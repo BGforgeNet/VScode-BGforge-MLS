@@ -1,0 +1,66 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "Fallout Star-Trek Scripting Language",
+	"patterns": [
+		{"include": "#keywords"},
+		{"include": "#strings"},
+		{"include": "#comments"},
+		{"include": "#function-declaration"},
+		{"include": "#variable-list"}
+	],
+	"repository": {
+		"keywords": {
+			"patterns": [{
+				"name": "keyword.control.ssl",
+				"match": "\\b(if|while|for|return|then|begin|foreach|continue|in|call|end|else|continue|int|and|not)\\b|(\\#include|\\#define|==|>=|<=|:=|\\+\\+|\\-|\\+|:|;)"
+			}]
+		},
+		"function-declaration": {
+			"name": "meta.function.ssl",
+			"patterns": [
+				{
+					"begin": "\\b(procedure)\\b[[:blank:]]+([a-zA-Z0-9_]+)",
+					"beginCaptures": {
+						"1": {"name": "support.type.procedure.ssl"},
+						"2": {"name": "entity.name.function"}
+					},
+					"end": "(;)$",
+					"endCaptures": {
+						"1": {"name": "keyword.control.ssl"}
+					}
+				},
+				{"include": "#variable-list"}
+			]
+		},
+		"variable-list": {
+			"name": "meta.variable-list.ssl",
+			"patterns": [{
+				"match": "(variable)[[:blank:]]+([a-zA-Z0-9_]+),?",
+				"captures": {
+					"1": {"name": "keyword.control.ssl"},
+					"2": {"name": "variable.ssl"}
+				}
+			}]
+		},
+		"comments": {
+			"patterns": [
+				{
+					"match": "//.*",
+					"name":"comment.line"
+				},
+				{
+					"begin": "/\\*",
+					"end": "\\*/",
+					"name":"comment.block"
+				}
+			]
+		},
+		"strings": {
+			"name": "string.quoted.double.ssl",
+			"begin": "\"",
+			"end": "\""
+		}
+
+	},
+	"scopeName": "text.ssl"
+}

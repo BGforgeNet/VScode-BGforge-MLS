@@ -1,0 +1,26 @@
+{
+    "name": "fallout-ssl",
+    "displayName": "fallout-ssl",
+    "description": "Fallout Star-Trek Scripting Language",
+    "version": "0.0.1",
+    "publisher": "BGforge",
+    "engines": {
+        "vscode": "^1.26.0"
+    },
+    "categories": [
+        "Programming Languages"
+    ],
+    "contributes": {
+        "languages": [{
+            "id": "ssl",
+            "aliases": ["Fallout Star-Trek Scripting Language", "ssl"],
+            "extensions": [".ssl",".int",".msg"],
+            "configuration": "./language-configuration.json"
+        }],
+        "grammars": [{
+            "language": "ssl",
+            "scopeName": "text.ssl",
+            "path": "./syntaxes/ssl.tmLanguage.json"
+        }]
+    }
+}
