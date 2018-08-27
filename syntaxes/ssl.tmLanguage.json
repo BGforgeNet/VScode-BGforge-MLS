@@ -12,7 +12,15 @@
 		"keywords": {
 			"patterns": [{
 				"name": "keyword.control.ssl",
-				"match": "\\b(if|while|for|return|then|begin|foreach|continue|in|call|end|else|continue|int|and|not)\\b|(\\#include|\\#define|==|>=|<=|:=|\\+\\+|\\-|\\+|:|;)"
+				"match": "\\b(if|while|for|return|then|begin|foreach|continue|in|call|end|else|continue|int)\\b|(\\#include|\\#define|;)"
+			},
+			{"include": "#operators"}
+			]
+		},
+		"operators": {
+			"patterns": [{
+				"match": "(\\b(or|and|not)\\b)|(==|>|>=|<|<=|:=|\\+\\+|\\-|\\+|:|;)",
+				"name": "keyword.control.ssl"
 			}]
 		},
 		"function-declaration": {
@@ -35,10 +43,10 @@
 		"variable-list": {
 			"name": "meta.variable-list.ssl",
 			"patterns": [{
-				"match": "(variable)[[:blank:]]+([a-zA-Z0-9_]+),?",
+				"match": "(variable)[[:blank:]]+([a-zA-Z0-9_]+),",
 				"captures": {
 					"1": {"name": "keyword.control.ssl"},
-					"2": {"name": "variable.ssl"}
+					"2": {"name": "variable.parameter.ssl"}
 				}
 			}]
 		},
