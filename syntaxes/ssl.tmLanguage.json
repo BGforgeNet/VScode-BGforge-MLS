@@ -2,19 +2,35 @@
 	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
 	"name": "Fallout Star-Trek Scripting Language",
 	"patterns": [
+		{"include": "#function-invocation"},
 		{"include": "#keywords"},
+		{"include": "#variable"},
 		{"include": "#strings"},
 		{"include": "#comments"},
 		{"include": "#function-declaration"},
-		{"include": "#variables"},
+		{"include": "#function-definition"},
 		{"include": "#types"},
 		{"include": "#constants"}
 	],
 	"repository": {
+		"function-invocation": {
+			"name": "meta.function.inv.ssl",
+			"patterns": [
+				{
+					"match": "\\b(call)\\b[[:blank:]]+(\\w+)(\\(.+\\))??(;)",
+					"captures": {
+						"1": {"name": "keyword.control.ssl"},
+						"2": {"name": "support.function.ssl"},
+						"3": {"patterns": [{"include": "$self"}]},
+						"4": {"name": "keyword.control.ssl"}
+					}
+				}
+			]
+		},
 		"keywords": {
 			"patterns": [{
 				"name": "keyword.control.ssl",
-				"match": "\\b(if|while|for|return|then|begin|foreach|continue|in|call|end|else|continue|do)\\b|(;)"
+				"match": "\\b(if|while|for|return|then|begin|foreach|continue|in|call|end|else|continue|do|variable)\\b|(;)"
 			},
 			{
 				"name": "keyword.control.import.ssl",
@@ -22,11 +38,11 @@
 			},
 			{
 				"name": "meta.define.ssl",
-				"match": "(#define)[[:blank:]]+(\\w+)[[:blank:]]+(.+)",
+				"match": "(#define)[[:blank:]]+(\\w+)(\\(\\w+\\))??[[:blank:]]+(.+)",
 				"captures": {
 					"1": {"name": "keyword.control.ssl"},
 					"2": {"name": "variable.language.ssl"},
-					"3": {"patterns": [{"include": "$self"}]}
+					"4": {"patterns": [{"include": "$self"}]}
 				}
 			},
 			{"include": "#operators"}
@@ -39,53 +55,54 @@
 			}]
 		},
 		"types":{
-			"patterns": [{	
-				"match": "(int)",
+			"patterns": [{
+				"match": "\\b(int|string|ObjectPtr)\\b",
 				"name": "support.type.ssl"
 			}]
 		},
-		"function-declaration": {
-			"name": "meta.function.ssl",
+		"constants": {
 			"patterns": [
 				{
-					"match": "\\b(procedure)\\b[[:blank:]]+([a-zA-Z0-9_]+)(\\(.+\\))?(;)$",
+					"match": "\\b(true|false)\\b",
+					"name": "constant.language.ssl"
+				}
+			]
+		},
+		"function-definition": {
+			"name": "meta.function.def.ssl",
+			"patterns": [
+				{
+					"match": "\\b(procedure)\\b[[:blank:]]+(\\w+)(\\(.+\\))?[[:blank:]]+(begin)",
 					"captures": {
 						"1": {"name": "support.type.procedure.ssl"},
 						"2": {"name": "entity.name.function"},
-						"3": {"patterns": [{"include": "#variables"}]},
+						"3": {"patterns": [{"include": "#variable"}]},
 						"4": {"name": "keyword.control.ssl"}
 					}
 				}
 			]
 		},
-		"variables": {
-			"name": "meta.variables.ssl",
+		"function-declaration": {
+			"name": "meta.function.dec.ssl",
 			"patterns": [
 				{
-					"match": "(variable)[[:blank:]]+(\\w+)[[:blank:]]*(:=)[[:blank:]]*(\\w+)[[:blank:]]*(;)",
+					"match": "\\b(procedure)\\b[[:blank:]]+(\\w+)(\\(.+\\))?[[:blank:]]*(;)",
 					"captures": {
-						"1": {"name": "keyword.control.ssl"},
-						"2": {"name": "variable.parameter.ssl"},
-						"3": {"name": "keyword.control.ssl"},
-						"4": {"name": "constant.numeric.ssl"},
-						"5": {"name": "keyword.control.ssl"}
-					}
-				},
-				{
-					"match": "(variable[[:blank:]](\\w+))",
-					"captures": {
-						"1": {"name": "keyword.control.ssl"},
-						"2": {"name": "variable.parameter.ssl"}
+						"1": {"name": "support.type.procedure.ssl"},
+						"2": {"name": "entity.name.function"},
+						"3": {"patterns": [{"include": "#variable"}]},
+						"4": {"name": "keyword.control.ssl"}
 					}
 				}
 			]
 		},
-		"constants": {
-			"name": "meta.constants.ssl",
-			"patterns": [{
-				"match": "(\\h+)",
-				"name": "constant.numeric.ssl"
-			}]
+		"variable": {
+			"patterns": [
+				{
+					"match": "\\b(variable)\\b",
+					"name": "keyword.control.ssl"
+				}
+			]
 		},
 		"comments": {
 			"patterns": [
