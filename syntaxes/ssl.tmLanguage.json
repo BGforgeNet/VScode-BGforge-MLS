@@ -6,60 +6,97 @@
 		{"include": "#strings"},
 		{"include": "#comments"},
 		{"include": "#function-declaration"},
-		{"include": "#variable-list"}
+		{"include": "#variables"},
+		{"include": "#types"},
+		{"include": "#constants"}
 	],
 	"repository": {
 		"keywords": {
 			"patterns": [{
 				"name": "keyword.control.ssl",
-				"match": "\\b(if|while|for|return|then|begin|foreach|continue|in|call|end|else|continue|int)\\b|(\\#include|\\#define|;)"
+				"match": "\\b(if|while|for|return|then|begin|foreach|continue|in|call|end|else|continue|do)\\b|(;)"
+			},
+			{
+				"name": "keyword.control.import.ssl",
+				"match": "(\\#include)"
+			},
+			{
+				"name": "meta.define.ssl",
+				"match": "(#define)[[:blank:]]+(\\w+)[[:blank:]]+(.+)",
+				"captures": {
+					"1": {"name": "keyword.control.ssl"},
+					"2": {"name": "variable.language.ssl"},
+					"3": {"patterns": [{"include": "$self"}]}
+				}
 			},
 			{"include": "#operators"}
 			]
 		},
 		"operators": {
 			"patterns": [{
-				"match": "(\\b(or|and|not)\\b)|(==|>|>=|<|<=|:=|\\+\\+|\\-|\\+|:|;)",
+				"match": "(\\b(or|and|not)\\b)|(=|:|>|<|\\+\\+|\\-|\\+|;|!)",
 				"name": "keyword.control.ssl"
+			}]
+		},
+		"types":{
+			"patterns": [{	
+				"match": "(int)",
+				"name": "support.type.ssl"
 			}]
 		},
 		"function-declaration": {
 			"name": "meta.function.ssl",
 			"patterns": [
 				{
-					"begin": "\\b(procedure)\\b[[:blank:]]+([a-zA-Z0-9_]+)",
-					"beginCaptures": {
+					"match": "\\b(procedure)\\b[[:blank:]]+([a-zA-Z0-9_]+)(\\(.+\\))?(;)$",
+					"captures": {
 						"1": {"name": "support.type.procedure.ssl"},
-						"2": {"name": "entity.name.function"}
-					},
-					"end": "(;)$",
-					"endCaptures": {
-						"1": {"name": "keyword.control.ssl"}
+						"2": {"name": "entity.name.function"},
+						"3": {"patterns": [{"include": "#variables"}]},
+						"4": {"name": "keyword.control.ssl"}
 					}
-				},
-				{"include": "#variable-list"}
+				}
 			]
 		},
-		"variable-list": {
-			"name": "meta.variable-list.ssl",
-			"patterns": [{
-				"match": "(variable)[[:blank:]]+([a-zA-Z0-9_]+),",
-				"captures": {
-					"1": {"name": "keyword.control.ssl"},
-					"2": {"name": "variable.parameter.ssl"}
+		"variables": {
+			"name": "meta.variables.ssl",
+			"patterns": [
+				{
+					"match": "(variable)[[:blank:]]+(\\w+)[[:blank:]]*(:=)[[:blank:]]*(\\w+)[[:blank:]]*(;)",
+					"captures": {
+						"1": {"name": "keyword.control.ssl"},
+						"2": {"name": "variable.parameter.ssl"},
+						"3": {"name": "keyword.control.ssl"},
+						"4": {"name": "constant.numeric.ssl"},
+						"5": {"name": "keyword.control.ssl"}
+					}
+				},
+				{
+					"match": "(variable[[:blank:]](\\w+))",
+					"captures": {
+						"1": {"name": "keyword.control.ssl"},
+						"2": {"name": "variable.parameter.ssl"}
+					}
 				}
+			]
+		},
+		"constants": {
+			"name": "meta.constants.ssl",
+			"patterns": [{
+				"match": "(\\h+)",
+				"name": "constant.numeric.ssl"
 			}]
 		},
 		"comments": {
 			"patterns": [
 				{
-					"match": "//.*",
-					"name":"comment.line"
+					"match": "(//).*",
+					"name":"comment.line.ssl"
 				},
 				{
 					"begin": "/\\*",
 					"end": "\\*/",
-					"name":"comment.block"
+					"name":"comment.block.ssl"
 				}
 			]
 		},
