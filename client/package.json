@@ -1,0 +1,26 @@
+{
+	"name": "fallout-ssl-client",
+	"description": "Fallout Star Trek Scripting Language client",
+	"author": "BGforge",
+	"license": "GPLv3",
+	"version": "0.0.1",
+	"publisher": "BGforge",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/BGforgeNet/vscode-fallout-ssl"
+	},
+	"engines": {
+		"vscode": "^1.26.1"
+	},
+	"scripts": {
+		"update-vscode": "vscode-install",
+		"postinstall": "vscode-install"
+	},
+	"dependencies": {
+		"vscode": "^1.1.21",
+		"vscode-languageclient": "^4.1.4"
+	},
+	"activationEvents": [
+		"onLanguage:ssl"
+	]
+}

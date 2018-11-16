@@ -1,26 +1,108 @@
 {
-    "name": "fallout-ssl",
-    "displayName": "fallout-ssl",
-    "description": "Fallout Star-Trek Scripting Language",
-    "version": "0.0.1",
-    "publisher": "BGforge",
-    "engines": {
-        "vscode": "^1.26.0"
-    },
+	"name": "fallout-ssl",
+	"displayName": "fallout-ssl",
+	"description": "Fallout Star-Trek Scripting Language",
+	"version": "1.0.0",
+	"author": "BGforge",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/BGforgeNet/vscode-fallout-ssl"
+	},
+	"publisher": "BGforge",
+	"license": "GPLv3",
+	"keywords": [
+		"multi-root ready"
+	],
+	"engines": {
+		"vscode": "^1.26.0"
+	},
+	"activationEvents": [
+		"onLanguage:plaintext",
+		"onLanguage:ssl"
+	],
+	"main": "./client/out/extension",
+	"contributes": {
+		"languages": [
+			{
+				"id": "ssl",
+				"aliases": [
+					"Fallout Star-Trek Scripting Language",
+					"ssl"
+				],
+				"extensions": [
+					".ssl"
+				],
+				"configuration": "./language-configuration.json"
+			}
+		],
+		"commands": [
+			{
+				"command": "extension.SSLcompile",
+				"title": "SSLCompile"
+			}
+		],
+		"grammars": [
+			{
+				"language": "ssl",
+				"scopeName": "text.ssl",
+				"path": "./syntaxes/ssl.tmLanguage.json"
+			}
+		],
+		"configuration": {
+			"type": "object",
+			"title": "SSL configuration",
+			"properties": {
+				"ssl.maxNumberOfProblems": {
+					"scope": "resource",
+					"type": "number",
+					"default": 100,
+					"description": "Controls the maximum number of problems produced by the server."
+				},
+				"ssl.trace.server": {
+					"scope": "window",
+					"type": "string",
+					"enum": [
+						"off",
+						"messages",
+						"verbose"
+					],
+					"default": "off",
+					"description": "Traces the communication between VS Code and the language server."
+				},
+				"ssl.compile": {
+					"type": "string",
+					"default": "wine ~/bin/compile.exe -p -l -O2 -d -s -n",
+					"description": "Full path to compile.exe plus compilation options"
+				},
+				"ssl.output_directory": {
+					"type": "string",
+					"default": ".",
+					"description": "Where to put the complied scripts"
+				}
+			}
+		},
+		"keybindings": [{
+			"command": "extension.SSLcompile",
+			"key": "ctrl+r",
+			"when": "editorTextFocus"
+		}]
+	},
+	"scripts": {
+		"vscode:prepublish": "cd client && npm run update-vscode && cd .. && npm run compile",
+		"compile:client": "tsc -p ./client/tsconfig.json",
+		"compile:server": "tsc -p ./server/tsconfig.json",
+		"watch:client": "tsc -w -p ./client/tsconfig.json",
+		"watch:server": "tsc -w -p ./server/tsconfig.json",
+		"compile": "npm run compile:client && npm run compile:server",
+		"postinstall": "cd client && npm install && cd ../server && npm install && cd ..",
+		"test": "sh ./scripts/e2e.sh"
+	},
+	"devDependencies": {
+		"@types/mocha": "^5.2.0",
+		"@types/node": "^8.0.0",
+		"typescript": "2.8.3"
+	},
     "categories": [
-        "Programming Languages"
-    ],
-    "contributes": {
-        "languages": [{
-            "id": "ssl",
-            "aliases": ["Fallout Star-Trek Scripting Language", "ssl"],
-            "extensions": [".ssl",".int",".msg"],
-            "configuration": "./language-configuration.json"
-        }],
-        "grammars": [{
-            "language": "ssl",
-            "scopeName": "text.ssl",
-            "path": "./syntaxes/ssl.tmLanguage.json"
-        }]
-    }
+		"Programming Languages"
+	]
 }
