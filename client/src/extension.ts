@@ -29,19 +29,19 @@ export function activate(context: ExtensionContext) {
 		var currentlyOpenTabdirPath = path.dirname(currentlyOpenTabfilePath);
 		var currentlyOpenTabfileName = path.basename(currentlyOpenTabfilePath);
 		var base_name = path.parse(currentlyOpenTabfileName).name;
-    console.log(vscode.workspace.getConfiguration('ssl'));
+    conlog(vscode.workspace.getConfiguration('ssl'));
 		var dst_dir = vscode.workspace.getConfiguration('ssl').get('output_directory','.');
 		var dst_path = path.join(dst_dir, base_name + '.int');
 		var compile_exe = vscode.workspace.getConfiguration('ssl').get('compile');
-		console.log('dst_path: ' + dst_path);
+		conlog('dst_path: ' + dst_path);
 		
 		const cp = require('child_process');
 		cp.exec(compile_exe +" "+ currentlyOpenTabfileName + ' -o ' + dst_path, {cwd: currentlyOpenTabdirPath}, (err: any, stdout: any, stderr: any) => {
-				console.log('stdout: ' + stdout);
-				console.log('stderr: ' + stderr);
+				conlog('stdout: ' + stdout);
+				conlog('stderr: ' + stderr);
 				if (err) {
 					vscode.window.showInformationMessage(err);
-					console.log('error: ' + err);
+					conlog('error: ' + err);
 				}
 		});
 
@@ -86,4 +86,24 @@ export function deactivate(): Thenable<void> {
 		return undefined;
 	}
 	return client.stop();
+}
+
+function conlog(item: any) {
+	switch (typeof(item)) {
+		case "number":
+			console.log(item);
+			break;
+		case "boolean":
+			console.log(item);
+			break;
+		case "undefined":
+			console.log(item);
+			break;
+		case "string":
+			console.log(item);
+			break;
+		default:
+			console.log(JSON.stringify(item));
+			break;
+	}
 }

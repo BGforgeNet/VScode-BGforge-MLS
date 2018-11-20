@@ -65,7 +65,7 @@ connection.onInitialized(() => {
 	}
 	if (hasWorkspaceFolderCapability) {
 		connection.workspace.onDidChangeWorkspaceFolders(_event => {
-			connection.console.log('Workspace folder change event received.');
+			connlog('Workspace folder change event received.');
 		});
 	}
 
@@ -73,11 +73,9 @@ connection.onInitialized(() => {
 	connection.workspace.getWorkspaceFolders().then(function (workspacefolders) {
 		connection.workspace.getConfiguration('ssl').then(function (conf: any) {
 			var def_list = get_defines(workspacefolders[0].uri.replace('file:\/\/', '') + '/' + (conf.headers_directory || 'headers'));
-				connection.console.log(JSON.stringify(def_list));
 				for (let item of def_list){
 					completion_item_list.push(item);
 				}
-			
 		});
 
 	});
@@ -186,7 +184,7 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
 
 connection.onDidChangeWatchedFiles(_change => {
 	// Monitored files have change in VSCode
-	connection.console.log('We received an file change event');
+	connlog('We received an file change event');
 });
 
 
@@ -201,7 +199,6 @@ function load_completion() {
 	const yaml = require('js-yaml');
 	const fs = require('fs');
 	try {
-		connection.console.log(process.cwd());
 		const completion_map = yaml.safeLoad(fs.readFileSync(__dirname + '/completion.yml', 'utf8'));
 		let item: any;
 		let completion_item_list = []
@@ -216,7 +213,7 @@ function load_completion() {
 		}
 		return completion_item_list;
 	} catch (e) {
-		connection.console.log(JSON.stringify(e));
+		connlog(e);
 	}
 };
 
@@ -244,15 +241,15 @@ function get_defines(headers_dir: string) {
 		return result;
 	}
 
-	connection.console.log(headers_dir);
+	connlog(headers_dir);
 
 	var full_def_list: Array<any> =[];
 	var file;
 	for (file of walkDirSync(headers_dir)) {
-		connection.console.log(file);
+		connlog(file);
 		var def_list = defines_from_file(path.join(headers_dir, file));
 		for (let item of def_list)
-		full_def_list.push(item);
+			full_def_list.push(item);
 	}
 	return full_def_list;
 }
@@ -285,8 +282,6 @@ function defines_from_file(file_path: string) {
 	let result: Array<any> = [];
 	if (!def_list)
 		return result;
-	var len: any = def_list.length;
-	connection.console.log(`def_list len : ${len}`);
 
 	match = def_regex.exec(code);
 	while (match != null) {
@@ -298,9 +293,6 @@ function defines_from_file(file_path: string) {
 
 		def_name = match[1];
 		def_detail = match[2];
-		
-		connection.console.log(match.index);
-		connection.console.log(def_name);
 		result.push({ label: def_name, kind: def_kind, documentation: def_doc, detail: def_detail });
 		match = def_regex.exec(code);
 	}
@@ -322,3 +314,23 @@ documents.listen(connection);
 
 // Listen on the connection
 connection.listen();
+
+function connlog(item: any) {
+	switch (typeof(item)) {
+		case "number":
+			connection.console.log(item);
+			break;
+		case "boolean":
+			connection.console.log(item);
+			break;
+		case "undefined":
+			connection.console.log(item);
+			break;
+		case "string":
+			connection.console.log(item);
+			break;
+		default:
+			connection.console.log(JSON.stringify(item));
+			break;
+	}
+}
