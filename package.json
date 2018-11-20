@@ -52,12 +52,6 @@
 			"type": "object",
 			"title": "SSL configuration",
 			"properties": {
-				"ssl.maxNumberOfProblems": {
-					"scope": "resource",
-					"type": "number",
-					"default": 100,
-					"description": "Controls the maximum number of problems produced by the server."
-				},
 				"ssl.trace.server": {
 					"scope": "window",
 					"type": "string",
@@ -72,19 +66,23 @@
 				"ssl.compile": {
 					"type": "string",
 					"default": "wine ~/bin/compile.exe -p -l -O2 -d -s -n",
-					"description": "Full path to compile.exe plus compilation options"
+					"description": "Path to compile.exe plus compilation options"
 				},
 				"ssl.output_directory": {
 					"type": "string",
 					"default": ".",
 					"description": "Where to put the complied scripts"
+				},
+				"ssl.headers_directory": {
+					"type": "string",
+					"default": "headers",
+					"description": "Directory containing headers, searched recursively"
 				}
 			}
 		},
 		"keybindings": [{
 			"command": "extension.SSLcompile",
-			"key": "ctrl+r",
-			"when": "editorTextFocus"
+			"key": "ctrl+r"
 		}]
 	},
 	"scripts": {
