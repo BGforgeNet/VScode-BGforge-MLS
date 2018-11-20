@@ -15,7 +15,6 @@ import {
 } from 'vscode-languageserver';
 import { connect } from 'tls';
 import { ExecSyncOptionsWithStringEncoding } from 'child_process';
-//import * as readline from 'readline';
 
 // Create a connection for the server. The connection uses Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
@@ -194,7 +193,6 @@ connection.onDidChangeWatchedFiles(_change => {
 // This handler provides the initial list of the completion items.
 connection.onCompletion(
 	(_textDocumentPosition: TextDocumentPositionParams): CompletionItem[] => {
-		//connection.console.log(JSON.stringify(completion_item_list));
 		return completion_item_list;
 	}
 );
@@ -247,8 +245,6 @@ function get_defines(headers_dir: string) {
 	}
 
 	connection.console.log(headers_dir);
-	//var defines_list = 
-	var glob = require('glob-fs')({ gitignore: true });
 
 	var full_def_list: Array<any> =[];
 	var file;
@@ -263,22 +259,13 @@ function get_defines(headers_dir: string) {
 
 
 function defines_from_file(file_path: string) {
-//	const readline = require('readline');
 	const fs = require('fs');
-//	const strip = require('strip-comments');
-
 	var def_list: Array<any>;
 	var proc_list: Array<any>;
 	var combined_list: Array<any>;
 
-	var content = fs.readFileSync(file_path, 'utf8');
-//	var code = strip(content);
-	var decomment = require('decomment');
-//	var code = decomment.text(content);
-	var code = content;
+	var code = fs.readFileSync(file_path, 'utf8');
 
-	// concat multilines ending with "\"
-//	var new_code = "";
 	var line: string;
 	var proc_name: string;
 	var proc_detail: string;
@@ -303,9 +290,6 @@ function defines_from_file(file_path: string) {
 
 	match = def_regex.exec(code);
 	while (match != null) {
-		// matched text: match[0]
-		// match start: match.index
-		// capturing group n: match[n]
 
 		// This is necessary to avoid infinite loops with zero-width matches
     if (match.index === def_regex.lastIndex) {
@@ -316,76 +300,11 @@ function defines_from_file(file_path: string) {
 		def_detail = match[2];
 		
 		connection.console.log(match.index);
-		
 		connection.console.log(def_name);
-/*		connection.console.log(`def_name: ${def_name},` + ` def_detail: ${def_detail}`);
-		connection.console.log(`full match: ${match[0]}`);
-*/
-		match.forEach((m: any, groupIndex: any) => {
-		//s	connection.console.log(`Found match, group ${groupIndex}: ${m}`);
-//			def_name = m[1];
-	//		def_detail = m[2];
-		//	connection.console.log(`def_name: ${def_name},` + `def_detail: ${def_detail}`);
-		});
-//		def_list.push([def_name, def_kind, def_doc, def_detail]);
 		result.push({ label: def_name, kind: def_kind, documentation: def_doc, detail: def_detail });
 		match = def_regex.exec(code);
 	}
-//	connection.console.log(JSON.stringify(result));
 	return result;
-/*
-	for (def of def_list) {
-		def_name = def[1];
-		def_detail = def[2];
-		connection.console.log(`def_name: ${def_name},` + `def_detail: ${def_detail}`);
-	}
-	*/
-//	var def_started = false;
-//	var def_ended = false;
-//	var last_char: string;
-//	for (var index in code.split("#define")) {
-//		line = line.trim();
-/*
-		//continue regex from la
-		if (def_started == true && def_ended == false) {
-			def_detail = def_detail.concat("\n").concat(line);
-			last_char = line.charAt(line.length - 1);
-			if (last_char != "\\") {
-				def_ended = true;
-				def_list.push([def_name, def_kind, def_doc, def_detail]);
-			}
-		}
-*/	
-/*		
-		match = line.match(proc_regex);
-		if (match) {
-			def_name = match[1];
-			def_detail = match[1].concat(match[2]);
-			def_list.push([proc_name, proc_kind, proc_detail]);
-		}
-*/
-
-
-		
-//		connection.console.log(`LAST CHAR: ${last_char}`);
-//		new_code = new_code.concat(inter_char);
-	//	new_code = new_code.concat(line);
-//	}
-	//connection.console.log(`Code: ${new_code}`);
-	
-/*
-	const rl = readline.createInterface({
-		input: fs.createReadStream(file_path),
-  	crlfDelay: Infinity
-	});
-
-	rl.on('line', (line: string) => {
-//		var code = decomment(line);
-		var code = strip(line);
-		connection.console.log(`Line from file: ${line}`);
-		connection.console.log(`Code from file: ${code}`);
-	});
-*/
 }
 
 // This handler resolve additional information for the item selected in

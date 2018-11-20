@@ -37,12 +37,10 @@ export function activate(context: ExtensionContext) {
 		
 		const cp = require('child_process');
 		cp.exec(compile_exe +" "+ currentlyOpenTabfileName + ' -o ' + dst_path, {cwd: currentlyOpenTabdirPath}, (err: any, stdout: any, stderr: any) => {
-//	cp.exec('pwd', {cwd: currentlyOpenTabdirPath}, (err: any, stdout: any, stderr: any) => {
 				console.log('stdout: ' + stdout);
 				console.log('stderr: ' + stderr);
 				if (err) {
 					vscode.window.showInformationMessage(err);
-		
 					console.log('error: ' + err);
 				}
 		});
