@@ -5,3 +5,4 @@ server/node_modules
 client/server
 .vscode-test
 *.vsix
+*.log
