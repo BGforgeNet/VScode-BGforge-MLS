@@ -63,6 +63,12 @@
 					"default": "off",
 					"description": "Traces the communication between VS Code and the language server."
 				},
+				"ssl.maxNumberOfProblems": {
+					"scope": "resource",
+					"type": "number",
+					"default": 100,
+					"description": "Controls the maximum number of problems produced by the server."
+				},
 				"ssl.compile": {
 					"type": "string",
 					"default": "wine ~/bin/compile.exe -p -l -O2 -d -s -n",
