@@ -50,7 +50,7 @@
 		],
 		"configuration": {
 			"type": "object",
-			"title": "SSL configuration",
+			"title": "SSL Language Server",
 			"properties": {
 				"ssl.trace.server": {
 					"scope": "window",
@@ -66,7 +66,7 @@
 				"ssl.maxNumberOfProblems": {
 					"scope": "resource",
 					"type": "number",
-					"default": 100,
+					"default": 10,
 					"description": "Controls the maximum number of problems produced by the server."
 				},
 				"ssl.compile": {
