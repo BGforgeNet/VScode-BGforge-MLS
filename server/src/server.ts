@@ -65,19 +65,23 @@ connection.onInitialized(() => {
 	}
 	if (hasWorkspaceFolderCapability) {
 		connection.workspace.onDidChangeWorkspaceFolders(_event => {
-			connlog('Workspace folder change event received.');
+			conlog('Workspace folder change event received.');
 		});
 	}
 
 	completion_item_list = load_completion();
 	connection.workspace.getWorkspaceFolders().then(function (workspacefolders) {
 		connection.workspace.getConfiguration('ssl').then(function (conf: any) {
-			var def_list = get_defines(workspacefolders[0].uri.replace('file:\/\/', '') + '/' + (conf.headers_directory || 'headers'));
-				for (let item of def_list){
-					completion_item_list.push(item);
-				}
+			var procdef_list = get_defines(workspacefolders[0].uri.replace('file:\/\/', '') + '/' + (conf.headers_directory || 'headers'));
+			var def_list = procdef_list[0];
+			var proc_list = procdef_list[1];
+			for (let item of def_list) {
+				completion_item_list.push({ label: item.label, kind: item.kind, documentation: item.documentation, detail: item.detail});
+			}
+			for (let item of proc_list) {
+				completion_item_list.push({ label: item.label, kind: item.kind, documentation: item.documentation, detail: item.detail});
+			}
 		});
-
 	});
 });
 
@@ -89,7 +93,7 @@ interface ExampleSettings {
 // The global settings, used when the `workspace/configuration` request is not supported by the client.
 // Please note that this is not the case when using this server with the client provided in this example
 // but could happen with other clients.
-const defaultSettings: ExampleSettings = { maxNumberOfProblems: 1000 };
+const defaultSettings: ExampleSettings = { maxNumberOfProblems: 10 };
 let globalSettings: ExampleSettings = defaultSettings;
 
 // Cache the settings of all open documents
@@ -117,7 +121,7 @@ function getDocumentSettings(resource: string): Thenable<ExampleSettings> {
 	if (!result) {
 		result = connection.workspace.getConfiguration({
 			scopeUri: resource,
-			section: 'SSLlanguageServer'
+			section: 'SSL configuration'
 		});
 		documentSettings.set(resource, result);
 	}
@@ -184,7 +188,7 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
 
 connection.onDidChangeWatchedFiles(_change => {
 	// Monitored files have change in VSCode
-	connlog('We received an file change event');
+	conlog('We received an file change event');
 });
 
 
@@ -213,7 +217,7 @@ function load_completion() {
 		}
 		return completion_item_list;
 	} catch (e) {
-		connlog(e);
+		conlog(e);
 	}
 };
 
@@ -241,43 +245,38 @@ function get_defines(headers_dir: string) {
 		return result;
 	}
 
-	connlog(headers_dir);
-
-	var full_def_list: Array<any> =[];
+	var full_def_list: Array<any> = [];
+	var full_proc_list: Array<any> = [];
 	var file;
 	for (file of walkDirSync(headers_dir)) {
-		connlog(file);
-		var def_list = defines_from_file(path.join(headers_dir, file));
+		const fs = require('fs');
+		var file_path = path.join(headers_dir, file);
+		var code = fs.readFileSync(file_path, 'utf8');
+
+		var def_list = defines_from_file(code);
 		for (let item of def_list)
-			full_def_list.push(item);
+			full_def_list.push({ label: item.label, kind: item.kind, documentation: file, detail: item.detail, filename: file_path, vars: item.vars});
+
+		var proc_list = procs_from_file(code);
+		for (let item of proc_list)
+			full_proc_list.push({ label: item.label, kind: item.kind, documentation: file, detail: item.detail, filename: file_path, vars: item.vars});
 	}
-	return full_def_list;
+	return [full_def_list, full_proc_list];
 }
 
 
-function defines_from_file(file_path: string) {
-	const fs = require('fs');
-	var def_list: Array<any>;
-	var proc_list: Array<any>;
-	var combined_list: Array<any>;
-
-	var code = fs.readFileSync(file_path, 'utf8');
-
-	var line: string;
-	var proc_name: string;
-	var proc_detail: string;
-	var proc_doc: "";
-	var proc_kind: 3; //function
-	var proc_regex = /procedure\\b[[:blank:]]+(\\w+)(\\(.+\\))?[[:blank:]]+begin/;
+//function defines_from_file(file_path: string) {
+function defines_from_file(code: string) {;
+	var def_list: Array<any> = [];
 
 	var def_name: string;
 	var def_detail: string;
-	var def_doc: "";
-	var def_kind: 6; //variable
-	var def_regex = /^[ \t]*#define[ \t]+(\S+)[ \t]*((?:.*\\\r?\n)*.*)/gm;
+	var def_doc = "";
+	var def_kind = 6; //variable
+	var def_vars = "";
+	var def_regex = /^[ \t]*#define[ \t]+(\w+)(?:\(([^)]+)\))?[ \t]*((?:.*\\\r?\n)*.*)/gm;
 
 	var match: any;
-	var def: string;
 	def_list = code.match(def_regex);
 	let result: Array<any> = [];
 	if (!def_list)
@@ -285,16 +284,56 @@ function defines_from_file(file_path: string) {
 
 	match = def_regex.exec(code);
 	while (match != null) {
-
 		// This is necessary to avoid infinite loops with zero-width matches
-    if (match.index === def_regex.lastIndex) {
+		if (match.index === def_regex.lastIndex) {
 			def_regex.lastIndex++;
 		}
 
 		def_name = match[1];
-		def_detail = match[2];
-		result.push({ label: def_name, kind: def_kind, documentation: def_doc, detail: def_detail });
+		def_detail = match[3];
+		def_vars = "";
+		if (match[2]) {
+			def_vars = match[2]; 
+		}
+		result.push({ label: def_name, kind: def_kind, documentation: def_doc, detail: def_detail, vars: def_vars});
 		match = def_regex.exec(code);
+	}
+	return result;
+}
+
+function procs_from_file(code: string) {
+	var proc_list: Array<any> = [];
+
+	var proc_name: string;
+	var proc_detail = "";
+	var proc_doc = "";
+	var proc_kind = 3; //function
+	var proc_vars = "";
+	var proc_regex = /procedure[\s]+(\w+)(?:\(([^)]+)\))?[\s]+begin/gm;
+	var match: any;
+	var vars_re = /variable[\s]/gi; //remove "variable " from tooltip
+
+	proc_list = code.match(proc_regex);
+	let result: Array<any> = [];
+	if (!proc_list)
+		return result;
+
+	match = proc_regex.exec(code);
+	while (match != null) {
+		// This is necessary to avoid infinite loops with zero-width matches
+		if (match.index === proc_regex.lastIndex) {
+			proc_regex.lastIndex++;
+		}
+
+		proc_name = match[1];
+		proc_vars = "";
+		proc_detail = match[1];
+		if (match[2]) {
+			proc_vars = match[2].replace(vars_re, "");
+			proc_detail = proc_detail + "(" + proc_vars + ")";
+		}
+		result.push({ label: proc_name, kind: proc_kind, documentation: proc_doc, detail: proc_detail, vars: proc_vars});
+		match = proc_regex.exec(code);
 	}
 	return result;
 }
@@ -315,8 +354,8 @@ documents.listen(connection);
 // Listen on the connection
 connection.listen();
 
-function connlog(item: any) {
-	switch (typeof(item)) {
+function conlog(item: any) {
+	switch (typeof (item)) {
 		case "number":
 			connection.console.log(item);
 			break;
