@@ -11,7 +11,8 @@ import {
 	DidChangeConfigurationNotification,
 	CompletionItem,
 	CompletionItemKind,
-	TextDocumentPositionParams
+	TextDocumentPositionParams,
+	Hover
 } from 'vscode-languageserver';
 import { connect } from 'tls';
 import { ExecSyncOptionsWithStringEncoding } from 'child_process';
@@ -29,7 +30,6 @@ let hasWorkspaceFolderCapability: boolean = false;
 let hasDiagnosticRelatedInformationCapability: boolean = false;
 
 let completion_item_list: Array<any>;
-let header_file_list: Array<any>;
 
 connection.onInitialize((params: InitializeParams) => {
 	let capabilities = params.capabilities;
@@ -49,8 +49,9 @@ connection.onInitialize((params: InitializeParams) => {
 			textDocumentSync: documents.syncKind,
 			// Tell the client that the server supports code completion
 			completionProvider: {
-				resolveProvider: true
-			}
+				resolveProvider: true,
+			},
+			hoverProvider : true
 		}
 	};
 });
@@ -76,10 +77,23 @@ connection.onInitialized(() => {
 			var def_list = procdef_list[0];
 			var proc_list = procdef_list[1];
 			for (let item of def_list) {
-				completion_item_list.push({ label: item.label, kind: item.kind, documentation: item.documentation, detail: item.detail});
+				//skip duplicates
+				var present = completion_item_list.filter(function (el: any) {
+					return (el.label == item.label && el.detail == item.detail);
+				})
+				if (present.length == 0) {
+					completion_item_list.push({ label: item.label, kind: item.kind, documentation: item.documentation, detail: item.detail});
+				}
 			}
+
 			for (let item of proc_list) {
-				completion_item_list.push({ label: item.label, kind: item.kind, documentation: item.documentation, detail: item.detail});
+				//skip duplicates
+				var present = completion_item_list.filter(function (el: any) {
+					return (el.label == item.label && el.detail == item.detail);
+				})
+				if (present.length == 0) {
+					completion_item_list.push({ label: item.label, kind: item.kind, documentation: item.documentation, detail: item.detail});
+				}
 			}
 		});
 	});
@@ -272,8 +286,6 @@ function defines_from_file(code: string) {;
 	var def_name: string;
 	var def_detail: string;
 	var def_doc = "";
-	var def_kind = 6; //variable
-	var def_vars = "";
 	var def_regex = /^[ \t]*#define[ \t]+(\w+)(?:\(([^)]+)\))?[ \t]*((?:.*\\\r?\n)*.*)/gm;
 
 	var match: any;
@@ -291,9 +303,11 @@ function defines_from_file(code: string) {;
 
 		def_name = match[1];
 		def_detail = match[3];
-		def_vars = "";
+		var def_vars = "";
+		var def_kind = 21; //constant
 		if (match[2]) {
 			def_vars = match[2]; 
+			def_kind = 3; //function
 		}
 		result.push({ label: def_name, kind: def_kind, documentation: def_doc, detail: def_detail, vars: def_vars});
 		match = def_regex.exec(code);
@@ -373,3 +387,71 @@ function conlog(item: any) {
 			break;
 	}
 }
+
+
+/*
+connection.onDidChangeTextDocument((params) => {
+	// The content of a text document did change in VS Code.
+	// params.uri uniquely identifies the document.
+	// params.contentChanges describe the content changes to the document.
+	params.contentChanges.
+});
+
+connection.onDidOpenTextDocument((params) => {
+	// A text document got opened in VS Code.
+	// params.uri uniquely identifies the document. For documents store on disk this is a file URI.
+	// params.text the initial full content of the document.
+	var text = params.textDocument.text;
+});
+*/
+
+
+/*
+connection.onHover(({ textDocument, position }): Hover => {
+	var line = textDocument.uri.
+	for(var i = 0; i < names.length; i++) {
+		if(names[i].line == position.line
+				&& (names[i].start <= position.character && names[i].end >= position.character) )
+		{
+				return {
+						contents: names[i].text
+				};
+		}
+	}
+});
+*/
+/*
+connection.onHover(
+	(p : TextDocumentPositionParams) : Hover => {}
+		conlog(p.position.character);
+		conlog(p.position.line);
+		const fs = require('fs');
+		var line = fs.readFileSync(p.textDocument.uri.replace("file://",""), 'utf8')[p.position.line];
+		conlog(line);
+		return {
+				//contents: "xxxxx" + p.position.character + ", yyyyy" + p.position.line,
+				//contents: p.textDocument.uri.charAt(p.position.character),
+				contents: get_word_at(line, p.position.character),
+				range : {
+						start : {line: 0, character: 0},
+						end : {line: 0, character: 10}
+				}
+		}
+	}
+);
+
+
+function get_word_at(str: string, pos: number) {
+	// Search for the word's beginning and end.
+	var left = str.slice(0, pos + 1).search(/\S+$/),
+			right = str.slice(pos).search(/\s/);
+
+	// The last word in the string is a special case.
+	if (right < 0) {
+			return str.slice(left);
+	}
+
+	// Return the word, using the located bounds to extract it from the string.
+	return str.slice(left, right + pos);
+}
+*/
