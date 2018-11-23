@@ -30,7 +30,8 @@
 					"ssl"
 				],
 				"extensions": [
-					".ssl"
+					".ssl",
+					".h"
 				],
 				"configuration": "./language-configuration.json"
 			}
