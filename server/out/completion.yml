@@ -1,0 +1,33 @@
+---
+
+keywords:
+  type: 1 #text
+  items:
+    - name: begin
+    - name: end
+    - name: procedure
+
+base-functions:
+  type: 3 #function
+  items:
+    - name: action_being_used
+      detail: "int action_being_used"
+      doc: "Returns the current skill () being used on a script object."
+    - name: activateregion
+
+sfall-functions:
+  type: 3 #function
+  items:
+    - name: abs
+      detail: "float abs(float x)"
+      doc: "Returns absolute (positive) value of x"
+    - name: activate_shader
+      detail: "void activate_shader(int id)"
+
+sfall-macro:
+  type: 1 #text
+  items:
+    - name: array_exists
+      detail: "true if (len_array(array) != -1)"
+    - name: array_is_map
+      detail: "true if (array_key(x, -1) == 1)"

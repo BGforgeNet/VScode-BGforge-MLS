@@ -1,4 +1,6 @@
-out
+client/out
+server/out/*
+!server/out/completion.yml
 node_modules
 client/node_modules
 server/node_modules
@@ -6,4 +8,3 @@ client/server
 .vscode-test
 *.vsix
 *.log
-!server/out/completion.yml
