@@ -391,7 +391,7 @@ function conlog(item: any) {
 
 function get_word_at(str: string, pos: number) {
 	// Search for the word's beginning and end.
-	var left = str.slice(0, pos + 1).search(/\S+$/), right = str.slice(pos).search(/\s/);
+	var left = str.slice(0, pos + 1).search(/\w+$/), right = str.slice(pos).search(/\W/);
 	// The last word in the string is a special case.
 	if (right < 0) {
 		return str.slice(left);
@@ -408,25 +408,26 @@ connection.onHover((textDocumentPosition: TextDocumentPositionParams): Hover => 
 	let str = lines[position.line];
 	let pos = position.character;
 	let word = get_word_at(str, pos);
-	var real_word = word.match(/(\w+)/)[0];
 
-	if (real_word) {
+	if (word) {
 		var present = completion_item_list.filter(function (el: any) {
-			return (el.label == real_word);
+			return (el.label == word);
 		})
 		if (present.length > 0) {
 			let item = present[0];
-			let markdown = {
-				kind: MarkupKind.Markdown,
-				value: [
-					'```c++',
-					item.detail,
-					'```',
-					item.documentation
-				].join('\n')
-			};
-			let hover = {contents: markdown};
-			return hover;
+			if (item.detail || item.documentation) {
+				let markdown = {
+					kind: MarkupKind.Markdown,
+					value: [
+						'```c++',
+						item.detail,
+						'```',
+						item.documentation
+					].join('\n')
+				};
+				let hover = {contents: markdown};
+				return hover;
+			}
 		}
 	}
 });
