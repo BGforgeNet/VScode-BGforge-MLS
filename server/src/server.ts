@@ -12,7 +12,8 @@ import {
 	CompletionItem,
 	CompletionItemKind,
 	TextDocumentPositionParams,
-	Hover
+	Hover,
+	MarkupKind
 } from 'vscode-languageserver';
 import { connect } from 'tls';
 import { ExecSyncOptionsWithStringEncoding } from 'child_process';
@@ -388,70 +389,45 @@ function conlog(item: any) {
 	}
 }
 
-
-/*
-connection.onDidChangeTextDocument((params) => {
-	// The content of a text document did change in VS Code.
-	// params.uri uniquely identifies the document.
-	// params.contentChanges describe the content changes to the document.
-	params.contentChanges.
-});
-
-connection.onDidOpenTextDocument((params) => {
-	// A text document got opened in VS Code.
-	// params.uri uniquely identifies the document. For documents store on disk this is a file URI.
-	// params.text the initial full content of the document.
-	var text = params.textDocument.text;
-});
-*/
-
-
-/*
-connection.onHover(({ textDocument, position }): Hover => {
-	var line = textDocument.uri.
-	for(var i = 0; i < names.length; i++) {
-		if(names[i].line == position.line
-				&& (names[i].start <= position.character && names[i].end >= position.character) )
-		{
-				return {
-						contents: names[i].text
-				};
-		}
-	}
-});
-*/
-/*
-connection.onHover(
-	(p : TextDocumentPositionParams) : Hover => {}
-		conlog(p.position.character);
-		conlog(p.position.line);
-		const fs = require('fs');
-		var line = fs.readFileSync(p.textDocument.uri.replace("file://",""), 'utf8')[p.position.line];
-		conlog(line);
-		return {
-				//contents: "xxxxx" + p.position.character + ", yyyyy" + p.position.line,
-				//contents: p.textDocument.uri.charAt(p.position.character),
-				contents: get_word_at(line, p.position.character),
-				range : {
-						start : {line: 0, character: 0},
-						end : {line: 0, character: 10}
-				}
-		}
-	}
-);
-
-
 function get_word_at(str: string, pos: number) {
 	// Search for the word's beginning and end.
-	var left = str.slice(0, pos + 1).search(/\S+$/),
-			right = str.slice(pos).search(/\s/);
-
+	var left = str.slice(0, pos + 1).search(/\S+$/), right = str.slice(pos).search(/\s/);
 	// The last word in the string is a special case.
 	if (right < 0) {
-			return str.slice(left);
+		return str.slice(left);
 	}
-
 	// Return the word, using the located bounds to extract it from the string.
 	return str.slice(left, right + pos);
 }
-*/
+
+connection.onHover((textDocumentPosition: TextDocumentPositionParams): Hover => {
+	let text = documents.get(textDocumentPosition.textDocument.uri).getText();
+	let lines = text.split(/\r?\n/g);
+	let position = textDocumentPosition.position;
+	conlog(typeof(position));
+	conlog(position);
+	let str = lines[position.line];
+	let pos = position.character;
+	let word = get_word_at(str, pos);
+	var real_word = word.match(/(\w+)/)[0];
+	conlog(real_word);
+	if (real_word) {
+		var present = completion_item_list.filter(function (el: any) {
+			return (el.label == real_word);
+		})
+		if (present.length > 0) {
+			let item = present[0];
+			let markdown = {
+				kind: MarkupKind.Markdown,
+				value: [
+					'```c++',
+					item.detail,
+					'```',
+					item.documentation
+				].join('\n')
+			};
+			let hover = {contents: markdown};
+			return hover;
+		}
+	}
+});
