@@ -20,9 +20,12 @@ sfall-functions:
   items:
     - name: abs
       detail: "float abs(float x)"
-      doc: "Returns absolute (positive) value of x"
+      doc: "Returns absolute (positive) value of x."
     - name: activate_shader
       detail: "void activate_shader(int id)"
+    - name: set_critter_burst_disable
+      detail: "void set_critter_burst_disable(objectptr critter, int disable)"
+      doc: "Critter won't use bursts unless having a burst-only weapon equipped."
 
 sfall-macro:
   type: 1 #text
