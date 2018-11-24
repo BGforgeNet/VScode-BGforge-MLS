@@ -6,3 +6,4 @@ client/server
 .vscode-test
 *.vsix
 *.log
+!server/out/completion.yml

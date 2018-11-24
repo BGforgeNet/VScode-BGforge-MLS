@@ -404,13 +404,12 @@ connection.onHover((textDocumentPosition: TextDocumentPositionParams): Hover => 
 	let text = documents.get(textDocumentPosition.textDocument.uri).getText();
 	let lines = text.split(/\r?\n/g);
 	let position = textDocumentPosition.position;
-	conlog(typeof(position));
-	conlog(position);
+
 	let str = lines[position.line];
 	let pos = position.character;
 	let word = get_word_at(str, pos);
 	var real_word = word.match(/(\w+)/)[0];
-	conlog(real_word);
+
 	if (real_word) {
 		var present = completion_item_list.filter(function (el: any) {
 			return (el.label == real_word);
