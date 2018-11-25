@@ -13,7 +13,11 @@ import {
 	CompletionItemKind,
 	TextDocumentPositionParams,
 	Hover,
-	MarkupKind
+	MarkupKind,
+	SignatureHelp,
+	SignatureInformation,
+	ParameterInformation,
+	SignatureHelpRegistrationOptions
 } from 'vscode-languageserver';
 import { connect } from 'tls';
 import { ExecSyncOptionsWithStringEncoding } from 'child_process';
@@ -30,7 +34,8 @@ let hasConfigurationCapability: boolean = false;
 let hasWorkspaceFolderCapability: boolean = false;
 let hasDiagnosticRelatedInformationCapability: boolean = false;
 
-let completion_item_list: Array<any>;
+let completion_item_list: Array<any> = [];
+let signature_list: Array<any> = [];
 
 connection.onInitialize((params: InitializeParams) => {
 	let capabilities = params.capabilities;
@@ -52,7 +57,10 @@ connection.onInitialize((params: InitializeParams) => {
 			completionProvider: {
 				resolveProvider: true,
 			},
-			hoverProvider : true
+			hoverProvider : true,
+			signatureHelpProvider : {
+				"triggerCharacters": [ '(' ]
+			}
 		}
 	};
 });
@@ -70,8 +78,10 @@ connection.onInitialized(() => {
 			conlog('Workspace folder change event received.');
 		});
 	}
-
+	//load static completion
 	completion_item_list = load_completion();
+
+	//add completion from headers
 	connection.workspace.getWorkspaceFolders().then(function (workspacefolders) {
 		connection.workspace.getConfiguration('ssl').then(function (conf: any) {
 			var procdef_list = get_defines(workspacefolders[0].uri.replace('file:\/\/', '') + '/' + (conf.headers_directory || 'headers'));
@@ -96,6 +106,18 @@ connection.onInitialized(() => {
 					completion_item_list.push({ label: item.label, kind: item.kind, documentation: item.documentation, detail: item.detail});
 				}
 			}
+
+			//generate signature list
+			for (let item of completion_item_list) {
+				if (item.detail && item.detail.includes("(")) { //has vars
+					let args = get_args(item.detail);
+					if (args) {
+						let signature = {label: item.label, documentation: `(${args})`};
+						signature_list.push(signature);
+					}
+				}
+			}
+
 		});
 	});
 });
@@ -389,6 +411,7 @@ function conlog(item: any) {
 	}
 }
 
+//get word under cursor
 function get_word_at(str: string, pos: number) {
 	// Search for the word's beginning and end.
 	var left = str.slice(0, pos + 1).search(/\w+$/), right = str.slice(pos).search(/\W/);
@@ -398,6 +421,27 @@ function get_word_at(str: string, pos: number) {
 	}
 	// Return the word, using the located bounds to extract it from the string.
 	return str.slice(left, right + pos);
+}
+
+//get word before cursor's position (for signature)
+function get_signature_word(str: string, pos: number) {
+	//cut off last character and search for words
+	const sliced = str.slice(0,pos);
+	let lpos= sliced.indexOf(')');
+	let matches = str.slice(lpos>0 ? lpos: 0, pos).match(/(\w+)\(/g);
+	if (matches){
+		var word = matches.pop().slice(0,-1);
+		return word;
+	}
+}
+
+//get everything between parenthesis
+function get_args(str: string) {
+	let match = str.match(/\((.*)\)/)
+	if (match && match.length > 1) {
+		return match[1];
+	}
+	return null;
 }
 
 connection.onHover((textDocumentPosition: TextDocumentPositionParams): Hover => {
@@ -419,7 +463,7 @@ connection.onHover((textDocumentPosition: TextDocumentPositionParams): Hover => 
 				let markdown = {
 					kind: MarkupKind.Markdown,
 					value: [
-						'```c++',
+						'```c++', //yeah, so what?
 						item.detail,
 						'```',
 						item.documentation
@@ -428,6 +472,24 @@ connection.onHover((textDocumentPosition: TextDocumentPositionParams): Hover => 
 				let hover = {contents: markdown};
 				return hover;
 			}
+		}
+	}
+});
+
+connection.onSignatureHelp((textDocumentPosition: TextDocumentPositionParams): SignatureHelp => {
+	let text = documents.get(textDocumentPosition.textDocument.uri).getText();
+	let lines = text.split(/\r?\n/g);
+	let position = textDocumentPosition.position;
+	let str = lines[position.line];
+	let pos = position.character;
+	let word = get_signature_word(str, pos);
+	if (word) {
+		var present = signature_list.filter(function (el: any) {
+			return (el.label == word);
+		});
+		if (present.length > 0) {
+			let sig = present[0];
+			return {signatures: [{label: sig.label, documentation: sig.documentation, parameters: []}], activeSignature: 0, activeParameter: null};
 		}
 	}
 });
