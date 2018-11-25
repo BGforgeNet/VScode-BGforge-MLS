@@ -1,0 +1,45 @@
+{
+    "ForEach_Loop": {
+        "prefix": "foreach",
+        "body": [
+          "foreach $1 in $2 begin",
+          "\t$0",
+          "end"
+        ],
+        "description": "ForEach Loop"
+    },
+    "While_Loop": {
+        "prefix": "while",
+        "body": [
+          "while $1 do begin",
+          "\t$0",
+          "end"
+        ],
+        "description": "While Loop"
+    },
+    "If-Then clause": {
+        "prefix": "if",
+        "body": [
+          "if $1 then $0"
+        ],
+        "description": "If-Then clause"
+    },
+    "Begin-End clause": {
+        "prefix": "begin",
+        "body": [
+          "begin",
+          "\t$0",
+          "end"
+        ],
+        "description": "Begin-End clause"
+    },
+    "New Procedure": {
+        "prefix": "procedure",
+        "body": [
+          "procedure $1 begin",
+          "\t$0",
+          "end"
+        ],
+        "description": "Begin-End clause"
+    }
+}

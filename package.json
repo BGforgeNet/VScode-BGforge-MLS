@@ -49,6 +49,10 @@
 				"path": "./syntaxes/ssl.tmLanguage.json"
 			}
 		],
+		"snippets": [{
+			"language": "ssl",
+			"path": "./snippets/ssl.json"
+		}],
 		"configuration": {
 			"type": "object",
 			"title": "SSL Language Server",
