@@ -58,9 +58,9 @@ connection.onInitialize((params: InitializeParams) => {
 			completionProvider: {
 				resolveProvider: true,
 			},
-			hoverProvider : true,
-			signatureHelpProvider : {
-				"triggerCharacters": [ '(' ]
+			hoverProvider: true,
+			signatureHelpProvider: {
+				"triggerCharacters": ['(']
 			}
 		}
 	};
@@ -100,7 +100,7 @@ function load_defines(procdef_list: Array<any>) {
 			return (el.label == item.label && el.detail == item.detail);
 		})
 		if (present.length == 0) {
-			completion_item_list.push({ label: item.label, kind: item.kind, documentation: item.source, detail: item.detail, fulltext: item.fulltext});
+			completion_item_list.push({ label: item.label, kind: item.kind, documentation: item.source, detail: item.detail, fulltext: item.fulltext });
 		}
 	}
 
@@ -110,7 +110,7 @@ function load_defines(procdef_list: Array<any>) {
 			return (el.label == item.label && el.detail == item.detail);
 		})
 		if (present.length == 0) {
-			completion_item_list.push({ label: item.label, kind: item.kind, documentation: item.source, detail: item.detail});
+			completion_item_list.push({ label: item.label, kind: item.kind, documentation: item.source, detail: item.detail });
 		}
 	}
 
@@ -119,7 +119,7 @@ function load_defines(procdef_list: Array<any>) {
 		if (item.detail && item.detail.includes("(")) { //has vars
 			let args = get_args(item.detail);
 			if (args) {
-				let signature = {label: item.label, documentation: `(${args})`, source: item.source};
+				let signature = { label: item.label, documentation: `(${args})`, source: item.source };
 				signature_list.push(signature);
 			}
 		}
@@ -141,7 +141,7 @@ function reload_defines(filename: string, code: string) {
 	//delete defines redefined in current file
 	completion_item_list = completion_item_list.filter(item => new_defines.filter(def_item => def_item.label == item.label).length == 0);
 	completion_item_list = completion_item_list.filter(item => new_procs.filter(proc_item => proc_item.label == item.label).length == 0);
-	load_defines([new_defines,new_procs]);
+	load_defines([new_defines, new_procs]);
 }
 
 // The settings
@@ -316,21 +316,22 @@ function get_defines(headers_dir: string) {
 		var def_list = defines_from_file(code);
 		for (let item of def_list) {
 			if (item.fulltext && item.vars) { //only show parenthesis when have vars
-				full_def_list.push({ label: item.label, kind: item.kind, detail: `${item.label}(${item.vars})`, source: file, vars: item.vars, fulltext: item.fulltext});
+				full_def_list.push({ label: item.label, kind: item.kind, detail: `${item.label}(${item.vars})`, source: file, vars: item.vars, fulltext: item.fulltext });
 			} else { //no vars, show only define itself
-				full_def_list.push({ label: item.label, kind: item.kind, detail: item.label, source: file, vars: item.vars, fulltext: item.fulltext});
+				full_def_list.push({ label: item.label, kind: item.kind, detail: item.label, source: file, vars: item.vars, fulltext: item.fulltext });
 			}
 		}
 
 		var proc_list = procs_from_file(code);
 		for (let item of proc_list)
-			full_proc_list.push({ label: item.label, kind: item.kind, detail: item.detail, source: file, vars: item.vars});
+			full_proc_list.push({ label: item.label, kind: item.kind, detail: item.detail, source: file, vars: item.vars });
 	}
 	return [full_def_list, full_proc_list];
 }
 
 //function defines_from_file(file_path: string) {
-function defines_from_file(code: string) {;
+function defines_from_file(code: string) {
+	;
 	var def_list: Array<any> = [];
 
 	var def_name: string;
@@ -356,11 +357,11 @@ function defines_from_file(code: string) {;
 		var def_kind = 21; //constant
 		def_detail = def_name;
 		if (match[2]) {
-			def_vars = match[2]; 
+			def_vars = match[2];
 			def_kind = 3; //function
 			def_detail = `${def_name}(${def_vars})`;
 		}
-		result.push({ label: def_name, kind: def_kind, documentation: "", detail: def_detail, fulltext: def_fulltext, vars: def_vars});
+		result.push({ label: def_name, kind: def_kind, documentation: "", detail: def_detail, fulltext: def_fulltext, vars: def_vars });
 		match = def_regex.exec(code);
 	}
 	return result;
@@ -397,7 +398,7 @@ function procs_from_file(code: string) {
 			proc_vars = match[2].replace(vars_re, "");
 			proc_detail = proc_detail + "(" + proc_vars + ")";
 		}
-		result.push({ label: proc_name, kind: proc_kind, documentation: proc_doc, detail: proc_detail, vars: proc_vars});
+		result.push({ label: proc_name, kind: proc_kind, documentation: proc_doc, detail: proc_detail, vars: proc_vars });
 		match = proc_regex.exec(code);
 	}
 	return result;
@@ -454,11 +455,11 @@ function get_word_at(str: string, pos: number) {
 //get word before cursor's position (for signature)
 function get_signature_word(str: string, pos: number) {
 	//cut off last character and search for words
-	const sliced = str.slice(0,pos);
-	let lpos= sliced.indexOf(')');
-	let matches = str.slice(lpos>0 ? lpos: 0, pos).match(/(\w+)\(/g);
-	if (matches){
-		var word = matches.pop().slice(0,-1);
+	const sliced = str.slice(0, pos);
+	let lpos = sliced.indexOf(')');
+	let matches = str.slice(lpos > 0 ? lpos : 0, pos).match(/(\w+)\(/g);
+	if (matches) {
+		var word = matches.pop().slice(0, -1);
 		return word;
 	}
 }
@@ -510,7 +511,7 @@ connection.onHover((textDocumentPosition: TextDocumentPositionParams): Hover => 
 						].join('\n')
 					};
 				}
-				let hover = {contents: markdown};
+				let hover = { contents: markdown };
 				return hover;
 			}
 		}
@@ -530,11 +531,11 @@ connection.onSignatureHelp((textDocumentPosition: TextDocumentPositionParams): S
 		});
 		if (present.length > 0) {
 			let sig = present[0];
-			return {signatures: [{label: sig.label, documentation: sig.documentation, parameters: []}], activeSignature: 0, activeParameter: null};
+			return { signatures: [{ label: sig.label, documentation: sig.documentation, parameters: [] }], activeSignature: 0, activeParameter: null };
 		}
 	}
 });
 
-connection.onExecuteCommand( (params, command) => {
+connection.onExecuteCommand((params, command) => {
 
 });
