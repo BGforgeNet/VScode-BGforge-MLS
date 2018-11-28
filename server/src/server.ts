@@ -128,7 +128,6 @@ function load_defines(procdef_list: Array<any>) {
 
 function reload_defines(filename: string, code: string) {
 	var new_defines = defines_from_file(code);
-	conlog(new_defines);
 	for (let item of new_defines) {
 		item.source = filename;
 	}
@@ -136,9 +135,12 @@ function reload_defines(filename: string, code: string) {
 	for (let item of new_procs) {
 		item.source = filename;
 	}
-	//delete old defs
+	//delete old defs from this file
 	completion_item_list = completion_item_list.filter(item => item.source !== filename);
 	signature_list = signature_list.filter(item => item.source !== filename);
+	//delete defines redefined in current file
+	completion_item_list = completion_item_list.filter(item => new_defines.filter(def_item => def_item.label == item.label).length == 0);
+	completion_item_list = completion_item_list.filter(item => new_procs.filter(proc_item => proc_item.label == item.label).length == 0);
 	load_defines([new_defines,new_procs]);
 }
 
