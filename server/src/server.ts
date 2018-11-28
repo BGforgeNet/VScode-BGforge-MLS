@@ -17,10 +17,11 @@ import {
 	SignatureHelp,
 	SignatureInformation,
 	ParameterInformation,
-	SignatureHelpRegistrationOptions
+	SignatureHelpRegistrationOptions,
 } from 'vscode-languageserver';
 import { connect } from 'tls';
 import { ExecSyncOptionsWithStringEncoding } from 'child_process';
+import Uri from 'vscode-uri'
 
 // Create a connection for the server. The connection uses Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
@@ -127,10 +128,18 @@ function load_defines(procdef_list: Array<any>) {
 
 function reload_defines(filename: string, code: string) {
 	var new_defines = defines_from_file(code);
+	conlog(new_defines);
+	for (let item of new_defines) {
+		item.source = filename;
+	}
+	var new_procs = procs_from_file(code);
+	for (let item of new_procs) {
+		item.source = filename;
+	}
 	//delete old defs
 	completion_item_list = completion_item_list.filter(item => item.source !== filename);
 	signature_list = signature_list.filter(item => item.source !== filename);
-	load_defines(new_defines);
+	load_defines([new_defines,new_procs]);
 }
 
 // The settings
@@ -185,6 +194,7 @@ documents.onDidClose(e => {
 // when the text document first opened or when its content has changed.
 documents.onDidChangeContent(change => {
 	validateTextDocument(change.document);
+	reload_defines(Uri.parse(change.document.uri).fsPath, change.document.getText());
 });
 
 async function validateTextDocument(textDocument: TextDocument): Promise<void> {
@@ -348,7 +358,7 @@ function defines_from_file(code: string) {;
 			def_kind = 3; //function
 			def_detail = `${def_name}(${def_vars})`;
 		}
-		result.push({ label: def_name, kind: def_kind, documentation: "", detail: def_fulltext, fulltext: def_fulltext, vars: def_vars});
+		result.push({ label: def_name, kind: def_kind, documentation: "", detail: def_detail, fulltext: def_fulltext, vars: def_vars});
 		match = def_regex.exec(code);
 	}
 	return result;
