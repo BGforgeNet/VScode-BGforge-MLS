@@ -85,42 +85,53 @@ connection.onInitialized(() => {
 	connection.workspace.getWorkspaceFolders().then(function (workspacefolders) {
 		connection.workspace.getConfiguration('ssl').then(function (conf: any) {
 			var procdef_list = get_defines(workspacefolders[0].uri.replace('file:\/\/', '') + '/' + (conf.headers_directory || 'headers'));
-			var def_list = procdef_list[0];
-			var proc_list = procdef_list[1];
-			for (let item of def_list) {
-				//skip duplicates
-				var present = completion_item_list.filter(function (el: any) {
-					return (el.label == item.label && el.detail == item.detail);
-				})
-				if (present.length == 0) {
-					completion_item_list.push({ label: item.label, kind: item.kind, documentation: item.documentation, detail: item.detail});
-				}
-			}
-
-			for (let item of proc_list) {
-				//skip duplicates
-				var present = completion_item_list.filter(function (el: any) {
-					return (el.label == item.label && el.detail == item.detail);
-				})
-				if (present.length == 0) {
-					completion_item_list.push({ label: item.label, kind: item.kind, documentation: item.documentation, detail: item.detail});
-				}
-			}
-
-			//generate signature list
-			for (let item of completion_item_list) {
-				if (item.detail && item.detail.includes("(")) { //has vars
-					let args = get_args(item.detail);
-					if (args) {
-						let signature = {label: item.label, documentation: `(${args})`};
-						signature_list.push(signature);
-					}
-				}
-			}
-
+			load_defines(procdef_list);
 		});
 	});
 });
+
+function load_defines(procdef_list: Array<any>) {
+	var def_list = procdef_list[0];
+	var proc_list = procdef_list[1];
+	for (let item of def_list) {
+		//skip duplicates
+		var present = completion_item_list.filter(function (el: any) {
+			return (el.label == item.label && el.detail == item.detail);
+		})
+		if (present.length == 0) {
+			completion_item_list.push({ label: item.label, kind: item.kind, documentation: item.source, detail: item.detail, fulltext: item.fulltext});
+		}
+	}
+
+	for (let item of proc_list) {
+		//skip duplicates
+		var present = completion_item_list.filter(function (el: any) {
+			return (el.label == item.label && el.detail == item.detail);
+		})
+		if (present.length == 0) {
+			completion_item_list.push({ label: item.label, kind: item.kind, documentation: item.source, detail: item.detail});
+		}
+	}
+
+	//generate signature list
+	for (let item of completion_item_list) {
+		if (item.detail && item.detail.includes("(")) { //has vars
+			let args = get_args(item.detail);
+			if (args) {
+				let signature = {label: item.label, documentation: `(${args})`, source: item.source};
+				signature_list.push(signature);
+			}
+		}
+	}
+}
+
+function reload_defines(filename: string, code: string) {
+	var new_defines = defines_from_file(code);
+	//delete old defs
+	completion_item_list = completion_item_list.filter(item => item.source !== filename);
+	signature_list = signature_list.filter(item => item.source !== filename);
+	load_defines(new_defines);
+}
 
 // The settings
 interface SSLsettings {
@@ -249,7 +260,7 @@ function load_completion() {
 			let element: any;
 
 			for (element of completion_map[item]['items']) {
-				completion_item_list.push({ label: element['name'], kind: kind, documentation: element['doc'], detail: element['detail'] });
+				completion_item_list.push({ label: element['name'], kind: kind, documentation: element['doc'], detail: element['detail'], source: "builtin" });
 			}
 		}
 		return completion_item_list;
@@ -291,26 +302,29 @@ function get_defines(headers_dir: string) {
 		var code = fs.readFileSync(file_path, 'utf8');
 
 		var def_list = defines_from_file(code);
-		for (let item of def_list)
-			full_def_list.push({ label: item.label, kind: item.kind, documentation: file, detail: item.detail, filename: file_path, vars: item.vars});
+		for (let item of def_list) {
+			if (item.fulltext && item.vars) { //only show parenthesis when have vars
+				full_def_list.push({ label: item.label, kind: item.kind, detail: `${item.label}(${item.vars})`, source: file, vars: item.vars, fulltext: item.fulltext});
+			} else { //no vars, show only define itself
+				full_def_list.push({ label: item.label, kind: item.kind, detail: item.label, source: file, vars: item.vars, fulltext: item.fulltext});
+			}
+		}
 
 		var proc_list = procs_from_file(code);
 		for (let item of proc_list)
-			full_proc_list.push({ label: item.label, kind: item.kind, documentation: file, detail: item.detail, filename: file_path, vars: item.vars});
+			full_proc_list.push({ label: item.label, kind: item.kind, detail: item.detail, source: file, vars: item.vars});
 	}
 	return [full_def_list, full_proc_list];
 }
-
 
 //function defines_from_file(file_path: string) {
 function defines_from_file(code: string) {;
 	var def_list: Array<any> = [];
 
 	var def_name: string;
-	var def_detail: string;
-	var def_doc = "";
+	var def_fulltext: string;
 	var def_regex = /^[ \t]*#define[ \t]+(\w+)(?:\(([^)]+)\))?[ \t]*((?:.*\\\r?\n)*.*)/gm;
-
+	var def_detail = "";
 	var match: any;
 	def_list = code.match(def_regex);
 	let result: Array<any> = [];
@@ -325,14 +339,16 @@ function defines_from_file(code: string) {;
 		}
 
 		def_name = match[1];
-		def_detail = match[3];
+		def_fulltext = match[3];
 		var def_vars = "";
 		var def_kind = 21; //constant
+		def_detail = def_name;
 		if (match[2]) {
 			def_vars = match[2]; 
 			def_kind = 3; //function
+			def_detail = `${def_name}(${def_vars})`;
 		}
-		result.push({ label: def_name, kind: def_kind, documentation: def_doc, detail: def_detail, vars: def_vars});
+		result.push({ label: def_name, kind: def_kind, documentation: "", detail: def_fulltext, fulltext: def_fulltext, vars: def_vars});
 		match = def_regex.exec(code);
 	}
 	return result;
@@ -441,7 +457,7 @@ function get_args(str: string) {
 	if (match && match.length > 1) {
 		return match[1];
 	}
-	return null;
+	return "";
 }
 
 connection.onHover((textDocumentPosition: TextDocumentPositionParams): Hover => {
@@ -460,15 +476,28 @@ connection.onHover((textDocumentPosition: TextDocumentPositionParams): Hover => 
 		if (present.length > 0) {
 			let item = present[0];
 			if (item.detail || item.documentation) {
-				let markdown = {
-					kind: MarkupKind.Markdown,
-					value: [
-						'```c++', //yeah, so what?
-						item.detail,
-						'```',
-						item.documentation
-					].join('\n')
-				};
+				var markdown;
+				if (item.fulltext) { //full text for defines
+					markdown = {
+						kind: MarkupKind.Markdown,
+						value: [
+							'```c++', //yeah, so what?
+							item.fulltext,
+							'```',
+							item.documentation
+						].join('\n')
+					};
+				} else {
+					markdown = {
+						kind: MarkupKind.Markdown,
+						value: [
+							'```c++', //yeah, so what?
+							item.detail,
+							'```',
+							item.documentation
+						].join('\n')
+					};
+				}
 				let hover = {contents: markdown};
 				return hover;
 			}
@@ -492,4 +521,8 @@ connection.onSignatureHelp((textDocumentPosition: TextDocumentPositionParams): S
 			return {signatures: [{label: sig.label, documentation: sig.documentation, parameters: []}], activeSignature: 0, activeParameter: null};
 		}
 	}
+});
+
+connection.onExecuteCommand( (params, command) => {
+
 });
