@@ -100,7 +100,7 @@ function load_defines(procdef_list: Array<any>) {
 			return (el.label == item.label && el.detail == item.detail);
 		})
 		if (present.length == 0) {
-			completion_item_list.push({ label: item.label, kind: item.kind, documentation: item.source, detail: item.detail, fulltext: item.fulltext });
+			completion_item_list.push({ label: item.label, kind: item.kind, documentation: item.source, detail: item.detail, fulltext: item.fulltext, source: item.source });
 		}
 	}
 
@@ -110,7 +110,7 @@ function load_defines(procdef_list: Array<any>) {
 			return (el.label == item.label && el.detail == item.detail);
 		})
 		if (present.length == 0) {
-			completion_item_list.push({ label: item.label, kind: item.kind, documentation: item.source, detail: item.detail });
+			completion_item_list.push({ label: item.label, kind: item.kind, documentation: item.source, detail: item.detail, source: item.source });
 		}
 	}
 
@@ -128,6 +128,7 @@ function load_defines(procdef_list: Array<any>) {
 
 function reload_defines(filename: string, code: string) {
 	var new_defines = defines_from_file(code);
+	filename = fname(filename);
 	for (let item of new_defines) {
 		item.source = filename;
 	}
@@ -255,9 +256,19 @@ connection.onDidChangeWatchedFiles(_change => {
 // This handler provides the initial list of the completion items.
 connection.onCompletion(
 	(_textDocumentPosition: TextDocumentPositionParams): CompletionItem[] => {
-		return completion_item_list;
+		var current_list = filter_completion(completion_item_list, _textDocumentPosition.textDocument.uri);;
+		return current_list;
 	}
 );
+
+//filter out defines from other opened ssl files
+function filter_completion(completion_item_list: Array<any>, filename: string) {
+	filename = fname(filename);
+	var current_list = completion_item_list.filter(function (el: any) {
+		return ( !el.source || (!el.source.endsWith(".ssl")) || (el.source.endsWith(".ssl") && filename == el.source) );
+	});
+	return current_list;
+};
 
 function load_completion() {
 	const yaml = require('js-yaml');
@@ -331,7 +342,6 @@ function get_defines(headers_dir: string) {
 
 //function defines_from_file(file_path: string) {
 function defines_from_file(code: string) {
-	;
 	var def_list: Array<any> = [];
 
 	var def_name: string;
@@ -440,6 +450,10 @@ function conlog(item: any) {
 	}
 }
 
+function fname(uri: string) {
+	return uri.split('/').pop();
+}
+
 //get word under cursor
 function get_word_at(str: string, pos: number) {
 	// Search for the word's beginning and end.
@@ -477,6 +491,7 @@ connection.onHover((textDocumentPosition: TextDocumentPositionParams): Hover => 
 	let text = documents.get(textDocumentPosition.textDocument.uri).getText();
 	let lines = text.split(/\r?\n/g);
 	let position = textDocumentPosition.position;
+	var filename = fname(textDocumentPosition.textDocument.uri);
 
 	let str = lines[position.line];
 	let pos = position.character;
@@ -485,7 +500,8 @@ connection.onHover((textDocumentPosition: TextDocumentPositionParams): Hover => 
 	if (word) {
 		var present = completion_item_list.filter(function (el: any) {
 			return (el.label == word);
-		})
+		});
+		present = filter_completion(present, filename);
 		if (present.length > 0) {
 			let item = present[0];
 			if (item.detail || item.documentation) {
