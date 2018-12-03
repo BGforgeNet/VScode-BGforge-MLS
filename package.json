@@ -83,11 +83,11 @@
 				"ssl.output_directory": {
 					"type": "string",
 					"default": ".",
-					"description": "Where to put the compiled scripts"
+					"description": "Where to put the compiled scripts. Absolute path or relative to source directory."
 				},
 				"ssl.headers_directory": {
 					"type": "string",
-					"default": "headers",
+					"default": "headers"
 					"description": "Absolute path to directory containing headers, searched recursively"
 				}
 			}
