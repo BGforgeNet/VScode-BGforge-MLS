@@ -554,8 +554,6 @@ connection.onSignatureHelp((textDocumentPosition: TextDocumentPositionParams): S
 });
 
 connection.onExecuteCommand((params, cancel_token) => {
-	conlog("server command!");
-	conlog(params);
 	var command = params.command;
 	var args: Array<any> = params.arguments;
 	var compile_exe = args[0];
@@ -598,7 +596,7 @@ function parse_compile_output(text: string) {
 			}
 			let col: string;
 			if (match[3] == "") { col = "0" } else { col = match[3] }
-			errors.push({ file: match[1], line: match[2], column: col, message: match[4] });
+			errors.push({ file: match[1], line: parseInt(match[2]), column: parseInt(col), message: match[4] });
 		};
 
 		while ((match = warnings_pattern.exec(text)) != null) {
@@ -608,7 +606,7 @@ function parse_compile_output(text: string) {
 			};
 			let col: string;
 			if (match[3] == "") { col = "0" } else { col = match[3] };
-			warnings.push({ file: match[1], line: match[2], column: col, message: match[4] });
+			warnings.push({ file: match[1], line: parseInt(match[2]), column: parseInt(col), message: match[4] });
 		};
 	} catch (err) {
 		conlog(err);
@@ -626,8 +624,8 @@ function send_diagnostics(text_document: TextDocument, output_text: string) {
 		let diagnosic: Diagnostic = {
 			severity: DiagnosticSeverity.Error,
 			range: {
-				start: { line: parseInt(e.line) - 1, character: parseInt(e.column) },
-				end: text_document.positionAt(text_document.offsetAt({ line: parseInt(e.line), character: 0 }) - 1)
+				start: { line: e.line - 1, character: e.column },
+				end: text_document.positionAt(text_document.offsetAt({ line: e.line, character: 0 }) - 1)
 			},
 			message: `${e.message}`,
 			source: 'ex'
@@ -638,8 +636,8 @@ function send_diagnostics(text_document: TextDocument, output_text: string) {
 		let diagnosic: Diagnostic = {
 			severity: DiagnosticSeverity.Warning,
 			range: {
-				start: { line: parseInt(w.line) - 1, character: parseInt(w.column) },
-				end: text_document.positionAt(text_document.offsetAt({ line: parseInt(w.line), character: 0 }) - 1)
+				start: { line: w.line - 1, character: w.column },
+				end: text_document.positionAt(text_document.offsetAt({ line: w.line, character: 0 }) - 1)
 			},
 			message: `${w.message}`,
 			source: 'ex'
