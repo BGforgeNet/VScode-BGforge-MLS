@@ -87,7 +87,7 @@
 				},
 				"ssl.headers_directory": {
 					"type": "string",
-					"default": "headers"
+					"default": "headers",
 					"description": "Absolute path to directory containing headers, searched recursively"
 				}
 			}
