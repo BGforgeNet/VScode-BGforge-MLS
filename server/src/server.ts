@@ -578,7 +578,7 @@ function send_diagnostics(text_document: TextDocument, output_text: string) {
 	let errors_warnings = parse_compile_output(output_text);
 	let errors = errors_warnings[0];
 	let warnings = errors_warnings[1];
-
+	let src = "BGforge SSL server";
 	let diagnostics: Diagnostic[] = [];
 	for (let e of errors) {
 		let diagnosic: Diagnostic = {
@@ -588,7 +588,7 @@ function send_diagnostics(text_document: TextDocument, output_text: string) {
 				end: text_document.positionAt(text_document.offsetAt({ line: e.line, character: 0 }) - 1)
 			},
 			message: `${e.message}`,
-			source: 'ex'
+			source: src
 		};
 		diagnostics.push(diagnosic);
 	}
@@ -600,7 +600,7 @@ function send_diagnostics(text_document: TextDocument, output_text: string) {
 				end: text_document.positionAt(text_document.offsetAt({ line: w.line, character: 0 }) - 1)
 			},
 			message: `${w.message}`,
-			source: 'ex'
+			source: src
 		};
 		diagnostics.push(diagnosic);
 	}
