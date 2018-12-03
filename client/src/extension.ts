@@ -61,7 +61,7 @@ export function activate(context: ExtensionContext) {
 	// Create the language client and start the client.
 	client = new LanguageClient(
 		'ssl',
-		'SSL Language Server',
+		'BGforge SSL server',
 		serverOptions,
 		clientOptions
 	);

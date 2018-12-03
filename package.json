@@ -55,7 +55,7 @@
 		}],
 		"configuration": {
 			"type": "object",
-			"title": "SSL Language Server",
+			"title": "BGforge SSL server",
 			"properties": {
 				"ssl.trace.server": {
 					"scope": "window",
