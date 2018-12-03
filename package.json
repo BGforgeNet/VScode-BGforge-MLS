@@ -76,7 +76,7 @@
 				},
 				"ssl.compile": {
 					"type": "string",
-					"default": "wine ~/bin/compile.exe -p -l -O2 -d -s -n",
+					"default": "wine ~/bin/compile.exe -q -p -l -O2 -d -s -n",
 					"description": "Path to compile.exe plus compilation options"
 				},
 				"ssl.output_directory": {

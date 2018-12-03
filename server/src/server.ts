@@ -21,7 +21,8 @@ import {
 } from 'vscode-languageserver';
 import { connect } from 'tls';
 import { ExecSyncOptionsWithStringEncoding } from 'child_process';
-import Uri from 'vscode-uri'
+import Uri from 'vscode-uri';
+import * as path from 'path';
 
 // Create a connection for the server. The connection uses Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
@@ -265,7 +266,7 @@ connection.onCompletion(
 function filter_completion(completion_item_list: Array<any>, filename: string) {
 	filename = fname(filename);
 	var current_list = completion_item_list.filter(function (el: any) {
-		return ( !el.source || (!el.source.endsWith(".ssl")) || (el.source.endsWith(".ssl") && filename == el.source) );
+		return (!el.source || (!el.source.endsWith(".ssl")) || (el.source.endsWith(".ssl") && filename == el.source));
 	});
 	return current_list;
 };
@@ -552,6 +553,103 @@ connection.onSignatureHelp((textDocumentPosition: TextDocumentPositionParams): S
 	}
 });
 
-connection.onExecuteCommand((params, command) => {
+connection.onExecuteCommand((params, cancel_token) => {
+	conlog("server command!");
+	conlog(params);
+	var command = params.command;
+	var args: Array<any> = params.arguments;
+	var compile_exe = args[0];
+	//var filepath = args[1];
+	var text_document: any = args[1];
+	var filepath = text_document.fileName;
+	var dst_dir = args[2];
+	var cwd_to = path.dirname(filepath);
+	var base_name = path.parse(filepath).base;
+	var base = path.parse(filepath).name;
+	var dst_path = path.join(dst_dir, base + '.int');
 
+	if (command == "extension.SSLcompile") {
+		conlog("server compile!");
+		const cp = require('child_process');
+
+		cp.exec(compile_exe + " " + base_name + ' -o ' + dst_path, { cwd: cwd_to }, (err: any, stdout: any, stderr: any) => {
+			conlog('stdout: ' + stdout);
+			conlog('stderr: ' + stderr);
+			if (err) {
+				conlog('error: ' + err);
+			}
+			send_diagnostics(documents.get(text_document.uri.external), stdout);
+		});
+	}
 });
+
+function parse_compile_output(text: string) {
+	let errors_pattern = /\[Error\] <(.+)>:([\d]*):([\d]*):? (.*)/g;
+	let warnings_pattern = /\[Warning\] <(.+)>:([\d]*):([\d]*):? (.*)/g;
+	let errors = [];
+	let warnings = [];
+
+	try {
+		let match: any;
+		while ((match = errors_pattern.exec(text)) != null) {
+			// This is necessary to avoid infinite loops with zero-width matches
+			if (match.index === errors_pattern.lastIndex) {
+				errors_pattern.lastIndex++;
+			}
+			let col: string;
+			if (match[3] == "") { col = "0" } else { col = match[3] }
+			errors.push({ file: match[1], line: match[2], column: col, message: match[4] });
+		};
+
+		while ((match = warnings_pattern.exec(text)) != null) {
+			// This is necessary to avoid infinite loops with zero-width matches
+			if (match.index === warnings_pattern.lastIndex) {
+				warnings_pattern.lastIndex++;
+			};
+			let col: string;
+			if (match[3] == "") { col = "0" } else { col = match[3] };
+			warnings.push({ file: match[1], line: match[2], column: col, message: match[4] });
+		};
+	} catch (err) {
+		conlog(err);
+	}
+	conlog(errors);
+	conlog(warnings);
+	return [errors, warnings];
+}
+
+function send_diagnostics(text_document: TextDocument, output_text: string) {
+	let errors_warnings = parse_compile_output(output_text);
+	let errors = errors_warnings[0];
+	let warnings = errors_warnings[1];
+
+	let diagnostics: Diagnostic[] = [];
+	for (let e of errors) {
+		let diagnosic: Diagnostic = {
+			severity: DiagnosticSeverity.Error,
+			range: {
+				start: { line: parseInt(e.line) - 1, character: parseInt(e.column) },
+				end: text_document.positionAt(text_document.offsetAt({ line: parseInt(e.line), character: 0 }) - 1)//{line: parseInt(e.line), character:0},
+			},
+			message: `${e.message}`,
+			source: 'ex'
+		};
+		diagnostics.push(diagnosic);
+	}
+	for (let w of warnings) {
+		let diagnosic: Diagnostic = {
+			severity: DiagnosticSeverity.Warning,
+			range: {
+				start: { line: parseInt(w.line) - 1, character: parseInt(w.column) },//text_document.positionAt(parseInt(w.column)),
+				end: text_document.positionAt(text_document.offsetAt({ line: parseInt(w.line), character: 0 }) - 1),//text_document.positionAt(parseInt(w.column)+1),
+			},
+			message: `${w.message}`,
+			source: 'ex'
+		};
+		diagnostics.push(diagnosic);
+	}
+
+	// Send the computed diagnostics to VSCode.
+	connection.sendDiagnostics({ uri: text_document.uri, diagnostics });
+	conlog("sent diag!");
+}
