@@ -26,36 +26,14 @@ export function activate(context: ExtensionContext) {
 
 	var cmd_name = 'extension.SSLcompile';
 	let disposable = vscode.commands.registerCommand(cmd_name, () => {
-		vscode.window.showInformationMessage('SSLcompile!');
-		
-		//var currentlyOpenTabfilePath = vscode.window.activeTextEditor.document.fileName;
-/*
-		var currentlyOpenTabdirPath = path.dirname(currentlyOpenTabfilePath);
-		var currentlyOpenTabfileName = path.basename(currentlyOpenTabfilePath);
-		var base_name = path.parse(currentlyOpenTabfileName).name;
-    conlog(vscode.workspace.getConfiguration('ssl'));
-		var dst_path = path.join(dst_dir, base_name + '.int');
-		conlog('dst_path: ' + dst_path);
-*/
 		var compile_exe = vscode.workspace.getConfiguration('ssl').get('compile');
-		var dst_dir = vscode.workspace.getConfiguration('ssl').get('output_directory','.');
+		var dst_dir = vscode.workspace.getConfiguration('ssl').get('output_directory', '.');
 		var text_document = vscode.window.activeTextEditor.document;
 		let params: ExecuteCommandParams = {
 			command: cmd_name,
 			arguments: [compile_exe, text_document, dst_dir]
 		};
 		client.sendRequest(ExecuteCommandRequest.type, params);
-/*
-		const cp = require('child_process');
-		cp.exec(compile_exe +" "+ currentlyOpenTabfileName + ' -o ' + dst_path, {cwd: currentlyOpenTabdirPath}, (err: any, stdout: any, stderr: any) => {
-				conlog('stdout: ' + stdout);
-				conlog('stderr: ' + stderr);
-				if (err) {
-					vscode.window.showInformationMessage(err);
-					conlog('error: ' + err);
-				}
-		});
-*/
 	});
 	context.subscriptions.push(disposable);
 
@@ -100,7 +78,7 @@ export function deactivate(): Thenable<void> {
 }
 
 function conlog(item: any) {
-	switch (typeof(item)) {
+	switch (typeof (item)) {
 		case "number":
 			console.log(item);
 			break;

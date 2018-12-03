@@ -569,7 +569,7 @@ connection.onExecuteCommand((params, cancel_token) => {
 	var dst_path = path.join(dst_dir, base + '.int');
 
 	if (command == "extension.SSLcompile") {
-		conlog("server compile!");
+		conlog("compiling...");
 		const cp = require('child_process');
 
 		cp.exec(compile_exe + " " + base_name + ' -o ' + dst_path, { cwd: cwd_to }, (err: any, stdout: any, stderr: any) => {
@@ -613,8 +613,6 @@ function parse_compile_output(text: string) {
 	} catch (err) {
 		conlog(err);
 	}
-	conlog(errors);
-	conlog(warnings);
 	return [errors, warnings];
 }
 
@@ -629,7 +627,7 @@ function send_diagnostics(text_document: TextDocument, output_text: string) {
 			severity: DiagnosticSeverity.Error,
 			range: {
 				start: { line: parseInt(e.line) - 1, character: parseInt(e.column) },
-				end: text_document.positionAt(text_document.offsetAt({ line: parseInt(e.line), character: 0 }) - 1)//{line: parseInt(e.line), character:0},
+				end: text_document.positionAt(text_document.offsetAt({ line: parseInt(e.line), character: 0 }) - 1)
 			},
 			message: `${e.message}`,
 			source: 'ex'
@@ -640,8 +638,8 @@ function send_diagnostics(text_document: TextDocument, output_text: string) {
 		let diagnosic: Diagnostic = {
 			severity: DiagnosticSeverity.Warning,
 			range: {
-				start: { line: parseInt(w.line) - 1, character: parseInt(w.column) },//text_document.positionAt(parseInt(w.column)),
-				end: text_document.positionAt(text_document.offsetAt({ line: parseInt(w.line), character: 0 }) - 1),//text_document.positionAt(parseInt(w.column)+1),
+				start: { line: parseInt(w.line) - 1, character: parseInt(w.column) },
+				end: text_document.positionAt(text_document.offsetAt({ line: parseInt(w.line), character: 0 }) - 1)
 			},
 			message: `${w.message}`,
 			source: 'ex'
@@ -651,5 +649,4 @@ function send_diagnostics(text_document: TextDocument, output_text: string) {
 
 	// Send the computed diagnostics to VSCode.
 	connection.sendDiagnostics({ uri: text_document.uri, diagnostics });
-	conlog("sent diag!");
 }
