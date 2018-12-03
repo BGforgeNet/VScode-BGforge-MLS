@@ -80,16 +80,15 @@ connection.onInitialized(() => {
 			conlog('Workspace folder change event received.');
 		});
 	}
+
 	//load static completion
 	completion_item_list = load_completion();
-
 	//add completion from headers
-	connection.workspace.getWorkspaceFolders().then(function (workspacefolders) {
-		connection.workspace.getConfiguration('ssl').then(function (conf: any) {
-			var procdef_list = get_defines(workspacefolders[0].uri.replace('file:\/\/', '') + '/' + (conf.headers_directory || 'headers'));
-			load_defines(procdef_list);
-		});
+	connection.workspace.getConfiguration('ssl').then(function (conf: any) {
+		var procdef_list = get_defines(conf.headers_directory || 'headers');
+		load_defines(procdef_list);
 	});
+
 });
 
 function load_defines(procdef_list: Array<any>) {
@@ -235,7 +234,7 @@ function load_completion() {
 	const yaml = require('js-yaml');
 	const fs = require('fs');
 	try {
-		const completion_map = yaml.safeLoad(fs.readFileSync(__dirname + '/completion.yml', 'utf8'));
+		const completion_map = yaml.safeLoad(fs.readFileSync(path.join(__dirname, 'completion.yml'), 'utf8'));
 		let item: any;
 		let completion_item_list = []
 
@@ -260,11 +259,11 @@ function get_defines(headers_dir: string) {
 		var files = readdirSync(directoryName);
 		var result: string[] = [];
 		files.forEach(function (file: string) {
-			let subfile = statSync(directoryName + path.sep + file);
+			let subfile = statSync(path.join(directoryName, file));
 			if (subfile.isDirectory()) {
-				for (var subfileName of walkDirSync(directoryName + path.sep + file)) {
+				for (var subfileName of walkDirSync(path.join(directoryName, file))) {
 					if (path.extname(subfileName) == '.h') {
-						result.push(file + path.sep + subfileName);
+						result.push(path.join(file,subfileName));
 					}
 				}
 			} else {

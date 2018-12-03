@@ -11,7 +11,8 @@
 	"publisher": "BGforge",
 	"license": "GPLv3",
 	"keywords": [
-		"multi-root ready"
+		"Fallout",
+		"Star-Trek Scripting Language"
 	],
 	"engines": {
 		"vscode": "^1.26.0"
@@ -39,7 +40,7 @@
 		"commands": [
 			{
 				"command": "extension.SSLcompile",
-				"title": "SSLCompile"
+				"title": "SSLcompile"
 			}
 		],
 		"grammars": [
@@ -82,12 +83,12 @@
 				"ssl.output_directory": {
 					"type": "string",
 					"default": ".",
-					"description": "Where to put the complied scripts"
+					"description": "Where to put the compiled scripts"
 				},
 				"ssl.headers_directory": {
 					"type": "string",
 					"default": "headers",
-					"description": "Directory containing headers, searched recursively"
+					"description": "Absolute path to directory containing headers, searched recursively"
 				}
 			}
 		},

@@ -23,7 +23,6 @@ export function activate(context: ExtensionContext) {
 	// The debug options for the server
 	// --inspect=6009: runs the server in Node's Inspector mode so VS Code can attach to the server for debugging
 	let debugOptions = { execArgv: ['--nolazy', '--inspect=6009'] };
-
 	var cmd_name = 'extension.SSLcompile';
 	let disposable = vscode.commands.registerCommand(cmd_name, () => {
 		var compile_exe = vscode.workspace.getConfiguration('ssl').get('compile');
