@@ -660,6 +660,483 @@ sfall-functions:
       detail: "void set_critter_burst_disable(ObjectPtr critter, int disable)"
       doc: "Critter won't use bursts unless having a burst-only weapon equipped."
 
+    - name: read_byte
+      detail: "int read_byte(int address)"
+    - name: read_short
+      detail: "int read_short(int address)"
+    - name: read_int
+      detail: "int read_int(int address)"
+    - name: read_string
+      detail: "int read_string(int address)"
+
+    - name: write_byte
+      detail: "void write_byte(int address, int value)"
+    - name: write_short
+      detail: void write_short(int address, int value)
+    - name: write_int
+      detail: void write_int(int address, int value)
+    - name: write_string
+      detail: void write_string(int address, string value)
+
+    - name: call_offset_v0
+      detail: void call_offset_v0(int address)
+    - name: call_offset_v1
+      detail: void call_offset_v1(int address, int arg1)
+    - name: call_offset_v2
+      detail: void call_offset_v2(int address, int arg1, int arg2)
+    - name: call_offset_v3
+      detail: void call_offset_v3(int address, int arg1, int arg2, int arg3)
+    - name: call_offset_v4
+      detail: void call_offset_v4(int address, int arg1, int arg2, int arg3, int arg4)
+    - name: call_offset_r0
+      detail: int call_offset_r0(int address)
+    - name: call_offset_r1
+      detail: int call_offset_r1(int address, int arg1)
+    - name: call_offset_r2
+      detail: int call_offset_r2(int address, int arg1, int arg2)
+    - name: call_offset_r3
+      detail: int call_offset_r3(int address, int arg1, int arg2, int arg3)
+    - name: call_offset_r4
+      detail: int call_offset_r4(int address, int arg1, int arg2, int arg3, int arg4)
+    - name: set_pc_base_stat
+      detail: void set_pc_base_stat(int StatID, int value)
+    - name: set_pc_extra_stat
+      detail: void set_pc_extra_stat(int StatID, int value)
+    - name: get_pc_base_stat
+      detail: int get_pc_base_stat(int StatID)
+    - name: get_pc_extra_stat
+      detail: int get_pc_extra_stat(int StatID)
+
+    - name: set_critter_base_stat
+      detail: void set_critter_base_stat(CritterPtr, int StatID, int value)
+    - name: set_critter_extra_stat
+      detail: void set_critter_extra_stat(CritterPtr, int StatID, int value)
+    - name: get_critter_base_stat
+      detail: int get_critter_base_stat(CritterPtr, int StatID)
+    - name: get_critter_extra_stat
+      detail: int get_critter_extra_stat(CritterPtr, int StatID)
+    - name: set_critter_skill_points
+      detail: void set_critter_skill_points(int critter, int skill, int value)
+    - name: get_critter_skill_points
+      detail: int get_critter_skill_points(int critter, int skill)
+    - name: set_available_skill_points
+      detail: void set_available_skill_points(int value)
+    - name: get_available_skill_points
+      detail: int get_available_skill_points()
+
+    - name: set_stat_max
+      detail: void set_stat_max(int stat, int value)
+    - name: set_stat_min
+      detail: void set_stat_min(int stat, int value)
+    - name: set_pc_stat_max
+      detail: void set_pc_stat_max(int stat, int value)
+    - name: set_pc_stat_min
+      detail: void set_pc_stat_min(int stat, int value)
+    - name: set_npc_stat_max
+      detail: void set_npc_stat_max(int stat, int value)
+    - name: set_npc_stat_min
+      detail: void set_npc_stat_min(int stat, int value)
+
+    - name: input_funcs_available
+      detail: int input_funcs_available()
+    - name: get_window_under_mouse
+      detail: int get_window_under_mouse()
+
+    - name: get_year
+      detail: int get_year
+
+    - name: graphics_funcs_available
+      detail: bool graphics_funcs_available
+    - name: load_shader
+      detail: int load_shader(string path)
+    - name: free_shader
+      detail: void free_shader(int ID)
+    - name: activate_shader
+      detail: void activate_shader(int ID)
+    - name: deactivate_shader
+      detail: void deactivate_shader(int ID)
+    - name: set_shader_int
+      detail: void set_shader_int(int ID, string param, int value)
+    - name: set_shader_float
+      detail: void set_shader_float(int ID, string param, float value)
+    - name: set_shader_vector
+      detail: void set_shader_vector(int ID, string param, float f1, float f2, float f3, float f4)
+    - name: get_shader_version
+      detail: int get_shader_version
+    - name: set_shader_mode
+      detail: void set_shader_mode(int mode)
+    - name: force_graphics_refresh
+      detail: void force_graphics_refresh(bool enabled)
+    - name: get_shader_texture
+      detail: int get_shader_texture(int ID, int texture)
+    - name: set_shader_texture
+      detail: void set_shader_texture(int ID, string param, int texID)
+
+    - name: set_global_script_repeat
+      detail: void set_global_script_repeat(int frames)
+    - name: set_global_script_type
+      detail: void set_global_script_type(int type)
+    - name: available_global_script_types
+      detail: int available_global_script_types
+
+    - name: in_world_map
+      detail: "bool in_world_map"
+
+    - name: force_encounter
+      detail: void force_encounter(int map)
+    - name: force_encounter_with_flags
+      detail: void force_encounter_with_flags(int map, int flags)
+    - name: set_map_time_multi
+      detail: void set_map_time_multi(float multi)
+
+    - name: set_world_map_pos
+      detail: void set_world_map_pos(int x, int y)
+    - name: get_world_map_x_pos
+      detail: int get_world_map_x_pos
+    - name: get_world_map_y_pos
+      detail: int get_world_map_y_pos()
+
+    - name: set_dm_model
+      detail: void set_dm_model(string name)
+    - name: set_df_model
+      detail: void set_df_model(string name)
+    - name: set_movie_path
+      detail: void set_movie_path(string filename, int movieid)
+
+    - name: set_perk_image
+      detail: void set_perk_image(int perkID, int value)
+    - name: set_perk_ranks
+      detail: void set_perk_ranks(int perkID, int value)
+    - name: set_perk_level
+      detail: void set_perk_level(int perkID, int value)
+    - name: set_perk_stat
+      detail: void set_perk_stat(int perkID, int value)
+    - name: set_perk_stat_mag
+      detail: void set_perk_stat_mag(int perkID, int value)
+    - name: set_perk_skill1
+      detail: void set_perk_skill1(int perkID, int value)
+    - name: set_perk_skill1_mag
+      detail: void set_perk_skill1_mag(int perkID, int value)
+    - name: set_perk_type
+      detail: void set_perk_type(int perkID, int value)
+    - name: set_perk_skill2
+      detail: void set_perk_skill2(int perkID, int value)
+    - name: set_perk_skill2_mag
+      detail: void set_perk_skill2_mag(int perkID, int value)
+    - name: set_perk_str
+      detail: void set_perk_str(int perkID, int value)
+    - name: set_perk_per
+      detail: void set_perk_per(int perkID, int value)
+    - name: set_perk_end
+      detail: void set_perk_end(int perkID, int value)
+    - name: set_perk_chr
+      detail: void set_perk_chr(int perkID, int value)
+    - name: set_perk_int
+      detail: void set_perk_int(int perkID, int value)
+    - name: set_perk_agl
+      detail: void set_perk_agl(int perkID, int value)
+    - name: set_perk_lck
+      detail: void set_perk_lck(int perkID, int value)
+    - name: set_perk_name
+      detail: void set_perk_name(int perkID, string value)
+    - name: set_perk_desc
+      detail: void set_perk_desc(int perkID, string value)
+    - name: set_perk_freq
+      detail: void set_perk_freq(int value)
+
+    - name: set_pipboy_available
+      detail: void set_pipboy_available(int available)
+
+    - name: get_kill_counter
+      detail: int get_kill_counter(int critterType)
+    - name:
+      detail: void mod_kill_counter(int critterType, int amount)
+
+    - name: get_perk_owed
+      detail: int get_perk_owed
+    - name: set_perk_owed
+      detail: void set_perk_owed(int value)
+    - name: get_perk_available
+      detail: int get_perk_available(int perk)
+
+    - name: get_critter_current_ap
+      detail: int get_critter_current_ap(CritterPtr)
+    - name: set_critter_current_ap
+      detail: void set_critter_current_ap(CritterPtr, int ap)
+
+    - name: active_hand
+      detail: int active_hand
+    - name: toggle_active_hand
+      detail: void toggle_active_hand
+
+    - name: set_weapon_knockback
+      detail: void set_weapon_knockback(WeaponPtr, int type, float value)
+    - name: set_target_knockback
+      detail: void set_target_knockback(CritterPtr, int type, float value)
+    - name: set_attacker_knockback
+      detail: void set_attacker_knockback(CritterPtr, int type, float value)
+    - name: remove_weapon_knockback
+      detail: void remove_weapon_knockback(WeaponPtr)
+    - name: remove_target_knockback
+      detail: void remove_target_knockback(CritterPtr)
+    - name: remove_attacker_knockback
+      detail: void remove_attacker_knockback(CritterPtr)
+
+    - name: set_sfall_global
+      detail: void set_sfall_global(string/int varname, int/float value)
+    - name: get_sfall_global_int
+      detail: int get_sfall_global_int(string/int varname)
+    - name: get_sfall_global_float
+      detail: float get_sfall_global_float(string/int varname)
+
+    - name: set_pickpocket_max
+      detail: void set_pickpocket_max(int percentage)
+    - name: set_hit_chance_max
+      detail: void set_hit_chance_max(int percentage)
+    - name: set_skill_max
+      detail: void set_skill_max(int value)
+    - name: set_xp_mod
+      detail: void set_xp_mod(int percentage)
+    - name: set_perk_level_mod
+      detail: void set_perk_level_mod(int levels)
+
+    - name: set_critter_hit_chance_mod
+      detail: void set_critter_hit_chance_mod(CritterPtr, int max, int mod)
+    - name: set_base_hit_chance_mod
+      detail: void set_base_hit_chance_mod(int max, int mod)
+    - name: set_critter_skill_mod
+      detail: void set_critter_skill_mod(CritterPtr, int max)
+    - name: set_base_skill_mod
+      detail: void set_base_skill_mod(int max)
+
+    - name: eax_available
+      detail: int eax_available
+    - name: set_eax_environment
+      detail: void set_eax_environment(int environment)
+
+    - name: inc_npc_level
+      detail: void inc_npc_level(string npc)
+    - name: get_npc_level
+      detail: int get_npc_level(string npc)
+
+    - name: get_viewport_x
+      detail: int get_viewport_x()
+    - name: get_viewport_y
+      detail: int get_viewport_y()
+    - name: set_viewport_x
+      detail: void set_viewport_x(int view_x)
+    - name: set_viewport_y
+      detail: void set_viewport_y(int view_y)
+
+    - name: set_car_current_town
+      detail: void set_car_current_town(int town)
+
+    - name: set_fake_perk
+      detail: void set_fake_perk(string name, int level, int image, string desc)
+    - name: set_fake_trait
+      detail: void set_fake_trait(string name, int active, int image, string desc)
+    - name: set_selectable_perk
+      detail: void set_selectable_perk(string name, int active, int image, string desc)
+    - name: set_perkbox_title
+      detail: void set_perkbox_title(string title)
+    - name: hide_real_perks
+      detail: void hide_real_perks()
+    - name: show_real_perks
+      detail: void show_real_perks()
+    - name: has_fake_perk
+      detail: int has_fake_perk(string name)
+    - name: has_fake_trait
+      detail: int has_fake_trait(string name)
+    - name: perk_add_mode
+      detail: void perk_add_mode(int type)
+    - name: clear_selectable_perks
+      detail: void clear_selectable_perks()
+    - name: remove_trait
+      detail: void remove_trait(int traitID)
+
+    - name: set_pyromaniac_mod
+      detail: void set_pyromaniac_mod(int bonus)
+    - name: apply_heaveho_fix
+      detail: void apply_heaveho_fix
+    - name: set_swiftlearner_mod
+      detail: void set_swiftlearner_mod(int bonus)
+    - name: set_hp_per_level_mod
+      detail: void set_hp_per_level_mod(int mod)
+
+    - name: show_iface_tag
+      detail: void show_iface_tag(int tag)
+    - name: hide_iface_tag
+      detail: void hide_iface_tag(int tag)
+    - name: is_iface_tag_active
+      detail: int is_iface_tag_active(int tag)
+
+    - name: get_bodypart_hit_modifier
+      detail: int get_bodypart_hit_modifier(int bodypart)
+    - name: set_bodypart_hit_modifier
+      detail: void set_bodypart_hit_modifier(int bodypart, int value)
+
+    - name: set_critical_table
+      detail: void set_critical_table(int crittertype, int bodypart, int level, int valuetype, int value)
+    - name: get_critical_table
+      detail: int get_critical_table(int crittertype, int bodypart, int level, int valuetype)
+    - name: reset_critical_table
+      detail: void reset_critical_table(int crittertype, int bodypart, int level, int valuetype)
+
+    - name: set_unspent_ap_bonus
+      detail: void set_unspent_ap_bonus(int multiplier)
+    - name: get_unspent_ap_bonus
+      detail: int get_unspent_ap_bonus()
+    - name: set_unspent_ap_perk_bonus
+      detail: void set_unspent_ap_perk_bonus(int multiplier)
+    - name: get_unspent_ap_perk_bonus
+      detail: int get_unspent_ap_perk_bonus()
+
+    - name: ceil
+      detail: int ceil(float)
+
+    - name: set_palette
+      detail: void set_palette(string path)
+
+    - name: remove_script
+      detail: void remove_script(objptr)
+    - name: set_script
+      detail: void set_script(objptr, int scriptid)
+    - name: get_script
+      detail: int get_script(objptr)
+
+    - name: nb_create_char
+      detail: int nb_create_char()
+
+    - name: fs_create
+      detail: int fs_create(string path, int size)
+    - name: fs_copy
+      detail: int fs_copy(string path, string source)
+    - name: fs_find
+      detail: int fs_find(string path)
+    - name: fs_write_byte
+      detail: void fs_write_byte(int id, int data)
+    - name: fs_write_short
+      detail: void fs_write_short(int id, int data)
+    - name: fs_write_int
+      detail: void fs_write_int(int id, int data)
+    - name: fs_write_float
+      detail: void fs_write_float(int id, int data)
+    - name: fs_write_string
+      detail: void fs_write_string(int id, string data)
+    - name: fs_write_bstring
+      detail: void fs_write_bstring(int id, string data)
+    - name: fs_read_byte
+      detail: int fs_read_byte(int id)
+    - name: fs_read_short
+      detail: int fs_read_short(int id)
+    - name: fs_read_int
+      detail: int fs_read_int(int id)
+    - name: fs_read_float
+      detail: float fs_read_float(int id)
+    - name: fs_delete
+      detail: void fs_delete(int id)
+    - name: fs_size
+      detail: int fs_size(int id)
+    - name: fs_pos
+      detail: int fs_pos(int id)
+    - name: fs_seek
+      detail: void fs_seek(int id, int pos)
+    - name: fs_resize
+      detail: void fs_resize(int id, int size)
+
+    - name: get_proto_data
+      detail: int get_proto_data(int pid, int offset)
+    - name: set_proto_data
+      detail: void set_proto_data(int pid, int offset, int value)
+
+    - name: list_begin
+      detail: int list_begin(int type)
+    - name: list_next
+      detail: int list_next(int listid)
+    - name: list_end
+      detail: void list_end(int listid)
+    - name: list_as_array
+      detail: array list_as_array(int type)
+
+    - name: sfall_ver_major
+      detail: int sfall_ver_major()
+    - name: sfall_ver_minor
+      detail: int sfall_ver_minor()
+    - name: sfall_ver_build
+      detail: int sfall_ver_build()
+
+    - name: hero_select_win
+      detail: void hero_select_win(int)
+    - name: set_hero_race
+      detail: void set_hero_race(int style)
+    - name: set_hero_style
+      detail: void set_hero_style(int style)
+
+    - name: set_critter_burst_disable
+      detail: void set_critter_burst_disable(int critter, int disable)
+
+    - name: get_weapon_ammo_pid
+      detail: int get_weapon_ammo_pid(objptr weapon)
+    - name: set_weapon_ammo_pid
+      detail: void set_weapon_ammo_pid(objptr weapon, int pid)
+    - name: get_weapon_ammo_count
+      detail: int get_weapon_ammo_count(objptr weapon)
+    - name: set_weapon_ammo_count
+      detail: void set_weapon_ammo_count(objptr weapon, int count)
+
+    - name: get_screen_width
+      detail: int get_screen_width()
+    - name: get_screen_height
+      detail: int get_screen_height()
+
+    - name: stop_game
+      detail: void stop_game()
+    - name: resume_game
+      detail: void resume_game()
+    - name: create_message_window
+      detail: void create_message_window(string message)
+
+    - name: get_light_level
+      detail: int get_light_level()
+
+    - name: refresh_pc_art
+      detail: void refresh_pc_art
+
+    - name: get_attack_type
+      detail: int get_attack_type
+
+    - name: play_sfall_sound
+      detail: int play_sfall_sound(string file, int loop)
+    - name: stop_sfall_sound
+      detail: void stop_sfall_sound(int ptr)
+
+    - name: atoi
+      detail: int atoi(string text)
+    - name: atof
+      detail: float atof(string text)
+
+    - name: get_tile_fid
+      detail: int get_tile_fid(int tile)
+
+    - name: modified_ini
+      detail: int modified_ini
+
+    - name: force_aimed_shots
+      detail: void force_aimed_shots(int pid)
+    - name: disable_aimed_shots
+      detail: void disable_aimed_shots(int pid)
+
+    - name: mark_movie_played
+      detail: void mark_movie_played(int id)
+
+    - name: tile_under_cursor
+      detail: int tile_under_cursor
+    - name: gdialog_get_barter_mod
+      detail: int gdialog_get_barter_mod
+    - name: set_inven_ap_cost
+      detail: void set_inven_ap_cost
+
+
 sfall-macro:
   type: 1 #text
   items:
