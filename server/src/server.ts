@@ -23,6 +23,7 @@ import { connect } from 'tls';
 import { ExecSyncOptionsWithStringEncoding } from 'child_process';
 import Uri from 'vscode-uri';
 import * as path from 'path';
+import { ClientRequest } from 'http';
 
 // Create a connection for the server. The connection uses Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
@@ -38,6 +39,7 @@ let hasDiagnosticRelatedInformationCapability: boolean = false;
 
 let completion_item_list: Array<any> = [];
 let signature_list: Array<any> = [];
+let ssl_ext = '.ssl';
 
 connection.onInitialize((params: InitializeParams) => {
 	let capabilities = params.capabilities;
@@ -516,24 +518,30 @@ connection.onExecuteCommand((params, cancel_token) => {
 	var command = params.command;
 	var args: Array<any> = params.arguments;
 	var compile_exe = args[0];
-	//var filepath = args[1];
 	var text_document: any = args[1];
-	var filepath = text_document.fileName;
 	var dst_dir = args[2];
+	var filepath = text_document.fileName;
 	var cwd_to = path.dirname(filepath);
 	var base_name = path.parse(filepath).base;
 	var base = path.parse(filepath).name;
 	var dst_path = path.join(dst_dir, base + '.int');
+	var ext = path.parse(filepath).ext;
 
 	if (command == "extension.SSLcompile") {
-		conlog("compiling...");
+		if (ext != ssl_ext) { //vscode loses open file if clicked on console or elsewhere
+			conlog("Not an SSL file! Please focus an SSL file to compile.");
+			connection.window.showInformationMessage("Please focus an SSL file to compile!");
+			return;
+		}
+		conlog(`compiling ${base_name}...`);
 		const cp = require('child_process');
 
 		cp.exec(compile_exe + " " + base_name + ' -o ' + dst_path, { cwd: cwd_to }, (err: any, stdout: any, stderr: any) => {
 			conlog('stdout: ' + stdout);
-			conlog('stderr: ' + stderr);
+			if (stderr) {conlog('stderr: ' + stderr);}
 			if (err) {
 				conlog('error: ' + err);
+				connection.window.showErrorMessage(`Failed to compile ${base_name}!`);
 			}
 			send_diagnostics(documents.get(text_document.uri.external), stdout);
 		});
