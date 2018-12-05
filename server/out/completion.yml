@@ -1,5 +1,3 @@
----
-
 keywords:
   type: 1 #text
   items:
@@ -70,14 +68,15 @@ base-functions:
       doc: "Causes the focused object (self) to attempt to attack an object (who). This is a macro to attack_complex()."
     - name: attack_complex
       detail: "void attack_complex(ObjectPtr who, int called_shot, int num_attacks, int bonus, int min_damage, int max_damage, int attacker_results, int target_results"
-      doc: "Causes the current object (self – must be a critter) to attempt to attack a critter (who) with various parameters modifying the combat:
-      called_shot – 0/1/specific means none/random/specific (head, torso, etc.)
-      num_attacks – the # of extra attacks the self object gets before the target
-      bonus – the bonus to hit the target on the first turn only
-      min_damage – the minimum damage that will be done the first attack
-      max_damage – the maximum damage that will be done the first attack
-      attacker_results – what state the attacker ends in after the first attack
-      target_results – what state the target ends in after the first attack"
+      doc:
+        "Causes the current object (self – must be a critter) to attempt to attack a critter (who) with various parameters modifying the combat:
+        called_shot – 0/1/specific means none/random/specific (head, torso, etc.)
+        num_attacks – the # of extra attacks the self object gets before the target
+        bonus – the bonus to hit the target on the first turn only
+        min_damage – the minimum damage that will be done the first attack
+        max_damage – the maximum damage that will be done the first attack
+        attacker_results – what state the attacker ends in after the first attack
+        target_results – what state the target ends in after the first attack"
     - name: attack_setup
       detail: "void attack_setup(ObjectPtr who, ObjectPtr victim)"
       doc: "Sets up an attack from who on victim, without expecting this script to be involved. Can be used to setup attacks on critters from the map script."
@@ -647,18 +646,12 @@ base-functions:
       detail: "int world_map_y_pos"
       doc: "Returns the current Y position of the party on the World Map."
 
-
 sfall-functions:
   type: 3 #function
   items:
     - name: abs
       detail: "float abs(float x)"
       doc: "Returns absolute (positive) value of x."
-    - name: activate_shader
-      detail: "void activate_shader(int id)"
-    - name: set_critter_burst_disable
-      detail: "void set_critter_burst_disable(ObjectPtr critter, int disable)"
-      doc: "Critter won't use bursts unless having a burst-only weapon equipped."
 
     - name: read_byte
       detail: "int read_byte(int address)"
@@ -849,7 +842,7 @@ sfall-functions:
 
     - name: get_kill_counter
       detail: int get_kill_counter(int critterType)
-    - name:
+    - name: mod_kill_counter
       detail: void mod_kill_counter(int critterType, int amount)
 
     - name: get_perk_owed
@@ -1136,6 +1129,171 @@ sfall-functions:
     - name: set_inven_ap_cost
       detail: void set_inven_ap_cost
 
+    - name: key_pressed
+      detail: int key_pressed(int dxScancode)
+    - name: tap_key
+      detail: void tap_key(int dxScancode)
+    - name: get_mouse_x
+      detail: int get_mouse_x()
+    - name: get_mouse_y
+      detail: int get_mouse_y()
+    - name: get_mouse_buttons
+      detail: int get_mouse_buttons()
+      doc: Returns the number of the mouse button that is currently pressed (1 - left, 2 - right, 3 - left+right, 4 - middle, 0 otherwise).
+
+    - name: block_combat
+      detail: void block_combat(bool value)
+      doc: Deny the player to enter combat mode.
+    - name: game_loaded
+      detail: int game_loaded()
+      doc: Returns 1 the first time it is called after a new game or game load, and 0 any time after.
+    - name: get_ini_setting
+      detail: int get_ini_setting(string setting)
+      doc: Reads an integer value from an ini file in the fallout directory.
+    - name: get_ini_string
+      detail: string get_ini_string(string setting)
+      doc: Reads a string value from an ini file in the fallout directory.
+    - name: get_game_mode
+      detail: int get_game_mode()
+      doc: A more flexible version of in_world_map. It will return a set of flags indicating which mode the game is currently in.
+    - name: get_uptime
+      detail: int get_uptime()
+      doc: Just a wrapper around the windows GetTickCount() function. It's useful for making time fade effects in shaders, since they already have access to the current tick count.
+    - name: set_self
+      detail: void set_self(objptr)
+      doc: Overrides the scripts self_obj for the next function call.
+    - name: mod_skill_points_per_level
+      detail: void mod_skill_points_per_level(int value)
+      doc: Accepts a value of between -100 and 100, and modifies the number of skill points the player recieves when they level up.
+    - name: seq_perk_freq
+      detail: void seq_perk_freq(int value)
+      doc: Sets the number of levels between each perk.
+    - name: get_last_target
+      detail: ObjectPtr get_last_target(objptr critter)
+      doc: Will return the last critter to be deliberately attacked.
+    - name: get_last_attacker
+      detail: ObjectPtr get_last_attacker(objptr critter)
+      doc: Will return the last critter to deliberately launch an attack against the argument critter.
+    - name: set_base_pickpocket_mod
+      detail: void set_base_pickpocket_mod(int max, int mod)
+      doc: Changes maximum chance of success and chance mod for each steal attempt.
+    - name: set_critter_pickpocket_mod
+      detail: void set_critter_pickpocket_mod(CritterPtr, int max, int mod)
+      doc: The same as set_base_pickpocket, but applies only to specific critter.
+    - name: reg_anim_combat_check
+      detail: void reg_anim_combat_check(int enable)
+      doc: Allows to enable all reg_anim_* functions in combat (including vanilla functions) if set to 0. It is automatically reset at the end of each frame, so you need to call it before "reg_anim_begin" - "reg_anim_end" block.
+    - name: reg_anim_destroy
+      detail: void reg_anim_destroy(objptr)
+      doc: Given object is destroyed at the end of current animation set.
+    - name: reg_anim_animate_and_hide
+      detail: void reg_anim_animate_and_hide(objptr, int animID, int delay)
+      doc: Exactly like "reg_anim_animate" but the object will automatically disappear after the last animation frame (but not destroyed).
+    - name: reg_anim_light
+      detail: void reg_anim_light(objptr, int light, int delay)
+      doc: "Change light of any object. Light argument is a light radius (0-8), but you can use highest 2 bytes to pass light intensity as well (example: 0xFFFF0008 - intensity 65535 and radius 8). | If highest 2 bytes are 0, intensity will not be changed. Intensity range is from 0 to 65535 (0xFFFF)"
+    - name: reg_anim_change_fid
+      detail: void reg_anim_change_fid(objptr, int FID, int delay)
+      doc: Should work like art_change_fid_num but in reg_anim sequence.
+    - name: reg_anim_take_out
+      detail: void reg_anim_take_out(objptr, holdFrameID, delay)
+      doc: Plays "take out weapon" animation for given holdFrameID. It is not required to have such weapon in critter's inventory.
+    - name: reg_anim_turn_towards
+      detail: void reg_anim_turn_towards(objptr, int tile/target, delay)
+      doc: Makes object change it's direction to face given tile num or target object.
+    - name: metarule2_explosions
+      detail: int metarule2_explosions(int arg1, int arg2)
+      doc: Was made as a dirty easy hack to allow dynamically change some explosion parameters (ranged attack). All changed parameters are reset to vanilla state automatically after each attack action.
+    - name: set_attack_explosion_pattern
+      detail: void set_attack_explosion_pattern(x, y)
+      doc: "Currently y is not used and x means: 1 - reduced explosion pattern (3 effects are spawned instead of 7), 0 - full pattern."
+    - name: set_attack_explosion_art
+      detail: void set_attack_explosion_art(x, y)
+      doc: y not used and x is a misc frame ID (last 3 bytes, without object type) to use for the next explosion.
+    - name: set_attack_explosion_radius
+      detail: void set_attack_explosion_radius(x)
+      doc: Changes radius at which explosion will hit secondary targets for the next attack (from the experiments it is limited to something around 8 by the engine).
+    - name: set_attack_is_explosion_fire
+      detail: void set_attack_is_explosion_fire
+      doc: If you call this right before using a weapon with fire damage type, it will produce explosion effects (and radius damage) just like "explosion" type, but all targets will still recieve fire damage.
+    - name: string_split
+      detail: array string_split(string, split)
+      doc: Takes a string and a seperator, searches the string for all instances of the seperator, and returns a temp array filled with the pieces of the string split at each instance. If you give an empty string as the seperator, the string is split into individual characters.
+    - name: substr
+      detail: string substr(string, start, length)
+      doc: 'Cuts a substring from a string starting at "start" up to "length" characters. | If start is negative - it indicates starting position from the end of the string (for example substr("test", -2, 2) will return last 2 charactes: "st"). | If length is negative - it means so many characters will be omitted from the end of string (example: substr("test", 0, -2) will return string without last 2 characters: "te").'
+    - name: strlen
+      detail: int strlen(string text)
+      doc: Returns string length
+    - name: sprintf
+      detail: string sprintf(string format, any value)
+      doc: Formats given value using standart syntax of C printf function (google "printf" for format details). However it is limited to formatting only 1 value.
+    - name: typeof
+      detail: int typeof(any value)
+      doc: "Returns type of the given value: VALTYPE_INT, VALTYPE_FLOAT or VALTYPE_STR."
+    - name: charcode
+      detail: int charcode(string text)
+      doc: Returns ASCII code for the first character in given string
+    - name: log
+      detail: float log(float x)
+      doc: Natural logarithm of x.
+    - name: exponent
+      detail: float exponent(float x)
+      doc: E^X
+    - name: round
+      detail: int round(float x)
+      doc: Round x to the nearest integer.
+    - name: sqrt
+      detail: float sqrt(float x)
+      doc: Square root of x.
+    - name: abs
+      detail: float abs(float x)
+      doc: Absolute (positive) value of x.
+    - name: sin
+      detail: float sin(float x)
+      doc: Sine of x
+    - name: cos
+      detail: float cos(float x)
+      doc: Cosine of x
+    - name: tan
+      detail: float tan(float x)
+      doc: Tangent of x.
+    - name: arctan
+      detail: float arctan(float x, float y)
+      doc: Arctangent of x.
+    - name: message_str_game
+      detail: string message_str_game(int fileId, int messageId)
+      doc: Works exactly the same as message_str, except you get messages from files in "text/english/game" folder.
+    - name: sneak_success
+      detail: int sneak_success
+      doc: Returns 1 if last sneak attempt (roll against skill) was successful, 0 otherwise.
+    - name: tile_light
+      detail: int tile_light(int elevation, int tileNum)
+      doc: Returns light intensity at the given tile in range from 0 to 65535.
+    - name: obj_blocking_line
+      detail: ObjectPtr obj_blocking_line(ObjectPtr objFrom, int tileTo, int blockingType)
+      doc: Returns first object which blocks direct linear path from objFrom to tileTo using selected blocking function (see BLOCKING_TYPE_* constants in sfall.h).
+    - name: obj_blocking_tile
+      detail: ObjectPtr obj_blocking_tile(int tileNum, int elevation, int blockingType)
+      doc: Returns first object blocking given tile using given blocking function or 0 if tile is clear.
+    - name: tile_get_objs
+      detail: array tile_get_objs(int tileNum, int elevation)
+      doc: Returns array of all objects at given tile.
+    - name: party_member_list
+      detail: array party_member_list(int includeHidden)
+      doc: Returns array of all current party members | (0 - only critter-type, alive and visible will be returned, 1 - all object, including Trunk, etc.)
+    - name: path_find_to
+      detail: array path_find_to(ObjectPtr objFrom, int tileTo, int blockingType)
+      doc: Returns the shortest path to a given tile using given blocking function as an array of tile directions (0..5) to move on each step.
+    - name: create_spatial
+      detail: ObjectPtr create_spatial(int scriptID, int tile, int elevation, int radius)
+      doc: Creates new spatial script with given SID, at given tile, and radius.
+    - name: art_exists
+      detail: int art_exists(int artFID)
+      doc: "checks if given artFID exists in the game | - Useful when you want to check if critter can use specific weapon: art_exists((artFid bwand 0xffff0fff) bwor (weaponAnim * 0x1000))."
+    - name: obj_is_carrying_obj
+      detail: int (ObjectPtr invenObj, ObjectPtr itemObj)
+      doc: Returns number of itemObj inside invenObj's inventory, note that both arguments are object pointers.
 
 sfall-macro:
   type: 1 #text
