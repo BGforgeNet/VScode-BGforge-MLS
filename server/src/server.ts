@@ -99,7 +99,7 @@ function load_defines(procdef_list: Array<any>) {
 	for (let item of def_list) {
 		//skip duplicates
 		var present = completion_item_list.filter(function (el: any) {
-			return (el.label == item.label && el.detail == item.detail);
+			return (el.label == item.label);
 		})
 		if (present.length == 0) {
 			completion_item_list.push({ label: item.label, kind: item.kind, documentation: item.source, detail: item.detail, fulltext: item.fulltext, source: item.source });
@@ -109,7 +109,7 @@ function load_defines(procdef_list: Array<any>) {
 	for (let item of proc_list) {
 		//skip duplicates
 		var present = completion_item_list.filter(function (el: any) {
-			return (el.label == item.label && el.detail == item.detail);
+			return (el.label == item.label);
 		})
 		if (present.length == 0) {
 			completion_item_list.push({ label: item.label, kind: item.kind, documentation: item.source, detail: item.detail, source: item.source });
