@@ -1383,3 +1383,103 @@ sfall-funcs:
     - name: sfall_func6
       detail: any sfall_func6(char* funcName, arg1, arg2, arg3, arg4, arg5, arg6)
       doc: Calls scripting function with given name and 6 arguments
+
+sfall-funcs-macro:
+  type: 3 # function
+  items:
+    - name: attack_is_aimed
+      detail: bool attack_is_aimed()
+      doc: Returns True if the aimed attack mode is selected, False otherwise.
+    - name: critter_inven_obj2
+      detail: ObjectPtr critter_inven_obj2(ObjectPtr obj, int type)
+      doc: Allows get the item in the inactive hand slot. For more details, see the description for the standard function critter_inven_obj.
+    - name: item_weight
+      detail: int item_weight(ObjectPtr obj)
+      doc: Gets the current weight of an object.
+    - name: outlined_object
+      detail: ObjectPtr outlined_object()
+      doc: Returns an object that is currently highlighted by hovering the mouse above it.
+    - name: get_outline
+      detail: int get_outline(ObjectPtr obj)
+      doc: Gets the current outline color for an object.
+    - name: set_outline
+      detail: void set_outline(ObjectPtr obj, int color)
+      doc: "Sets the outline color of an object. Note: 0 means or any value above 0x00FFFFFF disables the outline."
+    - name: get_flags
+      detail: int get_flags(ObjectPtr obj)
+      doc: Gets the current value of object flags (see define_extra.h for available flags).
+    - name: set_flags
+      detail: void set_flags(ObjectPtr obj, int flags)
+      doc: Sets the current flags of an object.
+    - name: real_dude_obj
+      detail: ObjectPtr real_dude_obj()
+      doc: Returns the initial dude_obj after set_dude_obj was used.
+    - name: set_dude_obj
+      detail: void set_dude_obj(ObjectPtr critter)
+      doc: Take control of a given critter. Passing value 0 will reset control back to "real" dude.
+    - name: lock_is_jammed
+      detail: bool lock_is_jammed(ObjectPtr obj)
+      doc: Returns True if the lock (container or scenery) is currently jammed, False otherwise.
+    - name: unjam_lock
+      detail: void unjam_lock(ObjectPtr obj)
+      doc: Unjams a lock immediately without having to wait until the next day, or leave the map and then return after 24 hours.
+    - name: set_unjam_locks_time
+      detail: void set_unjam_locks_time(int time)
+      doc: "Sets after how many hours (up to 127 hours) jammed locks will be unjammed if the player leaves the map. Also disables the auto unjam that occurs at midnight when the player is on the map. Passing 0 will disable the auto unjam mechanism completely. Note: The auto unjam mechanism will be reset each time the player reloads the game."
+    - name: exec_map_update_scripts
+      detail: void exec_map_update_scripts()
+      doc: Executes map_update_p_proc for all objects on map and global/hook scripts as well.
+    - name: spatial_radius
+      detail: int spatial_radius(ObjectPtr obj)
+      doc: Return radius of spatial script, associated with given dummy-object.
+    - name: set_map_enter_position
+      detail: void set_map_enter_position(int tile, int elev, int rot)
+      doc: "Overrides the player's entry position when entering the map through exit grids. Setting the tile to 0 will put the player on the start hex (default tile and elevation) of the map. Note: Works only in map_enter_p_proc procedure."
+    - name: get_map_enter_position
+      detail: array get_map_enter_position()
+      doc: "Returns an array of the player's position data (index: 0 - tile, 1 - elevation, 2 - rotation) when entering the map through exit grids. If entering from the world map, the tile value will be -1. Note: Should be called in map_enter_p_proc procedure to get the correct position data."
+    - name: set_rest_heal_time
+      detail: void set_rest_heal_time(int time)
+      doc: "Sets the time interval in minutes for healing during resting. The default is 180. Note: The time interval will be reset each time the player reloads the game."
+    - name: set_rest_mode
+      detail: void set_rest_mode(int flags)
+      doc: "Sets the bit flags for the rest mode (see RESTMODE_* constants in sfall.h). Passing 0 will reset the rest mode. Note: It will also be reset each time the player reloads the game."
+    - name: car_gas_amount
+      detail: int car_gas_amount()
+      doc: "Returns current amount of fuel in player's car between 0 and 80000. Note: To change fuel amount, use vanilla function: metarule(METARULE_GIVE_CAR_GAS, amount)."
+    - name: set_car_intface_art
+      detail: void set_car_intface_art(int artIndex)
+      doc: "Changes the interface art (index in LST file) for the car image on worldmap screen. Note: Should be called before going to worldmap."
+    - name: tile_refresh_display
+      detail: void tile_refresh_display()
+      doc: Redraws the game scene (tiles, walls, objects, etc.).
+    - name: display_stats
+      detail: void display_stats()
+      doc: "Updates player stats in the inventory screen display window. Note: Works only in opened player inventory."
+    - name: intface_is_hidden
+      detail: bool intface_is_hidden()
+      doc: Returns True if interface is currently hidden, False otherwise.
+    - name: intface_redraw
+      detail: void intface_redraw()
+      doc: Redraws main game interface.
+    - name: inventory_redraw
+      detail: void inventory_redraw(invSide)
+      doc: "Redraws inventory items list in the inventory/loot/barter screens. Argument invSide specifies which side needs to be redrawn: 0 - the player, 1 - target (container/NPC in loot/barter screens)."
+    - name: get_cursor_mode
+      detail: int get_cursor_mode()
+      doc: "Returns the current cursor mode. Values: 0 - movement cursor, 1 - command cursor, 2 - targeting cursor, 4 to 10 are Skilldex skills (yellow targeting cursor)."
+    - name: set_cursor_mode
+      detail: void set_cursor_mode(int mode)
+      doc: Sets the current cursor mode.
+    - name: set_iface_tag_text
+      detail: void set_iface_tag_text(int tag, string text, int color)
+      doc: "Sets the text messages and colors for custom notification boxes to the interface. Tag value is the same as used in show_iface_tag, hide_iface_tag, and is_iface_tag_active. Available colors: 0 - green, 1 - red, 2 - white, 3 - yellow, 4 - dark yellow, 5 - blue, 6 - purple."
+    - name: get_ini_section
+      detail: array get_ini_section(string file, string sect)
+      doc: Returns an associative array of keys and values for a given INI file and section.
+    - name: get_ini_sections
+      detail: array get_ini_sections(string file)
+      doc: Returns an array of names of all sections in a given INI file.
+    - name: set_ini_setting
+      detail: void set_ini_setting(string setting, int/string value)
+      doc: "Writes an integer or a string value to an ini file in the Fallout directory. The setting argument works in the same way as in get_ini_setting, seperate the file name, section and key with a '|' character. Note: The section name is limited to 32 characters."
