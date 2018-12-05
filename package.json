@@ -99,7 +99,7 @@
 	},
 	"scripts": {
 		"vscode:prepublish": "cd client && npm run update-vscode && cd .. && npm run compile",
-		"compile:client": "tsc -p ./client/tsconfig.json",
+		"compile:client": "./tools/syntaxes_to_json.sh && tsc -p ./client/tsconfig.json",
 		"compile:server": "tsc -p ./server/tsconfig.json",
 		"watch:client": "tsc -w -p ./client/tsconfig.json",
 		"watch:server": "tsc -w -p ./server/tsconfig.json",
