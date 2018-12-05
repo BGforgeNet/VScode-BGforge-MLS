@@ -34,7 +34,7 @@
 					".ssl",
 					".h"
 				],
-				"configuration": "./language-configuration.json"
+				"configuration": "./ssl.language-configuration.json"
 			}
 		],
 		"commands": [
