@@ -649,10 +649,6 @@ base-functions:
 sfall-functions:
   type: 3 #function
   items:
-    - name: abs
-      detail: "float abs(float x)"
-      doc: "Returns absolute (positive) value of x."
-
     - name: read_byte
       detail: "int read_byte(int address)"
     - name: read_short
@@ -773,7 +769,7 @@ sfall-functions:
       detail: int available_global_script_types
 
     - name: in_world_map
-      detail: "bool in_world_map"
+      detail: bool in_world_map
 
     - name: force_encounter
       detail: void force_encounter(int map)
