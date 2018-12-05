@@ -542,6 +542,8 @@ connection.onExecuteCommand((params, cancel_token) => {
 			if (err) {
 				conlog('error: ' + err);
 				connection.window.showErrorMessage(`Failed to compile ${base_name}!`);
+			} else {
+				connection.window.showInformationMessage(`Succesfully compiled ${base_name}.`);
 			}
 			send_diagnostics(documents.get(text_document.uri.external), stdout);
 		});
