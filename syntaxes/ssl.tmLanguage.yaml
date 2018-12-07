@@ -10,6 +10,8 @@ patterns:
 - include: '#function-definition'
 - include: '#types'
 - include: '#constants'
+- include: '#numbers'
+
 repository:
   comments:
     patterns:
@@ -820,4 +822,10 @@ repository:
     patterns:
     - match: \b(?i)(variable)\b
       name: keyword.control.ssl
+
+  numbers:
+    patterns:
+    - match: \b(([0-9]+)|(0x[0-9a-fA-F]+))\b
+      name: "constant.numeric.ssl"
+
 scopeName: text.ssl
