@@ -28,6 +28,9 @@
     },
     {
       "include": "#constants"
+    },
+    {
+      "include": "#numbers"
     }
   ],
   "repository": {
@@ -1556,7 +1559,7 @@
     "operators": {
       "patterns": [
         {
-          "match": "(\\b(?i)(and|or|not|band|bwor|bnot|bwxor|floor)\\b)",
+          "match": "(\\b(?i)(and|or|not|band|bwor|bnot|bwxor|bwand|floor)\\b)",
           "name": "keyword.control.ssl"
         },
         {
@@ -3049,6 +3052,14 @@
         {
           "match": "\\b(?i)(variable)\\b",
           "name": "keyword.control.ssl"
+        }
+      ]
+    },
+    "numbers": {
+      "patterns": [
+        {
+          "match": "\\b(([0-9]+)|(0x[0-9a-fA-F]+))\\b",
+          "name": "constant.numeric.ssl"
         }
       ]
     }
