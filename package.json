@@ -37,7 +37,7 @@
 					".ssl",
 					".h"
 				],
-				"configuration": "./ssl.language-configuration.json"
+				"configuration": "./language-configurations/ssl.language-configuration.json"
 			},
 			{
 				"id": "weidu",
@@ -51,7 +51,7 @@
 					".tph",
 					".tpp"
 				],
-				"configuration": "./weidu.language-configuration.json"
+				"configuration": "./language-configurations/weidu.language-configuration.json"
 			},
 			{
 				"id": "weidu-dialog",
@@ -62,7 +62,7 @@
 				"extensions": [
 					".d"
 				],
-				"configuration": "./weidu.d.language-configuration.json"
+				"configuration": "./language-configurations/weidu.d.language-configuration.json"
 			},
 			{
 				"id": "weidu-baf",
@@ -73,7 +73,7 @@
 				"extensions": [
 					".baf"
 				],
-				"configuration": "./weidu.baf.language-configuration.json"
+				"configuration": "./language-configurations/weidu.baf.language-configuration.json"
 			}
 
 		],
