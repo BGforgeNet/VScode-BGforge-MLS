@@ -1,0 +1,2311 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Infinity Engine Weidu",
+  "scopeName": "source.tp2.weidu",
+  "patterns": [
+    {
+      "include": "#function-invocation"
+    },
+    {
+      "include": "#macro-invocation"
+    },
+    {
+      "include": "#function-declaration"
+    },
+    {
+      "include": "#weidu-vars"
+    },
+    {
+      "include": "#strings"
+    },
+    {
+      "include": "#comments"
+    },
+    {
+      "include": "#weidu-tp2-file"
+    },
+    {
+      "include": "#weidu-tp2-flag"
+    },
+    {
+      "include": "#weidu-tp2-language"
+    },
+    {
+      "include": "#weidu-tp2-component-flag"
+    },
+    {
+      "include": "#weidu-tp2-action"
+    },
+    {
+      "include": "#weidu-tp2-optglob"
+    },
+    {
+      "include": "#weidu-tp2-optcase"
+    },
+    {
+      "include": "#weidu-tp2-optexact"
+    },
+    {
+      "include": "#weidu-tp2-arrarindicessorttype"
+    },
+    {
+      "include": "#weidu-tp2-patch"
+    },
+    {
+      "include": "#weidu-tp2-patch-controls"
+    },
+    {
+      "include": "#weidu-tp2-when"
+    },
+    {
+      "include": "#weidu-tp2-values"
+    },
+    {
+      "include": "#weidu-keywords"
+    },
+    {
+      "include": "#weidu-tp2-action-flow"
+    },
+    {
+      "include": "#weidu-tp2-value-operators"
+    },
+    {
+      "include": "#numbers"
+    },
+    {
+      "include": "#infinity-constants"
+    }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "match": "(//).*",
+          "name": "comment.line.weidu"
+        },
+        {
+          "begin": "/\\*",
+          "end": "\\*/",
+          "name": "comment.block.weidu"
+        }
+      ]
+    },
+    "weidu-tp2-file": {
+      "name": "keyword.other.weidu",
+      "patterns": [
+        {
+          "match": "\\b(BACKUP)\\b",
+          "name": "keyword.other.weidu"
+        },
+        {
+          "match": "\\b(AUTHOR|SUPPORT)\\b",
+          "name": "keyword.other.weidu"
+        }
+      ]
+    },
+    "weidu-tp2-flag": {
+      "name": "keyword.other.weidu",
+      "patterns": [
+        {
+          "match": "\\b(AUTO_TRA)\\b",
+          "name": "keyword.other.weidu"
+        },
+        {
+          "match": "\\b(ALLOW_MISSING)\\b",
+          "name": "keyword.other.weidu"
+        },
+        {
+          "match": "\\b(ASK_EVERY_COMPONENT)\\b",
+          "name": "keyword.other.weidu"
+        },
+        {
+          "match": "\\b(ALWAYS)\\b",
+          "name": "keyword.control.weidu"
+        },
+        {
+          "match": "\\b(README)\\b",
+          "name": "keyword.other.weidu"
+        },
+        {
+          "match": "\\b(UNINSTALL_ORDER)\\b",
+          "name": "keyword.other.weidu"
+        },
+        {
+          "match": "\\b(MODDER)\\b",
+          "name": "keyword.other.weidu"
+        },
+        {
+          "match": "\\b(VERSION)\\b",
+          "name": "keyword.other.weidu"
+        },
+        {
+          "match": "\\b(SCRIPT_STYLE)\\b",
+          "name": "keyword.other.weidu"
+        },
+        {
+          "match": "\\b(NO_IF_EVAL_BUG)\\b",
+          "name": "keyword.other.weidu"
+        },
+        {
+          "match": "\\b(QUICK_MENU)\\b",
+          "name": "keyword.other.weidu"
+        },
+        {
+          "match": "\\b(AUTO_EVAL_STRINGS)\\b",
+          "name": "keyword.other.weidu"
+        }
+      ]
+    },
+    "weidu-tp2-language": {
+      "name": "keyword.other.weidu",
+      "patterns": [
+        {
+          "match": "\\b(LANGUAGE)\\b",
+          "name": "keyword.other.weidu"
+        }
+      ]
+    },
+    "weidu-tp2-component-flag": {
+      "name": "keyword.other.weidu",
+      "patterns": [
+        {
+          "match": "\\b(DEPRECATED)\\b",
+          "name": "keyword.other.weidu"
+        },
+        {
+          "match": "\\b(REQUIRE_COMPONENT)\\b",
+          "name": "keyword.other.weidu"
+        },
+        {
+          "match": "\\b(FORBID_COMPONENT)\\b",
+          "name": "keyword.other.weidu"
+        },
+        {
+          "match": "\\b(REQUIRE_PREDICATE)\\b",
+          "name": "keyword.other.weidu"
+        },
+        {
+          "match": "\\b(SUBCOMPONENT)\\b",
+          "name": "keyword.other.weidu"
+        },
+        {
+          "match": "\\b(FORCED_SUBCOMPONENT)\\b",
+          "name": "keyword.other.weidu"
+        },
+        {
+          "match": "\\b(GROUP)\\b",
+          "name": "keyword.other.weidu"
+        },
+        {
+          "match": "\\b(INSTALL_BY_DEFAULT)\\b",
+          "name": "keyword.other.weidu"
+        },
+        {
+          "match": "\\b(DESIGNATED)\\b",
+          "name": "keyword.other.weidu"
+        },
+        {
+          "match": "\\b(NO_LOG_RECORD)\\b",
+          "name": "keyword.other.weidu"
+        },
+        {
+          "match": "\\b(LABEL)\\b",
+          "name": "keyword.other.weidu"
+        }
+      ]
+    },
+    "weidu-tp2-action": {
+      "name": "support.function.weidu",
+      "patterns": [
+        {
+          "match": "\\b(COPY)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(COPY_EXISTING)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(COPY_EXISTING_REGEXP)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(COPY_LARGE)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(COPY_RANDOM)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(COPY_ALL_GAM_FILES)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(MOVE)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(DELETE)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(DISABLE_FROM_KEY)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(CREATE)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(COMPILE)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(CLEAR_MEMORY)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(CLEAR_ARRAYS)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(CLEAR_CODES)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(CLEAR_INLINED)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(CLEAR_EVERYTHING)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(CLEAR_IDS_MAP)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(ACTION_CLEAR_ARRAY)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(SILENT)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(VERBOSE)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(MKDIR)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(RANDOM_SEED)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(ACTION_READLN)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(APPEND)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(APPEND_OUTER)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(APPEND_COL)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(APPEND_COL_OUTER)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(EXTEND_TOP)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(EXTEND_BOTTOM)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(EXTEND_TOP_REGEXP)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(EXTEND_BOTTOM_REGEXP)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(MAKE_BIFF)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(LOAD_TRA)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(WITH_TRA)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(WITH_SCOPE)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(UNINSTALL)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(COPY_KIT)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(ADD_KIT)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(ADD_MUSIC)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(ADD_SCHOOL)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(ADD_SECTYPE)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(ADD_AREA_TYPE)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(ADD_PROJECTILE)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(ADD_SPELL)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(ADD_JOURNAL)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(STRING_SET)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(STRING_SET_EVALUATE)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(STRING_SET_RANGE)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(ALTER_TLK_RANGE)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(ALTER_TLK_LIST)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(ALTER_TLK)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(REQUIRE_FILE)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(FORBID_FILE)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(FAIL)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(ABORT)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(WARN)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(PRINT)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(LOG)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(OUTER_TEXT_SPRINT)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(OUTER_SPRINT)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(OUTER_SNPRINT)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(OUTER_SET)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(OUTER_INNER_PATCH)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(OUTER_PATCH)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(OUTER_INNER_PATCH_SAVE)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(OUTER_PATCH_SAVE)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(OUTER_WHILE)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(OUTER_FOR)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(ACTION_BASH_FOR)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(ACTION_DEFINE_ARRAY)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(ACTION_SORT_ARRAY_INDICES)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(GET_FILE_ARRAY)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(GET_DIRECTORY_ARRAY)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(ACTION_DEFINE_ASSOCIATIVE_ARRAY)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(ACTION_TO_UPPER)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(ACTION_TO_LOWER)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(ACTION_GET_STRREF)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(ACTION_GET_STRREF_F)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(ACTION_GET_STRREF_S)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(ACTION_GET_STRREF_FS)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(DECOMPRESS_BIFF)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(DEFINE_ACTION_MACRO)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(DEFINE_PATCH_MACRO)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(DEFINE_ACTION_FUNCTION)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(DEFINE_PATCH_FUNCTION)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(ACTION_TIME)\\b",
+          "name": "support.function.weidu"
+        }
+      ]
+    },
+    "weidu-tp2-action-flow": {
+      "name": "keyword.control.action.weidu",
+      "patterns": [
+        {
+          "match": "\\b(ACTION_IF)\\b",
+          "name": "keyword.control.action.weidu"
+        },
+        {
+          "match": "\\b(ACTION_MATCH)\\b",
+          "name": "keyword.control.action.weidu"
+        },
+        {
+          "match": "\\b(ACTION_TRY)\\b",
+          "name": "keyword.control.action.weidu"
+        },
+        {
+          "match": "\\b(ACTION_RERAISE)\\b",
+          "name": "keyword.control.action.weidu"
+        },
+        {
+          "match": "\\b(AT_EXIT)\\b",
+          "name": "keyword.control.action.weidu"
+        },
+        {
+          "match": "\\b(AT_INTERACTIVE_EXIT)\\b",
+          "name": "keyword.control.action.weidu"
+        },
+        {
+          "match": "\\b(AT_UNINSTALL)\\b",
+          "name": "keyword.control.action.weidu"
+        },
+        {
+          "match": "\\b(AT_INTERACTIVE_UNINSTALL)\\b",
+          "name": "keyword.control.action.weidu"
+        },
+        {
+          "match": "\\b(AT_UNINSTALL_EXIT)\\b",
+          "name": "keyword.control.action.weidu"
+        },
+        {
+          "match": "\\b(AT_INTERACTIVE_UNINSTALL_EXIT)\\b",
+          "name": "keyword.control.action.weidu"
+        },
+        {
+          "match": "\\b(AT_NOW)\\b",
+          "name": "keyword.control.action.weidu"
+        },
+        {
+          "match": "\\b(AT_INTERACTIVE_NOW)\\b",
+          "name": "keyword.control.action.weidu"
+        },
+        {
+          "match": "\\b(ACTION_FOR_EACH)\\b",
+          "name": "keyword.control.action.weidu"
+        },
+        {
+          "match": "\\b(ACTION_PHP_EACH)\\b",
+          "name": "keyword.control.action.weidu"
+        },
+        {
+          "match": "\\b(INCLUDE)\\b",
+          "name": "keyword.control.action.weidu"
+        },
+        {
+          "match": "\\b(ACTION_INCLUDE)\\b",
+          "name": "keyword.control.action.weidu"
+        },
+        {
+          "match": "\\b(REINCLUDE)\\b",
+          "name": "keyword.control.action.weidu"
+        },
+        {
+          "match": "\\b(ACTION_REINCLUDE)\\b",
+          "name": "keyword.control.action.weidu"
+        },
+        {
+          "match": "\\b(USING)\\b",
+          "name": "keyword.control.action.weidu"
+        },
+        {
+          "match": "\\b(AS)\\b",
+          "name": "keyword.control.action.weidu"
+        }
+      ]
+    },
+    "weidu-tp2-optglob": {
+      "name": "constant.language.flag.weidu",
+      "patterns": [
+        {
+          "match": "\\b(GLOB)\\b",
+          "name": "constant.language.flag.weidu"
+        },
+        {
+          "match": "\\b(NOGLOB)\\b",
+          "name": "constant.language.flag.weidu"
+        }
+      ]
+    },
+    "weidu-tp2-optcase": {
+      "name": "constant.language.flag.weidu",
+      "patterns": [
+        {
+          "match": "\\b(CASE_SENSITIVE)\\b",
+          "name": "constant.language.flag.weidu"
+        },
+        {
+          "match": "\\b(CASE_INSENSITIVE)\\b",
+          "name": "constant.language.flag.weidu"
+        }
+      ]
+    },
+    "weidu-tp2-optexact": {
+      "name": "constant.language.flag.weidu",
+      "patterns": [
+        {
+          "match": "\\b(EXACT_MATCH)\\b",
+          "name": "constant.language.flag.weidu"
+        },
+        {
+          "match": "\\b(EVALUATE_REGEXP)\\b",
+          "name": "constant.language.flag.weidu"
+        }
+      ]
+    },
+    "weidu-tp2-arrarindicessorttype": {
+      "name": "constant.language.flag.weidu",
+      "patterns": [
+        {
+          "match": "\\b(LEXICOGRAPHICALLY)\\b",
+          "name": "constant.language.flag.weidu"
+        },
+        {
+          "match": "\\b(NUMERICALLY)\\b",
+          "name": "constant.language.flag.weidu"
+        }
+      ]
+    },
+    "weidu-tp2-patch": {
+      "name": "support.function.tp2.weidu",
+      "patterns": [
+        {
+          "match": "\\b(SAY)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(PATCH_FAIL)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(PATCH_ABORT)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(PATCH_WARN)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(PATCH_PRINT)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(PATCH_LOG)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(SAY_EVALUATED)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(TO_UPPER)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(TO_LOWER)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(TEXT_SPRINT)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(SPRINT)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(SNPRINT)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(SPRINTF)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(SOURCE_BIFF)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(SPACES)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(QUOTE)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(REPLACE)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(REPLACE_TEXTUALLY)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(EVALUATE_BUFFER_SPECIAL)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(EVALUATE_BUFFER)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(APPLY_BCS_PATCH)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(APPLY_BCS_PATCH_OR_COPY)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(WRITE_BYTE)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(WRITE_SHORT)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(WRITE_LONG)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(WRITE_ASCII)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(WRITE_ASCII_LIST)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(WRITE_ASCII_TERMINATE)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(WRITE_EVALUATED_ASCII)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(WRITE_FILE)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(INSERT_FILE)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(APPEND_FILE)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(APPEND_FILE_EVALUATE)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(REPLACE_BCS_BLOCK)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(INSERT_BYTES)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(DELETE_BYTES)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(READ_BYTE)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(READ_SBYTE)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(READ_SHORT)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(READ_SSHORT)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(READ_LONG)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(READ_SLONG)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(READ_ASCII)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(READ_STRREF)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(READ_STRREF_F)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(READ_STRREF_S)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(READ_STRREF_FS)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(GET_OFFSET_ARRAY)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(GET_OFFSET_ARRAY2)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(DEFINE_ASSOCIATIVE_ARRAY)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(GET_STRREF)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(GET_STRREF_F)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(GET_STRREF_S)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(GET_STRREF_FS)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(DEFINE_ARRAY)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(PATCH_DEFINE_ARRAY)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(SORT_ARRAY_INDICES)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(CLEAR_ARRAY)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(PATCH_CLEAR_ARRAY)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(PATCH_RERAISE)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(PATCH_INCLUDE)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(PATCH_REINCLUDE)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(PATCH_WITH_TRA)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(PATCH_WITH_SCOPE)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(SET_2DA_ENTRY)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(SET_2DA_ENTRY_LATER)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(SET_2DA_ENTRIES_NOW)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(PRETTY_PRINT_2DA)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(INSERT_2DA_ROW)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(REMOVE_2DA_ROW)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(PATCH_READLN)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(PATCH_RANDOM_SEED)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(ADD_STORE_ITEM)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(REMOVE_STORE_ITEM)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(READ_2DA_ENTRY)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(READ_2DA_ENTRIES_NOW)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(READ_2DA_ENTRY_FORMER)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(COUNT_2DA_ROWS)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(COUNT_2DA_COLS)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(COUNT_REGEXP_INSTANCES)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(LOOKUP_IDS_SYMBOL_OF_INT)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(COMPILE_BAF_TO_BCS)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(DECOMPILE_BCS_TO_BAF)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(DECOMPILE_DLG_TO_D)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(COMPILE_D_TO_DLG)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(DECOMPILE_AND_PATCH)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(REFACTOR_TRIGGER)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(REFACTOR_BAF_TRIGGER)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(REFACTOR_D_TRIGGER)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(REPLACE_EVALUATE)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(ADD_GAM_NPC)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(ADD_MAP_NOTE)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(ADD_KNOWN_SPELL)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(ADD_MEMORIZED_SPELL)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(REMOVE_KNOWN_SPELL)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(REMOVE_MEMORIZED_SPELL)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(SET_BG2_PROFICIENCY)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(ADD_CRE_ITEM)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(REPLACE_CRE_ITEM)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(REMOVE_CRE_ITEM)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(REMOVE_CRE_ITEMS)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(REMOVE_CRE_EFFECTS)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(REMOVE_KNOWN_SPELLS)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(REMOVE_MEMORIZED_SPELLS)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(PATCH_SILENT)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(EDIT_SAV_FILE)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(DECOMPRESS_REPLACE_FILE)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(DECOMPRESS_INTO_FILE)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(DECOMPRESS_INTO_VAR)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(COMPRESS_REPLACE_FILE)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(COMPRESS_INTO_FILE)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(COMPRESS_INTO_VAR)\\b",
+          "name": "support.function.tp2.weidu"
+        }
+      ]
+    },
+    "weidu-tp2-patch-controls": {
+      "name": "keyword.control.patch.weidu",
+      "patterns": [
+        {
+          "match": "\\b(SET)\\b",
+          "name": "keyword.control.patch.weidu"
+        },
+        {
+          "match": "\\b(WHILE)\\b",
+          "name": "keyword.control.patch.weidu"
+        },
+        {
+          "match": "\\b(FOR)\\b",
+          "name": "keyword.control.patch.weidu"
+        },
+        {
+          "match": "\\b(PATCH_BASH_FOR)\\b",
+          "name": "keyword.control.patch.weidu"
+        },
+        {
+          "match": "\\b(PATCH_FOR_EACH)\\b",
+          "name": "keyword.control.patch.weidu"
+        },
+        {
+          "match": "\\b(PHP_EACH)\\b",
+          "name": "keyword.control.patch.weidu"
+        },
+        {
+          "match": "\\b(PATCH_PHP_EACH)\\b",
+          "name": "keyword.control.patch.weidu"
+        },
+        {
+          "match": "\\b(PATCH_IF)\\b",
+          "name": "keyword.control.patch.weidu"
+        },
+        {
+          "match": "\\b(ELSE)\\b",
+          "name": "keyword.control.patch.weidu"
+        },
+        {
+          "match": "\\b(PATCH_MATCH)\\b",
+          "name": "keyword.control.patch.weidu"
+        },
+        {
+          "match": "\\b(PATCH_TRY)\\b",
+          "name": "keyword.control.patch.weidu"
+        },
+        {
+          "match": "\\b(PATCH_SILENT)\\b",
+          "name": "keyword.control.patch.weidu"
+        },
+        {
+          "match": "\\b(PATCH_VERBOSE)\\b",
+          "name": "keyword.control.patch.weidu"
+        },
+        {
+          "match": "\\b(INNER_PATCH_SAVE)\\b",
+          "name": "keyword.control.patch.weidu"
+        },
+        {
+          "match": "\\b(INNER_PATCH_FILE)\\b",
+          "name": "keyword.control.patch.weidu"
+        },
+        {
+          "match": "\\b(INNER_ACTION)\\b",
+          "name": "keyword.control.patch.weidu"
+        },
+        {
+          "match": "\\b(PATCH_TIME)\\b",
+          "name": "keyword.control.patch.weidu"
+        }
+      ]
+    },
+    "weidu-tp2-when": {
+      "name": "keyword.control.when.weidu",
+      "patterns": [
+        {
+          "match": "\\b(IF_SIZE_IS)\\b",
+          "name": "keyword.control.when.weidu"
+        },
+        {
+          "match": "\\b(I_S_I)\\b",
+          "name": "keyword.control.when.weidu"
+        },
+        {
+          "match": "\\b(IF)\\b",
+          "name": "keyword.control.when.weidu"
+        },
+        {
+          "match": "\\b(UNLESS)\\b",
+          "name": "keyword.control.when.weidu"
+        },
+        {
+          "match": "\\b(BUT_ONLY_IF_IT_CHANGES)\\b",
+          "name": "keyword.control.when.weidu"
+        },
+        {
+          "match": "\\b(BUT_ONLY)\\b",
+          "name": "keyword.control.when.weidu"
+        },
+        {
+          "match": "\\b(IF_EXISTS)\\b",
+          "name": "keyword.control.when.weidu"
+        }
+      ]
+    },
+    "weidu-tp2-value-operators": {
+      "name": "keyword.control.value.weidu",
+      "patterns": [
+        {
+          "match": "(\\+|-|\\*|\\/|=|\\*|!|>|<|\\?|:)",
+          "name": "keyword.control.value.weidu"
+        },
+        {
+          "match": "\\b(MODULO|NOT|OR|AND|BAND|BOR|BXOR|BNOT|BLSL|BASR)\\b",
+          "name": "keyword.control.value.weidu"
+        }
+      ]
+    },
+    "weidu-tp2-values": {
+      "name": "support.function.tp2value.weidu",
+      "patterns": [
+        {
+          "match": "\\b(BYTE_AT)\\b",
+          "name": "support.function.tp2value.weidu"
+        },
+        {
+          "match": "\\b(SBYTE_AT)\\b",
+          "name": "support.function.tp2value.weidu"
+        },
+        {
+          "match": "\\b(SHORT_AT)\\b",
+          "name": "support.function.tp2value.weidu"
+        },
+        {
+          "match": "\\b(SSHORT_AT)\\b",
+          "name": "support.function.tp2value.weidu"
+        },
+        {
+          "match": "\\b(LONG_AT)\\b",
+          "name": "support.function.tp2value.weidu"
+        },
+        {
+          "match": "\\b(SLONG_AT)\\b",
+          "name": "support.function.tp2value.weidu"
+        },
+        {
+          "match": "\\b(STRING_COMPARE)\\b",
+          "name": "support.function.tp2value.weidu"
+        },
+        {
+          "match": "\\b(STRING_COMPARE_CASE)\\b",
+          "name": "support.function.tp2value.weidu"
+        },
+        {
+          "match": "\\b(STRING_EQUAL)\\b",
+          "name": "support.function.tp2value.weidu"
+        },
+        {
+          "match": "\\b(STRING_EQUAL_CASE)\\b",
+          "name": "support.function.tp2value.weidu"
+        },
+        {
+          "match": "\\b(STR_EQ)\\b",
+          "name": "support.function.tp2value.weidu"
+        },
+        {
+          "match": "\\b(STRING_MATCHES_REGEXP)\\b",
+          "name": "support.function.tp2value.weidu"
+        },
+        {
+          "match": "\\b(STRING_CONTAINS_REGEXP)\\b",
+          "name": "support.function.tp2value.weidu"
+        },
+        {
+          "match": "\\b(GAME_IS)\\b",
+          "name": "support.function.tp2value.weidu"
+        },
+        {
+          "match": "\\b(ENGINE_IS)\\b",
+          "name": "support.function.tp2value.weidu"
+        },
+        {
+          "match": "\\b(GAME_INCLUDES)\\b",
+          "name": "support.function.tp2value.weidu"
+        },
+        {
+          "match": "\\b(IDS_OF_SYMBOL)\\b",
+          "name": "support.function.tp2value.weidu"
+        },
+        {
+          "match": "\\b(VARIABLE_IS_SET)\\b",
+          "name": "support.function.tp2value.weidu"
+        },
+        {
+          "match": "\\b(IS_AN_INT)\\b",
+          "name": "support.function.tp2value.weidu"
+        },
+        {
+          "match": "\\b(TRA_ENTRY_EXISTS)\\b",
+          "name": "support.function.tp2value.weidu"
+        },
+        {
+          "match": "\\b(IS_SILENT)\\b",
+          "name": "support.function.tp2value.weidu"
+        },
+        {
+          "match": "\\b(MOD_IS_INSTALLED)\\b",
+          "name": "support.function.tp2value.weidu"
+        },
+        {
+          "match": "\\b(INSTALL_ORDER)\\b",
+          "name": "support.function.tp2value.weidu"
+        },
+        {
+          "match": "\\b(ID_OF_LABEL)\\b",
+          "name": "support.function.tp2value.weidu"
+        },
+        {
+          "match": "\\b(STATE_WHICH_SAYS)\\b",
+          "name": "support.function.tp2value.weidu"
+        },
+        {
+          "match": "\\b(RESOLVE_STR_REF)\\b",
+          "name": "support.function.tp2value.weidu"
+        },
+        {
+          "match": "\\b(NEXT_STRREF)\\b",
+          "name": "support.function.tp2value.weidu"
+        },
+        {
+          "match": "\\b(RANDOM)\\b",
+          "name": "support.function.tp2value.weidu"
+        },
+        {
+          "match": "\\b(BUFFER_LENGTH)\\b",
+          "name": "support.function.tp2value.weidu"
+        },
+        {
+          "match": "\\b(INDEX)\\b",
+          "name": "support.function.tp2value.weidu"
+        },
+        {
+          "match": "\\b(RINDEX)\\b",
+          "name": "support.function.tp2value.weidu"
+        },
+        {
+          "match": "\\b(INDEX_BUFFER)\\b",
+          "name": "support.function.tp2value.weidu"
+        },
+        {
+          "match": "\\b(RINDEX_BUFFER)\\b",
+          "name": "support.function.tp2value.weidu"
+        },
+        {
+          "match": "\\b(STRING_LENGTH)\\b",
+          "name": "support.function.tp2value.weidu"
+        },
+        {
+          "match": "\\b(FILE_CONTAINS)\\b",
+          "name": "support.function.tp2value.weidu"
+        },
+        {
+          "match": "\\b(FILE_CONTAINS_EVALUATED)\\b",
+          "name": "support.function.tp2value.weidu"
+        },
+        {
+          "match": "\\b(FILE_EXISTS)\\b",
+          "name": "support.function.tp2value.weidu"
+        },
+        {
+          "match": "\\b(DIRECTORY_EXISTS)\\b",
+          "name": "support.function.tp2value.weidu"
+        },
+        {
+          "match": "\\b(FILE_EXISTS_IN_GAME)\\b",
+          "name": "support.function.tp2value.weidu"
+        },
+        {
+          "match": "\\b(FILE_MD5)\\b",
+          "name": "support.function.tp2value.weidu"
+        },
+        {
+          "match": "\\b(FILE_IS_IN_COMPRESSED_BIFF)\\b",
+          "name": "support.function.tp2value.weidu"
+        },
+        {
+          "match": "\\b(BIFF_IS_COMPRESSED)\\b",
+          "name": "support.function.tp2value.weidu"
+        },
+        {
+          "match": "\\b(FILE_SIZE)\\b",
+          "name": "support.function.tp2value.weidu"
+        },
+        {
+          "match": "\\b(SIZE_OF_FILE)\\b",
+          "name": "support.function.tp2value.weidu"
+        },
+        {
+          "match": "\\b(VALID_SCRIPT_ACTIONS)\\b",
+          "name": "support.function.tp2value.weidu"
+        },
+        {
+          "match": "\\b(VALID_SCRIPT_TRIGGERS)\\b",
+          "name": "support.function.tp2value.weidu"
+        },
+        {
+          "match": "\\b(EVALUATE_BUFFER)\\b",
+          "name": "support.function.tp2value.weidu"
+        },
+        {
+          "match": "\\b(WEIDU_ARCH)\\b",
+          "name": "support.function.tp2value.weidu"
+        },
+        {
+          "match": "\\b(WEIDU_OS)\\b",
+          "name": "support.function.tp2value.weidu"
+        },
+        {
+          "match": "\\b(COMPONENT_NUMBER)\\b",
+          "name": "support.function.tp2value.weidu"
+        },
+        {
+          "match": "\\b(INTERACTIVE)\\b",
+          "name": "support.function.tp2value.weidu"
+        }
+      ]
+    },
+    "weidu-keywords": {
+      "name": "keyword.control.weidu",
+      "patterns": [
+        {
+          "match": "\\b(BEGIN)\\b",
+          "name": "keyword.control.weidu"
+        },
+        {
+          "match": "\\b(END)\\b",
+          "name": "keyword.control.weidu"
+        }
+      ]
+    },
+    "strings": {
+      "patterns": [
+        {
+          "name": "string.quoted.double.weidu",
+          "begin": "\"",
+          "end": "\"",
+          "patterns": [
+            {
+              "include": "#non-weidu-vars"
+            }
+          ]
+        },
+        {
+          "name": "string.quoted.5tildes.weidu",
+          "begin": "~~~~~",
+          "end": "~~~~~",
+          "patterns": [
+            {
+              "include": "#non-weidu-vars"
+            }
+          ]
+        },
+        {
+          "match": "\\s(@)([0-9]+)\\s",
+          "captures": {
+            "1": {
+              "name": "variable.parameter.tra.weidu"
+            },
+            "2": {
+              "name": "variable.parameter.tra.weidu"
+            }
+          }
+        },
+        {
+          "name": "string.quoted.tilde.weidu",
+          "begin": "~",
+          "end": "~",
+          "patterns": [
+            {
+              "include": "#non-weidu-vars"
+            }
+          ]
+        }
+      ]
+    },
+    "weidu-vars": {
+      "name": "constant.language.weidu",
+      "patterns": [
+        {
+          "match": "(%?TP2_AUTHOR%?)",
+          "name": "constant.language.weidu"
+        },
+        {
+          "match": "(%?TP2_FILE_NAME%?)",
+          "name": "constant.language.weidu"
+        },
+        {
+          "match": "(%?MOD_FOLDER%?)",
+          "name": "constant.language.weidu"
+        },
+        {
+          "match": "(%LANGUAGE%)",
+          "name": "constant.language.weidu"
+        },
+        {
+          "match": "(%?SOURCE_DIRECTORY%?)",
+          "name": "constant.language.weidu"
+        },
+        {
+          "match": "(%?SOURCE_FILESPEC%?)",
+          "name": "constant.language.weidu"
+        },
+        {
+          "match": "(%?SOURCE_FILE%?)",
+          "name": "constant.language.weidu"
+        },
+        {
+          "match": "(%?SOURCE_RES%?)",
+          "name": "constant.language.weidu"
+        },
+        {
+          "match": "(%?SOURCE_EXT%?)",
+          "name": "constant.language.weidu"
+        },
+        {
+          "match": "(%?DEST_DIRECTORY%?)",
+          "name": "constant.language.weidu"
+        },
+        {
+          "match": "(%?DEST_FILESPEC%?)",
+          "name": "constant.language.weidu"
+        },
+        {
+          "match": "(%?DEST_FILE%?)",
+          "name": "constant.language.weidu"
+        },
+        {
+          "match": "(%?DEST_RES%?)",
+          "name": "constant.language.weidu"
+        },
+        {
+          "match": "(%?DEST_EXT%?)",
+          "name": "constant.language.weidu"
+        },
+        {
+          "match": "(%?SOURCE_SIZE%?)",
+          "name": "constant.language.weidu"
+        },
+        {
+          "match": "(%?BASH_FOR_DIRECTORY%?)",
+          "name": "constant.language.weidu"
+        },
+        {
+          "match": "(%?BASH_FOR_FILESPEC%?)",
+          "name": "constant.language.weidu"
+        },
+        {
+          "match": "(%?BASH_FOR_FILE%?)",
+          "name": "constant.language.weidu"
+        },
+        {
+          "match": "(%?BASH_FOR_RES%?)",
+          "name": "constant.language.weidu"
+        },
+        {
+          "match": "(%?BASH_FOR_EXT%?)",
+          "name": "constant.language.weidu"
+        },
+        {
+          "match": "(%?BASH_FOR_SIZE%?)",
+          "name": "constant.language.weidu"
+        },
+        {
+          "match": "(%?ARE_V10_ACTORS%?)",
+          "name": "constant.language.weidu"
+        },
+        {
+          "match": "(%?ARE_V10_REGIONS%?)",
+          "name": "constant.language.weidu"
+        },
+        {
+          "match": "(%?ARE_V10_SPAWN_POINTS%?)",
+          "name": "constant.language.weidu"
+        },
+        {
+          "match": "(%?ARE_V10_ENTRANCES%?)",
+          "name": "constant.language.weidu"
+        },
+        {
+          "match": "(%?ARE_V10_CONTAINERS%?)",
+          "name": "constant.language.weidu"
+        },
+        {
+          "match": "(%?ARE_V10_AMBIENTS%?)",
+          "name": "constant.language.weidu"
+        },
+        {
+          "match": "(%?ARE_V10_DOORS%?)",
+          "name": "constant.language.weidu"
+        },
+        {
+          "match": "(%?ARE_V10_ANIMATIONS%?)",
+          "name": "constant.language.weidu"
+        },
+        {
+          "match": "(%?ARE_V91_ACTORS%?)",
+          "name": "constant.language.weidu"
+        },
+        {
+          "match": "(%?CRE_V10_KNOWN_SPELLS%?)",
+          "name": "constant.language.weidu"
+        },
+        {
+          "match": "(%?CRE_V10_SPELL_MEM_INFO%?)",
+          "name": "constant.language.weidu"
+        },
+        {
+          "match": "(%?CRE_V10_EFFECTS%?)",
+          "name": "constant.language.weidu"
+        },
+        {
+          "match": "(%?CRE_V10_ITEMS%?)",
+          "name": "constant.language.weidu"
+        },
+        {
+          "match": "(%?ITM_V10_HEADERS%?)",
+          "name": "constant.language.weidu"
+        },
+        {
+          "match": "(%?ITM_V10_GEN_EFFECTS%?)",
+          "name": "constant.language.weidu"
+        },
+        {
+          "match": "(%?SPL_V10_HEADERS%?)",
+          "name": "constant.language.weidu"
+        },
+        {
+          "match": "(%?SPL_V10_GEN_EFFECTS%?)",
+          "name": "constant.language.weidu"
+        },
+        {
+          "match": "(%?STO_V10_ITEMS_PURCHASED%?)",
+          "name": "constant.language.weidu"
+        },
+        {
+          "match": "(%?STO_V10_ITEMS_SOLD%?)",
+          "name": "constant.language.weidu"
+        },
+        {
+          "match": "(%?STO_V10_DRINKS%?)",
+          "name": "constant.language.weidu"
+        },
+        {
+          "match": "(%?STO_V10_CURES%?)",
+          "name": "constant.language.weidu"
+        },
+        {
+          "match": "(%?WMP_AREAS%?)",
+          "name": "constant.language.weidu"
+        },
+        {
+          "match": "(%?WMP_LINKS%?)",
+          "name": "constant.language.weidu"
+        },
+        {
+          "match": "(%?ARE_V10_ITEMS%?)",
+          "name": "constant.language.weidu"
+        },
+        {
+          "match": "(%?ARE_V10_REGION_VERTICES%?)",
+          "name": "constant.language.weidu"
+        },
+        {
+          "match": "(%?ARE_V10_CONTAINER_VERTICES%?)",
+          "name": "constant.language.weidu"
+        },
+        {
+          "match": "(%?ARE_V10_DOOR_OPEN_OUTLINE_VERTICES%?)",
+          "name": "constant.language.weidu"
+        },
+        {
+          "match": "(%?ARE_V10_DOOR_CLOSED_OUTLINE_VERTICES%?)",
+          "name": "constant.language.weidu"
+        },
+        {
+          "match": "(%?ARE_V10_DOOR_OPEN_CELL_VERTICES%?)",
+          "name": "constant.language.weidu"
+        },
+        {
+          "match": "(%?ARE_V10_DOOR_CLOSED_CELL_VERTICES%?)",
+          "name": "constant.language.weidu"
+        },
+        {
+          "match": "(%?CRE_V10_SPELL_MEM%?)",
+          "name": "constant.language.weidu"
+        },
+        {
+          "match": "(%?ITM_V10_HEAD_EFFECTS%?)",
+          "name": "constant.language.weidu"
+        },
+        {
+          "match": "(%?SPL_V10_HEAD_EFFECTS%?)",
+          "name": "constant.language.weidu"
+        },
+        {
+          "match": "(%?WMP_NORTH_LINKS%?)",
+          "name": "constant.language.weidu"
+        },
+        {
+          "match": "(%?WMP_WEST_LINKS%?)",
+          "name": "constant.language.weidu"
+        },
+        {
+          "match": "(%?WMP_SOUTH_LINKS%?)",
+          "name": "constant.language.weidu"
+        },
+        {
+          "match": "(%?WMP_EAST_LINKS%?)",
+          "name": "constant.language.weidu"
+        }
+      ]
+    },
+    "non-weidu-vars": {
+      "name": "variable.parameter.weidu",
+      "patterns": [
+        {
+          "include": "#weidu-vars",
+          "name": "variable.parameter.weidu"
+        },
+        {
+          "match": "(%[^%]+%)",
+          "name": "variable.parameter.weidu"
+        }
+      ]
+    },
+    "numbers": {
+      "patterns": [
+        {
+          "match": "\\b(([0-9]+)|(0x[0-9a-fA-F]+)|(0b[0-1]+))\\b",
+          "name": "constant.numeric.weidu"
+        }
+      ]
+    },
+    "macro-invocation": {
+      "name": "meta.function.invocation.weidu",
+      "patterns": [
+        {
+          "match": "\\b(LAM|LAUNCH_ACTION_MACRO|LPM|LAUNCH_PATCH_MACRO)\\s+(~)(\\w+)(~)",
+          "captures": {
+            "1": {
+              "name": "keyword.control.weidu"
+            },
+            "2": {
+              "name": "keyword.control.weidu"
+            },
+            "3": {
+              "name": "entity.name.function"
+            },
+            "4": {
+              "name": "keyword.control.weidu"
+            }
+          },
+          "name": "meta.function.invocation.weidu"
+        }
+      ]
+    },
+    "function-invocation": {
+      "name": "meta.function.invocation.weidu",
+      "begin": "\\b(LAF|LAUNCH_ACTION_FUNCTION|LPF|LAUNCH_PATCH_FUNCTION)\\s+(~)?(\\w+)(~)?",
+      "end": "\\b(END)\\b",
+      "beginCaptures": {
+        "1": {
+          "name": "keyword.control.weidu"
+        },
+        "2": {
+          "name": "keyword.control.weidu"
+        },
+        "3": {
+          "name": "entity.name.function"
+        },
+        "4": {
+          "name": "keyword.control.weidu"
+        }
+      },
+      "endCaptures": {
+        "1": {
+          "name": "keyword.control.weidu"
+        }
+      },
+      "patterns": [
+        {
+          "match": "\\b(STR_VAR|INT_VAR|RET|RET_VAL)\\b",
+          "name": "keyword.control.weidu"
+        },
+        {
+          "include": "#vars-declaration",
+          "name": "meta.function.invocation.weidu"
+        }
+      ]
+    },
+    "function-declaration": {
+      "name": "meta.function.declaration.weidu",
+      "begin": "\\b(DEFINE_ACTION_FUNCTION|DEFINE_PATCH_FUNCTION)\\s+(~)?(\\w+)(~)?",
+      "end": "\\b(END)\\b",
+      "beginCaptures": {
+        "1": {
+          "name": "keyword.control.weidu"
+        },
+        "2": {
+          "name": "keyword.control.weidu"
+        },
+        "3": {
+          "name": "entity.name.function"
+        },
+        "4": {
+          "name": "keyword.control.weidu"
+        }
+      },
+      "endCaptures": {
+        "1": {
+          "name": "keyword.control.weidu"
+        }
+      },
+      "patterns": [
+        {
+          "match": "\\b(STR_VAR|INT_VAR|RET|RET_VAL)\\b",
+          "name": "keyword.control.weidu"
+        },
+        {
+          "include": "#vars-declaration",
+          "name": "meta.function.declaration.weidu"
+        },
+        {
+          "include": "$self",
+          "name": "meta.function.declaration.weidu"
+        }
+      ]
+    },
+    "vars-declaration": {
+      "name": "variable.complex.weidu",
+      "patterns": [
+        {
+          "match": "\\b([\\w]+)\\s*(=)\\s*([\\S]+)",
+          "captures": {
+            "1": {
+              "name": "variable.parameter.weidu"
+            },
+            "2": {
+              "name": "keyword.control.weidu"
+            },
+            "3": {
+              "patterns": [
+                {
+                  "include": "#strings"
+                },
+                {
+                  "include": "#numbers"
+                },
+                {
+                  "include": "#weidu-vars"
+                }
+              ]
+            }
+          },
+          "name": "variable.complex.weidu"
+        }
+      ]
+    },
+    "infinity-constants": {
+      "name": "constant.language.infinity.weidu",
+      "patterns": [
+        {
+          "match": "\\b(NAME1)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(NAME2)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(DESC)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(UNIDENTIFIED_DESC)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(AREA_CITY)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(AREA_DAY)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(AREA_DUNGEON)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(AREA_FOREST)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(AREA_NIGHT)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(ATTACK1)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(ATTACK2)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(ATTACK3)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(ATTACK4)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(ATTACK)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(BATTLE_CRY1)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(BATTLE_CRY2)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(BATTLE_CRY3)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(BATTLE_CRY4)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(BATTLE_CRY5)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(BATTLE_CRY)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(BIO)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(BORED)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(COMPLIMENT1)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(COMPLIMENT2)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(COMPLIMENT3)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(COMPLIMENT)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(CRITICAL_HIT)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(CRITICAL_MISS)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(DAMAGE)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(DIALOG_DEFAULT)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(DIALOG_HOSTILE)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(DYING)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(EXISTANCE1)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(EXISTANCE2)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(EXISTANCE3)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(EXISTANCE4)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(EXISTANCE5)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(HAPPY)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(HIDDEN_IN_SHADOWS)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(HURT)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(INITIAL_MEETING)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(INSULT1)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(INSULT2)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(INSULT3)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(INSULT)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(INTERACTION1)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(INTERACTION2)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(INTERACTION3)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(INTERACTION4)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(INTERACTION5)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(INTERACTION)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(INVENTORY_FULL)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(LEADER)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(MISCELLANEOUS)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(MORALE)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(PICKED_POCKET)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(REACT_TO_DIE_GENERAL)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(REACT_TO_DIE_SPECIFIC)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(RESPONSE_TO_COMPLIMENT1)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(RESPONSE_TO_COMPLIMENT2)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(RESPONSE_TO_COMPLIMENT3)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(RESPONSE_TO_COMPLIMENT)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(RESPONSE_TO_INSULT1)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(RESPONSE_TO_INSULT2)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(RESPONSE_TO_INSULT3)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(RESPONSE_TO_INSULT)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(SELECT_ACTION1)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(SELECT_ACTION2)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(SELECT_ACTION3)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(SELECT_ACTION4)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(SELECT_ACTION5)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(SELECT_ACTION6)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(SELECT_ACTION7)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(SELECT_ACTION)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(SELECT_COMMON1)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(SELECT_COMMON2)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(SELECT_COMMON3)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(SELECT_COMMON4)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(SELECT_COMMON5)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(SELECT_COMMON6)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(SELECT_COMMON)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(SELECT_RARE1)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(SELECT_RARE2)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(SELECT_RARE)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(SET_A_TRAP)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(SPECIAL1)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(SPECIAL2)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(SPECIAL3)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(SPECIAL)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(SPELL_DISRUPTED)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(TARGET_IMMUNE)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(TIRED)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(UNHAPPY_ANNOYED)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(UNHAPPY_BREAKING_POINT)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(UNHAPPY_SERIOUS)\\b",
+          "name": "constant.language.infinity.weidu"
+        }
+      ]
+    }
+  }
+}

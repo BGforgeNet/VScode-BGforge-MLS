@@ -19,7 +19,10 @@
 	},
 	"activationEvents": [
 		"onLanguage:plaintext",
-		"onLanguage:ssl"
+		"onLanguage:ssl",
+		"onLanguage:weidu",
+		"onLanguage:weidu-dialog",
+		"onLanguage:weidu-baf"
 	],
 	"main": "./client/out/extension",
 	"contributes": {
@@ -35,7 +38,44 @@
 					".h"
 				],
 				"configuration": "./ssl.language-configuration.json"
+			},
+			{
+				"id": "weidu",
+				"aliases": [
+					"Infinity Engine",
+					"weidu"
+				],
+				"extensions": [
+					".tp2",
+					".tpa",
+					".tph",
+					".tpp"
+				],
+				"configuration": "./weidu.language-configuration.json"
+			},
+			{
+				"id": "weidu-dialog",
+				"aliases": [
+					"Infinity Engine dialog",
+					"weidu dialog"
+				],
+				"extensions": [
+					".d"
+				],
+				"configuration": "./weidu.d.language-configuration.json"
+			},
+			{
+				"id": "weidu-baf",
+				"aliases": [
+					"Infinity Engine script",
+					"weidu baf"
+				],
+				"extensions": [
+					".baf"
+				],
+				"configuration": "./weidu.baf.language-configuration.json"
 			}
+
 		],
 		"commands": [
 			{
@@ -46,8 +86,23 @@
 		"grammars": [
 			{
 				"language": "ssl",
-				"scopeName": "text.ssl",
+				"scopeName": "source.fallout-ssl",
 				"path": "./syntaxes/ssl.tmLanguage.json"
+			},
+			{
+				"language": "weidu",
+				"scopeName": "source.tp2.weidu",
+				"path": "./syntaxes/weidu.tmLanguage.json"
+			},
+			{
+				"language": "weidu-dialog",
+				"scopeName": "source.d.weidu",
+				"path": "./syntaxes/weidu.d.tmLanguage.json"
+			},
+			{
+				"language": "weidu-baf",
+				"scopeName": "source.baf.weidu",
+				"path": "./syntaxes/weidu.baf.tmLanguage.json"
 			}
 		],
 		"snippets": [{

@@ -6,7 +6,14 @@ tools_dir="tools"
 yaml2json="$tools_dir/yaml2json.py"
 syntaxes_dir="syntaxes"
 
-for yaml_file in $(ls $syntaxes_dir | grep -i "\.yaml"); do
+function convert() {
+  yaml_file="$1"
   json_file="$(echo $yaml_file | sed 's|\.yaml|.json|i')"
   $yaml2json "$syntaxes_dir/$yaml_file" "$syntaxes_dir/$json_file"
+}
+
+for yaml_file in $(ls $syntaxes_dir | grep -i "\.yaml"); do
+  convert "$yaml_file" &
 done
+
+wait

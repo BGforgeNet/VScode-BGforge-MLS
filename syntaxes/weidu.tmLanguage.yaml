@@ -1,0 +1,708 @@
+$schema: https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json
+name: Infinity Engine Weidu
+scopeName: source.tp2.weidu
+
+patterns:
+- include: '#function-invocation'
+- include: '#macro-invocation'
+- include: '#function-declaration'
+- include: '#weidu-vars'
+- include: '#strings'
+- include: '#comments'
+- include: '#weidu-tp2-file'
+- include: '#weidu-tp2-flag'
+- include: '#weidu-tp2-language'
+- include: '#weidu-tp2-component-flag'
+- include: '#weidu-tp2-action'
+- include: '#weidu-tp2-optglob'
+- include: '#weidu-tp2-optcase'
+- include: '#weidu-tp2-optexact'
+- include: '#weidu-tp2-arrarindicessorttype'
+- include: '#weidu-tp2-patch'
+- include: '#weidu-tp2-patch-controls'
+- include: '#weidu-tp2-when'
+- include: '#weidu-tp2-values'
+- include: '#weidu-keywords'
+- include: '#weidu-tp2-action-flow'
+- include: '#weidu-tp2-value-operators'
+- include: '#numbers'
+- include: '#infinity-constants'
+
+repository:
+  comments:
+    patterns:
+    - match: (//).*
+      name: comment.line.weidu
+    - begin: /\*
+      end: \*/
+      name: comment.block.weidu
+
+  weidu-tp2-file:
+    name: keyword.other.weidu
+    patterns:
+    - match: \b(BACKUP)\b
+    - match: \b(AUTHOR|SUPPORT)\b
+
+  weidu-tp2-flag:
+    name: keyword.other.weidu
+    patterns:
+    - match: \b(AUTO_TRA)\b
+    - match: \b(ALLOW_MISSING)\b
+    - match: \b(ASK_EVERY_COMPONENT)\b
+    - match: \b(ALWAYS)\b
+      name: keyword.control.weidu
+    - match: \b(README)\b
+    - match: \b(UNINSTALL_ORDER)\b
+    - match: \b(MODDER)\b
+    - match: \b(VERSION)\b
+    - match: \b(SCRIPT_STYLE)\b
+    - match: \b(NO_IF_EVAL_BUG)\b
+    - match: \b(QUICK_MENU)\b
+    - match: \b(AUTO_EVAL_STRINGS)\b
+
+  weidu-tp2-language:
+    name: keyword.other.weidu
+    patterns:
+    - match: \b(LANGUAGE)\b
+
+  weidu-tp2-component-flag:
+    name: keyword.other.weidu
+    patterns:
+    - match: \b(DEPRECATED)\b
+    - match: \b(REQUIRE_COMPONENT)\b
+    - match: \b(FORBID_COMPONENT)\b
+    - match: \b(REQUIRE_PREDICATE)\b
+    - match: \b(SUBCOMPONENT)\b
+    - match: \b(FORCED_SUBCOMPONENT)\b
+    - match: \b(GROUP)\b
+    - match: \b(INSTALL_BY_DEFAULT)\b
+    - match: \b(DESIGNATED)\b
+    - match: \b(NO_LOG_RECORD)\b
+    - match: \b(LABEL)\b
+
+  weidu-tp2-action:
+    name: support.function.weidu
+    patterns:
+    - match: \b(COPY)\b
+    - match: \b(COPY_EXISTING)\b
+    - match: \b(COPY_EXISTING_REGEXP)\b
+    - match: \b(COPY_LARGE)\b
+    - match: \b(COPY_RANDOM)\b
+    - match: \b(COPY_ALL_GAM_FILES)\b
+    - match: \b(MOVE)\b
+    - match: \b(DELETE)\b
+    - match: \b(DISABLE_FROM_KEY)\b
+    - match: \b(CREATE)\b
+    - match: \b(COMPILE)\b
+    - match: \b(CLEAR_MEMORY)\b
+    - match: \b(CLEAR_ARRAYS)\b
+    - match: \b(CLEAR_CODES)\b
+    - match: \b(CLEAR_INLINED)\b
+    - match: \b(CLEAR_EVERYTHING)\b
+    - match: \b(CLEAR_IDS_MAP)\b
+    - match: \b(ACTION_CLEAR_ARRAY)\b
+    - match: \b(SILENT)\b
+    - match: \b(VERBOSE)\b
+    - match: \b(MKDIR)\b
+    - match: \b(RANDOM_SEED)\b
+    - match: \b(ACTION_READLN)\b
+    - match: \b(APPEND)\b
+    - match: \b(APPEND_OUTER)\b
+    - match: \b(APPEND_COL)\b
+    - match: \b(APPEND_COL_OUTER)\b
+    - match: \b(EXTEND_TOP)\b
+    - match: \b(EXTEND_BOTTOM)\b
+    - match: \b(EXTEND_TOP_REGEXP)\b
+    - match: \b(EXTEND_BOTTOM_REGEXP)\b
+    - match: \b(MAKE_BIFF)\b
+    - match: \b(LOAD_TRA)\b
+    - match: \b(WITH_TRA)\b
+    - match: \b(WITH_SCOPE)\b
+    - match: \b(UNINSTALL)\b
+    - match: \b(COPY_KIT)\b
+    - match: \b(ADD_KIT)\b
+    - match: \b(ADD_MUSIC)\b
+    - match: \b(ADD_SCHOOL)\b
+    - match: \b(ADD_SECTYPE)\b
+    - match: \b(ADD_AREA_TYPE)\b
+    - match: \b(ADD_PROJECTILE)\b
+    - match: \b(ADD_SPELL)\b
+    - match: \b(ADD_JOURNAL)\b
+    - match: \b(STRING_SET)\b
+    - match: \b(STRING_SET_EVALUATE)\b
+    - match: \b(STRING_SET_RANGE)\b
+    - match: \b(ALTER_TLK_RANGE)\b
+    - match: \b(ALTER_TLK_LIST)\b
+    - match: \b(ALTER_TLK)\b
+    - match: \b(REQUIRE_FILE)\b
+    - match: \b(FORBID_FILE)\b
+    - match: \b(FAIL)\b
+    - match: \b(ABORT)\b
+    - match: \b(WARN)\b
+    - match: \b(PRINT)\b
+    - match: \b(LOG)\b
+    - match: \b(OUTER_TEXT_SPRINT)\b
+    - match: \b(OUTER_SPRINT)\b
+    - match: \b(OUTER_SNPRINT)\b
+    - match: \b(OUTER_SET)\b
+    - match: \b(OUTER_INNER_PATCH)\b
+    - match: \b(OUTER_PATCH)\b
+    - match: \b(OUTER_INNER_PATCH_SAVE)\b
+    - match: \b(OUTER_PATCH_SAVE)\b
+    - match: \b(OUTER_WHILE)\b
+    - match: \b(OUTER_FOR)\b
+    - match: \b(ACTION_BASH_FOR)\b
+    - match: \b(ACTION_DEFINE_ARRAY)\b
+    - match: \b(ACTION_SORT_ARRAY_INDICES)\b
+    - match: \b(GET_FILE_ARRAY)\b
+    - match: \b(GET_DIRECTORY_ARRAY)\b
+    - match: \b(ACTION_DEFINE_ASSOCIATIVE_ARRAY)\b
+    - match: \b(ACTION_TO_UPPER)\b
+    - match: \b(ACTION_TO_LOWER)\b
+    - match: \b(ACTION_GET_STRREF)\b
+    - match: \b(ACTION_GET_STRREF_F)\b
+    - match: \b(ACTION_GET_STRREF_S)\b
+    - match: \b(ACTION_GET_STRREF_FS)\b
+    - match: \b(DECOMPRESS_BIFF)\b
+    - match: \b(DEFINE_ACTION_MACRO)\b
+    - match: \b(DEFINE_PATCH_MACRO)\b
+    - match: \b(DEFINE_ACTION_FUNCTION)\b
+    - match: \b(DEFINE_PATCH_FUNCTION)\b
+    - match: \b(ACTION_TIME)\b
+
+  weidu-tp2-action-flow:
+    name: keyword.control.action.weidu
+    patterns:
+    - match: \b(ACTION_IF)\b
+    - match: \b(ACTION_MATCH)\b
+    - match: \b(ACTION_TRY)\b
+    - match: \b(ACTION_RERAISE)\b
+    - match: \b(AT_EXIT)\b
+    - match: \b(AT_INTERACTIVE_EXIT)\b
+    - match: \b(AT_UNINSTALL)\b
+    - match: \b(AT_INTERACTIVE_UNINSTALL)\b
+    - match: \b(AT_UNINSTALL_EXIT)\b
+    - match: \b(AT_INTERACTIVE_UNINSTALL_EXIT)\b
+    - match: \b(AT_NOW)\b
+    - match: \b(AT_INTERACTIVE_NOW)\b
+    - match: \b(ACTION_FOR_EACH)\b
+    - match: \b(ACTION_PHP_EACH)\b
+    - match: \b(INCLUDE)\b
+    - match: \b(ACTION_INCLUDE)\b
+    - match: \b(REINCLUDE)\b
+    - match: \b(ACTION_REINCLUDE)\b
+    - match: \b(USING)\b
+    - match: \b(AS)\b
+
+  weidu-tp2-optglob:
+    name: constant.language.flag.weidu
+    patterns:
+    - match: \b(GLOB)\b
+    - match: \b(NOGLOB)\b
+
+  weidu-tp2-optcase:
+    name: constant.language.flag.weidu
+    patterns:
+    - match: \b(CASE_SENSITIVE)\b
+    - match: \b(CASE_INSENSITIVE)\b
+
+  weidu-tp2-optexact:
+    name: constant.language.flag.weidu
+    patterns:
+    - match: \b(EXACT_MATCH)\b
+    - match: \b(EVALUATE_REGEXP)\b
+
+  weidu-tp2-arrarindicessorttype:
+    name: constant.language.flag.weidu
+    patterns:
+    - match: \b(LEXICOGRAPHICALLY)\b
+    - match: \b(NUMERICALLY)\b
+
+  weidu-tp2-patch:
+    name: support.function.tp2.weidu
+    patterns:
+    - match: \b(SAY)\b
+    - match: \b(PATCH_FAIL)\b
+    - match: \b(PATCH_ABORT)\b
+    - match: \b(PATCH_WARN)\b
+    - match: \b(PATCH_PRINT)\b
+    - match: \b(PATCH_LOG)\b
+    - match: \b(SAY_EVALUATED)\b
+    - match: \b(TO_UPPER)\b
+    - match: \b(TO_LOWER)\b
+    - match: \b(TEXT_SPRINT)\b
+    - match: \b(SPRINT)\b
+    - match: \b(SNPRINT)\b
+    - match: \b(SPRINTF)\b
+    - match: \b(SOURCE_BIFF)\b
+    - match: \b(SPACES)\b
+    - match: \b(QUOTE)\b
+    - match: \b(REPLACE)\b
+    - match: \b(REPLACE_TEXTUALLY)\b
+    - match: \b(EVALUATE_BUFFER_SPECIAL)\b
+    - match: \b(EVALUATE_BUFFER)\b
+    - match: \b(APPLY_BCS_PATCH)\b
+    - match: \b(APPLY_BCS_PATCH_OR_COPY)\b
+    - match: \b(WRITE_BYTE)\b
+    - match: \b(WRITE_SHORT)\b
+    - match: \b(WRITE_LONG)\b
+    - match: \b(WRITE_ASCII)\b
+    - match: \b(WRITE_ASCII_LIST)\b
+    - match: \b(WRITE_ASCII_TERMINATE)\b
+    - match: \b(WRITE_EVALUATED_ASCII)\b
+    - match: \b(WRITE_FILE)\b
+    - match: \b(INSERT_FILE)\b
+    - match: \b(APPEND_FILE)\b
+    - match: \b(APPEND_FILE_EVALUATE)\b
+    - match: \b(REPLACE_BCS_BLOCK)\b
+    - match: \b(INSERT_BYTES)\b
+    - match: \b(DELETE_BYTES)\b
+    - match: \b(READ_BYTE)\b
+    - match: \b(READ_SBYTE)\b
+    - match: \b(READ_SHORT)\b
+    - match: \b(READ_SSHORT)\b
+    - match: \b(READ_LONG)\b
+    - match: \b(READ_SLONG)\b
+    - match: \b(READ_ASCII)\b
+    - match: \b(READ_STRREF)\b
+    - match: \b(READ_STRREF_F)\b
+    - match: \b(READ_STRREF_S)\b
+    - match: \b(READ_STRREF_FS)\b
+    - match: \b(GET_OFFSET_ARRAY)\b
+    - match: \b(GET_OFFSET_ARRAY2)\b
+    - match: \b(DEFINE_ASSOCIATIVE_ARRAY)\b
+    - match: \b(GET_STRREF)\b
+    - match: \b(GET_STRREF_F)\b
+    - match: \b(GET_STRREF_S)\b
+    - match: \b(GET_STRREF_FS)\b
+    - match: \b(DEFINE_ARRAY)\b
+    - match: \b(PATCH_DEFINE_ARRAY)\b
+    - match: \b(SORT_ARRAY_INDICES)\b
+    - match: \b(CLEAR_ARRAY)\b
+    - match: \b(PATCH_CLEAR_ARRAY)\b
+    - match: \b(PATCH_RERAISE)\b
+    - match: \b(PATCH_INCLUDE)\b
+    - match: \b(PATCH_REINCLUDE)\b
+    - match: \b(PATCH_WITH_TRA)\b
+    - match: \b(PATCH_WITH_SCOPE)\b
+    - match: \b(SET_2DA_ENTRY)\b
+    - match: \b(SET_2DA_ENTRY_LATER)\b
+    - match: \b(SET_2DA_ENTRIES_NOW)\b
+    - match: \b(PRETTY_PRINT_2DA)\b
+    - match: \b(INSERT_2DA_ROW)\b
+    - match: \b(REMOVE_2DA_ROW)\b
+    - match: \b(PATCH_READLN)\b
+    - match: \b(PATCH_RANDOM_SEED)\b
+    - match: \b(ADD_STORE_ITEM)\b
+    - match: \b(REMOVE_STORE_ITEM)\b
+    - match: \b(READ_2DA_ENTRY)\b
+    - match: \b(READ_2DA_ENTRIES_NOW)\b
+    - match: \b(READ_2DA_ENTRY_FORMER)\b
+    - match: \b(COUNT_2DA_ROWS)\b
+    - match: \b(COUNT_2DA_COLS)\b
+    - match: \b(COUNT_REGEXP_INSTANCES)\b
+    - match: \b(LOOKUP_IDS_SYMBOL_OF_INT)\b
+    - match: \b(COMPILE_BAF_TO_BCS)\b
+    - match: \b(DECOMPILE_BCS_TO_BAF)\b
+    - match: \b(DECOMPILE_DLG_TO_D)\b
+    - match: \b(COMPILE_D_TO_DLG)\b
+    - match: \b(DECOMPILE_AND_PATCH)\b
+    - match: \b(REFACTOR_TRIGGER)\b
+    - match: \b(REFACTOR_BAF_TRIGGER)\b
+    - match: \b(REFACTOR_D_TRIGGER)\b
+    - match: \b(REPLACE_EVALUATE)\b
+    - match: \b(ADD_GAM_NPC)\b
+    - match: \b(ADD_MAP_NOTE)\b
+    - match: \b(ADD_KNOWN_SPELL)\b
+    - match: \b(ADD_MEMORIZED_SPELL)\b
+    - match: \b(REMOVE_KNOWN_SPELL)\b
+    - match: \b(REMOVE_MEMORIZED_SPELL)\b
+    - match: \b(SET_BG2_PROFICIENCY)\b
+    - match: \b(ADD_CRE_ITEM)\b
+    - match: \b(REPLACE_CRE_ITEM)\b
+    - match: \b(REMOVE_CRE_ITEM)\b
+    - match: \b(REMOVE_CRE_ITEMS)\b
+    - match: \b(REMOVE_CRE_EFFECTS)\b
+    - match: \b(REMOVE_KNOWN_SPELLS)\b
+    - match: \b(REMOVE_MEMORIZED_SPELLS)\b
+    - match: \b(PATCH_SILENT)\b
+    - match: \b(EDIT_SAV_FILE)\b
+    - match: \b(DECOMPRESS_REPLACE_FILE)\b
+    - match: \b(DECOMPRESS_INTO_FILE)\b
+    - match: \b(DECOMPRESS_INTO_VAR)\b
+    - match: \b(COMPRESS_REPLACE_FILE)\b
+    - match: \b(COMPRESS_INTO_FILE)\b
+    - match: \b(COMPRESS_INTO_VAR)\b
+
+  weidu-tp2-patch-controls:
+    name: keyword.control.patch.weidu
+    patterns:
+    - match: \b(SET)\b
+    - match: \b(WHILE)\b
+    - match: \b(FOR)\b
+    - match: \b(PATCH_BASH_FOR)\b
+    - match: \b(PATCH_FOR_EACH)\b
+    - match: \b(PHP_EACH)\b
+    - match: \b(PATCH_PHP_EACH)\b
+    - match: \b(PATCH_IF)\b
+    - match: \b(ELSE)\b
+    - match: \b(PATCH_MATCH)\b
+    - match: \b(PATCH_TRY)\b
+    - match: \b(PATCH_SILENT)\b
+    - match: \b(PATCH_VERBOSE)\b
+    - match: \b(INNER_PATCH_SAVE)\b
+    - match: \b(INNER_PATCH_FILE)\b
+    - match: \b(INNER_ACTION)\b
+    - match: \b(PATCH_TIME)\b
+
+  weidu-tp2-when:
+    name: keyword.control.when.weidu
+    patterns:
+    - match: \b(IF_SIZE_IS)\b
+    - match: \b(I_S_I)\b
+    - match: \b(IF)\b
+    - match: \b(UNLESS)\b
+    - match: \b(BUT_ONLY_IF_IT_CHANGES)\b
+    - match: \b(BUT_ONLY)\b
+    - match: \b(IF_EXISTS)\b
+
+  weidu-tp2-value-operators:
+    name: keyword.control.value.weidu
+    patterns:
+    - match: (\+|-|\*|\/|=|\*|!|>|<|\?|:)
+    - match: \b(MODULO|NOT|OR|AND|BAND|BOR|BXOR|BNOT|BLSL|BASR)\b
+
+  weidu-tp2-values:
+    name: support.function.tp2value.weidu
+    patterns:
+    - match: \b(BYTE_AT)\b
+    - match: \b(SBYTE_AT)\b
+    - match: \b(SHORT_AT)\b
+    - match: \b(SSHORT_AT)\b
+    - match: \b(LONG_AT)\b
+    - match: \b(SLONG_AT)\b
+    - match: \b(STRING_COMPARE)\b
+    - match: \b(STRING_COMPARE_CASE)\b
+    - match: \b(STRING_EQUAL)\b
+    - match: \b(STRING_EQUAL_CASE)\b
+    - match: \b(STR_EQ)\b
+    - match: \b(STRING_MATCHES_REGEXP)\b
+    - match: \b(STRING_CONTAINS_REGEXP)\b
+    - match: \b(GAME_IS)\b
+    - match: \b(ENGINE_IS)\b
+    - match: \b(GAME_INCLUDES)\b
+    - match: \b(IDS_OF_SYMBOL)\b
+    - match: \b(VARIABLE_IS_SET)\b
+    - match: \b(IS_AN_INT)\b
+    - match: \b(TRA_ENTRY_EXISTS)\b
+    - match: \b(IS_SILENT)\b
+    - match: \b(MOD_IS_INSTALLED)\b
+    - match: \b(INSTALL_ORDER)\b
+    - match: \b(ID_OF_LABEL)\b
+    - match: \b(STATE_WHICH_SAYS)\b
+    - match: \b(RESOLVE_STR_REF)\b
+    - match: \b(NEXT_STRREF)\b
+    - match: \b(RANDOM)\b
+    - match: \b(BUFFER_LENGTH)\b
+    - match: \b(INDEX)\b
+    - match: \b(RINDEX)\b
+    - match: \b(INDEX_BUFFER)\b
+    - match: \b(RINDEX_BUFFER)\b
+    - match: \b(STRING_LENGTH)\b
+    - match: \b(FILE_CONTAINS)\b
+    - match: \b(FILE_CONTAINS_EVALUATED)\b
+    - match: \b(FILE_EXISTS)\b
+    - match: \b(DIRECTORY_EXISTS)\b
+    - match: \b(FILE_EXISTS_IN_GAME)\b
+    - match: \b(FILE_MD5)\b
+    - match: \b(FILE_IS_IN_COMPRESSED_BIFF)\b
+    - match: \b(BIFF_IS_COMPRESSED)\b
+    - match: \b(FILE_SIZE)\b
+    - match: \b(SIZE_OF_FILE)\b
+    - match: \b(VALID_SCRIPT_ACTIONS)\b
+    - match: \b(VALID_SCRIPT_TRIGGERS)\b
+    - match: \b(EVALUATE_BUFFER)\b
+    - match: \b(WEIDU_ARCH)\b
+    - match: \b(WEIDU_OS)\b
+    - match: \b(COMPONENT_NUMBER)\b
+    - match: \b(INTERACTIVE)\b
+
+  weidu-keywords:
+    name: keyword.control.weidu
+    patterns:
+    - match: \b(BEGIN)\b
+    - match: \b(END)\b
+
+  strings:
+    patterns:
+    - name: string.quoted.double.weidu
+      begin: '"'
+      end: '"'
+      patterns:
+      - include: '#non-weidu-vars'
+    - name: string.quoted.5tildes.weidu
+      begin: '~~~~~'
+      end: '~~~~~'
+      patterns:
+      - include: '#non-weidu-vars'
+    - match: \s(@)([0-9]+)\s
+      captures:
+        '1':
+          name: variable.parameter.tra.weidu
+        '2':
+          name: variable.parameter.tra.weidu
+
+    - name: string.quoted.tilde.weidu
+      begin: '~'
+      end: '~'
+      patterns:
+      - include: '#non-weidu-vars'
+
+  weidu-vars:
+    name: constant.language.weidu
+    patterns:
+    - match: (%?TP2_AUTHOR%?)
+    - match: (%?TP2_FILE_NAME%?)
+    - match: (%?MOD_FOLDER%?)
+    - match: (%LANGUAGE%)
+    - match: (%?SOURCE_DIRECTORY%?)
+    - match: (%?SOURCE_FILESPEC%?)
+    - match: (%?SOURCE_FILE%?)
+    - match: (%?SOURCE_RES%?)
+    - match: (%?SOURCE_EXT%?)
+    - match: (%?DEST_DIRECTORY%?)
+    - match: (%?DEST_FILESPEC%?)
+    - match: (%?DEST_FILE%?)
+    - match: (%?DEST_RES%?)
+    - match: (%?DEST_EXT%?)
+    - match: (%?SOURCE_SIZE%?)
+
+    - match: (%?BASH_FOR_DIRECTORY%?)
+    - match: (%?BASH_FOR_FILESPEC%?)
+    - match: (%?BASH_FOR_FILE%?)
+    - match: (%?BASH_FOR_RES%?)
+    - match: (%?BASH_FOR_EXT%?)
+    - match: (%?BASH_FOR_SIZE%?)
+
+    - match: (%?ARE_V10_ACTORS%?)
+    - match: (%?ARE_V10_REGIONS%?)
+    - match: (%?ARE_V10_SPAWN_POINTS%?)
+    - match: (%?ARE_V10_ENTRANCES%?)
+    - match: (%?ARE_V10_CONTAINERS%?)
+    - match: (%?ARE_V10_AMBIENTS%?)
+    - match: (%?ARE_V10_DOORS%?)
+    - match: (%?ARE_V10_ANIMATIONS%?)
+    - match: (%?ARE_V91_ACTORS%?)
+    - match: (%?CRE_V10_KNOWN_SPELLS%?)
+    - match: (%?CRE_V10_SPELL_MEM_INFO%?)
+    - match: (%?CRE_V10_EFFECTS%?)
+    - match: (%?CRE_V10_ITEMS%?)
+    - match: (%?ITM_V10_HEADERS%?)
+    - match: (%?ITM_V10_GEN_EFFECTS%?)
+    - match: (%?SPL_V10_HEADERS%?)
+    - match: (%?SPL_V10_GEN_EFFECTS%?)
+    - match: (%?STO_V10_ITEMS_PURCHASED%?)
+    - match: (%?STO_V10_ITEMS_SOLD%?)
+    - match: (%?STO_V10_DRINKS%?)
+    - match: (%?STO_V10_CURES%?)
+    - match: (%?WMP_AREAS%?)
+    - match: (%?WMP_LINKS%?)
+
+    - match: (%?ARE_V10_ITEMS%?)
+    - match: (%?ARE_V10_REGION_VERTICES%?)
+    - match: (%?ARE_V10_CONTAINER_VERTICES%?)
+    - match: (%?ARE_V10_DOOR_OPEN_OUTLINE_VERTICES%?)
+    - match: (%?ARE_V10_DOOR_CLOSED_OUTLINE_VERTICES%?)
+    - match: (%?ARE_V10_DOOR_OPEN_CELL_VERTICES%?)
+    - match: (%?ARE_V10_DOOR_CLOSED_CELL_VERTICES%?)
+    - match: (%?CRE_V10_SPELL_MEM%?)
+    - match: (%?ITM_V10_HEAD_EFFECTS%?)
+    - match: (%?SPL_V10_HEAD_EFFECTS%?)
+    - match: (%?WMP_NORTH_LINKS%?)
+    - match: (%?WMP_WEST_LINKS%?)
+    - match: (%?WMP_SOUTH_LINKS%?)
+    - match: (%?WMP_EAST_LINKS%?)
+
+  non-weidu-vars:
+    name: variable.parameter.weidu
+    patterns:
+    - include: '#weidu-vars'
+    - match: '(%[^%]+%)'
+
+  numbers:
+    patterns:
+    - match: \b(([0-9]+)|(0x[0-9a-fA-F]+)|(0b[0-1]+))\b
+      name: "constant.numeric.weidu"
+
+  macro-invocation:
+    name: meta.function.invocation.weidu
+    patterns:
+    - match: \b(LAM|LAUNCH_ACTION_MACRO|LPM|LAUNCH_PATCH_MACRO)\s+(~)(\w+)(~)
+      captures:
+        '1':
+          name: keyword.control.weidu
+        '2':
+          name: keyword.control.weidu
+        '3':
+          name: entity.name.function
+        '4':
+          name: keyword.control.weidu
+
+  function-invocation:
+    name: meta.function.invocation.weidu
+    begin: \b(LAF|LAUNCH_ACTION_FUNCTION|LPF|LAUNCH_PATCH_FUNCTION)\s+(~)?(\w+)(~)?
+    end: \b(END)\b
+    beginCaptures:
+      '1':
+        name: keyword.control.weidu
+      '2':
+        name: keyword.control.weidu
+      '3':
+        name: entity.name.function
+      '4':
+        name: keyword.control.weidu
+    endCaptures:
+      '1':
+        name: keyword.control.weidu
+    patterns:
+    - match: \b(STR_VAR|INT_VAR|RET|RET_VAL)\b
+      name: keyword.control.weidu
+    - include: '#vars-declaration'
+    
+  function-declaration:
+    name: meta.function.declaration.weidu
+    begin: \b(DEFINE_ACTION_FUNCTION|DEFINE_PATCH_FUNCTION)\s+(~)?(\w+)(~)?
+    end: \b(END)\b
+    beginCaptures:
+      '1':
+        name: keyword.control.weidu
+      '2':
+        name: keyword.control.weidu
+      '3':
+        name: entity.name.function
+      '4':
+        name: keyword.control.weidu
+    endCaptures:
+      '1':
+        name: keyword.control.weidu
+    patterns:
+    - match: \b(STR_VAR|INT_VAR|RET|RET_VAL)\b
+      name: keyword.control.weidu
+    - include: '#vars-declaration'
+    - include: $self
+
+
+  vars-declaration:
+    name: variable.complex.weidu
+    patterns:
+    - match: \b([\w]+)\s*(=)\s*([\S]+)
+      captures:
+        '1':
+          name: variable.parameter.weidu
+        '2':
+          name: keyword.control.weidu
+        '3':
+          patterns:
+          - include: '#strings'
+          - include: '#numbers'
+          - include: '#weidu-vars'
+
+  infinity-constants:
+    name: constant.language.infinity.weidu
+    patterns:
+    - match: \b(NAME1)\b
+    - match: \b(NAME2)\b
+    - match: \b(DESC)\b
+    - match: \b(UNIDENTIFIED_DESC)\b
+
+    - match: \b(AREA_CITY)\b
+    - match: \b(AREA_DAY)\b
+    - match: \b(AREA_DUNGEON)\b
+    - match: \b(AREA_FOREST)\b
+    - match: \b(AREA_NIGHT)\b
+    - match: \b(ATTACK1)\b
+    - match: \b(ATTACK2)\b
+    - match: \b(ATTACK3)\b
+    - match: \b(ATTACK4)\b
+    - match: \b(ATTACK)\b
+    - match: \b(BATTLE_CRY1)\b
+    - match: \b(BATTLE_CRY2)\b
+    - match: \b(BATTLE_CRY3)\b
+    - match: \b(BATTLE_CRY4)\b
+    - match: \b(BATTLE_CRY5)\b
+    - match: \b(BATTLE_CRY)\b
+    - match: \b(BIO)\b
+    - match: \b(BORED)\b
+    - match: \b(COMPLIMENT1)\b
+    - match: \b(COMPLIMENT2)\b
+    - match: \b(COMPLIMENT3)\b
+    - match: \b(COMPLIMENT)\b
+    - match: \b(CRITICAL_HIT)\b
+    - match: \b(CRITICAL_MISS)\b
+    - match: \b(DAMAGE)\b
+    - match: \b(DIALOG_DEFAULT)\b
+    - match: \b(DIALOG_HOSTILE)\b
+    - match: \b(DYING)\b
+    - match: \b(EXISTANCE1)\b
+    - match: \b(EXISTANCE2)\b
+    - match: \b(EXISTANCE3)\b
+    - match: \b(EXISTANCE4)\b
+    - match: \b(EXISTANCE5)\b
+    - match: \b(HAPPY)\b
+    - match: \b(HIDDEN_IN_SHADOWS)\b
+    - match: \b(HURT)\b
+    - match: \b(INITIAL_MEETING)\b
+    - match: \b(INSULT1)\b
+    - match: \b(INSULT2)\b
+    - match: \b(INSULT3)\b
+    - match: \b(INSULT)\b
+    - match: \b(INTERACTION1)\b
+    - match: \b(INTERACTION2)\b
+    - match: \b(INTERACTION3)\b
+    - match: \b(INTERACTION4)\b
+    - match: \b(INTERACTION5)\b
+    - match: \b(INTERACTION)\b
+    - match: \b(INVENTORY_FULL)\b
+    - match: \b(LEADER)\b
+    - match: \b(MISCELLANEOUS)\b
+    - match: \b(MORALE)\b
+    - match: \b(PICKED_POCKET)\b
+    - match: \b(REACT_TO_DIE_GENERAL)\b
+    - match: \b(REACT_TO_DIE_SPECIFIC)\b
+    - match: \b(RESPONSE_TO_COMPLIMENT1)\b
+    - match: \b(RESPONSE_TO_COMPLIMENT2)\b
+    - match: \b(RESPONSE_TO_COMPLIMENT3)\b
+    - match: \b(RESPONSE_TO_COMPLIMENT)\b
+    - match: \b(RESPONSE_TO_INSULT1)\b
+    - match: \b(RESPONSE_TO_INSULT2)\b
+    - match: \b(RESPONSE_TO_INSULT3)\b
+    - match: \b(RESPONSE_TO_INSULT)\b
+    - match: \b(SELECT_ACTION1)\b
+    - match: \b(SELECT_ACTION2)\b
+    - match: \b(SELECT_ACTION3)\b
+    - match: \b(SELECT_ACTION4)\b
+    - match: \b(SELECT_ACTION5)\b
+    - match: \b(SELECT_ACTION6)\b
+    - match: \b(SELECT_ACTION7)\b
+    - match: \b(SELECT_ACTION)\b
+    - match: \b(SELECT_COMMON1)\b
+    - match: \b(SELECT_COMMON2)\b
+    - match: \b(SELECT_COMMON3)\b
+    - match: \b(SELECT_COMMON4)\b
+    - match: \b(SELECT_COMMON5)\b
+    - match: \b(SELECT_COMMON6)\b
+    - match: \b(SELECT_COMMON)\b
+    - match: \b(SELECT_RARE1)\b
+    - match: \b(SELECT_RARE2)\b
+    - match: \b(SELECT_RARE)\b
+    - match: \b(SET_A_TRAP)\b
+    - match: \b(SPECIAL1)\b
+    - match: \b(SPECIAL2)\b
+    - match: \b(SPECIAL3)\b
+    - match: \b(SPECIAL)\b
+    - match: \b(SPELL_DISRUPTED)\b
+    - match: \b(TARGET_IMMUNE)\b
+    - match: \b(TIRED)\b
+    - match: \b(UNHAPPY_ANNOYED)\b
+    - match: \b(UNHAPPY_BREAKING_POINT)\b
+    - match: \b(UNHAPPY_SERIOUS)\b
