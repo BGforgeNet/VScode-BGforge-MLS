@@ -1,6 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
   "name": "Fallout Star-Trek Scripting Language",
+  "scopeName": "source.fallout-ssl",
   "patterns": [
     {
       "include": "#function-invocation"
@@ -3037,7 +3038,13 @@
     "strings": {
       "begin": "\"",
       "end": "\"",
-      "name": "string.quoted.double.ssl"
+      "name": "string.quoted.double.ssl",
+      "patterns": [
+        {
+          "match": ".",
+          "name": "string.quoted.double.ssl"
+        }
+      ]
     },
     "types": {
       "patterns": [
@@ -3063,6 +3070,5 @@
         }
       ]
     }
-  },
-  "scopeName": "text.ssl"
+  }
 }
