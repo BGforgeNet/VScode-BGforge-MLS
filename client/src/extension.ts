@@ -14,10 +14,8 @@ import { createConnection } from 'net';
 import { ExecuteCommandRequest, ExecuteCommandParams } from 'vscode-languageserver-protocol';
 
 let client: LanguageClient;
-let config_space = "ssl";
-let cmd_name = 'extension.SSLcompile';
-//let last_open_ssl: vscode.TextDocument;
-//let ssl_ext = 'ssl';
+let config_space = "bgforge";
+let cmd_name = 'extension.bgforge.compile';
 
 export function activate(context: ExtensionContext) {
 	// The server is implemented in node
@@ -28,14 +26,14 @@ export function activate(context: ExtensionContext) {
 	// --inspect=6009: runs the server in Node's Inspector mode so VS Code can attach to the server for debugging
 	let debugOptions = { execArgv: ['--nolazy', '--inspect=6009'] };
 	let disposable = vscode.commands.registerCommand(cmd_name, () => {
-		var compile_exe = vscode.workspace.getConfiguration(config_space).get('compile');
-		var dst_dir = vscode.workspace.getConfiguration(config_space).get('output_directory', '.');
+		var fallout_ssl_compile_exe = vscode.workspace.getConfiguration(config_space).get('fallout-ssl.compile');
+		var fallout_ssl_dst_dir = vscode.workspace.getConfiguration(config_space).get('fallout-ssl.output_directory', '.');
 		var text_document = vscode.window.activeTextEditor.document;
 		text_document.save(); //need this for compiler
 		//var text_document = last_open_ssl;
 		let params: ExecuteCommandParams = {
 			command: cmd_name,
-			arguments: [compile_exe, text_document, dst_dir]
+			arguments: [fallout_ssl_compile_exe, text_document, fallout_ssl_dst_dir]
 		};
 		client.sendRequest(ExecuteCommandRequest.type, params);
 	});
@@ -68,7 +66,12 @@ export function activate(context: ExtensionContext) {
 	// Options to control the language client
 	let clientOptions: LanguageClientOptions = {
 		// Register the server for plain text documents
-		documentSelector: [{ scheme: 'file', language: 'ssl' }],
+		documentSelector: [
+			{ scheme: 'file', language: 'fallout-ssl' },
+			{ scheme: 'file', language: 'weidu' },
+			{ scheme: 'file', language: 'weidu-dialog' },
+			{ scheme: 'file', language: 'weidu-baf' }
+		],
 		synchronize: {
 			// Notify the server about file changes to '.clientrc files contained in the workspace
 			fileEvents: workspace.createFileSystemWatcher('**/.clientrc')
@@ -77,8 +80,8 @@ export function activate(context: ExtensionContext) {
 
 	// Create the language client and start the client.
 	client = new LanguageClient(
-		'ssl',
-		'BGforge SSL server',
+		'fallout-ssl',
+		'BGforge MLS',
 		serverOptions,
 		clientOptions
 	);

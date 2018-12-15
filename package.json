@@ -19,7 +19,7 @@
 	},
 	"activationEvents": [
 		"onLanguage:plaintext",
-		"onLanguage:ssl",
+		"onLanguage:fallout-ssl",
 		"onLanguage:weidu",
 		"onLanguage:weidu-dialog",
 		"onLanguage:weidu-baf"
@@ -28,10 +28,10 @@
 	"contributes": {
 		"languages": [
 			{
-				"id": "ssl",
+				"id": "fallout-ssl",
 				"aliases": [
 					"Fallout Star-Trek Scripting Language",
-					"ssl"
+					"fallout-ssl"
 				],
 				"extensions": [
 					".ssl",
@@ -79,15 +79,15 @@
 		],
 		"commands": [
 			{
-				"command": "extension.SSLcompile",
-				"title": "SSLcompile"
+				"command": "extension.bgforge.compile",
+				"title": "BGforge MLS: compile"
 			}
 		],
 		"grammars": [
 			{
-				"language": "ssl",
+				"language": "fallout-ssl",
 				"scopeName": "source.fallout-ssl",
-				"path": "./syntaxes/ssl.tmLanguage.json"
+				"path": "./syntaxes/fallout-ssl.tmLanguage.json"
 			},
 			{
 				"language": "weidu",
@@ -106,14 +106,14 @@
 			}
 		],
 		"snippets": [{
-			"language": "ssl",
-			"path": "./snippets/ssl.json"
+			"language": "fallout-ssl",
+			"path": "./snippets/fallout-ssl.json"
 		}],
 		"configuration": {
 			"type": "object",
-			"title": "BGforge SSL server",
+			"title": "BGforge MLS",
 			"properties": {
-				"ssl.trace.server": {
+				"bgforge.trace.server": {
 					"scope": "window",
 					"type": "string",
 					"enum": [
@@ -124,31 +124,31 @@
 					"default": "off",
 					"description": "Traces the communication between VS Code and the language server."
 				},
-				"ssl.maxNumberOfProblems": {
+				"bgforge.maxNumberOfProblems": {
 					"scope": "resource",
 					"type": "number",
 					"default": 10,
 					"description": "Controls the maximum number of problems produced by the server."
 				},
-				"ssl.compile": {
+				"bgforge.fallout-ssl.compile": {
 					"type": "string",
 					"default": "wine ~/bin/compile.exe -q -p -l -O2 -d -s -n",
 					"description": "Path to compile.exe plus compilation options"
 				},
-				"ssl.output_directory": {
+				"bgforge.fallout-ssl.output_directory": {
 					"type": "string",
 					"default": ".",
 					"description": "Where to put the compiled scripts. Absolute path or relative to source directory."
 				},
-				"ssl.headers_directory": {
+				"bgforge.fallout-ssl.headers_directory": {
 					"type": "string",
-					"default": "headers",
+					"default": "NONE",
 					"description": "Absolute path to directory containing headers, searched recursively"
 				}
 			}
 		},
 		"keybindings": [{
-			"command": "extension.SSLcompile",
+			"command": "extension.bgforge.compile",
 			"key": "ctrl+r"
 		}]
 	},

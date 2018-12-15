@@ -24,22 +24,29 @@ import { ExecSyncOptionsWithStringEncoding } from 'child_process';
 import Uri from 'vscode-uri';
 import * as path from 'path';
 import { ClientRequest } from 'http';
+import * as fallout_ssl from './fallout-ssl';
+import * as common from './common';
+import { conlog } from './common';
+
 
 // Create a connection for the server. The connection uses Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
-let connection = createConnection(ProposedFeatures.all);
+export let connection = createConnection(ProposedFeatures.all);
 
 // Create a simple text document manager. The text document manager
 // supports full document sync only
-let documents: TextDocuments = new TextDocuments();
+export let documents: TextDocuments = new TextDocuments();
 
 let hasConfigurationCapability: boolean = false;
 let hasWorkspaceFolderCapability: boolean = false;
 let hasDiagnosticRelatedInformationCapability: boolean = false;
 
-let completion_item_list: Array<any> = [];
-let signature_list: Array<any> = [];
-let ssl_ext = '.ssl';
+let completion_map = new Map<string, Array<any>>();
+let signature_map = new Map<string, Array<any>>();
+let config_section = "bgforge";
+let config_prefix = 'bgforge.';
+let fallout_ssl_config = config_prefix + 'fallout-ssl';
+let weidu_config = config_prefix + 'weidu';
 
 connection.onInitialize((params: InitializeParams) => {
 	let capabilities = params.capabilities;
@@ -83,68 +90,14 @@ connection.onInitialized(() => {
 		});
 	}
 
-	//load static completion
-	completion_item_list = load_completion();
-	//add completion from headers
-	connection.workspace.getConfiguration('ssl').then(function (conf: any) {
-		var procdef_list = get_defines(conf.headers_directory || 'headers');
-		load_defines(procdef_list);
-	});
-
+	//load completion
+	completion_map = load_completion();
+	generate_signatures();
 });
 
-function load_defines(procdef_list: Array<any>) {
-	var def_list = procdef_list[0];
-	var proc_list = procdef_list[1];
-	for (let item of def_list) {
-		//skip duplicates
-		var present = completion_item_list.filter(function (el: any) {
-			return (el.label == item.label);
-		})
-		if (present.length == 0) {
-			completion_item_list.push({ label: item.label, kind: item.kind, documentation: item.source, detail: item.detail, fulltext: item.fulltext, source: item.source });
-		}
-	}
-
-	for (let item of proc_list) {
-		//skip duplicates
-		var present = completion_item_list.filter(function (el: any) {
-			return (el.label == item.label);
-		})
-		if (present.length == 0) {
-			completion_item_list.push({ label: item.label, kind: item.kind, documentation: item.source, detail: item.detail, source: item.source });
-		}
-	}
-
-	//generate signature list
-	for (let item of completion_item_list) {
-		if (item.detail && item.detail.includes("(")) { //has vars
-			let args = get_args(item.detail);
-			if (args) {
-				let signature = { label: item.label, documentation: `(${args})`, source: item.source };
-				signature_list.push(signature);
-			}
-		}
-	}
-}
-
-function reload_defines(filename: string, code: string) {
-	var new_defines = defines_from_file(code);
-	filename = fname(filename);
-	for (let item of new_defines) {
-		item.source = filename;
-	}
-	var new_procs = procs_from_file(code);
-	for (let item of new_procs) {
-		item.source = filename;
-	}
-	//delete old defs from this file
-	completion_item_list = completion_item_list.filter(item => item.source !== filename);
-	signature_list = signature_list.filter(item => item.source !== filename);
-	//delete defines redefined in current file
-	completion_item_list = completion_item_list.filter(item => new_defines.filter(def_item => def_item.label == item.label).length == 0);
-	completion_item_list = completion_item_list.filter(item => new_procs.filter(proc_item => proc_item.label == item.label).length == 0);
-	load_defines([new_defines, new_procs]);
+function generate_signatures() {
+	let fallout_ssl_signature_list = fallout_ssl.get_signature_list(completion_map);
+	signature_map.set("fallout-ssl", fallout_ssl_signature_list);
 }
 
 // The settings
@@ -167,7 +120,7 @@ connection.onDidChangeConfiguration(change => {
 		documentSettings.clear();
 	} else {
 		globalSettings = <SSLsettings>(
-			(change.settings.ssl || defaultSettings)
+			(change.settings.bgforge || defaultSettings)
 		);
 	}
 
@@ -183,7 +136,7 @@ function getDocumentSettings(resource: string): Thenable<SSLsettings> {
 	if (!result) {
 		result = connection.workspace.getConfiguration({
 			scopeUri: resource,
-			section: 'ssl'
+			section: config_section
 		});
 		documentSettings.set(resource, result);
 	}
@@ -199,7 +152,14 @@ documents.onDidClose(e => {
 // when the text document first opened or when its content has changed.
 documents.onDidChangeContent(change => {
 	validateTextDocument(change.document);
-	reload_defines(Uri.parse(change.document.uri).fsPath, change.document.getText());
+
+	let lang_id = documents.get(change.document.uri).languageId;
+	switch (lang_id) {
+		case 'fallout-ssl': {
+			fallout_ssl.reload_defines(completion_map, signature_map, Uri.parse(change.document.uri).fsPath, change.document.getText())
+		}
+	}
+	// /reload_defines(Uri.parse(change.document.uri).fsPath, change.document.getText());
 });
 
 async function validateTextDocument(textDocument: TextDocument): Promise<void> {
@@ -218,169 +178,71 @@ connection.onDidChangeWatchedFiles(_change => {
 // This handler provides the initial list of the completion items.
 connection.onCompletion(
 	(_textDocumentPosition: TextDocumentPositionParams): CompletionItem[] => {
-		var current_list = filter_completion(completion_item_list, _textDocumentPosition.textDocument.uri);;
+		let lang_id = documents.get(_textDocumentPosition.textDocument.uri).languageId;	
+		let current_list: any;
+		if (lang_id == "fallout-ssl") {
+			current_list = fallout_ssl.filter_completion(completion_map.get(lang_id), _textDocumentPosition.textDocument.uri);
+		} else {
+			current_list = completion_map.get(lang_id);
+		}
 		return current_list;
 	}
 );
 
-//filter out defines from other opened ssl files
-function filter_completion(completion_item_list: Array<any>, filename: string) {
-	filename = fname(filename);
-	var current_list = completion_item_list.filter(function (el: any) {
-		return (!el.source || (!el.source.endsWith(".ssl")) || (el.source.endsWith(".ssl") && filename == el.source));
-	});
-	return current_list;
-};
-
 function load_completion() {
 	const yaml = require('js-yaml');
 	const fs = require('fs');
-	try {
-		const completion_map = yaml.safeLoad(fs.readFileSync(path.join(__dirname, 'completion.yml'), 'utf8'));
-		let item: any;
-		let completion_item_list = []
 
-		for (item in completion_map) {
-			let kind = parseInt(completion_map[item]['type']);
-			let element: any;
+	let yml_list = fs.readdirSync(__dirname).filter(function (el: any) {
+		return (path.extname(el) == ".yml");
+	});
+	for (let el of yml_list) {
+		let lang_id = path.basename(el).split('.')[0];
+		let completion_list: Array<any>;
+		try {
+			const completion_yaml = yaml.safeLoad(fs.readFileSync(path.join(__dirname, el), 'utf8'));
+			let item: any;
+			completion_list = [];
 
-			for (element of completion_map[item]['items']) {
-				completion_item_list.push({ label: element['name'], kind: kind, documentation: element['doc'], detail: element['detail'], source: "builtin" });
-			}
-		}
-		return completion_item_list;
-	} catch (e) {
-		conlog(e);
-	}
-};
-
-function get_defines(headers_dir: string) {
-	const { readdirSync, statSync, stat } = require('fs')
-	const path = require('path');
-	var walkDirSync = function (directoryName: string) {
-		var files = readdirSync(directoryName);
-		var result: string[] = [];
-		files.forEach(function (file: string) {
-			let subfile = statSync(path.join(directoryName, file));
-			if (subfile.isDirectory()) {
-				for (var subfileName of walkDirSync(path.join(directoryName, file))) {
-					if (path.extname(subfileName) == '.h') {
-						result.push(path.join(file,subfileName));
+			for (item in completion_yaml) {
+				let kind = parseInt(completion_yaml[item]['type']);
+				let element: any;
+				let dtl: string;
+				for (element of completion_yaml[item]['items']) {
+					if (!element['detail']) {
+						dtl = element['name'];
+					} else {
+						dtl = element['detail']
 					}
-				}
-			} else {
-				if (path.extname(file) == '.h') {
-					result.push(file);
+					completion_list.push({ label: element['name'], kind: kind, documentation: element['doc'], detail: dtl, source: "builtin" });
 				}
 			}
+			completion_map.set(lang_id, completion_list);
+		} catch (e) {
+			conlog(e);
+		}
 
-		})
-		return result;
-	}
-
-	var full_def_list: Array<any> = [];
-	var full_proc_list: Array<any> = [];
-	var file;
-	for (file of walkDirSync(headers_dir)) {
-		const fs = require('fs');
-		var file_path = path.join(headers_dir, file);
-		var code = fs.readFileSync(file_path, 'utf8');
-
-		var def_list = defines_from_file(code);
-		for (let item of def_list) {
-			if (item.fulltext && item.vars) { //only show parenthesis when have vars
-				full_def_list.push({ label: item.label, kind: item.kind, detail: `${item.label}(${item.vars})`, source: file, vars: item.vars, fulltext: item.fulltext });
-			} else { //no vars, show only define itself
-				full_def_list.push({ label: item.label, kind: item.kind, detail: item.label, source: file, vars: item.vars, fulltext: item.fulltext });
+		//Fallout SSL: add completion from headers
+		connection.workspace.getConfiguration(fallout_ssl_config).then(function (conf: any) {
+			if (conf.headers_directory != "NONE") {
+				try {
+					var procdef_list = fallout_ssl.get_defines(conf.headers_directory);
+					fallout_ssl.load_defines(completion_map, signature_map, procdef_list);
+				} catch (e) {
+					conlog(e);
+				}
 			}
-		}
+		});
 
-		var proc_list = procs_from_file(code);
-		for (let item of proc_list)
-			full_proc_list.push({ label: item.label, kind: item.kind, detail: item.detail, source: file, vars: item.vars });
 	}
-	return [full_def_list, full_proc_list];
-}
-
-//function defines_from_file(file_path: string) {
-function defines_from_file(code: string) {
-	var def_list: Array<any> = [];
-
-	var def_name: string;
-	var def_fulltext: string;
-	var def_regex = /^[ \t]*#define[ \t]+(\w+)(?:\(([^)]+)\))?[ \t]*((?:.*\\\r?\n)*.*)/gm;
-	var def_detail = "";
-	var match: any;
-	def_list = code.match(def_regex);
-	let result: Array<any> = [];
-	if (!def_list)
-		return result;
-
-	match = def_regex.exec(code);
-	while (match != null) {
-		// This is necessary to avoid infinite loops with zero-width matches
-		if (match.index === def_regex.lastIndex) {
-			def_regex.lastIndex++;
-		}
-
-		def_name = match[1];
-		def_fulltext = match[3];
-		var def_vars = "";
-		var def_kind = 21; //constant
-		def_detail = def_name;
-		if (match[2]) {
-			def_vars = match[2];
-			def_kind = 3; //function
-			def_detail = `${def_name}(${def_vars})`;
-		}
-		result.push({ label: def_name, kind: def_kind, documentation: "", detail: def_detail, fulltext: def_fulltext, vars: def_vars });
-		match = def_regex.exec(code);
-	}
-	return result;
-}
-
-function procs_from_file(code: string) {
-	var proc_list: Array<any> = [];
-
-	var proc_name: string;
-	var proc_detail = "";
-	var proc_doc = "";
-	var proc_kind = 3; //function
-	var proc_vars = "";
-	var proc_regex = /procedure[\s]+(\w+)(?:\(([^)]+)\))?[\s]+begin/gm;
-	var match: any;
-	var vars_re = /variable[\s]/gi; //remove "variable " from tooltip
-
-	proc_list = code.match(proc_regex);
-	let result: Array<any> = [];
-	if (!proc_list)
-		return result;
-
-	match = proc_regex.exec(code);
-	while (match != null) {
-		// This is necessary to avoid infinite loops with zero-width matches
-		if (match.index === proc_regex.lastIndex) {
-			proc_regex.lastIndex++;
-		}
-
-		proc_name = match[1];
-		proc_vars = "";
-		proc_detail = match[1];
-		if (match[2]) {
-			proc_vars = match[2].replace(vars_re, "");
-			proc_detail = proc_detail + "(" + proc_vars + ")";
-		}
-		result.push({ label: proc_name, kind: proc_kind, documentation: proc_doc, detail: proc_detail, vars: proc_vars });
-		match = proc_regex.exec(code);
-	}
-	return result;
-}
+	return completion_map;
+};
 
 // This handler resolve additional information for the item selected in
 // the completion list.
 connection.onCompletionResolve(
 	(item: CompletionItem): CompletionItem => {
-		let connection = createConnection(process.stdin, process.stdout);
+		//let connection = createConnection(process.stdin, process.stdout);
 		return item;
 	}
 );
@@ -392,78 +254,31 @@ documents.listen(connection);
 // Listen on the connection
 connection.listen();
 
-function conlog(item: any) {
-	switch (typeof (item)) {
-		case "number":
-			connection.console.log(item);
-			break;
-		case "boolean":
-			connection.console.log(item);
-			break;
-		case "undefined":
-			connection.console.log(item);
-			break;
-		case "string":
-			connection.console.log(item);
-			break;
-		default:
-			connection.console.log(JSON.stringify(item));
-			break;
-	}
-}
-
-function fname(uri: string) {
-	return uri.split('/').pop();
-}
-
-//get word under cursor
-function get_word_at(str: string, pos: number) {
-	// Search for the word's beginning and end.
-	var left = str.slice(0, pos + 1).search(/\w+$/), right = str.slice(pos).search(/\W/);
-	// The last word in the string is a special case.
-	if (right < 0) {
-		return str.slice(left);
-	}
-	// Return the word, using the located bounds to extract it from the string.
-	return str.slice(left, right + pos);
-}
-
-//get word before cursor's position (for signature)
-function get_signature_word(str: string, pos: number) {
-	//cut off last character and search for words
-	const sliced = str.slice(0, pos);
-	let lpos = sliced.indexOf(')');
-	let matches = str.slice(lpos > 0 ? lpos : 0, pos).match(/(\w+)\(/g);
-	if (matches) {
-		var word = matches.pop().slice(0, -1);
-		return word;
-	}
-}
-
-//get everything between parenthesis
-function get_args(str: string) {
-	let match = str.match(/\((.*)\)/)
-	if (match && match.length > 1) {
-		return match[1];
-	}
-	return "";
-}
 
 connection.onHover((textDocumentPosition: TextDocumentPositionParams): Hover => {
 	let text = documents.get(textDocumentPosition.textDocument.uri).getText();
+	let lang_id = documents.get(textDocumentPosition.textDocument.uri).languageId;
+	let completion_list = completion_map.get(lang_id);
 	let lines = text.split(/\r?\n/g);
 	let position = textDocumentPosition.position;
-	var filename = fname(textDocumentPosition.textDocument.uri);
+	var filename = common.fname(textDocumentPosition.textDocument.uri);
 
 	let str = lines[position.line];
 	let pos = position.character;
-	let word = get_word_at(str, pos);
+	let word = common.get_word_at(str, pos);
 
-	if (word) {
-		var present = completion_item_list.filter(function (el: any) {
+	if (completion_list && word) {
+
+		let current_list: any[];
+		if (lang_id == "fallout-ssl") {
+			current_list = fallout_ssl.filter_completion(completion_list, filename);
+		} else {
+			current_list = completion_list;
+		}
+
+		let present = current_list.filter(function (el: any) {
 			return (el.label == word);
 		});
-		present = filter_completion(present, filename);
 		if (present.length > 0) {
 			let item = present[0];
 			if (item.detail || item.documentation) {
@@ -482,7 +297,7 @@ connection.onHover((textDocumentPosition: TextDocumentPositionParams): Hover => 
 					markdown = {
 						kind: MarkupKind.Markdown,
 						value: [
-							'```c++', //yeah, so what?
+							'```c++', //yeah...
 							item.detail,
 							'```',
 							item.documentation
@@ -502,7 +317,9 @@ connection.onSignatureHelp((textDocumentPosition: TextDocumentPositionParams): S
 	let position = textDocumentPosition.position;
 	let str = lines[position.line];
 	let pos = position.character;
-	let word = get_signature_word(str, pos);
+	let word = common.get_signature_word(str, pos);
+	let lang_id = documents.get(textDocumentPosition.textDocument.uri).languageId;
+	let signature_list = signature_map.get(lang_id);
 	if (word) {
 		var present = signature_list.filter(function (el: any) {
 			return (el.label == word);
@@ -515,105 +332,33 @@ connection.onSignatureHelp((textDocumentPosition: TextDocumentPositionParams): S
 });
 
 connection.onExecuteCommand((params, cancel_token) => {
-	var command = params.command;
-	var args: Array<any> = params.arguments;
-	var compile_exe = args[0];
-	var text_document: any = args[1];
-	var dst_dir = args[2];
-	var filepath = text_document.fileName;
-	var cwd_to = path.dirname(filepath);
-	var base_name = path.parse(filepath).base;
-	var base = path.parse(filepath).name;
-	var dst_path = path.join(dst_dir, base + '.int');
-	var ext = path.parse(filepath).ext;
+	let command = params.command;
+	let args = params.arguments;
+	let text_document = args[1];
+	let lang_id = text_document.languageId;
 
-	if (command == "extension.SSLcompile") {
-		if (ext != ssl_ext) { //vscode loses open file if clicked on console or elsewhere
-			conlog("Not an SSL file! Please focus an SSL file to compile.");
-			connection.window.showInformationMessage("Please focus an SSL file to compile!");
-			return;
-		}
-		conlog(`compiling ${base_name}...`);
-		const cp = require('child_process');
+	let scheme = text_document.uri.scheme;
+	if (scheme != "file") {
+		conlog("Please focus a valid file to compile.");
+		connection.window.showInformationMessage("Please focus a valid file to compile!");
+	}
 
-		cp.exec(compile_exe + " " + base_name + ' -o ' + dst_path, { cwd: cwd_to }, (err: any, stdout: any, stderr: any) => {
-			conlog('stdout: ' + stdout);
-			if (stderr) {conlog('stderr: ' + stderr);}
-			if (err) {
-				conlog('error: ' + err);
-				connection.window.showErrorMessage(`Failed to compile ${base_name}!`);
-			} else {
-				connection.window.showInformationMessage(`Succesfully compiled ${base_name}.`);
+	switch (command) {
+		case "extension.bgforge.compile": {
+			switch (lang_id) {
+				case "fallout-ssl": {
+					fallout_ssl.sslcompile(params, cancel_token);
+				}
 			}
-			send_diagnostics(documents.get(text_document.uri.external), stdout);
-		});
+		}
 	}
 });
 
-function parse_compile_output(text: string) {
-	let errors_pattern = /\[Error\] <(.+)>:([\d]*):([\d]*):? (.*)/g;
-	let warnings_pattern = /\[Warning\] <(.+)>:([\d]*):([\d]*):? (.*)/g;
-	let errors = [];
-	let warnings = [];
-
-	try {
-		let match: any;
-		while ((match = errors_pattern.exec(text)) != null) {
-			// This is necessary to avoid infinite loops with zero-width matches
-			if (match.index === errors_pattern.lastIndex) {
-				errors_pattern.lastIndex++;
-			}
-			let col: string;
-			if (match[3] == "") { col = "0" } else { col = match[3] }
-			errors.push({ file: match[1], line: parseInt(match[2]), column: parseInt(col), message: match[4] });
-		};
-
-		while ((match = warnings_pattern.exec(text)) != null) {
-			// This is necessary to avoid infinite loops with zero-width matches
-			if (match.index === warnings_pattern.lastIndex) {
-				warnings_pattern.lastIndex++;
-			};
-			let col: string;
-			if (match[3] == "") { col = "0" } else { col = match[3] };
-			warnings.push({ file: match[1], line: parseInt(match[2]), column: parseInt(col), message: match[4] });
-		};
-	} catch (err) {
-		conlog(err);
-	}
-	return [errors, warnings];
-}
-
 function send_diagnostics(text_document: TextDocument, output_text: string) {
-	let errors_warnings = parse_compile_output(output_text);
-	let errors = errors_warnings[0];
-	let warnings = errors_warnings[1];
-	let src = "BGforge SSL server";
-	let diagnostics: Diagnostic[] = [];
-	for (let e of errors) {
-		let diagnosic: Diagnostic = {
-			severity: DiagnosticSeverity.Error,
-			range: {
-				start: { line: e.line - 1, character: e.column },
-				end: text_document.positionAt(text_document.offsetAt({ line: e.line, character: 0 }) - 1)
-			},
-			message: `${e.message}`,
-			source: src
-		};
-		diagnostics.push(diagnosic);
+	let lang_id = text_document.languageId;
+	switch (lang_id) {
+		case 'fallout-ssl': {
+			fallout_ssl.send_diagnostics(text_document, output_text);
+		}
 	}
-	for (let w of warnings) {
-		let diagnosic: Diagnostic = {
-			severity: DiagnosticSeverity.Warning,
-			range: {
-				start: { line: w.line - 1, character: w.column },
-				end: text_document.positionAt(text_document.offsetAt({ line: w.line, character: 0 }) - 1)
-			},
-			message: `${w.message}`,
-			source: src
-		};
-		diagnostics.push(diagnosic);
-	}
-
-	// Send the computed diagnostics to VSCode.
-	connection.sendDiagnostics({ uri: text_document.uri, diagnostics });
 }
