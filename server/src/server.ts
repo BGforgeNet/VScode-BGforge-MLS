@@ -43,6 +43,10 @@ let hasDiagnosticRelatedInformationCapability: boolean = false;
 
 let completion_map = new Map<string, Array<any>>();
 let signature_map = new Map<string, Array<any>>();
+let hover_lang_map = new Map([
+	[ "weidu", "weidu" ],
+	[ "fallout-ssl", "fallout-ssl-codeblock" ]
+]);
 let config_section = "bgforge";
 let config_prefix = 'bgforge.';
 let fallout_ssl_config = config_prefix + 'fallout-ssl';
@@ -141,6 +145,12 @@ function getDocumentSettings(resource: string): Thenable<SSLsettings> {
 		documentSettings.set(resource, result);
 	}
 	return result;
+}
+
+function get_hover_lang(lang_id: string) {
+	let hover_lang = hover_lang_map.get(lang_id);
+	if (!hover_lang) { hover_lang = "c++" }
+	return hover_lang;
 }
 
 // Only keep settings for open documents
@@ -269,6 +279,7 @@ connection.onHover((textDocumentPosition: TextDocumentPositionParams): Hover => 
 
 	if (completion_list && word) {
 
+		let hover_lang = get_hover_lang(lang_id);
 		let current_list: any[];
 		if (lang_id == "fallout-ssl") {
 			current_list = fallout_ssl.filter_completion(completion_list, filename);
@@ -287,7 +298,7 @@ connection.onHover((textDocumentPosition: TextDocumentPositionParams): Hover => 
 					markdown = {
 						kind: MarkupKind.Markdown,
 						value: [
-							'```fallout-ssl-codeblock', //yeah, so what?
+							'```' + `${hover_lang}`,
 							item.fulltext,
 							'```',
 							item.documentation
@@ -297,7 +308,7 @@ connection.onHover((textDocumentPosition: TextDocumentPositionParams): Hover => 
 					markdown = {
 						kind: MarkupKind.Markdown,
 						value: [
-							'```fallout-ssl-codeblock', //yeah...
+							'```' + `${hover_lang}`,
 							item.detail,
 							'```',
 							item.documentation
