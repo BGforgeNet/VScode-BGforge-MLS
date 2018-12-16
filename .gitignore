@@ -1,6 +1,6 @@
 client/out
 server/out/*
-!server/out/completion.yml
+!server/out/*.yml
 node_modules
 client/node_modules
 server/node_modules
