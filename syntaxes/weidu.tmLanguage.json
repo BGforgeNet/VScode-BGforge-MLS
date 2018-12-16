@@ -4,6 +4,12 @@
   "scopeName": "source.tp2.weidu",
   "patterns": [
     {
+      "include": "#inlined-d"
+    },
+    {
+      "include": "#inlined-baf"
+    },
+    {
       "include": "#function-invocation"
     },
     {
@@ -2304,6 +2310,54 @@
         {
           "match": "\\b(UNHAPPY_SERIOUS)\\b",
           "name": "constant.language.infinity.weidu"
+        }
+      ]
+    },
+    "inlined-d": {
+      "name": "meta.weidu.inlined.d",
+      "begin": "(<<<<<<<<)\\s+(\\S+\\.d)\\b",
+      "beginCaptures": {
+        "1": {
+          "name": "keyword.other.weidu"
+        },
+        "2": {
+          "name": "variable.language.inlined-file.weidu"
+        }
+      },
+      "end": "(>>>>>>>>)",
+      "endCaptures": {
+        "1": {
+          "name": "keyword.other.weidu"
+        }
+      },
+      "patterns": [
+        {
+          "include": "source.d.weidu",
+          "name": "meta.weidu.inlined.d"
+        }
+      ]
+    },
+    "inlined-baf": {
+      "name": "meta.weidu.inlined.baf",
+      "begin": "(<<<<<<<<)\\s+(\\S+\\.baf)\\b",
+      "beginCaptures": {
+        "1": {
+          "name": "keyword.other.weidu"
+        },
+        "2": {
+          "name": "variable.language.inlined-file.weidu"
+        }
+      },
+      "end": "(>>>>>>>>)",
+      "endCaptures": {
+        "1": {
+          "name": "keyword.other.weidu"
+        }
+      },
+      "patterns": [
+        {
+          "include": "source.baf.weidu",
+          "name": "meta.weidu.inlined.baf"
         }
       ]
     }

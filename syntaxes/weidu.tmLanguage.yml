@@ -3,6 +3,8 @@ name: Infinity Engine Weidu
 scopeName: source.tp2.weidu
 
 patterns:
+- include: '#inlined-d'
+- include: '#inlined-baf'
 - include: '#function-invocation'
 - include: '#macro-invocation'
 - include: '#function-declaration'
@@ -706,3 +708,33 @@ repository:
     - match: \b(UNHAPPY_ANNOYED)\b
     - match: \b(UNHAPPY_BREAKING_POINT)\b
     - match: \b(UNHAPPY_SERIOUS)\b
+
+  inlined-d:
+    name: meta.weidu.inlined.d
+    begin: '(<<<<<<<<)\s+(\S+\.d)\b'
+    beginCaptures:
+      "1":
+        name: keyword.other.weidu
+      "2":
+        name: variable.language.inlined-file.weidu
+    end: '(>>>>>>>>)'
+    endCaptures:
+      "1":
+        name: keyword.other.weidu
+    patterns:
+      - include: source.d.weidu
+
+  inlined-baf:
+    name: meta.weidu.inlined.baf
+    begin: '(<<<<<<<<)\s+(\S+\.baf)\b'
+    beginCaptures:
+      "1":
+        name: keyword.other.weidu
+      "2":
+        name: variable.language.inlined-file.weidu
+    end: '(>>>>>>>>)'
+    endCaptures:
+      "1":
+        name: keyword.other.weidu
+    patterns:
+      - include: source.baf.weidu
