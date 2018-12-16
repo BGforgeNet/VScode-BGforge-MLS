@@ -287,7 +287,7 @@ connection.onHover((textDocumentPosition: TextDocumentPositionParams): Hover => 
 					markdown = {
 						kind: MarkupKind.Markdown,
 						value: [
-							'```c++', //yeah, so what?
+							'```fallout-ssl-codeblock', //yeah, so what?
 							item.fulltext,
 							'```',
 							item.documentation
@@ -297,7 +297,7 @@ connection.onHover((textDocumentPosition: TextDocumentPositionParams): Hover => 
 					markdown = {
 						kind: MarkupKind.Markdown,
 						value: [
-							'```c++', //yeah...
+							'```fallout-ssl-codeblock', //yeah...
 							item.detail,
 							'```',
 							item.documentation
@@ -340,7 +340,7 @@ connection.onExecuteCommand((params, cancel_token) => {
 	let scheme = text_document.uri.scheme;
 	if (scheme != "file") {
 		conlog("Please focus a valid file to compile.");
-		connection.window.showInformationMessage("Please focus a valid file to compile!");
+		connection.window.showWarningMessage("Please focus a valid file to compile!");
 	}
 
 	switch (command) {

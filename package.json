@@ -37,7 +37,17 @@
 					".ssl",
 					".h"
 				],
-				"configuration": "./language-configurations/ssl.language-configuration.json"
+				"configuration": "./language-configurations/fallout-ssl.language-configuration.json"
+			},
+			{
+				"id": "fallout-ssl-codeblock",
+				"aliases": [
+					"Fallout Star-Trek Scripting Language code block"
+				],
+				"extensions": [
+					".fallout-ssl-codeblock"
+				],
+				"configuration": "./language-configurations/fallout-ssl-codeblock.language-configuration.json"
 			},
 			{
 				"id": "weidu",
@@ -89,6 +99,21 @@
 				"scopeName": "source.fallout-ssl",
 				"path": "./syntaxes/fallout-ssl.tmLanguage.json"
 			},
+			{
+				"language": "fallout-ssl-codeblock",
+				"scopeName": "source.fallout-ssl-codeblock",
+				"path": "./syntaxes/fallout-ssl-codeblock.tmLanguage.json"
+			},
+			{
+        "scopeName": "markdown.fallout-ssl-codeblock",
+        "path": "./syntaxes/fallout-ssl-markdown-injection.tmLanguage.json",
+        "injectTo": [
+          "text.html.markdown"
+        ],
+        "embeddedLanguages": {
+          "meta.embedded.block.fallout-ssl-codeblock": "fallout-ssl-codeblock"
+        }
+      },
 			{
 				"language": "weidu",
 				"scopeName": "source.tp2.weidu",

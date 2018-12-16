@@ -1,0 +1,28 @@
+{
+	"fileTypes": [],
+	"injectionSelector": "L:markup.fenced_code.block.markdown",
+	"patterns": [
+		{
+			"include": "#fallout-ssl-codeblock"
+		}
+	],
+	"repository": {
+		"fallout-ssl-codeblock": {
+			"begin": "(?<=[`~])fallout-ssl-codeblock(\\s+[^`~]*)?$",
+			"end": "(^|\\G)(?=\\s*[`~]{3,}\\s*$)",
+			"patterns": [
+				{
+					"begin": "(^|\\G)(\\s*)(.*)",  
+					"while": "(^|\\G)(?!\\s*([`~]{3,})\\s*$)",
+					"contentName": "meta.embedded.block.fallout-ssl-codeblock",
+					"patterns": [
+            {
+              "include": "source.fallout-ssl-codeblock"
+            }
+          ]
+				}
+			]
+		}
+	},
+  "scopeName": "markdown.fallout-ssl-codeblock"
+}

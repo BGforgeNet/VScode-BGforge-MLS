@@ -1,0 +1,24 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "Fallout Star-Trek Scripting Language",
+	"scopeName": "source.fallout-ssl-codeblock",
+	"patterns": [
+		{
+			"include": "#common"
+		}
+	],
+	"repository": {
+		"common": {
+			"patterns": [
+				{
+					"include": "source.cpp",
+					"match": "."
+				},
+				{
+					"match": "\\b(ObjectPtr|mixed|array|string)\\b",
+					"name": "storage.type.fallout-ssl-codeblock"
+				}
+			]
+		}
+	}
+}
