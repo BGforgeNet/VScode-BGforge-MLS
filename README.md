@@ -38,5 +38,6 @@ See [changelog](CHANGELOG.md).
 
 ### Screenshots
 Highligting and completion example:
+
 ![highligting and completion example](resources/screenshot.png)
 
