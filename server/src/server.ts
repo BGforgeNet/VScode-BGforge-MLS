@@ -25,6 +25,7 @@ import Uri from 'vscode-uri';
 import * as path from 'path';
 import { ClientRequest } from 'http';
 import * as fallout_ssl from './fallout-ssl';
+import * as weidu from './weidu';
 import * as common from './common';
 import { conlog } from './common';
 
@@ -166,7 +167,8 @@ documents.onDidChangeContent(change => {
 	let lang_id = documents.get(change.document.uri).languageId;
 	switch (lang_id) {
 		case 'fallout-ssl': {
-			fallout_ssl.reload_defines(completion_map, signature_map, Uri.parse(change.document.uri).fsPath, change.document.getText())
+			fallout_ssl.reload_defines(completion_map, signature_map, Uri.parse(change.document.uri).fsPath, change.document.getText());
+			break;
 		}
 	}
 	// /reload_defines(Uri.parse(change.document.uri).fsPath, change.document.getText());
@@ -359,17 +361,15 @@ connection.onExecuteCommand((params, cancel_token) => {
 			switch (lang_id) {
 				case "fallout-ssl": {
 					fallout_ssl.sslcompile(params, cancel_token);
+					break;
 				}
+				case "weidu": {
+					weidu.wcompile(params, cancel_token);
+					break;
+				}
+				break;
 			}
 		}
 	}
-});
 
-function send_diagnostics(text_document: TextDocument, output_text: string) {
-	let lang_id = text_document.languageId;
-	switch (lang_id) {
-		case 'fallout-ssl': {
-			fallout_ssl.send_diagnostics(text_document, output_text);
-		}
-	}
-}
+});
