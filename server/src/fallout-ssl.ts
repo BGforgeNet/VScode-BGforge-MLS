@@ -156,7 +156,7 @@ function procs_from_file(code: string) {
 	return result;
 }
 
-export function parse_compile_output(text: string) {
+function parse_compile_output(text: string) {
 	let errors_pattern = /\[Error\] <(.+)>:([\d]*):([\d]*):? (.*)/g;
 	let warnings_pattern = /\[Warning\] <(.+)>:([\d]*):([\d]*):? (.*)/g;
 	let errors = [];
@@ -189,7 +189,7 @@ export function parse_compile_output(text: string) {
 	return [errors, warnings];
 }
 
-export function send_diagnostics(text_document: TextDocument, output_text: string) {
+function send_diagnostics(text_document: TextDocument, output_text: string) {
 	let errors_warnings = parse_compile_output(output_text);
 	let errors = errors_warnings[0];
 	let warnings = errors_warnings[1];
