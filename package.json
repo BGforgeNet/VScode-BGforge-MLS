@@ -6,10 +6,13 @@
 	"author": "BGforge",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/BGforgeNet/vscode-fallout-ssl"
+		"url": "https://github.com/BGforgeNet/vscode-bgforge-mls"
+	},
+	"bugs": {
+		"url": "https://github.com/BGforgeNet/vscode-bgforge-mls/issues"
 	},
 	"publisher": "BGforge",
-	"license": "GPLv3",
+	"license": "SEE LICENSE IN LICENSE.txt",
 	"keywords": [
 		"Fallout",
 		"Star-Trek Scripting Language",
@@ -161,7 +164,7 @@
 				"bgforge.fallout-ssl.compile": {
 					"type": "string",
 					"default": "wine ~/bin/compile.exe -q -p -l -O2 -d -s -n",
-					"description": "Path to Fallout SSL compile.exe plus compilation options"
+					"description": "Path to Fallout SSL compile.exe plus compilation options."
 				},
 				"bgforge.fallout-ssl.output_directory": {
 					"type": "string",
@@ -171,7 +174,7 @@
 				"bgforge.fallout-ssl.headers_directory": {
 					"type": "string",
 					"default": "NONE",
-					"description": "Absolute path to directory containing Fallout headers, searched recursively"
+					"description": "Absolute path to directory containing Fallout headers, searched recursively."
 				},
 				"bgforge.weidu.path": {
 					"type": "string",
@@ -201,8 +204,6 @@
 		"typescript": "2.8.3"
 	},
     "categories": [
-		"Programming Languages",
-		"Snippets",
-		"Keymaps"
+		"Programming Languages"
 	]
 }

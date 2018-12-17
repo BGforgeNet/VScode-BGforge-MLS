@@ -1,65 +1,39 @@
-# fallout-ssl README
+# BGforge multilanguage server
 
-This is the README for your extension "fallout-ssl". After writing up a brief description, we recommend including the following sections.
+[__Features__](#features)
+ | [__Settings__](#settings)
+ | [__Installation__](#installation)
+ | [__Forum__](https://forum.bgforge.net/viewforum.php?f=26)
+ | [__Discord__](https://discord.gg/4Yqfggm)
+
+BGforge MLS is a VScode extension adding support for Star-Trek Scripting Language used in Fallout 1 and 2 games, and several file formats (.d, .baf, .tp2) used by WeiDU, an Infinity Engine games modding utility.
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+* Syntax highlighting
+* Intellisense
+  * Completion
+  * Hovers
+  * Signature help
+  * Diagnostics
 
-For example if there is an image subfolder under your extension project workspace:
+\!\[highligting and completion example\]\(resources/screenshot.png\)
 
-\!\[feature X\]\(images/feature-x.png\)
-
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
-
-## Requirements
-
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
-
-## Extension Settings
-
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
+## Settings
 
 This extension contributes the following settings:
 
-* `myExtension.enable`: enable/disable this extension
-* `myExtension.thing`: set to `blah` to do something
+* `bgforge.fallout-ssl.compile`: Path to Fallout SSL compile.exe plus compilation options.
+* `bgforge.fallout-ssl.output_directory`:  Where to put the compiled Fallout SSL scripts. Absolute path or relative to source directory.
+* `bgforge.fallout-ssl.headers_directory`: Absolute path to directory containing Fallout headers, searched recursively.
+* `bgforge.weidu.path`: Full path to WeiDU binary
 
-## Known Issues
+## Hotkeys
+* `CTRL+R`: compile (Fallout SSL) or parse (WeiDU) file, reporting errors if any.
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+## Installation
+Search for BGforge in VScode marketplace, like any other extension.
 
 ## Release Notes
 
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
------------------------------------------------------------------------------------------------------------
-
-## Working with Markdown
-
-**Note:** You can author your README using Visual Studio Code.  Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux)
-* Toggle preview (`Shift+CMD+V` on macOS or `Shift+Ctrl+V` on Windows and Linux)
-* Press `Ctrl+Space` (Windows, Linux) or `Cmd+Space` (macOS) to see a list of Markdown snippets
-
-### For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+See [changelog](changelog.md)
