@@ -31,7 +31,7 @@ This extension contributes the following settings:
 * `CTRL+R`: compile (Fallout SSL) or parse (WeiDU) file, reporting errors if any.
 
 ### Installation
-Search for BGforge in VScode marketplace, like any other extension.
+Search for BGforge in VScode marketplace, like any other extension. Alternatively, download the packages from releases tab and install it manually.
 
 ### Release Notes
 See [changelog](CHANGELOG.md).
