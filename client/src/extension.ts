@@ -30,10 +30,11 @@ export function activate(context: ExtensionContext) {
 		var fallout_ssl_dst_dir = vscode.workspace.getConfiguration(config_space).get('fallout-ssl.output_directory', '.');
 		var text_document = vscode.window.activeTextEditor.document;
 		text_document.save(); //need this for compiler
+		var weidu_path = vscode.workspace.getConfiguration(config_space).get('weidu.path', '~/bin/weidu');
 		//var text_document = last_open_ssl;
 		let params: ExecuteCommandParams = {
 			command: cmd_name,
-			arguments: [fallout_ssl_compile_exe, text_document, fallout_ssl_dst_dir]
+			arguments: [fallout_ssl_compile_exe, text_document, fallout_ssl_dst_dir, weidu_path]
 		};
 		client.sendRequest(ExecuteCommandRequest.type, params);
 	});
@@ -80,7 +81,7 @@ export function activate(context: ExtensionContext) {
 
 	// Create the language client and start the client.
 	client = new LanguageClient(
-		'fallout-ssl',
+		'bgforge-mls',
 		'BGforge MLS',
 		serverOptions,
 		clientOptions
