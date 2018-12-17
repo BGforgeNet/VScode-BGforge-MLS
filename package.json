@@ -1,7 +1,7 @@
 {
-	"name": "fallout-ssl",
-	"displayName": "fallout-ssl",
-	"description": "Fallout Star-Trek Scripting Language",
+	"name": "bgforge-mls",
+	"displayName": "BGforge MLS",
+	"description": "BGforge multilanguage server",
 	"version": "1.0.0",
 	"author": "BGforge",
 	"repository": {
@@ -12,7 +12,10 @@
 	"license": "GPLv3",
 	"keywords": [
 		"Fallout",
-		"Star-Trek Scripting Language"
+		"Star-Trek Scripting Language",
+		"Infinity Engine",
+		"Baldur's Gate",
+		"WeiDU"
 	],
 	"engines": {
 		"vscode": "^1.26.0"
@@ -158,17 +161,22 @@
 				"bgforge.fallout-ssl.compile": {
 					"type": "string",
 					"default": "wine ~/bin/compile.exe -q -p -l -O2 -d -s -n",
-					"description": "Path to compile.exe plus compilation options"
+					"description": "Path to Fallout SSL compile.exe plus compilation options"
 				},
 				"bgforge.fallout-ssl.output_directory": {
 					"type": "string",
 					"default": ".",
-					"description": "Where to put the compiled scripts. Absolute path or relative to source directory."
+					"description": "Where to put the compiled Fallout SSL scripts. Absolute path or relative to source directory."
 				},
 				"bgforge.fallout-ssl.headers_directory": {
 					"type": "string",
 					"default": "NONE",
-					"description": "Absolute path to directory containing headers, searched recursively"
+					"description": "Absolute path to directory containing Fallout headers, searched recursively"
+				},
+				"bgforge.weidu.path": {
+					"type": "string",
+					"default": "~/bin/weidu",
+					"description": "Full path to WeiDU binary"
 				}
 			}
 		},
@@ -193,6 +201,8 @@
 		"typescript": "2.8.3"
 	},
     "categories": [
-		"Programming Languages"
+		"Programming Languages",
+		"Snippets",
+		"Keymaps"
 	]
 }
