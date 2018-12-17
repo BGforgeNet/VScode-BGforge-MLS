@@ -35,5 +35,4 @@ This extension contributes the following settings:
 Search for BGforge in VScode marketplace, like any other extension.
 
 ## Release Notes
-
-See [changelog](changelog.md)
+See [changelog](CHANGELOG.md)
