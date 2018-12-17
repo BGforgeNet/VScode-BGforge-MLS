@@ -367,7 +367,6 @@ connection.onExecuteCommand((params, cancel_token) => {
 					weidu.wcompile(params, cancel_token);
 					break;
 				}
-				break;
 			}
 		}
 	}
