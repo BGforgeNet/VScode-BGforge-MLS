@@ -27,7 +27,7 @@ This extension contributes the following settings:
 * `bgforge.weidu.path`: Full path to WeiDU binary
 
 ### Hotkeys
-* `CTRL+R`: compile (Fallout SSL) or parse (WeiDU) file, reporting errors if any.
+* `CTRL+R`: compile (Fallout SSL) or parse (WeiDU .tp2) file, reporting errors if any.
 
 ### Installation
 Search for BGforge in VScode marketplace, like any other extension. Alternatively, download the packages from releases tab and install it manually.
