@@ -12,11 +12,10 @@ BGforge MLS is a VScode extension adding support for Star-Trek Scripting Languag
 ### Features
 
 * Syntax highlighting
-* Intellisense
-  * Completion
-  * Hovers
-  * Signature help
-  * Diagnostics
+* Completion
+* Hovers
+* Signature help
+* Diagnostics
 
 ### Settings
 
