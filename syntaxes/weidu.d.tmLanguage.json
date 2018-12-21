@@ -354,7 +354,21 @@
         {
           "name": "string.quoted.tilde.weidu",
           "begin": "~",
-          "end": "~"
+          "end": "~",
+          "patterns": [
+            {
+              "include": "#vars"
+            }
+          ]
+        }
+      ]
+    },
+    "vars": {
+      "name": "variable.parameter.weidu-d",
+      "patterns": [
+        {
+          "match": "(%[^%]+%)",
+          "name": "variable.parameter.weidu-d"
         }
       ]
     }

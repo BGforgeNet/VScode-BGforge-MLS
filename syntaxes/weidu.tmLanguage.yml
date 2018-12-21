@@ -3,6 +3,7 @@ name: Infinity Engine Weidu
 scopeName: source.tp2.weidu
 
 patterns:
+- include: '#comments'
 - include: '#inlined-d'
 - include: '#inlined-baf'
 - include: '#function-invocation'
@@ -10,7 +11,6 @@ patterns:
 - include: '#function-declaration'
 - include: '#weidu-vars'
 - include: '#strings'
-- include: '#comments'
 - include: '#weidu-tp2-file'
 - include: '#weidu-tp2-flag'
 - include: '#weidu-tp2-language'
@@ -26,9 +26,9 @@ patterns:
 - include: '#weidu-tp2-values'
 - include: '#weidu-keywords'
 - include: '#weidu-tp2-action-flow'
-- include: '#weidu-tp2-value-operators'
 - include: '#numbers'
 - include: '#infinity-constants'
+- include: '#weidu-tp2-value-operators'
 
 repository:
   comments:
@@ -243,6 +243,7 @@ repository:
     - match: \b(REPLACE_TEXTUALLY)\b
     - match: \b(EVALUATE_BUFFER_SPECIAL)\b
     - match: \b(EVALUATE_BUFFER)\b
+    - match: \b(EVAL)\b
     - match: \b(APPLY_BCS_PATCH)\b
     - match: \b(APPLY_BCS_PATCH_OR_COPY)\b
     - match: \b(WRITE_BYTE)\b
@@ -251,7 +252,9 @@ repository:
     - match: \b(WRITE_ASCII)\b
     - match: \b(WRITE_ASCII_LIST)\b
     - match: \b(WRITE_ASCII_TERMINATE)\b
+    - match: \b(WRITE_ASCIIT)\b
     - match: \b(WRITE_EVALUATED_ASCII)\b
+    - match: \b(WRITE_ASCIIE)\b
     - match: \b(WRITE_FILE)\b
     - match: \b(INSERT_FILE)\b
     - match: \b(APPEND_FILE)\b
@@ -371,7 +374,7 @@ repository:
   weidu-tp2-value-operators:
     name: keyword.control.value.weidu
     patterns:
-    - match: (\+|-|\*|\/|=|\*|!|>|<|\?|:)
+    - match: (\=\>|\+|-|\*|\/|=|\*|!|>|<|\?|:)
     - match: \b(MODULO|NOT|OR|AND|BAND|BOR|BXOR|BNOT|BLSL|BASR)\b
 
   weidu-tp2-values:
@@ -533,7 +536,7 @@ repository:
 
   numbers:
     patterns:
-    - match: \b(([0-9]+)|(0x[0-9a-fA-F]+)|(0b[0-1]+))\b
+    - match: \s((#?[0-9]+)|(0x[0-9a-fA-F]+)|(0b[0-1]+))\b
       name: "constant.numeric.weidu"
 
   macro-invocation:
@@ -574,7 +577,7 @@ repository:
   function-declaration:
     name: meta.function.declaration.weidu
     begin: \b(DEFINE_ACTION_FUNCTION|DEFINE_PATCH_FUNCTION)\s+(~)?(\w+)(~)?
-    end: \b(END)\b
+    end: \b(BEGIN)\b
     beginCaptures:
       '1':
         name: keyword.control.weidu
@@ -591,7 +594,6 @@ repository:
     - match: \b(STR_VAR|INT_VAR|RET|RET_VAL)\b
       name: keyword.control.weidu
     - include: '#vars-declaration'
-    - include: $self
 
 
   vars-declaration:

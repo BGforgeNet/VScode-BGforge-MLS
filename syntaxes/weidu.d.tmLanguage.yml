@@ -148,3 +148,10 @@ repository:
     - name: string.quoted.tilde.weidu
       begin: '~'
       end: '~'
+      patterns:
+      - include: '#vars'
+
+  vars:
+    name: variable.parameter.weidu-d
+    patterns:
+    - match: '(%[^%]+%)'

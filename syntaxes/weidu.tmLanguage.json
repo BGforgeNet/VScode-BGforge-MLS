@@ -4,6 +4,9 @@
   "scopeName": "source.tp2.weidu",
   "patterns": [
     {
+      "include": "#comments"
+    },
+    {
       "include": "#inlined-d"
     },
     {
@@ -23,9 +26,6 @@
     },
     {
       "include": "#strings"
-    },
-    {
-      "include": "#comments"
     },
     {
       "include": "#weidu-tp2-file"
@@ -73,13 +73,13 @@
       "include": "#weidu-tp2-action-flow"
     },
     {
-      "include": "#weidu-tp2-value-operators"
-    },
-    {
       "include": "#numbers"
     },
     {
       "include": "#infinity-constants"
+    },
+    {
+      "include": "#weidu-tp2-value-operators"
     }
   ],
   "repository": {
@@ -790,6 +790,10 @@
           "name": "support.function.tp2.weidu"
         },
         {
+          "match": "\\b(EVAL)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
           "match": "\\b(APPLY_BCS_PATCH)\\b",
           "name": "support.function.tp2.weidu"
         },
@@ -822,7 +826,15 @@
           "name": "support.function.tp2.weidu"
         },
         {
+          "match": "\\b(WRITE_ASCIIT)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
           "match": "\\b(WRITE_EVALUATED_ASCII)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(WRITE_ASCIIE)\\b",
           "name": "support.function.tp2.weidu"
         },
         {
@@ -1269,7 +1281,7 @@
       "name": "keyword.control.value.weidu",
       "patterns": [
         {
-          "match": "(\\+|-|\\*|\\/|=|\\*|!|>|<|\\?|:)",
+          "match": "(\\=\\>|\\+|-|\\*|\\/|=|\\*|!|>|<|\\?|:)",
           "name": "keyword.control.value.weidu"
         },
         {
@@ -1798,7 +1810,7 @@
     "numbers": {
       "patterns": [
         {
-          "match": "\\b(([0-9]+)|(0x[0-9a-fA-F]+)|(0b[0-1]+))\\b",
+          "match": "\\s((#?[0-9]+)|(0x[0-9a-fA-F]+)|(0b[0-1]+))\\b",
           "name": "constant.numeric.weidu"
         }
       ]
@@ -1863,7 +1875,7 @@
     "function-declaration": {
       "name": "meta.function.declaration.weidu",
       "begin": "\\b(DEFINE_ACTION_FUNCTION|DEFINE_PATCH_FUNCTION)\\s+(~)?(\\w+)(~)?",
-      "end": "\\b(END)\\b",
+      "end": "\\b(BEGIN)\\b",
       "beginCaptures": {
         "1": {
           "name": "keyword.control.weidu"
@@ -1890,10 +1902,6 @@
         },
         {
           "include": "#vars-declaration",
-          "name": "meta.function.declaration.weidu"
-        },
-        {
-          "include": "$self",
           "name": "meta.function.declaration.weidu"
         }
       ]

@@ -11,6 +11,9 @@
     },
     {
       "include": "#action"
+    },
+    {
+      "include": "#vars"
     }
   ],
   "repository": {
@@ -86,6 +89,10 @@
         {
           "include": "#triggers",
           "name": "meta.condition-body.baf.weidu"
+        },
+        {
+          "include": "#vars",
+          "name": "meta.condition-body.baf.weidu"
         }
       ]
     },
@@ -138,6 +145,9 @@
         },
         {
           "include": "#actions"
+        },
+        {
+          "include": "#vars"
         }
       ]
     },
@@ -186,7 +196,21 @@
         {
           "name": "string.quoted.double.baf.weidu",
           "begin": "\"",
-          "end": "\""
+          "end": "\"",
+          "patterns": [
+            {
+              "include": "#vars"
+            }
+          ]
+        }
+      ]
+    },
+    "vars": {
+      "name": "variable.parameter.weidu-baf",
+      "patterns": [
+        {
+          "match": "(%[^%]+%)",
+          "name": "variable.parameter.weidu-baf"
         }
       ]
     },

@@ -6,6 +6,7 @@ patterns:
   - include: "#comments"
   - include: "#condition"
   - include: "#action"
+  - include: "#vars"
 
 repository:
   comments:
@@ -44,6 +45,7 @@ repository:
       - include: "#numbers"
       - include: "#operators"
       - include: '#triggers'
+      - include: '#vars'
 
   action:
     name: meta.action.baf.weidu
@@ -70,6 +72,7 @@ repository:
       - include: '#response'
       - include: "#operators"
       - include: '#actions'
+      - include: '#vars'
 
   response:
     name: keyword.control.baf.weidu
@@ -99,6 +102,13 @@ repository:
     - name: string.quoted.double.baf.weidu
       begin: '"'
       end: '"'
+      patterns:
+      - include: '#vars'
+
+  vars:
+    name: variable.parameter.weidu-baf
+    patterns:
+    - match: '(%[^%]+%)'
 
   identifiers:
     name: variable.language.baf.weidu
