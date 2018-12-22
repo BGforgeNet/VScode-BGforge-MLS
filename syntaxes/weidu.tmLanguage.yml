@@ -435,7 +435,7 @@ repository:
   weidu-keywords:
     name: keyword.control.weidu
     patterns:
-    - match: \b(BEGIN|END|THEN)\b
+    - match: \b(BEGIN|END|THEN|IN)\b
     - match: \b(AFTER|BEFORE|LAST|FIRST|AT)\b
 
   strings:
@@ -536,7 +536,9 @@ repository:
 
   numbers:
     patterns:
-    - match: \s((#?[0-9]+)|(0x[0-9a-fA-F]+)|(0b[0-1]+))\b
+    - match: \b(([0-9]+)|(0x[0-9a-fA-F]+)|(0b[0-1]+))\b
+      name: "constant.numeric.weidu"
+    - match: \s(#?[0-9]+)\b
       name: "constant.numeric.weidu"
 
   macro-invocation:
