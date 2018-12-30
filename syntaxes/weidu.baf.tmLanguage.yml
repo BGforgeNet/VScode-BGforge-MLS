@@ -111,7 +111,7 @@ repository:
     - match: '(%[^%]+%)'
 
   identifiers:
-    name: variable.language.baf.weidu
+    name: constant.other.baf.weidu
     patterns:
       - include: '#object-ids'
       - include: '#spell-ids'
@@ -119,7 +119,7 @@ repository:
 
 
   triggers:
-    name: entity.name.function.baf.weidu
+    name: entity.name.function.trigger.baf.weidu
     patterns:
       - match: \b(?i)(Acquired)\b
       - match: \b(?i)(ActionListEmpty)\b
@@ -816,7 +816,7 @@ repository:
       - match: \b(?i)(ZoomLock)\b
 
   object-ids:
-    name: variable.language.baf.weidu
+    name: constant.other.baf.weidu
     patterns:
       - match: \b(?i)(Nothing)\b
       - match: \b(?i)(Myself)\b
@@ -937,7 +937,7 @@ repository:
       - match: \b(?i)(TenthFarthestEnemyOf)\b
 
   spell-ids:
-    name: variable.language.baf.weidu
+    name: constant.other.baf.weidu
     patterns:
       - match: \b(?i)(CLERIC_BLESS)\b
       - match: \b(?i)(CLERIC_COMMAND)\b
