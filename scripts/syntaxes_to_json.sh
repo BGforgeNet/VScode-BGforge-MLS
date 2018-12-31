@@ -2,7 +2,7 @@
 
 set -xeu -o pipefail
 
-tools_dir="tools"
+tools_dir="scripts"
 yaml2json="$tools_dir/yaml2json.py"
 syntaxes_dir="syntaxes"
 
