@@ -333,7 +333,7 @@ connection.onSignatureHelp((textDocumentPosition: TextDocumentPositionParams): S
 	let word = common.get_signature_word(str, pos);
 	let lang_id = documents.get(textDocumentPosition.textDocument.uri).languageId;
 	let signature_list = signature_map.get(lang_id);
-	if (word) {
+	if (signature_list && word) {
 		var present = signature_list.filter(function (el: any) {
 			return (el.label == word);
 		});
