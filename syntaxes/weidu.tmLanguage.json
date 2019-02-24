@@ -1922,7 +1922,7 @@
       "name": "variable.complex.weidu",
       "patterns": [
         {
-          "match": "\\b([\\w]+)\\s*(=)\\s*([\\S]+)",
+          "match": "\\b([\\w]+)\\s*(=)\\s*(EVAL\\s+)?([\\S]+)",
           "captures": {
             "1": {
               "name": "variable.parameter.weidu"
@@ -1931,6 +1931,9 @@
               "name": "keyword.control.weidu"
             },
             "3": {
+              "name": "support.function.tp2.weidu"
+            },
+            "4": {
               "patterns": [
                 {
                   "include": "#strings"
