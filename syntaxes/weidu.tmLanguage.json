@@ -1823,6 +1823,10 @@
       "name": "meta.function.invocation.weidu",
       "patterns": [
         {
+          "include": "#comments",
+          "name": "meta.function.invocation.weidu"
+        },
+        {
           "match": "\\b(LAM|LAUNCH_ACTION_MACRO|LPM|LAUNCH_PATCH_MACRO)\\s+(~)(\\w+)(~)",
           "captures": {
             "1": {
@@ -1866,6 +1870,10 @@
         }
       },
       "patterns": [
+        {
+          "include": "#comments",
+          "name": "meta.function.invocation.weidu"
+        },
         {
           "match": "\\b(STR_VAR|INT_VAR|RET|RET_VAL)\\b",
           "name": "keyword.control.weidu"

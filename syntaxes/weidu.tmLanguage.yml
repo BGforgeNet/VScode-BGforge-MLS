@@ -544,6 +544,7 @@ repository:
   macro-invocation:
     name: meta.function.invocation.weidu
     patterns:
+    - include: '#comments'
     - match: \b(LAM|LAUNCH_ACTION_MACRO|LPM|LAUNCH_PATCH_MACRO)\s+(~)(\w+)(~)
       captures:
         '1':
@@ -572,6 +573,7 @@ repository:
       '1':
         name: keyword.control.weidu
     patterns:
+    - include: '#comments'
     - match: \b(STR_VAR|INT_VAR|RET|RET_VAL)\b
       name: keyword.control.weidu
     - include: '#vars-declaration'
