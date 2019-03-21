@@ -2,10 +2,14 @@
 
 [__Features__](#features)
  | [__Settings__](#settings)
+ | [__Hotkeys__](#hotkeys)
  | [__Installation__](#installation)
- | [__Forum__](https://forum.bgforge.net/viewforum.php?f=35)
+ | __Screenshots:__ [Infinity Engine](#infinity-engine-highlighting-and-completion), [Fallout](#fallout-highlighting-and-hovers)
+
+[__Forum__](https://forum.bgforge.net/viewforum.php?f=35)
  | [__Discord__](https://discord.gg/4Yqfggm)
- | [__Screenshots:__](#screenshots) [Infinity Engine](#infinity-engine-highlighting-and-completion), [Fallout](#fallout-highlighting-and-hovers)
+ | [__Roadmap__](#roadmap)
+ | [__Changelog__](#release-notes)
 
 BGforge MLS is a VScode extension adding support for Star-Trek Scripting Language used in Fallout 1 and 2 games, and several file formats (.d, .baf, .tp2) used by WeiDU, an Infinity Engine games modding utility.
 
@@ -31,6 +35,9 @@ This extension contributes the following settings:
 
 ### Installation
 Search for BGforge in VScode marketplace, like any other extension. Alternatively, download the packages from releases tab and install it manually.
+
+### Roadmap
+See the [forum](https://forum.bgforge.net/viewtopic.php?f=35&t=174&p=506).
 
 ### Release Notes
 See [changelog](CHANGELOG.md).
