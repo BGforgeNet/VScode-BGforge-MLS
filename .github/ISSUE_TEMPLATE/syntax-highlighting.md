@@ -7,7 +7,7 @@ assignees: burner1024
 
 ---
 
-Check https://forum.bgforge.net/viewtopic.php?f=35&t=139 to see how and where to make syntax hightlighting suggestions.
+Check https://forums.bgforge.net/viewtopic.php?f=35&t=139 to see how and where to make syntax hightlighting suggestions.
 
 If you still want to proceed:
 1. Make a screenshot. No need for the whole screen, just the relevant part and minimal context.
