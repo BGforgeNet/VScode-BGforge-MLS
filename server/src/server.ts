@@ -221,10 +221,11 @@ function load_completion() {
 				let element: any;
 				let dtl: string;
 				for (element of completion_yaml[item]['items']) {
-					if (!element['detail']) {
-						dtl = element['name'];
-					} else {
-						dtl = element['detail']
+					if (!element['detail']) { // copy name to detail if it's empty
+						element['detail'] = element['name'];
+					}
+					if (!element['doc']) { // allow empty doc, too
+						element['doc'] = '';
 					}
 					completion_list.push({ label: element['name'], kind: kind, documentation: element['doc'], detail: dtl, source: "builtin" });
 				}
