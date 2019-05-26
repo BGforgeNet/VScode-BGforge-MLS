@@ -714,8 +714,67 @@ repository:
     - match: \b(TARGET_IMMUNE)\b
     - match: \b(TIRED)\b
     - match: \b(UNHAPPY_ANNOYED)\b
-    - match: \b(UNHAPPY_BREAKING_POINT)\b
+    - match: \b(UNHAPPY_BREAKING)\b
     - match: \b(UNHAPPY_SERIOUS)\b
+    - match: \b(STORE_NAME)\b
+    
+    - match: \b(SCRIPT_OVERRIDE)\b
+    - match: \b(SCRIPT_CLASS)\b
+    - match: \b(SCRIPT_RACE)\b
+    - match: \b(SCRIPT_GENERAL)\b
+    - match: \b(SCRIPT_DEFAULT)\b
+    - match: \b(DEATHVAR)\b
+    - match: \b(DIALOG)\b
+    - match: \b(AREA_SCRIPT)\b
+    
+    - match: \b(BIT0)\b
+    - match: \b(BIT1)\b
+    - match: \b(BIT2)\b
+    - match: \b(BIT3)\b
+    - match: \b(BIT4)\b
+    - match: \b(BIT5)\b
+    - match: \b(BIT6)\b
+    - match: \b(BIT7)\b
+    - match: \b(BIT8)\b
+    - match: \b(BIT9)\b
+    - match: \b(BIT10)\b
+    - match: \b(BIT11)\b
+    - match: \b(BIT12)\b
+    - match: \b(BIT13)\b
+    - match: \b(BIT14)\b
+    - match: \b(BIT15)\b
+    - match: \b(BIT16)\b
+    - match: \b(BIT17)\b
+    - match: \b(BIT18)\b
+    - match: \b(BIT19)\b
+    - match: \b(BIT20)\b
+    - match: \b(BIT21)\b
+    - match: \b(BIT22)\b
+    - match: \b(BIT23)\b
+    - match: \b(BIT24)\b
+    - match: \b(BIT25)\b
+    - match: \b(BIT26)\b
+    - match: \b(BIT27)\b
+    - match: \b(BIT28)\b
+    - match: \b(BIT29)\b
+    - match: \b(BIT30)\b
+    - match: \b(BIT31)\b
+    
+    - match: \b(WNL)\b
+    - match: \b(MNL)\b
+    - match: \b(LNL)\b
+    - match: \b(TAB)\b
+    
+    - match: \b(REGISTRY_BG1_PATH)\b
+    - match: \b(REGISTRY_BG2_PATH)\b
+    - match: \b(REGISTRY_PST_PATH)\b
+    - match: \b(REGISTRY_IWD1_PATH)\b
+    - match: \b(REGISTRY_IWD2_PATH)\b
+    
+    - match: \b(USER_DIRECTORY)\b
+    - match: \b(SAVE_DIRECTORY)\b
+    - match: \b(MPSAVE_DIRECTORY)\b
+    - match: \b(EE_LANGUAGE)\b
 
   inlined-d:
     name: meta.weidu.inlined.d
