@@ -1397,6 +1397,26 @@ tp2-patch:
       doc: "Measure the time taken to execute the patches and report it under the label\
         \ String together with the other time measurements at the end of the mod'\
         s debug file."
+    - name: ADD_ITEM_EQEFFECT
+      doc: Adds an equipping effect to an item. All variables except probability1 are 0 by default. This is a PATCH macro and function.\
+      - SET opcode to opcode
+      - SET target to target type
+      - SET timing to timing type
+      - SET parameter1 to first parameter
+      - SET parameter2 to second parameter
+      - SET power to power
+      - SET resist_dispel to magic resistance/dispel type
+      - SET duration to duration
+      - SET probability1 to probability 1 (default 100)
+      - SET probability2 to probability 2
+      - SPRINT resource to resource (8 chars max)
+      - SET dicenumber to number of dices to be thrown
+      - SET dicesize to size of dices to be thrown
+      - SET savingthrow to type of savingthrow to be allowed against the effect
+      - SET savebonus to saving throw bonus
+      - SET special to the special parameter (only valid for functions; not macros)
+      - SET header to number of extended header (starting from 1) the effect should be added to (by default the effect is added to every header).
+      - SET insert_point to the position of the effect. If this variable is 0 the effect will be inserted as the first effect of the extended header. If this variable is negative or greater than the number of effects, the effect will be inserted as the last effect. The effect is added as the first effect by default.
 
 tp2-when:
   type: 14 # keyword
