@@ -2327,11 +2327,227 @@
           "name": "constant.language.infinity.weidu"
         },
         {
-          "match": "\\b(UNHAPPY_BREAKING_POINT)\\b",
+          "match": "\\b(UNHAPPY_BREAKING)\\b",
           "name": "constant.language.infinity.weidu"
         },
         {
           "match": "\\b(UNHAPPY_SERIOUS)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(STORE_NAME)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(SCRIPT_OVERRIDE)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(SCRIPT_CLASS)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(SCRIPT_RACE)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(SCRIPT_GENERAL)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(SCRIPT_DEFAULT)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(DEATHVAR)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(DIALOG)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(AREA_SCRIPT)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(BIT0)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(BIT1)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(BIT2)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(BIT3)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(BIT4)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(BIT5)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(BIT6)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(BIT7)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(BIT8)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(BIT9)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(BIT10)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(BIT11)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(BIT12)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(BIT13)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(BIT14)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(BIT15)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(BIT16)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(BIT17)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(BIT18)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(BIT19)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(BIT20)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(BIT21)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(BIT22)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(BIT23)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(BIT24)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(BIT25)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(BIT26)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(BIT27)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(BIT28)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(BIT29)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(BIT30)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(BIT31)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(WNL)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(MNL)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(LNL)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(TAB)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(REGISTRY_BG1_PATH)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(REGISTRY_BG2_PATH)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(REGISTRY_PST_PATH)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(REGISTRY_IWD1_PATH)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(REGISTRY_IWD2_PATH)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(USER_DIRECTORY)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(SAVE_DIRECTORY)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(MPSAVE_DIRECTORY)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(EE_LANGUAGE)\\b",
           "name": "constant.language.infinity.weidu"
         }
       ]

@@ -17,3 +17,9 @@
 ## 1.0.4
 - Fixed comment color in weidu function invocation.
 - Fixed EVAL color in weidu function invocation.
+
+## 1.0.5
+- More IE constants supported.
+
+## 1.0.6
+- Fixed detail missing from weidu completion

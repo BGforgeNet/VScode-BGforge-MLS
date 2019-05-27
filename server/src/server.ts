@@ -219,14 +219,12 @@ function load_completion() {
 			for (item in completion_yaml) {
 				let kind = parseInt(completion_yaml[item]['type']);
 				let element: any;
-				let dtl: string;
+				let detail: string;
+				let doc: string;
 				for (element of completion_yaml[item]['items']) {
-					if (!element['detail']) {
-						dtl = element['name'];
-					} else {
-						dtl = element['detail']
-					}
-					completion_list.push({ label: element['name'], kind: kind, documentation: element['doc'], detail: dtl, source: "builtin" });
+					detail = element['detail'] || element['name']; // copy name to detail if it's empty
+					doc = element['doc'] || ''; // allow empty doc, too
+					completion_list.push({ label: element['name'], kind: kind, documentation: doc, detail: detail, source: "builtin" });
 				}
 			}
 			completion_map.set(lang_id, completion_list);
