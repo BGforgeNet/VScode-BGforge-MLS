@@ -20,3 +20,6 @@
 
 ## 1.0.5
 - More IE constants supported.
+
+## 1.0.6
+- Fixed detail missing from weidu completion
