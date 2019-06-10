@@ -342,6 +342,7 @@ repository:
     - match: \b(ADD_ITEM_EFFECT)\b
     - match: \b(ALTER_ITEM_EFFECT)\b
     - match: \b(ALTER_ITEM_HEADER)\b
+    - match: \b(DELETE_ITEM_HEADER)\b
     - match: \b(DELETE_ITEM_EFFECT)\b
     - match: \b(DELETE_ITEM_EQEFFECT)\b
     - match: \b(ADD_SPELL_CFEFFECT)\b
@@ -349,6 +350,7 @@ repository:
     - match: \b(ALTER_SPELL_EFFECT)\b
     - match: \b(ALTER_SPELL_HEADER)\b
     - match: \b(DELETE_SPELL_EFFECT)\b
+    - match: \b(DELETE_SPELL_HEADER)\b
     - match: \b(DELETE_EFFECT)\b
     - match: \b(ALTER_EFFECT)\b
     - match: \b(CLONE_EFFECT)\b
