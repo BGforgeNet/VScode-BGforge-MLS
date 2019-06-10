@@ -1417,6 +1417,337 @@ tp2-patch:
       - SET special to the special parameter (only valid for functions; not macros)
       - SET header to number of extended header (starting from 1) the effect should be added to (by default the effect is added to every header).
       - SET insert_point to the position of the effect. If this variable is 0 the effect will be inserted as the first effect of the extended header. If this variable is negative or greater than the number of effects, the effect will be inserted as the last effect. The effect is added as the first effect by default.
+    - name: ADD_ITEM_EFFECT
+      doc: Adds an extended effect to an item. All variables except probability1, type and insert_point are 0 by default. This is a PATCH macro and function.\
+      - SET opcode to opcode
+      - SET target to target type
+      - SET timing to timing type
+      - SET parameter1 to first parameter
+      - SET parameter2 to second parameter
+      - SET power to power
+      - SET resist_dispel to magic resistance/dispel type
+      - SET duration to duration
+      - SET probability1 to probability 1 (default 100)
+      - SET probability2 to probability 2
+      - SPRINT resource to resource (8 chars max)
+      - SET dicenumber to number of dices to be thrown
+      - SET dicesize to size of dices to be thrown
+      - SET savingthrow to type of savingthrow to be allowed against the effect
+      - SET savebonus to saving throw bonus
+      - SET special to the special parameter (only valid for functions; not macros)
+      - SET header to number of extended header (starting from 1) the effect should be added to (by default the effect is added to every header).
+      - SET type to the type of header to which the effect should be added or 99 for all types. Defaults to 3 (magic).
+      - SET insert_point to the position of the effect. If this variable is 0 the effect will be inserted as the first effect of the extended header. If this variable is negative or greater than the number of effects, the effect will be inserted as the last effect. The effect is added as the last effect by default.
+    - name: ADD_SPELL_EFFECT
+      doc: Adds an extended effect to a spell. All variables except probability1 and insert_point are 0 by default. This is a PATCH macro and function.\
+      - SET opcode to opcode
+      - SET target to target type
+      - SET timing to timing type
+      - SET parameter1 to first parameter
+      - SET parameter2 to second parameter
+      - SET power to power
+      - SET resist_dispel to magic resistance/dispel type
+      - SET duration to duration
+      - SET probability1 to probability 1 (default 100)
+      - SET probability2 to probability 2
+      - SPRINT resource to resource (8 chars max)
+      - SET dicenumber to number of dices to be thrown
+      - SET dicesize to size of dices to be thrown
+      - SET savingthrow to type of savingthrow to be allowed against the effect
+      - SET savebonus to saving throw bonus
+      - SET special to the special parameter (only valid for functions; not macros)
+      - SET header to number of extended header (starting from 1) the effect should be added to (by default the effect is added to every header).
+      - SET insert_point to the position of the effect. If this variable is 0 the effect will be inserted as the first effect of the extended header. If this variable is negative or greater than the number of effects, the effect will be inserted as the last effect. The effect is added as the last effect by default.
+    - name: ADD_SPELL_CFEFFECT
+      doc: Adds a casting-feature effect to a spell. All variables except probability1 are 0 by default. This is a PATCH macro and function.\
+      - SET opcode to opcode
+      - SET target to target type
+      - SET timing to timing type
+      - SET parameter1 to first parameter
+      - SET parameter2 to second parameter
+      - SET power to power
+      - SET resist_dispel to magic resistance/dispel type
+      - SET duration to duration
+      - SET probability1 to probability 1 (default 100)
+      - SET probability2 to probability 2
+      - SPRINT resource to resource (8 chars max)
+      - SET dicenumber to number of dices to be thrown
+      - SET dicesize to size of dices to be thrown
+      - SET savingthrow to type of savingthrow to be allowed against the effect
+      - SET savebonus to saving throw bonus
+      - SET special to the special parameter (only valid for functions; not macros)
+      - SET header to number of extended header (starting from 1) the effect should be added to (by default the effect is added to every header).
+      - SET insert_point to the position of the effect. If this variable is 0 the effect will be inserted as the first effect of the extended header. If this variable is negative or greater than the number of effects, the effect will be inserted as the last effect. The effect is added as the first effect by default.
+    - name: ALTER_SPELL_HEADER
+      doc: Patch ability headers on spells. This is a PATCH function.All integer variables except 'match_icon' and 'header' default to -1 and negative values result in no change to the corresponding field. The integer variables match_icon and header default to 0. The string variable icon defaults to the string "same", which results in no change to the corresponding field.\
+      'header_type' is used to limit the scope of matching. The default value of -1 will match all types of headers while values of 0-4 will match headers with those values. If 'match_icon' is 1, the 'icon' resource reference will be match with the icon variable as an additional qualifier. This is useful for items which have multiple magic abilities. 'header' can also be used to limit patching to the Nth header, counting from 1 as the first header. The default is 0, which will match all headers.\
+      - INT_VAR header_type to the type of header to be matched. If this variable is -1, all headers will be a match. (default -1)
+      - INT_VAR match_icon to whether to match the ability icon (0 for no, 1 for yes). (default 0)
+      - INT_VAR header to the number of the ability header (starting from 1) that should be altered. A value of 0 matches all header. (default 0)
+      - INT_VAR new_header_type to the value the matched header should be changed into.
+      - INT_VAR location to the new new ability location.
+      - INT_VAR target to the new target.
+      - INT_VAR range to the new range.
+      - INT_VAR min_level to the new required minimum level.
+      - INT_VAR speed to the new speed factor.
+      - INT_VAR thac0_bonus to the new THAC0 bonus.
+      - INT_VAR dicesize to the new dice size.
+      - INT_VAR dicenumber to the new number of dice.
+      - INT_VAR damage_bonus to the new damage bonus.
+      - INT_VAR damage_type to the new damage type.
+      - INT_VAR charges to the new number of charges.
+      - INT_VAR projectile to the new projectile.
+      - STR_VAR icon to the resource reference to be used for matching if match_icon is 1, or the new ability icon if match_icon is 0.
+    - name: ALTER_SPELL_EFFECT
+      doc: Patch effects on spells. This is a PATCH function. All integer variables except 'check_globals', 'check_headers', 'header' and 'savebonus' default to -1 and negative values result in no change to the corresponding field. The integer variables 'check_globals' and 'header' default to 0. The integer variable 'check_headers' defaults to 1. The integer variable 'savebonus' defaults to -11 and values lower than -10 result in no change to the corresponding field. The string variable 'resource' defaults to the string "same", which results in no change to the corresponding field.\
+      The function will by default only check effects on headers. You can change this by changing the values of the variables 'check_globals' and 'check_headers'. If you patch headers, you can further target by using 'type' to target melee, ranged, or magical headers. 'match_opcode' can be left at -1 to match all effects on your targeted range or targeted to a specific opcode. If the opcode itself needs to be changed, you can use 'match_opcode' to target the existing effect and 'new_opcode' as the new opcode to use. 'duration_high' is an alternative to 'duration', mainly for changing the overall duration of an item’s effects. The idea is to allow you to mass patch effects to new durations while leaving the one-time only cosmetics and visuals--which are usual instant or only run for a few seconds--unchanged.\
+      - INT_VAR check_globals to whether to check global effects (0 for no, 1 for yes). (default 0)
+      - INT_VAR check_headers to whether to check effects on extended headers (0 for no, 1 for yes). (default 1)
+      - INT_VAR header to the number of the ability header that should be altered. A value of 0 matches all headers. (default 0)
+      - INT_VAR header_type to which type of header that should be checked. If this variable is -1, all header types will be checked.
+      - INT_VAR match_opcode to which type of opcode to match. If this variable is -1, all opcodes are a match.
+      - INT_VAR new_opcode to the value the matched opcode should be changed into.
+      - INT_VAR target to the new target.
+      - INT_VAR power to the new power.
+      - INT_VAR parameter1 to the new parameter1.
+      - INT_VAR parameter2 to the new parameter2.
+      - INT_VAR timing to the new timing mode.
+      - INT_VAR resist_dispel to the new resist/dispel.
+      - INT_VAR duration to the new duration.
+      - INT_VAR duration_high to the new duration, but is only written if the existing duration is greater than 5.
+      - INT_VAR probability1 to the new probability1 (the upper bound).
+      - INT_VAR probability2 to the new probability2 (the lower bound).
+      - INT_VAR dicenumber to the new number of dice. This field is instead used for maximum hit-dice (HD) by some opcodes.
+      - INT_VAR dicesize to the new size of dice. This field is also instead for minimum hit-dice (HD) by some opcodes.
+      - INT_VAR savingthrow to the new saving-throw type.
+      - INT_VAR savebonus to the new saving-throw bonus/penalty. This variable can take negative values down to -10 while still writing to the corresponding field. (default -11)
+      - INT_VAR special to the new special parameter.
+      - STR_VAR resource to the new resource reference.
+    - name: ALTER_ITEM_EFFECT
+      doc: Patch global (equipping) effects and/or effects on extended headers. This is a PATCH function. All integer variables except 'check_globals', 'check_headers', 'header' and 'savebonus' default to -1 and negative values result in no change to the corresponding field. The integer variables 'check_globals', 'check_headers' and 'header' default to 0. The integer variable 'savebonus' defaults to -11 and values lower than -10 result in no change to the corresponding field. The string variable 'resource' defaults to the string "same", which results in no change to the corresponding field.\
+      Note that both 'check_globals' and 'check_headers' are 0 by default, so you need to change one or both of these to 1 to perform any patching at all. If you patch headers, you can further target by using 'type' to target melee, ranged, or magical headers. 'match_opcode' can be left at -1 to match all effects on your targeted range or targeted to a specific opcode. If the opcode itself needs to be changed, you can use 'match_opcode' to target the existing effect and 'new_opcode' as the new opcode to use. 'duration_high' is an alternative to 'duration', mainly for changing the overall duration of an item’s effects. The idea is to allow you to mass patch effects to new durations while leaving the one-time only cosmetics and visuals--which are usual instant or only run for a few seconds--unchanged.\
+      - INT_VAR check_globals to whether to check global (on-equip) effects (0 for no, 1 for yes). (default 0)
+      - INT_VAR check_headers to whether to check effects on extended headers (0 for no, 1 for yes). (default 0)
+      - INT_VAR header to the number of the ability header that should be altered. A value of 0 matches all headers. (default 0)
+      - INT_VAR header_type to which type of header that should be checked. If this variable is -1, all header types will be checked.
+      - INT_VAR match_opcode to which type of opcode to match. If this variable is -1, all opcodes are a match.
+      - INT_VAR new_opcode to the value the matched opcode should be changed into.
+      - INT_VAR target to the new target.
+      - INT_VAR power to the new power.
+      - INT_VAR parameter1 to the new parameter1.
+      - INT_VAR parameter2 to the new parameter2.
+      - INT_VAR timing to the new timing mode.
+      - INT_VAR resist_dispel to the new resist/dispel.
+      - INT_VAR duration to the new duration.
+      - INT_VAR duration_high to the new duration, but is only written if the existing duration is greater than 5.
+      - INT_VAR probability1 to the new probability1 (the upper bound).
+      - INT_VAR probability2 to the new probability2 (the lower bound).
+      - INT_VAR dicenumber to the new number of dice. This field is instead used for maximum hit-dice (HD) by some opcodes.
+      - INT_VAR dicesize to the new size of dice. This field is also instead for minimum hit-dice (HD) by some opcodes.
+      - INT_VAR savingthrow to the new saving-throw type.
+      - INT_VAR savebonus to the new saving-throw bonus/penalty. This variable can take negative values down to -10 while still writing to the corresponding field. (default -11)
+      - INT_VAR special to the new special parameter.
+      - STR_VAR resource to the new resource reference.
+    - name: ALTER_EFFECT
+      doc: This is a patch function for creature, item, or spell files that will match an existing effect and alter it based on the defined variables. Numerous variables are available for matching the specified effect and for specifying new values.\
+      The first batch of variables are meta-variables which will help determine the scope of the function\":\"\
+      - INT_VAR check_globals to whether the function should loop through global effects on items (also known as equipping effects) and spells (default is 1). Creature effects are all global effects, so this variable will always be considered to be one when this function is run on a creature.
+      - INT_VAR check_headers to whether the function should loop through effects on extended headers on items and spells (default is 1). Creatures have no extended headers, so this variable is ignored when used on creatures.
+      - INT_VAR header to whether the function should target effects on one specific header, counting the first header as zero. A negative value will match all headers (default is -1). Creatures have no extended headers, so this variable is ignored when used on creatures.
+      - INT_VAR header_type to whether the function should only alter effects on extended headers of the specified type (1 - melee, 2 - ranged, etc.). Negative values will look at effects on all headers (default is -1). Creatures have no extended headers, so this variable is ignored when used on creatures.
+      - INT_VAR multi_match to the number of effects to alter in the active stack. If you just want to match the first effect and have the function stop, use 1. Otherwise the function will continue matching until the number of altered effects matches this value. The function will always make at least one change (e.g. 0 or negative values are treated as 1). (default is 999).
+      - INT_VAR verbose to whether the function should provide some rudimentary information on how many effects were added (default is 0).
+      - INT_VAR silent to whether the function should suppress warnings when no effects were altered. This option also suppresses the verbose option (default is 0).\
+      The next batch of variables sets the function boundaries on matching an effect to alter. Any variables not specified will not be used to determine a match. The function will only determine an effect is a match only if ALL of the variables specified are matched.\
+      - INT_VAR match_opcode to the opcode of effects to be matched (default is -1).
+      - INT_VAR match_target to the target of effects to be matched (default is -1).
+      - INT_VAR match_power to the power of effects to be matched (default is -1).
+      - INT_VAR match_parameter1 to parameter1 of effects to be matched (default is -1).
+      - INT_VAR match_parameter2 to parameter2 of effects to be matched (default is -1).
+      - INT_VAR match_timing to the timing of effects to be matched (default is -1).
+      - INT_VAR match_resist_dispel to the resist/dispel setting of effects to be matched (default is -1).
+      - INT_VAR match_duration to the duration of effects to be matched (default is -1).
+      - INT_VAR match_probability1 to probability1 (the upper bound) of effects to be matched (default is -1).
+      - INT_VAR match_probability2 to probability2 (the lower bound) of effects to be matched (default is -1).
+      - INT_VAR match_dicenumber to the number of dice of effects to be matched (default is -1). This field is instead used for maximum hit-dice (HD) by some opcodes.
+      - INT_VAR match_dicesize to the size of dice of effects to be matched (default is -1). This field is used instead for minimum hit-dice (HD) by some opcodes.
+      - INT_VAR match_savingthrow to the saving throw type of effects to be matched (default is -1).
+      - INT_VAR match_savebonus to the saving trow bonus effects to be matched (default is -11). Since saving throws can range into negative values, this variable can match all the way down to -10.
+      - INT_VAR match_special to the special field of effects to be matched (default is -1). The special field is used by some EE effects.
+      - STR_VAR match_resource to the resource of effects to be matched (default is "SAME").\
+      Once a matching effect is found, the next series of variables allows the function to change the fields to these new values in the matched effect. Any variables not set in this batch will keep their existing values.\
+      - INT_VAR opcode to the value the of the altered effect’s opcode.
+      - INT_VAR target to the altered effect’s target.
+      - INT_VAR power to the altered effect’s power.
+      - INT_VAR parameter1 to the altered effect’s parameter1.
+      - INT_VAR parameter2 to the altered effect’s parameter2.
+      - INT_VAR timing to the altered effect’s timing mode.
+      - INT_VAR resist_dispel to the altered effect’s resist/dispel setting.
+      - INT_VAR duration to the altered effect’s duration.
+      - INT_VAR probability1 to the altered effect’s probability1 (the upper bound).
+      - INT_VAR probability2 to the altered effect’s probability2 (the lower bound).
+      - INT_VAR dicenumber to the altered effect’s number of dice. This field is instead used for maximum hit-dice (HD) by some opcodes.
+      - INT_VAR dicesize to the altered effect’s size of dice. This field is also instead for minimum hit-dice (HD) by some opcodes.
+      - INT_VAR savingthrow to the altered effect’s saving-throw type.
+      - INT_VAR savebonus to the altered effect’s saving-throw bonus/penalty. This variable can take negative values down to -10 while still writing to the corresponding field.
+      - INT_VAR special to the new effect’s special field. The special field is used by many EE effects.
+      - STR_VAR resource to the altered effect’s resource reference.\
+    - name: CLONE_EFFECT
+      doc: This is a patch function for creature, item, or spell files that will match an existing effect and create a new one based on the matched effect. Numerous variables are available for matching the specified effect and for specifying new values in the new effect based on the matched effect.\
+      The first batch of variables are meta-variables which will help determine the scope of the function\":\"\
+      - INT_VAR check_globals to whether the function should loop through global effects on items (also known as equipping effects) and spells (default is 1). Creature effects are all global effects, so this variable will always be considered to be one when this function is run on a creature.
+      - INT_VAR check_headers to whether the function should loop through effects on extended headers on items and spells if set to 1 (default is 1). Creatures have no extended headers, so this variable is ignored when used on creatures.
+      - INT_VAR header to whether the function should target effects on one specific header, counting the first header as zero. A negative value will match all headers (default is -1). Creatures have no extended headers, so this variable is ignored when used on creatures.
+      - INT_VAR header_type to whether the function should only clone effects on extended headers of the specified type (1 - melee, 2 - ranged, etc.). Negative values will look at effects on all headers (default is -1). Creatures have no extended headers, so this variable is ignored when used on creatures.
+      - INT_VAR multi_match to the number of effects to clone in the active stack. If you just want to match the first effect and have the function stop, use 1. Otherwise the function will continue matching until the number of cloned effects matches this value. The function will always make at least one change (e.g. 0 or negative values are treated as 1). (default is 999).
+      - INT_VAR verbose to whether the function should provide some rudimentary information on how many effects were added (default is 0).
+      - INT_VAR silent to whether the function should suppress warnings when no effects were added. This option also suppresses the verbose option (default is 0).
+      - STR_VAR insert to the relative position the cloned effect should be inserted at. A value of ’below’ puts the new, cloned effect immediately below the matched effect. Values of ’first’ or last’ will put the new effect at the top or bottom of the effect stack, respectively. All other values will default to ’above’, where the effect is added immediately before the matched effect (default is ’above’).\
+      The next batch of variables sets the function boundaries on matching an effect to clone. Any variables not specified will not be used to determine a match. The function will only determine an effect is a match only if ALL of the variables specified are matched.\
+      - INT_VAR match_opcode to the opcode of effects to be matched (default -1).
+      - INT_VAR match_target to the target of effects to be matched (default -1).
+      - INT_VAR match_power to the power of effects to be matched (default -1).
+      - INT_VAR match_parameter1 to parameter1 of effects to be matched (default -1).
+      - INT_VAR match_parameter2 to parameter2 of effects to be matched (default -1).
+      - INT_VAR match_timing to the timing of effects to be matched (default -1).
+      - INT_VAR match_resist_dispel to the resist/dispel setting of effects to be matched (default -1).
+      - INT_VAR match_duration to the duration of effects to be matched (default -1).
+      - INT_VAR match_probability1 to probability1 (the upper bound) of effects to be matched (default -1).
+      - INT_VAR match_probability2 to probability2 (the lower bound) of effects to be matched (default -1).
+      - INT_VAR match_dicenumber to the number of dice of effects to be matched (default -1). This field is instead used for maximum hit-dice (HD) by some opcodes.
+      - INT_VAR match_dicesize to the size of dice of effects to be matched (default -1). This field is used instead for minimum hit-dice (HD) by some opcodes.
+      - INT_VAR match_savingthrow to the saving throw type of effects to be matched (default -1).
+      - INT_VAR match_savebonus to the saving throw bonus of effects to be matched (default -11). Since saving throws can range into negative values, this variable can match all the way down to -10.
+      - INT_VAR match_special to the special field of effects to be matched (default -1). The special field is used by some EE effects.
+      - STR_VAR match_resource to the resource of effects to be matched (default "SAME").\
+      Once a matching effect is found, a new effect is created (STR_VAR insert determines its placement) with all of the same specifications as the matched effect. The next series of variables allows the function to change the fields to new values in the newly-created effect. Any variables not set in this batch will simply inherit their values from the matched effect.\
+      - INT_VAR opcode to the value the of the new effect’s opcode.
+      - INT_VAR target to the new effect’s target.
+      - INT_VAR power to the new effect’s power.
+      - INT_VAR parameter1 to the new effect’s parameter1.
+      - INT_VAR parameter2 to the new effect’s parameter2.
+      - INT_VAR timing to the new effect’s timing mode.
+      - INT_VAR resist_dispel to the new effect’s resist/dispel setting.
+      - INT_VAR duration to the new effect’s duration.
+      - INT_VAR probability1 to the new effect’s probability1 (the upper bound).
+      - INT_VAR probability2 to the new effect’s probability2 (the lower bound).
+      - INT_VAR dicenumber to the new effect’s number of dice. This field is instead used for maximum hit-dice (HD) by some opcodes.
+      - INT_VAR dicesize to the new effect’s size of dice. This field is also instead for minimum hit-dice (HD) by some opcodes.
+      - INT_VAR savingthrow to the new effect’s saving-throw type.
+      - INT_VAR savebonus to the new effect’s saving-throw bonus/penalty. This variable can take negative values down to -10 while still writing to the corresponding field.
+      - INT_VAR special to the new effect’s special field. The special field is used by many EE effects.
+      - STR_VAR resource to the new effect’s resource reference.
+    - name: DELETE_EFFECT
+      doc: This is a patch function for creature, item, or spell files that will match an existing effect and then delete it. Numerous variables are available for matching the specified effect.\
+      The first batch of variables are meta-variables which will help determine the scope of the function\":\"\
+      - INT_VAR check_globals to whether the function should loop through global effects on items (also known as equipping effects) and spells (default is 1). Creature effects are all global effects, so this variable will always be considered to be one when this function is run on a creature.
+      - INT_VAR check_headers to whether the function should loop through effects on extended headers on items and spells (default is 1). Creatures have no extended headers, so this variable is ignored when used on creatures.
+      - INT_VAR header to whether the function should target effects on one specific header, counting the first header as zero. A negative value will match all headers (default is -1). Creatures have no extended headers, so this variable is ignored when used on creatures.
+      - INT_VAR header_type to whether the function should only delete effects on extended headers of the specified type (1 - melee, 2 - ranged, etc.). Negative values will look at effects on all headers (default is -1). Creatures have no extended headers, so this variable is ignored when used on creatures.
+      - INT_VAR multi_match to the number of effects to delete in the active stack. If you just want to match the first effect and have the function stop, use 1. Otherwise the function will continue matching until the number of deleted effects matches this value. The function will always make at least one change (e.g. 0 or negative values are treated as 1). (default is 999).
+      - INT_VAR verbose to whether the function should provide some rudimentary information on how many effects were deleted (default is 0).
+      The next batch of variables sets the function boundaries on matching an effect to delete. Any variables not specified will not be used to determine a match. The function will only determine an effect is a match only if ALL of the variables specified are matched.\
+      - INT_VAR match_opcode to the opcode of effects to be matched (default -1).
+      - INT_VAR match_target to the target of effects to be matched (default -1).
+      - INT_VAR match_power to the power of effects to be matched (default -1).
+      - INT_VAR match_parameter1 to parameter1 of effects to be matched (default -1).
+      - INT_VAR match_parameter2 to parameter2 of effects to be matched (default -1).
+      - INT_VAR match_timing to the timing of effects to be matched (default -1).
+      - INT_VAR match_resist_dispel to the resist/dispel setting of effects to be matched (default -1).
+      - INT_VAR match_duration to the duration of effects to be matched (default -1).
+      - INT_VAR match_probability1 to probability1 (the upper bound) of effects to be matched (default -1).
+      - INT_VAR match_probability2 to probability2 (the lower bound) of effects to be matched (default -1).
+      - INT_VAR match_dicenumber to the number of dice of effects to be matched (default -1). This field is instead used for maximum hit-dice (HD) by some opcodes.
+      - INT_VAR match_dicesize to the size of dice of effects to be matched (default -1). This field is used instead for minimum hit-dice (HD) by some opcodes.
+      - INT_VAR match_savingthrow to the saving throw type of effects to be matched (default -1).
+      - INT_VAR match_savebonus to the saving throw bonus effects to be matched (default -11). Since saving throws can range into negative values, this variable can match all the way down to -10.
+      - INT_VAR match_special to the special field of effects to be matched (default -1). The special field is used by some EE effects.
+      - STR_VAR match_resource to the resource of effects to be matched (default "SAME").
+      Once a matching effect is found it is deleted. The function will continue to delete effects from the stack until the number of effects deleted matches the 'multi_match' variable.
+    - name: DELETE_ITEM_EQEFFECT
+      doc: Deletes all equipping effects with specified opcode from an item. This is a PATCH macro and function.\
+      - SET 'opcode_to_delete' to the opcode of the effect you want to delete. Opcode of (-1) will match all effects.
+    - name: DELETE_ITEM_EFFECT
+      doc: Deletes all extended effects with specified opcode from an item. This is a PATCH macro and function.\
+      - SET 'opcode_to_delete' to the opcode of the effect you want to delete. Opcode of (-1) will match all effects.
+    - name: DELETE_SPELL_EFFECT
+      doc: Deletes all extended effects with specified opcode from a spell. This is a PATCH macro and function.\
+      - SET 'opcode_to_delete' to the opcode of the effect you want to delete. Opcode of (-1) will match all effects.
+    - name: DELETE_CRE_EFFECT
+      doc: Deletes all effects with specified opcode from a creature. (Warning: doesn’t check EFF version) This is a PATCH macro and function.\
+      - SET 'opcode_to_delete' to the opcode of the effect you want to delete. Opcode of (-1) will match all effects.
+    - name: ADD_CRE_EFFECT
+      doc: Adds an effect to a creature. All variables except 'probability1' are 0 by default. This is a PATCH macro and function.\
+      - SET opcode to opcode
+      - SET timing to timing type
+      - SET target to target type
+      - SET parameter1 to first parameter
+      - SET parameter2 to second parameter
+      - SET parameter3 to third parameter
+      - SET parameter4 to forth parameter
+      - SET power to power
+      - SET resist_dispel to magic resistance/dispel type
+      - SET duration to duration
+      - SET probability1 to probability 1 (default 100)
+      - SET probability2 to probability 2
+      - SPRINT resource to resource (8 chars max)
+      - SPRINT resource2 to second resource (8 chars max)
+      - SPRINT vvcresource to VVC resource (8 chars max)
+      - SPRINT effsource to effect source
+      - SPRINT effvar to effect variable
+      - SET dicenumber to number of dices to be thrown
+      - SET dicesize to size of dices to be thrown
+      - SET savingthrow to type of savingthrow to be allowed against the effect
+      - SET savebonus to saving throw bonus
+      - SET school to magical school
+      - SET special to the special parameter (only valid for functions; not macros)
+      - SET lowestafflvl to lowest affected level
+      - SET highestafflvl to highest affected level
+      - SET casterx to caster X position
+      - SET castery to caster Y position
+      - SET targetx to target X position
+      - SET targety to target Y position
+      - SET restype to source resource type
+      - SET sourceslot to source resource slot
+      - SET casterlvl to caster level
+      - SET sectype to secondary type
+      - SET insert_point to the index at which the new effect is to be inserted. 0 is first and negative values or values equal to or exceeding the existing number of effects are last.
+    - name: DELETE_CRE_ITEM
+      doc: Deletes all matching items from a creature. Regexp allowed. This is a PATCH macro and function.\
+      - SPRINT item_to_delete to the item you want to delete.
+    - name: DELETE_STORE_ITEM
+      doc: Deletes all matching items from a store. Regexp allowed. This is a PATCH macro and function.\
+      - SPRINT item_to_delete to the item you want to delete.
+    - name: DELETE_AREA_ITEM
+      doc: Deletes all matching items from an area. Regexp allowed. This is a PATCH macro and function.\
+      - SPRINT item_to_delete to the item you want to delete.
+    - name: RES_NUM_OF_SPELL_NAME
+      doc: Converts a spell.ids reference to resource name. This is an ACTION and PATCH macro and function.\
+      - SPRINT spell_name to the IDS symbolic reference of a spell.
+      - RET spell_num to the IDS numerical reference of that spell.
+      - RET spell_res to the resource name for the referenced spell.
+    - name: RES_NAME_OF_SPELL_NUM
+      doc: Converts a spell.ids reference to resource name. This is an ACTION and PATCH macro and function.\
+      - SET spell_num to the IDS numerical reference of that spell.
+      - RET spell_name to the IDS symbolic reference of a spell.
+      - RET spell_res to the resource name for the referenced spell.
+    - name: NAME_NUM_OF_SPELL_RES
+      doc: Converts a spell resource name to a spell.ids reference. This is an ACTION and PATCH macro and function.\
+      - SPRINT spell_res to the resource name for the referenced spell.
+      - RET spell_num to the IDS numerical reference of that spell.
+      - RET spell_name to the IDS symbolic reference of a spell.
+    - name: GET_UNIQUE_FILE_NAME
+      doc: Creates a file name that is currently unallocated. This is a PATCH and ACTION function. This function will create a filename using __ as a prefix. __ is reserved by The Bigg and writeable by anybody, as long as you dynamically create the file name (either by using this function or other code of your devising). The algorithm creates file names in base 36, going from __0000.ext to __zzzz.ext; this allows for 36 ^ 4 = 1679616 unique file names.\
+      To allow users to reinstall your mod without breaking the identity of these files, you can use the ’base’ parameter to ensure that the same thing will be mapped to the same file on reinstalls. For instance, if you’re iterating through Mages to give each of them a spellbook, base should contain your modder prefix, an identifier for the purpose of the call, and the file name you’re working on, for instance: ~tb#spellbooks_%SOURCE_RES%~\
+      - STR_VAR extension to the desired extension (required).
+      - STR_VAR base to a string unique to your mod and current file (optional).
+      - RET filename the currently unallocated file name (sans the extension).
+    - name: ITEM_EFFECT_TO_SPELL
+      doc: Copies all extended effects from the current item to the first extended header of a spell. This is a PATCH macro and function.\
+      - SET type to the header type to copy the effect from (use 99 to specify ’all types’).
+      - SET header to number of extended header the effect should be copied from (use 99 to specify ’every header’).
+      - SET insert_point to the index into the spell file at which the effects should be inserted. A value of 0 will have the effects inserted as the first effects of the spell. Effects are inserted as the last effects by default.
+      - SPRINT new_itm_spl to a spell you want to copy effects to.
 
 tp2-when:
   type: 14 # keyword
