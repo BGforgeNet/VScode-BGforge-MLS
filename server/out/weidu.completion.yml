@@ -1748,6 +1748,15 @@ tp2-patch:
       - SET header to number of extended header the effect should be copied from (use 99 to specify ’every header’).
       - SET insert_point to the index into the spell file at which the effects should be inserted. A value of 0 will have the effects inserted as the first effects of the spell. Effects are inserted as the last effects by default.
       - SPRINT new_itm_spl to a spell you want to copy effects to.
+    - name: DELETE_ITEM_HEADER
+      doc: Delete ability headers, also known as extended headers, from items. This is a PATCH function. All integer variables default to 0.\
+      This function will delete one or more ability headers, along with all of their associated effects, and properly re-index the file.\
+      - INT_VAR header_type to the header type to delete. If this variable is -1, all header types will be a match. (default 0)
+    - name: DELETE_SPELL_HEADER
+      doc: Delete ability headers, also known as extended headers, from spells. This is a PATCH function. The integer variable header_type defaults to 0. The integer variable 'min_level' defaults to -1 and if this variable is 0 or greater, only headers with a matching minimum level will be deleted.\
+      This function will delete one or more ability headers, along with all of their associated effects, and properly re-index the file.\
+      - INT_VAR header_type to the header type to delete. If this variable is -1, all header types will be a match. (default 0)
+      - INT_VAR min_level to the minimum level to be matched. If this variable is negative, it will not be used for matching. (default -1)
 
 tp2-when:
   type: 14 # keyword
