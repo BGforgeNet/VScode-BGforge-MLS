@@ -383,6 +383,7 @@ repository:
       - match: \b(?i)(XP)\b
       - match: \b(?i)(XPGT)\b
       - match: \b(?i)(XPLT)\b
+      - match: \b(?i)(TriggerOverride)\b
 
   actions:
     name: support.function.baf.weidu
