@@ -33,7 +33,7 @@ This extension contributes the following settings:
 * `CTRL+R`: compile (Fallout SSL) or parse (WeiDU .tp2) file, reporting errors if any.
 
 ### Installation
-Search for BGforge in VScode marketplace, like any other extension. Alternatively, download the packages from releases tab and install it manually.
+Search for BGforge in VScode marketplace, like any other extension. Alternatively, download the package from releases tab and install it manually.
 
 ### Screenshots
 ##### Infinity Engine highlighting and completion
