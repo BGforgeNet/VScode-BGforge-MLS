@@ -361,6 +361,7 @@ repository:
     - match: \b(RES_NAME_OF_SPELL_NUM)\b
     - match: \b(NAME_NUM_OF_SPELL_RES)\b
     - match: \b(GET_UNIQUE_FILE_NAME)\b
+    - match: \b(ALTER_AREA_DOOR)\b
 
   weidu-tp2-patch-controls:
     name: keyword.control.patch.weidu
