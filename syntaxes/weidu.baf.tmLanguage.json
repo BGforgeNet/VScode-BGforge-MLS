@@ -1227,6 +1227,10 @@
           "name": "entity.name.function.trigger.baf.weidu"
         },
         {
+          "match": "\\b(?i)(TriggerOverride)\\b",
+          "name": "entity.name.function.trigger.baf.weidu"
+        },
+        {
           "match": "\\b(?i)(True)\\b",
           "name": "entity.name.function.trigger.baf.weidu"
         },
