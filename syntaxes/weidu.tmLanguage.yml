@@ -362,6 +362,18 @@ repository:
     - match: \b(NAME_NUM_OF_SPELL_RES)\b
     - match: \b(GET_UNIQUE_FILE_NAME)\b
     - match: \b(ALTER_AREA_DOOR)\b
+    - match: \b(REPLACE_STORE_ITEM)\b
+    - match: \b(REPLACE_AREA_ITEM)\b
+    - match: \b(ADD_AREA_ITEM)\b
+    - match: \b(ADD_AREA_REGION_TRIGGER)\b
+    - match: \b(ALTER_AREA_ACTOR)\b
+    - match: \b(ALTER_AREA_CONTAINER)\b
+    - match: \b(ADD_CRE_ITEM_FLAGS)\b
+    - match: \b(REMOVE_CRE_ITEM_FLAGS)\b
+    - match: \b(SET_CRE_ITEM_FLAGS)\b
+    - match: \b(ALTER_AREA_ENTRANCE)\b
+    - match: \b(WRITE_SOUNDSET)\b
+    - match: \b(READ_SOUNDSET)\b
 
   weidu-tp2-patch-controls:
     name: keyword.control.patch.weidu
