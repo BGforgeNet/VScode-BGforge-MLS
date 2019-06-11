@@ -370,6 +370,7 @@ repository:
       - match: \b(?i)(TookDamage)\b
       - match: \b(?i)(TrapTriggered)\b
       - match: \b(?i)(Trigger)\b
+      - match: \b(?i)(TriggerOverride)\b
       - match: \b(?i)(True)\b
       - match: \b(?i)(TurnedBy)\b
       - match: \b(?i)(Unlocked)\b
