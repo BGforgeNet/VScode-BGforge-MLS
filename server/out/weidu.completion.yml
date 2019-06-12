@@ -1674,7 +1674,7 @@ tp2-patch:
       doc: "Deletes all extended effects with specified opcode from a spell. This is a PATCH macro and function.\
       - SET 'opcode_to_delete' to the opcode of the effect you want to delete. Opcode of (-1) will match all effects."
     - name: DELETE_CRE_EFFECT
-      doc: "Deletes all effects with specified opcode from a creature. (Warning\":\" doesn’t check EFF version) This is a PATCH macro and function.\
+      doc: "Deletes all effects with specified opcode from a creature. (Warning\":\" doesn't check EFF version) This is a PATCH macro and function.\
       - SET 'opcode_to_delete' to the opcode of the effect you want to delete. Opcode of (-1) will match all effects."
     - name: ADD_CRE_EFFECT
       doc: "Adds an effect to a creature. All variables except 'probability1' are 0 by default. This is a PATCH macro and function.\

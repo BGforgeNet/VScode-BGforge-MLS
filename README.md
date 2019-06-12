@@ -18,7 +18,7 @@ BGforge MLS is a VScode extension adding support for Star-Trek Scripting Languag
 * Signature help
 * Diagnostics
 
-More [coming](#https://forums.bgforge.net/viewtopic.php?f=35&t=174&p=506).
+More [coming](https://forums.bgforge.net/viewtopic.php?f=35&t=174&p=506).
 
 ### Settings
 
@@ -33,7 +33,7 @@ This extension contributes the following settings:
 * `CTRL+R`: compile (Fallout SSL) or parse (WeiDU .tp2) file, reporting errors if any.
 
 ### Installation
-Search for BGforge in VScode marketplace, like any other extension. Alternatively, download the packages from releases tab and install it manually.
+Search for BGforge in VScode marketplace, like any other extension. Alternatively, download the package from releases tab and install it manually.
 
 ### Screenshots
 ##### Infinity Engine highlighting and completion

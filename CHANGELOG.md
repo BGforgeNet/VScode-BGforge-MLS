@@ -23,3 +23,7 @@
 
 ## 1.0.6
 - Fixed detail missing from weidu completion
+
+## 1.0.7
+- Added WeiDU patch and macro functions
+- Fixed minor typos
