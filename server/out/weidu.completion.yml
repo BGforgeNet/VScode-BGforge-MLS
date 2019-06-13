@@ -1500,7 +1500,7 @@ tp2-patch:
       - STR_VAR 'icon' to the resource reference to be used for matching if 'match_icon' is 1, or the new ability icon if 'match_icon' is 0."
     - name: ALTER_SPELL_EFFECT
       doc: "Patch effects on spells. This is a PATCH function. All integer variables except 'check_globals', 'check_headers', 'header' and 'savebonus' default to -1 and negative values result in no change to the corresponding field. The integer variables 'check_globals' and 'header' default to 0. The integer variable 'check_headers' defaults to 1. The integer variable 'savebonus' defaults to -11 and values lower than -10 result in no change to the corresponding field. The string variable 'resource' defaults to the string \"same\", which results in no change to the corresponding field.\n
-      The function will by default only check effects on headers. You can change this by changing the values of the variables 'check_globals' and 'check_headers'. If you patch headers, you can further target by using 'type' to target melee, ranged, or magical headers. 'match_opcode' can be left at -1 to match all effects on your targeted range or targeted to a specific opcode. If the opcode itself needs to be changed, you can use 'match_opcode' to target the existing effect and 'new_opcode' as the new opcode to use. 'duration_high' is an alternative to 'duration', mainly for changing the overall duration of an item’s effects. The idea is to allow you to mass patch effects to new durations while leaving the one-time only cosmetics and visuals--which are usual instant or only run for a few seconds--unchanged.\n
+      The function will by default only check effects on headers. You can change this by changing the values of the variables 'check_globals' and 'check_headers'. If you patch headers, you can further target by using 'type' to target melee, ranged, or magical headers. 'match_opcode' can be left at -1 to match all effects on your targeted range or targeted to a specific opcode. If the opcode itself needs to be changed, you can use 'match_opcode' to target the existing effect and 'new_opcode' as the new opcode to use. 'duration_high' is an alternative to 'duration', mainly for changing the overall duration of an item's effects. The idea is to allow you to mass patch effects to new durations while leaving the one-time only cosmetics and visuals--which are usual instant or only run for a few seconds--unchanged.\n
       - INT_VAR 'check_globals' to whether to check global effects (0 for no, 1 for yes). (default 0)\n
       - INT_VAR 'check_headers' to whether to check effects on extended headers (0 for no, 1 for yes). (default 1)\n
       - INT_VAR 'header' to the number of the ability header that should be altered. A value of 0 matches all headers. (default 0)\n
@@ -1525,7 +1525,7 @@ tp2-patch:
       - STR_VAR 'resource' to the new resource reference."
     - name: ALTER_ITEM_EFFECT
       doc: "Patch global (equipping) effects and/or effects on extended headers. This is a PATCH function. All integer variables except 'check_globals', 'check_headers', 'header' and 'savebonus' default to -1 and negative values result in no change to the corresponding field. The integer variables 'check_globals', 'check_headers' and 'header' default to 0. The integer variable 'savebonus' defaults to -11 and values lower than -10 result in no change to the corresponding field. The string variable 'resource' defaults to the string \"same\", which results in no change to the corresponding field.\n
-      Note that both 'check_globals' and 'check_headers' are 0 by default, so you need to change one or both of these to 1 to perform any patching at all. If you patch headers, you can further target by using 'type' to target melee, ranged, or magical headers. 'match_opcode' can be left at -1 to match all effects on your targeted range or targeted to a specific opcode. If the opcode itself needs to be changed, you can use 'match_opcode' to target the existing effect and 'new_opcode' as the new opcode to use. 'duration_high' is an alternative to 'duration', mainly for changing the overall duration of an item’s effects. The idea is to allow you to mass patch effects to new durations while leaving the one-time only cosmetics and visuals--which are usual instant or only run for a few seconds--unchanged.\n
+      Note that both 'check_globals' and 'check_headers' are 0 by default, so you need to change one or both of these to 1 to perform any patching at all. If you patch headers, you can further target by using 'type' to target melee, ranged, or magical headers. 'match_opcode' can be left at -1 to match all effects on your targeted range or targeted to a specific opcode. If the opcode itself needs to be changed, you can use 'match_opcode' to target the existing effect and 'new_opcode' as the new opcode to use. 'duration_high' is an alternative to 'duration', mainly for changing the overall duration of an item's effects. The idea is to allow you to mass patch effects to new durations while leaving the one-time only cosmetics and visuals--which are usual instant or only run for a few seconds--unchanged.\n
       - INT_VAR 'check_globals' to whether to check global (on-equip) effects (0 for no, 1 for yes). (default 0)\n
       - INT_VAR 'check_headers' to whether to check effects on extended headers (0 for no, 1 for yes). (default 0)\n
       - INT_VAR 'header' to the number of the ability header that should be altered. A value of 0 matches all headers. (default 0)\n
@@ -1576,22 +1576,22 @@ tp2-patch:
       - INT_VAR 'match_special' to the special field of effects to be matched (default is -1). The special field is used by some EE effects.\n
       - STR_VAR 'match_resource' to the resource of effects to be matched (default is \"SAME\").\n
       Once a matching effect is found, the next series of variables allows the function to change the fields to these new values in the matched effect. Any variables not set in this batch will keep their existing values.\n
-      - INT_VAR 'opcode' to the value the of the altered effect’s opcode.\n
-      - INT_VAR 'target' to the altered effect’s target.\n
-      - INT_VAR 'power' to the altered effect’s power.\n
-      - INT_VAR 'parameter1' to the altered effect’s parameter1.\n
-      - INT_VAR 'parameter2' to the altered effect’s parameter2.\n
-      - INT_VAR 'timing' to the altered effect’s timing mode.\n
-      - INT_VAR 'resist_dispel' to the altered effect’s resist/dispel setting.\n
-      - INT_VAR 'duration' to the altered effect’s duration.\n
-      - INT_VAR 'probability1' to the altered effect’s probability1 (the upper bound).\n
-      - INT_VAR 'probability2' to the altered effect’s probability2 (the lower bound).\n
-      - INT_VAR 'dicenumber' to the altered effect’s number of dice. This field is instead used for maximum hit-dice (HD) by some opcodes.\n
-      - INT_VAR 'dicesize' to the altered effect’s size of dice. This field is also instead used for minimum hit-dice (HD) by some opcodes.\n
-      - INT_VAR 'savingthrow' to the altered effect’s saving-throw type.\n
-      - INT_VAR 'savebonus' to the altered effect’s saving-throw bonus/penalty. This variable can take negative values down to -10 while still writing to the corresponding field.\n
-      - INT_VAR 'special' to the new effect’s special field. The special field is used by many EE effects.\n
-      - STR_VAR 'resource' to the altered effect’s resource reference."
+      - INT_VAR 'opcode' to the value the of the altered effect's opcode.\n
+      - INT_VAR 'target' to the altered effect's target.\n
+      - INT_VAR 'power' to the altered effect's power.\n
+      - INT_VAR 'parameter1' to the altered effect's parameter1.\n
+      - INT_VAR 'parameter2' to the altered effect's parameter2.\n
+      - INT_VAR 'timing' to the altered effect's timing mode.\n
+      - INT_VAR 'resist_dispel' to the altered effect's resist/dispel setting.\n
+      - INT_VAR 'duration' to the altered effect's duration.\n
+      - INT_VAR 'probability1' to the altered effect's probability1 (the upper bound).\n
+      - INT_VAR 'probability2' to the altered effect's probability2 (the lower bound).\n
+      - INT_VAR 'dicenumber' to the altered effect's number of dice. This field is instead used for maximum hit-dice (HD) by some opcodes.\n
+      - INT_VAR 'dicesize' to the altered effect's size of dice. This field is also instead used for minimum hit-dice (HD) by some opcodes.\n
+      - INT_VAR 'savingthrow' to the altered effect's saving-throw type.\n
+      - INT_VAR 'savebonus' to the altered effect's saving-throw bonus/penalty. This variable can take negative values down to -10 while still writing to the corresponding field.\n
+      - INT_VAR 'special' to the new effect's special field. The special field is used by many EE effects.\n
+      - STR_VAR 'resource' to the altered effect's resource reference."
     - name: CLONE_EFFECT
       doc: "This is a patch function for creature, item, or spell files that will match an existing effect and create a new one based on the matched effect. Numerous variables are available for matching the specified effect and for specifying new values in the new effect based on the matched effect.\n
       The first batch of variables are meta-variables which will help determine the scope of the function\":\"\n
@@ -1602,7 +1602,7 @@ tp2-patch:
       - INT_VAR 'multi_match' to the number of effects to clone in the active stack. If you just want to match the first effect and have the function stop, use 1. Otherwise the function will continue matching until the number of cloned effects matches this value. The function will always make at least one change (e.g. 0 or negative values are treated as 1). (default is 999).\n
       - INT_VAR 'verbose' to whether the function should provide some rudimentary information on how many effects were added (default is 0).\n
       - INT_VAR 'silent' to whether the function should suppress warnings when no effects were added. This option also suppresses the verbose option (default is 0).\n
-      - STR_VAR 'insert' to the relative position the cloned effect should be inserted at. A value of ’below’ puts the new, cloned effect immediately below the matched effect. Values of ’first’ or last’ will put the new effect at the top or bottom of the effect stack, respectively. All other values will default to ’above’, where the effect is added immediately before the matched effect (default is ’above’).\n
+      - STR_VAR 'insert' to the relative position the cloned effect should be inserted at. A value of 'below' puts the new, cloned effect immediately below the matched effect. Values of 'first' or last' will put the new effect at the top or bottom of the effect stack, respectively. All other values will default to 'above', where the effect is added immediately before the matched effect (default is 'above').\n
       The next batch of variables sets the function boundaries on matching an effect to clone. Any variables not specified will not be used to determine a match. The function will only determine an effect is a match only if ALL of the variables specified are matched.\n
       - INT_VAR 'match_opcode' to the opcode of effects to be matched (default -1).\n
       - INT_VAR 'match_target' to the target of effects to be matched (default -1).\n
@@ -1621,22 +1621,22 @@ tp2-patch:
       - INT_VAR 'match_special' to the special field of effects to be matched (default -1). The special field is used by some EE effects.\n
       - STR_VAR 'match_resource' to the resource of effects to be matched (default \"SAME\").\n
       Once a matching effect is found, a new effect is created (STR_VAR 'insert' determines its placement) with all of the same specifications as the matched effect. The next series of variables allows the function to change the fields to new values in the newly-created effect. Any variables not set in this batch will simply inherit their values from the matched effect.\n
-      - INT_VAR 'opcode' to the value the of the new effect’s opcode.\n
-      - INT_VAR 'target' to the new effect’s target.\n
-      - INT_VAR 'power' to the new effect’s power.\n
-      - INT_VAR 'parameter1' to the new effect’s parameter1.\n
-      - INT_VAR 'parameter2' to the new effect’s parameter2.\n
-      - INT_VAR 'timing' to the new effect’s timing mode.\n
-      - INT_VAR 'resist_dispel' to the new effect’s resist/dispel setting.\n
-      - INT_VAR 'duration' to the new effect’s duration.\n
-      - INT_VAR 'probability1' to the new effect’s probability1 (the upper bound).\n
-      - INT_VAR 'probability2' to the new effect’s probability2 (the lower bound).\n
-      - INT_VAR 'dicenumber' to the new effect’s number of dice. This field is instead used for maximum hit-dice (HD) by some opcodes.\n
-      - INT_VAR 'dicesize' to the new effect’s size of dice. This field is also instead for minimum hit-dice (HD) by some opcodes.\n
-      - INT_VAR 'savingthrow' to the new effect’s saving-throw type.\n
-      - INT_VAR 'savebonus' to the new effect’s saving-throw bonus/penalty. This variable can take negative values down to -10 while still writing to the corresponding field.\n
-      - INT_VAR 'special' to the new effect’s special field. The special field is used by many EE effects.\n
-      - STR_VAR 'resource' to the new effect’s resource reference."
+      - INT_VAR 'opcode' to the value the of the new effect's opcode.\n
+      - INT_VAR 'target' to the new effect's target.\n
+      - INT_VAR 'power' to the new effect's power.\n
+      - INT_VAR 'parameter1' to the new effect's parameter1.\n
+      - INT_VAR 'parameter2' to the new effect's parameter2.\n
+      - INT_VAR 'timing' to the new effect's timing mode.\n
+      - INT_VAR 'resist_dispel' to the new effect's resist/dispel setting.\n
+      - INT_VAR 'duration' to the new effect's duration.\n
+      - INT_VAR 'probability1' to the new effect's probability1 (the upper bound).\n
+      - INT_VAR 'probability2' to the new effect's probability2 (the lower bound).\n
+      - INT_VAR 'dicenumber' to the new effect's number of dice. This field is instead used for maximum hit-dice (HD) by some opcodes.\n
+      - INT_VAR 'dicesize' to the new effect's size of dice. This field is also instead for minimum hit-dice (HD) by some opcodes.\n
+      - INT_VAR 'savingthrow' to the new effect's saving-throw type.\n
+      - INT_VAR 'savebonus' to the new effect's saving-throw bonus/penalty. This variable can take negative values down to -10 while still writing to the corresponding field.\n
+      - INT_VAR 'special' to the new effect's special field. The special field is used by many EE effects.\n
+      - STR_VAR 'resource' to the new effect's resource reference."
     - name: DELETE_EFFECT
       doc: "This is a patch function for creature, item, or spell files that will match an existing effect and then delete it. Numerous variables are available for matching the specified effect.\n
       The first batch of variables are meta-variables which will help determine the scope of the function\":\"\n
@@ -1674,7 +1674,7 @@ tp2-patch:
       doc: "Deletes all extended effects with specified opcode from a spell. This is a PATCH macro and function.\n
       - SET 'opcode_to_delete' to the opcode of the effect you want to delete. Opcode of (-1) will match all effects."
     - name: DELETE_CRE_EFFECT
-      doc: "Deletes all effects with specified opcode from a creature. (Warning\":\" doesn’t check EFF version) This is a PATCH macro and function.\n
+      doc: "Deletes all effects with specified opcode from a creature. (Warning\":\" doesn't check EFF version) This is a PATCH macro and function.\n
       - SET 'opcode_to_delete' to the opcode of the effect you want to delete. Opcode of (-1) will match all effects."
     - name: ADD_CRE_EFFECT
       doc: "Adds an effect to a creature. All variables except 'probability1' are 0 by default. This is a PATCH macro and function.\n
@@ -1738,14 +1738,14 @@ tp2-patch:
       - RET 'spell_name' to the IDS symbolic reference of a spell."
     - name: GET_UNIQUE_FILE_NAME
       doc: "Creates a file name that is currently unallocated. This is a PATCH and ACTION function. This function will create a filename using __ as a prefix. __ is reserved by The Bigg and writeable by anybody, as long as you dynamically create the file name (either by using this function or other code of your devising). The algorithm creates file names in base 36, going from __0000.ext to __zzzz.ext; this allows for 36 ^ 4 = 1679616 unique file names.\n
-      To allow users to reinstall your mod without breaking the identity of these files, you can use the ’base’ parameter to ensure that the same thing will be mapped to the same file on reinstalls. For instance, if you’re iterating through Mages to give each of them a spellbook, base should contain your modder prefix, an identifier for the purpose of the call, and the file name you’re working on, for instance\":\" ~tb#spellbooks_%SOURCE_RES%~\n
+      To allow users to reinstall your mod without breaking the identity of these files, you can use the 'base' parameter to ensure that the same thing will be mapped to the same file on reinstalls. For instance, if you're iterating through Mages to give each of them a spellbook, base should contain your modder prefix, an identifier for the purpose of the call, and the file name you're working on, for instance\":\" ~tb#spellbooks_%SOURCE_RES%~\n
       - STR_VAR 'extension' to the desired extension (required).\n
       - STR_VAR 'base' to a string unique to your mod and current file (optional).\n
       - RET 'filename' the currently unallocated file name (sans the extension)."
     - name: ITEM_EFFECT_TO_SPELL
       doc: "Copies all extended effects from the current item to the first extended header of a spell. This is a PATCH macro and function.\n
-      - SET 'type' to the header type to copy the effect from (use 99 to specify ’all types’).\n
-      - SET 'header' to number of extended header the effect should be copied from (use 99 to specify ’every header’).\n
+      - SET 'type' to the header type to copy the effect from (use 99 to specify 'all types').\n
+      - SET 'header' to number of extended header the effect should be copied from (use 99 to specify 'every header').\n
       - SET 'insert_point' to the index into the spell file at which the effects should be inserted. A value of 0 will have the effects inserted as the first effects of the spell. Effects are inserted as the last effects by default.\n
       - SPRINT 'new_itm_spl' to a spell you want to copy effects to."
     - name: DELETE_ITEM_HEADER
@@ -1759,202 +1759,202 @@ tp2-patch:
       - INT_VAR 'min_level' to the minimum level to be matched. If this variable is negative, it will not be used for matching. (default -1)"
     - name: ALTER_AREA_DOOR
       doc: "Patch area doors. This is a PATCH function. All integer variables, except 'string_unlock' and 'string_speaker', default to -1 and negative values result in no change to the corresponding field. The variables 'string_unlock' and 'string_speaker' instead default to 99999999. In the case of flags, a value of 1 will set the flag and a value of 0 will unset it. All string variables except 'door_name' default to the string \"same\", which results in no change to the corresponding field. The variable 'door_name' is required.\n
-      – INT_VAR 'bounding_open_left' to the new value of the left edge of the open-state bounding box. The vertices remain unchanged.\n
-      – INT_VAR 'bounding_open_top' to the new value of the top edge of the open-state bounding box. The vertices remain unchanged.\n
-      – INT_VAR 'bounding_open_right' to the new value of the right edge of the open-state bounding box. The vertices remain unchanged.\n
-      – INT_VAR 'bounding_open_bottom' to the new value of the bottom edge of the open-state bounding box. The vertices remain unchanged.\n
-      – INT_VAR 'bounding_closed_left' to the new value of the left edge of the closed-state bounding box. The vertices remain unchanged.\n
-      – INT_VAR 'bounding_closed_top' to the new value of the top edge of the closed-state bounding box. The vertices remain unchanged.\n
-      – INT_VAR 'bounding_closed_right' to the new value of the right edge of the closed-state bounding box. The vertices remain unchanged.\n
-      – INT_VAR 'bounding_closed_bottom' to the new value of the bottom edge of the closed-state bounding box. The vertices remain unchanged.\n
-      – INT_VAR 'door_hp' to the new hit-point value.\n
-      – INT_VAR 'door_ac' to the new armor-class value.\n
-      – INT_VAR 'cursor' to the new cursor index.\n
-      – INT_VAR 'trap_detect' to the new difficulty of trap detection.\n
-      – INT_VAR 'trap_remove' to the new difficulty of trap removal.\n
-      – INT_VAR 'trapped' to whether the door should be trapped.\n
-      – INT_VAR 'detected' to whether the door trap should be detected.\n
-      – INT_VAR 'launch_x' to the new x coordinate of the launch point.\n
-      – INT_VAR 'launch_y' to the new y coordinate of the launch point.\n
-      – INT_VAR 'door_detect' to the new difficulty of door detection.\n
-      – INT_VAR 'lock_difficulty' to the new difficulty of the lock.\n
-      – INT_VAR 'open_x' to the new x coordinate of the opening point.\n
-      – INT_VAR 'open_y' to the new y coordinate of the opening point.\n
-      – INT_VAR 'close_x' to the new x coordinate of the closing point.\n
-      – INT_VAR 'close_y' to the new y coordinate of the closing point.\n
-      – INT_VAR 'string_unlock' to the new string reference of the unlock message.\n
-      – INT_VAR 'string_speaker' to the new string reference of the dialogue-speaker name.\n
-      – INT_VAR 'flag_open' to the new value of the flag known as door open (bit 0).\n
-      – INT_VAR 'flag_locked' to the new value of the flag known as door locked (bit 1).\n
-      – INT_VAR 'flag_resets' to the new value of the flag known as reset trap (bit 2).\n
-      – INT_VAR 'flag_detectable' to the new value of the flag known as trap detectable (bit 3).\n
-      – INT_VAR 'flag_forced' to the new value of the flag known as broken (bit 4).\n
-      – INT_VAR 'flag_no_close' to the new value of the flag known as can’t close (bit 5).\n
-      – INT_VAR 'flag_located' to the new value of the flag known as linked (bit 6).\n
-      – INT_VAR 'flag_secret' to the new value of the flag known as door hidden (bit 7).\n
-      – INT_VAR 'flag_detected' to the new value of the flag known as door found (bit 8).\n
-      – INT_VAR 'flag_no_look' to the new value of the flag known as don’t block line of sight.\n
-      – INT_VAR 'flag_uses_key' to the new value of the flag known as remove key (bit 10).\n
-      – INT_VAR 'flag_sliding' to the new value of the flag known as ignore obstacles when closing (bit 11).\n
-      – STR_VAR 'door_name' to the name of the door to be patched. This variable is required.\n
-      – STR_VAR 'door_open_sound' to the resource reference of the opening sound.\n
-      – STR_VAR 'door_close_sound' to the resource reference of the closing sound.\n
-      – STR_VAR 'door_key' to the resref of the new door key.\n
-      – STR_VAR 'door_script' to the resref of the new door script.\n
-      – STR_VAR 'travel_trigger' to the new travel-trigger name. This field is 24 bytes in length.\n
-      – STR_VAR 'dialogue' to the new resource reference of the dialogue file."
+      - INT_VAR 'bounding_open_left' to the new value of the left edge of the open-state bounding box. The vertices remain unchanged.\n
+      - INT_VAR 'bounding_open_top' to the new value of the top edge of the open-state bounding box. The vertices remain unchanged.\n
+      - INT_VAR 'bounding_open_right' to the new value of the right edge of the open-state bounding box. The vertices remain unchanged.\n
+      - INT_VAR 'bounding_open_bottom' to the new value of the bottom edge of the open-state bounding box. The vertices remain unchanged.\n
+      - INT_VAR 'bounding_closed_left' to the new value of the left edge of the closed-state bounding box. The vertices remain unchanged.\n
+      - INT_VAR 'bounding_closed_top' to the new value of the top edge of the closed-state bounding box. The vertices remain unchanged.\n
+      - INT_VAR 'bounding_closed_right' to the new value of the right edge of the closed-state bounding box. The vertices remain unchanged.\n
+      - INT_VAR 'bounding_closed_bottom' to the new value of the bottom edge of the closed-state bounding box. The vertices remain unchanged.\n
+      - INT_VAR 'door_hp' to the new hit-point value.\n
+      - INT_VAR 'door_ac' to the new armor-class value.\n
+      - INT_VAR 'cursor' to the new cursor index.\n
+      - INT_VAR 'trap_detect' to the new difficulty of trap detection.\n
+      - INT_VAR 'trap_remove' to the new difficulty of trap removal.\n
+      - INT_VAR 'trapped' to whether the door should be trapped.\n
+      - INT_VAR 'detected' to whether the door trap should be detected.\n
+      - INT_VAR 'launch_x' to the new x coordinate of the launch point.\n
+      - INT_VAR 'launch_y' to the new y coordinate of the launch point.\n
+      - INT_VAR 'door_detect' to the new difficulty of door detection.\n
+      - INT_VAR 'lock_difficulty' to the new difficulty of the lock.\n
+      - INT_VAR 'open_x' to the new x coordinate of the opening point.\n
+      - INT_VAR 'open_y' to the new y coordinate of the opening point.\n
+      - INT_VAR 'close_x' to the new x coordinate of the closing point.\n
+      - INT_VAR 'close_y' to the new y coordinate of the closing point.\n
+      - INT_VAR 'string_unlock' to the new string reference of the unlock message.\n
+      - INT_VAR 'string_speaker' to the new string reference of the dialogue-speaker name.\n
+      - INT_VAR 'flag_open' to the new value of the flag known as door open (bit 0).\n
+      - INT_VAR 'flag_locked' to the new value of the flag known as door locked (bit 1).\n
+      - INT_VAR 'flag_resets' to the new value of the flag known as reset trap (bit 2).\n
+      - INT_VAR 'flag_detectable' to the new value of the flag known as trap detectable (bit 3).\n
+      - INT_VAR 'flag_forced' to the new value of the flag known as broken (bit 4).\n
+      - INT_VAR 'flag_no_close' to the new value of the flag known as can't close (bit 5).\n
+      - INT_VAR 'flag_located' to the new value of the flag known as linked (bit 6).\n
+      - INT_VAR 'flag_secret' to the new value of the flag known as door hidden (bit 7).\n
+      - INT_VAR 'flag_detected' to the new value of the flag known as door found (bit 8).\n
+      - INT_VAR 'flag_no_look' to the new value of the flag known as don't block line of sight.\n
+      - INT_VAR 'flag_uses_key' to the new value of the flag known as remove key (bit 10).\n
+      - INT_VAR 'flag_sliding' to the new value of the flag known as ignore obstacles when closing (bit 11).\n
+      - STR_VAR 'door_name' to the name of the door to be patched. This variable is required.\n
+      - STR_VAR 'door_open_sound' to the resource reference of the opening sound.\n
+      - STR_VAR 'door_close_sound' to the resource reference of the closing sound.\n
+      - STR_VAR 'door_key' to the resref of the new door key.\n
+      - STR_VAR 'door_script' to the resref of the new door script.\n
+      - STR_VAR 'travel_trigger' to the new travel-trigger name. This field is 24 bytes in length.\n
+      - STR_VAR 'dialogue' to the new resource reference of the dialogue file."
     - name: REPLACE_STORE_ITEM
       doc: "Replaces all matching items in a store with another item. Regexp allowed. This is a PATCH macro and function.\n
-      – SPRINT 'old_item' to the item you want to be replaced\n
-      – SPRINT 'new_item' to the new item\n
-      – SET 'number_in_stock' to number of new items in stock (default 0)\n
-      – SPRINT 'flags' to flags new item should have (usual weidu syntax: STOLEN, IDENTIFIEDSTOLEN, etc). Default - no flags.\n
-      – SET 'charges1' to number of charges of first magical ability (default 0)\n
-      – SET 'charges2' to number of charges of second magical ability (default 0)\n
-      – SET 'charges3' to number of charges of third magical ability (default 0)"
+      - SPRINT 'old_item' to the item you want to be replaced\n
+      - SPRINT 'new_item' to the new item\n
+      - SET 'number_in_stock' to number of new items in stock (default 0)\n
+      - SPRINT 'flags' to flags new item should have (usual weidu syntax: STOLEN, IDENTIFIEDSTOLEN, etc). Default - no flags.\n
+      - SET 'charges1' to number of charges of first magical ability (default 0)\n
+      - SET 'charges2' to number of charges of second magical ability (default 0)\n
+      - SET 'charges3' to number of charges of third magical ability (default 0)"
     - name: REPLACE_AREA_ITEM
       doc: "Replaces all matching items in an area with another item. Regexp allowed. This is a PATCH macro and function.\n
-      – SPRINT 'old_item' to the item you want to be replaced\n
-      – SPRINT 'new_item' to the new item\n
-      – SPRINT 'flags' to flags the new item should have (usual weidu syntax: STOLEN, IDENTIFIEDSTOLEN, etc). Default - no flags.\n
-      – SET 'charges1' to amount in stock/number of charges of first magical ability (default 0)\n
-      – SET 'charges2' to number of charges of second magical ability (default 0)\n
-      – SET 'charges3' to number of charges of third magical ability (default 0)"
+      - SPRINT 'old_item' to the item you want to be replaced\n
+      - SPRINT 'new_item' to the new item\n
+      - SPRINT 'flags' to flags the new item should have (usual weidu syntax: STOLEN, IDENTIFIEDSTOLEN, etc). Default - no flags.\n
+      - SET 'charges1' to amount in stock/number of charges of first magical ability (default 0)\n
+      - SET 'charges2' to number of charges of second magical ability (default 0)\n
+      - SET 'charges3' to number of charges of third magical ability (default 0)"
     - name: ADD_AREA_ITEM
       doc: "Adds an item to a container of an area. This is a PATCH macro and function.\n
-      – SPRINT 'item_to_add' to the item you want to add\n
-      – SET 'container_to_add_to' to the number of the container the item should be added to. The count starts at 1.\n
-      – SPRINT 'flags' to flags the item should have (usual weidu syntax: STOLEN, IDENTIFIEDSTOLEN, etc). Default - no flags.\n
-      – SET 'charges1' to amount in stock/number of charges of first magical ability (default 0)\n
-      – SET 'charges2' to number of charges of second magical ability (default 0)\n
-      – SET 'charges3' to number of charges of third magical ability (default 0)"
+      - SPRINT 'item_to_add' to the item you want to add\n
+      - SET 'container_to_add_to' to the number of the container the item should be added to. The count starts at 1.\n
+      - SPRINT 'flags' to flags the item should have (usual weidu syntax: STOLEN, IDENTIFIEDSTOLEN, etc). Default - no flags.\n
+      - SET 'charges1' to amount in stock/number of charges of first magical ability (default 0)\n
+      - SET 'charges2' to number of charges of second magical ability (default 0)\n
+      - SET 'charges3' to number of charges of third magical ability (default 0)"
     - name: ADD_AREA_REGION_TRIGGER
       doc: "Adds an area region to the current are file. This is a PATCH macro and function. Unlike other macros you do not need to set every variable. You are only required to set those values that you need to write.\n
-      – SPRINT 'ab_RT_Name' -- Name to assign to new region\n
-      – SET 'ab_RT_Type' -- Type of trigger -- 0=proximity; 1=info; 2=travel\n
-      – SET 'ab_RT_BbLX' -- Bounding Box - low x value - LEFT\n
-      – SET 'ab_RT_BbLY' -- Bounding Box - low y value - TOP\n
-      – SET 'ab_RT_BbHX' -- Bounding Box - High x value - RIGHT\n
-      – SET 'ab_RT_BbHY' -- Bounding Box - High y value - BOTTOM\n
-      – SET 'ab_RT_VxPr' -- Number of Vertex Pairs for current region\n
-      – SET 'ab_RT_CuId' -- Cursor Index - points to a graphic in cursors.bam\n
-      – SPRINT 'ab_RT_Dest' -- Destination Area\n
-      – SPRINT 'ab_RT_EntN' -- Entrance Name\n
-      – SET 'ab_RT_Fbit' -- Flag bits set in bit format which are read right to left - 0=off; 1=on\n
-      – SET 'ab_RT_Itxt' -- Info text\n
-      – SET 'ab_RT_TDtD' -- Trap Detection Difficulty\n
-      – SET 'ab_RT_TRmD' -- Trap Removal Difficulty\n
-      – SET 'ab_RT_TSet' -- Trap is set - 0=no; 1=yes\n
-      – SET 'ab_RT_TDet' -- Trap is detected - 0=no; 1=yes\n
-      – SET 'ab_RT_LPoX' -- Launch Point X\n
-      – SET 'ab_RT_LPoY' -- Launch Point Y\n
-      – SPRINT 'ab_RT_KeyI' -- Key Item\n
-      – SET 'ab_RT_Rbcs' -- Region Script file\n
-      – SET 'ab_RT_ALPX' -- Alternate Launch Point X\n
-      – SET 'ab_RT_ALPY' -- Alternate Launch Point Y\n
-      – SET 'ab_RT_Dial' -- Dialog file (used only in PST)\n
+      - SPRINT 'ab_RT_Name' -- Name to assign to new region\n
+      - SET 'ab_RT_Type' -- Type of trigger -- 0=proximity; 1=info; 2=travel\n
+      - SET 'ab_RT_BbLX' -- Bounding Box - low x value - LEFT\n
+      - SET 'ab_RT_BbLY' -- Bounding Box - low y value - TOP\n
+      - SET 'ab_RT_BbHX' -- Bounding Box - High x value - RIGHT\n
+      - SET 'ab_RT_BbHY' -- Bounding Box - High y value - BOTTOM\n
+      - SET 'ab_RT_VxPr' -- Number of Vertex Pairs for current region\n
+      - SET 'ab_RT_CuId' -- Cursor Index - points to a graphic in cursors.bam\n
+      - SPRINT 'ab_RT_Dest' -- Destination Area\n
+      - SPRINT 'ab_RT_EntN' -- Entrance Name\n
+      - SET 'ab_RT_Fbit' -- Flag bits set in bit format which are read right to left - 0=off; 1=on\n
+      - SET 'ab_RT_Itxt' -- Info text\n
+      - SET 'ab_RT_TDtD' -- Trap Detection Difficulty\n
+      - SET 'ab_RT_TRmD' -- Trap Removal Difficulty\n
+      - SET 'ab_RT_TSet' -- Trap is set - 0=no; 1=yes\n
+      - SET 'ab_RT_TDet' -- Trap is detected - 0=no; 1=yes\n
+      - SET 'ab_RT_LPoX' -- Launch Point X\n
+      - SET 'ab_RT_LPoY' -- Launch Point Y\n
+      - SPRINT 'ab_RT_KeyI' -- Key Item\n
+      - SET 'ab_RT_Rbcs' -- Region Script file\n
+      - SET 'ab_RT_ALPX' -- Alternate Launch Point X\n
+      - SET 'ab_RT_ALPY' -- Alternate Launch Point Y\n
+      - SET 'ab_RT_Dial' -- Dialog file (used only in PST)\n
       The vertex points are separated by their XY values You may have as many pairs as you need. Just copy this set and increment the #. Example\":\" For the X values\":\" 'ab_RT_Vx_X_0', 'ab_RT_Vx_X_1', 'ab_RT_Vx_X_2'\n
       For the Y values\":\" 'ab_RT_Vx_Y_0', 'ab_RT_Vx_Y_1', 'ab_RT_Vx_Y_2'\n
-      – SET 'ab_RT_Vx_X_0' -- Point #0 X value\n
-      – SET 'ab_RT_Vx_Y_0' -- Point #0 Y value\n
+      - SET 'ab_RT_Vx_X_0' -- Point #0 X value\n
+      - SET 'ab_RT_Vx_Y_0' -- Point #0 Y value\n
       NOTE: The original code released in WeiDU v211 has been overhauled and re-released in v212. Therefore, the user defined variable names have been changed. If you used the 211 version you will need to update your mod to use the variables in this version. Sorry for the inconvenience..."
     - name: ALTER_AREA_ACTOR
       doc: "Patch area actors. This is a PATCH function. All integer variables, except 'expiry', default to the value -1 and a negative value results in no change to the corresponding field. The variable 'expiry' instead has a default value of -2. In the case of flags, a value of 1 will set the flag and a value of 0 will unset it. All string variables except 'actor_name' default to the string \"same\", which results in no change to the corresponding field. The variable 'actor_name' is required.\n
-      – INT_VAR 'x_coord' to the new x coordinate. Unless dest_x is defined, x_coord is used as the x-value of the destination, as well.\n
-      – INT_VAR 'y_coord' to the new y coordinate. Unless dest_y is defined, y_coord is used as the y-value of the destination, as well.\n
-      – INT_VAR 'dest_x' to the new x destination.\n
-      – INT_VAR 'dest_y' to the new y destination.\n
-      – INT_VAR 'spawned' to the new spawned value.\n
-      – INT_VAR 'animation' to the new animation value.\n
-      – INT_VAR 'orient' to the new facing direction.\n
-      – INT_VAR 'expiry' to the new expiration time.\n
-      – INT_VAR 'wander' to the new wander-distance value.\n
-      – INT_VAR 'follow' to the new follow-distance value.\n
-      – INT_VAR 'times_talked' to the new number of times the actor has been talked to.\n
-      – INT_VAR 'flag_cre_unattached' to the new value of the flag known as CRE attached (bit 0).\n
-      – INT_VAR 'flag_seen_party' to the new value of the flag known as has seen party (bit 1).\n
-      – INT_VAR 'flag_invulnerable' to the new value of the flag known as invulnerable (bit 2).\n
-      – INT_VAR 'flag_override_script_name' to the new value of the flag known as override script name (bit 3).\n
-      – INT_VAR 'flag_time_0' through 'flag_time_23' to the new values of the actor’s appearance schedule.\n
-      – STR_VAR 'actor_name' to the name of the actor to be patched. This variable is required.\n
-      – STR_VAR 'dlg_file' to the resref of the new dialogue file.\n
-      – STR_VAR 'script_override' to the resref of the new override script.\n
-      – STR_VAR 'script_general' to the resref of the new general script.\n
-      – STR_VAR 'script_class' to the resref of the new class script.\n
-      – STR_VAR 'script_race' to the resref of the new race script.\n
-      – STR_VAR 'script_default' to the resref of the new default script.\n
-      – STR_VAR 'script_specifics' to the resref of the new specifics script.\n
-      – STR_VAR 'cre_file' to the resref of the new creature file."
+      - INT_VAR 'x_coord' to the new x coordinate. Unless dest_x is defined, x_coord is used as the x-value of the destination, as well.\n
+      - INT_VAR 'y_coord' to the new y coordinate. Unless dest_y is defined, y_coord is used as the y-value of the destination, as well.\n
+      - INT_VAR 'dest_x' to the new x destination.\n
+      - INT_VAR 'dest_y' to the new y destination.\n
+      - INT_VAR 'spawned' to the new spawned value.\n
+      - INT_VAR 'animation' to the new animation value.\n
+      - INT_VAR 'orient' to the new facing direction.\n
+      - INT_VAR 'expiry' to the new expiration time.\n
+      - INT_VAR 'wander' to the new wander-distance value.\n
+      - INT_VAR 'follow' to the new follow-distance value.\n
+      - INT_VAR 'times_talked' to the new number of times the actor has been talked to.\n
+      - INT_VAR 'flag_cre_unattached' to the new value of the flag known as CRE attached (bit 0).\n
+      - INT_VAR 'flag_seen_party' to the new value of the flag known as has seen party (bit 1).\n
+      - INT_VAR 'flag_invulnerable' to the new value of the flag known as invulnerable (bit 2).\n
+      - INT_VAR 'flag_override_script_name' to the new value of the flag known as override script name (bit 3).\n
+      - INT_VAR 'flag_time_0' through 'flag_time_23' to the new values of the actor's appearance schedule.\n
+      - STR_VAR 'actor_name' to the name of the actor to be patched. This variable is required.\n
+      - STR_VAR 'dlg_file' to the resref of the new dialogue file.\n
+      - STR_VAR 'script_override' to the resref of the new override script.\n
+      - STR_VAR 'script_general' to the resref of the new general script.\n
+      - STR_VAR 'script_class' to the resref of the new class script.\n
+      - STR_VAR 'script_race' to the resref of the new race script.\n
+      - STR_VAR 'script_default' to the resref of the new default script.\n
+      - STR_VAR 'script_specifics' to the resref of the new specifics script.\n
+      - STR_VAR 'cre_file' to the resref of the new creature file."
     - name: ALTER_AREA_CONTAINER
       doc: "Patch area containers, but not their contents. This is a PATCH function. All integer variables default to -1 and negative values result in no change to the corresponding field. In the case of flags, a value of 1 will set the flag and a value of 0 will unset it. All string variables except container_name default to the string \"same\", which results in no change to the corresponding field. The variable container_name is required.\n
-      – INT_VAR 'coord_x' to the new x coordinate.\n
-      – INT_VAR 'coord_y' to the new y coordinate.\n
-      – INT_VAR 'container_type' to the new type of the container.\n
-      – INT_VAR 'trapped' to whether the container should be trapped.\n
-      – INT_VAR 'detected' to whether the container trap should be detected.\n
-      – INT_VAR 'launch_x' to the new x coordinate of the launch point.\n
-      – INT_VAR 'launch_y' to the new y coordinate of the launch point.\n
-      – INT_VAR 'bounding_left' to the new value of the left edge of the bounding box. The vertices remain unchanged.\n
-      – INT_VAR 'bounding_top' to the new value of the top edge of the bounding box. The vertices remain unchanged.\n
-      – INT_VAR 'bounding_right' to the new value of the right edge of the bounding box. The vertices remain unchanged.\n
-      – INT_VAR 'bounding_bottom' to the new value of the bottom edge of the bounding box. The vertices remain unchanged.\n
-      – INT_VAR 'range' to the new trigger-range value.\n
-      – INT_VAR 'lockpick_strref' to the new strref of the lockpick string.\n
-      – INT_VAR 'lock_difficulty' to the new difficulty of the lock.\n
-      – INT_VAR 'trap_detect' to the new difficulty of trap detection.\n
-      – INT_VAR 'trap_remove' to the new difficulty of trap removal.\n
-      – INT_VAR 'flag_locked' to the new value of the flag known as locked (bit 0).\n
-      – INT_VAR 'flag_mlocked' to the new value of the flag known as magical lock (bit 2).\n
-      – INT_VAR 'flag_resets' to the new value of the flag known as trap resets (bit 3).\n
-      – INT_VAR 'flag_disabled' to the new value of the flag known as disabled (bit 5).\n
-      – STR_VAR 'container_name' to the name of the container to be patched. This variable is required.\n
-      – STR_VAR 'container_script' to the resref of the new container script.\n
-      – STR_VAR 'container_key' to the resref of the new container key."
+      - INT_VAR 'coord_x' to the new x coordinate.\n
+      - INT_VAR 'coord_y' to the new y coordinate.\n
+      - INT_VAR 'container_type' to the new type of the container.\n
+      - INT_VAR 'trapped' to whether the container should be trapped.\n
+      - INT_VAR 'detected' to whether the container trap should be detected.\n
+      - INT_VAR 'launch_x' to the new x coordinate of the launch point.\n
+      - INT_VAR 'launch_y' to the new y coordinate of the launch point.\n
+      - INT_VAR 'bounding_left' to the new value of the left edge of the bounding box. The vertices remain unchanged.\n
+      - INT_VAR 'bounding_top' to the new value of the top edge of the bounding box. The vertices remain unchanged.\n
+      - INT_VAR 'bounding_right' to the new value of the right edge of the bounding box. The vertices remain unchanged.\n
+      - INT_VAR 'bounding_bottom' to the new value of the bottom edge of the bounding box. The vertices remain unchanged.\n
+      - INT_VAR 'range' to the new trigger-range value.\n
+      - INT_VAR 'lockpick_strref' to the new strref of the lockpick string.\n
+      - INT_VAR 'lock_difficulty' to the new difficulty of the lock.\n
+      - INT_VAR 'trap_detect' to the new difficulty of trap detection.\n
+      - INT_VAR 'trap_remove' to the new difficulty of trap removal.\n
+      - INT_VAR 'flag_locked' to the new value of the flag known as locked (bit 0).\n
+      - INT_VAR 'flag_mlocked' to the new value of the flag known as magical lock (bit 2).\n
+      - INT_VAR 'flag_resets' to the new value of the flag known as trap resets (bit 3).\n
+      - INT_VAR 'flag_disabled' to the new value of the flag known as disabled (bit 5).\n
+      - STR_VAR 'container_name' to the name of the container to be patched. This variable is required.\n
+      - STR_VAR 'container_script' to the resref of the new container script.\n
+      - STR_VAR 'container_key' to the resref of the new container key."
     - name: ADD_CRE_ITEM_FLAGS
       doc: "Adds flags to all matching items possessed by a creature. Regexp allowed. This is a PATCH macro and function.\n
-      – SPRINT 'item_to_change' to the item the flags should be added to\n
-      – SPRINT 'flags to flags' you need to add (usual weidu syntax: STOLEN, IDENTIFIEDSTOLEN, etc)."
+      - SPRINT 'item_to_change' to the item the flags should be added to\n
+      - SPRINT 'flags to flags' you need to add (usual weidu syntax: STOLEN, IDENTIFIEDSTOLEN, etc)."
     - name: REMOVE_CRE_ITEM_FLAGS
       doc: "Removes flags from all matching items possessed by a creature. Regexp allowed. This is a PATCH macro and function.\n
-      – SPRINT 'item_to_change' to the item the flags should be removed from\n
-      – SPRINT 'flags' to flags you need to remove (usual weidu syntax: STOLEN, IDENTIFIEDSTOLEN, etc)."
+      - SPRINT 'item_to_change' to the item the flags should be removed from\n
+      - SPRINT 'flags' to flags you need to remove (usual weidu syntax: STOLEN, IDENTIFIEDSTOLEN, etc)."
     - name: SET_CRE_ITEM_FLAGS
       doc: "Set flags to all matching items possessed by a creature. Regexp allowed. This is a PATCH macro and function.\n
-      – SPRINT 'item_to_change' to the item which flags should be set\n
-      – SPRINT 'flags' to flags you need to set (usual weidu syntax: STOLEN, IDENTIFIEDSTOLEN, etc)."
+      - SPRINT 'item_to_change' to the item which flags should be set\n
+      - SPRINT 'flags' to flags you need to set (usual weidu syntax: STOLEN, IDENTIFIEDSTOLEN, etc)."
     - name: ALTER_AREA_ENTRANCE
       doc: "Patch coordinates and orientation of area party entrance points. This is a PATCH function. For all integer variables, a negative value results in no change to that field and the default value is -1. The variable 'entrance_name' is required.\n
-      – INT_VAR 'x_coord' to the new X coordinate.\n
-      – INT_VAR 'y_coord' to the new Y coordinate.\n
-      – INT_VAR 'orient' to the new orientation.\n
-      – STR_VAR 'entrance_name' to the name of the entrance point to be altered. This variable is required."
+      - INT_VAR 'x_coord' to the new X coordinate.\n
+      - INT_VAR 'y_coord' to the new Y coordinate.\n
+      - INT_VAR 'orient' to the new orientation.\n
+      - STR_VAR 'entrance_name' to the name of the entrance point to be altered. This variable is required."
     - name: READ_SOUNDSET
       doc: "Reads soundset of a creature and stores it as an array of string references This is an ACTION macro.\n
-      – SPRINT 'npc' to the target creature (with .cre extension)\n
-      – SPRINT 'soundset' to the name of soundset you want."
+      - SPRINT 'npc' to the target creature (with .cre extension)\n
+      - SPRINT 'soundset' to the name of soundset you want."
     - name: WRITE_SOUNDSET
       doc: "Writes soundset to all matching creatures. Regexp allowed. This is an ACTION macro.\n
-      – SPRINT 'npc' to a creature in question (with .cre extension)\n
-      – SPRINT 'soundset' to name of soundset you have.\n
-      – SET 'overwrite' to 2 if you want new soundset to overwrite the old one completely. Set it to 1 if you want to overwrite old string references only with non-empty new references (may keep some old). Set it to 0 it you want to overwrite only empty old references with new ones."
+      - SPRINT 'npc' to a creature in question (with .cre extension)\n
+      - SPRINT 'soundset' to name of soundset you have.\n
+      - SET 'overwrite' to 2 if you want new soundset to overwrite the old one completely. Set it to 1 if you want to overwrite old string references only with non-empty new references (may keep some old). Set it to 0 it you want to overwrite only empty old references with new ones."
     - name: tb#factorial
       doc: "Computes the factorial of a number.\n
       This is a PATCH macro.\n
-      – SET 'tb#factorial_index' to the factorial you’d like to compute.\n
-      – SET 'tb#factorial_result' to 1;\n
-      – The result is 'tb#factorial_result'."
+      - SET 'tb#factorial_index' to the factorial you'd like to compute.\n
+      - SET 'tb#factorial_result' to 1;\n
+      - The result is 'tb#factorial_result'."
     - name: tb#fix_file_size
       doc: "Overwrites all files matching a certain regexp with a certain standard file, if they are under a certain size.\n
       This is an ACTION macro.\n
-      – SET 'tb#fix_file_size_min' to the maximum allowed size (files whose size is exactly this value are NOT overwritten).\n
-      – SPRINT 'tb#fix_file_size_target' to the standard file used to replace file(s) that match the regexp.\n
-      – SPRINT 'tb#fix_file_size_category' to a descriptive name.\n
-      – SPRINT 'tb#fix_file_size_regexp' to the regexp for the file(s) to be checked for a match."
+      - SET 'tb#fix_file_size_min' to the maximum allowed size (files whose size is exactly this value are NOT overwritten).\n
+      - SPRINT 'tb#fix_file_size_target' to the standard file used to replace file(s) that match the regexp.\n
+      - SPRINT 'tb#fix_file_size_category' to a descriptive name.\n
+      - SPRINT 'tb#fix_file_size_regexp' to the regexp for the file(s) to be checked for a match."
     - name: FJ_CRE_REINDEX
       doc: "Reorders creatures with nonstandard offset orders. Called by FJ_CRE_VALIDITY automatically if relevant.\n
       This is a PATCH function.\n
-      – INT_VAR 'do_reindex' to 0 if you don’t want the creature file to be reindexed. Defaults to 1.\n
-      – INT_VAR 'do_eff' to 0 if you don’t want EFFv1 <-> EFFv2 conversion to be applied. Defaults to 1."
+      - INT_VAR 'do_reindex' to 0 if you don't want the creature file to be reindexed. Defaults to 1.\n
+      - INT_VAR 'do_eff' to 0 if you don't want EFFv1 <-> EFFv2 conversion to be applied. Defaults to 1."
     - name: FJ_CRE_EFF_V2
       doc: "Converts creatures using version 1 effects to version 2. Called by FJ_CRE_VALIDITY or FJ_CRE_REINDEX automatically if relevant.\n
       This is a PATCH function."
@@ -1964,76 +1964,76 @@ tp2-patch:
     - name: SUBSTRING
       doc: "Returns a substring of the provided string. This is an ACTION and PATCH function. All integer variables default to 0.\n
       The function will fail with an error if either 'start' or 'length' are negative or if any of 'start', 'length' or the sum of the two is greater than the length of 'string'.\n
-      – INT_VAR 'start' to the string index (0 based) from which the start of the substring should be read.\n
-      – INT_VAR 'length' to the length of the substring to be read.\n
-      – STR_VAR 'string' to the string the substring should be read from.\n
-      – RET 'substring' the substring read from the provided string."
+      - INT_VAR 'start' to the string index (0 based) from which the start of the substring should be read.\n
+      - INT_VAR 'length' to the length of the substring to be read.\n
+      - STR_VAR 'string' to the string the substring should be read from.\n
+      - RET 'substring' the substring read from the provided string."
     - name: ADD_CRE_SCRIPT
       doc: "Assigns a script to a creature in the first available slot. This is a PATCH function. By default, the function will try all 5 script slots from SCRIPT_OVERRIDE to SCRIPT_DEFAULT.\n
       The function will fail with an error if the file being patched does not have a signature (first 3 bytes) that case-sensitively equals CRE, if either 'offset_start' or 'offset_end' are negative, if 'offset_end' is less than 'offset_start' or if 'offset_end' is greater than the size of the file being patched.\n
-      – INT_VAR 'offset_start' to the offset from which the search for an empty slot should start. (default SCRIPT_OVERRIDE)\n
-      – INT_VAR 'offset_end' to the offset at which the search should end. (default SCRIPT_DEFAULT)\n
-      – STR_VAR 'script' to the resource reference of the script to be assigned.\n
-      – RET 'success' a return value indicating whether the script was successfully assigned. 1 signifies success and 0 signifies that no empty slot was found. A harmless warning will be printed if the function was unsuccessful."
+      - INT_VAR 'offset_start' to the offset from which the search for an empty slot should start. (default SCRIPT_OVERRIDE)\n
+      - INT_VAR 'offset_end' to the offset at which the search should end. (default SCRIPT_DEFAULT)\n
+      - STR_VAR 'script' to the resource reference of the script to be assigned.\n
+      - RET 'success' a return value indicating whether the script was successfully assigned. 1 signifies success and 0 signifies that no empty slot was found. A harmless warning will be printed if the function was unsuccessful."
     - name: DELETE_WORLDMAP_LINKS
       doc: "Delete all links from one worldmap area to another. This is a PATCH function.\n
       This function will delete links from one specified area to another. Links can be deleted from all four directional nodes (north, east, south, west) or from a specific node. Links connecting the areas in the opposite direction will not be deleted.\n
-      – STR_VAR 'from_area' to the area from which the links that are to be deleted originate.\n
-      – STR_VAR 'from_node' to the directional node from which the links that are to be deleted originate. Legal values for this variable are \"north\", \"n\", \"east\", \"e\", \"south\", \"s\", \"west\", \"w\". Values are not case sensitive. Links are deleted from all four nodes by default.\n
-      – STR_VAR 'to_area' to the area to which the links that are to be deleted lead."
+      - STR_VAR 'from_area' to the area from which the links that are to be deleted originate.\n
+      - STR_VAR 'from_node' to the directional node from which the links that are to be deleted originate. Legal values for this variable are \"north\", \"n\", \"east\", \"e\", \"south\", \"s\", \"west\", \"w\". Values are not case sensitive. Links are deleted from all four nodes by default.\n
+      - STR_VAR 'to_area' to the area to which the links that are to be deleted lead."
     - name: ADD_WORLDMAP_LINKS
       doc: "Add links from one worldmap area to another. This is a PATCH function.\n
       This function add links from one specified area to another. Links can be added from all four directional nodes (north, east, south, west) or from a specific node. If a link already exists, its metadata (distance scale, random encounters, etc.) will be overwritten. Links connecting the areas in the opposite direction will not be added. If either of the areas do not exist in the worldmap, a warning is printed and no links are added.\n
-      – INT_VAR 'distance_scale' to the distance scale between the two areas. 'distance_scale' * 4 equals the travel time between the areas (in hours).\n
-      – INT_VAR 'default_entry' to the default entry location. Legal values for this variable are 1 (northern side), 2 (eastern), 4 (southern) and 8 (western). The default value is 1.\n
-      – INT_VAR 'encounter_probability' to the probability of a random encounter occurring.\n
-      – STR_VAR 'from_area' to the area from which the links should originate.\n
-      – STR_VAR 'from_node' to the directional node from which the links should originate. Legal values for this variable are “north”, “n”, “east”, “e”, “south”, “s”, “west” and “w”. Values are not case sensitive. Links are added to all four nodes by default.\n
-      – STR_VAR 'to_area' to the area to which the links should lead.\n
-      – STR_VAR 'entry' to the entry point in 'to_area'.\n
-      – STR_VAR 'random_area1' to the first random-encounter area.\n
-      – STR_VAR 'random_area2' to the second random-encounter area.\n
-      – STR_VAR 'random_area3' to the third random-encounter area.\n
-      – STR_VAR 'random_area4' to the fourth random-encounter area.\n
-      – STR_VAR 'random_area5' to the fifth random-encounter area."
+      - INT_VAR 'distance_scale' to the distance scale between the two areas. 'distance_scale' * 4 equals the travel time between the areas (in hours).\n
+      - INT_VAR 'default_entry' to the default entry location. Legal values for this variable are 1 (northern side), 2 (eastern), 4 (southern) and 8 (western). The default value is 1.\n
+      - INT_VAR 'encounter_probability' to the probability of a random encounter occurring.\n
+      - STR_VAR 'from_area' to the area from which the links should originate.\n
+      - STR_VAR 'from_node' to the directional node from which the links should originate. Legal values for this variable are “north”, “n”, “east”, “e”, “south”, “s”, “west” and “w”. Values are not case sensitive. Links are added to all four nodes by default.\n
+      - STR_VAR 'to_area' to the area to which the links should lead.\n
+      - STR_VAR 'entry' to the entry point in 'to_area'.\n
+      - STR_VAR 'random_area1' to the first random-encounter area.\n
+      - STR_VAR 'random_area2' to the second random-encounter area.\n
+      - STR_VAR 'random_area3' to the third random-encounter area.\n
+      - STR_VAR 'random_area4' to the fourth random-encounter area.\n
+      - STR_VAR 'random_area5' to the fifth random-encounter area."
     - name: UPDATE_PVRZ_INDICES
       doc: "Update the PVRZ references in a BAM V2 or MOS V2 resource. This is a PATCH function.\n
       This function will update the PVRZ references in a BAM V2 or MOS V2 resource with the next contiguous block of free PVRZ indices. This function is intended to be used in combination with the action function INSTALL_PVRZ.\n
-      – INT_VAR 'target_base_index' is an optional parameter. When specified, the function attempts to use a block of free PVRZ indices starting at the specified value. The default value is 1000.\n
-      – RET 'original_base_index' returns the lowest PVRZ index used by the source BAM or MOS. Returns -1 on error.\n
-      – RET 'new_base_index' returns the lowest PVRZ index used by the target BAM or MOS. Returns -1 on error.\n
-      – RET 'index_range' returns the range of reserved PVRZ indices, i.e., the difference between the smallest and biggest PVRZ index, inclusive. Returns 0 on error."
+      - INT_VAR 'target_base_index' is an optional parameter. When specified, the function attempts to use a block of free PVRZ indices starting at the specified value. The default value is 1000.\n
+      - RET 'original_base_index' returns the lowest PVRZ index used by the source BAM or MOS. Returns -1 on error.\n
+      - RET 'new_base_index' returns the lowest PVRZ index used by the target BAM or MOS. Returns -1 on error.\n
+      - RET 'index_range' returns the range of reserved PVRZ indices, i.e., the difference between the smallest and biggest PVRZ index, inclusive. Returns 0 on error."
     - name: INSTALL_PVRZ
       doc: "Install a PVRZ file and updates the PVRZ index. This is an ACTION function.\n
       This function copies the specified PVRZ file into the target folder and updates the PVRZ index. This function should be used in conjunction with UPDATE_PVRZ_INDICES.\n
-      – INT_VAR 'original_base_index' to the current base index. This value is returned by the function UPDATE_PVRZ_INDICES as 'original_base_index'.\n
-      – INT_VAR 'new_base_index' to the new base index. This value is returned by the function UPDATE_PVRZ_INDICES as 'new_base_index'.\n
-      – STR_VAR 'source_file' to the source file to copy. The filename must match the regular expression ~MOS[0-9]+\\.PVRZ~ (e.g., MOS0000.PVRZ, mos1592.pvrz or Mos12345.PVRZ). Case is ignored.\n
-      – STR_VAR 'target_folder' to the target folder to copy the source file into. The default value is \"override\".\n
-      – RET 'success' is set to non-zero if the function returned successfully and is set to zero on error.\n
+      - INT_VAR 'original_base_index' to the current base index. This value is returned by the function UPDATE_PVRZ_INDICES as 'original_base_index'.\n
+      - INT_VAR 'new_base_index' to the new base index. This value is returned by the function UPDATE_PVRZ_INDICES as 'new_base_index'.\n
+      - STR_VAR 'source_file' to the source file to copy. The filename must match the regular expression ~MOS[0-9]+\\.PVRZ~ (e.g., MOS0000.PVRZ, mos1592.pvrz or Mos12345.PVRZ). Case is ignored.\n
+      - STR_VAR 'target_folder' to the target folder to copy the source file into. The default value is \"override\".\n
+      - RET 'success' is set to non-zero if the function returned successfully and is set to zero on error.\n
       This function can additionally return all the variables automatically set by COPY."
     - name: FIND_FREE_PVRZ_INDEX
       doc: "Attempt to find a contiguous block of free PVRZ indices in the game installation. This is a PATCH and an ACTION function.\n
       This function attempts to find the first available free PVRZ index of a contiguous block which guarantees to fit at least 'num_to_reserve' indices.\n
-      – INT_VAR 'num_to_reserve' to the minimum required size of the contiguous block of free indices. This number should be no smaller than 1 nor no bigger than 999. The default value is 1.\n
-      – INT_VAR 'start_index' to the index the search should begin at. The default value is 1000.\n
-      – RET 'free_index' returns the first available index matching the specified parameters. Returns -1 on errors."
+      - INT_VAR 'num_to_reserve' to the minimum required size of the contiguous block of free indices. This number should be no smaller than 1 nor no bigger than 999. The default value is 1.\n
+      - INT_VAR 'start_index' to the index the search should begin at. The default value is 1000.\n
+      - RET 'free_index' returns the first available index matching the specified parameters. Returns -1 on errors."
     - name: DIRECTORY_OF_FILESPEC
       doc: "Returns the directory of a file specification. Compare to SOURCE_DIRECTORY. This is an ACTION and PATCH function.\n
-      – STR_VAR 'filespec' to the file specification, which must include an identifiable directory, or a warning will be raised.\n
-      – RET 'directory' returns the directory of the file specification."
+      - STR_VAR 'filespec' to the file specification, which must include an identifiable directory, or a warning will be raised.\n
+      - RET 'directory' returns the directory of the file specification."
     - name: FILE_OF_FILESPEC
       doc: "Returns the file of a file specification. Compare to SOURCE_FILE. This is an ACTION and PATCH function.\n
-      – STR_VAR 'filespec' to the file specification, which may or may not include a directory.\n
-      – RET 'file' returns the file of the file specification."
+      - STR_VAR 'filespec' to the file specification, which may or may not include a directory.\n
+      - RET 'file' returns the file of the file specification."
     - name: RES_OF_FILESPEC
       doc: "Returns the resource name of a file specification. Compare to SOURCE_RES. This is an ACTION and PATCH function.\n
-      – STR_VAR 'filespec' to the file specification, which must include an identifiable resource name, or a warning will be raised.\n
-      – RET 'res' returns the resource name of the file specification."
+      - STR_VAR 'filespec' to the file specification, which must include an identifiable resource name, or a warning will be raised.\n
+      - RET 'res' returns the resource name of the file specification."
     - name: EXT_OF_FILESPEC
       doc: "Returns the resource extension of a file specification. Compare to SOURCE_EXT. This is an ACTION and PATCH function.\n
-      – STR_VAR 'filespec' to the file specification, which must include an identifiable resource extension, or a warning will be raised.\n
-      – RET 'ext' returns the resource extension of the file specification."
+      - STR_VAR 'filespec' to the file specification, which must include an identifiable resource extension, or a warning will be raised.\n
+      - RET 'ext' returns the resource extension of the file specification."
 
 tp2-when:
   type: 14 # keyword
