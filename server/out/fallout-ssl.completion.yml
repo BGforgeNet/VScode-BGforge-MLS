@@ -69,14 +69,14 @@ base-functions:
     - name: attack_complex
       detail: "void attack_complex(ObjectPtr who, int called_shot, int num_attacks, int bonus, int min_damage, int max_damage, int attacker_results, int target_results"
       doc:
-        "Causes the current object (self – must be a critter) to attempt to attack a critter (who) with various parameters modifying the combat:
-        called_shot – 0/1/specific means none/random/specific (head, torso, etc.)
-        num_attacks – the # of extra attacks the self object gets before the target
-        bonus – the bonus to hit the target on the first turn only
-        min_damage – the minimum damage that will be done the first attack
-        max_damage – the maximum damage that will be done the first attack
-        attacker_results – what state the attacker ends in after the first attack
-        target_results – what state the target ends in after the first attack"
+        "Causes the current object (self - must be a critter) to attempt to attack a critter (who) with various parameters modifying the combat:
+        called_shot - 0/1/specific means none/random/specific (head, torso, etc.)
+        num_attacks - the # of extra attacks the self object gets before the target
+        bonus - the bonus to hit the target on the first turn only
+        min_damage - the minimum damage that will be done the first attack
+        max_damage - the maximum damage that will be done the first attack
+        attacker_results - what state the attacker ends in after the first attack
+        target_results - what state the target ends in after the first attack"
     - name: attack_setup
       detail: "void attack_setup(ObjectPtr who, ObjectPtr victim)"
       doc: "Sets up an attack from who on victim, without expecting this script to be involved. Can be used to setup attacks on critters from the map script."
@@ -518,7 +518,7 @@ base-functions:
       doc: "Returns the value of the completed dice roll. NOTE: Avellone says this is unimplemented."
     - name: roll_vs_skill
       detail: "int roll_vs_skill(ObjectPtr who, int skill, int modifier)"
-      doc: "Returns the value of a completed skill roll made upon an object’s (who’s) skill level with a given skill, and modified by a given amount (may be zero). This value may then be passed to is_success and is_critical to determine the appropriate states, and the how_much call can be used to determine the difference succeeded or failed by."
+      doc: "Returns the value of a completed skill roll made upon an object's (who's) skill level with a given skill, and modified by a given amount (may be zero). This value may then be passed to is_success and is_critical to determine the appropriate states, and the how_much call can be used to determine the difference succeeded or failed by."
     - name: rotation_to_tile
       detail: "int rotation_to_tile(int srcTile, int destTile)"
       doc: "Returns the rotation (0...5) to face a particular tile (destTile) from a particular tile (srcTile)."
@@ -597,7 +597,7 @@ base-functions:
       doc: "Returns the tile distance between two tile #'s"
     - name: tile_distance_objs
       detail: "int tile_distance_objs(ObjectPtr obj1, ObjectPtr obj2)"
-      doc: "Returns the tile distance between two objects (between their tile #’s)."
+      doc: "Returns the tile distance between two objects (between their tile #'s)."
     - name: tile_is_visible
       detail: "bool tile_is_visible(int tile)"
       doc: "Returns True if a given hex (tile) is currently visible, i.e. an object on it could conceivably be displayed on-screen. This includes hexes that may technically have bases that are off-screen, but on whom objects could exist that would bound into the actual display area."
@@ -629,10 +629,10 @@ base-functions:
 
     - name: wield_obj
       detail: "void wield_obj(ObjectPtr obj)"
-      doc: "Sets up an animation causing a critter (self_obj) to wield an object (obj) in that critters’ inventory. This puts that object in the critter’s hand."
+      doc: "Sets up an animation causing a critter (self_obj) to wield an object (obj) in that critters' inventory. This puts that object in the critter's hand."
     - name: wield_obj_critter
       detail: "void wield_obj_critter(ObjectPtr who, ObjectPtr obj)"
-      doc: "Sets up an animation causing a critter (who) to wield an object (obj) in that critters’ inventory. This puts that object in the critter’s hand."
+      doc: "Sets up an animation causing a critter (who) to wield an object (obj) in that critters' inventory. This puts that object in the critter's hand."
     - name: wm_area_set_pos
       detail: "void wm_area_set_pos(int areaIdx, int xPos, int yPos)"
       doc: "Sets the World Map coordinates for a given area/town (areaIdx) to a given x and y position."
