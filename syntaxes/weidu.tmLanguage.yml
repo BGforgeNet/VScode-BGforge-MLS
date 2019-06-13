@@ -374,6 +374,22 @@ repository:
     - match: \b(ALTER_AREA_ENTRANCE)\b
     - match: \b(WRITE_SOUNDSET)\b
     - match: \b(READ_SOUNDSET)\b
+    - match: \b(tb#factorial)\b
+    - match: \b(tb#fix_file_size)\b
+    - match: \b(FJ_CRE_REINDEX)\b
+    - match: \b(FJ_CRE_EFF_V2)\b
+    - match: \b(T-CRE_EFF_V1)\b
+    - match: \b(SUBSTRING)\b
+    - match: \b(ADD_CRE_SCRIPT)\b
+    - match: \b(DELETE_WORLDMAP_LINKS)\b
+    - match: \b(ADD_WORLDMAP_LINKS)\b
+    - match: \b(UPDATE_PVRZ_INDICES)\b
+    - match: \b(INSTALL_PVRZ)\b
+    - match: \b(FIND_FREE_PVRZ_INDEX)\b
+    - match: \b(DIRECTORY_OF_FILESPEC)\b
+    - match: \b(FILE_OF_FILESPEC)\b
+    - match: \b(RES_OF_FILESPEC)\b
+    - match: \b(EXT_OF_FILESPEC)\b
 
   weidu-tp2-patch-controls:
     name: keyword.control.patch.weidu
