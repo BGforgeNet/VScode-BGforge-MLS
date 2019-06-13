@@ -27,3 +27,7 @@
 ## 1.0.7
 - Added WeiDU patch and macro functions
 - Fixed minor typos
+
+## 1.0.8
+- Added more macros
+- Added newlines to macro docs
