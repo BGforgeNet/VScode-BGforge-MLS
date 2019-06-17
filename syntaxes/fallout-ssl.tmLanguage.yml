@@ -443,6 +443,14 @@ repository:
   sfall-functions:
     name: support.function.sfall.ssl
     patterns:
+    - match: \b(?i)(read_byte)\b
+    - match: \b(?i)(read_int)\b
+    - match: \b(?i)(read_short)\b
+    - match: \b(?i)(read_string)\b
+    - match: \b(?i)(write_byte)\b
+    - match: \b(?i)(write_int)\b
+    - match: \b(?i)(write_short)\b
+    - match: \b(?i)(write_string)\b
     - match: \b(?i)(call_offset_r0)\b
     - match: \b(?i)(call_offset_r1)\b
     - match: \b(?i)(call_offset_r2)\b
@@ -453,14 +461,6 @@ repository:
     - match: \b(?i)(call_offset_v2)\b
     - match: \b(?i)(call_offset_v3)\b
     - match: \b(?i)(call_offset_v4)\b
-    - match: \b(?i)(read_byte)\b
-    - match: \b(?i)(read_int)\b
-    - match: \b(?i)(read_short)\b
-    - match: \b(?i)(read_string)\b
-    - match: \b(?i)(write_byte)\b
-    - match: \b(?i)(write_int)\b
-    - match: \b(?i)(write_short)\b
-    - match: \b(?i)(write_string)\b
     - match: \b(?i)(get_critter_base_stat)\b
     - match: \b(?i)(get_critter_extra_stat)\b
     - match: \b(?i)(get_pc_base_stat)\b

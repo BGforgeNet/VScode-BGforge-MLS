@@ -1572,6 +1572,38 @@
       "name": "support.function.sfall.ssl",
       "patterns": [
         {
+          "match": "\\b(?i)(read_byte)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(read_int)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(read_short)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(read_string)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(write_byte)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(write_int)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(write_short)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(write_string)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
           "match": "\\b(?i)(call_offset_r0)\\b",
           "name": "support.function.sfall.ssl"
         },
@@ -1609,38 +1641,6 @@
         },
         {
           "match": "\\b(?i)(call_offset_v4)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(read_byte)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(read_int)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(read_short)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(read_string)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(write_byte)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(write_int)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(write_short)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(write_string)\\b",
           "name": "support.function.sfall.ssl"
         },
         {
