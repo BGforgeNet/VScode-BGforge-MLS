@@ -26,31 +26,32 @@ with open(functions_yaml) as yf:
       cdoc = category['doc']
 
     # individual functions
-    functions = category['items']
-    functions = sorted(functions, key=lambda k: k['name']) 
+    if 'items' in category:
+      functions = category['items']
+      functions = sorted(functions, key=lambda k: k['name'])
 
-    for f in functions:
-      name = f['name']
-      # highlighting first
-      if name != '^': # sorry, exponentiation
-        highlight_functions.append({ 'match': "\\b(?i)({})\\b".format(name) })
-      # and now completion
-      detail = f['detail']
-      doc = ""
-      if 'doc' in f:
-        doc = f['doc']
+      for f in functions:
+        name = f['name']
+        # highlighting first
+        if name != '^': # sorry, exponentiation
+          highlight_functions.append({ 'match': "\\b(?i)({})\\b".format(name) })
+        # and now completion
+        detail = f['detail']
+        doc = ""
+        if 'doc' in f:
+          doc = f['doc']
 
-      # if caterory doc is not empty
-      if cdoc != "": 
-        if doc == "": # if function doc is empty
-          doc = cdoc  # replace
+        # if caterory doc is not empty
+        if cdoc != "":
+          if doc == "": # if function doc is empty
+            doc = cdoc  # replace
+          else:
+            doc += '\n' + cdoc # append
+
+        if doc == "":
+          completion_functions.append({'name': name, 'detail': detail}) # if doc is still empty
         else:
-          doc += '\n' + cdoc # append
-
-      if doc == "":
-        completion_functions.append({'name': name, 'detail': detail}) # if doc is still empty
-      else:
-        completion_functions.append({'name': name, 'detail': detail, 'doc': doc}) # proper record, all fields
+          completion_functions.append({'name': name, 'detail': detail, 'doc': doc}) # proper record, all fields
 
 # hooks
 with open(hooks_yaml) as yf:
