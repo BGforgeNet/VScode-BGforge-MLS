@@ -9,8 +9,13 @@ sfall_functions_stanza = "sfall-functions"
 sfall_hooks_stanza = "hooks"
 hooks_yaml = sys.argv[2]
 completion_yaml = sys.argv[3]
+highlight_yaml = sys.argv[4]
 
-new_functions = []
+completion_functions = []
+completion_hooks = []
+highlight_functions = []
+highlight_hooks = []
+
 # functions
 with open(functions_yaml) as yf:
   categories = yaml.load(yf)
@@ -26,6 +31,10 @@ with open(functions_yaml) as yf:
 
     for f in functions:
       name = f['name']
+      # highlighting first
+      if name != '^': # sorry, exponentiation
+        highlight_functions.append({ 'match': "\\b(?i)({})\\b".format(name) })
+      # and now completion
       detail = f['detail']
       doc = ""
       if 'doc' in f:
@@ -39,12 +48,11 @@ with open(functions_yaml) as yf:
           doc += '\n' + cdoc # append
 
       if doc == "":
-        new_functions.append({'name': name, 'detail': detail}) # if doc is still empty
+        completion_functions.append({'name': name, 'detail': detail}) # if doc is still empty
       else:
-        new_functions.append({'name': name, 'detail': detail, 'doc': doc}) # proper record, all fields
+        completion_functions.append({'name': name, 'detail': detail, 'doc': doc}) # proper record, all fields
 
 # hooks
-new_hooks = []
 with open(hooks_yaml) as yf:
   hooks = yaml.load(yf)
   hooks = sorted(hooks, key=lambda k: k['name']) # alphabetical sort
@@ -53,12 +61,22 @@ with open(hooks_yaml) as yf:
     name = h['name']
     doc = h['doc']
     codename = "HOOK_" + name.upper()
-    new_hooks.append({'name': codename, 'doc': doc})
+    completion_hooks.append({'name': codename, 'doc': doc})
+    highlight_hooks.append({ 'match': "\\b({})\\b".format(codename) })
 
 # dump to completion
 with open(completion_yaml) as yf:
   data = yaml.load(yf)
-  data[sfall_functions_stanza] = {'type': 3, 'items': new_functions} # type: function
-  data[sfall_hooks_stanza] = {'type': 21, 'items': new_hooks} # type: constant
+  data[sfall_functions_stanza] = {'type': 3, 'items': completion_functions} # type: function
+  data[sfall_hooks_stanza] = {'type': 21, 'items': completion_hooks} # type: constant
 with open(completion_yaml, 'w') as yf:
+  yaml.dump(data, yf, default_flow_style=False, width=4096)
+
+
+# dump to syntax highlight
+with open(highlight_yaml) as yf:
+  data = yaml.load(yf)
+  data['repository']['sfall-functions']['patterns'] = highlight_functions
+  data['repository']['hooks']['patterns'] = highlight_hooks
+with open(highlight_yaml, 'w') as yf:
   yaml.dump(data, yf, default_flow_style=False, width=4096)
