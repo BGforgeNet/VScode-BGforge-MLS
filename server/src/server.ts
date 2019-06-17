@@ -21,7 +21,7 @@ import {
 } from 'vscode-languageserver';
 import { connect } from 'tls';
 import { ExecSyncOptionsWithStringEncoding } from 'child_process';
-import Uri from 'vscode-uri';
+import { URI } from 'vscode-uri';
 import * as path from 'path';
 import { ClientRequest } from 'http';
 import * as fallout_ssl from './fallout-ssl';
@@ -167,7 +167,7 @@ documents.onDidChangeContent(change => {
 	let lang_id = documents.get(change.document.uri).languageId;
 	switch (lang_id) {
 		case 'fallout-ssl': {
-			fallout_ssl.reload_defines(completion_map, signature_map, Uri.parse(change.document.uri).fsPath, change.document.getText());
+			fallout_ssl.reload_defines(completion_map, signature_map, URI.parse(change.document.uri).fsPath, change.document.getText());
 			break;
 		}
 	}
