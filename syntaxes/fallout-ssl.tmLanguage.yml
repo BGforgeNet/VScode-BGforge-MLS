@@ -1,7 +1,6 @@
 $schema: https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json
 name: Fallout Star-Trek Scripting Language
 scopeName: source.fallout-ssl
-
 patterns:
 - include: '#function-invocation'
 - include: '#keywords'
@@ -13,7 +12,6 @@ patterns:
 - include: '#types'
 - include: '#constants'
 - include: '#numbers'
-
 repository:
   comments:
     patterns:
@@ -736,7 +734,7 @@ repository:
     end: '"'
     name: string.quoted.double.ssl
     patterns:
-      - match: .
+    - match: .
   types:
     patterns:
     - match: \b(?i)(int|string|ObjectPtr)\b
@@ -745,8 +743,7 @@ repository:
     patterns:
     - match: \b(?i)(variable)\b
       name: keyword.control.ssl
-
   numbers:
     patterns:
     - match: \b(([0-9]+)|(0x[0-9a-fA-F]+))\b
-      name: "constant.numeric.ssl"
+      name: constant.numeric.ssl
