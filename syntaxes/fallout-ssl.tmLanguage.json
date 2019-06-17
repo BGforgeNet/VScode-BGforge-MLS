@@ -2757,6 +2757,7 @@
       ]
     },
     "hooks": {
+      "name": "constant.language.ssl",
       "patterns": [
         {
           "match": "\\b(HOOK_WITHINPERCEPTION)\\b",

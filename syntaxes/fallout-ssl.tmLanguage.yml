@@ -749,6 +749,7 @@ repository:
     - match: \b(([0-9]+)|(0x[0-9a-fA-F]+))\b
       name: constant.numeric.ssl
   hooks:
+    name: constant.language.ssl
     patterns:
     - match: \b(HOOK_WITHINPERCEPTION)\b
-      name: constant.language.ssl
+
