@@ -22,12 +22,13 @@
 - More IE constants supported.
 
 ## 1.0.6
-- Fixed detail missing from weidu completion
+- Fixed detail missing from weidu completion.
 
 ## 1.0.7
-- Added WeiDU patch and macro functions
-- Fixed minor typos
+- Added WeiDU patch and macro functions.
+- Fixed minor typos.
 
 ## 1.0.8
-- Added more macros
-- Added newlines to macro docs
+- Added more WeiDU macros.
+- Added newlines to WeiDU macro docs.
+- Updated Fallout module with latest functions and hooks.
