@@ -32,6 +32,9 @@
     },
     {
       "include": "#numbers"
+    },
+    {
+      "include": "#hooks"
     }
   ],
   "repository": {
@@ -1363,10 +1366,6 @@
         },
         {
           "include": "#sfall-functions",
-          "name": "meta.function.inv.ssl"
-        },
-        {
-          "include": "#sfall-macro",
           "name": "meta.function.inv.ssl"
         }
       ]
@@ -2722,319 +2721,6 @@
         }
       ]
     },
-    "sfall-macro": {
-      "name": "support.function.sfall-macro.ssl",
-      "patterns": [
-        {
-          "match": "\\b(?i)(array_exists)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(array_is_map)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(attack_is_aimed)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(car_gas_amount)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(clear_array)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(create_array_list)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(create_array_map)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(critter_inven_obj2)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(display_stats)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(exec_map_update_scripts)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(floor2)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(get_cursor_mode)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(get_flags)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(get_ini_section)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(get_ini_sections)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(get_map_enter_position)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(get_outline)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(intface_hide)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(intface_is_hidden)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(intface_redraw)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(intface_show)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(inventory_redraw)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(is_in_array)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(item_weight)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(key_pressed_vk)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(list_saved_arrays)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(lock_is_jammed)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(mstr_ai)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(mstr_combat)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(mstr_custom)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(mstr_inventry)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(mstr_item)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(mstr_lsgame)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(mstr_map)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(mstr_misc)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(mstr_options)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(mstr_perk)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(mstr_pipboy)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(mstr_proto)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(mstr_quests)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(mstr_script)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(mstr_scrname)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(mstr_skill)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(mstr_skilldex)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(mstr_stat)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(mstr_trait)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(mstr_worldmap)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(outlined_object)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(real_dude_obj)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(reverse_array)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_attack_explosion_art)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_attack_explosion_pattern)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_attack_explosion_radius)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_attack_is_explosion)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_attack_is_explosion_fire)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_car_intface_art)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_cursor_mode)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_dude_obj)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_explosion_radius)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_flags)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_iface_tag_text)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_ini_setting)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_map_enter_position)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_outline)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_rest_heal_time)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_rest_mode)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_unjam_locks_time)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(shuffle_array)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(sort_array)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(sort_array_reverse)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(spatial_radius)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(temp_array_list)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(temp_array_map)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(tile_refresh_display)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(unjam_lock)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(unsave_array)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(unset_array)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        }
-      ]
-    },
     "strings": {
       "begin": "\"",
       "end": "\"",
@@ -3067,6 +2753,14 @@
         {
           "match": "\\b(([0-9]+)|(0x[0-9a-fA-F]+))\\b",
           "name": "constant.numeric.ssl"
+        }
+      ]
+    },
+    "hooks": {
+      "patterns": [
+        {
+          "match": "\\b(HOOK_WITHINPERCEPTION)\\b",
+          "name": "constant.language.ssl"
         }
       ]
     }

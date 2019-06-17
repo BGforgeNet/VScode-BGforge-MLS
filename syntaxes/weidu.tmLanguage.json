@@ -1312,6 +1312,70 @@
         {
           "match": "\\b(READ_SOUNDSET)\\b",
           "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(tb#factorial)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(tb#fix_file_size)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(FJ_CRE_REINDEX)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(FJ_CRE_EFF_V2)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(T-CRE_EFF_V1)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(SUBSTRING)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(ADD_CRE_SCRIPT)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(DELETE_WORLDMAP_LINKS)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(ADD_WORLDMAP_LINKS)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(UPDATE_PVRZ_INDICES)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(INSTALL_PVRZ)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(FIND_FREE_PVRZ_INDEX)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(DIRECTORY_OF_FILESPEC)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(FILE_OF_FILESPEC)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(RES_OF_FILESPEC)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(EXT_OF_FILESPEC)\\b",
+          "name": "support.function.tp2.weidu"
         }
       ]
     },
