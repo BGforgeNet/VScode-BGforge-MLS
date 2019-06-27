@@ -376,6 +376,7 @@ repository:
     - match: \b(READ_SOUNDSET)\b
     - match: \b(tb#factorial)\b
     - match: \b(tb#fix_file_size)\b
+    - match: \b(FJ_CRE_VALIDITY)\b
     - match: \b(FJ_CRE_REINDEX)\b
     - match: \b(FJ_CRE_EFF_V2)\b
     - match: \b(T-CRE_EFF_V1)\b

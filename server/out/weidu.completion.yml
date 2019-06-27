@@ -1950,6 +1950,21 @@ tp2-patch:
       - SPRINT `tb#fix_file_size_target` to the standard file used to replace file(s) that match the regexp.\n
       - SPRINT `tb#fix_file_size_category` to a descriptive name.\n
       - SPRINT `tb#fix_file_size_regexp` to the regexp for the file(s) to be checked for a match."
+    - name: FJ_CRE_VALIDITY
+      doc: |
+        Checks whether a CRE file is well-formed or not, fixes some common bugs, and reports whether the CRE file is still broken or not. In particular\":\"
+
+        – reports invalidity if it is charbase.cre, shorter than the minimum size, the signature mismatches, or a sub-structure has members and its offset is in the header.
+        – if a empty sub-structure’s offset is in the header, point them to the end of the header.
+        – if the cre is valid, force it to use proper order (known spells, spell memorization info, memorized spells, effects, items, item slot).
+        – forces the CRE file to use EFF V2 effects internally (or EFF V1 if on BG1).
+
+        This is a PATCH function.
+
+        – INT_VAR `do_message` to 1 if you want explicit an explicit message regarding the cre invalidity. Defaults to 0.
+        – INT_VAR `do_reindex` to 0 if you don’t want the creature file to be reindexed. Defaults to 1.
+        – INT_VAR `do_eff` to 0 if you don’t want EFFv1 <-> EFFv2 conversion to be applied. Defaults to 1.
+        – RET `valid` returns 1 if the CRE is well-formed, 0 otherwise.
     - name: FJ_CRE_REINDEX
       doc: "Reorders creatures with nonstandard offset orders. Called by FJ_CRE_VALIDITY automatically if relevant.\n
       This is a PATCH function.\n
