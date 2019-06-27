@@ -1928,6 +1928,41 @@ tp2-patch:
       - INT_VAR `y_coord` to the new Y coordinate.\n
       - INT_VAR `orient` to the new orientation.\n
       - STR_VAR `entrance_name` to the name of the entrance point to be altered. This variable is required."
+    - name: ALTER_AREA_REGION
+      doc: |
+        Patch ''area regions'', also known as area triggers. This is a PATCH function. For all integer variables except `info_point`, a negative value results in no change and the default value is -1. The variable `info_point` results in no change if it has the default value 99999999. In the case of flags, a value of 1 will set the flag and a value of 0 will unset it. For all string variables except `region_name`, the default value is the string "same", which results in no change to that field. The variable `region_name` is required.
+        – INT_VAR `type` to the new type of the region.
+        – INT_VAR `cursor` to the new cursor index to be used.
+        – INT_VAR `trap_detect` to the new difficulty of trap detection.
+        – INT_VAR `trap_remove` to the new difficulty of trap removal.
+        – INT_VAR `trapped` to whether the region should be trapped.
+        – INT_VAR `detected` to whether the trap should be detected.
+        – INT_VAR `flag_locked` to the new value of the flag known as `locked` or `invisible trap` (bit 0).
+        – INT_VAR `flag_resets` to the new value of the flag known as `trap resets` (bit 1).
+        – INT_VAR `flag_party_required` to the new value of the flag known as `party is required` (bit 2).
+        – INT_VAR `flag_trap_detectable` to the new value of the flag known as `trap is detectable` (bit 3).
+        – INT_VAR `flag_trap_enemies` to the new value of the flag known as `trap can be set off by enemies` (bit 4).
+        – INT_VAR `flag_tutorial` to the new value of the flag known as `tutorial trigger` (bit 5).
+        – INT_VAR `flag_trap_npcs` to the new value of the flag known as `trap can be set off by NPCs` (bit 6).
+        – INT_VAR `flag_silent` to the new value of the flag known as `silent trigger` (bit 7).
+        – INT_VAR `flag_deactivated` to the new value of the flag known as `deactivated` (bit 8).
+        – INT_VAR `flag_impassable_npc` to the new value of the flag known as `cannot be passed by NPCs` (bit 9).
+        – INT_VAR `flag_activation_point` to the new value of the flag known as `use activation point` (bit 10).
+        – INT_VAR `flag_connect_to_door` to the new value of the flag known as `connected to door` (bit 11).
+        – INT_VAR `bounding_left` to the new value of the left edge of the bounding box. The vertices remain unchanged.
+        – INT_VAR `bounding_top` to the new value of the top edge of the bounding box. The vertices remain unchanged.
+        – INT_VAR `bounding_right` to the new value of the right edge of the bounding box. The vertices remain unchanged.
+        – INT_VAR `bounding_bottom` to the new value of the bottom edge of the bounding box. The vertices remain unchanged.
+        – INT_VAR `info_point` to the new string reference of the info point.
+        – INT_VAR `launch_x` to the new x coordinate of the launch point.
+        – INT_VAR `launch_y` to the new y coordinate of the launch point.
+        – INT_VAR `activate_x` to the new x coordinate of the activation point.
+        – INT_VAR `activate_y` to the new y coordinate of the activation point.
+        – STR_VAR `region_name` to the name of the region to be patched. This variable is required.
+        – STR_VAR `destination_area` to the resref of the new destination area.
+        – STR_VAR `entrance_name` to the new entrance name of the destination area.
+        – STR_VAR `region_key` to the resref of the key item.
+        – STR_VAR `region_script` to the resref of the region script.
     - name: READ_SOUNDSET
       doc: "Reads soundset of a creature and stores it as an array of string references This is an ACTION macro.\n
       - SPRINT `npc` to the target creature (with .cre extension)\n

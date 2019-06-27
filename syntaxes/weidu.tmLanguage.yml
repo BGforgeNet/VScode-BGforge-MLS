@@ -367,6 +367,7 @@ repository:
     - match: \b(ADD_AREA_ITEM)\b
     - match: \b(ADD_AREA_REGION_TRIGGER)\b
     - match: \b(ALTER_AREA_ACTOR)\b
+    - match: \b(ALTER_AREA_REGION)\b
     - match: \b(ALTER_AREA_CONTAINER)\b
     - match: \b(ADD_CRE_ITEM_FLAGS)\b
     - match: \b(REMOVE_CRE_ITEM_FLAGS)\b
