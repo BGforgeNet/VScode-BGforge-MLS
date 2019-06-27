@@ -32,6 +32,9 @@
     },
     {
       "include": "#numbers"
+    },
+    {
+      "include": "#hooks"
     }
   ],
   "repository": {
@@ -1364,10 +1367,6 @@
         {
           "include": "#sfall-functions",
           "name": "meta.function.inv.ssl"
-        },
-        {
-          "include": "#sfall-macro",
-          "name": "meta.function.inv.ssl"
         }
       ]
     },
@@ -1573,47 +1572,35 @@
       "name": "support.function.sfall.ssl",
       "patterns": [
         {
-          "match": "\\b(?i)(abs)\\b",
+          "match": "\\b(?i)(read_byte)\\b",
           "name": "support.function.sfall.ssl"
         },
         {
-          "match": "\\b(?i)(activate_shader)\\b",
+          "match": "\\b(?i)(read_int)\\b",
           "name": "support.function.sfall.ssl"
         },
         {
-          "match": "\\b(?i)(active_hand)\\b",
+          "match": "\\b(?i)(read_short)\\b",
           "name": "support.function.sfall.ssl"
         },
         {
-          "match": "\\b(?i)(apply_heaveho_fix)\\b",
+          "match": "\\b(?i)(read_string)\\b",
           "name": "support.function.sfall.ssl"
         },
         {
-          "match": "\\b(?i)(arctan)\\b",
+          "match": "\\b(?i)(write_byte)\\b",
           "name": "support.function.sfall.ssl"
         },
         {
-          "match": "\\b(?i)(arrayexpr)\\b",
+          "match": "\\b(?i)(write_int)\\b",
           "name": "support.function.sfall.ssl"
         },
         {
-          "match": "\\b(?i)(array_key)\\b",
+          "match": "\\b(?i)(write_short)\\b",
           "name": "support.function.sfall.ssl"
         },
         {
-          "match": "\\b(?i)(art_exists)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(atof)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(atoi)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(available_global_script_types)\\b",
+          "match": "\\b(?i)(write_string)\\b",
           "name": "support.function.sfall.ssl"
         },
         {
@@ -1657,231 +1644,11 @@
           "name": "support.function.sfall.ssl"
         },
         {
-          "match": "\\b(?i)(charcode)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(clear_selectable_perks)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(cos)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(create_array)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(create_message_window)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(create_spatial)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(deactivate_shader)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(disable_aimed_shots)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(eax_available)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(exponent)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(fix_array)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(force_aimed_shots)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(force_encounter)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(force_encounter_with_flags)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(force_graphics_refresh)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(free_array)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(free_shader)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(fs_copy)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(fs_create)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(fs_delete)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(fs_find)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(fs_pos)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(fs_read_byte)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(fs_read_float)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(fs_read_int)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(fs_read_short)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(fs_resize)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(fs_seek)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(fs_size)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(fs_write_bstring)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(fs_write_byte)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(fs_write_float)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(fs_write_int)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(fs_write_short)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(fs_write_string)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(game_loaded)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(gdialog_get_barter_mod)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(get_array)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(get_attack_type)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(get_available_skill_points)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(get_bodypart_hit_modifier)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(get_critical_table)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
           "match": "\\b(?i)(get_critter_base_stat)\\b",
           "name": "support.function.sfall.ssl"
         },
         {
-          "match": "\\b(?i)(get_critter_current_ap)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
           "match": "\\b(?i)(get_critter_extra_stat)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(get_critter_skill_points)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(get_game_mode)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(get_ini_setting)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(get_ini_string)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(get_kill_counter)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(get_last_attacker)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(get_last_target)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(get_light_level)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(get_mouse_buttons)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(get_mouse_x)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(get_mouse_y)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(get_npc_level)\\b",
           "name": "support.function.sfall.ssl"
         },
         {
@@ -1893,471 +1660,11 @@
           "name": "support.function.sfall.ssl"
         },
         {
-          "match": "\\b(?i)(get_perk_available)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(get_perk_owed)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(get_proto_data)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(get_screen_height)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(get_screen_width)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(get_script)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(get_sfall_arg)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(get_sfall_args)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(get_sfall_global_float)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(get_sfall_global_int)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(get_shader_texture)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(get_shader_version)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(get_tile_fid)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(get_unspent_ap_bonus)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(get_unspent_ap_perk_bonus)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(get_uptime)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(get_viewport_x)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(get_viewport_y)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(get_weapon_ammo_count)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(get_weapon_ammo_pid)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(get_window_under_mouse)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(get_world_map_x_pos)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(get_world_map_y_pos)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(get_year)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(graphics_funcs_available)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(has_fake_perk)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(has_fake_trait)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(hero_select_win)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(hide_iface_tag)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(hide_real_perks)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(inc_npc_level)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(init_hook)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(input_funcs_available)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(in_world_map)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(is_iface_tag_active)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(key_pressed)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(len_array)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(list_as_array)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(list_begin)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(list_end)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(list_next)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(load_array)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(load_shader)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(log)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(mark_movie_played)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(message_str_game)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(metarule2_explosions)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(modified_ini)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(mod_kill_counter)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(mod_skill_points_per_level)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(nb_create_char)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(obj_blocking_line)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(obj_blocking_tile)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(obj_is_carrying_obj)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(party_member_list)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(path_find_to)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(perk_add_mode)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(play_sfall_sound)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(read_byte)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(read_int)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(read_short)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(read_string)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(refresh_pc_art)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(reg_anim_animate_and_hide)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(reg_anim_change_fid)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(reg_anim_combat_check)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(reg_anim_destroy)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(reg_anim_light)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(reg_anim_take_out)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(reg_anim_turn_towards)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(register_hook)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(register_hook_proc)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(remove_attacker_knockback)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(remove_script)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(remove_target_knockback)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(remove_trait)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(remove_weapon_knockback)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(reset_critical_table)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(resize_array)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(resume_game)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(round)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(save_array)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(scan_array)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_array)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_attacker_knockback)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_available_skill_points)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_base_hit_chance_mod)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_base_pickpocket_mod)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_base_skill_mod)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_bodypart_hit_modifier)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_car_current_town)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_critical_table)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
           "match": "\\b(?i)(set_critter_base_stat)\\b",
           "name": "support.function.sfall.ssl"
         },
         {
-          "match": "\\b(?i)(set_critter_burst_disable)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_critter_current_ap)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
           "match": "\\b(?i)(set_critter_extra_stat)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_critter_hit_chance_mod)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_critter_pickpocket_mod)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_critter_skill_mod)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_critter_skill_points)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_df_model)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_dm_model)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_eax_environment)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_fake_perk)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_fake_trait)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_global_script_repeat)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_global_script_type)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_hero_race)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_hero_style)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_hit_chance_max)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_hp_per_level_mod)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_inven_ap_cost)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_map_time_multi)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_movie_path)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_npc_stat_max)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_npc_stat_min)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_palette)\\b",
           "name": "support.function.sfall.ssl"
         },
         {
@@ -2369,6 +1676,14 @@
           "name": "support.function.sfall.ssl"
         },
         {
+          "match": "\\b(?i)(set_npc_stat_max)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_npc_stat_min)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
           "match": "\\b(?i)(set_pc_stat_max)\\b",
           "name": "support.function.sfall.ssl"
         },
@@ -2377,11 +1692,139 @@
           "name": "support.function.sfall.ssl"
         },
         {
-          "match": "\\b(?i)(set_perk_agl)\\b",
+          "match": "\\b(?i)(set_stat_max)\\b",
           "name": "support.function.sfall.ssl"
         },
         {
-          "match": "\\b(?i)(set_perkbox_title)\\b",
+          "match": "\\b(?i)(set_stat_min)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(get_available_skill_points)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(get_critter_skill_points)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_available_skill_points)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_critter_skill_points)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(activate_shader)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(deactivate_shader)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(force_graphics_refresh)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(free_shader)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(get_screen_height)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(get_screen_width)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(get_shader_texture)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(get_shader_version)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(graphics_funcs_available)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(load_shader)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_palette)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_shader_float)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_shader_int)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_shader_mode)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_shader_texture)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_shader_vector)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(clear_selectable_perks)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(get_perk_available)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(get_perk_owed)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(has_fake_perk)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(has_fake_trait)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(hide_real_perks)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(perk_add_mode)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(remove_trait)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(seq_perk_freq)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_fake_perk)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_fake_trait)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_perk_agl)\\b",
           "name": "support.function.sfall.ssl"
         },
         {
@@ -2469,6 +1912,654 @@
           "name": "support.function.sfall.ssl"
         },
         {
+          "match": "\\b(?i)(set_perkbox_title)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_selectable_perk)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(show_real_perks)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(fs_copy)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(fs_create)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(fs_delete)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(fs_find)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(fs_pos)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(fs_read_byte)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(fs_read_float)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(fs_read_int)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(fs_read_short)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(fs_resize)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(fs_seek)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(fs_size)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(fs_write_bstring)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(fs_write_byte)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(fs_write_float)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(fs_write_int)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(fs_write_short)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(fs_write_string)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(remove_attacker_knockback)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(remove_target_knockback)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(remove_weapon_knockback)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_attacker_knockback)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_target_knockback)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_weapon_knockback)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(force_encounter)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(force_encounter_with_flags)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(get_map_enter_position)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(in_world_map)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_map_enter_position)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_map_time_multi)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_world_map_pos)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(get_world_map_x_pos)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(get_world_map_y_pos)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(eax_available)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(play_sfall_sound)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_eax_environment)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(stop_sfall_sound)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(get_weapon_ammo_count)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(get_weapon_ammo_pid)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_weapon_ammo_count)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_weapon_ammo_pid)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(sfall_ver_build)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(sfall_ver_major)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(sfall_ver_minor)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(abs)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(arctan)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(ceil)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(cos)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(exponent)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(log)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(round)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(sin)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(sqrt)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(tan)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(get_mouse_buttons)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(get_mouse_x)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(get_mouse_y)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(key_pressed)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(tap_key)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(list_as_array)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(list_begin)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(list_end)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(list_next)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(get_explosion_damage)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(metarule2_explosions)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_attack_explosion_art)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_attack_explosion_pattern)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_attack_explosion_radius)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_attack_is_explosion_fire)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_dynamite_damage)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_explosion_max_targets)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_explosion_radius)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_plastic_damage)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(reg_anim_animate_and_hide)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(reg_anim_change_fid)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(reg_anim_combat_check)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(reg_anim_destroy)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(reg_anim_light)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(reg_anim_take_out)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(reg_anim_turn_towards)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(get_tile_fid)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(tile_get_objs)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(tile_light)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(tile_refresh_display)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(tile_under_cursor)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(active_hand)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(apply_heaveho_fix)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(art_exists)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(atof)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(atoi)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(available_global_script_types)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(block_combat)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(charcode)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(create_message_window)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(create_spatial)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(disable_aimed_shots)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(force_aimed_shots)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(game_loaded)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(gdialog_get_barter_mod)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(get_attack_type)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(get_bodypart_hit_modifier)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(get_critical_table)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(get_critter_current_ap)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(get_game_mode)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(get_ini_setting)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(get_ini_string)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(get_kill_counter)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(get_last_attacker)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(get_last_target)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(get_light_level)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(get_npc_level)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(get_proto_data)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(get_script)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(get_unspent_ap_bonus)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(get_unspent_ap_perk_bonus)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(get_uptime)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(get_viewport_x)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(get_viewport_y)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(get_window_under_mouse)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(get_year)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(hero_select_win)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(inc_npc_level)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(input_funcs_available)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(mark_movie_played)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(message_str_game)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(mod_kill_counter)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(mod_skill_points_per_level)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(modified_ini)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(nb_create_char)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(obj_blocking_line)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(obj_blocking_tile)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(obj_is_carrying_obj)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(party_member_list)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(path_find_to)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(refresh_pc_art)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(remove_script)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(reset_critical_table)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(resume_game)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_base_hit_chance_mod)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_base_pickpocket_mod)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_base_skill_mod)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_bodypart_hit_modifier)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_car_current_town)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_critical_table)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_critter_burst_disable)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_critter_current_ap)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_critter_hit_chance_mod)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_critter_pickpocket_mod)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_critter_skill_mod)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_df_model)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_dm_model)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_global_script_repeat)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_global_script_type)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_hero_race)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_hero_style)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_hit_chance_max)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_hp_per_level_mod)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_inven_ap_cost)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_movie_path)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
           "match": "\\b(?i)(set_pickpocket_max)\\b",
           "name": "support.function.sfall.ssl"
         },
@@ -2489,47 +2580,7 @@
           "name": "support.function.sfall.ssl"
         },
         {
-          "match": "\\b(?i)(set_selectable_perk)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
           "match": "\\b(?i)(set_self)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_sfall_arg)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_sfall_arg)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_sfall_global)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_sfall_return)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_shader_float)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_shader_int)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_shader_mode)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_shader_texture)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_shader_vector)\\b",
           "name": "support.function.sfall.ssl"
         },
         {
@@ -2537,19 +2588,7 @@
           "name": "support.function.sfall.ssl"
         },
         {
-          "match": "\\b(?i)(set_stat_max)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_stat_min)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
           "match": "\\b(?i)(set_swiftlearner_mod)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_target_knockback)\\b",
           "name": "support.function.sfall.ssl"
         },
         {
@@ -2569,23 +2608,143 @@
           "name": "support.function.sfall.ssl"
         },
         {
-          "match": "\\b(?i)(set_weapon_ammo_count)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_weapon_ammo_pid)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_weapon_knockback)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_world_map_pos)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
           "match": "\\b(?i)(set_xp_mod)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(sneak_success)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(sprintf)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(stop_game)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(string_split)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(strlen)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(substr)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(toggle_active_hand)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(typeof)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(hide_iface_tag)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(is_iface_tag_active)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(show_iface_tag)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(get_sfall_global_float)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(get_sfall_global_int)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_sfall_global)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(get_sfall_arg)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(get_sfall_args)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(init_hook)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(register_hook)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(register_hook_proc)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_sfall_arg)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_sfall_return)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(array_key)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(arrayexpr)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(create_array)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(fix_array)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(free_array)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(get_array)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(len_array)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(load_array)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(resize_array)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(save_array)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(scan_array)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_array)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(temp_array)\\b",
           "name": "support.function.sfall.ssl"
         },
         {
@@ -2617,421 +2776,236 @@
           "name": "support.function.sfall.ssl"
         },
         {
-          "match": "\\b(?i)(sfall_ver_build)\\b",
+          "match": "\\b(?i)(add_iface_tag)\\b",
           "name": "support.function.sfall.ssl"
         },
         {
-          "match": "\\b(?i)(sfall_ver_major)\\b",
+          "match": "\\b(?i)(art_cache_clear)\\b",
           "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(sfall_ver_minor)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(show_iface_tag)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(show_real_perks)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(sin)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(sneak_success)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(sprintf)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(sqrt)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(stop_game)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(stop_sfall_sound)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(string_split)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(strlen)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(substr)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(tan)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(tap_key)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(temp_array)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(tile_get_objs)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(tile_light)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(tile_under_cursor)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(toggle_active_hand)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(typeof)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(write_byte)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(write_int)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(write_short)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(write_string)\\b",
-          "name": "support.function.sfall.ssl"
-        }
-      ]
-    },
-    "sfall-macro": {
-      "name": "support.function.sfall-macro.ssl",
-      "patterns": [
-        {
-          "match": "\\b(?i)(array_exists)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(array_is_map)\\b",
-          "name": "support.function.sfall-macro.ssl"
         },
         {
           "match": "\\b(?i)(attack_is_aimed)\\b",
-          "name": "support.function.sfall-macro.ssl"
+          "name": "support.function.sfall.ssl"
         },
         {
           "match": "\\b(?i)(car_gas_amount)\\b",
-          "name": "support.function.sfall-macro.ssl"
+          "name": "support.function.sfall.ssl"
         },
         {
-          "match": "\\b(?i)(clear_array)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(create_array_list)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(create_array_map)\\b",
-          "name": "support.function.sfall-macro.ssl"
+          "match": "\\b(?i)(create_win)\\b",
+          "name": "support.function.sfall.ssl"
         },
         {
           "match": "\\b(?i)(critter_inven_obj2)\\b",
-          "name": "support.function.sfall-macro.ssl"
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(dialog_message)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(dialog_obj)\\b",
+          "name": "support.function.sfall.ssl"
         },
         {
           "match": "\\b(?i)(display_stats)\\b",
-          "name": "support.function.sfall-macro.ssl"
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(draw_image)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(draw_image_scaled)\\b",
+          "name": "support.function.sfall.ssl"
         },
         {
           "match": "\\b(?i)(exec_map_update_scripts)\\b",
-          "name": "support.function.sfall-macro.ssl"
+          "name": "support.function.sfall.ssl"
         },
         {
           "match": "\\b(?i)(floor2)\\b",
-          "name": "support.function.sfall-macro.ssl"
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(get_can_rest_on_map)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(get_current_inven_size)\\b",
+          "name": "support.function.sfall.ssl"
         },
         {
           "match": "\\b(?i)(get_cursor_mode)\\b",
-          "name": "support.function.sfall-macro.ssl"
+          "name": "support.function.sfall.ssl"
         },
         {
           "match": "\\b(?i)(get_flags)\\b",
-          "name": "support.function.sfall-macro.ssl"
+          "name": "support.function.sfall.ssl"
         },
         {
           "match": "\\b(?i)(get_ini_section)\\b",
-          "name": "support.function.sfall-macro.ssl"
+          "name": "support.function.sfall.ssl"
         },
         {
           "match": "\\b(?i)(get_ini_sections)\\b",
-          "name": "support.function.sfall-macro.ssl"
+          "name": "support.function.sfall.ssl"
         },
         {
-          "match": "\\b(?i)(get_map_enter_position)\\b",
-          "name": "support.function.sfall-macro.ssl"
+          "match": "\\b(?i)(get_metarule_table)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(get_object_ai_data)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(get_object_data)\\b",
+          "name": "support.function.sfall.ssl"
         },
         {
           "match": "\\b(?i)(get_outline)\\b",
-          "name": "support.function.sfall-macro.ssl"
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(get_string_pointer)\\b",
+          "name": "support.function.sfall.ssl"
         },
         {
           "match": "\\b(?i)(intface_hide)\\b",
-          "name": "support.function.sfall-macro.ssl"
+          "name": "support.function.sfall.ssl"
         },
         {
           "match": "\\b(?i)(intface_is_hidden)\\b",
-          "name": "support.function.sfall-macro.ssl"
+          "name": "support.function.sfall.ssl"
         },
         {
           "match": "\\b(?i)(intface_redraw)\\b",
-          "name": "support.function.sfall-macro.ssl"
+          "name": "support.function.sfall.ssl"
         },
         {
           "match": "\\b(?i)(intface_show)\\b",
-          "name": "support.function.sfall-macro.ssl"
+          "name": "support.function.sfall.ssl"
         },
         {
           "match": "\\b(?i)(inventory_redraw)\\b",
-          "name": "support.function.sfall-macro.ssl"
+          "name": "support.function.sfall.ssl"
         },
         {
-          "match": "\\b(?i)(is_in_array)\\b",
-          "name": "support.function.sfall-macro.ssl"
+          "match": "\\b(?i)(item_make_explosive)\\b",
+          "name": "support.function.sfall.ssl"
         },
         {
           "match": "\\b(?i)(item_weight)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(key_pressed_vk)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(list_saved_arrays)\\b",
-          "name": "support.function.sfall-macro.ssl"
+          "name": "support.function.sfall.ssl"
         },
         {
           "match": "\\b(?i)(lock_is_jammed)\\b",
-          "name": "support.function.sfall-macro.ssl"
+          "name": "support.function.sfall.ssl"
         },
         {
-          "match": "\\b(?i)(mstr_ai)\\b",
-          "name": "support.function.sfall-macro.ssl"
+          "match": "\\b(?i)(loot_obj)\\b",
+          "name": "support.function.sfall.ssl"
         },
         {
-          "match": "\\b(?i)(mstr_combat)\\b",
-          "name": "support.function.sfall-macro.ssl"
+          "match": "\\b(?i)(npc_engine_level_up)\\b",
+          "name": "support.function.sfall.ssl"
         },
         {
-          "match": "\\b(?i)(mstr_custom)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(mstr_inventry)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(mstr_item)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(mstr_lsgame)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(mstr_map)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(mstr_misc)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(mstr_options)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(mstr_perk)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(mstr_pipboy)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(mstr_proto)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(mstr_quests)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(mstr_script)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(mstr_scrname)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(mstr_skill)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(mstr_skilldex)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(mstr_stat)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(mstr_trait)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(mstr_worldmap)\\b",
-          "name": "support.function.sfall-macro.ssl"
+          "match": "\\b(?i)(obj_under_cursor)\\b",
+          "name": "support.function.sfall.ssl"
         },
         {
           "match": "\\b(?i)(outlined_object)\\b",
-          "name": "support.function.sfall-macro.ssl"
+          "name": "support.function.sfall.ssl"
         },
         {
           "match": "\\b(?i)(real_dude_obj)\\b",
-          "name": "support.function.sfall-macro.ssl"
+          "name": "support.function.sfall.ssl"
         },
         {
-          "match": "\\b(?i)(reverse_array)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_attack_explosion_art)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_attack_explosion_pattern)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_attack_explosion_radius)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_attack_is_explosion)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_attack_is_explosion_fire)\\b",
-          "name": "support.function.sfall-macro.ssl"
+          "match": "\\b(?i)(set_can_rest_on_map)\\b",
+          "name": "support.function.sfall.ssl"
         },
         {
           "match": "\\b(?i)(set_car_intface_art)\\b",
-          "name": "support.function.sfall-macro.ssl"
+          "name": "support.function.sfall.ssl"
         },
         {
           "match": "\\b(?i)(set_cursor_mode)\\b",
-          "name": "support.function.sfall-macro.ssl"
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_drugs_data)\\b",
+          "name": "support.function.sfall.ssl"
         },
         {
           "match": "\\b(?i)(set_dude_obj)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_explosion_radius)\\b",
-          "name": "support.function.sfall-macro.ssl"
+          "name": "support.function.sfall.ssl"
         },
         {
           "match": "\\b(?i)(set_flags)\\b",
-          "name": "support.function.sfall-macro.ssl"
+          "name": "support.function.sfall.ssl"
         },
         {
           "match": "\\b(?i)(set_iface_tag_text)\\b",
-          "name": "support.function.sfall-macro.ssl"
+          "name": "support.function.sfall.ssl"
         },
         {
           "match": "\\b(?i)(set_ini_setting)\\b",
-          "name": "support.function.sfall-macro.ssl"
+          "name": "support.function.sfall.ssl"
         },
         {
-          "match": "\\b(?i)(set_map_enter_position)\\b",
-          "name": "support.function.sfall-macro.ssl"
+          "match": "\\b(?i)(set_object_data)\\b",
+          "name": "support.function.sfall.ssl"
         },
         {
           "match": "\\b(?i)(set_outline)\\b",
-          "name": "support.function.sfall-macro.ssl"
+          "name": "support.function.sfall.ssl"
         },
         {
           "match": "\\b(?i)(set_rest_heal_time)\\b",
-          "name": "support.function.sfall-macro.ssl"
+          "name": "support.function.sfall.ssl"
         },
         {
           "match": "\\b(?i)(set_rest_mode)\\b",
-          "name": "support.function.sfall-macro.ssl"
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_unique_id)\\b",
+          "name": "support.function.sfall.ssl"
         },
         {
           "match": "\\b(?i)(set_unjam_locks_time)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(shuffle_array)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(sort_array)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(sort_array_reverse)\\b",
-          "name": "support.function.sfall-macro.ssl"
+          "name": "support.function.sfall.ssl"
         },
         {
           "match": "\\b(?i)(spatial_radius)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(temp_array_list)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(temp_array_map)\\b",
-          "name": "support.function.sfall-macro.ssl"
-        },
-        {
-          "match": "\\b(?i)(tile_refresh_display)\\b",
-          "name": "support.function.sfall-macro.ssl"
+          "name": "support.function.sfall.ssl"
         },
         {
           "match": "\\b(?i)(unjam_lock)\\b",
-          "name": "support.function.sfall-macro.ssl"
+          "name": "support.function.sfall.ssl"
         },
         {
-          "match": "\\b(?i)(unsave_array)\\b",
-          "name": "support.function.sfall-macro.ssl"
+          "match": "\\b(?i)(has_fake_perk_npc)\\b",
+          "name": "support.function.sfall.ssl"
         },
         {
-          "match": "\\b(?i)(unset_array)\\b",
-          "name": "support.function.sfall-macro.ssl"
+          "match": "\\b(?i)(has_fake_trait_npc)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_fake_perk_npc)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_fake_trait_npc)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_selectable_perk_npc)\\b",
+          "name": "support.function.sfall.ssl"
         }
       ]
     },
@@ -3067,6 +3041,159 @@
         {
           "match": "\\b(([0-9]+)|(0x[0-9a-fA-F]+))\\b",
           "name": "constant.numeric.ssl"
+        }
+      ]
+    },
+    "hooks": {
+      "name": "constant.language.ssl",
+      "patterns": [
+        {
+          "match": "\\b(HOOK_ADJUSTFID)\\b",
+          "name": "constant.language.ssl"
+        },
+        {
+          "match": "\\b(HOOK_AFTERHITROLL)\\b",
+          "name": "constant.language.ssl"
+        },
+        {
+          "match": "\\b(HOOK_AMMOCOST)\\b",
+          "name": "constant.language.ssl"
+        },
+        {
+          "match": "\\b(HOOK_BARTERPRICE)\\b",
+          "name": "constant.language.ssl"
+        },
+        {
+          "match": "\\b(HOOK_CALCAPCOST)\\b",
+          "name": "constant.language.ssl"
+        },
+        {
+          "match": "\\b(HOOK_CARTRAVEL)\\b",
+          "name": "constant.language.ssl"
+        },
+        {
+          "match": "\\b(HOOK_COMBATDAMAGE)\\b",
+          "name": "constant.language.ssl"
+        },
+        {
+          "match": "\\b(HOOK_COMBATTURN)\\b",
+          "name": "constant.language.ssl"
+        },
+        {
+          "match": "\\b(HOOK_DEATHANIM1)\\b",
+          "name": "constant.language.ssl"
+        },
+        {
+          "match": "\\b(HOOK_DEATHANIM2)\\b",
+          "name": "constant.language.ssl"
+        },
+        {
+          "match": "\\b(HOOK_DEPRECATED HOOKS)\\b",
+          "name": "constant.language.ssl"
+        },
+        {
+          "match": "\\b(HOOK_DESCRIPTIONOBJ)\\b",
+          "name": "constant.language.ssl"
+        },
+        {
+          "match": "\\b(HOOK_EXPLOSIVETIMER)\\b",
+          "name": "constant.language.ssl"
+        },
+        {
+          "match": "\\b(HOOK_FINDTARGET)\\b",
+          "name": "constant.language.ssl"
+        },
+        {
+          "match": "\\b(HOOK_GAMEMODECHANGE)\\b",
+          "name": "constant.language.ssl"
+        },
+        {
+          "match": "\\b(HOOK_INVENWIELD)\\b",
+          "name": "constant.language.ssl"
+        },
+        {
+          "match": "\\b(HOOK_INVENTORYMOVE)\\b",
+          "name": "constant.language.ssl"
+        },
+        {
+          "match": "\\b(HOOK_ITEMDAMAGE)\\b",
+          "name": "constant.language.ssl"
+        },
+        {
+          "match": "\\b(HOOK_KEYPRESS)\\b",
+          "name": "constant.language.ssl"
+        },
+        {
+          "match": "\\b(HOOK_MOUSECLICK)\\b",
+          "name": "constant.language.ssl"
+        },
+        {
+          "match": "\\b(HOOK_MOVECOST)\\b",
+          "name": "constant.language.ssl"
+        },
+        {
+          "match": "\\b(HOOK_ONDEATH)\\b",
+          "name": "constant.language.ssl"
+        },
+        {
+          "match": "\\b(HOOK_ONEXPLOSION)\\b",
+          "name": "constant.language.ssl"
+        },
+        {
+          "match": "\\b(HOOK_REMOVEINVENOBJ)\\b",
+          "name": "constant.language.ssl"
+        },
+        {
+          "match": "\\b(HOOK_RESTTIMER)\\b",
+          "name": "constant.language.ssl"
+        },
+        {
+          "match": "\\b(HOOK_SETGLOBALVAR)\\b",
+          "name": "constant.language.ssl"
+        },
+        {
+          "match": "\\b(HOOK_SETLIGHTING)\\b",
+          "name": "constant.language.ssl"
+        },
+        {
+          "match": "\\b(HOOK_SNEAK)\\b",
+          "name": "constant.language.ssl"
+        },
+        {
+          "match": "\\b(HOOK_STEAL)\\b",
+          "name": "constant.language.ssl"
+        },
+        {
+          "match": "\\b(HOOK_SUBCOMBATDAMAGE)\\b",
+          "name": "constant.language.ssl"
+        },
+        {
+          "match": "\\b(HOOK_TOHIT)\\b",
+          "name": "constant.language.ssl"
+        },
+        {
+          "match": "\\b(HOOK_USEANIMOBJ)\\b",
+          "name": "constant.language.ssl"
+        },
+        {
+          "match": "\\b(HOOK_USEOBJ)\\b",
+          "name": "constant.language.ssl"
+        },
+        {
+          "match": "\\b(HOOK_USEOBJON)\\b",
+          "name": "constant.language.ssl"
+        },
+        {
+          "match": "\\b(HOOK_USESKILL)\\b",
+          "name": "constant.language.ssl"
+        },
+        {
+          "match": "\\b(HOOK_USESKILLON)\\b",
+          "name": "constant.language.ssl"
+        },
+        {
+          "match": "\\b(HOOK_WITHINPERCEPTION)\\b",
+          "name": "constant.language.ssl"
         }
       ]
     }
