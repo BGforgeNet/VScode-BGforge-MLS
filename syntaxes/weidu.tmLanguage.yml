@@ -390,6 +390,8 @@ repository:
     - match: \b(FILE_OF_FILESPEC)\b
     - match: \b(RES_OF_FILESPEC)\b
     - match: \b(EXT_OF_FILESPEC)\b
+    - match: \b(fj_are_structure)\b
+    - match: \b(sc#addWmpAre)\b
 
   weidu-tp2-patch-controls:
     name: keyword.control.patch.weidu
@@ -827,6 +829,14 @@ repository:
     - match: \b(SAVE_DIRECTORY)\b
     - match: \b(MPSAVE_DIRECTORY)\b
     - match: \b(EE_LANGUAGE)\b
+
+    - match: \b(BEGIN)\b
+    - match: \b(END)\b
+
+    - match: \b(INT_VAR)\b
+    - match: \b(STR_VAR)\b
+    - match: \b(RET)\b
+    - match: \b(RET_ARRAY)\b
 
   inlined-d:
     name: meta.weidu.inlined.d
