@@ -21,7 +21,7 @@ import {
 } from 'vscode-languageserver';
 import { connect } from 'tls';
 import { ExecSyncOptionsWithStringEncoding } from 'child_process';
-import Uri from 'vscode-uri';
+import { URI } from 'vscode-uri';
 import * as path from 'path';
 import { ClientRequest } from 'http';
 import * as fallout_ssl from './fallout-ssl';
@@ -167,7 +167,7 @@ documents.onDidChangeContent(change => {
 	let lang_id = documents.get(change.document.uri).languageId;
 	switch (lang_id) {
 		case 'fallout-ssl': {
-			fallout_ssl.reload_defines(completion_map, signature_map, Uri.parse(change.document.uri).fsPath, change.document.getText());
+			fallout_ssl.reload_defines(completion_map, signature_map, URI.parse(change.document.uri).fsPath, change.document.getText());
 			break;
 		}
 	}
@@ -222,7 +222,15 @@ function load_completion() {
 				let detail: string;
 				let doc: string;
 				for (element of completion_yaml[item]['items']) {
-					detail = element['detail'] || element['name']; // copy name to detail if it's empty
+
+					// copy name to detail if it's empty
+					detail = element['detail'] || element['name'];
+					//strip () from the end of the string (not necessary in Fallout SSL)
+					let last_two = detail.substr(-2);
+					if (last_two == "()") {
+						detail = detail.substr(0, detail.length-2);
+					}
+
 					doc = element['doc'] || ''; // allow empty doc, too
 					completion_list.push({ label: element['name'], kind: kind, documentation: doc, detail: detail, source: "builtin" });
 				}

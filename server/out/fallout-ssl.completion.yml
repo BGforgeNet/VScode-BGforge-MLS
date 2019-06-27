@@ -992,13 +992,13 @@ sfall-functions:
     detail: void stop_sfall_sound(int ptr)
     doc: Stops looping mp3/wav/wma files previously launched by `play_sfall_sound`. All sounds effects will be stopped on game reload, looping or not. Does not require `AllowDShowSound` to be set to 1 in `ddraw.ini`.
   - name: get_weapon_ammo_count
-    detail: int get_weapon_ammo_count(ObjPtr weapon)
+    detail: int get_weapon_ammo_count(ObjectPtr weapon)
   - name: get_weapon_ammo_pid
-    detail: int get_weapon_ammo_pid(ObjPtr weapon)
+    detail: int get_weapon_ammo_pid(ObjectPtr weapon)
   - name: set_weapon_ammo_count
-    detail: void set_weapon_ammo_count(ObjPtr weapon, int count)
+    detail: void set_weapon_ammo_count(ObjectPtr weapon, int count)
   - name: set_weapon_ammo_pid
-    detail: void set_weapon_ammo_pid(ObjPtr weapon, int pid)
+    detail: void set_weapon_ammo_pid(ObjectPtr weapon, int pid)
   - name: sfall_ver_build
     detail: int sfall_ver_build()
   - name: sfall_ver_major
@@ -1092,25 +1092,25 @@ sfall-functions:
     detail: void set_plastic_damage(minDmg, maxDmg)
     doc: Sets the minimum and maximum damage for Plastic Explosives. Changed damage will be reset each time the player reloads the game.
   - name: reg_anim_animate_and_hide
-    detail: void reg_anim_animate_and_hide(ObjPtr, int animID, int delay)
+    detail: void reg_anim_animate_and_hide(ObjectPtr, int animID, int delay)
     doc: Exactly like `reg_anim_animate` but the object will automatically disappear after the last animation frame (but not destroyed).
   - name: reg_anim_change_fid
-    detail: void reg_anim_change_fid(ObjPtr, int FID, int delay)
+    detail: void reg_anim_change_fid(ObjectPtr, int FID, int delay)
     doc: Should work like `art_change_fid_num` but in `reg_anim` sequence.
   - name: reg_anim_combat_check
     detail: void reg_anim_combat_check(int enable)
     doc: Allows to enable all `reg_anim_*` functions in combat (including vanilla functions) if set to 0. It is automatically reset at the end of each frame, so you need to call it before `reg_anim_begin` - `reg_anim_end` block.
   - name: reg_anim_destroy
-    detail: void reg_anim_destroy(ObjPtr)
+    detail: void reg_anim_destroy(ObjectPtr)
     doc: Given object is destroyed at the end of current animation set.
   - name: reg_anim_light
-    detail: void reg_anim_light(ObjPtr, int light, int delay)
+    detail: void reg_anim_light(ObjectPtr, int light, int delay)
     doc: 'Change light of any object. Light argument is a light radius (0-8), but you can use highest 2 bytes to pass light intensity as well (example: 0xFFFF0008 - intensity 65535 and radius 8). If highest 2 bytes are 0, intensity will not be changed. Intensity range is from 0 to 65535 (0xFFFF)'
   - name: reg_anim_take_out
-    detail: void reg_anim_take_out(ObjPtr, holdFrameID, delay)
+    detail: void reg_anim_take_out(ObjectPtr, holdFrameID, delay)
     doc: Plays "take out weapon" animation for given `holdFrameID`. It is not required to have such weapon in critter's inventory.
   - name: reg_anim_turn_towards
-    detail: void reg_anim_turn_towards(ObjPtr, int tile/target, delay)
+    detail: void reg_anim_turn_towards(ObjectPtr, int tile/target, delay)
     doc: Makes object change its direction to face given tile num or target object.
   - name: get_tile_fid
     detail: int get_tile_fid(int tile)
@@ -1193,10 +1193,10 @@ sfall-functions:
   - name: get_kill_counter
     detail: int get_kill_counter(int critterType)
   - name: get_last_attacker
-    detail: ObjectPtr get_last_attacker(ObjPtr critter)
+    detail: ObjectPtr get_last_attacker(ObjectPtr critter)
     doc: Will return the last critter to deliberately launch an attack against the argument critter. If a critter has not launched/received an attack, it will return 0. Outside of combat always returns 0.
   - name: get_last_target
-    detail: ObjectPtr get_last_target(ObjPtr critter)
+    detail: ObjectPtr get_last_target(ObjectPtr critter)
     doc: Will return the last critter to be deliberately attacked. Outside of combat always returns 0.
   - name: get_light_level
     detail: int get_light_level()
@@ -1207,7 +1207,7 @@ sfall-functions:
     detail: int get_proto_data(int pid, int offset)
     doc: Used to read the in-memory copies of the .pro files Fallout makes when they are loaded. The offset refers to the offset in memory from the start of the proto to the element you are reading.
   - name: get_script
-    detail: int get_script(ObjPtr)
+    detail: int get_script(ObjectPtr)
     doc: Accepts a pointer to an object and returns its scriptID (line number in `scripts.lst`), or -1 if the object is unscripted.
   - name: get_unspent_ap_bonus
     detail: int get_unspent_ap_bonus()
@@ -1273,7 +1273,7 @@ sfall-functions:
   - name: refresh_pc_art
     detail: void refresh_pc_art
   - name: remove_script
-    detail: void remove_script(ObjPtr)
+    detail: void remove_script(ObjectPtr)
     doc: Accepts a pointer to an object and will remove the script from that object.
   - name: reset_critical_table
     detail: void reset_critical_table(int crittertype, int bodypart, int level, int valuetype)
@@ -1343,10 +1343,10 @@ sfall-functions:
   - name: set_pyromaniac_mod
     detail: void set_pyromaniac_mod(int bonus)
   - name: set_script
-    detail: void set_script(ObjPtr, int scriptid)
+    detail: void set_script(ObjectPtr, int scriptid)
     doc: Accepts a pointer to an object and scriptID, and applies the given script to an object (scriptID accept the same values as `create_object_sid `from sfall 3.6). If used on an object that is already scripted, it will remove the existing script first; you cannot have multiple scripts attached to a single object. Calling `set_script` on `self_obj` will have all sorts of wacky side effects, and should be avoided. If you add 0x80000000 to the sid when calling `set_script`, `map_enter_p_proc` will be SKIPPED. The `start` proc will always be run.
   - name: set_self
-    detail: void set_self(ObjPtr)
+    detail: void set_self(ObjectPtr)
     doc: 'Overrides the script''s `self_obj` for the next function call.
 
       - It is primarily used to allow the calling of functions which take an implicit `self_obj` parameter (e.g. `drop_obj`) from global scripts, but it can also be used from normal scripts.
@@ -1570,7 +1570,7 @@ sfall-functions:
     detail: void dialog_message(string text)
     doc: Risplays a message in the NPC response window in dialog or barter screen.
   - name: dialog_obj
-    detail: ObjPtr dialog_obj()
+    detail: ObjectPtr dialog_obj()
     doc: Returns a pointer to the object (critter) the player is having a conversation or bartering with.
   - name: display_stats
     detail: void display_stats()
@@ -1621,7 +1621,7 @@ sfall-functions:
     detail: get_can_rest_on_map(int mapNum, int elev)
     doc: Returns the set rest value of the map after using the `set_can_rest_on_map` function. Returns -1 if the rest value of the map was not previously set (i.e. no data for the map in `sfalldb.sav`). The `can_rest_here values` in `maps.txt` are ignored.
   - name: get_current_inven_size
-    detail: get_current_inven_size(ObjPtr object)
+    detail: get_current_inven_size(ObjectPtr object)
     doc: Returns the current inventory size of the container or the critter.
   - name: get_cursor_mode
     detail: int get_cursor_mode()
@@ -1639,10 +1639,10 @@ sfall-functions:
     detail: array get_metarule_table
     doc: Returns names of all currently available scripting functions.
   - name: get_object_ai_data
-    detail: int get_object_ai_data(ObjPtr object, int aiParam)
+    detail: int get_object_ai_data(ObjectPtr object, int aiParam)
     doc: Returns the setting value from the AI packet of an object (critter). Use `AI_CAP_*` constants from `define_extra.h` for the `aiParam` argument to get AI value.
   - name: get_object_data
-    detail: get_object_data(ObjPtr object, int offset)
+    detail: get_object_data(ObjectPtr object, int offset)
     doc: Returns the data at the specified offset of an object (see `OBJ_DATA_*` constants in `define_extra.h` for offsets).
   - name: get_outline
     detail: int get_outline(ObjectPtr obj)
@@ -1689,13 +1689,13 @@ sfall-functions:
     detail: bool lock_is_jammed(ObjectPtr obj)
     doc: Returns 1 if the lock (container or scenery) is currently jammed, 0 otherwise.
   - name: loot_obj
-    detail: ObjPtr loot_obj()
+    detail: ObjectPtr loot_obj()
     doc: Returns a pointer to the target object (container or critter) of the loot screen.
   - name: npc_engine_level_up
     detail: void npc_engine_level_up(bool toggle)
     doc: Enables/disables the engine function that increases the level of party members in the player leveling process. If the engine function is disabled, the process of leveling up party members should be performed by script functions.
   - name: obj_under_cursor
-    detail: ObjPtr obj_under_cursor(bool crSwitch, bool inclDude)
+    detail: ObjectPtr obj_under_cursor(bool crSwitch, bool inclDude)
     doc: 'Returns the object under the cursor on the main game screen. `crSwitch: True` - only checks critters and ignores their cover (roof tiles, walls, scenery, etc.), False - checks all objects (can''t check critters under objects). Passing False to the `inclDude` argument will ignore `dude_obj`'
   - name: outlined_object
     detail: ObjectPtr outlined_object()
@@ -1736,7 +1736,7 @@ sfall-functions:
     detail: void set_ini_setting(string setting, int/string value)
     doc: Writes an integer or a string value to an ini file in the Fallout directory. If the ini file does not exist, it will be created The setting argument works in the same way as in `get_ini_setting`, seperate the file name, section and key with a "|" character. __Note:__ the file name is limited to 63 chars (including the extension), the section name is limited to 32 characters.
   - name: set_object_data
-    detail: set_object_data(ObjPtr object, int offset, int data)
+    detail: set_object_data(ObjectPtr object, int offset, int data)
     doc: Sets the data at the specified offset of an object.
   - name: set_outline
     detail: void set_outline(ObjectPtr obj, int color)
@@ -1748,7 +1748,7 @@ sfall-functions:
     detail: void set_rest_mode(int flags)
     doc: Sets the bit flags for the rest mode (see `RESTMODE_*` constants in `sfall.h`). Passing 0 will reset the rest mode. It will also be reset each time the player reloads the game.
   - name: set_unique_id
-    detail: int set_unique_id(ObjPtr object, int flag)
+    detail: int set_unique_id(ObjectPtr object, int flag)
     doc: 'Assigns a unique ID number to the object and returns it. If a unique ID number has already been assigned to an object, then ID number is returned without reassignment. `flag` is optional.
 
       - items with unique IDs will not stack with other items of the same type in the inventory

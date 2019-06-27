@@ -25,7 +25,7 @@ More [coming](https://forums.bgforge.net/viewtopic.php?f=35&t=174&p=506).
 This extension contributes the following settings:
 
 * `bgforge.fallout-ssl.compile`: Path to Fallout SSL compile.exe plus compilation options.
-* `bgforge.fallout-ssl.output_directory`:  Where to put the compiled Fallout SSL scripts. Absolute path or relative to source directory.
+* `bgforge.fallout-ssl.output_directory`: Where to put the compiled Fallout SSL scripts. Absolute path or relative to source directory.
 * `bgforge.fallout-ssl.headers_directory`: Absolute path to directory containing Fallout headers, searched recursively.
 * `bgforge.weidu.path`: Full path to WeiDU binary
 
@@ -33,7 +33,7 @@ This extension contributes the following settings:
 * `CTRL+R`: compile (Fallout SSL) or parse (WeiDU .tp2) file, reporting errors if any.
 
 ### Installation
-Search for BGforge in VScode marketplace, like any other extension. Alternatively, download the package from releases tab and install it manually.
+Search for BGforge in VScode marketplace, like any other extension. Alternatively, download the package from [Github releases](https://github.com/BGforgeNet/vscode-bgforge-mls/releases) tab and install it manually.
 
 ### Screenshots
 ##### Infinity Engine highlighting and completion

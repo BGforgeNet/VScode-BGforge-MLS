@@ -4,19 +4,27 @@
 	"scopeName": "source.fallout-ssl-codeblock",
 	"patterns": [
 		{
-			"include": "#common"
+			"include": "#function-name"
 		}
 	],
 	"repository": {
-		"common": {
-			"patterns": [
+		"function-name": {
+      "name": "meta.fallout-ssl-codeblock",
+      "patterns": [
+        {
+					"match": "\\b(?i)(array|any|bool|int|mixed|float|ObjPtr|ObjectPtr|proc|string|void)\\b[[:blank:]]+\\b(\\w+)\\b",
+          "captures": {
+            "1": {
+              "name": "storage.type.fallout-ssl-codeblock"
+            },
+            "2": {
+              "name": "entity.name.function"
+            }
+					}
+        },
 				{
 					"include": "source.cpp",
 					"match": "."
-				},
-				{
-					"match": "\\b(ObjectPtr|mixed|array|string)\\b",
-					"name": "storage.type.fallout-ssl-codeblock"
 				}
 			]
 		}
