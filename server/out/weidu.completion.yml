@@ -2035,283 +2035,336 @@ tp2-patch:
       - STR_VAR `filespec` to the file specification, which must include an identifiable resource extension, or a warning will be raised.\n
       - RET `ext` returns the resource extension of the file specification."
     - name: fj_are_structure
-      doc: "Adds a structure to an area file. All variables are zero or blank by default unless otherwise indicated. Fields designated by an asterisk are typically required; all others are optional. This is a PATCH function.\n
-      Universal structure variables:\n
+      doc: |
+        Adds a structure to an area file. All variables are zero or blank by default unless otherwise indicated. Fields designated by an asterisk are typically required; all others are optional. This is a PATCH function.
+        Universal structure variables\":\"
 
-      – STR_VAR `fj_structure_type` to the type of area structure to be added (actor, region, spawn, entrance, container, itm, ambient, variable, door, animation, explored bitmask, songlist, rest interrupt table, note or projectile)^*^;\n
-      – INT_VAR `fj_delete_mode` to the index of the structure to be deleted (if deleting rather than adding a new structure);\n
-      – INT_VAR `fj_debug` to 1 to enable feedback\n
-      – RET `fj_return_offset` returns the position of the structure in the area file;\n
+        – STR_VAR `fj_structure_type` to the type of area structure to be added (actor, region, spawn, entrance, container, itm, ambient, variable, door, animation, explored bitmask, songlist, rest interrupt table, note or projectile)^*^;
+        – INT_VAR `fj_delete_mode` to the index of the structure to be deleted (if deleting rather than adding a new structure);
+        – INT_VAR `fj_debug` to 1 to enable feedback;
+        – RET `fj_return_offset` returns the position of the structure in the area file;
 
-      Actor structure variables:\n
+         Actor structure variables\":\"
 
-      – STR_VAR `fj_name` to the actor’s name^*^;\n
-      – INT_VAR `fj_loc_x` to the starting X (horizontal) coordinate^*^;\n
-      – INT_VAR `fj_loc_y` to the starting Y (vertical) coordinate^*^;\n
-      – INT_VAR `fj_dest_x` to the destination X coordinate (by default the same as `fj_loc_x`);\n
-      – INT_VAR `fj_dest_y` to the destination Y coordinate (by default the same as `fj_loc_y`);\n
-      – INT_VAR `fj_loading` to whether the .cre file is loaded (0=attached, 1=loaded, default 1);\n
-      – INT_VAR `fj_spawned` to whether the creature has been spawned (0=no, 1=yes, default 0);\n
-      – INT_VAR `fj_animation` to the actor’s animation number (from animate.ids, though the engine uses the animation set on the .cre file);\n
-      – INT_VAR `fj_orientation` to the facing direction (0-15 where 0=south, 4=west, 8=north, 12=east, default 0);\n
-      – INT_VAR `fj_expiry` to the actor removal timer in absolute ticks (default -1 to avoid removal);\n
-      – INT_VAR `fj_wander_dist_actor` to the actor’s random walk distance limit;\n
-      – INT_VAR `fj_mvmt_dist_actor` to the actor’s movement distance limit;\n
-      – INT_VAR `fj_schedule` to the hourly appearance schedule (bits 0-23, default -1 or always);\n
-      – INT_VAR `fj_num_talked` to the NumTimesTalkedTo (in .sav files);\n
-      – STR_VAR `fj_dlg_resref` to the actor’s dialogue file (normally obtained from .cre files);\n
-      – STR_VAR `fj_bcs_override` to the actor’s override script (normally obtained from .cre files);\n
-      – STR_VAR `fj_bcs_general` to the actor’s general script (normally obtained from .cre files);\n
-      – STR_VAR `fj_bcs_class` to the actor’s class script (normally obtained from .cre files);\n
-      – STR_VAR `fj_bcs_race` to the actor’s race script (normally obtained from .cre files);\n
-      – STR_VAR `fj_bcs_default` to the actor’s default script (normally obtained from .cre files);\n
-      – STR_VAR `fj_bcs_specific` to the actor’s specific script (normally obtained from .cre files);\n
-      – STR_VAR `fj_cre_resref` to the actor’s resource reference (creature filename)^*^;\n
-      – STR_VAR `fj_cre_embedded` to  path/to/file.cre  if embedding a new creature (defaults to `fj_cre_resref` if not set);\n
+        – STR_VAR `fj_name` to the actor’s name^*^;
+        – INT_VAR `fj_loc_x` to the starting X (horizontal) coordinate^*^;
+        – INT_VAR `fj_loc_y` to the starting Y (vertical) coordinate^*^;
+        – INT_VAR `fj_dest_x` to the destination X coordinate (by default the same as `fj_loc_x`);
+        – INT_VAR `fj_dest_y` to the destination Y coordinate (by default the same as `fj_loc_y`);
+        – INT_VAR `fj_loading` to whether the .cre file is loaded (0=attached, 1=loaded, default 1);
+        – INT_VAR `fj_spawned` to whether the creature has been spawned (0=no, 1=yes, default 0);
+        – INT_VAR `fj_animation` to the actor’s animation number (from animate.ids, though the engine uses the animation set on the .cre file);
+        – INT_VAR `fj_orientation` to the facing direction (0-15 where 0=south, 4=west, 8=north, 12=east, default 0);
+        – INT_VAR `fj_expiry` to the actor removal timer in absolute ticks (default -1 to avoid removal);
+        – INT_VAR `fj_wander_dist_actor` to the actor’s random walk distance limit;
+        – INT_VAR `fj_mvmt_dist_actor` to the actor’s movement distance limit;
+        – INT_VAR `fj_schedule` to the hourly appearance schedule (bits 0-23, default -1 or always);
+        – INT_VAR `fj_num_talked` to the NumTimesTalkedTo (in .sav files);
+        – STR_VAR `fj_dlg_resref` to the actor’s dialogue file (normally obtained from .cre files);
+        – STR_VAR `fj_bcs_override` to the actor’s override script (normally obtained from .cre files);
+        – STR_VAR `fj_bcs_general` to the actor’s general script (normally obtained from .cre files);
+        – STR_VAR `fj_bcs_class` to the actor’s class script (normally obtained from .cre files);
+        – STR_VAR `fj_bcs_race` to the actor’s race script (normally obtained from .cre files);
+        – STR_VAR `fj_bcs_default` to the actor’s default script (normally obtained from .cre files);
+        – STR_VAR `fj_cre_resref` to the actor’s resource reference (creature filename)^*^;
+        – STR_VAR `fj_cre_embedded` to  path/to/file.cre  if embedding a new creature (defaults to `fj_cre_resref` if not set);
 
-      Region structure variables:\n
+        Region structure variables\":\"
 
-      – STR_VAR `fj_name` to the region’s name^*^;\n
-      – INT_VAR `fj_type` to the region type (0=trap, 1=info, 2=travel)^*^;\n
-      – INT_VAR `fj_box_left` to the leftmost X coordinate of the region’s bounding box^*^;\n
-      – INT_VAR `fj_box_top` to the topmost Y coordinate of the region’s bounding box^*^;\n
-      – INT_VAR `fj_box_right` to the rightmost X coordinate of the region’s bounding box^*^;\n
-      – INT_VAR `fj_box_bottom` to the bottommost Y coordinate of the region’s bounding box^*^;\n
-      – INT_VAR `fj_cursor_idx` to the region’s mouse cursor index (from cursors.bam)^*^;\n
-      – STR_VAR `fj_destination_area` to the destination area resource reference (for travel regions);\n
-      – STR_VAR `fj_destination_name` to the entrance name in the destination area (for travel regions);\n
-      – INT_VAR `fj_flags` to the bitwise region flags;\n
-      – INT_VAR `fj_info_point_strref` to the information text string reference (for info points, default -1);\n
-      – INT_VAR `fj_trap_detect` to the trap detection difficulty percentage;\n
-      – INT_VAR `fj_trap_remove` to the trap removal difficulty percentage;\n
-      – INT_VAR `fj_trap_active` to whether the region is trapped (0=no, 1=yes);\n
-      – INT_VAR `fj_trap_status` to whether the trap is detected (0=no, 1=yes);\n
-      – INT_VAR `fj_loc_x` to the trap launch X coordinate^*^;\n
-      – INT_VAR `fj_loc_y` to the trap launch Y coordinate^*^;\n
-      – STR_VAR `fj_key_resref` to the filename of the region’s key;\n
-      – STR_VAR `fj_reg_script` to the region script;\n
-      – INT_VAR `fj_alt_x` to the activation point X coordinate;\n
-      – INT_VAR `fj_alt_y` to the activation point Y coordinate;\n
-      – STR_VAR `fj_sound` to the sound resource reference (ONLY for PST);\n
-      – INT_VAR `fj_talk_loc_x` to the talk location point X coordinate (ONLY for PST);\n
-      – INT_VAR `fj_talk_loc_y` to the talk location point Y coordinate (ONLY for PST);\n
-      – INT_VAR `fj_speaker_strref` to the speaker’s name string reference (default -1; ONLY for PST);\n
-      – STR_VAR `fj_dialog` to the region’s dialogue file (ONLY for PST);\n
-      – INT_VAR `fj_vertex_0` to (X coordinate + (Y coordinate << 16)) for each vertex pair^*^;\n
+        – STR_VAR `fj_name` to the region’s name^*^;
+        – INT_VAR `fj_type` to the region type (0=trap, 1=info, 2=travel)^*^;
+        – INT_VAR `fj_box_left` to the leftmost X coordinate of the region’s bounding box^*^;
+        – INT_VAR `fj_box_top` to the topmost Y coordinate of the region’s bounding box^*^;
+        – INT_VAR `fj_box_right` to the rightmost X coordinate of the region’s bounding box^*^;
+        – INT_VAR `fj_box_bottom` to the bottommost Y coordinate of the region’s bounding box^*^;
+        – INT_VAR `fj_cursor_idx` to the region’s mouse cursor index (from cursors.bam)^*^;
+        – STR_VAR `fj_destination_area` to the destination area resource reference (for travel regions);
+        – STR_VAR `fj_destination_name` to the entrance name in the destination area (for travel regions);
+        – INT_VAR `fj_flags` to the bitwise region flags;
+        – INT_VAR `fj_info_point_strref` to the information text string reference (for info points, default -1);
+        – INT_VAR `fj_trap_detect` to the trap detection difficulty percentage;
+        – INT_VAR `fj_trap_remove` to the trap removal difficulty percentage;
+        – INT_VAR `fj_trap_active` to whether the region is trapped (0=no, 1=yes);
+        – INT_VAR `fj_trap_status` to whether the trap is detected (0=no, 1=yes);
+        – INT_VAR `fj_loc_x` to the trap launch X coordinate^*^;
+        – INT_VAR `fj_loc_y` to the trap launch Y coordinate^*^;
+        – STR_VAR `fj_key_resref` to the filename of the region’s key;
+        – STR_VAR `fj_reg_script` to the region script;
+        – INT_VAR `fj_alt_x` to the activation point X coordinate;
+        – INT_VAR `fj_alt_y` to the activation point Y coordinate;
+        – STR_VAR `fj_sound` to the sound resource reference (ONLY for PST);
+        – INT_VAR `fj_talk_loc_x` to the talk location point X coordinate (ONLY for PST);
+        – INT_VAR `fj_talk_loc_y` to the talk location point Y coordinate (ONLY for PST);
+        – INT_VAR `fj_speaker_strref` to the speaker’s name string reference (default -1; ONLY for PST);
+        – STR_VAR `fj_dialog` to the region’s dialogue file (ONLY for PST);
+        – INT_VAR `fj_vertex_0` to (X coordinate + (Y coordinate << 16)) for each vertex pair^*^;
 
-      Spawn structure variables:\n
+        Spawn structure variables\":\"
 
-      – STR_VAR `fj_name` to the spawn point’s name^*^;\n
-      – INT_VAR `fj_loc_x` to the spawning X coordinate^*^;\n
-      – INT_VAR `fj_loc_y` to the spawning Y coordinate^*^;\n
-      – STR_VAR `fj_cre_resref0` to the resource reference of each creature spawned (0-9)^*^;\n
-      – INT_VAR `fj_spawn_num` to the count of spawn creatures^*^;\n
-      – INT_VAR `fj_difficulty` to the base number of creatures to spawn (encounter difficulty)^*^;\n
-      – INT_VAR `fj_delay` to the number of seconds between spawning (default 10);\n
-      – INT_VAR `fj_method` to the spawn method;\n
-      – INT_VAR `fj_duration` to the creature duration (default 1000);\n
-      – INT_VAR `fj_wander_dist_spawn` to the creature’s random walk distance limit (default 1000);\n
-      – INT_VAR `fj_mvmt_dist_spawn` to the creature’s movement distance limit (default 1000);\n
-      – INT_VAR `fj_max_num` to the maximum number of creatures to spawn^*^;\n
-      – INT_VAR `fj_enable` to the spawn point status (0=inactive, 1=active, default 1);\n
-      – INT_VAR `fj_schedule` to the hourly appearance schedule (bits 0-23, default -1 or always);\n
-      – INT_VAR `fj_day_prob` to the spawn point daytime probability (default 100);\n
-      – INT_VAR `fj_night_prob` to the spawn point nighttime probability (default 100);\n
+        – STR_VAR `fj_name` to the spawn point’s name^*^;
+        – INT_VAR `fj_loc_x` to the spawning X coordinate^*^;
+        – INT_VAR `fj_loc_y` to the spawning Y coordinate^*^;
+        – STR_VAR `fj_cre_resref0` to the resource reference of each creature spawned (0-9)^*^;
+        – INT_VAR `fj_spawn_num` to the count of spawn creatures^*^;
+        – INT_VAR `fj_difficulty` to the base number of creatures to spawn (encounter difficulty)^*^;
+        – INT_VAR `fj_delay` to the number of seconds between spawning (default 10);
+        – INT_VAR `fj_method` to the spawn method;
+        – INT_VAR `fj_duration` to the creature duration (default 1000);
+        – INT_VAR `fj_wander_dist_spawn` to the creature’s random walk distance limit (default 1000);
+        – INT_VAR `fj_mvmt_dist_spawn` to the creature’s movement distance limit (default 1000);
+        – INT_VAR `fj_max_num` to the maximum number of creatures to spawn^*^;
+        – INT_VAR `fj_enable` to the spawn point status (0=inactive, 1=active, default 1);
+        – INT_VAR `fj_schedule` to the hourly appearance schedule (bits 0-23, default -1 or always);
+        – INT_VAR `fj_day_prob` to the spawn point daytime probability (default 100);
+        – INT_VAR `fj_night_prob` to the spawn point nighttime probability (default 100);
 
-      Entrance structure variables:\n
+        Entrance structure variables\":\"
 
-      – STR_VAR `fj_name` to the entrance’s name^*^;\n
-      – INT_VAR `fj_loc_x` to the X coordinate^*^;\n
-      – INT_VAR `fj_loc_y` to the Y coordinate^*^;\n
-      – INT_VAR `fj_orientation` to the facing direction (0-15 where 0=south, 4=west, 8=north, 12=east)^*^;\n
+        – STR_VAR `fj_name` to the entrance’s name^*^;
+        – INT_VAR `fj_loc_x` to the X coordinate^*^;
+        – INT_VAR `fj_loc_y` to the Y coordinate^*^;
+        – INT_VAR `fj_orientation` to the facing direction (0-15 where 0=south, 4=west, 8=north, 12=east)^*^;
 
-      Container structure variables:\n
+        Container structure variables\":\"
 
-      – STR_VAR `fj_name` to the container’s name^*^;\n
-      – INT_VAR `fj_loc_x` to the X coordinate^*^;\n
-      – INT_VAR `fj_loc_y` to the Y coordinate^*^;\n
-      – INT_VAR `fj_type` to the container type (1=bag, 2=chest, 3=drawer, 4=pile, 5=table, 6=shelf, 7=altar, 8=nonvisible, 9=spellbook, 10=body, 11=barrel, 12=crate)^*^;\n
-      – INT_VAR `fj_lock_diff` to the lock difficulty (default 100);\n
-      – INT_VAR `fj_flags` to the bitwise container flags (bit0=locked, bit3=trap resets, bit5=disabled);\n
-      – INT_VAR `fj_trap_detect` to the trap detection difficulty percentage;\n
-      – INT_VAR `fj_trap_remove_diff` to the trap removal difficulty percentage (default 100);\n
-      – INT_VAR `fj_trap_active` to whether the container is trapped (0=no, 1=yes);\n
-      – INT_VAR `fj_trap_status` to whether the trap is detected (0=no, 1=yes);\n
-      – INT_VAR `fj_trap_loc_x` to the trap launch X coordinate^*^;\n
-      – INT_VAR `fj_trap_loc_y` to the trap launch Y coordinate^*^;\n
-      – INT_VAR `fj_box_left` to the leftmost X coordinate of the trap’s bounding box;\n
-      – INT_VAR `fj_box_top` to the topmost Y coordinate of the trap’s bounding box;\n
-      – INT_VAR `fj_box_right` to the rightmost X coordinate of the trap’s bounding box;\n
-      – INT_VAR `fj_box_bottom` to the bottommost Y coordinate of the trap’s bounding box;\n
-      – STR_VAR `fj_trap_script` to the trap’s script;\n
-      – INT_VAR `fj_vertex_0` to (X coordinate + (Y coordinate << 16)) for each vertex pair^*^;\n
-      – STR_VAR `fj_key_resref` to the filename of the container’s key;\n
-      – INT_VAR `fj_lockpick_strref` to the lockpick string reference (default -1);\n
+        – STR_VAR `fj_name` to the container’s name^*^;
+        – INT_VAR `fj_loc_x` to the X coordinate^*^;
+        – INT_VAR `fj_loc_y` to the Y coordinate^*^;
+        – INT_VAR `fj_type` to the container type (1=bag, 2=chest, 3=drawer, 4=pile, 5=table, 6=shelf, 7=altar, 8=nonvisible, 9=spellbook, 10=body, 11=barrel, 12=crate)^*^;
+        – INT_VAR `fj_lock_diff` to the lock difficulty (default 100);
+        – INT_VAR `fj_flags` to the bitwise container flags (bit0=locked, bit3=trap resets, bit5=disabled);
+        – INT_VAR `fj_trap_detect` to the trap detection difficulty percentage;
+        – INT_VAR `fj_trap_remove_diff` to the trap removal difficulty percentage (default 100);
+        – INT_VAR `fj_trap_active` to whether the container is trapped (0=no, 1=yes);
+        – INT_VAR `fj_trap_status` to whether the trap is detected (0=no, 1=yes);
+        – INT_VAR `fj_trap_loc_x` to the trap launch X coordinate^*^;
+        – INT_VAR `fj_trap_loc_y` to the trap launch Y coordinate^*^;
+        – INT_VAR `fj_box_left` to the leftmost X coordinate of the trap’s bounding box;
+        – INT_VAR `fj_box_top` to the topmost Y coordinate of the trap’s bounding box;
+        – INT_VAR `fj_box_right` to the rightmost X coordinate of the trap’s bounding box;
+        – INT_VAR `fj_box_bottom` to the bottommost Y coordinate of the trap’s bounding box;
+        – STR_VAR `fj_trap_script` to the trap’s script;
+        – INT_VAR `fj_vertex_0` to (X coordinate + (Y coordinate << 16)) for each vertex pair^*^;
+        – STR_VAR `fj_key_resref` to the filename of the container’s key;
+        – INT_VAR `fj_lockpick_strref` to the lockpick string reference (default -1);
 
-      Item structure variables:\n
+        Item structure variables\":\"
 
-      – STR_VAR `fj_name` to the item’s resource reference (filename)^*^;\n
-      – INT_VAR `fj_con_itm_idx` to the index of the container to which the item is added^*^;\n
-      – INT_VAR `fj_itm_expiry` to the item expiration time (default 0);\n
-      – INT_VAR `fj_charge0` to the charges of the 1st ability (item quantity for stackables, default 0);\n
-      – INT_VAR `fj_charge1` to the charges of the 2nd ability (default 0);\n
-      – INT_VAR `fj_charge2` to the charges of the 3rd ability (default 0);\n
-      – INT_VAR `fj_flags` to the bitwise item flags (bit0=identified, bit1=unstealable, bit2=stolen, bit3=undroppable, default 0);\n
+        – STR_VAR `fj_name` to the item’s resource reference (filename)^*^;
+        – INT_VAR `fj_con_itm_idx` to the index of the container to which the item is added^*^;
+        – INT_VAR `fj_itm_expiry` to the item expiration time (default 0);
+        – INT_VAR `fj_charge0` to the charges of the 1st ability (item quantity for stackables, default 0);
+        – INT_VAR `fj_charge1` to the charges of the 2nd ability (default 0);
+        – INT_VAR `fj_charge2` to the charges of the 3rd ability (default 0);
+        – INT_VAR `fj_flags` to the bitwise item flags (bit0=identified, bit1=unstealable, bit2=stolen, bit3=undroppable, default 0);
 
-      Ambient structure variables:\n
+        Ambient structure variables\":\"
 
-      – STR_VAR `fj_name` to the ambient’s name^*^;\n
-      – INT_VAR `fj_loc_x` to the X coordinate^*^;\n
-      – INT_VAR `fj_loc_y` to the Y coordinate^*^;\n
-      – INT_VAR `fj_radius` to the sound radius (default 500);\n
-      – INT_VAR `fj_loc_z` to the Z coordinate (height);\n
-      – INT_VAR `fj_pitch_variance` to the pitch variance;\n
-      – INT_VAR `fj_volume_variance` to the volume variance;\n
-      – INT_VAR `fj_volume` to the volume percentage (default 80);\n
-      – STR_VAR `fj_wav_resref0` to the resource reference of each sound (0-9)^*^;\n
-      – INT_VAR `fj_sound_num` to the number of sounds^*^;\n
-      – INT_VAR `fj_delay` to the base interval in seconds between sounds from this ambient list;\n
-      – INT_VAR `fj_variation` to the base deviation from the base interval;\n
-      – INT_VAR `fj_schedule` to the hourly appearance schedule (bits 0-23, default -1 or always);\n
-      – INT_VAR `fj_flags` to the bitwise ambient flags^*^;\n
+        – STR_VAR `fj_name` to the ambient’s name^*^;
+        – INT_VAR `fj_loc_x` to the X coordinate^*^;
+        – INT_VAR `fj_loc_y` to the Y coordinate^*^;
+        – INT_VAR `fj_radius` to the sound radius (default 500);
+        – INT_VAR `fj_loc_z` to the Z coordinate (height);
+        – INT_VAR `fj_pitch_variance` to the pitch variance;
+        – INT_VAR `fj_volume_variance` to the volume variance;
+        – INT_VAR `fj_volume` to the volume percentage (default 80);
+        – STR_VAR `fj_wav_resref0` to the resource reference of each sound (0-9)^*^;
+        – INT_VAR `fj_sound_num` to the number of sounds^*^;
+        – INT_VAR `fj_delay` to the base interval in seconds between sounds from this ambient list;
+        – INT_VAR `fj_variation` to the base deviation from the base interval;
+        – INT_VAR `fj_schedule` to the hourly appearance schedule (bits 0-23, default -1 or always);
+        – INT_VAR `fj_flags` to the bitwise ambient flags^*^;
 
-      Variable structure variables:\n
+        Variable structure variables\":\"
 
-      – STR_VAR `fj_name` to the variable’s name^*^;\n
-      – INT_VAR `fj_variable_value` to the variable’s value^*^;\n
+        – STR_VAR `fj_name` to the variable’s name^*^;
+        – INT_VAR `fj_variable_value` to the variable’s value^*^;
 
-      Door structure variables:\n
+        Door structure variables\":\"
 
-      – STR_VAR `fj_name` to the door’s name^*^;\n
-      – STR_VAR `fj_door_wed_id` to the door ID linked to the .wed file^*^;\n
-      – INT_VAR `fj_flags` to the bitwise door flags^*^;\n
-      – INT_VAR `fj_open_box_left` to the leftmost X coordinate of the open door’s bounding box^*^;\n
-      – INT_VAR `fj_open_box_top` to the topmost Y coordinate of the open door’s bounding box^*^;\n
-      – INT_VAR `fj_open_box_right` to the rightmost X coordinate of the open door’s bounding box^*^;\n
-      – INT_VAR `fj_open_box_bottom` to the bottommost Y coordinate of the open door’s bounding box^*^;\n
-      – INT_VAR `fj_closed_box_left` to the leftmost X coordinate of the closed door’s bounding box^*^;\n
-      – INT_VAR `fj_closed_box_top` to the topmost Y coordinate of the closed door’s bounding box^*^;\n
-      – INT_VAR `fj_closed_box_right` to the rightmost X coordinate of the closed door’s bounding box^*^;\n
-      – INT_VAR `fj_closed_box_bottom` to the bottommost Y coordinate of the closed door’s bounding box^*^;\n
-      – INT_VAR `fj_door_open_vert_0` to (X coordinate + (Y coordinate << 16)) for each vertex pair of the open door^*^;\n
-      – INT_VAR `fj_door_closed_vert_0` to (X coordinate + (Y coordinate << 16)) for each vertex pair of the closed door^*^;\n
-      – INT_VAR `fj_cell_open_vert_0` to (X coordinate + (Y coordinate << 16)) for each impeded search map cell of the open door^*^;\n
-      – INT_VAR `fj_cell_closed_vert_0` to (X coordinate + (Y coordinate << 16)) for each impeded search map cell of the closed door^*^;\n
-      – STR_VAR `fj_door_open_wav` to the door open sound;\n
-      – STR_VAR `fj_door_close_wav` to the door closed sound;\n
-      – INT_VAR `fj_cursor_idx` to the door’s mouse cursor index (from cursors.bam)^*^;\n
-      – INT_VAR `fj_trap_detect` to the trap detection difficulty percentage;\n
-      – INT_VAR `fj_trap_remove` to the trap removal difficulty percentage;\n
-      – INT_VAR `fj_trap_active` to whether the door is trapped (0=no, 1=yes);\n
-      – INT_VAR `fj_trap_status` to whether the trap is detected (0=no, 1=yes);\n
-      – INT_VAR `fj_trap_loc_x` to the trap launch X coordinate^*^;\n
-      – INT_VAR `fj_trap_loc_y` to the trap launch Y coordinate^*^;\n
-      – STR_VAR `fj_key_resref` to the filename of the door’s key;\n
-      – STR_VAR `fj_door_script` to the door script;\n
-      – INT_VAR `fj_detect_diff` to the detection difficulty (for secret doors);\n
-      – INT_VAR `fj_locked_diff` to the lock difficulty;\n
-      – INT_VAR `fj_open_loc_x` to the X coordinate for toggling the door’s open state^*^;\n
-      – INT_VAR `fj_open_loc_y` to the Y coordinate for toggling the door’s open state^*^;\n
-      – INT_VAR `fj_closed_loc_x` to the X coordinate for toggling the door’s closed state^*^;\n
-      – INT_VAR `fj_closed_loc_y` to the Y coordinate for toggling the door’s closed state^*^;\n
-      – INT_VAR `fj_lockpick_strref` to the lockpick string reference (default -1);\n
-      – STR_VAR `fj_travel_trigger` to the travel region name^*^;\n
-      – INT_VAR `fj_dlg_strref` to the dialogue string reference (default -1);\n
-      – STR_VAR `fj_dlg_resref` to the door’s dialogue file;\n
+        – STR_VAR `fj_name` to the door’s name^*^;
+        – STR_VAR `fj_door_wed_id` to the door ID linked to the .wed file^*^;
+        – INT_VAR `fj_flags` to the bitwise door flags^*^;
+        – INT_VAR `fj_open_box_left` to the leftmost X coordinate of the open door’s bounding box^*^;
+        – INT_VAR `fj_open_box_top` to the topmost Y coordinate of the open door’s bounding box^*^;
+        – INT_VAR `fj_open_box_right` to the rightmost X coordinate of the open door’s bounding box^*^;
+        – INT_VAR `fj_open_box_bottom` to the bottommost Y coordinate of the open door’s bounding box^*^;
+        – INT_VAR `fj_closed_box_left` to the leftmost X coordinate of the closed door’s bounding box^*^;
+        – INT_VAR `fj_closed_box_top` to the topmost Y coordinate of the closed door’s bounding box^*^;
+        – INT_VAR `fj_closed_box_right` to the rightmost X coordinate of the closed door’s bounding box^*^;
+        – INT_VAR `fj_closed_box_bottom` to the bottommost Y coordinate of the closed door’s bounding box^*^;
+        – INT_VAR `fj_door_open_vert_0` to (X coordinate + (Y coordinate << 16)) for each vertex pair of the open door^*^;
+        – INT_VAR `fj_door_closed_vert_0` to (X coordinate + (Y coordinate << 16)) for each vertex pair of the closed door^*^;
+        – INT_VAR `fj_cell_open_vert_0` to (X coordinate + (Y coordinate << 16)) for each impeded search map cell of the open door^*^;
+        – INT_VAR `fj_cell_closed_vert_0` to (X coordinate + (Y coordinate << 16)) for each impeded search map cell of the closed door^*^;
+        – STR_VAR `fj_door_open_wav` to the door open sound;
+        – STR_VAR `fj_door_close_wav` to the door closed sound;
+        – INT_VAR `fj_cursor_idx` to the door’s mouse cursor index (from cursors.bam)^*^;
+        – INT_VAR `fj_trap_detect` to the trap detection difficulty percentage;
+        – INT_VAR `fj_trap_remove` to the trap removal difficulty percentage;
+        – INT_VAR `fj_trap_active` to whether the door is trapped (0=no, 1=yes);
+        – INT_VAR `fj_trap_status` to whether the trap is detected (0=no, 1=yes);
+        – INT_VAR `fj_trap_loc_x` to the trap launch X coordinate^*^;
+        – INT_VAR `fj_trap_loc_y` to the trap launch Y coordinate^*^;
+        – STR_VAR `fj_key_resref` to the filename of the door’s key;
+        – STR_VAR `fj_door_script` to the door script;
+        – INT_VAR `fj_detect_diff` to the detection difficulty (for secret doors);
+        – INT_VAR `fj_locked_diff` to the lock difficulty;
+        – INT_VAR `fj_open_loc_x` to the X coordinate for toggling the door’s open state^*^;
+        – INT_VAR `fj_open_loc_y` to the Y coordinate for toggling the door’s open state^*^;
+        – INT_VAR `fj_closed_loc_x` to the X coordinate for toggling the door’s closed state^*^;
+        – INT_VAR `fj_closed_loc_y` to the Y coordinate for toggling the door’s closed state^*^;
+        – INT_VAR `fj_lockpick_strref` to the lockpick string reference (default -1);
+        – STR_VAR `fj_travel_trigger` to the travel region name^*^;
+        – INT_VAR `fj_dlg_strref` to the dialogue string reference (default -1);
+        – STR_VAR `fj_dlg_resref` to the door’s dialogue file;
 
-      Animation structure variables:\n
+        Animation structure variables\":\"
 
-      – STR_VAR `fj_name` to the animation name^*^;\n
-      – INT_VAR `fj_loc_x` to the X coordinate^*^;\n
-      – INT_VAR `fj_loc_y` to the Y coordinate^*^;\n
-      – INT_VAR `fj_schedule` to the hourly appearance schedule (bits 0-23, default -1 or always);\n
-      – STR_VAR `fj_bam_resref` to the animation resource reference (filename)^*^;\n
-      – INT_VAR `fj_bam_seq` to the BAM sequence number;\n
-      – INT_VAR `fj_bam_frame` to the BAM frame number;\n
-      – INT_VAR `fj_flags` to the bitwise animation flags^*^;\n
-      – INT_VAR `fj_loc_z` to the height;\n
-      – INT_VAR `fj_transparent` to the BAM transparency;\n
-      – INT_VAR `fj_init_frame` to the starting frame;\n
-      – INT_VAR `fj_loop_chance` to the chance of looping;\n
-      – INT_VAR `fj_skip_cycles` to start delay in frames;\n
-      – STR_VAR `fj_bmp_resref` to the palette bitmap;\n
+        – STR_VAR `fj_name` to the animation name^*^;
+        – INT_VAR `fj_loc_x` to the X coordinate^*^;
+        – INT_VAR `fj_loc_y` to the Y coordinate^*^;
+        – INT_VAR `fj_schedule` to the hourly appearance schedule (bits 0-23, default -1 or always);
+        – STR_VAR `fj_bam_resref` to the animation resource reference (filename)^*^;
+        – INT_VAR `fj_bam_seq` to the BAM sequence number;
+        – INT_VAR `fj_bam_frame` to the BAM frame number;
+        – INT_VAR `fj_flags` to the bitwise animation flags^*^;
+        – INT_VAR `fj_loc_z` to the height;
+        – INT_VAR `fj_transparent` to the BAM transparency;
+        – INT_VAR `fj_init_frame` to the starting frame;
+        – INT_VAR `fj_loop_chance` to the chance of looping;
+        – INT_VAR `fj_skip_cycles` to start delay in frames;
+        – STR_VAR `fj_bmp_resref` to the palette bitmap;
 
-      Bitmask structure variables:\n
+        Bitmask structure variables\":\"
 
-      – STR_VAR `fj_bitmask` to  path/to/binary.file ^*^;\n
+        – STR_VAR `fj_bitmask` to  path/to/binary.file ^*^;
 
-      Songlist structure variables:\n
+        Songlist structure variables\":\"
 
-      – INT_VAR `fj_song_day` to the day SONGLIST.2DA entry;\n
-      – INT_VAR `fj_song_night` to the night SONGLIST.2DA entry;\n
-      – INT_VAR `fj_song_victory` to the victory SONGLIST.2DA entry;\n
-      – INT_VAR `fj_song_battle` to the battle SONGLIST.2DA entry;\n
-      – INT_VAR `fj_song_defeat` to the defeat SONGLIST.2DA entry;\n
-      – STR_VAR `fj_song_day0` to the day song WAV resref;\n
-      – STR_VAR `fj_song_day1` to the night song WAV resref;\n
-      – INT_VAR `fj_song_day_vol` to the day songs volume (default 100);\n
-      – STR_VAR `fj_song_night0` to the night song WAV resref;\n
-      – STR_VAR `fj_song_night1` to the second night song WAV resref;\n
-      – INT_VAR `fj_song_night_vol` to the night songs volume (default 100);\n
+        – INT_VAR `fj_song_day` to the day SONGLIST.2DA entry;
+        – INT_VAR `fj_song_night` to the night SONGLIST.2DA entry;
+        – INT_VAR `fj_song_victory` to the victory SONGLIST.2DA entry;
+        – INT_VAR `fj_song_battle` to the battle SONGLIST.2DA entry;
+        – INT_VAR `fj_song_defeat` to the defeat SONGLIST.2DA entry;
+        – STR_VAR `fj_song_day0` to the day song WAV resref;
+        – STR_VAR `fj_song_day1` to the night song WAV resref;
+        – INT_VAR `fj_song_day_vol` to the day songs volume (default 100);
+        – STR_VAR `fj_song_night0` to the night song WAV resref;
+        – STR_VAR `fj_song_night1` to the second night song WAV resref;
+        – INT_VAR `fj_song_night_vol` to the night songs volume (default 100);
 
-      Rest interrupt structure variables:\n
+        Rest interrupt structure variables\":\"
 
-      – STR_VAR `fj_name` to the name of the rest interrupts (for editor use only);\n
-      – INT_VAR `fj_cre_strref0...fj_cre_strref9` to string displayed upon party ambush (default -1);\n
-      – STR_VAR `fj_cre_resref0...fj_cre_resref9` to creature resref;\n
-      – STR_VAR `fj_spawn_num` to the number of spawned attackers;\n
-      – STR_VAR `fj_difficulty` to the difficulty of the encounter;\n
-      – STR_VAR `fj_duration` to the creature’s duration (default 1000);\n
-      – STR_VAR `fj_wander_distance` to the creature’s random walk distance limit (default 1000);\n
-      – STR_VAR `fj_mvmt_distance` to the creature’s movement distance limit (default 1000);\n
-      – STR_VAR `fj_max_num` to maximum number of spawned creatures;\n
-      – STR_VAR `fj_enable` to whether rest interrupts are enabled (0=no, 1=yes);\n
-      – STR_VAR `fj_day_prob` to probability of daytime ambush;\n
-      – STR_VAR `fj_night_prob` to probability of nightime ambush;\n
+        – STR_VAR `fj_name` to the name of the rest interrupts (for editor use only);
+        – INT_VAR `fj_cre_strref0...fj_cre_strref9` to string displayed upon party ambush (default -1);
+        – STR_VAR `fj_cre_resref0...fj_cre_resref9` to creature resref;
+        – STR_VAR `fj_spawn_num` to the number of spawned attackers;
+        – STR_VAR `fj_difficulty` to the difficulty of the encounter;
+        – STR_VAR `fj_duration` to the creature’s duration (default 1000);
+        – STR_VAR `fj_wander_distance` to the creature’s random walk distance limit (default 1000);
+        – STR_VAR `fj_mvmt_distance` to the creature’s movement distance limit (default 1000);
+        – STR_VAR `fj_max_num` to maximum number of spawned creatures;
+        – STR_VAR `fj_enable` to whether rest interrupts are enabled (0=no, 1=yes);
+        – STR_VAR `fj_day_prob` to probability of daytime ambush;
+        – STR_VAR `fj_night_prob` to probability of nightime ambush;
 
-      Map note structure variables:\n
+        Map note structure variables\":\"
 
-      – INT_VAR `fj_loc_x` to the X coordinate^*^;\n
-      – INT_VAR `fj_loc_y` to the Y coordinate^*^;\n
-      – INT_VAR `fj_note_strref` to the note string reference (default -1, BGII only)^*^;\n
-      – STR_VAR `fj_note_text` to the note text (PST only)^*^;\n
-      – INT_VAR `fj_strref_loc` to the strref location (0=external, 1=dialog.tlk, default 1);\n
-      – INT_VAR `fj_color` to the map marker color (0-7);\n
-      – INT_VAR `fj_note_id` to the note ID;\n
+        – INT_VAR `fj_loc_x` to the X coordinate^*^;
+        – INT_VAR `fj_loc_y` to the Y coordinate^*^;
+        – INT_VAR `fj_note_strref` to the note string reference (default -1, BGII only)^*^;
+        – STR_VAR `fj_note_text` to the note text (PST only)^*^;
+        – INT_VAR `fj_strref_loc` to the strref location (0=external, 1=dialog.tlk, default 1);
+        – INT_VAR `fj_color` to the map marker color (0-7);
+        – INT_VAR `fj_note_id` to the note ID;
 
-      Projectile trap structure variables (not available on PST):\n
+        Projectile trap structure variables (not available on PST)\":\"
 
-      – STR_VAR `fj_name` to the projectile filename^*^;\n
-      – INT_VAR `fj_eff_off` to the effect block offset;\n
-      – INT_VAR `fj_eff_size` to the effect block size;\n
-      – INT_VAR `fj_missile_num` to the missile.ids reference (projectl.ids - 1);\n
-      – INT_VAR `fj_frequency` to the explosion length (in frames);\n
-      – INT_VAR `fj_duration` to the number of explosions;\n
-      – INT_VAR `fj_loc_x` to the X coordinate^*^;\n
-      – INT_VAR `fj_loc_y` to the Y coordinate^*^;\n
-      – INT_VAR `fj_loc_z` to the height;\n
-      – INT_VAR `fj_target` to the target ID;\n
-      – STR_VAR `fj_embedded_eff0` to  path/to/v2.eff  or eff resref containing to projectile’s effects^*^;"
+        – STR_VAR `fj_name` to the projectile filename^*^;
+        – INT_VAR `fj_eff_off` to the effect block offset;
+        – INT_VAR `fj_eff_size` to the effect block size;
+        – INT_VAR `fj_missile_num` to the missile.ids reference (projectl.ids - 1);
+        – INT_VAR `fj_frequency` to the explosion length (in frames);
+        – INT_VAR `fj_duration` to the number of explosions;
+        – INT_VAR `fj_loc_x` to the X coordinate^*^;
+        – INT_VAR `fj_loc_y` to the Y coordinate^*^;
+        – INT_VAR `fj_loc_z` to the height;
+        – INT_VAR `fj_target` to the target ID;
+        – STR_VAR `fj_embedded_eff0` to  path/to/v2.eff  or eff resref containing to projectile’s effects^*^;
 
     - name: sc#addWmpAre
-      doc: "Adds an area to the worldmap. All variables are zero or blank by default unless otherwise indicated. This is an ACTION function.\n
+      doc: |
+        Adds an area to the worldmap. All variables are zero or blank by default unless otherwise indicated. This is an ACTION function.
 
-      – ACTION_DEFINE_ASSOCIATIVE_ARRAY `toNewArea` to the area references that lead to the new area;\n
-      – ACTION_DEFINE_ASSOCIATIVE_ARRAY `fromNewArea` to the area references that lead away from the new area;\n
-      – STR_VAR `areName` to the resource reference of the area to add (like \"ar0700\");\n
-      – STR_VAR `strName` to the descriptive name of the area (like \"Waukeen’s Promenade\");\n
-      – STR_VAR `strDesc` to the area description that will show up when hovering the cursor over the area on the worldmap;\n
-      – STR_VAR `worldmap` to the name of the .wmp file you want patched (default is \"worldmap\");\n
-      – INT_VAR `mapIcon` to the area’s map icon index (from mapicons.bam);\n
-      – INT_VAR `xCoord` to the area’s X (east-west) coordinate;\n
-      – INT_VAR `yCoord` to the area’s Y (north-south) coordinate;\n
-      – INT_VAR `tTime` to the area’s travel time in hours * 4 (so 2 = 8 hours);\n
-      – INT_VAR `inclSv` to 1 if you want to patch saved game worldmaps as well as the master worldmap. '''NB''': changes to saved games are uninstallable;\n
-      – INT_VAR `visible` to 1 if you want the ''visible'' flag to be set;\n
-      – INT_VAR `visibleAdjacent` to 1 if you want the ''visible from adjacent'' flag to be set;\n
-      – INT_VAR `reachable` to 1 if you want the ''reachable'' flag to be set;\n
-      – INT_VAR `visited` to 1 if you want the ''visited'' flag to be set;\n
-      – RET `areNum` returns the worldmap entry number for the new area;"
+        – ACTION_DEFINE_ASSOCIATIVE_ARRAY `toNewArea` to the area references that lead to the new area;
+        – ACTION_DEFINE_ASSOCIATIVE_ARRAY `fromNewArea` to the area references that lead away from the new area;
+        – STR_VAR `areName` to the resource reference of the area to add (like \"ar0700\");
+        – STR_VAR `strName` to the descriptive name of the area (like \"Waukeen’s Promenade\");
+        – STR_VAR `strDesc` to the area description that will show up when hovering the cursor over the area on the worldmap;
+        – STR_VAR `worldmap` to the name of the .wmp file you want patched (default is \"worldmap\");
+        – INT_VAR `mapIcon` to the area’s map icon index (from mapicons.bam);
+        – INT_VAR `xCoord` to the area’s X (east-west) coordinate;
+        – INT_VAR `yCoord` to the area’s Y (north-south) coordinate;
+        – INT_VAR `tTime` to the area’s travel time in hours * 4 (so 2 = 8 hours);
+        – INT_VAR `inclSv` to 1 if you want to patch saved game worldmaps as well as the master worldmap. '''NB:''' changes to saved games are uninstallable;
+        – INT_VAR `visible` to 1 if you want the ''visible'' flag to be set;
+        – INT_VAR `visibleAdjacent` to 1 if you want the ''visible from adjacent'' flag to be set;
+        – INT_VAR `reachable` to 1 if you want the ''reachable'' flag to be set;
+        – INT_VAR `visited` to 1 if you want the ''visited'' flag to be set;
+        – RET `areNum` returns the worldmap entry number for the new area;
+
+    - name: HANDLE_AUDIO
+      doc: |
+        Install Ogg--Vorbis compressed audio files in a safe and easy manner. This is an ACTION function.
+
+        This function supports Windows, OS X, GNU/Linux and all IE games, including BG:EE. If the game is not BG:EE, the audio will be decompressed and the resulting .wav files will be `MOVE`d to the override. If the game is BG:EE, the .ogg files are copied into the override and renamed into .wav files. Refer to the `HANDLE_AUDIO` and `HANDLE_TILESETS` tutorial for usage examples and a more practical explanation.
+
+        If the audio files need to be decompressed, this function will use oggdec.exe on Windows, which is by default expected to be found in `audio_path`. The most recent version of oggdec can be downloaded [http://downloads.xiph.org/releases/vorbis/vorbis-tools-win32-bin.7z here] (direct link). On OS X, SoX will be used, which is by default also expected to be found in `audio_path`. SoX compiled for OS X can be downloaded [http://sourceforge.net/projects/sox/files/sox/14.4.1/sox-14.4.1-macosx.zip/download here]. On GNU/Linux, oggdec will be used, but it is expected to be found on the system path and the user should install it him/herself. If you provide installation instructions for GNU/Linux, just include something to the effect of "install oggdec, which is usually part of the package vorbis-tools".
+
+        If the decompression utility cannot be found, the user is warned that the audio files were not installed.
+
+        – INT_VAR `music` if this variable is not 0 and the game is BG:EE, the audio files are given the extension .acm instead of .wav. This variable has no effect if the game is not BG:EE. By default its value is 0.
+        – STR_VAR `audio_path` to the path your .ogg files are stored in. By default this variable is `~%MOD_FOLDER%/audio~`.
+        – STR_VAR `oggdec_path` to the path oggdec is located in. By default this variable is `~%audio_path%~`.
+        – STR_VAR `sox_path` to the path SoX is located in. By default this variable is `~%audio_path%~`.
+        – STR_VAR `output_path` to the path the audio should be installed into. By default this variable is `override`.
+
+    - name: HANDLE_TILESETS
+      doc: |
+        Install TISpack-compressed tilesets in a safe and easy manner. This is an ACTION function.
+
+        This function supports Windows, OS X, GNU/Linux and all IE games that support the `TIS V1` file format. The program tisunpack, part of `TISpack`, is used to decompress the provided .tiz files and the resulting .tis files are placed in the override. Refer to the `HANDLE_AUDIO` and `HANDLE_TILESETS` tutorial for usage examples and a more practical explanation.
+
+        This function expects to find tisunpack for one or more of Windows, OS X or GNU/Linux in a common directory under the subdirectories `win32`, `osx`, and `unix`, respectively. For example, in `mymod/tiz/win32`, `mymod/tiz/osx` and `mymod/tiz/unix`, the common directory is `mymod/tiz` and `mymod/tiz/win32/tisunpack.exe` should be a valid file. For GNU/Linux, this function also supports tisunpack being located on the system path (something the user would take care of). If you choose to leave tisunpack to the user, you should mention this requirement in any installation instructions you provide.
+
+        If tisunpack for the user’s platform could not be found, the installation fails.
+
+        – STR_VAR `tiz_path` to the path your .tiz files are stored in. By default this variable is `~%MOD_FOLDER%/tiz~`.
+        – STR_VAR `tisunpack_path` to the common directory where the subdirectories `win32`, `osx` and `unix` are located. By default this variable is `~%tiz_path%~`.
+        – STR_VAR `output_path` to the path the tilesets should be installed into. By default this variable is `override`.
+
+    - name: HANDLE_CHARSETS
+      doc: |
+        Runtime-convert `TRA` files into `UTF-8` in a safe and easy manner. This is an ACTION function.
+
+        This function supports Windows, OS X and GNU/Linux. If the game is BG:EE or BG2:EE, `TRA` files are encoded into `UTF-8` so the text can be installed without causing problems. `HANDLE_CHARSETS` needs to be used before any text is installed and is compatible with `AUTO_TRA` and all other methods of loading `TRA` files.
+
+        Conversion is handled by the program `iconv`. The program is available as part of the base system on OS X and GNU/Linux but a Windows version needs to be included in your mod. A Windows version can be downloaded [http://gnuwin32.sourceforge.net/packages/libiconv.htm here].
+
+        In order to function, `HANDLE_CHARSETS` needs to know a few things. First, you need to specify where you keep your `TRA` files. You do this with the variable `tra_path`. Second, `HANDLE_CHARSETS` needs to know where the Windows version of `iconv` is located. You do this with the variable `iconv_path`. Third, `HANDLE_CHARSETS` needs to know which character set the `TRA` files are in. Note that they can only be converted into `UTF-8` and cannot already be in `UTF-8`. You provide this information with `charset_table` or tell `HANDLE_CHARSETS` to try to infer this by itself with `infer_charsets`. Lastly, `HANDLE_CHARSETS` needs to know which `TRA` files to convert and whether any of them should be reloaded. You can do this with `noconvert_array`, `convert_array` and `reload_array`.
+
+        Unless `convert_array` is specified, `HANDLE_CHARSETS` will recursively convert all `TRA` files in `tra_path` except those listed in `noconvert_array`. If `convert_array` is specified, only those `TRA` files listed in the array will be converted. `convert_array` may contain references to `TRA` files in subdirectories of `tra_path`.
+
+        – INT_VAR `infer_charsets` to whether `HANDLE_CHARSETS` should try to infer which character set the `TRA` files are encoded in. It uses the contents of the `%language%` variable (''vide infra''). If the contents of the variable can be recognised, `HANDLE_CHARSETS` will use the character set used by the localised version of BG2 for this language. If the contents of the variable cannot be recognised, or if the `TRA` files use a different character set than the expected one, `HANDLE_CHARSETS` will fail. Refer to the compatibility matrix below for additional information. `infer_charsets` overrides `charset_table`. Defaults to 0.
+        – STR_VAR `language` to the name of the language directory you wish to convert. The default value of this variable is `\%LANGUAGE\%`, in other words, the directory corresponding to the language the user selected at the start of the installation. You should never need to alter the value of this variable.
+        – STR_VAR `default_language` to the name of the directory used by the default language of your mod, if your mod has one. The default language is typically one for which the translation is always complete and up to date and which you use to guard against incomplete translations. `HANDLE_CHARSETS` will convert the `TRA` files of the default language in addition to those of the user-selected language. Should these two languages be the same, the `TRA` files will only be converted once. Additionally, any `TRA` files listed in the `reload_array` (''vide infra'') will be reloaded for the default language before they are reloaded for the user-selected language. The default value of this variable is `~~` (the empty string).
+        – STR_VAR `tra_path` to the path where your mod’s language directories are located. `%tra_path%/%language%` should be a valid directory containing `TRA` files.
+        – STR_VAR `iconv_path` to the path where iconv.exe is located. Defaults to `%tra_path%/iconv`.
+        – STR_VAR `charset_table` to the name of an associative array where the keys are the names of your language directories and the corresponding values are the character sets used by the respective language. The keys must be entirely in lowercase. `charset_table` is not used if you also specify `infer_charsets`.
+        – STR_VAR `noconvert_array` to the name of an array indexed by monotonically increasing integers starting from 0. The values should be the names of `TRA` files that should not be converted into `UTF-8`. All `TRA` files in the language directory and its subdirectories except the ones listed in `noconvert_array` will be converted. The .tra file extension is optional. This variable should not be provided if you also provide `convert_array`.
+        – STR_VAR `convert_array` to the name of an array indexed by monotonically increasing integers starting from 0. The values should be the names of `TRA` files that should be converted into `UTF-8`. Only those `TRA` files in the language directory or its subdirectories which are listed in `convert_array` will be converted. The .tra file extension is optional. If this variable is provided, `noconvert_array` will not be used.
+        – STR_VAR `reload_array` to the name of an array indexed by monotonically increasing integers starting from 0. The values should be the names of `TRA` files which should be reloaded after they have been converted. The .tra file extension is optional. You should use this variable for reloading those `TRA` files loaded by `LANGUAGE` which should also be converted.
 
 tp2-when:
   type: 14 # keyword

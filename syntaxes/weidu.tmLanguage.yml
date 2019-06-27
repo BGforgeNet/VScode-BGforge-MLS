@@ -392,6 +392,9 @@ repository:
     - match: \b(EXT_OF_FILESPEC)\b
     - match: \b(fj_are_structure)\b
     - match: \b(sc#addWmpAre)\b
+    - match: \b(HANDLE_AUDIO)\b
+    - match: \b(HANDLE_TILESETS)\b
+    - match: \b(HANDLE_CHARSETS)\b
 
   weidu-tp2-patch-controls:
     name: keyword.control.patch.weidu
