@@ -222,7 +222,15 @@ function load_completion() {
 				let detail: string;
 				let doc: string;
 				for (element of completion_yaml[item]['items']) {
-					detail = element['detail'] || element['name']; // copy name to detail if it's empty
+
+					// copy name to detail if it's empty
+					detail = element['detail'] || element['name'];
+					//strip () from the end of the string (not necessary in Fallout SSL)
+					let last_two = detail.substr(-2);
+					if (last_two == "()") {
+						detail = detail.substr(0, detail.length-2);
+					}
+
 					doc = element['doc'] || ''; // allow empty doc, too
 					completion_list.push({ label: element['name'], kind: kind, documentation: doc, detail: detail, source: "builtin" });
 				}
