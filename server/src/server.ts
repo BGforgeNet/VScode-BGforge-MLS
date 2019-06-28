@@ -225,9 +225,9 @@ function load_completion() {
 
 					// copy name to detail if it's empty
 					detail = element['detail'] || element['name'];
+
 					//strip () from the end of the string (not necessary in Fallout SSL)
-					let last_two = detail.substr(-2);
-					if (last_two == "()") {
+					if (lang_id == "fallout-ssl" && detail.substr(-2) == "()") {
 						detail = detail.substr(0, detail.length-2);
 					}
 

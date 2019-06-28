@@ -21,6 +21,7 @@ patterns:
 - include: '#weidu-tp2-optexact'
 - include: '#weidu-tp2-arrarindicessorttype'
 - include: '#weidu-tp2-patch'
+- include: '#weidu-tp2-macro'
 - include: '#weidu-tp2-patch-controls'
 - include: '#weidu-tp2-when'
 - include: '#weidu-tp2-values'
@@ -338,6 +339,10 @@ repository:
     - match: \b(COMPRESS_REPLACE_FILE)\b
     - match: \b(COMPRESS_INTO_FILE)\b
     - match: \b(COMPRESS_INTO_VAR)\b
+
+  weidu-tp2-macro:
+    name: support.function.tp2.weidu
+    patterns:
     - match: \b(ADD_ITEM_EQEFFECT)\b
     - match: \b(ADD_ITEM_EFFECT)\b
     - match: \b(ALTER_ITEM_EFFECT)\b
@@ -636,7 +641,7 @@ repository:
     - match: \b(STR_VAR|INT_VAR|RET|RET_VAL)\b
       name: keyword.control.weidu
     - include: '#vars-declaration'
-    
+
   function-declaration:
     name: meta.function.declaration.weidu
     begin: \b(DEFINE_ACTION_FUNCTION|DEFINE_PATCH_FUNCTION)\s+(~)?(\w+)(~)?
