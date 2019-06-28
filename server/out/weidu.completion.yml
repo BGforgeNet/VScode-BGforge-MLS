@@ -1399,562 +1399,612 @@ tp2-patch:
         s debug file."
     - name: ADD_ITEM_EQEFFECT
       doc: "Adds an equipping effect to an item. All variables except 'probability1' are 0 by default. This is a PATCH macro and function.\
-      - SET 'opcode' to opcode\n
-      - SET 'target' to target type\n
-      - SET 'timing' to timing type\n
-      - SET 'parameter1' to first parameter\n
-      - SET 'parameter2' to second parameter\n
-      - SET 'power' to power\n
-      - SET 'resist_dispel' to magic resistance/dispel type\n
-      - SET 'duration' to duration\n
-      - SET 'probability1' to probability 1 (default 100)\n
-      - SET 'probability2' to probability 2\n
-      - SPRINT 'resource' to resource (8 chars max)\n
-      - SET 'dicenumber' to number of dices to be thrown\n
-      - SET 'dicesize' to size of dices to be thrown\n
-      - SET 'savingthrow' to type of savingthrow to be allowed against the effect\n
-      - SET 'savebonus' to saving throw bonus\n
-      - SET 'special' to the special parameter (only valid for functions; not macros)\n
-      - SET 'header' to number of extended header (starting from 1) the effect should be added to (by default the effect is added to every header).\n
-      - SET 'insert_point' to the position of the effect. If this variable is 0 the effect will be inserted as the first effect of the extended header. If this variable is negative or greater than the number of effects, the effect will be inserted as the last effect. The effect is added as the first effect by default."
+      - SET `opcode` to opcode\n
+      - SET `target` to target type\n
+      - SET `timing` to timing type\n
+      - SET `parameter1` to first parameter\n
+      - SET `parameter2` to second parameter\n
+      - SET `power` to power\n
+      - SET `resist_dispel` to magic resistance/dispel type\n
+      - SET `duration` to duration\n
+      - SET `probability1` to probability 1 (default 100)\n
+      - SET `probability2` to probability 2\n
+      - SPRINT `resource` to resource (8 chars max)\n
+      - SET `dicenumber` to number of dices to be thrown\n
+      - SET `dicesize` to size of dices to be thrown\n
+      - SET `savingthrow` to type of savingthrow to be allowed against the effect\n
+      - SET `savebonus` to saving throw bonus\n
+      - SET `special` to the special parameter (only valid for functions; not macros)\n
+      - SET `header` to number of extended header (starting from 1) the effect should be added to (by default the effect is added to every header).\n
+      - SET `insert_point` to the position of the effect. If this variable is 0 the effect will be inserted as the first effect of the extended header. If this variable is negative or greater than the number of effects, the effect will be inserted as the last effect. The effect is added as the first effect by default."
     - name: ADD_ITEM_EFFECT
-      doc: "Adds an extended effect to an item. All variables except 'probability1', type and 'insert_point' are 0 by default. This is a PATCH macro and function.\
-      - SET 'opcode' to opcode\n
-      - SET 'target' to target type\n
-      - SET 'timing' to timing type\n
-      - SET 'parameter1' to first parameter\n
-      - SET 'parameter2' to second parameter\n
-      - SET 'power' to power\n
-      - SET 'resist_dispel' to magic resistance/dispel type\n
-      - SET 'duration' to duration\n
-      - SET 'probability1' to probability 1 (default 100)\n
-      - SET 'probability2' to probability 2\n
-      - SPRINT 'resource' to resource (8 chars max)\n
-      - SET 'dicenumber' to number of dices to be thrown\n
-      - SET 'dicesize' to size of dices to be thrown\n
-      - SET 'savingthrow' to type of savingthrow to be allowed against the effect\n
-      - SET 'savebonus' to saving throw bonus\n
-      - SET 'special' to the special parameter (only valid for functions; not macros)\n
-      - SET 'header' to number of extended header (starting from 1) the effect should be added to (by default the effect is added to every header).\n
-      - SET 'type' to the type of header to which the effect should be added or 99 for all types. Defaults to 3 (magic).\n
-      - SET 'insert_point' to the position of the effect. If this variable is 0 the effect will be inserted as the first effect of the extended header. If this variable is negative or greater than the number of effects, the effect will be inserted as the last effect. The effect is added as the last effect by default."
+      doc: "Adds an extended effect to an item. All variables except `probability1`, type and `insert_point` are 0 by default. This is a PATCH macro and function.\
+      - SET `opcode` to opcode\n
+      - SET `target` to target type\n
+      - SET `timing` to timing type\n
+      - SET `parameter1` to first parameter\n
+      - SET `parameter2` to second parameter\n
+      - SET `power` to power\n
+      - SET `resist_dispel` to magic resistance/dispel type\n
+      - SET `duration` to duration\n
+      - SET `probability1` to probability 1 (default 100)\n
+      - SET `probability2` to probability 2\n
+      - SPRINT `resource` to resource (8 chars max)\n
+      - SET `dicenumber` to number of dices to be thrown\n
+      - SET `dicesize` to size of dices to be thrown\n
+      - SET `savingthrow` to type of savingthrow to be allowed against the effect\n
+      - SET `savebonus` to saving throw bonus\n
+      - SET `special` to the special parameter (only valid for functions; not macros)\n
+      - SET `header` to number of extended header (starting from 1) the effect should be added to (by default the effect is added to every header).\n
+      - SET `type` to the type of header to which the effect should be added or 99 for all types. Defaults to 3 (magic).\n
+      - SET `insert_point` to the position of the effect. If this variable is 0 the effect will be inserted as the first effect of the extended header. If this variable is negative or greater than the number of effects, the effect will be inserted as the last effect. The effect is added as the last effect by default."
     - name: ADD_SPELL_EFFECT
-      doc: "Adds an extended effect to a spell. All variables except 'probability1' and 'insert_point' are 0 by default. This is a PATCH macro and function.\n
-      - SET 'opcode' to opcode\n
-      - SET 'target' to target type\n
-      - SET 'timing' to timing type\n
-      - SET 'parameter1' to first parameter\n
-      - SET 'parameter2' to second parameter\n
-      - SET 'power' to power\n
-      - SET 'resist_dispel' to magic resistance/dispel type\n
-      - SET 'duration' to duration\n
-      - SET 'probability1' to probability 1 (default 100)\n
-      - SET 'probability2' to probability 2\n
-      - SPRINT 'resource' to resource (8 chars max)\n
-      - SET 'dicenumber' to number of dices to be thrown\n
-      - SET 'dicesize' to size of dices to be thrown\n
-      - SET 'savingthrow' to type of savingthrow to be allowed against the effect\n
-      - SET 'savebonus' to saving throw bonus\n
-      - SET 'special' to the special parameter (only valid for functions; not macros)\n
-      - SET 'header' to number of extended header (starting from 1) the effect should be added to (by default the effect is added to every header).\n
-      - SET 'insert_point' to the position of the effect. If this variable is 0 the effect will be inserted as the first effect of the extended header. If this variable is negative or greater than the number of effects, the effect will be inserted as the last effect. The effect is added as the last effect by default."
+      doc: "Adds an extended effect to a spell. All variables except `probability1` and `insert_point` are 0 by default. This is a PATCH macro and function.\n
+      - SET `opcode` to opcode\n
+      - SET `target` to target type\n
+      - SET `timing` to timing type\n
+      - SET `parameter1` to first parameter\n
+      - SET `parameter2` to second parameter\n
+      - SET `power` to power\n
+      - SET `resist_dispel` to magic resistance/dispel type\n
+      - SET `duration` to duration\n
+      - SET `probability1` to probability 1 (default 100)\n
+      - SET `probability2` to probability 2\n
+      - SPRINT `resource` to resource (8 chars max)\n
+      - SET `dicenumber` to number of dices to be thrown\n
+      - SET `dicesize` to size of dices to be thrown\n
+      - SET `savingthrow` to type of savingthrow to be allowed against the effect\n
+      - SET `savebonus` to saving throw bonus\n
+      - SET `special` to the special parameter (only valid for functions; not macros)\n
+      - SET `header` to number of extended header (starting from 1) the effect should be added to (by default the effect is added to every header).\n
+      - SET `insert_point` to the position of the effect. If this variable is 0 the effect will be inserted as the first effect of the extended header. If this variable is negative or greater than the number of effects, the effect will be inserted as the last effect. The effect is added as the last effect by default."
     - name: ADD_SPELL_CFEFFECT
-      doc: "Adds a casting-feature effect to a spell. All variables except 'probability1' are 0 by default. This is a PATCH macro and function.\n
-      - SET 'opcode' to opcode\n
-      - SET 'target' to target type\n
-      - SET 'timing' to timing type\n
-      - SET 'parameter1' to first parameter\n
-      - SET 'parameter2' to second parameter\n
-      - SET 'power' to power\n
-      - SET 'resist_dispel' to magic resistance/dispel type\n
-      - SET 'duration' to duration\n
-      - SET 'probability1' to probability 1 (default 100)\n
-      - SET 'probability2' to probability 2\n
-      - SPRINT 'resource' to resource (8 chars max)\n
-      - SET 'dicenumber' to number of dices to be thrown\n
-      - SET 'dicesize' to size of dices to be thrown\n
-      - SET 'savingthrow' to type of savingthrow to be allowed against the effect\n
-      - SET 'savebonus' to saving throw bonus\n
-      - SET 'special' to the special parameter (only valid for functions; not macros)\n
-      - SET 'header' to number of extended header (starting from 1) the effect should be added to (by default the effect is added to every header).\n
-      - SET 'insert_point' to the position of the effect. If this variable is 0 the effect will be inserted as the first effect of the extended header. If this variable is negative or greater than the number of effects, the effect will be inserted as the last effect. The effect is added as the first effect by default."
+      doc: "Adds a casting-feature effect to a spell. All variables except `probability1` are 0 by default. This is a PATCH macro and function.\n
+      - SET `opcode` to opcode\n
+      - SET `target` to target type\n
+      - SET `timing` to timing type\n
+      - SET `parameter1` to first parameter\n
+      - SET `parameter2` to second parameter\n
+      - SET `power` to power\n
+      - SET `resist_dispel` to magic resistance/dispel type\n
+      - SET `duration` to duration\n
+      - SET `probability1` to probability 1 (default 100)\n
+      - SET `probability2` to probability 2\n
+      - SPRINT `resource` to resource (8 chars max)\n
+      - SET `dicenumber` to number of dices to be thrown\n
+      - SET `dicesize` to size of dices to be thrown\n
+      - SET `savingthrow` to type of savingthrow to be allowed against the effect\n
+      - SET `savebonus` to saving throw bonus\n
+      - SET `special` to the special parameter (only valid for functions; not macros)\n
+      - SET `header` to number of extended header (starting from 1) the effect should be added to (by default the effect is added to every header).\n
+      - SET `insert_point` to the position of the effect. If this variable is 0 the effect will be inserted as the first effect of the extended header. If this variable is negative or greater than the number of effects, the effect will be inserted as the last effect. The effect is added as the first effect by default."
     - name: ALTER_SPELL_HEADER
-      doc: "Patch ability headers on spells. This is a PATCH function.All integer variables except 'match_icon' and 'header' default to -1 and negative values result in no change to the corresponding field. The integer variables 'match_icon' and 'header' default to 0. The string variable 'icon' defaults to the string \"same\", which results in no change to the corresponding field.\n
-      'header_type' is used to limit the scope of matching. The default value of -1 will match all types of headers while values of 0-4 will match headers with those values. If 'match_icon' is 1, the 'icon' resource reference will be match with the 'icon' variable as an additional qualifier. This is useful for items which have multiple magic abilities. 'header' can also be used to limit patching to the Nth header, counting from 1 as the first header. The default is 0, which will match all headers.\n
-      - INT_VAR 'header_type' to the type of header to be matched. If this variable is -1, all headers will be a match. (default -1)\n
-      - INT_VAR 'match_icon' to whether to match the ability icon (0 for no, 1 for yes). (default 0)\n
-      - INT_VAR 'header' to the number of the ability header (starting from 1) that should be altered. A value of 0 matches all header. (default 0)\n
-      - INT_VAR 'new_header_type' to the value the matched header should be changed into.\n
-      - INT_VAR 'location' to the new new ability location.\n
-      - INT_VAR 'target' to the new target.\n
-      - INT_VAR 'range' to the new range.\n
-      - INT_VAR 'min_level' to the new required minimum level.\n
-      - INT_VAR 'speed' to the new speed factor.\n
-      - INT_VAR 'thac0_bonus' to the new THAC0 bonus.\n
-      - INT_VAR 'dicesize' to the new dice size.\n
-      - INT_VAR 'dicenumber' to the new number of dice.\n
-      - INT_VAR 'damage_bonus' to the new damage bonus.\n
-      - INT_VAR 'damage_type' to the new damage type.\n
-      - INT_VAR 'charges' to the new number of charges.\n
-      - INT_VAR 'projectile' to the new projectile.\n
-      - STR_VAR 'icon' to the resource reference to be used for matching if 'match_icon' is 1, or the new ability icon if 'match_icon' is 0."
+      doc: "Patch ability headers on spells. This is a PATCH function.All integer variables except `match_icon` and `header` default to -1 and negative values result in no change to the corresponding field. The integer variables `match_icon` and `header` default to 0. The string variable `icon` defaults to the string \"same\", which results in no change to the corresponding field.\n
+      `header_type` is used to limit the scope of matching. The default value of -1 will match all types of headers while values of 0-4 will match headers with those values. If `match_icon` is 1, the `icon` resource reference will be match with the `icon` variable as an additional qualifier. This is useful for items which have multiple magic abilities. `header` can also be used to limit patching to the Nth header, counting from 1 as the first header. The default is 0, which will match all headers.\n
+      - INT_VAR `header_type` to the type of header to be matched. If this variable is -1, all headers will be a match. (default -1)\n
+      - INT_VAR `match_icon` to whether to match the ability icon (0 for no, 1 for yes). (default 0)\n
+      - INT_VAR `header` to the number of the ability header (starting from 1) that should be altered. A value of 0 matches all header. (default 0)\n
+      - INT_VAR `new_header_type` to the value the matched header should be changed into.\n
+      - INT_VAR `location` to the new new ability location.\n
+      - INT_VAR `target` to the new target.\n
+      - INT_VAR `range` to the new range.\n
+      - INT_VAR `min_level` to the new required minimum level.\n
+      - INT_VAR `speed` to the new speed factor.\n
+      - INT_VAR `thac0_bonus` to the new THAC0 bonus.\n
+      - INT_VAR `dicesize` to the new dice size.\n
+      - INT_VAR `dicenumber` to the new number of dice.\n
+      - INT_VAR `damage_bonus` to the new damage bonus.\n
+      - INT_VAR `damage_type` to the new damage type.\n
+      - INT_VAR `charges` to the new number of charges.\n
+      - INT_VAR `projectile` to the new projectile.\n
+      - STR_VAR `icon` to the resource reference to be used for matching if `match_icon` is 1, or the new ability icon if `match_icon` is 0."
     - name: ALTER_SPELL_EFFECT
-      doc: "Patch effects on spells. This is a PATCH function. All integer variables except 'check_globals', 'check_headers', 'header' and 'savebonus' default to -1 and negative values result in no change to the corresponding field. The integer variables 'check_globals' and 'header' default to 0. The integer variable 'check_headers' defaults to 1. The integer variable 'savebonus' defaults to -11 and values lower than -10 result in no change to the corresponding field. The string variable 'resource' defaults to the string \"same\", which results in no change to the corresponding field.\n
-      The function will by default only check effects on headers. You can change this by changing the values of the variables 'check_globals' and 'check_headers'. If you patch headers, you can further target by using 'type' to target melee, ranged, or magical headers. 'match_opcode' can be left at -1 to match all effects on your targeted range or targeted to a specific opcode. If the opcode itself needs to be changed, you can use 'match_opcode' to target the existing effect and 'new_opcode' as the new opcode to use. 'duration_high' is an alternative to 'duration', mainly for changing the overall duration of an item's effects. The idea is to allow you to mass patch effects to new durations while leaving the one-time only cosmetics and visuals--which are usual instant or only run for a few seconds--unchanged.\n
-      - INT_VAR 'check_globals' to whether to check global effects (0 for no, 1 for yes). (default 0)\n
-      - INT_VAR 'check_headers' to whether to check effects on extended headers (0 for no, 1 for yes). (default 1)\n
-      - INT_VAR 'header' to the number of the ability header that should be altered. A value of 0 matches all headers. (default 0)\n
-      - INT_VAR 'header_type' to which type of header that should be checked. If this variable is -1, all header types will be checked.\n
-      - INT_VAR 'match_opcode' to which type of opcode to match. If this variable is -1, all opcodes are a match.\n
-      - INT_VAR 'new_opcode' to the value the matched opcode should be changed into.\n
-      - INT_VAR 'target' to the new target.\n
-      - INT_VAR 'power' to the new power.\n
-      - INT_VAR 'parameter1' to the new parameter1.\n
-      - INT_VAR 'parameter2' to the new parameter2.\n
-      - INT_VAR 'timing' to the new timing mode.\n
-      - INT_VAR 'resist_dispel' to the new resist/dispel.\n
-      - INT_VAR 'duration' to the new duration.\n
-      - INT_VAR 'duration_high' to the new duration, but is only written if the existing duration is greater than 5.\n
-      - INT_VAR 'probability1' to the new probability1 (the upper bound).\n
-      - INT_VAR 'probability2' to the new probability2 (the lower bound).\n
-      - INT_VAR 'dicenumber' to the new number of dice. This field is instead used for maximum hit-dice (HD) by some opcodes.\n
-      - INT_VAR 'dicesize' to the new size of dice. This field is also instead used for minimum hit-dice (HD) by some opcodes.\n
-      - INT_VAR 'savingthrow' to the new saving-throw type.\n
-      - INT_VAR 'savebonus' to the new saving-throw bonus/penalty. This variable can take negative values down to -10 while still writing to the corresponding field. (default -11)\n
-      - INT_VAR 'special' to the new special parameter.\n
-      - STR_VAR 'resource' to the new resource reference."
+      doc: "Patch effects on spells. This is a PATCH function. All integer variables except `check_globals`, `check_headers`, `header` and `savebonus` default to -1 and negative values result in no change to the corresponding field. The integer variables `check_globals` and `header` default to 0. The integer variable `check_headers` defaults to 1. The integer variable `savebonus` defaults to -11 and values lower than -10 result in no change to the corresponding field. The string variable `resource` defaults to the string \"same\", which results in no change to the corresponding field.\n
+      The function will by default only check effects on headers. You can change this by changing the values of the variables `check_globals` and `check_headers`. If you patch headers, you can further target by using `type` to target melee, ranged, or magical headers. `match_opcode` can be left at -1 to match all effects on your targeted range or targeted to a specific opcode. If the opcode itself needs to be changed, you can use `match_opcode` to target the existing effect and `new_opcode` as the new opcode to use. `duration_high` is an alternative to `duration`, mainly for changing the overall duration of an item's effects. The idea is to allow you to mass patch effects to new durations while leaving the one-time only cosmetics and visuals--which are usual instant or only run for a few seconds--unchanged.\n
+      - INT_VAR `check_globals` to whether to check global effects (0 for no, 1 for yes). (default 0)\n
+      - INT_VAR `check_headers` to whether to check effects on extended headers (0 for no, 1 for yes). (default 1)\n
+      - INT_VAR `header` to the number of the ability header that should be altered. A value of 0 matches all headers. (default 0)\n
+      - INT_VAR `header_type` to which type of header that should be checked. If this variable is -1, all header types will be checked.\n
+      - INT_VAR `match_opcode` to which type of opcode to match. If this variable is -1, all opcodes are a match.\n
+      - INT_VAR `new_opcode` to the value the matched opcode should be changed into.\n
+      - INT_VAR `target` to the new target.\n
+      - INT_VAR `power` to the new power.\n
+      - INT_VAR `parameter1` to the new parameter1.\n
+      - INT_VAR `parameter2` to the new parameter2.\n
+      - INT_VAR `timing` to the new timing mode.\n
+      - INT_VAR `resist_dispel` to the new resist/dispel.\n
+      - INT_VAR `duration` to the new duration.\n
+      - INT_VAR `duration_high` to the new duration, but is only written if the existing duration is greater than 5.\n
+      - INT_VAR `probability1` to the new probability1 (the upper bound).\n
+      - INT_VAR `probability2` to the new probability2 (the lower bound).\n
+      - INT_VAR `dicenumber` to the new number of dice. This field is instead used for maximum hit-dice (HD) by some opcodes.\n
+      - INT_VAR `dicesize` to the new size of dice. This field is also instead used for minimum hit-dice (HD) by some opcodes.\n
+      - INT_VAR `savingthrow` to the new saving-throw type.\n
+      - INT_VAR `savebonus` to the new saving-throw bonus/penalty. This variable can take negative values down to -10 while still writing to the corresponding field. (default -11)\n
+      - INT_VAR `special` to the new special parameter.\n
+      - STR_VAR `resource` to the new resource reference."
     - name: ALTER_ITEM_EFFECT
-      doc: "Patch global (equipping) effects and/or effects on extended headers. This is a PATCH function. All integer variables except 'check_globals', 'check_headers', 'header' and 'savebonus' default to -1 and negative values result in no change to the corresponding field. The integer variables 'check_globals', 'check_headers' and 'header' default to 0. The integer variable 'savebonus' defaults to -11 and values lower than -10 result in no change to the corresponding field. The string variable 'resource' defaults to the string \"same\", which results in no change to the corresponding field.\n
-      Note that both 'check_globals' and 'check_headers' are 0 by default, so you need to change one or both of these to 1 to perform any patching at all. If you patch headers, you can further target by using 'type' to target melee, ranged, or magical headers. 'match_opcode' can be left at -1 to match all effects on your targeted range or targeted to a specific opcode. If the opcode itself needs to be changed, you can use 'match_opcode' to target the existing effect and 'new_opcode' as the new opcode to use. 'duration_high' is an alternative to 'duration', mainly for changing the overall duration of an item's effects. The idea is to allow you to mass patch effects to new durations while leaving the one-time only cosmetics and visuals--which are usual instant or only run for a few seconds--unchanged.\n
-      - INT_VAR 'check_globals' to whether to check global (on-equip) effects (0 for no, 1 for yes). (default 0)\n
-      - INT_VAR 'check_headers' to whether to check effects on extended headers (0 for no, 1 for yes). (default 0)\n
-      - INT_VAR 'header' to the number of the ability header that should be altered. A value of 0 matches all headers. (default 0)\n
-      - INT_VAR 'header_type' to which type of header that should be checked. If this variable is -1, all header types will be checked.\n
-      - INT_VAR 'match_opcode' to which type of opcode to match. If this variable is -1, all opcodes are a match.\n
-      - INT_VAR 'new_opcode' to the value the matched opcode should be changed into.\n
-      - INT_VAR 'target' to the new target.\n
-      - INT_VAR 'power' to the new power.\n
-      - INT_VAR 'parameter1' to the new parameter1.\n
-      - INT_VAR 'parameter2' to the new parameter2.\n
-      - INT_VAR 'timing' to the new timing mode.\n
-      - INT_VAR 'resist_dispel' to the new resist/dispel.\n
-      - INT_VAR 'duration' to the new duration.\n
-      - INT_VAR 'duration_high' to the new duration, but is only written if the existing duration is greater than 5.\n
-      - INT_VAR 'probability1' to the new probability1 (the upper bound).\n
-      - INT_VAR 'probability2' to the new probability2 (the lower bound).\n
-      - INT_VAR 'dicenumber' to the new number of dice. This field is instead used for maximum hit-dice (HD) by some opcodes.\n
-      - INT_VAR 'dicesize' to the new size of dice. This field is also instead used for minimum hit-dice (HD) by some opcodes.\n
-      - INT_VAR 'savingthrow' to the new saving-throw type.\n
-      - INT_VAR 'savebonus' to the new saving-throw bonus/penalty. This variable can take negative values down to -10 while still writing to the corresponding field. (default -11)\n
-      - INT_VAR 'special' to the new special parameter.\n
-      - STR_VAR 'resource' to the new resource reference."
+      doc: "Patch global (equipping) effects and/or effects on extended headers. This is a PATCH function. All integer variables except `check_globals`, `check_headers`, `header` and `savebonus` default to -1 and negative values result in no change to the corresponding field. The integer variables `check_globals`, `check_headers` and `header` default to 0. The integer variable `savebonus` defaults to -11 and values lower than -10 result in no change to the corresponding field. The string variable `resource` defaults to the string \"same\", which results in no change to the corresponding field.\n
+      Note that both `check_globals` and `check_headers` are 0 by default, so you need to change one or both of these to 1 to perform any patching at all. If you patch headers, you can further target by using `type` to target melee, ranged, or magical headers. `match_opcode` can be left at -1 to match all effects on your targeted range or targeted to a specific opcode. If the opcode itself needs to be changed, you can use `match_opcode` to target the existing effect and `new_opcode` as the new opcode to use. `duration_high` is an alternative to `duration`, mainly for changing the overall duration of an item's effects. The idea is to allow you to mass patch effects to new durations while leaving the one-time only cosmetics and visuals--which are usual instant or only run for a few seconds--unchanged.\n
+      - INT_VAR `check_globals` to whether to check global (on-equip) effects (0 for no, 1 for yes). (default 0)\n
+      - INT_VAR `check_headers` to whether to check effects on extended headers (0 for no, 1 for yes). (default 0)\n
+      - INT_VAR `header` to the number of the ability header that should be altered. A value of 0 matches all headers. (default 0)\n
+      - INT_VAR `header_type` to which type of header that should be checked. If this variable is -1, all header types will be checked.\n
+      - INT_VAR `match_opcode` to which type of opcode to match. If this variable is -1, all opcodes are a match.\n
+      - INT_VAR `new_opcode` to the value the matched opcode should be changed into.\n
+      - INT_VAR `target` to the new target.\n
+      - INT_VAR `power` to the new power.\n
+      - INT_VAR `parameter1` to the new parameter1.\n
+      - INT_VAR `parameter2` to the new parameter2.\n
+      - INT_VAR `timing` to the new timing mode.\n
+      - INT_VAR `resist_dispel` to the new resist/dispel.\n
+      - INT_VAR `duration` to the new duration.\n
+      - INT_VAR `duration_high` to the new duration, but is only written if the existing duration is greater than 5.\n
+      - INT_VAR `probability1` to the new probability1 (the upper bound).\n
+      - INT_VAR `probability2` to the new probability2 (the lower bound).\n
+      - INT_VAR `dicenumber` to the new number of dice. This field is instead used for maximum hit-dice (HD) by some opcodes.\n
+      - INT_VAR `dicesize` to the new size of dice. This field is also instead used for minimum hit-dice (HD) by some opcodes.\n
+      - INT_VAR `savingthrow` to the new saving-throw type.\n
+      - INT_VAR `savebonus` to the new saving-throw bonus/penalty. This variable can take negative values down to -10 while still writing to the corresponding field. (default -11)\n
+      - INT_VAR `special` to the new special parameter.\n
+      - STR_VAR `resource` to the new resource reference."
     - name: ALTER_EFFECT
       doc: "This is a patch function for creature, item, or spell files that will match an existing effect and alter it based on the defined variables. Numerous variables are available for matching the specified effect and for specifying new values.\n
       The first batch of variables are meta-variables which will help determine the scope of the function\":\"\n
-      - INT_VAR 'check_globals' to whether the function should loop through global effects on items (also known as equipping effects) and spells (default is 1). Creature effects are all global effects, so this variable will always be considered to be one when this function is run on a creature.\n
-      - INT_VAR 'check_headers' to whether the function should loop through effects on extended headers on items and spells (default is 1). Creatures have no extended headers, so this variable is ignored when used on creatures.\n
-      - INT_VAR 'header' to whether the function should target effects on one specific header, counting the first header as zero. A negative value will match all headers (default is -1). Creatures have no extended headers, so this variable is ignored when used on creatures.\n
-      - INT_VAR 'header_type' to whether the function should only alter effects on extended headers of the specified type (1 - melee, 2 - ranged, etc.). Negative values will look at effects on all headers (default is -1). Creatures have no extended headers, so this variable is ignored when used on creatures.\n
-      - INT_VAR 'multi_match' to the number of effects to alter in the active stack. If you just want to match the first effect and have the function stop, use 1. Otherwise the function will continue matching until the number of altered effects matches this value. The function will always make at least one change (e.g. 0 or negative values are treated as 1). (default is 999).\n
-      - INT_VAR 'verbose' to whether the function should provide some rudimentary information on how many effects were added (default is 0).\n
-      - INT_VAR 'silent' to whether the function should suppress warnings when no effects were altered. This option also suppresses the verbose option (default is 0).\n
+      - INT_VAR `check_globals` to whether the function should loop through global effects on items (also known as equipping effects) and spells (default is 1). Creature effects are all global effects, so this variable will always be considered to be one when this function is run on a creature.\n
+      - INT_VAR `check_headers` to whether the function should loop through effects on extended headers on items and spells (default is 1). Creatures have no extended headers, so this variable is ignored when used on creatures.\n
+      - INT_VAR `header` to whether the function should target effects on one specific header, counting the first header as zero. A negative value will match all headers (default is -1). Creatures have no extended headers, so this variable is ignored when used on creatures.\n
+      - INT_VAR `header_type` to whether the function should only alter effects on extended headers of the specified type (1 - melee, 2 - ranged, etc.). Negative values will look at effects on all headers (default is -1). Creatures have no extended headers, so this variable is ignored when used on creatures.\n
+      - INT_VAR `multi_match` to the number of effects to alter in the active stack. If you just want to match the first effect and have the function stop, use 1. Otherwise the function will continue matching until the number of altered effects matches this value. The function will always make at least one change (e.g. 0 or negative values are treated as 1). (default is 999).\n
+      - INT_VAR `verbose` to whether the function should provide some rudimentary information on how many effects were added (default is 0).\n
+      - INT_VAR `silent` to whether the function should suppress warnings when no effects were altered. This option also suppresses the verbose option (default is 0).\n
       The next batch of variables sets the function boundaries on matching an effect to alter. Any variables not specified will not be used to determine a match. The function will only determine an effect is a match only if ALL of the variables specified are matched.\n
-      - INT_VAR 'match_opcode' to the opcode of effects to be matched (default is -1).\n
-      - INT_VAR 'match_target' to the target of effects to be matched (default is -1).\n
-      - INT_VAR 'match_power' to the power of effects to be matched (default is -1).\n
-      - INT_VAR 'match_parameter1' to parameter1 of effects to be matched (default is -1).\n
-      - INT_VAR 'match_parameter2' to parameter2 of effects to be matched (default is -1).\n
-      - INT_VAR 'match_timing' to the timing of effects to be matched (default is -1).\n
-      - INT_VAR 'match_resist_dispel' to the resist/dispel setting of effects to be matched (default is -1).\n
-      - INT_VAR 'match_duration' to the duration of effects to be matched (default is -1).\n
-      - INT_VAR 'match_probability1' to probability1 (the upper bound) of effects to be matched (default is -1).\n
-      - INT_VAR 'match_probability2' to probability2 (the lower bound) of effects to be matched (default is -1).\n
-      - INT_VAR 'match_dicenumber' to the number of dice of effects to be matched (default is -1). This field is instead used for maximum hit-dice (HD) by some opcodes.\n
-      - INT_VAR 'match_dicesize' to the size of dice of effects to be matched (default is -1). This field is used instead for minimum hit-dice (HD) by some opcodes.\n
-      - INT_VAR 'match_savingthrow' to the saving throw type of effects to be matched (default is -1).\n
-      - INT_VAR 'match_savebonus' to the saving trow bonus effects to be matched (default is -11). Since saving throws can range into negative values, this variable can match all the way down to -10.\n
-      - INT_VAR 'match_special' to the special field of effects to be matched (default is -1). The special field is used by some EE effects.\n
-      - STR_VAR 'match_resource' to the resource of effects to be matched (default is \"SAME\").\n
+      - INT_VAR `match_opcode` to the opcode of effects to be matched (default is -1).\n
+      - INT_VAR `match_target` to the target of effects to be matched (default is -1).\n
+      - INT_VAR `match_power` to the power of effects to be matched (default is -1).\n
+      - INT_VAR `match_parameter1` to parameter1 of effects to be matched (default is -1).\n
+      - INT_VAR `match_parameter2` to parameter2 of effects to be matched (default is -1).\n
+      - INT_VAR `match_timing` to the timing of effects to be matched (default is -1).\n
+      - INT_VAR `match_resist_dispel` to the resist/dispel setting of effects to be matched (default is -1).\n
+      - INT_VAR `match_duration` to the duration of effects to be matched (default is -1).\n
+      - INT_VAR `match_probability1` to probability1 (the upper bound) of effects to be matched (default is -1).\n
+      - INT_VAR `match_probability2` to probability2 (the lower bound) of effects to be matched (default is -1).\n
+      - INT_VAR `match_dicenumber` to the number of dice of effects to be matched (default is -1). This field is instead used for maximum hit-dice (HD) by some opcodes.\n
+      - INT_VAR `match_dicesize` to the size of dice of effects to be matched (default is -1). This field is used instead for minimum hit-dice (HD) by some opcodes.\n
+      - INT_VAR `match_savingthrow` to the saving throw type of effects to be matched (default is -1).\n
+      - INT_VAR `match_savebonus` to the saving trow bonus effects to be matched (default is -11). Since saving throws can range into negative values, this variable can match all the way down to -10.\n
+      - INT_VAR `match_special` to the special field of effects to be matched (default is -1). The special field is used by some EE effects.\n
+      - STR_VAR `match_resource` to the resource of effects to be matched (default is \"SAME\").\n
       Once a matching effect is found, the next series of variables allows the function to change the fields to these new values in the matched effect. Any variables not set in this batch will keep their existing values.\n
-      - INT_VAR 'opcode' to the value the of the altered effect's opcode.\n
-      - INT_VAR 'target' to the altered effect's target.\n
-      - INT_VAR 'power' to the altered effect's power.\n
-      - INT_VAR 'parameter1' to the altered effect's parameter1.\n
-      - INT_VAR 'parameter2' to the altered effect's parameter2.\n
-      - INT_VAR 'timing' to the altered effect's timing mode.\n
-      - INT_VAR 'resist_dispel' to the altered effect's resist/dispel setting.\n
-      - INT_VAR 'duration' to the altered effect's duration.\n
-      - INT_VAR 'probability1' to the altered effect's probability1 (the upper bound).\n
-      - INT_VAR 'probability2' to the altered effect's probability2 (the lower bound).\n
-      - INT_VAR 'dicenumber' to the altered effect's number of dice. This field is instead used for maximum hit-dice (HD) by some opcodes.\n
-      - INT_VAR 'dicesize' to the altered effect's size of dice. This field is also instead used for minimum hit-dice (HD) by some opcodes.\n
-      - INT_VAR 'savingthrow' to the altered effect's saving-throw type.\n
-      - INT_VAR 'savebonus' to the altered effect's saving-throw bonus/penalty. This variable can take negative values down to -10 while still writing to the corresponding field.\n
-      - INT_VAR 'special' to the new effect's special field. The special field is used by many EE effects.\n
-      - STR_VAR 'resource' to the altered effect's resource reference."
+      - INT_VAR `opcode` to the value the of the altered effect's opcode.\n
+      - INT_VAR `target` to the altered effect's target.\n
+      - INT_VAR `power` to the altered effect's power.\n
+      - INT_VAR `parameter1` to the altered effect's parameter1.\n
+      - INT_VAR `parameter2` to the altered effect's parameter2.\n
+      - INT_VAR `timing` to the altered effect's timing mode.\n
+      - INT_VAR `resist_dispel` to the altered effect's resist/dispel setting.\n
+      - INT_VAR `duration` to the altered effect's duration.\n
+      - INT_VAR `probability1` to the altered effect's probability1 (the upper bound).\n
+      - INT_VAR `probability2` to the altered effect's probability2 (the lower bound).\n
+      - INT_VAR `dicenumber` to the altered effect's number of dice. This field is instead used for maximum hit-dice (HD) by some opcodes.\n
+      - INT_VAR `dicesize` to the altered effect's size of dice. This field is also instead used for minimum hit-dice (HD) by some opcodes.\n
+      - INT_VAR `savingthrow` to the altered effect's saving-throw type.\n
+      - INT_VAR `savebonus` to the altered effect's saving-throw bonus/penalty. This variable can take negative values down to -10 while still writing to the corresponding field.\n
+      - INT_VAR `special` to the new effect's special field. The special field is used by many EE effects.\n
+      - STR_VAR `resource` to the altered effect's resource reference."
     - name: CLONE_EFFECT
       doc: "This is a patch function for creature, item, or spell files that will match an existing effect and create a new one based on the matched effect. Numerous variables are available for matching the specified effect and for specifying new values in the new effect based on the matched effect.\n
       The first batch of variables are meta-variables which will help determine the scope of the function\":\"\n
-      - INT_VAR 'check_globals' to whether the function should loop through global effects on items (also known as equipping effects) and spells (default is 1). Creature effects are all global effects, so this variable will always be considered to be one when this function is run on a creature.\n
-      - INT_VAR 'check_headers' to whether the function should loop through effects on extended headers on items and spells if set to 1 (default is 1). Creatures have no extended headers, so this variable is ignored when used on creatures.\n
-      - INT_VAR 'header' to whether the function should target effects on one specific header, counting the first header as zero. A negative value will match all headers (default is -1). Creatures have no extended headers, so this variable is ignored when used on creatures.\n
-      - INT_VAR 'header_type' to whether the function should only clone effects on extended headers of the specified type (1 - melee, 2 - ranged, etc.). Negative values will look at effects on all headers (default is -1). Creatures have no extended headers, so this variable is ignored when used on creatures.\n
-      - INT_VAR 'multi_match' to the number of effects to clone in the active stack. If you just want to match the first effect and have the function stop, use 1. Otherwise the function will continue matching until the number of cloned effects matches this value. The function will always make at least one change (e.g. 0 or negative values are treated as 1). (default is 999).\n
-      - INT_VAR 'verbose' to whether the function should provide some rudimentary information on how many effects were added (default is 0).\n
-      - INT_VAR 'silent' to whether the function should suppress warnings when no effects were added. This option also suppresses the verbose option (default is 0).\n
-      - STR_VAR 'insert' to the relative position the cloned effect should be inserted at. A value of 'below' puts the new, cloned effect immediately below the matched effect. Values of 'first' or last' will put the new effect at the top or bottom of the effect stack, respectively. All other values will default to 'above', where the effect is added immediately before the matched effect (default is 'above').\n
+      - INT_VAR `check_globals` to whether the function should loop through global effects on items (also known as equipping effects) and spells (default is 1). Creature effects are all global effects, so this variable will always be considered to be one when this function is run on a creature.\n
+      - INT_VAR `check_headers` to whether the function should loop through effects on extended headers on items and spells if set to 1 (default is 1). Creatures have no extended headers, so this variable is ignored when used on creatures.\n
+      - INT_VAR `header` to whether the function should target effects on one specific header, counting the first header as zero. A negative value will match all headers (default is -1). Creatures have no extended headers, so this variable is ignored when used on creatures.\n
+      - INT_VAR `header_type` to whether the function should only clone effects on extended headers of the specified type (1 - melee, 2 - ranged, etc.). Negative values will look at effects on all headers (default is -1). Creatures have no extended headers, so this variable is ignored when used on creatures.\n
+      - INT_VAR `multi_match` to the number of effects to clone in the active stack. If you just want to match the first effect and have the function stop, use 1. Otherwise the function will continue matching until the number of cloned effects matches this value. The function will always make at least one change (e.g. 0 or negative values are treated as 1). (default is 999).\n
+      - INT_VAR `verbose` to whether the function should provide some rudimentary information on how many effects were added (default is 0).\n
+      - INT_VAR `silent` to whether the function should suppress warnings when no effects were added. This option also suppresses the verbose option (default is 0).\n
+      - STR_VAR `insert` to the relative position the cloned effect should be inserted at. A value of `below` puts the new, cloned effect immediately below the matched effect. Values of `first` or `last` will put the new effect at the top or bottom of the effect stack, respectively. All other values will default to `above`, where the effect is added immediately before the matched effect (default is `above`).\n
       The next batch of variables sets the function boundaries on matching an effect to clone. Any variables not specified will not be used to determine a match. The function will only determine an effect is a match only if ALL of the variables specified are matched.\n
-      - INT_VAR 'match_opcode' to the opcode of effects to be matched (default -1).\n
-      - INT_VAR 'match_target' to the target of effects to be matched (default -1).\n
-      - INT_VAR 'match_power' to the power of effects to be matched (default -1).\n
-      - INT_VAR 'match_parameter1' to parameter1 of effects to be matched (default -1).\n
-      - INT_VAR 'match_parameter2' to parameter2 of effects to be matched (default -1).\n
-      - INT_VAR 'match_timing' to the timing of effects to be matched (default -1).\n
-      - INT_VAR 'match_resist_dispel' to the resist/dispel setting of effects to be matched (default -1).\n
-      - INT_VAR 'match_duration' to the duration of effects to be matched (default -1).\n
-      - INT_VAR 'match_probability1' to probability1 (the upper bound) of effects to be matched (default -1).\n
-      - INT_VAR 'match_probability2' to probability2 (the lower bound) of effects to be matched (default -1).\n
-      - INT_VAR 'match_dicenumber' to the number of dice of effects to be matched (default -1). This field is instead used for maximum hit-dice (HD) by some opcodes.\n
-      - INT_VAR 'match_dicesize' to the size of dice of effects to be matched (default -1). This field is used instead for minimum hit-dice (HD) by some opcodes.\n
-      - INT_VAR 'match_savingthrow' to the saving throw type of effects to be matched (default -1).\n
-      - INT_VAR 'match_savebonus' to the saving throw bonus of effects to be matched (default -11). Since saving throws can range into negative values, this variable can match all the way down to -10.\n
-      - INT_VAR 'match_special' to the special field of effects to be matched (default -1). The special field is used by some EE effects.\n
-      - STR_VAR 'match_resource' to the resource of effects to be matched (default \"SAME\").\n
-      Once a matching effect is found, a new effect is created (STR_VAR 'insert' determines its placement) with all of the same specifications as the matched effect. The next series of variables allows the function to change the fields to new values in the newly-created effect. Any variables not set in this batch will simply inherit their values from the matched effect.\n
-      - INT_VAR 'opcode' to the value the of the new effect's opcode.\n
-      - INT_VAR 'target' to the new effect's target.\n
-      - INT_VAR 'power' to the new effect's power.\n
-      - INT_VAR 'parameter1' to the new effect's parameter1.\n
-      - INT_VAR 'parameter2' to the new effect's parameter2.\n
-      - INT_VAR 'timing' to the new effect's timing mode.\n
-      - INT_VAR 'resist_dispel' to the new effect's resist/dispel setting.\n
-      - INT_VAR 'duration' to the new effect's duration.\n
-      - INT_VAR 'probability1' to the new effect's probability1 (the upper bound).\n
-      - INT_VAR 'probability2' to the new effect's probability2 (the lower bound).\n
-      - INT_VAR 'dicenumber' to the new effect's number of dice. This field is instead used for maximum hit-dice (HD) by some opcodes.\n
-      - INT_VAR 'dicesize' to the new effect's size of dice. This field is also instead for minimum hit-dice (HD) by some opcodes.\n
-      - INT_VAR 'savingthrow' to the new effect's saving-throw type.\n
-      - INT_VAR 'savebonus' to the new effect's saving-throw bonus/penalty. This variable can take negative values down to -10 while still writing to the corresponding field.\n
-      - INT_VAR 'special' to the new effect's special field. The special field is used by many EE effects.\n
-      - STR_VAR 'resource' to the new effect's resource reference."
+      - INT_VAR `match_opcode` to the opcode of effects to be matched (default -1).\n
+      - INT_VAR `match_target` to the target of effects to be matched (default -1).\n
+      - INT_VAR `match_power` to the power of effects to be matched (default -1).\n
+      - INT_VAR `match_parameter1` to parameter1 of effects to be matched (default -1).\n
+      - INT_VAR `match_parameter2` to parameter2 of effects to be matched (default -1).\n
+      - INT_VAR `match_timing` to the timing of effects to be matched (default -1).\n
+      - INT_VAR `match_resist_dispel` to the resist/dispel setting of effects to be matched (default -1).\n
+      - INT_VAR `match_duration` to the duration of effects to be matched (default -1).\n
+      - INT_VAR `match_probability1` to probability1 (the upper bound) of effects to be matched (default -1).\n
+      - INT_VAR `match_probability2` to probability2 (the lower bound) of effects to be matched (default -1).\n
+      - INT_VAR `match_dicenumber` to the number of dice of effects to be matched (default -1). This field is instead used for maximum hit-dice (HD) by some opcodes.\n
+      - INT_VAR `match_dicesize` to the size of dice of effects to be matched (default -1). This field is used instead for minimum hit-dice (HD) by some opcodes.\n
+      - INT_VAR `match_savingthrow` to the saving throw type of effects to be matched (default -1).\n
+      - INT_VAR `match_savebonus` to the saving throw bonus of effects to be matched (default -11). Since saving throws can range into negative values, this variable can match all the way down to -10.\n
+      - INT_VAR `match_special` to the special field of effects to be matched (default -1). The special field is used by some EE effects.\n
+      - STR_VAR `match_resource` to the resource of effects to be matched (default \"SAME\").\n
+      Once a matching effect is found, a new effect is created (STR_VAR `insert` determines its placement) with all of the same specifications as the matched effect. The next series of variables allows the function to change the fields to new values in the newly-created effect. Any variables not set in this batch will simply inherit their values from the matched effect.\n
+      - INT_VAR `opcode` to the value the of the new effect's opcode.\n
+      - INT_VAR `target` to the new effect's target.\n
+      - INT_VAR `power` to the new effect's power.\n
+      - INT_VAR `parameter1` to the new effect's parameter1.\n
+      - INT_VAR `parameter2` to the new effect's parameter2.\n
+      - INT_VAR `timing` to the new effect's timing mode.\n
+      - INT_VAR `resist_dispel` to the new effect's resist/dispel setting.\n
+      - INT_VAR `duration` to the new effect's duration.\n
+      - INT_VAR `probability1` to the new effect's probability1 (the upper bound).\n
+      - INT_VAR `probability2` to the new effect's probability2 (the lower bound).\n
+      - INT_VAR `dicenumber` to the new effect's number of dice. This field is instead used for maximum hit-dice (HD) by some opcodes.\n
+      - INT_VAR `dicesize` to the new effect's size of dice. This field is also instead for minimum hit-dice (HD) by some opcodes.\n
+      - INT_VAR `savingthrow` to the new effect's saving-throw type.\n
+      - INT_VAR `savebonus` to the new effect's saving-throw bonus/penalty. This variable can take negative values down to -10 while still writing to the corresponding field.\n
+      - INT_VAR `special` to the new effect's special field. The special field is used by many EE effects.\n
+      - STR_VAR `resource` to the new effect's resource reference."
     - name: DELETE_EFFECT
       doc: "This is a patch function for creature, item, or spell files that will match an existing effect and then delete it. Numerous variables are available for matching the specified effect.\n
       The first batch of variables are meta-variables which will help determine the scope of the function\":\"\n
-      - INT_VAR 'check_globals' to whether the function should loop through global effects on items (also known as equipping effects) and spells (default is 1). Creature effects are all global effects, so this variable will always be considered to be one when this function is run on a creature.\n
-      - INT_VAR 'check_headers' to whether the function should loop through effects on extended headers on items and spells (default is 1). Creatures have no extended headers, so this variable is ignored when used on creatures.\n
-      - INT_VAR 'header' to whether the function should target effects on one specific header, counting the first header as zero. A negative value will match all headers (default is -1). Creatures have no extended headers, so this variable is ignored when used on creatures.\n
-      - INT_VAR 'header_type' to whether the function should only delete effects on extended headers of the specified type (1 - melee, 2 - ranged, etc.). Negative values will look at effects on all headers (default is -1). Creatures have no extended headers, so this variable is ignored when used on creatures.\n
-      - INT_VAR 'multi_match' to the number of effects to delete in the active stack. If you just want to match the first effect and have the function stop, use 1. Otherwise the function will continue matching until the number of deleted effects matches this value. The function will always make at least one change (e.g. 0 or negative values are treated as 1). (default is 999).\n
-      - INT_VAR 'verbose' to whether the function should provide some rudimentary information on how many effects were deleted (default is 0).\n
+      - INT_VAR `check_globals` to whether the function should loop through global effects on items (also known as equipping effects) and spells (default is 1). Creature effects are all global effects, so this variable will always be considered to be one when this function is run on a creature.\n
+      - INT_VAR `check_headers` to whether the function should loop through effects on extended headers on items and spells (default is 1). Creatures have no extended headers, so this variable is ignored when used on creatures.\n
+      - INT_VAR `header` to whether the function should target effects on one specific header, counting the first header as zero. A negative value will match all headers (default is -1). Creatures have no extended headers, so this variable is ignored when used on creatures.\n
+      - INT_VAR `header_type` to whether the function should only delete effects on extended headers of the specified type (1 - melee, 2 - ranged, etc.). Negative values will look at effects on all headers (default is -1). Creatures have no extended headers, so this variable is ignored when used on creatures.\n
+      - INT_VAR `multi_match` to the number of effects to delete in the active stack. If you just want to match the first effect and have the function stop, use 1. Otherwise the function will continue matching until the number of deleted effects matches this value. The function will always make at least one change (e.g. 0 or negative values are treated as 1). (default is 999).\n
+      - INT_VAR `verbose` to whether the function should provide some rudimentary information on how many effects were deleted (default is 0).\n
       The next batch of variables sets the function boundaries on matching an effect to delete. Any variables not specified will not be used to determine a match. The function will only determine an effect is a match only if ALL of the variables specified are matched.\n
-      - INT_VAR 'match_opcode' to the opcode of effects to be matched (default -1).\n
-      - INT_VAR 'match_target' to the target of effects to be matched (default -1).\n
-      - INT_VAR 'match_power' to the power of effects to be matched (default -1).\n
-      - INT_VAR 'match_parameter1' to parameter1 of effects to be matched (default -1).\n
-      - INT_VAR 'match_parameter2' to parameter2 of effects to be matched (default -1).\n
-      - INT_VAR 'match_timing' to the timing of effects to be matched (default -1).\n
-      - INT_VAR 'match_resist_dispel' to the resist/dispel setting of effects to be matched (default -1).\n
-      - INT_VAR 'match_duration' to the duration of effects to be matched (default -1).\n
-      - INT_VAR 'match_probability1' to probability1 (the upper bound) of effects to be matched (default -1).\n
-      - INT_VAR 'match_probability2' to probability2 (the lower bound) of effects to be matched (default -1).\n
-      - INT_VAR 'match_dicenumber' to the number of dice of effects to be matched (default -1). This field is instead used for maximum hit-dice (HD) by some opcodes.\n
-      - INT_VAR 'match_dicesize' to the size of dice of effects to be matched (default -1). This field is used instead for minimum hit-dice (HD) by some opcodes.\n
-      - INT_VAR 'match_savingthrow' to the saving throw type of effects to be matched (default -1).\n
-      - INT_VAR 'match_savebonus' to the saving throw bonus effects to be matched (default -11). Since saving throws can range into negative values, this variable can match all the way down to -10.\n
-      - INT_VAR 'match_special' to the special field of effects to be matched (default -1). The special field is used by some EE effects.\n
-      - STR_VAR 'match_resource' to the resource of effects to be matched (default \"SAME\").\n
-      Once a matching effect is found it is deleted. The function will continue to delete effects from the stack until the number of effects deleted matches the 'multi_match' variable."
+      - INT_VAR `match_opcode` to the opcode of effects to be matched (default -1).\n
+      - INT_VAR `match_target` to the target of effects to be matched (default -1).\n
+      - INT_VAR `match_power` to the power of effects to be matched (default -1).\n
+      - INT_VAR `match_parameter1` to parameter1 of effects to be matched (default -1).\n
+      - INT_VAR `match_parameter2` to parameter2 of effects to be matched (default -1).\n
+      - INT_VAR `match_timing` to the timing of effects to be matched (default -1).\n
+      - INT_VAR `match_resist_dispel` to the resist/dispel setting of effects to be matched (default -1).\n
+      - INT_VAR `match_duration` to the duration of effects to be matched (default -1).\n
+      - INT_VAR `match_probability1` to probability1 (the upper bound) of effects to be matched (default -1).\n
+      - INT_VAR `match_probability2` to probability2 (the lower bound) of effects to be matched (default -1).\n
+      - INT_VAR `match_dicenumber` to the number of dice of effects to be matched (default -1). This field is instead used for maximum hit-dice (HD) by some opcodes.\n
+      - INT_VAR `match_dicesize` to the size of dice of effects to be matched (default -1). This field is used instead for minimum hit-dice (HD) by some opcodes.\n
+      - INT_VAR `match_savingthrow` to the saving throw type of effects to be matched (default -1).\n
+      - INT_VAR `match_savebonus` to the saving throw bonus effects to be matched (default -11). Since saving throws can range into negative values, this variable can match all the way down to -10.\n
+      - INT_VAR `match_special` to the special field of effects to be matched (default -1). The special field is used by some EE effects.\n
+      - STR_VAR `match_resource` to the resource of effects to be matched (default \"SAME\").\n
+      Once a matching effect is found it is deleted. The function will continue to delete effects from the stack until the number of effects deleted matches the `multi_match` variable."
     - name: DELETE_ITEM_EQEFFECT
       doc: "Deletes all equipping effects with specified opcode from an item. This is a PATCH macro and function.\n
-      - SET 'opcode_to_delete' to the opcode of the effect you want to delete. Opcode of (-1) will match all effects."
+      - SET `opcode_to_delete` to the opcode of the effect you want to delete. Opcode of (-1) will match all effects."
     - name: DELETE_ITEM_EFFECT
       doc: "Deletes all extended effects with specified opcode from an item. This is a PATCH macro and function.\n
-      - SET 'opcode_to_delete' to the opcode of the effect you want to delete. Opcode of (-1) will match all effects."
+      - SET `opcode_to_delete` to the opcode of the effect you want to delete. Opcode of (-1) will match all effects."
     - name: DELETE_SPELL_EFFECT
       doc: "Deletes all extended effects with specified opcode from a spell. This is a PATCH macro and function.\n
-      - SET 'opcode_to_delete' to the opcode of the effect you want to delete. Opcode of (-1) will match all effects."
+      - SET `opcode_to_delete` to the opcode of the effect you want to delete. Opcode of (-1) will match all effects."
     - name: DELETE_CRE_EFFECT
       doc: "Deletes all effects with specified opcode from a creature. (Warning\":\" doesn't check EFF version) This is a PATCH macro and function.\n
-      - SET 'opcode_to_delete' to the opcode of the effect you want to delete. Opcode of (-1) will match all effects."
+      - SET `opcode_to_delete` to the opcode of the effect you want to delete. Opcode of (-1) will match all effects."
     - name: ADD_CRE_EFFECT
-      doc: "Adds an effect to a creature. All variables except 'probability1' are 0 by default. This is a PATCH macro and function.\n
-      - SET 'opcode' to opcode.\n
-      - SET 'timing' to timing type.\n
-      - SET 'target' to target type.\n
-      - SET 'parameter1' to first parameter.\n
-      - SET 'parameter2' to second parameter.\n
-      - SET parameter3 to third parameter.\n
-      - SET parameter4 to forth parameter.\n
-      - SET 'power' to power.\n
-      - SET 'resist_dispel' to magic resistance/dispel type.\n
-      - SET 'duration' to duration.\n
-      - SET 'probability1' to probability 1 (default 100).\n
-      - SET 'probability2' to probability 2.\n
-      - SPRINT 'resource' to resource (8 chars max).\n
-      - SPRINT 'resource2' to second resource (8 chars max).\n
-      - SPRINT 'vvcresource' to VVC resource (8 chars max).\n
-      - SPRINT 'effsource' to effect source.\n
-      - SPRINT 'effvar' to effect variable.\n
-      - SET 'dicenumber' to number of dices to be thrown.\n
-      - SET 'dicesize' to size of dices to be thrown.\n
-      - SET 'savingthrow' to type of savingthrow to be allowed against the effect.\n
-      - SET 'savebonus' to saving throw bonus.\n
-      - SET 'school' to magical school.\n
-      - SET 'special' to the special parameter (only valid for functions; not macros).\n
-      - SET 'lowestafflvl' to lowest affected level.\n
-      - SET 'highestafflvl' to highest affected level.\n
-      - SET 'casterx' to caster X position.\n
-      - SET 'castery' to caster Y position.\n
-      - SET 'targetx' to target X position.\n
-      - SET 'targety' to target Y position.\n
-      - SET 'restype' to source resource type.\n
-      - SET 'sourceslot' to source resource slot.\n
-      - SET 'casterlvl' to caster level.\n
-      - SET 'sectype' to secondary type.\n
-      - SET 'insert_point' to the index at which the new effect is to be inserted. 0 is first and negative values or values equal to or exceeding the existing number of effects are last."
+      doc: "Adds an effect to a creature. All variables except `probability1` are 0 by default. This is a PATCH macro and function.\n
+      - SET `opcode` to opcode.\n
+      - SET `timing` to timing type.\n
+      - SET `target` to target type.\n
+      - SET `parameter1` to first parameter.\n
+      - SET `parameter2` to second parameter.\n
+      - SET `parameter3` to third parameter.\n
+      - SET `parameter4` to forth parameter.\n
+      - SET `power` to power.\n
+      - SET `resist_dispel` to magic resistance/dispel type.\n
+      - SET `duration` to duration.\n
+      - SET `probability1` to probability 1 (default 100).\n
+      - SET `probability2` to probability 2.\n
+      - SPRINT `resource` to resource (8 chars max).\n
+      - SPRINT `resource2` to second resource (8 chars max).\n
+      - SPRINT `vvcresource` to VVC resource (8 chars max).\n
+      - SPRINT `effsource` to effect source.\n
+      - SPRINT `effvar` to effect variable.\n
+      - SET `dicenumber` to number of dices to be thrown.\n
+      - SET `dicesize` to size of dices to be thrown.\n
+      - SET `savingthrow` to type of savingthrow to be allowed against the effect.\n
+      - SET `savebonus` to saving throw bonus.\n
+      - SET `school` to magical school.\n
+      - SET `special` to the special parameter (only valid for functions; not macros).\n
+      - SET `lowestafflvl` to lowest affected level.\n
+      - SET `highestafflvl` to highest affected level.\n
+      - SET `casterx` to caster X position.\n
+      - SET `castery` to caster Y position.\n
+      - SET `targetx` to target X position.\n
+      - SET `targety` to target Y position.\n
+      - SET `restype` to source resource type.\n
+      - SET `sourceslot` to source resource slot.\n
+      - SET `casterlvl` to caster level.\n
+      - SET `sectype` to secondary type.\n
+      - SET `insert_point` to the index at which the new effect is to be inserted. 0 is first and negative values or values equal to or exceeding the existing number of effects are last."
     - name: DELETE_CRE_ITEM
       doc: "Deletes all matching items from a creature. Regexp allowed. This is a PATCH macro and function.\n
-      - SPRINT 'item_to_delete' to the item you want to delete."
+      - SPRINT `item_to_delete` to the item you want to delete."
     - name: DELETE_STORE_ITEM
       doc: "Deletes all matching items from a store. Regexp allowed. This is a PATCH macro and function.\n
-      - SPRINT 'item_to_delete' to the item you want to delete."
+      - SPRINT `item_to_delete` to the item you want to delete."
     - name: DELETE_AREA_ITEM
       doc: "Deletes all matching items from an area. Regexp allowed. This is a PATCH macro and function.\n
-      - SPRINT 'item_to_delete' to the item you want to delete."
+      - SPRINT `item_to_delete` to the item you want to delete."
     - name: RES_NUM_OF_SPELL_NAME
       doc: "Converts a spell.ids reference to resource name. This is an ACTION and PATCH macro and function.\n
-      - SPRINT 'spell_name' to the IDS symbolic reference of a spell.\n
-      - RET 'spell_num' to the IDS numerical reference of that spell.\n
-      - RET 'spell_res' to the resource name for the referenced spell."
+      - SPRINT `spell_name` to the IDS symbolic reference of a spell.\n
+      - RET `spell_num` to the IDS numerical reference of that spell.\n
+      - RET `spell_res` to the resource name for the referenced spell."
     - name: RES_NAME_OF_SPELL_NUM
       doc: "Converts a spell.ids reference to resource name. This is an ACTION and PATCH macro and function.\n
-      - SET 'spell_num' to the IDS numerical reference of that spell.\n
-      - RET 'spell_name' to the IDS symbolic reference of a spell.\n
-      - RET 'spell_res' to the resource name for the referenced spell."
+      - SET `spell_num` to the IDS numerical reference of that spell.\n
+      - RET `spell_name` to the IDS symbolic reference of a spell.\n
+      - RET `spell_res` to the resource name for the referenced spell."
     - name: NAME_NUM_OF_SPELL_RES
       doc: "Converts a spell resource name to a spell.ids reference. This is an ACTION and PATCH macro and function.\n
-      - SPRINT 'spell_res' to the resource name for the referenced spell.\n
-      - RET 'spell_num' to the IDS numerical reference of that spell.\n
-      - RET 'spell_name' to the IDS symbolic reference of a spell."
+      - SPRINT `spell_res` to the resource name for the referenced spell.\n
+      - RET `spell_num` to the IDS numerical reference of that spell.\n
+      - RET `spell_name` to the IDS symbolic reference of a spell."
     - name: GET_UNIQUE_FILE_NAME
       doc: "Creates a file name that is currently unallocated. This is a PATCH and ACTION function. This function will create a filename using __ as a prefix. __ is reserved by The Bigg and writeable by anybody, as long as you dynamically create the file name (either by using this function or other code of your devising). The algorithm creates file names in base 36, going from __0000.ext to __zzzz.ext; this allows for 36 ^ 4 = 1679616 unique file names.\n
-      To allow users to reinstall your mod without breaking the identity of these files, you can use the 'base' parameter to ensure that the same thing will be mapped to the same file on reinstalls. For instance, if you're iterating through Mages to give each of them a spellbook, base should contain your modder prefix, an identifier for the purpose of the call, and the file name you're working on, for instance\":\" ~tb#spellbooks_%SOURCE_RES%~\n
-      - STR_VAR 'extension' to the desired extension (required).\n
-      - STR_VAR 'base' to a string unique to your mod and current file (optional).\n
-      - RET 'filename' the currently unallocated file name (sans the extension)."
+      To allow users to reinstall your mod without breaking the identity of these files, you can use the `base` parameter to ensure that the same thing will be mapped to the same file on reinstalls. For instance, if you're iterating through Mages to give each of them a spellbook, base should contain your modder prefix, an identifier for the purpose of the call, and the file name you're working on, for instance\":\" ~tb#spellbooks_%SOURCE_RES%~\n
+      - STR_VAR `extension` to the desired extension (required).\n
+      - STR_VAR `base` to a string unique to your mod and current file (optional).\n
+      - RET `filename` the currently unallocated file name (sans the extension)."
     - name: ITEM_EFFECT_TO_SPELL
       doc: "Copies all extended effects from the current item to the first extended header of a spell. This is a PATCH macro and function.\n
-      - SET 'type' to the header type to copy the effect from (use 99 to specify 'all types').\n
-      - SET 'header' to number of extended header the effect should be copied from (use 99 to specify 'every header').\n
-      - SET 'insert_point' to the index into the spell file at which the effects should be inserted. A value of 0 will have the effects inserted as the first effects of the spell. Effects are inserted as the last effects by default.\n
-      - SPRINT 'new_itm_spl' to a spell you want to copy effects to."
+      - SET `type` to the header type to copy the effect from (use 99 to specify 'all types').\n
+      - SET `header` to number of extended header the effect should be copied from (use 99 to specify 'every header').\n
+      - SET `insert_point` to the index into the spell file at which the effects should be inserted. A value of 0 will have the effects inserted as the first effects of the spell. Effects are inserted as the last effects by default.\n
+      - SPRINT `new_itm_spl` to a spell you want to copy effects to."
     - name: DELETE_ITEM_HEADER
       doc: "Delete ability headers, also known as extended headers, from items. This is a PATCH function. All integer variables default to 0.\n
       This function will delete one or more ability headers, along with all of their associated effects, and properly re-index the file.\n
-      - INT_VAR 'header_type' to the header type to delete. If this variable is -1, all header types will be a match. (default 0)"
+      - INT_VAR `header_type` to the header type to delete. If this variable is -1, all header types will be a match. (default 0)"
     - name: DELETE_SPELL_HEADER
-      doc: "Delete ability headers, also known as extended headers, from spells. This is a PATCH function. The integer variable 'header_type' defaults to 0. The integer variable 'min_level' defaults to -1 and if this variable is 0 or greater, only headers with a matching minimum level will be deleted.\n
+      doc: "Delete ability headers, also known as extended headers, from spells. This is a PATCH function. The integer variable `header_type` defaults to 0. The integer variable `min_level` defaults to -1 and if this variable is 0 or greater, only headers with a matching minimum level will be deleted.\n
       This function will delete one or more ability headers, along with all of their associated effects, and properly re-index the file.\n
-      - INT_VAR 'header_type' to the header type to delete. If this variable is -1, all header types will be a match. (default 0)\n
-      - INT_VAR 'min_level' to the minimum level to be matched. If this variable is negative, it will not be used for matching. (default -1)"
+      - INT_VAR `header_type` to the header type to delete. If this variable is -1, all header types will be a match. (default 0)\n
+      - INT_VAR `min_level` to the minimum level to be matched. If this variable is negative, it will not be used for matching. (default -1)"
     - name: ALTER_AREA_DOOR
-      doc: "Patch area doors. This is a PATCH function. All integer variables, except 'string_unlock' and 'string_speaker', default to -1 and negative values result in no change to the corresponding field. The variables 'string_unlock' and 'string_speaker' instead default to 99999999. In the case of flags, a value of 1 will set the flag and a value of 0 will unset it. All string variables except 'door_name' default to the string \"same\", which results in no change to the corresponding field. The variable 'door_name' is required.\n
-      - INT_VAR 'bounding_open_left' to the new value of the left edge of the open-state bounding box. The vertices remain unchanged.\n
-      - INT_VAR 'bounding_open_top' to the new value of the top edge of the open-state bounding box. The vertices remain unchanged.\n
-      - INT_VAR 'bounding_open_right' to the new value of the right edge of the open-state bounding box. The vertices remain unchanged.\n
-      - INT_VAR 'bounding_open_bottom' to the new value of the bottom edge of the open-state bounding box. The vertices remain unchanged.\n
-      - INT_VAR 'bounding_closed_left' to the new value of the left edge of the closed-state bounding box. The vertices remain unchanged.\n
-      - INT_VAR 'bounding_closed_top' to the new value of the top edge of the closed-state bounding box. The vertices remain unchanged.\n
-      - INT_VAR 'bounding_closed_right' to the new value of the right edge of the closed-state bounding box. The vertices remain unchanged.\n
-      - INT_VAR 'bounding_closed_bottom' to the new value of the bottom edge of the closed-state bounding box. The vertices remain unchanged.\n
-      - INT_VAR 'door_hp' to the new hit-point value.\n
-      - INT_VAR 'door_ac' to the new armor-class value.\n
-      - INT_VAR 'cursor' to the new cursor index.\n
-      - INT_VAR 'trap_detect' to the new difficulty of trap detection.\n
-      - INT_VAR 'trap_remove' to the new difficulty of trap removal.\n
-      - INT_VAR 'trapped' to whether the door should be trapped.\n
-      - INT_VAR 'detected' to whether the door trap should be detected.\n
-      - INT_VAR 'launch_x' to the new x coordinate of the launch point.\n
-      - INT_VAR 'launch_y' to the new y coordinate of the launch point.\n
-      - INT_VAR 'door_detect' to the new difficulty of door detection.\n
-      - INT_VAR 'lock_difficulty' to the new difficulty of the lock.\n
-      - INT_VAR 'open_x' to the new x coordinate of the opening point.\n
-      - INT_VAR 'open_y' to the new y coordinate of the opening point.\n
-      - INT_VAR 'close_x' to the new x coordinate of the closing point.\n
-      - INT_VAR 'close_y' to the new y coordinate of the closing point.\n
-      - INT_VAR 'string_unlock' to the new string reference of the unlock message.\n
-      - INT_VAR 'string_speaker' to the new string reference of the dialogue-speaker name.\n
-      - INT_VAR 'flag_open' to the new value of the flag known as door open (bit 0).\n
-      - INT_VAR 'flag_locked' to the new value of the flag known as door locked (bit 1).\n
-      - INT_VAR 'flag_resets' to the new value of the flag known as reset trap (bit 2).\n
-      - INT_VAR 'flag_detectable' to the new value of the flag known as trap detectable (bit 3).\n
-      - INT_VAR 'flag_forced' to the new value of the flag known as broken (bit 4).\n
-      - INT_VAR 'flag_no_close' to the new value of the flag known as can't close (bit 5).\n
-      - INT_VAR 'flag_located' to the new value of the flag known as linked (bit 6).\n
-      - INT_VAR 'flag_secret' to the new value of the flag known as door hidden (bit 7).\n
-      - INT_VAR 'flag_detected' to the new value of the flag known as door found (bit 8).\n
-      - INT_VAR 'flag_no_look' to the new value of the flag known as don't block line of sight.\n
-      - INT_VAR 'flag_uses_key' to the new value of the flag known as remove key (bit 10).\n
-      - INT_VAR 'flag_sliding' to the new value of the flag known as ignore obstacles when closing (bit 11).\n
-      - STR_VAR 'door_name' to the name of the door to be patched. This variable is required.\n
-      - STR_VAR 'door_open_sound' to the resource reference of the opening sound.\n
-      - STR_VAR 'door_close_sound' to the resource reference of the closing sound.\n
-      - STR_VAR 'door_key' to the resref of the new door key.\n
-      - STR_VAR 'door_script' to the resref of the new door script.\n
-      - STR_VAR 'travel_trigger' to the new travel-trigger name. This field is 24 bytes in length.\n
-      - STR_VAR 'dialogue' to the new resource reference of the dialogue file."
+      doc: "Patch area doors. This is a PATCH function. All integer variables, except `string_unlock` and `string_speaker`, default to -1 and negative values result in no change to the corresponding field. The variables `string_unlock` and `string_speaker` instead default to 99999999. In the case of flags, a value of 1 will set the flag and a value of 0 will unset it. All string variables except `door_name` default to the string \"same\", which results in no change to the corresponding field. The variable `door_name` is required.\n
+      - INT_VAR `bounding_open_left` to the new value of the left edge of the open-state bounding box. The vertices remain unchanged.\n
+      - INT_VAR `bounding_open_top` to the new value of the top edge of the open-state bounding box. The vertices remain unchanged.\n
+      - INT_VAR `bounding_open_right` to the new value of the right edge of the open-state bounding box. The vertices remain unchanged.\n
+      - INT_VAR `bounding_open_bottom` to the new value of the bottom edge of the open-state bounding box. The vertices remain unchanged.\n
+      - INT_VAR `bounding_closed_left` to the new value of the left edge of the closed-state bounding box. The vertices remain unchanged.\n
+      - INT_VAR `bounding_closed_top` to the new value of the top edge of the closed-state bounding box. The vertices remain unchanged.\n
+      - INT_VAR `bounding_closed_right` to the new value of the right edge of the closed-state bounding box. The vertices remain unchanged.\n
+      - INT_VAR `bounding_closed_bottom` to the new value of the bottom edge of the closed-state bounding box. The vertices remain unchanged.\n
+      - INT_VAR `door_hp` to the new hit-point value.\n
+      - INT_VAR `door_ac` to the new armor-class value.\n
+      - INT_VAR `cursor` to the new cursor index.\n
+      - INT_VAR `trap_detect` to the new difficulty of trap detection.\n
+      - INT_VAR `trap_remove` to the new difficulty of trap removal.\n
+      - INT_VAR `trapped` to whether the door should be trapped.\n
+      - INT_VAR `detected` to whether the door trap should be detected.\n
+      - INT_VAR `launch_x` to the new x coordinate of the launch point.\n
+      - INT_VAR `launch_y` to the new y coordinate of the launch point.\n
+      - INT_VAR `door_detect` to the new difficulty of door detection.\n
+      - INT_VAR `lock_difficulty` to the new difficulty of the lock.\n
+      - INT_VAR `open_x` to the new x coordinate of the opening point.\n
+      - INT_VAR `open_y` to the new y coordinate of the opening point.\n
+      - INT_VAR `close_x` to the new x coordinate of the closing point.\n
+      - INT_VAR `close_y` to the new y coordinate of the closing point.\n
+      - INT_VAR `string_unlock` to the new string reference of the unlock message.\n
+      - INT_VAR `string_speaker` to the new string reference of the dialogue-speaker name.\n
+      - INT_VAR `flag_open` to the new value of the flag known as door open (bit 0).\n
+      - INT_VAR `flag_locked` to the new value of the flag known as door locked (bit 1).\n
+      - INT_VAR `flag_resets` to the new value of the flag known as reset trap (bit 2).\n
+      - INT_VAR `flag_detectable` to the new value of the flag known as trap detectable (bit 3).\n
+      - INT_VAR `flag_forced` to the new value of the flag known as broken (bit 4).\n
+      - INT_VAR `flag_no_close` to the new value of the flag known as can't close (bit 5).\n
+      - INT_VAR `flag_located` to the new value of the flag known as linked (bit 6).\n
+      - INT_VAR `flag_secret` to the new value of the flag known as door hidden (bit 7).\n
+      - INT_VAR `flag_detected` to the new value of the flag known as door found (bit 8).\n
+      - INT_VAR `flag_no_look` to the new value of the flag known as don't block line of sight.\n
+      - INT_VAR `flag_uses_key` to the new value of the flag known as remove key (bit 10).\n
+      - INT_VAR `flag_sliding` to the new value of the flag known as ignore obstacles when closing (bit 11).\n
+      - STR_VAR `door_name` to the name of the door to be patched. This variable is required.\n
+      - STR_VAR `door_open_sound` to the resource reference of the opening sound.\n
+      - STR_VAR `door_close_sound` to the resource reference of the closing sound.\n
+      - STR_VAR `door_key` to the resref of the new door key.\n
+      - STR_VAR `door_script` to the resref of the new door script.\n
+      - STR_VAR `travel_trigger` to the new travel-trigger name. This field is 24 bytes in length.\n
+      - STR_VAR `dialogue` to the new resource reference of the dialogue file."
     - name: REPLACE_STORE_ITEM
       doc: "Replaces all matching items in a store with another item. Regexp allowed. This is a PATCH macro and function.\n
-      - SPRINT 'old_item' to the item you want to be replaced\n
-      - SPRINT 'new_item' to the new item\n
-      - SET 'number_in_stock' to number of new items in stock (default 0)\n
-      - SPRINT 'flags' to flags new item should have (usual weidu syntax: STOLEN, IDENTIFIEDSTOLEN, etc). Default - no flags.\n
-      - SET 'charges1' to number of charges of first magical ability (default 0)\n
-      - SET 'charges2' to number of charges of second magical ability (default 0)\n
-      - SET 'charges3' to number of charges of third magical ability (default 0)"
+      - SPRINT `old_item` to the item you want to be replaced\n
+      - SPRINT `new_item` to the new item\n
+      - SET `number_in_stock` to number of new items in stock (default 0)\n
+      - SPRINT `flags` to flags new item should have (usual weidu syntax: STOLEN, IDENTIFIEDSTOLEN, etc). Default - no flags.\n
+      - SET `charges1` to number of charges of first magical ability (default 0)\n
+      - SET `charges2` to number of charges of second magical ability (default 0)\n
+      - SET `charges3` to number of charges of third magical ability (default 0)"
     - name: REPLACE_AREA_ITEM
       doc: "Replaces all matching items in an area with another item. Regexp allowed. This is a PATCH macro and function.\n
-      - SPRINT 'old_item' to the item you want to be replaced\n
-      - SPRINT 'new_item' to the new item\n
-      - SPRINT 'flags' to flags the new item should have (usual weidu syntax: STOLEN, IDENTIFIEDSTOLEN, etc). Default - no flags.\n
-      - SET 'charges1' to amount in stock/number of charges of first magical ability (default 0)\n
-      - SET 'charges2' to number of charges of second magical ability (default 0)\n
-      - SET 'charges3' to number of charges of third magical ability (default 0)"
+      - SPRINT `old_item` to the item you want to be replaced\n
+      - SPRINT `new_item` to the new item\n
+      - SPRINT `flags` to flags the new item should have (usual weidu syntax: STOLEN, IDENTIFIEDSTOLEN, etc). Default - no flags.\n
+      - SET `charges1` to amount in stock/number of charges of first magical ability (default 0)\n
+      - SET `charges2` to number of charges of second magical ability (default 0)\n
+      - SET `charges3` to number of charges of third magical ability (default 0)"
     - name: ADD_AREA_ITEM
       doc: "Adds an item to a container of an area. This is a PATCH macro and function.\n
-      - SPRINT 'item_to_add' to the item you want to add\n
-      - SET 'container_to_add_to' to the number of the container the item should be added to. The count starts at 1.\n
-      - SPRINT 'flags' to flags the item should have (usual weidu syntax: STOLEN, IDENTIFIEDSTOLEN, etc). Default - no flags.\n
-      - SET 'charges1' to amount in stock/number of charges of first magical ability (default 0)\n
-      - SET 'charges2' to number of charges of second magical ability (default 0)\n
-      - SET 'charges3' to number of charges of third magical ability (default 0)"
+      - SPRINT `item_to_add` to the item you want to add\n
+      - SET `container_to_add_to` to the number of the container the item should be added to. The count starts at 1.\n
+      - SPRINT `flags` to flags the item should have (usual weidu syntax: STOLEN, IDENTIFIEDSTOLEN, etc). Default - no flags.\n
+      - SET `charges1` to amount in stock/number of charges of first magical ability (default 0)\n
+      - SET `charges2` to number of charges of second magical ability (default 0)\n
+      - SET `charges3` to number of charges of third magical ability (default 0)"
     - name: ADD_AREA_REGION_TRIGGER
       doc: "Adds an area region to the current are file. This is a PATCH macro and function. Unlike other macros you do not need to set every variable. You are only required to set those values that you need to write.\n
-      - SPRINT 'ab_RT_Name' -- Name to assign to new region\n
-      - SET 'ab_RT_Type' -- Type of trigger -- 0=proximity; 1=info; 2=travel\n
-      - SET 'ab_RT_BbLX' -- Bounding Box - low x value - LEFT\n
-      - SET 'ab_RT_BbLY' -- Bounding Box - low y value - TOP\n
-      - SET 'ab_RT_BbHX' -- Bounding Box - High x value - RIGHT\n
-      - SET 'ab_RT_BbHY' -- Bounding Box - High y value - BOTTOM\n
-      - SET 'ab_RT_VxPr' -- Number of Vertex Pairs for current region\n
-      - SET 'ab_RT_CuId' -- Cursor Index - points to a graphic in cursors.bam\n
-      - SPRINT 'ab_RT_Dest' -- Destination Area\n
-      - SPRINT 'ab_RT_EntN' -- Entrance Name\n
-      - SET 'ab_RT_Fbit' -- Flag bits set in bit format which are read right to left - 0=off; 1=on\n
-      - SET 'ab_RT_Itxt' -- Info text\n
-      - SET 'ab_RT_TDtD' -- Trap Detection Difficulty\n
-      - SET 'ab_RT_TRmD' -- Trap Removal Difficulty\n
-      - SET 'ab_RT_TSet' -- Trap is set - 0=no; 1=yes\n
-      - SET 'ab_RT_TDet' -- Trap is detected - 0=no; 1=yes\n
-      - SET 'ab_RT_LPoX' -- Launch Point X\n
-      - SET 'ab_RT_LPoY' -- Launch Point Y\n
-      - SPRINT 'ab_RT_KeyI' -- Key Item\n
-      - SET 'ab_RT_Rbcs' -- Region Script file\n
-      - SET 'ab_RT_ALPX' -- Alternate Launch Point X\n
-      - SET 'ab_RT_ALPY' -- Alternate Launch Point Y\n
-      - SET 'ab_RT_Dial' -- Dialog file (used only in PST)\n
+      - SPRINT `ab_RT_Name` -- Name to assign to new region\n
+      - SET `ab_RT_Type` -- Type of trigger -- 0=proximity; 1=info; 2=travel\n
+      - SET `ab_RT_BbLX` -- Bounding Box - low x value - LEFT\n
+      - SET `ab_RT_BbLY` -- Bounding Box - low y value - TOP\n
+      - SET `ab_RT_BbHX` -- Bounding Box - High x value - RIGHT\n
+      - SET `ab_RT_BbHY` -- Bounding Box - High y value - BOTTOM\n
+      - SET `ab_RT_VxPr` -- Number of Vertex Pairs for current region\n
+      - SET `ab_RT_CuId` -- Cursor Index - points to a graphic in cursors.bam\n
+      - SPRINT `ab_RT_Dest` -- Destination Area\n
+      - SPRINT `ab_RT_EntN` -- Entrance Name\n
+      - SET `ab_RT_Fbit` -- Flag bits set in bit format which are read right to left - 0=off; 1=on\n
+      - SET `ab_RT_Itxt` -- Info text\n
+      - SET `ab_RT_TDtD` -- Trap Detection Difficulty\n
+      - SET `ab_RT_TRmD` -- Trap Removal Difficulty\n
+      - SET `ab_RT_TSet` -- Trap is set - 0=no; 1=yes\n
+      - SET `ab_RT_TDet` -- Trap is detected - 0=no; 1=yes\n
+      - SET `ab_RT_LPoX` -- Launch Point X\n
+      - SET `ab_RT_LPoY` -- Launch Point Y\n
+      - SPRINT `ab_RT_KeyI` -- Key Item\n
+      - SET `ab_RT_Rbcs` -- Region Script file\n
+      - SET `ab_RT_ALPX` -- Alternate Launch Point X\n
+      - SET `ab_RT_ALPY` -- Alternate Launch Point Y\n
+      - SET `ab_RT_Dial` -- Dialog file (used only in PST)\n
       The vertex points are separated by their XY values You may have as many pairs as you need. Just copy this set and increment the #. Example\":\" For the X values\":\" 'ab_RT_Vx_X_0', 'ab_RT_Vx_X_1', 'ab_RT_Vx_X_2'\n
       For the Y values\":\" 'ab_RT_Vx_Y_0', 'ab_RT_Vx_Y_1', 'ab_RT_Vx_Y_2'\n
-      - SET 'ab_RT_Vx_X_0' -- Point #0 X value\n
-      - SET 'ab_RT_Vx_Y_0' -- Point #0 Y value\n
+      - SET `ab_RT_Vx_X_0` -- Point #0 X value\n
+      - SET `ab_RT_Vx_Y_0` -- Point #0 Y value\n
       NOTE: The original code released in WeiDU v211 has been overhauled and re-released in v212. Therefore, the user defined variable names have been changed. If you used the 211 version you will need to update your mod to use the variables in this version. Sorry for the inconvenience..."
     - name: ALTER_AREA_ACTOR
-      doc: "Patch area actors. This is a PATCH function. All integer variables, except 'expiry', default to the value -1 and a negative value results in no change to the corresponding field. The variable 'expiry' instead has a default value of -2. In the case of flags, a value of 1 will set the flag and a value of 0 will unset it. All string variables except 'actor_name' default to the string \"same\", which results in no change to the corresponding field. The variable 'actor_name' is required.\n
-      - INT_VAR 'x_coord' to the new x coordinate. Unless dest_x is defined, x_coord is used as the x-value of the destination, as well.\n
-      - INT_VAR 'y_coord' to the new y coordinate. Unless dest_y is defined, y_coord is used as the y-value of the destination, as well.\n
-      - INT_VAR 'dest_x' to the new x destination.\n
-      - INT_VAR 'dest_y' to the new y destination.\n
-      - INT_VAR 'spawned' to the new spawned value.\n
-      - INT_VAR 'animation' to the new animation value.\n
-      - INT_VAR 'orient' to the new facing direction.\n
-      - INT_VAR 'expiry' to the new expiration time.\n
-      - INT_VAR 'wander' to the new wander-distance value.\n
-      - INT_VAR 'follow' to the new follow-distance value.\n
-      - INT_VAR 'times_talked' to the new number of times the actor has been talked to.\n
-      - INT_VAR 'flag_cre_unattached' to the new value of the flag known as CRE attached (bit 0).\n
-      - INT_VAR 'flag_seen_party' to the new value of the flag known as has seen party (bit 1).\n
-      - INT_VAR 'flag_invulnerable' to the new value of the flag known as invulnerable (bit 2).\n
-      - INT_VAR 'flag_override_script_name' to the new value of the flag known as override script name (bit 3).\n
-      - INT_VAR 'flag_time_0' through 'flag_time_23' to the new values of the actor's appearance schedule.\n
-      - STR_VAR 'actor_name' to the name of the actor to be patched. This variable is required.\n
-      - STR_VAR 'dlg_file' to the resref of the new dialogue file.\n
-      - STR_VAR 'script_override' to the resref of the new override script.\n
-      - STR_VAR 'script_general' to the resref of the new general script.\n
-      - STR_VAR 'script_class' to the resref of the new class script.\n
-      - STR_VAR 'script_race' to the resref of the new race script.\n
-      - STR_VAR 'script_default' to the resref of the new default script.\n
-      - STR_VAR 'script_specifics' to the resref of the new specifics script.\n
-      - STR_VAR 'cre_file' to the resref of the new creature file."
+      doc: "Patch area actors. This is a PATCH function. All integer variables, except `expiry`, default to the value -1 and a negative value results in no change to the corresponding field. The variable `expiry` instead has a default value of -2. In the case of flags, a value of 1 will set the flag and a value of 0 will unset it. All string variables except `actor_name` default to the string \"same\", which results in no change to the corresponding field. The variable `actor_name` is required.\n
+      - INT_VAR `x_coord` to the new x coordinate. Unless dest_x is defined, x_coord is used as the x-value of the destination, as well.\n
+      - INT_VAR `y_coord` to the new y coordinate. Unless dest_y is defined, y_coord is used as the y-value of the destination, as well.\n
+      - INT_VAR `dest_x` to the new x destination.\n
+      - INT_VAR `dest_y` to the new y destination.\n
+      - INT_VAR `spawned` to the new spawned value.\n
+      - INT_VAR `animation` to the new animation value.\n
+      - INT_VAR `orient` to the new facing direction.\n
+      - INT_VAR `expiry` to the new expiration time.\n
+      - INT_VAR `wander` to the new wander-distance value.\n
+      - INT_VAR `follow` to the new follow-distance value.\n
+      - INT_VAR `times_talked` to the new number of times the actor has been talked to.\n
+      - INT_VAR `flag_cre_unattached` to the new value of the flag known as CRE attached (bit 0).\n
+      - INT_VAR `flag_seen_party` to the new value of the flag known as has seen party (bit 1).\n
+      - INT_VAR `flag_invulnerable` to the new value of the flag known as invulnerable (bit 2).\n
+      - INT_VAR `flag_override_script_name` to the new value of the flag known as override script name (bit 3).\n
+      - INT_VAR `flag_time_0` through `flag_time_23` to the new values of the actor's appearance schedule.\n
+      - STR_VAR `actor_name` to the name of the actor to be patched. This variable is required.\n
+      - STR_VAR `dlg_file` to the resref of the new dialogue file.\n
+      - STR_VAR `script_override` to the resref of the new override script.\n
+      - STR_VAR `script_general` to the resref of the new general script.\n
+      - STR_VAR `script_class` to the resref of the new class script.\n
+      - STR_VAR `script_race` to the resref of the new race script.\n
+      - STR_VAR `script_default` to the resref of the new default script.\n
+      - STR_VAR `script_specifics` to the resref of the new specifics script.\n
+      - STR_VAR `cre_file` to the resref of the new creature file."
     - name: ALTER_AREA_CONTAINER
       doc: "Patch area containers, but not their contents. This is a PATCH function. All integer variables default to -1 and negative values result in no change to the corresponding field. In the case of flags, a value of 1 will set the flag and a value of 0 will unset it. All string variables except container_name default to the string \"same\", which results in no change to the corresponding field. The variable container_name is required.\n
-      - INT_VAR 'coord_x' to the new x coordinate.\n
-      - INT_VAR 'coord_y' to the new y coordinate.\n
-      - INT_VAR 'container_type' to the new type of the container.\n
-      - INT_VAR 'trapped' to whether the container should be trapped.\n
-      - INT_VAR 'detected' to whether the container trap should be detected.\n
-      - INT_VAR 'launch_x' to the new x coordinate of the launch point.\n
-      - INT_VAR 'launch_y' to the new y coordinate of the launch point.\n
-      - INT_VAR 'bounding_left' to the new value of the left edge of the bounding box. The vertices remain unchanged.\n
-      - INT_VAR 'bounding_top' to the new value of the top edge of the bounding box. The vertices remain unchanged.\n
-      - INT_VAR 'bounding_right' to the new value of the right edge of the bounding box. The vertices remain unchanged.\n
-      - INT_VAR 'bounding_bottom' to the new value of the bottom edge of the bounding box. The vertices remain unchanged.\n
-      - INT_VAR 'range' to the new trigger-range value.\n
-      - INT_VAR 'lockpick_strref' to the new strref of the lockpick string.\n
-      - INT_VAR 'lock_difficulty' to the new difficulty of the lock.\n
-      - INT_VAR 'trap_detect' to the new difficulty of trap detection.\n
-      - INT_VAR 'trap_remove' to the new difficulty of trap removal.\n
-      - INT_VAR 'flag_locked' to the new value of the flag known as locked (bit 0).\n
-      - INT_VAR 'flag_mlocked' to the new value of the flag known as magical lock (bit 2).\n
-      - INT_VAR 'flag_resets' to the new value of the flag known as trap resets (bit 3).\n
-      - INT_VAR 'flag_disabled' to the new value of the flag known as disabled (bit 5).\n
-      - STR_VAR 'container_name' to the name of the container to be patched. This variable is required.\n
-      - STR_VAR 'container_script' to the resref of the new container script.\n
-      - STR_VAR 'container_key' to the resref of the new container key."
+      - INT_VAR `coord_x` to the new x coordinate.\n
+      - INT_VAR `coord_y` to the new y coordinate.\n
+      - INT_VAR `container_type` to the new type of the container.\n
+      - INT_VAR `trapped` to whether the container should be trapped.\n
+      - INT_VAR `detected` to whether the container trap should be detected.\n
+      - INT_VAR `launch_x` to the new x coordinate of the launch point.\n
+      - INT_VAR `launch_y` to the new y coordinate of the launch point.\n
+      - INT_VAR `bounding_left` to the new value of the left edge of the bounding box. The vertices remain unchanged.\n
+      - INT_VAR `bounding_top` to the new value of the top edge of the bounding box. The vertices remain unchanged.\n
+      - INT_VAR `bounding_right` to the new value of the right edge of the bounding box. The vertices remain unchanged.\n
+      - INT_VAR `bounding_bottom` to the new value of the bottom edge of the bounding box. The vertices remain unchanged.\n
+      - INT_VAR `range` to the new trigger-range value.\n
+      - INT_VAR `lockpick_strref` to the new strref of the lockpick string.\n
+      - INT_VAR `lock_difficulty` to the new difficulty of the lock.\n
+      - INT_VAR `trap_detect` to the new difficulty of trap detection.\n
+      - INT_VAR `trap_remove` to the new difficulty of trap removal.\n
+      - INT_VAR `flag_locked` to the new value of the flag known as locked (bit 0).\n
+      - INT_VAR `flag_mlocked` to the new value of the flag known as magical lock (bit 2).\n
+      - INT_VAR `flag_resets` to the new value of the flag known as trap resets (bit 3).\n
+      - INT_VAR `flag_disabled` to the new value of the flag known as disabled (bit 5).\n
+      - STR_VAR `container_name` to the name of the container to be patched. This variable is required.\n
+      - STR_VAR `container_script` to the resref of the new container script.\n
+      - STR_VAR `container_key` to the resref of the new container key."
     - name: ADD_CRE_ITEM_FLAGS
       doc: "Adds flags to all matching items possessed by a creature. Regexp allowed. This is a PATCH macro and function.\n
-      - SPRINT 'item_to_change' to the item the flags should be added to\n
-      - SPRINT 'flags to flags' you need to add (usual weidu syntax: STOLEN, IDENTIFIEDSTOLEN, etc)."
+      - SPRINT `item_to_change` to the item the flags should be added to\n
+      - SPRINT `flags to flags` you need to add (usual weidu syntax: STOLEN, IDENTIFIEDSTOLEN, etc)."
     - name: REMOVE_CRE_ITEM_FLAGS
       doc: "Removes flags from all matching items possessed by a creature. Regexp allowed. This is a PATCH macro and function.\n
-      - SPRINT 'item_to_change' to the item the flags should be removed from\n
-      - SPRINT 'flags' to flags you need to remove (usual weidu syntax: STOLEN, IDENTIFIEDSTOLEN, etc)."
+      - SPRINT `item_to_change` to the item the flags should be removed from\n
+      - SPRINT `flags` to flags you need to remove (usual weidu syntax: STOLEN, IDENTIFIEDSTOLEN, etc)."
     - name: SET_CRE_ITEM_FLAGS
       doc: "Set flags to all matching items possessed by a creature. Regexp allowed. This is a PATCH macro and function.\n
-      - SPRINT 'item_to_change' to the item which flags should be set\n
-      - SPRINT 'flags' to flags you need to set (usual weidu syntax: STOLEN, IDENTIFIEDSTOLEN, etc)."
+      - SPRINT `item_to_change` to the item which flags should be set\n
+      - SPRINT `flags` to flags you need to set (usual weidu syntax: STOLEN, IDENTIFIEDSTOLEN, etc)."
     - name: ALTER_AREA_ENTRANCE
-      doc: "Patch coordinates and orientation of area party entrance points. This is a PATCH function. For all integer variables, a negative value results in no change to that field and the default value is -1. The variable 'entrance_name' is required.\n
-      - INT_VAR 'x_coord' to the new X coordinate.\n
-      - INT_VAR 'y_coord' to the new Y coordinate.\n
-      - INT_VAR 'orient' to the new orientation.\n
-      - STR_VAR 'entrance_name' to the name of the entrance point to be altered. This variable is required."
+      doc: "Patch coordinates and orientation of area party entrance points. This is a PATCH function. For all integer variables, a negative value results in no change to that field and the default value is -1. The variable `entrance_name` is required.\n
+      - INT_VAR `x_coord` to the new X coordinate.\n
+      - INT_VAR `y_coord` to the new Y coordinate.\n
+      - INT_VAR `orient` to the new orientation.\n
+      - STR_VAR `entrance_name` to the name of the entrance point to be altered. This variable is required."
+    - name: ALTER_AREA_REGION
+      doc: |
+        Patch ''area regions'', also known as area triggers. This is a PATCH function. For all integer variables except `info_point`, a negative value results in no change and the default value is -1. The variable `info_point` results in no change if it has the default value 99999999. In the case of flags, a value of 1 will set the flag and a value of 0 will unset it. For all string variables except `region_name`, the default value is the string "same", which results in no change to that field. The variable `region_name` is required.
+        – INT_VAR `type` to the new type of the region.
+        – INT_VAR `cursor` to the new cursor index to be used.
+        – INT_VAR `trap_detect` to the new difficulty of trap detection.
+        – INT_VAR `trap_remove` to the new difficulty of trap removal.
+        – INT_VAR `trapped` to whether the region should be trapped.
+        – INT_VAR `detected` to whether the trap should be detected.
+        – INT_VAR `flag_locked` to the new value of the flag known as `locked` or `invisible trap` (bit 0).
+        – INT_VAR `flag_resets` to the new value of the flag known as `trap resets` (bit 1).
+        – INT_VAR `flag_party_required` to the new value of the flag known as `party is required` (bit 2).
+        – INT_VAR `flag_trap_detectable` to the new value of the flag known as `trap is detectable` (bit 3).
+        – INT_VAR `flag_trap_enemies` to the new value of the flag known as `trap can be set off by enemies` (bit 4).
+        – INT_VAR `flag_tutorial` to the new value of the flag known as `tutorial trigger` (bit 5).
+        – INT_VAR `flag_trap_npcs` to the new value of the flag known as `trap can be set off by NPCs` (bit 6).
+        – INT_VAR `flag_silent` to the new value of the flag known as `silent trigger` (bit 7).
+        – INT_VAR `flag_deactivated` to the new value of the flag known as `deactivated` (bit 8).
+        – INT_VAR `flag_impassable_npc` to the new value of the flag known as `cannot be passed by NPCs` (bit 9).
+        – INT_VAR `flag_activation_point` to the new value of the flag known as `use activation point` (bit 10).
+        – INT_VAR `flag_connect_to_door` to the new value of the flag known as `connected to door` (bit 11).
+        – INT_VAR `bounding_left` to the new value of the left edge of the bounding box. The vertices remain unchanged.
+        – INT_VAR `bounding_top` to the new value of the top edge of the bounding box. The vertices remain unchanged.
+        – INT_VAR `bounding_right` to the new value of the right edge of the bounding box. The vertices remain unchanged.
+        – INT_VAR `bounding_bottom` to the new value of the bottom edge of the bounding box. The vertices remain unchanged.
+        – INT_VAR `info_point` to the new string reference of the info point.
+        – INT_VAR `launch_x` to the new x coordinate of the launch point.
+        – INT_VAR `launch_y` to the new y coordinate of the launch point.
+        – INT_VAR `activate_x` to the new x coordinate of the activation point.
+        – INT_VAR `activate_y` to the new y coordinate of the activation point.
+        – STR_VAR `region_name` to the name of the region to be patched. This variable is required.
+        – STR_VAR `destination_area` to the resref of the new destination area.
+        – STR_VAR `entrance_name` to the new entrance name of the destination area.
+        – STR_VAR `region_key` to the resref of the key item.
+        – STR_VAR `region_script` to the resref of the region script.
     - name: READ_SOUNDSET
       doc: "Reads soundset of a creature and stores it as an array of string references This is an ACTION macro.\n
-      - SPRINT 'npc' to the target creature (with .cre extension)\n
-      - SPRINT 'soundset' to the name of soundset you want."
+      - SPRINT `npc` to the target creature (with .cre extension)\n
+      - SPRINT `soundset` to the name of soundset you want."
     - name: WRITE_SOUNDSET
       doc: "Writes soundset to all matching creatures. Regexp allowed. This is an ACTION macro.\n
-      - SPRINT 'npc' to a creature in question (with .cre extension)\n
-      - SPRINT 'soundset' to name of soundset you have.\n
-      - SET 'overwrite' to 2 if you want new soundset to overwrite the old one completely. Set it to 1 if you want to overwrite old string references only with non-empty new references (may keep some old). Set it to 0 it you want to overwrite only empty old references with new ones."
+      - SPRINT `npc` to a creature in question (with .cre extension)\n
+      - SPRINT `soundset` to name of soundset you have.\n
+      - SET `overwrite` to 2 if you want new soundset to overwrite the old one completely. Set it to 1 if you want to overwrite old string references only with non-empty new references (may keep some old). Set it to 0 it you want to overwrite only empty old references with new ones."
     - name: tb#factorial
       doc: "Computes the factorial of a number.\n
       This is a PATCH macro.\n
-      - SET 'tb#factorial_index' to the factorial you'd like to compute.\n
-      - SET 'tb#factorial_result' to 1;\n
-      - The result is 'tb#factorial_result'."
+      - SET `tb#factorial_index` to the factorial you'd like to compute.\n
+      - SET `tb#factorial_result` to 1;\n
+      - The result is `tb#factorial_result`."
     - name: tb#fix_file_size
       doc: "Overwrites all files matching a certain regexp with a certain standard file, if they are under a certain size.\n
       This is an ACTION macro.\n
-      - SET 'tb#fix_file_size_min' to the maximum allowed size (files whose size is exactly this value are NOT overwritten).\n
-      - SPRINT 'tb#fix_file_size_target' to the standard file used to replace file(s) that match the regexp.\n
-      - SPRINT 'tb#fix_file_size_category' to a descriptive name.\n
-      - SPRINT 'tb#fix_file_size_regexp' to the regexp for the file(s) to be checked for a match."
+      - SET `tb#fix_file_size_min` to the maximum allowed size (files whose size is exactly this value are NOT overwritten).\n
+      - SPRINT `tb#fix_file_size_target` to the standard file used to replace file(s) that match the regexp.\n
+      - SPRINT `tb#fix_file_size_category` to a descriptive name.\n
+      - SPRINT `tb#fix_file_size_regexp` to the regexp for the file(s) to be checked for a match."
+    - name: FJ_CRE_VALIDITY
+      doc: |
+        Checks whether a CRE file is well-formed or not, fixes some common bugs, and reports whether the CRE file is still broken or not. In particular\":\"
+
+        – reports invalidity if it is charbase.cre, shorter than the minimum size, the signature mismatches, or a sub-structure has members and its offset is in the header.
+        – if a empty sub-structure’s offset is in the header, point them to the end of the header.
+        – if the cre is valid, force it to use proper order (known spells, spell memorization info, memorized spells, effects, items, item slot).
+        – forces the CRE file to use EFF V2 effects internally (or EFF V1 if on BG1).
+
+        This is a PATCH function.
+
+        – INT_VAR `do_message` to 1 if you want explicit an explicit message regarding the cre invalidity. Defaults to 0.
+        – INT_VAR `do_reindex` to 0 if you don’t want the creature file to be reindexed. Defaults to 1.
+        – INT_VAR `do_eff` to 0 if you don’t want EFFv1 <-> EFFv2 conversion to be applied. Defaults to 1.
+        – RET `valid` returns 1 if the CRE is well-formed, 0 otherwise.
     - name: FJ_CRE_REINDEX
       doc: "Reorders creatures with nonstandard offset orders. Called by FJ_CRE_VALIDITY automatically if relevant.\n
       This is a PATCH function.\n
-      - INT_VAR 'do_reindex' to 0 if you don't want the creature file to be reindexed. Defaults to 1.\n
-      - INT_VAR 'do_eff' to 0 if you don't want EFFv1 <-> EFFv2 conversion to be applied. Defaults to 1."
+      - INT_VAR `do_reindex` to 0 if you don't want the creature file to be reindexed. Defaults to 1.\n
+      - INT_VAR `do_eff` to 0 if you don't want EFFv1 <-> EFFv2 conversion to be applied. Defaults to 1."
     - name: FJ_CRE_EFF_V2
       doc: "Converts creatures using version 1 effects to version 2. Called by FJ_CRE_VALIDITY or FJ_CRE_REINDEX automatically if relevant.\n
       This is a PATCH function."
@@ -1963,77 +2013,408 @@ tp2-patch:
       This is a PATCH function."
     - name: SUBSTRING
       doc: "Returns a substring of the provided string. This is an ACTION and PATCH function. All integer variables default to 0.\n
-      The function will fail with an error if either 'start' or 'length' are negative or if any of 'start', 'length' or the sum of the two is greater than the length of 'string'.\n
-      - INT_VAR 'start' to the string index (0 based) from which the start of the substring should be read.\n
-      - INT_VAR 'length' to the length of the substring to be read.\n
-      - STR_VAR 'string' to the string the substring should be read from.\n
-      - RET 'substring' the substring read from the provided string."
+      The function will fail with an error if either `start` or `length` are negative or if any of `start`, `length` or the sum of the two is greater than the length of `string`.\n
+      - INT_VAR `start` to the string index (0 based) from which the start of the substring should be read.\n
+      - INT_VAR `length` to the length of the substring to be read.\n
+      - STR_VAR `string` to the string the substring should be read from.\n
+      - RET `substring` the substring read from the provided string."
     - name: ADD_CRE_SCRIPT
       doc: "Assigns a script to a creature in the first available slot. This is a PATCH function. By default, the function will try all 5 script slots from SCRIPT_OVERRIDE to SCRIPT_DEFAULT.\n
-      The function will fail with an error if the file being patched does not have a signature (first 3 bytes) that case-sensitively equals CRE, if either 'offset_start' or 'offset_end' are negative, if 'offset_end' is less than 'offset_start' or if 'offset_end' is greater than the size of the file being patched.\n
-      - INT_VAR 'offset_start' to the offset from which the search for an empty slot should start. (default SCRIPT_OVERRIDE)\n
-      - INT_VAR 'offset_end' to the offset at which the search should end. (default SCRIPT_DEFAULT)\n
-      - STR_VAR 'script' to the resource reference of the script to be assigned.\n
-      - RET 'success' a return value indicating whether the script was successfully assigned. 1 signifies success and 0 signifies that no empty slot was found. A harmless warning will be printed if the function was unsuccessful."
+      The function will fail with an error if the file being patched does not have a signature (first 3 bytes) that case-sensitively equals CRE, if either `offset_start` or `offset_end` are negative, if `offset_end` is less than `offset_start` or if `offset_end` is greater than the size of the file being patched.\n
+      - INT_VAR `offset_start` to the offset from which the search for an empty slot should start. (default SCRIPT_OVERRIDE)\n
+      - INT_VAR `offset_end` to the offset at which the search should end. (default SCRIPT_DEFAULT)\n
+      - STR_VAR `script` to the resource reference of the script to be assigned.\n
+      - RET `success` a return value indicating whether the script was successfully assigned. 1 signifies success and 0 signifies that no empty slot was found. A harmless warning will be printed if the function was unsuccessful."
     - name: DELETE_WORLDMAP_LINKS
       doc: "Delete all links from one worldmap area to another. This is a PATCH function.\n
       This function will delete links from one specified area to another. Links can be deleted from all four directional nodes (north, east, south, west) or from a specific node. Links connecting the areas in the opposite direction will not be deleted.\n
-      - STR_VAR 'from_area' to the area from which the links that are to be deleted originate.\n
-      - STR_VAR 'from_node' to the directional node from which the links that are to be deleted originate. Legal values for this variable are \"north\", \"n\", \"east\", \"e\", \"south\", \"s\", \"west\", \"w\". Values are not case sensitive. Links are deleted from all four nodes by default.\n
-      - STR_VAR 'to_area' to the area to which the links that are to be deleted lead."
+      - STR_VAR `from_area` to the area from which the links that are to be deleted originate.\n
+      - STR_VAR `from_node` to the directional node from which the links that are to be deleted originate. Legal values for this variable are \"north\", \"n\", \"east\", \"e\", \"south\", \"s\", \"west\", \"w\". Values are not case sensitive. Links are deleted from all four nodes by default.\n
+      - STR_VAR `to_area` to the area to which the links that are to be deleted lead."
     - name: ADD_WORLDMAP_LINKS
       doc: "Add links from one worldmap area to another. This is a PATCH function.\n
       This function add links from one specified area to another. Links can be added from all four directional nodes (north, east, south, west) or from a specific node. If a link already exists, its metadata (distance scale, random encounters, etc.) will be overwritten. Links connecting the areas in the opposite direction will not be added. If either of the areas do not exist in the worldmap, a warning is printed and no links are added.\n
-      - INT_VAR 'distance_scale' to the distance scale between the two areas. 'distance_scale' * 4 equals the travel time between the areas (in hours).\n
-      - INT_VAR 'default_entry' to the default entry location. Legal values for this variable are 1 (northern side), 2 (eastern), 4 (southern) and 8 (western). The default value is 1.\n
-      - INT_VAR 'encounter_probability' to the probability of a random encounter occurring.\n
-      - STR_VAR 'from_area' to the area from which the links should originate.\n
-      - STR_VAR 'from_node' to the directional node from which the links should originate. Legal values for this variable are “north”, “n”, “east”, “e”, “south”, “s”, “west” and “w”. Values are not case sensitive. Links are added to all four nodes by default.\n
-      - STR_VAR 'to_area' to the area to which the links should lead.\n
-      - STR_VAR 'entry' to the entry point in 'to_area'.\n
-      - STR_VAR 'random_area1' to the first random-encounter area.\n
-      - STR_VAR 'random_area2' to the second random-encounter area.\n
-      - STR_VAR 'random_area3' to the third random-encounter area.\n
-      - STR_VAR 'random_area4' to the fourth random-encounter area.\n
-      - STR_VAR 'random_area5' to the fifth random-encounter area."
+      - INT_VAR `distance_scale` to the distance scale between the two areas. `distance_scale` * 4 equals the travel time between the areas (in hours).\n
+      - INT_VAR `default_entry` to the default entry location. Legal values for this variable are 1 (northern side), 2 (eastern), 4 (southern) and 8 (western). The default value is 1.\n
+      - INT_VAR `encounter_probability` to the probability of a random encounter occurring.\n
+      - STR_VAR `from_area` to the area from which the links should originate.\n
+      - STR_VAR `from_node` to the directional node from which the links should originate. Legal values for this variable are “north”, “n”, “east”, “e”, “south”, “s”, “west” and “w”. Values are not case sensitive. Links are added to all four nodes by default.\n
+      - STR_VAR `to_area` to the area to which the links should lead.\n
+      - STR_VAR `entry` to the entry point in `to_area`.\n
+      - STR_VAR `random_area1` to the first random-encounter area.\n
+      - STR_VAR `random_area2` to the second random-encounter area.\n
+      - STR_VAR `random_area3` to the third random-encounter area.\n
+      - STR_VAR `random_area4` to the fourth random-encounter area.\n
+      - STR_VAR `random_area5` to the fifth random-encounter area."
     - name: UPDATE_PVRZ_INDICES
       doc: "Update the PVRZ references in a BAM V2 or MOS V2 resource. This is a PATCH function.\n
       This function will update the PVRZ references in a BAM V2 or MOS V2 resource with the next contiguous block of free PVRZ indices. This function is intended to be used in combination with the action function INSTALL_PVRZ.\n
-      - INT_VAR 'target_base_index' is an optional parameter. When specified, the function attempts to use a block of free PVRZ indices starting at the specified value. The default value is 1000.\n
-      - RET 'original_base_index' returns the lowest PVRZ index used by the source BAM or MOS. Returns -1 on error.\n
-      - RET 'new_base_index' returns the lowest PVRZ index used by the target BAM or MOS. Returns -1 on error.\n
-      - RET 'index_range' returns the range of reserved PVRZ indices, i.e., the difference between the smallest and biggest PVRZ index, inclusive. Returns 0 on error."
+      - INT_VAR `target_base_index` is an optional parameter. When specified, the function attempts to use a block of free PVRZ indices starting at the specified value. The default value is 1000.\n
+      - RET `original_base_index` returns the lowest PVRZ index used by the source BAM or MOS. Returns -1 on error.\n
+      - RET `new_base_index` returns the lowest PVRZ index used by the target BAM or MOS. Returns -1 on error.\n
+      - RET `index_range` returns the range of reserved PVRZ indices, i.e., the difference between the smallest and biggest PVRZ index, inclusive. Returns 0 on error."
     - name: INSTALL_PVRZ
       doc: "Install a PVRZ file and updates the PVRZ index. This is an ACTION function.\n
       This function copies the specified PVRZ file into the target folder and updates the PVRZ index. This function should be used in conjunction with UPDATE_PVRZ_INDICES.\n
-      - INT_VAR 'original_base_index' to the current base index. This value is returned by the function UPDATE_PVRZ_INDICES as 'original_base_index'.\n
-      - INT_VAR 'new_base_index' to the new base index. This value is returned by the function UPDATE_PVRZ_INDICES as 'new_base_index'.\n
-      - STR_VAR 'source_file' to the source file to copy. The filename must match the regular expression ~MOS[0-9]+\\.PVRZ~ (e.g., MOS0000.PVRZ, mos1592.pvrz or Mos12345.PVRZ). Case is ignored.\n
-      - STR_VAR 'target_folder' to the target folder to copy the source file into. The default value is \"override\".\n
-      - RET 'success' is set to non-zero if the function returned successfully and is set to zero on error.\n
+      - INT_VAR `original_base_index` to the current base index. This value is returned by the function UPDATE_PVRZ_INDICES as `original_base_index`.\n
+      - INT_VAR `new_base_index` to the new base index. This value is returned by the function UPDATE_PVRZ_INDICES as `new_base_index`.\n
+      - STR_VAR `source_file` to the source file to copy. The filename must match the regular expression ~MOS[0-9]+\\.PVRZ~ (e.g., MOS0000.PVRZ, mos1592.pvrz or Mos12345.PVRZ). Case is ignored.\n
+      - STR_VAR `target_folder` to the target folder to copy the source file into. The default value is \"override\".\n
+      - RET `success` is set to non-zero if the function returned successfully and is set to zero on error.\n
       This function can additionally return all the variables automatically set by COPY."
     - name: FIND_FREE_PVRZ_INDEX
       doc: "Attempt to find a contiguous block of free PVRZ indices in the game installation. This is a PATCH and an ACTION function.\n
-      This function attempts to find the first available free PVRZ index of a contiguous block which guarantees to fit at least 'num_to_reserve' indices.\n
-      - INT_VAR 'num_to_reserve' to the minimum required size of the contiguous block of free indices. This number should be no smaller than 1 nor no bigger than 999. The default value is 1.\n
-      - INT_VAR 'start_index' to the index the search should begin at. The default value is 1000.\n
-      - RET 'free_index' returns the first available index matching the specified parameters. Returns -1 on errors."
+      This function attempts to find the first available free PVRZ index of a contiguous block which guarantees to fit at least `num_to_reserve` indices.\n
+      - INT_VAR `num_to_reserve` to the minimum required size of the contiguous block of free indices. This number should be no smaller than 1 nor no bigger than 999. The default value is 1.\n
+      - INT_VAR `start_index` to the index the search should begin at. The default value is 1000.\n
+      - RET `free_index` returns the first available index matching the specified parameters. Returns -1 on errors."
     - name: DIRECTORY_OF_FILESPEC
       doc: "Returns the directory of a file specification. Compare to SOURCE_DIRECTORY. This is an ACTION and PATCH function.\n
-      - STR_VAR 'filespec' to the file specification, which must include an identifiable directory, or a warning will be raised.\n
-      - RET 'directory' returns the directory of the file specification."
+      - STR_VAR `filespec` to the file specification, which must include an identifiable directory, or a warning will be raised.\n
+      - RET `directory` returns the directory of the file specification."
     - name: FILE_OF_FILESPEC
       doc: "Returns the file of a file specification. Compare to SOURCE_FILE. This is an ACTION and PATCH function.\n
-      - STR_VAR 'filespec' to the file specification, which may or may not include a directory.\n
-      - RET 'file' returns the file of the file specification."
+      - STR_VAR `filespec` to the file specification, which may or may not include a directory.\n
+      - RET `file` returns the file of the file specification."
     - name: RES_OF_FILESPEC
       doc: "Returns the resource name of a file specification. Compare to SOURCE_RES. This is an ACTION and PATCH function.\n
-      - STR_VAR 'filespec' to the file specification, which must include an identifiable resource name, or a warning will be raised.\n
-      - RET 'res' returns the resource name of the file specification."
+      - STR_VAR `filespec` to the file specification, which must include an identifiable resource name, or a warning will be raised.\n
+      - RET `res` returns the resource name of the file specification."
     - name: EXT_OF_FILESPEC
       doc: "Returns the resource extension of a file specification. Compare to SOURCE_EXT. This is an ACTION and PATCH function.\n
-      - STR_VAR 'filespec' to the file specification, which must include an identifiable resource extension, or a warning will be raised.\n
-      - RET 'ext' returns the resource extension of the file specification."
+      - STR_VAR `filespec` to the file specification, which must include an identifiable resource extension, or a warning will be raised.\n
+      - RET `ext` returns the resource extension of the file specification."
+    - name: fj_are_structure
+      doc: |
+        Adds a structure to an area file. All variables are zero or blank by default unless otherwise indicated. Fields designated by an asterisk are typically required; all others are optional. This is a PATCH function.
+        Universal structure variables\":\"
+
+        – STR_VAR `fj_structure_type` to the type of area structure to be added (actor, region, spawn, entrance, container, itm, ambient, variable, door, animation, explored bitmask, songlist, rest interrupt table, note or projectile)^*^;
+        – INT_VAR `fj_delete_mode` to the index of the structure to be deleted (if deleting rather than adding a new structure);
+        – INT_VAR `fj_debug` to 1 to enable feedback;
+        – RET `fj_return_offset` returns the position of the structure in the area file;
+
+         Actor structure variables\":\"
+
+        – STR_VAR `fj_name` to the actor’s name^*^;
+        – INT_VAR `fj_loc_x` to the starting X (horizontal) coordinate^*^;
+        – INT_VAR `fj_loc_y` to the starting Y (vertical) coordinate^*^;
+        – INT_VAR `fj_dest_x` to the destination X coordinate (by default the same as `fj_loc_x`);
+        – INT_VAR `fj_dest_y` to the destination Y coordinate (by default the same as `fj_loc_y`);
+        – INT_VAR `fj_loading` to whether the .cre file is loaded (0=attached, 1=loaded, default 1);
+        – INT_VAR `fj_spawned` to whether the creature has been spawned (0=no, 1=yes, default 0);
+        – INT_VAR `fj_animation` to the actor’s animation number (from animate.ids, though the engine uses the animation set on the .cre file);
+        – INT_VAR `fj_orientation` to the facing direction (0-15 where 0=south, 4=west, 8=north, 12=east, default 0);
+        – INT_VAR `fj_expiry` to the actor removal timer in absolute ticks (default -1 to avoid removal);
+        – INT_VAR `fj_wander_dist_actor` to the actor’s random walk distance limit;
+        – INT_VAR `fj_mvmt_dist_actor` to the actor’s movement distance limit;
+        – INT_VAR `fj_schedule` to the hourly appearance schedule (bits 0-23, default -1 or always);
+        – INT_VAR `fj_num_talked` to the NumTimesTalkedTo (in .sav files);
+        – STR_VAR `fj_dlg_resref` to the actor’s dialogue file (normally obtained from .cre files);
+        – STR_VAR `fj_bcs_override` to the actor’s override script (normally obtained from .cre files);
+        – STR_VAR `fj_bcs_general` to the actor’s general script (normally obtained from .cre files);
+        – STR_VAR `fj_bcs_class` to the actor’s class script (normally obtained from .cre files);
+        – STR_VAR `fj_bcs_race` to the actor’s race script (normally obtained from .cre files);
+        – STR_VAR `fj_bcs_default` to the actor’s default script (normally obtained from .cre files);
+        – STR_VAR `fj_cre_resref` to the actor’s resource reference (creature filename)^*^;
+        – STR_VAR `fj_cre_embedded` to  path/to/file.cre  if embedding a new creature (defaults to `fj_cre_resref` if not set);
+
+        Region structure variables\":\"
+
+        – STR_VAR `fj_name` to the region’s name^*^;
+        – INT_VAR `fj_type` to the region type (0=trap, 1=info, 2=travel)^*^;
+        – INT_VAR `fj_box_left` to the leftmost X coordinate of the region’s bounding box^*^;
+        – INT_VAR `fj_box_top` to the topmost Y coordinate of the region’s bounding box^*^;
+        – INT_VAR `fj_box_right` to the rightmost X coordinate of the region’s bounding box^*^;
+        – INT_VAR `fj_box_bottom` to the bottommost Y coordinate of the region’s bounding box^*^;
+        – INT_VAR `fj_cursor_idx` to the region’s mouse cursor index (from cursors.bam)^*^;
+        – STR_VAR `fj_destination_area` to the destination area resource reference (for travel regions);
+        – STR_VAR `fj_destination_name` to the entrance name in the destination area (for travel regions);
+        – INT_VAR `fj_flags` to the bitwise region flags;
+        – INT_VAR `fj_info_point_strref` to the information text string reference (for info points, default -1);
+        – INT_VAR `fj_trap_detect` to the trap detection difficulty percentage;
+        – INT_VAR `fj_trap_remove` to the trap removal difficulty percentage;
+        – INT_VAR `fj_trap_active` to whether the region is trapped (0=no, 1=yes);
+        – INT_VAR `fj_trap_status` to whether the trap is detected (0=no, 1=yes);
+        – INT_VAR `fj_loc_x` to the trap launch X coordinate^*^;
+        – INT_VAR `fj_loc_y` to the trap launch Y coordinate^*^;
+        – STR_VAR `fj_key_resref` to the filename of the region’s key;
+        – STR_VAR `fj_reg_script` to the region script;
+        – INT_VAR `fj_alt_x` to the activation point X coordinate;
+        – INT_VAR `fj_alt_y` to the activation point Y coordinate;
+        – STR_VAR `fj_sound` to the sound resource reference (ONLY for PST);
+        – INT_VAR `fj_talk_loc_x` to the talk location point X coordinate (ONLY for PST);
+        – INT_VAR `fj_talk_loc_y` to the talk location point Y coordinate (ONLY for PST);
+        – INT_VAR `fj_speaker_strref` to the speaker’s name string reference (default -1; ONLY for PST);
+        – STR_VAR `fj_dialog` to the region’s dialogue file (ONLY for PST);
+        – INT_VAR `fj_vertex_0` to (X coordinate + (Y coordinate << 16)) for each vertex pair^*^;
+
+        Spawn structure variables\":\"
+
+        – STR_VAR `fj_name` to the spawn point’s name^*^;
+        – INT_VAR `fj_loc_x` to the spawning X coordinate^*^;
+        – INT_VAR `fj_loc_y` to the spawning Y coordinate^*^;
+        – STR_VAR `fj_cre_resref0` to the resource reference of each creature spawned (0-9)^*^;
+        – INT_VAR `fj_spawn_num` to the count of spawn creatures^*^;
+        – INT_VAR `fj_difficulty` to the base number of creatures to spawn (encounter difficulty)^*^;
+        – INT_VAR `fj_delay` to the number of seconds between spawning (default 10);
+        – INT_VAR `fj_method` to the spawn method;
+        – INT_VAR `fj_duration` to the creature duration (default 1000);
+        – INT_VAR `fj_wander_dist_spawn` to the creature’s random walk distance limit (default 1000);
+        – INT_VAR `fj_mvmt_dist_spawn` to the creature’s movement distance limit (default 1000);
+        – INT_VAR `fj_max_num` to the maximum number of creatures to spawn^*^;
+        – INT_VAR `fj_enable` to the spawn point status (0=inactive, 1=active, default 1);
+        – INT_VAR `fj_schedule` to the hourly appearance schedule (bits 0-23, default -1 or always);
+        – INT_VAR `fj_day_prob` to the spawn point daytime probability (default 100);
+        – INT_VAR `fj_night_prob` to the spawn point nighttime probability (default 100);
+
+        Entrance structure variables\":\"
+
+        – STR_VAR `fj_name` to the entrance’s name^*^;
+        – INT_VAR `fj_loc_x` to the X coordinate^*^;
+        – INT_VAR `fj_loc_y` to the Y coordinate^*^;
+        – INT_VAR `fj_orientation` to the facing direction (0-15 where 0=south, 4=west, 8=north, 12=east)^*^;
+
+        Container structure variables\":\"
+
+        – STR_VAR `fj_name` to the container’s name^*^;
+        – INT_VAR `fj_loc_x` to the X coordinate^*^;
+        – INT_VAR `fj_loc_y` to the Y coordinate^*^;
+        – INT_VAR `fj_type` to the container type (1=bag, 2=chest, 3=drawer, 4=pile, 5=table, 6=shelf, 7=altar, 8=nonvisible, 9=spellbook, 10=body, 11=barrel, 12=crate)^*^;
+        – INT_VAR `fj_lock_diff` to the lock difficulty (default 100);
+        – INT_VAR `fj_flags` to the bitwise container flags (bit0=locked, bit3=trap resets, bit5=disabled);
+        – INT_VAR `fj_trap_detect` to the trap detection difficulty percentage;
+        – INT_VAR `fj_trap_remove_diff` to the trap removal difficulty percentage (default 100);
+        – INT_VAR `fj_trap_active` to whether the container is trapped (0=no, 1=yes);
+        – INT_VAR `fj_trap_status` to whether the trap is detected (0=no, 1=yes);
+        – INT_VAR `fj_trap_loc_x` to the trap launch X coordinate^*^;
+        – INT_VAR `fj_trap_loc_y` to the trap launch Y coordinate^*^;
+        – INT_VAR `fj_box_left` to the leftmost X coordinate of the trap’s bounding box;
+        – INT_VAR `fj_box_top` to the topmost Y coordinate of the trap’s bounding box;
+        – INT_VAR `fj_box_right` to the rightmost X coordinate of the trap’s bounding box;
+        – INT_VAR `fj_box_bottom` to the bottommost Y coordinate of the trap’s bounding box;
+        – STR_VAR `fj_trap_script` to the trap’s script;
+        – INT_VAR `fj_vertex_0` to (X coordinate + (Y coordinate << 16)) for each vertex pair^*^;
+        – STR_VAR `fj_key_resref` to the filename of the container’s key;
+        – INT_VAR `fj_lockpick_strref` to the lockpick string reference (default -1);
+
+        Item structure variables\":\"
+
+        – STR_VAR `fj_name` to the item’s resource reference (filename)^*^;
+        – INT_VAR `fj_con_itm_idx` to the index of the container to which the item is added^*^;
+        – INT_VAR `fj_itm_expiry` to the item expiration time (default 0);
+        – INT_VAR `fj_charge0` to the charges of the 1st ability (item quantity for stackables, default 0);
+        – INT_VAR `fj_charge1` to the charges of the 2nd ability (default 0);
+        – INT_VAR `fj_charge2` to the charges of the 3rd ability (default 0);
+        – INT_VAR `fj_flags` to the bitwise item flags (bit0=identified, bit1=unstealable, bit2=stolen, bit3=undroppable, default 0);
+
+        Ambient structure variables\":\"
+
+        – STR_VAR `fj_name` to the ambient’s name^*^;
+        – INT_VAR `fj_loc_x` to the X coordinate^*^;
+        – INT_VAR `fj_loc_y` to the Y coordinate^*^;
+        – INT_VAR `fj_radius` to the sound radius (default 500);
+        – INT_VAR `fj_loc_z` to the Z coordinate (height);
+        – INT_VAR `fj_pitch_variance` to the pitch variance;
+        – INT_VAR `fj_volume_variance` to the volume variance;
+        – INT_VAR `fj_volume` to the volume percentage (default 80);
+        – STR_VAR `fj_wav_resref0` to the resource reference of each sound (0-9)^*^;
+        – INT_VAR `fj_sound_num` to the number of sounds^*^;
+        – INT_VAR `fj_delay` to the base interval in seconds between sounds from this ambient list;
+        – INT_VAR `fj_variation` to the base deviation from the base interval;
+        – INT_VAR `fj_schedule` to the hourly appearance schedule (bits 0-23, default -1 or always);
+        – INT_VAR `fj_flags` to the bitwise ambient flags^*^;
+
+        Variable structure variables\":\"
+
+        – STR_VAR `fj_name` to the variable’s name^*^;
+        – INT_VAR `fj_variable_value` to the variable’s value^*^;
+
+        Door structure variables\":\"
+
+        – STR_VAR `fj_name` to the door’s name^*^;
+        – STR_VAR `fj_door_wed_id` to the door ID linked to the .wed file^*^;
+        – INT_VAR `fj_flags` to the bitwise door flags^*^;
+        – INT_VAR `fj_open_box_left` to the leftmost X coordinate of the open door’s bounding box^*^;
+        – INT_VAR `fj_open_box_top` to the topmost Y coordinate of the open door’s bounding box^*^;
+        – INT_VAR `fj_open_box_right` to the rightmost X coordinate of the open door’s bounding box^*^;
+        – INT_VAR `fj_open_box_bottom` to the bottommost Y coordinate of the open door’s bounding box^*^;
+        – INT_VAR `fj_closed_box_left` to the leftmost X coordinate of the closed door’s bounding box^*^;
+        – INT_VAR `fj_closed_box_top` to the topmost Y coordinate of the closed door’s bounding box^*^;
+        – INT_VAR `fj_closed_box_right` to the rightmost X coordinate of the closed door’s bounding box^*^;
+        – INT_VAR `fj_closed_box_bottom` to the bottommost Y coordinate of the closed door’s bounding box^*^;
+        – INT_VAR `fj_door_open_vert_0` to (X coordinate + (Y coordinate << 16)) for each vertex pair of the open door^*^;
+        – INT_VAR `fj_door_closed_vert_0` to (X coordinate + (Y coordinate << 16)) for each vertex pair of the closed door^*^;
+        – INT_VAR `fj_cell_open_vert_0` to (X coordinate + (Y coordinate << 16)) for each impeded search map cell of the open door^*^;
+        – INT_VAR `fj_cell_closed_vert_0` to (X coordinate + (Y coordinate << 16)) for each impeded search map cell of the closed door^*^;
+        – STR_VAR `fj_door_open_wav` to the door open sound;
+        – STR_VAR `fj_door_close_wav` to the door closed sound;
+        – INT_VAR `fj_cursor_idx` to the door’s mouse cursor index (from cursors.bam)^*^;
+        – INT_VAR `fj_trap_detect` to the trap detection difficulty percentage;
+        – INT_VAR `fj_trap_remove` to the trap removal difficulty percentage;
+        – INT_VAR `fj_trap_active` to whether the door is trapped (0=no, 1=yes);
+        – INT_VAR `fj_trap_status` to whether the trap is detected (0=no, 1=yes);
+        – INT_VAR `fj_trap_loc_x` to the trap launch X coordinate^*^;
+        – INT_VAR `fj_trap_loc_y` to the trap launch Y coordinate^*^;
+        – STR_VAR `fj_key_resref` to the filename of the door’s key;
+        – STR_VAR `fj_door_script` to the door script;
+        – INT_VAR `fj_detect_diff` to the detection difficulty (for secret doors);
+        – INT_VAR `fj_locked_diff` to the lock difficulty;
+        – INT_VAR `fj_open_loc_x` to the X coordinate for toggling the door’s open state^*^;
+        – INT_VAR `fj_open_loc_y` to the Y coordinate for toggling the door’s open state^*^;
+        – INT_VAR `fj_closed_loc_x` to the X coordinate for toggling the door’s closed state^*^;
+        – INT_VAR `fj_closed_loc_y` to the Y coordinate for toggling the door’s closed state^*^;
+        – INT_VAR `fj_lockpick_strref` to the lockpick string reference (default -1);
+        – STR_VAR `fj_travel_trigger` to the travel region name^*^;
+        – INT_VAR `fj_dlg_strref` to the dialogue string reference (default -1);
+        – STR_VAR `fj_dlg_resref` to the door’s dialogue file;
+
+        Animation structure variables\":\"
+
+        – STR_VAR `fj_name` to the animation name^*^;
+        – INT_VAR `fj_loc_x` to the X coordinate^*^;
+        – INT_VAR `fj_loc_y` to the Y coordinate^*^;
+        – INT_VAR `fj_schedule` to the hourly appearance schedule (bits 0-23, default -1 or always);
+        – STR_VAR `fj_bam_resref` to the animation resource reference (filename)^*^;
+        – INT_VAR `fj_bam_seq` to the BAM sequence number;
+        – INT_VAR `fj_bam_frame` to the BAM frame number;
+        – INT_VAR `fj_flags` to the bitwise animation flags^*^;
+        – INT_VAR `fj_loc_z` to the height;
+        – INT_VAR `fj_transparent` to the BAM transparency;
+        – INT_VAR `fj_init_frame` to the starting frame;
+        – INT_VAR `fj_loop_chance` to the chance of looping;
+        – INT_VAR `fj_skip_cycles` to start delay in frames;
+        – STR_VAR `fj_bmp_resref` to the palette bitmap;
+
+        Bitmask structure variables\":\"
+
+        – STR_VAR `fj_bitmask` to  path/to/binary.file ^*^;
+
+        Songlist structure variables\":\"
+
+        – INT_VAR `fj_song_day` to the day SONGLIST.2DA entry;
+        – INT_VAR `fj_song_night` to the night SONGLIST.2DA entry;
+        – INT_VAR `fj_song_victory` to the victory SONGLIST.2DA entry;
+        – INT_VAR `fj_song_battle` to the battle SONGLIST.2DA entry;
+        – INT_VAR `fj_song_defeat` to the defeat SONGLIST.2DA entry;
+        – STR_VAR `fj_song_day0` to the day song WAV resref;
+        – STR_VAR `fj_song_day1` to the night song WAV resref;
+        – INT_VAR `fj_song_day_vol` to the day songs volume (default 100);
+        – STR_VAR `fj_song_night0` to the night song WAV resref;
+        – STR_VAR `fj_song_night1` to the second night song WAV resref;
+        – INT_VAR `fj_song_night_vol` to the night songs volume (default 100);
+
+        Rest interrupt structure variables\":\"
+
+        – STR_VAR `fj_name` to the name of the rest interrupts (for editor use only);
+        – INT_VAR `fj_cre_strref0...fj_cre_strref9` to string displayed upon party ambush (default -1);
+        – STR_VAR `fj_cre_resref0...fj_cre_resref9` to creature resref;
+        – STR_VAR `fj_spawn_num` to the number of spawned attackers;
+        – STR_VAR `fj_difficulty` to the difficulty of the encounter;
+        – STR_VAR `fj_duration` to the creature’s duration (default 1000);
+        – STR_VAR `fj_wander_distance` to the creature’s random walk distance limit (default 1000);
+        – STR_VAR `fj_mvmt_distance` to the creature’s movement distance limit (default 1000);
+        – STR_VAR `fj_max_num` to maximum number of spawned creatures;
+        – STR_VAR `fj_enable` to whether rest interrupts are enabled (0=no, 1=yes);
+        – STR_VAR `fj_day_prob` to probability of daytime ambush;
+        – STR_VAR `fj_night_prob` to probability of nightime ambush;
+
+        Map note structure variables\":\"
+
+        – INT_VAR `fj_loc_x` to the X coordinate^*^;
+        – INT_VAR `fj_loc_y` to the Y coordinate^*^;
+        – INT_VAR `fj_note_strref` to the note string reference (default -1, BGII only)^*^;
+        – STR_VAR `fj_note_text` to the note text (PST only)^*^;
+        – INT_VAR `fj_strref_loc` to the strref location (0=external, 1=dialog.tlk, default 1);
+        – INT_VAR `fj_color` to the map marker color (0-7);
+        – INT_VAR `fj_note_id` to the note ID;
+
+        Projectile trap structure variables (not available on PST)\":\"
+
+        – STR_VAR `fj_name` to the projectile filename^*^;
+        – INT_VAR `fj_eff_off` to the effect block offset;
+        – INT_VAR `fj_eff_size` to the effect block size;
+        – INT_VAR `fj_missile_num` to the missile.ids reference (projectl.ids - 1);
+        – INT_VAR `fj_frequency` to the explosion length (in frames);
+        – INT_VAR `fj_duration` to the number of explosions;
+        – INT_VAR `fj_loc_x` to the X coordinate^*^;
+        – INT_VAR `fj_loc_y` to the Y coordinate^*^;
+        – INT_VAR `fj_loc_z` to the height;
+        – INT_VAR `fj_target` to the target ID;
+        – STR_VAR `fj_embedded_eff0` to  path/to/v2.eff  or eff resref containing to projectile’s effects^*^;
+
+    - name: sc#addWmpAre
+      doc: |
+        Adds an area to the worldmap. All variables are zero or blank by default unless otherwise indicated. This is an ACTION function.
+
+        – ACTION_DEFINE_ASSOCIATIVE_ARRAY `toNewArea` to the area references that lead to the new area;
+        – ACTION_DEFINE_ASSOCIATIVE_ARRAY `fromNewArea` to the area references that lead away from the new area;
+        – STR_VAR `areName` to the resource reference of the area to add (like \"ar0700\");
+        – STR_VAR `strName` to the descriptive name of the area (like \"Waukeen’s Promenade\");
+        – STR_VAR `strDesc` to the area description that will show up when hovering the cursor over the area on the worldmap;
+        – STR_VAR `worldmap` to the name of the .wmp file you want patched (default is \"worldmap\");
+        – INT_VAR `mapIcon` to the area’s map icon index (from mapicons.bam);
+        – INT_VAR `xCoord` to the area’s X (east-west) coordinate;
+        – INT_VAR `yCoord` to the area’s Y (north-south) coordinate;
+        – INT_VAR `tTime` to the area’s travel time in hours * 4 (so 2 = 8 hours);
+        – INT_VAR `inclSv` to 1 if you want to patch saved game worldmaps as well as the master worldmap. '''NB:''' changes to saved games are uninstallable;
+        – INT_VAR `visible` to 1 if you want the ''visible'' flag to be set;
+        – INT_VAR `visibleAdjacent` to 1 if you want the ''visible from adjacent'' flag to be set;
+        – INT_VAR `reachable` to 1 if you want the ''reachable'' flag to be set;
+        – INT_VAR `visited` to 1 if you want the ''visited'' flag to be set;
+        – RET `areNum` returns the worldmap entry number for the new area;
+
+    - name: HANDLE_AUDIO
+      doc: |
+        Install Ogg--Vorbis compressed audio files in a safe and easy manner. This is an ACTION function.
+
+        This function supports Windows, OS X, GNU/Linux and all IE games, including BG:EE. If the game is not BG:EE, the audio will be decompressed and the resulting .wav files will be `MOVE`d to the override. If the game is BG:EE, the .ogg files are copied into the override and renamed into .wav files. Refer to the `HANDLE_AUDIO` and `HANDLE_TILESETS` tutorial for usage examples and a more practical explanation.
+
+        If the audio files need to be decompressed, this function will use oggdec.exe on Windows, which is by default expected to be found in `audio_path`. The most recent version of oggdec can be downloaded [http://downloads.xiph.org/releases/vorbis/vorbis-tools-win32-bin.7z here] (direct link). On OS X, SoX will be used, which is by default also expected to be found in `audio_path`. SoX compiled for OS X can be downloaded [http://sourceforge.net/projects/sox/files/sox/14.4.1/sox-14.4.1-macosx.zip/download here]. On GNU/Linux, oggdec will be used, but it is expected to be found on the system path and the user should install it him/herself. If you provide installation instructions for GNU/Linux, just include something to the effect of "install oggdec, which is usually part of the package vorbis-tools".
+
+        If the decompression utility cannot be found, the user is warned that the audio files were not installed.
+
+        – INT_VAR `music` if this variable is not 0 and the game is BG:EE, the audio files are given the extension .acm instead of .wav. This variable has no effect if the game is not BG:EE. By default its value is 0.
+        – STR_VAR `audio_path` to the path your .ogg files are stored in. By default this variable is `~%MOD_FOLDER%/audio~`.
+        – STR_VAR `oggdec_path` to the path oggdec is located in. By default this variable is `~%audio_path%~`.
+        – STR_VAR `sox_path` to the path SoX is located in. By default this variable is `~%audio_path%~`.
+        – STR_VAR `output_path` to the path the audio should be installed into. By default this variable is `override`.
+
+    - name: HANDLE_TILESETS
+      doc: |
+        Install TISpack-compressed tilesets in a safe and easy manner. This is an ACTION function.
+
+        This function supports Windows, OS X, GNU/Linux and all IE games that support the `TIS V1` file format. The program tisunpack, part of `TISpack`, is used to decompress the provided .tiz files and the resulting .tis files are placed in the override. Refer to the `HANDLE_AUDIO` and `HANDLE_TILESETS` tutorial for usage examples and a more practical explanation.
+
+        This function expects to find tisunpack for one or more of Windows, OS X or GNU/Linux in a common directory under the subdirectories `win32`, `osx`, and `unix`, respectively. For example, in `mymod/tiz/win32`, `mymod/tiz/osx` and `mymod/tiz/unix`, the common directory is `mymod/tiz` and `mymod/tiz/win32/tisunpack.exe` should be a valid file. For GNU/Linux, this function also supports tisunpack being located on the system path (something the user would take care of). If you choose to leave tisunpack to the user, you should mention this requirement in any installation instructions you provide.
+
+        If tisunpack for the user’s platform could not be found, the installation fails.
+
+        – STR_VAR `tiz_path` to the path your .tiz files are stored in. By default this variable is `~%MOD_FOLDER%/tiz~`.
+        – STR_VAR `tisunpack_path` to the common directory where the subdirectories `win32`, `osx` and `unix` are located. By default this variable is `~%tiz_path%~`.
+        – STR_VAR `output_path` to the path the tilesets should be installed into. By default this variable is `override`.
+
+    - name: HANDLE_CHARSETS
+      doc: |
+        Runtime-convert `TRA` files into `UTF-8` in a safe and easy manner. This is an ACTION function.
+
+        This function supports Windows, OS X and GNU/Linux. If the game is BG:EE or BG2:EE, `TRA` files are encoded into `UTF-8` so the text can be installed without causing problems. `HANDLE_CHARSETS` needs to be used before any text is installed and is compatible with `AUTO_TRA` and all other methods of loading `TRA` files.
+
+        Conversion is handled by the program `iconv`. The program is available as part of the base system on OS X and GNU/Linux but a Windows version needs to be included in your mod. A Windows version can be downloaded [http://gnuwin32.sourceforge.net/packages/libiconv.htm here].
+
+        In order to function, `HANDLE_CHARSETS` needs to know a few things. First, you need to specify where you keep your `TRA` files. You do this with the variable `tra_path`. Second, `HANDLE_CHARSETS` needs to know where the Windows version of `iconv` is located. You do this with the variable `iconv_path`. Third, `HANDLE_CHARSETS` needs to know which character set the `TRA` files are in. Note that they can only be converted into `UTF-8` and cannot already be in `UTF-8`. You provide this information with `charset_table` or tell `HANDLE_CHARSETS` to try to infer this by itself with `infer_charsets`. Lastly, `HANDLE_CHARSETS` needs to know which `TRA` files to convert and whether any of them should be reloaded. You can do this with `noconvert_array`, `convert_array` and `reload_array`.
+
+        Unless `convert_array` is specified, `HANDLE_CHARSETS` will recursively convert all `TRA` files in `tra_path` except those listed in `noconvert_array`. If `convert_array` is specified, only those `TRA` files listed in the array will be converted. `convert_array` may contain references to `TRA` files in subdirectories of `tra_path`.
+
+        – INT_VAR `infer_charsets` to whether `HANDLE_CHARSETS` should try to infer which character set the `TRA` files are encoded in. It uses the contents of the `%language%` variable (''vide infra''). If the contents of the variable can be recognised, `HANDLE_CHARSETS` will use the character set used by the localised version of BG2 for this language. If the contents of the variable cannot be recognised, or if the `TRA` files use a different character set than the expected one, `HANDLE_CHARSETS` will fail. Refer to the compatibility matrix below for additional information. `infer_charsets` overrides `charset_table`. Defaults to 0.
+        – STR_VAR `language` to the name of the language directory you wish to convert. The default value of this variable is `\%LANGUAGE\%`, in other words, the directory corresponding to the language the user selected at the start of the installation. You should never need to alter the value of this variable.
+        – STR_VAR `default_language` to the name of the directory used by the default language of your mod, if your mod has one. The default language is typically one for which the translation is always complete and up to date and which you use to guard against incomplete translations. `HANDLE_CHARSETS` will convert the `TRA` files of the default language in addition to those of the user-selected language. Should these two languages be the same, the `TRA` files will only be converted once. Additionally, any `TRA` files listed in the `reload_array` (''vide infra'') will be reloaded for the default language before they are reloaded for the user-selected language. The default value of this variable is `~~` (the empty string).
+        – STR_VAR `tra_path` to the path where your mod’s language directories are located. `%tra_path%/%language%` should be a valid directory containing `TRA` files.
+        – STR_VAR `iconv_path` to the path where iconv.exe is located. Defaults to `%tra_path%/iconv`.
+        – STR_VAR `charset_table` to the name of an associative array where the keys are the names of your language directories and the corresponding values are the character sets used by the respective language. The keys must be entirely in lowercase. `charset_table` is not used if you also specify `infer_charsets`.
+        – STR_VAR `noconvert_array` to the name of an array indexed by monotonically increasing integers starting from 0. The values should be the names of `TRA` files that should not be converted into `UTF-8`. All `TRA` files in the language directory and its subdirectories except the ones listed in `noconvert_array` will be converted. The .tra file extension is optional. This variable should not be provided if you also provide `convert_array`.
+        – STR_VAR `convert_array` to the name of an array indexed by monotonically increasing integers starting from 0. The values should be the names of `TRA` files that should be converted into `UTF-8`. Only those `TRA` files in the language directory or its subdirectories which are listed in `convert_array` will be converted. The .tra file extension is optional. If this variable is provided, `noconvert_array` will not be used.
+        – STR_VAR `reload_array` to the name of an array indexed by monotonically increasing integers starting from 0. The values should be the names of `TRA` files which should be reloaded after they have been converted. The .tra file extension is optional. You should use this variable for reloading those `TRA` files loaded by `LANGUAGE` which should also be converted.
 
 tp2-when:
   type: 14 # keyword
@@ -2469,71 +2850,71 @@ tp2-value:
     - name: DEATHVAR
     - name: DIALOG
     - name: AREA_SCRIPT
-    
+
     - name: BIT0
-    - doc: 0b00000000000000000000000000000001
+      doc: 0b00000000000000000000000000000001
     - name: BIT1
-    - doc: 0b00000000000000000000000000000010
+      doc: 0b00000000000000000000000000000010
     - name: BIT2
-    - doc: 0b00000000000000000000000000000100
+      doc: 0b00000000000000000000000000000100
     - name: BIT3
-    - doc: 0b00000000000000000000000000001000
+      doc: 0b00000000000000000000000000001000
     - name: BIT4
-    - doc: 0b00000000000000000000000000010000
+      doc: 0b00000000000000000000000000010000
     - name: BIT5
-    - doc: 0b00000000000000000000000000100000
+      doc: 0b00000000000000000000000000100000
     - name: BIT6
-    - doc: 0b00000000000000000000000001000000
+      doc: 0b00000000000000000000000001000000
     - name: BIT7
-    - doc: 0b00000000000000000000000010000000
+      doc: 0b00000000000000000000000010000000
     - name: BIT8
-    - doc: 0b00000000000000000000000100000000
+      doc: 0b00000000000000000000000100000000
     - name: BIT9
-    - doc: 0b00000000000000000000001000000000
+      doc: 0b00000000000000000000001000000000
     - name: BIT10
-    - doc: 0b00000000000000000000010000000000
+      doc: 0b00000000000000000000010000000000
     - name: BIT11
-    - doc: 0b00000000000000000000100000000000
+      doc: 0b00000000000000000000100000000000
     - name: BIT12
-    - doc: 0b00000000000000000001000000000000
+      doc: 0b00000000000000000001000000000000
     - name: BIT13
-    - doc: 0b00000000000000000010000000000000
+      doc: 0b00000000000000000010000000000000
     - name: BIT14
-    - doc: 0b00000000000000000100000000000000
+      doc: 0b00000000000000000100000000000000
     - name: BIT15
-    - doc: 0b00000000000000001000000000000000
+      doc: 0b00000000000000001000000000000000
     - name: BIT16
-    - doc: 0b00000000000000010000000000000000
+      doc: 0b00000000000000010000000000000000
     - name: BIT17
-    - doc: 0b00000000000000100000000000000000
+      doc: 0b00000000000000100000000000000000
     - name: BIT18
-    - doc: 0b00000000000001000000000000000000
+      doc: 0b00000000000001000000000000000000
     - name: BIT19
-    - doc: 0b00000000000010000000000000000000
+      doc: 0b00000000000010000000000000000000
     - name: BIT20
-    - doc: 0b00000000000100000000000000000000
+      doc: 0b00000000000100000000000000000000
     - name: BIT21
-    - doc: 0b00000000001000000000000000000000
+      doc: 0b00000000001000000000000000000000
     - name: BIT22
-    - doc: 0b00000000010000000000000000000000
+      doc: 0b00000000010000000000000000000000
     - name: BIT23
-    - doc: 0b00000000100000000000000000000000
+      doc: 0b00000000100000000000000000000000
     - name: BIT24
-    - doc: 0b00000001000000000000000000000000
+      doc: 0b00000001000000000000000000000000
     - name: BIT25
-    - doc: 0b00000010000000000000000000000000
+      doc: 0b00000010000000000000000000000000
     - name: BIT26
-    - doc: 0b00000100000000000000000000000000
+      doc: 0b00000100000000000000000000000000
     - name: BIT27
-    - doc: 0b00001000000000000000000000000000
+      doc: 0b00001000000000000000000000000000
     - name: BIT28
-    - doc: 0b00010000000000000000000000000000
+      doc: 0b00010000000000000000000000000000
     - name: BIT29
-    - doc: 0b00100000000000000000000000000000
+      doc: 0b00100000000000000000000000000000
     - name: BIT30
-    - doc: 0b01000000000000000000000000000000
+      doc: 0b01000000000000000000000000000000
     - name: BIT31
-    - doc: 0b10000000000000000000000000000000
+      doc: 0b10000000000000000000000000000000
     
     - name: WNL
       doc: Windows new line
@@ -2562,3 +2943,17 @@ tp2-value:
       doc: Evaluates to the directory in which the current game type stores its multiplayer saved games. The determination is done the same way as with the save directory, but for the directory mpsave instead.
     - name: EE_LANGUAGE
       doc: Evaluates to the Enhanced Edition language directory the user has selected, for example, en_US. This variable is undefined on non-EE games.
+
+    - name: BEGIN
+      doc: ""
+    - name: END
+      doc: ""
+
+    - name: INT_VAR
+      doc: "Integer variable"
+    - name: STR_VAR
+      doc: "String variable"
+    - name: RET
+      doc: "Return value"
+    - name: RET_ARRAY
+      doc: "Return value (arrays)"

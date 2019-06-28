@@ -367,6 +367,7 @@ repository:
     - match: \b(ADD_AREA_ITEM)\b
     - match: \b(ADD_AREA_REGION_TRIGGER)\b
     - match: \b(ALTER_AREA_ACTOR)\b
+    - match: \b(ALTER_AREA_REGION)\b
     - match: \b(ALTER_AREA_CONTAINER)\b
     - match: \b(ADD_CRE_ITEM_FLAGS)\b
     - match: \b(REMOVE_CRE_ITEM_FLAGS)\b
@@ -376,6 +377,7 @@ repository:
     - match: \b(READ_SOUNDSET)\b
     - match: \b(tb#factorial)\b
     - match: \b(tb#fix_file_size)\b
+    - match: \b(FJ_CRE_VALIDITY)\b
     - match: \b(FJ_CRE_REINDEX)\b
     - match: \b(FJ_CRE_EFF_V2)\b
     - match: \b(T-CRE_EFF_V1)\b
@@ -390,6 +392,11 @@ repository:
     - match: \b(FILE_OF_FILESPEC)\b
     - match: \b(RES_OF_FILESPEC)\b
     - match: \b(EXT_OF_FILESPEC)\b
+    - match: \b(fj_are_structure)\b
+    - match: \b(sc#addWmpAre)\b
+    - match: \b(HANDLE_AUDIO)\b
+    - match: \b(HANDLE_TILESETS)\b
+    - match: \b(HANDLE_CHARSETS)\b
 
   weidu-tp2-patch-controls:
     name: keyword.control.patch.weidu
@@ -827,6 +834,14 @@ repository:
     - match: \b(SAVE_DIRECTORY)\b
     - match: \b(MPSAVE_DIRECTORY)\b
     - match: \b(EE_LANGUAGE)\b
+
+    - match: \b(BEGIN)\b
+    - match: \b(END)\b
+
+    - match: \b(INT_VAR)\b
+    - match: \b(STR_VAR)\b
+    - match: \b(RET)\b
+    - match: \b(RET_ARRAY)\b
 
   inlined-d:
     name: meta.weidu.inlined.d
