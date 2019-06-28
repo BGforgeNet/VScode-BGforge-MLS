@@ -636,7 +636,7 @@ repository:
     - match: \b(STR_VAR|INT_VAR|RET|RET_VAL)\b
       name: keyword.control.weidu
     - include: '#vars-declaration'
-    
+
   function-declaration:
     name: meta.function.declaration.weidu
     begin: \b(DEFINE_ACTION_FUNCTION|DEFINE_PATCH_FUNCTION)\s+(~)?(\w+)(~)?
