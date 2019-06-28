@@ -1286,6 +1286,10 @@
           "name": "support.function.tp2.weidu"
         },
         {
+          "match": "\\b(ALTER_AREA_REGION)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
           "match": "\\b(ALTER_AREA_CONTAINER)\\b",
           "name": "support.function.tp2.weidu"
         },
@@ -1319,6 +1323,10 @@
         },
         {
           "match": "\\b(tb#fix_file_size)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(FJ_CRE_VALIDITY)\\b",
           "name": "support.function.tp2.weidu"
         },
         {
@@ -1375,6 +1383,26 @@
         },
         {
           "match": "\\b(EXT_OF_FILESPEC)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(fj_are_structure)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(sc#addWmpAre)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(HANDLE_AUDIO)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(HANDLE_TILESETS)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(HANDLE_CHARSETS)\\b",
           "name": "support.function.tp2.weidu"
         }
       ]
@@ -2756,6 +2784,30 @@
         },
         {
           "match": "\\b(EE_LANGUAGE)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(BEGIN)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(END)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(INT_VAR)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(STR_VAR)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(RET)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
+          "match": "\\b(RET_ARRAY)\\b",
           "name": "constant.language.infinity.weidu"
         }
       ]
