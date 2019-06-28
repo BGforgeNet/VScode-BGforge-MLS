@@ -58,6 +58,9 @@
       "include": "#weidu-tp2-patch"
     },
     {
+      "include": "#weidu-tp2-macro"
+    },
+    {
       "include": "#weidu-tp2-patch-controls"
     },
     {
@@ -1168,7 +1171,12 @@
         {
           "match": "\\b(COMPRESS_INTO_VAR)\\b",
           "name": "support.function.tp2.weidu"
-        },
+        }
+      ]
+    },
+    "weidu-tp2-macro": {
+      "name": "support.function.tp2.weidu",
+      "patterns": [
         {
           "match": "\\b(ADD_ITEM_EQEFFECT)\\b",
           "name": "support.function.tp2.weidu"
