@@ -32,10 +32,10 @@ export function fname(uri: string) {
 export function conlog(item: any) {
 	switch (typeof (item)) {
 		case "number":
-			connection.console.log(item);
+			connection.console.log(item.toString());
 			break;
 		case "boolean":
-			connection.console.log(item);
+			connection.console.log(item.toString());
 			break;
 		case "undefined":
 			connection.console.log(item);
