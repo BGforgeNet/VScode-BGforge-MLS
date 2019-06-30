@@ -33,3 +33,8 @@
 - Added newlines to WeiDU macro docs.
 - Updated Fallout module with latest functions and hooks.
 - Fixed import typo in server.
+
+## 1.0.9
+- FSSL: added support for more data types and standartized display of functions without args (strip parhenthesis).
+- Last built-in WeiDU macros added.
+- Allow to compile files uppercased names.
