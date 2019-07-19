@@ -342,7 +342,7 @@ base-functions:
     detail: ObjectPtr inven(ObjectPtr what, int slotNum)
     doc: 'Returns a pointer to the object in slot # (slotNum) in a given object (what).'
   - name: inven_unwield
-    detail: void inven_unwield
+    detail: void inven_unwield(ObjectPtr who)
     doc: Attempts to cause a critter to unwield any wielded weapons/items. If animations are currently disabled, it will just instantly change the art.
   - name: is_critical
     detail: bool is_critical(int val)
