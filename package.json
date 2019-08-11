@@ -20,6 +20,7 @@
 		"Baldur's Gate",
 		"WeiDU"
 	],
+	"icon": "resources/bgforge.png",
 	"engines": {
 		"vscode": "^1.26.0"
 	},
