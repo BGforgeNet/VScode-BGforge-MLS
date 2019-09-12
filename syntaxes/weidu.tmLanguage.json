@@ -1753,6 +1753,10 @@
         {
           "match": "\\b(AFTER|BEFORE|LAST|FIRST|AT)\\b",
           "name": "keyword.control.weidu"
+        },
+        {
+          "match": "\\b(INT_VAR|STR_VAR|RET|RET_ARRAY)\\b",
+          "name": "keyword.control.weidu"
         }
       ]
     },
@@ -2092,41 +2096,24 @@
     },
     "function-invocation": {
       "name": "meta.function.invocation.weidu",
-      "begin": "\\b(LAF|LAUNCH_ACTION_FUNCTION|LPF|LAUNCH_PATCH_FUNCTION)\\s+(~)?(\\w+)(~)?",
-      "end": "\\b(END)\\b",
+      "begin": "\\b(LAF|LAUNCH_ACTION_FUNCTION|LPF|LAUNCH_PATCH_FUNCTION)\\b",
+      "end": "(~)?(\\w+)(~)?",
       "beginCaptures": {
         "1": {
-          "name": "keyword.control.weidu"
-        },
-        "2": {
-          "name": "keyword.control.weidu"
-        },
-        "3": {
-          "name": "entity.name.function"
-        },
-        "4": {
           "name": "keyword.control.weidu"
         }
       },
       "endCaptures": {
         "1": {
           "name": "keyword.control.weidu"
-        }
-      },
-      "patterns": [
-        {
-          "include": "#comments",
-          "name": "meta.function.invocation.weidu"
         },
-        {
-          "match": "\\b(STR_VAR|INT_VAR|RET|RET_VAL)\\b",
+        "2": {
+          "name": "entity.name.function"
+        },
+        "3": {
           "name": "keyword.control.weidu"
-        },
-        {
-          "include": "#vars-declaration",
-          "name": "meta.function.invocation.weidu"
         }
-      ]
+      }
     },
     "function-declaration": {
       "name": "meta.function.declaration.weidu",
@@ -2792,30 +2779,6 @@
         },
         {
           "match": "\\b(EE_LANGUAGE)\\b",
-          "name": "constant.language.infinity.weidu"
-        },
-        {
-          "match": "\\b(BEGIN)\\b",
-          "name": "constant.language.infinity.weidu"
-        },
-        {
-          "match": "\\b(END)\\b",
-          "name": "constant.language.infinity.weidu"
-        },
-        {
-          "match": "\\b(INT_VAR)\\b",
-          "name": "constant.language.infinity.weidu"
-        },
-        {
-          "match": "\\b(STR_VAR)\\b",
-          "name": "constant.language.infinity.weidu"
-        },
-        {
-          "match": "\\b(RET)\\b",
-          "name": "constant.language.infinity.weidu"
-        },
-        {
-          "match": "\\b(RET_ARRAY)\\b",
           "name": "constant.language.infinity.weidu"
         }
       ]
