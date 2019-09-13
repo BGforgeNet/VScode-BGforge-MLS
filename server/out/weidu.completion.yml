@@ -1593,50 +1593,52 @@ tp2-patch:
       - INT_VAR `special` to the new effect's special field. The special field is used by many EE effects.\n
       - STR_VAR `resource` to the altered effect's resource reference."
     - name: CLONE_EFFECT
-      doc: "This is a patch function for creature, item, or spell files that will match an existing effect and create a new one based on the matched effect. Numerous variables are available for matching the specified effect and for specifying new values in the new effect based on the matched effect.\n
-      The first batch of variables are meta-variables which will help determine the scope of the function\":\"\n
-      - INT_VAR `check_globals` to whether the function should loop through global effects on items (also known as equipping effects) and spells (default is 1). Creature effects are all global effects, so this variable will always be considered to be one when this function is run on a creature.\n
-      - INT_VAR `check_headers` to whether the function should loop through effects on extended headers on items and spells if set to 1 (default is 1). Creatures have no extended headers, so this variable is ignored when used on creatures.\n
-      - INT_VAR `header` to whether the function should target effects on one specific header, counting the first header as zero. A negative value will match all headers (default is -1). Creatures have no extended headers, so this variable is ignored when used on creatures.\n
-      - INT_VAR `header_type` to whether the function should only clone effects on extended headers of the specified type (1 - melee, 2 - ranged, etc.). Negative values will look at effects on all headers (default is -1). Creatures have no extended headers, so this variable is ignored when used on creatures.\n
-      - INT_VAR `multi_match` to the number of effects to clone in the active stack. If you just want to match the first effect and have the function stop, use 1. Otherwise the function will continue matching until the number of cloned effects matches this value. The function will always make at least one change (e.g. 0 or negative values are treated as 1). (default is 999).\n
-      - INT_VAR `verbose` to whether the function should provide some rudimentary information on how many effects were added (default is 0).\n
-      - INT_VAR `silent` to whether the function should suppress warnings when no effects were added. This option also suppresses the verbose option (default is 0).\n
-      - STR_VAR `insert` to the relative position the cloned effect should be inserted at. A value of `below` puts the new, cloned effect immediately below the matched effect. Values of `first` or `last` will put the new effect at the top or bottom of the effect stack, respectively. All other values will default to `above`, where the effect is added immediately before the matched effect (default is `above`).\n
-      The next batch of variables sets the function boundaries on matching an effect to clone. Any variables not specified will not be used to determine a match. The function will only determine an effect is a match only if ALL of the variables specified are matched.\n
-      - INT_VAR `match_opcode` to the opcode of effects to be matched (default -1).\n
-      - INT_VAR `match_target` to the target of effects to be matched (default -1).\n
-      - INT_VAR `match_power` to the power of effects to be matched (default -1).\n
-      - INT_VAR `match_parameter1` to parameter1 of effects to be matched (default -1).\n
-      - INT_VAR `match_parameter2` to parameter2 of effects to be matched (default -1).\n
-      - INT_VAR `match_timing` to the timing of effects to be matched (default -1).\n
-      - INT_VAR `match_resist_dispel` to the resist/dispel setting of effects to be matched (default -1).\n
-      - INT_VAR `match_duration` to the duration of effects to be matched (default -1).\n
-      - INT_VAR `match_probability1` to probability1 (the upper bound) of effects to be matched (default -1).\n
-      - INT_VAR `match_probability2` to probability2 (the lower bound) of effects to be matched (default -1).\n
-      - INT_VAR `match_dicenumber` to the number of dice of effects to be matched (default -1). This field is instead used for maximum hit-dice (HD) by some opcodes.\n
-      - INT_VAR `match_dicesize` to the size of dice of effects to be matched (default -1). This field is used instead for minimum hit-dice (HD) by some opcodes.\n
-      - INT_VAR `match_savingthrow` to the saving throw type of effects to be matched (default -1).\n
-      - INT_VAR `match_savebonus` to the saving throw bonus of effects to be matched (default -11). Since saving throws can range into negative values, this variable can match all the way down to -10.\n
-      - INT_VAR `match_special` to the special field of effects to be matched (default -1). The special field is used by some EE effects.\n
-      - STR_VAR `match_resource` to the resource of effects to be matched (default \"SAME\").\n
-      Once a matching effect is found, a new effect is created (STR_VAR `insert` determines its placement) with all of the same specifications as the matched effect. The next series of variables allows the function to change the fields to new values in the newly-created effect. Any variables not set in this batch will simply inherit their values from the matched effect.\n
-      - INT_VAR `opcode` to the value the of the new effect's opcode.\n
-      - INT_VAR `target` to the new effect's target.\n
-      - INT_VAR `power` to the new effect's power.\n
-      - INT_VAR `parameter1` to the new effect's parameter1.\n
-      - INT_VAR `parameter2` to the new effect's parameter2.\n
-      - INT_VAR `timing` to the new effect's timing mode.\n
-      - INT_VAR `resist_dispel` to the new effect's resist/dispel setting.\n
-      - INT_VAR `duration` to the new effect's duration.\n
-      - INT_VAR `probability1` to the new effect's probability1 (the upper bound).\n
-      - INT_VAR `probability2` to the new effect's probability2 (the lower bound).\n
-      - INT_VAR `dicenumber` to the new effect's number of dice. This field is instead used for maximum hit-dice (HD) by some opcodes.\n
-      - INT_VAR `dicesize` to the new effect's size of dice. This field is also instead for minimum hit-dice (HD) by some opcodes.\n
-      - INT_VAR `savingthrow` to the new effect's saving-throw type.\n
-      - INT_VAR `savebonus` to the new effect's saving-throw bonus/penalty. This variable can take negative values down to -10 while still writing to the corresponding field.\n
-      - INT_VAR `special` to the new effect's special field. The special field is used by many EE effects.\n
-      - STR_VAR `resource` to the new effect's resource reference."
+      doc: |
+        This is a patch function for creature, item, or spell files that will match an existing effect and create a new one based on the matched effect. Numerous variables are available for matching the specified effect and for specifying new values in the new effect based on the matched effect.
+        The first batch of variables are meta-variables which will help determine the scope of the function:
+        - INT_VAR `check_globals` to whether the function should loop through global effects on items (also known as equipping effects) and spells (default is 1). Creature effects are all global effects, so this variable will always be considered to be one when this function is run on a creature.
+        - INT_VAR `check_headers` to whether the function should loop through effects on extended headers on items and spells if set to 1 (default is 1). Creatures have no extended headers, so this variable is ignored when used on creatures.
+        - INT_VAR `header` to whether the function should target effects on one specific header, counting the first header as zero. A negative value will match all headers (default is -1). Creatures have no extended headers, so this variable is ignored when used on creatures.
+        - INT_VAR `header_type` to whether the function should only clone effects on extended headers of the specified type (1 - melee, 2 - ranged, etc.). Negative values will look at effects on all headers (default is -1). Creatures have no extended headers, so this variable is ignored when used on creatures.
+        - INT_VAR `multi_match` to the number of effects to clone in the active stack. If you just want to match the first effect and have the function stop, use 1. Otherwise the function will continue matching until the number of cloned effects matches this value. The function will always make at least one change (e.g. 0 or negative values are treated as 1). (default is 999).
+        - INT_VAR `verbose` to whether the function should provide some rudimentary information on how many effects were added (default is 0).
+        - INT_VAR `silent` to whether the function should suppress warnings when no effects were added. This option also suppresses the verbose option (default is 0).
+        - STR_VAR `insert` to the relative position the cloned effect should be inserted at. A value of `below` puts the new, cloned effect immediately below the matched effect. Values of `first` or `last` will put the new effect at the top or bottom of the effect stack, respectively. All other values will default to `above`, where the effect is added immediately before the matched effect (default is `above`).
+
+        The next batch of variables sets the function boundaries on matching an effect to clone. Any variables not specified will not be used to determine a match. The function will only determine an effect is a match only if ALL of the variables specified are matched.
+        - INT_VAR `match_opcode` to the opcode of effects to be matched (default -1).
+        - INT_VAR `match_target` to the target of effects to be matched (default -1).
+        - INT_VAR `match_power` to the power of effects to be matched (default -1).
+        - INT_VAR `match_parameter1` to parameter1 of effects to be matched (default -1).
+        - INT_VAR `match_parameter2` to parameter2 of effects to be matched (default -1).
+        - INT_VAR `match_timing` to the timing of effects to be matched (default -1).
+        - INT_VAR `match_resist_dispel` to the resist/dispel setting of effects to be matched (default -1).
+        - INT_VAR `match_duration` to the duration of effects to be matched (default -1).
+        - INT_VAR `match_probability1` to probability1 (the upper bound) of effects to be matched (default -1).
+        - INT_VAR `match_probability2` to probability2 (the lower bound) of effects to be matched (default -1).
+        - INT_VAR `match_dicenumber` to the number of dice of effects to be matched (default -1). This field is instead used for maximum hit-dice (HD) by some opcodes.
+        - INT_VAR `match_dicesize` to the size of dice of effects to be matched (default -1). This field is used instead for minimum hit-dice (HD) by some opcodes.
+        - INT_VAR `match_savingthrow` to the saving throw type of effects to be matched (default -1).
+        - INT_VAR `match_savebonus` to the saving throw bonus of effects to be matched (default -11). Since saving throws can range into negative values, this variable can match all the way down to -10.
+        - INT_VAR `match_special` to the special field of effects to be matched (default -1). The special field is used by some EE effects.
+        - STR_VAR `match_resource` to the resource of effects to be matched (default \"SAME\").
+        Once a matching effect is found, a new effect is created (STR_VAR `insert` determines its placement) with all of the same specifications as the matched effect. The next series of variables allows the function to change the fields to new values in the newly-created effect. Any variables not set in this batch will simply inherit their values from the matched effect.
+        - INT_VAR `opcode` to the value the of the new effect's opcode.
+        - INT_VAR `target` to the new effect's target.
+        - INT_VAR `power` to the new effect's power.
+        - INT_VAR `parameter1` to the new effect's parameter1.
+        - INT_VAR `parameter2` to the new effect's parameter2.
+        - INT_VAR `timing` to the new effect's timing mode.
+        - INT_VAR `resist_dispel` to the new effect's resist/dispel setting.
+        - INT_VAR `duration` to the new effect's duration.
+        - INT_VAR `probability1` to the new effect's probability1 (the upper bound).
+        - INT_VAR `probability2` to the new effect's probability2 (the lower bound).
+        - INT_VAR `dicenumber` to the new effect's number of dice. This field is instead used for maximum hit-dice (HD) by some opcodes.
+        - INT_VAR `dicesize` to the new effect's size of dice. This field is also instead for minimum hit-dice (HD) by some opcodes.
+        - INT_VAR `savingthrow` to the new effect's saving-throw type.
+        - INT_VAR `savebonus` to the new effect's saving-throw bonus/penalty. This variable can take negative values down to -10 while still writing to the corresponding field.
+        - INT_VAR `special` to the new effect's special field. The special field is used by many EE effects.
+        - STR_VAR `resource` to the new effect's resource reference.
     - name: DELETE_EFFECT
       doc: "This is a patch function for creature, item, or spell files that will match an existing effect and then delete it. Numerous variables are available for matching the specified effect.\n
       The first batch of variables are meta-variables which will help determine the scope of the function\":\"\n

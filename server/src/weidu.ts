@@ -101,7 +101,7 @@ export function wcompile(params: any, cancel_token: any) {
 	let weidu_cmd = `${weidu_path} ${weidu_args} ${base_name}`;
 
 	if (command == "extension.bgforge.compile") {
-		if (ext != file_ext) { //vscode loses open file if clicked on console or elsewhere
+		if (ext.toLowerCase() != file_ext) { //vscode loses open file if clicked on console or elsewhere
 			conlog("Not a WeiDU TP2 file! Please focus a WeiDU TP2 file to compile.");
 			connection.window.showInformationMessage("Please focus a WeiDU TP2 file to compile!");
 			return;

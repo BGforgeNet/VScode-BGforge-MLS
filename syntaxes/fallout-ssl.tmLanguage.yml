@@ -95,11 +95,12 @@ repository:
     - match: \b(?i)(clearnamed)\b
     - match: \b(?i)(combat_difficulty)\b
     - match: \b(?i)(combat_is_initialized)\b
+    - match: \b(?i)(create_object)\b
     - match: \b(?i)(create_object_sid)\b
     - match: \b(?i)(createwin)\b
     - match: \b(?i)(critter_add_trait)\b
     - match: \b(?i)(critter_attempt_placement)\b
-    - match: \b(?i)(critter_dmg)\b
+    - match: \b(?i)(critter_damage)\b
     - match: \b(?i)(critter_heal)\b
     - match: \b(?i)(critter_injure)\b
     - match: \b(?i)(critter_inven_obj)\b

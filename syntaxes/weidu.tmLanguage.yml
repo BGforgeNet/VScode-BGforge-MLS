@@ -501,6 +501,7 @@ repository:
     patterns:
     - match: \b(BEGIN|END|THEN|IN)\b
     - match: \b(AFTER|BEFORE|LAST|FIRST|AT)\b
+    - match: \b(INT_VAR|STR_VAR|RET|RET_ARRAY)\b
 
   strings:
     patterns:
@@ -622,25 +623,18 @@ repository:
 
   function-invocation:
     name: meta.function.invocation.weidu
-    begin: \b(LAF|LAUNCH_ACTION_FUNCTION|LPF|LAUNCH_PATCH_FUNCTION)\s+(~)?(\w+)(~)?
-    end: \b(END)\b
+    begin: \b(LAF|LAUNCH_ACTION_FUNCTION|LPF|LAUNCH_PATCH_FUNCTION)\b
+    end: (~)?(\w+)(~)?
     beginCaptures:
       '1':
-        name: keyword.control.weidu
-      '2':
-        name: keyword.control.weidu
-      '3':
-        name: entity.name.function
-      '4':
         name: keyword.control.weidu
     endCaptures:
       '1':
         name: keyword.control.weidu
-    patterns:
-    - include: '#comments'
-    - match: \b(STR_VAR|INT_VAR|RET|RET_VAL)\b
-      name: keyword.control.weidu
-    - include: '#vars-declaration'
+      '2':
+        name: entity.name.function
+      '3':
+        name: keyword.control.weidu
 
   function-declaration:
     name: meta.function.declaration.weidu
@@ -839,14 +833,6 @@ repository:
     - match: \b(SAVE_DIRECTORY)\b
     - match: \b(MPSAVE_DIRECTORY)\b
     - match: \b(EE_LANGUAGE)\b
-
-    - match: \b(BEGIN)\b
-    - match: \b(END)\b
-
-    - match: \b(INT_VAR)\b
-    - match: \b(STR_VAR)\b
-    - match: \b(RET)\b
-    - match: \b(RET_ARRAY)\b
 
   inlined-d:
     name: meta.weidu.inlined.d

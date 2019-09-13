@@ -2,7 +2,7 @@
 	"name": "bgforge-mls",
 	"displayName": "BGforge MLS",
 	"description": "BGforge multilanguage server",
-	"version": "1.0.8",
+	"version": "1.0.9",
 	"author": "BGforge",
 	"repository": {
 		"type": "git",
@@ -20,6 +20,7 @@
 		"Baldur's Gate",
 		"WeiDU"
 	],
+	"icon": "resources/bgforge.png",
 	"engines": {
 		"vscode": "^1.26.0"
 	},
@@ -206,5 +207,5 @@
     "categories": [
 		"Programming Languages"
 	],
-	"homepage": "https://forum.bgforge.net/viewforum.php?f=35"
+	"homepage": "https://forums.bgforge.net/viewforum.php?f=35"
 }

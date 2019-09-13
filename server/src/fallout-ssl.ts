@@ -286,7 +286,7 @@ export function sslcompile(params: any, cancel_token: any) {
 	var ext = path.parse(filepath).ext;
 
 	if (command == "extension.bgforge.compile") {
-		if (ext != ssl_ext) { //vscode loses open file if clicked on console or elsewhere
+		if (ext.toLowerCase() != ssl_ext) { //vscode loses open file if clicked on console or elsewhere
 			conlog("Not a Fallout SSL file! Please focus a Fallout SSL file to compile.");
 			connection.window.showInformationMessage("Please focus a Fallout SSL file to compile!");
 			return;
