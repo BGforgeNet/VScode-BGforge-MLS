@@ -1471,6 +1471,10 @@
           "name": "keyword.control.patch.weidu"
         },
         {
+          "match": "\\b(INNER_PATCH)\\b",
+          "name": "keyword.control.patch.weidu"
+        },
+        {
           "match": "\\b(INNER_PATCH_SAVE)\\b",
           "name": "keyword.control.patch.weidu"
         },
@@ -2097,21 +2101,23 @@
     "function-invocation": {
       "name": "meta.function.invocation.weidu",
       "begin": "\\b(LAF|LAUNCH_ACTION_FUNCTION|LPF|LAUNCH_PATCH_FUNCTION)\\b",
-      "end": "(~)?(\\w+)(~)?",
+      "end": "((\\w+)|(\\S+))",
       "beginCaptures": {
         "1": {
           "name": "keyword.control.weidu"
         }
       },
       "endCaptures": {
-        "1": {
-          "name": "keyword.control.weidu"
-        },
         "2": {
           "name": "entity.name.function"
         },
         "3": {
-          "name": "keyword.control.weidu"
+          "name": "name.function.weidu",
+          "patterns": [
+            {
+              "include": "#strings"
+            }
+          ]
         }
       }
     },
