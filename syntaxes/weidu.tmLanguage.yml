@@ -419,6 +419,7 @@ repository:
     - match: \b(PATCH_TRY)\b
     - match: \b(PATCH_SILENT)\b
     - match: \b(PATCH_VERBOSE)\b
+    - match: \b(INNER_PATCH)\b
     - match: \b(INNER_PATCH_SAVE)\b
     - match: \b(INNER_PATCH_FILE)\b
     - match: \b(INNER_ACTION)\b
