@@ -30,6 +30,7 @@ patterns:
 - include: '#numbers'
 - include: '#infinity-constants'
 - include: '#weidu-tp2-value-operators'
+- include: '#vars-declaration'
 
 repository:
   comments:
