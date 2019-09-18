@@ -665,7 +665,7 @@ repository:
   vars-declaration:
     name: variable.complex.weidu
     patterns:
-    - match: \b([\w]+)\s*(=)\s*(EVAL\s+)?([\S]+)
+    - match: \b([\w]+)\s*(=)\s*(EVAL\s+)?
       captures:
         '1':
           name: variable.parameter.weidu
@@ -673,11 +673,6 @@ repository:
           name: keyword.control.weidu
         '3':
           name: support.function.tp2.weidu
-        '4':
-          patterns:
-          - include: '#strings'
-          - include: '#numbers'
-          - include: '#weidu-vars'
 
   infinity-constants:
     name: constant.language.infinity.weidu
