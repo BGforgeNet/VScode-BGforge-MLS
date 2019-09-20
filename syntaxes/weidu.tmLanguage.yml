@@ -660,6 +660,7 @@ repository:
     - match: \b(STR_VAR|INT_VAR|RET|RET_VAL)\b
       name: keyword.control.weidu
     - include: '#vars-declaration'
+    - include: '#comments'
 
 
   vars-declaration:
