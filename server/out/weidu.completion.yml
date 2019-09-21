@@ -1523,6 +1523,47 @@ tp2-patch:
       - INT_VAR `savebonus` to the new saving-throw bonus/penalty. This variable can take negative values down to -10 while still writing to the corresponding field. (default -11)\n
       - INT_VAR `special` to the new special parameter.\n
       - STR_VAR `resource` to the new resource reference."
+    - name: ALTER_ITEM_HEADER
+      doc: |
+        Patch ability headers on items. This is a PATCH function. All integer variables except `match_icon` and `header` default to -1 and negative values result in no change to the corresponding field. The integer variables `match_icon` and `header` default to 0. In the case of flags, a value of 1 will set the flag and a value of 0 will unset it. The string variable `icon` defaults to the string \"same\", which results in no change to the corresponding field.
+
+        `header_type` is used to limit the scope of matching. The default value of -1 will match all types of headers while values of 0-4 will match headers with those values. If `match_icon` is 1, the icon resource reference will be match with the `icon` variable as an additional qualifier. This is useful for items which have multiple magic abilities. `header` can also be used to limit patching to the Nth header, counting from 1 as the first header. The default is 0, which will match all headers.
+
+        - INT_VAR `header_type` to the type of header to be matched. If this variable is -1, all headers will be a match. (default -1)
+        - INT_VAR `match_icon` to whether to match the ability icon (0 for no, 1 for yes). (default 0)
+        - INT_VAR `header` to the number of the ability header (starting from 1) that should be altered. A value of 0 matches all header. (default 0)
+        - INT_VAR `new_header_type` to the value the matched header should be changed into.
+        - INT_VAR `identify` to the new identification requirement.
+        - INT_VAR `location` to the new new ability location.
+        - INT_VAR `target` to the new target.
+        - INT_VAR `range` to the new range.
+        - INT_VAR `launcher` to the new required launcher.
+        - INT_VAR `speed` to the new speed factor.
+        - INT_VAR `thac0_bonus` to the new THAC0 bonus.
+        - INT_VAR `dicesize` to the new dice size.
+        - INT_VAR `primary_type` to the new primary type (school).
+        - INT_VAR `dicenumber` to the new number of dice.
+        - INT_VAR `secondary_type` to the new secondary type.
+        - INT_VAR `damage_bonus` to the new damage bonus.
+        - INT_VAR `damage_type` to the new damage type.
+        - INT_VAR `charges` to the new number of charges.
+        - INT_VAR `drained` to the new charge-depletion behaviour.
+        - INT_VAR `projectile` to the new projectile.
+        - INT_VAR `animation_overhand` to the new overhand animation percentage.
+        - INT_VAR `animation_backhand` to the new backhand animation percentage.
+        - INT_VAR `animation_thrust` to the new thrust animation percentage.
+        - INT_VAR `arrow` to the new arrow qualifier.
+        - INT_VAR `bolt` to the new bolt qualifier.
+        - INT_VAR `bullet` to the new bullet qualifier.
+        - INT_VAR `flag_strength` to the new value of the flag known as `add strength bonus` (bit 0).
+        - INT_VAR `flag_break` to the new value of the flag known as `breakable` (bit 1).
+        - INT_VAR `flag_hostile` to the new value of the flag known as `hostile` (bit 10).
+        - INT_VAR `flag_recharge` to the new value of the flag known as `recharges` (bit 11).
+        - INT_VAR `flag_bypass` to the new value of the flag known as `bypass armor` (bit 16). This flag is not available in all games.
+        - INT_VAR `flag_keenedge` to the new value of the flag known as `keen edge` (bit 17). This flag is not available in all games.
+        - INT_VAR `flag_backstab` to the new value of the flag known as `toggle backstab` (bit 25). This flag is not available in all games.
+        - INT_VAR `flag_noinvisible` to the new value of the flag known as `cannot target invisible` (bit 26). This flag is not available in all games.
+        - STR_VAR `icon` to the resource reference to be used for matching if `match_icon` is 1, or the new ability icon if `match_icon` is 0.
     - name: ALTER_ITEM_EFFECT
       doc: "Patch global (equipping) effects and/or effects on extended headers. This is a PATCH function. All integer variables except `check_globals`, `check_headers`, `header` and `savebonus` default to -1 and negative values result in no change to the corresponding field. The integer variables `check_globals`, `check_headers` and `header` default to 0. The integer variable `savebonus` defaults to -11 and values lower than -10 result in no change to the corresponding field. The string variable `resource` defaults to the string \"same\", which results in no change to the corresponding field.\n
       Note that both `check_globals` and `check_headers` are 0 by default, so you need to change one or both of these to 1 to perform any patching at all. If you patch headers, you can further target by using `type` to target melee, ranged, or magical headers. `match_opcode` can be left at -1 to match all effects on your targeted range or targeted to a specific opcode. If the opcode itself needs to be changed, you can use `match_opcode` to target the existing effect and `new_opcode` as the new opcode to use. `duration_high` is an alternative to `duration`, mainly for changing the overall duration of an item's effects. The idea is to allow you to mass patch effects to new durations while leaving the one-time only cosmetics and visuals--which are usual instant or only run for a few seconds--unchanged.\n
