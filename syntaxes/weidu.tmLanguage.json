@@ -2155,6 +2155,10 @@
         {
           "include": "#vars-declaration",
           "name": "meta.function.declaration.weidu"
+        },
+        {
+          "include": "#comments",
+          "name": "meta.function.declaration.weidu"
         }
       ]
     },
