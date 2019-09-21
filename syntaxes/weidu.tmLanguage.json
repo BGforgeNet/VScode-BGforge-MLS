@@ -86,6 +86,12 @@
     },
     {
       "include": "#vars-declaration"
+    },
+    {
+      "include": "#numbers"
+    },
+    {
+      "include": "#weidu-vars"
     }
   ],
   "repository": {
@@ -2158,6 +2164,14 @@
         },
         {
           "include": "#comments",
+          "name": "meta.function.declaration.weidu"
+        },
+        {
+          "include": "#numbers",
+          "name": "meta.function.declaration.weidu"
+        },
+        {
+          "include": "#strings",
           "name": "meta.function.declaration.weidu"
         }
       ]
