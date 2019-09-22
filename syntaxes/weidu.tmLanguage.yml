@@ -31,6 +31,8 @@ patterns:
 - include: '#infinity-constants'
 - include: '#weidu-tp2-value-operators'
 - include: '#vars-declaration'
+- include: '#numbers'
+- include: '#weidu-vars'
 
 repository:
   comments:
@@ -661,6 +663,8 @@ repository:
       name: keyword.control.weidu
     - include: '#vars-declaration'
     - include: '#comments'
+    - include: '#numbers'
+    - include: '#strings'
 
 
   vars-declaration:
