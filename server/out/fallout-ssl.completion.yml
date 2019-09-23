@@ -44,7 +44,7 @@ engine-procedures:
   - name: use_p_proc
     doc: |
       Called when:
-      - A critter uses an object from inventory which have "Use" action flag set or it’s an active flare or dynamite.
+      - A critter uses an object from inventory which have "Use" action flag set or it's an active flare or dynamite.
       - Player uses an object from main interface.
   - name: use_skill_on_p_proc
     doc: Called when a skill is used on the object.
@@ -52,7 +52,7 @@ engine-procedures:
     doc: |
       Called when:
       - A critter uses an object on another critter. (Or themselves).
-      - A critter uses an object from inventory screen AND this object does not have "Use" action flag set and it’s not active flare or explosive.
+      - A critter uses an object from inventory screen AND this object does not have "Use" action flag set and it's not active flare or explosive.
       - Player or AI uses any drug.
 
 base-functions:
