@@ -19,7 +19,9 @@ highlight_hooks = []
 # functions
 with open(functions_yaml) as yf:
   categories = yaml.load(yf)
+  categories = sorted(categories, key=lambda k: k['name']) # less diff noise
   for category in categories:
+    print(category['name'])
     cdoc = ""
     # common catefory documentation
     if 'doc' in category:
@@ -28,7 +30,7 @@ with open(functions_yaml) as yf:
     # individual functions
     if 'items' in category:
       functions = category['items']
-      functions = sorted(functions, key=lambda k: k['name'])
+      functions = sorted(functions, key=lambda k: k['name']) # less diff noise
 
       for f in functions:
         name = f['name']
