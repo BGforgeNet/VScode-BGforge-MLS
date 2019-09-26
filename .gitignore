@@ -8,3 +8,4 @@ client/server
 .vscode-test
 *.vsix
 *.log
+tmp
