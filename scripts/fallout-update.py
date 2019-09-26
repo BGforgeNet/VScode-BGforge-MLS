@@ -3,20 +3,108 @@
 
 import sys, os
 import oyaml as yaml
+import argparse
+import re
+from collections import OrderedDict
 
-functions_yaml = sys.argv[1]
+#parse args
+parser = argparse.ArgumentParser(description='Update Fallout syntax highlighting and completion from headers', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+parser.add_argument('-s', dest='src_dir', help='header directory', required=True)
+parser.add_argument('--completion-file', dest='completion_yaml', help='completion YAML', required=True)
+parser.add_argument('--highlight-file', dest='highlight_yaml', help='syntax highlight YAML', required=True)
+args=parser.parse_args()
+
+#init vars
+functions_yaml_name = "functions.yml"
+hooks_yaml_name = "hooks.yml"
 sfall_functions_stanza = "sfall-functions"
 sfall_hooks_stanza = "hooks"
-hooks_yaml = sys.argv[2]
-completion_yaml = sys.argv[3]
-highlight_yaml = sys.argv[4]
-
+completion_yaml = args.completion_yaml
+highlight_yaml = args.highlight_yaml
+src_dir = args.src_dir
 completion_functions = []
 completion_hooks = []
 highlight_functions = []
 highlight_hooks = []
+header_defines = {}
 
-# functions
+def find_file(path, name):
+  for root, dirs, files in os.walk(path):
+    if name in files:
+      return os.path.join(root, name)
+
+def find_files(path, ext):
+  flist = []
+  for root, dirs, files in os.walk(path):
+    for f in files:
+      if f.lower().endswith(".h"):
+        flist.append(os.path.join(root, f))
+  return flist
+
+
+regex_constant = r"^#define\s+(\w+)\s+\(?([0-9]+)\)?"
+regex_define_with_vars = r"^#define\s+(\w+)\([\w\s,]+\)" # not perferct, but works
+regex_procedure = r"^procedure\s+(\w+)(\((variable\s+[\w+])+(\s*,\s*variable\s+[\w+])?\))?\s+begin"
+regex_variable = r"^#define\s+((GVAR|MVAR|LVAR)_\w+)\s+\(?([0-9]+)\)?"
+def defines_from_file(path):
+  defines = {}
+  with open(path, "r") as fh:
+    for line in fh: # some monkey code
+      variable = re.match(regex_variable, line)
+      if variable:
+        name = variable.group(1)
+        defines[name] = "variable"
+        continue
+      constant = re.match(regex_constant, line)
+      if constant:
+        name = constant.group(1)
+        defines[name] = "constant"
+        continue
+      define_with_vars = re.match(regex_define_with_vars, line)
+      if define_with_vars:
+        name = define_with_vars.group(1)
+        defines[name] = "define_with_vars"
+        continue
+      procedure = re.match(regex_procedure, line)
+      if procedure:
+        name = procedure.group(1)
+        defines[name] = "procedure"
+        continue
+  return defines
+
+# get various defines from header files
+define_files = find_files(src_dir, "h")
+for df in define_files:
+  new_defines = defines_from_file(df)
+  header_defines = {**header_defines, **new_defines}
+
+# reduce diff noise
+header_defines = OrderedDict(sorted(header_defines.items()))
+
+# prepare tmlanguage data structures
+header_variables = []
+header_constants = []
+header_procedures = []
+header_defines_with_vars = []
+for h in header_defines:
+  if header_defines[h] == "variable":
+    header_variables.append({ 'match': "\\b({})\\b".format(h) })
+    continue
+  if header_defines[h] == "constant":
+    header_constants.append({ 'match': "\\b({})\\b".format(h) })
+    continue
+  if header_defines[h] == "define_with_vars":
+    header_defines_with_vars.append({ 'match': "\\b({})\\b".format(h) })
+    continue
+  if header_defines[h] == "procedure":
+    header_procedures.append({ 'match': "\\b({})\\b".format(h) })
+    continue
+  print("Warning: couldn't determine type for {}".format(h))
+
+functions_yaml = find_file(src_dir, functions_yaml_name)
+hooks_yaml = find_file(src_dir, hooks_yaml_name)
+
+# load functions
 with open(functions_yaml) as yf:
   categories = yaml.load(yf)
   categories = sorted(categories, key=lambda k: k['name']) # less diff noise
@@ -54,7 +142,7 @@ with open(functions_yaml) as yf:
         else:
           completion_functions.append({'name': name, 'detail': detail, 'doc': doc}) # proper record, all fields
 
-# hooks
+# load hooks
 with open(hooks_yaml) as yf:
   hooks = yaml.load(yf)
   hooks = sorted(hooks, key=lambda k: k['name']) # alphabetical sort
@@ -75,10 +163,14 @@ with open(completion_yaml, 'w') as yf:
   yaml.dump(data, yf, default_flow_style=False, width=4096)
 
 
-# dump to syntax highlight
+# dump function and hooks to syntax highlight
 with open(highlight_yaml) as yf:
   data = yaml.load(yf)
   data['repository']['sfall-functions']['patterns'] = highlight_functions
   data['repository']['hooks']['patterns'] = highlight_hooks
+  data['repository']['header-constants']['patterns'] = header_constants
+  data['repository']['header-variables']['patterns'] = header_variables
+  data['repository']['header-procedures']['patterns'] = header_procedures
+  data['repository']['header-defines-with-vars']['patterns'] = header_defines_with_vars
 with open(highlight_yaml, 'w') as yf:
   yaml.dump(data, yf, default_flow_style=False, width=4096)
