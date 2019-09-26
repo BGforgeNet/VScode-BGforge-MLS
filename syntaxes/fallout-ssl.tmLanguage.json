@@ -47,6 +47,9 @@
     },
     {
       "include": "#header-defines-with-vars"
+    },
+    {
+      "include": "#local-vars"
     }
   ],
   "repository": {
@@ -60,6 +63,14 @@
           "begin": "/\\*",
           "end": "\\*/",
           "name": "comment.block.ssl"
+        }
+      ]
+    },
+    "local-vars": {
+      "patterns": [
+        {
+          "match": "\\b(LVAR_\\w+)\\b",
+          "name": "variable.language.local.ssl"
         }
       ]
     },

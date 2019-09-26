@@ -17,6 +17,7 @@ patterns:
 - include: '#header-variables'
 - include: '#header-procedures'
 - include: '#header-defines-with-vars'
+- include: '#local-vars'
 repository:
   comments:
     patterns:
@@ -25,6 +26,10 @@ repository:
     - begin: /\*
       end: \*/
       name: comment.block.ssl
+  local-vars:
+    patterns:
+    - match: \b(LVAR_\w+)\b
+      name: variable.language.local.ssl
   constants:
     patterns:
     - match: \b(?i)(true|false)\b
