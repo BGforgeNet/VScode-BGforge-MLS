@@ -18,6 +18,7 @@ patterns:
 - include: '#header-procedures'
 - include: '#header-defines-with-vars'
 - include: '#local-vars'
+- include: '#defines'
 repository:
   comments:
     patterns:
@@ -388,20 +389,26 @@ repository:
       match: \b(?i)(call)\b[[:blank:]]+(\w+)(\(.+\))??(;)
     - include: '#fallout-base-functions'
     - include: '#sfall-functions'
+  defines:
+    patterns:
+    - match: (?i)(\#ifndef)[[:blank:]]+(\w+)
+      captures:
+        '1':
+          name: keyword.control.ssl
+        '2':
+          name: entity.other.attribute-name.ssl
+    - match: (?i)(\#define)\b[[:blank:]]+(\w+)
+      captures:
+        '1':
+          name: keyword.control.ssl
+        '2':
+          name: entity.other.attribute-name.ssl
+    - match: (?i)(\#endif)\b
+      name: keyword.control.ssl
   keywords:
     patterns:
     - match: (\#include)
       name: keyword.control.import.ssl
-    - captures:
-        '1':
-          name: keyword.control.ssl
-        '2':
-          name: variable.language.ssl
-        '4':
-          patterns:
-          - include: $self
-      match: (#define)[[:blank:]]+(\w+)(\(\w+\))??[[:blank:]]+(.+)
-      name: meta.define.ssl
     - include: '#operators'
     - include: '#keywords-core'
   keywords-core:
@@ -420,7 +427,6 @@ repository:
     - match: \b(?i)(detach)\b
     - match: \b(?i)(do)\b
     - match: \b(?i)(else)\b
-    - match: \b(?i)(end)\b
     - match: \b(?i)(end)\b
     - match: \b(?i)(endcritical)\b
     - match: \b(?i)(exec)\b
@@ -448,7 +454,7 @@ repository:
     patterns:
     - match: (\b(?i)(and|or|not|band|bwor|bnot|bwxor|bwand|floor)\b)
       name: keyword.control.ssl
-    - match: (=|:|>|<|\+\+|\-|\+|;|!)
+    - match: (=|:|>|<|\+\+|\-|\+|;|!|%)
       name: keyword.control.ssl
   sfall-functions:
     name: support.function.sfall.ssl

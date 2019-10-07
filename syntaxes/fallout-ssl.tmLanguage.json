@@ -50,6 +50,9 @@
     },
     {
       "include": "#local-vars"
+    },
+    {
+      "include": "#defines"
     }
   ],
   "repository": {
@@ -1397,30 +1400,41 @@
         }
       ]
     },
-    "keywords": {
+    "defines": {
       "patterns": [
         {
-          "match": "(\\#include)",
-          "name": "keyword.control.import.ssl"
-        },
-        {
+          "match": "(?i)(\\#ifndef)[[:blank:]]+(\\w+)",
           "captures": {
             "1": {
               "name": "keyword.control.ssl"
             },
             "2": {
-              "name": "variable.language.ssl"
-            },
-            "4": {
-              "patterns": [
-                {
-                  "include": "$self"
-                }
-              ]
+              "name": "entity.other.attribute-name.ssl"
             }
-          },
-          "match": "(#define)[[:blank:]]+(\\w+)(\\(\\w+\\))??[[:blank:]]+(.+)",
-          "name": "meta.define.ssl"
+          }
+        },
+        {
+          "match": "(?i)(\\#define)\\b[[:blank:]]+(\\w+)",
+          "captures": {
+            "1": {
+              "name": "keyword.control.ssl"
+            },
+            "2": {
+              "name": "entity.other.attribute-name.ssl"
+            }
+          }
+        },
+        {
+          "match": "(?i)(\\#endif)\\b",
+          "name": "keyword.control.ssl"
+        }
+      ]
+    },
+    "keywords": {
+      "patterns": [
+        {
+          "match": "(\\#include)",
+          "name": "keyword.control.import.ssl"
         },
         {
           "include": "#operators"
@@ -1483,10 +1497,6 @@
         },
         {
           "match": "\\b(?i)(else)\\b",
-          "name": "keyword.control.core.ssl"
-        },
-        {
-          "match": "\\b(?i)(end)\\b",
           "name": "keyword.control.core.ssl"
         },
         {
@@ -1590,7 +1600,7 @@
           "name": "keyword.control.ssl"
         },
         {
-          "match": "(=|:|>|<|\\+\\+|\\-|\\+|;|!)",
+          "match": "(=|:|>|<|\\+\\+|\\-|\\+|;|!|%)",
           "name": "keyword.control.ssl"
         }
       ]
