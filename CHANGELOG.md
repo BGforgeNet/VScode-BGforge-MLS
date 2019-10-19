@@ -1,4 +1,11 @@
-# Change Log
+# Changelog
+
+## 1.2.0
+- WeiDU:
+  - Added `.tra` syntax highlighting.
+- Fallout:
+  - Added `.msg` syntax highlighting.
+  - Added missing `ifndef`, `endif`, `%`.
 
 ## 1.1.0
 - WeiDU:
