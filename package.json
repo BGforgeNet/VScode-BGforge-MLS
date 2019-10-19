@@ -102,8 +102,18 @@
 					".baf"
 				],
 				"configuration": "./language-configurations/weidu.baf.language-configuration.json"
+			},
+			{
+				"id": "weidu-tra",
+				"aliases": [
+					"Infinity Engine translation",
+					"WeiDU TRA"
+				],
+				"extensions": [
+					".tra"
+				],
+				"configuration": "./language-configurations/weidu-tra.language-configuration.json"
 			}
-
 		],
 		"commands": [
 			{
@@ -151,6 +161,11 @@
 				"language": "weidu-baf",
 				"scopeName": "source.baf.weidu",
 				"path": "./syntaxes/weidu.baf.tmLanguage.json"
+			},
+			{
+				"language": "weidu-tra",
+				"scopeName": "source.weidu-tra",
+				"path": "./syntaxes/weidu-tra.tmLanguage.json"
 			}
 		],
 		"snippets": [{

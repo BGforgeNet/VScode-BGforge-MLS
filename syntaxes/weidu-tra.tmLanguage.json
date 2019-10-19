@@ -1,0 +1,71 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "WeiDU translation",
+	"scopeName": "source.weidu-tra",
+	"patterns": [
+		{
+			"include": "#line_numbers"
+		},
+		{
+			"include": "#strings"
+		},
+		{
+			"include": "#sounds"
+		},
+		{
+			"include": "#comments"
+		}
+	],
+	"repository": {
+		"line_numbers": {
+			"patterns": [
+				{
+					"match": "(@)(\\d+)\\s*(=)",
+					"captures": {
+						"1": { "name": "keyword.control.weidu-tra" },
+						"2": { "name": "constant.language.weidu-tra" },
+						"3": { "name": "keyword.control.weidu-tra" }
+					}
+				}
+			]
+		},
+		"strings": {
+      "patterns": [
+        {
+					"name": "string.quoted.weidu-tra",
+					"begin": "(~)",
+					"beginCaptures": { "1": { "name": "keyword.control.weidu-tra" } },
+					"end": "(~)",
+					"endCaptures": { "1": { "name": "keyword.control.weidu-tra" } }
+				},
+				{
+					"name": "string.quoted.weidu-tra",
+					"begin": "(\")",
+					"beginCaptures": { "1": { "name": "keyword.control.weidu-tra" } },
+					"end": "(\")",
+					"endCaptures": { "1": { "name": "keyword.control.weidu-tra" } }
+				}
+			]
+		},
+		"sounds": {
+			"patterns": [
+				{
+					"name": "entity.name.function.sound.weidu-tra",
+					"match": "(\\[)(\\w+)(\\])",
+					"captures": {
+						"1": { "name": "keyword.control.weidu-tra" },
+						"3": { "name": "keyword.control.weidu-tra" }
+					}
+				}
+			]
+		},
+		"comments": {
+			"patterns": [
+				{
+					"name": "comment.block.weidu-tra",
+					"match": "(.)"
+				}
+			]
+		}
+	}
+}
