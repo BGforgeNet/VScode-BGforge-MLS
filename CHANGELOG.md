@@ -9,10 +9,10 @@
 
 ## 1.1.0
 - WeiDU:
-  - Fixed line breaks in CLONE_EFFECT.
-  - Fixed highlighting in LAF/LPF invocation when strings contain keywords or names contain variables.
+  - Fixed line breaks in `CLONE_EFFECT`.
+  - Fixed highlighting in `LAF`/`LPF` invocation when strings contain keywords or names contain variables.
   - Fixed variable highlighing in function definition.
-  - Added missing ALTER_ITEM_HEADER, INNER_PATCH.
+  - Added missing `ALTER_ITEM_HEADER`, `INNER_PATCH`.
 - Fallout SSL:
   - Added highlighting for defines (constants, variables, defines with variables, procedures) from [sfall](https://github.com/phobos2077/sfall/) and [RPU](https://github.com/BGforgeNet/Fallout2_Restoration_Project) headers.
   - Added support for automatic update of defines sfall/RPU headers.
@@ -43,7 +43,7 @@
 
 ## 1.0.4
 - Fixed comment color in weidu function invocation.
-- Fixed EVAL color in weidu function invocation.
+- Fixed `EVAL` color in weidu function invocation.
 
 ## 1.0.3
 - Fixed console error spam for languages with missing signatures.
@@ -54,7 +54,7 @@
 - Added THEN as a keyword, and ADD_STORE_ITEM flags.
 
 ## 1.0.1
-- Fixed #NUM notaion, variable highlight in d and baf, and some missing highlight in function definitions.
+- Fixed `#NUM` notaion, variable highlight in `.d` and `.baf`, and some missing highlight in function definitions.
 
 ## 1.0.0
 - Initial release.
