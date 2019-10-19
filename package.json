@@ -57,6 +57,17 @@
 				"configuration": "./language-configurations/fallout-ssl-codeblock.language-configuration.json"
 			},
 			{
+				"id": "fallout-msg",
+				"aliases": [
+					"Fallout message",
+					"Fallout MSG"
+				],
+				"extensions": [
+					".msg"
+				],
+				"configuration": "./language-configurations/fallout-msg.language-configuration.json"
+			},
+			{
 				"id": "weidu",
 				"aliases": [
 					"Infinity Engine",
@@ -110,6 +121,11 @@
 				"language": "fallout-ssl-codeblock",
 				"scopeName": "source.fallout-ssl-codeblock",
 				"path": "./syntaxes/fallout-ssl-codeblock.tmLanguage.json"
+			},
+			{
+				"language": "fallout-msg",
+				"scopeName": "source.fallout-msg",
+				"path": "./syntaxes/fallout-msg.tmLanguage.json"
 			},
 			{
         "scopeName": "markdown.fallout-ssl-codeblock",
