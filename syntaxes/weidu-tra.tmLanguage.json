@@ -4,6 +4,9 @@
 	"scopeName": "source.weidu-tra",
 	"patterns": [
 		{
+			"include": "#comments"
+		},
+		{
 			"include": "#line_numbers"
 		},
 		{
@@ -11,9 +14,6 @@
 		},
 		{
 			"include": "#sounds"
-		},
-		{
-			"include": "#comments"
 		}
 	],
 	"repository": {
@@ -61,14 +61,19 @@
 				}
 			]
 		},
-		"comments": {
-			"patterns": [
-				{
-					"name": "comment.block.weidu-tra",
-					"match": "(.)"
-				}
-			]
-		},
+    "comments": {
+      "patterns": [
+        {
+          "match": "(//).*",
+          "name": "comment.line.weidu-tra"
+        },
+        {
+          "begin": "/\\*",
+          "end": "\\*/",
+          "name": "comment.block.weidu-tra"
+        }
+      ]
+    },
 		"tokens": {
 			"patterns": [
 				{
