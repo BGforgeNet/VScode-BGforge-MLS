@@ -113,6 +113,17 @@
 					".tra"
 				],
 				"configuration": "./language-configurations/weidu-tra.language-configuration.json"
+			},
+			{
+				"id": "infinity-2da",
+				"aliases": [
+					"Infinity Engine 2-Dimensional Array",
+					"Infinity 2DA"
+				],
+				"extensions": [
+					".2da"
+				],
+				"configuration": "./language-configurations/infinity-2da.language-configuration.json"
 			}
 		],
 		"commands": [
@@ -166,6 +177,11 @@
 				"language": "weidu-tra",
 				"scopeName": "source.weidu-tra",
 				"path": "./syntaxes/weidu-tra.tmLanguage.json"
+			},
+			{
+				"language": "infinity-2da",
+				"scopeName": "source.infinity-2da",
+				"path": "./syntaxes/infinity-2da.tmLanguage.json"
 			}
 		],
 		"snippets": [{
