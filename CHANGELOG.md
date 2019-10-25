@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.3.0
+- IE:
+  - Added `.2da` syntax highlighting.
+
 ## 1.2.0
 - WeiDU:
   - Added `.tra` syntax highlighting.
