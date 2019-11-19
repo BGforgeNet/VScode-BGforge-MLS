@@ -9,7 +9,7 @@
  | [__Roadmap__](https://forums.bgforge.net/viewtopic.php?f=35&t=174&p=506)
  | [__Changelog__](CHANGELOG.md)
 
-BGforge MLS is a VScode extension adding support for Star-Trek Scripting Language used in Fallout 1 and 2 games, and several file formats (.d, .baf, .tp2) used by WeiDU, an Infinity Engine games modding utility.
+BGforge MLS is a VScode extension adding support for Star-Trek Scripting Language used in Fallout 1 and 2 games, and several file formats (`.d`, `.baf`, `.tp2`, `.tra`, `2da`) used by WeiDU/Infinity Engine.
 
 ### Features
 * Syntax highlighting
@@ -30,7 +30,7 @@ This extension contributes the following settings:
 * `bgforge.weidu.path`: Full path to WeiDU binary
 
 ### Hotkeys
-* `CTRL+R`: compile (Fallout SSL) or parse (WeiDU .tp2) file, reporting errors if any.
+* `CTRL+R`: compile (Fallout SSL) or parse (WeiDU `.tp2`) file, reporting errors if any.
 
 ### Installation
 Search for BGforge in VScode marketplace, like any other extension. Alternatively, download the package from [Github releases](https://github.com/BGforgeNet/vscode-bgforge-mls/releases) tab and install it manually.

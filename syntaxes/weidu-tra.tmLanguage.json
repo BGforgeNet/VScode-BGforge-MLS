@@ -1,0 +1,90 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "WeiDU translation",
+	"scopeName": "source.weidu-tra",
+	"patterns": [
+		{
+			"include": "#comments"
+		},
+		{
+			"include": "#line_numbers"
+		},
+		{
+			"include": "#strings"
+		},
+		{
+			"include": "#sounds"
+		}
+	],
+	"repository": {
+		"line_numbers": {
+			"patterns": [
+				{
+					"match": "(@)(\\d+)\\s*(=)",
+					"captures": {
+						"1": { "name": "keyword.control.weidu-tra" },
+						"2": { "name": "constant.language.weidu-tra" },
+						"3": { "name": "keyword.control.weidu-tra" }
+					}
+				}
+			]
+		},
+		"strings": {
+      "patterns": [
+        {
+					"name": "string.quoted.weidu-tra",
+					"begin": "(~)",
+					"beginCaptures": { "1": { "name": "keyword.control.weidu-tra" } },
+					"end": "(~)",
+					"endCaptures": { "1": { "name": "keyword.control.weidu-tra" } },
+					"patterns": [ { "include": "#tokens" } ]
+				},
+				{
+					"name": "string.quoted.weidu-tra",
+					"begin": "(\")",
+					"beginCaptures": { "1": { "name": "keyword.control.weidu-tra" } },
+					"end": "(\")",
+					"endCaptures": { "1": { "name": "keyword.control.weidu-tra" } },
+					"patterns": [ { "include": "#tokens" } ]
+				}
+			]
+		},
+		"sounds": {
+			"patterns": [
+				{
+					"name": "entity.name.function.sound.weidu-tra",
+					"match": "(\\[)(\\w+)(\\])",
+					"captures": {
+						"1": { "name": "keyword.control.weidu-tra" },
+						"3": { "name": "keyword.control.weidu-tra" }
+					}
+				}
+			]
+		},
+    "comments": {
+      "patterns": [
+        {
+          "match": "(//).*",
+          "name": "comment.line.weidu-tra"
+        },
+        {
+          "begin": "/\\*",
+          "end": "\\*/",
+          "name": "comment.block.weidu-tra"
+        }
+      ]
+    },
+		"tokens": {
+			"patterns": [
+				{
+					"match": "(<)(BROTHERSISTER|CHARNAME|DAYANDMONTH|DAYNIGHT|DAYNIGHTALL|GABBER|GAMEDAY|GAMEDAYS|GIRLBOY|HESHE|HIMHER|HISHER|LADYLORD|LEVEL|MALEFEMALE|MANWOMAN|MONTH|MONTHNAME|PLAYER1-6|PRO_BROTHERSISTER|PRO_GIRLBOY|PRO_HESHE|PRO_HIMHER|PRO_HISHER|PRO_LADYLORD|PRO_MALEFEMALE|PRO_MANWOMAN|PRO_RACE|PRO_SIRMAAM|PRO_SONDAUGHTER|RACE|SIRMAAM|SONDAUGHTER|TM|YEAR)(>)",
+					"captures": {
+						"1": { "name": "keyword.control.weidu-tra" },
+						"2": { "name": "variable.parameter.weidu-tra" },
+						"3": { "name": "keyword.control.weidu-tra" }
+					}
+				}
+			]
+		}
+	}
+}

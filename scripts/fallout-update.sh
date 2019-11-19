@@ -4,19 +4,23 @@ set -xeu -o pipefail
 
 # launch from root repo dir
 
-repo="BGforgeNet/sfall"
-branch="better-docs"
-base_url="https://raw.githubusercontent.com/$repo/$branch/artifacts/scripting"
-func_file="functions.yml"
-func_url="$base_url/$func_file"
-hooks_file="hooks.yml"
-hooks_url="$base_url/$hooks_file"
-completion_file="./server/out/fallout-ssl.completion.yml"
-highlight_file="./syntaxes/fallout-ssl.tmLanguage.yml"
+tmp_dir='tmp'
+sfall_repo="BGforgeNet/sfall"
+sfall_branch="better-docs"
+rpu_repo="BGforgeNet/Fallout2_Restoration_Project"
+rpu_branch="master"
+completion_file="server/out/fallout-ssl.completion.yml"
+highlight_file="syntaxes/fallout-ssl.tmLanguage.yml"
 
-rm -f "$hooks_file" "$func_file"
-wget "$func_url"
-wget "$hooks_url"
-./scripts/fallout-update.py "$func_file" "$hooks_file" "$completion_file" "$highlight_file"
-rm -f "$hooks_file" "$func_file"
+rm -rf "$tmp_dir"; mkdir "$tmp_dir"; cd "$tmp_dir"
+# sfall
+ghclone "https://github.com/$sfall_repo/tree/$sfall_branch/artifacts/scripting"
+# RPU
+ghclone "https://github.com/$rpu_repo/tree/$rpu_branch/scripts_src/HEADERS"
+cd ..
+
+./scripts/fallout-update.py -s "$tmp_dir" --completion-file "$completion_file" --highlight-file "$highlight_file"
+
+rm -rf "$tmp_dir"
+
 ./scripts/syntaxes_to_json.sh

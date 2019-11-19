@@ -2,7 +2,7 @@
 	"name": "bgforge-mls",
 	"displayName": "BGforge MLS",
 	"description": "BGforge multilanguage server",
-	"version": "1.0.9",
+	"version": "1.3.0",
 	"author": "BGforge",
 	"repository": {
 		"type": "git",
@@ -57,6 +57,17 @@
 				"configuration": "./language-configurations/fallout-ssl-codeblock.language-configuration.json"
 			},
 			{
+				"id": "fallout-msg",
+				"aliases": [
+					"Fallout message",
+					"Fallout MSG"
+				],
+				"extensions": [
+					".msg"
+				],
+				"configuration": "./language-configurations/fallout-msg.language-configuration.json"
+			},
+			{
 				"id": "weidu",
 				"aliases": [
 					"Infinity Engine",
@@ -91,8 +102,29 @@
 					".baf"
 				],
 				"configuration": "./language-configurations/weidu.baf.language-configuration.json"
+			},
+			{
+				"id": "weidu-tra",
+				"aliases": [
+					"Infinity Engine translation",
+					"WeiDU TRA"
+				],
+				"extensions": [
+					".tra"
+				],
+				"configuration": "./language-configurations/weidu-tra.language-configuration.json"
+			},
+			{
+				"id": "infinity-2da",
+				"aliases": [
+					"Infinity Engine 2-Dimensional Array",
+					"Infinity 2DA"
+				],
+				"extensions": [
+					".2da"
+				],
+				"configuration": "./language-configurations/infinity-2da.language-configuration.json"
 			}
-
 		],
 		"commands": [
 			{
@@ -110,6 +142,11 @@
 				"language": "fallout-ssl-codeblock",
 				"scopeName": "source.fallout-ssl-codeblock",
 				"path": "./syntaxes/fallout-ssl-codeblock.tmLanguage.json"
+			},
+			{
+				"language": "fallout-msg",
+				"scopeName": "source.fallout-msg",
+				"path": "./syntaxes/fallout-msg.tmLanguage.json"
 			},
 			{
         "scopeName": "markdown.fallout-ssl-codeblock",
@@ -135,6 +172,16 @@
 				"language": "weidu-baf",
 				"scopeName": "source.baf.weidu",
 				"path": "./syntaxes/weidu.baf.tmLanguage.json"
+			},
+			{
+				"language": "weidu-tra",
+				"scopeName": "source.weidu-tra",
+				"path": "./syntaxes/weidu-tra.tmLanguage.json"
+			},
+			{
+				"language": "infinity-2da",
+				"scopeName": "source.infinity-2da",
+				"path": "./syntaxes/infinity-2da.tmLanguage.json"
 			}
 		],
 		"snippets": [{
