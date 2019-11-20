@@ -224,6 +224,10 @@
         {
           "include": "#spell-ids",
           "name": "constant.other.baf.weidu"
+        },
+        {
+          "include": "#spell-ids-iwdee",
+          "name": "constant.other.baf.weidu"
         }
       ]
     },
@@ -7603,6 +7607,375 @@
         },
         {
           "match": "\\b(?i)(SHAMAN_FAVORED_OF_THE_SPIRITS)\\b",
+          "name": "constant.other.baf.weidu"
+        }
+      ]
+    },
+    "spell-ids-iwdee": {
+      "name": "constant.other.baf.weidu",
+      "patterns": [
+        {
+          "match": "\\b(?i)(CLERIC_CAUSE_LIGHT_WOUNDS)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CLERIC_SUNSCORCH)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CLERIC_PROTECT_FROM_GOOD)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CLERIC_GOODBERRY)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CLERIC_RESIST_FIRE_AND_COLD)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CLERIC_CURE_MODERATE_WOUNDS)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CLERIC_ALICORN_LANCE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CLERIC_BEAST_CLAW)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CLERIC_CAUSE_MODERATE_WOUNDS)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CLERIC_PRAYER)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CLERIC_CAUSE_DISEASE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CLERIC_EXALTATION)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CLERIC_MOONBLADE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CLERIC_CIRCLE_OF_BONES)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CLERIC_SPIKE_GROWTH)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CLERIC_CLOUDBURST)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CLERIC_MOLD_TOUCH)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CLERIC_STORM_SHELL)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CLERIC_SUMMON_LIZARDMEN)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CLERIC_SUMMON_TROLLS)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CLERIC_CAUSE_MEDIUM_WOUNDS)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CLERIC_FAVOR_OR_ILMATER)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CLERIC_GIANT_INSECT)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CLERIC_PRODUCE_FIRE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CLERIC_STATIC_CHARGE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CLERIC_RECITATION)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CLERIC_BLOOD_RAGE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CLERIC_CLOUD_OF_PESTILENCE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CLERIC_UNFAILING_ENDURANCE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CLERIC_STAR_METAL_CUDGEL)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CLERIC_SMASHING_WAVE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CLERIC_THORN_SPRAY)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CLERIC_WALL_OF_MOONLIGHT)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CLERIC_RIGHTEOUS_WRATH_OF_THE_FAITHFUL)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CLERIC_SPIKE_STONES)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CLERIC_SHIELD_OF_LATHANDER)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CLERIC_UNDEAD_WARD)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CLERIC_ANIMAL_RAGE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CLERIC_MASS_CAUSE_LIGHT_WOUNDS)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CLERIC_SYMBOL_OF_PAIN)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CLERIC_SYMBOL_OF_HOPELESSNESS)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CLERIC_IMPERVIOUS_SANCTITY_OF_MIND)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CLERIC_DESTRUCTION)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CLERIC_GREATER_SHIELD_OF_LATHANDER)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CLERIC_MIST_OF_ELDATH)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CLERIC_STALKER)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CLERIC_HEAVENLY_INFERNO)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CLERIC_WITHER)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIZARD_EXPEDITIOUS_RETREAT)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIZARD_SNILLOCS_SNOWBALL_SWARM)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIZARD_DECASTAVE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIZARD_CATS_GRACE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIZARD_ICELANCE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIZARD_LANCE_OF_DISRUPTION)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIZARD_BELTYNS_BURNING_BLOOD)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIZARD_SHADOW_MONSTERS)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIZARD_EMOTION_COURAGE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIZARD_EMOTION_FEAR)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIZARD_EMOTION_HOPE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIZARD_MORDENKAINENS_FORCE_MISSILES)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIZARD_SHOUT)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIZARD_VITRIOLIC_SPHERE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIZARD_POLYMORPH_BORING_BEETLE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIZARD_POLYMORPH_POLAR_BEAR)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIZARD_POLYMORPH_WINTER_WOLF)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIZARD_SHROUD_OF_FLAME)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIZARD_DEMI_SHADOW_MONSTERS)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIZARD_SUMMON_SHADOW)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIZARD_CONTACT_OTHER_PLANE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIZARD_ANIMATE_DEAD_LICH)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIZARD_CONJURE_WATER_ELEMENTAL)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIZARD_LICH_TOUCH)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIZARD_MONSTER_SUMMONING_4)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIZARD_OTILUKES_FREEZING_SPHERE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIZARD_SHADES)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIZARD_DARTS_OF_BONE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIZARD_SOUL_EATER)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIZARD_TROLLISH_FORTITUDE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIZARD_MONSTER_SUMMONING_5)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIZARD_MALAVONS_RAGE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIZARD_ACID_STORM)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIZARD_SEVEN_EYES)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIZARD_SUFFOCATE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIZARD_MONSTER_SUMMONING_6)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIZARD_MIND_BLANK)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIZARD_GREAT_SHOUT)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIZARD_IRON_BODY)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIZARD_MONSTER_SUMMONING_VI_MALAVON)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIZARD_MONSTER_SUMMONING_7)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIZARD_MALAVONS_CORROSIVE_FOG)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CRUSHING_TRAP)\\b",
           "name": "constant.other.baf.weidu"
         }
       ]
