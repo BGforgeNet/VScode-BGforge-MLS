@@ -953,12 +953,9 @@ repository:
       - match: \b(?i)(CLERIC_ARMOR_OF_FAITH)\b
       - match: \b(?i)(CLERIC_CIRCLE_OF_PROTECTION)\b
       - match: \b(?i)(CLERIC_DOOM)\b
-      - match: \b(?i)(CLERIC_CAUSE_LIGHT_WOUNDS)\b
-      - match: \b(?i)(CLERIC_SUNSCORCH)\b
       - match: \b(?i)(CLERIC_ANIMAL_FRIENDSHIP)\b
       - match: \b(?i)(CLERIC_ENDURE_HEAT_COLD)\b
       - match: \b(?i)(CLERIC_SPIRIT_WARD)\b
-      - match: \b(?i)(CLERIC_PROTECT_FROM_GOOD)\b
       - match: \b(?i)(CLERIC_AID)\b
       - match: \b(?i)(CLERIC_BARKSKIN)\b
       - match: \b(?i)(CLERIC_CHANT)\b
@@ -974,12 +971,6 @@ repository:
       - match: \b(?i)(CLERIC_SPIRITUAL_HAMMER)\b
       - match: \b(?i)(CLERIC_DRAW_UPON_HOLY_MIGHT)\b
       - match: \b(?i)(CLERIC_RESIST_COLD)\b
-      - match: \b(?i)(CLERIC_GOODBERRY)\b
-      - match: \b(?i)(CLERIC_RESIST_FIRE_AND_COLD)\b
-      - match: \b(?i)(CLERIC_CURE_MODERATE_WOUNDS)\b
-      - match: \b(?i)(CLERIC_ALICORN_LANCE)\b
-      - match: \b(?i)(CLERIC_BEAST_CLAW)\b
-      - match: \b(?i)(CLERIC_CAUSE_MODERATE_WOUNDS)\b
       - match: \b(?i)(CLERIC_WRITHING_FOG)\b
       - match: \b(?i)(CLERIC_ANIMATE_DEAD)\b
       - match: \b(?i)(CLERIC_CALL_LIGHTNING)\b
@@ -996,23 +987,10 @@ repository:
       - match: \b(?i)(CLERIC_HOLY_SMITE)\b
       - match: \b(?i)(CLERIC_UNHOLY_BLIGHT)\b
       - match: \b(?i)(CLERIC_CURE_MEDIUM_WOUNDS)\b
-      - match: \b(?i)(CLERIC_PRAYER)\b
       - match: \b(?i)(CLERIC_CURE_BLIND_DEAF)\b
       - match: \b(?i)(CLERIC_CURE_DISEASE)\b
       - match: \b(?i)(CLERIC_ZONE_OF_SWEET_AIR)\b
       - match: \b(?i)(CLERIC_SUMMON_INSECTS)\b
-      - match: \b(?i)(CLERIC_CAUSE_DISEASE)\b
-      - match: \b(?i)(CLERIC_EXALTATION)\b
-      - match: \b(?i)(CLERIC_MOONBLADE)\b
-      - match: \b(?i)(CLERIC_CIRCLE_OF_BONES)\b
-      - match: \b(?i)(CLERIC_SPIKE_GROWTH)\b
-      - match: \b(?i)(CLERIC_CLOUDBURST)\b
-      - match: \b(?i)(CLERIC_MOLD_TOUCH)\b
-      - match: \b(?i)(CLERIC_STORM_SHELL)\b
-      - match: \b(?i)(CLERIC_SUMMON_LIZARDMEN)\b
-      - match: \b(?i)(CLERIC_SUMMON_TROLLS)\b
-      - match: \b(?i)(CLERIC_CAUSE_MEDIUM_WOUNDS)\b
-      - match: \b(?i)(CLERIC_FAVOR_OR_ILMATER)\b
       - match: \b(?i)(CLERIC_SPIRITUAL_CLARITY)\b
       - match: \b(?i)(CLERIC_CURE_SERIOUS_WOUNDS)\b
       - match: \b(?i)(CLERIC_ANIMAL_SUMMONING_1)\b
@@ -1031,17 +1009,6 @@ repository:
       - match: \b(?i)(CLERIC_FAR_SIGHT)\b
       - match: \b(?i)(CLERIC_CLOAK_OF_FEAR)\b
       - match: \b(?i)(CLERIC_LESSER_RESTORATION)\b
-      - match: \b(?i)(CLERIC_GIANT_INSECT)\b
-      - match: \b(?i)(CLERIC_PRODUCE_FIRE)\b
-      - match: \b(?i)(CLERIC_STATIC_CHARGE)\b
-      - match: \b(?i)(CLERIC_RECITATION)\b
-      - match: \b(?i)(CLERIC_BLOOD_RAGE)\b
-      - match: \b(?i)(CLERIC_CLOUD_OF_PESTILENCE)\b
-      - match: \b(?i)(CLERIC_UNFAILING_ENDURANCE)\b
-      - match: \b(?i)(CLERIC_STAR_METAL_CUDGEL)\b
-      - match: \b(?i)(CLERIC_SMASHING_WAVE)\b
-      - match: \b(?i)(CLERIC_THORN_SPRAY)\b
-      - match: \b(?i)(CLERIC_WALL_OF_MOONLIGHT)\b
       - match: \b(?i)(CLERIC_SPIRIT_FIRE)\b
       - match: \b(?i)(CLERIC_ANIMAL_SUMMONING_2)\b
       - match: \b(?i)(CLERIC_CURE_CRITICAL_WOUNDS)\b
@@ -1060,12 +1027,6 @@ repository:
       - match: \b(?i)(CLERIC_REPULSE_UNDEAD)\b
       - match: \b(?i)(CLERIC_PIXIE_DUST)\b
       - match: \b(?i)(CLERIC_INSECT_PLAGUE)\b
-      - match: \b(?i)(CLERIC_RIGHTEOUS_WRATH_OF_THE_FAITHFUL)\b
-      - match: \b(?i)(CLERIC_SPIKE_STONES)\b
-      - match: \b(?i)(CLERIC_SHIELD_OF_LATHANDER)\b
-      - match: \b(?i)(CLERIC_UNDEAD_WARD)\b
-      - match: \b(?i)(CLERIC_ANIMAL_RAGE)\b
-      - match: \b(?i)(CLERIC_MASS_CAUSE_LIGHT_WOUNDS)\b
       - match: \b(?i)(CLERIC_RECALL_SPIRIT)\b
       - match: \b(?i)(ENEMY_CLERIC_SLAY_LIVING)\b
       - match: \b(?i)(CLERIC_AERIAL_SERVANT)\b
@@ -1098,10 +1059,8 @@ repository:
       - match: \b(?i)(CLERIC_REGENERATE)\b
       - match: \b(?i)(CLERIC_RESURRECTION)\b
       - match: \b(?i)(CLERIC_RESTORATION)\b
-      - match: \b(?i)(CLERIC_SYMBOL_OF_PAIN)\b
       - match: \b(?i)(CLERIC_ENERGY_DRAIN)\b
       - match: \b(?i)(CLERIC_UNHOLY_WORD)\b
-      - match: \b(?i)(CLERIC_SYMBOL_OF_HOPELESSNESS)\b
       - match: \b(?i)(CLERIC_SPACE_WARP)\b
       - match: \b(?i)(CLERIC_CREEPING_DOOM)\b
       - match: \b(?i)(CLERIC_SYMBOL_STUN)\b
@@ -1119,13 +1078,6 @@ repository:
       - match: \b(?i)(CLERIC_AURA_OF_FLAMING_DEATH)\b
       - match: \b(?i)(CLERIC_ELEMENTAL_TRANSFORMATION_FIRE)\b
       - match: \b(?i)(CLERIC_ELEMENTAL_TRANSFORMATION_EARTH)\b
-      - match: \b(?i)(CLERIC_IMPERVIOUS_SANCTITY_OF_MIND)\b
-      - match: \b(?i)(CLERIC_DESTRUCTION)\b
-      - match: \b(?i)(CLERIC_GREATER_SHIELD_OF_LATHANDER)\b
-      - match: \b(?i)(CLERIC_MIST_OF_ELDATH)\b
-      - match: \b(?i)(CLERIC_STALKER)\b
-      - match: \b(?i)(CLERIC_HEAVENLY_INFERNO)\b
-      - match: \b(?i)(CLERIC_WITHER)\b
       - match: \b(?i)(CLERIC_ETHER_GATE)\b
       - match: \b(?i)(CLERIC_ETHEREAL_RETRIBUTION)\b
       - match: \b(?i)(TRAP_DIRE_CHARM)\b
@@ -1195,11 +1147,9 @@ repository:
       - match: \b(?i)(WIZARD_ALARM)\b
       - match: \b(?i)(WIZARD_NAHALS_RECKLESS_DWEOMER)\b
       - match: \b(?i)(WIZARD_SPOOK)\b
-      - match: \b(?i)(WIZARD_EXPEDITIOUS_RETREAT)\b
       - match: \b(?i)(WIZARD_BLUR)\b
       - match: \b(?i)(WIZARD_DETECT_EVIL)\b
       - match: \b(?i)(WIZARD_DETECT_INVISIBILITY)\b
-      - match: \b(?i)(WIZARD_SNILLOCS_SNOWBALL_SWARM)\b
       - match: \b(?i)(WIZARD_FOG_CLOUD)\b
       - match: \b(?i)(WIZARD_HORROR)\b
       - match: \b(?i)(WIZARD_INVISIBILITY)\b
@@ -1212,7 +1162,6 @@ repository:
       - match: \b(?i)(WIZARD_STINKING_CLOUD)\b
       - match: \b(?i)(WIZARD_STRENGTH)\b
       - match: \b(?i)(WIZARD_WEB)\b
-      - match: \b(?i)(WIZARD_DECASTAVE)\b
       - match: \b(?i)(WIZARD_WIZARD_LOCK)\b
       - match: \b(?i)(WIZARD_AGANNAZAR_SCORCHER)\b
       - match: \b(?i)(WIZARD_GHOUL_TOUCH)\b
@@ -1222,7 +1171,6 @@ repository:
       - match: \b(?i)(WIZARD_CHAOS_SHIELD)\b
       - match: \b(?i)(WIZARD_DEAFNESS)\b
       - match: \b(?i)(WIZARD_GLITTERDUST)\b
-      - match: \b(?i)(WIZARD_CATS_GRACE)\b
       - match: \b(?i)(CONTINGENCY_MIRROR_IMAGE)\b
       - match: \b(?i)(WIZARD_CLAIRVOYANCE)\b
       - match: \b(?i)(WIZARD_DISPEL_MAGIC)\b
@@ -1250,8 +1198,6 @@ repository:
       - match: \b(?i)(WIZARD_HOLD_UNDEAD)\b
       - match: \b(?i)(WIZARD_MELF_METEOR)\b
       - match: \b(?i)(WIZARD_TRUE_DISPEL_MAGIC)\b
-      - match: \b(?i)(WIZARD_ICELANCE)\b
-      - match: \b(?i)(WIZARD_LANCE_OF_DISRUPTION)\b
       - match: \b(?i)(WIZARD_CONFUSION)\b
       - match: \b(?i)(WIZARD_DIMENSION_DOOR)\b
       - match: \b(?i)(WIZARD_FIRE_SHIELD_BLUE)\b
@@ -1273,17 +1219,9 @@ repository:
       - match: \b(?i)(WIZARD_SECRET_WORD)\b
       - match: \b(?i)(WIZARD_MINOR_SEQUENCER)\b
       - match: \b(?i)(WIZARD_TELEPORT_FIELD)\b
-      - match: \b(?i)(WIZARD_BELTYNS_BURNING_BLOOD)\b
       - match: \b(?i)(WIZARD_SPIDER_SPAWN)\b
       - match: \b(?i)(WIZARD_FAR_SIGHT)\b
       - match: \b(?i)(WIZARD_EYE)\b
-      - match: \b(?i)(WIZARD_SHADOW_MONSTERS)\b
-      - match: \b(?i)(WIZARD_EMOTION_COURAGE)\b
-      - match: \b(?i)(WIZARD_EMOTION_FEAR)\b
-      - match: \b(?i)(WIZARD_EMOTION_HOPE)\b
-      - match: \b(?i)(WIZARD_MORDENKAINENS_FORCE_MISSILES)\b
-      - match: \b(?i)(WIZARD_SHOUT)\b
-      - match: \b(?i)(WIZARD_VITRIOLIC_SPHERE)\b
       - match: \b(?i)(WIZARD_POLYMORPH_NATURAL_FORM)\b
       - match: \b(?i)(WIZARD_POLYMORPH_FLIND)\b
       - match: \b(?i)(WIZARD_POLYMORPH_OGRE)\b
@@ -1292,9 +1230,6 @@ repository:
       - match: \b(?i)(WIZARD_POLYMORPH_BROWN_BEAR)\b
       - match: \b(?i)(WIZARD_POLYMORPH_BLACK_BEAR)\b
       - match: \b(?i)(WIZARD_POLYMORPH_WOLF)\b
-      - match: \b(?i)(WIZARD_POLYMORPH_BORING_BEETLE)\b
-      - match: \b(?i)(WIZARD_POLYMORPH_POLAR_BEAR)\b
-      - match: \b(?i)(WIZARD_POLYMORPH_WINTER_WOLF)\b
       - match: \b(?i)(WIZARD_ANIMATE_DEAD)\b
       - match: \b(?i)(WIZARD_CLOUDKILL)\b
       - match: \b(?i)(WIZARD_CONE_OF_COLD)\b
@@ -1318,12 +1253,6 @@ repository:
       - match: \b(?i)(WIZARD_CONJURE_LESSER_EARTH_ELEMENTAL)\b
       - match: \b(?i)(WIZARD_MINOR_SPELL_TURNING)\b
       - match: \b(?i)(WIZARD_SUN_FIRE)\b
-      - match: \b(?i)(WIZARD_SHROUD_OF_FLAME)\b
-      - match: \b(?i)(WIZARD_DEMI_SHADOW_MONSTERS)\b
-      - match: \b(?i)(WIZARD_SUMMON_SHADOW)\b
-      - match: \b(?i)(WIZARD_CONTACT_OTHER_PLANE)\b
-      - match: \b(?i)(WIZARD_ANIMATE_DEAD_LICH)\b
-      - match: \b(?i)(WIZARD_CONJURE_WATER_ELEMENTAL)\b
       - match: \b(?i)(WIZARD_SPELL_IMMUNITY_ABJURATION)\b
       - match: \b(?i)(WIZARD_SPELL_IMMUNITY_CONJURATION)\b
       - match: \b(?i)(WIZARD_SPELL_IMMUNITY_DIVINATION)\b
@@ -1357,23 +1286,14 @@ repository:
       - match: \b(?i)(WIZARD_CARRION)\b
       - match: \b(?i)(WIZARD_SUMMON_NISHRUU)\b
       - match: \b(?i)(WIZARD_STONE_TO_FLESH)\b
-      - match: \b(?i)(WIZARD_LICH_TOUCH)\b
-      - match: \b(?i)(WIZARD_MONSTER_SUMMONING_4)\b
-      - match: \b(?i)(WIZARD_OTILUKES_FREEZING_SPHERE)\b
-      - match: \b(?i)(WIZARD_SHADES)\b
-      - match: \b(?i)(WIZARD_DARTS_OF_BONE)\b
-      - match: \b(?i)(WIZARD_SOUL_EATER)\b
-      - match: \b(?i)(WIZARD_TROLLISH_FORTITUDE)\b
       - match: \b(?i)(WIZARD_SPELL_TURNING)\b
       - match: \b(?i)(WIZARD_PROTECTION_FROM_THE_ELEMENTS)\b
       - match: \b(?i)(WIZARD_PROJECT_IMAGE)\b
       - match: \b(?i)(WIZARD_RUBY_RAY_OF_REVERSAL)\b
       - match: \b(?i)(WIZARD_KHELBENS_WARDING_WHIP)\b
       - match: \b(?i)(WIZARD_WARDING_WHIP)\b
-      - match: \b(?i)(WIZARD_MONSTER_SUMMONING_5)\b
       - match: \b(?i)(WIZARD_CACOFIEND)\b
       - match: \b(?i)(WIZARD_MANTLE)\b
-      - match: \b(?i)(WIZARD_MALAVONS_RAGE)\b
       - match: \b(?i)(WIZARD_TATTOOS_OF_POWER)\b
       - match: \b(?i)(WIZARD_SPELL_SEQUENCER)\b
       - match: \b(?i)(WIZARD_SPHERE_OF_CHAOS)\b
@@ -1390,15 +1310,9 @@ repository:
       - match: \b(?i)(WIZARD_LIMITED_WISH)\b
       - match: \b(?i)(WIZARD_IMPROVED_CHAOS_SHIELD)\b
       - match: \b(?i)(WIZARD_DELETED)\b
-      - match: \b(?i)(WIZARD_ACID_STORM)\b
-      - match: \b(?i)(WIZARD_SEVEN_EYES)\b
-      - match: \b(?i)(WIZARD_SUFFOCATE)\b
-      - match: \b(?i)(WIZARD_MONSTER_SUMMONING_6)\b
-      - match: \b(?i)(WIZARD_MIND_BLANK)\b
       - match: \b(?i)(WIZARD_PROTECTION_FROM_ENERGY)\b
       - match: \b(?i)(WIZARD_SIMULACRUM)\b
       - match: \b(?i)(WIZARD_PIERCE_SHIELD)\b
-      - match: \b(?i)(WIZARD_GREAT_SHOUT)\b
       - match: \b(?i)(WIZARD_SUMMON_FIEND)\b
       - match: \b(?i)(WIZARD_IMPROVED_MANTLE)\b
       - match: \b(?i)(WIZARD_SPELL_TRIGGER)\b
@@ -1406,23 +1320,18 @@ repository:
       - match: \b(?i)(WIZARD_SYMBOL_FEAR)\b
       - match: \b(?i)(WIZARD_ABI_DALZIMS_HORRID_WILTING)\b
       - match: \b(?i)(WIZARD_MAZE)\b
-      - match: \b(?i)(WIZARD_IRON_BODY)\b
       - match: \b(?i)(WIZARD_OTTOS_IRRESISTIBLE_DANCE)\b
       - match: \b(?i)(WIZARD_POWER_WORD_BLIND)\b
       - match: \b(?i)(WIZARD_SYMBOL_STUN)\b
       - match: \b(?i)(WIZARD_SYMBOL_DEATH)\b
       - match: \b(?i)(WIZARD_BIGBYS_CLENCHED_FIST)\b
-      - match: \b(?i)(WIZARD_MONSTER_SUMMONING_VI_MALAVON)\b
       - match: \b(?i)(FORCE_DAMAGE_1)\b
       - match: \b(?i)(WIZARD_NPC_SYMBOL_DEATH)\b
       - match: \b(?i)(WIZARD_NPC_SYMBOL_STUN)\b
       - match: \b(?i)(WIZARD_NPC_SYMBOL_FEAR)\b
-      - match: \b(?i)(WIZARD_MONSTER_SUMMONING_7)\b
       - match: \b(?i)(WIZARD_SPELL_TRAP)\b
       - match: \b(?i)(WIZARD_SPELL_STRIKE)\b
-      - match: \b(?i)(WIZARD_MALAVONS_CORROSIVE_FOG)\b
       - match: \b(?i)(WIZARD_GATE)\b
-      - match: \b(?i)(CRUSHING_TRAP)\b
       - match: \b(?i)(WIZARD_ABSOLUTE_IMMUNITY)\b
       - match: \b(?i)(WIZARD_CHAIN_CONTINGENCY)\b
       - match: \b(?i)(WIZARD_TIME_STOP)\b
@@ -2064,3 +1973,98 @@ repository:
       - match: \b(?i)(SHADOWDANCER_SHADOW_FORM)\b
       - match: \b(?i)(SHAMAN_SPIRIT_FORM)\b
       - match: \b(?i)(SHAMAN_FAVORED_OF_THE_SPIRITS)\b
+
+  spell-ids-iwdee:
+    name: constant.other.baf.weidu
+    patterns:
+      - match: \b(?i)(CLERIC_CAUSE_LIGHT_WOUNDS)\b
+      - match: \b(?i)(CLERIC_SUNSCORCH)\b
+      - match: \b(?i)(CLERIC_PROTECT_FROM_GOOD)\b
+      - match: \b(?i)(CLERIC_GOODBERRY)\b
+      - match: \b(?i)(CLERIC_RESIST_FIRE_AND_COLD)\b
+      - match: \b(?i)(CLERIC_CURE_MODERATE_WOUNDS)\b
+      - match: \b(?i)(CLERIC_ALICORN_LANCE)\b
+      - match: \b(?i)(CLERIC_BEAST_CLAW)\b
+      - match: \b(?i)(CLERIC_CAUSE_MODERATE_WOUNDS)\b
+      - match: \b(?i)(CLERIC_PRAYER)\b
+      - match: \b(?i)(CLERIC_CAUSE_DISEASE)\b
+      - match: \b(?i)(CLERIC_EXALTATION)\b
+      - match: \b(?i)(CLERIC_MOONBLADE)\b
+      - match: \b(?i)(CLERIC_CIRCLE_OF_BONES)\b
+      - match: \b(?i)(CLERIC_SPIKE_GROWTH)\b
+      - match: \b(?i)(CLERIC_CLOUDBURST)\b
+      - match: \b(?i)(CLERIC_MOLD_TOUCH)\b
+      - match: \b(?i)(CLERIC_STORM_SHELL)\b
+      - match: \b(?i)(CLERIC_SUMMON_LIZARDMEN)\b
+      - match: \b(?i)(CLERIC_SUMMON_TROLLS)\b
+      - match: \b(?i)(CLERIC_CAUSE_MEDIUM_WOUNDS)\b
+      - match: \b(?i)(CLERIC_FAVOR_OR_ILMATER)\b
+      - match: \b(?i)(CLERIC_GIANT_INSECT)\b
+      - match: \b(?i)(CLERIC_PRODUCE_FIRE)\b
+      - match: \b(?i)(CLERIC_STATIC_CHARGE)\b
+      - match: \b(?i)(CLERIC_RECITATION)\b
+      - match: \b(?i)(CLERIC_BLOOD_RAGE)\b
+      - match: \b(?i)(CLERIC_CLOUD_OF_PESTILENCE)\b
+      - match: \b(?i)(CLERIC_UNFAILING_ENDURANCE)\b
+      - match: \b(?i)(CLERIC_STAR_METAL_CUDGEL)\b
+      - match: \b(?i)(CLERIC_SMASHING_WAVE)\b
+      - match: \b(?i)(CLERIC_THORN_SPRAY)\b
+      - match: \b(?i)(CLERIC_WALL_OF_MOONLIGHT)\b
+      - match: \b(?i)(CLERIC_RIGHTEOUS_WRATH_OF_THE_FAITHFUL)\b
+      - match: \b(?i)(CLERIC_SPIKE_STONES)\b
+      - match: \b(?i)(CLERIC_SHIELD_OF_LATHANDER)\b
+      - match: \b(?i)(CLERIC_UNDEAD_WARD)\b
+      - match: \b(?i)(CLERIC_ANIMAL_RAGE)\b
+      - match: \b(?i)(CLERIC_MASS_CAUSE_LIGHT_WOUNDS)\b
+      - match: \b(?i)(CLERIC_SYMBOL_OF_PAIN)\b
+      - match: \b(?i)(CLERIC_SYMBOL_OF_HOPELESSNESS)\b
+      - match: \b(?i)(CLERIC_IMPERVIOUS_SANCTITY_OF_MIND)\b
+      - match: \b(?i)(CLERIC_DESTRUCTION)\b
+      - match: \b(?i)(CLERIC_GREATER_SHIELD_OF_LATHANDER)\b
+      - match: \b(?i)(CLERIC_MIST_OF_ELDATH)\b
+      - match: \b(?i)(CLERIC_STALKER)\b
+      - match: \b(?i)(CLERIC_HEAVENLY_INFERNO)\b
+      - match: \b(?i)(CLERIC_WITHER)\b
+      - match: \b(?i)(WIZARD_EXPEDITIOUS_RETREAT)\b
+      - match: \b(?i)(WIZARD_SNILLOCS_SNOWBALL_SWARM)\b
+      - match: \b(?i)(WIZARD_DECASTAVE)\b
+      - match: \b(?i)(WIZARD_CATS_GRACE)\b
+      - match: \b(?i)(WIZARD_ICELANCE)\b
+      - match: \b(?i)(WIZARD_LANCE_OF_DISRUPTION)\b
+      - match: \b(?i)(WIZARD_BELTYNS_BURNING_BLOOD)\b
+      - match: \b(?i)(WIZARD_SHADOW_MONSTERS)\b
+      - match: \b(?i)(WIZARD_EMOTION_COURAGE)\b
+      - match: \b(?i)(WIZARD_EMOTION_FEAR)\b
+      - match: \b(?i)(WIZARD_EMOTION_HOPE)\b
+      - match: \b(?i)(WIZARD_MORDENKAINENS_FORCE_MISSILES)\b
+      - match: \b(?i)(WIZARD_SHOUT)\b
+      - match: \b(?i)(WIZARD_VITRIOLIC_SPHERE)\b
+      - match: \b(?i)(WIZARD_POLYMORPH_BORING_BEETLE)\b
+      - match: \b(?i)(WIZARD_POLYMORPH_POLAR_BEAR)\b
+      - match: \b(?i)(WIZARD_POLYMORPH_WINTER_WOLF)\b
+      - match: \b(?i)(WIZARD_SHROUD_OF_FLAME)\b
+      - match: \b(?i)(WIZARD_DEMI_SHADOW_MONSTERS)\b
+      - match: \b(?i)(WIZARD_SUMMON_SHADOW)\b
+      - match: \b(?i)(WIZARD_CONTACT_OTHER_PLANE)\b
+      - match: \b(?i)(WIZARD_ANIMATE_DEAD_LICH)\b
+      - match: \b(?i)(WIZARD_CONJURE_WATER_ELEMENTAL)\b
+      - match: \b(?i)(WIZARD_LICH_TOUCH)\b
+      - match: \b(?i)(WIZARD_MONSTER_SUMMONING_4)\b
+      - match: \b(?i)(WIZARD_OTILUKES_FREEZING_SPHERE)\b
+      - match: \b(?i)(WIZARD_SHADES)\b
+      - match: \b(?i)(WIZARD_DARTS_OF_BONE)\b
+      - match: \b(?i)(WIZARD_SOUL_EATER)\b
+      - match: \b(?i)(WIZARD_TROLLISH_FORTITUDE)\b
+      - match: \b(?i)(WIZARD_MONSTER_SUMMONING_5)\b
+      - match: \b(?i)(WIZARD_MALAVONS_RAGE)\b
+      - match: \b(?i)(WIZARD_ACID_STORM)\b
+      - match: \b(?i)(WIZARD_SEVEN_EYES)\b
+      - match: \b(?i)(WIZARD_SUFFOCATE)\b
+      - match: \b(?i)(WIZARD_MONSTER_SUMMONING_6)\b
+      - match: \b(?i)(WIZARD_MIND_BLANK)\b
+      - match: \b(?i)(WIZARD_GREAT_SHOUT)\b
+      - match: \b(?i)(WIZARD_IRON_BODY)\b
+      - match: \b(?i)(WIZARD_MONSTER_SUMMONING_VI_MALAVON)\b
+      - match: \b(?i)(WIZARD_MONSTER_SUMMONING_7)\b
+      - match: \b(?i)(WIZARD_MALAVONS_CORROSIVE_FOG)\b
+      - match: \b(?i)(CRUSHING_TRAP)\b
