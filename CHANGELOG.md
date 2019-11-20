@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.4.0
+- IE:
+  - Added syntax highlighting for IWD:EE `spell.ids` tokens.
+  - Fixed `PLAYER1-PLAYER6` highlighing in TRA files.
+
 ## 1.3.0
 - IE:
   - Added `.2da` syntax highlighting.
