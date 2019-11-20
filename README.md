@@ -1,4 +1,6 @@
 ## BGforge multilanguage server
+<a href="https://www.patreon.com/BGforge"><img src="https://c5.patreon.com/external/logo/become_a_patron_button.png" width="100" alt="Support us on Patreon"></a>
+
 [__Features__](#features)
  | [__Screenshots__](#screenshots)
  | [__Installation__](#installation)
