@@ -115,7 +115,7 @@ repository:
     patterns:
       - include: '#object-ids'
       - include: '#spell-ids'
-
+      - include: '#spell-ids-iwdee'
 
 
   triggers:
