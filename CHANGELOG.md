@@ -1,14 +1,19 @@
 # Changelog
 
+## 1.4.0
+- IE:
+  - Added syntax highlighting for IWD:EE `spell.ids` tokens.
+  - Fixed `PLAYER1-PLAYER6` highlighing in `tra` files.
+
 ## 1.3.0
 - IE:
-  - Added `.2da` syntax highlighting.
+  - Added `2da` syntax highlighting.
 
 ## 1.2.0
 - WeiDU:
-  - Added `.tra` syntax highlighting.
+  - Added `tra` syntax highlighting.
 - Fallout:
-  - Added `.msg` syntax highlighting.
+  - Added `msg` syntax highlighting.
   - Added missing `ifndef`, `endif`, `%`.
 
 ## 1.1.0
@@ -58,7 +63,7 @@
 - Added THEN as a keyword, and ADD_STORE_ITEM flags.
 
 ## 1.0.1
-- Fixed `#NUM` notaion, variable highlight in `.d` and `.baf`, and some missing highlight in function definitions.
+- Fixed `#NUM` notation, variable highlight in `d` and `baf`, and some missing highlight in function definitions.
 
 ## 1.0.0
 - Initial release.
