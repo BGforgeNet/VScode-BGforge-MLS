@@ -121,6 +121,9 @@ repository:
       - include: '#state-ids'
       - include: '#ea-ids'
       - include: '#align-ids'
+      - include: '#general-ids'
+      - include: '#gender-ids'
+      - include: '#hand-ids'
 
 
   triggers:
@@ -2527,3 +2530,49 @@ repository:
       - match: \b(?i)(MASK_LAWFUL)\b
       - match: \b(?i)(MASK_LCNEUTRAL)\b
       - match: \b(?i)(MASK_CHAOTIC)\b
+
+  general-ids:
+    name: constant.other.baf.weidu
+    patterns:
+      - match: \b(?i)(HUMANOID)\b
+      - match: \b(?i)(ANIMAL)\b
+      - match: \b(?i)(DEAD)\b
+      - match: \b(?i)(UNDEAD)\b
+      - match: \b(?i)(GIANTHUMANOID)\b
+      - match: \b(?i)(FROZEN)\b
+      - match: \b(?i)(PLANT)\b
+      - match: \b(?i)(MONSTER)\b
+      - match: \b(?i)(WEAPON)\b
+      - match: \b(?i)(ARMOR)\b
+      - match: \b(?i)(AMULET)\b
+      - match: \b(?i)(BELT)\b
+      - match: \b(?i)(BOOTS)\b
+      - match: \b(?i)(AMMO)\b
+      - match: \b(?i)(GENERAL_ITEM)\b
+      - match: \b(?i)(HELMET)\b
+      - match: \b(?i)(KEY)\b
+      - match: \b(?i)(POTION)\b
+      - match: \b(?i)(RING)\b
+      - match: \b(?i)(SCROLL)\b
+      - match: \b(?i)(SHIELD)\b
+      - match: \b(?i)(GLOVES)\b
+
+  gender-ids:
+    name: constant.other.baf.weidu
+    patterns:
+      - match: \b(?i)(MALE)\b
+      - match: \b(?i)(FEMALE)\b
+      - match: \b(?i)(OTHER)\b
+      - match: \b(?i)(NIETHER)\b
+      - match: \b(?i)(BOTH)\b
+      - match: \b(?i)(SUMMONED)\b
+      - match: \b(?i)(ILLUSIONARY)\b
+      - match: \b(?i)(EXTRA)\b
+      - match: \b(?i)(SUMMONED_DEMON)\b
+
+  hand-ids:
+    name: constant.other.baf.weidu
+    patterns:
+      - match: \b(?i)(MAINHAND)\b
+      - match: \b(?i)(OFFHAND)\b
+      - match: \b(?i)(BOTH)\b
