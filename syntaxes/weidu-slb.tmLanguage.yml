@@ -12,7 +12,7 @@ patterns:
 repository:
   definitions:
     patterns:
-    - match: \b(TARGET|TRIGGER)\b=(\w+)
+    - match: \b(TARGET|TRIGGER|TRIGGER_REPLACE|TARGET_REPLACE)\b=(\w+)
       name: "definition.slb.weidu"
       captures:
         "1":
