@@ -1,0 +1,129 @@
+$schema: https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json
+name: Infinity Engine Sword Coast Stratagems script
+scopeName: source.ssl.weidu
+
+patterns:
+  - include: "#action-definition-start"
+  - include: "#action-definition-end"
+  - include: "#condition"
+  - include: "#action"
+  - include: "source.baf.weidu"
+  - include: "#keywords"
+
+repository:
+  operators:
+    patterns:
+      - match: (\&)|(\|)|(;)
+        name: keyword.control.ssl.weidu
+
+  loop:
+    patterns:
+    - match: \b(BEGIN|END)\s+(LOOP)\b
+      name: keyword.control.ssl.weidu
+
+  keywords:
+    patterns:
+    - match: \b(TRIGGER|ACTION)\b
+      name: "keyword.control.ssl.weidu"
+    - include: "#loop"
+    - include: "#include-file"
+
+  include-file:
+    patterns:
+      - match: \b(INCLUDE\s+FILE)(\()([^)]+)(\))
+        captures:
+          "1":
+            name: keyword.control.ssl.weidu
+          "2":
+            name: keyword.control.ssl.weidu
+          '3':
+            name: string.quoted.double.ssl.weidu
+            patterns:
+              - include: 'source.baf.weidu#vars'
+          "4":
+            name: keyword.control.ssl.weidu
+            
+  action-definition-start:
+    begin: \b(BEGIN_ACTION_DEFINITION)\b
+    end: \b(ACTION)\b
+    name: meta.action-definition.ssl.weidu
+    beginCaptures:
+      '1':
+        name: keyword.control.baf.weidu
+    endCaptures:
+      '1':
+        name: keyword.control.baf.weidu
+    patterns:
+      - include: '#keywords'
+      - include: '#condition-body'
+
+  action-definition-end:
+    name: meta.action-definition.ssl.weidu
+    begin: \b(RESPONSE)\b\s+(#\w+) #first response line colored individially
+    end: \b(END)\b
+    beginCaptures:
+      '1':
+        name: keyword.control.ssl.weidu
+      '2':
+        name: constant.other.ssl.weidu
+    endCaptures:
+      '1':
+        name: keyword.control.ssl.weidu
+    patterns:
+      - include: 'source.baf.weidu#action-body'
+
+  triggers:
+    name: entity.name.function.trigger.ssl.weidu
+    patterns:
+      - match: \b(?i)(IgnoreBlock)\b
+      - match: \b(?i)(RequireBlock)\b
+      - match: \b(?i)(TargetBlock)\b
+      - match: \b(?i)(TriggerBlock)\b
+      - match: \b(?i)(ConditionalTargetBlock)\b
+      - match: \b(?i)(SSLBoolean)\b
+      - match: \b(?i)(Target)\b
+
+  condition-body:
+    name: meta.condition-body.ssl.weidu
+    patterns:
+      - include: 'source.baf.weidu#condition-body'
+      - include: '#triggers'
+      - include: '#loop'
+      - include: '#operators'
+
+  condition:
+    name: meta.condition.ssl.weidu
+    begin: \b(IF)\b\s+(TRIGGER)\b
+    end: \b(THEN)\b
+    beginCaptures:
+      '1':
+        name: keyword.control.ssl.weidu
+      '2':
+        name: keyword.control.ssl.weidu
+    endCaptures:
+      '1':
+        name: keyword.control.ssl.weidu
+    patterns:
+      - include: '#condition-body'
+
+  action:
+    name: meta.action.ssl.weidu
+    begin: \b(DO)\b
+    end: \b(END)\b
+    beginCaptures:
+      '1':
+        name: keyword.control.ssl.weidu
+    endCaptures:
+      '1':
+        name: keyword.control.ssl.weidu
+    patterns:
+      - include: 'source.baf.weidu#action-body'
+      - include: '#actions'
+      - include: '#operators'
+
+  actions:
+    name: support.function.ssl.weidu
+    patterns:
+      - match: \b(?i)(Action)\b
+      - match: \b(?i)(Combine)\b
+      - match: \b(?i)(ActionCondition)\b
