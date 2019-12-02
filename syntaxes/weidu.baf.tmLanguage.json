@@ -228,6 +228,38 @@
         {
           "include": "#spell-ids-iwdee",
           "name": "constant.other.baf.weidu"
+        },
+        {
+          "include": "#stats-ids",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "include": "#splstate-ids",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "include": "#state-ids",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "include": "#ea-ids",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "include": "#align-ids",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "include": "#general-ids",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "include": "#gender-ids",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "include": "#hand-ids",
+          "name": "constant.other.baf.weidu"
         }
       ]
     },
@@ -7976,6 +8008,1918 @@
         },
         {
           "match": "\\b(?i)(CRUSHING_TRAP)\\b",
+          "name": "constant.other.baf.weidu"
+        }
+      ]
+    },
+    "stats-ids": {
+      "name": "constant.other.baf.weidu",
+      "patterns": [
+        {
+          "match": "\\b(?i)(CURHITPOINTS)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(MAXHITPOINTS)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(ARMORCLASS)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(ACCRUSHINGMOD)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(ACMISSILEMOD)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(ACPIERCINGMOD)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(ACSLASHINGMOD)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(THAC0)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(NUMBEROFATTACKS)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(SAVEVSDEATH)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(SAVEVSWANDS)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(SAVEVSPOLY)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(SAVEVSBREATH)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(SAVEVSSPELL)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(RESISTFIRE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(RESISTCOLD)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(RESISTELECTRICITY)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(RESISTACID)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(RESISTMAGIC)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(RESISTMAGICFIRE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(RESISTMAGICCOLD)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIZARD_LICH_TOUCH)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(RESISTSLASHING)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(RESISTCRUSHING)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(RESISTPIERCING)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(RESISTMISSILE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(LORE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(LOCKPICKING)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(STEALTH)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(TRAPS)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(PICKPOCKET)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(FATIGUE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(INTOXICATION)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(LUCK)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(TRACKING)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(LEVEL)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(SEX)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(STR)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(STREXTRA)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(INT)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIS)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(DEX)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CON)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CHR)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(XPVALUE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(XP)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(GOLD)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(MORALEBREAK)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(MORALERECOVERYTIME)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(REPUTATION)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(HATEDRACE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(DAMAGEBONUS)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(SPELLFAILUREMAGE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(SPELLFAILUREPRIEST)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(SPELLDURATIONMODMAGE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(SPELLDURATIONMODPRIEST)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(TURNUNDEADLEVEL)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(BACKSTABDAMAGEMULTIPLIER)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(LAYONHANDSAMOUNT)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(HELD)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(POLYMORPHED)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(TRANSLUCENT)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(IDENTIFYMODE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(ENTANGLE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(SANCTUARY)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(MINORGLOBE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(SHIELDGLOBE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(GREASE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WEB)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(LEVEL2)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(LEVEL3)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CasterHold)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(ENCUMBERANCE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(MISSILETHAC0BONUS)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(MAGICDAMAGERESISTANCE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(RESISTPOISON)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(DONOTJUMP)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(AURACLEANSING)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(MENTALSPEED)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(PHYSICALSPEED)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CASTINGLEVELBONUSMAGE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CASTINGLEVELBONUSCLERIC)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(SEEINVISIBLE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(IGNOREDIALOGPAUSE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(MINHITPOINTS)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(THAC0BONUSRIGHT)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(THAC0BONUSLEFT)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(DAMAGEBONUSRIGHT)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(DAMAGEBONUSLEFT)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(STONESKINS)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(PROFICIENCYBASTARDSWORD)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(PROFICIENCYLONGSWORD)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(PROFICIENCYSHORTSWORD)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(PROFICIENCYAXE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(PROFICIENCYTWOHANDEDSWORD)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(PROFICIENCYKATANA)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(PROFICIENCYSCIMITARWAKISASHININJATO)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(PROFICIENCYDAGGER)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(PROFICIENCYWARHAMMER)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(PROFICIENCYSPEAR)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(PROFICIENCYHALBERD)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(PROFICIENCYFLAILMORNINGSTAR)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(PROFICIENCYMACE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(PROFICIENCYQUARTERSTAFF)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(PROFICIENCYCROSSBOW)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(PROFICIENCYLONGBOW)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(PROFICIENCYSHORTBOW)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(PROFICIENCYDART)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(PROFICIENCYSLING)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(PROFICIENCYBLACKJACK)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WEAPON_ENCHANTMENT)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CLERIC_ARMOR_OF_FAITH)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(PROFICIENCY2HANDED)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(PROFICIENCYSWORDANDSHIELD)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(PROFICIENCYSINGLEWEAPON)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(PROFICIENCY2WEAPON)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(PROFICIENCYCLUB)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIZARD_SPELL_DEFLECTION)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(PROTECTION_FROM_EVIL)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(TRUE_SIGHT)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CLERIC_CHAOTIC_COMMANDS)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CLERIC_INSECT_PLAGUE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CLERIC_BLADE_BARRIER)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CLERIC_PHYSICAL_MIRROR)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CLERIC_SHIELD_OF_THE_ARCHONS)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CLERIC_REGENERATION)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIZARD_FIRE_SHIELD)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIZARD_PROTECTION_FROM_MAGIC_ENERGY)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIZARD_MISLEAD)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIZARD_PROTECTION_FROM_MAGIC_WEAPONS)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIZARD_SPELL_TURNING)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIZARD_PROTECTION_FROM_THE_ELEMENTS)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CLERIC_FREE_ACTION)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIZARD_KHELBENS_WARDING_WHIP)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CLERIC_DEFENSIVE_HARMONY)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(EXTRAPROFICIENCY20)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(HIDEINSHADOWS)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(DETECTILLUSIONS)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(SETTRAPS)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(PUPPETMASTERID)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(PUPPETMASTERTYPE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(PUPPETTYPE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(PUPPETID)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CHECKFORBERSERK)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(BERSERKSTAGE1)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(BERSERKSTAGE2)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(DAMAGELUCK)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CRITICALHITBONUS)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(VISUALRANGE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(EXPLORE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(THRULLCHARM)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(SUMMONDISABLE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(HITBONUS)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(KIT)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(FORCESURGE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(SURGEMOD)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(IMPROVEDHASTE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(SCRIPTINGSTATE1)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WING_BUFFET)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(SCRIPTINGSTATE2)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(DEATH_WARD)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(SCRIPTINGSTATE3)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(LEVEL_DRAIN_IMMUNITY)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(SCRIPTINGSTATE4)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(OFFENSIVE_MODIFIER)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(SCRIPTINGSTATE5)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(DEFENSIVE_MODIFIER)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(SCRIPTINGSTATE6)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(STRENGTH_MODIFIER)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIZARD_SPELL_IMMUNITY)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIZARD_PROTECTION_FROM_ENERGY)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIZARD_SPELL_TRAP)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIZARD_IMPROVED_ALACRITY)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(MELEE_THACO_BONUS)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(MELEE_DAMAGE_BONUS)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(MISSILE_DAMAGE_BONUS)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(DISABLE_CIRCLE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(FIST_THACO_BONUS)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(FIST_DAMAGE_BONUS)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CLASS_STRING_OVERRIDE_MIXED)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CLASS_STRING_OVERRIDE_LOWER)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(PREVENT_SPELL_PROTECTION_EFFECTS)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(IMMUNITY_TO_BACKSTAB)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(LOCKPICKINGMTPBONUS)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIZARD_PROTECTION_FROM_PETRIFICATION)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(PROTECTION_FROM_PETRIFICATION_DONOTUSE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(MOVESILENTLYMTPBONUS)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIZARD_SPELL_SHIELD)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(SPELL_SHIELD_DONOTUSE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(TRAPSMTPBONUS)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIZARD_RESIST_FEAR)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(RESIST_FEAR_DONOTUSE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(PICKPOCKETMTPBONUS)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIZARD_PROTECTION_FROM_NORMAL_MISSILES)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(PROTECTION_FROM_NORMAL_MISSILES_DONOTUSE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(HIDEINSHADOWSMTPBONUS)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIZARD_GREATER_MALISON)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(MALISON_DONOTUSE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(DETECTILLUSIONSMTPBONUS)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIZARD_PROTECTION_FROM_NORMAL_WEAPONS)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(PROTECTION_FROM_NORMAL_WEAPONS_DONOTUSE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(SETTRAPSMTPBONUS)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIZARD_TENSERS_TRANSFORMATION)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(TENSERS_TRANSFORMATION_DONOTUSE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(PREVENT_AI_SLOWDOWN)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(EXISTANCE_DELAY_OVERRIDE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(ANIMATION_ONLY_HASTE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(NO_PERMANENT_DEATH)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(IMMUNE_TO_TURN_UNDEAD)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(SUMMON_DISABLE_ACTION)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CHAOS_SHIELD)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(NPC_BUMP)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(USE_ANY_ITEM)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(ASSASSINATE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(SEX_CHANGED)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(SPELL_FAILURE_INNATE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(IMMUNE_TO_TRACKING)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(DEAD_MAGIC)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(IMMUNE_TO_TIME_STOP)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(IMMUNE_TO_SEQUESTER)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(STONESKINSGOLEM)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(LEVELDRAIN)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(DONOTDRAW)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(IGNOREDRAINDEATH)\\b",
+          "name": "constant.other.baf.weidu"
+        }
+      ]
+    },
+    "splstate-ids": {
+      "name": "constant.other.baf.weidu",
+      "patterns": [
+        {
+          "match": "\\b(?i)(HOPELESSNESS)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(PROTECTION_FROM_EVIL)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(ARMOR_OF_FAITH)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(NAUSEA)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(ENFEEBLED)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(RED_FIRESHIELD)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(BLUE_FIRESHIELD)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(HELD)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(DEATH_WARD)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(HOLY_POWER)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(BENEFICIAL_CHANT)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(DETRIMENTAL_CHANT)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(BENEFICIAL_PRAYER)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(DETRIMENTAL_PRAYER)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(BENEFICIAL_RECITATION)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(DETRIMENTAL_RECITATION)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(ALLIED_RIGHTEOUS_WRATH_OF_THE_FAITHFUL)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(ALLIED_AND_SAME_ALIGNMENT_RIGHTEOUS_WRATH_OF_THE_FAITHFUL)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(STONESKIN)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(IRON_SKINS)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(SANCTUARY)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(OTILUKES_RESILIENT_SPHERE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(BLESS)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(AID)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(BARKSKIN)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(DRAW_UPON_HOLY_MIGHT)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(ENTANGLE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WEB)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(GREASE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(FREE_ACTION)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(ENTROPY_SHIELD)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(STORM_SHELL)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(PROTECTION_FROM_THE_ELEMENTS)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(BERSERK_ALWAYS_ACTIVE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(BLOOD_RAGE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(SUPPRESS_HP_INFO)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(DOESNT_AWAKEN_ON_DAMAGE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(UNSTUN_ON_DAMAGE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(DEAFENED)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(ANIMAL_RAGE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(SNEAK_ATTACK_IMMUNITY)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CHAOTIC_COMMANDS)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(MISCAST_MAGIC)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(PAIN)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(MALISON)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CATS_GRACE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(MOLD_TOUCH)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(SHROUD_OF_FLAME)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(EYE_OF_THE_MIND)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(EYE_OF_THE_SWORD)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(EYE_OF_THE_MAGE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(EYE_OF_VENOM)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(EYE_OF_THE_SPIRIT)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(EYE_OF_FORTITUDE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(EYE_OF_STONE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(DOOM)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(SI_ABJURATION)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(SI_CONJURATION)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(SI_DIVINATION)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(SI_ENCHANTMENT)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(SI_ILLUSION)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(SI_EVOCATION)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(SI_NECROMANCY)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(SI_TRANSMUTATION)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(BUFF_PRO_WEAPONS)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(BUFF_PRO_DAMAGE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(BUFF_PRO_SPELLS)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(BUFF_PRO_EFFECTS)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(BUFF_ENHANCEMENT)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(BUFF_ILLUSION)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(FAERIE_FIRE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(GLITTERDUST)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CANNOT_TURN_INVISIBLE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(SHAMANIC_DANCE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(LATHANDER_BOON)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(BERSERKER_RAGE_FATIGUE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(BARBARIAN_RAGE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(BERSERKER_RAGE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(MINSC_BERSERK)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(POISON_WEAPON)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(KENSAI_KIA)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(DEFENSIVE_STANCE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(ARCHER_CALL_SHOT)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CHAOS_SHIELD)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(IMPROVED_CHAOS_SHIELD)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(BARD_SONG)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(BLADE_SONG)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(SKALD_SONG)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(JESTER_SONG)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(ENHANCED_BARD_SONG)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(ENHANCED_SKALD_SONG)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(ENHANCED_JESTER_SONG)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(SPIRIT_WARD)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(ENCHANTED_WEAPON)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(SPECTACLES_QUEST)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(SPIRIT_FORM)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(FAVORED_OF_THE_SPIRITS)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(DRAGON_BLADE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(POTION_OF_MAGIC_BLOCKING)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(POTION_OF_CLARITY)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(SCROLL_OF_PROTECTION_FROM_MAGIC)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(SCROLL_OF_PROTECTION_FROM_UNDEAD)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WILD_MAGIC_AREA)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(DEAD_MAGIC_AREA)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(STATE_ENRAGED)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(GASEOUS_FORM)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(RESIST_FEAR)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(PROTECTION_FROM_PETRIFICATION)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(SPELL_SHIELD)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(PROTECTION_FROM_NORMAL_MISSILES)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(OFFENSIVE_SPIN)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(PROTECTION_FROM_NORMAL_WEAPONS)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(TENSERS_TRANSFORMATION)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(DEFENSIVE_SPIN)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(POTION_OF_HEALING)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(TASTE_LINK)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(STATIC_CHARGE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(FLAMING_FISTS)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(PROTECTION_FROM_MAGICAL_WEAPONS)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(MANTLE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(IMPROVED_MANTLE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(ABSOLUTE_IMMUNITY)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(IMPRISONMENT_DESTROY)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(STORY_MODE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WIZARD_SHIELD)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(PRONE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(DISEASED)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CHAIN_LIGHTNING)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(EVASION)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(ACID_LEVEL_2)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(ACID_LEVEL_3)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CYNICISM_EQUIPPED)\\b",
+          "name": "constant.other.baf.weidu"
+        }
+      ]
+    },
+    "state-ids": {
+      "name": "constant.other.baf.weidu",
+      "patterns": [
+        {
+          "match": "\\b(?i)(STATE_NORMAL)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(STATE_SLEEPING)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(STATE_BERSERK)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(STATE_PANIC)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(STATE_STUNNED)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(STATE_INVISIBLE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(STATE_HELPLESS)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(STATE_IMMOBILE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(STATE_FROZEN_DEATH)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(STATE_STONE_DEATH)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(STATE_EXPLODING_DEATH)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(STATE_FLAME_DEATH)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(STATE_ACID_DEATH)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(STATE_DEAD)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(STATE_REALLY_DEAD)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(STATE_SILENCED)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(STATE_CHARMED)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(STATE_POISONED)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(STATE_HASTED)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(STATE_SLOWED)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(STATE_INFRAVISION)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(STATE_BLIND)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(STATE_DISEASED)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(STATE_FEEBLEMINDED)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(STATE_HARMLESS)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(STATE_NONDETECTION)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(STATE_IMPROVEDINVISIBILITY)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(STATE_NOT_TARGETABLE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(STATE_BLESS)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(STATE_CHANT)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(STATE_DRAWUPONHOLYMIGHT)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(STATE_LUCK)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(STATE_AID)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(STATE_CHANTBAD)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(STATE_BLUR)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(STATE_MIRRORIMAGE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(STATE_ILLUSIONS)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(STATE_CONFUSED)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(STATE_RANGED_TARGET)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CD_STATE_NOTVALID)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(STATE_DISABLED)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(STATE_DISABLED_CASTING)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(STATE_DEBUFF)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(STATE_NOT_APPROACHABLE)\\b",
+          "name": "constant.other.baf.weidu"
+        }
+      ]
+    },
+    "ea-ids": {
+      "name": "constant.other.baf.weidu",
+      "patterns": [
+        {
+          "match": "\\b(?i)(ANYONE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(INANIMATE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(PC)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(FAMILIAR)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(ALLY)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CONTROLLED)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CHARMED)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(REALLYCHARMED)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(GOODBUTRED)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(GOODBUTBLUE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(GOODCUTOFF)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(NOTGOOD)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(ANYTHING)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(NEUTRAL)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(NOTEVIL)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(EVILCUTOFF)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(EVILBUTGREEN)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(EVILBUTBLUE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(ENEMY)\\b",
+          "name": "constant.other.baf.weidu"
+        }
+      ]
+    },
+    "align-ids": {
+      "name": "constant.other.baf.weidu",
+      "patterns": [
+        {
+          "match": "\\b(?i)(LAWFUL_GOOD)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(LAWFUL_NEUTRAL)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(LAWFUL_EVIL)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(NEUTRAL_GOOD)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(NEUTRAL)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(NEUTRAL_EVIL)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CHAOTIC_GOOD)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CHAOTIC_NEUTRAL)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(CHAOTIC_EVIL)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(MASK_GOOD)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(MASK_GENEUTRAL)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(MASK_EVIL)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(MASK_LAWFUL)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(MASK_LCNEUTRAL)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(MASK_CHAOTIC)\\b",
+          "name": "constant.other.baf.weidu"
+        }
+      ]
+    },
+    "general-ids": {
+      "name": "constant.other.baf.weidu",
+      "patterns": [
+        {
+          "match": "\\b(?i)(HUMANOID)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(ANIMAL)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(DEAD)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(UNDEAD)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(GIANTHUMANOID)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(FROZEN)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(PLANT)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(MONSTER)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(WEAPON)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(ARMOR)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(AMULET)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(BELT)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(BOOTS)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(AMMO)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(GENERAL_ITEM)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(HELMET)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(KEY)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(POTION)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(RING)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(SCROLL)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(SHIELD)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(GLOVES)\\b",
+          "name": "constant.other.baf.weidu"
+        }
+      ]
+    },
+    "gender-ids": {
+      "name": "constant.other.baf.weidu",
+      "patterns": [
+        {
+          "match": "\\b(?i)(MALE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(FEMALE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(OTHER)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(NIETHER)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(BOTH)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(SUMMONED)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(ILLUSIONARY)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(EXTRA)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(SUMMONED_DEMON)\\b",
+          "name": "constant.other.baf.weidu"
+        }
+      ]
+    },
+    "hand-ids": {
+      "name": "constant.other.baf.weidu",
+      "patterns": [
+        {
+          "match": "\\b(?i)(MAINHAND)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(OFFHAND)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(?i)(BOTH)\\b",
           "name": "constant.other.baf.weidu"
         }
       ]

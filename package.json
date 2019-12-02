@@ -29,11 +29,24 @@
 		"onLanguage:fallout-ssl",
 		"onLanguage:weidu",
 		"onLanguage:weidu-dialog",
-		"onLanguage:weidu-baf"
+		"onLanguage:weidu-baf",
+		"onLanguage:weidu-slb",
+		"onLanguage:weidu-ssl"
 	],
 	"main": "./client/out/extension",
 	"contributes": {
 		"languages": [
+			{
+				"id": "weidu-ssl",
+				"aliases": [
+					"Infinity Engine Sword Coast Stratagems script",
+					"WeiDU SSL"
+				],
+				"extensions": [
+					".ssl"
+				],
+				"configuration": "./language-configurations/weidu-ssl.language-configuration.json"
+			},
 			{
 				"id": "fallout-ssl",
 				"aliases": [
@@ -104,6 +117,17 @@
 				"configuration": "./language-configurations/weidu.baf.language-configuration.json"
 			},
 			{
+				"id": "weidu-slb",
+				"aliases": [
+					"Infinity Engine Sword Coast Stratagems library",
+					"WeiDU SLB"
+				],
+				"extensions": [
+					".slb"
+				],
+				"configuration": "./language-configurations/weidu-slb.language-configuration.json"
+			},
+			{
 				"id": "weidu-tra",
 				"aliases": [
 					"Infinity Engine translation",
@@ -172,6 +196,16 @@
 				"language": "weidu-baf",
 				"scopeName": "source.baf.weidu",
 				"path": "./syntaxes/weidu.baf.tmLanguage.json"
+			},
+			{
+				"language": "weidu-slb",
+				"scopeName": "source.slb.weidu",
+				"path": "./syntaxes/weidu-slb.tmLanguage.json"
+			},
+			{
+				"language": "weidu-ssl",
+				"scopeName": "source.ssl.weidu",
+				"path": "./syntaxes/weidu-ssl.tmLanguage.json"
 			},
 			{
 				"language": "weidu-tra",

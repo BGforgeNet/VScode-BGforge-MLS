@@ -32,7 +32,7 @@ This extension contributes the following settings:
 * `bgforge.weidu.path`: Full path to WeiDU binary
 
 ### Hotkeys
-* `CTRL+R`: compile (Fallout `ssl`) or parse (WeiDU `tp2`) file, reporting errors if any.
+* `CTRL+R`: compile (Fallout `ssl`) or parse (WeiDU `tp2`) file, [reporting errors](#error-reporting) if any.
 
 ### Installation
 Search for BGforge in VScode marketplace, like any other extension. Alternatively, download the package from [Github releases](https://github.com/BGforgeNet/vscode-bgforge-mls/releases) tab and install it manually.
@@ -45,3 +45,7 @@ Search for BGforge in VScode marketplace, like any other extension. Alternativel
 ##### Fallout highlighting and hovers
 
 ![fallout highlighting and hover example](resources/fallout.png)
+
+##### Error reporting
+
+![error reporting example](resources/error_reporting.png)
