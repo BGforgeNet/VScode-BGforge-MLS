@@ -601,7 +601,12 @@ repository:
     name: variable.parameter.weidu
     patterns:
     - include: '#weidu-vars'
-    - match: '(%[^%]+%)'
+    - match: (%?)(%[^%]+%)(%?)
+      captures:
+        '1':
+          name: keyword.control.double-eval.weidu
+        '3':
+          name: keyword.control.double-eval.weidu
 
   numbers:
     patterns:
