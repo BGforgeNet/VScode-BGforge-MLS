@@ -1,0 +1,40 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Infinity Engine Sword Coast Stratagems script library",
+  "scopeName": "source.slb.weidu",
+  "patterns": [
+    {
+      "include": "#definitions"
+    },
+    {
+      "include": "source.baf.weidu#comments"
+    },
+    {
+      "include": "source.baf.weidu#identifiers"
+    },
+    {
+      "include": "source.baf.weidu#triggers"
+    },
+    {
+      "include": "source.baf.weidu#numbers"
+    }
+  ],
+  "repository": {
+    "definitions": {
+      "patterns": [
+        {
+          "match": "\\b(TARGET|TRIGGER)\\b=(\\w+)",
+          "name": "definition.slb.weidu",
+          "captures": {
+            "1": {
+              "name": "keyword.control.slb.weidu"
+            },
+            "2": {
+              "name": "variable.parameter.slb.weidu"
+            }
+          }
+        }
+      ]
+    }
+  }
+}
