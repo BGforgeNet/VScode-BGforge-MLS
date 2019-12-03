@@ -257,7 +257,7 @@ repository:
       - match: \b(?i)(IsWeaponRanged)\b
       - match: \b(?i)(Joins)\b
       - match: \b(?i)(Killed)\b
-      - match: \b(?i)(Kit)\b
+      - match: \b(Kit)\b
       - match: \b(?i)(Leaves)\b
       - match: \b(?i)(Level)\b
       - match: \b(?i)(LevelGT)\b
@@ -2145,7 +2145,7 @@ repository:
       - match: \b(?i)(IDENTIFYMODE)\b
       - match: \b(?i)(ENTANGLE)\b
       - match: \b(?i)(SANCTUARY)\b
-      - match: \b(?i)(MINORGLOBE)\b
+      - match: \b(MINORGLOBE)\b
       - match: \b(?i)(SHIELDGLOBE)\b
       - match: \b(?i)(GREASE)\b
       - match: \b(?i)(WEB)\b
@@ -2233,7 +2233,7 @@ repository:
       - match: \b(?i)(THRULLCHARM)\b
       - match: \b(?i)(SUMMONDISABLE)\b
       - match: \b(?i)(HITBONUS)\b
-      - match: \b(?i)(KIT)\b
+      - match: \b(KIT)\b
       - match: \b(?i)(FORCESURGE)\b
       - match: \b(?i)(SURGEMOD)\b
       - match: \b(?i)(IMPROVEDHASTE)\b

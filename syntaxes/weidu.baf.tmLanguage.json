@@ -779,7 +779,7 @@
           "name": "entity.name.function.trigger.baf.weidu"
         },
         {
-          "match": "\\b(?i)(Kit)\\b",
+          "match": "\\b(Kit)\\b",
           "name": "entity.name.function.trigger.baf.weidu"
         },
         {
@@ -8276,7 +8276,7 @@
           "name": "constant.other.baf.weidu"
         },
         {
-          "match": "\\b(?i)(MINORGLOBE)\\b",
+          "match": "\\b(MINORGLOBE)\\b",
           "name": "constant.other.baf.weidu"
         },
         {
@@ -8628,7 +8628,7 @@
           "name": "constant.other.baf.weidu"
         },
         {
-          "match": "\\b(?i)(KIT)\\b",
+          "match": "\\b(KIT)\\b",
           "name": "constant.other.baf.weidu"
         },
         {
