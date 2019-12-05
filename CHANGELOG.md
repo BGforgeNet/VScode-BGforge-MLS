@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.5.0
+- IE:
+  - Added support for Sword Coast Stratagems Scripting Language.
+  - Fixed macro invocation highlighting.
+  - Added vars highlighting in tra strings.
+  - Added many more IDS tokens.
+
 ## 1.4.0
 - IE:
   - Added syntax highlighting for IWD:EE `spell.ids` tokens.
