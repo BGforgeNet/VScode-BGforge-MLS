@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.5.1
+- IE:
+  - Really fixed macro invocation highlighting.
+
 ## 1.5.0
 - IE:
   - Added support for Sword Coast Stratagems Scripting Language.
