@@ -2089,22 +2089,27 @@
       ]
     },
     "macro-invocation": {
-      "name": "meta.function.invocation.weidu",
-      "patterns": [
-        {
-          "include": "#strings",
-          "name": "meta.function.invocation.weidu"
-        },
-        {
-          "match": "\\b(LAM|LAUNCH_ACTION_MACRO|LPM|LAUNCH_PATCH_MACRO)\\s+(~)(\\w+)(~)",
-          "captures": {
-            "1": {
-              "name": "entity.name.function"
-            }
-          },
-          "name": "meta.function.invocation.weidu"
+      "name": "meta.macro.invocation.weidu",
+      "begin": "\\b(LAM|LAUNCH_ACTION_MACRO|LPM|LAUNCH_PATCH_MACRO)\\b",
+      "end": "((\\w+)|(\\S+))",
+      "beginCaptures": {
+        "1": {
+          "name": "keyword.control.weidu"
         }
-      ]
+      },
+      "endCaptures": {
+        "2": {
+          "name": "entity.name.function"
+        },
+        "3": {
+          "name": "name.function.weidu",
+          "patterns": [
+            {
+              "include": "#strings"
+            }
+          ]
+        }
+      }
     },
     "function-invocation": {
       "name": "meta.function.invocation.weidu",
