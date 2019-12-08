@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.5.2
+- IE:
+  - Really really fixed macro invocation highlighting.
+
 ## 1.5.1
 - IE:
   - Really fixed macro invocation highlighting.
