@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.5.3
+- IE:
+  - Added highlighting for double variable references (`EVAL ~%%my%_var%~`).
+
 ## 1.5.2
 - IE:
   - Really really fixed macro invocation highlighting.
