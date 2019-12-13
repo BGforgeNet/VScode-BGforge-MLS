@@ -5,13 +5,14 @@
  | [__Screenshots__](#screenshots)
  | [__Installation__](#installation)
  | [__Settings__](#settings)
+ | [__SSL__](#ssl)
  | [__Hotkeys__](#hotkeys)
  | [__Forum__](https://forums.bgforge.net/viewforum.php?f=35)
  | [__Discord__](https://discord.gg/4Yqfggm)
  | [__Roadmap__](https://forums.bgforge.net/viewtopic.php?f=35&t=174&p=506)
  | [__Changelog__](CHANGELOG.md)
 
-BGforge MLS is a VScode extension adding support for Star-Trek Scripting Language (`ssl`) used in Fallout 1 and 2 games, and several file formats (`d`, `baf`, `tp2`, `tra`, `2da`) used by WeiDU/Infinity Engine.
+BGforge MLS is a VScode extension adding support for Star-Trek Scripting Language (`ssl`) used in Fallout 1 and 2 games, and several file formats (`d`, `baf`, `tp2`, `tra`, `2da`) used by WeiDU/Infinity Engine, as well as Sword Coast Stratagems Scripting Language (`ssl`/`slb`).
 
 ### Features
 * Syntax highlighting
@@ -30,6 +31,16 @@ This extension contributes the following settings:
 * `bgforge.fallout-ssl.output_directory`: Where to put the compiled Fallout SSL scripts. Absolute path or relative to source directory.
 * `bgforge.fallout-ssl.headers_directory`: Absolute path to directory containing Fallout headers, searched recursively.
 * `bgforge.weidu.path`: Full path to WeiDU binary
+
+### SSL
+
+Both Star-Trek Scripting Language and Sword Coast Stratagems Scripting Language use files with extension `ssl`. BGforge MLS defaults to Star-Trek Scripting Language (Fallout). If you need Sword Coast Stratagems Scripting Language instead, you can [set file associations](https://code.visualstudio.com/docs/languages/overview#_changing-the-language-for-the-selected-file) in VScode settings:
+```
+"files.associations": {
+  "*.ssl": "weidu-ssl"
+}
+```
+This can be set globally, or per project, so you can work on both types of projects simultaneously.
 
 ### Hotkeys
 * `CTRL+R`: compile (Fallout `ssl`) or parse (WeiDU `tp2`) file, [reporting errors](#error-reporting) if any.

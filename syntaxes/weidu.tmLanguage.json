@@ -2063,15 +2063,25 @@
           "name": "variable.parameter.weidu"
         },
         {
-          "match": "(%?)(%[^%]+%)(%?)",
+          "match": "(%)((\\w*)(%\\w+%)(\\w*))(%)",
           "captures": {
             "1": {
               "name": "keyword.control.double-eval.weidu"
             },
             "3": {
               "name": "keyword.control.double-eval.weidu"
+            },
+            "5": {
+              "name": "keyword.control.double-eval.weidu"
+            },
+            "6": {
+              "name": "keyword.control.double-eval.weidu"
             }
           },
+          "name": "variable.parameter.weidu"
+        },
+        {
+          "match": "(%\\w+%)",
           "name": "variable.parameter.weidu"
         }
       ]
@@ -2089,31 +2099,27 @@
       ]
     },
     "macro-invocation": {
-      "name": "meta.function.invocation.weidu",
-      "patterns": [
-        {
-          "include": "#comments",
-          "name": "meta.function.invocation.weidu"
-        },
-        {
-          "match": "\\b(LAM|LAUNCH_ACTION_MACRO|LPM|LAUNCH_PATCH_MACRO)\\s+(~)(\\w+)(~)",
-          "captures": {
-            "1": {
-              "name": "keyword.control.weidu"
-            },
-            "2": {
-              "name": "keyword.control.weidu"
-            },
-            "3": {
-              "name": "entity.name.function"
-            },
-            "4": {
-              "name": "keyword.control.weidu"
-            }
-          },
-          "name": "meta.function.invocation.weidu"
+      "name": "meta.macro.invocation.weidu",
+      "begin": "\\b(LAM|LAUNCH_ACTION_MACRO|LPM|LAUNCH_PATCH_MACRO)\\b",
+      "end": "((\\w+)|(\\S+))",
+      "beginCaptures": {
+        "1": {
+          "name": "keyword.control.weidu"
         }
-      ]
+      },
+      "endCaptures": {
+        "2": {
+          "name": "entity.name.function"
+        },
+        "3": {
+          "name": "name.function.weidu",
+          "patterns": [
+            {
+              "include": "#strings"
+            }
+          ]
+        }
+      }
     },
     "function-invocation": {
       "name": "meta.function.invocation.weidu",
@@ -2163,7 +2169,7 @@
       },
       "patterns": [
         {
-          "match": "\\b(STR_VAR|INT_VAR|RET|RET_VAL)\\b",
+          "match": "\\b(STR_VAR|INT_VAR|RET|RET_ARRAY)\\b",
           "name": "keyword.control.weidu"
         },
         {

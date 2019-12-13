@@ -1,5 +1,24 @@
 # Changelog
 
+## 1.5.3
+- IE:
+  - Added highlighting for double variable references (`EVAL ~%%my%_var%~`).
+
+## 1.5.2
+- IE:
+  - Really really fixed macro invocation highlighting.
+
+## 1.5.1
+- IE:
+  - Really fixed macro invocation highlighting.
+
+## 1.5.0
+- IE:
+  - Added support for Sword Coast Stratagems Scripting Language.
+  - Fixed macro invocation highlighting.
+  - Added vars highlighting in tra strings.
+  - Added many more IDS tokens.
+
 ## 1.4.0
 - IE:
   - Added syntax highlighting for IWD:EE `spell.ids` tokens.
