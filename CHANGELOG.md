@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.5.4
+- IE:
+  - Fixed highlighting for double variable references.
+
 ## 1.5.3
 - IE:
   - Added highlighting for double variable references (`EVAL ~%%my%_var%~`).
