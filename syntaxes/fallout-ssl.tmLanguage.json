@@ -1637,6 +1637,10 @@
           "name": "support.function.sfall.ssl"
         },
         {
+          "match": "\\b(?i)(reg_anim_callback)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
           "match": "\\b(?i)(reg_anim_change_fid)\\b",
           "name": "support.function.sfall.ssl"
         },
@@ -1965,6 +1969,10 @@
           "name": "support.function.sfall.ssl"
         },
         {
+          "match": "\\b(?i)(get_sfall_arg_at)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
           "match": "\\b(?i)(get_sfall_args)\\b",
           "name": "support.function.sfall.ssl"
         },
@@ -2249,6 +2257,14 @@
           "name": "support.function.sfall.ssl"
         },
         {
+          "match": "\\b(?i)(add_g_timer_event)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(add_trait)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
           "match": "\\b(?i)(create_message_window)\\b",
           "name": "support.function.sfall.ssl"
         },
@@ -2266,6 +2282,10 @@
         },
         {
           "match": "\\b(?i)(get_game_mode)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(get_inven_ap_cost)\\b",
           "name": "support.function.sfall.ssl"
         },
         {
@@ -2426,6 +2446,10 @@
         },
         {
           "match": "\\b(?i)(toggle_active_hand)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(unwield_slot)\\b",
           "name": "support.function.sfall.ssl"
         },
         {
@@ -2649,6 +2673,10 @@
           "name": "support.function.sfall.ssl"
         },
         {
+          "match": "\\b(?i)(get_text_width)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
           "match": "\\b(?i)(item_weight)\\b",
           "name": "support.function.sfall.ssl"
         },
@@ -2689,7 +2717,51 @@
           "name": "support.function.sfall.ssl"
         },
         {
+          "match": "\\b(?i)(set_window_flag)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(sfall_func0(\"hide_window\"))\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(sfall_func0(\"show_window\"))\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(sfall_func1(\"hide_window\", string winName))\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(sfall_func1(\"remove_timer_event\", int fixedParam))\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(sfall_func1(\"show_window\", string winName))\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(sfall_func2(\"string_compare\", string str1, string str2))\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(sfall_func3(\"objects_in_radius\", int tile, int radius, int elevation))\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(sfall_func3(\"string_compare\", string str1, string str2, int codePage))\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(sfall_func4(\"objects_in_radius\", int tile, int radius, int elevation, int type))\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
           "match": "\\b(?i)(spatial_radius)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(void sfall_func0(\"remove_timer_event\"))\\b",
           "name": "support.function.sfall.ssl"
         },
         {
@@ -2765,6 +2837,10 @@
           "name": "support.function.sfall.ssl"
         },
         {
+          "match": "\\b(?i)(string_format)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
           "match": "\\b(?i)(string_split)\\b",
           "name": "support.function.sfall.ssl"
         },
@@ -2810,6 +2886,10 @@
         },
         {
           "match": "\\b(?i)(path_find_to)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(tile_by_position)\\b",
           "name": "support.function.sfall.ssl"
         },
         {
@@ -3213,11 +3293,19 @@
           "name": "constant.language.ssl"
         },
         {
+          "match": "\\b(HOOK_STDPROCEDUREEND)\\b",
+          "name": "constant.language.ssl"
+        },
+        {
           "match": "\\b(HOOK_STEAL)\\b",
           "name": "constant.language.ssl"
         },
         {
           "match": "\\b(HOOK_SUBCOMBATDAMAGE)\\b",
+          "name": "constant.language.ssl"
+        },
+        {
+          "match": "\\b(HOOK_TARGETOBJECT)\\b",
           "name": "constant.language.ssl"
         },
         {
@@ -7914,18 +8002,6 @@
           "name": "constant.language.define.ssl"
         },
         {
-          "match": "\\b(DRUG_AGILITY)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
-          "match": "\\b(DRUG_INTELLIGENCE)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
-          "match": "\\b(DRUG_STRENGTH)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
           "match": "\\b(DUDE_CRAZY_POS)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -11026,11 +11102,19 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(HOOK_STDPROCEDURE_END)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(HOOK_STEAL)\\b",
           "name": "constant.language.define.ssl"
         },
         {
           "match": "\\b(HOOK_SUBCOMBATDAMAGE)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(HOOK_TARGETOBJECT)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -11527,10 +11611,6 @@
         },
         {
           "match": "\\b(LOAD_TILE)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
-          "match": "\\b(LOCALMAP)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -13195,6 +13275,10 @@
         },
         {
           "match": "\\b(OBJ_DATA_ROTATION)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(OBJ_DATA_SCRIPT_INDEX)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -27462,6 +27546,10 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(SPECIAL)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(SPRING_EVENING)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -28638,10 +28726,6 @@
           "name": "constant.language.define.ssl"
         },
         {
-          "match": "\\b(TIMER_CLOSE)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
           "match": "\\b(TIMER_CONTROL)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -29230,6 +29314,22 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(WIN_FLAG_EXCLUSIVE)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(WIN_FLAG_HIDDEN)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(WIN_FLAG_MOVEONTOP)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(WIN_FLAG_TRANSPARENT)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(WOODY_ACCEPTED)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -29391,10 +29491,6 @@
         },
         {
           "match": "\\b(ai_disposition_defensive)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
-          "match": "\\b(ai_disposition_none)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -36283,10 +36379,6 @@
           "name": "variable.language.define.ssl"
         },
         {
-          "match": "\\b(MVAR_Made_Car)\\b",
-          "name": "variable.language.define.ssl"
-        },
-        {
           "match": "\\b(MVAR_Made_Dobbs)\\b",
           "name": "variable.language.define.ssl"
         },
@@ -37229,6 +37321,10 @@
         },
         {
           "match": "\\b(checkPartyMembersNearDoor)\\b",
+          "name": "support.function.header.ssl"
+        },
+        {
+          "match": "\\b(check_filesystem_override)\\b",
           "name": "support.function.header.ssl"
         },
         {
@@ -39413,7 +39509,15 @@
           "name": "support.type.define.header.ssl"
         },
         {
+          "match": "\\b(add_global_timer_event)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
           "match": "\\b(add_item_pid)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(add_trait)\\b",
           "name": "support.type.define.header.ssl"
         },
         {
@@ -40201,6 +40305,10 @@
           "name": "support.type.define.header.ssl"
         },
         {
+          "match": "\\b(get_sfall_arg_at)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
           "match": "\\b(get_snuff_carlson)\\b",
           "name": "support.type.define.header.ssl"
         },
@@ -40226,6 +40334,10 @@
         },
         {
           "match": "\\b(get_string_pointer)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(get_text_width)\\b",
           "name": "support.type.define.header.ssl"
         },
         {
@@ -40298,6 +40410,10 @@
         },
         {
           "match": "\\b(heal_boxer)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(hide_window)\\b",
           "name": "support.type.define.header.ssl"
         },
         {
@@ -40925,6 +41041,10 @@
           "name": "support.type.define.header.ssl"
         },
         {
+          "match": "\\b(objects_in_radius)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
           "match": "\\b(objhas)\\b",
           "name": "support.type.define.header.ssl"
         },
@@ -41154,6 +41274,10 @@
         },
         {
           "match": "\\b(remove_pid_qty)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(remove_timer_event)\\b",
           "name": "support.type.define.header.ssl"
         },
         {
@@ -41937,6 +42061,10 @@
           "name": "support.type.define.header.ssl"
         },
         {
+          "match": "\\b(set_window_flag)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
           "match": "\\b(set_wright_flag)\\b",
           "name": "support.type.define.header.ssl"
         },
@@ -41958,6 +42086,10 @@
         },
         {
           "match": "\\b(shihacked_flag)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(show_window)\\b",
           "name": "support.type.define.header.ssl"
         },
         {
@@ -42014,10 +42146,6 @@
         },
         {
           "match": "\\b(sort_map_value)\\b",
-          "name": "support.type.define.header.ssl"
-        },
-        {
-          "match": "\\b(sort_map_value_desc)\\b",
           "name": "support.type.define.header.ssl"
         },
         {
@@ -42121,6 +42249,18 @@
           "name": "support.type.define.header.ssl"
         },
         {
+          "match": "\\b(string_compare)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(string_compare_locale)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(string_format)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
           "match": "\\b(string_replace)\\b",
           "name": "support.type.define.header.ssl"
         },
@@ -42190,6 +42330,10 @@
         },
         {
           "match": "\\b(tile_boxing_gym_ring)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(tile_by_position)\\b",
           "name": "support.type.define.header.ssl"
         },
         {
@@ -42482,6 +42626,10 @@
         },
         {
           "match": "\\b(unset_v13_status)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(unwield_slot)\\b",
           "name": "support.type.define.header.ssl"
         },
         {

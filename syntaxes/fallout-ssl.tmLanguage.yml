@@ -466,6 +466,7 @@ repository:
     - match: \b(?i)(set_stat_max)\b
     - match: \b(?i)(set_stat_min)\b
     - match: \b(?i)(reg_anim_animate_and_hide)\b
+    - match: \b(?i)(reg_anim_callback)\b
     - match: \b(?i)(reg_anim_change_fid)\b
     - match: \b(?i)(reg_anim_combat_check)\b
     - match: \b(?i)(reg_anim_destroy)\b
@@ -548,6 +549,7 @@ repository:
     - match: \b(?i)(set_shader_texture)\b
     - match: \b(?i)(set_shader_vector)\b
     - match: \b(?i)(get_sfall_arg)\b
+    - match: \b(?i)(get_sfall_arg_at)\b
     - match: \b(?i)(get_sfall_args)\b
     - match: \b(?i)(init_hook)\b
     - match: \b(?i)(register_hook)\b
@@ -619,11 +621,14 @@ repository:
     - match: \b(?i)(set_script)\b
     - match: \b(?i)(set_self)\b
     - match: \b(?i)(active_hand)\b
+    - match: \b(?i)(add_g_timer_event)\b
+    - match: \b(?i)(add_trait)\b
     - match: \b(?i)(create_message_window)\b
     - match: \b(?i)(create_spatial)\b
     - match: \b(?i)(game_loaded)\b
     - match: \b(?i)(gdialog_get_barter_mod)\b
     - match: \b(?i)(get_game_mode)\b
+    - match: \b(?i)(get_inven_ap_cost)\b
     - match: \b(?i)(get_kill_counter)\b
     - match: \b(?i)(get_light_level)\b
     - match: \b(?i)(get_npc_level)\b
@@ -664,6 +669,7 @@ repository:
     - match: \b(?i)(sneak_success)\b
     - match: \b(?i)(stop_game)\b
     - match: \b(?i)(toggle_active_hand)\b
+    - match: \b(?i)(unwield_slot)\b
     - match: \b(?i)(get_outline)\b
     - match: \b(?i)(outlined_object)\b
     - match: \b(?i)(set_outline)\b
@@ -719,6 +725,7 @@ repository:
     - match: \b(?i)(get_metarule_table)\b
     - match: \b(?i)(get_object_ai_data)\b
     - match: \b(?i)(get_object_data)\b
+    - match: \b(?i)(get_text_width)\b
     - match: \b(?i)(item_weight)\b
     - match: \b(?i)(metarule_exist)\b
     - match: \b(?i)(npc_engine_level_up)\b
@@ -729,7 +736,18 @@ repository:
     - match: \b(?i)(set_rest_heal_time)\b
     - match: \b(?i)(set_rest_mode)\b
     - match: \b(?i)(set_unique_id)\b
+    - match: \b(?i)(set_window_flag)\b
+    - match: \b(?i)(sfall_func0("hide_window"))\b
+    - match: \b(?i)(sfall_func0("show_window"))\b
+    - match: \b(?i)(sfall_func1("hide_window", string winName))\b
+    - match: \b(?i)(sfall_func1("remove_timer_event", int fixedParam))\b
+    - match: \b(?i)(sfall_func1("show_window", string winName))\b
+    - match: \b(?i)(sfall_func2("string_compare", string str1, string str2))\b
+    - match: \b(?i)(sfall_func3("objects_in_radius", int tile, int radius, int elevation))\b
+    - match: \b(?i)(sfall_func3("string_compare", string str1, string str2, int codePage))\b
+    - match: \b(?i)(sfall_func4("objects_in_radius", int tile, int radius, int elevation, int type))\b
     - match: \b(?i)(spatial_radius)\b
+    - match: \b(?i)(void sfall_func0("remove_timer_event"))\b
     - match: \b(?i)(get_available_skill_points)\b
     - match: \b(?i)(get_critter_skill_points)\b
     - match: \b(?i)(mod_skill_points_per_level)\b
@@ -748,6 +766,7 @@ repository:
     - match: \b(?i)(set_pc_extra_stat)\b
     - match: \b(?i)(charcode)\b
     - match: \b(?i)(get_string_pointer)\b
+    - match: \b(?i)(string_format)\b
     - match: \b(?i)(string_split)\b
     - match: \b(?i)(strlen)\b
     - match: \b(?i)(substr)\b
@@ -760,6 +779,7 @@ repository:
     - match: \b(?i)(obj_blocking_line)\b
     - match: \b(?i)(obj_blocking_tile)\b
     - match: \b(?i)(path_find_to)\b
+    - match: \b(?i)(tile_by_position)\b
     - match: \b(?i)(tile_get_objs)\b
     - match: \b(?i)(tile_light)\b
     - match: \b(?i)(tile_refresh_display)\b
@@ -871,8 +891,10 @@ repository:
     - match: \b(HOOK_SETLIGHTING)\b
     - match: \b(HOOK_SNEAK)\b
     - match: \b(HOOK_STDPROCEDURE)\b
+    - match: \b(HOOK_STDPROCEDUREEND)\b
     - match: \b(HOOK_STEAL)\b
     - match: \b(HOOK_SUBCOMBATDAMAGE)\b
+    - match: \b(HOOK_TARGETOBJECT)\b
     - match: \b(HOOK_TOHIT)\b
     - match: \b(HOOK_USEANIMOBJ)\b
     - match: \b(HOOK_USEOBJ)\b
@@ -2048,9 +2070,6 @@ repository:
     - match: \b(DOROTHY_YARD_TILE)\b
     - match: \b(DORTHY_POS_INVIS)\b
     - match: \b(DOWNLOAD_HOLODISK)\b
-    - match: \b(DRUG_AGILITY)\b
-    - match: \b(DRUG_INTELLIGENCE)\b
-    - match: \b(DRUG_STRENGTH)\b
     - match: \b(DUDE_CRAZY_POS)\b
     - match: \b(DUDE_ESCAPE_POS)\b
     - match: \b(DUDE_FIGURED_FAKE_MAP)\b
@@ -2826,8 +2845,10 @@ repository:
     - match: \b(HOOK_SETLIGHTING)\b
     - match: \b(HOOK_SNEAK)\b
     - match: \b(HOOK_STDPROCEDURE)\b
+    - match: \b(HOOK_STDPROCEDURE_END)\b
     - match: \b(HOOK_STEAL)\b
     - match: \b(HOOK_SUBCOMBATDAMAGE)\b
+    - match: \b(HOOK_TARGETOBJECT)\b
     - match: \b(HOOK_TOHIT)\b
     - match: \b(HOOK_USEANIMOBJ)\b
     - match: \b(HOOK_USEOBJ)\b
@@ -2952,7 +2973,6 @@ repository:
     - match: \b(LOADGAME)\b
     - match: \b(LOAD_MAP_WHORE_CUT_JAIL)\b
     - match: \b(LOAD_TILE)\b
-    - match: \b(LOCALMAP)\b
     - match: \b(LONG_HAIR)\b
     - match: \b(LOW_REACTION)\b
     - match: \b(MAGAZINES_ASSIGNED)\b
@@ -3369,6 +3389,7 @@ repository:
     - match: \b(OBJ_DATA_ID)\b
     - match: \b(OBJ_DATA_PID)\b
     - match: \b(OBJ_DATA_ROTATION)\b
+    - match: \b(OBJ_DATA_SCRIPT_INDEX)\b
     - match: \b(OBJ_DATA_SID)\b
     - match: \b(OBJ_DATA_TILENUM)\b
     - match: \b(OBJ_DATA_WHO_HIT_ME)\b
@@ -6935,6 +6956,7 @@ repository:
     - match: \b(SPEAR_FINISHED)\b
     - match: \b(SPEAR_GET_FLINT)\b
     - match: \b(SPEAR_GET_POWDER)\b
+    - match: \b(SPECIAL)\b
     - match: \b(SPRING_EVENING)\b
     - match: \b(SPRING_MORNING)\b
     - match: \b(SP_ACCEPTED)\b
@@ -7229,7 +7251,6 @@ repository:
     - match: \b(TIMERSHOPOPEN)\b
     - match: \b(TIMER_CHECK_POWER)\b
     - match: \b(TIMER_CLEAR_CONTROL)\b
-    - match: \b(TIMER_CLOSE)\b
     - match: \b(TIMER_CONTROL)\b
     - match: \b(TIMER_DO_FLICKER)\b
     - match: \b(TIMER_DUDE_SEE)\b
@@ -7377,6 +7398,10 @@ repository:
     - match: \b(WIDOW_PAID)\b
     - match: \b(WINTER_EVENING)\b
     - match: \b(WINTER_MORNING)\b
+    - match: \b(WIN_FLAG_EXCLUSIVE)\b
+    - match: \b(WIN_FLAG_HIDDEN)\b
+    - match: \b(WIN_FLAG_MOVEONTOP)\b
+    - match: \b(WIN_FLAG_TRANSPARENT)\b
     - match: \b(WOODY_ACCEPTED)\b
     - match: \b(WOODY_FOUND)\b
     - match: \b(WOODY_REFUSED)\b
@@ -7418,7 +7443,6 @@ repository:
     - match: \b(ai_disposition_coward)\b
     - match: \b(ai_disposition_custom)\b
     - match: \b(ai_disposition_defensive)\b
-    - match: \b(ai_disposition_none)\b
     - match: \b(ai_distance_charge)\b
     - match: \b(ai_distance_on_your_own)\b
     - match: \b(ai_distance_snipe)\b
@@ -9142,7 +9166,6 @@ repository:
     - match: \b(MVAR_MELCHIOR_PET_NUM_2)\b
     - match: \b(MVAR_MELCHIOR_PET_NUM_3)\b
     - match: \b(MVAR_MELCHIOR_PET_NUM_4)\b
-    - match: \b(MVAR_Made_Car)\b
     - match: \b(MVAR_Made_Dobbs)\b
     - match: \b(MVAR_Made_Froggy)\b
     - match: \b(MVAR_Made_Payoff)\b
@@ -9381,6 +9404,7 @@ repository:
     - match: \b(Choose_Pid)\b
     - match: \b(_PURGE_all_saved_arrays)\b
     - match: \b(checkPartyMembersNearDoor)\b
+    - match: \b(check_filesystem_override)\b
     - match: \b(critter_p_proc)\b
     - match: \b(doVaultBoxerAppearance)\b
     - match: \b(final_fight_lock_doors)\b
@@ -9928,7 +9952,9 @@ repository:
     - match: \b(Warn_Player)\b
     - match: \b(_ITEM_NAME)\b
     - match: \b(add_extra_msg_file)\b
+    - match: \b(add_global_timer_event)\b
     - match: \b(add_item_pid)\b
+    - match: \b(add_trait)\b
     - match: \b(amt_cost_barter)\b
     - match: \b(amt_food_digested_in_time)\b
     - match: \b(amt_time_has_passed)\b
@@ -10125,6 +10151,7 @@ repository:
     - match: \b(get_salvatore_pistol)\b
     - match: \b(get_saved_array_new_map)\b
     - match: \b(get_self_family)\b
+    - match: \b(get_sfall_arg_at)\b
     - match: \b(get_snuff_carlson)\b
     - match: \b(get_snuff_westin)\b
     - match: \b(get_still_mission)\b
@@ -10132,6 +10159,7 @@ repository:
     - match: \b(get_stolen_car)\b
     - match: \b(get_stranger_flag)\b
     - match: \b(get_string_pointer)\b
+    - match: \b(get_text_width)\b
     - match: \b(get_track_lloyd)\b
     - match: \b(get_tribute)\b
     - match: \b(get_westin_flag)\b
@@ -10150,6 +10178,7 @@ repository:
     - match: \b(have_quickie_time_obj)\b
     - match: \b(have_sex_time_obj)\b
     - match: \b(heal_boxer)\b
+    - match: \b(hide_window)\b
     - match: \b(hs_move_obj_to_tile)\b
     - match: \b(hs_timer_add)\b
     - match: \b(in_range)\b
@@ -10306,6 +10335,7 @@ repository:
     - match: \b(obj_wright_house)\b
     - match: \b(obj_wright_property)\b
     - match: \b(obj_wright_richards_room)\b
+    - match: \b(objects_in_radius)\b
     - match: \b(objhas)\b
     - match: \b(off_myron_flag)\b
     - match: \b(off_wright_flag)\b
@@ -10364,6 +10394,7 @@ repository:
     - match: \b(remove_blocking_hex)\b
     - match: \b(remove_item_pid)\b
     - match: \b(remove_pid_qty)\b
+    - match: \b(remove_timer_event)\b
     - match: \b(reverse_array)\b
     - match: \b(rm_caravan_brahmin)\b
     - match: \b(rm_caravan_carts)\b
@@ -10559,12 +10590,14 @@ repository:
     - match: \b(set_watcher)\b
     - match: \b(set_westin_flag)\b
     - match: \b(set_westin_price)\b
+    - match: \b(set_window_flag)\b
     - match: \b(set_wright_flag)\b
     - match: \b(setup_set_made_man_name)\b
     - match: \b(setup_set_porn_star_name)\b
     - match: \b(setup_set_prizefighter_name)\b
     - match: \b(shi_whirly)\b
     - match: \b(shihacked_flag)\b
+    - match: \b(show_window)\b
     - match: \b(shuffle_array)\b
     - match: \b(simulate_push)\b
     - match: \b(skill_success)\b
@@ -10579,7 +10612,6 @@ repository:
     - match: \b(sort_array_reverse)\b
     - match: \b(sort_map_reverse)\b
     - match: \b(sort_map_value)\b
-    - match: \b(sort_map_value_desc)\b
     - match: \b(spatial_radius)\b
     - match: \b(spleen_flag)\b
     - match: \b(split_stuart_deal)\b
@@ -10605,6 +10637,9 @@ repository:
     - match: \b(still_quest)\b
     - match: \b(stock_pid_qty)\b
     - match: \b(stock_weapon_obj)\b
+    - match: \b(string_compare)\b
+    - match: \b(string_compare_locale)\b
+    - match: \b(string_format)\b
     - match: \b(string_replace)\b
     - match: \b(string_starts_with)\b
     - match: \b(struggle_flag)\b
@@ -10623,6 +10658,7 @@ repository:
     - match: \b(tile_bishop_property)\b
     - match: \b(tile_boxing_gym_building)\b
     - match: \b(tile_boxing_gym_ring)\b
+    - match: \b(tile_by_position)\b
     - match: \b(tile_cats_paw_building)\b
     - match: \b(tile_get_next_critter)\b
     - match: \b(tile_has_rad_goo)\b
@@ -10696,6 +10732,7 @@ repository:
     - match: \b(unset_spec_flag)\b
     - match: \b(unset_unique_id)\b
     - match: \b(unset_v13_status)\b
+    - match: \b(unwield_slot)\b
     - match: \b(up_sex_status_amt)\b
     - match: \b(v13_status)\b
     - match: \b(v15_status)\b
