@@ -503,8 +503,8 @@ repository:
   weidu-keywords:
     name: keyword.control.weidu
     patterns:
-    - match: \b(BEGIN|END|THEN|IN)\b
-    - match: \b(AFTER|BEFORE|LAST|FIRST|AT)\b
+    - match: \b(BEGIN|END|THEN|IN|ELSE)\b
+    - match: \b(AFTER|BEFORE|LAST|FIRST|AT|THIS)\b
     - match: \b(INT_VAR|STR_VAR|RET|RET_ARRAY)\b
 
   strings:
