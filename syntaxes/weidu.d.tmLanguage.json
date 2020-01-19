@@ -60,7 +60,7 @@
     "numbers": {
       "patterns": [
         {
-          "match": "\\b([0-9]+)\\b",
+          "match": "\\b(([0-9]+)|(0x[0-9a-fA-F]+))\\b",
           "name": "constant.numeric.d.weidu"
         }
       ]
