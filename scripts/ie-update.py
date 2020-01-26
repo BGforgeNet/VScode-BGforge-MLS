@@ -73,11 +73,15 @@ for d in defines:
 # dump to completion
 with open(completion_yaml) as yf:
   data = yaml.load(yf)
+  data[completion_stanza]["items"] = completion_list
+  data[completion_stanza]["type"] = 21 # constant
 with open(completion_yaml, 'w') as yf:
   yaml.dump(data, yf)
 
 # dump function and hooks to syntax highlight
 with open(highlight_yaml) as yf:
   data = yaml.load(yf)
+  data["repository"][highlight_stanza]["patterns"] = highlight_list
+  data["repository"][highlight_stanza]["name"] = "constant.language.ielib.weidu"
 with open(highlight_yaml, 'w') as yf:
   yaml.dump(data, yf)
