@@ -1888,3 +1888,1095 @@ tp2-value:
       doc: Return value
     - name: RET_ARRAY
       doc: Return value (arrays)
+
+ielib:
+  type: 21 # constant
+  items:
+    - name: DISPEL_no_MR_BYPASS_yes
+      detail: 2
+    - name: DISPEL_yes_MR_BYPASS_no
+      detail: 1
+    - name: DISPEL_yes_MR_BYPASS_yes
+      detail: 3
+    - name: ICON_ability_score_drained
+      detail: 91
+    - name: ICON_able_to_poison_weapons
+      detail: 95
+    - name: ICON_absolute_immunity
+      detail: 118
+    - name: ICON_acid
+      detail: 102
+    - name: ICON_aid
+      detail: 167
+    - name: ICON_animal_rage
+      detail: 173
+    - name: ICON_assassination
+      detail: 156
+    - name: ICON_at_a_store
+      detail: 89
+    - name: ICON_aura_of_flaming_death
+      detail: 160
+    - name: ICON_avoid_death
+      detail: 155
+    - name: ICON_bad_luck
+      detail: 33
+    - name: ICON_barbarian_rage
+      detail: 138
+    - name: ICON_bard_song
+      detail: 40
+    - name: ICON_barkskin
+      detail: 20
+    - name: ICON_berserk
+      detail: 4
+    - name: ICON_blade_barrier
+      detail: 98
+    - name: ICON_bleeding
+      detail: 137
+    - name: ICON_blessed
+      detail: 17
+    - name: ICON_blind
+      detail: 8
+    - name: ICON_blood_rage
+      detail: 176
+    - name: ICON_boon_of_lathander
+      detail: 139
+    - name: ICON_called_shot
+      detail: 82
+    - name: ICON_cats_grace
+      detail: 185
+    - name: ICON_champions_strength
+      detail: 50
+    - name: ICON_chant
+      detail: 18
+    - name: ICON_chaos
+      detail: 47
+    - name: ICON_chaos_of_battle
+      detail: 192
+    - name: ICON_chaos_shield
+      detail: 163
+    - name: ICON_chaotic_commands
+      detail: 134
+    - name: ICON_charm
+      detail: 0
+    - name: ICON_cloak_of_fear
+      detail: 61
+    - name: ICON_confusion
+      detail: 3
+    - name: ICON_contingency_active
+      detail: 75
+    - name: ICON_courage
+      detail: 187
+    - name: ICON_critical_strike
+      detail: 152
+    - name: ICON_cursed
+      detail: 35
+    - name: ICON_deaf
+      detail: 112
+    - name: ICON_death_ward
+      detail: 99
+    - name: ICON_deathblow
+      detail: 154
+    - name: ICON_decaying
+      detail: 101
+    - name: ICON_defensive_harmony
+      detail: 49
+    - name: ICON_defensive_stance
+      detail: 85
+    - name: ICON_detecting_traps
+      detail: 109
+    - name: ICON_dialog_mode
+      detail: 88
+    - name: ICON_dire_charm
+      detail: 1
+    - name: ICON_domination
+      detail: 43
+    - name: ICON_doom
+      detail: 100
+    - name: ICON_draw_upon_holy_might
+      detail: 135
+    - name: ICON_dying
+      detail: 51
+    - name: ICON_earth_elemental_transformation
+      detail: 165
+    - name: ICON_enchanted_weapon
+      detail: 188
+    - name: ICON_energy_drain_mindflayer
+      detail: 59
+    - name: ICON_energy_drain_psionic
+      detail: 59
+    - name: ICON_enfeebled
+      detail: 113
+    - name: ICON_enraged
+      detail: 141
+    - name: ICON_entangled
+      detail: 144
+    - name: ICON_ether_gate
+      detail: 190
+    - name: ICON_evasion
+      detail: 157
+    - name: ICON_exaltation
+      detail: 174
+    - name: ICON_farsight
+      detail: 120
+    - name: ICON_fatigue
+      detail: 39
+    - name: ICON_feebleminded
+      detail: 48
+    - name: ICON_fire_elemental_transformation
+      detail: 164
+    - name: ICON_fire_shield_blue
+      detail: 69
+    - name: ICON_fire_shield_red
+      detail: 68
+    - name: ICON_free_action
+      detail: 19
+    - name: ICON_friends
+      detail: 115
+    - name: ICON_ghost_armor
+      detail: 127
+    - name: ICON_glass_dust
+      detail: 97
+    - name: ICON_glitterdust
+      detail: 128
+    - name: ICON_globe_of_blades
+      detail: 161
+    - name: ICON_globe_of_invulnerability
+      detail: 121
+    - name: ICON_good_luck
+      detail: 32
+    - name: ICON_grease
+      detail: 145
+    - name: ICON_greater_deathblow
+      detail: 153
+    - name: ICON_greater_evasion
+      detail: 158
+    - name: ICON_greater_malison
+      detail: 45
+    - name: ICON_greater_shield_of_lathander
+      detail: 165
+    - name: ICON_greater_whirlwind
+      detail: 150
+    - name: ICON_hardiness
+      detail: 147
+    - name: ICON_haste
+      detail: 38
+    - name: ICON_held
+      detail: 13
+    - name: ICON_heroism
+      detail: 22
+    - name: ICON_holy_power
+      detail: 60
+    - name: ICON_hope
+      detail: 186
+    - name: ICON_hopelessness
+      detail: 44
+    - name: ICON_immunity_abjuration
+      detail: 196
+    - name: ICON_immunity_alteration
+      detail: 203
+    - name: ICON_immunity_conjuration
+      detail: 197
+    - name: ICON_immunity_divination
+      detail: 198
+    - name: ICON_immunity_enchantment
+      detail: 199
+    - name: ICON_immunity_evocation
+      detail: 201
+    - name: ICON_immunity_illusion
+      detail: 200
+    - name: ICON_immunity_necromancy
+      detail: 202
+    - name: ICON_impervious_sanctity_of_mind
+      detail: 170
+    - name: ICON_imprisonment
+      detail: 79
+    - name: ICON_improved_alacrity
+      detail: 159
+    - name: ICON_improved_chaos_shield
+      detail: 162
+    - name: ICON_improved_haste
+      detail: 110
+    - name: ICON_improved_mantle
+      detail: 119
+    - name: ICON_increased_movement_rate
+      detail: 195
+    - name: ICON_infravision
+      detail: 114
+    - name: ICON_intelligence_drained_by_mind_flayer
+      detail: 86
+    - name: ICON_intoxicated
+      detail: 5
+    - name: ICON_invulnerable
+      detail: 23
+    - name: ICON_iron_body
+      detail: 172
+    - name: ICON_iron_skins
+      detail: 62
+    - name: ICON_kai
+      detail: 81
+    - name: ICON_level_drain
+      detail: 53
+    - name: ICON_magic_armour
+      detail: 12
+    - name: ICON_magic_flute
+      detail: 151
+    - name: ICON_magic_resistance
+      detail: 63
+    - name: ICON_magic_resistance_lowered
+      detail: 106
+    - name: ICON_magnetized
+      detail: 94
+    - name: ICON_mantle
+      detail: 104
+    - name: ICON_mareks_poison
+      detail: 193
+    - name: ICON_master_thievery
+      detail: 58
+    - name: ICON_maze
+      detail: 78
+    - name: ICON_mental_combat
+      detail: 131
+    - name: ICON_mind_blank
+      detail: 166
+    - name: ICON_mind_shield
+      detail: 52
+    - name: ICON_minor_globe_of_invulnerability
+      detail: 122
+    - name: ICON_miscast_magic
+      detail: 105
+    - name: ICON_mislead
+      detail: 74
+    - name: ICON_nauseated
+      detail: 126
+    - name: ICON_negative_plane_protection
+      detail: 90
+    - name: ICON_offensive_stance
+      detail: 84
+    - name: ICON_otilukes_resilient_sphere
+      detail: 125
+    - name: ICON_pain
+      detail: 169
+    - name: ICON_panic
+      detail: 36
+    - name: ICON_perception
+      detail: 57
+    - name: ICON_petrified
+      detail: 171
+    - name: ICON_phased
+      detail: 168
+    - name: ICON_physical_mirror
+      detail: 132
+    - name: ICON_poisoned
+      detail: 6
+    - name: ICON_polymorph_self
+      detail: 54
+    - name: ICON_polymorphed
+      detail: 124
+    - name: ICON_power_attack
+      detail: 148
+    - name: ICON_prayer
+      detail: 183
+    - name: ICON_projected_image
+      detail: 77
+    - name: ICON_protected_from_energy
+      detail: 93
+    - name: ICON_protected_from_the_elements
+      detail: 76
+    - name: ICON_protection_from_acid
+      detail: 24
+    - name: ICON_protection_from_cold
+      detail: 25
+    - name: ICON_protection_from_electricity
+      detail: 27
+    - name: ICON_protection_from_evil
+      detail: 9
+    - name: ICON_protection_from_fire
+      detail: 16
+    - name: ICON_protection_from_magic
+      detail: 28
+    - name: ICON_protection_from_magic_weapons
+      detail: 71
+    - name: ICON_protection_from_magical_energy
+      detail: 73
+    - name: ICON_protection_from_missiles
+      detail: 11
+    - name: ICON_protection_from_normal_weapons
+      detail: 70
+    - name: ICON_protection_from_petrification
+      detail: 10
+    - name: ICON_protection_from_poison
+      detail: 30
+    - name: ICON_protection_from_undead
+      detail: 29
+    - name: ICON_quivering_palm
+      detail: 143
+    - name: ICON_recitation
+      detail: 175
+    - name: ICON_regenerate
+      detail: 42
+    - name: ICON_regenerating
+      detail: 87
+    - name: ICON_regeneration
+      detail: 56
+    - name: ICON_repulse_undead
+      detail: 133
+    - name: ICON_repulsing_undead
+      detail: 66
+    - name: ICON_repulsion
+      detail: 194
+    - name: ICON_resist_fear
+      detail: 37
+    - name: ICON_resist_fire_cold
+      detail: 26
+    - name: ICON_righteous_magic
+      detail: 64
+    - name: ICON_righteous_wrath_of_the_faithful
+      detail: 184
+    - name: ICON_rigid_thinking
+      detail: 2
+    - name: ICON_setting_trap
+      detail: 96
+    - name: ICON_shamanic_dance
+      detail: 191
+    - name: ICON_shield_of_lathander
+      detail: 164
+    - name: ICON_shield_of_the_archons
+      detail: 116
+    - name: ICON_shielded
+      detail: 15
+    - name: ICON_silenced
+      detail: 34
+    - name: ICON_sleep
+      detail: 14
+    - name: ICON_slow
+      detail: 41
+    - name: ICON_smite
+      detail: 146
+    - name: ICON_spell_deflection
+      detail: 67
+    - name: ICON_spell_failure
+      detail: 83
+    - name: ICON_spell_immunity
+      detail: 107
+    - name: ICON_spell_sequencer_active
+      detail: 92
+    - name: ICON_spell_shield
+      detail: 123
+    - name: ICON_spell_trap
+      detail: 117
+    - name: ICON_spell_trigger
+      detail: 111
+    - name: ICON_spell_turning
+      detail: 65
+    - name: ICON_spirit_armour
+      detail: 46
+    - name: ICON_spirit_ward
+      detail: 189
+    - name: ICON_stoneskin
+      detail: 80
+    - name: ICON_storm_shield
+      detail: 140
+    - name: ICON_strength
+      detail: 21
+    - name: ICON_strength_of_one
+      detail: 136
+    - name: ICON_stun
+      detail: 55
+    - name: ICON_stunning_blow
+      detail: 142
+    - name: ICON_tensers_transformation
+      detail: 72
+    - name: ICON_the_ballad_of_three_heroes
+      detail: 177
+    - name: ICON_the_sirens_yearning
+      detail: 181
+    - name: ICON_the_song_of_kaudies
+      detail: 180
+    - name: ICON_the_tale_of_curran_strongheart
+      detail: 178
+    - name: ICON_true_seeing
+      detail: 108
+    - name: ICON_tymoras_melody
+      detail: 179
+    - name: ICON_unconscious
+      detail: 130
+    - name: ICON_vocalize
+      detail: 103
+    - name: ICON_war_chant_of_sith
+      detail: 182
+    - name: ICON_webbed
+      detail: 129
+    - name: ICON_whirlwind_attack
+      detail: 149
+    - name: NONMAGICAL
+      detail: 0
+    - name: OPCODE_HLA_denotation
+      detail: 313
+    - name: OPCODE_ac_vs_creature_type
+      detail: 219
+    - name: OPCODE_ac_vs_damage_type
+      detail: 0
+    - name: OPCODE_acid_resist_mod
+      detail: 27
+    - name: OPCODE_add_map_marker
+      detail: 253
+    - name: OPCODE_aid
+      detail: 129
+    - name: OPCODE_alignment_change
+      detail: 57
+    - name: OPCODE_alignment_invert
+      detail: 56
+    - name: OPCODE_animation_change
+      detail: 53
+    - name: OPCODE_animation_removal
+      detail: 315
+    - name: OPCODE_apply_effect_item
+      detail: 182
+    - name: OPCODE_apply_effect_itemtype
+      detail: 183
+    - name: OPCODE_apply_repeating_eff
+      detail: 272
+    - name: OPCODE_attack_nearest_creature
+      detail: 247
+    - name: OPCODE_attack_speed_factor
+      detail: 190
+    - name: OPCODE_attacks_per_round_mod
+      detail: 1
+    - name: OPCODE_aura_cleansing
+      detail: 188
+    - name: OPCODE_avatar_removal
+      detail: 271
+    - name: OPCODE_backstab
+      detail: 263
+    - name: OPCODE_backstab_every_hit
+      detail: 303
+    - name: OPCODE_bless
+      detail: 130
+    - name: OPCODE_blindness
+      detail: 74
+    - name: OPCODE_bounce_opcode
+      detail: 198
+    - name: OPCODE_bounce_projectile
+      detail: 197
+    - name: OPCODE_bounce_school_decrement
+      detail: 227
+    - name: OPCODE_bounce_secondary_type
+      detail: 203
+    - name: OPCODE_bounce_secondary_type_decrement
+      detail: 228
+    - name: OPCODE_bounce_specified_spell
+      detail: 207
+    - name: OPCODE_bounce_spell_level
+      detail: 199
+    - name: OPCODE_bounce_spell_school
+      detail: 202
+    - name: OPCODE_button_disable_button
+      detail: 144
+    - name: OPCODE_button_enable_button
+      detail: 279
+    - name: OPCODE_can_use_any_item
+      detail: 302
+    - name: OPCODE_cant_use_item
+      detail: 180
+    - name: OPCODE_cant_use_itemtype
+      detail: 181
+    - name: OPCODE_cast_spell_at_creature
+      detail: 146
+    - name: OPCODE_cast_spell_at_point
+      detail: 148
+    - name: OPCODE_cast_spell_on
+      detail: 232
+    - name: OPCODE_casting_glow
+      detail: 140
+    - name: OPCODE_casting_level_mod
+      detail: 191
+    - name: OPCODE_casting_time_mod
+      detail: 189
+    - name: OPCODE_change_bard_song
+      detail: 251
+    - name: OPCODE_chaos_shield
+      detail: 299
+    - name: OPCODE_character_animation_change
+      detail: 138
+    - name: OPCODE_charisma_mod
+      detail: 6
+    - name: OPCODE_charm_charm_specific_creature
+      detail: 5
+    - name: OPCODE_charm_control_creature
+      detail: 241
+    - name: OPCODE_check_for_berserk
+      detail: 245
+    - name: OPCODE_clear_fog_of
+      detail: 268
+    - name: OPCODE_cold_resist_mod
+      detail: 28
+    - name: OPCODE_colour_change_by_rgb
+      detail: 8
+    - name: OPCODE_colour_glow_by_rgb_brief
+      detail: 50
+    - name: OPCODE_colour_glow_pulse
+      detail: 9
+    - name: OPCODE_colour_set_character_colours_by
+      detail: 7
+    - name: OPCODE_colour_strong_dark_by_rgb
+      detail: 51
+    - name: OPCODE_colour_very_bright_by_rgb
+      detail: 52
+    - name: OPCODE_confusion
+      detail: 128
+    - name: OPCODE_constitution_mod
+      detail: 10
+    - name: OPCODE_contingency_creation
+      detail: 234
+    - name: OPCODE_create_inventory_item
+      detail: 122
+    - name: OPCODE_create_inventory_item_days
+      detail: 255
+    - name: OPCODE_create_item_in_slot
+      detail: 143
+    - name: OPCODE_create_magical_weapon
+      detail: 111
+    - name: OPCODE_creature_summoning
+      detail: 67
+    - name: OPCODE_critical_hit_mod
+      detail: 301
+    - name: OPCODE_crushing_resist_mod
+      detail: 87
+    - name: OPCODE_cumulative_luck_bonus
+      detail: 22
+    - name: OPCODE_cure_berserking
+      detail: 4
+    - name: OPCODE_cure_blindness
+      detail: 75
+    - name: OPCODE_cure_confusion
+      detail: 242
+    - name: OPCODE_cure_deafness
+      detail: 81
+    - name: OPCODE_cure_death
+      detail: 32
+    - name: OPCODE_cure_disease
+      detail: 79
+    - name: OPCODE_cure_dispellable_effects
+      detail: 58
+    - name: OPCODE_cure_drunkeness
+      detail: 164
+    - name: OPCODE_cure_feeblemindedness
+      detail: 77
+    - name: OPCODE_cure_hold
+      detail: 162
+    - name: OPCODE_cure_horror
+      detail: 161
+    - name: OPCODE_cure_invisibility
+      detail: 47
+    - name: OPCODE_cure_invisibility_2
+      detail: 116
+    - name: OPCODE_cure_level_drain
+      detail: 224
+    - name: OPCODE_cure_poison
+      detail: 11
+    - name: OPCODE_cure_silence
+      detail: 48
+    - name: OPCODE_cure_sleep
+      detail: 2
+    - name: OPCODE_cure_stone_to_flesh
+      detail: 43
+    - name: OPCODE_cure_stun
+      detail: 46
+    - name: OPCODE_cure_unpause_target
+      detail: 270
+    - name: OPCODE_damage_mod
+      detail: 250
+    - name: OPCODE_damage_vs_creature
+      detail: 179
+    - name: OPCODE_deafness
+      detail: 80
+    - name: OPCODE_death_dependent_constitution
+      detail: 195
+    - name: OPCODE_death_disintegrate
+      detail: 238
+    - name: OPCODE_death_kill_60hp
+      detail: 209
+    - name: OPCODE_death_kill_creature_type
+      detail: 55
+    - name: OPCODE_decrementing_bounce_spells
+      detail: 200
+    - name: OPCODE_decrementing_spell_immunity
+      detail: 201
+    - name: OPCODE_defrost
+      detail: 14
+    - name: OPCODE_detect_alignment
+      detail: 115
+    - name: OPCODE_detect_illusion_mod
+      detail: 276
+    - name: OPCODE_dexterity_mod
+      detail: 15
+    - name: OPCODE_dimension_door
+      detail: 124
+    - name: OPCODE_disable_permanent_death
+      detail: 295
+    - name: OPCODE_disable_spell_casting_abilities
+      detail: 145
+    - name: OPCODE_disable_visual_effect
+      detail: 291
+    - name: OPCODE_disease
+      detail: 78
+    - name: OPCODE_dispel_magic
+      detail: 58
+    - name: OPCODE_display_special_effect_icon
+      detail: 142
+    - name: OPCODE_dither
+      detail: 114
+    - name: OPCODE_dont_jump
+      detail: 184
+    - name: OPCODE_drain_item_charges
+      detail: 243
+    - name: OPCODE_drain_wizard_spell
+      detail: 244
+    - name: OPCODE_drop_weapons_in
+      detail: 264
+    - name: OPCODE_drunkenness_mod
+      detail: 94
+    - name: OPCODE_duration_mod
+      detail: 99
+    - name: OPCODE_effect_berserking
+      detail: 246
+    - name: OPCODE_effect_wild_magic
+      detail: 280
+    - name: OPCODE_electricity_resist_mod
+      detail: 29
+    - name: OPCODE_empty
+      detail: 121
+    - name: OPCODE_execute_script_cut250a
+      detail: 298
+    - name: OPCODE_existance_delay_override
+      detail: 294
+    - name: OPCODE_experience_points
+      detail: 104
+    - name: OPCODE_extra_damage_mod
+      detail: 73
+    - name: OPCODE_familiar_block
+      detail: 196
+    - name: OPCODE_farsight
+      detail: 239
+    - name: OPCODE_fatigue_mod
+      detail: 93
+    - name: OPCODE_feeblemindedness
+      detail: 76
+    - name: OPCODE_find_familiar
+      detail: 192
+    - name: OPCODE_find_traps
+      detail: 150
+    - name: OPCODE_find_traps_mod
+      detail: 91
+    - name: OPCODE_fire_resist_mod
+      detail: 30
+    - name: OPCODE_fist_damage_mod
+      detail: 289
+    - name: OPCODE_fist_thac0_mod
+      detail: 288
+    - name: OPCODE_force_visible
+      detail: 136
+    - name: OPCODE_give_ability
+      detail: 171
+    - name: OPCODE_gold
+      detail: 105
+    - name: OPCODE_golem_stoneskin
+      detail: 314
+    - name: OPCODE_haste
+      detail: 16
+    - name: OPCODE_haste_2
+      detail: 317
+    - name: OPCODE_hide_in_shadows_mod
+      detail: 275
+    - name: OPCODE_hold
+      detail: 109
+    - name: OPCODE_hold3
+      detail: 185
+    - name: OPCODE_hold_2
+      detail: 175
+    - name: OPCODE_horror
+      detail: 24
+    - name: OPCODE_hp_current_hp_mod
+      detail: 17
+    - name: OPCODE_hp_damage
+      detail: 12
+    - name: OPCODE_hp_maximum_hp_mod
+      detail: 18
+    - name: OPCODE_hp_minimum_limit
+      detail: 208
+    - name: OPCODE_hp_regeneration
+      detail: 98
+    - name: OPCODE_identify
+      detail: 149
+    - name: OPCODE_ids_set_ids_state
+      detail: 72
+    - name: OPCODE_ids_sex_change
+      detail: 71
+    - name: OPCODE_ignore_dialog_pause
+      detail: 194
+    - name: OPCODE_image_projection
+      detail: 236
+    - name: OPCODE_immunity_school_decrement
+      detail: 223
+    - name: OPCODE_immunity_secondary_type_decrement
+      detail: 226
+    - name: OPCODE_immunity_to_turn
+      detail: 297
+    - name: OPCODE_imprisonment
+      detail: 211
+    - name: OPCODE_infravision
+      detail: 63
+    - name: OPCODE_instant_death
+      detail: 13
+    - name: OPCODE_intelligence_mod
+      detail: 19
+    - name: OPCODE_invisibility
+      detail: 20
+    - name: OPCODE_invisible_detection_by
+      detail: 193
+    - name: OPCODE_knock
+      detail: 125
+    - name: OPCODE_learn_spell
+      detail: 147
+    - name: OPCODE_level_change
+      detail: 96
+    - name: OPCODE_level_drain
+      detail: 216
+    - name: OPCODE_lighting_effects
+      detail: 141
+    - name: OPCODE_lore_mod
+      detail: 21
+    - name: OPCODE_magic_damage_resist_mod
+      detail: 31
+    - name: OPCODE_magic_resist_mod
+      detail: 166
+    - name: OPCODE_magical_cold_resist_mod
+      detail: 85
+    - name: OPCODE_magical_fire_resist_mod
+      detail: 84
+    - name: OPCODE_magical_rest
+      detail: 316
+    - name: OPCODE_mass_raise_dead
+      detail: 304
+    - name: OPCODE_maze
+      detail: 213
+    - name: OPCODE_melee_thac0_mod
+      detail: 284
+    - name: OPCODE_melee_weapon_damage_mod
+      detail: 285
+    - name: OPCODE_mirror_image
+      detail: 119
+    - name: OPCODE_mirror_image_exact_number
+      detail: 159
+    - name: OPCODE_miscast_magic
+      detail: 60
+    - name: OPCODE_missile_weapon_damage_mod
+      detail: 286
+    - name: OPCODE_missiles_resist_mod
+      detail: 89
+    - name: OPCODE_monster_summoning
+      detail: 127
+    - name: OPCODE_morale_break_mod
+      detail: 106
+    - name: OPCODE_morale_mod
+      detail: 23
+    - name: OPCODE_movement_mod
+      detail: 126
+    - name: OPCODE_movement_mod_2
+      detail: 176
+    - name: OPCODE_negative_chant
+      detail: 137
+    - name: OPCODE_npcbump
+      detail: 300
+    - name: OPCODE_open_locks_mod
+      detail: 90
+    - name: OPCODE_overlay_blur
+      detail: 65
+    - name: OPCODE_overlay_entangle
+      detail: 154
+    - name: OPCODE_overlay_grease
+      detail: 158
+    - name: OPCODE_overlay_minor_globe
+      detail: 155
+    - name: OPCODE_overlay_protection_from_normal_missiles
+      detail: 156
+    - name: OPCODE_overlay_sanctuary
+      detail: 153
+    - name: OPCODE_passwall
+      detail: 184
+    - name: OPCODE_pause_target
+      detail: 165
+    - name: OPCODE_petrification
+      detail: 134
+    - name: OPCODE_pick_pockets_mod
+      detail: 92
+    - name: OPCODE_piercing_resist_mod
+      detail: 88
+    - name: OPCODE_play_3d_effect
+      detail: 215
+    - name: OPCODE_play_damage_animation
+      detail: 170
+    - name: OPCODE_play_movie
+      detail: 152
+    - name: OPCODE_play_sound_effect
+      detail: 174
+    - name: OPCODE_poison
+      detail: 25
+    - name: OPCODE_poison_resist_mod
+      detail: 173
+    - name: OPCODE_polymorph_into_specific
+      detail: 135
+    - name: OPCODE_portrait_change
+      detail: 107
+    - name: OPCODE_positive_chant
+      detail: 131
+    - name: OPCODE_prevent_special_effect_icon
+      detail: 169
+    - name: OPCODE_priest_spell_slots_mod
+      detail: 62
+    - name: OPCODE_proficiency_mod
+      detail: 233
+    - name: OPCODE_protection_backstab
+      detail: 292
+    - name: OPCODE_protection_free_action
+      detail: 163
+    - name: OPCODE_protection_freedom
+      detail: 212
+    - name: OPCODE_protection_from_creature_type
+      detail: 100
+    - name: OPCODE_protection_from_detection
+      detail: 69
+    - name: OPCODE_protection_from_melee_weapons
+      detail: 120
+    - name: OPCODE_protection_from_opcode
+      detail: 101
+    - name: OPCODE_protection_from_projectile
+      detail: 83
+    - name: OPCODE_protection_from_specific_animation
+      detail: 296
+    - name: OPCODE_protection_from_spell
+      detail: 206
+    - name: OPCODE_protection_from_spell_levels
+      detail: 102
+    - name: OPCODE_protection_from_spell_school
+      detail: 204
+    - name: OPCODE_protection_from_spell_secondary_type
+      detail: 205
+    - name: OPCODE_protection_from_timestop
+      detail: 310
+    - name: OPCODE_protection_from_tracking
+      detail: 308
+    - name: OPCODE_protection_spell_trap
+      detail: 259
+    - name: OPCODE_protection_stoneskin
+      detail: 218
+    - name: OPCODE_puppet_id
+      detail: 237
+    - name: OPCODE_raise_dead
+      detail: 32
+    - name: OPCODE_random_wish_spell
+      detail: 311
+    - name: OPCODE_ranger_tracking_ability
+      detail: 307
+    - name: OPCODE_removal_remove_one_school
+      detail: 229
+    - name: OPCODE_removal_remove_one_secondary_type
+      detail: 230
+    - name: OPCODE_removal_remove_school
+      detail: 220
+    - name: OPCODE_removal_remove_secondary_type
+      detail: 221
+    - name: OPCODE_remove_creature
+      detail: 168
+    - name: OPCODE_remove_curse
+      detail: 26
+    - name: OPCODE_remove_infravision
+      detail: 64
+    - name: OPCODE_remove_inventory_item
+      detail: 123
+    - name: OPCODE_remove_item
+      detail: 112
+    - name: OPCODE_remove_map_marker
+      detail: 254
+    - name: OPCODE_remove_protection_from_spell
+      detail: 266
+    - name: OPCODE_remove_sanctuary
+      detail: 160
+    - name: OPCODE_remove_special_effect_icon
+      detail: 240
+    - name: OPCODE_remove_specific_area_effect
+      detail: 273
+    - name: OPCODE_remove_spell
+      detail: 172
+    - name: OPCODE_replace_creature
+      detail: 151
+    - name: OPCODE_reputation
+      detail: 108
+    - name: OPCODE_restoration
+      detail: 224
+    - name: OPCODE_restore_lost_spells
+      detail: 261
+    - name: OPCODE_reveal_area
+      detail: 117
+    - name: OPCODE_reveal_magic
+      detail: 225
+    - name: OPCODE_save_vs_breath_weapons
+      detail: 36
+    - name: OPCODE_save_vs_death_mod
+      detail: 33
+    - name: OPCODE_save_vs_petrification
+      detail: 35
+    - name: OPCODE_save_vs_polymorph_mod
+      detail: 35
+    - name: OPCODE_save_vs_spells_mod
+      detail: 37
+    - name: OPCODE_save_vs_wands_mod
+      detail: 34
+    - name: OPCODE_script_enable_offscreen_ai
+      detail: 293
+    - name: OPCODE_script_modify_global_variable
+      detail: 265
+    - name: OPCODE_script_modify_local_variable
+      detail: 309
+    - name: OPCODE_script_movetoarea
+      detail: 186
+    - name: OPCODE_script_scripting_state_mod
+      detail: 282
+    - name: OPCODE_script_store_local_variable
+      detail: 187
+    - name: OPCODE_select_spell
+      detail: 214
+    - name: OPCODE_selection_circle_removal
+      detail: 287
+    - name: OPCODE_set_ai_script
+      detail: 82
+    - name: OPCODE_set_melee_effect
+      detail: 248
+    - name: OPCODE_set_ranged_effect
+      detail: 249
+    - name: OPCODE_set_stat_tobex
+      detail: 318
+    - name: OPCODE_set_trap
+      detail: 252
+    - name: OPCODE_set_traps_mod
+      detail: 277
+    - name: OPCODE_shake_window
+      detail: 269
+    - name: OPCODE_silence
+      detail: 38
+    - name: OPCODE_slashing_resist_mod
+      detail: 86
+    - name: OPCODE_slow
+      detail: 40
+    - name: OPCODE_sparkle
+      detail: 41
+    - name: OPCODE_spell_sequencer_activation
+      detail: 258
+    - name: OPCODE_spell_sequencer_active
+      detail: 256
+    - name: OPCODE_spell_sequencer_creation
+      detail: 257
+    - name: OPCODE_stat_wild_magic_mod
+      detail: 281
+    - name: OPCODE_state_berserking
+      detail: 3
+    - name: OPCODE_stealth_mod
+      detail: 59
+    - name: OPCODE_strength_mod
+      detail: 44
+    - name: OPCODE_stun
+      detail: 45
+    - name: OPCODE_stun_90hp
+      detail: 210
+    - name: OPCODE_teleport
+      detail: 124
+    - name: OPCODE_teleport_field
+      detail: 222
+    - name: OPCODE_teleport_to_target
+      detail: 274
+    - name: OPCODE_text_change_name
+      detail: 103
+    - name: OPCODE_text_change_title
+      detail: 290
+    - name: OPCODE_text_display_string
+      detail: 139
+    - name: OPCODE_text_protection_from_display_specific
+      detail: 267
+    - name: OPCODE_thac0_mod
+      detail: 54
+    - name: OPCODE_thac0_mod_with_missile
+      detail: 167
+    - name: OPCODE_thac0_vs_creature
+      detail: 178
+    - name: OPCODE_time_stop
+      detail: 231
+    - name: OPCODE_to_hit_mod
+      detail: 278
+    - name: OPCODE_tracking_skill_mod
+      detail: 95
+    - name: OPCODE_transparency_fade
+      detail: 66
+    - name: OPCODE_unconsciousness
+      detail: 39
+    - name: OPCODE_unconsciousness_20hp
+      detail: 217
+    - name: OPCODE_unlock
+      detail: 125
+    - name: OPCODE_unstun
+      detail: 46
+    - name: OPCODE_unsummon_creature
+      detail: 68
+    - name: OPCODE_use_eff_file
+      detail: 177
+    - name: OPCODE_use_eff_file_cursed
+      detail: 283
+    - name: OPCODE_visual_range
+      detail: 262
+    - name: OPCODE_vocalize
+      detail: 48
+    - name: OPCODE_web_effect
+      detail: 157
+    - name: OPCODE_wing_buffet
+      detail: 235
+    - name: OPCODE_wisdom_mod
+      detail: 49
+    - name: OPCODE_wizard_spell_slots_mod
+      detail: 42
+    - name: OPCODE_zone_of_sweet_air
+      detail: 273
+    - name: TARGET_eff_everyone
+      detail: 4
+    - name: TARGET_eff_everyone_except_party
+      detail: 5
+    - name: TARGET_eff_everyone_except_self
+      detail: 8
+    - name: TARGET_eff_everyone_match_specific_caster
+      detail: 6
+    - name: TARGET_eff_everyone_match_specific_target
+      detail: 7
+    - name: TARGET_eff_none
+      detail: 0
+    - name: TARGET_eff_original_caster
+      detail: 9
+    - name: TARGET_eff_party
+      detail: 3
+    - name: TARGET_eff_preset
+      detail: 2
+    - name: TARGET_eff_self
+      detail: 1
+    - name: TIMING_absolute_duration
+      detail: 4096
+    - name: TIMING_delayed
+      detail: 4
+    - name: TIMING_delayed_duration
+      detail: 3
+    - name: TIMING_duration
+      detail: 0
+    - name: TIMING_permanent
+      detail: 1
+    - name: TIMING_permanent_after_death
+      detail: 9
+    - name: TIMING_trigger
+      detail: 10
+    - name: TIMING_while_equipped
+      detail: 2
