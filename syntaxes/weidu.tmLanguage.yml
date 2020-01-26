@@ -1200,7 +1200,7 @@ repository:
       - match: \b(OPCODE_dont_jump)\b
       - match: \b(OPCODE_drain_item_charges)\b
       - match: \b(OPCODE_drain_wizard_spell)\b
-      - match: \b(OPCODE_drop_weapons_in)\b
+      - match: \b(OPCODE_drop_weapons_in_panic)\b
       - match: \b(OPCODE_drunkenness_mod)\b
       - match: \b(OPCODE_duration_mod)\b
       - match: \b(OPCODE_effect_berserking)\b
@@ -1307,6 +1307,7 @@ repository:
       - match: \b(OPCODE_protection_freedom)\b
       - match: \b(OPCODE_protection_from_creature_type)\b
       - match: \b(OPCODE_protection_from_detection)\b
+      - match: \b(OPCODE_protection_from_display_specific_string)\b
       - match: \b(OPCODE_protection_from_melee_weapons)\b
       - match: \b(OPCODE_protection_from_opcode)\b
       - match: \b(OPCODE_protection_from_projectile)\b
@@ -1384,7 +1385,6 @@ repository:
       - match: \b(OPCODE_text_change_name)\b
       - match: \b(OPCODE_text_change_title)\b
       - match: \b(OPCODE_text_display_string)\b
-      - match: \b(OPCODE_text_protection_from_display_specific)\b
       - match: \b(OPCODE_thac0_mod)\b
       - match: \b(OPCODE_thac0_mod_with_missile)\b
       - match: \b(OPCODE_thac0_vs_creature)\b

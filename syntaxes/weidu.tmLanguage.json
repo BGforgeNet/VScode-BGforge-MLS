@@ -4146,7 +4146,7 @@
           "name": "constant.language.ielib.weidu"
         },
         {
-          "match": "\\b(OPCODE_drop_weapons_in)\\b",
+          "match": "\\b(OPCODE_drop_weapons_in_panic)\\b",
           "name": "constant.language.ielib.weidu"
         },
         {
@@ -4574,6 +4574,10 @@
           "name": "constant.language.ielib.weidu"
         },
         {
+          "match": "\\b(OPCODE_protection_from_display_specific_string)\\b",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
           "match": "\\b(OPCODE_protection_from_melee_weapons)\\b",
           "name": "constant.language.ielib.weidu"
         },
@@ -4879,10 +4883,6 @@
         },
         {
           "match": "\\b(OPCODE_text_display_string)\\b",
-          "name": "constant.language.ielib.weidu"
-        },
-        {
-          "match": "\\b(OPCODE_text_protection_from_display_specific)\\b",
           "name": "constant.language.ielib.weidu"
         },
         {

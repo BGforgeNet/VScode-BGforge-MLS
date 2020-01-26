@@ -1783,69 +1783,69 @@ tp2-value:
     - name: AREA_SCRIPT
 
     - name: BIT0
-      doc: 0b00000000000000000000000000000001
+      doc: '0b00000000000000000000000000000001'
     - name: BIT1
-      doc: 0b00000000000000000000000000000010
+      doc: '0b00000000000000000000000000000010'
     - name: BIT2
-      doc: 0b00000000000000000000000000000100
+      doc: '0b00000000000000000000000000000100'
     - name: BIT3
-      doc: 0b00000000000000000000000000001000
+      doc: '0b00000000000000000000000000001000'
     - name: BIT4
-      doc: 0b00000000000000000000000000010000
+      doc: '0b00000000000000000000000000010000'
     - name: BIT5
-      doc: 0b00000000000000000000000000100000
+      doc: '0b00000000000000000000000000100000'
     - name: BIT6
-      doc: 0b00000000000000000000000001000000
+      doc: '0b00000000000000000000000001000000'
     - name: BIT7
-      doc: 0b00000000000000000000000010000000
+      doc: '0b00000000000000000000000010000000'
     - name: BIT8
-      doc: 0b00000000000000000000000100000000
+      doc: '0b00000000000000000000000100000000'
     - name: BIT9
-      doc: 0b00000000000000000000001000000000
+      doc: '0b00000000000000000000001000000000'
     - name: BIT10
-      doc: 0b00000000000000000000010000000000
+      doc: '0b00000000000000000000010000000000'
     - name: BIT11
-      doc: 0b00000000000000000000100000000000
+      doc: '0b00000000000000000000100000000000'
     - name: BIT12
-      doc: 0b00000000000000000001000000000000
+      doc: '0b00000000000000000001000000000000'
     - name: BIT13
-      doc: 0b00000000000000000010000000000000
+      doc: '0b00000000000000000010000000000000'
     - name: BIT14
-      doc: 0b00000000000000000100000000000000
+      doc: '0b00000000000000000100000000000000'
     - name: BIT15
-      doc: 0b00000000000000001000000000000000
+      doc: '0b00000000000000001000000000000000'
     - name: BIT16
-      doc: 0b00000000000000010000000000000000
+      doc: '0b00000000000000010000000000000000'
     - name: BIT17
-      doc: 0b00000000000000100000000000000000
+      doc: '0b00000000000000100000000000000000'
     - name: BIT18
-      doc: 0b00000000000001000000000000000000
+      doc: '0b00000000000001000000000000000000'
     - name: BIT19
-      doc: 0b00000000000010000000000000000000
+      doc: '0b00000000000010000000000000000000'
     - name: BIT20
-      doc: 0b00000000000100000000000000000000
+      doc: '0b00000000000100000000000000000000'
     - name: BIT21
-      doc: 0b00000000001000000000000000000000
+      doc: '0b00000000001000000000000000000000'
     - name: BIT22
-      doc: 0b00000000010000000000000000000000
+      doc: '0b00000000010000000000000000000000'
     - name: BIT23
-      doc: 0b00000000100000000000000000000000
+      doc: '0b00000000100000000000000000000000'
     - name: BIT24
-      doc: 0b00000001000000000000000000000000
+      doc: '0b00000001000000000000000000000000'
     - name: BIT25
-      doc: 0b00000010000000000000000000000000
+      doc: '0b00000010000000000000000000000000'
     - name: BIT26
-      doc: 0b00000100000000000000000000000000
+      doc: '0b00000100000000000000000000000000'
     - name: BIT27
-      doc: 0b00001000000000000000000000000000
+      doc: '0b00001000000000000000000000000000'
     - name: BIT28
-      doc: 0b00010000000000000000000000000000
+      doc: '0b00010000000000000000000000000000'
     - name: BIT29
-      doc: 0b00100000000000000000000000000000
+      doc: '0b00100000000000000000000000000000'
     - name: BIT30
-      doc: 0b01000000000000000000000000000000
+      doc: '0b01000000000000000000000000000000'
     - name: BIT31
-      doc: 0b10000000000000000000000000000000
+      doc: '0b10000000000000000000000000000000'
 
     - name: WNL
       doc: Windows new line
@@ -1893,1090 +1893,1634 @@ ielib:
   type: 21 # constant
   items:
     - name: DISPEL_no_MR_BYPASS_yes
-      detail: 2
+      detail: '2'
+      doc: IElib define
     - name: DISPEL_yes_MR_BYPASS_no
-      detail: 1
+      detail: '1'
+      doc: IElib define
     - name: DISPEL_yes_MR_BYPASS_yes
-      detail: 3
+      detail: '3'
+      doc: IElib define
     - name: ICON_ability_score_drained
-      detail: 91
+      detail: '91'
+      doc: IElib define
     - name: ICON_able_to_poison_weapons
-      detail: 95
+      detail: '95'
+      doc: IElib define
     - name: ICON_absolute_immunity
-      detail: 118
+      detail: '118'
+      doc: IElib define
     - name: ICON_acid
-      detail: 102
+      detail: '102'
+      doc: IElib define
     - name: ICON_aid
-      detail: 167
+      detail: '167'
+      doc: IElib define
     - name: ICON_animal_rage
-      detail: 173
+      detail: '173'
+      doc: IElib define
     - name: ICON_assassination
-      detail: 156
+      detail: '156'
+      doc: IElib define
     - name: ICON_at_a_store
-      detail: 89
+      detail: '89'
+      doc: IElib define
     - name: ICON_aura_of_flaming_death
-      detail: 160
+      detail: '160'
+      doc: IElib define
     - name: ICON_avoid_death
-      detail: 155
+      detail: '155'
+      doc: IElib define
     - name: ICON_bad_luck
-      detail: 33
+      detail: '33'
+      doc: IElib define
     - name: ICON_barbarian_rage
-      detail: 138
+      detail: '138'
+      doc: IElib define
     - name: ICON_bard_song
-      detail: 40
+      detail: '40'
+      doc: IElib define
     - name: ICON_barkskin
-      detail: 20
+      detail: '20'
+      doc: IElib define
     - name: ICON_berserk
-      detail: 4
+      detail: '4'
+      doc: IElib define
     - name: ICON_blade_barrier
-      detail: 98
+      detail: '98'
+      doc: IElib define
     - name: ICON_bleeding
-      detail: 137
+      detail: '137'
+      doc: IElib define
     - name: ICON_blessed
-      detail: 17
+      detail: '17'
+      doc: IElib define
     - name: ICON_blind
-      detail: 8
+      detail: '8'
+      doc: IElib define
     - name: ICON_blood_rage
-      detail: 176
+      detail: '176'
+      doc: IElib define
     - name: ICON_boon_of_lathander
-      detail: 139
+      detail: '139'
+      doc: IElib define
     - name: ICON_called_shot
-      detail: 82
+      detail: '82'
+      doc: IElib define
     - name: ICON_cats_grace
-      detail: 185
+      detail: '185'
+      doc: IElib define
     - name: ICON_champions_strength
-      detail: 50
+      detail: '50'
+      doc: IElib define
     - name: ICON_chant
-      detail: 18
+      detail: '18'
+      doc: IElib define
     - name: ICON_chaos
-      detail: 47
+      detail: '47'
+      doc: IElib define
     - name: ICON_chaos_of_battle
-      detail: 192
+      detail: '192'
+      doc: IElib define
     - name: ICON_chaos_shield
-      detail: 163
+      detail: '163'
+      doc: IElib define
     - name: ICON_chaotic_commands
-      detail: 134
+      detail: '134'
+      doc: IElib define
     - name: ICON_charm
-      detail: 0
+      detail: '0'
+      doc: IElib define
     - name: ICON_cloak_of_fear
-      detail: 61
+      detail: '61'
+      doc: IElib define
     - name: ICON_confusion
-      detail: 3
+      detail: '3'
+      doc: IElib define
     - name: ICON_contingency_active
-      detail: 75
+      detail: '75'
+      doc: IElib define
     - name: ICON_courage
-      detail: 187
+      detail: '187'
+      doc: IElib define
     - name: ICON_critical_strike
-      detail: 152
+      detail: '152'
+      doc: IElib define
     - name: ICON_cursed
-      detail: 35
+      detail: '35'
+      doc: IElib define
     - name: ICON_deaf
-      detail: 112
+      detail: '112'
+      doc: IElib define
     - name: ICON_death_ward
-      detail: 99
+      detail: '99'
+      doc: IElib define
     - name: ICON_deathblow
-      detail: 154
+      detail: '154'
+      doc: IElib define
     - name: ICON_decaying
-      detail: 101
+      detail: '101'
+      doc: IElib define
     - name: ICON_defensive_harmony
-      detail: 49
+      detail: '49'
+      doc: IElib define
     - name: ICON_defensive_stance
-      detail: 85
+      detail: '85'
+      doc: IElib define
     - name: ICON_detecting_traps
-      detail: 109
+      detail: '109'
+      doc: IElib define
     - name: ICON_dialog_mode
-      detail: 88
+      detail: '88'
+      doc: IElib define
     - name: ICON_dire_charm
-      detail: 1
+      detail: '1'
+      doc: IElib define
     - name: ICON_domination
-      detail: 43
+      detail: '43'
+      doc: IElib define
     - name: ICON_doom
-      detail: 100
+      detail: '100'
+      doc: IElib define
     - name: ICON_draw_upon_holy_might
-      detail: 135
+      detail: '135'
+      doc: IElib define
     - name: ICON_dying
-      detail: 51
+      detail: '51'
+      doc: IElib define
     - name: ICON_earth_elemental_transformation
-      detail: 165
+      detail: '165'
+      doc: IElib define
     - name: ICON_enchanted_weapon
-      detail: 188
+      detail: '188'
+      doc: IElib define
     - name: ICON_energy_drain_mindflayer
-      detail: 59
+      detail: '59'
+      doc: IElib define
     - name: ICON_energy_drain_psionic
-      detail: 59
+      detail: '59'
+      doc: IElib define
     - name: ICON_enfeebled
-      detail: 113
+      detail: '113'
+      doc: IElib define
     - name: ICON_enraged
-      detail: 141
+      detail: '141'
+      doc: IElib define
     - name: ICON_entangled
-      detail: 144
+      detail: '144'
+      doc: IElib define
     - name: ICON_ether_gate
-      detail: 190
+      detail: '190'
+      doc: IElib define
     - name: ICON_evasion
-      detail: 157
+      detail: '157'
+      doc: IElib define
     - name: ICON_exaltation
-      detail: 174
+      detail: '174'
+      doc: IElib define
     - name: ICON_farsight
-      detail: 120
+      detail: '120'
+      doc: IElib define
     - name: ICON_fatigue
-      detail: 39
+      detail: '39'
+      doc: IElib define
     - name: ICON_feebleminded
-      detail: 48
+      detail: '48'
+      doc: IElib define
     - name: ICON_fire_elemental_transformation
-      detail: 164
+      detail: '164'
+      doc: IElib define
     - name: ICON_fire_shield_blue
-      detail: 69
+      detail: '69'
+      doc: IElib define
     - name: ICON_fire_shield_red
-      detail: 68
+      detail: '68'
+      doc: IElib define
     - name: ICON_free_action
-      detail: 19
+      detail: '19'
+      doc: IElib define
     - name: ICON_friends
-      detail: 115
+      detail: '115'
+      doc: IElib define
     - name: ICON_ghost_armor
-      detail: 127
+      detail: '127'
+      doc: IElib define
     - name: ICON_glass_dust
-      detail: 97
+      detail: '97'
+      doc: IElib define
     - name: ICON_glitterdust
-      detail: 128
+      detail: '128'
+      doc: IElib define
     - name: ICON_globe_of_blades
-      detail: 161
+      detail: '161'
+      doc: IElib define
     - name: ICON_globe_of_invulnerability
-      detail: 121
+      detail: '121'
+      doc: IElib define
     - name: ICON_good_luck
-      detail: 32
+      detail: '32'
+      doc: IElib define
     - name: ICON_grease
-      detail: 145
+      detail: '145'
+      doc: IElib define
     - name: ICON_greater_deathblow
-      detail: 153
+      detail: '153'
+      doc: IElib define
     - name: ICON_greater_evasion
-      detail: 158
+      detail: '158'
+      doc: IElib define
     - name: ICON_greater_malison
-      detail: 45
+      detail: '45'
+      doc: IElib define
     - name: ICON_greater_shield_of_lathander
-      detail: 165
+      detail: '165'
+      doc: IElib define
     - name: ICON_greater_whirlwind
-      detail: 150
+      detail: '150'
+      doc: IElib define
     - name: ICON_hardiness
-      detail: 147
+      detail: '147'
+      doc: IElib define
     - name: ICON_haste
-      detail: 38
+      detail: '38'
+      doc: IElib define
     - name: ICON_held
-      detail: 13
+      detail: '13'
+      doc: IElib define
     - name: ICON_heroism
-      detail: 22
+      detail: '22'
+      doc: IElib define
     - name: ICON_holy_power
-      detail: 60
+      detail: '60'
+      doc: IElib define
     - name: ICON_hope
-      detail: 186
+      detail: '186'
+      doc: IElib define
     - name: ICON_hopelessness
-      detail: 44
+      detail: '44'
+      doc: IElib define
     - name: ICON_immunity_abjuration
-      detail: 196
+      detail: '196'
+      doc: IElib define
     - name: ICON_immunity_alteration
-      detail: 203
+      detail: '203'
+      doc: IElib define
     - name: ICON_immunity_conjuration
-      detail: 197
+      detail: '197'
+      doc: IElib define
     - name: ICON_immunity_divination
-      detail: 198
+      detail: '198'
+      doc: IElib define
     - name: ICON_immunity_enchantment
-      detail: 199
+      detail: '199'
+      doc: IElib define
     - name: ICON_immunity_evocation
-      detail: 201
+      detail: '201'
+      doc: IElib define
     - name: ICON_immunity_illusion
-      detail: 200
+      detail: '200'
+      doc: IElib define
     - name: ICON_immunity_necromancy
-      detail: 202
+      detail: '202'
+      doc: IElib define
     - name: ICON_impervious_sanctity_of_mind
-      detail: 170
+      detail: '170'
+      doc: IElib define
     - name: ICON_imprisonment
-      detail: 79
+      detail: '79'
+      doc: IElib define
     - name: ICON_improved_alacrity
-      detail: 159
+      detail: '159'
+      doc: IElib define
     - name: ICON_improved_chaos_shield
-      detail: 162
+      detail: '162'
+      doc: IElib define
     - name: ICON_improved_haste
-      detail: 110
+      detail: '110'
+      doc: IElib define
     - name: ICON_improved_mantle
-      detail: 119
+      detail: '119'
+      doc: IElib define
     - name: ICON_increased_movement_rate
-      detail: 195
+      detail: '195'
+      doc: IElib define
     - name: ICON_infravision
-      detail: 114
+      detail: '114'
+      doc: IElib define
     - name: ICON_intelligence_drained_by_mind_flayer
-      detail: 86
+      detail: '86'
+      doc: IElib define
     - name: ICON_intoxicated
-      detail: 5
+      detail: '5'
+      doc: IElib define
     - name: ICON_invulnerable
-      detail: 23
+      detail: '23'
+      doc: IElib define
     - name: ICON_iron_body
-      detail: 172
+      detail: '172'
+      doc: IElib define
     - name: ICON_iron_skins
-      detail: 62
+      detail: '62'
+      doc: IElib define
     - name: ICON_kai
-      detail: 81
+      detail: '81'
+      doc: IElib define
     - name: ICON_level_drain
-      detail: 53
+      detail: '53'
+      doc: IElib define
     - name: ICON_magic_armour
-      detail: 12
+      detail: '12'
+      doc: IElib define
     - name: ICON_magic_flute
-      detail: 151
+      detail: '151'
+      doc: IElib define
     - name: ICON_magic_resistance
-      detail: 63
+      detail: '63'
+      doc: IElib define
     - name: ICON_magic_resistance_lowered
-      detail: 106
+      detail: '106'
+      doc: IElib define
     - name: ICON_magnetized
-      detail: 94
+      detail: '94'
+      doc: IElib define
     - name: ICON_mantle
-      detail: 104
+      detail: '104'
+      doc: IElib define
     - name: ICON_mareks_poison
-      detail: 193
+      detail: '193'
+      doc: IElib define
     - name: ICON_master_thievery
-      detail: 58
+      detail: '58'
+      doc: IElib define
     - name: ICON_maze
-      detail: 78
+      detail: '78'
+      doc: IElib define
     - name: ICON_mental_combat
-      detail: 131
+      detail: '131'
+      doc: IElib define
     - name: ICON_mind_blank
-      detail: 166
+      detail: '166'
+      doc: IElib define
     - name: ICON_mind_shield
-      detail: 52
+      detail: '52'
+      doc: IElib define
     - name: ICON_minor_globe_of_invulnerability
-      detail: 122
+      detail: '122'
+      doc: IElib define
     - name: ICON_miscast_magic
-      detail: 105
+      detail: '105'
+      doc: IElib define
     - name: ICON_mislead
-      detail: 74
+      detail: '74'
+      doc: IElib define
     - name: ICON_nauseated
-      detail: 126
+      detail: '126'
+      doc: IElib define
     - name: ICON_negative_plane_protection
-      detail: 90
+      detail: '90'
+      doc: IElib define
     - name: ICON_offensive_stance
-      detail: 84
+      detail: '84'
+      doc: IElib define
     - name: ICON_otilukes_resilient_sphere
-      detail: 125
+      detail: '125'
+      doc: IElib define
     - name: ICON_pain
-      detail: 169
+      detail: '169'
+      doc: IElib define
     - name: ICON_panic
-      detail: 36
+      detail: '36'
+      doc: IElib define
     - name: ICON_perception
-      detail: 57
+      detail: '57'
+      doc: IElib define
     - name: ICON_petrified
-      detail: 171
+      detail: '171'
+      doc: IElib define
     - name: ICON_phased
-      detail: 168
+      detail: '168'
+      doc: IElib define
     - name: ICON_physical_mirror
-      detail: 132
+      detail: '132'
+      doc: IElib define
     - name: ICON_poisoned
-      detail: 6
+      detail: '6'
+      doc: IElib define
     - name: ICON_polymorph_self
-      detail: 54
+      detail: '54'
+      doc: IElib define
     - name: ICON_polymorphed
-      detail: 124
+      detail: '124'
+      doc: IElib define
     - name: ICON_power_attack
-      detail: 148
+      detail: '148'
+      doc: IElib define
     - name: ICON_prayer
-      detail: 183
+      detail: '183'
+      doc: IElib define
     - name: ICON_projected_image
-      detail: 77
+      detail: '77'
+      doc: IElib define
     - name: ICON_protected_from_energy
-      detail: 93
+      detail: '93'
+      doc: IElib define
     - name: ICON_protected_from_the_elements
-      detail: 76
+      detail: '76'
+      doc: IElib define
     - name: ICON_protection_from_acid
-      detail: 24
+      detail: '24'
+      doc: IElib define
     - name: ICON_protection_from_cold
-      detail: 25
+      detail: '25'
+      doc: IElib define
     - name: ICON_protection_from_electricity
-      detail: 27
+      detail: '27'
+      doc: IElib define
     - name: ICON_protection_from_evil
-      detail: 9
+      detail: '9'
+      doc: IElib define
     - name: ICON_protection_from_fire
-      detail: 16
+      detail: '16'
+      doc: IElib define
     - name: ICON_protection_from_magic
-      detail: 28
+      detail: '28'
+      doc: IElib define
     - name: ICON_protection_from_magic_weapons
-      detail: 71
+      detail: '71'
+      doc: IElib define
     - name: ICON_protection_from_magical_energy
-      detail: 73
+      detail: '73'
+      doc: IElib define
     - name: ICON_protection_from_missiles
-      detail: 11
+      detail: '11'
+      doc: IElib define
     - name: ICON_protection_from_normal_weapons
-      detail: 70
+      detail: '70'
+      doc: IElib define
     - name: ICON_protection_from_petrification
-      detail: 10
+      detail: '10'
+      doc: IElib define
     - name: ICON_protection_from_poison
-      detail: 30
+      detail: '30'
+      doc: IElib define
     - name: ICON_protection_from_undead
-      detail: 29
+      detail: '29'
+      doc: IElib define
     - name: ICON_quivering_palm
-      detail: 143
+      detail: '143'
+      doc: IElib define
     - name: ICON_recitation
-      detail: 175
+      detail: '175'
+      doc: IElib define
     - name: ICON_regenerate
-      detail: 42
+      detail: '42'
+      doc: IElib define
     - name: ICON_regenerating
-      detail: 87
+      detail: '87'
+      doc: IElib define
     - name: ICON_regeneration
-      detail: 56
+      detail: '56'
+      doc: IElib define
     - name: ICON_repulse_undead
-      detail: 133
+      detail: '133'
+      doc: IElib define
     - name: ICON_repulsing_undead
-      detail: 66
+      detail: '66'
+      doc: IElib define
     - name: ICON_repulsion
-      detail: 194
+      detail: '194'
+      doc: IElib define
     - name: ICON_resist_fear
-      detail: 37
+      detail: '37'
+      doc: IElib define
     - name: ICON_resist_fire_cold
-      detail: 26
+      detail: '26'
+      doc: IElib define
     - name: ICON_righteous_magic
-      detail: 64
+      detail: '64'
+      doc: IElib define
     - name: ICON_righteous_wrath_of_the_faithful
-      detail: 184
+      detail: '184'
+      doc: IElib define
     - name: ICON_rigid_thinking
-      detail: 2
+      detail: '2'
+      doc: IElib define
     - name: ICON_setting_trap
-      detail: 96
+      detail: '96'
+      doc: IElib define
     - name: ICON_shamanic_dance
-      detail: 191
+      detail: '191'
+      doc: IElib define
     - name: ICON_shield_of_lathander
-      detail: 164
+      detail: '164'
+      doc: IElib define
     - name: ICON_shield_of_the_archons
-      detail: 116
+      detail: '116'
+      doc: IElib define
     - name: ICON_shielded
-      detail: 15
+      detail: '15'
+      doc: IElib define
     - name: ICON_silenced
-      detail: 34
+      detail: '34'
+      doc: IElib define
     - name: ICON_sleep
-      detail: 14
+      detail: '14'
+      doc: IElib define
     - name: ICON_slow
-      detail: 41
+      detail: '41'
+      doc: IElib define
     - name: ICON_smite
-      detail: 146
+      detail: '146'
+      doc: IElib define
     - name: ICON_spell_deflection
-      detail: 67
+      detail: '67'
+      doc: IElib define
     - name: ICON_spell_failure
-      detail: 83
+      detail: '83'
+      doc: IElib define
     - name: ICON_spell_immunity
-      detail: 107
+      detail: '107'
+      doc: IElib define
     - name: ICON_spell_sequencer_active
-      detail: 92
+      detail: '92'
+      doc: IElib define
     - name: ICON_spell_shield
-      detail: 123
+      detail: '123'
+      doc: IElib define
     - name: ICON_spell_trap
-      detail: 117
+      detail: '117'
+      doc: IElib define
     - name: ICON_spell_trigger
-      detail: 111
+      detail: '111'
+      doc: IElib define
     - name: ICON_spell_turning
-      detail: 65
+      detail: '65'
+      doc: IElib define
     - name: ICON_spirit_armour
-      detail: 46
+      detail: '46'
+      doc: IElib define
     - name: ICON_spirit_ward
-      detail: 189
+      detail: '189'
+      doc: IElib define
     - name: ICON_stoneskin
-      detail: 80
+      detail: '80'
+      doc: IElib define
     - name: ICON_storm_shield
-      detail: 140
+      detail: '140'
+      doc: IElib define
     - name: ICON_strength
-      detail: 21
+      detail: '21'
+      doc: IElib define
     - name: ICON_strength_of_one
-      detail: 136
+      detail: '136'
+      doc: IElib define
     - name: ICON_stun
-      detail: 55
+      detail: '55'
+      doc: IElib define
     - name: ICON_stunning_blow
-      detail: 142
+      detail: '142'
+      doc: IElib define
     - name: ICON_tensers_transformation
-      detail: 72
+      detail: '72'
+      doc: IElib define
     - name: ICON_the_ballad_of_three_heroes
-      detail: 177
+      detail: '177'
+      doc: IElib define
     - name: ICON_the_sirens_yearning
-      detail: 181
+      detail: '181'
+      doc: IElib define
     - name: ICON_the_song_of_kaudies
-      detail: 180
+      detail: '180'
+      doc: IElib define
     - name: ICON_the_tale_of_curran_strongheart
-      detail: 178
+      detail: '178'
+      doc: IElib define
     - name: ICON_true_seeing
-      detail: 108
+      detail: '108'
+      doc: IElib define
     - name: ICON_tymoras_melody
-      detail: 179
+      detail: '179'
+      doc: IElib define
     - name: ICON_unconscious
-      detail: 130
+      detail: '130'
+      doc: IElib define
     - name: ICON_vocalize
-      detail: 103
+      detail: '103'
+      doc: IElib define
     - name: ICON_war_chant_of_sith
-      detail: 182
+      detail: '182'
+      doc: IElib define
     - name: ICON_webbed
-      detail: 129
+      detail: '129'
+      doc: IElib define
     - name: ICON_whirlwind_attack
-      detail: 149
+      detail: '149'
+      doc: IElib define
     - name: NONMAGICAL
-      detail: 0
+      detail: '0'
+      doc: IElib define
     - name: OPCODE_HLA_denotation
-      detail: 313
+      detail: '313'
+      doc: IElib define
     - name: OPCODE_ac_vs_creature_type
-      detail: 219
+      detail: '219'
+      doc: IElib define
     - name: OPCODE_ac_vs_damage_type
-      detail: 0
+      detail: '0'
+      doc: IElib define
     - name: OPCODE_acid_resist_mod
-      detail: 27
+      detail: '27'
+      doc: IElib define
     - name: OPCODE_add_map_marker
-      detail: 253
+      detail: '253'
+      doc: IElib define
     - name: OPCODE_aid
-      detail: 129
+      detail: '129'
+      doc: IElib define
     - name: OPCODE_alignment_change
-      detail: 57
+      detail: '57'
+      doc: IElib define
     - name: OPCODE_alignment_invert
-      detail: 56
+      detail: '56'
+      doc: IElib define
     - name: OPCODE_animation_change
-      detail: 53
+      detail: '53'
+      doc: IElib define
     - name: OPCODE_animation_removal
-      detail: 315
+      detail: '315'
+      doc: IElib define
     - name: OPCODE_apply_effect_item
-      detail: 182
+      detail: '182'
+      doc: IElib define
     - name: OPCODE_apply_effect_itemtype
-      detail: 183
+      detail: '183'
+      doc: IElib define
     - name: OPCODE_apply_repeating_eff
-      detail: 272
+      detail: '272'
+      doc: IElib define
     - name: OPCODE_attack_nearest_creature
-      detail: 247
+      detail: '247'
+      doc: IElib define
     - name: OPCODE_attack_speed_factor
-      detail: 190
+      detail: '190'
+      doc: IElib define
     - name: OPCODE_attacks_per_round_mod
-      detail: 1
+      detail: '1'
+      doc: IElib define
     - name: OPCODE_aura_cleansing
-      detail: 188
+      detail: '188'
+      doc: IElib define
     - name: OPCODE_avatar_removal
-      detail: 271
+      detail: '271'
+      doc: IElib define
     - name: OPCODE_backstab
-      detail: 263
+      detail: '263'
+      doc: IElib define
     - name: OPCODE_backstab_every_hit
-      detail: 303
+      detail: '303'
+      doc: IElib define
     - name: OPCODE_bless
-      detail: 130
+      detail: '130'
+      doc: IElib define
     - name: OPCODE_blindness
-      detail: 74
+      detail: '74'
+      doc: IElib define
     - name: OPCODE_bounce_opcode
-      detail: 198
+      detail: '198'
+      doc: IElib define
     - name: OPCODE_bounce_projectile
-      detail: 197
+      detail: '197'
+      doc: IElib define
     - name: OPCODE_bounce_school_decrement
-      detail: 227
+      detail: '227'
+      doc: IElib define
     - name: OPCODE_bounce_secondary_type
-      detail: 203
+      detail: '203'
+      doc: IElib define
     - name: OPCODE_bounce_secondary_type_decrement
-      detail: 228
+      detail: '228'
+      doc: IElib define
     - name: OPCODE_bounce_specified_spell
-      detail: 207
+      detail: '207'
+      doc: IElib define
     - name: OPCODE_bounce_spell_level
-      detail: 199
+      detail: '199'
+      doc: IElib define
     - name: OPCODE_bounce_spell_school
-      detail: 202
+      detail: '202'
+      doc: IElib define
     - name: OPCODE_button_disable_button
-      detail: 144
+      detail: '144'
+      doc: IElib define
     - name: OPCODE_button_enable_button
-      detail: 279
+      detail: '279'
+      doc: IElib define
     - name: OPCODE_can_use_any_item
-      detail: 302
+      detail: '302'
+      doc: IElib define
     - name: OPCODE_cant_use_item
-      detail: 180
+      detail: '180'
+      doc: IElib define
     - name: OPCODE_cant_use_itemtype
-      detail: 181
+      detail: '181'
+      doc: IElib define
     - name: OPCODE_cast_spell_at_creature
-      detail: 146
+      detail: '146'
+      doc: IElib define
     - name: OPCODE_cast_spell_at_point
-      detail: 148
+      detail: '148'
+      doc: IElib define
     - name: OPCODE_cast_spell_on
-      detail: 232
+      detail: '232'
+      doc: IElib define
     - name: OPCODE_casting_glow
-      detail: 140
+      detail: '140'
+      doc: IElib define
     - name: OPCODE_casting_level_mod
-      detail: 191
+      detail: '191'
+      doc: IElib define
     - name: OPCODE_casting_time_mod
-      detail: 189
+      detail: '189'
+      doc: IElib define
     - name: OPCODE_change_bard_song
-      detail: 251
+      detail: '251'
+      doc: IElib define
     - name: OPCODE_chaos_shield
-      detail: 299
+      detail: '299'
+      doc: IElib define
     - name: OPCODE_character_animation_change
-      detail: 138
+      detail: '138'
+      doc: IElib define
     - name: OPCODE_charisma_mod
-      detail: 6
+      detail: '6'
+      doc: IElib define
     - name: OPCODE_charm_charm_specific_creature
-      detail: 5
+      detail: '5'
+      doc: IElib define
     - name: OPCODE_charm_control_creature
-      detail: 241
+      detail: '241'
+      doc: IElib define
     - name: OPCODE_check_for_berserk
-      detail: 245
+      detail: '245'
+      doc: IElib define
     - name: OPCODE_clear_fog_of
-      detail: 268
+      detail: '268'
+      doc: IElib define
     - name: OPCODE_cold_resist_mod
-      detail: 28
+      detail: '28'
+      doc: IElib define
     - name: OPCODE_colour_change_by_rgb
-      detail: 8
+      detail: '8'
+      doc: IElib define
     - name: OPCODE_colour_glow_by_rgb_brief
-      detail: 50
+      detail: '50'
+      doc: IElib define
     - name: OPCODE_colour_glow_pulse
-      detail: 9
+      detail: '9'
+      doc: IElib define
     - name: OPCODE_colour_set_character_colours_by
-      detail: 7
+      detail: '7'
+      doc: IElib define
     - name: OPCODE_colour_strong_dark_by_rgb
-      detail: 51
+      detail: '51'
+      doc: IElib define
     - name: OPCODE_colour_very_bright_by_rgb
-      detail: 52
+      detail: '52'
+      doc: IElib define
     - name: OPCODE_confusion
-      detail: 128
+      detail: '128'
+      doc: IElib define
     - name: OPCODE_constitution_mod
-      detail: 10
+      detail: '10'
+      doc: IElib define
     - name: OPCODE_contingency_creation
-      detail: 234
+      detail: '234'
+      doc: IElib define
     - name: OPCODE_create_inventory_item
-      detail: 122
+      detail: '122'
+      doc: IElib define
     - name: OPCODE_create_inventory_item_days
-      detail: 255
+      detail: '255'
+      doc: IElib define
     - name: OPCODE_create_item_in_slot
-      detail: 143
+      detail: '143'
+      doc: IElib define
     - name: OPCODE_create_magical_weapon
-      detail: 111
+      detail: '111'
+      doc: IElib define
     - name: OPCODE_creature_summoning
-      detail: 67
+      detail: '67'
+      doc: IElib define
     - name: OPCODE_critical_hit_mod
-      detail: 301
+      detail: '301'
+      doc: IElib define
     - name: OPCODE_crushing_resist_mod
-      detail: 87
+      detail: '87'
+      doc: IElib define
     - name: OPCODE_cumulative_luck_bonus
-      detail: 22
+      detail: '22'
+      doc: IElib define
     - name: OPCODE_cure_berserking
-      detail: 4
+      detail: '4'
+      doc: IElib define
     - name: OPCODE_cure_blindness
-      detail: 75
+      detail: '75'
+      doc: IElib define
     - name: OPCODE_cure_confusion
-      detail: 242
+      detail: '242'
+      doc: IElib define
     - name: OPCODE_cure_deafness
-      detail: 81
+      detail: '81'
+      doc: IElib define
     - name: OPCODE_cure_death
-      detail: 32
+      detail: '32'
+      doc: IElib define
     - name: OPCODE_cure_disease
-      detail: 79
+      detail: '79'
+      doc: IElib define
     - name: OPCODE_cure_dispellable_effects
-      detail: 58
+      detail: '58'
+      doc: IElib define
     - name: OPCODE_cure_drunkeness
-      detail: 164
+      detail: '164'
+      doc: IElib define
     - name: OPCODE_cure_feeblemindedness
-      detail: 77
+      detail: '77'
+      doc: IElib define
     - name: OPCODE_cure_hold
-      detail: 162
+      detail: '162'
+      doc: IElib define
     - name: OPCODE_cure_horror
-      detail: 161
+      detail: '161'
+      doc: IElib define
     - name: OPCODE_cure_invisibility
-      detail: 47
+      detail: '47'
+      doc: IElib define
     - name: OPCODE_cure_invisibility_2
-      detail: 116
+      detail: '116'
+      doc: IElib define
     - name: OPCODE_cure_level_drain
-      detail: 224
+      detail: '224'
+      doc: IElib define
     - name: OPCODE_cure_poison
-      detail: 11
+      detail: '11'
+      doc: IElib define
     - name: OPCODE_cure_silence
-      detail: 48
+      detail: '48'
+      doc: IElib define
     - name: OPCODE_cure_sleep
-      detail: 2
+      detail: '2'
+      doc: IElib define
     - name: OPCODE_cure_stone_to_flesh
-      detail: 43
+      detail: '43'
+      doc: IElib define
     - name: OPCODE_cure_stun
-      detail: 46
+      detail: '46'
+      doc: IElib define
     - name: OPCODE_cure_unpause_target
-      detail: 270
+      detail: '270'
+      doc: IElib define
     - name: OPCODE_damage_mod
-      detail: 250
+      detail: '250'
+      doc: IElib define
     - name: OPCODE_damage_vs_creature
-      detail: 179
+      detail: '179'
+      doc: IElib define
     - name: OPCODE_deafness
-      detail: 80
+      detail: '80'
+      doc: IElib define
     - name: OPCODE_death_dependent_constitution
-      detail: 195
+      detail: '195'
+      doc: IElib define
     - name: OPCODE_death_disintegrate
-      detail: 238
+      detail: '238'
+      doc: IElib define
     - name: OPCODE_death_kill_60hp
-      detail: 209
+      detail: '209'
+      doc: IElib define
     - name: OPCODE_death_kill_creature_type
-      detail: 55
+      detail: '55'
+      doc: IElib define
     - name: OPCODE_decrementing_bounce_spells
-      detail: 200
+      detail: '200'
+      doc: IElib define
     - name: OPCODE_decrementing_spell_immunity
-      detail: 201
+      detail: '201'
+      doc: IElib define
     - name: OPCODE_defrost
-      detail: 14
+      detail: '14'
+      doc: IElib define
     - name: OPCODE_detect_alignment
-      detail: 115
+      detail: '115'
+      doc: IElib define
     - name: OPCODE_detect_illusion_mod
-      detail: 276
+      detail: '276'
+      doc: IElib define
     - name: OPCODE_dexterity_mod
-      detail: 15
+      detail: '15'
+      doc: IElib define
     - name: OPCODE_dimension_door
-      detail: 124
+      detail: '124'
+      doc: IElib define
     - name: OPCODE_disable_permanent_death
-      detail: 295
+      detail: '295'
+      doc: IElib define
     - name: OPCODE_disable_spell_casting_abilities
-      detail: 145
+      detail: '145'
+      doc: IElib define
     - name: OPCODE_disable_visual_effect
-      detail: 291
+      detail: '291'
+      doc: IElib define
     - name: OPCODE_disease
-      detail: 78
+      detail: '78'
+      doc: IElib define
     - name: OPCODE_dispel_magic
-      detail: 58
+      detail: '58'
+      doc: IElib define
     - name: OPCODE_display_special_effect_icon
-      detail: 142
+      detail: '142'
+      doc: IElib define
     - name: OPCODE_dither
-      detail: 114
+      detail: '114'
+      doc: IElib define
     - name: OPCODE_dont_jump
-      detail: 184
+      detail: '184'
+      doc: IElib define
     - name: OPCODE_drain_item_charges
-      detail: 243
+      detail: '243'
+      doc: IElib define
     - name: OPCODE_drain_wizard_spell
-      detail: 244
-    - name: OPCODE_drop_weapons_in
-      detail: 264
+      detail: '244'
+      doc: IElib define
+    - name: OPCODE_drop_weapons_in_panic
+      detail: '264'
+      doc: IElib define
     - name: OPCODE_drunkenness_mod
-      detail: 94
+      detail: '94'
+      doc: IElib define
     - name: OPCODE_duration_mod
-      detail: 99
+      detail: '99'
+      doc: IElib define
     - name: OPCODE_effect_berserking
-      detail: 246
+      detail: '246'
+      doc: IElib define
     - name: OPCODE_effect_wild_magic
-      detail: 280
+      detail: '280'
+      doc: IElib define
     - name: OPCODE_electricity_resist_mod
-      detail: 29
+      detail: '29'
+      doc: IElib define
     - name: OPCODE_empty
-      detail: 121
+      detail: '121'
+      doc: IElib define
     - name: OPCODE_execute_script_cut250a
-      detail: 298
+      detail: '298'
+      doc: IElib define
     - name: OPCODE_existance_delay_override
-      detail: 294
+      detail: '294'
+      doc: IElib define
     - name: OPCODE_experience_points
-      detail: 104
+      detail: '104'
+      doc: IElib define
     - name: OPCODE_extra_damage_mod
-      detail: 73
+      detail: '73'
+      doc: IElib define
     - name: OPCODE_familiar_block
-      detail: 196
+      detail: '196'
+      doc: IElib define
     - name: OPCODE_farsight
-      detail: 239
+      detail: '239'
+      doc: IElib define
     - name: OPCODE_fatigue_mod
-      detail: 93
+      detail: '93'
+      doc: IElib define
     - name: OPCODE_feeblemindedness
-      detail: 76
+      detail: '76'
+      doc: IElib define
     - name: OPCODE_find_familiar
-      detail: 192
+      detail: '192'
+      doc: IElib define
     - name: OPCODE_find_traps
-      detail: 150
+      detail: '150'
+      doc: IElib define
     - name: OPCODE_find_traps_mod
-      detail: 91
+      detail: '91'
+      doc: IElib define
     - name: OPCODE_fire_resist_mod
-      detail: 30
+      detail: '30'
+      doc: IElib define
     - name: OPCODE_fist_damage_mod
-      detail: 289
+      detail: '289'
+      doc: IElib define
     - name: OPCODE_fist_thac0_mod
-      detail: 288
+      detail: '288'
+      doc: IElib define
     - name: OPCODE_force_visible
-      detail: 136
+      detail: '136'
+      doc: IElib define
     - name: OPCODE_give_ability
-      detail: 171
+      detail: '171'
+      doc: IElib define
     - name: OPCODE_gold
-      detail: 105
+      detail: '105'
+      doc: IElib define
     - name: OPCODE_golem_stoneskin
-      detail: 314
+      detail: '314'
+      doc: IElib define
     - name: OPCODE_haste
-      detail: 16
+      detail: '16'
+      doc: IElib define
     - name: OPCODE_haste_2
-      detail: 317
+      detail: '317'
+      doc: IElib define
     - name: OPCODE_hide_in_shadows_mod
-      detail: 275
+      detail: '275'
+      doc: IElib define
     - name: OPCODE_hold
-      detail: 109
+      detail: '109'
+      doc: IElib define
     - name: OPCODE_hold3
-      detail: 185
+      detail: '185'
+      doc: IElib define
     - name: OPCODE_hold_2
-      detail: 175
+      detail: '175'
+      doc: IElib define
     - name: OPCODE_horror
-      detail: 24
+      detail: '24'
+      doc: IElib define
     - name: OPCODE_hp_current_hp_mod
-      detail: 17
+      detail: '17'
+      doc: IElib define
     - name: OPCODE_hp_damage
-      detail: 12
+      detail: '12'
+      doc: IElib define
     - name: OPCODE_hp_maximum_hp_mod
-      detail: 18
+      detail: '18'
+      doc: IElib define
     - name: OPCODE_hp_minimum_limit
-      detail: 208
+      detail: '208'
+      doc: IElib define
     - name: OPCODE_hp_regeneration
-      detail: 98
+      detail: '98'
+      doc: IElib define
     - name: OPCODE_identify
-      detail: 149
+      detail: '149'
+      doc: IElib define
     - name: OPCODE_ids_set_ids_state
-      detail: 72
+      detail: '72'
+      doc: IElib define
     - name: OPCODE_ids_sex_change
-      detail: 71
+      detail: '71'
+      doc: IElib define
     - name: OPCODE_ignore_dialog_pause
-      detail: 194
+      detail: '194'
+      doc: IElib define
     - name: OPCODE_image_projection
-      detail: 236
+      detail: '236'
+      doc: IElib define
     - name: OPCODE_immunity_school_decrement
-      detail: 223
+      detail: '223'
+      doc: IElib define
     - name: OPCODE_immunity_secondary_type_decrement
-      detail: 226
+      detail: '226'
+      doc: IElib define
     - name: OPCODE_immunity_to_turn
-      detail: 297
+      detail: '297'
+      doc: IElib define
     - name: OPCODE_imprisonment
-      detail: 211
+      detail: '211'
+      doc: IElib define
     - name: OPCODE_infravision
-      detail: 63
+      detail: '63'
+      doc: IElib define
     - name: OPCODE_instant_death
-      detail: 13
+      detail: '13'
+      doc: IElib define
     - name: OPCODE_intelligence_mod
-      detail: 19
+      detail: '19'
+      doc: IElib define
     - name: OPCODE_invisibility
-      detail: 20
+      detail: '20'
+      doc: IElib define
     - name: OPCODE_invisible_detection_by
-      detail: 193
+      detail: '193'
+      doc: IElib define
     - name: OPCODE_knock
-      detail: 125
+      detail: '125'
+      doc: IElib define
     - name: OPCODE_learn_spell
-      detail: 147
+      detail: '147'
+      doc: IElib define
     - name: OPCODE_level_change
-      detail: 96
+      detail: '96'
+      doc: IElib define
     - name: OPCODE_level_drain
-      detail: 216
+      detail: '216'
+      doc: IElib define
     - name: OPCODE_lighting_effects
-      detail: 141
+      detail: '141'
+      doc: IElib define
     - name: OPCODE_lore_mod
-      detail: 21
+      detail: '21'
+      doc: IElib define
     - name: OPCODE_magic_damage_resist_mod
-      detail: 31
+      detail: '31'
+      doc: IElib define
     - name: OPCODE_magic_resist_mod
-      detail: 166
+      detail: '166'
+      doc: IElib define
     - name: OPCODE_magical_cold_resist_mod
-      detail: 85
+      detail: '85'
+      doc: IElib define
     - name: OPCODE_magical_fire_resist_mod
-      detail: 84
+      detail: '84'
+      doc: IElib define
     - name: OPCODE_magical_rest
-      detail: 316
+      detail: '316'
+      doc: IElib define
     - name: OPCODE_mass_raise_dead
-      detail: 304
+      detail: '304'
+      doc: IElib define
     - name: OPCODE_maze
-      detail: 213
+      detail: '213'
+      doc: IElib define
     - name: OPCODE_melee_thac0_mod
-      detail: 284
+      detail: '284'
+      doc: IElib define
     - name: OPCODE_melee_weapon_damage_mod
-      detail: 285
+      detail: '285'
+      doc: IElib define
     - name: OPCODE_mirror_image
-      detail: 119
+      detail: '119'
+      doc: IElib define
     - name: OPCODE_mirror_image_exact_number
-      detail: 159
+      detail: '159'
+      doc: IElib define
     - name: OPCODE_miscast_magic
-      detail: 60
+      detail: '60'
+      doc: IElib define
     - name: OPCODE_missile_weapon_damage_mod
-      detail: 286
+      detail: '286'
+      doc: IElib define
     - name: OPCODE_missiles_resist_mod
-      detail: 89
+      detail: '89'
+      doc: IElib define
     - name: OPCODE_monster_summoning
-      detail: 127
+      detail: '127'
+      doc: IElib define
     - name: OPCODE_morale_break_mod
-      detail: 106
+      detail: '106'
+      doc: IElib define
     - name: OPCODE_morale_mod
-      detail: 23
+      detail: '23'
+      doc: IElib define
     - name: OPCODE_movement_mod
-      detail: 126
+      detail: '126'
+      doc: IElib define
     - name: OPCODE_movement_mod_2
-      detail: 176
+      detail: '176'
+      doc: IElib define
     - name: OPCODE_negative_chant
-      detail: 137
+      detail: '137'
+      doc: IElib define
     - name: OPCODE_npcbump
-      detail: 300
+      detail: '300'
+      doc: IElib define
     - name: OPCODE_open_locks_mod
-      detail: 90
+      detail: '90'
+      doc: IElib define
     - name: OPCODE_overlay_blur
-      detail: 65
+      detail: '65'
+      doc: IElib define
     - name: OPCODE_overlay_entangle
-      detail: 154
+      detail: '154'
+      doc: IElib define
     - name: OPCODE_overlay_grease
-      detail: 158
+      detail: '158'
+      doc: IElib define
     - name: OPCODE_overlay_minor_globe
-      detail: 155
+      detail: '155'
+      doc: IElib define
     - name: OPCODE_overlay_protection_from_normal_missiles
-      detail: 156
+      detail: '156'
+      doc: IElib define
     - name: OPCODE_overlay_sanctuary
-      detail: 153
+      detail: '153'
+      doc: IElib define
     - name: OPCODE_passwall
-      detail: 184
+      detail: '184'
+      doc: IElib define
     - name: OPCODE_pause_target
-      detail: 165
+      detail: '165'
+      doc: IElib define
     - name: OPCODE_petrification
-      detail: 134
+      detail: '134'
+      doc: IElib define
     - name: OPCODE_pick_pockets_mod
-      detail: 92
+      detail: '92'
+      doc: IElib define
     - name: OPCODE_piercing_resist_mod
-      detail: 88
+      detail: '88'
+      doc: IElib define
     - name: OPCODE_play_3d_effect
-      detail: 215
+      detail: '215'
+      doc: IElib define
     - name: OPCODE_play_damage_animation
-      detail: 170
+      detail: '170'
+      doc: IElib define
     - name: OPCODE_play_movie
-      detail: 152
+      detail: '152'
+      doc: IElib define
     - name: OPCODE_play_sound_effect
-      detail: 174
+      detail: '174'
+      doc: IElib define
     - name: OPCODE_poison
-      detail: 25
+      detail: '25'
+      doc: IElib define
     - name: OPCODE_poison_resist_mod
-      detail: 173
+      detail: '173'
+      doc: IElib define
     - name: OPCODE_polymorph_into_specific
-      detail: 135
+      detail: '135'
+      doc: IElib define
     - name: OPCODE_portrait_change
-      detail: 107
+      detail: '107'
+      doc: IElib define
     - name: OPCODE_positive_chant
-      detail: 131
+      detail: '131'
+      doc: IElib define
     - name: OPCODE_prevent_special_effect_icon
-      detail: 169
+      detail: '169'
+      doc: IElib define
     - name: OPCODE_priest_spell_slots_mod
-      detail: 62
+      detail: '62'
+      doc: IElib define
     - name: OPCODE_proficiency_mod
-      detail: 233
+      detail: '233'
+      doc: IElib define
     - name: OPCODE_protection_backstab
-      detail: 292
+      detail: '292'
+      doc: IElib define
     - name: OPCODE_protection_free_action
-      detail: 163
+      detail: '163'
+      doc: IElib define
     - name: OPCODE_protection_freedom
-      detail: 212
+      detail: '212'
+      doc: IElib define
     - name: OPCODE_protection_from_creature_type
-      detail: 100
+      detail: '100'
+      doc: IElib define
     - name: OPCODE_protection_from_detection
-      detail: 69
+      detail: '69'
+      doc: IElib define
+    - name: OPCODE_protection_from_display_specific_string
+      detail: '267'
+      doc: IElib define
     - name: OPCODE_protection_from_melee_weapons
-      detail: 120
+      detail: '120'
+      doc: IElib define
     - name: OPCODE_protection_from_opcode
-      detail: 101
+      detail: '101'
+      doc: IElib define
     - name: OPCODE_protection_from_projectile
-      detail: 83
+      detail: '83'
+      doc: IElib define
     - name: OPCODE_protection_from_specific_animation
-      detail: 296
+      detail: '296'
+      doc: IElib define
     - name: OPCODE_protection_from_spell
-      detail: 206
+      detail: '206'
+      doc: IElib define
     - name: OPCODE_protection_from_spell_levels
-      detail: 102
+      detail: '102'
+      doc: IElib define
     - name: OPCODE_protection_from_spell_school
-      detail: 204
+      detail: '204'
+      doc: IElib define
     - name: OPCODE_protection_from_spell_secondary_type
-      detail: 205
+      detail: '205'
+      doc: IElib define
     - name: OPCODE_protection_from_timestop
-      detail: 310
+      detail: '310'
+      doc: IElib define
     - name: OPCODE_protection_from_tracking
-      detail: 308
+      detail: '308'
+      doc: IElib define
     - name: OPCODE_protection_spell_trap
-      detail: 259
+      detail: '259'
+      doc: IElib define
     - name: OPCODE_protection_stoneskin
-      detail: 218
+      detail: '218'
+      doc: IElib define
     - name: OPCODE_puppet_id
-      detail: 237
+      detail: '237'
+      doc: IElib define
     - name: OPCODE_raise_dead
-      detail: 32
+      detail: '32'
+      doc: IElib define
     - name: OPCODE_random_wish_spell
-      detail: 311
+      detail: '311'
+      doc: IElib define
     - name: OPCODE_ranger_tracking_ability
-      detail: 307
+      detail: '307'
+      doc: IElib define
     - name: OPCODE_removal_remove_one_school
-      detail: 229
+      detail: '229'
+      doc: IElib define
     - name: OPCODE_removal_remove_one_secondary_type
-      detail: 230
+      detail: '230'
+      doc: IElib define
     - name: OPCODE_removal_remove_school
-      detail: 220
+      detail: '220'
+      doc: IElib define
     - name: OPCODE_removal_remove_secondary_type
-      detail: 221
+      detail: '221'
+      doc: IElib define
     - name: OPCODE_remove_creature
-      detail: 168
+      detail: '168'
+      doc: IElib define
     - name: OPCODE_remove_curse
-      detail: 26
+      detail: '26'
+      doc: IElib define
     - name: OPCODE_remove_infravision
-      detail: 64
+      detail: '64'
+      doc: IElib define
     - name: OPCODE_remove_inventory_item
-      detail: 123
+      detail: '123'
+      doc: IElib define
     - name: OPCODE_remove_item
-      detail: 112
+      detail: '112'
+      doc: IElib define
     - name: OPCODE_remove_map_marker
-      detail: 254
+      detail: '254'
+      doc: IElib define
     - name: OPCODE_remove_protection_from_spell
-      detail: 266
+      detail: '266'
+      doc: IElib define
     - name: OPCODE_remove_sanctuary
-      detail: 160
+      detail: '160'
+      doc: IElib define
     - name: OPCODE_remove_special_effect_icon
-      detail: 240
+      detail: '240'
+      doc: IElib define
     - name: OPCODE_remove_specific_area_effect
-      detail: 273
+      detail: '273'
+      doc: IElib define
     - name: OPCODE_remove_spell
-      detail: 172
+      detail: '172'
+      doc: IElib define
     - name: OPCODE_replace_creature
-      detail: 151
+      detail: '151'
+      doc: IElib define
     - name: OPCODE_reputation
-      detail: 108
+      detail: '108'
+      doc: IElib define
     - name: OPCODE_restoration
-      detail: 224
+      detail: '224'
+      doc: IElib define
     - name: OPCODE_restore_lost_spells
-      detail: 261
+      detail: '261'
+      doc: IElib define
     - name: OPCODE_reveal_area
-      detail: 117
+      detail: '117'
+      doc: IElib define
     - name: OPCODE_reveal_magic
-      detail: 225
+      detail: '225'
+      doc: IElib define
     - name: OPCODE_save_vs_breath_weapons
-      detail: 36
+      detail: '36'
+      doc: IElib define
     - name: OPCODE_save_vs_death_mod
-      detail: 33
+      detail: '33'
+      doc: IElib define
     - name: OPCODE_save_vs_petrification
-      detail: 35
+      detail: '35'
+      doc: IElib define
     - name: OPCODE_save_vs_polymorph_mod
-      detail: 35
+      detail: '35'
+      doc: IElib define
     - name: OPCODE_save_vs_spells_mod
-      detail: 37
+      detail: '37'
+      doc: IElib define
     - name: OPCODE_save_vs_wands_mod
-      detail: 34
+      detail: '34'
+      doc: IElib define
     - name: OPCODE_script_enable_offscreen_ai
-      detail: 293
+      detail: '293'
+      doc: IElib define
     - name: OPCODE_script_modify_global_variable
-      detail: 265
+      detail: '265'
+      doc: IElib define
     - name: OPCODE_script_modify_local_variable
-      detail: 309
+      detail: '309'
+      doc: IElib define
     - name: OPCODE_script_movetoarea
-      detail: 186
+      detail: '186'
+      doc: IElib define
     - name: OPCODE_script_scripting_state_mod
-      detail: 282
+      detail: '282'
+      doc: IElib define
     - name: OPCODE_script_store_local_variable
-      detail: 187
+      detail: '187'
+      doc: IElib define
     - name: OPCODE_select_spell
-      detail: 214
+      detail: '214'
+      doc: IElib define
     - name: OPCODE_selection_circle_removal
-      detail: 287
+      detail: '287'
+      doc: IElib define
     - name: OPCODE_set_ai_script
-      detail: 82
+      detail: '82'
+      doc: IElib define
     - name: OPCODE_set_melee_effect
-      detail: 248
+      detail: '248'
+      doc: IElib define
     - name: OPCODE_set_ranged_effect
-      detail: 249
+      detail: '249'
+      doc: IElib define
     - name: OPCODE_set_stat_tobex
-      detail: 318
+      detail: '318'
+      doc: IElib define
     - name: OPCODE_set_trap
-      detail: 252
+      detail: '252'
+      doc: IElib define
     - name: OPCODE_set_traps_mod
-      detail: 277
+      detail: '277'
+      doc: IElib define
     - name: OPCODE_shake_window
-      detail: 269
+      detail: '269'
+      doc: IElib define
     - name: OPCODE_silence
-      detail: 38
+      detail: '38'
+      doc: IElib define
     - name: OPCODE_slashing_resist_mod
-      detail: 86
+      detail: '86'
+      doc: IElib define
     - name: OPCODE_slow
-      detail: 40
+      detail: '40'
+      doc: IElib define
     - name: OPCODE_sparkle
-      detail: 41
+      detail: '41'
+      doc: IElib define
     - name: OPCODE_spell_sequencer_activation
-      detail: 258
+      detail: '258'
+      doc: IElib define
     - name: OPCODE_spell_sequencer_active
-      detail: 256
+      detail: '256'
+      doc: IElib define
     - name: OPCODE_spell_sequencer_creation
-      detail: 257
+      detail: '257'
+      doc: IElib define
     - name: OPCODE_stat_wild_magic_mod
-      detail: 281
+      detail: '281'
+      doc: IElib define
     - name: OPCODE_state_berserking
-      detail: 3
+      detail: '3'
+      doc: IElib define
     - name: OPCODE_stealth_mod
-      detail: 59
+      detail: '59'
+      doc: IElib define
     - name: OPCODE_strength_mod
-      detail: 44
+      detail: '44'
+      doc: IElib define
     - name: OPCODE_stun
-      detail: 45
+      detail: '45'
+      doc: IElib define
     - name: OPCODE_stun_90hp
-      detail: 210
+      detail: '210'
+      doc: IElib define
     - name: OPCODE_teleport
-      detail: 124
+      detail: '124'
+      doc: IElib define
     - name: OPCODE_teleport_field
-      detail: 222
+      detail: '222'
+      doc: IElib define
     - name: OPCODE_teleport_to_target
-      detail: 274
+      detail: '274'
+      doc: IElib define
     - name: OPCODE_text_change_name
-      detail: 103
+      detail: '103'
+      doc: IElib define
     - name: OPCODE_text_change_title
-      detail: 290
+      detail: '290'
+      doc: IElib define
     - name: OPCODE_text_display_string
-      detail: 139
-    - name: OPCODE_text_protection_from_display_specific
-      detail: 267
+      detail: '139'
+      doc: IElib define
     - name: OPCODE_thac0_mod
-      detail: 54
+      detail: '54'
+      doc: IElib define
     - name: OPCODE_thac0_mod_with_missile
-      detail: 167
+      detail: '167'
+      doc: IElib define
     - name: OPCODE_thac0_vs_creature
-      detail: 178
+      detail: '178'
+      doc: IElib define
     - name: OPCODE_time_stop
-      detail: 231
+      detail: '231'
+      doc: IElib define
     - name: OPCODE_to_hit_mod
-      detail: 278
+      detail: '278'
+      doc: IElib define
     - name: OPCODE_tracking_skill_mod
-      detail: 95
+      detail: '95'
+      doc: IElib define
     - name: OPCODE_transparency_fade
-      detail: 66
+      detail: '66'
+      doc: IElib define
     - name: OPCODE_unconsciousness
-      detail: 39
+      detail: '39'
+      doc: IElib define
     - name: OPCODE_unconsciousness_20hp
-      detail: 217
+      detail: '217'
+      doc: IElib define
     - name: OPCODE_unlock
-      detail: 125
+      detail: '125'
+      doc: IElib define
     - name: OPCODE_unstun
-      detail: 46
+      detail: '46'
+      doc: IElib define
     - name: OPCODE_unsummon_creature
-      detail: 68
+      detail: '68'
+      doc: IElib define
     - name: OPCODE_use_eff_file
-      detail: 177
+      detail: '177'
+      doc: IElib define
     - name: OPCODE_use_eff_file_cursed
-      detail: 283
+      detail: '283'
+      doc: IElib define
     - name: OPCODE_visual_range
-      detail: 262
+      detail: '262'
+      doc: IElib define
     - name: OPCODE_vocalize
-      detail: 48
+      detail: '48'
+      doc: IElib define
     - name: OPCODE_web_effect
-      detail: 157
+      detail: '157'
+      doc: IElib define
     - name: OPCODE_wing_buffet
-      detail: 235
+      detail: '235'
+      doc: IElib define
     - name: OPCODE_wisdom_mod
-      detail: 49
+      detail: '49'
+      doc: IElib define
     - name: OPCODE_wizard_spell_slots_mod
-      detail: 42
+      detail: '42'
+      doc: IElib define
     - name: OPCODE_zone_of_sweet_air
-      detail: 273
+      detail: '273'
+      doc: IElib define
     - name: TARGET_eff_everyone
-      detail: 4
+      detail: '4'
+      doc: IElib define
     - name: TARGET_eff_everyone_except_party
-      detail: 5
+      detail: '5'
+      doc: IElib define
     - name: TARGET_eff_everyone_except_self
-      detail: 8
+      detail: '8'
+      doc: IElib define
     - name: TARGET_eff_everyone_match_specific_caster
-      detail: 6
+      detail: '6'
+      doc: IElib define
     - name: TARGET_eff_everyone_match_specific_target
-      detail: 7
+      detail: '7'
+      doc: IElib define
     - name: TARGET_eff_none
-      detail: 0
+      detail: '0'
+      doc: IElib define
     - name: TARGET_eff_original_caster
-      detail: 9
+      detail: '9'
+      doc: IElib define
     - name: TARGET_eff_party
-      detail: 3
+      detail: '3'
+      doc: IElib define
     - name: TARGET_eff_preset
-      detail: 2
+      detail: '2'
+      doc: IElib define
     - name: TARGET_eff_self
-      detail: 1
+      detail: '1'
+      doc: IElib define
     - name: TIMING_absolute_duration
-      detail: 4096
+      detail: '4096'
+      doc: IElib define
     - name: TIMING_delayed
-      detail: 4
+      detail: '4'
+      doc: IElib define
     - name: TIMING_delayed_duration
-      detail: 3
+      detail: '3'
+      doc: IElib define
     - name: TIMING_duration
-      detail: 0
+      detail: '0'
+      doc: IElib define
     - name: TIMING_permanent
-      detail: 1
+      detail: '1'
+      doc: IElib define
     - name: TIMING_permanent_after_death
-      detail: 9
+      detail: '9'
+      doc: IElib define
     - name: TIMING_trigger
-      detail: 10
+      detail: '10'
+      doc: IElib define
     - name: TIMING_while_equipped
-      detail: 2
+      detail: '2'
+      doc: IElib define
