@@ -53,7 +53,7 @@ def defines_from_file(path):
     for line in fh: # some monkey code
       constant = re.match(regex_constant, line)
       if constant:
-        defines[constant.group(1)] = int(constant.group(2))
+        defines[constant.group(1)] = constant.group(2)
   return defines
 
 # get various defines from header files
@@ -68,7 +68,7 @@ defines = OrderedDict(sorted(defines.items()))
 
 for d in defines:
   highlight_list.append({"match": "\\b({})\\b".format(d)})
-  completion_list.append({"name": d, "detail": defines[d]})
+  completion_list.append({"name": d, "detail": defines[d], "doc": "IElib define"})
 
 # dump to completion
 with open(completion_yaml) as yf:
