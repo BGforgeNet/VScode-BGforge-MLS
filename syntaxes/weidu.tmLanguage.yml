@@ -880,9 +880,9 @@ repository:
   ielib:
     name: constant.language.ielib.weidu
     patterns:
-      - match: \b(DISPEL_no_MR_BYPASS_yes)\b
-      - match: \b(DISPEL_yes_MR_BYPASS_no)\b
-      - match: \b(DISPEL_yes_MR_BYPASS_yes)\b
+      - match: \b(DISPEL_no_BYPASS_MR_yes)\b
+      - match: \b(DISPEL_yes_BYPASS_MR_no)\b
+      - match: \b(DISPEL_yes_BYPASS_MR_yes)\b
       - match: \b(ICON_ability_score_drained)\b
       - match: \b(ICON_able_to_poison_weapons)\b
       - match: \b(ICON_absolute_immunity)\b

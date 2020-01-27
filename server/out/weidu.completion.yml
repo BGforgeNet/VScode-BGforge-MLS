@@ -1892,13 +1892,13 @@ tp2-value:
 ielib:
   type: 21 # constant
   items:
-    - name: DISPEL_no_MR_BYPASS_yes
+    - name: DISPEL_no_BYPASS_MR_yes
       detail: '2'
       doc: IElib define
-    - name: DISPEL_yes_MR_BYPASS_no
+    - name: DISPEL_yes_BYPASS_MR_no
       detail: '1'
       doc: IElib define
-    - name: DISPEL_yes_MR_BYPASS_yes
+    - name: DISPEL_yes_BYPASS_MR_yes
       detail: '3'
       doc: IElib define
     - name: ICON_ability_score_drained
