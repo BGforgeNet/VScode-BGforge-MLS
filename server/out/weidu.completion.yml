@@ -3470,19 +3470,19 @@ ielib:
     - name: OPCODE_zone_of_sweet_air
       detail: '273'
       doc: IElib define
-    - name: SAVINGTHROW_BREATH
+    - name: SAVINGTHROW_breath
       detail: '1'
       doc: IElib define
-    - name: SAVINGTHROW_DEATH
+    - name: SAVINGTHROW_death
       detail: '2'
       doc: IElib define
-    - name: SAVINGTHROW_POLYMORPH
+    - name: SAVINGTHROW_polymorph
       detail: '4'
       doc: IElib define
-    - name: SAVINGTHROW_SPELL
+    - name: SAVINGTHROW_spell
       detail: '0'
       doc: IElib define
-    - name: SAVINGTHROW_WAND
+    - name: SAVINGTHROW_wand
       detail: '3'
       doc: IElib define
     - name: TARGET_eff_everyone

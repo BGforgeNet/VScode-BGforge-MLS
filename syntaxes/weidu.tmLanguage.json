@@ -4970,23 +4970,23 @@
           "name": "constant.language.ielib.weidu"
         },
         {
-          "match": "\\b(SAVINGTHROW_BREATH)\\b",
+          "match": "\\b(SAVINGTHROW_breath)\\b",
           "name": "constant.language.ielib.weidu"
         },
         {
-          "match": "\\b(SAVINGTHROW_DEATH)\\b",
+          "match": "\\b(SAVINGTHROW_death)\\b",
           "name": "constant.language.ielib.weidu"
         },
         {
-          "match": "\\b(SAVINGTHROW_POLYMORPH)\\b",
+          "match": "\\b(SAVINGTHROW_polymorph)\\b",
           "name": "constant.language.ielib.weidu"
         },
         {
-          "match": "\\b(SAVINGTHROW_SPELL)\\b",
+          "match": "\\b(SAVINGTHROW_spell)\\b",
           "name": "constant.language.ielib.weidu"
         },
         {
-          "match": "\\b(SAVINGTHROW_WAND)\\b",
+          "match": "\\b(SAVINGTHROW_wand)\\b",
           "name": "constant.language.ielib.weidu"
         },
         {

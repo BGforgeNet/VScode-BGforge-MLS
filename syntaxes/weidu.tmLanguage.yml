@@ -1406,11 +1406,11 @@ repository:
       - match: \b(OPCODE_wisdom_mod)\b
       - match: \b(OPCODE_wizard_spell_slots_mod)\b
       - match: \b(OPCODE_zone_of_sweet_air)\b
-      - match: \b(SAVINGTHROW_BREATH)\b
-      - match: \b(SAVINGTHROW_DEATH)\b
-      - match: \b(SAVINGTHROW_POLYMORPH)\b
-      - match: \b(SAVINGTHROW_SPELL)\b
-      - match: \b(SAVINGTHROW_WAND)\b
+      - match: \b(SAVINGTHROW_breath)\b
+      - match: \b(SAVINGTHROW_death)\b
+      - match: \b(SAVINGTHROW_polymorph)\b
+      - match: \b(SAVINGTHROW_spell)\b
+      - match: \b(SAVINGTHROW_wand)\b
       - match: \b(TARGET_eff_everyone)\b
       - match: \b(TARGET_eff_everyone_except_party)\b
       - match: \b(TARGET_eff_everyone_except_self)\b
