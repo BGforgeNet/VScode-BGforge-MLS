@@ -4970,6 +4970,26 @@
           "name": "constant.language.ielib.weidu"
         },
         {
+          "match": "\\b(SAVINGTHROW_BREATH)\\b",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "\\b(SAVINGTHROW_DEATH)\\b",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "\\b(SAVINGTHROW_POLYMORPH)\\b",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "\\b(SAVINGTHROW_SPELL)\\b",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "\\b(SAVINGTHROW_WAND)\\b",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
           "match": "\\b(TARGET_eff_everyone)\\b",
           "name": "constant.language.ielib.weidu"
         },
