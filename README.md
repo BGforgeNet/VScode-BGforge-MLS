@@ -1,4 +1,5 @@
 ## BGforge multilanguage server
+[![VScode marketplace](https://img.shields.io/visual-studio-marketplace/i/bgforge.bgforge-mls)](https://marketplace.visualstudio.com/items?itemName=BGforge.bgforge-mls)
 <a href="https://www.patreon.com/BGforge"><img src="https://c5.patreon.com/external/logo/become_a_patron_button.png" width="100" alt="Support us on Patreon"></a>
 [![Discord chat](https://img.shields.io/discord/420268540700917760?logo=discord)](https://discord.gg/4Yqfggm)
 
@@ -6,7 +7,7 @@
 | [__Screenshots__](#screenshots)
 | [__Install__](#installation)
 | [__Configure__](#settings)
-| [__Discuss__](https://forums.bgforge.net/viewforum.php?f=35) 
+| [__Discuss__](https://forums.bgforge.net/viewforum.php?f=35)
 
 BGforge MLS is a VScode extension adding support for Star-Trek Scripting Language (`ssl`) used in Fallout 1 and 2 games, and several file formats (`d`, `baf`, `tp2`, `tra`, `2da`) used by WeiDU/Infinity Engine, as well as Sword Coast Stratagems Scripting Language (`ssl`/`slb`).
 
