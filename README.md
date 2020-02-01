@@ -11,7 +11,7 @@
 
 BGforge MLS is a VScode extension adding support for [Star-Trek Scripting Language](https://falloutmods.fandom.com/wiki/Fallout_1_and_Fallout_2_scripting_-_commands,_reference,_tutorials) (`ssl`) used in Fallout 1 and 2 games, and several file formats (`d`, `baf`, `tp2`, `tra`, `2da`) used by [WeiDU](https://weidu.org/~thebigg/README-WeiDU.html) and [Infinity Engine](https://iesdp.bgforge.net), as well as [Sword Coast Stratagems Scripting Language](https://www.gibberlings3.net/forums/topic/13725-coding-scripts-in-ssl-some-lessons/) (`ssl`/`slb`).
 
-[Roadmap](https://forums.bgforge.net/viewtopic.php?f=35&t=174&p=506), [changelog](CHANGELOG.md)
+[Roadmap](https://forums.bgforge.net/viewtopic.php?f=35&t=174&p=506), [changelog](CHANGELOG.md).
 
 ### Features
 - [Syntax highlighting](#screenshots)
@@ -46,7 +46,7 @@ Both Star-Trek Scripting Language and Sword Coast Stratagems Scripting Language 
 ```
 This can be set globally, or per project, so you can work on both types of projects simultaneously.
 
-### Hotkeys
+#### Hotkeys
 * `CTRL+R`: compile (Fallout `ssl`) or parse (WeiDU `tp2`) file, [reporting errors](#error-reporting) if any.
 
 ### Installation
