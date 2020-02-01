@@ -1355,12 +1355,9 @@
                   "include": "#variable"
                 }
               ]
-            },
-            "4": {
-              "name": "keyword.control.ssl"
             }
           },
-          "match": "\\b(?i)(procedure)\\b[[:blank:]]+(\\w+)(\\(.+\\))?[[:blank:]]+(begin)",
+          "match": "\\b(?i)(procedure)\\b[[:blank:]]+(\\w+)(\\(.+\\))?\\b",
           "name": "meta.function.def.ssl"
         }
       ]
