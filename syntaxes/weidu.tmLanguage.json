@@ -2866,6 +2866,22 @@
       "name": "constant.language.ielib.weidu",
       "patterns": [
         {
+          "match": "\\b(DEPLETION_recharges)\\b",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "\\b(DEPLETION_remains)\\b",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "\\b(DEPLETION_replace_with_used_up)\\b",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "\\b(DEPLETION_vanishes)\\b",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
           "match": "\\b(DISPEL_no_BYPASS_MR_yes)\\b",
           "name": "constant.language.ielib.weidu"
         },
@@ -4167,10 +4183,6 @@
         },
         {
           "match": "\\b(OPCODE_electricity_resist_mod)\\b",
-          "name": "constant.language.ielib.weidu"
-        },
-        {
-          "match": "\\b(OPCODE_empty)\\b",
           "name": "constant.language.ielib.weidu"
         },
         {

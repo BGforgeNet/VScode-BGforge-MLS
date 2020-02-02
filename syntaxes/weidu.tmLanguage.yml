@@ -880,6 +880,10 @@ repository:
   ielib:
     name: constant.language.ielib.weidu
     patterns:
+      - match: \b(DEPLETION_recharges)\b
+      - match: \b(DEPLETION_remains)\b
+      - match: \b(DEPLETION_replace_with_used_up)\b
+      - match: \b(DEPLETION_vanishes)\b
       - match: \b(DISPEL_no_BYPASS_MR_yes)\b
       - match: \b(DISPEL_yes_BYPASS_MR_no)\b
       - match: \b(DISPEL_yes_BYPASS_MR_yes)\b
@@ -1206,7 +1210,6 @@ repository:
       - match: \b(OPCODE_effect_berserking)\b
       - match: \b(OPCODE_effect_wild_magic)\b
       - match: \b(OPCODE_electricity_resist_mod)\b
-      - match: \b(OPCODE_empty)\b
       - match: \b(OPCODE_execute_script_cut250a)\b
       - match: \b(OPCODE_existance_delay_override)\b
       - match: \b(OPCODE_experience_points)\b

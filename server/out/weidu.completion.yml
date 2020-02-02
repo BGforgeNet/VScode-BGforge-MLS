@@ -1892,6 +1892,18 @@ tp2-value:
 ielib:
   type: 21 # constant
   items:
+    - name: DEPLETION_recharges
+      detail: '3'
+      doc: IElib define
+    - name: DEPLETION_remains
+      detail: '0'
+      doc: IElib define
+    - name: DEPLETION_replace_with_used_up
+      detail: '2'
+      doc: IElib define
+    - name: DEPLETION_vanishes
+      detail: '1'
+      doc: IElib define
     - name: DISPEL_no_BYPASS_MR_yes
       detail: '2'
       doc: IElib define
@@ -2869,9 +2881,6 @@ ielib:
       doc: IElib define
     - name: OPCODE_electricity_resist_mod
       detail: '29'
-      doc: IElib define
-    - name: OPCODE_empty
-      detail: '121'
       doc: IElib define
     - name: OPCODE_execute_script_cut250a
       detail: '298'
