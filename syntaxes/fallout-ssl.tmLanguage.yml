@@ -359,7 +359,6 @@ repository:
         '4':
           name: keyword.control.ssl
       match: \b(?i)(procedure)\b[[:blank:]]+(\w+)(\(.+\))?[[:blank:]]*(;)
-
   function-definition:
     name: meta.function.def.ssl
     patterns:
@@ -372,7 +371,6 @@ repository:
           patterns:
           - include: '#variable'
       match: \b(?i)(procedure)\b[[:blank:]]+(\w+)(\(.+\))?\b
-
   function-invocation:
     name: meta.function.inv.ssl
     patterns:
@@ -9405,12 +9403,10 @@ repository:
     - match: \b(_PURGE_all_saved_arrays)\b
     - match: \b(checkPartyMembersNearDoor)\b
     - match: \b(check_filesystem_override)\b
-    - match: \b(critter_p_proc)\b
     - match: \b(doVaultBoxerAppearance)\b
     - match: \b(final_fight_lock_doors)\b
     - match: \b(getTimeBit)\b
     - match: \b(hotkey_pressed)\b
-    - match: \b(map_enter_p_proc)\b
     - match: \b(max)\b
     - match: \b(min)\b
     - match: \b(party_size_humans)\b

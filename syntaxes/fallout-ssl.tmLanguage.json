@@ -37325,10 +37325,6 @@
           "name": "support.function.header.ssl"
         },
         {
-          "match": "\\b(critter_p_proc)\\b",
-          "name": "support.function.header.ssl"
-        },
-        {
           "match": "\\b(doVaultBoxerAppearance)\\b",
           "name": "support.function.header.ssl"
         },
@@ -37342,10 +37338,6 @@
         },
         {
           "match": "\\b(hotkey_pressed)\\b",
-          "name": "support.function.header.ssl"
-        },
-        {
-          "match": "\\b(map_enter_p_proc)\\b",
           "name": "support.function.header.ssl"
         },
         {
