@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.7.0
+
+- IE:
+  - Added colorization for [IElib](https://github.com/BGforgeNet/BGforge-MLS-IElib) defines.
+- Fallout:
+  - Fixed colorization bug when procedure begins on the next line.
+
 ## 1.6.0
 
 - IE:
