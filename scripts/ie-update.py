@@ -68,7 +68,7 @@ for df in define_files:
 defines = OrderedDict(sorted(defines.items()))
 
 for d in defines:
-  highlight_list.append({"match": "\\b({})\\b".format(d)})
+  highlight_list.append({"match": "(%?{}%?)".format(d)})
   completion_list.append({"name": d, "detail": defines[d], "doc": "IElib define"})
 
 # dump to completion
