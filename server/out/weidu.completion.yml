@@ -576,11 +576,20 @@ tp2-patch:
     - name: WRITE_ASCII_LIST
       detail: WRITE_ASCII_LIST offset ascString list
       doc: The given ASCII strings are written at offset, offset + 8, offset + 16... Automatically evaluates variables. You may use WRITE_ASCIIL as a synonym for WRITE_ASCII_LIST.
+    - name: WRITE_ASCIIL
+      detail: WRITE_ASCIIL offset ascString list
+      doc: The given ASCII strings are written at offset, offset + 8, offset + 16... Automatically evaluates variables. You may use WRITE_ASCIIL as a synonym for WRITE_ASCII_LIST.
     - name: WRITE_ASCII_TERMINATE
       detail: WRITE_ASCII_TERMINATE offset ascString
       doc: The ASCII ascString is written to the file starting at offset. The terminating NUL is written. You may use WRITE_ASCIIT as a synonym for WRITE_ASCII_TERMINATE.
+    - name: WRITE_ASCIIT
+      detail: WRITE_ASCIIT offset ascString
+      doc: The ASCII ascString is written to the file starting at offset. The terminating NUL is written. You may use WRITE_ASCIIT as a synonym for WRITE_ASCII_TERMINATE.
     - name: WRITE_EVALUATED_ASCII
       detail: 'WRITE_EVALUATED_ASCII offset ascString [ #requiredSize ]'
+      doc: The ASCII ascString is evaluated (so %variable% is replaced by its value) and written to the file starting at offset (as in WRITE_ASCII). You may use WRITE_ASCIIE as a synonym for WRITE_EVALUATED_ASCII.
+    - name: WRITE_ASCIIE
+      detail: 'WRITE_ASCIIE offset ascString [ #requiredSize ]'
       doc: The ASCII ascString is evaluated (so %variable% is replaced by its value) and written to the file starting at offset (as in WRITE_ASCII). You may use WRITE_ASCIIE as a synonym for WRITE_EVALUATED_ASCII.
     - name: WRITE_FILE
       detail: WRITE_FILE offset filename
