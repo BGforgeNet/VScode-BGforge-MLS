@@ -43,12 +43,14 @@ def find_files(path, ext):
         flist.append(os.path.join(root, f))
   return flist
 
-regex_constant = r"^(\w+)\s*=\s*([0-9]+)"
-def defines_from_file(path):
+regex_numeric = r"^(\w+)\s*=\s*(\w+)" # can be hex or bin numbers
+regex_text = r"^TEXT_SPRINT\s+(\w+)\s+~(\w+)~"
+
+def defines_from_file(path, regex):
   defines = {}
   with open(path, "r") as fh:
     for line in fh: # some monkey code
-      constant = re.match(regex_constant, line)
+      constant = re.match(regex, line)
       if constant:
         defines[constant.group(1)] = constant.group(2)
   return defines
@@ -57,7 +59,9 @@ def defines_from_file(path):
 define_files = find_files(src_dir, "tpp")
 defines = {}
 for df in define_files:
-  new_defines = defines_from_file(df)
+  new_defines = defines_from_file(df, regex_numeric)
+  defines = {**defines, **new_defines}
+  new_defines = defines_from_file(df, regex_text)
   defines = {**defines, **new_defines}
 
 # reduce diff noise
