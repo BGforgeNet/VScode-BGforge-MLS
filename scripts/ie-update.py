@@ -43,9 +43,6 @@ def find_files(path, ext):
         flist.append(os.path.join(root, f))
   return flist
 
-def LS(s):
-  return LiteralScalarString(textwrap.dedent(s))
-
 regex_constant = r"^(\w+)\s*=\s*([0-9]+)"
 def defines_from_file(path):
   defines = {}
