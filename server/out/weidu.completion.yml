@@ -1564,6 +1564,9 @@ tp2-value:
     - name: STRING_COMPARE
       detail: String STRING_COMPARE String
       doc: "This is legacy syntax for STRING_EQUAL: This expression evaluates to 0 if and only if its two string arguments are equal (have the same length and the same contents). Otherwise it will evaluate to a negative or positive integer, depending on whether the first string argument would sort lexicographically before or after the second string argument. variables within the strings (e.g., \"%mykit%\") are replaced by their values. Note that variables that you want expanded must be put in %'s, otherwise the raw text will be used. You may use STR_CMP as a synonym for STRING_COMPARE. This function works just like C's strcmp. Note also that STRING_EQUAL and STRING_COMPARE are similar, but STRING_EQUAL has more intuitive return values."
+    - name: STR_CMP
+      detail: String STR_CMP String
+      doc: "This is legacy syntax for STRING_EQUAL: This expression evaluates to 0 if and only if its two string arguments are equal (have the same length and the same contents). Otherwise it will evaluate to a negative or positive integer, depending on whether the first string argument would sort lexicographically before or after the second string argument. variables within the strings (e.g., \"%mykit%\") are replaced by their values. Note that variables that you want expanded must be put in %'s, otherwise the raw text will be used. This function works just like C's strcmp. Note also that STRING_EQUAL and STRING_COMPARE are similar, but STRING_EQUAL has more intuitive return values."
     - name: STRING_COMPARE_CASE
       detail: String STRING_COMPARE_CASE String
       doc: 'This is legacy syntax for STRING_EQUAL_CASE: As STRING_COMPARE, but the comparison ignores case. That is, "ANOMEN" and "aNoMeN" are considered equal.'
@@ -1573,8 +1576,14 @@ tp2-value:
     - name: STRING_EQUAL_CASE
       detail: String STRING_EQUAL_CASE String
       doc: As STRING_EQUAL, but the comparison ignores case. That is, "ANOMEN" and "aNoMeN" are considered equal. You may use STR_EQ as a synonym for STRING_EQUAL_CASE.
+    - name: STR_EQ
+      detail: String STR_EQ String
+      doc: As STRING_EQUAL, but the comparison ignores case. That is, "ANOMEN" and "aNoMeN" are considered equal.
     - name: STRING_MATCHES_REGEXP
       detail: String STRING_MATCHES_REGEXP String
+      doc: As STRING_COMPARE_CASE, but the second string is treated as a regexp. Thus "AR1005" STRING_MATCHES_REGEXP "AR[0-9]+" evaluates to 0 ("no difference" ). You may use STRING_COMPARE_REGEXP as a synonym.
+    - name: STRING_COMPARE_REGEXP
+      detail: String STRING_COMPARE_REGEXP String
       doc: As STRING_COMPARE_CASE, but the second string is treated as a regexp. Thus "AR1005" STRING_MATCHES_REGEXP "AR[0-9]+" evaluates to 0 ("no difference" ). You may use STRING_COMPARE_REGEXP as a synonym.
     - name: STRING_CONTAINS_REGEXP
       detail: String STRING_CONTAINS_REGEXP String
