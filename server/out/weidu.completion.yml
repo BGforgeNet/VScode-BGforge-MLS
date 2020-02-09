@@ -1504,6 +1504,8 @@ tp2-when:
       doc: False if the input file contains regexp.
     - name: BUT_ONLY_IF_IT_CHANGES
       doc: True only if the file is actually changed by patching actions. Unlike all other when clauses, this one is evaluated just before the result would be written out to the disk. You may use BUT_ONLY as a synonym for BUT_ONLY_IF_IT_CHANGES.
+    - name: BUT_ONLY
+      doc: True only if the file is actually changed by patching actions. Unlike all other when clauses, this one is evaluated just before the result would be written out to the disk. You may use BUT_ONLY as a synonym for BUT_ONLY_IF_IT_CHANGES.
     - name: IF_EXISTS
       doc: True only if the file exists. For COPY, this check is done with FILE_EXISTS. For COPY_EXISTING, COPY_EXISTING_REGEXP, COPY_RANDOM, APPEND and APPEND_COL this check is done with FILE_EXISTS_IN_GAME. For COPY_ALL_GAM_FILES, this when clause is redundant.
 
