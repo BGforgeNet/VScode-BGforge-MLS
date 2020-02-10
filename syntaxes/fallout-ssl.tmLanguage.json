@@ -40,6 +40,9 @@
       "include": "#header-constants"
     },
     {
+      "include": "#header-aliases"
+    },
+    {
       "include": "#header-variables"
     },
     {
@@ -6055,23 +6058,11 @@
           "name": "constant.language.define.ssl"
         },
         {
-          "match": "\\b(CARLSON_ACCEPT_SNUFF)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
-          "match": "\\b(CARLSON_DEAD)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
           "match": "\\b(CARLSON_GATE_GUARD_CAPTAIN_TILE)\\b",
           "name": "constant.language.define.ssl"
         },
         {
           "match": "\\b(CARLSON_GUARD_TALK_DIST)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
-          "match": "\\b(CARLSON_SECURITY_DUTY)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -10288,10 +10279,6 @@
         },
         {
           "match": "\\b(FIELD_DELAY_COUNT)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
-          "match": "\\b(FIELD_DESTROYED)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -29239,14 +29226,6 @@
           "name": "constant.language.define.ssl"
         },
         {
-          "match": "\\b(WESTIN_ACCEPT_SNUFF)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
-          "match": "\\b(WESTIN_DEAD)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
           "match": "\\b(WHIRLY_BEGIN)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -32108,6 +32087,2463 @@
         },
         {
           "match": "\\b(wright_house_heart)\\b",
+          "name": "constant.language.define.ssl"
+        }
+      ]
+    },
+    "header-aliases": {
+      "name": "constant.language.define.ssl",
+      "patterns": [
+        {
+          "match": "\\b(ALL_LEAVE_BIT)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(ARTHUR_IN_POS)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(BADGER_DONEELE)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(BADGER_DONESHI)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(BEDEMIR_IN_POS)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(BISHIP_ASSASSINATED)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(BISHOP_ACCEPT_SNUFF)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(BISHOP_CANCEL_SNUFF)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(BISHOP_COMPLETE)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(BISHOP_DEAD)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(BIT_LEAVE)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(BigDownReact)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(BigUpReact)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(CALL_PICKUP)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(CARLSON_ACCEPT_SNUFF)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(CARLSON_CANCEL_SNUFF)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(CARLSON_COMPLETE)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(CARLSON_DEAD)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(CARLSON_FAIL)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(CARLSON_GATE_CLOSED)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(CARLSON_SECURITY_DUTY)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(CATTLE_ABANDON)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(CATTLE_ACCEPT)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(CATTLE_AVERAGE)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(CATTLE_FAIL)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(CATTLE_FINISHED)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(CATTLE_MISSED)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(CATTLE_OFFERED)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(CATTLE_ON)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(CATTLE_ON1)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(CATTLE_SCREWED)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(CATTLE_SUCCESS)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(COW_PID)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(COW_SID)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(DALIA_GUARD)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(DAVE_LOVE)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(DAVE_NOTALKLOVE)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(DAVE_REJECTED)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(DAVE_TOLD)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(DAVE_TOLD2)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(DEF_FOLLOW_CLOSE_NODE)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(DEF_FOLLOW_FAR_NODE)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(DEF_FOLLOW_MEDIUM_NODE)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(DEF_PARTY_END_NODE)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(DEF_PARTY_FOLLOW_NODE)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(DEF_PARTY_GEAR_NODE)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(DEF_PARTY_HEAL_NODE)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(DEF_PARTY_NOWAIT_NODE)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(DEF_PARTY_STUPID_NODE)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(DEF_PARTY_WAIT_NODE)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(DEF_REMOVE_ARMOR_NODE)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(DEF_UNARM_NODE)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(DEF_WEAPON_USE_NODE)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(DownReact)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(EL_ACBADGEROFFER)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(EL_ASKED)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(EL_REJECTED)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(EL_SPOKEN)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(EL_WH_ACCEPTED)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(EL_WH_GIVEN)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(EL_WH_REJECTED)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(EL_WH_STEALSHI)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(ENC_ARTHUR_ONE)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(ENC_ARTHUR_TWO)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FAKE_HOLODISK)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FELIX_CRITTERS_ACCEPT)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FELIX_CRITTERS_DEAD)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FELIX_CRITTERS_DONE)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FELIX_DUMONT_REF)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FELIX_FRIENDLY)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FELIX_SENT_BY_WESTIN)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FIELD_DELAY)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FIELD_DESTROYED)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FIELD_FLICKER)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FIELD_OFF)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FIELD_ON)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FLG_GRUTHAR_DEAD)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FLG_SABOTAGE)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FLG_TALKED_ABOUT_GORIS)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FLG_V13_ENEMY)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FLOAT_COLOR_AFRAID)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FLOAT_COLOR_BAD)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FLOAT_COLOR_GOOD)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FLOAT_COLOR_HIGH)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FLOAT_COLOR_NORMAL)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FLOAT_COLOR_PAIN)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FLOAT_COLOR_SAD)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FLOAT_COLOR_SFX)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FLOAT_COLOR_SICK)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FLOAT_COLOR_WHISPER)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(F_DELAY)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(F_DESTROYED)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(F_FLICKER)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(F_ON)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(Fallout2_tribe_kidnapped)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(Fallout2_vault13_found)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(GALAHAD_IN_POS)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(GECKOBJ)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(GUARD_PID)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(Generator_Fixed)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(HAL_DEAD)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(HENRY_SERUM)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(HKP90C_PID)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(HOMESTEAD_FAIL)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(HOMESTEAD_NONE)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(HOMESTEAD_REWARDED)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(HOMESTEAD_SAVED)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(KAGA_2)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(KAGA_3)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(KAGA_4)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(KAGA_5)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(KAGA_BG)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(KAGA_DEAD)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(KAGA_MET)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(KEY_CARD_PID)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(KHAN_GUARD_PID1)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(KHAN_GUARD_PID2)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(LAUNCELOT_IN_POS)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(LYNETTE_PID_HOLO)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(MYRON_CALLED_GUARDS_BIT)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(MYRON_CONVINCED_BIT)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(MYRON_DEAD_BIT)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(MYRON_GAVE_ID_BIT)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(MYRON_GUARD_1_DEAD_BIT)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(MYRON_GUARD_2_DEAD_BIT)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(MYRON_KITTY_BIT)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(MYRON_KNOWN_BIT)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(MYRON_LEFT_BIT)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(MYRON_PERMISSION_BIT)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(MYRON_STASH_BIT)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(MYRON_STASH_FOUND_BIT)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(MYRON_SUPERSTIM_BIT)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(MYRON_WHORES_BIT)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(NCR_BOMB_JACK)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(NCR_CRAPS_KNOWN)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(NCR_DOC_REF_RANGERS)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(NCR_ELISE_TAMPER_FLAG)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(NCR_GENERATOR_COUNT)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(NCR_GRANT_ACCESS)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(NCR_GUARD_CAPTAIN_TAMPER_FLAG)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(NCR_GUARD_CHECK_HOSTILE)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(NCR_GUARD_ENEMY)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(NCR_KARL_REF_RANGERS)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(NCR_KILLED_GOND_SERUM_FLAG)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(NCR_KILLED_LENNY_SERUM_FLAG)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(NCR_MERK_SERUM_FLAG)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(NCR_OSWALD_DEAD)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(NCR_PAYED_FIND_V13)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(NCR_PAYED_HOLO)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(NCR_PAYED_PARTS)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(NCR_PAYED_V15_CLEAR)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(NCR_PAY_FIND_V13)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(NCR_PAY_HOLO)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(NCR_PAY_PARTS)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(NCR_PAY_V15_CLEAR)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(NCR_SALBOB_REF_DOCTOR)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(NCR_SLAVES_FREE)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(NCR_VORTIS_REF_RANGERS)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(NCR_WESTIN_ENEMY)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(OBJ_PRES_PASS)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(OVR_TILE_QUATERS)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(OVR_TILE_WORK)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(OZ_LETTER_PID)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(PERSN_ATTACKED)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(PERSON_ASSASSINATED)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(PERSON_DEAD)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(PERSON_IN_PARTY)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(PERSON_KILLED)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(PERSON_KNOWN)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(PERSON_SEX)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(PERSON_SPECIAL)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(PERSON_SPECIAL_2)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(PERSON_SPOKEN_TO)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(PERSON_SPOKEN_TO_SPECIAL)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(PERSON_WARNED)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(PET_1_AI)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(PET_1_PID)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(PET_2_AI)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(PET_2_PID)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(PET_3_AI)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(PET_3_PID)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(PET_4_AI)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(PET_4_PID)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(PHIL_KEY_PID)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(PID_DOC_PAPERS)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(PILL_PID)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(POISON_PID)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(PROTO_IT_FLAG)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(PROTO_IT_FLAGS)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(PROTO_IT_LDIST)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(PROTO_IT_LINT)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(PROTO_IT_SCRIPTID)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(RANGER_PIN_PID)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(REPAIR_BAY_DISABLED)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(REPAIR_BOT1_DEAD)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(REPAIR_BOT2_DEAD)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(REPAIR_BOT3_DEAD)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(ROBIN_IN_POS)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(SEQ_1)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(SEQ_1_DONE)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(SEQ_2)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(SEQ_2_DONE)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(SEQ_3)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(SEQ_3_DONE)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(SF_BROTHER_PLANS)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(SF_DRAGON_DEAD)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(SF_ELRON_DRIVE_FORMAT)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(SF_ELRON_ENEMY)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(SF_EMPEROR_FIELD_OFF)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(SF_EMPEROR_FORMATTED)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(SF_EMP_ROOM_BIO)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(SF_EMP_ROOM_CHEM)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(SF_EMP_ROOM_PHY)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(SF_FUEL_COMP_KNOWN)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(SF_GAS_BEGUN)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(SF_GAS_ELRONS)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(SF_IN_BROTHER_HOOD)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(SF_JING_TIE_GAHNG_DEAD)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(SF_LEE_DEAD)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(SF_LEE_OK_FUEL_TANKER)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(SF_LOPAN_DEAD)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(SF_LOPAN_ENEMY)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(SF_ON_DRAGON_MISSION)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(SF_ON_LOPAN_MISSION)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(SF_OZ9_DEAD)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(SF_PUNKS_ENEMY)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(SF_SHENG_MING_DEAD)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(SF_SHI_ENEMY)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(SF_SUZE_SAVED)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(SF_WONG_YI_TZE_DEAD)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(SHI_AVENGED)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(SHI_TRUE)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(SH_WH_ACCEPTED)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(SH_WH_GIVEN)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(SH_WH_REJECTED)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(SH_WH_STEALELE)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(SPY_HOLO_PID)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(STAT_max_stat)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(STRANGER_DEAD)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(STRANGER_FEMALE)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(STRANGER_GENDER)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(STRUG_DONE)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(STRUG_ELDOUBLE)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(STRUG_ELRECRUIT)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(STRUG_ELRECRUIT2)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(STRUG_SHIDOUBLE)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(STRUG_SHIRECRUIT)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(SUB_DEACTIVATED)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(SUB_DISCOVERED)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(TANK_FOB)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(TANK_FUEL)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(TANK_KNOWN)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(TANK_NAVCOMP)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(UpReact)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(V15_PHIL_HOSTILE)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(V15_PHIL_LET_GO)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(V15_SPY)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(V15_WANT_DEAL)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(VAULTPARTS)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(VOICEREPAIROBJ)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(VOICE_CHIP_PID)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(VOTRIS_NCR_MAP)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(WESTIN_ACCEPT_SNUFF)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(WESTIN_CANCEL_SNUFF)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(WESTIN_COMPLETE)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(WESTIN_DEAD)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(WESTIN_DOC_JUB_TALKED)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(WESTIN_DRUGS_KNOWN)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(WESTIN_FAIL)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(WESTIN_HEART_PILLS_DEATH)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(WESTIN_KNOWN)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(WESTIN_LENNY_TALKED)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(WESTIN_PID_HOLO)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(WESTIN_PILLS_KNOW)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(WESTIN_RENESCO_PISSED)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(WESTIN_SNUFF_KNOWN)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(WHIRLY_PLANS_PID)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(WOOZ_DEAD)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(WOOZ_TALKED)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(abandon_slave_run_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(aidan_jet_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(aidan_reward_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(aidan_tip_hole_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(aidan_tip_metzger_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(algernon_dead_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(all_hidden_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(anna_spoken_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(assassinated_big_jesus_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(at_party_fight_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(attack_dog_team_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(attacked_slaver_on_run_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(balthas_dead_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(band_killed_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(base_opened_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(base_power_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(becky_cost_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(becky_dead_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(becky_dishonest_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(becky_karma_neg_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(becky_known_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(becky_paw_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(becky_sex_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(becky_why_cheap_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(becky_work_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(big_jesus_dead_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(bishop_assassinated_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(bishop_raiders_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(blow_up_grave_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(boxer_killed_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(boxer_resting_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(brahmin_seed)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(brahmin_seed_dog_attacked_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(brightlight_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(bros_dead_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(butcher_leaving_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(came_from_cave_2_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(came_from_shitter_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(car_is_now_being_stolen_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(chicken_1st_visible_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(chicken_dead_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(chicken_let_out_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(chicken_message_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(chop_shop_hostile_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(chris_reccomends_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(chris_recommends_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(church_cleared_speech_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(clear_props_from_farm_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(cleared_unclaimed_car_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(cody_dead_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(cody_fingered_jules_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(compartment_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(cookie_pid)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(cornelius_dead_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(cornelius_watch_pid)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(corvega_bishop_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(crates_ID_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(crazy_addict_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(davin_dead_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(death_claw_dead)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(derek_dead_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(derek_talk_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(destroy_me_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(destroy_prop_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(did_enter_base_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(did_fade_out_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(did_lloyd_golgotha_placement_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(divorce_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(dog_message_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(dude_is_pornstar)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(dude_spotted_on_slave_run_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(dug_up_willie_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(eldrdige_closed)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(eldridge_bed_time_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(eldridge_dead_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(enclave_destroyed)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(enemy_slags_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(entered_caves_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(entered_farm_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(ethyl_discovered_still_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(examined_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(examined_body_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(fall_comment_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(farrel_dead_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(fight_is_on_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(fighting_main_boxer_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(flew_out_of_shitter_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(flick_dead_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(flufer_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(found_jonny_bb_gun_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(frankie_dead_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(frankie_known_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(fred_dead_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(fred_remembers_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(fred_talk_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(freed_bess_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(gang1_hostile_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(gang_1)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(gang_1_dead_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(gang_1_hostile_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(gang_2)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(gang_2_dead_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(gang_2_hostile_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(gang_2_member_2_killed_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(gang_2_member_3_killed_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(gang_2_member_4_killed_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(gang_war_dude_stray_message_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(gave_anna_locket_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(gave_fred_winnings_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(gave_gun_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(gave_metzger_party_stuff_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(ghost_farm_seed)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(grisham_dead_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(grisham_jerky_pid)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(heard_call_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(heather_dead_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(heather_fix_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(heather_talk_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(herebefore_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(hidden_cat_jules_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(hidden_cyberdog_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(hidden_davin_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(hidden_dex_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(hidden_doc_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(hidden_dogmeat_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(hidden_goris_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(hidden_k9_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(hidden_kitsune_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(hidden_lenny_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(hidden_macrae_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(hidden_marcus_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(hidden_miria_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(hidden_myron_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(hidden_pariah_dog_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(hidden_robobrain_abnormal_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(hidden_robobrain_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(hidden_robobrain_chimp_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(hidden_robobrain_human_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(hidden_sulik_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(hidden_vic_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(holyfeld_dead_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(hostile_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(hostile_slavers_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(id_badge_pid)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(initialized_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(is_float_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(jet_canister_poison_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(jjj_dead_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(jjj_slander_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(jjj_truth_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(jo_dead_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(joey_dead_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(jonny_arriving_at_home_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(jonny_bb_gun_pid)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(jonny_sad_laddie_died_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(jonny_seed)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(jules_dead_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(jules_killed_cody_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(jules_slander_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(jules_warned_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(karl_come_home_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(karl_going_home_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(karl_left_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(karl_seed)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(kill_daddy_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(kill_daddy_karma_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(killed_opponent_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(killed_slave_on_run_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(know_algernon_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(know_algernon_fake_death_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(know_algernon_weapons_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(know_church_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(know_cody_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(know_jjj_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(know_jules_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(know_lasers_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(know_lil_jesus_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(know_mordino_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(know_mr_wright_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(know_mrs_wright_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(know_raiders_trap_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(know_renesco_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(know_salvatore_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(know_scott_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(know_still_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(know_tully_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(lang_filter_on)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(lara_dead_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(last_pet_mvar)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(leaving_shitter_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(lil_jesus_dead_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(lil_jesus_dealer_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(lil_jesus_family)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(lloyd_dead_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(lloyd_locale_desperado_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(lloyd_locale_upstairs_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(lloyd_took_money_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(look_cody_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(looking_for_vault_13)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(lost_and_found_unlocked_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(made_slave_guild_guy_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(making_porn_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(marcus_laid_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(marjorie_called_guards_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(married_to_davin)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(married_to_miria)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(masticator_bit_ear_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(masticator_dead_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(mcgee_family)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(mckneely_dead_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(met_grisham_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(met_rose_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(met_vice_pres)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(metzger_dead_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(metzger_known_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(metzger_permission_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(metzger_sex_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(miria_dead_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(mission_aborted_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(mole_rat_origin_amulet_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(mole_rat_origin_info_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(mom_attacked_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(mom_dead_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(mom_fingered_joey_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(mom_killed_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(monte_fingered_jules_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(mordino_known_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(mrs_bishop_warning_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(mrs_bishop_win_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(mrs_wright_dead_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(mrs_wright_destroyed_still_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(mrs_wright_pissed_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(myron_date_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(nikki_bribed_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(nikki_dead_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(nikki_intro_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(nikki_lead_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(nikki_lloyd_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(no_whore_floats_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(on_fix_tanker_quest)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(on_slave_run_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(personal_enemy_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(pickup_p_proc)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(player_bites_masticator_ear_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(player_has_destroyed_still_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(porn_studio_hostile_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(pritchard_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(pritchard_exp_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(proctector_said_surrender_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(protector_said_message_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(radio_fixed_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(raiders_alarm_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(raiders_bonenose_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(raiders_dead_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(raiders_marcus_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(raiders_robobrain_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(raiders_scout_left_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(raiders_secret_enterance_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(rats_killed_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(rebecca_dead)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(renesco_dead_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(renesco_slander_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(returned_to_church_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(richard_wright_known_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(richard_wright_room_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(robby_dead_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(robby_left_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(robby_talk_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(said_fell_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(salvatore_call_guards_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(salvatore_done_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(saw_secret_trade_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(secret_trade_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(set_ghost_farm_seeds_inactive)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(set_rebecca_dead)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(setup_slag_guard_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(shitter_blew_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(slags_spot_dude_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(slags_wiped_out)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(slave_tagged_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(slaver1_dead_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(slaver2_dead_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(slaver3_dead_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(slaves_free_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(sleezy_stranger_flag_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(smitty_dead_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(special_leather_armor_pid)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(spoke_to_vegeir_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(started_slag_attack_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(still_broken_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(still_known_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(stole_wish_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(surrender_to_guards_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(surrender_to_slag_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(thousand_caps_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(thugs_hostile_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(told_to_move_out_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(took_car_off_den_bus_1_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(touched_stolen_car_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(trap_safe_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(treasure_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(tribe_kidnapped)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(tubby_dead_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(tully_dead_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(tully_drinks_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(tyler_dead_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(ui_should_be_disabled_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(uncovered_lloyd_grave_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(vault_city_wrong_place_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(vegeir_dead_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(vermin_hunter_seed)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(vic_dead_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(vic_free_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(vic_talk_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(vic_trader_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(warning_armor)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(warning_attack)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(warning_door)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(warning_family)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(warning_lenny)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(warning_marcus)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(warning_myron_door)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(warning_robobrain)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(warning_safe)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(warning_sneak)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(warning_stairs)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(warning_tamper)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(warning_weapon)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(went_to_still_map_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(witness_transaction_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(wright_asssassinated_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(wright_dead_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(wright_known_bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(wright_permission_bit)\\b",
           "name": "constant.language.define.ssl"
         }
       ]
@@ -37350,10 +39786,6 @@
         },
         {
           "match": "\\b(party_size_humans)\\b",
-          "name": "support.function.header.ssl"
-        },
-        {
-          "match": "\\b(pickup_p_proc)\\b",
           "name": "support.function.header.ssl"
         },
         {
