@@ -870,6 +870,10 @@
           "name": "support.function.tp2.weidu"
         },
         {
+          "match": "\\b(R_B_B)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
           "match": "\\b(INSERT_BYTES)\\b",
           "name": "support.function.tp2.weidu"
         },

@@ -265,6 +265,7 @@ repository:
       - match: \b(APPEND_FILE)\b
       - match: \b(APPEND_FILE_EVALUATE)\b
       - match: \b(REPLACE_BCS_BLOCK)\b
+      - match: \b(R_B_B)\b
       - match: \b(INSERT_BYTES)\b
       - match: \b(DELETE_BYTES)\b
       - match: \b(READ_BYTE)\b
