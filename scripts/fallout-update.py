@@ -43,9 +43,10 @@ def find_files(path, ext):
 
 
 regex_constant = r"^#define\s+(\w+)\s+\(?([0-9]+)\)?"
-regex_define_with_vars = r"^#define\s+(\w+)\([\w\s,]+\)" # not perferct, but works
+regex_define_with_vars = r"^#define\s+(\w+)\([\w\s,]+\)" # not perfect, but works
 regex_procedure = r"^procedure\s+(\w+)(\((variable\s+[\w+])+(\s*,\s*variable\s+[\w+])?\))?\s+begin"
 regex_variable = r"^#define\s+((GVAR|MVAR|LVAR)_\w+)\s+\(?([0-9]+)\)?"
+regex_alias = r"^#define\s+(\w+)\s+\(?(\w+)\)?\s*$" # aliases like: #define FLOAT_COLOR_NORMAL          FLOAT_MSG_YELLOW.
 def defines_from_file(path):
   defines = {}
   with open(path, "r") as fh:
@@ -53,7 +54,7 @@ def defines_from_file(path):
       variable = re.match(regex_variable, line)
       if variable:
         name = variable.group(1)
-        defines[name] = "variable"
+        defines[name] = "variable" # it's actually a constant, but it helps to see XVAR highlighted as vars
         continue
       constant = re.match(regex_constant, line)
       if constant:
@@ -64,6 +65,11 @@ def defines_from_file(path):
       if define_with_vars:
         name = define_with_vars.group(1)
         defines[name] = "define_with_vars"
+        continue
+      alias = re.match(regex_alias, line)
+      if alias:
+        name = alias.group(1)
+        defines[name] = "alias"
         continue
       procedure = re.match(regex_procedure, line)
       if procedure:
@@ -86,6 +92,7 @@ header_variables = []
 header_constants = []
 header_procedures = []
 header_defines_with_vars = []
+header_aliases = []
 for h in header_defines:
   if header_defines[h] == "variable":
     header_variables.append({ 'match': "\\b({})\\b".format(h) })
@@ -95,6 +102,9 @@ for h in header_defines:
     continue
   if header_defines[h] == "define_with_vars":
     header_defines_with_vars.append({ 'match': "\\b({})\\b".format(h) })
+    continue
+  if header_defines[h] == "alias":
+    header_aliases.append({ 'match': "\\b({})\\b".format(h) })
     continue
   if header_defines[h] == "procedure":
     header_procedures.append({ 'match': "\\b({})\\b".format(h) })
@@ -172,5 +182,6 @@ with open(highlight_yaml) as yf:
   data['repository']['header-variables']['patterns'] = header_variables
   data['repository']['header-procedures']['patterns'] = header_procedures
   data['repository']['header-defines-with-vars']['patterns'] = header_defines_with_vars
+  data['repository']['header-aliases']['patterns'] = header_aliases
 with open(highlight_yaml, 'w') as yf:
   yaml.dump(data, yf, default_flow_style=False, width=4096)
