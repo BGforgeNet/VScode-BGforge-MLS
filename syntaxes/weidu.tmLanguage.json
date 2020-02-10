@@ -874,6 +874,10 @@
           "name": "support.function.tp2.weidu"
         },
         {
+          "match": "\\b(ON_MISMATCH)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
           "match": "\\b(INSERT_BYTES)\\b",
           "name": "support.function.tp2.weidu"
         },
