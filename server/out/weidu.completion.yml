@@ -2197,9 +2197,6 @@ ielib:
     - name: CLERIC_ALICORN_LANCE
       detail: SPPR218
       doc: IElib define
-    - name: CLERIC_ANIMAL_FRIENDSHIP
-      detail: SPPR114
-      doc: IElib define
     - name: CLERIC_ANIMAL_RAGE
       detail: SPPR522
       doc: IElib define
@@ -2277,9 +2274,6 @@ ielib:
       doc: IElib define
     - name: CLERIC_CIRCLE_OF_BONES
       detail: SPPR323
-      doc: IElib define
-    - name: CLERIC_CIRCLE_OF_PROTECTION
-      detail: SPPR112
       doc: IElib define
     - name: CLERIC_CLOAK_OF_FEAR
       detail: SPPR416
@@ -2364,9 +2358,6 @@ ielib:
       doc: IElib define
     - name: CLERIC_ELEMENTAL_TRANSFORMATION_FIRE
       detail: SPPR731
-      doc: IElib define
-    - name: CLERIC_ENDURE_HEAT_COLD
-      detail: SPPR115
       doc: IElib define
     - name: CLERIC_ENERGY_BLADES
       detail: SPPR721
@@ -2586,9 +2577,6 @@ ielib:
       doc: IElib define
     - name: CLERIC_REPULSE_UNDEAD
       detail: SPPR515
-      doc: IElib define
-    - name: CLERIC_RESIST_COLD
-      detail: SPPR215
       doc: IElib define
     - name: CLERIC_RESIST_FIRE
       detail: SPPR210
@@ -5053,6 +5041,39 @@ ielib:
     - name: ODREN_RITUAL_SCROLL
       detail: SPIN593
       doc: IElib define
+    - name: OFFSET_dicenum
+      detail: '0x1c'
+      doc: IElib define
+    - name: OFFSET_dicesize
+      detail: '0x20'
+      doc: IElib define
+    - name: OFFSET_duration
+      detail: '0xe'
+      doc: IElib define
+    - name: OFFSET_parameter1
+      detail: '0x4'
+      doc: IElib define
+    - name: OFFSET_parameter2
+      detail: '0x8'
+      doc: IElib define
+    - name: OFFSET_power
+      detail: '0x3'
+      doc: IElib define
+    - name: OFFSET_probability1
+      detail: '0x12'
+      doc: IElib define
+    - name: OFFSET_probability2
+      detail: '0x13'
+      doc: IElib define
+    - name: OFFSET_resource
+      detail: '0x14'
+      doc: IElib define
+    - name: OFFSET_savingthrow
+      detail: '0x24'
+      doc: IElib define
+    - name: OFFSET_savingthrow_bonus
+      detail: '0x28'
+      doc: IElib define
     - name: ONE_CON
       detail: SPIN861
       doc: IElib define
@@ -7034,7 +7055,7 @@ ielib:
       detail: SPWI915
       doc: IElib define
     - name: WIZARD_BLINDNESS
-      detail: SPWI106
+      detail: SPWI226
       doc: IElib define
     - name: WIZARD_BLIND_OLD
       detail: SPWI106
@@ -7109,16 +7130,16 @@ ielib:
       detail: SPWI401
       doc: IElib define
     - name: WIZARD_CONJURE_AIR_ELEMENTAL
-      detail: SPWI621
+      detail: SPWI534
       doc: IElib define
     - name: WIZARD_CONJURE_EARTH_ELEMENTAL
-      detail: SPWI622
+      detail: SPWI532
       doc: IElib define
     - name: WIZARD_CONJURE_EARTH_ELEMENTAL_MALAVON
       detail: SPWI529
       doc: IElib define
     - name: WIZARD_CONJURE_FIRE_ELEMENTAL
-      detail: SPWI620
+      detail: SPWI531
       doc: IElib define
     - name: WIZARD_CONJURE_LESSER_AIR_ELEMENTAL
       detail: SPWI520
@@ -7598,7 +7619,7 @@ ielib:
       detail: SPWI511
       doc: IElib define
     - name: WIZARD_PROTECTION_FROM_PETRIFICATION
-      detail: SPWI108
+      detail: SPWI227
       doc: IElib define
     - name: WIZARD_PROTECTION_FROM_THE_ELEMENTS
       detail: SPWI702
@@ -7796,7 +7817,7 @@ ielib:
       detail: SPWI632
       doc: IElib define
     - name: WIZARD_TRUE_DISPEL_MAGIC
-      detail: SPWI326
+      detail: SPWI323
       doc: IElib define
     - name: WIZARD_TRUE_SIGHT
       detail: SPWI609

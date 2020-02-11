@@ -3247,10 +3247,6 @@
           "name": "constant.language.ielib.weidu"
         },
         {
-          "match": "(%?CLERIC_ANIMAL_FRIENDSHIP%?)",
-          "name": "constant.language.ielib.weidu"
-        },
-        {
           "match": "(%?CLERIC_ANIMAL_RAGE%?)",
           "name": "constant.language.ielib.weidu"
         },
@@ -3352,10 +3348,6 @@
         },
         {
           "match": "(%?CLERIC_CIRCLE_OF_BONES%?)",
-          "name": "constant.language.ielib.weidu"
-        },
-        {
-          "match": "(%?CLERIC_CIRCLE_OF_PROTECTION%?)",
           "name": "constant.language.ielib.weidu"
         },
         {
@@ -3468,10 +3460,6 @@
         },
         {
           "match": "(%?CLERIC_ELEMENTAL_TRANSFORMATION_FIRE%?)",
-          "name": "constant.language.ielib.weidu"
-        },
-        {
-          "match": "(%?CLERIC_ENDURE_HEAT_COLD%?)",
           "name": "constant.language.ielib.weidu"
         },
         {
@@ -3764,10 +3752,6 @@
         },
         {
           "match": "(%?CLERIC_REPULSE_UNDEAD%?)",
-          "name": "constant.language.ielib.weidu"
-        },
-        {
-          "match": "(%?CLERIC_RESIST_COLD%?)",
           "name": "constant.language.ielib.weidu"
         },
         {
@@ -7052,6 +7036,50 @@
         },
         {
           "match": "(%?ODREN_RITUAL_SCROLL%?)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%?OFFSET_dicenum%?)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%?OFFSET_dicesize%?)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%?OFFSET_duration%?)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%?OFFSET_parameter1%?)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%?OFFSET_parameter2%?)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%?OFFSET_power%?)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%?OFFSET_probability1%?)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%?OFFSET_probability2%?)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%?OFFSET_resource%?)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%?OFFSET_savingthrow%?)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%?OFFSET_savingthrow_bonus%?)",
           "name": "constant.language.ielib.weidu"
         },
         {
