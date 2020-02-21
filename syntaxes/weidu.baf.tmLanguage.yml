@@ -73,6 +73,7 @@ repository:
       - include: '#response'
       - include: "#operators"
       - include: '#actions'
+      - include: '#actions-extras'
       - include: '#vars'
 
   response:
@@ -154,6 +155,7 @@ repository:
       - include: '#race-ids-iwdee'
       - include: '#class-ids'
       - include: '#class-ids-iwdee'
+      - include: '#kit-ids'
 
 
   triggers:
@@ -853,6 +855,15 @@ repository:
       - match: \b(Weather)\b
       - match: \b(XEquipItem)\b
       - match: \b(ZoomLock)\b
+
+  actions-extras:
+    name: support.function.baf.weidu
+    patterns:
+      - match: \b(ForceSpellLevelRES)\b
+      - match: \b(ForceSpellPointLevelRES)\b
+      - match: \b(ReallyForceSpellLevelRES)\b
+      - match: \b(ReallyForceSpellDeadLevelRES)\b
+      - match: \b(ReallyForceSpellPointLevelRES)\b
 
   object-ids:
     name: constant.other.baf.weidu
@@ -3166,3 +3177,49 @@ repository:
       - match: \b(REMORHAZ)\b
       - match: \b(GOLEM_ICE)\b
       - match: \b(BEETLE_RHINO)\b
+
+  kit-ids:
+    name: constant.other.baf.weidu
+    patterns:
+      - match: \b(TRUECLASS)\b
+      - match: \b(BERSERKER)\b
+      - match: \b(WIZARDSLAYER)\b
+      - match: \b(KENSAI)\b
+      - match: \b(CAVALIER)\b
+      - match: \b(INQUISITOR)\b
+      - match: \b(UNDEADHUNTER)\b
+      - match: \b(MAGESCHOOL_ABJURER)\b
+      - match: \b(MAGESCHOOL_CONJURER)\b
+      - match: \b(MAGESCHOOL_DIVINER)\b
+      - match: \b(MAGESCHOOL_ENCHANTER)\b
+      - match: \b(MAGESCHOOL_ILLUSIONIST)\b
+      - match: \b(MAGESCHOOL_INVOKER)\b
+      - match: \b(MAGESCHOOL_NECROMANCER)\b
+      - match: \b(MAGESCHOOL_TRANSMUTER)\b
+      - match: \b(MAGESCHOOL_GENERALIST)\b
+      - match: \b(FERALAN)\b
+      - match: \b(STALKER)\b
+      - match: \b(BEASTMASTER)\b
+      - match: \b(ASSASIN)\b
+      - match: \b(BOUNTYHUNTER)\b
+      - match: \b(SWASHBUCKLER)\b
+      - match: \b(BLADE)\b
+      - match: \b(JESTER)\b
+      - match: \b(SKALD)\b
+      - match: \b(GODTALOS)\b
+      - match: \b(GODHELM)\b
+      - match: \b(GODLATHANDER)\b
+      - match: \b(TOTEMIC)\b
+      - match: \b(SHAPESHIFTER)\b
+      - match: \b(BEASTFRIEND)\b
+      - match: \b(BARBARIAN)\b
+      - match: \b(WILDMAGE)\b
+      - match: \b(BLACKGUARD)\b
+      - match: \b(SHADOWDANCER)\b
+      - match: \b(DWARVEN_DEFENDER)\b
+      - match: \b(DRAGON_DISCIPLE)\b
+      - match: \b(DARK_MOON)\b
+      - match: \b(SUN_SOUL)\b
+      - match: \b(GRIZZLY_BEAR)\b
+      - match: \b(OHTYR)\b
+      - match: \b(OHTEMPUS)\b
