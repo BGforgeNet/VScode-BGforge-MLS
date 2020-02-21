@@ -3195,7 +3195,7 @@ repository:
       - match: \b(MAGESCHOOL_ILLUSIONIST)\b
       - match: \b(MAGESCHOOL_INVOKER)\b
       - match: \b(MAGESCHOOL_NECROMANCER)\b
-      - match: \b(MAGESCHOO_TRANSMUTER)\b
+      - match: \b(MAGESCHOOL_TRANSMUTER)\b
       - match: \b(MAGESCHOOL_GENERALIST)\b
       - match: \b(FERALAN)\b
       - match: \b(STALKER)\b
