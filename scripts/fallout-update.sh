@@ -16,7 +16,7 @@ rm -rf "$tmp_dir"; mkdir "$tmp_dir"; cd "$tmp_dir"
 # sfall
 ghclone "https://github.com/$sfall_repo/tree/$sfall_branch/artifacts/scripting"
 # RPU
-ghclone "https://github.com/$rpu_repo/tree/$rpu_branch/scripts_src/HEADERS"
+ghclone "https://github.com/$rpu_repo/tree/$rpu_branch/scripts_src/headers"
 cd ..
 
 ./scripts/fallout-update.py -s "$tmp_dir" --completion-file "$completion_file" --highlight-file "$highlight_file"

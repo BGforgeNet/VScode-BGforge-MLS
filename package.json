@@ -2,14 +2,14 @@
 	"name": "bgforge-mls",
 	"displayName": "BGforge MLS",
 	"description": "BGforge multilanguage server",
-	"version": "1.5.4",
+	"version": "1.7.0",
 	"author": "BGforge",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/BGforgeNet/vscode-bgforge-mls"
+		"url": "https://github.com/BGforgeNet/VScode-BGforge-MLS"
 	},
 	"bugs": {
-		"url": "https://github.com/BGforgeNet/vscode-bgforge-mls/issues"
+		"url": "https://github.com/BGforgeNet/VScode-BGforge-MLS/issues"
 	},
 	"publisher": "BGforge",
 	"license": "SEE LICENSE IN LICENSE.txt",

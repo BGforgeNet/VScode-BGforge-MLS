@@ -333,7 +333,7 @@ export function get_signature_list(completion_map: Map<string, Array<any>>) {
 		let completion_list = completion_map.get(lang);
 		//generate signature list
 		for (let item of completion_list) {
-			if (item.detail && item.detail.includes("(")) { //has vars
+			if (item.detail && (typeof item.detail === 'string') && item.detail.includes("(")) { //has vars
 				let args = get_args(item.detail);
 				if (args) {
 					let signature = { label: item.label, documentation: `(${args})`, source: item.source };

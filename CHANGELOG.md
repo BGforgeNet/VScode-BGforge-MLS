@@ -1,5 +1,23 @@
 # Changelog
 
+## 1.7.0
+
+- IE:
+  - Added colorization for [IElib](https://github.com/BGforgeNet/BGforge-MLS-IElib) defines.
+- Fallout:
+  - Fixed colorization bug when procedure begins on the next line.
+
+## 1.6.0
+
+- IE:
+  - More symbolic references.
+  - Added support for hexadecimal numbers in BAF and D files.
+  - Removed '(?i)' from triggers: everything is case sensitive now.
+  - Colored ELSE and THIS.
+
+Fallout:
+  - Updated definitions: sfall 4.2.2, RPU 12.
+
 ## 1.5.4
 - IE:
   - Fixed highlighting for double variable references.

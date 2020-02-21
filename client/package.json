@@ -7,7 +7,7 @@
 	"publisher": "BGforge",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/BGforgeNet/vscode-bgforge-mls"
+		"url": "https://github.com/BGforgeNet/VScode-BGforge-MLS"
 	},
 	"engines": {
 		"vscode": "^1.26.1"
