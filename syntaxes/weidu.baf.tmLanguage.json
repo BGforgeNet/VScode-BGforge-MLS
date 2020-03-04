@@ -150,6 +150,9 @@
           "include": "#actions"
         },
         {
+          "include": "#actions-extras"
+        },
+        {
           "include": "#vars"
         }
       ]
@@ -378,6 +381,10 @@
         },
         {
           "include": "#class-ids-iwdee",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "include": "#kit-ids",
           "name": "constant.other.baf.weidu"
         }
       ]
@@ -1443,11 +1450,11 @@
       "name": "support.function.baf.weidu",
       "patterns": [
         {
-          "match": "\\b(Activate)\\b",
+          "match": "\\b(ActionOverride)\\b",
           "name": "support.function.baf.weidu"
         },
         {
-          "match": "\\b(ActionOverride)\\b",
+          "match": "\\b(Activate)\\b",
           "name": "support.function.baf.weidu"
         },
         {
@@ -1456,10 +1463,6 @@
         },
         {
           "match": "\\b(AddAreaType)\\b",
-          "name": "support.function.baf.weidu"
-        },
-        {
-          "match": "\\b(AddexperienceParty)\\b",
           "name": "support.function.baf.weidu"
         },
         {
@@ -1524,6 +1527,10 @@
         },
         {
           "match": "\\b(AddXPWorthOnce)\\b",
+          "name": "support.function.baf.weidu"
+        },
+        {
+          "match": "\\b(AddexperienceParty)\\b",
           "name": "support.function.baf.weidu"
         },
         {
@@ -1592,6 +1599,10 @@
         },
         {
           "match": "\\b(BanterBlockTime)\\b",
+          "name": "support.function.baf.weidu"
+        },
+        {
+          "match": "\\b(BashDoor)\\b",
           "name": "support.function.baf.weidu"
         },
         {
@@ -1755,6 +1766,10 @@
           "name": "support.function.baf.weidu"
         },
         {
+          "match": "\\b(CreateCreatureImpassableEffect)\\b",
+          "name": "support.function.baf.weidu"
+        },
+        {
           "match": "\\b(CreateCreatureObject)\\b",
           "name": "support.function.baf.weidu"
         },
@@ -1795,11 +1810,19 @@
           "name": "support.function.baf.weidu"
         },
         {
+          "match": "\\b(CreateItemNumGlobal)\\b",
+          "name": "support.function.baf.weidu"
+        },
+        {
           "match": "\\b(CreateVisualEffect)\\b",
           "name": "support.function.baf.weidu"
         },
         {
           "match": "\\b(CreateVisualEffectObject)\\b",
+          "name": "support.function.baf.weidu"
+        },
+        {
+          "match": "\\b(CutAllowScripts)\\b",
           "name": "support.function.baf.weidu"
         },
         {
@@ -2087,6 +2110,10 @@
           "name": "support.function.baf.weidu"
         },
         {
+          "match": "\\b(ForceSpellPointRES)\\b",
+          "name": "support.function.baf.weidu"
+        },
+        {
           "match": "\\b(ForceSpellPointRange)\\b",
           "name": "support.function.baf.weidu"
         },
@@ -2095,7 +2122,7 @@
           "name": "support.function.baf.weidu"
         },
         {
-          "match": "\\b(ForceSpellPointRES)\\b",
+          "match": "\\b(ForceSpellRES)\\b",
           "name": "support.function.baf.weidu"
         },
         {
@@ -2104,10 +2131,6 @@
         },
         {
           "match": "\\b(ForceSpellRangeRES)\\b",
-          "name": "support.function.baf.weidu"
-        },
-        {
-          "match": "\\b(ForceSpellRES)\\b",
           "name": "support.function.baf.weidu"
         },
         {
@@ -2395,6 +2418,50 @@
           "name": "support.function.baf.weidu"
         },
         {
+          "match": "\\b(NIDSpecial10)\\b",
+          "name": "support.function.baf.weidu"
+        },
+        {
+          "match": "\\b(NIDSpecial11)\\b",
+          "name": "support.function.baf.weidu"
+        },
+        {
+          "match": "\\b(NIDSpecial12)\\b",
+          "name": "support.function.baf.weidu"
+        },
+        {
+          "match": "\\b(NIDSpecial2)\\b",
+          "name": "support.function.baf.weidu"
+        },
+        {
+          "match": "\\b(NIDSpecial3)\\b",
+          "name": "support.function.baf.weidu"
+        },
+        {
+          "match": "\\b(NIDSpecial4)\\b",
+          "name": "support.function.baf.weidu"
+        },
+        {
+          "match": "\\b(NIDSpecial5)\\b",
+          "name": "support.function.baf.weidu"
+        },
+        {
+          "match": "\\b(NIDSpecial6)\\b",
+          "name": "support.function.baf.weidu"
+        },
+        {
+          "match": "\\b(NIDSpecial7)\\b",
+          "name": "support.function.baf.weidu"
+        },
+        {
+          "match": "\\b(NIDSpecial8)\\b",
+          "name": "support.function.baf.weidu"
+        },
+        {
+          "match": "\\b(NIDSpecial9)\\b",
+          "name": "support.function.baf.weidu"
+        },
+        {
           "match": "\\b(NoAction)\\b",
           "name": "support.function.baf.weidu"
         },
@@ -2435,14 +2502,6 @@
           "name": "support.function.baf.weidu"
         },
         {
-          "match": "\\b(PlayerDialog)\\b",
-          "name": "support.function.baf.weidu"
-        },
-        {
-          "match": "\\b(PlayerDialogue)\\b",
-          "name": "support.function.baf.weidu"
-        },
-        {
           "match": "\\b(PlaySong)\\b",
           "name": "support.function.baf.weidu"
         },
@@ -2456,6 +2515,14 @@
         },
         {
           "match": "\\b(PlaySoundThroughVoice)\\b",
+          "name": "support.function.baf.weidu"
+        },
+        {
+          "match": "\\b(PlayerDialog)\\b",
+          "name": "support.function.baf.weidu"
+        },
+        {
+          "match": "\\b(PlayerDialogue)\\b",
           "name": "support.function.baf.weidu"
         },
         {
@@ -2503,6 +2570,10 @@
           "name": "support.function.baf.weidu"
         },
         {
+          "match": "\\b(RealSetGlobalTimer)\\b",
+          "name": "support.function.baf.weidu"
+        },
+        {
           "match": "\\b(ReallyForceSpell)\\b",
           "name": "support.function.baf.weidu"
         },
@@ -2524,10 +2595,6 @@
         },
         {
           "match": "\\b(ReallyForceSpellRES)\\b",
-          "name": "support.function.baf.weidu"
-        },
-        {
-          "match": "\\b(RealSetGlobalTimer)\\b",
           "name": "support.function.baf.weidu"
         },
         {
@@ -2611,19 +2678,19 @@
           "name": "support.function.baf.weidu"
         },
         {
-          "match": "\\b(RestorePartyLocations)\\b",
-          "name": "support.function.baf.weidu"
-        },
-        {
-          "match": "\\b(RestoreZoomLevel)\\b",
-          "name": "support.function.baf.weidu"
-        },
-        {
           "match": "\\b(RestParty)\\b",
           "name": "support.function.baf.weidu"
         },
         {
           "match": "\\b(RestPartyEx)\\b",
+          "name": "support.function.baf.weidu"
+        },
+        {
+          "match": "\\b(RestorePartyLocations)\\b",
+          "name": "support.function.baf.weidu"
+        },
+        {
+          "match": "\\b(RestoreZoomLevel)\\b",
           "name": "support.function.baf.weidu"
         },
         {
@@ -2644,6 +2711,10 @@
         },
         {
           "match": "\\b(RunAwayFromNoLeaveArea)\\b",
+          "name": "support.function.baf.weidu"
+        },
+        {
+          "match": "\\b(SG)\\b",
           "name": "support.function.baf.weidu"
         },
         {
@@ -2807,14 +2878,6 @@
           "name": "support.function.baf.weidu"
         },
         {
-          "match": "\\b(SetupWish)\\b",
-          "name": "support.function.baf.weidu"
-        },
-        {
-          "match": "\\b(SetupWishObject)\\b",
-          "name": "support.function.baf.weidu"
-        },
-        {
           "match": "\\b(SetWorldmap)\\b",
           "name": "support.function.baf.weidu"
         },
@@ -2823,7 +2886,11 @@
           "name": "support.function.baf.weidu"
         },
         {
-          "match": "\\b(SG)\\b",
+          "match": "\\b(SetupWish)\\b",
+          "name": "support.function.baf.weidu"
+        },
+        {
+          "match": "\\b(SetupWishObject)\\b",
           "name": "support.function.baf.weidu"
         },
         {
@@ -2856,6 +2923,10 @@
         },
         {
           "match": "\\b(SpellNoDec)\\b",
+          "name": "support.function.baf.weidu"
+        },
+        {
+          "match": "\\b(SpellNoDecRES)\\b",
           "name": "support.function.baf.weidu"
         },
         {
@@ -3148,6 +3219,35 @@
         },
         {
           "match": "\\b(ZoomLock)\\b",
+          "name": "support.function.baf.weidu"
+        },
+        {
+          "match": "\\b(reserved)\\b",
+          "name": "support.function.baf.weidu"
+        }
+      ]
+    },
+    "actions-extras": {
+      "name": "support.function.baf.weidu",
+      "patterns": [
+        {
+          "match": "\\b(ForceSpellLevelRES)\\b",
+          "name": "support.function.baf.weidu"
+        },
+        {
+          "match": "\\b(ForceSpellPointLevelRES)\\b",
+          "name": "support.function.baf.weidu"
+        },
+        {
+          "match": "\\b(ReallyForceSpellLevelRES)\\b",
+          "name": "support.function.baf.weidu"
+        },
+        {
+          "match": "\\b(ReallyForceSpellDeadLevelRES)\\b",
+          "name": "support.function.baf.weidu"
+        },
+        {
+          "match": "\\b(ReallyForceSpellPointLevelRES)\\b",
           "name": "support.function.baf.weidu"
         }
       ]
@@ -11960,6 +12060,179 @@
         },
         {
           "match": "\\b(BEETLE_RHINO)\\b",
+          "name": "constant.other.baf.weidu"
+        }
+      ]
+    },
+    "kit-ids": {
+      "name": "constant.other.baf.weidu",
+      "patterns": [
+        {
+          "match": "\\b(TRUECLASS)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(BERSERKER)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(WIZARDSLAYER)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(KENSAI)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(CAVALIER)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(INQUISITOR)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(UNDEADHUNTER)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(MAGESCHOOL_ABJURER)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(MAGESCHOOL_CONJURER)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(MAGESCHOOL_DIVINER)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(MAGESCHOOL_ENCHANTER)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(MAGESCHOOL_ILLUSIONIST)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(MAGESCHOOL_INVOKER)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(MAGESCHOOL_NECROMANCER)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(MAGESCHOOL_TRANSMUTER)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(MAGESCHOOL_GENERALIST)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(FERALAN)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(STALKER)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(BEASTMASTER)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(ASSASIN)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(BOUNTYHUNTER)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(SWASHBUCKLER)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(BLADE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(JESTER)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(SKALD)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(GODTALOS)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(GODHELM)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(GODLATHANDER)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(TOTEMIC)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(SHAPESHIFTER)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(BEASTFRIEND)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(BARBARIAN)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(WILDMAGE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(BLACKGUARD)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(SHADOWDANCER)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(DWARVEN_DEFENDER)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(DRAGON_DISCIPLE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(DARK_MOON)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(SUN_SOUL)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(GRIZZLY_BEAR)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(OHTYR)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
+          "match": "\\b(OHTEMPUS)\\b",
           "name": "constant.other.baf.weidu"
         }
       ]

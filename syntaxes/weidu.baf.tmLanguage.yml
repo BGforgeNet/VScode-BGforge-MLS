@@ -3,11 +3,11 @@ name: Infinity Engine Weidu script
 scopeName: source.baf.weidu
 
 patterns:
-  - include: "#comments"
-  - include: "#condition"
-  - include: "#action"
-  - include: "#vars"
-  - include: "#condition-body"
+  - include: '#comments'
+  - include: '#condition'
+  - include: '#action'
+  - include: '#vars'
+  - include: '#condition-body'
 
 repository:
   comments:
@@ -20,8 +20,8 @@ repository:
 
   numbers:
     patterns:
-    - match: \b(([0-9]+)|(0x[0-9a-fA-F]+))\b
-      name: "constant.numeric.baf.weidu"
+      - match: \b(([0-9]+)|(0x[0-9a-fA-F]+))\b
+        name: constant.numeric.baf.weidu
 
   condition:
     begin: \b(IF)\b
@@ -40,11 +40,11 @@ repository:
     name: meta.condition-body.baf.weidu
     patterns:
       - include: '#identifiers'
-      - include: "#comments"
-      - include: "#vartype"
-      - include: "#strings"
-      - include: "#numbers"
-      - include: "#operators"
+      - include: '#comments'
+      - include: '#vartype'
+      - include: '#strings'
+      - include: '#numbers'
+      - include: '#operators'
       - include: '#triggers'
       - include: '#vars'
 
@@ -54,7 +54,7 @@ repository:
     beginCaptures:
       '1':
         name: keyword.control.baf.weidu
-      "2":
+      '2':
         name: constant.numeric.baf.weidu
     end: \b(END)\b
     endCaptures:
@@ -66,12 +66,12 @@ repository:
   action-body:
     patterns:
       - include: '#identifiers'
-      - include: "#comments"
-      - include: "#vartype"
-      - include: "#strings"
-      - include: "#numbers"
+      - include: '#comments'
+      - include: '#vartype'
+      - include: '#strings'
+      - include: '#numbers'
       - include: '#response'
-      - include: "#operators"
+      - include: '#operators'
       - include: '#actions'
       - include: '#actions-extras'
       - include: '#vars'
@@ -81,7 +81,7 @@ repository:
     patterns:
       - match: \b(RESPONSE)\b\s+(#[0-9]+)
         captures:
-          "2":
+          '2':
             name: constant.numeric.baf.weidu
 
   vartype:
@@ -89,9 +89,9 @@ repository:
     patterns:
       - match: (")\b(LOCALS|GLOBAL)\b(")
         captures:
-          "1":
+          '1':
             name: string.quoted.double.baf.weidu
-          "3":
+          '3':
             name: string.quoted.double.baf.weidu
 
   operators:
@@ -101,16 +101,16 @@ repository:
 
   strings:
     patterns:
-    - name: string.quoted.double.baf.weidu
-      begin: '"'
-      end: '"'
-      patterns:
-      - include: '#vars'
+      - name: string.quoted.double.baf.weidu
+        begin: '"'
+        end: '"'
+        patterns:
+          - include: '#vars'
 
   vars:
     name: variable.parameter.weidu-baf
     patterns:
-    - match: '(%[^%]+%)'
+      - match: (%[^%]+%)
 
   identifiers:
     name: constant.other.baf.weidu
@@ -428,11 +428,10 @@ repository:
   actions:
     name: support.function.baf.weidu
     patterns:
-      - match: \b(Activate)\b
       - match: \b(ActionOverride)\b
+      - match: \b(Activate)\b
       - match: \b(AddAreaFlag)\b
       - match: \b(AddAreaType)\b
-      - match: \b(AddexperienceParty)\b
       - match: \b(AddExperiencePartyGlobal)\b
       - match: \b(AddFamiliar)\b
       - match: \b(AddGlobals)\b
@@ -449,6 +448,7 @@ repository:
       - match: \b(AddXPObject)\b
       - match: \b(AddXPWorth)\b
       - match: \b(AddXPWorthOnce)\b
+      - match: \b(AddexperienceParty)\b
       - match: \b(AdvanceTime)\b
       - match: \b(Ally)\b
       - match: \b(AmbientActivate)\b
@@ -466,6 +466,7 @@ repository:
       - match: \b(BackStab)\b
       - match: \b(BanterBlockFlag)\b
       - match: \b(BanterBlockTime)\b
+      - match: \b(BashDoor)\b
       - match: \b(BattleSong)\b
       - match: \b(Berserk)\b
       - match: \b(BitClear)\b
@@ -506,6 +507,7 @@ repository:
       - match: \b(CreateCreatureImpassable)\b
       - match: \b(CreateCreatureImpassableAllowOverlap)\b
       - match: \b(CreateCreatureImpassableAllowOverlapEffect)\b
+      - match: \b(CreateCreatureImpassableEffect)\b
       - match: \b(CreateCreatureObject)\b
       - match: \b(CreateCreatureObjectCopy)\b
       - match: \b(CreateCreatureObjectCopyEffect)\b
@@ -516,8 +518,10 @@ repository:
       - match: \b(CreateCreatureOffScreen)\b
       - match: \b(CreateItem)\b
       - match: \b(CreateItemGlobal)\b
+      - match: \b(CreateItemNumGlobal)\b
       - match: \b(CreateVisualEffect)\b
       - match: \b(CreateVisualEffectObject)\b
+      - match: \b(CutAllowScripts)\b
       - match: \b(CutSceneId)\b
       - match: \b(DayNight)\b
       - match: \b(Deactivate)\b
@@ -589,12 +593,12 @@ repository:
       - match: \b(ForceRandomEncounterEntry)\b
       - match: \b(ForceSpell)\b
       - match: \b(ForceSpellPoint)\b
+      - match: \b(ForceSpellPointRES)\b
       - match: \b(ForceSpellPointRange)\b
       - match: \b(ForceSpellPointRangeRES)\b
-      - match: \b(ForceSpellPointRES)\b
+      - match: \b(ForceSpellRES)\b
       - match: \b(ForceSpellRange)\b
       - match: \b(ForceSpellRangeRES)\b
-      - match: \b(ForceSpellRES)\b
       - match: \b(Formation)\b
       - match: \b(GameOver)\b
       - match: \b(GetItem)\b
@@ -666,6 +670,17 @@ repository:
       - match: \b(MoveViewPoint)\b
       - match: \b(MultiPlayerSync)\b
       - match: \b(NIDSpecial1)\b
+      - match: \b(NIDSpecial10)\b
+      - match: \b(NIDSpecial11)\b
+      - match: \b(NIDSpecial12)\b
+      - match: \b(NIDSpecial2)\b
+      - match: \b(NIDSpecial3)\b
+      - match: \b(NIDSpecial4)\b
+      - match: \b(NIDSpecial5)\b
+      - match: \b(NIDSpecial6)\b
+      - match: \b(NIDSpecial7)\b
+      - match: \b(NIDSpecial8)\b
+      - match: \b(NIDSpecial9)\b
       - match: \b(NoAction)\b
       - match: \b(OpenDoor)\b
       - match: \b(Panic)\b
@@ -676,12 +691,12 @@ repository:
       - match: \b(PlayDead)\b
       - match: \b(PlayDeadInterruptable)\b
       - match: \b(PlayDeadInterruptible)\b
-      - match: \b(PlayerDialog)\b
-      - match: \b(PlayerDialogue)\b
       - match: \b(PlaySong)\b
       - match: \b(PlaySound)\b
       - match: \b(PlaySoundNotRanged)\b
       - match: \b(PlaySoundThroughVoice)\b
+      - match: \b(PlayerDialog)\b
+      - match: \b(PlayerDialogue)\b
       - match: \b(Polymorph)\b
       - match: \b(PolymorphCopy)\b
       - match: \b(PolymorphCopyBase)\b
@@ -693,13 +708,13 @@ repository:
       - match: \b(RandomWalkContinuous)\b
       - match: \b(RandomWalkContinuousTime)\b
       - match: \b(RandomWalkTime)\b
+      - match: \b(RealSetGlobalTimer)\b
       - match: \b(ReallyForceSpell)\b
       - match: \b(ReallyForceSpellDead)\b
       - match: \b(ReallyForceSpellDeadRES)\b
       - match: \b(ReallyForceSpellPoint)\b
       - match: \b(ReallyForceSpellPointRES)\b
       - match: \b(ReallyForceSpellRES)\b
-      - match: \b(RealSetGlobalTimer)\b
       - match: \b(Recoil)\b
       - match: \b(RegainPaladinHood)\b
       - match: \b(RegainRangerHood)\b
@@ -720,15 +735,16 @@ repository:
       - match: \b(ResetPlayerAI)\b
       - match: \b(Rest)\b
       - match: \b(RestNoSpells)\b
-      - match: \b(RestorePartyLocations)\b
-      - match: \b(RestoreZoomLevel)\b
       - match: \b(RestParty)\b
       - match: \b(RestPartyEx)\b
+      - match: \b(RestorePartyLocations)\b
+      - match: \b(RestoreZoomLevel)\b
       - match: \b(RevealAreaOnMap)\b
       - match: \b(RunAwayFrom)\b
       - match: \b(RunAwayFromNoInterrupt)\b
       - match: \b(RunAwayFromNoInterruptNoLeaveArea)\b
       - match: \b(RunAwayFromNoLeaveArea)\b
+      - match: \b(SG)\b
       - match: \b(SaveGame)\b
       - match: \b(SaveLocation)\b
       - match: \b(SaveObjectLocation)\b
@@ -769,11 +785,10 @@ repository:
       - match: \b(SetToken)\b
       - match: \b(SetTokenGlobal)\b
       - match: \b(SetTokenObject)\b
-      - match: \b(SetupWish)\b
-      - match: \b(SetupWishObject)\b
       - match: \b(SetWorldmap)\b
       - match: \b(SetZoomViewport)\b
-      - match: \b(SG)\b
+      - match: \b(SetupWish)\b
+      - match: \b(SetupWishObject)\b
       - match: \b(Shout)\b
       - match: \b(SmallWait)\b
       - match: \b(SoundActivate)\b
@@ -782,6 +797,7 @@ repository:
       - match: \b(SpawnPtSpawn)\b
       - match: \b(Spell)\b
       - match: \b(SpellNoDec)\b
+      - match: \b(SpellNoDecRES)\b
       - match: \b(SpellPoint)\b
       - match: \b(SpellPointNoDec)\b
       - match: \b(SpellPointNoDecRES)\b
@@ -855,7 +871,7 @@ repository:
       - match: \b(Weather)\b
       - match: \b(XEquipItem)\b
       - match: \b(ZoomLock)\b
-
+      - match: \b(reserved)\b
   actions-extras:
     name: support.function.baf.weidu
     patterns:
