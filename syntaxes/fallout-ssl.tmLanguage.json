@@ -1387,7 +1387,7 @@
               "name": "keyword.control.ssl"
             }
           },
-          "match": "\\b(?i)(call)\\b[[:blank:]]+(\\w+)(\\(.+\\))??(;)",
+          "match": "\\b(?i)(call)\\b[[:blank:]]+(\\w+)[[:blank:]]*(\\(.*\\))??(;)",
           "name": "meta.function.inv.ssl"
         },
         {
