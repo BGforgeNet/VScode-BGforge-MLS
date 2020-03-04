@@ -9,3 +9,4 @@ client/server
 *.vsix
 *.log
 tmp
+external
