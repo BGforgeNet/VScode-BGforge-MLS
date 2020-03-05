@@ -101,8 +101,8 @@ def action_desc(actions, action):
 # fixes relative/variable links
 def action_desc_absolute_urls(desc, games, game_name):
   game = [x for x in games if x["name"] == game_name][0]
-  ids = game["ids"]
-  twoda = game["2da"]
+  ids = game["ids"].lstrip("/")
+  twoda = game["2da"].lstrip("/")
   actions_url = game["actions"]
   desc = desc.replace("{{ ids }}", ids).replace("{{ 2da }}", twoda)
 
@@ -111,7 +111,6 @@ def action_desc_absolute_urls(desc, games, game_name):
   for url in urls:
     dst = url[1].strip()
     dst_abs = urljoin(current_url, dst)
-    print(dst_abs)
     desc = re.sub(dst, dst_abs, desc)
 
   return desc
