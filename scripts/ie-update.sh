@@ -15,7 +15,7 @@ iesdp_dir="iesdp"
 rm -rf "$tmp_dir"; mkdir "$tmp_dir"; cd "$tmp_dir"
 ghclone "https://github.com/$repo/tree/master"
 cd ..
-./scripts/ie-update.py -s "$tmp_dir" --completion-file "$completion_file" --highlight-file "$highlight_file"
+./scripts/ielib-update.py -s "$tmp_dir" --completion-file "$completion_file" --highlight-file "$highlight_file"
 
 rm -rf "$tmp_dir"
 
@@ -31,6 +31,6 @@ fi
 cd $iesdp_dir
 git pull
 popd
-./scripts/iesdp-update.py -s $external/iesdp_dir --completion-baf server/out/weidu.baf.completion.yml --highlight-file syntaxes/weidu.baf.tmLanguage.yml
+./scripts/iesdp-update.py -s $external/$iesdp_dir --completion-baf server/out/weidu-baf.completion.yml --highlight-baf syntaxes/weidu.baf.tmLanguage.yml
 
 ./scripts/syntaxes_to_json.sh

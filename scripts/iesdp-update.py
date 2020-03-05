@@ -22,9 +22,9 @@ args=parser.parse_args()
 iesdp_dir = args.iesdp_dir
 actions_dir = os.path.join(iesdp_dir, "_data", 'actions')
 highlight_baf = args.highlight_baf
-competion_baf = args.competion_baf
+completion_baf = args.competion_baf
 actions = []
-action_stanza = "actions"
+actions_stanza = "actions"
 
 def find_file(path, name):
   for root, dirs, files in os.walk(path):
@@ -47,14 +47,70 @@ for f in files:
     actions.append(action)
 
 actions = sorted(actions, key=lambda k: k["n"])
-actions_highlight = [x["name"] for x in actions]
-actions_highlight = set(actions_highlight)
-actions_highlight_patterns = [{"match": "\\b({})\\b".format(x)} for x in actions_highlight]
-actions_highlight_patterns = sorted(actions_highlight_patterns, key=lambda k: k["match"])
 
-# dump to completion
-with open(highlight_baf) as yf:
+# # highlight
+# actions_highlight = [x["name"] for x in actions]
+# actions_highlight = set(actions_highlight)
+# actions_highlight_patterns = [{"match": "\\b({})\\b".format(x)} for x in actions_highlight]
+# actions_highlight_patterns = sorted(actions_highlight_patterns, key=lambda k: k["match"])
+# # dump to file
+# with open(highlight_baf) as yf:
+#   data = yaml.load(yf)
+#   data["repository"][actions_stanza]["patterns"] = actions_highlight_patterns
+# with open(highlight_baf, 'w') as yf:
+#   yaml.dump(data, yf)
+
+
+#completion
+def action_alias_desc(actions, action):
+  if action["alias"] == True:
+    num = action["n"]
+  else:
+    num = action["alias"]
+  # print(action)
+  # print(num)
+  parent = [x for x in actions if x['n'] == num and not "alias" in x][0]
+  if "unknown" in parent:
+    return False
+  # print(parent)
+  return parent["desc"]
+
+def append_unique(actions, new_actions):
+  for na in new_actions:
+    existing = [x for x in actions if x["name"] == na["name"]]
+    if len(existing) == 0: actions.append(na)
+  return actions
+
+actions_unique = []
+parents_bg2 = [x for x in actions if "bg2" in x and not "alias" in x]
+aliases_bg2 = [x for x in actions if "bg2" in x and "alias" in x]
+parents_bgee = [x for x in actions if "bgee" in x and not "bg2" in x and not "alias" in x]
+aliases_bgee = [x for x in actions if "bgee" in x and not "bg2" in x and "alias" in x]
+
+# Priority: classic actions > classic aliases > EE in the same order
+actions_unique = append_unique(actions_unique, parents_bg2)
+actions_unique = append_unique(actions_unique, aliases_bg2)
+actions_unique = append_unique(actions_unique, parents_bgee)
+actions_unique = append_unique(actions_unique, aliases_bgee)
+
+actions_completion = []
+for a in actions_unique:
+  if "no_result" in a and a["no_result"]: continue
+  if "unknown" in a and a["unknown"]: continue
+  if "Dialogue" in a["name"]: continue # dupes of Dialog
+  if "alias" in a:
+    desc = action_alias_desc(actions_unique, a)
+    if not desc: continue
+  else:
+    desc = a["desc"]
+  action = {"name": a["name"], "detail": "", "doc": desc}
+  actions_completion.append(action)
+
+actions_completion = sorted(actions_completion, key=lambda k: k["name"])
+
+# dump to file
+with open(completion_baf) as yf:
   data = yaml.load(yf)
-  data["repository"][action_stanza]["patterns"] = actions_highlight_patterns
-with open(highlight_baf, 'w') as yf:
+  data[actions_stanza]["items"] = actions_completion
+with open(completion_baf, 'w') as yf:
   yaml.dump(data, yf)
