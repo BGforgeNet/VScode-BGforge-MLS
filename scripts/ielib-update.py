@@ -31,13 +31,13 @@ completion_list = []
 highlight_list = []
 
 def find_file(path, name):
-  for root, dirs, files in os.walk(path):
+  for root, dirs, files in os.walk(path, followlinks=True):
     if name in files:
       return os.path.join(root, name)
 
 def find_files(path, ext):
   flist = []
-  for root, dirs, files in os.walk(path):
+  for root, dirs, files in os.walk(path, followlinks=True):
     for f in files:
       if f.lower().endswith(ext.lower()):
         flist.append(os.path.join(root, f))

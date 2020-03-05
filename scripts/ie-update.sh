@@ -8,7 +8,7 @@ ielib_repo="https://github.com/BGforgeNet/BGforge-MLS-IElib.git"
 ielib_dir="ielib"
 completion_file="server/out/weidu.completion.yml"
 highlight_file="syntaxes/weidu.tmLanguage.yml"
-external="external"
+external="external/ie"
 iesdp_repo="https://github.com/Gibberlings3/iesdp.git"
 iesdp_dir="iesdp"
 
