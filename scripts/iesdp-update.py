@@ -5,10 +5,17 @@ import sys, os, re
 import argparse
 import re
 from collections import OrderedDict
+
 import ruamel.yaml
 yaml = ruamel.yaml.YAML(typ="rt")
 yaml.width = 4096
 yaml.indent(mapping=2, sequence=4, offset=2)
+# https://stackoverflow.com/questions/57382525/can-i-control-the-formatting-of-multiline-strings
+from ruamel.yaml.scalarstring import LiteralScalarString
+import textwrap
+def LS(s):
+  return LiteralScalarString(textwrap.dedent(s))
+
 from urllib.parse import urljoin
 
 #parse args
@@ -107,7 +114,7 @@ def action_desc_absolute_urls(desc, games, game_name):
   desc = desc.replace("{{ ids }}", ids).replace("{{ 2da }}", twoda)
 
   current_url = urljoin(iesdp_base_url, actions_url.lstrip("/"))
-  urls = re.findall("\[(.*?)\]\((.*?)\)", desc)
+  urls = re.findall(r"\[(.*?)\]\((.*?)\)", desc)
   for url in urls:
     dst = url[1].strip()
     dst_abs = urljoin(current_url, dst)
@@ -155,6 +162,7 @@ for a in actions_unique:
   desc = action_desc(actions_unique, a)
   if not desc:
     continue
+  desc = LS(desc); # format multiline properly
   action = {"name": a["name"], "detail": action_detail(a), "doc": desc}
   actions_completion.append(action)
 
