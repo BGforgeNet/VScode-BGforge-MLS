@@ -78,6 +78,20 @@ def append_unique(actions, new_actions):
     if len(existing) == 0: actions.append(na)
   return actions
 
+def action_detail(action):
+  if not "params" in action:
+    return "{}()".format(action["name"])
+  param_string = ""
+  first_param = True
+  for p in action["params"]:
+    if not first_param:
+      param_string = param_string + ", "
+    first_param = False
+    param_string = param_string + "{}:{}".format(p["type"].upper(), p["name"])
+    if "ids" in p:
+      param_string = param_string + "*{}".format(p["ids"].title())
+  return "{}({})".format(action["name"], param_string)
+
 actions_unique = []
 parents_bg2 = [x for x in actions if "bg2" in x and not "alias" in x]
 aliases_bg2 = [x for x in actions if "bg2" in x and "alias" in x]
@@ -100,7 +114,7 @@ for a in actions_unique:
     if not desc: continue
   else:
     desc = a["desc"]
-  action = {"name": a["name"], "detail": "", "doc": desc}
+  action = {"name": a["name"], "detail": action_detail(a), "doc": desc}
   actions_completion.append(action)
 
 actions_completion = sorted(actions_completion, key=lambda k: k["name"])
