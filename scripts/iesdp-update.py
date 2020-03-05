@@ -48,17 +48,17 @@ for f in files:
 
 actions = sorted(actions, key=lambda k: k["n"])
 
-# # highlight
-# actions_highlight = [x["name"] for x in actions]
-# actions_highlight = set(actions_highlight)
-# actions_highlight_patterns = [{"match": "\\b({})\\b".format(x)} for x in actions_highlight]
-# actions_highlight_patterns = sorted(actions_highlight_patterns, key=lambda k: k["match"])
-# # dump to file
-# with open(highlight_baf) as yf:
-#   data = yaml.load(yf)
-#   data["repository"][actions_stanza]["patterns"] = actions_highlight_patterns
-# with open(highlight_baf, 'w') as yf:
-#   yaml.dump(data, yf)
+# highlight
+actions_highlight = [x["name"] for x in actions]
+actions_highlight = set(actions_highlight)
+actions_highlight_patterns = [{"match": "\\b({})\\b".format(x)} for x in actions_highlight]
+actions_highlight_patterns = sorted(actions_highlight_patterns, key=lambda k: k["match"])
+# dump to file
+with open(highlight_baf) as yf:
+  data = yaml.load(yf)
+  data["repository"][actions_stanza]["patterns"] = actions_highlight_patterns
+with open(highlight_baf, 'w') as yf:
+  yaml.dump(data, yf)
 
 
 #completion
@@ -67,12 +67,9 @@ def action_alias_desc(actions, action):
     num = action["n"]
   else:
     num = action["alias"]
-  # print(action)
-  # print(num)
   parent = [x for x in actions if x['n'] == num and not "alias" in x][0]
   if "unknown" in parent:
     return False
-  # print(parent)
   return parent["desc"]
 
 def append_unique(actions, new_actions):

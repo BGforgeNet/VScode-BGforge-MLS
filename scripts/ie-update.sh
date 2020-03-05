@@ -3,27 +3,32 @@
 set -xeu -o pipefail
 
 # launch from root repo dir
-tmp_dir='tmp'
-repo="BGforgeNet/BGforge-MLS-IElib"
+
+ielib_repo="https://github.com/BGforgeNet/BGforge-MLS-IElib.git"
+ielib_dir="ielib"
 completion_file="server/out/weidu.completion.yml"
 highlight_file="syntaxes/weidu.tmLanguage.yml"
 external="external"
 iesdp_repo="https://github.com/Gibberlings3/iesdp.git"
 iesdp_dir="iesdp"
 
-# IElib
-rm -rf "$tmp_dir"; mkdir "$tmp_dir"; cd "$tmp_dir"
-ghclone "https://github.com/$repo/tree/master"
-cd ..
-./scripts/ielib-update.py -s "$tmp_dir" --completion-file "$completion_file" --highlight-file "$highlight_file"
-
-rm -rf "$tmp_dir"
-
-# IESDP
-pushd .
 if [ ! -d $external ]; then
   mkdir $external
 fi
+
+# IElib
+pushd .
+cd $external
+if [ ! -d $ielib_dir ]; then
+  git clone $ielib_repo $ielib_dir
+fi
+cd $ielib_dir
+git pull
+popd
+./scripts/ielib-update.py -s $external/$ielib_dir --completion-file "$completion_file" --highlight-file "$highlight_file"
+
+# IESDP
+pushd .
 cd $external
 if [ ! -d $iesdp_dir ]; then
   git clone $iesdp_repo $iesdp_dir  
@@ -33,4 +38,5 @@ git pull
 popd
 ./scripts/iesdp-update.py -s $external/$iesdp_dir --completion-baf server/out/weidu-baf.completion.yml --highlight-baf syntaxes/weidu.baf.tmLanguage.yml
 
+# convert yaml to json
 ./scripts/syntaxes_to_json.sh
