@@ -232,7 +232,12 @@ function load_completion() {
 					}
 
 					doc = element['doc'] || ''; // allow empty doc, too
-					completion_list.push({ label: element['name'], kind: kind, documentation: doc, detail: detail, source: "builtin" });
+					let markdown = {
+						kind: MarkupKind.Markdown,
+						value: doc
+					};
+
+					completion_list.push({ label: element['name'], kind: kind, documentation: markdown, detail: detail, source: "builtin" });
 				}
 			}
 			completion_map.set(lang_id, completion_list);
@@ -309,7 +314,7 @@ connection.onHover((textDocumentPosition: TextDocumentPositionParams): Hover => 
 							'```' + `${hover_lang}`,
 							item.fulltext,
 							'```',
-							item.documentation
+							item.documentation.value
 						].join('\n')
 					};
 				} else {
@@ -319,7 +324,7 @@ connection.onHover((textDocumentPosition: TextDocumentPositionParams): Hover => 
 							'```' + `${hover_lang}`,
 							item.detail,
 							'```',
-							item.documentation
+							item.documentation.value
 						].join('\n')
 					};
 				}
