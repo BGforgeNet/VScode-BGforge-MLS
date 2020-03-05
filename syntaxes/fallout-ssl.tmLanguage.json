@@ -2153,6 +2153,14 @@
           "name": "support.function.sfall.ssl"
         },
         {
+          "match": "\\b(?i)(set_terrain_name)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_town_title)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
           "match": "\\b(?i)(abs)\\b",
           "name": "support.function.sfall.ssl"
         },
@@ -2166,6 +2174,10 @@
         },
         {
           "match": "\\b(?i)(cos)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(div)\\b",
           "name": "support.function.sfall.ssl"
         },
         {
@@ -2677,7 +2689,15 @@
           "name": "support.function.sfall.ssl"
         },
         {
+          "match": "\\b(?i)(get_window_attribute)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
           "match": "\\b(?i)(item_weight)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(message_box)\\b",
           "name": "support.function.sfall.ssl"
         },
         {
@@ -2842,6 +2862,10 @@
         },
         {
           "match": "\\b(?i)(string_split)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(string_to_case)\\b",
           "name": "support.function.sfall.ssl"
         },
         {
@@ -3222,6 +3246,10 @@
         },
         {
           "match": "\\b(HOOK_DESCRIPTIONOBJ)\\b",
+          "name": "constant.language.ssl"
+        },
+        {
+          "match": "\\b(HOOK_ENCOUNTER)\\b",
           "name": "constant.language.ssl"
         },
         {
@@ -6730,7 +6758,7 @@
           "name": "constant.language.define.ssl"
         },
         {
-          "match": "\\b(CFLG_NOKNOCKDOWN)\\b",
+          "match": "\\b(CFLG_NOKNOCKBACK)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -8258,11 +8286,23 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(ENCOUNTER_FLAG_FADEOUT)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(ENCOUNTER_FLAG_ICON_SP)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(ENCOUNTER_FLAG_LOCK)\\b",
           "name": "constant.language.define.ssl"
         },
         {
           "match": "\\b(ENCOUNTER_FLAG_NO_CAR)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(ENCOUNTER_FLAG_NO_ICON)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -10614,6 +10654,10 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(FO_VAR_EncounterMapID)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(FO_VAR_Experience_)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -10858,11 +10902,35 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(FO_VAR_dialog_red_button_down_buf)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_dialog_red_button_down_key)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_dialog_red_button_up_buf)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_dialog_red_button_up_key)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(FO_VAR_dialog_target)\\b",
           "name": "constant.language.define.ssl"
         },
         {
           "match": "\\b(FO_VAR_dialog_target_is_party)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_dialogueBackWindow)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_dialogueWindow)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -11102,6 +11170,14 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(FO_VAR_lastMovieH)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_lastMovieW)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(FO_VAR_last_button_winID)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -11258,6 +11334,14 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(FO_VAR_old_world_xpos)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_old_world_ypos)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(FO_VAR_optionRect)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -11283,6 +11367,10 @@
         },
         {
           "match": "\\b(FO_VAR_optionsButtonUpKey)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_optnwin)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -11442,6 +11530,10 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(FO_VAR_skldxwin)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(FO_VAR_slot_cursor)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -11483,6 +11575,10 @@
         },
         {
           "match": "\\b(FO_VAR_stat_flag)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_subtitles)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -11586,6 +11682,10 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(FO_VAR_wmEncounterIconShow)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(FO_VAR_wmLastRndTime)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -11603,6 +11703,10 @@
         },
         {
           "match": "\\b(FO_VAR_wmNumHorizontalTiles)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_wmRndCursorFid)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -12135,6 +12239,10 @@
         },
         {
           "match": "\\b(HOOK_DESCRIPTIONOBJ)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(HOOK_ENCOUNTER)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -13955,6 +14063,34 @@
         },
         {
           "match": "\\b(MORTON_TOAD_HUNTING)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(MSGBOX_ALIGN_LEFT)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(MSGBOX_ALIGN_TOP)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(MSGBOX_AUTOSIZE)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(MSGBOX_CLEAN)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(MSGBOX_NORMAL)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(MSGBOX_SMALL)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(MSGBOX_YESNO)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -30574,6 +30710,38 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(WINTYPE_CHARACTER)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(WINTYPE_DIALOG)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(WINTYPE_ESCMENU)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(WINTYPE_IFACEBAR)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(WINTYPE_INVENTORY)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(WINTYPE_PIPBOY)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(WINTYPE_SKILLDEX)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(WINTYPE_WORLDMAP)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(WIN_FLAG_EXCLUSIVE)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -34491,11 +34659,19 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(WINVER)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(WOOZ_DEAD)\\b",
           "name": "constant.language.define.ssl"
         },
         {
           "match": "\\b(WOOZ_TALKED)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(_WIN32_WINNT)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -43170,6 +43346,10 @@
           "name": "support.type.define.header.ssl"
         },
         {
+          "match": "\\b(VARC)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
           "match": "\\b(VARP)\\b",
           "name": "support.type.define.header.ssl"
         },
@@ -43310,6 +43490,14 @@
           "name": "support.type.define.header.ssl"
         },
         {
+          "match": "\\b(above)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(above_equal)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
           "match": "\\b(add_extra_msg_file)\\b",
           "name": "support.type.define.header.ssl"
         },
@@ -43443,6 +43631,14 @@
         },
         {
           "match": "\\b(becky_job)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(below)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(below_equal)\\b",
           "name": "support.type.define.header.ssl"
         },
         {
@@ -44030,6 +44226,14 @@
           "name": "support.type.define.header.ssl"
         },
         {
+          "match": "\\b(get_interface_x)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(get_interface_y)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
           "match": "\\b(get_jet_quest)\\b",
           "name": "support.type.define.header.ssl"
         },
@@ -44310,6 +44514,10 @@
           "name": "support.type.define.header.ssl"
         },
         {
+          "match": "\\b(intface_is_shown)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
           "match": "\\b(inven_count)\\b",
           "name": "support.type.define.header.ssl"
         },
@@ -44423,6 +44631,10 @@
         },
         {
           "match": "\\b(merk_seed_status)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(message_box)\\b",
           "name": "support.type.define.header.ssl"
         },
         {
@@ -45826,6 +46038,14 @@
           "name": "support.type.define.header.ssl"
         },
         {
+          "match": "\\b(set_terrain_name)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(set_town_title)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
           "match": "\\b(set_track_lloyd)\\b",
           "name": "support.type.define.header.ssl"
         },
@@ -46079,6 +46299,14 @@
         },
         {
           "match": "\\b(string_starts_with)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(string_tolower)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(string_toupper)\\b",
           "name": "support.type.define.header.ssl"
         },
         {

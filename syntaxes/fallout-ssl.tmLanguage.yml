@@ -594,10 +594,13 @@ repository:
       - match: \b(?i)(in_world_map)\b
       - match: \b(?i)(set_map_enter_position)\b
       - match: \b(?i)(set_map_time_multi)\b
+      - match: \b(?i)(set_terrain_name)\b
+      - match: \b(?i)(set_town_title)\b
       - match: \b(?i)(abs)\b
       - match: \b(?i)(arctan)\b
       - match: \b(?i)(ceil)\b
       - match: \b(?i)(cos)\b
+      - match: \b(?i)(div)\b
       - match: \b(?i)(exponent)\b
       - match: \b(?i)(floor2)\b
       - match: \b(?i)(log)\b
@@ -725,7 +728,9 @@ repository:
       - match: \b(?i)(get_object_ai_data)\b
       - match: \b(?i)(get_object_data)\b
       - match: \b(?i)(get_text_width)\b
+      - match: \b(?i)(get_window_attribute)\b
       - match: \b(?i)(item_weight)\b
+      - match: \b(?i)(message_box)\b
       - match: \b(?i)(metarule_exist)\b
       - match: \b(?i)(npc_engine_level_up)\b
       - match: \b(?i)(obj_under_cursor)\b
@@ -767,6 +772,7 @@ repository:
       - match: \b(?i)(get_string_pointer)\b
       - match: \b(?i)(string_format)\b
       - match: \b(?i)(string_split)\b
+      - match: \b(?i)(string_to_case)\b
       - match: \b(?i)(strlen)\b
       - match: \b(?i)(substr)\b
       - match: \b(?i)(add_iface_tag)\b
@@ -873,6 +879,7 @@ repository:
       - match: \b(HOOK_DEATHANIM2)\b
       - match: \b(HOOK_DEPRECATED HOOKS)\b
       - match: \b(HOOK_DESCRIPTIONOBJ)\b
+      - match: \b(HOOK_ENCOUNTER)\b
       - match: \b(HOOK_EXPLOSIVETIMER)\b
       - match: \b(HOOK_FINDTARGET)\b
       - match: \b(HOOK_GAMEMODECHANGE)\b
@@ -1751,7 +1758,7 @@ repository:
       - match: \b(CFLG_NOAGES)\b
       - match: \b(CFLG_NODROP)\b
       - match: \b(CFLG_NOHEAL)\b
-      - match: \b(CFLG_NOKNOCKDOWN)\b
+      - match: \b(CFLG_NOKNOCKBACK)\b
       - match: \b(CFLG_NOLIMBS)\b
       - match: \b(CFLG_NOSTEAL)\b
       - match: \b(CFLG_RANGED)\b
@@ -2133,8 +2140,11 @@ repository:
       - match: \b(ENCLAVE_MOVIE)\b
       - match: \b(ENCLAVE_REACTOR_OFF)\b
       - match: \b(ENCLAVE_REACTOR_ON)\b
+      - match: \b(ENCOUNTER_FLAG_FADEOUT)\b
+      - match: \b(ENCOUNTER_FLAG_ICON_SP)\b
       - match: \b(ENCOUNTER_FLAG_LOCK)\b
       - match: \b(ENCOUNTER_FLAG_NO_CAR)\b
+      - match: \b(ENCOUNTER_FLAG_NO_ICON)\b
       - match: \b(ESCMENU)\b
       - match: \b(EXPIRED_GECK)\b
       - match: \b(EXP_AGILITY_TEST_HIGH_INT)\b
@@ -2722,6 +2732,7 @@ repository:
       - match: \b(FO_VAR_DarkGreenGreyColor)\b
       - match: \b(FO_VAR_DullPinkColor)\b
       - match: \b(FO_VAR_Educated)\b
+      - match: \b(FO_VAR_EncounterMapID)\b
       - match: \b(FO_VAR_Experience_)\b
       - match: \b(FO_VAR_GNW_win_init_flag)\b
       - match: \b(FO_VAR_GoodColor)\b
@@ -2783,8 +2794,14 @@ repository:
       - match: \b(FO_VAR_currentWindow)\b
       - match: \b(FO_VAR_cursor_line)\b
       - match: \b(FO_VAR_debug_func)\b
+      - match: \b(FO_VAR_dialog_red_button_down_buf)\b
+      - match: \b(FO_VAR_dialog_red_button_down_key)\b
+      - match: \b(FO_VAR_dialog_red_button_up_buf)\b
+      - match: \b(FO_VAR_dialog_red_button_up_key)\b
       - match: \b(FO_VAR_dialog_target)\b
       - match: \b(FO_VAR_dialog_target_is_party)\b
+      - match: \b(FO_VAR_dialogueBackWindow)\b
+      - match: \b(FO_VAR_dialogueWindow)\b
       - match: \b(FO_VAR_dialogue_head)\b
       - match: \b(FO_VAR_dialogue_state)\b
       - match: \b(FO_VAR_dialogue_switch_mode)\b
@@ -2844,6 +2861,8 @@ repository:
       - match: \b(FO_VAR_itemButtonItems)\b
       - match: \b(FO_VAR_itemCurrentItem)\b
       - match: \b(FO_VAR_kb_lock_flags)\b
+      - match: \b(FO_VAR_lastMovieH)\b
+      - match: \b(FO_VAR_lastMovieW)\b
       - match: \b(FO_VAR_last_button_winID)\b
       - match: \b(FO_VAR_last_buttons)\b
       - match: \b(FO_VAR_last_level)\b
@@ -2883,6 +2902,8 @@ repository:
       - match: \b(FO_VAR_obj_seen)\b
       - match: \b(FO_VAR_obj_seen_check)\b
       - match: \b(FO_VAR_objectTable)\b
+      - match: \b(FO_VAR_old_world_xpos)\b
+      - match: \b(FO_VAR_old_world_ypos)\b
       - match: \b(FO_VAR_optionRect)\b
       - match: \b(FO_VAR_optionsButtonDown)\b
       - match: \b(FO_VAR_optionsButtonDown1)\b
@@ -2890,6 +2911,7 @@ repository:
       - match: \b(FO_VAR_optionsButtonUp)\b
       - match: \b(FO_VAR_optionsButtonUp1)\b
       - match: \b(FO_VAR_optionsButtonUpKey)\b
+      - match: \b(FO_VAR_optnwin)\b
       - match: \b(FO_VAR_outlined_object)\b
       - match: \b(FO_VAR_partyMemberAIOptions)\b
       - match: \b(FO_VAR_partyMemberCount)\b
@@ -2929,6 +2951,7 @@ repository:
       - match: \b(FO_VAR_script_engine_running)\b
       - match: \b(FO_VAR_script_path_base)\b
       - match: \b(FO_VAR_skill_data)\b
+      - match: \b(FO_VAR_skldxwin)\b
       - match: \b(FO_VAR_slot_cursor)\b
       - match: \b(FO_VAR_sndfx_volume)\b
       - match: \b(FO_VAR_sneak_working)\b
@@ -2940,6 +2963,7 @@ repository:
       - match: \b(FO_VAR_stack_offset)\b
       - match: \b(FO_VAR_stat_data)\b
       - match: \b(FO_VAR_stat_flag)\b
+      - match: \b(FO_VAR_subtitles)\b
       - match: \b(FO_VAR_tag_skill)\b
       - match: \b(FO_VAR_target_curr_stack)\b
       - match: \b(FO_VAR_target_pud)\b
@@ -2965,11 +2989,13 @@ repository:
       - match: \b(FO_VAR_wmAreaInfoList)\b
       - match: \b(FO_VAR_wmBkWin)\b
       - match: \b(FO_VAR_wmBkWinBuf)\b
+      - match: \b(FO_VAR_wmEncounterIconShow)\b
       - match: \b(FO_VAR_wmLastRndTime)\b
       - match: \b(FO_VAR_wmMaxMapNum)\b
       - match: \b(FO_VAR_wmMaxTileNum)\b
       - match: \b(FO_VAR_wmMsgFile)\b
       - match: \b(FO_VAR_wmNumHorizontalTiles)\b
+      - match: \b(FO_VAR_wmRndCursorFid)\b
       - match: \b(FO_VAR_wmViewportBottomtScrlLimit)\b
       - match: \b(FO_VAR_wmViewportRightScrlLimit)\b
       - match: \b(FO_VAR_wmWorldOffsetX)\b
@@ -3103,6 +3129,7 @@ repository:
       - match: \b(HOOK_DEATHANIM1)\b
       - match: \b(HOOK_DEATHANIM2)\b
       - match: \b(HOOK_DESCRIPTIONOBJ)\b
+      - match: \b(HOOK_ENCOUNTER)\b
       - match: \b(HOOK_EXPLOSIVETIMER)\b
       - match: \b(HOOK_FINDTARGET)\b
       - match: \b(HOOK_GAMEMODECHANGE)\b
@@ -3558,6 +3585,13 @@ repository:
       - match: \b(MORTON_SNAKE_HUNTING)\b
       - match: \b(MORTON_TOAD_DEAD)\b
       - match: \b(MORTON_TOAD_HUNTING)\b
+      - match: \b(MSGBOX_ALIGN_LEFT)\b
+      - match: \b(MSGBOX_ALIGN_TOP)\b
+      - match: \b(MSGBOX_AUTOSIZE)\b
+      - match: \b(MSGBOX_CLEAN)\b
+      - match: \b(MSGBOX_NORMAL)\b
+      - match: \b(MSGBOX_SMALL)\b
+      - match: \b(MSGBOX_YESNO)\b
       - match: \b(MSG_ATTACKED_NC_END)\b
       - match: \b(MSG_ATTACKED_NC_START)\b
       - match: \b(MSG_ATTACKED_NG_END)\b
@@ -7712,6 +7746,14 @@ repository:
       - match: \b(WIDOW_PAID)\b
       - match: \b(WINTER_EVENING)\b
       - match: \b(WINTER_MORNING)\b
+      - match: \b(WINTYPE_CHARACTER)\b
+      - match: \b(WINTYPE_DIALOG)\b
+      - match: \b(WINTYPE_ESCMENU)\b
+      - match: \b(WINTYPE_IFACEBAR)\b
+      - match: \b(WINTYPE_INVENTORY)\b
+      - match: \b(WINTYPE_PIPBOY)\b
+      - match: \b(WINTYPE_SKILLDEX)\b
+      - match: \b(WINTYPE_WORLDMAP)\b
       - match: \b(WIN_FLAG_EXCLUSIVE)\b
       - match: \b(WIN_FLAG_HIDDEN)\b
       - match: \b(WIN_FLAG_MOVEONTOP)\b
@@ -8693,8 +8735,10 @@ repository:
       - match: \b(WESTIN_RENESCO_PISSED)\b
       - match: \b(WESTIN_SNUFF_KNOWN)\b
       - match: \b(WHIRLY_PLANS_PID)\b
+      - match: \b(WINVER)\b
       - match: \b(WOOZ_DEAD)\b
       - match: \b(WOOZ_TALKED)\b
+      - match: \b(_WIN32_WINNT)\b
       - match: \b(abandon_slave_run_bit)\b
       - match: \b(aidan_jet_bit)\b
       - match: \b(aidan_reward_bit)\b
@@ -10868,6 +10912,7 @@ repository:
       - match: \b(VAR2)\b
       - match: \b(VAR3)\b
       - match: \b(VARA)\b
+      - match: \b(VARC)\b
       - match: \b(VARP)\b
       - match: \b(VAR_)\b
       - match: \b(WM_In_Band)\b
@@ -10903,6 +10948,8 @@ repository:
       - match: \b(_GET_ARG_INT)\b
       - match: \b(_ITEM_NAME)\b
       - match: \b(_J_RET_VAL_TYPE)\b
+      - match: \b(above)\b
+      - match: \b(above_equal)\b
       - match: \b(add_extra_msg_file)\b
       - match: \b(add_global_timer_event)\b
       - match: \b(add_item_pid)\b
@@ -10937,6 +10984,8 @@ repository:
       - match: \b(badger_flag)\b
       - match: \b(bb_note)\b
       - match: \b(becky_job)\b
+      - match: \b(below)\b
+      - match: \b(below_equal)\b
       - match: \b(bos_state)\b
       - match: \b(bwandlvar)\b
       - match: \b(bworlvar)\b
@@ -11083,6 +11132,8 @@ repository:
       - match: \b(get_guard_assignment)\b
       - match: \b(get_ini_section)\b
       - match: \b(get_ini_sections)\b
+      - match: \b(get_interface_x)\b
+      - match: \b(get_interface_y)\b
       - match: \b(get_jet_quest)\b
       - match: \b(get_jet_source)\b
       - match: \b(get_jules_eldridge)\b
@@ -11153,6 +11204,7 @@ repository:
       - match: \b(inc_san_fran_rep)\b
       - match: \b(inc_vault13_rep)\b
       - match: \b(inc_vault15_rep)\b
+      - match: \b(intface_is_shown)\b
       - match: \b(inven_count)\b
       - match: \b(inven_ptr)\b
       - match: \b(inven_unwield)\b
@@ -11182,6 +11234,7 @@ repository:
       - match: \b(mark_on_map)\b
       - match: \b(mark_world_subtile_visited)\b
       - match: \b(merk_seed_status)\b
+      - match: \b(message_box)\b
       - match: \b(metarule_exist)\b
       - match: \b(metzger_ban)\b
       - match: \b(mid_tile)\b
@@ -11532,6 +11585,8 @@ repository:
       - match: \b(set_sub_stage)\b
       - match: \b(set_suspect)\b
       - match: \b(set_tanker_flag)\b
+      - match: \b(set_terrain_name)\b
+      - match: \b(set_town_title)\b
       - match: \b(set_track_lloyd)\b
       - match: \b(set_tribute)\b
       - match: \b(set_unique_id)\b
@@ -11596,6 +11651,8 @@ repository:
       - match: \b(string_format)\b
       - match: \b(string_replace)\b
       - match: \b(string_starts_with)\b
+      - match: \b(string_tolower)\b
+      - match: \b(string_toupper)\b
       - match: \b(struggle_flag)\b
       - match: \b(sub_flag)\b
       - match: \b(tanker_flag)\b

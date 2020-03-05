@@ -1424,8 +1424,9 @@ sfall-functions:
         Can be called either from a global script while traveling on the world map, or from a normal script while on a local map. In either case the encounter occurs shortly after the next time the player moves on the world map. The player will not get an outdoorsman skill check.
     - name: force_encounter_with_flags
       detail: void force_encounter_with_flags(int map, int flags)
-      doc: |-
-        Does the same thing as `force_encounter`, but allows the specification of some extra options. Forcing a random encounter on a map that is not normally used for random encounters may cause the player to lose the car, if they have it. In this case use `force_encounter_with_flags` with the `ENCOUNTER_FLAG_NO_CAR` flag set.
+      doc: |
+        Does the same thing as force_encounter, but allows the specification of some extra options (see `sfall.h` for available flags).
+        Forcing a random encounter on a map that is not normally used for random encounters may cause the player to lose the car, if they have it. In this case use `force_encounter_with_flags` with the `ENCOUNTER_FLAG_NO_CAR` flag set.
     - name: get_map_enter_position
       detail: array get_map_enter_position()
       doc: |-
@@ -1442,10 +1443,23 @@ sfall-functions:
       detail: void set_map_time_multi(float multi)
       doc: |-
         Adjusts how fast time passes while you're on the world map. It takes a single float as an argument, where 1 is the normal speed. This function works in addition to the `WorldMapTimeMod` setting in `ddraw.ini` and the Pathfinder perk, rather than overriding it, so calling `set_map_time_multi(0.5)` when the player has 2 levels of Pathfinder would result in time passing at 25% the normal speed on the world map.
+    - name: set_terrain_name
+      detail: void sfall_func3("set_terrain_name", int x, int y, string name)
+      doc: |-
+        Overrides the terrain type name for the sub-tile on the world map by the specified coordinates.
+    - name: set_town_title
+      detail: void sfall_func2("set_town_title", int areaID, string title)
+      doc: |
+        Sets a floating text for a town on the world map when hovering the cursor over the player's marker.
+        ```
+        - areaID: the ID number of the town from city.txt
+        ```
     - name: ^
       detail: x^y
-      doc: |-
-        Exponentiation. Use as any other arithmetic operator, like 5^(1/3). If exponent is integer, you can use negative base, otherwise you will get "nan" with negative base. If both arguments are integers, result will be integer.
+      doc: |
+        Exponentiation. Use as any other arithmetic operator, like `5^(1/3)`.
+        If exponent is an integer, you can use a negative base, otherwise you will get "NaN" with a negative base.
+        If both arguments are integers, the result will be an integer.
     - name: abs
       detail: int/float abs(int/float x)
       doc: |-
@@ -1462,6 +1476,12 @@ sfall-functions:
       detail: float cos(float x)
       doc: |-
         Cosine of x
+    - name: div
+      detail: div(x, y)
+      doc: |
+        Unsigned integer division. Use as a division operator, like `3 + (20 div 5)`.
+        If both dividend and divisor are integers, they will be treated as unsigned integers.
+        If one of them is a float, div will perform the signed division just like vanilla division operator.
     - name: exponent
       detail: float exponent(float x)
       doc: |-
@@ -1901,10 +1921,31 @@ sfall-functions:
       detail: int get_text_width(string text)
       doc: |-
         Returns the text width in pixels for the currently set font.
+    - name: get_window_attribute
+      detail: int sfall_func1("get_window_attribute", int winType)
+      doc: |
+        Alternative form: `int sfall_func2("get_window_attribute", int winType, int attrType)`
+        Returns the attribute of the specified interface window by the attrType argument.
+        ```
+        - winType: the type number of the interface window (see `WINTYPE_*` constants in `sfall.h`)
+        - attrType: 0 - checks and returns a value of 1 if the specified interface window is created by the game (same as without the argument)
+                    1 - X position, 2 - Y position (relative to the top-left corner of the game screen)
+        - returns -1 if the specified attribute cannot be obtained
+        ```
     - name: item_weight
       detail: int item_weight(ObjectPtr obj)
       doc: |-
         Gets the current weight of an object.
+    - name: message_box
+      detail: int sfall_func4("message_box", string message, int flags, int color1, int color2)
+      doc: |
+        Creates a dialog box with text and returns the result of pressing the button: 0 - No (Escape), 1 - Yes/Done (Enter). Returns -1 if for some reason the dialog box cannot be created.
+        ```
+        - message: the text in the dialog box. Use the \n control character to move text to a new line (example: "Hello\nWorld!")
+        optional arguments:
+        - flags: mode flags (see MSGBOX_* constants in define_extra.h). Pass -1 to skip setting the flags (default flags are NORMAL and YESNO)
+        - color1/2: the color index in Fallout palette. color1 sets the text color for the first line, and color2 for all subsequent lines of text (default color is 145)
+        ```
     - name: metarule_exist
       detail: bool metarule_exist(string metaruleName)
       doc: |-
@@ -2082,6 +2123,14 @@ sfall-functions:
       detail: array string_split(string, split)
       doc: |-
         Takes a string and a seperator, searches the string for all instances of the seperator, and returns a temp array filled with the pieces of the string split at each instance. If you give an empty string as the seperator, the string is split into individual characters. You can use this to search for a substring in a string like this: `strlen(get_array(string_split(haystack, needle), 0))`
+    - name: string_to_case
+      detail: string sfall_func2("string_to_case", string text, int toCase)
+      doc: |
+        Converts all letters in the given string to the specified case.
+        ```
+        toCase: 0 - lowercase, 1 - uppercase
+        ```
+        NOTE: this function works only for English letters of A-Z/a-z.
     - name: strlen
       detail: int strlen(string text)
       doc: |-
@@ -2496,6 +2545,8 @@ hooks:
       doc: |
         Runs before Fallout tries to calculate the death animation. Lets you switch out which weapon Fallout sees.
 
+        Does not run for critters in the knockdown/out state.
+
         ```
         int     arg1 - The pid of the weapon performing the attack. (May be -1 if the attack is unarmed)
         critter arg2 - The attacker
@@ -2506,7 +2557,9 @@ hooks:
         ```
     - name: HOOK_DEATHANIM2
       doc: |
-        Runs after Fallout has calculated the death animation. Lets you set your own custom frame id, so more powerful than hs_deathanim1, but performs no validation. When using `critter_dmg` function, this script will also run. In that case weapon pid will be -1 and target will point to an object with `obj_art_fid == 0x20001F5`.
+        Runs after Fallout has calculated the death animation. Lets you set your own custom frame id, so more powerful than hs_deathanim1, but performs no validation.
+        When using `critter_dmg` function, this script will also run. In that case weapon pid will be `-1` and attacker will point to an object with `obj_art_fid == 0x20001F5`.
+        Does not run for critters in the knockdown/out state.
 
         ```
         item    arg1 - The pid of the weapon performing the attack. (May be -1 if the attack is unarmed)
@@ -2547,6 +2600,18 @@ hooks:
         Obj     arg1 - the item
 
         int     ret1 - a pointer to the new text received by using "get_string_pointer" function
+        ```
+    - name: HOOK_ENCOUNTER
+      doc: |
+        Runs whenever a random encounter occurs (except the Horrigan meeting and scripted encounters), or when the player enters a local map from the world map.
+        You can override the map for loading or the encounter.
+        ```
+        int     arg1 - event type: 0 - when a random encounter occurs, 1 - when the player enters from the world map
+        int     arg2 - the map ID that the encounter will load (see MAPS.h or Maps.txt)
+        int     arg3 - 1 when the encounter occurs is a special encounter, 0 otherwise
+
+        int     ret1 - overrides the map ID, or pass -1 for event type 0 to cancel the encounter and continue traveling
+        int     ret2 - pass 1 to cancel the encounter and load the specified map from the ret1 (only for event type 0)
         ```
     - name: HOOK_EXPLOSIVETIMER
       doc: |
