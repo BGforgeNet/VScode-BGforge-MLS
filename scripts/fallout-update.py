@@ -2,10 +2,19 @@
 # coding: utf-8
 
 import sys, os
-import oyaml as yaml
 import argparse
 import re
 from collections import OrderedDict
+
+import ruamel.yaml
+yaml = ruamel.yaml.YAML(typ="rt")
+yaml.width = 4096
+yaml.indent(mapping=2, sequence=4, offset=2)
+# https://stackoverflow.com/questions/57382525/can-i-control-the-formatting-of-multiline-strings
+from ruamel.yaml.scalarstring import LiteralScalarString
+import textwrap
+def LS(s):
+  return LiteralScalarString(textwrap.dedent(s))
 
 #parse args
 parser = argparse.ArgumentParser(description='Update Fallout syntax highlighting and completion from headers', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -29,13 +38,13 @@ highlight_hooks = []
 header_defines = {}
 
 def find_file(path, name):
-  for root, dirs, files in os.walk(path):
+  for root, dirs, files in os.walk(path, followlinks=True):
     if name in files:
       return os.path.join(root, name)
 
 def find_files(path, ext):
   flist = []
-  for root, dirs, files in os.walk(path):
+  for root, dirs, files in os.walk(path, followlinks=True):
     for f in files:
       if f.lower().endswith(".h"):
         flist.append(os.path.join(root, f))
@@ -117,71 +126,72 @@ hooks_yaml = find_file(src_dir, hooks_yaml_name)
 # load functions
 with open(functions_yaml) as yf:
   categories = yaml.load(yf)
-  categories = sorted(categories, key=lambda k: k['name']) # less diff noise
-  for category in categories:
-    cdoc = ""
-    # common catefory documentation
-    if 'doc' in category:
-      cdoc = category['doc']
+categories = sorted(categories, key=lambda k: k['name']) # less diff noise
+for category in categories:
+  cdoc = ""
+  # common catefory documentation
+  if 'doc' in category:
+    cdoc = category['doc']
 
-    # individual functions
-    if 'items' in category:
-      functions = category['items']
-      functions = sorted(functions, key=lambda k: k['name']) # less diff noise
+  # individual functions
+  if 'items' in category:
+    functions = category['items']
+    functions = sorted(functions, key=lambda k: k['name']) # less diff noise
 
-      for f in functions:
-        name = f['name']
-        # highlighting first
-        if name != '^': # sorry, exponentiation
-          highlight_functions.append({ 'match': "\\b(?i)({})\\b".format(name) })
-        # and now completion
-        detail = f['detail']
-        doc = ""
-        if 'doc' in f:
-          doc = f['doc']
+    for f in functions:
+      name = f['name']
+      # highlighting first
+      if name != '^': # sorry, exponentiation
+        highlight_functions.append({ 'match': "\\b(?i)({})\\b".format(name) })
+      # and now completion
+      detail = f['detail']
+      doc = ""
+      if 'doc' in f:
+        doc = f['doc']
 
-        # if caterory doc is not empty
-        if cdoc != "":
-          if doc == "": # if function doc is empty
-            doc = cdoc  # replace
-          else:
-            doc += '\n' + cdoc # append
-
-        if doc == "":
-          completion_functions.append({'name': name, 'detail': detail}) # if doc is still empty
+      # if caterory doc is not empty
+      if cdoc != "":
+        if doc == "": # if function doc is empty
+          doc = cdoc  # replace
         else:
-          completion_functions.append({'name': name, 'detail': detail, 'doc': doc}) # proper record, all fields
+          doc += '\n' + cdoc # append
+
+      if doc == "":
+        completion_functions.append({'name': name, 'detail': detail}) # if doc is still empty
+      else:
+        doc = LS(doc)
+        completion_functions.append({'name': name, 'detail': detail, 'doc': doc}) # proper record, all fields
 
 # load hooks
 with open(hooks_yaml) as yf:
   hooks = yaml.load(yf)
-  hooks = sorted(hooks, key=lambda k: k['name']) # alphabetical sort
+hooks = sorted(hooks, key=lambda k: k['name']) # alphabetical sort
 
-  for h in hooks:
-    name = h['name']
-    doc = h['doc']
-    codename = "HOOK_" + name.upper()
-    completion_hooks.append({'name': codename, 'doc': doc})
-    highlight_hooks.append({ 'match': "\\b({})\\b".format(codename) })
+for h in hooks:
+  name = h['name']
+  doc = h['doc']
+  doc = LS(doc)
+  codename = "HOOK_" + name.upper()
+  completion_hooks.append({'name': codename, 'doc': doc})
+  highlight_hooks.append({ 'match': "\\b({})\\b".format(codename) })
 
 # dump to completion
 with open(completion_yaml) as yf:
   data = yaml.load(yf)
-  data[sfall_functions_stanza] = {'type': 3, 'items': completion_functions} # type: function
-  data[sfall_hooks_stanza] = {'type': 21, 'items': completion_hooks} # type: constant
+data[sfall_functions_stanza] = {'type': 3, 'items': completion_functions} # type: function
+data[sfall_hooks_stanza] = {'type': 21, 'items': completion_hooks} # type: constant
 with open(completion_yaml, 'w') as yf:
-  yaml.dump(data, yf, default_flow_style=False, width=4096)
-
+  yaml.dump(data, yf)
 
 # dump function and hooks to syntax highlight
 with open(highlight_yaml) as yf:
   data = yaml.load(yf)
-  data['repository']['sfall-functions']['patterns'] = highlight_functions
-  data['repository']['hooks']['patterns'] = highlight_hooks
-  data['repository']['header-constants']['patterns'] = header_constants
-  data['repository']['header-variables']['patterns'] = header_variables
-  data['repository']['header-procedures']['patterns'] = header_procedures
-  data['repository']['header-defines-with-vars']['patterns'] = header_defines_with_vars
-  data['repository']['header-aliases']['patterns'] = header_aliases
+data['repository']['sfall-functions']['patterns'] = highlight_functions
+data['repository']['hooks']['patterns'] = highlight_hooks
+data['repository']['header-constants']['patterns'] = header_constants
+data['repository']['header-variables']['patterns'] = header_variables
+data['repository']['header-procedures']['patterns'] = header_procedures
+data['repository']['header-defines-with-vars']['patterns'] = header_defines_with_vars
+data['repository']['header-aliases']['patterns'] = header_aliases
 with open(highlight_yaml, 'w') as yf:
-  yaml.dump(data, yf, default_flow_style=False, width=4096)
+  yaml.dump(data, yf)
