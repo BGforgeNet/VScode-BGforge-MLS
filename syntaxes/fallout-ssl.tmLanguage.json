@@ -4882,6 +4882,22 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(ARRAYFLAG_ASSOC)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(ARRAYFLAG_CONSTVAL)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(ARRAY_MAX_SIZE)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(ARRAY_MAX_STRING)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(ARRAY_SET_BLOCK_SIZE)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -5071,6 +5087,10 @@
         },
         {
           "match": "\\b(AUTOMAP)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(AUTOMAP_MAX)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -6922,6 +6942,18 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(CRITTER_BROKEN_LARM)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(CRITTER_BROKEN_RARM)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(CRITTER_EYEDAMAGE)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(CRITTER_IS_DEAD)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -7482,6 +7514,10 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(DIK_CONVERT)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(DIK_D)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -7535,6 +7571,18 @@
         },
         {
           "match": "\\b(DIK_F12)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(DIK_F13)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(DIK_F14)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(DIK_F15)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -7602,6 +7650,14 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(DIK_KANA)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(DIK_KANJI)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(DIK_L)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -7647,6 +7703,10 @@
         },
         {
           "match": "\\b(DIK_NEXT)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(DIK_NOCONVERT)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -7715,6 +7775,10 @@
         },
         {
           "match": "\\b(DIK_PERIOD)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(DIK_PREVTRACK)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -7830,7 +7894,31 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(DIK_YEN)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(DIK_Z)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(DL_CRITICALS)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(DL_HOOK)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(DL_INIT)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(DL_MAIN)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(DL_SCRIPT)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -10502,6 +10590,1054 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(FO_VAR_BlueColor)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_DARK_GREY_Color)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_DarkGreenColor)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_DarkGreenGreyColor)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_DullPinkColor)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_Educated)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_Experience_)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_GNW_win_init_flag)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_GoodColor)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_GreenColor)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_In_WorldMap)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_LIGHT_GREY_Color)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_LSData)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_Level_)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_Lifegiver)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_Meet_Frank_Horrigan)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_Move_on_Car)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_Mutate_)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_PeanutButter)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_RedColor)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_Tag_)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_WhiteColor)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_WorldMapCurrArea)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_YellowColor)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_aDialogS_msg)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_aTextSCuts)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_aTextSCutsS)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_aTextSCutsSS)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_aiInfoList)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_ambient_light)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_anim_set)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_art)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_art_name)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_art_vault_guy_num)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_art_vault_person_nums)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_background_volume)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_bboxslot)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_bckgnd)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_bk_disabled)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_black_palette)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_bottom_line)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_btable)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_btncnt)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_carCurrentArea)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_carGasAmount)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_card_old_fid1)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_character_points)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_cmap)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_colorTable)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_combatNumTurns)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_combat_end_due_to_load)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_combat_free_move)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_combat_list)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_combat_state)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_combat_turn_obj)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_combat_turn_running)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_crit_succ_eff)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_critterClearObj)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_critter_db_handle)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_crnt_func)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_cur_id)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_curr_font_num)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_curr_pc_stat)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_curr_stack)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_currentWindow)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_cursor_line)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_debug_func)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_dialog_target)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_dialog_target_is_party)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_dialogue_head)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_dialogue_state)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_dialogue_switch_mode)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_displayMapList)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_display_win)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_dropped_explosive)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_drugInfoList)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_edit_win)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_editor_message_file)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_elevation)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_fade_steps)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_fallout_game_time)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_fidgetFID)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_fidgetFp)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_flptr)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_folder_card_desc)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_folder_card_fid)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_folder_card_title)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_folder_card_title2)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_frame_time)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_free_perk)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_frstc_draw1)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_gDialogMusicVol)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_gIsSteal)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_game_config)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_game_global_vars)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_game_ui_disabled)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_game_user_wants_to_quit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_gconfig_file_name)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_gcsd)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_gdBarterMod)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_gdNumOptions)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_glblmode)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_gmouse_current_cursor)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_gmovie_played_list)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_gsound_initialized)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_hit_location_penalty)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_holo_flag)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_holodisk)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_holopages)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_hot_line_count)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_i_fid)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_i_lhand)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_i_rhand)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_i_wid)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_i_worn)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_idle_func)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_info_line)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_interfaceWindow)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_intfaceEnabled)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_intotal)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_inven_dude)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_inven_pid)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_inven_scroll_dn_bid)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_inven_scroll_up_bid)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_inventry_message_file)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_itemButtonItems)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_itemCurrentItem)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_kb_lock_flags)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_last_button_winID)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_last_buttons)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_last_level)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_lipsFID)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_lips_draw_head)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_list_com)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_list_total)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_loadingGame)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_lsgwin)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_main_ctd)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_main_window)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_mapEntranceElevation)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_mapEntranceTileNum)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_map_elevation)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_map_global_vars)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_map_number)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_map_state)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_master_db_handle)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_master_volume)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_max)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_maxScriptNum)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_mouse_hotx)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_mouse_hoty)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_mouse_is_hidden)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_mouse_x_)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_mouse_y)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_mouse_y_)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_movePointRect)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_name_color)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_name_font)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_name_sort_list)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_num_game_global_vars)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_num_map_global_vars)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_num_windows)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_objItemOutlineState)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_obj_dude)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_obj_seen)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_obj_seen_check)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_objectTable)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_optionRect)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_optionsButtonDown)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_optionsButtonDown1)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_optionsButtonDownKey)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_optionsButtonUp)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_optionsButtonUp1)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_optionsButtonUpKey)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_outlined_object)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_partyMemberAIOptions)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_partyMemberCount)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_partyMemberLevelUpInfoList)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_partyMemberList)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_partyMemberMaxCount)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_partyMemberPidList)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_patches)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_paths)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_pc_crit_succ_eff)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_pc_kill_counts)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_pc_name)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_pc_proto)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_pc_trait)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_pc_trait2)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_perkLevelDataList)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_perk_data)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_pip_win)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_pipboy_message_file)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_pipmesg)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_preload_list_index)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_procTableStrs)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_proto_main_msg_file)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_proto_msg_files)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_ptable)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_pud)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_quest_count)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_queue)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_quick_done)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_read_callback)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_retvals)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_rotation)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_sWindows)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_sad)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_scr_size)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_scriptListInfo)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_script_engine_running)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_script_path_base)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_skill_data)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_slot_cursor)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_sndfx_volume)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_sneak_working)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_sound_music_path1)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_sound_music_path2)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_square)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_squares)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_stack)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_stack_offset)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_stat_data)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_stat_flag)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_tag_skill)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_target_curr_stack)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_target_pud)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_target_stack)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_target_stack_offset)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_target_str)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_target_xpos)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_target_ypos)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_text_char_width)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_text_height)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_text_max)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_text_mono_width)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_text_spacing)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_text_to_buf)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_text_width)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_tile)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_title_color)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_title_font)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_trait_data)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_view_page)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_wd_obj)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_window)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_wmAreaInfoList)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_wmBkWin)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_wmBkWinBuf)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_wmLastRndTime)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_wmMaxMapNum)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_wmMaxTileNum)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_wmMsgFile)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_wmNumHorizontalTiles)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_wmViewportBottomtScrlLimit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_wmViewportRightScrlLimit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_wmWorldOffsetX)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_wmWorldOffsetY)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_wmYesNoStrs)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_world_subtile)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_world_xpos)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_world_ypos)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(FRAUD_CHAD_SUSPICIOUS)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -12918,6 +14054,90 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(MSG_FILE_AI)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(MSG_FILE_COMBAT)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(MSG_FILE_CUSTOM)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(MSG_FILE_INVENTRY)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(MSG_FILE_ITEM)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(MSG_FILE_LSGAME)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(MSG_FILE_MAP)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(MSG_FILE_MISC)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(MSG_FILE_OPTIONS)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(MSG_FILE_PERK)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(MSG_FILE_PIPBOY)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(MSG_FILE_PROTO)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(MSG_FILE_QUESTS)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(MSG_FILE_SCRIPT)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(MSG_FILE_SCRNAME)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(MSG_FILE_SKILL)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(MSG_FILE_SKILLDEX)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(MSG_FILE_STAT)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(MSG_FILE_TRAIT)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(MSG_FILE_WORLDMAP)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(MSG_GENDER_CHECK_FLG)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(MSG_LOCKPICK_NC_END)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -13218,6 +14438,22 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(OBJFLAG_CAN_WEAR_ITEMS)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(OBJFLAG_HELD_IN_LEFT)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(OBJFLAG_HELD_IN_RIGHT)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(OBJFLAG_WORN)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(OBJ_DATA_CID)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -13359,6 +14595,10 @@
         },
         {
           "match": "\\b(OPTIONS)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(OP_MAX_ARGUMENTS)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -18767,6 +20007,10 @@
         },
         {
           "match": "\\b(PLAYERBOXSTART)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(PLAYER_ID)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -27282,6 +28526,10 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(SIZE_S_DRUGS)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(SKEETER_ASKED)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -29034,11 +30282,43 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(VAR_TYPE_FLOAT)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(VAR_TYPE_INT)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(VAR_TYPE_STR)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(VAR_TYPE_STR2)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(VENT_KNOWN)\\b",
           "name": "constant.language.define.ssl"
         },
         {
           "match": "\\b(VENT_REPAIRED)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(VERSION_BUILD)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(VERSION_MAJOR)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(VERSION_MINOR)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(VERSION_REV)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -29203,6 +30483,10 @@
         },
         {
           "match": "\\b(WEAPON_ENERGY)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(WEAPON_TWO_HANDED)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -33040,6 +34324,10 @@
         },
         {
           "match": "\\b(SPY_HOLO_PID)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(STAT_max_derived)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -39749,6 +41037,10 @@
           "name": "support.function.header.ssl"
         },
         {
+          "match": "\\b(InitConfigs)\\b",
+          "name": "support.function.header.ssl"
+        },
+        {
           "match": "\\b(_PURGE_all_saved_arrays)\\b",
           "name": "support.function.header.ssl"
         },
@@ -40607,6 +41899,10 @@
         },
         {
           "match": "\\b(FORK078)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(FUNC)\\b",
           "name": "support.type.define.header.ssl"
         },
         {
@@ -41670,6 +42966,10 @@
           "name": "support.type.define.header.ssl"
         },
         {
+          "match": "\\b(SAFERELEASE)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
           "match": "\\b(SETDSTATUS)\\b",
           "name": "support.type.define.header.ssl"
         },
@@ -41858,6 +43158,26 @@
           "name": "support.type.define.header.ssl"
         },
         {
+          "match": "\\b(VAR2)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(VAR3)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(VARA)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(VARP)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(VAR_)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
           "match": "\\b(WM_In_Band)\\b",
           "name": "support.type.define.header.ssl"
         },
@@ -41914,6 +43234,62 @@
           "name": "support.type.define.header.ssl"
         },
         {
+          "match": "\\b(WRAP_WATCOM_FFUNC1)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(WRAP_WATCOM_FFUNC2)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(WRAP_WATCOM_FFUNC3)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(WRAP_WATCOM_FFUNC4)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(WRAP_WATCOM_FFUNC5)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(WRAP_WATCOM_FFUNC6)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(WRAP_WATCOM_FFUNC7)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(WRAP_WATCOM_FUNC0)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(WRAP_WATCOM_FUNC1)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(WRAP_WATCOM_FUNC2)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(WRAP_WATCOM_FUNC3)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(WRAP_WATCOM_FUNC4)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(WRAP_WATCOM_FUNC5)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(WRAP_WATCOM_FUNC6)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
           "match": "\\b(War_Cry)\\b",
           "name": "support.type.define.header.ssl"
         },
@@ -41922,7 +43298,15 @@
           "name": "support.type.define.header.ssl"
         },
         {
+          "match": "\\b(_GET_ARG_INT)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
           "match": "\\b(_ITEM_NAME)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(_J_RET_VAL_TYPE)\\b",
           "name": "support.type.define.header.ssl"
         },
         {
@@ -42327,6 +43711,14 @@
         },
         {
           "match": "\\b(display_mstr_rand)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(dlog)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(dlogr)\\b",
           "name": "support.type.define.header.ssl"
         },
         {
