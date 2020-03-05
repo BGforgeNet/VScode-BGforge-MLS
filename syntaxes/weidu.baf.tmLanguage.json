@@ -17,6 +17,9 @@
     },
     {
       "include": "#condition-body"
+    },
+    {
+      "include": "#actions"
     }
   ],
   "repository": {

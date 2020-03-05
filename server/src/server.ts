@@ -46,6 +46,7 @@ let completion_map = new Map<string, Array<any>>();
 let signature_map = new Map<string, Array<any>>();
 let hover_lang_map = new Map([
 	[ "weidu", "weidu" ],
+	[ "weidu-baf", "weidu-baf" ],
 	[ "fallout-ssl", "fallout-ssl-codeblock" ]
 ]);
 let config_section = "bgforge";

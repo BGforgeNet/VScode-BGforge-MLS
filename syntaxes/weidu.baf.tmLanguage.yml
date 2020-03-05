@@ -8,6 +8,7 @@ patterns:
   - include: '#action'
   - include: '#vars'
   - include: '#condition-body'
+  - include: '#actions' # for completion - must be last
 
 repository:
   comments:
