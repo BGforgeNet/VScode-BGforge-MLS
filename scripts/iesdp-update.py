@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 # coding: utf-8
 
-import sys, os
-import frontmatter
+import sys, os, re
 import argparse
 import re
 from collections import OrderedDict
@@ -10,6 +9,7 @@ import ruamel.yaml
 yaml = ruamel.yaml.YAML(typ="rt")
 yaml.width = 4096
 yaml.indent(mapping=2, sequence=4, offset=2)
+from urllib.parse import urljoin
 
 #parse args
 parser = argparse.ArgumentParser(description='Get updates from IESDP', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -26,7 +26,8 @@ completion_baf = args.competion_baf
 actions = []
 actions_stanza = "actions"
 
-iesdp_actions_url = "https://gibberlings3.github.io/iesdp/scripting/actions"
+iesdp_base_url = "https://gibberlings3.github.io/iesdp/"
+iesdp_actions_url = "{}/scripting/actions".format(iesdp_base_url)
 iesdp_games_file = os.path.join(iesdp_dir, "_data", 'games.yml')
 with open(iesdp_games_file) as yf:
   iesdp_games = yaml.load(yf)
@@ -67,7 +68,8 @@ with open(highlight_baf, 'w') as yf:
   yaml.dump(data, yf)
 
 
-#completion
+# completion
+# alias has no desc of its own
 def action_alias_desc(actions, action):
   if action["alias"] == True:
     num = action["n"]
@@ -78,6 +80,7 @@ def action_alias_desc(actions, action):
     return False
   return parent["desc"]
 
+# entry point for getting generic desc
 def action_desc(actions, action):
   if "alias" in action:
     desc = action_alias_desc(actions, action)
@@ -91,10 +94,25 @@ def action_desc(actions, action):
     game_name = "bg2"
   else:
     game_name = "bgee"
-  game = [x for x in iesdp_games if x["name"] == game_name][0]
+  desc = action_desc_absolute_urls(desc, iesdp_games, game_name)
+
+  return desc
+
+# fixes relative/variable links
+def action_desc_absolute_urls(desc, games, game_name):
+  game = [x for x in games if x["name"] == game_name][0]
   ids = game["ids"]
   twoda = game["2da"]
+  actions_url = game["actions"]
   desc = desc.replace("{{ ids }}", ids).replace("{{ 2da }}", twoda)
+
+  current_url = urljoin(iesdp_base_url, actions_url.lstrip("/"))
+  urls = re.findall("\[(.*?)\]\((.*?)\)", desc)
+  for url in urls:
+    dst = url[1].strip()
+    dst_abs = urljoin(current_url, dst)
+    print(dst_abs)
+    desc = re.sub(dst, dst_abs, desc)
 
   return desc
 
