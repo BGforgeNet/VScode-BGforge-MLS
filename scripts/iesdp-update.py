@@ -26,6 +26,12 @@ completion_baf = args.competion_baf
 actions = []
 actions_stanza = "actions"
 
+iesdp_actions_url = "https://gibberlings3.github.io/iesdp/scripting/actions"
+iesdp_games_file = os.path.join(iesdp_dir, "_data", 'games.yml')
+with open(iesdp_games_file) as yf:
+  iesdp_games = yaml.load(yf)
+
+
 def find_file(path, name):
   for root, dirs, files in os.walk(path):
     if name in files:
@@ -72,6 +78,26 @@ def action_alias_desc(actions, action):
     return False
   return parent["desc"]
 
+def action_desc(actions, action):
+  if "alias" in action:
+    desc = action_alias_desc(actions, action)
+    if not desc:
+      return False
+  else:
+    desc = a["desc"]
+
+  # replace variables in links
+  if "bg2" in a:
+    game_name = "bg2"
+  else:
+    game_name = "bgee"
+  game = [x for x in iesdp_games if x["name"] == game_name][0]
+  ids = game["ids"]
+  twoda = game["2da"]
+  desc = desc.replace("{{ ids }}", ids).replace("{{ 2da }}", twoda)
+
+  return desc
+
 def append_unique(actions, new_actions):
   for na in new_actions:
     existing = [x for x in actions if x["name"] == na["name"]]
@@ -109,11 +135,9 @@ for a in actions_unique:
   if "no_result" in a and a["no_result"]: continue
   if "unknown" in a and a["unknown"]: continue
   if "Dialogue" in a["name"]: continue # dupes of Dialog
-  if "alias" in a:
-    desc = action_alias_desc(actions_unique, a)
-    if not desc: continue
-  else:
-    desc = a["desc"]
+  desc = action_desc(actions_unique, a)
+  if not desc:
+    continue
   action = {"name": a["name"], "detail": action_detail(a), "doc": desc}
   actions_completion.append(action)
 
