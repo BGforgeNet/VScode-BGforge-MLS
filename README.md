@@ -1,6 +1,6 @@
 ## BGforge multilanguage server
 [![VScode marketplace](https://img.shields.io/visual-studio-marketplace/i/bgforge.bgforge-mls)](https://marketplace.visualstudio.com/items?itemName=BGforge.bgforge-mls)
-<a href="https://www.patreon.com/BGforge"><img src="https://c5.patreon.com/external/logo/become_a_patron_button.png" width="100" alt="Support us on Patreon"></a>
+[![Support us on Patreon](https://img.shields.io/badge/support%20us-patreon-purple)](https://www.patreon.com/BGforge)
 [![Discord chat](https://img.shields.io/discord/420268540700917760?logo=discord)](https://discord.gg/4Yqfggm)
 
 [__Features__](#features)
