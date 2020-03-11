@@ -12,7 +12,7 @@
   - Added some hidden script actions.
   - Added completion for BAF actions (BG2/EE only).
   - Fixed shorted highlighting keys overriding longer ones in some cases.
-  - Fixed hightlighting of unbalanced `%`s for IElib defines.
+  - Fixed highlighting of unbalanced `%`s for [IElib](https://github.com/BGforgeNet/BGforge-MLS-IElib) defines.
 - Fallout:
   - Loaded aliased defines from RP.
   - Allowed empty arg list for ssl function invocation.
