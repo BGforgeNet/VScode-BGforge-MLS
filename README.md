@@ -13,6 +13,8 @@ BGforge MLS is a VScode extension adding support for [Star-Trek Scripting Langua
 
 [Roadmap](https://forums.bgforge.net/viewtopic.php?f=35&t=174&p=506), [changelog](CHANGELOG.md).
 
+**IE modders:** consider also installing MLS companion library - [IElib](https://github.com/BGforgeNet/BGforge-MLS-IElib).
+
 ### Features
 - [Syntax highlighting](#screenshots)
 - [Completion](#infinity-engine-highlighting-and-completion)
