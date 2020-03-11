@@ -1,5 +1,24 @@
 # Changelog
 
+## 1.8.0
+
+- Common:
+  - Fixed hovers display/highlight.
+- IE:
+  - Added `WRITE_ASCIIL`, `WRITE_ASCIIT`, `WRITE_ASCIIE`, `BUT_ONLY`, `STR_EQ`, `STR_CMP`, `R_B_B`, `ON_MISMATCH` aliases.
+  - Added text defines, in particular spell names.
+  - Added support for partial syntax: inlined BAF scripts.
+  - Added `kit.ids` defines.
+  - Added some hidden script actions.
+  - Added completion for BAF actions (BG2/EE only).
+  - Fixed shorted highlighting keys overriding longer ones in some cases.
+  - Fixed hightlighting of unbalanced `%`s for IElib defines.
+- Fallout:
+  - Loaded aliased defines from RP.
+  - Allowed empty arg list for ssl function invocation.
+  - Allowed whitespace between function name and parentheses.
+  - Updated sfall defines to version 4.2.3+develop.
+
 ## 1.7.0
 
 - IE:
