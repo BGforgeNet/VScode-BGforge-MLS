@@ -9531,6 +9531,62 @@
           "name": "constant.language.ielib.weidu"
         },
         {
+          "match": "(%?SECTYPE_battleground%?)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%?SECTYPE_combat_protections%?)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%?SECTYPE_combination%?)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%?SECTYPE_conjuration%?)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%?SECTYPE_contingency%?)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%?SECTYPE_disabling%?)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%?SECTYPE_divination_attack%?)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%?SECTYPE_illusionary_protections%?)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%?SECTYPE_magic_attack%?)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%?SECTYPE_non_combat%?)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%?SECTYPE_none%?)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%?SECTYPE_offensive_damage%?)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%?SECTYPE_specific_protections%?)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%?SECTYPE_spell_protections%?)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
           "match": "(%?SENDAI_CHANGE%?)",
           "name": "constant.language.ielib.weidu"
         },

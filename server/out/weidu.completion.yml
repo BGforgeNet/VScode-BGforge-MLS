@@ -7952,6 +7952,48 @@ ielib:
     - name: SEA_TROLL_CHANGE
       detail: SPIN670
       doc: IElib define
+    - name: SECTYPE_battleground
+      detail: '9'
+      doc: IElib define
+    - name: SECTYPE_combat_protections
+      detail: '7'
+      doc: IElib define
+    - name: SECTYPE_combination
+      detail: '12'
+      doc: IElib define
+    - name: SECTYPE_conjuration
+      detail: '6'
+      doc: IElib define
+    - name: SECTYPE_contingency
+      detail: '8'
+      doc: IElib define
+    - name: SECTYPE_disabling
+      detail: '11'
+      doc: IElib define
+    - name: SECTYPE_divination_attack
+      detail: '5'
+      doc: IElib define
+    - name: SECTYPE_illusionary_protections
+      detail: '3'
+      doc: IElib define
+    - name: SECTYPE_magic_attack
+      detail: '4'
+      doc: IElib define
+    - name: SECTYPE_non_combat
+      detail: '13'
+      doc: IElib define
+    - name: SECTYPE_none
+      detail: '0'
+      doc: IElib define
+    - name: SECTYPE_offensive_damage
+      detail: '10'
+      doc: IElib define
+    - name: SECTYPE_specific_protections
+      detail: '2'
+      doc: IElib define
+    - name: SECTYPE_spell_protections
+      detail: '1'
+      doc: IElib define
     - name: SENDAI_CHANGE
       detail: SPIN533
       doc: IElib define
