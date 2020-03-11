@@ -65,10 +65,11 @@ for df in define_files:
   defines = {**defines, **new_defines}
 
 # reduce diff noise
-defines = OrderedDict(sorted(defines.items()))
+defines = OrderedDict(sorted(defines.items(), reverse=True)) # so that longer keys are found first
 
 for d in defines:
-  highlight_list.append({"match": "(%?{}%?)".format(d)})
+  highlight_list.append({"match": "(%{}%)".format(d)})
+  highlight_list.append({"match": "({})".format(d)}) # make sure unbalanced %'s are not highlighted
   completion_list.append({"name": d, "detail": defines[d], "doc": "IElib define"})
 
 # dump to completion
