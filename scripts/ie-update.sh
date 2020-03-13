@@ -6,7 +6,8 @@ set -xeu -o pipefail
 
 ielib_repo="https://github.com/BGforgeNet/BGforge-MLS-IElib.git"
 ielib_dir="ielib"
-completion_file="server/out/weidu.completion.yml"
+completion_dir="server/out"
+completion_file="$completion_dir/weidu.completion.yml"
 highlight_file="syntaxes/weidu.tmLanguage.yml"
 external="external/ie"
 iesdp_repo="https://github.com/Gibberlings3/iesdp.git"
@@ -37,6 +38,9 @@ cd $iesdp_dir
 git pull
 popd
 ./scripts/iesdp-update.py -s $external/$iesdp_dir --completion-baf server/out/weidu-baf.completion.yml --highlight-baf syntaxes/weidu.baf.tmLanguage.yml
+
+# ssl should have the same completion as baf
+cp -f "$completion_dir/weidu-baf.completion.yml" "$completion_dir/weidu-ssl.completion.yml"
 
 # convert yaml to json
 ./scripts/syntaxes_to_json.sh
