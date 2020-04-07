@@ -1,9 +1,9 @@
 {
-	"name": "bgforge-mls",
+	"name": "bgforge-mls-server",
 	"description": "BGforge multilanguage server",
 	"version": "1.5.0",
 	"author": "BGforge",
-	"license": "GPLv3",
+	"license": "SEE LICENSE IN LICENSE.txt",
 	"engines": {
 		"vscode": "^1.26.1",
 		"node": "*"

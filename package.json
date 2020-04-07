@@ -1,7 +1,7 @@
 {
 	"name": "bgforge-mls",
 	"displayName": "BGforge MLS",
-	"description": "BGforge multilanguage server",
+	"description": "BGforge multilanguage extension",
 	"version": "1.8.0",
 	"author": "BGforge",
 	"repository": {
