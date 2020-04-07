@@ -173,15 +173,15 @@
 				"path": "./syntaxes/fallout-msg.tmLanguage.json"
 			},
 			{
-        "scopeName": "markdown.fallout-ssl-codeblock",
-        "path": "./syntaxes/fallout-ssl-markdown-injection.tmLanguage.json",
-        "injectTo": [
-          "text.html.markdown"
-        ],
-        "embeddedLanguages": {
-          "meta.embedded.block.fallout-ssl-codeblock": "fallout-ssl-codeblock"
-        }
-      },
+				"scopeName": "markdown.fallout-ssl-codeblock",
+				"path": "./syntaxes/fallout-ssl-markdown-injection.tmLanguage.json",
+				"injectTo": [
+					"text.html.markdown"
+				],
+				"embeddedLanguages": {
+					"meta.embedded.block.fallout-ssl-codeblock": "fallout-ssl-codeblock"
+				}
+			},
 			{
 				"language": "weidu",
 				"scopeName": "source.tp2.weidu",
@@ -218,10 +218,12 @@
 				"path": "./syntaxes/infinity-2da.tmLanguage.json"
 			}
 		],
-		"snippets": [{
-			"language": "fallout-ssl",
-			"path": "./snippets/fallout-ssl.json"
-		}],
+		"snippets": [
+			{
+				"language": "fallout-ssl",
+				"path": "./snippets/fallout-ssl.json"
+			}
+		],
 		"configuration": {
 			"type": "object",
 			"title": "BGforge MLS",
@@ -265,10 +267,12 @@
 				}
 			}
 		},
-		"keybindings": [{
-			"command": "extension.bgforge.compile",
-			"key": "ctrl+r"
-		}]
+		"keybindings": [
+			{
+				"command": "extension.bgforge.compile",
+				"key": "ctrl+r"
+			}
+		]
 	},
 	"scripts": {
 		"vscode:prepublish": "cd client && npm run update-vscode && cd .. && npm run compile",
@@ -285,7 +289,7 @@
 		"@types/node": "^8.0.0",
 		"typescript": "2.8.3"
 	},
-    "categories": [
+	"categories": [
 		"Programming Languages"
 	],
 	"homepage": "https://forums.bgforge.net/viewforum.php?f=35"
