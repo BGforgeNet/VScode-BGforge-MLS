@@ -2,7 +2,7 @@
 	"name": "bgforge-mls-client",
 	"description": "BGforge multilanguage server client",
 	"author": "BGforge",
-	"license": "GPLv3",
+	"license": "SEE LICENSE IN LICENSE.txt",
 	"version": "1.5.0",
 	"publisher": "BGforge",
 	"repository": {
