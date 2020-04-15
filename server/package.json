@@ -5,7 +5,7 @@
 	"author": "BGforge",
 	"license": "SEE LICENSE IN LICENSE.txt",
 	"engines": {
-		"vscode": "^1.26.1",
+		"vscode": "^1.43.0",
 		"node": "*"
 	},
 	"repository": {
@@ -13,15 +13,14 @@
 		"url": "https://github.com/BGforgeNet/VScode-BGforge-MLS"
 	},
 	"dependencies": {
+		"js-yaml": "^3.12.0",
+		"typescript": "^3.8.3",
 		"vscode-languageserver": "^4.1.3",
-		"vscode": "^1.1.21",
-		"vscode-uri": "*",
-		"glob-fs": "^0.1.7",
-		"readline": "^1.3.0",
-		"js-yaml": "^3.12.0"
+		"vscode-uri": "*"
 	},
-	"scripts": {
-		"update-vscode": "vscode-install",
-		"postinstall": "vscode-install"
-	}
+	"devDependencies": {
+		"@types/vscode": "1.43.0",
+		"vscode-test": "^1.3.0"
+	},
+	"scripts": {}
 }
