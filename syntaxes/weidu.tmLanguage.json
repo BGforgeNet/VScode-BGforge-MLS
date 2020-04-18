@@ -85,6 +85,9 @@
       "include": "#weidu-tp2-value-operators"
     },
     {
+      "include": "#array-construct"
+    },
+    {
       "include": "#vars-declaration"
     },
     {
@@ -1826,6 +1829,37 @@
         }
       ]
     },
+    "array-construct": {
+      "patterns": [
+        {
+          "match": "(\\$)(\\w+)(\\()([^)]+)(\\))",
+          "captures": {
+            "1": {
+              "name": "keyword.array-construct.weidu"
+            },
+            "2": {
+              "name": "variable.parameter.array-construct.weidu"
+            },
+            "3": {
+              "name": "keyword.array-construct.weidu"
+            },
+            "4": {
+              "patterns": [
+                {
+                  "include": "#strings"
+                },
+                {
+                  "include": "#vars"
+                }
+              ]
+            },
+            "5": {
+              "name": "keyword.array-construct.weidu"
+            }
+          }
+        }
+      ]
+    },
     "weidu-vars": {
       "name": "constant.language.weidu",
       "patterns": [
@@ -2095,6 +2129,16 @@
         {
           "match": "(%\\w+%)",
           "name": "variable.parameter.weidu"
+        }
+      ]
+    },
+    "vars": {
+      "patterns": [
+        {
+          "include": "#weidu-vars"
+        },
+        {
+          "include": "#non-weidu-vars"
         }
       ]
     },

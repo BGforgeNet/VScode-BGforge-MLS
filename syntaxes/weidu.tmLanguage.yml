@@ -30,10 +30,10 @@ patterns:
   - include: '#numbers'
   - include: '#infinity-constants'
   - include: '#weidu-tp2-value-operators'
+  - include: '#array-construct'
   - include: '#vars-declaration'
   - include: '#ielib'
   - include: '#numbers'
-
 
 repository:
   comments:
@@ -535,6 +535,23 @@ repository:
         patterns:
           - include: '#non-weidu-vars'
 
+  array-construct:
+    patterns:
+      - match: (\$)(\w+)(\()([^)]+)(\))
+        captures:
+          '1':
+            name: keyword.array-construct.weidu
+          '2':
+            name: variable.parameter.array-construct.weidu
+          '3':
+            name: keyword.array-construct.weidu
+          '4':
+            patterns:
+              - include: '#strings'
+              - include: '#vars'
+          '5':
+            name: keyword.array-construct.weidu
+
   weidu-vars:
     name: constant.language.weidu
     patterns:
@@ -616,6 +633,11 @@ repository:
           '6':
             name: keyword.control.double-eval.weidu
       - match: (%\w+%)
+
+  vars:
+    patterns:
+      - include: '#weidu-vars'
+      - include: '#non-weidu-vars'
 
   numbers:
     patterns:
