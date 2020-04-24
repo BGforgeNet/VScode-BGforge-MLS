@@ -2200,22 +2200,53 @@
         }
       }
     },
+    "function-name": {
+      "name": "entity.name.function.weidu",
+      "patterns": [
+        {
+          "match": "(~)(\\S+)(~)",
+          "captures": {
+            "1": {
+              "name": "keyword.control.weidu"
+            },
+            "3": {
+              "name": "keyword.control.weidu"
+            }
+          },
+          "name": "entity.name.function.weidu"
+        },
+        {
+          "match": "(\")(\\S+)(\")",
+          "captures": {
+            "1": {
+              "name": "keyword.control.weidu"
+            },
+            "3": {
+              "name": "keyword.control.weidu"
+            }
+          },
+          "name": "entity.name.function.weidu"
+        },
+        {
+          "match": "(\\S+)",
+          "name": "entity.name.function.weidu"
+        }
+      ]
+    },
     "function-declaration": {
       "name": "meta.function.declaration.weidu",
-      "begin": "\\b(DEFINE_ACTION_FUNCTION|DEFINE_PATCH_FUNCTION)\\s+(~)?(\\S+)(~)?",
+      "begin": "\\b(DEFINE_ACTION_FUNCTION|DEFINE_PATCH_FUNCTION)\\s+(.*)",
       "end": "\\b(BEGIN)\\b",
       "beginCaptures": {
         "1": {
           "name": "keyword.control.weidu"
         },
         "2": {
-          "name": "keyword.control.weidu"
-        },
-        "3": {
-          "name": "entity.name.function"
-        },
-        "4": {
-          "name": "keyword.control.weidu"
+          "patterns": [
+            {
+              "include": "#function-name"
+            }
+          ]
         }
       },
       "endCaptures": {
