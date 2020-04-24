@@ -678,7 +678,7 @@ repository:
 
   function-declaration:
     name: meta.function.declaration.weidu
-    begin: \b(DEFINE_ACTION_FUNCTION|DEFINE_PATCH_FUNCTION)\s+(~)?(\w+)(~)?
+    begin: \b(DEFINE_ACTION_FUNCTION|DEFINE_PATCH_FUNCTION)\s+(~)?(\S+)(~)?
     end: \b(BEGIN)\b
     beginCaptures:
       '1':
