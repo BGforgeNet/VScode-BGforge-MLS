@@ -1962,6 +1962,12 @@ sfall-functions:
           - True - only checks critters and ignores their cover (roof tiles, walls, scenery, etc.)
           - False - checks all objects (can't check critters under objects)
         - passing False to the includeDude argument will ignore dude_obj
+    - name: objects_in_radius
+      detail: objects_in_radius", int tile, int radius, int elevation, int type)
+      doc: |
+        - returns an array of objects of a type (see `OBJ_TYPE_*` constants in `define_extra.h`) within the specified radius from the given tile
+        - passing -1 to the `type` argument or _not specifying it_ will return all objects within the radius
+        - the radius is limited to 50 hexes
     - name: set_drugs_data
       detail: void set_drugs_data(int type, int pid, int value)
       doc: |-
@@ -2025,23 +2031,12 @@ sfall-functions:
       detail: bool sfall_func2("string_compare", string str1, string str2)
       doc: |-
         Compares two strings case-insensitive, and returns `True` if the two strings are matched.
-    - name: sfall_func3("objects_in_radius", int tile, int radius, int elevation)
-      detail: array sfall_func3("objects_in_radius", int tile, int radius, int elevation)
-      doc: |
-        - returns an array of objects of a type (see `OBJ_TYPE_*` constants in `define_extra.h`) within the specified radius from the given tile
-        - the radius is limited to 50 hexes
     - name: sfall_func3("string_compare", string str1, string str2, int codePage)
       detail: bool sfall_func3("string_compare", string str1, string str2, int codePage)
       doc: |
         Compares two strings case-insensitive, and returns `True` if the two strings are matched
         - `codePage`: code page number to properly compare national characters in the range 128-255 of the ASCII code table
         available encodings: 1250-1252, 866
-    - name: sfall_func4("objects_in_radius", int tile, int radius, int elevation, int type)
-      detail: array sfall_func4("objects_in_radius", int tile, int radius, int elevation, int type)
-      doc: |
-        - returns an array of objects of a type (see `OBJ_TYPE_*` constants in `define_extra.h`) within the specified radius from the given tile
-        - passing -1 to the type argument or not specifying it will return all objects within the radius
-        - the radius is limited to 50 hexes
     - name: spatial_radius
       detail: int spatial_radius(ObjectPtr obj)
       doc: |-

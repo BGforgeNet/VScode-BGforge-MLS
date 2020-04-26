@@ -2713,6 +2713,10 @@
           "name": "support.function.sfall.ssl"
         },
         {
+          "match": "\\b(?i)(objects_in_radius)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
           "match": "\\b(?i)(set_drugs_data)\\b",
           "name": "support.function.sfall.ssl"
         },
@@ -2765,15 +2769,7 @@
           "name": "support.function.sfall.ssl"
         },
         {
-          "match": "\\b(?i)(sfall_func3(\"objects_in_radius\", int tile, int radius, int elevation))\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
           "match": "\\b(?i)(sfall_func3(\"string_compare\", string str1, string str2, int codePage))\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(sfall_func4(\"objects_in_radius\", int tile, int radius, int elevation, int type))\\b",
           "name": "support.function.sfall.ssl"
         },
         {
@@ -8126,6 +8122,10 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(DUMMY_PARAM)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(DUSK_LIGHT)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -12170,6 +12170,10 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(HEX_XANDER)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(HIDDEN_ITEM)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -15766,10 +15770,6 @@
           "name": "constant.language.define.ssl"
         },
         {
-          "match": "\\b(PID_BLUE_MEMORY_MODULE)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
           "match": "\\b(PID_BLUE_PASS_KEY)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -16906,10 +16906,6 @@
           "name": "constant.language.define.ssl"
         },
         {
-          "match": "\\b(PID_FIRE_GECKO_FLAME_WEAPON)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
           "match": "\\b(PID_FIRE_GECKO_PELT)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -17258,10 +17254,6 @@
           "name": "constant.language.define.ssl"
         },
         {
-          "match": "\\b(PID_GREEN_MEMORY_MODULE)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
           "match": "\\b(PID_GREGORY)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -17422,10 +17414,6 @@
           "name": "constant.language.define.ssl"
         },
         {
-          "match": "\\b(PID_HIDDEN_CONTAINER)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
           "match": "\\b(PID_HK_CAWS)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -17555,10 +17543,6 @@
         },
         {
           "match": "\\b(PID_JAIL_DOOR_N_S)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
-          "match": "\\b(PID_JAIL_KEY)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -18422,10 +18406,6 @@
           "name": "constant.language.define.ssl"
         },
         {
-          "match": "\\b(PID_NAVCOM_PARTS)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
           "match": "\\b(PID_NAV_COMPUTER_PARTS)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -18878,10 +18858,6 @@
           "name": "constant.language.define.ssl"
         },
         {
-          "match": "\\b(PID_REAL_BOTTLE_CAPS)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
           "match": "\\b(PID_RED_CARAVAN_HANDLE)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -18891,10 +18867,6 @@
         },
         {
           "match": "\\b(PID_RED_CONDOM)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
-          "match": "\\b(PID_RED_MEMORY_MODULE)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -18939,14 +18911,6 @@
         },
         {
           "match": "\\b(PID_RIGHT_ARROYO_BOOKCASE)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
-          "match": "\\b(PID_RING_BOXING_GLOVES)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
-          "match": "\\b(PID_RING_PLATED_BOXING_GLOVES)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -19379,6 +19343,10 @@
         },
         {
           "match": "\\b(PID_STAKE_9)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(PID_STEALTH_BOY)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -19943,10 +19911,6 @@
         },
         {
           "match": "\\b(PID_YAKUZA)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
-          "match": "\\b(PID_YELLOW_MEMORY_MODULE)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -28735,6 +28699,10 @@
         },
         {
           "match": "\\b(SKILL_SNEAK)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(SKILL_SPEECH)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -43942,6 +43910,10 @@
           "name": "support.type.define.header.ssl"
         },
         {
+          "match": "\\b(dude_caps_adjust)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
           "match": "\\b(dude_eat_food)\\b",
           "name": "support.type.define.header.ssl"
         },
@@ -43970,6 +43942,18 @@
           "name": "support.type.define.header.ssl"
         },
         {
+          "match": "\\b(dude_perk)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(dude_rotate)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(dude_run_to_tile)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
           "match": "\\b(dude_skill)\\b",
           "name": "support.type.define.header.ssl"
         },
@@ -43983,6 +43967,10 @@
         },
         {
           "match": "\\b(dude_stat_win)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(dude_trait)\\b",
           "name": "support.type.define.header.ssl"
         },
         {
@@ -44142,11 +44130,23 @@
           "name": "support.type.define.header.ssl"
         },
         {
+          "match": "\\b(get_agility)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(get_ai)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
           "match": "\\b(get_and_set_family)\\b",
           "name": "support.type.define.header.ssl"
         },
         {
           "match": "\\b(get_anna_locket_pip)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(get_armor)\\b",
           "name": "support.type.define.header.ssl"
         },
         {
@@ -44170,6 +44170,18 @@
           "name": "support.type.define.header.ssl"
         },
         {
+          "match": "\\b(get_charisma)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(get_cur_hits)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(get_cur_rot)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
           "match": "\\b(get_current_inven_size)\\b",
           "name": "support.type.define.header.ssl"
         },
@@ -44179,6 +44191,10 @@
         },
         {
           "match": "\\b(get_den_flag)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(get_endurance)\\b",
           "name": "support.type.define.header.ssl"
         },
         {
@@ -44214,6 +44230,10 @@
           "name": "support.type.define.header.ssl"
         },
         {
+          "match": "\\b(get_gender)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
           "match": "\\b(get_guard_assignment)\\b",
           "name": "support.type.define.header.ssl"
         },
@@ -44234,6 +44254,18 @@
           "name": "support.type.define.header.ssl"
         },
         {
+          "match": "\\b(get_iq)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(get_item)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(get_item_count)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
           "match": "\\b(get_jet_quest)\\b",
           "name": "support.type.define.header.ssl"
         },
@@ -44250,11 +44282,23 @@
           "name": "support.type.define.header.ssl"
         },
         {
+          "match": "\\b(get_left_hand)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
           "match": "\\b(get_lil_jesus_refers)\\b",
           "name": "support.type.define.header.ssl"
         },
         {
+          "match": "\\b(get_luck)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
           "match": "\\b(get_magazines)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(get_max_hits)\\b",
           "name": "support.type.define.header.ssl"
         },
         {
@@ -44302,7 +44346,23 @@
           "name": "support.type.define.header.ssl"
         },
         {
+          "match": "\\b(get_perception)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(get_perk)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(get_rads)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
           "match": "\\b(get_redding_problem)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(get_right_hand)\\b",
           "name": "support.type.define.header.ssl"
         },
         {
@@ -44350,7 +44410,15 @@
           "name": "support.type.define.header.ssl"
         },
         {
+          "match": "\\b(get_strength)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
           "match": "\\b(get_string_pointer)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(get_team)\\b",
           "name": "support.type.define.header.ssl"
         },
         {
@@ -44359,6 +44427,10 @@
         },
         {
           "match": "\\b(get_track_lloyd)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(get_trait)\\b",
           "name": "support.type.define.header.ssl"
         },
         {
@@ -44546,6 +44618,10 @@
           "name": "support.type.define.header.ssl"
         },
         {
+          "match": "\\b(is_female)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
           "match": "\\b(is_in_array)\\b",
           "name": "support.type.define.header.ssl"
         },
@@ -44554,7 +44630,15 @@
           "name": "support.type.define.header.ssl"
         },
         {
+          "match": "\\b(is_male)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
           "match": "\\b(is_skill_tagged)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(is_visible)\\b",
           "name": "support.type.define.header.ssl"
         },
         {
@@ -45026,6 +45110,10 @@
           "name": "support.type.define.header.ssl"
         },
         {
+          "match": "\\b(obj_rotate)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
           "match": "\\b(obj_salvatore_2nd_floor)\\b",
           "name": "support.type.define.header.ssl"
         },
@@ -45386,11 +45474,47 @@
           "name": "support.type.define.header.ssl"
         },
         {
+          "match": "\\b(self_caps_adjust)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
           "match": "\\b(self_item)\\b",
           "name": "support.type.define.header.ssl"
         },
         {
           "match": "\\b(self_item_count)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(self_perk)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(self_rotate)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(self_run_to_tile)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(self_run_to_tile_force)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(self_set_frame)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(self_trait)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(self_walk_to_tile)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(set_ai)\\b",
           "name": "support.type.define.header.ssl"
         },
         {
@@ -45834,6 +45958,14 @@
           "name": "support.type.define.header.ssl"
         },
         {
+          "match": "\\b(set_obj_invisible)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(set_obj_visible)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
           "match": "\\b(set_object_data)\\b",
           "name": "support.type.define.header.ssl"
         },
@@ -45895,6 +46027,14 @@
         },
         {
           "match": "\\b(set_selectable_perk_npc)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(set_self_ai)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(set_self_team)\\b",
           "name": "support.type.define.header.ssl"
         },
         {
@@ -46035,6 +46175,10 @@
         },
         {
           "match": "\\b(set_tanker_flag)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(set_team)\\b",
           "name": "support.type.define.header.ssl"
         },
         {

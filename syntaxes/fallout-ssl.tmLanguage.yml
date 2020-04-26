@@ -734,6 +734,7 @@ repository:
       - match: \b(?i)(metarule_exist)\b
       - match: \b(?i)(npc_engine_level_up)\b
       - match: \b(?i)(obj_under_cursor)\b
+      - match: \b(?i)(objects_in_radius)\b
       - match: \b(?i)(set_drugs_data)\b
       - match: \b(?i)(set_flags)\b
       - match: \b(?i)(set_object_data)\b
@@ -747,9 +748,7 @@ repository:
       - match: \b(?i)(sfall_func1("remove_timer_event", int fixedParam))\b
       - match: \b(?i)(sfall_func1("show_window", string winName))\b
       - match: \b(?i)(sfall_func2("string_compare", string str1, string str2))\b
-      - match: \b(?i)(sfall_func3("objects_in_radius", int tile, int radius, int elevation))\b
       - match: \b(?i)(sfall_func3("string_compare", string str1, string str2, int codePage))\b
-      - match: \b(?i)(sfall_func4("objects_in_radius", int tile, int radius, int elevation, int type))\b
       - match: \b(?i)(spatial_radius)\b
       - match: \b(?i)(void sfall_func0("remove_timer_event"))\b
       - match: \b(?i)(get_available_skill_points)\b
@@ -2100,6 +2099,7 @@ repository:
       - match: \b(DUDE_FIGURED_FAKE_MAP)\b
       - match: \b(DUDE_HAS_FAKE_MAP)\b
       - match: \b(DUDE_TENT_POS)\b
+      - match: \b(DUMMY_PARAM)\b
       - match: \b(DUSK_LIGHT)\b
       - match: \b(ECON_DISK_GET_DISK)\b
       - match: \b(ECON_DISK_GIVEN)\b
@@ -3111,6 +3111,7 @@ repository:
       - match: \b(HEX_MARK0)\b
       - match: \b(HEX_MARK1)\b
       - match: \b(HEX_MARK2)\b
+      - match: \b(HEX_XANDER)\b
       - match: \b(HIDDEN_ITEM)\b
       - match: \b(HIGH_REACTION)\b
       - match: \b(HOLODISK_ACCEPTED)\b
@@ -4010,7 +4011,6 @@ repository:
       - match: \b(PID_BLOWN_ARROYO_CAVE_DOOR)\b
       - match: \b(PID_BLOW_UP_DOLL)\b
       - match: \b(PID_BLUE_CONDOM)\b
-      - match: \b(PID_BLUE_MEMORY_MODULE)\b
       - match: \b(PID_BLUE_PASS_KEY)\b
       - match: \b(PID_BLUE_TOUGH_MISSILE_BOT)\b
       - match: \b(PID_BOOTLEGGER_FEMALE)\b
@@ -4295,7 +4295,6 @@ repository:
       - match: \b(PID_FIGHTING_MOLERAT_6)\b
       - match: \b(PID_FIREWOOD)\b
       - match: \b(PID_FIRE_GECKO)\b
-      - match: \b(PID_FIRE_GECKO_FLAME_WEAPON)\b
       - match: \b(PID_FIRE_GECKO_PELT)\b
       - match: \b(PID_FIRST_AID_BOOK)\b
       - match: \b(PID_FIRST_AID_KIT)\b
@@ -4383,7 +4382,6 @@ repository:
       - match: \b(PID_GREASE_GUN)\b
       - match: \b(PID_GREATER_MOLE_RAT)\b
       - match: \b(PID_GREEN_CONDOM)\b
-      - match: \b(PID_GREEN_MEMORY_MODULE)\b
       - match: \b(PID_GREGORY)\b
       - match: \b(PID_GREY_CARAVAN_HANDLE)\b
       - match: \b(PID_GRIM_REAPER)\b
@@ -4424,7 +4422,6 @@ repository:
       - match: \b(PID_HERO_ROBE)\b
       - match: \b(PID_HERO_VAULT_FEMALE)\b
       - match: \b(PID_HERO_VAULT_MALE)\b
-      - match: \b(PID_HIDDEN_CONTAINER)\b
       - match: \b(PID_HK_CAWS)\b
       - match: \b(PID_HK_G11)\b
       - match: \b(PID_HK_G11E)\b
@@ -4458,7 +4455,6 @@ repository:
       - match: \b(PID_INDEPENDENT)\b
       - match: \b(PID_JAGGED_JIMMY_J)\b
       - match: \b(PID_JAIL_DOOR_N_S)\b
-      - match: \b(PID_JAIL_KEY)\b
       - match: \b(PID_JAUN)\b
       - match: \b(PID_JESSE_CONTAINER)\b
       - match: \b(PID_JET)\b
@@ -4674,7 +4670,6 @@ repository:
       - match: \b(PID_MYST_STRANGER_MALE_21)\b
       - match: \b(PID_MYST_STRANGER_MALE_5_10)\b
       - match: \b(PID_NASTY_FLOATER)\b
-      - match: \b(PID_NAVCOM_PARTS)\b
       - match: \b(PID_NAV_COMPUTER_PARTS)\b
       - match: \b(PID_NCR_BARTENDER)\b
       - match: \b(PID_NCR_GUARD_FEMALE)\b
@@ -4788,11 +4783,9 @@ repository:
       - match: \b(PID_REACTOR_GHOUL)\b
       - match: \b(PID_REACTOR_GLOWING_ONE)\b
       - match: \b(PID_REACTOR_GUARD)\b
-      - match: \b(PID_REAL_BOTTLE_CAPS)\b
       - match: \b(PID_RED_CARAVAN_HANDLE)\b
       - match: \b(PID_RED_COC_BADGE)\b
       - match: \b(PID_RED_CONDOM)\b
-      - match: \b(PID_RED_MEMORY_MODULE)\b
       - match: \b(PID_RED_PASS_KEY)\b
       - match: \b(PID_RED_REACTOR_KEYCARD)\b
       - match: \b(PID_RED_RYDER_BB_GUN)\b
@@ -4804,8 +4797,6 @@ repository:
       - match: \b(PID_REPAIR_BOT_1)\b
       - match: \b(PID_REPAIR_BOT_2)\b
       - match: \b(PID_RIGHT_ARROYO_BOOKCASE)\b
-      - match: \b(PID_RING_BOXING_GLOVES)\b
-      - match: \b(PID_RING_PLATED_BOXING_GLOVES)\b
       - match: \b(PID_RIPPER)\b
       - match: \b(PID_ROBOBRAIN)\b
       - match: \b(PID_ROBOBRAIN_ABNORMAL)\b
@@ -4914,6 +4905,7 @@ repository:
       - match: \b(PID_STAKE_7)\b
       - match: \b(PID_STAKE_8)\b
       - match: \b(PID_STAKE_9)\b
+      - match: \b(PID_STEALTH_BOY)\b
       - match: \b(PID_STIMPAK)\b
       - match: \b(PID_STONE_HEAD)\b
       - match: \b(PID_STRONG_PEASANT_FEMALE)\b
@@ -5055,7 +5047,6 @@ repository:
       - match: \b(PID_Warrior)\b
       - match: \b(PID_XANDER_ROOT)\b
       - match: \b(PID_YAKUZA)\b
-      - match: \b(PID_YELLOW_MEMORY_MODULE)\b
       - match: \b(PID_YELLOW_PASS_KEY)\b
       - match: \b(PID_YELLOW_REACTOR_KEYCARD)\b
       - match: \b(PID_YK32_PULSE_PISTOL)\b
@@ -7253,6 +7244,7 @@ repository:
       - match: \b(SKILL_SCIENCE)\b
       - match: \b(SKILL_SMALL_GUNS)\b
       - match: \b(SKILL_SNEAK)\b
+      - match: \b(SKILL_SPEECH)\b
       - match: \b(SKILL_STEAL)\b
       - match: \b(SKILL_THROWING)\b
       - match: \b(SKILL_TRAPS)\b
@@ -11061,6 +11053,7 @@ repository:
       - match: \b(drug_influence)\b
       - match: \b(dude_can_eat)\b
       - match: \b(dude_can_eat_food)\b
+      - match: \b(dude_caps_adjust)\b
       - match: \b(dude_eat_food)\b
       - match: \b(dude_floater)\b
       - match: \b(dude_floater_bad)\b
@@ -11068,10 +11061,14 @@ repository:
       - match: \b(dude_floater_sick)\b
       - match: \b(dude_item)\b
       - match: \b(dude_item_count)\b
+      - match: \b(dude_perk)\b
+      - match: \b(dude_rotate)\b
+      - match: \b(dude_run_to_tile)\b
       - match: \b(dude_skill)\b
       - match: \b(dude_stat_lose)\b
       - match: \b(dude_stat_tie)\b
       - match: \b(dude_stat_win)\b
+      - match: \b(dude_trait)\b
       - match: \b(elevator)\b
       - match: \b(elron_flag)\b
       - match: \b(elron_whirly)\b
@@ -11111,16 +11108,23 @@ repository:
       - match: \b(gang_trap)\b
       - match: \b(gangwar)\b
       - match: \b(gen_floater)\b
+      - match: \b(get_agility)\b
+      - match: \b(get_ai)\b
       - match: \b(get_and_set_family)\b
       - match: \b(get_anna_locket_pip)\b
+      - match: \b(get_armor)\b
       - match: \b(get_assassination)\b
       - match: \b(get_bishop_flag)\b
       - match: \b(get_briefcase_flag)\b
       - match: \b(get_can_rest_on_map)\b
       - match: \b(get_carlson_flag)\b
+      - match: \b(get_charisma)\b
+      - match: \b(get_cur_hits)\b
+      - match: \b(get_cur_rot)\b
       - match: \b(get_current_inven_size)\b
       - match: \b(get_delivery)\b
       - match: \b(get_den_flag)\b
+      - match: \b(get_endurance)\b
       - match: \b(get_escape)\b
       - match: \b(get_explosion_damage)\b
       - match: \b(get_extortion_bros)\b
@@ -11129,17 +11133,24 @@ repository:
       - match: \b(get_fetch_laser)\b
       - match: \b(get_flags)\b
       - match: \b(get_follow_point_dist)\b
+      - match: \b(get_gender)\b
       - match: \b(get_guard_assignment)\b
       - match: \b(get_ini_section)\b
       - match: \b(get_ini_sections)\b
       - match: \b(get_interface_x)\b
       - match: \b(get_interface_y)\b
+      - match: \b(get_iq)\b
+      - match: \b(get_item)\b
+      - match: \b(get_item_count)\b
       - match: \b(get_jet_quest)\b
       - match: \b(get_jet_source)\b
       - match: \b(get_jules_eldridge)\b
       - match: \b(get_jules_kitty)\b
+      - match: \b(get_left_hand)\b
       - match: \b(get_lil_jesus_refers)\b
+      - match: \b(get_luck)\b
       - match: \b(get_magazines)\b
+      - match: \b(get_max_hits)\b
       - match: \b(get_modoc_flag)\b
       - match: \b(get_modoc_flag_1)\b
       - match: \b(get_modoc_flag_2)\b
@@ -11151,7 +11162,11 @@ repository:
       - match: \b(get_outline)\b
       - match: \b(get_p_hidden_flag)\b
       - match: \b(get_p_hidden_flag_obj)\b
+      - match: \b(get_perception)\b
+      - match: \b(get_perk)\b
+      - match: \b(get_rads)\b
       - match: \b(get_redding_problem)\b
+      - match: \b(get_right_hand)\b
       - match: \b(get_sad)\b
       - match: \b(get_salvatore_pistol)\b
       - match: \b(get_saved_array_new_map)\b
@@ -11163,9 +11178,12 @@ repository:
       - match: \b(get_still_status)\b
       - match: \b(get_stolen_car)\b
       - match: \b(get_stranger_flag)\b
+      - match: \b(get_strength)\b
       - match: \b(get_string_pointer)\b
+      - match: \b(get_team)\b
       - match: \b(get_text_width)\b
       - match: \b(get_track_lloyd)\b
+      - match: \b(get_trait)\b
       - match: \b(get_tribute)\b
       - match: \b(get_westin_flag)\b
       - match: \b(get_wright_flag)\b
@@ -11212,9 +11230,12 @@ repository:
       - match: \b(is_critter)\b
       - match: \b(is_critter_dead)\b
       - match: \b(is_critter_prone)\b
+      - match: \b(is_female)\b
       - match: \b(is_in_array)\b
       - match: \b(is_in_string)\b
+      - match: \b(is_male)\b
       - match: \b(is_skill_tagged)\b
+      - match: \b(is_visible)\b
       - match: \b(item_make_explosive)\b
       - match: \b(item_weight)\b
       - match: \b(jet_known)\b
@@ -11332,6 +11353,7 @@ repository:
       - match: \b(obj_pimp_team_4)\b
       - match: \b(obj_porn_studio_building)\b
       - match: \b(obj_porn_stuidio_stage)\b
+      - match: \b(obj_rotate)\b
       - match: \b(obj_salvatore_2nd_floor)\b
       - match: \b(obj_salvatore_casino)\b
       - match: \b(obj_salvatore_property)\b
@@ -11422,8 +11444,17 @@ repository:
       - match: \b(seat_party_member)\b
       - match: \b(seat_wedding_guest)\b
       - match: \b(see_vic)\b
+      - match: \b(self_caps_adjust)\b
       - match: \b(self_item)\b
       - match: \b(self_item_count)\b
+      - match: \b(self_perk)\b
+      - match: \b(self_rotate)\b
+      - match: \b(self_run_to_tile)\b
+      - match: \b(self_run_to_tile_force)\b
+      - match: \b(self_set_frame)\b
+      - match: \b(self_trait)\b
+      - match: \b(self_walk_to_tile)\b
+      - match: \b(set_ai)\b
       - match: \b(set_anna_locket_pip)\b
       - match: \b(set_armor_flag)\b
       - match: \b(set_assassination)\b
@@ -11534,6 +11565,8 @@ repository:
       - match: \b(set_next_float_time_def)\b
       - match: \b(set_next_stage_time)\b
       - match: \b(set_next_stage_time_only)\b
+      - match: \b(set_obj_invisible)\b
+      - match: \b(set_obj_visible)\b
       - match: \b(set_object_data)\b
       - match: \b(set_outline)\b
       - match: \b(set_p_hidden_flag)\b
@@ -11550,6 +11583,8 @@ repository:
       - match: \b(set_san_fran_flag)\b
       - match: \b(set_see_vic)\b
       - match: \b(set_selectable_perk_npc)\b
+      - match: \b(set_self_ai)\b
+      - match: \b(set_self_team)\b
       - match: \b(set_shi_whirly)\b
       - match: \b(set_shihacked_flag)\b
       - match: \b(set_slave_door)\b
@@ -11585,6 +11620,7 @@ repository:
       - match: \b(set_sub_stage)\b
       - match: \b(set_suspect)\b
       - match: \b(set_tanker_flag)\b
+      - match: \b(set_team)\b
       - match: \b(set_terrain_name)\b
       - match: \b(set_town_title)\b
       - match: \b(set_track_lloyd)\b
