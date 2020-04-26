@@ -8,7 +8,7 @@
   - Fixed dashes in SLB `TARGET` breaking highlighting.
   - Added support for array construct highlighting.
 - Fallout:
-  - Updated IE defines.
+  - Updated RP defines.
 
 ## 1.8.0
 
