@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.9.0
+- General:
+  - Switched to `@types/vscode` for tests, removed old unused dependencies, bumped minimal VScode version.
+- IE:
+  - Fixed dashes/quotes in function names breaking highlighting.
+  - Fixed dashes in SLB `TARGET` breaking highlighting.
+  - Added support for array construct highlighting.
+- Fallout:
+  - Updated IE defines.
+
 ## 1.8.0
 
 - Common:
