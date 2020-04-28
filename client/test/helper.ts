@@ -2,6 +2,7 @@
  * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License. See License.txt in the project root for license information.
  * ------------------------------------------------------------------------------------------ */
+'use strict';
 
 import * as vscode from 'vscode';
 import * as path from 'path';
@@ -16,7 +17,7 @@ export let platformEol: string;
  */
 export async function activate(docUri: vscode.Uri) {
 	// The extensionId is `publisher.name` from package.json
-	const ext = vscode.extensions.getExtension('vscode-samples.lsp-sample')!;
+	const ext = vscode.extensions.getExtension('vscode.lsp-sample');
 	await ext.activate();
 	try {
 		doc = await vscode.workspace.openTextDocument(docUri);

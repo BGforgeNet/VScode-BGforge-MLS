@@ -2,15 +2,16 @@
  * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License. See License.txt in the project root for license information.
  * ------------------------------------------------------------------------------------------ */
+'use strict';
 
 import * as vscode from 'vscode';
 import * as assert from 'assert';
 import { getDocUri, activate } from './helper';
 
-suite('Should do completion', () => {
+describe('Should do completion', () => {
 	const docUri = getDocUri('completion.txt');
 
-	test('Completes JS/TS in txt file', async () => {
+	it('Completes JS/TS in txt file', async () => {
 		await testCompletion(docUri, new vscode.Position(0, 0), {
 			items: [
 				{ label: 'JavaScript', kind: vscode.CompletionItemKind.Text },
@@ -34,7 +35,7 @@ async function testCompletion(
 		position
 	)) as vscode.CompletionList;
 
-	assert.ok(actualCompletionList.items.length >= 2);
+	assert.equal(actualCompletionList.items.length, expectedCompletionList.items.length);
 	expectedCompletionList.items.forEach((expectedItem, i) => {
 		const actualItem = actualCompletionList.items[i];
 		assert.equal(actualItem.label, expectedItem.label);
