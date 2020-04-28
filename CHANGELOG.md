@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.9.1
+ - General:
+  - Reverted client to `vscode` module to fix missing tooltips.
+
 ## 1.9.0
 - General:
   - Switched to `@types/vscode` for tests, removed old unused dependencies, bumped minimal VScode version.
