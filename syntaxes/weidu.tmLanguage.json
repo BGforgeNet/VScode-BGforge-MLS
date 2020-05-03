@@ -777,6 +777,14 @@
           "name": "support.function.tp2.weidu"
         },
         {
+          "match": "\\b(LOCAL_SPRINT)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
+          "match": "\\b(LOCAL_SET)\\b",
+          "name": "support.function.tp2.weidu"
+        },
+        {
           "match": "\\b(SOURCE_BIFF)\\b",
           "name": "support.function.tp2.weidu"
         },

@@ -241,6 +241,8 @@ repository:
       - match: \b(SPRINT)\b
       - match: \b(SNPRINT)\b
       - match: \b(SPRINTF)\b
+      - match: \b(LOCAL_SPRINT)\b
+      - match: \b(LOCAL_SET)\b
       - match: \b(SOURCE_BIFF)\b
       - match: \b(SPACES)\b
       - match: \b(QUOTE)\b
