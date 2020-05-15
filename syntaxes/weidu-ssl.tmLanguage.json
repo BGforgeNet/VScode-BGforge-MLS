@@ -129,35 +129,21 @@
       ]
     },
     "triggers": {
-      "name": "entity.name.function.trigger.ssl.weidu",
       "patterns": [
         {
-          "match": "\\b(?i)(IgnoreBlock)\\b",
-          "name": "entity.name.function.trigger.ssl.weidu"
-        },
-        {
-          "match": "\\b(?i)(RequireBlock)\\b",
-          "name": "entity.name.function.trigger.ssl.weidu"
-        },
-        {
-          "match": "\\b(?i)(TargetBlock)\\b",
-          "name": "entity.name.function.trigger.ssl.weidu"
-        },
-        {
-          "match": "\\b(?i)(TriggerBlock)\\b",
-          "name": "entity.name.function.trigger.ssl.weidu"
-        },
-        {
-          "match": "\\b(?i)(ConditionalTargetBlock)\\b",
-          "name": "entity.name.function.trigger.ssl.weidu"
-        },
-        {
-          "match": "\\b(?i)(SSLBoolean)\\b",
-          "name": "entity.name.function.trigger.ssl.weidu"
-        },
-        {
-          "match": "\\b(?i)(Target)\\b",
-          "name": "entity.name.function.trigger.ssl.weidu"
+          "match": "\\b(ConditionalTargetBlock|IgnoreBlock|RequireBlock|Target|TargetBlock|TriggerBlock|SSLBoolean)\\b\\(([\\S]+)\\)",
+          "captures": {
+            "1": {
+              "name": "entity.name.function.trigger.ssl.weidu"
+            },
+            "2": {
+              "patterns": [
+                {
+                  "include": "#operators"
+                }
+              ]
+            }
+          }
         }
       ]
     },
