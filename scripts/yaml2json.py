@@ -4,7 +4,7 @@
 import sys, yaml, json
 
 with open(sys.argv[1]) as yf:
-  data = yaml.load(yf)
+  data = yaml.full_load(yf)
 
 for rep_item in data['repository']: # allow to use shorthand syntax in yaml
   rep_data = data['repository'][rep_item]

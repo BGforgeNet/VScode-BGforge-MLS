@@ -125,7 +125,7 @@ hooks_yaml = find_file(src_dir, hooks_yaml_name)
 
 # load functions
 with open(functions_yaml) as yf:
-  categories = yaml.load(yf)
+  categories = yaml.full_load(yf)
 categories = sorted(categories, key=lambda k: k['name']) # less diff noise
 for category in categories:
   cdoc = ""
@@ -164,7 +164,7 @@ for category in categories:
 
 # load hooks
 with open(hooks_yaml) as yf:
-  hooks = yaml.load(yf)
+  hooks = yaml.full_load(yf)
 hooks = sorted(hooks, key=lambda k: k['name']) # alphabetical sort
 
 for h in hooks:
@@ -185,7 +185,7 @@ with open(completion_yaml, 'w') as yf:
 
 # dump function and hooks to syntax highlight
 with open(highlight_yaml) as yf:
-  data = yaml.load(yf)
+  data = yaml.full_load(yf)
 data['repository']['sfall-functions']['patterns'] = highlight_functions
 data['repository']['hooks']['patterns'] = highlight_hooks
 data['repository']['header-constants']['patterns'] = header_constants
