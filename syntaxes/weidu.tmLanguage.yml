@@ -432,6 +432,7 @@ repository:
       - match: \b(INNER_PATCH_FILE)\b
       - match: \b(INNER_ACTION)\b
       - match: \b(PATCH_TIME)\b
+      - match: \b(DEFAULT)\b
 
   weidu-tp2-when:
     name: keyword.control.when.weidu

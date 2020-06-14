@@ -1689,7 +1689,7 @@ tp2-patch:
     - name: PATCH_MATCH
       detail: PATCH_MATCH value WITH [ guardvalue ... [ WHEN conditionvalue ] BEGIN patch list END ] ... DEFAULT patch list END
       doc: |-
-        The value is case-insensitively matched against the guard values. If value matches one of the guard values, the associated patch list is executed. If there is a condition, it additionally needs to evaluate to true for the values to match. If none of the values match, the DEFAULT patch list is executed.See the MATCH and TRY tutorial for additional information.
+        The value is case-insensitively matched against the guard values. If value matches one of the guard values, the associated patch list is executed. If there is a condition, it additionally needs to evaluate to true for the values to match. If none of the values match, the DEFAULT patch list is executed. See the MATCH and TRY tutorial for additional information.
     - name: PATCH_PHP_EACH
       detail: PATCH_PHP_EACH String1 AS String2 => String3 list BEGIN patch list END
       doc: |-
@@ -2473,7 +2473,6 @@ tp2-value:
     - name: BATTLE_CRY4
     - name: BATTLE_CRY5
     - name: BEGIN
-      doc: |
     - name: BIFF_IS_COMPRESSED
       detail: BIFF_IS_COMPRESSED fileName
       doc: |-
@@ -2627,17 +2626,19 @@ tp2-value:
       doc: |-
         Evaluates to the Enhanced Edition language directory the user has selected, for example, en_US. This variable is undefined on non-EE games.
 
-
     - name: END
-      doc: |
-
 
     - name: ENGINE_IS
       detail: ENGINE_IS String
       doc: |-
         Functions like GAME_IS except bg2=soa will detect SoA-based Tutu games in addition to SoA games, and tob will detect ToB-based Tutu games in addition to ToB and BGT games. As such, a mod that requires Throne of Bhaal's engine enhancements could use REQUIRE_PREDICATE ENGINE_IS ~tob~ .
+
     - name: EVALUATE_BUFFER
       detail: EVALUATE_BUFFER variable
+      doc: |-
+        User variables inside the given string are evaluated one additional time. You may prepend EVALUATE_BUFFER when a value is called for and you would normally use a string. You may also use it for SET and SPRINT statements. Example: SPRINT x ~y~ SET y = 5 SPRINT z EVALUATE_BUFFER ~tricky %%x%%~ SET EVALUATE_BUFFER "%x%" += 77 PATCH_PRINT "y is %y% ; z is %z%" This prints out y is 82 ; z is tricky 5. You may also do hackery like FILE_SIZE "myfile" "%%indirection%%". Be very careful with this feature.
+    - name: EVAL
+      detail: EVAL variable
       doc: |-
         User variables inside the given string are evaluated one additional time. You may prepend EVALUATE_BUFFER when a value is called for and you would normally use a string. You may also use it for SET and SPRINT statements. Example: SPRINT x ~y~ SET y = 5 SPRINT z EVALUATE_BUFFER ~tricky %%x%%~ SET EVALUATE_BUFFER "%x%" += 77 PATCH_PRINT "y is %y% ; z is %z%" This prints out y is 82 ; z is tricky 5. You may also do hackery like FILE_SIZE "myfile" "%%indirection%%". Be very careful with this feature.
 
