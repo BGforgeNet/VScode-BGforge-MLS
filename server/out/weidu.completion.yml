@@ -1,5 +1,19 @@
 # types https://docs.microsoft.com/en-us/dotnet/api/microsoft.visualstudio.languageserver.protocol.completionitemkind?view=visualstudiosdk-2017
 
+tp2-vars:
+  type: 21 # constant
+  items:
+    - name: SOURCE_FILE
+      doc: Set by `COPY_*` family of functions. If `COPY fromFile` is `mymod/cre/bigboss.cre`, then `SOURCE_FILE` is `bigboss.cre`.
+    - name: SOURCE_DIRECTORY
+      doc: Set by `COPY_*` family of functions. If `COPY fromFile` is `mymod/cre/bigboss.cre`, then `SOURCE_DIRECTORY` is `mymod/cre`.
+    - name: SOURCE_FILESPEC
+      doc: Set by `COPY_*` family of functions. If `COPY fromFile` is `mymod/cre/bigboss.cre`, then `SOURCE_FILESPEC` is ` mymod/cre/bigboss.cre`.
+    - name: SOURCE_RES
+      doc: Set by `COPY_*` family of functions. If `COPY fromFile` is `mymod/cre/bigboss.cre`, then `SOURCE_RES` is `bigboss`.
+    - name: SOURCE_EXT
+      doc: Set by `COPY_*` family of functions. If `COPY fromFile` is `mymod/cre/bigboss.cre`, then `SOURCE_EXT` is `cre`.
+
 tp2-file:
   type: 14 # keyword
   items:
@@ -2454,6 +2468,10 @@ tp2-value:
       detail: ABS Value
       doc: |-
         Absolute value. If the value is >= 0, the result is x. Otherwise the result is -x.
+    - name: AND
+      detail: value AND value
+      doc: |-
+        Conjunction. If both values are non-zero, the result is 1. Otherwise, the result is 0. Synonym: `&&`.
     - name: AREA_CITY
     - name: AREA_DAY
     - name: AREA_DUNGEON
@@ -2780,6 +2798,10 @@ tp2-value:
       detail: NOT value
       doc: |-
         Negation. If the value is 0, the result is 1. Otherwise the result is 0.
+    - name: OR
+      detail: value OR value
+      doc: |-
+        Disjunction. If either value is non-zero, the result is 1. Otherwise, the result is 0. Synonym: `||`.
     - name: PICKED_POCKET
     - name: RANDOM
       detail: RANDOM ( value value )
