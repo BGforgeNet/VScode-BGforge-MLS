@@ -1521,6 +1521,10 @@
         {
           "match": "\\b(DEFAULT)\\b",
           "name": "keyword.control.patch.weidu"
+        },
+        {
+          "match": "\\b(WITH)\\b",
+          "name": "keyword.control.patch.weidu"
         }
       ]
     },
