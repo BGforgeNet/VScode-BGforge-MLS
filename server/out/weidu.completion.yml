@@ -1690,6 +1690,14 @@ tp2-patch:
       detail: PATCH_MATCH value WITH [ guardvalue ... [ WHEN conditionvalue ] BEGIN patch list END ] ... DEFAULT patch list END
       doc: |-
         The value is case-insensitively matched against the guard values. If value matches one of the guard values, the associated patch list is executed. If there is a condition, it additionally needs to evaluate to true for the values to match. If none of the values match, the DEFAULT patch list is executed. See the MATCH and TRY tutorial for additional information.
+    - name: WITH
+      detail: PATCH_MATCH value WITH [ guardvalue ... [ WHEN conditionvalue ] BEGIN patch list END ] ... DEFAULT patch list END
+      doc: |-
+        The value is case-insensitively matched against the guard values. If value matches one of the guard values, the associated patch list is executed. If there is a condition, it additionally needs to evaluate to true for the values to match. If none of the values match, the DEFAULT patch list is executed. See the MATCH and TRY tutorial for additional information.
+    - name: DEFAULT
+      detail: PATCH_MATCH value WITH [ guardvalue ... [ WHEN conditionvalue ] BEGIN patch list END ] ... DEFAULT patch list END
+      doc: |-
+        The value is case-insensitively matched against the guard values. If value matches one of the guard values, the associated patch list is executed. If there is a condition, it additionally needs to evaluate to true for the values to match. If none of the values match, the DEFAULT patch list is executed. See the MATCH and TRY tutorial for additional information.
     - name: PATCH_PHP_EACH
       detail: PATCH_PHP_EACH String1 AS String2 => String3 list BEGIN patch list END
       doc: |-
