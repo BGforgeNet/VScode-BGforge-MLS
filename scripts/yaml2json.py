@@ -1,10 +1,14 @@
 #!/usr/bin/env python3
 # coding: utf-8
 
-import sys, yaml, json
+import sys, json
+import ruamel.yaml
+yaml = ruamel.yaml.YAML(typ="rt")
+yaml.width = 4096
+yaml.indent(mapping=2, sequence=4, offset=2)
 
 with open(sys.argv[1]) as yf:
-  data = yaml.full_load(yf)
+  data = yaml.load(yf)
 
 for rep_item in data['repository']: # allow to use shorthand syntax in yaml
   rep_data = data['repository'][rep_item]

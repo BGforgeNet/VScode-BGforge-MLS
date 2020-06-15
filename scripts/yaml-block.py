@@ -17,7 +17,7 @@ def LS(s):
 file = sys.argv[1]
 
 with open(file) as yf:
-  data = yaml.full_load(yf)
+  data = yaml.load(yf)
 for d in data:
   items = data[d]["items"]
   for i in items:
