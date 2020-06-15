@@ -4155,6 +4155,9 @@ ielib:
     - name: TIMING_permanent
       detail: '1'
       doc: IElib define
+    - name: TIMING_instant
+      detail: '1'
+      doc: IElib define
     - name: TIMING_duration_ticks
       detail: '10'
       doc: IElib define
@@ -4341,6 +4344,105 @@ ielib:
     - name: SUCCUBUS_CHARM_FEMALE
       detail: SPWI929
       doc: IElib define
+    - name: STO_type
+      detail: '0x8'
+      doc: IElib define
+    - name: STO_sell_price_markup
+      detail: '0x14'
+      doc: IElib define
+    - name: STO_rumours_temple
+      detail: '0x54'
+      doc: IElib define
+    - name: STO_rumours_tavern
+      detail: '0x44'
+      doc: IElib define
+    - name: STO_room_flags
+      detail: '0x5c'
+      doc: IElib define
+    - name: STO_price_of_a_royal_room
+      detail: '0x6c'
+      doc: IElib define
+    - name: STO_price_of_a_peasant_room
+      detail: '0x60'
+      doc: IElib define
+    - name: STO_price_of_a_noble_room
+      detail: '0x68'
+      doc: IElib define
+    - name: STO_price_of_a_merchant_room
+      detail: '0x64'
+      doc: IElib define
+    - name: STO_name
+      detail: '0xc'
+      doc: IElib define
+    - name: STO_lore
+      detail: '0x3c'
+      doc: IElib define
+    - name: STO_items_purchased_offset
+      detail: '0x2c'
+      doc: IElib define
+    - name: STO_items_purchased_count
+      detail: '0x30'
+      doc: IElib define
+    - name: STO_items_for_sale_offset
+      detail: '0x34'
+      doc: IElib define
+    - name: STO_items_for_sale_count
+      detail: '0x38'
+      doc: IElib define
+    - name: STO_id_price
+      detail: '0x40'
+      doc: IElib define
+    - name: STO_flags
+      detail: '0x10'
+      doc: IElib define
+    - name: STO_drinks_offset
+      detail: '0x4c'
+      doc: IElib define
+    - name: STO_drinks_count
+      detail: '0x50'
+      doc: IElib define
+    - name: STO_depreciation_rate
+      detail: '0x1c'
+      doc: IElib define
+    - name: STO_cures_offset
+      detail: '0x70'
+      doc: IElib define
+    - name: STO_cures_conut
+      detail: '0x74'
+      doc: IElib define
+    - name: STO_chance_of_steal_failure
+      detail: '0x20'
+      doc: IElib define
+    - name: STO_capacity
+      detail: '0x22'
+      doc: IElib define
+    - name: STO_buy_price_markup
+      detail: '0x18'
+      doc: IElib define
+    - name: STO_ITEM_SALE_name
+      detail: '0'
+      doc: IElib define
+    - name: STO_ITEM_SALE_infinite
+      detail: '0x18'
+      doc: IElib define
+    - name: STO_ITEM_SALE_flags
+      detail: '0x10'
+      doc: IElib define
+    - name: STO_ITEM_SALE_expiration_time
+      detail: '0x8'
+      doc: IElib define
+    - name: STO_ITEM_SALE_charges3
+      detail: '0xe'
+      doc: IElib define
+    - name: STO_ITEM_SALE_charges2
+      detail: '0xc'
+      doc: IElib define
+    - name: STO_ITEM_SALE_charges1
+      detail: '0xa'
+      doc: IElib define
+    - name: STO_ITEM_SALE_amount
+      detail: '0x14'
+      doc: IElib define
     - name: SPORE_DEATH
       detail: SPIN673
       doc: IElib define
@@ -4371,6 +4473,12 @@ ielib:
     - name: SPL_exclusion_flags
       detail: '0x1e'
       doc: IElib define
+    - name: SPL_desc_unidentified
+      detail: '0x54'
+      doc: IElib define
+    - name: SPL_desc
+      detail: '0x50'
+      doc: IElib define
     - name: SPL_completion_sound
       detail: '0x10'
       doc: IElib define
@@ -4382,6 +4490,69 @@ ielib:
       doc: IElib define
     - name: SPL_casting_feature_block_count
       detail: '0x70'
+      doc: IElib define
+    - name: SPL_HEADER_times_per_dat
+      detail: '0x14'
+      doc: IElib define
+    - name: SPL_HEADER_target_number
+      detail: '0xd'
+      doc: IElib define
+    - name: SPL_HEADER_target
+      detail: '0xc'
+      doc: IElib define
+    - name: SPL_HEADER_spell_form
+      detail: '0'
+      doc: IElib define
+    - name: SPL_HEADER_range
+      detail: '0xe'
+      doc: IElib define
+    - name: SPL_HEADER_projectile
+      detail: '0x26'
+      doc: IElib define
+    - name: SPL_HEADER_memorized_icon
+      detail: '0x4'
+      doc: IElib define
+    - name: SPL_HEADER_location
+      detail: '0x2'
+      doc: IElib define
+    - name: SPL_HEADER_level_required
+      detail: '0x10'
+      doc: IElib define
+    - name: SPL_HEADER_frienly_bit2
+      detail: '0x1'
+      doc: IElib define
+    - name: SPL_HEADER_feature_blocks_offset
+      detail: '0x20'
+      doc: IElib define
+    - name: SPL_HEADER_feature_blocks_count
+      detail: '0x1e'
+      doc: IElib define
+    - name: SPL_HEADER_casting_time
+      detail: '0x12'
+      doc: IElib define
+    - name: SPL_HEADER_TARGET_self_ignores_game_pause
+      detail: '7'
+      doc: IElib define
+    - name: SPL_HEADER_TARGET_self
+      detail: '5'
+      doc: IElib define
+    - name: SPL_HEADER_TARGET_invalid_target_cannot_be_selected
+      detail: '0'
+      doc: IElib define
+    - name: SPL_HEADER_TARGET_creature
+      detail: '1'
+      doc: IElib define
+    - name: SPL_HEADER_TARGET_character_potrait
+      detail: '3'
+      doc: IElib define
+    - name: SPL_HEADER_TARGET_area
+      detail: '4'
+      doc: IElib define
+    - name: SPL_HEADER_SPELL_FORM_standard
+      detail: '1'
+      doc: IElib define
+    - name: SPL_HEADER_SPELL_FORM_projectile
+      detail: '2'
       doc: IElib define
     - name: SPIDER_SUMMON
       detail: SPWI986
@@ -4787,6 +4958,459 @@ ielib:
       doc: IElib define
     - name: PSIONIC_BALLISTIC
       detail: SPIN911
+      doc: IElib define
+    - name: PRO_web1p
+      detail: '0x103'
+      doc: IElib define
+    - name: PRO_web
+      detail: '0x3f'
+      doc: IElib define
+    - name: PRO_unlyarea
+      detail: '0x105'
+      doc: IElib define
+    - name: PRO_tskullnp
+      detail: '0xef'
+      doc: IElib define
+    - name: PRO_traptime
+      detail: '0x10b'
+      doc: IElib define
+    - name: PRO_trapspik
+      detail: '0x10a'
+      doc: IElib define
+    - name: PRO_trapsnar
+      detail: '0xd5'
+      doc: IElib define
+    - name: PRO_trapskul
+      detail: '0x5f'
+      doc: IElib define
+    - name: PRO_trapglyp
+      detail: '0x63'
+      doc: IElib define
+    - name: PRO_trapglpn
+      detail: '0xd8'
+      doc: IElib define
+    - name: PRO_trapdart
+      detail: '0xf4'
+      doc: IElib define
+    - name: PRO_trapboom
+      detail: '0x10c'
+      doc: IElib define
+    - name: PRO_strmveng
+      detail: '0x108'
+      doc: IElib define
+    - name: PRO_stone
+      detail: '0x28'
+      doc: IElib define
+    - name: PRO_spklarst
+      detail: '0x98'
+      doc: IElib define
+    - name: PRO_spklarre
+      detail: '0x9b'
+      doc: IElib define
+    - name: PRO_spklarpu
+      detail: '0x96'
+      doc: IElib define
+    - name: PRO_spklaror
+      detail: '0xb6'
+      doc: IElib define
+    - name: PRO_spklarma
+      detail: '0xb5'
+      doc: IElib define
+    - name: PRO_spklaric
+      detail: '0x97'
+      doc: IElib define
+    - name: PRO_spklargr
+      detail: '0x9c'
+      doc: IElib define
+    - name: PRO_spklargo
+      detail: '0x95'
+      doc: IElib define
+    - name: PRO_spklarch
+      detail: '0x9a'
+      doc: IElib define
+    - name: PRO_spklarbl
+      detail: '0x94'
+      doc: IElib define
+    - name: PRO_spklarbk
+      detail: '0x99'
+      doc: IElib define
+    - name: PRO_spgreorb
+      detail: '0xda'
+      doc: IElib define
+    - name: PRO_spenbld
+      detail: '0x10e'
+      doc: IElib define
+    - name: PRO_spearex
+      detail: '0x38'
+      doc: IElib define
+    - name: PRO_spear
+      detail: '0x3b'
+      doc: IElib define
+    - name: PRO_spdrbrth
+      detail: '0x10d'
+      doc: IElib define
+    - name: PRO_spbehbla
+      detail: '0xd0'
+      doc: IElib define
+    - name: PRO_spattck2
+      detail: '0xdc'
+      doc: IElib define
+    - name: PRO_sparstpa
+      detail: '0xa3'
+      doc: IElib define
+    - name: PRO_sparstnp
+      detail: '0xac'
+      doc: IElib define
+    - name: PRO_sparrepa
+      detail: '0xa6'
+      doc: IElib define
+    - name: PRO_sparrenp
+      detail: '0xaf'
+      doc: IElib define
+    - name: PRO_sparpupa
+      detail: '0xa1'
+      doc: IElib define
+    - name: PRO_sparpunp
+      detail: '0xaa'
+      doc: IElib define
+    - name: PRO_sparorpa
+      detail: '0xb4'
+      doc: IElib define
+    - name: PRO_sparornp
+      detail: '0xb2'
+      doc: IElib define
+    - name: PRO_sparmapa
+      detail: '0xb3'
+      doc: IElib define
+    - name: PRO_sparmanp
+      detail: '0xb1'
+      doc: IElib define
+    - name: PRO_sparklst
+      detail: '0x32'
+      doc: IElib define
+    - name: PRO_sparklre
+      detail: '0x35'
+      doc: IElib define
+    - name: PRO_sparklpu
+      detail: '0x30'
+      doc: IElib define
+    - name: PRO_sparklor
+      detail: '0xb8'
+      doc: IElib define
+    - name: PRO_sparklma
+      detail: '0xb7'
+      doc: IElib define
+    - name: PRO_sparklic
+      detail: '0x31'
+      doc: IElib define
+    - name: PRO_sparklgr
+      detail: '0x36'
+      doc: IElib define
+    - name: PRO_sparklgo
+      detail: '0x2f'
+      doc: IElib define
+    - name: PRO_sparklch
+      detail: '0x34'
+      doc: IElib define
+    - name: PRO_sparklbl
+      detail: '0x2e'
+      doc: IElib define
+    - name: PRO_sparklbk
+      detail: '0x33'
+      doc: IElib define
+    - name: PRO_sparicpa
+      detail: '0xa2'
+      doc: IElib define
+    - name: PRO_sparicnp
+      detail: '0xab'
+      doc: IElib define
+    - name: PRO_spargrpa
+      detail: '0xa7'
+      doc: IElib define
+    - name: PRO_spargrnp
+      detail: '0xb0'
+      doc: IElib define
+    - name: PRO_spargopa
+      detail: '0xa0'
+      doc: IElib define
+    - name: PRO_spargonp
+      detail: '0xa9'
+      doc: IElib define
+    - name: PRO_sparchpa
+      detail: '0xa5'
+      doc: IElib define
+    - name: PRO_sparchnp
+      detail: '0xae'
+      doc: IElib define
+    - name: PRO_sparblpa
+      detail: '0x9f'
+      doc: IElib define
+    - name: PRO_sparblnp
+      detail: '0xa8'
+      doc: IElib define
+    - name: PRO_sparbkpa
+      detail: '0xa4'
+      doc: IElib define
+    - name: PRO_sparbknp
+      detail: '0xad'
+      doc: IElib define
+    - name: PRO_smllnpc
+      detail: '0xd9'
+      doc: IElib define
+    - name: PRO_smllarnc
+      detail: '0xd7'
+      doc: IElib define
+    - name: PRO_smllarea
+      detail: '0xd6'
+      doc: IElib define
+    - name: PRO_sleep
+      detail: '0x29'
+      doc: IElib define
+    - name: PRO_safefire
+      detail: '0xee'
+      doc: IElib define
+    - name: PRO_redhit
+      detail: '0xff'
+      doc: IElib define
+    - name: PRO_rdmiddle
+      detail: '0x100'
+      doc: IElib define
+    - name: PRO_pwilt
+      detail: '0xec'
+      doc: IElib define
+    - name: PRO_punhlst
+      detail: '0xfb'
+      doc: IElib define
+    - name: PRO_pspray
+      detail: '0xfc'
+      doc: IElib define
+    - name: PRO_pspeart
+      detail: '0xe8'
+      doc: IElib define
+    - name: PRO_pskullt
+      detail: '0xea'
+      doc: IElib define
+    - name: PRO_pholyst
+      detail: '0xfa'
+      doc: IElib define
+    - name: PRO_pfire3
+      detail: '0x101'
+      doc: IElib define
+    - name: PRO_pfire2
+      detail: '0xe9'
+      doc: IElib define
+    - name: PRO_pfield
+      detail: '0xed'
+      doc: IElib define
+    - name: PRO_pcomett
+      detail: '0xeb'
+      doc: IElib define
+    - name: PRO_newbolt1
+      detail: '0xf0'
+      doc: IElib define
+    - name: PRO_metswarm
+      detail: '0xe4'
+      doc: IElib define
+    - name: PRO_magicmis
+      detail: '0x24'
+      doc: IElib define
+    - name: PRO_lightsto
+      detail: '0x5c'
+      doc: IElib define
+    - name: PRO_lightcha
+      detail: '0xd4'
+      doc: IElib define
+    - name: PRO_insec4
+      detail: '0xe7'
+      doc: IElib define
+    - name: PRO_insec3
+      detail: '0xe5'
+      doc: IElib define
+    - name: PRO_insec2
+      detail: '0xe3'
+      doc: IElib define
+    - name: PRO_insec1
+      detail: '0xe2'
+      doc: IElib define
+    - name: PRO_inmed
+      detail: '0xdd'
+      doc: IElib define
+    - name: PRO_inareasm
+      detail: '0xcc'
+      doc: IElib define
+    - name: PRO_inareapa
+      detail: '0x9d'
+      doc: IElib define
+    - name: PRO_inareans
+      detail: '0xd3'
+      doc: IElib define
+    - name: PRO_inareanp
+      detail: '0x9e'
+      doc: IElib define
+    - name: PRO_inarea
+      detail: '0x5d'
+      doc: IElib define
+    - name: PRO_icghit
+      detail: '0xe6'
+      doc: IElib define
+    - name: PRO_icestorm
+      detail: '0x61'
+      doc: IElib define
+    - name: PRO_iceglyp
+      detail: '0xe0'
+      doc: IElib define
+    - name: PRO_holyarea
+      detail: '0x104'
+      doc: IElib define
+    - name: PRO_holdsumm
+      detail: '0x106'
+      doc: IElib define
+    - name: PRO_holdnecr
+      detail: '0x102'
+      doc: IElib define
+    - name: PRO_hold
+      detail: '0xbd'
+      doc: IElib define
+    - name: PRO_greehit
+      detail: '0x110'
+      doc: IElib define
+    - name: PRO_grease
+      detail: '0x64'
+      doc: IElib define
+    - name: PRO_golcloud
+      detail: '0xdf'
+      doc: IElib define
+    - name: PRO_gaze
+      detail: '0x40'
+      doc: IElib define
+    - name: PRO_firestor
+      detail: '0x5b'
+      doc: IElib define
+    - name: PRO_firebtbl
+      detail: '0x68'
+      doc: IElib define
+    - name: PRO_firebolt
+      detail: '0x4f'
+      doc: IElib define
+    - name: PRO_fireblns
+      detail: '0xd2'
+      doc: IElib define
+    - name: PRO_fireblic
+      detail: '0xcb'
+      doc: IElib define
+    - name: PRO_fireblgr
+      detail: '0x67'
+      doc: IElib define
+    - name: PRO_fireball
+      detail: '0x25'
+      doc: IElib define
+    - name: PRO_entang2
+      detail: '0xf2'
+      doc: IElib define
+    - name: PRO_dragsilv
+      detail: '0xf7'
+      doc: IElib define
+    - name: PRO_dragred
+      detail: '0xf5'
+      doc: IElib define
+    - name: PRO_draggree
+      detail: '0x10f'
+      doc: IElib define
+    - name: PRO_dragblck
+      detail: '0xf6'
+      doc: IElib define
+    - name: PRO_dfirebl
+      detail: '0xf3'
+      doc: IElib define
+    - name: PRO_dartex
+      detail: '0x20'
+      doc: IElib define
+    - name: PRO_dart
+      detail: '0x23'
+      doc: IElib define
+    - name: PRO_daggerex
+      detail: '0x1b'
+      doc: IElib define
+    - name: PRO_dagger
+      detail: '0x1e'
+      doc: IElib define
+    - name: PRO_cspray
+      detail: '0xf8'
+      doc: IElib define
+    - name: PRO_conecold
+      detail: '0xf9'
+      doc: IElib define
+    - name: PRO_cloudpc
+      detail: '0xde'
+      doc: IElib define
+    - name: PRO_cloudkil
+      detail: '0xba'
+      doc: IElib define
+    - name: PRO_cloud
+      detail: '0x5e'
+      doc: IElib define
+    - name: PRO_chromorb
+      detail: '0x17'
+      doc: IElib define
+    - name: PRO_bulletex
+      detail: '0x11'
+      doc: IElib define
+    - name: PRO_bullet2
+      detail: '0x107'
+      doc: IElib define
+    - name: PRO_bullet
+      detail: '0x14'
+      doc: IElib define
+    - name: PRO_boltex
+      detail: '0xc'
+      doc: IElib define
+    - name: PRO_bolt2
+      detail: '0xe1'
+      doc: IElib define
+    - name: PRO_bolt
+      detail: '0xf'
+      doc: IElib define
+    - name: PRO_bignarea
+      detail: '0xfd'
+      doc: IElib define
+    - name: PRO_axeex
+      detail: '0x7'
+      doc: IElib define
+    - name: PRO_axe
+      detail: '0xa'
+      doc: IElib define
+    - name: PRO_arrowhvy
+      detail: '0x4'
+      doc: IElib define
+    - name: PRO_arrowflm
+      detail: '0x3'
+      doc: IElib define
+    - name: PRO_arrowfli
+      detail: '0xbb'
+      doc: IElib define
+    - name: PRO_arrowflg
+      detail: '0x65'
+      doc: IElib define
+    - name: PRO_arrowflb
+      detail: '0x66'
+      doc: IElib define
+    - name: PRO_arrowex
+      detail: '0x2'
+      doc: IElib define
+    - name: PRO_arrow
+      detail: '0x5'
+      doc: IElib define
+    - name: PRO_acidbloc
+      detail: '0xc1'
+      doc: IElib define
+    - name: PRO_acidblob
+      detail: '0x6b'
+      doc: IElib define
+    - name: PRO_acidblmu
+      detail: '0xbf'
+      doc: IElib define
+    - name: PRO_acidblgr
+      detail: '0xc0'
       doc: IElib define
     - name: PROTECTION_MAGIC_WEAPON_NOEFF
       detail: SPIN686
@@ -6210,8 +6834,473 @@ ielib:
     - name: IWD_UNKNOWN_2
       detail: SPIN174
       doc: IElib define
+    - name: ITM_weight
+      detail: '0x4c'
+      doc: IElib define
+    - name: ITM_weapon_proficiency
+      detail: '0x31'
+      doc: IElib define
+    - name: ITM_usability_flags
+      detail: '0x1e'
+      doc: IElib define
+    - name: ITM_type
+      detail: '0x1c'
+      doc: IElib define
+    - name: ITM_stack_amount
+      detail: '0x38'
+      doc: IElib define
+    - name: ITM_replacement_item
+      detail: '0x10'
+      doc: IElib define
+    - name: ITM_price
+      detail: '0x34'
+      doc: IElib define
+    - name: ITM_min_wisdom
+      detail: '0x2e'
+      doc: IElib define
+    - name: ITM_min_strength_bonus
+      detail: '0x28'
+      doc: IElib define
+    - name: ITM_min_strength
+      detail: '0x26'
+      doc: IElib define
+    - name: ITM_min_level
+      detail: '0x24'
+      doc: IElib define
+    - name: ITM_min_intelligencs
+      detail: '0x2a'
+      doc: IElib define
+    - name: ITM_min_dexterity
+      detail: '0x2c'
+      doc: IElib define
+    - name: ITM_min_constitution
+      detail: '0x30'
+      doc: IElib define
+    - name: ITM_min_charisma
+      detail: '0x32'
+      doc: IElib define
+    - name: ITM_lore_to_id
+      detail: '0x42'
+      doc: IElib define
+    - name: ITM_kit_usability_3
+      detail: '0x2f'
+      doc: IElib define
+    - name: ITM_kit_usability_2
+      detail: '0x2b'
+      doc: IElib define
+    - name: ITM_kit_usability_1
+      detail: '0x29'
+      doc: IElib define
+    - name: ITM_inventory_icon
+      detail: '0x3a'
+      doc: IElib define
+    - name: ITM_ground_icon
+      detail: '0x44'
+      doc: IElib define
+    - name: ITM_flags
+      detail: '0x18'
+      doc: IElib define
+    - name: ITM_feature_blocks_offset
+      detail: '0x6a'
+      doc: IElib define
+    - name: ITM_extended_headers_offset
+      detail: '0x64'
+      doc: IElib define
+    - name: ITM_extended_headers_count
+      detail: '0x68'
+      doc: IElib define
+    - name: ITM_equipping_feature_blocks_index
+      detail: '0x6e'
+      doc: IElib define
+    - name: ITM_equipping_feature_blocks_count
+      detail: '0x70'
+      doc: IElib define
     - name: ITM_enchantment
       detail: '0x60'
+      doc: IElib define
+    - name: ITM_description_icon
+      detail: '0x58'
+      doc: IElib define
+    - name: ITM_animation
+      detail: '0x22'
+      doc: IElib define
+    - name: ITM_TYPE_wand
+      detail: '0x23'
+      doc: IElib define
+    - name: ITM_TYPE_telescope_iwd
+      detail: '0x37'
+      doc: IElib define
+    - name: ITM_TYPE_teeth
+      detail: '0x29'
+      doc: IElib define
+    - name: ITM_TYPE_tattoo_pst
+      detail: '0x27'
+      doc: IElib define
+    - name: ITM_TYPE_studded_leather_armor
+      detail: '0x3d'
+      doc: IElib define
+    - name: ITM_TYPE_splint_mail
+      detail: '0x3f'
+      doc: IElib define
+    - name: ITM_TYPE_spear
+      detail: '0x1d'
+      doc: IElib define
+    - name: ITM_TYPE_small_sword
+      detail: '0x13'
+      doc: IElib define
+    - name: ITM_TYPE_small_shield_iwd
+      detail: '0x35'
+      doc: IElib define
+    - name: ITM_TYPE_sling
+      detail: '0x12'
+      doc: IElib define
+    - name: ITM_TYPE_shield_not_in_iwd
+      detail: '0xc'
+      doc: IElib define
+    - name: ITM_TYPE_scroll
+      detail: '0xb'
+      doc: IElib define
+    - name: ITM_TYPE_scarf
+      detail: '0x46'
+      doc: IElib define
+    - name: ITM_TYPE_robe
+      detail: '0x43'
+      doc: IElib define
+    - name: ITM_TYPE_ring
+      detail: '0xa'
+      doc: IElib define
+    - name: ITM_TYPE_quarterstaff
+      detail: '0x1a'
+      doc: IElib define
+    - name: ITM_TYPE_potion
+      detail: '0x9'
+      doc: IElib define
+    - name: ITM_TYPE_polearm
+      detail: '0x1e'
+      doc: IElib define
+    - name: ITM_TYPE_pelt
+      detail: '0x3b'
+      doc: IElib define
+    - name: ITM_TYPE_note
+      detail: '0x32'
+      doc: IElib define
+    - name: ITM_TYPE_necklace
+      detail: '0x1'
+      doc: IElib define
+    - name: ITM_TYPE_morning_star
+      detail: '0x16'
+      doc: IElib define
+    - name: ITM_TYPE_misc
+      detail: '0'
+      doc: IElib define
+    - name: ITM_TYPE_medium_shield_iwd
+      detail: '0x31'
+      doc: IElib define
+    - name: ITM_TYPE_mace
+      detail: '0x11'
+      doc: IElib define
+    - name: ITM_TYPE_lense_pst
+      detail: '0x28'
+      doc: IElib define
+    - name: ITM_TYPE_leather_armor
+      detail: '0x3c'
+      doc: IElib define
+    - name: ITM_TYPE_large_sword
+      detail: '0x14'
+      doc: IElib define
+    - name: ITM_TYPE_large_shield_iwd
+      detail: '0x2f'
+      doc: IElib define
+    - name: ITM_TYPE_key
+      detail: '0x8'
+      doc: IElib define
+    - name: ITM_TYPE_hide_armor
+      detail: '0x42'
+      doc: IElib define
+    - name: ITM_TYPE_helm
+      detail: '0x7'
+      doc: IElib define
+    - name: ITM_TYPE_hat
+      detail: '0x48'
+      doc: IElib define
+    - name: ITM_TYPE_hand_to_hand_hth
+      detail: '0x1c'
+      doc: IElib define
+    - name: ITM_TYPE_hammer
+      detail: '0x15'
+      doc: IElib define
+    - name: ITM_TYPE_half_plate
+      detail: '0x40'
+      doc: IElib define
+    - name: ITM_TYPE_halberd
+      detail: '0x1e'
+      doc: IElib define
+    - name: ITM_TYPE_great_sword_iwd
+      detail: '0x39'
+      doc: IElib define
+    - name: ITM_TYPE_gold_pieces
+      detail: '0x21'
+      doc: IElib define
+    - name: ITM_TYPE_girdle
+      detail: '0x3'
+      doc: IElib define
+    - name: ITM_TYPE_gem
+      detail: '0x22'
+      doc: IElib define
+    - name: ITM_TYPE_gauntlets
+      detail: '0x6'
+      doc: IElib define
+    - name: ITM_TYPE_gauntlet
+      detail: '0x49'
+      doc: IElib define
+    - name: ITM_TYPE_fur
+      detail: '0x3b'
+      doc: IElib define
+    - name: ITM_TYPE_full_plate
+      detail: '0x41'
+      doc: IElib define
+    - name: ITM_TYPE_food_iwd2
+      detail: '0x47'
+      doc: IElib define
+    - name: ITM_TYPE_food
+      detail: '0xd'
+      doc: IElib define
+    - name: ITM_TYPE_flail
+      detail: '0x17'
+      doc: IElib define
+    - name: ITM_TYPE_familiar
+      detail: '0x26'
+      doc: IElib define
+    - name: ITM_TYPE_eye
+      detail: '0x24'
+      doc: IElib define
+    - name: ITM_TYPE_earring
+      detail: '0x26'
+      doc: IElib define
+    - name: ITM_TYPE_drink_iwd
+      detail: '0x38'
+      doc: IElib define
+    - name: ITM_TYPE_dart
+      detail: '0x18'
+      doc: IElib define
+    - name: ITM_TYPE_dagger
+      detail: '0x10'
+      doc: IElib define
+    - name: ITM_TYPE_crossbow
+      detail: '0x1b'
+      doc: IElib define
+    - name: ITM_TYPE_container
+      detail: '0x3a'
+      doc: IElib define
+    - name: ITM_TYPE_club_iwd
+      detail: '0x2c'
+      doc: IElib define
+    - name: ITM_TYPE_cloak
+      detail: '0x20'
+      doc: IElib define
+    - name: ITM_TYPE_chain_mail
+      detail: '0x3e'
+      doc: IElib define
+    - name: ITM_TYPE_candle
+      detail: '0x2a'
+      doc: IElib define
+    - name: ITM_TYPE_bullets
+      detail: '0xe'
+      doc: IElib define
+    - name: ITM_TYPE_buckler
+      detail: '0x29'
+      doc: IElib define
+    - name: ITM_TYPE_broken_sword
+      detail: '0x26'
+      doc: IElib define
+    - name: ITM_TYPE_broken_shield
+      detail: '0x25'
+      doc: IElib define
+    - name: ITM_TYPE_broken_armor
+      detail: '0x24'
+      doc: IElib define
+    - name: ITM_TYPE_bracers
+      detail: '0x6'
+      doc: IElib define
+    - name: ITM_TYPE_bracelet
+      detail: '0x25'
+      doc: IElib define
+    - name: ITM_TYPE_bow
+      detail: '0xf'
+      doc: IElib define
+    - name: ITM_TYPE_boots
+      detail: '0x4'
+      doc: IElib define
+    - name: ITM_TYPE_book
+      detail: '0'
+      doc: IElib define
+    - name: ITM_TYPE_bolts
+      detail: '0x1f'
+      doc: IElib define
+    - name: ITM_TYPE_belt
+      detail: '0x3'
+      doc: IElib define
+    - name: ITM_TYPE_bastard_sword
+      detail: '0x45'
+      doc: IElib define
+    - name: ITM_TYPE_axe
+      detail: '0x19'
+      doc: IElib define
+    - name: ITM_TYPE_arrows
+      detail: '0x5'
+      doc: IElib define
+    - name: ITM_TYPE_armor
+      detail: '0x2'
+      doc: IElib define
+    - name: ITM_TYPE_amulet
+      detail: '0x1'
+      doc: IElib define
+    - name: ITM_HEADER_use_icon
+      detail: '0x4'
+      doc: IElib define
+    - name: ITM_HEADER_thac0_bonus
+      detail: '0x14'
+      doc: IElib define
+    - name: ITM_HEADER_target_type
+      detail: '0xc'
+      doc: IElib define
+    - name: ITM_HEADER_target_count
+      detail: '0xd'
+      doc: IElib define
+    - name: ITM_HEADER_speed
+      detail: '0x12'
+      doc: IElib define
+    - name: ITM_HEADER_secondary_type
+      detail: '0x19'
+      doc: IElib define
+    - name: ITM_HEADER_range
+      detail: '0xe'
+      doc: IElib define
+    - name: ITM_HEADER_projectile_type
+      detail: '0x10'
+      doc: IElib define
+    - name: ITM_HEADER_projectile
+      detail: '0x2a'
+      doc: IElib define
+    - name: ITM_HEADER_primary_type
+      detail: '0x17'
+      doc: IElib define
+    - name: ITM_HEADER_misc_projectile_qualifier
+      detail: '0x36'
+      doc: IElib define
+    - name: ITM_HEADER_melee_animation
+      detail: '0x2c'
+      doc: IElib define
+    - name: ITM_HEADER_location
+      detail: '0x2'
+      doc: IElib define
+    - name: ITM_HEADER_id_required
+      detail: '0x1'
+      doc: IElib define
+    - name: ITM_HEADER_flags
+      detail: '0x26'
+      doc: IElib define
+    - name: ITM_HEADER_feature_blocks_index
+      detail: '0x20'
+      doc: IElib define
+    - name: ITM_HEADER_feature_blocks_count
+      detail: '0x1e'
+      doc: IElib define
+    - name: ITM_HEADER_dice_thrown
+      detail: '0x18'
+      doc: IElib define
+    - name: ITM_HEADER_dice_sides
+      detail: '0x16'
+      doc: IElib define
+    - name: ITM_HEADER_damage_type
+      detail: '0x1c'
+      doc: IElib define
+    - name: ITM_HEADER_damage_bonus
+      detail: '0x1a'
+      doc: IElib define
+    - name: ITM_HEADER_charges
+      detail: '0x22'
+      doc: IElib define
+    - name: ITM_HEADER_charge_depletion_behaviour
+      detail: '0x24'
+      doc: IElib define
+    - name: ITM_HEADER_bolt_qualifier
+      detail: '0x34'
+      doc: IElib define
+    - name: ITM_HEADER_attack_type
+      detail: '0'
+      doc: IElib define
+    - name: ITM_HEADER_arrow_qualifier
+      detail: '0x32'
+      doc: IElib define
+    - name: ITM_HEADER_alternative_dice_thrown
+      detail: '0x11'
+      doc: IElib define
+    - name: ITM_HEADER_alternative_dice_sides
+      detail: '0x3'
+      doc: IElib define
+    - name: ITM_HEADER_alternative_damage_bonus
+      detail: '0x13'
+      doc: IElib define
+    - name: ITM_HEADER_LOCATION_weapon
+      detail: '1'
+      doc: IElib define
+    - name: ITM_HEADER_LOCATION_spell
+      detail: '2'
+      doc: IElib define
+    - name: ITM_HEADER_LOCATION_none
+      detail: '0'
+      doc: IElib define
+    - name: ITM_HEADER_LOCATION_innate
+      detail: '4'
+      doc: IElib define
+    - name: ITM_HEADER_LOCATION_equipment
+      detail: '3'
+      doc: IElib define
+    - name: ITM_DAMAGE_TYPE_slashing
+      detail: '3'
+      doc: IElib define
+    - name: ITM_DAMAGE_TYPE_ranged
+      detail: '4'
+      doc: IElib define
+    - name: ITM_DAMAGE_TYPE_piercing_slashing
+      detail: '7'
+      doc: IElib define
+    - name: ITM_DAMAGE_TYPE_piercing_magic
+      detail: '1'
+      doc: IElib define
+    - name: ITM_DAMAGE_TYPE_piercing_blunt
+      detail: '6'
+      doc: IElib define
+    - name: ITM_DAMAGE_TYPE_none
+      detail: '0'
+      doc: IElib define
+    - name: ITM_DAMAGE_TYPE_fists
+      detail: '5'
+      doc: IElib define
+    - name: ITM_DAMAGE_TYPE_blunt_slashing
+      detail: '8'
+      doc: IElib define
+    - name: ITM_DAMAGE_TYPE_blunt
+      detail: '2'
+      doc: IElib define
+    - name: ITM_ATTACK_TYPE_ranged
+      detail: '2'
+      doc: IElib define
+    - name: ITM_ATTACK_TYPE_projectile
+      detail: '2'
+      doc: IElib define
+    - name: ITM_ATTACK_TYPE_none
+      detail: '0'
+      doc: IElib define
+    - name: ITM_ATTACK_TYPE_melee
+      detail: '1'
+      doc: IElib define
+    - name: ITM_ATTACK_TYPE_magic
+      detail: '3'
+      doc: IElib define
+    - name: ITM_ATTACK_TYPE_launcher
+      detail: '4'
       doc: IElib define
     - name: IRENICUS_WORD_OF_POWER
       detail: SPIN757
@@ -7329,6 +8418,39 @@ ielib:
     - name: FLAME_HEAD
       detail: SPIN800
       doc: IElib define
+    - name: FLAG_STO_sells
+      detail: BIT0
+      doc: IElib define
+    - name: FLAG_STO_repucation_has_no_effect_bgee
+      detail: BIT13
+      doc: IElib define
+    - name: FLAG_STO_recharges_items_ex
+      detail: BIT14
+      doc: IElib define
+    - name: FLAG_STO_has_drinks
+      detail: BIT6
+      doc: IElib define
+    - name: FLAG_STO_has_cures
+      detail: BIT5
+      doc: IElib define
+    - name: FLAG_STO_can_steal
+      detail: BIT3
+      doc: IElib define
+    - name: FLAG_STO_can_identify
+      detail: BIT2
+      doc: IElib define
+    - name: FLAG_STO_can_done
+      detail: BIT4
+      doc: IElib define
+    - name: FLAG_STO_buys_fenced
+      detail: BIT12
+      doc: IElib define
+    - name: FLAG_STO_buys_critical_items_bgee
+      detail: BIT15
+      doc: IElib define
+    - name: FLAG_STO_buys
+      detail: BIT1
+      doc: IElib define
     - name: FLAG_SPL_outdoors_only
       detail: BIT13
       doc: IElib define
@@ -7358,6 +8480,18 @@ ielib:
       doc: IElib define
     - name: FLAG_SPL_allow_spotting
       detail: BIT12
+      doc: IElib define
+    - name: FLAG_ITEM_SALE_unstealable
+      detail: BIT1
+      doc: IElib define
+    - name: FLAG_ITEM_SALE_undroppable
+      detail: BIT3
+      doc: IElib define
+    - name: FLAG_ITEM_SALE_stolen
+      detail: BIT2
+      doc: IElib define
+    - name: FLAG_ITEM_SALE_identified
+      detail: BIT0
       doc: IElib define
     - name: FLAG_HEADER_recharge_after_rest
       detail: BIT11
@@ -7475,6 +8609,48 @@ ielib:
       doc: IElib define
     - name: FLAG_CRE_alignment_tracking
       detail: BIT30
+      doc: IElib define
+    - name: FLAG_ARE_REGION_reset_trap
+      detail: BIT1
+      doc: IElib define
+    - name: FLAG_ARE_REGION_party_required
+      detail: BIT2
+      doc: IElib define
+    - name: FLAG_ARE_REGION_party_only
+      detail: BIT9
+      doc: IElib define
+    - name: FLAG_ARE_REGION_npc_activates
+      detail: BIT4
+      doc: IElib define
+    - name: FLAG_ARE_REGION_no_string
+      detail: BIT7
+      doc: IElib define
+    - name: FLAG_ARE_REGION_key_required
+      detail: BIT0
+      doc: IElib define
+    - name: FLAG_ARE_REGION_door_closed
+      detail: BIT11
+      doc: IElib define
+    - name: FLAG_ARE_REGION_detectable
+      detail: BIT3
+      doc: IElib define
+    - name: FLAG_ARE_REGION_deactivated
+      detail: BIT8
+      doc: IElib define
+    - name: FLAG_ARE_REGION_anyone_activates
+      detail: BIT6
+      doc: IElib define
+    - name: FLAG_ARE_REGION_alternative_point
+      detail: BIT10
+      doc: IElib define
+    - name: FLAG_ARE_REGION_active_in_tutorial_area_only
+      detail: BIT5
+      doc: IElib define
+    - name: FLAG_ARE_EDGE_party_required
+      detail: '0'
+      doc: IElib define
+    - name: FLAG_ARE_EDGE_party_enabled
+      detail: '1'
       doc: IElib define
     - name: FIVE_ROUND_ENCHANTMENT_IMMUNITY
       detail: SPIN872
