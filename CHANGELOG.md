@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.10.0
+- General:
+  - Switched all helper scripts to Ruamel for YAML.
+- IE:
+  - Added WeiDU's `LOCAL_SET`, `LOCAL_SPRINT`, `WITH`, `DEFAULT`, multuple `SOURCE_*` vars.
+  - Fixed `TargetBlock`/`TriggerBlock` highlighting in SSL.
+  - Updated [IElib](https://github.com/BGforgeNet/BGforge-MLS-IElib) and [IESDP](https://iesdp.bgforge.net) defines.
+  - Fixed error in WeiDU completion formatting, which was breaking some completion items.
+- Fallout:
+  - Updated sfall and [RPU](https://github.com/BGforgeNet/Fallout2_Restoration_Project) defines.
+
 ## 1.9.1
  - General:
   - Reverted client to `vscode` module to fix missing tooltips.
@@ -15,7 +26,6 @@
   - Updated RP defines.
 
 ## 1.8.0
-
 - Common:
   - Fixed hovers display/highlight.
 - IE:
@@ -34,20 +44,17 @@
   - Updated sfall defines to version 4.2.3+develop.
 
 ## 1.7.0
-
 - IE:
   - Added colorization for [IElib](https://github.com/BGforgeNet/BGforge-MLS-IElib) defines.
 - Fallout:
   - Fixed colorization bug when procedure begins on the next line.
 
 ## 1.6.0
-
 - IE:
   - More symbolic references.
   - Added support for hexadecimal numbers in BAF and D files.
   - Removed '(?i)' from triggers: everything is case sensitive now.
   - Colored ELSE and THIS.
-
 Fallout:
   - Updated definitions: sfall 4.2.2, RPU 12.
 
