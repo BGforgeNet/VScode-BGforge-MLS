@@ -2099,7 +2099,6 @@ repository:
       - match: \b(DUDE_FIGURED_FAKE_MAP)\b
       - match: \b(DUDE_HAS_FAKE_MAP)\b
       - match: \b(DUDE_TENT_POS)\b
-      - match: \b(DUMMY_PARAM)\b
       - match: \b(DUSK_LIGHT)\b
       - match: \b(ECON_DISK_GET_DISK)\b
       - match: \b(ECON_DISK_GIVEN)\b
@@ -2730,6 +2729,8 @@ repository:
       - match: \b(FO_VAR_DARK_GREY_Color)\b
       - match: \b(FO_VAR_DarkGreenColor)\b
       - match: \b(FO_VAR_DarkGreenGreyColor)\b
+      - match: \b(FO_VAR_DarkRedColor)\b
+      - match: \b(FO_VAR_DarkYellowColor)\b
       - match: \b(FO_VAR_DullPinkColor)\b
       - match: \b(FO_VAR_Educated)\b
       - match: \b(FO_VAR_EncounterMapID)\b
@@ -2739,6 +2740,7 @@ repository:
       - match: \b(FO_VAR_GreenColor)\b
       - match: \b(FO_VAR_In_WorldMap)\b
       - match: \b(FO_VAR_LIGHT_GREY_Color)\b
+      - match: \b(FO_VAR_LIGHT_RED_Color)\b
       - match: \b(FO_VAR_LSData)\b
       - match: \b(FO_VAR_Level_)\b
       - match: \b(FO_VAR_Lifegiver)\b
@@ -2758,6 +2760,7 @@ repository:
       - match: \b(FO_VAR_aiInfoList)\b
       - match: \b(FO_VAR_ambient_light)\b
       - match: \b(FO_VAR_anim_set)\b
+      - match: \b(FO_VAR_anon_alias)\b
       - match: \b(FO_VAR_art)\b
       - match: \b(FO_VAR_art_name)\b
       - match: \b(FO_VAR_art_vault_guy_num)\b
@@ -3111,7 +3114,6 @@ repository:
       - match: \b(HEX_MARK0)\b
       - match: \b(HEX_MARK1)\b
       - match: \b(HEX_MARK2)\b
-      - match: \b(HEX_XANDER)\b
       - match: \b(HIDDEN_ITEM)\b
       - match: \b(HIGH_REACTION)\b
       - match: \b(HOLODISK_ACCEPTED)\b
@@ -5096,7 +5098,6 @@ repository:
       - match: \b(PLASMA_TRANSFORMER_ACCEPT)\b
       - match: \b(PLASMA_TRANSFORMER_SUCCESS)\b
       - match: \b(PLAYERBOXSTART)\b
-      - match: \b(PLAYER_ID)\b
       - match: \b(PLOW_FIXED)\b
       - match: \b(PLOW_HELP_CASH)\b
       - match: \b(PLOW_HELP_FREE)\b
@@ -10853,7 +10854,6 @@ repository:
       - match: \b(Run_Away_From_Who_Tile)\b
       - match: \b(Run_Next_To_Obj_And_Face)\b
       - match: \b(Run_Next_To_Obj_And_Face_Rate)\b
-      - match: \b(SAFERELEASE)\b
       - match: \b(SETDSTATUS)\b
       - match: \b(SET_GUARD_NOTIFY)\b
       - match: \b(Show_Time)\b
@@ -10937,6 +10937,7 @@ repository:
       - match: \b(WRAP_WATCOM_FUNC6)\b
       - match: \b(War_Cry)\b
       - match: \b(Warn_Player)\b
+      - match: \b(_GET_ARG)\b
       - match: \b(_GET_ARG_INT)\b
       - match: \b(_ITEM_NAME)\b
       - match: \b(_J_RET_VAL_TYPE)\b
@@ -11781,6 +11782,7 @@ repository:
       - match: \b(unset_v13_status)\b
       - match: \b(unwield_slot)\b
       - match: \b(up_sex_status_amt)\b
+      - match: \b(use_item_on_dude)\b
       - match: \b(v13_status)\b
       - match: \b(v15_status)\b
       - match: \b(vic_known)\b

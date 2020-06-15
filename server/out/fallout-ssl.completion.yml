@@ -883,27 +883,27 @@ sfall-functions:
     - name: set_npc_stat_max
       detail: void set_npc_stat_max(int stat, int value)
       doc: |-
-        Can be used to set the valid ranges on on stats. Values returned by `get_current_stat` will be clamped to this range. The `set_pc_` function only effect the player, the `set_npc_` functions only effect other critters, and the `set_` functions effect both.
+        The `set_stat_max/min` functions can be used to set the valid ranges on stats. Values returned by `get_current_stat` will be clamped to this range. The `set_pc_` function only effect the player, the `set_npc_` functions only effect other critters, and the `set_` functions effect both.
     - name: set_npc_stat_min
       detail: void set_npc_stat_min(int stat, int value)
       doc: |-
-        Can be used to set the valid ranges on on stats. Values returned by `get_current_stat` will be clamped to this range. The `set_pc_` function only effect the player, the `set_npc_` functions only effect other critters, and the `set_` functions effect both.
+        The `set_stat_max/min` functions can be used to set the valid ranges on stats. Values returned by `get_current_stat` will be clamped to this range. The `set_pc_` function only effect the player, the `set_npc_` functions only effect other critters, and the `set_` functions effect both.
     - name: set_pc_stat_max
       detail: void set_pc_stat_max(int stat, int value)
       doc: |-
-        Can be used to set the valid ranges on on stats. Values returned by `get_current_stat` will be clamped to this range. The `set_pc_` function only effect the player, the `set_npc_` functions only effect other critters, and the `set_` functions effect both.
+        The `set_stat_max/min` functions can be used to set the valid ranges on stats. Values returned by `get_current_stat` will be clamped to this range. The `set_pc_` function only effect the player, the `set_npc_` functions only effect other critters, and the `set_` functions effect both.
     - name: set_pc_stat_min
       detail: void set_pc_stat_min(int stat, int value)
       doc: |-
-        Can be used to set the valid ranges on on stats. Values returned by `get_current_stat` will be clamped to this range. The `set_pc_` function only effect the player, the `set_npc_` functions only effect other critters, and the `set_` functions effect both.
+        The `set_stat_max/min` functions can be used to set the valid ranges on stats. Values returned by `get_current_stat` will be clamped to this range. The `set_pc_` function only effect the player, the `set_npc_` functions only effect other critters, and the `set_` functions effect both.
     - name: set_stat_max
       detail: void set_stat_max(int stat, int value)
       doc: |-
-        Can be used to set the valid ranges on on stats. Values returned by `get_current_stat` will be clamped to this range. The `set_pc_` function only effect the player, the `set_npc_` functions only effect other critters, and the `set_` functions effect both.
+        The `set_stat_max/min` functions can be used to set the valid ranges on stats. Values returned by `get_current_stat` will be clamped to this range. The `set_pc_` function only effect the player, the `set_npc_` functions only effect other critters, and the `set_` functions effect both.
     - name: set_stat_min
       detail: void set_stat_min(int stat, int value)
       doc: |-
-        Can be used to set the valid ranges on on stats. Values returned by `get_current_stat` will be clamped to this range. The `set_pc_` function only effect the player, the `set_npc_` functions only effect other critters, and the `set_` functions effect both.
+        The `set_stat_max/min` functions can be used to set the valid ranges on stats. Values returned by `get_current_stat` will be clamped to this range. The `set_pc_` function only effect the player, the `set_npc_` functions only effect other critters, and the `set_` functions effect both.
     - name: reg_anim_animate_and_hide
       detail: void reg_anim_animate_and_hide(ObjectPtr, int animID, int delay)
       doc: |-
@@ -1005,15 +1005,15 @@ sfall-functions:
     - name: eax_available
       detail: int eax_available
     - name: play_sfall_sound
-      detail: int play_sfall_sound(string file, int loop)
+      detail: int play_sfall_sound(string file, int mode)
       doc: |-
-        Used to play mp3/wav/wma files. The path given is relative to the Fallout folder. Specify loop as 1 to loop the file continuously, or 0 otherwise. If you don't wish to loop, it returns 0. If you do loop, it returns an id which can be passed back to `stop_sfall_sound` when you want to stop the effect. All sounds effects will be stopped on game reload, looping or not. Does not require `AllowDShowSound` to be set to 1 in `ddraw.ini`.
+        Used to play `mp3/wav/wma` files. The path given is relative to the Fallout folder. Specify mode as 1 to loop the file continuously, 2 to replace the current background game music with playing the specified file in loop mode, or 0 to play the file once. If you don't wish to loop, `play_sfall_sound` returns 0. If you do loop, it returns an id which can be passed back to `stop_sfall_sound` when you want to stop the effect. All sounds effects will be stopped on game reload, looping or not. Does not require `AllowDShowSound` to be set to 1 in `ddraw.ini`.
     - name: set_eax_environment
       detail: void set_eax_environment(int environment)
     - name: stop_sfall_sound
-      detail: void stop_sfall_sound(int ptr)
+      detail: void stop_sfall_sound(int soundID)
       doc: |-
-        Stops looping mp3/wav/wma files previously launched by `play_sfall_sound`. All sounds effects will be stopped on game reload, looping or not. Does not require `AllowDShowSound` to be set to 1 in `ddraw.ini`.
+        Stops looping `mp3/wav/wma` files previously launched by `play_sfall_sound`. All sounds effects will be stopped on game reload, looping or not. Does not require `AllowDShowSound` to be set to 1 in `ddraw.ini`.
     - name: car_gas_amount
       detail: int car_gas_amount()
       doc: |-
@@ -1081,7 +1081,7 @@ sfall-functions:
     - name: set_critter_current_ap
       detail: void set_critter_current_ap(CritterPtr, int ap)
       doc: |-
-        Should only be used during the target critters turn while in combat. Using it on the player will not automatically redraw the screen, so the ap bar will be incorrect until the player next clicks.
+        Should only be used during the target critters turn while in combat.
     - name: get_cursor_mode
       detail: int get_cursor_mode()
       doc: |-
@@ -1487,7 +1487,7 @@ sfall-functions:
       doc: |-
         E^X
     - name: floor2
-      detail: int sfall_func1("floor2", int/float value)
+      detail: int floor2(int/float value)
       doc: |-
         Works just like vanilla floor function, but returns correct integers for negative values (vanilla floor function works exactly the same as `ceil` for negative values, much like `trunc` in C/C++).
     - name: log
@@ -1846,8 +1846,10 @@ sfall-functions:
         Reverts the effect os `hide_real_perks`.
     - name: get_can_rest_on_map
       detail: get_can_rest_on_map(int mapNum, int elev)
-      doc: |-
-        Returns the set rest value of the map after using the `set_can_rest_on_map` function. Returns -1 if the rest value of the map was not previously set (i.e. no data for the map in `sfalldb.sav`). The `can_rest_here values` in `maps.txt` are ignored.
+      doc: |
+        - returns the set rest value of the map after using the `set_can_rest_on_map` function
+        - Returns -1 if the rest value of the map was not previously set (i.e. no data for the map in `sfalldb.sav`)
+        - the `can_rest_here values` from `maps.txt` are ignored.
     - name: set_can_rest_on_map
       detail: void set_can_rest_on_map(int mapNum, int elev, bool value)
       doc: |
@@ -2141,25 +2143,25 @@ sfall-functions:
       detail: void add_iface_tag()
       doc: |-
         Adds one custom box to the current boxes, and returns the number of the added tag (-1 if the tags limit is exceeded. The maximum number of boxes is limited to 126 tags.
-        These functions relate to the boxes that appear above the interface such as SNEAK and LEVEL. You can use 3 for LEVEL and 4 for ADDICT, or the range from 5 to (4 + the value of `BoxBarCount` in `ddraw.ini`) for custom boxes. Remember to add your messages to `intrface.msg` and set up the font colours in `ddraw.ini` if you're going to use custom boxes.
+        show_iface_tag, hide_iface_tag and is_iface_tag_active relate to the boxes that appear above the interface such as SNEAK and LEVEL. You can use 3 for LEVEL and 4 for ADDICT, or the range from 5 to (4 + the value of BoxBarCount in `ddraw.ini`) for custom boxes. Remember to add your messages to `intrface.msg` and set up the font colours in `ddraw.ini` if you're going to use custom boxes. Starting from sfall 4.1/3.8.12, is_iface_tag_active can also be used to check 0 for SNEAK, 1 for POISONED, and 2 for RADIATED.
     - name: hide_iface_tag
       detail: void hide_iface_tag(int tag)
       doc: |-
-        These functions relate to the boxes that appear above the interface such as SNEAK and LEVEL. You can use 3 for LEVEL and 4 for ADDICT, or the range from 5 to (4 + the value of `BoxBarCount` in `ddraw.ini`) for custom boxes. Remember to add your messages to `intrface.msg` and set up the font colours in `ddraw.ini` if you're going to use custom boxes.
+        show_iface_tag, hide_iface_tag and is_iface_tag_active relate to the boxes that appear above the interface such as SNEAK and LEVEL. You can use 3 for LEVEL and 4 for ADDICT, or the range from 5 to (4 + the value of BoxBarCount in `ddraw.ini`) for custom boxes. Remember to add your messages to `intrface.msg` and set up the font colours in `ddraw.ini` if you're going to use custom boxes. Starting from sfall 4.1/3.8.12, is_iface_tag_active can also be used to check 0 for SNEAK, 1 for POISONED, and 2 for RADIATED.
     - name: is_iface_tag_active
       detail: int is_iface_tag_active(int tag)
       doc: |-
         Starting from sfall 4.1, can also be used to check 0 for SNEAK, 1 for POISONED, and 2 for RADIATED.
-        These functions relate to the boxes that appear above the interface such as SNEAK and LEVEL. You can use 3 for LEVEL and 4 for ADDICT, or the range from 5 to (4 + the value of `BoxBarCount` in `ddraw.ini`) for custom boxes. Remember to add your messages to `intrface.msg` and set up the font colours in `ddraw.ini` if you're going to use custom boxes.
+        show_iface_tag, hide_iface_tag and is_iface_tag_active relate to the boxes that appear above the interface such as SNEAK and LEVEL. You can use 3 for LEVEL and 4 for ADDICT, or the range from 5 to (4 + the value of BoxBarCount in `ddraw.ini`) for custom boxes. Remember to add your messages to `intrface.msg` and set up the font colours in `ddraw.ini` if you're going to use custom boxes. Starting from sfall 4.1/3.8.12, is_iface_tag_active can also be used to check 0 for SNEAK, 1 for POISONED, and 2 for RADIATED.
     - name: set_iface_tag_text
       detail: void set_iface_tag_text(int tag, string text, int color)
       doc: |-
         Sets the text messages and colors for custom notification boxes to the interface without the need to add messages to `intrface.msg` and set up the font colors in `ddraw.ini`. Tag value is the same as used in `show_iface_tag`, `hide_iface_tag`, and `is_iface_tag_active`. The valid range is from 5 to (4 + the value of `BoxBarCount` in `ddraw.ini`) or the number of the last custom box added using the `add_iface_tag` function. The text is limited to 19 characters.
-        These functions relate to the boxes that appear above the interface such as SNEAK and LEVEL. You can use 3 for LEVEL and 4 for ADDICT, or the range from 5 to (4 + the value of `BoxBarCount` in `ddraw.ini`) for custom boxes. Remember to add your messages to `intrface.msg` and set up the font colours in `ddraw.ini` if you're going to use custom boxes.
+        show_iface_tag, hide_iface_tag and is_iface_tag_active relate to the boxes that appear above the interface such as SNEAK and LEVEL. You can use 3 for LEVEL and 4 for ADDICT, or the range from 5 to (4 + the value of BoxBarCount in `ddraw.ini`) for custom boxes. Remember to add your messages to `intrface.msg` and set up the font colours in `ddraw.ini` if you're going to use custom boxes. Starting from sfall 4.1/3.8.12, is_iface_tag_active can also be used to check 0 for SNEAK, 1 for POISONED, and 2 for RADIATED.
     - name: show_iface_tag
       detail: void show_iface_tag(int tag)
       doc: |-
-        These functions relate to the boxes that appear above the interface such as SNEAK and LEVEL. You can use 3 for LEVEL and 4 for ADDICT, or the range from 5 to (4 + the value of `BoxBarCount` in `ddraw.ini`) for custom boxes. Remember to add your messages to `intrface.msg` and set up the font colours in `ddraw.ini` if you're going to use custom boxes.
+        show_iface_tag, hide_iface_tag and is_iface_tag_active relate to the boxes that appear above the interface such as SNEAK and LEVEL. You can use 3 for LEVEL and 4 for ADDICT, or the range from 5 to (4 + the value of BoxBarCount in `ddraw.ini`) for custom boxes. Remember to add your messages to `intrface.msg` and set up the font colours in `ddraw.ini` if you're going to use custom boxes. Starting from sfall 4.1/3.8.12, is_iface_tag_active can also be used to check 0 for SNEAK, 1 for POISONED, and 2 for RADIATED.
     - name: get_tile_fid
       detail: int get_tile_fid(int tile)
     - name: obj_blocking_line
@@ -2547,6 +2549,7 @@ hooks:
         critter arg2 - The attacker
         critter arg3 - The target
         int     arg4 - The amount of damage
+        int     arg5 - Unused, always -1. Use this if you are using the same procedure for HOOK_DEATHANIM1 and HOOK_DEATHANIM2 (since sfall 4.1/3.8.24)
 
         int     ret1 - The pid of an object to override the attacking weapon with
         ```

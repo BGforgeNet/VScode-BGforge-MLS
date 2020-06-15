@@ -8122,10 +8122,6 @@
           "name": "constant.language.define.ssl"
         },
         {
-          "match": "\\b(DUMMY_PARAM)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
           "match": "\\b(DUSK_LIGHT)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -10646,6 +10642,14 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(FO_VAR_DarkRedColor)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_DarkYellowColor)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(FO_VAR_DullPinkColor)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -10679,6 +10683,10 @@
         },
         {
           "match": "\\b(FO_VAR_LIGHT_GREY_Color)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_LIGHT_RED_Color)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -10755,6 +10763,10 @@
         },
         {
           "match": "\\b(FO_VAR_anim_set)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_anon_alias)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -12167,10 +12179,6 @@
         },
         {
           "match": "\\b(HEX_MARK2)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
-          "match": "\\b(HEX_XANDER)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -20107,10 +20115,6 @@
         },
         {
           "match": "\\b(PLAYERBOXSTART)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
-          "match": "\\b(PLAYER_ID)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -43110,10 +43114,6 @@
           "name": "support.type.define.header.ssl"
         },
         {
-          "match": "\\b(SAFERELEASE)\\b",
-          "name": "support.type.define.header.ssl"
-        },
-        {
           "match": "\\b(SETDSTATUS)\\b",
           "name": "support.type.define.header.ssl"
         },
@@ -43443,6 +43443,10 @@
         },
         {
           "match": "\\b(Warn_Player)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(_GET_ARG)\\b",
           "name": "support.type.define.header.ssl"
         },
         {
@@ -46819,6 +46823,10 @@
         },
         {
           "match": "\\b(up_sex_status_amt)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(use_item_on_dude)\\b",
           "name": "support.type.define.header.ssl"
         },
         {
