@@ -2333,6 +2333,10 @@
           "name": "constant.language.infinity.weidu"
         },
         {
+          "match": "\\b(IDENTIFIED_DESC)\\b",
+          "name": "constant.language.infinity.weidu"
+        },
+        {
           "match": "\\b(AREA_CITY)\\b",
           "name": "constant.language.infinity.weidu"
         },

@@ -738,6 +738,7 @@ repository:
       - match: \b(NAME2)\b
       - match: \b(DESC)\b
       - match: \b(UNIDENTIFIED_DESC)\b
+      - match: \b(IDENTIFIED_DESC)\b
 
       - match: \b(AREA_CITY)\b
       - match: \b(AREA_DAY)\b
