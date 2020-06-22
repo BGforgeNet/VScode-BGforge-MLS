@@ -88,7 +88,7 @@ repository:
   vartype:
     name: keyword.control.baf.weidu
     patterns:
-      - match: (")\b(LOCALS|GLOBAL)\b(")
+      - match: (")\b(LOCALS|GLOBAL|MYAREA)\b(")
         captures:
           '1':
             name: string.quoted.double.baf.weidu
