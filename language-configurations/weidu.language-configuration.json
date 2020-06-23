@@ -12,7 +12,11 @@
         ["(", ")"],
         ["BEGIN", "END"],
         ["IF", "BEGIN"],
-        ["~", "~"]
+        ["~", "~"],
+        ["LAF", "END"],
+        ["LAUNCH_ACTION_FUNCTION", "END"],
+        ["LPF", "END"],
+        ["LAUNCH_PATCH_FUNCTION", "END"]
     ],
     // symbols that are auto closed when typing
     "autoClosingPairs": [
