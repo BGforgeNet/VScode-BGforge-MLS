@@ -2777,6 +2777,10 @@ tp2-value:
       detail: value MODULO value
       doc: |-
         An operation that returns the remainder of a division between two numbers. If the second value is 0, the returned value is 0. You may use REM as a synonym.
+    - name: REM
+      detail: value REM value
+      doc: |-
+        An operation that returns the remainder of a division between two numbers. If the second value is 0, the returned value is 0. You may use MODULO as a synonym.
     - name: MOD_IS_INSTALLED
       detail: MOD_IS_INSTALLED modTp2Name modComponent
       doc: |-

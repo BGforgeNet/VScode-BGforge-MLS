@@ -450,7 +450,7 @@ repository:
     name: keyword.control.value.weidu
     patterns:
       - match: (\=\>|\+|-|\*|\/|=|\*|!|>|<|\?|:)
-      - match: \b(MODULO|NOT|OR|AND|BAND|BOR|BXOR|BNOT|BLSL|BASR)\b
+      - match: \b(MODULO|REM|NOT|OR|AND|BAND|BOR|BXOR|BNOT|BLSL|BASR)\b
 
   weidu-tp2-values:
     name: support.function.tp2value.weidu
