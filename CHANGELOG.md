@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.11.0
+- IE:
+  - Updated [IElib](https://github.com/BGforgeNet/BGforge-MLS-IElib) and [IESDP](https://iesdp.bgforge.net) defines.
+  - Added WeiDU's `REM`.
+
 ## 1.10.0
 - General:
   - Switched all helper scripts to Ruamel for YAML.
