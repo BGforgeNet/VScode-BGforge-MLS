@@ -6746,11 +6746,11 @@
           "name": "constant.language.ielib.weidu"
         },
         {
-          "match": "(%STO_cures_conut%)",
+          "match": "(%STO_cures_count%)",
           "name": "constant.language.ielib.weidu"
         },
         {
-          "match": "(STO_cures_conut)",
+          "match": "(STO_cures_count)",
           "name": "constant.language.ielib.weidu"
         },
         {
@@ -7714,75 +7714,59 @@
           "name": "constant.language.ielib.weidu"
         },
         {
-          "match": "(%SAVINGTHROW_wand%)",
+          "match": "(%SCRIPT_TYPE_specifics%)",
           "name": "constant.language.ielib.weidu"
         },
         {
-          "match": "(SAVINGTHROW_wand)",
+          "match": "(SCRIPT_TYPE_specifics)",
           "name": "constant.language.ielib.weidu"
         },
         {
-          "match": "(%SAVINGTHROW_spell%)",
+          "match": "(%SCRIPT_TYPE_race%)",
           "name": "constant.language.ielib.weidu"
         },
         {
-          "match": "(SAVINGTHROW_spell)",
+          "match": "(SCRIPT_TYPE_race)",
           "name": "constant.language.ielib.weidu"
         },
         {
-          "match": "(%SAVINGTHROW_polymorph%)",
+          "match": "(%SCRIPT_TYPE_override%)",
           "name": "constant.language.ielib.weidu"
         },
         {
-          "match": "(SAVINGTHROW_polymorph)",
+          "match": "(SCRIPT_TYPE_override)",
           "name": "constant.language.ielib.weidu"
         },
         {
-          "match": "(%SAVINGTHROW_ignore_secondary_target%)",
+          "match": "(%SCRIPT_TYPE_general%)",
           "name": "constant.language.ielib.weidu"
         },
         {
-          "match": "(SAVINGTHROW_ignore_secondary_target)",
+          "match": "(SCRIPT_TYPE_general)",
           "name": "constant.language.ielib.weidu"
         },
         {
-          "match": "(%SAVINGTHROW_ignore_primary_target%)",
+          "match": "(%SCRIPT_TYPE_default%)",
           "name": "constant.language.ielib.weidu"
         },
         {
-          "match": "(SAVINGTHROW_ignore_primary_target)",
+          "match": "(SCRIPT_TYPE_default)",
           "name": "constant.language.ielib.weidu"
         },
         {
-          "match": "(%SAVINGTHROW_ignore_difficulty%)",
+          "match": "(%SCRIPT_TYPE_class%)",
           "name": "constant.language.ielib.weidu"
         },
         {
-          "match": "(SAVINGTHROW_ignore_difficulty)",
+          "match": "(SCRIPT_TYPE_class)",
           "name": "constant.language.ielib.weidu"
         },
         {
-          "match": "(%SAVINGTHROW_death%)",
+          "match": "(%SCRIPT_TYPE_area%)",
           "name": "constant.language.ielib.weidu"
         },
         {
-          "match": "(SAVINGTHROW_death)",
-          "name": "constant.language.ielib.weidu"
-        },
-        {
-          "match": "(%SAVINGTHROW_bypass_mirror_image%)",
-          "name": "constant.language.ielib.weidu"
-        },
-        {
-          "match": "(SAVINGTHROW_bypass_mirror_image)",
-          "name": "constant.language.ielib.weidu"
-        },
-        {
-          "match": "(%SAVINGTHROW_breath%)",
-          "name": "constant.language.ielib.weidu"
-        },
-        {
-          "match": "(SAVINGTHROW_breath)",
+          "match": "(SCRIPT_TYPE_area)",
           "name": "constant.language.ielib.weidu"
         },
         {
@@ -15138,6 +15122,70 @@
           "name": "constant.language.ielib.weidu"
         },
         {
+          "match": "(%IDS_specific%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(IDS_specific)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%IDS_race%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(IDS_race)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%IDS_kit_ee%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(IDS_kit_ee)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%IDS_general%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(IDS_general)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%IDS_gender%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(IDS_gender)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%IDS_ea%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(IDS_ea)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%IDS_class%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(IDS_class)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%IDS_align%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(IDS_align)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
           "match": "(%ICON_whirlwind_attack%)",
           "name": "constant.language.ielib.weidu"
         },
@@ -17610,6 +17658,94 @@
           "name": "constant.language.ielib.weidu"
         },
         {
+          "match": "(%FLAG_SAVINGTHROW_wand%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(FLAG_SAVINGTHROW_wand)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%FLAG_SAVINGTHROW_tobex_suspend_stacking_application%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(FLAG_SAVINGTHROW_tobex_suspend_stacking_application)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%FLAG_SAVINGTHROW_tobex_limit_effect_stacking%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(FLAG_SAVINGTHROW_tobex_limit_effect_stacking)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%FLAG_SAVINGTHROW_spell%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(FLAG_SAVINGTHROW_spell)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%FLAG_SAVINGTHROW_polymorph%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(FLAG_SAVINGTHROW_polymorph)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%FLAG_SAVINGTHROW_death%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(FLAG_SAVINGTHROW_death)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%FLAG_SAVINGTHROW_breath%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(FLAG_SAVINGTHROW_breath)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%FLAG_SAVINGTHROW_EE_ignore_secondary_target%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(FLAG_SAVINGTHROW_EE_ignore_secondary_target)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%FLAG_SAVINGTHROW_EE_ignore_primary_target%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(FLAG_SAVINGTHROW_EE_ignore_primary_target)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%FLAG_SAVINGTHROW_EE_ignore_difficulty%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(FLAG_SAVINGTHROW_EE_ignore_difficulty)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%FLAG_SAVINGTHROW_EE_bypass_mirror_image%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(FLAG_SAVINGTHROW_EE_bypass_mirror_image)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
           "match": "(%FLAG_ITEM_SALE_unstealable%)",
           "name": "constant.language.ielib.weidu"
         },
@@ -17954,11 +18090,19 @@
           "name": "constant.language.ielib.weidu"
         },
         {
-          "match": "(%FLAG_ARE_REGION_reset_trap%)",
+          "match": "(%FLAG_ARE_REGION_trap_resets%)",
           "name": "constant.language.ielib.weidu"
         },
         {
-          "match": "(FLAG_ARE_REGION_reset_trap)",
+          "match": "(FLAG_ARE_REGION_trap_resets)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%FLAG_ARE_REGION_trap_detectable%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(FLAG_ARE_REGION_trap_detectable)",
           "name": "constant.language.ielib.weidu"
         },
         {
@@ -18010,14 +18154,6 @@
           "name": "constant.language.ielib.weidu"
         },
         {
-          "match": "(%FLAG_ARE_REGION_detectable%)",
-          "name": "constant.language.ielib.weidu"
-        },
-        {
-          "match": "(FLAG_ARE_REGION_detectable)",
-          "name": "constant.language.ielib.weidu"
-        },
-        {
           "match": "(%FLAG_ARE_REGION_deactivated%)",
           "name": "constant.language.ielib.weidu"
         },
@@ -18063,6 +18199,126 @@
         },
         {
           "match": "(FLAG_ARE_EDGE_party_enabled)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%FLAG_ARE_DOOR_trap_resets%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(FLAG_ARE_DOOR_trap_resets)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%FLAG_ARE_DOOR_trap_detectable%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(FLAG_ARE_DOOR_trap_detectable)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%FLAG_ARE_DOOR_remove_key_bg2%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(FLAG_ARE_DOOR_remove_key_bg2)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%FLAG_ARE_DOOR_open%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(FLAG_ARE_DOOR_open)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%FLAG_ARE_DOOR_not_blocking_line_of_sight%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(FLAG_ARE_DOOR_not_blocking_line_of_sight)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%FLAG_ARE_DOOR_locked%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(FLAG_ARE_DOOR_locked)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%FLAG_ARE_DOOR_linked%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(FLAG_ARE_DOOR_linked)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%FLAG_ARE_DOOR_ignore_obstacles_when_closing%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(FLAG_ARE_DOOR_ignore_obstacles_when_closing)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%FLAG_ARE_DOOR_hidden%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(FLAG_ARE_DOOR_hidden)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%FLAG_ARE_DOOR_found%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(FLAG_ARE_DOOR_found)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%FLAG_ARE_DOOR_cannot_close%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(FLAG_ARE_DOOR_cannot_close)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%FLAG_ARE_DOOR_broken%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(FLAG_ARE_DOOR_broken)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%FLAG_ARE_CONTAINER_trap_resets%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(FLAG_ARE_CONTAINER_trap_resets)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%FLAG_ARE_CONTAINER_locked%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(FLAG_ARE_CONTAINER_locked)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%FLAG_ARE_CONTAINER_disabled%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(FLAG_ARE_CONTAINER_disabled)",
           "name": "constant.language.ielib.weidu"
         },
         {
@@ -18151,6 +18407,14 @@
         },
         {
           "match": "(FIFTY_PERCENT_DAMAGE)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%FEATURE_tobex_stacking_id%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(FEATURE_tobex_stacking_id)",
           "name": "constant.language.ielib.weidu"
         },
         {
@@ -18439,6 +18703,302 @@
         },
         {
           "match": "(EFFECT_IDS_align)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%EFF2_vvc%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(EFF2_vvc)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%EFF2_variable%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(EFF2_variable)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%EFF2_tobex_stacking_id%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(EFF2_tobex_stacking_id)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%EFF2_timing_mode%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(EFF2_timing_mode)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%EFF2_target_y_coord%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(EFF2_target_y_coord)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%EFF2_target_x_coord%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(EFF2_target_x_coord)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%EFF2_target_type%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(EFF2_target_type)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%EFF2_secondary_type%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(EFF2_secondary_type)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%EFF2_saving_throw_type%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(EFF2_saving_throw_type)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%EFF2_save_bonus%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(EFF2_save_bonus)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%EFF2_resource3%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(EFF2_resource3)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%EFF2_resource2%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(EFF2_resource2)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%EFF2_resource%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(EFF2_resource)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%EFF2_resistance%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(EFF2_resistance)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%EFF2_projectile%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(EFF2_projectile)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%EFF2_probability2%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(EFF2_probability2)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%EFF2_probability1%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(EFF2_probability1)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%EFF2_primary_type_school%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(EFF2_primary_type_school)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%EFF2_power%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(EFF2_power)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%EFF2_parent_resource_type%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(EFF2_parent_resource_type)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%EFF2_parent_resource_slot%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(EFF2_parent_resource_slot)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%EFF2_parent_resource_flags%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(EFF2_parent_resource_flags)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%EFF2_parent_resource%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(EFF2_parent_resource)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%EFF2_parameter6%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(EFF2_parameter6)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%EFF2_parameter5%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(EFF2_parameter5)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%EFF2_parameter4%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(EFF2_parameter4)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%EFF2_parameter3%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(EFF2_parameter3)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%EFF2_parameter2%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(EFF2_parameter2)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%EFF2_parameter1%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(EFF2_parameter1)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%EFF2_opcode%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(EFF2_opcode)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%EFF2_firstapply_internal_flag%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(EFF2_firstapply_internal_flag)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%EFF2_duration%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(EFF2_duration)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%EFF2_dice_thrown%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(EFF2_dice_thrown)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%EFF2_dice_sides%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(EFF2_dice_sides)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%EFF2_caster_y_coord%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(EFF2_caster_y_coord)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%EFF2_caster_x_coord%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(EFF2_caster_x_coord)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%EFF2_caster_level%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(EFF2_caster_level)",
           "name": "constant.language.ielib.weidu"
         },
         {
@@ -19466,6 +20026,30 @@
           "name": "constant.language.ielib.weidu"
         },
         {
+          "match": "(%CURRENT_HP_MOD_TYPE_percentage%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(CURRENT_HP_MOD_TYPE_percentage)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%CURRENT_HP_MOD_TYPE_flat%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(CURRENT_HP_MOD_TYPE_flat)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%CURRENT_HP_MOD_TYPE_cumulative%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(CURRENT_HP_MOD_TYPE_cumulative)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
           "match": "(%CRUSHING_TRAP%)",
           "name": "constant.language.ielib.weidu"
         },
@@ -20351,6 +20935,38 @@
         },
         {
           "match": "(CONFUSION_NO_SAVE)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%CLONE_TYPE_talkative_uncontrollable%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(CLONE_TYPE_talkative_uncontrollable)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%CLONE_TYPE_simulacrum%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(CLONE_TYPE_simulacrum)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%CLONE_TYPE_project_image%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(CLONE_TYPE_project_image)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%CLONE_TYPE_mislead%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(CLONE_TYPE_mislead)",
           "name": "constant.language.ielib.weidu"
         },
         {
@@ -21946,6 +22562,134 @@
           "name": "constant.language.ielib.weidu"
         },
         {
+          "match": "(%BUTTON_use_item%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(BUTTON_use_item)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%BUTTON_turn_undead%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(BUTTON_turn_undead)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%BUTTON_thieving_skill%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(BUTTON_thieving_skill)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%BUTTON_talk%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(BUTTON_talk)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%BUTTON_stealth%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(BUTTON_stealth)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%BUTTON_spell_select%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(BUTTON_spell_select)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%BUTTON_quick_spell3%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(BUTTON_quick_spell3)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%BUTTON_quick_spell2%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(BUTTON_quick_spell2)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%BUTTON_quick_spell1%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(BUTTON_quick_spell1)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%BUTTON_quick_item3%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(BUTTON_quick_item3)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%BUTTON_quick_item2%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(BUTTON_quick_item2)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%BUTTON_quick_item1%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(BUTTON_quick_item1)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%BUTTON_inventory_ee%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(BUTTON_inventory_ee)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%BUTTON_innate_ability%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(BUTTON_innate_ability)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%BUTTON_find_traps%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(BUTTON_find_traps)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%BUTTON_bard_song_ee%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(BUTTON_bard_song_ee)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
           "match": "(%BURNING_MAN_KEENING%)",
           "name": "constant.language.ielib.weidu"
         },
@@ -22922,11 +23666,11 @@
           "name": "constant.language.ielib.weidu"
         },
         {
-          "match": "(%ARE_REGION_trap_removal_difficulty%)",
+          "match": "(%ARE_REGION_trap_remove%)",
           "name": "constant.language.ielib.weidu"
         },
         {
-          "match": "(ARE_REGION_trap_removal_difficulty)",
+          "match": "(ARE_REGION_trap_remove)",
           "name": "constant.language.ielib.weidu"
         },
         {
@@ -22938,19 +23682,11 @@
           "name": "constant.language.ielib.weidu"
         },
         {
-          "match": "(%ARE_REGION_trap_detection_difficulty%)",
+          "match": "(%ARE_REGION_trap_detect%)",
           "name": "constant.language.ielib.weidu"
         },
         {
-          "match": "(ARE_REGION_trap_detection_difficulty)",
-          "name": "constant.language.ielib.weidu"
-        },
-        {
-          "match": "(%ARE_REGION_trap_detected%)",
-          "name": "constant.language.ielib.weidu"
-        },
-        {
-          "match": "(ARE_REGION_trap_detected)",
+          "match": "(ARE_REGION_trap_detect)",
           "name": "constant.language.ielib.weidu"
         },
         {
@@ -23050,6 +23786,14 @@
           "name": "constant.language.ielib.weidu"
         },
         {
+          "match": "(%ARE_REGION_detected%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(ARE_REGION_detected)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
           "match": "(%ARE_REGION_dest_area_entranc_name%)",
           "name": "constant.language.ielib.weidu"
         },
@@ -23098,6 +23842,30 @@
           "name": "constant.language.ielib.weidu"
         },
         {
+          "match": "(%ARE_REGION_TYPE_travel%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(ARE_REGION_TYPE_travel)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%ARE_REGION_TYPE_proximity%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(ARE_REGION_TYPE_proximity)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%ARE_REGION_TYPE_info%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(ARE_REGION_TYPE_info)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
           "match": "(%ARE_DOOR_travel_trigger_name%)",
           "name": "constant.language.ielib.weidu"
         },
@@ -23114,11 +23882,11 @@
           "name": "constant.language.ielib.weidu"
         },
         {
-          "match": "(%ARE_DOOR_trap_removal_difficulty%)",
+          "match": "(%ARE_DOOR_trap_remove%)",
           "name": "constant.language.ielib.weidu"
         },
         {
-          "match": "(ARE_DOOR_trap_removal_difficulty)",
+          "match": "(ARE_DOOR_trap_remove)",
           "name": "constant.language.ielib.weidu"
         },
         {
@@ -23138,19 +23906,11 @@
           "name": "constant.language.ielib.weidu"
         },
         {
-          "match": "(%ARE_DOOR_trap_detection_difficulty%)",
+          "match": "(%ARE_DOOR_trap_detect%)",
           "name": "constant.language.ielib.weidu"
         },
         {
-          "match": "(ARE_DOOR_trap_detection_difficulty)",
-          "name": "constant.language.ielib.weidu"
-        },
-        {
-          "match": "(%ARE_DOOR_trap_detected%)",
-          "name": "constant.language.ielib.weidu"
-        },
-        {
-          "match": "(ARE_DOOR_trap_detected)",
+          "match": "(ARE_DOOR_trap_detect)",
           "name": "constant.language.ielib.weidu"
         },
         {
@@ -23306,11 +24066,11 @@
           "name": "constant.language.ielib.weidu"
         },
         {
-          "match": "(%ARE_DOOR_detection_difficulty%)",
+          "match": "(%ARE_DOOR_detected%)",
           "name": "constant.language.ielib.weidu"
         },
         {
-          "match": "(ARE_DOOR_detection_difficulty)",
+          "match": "(ARE_DOOR_detected)",
           "name": "constant.language.ielib.weidu"
         },
         {
@@ -23418,11 +24178,11 @@
           "name": "constant.language.ielib.weidu"
         },
         {
-          "match": "(%ARE_CONTAINER_trap_removal_difficulty%)",
+          "match": "(%ARE_CONTAINER_trap_remove%)",
           "name": "constant.language.ielib.weidu"
         },
         {
-          "match": "(ARE_CONTAINER_trap_removal_difficulty)",
+          "match": "(ARE_CONTAINER_trap_remove)",
           "name": "constant.language.ielib.weidu"
         },
         {
@@ -23442,19 +24202,19 @@
           "name": "constant.language.ielib.weidu"
         },
         {
-          "match": "(%ARE_CONTAINER_trap_detection_difficulty%)",
-          "name": "constant.language.ielib.weidu"
-        },
-        {
-          "match": "(ARE_CONTAINER_trap_detection_difficulty)",
-          "name": "constant.language.ielib.weidu"
-        },
-        {
           "match": "(%ARE_CONTAINER_trap_detected%)",
           "name": "constant.language.ielib.weidu"
         },
         {
           "match": "(ARE_CONTAINER_trap_detected)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%ARE_CONTAINER_trap_detect%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(ARE_CONTAINER_trap_detect)",
           "name": "constant.language.ielib.weidu"
         },
         {

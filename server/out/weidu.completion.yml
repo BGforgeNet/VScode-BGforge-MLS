@@ -4407,7 +4407,7 @@ ielib:
     - name: STO_cures_offset
       detail: '0x70'
       doc: IElib define
-    - name: STO_cures_conut
+    - name: STO_cures_count
       detail: '0x74'
       doc: IElib define
     - name: STO_chance_of_steal_failure
@@ -4770,32 +4770,26 @@ ielib:
     - name: SEA_TROLL_CHANGE
       detail: SPIN670
       doc: IElib define
-    - name: SAVINGTHROW_wand
-      detail: BIT3
+    - name: SCRIPT_TYPE_specifics
+      detail: '2'
       doc: IElib define
-    - name: SAVINGTHROW_spell
-      detail: BIT0
+    - name: SCRIPT_TYPE_race
+      detail: '5'
       doc: IElib define
-    - name: SAVINGTHROW_polymorph
-      detail: BIT4
+    - name: SCRIPT_TYPE_override
+      detail: '0'
       doc: IElib define
-    - name: SAVINGTHROW_ignore_secondary_target
-      detail: BIT11
+    - name: SCRIPT_TYPE_general
+      detail: '6'
       doc: IElib define
-    - name: SAVINGTHROW_ignore_primary_target
-      detail: BIT10
+    - name: SCRIPT_TYPE_default
+      detail: '7'
       doc: IElib define
-    - name: SAVINGTHROW_ignore_difficulty
-      detail: BIT25
+    - name: SCRIPT_TYPE_class
+      detail: '4'
       doc: IElib define
-    - name: SAVINGTHROW_death
-      detail: BIT2
-      doc: IElib define
-    - name: SAVINGTHROW_bypass_mirror_image
-      detail: BIT24
-      doc: IElib define
-    - name: SAVINGTHROW_breath
-      detail: BIT1
+    - name: SCRIPT_TYPE_area
+      detail: '1'
       doc: IElib define
     - name: SAR_DIVINATION
       detail: SPIN541
@@ -7554,6 +7548,30 @@ ielib:
     - name: IGNORE_MAGIC_RESISTANCE
       detail: BIT1
       doc: IElib define
+    - name: IDS_specific
+      detail: '6'
+      doc: IElib define
+    - name: IDS_race
+      detail: '4'
+      doc: IElib define
+    - name: IDS_kit_ee
+      detail: '9'
+      doc: IElib define
+    - name: IDS_general
+      detail: '3'
+      doc: IElib define
+    - name: IDS_gender
+      detail: '7'
+      doc: IElib define
+    - name: IDS_ea
+      detail: '2'
+      doc: IElib define
+    - name: IDS_class
+      detail: '5'
+      doc: IElib define
+    - name: IDS_align
+      detail: '8'
+      doc: IElib define
     - name: ICON_whirlwind_attack
       detail: '149'
       doc: IElib define
@@ -8481,6 +8499,39 @@ ielib:
     - name: FLAG_SPL_allow_spotting
       detail: BIT12
       doc: IElib define
+    - name: FLAG_SAVINGTHROW_wand
+      detail: BIT3
+      doc: IElib define
+    - name: FLAG_SAVINGTHROW_tobex_suspend_stacking_application
+      detail: BIT26
+      doc: IElib define
+    - name: FLAG_SAVINGTHROW_tobex_limit_effect_stacking
+      detail: BIT25
+      doc: IElib define
+    - name: FLAG_SAVINGTHROW_spell
+      detail: BIT0
+      doc: IElib define
+    - name: FLAG_SAVINGTHROW_polymorph
+      detail: BIT4
+      doc: IElib define
+    - name: FLAG_SAVINGTHROW_death
+      detail: BIT2
+      doc: IElib define
+    - name: FLAG_SAVINGTHROW_breath
+      detail: BIT1
+      doc: IElib define
+    - name: FLAG_SAVINGTHROW_EE_ignore_secondary_target
+      detail: BIT11
+      doc: IElib define
+    - name: FLAG_SAVINGTHROW_EE_ignore_primary_target
+      detail: BIT10
+      doc: IElib define
+    - name: FLAG_SAVINGTHROW_EE_ignore_difficulty
+      detail: BIT25
+      doc: IElib define
+    - name: FLAG_SAVINGTHROW_EE_bypass_mirror_image
+      detail: BIT24
+      doc: IElib define
     - name: FLAG_ITEM_SALE_unstealable
       detail: BIT1
       doc: IElib define
@@ -8610,8 +8661,11 @@ ielib:
     - name: FLAG_CRE_alignment_tracking
       detail: BIT30
       doc: IElib define
-    - name: FLAG_ARE_REGION_reset_trap
+    - name: FLAG_ARE_REGION_trap_resets
       detail: BIT1
+      doc: IElib define
+    - name: FLAG_ARE_REGION_trap_detectable
+      detail: BIT3
       doc: IElib define
     - name: FLAG_ARE_REGION_party_required
       detail: BIT2
@@ -8631,9 +8685,6 @@ ielib:
     - name: FLAG_ARE_REGION_door_closed
       detail: BIT11
       doc: IElib define
-    - name: FLAG_ARE_REGION_detectable
-      detail: BIT3
-      doc: IElib define
     - name: FLAG_ARE_REGION_deactivated
       detail: BIT8
       doc: IElib define
@@ -8651,6 +8702,51 @@ ielib:
       doc: IElib define
     - name: FLAG_ARE_EDGE_party_enabled
       detail: '1'
+      doc: IElib define
+    - name: FLAG_ARE_DOOR_trap_resets
+      detail: BIT2
+      doc: IElib define
+    - name: FLAG_ARE_DOOR_trap_detectable
+      detail: BIT3
+      doc: IElib define
+    - name: FLAG_ARE_DOOR_remove_key_bg2
+      detail: BIT10
+      doc: IElib define
+    - name: FLAG_ARE_DOOR_open
+      detail: BIT0
+      doc: IElib define
+    - name: FLAG_ARE_DOOR_not_blocking_line_of_sight
+      detail: BIT9
+      doc: IElib define
+    - name: FLAG_ARE_DOOR_locked
+      detail: BIT1
+      doc: IElib define
+    - name: FLAG_ARE_DOOR_linked
+      detail: BIT6
+      doc: IElib define
+    - name: FLAG_ARE_DOOR_ignore_obstacles_when_closing
+      detail: BIT11
+      doc: IElib define
+    - name: FLAG_ARE_DOOR_hidden
+      detail: BIT7
+      doc: IElib define
+    - name: FLAG_ARE_DOOR_found
+      detail: BIT8
+      doc: IElib define
+    - name: FLAG_ARE_DOOR_cannot_close
+      detail: BIT5
+      doc: IElib define
+    - name: FLAG_ARE_DOOR_broken
+      detail: BIT4
+      doc: IElib define
+    - name: FLAG_ARE_CONTAINER_trap_resets
+      detail: BIT3
+      doc: IElib define
+    - name: FLAG_ARE_CONTAINER_locked
+      detail: BIT0
+      doc: IElib define
+    - name: FLAG_ARE_CONTAINER_disabled
+      detail: BIT5
       doc: IElib define
     - name: FIVE_ROUND_ENCHANTMENT_IMMUNITY
       detail: SPIN872
@@ -8684,6 +8780,9 @@ ielib:
       doc: IElib define
     - name: FIFTY_PERCENT_DAMAGE
       detail: SPIN908
+      doc: IElib define
+    - name: FEATURE_tobex_stacking_id
+      detail: '0x2c'
       doc: IElib define
     - name: FEATURE_target
       detail: '0x2'
@@ -8792,6 +8891,117 @@ ielib:
       doc: IElib define
     - name: EFFECT_IDS_align
       detail: '8'
+      doc: IElib define
+    - name: EFF2_vvc
+      detail: '0x70'
+      doc: IElib define
+    - name: EFF2_variable
+      detail: '0xa8'
+      doc: IElib define
+    - name: EFF2_tobex_stacking_id
+      detail: '0x48'
+      doc: IElib define
+    - name: EFF2_timing_mode
+      detail: '0x24'
+      doc: IElib define
+    - name: EFF2_target_y_coord
+      detail: '0x8c'
+      doc: IElib define
+    - name: EFF2_target_x_coord
+      detail: '0x88'
+      doc: IElib define
+    - name: EFF2_target_type
+      detail: '0x14'
+      doc: IElib define
+    - name: EFF2_secondary_type
+      detail: '0xd0'
+      doc: IElib define
+    - name: EFF2_saving_throw_type
+      detail: '0x40'
+      doc: IElib define
+    - name: EFF2_save_bonus
+      detail: '0x44'
+      doc: IElib define
+    - name: EFF2_resource3
+      detail: '0x78'
+      doc: IElib define
+    - name: EFF2_resource2
+      detail: '0x70'
+      doc: IElib define
+    - name: EFF2_resource
+      detail: '0x30'
+      doc: IElib define
+    - name: EFF2_resistance
+      detail: '0x5c'
+      doc: IElib define
+    - name: EFF2_projectile
+      detail: '0xa0'
+      doc: IElib define
+    - name: EFF2_probability2
+      detail: '0x2e'
+      doc: IElib define
+    - name: EFF2_probability1
+      detail: '0x2c'
+      doc: IElib define
+    - name: EFF2_primary_type_school
+      detail: '0x4c'
+      doc: IElib define
+    - name: EFF2_power
+      detail: '0x18'
+      doc: IElib define
+    - name: EFF2_parent_resource_type
+      detail: '0x90'
+      doc: IElib define
+    - name: EFF2_parent_resource_slot
+      detail: '0xa4'
+      doc: IElib define
+    - name: EFF2_parent_resource_flags
+      detail: '0x9c'
+      doc: IElib define
+    - name: EFF2_parent_resource
+      detail: '0x94'
+      doc: IElib define
+    - name: EFF2_parameter6
+      detail: '0x6c'
+      doc: IElib define
+    - name: EFF2_parameter5
+      detail: '0x68'
+      doc: IElib define
+    - name: EFF2_parameter4
+      detail: '0x64'
+      doc: IElib define
+    - name: EFF2_parameter3
+      detail: '0x60'
+      doc: IElib define
+    - name: EFF2_parameter2
+      detail: '0x20'
+      doc: IElib define
+    - name: EFF2_parameter1
+      detail: '0x1c'
+      doc: IElib define
+    - name: EFF2_opcode
+      detail: '0x10'
+      doc: IElib define
+    - name: EFF2_firstapply_internal_flag
+      detail: '0xcc'
+      doc: IElib define
+    - name: EFF2_duration
+      detail: '0x28'
+      doc: IElib define
+    - name: EFF2_dice_thrown
+      detail: '0x38'
+      doc: IElib define
+    - name: EFF2_dice_sides
+      detail: '0x3c'
+      doc: IElib define
+    - name: EFF2_caster_y_coord
+      detail: '0x84'
+      doc: IElib define
+    - name: EFF2_caster_x_coord
+      detail: '0x80'
+      doc: IElib define
+    - name: EFF2_caster_level
+      detail: '0xc8'
       doc: IElib define
     - name: EDWIN_CHANGE_BACK
       detail: SPIN662
@@ -9177,6 +9387,15 @@ ielib:
     - name: CUTSCENE_BREACH
       detail: SPIN946
       doc: IElib define
+    - name: CURRENT_HP_MOD_TYPE_percentage
+      detail: '2'
+      doc: IElib define
+    - name: CURRENT_HP_MOD_TYPE_flat
+      detail: '1'
+      doc: IElib define
+    - name: CURRENT_HP_MOD_TYPE_cumulative
+      detail: '0'
+      doc: IElib define
     - name: CRUSHING_TRAP
       detail: SPWI934
       doc: IElib define
@@ -9509,6 +9728,18 @@ ielib:
       doc: IElib define
     - name: CONFUSION_NO_SAVE
       detail: SPIN582
+      doc: IElib define
+    - name: CLONE_TYPE_talkative_uncontrollable
+      detail: '1'
+      doc: IElib define
+    - name: CLONE_TYPE_simulacrum
+      detail: '3'
+      doc: IElib define
+    - name: CLONE_TYPE_project_image
+      detail: '2'
+      doc: IElib define
+    - name: CLONE_TYPE_mislead
+      detail: '1'
       doc: IElib define
     - name: CLERIC_ZONE_OF_SWEET_AIR
       detail: SPPR318
@@ -10107,6 +10338,54 @@ ielib:
     - name: BYPASS_DEFLECTION
       detail: BIT2
       doc: IElib define
+    - name: BUTTON_use_item
+      detail: '8'
+      doc: IElib define
+    - name: BUTTON_turn_undead
+      detail: '6'
+      doc: IElib define
+    - name: BUTTON_thieving_skill
+      detail: '1'
+      doc: IElib define
+    - name: BUTTON_talk
+      detail: '7'
+      doc: IElib define
+    - name: BUTTON_stealth
+      detail: '0'
+      doc: IElib define
+    - name: BUTTON_spell_select
+      detail: '2'
+      doc: IElib define
+    - name: BUTTON_quick_spell3
+      detail: '5'
+      doc: IElib define
+    - name: BUTTON_quick_spell2
+      detail: '4'
+      doc: IElib define
+    - name: BUTTON_quick_spell1
+      detail: '3'
+      doc: IElib define
+    - name: BUTTON_quick_item3
+      detail: '12'
+      doc: IElib define
+    - name: BUTTON_quick_item2
+      detail: '11'
+      doc: IElib define
+    - name: BUTTON_quick_item1
+      detail: '9'
+      doc: IElib define
+    - name: BUTTON_inventory_ee
+      detail: '15'
+      doc: IElib define
+    - name: BUTTON_innate_ability
+      detail: '13'
+      doc: IElib define
+    - name: BUTTON_find_traps
+      detail: '14'
+      doc: IElib define
+    - name: BUTTON_bard_song_ee
+      detail: '10'
+      doc: IElib define
     - name: BURNING_MAN_KEENING
       detail: SPIN559
       doc: IElib define
@@ -10473,17 +10752,14 @@ ielib:
     - name: ARE_REGION_trapped
       detail: '0x6c'
       doc: IElib define
-    - name: ARE_REGION_trap_removal_difficulty
+    - name: ARE_REGION_trap_remove
       detail: '0x6a'
       doc: IElib define
     - name: ARE_REGION_trap_launch_location
       detail: '0x70'
       doc: IElib define
-    - name: ARE_REGION_trap_detection_difficulty
+    - name: ARE_REGION_trap_detect
       detail: '0x68'
-      doc: IElib define
-    - name: ARE_REGION_trap_detected
-      detail: '0x6e'
       doc: IElib define
     - name: ARE_REGION_talk_location_point_y_PST
       detail: '0xb6'
@@ -10521,6 +10797,9 @@ ielib:
     - name: ARE_REGION_dialog_PST
       detail: '0xbc'
       doc: IElib define
+    - name: ARE_REGION_detected
+      detail: '0x6e'
+      doc: IElib define
     - name: ARE_REGION_dest_area_entranc_name
       detail: '0x40'
       doc: IElib define
@@ -10539,13 +10818,22 @@ ielib:
     - name: ARE_REGION_alt_use_point_x_coord
       detail: '0x84'
       doc: IElib define
+    - name: ARE_REGION_TYPE_travel
+      detail: '2'
+      doc: IElib define
+    - name: ARE_REGION_TYPE_proximity
+      detail: '0'
+      doc: IElib define
+    - name: ARE_REGION_TYPE_info
+      detail: '1'
+      doc: IElib define
     - name: ARE_DOOR_travel_trigger_name
       detail: '0x9c'
       doc: IElib define
     - name: ARE_DOOR_trapped
       detail: '0x70'
       doc: IElib define
-    - name: ARE_DOOR_trap_removal_difficulty
+    - name: ARE_DOOR_trap_remove
       detail: '0x6e'
       doc: IElib define
     - name: ARE_DOOR_trap_launch_y_coord
@@ -10554,11 +10842,8 @@ ielib:
     - name: ARE_DOOR_trap_launch_x_coord
       detail: '0x74'
       doc: IElib define
-    - name: ARE_DOOR_trap_detection_difficulty
-      detail: '0x6c'
-      doc: IElib define
-    - name: ARE_DOOR_trap_detected
-      detail: '0x72'
+    - name: ARE_DOOR_trap_detect
+      detail: '0x88'
       doc: IElib define
     - name: ARE_DOOR_toggle_state_points
       detail: '0x90'
@@ -10617,8 +10902,8 @@ ielib:
     - name: ARE_DOOR_dialog
       detail: '0xb8'
       doc: IElib define
-    - name: ARE_DOOR_detection_difficulty
-      detail: '0x88'
+    - name: ARE_DOOR_detected
+      detail: '0x72'
       doc: IElib define
     - name: ARE_DOOR_cursor
       detail: '0x68'
@@ -10659,7 +10944,7 @@ ielib:
     - name: ARE_CONTAINER_trapped
       detail: '0x30'
       doc: IElib define
-    - name: ARE_CONTAINER_trap_removal_difficulty
+    - name: ARE_CONTAINER_trap_remove
       detail: '0x2e'
       doc: IElib define
     - name: ARE_CONTAINER_trap_launch_y_coord
@@ -10668,11 +10953,11 @@ ielib:
     - name: ARE_CONTAINER_trap_launch_x_coord
       detail: '0x34'
       doc: IElib define
-    - name: ARE_CONTAINER_trap_detection_difficulty
-      detail: '0x2c'
-      doc: IElib define
     - name: ARE_CONTAINER_trap_detected
       detail: '0x32'
+      doc: IElib define
+    - name: ARE_CONTAINER_trap_detect
+      detail: '0x2c'
       doc: IElib define
     - name: ARE_CONTAINER_size
       detail: '0xc0'

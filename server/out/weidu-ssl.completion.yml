@@ -870,6 +870,8 @@ actions:
             UseItem("Potn52",Myself)
         END
         ```
+
+        If the object's name is unset or set to an invalid strref, it will be attributed to the protagonist in the message log. To avoid that, use `DisplayStringNoNameHead()`, or `SAY` the creature's `NAME` to ~~ (empty string) when coding it in WeIDu.
     - name: DisplayStringHeadDead
       detail: DisplayStringHeadDead(O:Object, I:StrRef)
       doc: |-
@@ -2986,85 +2988,77 @@ actions:
     - name: StartCutScene
       detail: StartCutScene(S:CutScene)
       doc: |-
-        This action starts a cutscene; a cinematic sequence that removes the GUI and player control. The cutscene parameter is the script name to run. The example script is from the Irenicus cutscene cut01.bcs.
+        This action starts a cutscene; a cinematic sequence that removes the GUI and player control. The cutscene parameter is the script name to run.
+        The second variant can enable condition checking (trigger evaluation, off by default) when the second parameter is set to TRUE.
+
+        The example script is from cutscene BDCUT17B.bcs and shows how they can be reused. With `StartCutSceneEx("BDCUT17B",TRUE)` it executes
+        only one script block depending on the specified conditions. With `StartCutSceneEx("BDCUT17B",FALSE)` it will execute both blocks
+        regardless of condition.
 
         ```
         IF
-          True()
+          GlobalLT("bd_cut17b_cycle","bd1000",10)
+          !NearLocation(Player1,4535,550,30)
         THEN
           RESPONSE #100
-            CutSceneId(Player1)
-            LeaveAreaLUAPanic("AR0700","",[2753.868],4)
-            LeaveAreaLUA("AR0700","",[2753.868],4)
-            ActionOverride(Player2,LeaveAreaLUA("AR0700","",[2805.882],4))
-            ActionOverride(Player3,LeaveAreaLUA("AR0700","",[2791.820],4))
-            ActionOverride(Player4,LeaveAreaLUA("AR0700","",[2764.788],2))
-            ActionOverride(Player5,LeaveAreaLUA("AR0700","",[2781.716],0))
-            ActionOverride(Player6,LeaveAreaLUA("AR0700","",[2763.668],0))
+            CutSceneId("bdcutid")
+            IncrementGlobal("bd_cut17b_cycle","bd1000",1)
             Wait(1)
-            Explore()
-            MultiPlayerSync()
-            SetGlobal("EnteredWaukeen","AR0700",1)
-            TextScreen("SCENE01")
-            ActionOverride("Imoen",SetDialog("None"))
-            ActionOverride("Imoen",LeaveParty())
-            ActionOverride("Imoen",GivePartyAllEquipment())
-            ActionOverride("Imoen",DestroySelf())
-            CreateCreature("CSIMOEN",[2732.831],2)
-            CreateCreature("CSIREN",[2557.935],0)
-            CreateCreature("CSTHIEF1",[2740.1009],6)
-            CreateCreature("CSTHIEF2",[2678.1043],6)
-            CreateCreature("CSTHIEF3",[2579.1075],8)
-            CreateCreature("CSTHIEF4",[2488.1078],10)
-            CreateCreature("CSGAYL",[2671.1101],6)
-            CreateCreature("AMNG1",[2736.1260],0)
-            SmallWait(1)
-            MoveViewPoint([2576.908],INSTANT)
-            DayNight(DAWN_END)
-            FadeFromColor([40.0],0)
-            StartCutScene("Cut01a")
+            StartCutSceneEx("bdcut17b",TRUE)
+        END
+
+        IF
+          OR(2)
+            GlobalGT("bd_cut17b_cycle","bd1000",9)
+            NearLocation(Player1,4535,550,30)
+        THEN
+          RESPONSE #100
+            CutSceneId("bdcutid")
+            SmallWait(10)
+            SetCutSceneBreakable(FALSE)
+            SetGlobal("BD_CUTSCENE_BREAKABLE","GLOBAL",0)
+            SetAreaScript("",OVERRIDE)
+            SmallWait(5)
+            SetGlobalTimer("bd_mdd016b_timer","bd1000",TWO_ROUNDS)
+            ActionOverride("bdcaelar",StartDialogNoSet(Player1))
         END
         ```
     - name: StartCutSceneEx
       detail: StartCutSceneEx(S:CutScene, I:evaluateConditions*Boolean)
       doc: |-
-        This action starts a cutscene; a cinematic sequence that removes the GUI and player control. The cutscene parameter is the script name to run. The example script is from the Irenicus cutscene cut01.bcs.
+        This action starts a cutscene; a cinematic sequence that removes the GUI and player control. The cutscene parameter is the script name to run.
+        The second variant can enable condition checking (trigger evaluation, off by default) when the second parameter is set to TRUE.
+
+        The example script is from cutscene BDCUT17B.bcs and shows how they can be reused. With `StartCutSceneEx("BDCUT17B",TRUE)` it executes
+        only one script block depending on the specified conditions. With `StartCutSceneEx("BDCUT17B",FALSE)` it will execute both blocks
+        regardless of condition.
 
         ```
         IF
-          True()
+          GlobalLT("bd_cut17b_cycle","bd1000",10)
+          !NearLocation(Player1,4535,550,30)
         THEN
           RESPONSE #100
-            CutSceneId(Player1)
-            LeaveAreaLUAPanic("AR0700","",[2753.868],4)
-            LeaveAreaLUA("AR0700","",[2753.868],4)
-            ActionOverride(Player2,LeaveAreaLUA("AR0700","",[2805.882],4))
-            ActionOverride(Player3,LeaveAreaLUA("AR0700","",[2791.820],4))
-            ActionOverride(Player4,LeaveAreaLUA("AR0700","",[2764.788],2))
-            ActionOverride(Player5,LeaveAreaLUA("AR0700","",[2781.716],0))
-            ActionOverride(Player6,LeaveAreaLUA("AR0700","",[2763.668],0))
+            CutSceneId("bdcutid")
+            IncrementGlobal("bd_cut17b_cycle","bd1000",1)
             Wait(1)
-            Explore()
-            MultiPlayerSync()
-            SetGlobal("EnteredWaukeen","AR0700",1)
-            TextScreen("SCENE01")
-            ActionOverride("Imoen",SetDialog("None"))
-            ActionOverride("Imoen",LeaveParty())
-            ActionOverride("Imoen",GivePartyAllEquipment())
-            ActionOverride("Imoen",DestroySelf())
-            CreateCreature("CSIMOEN",[2732.831],2)
-            CreateCreature("CSIREN",[2557.935],0)
-            CreateCreature("CSTHIEF1",[2740.1009],6)
-            CreateCreature("CSTHIEF2",[2678.1043],6)
-            CreateCreature("CSTHIEF3",[2579.1075],8)
-            CreateCreature("CSTHIEF4",[2488.1078],10)
-            CreateCreature("CSGAYL",[2671.1101],6)
-            CreateCreature("AMNG1",[2736.1260],0)
-            SmallWait(1)
-            MoveViewPoint([2576.908],INSTANT)
-            DayNight(DAWN_END)
-            FadeFromColor([40.0],0)
-            StartCutScene("Cut01a")
+            StartCutSceneEx("bdcut17b",TRUE)
+        END
+
+        IF
+          OR(2)
+            GlobalGT("bd_cut17b_cycle","bd1000",9)
+            NearLocation(Player1,4535,550,30)
+        THEN
+          RESPONSE #100
+            CutSceneId("bdcutid")
+            SmallWait(10)
+            SetCutSceneBreakable(FALSE)
+            SetGlobal("BD_CUTSCENE_BREAKABLE","GLOBAL",0)
+            SetAreaScript("",OVERRIDE)
+            SmallWait(5)
+            SetGlobalTimer("bd_mdd016b_timer","bd1000",TWO_ROUNDS)
+            ActionOverride("bdcaelar",StartDialogNoSet(Player1))
         END
         ```
     - name: StartCutSceneMode
