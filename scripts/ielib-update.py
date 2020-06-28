@@ -35,9 +35,10 @@ def find_file(path, name):
     if name in files:
       return os.path.join(root, name)
 
-def find_files(path, ext):
+def find_files(path, ext, skip_dirs = []):
   flist = []
   for root, dirs, files in os.walk(path, followlinks=True):
+    dirs[:] = [d for d in dirs if d not in skip_dirs]
     for f in files:
       if f.lower().endswith(ext.lower()):
         flist.append(os.path.join(root, f))
@@ -56,7 +57,7 @@ def defines_from_file(path, regex):
   return defines
 
 # get various defines from header files
-define_files = find_files(src_dir, "tpp")
+define_files = find_files(src_dir, "tpp", skip_dirs=["functions"])
 defines = {}
 for df in define_files:
   new_defines = defines_from_file(df, regex_numeric)
