@@ -1,5 +1,84 @@
 # types https://docs.microsoft.com/en-us/dotnet/api/microsoft.visualstudio.languageserver.protocol.completionitemkind?view=visualstudiosdk-2017
 
+weidu-constants:
+  type: 21 # constant
+  items:
+    - name: ARE_V10_ACTORS
+      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
+    - name: ARE_V10_REGIONS
+      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
+    - name: ARE_V10_SPAWN_POINTS
+      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
+    - name: ARE_V10_ENTRANCES
+      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
+    - name: ARE_V10_CONTAINERS
+      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
+    - name: ARE_V10_AMBIENTS
+      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
+    - name: ARE_V10_DOORS
+      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
+    - name: ARE_V10_ANIMATIONS
+      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
+    - name: ARE_V91_ACTORS
+      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
+    - name: CRE_V10_KNOWN_SPELLS
+      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
+    - name: CRE_V10_SPELL_MEM_INFO
+      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
+    - name: CRE_V10_EFFECTS
+      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
+    - name: CRE_V10_ITEMS
+      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
+    - name: ITM_V10_HEADERS
+      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
+    - name: ITM_V10_GEN_EFFECTS
+      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
+    - name: SPL_V10_HEADERS
+      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
+    - name: SPL_V10_GEN_EFFECTS
+      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
+    - name: STO_V10_ITEMS_PURCHASED
+      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
+    - name: STO_V10_ITEMS_SOLD
+      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
+    - name: STO_V10_DRINKS
+      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
+    - name: STO_V10_CURES
+      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
+    - name: WMP_AREAS
+      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
+    - name: WMP_LINKS
+      doc: Predefined set of values for `GET_OFFSET_ARRAY`.
+
+    - name: ARE_V10_ITEMS
+      doc: Predefined set of values for `GET_OFFSET_ARRAY2`.
+    - name: ARE_V10_REGION_VERTICES
+      doc: Predefined set of values for `GET_OFFSET_ARRAY2`.
+    - name: ARE_V10_CONTAINER_VERTICES
+      doc: Predefined set of values for `GET_OFFSET_ARRAY2`.
+    - name: ARE_V10_DOOR_OPEN_OUTLINE_VERTICES
+      doc: Predefined set of values for `GET_OFFSET_ARRAY2`.
+    - name: ARE_V10_DOOR_CLOSED_OUTLINE_VERTICES
+      doc: Predefined set of values for `GET_OFFSET_ARRAY2`.
+    - name: ARE_V10_DOOR_OPEN_CELL_VERTICES
+      doc: Predefined set of values for `GET_OFFSET_ARRAY2`.
+    - name: ARE_V10_DOOR_CLOSED_CELL_VERTICES
+      doc: Predefined set of values for `GET_OFFSET_ARRAY2`.
+    - name: CRE_V10_SPELL_MEM
+      doc: Predefined set of values for `GET_OFFSET_ARRAY2`.
+    - name: ITM_V10_HEAD_EFFECTS
+      doc: Predefined set of values for `GET_OFFSET_ARRAY2`.
+    - name: SPL_V10_HEAD_EFFECTS
+      doc: Predefined set of values for `GET_OFFSET_ARRAY2`.
+    - name: WMP_NORTH_LINKS
+      doc: Predefined set of values for `GET_OFFSET_ARRAY2`.
+    - name: WMP_WEST_LINKS
+      doc: Predefined set of values for `GET_OFFSET_ARRAY2`.
+    - name: WMP_SOUTH_LINKS
+      doc: Predefined set of values for `GET_OFFSET_ARRAY2`.
+    - name: WMP_EAST_LINKS
+      doc: Predefined set of values for `GET_OFFSET_ARRAY2`.
+
 tp2-vars:
   type: 21 # constant
   items:
