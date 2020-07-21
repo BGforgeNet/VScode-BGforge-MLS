@@ -4286,34 +4286,34 @@ ielib:
     - name: TARGET_HEADER_area
       detail: '4'
       doc: IElib define
-    - name: TARGET_FEATURE_self
+    - name: TARGET_EFF_self
       detail: '1'
       doc: IElib define
-    - name: TARGET_FEATURE_preset
+    - name: TARGET_EFF_preset
       detail: '2'
       doc: IElib define
-    - name: TARGET_FEATURE_party
+    - name: TARGET_EFF_party
       detail: '3'
       doc: IElib define
-    - name: TARGET_FEATURE_original_caster
+    - name: TARGET_EFF_original_caster
       detail: '9'
       doc: IElib define
-    - name: TARGET_FEATURE_none
+    - name: TARGET_EFF_none
       detail: '0'
       doc: IElib define
-    - name: TARGET_FEATURE_everyone_match_specific_target
+    - name: TARGET_EFF_everyone_match_specific_target
       detail: '7'
       doc: IElib define
-    - name: TARGET_FEATURE_everyone_match_specific_caster
+    - name: TARGET_EFF_everyone_match_specific_caster
       detail: '6'
       doc: IElib define
-    - name: TARGET_FEATURE_everyone_except_self
+    - name: TARGET_EFF_everyone_except_self
       detail: '8'
       doc: IElib define
-    - name: TARGET_FEATURE_everyone_except_party
+    - name: TARGET_EFF_everyone_except_party
       detail: '5'
       doc: IElib define
-    - name: TARGET_FEATURE_everyone
+    - name: TARGET_EFF_everyone
       detail: '4'
       doc: IElib define
     - name: TANOVA_MIST_FORM_CHANGE
@@ -6716,6 +6716,15 @@ ielib:
     - name: MONK_LAY_ON_HANDS
       detail: SPCL815
       doc: IElib define
+    - name: MOD_TYPE_percentage
+      detail: '2'
+      doc: IElib define
+    - name: MOD_TYPE_flat
+      detail: '1'
+      doc: IElib define
+    - name: MOD_TYPE_cumulative
+      detail: '0'
+      doc: IElib define
     - name: MKHIIN_SUMMON_ANCESTRAL_GUARDIAN
       detail: SPIN205
       doc: IElib define
@@ -8864,48 +8873,6 @@ ielib:
     - name: FIFTY_PERCENT_DAMAGE
       detail: SPIN908
       doc: IElib define
-    - name: FEATURE_tobex_stacking_id
-      detail: '0x2c'
-      doc: IElib define
-    - name: FEATURE_target
-      detail: '0x2'
-      doc: IElib define
-    - name: FEATURE_savingthrow_bonus
-      detail: '0x28'
-      doc: IElib define
-    - name: FEATURE_savingthrow
-      detail: '0x24'
-      doc: IElib define
-    - name: FEATURE_resource
-      detail: '0x14'
-      doc: IElib define
-    - name: FEATURE_probability2
-      detail: '0x13'
-      doc: IElib define
-    - name: FEATURE_probability1
-      detail: '0x12'
-      doc: IElib define
-    - name: FEATURE_power
-      detail: '0x3'
-      doc: IElib define
-    - name: FEATURE_parameter2
-      detail: '0x8'
-      doc: IElib define
-    - name: FEATURE_parameter1
-      detail: '0x4'
-      doc: IElib define
-    - name: FEATURE_opcode
-      detail: '0'
-      doc: IElib define
-    - name: FEATURE_duration
-      detail: '0xe'
-      doc: IElib define
-    - name: FEATURE_dicesize
-      detail: '0x20'
-      doc: IElib define
-    - name: FEATURE_dicenum
-      detail: '0x1c'
-      doc: IElib define
     - name: FEAR
       detail: SPWI956
       doc: IElib define
@@ -8947,6 +8914,48 @@ ielib:
       doc: IElib define
     - name: EFREETI_GAS_FORM_CHANGE
       detail: SPIN970
+      doc: IElib define
+    - name: EFF_tobex_stacking_id
+      detail: '0x2c'
+      doc: IElib define
+    - name: EFF_target
+      detail: '0x2'
+      doc: IElib define
+    - name: EFF_savingthrow_bonus
+      detail: '0x28'
+      doc: IElib define
+    - name: EFF_savingthrow
+      detail: '0x24'
+      doc: IElib define
+    - name: EFF_resource
+      detail: '0x14'
+      doc: IElib define
+    - name: EFF_probability2
+      detail: '0x13'
+      doc: IElib define
+    - name: EFF_probability1
+      detail: '0x12'
+      doc: IElib define
+    - name: EFF_power
+      detail: '0x3'
+      doc: IElib define
+    - name: EFF_parameter2
+      detail: '0x8'
+      doc: IElib define
+    - name: EFF_parameter1
+      detail: '0x4'
+      doc: IElib define
+    - name: EFF_opcode
+      detail: '0'
+      doc: IElib define
+    - name: EFF_duration
+      detail: '0xe'
+      doc: IElib define
+    - name: EFF_dicesize
+      detail: '0x20'
+      doc: IElib define
+    - name: EFF_dicenum
+      detail: '0x1c'
       doc: IElib define
     - name: EFFECT_ONLY
       detail: SPWI989
@@ -9412,6 +9421,186 @@ ielib:
       doc: IElib define
     - name: DARK_GIFT
       detail: SPCL101
+      doc: IElib define
+    - name: DAMAGETYPE_stunning_set_to_value
+      detail: '134217729'
+      doc: IElib define
+    - name: DAMAGETYPE_stunning_set_to_percentage
+      detail: '134217730'
+      doc: IElib define
+    - name: DAMAGETYPE_stunning_reduce_by_percentage
+      detail: '134217731'
+      doc: IElib define
+    - name: DAMAGETYPE_stunning
+      detail: '134217728'
+      doc: IElib define
+    - name: DAMAGETYPE_soul_eater_set_to_value
+      detail: '268435457'
+      doc: IElib define
+    - name: DAMAGETYPE_soul_eater_set_to_percentage
+      detail: '268435458'
+      doc: IElib define
+    - name: DAMAGETYPE_soul_eater_reduce_by_percentage
+      detail: '268435459'
+      doc: IElib define
+    - name: DAMAGETYPE_soul_eater
+      detail: '268435456'
+      doc: IElib define
+    - name: DAMAGETYPE_slashing_set_to_value
+      detail: '16777217'
+      doc: IElib define
+    - name: DAMAGETYPE_slashing_set_to_percentage
+      detail: '16777218'
+      doc: IElib define
+    - name: DAMAGETYPE_slashing_reduce_by_percentage
+      detail: '16777219'
+      doc: IElib define
+    - name: DAMAGETYPE_slashing
+      detail: '16777216'
+      doc: IElib define
+    - name: DAMAGETYPE_poison_set_to_value
+      detail: '2097153'
+      doc: IElib define
+    - name: DAMAGETYPE_poison_set_to_percentage
+      detail: '2097154'
+      doc: IElib define
+    - name: DAMAGETYPE_poison_reduce_by_percentage
+      detail: '2097155'
+      doc: IElib define
+    - name: DAMAGETYPE_poison
+      detail: '2097152'
+      doc: IElib define
+    - name: DAMAGETYPE_piercing_set_to_value
+      detail: '1048577'
+      doc: IElib define
+    - name: DAMAGETYPE_piercing_set_to_percentage
+      detail: '1048578'
+      doc: IElib define
+    - name: DAMAGETYPE_piercing_reduce_by_percentage
+      detail: '1048579'
+      doc: IElib define
+    - name: DAMAGETYPE_piercing
+      detail: '1048576'
+      doc: IElib define
+    - name: DAMAGETYPE_missile_set_to_value
+      detail: '8388609'
+      doc: IElib define
+    - name: DAMAGETYPE_missile_set_to_percentage
+      detail: '8388610'
+      doc: IElib define
+    - name: DAMAGETYPE_missile_reduce_by_percentage
+      detail: '8388611'
+      doc: IElib define
+    - name: DAMAGETYPE_missile
+      detail: '8388608'
+      doc: IElib define
+    - name: DAMAGETYPE_magic_set_to_value
+      detail: '4194305'
+      doc: IElib define
+    - name: DAMAGETYPE_magic_set_to_percentage
+      detail: '4194306'
+      doc: IElib define
+    - name: DAMAGETYPE_magic_reduce_by_percentage
+      detail: '4194307'
+      doc: IElib define
+    - name: DAMAGETYPE_magic_fire_set_to_value
+      detail: '33554433'
+      doc: IElib define
+    - name: DAMAGETYPE_magic_fire_set_to_percentage
+      detail: '33554434'
+      doc: IElib define
+    - name: DAMAGETYPE_magic_fire_reduce_by_percentage
+      detail: '33554435'
+      doc: IElib define
+    - name: DAMAGETYPE_magic_fire
+      detail: '33554432'
+      doc: IElib define
+    - name: DAMAGETYPE_magic_cold_set_to_value
+      detail: '67108865'
+      doc: IElib define
+    - name: DAMAGETYPE_magic_cold_set_to_percentage
+      detail: '67108866'
+      doc: IElib define
+    - name: DAMAGETYPE_magic_cold_reduce_by_percentage
+      detail: '67108867'
+      doc: IElib define
+    - name: DAMAGETYPE_magic_cold
+      detail: '67108864'
+      doc: IElib define
+    - name: DAMAGETYPE_magic
+      detail: '4194304'
+      doc: IElib define
+    - name: DAMAGETYPE_fire_set_to_value
+      detail: '524289'
+      doc: IElib define
+    - name: DAMAGETYPE_fire_set_to_percentage
+      detail: '524290'
+      doc: IElib define
+    - name: DAMAGETYPE_fire_reduce_by_percentage
+      detail: '524291'
+      doc: IElib define
+    - name: DAMAGETYPE_fire
+      detail: '524288'
+      doc: IElib define
+    - name: DAMAGETYPE_electricity_set_to_value
+      detail: '262145'
+      doc: IElib define
+    - name: DAMAGETYPE_electricity_set_to_percentage
+      detail: '262146'
+      doc: IElib define
+    - name: DAMAGETYPE_electricity_reduce_by_percentage
+      detail: '262147'
+      doc: IElib define
+    - name: DAMAGETYPE_electricity
+      detail: '262144'
+      doc: IElib define
+    - name: DAMAGETYPE_disease_set_to_value
+      detail: '1073741825'
+      doc: IElib define
+    - name: DAMAGETYPE_disease_set_to_percentage
+      detail: '1073741826'
+      doc: IElib define
+    - name: DAMAGETYPE_disease_reduce_by_percentage
+      detail: '1073741827'
+      doc: IElib define
+    - name: DAMAGETYPE_disease
+      detail: '1073741824'
+      doc: IElib define
+    - name: DAMAGETYPE_crushing_set_to_value
+      detail: '1'
+      doc: IElib define
+    - name: DAMAGETYPE_crushing_set_to_percentage
+      detail: '2'
+      doc: IElib define
+    - name: DAMAGETYPE_crushing_reduce_by_percentage
+      detail: '3'
+      doc: IElib define
+    - name: DAMAGETYPE_crushing
+      detail: '0'
+      doc: IElib define
+    - name: DAMAGETYPE_cold_set_to_value
+      detail: '131073'
+      doc: IElib define
+    - name: DAMAGETYPE_cold_set_to_percentage
+      detail: '131074'
+      doc: IElib define
+    - name: DAMAGETYPE_cold_reduce_by_percentage
+      detail: '131075'
+      doc: IElib define
+    - name: DAMAGETYPE_cold
+      detail: '131072'
+      doc: IElib define
+    - name: DAMAGETYPE_acid_set_to_value
+      detail: '65537'
+      doc: IElib define
+    - name: DAMAGETYPE_acid_set_to_percentage
+      detail: '65538'
+      doc: IElib define
+    - name: DAMAGETYPE_acid_reduce_by_percentage
+      detail: '65539'
+      doc: IElib define
+    - name: DAMAGETYPE_acid
+      detail: '65536'
       doc: IElib define
     - name: DAESEWOLF_CHANGE
       detail: SPWI944
@@ -10409,6 +10598,12 @@ ielib:
     - name: CAVALIER_REMOVE_FEAR
       detail: SPCL222
       doc: IElib define
+    - name: CASTING_TYPE_normal
+      detail: '0'
+      doc: IElib define
+    - name: CASTING_TYPE_instant
+      detail: '1'
+      doc: IElib define
     - name: C6VAMPIRE_WEAKNESS
       detail: SPIN818
       doc: IElib define
@@ -11125,6 +11320,24 @@ ielib:
       doc: IElib define
     - name: AERIE_DISPEL_MAGIC
       detail: SPIN703
+      doc: IElib define
+    - name: AC_MOD_TYPE_slashing
+      detail: '8'
+      doc: IElib define
+    - name: AC_MOD_TYPE_set_base
+      detail: '16'
+      doc: IElib define
+    - name: AC_MOD_TYPE_piercing
+      detail: '4'
+      doc: IElib define
+    - name: AC_MOD_TYPE_missile
+      detail: '2'
+      doc: IElib define
+    - name: AC_MOD_TYPE_crushing
+      detail: '1'
+      doc: IElib define
+    - name: AC_MOD_TYPE_all
+      detail: '0'
       doc: IElib define
     - name: ACID_DAMAGE_1
       detail: SPIN994
