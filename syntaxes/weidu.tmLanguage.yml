@@ -33,6 +33,7 @@ patterns:
   - include: '#array-construct'
   - include: '#vars-declaration'
   - include: '#ielib-constants'
+  - include: '#ielib-functions'
   - include: '#numbers'
 
 repository:
@@ -6438,3 +6439,25 @@ repository:
       - match: (ACID_DAMAGE_1)
       - match: (%ABAZIGAL_SHOCKWAVE%)
       - match: (ABAZIGAL_SHOCKWAVE)
+  ielib-functions:
+    name: support.function.ielib.weidu
+    patterns:
+      - match: (ALTER_AREA_REGION_MATCH)
+      - match: (ALTER_AREA_STRUCTURE_SCRIPT)
+      - match: (CREATE_MINION)
+      - match: (GET_2DA_INDEX)
+      - match: (GET_AREA_STRUCTURE_CENTER_POINT)
+      - match: (GET_ARMOR_BASE_AC)
+      - match: (INFER_ARMOR_ENCHANTMENT)
+      - match: (INFER_ARMOR_TYPE)
+      - match: (IS_ITEM_GIVEN_OR_CREATED_IN_DIALOG)
+      - match: (IS_ITEM_GIVEN_OR_CREATED_IN_DIALOG_OR_SCRIPT)
+      - match: (IS_ITEM_GIVEN_OR_CREATED_IN_SCRIPT)
+      - match: (IS_ITEM_IN_AREA)
+      - match: (IS_ITEM_IN_RESOURCE)
+      - match: (IS_ITEM_IN_STORE)
+      - match: (IS_ITEM_ON_CREATURE)
+      - match: (REPLACE_AREA_ITEM_MATCH)
+      - match: (REPLACE_CRE_ITEM_MATCH)
+      - match: (REPLACE_STORE_ITEM_MATCH)
+      - match: (REPLACE_STRREF_TRA)

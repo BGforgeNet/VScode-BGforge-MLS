@@ -94,6 +94,9 @@
       "include": "#ielib-constants"
     },
     {
+      "include": "#ielib-functions"
+    },
+    {
       "include": "#numbers"
     }
   ],
@@ -25024,6 +25027,87 @@
         {
           "match": "(ABAZIGAL_SHOCKWAVE)",
           "name": "constant.language.ielib.weidu"
+        }
+      ]
+    },
+    "ielib-functions": {
+      "name": "support.function.ielib.weidu",
+      "patterns": [
+        {
+          "match": "(ALTER_AREA_REGION_MATCH)",
+          "name": "support.function.ielib.weidu"
+        },
+        {
+          "match": "(ALTER_AREA_STRUCTURE_SCRIPT)",
+          "name": "support.function.ielib.weidu"
+        },
+        {
+          "match": "(CREATE_MINION)",
+          "name": "support.function.ielib.weidu"
+        },
+        {
+          "match": "(GET_2DA_INDEX)",
+          "name": "support.function.ielib.weidu"
+        },
+        {
+          "match": "(GET_AREA_STRUCTURE_CENTER_POINT)",
+          "name": "support.function.ielib.weidu"
+        },
+        {
+          "match": "(GET_ARMOR_BASE_AC)",
+          "name": "support.function.ielib.weidu"
+        },
+        {
+          "match": "(INFER_ARMOR_ENCHANTMENT)",
+          "name": "support.function.ielib.weidu"
+        },
+        {
+          "match": "(INFER_ARMOR_TYPE)",
+          "name": "support.function.ielib.weidu"
+        },
+        {
+          "match": "(IS_ITEM_GIVEN_OR_CREATED_IN_DIALOG)",
+          "name": "support.function.ielib.weidu"
+        },
+        {
+          "match": "(IS_ITEM_GIVEN_OR_CREATED_IN_DIALOG_OR_SCRIPT)",
+          "name": "support.function.ielib.weidu"
+        },
+        {
+          "match": "(IS_ITEM_GIVEN_OR_CREATED_IN_SCRIPT)",
+          "name": "support.function.ielib.weidu"
+        },
+        {
+          "match": "(IS_ITEM_IN_AREA)",
+          "name": "support.function.ielib.weidu"
+        },
+        {
+          "match": "(IS_ITEM_IN_RESOURCE)",
+          "name": "support.function.ielib.weidu"
+        },
+        {
+          "match": "(IS_ITEM_IN_STORE)",
+          "name": "support.function.ielib.weidu"
+        },
+        {
+          "match": "(IS_ITEM_ON_CREATURE)",
+          "name": "support.function.ielib.weidu"
+        },
+        {
+          "match": "(REPLACE_AREA_ITEM_MATCH)",
+          "name": "support.function.ielib.weidu"
+        },
+        {
+          "match": "(REPLACE_CRE_ITEM_MATCH)",
+          "name": "support.function.ielib.weidu"
+        },
+        {
+          "match": "(REPLACE_STORE_ITEM_MATCH)",
+          "name": "support.function.ielib.weidu"
+        },
+        {
+          "match": "(REPLACE_STRREF_TRA)",
+          "name": "support.function.ielib.weidu"
         }
       ]
     }
