@@ -73,20 +73,20 @@ defines = OrderedDict(sorted(defines.items(), reverse=True)) # so that longer ke
 for d in defines:
   highlight_list.append({"match": "(%{}%)".format(d)})
   highlight_list.append({"match": "({})".format(d)}) # make sure unbalanced %'s are not highlighted
-  completion_list.append({"name": d, "detail": defines[d], "doc": "IElib define"})
+  completion_list.append({"name": d, "detail": defines[d], "doc": "IElib constant"})
 
 # dump to completion
 with open(completion_yaml) as yf:
   data = yaml.load(yf)
-  data[stanza_completion_constants]["items"] = completion_list
-  data[stanza_completion_constants]["type"] = 21 # constant
+data[stanza_completion_constants]["items"] = completion_list
+data[stanza_completion_constants]["type"] = 21 # constant
 with open(completion_yaml, 'w') as yf:
   yaml.dump(data, yf)
 
 # dump function and hooks to syntax highlight
 with open(highlight_yaml) as yf:
   data = yaml.load(yf)
-  data["repository"][stanza_highlight_constants]["patterns"] = highlight_list
-  data["repository"][stanza_highlight_constants]["name"] = "constant.language.ielib.weidu"
+data["repository"][stanza_highlight_constants]["patterns"] = highlight_list
+data["repository"][stanza_highlight_constants]["name"] = "constant.language.ielib.weidu"
 with open(highlight_yaml, 'w') as yf:
   yaml.dump(data, yf)
