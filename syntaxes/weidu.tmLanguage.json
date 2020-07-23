@@ -91,7 +91,7 @@
       "include": "#vars-declaration"
     },
     {
-      "include": "#ielib"
+      "include": "#ielib-constants"
     },
     {
       "include": "#numbers"
@@ -2121,7 +2121,7 @@
           "name": "variable.parameter.weidu"
         },
         {
-          "include": "#ielib",
+          "include": "#ielib-constants",
           "name": "variable.parameter.weidu"
         },
         {
@@ -2966,7 +2966,7 @@
         }
       ]
     },
-    "ielib": {
+    "ielib-constants": {
       "name": "constant.language.ielib.weidu",
       "patterns": [
         {

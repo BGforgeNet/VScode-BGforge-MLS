@@ -3071,7 +3071,7 @@ tp2-value:
     - name: WNL
       doc: |-
         Windows new line
-ielib:
+ielib-constants:
   type: 21 # constant
   items:
     - name: ZOMBIE_SICKNESS

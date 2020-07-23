@@ -32,7 +32,7 @@ patterns:
   - include: '#weidu-tp2-value-operators'
   - include: '#array-construct'
   - include: '#vars-declaration'
-  - include: '#ielib'
+  - include: '#ielib-constants'
   - include: '#numbers'
 
 repository:
@@ -625,7 +625,7 @@ repository:
     name: variable.parameter.weidu
     patterns:
       - include: '#weidu-vars'
-      - include: '#ielib'
+      - include: '#ielib-constants'
       - match: (%)((\w*)(%\w+%)(\w*))(%)
         captures:
           '1':
@@ -921,7 +921,7 @@ repository:
     patterns:
       - include: source.baf.weidu
 
-  ielib:
+  ielib-constants:
     name: constant.language.ielib.weidu
     patterns:
       - match: (%ZOMBIE_SICKNESS%)
