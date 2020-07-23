@@ -79,7 +79,7 @@ defines = OrderedDict(sorted(defines.items(), reverse=True)) # so that longer ke
 for d in defines:
   highlight_constants.append({"match": "(%{}%)".format(d)})
   highlight_constants.append({"match": "({})".format(d)}) # make sure unbalanced %'s are not highlighted
-  completion_constants.append({"name": d, "detail": defines[d], "doc": "IElib define"})
+  completion_constants.append({"name": d, "detail": defines[d], "doc": "IElib constant"})
 
 # dump to completion
 with open(completion_yaml) as yf:
