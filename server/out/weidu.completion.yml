@@ -4853,6 +4853,27 @@ ielib-constants:
     - name: SEA_TROLL_CHANGE
       detail: SPIN670
       doc: IElib constant
+    - name: SCROLL_protection_from_undead
+      detail: scrl09
+      doc: IElib constant
+    - name: SCROLL_protection_from_poison
+      detail: scrl08
+      doc: IElib constant
+    - name: SCROLL_protection_from_magic
+      detail: scrl07
+      doc: IElib constant
+    - name: SCROLL_protection_from_fire
+      detail: scrl06
+      doc: IElib constant
+    - name: SCROLL_protection_from_electricity
+      detail: scrl05
+      doc: IElib constant
+    - name: SCROLL_protection_from_cold
+      detail: scrl04
+      doc: IElib constant
+    - name: SCROLL_protection_from_acid
+      detail: scrl03
+      doc: IElib constant
     - name: SCRIPT_TYPE_specifics
       detail: '2'
       doc: IElib constant

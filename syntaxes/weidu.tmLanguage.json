@@ -7717,6 +7717,62 @@
           "name": "constant.language.ielib.weidu"
         },
         {
+          "match": "(%SCROLL_protection_from_undead%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(SCROLL_protection_from_undead)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%SCROLL_protection_from_poison%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(SCROLL_protection_from_poison)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%SCROLL_protection_from_magic%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(SCROLL_protection_from_magic)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%SCROLL_protection_from_fire%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(SCROLL_protection_from_fire)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%SCROLL_protection_from_electricity%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(SCROLL_protection_from_electricity)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%SCROLL_protection_from_cold%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(SCROLL_protection_from_cold)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(%SCROLL_protection_from_acid%)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
+          "match": "(SCROLL_protection_from_acid)",
+          "name": "constant.language.ielib.weidu"
+        },
+        {
           "match": "(%SCRIPT_TYPE_specifics%)",
           "name": "constant.language.ielib.weidu"
         },
