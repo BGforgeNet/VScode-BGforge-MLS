@@ -82,6 +82,9 @@
       "include": "#infinity-constants"
     },
     {
+      "include": "#ielib-constants"
+    },
+    {
       "include": "#weidu-tp2-value-operators"
     },
     {
@@ -89,9 +92,6 @@
     },
     {
       "include": "#vars-declaration"
-    },
-    {
-      "include": "#ielib-constants"
     },
     {
       "include": "#ielib-functions"
