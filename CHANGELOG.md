@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.12.0
+- IE:
+  - Added weidu's `GET_OFFSET_ARRAY/2` predefined sets to completion.
+  - Added support for [IElib](https://ielib.bgforge.net) functions.
+  - Fixed IElib's constants coloring inside associative array declarations.
+
 ## 1.11.0
 - IE:
   - Updated [IElib](https://github.com/BGforgeNet/BGforge-MLS-IElib) and [IESDP](https://iesdp.bgforge.net) defines.
