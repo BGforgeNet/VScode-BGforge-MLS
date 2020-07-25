@@ -286,8 +286,8 @@
 	},
 	"devDependencies": {
 		"@types/mocha": "^5.2.0",
-		"@types/node": "^8.10.61",
-		"typescript": "^3.9.5"
+		"@types/node": "^8.10.62",
+		"typescript": "^3.9.7"
 	},
 	"categories": [
 		"Programming Languages"
