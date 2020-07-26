@@ -451,7 +451,7 @@ repository:
       - match: \b(MODULO|REM|NOT|OR|AND|BAND|BOR|BXOR|BNOT|BLSL|BASR)\b
 
   weidu-tp2-values:
-    name: keyword.weidu.tp2value
+    name: support.class.weidu.tp2value
     patterns:
       - match: \b(BYTE_AT)\b
       - match: \b(SBYTE_AT)\b
