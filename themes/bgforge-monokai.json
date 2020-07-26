@@ -476,6 +476,13 @@
 			"settings": {
 				"fontStyle": "underline"
 			}
+		},
+		{
+			"name": "weidu tp2 value",
+			"scope": "keyword.weidu.tp2value",
+			"settings": {
+				"fontStyle": "italic"
+			}
 		}
 	],
 	"semanticHighlighting": true

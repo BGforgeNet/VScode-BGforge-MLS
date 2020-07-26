@@ -175,6 +175,10 @@ repository:
       - match: \b(ACTION_GET_STRREF_FS)\b
       - match: \b(DECOMPRESS_BIFF)\b
       - match: \b(ACTION_TIME)\b
+      - match: \b(INCLUDE)\b
+      - match: \b(ACTION_INCLUDE)\b
+      - match: \b(REINCLUDE)\b
+      - match: \b(ACTION_REINCLUDE)\b
 
   weidu-tp2-action-flow:
     name: keyword.control.action.weidu
@@ -193,10 +197,6 @@ repository:
       - match: \b(AT_INTERACTIVE_NOW)\b
       - match: \b(ACTION_FOR_EACH)\b
       - match: \b(ACTION_PHP_EACH)\b
-      - match: \b(INCLUDE)\b
-      - match: \b(ACTION_INCLUDE)\b
-      - match: \b(REINCLUDE)\b
-      - match: \b(ACTION_REINCLUDE)\b
       - match: \b(USING)\b
       - match: \b(AS)\b
 
@@ -249,7 +249,6 @@ repository:
       - match: \b(REPLACE_TEXTUALLY)\b
       - match: \b(EVALUATE_BUFFER_SPECIAL)\b
       - match: \b(EVALUATE_BUFFER)\b
-      - match: \b(EVAL)\b
       - match: \b(APPLY_BCS_PATCH)\b
       - match: \b(APPLY_BCS_PATCH_OR_COPY)\b
       - match: \b(WRITE_BYTE)\b
@@ -452,7 +451,7 @@ repository:
       - match: \b(MODULO|REM|NOT|OR|AND|BAND|BOR|BXOR|BNOT|BLSL|BASR)\b
 
   weidu-tp2-values:
-    name: support.function.tp2value.weidu
+    name: keyword.weidu.tp2value
     patterns:
       - match: \b(BYTE_AT)\b
       - match: \b(SBYTE_AT)\b
@@ -695,35 +694,41 @@ repository:
           - include: '#strings'
 
   function-name-action:
-    name: support.function.weidu.action_function
     patterns:
       - match: (~)(\S+)(~)
         captures:
           '1':
             name: keyword.control.weidu
+          '2':
+            name: support.function.weidu.action_function
           '3':
             name: keyword.control.weidu
       - match: (")(\S+)(")
         captures:
           '1':
             name: keyword.control.weidu
+          '2':
+            name: support.function.weidu.action_function
           '3':
             name: keyword.control.weidu
       - match: (\S+)
 
   function-name-patch:
-    name: entity.name.class.weidu.patch_function
     patterns:
       - match: (~)(\S+)(~)
         captures:
           '1':
             name: keyword.control.weidu
+          '2':
+            name: entity.name.class.weidu.patch_function
           '3':
             name: keyword.control.weidu
       - match: (")(\S+)(")
         captures:
           '1':
             name: keyword.control.weidu
+          '2':
+            name: entity.name.class.weidu.patch_function
           '3':
             name: keyword.control.weidu
       - match: (\S+)
@@ -781,7 +786,7 @@ repository:
           '2':
             name: keyword.control.weidu
           '3':
-            name: support.function.tp2.weidu
+            name: keyword.control.weidu
 
   infinity-constants:
     name: constant.language.infinity.weidu

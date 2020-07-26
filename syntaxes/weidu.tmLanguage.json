@@ -574,6 +574,22 @@
         {
           "match": "\\b(ACTION_TIME)\\b",
           "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(INCLUDE)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(ACTION_INCLUDE)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(REINCLUDE)\\b",
+          "name": "support.function.weidu"
+        },
+        {
+          "match": "\\b(ACTION_REINCLUDE)\\b",
+          "name": "support.function.weidu"
         }
       ]
     },
@@ -634,22 +650,6 @@
         },
         {
           "match": "\\b(ACTION_PHP_EACH)\\b",
-          "name": "keyword.control.action.weidu"
-        },
-        {
-          "match": "\\b(INCLUDE)\\b",
-          "name": "keyword.control.action.weidu"
-        },
-        {
-          "match": "\\b(ACTION_INCLUDE)\\b",
-          "name": "keyword.control.action.weidu"
-        },
-        {
-          "match": "\\b(REINCLUDE)\\b",
-          "name": "keyword.control.action.weidu"
-        },
-        {
-          "match": "\\b(ACTION_REINCLUDE)\\b",
           "name": "keyword.control.action.weidu"
         },
         {
@@ -803,10 +803,6 @@
         },
         {
           "match": "\\b(EVALUATE_BUFFER)\\b",
-          "name": "entity.name.function.weidu.patch"
-        },
-        {
-          "match": "\\b(EVAL)\\b",
           "name": "entity.name.function.weidu.patch"
         },
         {
@@ -1568,211 +1564,211 @@
       ]
     },
     "weidu-tp2-values": {
-      "name": "support.function.tp2value.weidu",
+      "name": "keyword.weidu.tp2value",
       "patterns": [
         {
           "match": "\\b(BYTE_AT)\\b",
-          "name": "support.function.tp2value.weidu"
+          "name": "keyword.weidu.tp2value"
         },
         {
           "match": "\\b(SBYTE_AT)\\b",
-          "name": "support.function.tp2value.weidu"
+          "name": "keyword.weidu.tp2value"
         },
         {
           "match": "\\b(SHORT_AT)\\b",
-          "name": "support.function.tp2value.weidu"
+          "name": "keyword.weidu.tp2value"
         },
         {
           "match": "\\b(SSHORT_AT)\\b",
-          "name": "support.function.tp2value.weidu"
+          "name": "keyword.weidu.tp2value"
         },
         {
           "match": "\\b(LONG_AT)\\b",
-          "name": "support.function.tp2value.weidu"
+          "name": "keyword.weidu.tp2value"
         },
         {
           "match": "\\b(SLONG_AT)\\b",
-          "name": "support.function.tp2value.weidu"
+          "name": "keyword.weidu.tp2value"
         },
         {
           "match": "\\b(STRING_COMPARE)\\b",
-          "name": "support.function.tp2value.weidu"
+          "name": "keyword.weidu.tp2value"
         },
         {
           "match": "\\b(STRING_COMPARE_CASE)\\b",
-          "name": "support.function.tp2value.weidu"
+          "name": "keyword.weidu.tp2value"
         },
         {
           "match": "\\b(STRING_EQUAL)\\b",
-          "name": "support.function.tp2value.weidu"
+          "name": "keyword.weidu.tp2value"
         },
         {
           "match": "\\b(STRING_EQUAL_CASE)\\b",
-          "name": "support.function.tp2value.weidu"
+          "name": "keyword.weidu.tp2value"
         },
         {
           "match": "\\b(STR_EQ)\\b",
-          "name": "support.function.tp2value.weidu"
+          "name": "keyword.weidu.tp2value"
         },
         {
           "match": "\\b(STRING_MATCHES_REGEXP)\\b",
-          "name": "support.function.tp2value.weidu"
+          "name": "keyword.weidu.tp2value"
         },
         {
           "match": "\\b(STRING_CONTAINS_REGEXP)\\b",
-          "name": "support.function.tp2value.weidu"
+          "name": "keyword.weidu.tp2value"
         },
         {
           "match": "\\b(GAME_IS)\\b",
-          "name": "support.function.tp2value.weidu"
+          "name": "keyword.weidu.tp2value"
         },
         {
           "match": "\\b(ENGINE_IS)\\b",
-          "name": "support.function.tp2value.weidu"
+          "name": "keyword.weidu.tp2value"
         },
         {
           "match": "\\b(GAME_INCLUDES)\\b",
-          "name": "support.function.tp2value.weidu"
+          "name": "keyword.weidu.tp2value"
         },
         {
           "match": "\\b(IDS_OF_SYMBOL)\\b",
-          "name": "support.function.tp2value.weidu"
+          "name": "keyword.weidu.tp2value"
         },
         {
           "match": "\\b(VARIABLE_IS_SET)\\b",
-          "name": "support.function.tp2value.weidu"
+          "name": "keyword.weidu.tp2value"
         },
         {
           "match": "\\b(IS_AN_INT)\\b",
-          "name": "support.function.tp2value.weidu"
+          "name": "keyword.weidu.tp2value"
         },
         {
           "match": "\\b(TRA_ENTRY_EXISTS)\\b",
-          "name": "support.function.tp2value.weidu"
+          "name": "keyword.weidu.tp2value"
         },
         {
           "match": "\\b(IS_SILENT)\\b",
-          "name": "support.function.tp2value.weidu"
+          "name": "keyword.weidu.tp2value"
         },
         {
           "match": "\\b(MOD_IS_INSTALLED)\\b",
-          "name": "support.function.tp2value.weidu"
+          "name": "keyword.weidu.tp2value"
         },
         {
           "match": "\\b(INSTALL_ORDER)\\b",
-          "name": "support.function.tp2value.weidu"
+          "name": "keyword.weidu.tp2value"
         },
         {
           "match": "\\b(ID_OF_LABEL)\\b",
-          "name": "support.function.tp2value.weidu"
+          "name": "keyword.weidu.tp2value"
         },
         {
           "match": "\\b(STATE_WHICH_SAYS)\\b",
-          "name": "support.function.tp2value.weidu"
+          "name": "keyword.weidu.tp2value"
         },
         {
           "match": "\\b(RESOLVE_STR_REF)\\b",
-          "name": "support.function.tp2value.weidu"
+          "name": "keyword.weidu.tp2value"
         },
         {
           "match": "\\b(NEXT_STRREF)\\b",
-          "name": "support.function.tp2value.weidu"
+          "name": "keyword.weidu.tp2value"
         },
         {
           "match": "\\b(RANDOM)\\b",
-          "name": "support.function.tp2value.weidu"
+          "name": "keyword.weidu.tp2value"
         },
         {
           "match": "\\b(BUFFER_LENGTH)\\b",
-          "name": "support.function.tp2value.weidu"
+          "name": "keyword.weidu.tp2value"
         },
         {
           "match": "\\b(INDEX)\\b",
-          "name": "support.function.tp2value.weidu"
+          "name": "keyword.weidu.tp2value"
         },
         {
           "match": "\\b(RINDEX)\\b",
-          "name": "support.function.tp2value.weidu"
+          "name": "keyword.weidu.tp2value"
         },
         {
           "match": "\\b(INDEX_BUFFER)\\b",
-          "name": "support.function.tp2value.weidu"
+          "name": "keyword.weidu.tp2value"
         },
         {
           "match": "\\b(RINDEX_BUFFER)\\b",
-          "name": "support.function.tp2value.weidu"
+          "name": "keyword.weidu.tp2value"
         },
         {
           "match": "\\b(STRING_LENGTH)\\b",
-          "name": "support.function.tp2value.weidu"
+          "name": "keyword.weidu.tp2value"
         },
         {
           "match": "\\b(FILE_CONTAINS)\\b",
-          "name": "support.function.tp2value.weidu"
+          "name": "keyword.weidu.tp2value"
         },
         {
           "match": "\\b(FILE_CONTAINS_EVALUATED)\\b",
-          "name": "support.function.tp2value.weidu"
+          "name": "keyword.weidu.tp2value"
         },
         {
           "match": "\\b(FILE_EXISTS)\\b",
-          "name": "support.function.tp2value.weidu"
+          "name": "keyword.weidu.tp2value"
         },
         {
           "match": "\\b(DIRECTORY_EXISTS)\\b",
-          "name": "support.function.tp2value.weidu"
+          "name": "keyword.weidu.tp2value"
         },
         {
           "match": "\\b(FILE_EXISTS_IN_GAME)\\b",
-          "name": "support.function.tp2value.weidu"
+          "name": "keyword.weidu.tp2value"
         },
         {
           "match": "\\b(FILE_MD5)\\b",
-          "name": "support.function.tp2value.weidu"
+          "name": "keyword.weidu.tp2value"
         },
         {
           "match": "\\b(FILE_IS_IN_COMPRESSED_BIFF)\\b",
-          "name": "support.function.tp2value.weidu"
+          "name": "keyword.weidu.tp2value"
         },
         {
           "match": "\\b(BIFF_IS_COMPRESSED)\\b",
-          "name": "support.function.tp2value.weidu"
+          "name": "keyword.weidu.tp2value"
         },
         {
           "match": "\\b(FILE_SIZE)\\b",
-          "name": "support.function.tp2value.weidu"
+          "name": "keyword.weidu.tp2value"
         },
         {
           "match": "\\b(SIZE_OF_FILE)\\b",
-          "name": "support.function.tp2value.weidu"
+          "name": "keyword.weidu.tp2value"
         },
         {
           "match": "\\b(VALID_SCRIPT_ACTIONS)\\b",
-          "name": "support.function.tp2value.weidu"
+          "name": "keyword.weidu.tp2value"
         },
         {
           "match": "\\b(VALID_SCRIPT_TRIGGERS)\\b",
-          "name": "support.function.tp2value.weidu"
+          "name": "keyword.weidu.tp2value"
         },
         {
           "match": "\\b(EVALUATE_BUFFER)\\b",
-          "name": "support.function.tp2value.weidu"
+          "name": "keyword.weidu.tp2value"
         },
         {
           "match": "\\b(WEIDU_ARCH)\\b",
-          "name": "support.function.tp2value.weidu"
+          "name": "keyword.weidu.tp2value"
         },
         {
           "match": "\\b(WEIDU_OS)\\b",
-          "name": "support.function.tp2value.weidu"
+          "name": "keyword.weidu.tp2value"
         },
         {
           "match": "\\b(COMPONENT_NUMBER)\\b",
-          "name": "support.function.tp2value.weidu"
+          "name": "keyword.weidu.tp2value"
         },
         {
           "match": "\\b(INTERACTIVE)\\b",
-          "name": "support.function.tp2value.weidu"
+          "name": "keyword.weidu.tp2value"
         }
       ]
     },
@@ -2233,7 +2229,6 @@
       }
     },
     "function-name-action": {
-      "name": "support.function.weidu.action_function",
       "patterns": [
         {
           "match": "(~)(\\S+)(~)",
@@ -2241,11 +2236,13 @@
             "1": {
               "name": "keyword.control.weidu"
             },
+            "2": {
+              "name": "support.function.weidu.action_function"
+            },
             "3": {
               "name": "keyword.control.weidu"
             }
-          },
-          "name": "support.function.weidu.action_function"
+          }
         },
         {
           "match": "(\")(\\S+)(\")",
@@ -2253,20 +2250,20 @@
             "1": {
               "name": "keyword.control.weidu"
             },
+            "2": {
+              "name": "support.function.weidu.action_function"
+            },
             "3": {
               "name": "keyword.control.weidu"
             }
-          },
-          "name": "support.function.weidu.action_function"
+          }
         },
         {
-          "match": "(\\S+)",
-          "name": "support.function.weidu.action_function"
+          "match": "(\\S+)"
         }
       ]
     },
     "function-name-patch": {
-      "name": "entity.name.class.weidu.patch_function",
       "patterns": [
         {
           "match": "(~)(\\S+)(~)",
@@ -2274,11 +2271,13 @@
             "1": {
               "name": "keyword.control.weidu"
             },
+            "2": {
+              "name": "entity.name.class.weidu.patch_function"
+            },
             "3": {
               "name": "keyword.control.weidu"
             }
-          },
-          "name": "entity.name.class.weidu.patch_function"
+          }
         },
         {
           "match": "(\")(\\S+)(\")",
@@ -2286,15 +2285,16 @@
             "1": {
               "name": "keyword.control.weidu"
             },
+            "2": {
+              "name": "entity.name.class.weidu.patch_function"
+            },
             "3": {
               "name": "keyword.control.weidu"
             }
-          },
-          "name": "entity.name.class.weidu.patch_function"
+          }
         },
         {
-          "match": "(\\S+)",
-          "name": "entity.name.class.weidu.patch_function"
+          "match": "(\\S+)"
         }
       ]
     },
@@ -2399,7 +2399,7 @@
               "name": "keyword.control.weidu"
             },
             "3": {
-              "name": "support.function.tp2.weidu"
+              "name": "keyword.control.weidu"
             }
           },
           "name": "variable.complex.weidu"
