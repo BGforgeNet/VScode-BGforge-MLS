@@ -1815,7 +1815,7 @@
           "match": "\\s(@)([0-9]+)\\s",
           "captures": {
             "1": {
-              "name": "variable.parameter.tra.weidu"
+              "name": "keyword.weidu.trastart"
             },
             "2": {
               "name": "variable.parameter.tra.weidu"

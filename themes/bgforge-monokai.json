@@ -476,6 +476,13 @@
 			"settings": {
 				"fontStyle": "underline"
 			}
+		},
+		{
+			"name": "weidu tra start",
+			"scope": "keyword.weidu.trastart",
+			"settings": {
+				"fontStyle": "italic"
+			}
 		}
 	],
 	"semanticHighlighting": true
