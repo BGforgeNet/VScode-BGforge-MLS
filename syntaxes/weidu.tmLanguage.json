@@ -13,13 +13,19 @@
       "include": "#inlined-baf"
     },
     {
-      "include": "#function-invocation"
+      "include": "#function-invocation-action"
+    },
+    {
+      "include": "#function-invocation-patch"
     },
     {
       "include": "#macro-invocation"
     },
     {
-      "include": "#function-declaration"
+      "include": "#function-declaration-action"
+    },
+    {
+      "include": "#function-declaration-patch"
     },
     {
       "include": "#weidu-vars"
@@ -566,22 +572,6 @@
           "name": "support.function.weidu"
         },
         {
-          "match": "\\b(DEFINE_ACTION_MACRO)\\b",
-          "name": "support.function.weidu"
-        },
-        {
-          "match": "\\b(DEFINE_PATCH_MACRO)\\b",
-          "name": "support.function.weidu"
-        },
-        {
-          "match": "\\b(DEFINE_ACTION_FUNCTION)\\b",
-          "name": "support.function.weidu"
-        },
-        {
-          "match": "\\b(DEFINE_PATCH_FUNCTION)\\b",
-          "name": "support.function.weidu"
-        },
-        {
           "match": "\\b(ACTION_TIME)\\b",
           "name": "support.function.weidu"
         }
@@ -725,483 +715,483 @@
       ]
     },
     "weidu-tp2-patch": {
-      "name": "support.function.tp2.weidu",
+      "name": "entity.name.function.weidu.patch",
       "patterns": [
         {
           "match": "\\b(SAY)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(PATCH_FAIL)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(PATCH_ABORT)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(PATCH_WARN)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(PATCH_PRINT)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(PATCH_LOG)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(SAY_EVALUATED)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(TO_UPPER)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(TO_LOWER)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(TEXT_SPRINT)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(SPRINT)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(SNPRINT)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(SPRINTF)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(LOCAL_SPRINT)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(LOCAL_SET)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(SOURCE_BIFF)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(SPACES)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(QUOTE)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(REPLACE)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(REPLACE_TEXTUALLY)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(EVALUATE_BUFFER_SPECIAL)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(EVALUATE_BUFFER)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(EVAL)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(APPLY_BCS_PATCH)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(APPLY_BCS_PATCH_OR_COPY)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(WRITE_BYTE)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(WRITE_SHORT)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(WRITE_LONG)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(WRITE_ASCII)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(WRITE_ASCII_LIST)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(WRITE_ASCII_TERMINATE)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(WRITE_ASCIIT)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(WRITE_EVALUATED_ASCII)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(WRITE_ASCIIE)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(WRITE_FILE)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(INSERT_FILE)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(APPEND_FILE)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(APPEND_FILE_EVALUATE)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(REPLACE_BCS_BLOCK)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(R_B_B)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(ON_MISMATCH)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(INSERT_BYTES)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(DELETE_BYTES)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(READ_BYTE)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(READ_SBYTE)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(READ_SHORT)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(READ_SSHORT)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(READ_LONG)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(READ_SLONG)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(READ_ASCII)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(READ_STRREF)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(READ_STRREF_F)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(READ_STRREF_S)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(READ_STRREF_FS)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(GET_OFFSET_ARRAY)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(GET_OFFSET_ARRAY2)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(DEFINE_ASSOCIATIVE_ARRAY)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(GET_STRREF)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(GET_STRREF_F)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(GET_STRREF_S)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(GET_STRREF_FS)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(DEFINE_ARRAY)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(PATCH_DEFINE_ARRAY)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(SORT_ARRAY_INDICES)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(CLEAR_ARRAY)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(PATCH_CLEAR_ARRAY)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(PATCH_RERAISE)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(PATCH_INCLUDE)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(PATCH_REINCLUDE)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(PATCH_WITH_TRA)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(PATCH_WITH_SCOPE)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(SET_2DA_ENTRY)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(SET_2DA_ENTRY_LATER)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(SET_2DA_ENTRIES_NOW)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(PRETTY_PRINT_2DA)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(INSERT_2DA_ROW)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(REMOVE_2DA_ROW)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(PATCH_READLN)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(PATCH_RANDOM_SEED)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(ADD_STORE_ITEM)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(REMOVE_STORE_ITEM)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(READ_2DA_ENTRY)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(READ_2DA_ENTRIES_NOW)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(READ_2DA_ENTRY_FORMER)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(COUNT_2DA_ROWS)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(COUNT_2DA_COLS)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(COUNT_REGEXP_INSTANCES)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(LOOKUP_IDS_SYMBOL_OF_INT)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(COMPILE_BAF_TO_BCS)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(DECOMPILE_BCS_TO_BAF)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(DECOMPILE_DLG_TO_D)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(COMPILE_D_TO_DLG)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(DECOMPILE_AND_PATCH)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(REFACTOR_TRIGGER)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(REFACTOR_BAF_TRIGGER)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(REFACTOR_D_TRIGGER)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(REPLACE_EVALUATE)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(ADD_GAM_NPC)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(ADD_MAP_NOTE)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(ADD_KNOWN_SPELL)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(ADD_MEMORIZED_SPELL)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(REMOVE_KNOWN_SPELL)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(REMOVE_MEMORIZED_SPELL)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(SET_BG2_PROFICIENCY)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(ADD_CRE_ITEM)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(REPLACE_CRE_ITEM)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(REMOVE_CRE_ITEM)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(REMOVE_CRE_ITEMS)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(REMOVE_CRE_EFFECTS)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(REMOVE_KNOWN_SPELLS)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(REMOVE_MEMORIZED_SPELLS)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(PATCH_SILENT)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(EDIT_SAV_FILE)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(DECOMPRESS_REPLACE_FILE)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(DECOMPRESS_INTO_FILE)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(DECOMPRESS_INTO_VAR)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(COMPRESS_REPLACE_FILE)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(COMPRESS_INTO_FILE)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         },
         {
           "match": "\\b(COMPRESS_INTO_VAR)\\b",
-          "name": "support.function.tp2.weidu"
+          "name": "entity.name.function.weidu.patch"
         }
       ]
     },
@@ -2196,9 +2186,9 @@
         }
       }
     },
-    "function-invocation": {
+    "function-invocation-action": {
       "name": "meta.function.invocation.weidu",
-      "begin": "\\b(LAF|LAUNCH_ACTION_FUNCTION|LPF|LAUNCH_PATCH_FUNCTION)\\b",
+      "begin": "\\b(LAF|LAUNCH_ACTION_FUNCTION)\\b",
       "end": "((\\w+)|(\\S+))",
       "beginCaptures": {
         "1": {
@@ -2207,7 +2197,7 @@
       },
       "endCaptures": {
         "2": {
-          "name": "entity.name.function"
+          "name": "support.function.weidu.action_function"
         },
         "3": {
           "name": "name.function.weidu",
@@ -2219,8 +2209,31 @@
         }
       }
     },
-    "function-name": {
-      "name": "entity.name.function.weidu",
+    "function-invocation-patch": {
+      "name": "meta.function.invocation.weidu",
+      "begin": "\\b(LPF|LAUNCH_PATCH_FUNCTION)\\b",
+      "end": "((\\w+)|(\\S+))",
+      "beginCaptures": {
+        "1": {
+          "name": "keyword.control.weidu"
+        }
+      },
+      "endCaptures": {
+        "2": {
+          "name": "entity.name.class.weidu.patch_function"
+        },
+        "3": {
+          "name": "name.function.weidu",
+          "patterns": [
+            {
+              "include": "#strings"
+            }
+          ]
+        }
+      }
+    },
+    "function-name-action": {
+      "name": "support.function.weidu.action_function",
       "patterns": [
         {
           "match": "(~)(\\S+)(~)",
@@ -2232,7 +2245,7 @@
               "name": "keyword.control.weidu"
             }
           },
-          "name": "entity.name.function.weidu"
+          "name": "support.function.weidu.action_function"
         },
         {
           "match": "(\")(\\S+)(\")",
@@ -2244,17 +2257,50 @@
               "name": "keyword.control.weidu"
             }
           },
-          "name": "entity.name.function.weidu"
+          "name": "support.function.weidu.action_function"
         },
         {
           "match": "(\\S+)",
-          "name": "entity.name.function.weidu"
+          "name": "support.function.weidu.action_function"
         }
       ]
     },
-    "function-declaration": {
+    "function-name-patch": {
+      "name": "entity.name.class.weidu.patch_function",
+      "patterns": [
+        {
+          "match": "(~)(\\S+)(~)",
+          "captures": {
+            "1": {
+              "name": "keyword.control.weidu"
+            },
+            "3": {
+              "name": "keyword.control.weidu"
+            }
+          },
+          "name": "entity.name.class.weidu.patch_function"
+        },
+        {
+          "match": "(\")(\\S+)(\")",
+          "captures": {
+            "1": {
+              "name": "keyword.control.weidu"
+            },
+            "3": {
+              "name": "keyword.control.weidu"
+            }
+          },
+          "name": "entity.name.class.weidu.patch_function"
+        },
+        {
+          "match": "(\\S+)",
+          "name": "entity.name.class.weidu.patch_function"
+        }
+      ]
+    },
+    "function-declaration-action": {
       "name": "meta.function.declaration.weidu",
-      "begin": "\\b(DEFINE_ACTION_FUNCTION|DEFINE_PATCH_FUNCTION)\\s+(.*)",
+      "begin": "\\b(DEFINE_ACTION_FUNCTION)\\s+(.*)",
       "end": "\\b(BEGIN)\\b",
       "beginCaptures": {
         "1": {
@@ -2263,7 +2309,51 @@
         "2": {
           "patterns": [
             {
-              "include": "#function-name"
+              "include": "#function-name-action"
+            }
+          ]
+        }
+      },
+      "endCaptures": {
+        "1": {
+          "name": "keyword.control.weidu"
+        }
+      },
+      "patterns": [
+        {
+          "match": "\\b(STR_VAR|INT_VAR|RET|RET_ARRAY)\\b",
+          "name": "keyword.control.weidu"
+        },
+        {
+          "include": "#vars-declaration",
+          "name": "meta.function.declaration.weidu"
+        },
+        {
+          "include": "#comments",
+          "name": "meta.function.declaration.weidu"
+        },
+        {
+          "include": "#numbers",
+          "name": "meta.function.declaration.weidu"
+        },
+        {
+          "include": "#strings",
+          "name": "meta.function.declaration.weidu"
+        }
+      ]
+    },
+    "function-declaration-patch": {
+      "name": "meta.function.declaration.weidu",
+      "begin": "\\b(DEFINE_PATCH_FUNCTION)\\s+(.*)",
+      "end": "\\b(BEGIN)\\b",
+      "beginCaptures": {
+        "1": {
+          "name": "keyword.control.weidu"
+        },
+        "2": {
+          "patterns": [
+            {
+              "include": "#function-name-patch"
             }
           ]
         }

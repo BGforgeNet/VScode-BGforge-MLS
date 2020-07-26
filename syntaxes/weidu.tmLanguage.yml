@@ -6,9 +6,11 @@ patterns:
   - include: '#comments'
   - include: '#inlined-d'
   - include: '#inlined-baf'
-  - include: '#function-invocation'
+  - include: '#function-invocation-action'
+  - include: '#function-invocation-patch'
   - include: '#macro-invocation'
-  - include: '#function-declaration'
+  - include: '#function-declaration-action'
+  - include: '#function-declaration-patch'
   - include: '#weidu-vars'
   - include: '#strings'
   - include: '#weidu-tp2-file'
@@ -172,10 +174,6 @@ repository:
       - match: \b(ACTION_GET_STRREF_S)\b
       - match: \b(ACTION_GET_STRREF_FS)\b
       - match: \b(DECOMPRESS_BIFF)\b
-      - match: \b(DEFINE_ACTION_MACRO)\b
-      - match: \b(DEFINE_PATCH_MACRO)\b
-      - match: \b(DEFINE_ACTION_FUNCTION)\b
-      - match: \b(DEFINE_PATCH_FUNCTION)\b
       - match: \b(ACTION_TIME)\b
 
   weidu-tp2-action-flow:
@@ -227,7 +225,7 @@ repository:
       - match: \b(NUMERICALLY)\b
 
   weidu-tp2-patch:
-    name: support.function.tp2.weidu
+    name: entity.name.function.weidu.patch
     patterns:
       - match: \b(SAY)\b
       - match: \b(PATCH_FAIL)\b
@@ -666,23 +664,38 @@ repository:
         patterns:
           - include: '#strings'
 
-  function-invocation:
+  function-invocation-action:
     name: meta.function.invocation.weidu
-    begin: \b(LAF|LAUNCH_ACTION_FUNCTION|LPF|LAUNCH_PATCH_FUNCTION)\b
+    begin: \b(LAF|LAUNCH_ACTION_FUNCTION)\b
     end: ((\w+)|(\S+))
     beginCaptures:
       '1':
         name: keyword.control.weidu
     endCaptures:
       '2':
-        name: entity.name.function
+        name: support.function.weidu.action_function
       '3':
         name: name.function.weidu
         patterns:
           - include: '#strings'
 
-  function-name:
-    name: entity.name.function.weidu
+  function-invocation-patch:
+    name: meta.function.invocation.weidu
+    begin: \b(LPF|LAUNCH_PATCH_FUNCTION)\b
+    end: ((\w+)|(\S+))
+    beginCaptures:
+      '1':
+        name: keyword.control.weidu
+    endCaptures:
+      '2':
+        name: entity.name.class.weidu.patch_function
+      '3':
+        name: name.function.weidu
+        patterns:
+          - include: '#strings'
+
+  function-name-action:
+    name: support.function.weidu.action_function
     patterns:
       - match: (~)(\S+)(~)
         captures:
@@ -698,16 +711,54 @@ repository:
             name: keyword.control.weidu
       - match: (\S+)
 
-  function-declaration:
+  function-name-patch:
+    name: entity.name.class.weidu.patch_function
+    patterns:
+      - match: (~)(\S+)(~)
+        captures:
+          '1':
+            name: keyword.control.weidu
+          '3':
+            name: keyword.control.weidu
+      - match: (")(\S+)(")
+        captures:
+          '1':
+            name: keyword.control.weidu
+          '3':
+            name: keyword.control.weidu
+      - match: (\S+)
+
+  function-declaration-action:
     name: meta.function.declaration.weidu
-    begin: \b(DEFINE_ACTION_FUNCTION|DEFINE_PATCH_FUNCTION)\s+(.*)
+    begin: \b(DEFINE_ACTION_FUNCTION)\s+(.*)
     end: \b(BEGIN)\b
     beginCaptures:
       '1':
         name: keyword.control.weidu
       '2':
         patterns:
-          - include: '#function-name'
+          - include: '#function-name-action'
+    endCaptures:
+      '1':
+        name: keyword.control.weidu
+    patterns:
+      - match: \b(STR_VAR|INT_VAR|RET|RET_ARRAY)\b
+        name: keyword.control.weidu
+      - include: '#vars-declaration'
+      - include: '#comments'
+      - include: '#numbers'
+      - include: '#strings'
+
+  function-declaration-patch:
+    name: meta.function.declaration.weidu
+    begin: \b(DEFINE_PATCH_FUNCTION)\s+(.*)
+    end: \b(BEGIN)\b
+    beginCaptures:
+      '1':
+        name: keyword.control.weidu
+      '2':
+        patterns:
+          - include: '#function-name-patch'
     endCaptures:
       '1':
         name: keyword.control.weidu
