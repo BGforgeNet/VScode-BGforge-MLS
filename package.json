@@ -224,6 +224,13 @@
 				"path": "./snippets/fallout-ssl.json"
 			}
 		],
+		"themes": [
+      {
+        "label": "BGforge Monokai",
+        "uiTheme": "vs-dark",
+        "path": "./themes/bgforge-monokai.json"
+      }
+    ],
 		"configuration": {
 			"type": "object",
 			"title": "BGforge MLS",
