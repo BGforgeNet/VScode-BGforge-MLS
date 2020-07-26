@@ -712,6 +712,7 @@ repository:
           '3':
             name: keyword.control.weidu
       - match: (\S+)
+        name: support.function.weidu.action_function
 
   function-name-patch:
     patterns:
@@ -732,6 +733,7 @@ repository:
           '3':
             name: keyword.control.weidu
       - match: (\S+)
+        name: entity.name.class.weidu.patch_function
 
   function-declaration-action:
     name: meta.function.declaration.weidu

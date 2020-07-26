@@ -2259,7 +2259,8 @@
           }
         },
         {
-          "match": "(\\S+)"
+          "match": "(\\S+)",
+          "name": "support.function.weidu.action_function"
         }
       ]
     },
@@ -2294,7 +2295,8 @@
           }
         },
         {
-          "match": "(\\S+)"
+          "match": "(\\S+)",
+          "name": "entity.name.class.weidu.patch_function"
         }
       ]
     },
