@@ -24,7 +24,10 @@ args=parser.parse_args()
 #init vars
 ielib_url = "https://ielib.bgforge.net"
 types_url = ielib_url + "/types"
-stanza_highlight_constants = "ielib-constants"
+stanza_highlight_ints = "ielib-ints"
+stanza_highlight_ints_name = "constant.language.weidu.int.ielib"
+stanza_highlight_resrefs = "ielib-resrefs"
+stanza_highlight_resrefs_name = "constant.language.weidu.resref.ielib"
 stanza_completion_constants = "ielib-constants"
 stanza_highlight_functions = "ielib-functions"
 stanza_completion_functions = "ielib-functions"
@@ -33,6 +36,7 @@ highlight_yaml = args.highlight_yaml
 src_dir = args.src_dir
 completion_constants = []
 highlight_constants = []
+highlight_resrefs = []
 completion_functions = []
 highlight_functions = []
 
@@ -66,22 +70,29 @@ def defines_from_file(path, regex):
 
 # get various defines from header files
 define_files = find_files(src_dir, "tpp", skip_dirs=["functions"])
-defines = {}
+int_defines = {}
+resref_defines = {}
 for df in define_files:
-  new_defines = defines_from_file(df, regex_numeric)
-  defines = {**defines, **new_defines}
-  new_defines = defines_from_file(df, regex_text)
-  defines = {**defines, **new_defines}
+  new_int_defines = defines_from_file(df, regex_numeric)
+  int_defines = {**int_defines, **new_int_defines}
+  new_resref_defines = defines_from_file(df, regex_text)
+  resref_defines = {**resref_defines, **new_resref_defines}
 
 # reduce diff noise
-defines = OrderedDict(sorted(defines.items(), reverse=True)) # so that longer keys are found first
+# longer keys should be found first, to avoid partial coloring when one define is a subset of another
+int_defines = OrderedDict(sorted(int_defines.items(), reverse=True))
+resref_defines = OrderedDict(sorted(resref_defines.items(), reverse=True))
 
-for d in defines:
+for d in int_defines:
   highlight_constants.append({"match": "(%{}%)".format(d)})
   highlight_constants.append({"match": "({})".format(d)}) # make sure unbalanced %'s are not highlighted
-  completion_constants.append({"name": d, "detail": defines[d], "doc": "IElib constant"})
+  completion_constants.append({"name": d, "detail": int_defines[d], "doc": "IElib constant"})
+for d in resref_defines:
+  highlight_resrefs.append({"match": "(%{}%)".format(d)})
+  highlight_resrefs.append({"match": "({})".format(d)}) # make sure unbalanced %'s are not highlighted
+  completion_constants.append({"name": d, "detail": resref_defines[d], "doc": "IElib resref"})
 
-# dump to completion
+# dump to completion - unified
 with open(completion_yaml) as yf:
   data = yaml.load(yf)
 data[stanza_completion_constants]["items"] = completion_constants
@@ -89,11 +100,13 @@ data[stanza_completion_constants]["type"] = 21 # constant
 with open(completion_yaml, 'w') as yf:
   yaml.dump(data, yf)
 
-# dump function and hooks to syntax highlight
+# dump to syntax highlight - split per type
 with open(highlight_yaml) as yf:
   data = yaml.load(yf)
-data["repository"][stanza_highlight_constants]["patterns"] = highlight_constants
-data["repository"][stanza_highlight_constants]["name"] = "constant.language.ielib.weidu"
+data["repository"][stanza_highlight_ints]["patterns"] = highlight_constants
+data["repository"][stanza_highlight_ints]["name"] = stanza_highlight_ints_name
+data["repository"][stanza_highlight_resrefs]["patterns"] = highlight_resrefs
+data["repository"][stanza_highlight_resrefs]["name"] = stanza_highlight_resrefs_name
 with open(highlight_yaml, 'w') as yf:
   yaml.dump(data, yf)
 # END CONSTANTS

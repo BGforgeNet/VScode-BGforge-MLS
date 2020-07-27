@@ -483,6 +483,41 @@
 			"settings": {
 				"fontStyle": "italic"
 			}
+		},
+		{
+			"name": "weidu constant byte",
+			"scope": "constant.language.weidu.byte",
+			"settings": {
+				"fontStyle": "italic"
+			}
+		},
+		{
+			"name": "weidu constant char",
+			"scope": "constant.language.weidu.char",
+			"settings": {
+				"fontStyle": "italic"
+			}
+		},
+		{
+			"name": "weidu constant word",
+			"scope": "constant.language.weidu.word",
+			"settings": {
+				"fontStyle": "bold italic"
+			}
+		},
+		{
+			"name": "weidu constant dword",
+			"scope": "constant.language.weidu.dword",
+			"settings": {
+				"fontStyle": "bold"
+			}
+		},
+		{
+			"name": "weidu constant resref",
+			"scope": "constant.language.weidu.resref",
+			"settings": {
+				"fontStyle": "underline"
+			}
 		}
 	],
 	"semanticHighlighting": true
