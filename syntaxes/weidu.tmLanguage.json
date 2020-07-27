@@ -1558,7 +1558,7 @@
           "name": "keyword.control.value.weidu"
         },
         {
-          "match": "\\b(MODULO|REM|NOT|OR|AND|BAND|BOR|BXOR|BNOT|BLSL|BASR)\\b",
+          "match": "\\b(MODULO|REM|NOT|OR|AND|BAND|BOR|BXOR|BNOT|BLSL|BASR|EVAL)\\b",
           "name": "keyword.control.value.weidu"
         }
       ]

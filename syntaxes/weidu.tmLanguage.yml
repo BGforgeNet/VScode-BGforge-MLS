@@ -448,7 +448,7 @@ repository:
     name: keyword.control.value.weidu
     patterns:
       - match: (\=\>|\+|-|\*|\/|=|\*|!|>|<|\?|:)
-      - match: \b(MODULO|REM|NOT|OR|AND|BAND|BOR|BXOR|BNOT|BLSL|BASR)\b
+      - match: \b(MODULO|REM|NOT|OR|AND|BAND|BOR|BXOR|BNOT|BLSL|BASR|EVAL)\b
 
   weidu-tp2-values:
     name: support.class.weidu.tp2value
