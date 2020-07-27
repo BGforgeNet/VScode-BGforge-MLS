@@ -21939,6 +21939,14 @@
           "name": "constant.language.weidu.int.ielib"
         },
         {
+          "match": "(%EFF_timing%)",
+          "name": "constant.language.weidu.int.ielib"
+        },
+        {
+          "match": "(EFF_timing)",
+          "name": "constant.language.weidu.int.ielib"
+        },
+        {
           "match": "(%EFF_target%)",
           "name": "constant.language.weidu.int.ielib"
         },
@@ -21968,6 +21976,14 @@
         },
         {
           "match": "(EFF_resource)",
+          "name": "constant.language.weidu.int.ielib"
+        },
+        {
+          "match": "(%EFF_resistance%)",
+          "name": "constant.language.weidu.int.ielib"
+        },
+        {
+          "match": "(EFF_resistance)",
           "name": "constant.language.weidu.int.ielib"
         },
         {

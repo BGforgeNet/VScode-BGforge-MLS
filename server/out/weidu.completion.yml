@@ -6413,6 +6413,9 @@ ielib-constants:
     - name: EFF_tobex_stacking_id
       detail: '0x2c'
       doc: IElib constant
+    - name: EFF_timing
+      detail: '0xc'
+      doc: IElib constant
     - name: EFF_target
       detail: '0x2'
       doc: IElib constant
@@ -6424,6 +6427,9 @@ ielib-constants:
       doc: IElib constant
     - name: EFF_resource
       detail: '0x14'
+      doc: IElib constant
+    - name: EFF_resistance
+      detail: '0xd'
       doc: IElib constant
     - name: EFF_probability2
       detail: '0x13'
