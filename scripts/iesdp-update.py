@@ -220,7 +220,7 @@ def get_id(item, prefix):
     return iid
   else:
     print('Bad id: "{}". Aborting.'.format(iid))
-    # sys.exit(1)
+    sys.exit(1)
 
 # mutates lists in place
 def load_datafile(fpath, prefix, chars, lbytes, words, dwords, resrefs, strrefs, other):
