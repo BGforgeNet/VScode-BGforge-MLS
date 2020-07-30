@@ -1,24 +1,7 @@
 #!/usr/bin/env python3
 # coding: utf-8
 
-import sys, os, re
-import argparse
-import re
-from collections import OrderedDict
-from collections import Counter as collections_counter
-import ruamel.yaml
-yaml = ruamel.yaml.YAML(typ="rt")
-yaml.width = 4096
-yaml.indent(mapping=2, sequence=4, offset=2)
-# https://stackoverflow.com/questions/57382525/can-i-control-the-formatting-of-multiline-strings
-from ruamel.yaml.scalarstring import LiteralScalarString
-import textwrap
-def LS(s):
-  return LiteralScalarString(textwrap.dedent(s))
-
-from urllib.parse import urljoin
-from bs4 import BeautifulSoup
-from markdown import markdown
+from ie_import import *
 
 #parse args
 parser = argparse.ArgumentParser(description='Get updates from IESDP', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -43,7 +26,6 @@ actions_stanza = "actions"
 completion_weidu = args.completion_weidu
 highlight_weidu = args.highlight_weidu
 file_formats_dir = os.path.join(iesdp_dir, "_data", 'file_formats')
-COMPLETION_TYPE_constant = 21
 
 def get_stanza(dtype):
   try:
@@ -286,9 +268,11 @@ fpath = os.path.join(file_formats_dir, 'itm_v1', 'feature_block.yml')
 prefix = 'FX_'
 load_datafile(fpath, prefix, chars, lbytes, words, dwords, resrefs, strrefs, other)
 
-# reduce diff noise
+# sanitising
 for l in [chars, lbytes, words, dwords, resrefs, strrefs, other]:
+  # reduce diff noise
   l = sorted(l, key=lambda k: k["name"])
+  # check for dupes
   name_list = [x['name'] for x in l]
   l_counted = collections_counter(name_list)
   non_unique = [x for x in l_counted if l_counted[x] > 1]
@@ -297,41 +281,15 @@ for l in [chars, lbytes, words, dwords, resrefs, strrefs, other]:
     print(non_unique)
     sys.exit(1)
 
-iesdp_data = [
-  {'stanza': 'iesdp-char', 'data': chars, 'scope': 'constant.language.iesdp.char'},
-  {'stanza': 'iesdp-byte', 'data': lbytes, 'scope': 'constant.language.iesdp.byte'},
-  {'stanza': 'iesdp-word', 'data': words, 'scope': 'constant.language.iesdp.word'},
-  {'stanza': 'iesdp-dword', 'data': dwords, 'scope': 'constant.language.iesdp.dword'},
-  {'stanza': 'iesdp-resref', 'data': resrefs, 'scope': 'constant.language.iesdp.resref'},
-  {'stanza': 'iesdp-strref', 'data': strrefs, 'scope': 'constant.language.iesdp.strref'},
-  {'stanza': 'iesdp-other', 'data': other, 'scope': 'constant.language.iesdp.other'},
-]
+iesdp_data = {
+  'chars': {'stanza': 'iesdp-char', 'items': chars, 'scope': 'constant.language.iesdp.char',},
+  'bytes': {'stanza': 'iesdp-byte', 'items': lbytes, 'scope': 'constant.language.iesdp.byte'},
+  'words': {'stanza': 'iesdp-word', 'items': words, 'scope': 'constant.language.iesdp.word'},
+  'dwords': {'stanza': 'iesdp-dword', 'items': dwords, 'scope': 'constant.language.iesdp.dword'},
+  'resrefs': {'stanza': 'iesdp-resref', 'items': resrefs, 'scope': 'constant.language.iesdp.resref'},
+  'strrefs': {'stanza': 'iesdp-strref', 'items': strrefs, 'scope': 'constant.language.iesdp.strref'},
+  'other': {'stanza': 'iesdp-other', 'items': other, 'scope': 'constant.language.iesdp.other'},
+}
 
-# dump to completion
-with open(completion_weidu) as yf:
-  data = yaml.load(yf)
-for ied in iesdp_data:
-  stanza = ied['stanza']
-  if not stanza in data:
-    data.insert(1, stanza, {'type': COMPLETION_TYPE_constant})
-  data[stanza]["type"] = COMPLETION_TYPE_constant
-  data[stanza]["items"] = ied['data']
-with open(completion_weidu, 'w') as yf:
-  yaml.dump(data, yf)
-
-# dump to syntax highlight
-with open(highlight_weidu) as yf:
-  data = yaml.load(yf)
-for ied in iesdp_data:
-  stanza = ied['stanza']
-  repository = data["repository"]
-
-  if not stanza in repository:
-    repository.insert(1, stanza, {'name': ied['scope']})
-  repository[stanza]['name'] = ied['scope']
-
-  items = [x['name'] for x in ied['data']]
-  items = [{"match": "\\b({})\\b".format(x)} for x in items]
-  repository[stanza]['patterns'] = items
-with open(highlight_weidu, 'w') as yf:
-  yaml.dump(data, yf)
+dump_completion(completion_weidu, iesdp_data)
+dump_highlight(highlight_weidu, iesdp_data)

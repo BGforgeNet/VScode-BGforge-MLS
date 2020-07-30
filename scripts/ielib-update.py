@@ -1,47 +1,30 @@
 #!/usr/bin/env python3
 # coding: utf-8
 
-import sys, os
-
-import ruamel.yaml
-yaml = ruamel.yaml.YAML(typ="rt")
-yaml.width = 4096
-yaml.indent(mapping=2, sequence=4, offset=2)
-from ruamel.yaml.scalarstring import LiteralScalarString
-import textwrap
-
-import argparse
-import re
-from collections import OrderedDict
+from ie_import import *
 
 #parse args
-parser = argparse.ArgumentParser(description='Update IE  syntax highlighting and completion from IElib', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+parser = argparse.ArgumentParser(description='Update IE syntax highlighting and completion from IElib', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 parser.add_argument('-s', dest='src_dir', help='header directory', required=True)
-parser.add_argument('--completion-file', dest='completion_yaml', help='completion YAML', required=True)
-parser.add_argument('--highlight-file', dest='highlight_yaml', help='syntax highlight YAML', required=True)
+parser.add_argument('--completion-weidu', dest='completion_weidu', help='WeiDU completion YAML', required=True)
+parser.add_argument('--highlight-weidu', dest='highlight_weidu', help='WeidDU syntax highlight YAML', required=True)
 args=parser.parse_args()
 
 #init vars
 ielib_url = "https://ielib.bgforge.net"
 types_url = ielib_url + "/types"
-stanza_highlight_ints = "ielib-ints"
-stanza_highlight_ints_name = "constant.language.weidu.int.ielib"
-stanza_highlight_resrefs = "ielib-resrefs"
-stanza_highlight_resrefs_name = "constant.language.weidu.resref.ielib"
-stanza_completion_constants = "ielib-constants"
-stanza_highlight_functions = "ielib-functions"
-stanza_completion_functions = "ielib-functions"
-completion_yaml = args.completion_yaml
-highlight_yaml = args.highlight_yaml
-src_dir = args.src_dir
-completion_constants = []
-highlight_constants = []
-highlight_resrefs = []
-completion_functions = []
-highlight_functions = []
 
-COMPLETION_TYPE_constant = 21
-COMPLETION_TYPE_function = 3
+ielib_data = {
+  'ints': {'stanza': 'ielib-ints', 'scope': 'constant.language.ielib.int'},
+  'resrefs': {'stanza': 'ielib-resref', 'scope': 'constant.language.ielib.resref'},
+  'action_functions': {'stanza': 'ielib-action-functions', 'scope': 'entity.name.class.ielib.action_function', 'type': COMPLETION_TYPE_function},
+  'patch_functions': { 'stanza': 'ielib-patch-functions', 'scope': 'entity.name.class.ielib.patch_function', 'type': COMPLETION_TYPE_function}
+}
+
+completion_weidu = args.completion_weidu
+highlight_weidu = args.highlight_weidu
+src_dir = args.src_dir
+
 
 def find_file(path, name):
   for root, dirs, files in os.walk(path, followlinks=True):
@@ -81,37 +64,11 @@ for df in define_files:
   new_resref_defines = defines_from_file(df, regex_text)
   resref_defines = {**resref_defines, **new_resref_defines}
 
-# reduce diff noise
-# longer keys should be found first, to avoid partial coloring when one define is a subset of another
-int_defines = OrderedDict(sorted(int_defines.items(), reverse=True))
-resref_defines = OrderedDict(sorted(resref_defines.items(), reverse=True))
+int_defines = [{"name": x, "detail": int_defines[x], "doc": "IElib int"} for x in int_defines]
+resref_defines = [{"name": x, "detail": resref_defines[x], "doc": "IElib resref"} for x in resref_defines]
+ielib_data['ints']['items'] = int_defines
+ielib_data['resrefs']['items'] = resref_defines
 
-for d in int_defines:
-  highlight_constants.append({"match": "(%{}%)".format(d)})
-  highlight_constants.append({"match": "({})".format(d)}) # make sure unbalanced %'s are not highlighted
-  completion_constants.append({"name": d, "detail": int_defines[d], "doc": "IElib constant"})
-for d in resref_defines:
-  highlight_resrefs.append({"match": "(%{}%)".format(d)})
-  highlight_resrefs.append({"match": "({})".format(d)}) # make sure unbalanced %'s are not highlighted
-  completion_constants.append({"name": d, "detail": resref_defines[d], "doc": "IElib resref"})
-
-# dump to completion - unified
-with open(completion_yaml) as yf:
-  data = yaml.load(yf)
-data[stanza_completion_constants]["items"] = completion_constants
-data[stanza_completion_constants]["type"] = COMPLETION_TYPE_constant
-with open(completion_yaml, 'w') as yf:
-  yaml.dump(data, yf)
-
-# dump to syntax highlight - split per type
-with open(highlight_yaml) as yf:
-  data = yaml.load(yf)
-data["repository"][stanza_highlight_ints]["patterns"] = highlight_constants
-data["repository"][stanza_highlight_ints]["name"] = stanza_highlight_ints_name
-data["repository"][stanza_highlight_resrefs]["patterns"] = highlight_resrefs
-data["repository"][stanza_highlight_resrefs]["name"] = stanza_highlight_resrefs_name
-with open(highlight_yaml, 'w') as yf:
-  yaml.dump(data, yf)
 # END CONSTANTS
 
 
@@ -129,6 +86,7 @@ def func_to_item(func):
   if "return" in func:
     text += rets_to_md(func)
   item["doc"] = text
+  item['type'] = func['type']
   return(item)
 
 def params_to_md(func, ptype):
@@ -177,6 +135,8 @@ data_dir = os.path.join(src_dir, "docs", "data")
 functions_dir = os.path.join(data_dir, "functions")
 function_files = find_files(functions_dir, "yml")
 types_file = os.path.join(data_dir, "types.yml")
+action_functions = []
+patch_functions = []
 with open(types_file) as yf:
   types = yaml.load(yf)
 for f in function_files:
@@ -185,24 +145,15 @@ for f in function_files:
   data = sorted(data, key=lambda k: k['name'])
   for i in data:
     item = func_to_item(i)
-    highlight_functions.append({"match": "({})".format(item["name"])})
-    completion_functions.append({"name": item["name"], "detail": item["detail"], "doc": item["doc"]})
+    if item['type'] == 'action':
+      action_functions.append(item)
+    if item['type'] == 'patch':
+      patch_functions.append(item)
 
-# dump to completion
-with open(completion_yaml) as yf:
-  data = yaml.load(yf)
-completion_functions = sorted(completion_functions, key=lambda k: k['name']) # reduce diff noise
-data[stanza_completion_functions]["items"] = completion_functions
-data[stanza_completion_functions]["type"] = COMPLETION_TYPE_function
-with open(completion_yaml, 'w') as yf:
-  yaml.dump(data, yf)
+ielib_data['action_functions']['items'] = action_functions
+ielib_data['patch_functions']['items'] = patch_functions
 
-# dump function and hooks to syntax highlight
-with open(highlight_yaml) as yf:
-  data = yaml.load(yf)
-highlight_functions = sorted(highlight_functions, key=lambda k: k['match']) # reduce diff noise
-data["repository"][stanza_highlight_functions]["patterns"] = highlight_functions
-data["repository"][stanza_highlight_functions]["name"] = "support.function.ielib.weidu"
-with open(highlight_yaml, 'w') as yf:
-  yaml.dump(data, yf)
-# END FUNCTIONS
+### END FUNCTIONS
+
+dump_completion(completion_weidu, ielib_data)
+dump_highlight(highlight_weidu, ielib_data)

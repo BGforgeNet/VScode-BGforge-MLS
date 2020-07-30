@@ -29,7 +29,7 @@ fi
 cd "$ielib_dir"
 git pull
 popd
-./scripts/ielib-update.py -s "$external/$ielib_dir" --completion-file "$completion_weidu" --highlight-file "$highlight_weidu"
+./scripts/ielib-update.py -s "$external/$ielib_dir" --completion-weidu "$completion_weidu" --highlight-weidu "$highlight_weidu"
 
 # IESDP
 pushd .
@@ -40,7 +40,7 @@ fi
 cd $iesdp_dir
 git pull
 popd
-./scripts/iesdp-update.py -s "$external/$iesdp_dir" --completion-baf "$completion_baf" --highlight-baf "$highlight_baf" --completion-weidu "$weidu_completion" --highlight-weidu "$weidu_highlight"
+./scripts/iesdp-update.py -s "$external/$iesdp_dir" --completion-baf "$completion_baf" --highlight-baf "$highlight_baf" --completion-weidu "$completion_weidu" --highlight-weidu "$highlight_weidu"
 
 # ssl should have the same completion as baf
 cp -f "$completion_dir/weidu-baf.completion.yml" "$completion_dir/weidu-ssl.completion.yml"
