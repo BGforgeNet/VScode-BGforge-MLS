@@ -27,19 +27,12 @@ COMPLETION_TYPE_function = 3
 
 # https://stackoverflow.com/questions/42899405/sort-a-list-with-longest-items-first
 def sort_longer_first(s, t):
-  for p, q in zip(s['name'], t['name']):
+  for p, q in zip(s, t):
     if p < q: return -1
     if q < p: return 1
   if len(s) > len(t): return -1
   elif len(t) > len(s): return 1
   return 0
-
-def sort_ie_items(ilist, longer_first = False):
-  if longer_first is False:
-    items = sorted(ilist, key = lambda k: k['name'])
-  else:
-    items = sorted(ilist, key = functools.cmp_to_key(sort_longer_first))
-  return items
 
 def dump_completion(fpath, iedata):
   # dump to completion
@@ -55,7 +48,7 @@ def dump_completion(fpath, iedata):
     if not stanza in data:
       data.insert(1, stanza, {'type': dtype})
     data[stanza]["type"] = dtype
-    items = sort_ie_items(ied['items'])
+    items = sorted(ied['items'], key = lambda k: k['name'])
     data[stanza]["items"] = items
   with open(fpath, 'w') as yf:
     yaml.dump(data, yf)
@@ -73,8 +66,8 @@ def dump_highlight(fpath, iedata):
       repository.insert(1, stanza, {'name': ied['scope']})
     repository[stanza]['name'] = ied['scope']
 
-    items = sort_ie_items(ied['items'])
-    items = [x['name'] for x in items]
+    items = [x['name'] for x in ied['items']]
+    items = sorted(items, key = functools.cmp_to_key(sort_longer_first))
     items = [{"match": "\\b({})\\b".format(x)} for x in items]
     repository[stanza]['patterns'] = items
   with open(fpath, 'w') as yf:
