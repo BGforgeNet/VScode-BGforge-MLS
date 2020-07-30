@@ -35,7 +35,6 @@ patterns:
   - include: '#weidu-tp2-value-operators'
   - include: '#array-construct'
   - include: '#vars-declaration'
-  - include: '#ielib-functions'
   - include: '#numbers'
   - include: '#datatypes'
 
@@ -57,10 +56,8 @@ repository:
           '1':
             name: support.type.weidu.datatype
           '2':
-            name: support.type.weidu.datatype
-          '3':
             name: comment
-          '4':
+          '3':
             patterns:
               - include: '#known-functions'
       - match: \b(patch) (function) (\w+)\b

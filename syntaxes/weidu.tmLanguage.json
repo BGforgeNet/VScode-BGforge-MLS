@@ -100,9 +100,6 @@
       "include": "#vars-declaration"
     },
     {
-      "include": "#ielib-functions"
-    },
-    {
       "include": "#numbers"
     },
     {
@@ -136,12 +133,9 @@
               "name": "support.type.weidu.datatype"
             },
             "2": {
-              "name": "support.type.weidu.datatype"
-            },
-            "3": {
               "name": "comment"
             },
-            "4": {
+            "3": {
               "patterns": [
                 {
                   "include": "#known-functions"
