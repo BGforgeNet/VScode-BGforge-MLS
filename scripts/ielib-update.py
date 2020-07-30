@@ -80,8 +80,8 @@ for df in define_files:
   new_resref_defines = defines_from_file(df, regex_text)
   resref_defines = {**resref_defines, **new_resref_defines}
 
-int_defines = [{"name": x, "detail": "int {}".format(x), "doc": "IElib define"} for x in int_defines]
-resref_defines = [{"name": x, "detail": "resref {}".format(x), "doc": "IElib define"} for x in resref_defines]
+int_defines = [{"name": x, "detail": "int {} = {}".format(x, int_defines[x]), "doc": "IElib define"} for x in int_defines]
+resref_defines = [{"name": x, "detail": 'resref {} = "{}"'.format(x, resref_defines[x]), "doc": "IElib define"} for x in resref_defines]
 ielib_data['ints']['items'] = int_defines
 ielib_data['resrefs']['items'] = resref_defines
 
