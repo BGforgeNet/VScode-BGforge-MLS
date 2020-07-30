@@ -42,12 +42,13 @@ def dump_completion(fpath, iedata):
     ied = iedata[k]
     stanza = ied['stanza']
     try:
-      dtype = ied['type']
+      ctype = ied['completion_type']
     except:
-      dtype = COMPLETION_TYPE_constant
+      ctype = COMPLETION_TYPE_constant
     if not stanza in data:
-      data.insert(1, stanza, {'type': dtype})
-    data[stanza]["type"] = dtype
+      data.insert(1, stanza, {'type': ctype})
+    data[stanza]["type"] = ctype
+
     items = sorted(ied['items'], key = lambda k: k['name'])
     data[stanza]["items"] = items
   with open(fpath, 'w') as yf:
@@ -75,7 +76,7 @@ def dump_highlight(fpath, iedata):
 
     string_items = [x['name'] for x in string_items]
     string_items = sorted(string_items, key = functools.cmp_to_key(sort_longer_first))
-    string_items = [{"match": "\\b(%{}%)\\b".format(x)} for x in string_items]
+    string_items = [{"match": "(%{}%)".format(x)} for x in string_items]
 
     items = string_items + items
     repository[stanza]['patterns'] = items

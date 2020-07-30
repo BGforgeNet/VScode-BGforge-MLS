@@ -15,10 +15,26 @@ ielib_url = "https://ielib.bgforge.net"
 types_url = ielib_url + "/types"
 
 ielib_data = {
-  'ints': {'stanza': 'ielib-ints', 'scope': 'constant.language.ielib.int'},
-  'resrefs': {'stanza': 'ielib-resref', 'scope': 'constant.language.ielib.resref', 'string': True},
-  'action_functions': {'stanza': 'ielib-action-functions', 'scope': 'entity.name.class.ielib.action_function', 'type': COMPLETION_TYPE_function},
-  'patch_functions': { 'stanza': 'ielib-patch-functions', 'scope': 'entity.name.class.ielib.patch_function', 'type': COMPLETION_TYPE_function}
+  'ints': {
+    'stanza': 'ielib-ints',
+    'scope':
+    'constant.language.ielib.int',
+  },
+  'resrefs': {
+    'stanza': 'ielib-resref',
+    'scope': 'constant.language.ielib.resref',
+    'string': True,
+  },
+  'action_functions': {
+    'stanza': 'ielib-action-functions',
+    'scope': 'support.function.weidu.action_function',
+    'completion_type': COMPLETION_TYPE_function,
+  },
+  'patch_functions': {
+    'stanza': 'ielib-patch-functions',
+    'scope': 'entity.name.class.ielib.patch_function',
+    'completion_type': COMPLETION_TYPE_function,
+  }
 }
 
 completion_weidu = args.completion_weidu
@@ -64,8 +80,8 @@ for df in define_files:
   new_resref_defines = defines_from_file(df, regex_text)
   resref_defines = {**resref_defines, **new_resref_defines}
 
-int_defines = [{"name": x, "detail": int_defines[x], "doc": "IElib int"} for x in int_defines]
-resref_defines = [{"name": x, "detail": resref_defines[x], "doc": "IElib resref"} for x in resref_defines]
+int_defines = [{"name": x, "detail": "int {}".format(x), "doc": "IElib define"} for x in int_defines]
+resref_defines = [{"name": x, "detail": "resref {}".format(x), "doc": "IElib define"} for x in resref_defines]
 ielib_data['ints']['items'] = int_defines
 ielib_data['resrefs']['items'] = resref_defines
 

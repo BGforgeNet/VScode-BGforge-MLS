@@ -230,7 +230,7 @@ def load_datafile(fpath, prefix, chars, lbytes, words, dwords, resrefs, strrefs,
     if 'unused' in i or 'unknown' in i:
       continue
     iid = get_id(i, prefix)
-    item = {"name": iid, "detail": i['type'], "doc": i['desc']}
+    item = {"name": iid, "detail": "{} {}".format(i['type'], iid), "doc": i['desc']}
     if i['type'] == 'char':
       chars.append(item)
     elif i['type'] == 'byte':
@@ -282,7 +282,7 @@ for l in [chars, lbytes, words, dwords, resrefs, strrefs, other]:
     sys.exit(1)
 
 iesdp_data = {
-  'chars': {'stanza': 'iesdp-char', 'items': chars, 'scope': 'constant.language.iesdp.char',},
+  'chars': {'stanza': 'iesdp-char', 'items': chars, 'scope': 'constant.language.iesdp.char'},
   'bytes': {'stanza': 'iesdp-byte', 'items': lbytes, 'scope': 'constant.language.iesdp.byte'},
   'words': {'stanza': 'iesdp-word', 'items': words, 'scope': 'constant.language.iesdp.word'},
   'dwords': {'stanza': 'iesdp-dword', 'items': dwords, 'scope': 'constant.language.iesdp.dword'},
