@@ -16,7 +16,7 @@ types_url = ielib_url + "/types"
 
 ielib_data = {
   'ints': {'stanza': 'ielib-ints', 'scope': 'constant.language.ielib.int'},
-  'resrefs': {'stanza': 'ielib-resref', 'scope': 'constant.language.ielib.resref'},
+  'resrefs': {'stanza': 'ielib-resref', 'scope': 'constant.language.ielib.resref', 'string': True},
   'action_functions': {'stanza': 'ielib-action-functions', 'scope': 'entity.name.class.ielib.action_function', 'type': COMPLETION_TYPE_function},
   'patch_functions': { 'stanza': 'ielib-patch-functions', 'scope': 'entity.name.class.ielib.patch_function', 'type': COMPLETION_TYPE_function}
 }

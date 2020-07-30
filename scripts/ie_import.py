@@ -66,9 +66,18 @@ def dump_highlight(fpath, iedata):
       repository.insert(1, stanza, {'name': ied['scope']})
     repository[stanza]['name'] = ied['scope']
 
+    # string items get additional %' around
+    string_items = [x for x in ied['items'] if 'string' in ied]
+
     items = [x['name'] for x in ied['items']]
     items = sorted(items, key = functools.cmp_to_key(sort_longer_first))
     items = [{"match": "\\b({})\\b".format(x)} for x in items]
+
+    string_items = [x['name'] for x in string_items]
+    string_items = sorted(string_items, key = functools.cmp_to_key(sort_longer_first))
+    string_items = [{"match": "\\b(%{}%)\\b".format(x)} for x in string_items]
+
+    items = string_items + items
     repository[stanza]['patterns'] = items
   with open(fpath, 'w') as yf:
     yaml.dump(data, yf)
