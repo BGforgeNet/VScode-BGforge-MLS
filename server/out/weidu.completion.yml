@@ -442,8 +442,8 @@ iesdp-word:
     - name: EFF_effect_type
       detail: word EFF_effect_type
       doc: Effect type
-    - name: FX_opcode_number
-      detail: word FX_opcode_number
+    - name: FX_opcode
+      detail: word FX_opcode
       doc: Opcode Number
     - name: ITM_charges
       detail: word ITM_charges

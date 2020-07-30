@@ -1718,7 +1718,7 @@ repository:
       - match: \b(EFF2_probability2)\b
       - match: \b(EFF2_timing)\b
       - match: \b(EFF_effect_type)\b
-      - match: \b(FX_opcode_number)\b
+      - match: \b(FX_opcode)\b
       - match: \b(ITM_charges)\b
       - match: \b(ITM_damage_bonus)\b
       - match: \b(ITM_damage_type)\b

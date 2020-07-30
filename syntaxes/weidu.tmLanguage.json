@@ -6667,7 +6667,7 @@
           "name": "constant.language.iesdp.word"
         },
         {
-          "match": "\\b(FX_opcode_number)\\b",
+          "match": "\\b(FX_opcode)\\b",
           "name": "constant.language.iesdp.word"
         },
         {
