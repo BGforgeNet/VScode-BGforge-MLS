@@ -40,6 +40,9 @@ highlight_resrefs = []
 completion_functions = []
 highlight_functions = []
 
+COMPLETION_TYPE_constant = 21
+COMPLETION_TYPE_function = 3
+
 def find_file(path, name):
   for root, dirs, files in os.walk(path, followlinks=True):
     if name in files:
@@ -96,7 +99,7 @@ for d in resref_defines:
 with open(completion_yaml) as yf:
   data = yaml.load(yf)
 data[stanza_completion_constants]["items"] = completion_constants
-data[stanza_completion_constants]["type"] = 21 # constant
+data[stanza_completion_constants]["type"] = COMPLETION_TYPE_constant
 with open(completion_yaml, 'w') as yf:
   yaml.dump(data, yf)
 
@@ -190,7 +193,7 @@ with open(completion_yaml) as yf:
   data = yaml.load(yf)
 completion_functions = sorted(completion_functions, key=lambda k: k['name']) # reduce diff noise
 data[stanza_completion_functions]["items"] = completion_functions
-data[stanza_completion_functions]["type"] = 3 # functions
+data[stanza_completion_functions]["type"] = COMPLETION_TYPE_function
 with open(completion_yaml, 'w') as yf:
   yaml.dump(data, yf)
 
