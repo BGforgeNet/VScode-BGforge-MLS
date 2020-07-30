@@ -10854,7 +10854,7 @@
         }
       ]
     },
-    "ielib-ints": {
+    "ielib-int": {
       "name": "constant.language.ielib.int",
       "patterns": [
         {
@@ -19889,48 +19889,48 @@
       ]
     },
     "ielib-constants": {
-      "name": "constant.weidu.ielib",
+      "name": "constant.language.weidu.ielib",
       "patterns": [
         {
+          "include": "#iesdp-constants",
+          "name": "constant.language.weidu.ielib"
+        },
+        {
           "include": "#ielib-int",
-          "name": "constant.weidu.ielib"
+          "name": "constant.language.weidu.ielib"
         },
         {
           "include": "#ielib-resref",
-          "name": "constant.weidu.ielib"
-        },
-        {
-          "include": "#iesdp-constants",
-          "name": "constant.weidu.ielib"
+          "name": "constant.language.weidu.ielib"
         }
       ]
     },
     "iesdp-constants": {
-      "name": "constant.weidu.iesdp",
+      "name": "constant.language.weidu.iesdp",
       "patterns": [
         {
           "include": "#iesdp-char",
-          "name": "constant.weidu.iesdp"
+          "name": "constant.language.weidu.iesdp"
         },
         {
           "include": "#iesdp-byte",
-          "name": "constant.weidu.iesdp"
+          "name": "constant.language.weidu.iesdp"
         },
         {
           "include": "#iesdp-word",
-          "name": "constant.weidu.iesdp"
+          "name": "constant.language.weidu.iesdp"
         },
         {
           "include": "#iesdp-dword",
-          "name": "constant.weidu.iesdp"
+          "name": "constant.language.weidu.iesdp"
         },
         {
           "include": "#iesdp-resref",
-          "name": "constant.weidu.iesdp"
+          "name": "constant.language.weidu.iesdp"
         },
         {
           "include": "#iesdp-strref",
-          "name": "constant.weidu.iesdp"
+          "name": "constant.language.weidu.iesdp"
         }
       ]
     }

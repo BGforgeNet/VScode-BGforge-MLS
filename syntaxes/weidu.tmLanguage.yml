@@ -2748,7 +2748,7 @@ repository:
       - match: \b(ZOMBIE_CON_LOSS)\b
       - match: \b(ZOMBIE_LEVEL_DRAIN)\b
       - match: \b(ZOMBIE_SICKNESS)\b
-  ielib-ints:
+  ielib-int:
     name: constant.language.ielib.int
     patterns:
       - match: \b(AC_MOD_TYPE_all)\b
@@ -5207,14 +5207,14 @@ repository:
       - include: source.baf.weidu
 
   ielib-constants:
-    name: constant.weidu.ielib
+    name: constant.language.weidu.ielib
     patterns:
+      - include: '#iesdp-constants'
       - include: '#ielib-int'
       - include: '#ielib-resref'
-      - include: '#iesdp-constants'
 
   iesdp-constants:
-    name: constant.weidu.iesdp
+    name: constant.language.weidu.iesdp
     patterns:
       - include: '#iesdp-char'
       - include: '#iesdp-byte'
