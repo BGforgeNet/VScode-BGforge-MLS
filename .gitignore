@@ -10,3 +10,4 @@ client/server
 *.log
 tmp
 external
+scripts/__pycache__/
