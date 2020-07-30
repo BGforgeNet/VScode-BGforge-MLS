@@ -518,6 +518,13 @@
 			"settings": {
 				"fontStyle": "underline"
 			}
+		},
+		{
+			"name": "ielib constant resref",
+			"scope": "constant.language.ielib.resref",
+			"settings": {
+				"fontStyle": "underline"
+			}
 		}
 	],
 	"semanticHighlighting": true

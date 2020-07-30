@@ -91,7 +91,7 @@ repository:
       - match: \b(LABEL)\b
 
   weidu-tp2-action:
-    name: support.function.weidu
+    name: support.function.weidu.action
     patterns:
       - match: \b(COPY)\b
       - match: \b(COPY_EXISTING)\b
@@ -985,10 +985,7 @@ repository:
     patterns:
       - include: '#ielib-int'
       - include: '#ielib-resref'
-      - include: '#ielib-char'
-      - include: '#ielib-byte'
-      - include: '#ielib-word'
-      - include: '#ielib-dword'
+      - include: '#iesdp-constants'
 
   iesdp-constants:
     name: constant.weidu.iesdp
@@ -1187,7 +1184,7 @@ repository:
       - match: \b(SPL_signature)\b
       - match: \b(SPL_versions)\b
   ielib-resref:
-    name: constant.language.weidu.resref.ielib
+    name: constant.language.ielib.resref
     patterns:
       - match: (%ZOMBIE_SICKNESS%)
       - match: (ZOMBIE_SICKNESS)
@@ -3678,7 +3675,7 @@ repository:
       - match: (%ABAZIGAL_SHOCKWAVE%)
       - match: (ABAZIGAL_SHOCKWAVE)
   ielib-int:
-    name: constant.language.weidu.int.ielib
+    name: constant.language.ielib.int
     patterns:
       - match: (%TIMING_while_equipped%)
       - match: (TIMING_while_equipped)
@@ -6725,7 +6722,7 @@ repository:
       - match: (%AC_MOD_TYPE_all%)
       - match: (AC_MOD_TYPE_all)
   ielib-functions:
-    name: support.function.ielib.weidu
+    name: support.function.ielib.function
     patterns:
       - match: (ALTER_AREA_REGION_MATCH)
       - match: (ALTER_AREA_STRUCTURE_SCRIPT)
