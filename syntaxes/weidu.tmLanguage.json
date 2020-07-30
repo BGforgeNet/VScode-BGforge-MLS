@@ -107,12 +107,6 @@
     },
     {
       "include": "#datatypes"
-    },
-    {
-      "include": "#action-functions"
-    },
-    {
-      "include": "#patch-functions"
     }
   ],
   "repository": {
@@ -136,24 +130,38 @@
           "name": "support.type.weidu.datatype"
         },
         {
-          "match": "\\b(action) (function)\\b",
+          "match": "\\b(action) (function) (\\w+)\\b",
           "captures": {
             "1": {
               "name": "support.type.weidu.datatype"
             },
             "2": {
               "name": "comment"
+            },
+            "3": {
+              "patterns": [
+                {
+                  "include": "#known-functions"
+                }
+              ]
             }
           }
         },
         {
-          "match": "\\b(patch) (function)\\b",
+          "match": "\\b(patch) (function) (\\w+)\\b",
           "captures": {
             "1": {
               "name": "entity.name.function.weidu.patch"
             },
             "2": {
               "name": "comment"
+            },
+            "3": {
+              "patterns": [
+                {
+                  "include": "#known-functions"
+                }
+              ]
             }
           }
         }
@@ -25179,7 +25187,7 @@
       "end": "((\\w+)|(\\S+))",
       "beginCaptures": {
         "1": {
-          "name": "keyword.control.weidu"
+          "name": "support.function.weidu.action"
         }
       },
       "endCaptures": {
@@ -25209,7 +25217,7 @@
       "end": "((\\w+)|(\\S+))",
       "beginCaptures": {
         "1": {
-          "name": "keyword.control.weidu"
+          "name": "entity.name.function.weidu.patch"
         }
       },
       "endCaptures": {
