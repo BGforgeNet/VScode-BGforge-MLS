@@ -50,15 +50,17 @@ repository:
 
   datatypes: # completion tooltips
     patterns:
-      - match: \b(int|byte|char array|char|word|dword|resref|strref)\b
+      - match: \b(multi )?(int|byte|char array|char|word|dword|resref|strref)\b
         name: support.type.weidu.datatype
       - match: \b(action) (function) (\w+)\b
         captures:
           '1':
             name: support.type.weidu.datatype
           '2':
-            name: comment
+            name: support.type.weidu.datatype
           '3':
+            name: comment
+          '4':
             patterns:
               - include: '#known-functions'
       - match: \b(patch) (function) (\w+)\b
@@ -1623,7 +1625,9 @@ repository:
       - match: \b(EFF2_version2)\b
       - match: \b(EFF2_version)\b
       - match: \b(ITM_animation)\b
+      - match: \b(ITM_melee_animation)\b
       - match: \b(ITM_signature)\b
+      - match: \b(ITM_usability_flags)\b
       - match: \b(ITM_version)\b
       - match: \b(SPL_signature)\b
       - match: \b(SPL_versions)\b
@@ -1728,7 +1732,6 @@ repository:
       - match: \b(ITM_is_bolt)\b
       - match: \b(ITM_is_bullet)\b
       - match: \b(ITM_lore_to_id)\b
-      - match: \b(ITM_melee_animation)\b
       - match: \b(ITM_min_charisma)\b
       - match: \b(ITM_min_level)\b
       - match: \b(ITM_min_strength)\b
@@ -1776,7 +1779,6 @@ repository:
       - match: \b(ITM_projectile_type)\b
       - match: \b(ITM_secondary_type)\b
       - match: \b(ITM_speed)\b
-      - match: \b(ITM_usability_flags)\b
       - match: \b(ITM_weapon_proficiency)\b
       - match: \b(SPL_school)\b
   iesdp-char:

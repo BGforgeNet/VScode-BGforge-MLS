@@ -230,7 +230,18 @@ def load_datafile(fpath, prefix, chars, lbytes, words, dwords, resrefs, strrefs,
     if 'unused' in i or 'unknown' in i:
       continue
     iid = get_id(i, prefix)
-    item = {"name": iid, "detail": "{} {}".format(i['type'], iid), "doc": i['desc']}
+
+    if 'mult' in i: # multiword, multibyte - etc
+      detail = "multi {} {}".format(i['type'], iid)
+    else:
+      detail = "{} {}".format(i['type'], iid)
+
+    item = {"name": iid, "detail": detail, "doc": i['desc']}
+
+    if 'mult' in i:
+      other.append(item)
+      continue
+
     if i['type'] == 'char':
       chars.append(item)
     elif i['type'] == 'byte':

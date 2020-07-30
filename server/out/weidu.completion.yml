@@ -104,9 +104,15 @@ iesdp-other:
     - name: ITM_animation
       detail: char array ITM_animation
       doc: '[Item animation](#Header_Animation)'
+    - name: ITM_melee_animation
+      detail: multi word ITM_melee_animation
+      doc: '[Melee animation](#ExtendedHeader_MeleeAnimation)'
     - name: ITM_signature
       detail: char array ITM_signature
       doc: Signature ('ITM ')
+    - name: ITM_usability_flags
+      detail: multi byte ITM_usability_flags
+      doc: '[Usability bitmask](#Header_Usability)'
     - name: ITM_version
       detail: char array ITM_version
       doc: Version ('V1  ')
@@ -493,9 +499,6 @@ iesdp-word:
     - name: ITM_lore_to_id
       detail: word ITM_lore_to_id
       doc: Lore to ID
-    - name: ITM_melee_animation
-      detail: word ITM_melee_animation
-      doc: '[Melee animation](#ExtendedHeader_MeleeAnimation)'
     - name: ITM_min_charisma
       detail: word ITM_min_charisma
       doc: Min Charisma
@@ -665,9 +668,6 @@ iesdp-byte:
     - name: ITM_speed
       detail: byte ITM_speed
       doc: Speed
-    - name: ITM_usability_flags
-      detail: byte ITM_usability_flags
-      doc: '[Usability bitmask](#Header_Usability)'
     - name: ITM_weapon_proficiency
       detail: byte ITM_weapon_proficiency
       doc: '[Weapon Proficiency](#Header_Proficiency)'

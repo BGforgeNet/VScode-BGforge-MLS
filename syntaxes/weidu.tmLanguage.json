@@ -126,7 +126,7 @@
     "datatypes": {
       "patterns": [
         {
-          "match": "\\b(int|byte|char array|char|word|dword|resref|strref)\\b",
+          "match": "\\b(multi )?(int|byte|char array|char|word|dword|resref|strref)\\b",
           "name": "support.type.weidu.datatype"
         },
         {
@@ -136,9 +136,12 @@
               "name": "support.type.weidu.datatype"
             },
             "2": {
-              "name": "comment"
+              "name": "support.type.weidu.datatype"
             },
             "3": {
+              "name": "comment"
+            },
+            "4": {
               "patterns": [
                 {
                   "include": "#known-functions"
@@ -6320,7 +6323,15 @@
           "name": "constant.language.iesdp.other"
         },
         {
+          "match": "\\b(ITM_melee_animation)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
           "match": "\\b(ITM_signature)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITM_usability_flags)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
@@ -6712,10 +6723,6 @@
           "name": "constant.language.iesdp.word"
         },
         {
-          "match": "\\b(ITM_melee_animation)\\b",
-          "name": "constant.language.iesdp.word"
-        },
-        {
           "match": "\\b(ITM_min_charisma)\\b",
           "name": "constant.language.iesdp.word"
         },
@@ -6894,10 +6901,6 @@
         },
         {
           "match": "\\b(ITM_speed)\\b",
-          "name": "constant.language.iesdp.byte"
-        },
-        {
-          "match": "\\b(ITM_usability_flags)\\b",
           "name": "constant.language.iesdp.byte"
         },
         {
