@@ -485,36 +485,36 @@
 			}
 		},
 		{
-			"name": "weidu constant byte",
-			"scope": "constant.language.weidu.byte",
+			"name": "iesdp constant byte",
+			"scope": "constant.language.iesdp.byte",
 			"settings": {
 				"fontStyle": "italic"
 			}
 		},
 		{
-			"name": "weidu constant char",
-			"scope": "constant.language.weidu.char",
+			"name": "iesdp constant char",
+			"scope": "constant.language.iesdp.char",
 			"settings": {
 				"fontStyle": "italic"
 			}
 		},
 		{
-			"name": "weidu constant word",
-			"scope": "constant.language.weidu.word",
+			"name": "iesdp constant word",
+			"scope": "constant.language.iesdp.word",
 			"settings": {
 				"fontStyle": "bold italic"
 			}
 		},
 		{
-			"name": "weidu constant dword",
-			"scope": "constant.language.weidu.dword",
+			"name": "iesdp constant dword",
+			"scope": "constant.language.iesdp.dword",
 			"settings": {
 				"fontStyle": "bold"
 			}
 		},
 		{
-			"name": "weidu constant resref",
-			"scope": "constant.language.weidu.resref",
+			"name": "iesdp constant resref",
+			"scope": "constant.language.iesdp.resref",
 			"settings": {
 				"fontStyle": "underline"
 			}
