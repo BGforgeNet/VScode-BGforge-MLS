@@ -983,10 +983,210 @@ repository:
   ielib-constants:
     name: constant.weidu.ielib
     patterns:
-      - include: '#ielib-ints'
-      - include: '#ielib-resrefs'
+      - include: '#ielib-int'
+      - include: '#ielib-resref'
+      - include: '#ielib-char'
+      - include: '#ielib-byte'
+      - include: '#ielib-word'
+      - include: '#ielib-dword'
 
-  ielib-resrefs:
+  iesdp-constants:
+    name: constant.weidu.iesdp
+    patterns:
+      - include: '#iesdp-char'
+      - include: '#iesdp-byte'
+      - include: '#iesdp-word'
+      - include: '#iesdp-dword'
+      - include: '#iesdp-resref'
+      - include: '#iesdp-strref'
+
+  iesdp-char:
+    name: constant.language.iesdp.char
+    patterns:
+      - match: \b(ITM_attack_type)\b
+      - match: \b(ITM_id_required)\b
+      - match: \b(ITM_location)\b
+      - match: \b(ITM_alt_dice_sides)\b
+      - match: \b(ITM_target)\b
+      - match: \b(ITM_target_count)\b
+      - match: \b(SPL_form)\b
+      - match: \b(SPL_friendly)\b
+      - match: \b(SPL_target)\b
+      - match: \b(SPL_target_number)\b
+      - match: \b(SPL_sectype)\b
+      - match: \b(FX_target)\b
+      - match: \b(FX_power)\b
+      - match: \b(FX_timing)\b
+      - match: \b(FX_resistance)\b
+      - match: \b(FX_probability1)\b
+      - match: \b(FX_probability2)\b
+  iesdp-byte:
+    name: constant.language.iesdp.byte
+    patterns:
+      - match: \b(ITM_projectile_type)\b
+      - match: \b(ITM_alt_dice_thrown)\b
+      - match: \b(ITM_speed)\b
+      - match: \b(ITM_alt_damage_bonus)\b
+      - match: \b(ITM_dice_sides)\b
+      - match: \b(ITM_primary_type)\b
+      - match: \b(ITM_dice_thrown)\b
+      - match: \b(ITM_secondary_type)\b
+      - match: \b(ITM_usabilitybitmask)\b
+      - match: \b(ITM_min_strength_bonus)\b
+      - match: \b(ITM_kit_usability1)\b
+      - match: \b(ITM_min_intelligence)\b
+      - match: \b(ITM_kit_usability2)\b
+      - match: \b(ITM_min_dexterity)\b
+      - match: \b(ITM_kit_usability3)\b
+      - match: \b(ITM_min_wisdom)\b
+      - match: \b(ITM_kit_usability4)\b
+      - match: \b(ITM_min_constitution)\b
+      - match: \b(ITM_weapon_proficiency)\b
+      - match: \b(EFF_target)\b
+      - match: \b(EFF_power)\b
+      - match: \b(EFF_timing_mode)\b
+      - match: \b(EFF_resistance)\b
+      - match: \b(EFF_probability1)\b
+      - match: \b(EFF_probability2)\b
+      - match: \b(SPL_school)\b
+  iesdp-word:
+    name: constant.language.iesdp.word
+    patterns:
+      - match: \b(ITM_range)\b
+      - match: \b(ITM_thac0_bonus)\b
+      - match: \b(ITM_damage_bonus)\b
+      - match: \b(ITM_damage_type)\b
+      - match: \b(ITM_feature_block_count)\b
+      - match: \b(ITM_feature_block_index)\b
+      - match: \b(ITM_charges)\b
+      - match: \b(ITM_depletion)\b
+      - match: \b(ITM_projectile_animation)\b
+      - match: \b(ITM_melee_animation)\b
+      - match: \b(ITM_is_arrow)\b
+      - match: \b(ITM_is_bolt)\b
+      - match: \b(ITM_is_bullet)\b
+      - match: \b(ITM_type)\b
+      - match: \b(ITM_min_level)\b
+      - match: \b(ITM_min_strength)\b
+      - match: \b(ITM_min_charisma)\b
+      - match: \b(ITM_stack_amount)\b
+      - match: \b(ITM_lore_to_id)\b
+      - match: \b(ITM_extended_headers_count)\b
+      - match: \b(ITM_feature_blocks_index)\b
+      - match: \b(ITM_feature_blocks_count)\b
+      - match: \b(EFF2_timing)\b
+      - match: \b(EFF2_probability1)\b
+      - match: \b(EFF2_probability2)\b
+      - match: \b(EFF_effect_type)\b
+      - match: \b(SPL_location)\b
+      - match: \b(SPL_range)\b
+      - match: \b(SPL_level_required)\b
+      - match: \b(SPL_casting_time)\b
+      - match: \b(SPL_times_per_day)\b
+      - match: \b(SPL_feature_blocks_count)\b
+      - match: \b(SPL_feature_blocks_offset)\b
+      - match: \b(SPL_projectile)\b
+      - match: \b(SPL_type)\b
+      - match: \b(SPL_casting_graphics)\b
+      - match: \b(SPL_extended_headers_count)\b
+      - match: \b(SPL_casting_feature_blocks_offset)\b
+      - match: \b(SPL_casting_feature_blocks_count)\b
+      - match: \b(FX_opcode_number)\b
+  iesdp-dword:
+    name: constant.language.iesdp.dword
+    patterns:
+      - match: \b(ITM_header_flags)\b
+      - match: \b(ITM_flags)\b
+      - match: \b(ITM_price)\b
+      - match: \b(ITM_weight)\b
+      - match: \b(ITM_enchantment)\b
+      - match: \b(ITM_extended_headers_offset)\b
+      - match: \b(ITM_feature_blocks_offset)\b
+      - match: \b(EFF2_opcode)\b
+      - match: \b(EFF2_target)\b
+      - match: \b(EFF2_power)\b
+      - match: \b(EFF2_parameter1)\b
+      - match: \b(EFF2_parameter2)\b
+      - match: \b(EFF2_duration)\b
+      - match: \b(EFF2_dice_thrown)\b
+      - match: \b(EFF2_dice_sides)\b
+      - match: \b(EFF2_save_type)\b
+      - match: \b(EFF2_save_bonus)\b
+      - match: \b(EFF2_stacking_id_tobex)\b
+      - match: \b(EFF2_school)\b
+      - match: \b(EFF2_resistance)\b
+      - match: \b(EFF2_parameter3)\b
+      - match: \b(EFF2_parameter4)\b
+      - match: \b(EFF2_parameter5)\b
+      - match: \b(EFF2_parameter6)\b
+      - match: \b(EFF2_caster_x_coord)\b
+      - match: \b(EFF2_caster_y_coord)\b
+      - match: \b(EFF2_target_x_coord)\b
+      - match: \b(EFF2_target_y_coord)\b
+      - match: \b(EFF2_sectype)\b
+      - match: \b(EFF_parameter1)\b
+      - match: \b(EFF_parameter2)\b
+      - match: \b(EFF_duration)\b
+      - match: \b(EFF_dice_count)\b
+      - match: \b(EFF_dice_sides)\b
+      - match: \b(EFF_save_type)\b
+      - match: \b(EFF_save_bonus)\b
+      - match: \b(SPL_unidentified_name)\b
+      - match: \b(SPL_identified_name)\b
+      - match: \b(SPL_flags)\b
+      - match: \b(SPL_exclusion_flags)\b
+      - match: \b(SPL_spell_level)\b
+      - match: \b(SPL_unidentified_description)\b
+      - match: \b(SPL_identified_desc)\b
+      - match: \b(SPL_extended_headers_offset)\b
+      - match: \b(SPL_feature_blocks_offset)\b
+      - match: \b(FX_parameter1)\b
+      - match: \b(FX_parameter2)\b
+      - match: \b(FX_duration)\b
+      - match: \b(FX_dice_thrown)\b
+      - match: \b(FX_dice_sides)\b
+      - match: \b(FX_save_type)\b
+      - match: \b(FX_save_bonus)\b
+      - match: \b(FX_stacking_id_tobex)\b
+  iesdp-resref:
+    name: constant.language.iesdp.resref
+    patterns:
+      - match: \b(ITM_use_icon)\b
+      - match: \b(ITM_replacement)\b
+      - match: \b(ITM_inventory_icon)\b
+      - match: \b(ITM_ground_icon)\b
+      - match: \b(ITM_description_icon)\b
+      - match: \b(EFF2_resource)\b
+      - match: \b(EFF2_resource2)\b
+      - match: \b(EFF2_resource3)\b
+      - match: \b(EFF2_parent_resource)\b
+      - match: \b(EFF_resref_key)\b
+      - match: \b(SPL_memorised_icon)\b
+      - match: \b(SPL_completion_sound)\b
+      - match: \b(SPL_spellbook_icon)\b
+      - match: \b(FX_resource)\b
+  iesdp-strref:
+    name: constant.language.iesdp.strref
+    patterns:
+      - match: \b(ITM_unidentified_name)\b
+      - match: \b(ITM_identified_name)\b
+      - match: \b(ITM_unidentified_desc)\b
+      - match: \b(ITM_identified_desc)\b
+  iesdp-other:
+    name: constant.language.iesdp.other
+
+    patterns:
+      - match: \b(ITM_signature)\b
+      - match: \b(ITM_version)\b
+      - match: \b(ITM_animation)\b
+      - match: \b(EFF2_signature)\b
+      - match: \b(EFF2_version)\b
+      - match: \b(EFF2_signature2)\b
+      - match: \b(EFF2_version2)\b
+      - match: \b(EFF2_variable)\b
+      - match: \b(SPL_signature)\b
+      - match: \b(SPL_versions)\b
+  ielib-resref:
     name: constant.language.weidu.resref.ielib
     patterns:
       - match: (%ZOMBIE_SICKNESS%)
@@ -3477,7 +3677,7 @@ repository:
       - match: (ACID_DAMAGE_1)
       - match: (%ABAZIGAL_SHOCKWAVE%)
       - match: (ABAZIGAL_SHOCKWAVE)
-  ielib-ints:
+  ielib-int:
     name: constant.language.weidu.int.ielib
     patterns:
       - match: (%TIMING_while_equipped%)

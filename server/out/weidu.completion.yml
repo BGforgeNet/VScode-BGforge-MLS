@@ -79,6 +79,739 @@ weidu-constants:
     - name: WMP_EAST_LINKS
       doc: Predefined set of values for `GET_OFFSET_ARRAY2`.
 
+iesdp-other:
+  type: 21
+  items:
+    - name: ITM_signature
+      detail: char array
+      doc: Signature ('ITM ')
+    - name: ITM_version
+      detail: char array
+      doc: Version ('V1  ')
+    - name: ITM_animation
+      detail: char array
+      doc: '[Item animation](#Header_Animation)'
+    - name: EFF2_signature
+      detail: char array
+      doc: Signature ('EFF ')
+    - name: EFF2_version
+      detail: char array
+      doc: Version ('V2.0')
+    - name: EFF2_signature2
+      detail: char array
+      doc: |
+        External EFFs - the field is the same as the signature field from the header  
+        Embedded EFFs - this field is zeroed out
+    - name: EFF2_version2
+      detail: char array
+      doc: |
+        External EFFs - the field is the same as the version field from the header  
+        Embedded EFFs - this field is zeroed out
+    - name: EFF2_variable
+      detail: bytes
+      doc: Variable
+    - name: SPL_signature
+      detail: char array
+      doc: Signature ('SPL &nbsp;')
+    - name: SPL_versions
+      detail: char array
+      doc: Version ('V1  ')
+iesdp-strref:
+  type: 21
+  items:
+    - name: ITM_unidentified_name
+      detail: strref
+      doc: Unidentified Name (strref)
+    - name: ITM_identified_name
+      detail: strref
+      doc: Identified Name (strref)
+    - name: ITM_unidentified_desc
+      detail: strref
+      doc: Unidentified Description (strref)
+    - name: ITM_identified_desc
+      detail: strref
+      doc: Identified Description (strref)
+iesdp-resref:
+  type: 21
+  items:
+    - name: ITM_use_icon
+      detail: resref
+      doc: Use icon
+    - name: ITM_replacement
+      detail: resref
+      doc: |
+        BG1, BG2, BGEE:  
+        Replacement item (ITM)
+
+        PSTEE:  
+        Drop sound - played when the item is dropped in the inventory (WAV)
+    - name: ITM_inventory_icon
+      detail: resref
+      doc: Inventory icon (BAM)
+    - name: ITM_ground_icon
+      detail: resref
+      doc: Ground icon (BAM)
+    - name: ITM_description_icon
+      detail: resref
+      doc: Description icon (BAM)
+    - name: EFF2_resource
+      detail: resref
+      doc: Resource
+    - name: EFF2_resource2
+      detail: resref
+      doc: Resource 2 (VVC in many effects)
+    - name: EFF2_resource3
+      detail: resref
+      doc: Resource 3
+    - name: EFF2_parent_resource
+      detail: resref
+      doc: Parent resource
+    - name: EFF_resref_key
+      detail: resref
+      doc: Resref key
+    - name: SPL_memorised_icon
+      detail: resref
+      doc: Memorised icon (BAM). The engine replaces the last character of this filename with a B.
+    - name: SPL_completion_sound
+      detail: resref
+      doc: Completion Sound
+    - name: SPL_spellbook_icon
+      detail: resref
+      doc: Spellbook icon (BAM). The engine replaces the last character of this filename with a C.
+    - name: FX_resource
+      detail: resref
+      doc: Resource
+iesdp-dword:
+  type: 21
+  items:
+    - name: ITM_header_flags
+      detail: dword
+      doc: '[Flags](#ExtHeader_Flags)'
+    - name: ITM_flags
+      detail: dword
+      doc: '[Flags](#Header_Flags)'
+    - name: ITM_price
+      detail: dword
+      doc: Price
+    - name: ITM_weight
+      detail: dword
+      doc: Weight
+    - name: ITM_enchantment
+      detail: dword
+      doc: Enchantment
+    - name: ITM_extended_headers_offset
+      detail: dword
+      doc: Offset to extended headers
+    - name: ITM_feature_blocks_offset
+      detail: dword
+      doc: Offset to feature blocks
+    - name: EFF2_opcode
+      detail: dword
+      doc: Opcode number
+    - name: EFF2_target
+      detail: dword
+      doc: |
+        Target type
+        - 0=None
+        - 1=Self (pre-projectile)
+        - 2=Pre-target
+        - 3=Party
+        - 4=Everyone (inc. party)
+        - 5=Everyone (excl. party)
+        - 6=Everyone matching specific value of caster (or Party if cast by party member)
+        - 7=Everyone matching specific value of target
+        - 8=Everyone (excl. caster)
+        - 9=Self (post-projectile)
+    - name: EFF2_power
+      detail: dword
+      doc: Power
+    - name: EFF2_parameter1
+      detail: dword
+      doc: Parameter 1
+    - name: EFF2_parameter2
+      detail: dword
+      doc: Parameter 2
+    - name: EFF2_duration
+      detail: dword
+      doc: Duration
+    - name: EFF2_dice_thrown
+      detail: dword
+      doc: Dice Thrown
+    - name: EFF2_dice_sides
+      detail: dword
+      doc: Dice Sides
+    - name: EFF2_save_type
+      detail: dword
+      doc: |
+        Saving throw type
+        - bit 0: Spells
+        - bit 1: Breath
+        - bit 2: Death
+        - bit 3: Wands
+        - bit 4: Polymorph
+        - bit 10: Ignore primary target – Line AoE projectile doesn't affect end target (EE only)
+        - bit 11: Ignore secondary target – Line AoE projectile doesn't affect bystanders (EE only)
+        - bit 24: Bypass mirror image (EE/ToBEx only)
+        - bit 25: EE - ignore difficulty; TobEx - limit effect stacking
+        - bit 26: TobEx internal (don't use) - suspend effect application
+
+        NB. If more than 1 saving throw type is specified, the target rolls against their best save
+    - name: EFF2_save_bonus
+      detail: dword
+      doc: Save bonus
+    - name: EFF2_stacking_id_tobex
+      detail: dword
+      doc: |
+        TobEx: Stacking ID. Checked when bit 25 of the Saving Throw Type is set.
+
+        If two effects of the same opcode are applied, both have Limit Effect Stacking bit set, and both have the same stacking ID, then the latter applied effect is suspended in application until the former effect expires. Regardless of whether it is applied, the latter effect will expire at the same time that it would expire if it was applied. In other words, the total duration of some non-stacking effect opcode is not extended because more than one copy of the effect was applied.
+
+        Stacking IDs are unique to the opcode being applied. To maintain uniqueness of stacking IDs between different mods, one recommendation is to use the higher word of Special as the modder's Infinity Engine Community Prefix, then use the lower word as an identifying ID. For example, 0x41360001 ('A6' 0x0001).
+    - name: EFF2_school
+      detail: dword
+      doc: Primary type (school)
+    - name: EFF2_resistance
+      detail: dword
+      doc: |
+        Resistance
+
+        The default behaviour is that effects cannot be dispelled and ignore resistance.
+        - bit 0: Can be dispelled, affected by resistance
+        - bit 1: Ignores resistance (when used in combination with bit 0)
+
+        This can also be presented in the more traditional way:
+        - 0=Nonmagical
+        - 1=Can be dispelled/Affected by resistance
+        - 2=Cannot be dispelled/Ignores resistance
+        - 3=Can be dispelled/Ignores resistance
+    - name: EFF2_parameter3
+      detail: dword
+      doc: Parameter 3
+    - name: EFF2_parameter4
+      detail: dword
+      doc: Parameter 4
+    - name: EFF2_parameter5
+      detail: dword
+      doc: Parameter 5
+    - name: EFF2_parameter6
+      detail: dword
+      doc: Parameter 6
+    - name: EFF2_caster_x_coord
+      detail: dword
+      doc: Caster X coordinate
+    - name: EFF2_caster_y_coord
+      detail: dword
+      doc: Caster Y coordinate
+    - name: EFF2_target_x_coord
+      detail: dword
+      doc: Target X coordinate
+    - name: EFF2_target_y_coord
+      detail: dword
+      doc: Target Y coordinate
+    - name: EFF2_sectype
+      detail: dword
+      doc: Secondary Type
+    - name: EFF_parameter1
+      detail: dword
+      doc: Parameter 1
+    - name: EFF_parameter2
+      detail: dword
+      doc: Parameter 2
+    - name: EFF_duration
+      detail: dword
+      doc: Duration
+    - name: EFF_dice_count
+      detail: dword
+      doc: Dice count
+    - name: EFF_dice_sides
+      detail: dword
+      doc: Dice sides
+    - name: EFF_save_type
+      detail: dword
+      doc: Saving throw type
+    - name: EFF_save_bonus
+      detail: dword
+      doc: Saving throw bonus
+    - name: SPL_unidentified_name
+      detail: dword
+      doc: Spell Name - Unidentified (strref)
+    - name: SPL_identified_name
+      detail: dword
+      doc: Spell Name - Identified (strref) (usually -1)
+    - name: SPL_flags
+      detail: dword
+      doc: '[Flags](#Header_Flags)'
+    - name: SPL_exclusion_flags
+      detail: dword
+      doc: '[Exclusion Flags](#Exclusion_Flags)'
+    - name: SPL_spell_level
+      detail: dword
+      doc: Spell Level
+    - name: SPL_unidentified_description
+      detail: dword
+      doc: Spell Description - Unidentified (strref)
+    - name: SPL_identified_desc
+      detail: dword
+      doc: Spell Description - Identified (strref) (usually -1)
+    - name: SPL_extended_headers_offset
+      detail: dword
+      doc: Extended Header offset
+    - name: SPL_feature_blocks_offset
+      detail: dword
+      doc: Feature Block Table offset
+    - name: FX_parameter1
+      detail: dword
+      doc: Parameter 1
+    - name: FX_parameter2
+      detail: dword
+      doc: Parameter 2
+    - name: FX_duration
+      detail: dword
+      doc: Duration
+    - name: FX_dice_thrown
+      detail: dword
+      doc: Dice Thrown
+    - name: FX_dice_sides
+      detail: dword
+      doc: Dice Sides
+    - name: FX_save_type
+      detail: dword
+      doc: |
+        Saving Throw Type
+        - bit 0: Spells
+        - bit 1: Breathe
+        - bit 2: Death
+        - bit 3: Wands
+        - bit 4: Polymorph
+        - bit 10: Ignore primary target – Line AoE projectile doesn't affect end target (EE only)
+        - bit 11: Ignore secondary target – Line AoE projectile doesn't affect bystanders (EE only)
+        - bit 24: Bypass mirror image (EE/TobEx only)
+        - bit 25: EE - ignore difficulty; TobEx - limit effect stacking
+        - bit 26: TobEx internal (don't use) - suspend effect application
+
+        NB. If more than 1 saving throw type is specified, the target rolls against their best save.
+    - name: FX_save_bonus
+      detail: dword
+      doc: Saving Throw Bonus
+    - name: FX_stacking_id_tobex
+      detail: dword
+      doc: |
+        TobEx: Stacking ID. Checked when bit 25 of the Saving Throw Type is set.
+
+        If two effects of the same opcode are applied, both have Limit Effect Stacking bit set, and both have the same stacking ID, then the latter applied effect is suspended in application until the former effect expires. Regardless of whether it is applied, the latter effect will expire at the same time that it would expire if it was applied. In other words, the total duration of some non-stacking effect opcode is not extended because more than one copy of the effect was applied.
+
+        Stacking IDs are unique to the opcode being applied. To maintain uniqueness of stacking IDs between different mods, one recommendation is to use the higher word of Special as the modder's Infinity Engine Community Prefix, then use the lower word as an identifying ID. For example, 0x41360001 ('A6' 0x0001).
+iesdp-word:
+  type: 21
+  items:
+    - name: ITM_range
+      detail: word
+      doc: Range
+    - name: ITM_thac0_bonus
+      detail: word
+      doc: |
+        THAC0 bonus
+
+        A successful hit will always occur if any of the conditions below is true
+        - This field is set to 32767
+        - The target creature(s) is STATE_HELPLESS
+        - The target is affected by time stop
+    - name: ITM_damage_bonus
+      detail: word
+      doc: Damage bonus
+    - name: ITM_damage_type
+      detail: word
+      doc: |
+        Damage type
+        - 0 = None
+        - 1 = Piercing/Magic
+        - 2 = Blunt
+        - 3 = Slashing
+        - 4 = Ranged
+        - 5 = Fists
+        - 6 = Piercing/Blunt (more) (BG2)
+        - 7 = Piercing/Slashing (more) (BG2)
+        - 8 = Blunt/Slashing (less) (BG2)
+    - name: ITM_feature_block_count
+      detail: word
+      doc: Count of feature blocks
+    - name: ITM_feature_block_index
+      detail: word
+      doc: Index into feature blocks
+    - name: ITM_charges
+      detail: word
+      doc: Charges
+    - name: ITM_depletion
+      detail: word
+      doc: |
+        Charge depletion behaviour
+        - 0 = Don't vanish
+        - 1 = Expended
+        - 2 = Expended (w/o sound)
+        - 3 = Recharge each day
+    - name: ITM_projectile_animation
+      detail: word
+      doc: Projectile animation (projectl.ids/missile.ids)
+    - name: ITM_melee_animation
+      detail: word
+      doc: '[Melee animation](#ExtendedHeader_MeleeAnimation)'
+    - name: ITM_is_arrow
+      detail: word
+      doc: Bow/Arrow qualifier (0=No, 1=Yes)
+    - name: ITM_is_bolt
+      detail: word
+      doc: Crossbow/Bolt qualifier (0=No, 1=Yes)
+    - name: ITM_is_bullet
+      detail: word
+      doc: Misc. Projectile qualifier (0=No, 1=Yes)
+    - name: ITM_type
+      detail: word
+      doc: '[Item type](#Header_ItemType)'
+    - name: ITM_min_level
+      detail: word
+      doc: Min Level
+    - name: ITM_min_strength
+      detail: word
+      doc: Min Strength (unused in BG1)
+    - name: ITM_min_charisma
+      detail: word
+      doc: Min Charisma
+    - name: ITM_stack_amount
+      detail: word
+      doc: Stack amount
+    - name: ITM_lore_to_id
+      detail: word
+      doc: Lore to ID
+    - name: ITM_extended_headers_count
+      detail: word
+      doc: Count of extended headers
+    - name: ITM_feature_blocks_index
+      detail: word
+      doc: Index into equipping feature blocks
+    - name: ITM_feature_blocks_count
+      detail: word
+      doc: Count of equipping feature blocks
+    - name: EFF2_timing
+      detail: word
+      doc: |
+        Timing mode
+        - 0=Duration
+        - 1=Permanent
+        - 2=While equipped
+        - 3=Delayed Duration
+        - 4=Delayed
+        - 5=Delayed (transforms to 8)
+        - 6=Duration?
+        - 7=Permanent?
+        - 8=Permanent (unsaved)
+        - 9=Permanent (after Death)
+        - 10=Trigger
+        - 4096=Absolute duration
+
+        NB. all effects except those with Timing mode '9' are removed by death.
+    - name: EFF2_probability1
+      detail: word
+      doc: Probability 1
+    - name: EFF2_probability2
+      detail: word
+      doc: |
+        Probability 2
+
+        Note: The BG1 engine treats probability as a single word, effects are applied in the range 0-probability.  
+        Note: Other engines treat probability as two values, effects are applied in the range probability <= x <= probability.  
+        Probability range is 0-99
+    - name: EFF_effect_type
+      detail: word
+      doc: Effect type
+    - name: SPL_location
+      detail: word
+      doc: Location
+    - name: SPL_range
+      detail: word
+      doc: Range
+    - name: SPL_level_required
+      detail: word
+      doc: Level Required
+    - name: SPL_casting_time
+      detail: word
+      doc: Casting Time
+    - name: SPL_times_per_day
+      detail: word
+      doc: Times per day
+    - name: SPL_feature_blocks_count
+      detail: word
+      doc: Count of feature blocks
+    - name: SPL_feature_blocks_offset
+      detail: word
+      doc: Offset to feature blocks
+    - name: SPL_projectile
+      detail: word
+      doc: 'Projectile (BG2: [projectl.ids](../../ids/bg2/projectl.htm). **Note:** in BG2, this value is off-by-one from projectl.ids value. I.e. binary value of 2 corresponds to 0x1 - ARROW)'
+    - name: SPL_type
+      detail: word
+      doc: |
+        Spell type:
+        - 0 = Special
+        - 1 = Wizard
+        - 2 = Cleric
+        - 3 = Psionic
+        - 4 = Innate
+        - 5 = Bardsong
+    - name: SPL_casting_graphics
+      detail: word
+      doc: '[Casting Graphics](#Header_Casting_Graphics)'
+    - name: SPL_extended_headers_count
+      detail: word
+      doc: Extended Header count
+    - name: SPL_casting_feature_blocks_offset
+      detail: word
+      doc: Casting Feature Block offset (these feature blocks may not use target type 2)
+    - name: SPL_casting_feature_blocks_count
+      detail: word
+      doc: Casting Feature Block count
+    - name: FX_opcode_number
+      detail: word
+      doc: Opcode Number
+iesdp-byte:
+  type: 21
+  items:
+    - name: ITM_projectile_type
+      detail: byte
+      doc: |
+        Projectile type
+        - 0 = None
+        - 1 = Arrow
+        - 2 = Bolt
+        - 3 = Bullet
+        - 40 = Spear
+        - 100 = Throwing Axe
+    - name: ITM_alt_dice_thrown
+      detail: byte
+      doc: Alternative dice thrown
+    - name: ITM_speed
+      detail: byte
+      doc: Speed
+    - name: ITM_alt_damage_bonus
+      detail: byte
+      doc: Alternative damage bonus
+    - name: ITM_dice_sides
+      detail: byte
+      doc: Dice sides
+    - name: ITM_primary_type
+      detail: byte
+      doc: Primary type
+    - name: ITM_dice_thrown
+      detail: byte
+      doc: Dice thrown
+    - name: ITM_secondary_type
+      detail: byte
+      doc: Secondary type
+    - name: ITM_usabilitybitmask
+      detail: byte
+      doc: '[Usability bitmask](#Header_Usability)'
+    - name: ITM_min_strength_bonus
+      detail: byte
+      doc: |
+        Min Strength Bonus (unused in BG1)  
+        Note: A strength of 19 or above is considered to have a Strength Bonus of 0, and would therefore not be able to equip any weapon with a Strength Bonus restriction.
+    - name: ITM_kit_usability1
+      detail: byte
+      doc: '[Kit Usability 1](#Header_KitUsability)'
+    - name: ITM_min_intelligence
+      detail: byte
+      doc: Min Intelligence (unused in BG1)
+    - name: ITM_kit_usability2
+      detail: byte
+      doc: '[Kit Usability 2](#Header_KitUsability)'
+    - name: ITM_min_dexterity
+      detail: byte
+      doc: Min Dexterity (unused in BG1)
+    - name: ITM_kit_usability3
+      detail: byte
+      doc: '[Kit Usability 3](#Header_KitUsability)'
+    - name: ITM_min_wisdom
+      detail: byte
+      doc: Min Wisdom (unused in BG1)
+    - name: ITM_kit_usability4
+      detail: byte
+      doc: '[Kit Usability 4](#Header_KitUsability)'
+    - name: ITM_min_constitution
+      detail: byte
+      doc: Min Constitution (unused in BG1)
+    - name: ITM_weapon_proficiency
+      detail: byte
+      doc: '[Weapon Proficiency](#Header_Proficiency)'
+    - name: EFF_target
+      detail: byte
+      doc: |
+        Target type
+        - 0=None
+        - 1=Self (pre-projectile)
+        - 2=Pre-target
+        - 3=Party
+        - 4=Everyone (inc. party)
+        - 5=Everyone (excl. party)
+    - name: EFF_power
+      detail: byte
+      doc: Power
+    - name: EFF_timing_mode
+      detail: byte
+      doc: Timing Mode
+    - name: EFF_resistance
+      detail: byte
+      doc: Dispel/Resistance
+    - name: EFF_probability1
+      detail: byte
+      doc: Probability 1
+    - name: EFF_probability2
+      detail: byte
+      doc: |
+        Probability 2
+
+        Note: The BG1 engine treats probability as a single word, effects are applied in the range 0-probability.  
+        Note: Other engines treat probability as two values, effects are applied in the range probability <= x <= probability.  
+        Probability range is 0-99
+    - name: SPL_school
+      detail: byte
+      doc: 'Primary Type (Spell school) (IWD: school.2da, BG2:mschool.2da)'
+iesdp-char:
+  type: 21
+  items:
+    - name: ITM_attack_type
+      detail: char
+      doc: |
+        Attack type
+        - 0 = None
+        - 1 = Melee
+        - 2 = Projectile
+        - 3 = Magic
+        - 4 = Launcher
+    - name: ITM_id_required
+      detail: char
+      doc: |
+        ID Req.
+        - bit 0: ID Required
+        - bit 1: Non-ID Required
+    - name: ITM_location
+      detail: char
+      doc: |
+        Location
+        - 0 = None
+        - 1 = Weapon
+        - 2 = Spell
+        - 3 = Equipment
+        - 4 = Innate
+    - name: ITM_alt_dice_sides
+      detail: char
+      doc: Alternative dice sides
+    - name: ITM_target
+      detail: char
+      doc: |
+        Target type
+        - 0 = Invalid (cannot be selected)
+        - 1 = Creature
+        - 2 = Crash
+        - 3 = Character potrait
+        - 4 = Area
+        - 5 = Self
+        - 6 = Crash
+        - 7 = None (Self, ignores game pause)
+    - name: ITM_target_count
+      detail: char
+      doc: Target count
+    - name: SPL_form
+      detail: char
+      doc: |
+        Spell form
+          - 1 - Standard
+          - 2 - Projectile
+    - name: SPL_friendly
+      detail: char
+      doc: "- bit 2: 'Friendly' ability"
+    - name: SPL_target
+      detail: char
+      doc: |
+        Target:
+        - 0 = Invalid (target cannot be selected)
+        - 1 = Creature
+        - 2 = Crash
+        - 3 = Character potrait (ignores range, uses projectile #1)
+        - 4 = Area
+        - 5 = Self
+        - 6 = Crash
+        - 7 = None (Self, ignores game pause)
+    - name: SPL_target_number
+      detail: char
+      doc: Target Number
+    - name: SPL_sectype
+      detail: char
+      doc: Secondary Type (BG2:msectype.2da)
+    - name: FX_target
+      detail: char
+      doc: |
+        Target type
+        - 0 = None
+        - 1 = Self (pre-projectile)
+        - 2 = Pre-target
+        - 3 = Party
+        - 4 = Everyone (inc. party)
+        - 5 = Everyone (excl. party)
+        - 6 = Everyone matching specific value of caster (or Party if cast by party member)
+        - 7 = Everyone matching specific value of target
+        - 8 = Everyone (excl. caster)
+        - 9 = Self (post-projectile)
+    - name: FX_power
+      detail: char
+      doc: Power
+    - name: FX_timing
+      detail: char
+      doc: |
+        Timing Mode
+
+        - 0 = Duration
+        - 1 = Permanent
+        - 2 = While equipped
+        - 3 = Delayed Duration
+        - 4 = Delayed
+        - 5 = Delayed?
+        - 6 = Duration?
+        - 7 = Permanent?
+        - 8 = Permanent?
+        - 9 = Permanent (after Death)
+        - 10 = Trigger
+        - 4096 = Absolute duration
+
+        NB. all effects except those with Timing mode '9' are removed by death.
+    - name: FX_resistance
+      detail: char
+      doc: |
+        Resistance
+
+        The default behaviour is that effects cannot be dispelled and ignore magic resistance.
+
+        - bit 0: Can be dispelled, affected by magic resistance
+        - bit 1: Ignores magic resistance (when used in combination with bit 0)
+        - bit 2: Bypasses deflection/reflection/trap opcodes (only in EE games patched to v2.0+ / external [EFF](../ie_formats/eff_v2.htm) files)
+        - bit 31: Effect was applied by an ITM (only present in EE games patched to v2.0+ / external [EFF](../ie_formats/eff_v2.htm) files). It is set by the engine if the effect's source ITM is identified. This bit is only used by [opcode #324](../../opcodes/bgee.htm#op324) which checks it to determine whether it should set STRREF_FEEDBACK_IMMUNE_RESOURCE (see [ENGINEST.2DA](../../files/2da/2da_bgee/enginest.htm)) to the ITM's general or identified name
+
+        The only difference between 0 and 2 is that 0 will automatically convert to 2 when targeting yourself.
+
+        This can also be presented in the more traditional way:
+        - 0 = Natural/Nonmagical
+        - 1 = Can be dispelled/Affected by resistance
+        - 2 = Cannot be dispelled/Ignores resistance
+        - 3 = Can be dispelled/Ignores resistance
+    - name: FX_probability1
+      detail: char
+      doc: Probability 1
+    - name: FX_probability2
+      detail: char
+      doc: |
+        Probability 2
+
+        Note: The BG1 engine treats probability as a single word, effects are applied in the range 0-probability.  
+        Note: Other engines treat probability as two values, effects are applied in the range probability <= x <= probability.  
+        Probability range is 0-99
 tp2-vars:
   type: 21 # constant
   items:
