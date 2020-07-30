@@ -159,17 +159,35 @@
         }
       ]
     },
-    "action-functions": {
+    "known-functions": {
       "patterns": [
         {
           "include": "#ielib-action-functions"
+        },
+        {
+          "include": "#ielib-patch-functions"
+        }
+      ]
+    },
+    "action-functions": {
+      "patterns": [
+        {
+          "include": "#known-functions"
+        },
+        {
+          "match": "\\b(\\w+)\\b",
+          "name": "support.function.weidu.action_function"
         }
       ]
     },
     "patch-functions": {
       "patterns": [
         {
-          "include": "#ielib-patch-functions"
+          "include": "#known-functions"
+        },
+        {
+          "match": "\\b(\\w+)\\b",
+          "name": "entity.name.class.ielib.patch_function"
         }
       ]
     },
@@ -25166,7 +25184,6 @@
       },
       "endCaptures": {
         "2": {
-          "name": "support.function.weidu.action_function",
           "patterns": [
             {
               "include": "#action-functions"
@@ -25197,7 +25214,6 @@
       },
       "endCaptures": {
         "2": {
-          "name": "entity.name.class.weidu.patch_function",
           "patterns": [
             {
               "include": "#patch-functions"
