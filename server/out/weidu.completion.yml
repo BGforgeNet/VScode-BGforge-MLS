@@ -12103,10 +12103,6 @@ tp2-value:
         Returns the index of the first regexp match of string inside the current string, or -1 if not found. If provided, value specifies from what point of the string the searching should begin (instead of 0).
     - name: INITIAL_MEETING
     - name: INSTALL_ORDER
-      detail: INSTALL_ORDER modTp2Name1 modComponent1 AFTER modTp2Name2 modComponent2
-      doc: |-
-        Returns true if the modComponent1 of modTp2Name1 is installed after the modComponent2 of modTp2Name2 (and both components are installed). The syntax is the same as with REQUIRE_COMPONENT.
-    - name: INSTALL_ORDER
       detail: INSTALL_ORDER modTp2Name1 modComponent1 BEFORE modTp2Name2 modComponent2
       doc: |-
         Returns true if the modComponent1 of modTp2Name1 is installed before the modComponent2 of modTp2Name2 (and both components are installed). The syntax is the same as with REQUIRE_COMPONENT.
