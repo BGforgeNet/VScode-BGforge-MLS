@@ -101,7 +101,7 @@ def func_to_item(func):
     text += params_to_md(func, "string_params")
   if "return" in func:
     text += rets_to_md(func)
-  item["doc"] = text
+  item["doc"] = LS(text) # multiline format
   item['type'] = func['type']
   return(item)
 

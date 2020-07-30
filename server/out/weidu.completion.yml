@@ -817,82 +817,250 @@ ielib-patch-functions:
   items:
     - name: ALTER_AREA_REGION_MATCH
       detail: patch function ALTER_AREA_REGION_MATCH
-      doc: "Alters area regions which match all the `match_*` variables according to the non-`match_` variables.\n\n| **INT_VAR** | **Description** | **Type** | **Default** |\n|:-|:-|:-|:-|\n| flag_trap_detectable | whether trap is detectable | [bool](https://ielib.bgforge.net/types/#bool) |  |\n| trap_detect | trap detection difficulty | [int](https://ielib.bgforge.net/types/#int) |  |\n| trap_remove | trap removal difficulty | [int](https://ielib.bgforge.net/types/#int) |  |\n| trapped | region trapped flag | [bool](https://ielib.bgforge.net/types/#bool) |  |\n| **STR_VAR** | **Description** | **Type** | **Default** |\n|:-|:-|:-|:-|\n| match_script | only alter if script matches | [resref](https://ielib.bgforge.net/types/#resref) | _required_ |\n"
+      doc: |
+        Alters area regions which match all the `match_*` variables according to the non-`match_` variables.
+
+        | **INT_VAR** | **Description** | **Type** | **Default** |
+        |:-|:-|:-|:-|
+        | flag_trap_detectable | whether trap is detectable | [bool](https://ielib.bgforge.net/types/#bool) |  |
+        | trap_detect | trap detection difficulty | [int](https://ielib.bgforge.net/types/#int) |  |
+        | trap_remove | trap removal difficulty | [int](https://ielib.bgforge.net/types/#int) |  |
+        | trapped | region trapped flag | [bool](https://ielib.bgforge.net/types/#bool) |  |
+        | **STR_VAR** | **Description** | **Type** | **Default** |
+        |:-|:-|:-|:-|
+        | match_script | only alter if script matches | [resref](https://ielib.bgforge.net/types/#resref) | _required_ |
       type: patch
     - name: ALTER_AREA_STRUCTURE_SCRIPT
       detail: patch function ALTER_AREA_STRUCTURE_SCRIPT
-      doc: "Writes new script to an area structure.\n\n| **INT_VAR** | **Description** | **Type** | **Default** |\n|:-|:-|:-|:-|\n| index | structure index | [int](https://ielib.bgforge.net/types/#int) | _required_ |\n| **STR_VAR** | **Description** | **Type** | **Default** |\n|:-|:-|:-|:-|\n| script | new script | [resref](https://ielib.bgforge.net/types/#resref) | _required_ |\n| type | container, door or region | [string](https://ielib.bgforge.net/types/#string) | _required_ |\n"
+      doc: |
+        Writes new script to an area structure.
+
+        | **INT_VAR** | **Description** | **Type** | **Default** |
+        |:-|:-|:-|:-|
+        | index | structure index | [int](https://ielib.bgforge.net/types/#int) | _required_ |
+        | **STR_VAR** | **Description** | **Type** | **Default** |
+        |:-|:-|:-|:-|
+        | script | new script | [resref](https://ielib.bgforge.net/types/#resref) | _required_ |
+        | type | container, door or region | [string](https://ielib.bgforge.net/types/#string) | _required_ |
       type: patch
     - name: GET_2DA_INDEX
       detail: patch function GET_2DA_INDEX
-      doc: "Returns arrays containing current 2DA row and column names, for usage in `SET_2DA_ENTRY_LATER`:\n```\nCOPY_EXISTING ~clsrcreq.2da~ override\n  LPF GET_2DA_INDEX RET_ARRAY row_index col_index END\n  SET_2DA_ENTRY_LATER new_rows $row_index(CLERIC_MAGE) $col_index(ELF) 1\n```\n\n\n\n| RET vars | Description | Type |\n|:--------|:-----|:--------|\n| col_index | column name => index | [array](https://ielib.bgforge.net/types/#array) |\n| row_index | row name => index | [array](https://ielib.bgforge.net/types/#array) |\n"
+      doc: |
+        Returns arrays containing current 2DA row and column names, for usage in `SET_2DA_ENTRY_LATER`:
+        ```
+        COPY_EXISTING ~clsrcreq.2da~ override
+          LPF GET_2DA_INDEX RET_ARRAY row_index col_index END
+          SET_2DA_ENTRY_LATER new_rows $row_index(CLERIC_MAGE) $col_index(ELF) 1
+        ```
+
+
+
+        | RET vars | Description | Type |
+        |:--------|:-----|:--------|
+        | col_index | column name => index | [array](https://ielib.bgforge.net/types/#array) |
+        | row_index | row name => index | [array](https://ielib.bgforge.net/types/#array) |
       type: patch
     - name: GET_AREA_STRUCTURE_CENTER_POINT
       detail: patch function GET_AREA_STRUCTURE_CENTER_POINT
-      doc: "Returns coordinates of an area structure center point by averaging coordinates of all of its vertices.\n\n| **INT_VAR** | **Description** | **Type** | **Default** |\n|:-|:-|:-|:-|\n| index | structure index | [int](https://ielib.bgforge.net/types/#int) | _required_ |\n| **STR_VAR** | **Description** | **Type** | **Default** |\n|:-|:-|:-|:-|\n| type | container, door or region | [string](https://ielib.bgforge.net/types/#string) | _required_ |\n\n| RET vars | Description | Type |\n|:--------|:-----|:--------|\n| x | x coordinate | [int](https://ielib.bgforge.net/types/#int) |\n| y | y coordinate | [int](https://ielib.bgforge.net/types/#int) |\n"
+      doc: |
+        Returns coordinates of an area structure center point by averaging coordinates of all of its vertices.
+
+        | **INT_VAR** | **Description** | **Type** | **Default** |
+        |:-|:-|:-|:-|
+        | index | structure index | [int](https://ielib.bgforge.net/types/#int) | _required_ |
+        | **STR_VAR** | **Description** | **Type** | **Default** |
+        |:-|:-|:-|:-|
+        | type | container, door or region | [string](https://ielib.bgforge.net/types/#string) | _required_ |
+
+        | RET vars | Description | Type |
+        |:--------|:-----|:--------|
+        | x | x coordinate | [int](https://ielib.bgforge.net/types/#int) |
+        | y | y coordinate | [int](https://ielib.bgforge.net/types/#int) |
       type: patch
     - name: GET_ARMOR_BASE_AC
       detail: patch function GET_ARMOR_BASE_AC
-      doc: "Returns current armor's base AC. If base AC is not found, defaults to 100.\n\n\n\n| RET vars | Description | Type |\n|:--------|:-----|:--------|\n| base_ac | base AC | [int](https://ielib.bgforge.net/types/#int) |\n"
+      doc: |
+        Returns current armor's base AC. If base AC is not found, defaults to 100.
+
+
+
+        | RET vars | Description | Type |
+        |:--------|:-----|:--------|
+        | base_ac | base AC | [int](https://ielib.bgforge.net/types/#int) |
       type: patch
     - name: INFER_ARMOR_ENCHANTMENT
       detail: patch function INFER_ARMOR_ENCHANTMENT
-      doc: "Returns current armor enchantment level (Leather Armor +1 will return 1). Ankeg armor and Red Dragon scales are considered +2. Defaults to -1 if enchantment couldn't be determined.\n\n\n| RET vars | Description | Type |\n|:--------|:-----|:--------|\n| enchantment | Armor enchantment | [int](https://ielib.bgforge.net/types/#int) |\n"
+      doc: |
+        Returns current armor enchantment level (Leather Armor +1 will return 1). Ankeg armor and Red Dragon scales are considered +2. Defaults to -1 if enchantment couldn't be determined.
+
+
+        | RET vars | Description | Type |
+        |:--------|:-----|:--------|
+        | enchantment | Armor enchantment | [int](https://ielib.bgforge.net/types/#int) |
       type: patch
     - name: INFER_ARMOR_TYPE
       detail: patch function INFER_ARMOR_TYPE
-      doc: "Returns current armor type.\n\n\n| RET vars | Description | Type |\n|:--------|:-----|:--------|\n| type | leather, studded_leather, chain, splint, plate, full_plate or unknown. | [string](https://ielib.bgforge.net/types/#string) |\n"
+      doc: |
+        Returns current armor type.
+
+
+        | RET vars | Description | Type |
+        |:--------|:-----|:--------|
+        | type | leather, studded_leather, chain, splint, plate, full_plate or unknown. | [string](https://ielib.bgforge.net/types/#string) |
       type: patch
     - name: REPLACE_AREA_ITEM_MATCH
       detail: patch function REPLACE_AREA_ITEM_MATCH
-      doc: "Replaces each occurrence of `match_item` with `new_item`. Doesn't change charges, flags, etc. Does nothing if `match_item` wasn't found.\n\n| **STR_VAR** | **Description** | **Type** | **Default** |\n|:-|:-|:-|:-|\n| match_item | old item | [resref](https://ielib.bgforge.net/types/#resref) | _required_ |\n| new_item | new item | [resref](https://ielib.bgforge.net/types/#resref) | _required_ |\n"
+      doc: |
+        Replaces each occurrence of `match_item` with `new_item`. Doesn't change charges, flags, etc. Does nothing if `match_item` wasn't found.
+
+        | **STR_VAR** | **Description** | **Type** | **Default** |
+        |:-|:-|:-|:-|
+        | match_item | old item | [resref](https://ielib.bgforge.net/types/#resref) | _required_ |
+        | new_item | new item | [resref](https://ielib.bgforge.net/types/#resref) | _required_ |
       type: patch
     - name: REPLACE_CRE_ITEM_MATCH
       detail: patch function REPLACE_CRE_ITEM_MATCH
-      doc: "Replaces each occurrence of `match_item` with `new_item`. Doesn't change charges, flags, etc. Does nothing if `match_item` wasn't found.\n\n| **STR_VAR** | **Description** | **Type** | **Default** |\n|:-|:-|:-|:-|\n| match_item | old item | [resref](https://ielib.bgforge.net/types/#resref) | _required_ |\n| new_item | new item | [resref](https://ielib.bgforge.net/types/#resref) | _required_ |\n"
+      doc: |
+        Replaces each occurrence of `match_item` with `new_item`. Doesn't change charges, flags, etc. Does nothing if `match_item` wasn't found.
+
+        | **STR_VAR** | **Description** | **Type** | **Default** |
+        |:-|:-|:-|:-|
+        | match_item | old item | [resref](https://ielib.bgforge.net/types/#resref) | _required_ |
+        | new_item | new item | [resref](https://ielib.bgforge.net/types/#resref) | _required_ |
       type: patch
     - name: REPLACE_STORE_ITEM_MATCH
       detail: patch function REPLACE_STORE_ITEM_MATCH
-      doc: "Replaces each occurrence of `match_item` with `new_item`. Doesn't change charges, flags, etc. Does nothing if `match_item` wasn't found.\n\n| **STR_VAR** | **Description** | **Type** | **Default** |\n|:-|:-|:-|:-|\n| match_item | old item | [resref](https://ielib.bgforge.net/types/#resref) | _required_ |\n| new_item | new item | [resref](https://ielib.bgforge.net/types/#resref) | _required_ |\n"
+      doc: |
+        Replaces each occurrence of `match_item` with `new_item`. Doesn't change charges, flags, etc. Does nothing if `match_item` wasn't found.
+
+        | **STR_VAR** | **Description** | **Type** | **Default** |
+        |:-|:-|:-|:-|
+        | match_item | old item | [resref](https://ielib.bgforge.net/types/#resref) | _required_ |
+        | new_item | new item | [resref](https://ielib.bgforge.net/types/#resref) | _required_ |
       type: patch
     - name: REPLACE_STRREF_TRA
       detail: patch function REPLACE_STRREF_TRA
-      doc: "Reads an strref at the given offset. In the string, replaces occurences of `old_substring_traref` with `new_substring_traref`. `SAY`s the new string back to the offset.\n\n| **INT_VAR** | **Description** | **Type** | **Default** |\n|:-|:-|:-|:-|\n| new_substring_traref | traref of replacement text | [int](https://ielib.bgforge.net/types/#int) | _required_ |\n| offset | strref offset | [int](https://ielib.bgforge.net/types/#int) | _required_ |\n| old_substring_traref | traref of text to be replaced | [int](https://ielib.bgforge.net/types/#int) | _required_ |\n"
+      doc: |
+        Reads an strref at the given offset. In the string, replaces occurences of `old_substring_traref` with `new_substring_traref`. `SAY`s the new string back to the offset.
+
+        | **INT_VAR** | **Description** | **Type** | **Default** |
+        |:-|:-|:-|:-|
+        | new_substring_traref | traref of replacement text | [int](https://ielib.bgforge.net/types/#int) | _required_ |
+        | offset | strref offset | [int](https://ielib.bgforge.net/types/#int) | _required_ |
+        | old_substring_traref | traref of text to be replaced | [int](https://ielib.bgforge.net/types/#int) | _required_ |
       type: patch
 ielib-action-functions:
   type: 3
   items:
     - name: CREATE_MINION
       detail: action function CREATE_MINION
-      doc: "Creates a an invisible, invulnerable minion creature file to run your custom script.\n\n| **STR_VAR** | **Description** | **Type** | **Default** |\n|:-|:-|:-|:-|\n| cre | cre filename | [resref](https://ielib.bgforge.net/types/#resref) | _required_ |\n| ea | EA allegiance | [ids](https://ielib.bgforge.net/types/#ids) | NEUTRAL |\n| name | cre name | [string](https://ielib.bgforge.net/types/#string) |  |\n| script | cre script | [resref](https://ielib.bgforge.net/types/#resref) |  |\n"
+      doc: |
+        Creates a an invisible, invulnerable minion creature file to run your custom script.
+
+        | **STR_VAR** | **Description** | **Type** | **Default** |
+        |:-|:-|:-|:-|
+        | cre | cre filename | [resref](https://ielib.bgforge.net/types/#resref) | _required_ |
+        | ea | EA allegiance | [ids](https://ielib.bgforge.net/types/#ids) | NEUTRAL |
+        | name | cre name | [string](https://ielib.bgforge.net/types/#string) |  |
+        | script | cre script | [resref](https://ielib.bgforge.net/types/#resref) |  |
       type: action
     - name: IS_ITEM_GIVEN_OR_CREATED_IN_DIALOG
       detail: action function IS_ITEM_GIVEN_OR_CREATED_IN_DIALOG
-      doc: "Returns 1 if item is given or created in the dialog, 0 otherwise.\n\n| **STR_VAR** | **Description** | **Type** | **Default** |\n|:-|:-|:-|:-|\n| dialog | dialog resource | [resref](https://ielib.bgforge.net/types/#resref) | _required_ |\n| item | item resource | [resref](https://ielib.bgforge.net/types/#resref) | _required_ |\n\n| RET vars | Description | Type |\n|:--------|:-----|:--------|\n| present | item is given or created in the dialog? | [bool](https://ielib.bgforge.net/types/#bool) |\n"
+      doc: |
+        Returns 1 if item is given or created in the dialog, 0 otherwise.
+
+        | **STR_VAR** | **Description** | **Type** | **Default** |
+        |:-|:-|:-|:-|
+        | dialog | dialog resource | [resref](https://ielib.bgforge.net/types/#resref) | _required_ |
+        | item | item resource | [resref](https://ielib.bgforge.net/types/#resref) | _required_ |
+
+        | RET vars | Description | Type |
+        |:--------|:-----|:--------|
+        | present | item is given or created in the dialog? | [bool](https://ielib.bgforge.net/types/#bool) |
       type: action
     - name: IS_ITEM_GIVEN_OR_CREATED_IN_DIALOG_OR_SCRIPT
       detail: action function IS_ITEM_GIVEN_OR_CREATED_IN_DIALOG_OR_SCRIPT
-      doc: "Returns 1 if item is given or created in the dialog or script, 0 otherwise.\n\n| **STR_VAR** | **Description** | **Type** | **Default** |\n|:-|:-|:-|:-|\n| dialog or script | filename of the dialog or script | [filename](https://ielib.bgforge.net/types/#filename) | _required_ |\n| item | item resource | [resref](https://ielib.bgforge.net/types/#resref) | _required_ |\n\n| RET vars | Description | Type |\n|:--------|:-----|:--------|\n| present | is item given or created in the dialog or script | [bool](https://ielib.bgforge.net/types/#bool) |\n"
+      doc: |
+        Returns 1 if item is given or created in the dialog or script, 0 otherwise.
+
+        | **STR_VAR** | **Description** | **Type** | **Default** |
+        |:-|:-|:-|:-|
+        | dialog or script | filename of the dialog or script | [filename](https://ielib.bgforge.net/types/#filename) | _required_ |
+        | item | item resource | [resref](https://ielib.bgforge.net/types/#resref) | _required_ |
+
+        | RET vars | Description | Type |
+        |:--------|:-----|:--------|
+        | present | is item given or created in the dialog or script | [bool](https://ielib.bgforge.net/types/#bool) |
       type: action
     - name: IS_ITEM_GIVEN_OR_CREATED_IN_SCRIPT
       detail: action function IS_ITEM_GIVEN_OR_CREATED_IN_SCRIPT
-      doc: "Returns 1 if item is given or created in the script, 0 otherwise.\n\n| **STR_VAR** | **Description** | **Type** | **Default** |\n|:-|:-|:-|:-|\n| item | item resource | [resref](https://ielib.bgforge.net/types/#resref) | _required_ |\n| script | script resource | [resref](https://ielib.bgforge.net/types/#resref) | _required_ |\n\n| RET vars | Description | Type |\n|:--------|:-----|:--------|\n| present | is item given or created in the script? | [bool](https://ielib.bgforge.net/types/#bool) |\n"
+      doc: |
+        Returns 1 if item is given or created in the script, 0 otherwise.
+
+        | **STR_VAR** | **Description** | **Type** | **Default** |
+        |:-|:-|:-|:-|
+        | item | item resource | [resref](https://ielib.bgforge.net/types/#resref) | _required_ |
+        | script | script resource | [resref](https://ielib.bgforge.net/types/#resref) | _required_ |
+
+        | RET vars | Description | Type |
+        |:--------|:-----|:--------|
+        | present | is item given or created in the script? | [bool](https://ielib.bgforge.net/types/#bool) |
       type: action
     - name: IS_ITEM_IN_AREA
       detail: action function IS_ITEM_IN_AREA
-      doc: "Returns 1 if item is sold in the store, 0 otherwise.\n\n| **STR_VAR** | **Description** | **Type** | **Default** |\n|:-|:-|:-|:-|\n| area | area resource | [resref](https://ielib.bgforge.net/types/#resref) | _required_ |\n| item | item resource | [resref](https://ielib.bgforge.net/types/#resref) | _required_ |\n\n| RET vars | Description | Type |\n|:--------|:-----|:--------|\n| present | is item somewhere in the area? | [bool](https://ielib.bgforge.net/types/#bool) |\n"
+      doc: |
+        Returns 1 if item is sold in the store, 0 otherwise.
+
+        | **STR_VAR** | **Description** | **Type** | **Default** |
+        |:-|:-|:-|:-|
+        | area | area resource | [resref](https://ielib.bgforge.net/types/#resref) | _required_ |
+        | item | item resource | [resref](https://ielib.bgforge.net/types/#resref) | _required_ |
+
+        | RET vars | Description | Type |
+        |:--------|:-----|:--------|
+        | present | is item somewhere in the area? | [bool](https://ielib.bgforge.net/types/#bool) |
       type: action
     - name: IS_ITEM_IN_RESOURCE
       detail: action function IS_ITEM_IN_RESOURCE
-      doc: "Returns 1 if item is present in area, store, on creature, or given/created in the dialog or script. 0 otherwise.\n\n| **STR_VAR** | **Description** | **Type** | **Default** |\n|:-|:-|:-|:-|\n| item | item resource | [resref](https://ielib.bgforge.net/types/#resref) | _required_ |\n| resource file | filename | [filename](https://ielib.bgforge.net/types/#filename) | _required_ |\n\n| RET vars | Description | Type |\n|:--------|:-----|:--------|\n| present | is item present? | [bool](https://ielib.bgforge.net/types/#bool) |\n"
+      doc: |
+        Returns 1 if item is present in area, store, on creature, or given/created in the dialog or script. 0 otherwise.
+
+        | **STR_VAR** | **Description** | **Type** | **Default** |
+        |:-|:-|:-|:-|
+        | item | item resource | [resref](https://ielib.bgforge.net/types/#resref) | _required_ |
+        | resource file | filename | [filename](https://ielib.bgforge.net/types/#filename) | _required_ |
+
+        | RET vars | Description | Type |
+        |:--------|:-----|:--------|
+        | present | is item present? | [bool](https://ielib.bgforge.net/types/#bool) |
       type: action
     - name: IS_ITEM_IN_STORE
       detail: action function IS_ITEM_IN_STORE
-      doc: "Returns 1 if item is sold in the store, 0 otherwise.\n\n| **STR_VAR** | **Description** | **Type** | **Default** |\n|:-|:-|:-|:-|\n| item | item resource | [resref](https://ielib.bgforge.net/types/#resref) | _required_ |\n| store | store resource | [resref](https://ielib.bgforge.net/types/#resref) | _required_ |\n\n| RET vars | Description | Type |\n|:--------|:-----|:--------|\n| present | is item sold in the store? | [bool](https://ielib.bgforge.net/types/#bool) |\n"
+      doc: |
+        Returns 1 if item is sold in the store, 0 otherwise.
+
+        | **STR_VAR** | **Description** | **Type** | **Default** |
+        |:-|:-|:-|:-|
+        | item | item resource | [resref](https://ielib.bgforge.net/types/#resref) | _required_ |
+        | store | store resource | [resref](https://ielib.bgforge.net/types/#resref) | _required_ |
+
+        | RET vars | Description | Type |
+        |:--------|:-----|:--------|
+        | present | is item sold in the store? | [bool](https://ielib.bgforge.net/types/#bool) |
       type: action
     - name: IS_ITEM_ON_CREATURE
       detail: action function IS_ITEM_ON_CREATURE
-      doc: "Returns 1 if the creature has the item, 0 otherwise.\n\n| **STR_VAR** | **Description** | **Type** | **Default** |\n|:-|:-|:-|:-|\n| creature | creature resource | [resref](https://ielib.bgforge.net/types/#resref) | _required_ |\n| item | item resource | [resref](https://ielib.bgforge.net/types/#resref) | _required_ |\n\n| RET vars | Description | Type |\n|:--------|:-----|:--------|\n| present | does the creature posess the item? | [bool](https://ielib.bgforge.net/types/#bool) |\n"
+      doc: |
+        Returns 1 if the creature has the item, 0 otherwise.
+
+        | **STR_VAR** | **Description** | **Type** | **Default** |
+        |:-|:-|:-|:-|
+        | creature | creature resource | [resref](https://ielib.bgforge.net/types/#resref) | _required_ |
+        | item | item resource | [resref](https://ielib.bgforge.net/types/#resref) | _required_ |
+
+        | RET vars | Description | Type |
+        |:--------|:-----|:--------|
+        | present | does the creature posess the item? | [bool](https://ielib.bgforge.net/types/#bool) |
       type: action
 ielib-resref:
   type: 21
