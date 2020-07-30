@@ -50,11 +50,11 @@ repository:
   iesdp-other:
     name: constant.language.iesdp.other
     patterns:
-      - match: \b(EFF2_signature)\b
       - match: \b(EFF2_signature2)\b
+      - match: \b(EFF2_signature)\b
       - match: \b(EFF2_variable)\b
-      - match: \b(EFF2_version)\b
       - match: \b(EFF2_version2)\b
+      - match: \b(EFF2_version)\b
       - match: \b(ITM_animation)\b
       - match: \b(ITM_signature)\b
       - match: \b(ITM_version)\b
@@ -71,9 +71,9 @@ repository:
     name: constant.language.iesdp.resref
     patterns:
       - match: \b(EFF2_parent_resource)\b
-      - match: \b(EFF2_resource)\b
       - match: \b(EFF2_resource2)\b
       - match: \b(EFF2_resource3)\b
+      - match: \b(EFF2_resource)\b
       - match: \b(EFF_resref_key)\b
       - match: \b(FX_resource)\b
       - match: \b(ITM_description_icon)\b
@@ -106,9 +106,9 @@ repository:
       - match: \b(EFF2_school)\b
       - match: \b(EFF2_sectype)\b
       - match: \b(EFF2_stacking_id_tobex)\b
-      - match: \b(EFF2_target)\b
       - match: \b(EFF2_target_x_coord)\b
       - match: \b(EFF2_target_y_coord)\b
+      - match: \b(EFF2_target)\b
       - match: \b(EFF_dice_count)\b
       - match: \b(EFF_dice_sides)\b
       - match: \b(EFF_duration)\b
@@ -225,13 +225,13 @@ repository:
       - match: \b(ITM_attack_type)\b
       - match: \b(ITM_id_required)\b
       - match: \b(ITM_location)\b
-      - match: \b(ITM_target)\b
       - match: \b(ITM_target_count)\b
+      - match: \b(ITM_target)\b
       - match: \b(SPL_form)\b
       - match: \b(SPL_friendly)\b
       - match: \b(SPL_sectype)\b
-      - match: \b(SPL_target)\b
       - match: \b(SPL_target_number)\b
+      - match: \b(SPL_target)\b
   ielib-patch-functions:
     name: entity.name.class.ielib.patch_function
     patterns:
@@ -250,8 +250,8 @@ repository:
     name: entity.name.class.ielib.action_function
     patterns:
       - match: \b(CREATE_MINION)\b
-      - match: \b(IS_ITEM_GIVEN_OR_CREATED_IN_DIALOG)\b
       - match: \b(IS_ITEM_GIVEN_OR_CREATED_IN_DIALOG_OR_SCRIPT)\b
+      - match: \b(IS_ITEM_GIVEN_OR_CREATED_IN_DIALOG)\b
       - match: \b(IS_ITEM_GIVEN_OR_CREATED_IN_SCRIPT)\b
       - match: \b(IS_ITEM_IN_AREA)\b
       - match: \b(IS_ITEM_IN_RESOURCE)\b
@@ -265,8 +265,8 @@ repository:
       - match: \b(AERIE_DISPEL_MAGIC)\b
       - match: \b(AERIE_PORTRAIT)\b
       - match: \b(AIR_ELEMENTAL_EFFECT)\b
-      - match: \b(ANATH_WEREWOLF)\b
       - match: \b(ANATH_WEREWOLF2)\b
+      - match: \b(ANATH_WEREWOLF)\b
       - match: \b(ANOMEN_TITLE)\b
       - match: \b(ANTI_MAGIC_ZONE)\b
       - match: \b(APPLY_NON_PERMANENT_DEATH)\b
@@ -292,8 +292,8 @@ repository:
       - match: \b(BEASTMASTER_FIND_FAMILIAR)\b
       - match: \b(BEHOLDER_AGANNAZAR_SCORCHER)\b
       - match: \b(BEHOLDER_ANTIMAGIC_RAY)\b
-      - match: \b(BEHOLDER_BLAST_VISUAL)\b
       - match: \b(BEHOLDER_BLAST_VISUAL2)\b
+      - match: \b(BEHOLDER_BLAST_VISUAL)\b
       - match: \b(BEHOLDER_CAUSE_SERIOUS_WOUNDS)\b
       - match: \b(BEHOLDER_CHARM_PERSON)\b
       - match: \b(BEHOLDER_DEATH_RAY)\b
@@ -306,8 +306,8 @@ repository:
       - match: \b(BEHOLDER_HOLD_PERSON)\b
       - match: \b(BEHOLDER_LIGHTNING_BOLT)\b
       - match: \b(BEHOLDER_MAGIC_MISSILE)\b
-      - match: \b(BEHOLDER_PARALYZATION)\b
       - match: \b(BEHOLDER_PARALYZATION_RAY)\b
+      - match: \b(BEHOLDER_PARALYZATION)\b
       - match: \b(BEHOLDER_SLOW)\b
       - match: \b(BEHOLDER_SPELL_TURNING)\b
       - match: \b(BERSERKER_RAGE)\b
@@ -479,8 +479,8 @@ repository:
       - match: \b(CLERIC_REMOVE_FEAR)\b
       - match: \b(CLERIC_REMOVE_PARALYSIS)\b
       - match: \b(CLERIC_REPULSE_UNDEAD)\b
-      - match: \b(CLERIC_RESIST_FIRE)\b
       - match: \b(CLERIC_RESIST_FIRE_AND_COLD)\b
+      - match: \b(CLERIC_RESIST_FIRE)\b
       - match: \b(CLERIC_RESTORATION)\b
       - match: \b(CLERIC_RESURRECTION)\b
       - match: \b(CLERIC_RIGHTEOUS_MAGIC)\b
@@ -540,9 +540,9 @@ repository:
       - match: \b(CREATE_YOSHIMO_BLADE)\b
       - match: \b(CRUSHING_TRAP)\b
       - match: \b(CUTSCENE_BREACH)\b
-      - match: \b(CUTSCENE_DAMAGE_1)\b
       - match: \b(CUTSCENE_DAMAGE_1B)\b
       - match: \b(CUTSCENE_DAMAGE_1C)\b
+      - match: \b(CUTSCENE_DAMAGE_1)\b
       - match: \b(CUTSCENE_FLESH_TO_STONE)\b
       - match: \b(CUTSCENE_HASTE)\b
       - match: \b(CUTSCENE_IMPRISONMENT)\b
@@ -617,7 +617,6 @@ repository:
       - match: \b(DM_SHIELD)\b
       - match: \b(DOA_GAS_FORM_CHANGE)\b
       - match: \b(DOA_PHYSICAL_FORM_CHANGE)\b
-      - match: \b(DOPPLEGANGER_CHANGE)\b
       - match: \b(DOPPLEGANGER_CHANGE2)\b
       - match: \b(DOPPLEGANGER_CHANGE3)\b
       - match: \b(DOPPLEGANGER_CHANGE4)\b
@@ -625,8 +624,9 @@ repository:
       - match: \b(DOPPLEGANGER_CHANGE6)\b
       - match: \b(DOPPLEGANGER_CHANGE7)\b
       - match: \b(DOPPLEGANGER_CHANGE8)\b
-      - match: \b(DOPPLEGANGER_CHANGE_DEFAULT)\b
       - match: \b(DOPPLEGANGER_CHANGE_DEFAULT_LESSER)\b
+      - match: \b(DOPPLEGANGER_CHANGE_DEFAULT)\b
+      - match: \b(DOPPLEGANGER_CHANGE)\b
       - match: \b(DOPPLEGANGER_RASHAD)\b
       - match: \b(DO_NOTHING)\b
       - match: \b(DO_SOME_EFFECTS)\b
@@ -659,8 +659,8 @@ repository:
       - match: \b(DRYAD_TELEPORT)\b
       - match: \b(DURLAG_SWORD)\b
       - match: \b(EDWINA_IN_HELL)\b
-      - match: \b(EDWIN_CHANGE)\b
       - match: \b(EDWIN_CHANGE_BACK)\b
+      - match: \b(EDWIN_CHANGE)\b
       - match: \b(EFFECT_ONLY)\b
       - match: \b(EFREETI_GAS_FORM_CHANGE)\b
       - match: \b(EFREETI_PHYSICAL_FORM_CHANGE)\b
@@ -676,8 +676,8 @@ repository:
       - match: \b(FAN_BLOW)\b
       - match: \b(FAST_SKULLTRAP)\b
       - match: \b(FEAR)\b
-      - match: \b(FIFTY_PERCENT_DAMAGE)\b
       - match: \b(FIFTY_PERCENT_DAMAGE_ARROW)\b
+      - match: \b(FIFTY_PERCENT_DAMAGE)\b
       - match: \b(FIGURINE_SPIDER_WEB)\b
       - match: \b(FINAL_HEAL)\b
       - match: \b(FIRAMB01_CHANGE)\b
@@ -734,9 +734,9 @@ repository:
       - match: \b(HELL_DAMAGE_HALF)\b
       - match: \b(HELL_DISPELL)\b
       - match: \b(HELL_EXPLODE)\b
-      - match: \b(HELL_FEAR)\b
       - match: \b(HELL_FEAR_EVIL)\b
       - match: \b(HELL_FEAR_GOOD)\b
+      - match: \b(HELL_FEAR)\b
       - match: \b(HELL_GAIN_CHR)\b
       - match: \b(HELL_GAIN_CON)\b
       - match: \b(HELL_GAIN_DEX)\b
@@ -790,8 +790,8 @@ repository:
       - match: \b(INNATE_BLUE_GLOW)\b
       - match: \b(INNATE_BOMBARDIER_BEETLE_CLOUD)\b
       - match: \b(INNATE_CHAMELEON_POWER)\b
-      - match: \b(INNATE_CONTAINER_GLOW)\b
       - match: \b(INNATE_CONTAINER_GLOW_BAD)\b
+      - match: \b(INNATE_CONTAINER_GLOW)\b
       - match: \b(INNATE_CORNUGON_SUMMON_TRAVEL_ANIMATION)\b
       - match: \b(INNATE_CRYPT_THING_TELEPORT)\b
       - match: \b(INNATE_CURE_LIGHT_WOUNDS)\b
@@ -809,8 +809,8 @@ repository:
       - match: \b(INNATE_FLASH_DISAPPEAR)\b
       - match: \b(INNATE_FROST_AURA)\b
       - match: \b(INNATE_GREAT_ROAR)\b
-      - match: \b(INNATE_HARPY_WAIL)\b
       - match: \b(INNATE_HARPY_WAIL_INTERNAL)\b
+      - match: \b(INNATE_HARPY_WAIL)\b
       - match: \b(INNATE_HOBART_TO_RAKSHASA)\b
       - match: \b(INNATE_HORROR)\b
       - match: \b(INNATE_ICE_GOLEM_DISAPPEAR)\b
@@ -818,8 +818,8 @@ repository:
       - match: \b(INNATE_INCENDIARY_CLOUD_IDLING)\b
       - match: \b(INNATE_INFERNAL_CONVEYANCE)\b
       - match: \b(INNATE_IRON_GOLEM_CLOUD)\b
-      - match: \b(INNATE_JACKALWERE_GAZE)\b
       - match: \b(INNATE_JACKALWERE_GAZE_INTERNAL)\b
+      - match: \b(INNATE_JACKALWERE_GAZE)\b
       - match: \b(INNATE_LARLOCHS_MINOR_DRAIN)\b
       - match: \b(INNATE_MOURNFUL_WAIL)\b
       - match: \b(INNATE_MUSTARD_JELLY_VAPOR)\b
@@ -870,8 +870,8 @@ repository:
       - match: \b(LICH_IMPRISON)\b
       - match: \b(LICH_REPLACE_SELF)\b
       - match: \b(LONG_RED_MIGHT)\b
-      - match: \b(LONG_VISUAL)\b
       - match: \b(LONG_VISUAL2)\b
+      - match: \b(LONG_VISUAL)\b
       - match: \b(LOSE_ALL)\b
       - match: \b(LOSE_FIFTEEN_LEVELS)\b
       - match: \b(LOSE_FIVE_LEVELS)\b
@@ -993,8 +993,8 @@ repository:
       - match: \b(REPULSE_X)\b
       - match: \b(RESIST_FEAR)\b
       - match: \b(RESTORATION_IGNORE_RESIST)\b
-      - match: \b(RESTORE_FULL_HEALTH)\b
       - match: \b(RESTORE_FULL_HEALTH_PARTY)\b
+      - match: \b(RESTORE_FULL_HEALTH)\b
       - match: \b(REVENANT_CHANGE)\b
       - match: \b(RISE_FROM_ASH)\b
       - match: \b(ROGUE_ASSASINATION)\b
@@ -1055,16 +1055,16 @@ repository:
       - match: \b(SILVER_DRAGON_BREATH_PARALIZATION)\b
       - match: \b(SIRINE_DIRE_CHARM)\b
       - match: \b(SIRINE_TELEPORT_FAKE)\b
-      - match: \b(SKIN_DANCER_RESTORE)\b
       - match: \b(SKIN_DANCER_RESTORE_2)\b
+      - match: \b(SKIN_DANCER_RESTORE)\b
       - match: \b(SKIN_DANCER_SWITCH)\b
       - match: \b(SKULL_EXPLODE)\b
       - match: \b(SLAVE_CHUNK)\b
-      - match: \b(SLAYER_BACK_TO_HUMAN)\b
       - match: \b(SLAYER_BACK_TO_HUMAN_NOVIS)\b
-      - match: \b(SLAYER_CHANGE)\b
+      - match: \b(SLAYER_BACK_TO_HUMAN)\b
       - match: \b(SLAYER_CHANGE_CUT_SCENE)\b
       - match: \b(SLAYER_CHANGE_TWO)\b
+      - match: \b(SLAYER_CHANGE)\b
       - match: \b(SLAYER_ENEMY)\b
       - match: \b(SLAYER_FEAR)\b
       - match: \b(SLAYER_IMMUNE_TO_DAMAGE)\b
@@ -1093,11 +1093,11 @@ repository:
       - match: \b(SUMMON_INFERNAL_HOST)\b
       - match: \b(SUMMON_PIT_FIEND)\b
       - match: \b(SUMMON_POISON)\b
-      - match: \b(SUMMON_SHADOW)\b
       - match: \b(SUMMON_SHADOW_WOLF)\b
-      - match: \b(SUMMON_SKELETON_WARRIOR)\b
+      - match: \b(SUMMON_SHADOW)\b
       - match: \b(SUMMON_SKELETON_WARRIOR2)\b
       - match: \b(SUMMON_SKELETON_WARRIOR3)\b
+      - match: \b(SUMMON_SKELETON_WARRIOR)\b
       - match: \b(SUN_SOUL_FLAMING_FISTS)\b
       - match: \b(SUN_SOUL_GREATER_SUN)\b
       - match: \b(SUN_SOUL_SUN_SOULBEAM)\b
@@ -1121,7 +1121,6 @@ repository:
       - match: \b(THREE_ROUND_ENCHANTMENT_IMMUNITY)\b
       - match: \b(TOTEMIC_DRUID_SUMMON_SPIRIT_ANIMAL)\b
       - match: \b(TRANSFORMATION_DEATH)\b
-      - match: \b(TRAP_ARROW)\b
       - match: \b(TRAP_ARROW_ACID)\b
       - match: \b(TRAP_ARROW_BITING)\b
       - match: \b(TRAP_ARROW_DETONATION)\b
@@ -1130,6 +1129,7 @@ repository:
       - match: \b(TRAP_ARROW_ICE)\b
       - match: \b(TRAP_ARROW_PIERCING)\b
       - match: \b(TRAP_ARROW_SLAYING)\b
+      - match: \b(TRAP_ARROW)\b
       - match: \b(TRAP_CALL_LIGHTNING)\b
       - match: \b(TRAP_CHROMATIC_ORB)\b
       - match: \b(TRAP_CLOUDKILL)\b
@@ -1139,8 +1139,8 @@ repository:
       - match: \b(TRAP_DIRE_CHARM)\b
       - match: \b(TRAP_DISEASE_DARTS)\b
       - match: \b(TRAP_FINGER_OF_DEATH)\b
-      - match: \b(TRAP_FIREBALL)\b
       - match: \b(TRAP_FIREBALL_4D6)\b
+      - match: \b(TRAP_FIREBALL)\b
       - match: \b(TRAP_FLAMESTRIKE)\b
       - match: \b(TRAP_FLESH_TO_STONE)\b
       - match: \b(TRAP_FROST)\b
@@ -1153,8 +1153,8 @@ repository:
       - match: \b(TRAP_LIGHTNING_ORB1)\b
       - match: \b(TRAP_LIGHTNING_ORB2)\b
       - match: \b(TRAP_LIGHTNING_ORB3)\b
-      - match: \b(TRAP_MAGIC_MISSILE)\b
       - match: \b(TRAP_MAGIC_MISSILE_5)\b
+      - match: \b(TRAP_MAGIC_MISSILE)\b
       - match: \b(TRAP_MINOR_LIGHTNING_BOLT)\b
       - match: \b(TRAP_MISCAST_MAGIC)\b
       - match: \b(TRAP_MONSTER_SUMMONING)\b
@@ -1170,8 +1170,8 @@ repository:
       - match: \b(TRAP_STINKING_CLOUD)\b
       - match: \b(TRAP_UNDERWATER_BITE)\b
       - match: \b(TRAP_VENT)\b
-      - match: \b(TROLL_CHANGE)\b
       - match: \b(TROLL_CHANGE_NITHIRI)\b
+      - match: \b(TROLL_CHANGE)\b
       - match: \b(TROLL_DESERT_CHANGE)\b
       - match: \b(TROLL_FIRE_CHANGE)\b
       - match: \b(TROLL_FRESHWATER_CHANGE)\b
@@ -1225,8 +1225,8 @@ repository:
       - match: \b(WIZARD_ACID_STORM)\b
       - match: \b(WIZARD_AGANNAZAR_SCORCHER)\b
       - match: \b(WIZARD_ALARM)\b
-      - match: \b(WIZARD_ANIMATE_DEAD)\b
       - match: \b(WIZARD_ANIMATE_DEAD_LICH)\b
+      - match: \b(WIZARD_ANIMATE_DEAD)\b
       - match: \b(WIZARD_ANTIMAGIC_SHELL)\b
       - match: \b(WIZARD_ARMOR)\b
       - match: \b(WIZARD_BELTYNS_BURNING_BLOOD)\b
@@ -1246,9 +1246,9 @@ repository:
       - match: \b(WIZARD_CFE_OLD)\b
       - match: \b(WIZARD_CHAIN_CONTINGENCY)\b
       - match: \b(WIZARD_CHAIN_LIGHTNING)\b
-      - match: \b(WIZARD_CHAOS)\b
       - match: \b(WIZARD_CHAOS_SHIELD)\b
       - match: \b(WIZARD_CHAOS_VISUALS_ONLY)\b
+      - match: \b(WIZARD_CHAOS)\b
       - match: \b(WIZARD_CHARM_PERSON)\b
       - match: \b(WIZARD_CHILL_TOUCH)\b
       - match: \b(WIZARD_CHROMATIC_ORB)\b
@@ -1259,8 +1259,8 @@ repository:
       - match: \b(WIZARD_CONE_OF_COLD)\b
       - match: \b(WIZARD_CONFUSION)\b
       - match: \b(WIZARD_CONJURE_AIR_ELEMENTAL)\b
-      - match: \b(WIZARD_CONJURE_EARTH_ELEMENTAL)\b
       - match: \b(WIZARD_CONJURE_EARTH_ELEMENTAL_MALAVON)\b
+      - match: \b(WIZARD_CONJURE_EARTH_ELEMENTAL)\b
       - match: \b(WIZARD_CONJURE_FIRE_ELEMENTAL)\b
       - match: \b(WIZARD_CONJURE_LESSER_AIR_ELEMENTAL)\b
       - match: \b(WIZARD_CONJURE_LESSER_EARTH_ELEMENTAL)\b
@@ -1285,17 +1285,17 @@ repository:
       - match: \b(WIZARD_DETECT_INVISIBILITY)\b
       - match: \b(WIZARD_DIMENSION_DOOR)\b
       - match: \b(WIZARD_DIRE_CHARM)\b
-      - match: \b(WIZARD_DISINTEGRATE)\b
       - match: \b(WIZARD_DISINTEGRATE2_IGNORE_RESISTANCE)\b
       - match: \b(WIZARD_DISINTEGRATE_IGNORE_RESISTANCE)\b
-      - match: \b(WIZARD_DISPEL_MAGIC)\b
+      - match: \b(WIZARD_DISINTEGRATE)\b
       - match: \b(WIZARD_DISPEL_MAGIC_VISUALS_ONLY)\b
+      - match: \b(WIZARD_DISPEL_MAGIC)\b
       - match: \b(WIZARD_DOMINATION)\b
       - match: \b(WIZARD_DRAGONS_BREATH)\b
       - match: \b(WIZARD_EMOTION_COURAGE)\b
       - match: \b(WIZARD_EMOTION_FEAR)\b
-      - match: \b(WIZARD_EMOTION_HOPE)\b
       - match: \b(WIZARD_EMOTION_HOPELESSNESS)\b
+      - match: \b(WIZARD_EMOTION_HOPE)\b
       - match: \b(WIZARD_ENCHANTED_WEAPON)\b
       - match: \b(WIZARD_ENERGY_BLADES)\b
       - match: \b(WIZARD_ENERGY_DRAIN)\b
@@ -1304,14 +1304,14 @@ repository:
       - match: \b(WIZARD_FAR_SIGHT)\b
       - match: \b(WIZARD_FEEBLEMIND)\b
       - match: \b(WIZARD_FIND_FAMILAR)\b
-      - match: \b(WIZARD_FINGER_OF_DEATH)\b
       - match: \b(WIZARD_FINGER_OF_DEATH_IGNORE_RESISTANCE)\b
+      - match: \b(WIZARD_FINGER_OF_DEATH)\b
       - match: \b(WIZARD_FIREBALL)\b
       - match: \b(WIZARD_FIRE_SHIELD_BLUE)\b
       - match: \b(WIZARD_FIRE_SHIELD_RED)\b
       - match: \b(WIZARD_FLAME_ARROW)\b
-      - match: \b(WIZARD_FLESH_TO_STONE)\b
       - match: \b(WIZARD_FLESH_TO_STONE_IGNORE_RESISTANCE)\b
+      - match: \b(WIZARD_FLESH_TO_STONE)\b
       - match: \b(WIZARD_FREEDOM)\b
       - match: \b(WIZARD_FRIENDS)\b
       - match: \b(WIZARD_GATE)\b
@@ -1339,8 +1339,8 @@ repository:
       - match: \b(WIZARD_IMPROVED_MANTLE)\b
       - match: \b(WIZARD_INCENDIARY_CLOUD)\b
       - match: \b(WIZARD_INFRAVISION)\b
-      - match: \b(WIZARD_INVISIBILITY)\b
       - match: \b(WIZARD_INVISIBILITY_10_FOOT)\b
+      - match: \b(WIZARD_INVISIBILITY)\b
       - match: \b(WIZARD_INVISIBLE_STALKER)\b
       - match: \b(WIZARD_IRON_BODY)\b
       - match: \b(WIZARD_KNOCK)\b
@@ -1405,8 +1405,8 @@ repository:
       - match: \b(WIZARD_POLYMORPH_WOLF)\b
       - match: \b(WIZARD_POWER_WORD_BLIND)\b
       - match: \b(WIZARD_POWER_WORD_KILL)\b
-      - match: \b(WIZARD_POWER_WORD_SILENCE)\b
       - match: \b(WIZARD_POWER_WORD_SILENCE_VISUALS_ONLY)\b
+      - match: \b(WIZARD_POWER_WORD_SILENCE)\b
       - match: \b(WIZARD_POWER_WORD_SLEEP)\b
       - match: \b(WIZARD_POWER_WORD_STUN)\b
       - match: \b(WIZARD_PRISMATIC_SPRAY)\b
@@ -1446,7 +1446,6 @@ repository:
       - match: \b(WIZARD_SNILLOCS_SNOWBALL_SWARM)\b
       - match: \b(WIZARD_SOUL_EATER)\b
       - match: \b(WIZARD_SPELL_DEFLECTION)\b
-      - match: \b(WIZARD_SPELL_IMMUNITY)\b
       - match: \b(WIZARD_SPELL_IMMUNITY_ABJURATION)\b
       - match: \b(WIZARD_SPELL_IMMUNITY_ALTERATION)\b
       - match: \b(WIZARD_SPELL_IMMUNITY_CONJURATION)\b
@@ -1455,6 +1454,7 @@ repository:
       - match: \b(WIZARD_SPELL_IMMUNITY_ILLUSIONIST)\b
       - match: \b(WIZARD_SPELL_IMMUNITY_INVOCATION)\b
       - match: \b(WIZARD_SPELL_IMMUNITY_NECROMANCY)\b
+      - match: \b(WIZARD_SPELL_IMMUNITY)\b
       - match: \b(WIZARD_SPELL_SEQUENCER)\b
       - match: \b(WIZARD_SPELL_SHIELD)\b
       - match: \b(WIZARD_SPELL_STRIKE)\b
@@ -1529,8 +1529,8 @@ repository:
       - match: \b(ARE_CONTAINER_owner_script_name)\b
       - match: \b(ARE_CONTAINER_script)\b
       - match: \b(ARE_CONTAINER_size)\b
-      - match: \b(ARE_CONTAINER_trap_detect)\b
       - match: \b(ARE_CONTAINER_trap_detected)\b
+      - match: \b(ARE_CONTAINER_trap_detect)\b
       - match: \b(ARE_CONTAINER_trap_launch_x_coord)\b
       - match: \b(ARE_CONTAINER_trap_launch_y_coord)\b
       - match: \b(ARE_CONTAINER_trap_remove)\b
@@ -1580,8 +1580,8 @@ repository:
       - match: \b(ARE_REGION_alt_use_point_y_coord)\b
       - match: \b(ARE_REGION_bounding_box)\b
       - match: \b(ARE_REGION_cursor)\b
-      - match: \b(ARE_REGION_dest_area)\b
       - match: \b(ARE_REGION_dest_area_entranc_name)\b
+      - match: \b(ARE_REGION_dest_area)\b
       - match: \b(ARE_REGION_detected)\b
       - match: \b(ARE_REGION_dialog_PST)\b
       - match: \b(ARE_REGION_first_vertex_index)\b
@@ -1614,8 +1614,8 @@ repository:
       - match: \b(ARE_containers_offset)\b
       - match: \b(ARE_doors_count)\b
       - match: \b(ARE_doors_offset)\b
-      - match: \b(ARE_east)\b
       - match: \b(ARE_east_flags)\b
+      - match: \b(ARE_east)\b
       - match: \b(ARE_entrances_count)\b
       - match: \b(ARE_entrances_offset)\b
       - match: \b(ARE_flags)\b
@@ -1626,8 +1626,8 @@ repository:
       - match: \b(ARE_lighting_probability)\b
       - match: \b(ARE_map_note_count_PST)\b
       - match: \b(ARE_map_note_offset_PST)\b
-      - match: \b(ARE_north)\b
       - match: \b(ARE_north_flags)\b
+      - match: \b(ARE_north)\b
       - match: \b(ARE_overlay_transparency_EE)\b
       - match: \b(ARE_projectile_traps_count)\b
       - match: \b(ARE_rain_probability)\b
@@ -1640,8 +1640,8 @@ repository:
       - match: \b(ARE_signature)\b
       - match: \b(ARE_snow_probability)\b
       - match: \b(ARE_soung_offset)\b
-      - match: \b(ARE_south)\b
       - match: \b(ARE_south_flags)\b
+      - match: \b(ARE_south)\b
       - match: \b(ARE_spawn_count)\b
       - match: \b(ARE_spawn_offset)\b
       - match: \b(ARE_tiled_object_count)\b
@@ -1655,8 +1655,8 @@ repository:
       - match: \b(ARE_vertices_count)\b
       - match: \b(ARE_vertices_offset)\b
       - match: \b(ARE_wed)\b
-      - match: \b(ARE_west)\b
       - match: \b(ARE_west_flags)\b
+      - match: \b(ARE_west)\b
       - match: \b(ARE_wind_speed_nonEE)\b
       - match: \b(BUTTON_bard_song_ee)\b
       - match: \b(BUTTON_find_traps)\b
@@ -1739,9 +1739,9 @@ repository:
       - match: \b(CRE_missile_AC_mod)\b
       - match: \b(CRE_missile_proficiency)\b
       - match: \b(CRE_missile_resistance)\b
-      - match: \b(CRE_morale)\b
       - match: \b(CRE_morale_break)\b
       - match: \b(CRE_morale_recovery)\b
+      - match: \b(CRE_morale)\b
       - match: \b(CRE_move_silently)\b
       - match: \b(CRE_name)\b
       - match: \b(CRE_natural_AC)\b
@@ -1757,10 +1757,10 @@ repository:
       - match: \b(CRE_piercing_resistance)\b
       - match: \b(CRE_race)\b
       - match: \b(CRE_racial_enemy)\b
-      - match: \b(CRE_reputation)\b
       - match: \b(CRE_reputation_gain_loss_when_joining_party)\b
       - match: \b(CRE_reputation_gain_loss_when_killed)\b
       - match: \b(CRE_reputation_gain_loss_when_leaving_party)\b
+      - match: \b(CRE_reputation)\b
       - match: \b(CRE_save_vs_breath)\b
       - match: \b(CRE_save_vs_death)\b
       - match: \b(CRE_save_vs_polymorph)\b
@@ -1779,83 +1779,83 @@ repository:
       - match: \b(CRE_specifics)\b
       - match: \b(CRE_spiked_proficiency)\b
       - match: \b(CRE_status)\b
-      - match: \b(CRE_strength)\b
       - match: \b(CRE_strength_bonus)\b
+      - match: \b(CRE_strength)\b
       - match: \b(CRE_tooltip)\b
-      - match: \b(CRE_tracking)\b
       - match: \b(CRE_tracking_target)\b
+      - match: \b(CRE_tracking)\b
       - match: \b(CRE_translucency)\b
       - match: \b(CRE_turn_undead_level)\b
       - match: \b(CRE_wisdom)\b
       - match: \b(CURRENT_HP_MOD_TYPE_cumulative)\b
       - match: \b(CURRENT_HP_MOD_TYPE_flat)\b
       - match: \b(CURRENT_HP_MOD_TYPE_percentage)\b
-      - match: \b(DAMAGETYPE_acid)\b
       - match: \b(DAMAGETYPE_acid_reduce_by_percentage)\b
       - match: \b(DAMAGETYPE_acid_set_to_percentage)\b
       - match: \b(DAMAGETYPE_acid_set_to_value)\b
-      - match: \b(DAMAGETYPE_cold)\b
+      - match: \b(DAMAGETYPE_acid)\b
       - match: \b(DAMAGETYPE_cold_reduce_by_percentage)\b
       - match: \b(DAMAGETYPE_cold_set_to_percentage)\b
       - match: \b(DAMAGETYPE_cold_set_to_value)\b
-      - match: \b(DAMAGETYPE_crushing)\b
+      - match: \b(DAMAGETYPE_cold)\b
       - match: \b(DAMAGETYPE_crushing_reduce_by_percentage)\b
       - match: \b(DAMAGETYPE_crushing_set_to_percentage)\b
       - match: \b(DAMAGETYPE_crushing_set_to_value)\b
-      - match: \b(DAMAGETYPE_disease)\b
+      - match: \b(DAMAGETYPE_crushing)\b
       - match: \b(DAMAGETYPE_disease_reduce_by_percentage)\b
       - match: \b(DAMAGETYPE_disease_set_to_percentage)\b
       - match: \b(DAMAGETYPE_disease_set_to_value)\b
-      - match: \b(DAMAGETYPE_electricity)\b
+      - match: \b(DAMAGETYPE_disease)\b
       - match: \b(DAMAGETYPE_electricity_reduce_by_percentage)\b
       - match: \b(DAMAGETYPE_electricity_set_to_percentage)\b
       - match: \b(DAMAGETYPE_electricity_set_to_value)\b
-      - match: \b(DAMAGETYPE_fire)\b
+      - match: \b(DAMAGETYPE_electricity)\b
       - match: \b(DAMAGETYPE_fire_reduce_by_percentage)\b
       - match: \b(DAMAGETYPE_fire_set_to_percentage)\b
       - match: \b(DAMAGETYPE_fire_set_to_value)\b
-      - match: \b(DAMAGETYPE_magic)\b
-      - match: \b(DAMAGETYPE_magic_cold)\b
+      - match: \b(DAMAGETYPE_fire)\b
       - match: \b(DAMAGETYPE_magic_cold_reduce_by_percentage)\b
       - match: \b(DAMAGETYPE_magic_cold_set_to_percentage)\b
       - match: \b(DAMAGETYPE_magic_cold_set_to_value)\b
-      - match: \b(DAMAGETYPE_magic_fire)\b
+      - match: \b(DAMAGETYPE_magic_cold)\b
       - match: \b(DAMAGETYPE_magic_fire_reduce_by_percentage)\b
       - match: \b(DAMAGETYPE_magic_fire_set_to_percentage)\b
       - match: \b(DAMAGETYPE_magic_fire_set_to_value)\b
+      - match: \b(DAMAGETYPE_magic_fire)\b
       - match: \b(DAMAGETYPE_magic_reduce_by_percentage)\b
       - match: \b(DAMAGETYPE_magic_set_to_percentage)\b
       - match: \b(DAMAGETYPE_magic_set_to_value)\b
-      - match: \b(DAMAGETYPE_missile)\b
+      - match: \b(DAMAGETYPE_magic)\b
       - match: \b(DAMAGETYPE_missile_reduce_by_percentage)\b
       - match: \b(DAMAGETYPE_missile_set_to_percentage)\b
       - match: \b(DAMAGETYPE_missile_set_to_value)\b
-      - match: \b(DAMAGETYPE_piercing)\b
+      - match: \b(DAMAGETYPE_missile)\b
       - match: \b(DAMAGETYPE_piercing_reduce_by_percentage)\b
       - match: \b(DAMAGETYPE_piercing_set_to_percentage)\b
       - match: \b(DAMAGETYPE_piercing_set_to_value)\b
-      - match: \b(DAMAGETYPE_poison)\b
+      - match: \b(DAMAGETYPE_piercing)\b
       - match: \b(DAMAGETYPE_poison_reduce_by_percentage)\b
       - match: \b(DAMAGETYPE_poison_set_to_percentage)\b
       - match: \b(DAMAGETYPE_poison_set_to_value)\b
-      - match: \b(DAMAGETYPE_slashing)\b
+      - match: \b(DAMAGETYPE_poison)\b
       - match: \b(DAMAGETYPE_slashing_reduce_by_percentage)\b
       - match: \b(DAMAGETYPE_slashing_set_to_percentage)\b
       - match: \b(DAMAGETYPE_slashing_set_to_value)\b
-      - match: \b(DAMAGETYPE_soul_eater)\b
+      - match: \b(DAMAGETYPE_slashing)\b
       - match: \b(DAMAGETYPE_soul_eater_reduce_by_percentage)\b
       - match: \b(DAMAGETYPE_soul_eater_set_to_percentage)\b
       - match: \b(DAMAGETYPE_soul_eater_set_to_value)\b
-      - match: \b(DAMAGETYPE_stunning)\b
+      - match: \b(DAMAGETYPE_soul_eater)\b
       - match: \b(DAMAGETYPE_stunning_reduce_by_percentage)\b
       - match: \b(DAMAGETYPE_stunning_set_to_percentage)\b
       - match: \b(DAMAGETYPE_stunning_set_to_value)\b
+      - match: \b(DAMAGETYPE_stunning)\b
       - match: \b(DEPLETION_recharges)\b
       - match: \b(DEPLETION_remains)\b
       - match: \b(DEPLETION_replace_with_used_up)\b
       - match: \b(DEPLETION_vanishes)\b
-      - match: \b(DISPEL)\b
       - match: \b(DISPELLABLE)\b
+      - match: \b(DISPEL)\b
       - match: \b(EFF2_caster_level)\b
       - match: \b(EFF2_caster_x_coord)\b
       - match: \b(EFF2_caster_y_coord)\b
@@ -1870,19 +1870,19 @@ repository:
       - match: \b(EFF2_parameter4)\b
       - match: \b(EFF2_parameter5)\b
       - match: \b(EFF2_parameter6)\b
-      - match: \b(EFF2_parent_resource)\b
       - match: \b(EFF2_parent_resource_flags)\b
       - match: \b(EFF2_parent_resource_slot)\b
       - match: \b(EFF2_parent_resource_type)\b
+      - match: \b(EFF2_parent_resource)\b
       - match: \b(EFF2_power)\b
       - match: \b(EFF2_primary_type_school)\b
       - match: \b(EFF2_probability1)\b
       - match: \b(EFF2_probability2)\b
       - match: \b(EFF2_projectile)\b
       - match: \b(EFF2_resistance)\b
-      - match: \b(EFF2_resource)\b
       - match: \b(EFF2_resource2)\b
       - match: \b(EFF2_resource3)\b
+      - match: \b(EFF2_resource)\b
       - match: \b(EFF2_save_bonus)\b
       - match: \b(EFF2_saving_throw_type)\b
       - match: \b(EFF2_secondary_type)\b
@@ -1912,8 +1912,8 @@ repository:
       - match: \b(EFF_probability2)\b
       - match: \b(EFF_resistance)\b
       - match: \b(EFF_resource)\b
-      - match: \b(EFF_savingthrow)\b
       - match: \b(EFF_savingthrow_bonus)\b
+      - match: \b(EFF_savingthrow)\b
       - match: \b(EFF_target)\b
       - match: \b(EFF_timing)\b
       - match: \b(EFF_tobex_stacking_id)\b
@@ -2010,9 +2010,9 @@ repository:
       - match: \b(FLAG_SPL_no_LoS)\b
       - match: \b(FLAG_SPL_not_in_combat)\b
       - match: \b(FLAG_SPL_outdoors_only)\b
-      - match: \b(FLAG_STO_buys)\b
       - match: \b(FLAG_STO_buys_critical_items_bgee)\b
       - match: \b(FLAG_STO_buys_fenced)\b
+      - match: \b(FLAG_STO_buys)\b
       - match: \b(FLAG_STO_can_done)\b
       - match: \b(FLAG_STO_can_identify)\b
       - match: \b(FLAG_STO_can_steal)\b
@@ -2046,9 +2046,9 @@ repository:
       - match: \b(ICON_cats_grace)\b
       - match: \b(ICON_champions_strength)\b
       - match: \b(ICON_chant)\b
-      - match: \b(ICON_chaos)\b
       - match: \b(ICON_chaos_of_battle)\b
       - match: \b(ICON_chaos_shield)\b
+      - match: \b(ICON_chaos)\b
       - match: \b(ICON_chaotic_commands)\b
       - match: \b(ICON_charm)\b
       - match: \b(ICON_cloak_of_fear)\b
@@ -2105,8 +2105,8 @@ repository:
       - match: \b(ICON_held)\b
       - match: \b(ICON_heroism)\b
       - match: \b(ICON_holy_power)\b
-      - match: \b(ICON_hope)\b
       - match: \b(ICON_hopelessness)\b
+      - match: \b(ICON_hope)\b
       - match: \b(ICON_immunity_abjuration)\b
       - match: \b(ICON_immunity_alteration)\b
       - match: \b(ICON_immunity_conjuration)\b
@@ -2132,8 +2132,8 @@ repository:
       - match: \b(ICON_level_drain)\b
       - match: \b(ICON_magic_armour)\b
       - match: \b(ICON_magic_flute)\b
-      - match: \b(ICON_magic_resistance)\b
       - match: \b(ICON_magic_resistance_lowered)\b
+      - match: \b(ICON_magic_resistance)\b
       - match: \b(ICON_magnetized)\b
       - match: \b(ICON_mantle)\b
       - match: \b(ICON_mareks_poison)\b
@@ -2169,9 +2169,9 @@ repository:
       - match: \b(ICON_protection_from_electricity)\b
       - match: \b(ICON_protection_from_evil)\b
       - match: \b(ICON_protection_from_fire)\b
-      - match: \b(ICON_protection_from_magic)\b
       - match: \b(ICON_protection_from_magic_weapons)\b
       - match: \b(ICON_protection_from_magical_energy)\b
+      - match: \b(ICON_protection_from_magic)\b
       - match: \b(ICON_protection_from_missiles)\b
       - match: \b(ICON_protection_from_normal_weapons)\b
       - match: \b(ICON_protection_from_petrification)\b
@@ -2211,10 +2211,10 @@ repository:
       - match: \b(ICON_spirit_ward)\b
       - match: \b(ICON_stoneskin)\b
       - match: \b(ICON_storm_shield)\b
-      - match: \b(ICON_strength)\b
       - match: \b(ICON_strength_of_one)\b
-      - match: \b(ICON_stun)\b
+      - match: \b(ICON_strength)\b
       - match: \b(ICON_stunning_blow)\b
+      - match: \b(ICON_stun)\b
       - match: \b(ICON_tensers_transformation)\b
       - match: \b(ICON_the_ballad_of_three_heroes)\b
       - match: \b(ICON_the_sirens_yearning)\b
@@ -2242,8 +2242,8 @@ repository:
       - match: \b(ITM_ATTACK_TYPE_none)\b
       - match: \b(ITM_ATTACK_TYPE_projectile)\b
       - match: \b(ITM_ATTACK_TYPE_ranged)\b
-      - match: \b(ITM_DAMAGE_TYPE_blunt)\b
       - match: \b(ITM_DAMAGE_TYPE_blunt_slashing)\b
+      - match: \b(ITM_DAMAGE_TYPE_blunt)\b
       - match: \b(ITM_DAMAGE_TYPE_fists)\b
       - match: \b(ITM_DAMAGE_TYPE_none)\b
       - match: \b(ITM_DAMAGE_TYPE_piercing_blunt)\b
@@ -2276,8 +2276,8 @@ repository:
       - match: \b(ITM_HEADER_melee_animation)\b
       - match: \b(ITM_HEADER_misc_projectile_qualifier)\b
       - match: \b(ITM_HEADER_primary_type)\b
-      - match: \b(ITM_HEADER_projectile)\b
       - match: \b(ITM_HEADER_projectile_type)\b
+      - match: \b(ITM_HEADER_projectile)\b
       - match: \b(ITM_HEADER_range)\b
       - match: \b(ITM_HEADER_secondary_type)\b
       - match: \b(ITM_HEADER_speed)\b
@@ -2315,12 +2315,12 @@ repository:
       - match: \b(ITM_TYPE_eye)\b
       - match: \b(ITM_TYPE_familiar)\b
       - match: \b(ITM_TYPE_flail)\b
-      - match: \b(ITM_TYPE_food)\b
       - match: \b(ITM_TYPE_food_iwd2)\b
+      - match: \b(ITM_TYPE_food)\b
       - match: \b(ITM_TYPE_full_plate)\b
       - match: \b(ITM_TYPE_fur)\b
-      - match: \b(ITM_TYPE_gauntlet)\b
       - match: \b(ITM_TYPE_gauntlets)\b
+      - match: \b(ITM_TYPE_gauntlet)\b
       - match: \b(ITM_TYPE_gem)\b
       - match: \b(ITM_TYPE_girdle)\b
       - match: \b(ITM_TYPE_gold_pieces)\b
@@ -2382,8 +2382,8 @@ repository:
       - match: \b(ITM_min_dexterity)\b
       - match: \b(ITM_min_intelligencs)\b
       - match: \b(ITM_min_level)\b
-      - match: \b(ITM_min_strength)\b
       - match: \b(ITM_min_strength_bonus)\b
+      - match: \b(ITM_min_strength)\b
       - match: \b(ITM_min_wisdom)\b
       - match: \b(ITM_price)\b
       - match: \b(ITM_replacement_item)\b
@@ -2409,8 +2409,8 @@ repository:
       - match: \b(OPCODE_alter_visual_animation_effect)\b
       - match: \b(OPCODE_animation_change)\b
       - match: \b(OPCODE_animation_removal)\b
-      - match: \b(OPCODE_apply_effect_item)\b
       - match: \b(OPCODE_apply_effect_itemtype)\b
+      - match: \b(OPCODE_apply_effect_item)\b
       - match: \b(OPCODE_apply_effects_list)\b
       - match: \b(OPCODE_apply_repeating_eff)\b
       - match: \b(OPCODE_apply_spell_on_movement)\b
@@ -2420,26 +2420,26 @@ repository:
       - match: \b(OPCODE_attacks_per_round_mod)\b
       - match: \b(OPCODE_aura_cleansing)\b
       - match: \b(OPCODE_avatar_removal)\b
-      - match: \b(OPCODE_backstab)\b
       - match: \b(OPCODE_backstab_every_hit)\b
       - match: \b(OPCODE_backstab_hit_effect)\b
-      - match: \b(OPCODE_berserking)\b
+      - match: \b(OPCODE_backstab)\b
       - match: \b(OPCODE_berserking_2)\b
+      - match: \b(OPCODE_berserking)\b
       - match: \b(OPCODE_bless)\b
       - match: \b(OPCODE_blindness)\b
       - match: \b(OPCODE_bounce_opcode)\b
       - match: \b(OPCODE_bounce_projectile)\b
       - match: \b(OPCODE_bounce_school_decrement)\b
-      - match: \b(OPCODE_bounce_secondary_type)\b
       - match: \b(OPCODE_bounce_secondary_type_decrement)\b
+      - match: \b(OPCODE_bounce_secondary_type)\b
       - match: \b(OPCODE_bounce_specified_spell)\b
       - match: \b(OPCODE_bounce_spell_level)\b
       - match: \b(OPCODE_bounce_spell_school)\b
       - match: \b(OPCODE_button_disable_button)\b
       - match: \b(OPCODE_button_enable_button)\b
       - match: \b(OPCODE_can_use_any_item)\b
-      - match: \b(OPCODE_cant_use_item)\b
       - match: \b(OPCODE_cant_use_itemtype)\b
+      - match: \b(OPCODE_cant_use_item)\b
       - match: \b(OPCODE_cast_spell_at_creature)\b
       - match: \b(OPCODE_cast_spell_at_point)\b
       - match: \b(OPCODE_cast_spell_on_condition)\b
@@ -2467,8 +2467,8 @@ repository:
       - match: \b(OPCODE_confusion)\b
       - match: \b(OPCODE_constitution_mod)\b
       - match: \b(OPCODE_contingency_creation)\b
-      - match: \b(OPCODE_create_inventory_item)\b
       - match: \b(OPCODE_create_inventory_item_days)\b
+      - match: \b(OPCODE_create_inventory_item)\b
       - match: \b(OPCODE_create_item_in_slot)\b
       - match: \b(OPCODE_create_magical_weapon)\b
       - match: \b(OPCODE_creature_summoning)\b
@@ -2488,8 +2488,8 @@ repository:
       - match: \b(OPCODE_cure_feeblemindedness)\b
       - match: \b(OPCODE_cure_hold)\b
       - match: \b(OPCODE_cure_horror)\b
-      - match: \b(OPCODE_cure_invisibility)\b
       - match: \b(OPCODE_cure_invisibility_2)\b
+      - match: \b(OPCODE_cure_invisibility)\b
       - match: \b(OPCODE_cure_level_drain_restoration)\b
       - match: \b(OPCODE_cure_non_detection)\b
       - match: \b(OPCODE_cure_poison)\b
@@ -2539,8 +2539,8 @@ repository:
       - match: \b(OPCODE_fatigue_mod)\b
       - match: \b(OPCODE_feeblemindedness)\b
       - match: \b(OPCODE_find_familiar)\b
-      - match: \b(OPCODE_find_traps)\b
       - match: \b(OPCODE_find_traps_mod)\b
+      - match: \b(OPCODE_find_traps)\b
       - match: \b(OPCODE_fire_resist_mod)\b
       - match: \b(OPCODE_fist_damage_mod)\b
       - match: \b(OPCODE_fist_of_iron)\b
@@ -2551,12 +2551,12 @@ repository:
       - match: \b(OPCODE_give_ability)\b
       - match: \b(OPCODE_gold)\b
       - match: \b(OPCODE_golem_stoneskin)\b
-      - match: \b(OPCODE_haste)\b
       - match: \b(OPCODE_haste_2)\b
+      - match: \b(OPCODE_haste)\b
       - match: \b(OPCODE_hide_in_shadows_mod)\b
       - match: \b(OPCODE_hit_point_transfer)\b
-      - match: \b(OPCODE_hold)\b
       - match: \b(OPCODE_hold_2)\b
+      - match: \b(OPCODE_hold)\b
       - match: \b(OPCODE_horror)\b
       - match: \b(OPCODE_hp_current_hp_mod)\b
       - match: \b(OPCODE_hp_damage)\b
@@ -2597,8 +2597,8 @@ repository:
       - match: \b(OPCODE_melee_thac0_mod)\b
       - match: \b(OPCODE_melee_weapon_damage_mod)\b
       - match: \b(OPCODE_minimum_base_stats)\b
-      - match: \b(OPCODE_mirror_image)\b
       - match: \b(OPCODE_mirror_image_exact_number)\b
+      - match: \b(OPCODE_mirror_image)\b
       - match: \b(OPCODE_miscast_magic)\b
       - match: \b(OPCODE_missile_weapon_damage_mod)\b
       - match: \b(OPCODE_missiles_resist_mod)\b
@@ -2607,8 +2607,8 @@ repository:
       - match: \b(OPCODE_morale_break_mod)\b
       - match: \b(OPCODE_morale_mod)\b
       - match: \b(OPCODE_move_view_to_target)\b
-      - match: \b(OPCODE_movement_mod)\b
       - match: \b(OPCODE_movement_mod_ii)\b
+      - match: \b(OPCODE_movement_mod)\b
       - match: \b(OPCODE_negative_chant)\b
       - match: \b(OPCODE_npcbump)\b
       - match: \b(OPCODE_open_locks_mod)\b
@@ -2625,17 +2625,17 @@ repository:
       - match: \b(OPCODE_pick_pockets_mod)\b
       - match: \b(OPCODE_piercing_resist_mod)\b
       - match: \b(OPCODE_play_3d_effect)\b
-      - match: \b(OPCODE_play_BAM_file)\b
       - match: \b(OPCODE_play_BAM_file_2)\b
       - match: \b(OPCODE_play_BAM_file_3)\b
       - match: \b(OPCODE_play_BAM_file_4)\b
       - match: \b(OPCODE_play_BAM_file_single_or_dual)\b
+      - match: \b(OPCODE_play_BAM_file)\b
       - match: \b(OPCODE_play_BAM_with_effects)\b
       - match: \b(OPCODE_play_damage_animation)\b
       - match: \b(OPCODE_play_movie)\b
       - match: \b(OPCODE_play_sound_effect)\b
-      - match: \b(OPCODE_poison)\b
       - match: \b(OPCODE_poison_resist_mod)\b
+      - match: \b(OPCODE_poison)\b
       - match: \b(OPCODE_polymorph_into_specific)\b
       - match: \b(OPCODE_portrait_change)\b
       - match: \b(OPCODE_positive_chant)\b
@@ -2652,10 +2652,10 @@ repository:
       - match: \b(OPCODE_protection_from_opcode)\b
       - match: \b(OPCODE_protection_from_projectile)\b
       - match: \b(OPCODE_protection_from_specific_animation)\b
-      - match: \b(OPCODE_protection_from_spell)\b
       - match: \b(OPCODE_protection_from_spell_levels)\b
       - match: \b(OPCODE_protection_from_spell_school)\b
       - match: \b(OPCODE_protection_from_spell_secondary_type)\b
+      - match: \b(OPCODE_protection_from_spell)\b
       - match: \b(OPCODE_protection_from_timestop)\b
       - match: \b(OPCODE_protection_from_tracking)\b
       - match: \b(OPCODE_protection_spell_trap)\b
@@ -2708,16 +2708,16 @@ repository:
       - match: \b(OPCODE_set_spell_state)\b
       - match: \b(OPCODE_set_stat_tobex)\b
       - match: \b(OPCODE_set_state)\b
-      - match: \b(OPCODE_set_trap)\b
       - match: \b(OPCODE_set_traps_mod)\b
-      - match: \b(OPCODE_seven_eyes)\b
+      - match: \b(OPCODE_set_trap)\b
       - match: \b(OPCODE_seven_eyes_overlay)\b
+      - match: \b(OPCODE_seven_eyes)\b
       - match: \b(OPCODE_shake_window)\b
       - match: \b(OPCODE_show_visual_effect)\b
       - match: \b(OPCODE_silence)\b
       - match: \b(OPCODE_slashing_resist_mod)\b
-      - match: \b(OPCODE_slow)\b
       - match: \b(OPCODE_slow_poison)\b
+      - match: \b(OPCODE_slow)\b
       - match: \b(OPCODE_soul_exodus)\b
       - match: \b(OPCODE_sparkle)\b
       - match: \b(OPCODE_special_spell_hit)\b
@@ -2729,8 +2729,8 @@ repository:
       - match: \b(OPCODE_stop_all_actions)\b
       - match: \b(OPCODE_strength_bonus_mod)\b
       - match: \b(OPCODE_strength_mod)\b
-      - match: \b(OPCODE_stun)\b
       - match: \b(OPCODE_stun_90hp)\b
+      - match: \b(OPCODE_stun)\b
       - match: \b(OPCODE_summon_creatures_2)\b
       - match: \b(OPCODE_teleport_dimension_door)\b
       - match: \b(OPCODE_teleport_field)\b
@@ -2739,28 +2739,28 @@ repository:
       - match: \b(OPCODE_text_change_title)\b
       - match: \b(OPCODE_text_display_string)\b
       - match: \b(OPCODE_text_protection_from_display_specific_string)\b
-      - match: \b(OPCODE_thac0_mod)\b
       - match: \b(OPCODE_thac0_mod_off_hand)\b
       - match: \b(OPCODE_thac0_mod_on_hand)\b
       - match: \b(OPCODE_thac0_mod_with_missile_weapons)\b
+      - match: \b(OPCODE_thac0_mod)\b
       - match: \b(OPCODE_thac0_vs_creature_type_mod)\b
       - match: \b(OPCODE_time_stop)\b
       - match: \b(OPCODE_tint_screen)\b
       - match: \b(OPCODE_to_hit_mod)\b
       - match: \b(OPCODE_tracking_skill_mod)\b
       - match: \b(OPCODE_transparency_fade)\b
-      - match: \b(OPCODE_turn_undead)\b
       - match: \b(OPCODE_turn_undead_level)\b
-      - match: \b(OPCODE_unconsciousness)\b
+      - match: \b(OPCODE_turn_undead)\b
       - match: \b(OPCODE_unconsciousness_20hp)\b
+      - match: \b(OPCODE_unconsciousness)\b
       - match: \b(OPCODE_unlock_knock)\b
       - match: \b(OPCODE_unsummon_creature)\b
-      - match: \b(OPCODE_use_eff_file)\b
       - match: \b(OPCODE_use_eff_file_cursed)\b
+      - match: \b(OPCODE_use_eff_file)\b
       - match: \b(OPCODE_visual_range)\b
       - match: \b(OPCODE_web_effect)\b
-      - match: \b(OPCODE_wild_magic)\b
       - match: \b(OPCODE_wild_magic_2)\b
+      - match: \b(OPCODE_wild_magic)\b
       - match: \b(OPCODE_wing_buffet)\b
       - match: \b(OPCODE_wisdom_mod)\b
       - match: \b(OPCODE_wizard_spell_slots_mod)\b
@@ -2768,32 +2768,32 @@ repository:
       - match: \b(PRO_acidblmu)\b
       - match: \b(PRO_acidblob)\b
       - match: \b(PRO_acidbloc)\b
-      - match: \b(PRO_arrow)\b
       - match: \b(PRO_arrowex)\b
       - match: \b(PRO_arrowflb)\b
       - match: \b(PRO_arrowflg)\b
       - match: \b(PRO_arrowfli)\b
       - match: \b(PRO_arrowflm)\b
       - match: \b(PRO_arrowhvy)\b
-      - match: \b(PRO_axe)\b
+      - match: \b(PRO_arrow)\b
       - match: \b(PRO_axeex)\b
+      - match: \b(PRO_axe)\b
       - match: \b(PRO_bignarea)\b
-      - match: \b(PRO_bolt)\b
       - match: \b(PRO_bolt2)\b
       - match: \b(PRO_boltex)\b
-      - match: \b(PRO_bullet)\b
+      - match: \b(PRO_bolt)\b
       - match: \b(PRO_bullet2)\b
       - match: \b(PRO_bulletex)\b
+      - match: \b(PRO_bullet)\b
       - match: \b(PRO_chromorb)\b
-      - match: \b(PRO_cloud)\b
       - match: \b(PRO_cloudkil)\b
       - match: \b(PRO_cloudpc)\b
+      - match: \b(PRO_cloud)\b
       - match: \b(PRO_conecold)\b
       - match: \b(PRO_cspray)\b
-      - match: \b(PRO_dagger)\b
       - match: \b(PRO_daggerex)\b
-      - match: \b(PRO_dart)\b
+      - match: \b(PRO_dagger)\b
       - match: \b(PRO_dartex)\b
+      - match: \b(PRO_dart)\b
       - match: \b(PRO_dfirebl)\b
       - match: \b(PRO_dragblck)\b
       - match: \b(PRO_draggree)\b
@@ -2811,18 +2811,18 @@ repository:
       - match: \b(PRO_golcloud)\b
       - match: \b(PRO_grease)\b
       - match: \b(PRO_greehit)\b
-      - match: \b(PRO_hold)\b
       - match: \b(PRO_holdnecr)\b
       - match: \b(PRO_holdsumm)\b
+      - match: \b(PRO_hold)\b
       - match: \b(PRO_holyarea)\b
       - match: \b(PRO_iceglyp)\b
       - match: \b(PRO_icestorm)\b
       - match: \b(PRO_icghit)\b
-      - match: \b(PRO_inarea)\b
       - match: \b(PRO_inareanp)\b
       - match: \b(PRO_inareans)\b
       - match: \b(PRO_inareapa)\b
       - match: \b(PRO_inareasm)\b
+      - match: \b(PRO_inarea)\b
       - match: \b(PRO_inmed)\b
       - match: \b(PRO_insec1)\b
       - match: \b(PRO_insec2)\b
@@ -2886,8 +2886,8 @@ repository:
       - match: \b(PRO_spattck2)\b
       - match: \b(PRO_spbehbla)\b
       - match: \b(PRO_spdrbrth)\b
-      - match: \b(PRO_spear)\b
       - match: \b(PRO_spearex)\b
+      - match: \b(PRO_spear)\b
       - match: \b(PRO_spenbld)\b
       - match: \b(PRO_spgreorb)\b
       - match: \b(PRO_spklarbk)\b
@@ -2913,8 +2913,8 @@ repository:
       - match: \b(PRO_traptime)\b
       - match: \b(PRO_tskullnp)\b
       - match: \b(PRO_unlyarea)\b
-      - match: \b(PRO_web)\b
       - match: \b(PRO_web1p)\b
+      - match: \b(PRO_web)\b
       - match: \b(SCRIPT_TYPE_area)\b
       - match: \b(SCRIPT_TYPE_class)\b
       - match: \b(SCRIPT_TYPE_default)\b
@@ -2942,8 +2942,8 @@ repository:
       - match: \b(SPL_HEADER_TARGET_character_potrait)\b
       - match: \b(SPL_HEADER_TARGET_creature)\b
       - match: \b(SPL_HEADER_TARGET_invalid_target_cannot_be_selected)\b
-      - match: \b(SPL_HEADER_TARGET_self)\b
       - match: \b(SPL_HEADER_TARGET_self_ignores_game_pause)\b
+      - match: \b(SPL_HEADER_TARGET_self)\b
       - match: \b(SPL_HEADER_casting_time)\b
       - match: \b(SPL_HEADER_feature_blocks_count)\b
       - match: \b(SPL_HEADER_feature_blocks_offset)\b
@@ -2954,15 +2954,15 @@ repository:
       - match: \b(SPL_HEADER_projectile)\b
       - match: \b(SPL_HEADER_range)\b
       - match: \b(SPL_HEADER_spell_form)\b
-      - match: \b(SPL_HEADER_target)\b
       - match: \b(SPL_HEADER_target_number)\b
+      - match: \b(SPL_HEADER_target)\b
       - match: \b(SPL_HEADER_times_per_dat)\b
       - match: \b(SPL_casting_feature_block_count)\b
       - match: \b(SPL_casting_feature_block_offset)\b
       - match: \b(SPL_casting_graphics)\b
       - match: \b(SPL_completion_sound)\b
-      - match: \b(SPL_desc)\b
       - match: \b(SPL_desc_unidentified)\b
+      - match: \b(SPL_desc)\b
       - match: \b(SPL_exclusion_flags)\b
       - match: \b(SPL_ext_header_count)\b
       - match: \b(SPL_ext_header_offset)\b
@@ -3005,11 +3005,11 @@ repository:
       - match: \b(STO_rumours_temple)\b
       - match: \b(STO_sell_price_markup)\b
       - match: \b(STO_type)\b
-      - match: \b(TARGET_EFF_everyone)\b
       - match: \b(TARGET_EFF_everyone_except_party)\b
       - match: \b(TARGET_EFF_everyone_except_self)\b
       - match: \b(TARGET_EFF_everyone_match_specific_caster)\b
       - match: \b(TARGET_EFF_everyone_match_specific_target)\b
+      - match: \b(TARGET_EFF_everyone)\b
       - match: \b(TARGET_EFF_none)\b
       - match: \b(TARGET_EFF_original_caster)\b
       - match: \b(TARGET_EFF_party)\b
@@ -3018,16 +3018,16 @@ repository:
       - match: \b(TARGET_HEADER_area)\b
       - match: \b(TARGET_HEADER_character_portrait)\b
       - match: \b(TARGET_HEADER_creature)\b
-      - match: \b(TARGET_HEADER_self)\b
       - match: \b(TARGET_HEADER_self_ignore_pause)\b
+      - match: \b(TARGET_HEADER_self)\b
       - match: \b(TIMING_absolute_duration)\b
-      - match: \b(TIMING_delayed)\b
       - match: \b(TIMING_delayed_duration)\b
-      - match: \b(TIMING_duration)\b
+      - match: \b(TIMING_delayed)\b
       - match: \b(TIMING_duration_ticks)\b
+      - match: \b(TIMING_duration)\b
       - match: \b(TIMING_instant)\b
-      - match: \b(TIMING_permanent)\b
       - match: \b(TIMING_permanent_after_death)\b
+      - match: \b(TIMING_permanent)\b
       - match: \b(TIMING_while_equipped)\b
   weidu-tp2-file:
     name: keyword.other.weidu

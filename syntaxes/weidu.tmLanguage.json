@@ -124,11 +124,11 @@
       "name": "constant.language.iesdp.other",
       "patterns": [
         {
-          "match": "\\b(EFF2_signature)\\b",
+          "match": "\\b(EFF2_signature2)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(EFF2_signature2)\\b",
+          "match": "\\b(EFF2_signature)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
@@ -136,11 +136,11 @@
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(EFF2_version)\\b",
+          "match": "\\b(EFF2_version2)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(EFF2_version2)\\b",
+          "match": "\\b(EFF2_version)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
@@ -194,15 +194,15 @@
           "name": "constant.language.iesdp.resref"
         },
         {
-          "match": "\\b(EFF2_resource)\\b",
-          "name": "constant.language.iesdp.resref"
-        },
-        {
           "match": "\\b(EFF2_resource2)\\b",
           "name": "constant.language.iesdp.resref"
         },
         {
           "match": "\\b(EFF2_resource3)\\b",
+          "name": "constant.language.iesdp.resref"
+        },
+        {
+          "match": "\\b(EFF2_resource)\\b",
           "name": "constant.language.iesdp.resref"
         },
         {
@@ -327,15 +327,15 @@
           "name": "constant.language.iesdp.dword"
         },
         {
-          "match": "\\b(EFF2_target)\\b",
-          "name": "constant.language.iesdp.dword"
-        },
-        {
           "match": "\\b(EFF2_target_x_coord)\\b",
           "name": "constant.language.iesdp.dword"
         },
         {
           "match": "\\b(EFF2_target_y_coord)\\b",
+          "name": "constant.language.iesdp.dword"
+        },
+        {
+          "match": "\\b(EFF2_target)\\b",
           "name": "constant.language.iesdp.dword"
         },
         {
@@ -782,11 +782,11 @@
           "name": "constant.language.iesdp.char"
         },
         {
-          "match": "\\b(ITM_target)\\b",
+          "match": "\\b(ITM_target_count)\\b",
           "name": "constant.language.iesdp.char"
         },
         {
-          "match": "\\b(ITM_target_count)\\b",
+          "match": "\\b(ITM_target)\\b",
           "name": "constant.language.iesdp.char"
         },
         {
@@ -802,11 +802,11 @@
           "name": "constant.language.iesdp.char"
         },
         {
-          "match": "\\b(SPL_target)\\b",
+          "match": "\\b(SPL_target_number)\\b",
           "name": "constant.language.iesdp.char"
         },
         {
-          "match": "\\b(SPL_target_number)\\b",
+          "match": "\\b(SPL_target)\\b",
           "name": "constant.language.iesdp.char"
         }
       ]
@@ -868,11 +868,11 @@
           "name": "entity.name.class.ielib.action_function"
         },
         {
-          "match": "\\b(IS_ITEM_GIVEN_OR_CREATED_IN_DIALOG)\\b",
+          "match": "\\b(IS_ITEM_GIVEN_OR_CREATED_IN_DIALOG_OR_SCRIPT)\\b",
           "name": "entity.name.class.ielib.action_function"
         },
         {
-          "match": "\\b(IS_ITEM_GIVEN_OR_CREATED_IN_DIALOG_OR_SCRIPT)\\b",
+          "match": "\\b(IS_ITEM_GIVEN_OR_CREATED_IN_DIALOG)\\b",
           "name": "entity.name.class.ielib.action_function"
         },
         {
@@ -921,11 +921,11 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(ANATH_WEREWOLF)\\b",
+          "match": "\\b(ANATH_WEREWOLF2)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(ANATH_WEREWOLF2)\\b",
+          "match": "\\b(ANATH_WEREWOLF)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -1029,11 +1029,11 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(BEHOLDER_BLAST_VISUAL)\\b",
+          "match": "\\b(BEHOLDER_BLAST_VISUAL2)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(BEHOLDER_BLAST_VISUAL2)\\b",
+          "match": "\\b(BEHOLDER_BLAST_VISUAL)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -1085,11 +1085,11 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(BEHOLDER_PARALYZATION)\\b",
+          "match": "\\b(BEHOLDER_PARALYZATION_RAY)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(BEHOLDER_PARALYZATION_RAY)\\b",
+          "match": "\\b(BEHOLDER_PARALYZATION)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -1777,11 +1777,11 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(CLERIC_RESIST_FIRE)\\b",
+          "match": "\\b(CLERIC_RESIST_FIRE_AND_COLD)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(CLERIC_RESIST_FIRE_AND_COLD)\\b",
+          "match": "\\b(CLERIC_RESIST_FIRE)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -2021,15 +2021,15 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(CUTSCENE_DAMAGE_1)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(CUTSCENE_DAMAGE_1B)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
           "match": "\\b(CUTSCENE_DAMAGE_1C)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(CUTSCENE_DAMAGE_1)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -2329,10 +2329,6 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(DOPPLEGANGER_CHANGE)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(DOPPLEGANGER_CHANGE2)\\b",
           "name": "constant.language.ielib.resref"
         },
@@ -2361,11 +2357,15 @@
           "name": "constant.language.ielib.resref"
         },
         {
+          "match": "\\b(DOPPLEGANGER_CHANGE_DEFAULT_LESSER)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
           "match": "\\b(DOPPLEGANGER_CHANGE_DEFAULT)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(DOPPLEGANGER_CHANGE_DEFAULT_LESSER)\\b",
+          "match": "\\b(DOPPLEGANGER_CHANGE)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -2497,11 +2497,11 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(EDWIN_CHANGE)\\b",
+          "match": "\\b(EDWIN_CHANGE_BACK)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(EDWIN_CHANGE_BACK)\\b",
+          "match": "\\b(EDWIN_CHANGE)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -2565,11 +2565,11 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(FIFTY_PERCENT_DAMAGE)\\b",
+          "match": "\\b(FIFTY_PERCENT_DAMAGE_ARROW)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(FIFTY_PERCENT_DAMAGE_ARROW)\\b",
+          "match": "\\b(FIFTY_PERCENT_DAMAGE)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -2797,15 +2797,15 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(HELL_FEAR)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(HELL_FEAR_EVIL)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
           "match": "\\b(HELL_FEAR_GOOD)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(HELL_FEAR)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -3021,11 +3021,11 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(INNATE_CONTAINER_GLOW)\\b",
+          "match": "\\b(INNATE_CONTAINER_GLOW_BAD)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(INNATE_CONTAINER_GLOW_BAD)\\b",
+          "match": "\\b(INNATE_CONTAINER_GLOW)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -3097,11 +3097,11 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(INNATE_HARPY_WAIL)\\b",
+          "match": "\\b(INNATE_HARPY_WAIL_INTERNAL)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(INNATE_HARPY_WAIL_INTERNAL)\\b",
+          "match": "\\b(INNATE_HARPY_WAIL)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -3133,11 +3133,11 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(INNATE_JACKALWERE_GAZE)\\b",
+          "match": "\\b(INNATE_JACKALWERE_GAZE_INTERNAL)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(INNATE_JACKALWERE_GAZE_INTERNAL)\\b",
+          "match": "\\b(INNATE_JACKALWERE_GAZE)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -3341,11 +3341,11 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(LONG_VISUAL)\\b",
+          "match": "\\b(LONG_VISUAL2)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(LONG_VISUAL2)\\b",
+          "match": "\\b(LONG_VISUAL)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -3833,11 +3833,11 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(RESTORE_FULL_HEALTH)\\b",
+          "match": "\\b(RESTORE_FULL_HEALTH_PARTY)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(RESTORE_FULL_HEALTH_PARTY)\\b",
+          "match": "\\b(RESTORE_FULL_HEALTH)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -4081,11 +4081,11 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(SKIN_DANCER_RESTORE)\\b",
+          "match": "\\b(SKIN_DANCER_RESTORE_2)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(SKIN_DANCER_RESTORE_2)\\b",
+          "match": "\\b(SKIN_DANCER_RESTORE)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -4101,15 +4101,11 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(SLAYER_BACK_TO_HUMAN)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(SLAYER_BACK_TO_HUMAN_NOVIS)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(SLAYER_CHANGE)\\b",
+          "match": "\\b(SLAYER_BACK_TO_HUMAN)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -4118,6 +4114,10 @@
         },
         {
           "match": "\\b(SLAYER_CHANGE_TWO)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SLAYER_CHANGE)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -4233,15 +4233,11 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(SUMMON_SHADOW)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(SUMMON_SHADOW_WOLF)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(SUMMON_SKELETON_WARRIOR)\\b",
+          "match": "\\b(SUMMON_SHADOW)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -4250,6 +4246,10 @@
         },
         {
           "match": "\\b(SUMMON_SKELETON_WARRIOR3)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SUMMON_SKELETON_WARRIOR)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -4345,10 +4345,6 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(TRAP_ARROW)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(TRAP_ARROW_ACID)\\b",
           "name": "constant.language.ielib.resref"
         },
@@ -4378,6 +4374,10 @@
         },
         {
           "match": "\\b(TRAP_ARROW_SLAYING)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(TRAP_ARROW)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -4417,11 +4417,11 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(TRAP_FIREBALL)\\b",
+          "match": "\\b(TRAP_FIREBALL_4D6)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(TRAP_FIREBALL_4D6)\\b",
+          "match": "\\b(TRAP_FIREBALL)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -4473,11 +4473,11 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(TRAP_MAGIC_MISSILE)\\b",
+          "match": "\\b(TRAP_MAGIC_MISSILE_5)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(TRAP_MAGIC_MISSILE_5)\\b",
+          "match": "\\b(TRAP_MAGIC_MISSILE)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -4541,11 +4541,11 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(TROLL_CHANGE)\\b",
+          "match": "\\b(TROLL_CHANGE_NITHIRI)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(TROLL_CHANGE_NITHIRI)\\b",
+          "match": "\\b(TROLL_CHANGE)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -4761,11 +4761,11 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(WIZARD_ANIMATE_DEAD)\\b",
+          "match": "\\b(WIZARD_ANIMATE_DEAD_LICH)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(WIZARD_ANIMATE_DEAD_LICH)\\b",
+          "match": "\\b(WIZARD_ANIMATE_DEAD)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -4845,15 +4845,15 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(WIZARD_CHAOS)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(WIZARD_CHAOS_SHIELD)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
           "match": "\\b(WIZARD_CHAOS_VISUALS_ONLY)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(WIZARD_CHAOS)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -4897,11 +4897,11 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(WIZARD_CONJURE_EARTH_ELEMENTAL)\\b",
+          "match": "\\b(WIZARD_CONJURE_EARTH_ELEMENTAL_MALAVON)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(WIZARD_CONJURE_EARTH_ELEMENTAL_MALAVON)\\b",
+          "match": "\\b(WIZARD_CONJURE_EARTH_ELEMENTAL)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -5001,10 +5001,6 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(WIZARD_DISINTEGRATE)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(WIZARD_DISINTEGRATE2_IGNORE_RESISTANCE)\\b",
           "name": "constant.language.ielib.resref"
         },
@@ -5013,11 +5009,15 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(WIZARD_DISPEL_MAGIC)\\b",
+          "match": "\\b(WIZARD_DISINTEGRATE)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
           "match": "\\b(WIZARD_DISPEL_MAGIC_VISUALS_ONLY)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(WIZARD_DISPEL_MAGIC)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -5037,11 +5037,11 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(WIZARD_EMOTION_HOPE)\\b",
+          "match": "\\b(WIZARD_EMOTION_HOPELESSNESS)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(WIZARD_EMOTION_HOPELESSNESS)\\b",
+          "match": "\\b(WIZARD_EMOTION_HOPE)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -5077,11 +5077,11 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(WIZARD_FINGER_OF_DEATH)\\b",
+          "match": "\\b(WIZARD_FINGER_OF_DEATH_IGNORE_RESISTANCE)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(WIZARD_FINGER_OF_DEATH_IGNORE_RESISTANCE)\\b",
+          "match": "\\b(WIZARD_FINGER_OF_DEATH)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -5101,11 +5101,11 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(WIZARD_FLESH_TO_STONE)\\b",
+          "match": "\\b(WIZARD_FLESH_TO_STONE_IGNORE_RESISTANCE)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(WIZARD_FLESH_TO_STONE_IGNORE_RESISTANCE)\\b",
+          "match": "\\b(WIZARD_FLESH_TO_STONE)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -5217,11 +5217,11 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(WIZARD_INVISIBILITY)\\b",
+          "match": "\\b(WIZARD_INVISIBILITY_10_FOOT)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(WIZARD_INVISIBILITY_10_FOOT)\\b",
+          "match": "\\b(WIZARD_INVISIBILITY)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -5481,11 +5481,11 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(WIZARD_POWER_WORD_SILENCE)\\b",
+          "match": "\\b(WIZARD_POWER_WORD_SILENCE_VISUALS_ONLY)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(WIZARD_POWER_WORD_SILENCE_VISUALS_ONLY)\\b",
+          "match": "\\b(WIZARD_POWER_WORD_SILENCE)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -5645,10 +5645,6 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(WIZARD_SPELL_IMMUNITY)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(WIZARD_SPELL_IMMUNITY_ABJURATION)\\b",
           "name": "constant.language.ielib.resref"
         },
@@ -5678,6 +5674,10 @@
         },
         {
           "match": "\\b(WIZARD_SPELL_IMMUNITY_NECROMANCY)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(WIZARD_SPELL_IMMUNITY)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -5970,11 +5970,11 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(ARE_CONTAINER_trap_detect)\\b",
+          "match": "\\b(ARE_CONTAINER_trap_detected)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(ARE_CONTAINER_trap_detected)\\b",
+          "match": "\\b(ARE_CONTAINER_trap_detect)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -6174,11 +6174,11 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(ARE_REGION_dest_area)\\b",
+          "match": "\\b(ARE_REGION_dest_area_entranc_name)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(ARE_REGION_dest_area_entranc_name)\\b",
+          "match": "\\b(ARE_REGION_dest_area)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -6310,11 +6310,11 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(ARE_east)\\b",
+          "match": "\\b(ARE_east_flags)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(ARE_east_flags)\\b",
+          "match": "\\b(ARE_east)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -6358,11 +6358,11 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(ARE_north)\\b",
+          "match": "\\b(ARE_north_flags)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(ARE_north_flags)\\b",
+          "match": "\\b(ARE_north)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -6414,11 +6414,11 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(ARE_south)\\b",
+          "match": "\\b(ARE_south_flags)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(ARE_south_flags)\\b",
+          "match": "\\b(ARE_south)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -6474,11 +6474,11 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(ARE_west)\\b",
+          "match": "\\b(ARE_west_flags)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(ARE_west_flags)\\b",
+          "match": "\\b(ARE_west)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -6810,15 +6810,15 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(CRE_morale)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
           "match": "\\b(CRE_morale_break)\\b",
           "name": "constant.language.ielib.int"
         },
         {
           "match": "\\b(CRE_morale_recovery)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
+          "match": "\\b(CRE_morale)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -6882,10 +6882,6 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(CRE_reputation)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
           "match": "\\b(CRE_reputation_gain_loss_when_joining_party)\\b",
           "name": "constant.language.ielib.int"
         },
@@ -6895,6 +6891,10 @@
         },
         {
           "match": "\\b(CRE_reputation_gain_loss_when_leaving_party)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
+          "match": "\\b(CRE_reputation)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -6970,11 +6970,11 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(CRE_strength)\\b",
+          "match": "\\b(CRE_strength_bonus)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(CRE_strength_bonus)\\b",
+          "match": "\\b(CRE_strength)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -6982,11 +6982,11 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(CRE_tracking)\\b",
+          "match": "\\b(CRE_tracking_target)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(CRE_tracking_target)\\b",
+          "match": "\\b(CRE_tracking)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -7014,10 +7014,6 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(DAMAGETYPE_acid)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
           "match": "\\b(DAMAGETYPE_acid_reduce_by_percentage)\\b",
           "name": "constant.language.ielib.int"
         },
@@ -7030,7 +7026,7 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(DAMAGETYPE_cold)\\b",
+          "match": "\\b(DAMAGETYPE_acid)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -7046,7 +7042,7 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(DAMAGETYPE_crushing)\\b",
+          "match": "\\b(DAMAGETYPE_cold)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -7062,7 +7058,7 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(DAMAGETYPE_disease)\\b",
+          "match": "\\b(DAMAGETYPE_crushing)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -7078,7 +7074,7 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(DAMAGETYPE_electricity)\\b",
+          "match": "\\b(DAMAGETYPE_disease)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -7094,7 +7090,7 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(DAMAGETYPE_fire)\\b",
+          "match": "\\b(DAMAGETYPE_electricity)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -7110,11 +7106,7 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(DAMAGETYPE_magic)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(DAMAGETYPE_magic_cold)\\b",
+          "match": "\\b(DAMAGETYPE_fire)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -7130,7 +7122,7 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(DAMAGETYPE_magic_fire)\\b",
+          "match": "\\b(DAMAGETYPE_magic_cold)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -7146,6 +7138,10 @@
           "name": "constant.language.ielib.int"
         },
         {
+          "match": "\\b(DAMAGETYPE_magic_fire)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
           "match": "\\b(DAMAGETYPE_magic_reduce_by_percentage)\\b",
           "name": "constant.language.ielib.int"
         },
@@ -7158,7 +7154,7 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(DAMAGETYPE_missile)\\b",
+          "match": "\\b(DAMAGETYPE_magic)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -7174,7 +7170,7 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(DAMAGETYPE_piercing)\\b",
+          "match": "\\b(DAMAGETYPE_missile)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -7190,7 +7186,7 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(DAMAGETYPE_poison)\\b",
+          "match": "\\b(DAMAGETYPE_piercing)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -7206,7 +7202,7 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(DAMAGETYPE_slashing)\\b",
+          "match": "\\b(DAMAGETYPE_poison)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -7222,7 +7218,7 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(DAMAGETYPE_soul_eater)\\b",
+          "match": "\\b(DAMAGETYPE_slashing)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -7238,7 +7234,7 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(DAMAGETYPE_stunning)\\b",
+          "match": "\\b(DAMAGETYPE_soul_eater)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -7251,6 +7247,10 @@
         },
         {
           "match": "\\b(DAMAGETYPE_stunning_set_to_value)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
+          "match": "\\b(DAMAGETYPE_stunning)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -7270,11 +7270,11 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(DISPEL)\\b",
+          "match": "\\b(DISPELLABLE)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(DISPELLABLE)\\b",
+          "match": "\\b(DISPEL)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -7334,10 +7334,6 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(EFF2_parent_resource)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
           "match": "\\b(EFF2_parent_resource_flags)\\b",
           "name": "constant.language.ielib.int"
         },
@@ -7347,6 +7343,10 @@
         },
         {
           "match": "\\b(EFF2_parent_resource_type)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
+          "match": "\\b(EFF2_parent_resource)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -7374,15 +7374,15 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(EFF2_resource)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
           "match": "\\b(EFF2_resource2)\\b",
           "name": "constant.language.ielib.int"
         },
         {
           "match": "\\b(EFF2_resource3)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
+          "match": "\\b(EFF2_resource)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -7502,11 +7502,11 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(EFF_savingthrow)\\b",
+          "match": "\\b(EFF_savingthrow_bonus)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(EFF_savingthrow_bonus)\\b",
+          "match": "\\b(EFF_savingthrow)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -7894,15 +7894,15 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(FLAG_STO_buys)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
           "match": "\\b(FLAG_STO_buys_critical_items_bgee)\\b",
           "name": "constant.language.ielib.int"
         },
         {
           "match": "\\b(FLAG_STO_buys_fenced)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
+          "match": "\\b(FLAG_STO_buys)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -8038,15 +8038,15 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(ICON_chaos)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
           "match": "\\b(ICON_chaos_of_battle)\\b",
           "name": "constant.language.ielib.int"
         },
         {
           "match": "\\b(ICON_chaos_shield)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
+          "match": "\\b(ICON_chaos)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -8274,11 +8274,11 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(ICON_hope)\\b",
+          "match": "\\b(ICON_hopelessness)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(ICON_hopelessness)\\b",
+          "match": "\\b(ICON_hope)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -8382,11 +8382,11 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(ICON_magic_resistance)\\b",
+          "match": "\\b(ICON_magic_resistance_lowered)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(ICON_magic_resistance_lowered)\\b",
+          "match": "\\b(ICON_magic_resistance)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -8530,15 +8530,15 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(ICON_protection_from_magic)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
           "match": "\\b(ICON_protection_from_magic_weapons)\\b",
           "name": "constant.language.ielib.int"
         },
         {
           "match": "\\b(ICON_protection_from_magical_energy)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
+          "match": "\\b(ICON_protection_from_magic)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -8698,19 +8698,19 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(ICON_strength)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
           "match": "\\b(ICON_strength_of_one)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(ICON_stun)\\b",
+          "match": "\\b(ICON_strength)\\b",
           "name": "constant.language.ielib.int"
         },
         {
           "match": "\\b(ICON_stunning_blow)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
+          "match": "\\b(ICON_stun)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -8822,11 +8822,11 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(ITM_DAMAGE_TYPE_blunt)\\b",
+          "match": "\\b(ITM_DAMAGE_TYPE_blunt_slashing)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(ITM_DAMAGE_TYPE_blunt_slashing)\\b",
+          "match": "\\b(ITM_DAMAGE_TYPE_blunt)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -8958,11 +8958,11 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(ITM_HEADER_projectile)\\b",
+          "match": "\\b(ITM_HEADER_projectile_type)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(ITM_HEADER_projectile_type)\\b",
+          "match": "\\b(ITM_HEADER_projectile)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -9114,11 +9114,11 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(ITM_TYPE_food)\\b",
+          "match": "\\b(ITM_TYPE_food_iwd2)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(ITM_TYPE_food_iwd2)\\b",
+          "match": "\\b(ITM_TYPE_food)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -9130,11 +9130,11 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(ITM_TYPE_gauntlet)\\b",
+          "match": "\\b(ITM_TYPE_gauntlets)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(ITM_TYPE_gauntlets)\\b",
+          "match": "\\b(ITM_TYPE_gauntlet)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -9382,11 +9382,11 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(ITM_min_strength)\\b",
+          "match": "\\b(ITM_min_strength_bonus)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(ITM_min_strength_bonus)\\b",
+          "match": "\\b(ITM_min_strength)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -9490,11 +9490,11 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(OPCODE_apply_effect_item)\\b",
+          "match": "\\b(OPCODE_apply_effect_itemtype)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(OPCODE_apply_effect_itemtype)\\b",
+          "match": "\\b(OPCODE_apply_effect_item)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -9534,10 +9534,6 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(OPCODE_backstab)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
           "match": "\\b(OPCODE_backstab_every_hit)\\b",
           "name": "constant.language.ielib.int"
         },
@@ -9546,11 +9542,15 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(OPCODE_berserking)\\b",
+          "match": "\\b(OPCODE_backstab)\\b",
           "name": "constant.language.ielib.int"
         },
         {
           "match": "\\b(OPCODE_berserking_2)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
+          "match": "\\b(OPCODE_berserking)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -9574,11 +9574,11 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(OPCODE_bounce_secondary_type)\\b",
+          "match": "\\b(OPCODE_bounce_secondary_type_decrement)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(OPCODE_bounce_secondary_type_decrement)\\b",
+          "match": "\\b(OPCODE_bounce_secondary_type)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -9606,11 +9606,11 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(OPCODE_cant_use_item)\\b",
+          "match": "\\b(OPCODE_cant_use_itemtype)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(OPCODE_cant_use_itemtype)\\b",
+          "match": "\\b(OPCODE_cant_use_item)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -9722,11 +9722,11 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(OPCODE_create_inventory_item)\\b",
+          "match": "\\b(OPCODE_create_inventory_item_days)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(OPCODE_create_inventory_item_days)\\b",
+          "match": "\\b(OPCODE_create_inventory_item)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -9806,11 +9806,11 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(OPCODE_cure_invisibility)\\b",
+          "match": "\\b(OPCODE_cure_invisibility_2)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(OPCODE_cure_invisibility_2)\\b",
+          "match": "\\b(OPCODE_cure_invisibility)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -10010,11 +10010,11 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(OPCODE_find_traps)\\b",
+          "match": "\\b(OPCODE_find_traps_mod)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(OPCODE_find_traps_mod)\\b",
+          "match": "\\b(OPCODE_find_traps)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -10058,11 +10058,11 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(OPCODE_haste)\\b",
+          "match": "\\b(OPCODE_haste_2)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(OPCODE_haste_2)\\b",
+          "match": "\\b(OPCODE_haste)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -10074,11 +10074,11 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(OPCODE_hold)\\b",
+          "match": "\\b(OPCODE_hold_2)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(OPCODE_hold_2)\\b",
+          "match": "\\b(OPCODE_hold)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -10242,11 +10242,11 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(OPCODE_mirror_image)\\b",
+          "match": "\\b(OPCODE_mirror_image_exact_number)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(OPCODE_mirror_image_exact_number)\\b",
+          "match": "\\b(OPCODE_mirror_image)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -10282,11 +10282,11 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(OPCODE_movement_mod)\\b",
+          "match": "\\b(OPCODE_movement_mod_ii)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(OPCODE_movement_mod_ii)\\b",
+          "match": "\\b(OPCODE_movement_mod)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -10354,10 +10354,6 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(OPCODE_play_BAM_file)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
           "match": "\\b(OPCODE_play_BAM_file_2)\\b",
           "name": "constant.language.ielib.int"
         },
@@ -10371,6 +10367,10 @@
         },
         {
           "match": "\\b(OPCODE_play_BAM_file_single_or_dual)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
+          "match": "\\b(OPCODE_play_BAM_file)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -10390,11 +10390,11 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(OPCODE_poison)\\b",
+          "match": "\\b(OPCODE_poison_resist_mod)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(OPCODE_poison_resist_mod)\\b",
+          "match": "\\b(OPCODE_poison)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -10462,10 +10462,6 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(OPCODE_protection_from_spell)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
           "match": "\\b(OPCODE_protection_from_spell_levels)\\b",
           "name": "constant.language.ielib.int"
         },
@@ -10475,6 +10471,10 @@
         },
         {
           "match": "\\b(OPCODE_protection_from_spell_secondary_type)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
+          "match": "\\b(OPCODE_protection_from_spell)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -10686,19 +10686,19 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(OPCODE_set_trap)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
           "match": "\\b(OPCODE_set_traps_mod)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(OPCODE_seven_eyes)\\b",
+          "match": "\\b(OPCODE_set_trap)\\b",
           "name": "constant.language.ielib.int"
         },
         {
           "match": "\\b(OPCODE_seven_eyes_overlay)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
+          "match": "\\b(OPCODE_seven_eyes)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -10718,11 +10718,11 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(OPCODE_slow)\\b",
+          "match": "\\b(OPCODE_slow_poison)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(OPCODE_slow_poison)\\b",
+          "match": "\\b(OPCODE_slow)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -10770,11 +10770,11 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(OPCODE_stun)\\b",
+          "match": "\\b(OPCODE_stun_90hp)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(OPCODE_stun_90hp)\\b",
+          "match": "\\b(OPCODE_stun)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -10810,10 +10810,6 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(OPCODE_thac0_mod)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
           "match": "\\b(OPCODE_thac0_mod_off_hand)\\b",
           "name": "constant.language.ielib.int"
         },
@@ -10823,6 +10819,10 @@
         },
         {
           "match": "\\b(OPCODE_thac0_mod_with_missile_weapons)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
+          "match": "\\b(OPCODE_thac0_mod)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -10850,19 +10850,19 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(OPCODE_turn_undead)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
           "match": "\\b(OPCODE_turn_undead_level)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(OPCODE_unconsciousness)\\b",
+          "match": "\\b(OPCODE_turn_undead)\\b",
           "name": "constant.language.ielib.int"
         },
         {
           "match": "\\b(OPCODE_unconsciousness_20hp)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
+          "match": "\\b(OPCODE_unconsciousness)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -10874,11 +10874,11 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(OPCODE_use_eff_file)\\b",
+          "match": "\\b(OPCODE_use_eff_file_cursed)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(OPCODE_use_eff_file_cursed)\\b",
+          "match": "\\b(OPCODE_use_eff_file)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -10890,11 +10890,11 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(OPCODE_wild_magic)\\b",
+          "match": "\\b(OPCODE_wild_magic_2)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(OPCODE_wild_magic_2)\\b",
+          "match": "\\b(OPCODE_wild_magic)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -10926,10 +10926,6 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(PRO_arrow)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
           "match": "\\b(PRO_arrowex)\\b",
           "name": "constant.language.ielib.int"
         },
@@ -10954,7 +10950,7 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(PRO_axe)\\b",
+          "match": "\\b(PRO_arrow)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -10962,11 +10958,11 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(PRO_bignarea)\\b",
+          "match": "\\b(PRO_axe)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(PRO_bolt)\\b",
+          "match": "\\b(PRO_bignarea)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -10978,7 +10974,7 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(PRO_bullet)\\b",
+          "match": "\\b(PRO_bolt)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -10990,11 +10986,11 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(PRO_chromorb)\\b",
+          "match": "\\b(PRO_bullet)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(PRO_cloud)\\b",
+          "match": "\\b(PRO_chromorb)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -11006,6 +11002,10 @@
           "name": "constant.language.ielib.int"
         },
         {
+          "match": "\\b(PRO_cloud)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
           "match": "\\b(PRO_conecold)\\b",
           "name": "constant.language.ielib.int"
         },
@@ -11014,19 +11014,19 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(PRO_dagger)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
           "match": "\\b(PRO_daggerex)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(PRO_dart)\\b",
+          "match": "\\b(PRO_dagger)\\b",
           "name": "constant.language.ielib.int"
         },
         {
           "match": "\\b(PRO_dartex)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
+          "match": "\\b(PRO_dart)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -11098,15 +11098,15 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(PRO_hold)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
           "match": "\\b(PRO_holdnecr)\\b",
           "name": "constant.language.ielib.int"
         },
         {
           "match": "\\b(PRO_holdsumm)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
+          "match": "\\b(PRO_hold)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -11126,10 +11126,6 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(PRO_inarea)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
           "match": "\\b(PRO_inareanp)\\b",
           "name": "constant.language.ielib.int"
         },
@@ -11143,6 +11139,10 @@
         },
         {
           "match": "\\b(PRO_inareasm)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
+          "match": "\\b(PRO_inarea)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -11398,11 +11398,11 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(PRO_spear)\\b",
+          "match": "\\b(PRO_spearex)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(PRO_spearex)\\b",
+          "match": "\\b(PRO_spear)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -11506,11 +11506,11 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(PRO_web)\\b",
+          "match": "\\b(PRO_web1p)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(PRO_web1p)\\b",
+          "match": "\\b(PRO_web)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -11622,11 +11622,11 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(SPL_HEADER_TARGET_self)\\b",
+          "match": "\\b(SPL_HEADER_TARGET_self_ignores_game_pause)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(SPL_HEADER_TARGET_self_ignores_game_pause)\\b",
+          "match": "\\b(SPL_HEADER_TARGET_self)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -11670,11 +11670,11 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(SPL_HEADER_target)\\b",
+          "match": "\\b(SPL_HEADER_target_number)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(SPL_HEADER_target_number)\\b",
+          "match": "\\b(SPL_HEADER_target)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -11698,11 +11698,11 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(SPL_desc)\\b",
+          "match": "\\b(SPL_desc_unidentified)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(SPL_desc_unidentified)\\b",
+          "match": "\\b(SPL_desc)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -11874,10 +11874,6 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(TARGET_EFF_everyone)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
           "match": "\\b(TARGET_EFF_everyone_except_party)\\b",
           "name": "constant.language.ielib.int"
         },
@@ -11891,6 +11887,10 @@
         },
         {
           "match": "\\b(TARGET_EFF_everyone_match_specific_target)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
+          "match": "\\b(TARGET_EFF_everyone)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -11926,11 +11926,11 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(TARGET_HEADER_self)\\b",
+          "match": "\\b(TARGET_HEADER_self_ignore_pause)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(TARGET_HEADER_self_ignore_pause)\\b",
+          "match": "\\b(TARGET_HEADER_self)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -11938,15 +11938,11 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(TIMING_delayed)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
           "match": "\\b(TIMING_delayed_duration)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(TIMING_duration)\\b",
+          "match": "\\b(TIMING_delayed)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -11954,15 +11950,19 @@
           "name": "constant.language.ielib.int"
         },
         {
+          "match": "\\b(TIMING_duration)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
           "match": "\\b(TIMING_instant)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(TIMING_permanent)\\b",
+          "match": "\\b(TIMING_permanent_after_death)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(TIMING_permanent_after_death)\\b",
+          "match": "\\b(TIMING_permanent)\\b",
           "name": "constant.language.ielib.int"
         },
         {
