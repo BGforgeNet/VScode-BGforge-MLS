@@ -51,8 +51,18 @@ def dump_completion(fpath, iedata):
 
     items = sorted(ied['items'], key = lambda k: k['name'])
     data[stanza]["items"] = items
+  check_completion(data)
   with open(fpath, 'w') as yf:
     yaml.dump(data, yf)
+
+def check_completion(data):
+  items = []
+  for d in data:
+    items += [i['name'] for i in data[d]['items']]
+  dupes = set([x for x in items if items.count(x) > 1])
+  if len(dupes) > 0:
+    print("Error: duplicated completion items found: {}".format(dupes))
+    sys.exit(1)
 
 def dump_highlight(fpath, iedata):
   # dump to syntax highlight
