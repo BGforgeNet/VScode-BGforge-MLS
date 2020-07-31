@@ -101,12 +101,12 @@ iesdp-other:
       doc: |
         External EFFs - the field is the same as the version field from the header  
         Embedded EFFs - this field is zeroed out
+    - name: ITM_H_melee_animation
+      detail: multi word ITM_H_melee_animation
+      doc: '[Melee animation](#ExtendedHeader_MeleeAnimation)'
     - name: ITM_animation
       detail: char array ITM_animation
       doc: '[Item animation](#Header_Animation)'
-    - name: ITM_melee_animation
-      detail: multi word ITM_melee_animation
-      doc: '[Melee animation](#ExtendedHeader_MeleeAnimation)'
     - name: ITM_signature
       detail: char array ITM_signature
       doc: Signature ('ITM ')
@@ -158,6 +158,9 @@ iesdp-resref:
     - name: FX_resource
       detail: resref FX_resource
       doc: Resource
+    - name: ITM_H_use_icon
+      detail: resref ITM_H_use_icon
+      doc: Use icon
     - name: ITM_description_icon
       detail: resref ITM_description_icon
       doc: Description icon (BAM)
@@ -175,15 +178,12 @@ iesdp-resref:
 
         PSTEE:  
         Drop sound - played when the item is dropped in the inventory (WAV)
-    - name: ITM_use_icon
-      detail: resref ITM_use_icon
-      doc: Use icon
+    - name: SPL_H_memorised_icon
+      detail: resref SPL_H_memorised_icon
+      doc: Memorised icon (BAM). The engine replaces the last character of this filename with a B.
     - name: SPL_completion_sound
       detail: resref SPL_completion_sound
       doc: Completion Sound
-    - name: SPL_memorised_icon
-      detail: resref SPL_memorised_icon
-      doc: Memorised icon (BAM). The engine replaces the last character of this filename with a B.
     - name: SPL_spellbook_icon
       detail: resref SPL_spellbook_icon
       doc: Spellbook icon (BAM). The engine replaces the last character of this filename with a C.
@@ -359,6 +359,9 @@ iesdp-dword:
         If two effects of the same opcode are applied, both have Limit Effect Stacking bit set, and both have the same stacking ID, then the latter applied effect is suspended in application until the former effect expires. Regardless of whether it is applied, the latter effect will expire at the same time that it would expire if it was applied. In other words, the total duration of some non-stacking effect opcode is not extended because more than one copy of the effect was applied.
 
         Stacking IDs are unique to the opcode being applied. To maintain uniqueness of stacking IDs between different mods, one recommendation is to use the higher word of Special as the modder's Infinity Engine Community Prefix, then use the lower word as an identifying ID. For example, 0x41360001 ('A6' 0x0001).
+    - name: ITM_H_header_flags
+      detail: dword ITM_H_header_flags
+      doc: '[Flags](#ExtHeader_Flags)'
     - name: ITM_enchantment
       detail: dword ITM_enchantment
       doc: Enchantment
@@ -371,9 +374,6 @@ iesdp-dword:
     - name: ITM_flags
       detail: dword ITM_flags
       doc: '[Flags](#Header_Flags)'
-    - name: ITM_header_flags
-      detail: dword ITM_header_flags
-      doc: '[Flags](#ExtHeader_Flags)'
     - name: ITM_price
       detail: dword ITM_price
       doc: Price
@@ -445,14 +445,14 @@ iesdp-word:
     - name: FX_opcode
       detail: word FX_opcode
       doc: Opcode Number
-    - name: ITM_charges
-      detail: word ITM_charges
+    - name: ITM_H_charges
+      detail: word ITM_H_charges
       doc: Charges
-    - name: ITM_damage_bonus
-      detail: word ITM_damage_bonus
+    - name: ITM_H_damage_bonus
+      detail: word ITM_H_damage_bonus
       doc: Damage bonus
-    - name: ITM_damage_type
-      detail: word ITM_damage_type
+    - name: ITM_H_damage_type
+      detail: word ITM_H_damage_type
       doc: |
         Damage type
         - 0 = None
@@ -464,38 +464,53 @@ iesdp-word:
         - 6 = Piercing/Blunt (more) (BG2)
         - 7 = Piercing/Slashing (more) (BG2)
         - 8 = Blunt/Slashing (less) (BG2)
-    - name: ITM_depletion
-      detail: word ITM_depletion
+    - name: ITM_H_depletion
+      detail: word ITM_H_depletion
       doc: |
         Charge depletion behaviour
         - 0 = Don't vanish
         - 1 = Expended
         - 2 = Expended (w/o sound)
         - 3 = Recharge each day
+    - name: ITM_H_feature_block_count
+      detail: word ITM_H_feature_block_count
+      doc: Count of feature blocks
+    - name: ITM_H_feature_block_index
+      detail: word ITM_H_feature_block_index
+      doc: Index into feature blocks
+    - name: ITM_H_is_arrow
+      detail: word ITM_H_is_arrow
+      doc: Bow/Arrow qualifier (0=No, 1=Yes)
+    - name: ITM_H_is_bolt
+      detail: word ITM_H_is_bolt
+      doc: Crossbow/Bolt qualifier (0=No, 1=Yes)
+    - name: ITM_H_is_bullet
+      detail: word ITM_H_is_bullet
+      doc: Misc. Projectile qualifier (0=No, 1=Yes)
+    - name: ITM_H_projectile_animation
+      detail: word ITM_H_projectile_animation
+      doc: Projectile animation (projectl.ids/missile.ids)
+    - name: ITM_H_range
+      detail: word ITM_H_range
+      doc: Range
+    - name: ITM_H_thac0_bonus
+      detail: word ITM_H_thac0_bonus
+      doc: |
+        THAC0 bonus
+
+        A successful hit will always occur if any of the conditions below is true
+        - This field is set to 32767
+        - The target creature(s) is STATE_HELPLESS
+        - The target is affected by time stop
     - name: ITM_extended_headers_count
       detail: word ITM_extended_headers_count
       doc: Count of extended headers
-    - name: ITM_feature_block_count
-      detail: word ITM_feature_block_count
-      doc: Count of feature blocks
-    - name: ITM_feature_block_index
-      detail: word ITM_feature_block_index
-      doc: Index into feature blocks
     - name: ITM_feature_blocks_count
       detail: word ITM_feature_blocks_count
       doc: Count of equipping feature blocks
     - name: ITM_feature_blocks_index
       detail: word ITM_feature_blocks_index
       doc: Index into equipping feature blocks
-    - name: ITM_is_arrow
-      detail: word ITM_is_arrow
-      doc: Bow/Arrow qualifier (0=No, 1=Yes)
-    - name: ITM_is_bolt
-      detail: word ITM_is_bolt
-      doc: Crossbow/Bolt qualifier (0=No, 1=Yes)
-    - name: ITM_is_bullet
-      detail: word ITM_is_bullet
-      doc: Misc. Projectile qualifier (0=No, 1=Yes)
     - name: ITM_lore_to_id
       detail: word ITM_lore_to_id
       doc: Lore to ID
@@ -508,27 +523,36 @@ iesdp-word:
     - name: ITM_min_strength
       detail: word ITM_min_strength
       doc: Min Strength (unused in BG1)
-    - name: ITM_projectile_animation
-      detail: word ITM_projectile_animation
-      doc: Projectile animation (projectl.ids/missile.ids)
-    - name: ITM_range
-      detail: word ITM_range
-      doc: Range
     - name: ITM_stack_amount
       detail: word ITM_stack_amount
       doc: Stack amount
-    - name: ITM_thac0_bonus
-      detail: word ITM_thac0_bonus
-      doc: |
-        THAC0 bonus
-
-        A successful hit will always occur if any of the conditions below is true
-        - This field is set to 32767
-        - The target creature(s) is STATE_HELPLESS
-        - The target is affected by time stop
     - name: ITM_type
       detail: word ITM_type
       doc: '[Item type](#Header_ItemType)'
+    - name: SPL_H_casting_time
+      detail: word SPL_H_casting_time
+      doc: Casting Time
+    - name: SPL_H_feature_blocks_count
+      detail: word SPL_H_feature_blocks_count
+      doc: Count of feature blocks
+    - name: SPL_H_feature_blocks_offset
+      detail: word SPL_H_feature_blocks_offset
+      doc: Offset to feature blocks
+    - name: SPL_H_level_required
+      detail: word SPL_H_level_required
+      doc: Level Required
+    - name: SPL_H_location
+      detail: word SPL_H_location
+      doc: Location
+    - name: SPL_H_projectile
+      detail: word SPL_H_projectile
+      doc: 'Projectile (BG2: [projectl.ids](../../ids/bg2/projectl.htm). **Note:** in BG2, this value is off-by-one from projectl.ids value. I.e. binary value of 2 corresponds to 0x1 - ARROW)'
+    - name: SPL_H_range
+      detail: word SPL_H_range
+      doc: Range
+    - name: SPL_H_times_per_day
+      detail: word SPL_H_times_per_day
+      doc: Times per day
     - name: SPL_casting_feature_blocks_count
       detail: word SPL_casting_feature_blocks_count
       doc: Casting Feature Block count
@@ -538,33 +562,9 @@ iesdp-word:
     - name: SPL_casting_graphics
       detail: word SPL_casting_graphics
       doc: '[Casting Graphics](#Header_Casting_Graphics)'
-    - name: SPL_casting_time
-      detail: word SPL_casting_time
-      doc: Casting Time
     - name: SPL_extended_headers_count
       detail: word SPL_extended_headers_count
       doc: Extended Header count
-    - name: SPL_feature_blocks_count
-      detail: word SPL_feature_blocks_count
-      doc: Count of feature blocks
-    - name: SPL_feature_blocks_offset
-      detail: word SPL_feature_blocks_offset
-      doc: Offset to feature blocks
-    - name: SPL_level_required
-      detail: word SPL_level_required
-      doc: Level Required
-    - name: SPL_location
-      detail: word SPL_location
-      doc: Location
-    - name: SPL_projectile
-      detail: word SPL_projectile
-      doc: 'Projectile (BG2: [projectl.ids](../../ids/bg2/projectl.htm). **Note:** in BG2, this value is off-by-one from projectl.ids value. I.e. binary value of 2 corresponds to 0x1 - ARROW)'
-    - name: SPL_range
-      detail: word SPL_range
-      doc: Range
-    - name: SPL_times_per_day
-      detail: word SPL_times_per_day
-      doc: Times per day
     - name: SPL_type
       detail: word SPL_type
       doc: |
@@ -608,18 +608,37 @@ iesdp-byte:
     - name: EFF_timing_mode
       detail: byte EFF_timing_mode
       doc: Timing Mode
-    - name: ITM_alt_damage_bonus
-      detail: byte ITM_alt_damage_bonus
+    - name: ITM_H_alt_damage_bonus
+      detail: byte ITM_H_alt_damage_bonus
       doc: Alternative damage bonus
-    - name: ITM_alt_dice_thrown
-      detail: byte ITM_alt_dice_thrown
+    - name: ITM_H_alt_dice_thrown
+      detail: byte ITM_H_alt_dice_thrown
       doc: Alternative dice thrown
-    - name: ITM_dice_sides
-      detail: byte ITM_dice_sides
+    - name: ITM_H_dice_sides
+      detail: byte ITM_H_dice_sides
       doc: Dice sides
-    - name: ITM_dice_thrown
-      detail: byte ITM_dice_thrown
+    - name: ITM_H_dice_thrown
+      detail: byte ITM_H_dice_thrown
       doc: Dice thrown
+    - name: ITM_H_primary_type
+      detail: byte ITM_H_primary_type
+      doc: Primary type
+    - name: ITM_H_projectile_type
+      detail: byte ITM_H_projectile_type
+      doc: |
+        Projectile type
+        - 0 = None
+        - 1 = Arrow
+        - 2 = Bolt
+        - 3 = Bullet
+        - 40 = Spear
+        - 100 = Throwing Axe
+    - name: ITM_H_secondary_type
+      detail: byte ITM_H_secondary_type
+      doc: Secondary type
+    - name: ITM_H_speed
+      detail: byte ITM_H_speed
+      doc: Speed
     - name: ITM_kit_usability1
       detail: byte ITM_kit_usability1
       doc: '[Kit Usability 1](#Header_KitUsability)'
@@ -649,25 +668,6 @@ iesdp-byte:
     - name: ITM_min_wisdom
       detail: byte ITM_min_wisdom
       doc: Min Wisdom (unused in BG1)
-    - name: ITM_primary_type
-      detail: byte ITM_primary_type
-      doc: Primary type
-    - name: ITM_projectile_type
-      detail: byte ITM_projectile_type
-      doc: |
-        Projectile type
-        - 0 = None
-        - 1 = Arrow
-        - 2 = Bolt
-        - 3 = Bullet
-        - 40 = Spear
-        - 100 = Throwing Axe
-    - name: ITM_secondary_type
-      detail: byte ITM_secondary_type
-      doc: Secondary type
-    - name: ITM_speed
-      detail: byte ITM_speed
-      doc: Speed
     - name: ITM_weapon_proficiency
       detail: byte ITM_weapon_proficiency
       doc: '[Weapon Proficiency](#Header_Proficiency)'
@@ -743,11 +743,11 @@ iesdp-char:
         - 4096 = Absolute duration
 
         NB. all effects except those with Timing mode '9' are removed by death.
-    - name: ITM_alt_dice_sides
-      detail: char ITM_alt_dice_sides
+    - name: ITM_H_alt_dice_sides
+      detail: char ITM_H_alt_dice_sides
       doc: Alternative dice sides
-    - name: ITM_attack_type
-      detail: char ITM_attack_type
+    - name: ITM_H_attack_type
+      detail: char ITM_H_attack_type
       doc: |
         Attack type
         - 0 = None
@@ -755,14 +755,14 @@ iesdp-char:
         - 2 = Projectile
         - 3 = Magic
         - 4 = Launcher
-    - name: ITM_id_required
-      detail: char ITM_id_required
+    - name: ITM_H_id_required
+      detail: char ITM_H_id_required
       doc: |
         ID Req.
         - bit 0: ID Required
         - bit 1: Non-ID Required
-    - name: ITM_location
-      detail: char ITM_location
+    - name: ITM_H_location
+      detail: char ITM_H_location
       doc: |
         Location
         - 0 = None
@@ -770,8 +770,8 @@ iesdp-char:
         - 2 = Spell
         - 3 = Equipment
         - 4 = Innate
-    - name: ITM_target
-      detail: char ITM_target
+    - name: ITM_H_target
+      detail: char ITM_H_target
       doc: |
         Target type
         - 0 = Invalid (cannot be selected)
@@ -782,23 +782,20 @@ iesdp-char:
         - 5 = Self
         - 6 = Crash
         - 7 = None (Self, ignores game pause)
-    - name: ITM_target_count
-      detail: char ITM_target_count
+    - name: ITM_H_target_count
+      detail: char ITM_H_target_count
       doc: Target count
-    - name: SPL_form
-      detail: char SPL_form
+    - name: SPL_H_form
+      detail: char SPL_H_form
       doc: |
         Spell form
           - 1 - Standard
           - 2 - Projectile
-    - name: SPL_friendly
-      detail: char SPL_friendly
+    - name: SPL_H_friendly
+      detail: char SPL_H_friendly
       doc: "- bit 2: 'Friendly' ability"
-    - name: SPL_sectype
-      detail: char SPL_sectype
-      doc: Secondary Type (BG2:msectype.2da)
-    - name: SPL_target
-      detail: char SPL_target
+    - name: SPL_H_target
+      detail: char SPL_H_target
       doc: |
         Target:
         - 0 = Invalid (target cannot be selected)
@@ -809,9 +806,12 @@ iesdp-char:
         - 5 = Self
         - 6 = Crash
         - 7 = None (Self, ignores game pause)
-    - name: SPL_target_number
-      detail: char SPL_target_number
+    - name: SPL_H_target_number
+      detail: char SPL_H_target_number
       doc: Target Number
+    - name: SPL_sectype
+      detail: char SPL_sectype
+      doc: Secondary Type (BG2:msectype.2da)
 ielib-patch-functions:
   type: 3
   items:

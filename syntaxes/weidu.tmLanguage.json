@@ -6313,11 +6313,11 @@
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITM_animation)\\b",
+          "match": "\\b(ITM_H_melee_animation)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITM_melee_animation)\\b",
+          "match": "\\b(ITM_animation)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
@@ -6391,6 +6391,10 @@
           "name": "constant.language.iesdp.resref"
         },
         {
+          "match": "\\b(ITM_H_use_icon)\\b",
+          "name": "constant.language.iesdp.resref"
+        },
+        {
           "match": "\\b(ITM_description_icon)\\b",
           "name": "constant.language.iesdp.resref"
         },
@@ -6407,15 +6411,11 @@
           "name": "constant.language.iesdp.resref"
         },
         {
-          "match": "\\b(ITM_use_icon)\\b",
+          "match": "\\b(SPL_H_memorised_icon)\\b",
           "name": "constant.language.iesdp.resref"
         },
         {
           "match": "\\b(SPL_completion_sound)\\b",
-          "name": "constant.language.iesdp.resref"
-        },
-        {
-          "match": "\\b(SPL_memorised_icon)\\b",
           "name": "constant.language.iesdp.resref"
         },
         {
@@ -6576,6 +6576,10 @@
           "name": "constant.language.iesdp.dword"
         },
         {
+          "match": "\\b(ITM_H_header_flags)\\b",
+          "name": "constant.language.iesdp.dword"
+        },
+        {
           "match": "\\b(ITM_enchantment)\\b",
           "name": "constant.language.iesdp.dword"
         },
@@ -6589,10 +6593,6 @@
         },
         {
           "match": "\\b(ITM_flags)\\b",
-          "name": "constant.language.iesdp.dword"
-        },
-        {
-          "match": "\\b(ITM_header_flags)\\b",
           "name": "constant.language.iesdp.dword"
         },
         {
@@ -6665,31 +6665,55 @@
           "name": "constant.language.iesdp.word"
         },
         {
-          "match": "\\b(ITM_charges)\\b",
+          "match": "\\b(ITM_H_charges)\\b",
           "name": "constant.language.iesdp.word"
         },
         {
-          "match": "\\b(ITM_damage_bonus)\\b",
+          "match": "\\b(ITM_H_damage_bonus)\\b",
           "name": "constant.language.iesdp.word"
         },
         {
-          "match": "\\b(ITM_damage_type)\\b",
+          "match": "\\b(ITM_H_damage_type)\\b",
           "name": "constant.language.iesdp.word"
         },
         {
-          "match": "\\b(ITM_depletion)\\b",
+          "match": "\\b(ITM_H_depletion)\\b",
+          "name": "constant.language.iesdp.word"
+        },
+        {
+          "match": "\\b(ITM_H_feature_block_count)\\b",
+          "name": "constant.language.iesdp.word"
+        },
+        {
+          "match": "\\b(ITM_H_feature_block_index)\\b",
+          "name": "constant.language.iesdp.word"
+        },
+        {
+          "match": "\\b(ITM_H_is_arrow)\\b",
+          "name": "constant.language.iesdp.word"
+        },
+        {
+          "match": "\\b(ITM_H_is_bolt)\\b",
+          "name": "constant.language.iesdp.word"
+        },
+        {
+          "match": "\\b(ITM_H_is_bullet)\\b",
+          "name": "constant.language.iesdp.word"
+        },
+        {
+          "match": "\\b(ITM_H_projectile_animation)\\b",
+          "name": "constant.language.iesdp.word"
+        },
+        {
+          "match": "\\b(ITM_H_range)\\b",
+          "name": "constant.language.iesdp.word"
+        },
+        {
+          "match": "\\b(ITM_H_thac0_bonus)\\b",
           "name": "constant.language.iesdp.word"
         },
         {
           "match": "\\b(ITM_extended_headers_count)\\b",
-          "name": "constant.language.iesdp.word"
-        },
-        {
-          "match": "\\b(ITM_feature_block_count)\\b",
-          "name": "constant.language.iesdp.word"
-        },
-        {
-          "match": "\\b(ITM_feature_block_index)\\b",
           "name": "constant.language.iesdp.word"
         },
         {
@@ -6698,18 +6722,6 @@
         },
         {
           "match": "\\b(ITM_feature_blocks_index)\\b",
-          "name": "constant.language.iesdp.word"
-        },
-        {
-          "match": "\\b(ITM_is_arrow)\\b",
-          "name": "constant.language.iesdp.word"
-        },
-        {
-          "match": "\\b(ITM_is_bolt)\\b",
-          "name": "constant.language.iesdp.word"
-        },
-        {
-          "match": "\\b(ITM_is_bullet)\\b",
           "name": "constant.language.iesdp.word"
         },
         {
@@ -6729,23 +6741,43 @@
           "name": "constant.language.iesdp.word"
         },
         {
-          "match": "\\b(ITM_projectile_animation)\\b",
-          "name": "constant.language.iesdp.word"
-        },
-        {
-          "match": "\\b(ITM_range)\\b",
-          "name": "constant.language.iesdp.word"
-        },
-        {
           "match": "\\b(ITM_stack_amount)\\b",
           "name": "constant.language.iesdp.word"
         },
         {
-          "match": "\\b(ITM_thac0_bonus)\\b",
+          "match": "\\b(ITM_type)\\b",
           "name": "constant.language.iesdp.word"
         },
         {
-          "match": "\\b(ITM_type)\\b",
+          "match": "\\b(SPL_H_casting_time)\\b",
+          "name": "constant.language.iesdp.word"
+        },
+        {
+          "match": "\\b(SPL_H_feature_blocks_count)\\b",
+          "name": "constant.language.iesdp.word"
+        },
+        {
+          "match": "\\b(SPL_H_feature_blocks_offset)\\b",
+          "name": "constant.language.iesdp.word"
+        },
+        {
+          "match": "\\b(SPL_H_level_required)\\b",
+          "name": "constant.language.iesdp.word"
+        },
+        {
+          "match": "\\b(SPL_H_location)\\b",
+          "name": "constant.language.iesdp.word"
+        },
+        {
+          "match": "\\b(SPL_H_projectile)\\b",
+          "name": "constant.language.iesdp.word"
+        },
+        {
+          "match": "\\b(SPL_H_range)\\b",
+          "name": "constant.language.iesdp.word"
+        },
+        {
+          "match": "\\b(SPL_H_times_per_day)\\b",
           "name": "constant.language.iesdp.word"
         },
         {
@@ -6761,39 +6793,7 @@
           "name": "constant.language.iesdp.word"
         },
         {
-          "match": "\\b(SPL_casting_time)\\b",
-          "name": "constant.language.iesdp.word"
-        },
-        {
           "match": "\\b(SPL_extended_headers_count)\\b",
-          "name": "constant.language.iesdp.word"
-        },
-        {
-          "match": "\\b(SPL_feature_blocks_count)\\b",
-          "name": "constant.language.iesdp.word"
-        },
-        {
-          "match": "\\b(SPL_feature_blocks_offset)\\b",
-          "name": "constant.language.iesdp.word"
-        },
-        {
-          "match": "\\b(SPL_level_required)\\b",
-          "name": "constant.language.iesdp.word"
-        },
-        {
-          "match": "\\b(SPL_location)\\b",
-          "name": "constant.language.iesdp.word"
-        },
-        {
-          "match": "\\b(SPL_projectile)\\b",
-          "name": "constant.language.iesdp.word"
-        },
-        {
-          "match": "\\b(SPL_range)\\b",
-          "name": "constant.language.iesdp.word"
-        },
-        {
-          "match": "\\b(SPL_times_per_day)\\b",
           "name": "constant.language.iesdp.word"
         },
         {
@@ -6830,19 +6830,35 @@
           "name": "constant.language.iesdp.byte"
         },
         {
-          "match": "\\b(ITM_alt_damage_bonus)\\b",
+          "match": "\\b(ITM_H_alt_damage_bonus)\\b",
           "name": "constant.language.iesdp.byte"
         },
         {
-          "match": "\\b(ITM_alt_dice_thrown)\\b",
+          "match": "\\b(ITM_H_alt_dice_thrown)\\b",
           "name": "constant.language.iesdp.byte"
         },
         {
-          "match": "\\b(ITM_dice_sides)\\b",
+          "match": "\\b(ITM_H_dice_sides)\\b",
           "name": "constant.language.iesdp.byte"
         },
         {
-          "match": "\\b(ITM_dice_thrown)\\b",
+          "match": "\\b(ITM_H_dice_thrown)\\b",
+          "name": "constant.language.iesdp.byte"
+        },
+        {
+          "match": "\\b(ITM_H_primary_type)\\b",
+          "name": "constant.language.iesdp.byte"
+        },
+        {
+          "match": "\\b(ITM_H_projectile_type)\\b",
+          "name": "constant.language.iesdp.byte"
+        },
+        {
+          "match": "\\b(ITM_H_secondary_type)\\b",
+          "name": "constant.language.iesdp.byte"
+        },
+        {
+          "match": "\\b(ITM_H_speed)\\b",
           "name": "constant.language.iesdp.byte"
         },
         {
@@ -6879,22 +6895,6 @@
         },
         {
           "match": "\\b(ITM_min_wisdom)\\b",
-          "name": "constant.language.iesdp.byte"
-        },
-        {
-          "match": "\\b(ITM_primary_type)\\b",
-          "name": "constant.language.iesdp.byte"
-        },
-        {
-          "match": "\\b(ITM_projectile_type)\\b",
-          "name": "constant.language.iesdp.byte"
-        },
-        {
-          "match": "\\b(ITM_secondary_type)\\b",
-          "name": "constant.language.iesdp.byte"
-        },
-        {
-          "match": "\\b(ITM_speed)\\b",
           "name": "constant.language.iesdp.byte"
         },
         {
@@ -6935,47 +6935,47 @@
           "name": "constant.language.iesdp.char"
         },
         {
-          "match": "\\b(ITM_alt_dice_sides)\\b",
+          "match": "\\b(ITM_H_alt_dice_sides)\\b",
           "name": "constant.language.iesdp.char"
         },
         {
-          "match": "\\b(ITM_attack_type)\\b",
+          "match": "\\b(ITM_H_attack_type)\\b",
           "name": "constant.language.iesdp.char"
         },
         {
-          "match": "\\b(ITM_id_required)\\b",
+          "match": "\\b(ITM_H_id_required)\\b",
           "name": "constant.language.iesdp.char"
         },
         {
-          "match": "\\b(ITM_location)\\b",
+          "match": "\\b(ITM_H_location)\\b",
           "name": "constant.language.iesdp.char"
         },
         {
-          "match": "\\b(ITM_target_count)\\b",
+          "match": "\\b(ITM_H_target_count)\\b",
           "name": "constant.language.iesdp.char"
         },
         {
-          "match": "\\b(ITM_target)\\b",
+          "match": "\\b(ITM_H_target)\\b",
           "name": "constant.language.iesdp.char"
         },
         {
-          "match": "\\b(SPL_form)\\b",
+          "match": "\\b(SPL_H_form)\\b",
           "name": "constant.language.iesdp.char"
         },
         {
-          "match": "\\b(SPL_friendly)\\b",
+          "match": "\\b(SPL_H_friendly)\\b",
+          "name": "constant.language.iesdp.char"
+        },
+        {
+          "match": "\\b(SPL_H_target_number)\\b",
+          "name": "constant.language.iesdp.char"
+        },
+        {
+          "match": "\\b(SPL_H_target)\\b",
           "name": "constant.language.iesdp.char"
         },
         {
           "match": "\\b(SPL_sectype)\\b",
-          "name": "constant.language.iesdp.char"
-        },
-        {
-          "match": "\\b(SPL_target_number)\\b",
-          "name": "constant.language.iesdp.char"
-        },
-        {
-          "match": "\\b(SPL_target)\\b",
           "name": "constant.language.iesdp.char"
         }
       ]
