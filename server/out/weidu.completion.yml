@@ -9512,15 +9512,6 @@ tp2-action:
       detail: OUTER_SET variable = value
       doc: |-
         Update variable so that it is equal to value.
-
-# OUTER_SET variable += value	Equivalent to OUTER_SET variable = variable + value.
-# OUTER_SET variable -= value	Equivalent to OUTER_SET variable = variable - value.
-# OUTER_SET variable *= value	Equivalent to OUTER_SET variable = variable * value.
-# OUTER_SET variable /= value	Equivalent to OUTER_SET variable = variable / value.
-# OUTER_SET variable &= value	Equivalent to OUTER_SET variable = variable BAND value.
-# OUTER_SET variable |= value	Equivalent to OUTER_SET variable = variable BOR value.
-# OUTER_SET variable <<= value	Equivalent to OUTER_SET variable = variable BLSL value.
-# OUTER_SET variable >>= value	Equivalent to OUTER_SET variable = variable BLSR value.
     - name: OUTER_SNPRINT
       detail: OUTER_SNPRINT value variable stringWithVars
       doc: |-
@@ -10680,11 +10671,10 @@ tp2-patch:
         For every value of the string1 array that has been created or read, sets string2_0 to the first array parameter, string2_1 to the second array parameter, etc. and string3 to the result of the array. string2 will also contain 		the first array parameter (as a synonym of string2_0). then executes the patches listed. More exhaustive documentation will be provided by SConrad.
     - name: PRETTY_PRINT_2DA
       doc: |-
-        Indents the 3rd line in the current file (which should be a 2da file).
-    - name: PRETTY_PRINT_2DA
-      detail: PRETTY_PRINT_2DA value
-      doc: |-
-        Indents the value'th line (counting from 0) in the current file (which should be a 2da file).
+        Indents the 3rd line in the current file (which should be a `2da` file).
+
+        **Alternative form**: `PRETTY_PRINT_2DA value`
+        Indents the value'th line (counting from 0) in the current file (which should be a `2da` file).
     - name: QUOTE
       detail: QUOTE variable stringWithVars
       doc: |-
@@ -10869,11 +10859,18 @@ tp2-patch:
     - name: SAY_EVALUATED
       detail: SAY_EVALUATED offset stringWithVars
       doc: |-
-        Any WeiDU variables (enclosed in %s) inside stringWithVars are replaced by their values and the resulting string (constructed at mod-installation time!) is added to DIALOG.TLK and its string reference it written to the offset. Example: COPY_EXISTING_REGEXP ~RING.*.ITM~ ~override~ READ_LONG 0x38 cost SAY_EVALUATED IDENTIFIED_DESC ~I Am %SOURCE_RES%, I Cost %cost%~
+        Any WeiDU variables (enclosed in `%s`) inside stringWithVars are replaced by their values and the resulting string (constructed at mod-installation time!) is added to `DIALOG.TLK` and its string reference it written to the offset. Example:
+        ```
+        COPY_EXISTING_REGEXP ~RING.*.ITM~ ~override~
+          READ_LONG 0x38 cost
+          SAY_EVALUATED IDENTIFIED_DESC ~I Am %SOURCE_RES%, I Cost %cost%~
+        ```
     - name: SET
       detail: SET variable = value
       doc: |-
         Update variable so that it is equal to value.
+
+        **Equivalent**: `variable = value`
     - name: SET_2DA_ENTRIES_NOW
       detail: SET_2DA_ENTRIES_NOW string value
       doc: |-
@@ -11005,38 +11002,6 @@ tp2-patch:
          - SPRINT `npc` to a creature in question (with .cre extension)
          - SPRINT `soundset` to name of soundset you have.
          - SET `overwrite` to 2 if you want new soundset to overwrite the old one completely. Set it to 1 if you want to overwrite old string references only with non-empty new references (may keep some old). Set it to 0 it you want to overwrite only empty old references with new ones.
-    - name: '['
-      detail: '[ SET ] variable += value'
-      doc: |-
-        Equivalent to SET variable = variable + value.
-    - name: '['
-      detail: '[ SET ] variable -= value'
-      doc: |-
-        Equivalent to SET variable = variable - value.
-    - name: '['
-      detail: '[ SET ] variable *= value'
-      doc: |-
-        Equivalent to SET variable = variable * value.
-    - name: '['
-      detail: '[ SET ] variable /= value'
-      doc: |-
-        Equivalent to SET variable = variable / value.
-    - name: '['
-      detail: '[ SET ] variable &= value'
-      doc: |-
-        Equivalent to SET variable = variable BAND value.
-    - name: '['
-      detail: '[ SET ] variable |= value'
-      doc: |-
-        Equivalent to SET variable = variable BOR value.
-    - name: '['
-      detail: '[ SET ] variable <<= value'
-      doc: |-
-        Equivalent to SET variable = variable BLSL value.
-    - name: '['
-      detail: '[ SET ] variable >>= value'
-      doc: |-
-        Equivalent to SET variable = variable BLSR value.
     - name: fj_are_structure
       doc: |
         Adds a structure to an area file. All variables are zero or blank by default unless otherwise indicated. Fields designated by an asterisk are typically required; all others are optional. This is a PATCH function.
@@ -11575,11 +11540,27 @@ tp2-value:
     - name: EVALUATE_BUFFER
       detail: EVALUATE_BUFFER variable
       doc: |-
-        User variables inside the given string are evaluated one additional time. You may prepend EVALUATE_BUFFER when a value is called for and you would normally use a string. You may also use it for SET and SPRINT statements. Example: SPRINT x ~y~ SET y = 5 SPRINT z EVALUATE_BUFFER ~tricky %%x%%~ SET EVALUATE_BUFFER "%x%" += 77 PATCH_PRINT "y is %y% ; z is %z%" This prints out y is 82 ; z is tricky 5. You may also do hackery like FILE_SIZE "myfile" "%%indirection%%". Be very careful with this feature.
+        User variables inside the given string are evaluated one additional time. You may prepend `EVALUATE_BUFFER` when a value is called for and you would normally use a string. You may also use it for `SET` and `SPRINT` statements. Example:
+        ```
+        SPRINT x ~y~
+        SET y = 5
+        SPRINT z EVALUATE_BUFFER ~tricky %%x%%~
+        SET EVALUATE_BUFFER "%x%" += 77
+        PATCH_PRINT "y is %y% ; z is %z%"
+        ```
+        This prints out `y is 82 ; z is tricky 5`. You may also do hackery like `FILE_SIZE "myfile" "%%indirection%%"`. Be very careful with this feature.
     - name: EVAL
       detail: EVAL variable
       doc: |-
-        User variables inside the given string are evaluated one additional time. You may prepend EVALUATE_BUFFER when a value is called for and you would normally use a string. You may also use it for SET and SPRINT statements. Example: SPRINT x ~y~ SET y = 5 SPRINT z EVALUATE_BUFFER ~tricky %%x%%~ SET EVALUATE_BUFFER "%x%" += 77 PATCH_PRINT "y is %y% ; z is %z%" This prints out y is 82 ; z is tricky 5. You may also do hackery like FILE_SIZE "myfile" "%%indirection%%". Be very careful with this feature.
+        User variables inside the given string are evaluated one additional time. You may prepend `EVAL` when a value is called for and you would normally use a string. You may also use it for `SET` and `SPRINT` statements. Example:
+        ```
+        SPRINT x ~y~
+        SET y = 5
+        SPRINT z EVAL ~tricky %%x%%~
+        SET EVAL "%x%" += 77
+        PATCH_PRINT "y is %y% ; z is %z%"
+        ```
+        This prints out `y is 82 ; z is tricky 5`. You may also do hackery like `FILE_SIZE "myfile" "%%indirection%%"`. Be very careful with this feature.
 
 #    - name: $array(index
 #      detail: $array(index list)
@@ -11631,7 +11612,6 @@ tp2-value:
     - name: IDENTIFIED_DESC
       doc: |-
         The offset within an infinity engine resource where the identified description is stored.
-    - name: IDENTIFIED_DESC
     - name: IDS_OF_SYMBOL
       detail: IDS_OF_SYMBOL ( File String )
       doc: |-
@@ -11813,15 +11793,21 @@ tp2-value:
     - name: STATE_WHICH_SAYS
       detail: STATE_WHICH_SAYS text FROM String
       doc: |-
-        String must be an in-game or in-override .dlg file. Returns: 
-         Fails the installation if it can't evaluate the text (an @x reference out of bounds) 
-        -3 if the text is not currently in the tlk or in the list of strings to add 
-        -2 if the text is spoken (= SAY ~Foo~) at least twice in the file String 
-        -1 if the text is never spoken in the file String Otherwise it returns the number of the state in which text is spoken in the file String. @x references are taken from the loaded TRA files (the ones defined in the Language part).
-    - name: STATE_WHICH_SAYS
-      detail: STATE_WHICH_SAYS value IN String1 FROM String2
-      doc: |-
-        As above, except that @x references are taken from the String1 tra file. In particular, one %s in String1 is expanded to the list of directories; for example (as of Sola v102), solarom/%s/epilogue.tra would match solarom/american/epilogue.tra solarom/french/epilogue.tra solarom/german/epilogue.tra solarom/italian/epilogue.tra solarom/polski/epilogue.tra solarom/portuguese/epilogue.tra solarom/russian/epilogue.tra
+        String must be an in-game or in-override `.dlg` file. Returns:
+        - Fails the installation if it can't evaluate the text (an `@x` reference out of bounds)
+        - `-3` if the text is not currently in the tlk or in the list of strings to add
+        - `-2` if the text is spoken (`= SAY ~Foo~`) at least twice in the file `String`
+        - `-1` if the text is never spoken in the file String Otherwise it returns the number of the state in which text is spoken in the file `String`. `@x` references are taken from the loaded TRA files (the ones defined in the Language part).
+
+        **Alternative form**: `STATE_WHICH_SAYS value IN String1 FROM String2`
+        As above, except that `@x` references are taken from the `String1` tra file. In particular, one `%s` in `String1` is expanded to the list of directories; for example (as of Sola `v102`), `solarom/%s/epilogue.tra` would match
+        - `solarom/american/epilogue.tra`
+        - `solarom/french/epilogue.tra`
+        - `solarom/german/epilogue.tra`
+        - `solarom/italian/epilogue.tra`
+        - `solarom/polski/epilogue.tra`
+        - `solarom/portuguese/epilogue.tra`
+        - `solarom/russian/epilogue.tra`
     - name: STORE_NAME
     - name: STRING_COMPARE
       detail: String STRING_COMPARE String
