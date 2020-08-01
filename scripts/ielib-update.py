@@ -16,7 +16,7 @@ types_url = ielib_url + "/types"
 
 ielib_data = {
   'ints': {
-    'stanza': 'ielib-ints',
+    'stanza': 'ielib-int',
     'scope':
     'constant.language.ielib.int',
   },
