@@ -440,42 +440,6 @@ repository:
       - match: \b(DEPLETION_vanishes)\b
       - match: \b(DISPELLABLE)\b
       - match: \b(DISPEL)\b
-      - match: \b(EFF2_caster_level)\b
-      - match: \b(EFF2_caster_x_coord)\b
-      - match: \b(EFF2_caster_y_coord)\b
-      - match: \b(EFF2_dice_sides)\b
-      - match: \b(EFF2_dice_thrown)\b
-      - match: \b(EFF2_duration)\b
-      - match: \b(EFF2_firstapply_internal_flag)\b
-      - match: \b(EFF2_opcode)\b
-      - match: \b(EFF2_parameter1)\b
-      - match: \b(EFF2_parameter2)\b
-      - match: \b(EFF2_parameter3)\b
-      - match: \b(EFF2_parameter4)\b
-      - match: \b(EFF2_parameter5)\b
-      - match: \b(EFF2_parameter6)\b
-      - match: \b(EFF2_parent_resource_flags)\b
-      - match: \b(EFF2_parent_resource_slot)\b
-      - match: \b(EFF2_parent_resource_type)\b
-      - match: \b(EFF2_parent_resource)\b
-      - match: \b(EFF2_power)\b
-      - match: \b(EFF2_primary_type_school)\b
-      - match: \b(EFF2_probability1)\b
-      - match: \b(EFF2_probability2)\b
-      - match: \b(EFF2_projectile)\b
-      - match: \b(EFF2_resistance)\b
-      - match: \b(EFF2_resource2)\b
-      - match: \b(EFF2_resource3)\b
-      - match: \b(EFF2_resource)\b
-      - match: \b(EFF2_save_bonus)\b
-      - match: \b(EFF2_saving_throw_type)\b
-      - match: \b(EFF2_secondary_type)\b
-      - match: \b(EFF2_target_type)\b
-      - match: \b(EFF2_target_x_coord)\b
-      - match: \b(EFF2_target_y_coord)\b
-      - match: \b(EFF2_timing_mode)\b
-      - match: \b(EFF2_tobex_stacking_id)\b
-      - match: \b(EFF2_variable)\b
       - match: \b(EFF2_vvc)\b
       - match: \b(EFFECT_IDS_align)\b
       - match: \b(EFFECT_IDS_class)\b
@@ -485,22 +449,6 @@ repository:
       - match: \b(EFFECT_IDS_kit_ee)\b
       - match: \b(EFFECT_IDS_race)\b
       - match: \b(EFFECT_IDS_specific)\b
-      - match: \b(EFF_dicenum)\b
-      - match: \b(EFF_dicesize)\b
-      - match: \b(EFF_duration)\b
-      - match: \b(EFF_opcode)\b
-      - match: \b(EFF_parameter1)\b
-      - match: \b(EFF_parameter2)\b
-      - match: \b(EFF_power)\b
-      - match: \b(EFF_probability1)\b
-      - match: \b(EFF_probability2)\b
-      - match: \b(EFF_resistance)\b
-      - match: \b(EFF_resource)\b
-      - match: \b(EFF_savingthrow_bonus)\b
-      - match: \b(EFF_savingthrow)\b
-      - match: \b(EFF_target)\b
-      - match: \b(EFF_timing)\b
-      - match: \b(EFF_tobex_stacking_id)\b
       - match: \b(FLAG_ARE_CONTAINER_disabled)\b
       - match: \b(FLAG_ARE_CONTAINER_locked)\b
       - match: \b(FLAG_ARE_CONTAINER_trap_resets)\b
@@ -559,30 +507,29 @@ repository:
       - match: \b(FLAG_CRE_reset_holding_item)\b
       - match: \b(FLAG_CRE_specifics_tracking)\b
       - match: \b(FLAG_CRE_uninterruptible)\b
-      - match: \b(FLAG_HEADER_add_strength_bonus)\b
-      - match: \b(FLAG_HEADER_breakable)\b
-      - match: \b(FLAG_HEADER_bypass_armor)\b
-      - match: \b(FLAG_HEADER_ee_strength_bonus)\b
-      - match: \b(FLAG_HEADER_ee_thac0_strength_bonus)\b
-      - match: \b(FLAG_HEADER_ex_cant_target_invisible)\b
-      - match: \b(FLAG_HEADER_ex_toggle_backstab)\b
-      - match: \b(FLAG_HEADER_hostile)\b
-      - match: \b(FLAG_HEADER_keen_edge)\b
-      - match: \b(FLAG_HEADER_recharge_after_rest)\b
+      - match: \b(FLAG_HEAD_add_strength_bonus)\b
+      - match: \b(FLAG_HEAD_breakable)\b
+      - match: \b(FLAG_HEAD_bypass_armor)\b
+      - match: \b(FLAG_HEAD_cant_target_invisible_Ex)\b
+      - match: \b(FLAG_HEAD_damage_strength_bonus_EE)\b
+      - match: \b(FLAG_HEAD_hostile)\b
+      - match: \b(FLAG_HEAD_keen_edge)\b
+      - match: \b(FLAG_HEAD_recharge_after_rest)\b
+      - match: \b(FLAG_HEAD_thac0_strength_bonus_EE)\b
+      - match: \b(FLAG_HEAD_toggle_backstab_Ex)\b
       - match: \b(FLAG_ITEM_SALE_identified)\b
       - match: \b(FLAG_ITEM_SALE_stolen)\b
       - match: \b(FLAG_ITEM_SALE_undroppable)\b
       - match: \b(FLAG_ITEM_SALE_unstealable)\b
-      - match: \b(FLAG_SAVINGTHROW_EE_bypass_mirror_image)\b
-      - match: \b(FLAG_SAVINGTHROW_EE_ignore_difficulty)\b
-      - match: \b(FLAG_SAVINGTHROW_EE_ignore_primary_target)\b
-      - match: \b(FLAG_SAVINGTHROW_EE_ignore_secondary_target)\b
       - match: \b(FLAG_SAVINGTHROW_breath)\b
+      - match: \b(FLAG_SAVINGTHROW_bypass_mirror_image_EE)\b
       - match: \b(FLAG_SAVINGTHROW_death)\b
+      - match: \b(FLAG_SAVINGTHROW_ignore_difficulty_EE)\b
+      - match: \b(FLAG_SAVINGTHROW_ignore_primary_target_EE)\b
+      - match: \b(FLAG_SAVINGTHROW_ignore_secondary_target_EE)\b
+      - match: \b(FLAG_SAVINGTHROW_limit_effect_stacking_Ex)\b
       - match: \b(FLAG_SAVINGTHROW_polymorph)\b
       - match: \b(FLAG_SAVINGTHROW_spell)\b
-      - match: \b(FLAG_SAVINGTHROW_tobex_limit_effect_stacking)\b
-      - match: \b(FLAG_SAVINGTHROW_tobex_suspend_stacking_application)\b
       - match: \b(FLAG_SAVINGTHROW_wand)\b
       - match: \b(FLAG_SPL_allow_spotting)\b
       - match: \b(FLAG_SPL_break_sanctuary_EE)\b
@@ -835,40 +782,6 @@ repository:
       - match: \b(ITM_DAMAGE_TYPE_piercing_slashing)\b
       - match: \b(ITM_DAMAGE_TYPE_ranged)\b
       - match: \b(ITM_DAMAGE_TYPE_slashing)\b
-      - match: \b(ITM_HEADER_LOCATION_equipment)\b
-      - match: \b(ITM_HEADER_LOCATION_innate)\b
-      - match: \b(ITM_HEADER_LOCATION_none)\b
-      - match: \b(ITM_HEADER_LOCATION_spell)\b
-      - match: \b(ITM_HEADER_LOCATION_weapon)\b
-      - match: \b(ITM_HEADER_alternative_damage_bonus)\b
-      - match: \b(ITM_HEADER_alternative_dice_sides)\b
-      - match: \b(ITM_HEADER_alternative_dice_thrown)\b
-      - match: \b(ITM_HEADER_arrow_qualifier)\b
-      - match: \b(ITM_HEADER_attack_type)\b
-      - match: \b(ITM_HEADER_bolt_qualifier)\b
-      - match: \b(ITM_HEADER_charge_depletion_behaviour)\b
-      - match: \b(ITM_HEADER_charges)\b
-      - match: \b(ITM_HEADER_damage_bonus)\b
-      - match: \b(ITM_HEADER_damage_type)\b
-      - match: \b(ITM_HEADER_dice_sides)\b
-      - match: \b(ITM_HEADER_dice_thrown)\b
-      - match: \b(ITM_HEADER_feature_blocks_count)\b
-      - match: \b(ITM_HEADER_feature_blocks_index)\b
-      - match: \b(ITM_HEADER_flags)\b
-      - match: \b(ITM_HEADER_id_required)\b
-      - match: \b(ITM_HEADER_location)\b
-      - match: \b(ITM_HEADER_melee_animation)\b
-      - match: \b(ITM_HEADER_misc_projectile_qualifier)\b
-      - match: \b(ITM_HEADER_primary_type)\b
-      - match: \b(ITM_HEADER_projectile_type)\b
-      - match: \b(ITM_HEADER_projectile)\b
-      - match: \b(ITM_HEADER_range)\b
-      - match: \b(ITM_HEADER_secondary_type)\b
-      - match: \b(ITM_HEADER_speed)\b
-      - match: \b(ITM_HEADER_target_count)\b
-      - match: \b(ITM_HEADER_target_type)\b
-      - match: \b(ITM_HEADER_thac0_bonus)\b
-      - match: \b(ITM_HEADER_use_icon)\b
       - match: \b(ITM_TYPE_amulet)\b
       - match: \b(ITM_TYPE_armor)\b
       - match: \b(ITM_TYPE_arrows)\b
@@ -946,36 +859,6 @@ repository:
       - match: \b(ITM_TYPE_teeth)\b
       - match: \b(ITM_TYPE_telescope_iwd)\b
       - match: \b(ITM_TYPE_wand)\b
-      - match: \b(ITM_animation)\b
-      - match: \b(ITM_description_icon)\b
-      - match: \b(ITM_enchantment)\b
-      - match: \b(ITM_equipping_feature_blocks_count)\b
-      - match: \b(ITM_equipping_feature_blocks_index)\b
-      - match: \b(ITM_extended_headers_count)\b
-      - match: \b(ITM_extended_headers_offset)\b
-      - match: \b(ITM_feature_blocks_offset)\b
-      - match: \b(ITM_flags)\b
-      - match: \b(ITM_ground_icon)\b
-      - match: \b(ITM_inventory_icon)\b
-      - match: \b(ITM_kit_usability_1)\b
-      - match: \b(ITM_kit_usability_2)\b
-      - match: \b(ITM_kit_usability_3)\b
-      - match: \b(ITM_lore_to_id)\b
-      - match: \b(ITM_min_charisma)\b
-      - match: \b(ITM_min_constitution)\b
-      - match: \b(ITM_min_dexterity)\b
-      - match: \b(ITM_min_intelligencs)\b
-      - match: \b(ITM_min_level)\b
-      - match: \b(ITM_min_strength_bonus)\b
-      - match: \b(ITM_min_strength)\b
-      - match: \b(ITM_min_wisdom)\b
-      - match: \b(ITM_price)\b
-      - match: \b(ITM_replacement_item)\b
-      - match: \b(ITM_stack_amount)\b
-      - match: \b(ITM_type)\b
-      - match: \b(ITM_usability_flags)\b
-      - match: \b(ITM_weapon_proficiency)\b
-      - match: \b(ITM_weight)\b
       - match: \b(MOD_TYPE_cumulative)\b
       - match: \b(MOD_TYPE_flat)\b
       - match: \b(MOD_TYPE_percentage)\b
@@ -1520,42 +1403,8 @@ repository:
       - match: \b(SECTYPE_offensive_damage)\b
       - match: \b(SECTYPE_specific_protections)\b
       - match: \b(SECTYPE_spell_protections)\b
-      - match: \b(SPL_HEADER_SPELL_FORM_projectile)\b
-      - match: \b(SPL_HEADER_SPELL_FORM_standard)\b
-      - match: \b(SPL_HEADER_TARGET_area)\b
-      - match: \b(SPL_HEADER_TARGET_character_potrait)\b
-      - match: \b(SPL_HEADER_TARGET_creature)\b
-      - match: \b(SPL_HEADER_TARGET_invalid_target_cannot_be_selected)\b
-      - match: \b(SPL_HEADER_TARGET_self_ignores_game_pause)\b
-      - match: \b(SPL_HEADER_TARGET_self)\b
-      - match: \b(SPL_HEADER_casting_time)\b
-      - match: \b(SPL_HEADER_feature_blocks_count)\b
-      - match: \b(SPL_HEADER_feature_blocks_offset)\b
-      - match: \b(SPL_HEADER_frienly_bit2)\b
-      - match: \b(SPL_HEADER_level_required)\b
-      - match: \b(SPL_HEADER_location)\b
-      - match: \b(SPL_HEADER_memorized_icon)\b
-      - match: \b(SPL_HEADER_projectile)\b
-      - match: \b(SPL_HEADER_range)\b
-      - match: \b(SPL_HEADER_spell_form)\b
-      - match: \b(SPL_HEADER_target_number)\b
-      - match: \b(SPL_HEADER_target)\b
-      - match: \b(SPL_HEADER_times_per_dat)\b
-      - match: \b(SPL_casting_feature_block_count)\b
-      - match: \b(SPL_casting_feature_block_offset)\b
-      - match: \b(SPL_casting_graphics)\b
-      - match: \b(SPL_completion_sound)\b
-      - match: \b(SPL_desc_unidentified)\b
-      - match: \b(SPL_desc)\b
-      - match: \b(SPL_exclusion_flags)\b
-      - match: \b(SPL_ext_header_count)\b
-      - match: \b(SPL_ext_header_offset)\b
-      - match: \b(SPL_feature_block_offset)\b
-      - match: \b(SPL_flags)\b
-      - match: \b(SPL_icon)\b
-      - match: \b(SPL_level)\b
-      - match: \b(SPL_sectype)\b
-      - match: \b(SPL_type)\b
+      - match: \b(SPELL_FORM_projectile)\b
+      - match: \b(SPELL_FORM_standard)\b
       - match: \b(STO_ITEM_SALE_amount)\b
       - match: \b(STO_ITEM_SALE_charges1)\b
       - match: \b(STO_ITEM_SALE_charges2)\b
@@ -1589,21 +1438,21 @@ repository:
       - match: \b(STO_rumours_temple)\b
       - match: \b(STO_sell_price_markup)\b
       - match: \b(STO_type)\b
-      - match: \b(TARGET_EFF_everyone_except_party)\b
-      - match: \b(TARGET_EFF_everyone_except_self)\b
-      - match: \b(TARGET_EFF_everyone_match_specific_caster)\b
-      - match: \b(TARGET_EFF_everyone_match_specific_target)\b
-      - match: \b(TARGET_EFF_everyone)\b
-      - match: \b(TARGET_EFF_none)\b
-      - match: \b(TARGET_EFF_original_caster)\b
-      - match: \b(TARGET_EFF_party)\b
-      - match: \b(TARGET_EFF_preset)\b
-      - match: \b(TARGET_EFF_self)\b
-      - match: \b(TARGET_HEADER_area)\b
-      - match: \b(TARGET_HEADER_character_portrait)\b
-      - match: \b(TARGET_HEADER_creature)\b
-      - match: \b(TARGET_HEADER_self_ignore_pause)\b
-      - match: \b(TARGET_HEADER_self)\b
+      - match: \b(TARGET_FX_everyone_except_party)\b
+      - match: \b(TARGET_FX_everyone_except_self)\b
+      - match: \b(TARGET_FX_everyone_match_specific_caster)\b
+      - match: \b(TARGET_FX_everyone_match_specific_target)\b
+      - match: \b(TARGET_FX_everyone)\b
+      - match: \b(TARGET_FX_none)\b
+      - match: \b(TARGET_FX_original_caster)\b
+      - match: \b(TARGET_FX_party)\b
+      - match: \b(TARGET_FX_preset)\b
+      - match: \b(TARGET_FX_self)\b
+      - match: \b(TARGET_HEAD_area)\b
+      - match: \b(TARGET_HEAD_character_portrait)\b
+      - match: \b(TARGET_HEAD_creature)\b
+      - match: \b(TARGET_HEAD_self_ignore_pause)\b
+      - match: \b(TARGET_HEAD_self)\b
       - match: \b(TIMING_absolute_duration)\b
       - match: \b(TIMING_delayed_duration)\b
       - match: \b(TIMING_delayed)\b
@@ -1691,8 +1540,8 @@ repository:
       - match: \b(FX_parameter2)\b
       - match: \b(FX_save_bonus)\b
       - match: \b(FX_save_type)\b
-      - match: \b(FX_stacking_id_tobex)\b
-      - match: \b(ITM_H_header_flags)\b
+      - match: \b(FX_stacking_id_Ex)\b
+      - match: \b(ITM_H_flags)\b
       - match: \b(ITM_enchantment)\b
       - match: \b(ITM_extended_headers_offset)\b
       - match: \b(ITM_feature_blocks_offset)\b
@@ -1705,7 +1554,7 @@ repository:
       - match: \b(SPL_flags)\b
       - match: \b(SPL_identified_desc)\b
       - match: \b(SPL_identified_name)\b
-      - match: \b(SPL_spell_level)\b
+      - match: \b(SPL_level)\b
       - match: \b(SPL_unidentified_description)\b
       - match: \b(SPL_unidentified_name)\b
   iesdp-word:

@@ -351,16 +351,16 @@ iesdp-dword:
         - bit 26: TobEx internal (don't use) - suspend effect application
 
         NB. If more than 1 saving throw type is specified, the target rolls against their best save.
-    - name: FX_stacking_id_tobex
-      detail: dword FX_stacking_id_tobex
+    - name: FX_stacking_id_Ex
+      detail: dword FX_stacking_id_Ex
       doc: |
         TobEx: Stacking ID. Checked when bit 25 of the Saving Throw Type is set.
 
         If two effects of the same opcode are applied, both have Limit Effect Stacking bit set, and both have the same stacking ID, then the latter applied effect is suspended in application until the former effect expires. Regardless of whether it is applied, the latter effect will expire at the same time that it would expire if it was applied. In other words, the total duration of some non-stacking effect opcode is not extended because more than one copy of the effect was applied.
 
         Stacking IDs are unique to the opcode being applied. To maintain uniqueness of stacking IDs between different mods, one recommendation is to use the higher word of Special as the modder's Infinity Engine Community Prefix, then use the lower word as an identifying ID. For example, 0x41360001 ('A6' 0x0001).
-    - name: ITM_H_header_flags
-      detail: dword ITM_H_header_flags
+    - name: ITM_H_flags
+      detail: dword ITM_H_flags
       doc: '[Flags](#ExtHeader_Flags)'
     - name: ITM_enchantment
       detail: dword ITM_enchantment
@@ -398,8 +398,8 @@ iesdp-dword:
     - name: SPL_identified_name
       detail: dword SPL_identified_name
       doc: Spell Name - Identified (strref) (usually -1)
-    - name: SPL_spell_level
-      detail: dword SPL_spell_level
+    - name: SPL_level
+      detail: dword SPL_level
       doc: Spell Level
     - name: SPL_unidentified_description
       detail: dword SPL_unidentified_description
@@ -5847,116 +5847,8 @@ ielib-ints:
     - name: DISPELLABLE
       detail: int DISPELLABLE = BIT0
       doc: IElib define
-    - name: EFF2_caster_level
-      detail: int EFF2_caster_level = 0xc8
-      doc: IElib define
-    - name: EFF2_caster_x_coord
-      detail: int EFF2_caster_x_coord = 0x80
-      doc: IElib define
-    - name: EFF2_caster_y_coord
-      detail: int EFF2_caster_y_coord = 0x84
-      doc: IElib define
-    - name: EFF2_dice_sides
-      detail: int EFF2_dice_sides = 0x3c
-      doc: IElib define
-    - name: EFF2_dice_thrown
-      detail: int EFF2_dice_thrown = 0x38
-      doc: IElib define
-    - name: EFF2_duration
-      detail: int EFF2_duration = 0x28
-      doc: IElib define
-    - name: EFF2_firstapply_internal_flag
-      detail: int EFF2_firstapply_internal_flag = 0xcc
-      doc: IElib define
-    - name: EFF2_opcode
-      detail: int EFF2_opcode = 0x10
-      doc: IElib define
-    - name: EFF2_parameter1
-      detail: int EFF2_parameter1 = 0x1c
-      doc: IElib define
-    - name: EFF2_parameter2
-      detail: int EFF2_parameter2 = 0x20
-      doc: IElib define
-    - name: EFF2_parameter3
-      detail: int EFF2_parameter3 = 0x60
-      doc: IElib define
-    - name: EFF2_parameter4
-      detail: int EFF2_parameter4 = 0x64
-      doc: IElib define
-    - name: EFF2_parameter5
-      detail: int EFF2_parameter5 = 0x68
-      doc: IElib define
-    - name: EFF2_parameter6
-      detail: int EFF2_parameter6 = 0x6c
-      doc: IElib define
-    - name: EFF2_parent_resource
-      detail: int EFF2_parent_resource = 0x94
-      doc: IElib define
-    - name: EFF2_parent_resource_flags
-      detail: int EFF2_parent_resource_flags = 0x9c
-      doc: IElib define
-    - name: EFF2_parent_resource_slot
-      detail: int EFF2_parent_resource_slot = 0xa4
-      doc: IElib define
-    - name: EFF2_parent_resource_type
-      detail: int EFF2_parent_resource_type = 0x90
-      doc: IElib define
-    - name: EFF2_power
-      detail: int EFF2_power = 0x18
-      doc: IElib define
-    - name: EFF2_primary_type_school
-      detail: int EFF2_primary_type_school = 0x4c
-      doc: IElib define
-    - name: EFF2_probability1
-      detail: int EFF2_probability1 = 0x2c
-      doc: IElib define
-    - name: EFF2_probability2
-      detail: int EFF2_probability2 = 0x2e
-      doc: IElib define
-    - name: EFF2_projectile
-      detail: int EFF2_projectile = 0xa0
-      doc: IElib define
-    - name: EFF2_resistance
-      detail: int EFF2_resistance = 0x5c
-      doc: IElib define
-    - name: EFF2_resource
-      detail: int EFF2_resource = 0x30
-      doc: IElib define
-    - name: EFF2_resource2
-      detail: int EFF2_resource2 = 0x70
-      doc: IElib define
-    - name: EFF2_resource3
-      detail: int EFF2_resource3 = 0x78
-      doc: IElib define
-    - name: EFF2_save_bonus
-      detail: int EFF2_save_bonus = 0x44
-      doc: IElib define
-    - name: EFF2_saving_throw_type
-      detail: int EFF2_saving_throw_type = 0x40
-      doc: IElib define
-    - name: EFF2_secondary_type
-      detail: int EFF2_secondary_type = 0xd0
-      doc: IElib define
-    - name: EFF2_target_type
-      detail: int EFF2_target_type = 0x14
-      doc: IElib define
-    - name: EFF2_target_x_coord
-      detail: int EFF2_target_x_coord = 0x88
-      doc: IElib define
-    - name: EFF2_target_y_coord
-      detail: int EFF2_target_y_coord = 0x8c
-      doc: IElib define
-    - name: EFF2_timing_mode
-      detail: int EFF2_timing_mode = 0x24
-      doc: IElib define
-    - name: EFF2_tobex_stacking_id
-      detail: int EFF2_tobex_stacking_id = 0x48
-      doc: IElib define
-    - name: EFF2_variable
-      detail: int EFF2_variable = 0xa8
-      doc: IElib define
     - name: EFF2_vvc
-      detail: int EFF2_vvc = 0x70
+      detail: int EFF2_vvc = 0x20
       doc: IElib define
     - name: EFFECT_IDS_align
       detail: int EFFECT_IDS_align = 8
@@ -5981,54 +5873,6 @@ ielib-ints:
       doc: IElib define
     - name: EFFECT_IDS_specific
       detail: int EFFECT_IDS_specific = 6
-      doc: IElib define
-    - name: EFF_dicenum
-      detail: int EFF_dicenum = 0x1c
-      doc: IElib define
-    - name: EFF_dicesize
-      detail: int EFF_dicesize = 0x20
-      doc: IElib define
-    - name: EFF_duration
-      detail: int EFF_duration = 0xe
-      doc: IElib define
-    - name: EFF_opcode
-      detail: int EFF_opcode = 0
-      doc: IElib define
-    - name: EFF_parameter1
-      detail: int EFF_parameter1 = 0x4
-      doc: IElib define
-    - name: EFF_parameter2
-      detail: int EFF_parameter2 = 0x8
-      doc: IElib define
-    - name: EFF_power
-      detail: int EFF_power = 0x3
-      doc: IElib define
-    - name: EFF_probability1
-      detail: int EFF_probability1 = 0x12
-      doc: IElib define
-    - name: EFF_probability2
-      detail: int EFF_probability2 = 0x13
-      doc: IElib define
-    - name: EFF_resistance
-      detail: int EFF_resistance = 0xd
-      doc: IElib define
-    - name: EFF_resource
-      detail: int EFF_resource = 0x14
-      doc: IElib define
-    - name: EFF_savingthrow
-      detail: int EFF_savingthrow = 0x24
-      doc: IElib define
-    - name: EFF_savingthrow_bonus
-      detail: int EFF_savingthrow_bonus = 0x28
-      doc: IElib define
-    - name: EFF_target
-      detail: int EFF_target = 0x2
-      doc: IElib define
-    - name: EFF_timing
-      detail: int EFF_timing = 0xc
-      doc: IElib define
-    - name: EFF_tobex_stacking_id
-      detail: int EFF_tobex_stacking_id = 0x2c
       doc: IElib define
     - name: FLAG_ARE_CONTAINER_disabled
       detail: int FLAG_ARE_CONTAINER_disabled = BIT5
@@ -6204,35 +6048,35 @@ ielib-ints:
     - name: FLAG_CRE_uninterruptible
       detail: int FLAG_CRE_uninterruptible = BIT31
       doc: IElib define
-    - name: FLAG_HEADER_add_strength_bonus
-      detail: int FLAG_HEADER_add_strength_bonus = BIT0
+    - name: FLAG_HEAD_add_strength_bonus
+      detail: int FLAG_HEAD_add_strength_bonus = BIT0
       doc: IElib define
-    - name: FLAG_HEADER_breakable
-      detail: int FLAG_HEADER_breakable = BIT1
+    - name: FLAG_HEAD_breakable
+      detail: int FLAG_HEAD_breakable = BIT1
       doc: IElib define
-    - name: FLAG_HEADER_bypass_armor
-      detail: int FLAG_HEADER_bypass_armor = BIT16
+    - name: FLAG_HEAD_bypass_armor
+      detail: int FLAG_HEAD_bypass_armor = BIT16
       doc: IElib define
-    - name: FLAG_HEADER_ee_strength_bonus
-      detail: int FLAG_HEADER_ee_strength_bonus = BIT2
+    - name: FLAG_HEAD_cant_target_invisible_Ex
+      detail: int FLAG_HEAD_cant_target_invisible_Ex = BIT26
       doc: IElib define
-    - name: FLAG_HEADER_ee_thac0_strength_bonus
-      detail: int FLAG_HEADER_ee_thac0_strength_bonus = BIT3
+    - name: FLAG_HEAD_damage_strength_bonus_EE
+      detail: int FLAG_HEAD_damage_strength_bonus_EE = BIT2
       doc: IElib define
-    - name: FLAG_HEADER_ex_cant_target_invisible
-      detail: int FLAG_HEADER_ex_cant_target_invisible = BIT26
+    - name: FLAG_HEAD_hostile
+      detail: int FLAG_HEAD_hostile = BIT10
       doc: IElib define
-    - name: FLAG_HEADER_ex_toggle_backstab
-      detail: int FLAG_HEADER_ex_toggle_backstab = BIT25
+    - name: FLAG_HEAD_keen_edge
+      detail: int FLAG_HEAD_keen_edge = BIT17
       doc: IElib define
-    - name: FLAG_HEADER_hostile
-      detail: int FLAG_HEADER_hostile = BIT10
+    - name: FLAG_HEAD_recharge_after_rest
+      detail: int FLAG_HEAD_recharge_after_rest = BIT11
       doc: IElib define
-    - name: FLAG_HEADER_keen_edge
-      detail: int FLAG_HEADER_keen_edge = BIT17
+    - name: FLAG_HEAD_thac0_strength_bonus_EE
+      detail: int FLAG_HEAD_thac0_strength_bonus_EE = BIT3
       doc: IElib define
-    - name: FLAG_HEADER_recharge_after_rest
-      detail: int FLAG_HEADER_recharge_after_rest = BIT11
+    - name: FLAG_HEAD_toggle_backstab_Ex
+      detail: int FLAG_HEAD_toggle_backstab_Ex = BIT25
       doc: IElib define
     - name: FLAG_ITEM_SALE_identified
       detail: int FLAG_ITEM_SALE_identified = BIT0
@@ -6246,35 +6090,32 @@ ielib-ints:
     - name: FLAG_ITEM_SALE_unstealable
       detail: int FLAG_ITEM_SALE_unstealable = BIT1
       doc: IElib define
-    - name: FLAG_SAVINGTHROW_EE_bypass_mirror_image
-      detail: int FLAG_SAVINGTHROW_EE_bypass_mirror_image = BIT24
-      doc: IElib define
-    - name: FLAG_SAVINGTHROW_EE_ignore_difficulty
-      detail: int FLAG_SAVINGTHROW_EE_ignore_difficulty = BIT25
-      doc: IElib define
-    - name: FLAG_SAVINGTHROW_EE_ignore_primary_target
-      detail: int FLAG_SAVINGTHROW_EE_ignore_primary_target = BIT10
-      doc: IElib define
-    - name: FLAG_SAVINGTHROW_EE_ignore_secondary_target
-      detail: int FLAG_SAVINGTHROW_EE_ignore_secondary_target = BIT11
-      doc: IElib define
     - name: FLAG_SAVINGTHROW_breath
       detail: int FLAG_SAVINGTHROW_breath = BIT1
       doc: IElib define
+    - name: FLAG_SAVINGTHROW_bypass_mirror_image_EE
+      detail: int FLAG_SAVINGTHROW_bypass_mirror_image_EE = BIT24
+      doc: IElib define
     - name: FLAG_SAVINGTHROW_death
       detail: int FLAG_SAVINGTHROW_death = BIT2
+      doc: IElib define
+    - name: FLAG_SAVINGTHROW_ignore_difficulty_EE
+      detail: int FLAG_SAVINGTHROW_ignore_difficulty_EE = BIT25
+      doc: IElib define
+    - name: FLAG_SAVINGTHROW_ignore_primary_target_EE
+      detail: int FLAG_SAVINGTHROW_ignore_primary_target_EE = BIT10
+      doc: IElib define
+    - name: FLAG_SAVINGTHROW_ignore_secondary_target_EE
+      detail: int FLAG_SAVINGTHROW_ignore_secondary_target_EE = BIT11
+      doc: IElib define
+    - name: FLAG_SAVINGTHROW_limit_effect_stacking_Ex
+      detail: int FLAG_SAVINGTHROW_limit_effect_stacking_Ex = BIT25
       doc: IElib define
     - name: FLAG_SAVINGTHROW_polymorph
       detail: int FLAG_SAVINGTHROW_polymorph = BIT4
       doc: IElib define
     - name: FLAG_SAVINGTHROW_spell
       detail: int FLAG_SAVINGTHROW_spell = BIT0
-      doc: IElib define
-    - name: FLAG_SAVINGTHROW_tobex_limit_effect_stacking
-      detail: int FLAG_SAVINGTHROW_tobex_limit_effect_stacking = BIT25
-      doc: IElib define
-    - name: FLAG_SAVINGTHROW_tobex_suspend_stacking_application
-      detail: int FLAG_SAVINGTHROW_tobex_suspend_stacking_application = BIT26
       doc: IElib define
     - name: FLAG_SAVINGTHROW_wand
       detail: int FLAG_SAVINGTHROW_wand = BIT3
@@ -7032,108 +6873,6 @@ ielib-ints:
     - name: ITM_DAMAGE_TYPE_slashing
       detail: int ITM_DAMAGE_TYPE_slashing = 3
       doc: IElib define
-    - name: ITM_HEADER_LOCATION_equipment
-      detail: int ITM_HEADER_LOCATION_equipment = 3
-      doc: IElib define
-    - name: ITM_HEADER_LOCATION_innate
-      detail: int ITM_HEADER_LOCATION_innate = 4
-      doc: IElib define
-    - name: ITM_HEADER_LOCATION_none
-      detail: int ITM_HEADER_LOCATION_none = 0
-      doc: IElib define
-    - name: ITM_HEADER_LOCATION_spell
-      detail: int ITM_HEADER_LOCATION_spell = 2
-      doc: IElib define
-    - name: ITM_HEADER_LOCATION_weapon
-      detail: int ITM_HEADER_LOCATION_weapon = 1
-      doc: IElib define
-    - name: ITM_HEADER_alternative_damage_bonus
-      detail: int ITM_HEADER_alternative_damage_bonus = 0x13
-      doc: IElib define
-    - name: ITM_HEADER_alternative_dice_sides
-      detail: int ITM_HEADER_alternative_dice_sides = 0x3
-      doc: IElib define
-    - name: ITM_HEADER_alternative_dice_thrown
-      detail: int ITM_HEADER_alternative_dice_thrown = 0x11
-      doc: IElib define
-    - name: ITM_HEADER_arrow_qualifier
-      detail: int ITM_HEADER_arrow_qualifier = 0x32
-      doc: IElib define
-    - name: ITM_HEADER_attack_type
-      detail: int ITM_HEADER_attack_type = 0
-      doc: IElib define
-    - name: ITM_HEADER_bolt_qualifier
-      detail: int ITM_HEADER_bolt_qualifier = 0x34
-      doc: IElib define
-    - name: ITM_HEADER_charge_depletion_behaviour
-      detail: int ITM_HEADER_charge_depletion_behaviour = 0x24
-      doc: IElib define
-    - name: ITM_HEADER_charges
-      detail: int ITM_HEADER_charges = 0x22
-      doc: IElib define
-    - name: ITM_HEADER_damage_bonus
-      detail: int ITM_HEADER_damage_bonus = 0x1a
-      doc: IElib define
-    - name: ITM_HEADER_damage_type
-      detail: int ITM_HEADER_damage_type = 0x1c
-      doc: IElib define
-    - name: ITM_HEADER_dice_sides
-      detail: int ITM_HEADER_dice_sides = 0x16
-      doc: IElib define
-    - name: ITM_HEADER_dice_thrown
-      detail: int ITM_HEADER_dice_thrown = 0x18
-      doc: IElib define
-    - name: ITM_HEADER_feature_blocks_count
-      detail: int ITM_HEADER_feature_blocks_count = 0x1e
-      doc: IElib define
-    - name: ITM_HEADER_feature_blocks_index
-      detail: int ITM_HEADER_feature_blocks_index = 0x20
-      doc: IElib define
-    - name: ITM_HEADER_flags
-      detail: int ITM_HEADER_flags = 0x26
-      doc: IElib define
-    - name: ITM_HEADER_id_required
-      detail: int ITM_HEADER_id_required = 0x1
-      doc: IElib define
-    - name: ITM_HEADER_location
-      detail: int ITM_HEADER_location = 0x2
-      doc: IElib define
-    - name: ITM_HEADER_melee_animation
-      detail: int ITM_HEADER_melee_animation = 0x2c
-      doc: IElib define
-    - name: ITM_HEADER_misc_projectile_qualifier
-      detail: int ITM_HEADER_misc_projectile_qualifier = 0x36
-      doc: IElib define
-    - name: ITM_HEADER_primary_type
-      detail: int ITM_HEADER_primary_type = 0x17
-      doc: IElib define
-    - name: ITM_HEADER_projectile
-      detail: int ITM_HEADER_projectile = 0x2a
-      doc: IElib define
-    - name: ITM_HEADER_projectile_type
-      detail: int ITM_HEADER_projectile_type = 0x10
-      doc: IElib define
-    - name: ITM_HEADER_range
-      detail: int ITM_HEADER_range = 0xe
-      doc: IElib define
-    - name: ITM_HEADER_secondary_type
-      detail: int ITM_HEADER_secondary_type = 0x19
-      doc: IElib define
-    - name: ITM_HEADER_speed
-      detail: int ITM_HEADER_speed = 0x12
-      doc: IElib define
-    - name: ITM_HEADER_target_count
-      detail: int ITM_HEADER_target_count = 0xd
-      doc: IElib define
-    - name: ITM_HEADER_target_type
-      detail: int ITM_HEADER_target_type = 0xc
-      doc: IElib define
-    - name: ITM_HEADER_thac0_bonus
-      detail: int ITM_HEADER_thac0_bonus = 0x14
-      doc: IElib define
-    - name: ITM_HEADER_use_icon
-      detail: int ITM_HEADER_use_icon = 0x4
-      doc: IElib define
     - name: ITM_TYPE_amulet
       detail: int ITM_TYPE_amulet = 0x1
       doc: IElib define
@@ -7364,96 +7103,6 @@ ielib-ints:
       doc: IElib define
     - name: ITM_TYPE_wand
       detail: int ITM_TYPE_wand = 0x23
-      doc: IElib define
-    - name: ITM_animation
-      detail: int ITM_animation = 0x22
-      doc: IElib define
-    - name: ITM_description_icon
-      detail: int ITM_description_icon = 0x58
-      doc: IElib define
-    - name: ITM_enchantment
-      detail: int ITM_enchantment = 0x60
-      doc: IElib define
-    - name: ITM_equipping_feature_blocks_count
-      detail: int ITM_equipping_feature_blocks_count = 0x70
-      doc: IElib define
-    - name: ITM_equipping_feature_blocks_index
-      detail: int ITM_equipping_feature_blocks_index = 0x6e
-      doc: IElib define
-    - name: ITM_extended_headers_count
-      detail: int ITM_extended_headers_count = 0x68
-      doc: IElib define
-    - name: ITM_extended_headers_offset
-      detail: int ITM_extended_headers_offset = 0x64
-      doc: IElib define
-    - name: ITM_feature_blocks_offset
-      detail: int ITM_feature_blocks_offset = 0x6a
-      doc: IElib define
-    - name: ITM_flags
-      detail: int ITM_flags = 0x18
-      doc: IElib define
-    - name: ITM_ground_icon
-      detail: int ITM_ground_icon = 0x44
-      doc: IElib define
-    - name: ITM_inventory_icon
-      detail: int ITM_inventory_icon = 0x3a
-      doc: IElib define
-    - name: ITM_kit_usability_1
-      detail: int ITM_kit_usability_1 = 0x29
-      doc: IElib define
-    - name: ITM_kit_usability_2
-      detail: int ITM_kit_usability_2 = 0x2b
-      doc: IElib define
-    - name: ITM_kit_usability_3
-      detail: int ITM_kit_usability_3 = 0x2f
-      doc: IElib define
-    - name: ITM_lore_to_id
-      detail: int ITM_lore_to_id = 0x42
-      doc: IElib define
-    - name: ITM_min_charisma
-      detail: int ITM_min_charisma = 0x32
-      doc: IElib define
-    - name: ITM_min_constitution
-      detail: int ITM_min_constitution = 0x30
-      doc: IElib define
-    - name: ITM_min_dexterity
-      detail: int ITM_min_dexterity = 0x2c
-      doc: IElib define
-    - name: ITM_min_intelligencs
-      detail: int ITM_min_intelligencs = 0x2a
-      doc: IElib define
-    - name: ITM_min_level
-      detail: int ITM_min_level = 0x24
-      doc: IElib define
-    - name: ITM_min_strength
-      detail: int ITM_min_strength = 0x26
-      doc: IElib define
-    - name: ITM_min_strength_bonus
-      detail: int ITM_min_strength_bonus = 0x28
-      doc: IElib define
-    - name: ITM_min_wisdom
-      detail: int ITM_min_wisdom = 0x2e
-      doc: IElib define
-    - name: ITM_price
-      detail: int ITM_price = 0x34
-      doc: IElib define
-    - name: ITM_replacement_item
-      detail: int ITM_replacement_item = 0x10
-      doc: IElib define
-    - name: ITM_stack_amount
-      detail: int ITM_stack_amount = 0x38
-      doc: IElib define
-    - name: ITM_type
-      detail: int ITM_type = 0x1c
-      doc: IElib define
-    - name: ITM_usability_flags
-      detail: int ITM_usability_flags = 0x1e
-      doc: IElib define
-    - name: ITM_weapon_proficiency
-      detail: int ITM_weapon_proficiency = 0x31
-      doc: IElib define
-    - name: ITM_weight
-      detail: int ITM_weight = 0x4c
       doc: IElib define
     - name: MOD_TYPE_cumulative
       detail: int MOD_TYPE_cumulative = 0
@@ -9087,113 +8736,11 @@ ielib-ints:
     - name: SECTYPE_spell_protections
       detail: int SECTYPE_spell_protections = 1
       doc: IElib define
-    - name: SPL_HEADER_SPELL_FORM_projectile
-      detail: int SPL_HEADER_SPELL_FORM_projectile = 2
+    - name: SPELL_FORM_projectile
+      detail: int SPELL_FORM_projectile = 2
       doc: IElib define
-    - name: SPL_HEADER_SPELL_FORM_standard
-      detail: int SPL_HEADER_SPELL_FORM_standard = 1
-      doc: IElib define
-    - name: SPL_HEADER_TARGET_area
-      detail: int SPL_HEADER_TARGET_area = 4
-      doc: IElib define
-    - name: SPL_HEADER_TARGET_character_potrait
-      detail: int SPL_HEADER_TARGET_character_potrait = 3
-      doc: IElib define
-    - name: SPL_HEADER_TARGET_creature
-      detail: int SPL_HEADER_TARGET_creature = 1
-      doc: IElib define
-    - name: SPL_HEADER_TARGET_invalid_target_cannot_be_selected
-      detail: int SPL_HEADER_TARGET_invalid_target_cannot_be_selected = 0
-      doc: IElib define
-    - name: SPL_HEADER_TARGET_self
-      detail: int SPL_HEADER_TARGET_self = 5
-      doc: IElib define
-    - name: SPL_HEADER_TARGET_self_ignores_game_pause
-      detail: int SPL_HEADER_TARGET_self_ignores_game_pause = 7
-      doc: IElib define
-    - name: SPL_HEADER_casting_time
-      detail: int SPL_HEADER_casting_time = 0x12
-      doc: IElib define
-    - name: SPL_HEADER_feature_blocks_count
-      detail: int SPL_HEADER_feature_blocks_count = 0x1e
-      doc: IElib define
-    - name: SPL_HEADER_feature_blocks_offset
-      detail: int SPL_HEADER_feature_blocks_offset = 0x20
-      doc: IElib define
-    - name: SPL_HEADER_frienly_bit2
-      detail: int SPL_HEADER_frienly_bit2 = 0x1
-      doc: IElib define
-    - name: SPL_HEADER_level_required
-      detail: int SPL_HEADER_level_required = 0x10
-      doc: IElib define
-    - name: SPL_HEADER_location
-      detail: int SPL_HEADER_location = 0x2
-      doc: IElib define
-    - name: SPL_HEADER_memorized_icon
-      detail: int SPL_HEADER_memorized_icon = 0x4
-      doc: IElib define
-    - name: SPL_HEADER_projectile
-      detail: int SPL_HEADER_projectile = 0x26
-      doc: IElib define
-    - name: SPL_HEADER_range
-      detail: int SPL_HEADER_range = 0xe
-      doc: IElib define
-    - name: SPL_HEADER_spell_form
-      detail: int SPL_HEADER_spell_form = 0
-      doc: IElib define
-    - name: SPL_HEADER_target
-      detail: int SPL_HEADER_target = 0xc
-      doc: IElib define
-    - name: SPL_HEADER_target_number
-      detail: int SPL_HEADER_target_number = 0xd
-      doc: IElib define
-    - name: SPL_HEADER_times_per_dat
-      detail: int SPL_HEADER_times_per_dat = 0x14
-      doc: IElib define
-    - name: SPL_casting_feature_block_count
-      detail: int SPL_casting_feature_block_count = 0x70
-      doc: IElib define
-    - name: SPL_casting_feature_block_offset
-      detail: int SPL_casting_feature_block_offset = 0x6e
-      doc: IElib define
-    - name: SPL_casting_graphics
-      detail: int SPL_casting_graphics = 0x22
-      doc: IElib define
-    - name: SPL_completion_sound
-      detail: int SPL_completion_sound = 0x10
-      doc: IElib define
-    - name: SPL_desc
-      detail: int SPL_desc = 0x50
-      doc: IElib define
-    - name: SPL_desc_unidentified
-      detail: int SPL_desc_unidentified = 0x54
-      doc: IElib define
-    - name: SPL_exclusion_flags
-      detail: int SPL_exclusion_flags = 0x1e
-      doc: IElib define
-    - name: SPL_ext_header_count
-      detail: int SPL_ext_header_count = 0x68
-      doc: IElib define
-    - name: SPL_ext_header_offset
-      detail: int SPL_ext_header_offset = 0x64
-      doc: IElib define
-    - name: SPL_feature_block_offset
-      detail: int SPL_feature_block_offset = 0x6a
-      doc: IElib define
-    - name: SPL_flags
-      detail: int SPL_flags = 0x18
-      doc: IElib define
-    - name: SPL_icon
-      detail: int SPL_icon = 0x3a
-      doc: IElib define
-    - name: SPL_level
-      detail: int SPL_level = 0x34
-      doc: IElib define
-    - name: SPL_sectype
-      detail: int SPL_sectype = 0x27
-      doc: IElib define
-    - name: SPL_type
-      detail: int SPL_type = 0x25
+    - name: SPELL_FORM_standard
+      detail: int SPELL_FORM_standard = 1
       doc: IElib define
     - name: STO_ITEM_SALE_amount
       detail: int STO_ITEM_SALE_amount = 0x14
@@ -9294,50 +8841,50 @@ ielib-ints:
     - name: STO_type
       detail: int STO_type = 0x8
       doc: IElib define
-    - name: TARGET_EFF_everyone
-      detail: int TARGET_EFF_everyone = 4
+    - name: TARGET_FX_everyone
+      detail: int TARGET_FX_everyone = 4
       doc: IElib define
-    - name: TARGET_EFF_everyone_except_party
-      detail: int TARGET_EFF_everyone_except_party = 5
+    - name: TARGET_FX_everyone_except_party
+      detail: int TARGET_FX_everyone_except_party = 5
       doc: IElib define
-    - name: TARGET_EFF_everyone_except_self
-      detail: int TARGET_EFF_everyone_except_self = 8
+    - name: TARGET_FX_everyone_except_self
+      detail: int TARGET_FX_everyone_except_self = 8
       doc: IElib define
-    - name: TARGET_EFF_everyone_match_specific_caster
-      detail: int TARGET_EFF_everyone_match_specific_caster = 6
+    - name: TARGET_FX_everyone_match_specific_caster
+      detail: int TARGET_FX_everyone_match_specific_caster = 6
       doc: IElib define
-    - name: TARGET_EFF_everyone_match_specific_target
-      detail: int TARGET_EFF_everyone_match_specific_target = 7
+    - name: TARGET_FX_everyone_match_specific_target
+      detail: int TARGET_FX_everyone_match_specific_target = 7
       doc: IElib define
-    - name: TARGET_EFF_none
-      detail: int TARGET_EFF_none = 0
+    - name: TARGET_FX_none
+      detail: int TARGET_FX_none = 0
       doc: IElib define
-    - name: TARGET_EFF_original_caster
-      detail: int TARGET_EFF_original_caster = 9
+    - name: TARGET_FX_original_caster
+      detail: int TARGET_FX_original_caster = 9
       doc: IElib define
-    - name: TARGET_EFF_party
-      detail: int TARGET_EFF_party = 3
+    - name: TARGET_FX_party
+      detail: int TARGET_FX_party = 3
       doc: IElib define
-    - name: TARGET_EFF_preset
-      detail: int TARGET_EFF_preset = 2
+    - name: TARGET_FX_preset
+      detail: int TARGET_FX_preset = 2
       doc: IElib define
-    - name: TARGET_EFF_self
-      detail: int TARGET_EFF_self = 1
+    - name: TARGET_FX_self
+      detail: int TARGET_FX_self = 1
       doc: IElib define
-    - name: TARGET_HEADER_area
-      detail: int TARGET_HEADER_area = 4
+    - name: TARGET_HEAD_area
+      detail: int TARGET_HEAD_area = 4
       doc: IElib define
-    - name: TARGET_HEADER_character_portrait
-      detail: int TARGET_HEADER_character_portrait = 3
+    - name: TARGET_HEAD_character_portrait
+      detail: int TARGET_HEAD_character_portrait = 3
       doc: IElib define
-    - name: TARGET_HEADER_creature
-      detail: int TARGET_HEADER_creature = 1
+    - name: TARGET_HEAD_creature
+      detail: int TARGET_HEAD_creature = 1
       doc: IElib define
-    - name: TARGET_HEADER_self
-      detail: int TARGET_HEADER_self = 5
+    - name: TARGET_HEAD_self
+      detail: int TARGET_HEAD_self = 5
       doc: IElib define
-    - name: TARGET_HEADER_self_ignore_pause
-      detail: int TARGET_HEADER_self_ignore_pause = 7
+    - name: TARGET_HEAD_self_ignore_pause
+      detail: int TARGET_HEAD_self_ignore_pause = 7
       doc: IElib define
     - name: TIMING_absolute_duration
       detail: int TIMING_absolute_duration = 4096

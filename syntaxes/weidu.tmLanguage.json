@@ -1596,150 +1596,6 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(EFF2_caster_level)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(EFF2_caster_x_coord)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(EFF2_caster_y_coord)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(EFF2_dice_sides)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(EFF2_dice_thrown)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(EFF2_duration)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(EFF2_firstapply_internal_flag)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(EFF2_opcode)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(EFF2_parameter1)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(EFF2_parameter2)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(EFF2_parameter3)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(EFF2_parameter4)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(EFF2_parameter5)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(EFF2_parameter6)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(EFF2_parent_resource_flags)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(EFF2_parent_resource_slot)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(EFF2_parent_resource_type)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(EFF2_parent_resource)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(EFF2_power)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(EFF2_primary_type_school)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(EFF2_probability1)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(EFF2_probability2)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(EFF2_projectile)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(EFF2_resistance)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(EFF2_resource2)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(EFF2_resource3)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(EFF2_resource)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(EFF2_save_bonus)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(EFF2_saving_throw_type)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(EFF2_secondary_type)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(EFF2_target_type)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(EFF2_target_x_coord)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(EFF2_target_y_coord)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(EFF2_timing_mode)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(EFF2_tobex_stacking_id)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(EFF2_variable)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
           "match": "\\b(EFF2_vvc)\\b",
           "name": "constant.language.ielib.int"
         },
@@ -1773,70 +1629,6 @@
         },
         {
           "match": "\\b(EFFECT_IDS_specific)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(EFF_dicenum)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(EFF_dicesize)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(EFF_duration)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(EFF_opcode)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(EFF_parameter1)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(EFF_parameter2)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(EFF_power)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(EFF_probability1)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(EFF_probability2)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(EFF_resistance)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(EFF_resource)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(EFF_savingthrow_bonus)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(EFF_savingthrow)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(EFF_target)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(EFF_timing)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(EFF_tobex_stacking_id)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -2072,43 +1864,43 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(FLAG_HEADER_add_strength_bonus)\\b",
+          "match": "\\b(FLAG_HEAD_add_strength_bonus)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(FLAG_HEADER_breakable)\\b",
+          "match": "\\b(FLAG_HEAD_breakable)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(FLAG_HEADER_bypass_armor)\\b",
+          "match": "\\b(FLAG_HEAD_bypass_armor)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(FLAG_HEADER_ee_strength_bonus)\\b",
+          "match": "\\b(FLAG_HEAD_cant_target_invisible_Ex)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(FLAG_HEADER_ee_thac0_strength_bonus)\\b",
+          "match": "\\b(FLAG_HEAD_damage_strength_bonus_EE)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(FLAG_HEADER_ex_cant_target_invisible)\\b",
+          "match": "\\b(FLAG_HEAD_hostile)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(FLAG_HEADER_ex_toggle_backstab)\\b",
+          "match": "\\b(FLAG_HEAD_keen_edge)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(FLAG_HEADER_hostile)\\b",
+          "match": "\\b(FLAG_HEAD_recharge_after_rest)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(FLAG_HEADER_keen_edge)\\b",
+          "match": "\\b(FLAG_HEAD_thac0_strength_bonus_EE)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(FLAG_HEADER_recharge_after_rest)\\b",
+          "match": "\\b(FLAG_HEAD_toggle_backstab_Ex)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -2128,27 +1920,31 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(FLAG_SAVINGTHROW_EE_bypass_mirror_image)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(FLAG_SAVINGTHROW_EE_ignore_difficulty)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(FLAG_SAVINGTHROW_EE_ignore_primary_target)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(FLAG_SAVINGTHROW_EE_ignore_secondary_target)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
           "match": "\\b(FLAG_SAVINGTHROW_breath)\\b",
           "name": "constant.language.ielib.int"
         },
         {
+          "match": "\\b(FLAG_SAVINGTHROW_bypass_mirror_image_EE)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
           "match": "\\b(FLAG_SAVINGTHROW_death)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
+          "match": "\\b(FLAG_SAVINGTHROW_ignore_difficulty_EE)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
+          "match": "\\b(FLAG_SAVINGTHROW_ignore_primary_target_EE)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
+          "match": "\\b(FLAG_SAVINGTHROW_ignore_secondary_target_EE)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
+          "match": "\\b(FLAG_SAVINGTHROW_limit_effect_stacking_Ex)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -2157,14 +1953,6 @@
         },
         {
           "match": "\\b(FLAG_SAVINGTHROW_spell)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(FLAG_SAVINGTHROW_tobex_limit_effect_stacking)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(FLAG_SAVINGTHROW_tobex_suspend_stacking_application)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -3176,142 +2964,6 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(ITM_HEADER_LOCATION_equipment)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(ITM_HEADER_LOCATION_innate)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(ITM_HEADER_LOCATION_none)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(ITM_HEADER_LOCATION_spell)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(ITM_HEADER_LOCATION_weapon)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(ITM_HEADER_alternative_damage_bonus)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(ITM_HEADER_alternative_dice_sides)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(ITM_HEADER_alternative_dice_thrown)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(ITM_HEADER_arrow_qualifier)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(ITM_HEADER_attack_type)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(ITM_HEADER_bolt_qualifier)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(ITM_HEADER_charge_depletion_behaviour)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(ITM_HEADER_charges)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(ITM_HEADER_damage_bonus)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(ITM_HEADER_damage_type)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(ITM_HEADER_dice_sides)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(ITM_HEADER_dice_thrown)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(ITM_HEADER_feature_blocks_count)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(ITM_HEADER_feature_blocks_index)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(ITM_HEADER_flags)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(ITM_HEADER_id_required)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(ITM_HEADER_location)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(ITM_HEADER_melee_animation)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(ITM_HEADER_misc_projectile_qualifier)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(ITM_HEADER_primary_type)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(ITM_HEADER_projectile_type)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(ITM_HEADER_projectile)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(ITM_HEADER_range)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(ITM_HEADER_secondary_type)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(ITM_HEADER_speed)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(ITM_HEADER_target_count)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(ITM_HEADER_target_type)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(ITM_HEADER_thac0_bonus)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(ITM_HEADER_use_icon)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
           "match": "\\b(ITM_TYPE_amulet)\\b",
           "name": "constant.language.ielib.int"
         },
@@ -3617,126 +3269,6 @@
         },
         {
           "match": "\\b(ITM_TYPE_wand)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(ITM_animation)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(ITM_description_icon)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(ITM_enchantment)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(ITM_equipping_feature_blocks_count)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(ITM_equipping_feature_blocks_index)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(ITM_extended_headers_count)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(ITM_extended_headers_offset)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(ITM_feature_blocks_offset)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(ITM_flags)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(ITM_ground_icon)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(ITM_inventory_icon)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(ITM_kit_usability_1)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(ITM_kit_usability_2)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(ITM_kit_usability_3)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(ITM_lore_to_id)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(ITM_min_charisma)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(ITM_min_constitution)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(ITM_min_dexterity)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(ITM_min_intelligencs)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(ITM_min_level)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(ITM_min_strength_bonus)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(ITM_min_strength)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(ITM_min_wisdom)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(ITM_price)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(ITM_replacement_item)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(ITM_stack_amount)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(ITM_type)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(ITM_usability_flags)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(ITM_weapon_proficiency)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(ITM_weight)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -5916,147 +5448,11 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(SPL_HEADER_SPELL_FORM_projectile)\\b",
+          "match": "\\b(SPELL_FORM_projectile)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(SPL_HEADER_SPELL_FORM_standard)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(SPL_HEADER_TARGET_area)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(SPL_HEADER_TARGET_character_potrait)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(SPL_HEADER_TARGET_creature)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(SPL_HEADER_TARGET_invalid_target_cannot_be_selected)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(SPL_HEADER_TARGET_self_ignores_game_pause)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(SPL_HEADER_TARGET_self)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(SPL_HEADER_casting_time)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(SPL_HEADER_feature_blocks_count)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(SPL_HEADER_feature_blocks_offset)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(SPL_HEADER_frienly_bit2)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(SPL_HEADER_level_required)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(SPL_HEADER_location)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(SPL_HEADER_memorized_icon)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(SPL_HEADER_projectile)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(SPL_HEADER_range)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(SPL_HEADER_spell_form)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(SPL_HEADER_target_number)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(SPL_HEADER_target)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(SPL_HEADER_times_per_dat)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(SPL_casting_feature_block_count)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(SPL_casting_feature_block_offset)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(SPL_casting_graphics)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(SPL_completion_sound)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(SPL_desc_unidentified)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(SPL_desc)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(SPL_exclusion_flags)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(SPL_ext_header_count)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(SPL_ext_header_offset)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(SPL_feature_block_offset)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(SPL_flags)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(SPL_icon)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(SPL_level)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(SPL_sectype)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(SPL_type)\\b",
+          "match": "\\b(SPELL_FORM_standard)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -6192,63 +5588,63 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(TARGET_EFF_everyone_except_party)\\b",
+          "match": "\\b(TARGET_FX_everyone_except_party)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(TARGET_EFF_everyone_except_self)\\b",
+          "match": "\\b(TARGET_FX_everyone_except_self)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(TARGET_EFF_everyone_match_specific_caster)\\b",
+          "match": "\\b(TARGET_FX_everyone_match_specific_caster)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(TARGET_EFF_everyone_match_specific_target)\\b",
+          "match": "\\b(TARGET_FX_everyone_match_specific_target)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(TARGET_EFF_everyone)\\b",
+          "match": "\\b(TARGET_FX_everyone)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(TARGET_EFF_none)\\b",
+          "match": "\\b(TARGET_FX_none)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(TARGET_EFF_original_caster)\\b",
+          "match": "\\b(TARGET_FX_original_caster)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(TARGET_EFF_party)\\b",
+          "match": "\\b(TARGET_FX_party)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(TARGET_EFF_preset)\\b",
+          "match": "\\b(TARGET_FX_preset)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(TARGET_EFF_self)\\b",
+          "match": "\\b(TARGET_FX_self)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(TARGET_HEADER_area)\\b",
+          "match": "\\b(TARGET_HEAD_area)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(TARGET_HEADER_character_portrait)\\b",
+          "match": "\\b(TARGET_HEAD_character_portrait)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(TARGET_HEADER_creature)\\b",
+          "match": "\\b(TARGET_HEAD_creature)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(TARGET_HEADER_self_ignore_pause)\\b",
+          "match": "\\b(TARGET_HEAD_self_ignore_pause)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(TARGET_HEADER_self)\\b",
+          "match": "\\b(TARGET_HEAD_self)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -6572,11 +5968,11 @@
           "name": "constant.language.iesdp.dword"
         },
         {
-          "match": "\\b(FX_stacking_id_tobex)\\b",
+          "match": "\\b(FX_stacking_id_Ex)\\b",
           "name": "constant.language.iesdp.dword"
         },
         {
-          "match": "\\b(ITM_H_header_flags)\\b",
+          "match": "\\b(ITM_H_flags)\\b",
           "name": "constant.language.iesdp.dword"
         },
         {
@@ -6628,7 +6024,7 @@
           "name": "constant.language.iesdp.dword"
         },
         {
-          "match": "\\b(SPL_spell_level)\\b",
+          "match": "\\b(SPL_level)\\b",
           "name": "constant.language.iesdp.dword"
         },
         {
