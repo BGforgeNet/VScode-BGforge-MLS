@@ -4797,7 +4797,7 @@ ielib-resref:
     - name: ZOMBIE_SICKNESS
       detail: resref ZOMBIE_SICKNESS = "SPIN899"
       doc: IElib define
-ielib-ints:
+ielib-int:
   type: 21
   items:
     - name: AC_MOD_TYPE_all
