@@ -34,14 +34,14 @@ def find_file(path, name):
     if name in files:
       return os.path.join(root, name)
 
-def find_files(path, ext):
+def find_files(path, ext, skip_dirs = [], skip_files = ['iesdp.tpp']):
   flist = []
   for root, dirs, files in os.walk(path, followlinks=True):
+    dirs[:] = [d for d in dirs if d not in skip_dirs]
     for f in files:
-      if f.lower().endswith(ext.lower()):
+      if f.lower().endswith(ext.lower()) and not f in skip_files:
         flist.append(os.path.join(root, f))
   return flist
-
 
 # https://stackoverflow.com/questions/42899405/sort-a-list-with-longest-items-first
 def sort_longer_first(s, t):
