@@ -4,13 +4,17 @@
 # common functions to dump IElib/IESDP data to completion and highlight
 import sys, os, re
 import argparse
-import re
 from collections import OrderedDict
 from collections import Counter as collections_counter
 from urllib.parse import urljoin
 from bs4 import BeautifulSoup
 from markdown import markdown
 import functools
+import frontmatter
+
+from ie_actions import *
+from ie_offsets import *
+from ie_opcodes import *
 
 import ruamel.yaml
 yaml = ruamel.yaml.YAML(typ="rt")
@@ -24,6 +28,20 @@ def LS(s):
 
 COMPLETION_TYPE_constant = 21
 COMPLETION_TYPE_function = 3
+
+def find_file(path, name):
+  for root, dirs, files in os.walk(path, followlinks=True):
+    if name in files:
+      return os.path.join(root, name)
+
+def find_files(path, ext):
+  flist = []
+  for root, dirs, files in os.walk(path, followlinks=True):
+    for f in files:
+      if f.lower().endswith(ext.lower()):
+        flist.append(os.path.join(root, f))
+  return flist
+
 
 # https://stackoverflow.com/questions/42899405/sort-a-list-with-longest-items-first
 def sort_longer_first(s, t):
@@ -93,3 +111,47 @@ def dump_highlight(fpath, iedata):
     repository[stanza]['patterns'] = items
   with open(fpath, 'w') as yf:
     yaml.dump(data, yf)
+
+# dump dict of items to iesdp.tpp in the corresponding dir
+def dump_definition(prefix, items, structures_dir):
+  output_dir = os.path.join(structures_dir, prefix.lower().replace('_', ''))
+  output_file = os.path.join(output_dir, 'iesdp.tpp')
+  os.makedirs(output_dir, exist_ok=True)
+  text = ''
+  for i in items:
+    text += '{} = {}\n'.format(i, items[i])
+  with open(output_file, 'w') as fh:
+    print(text, file=fh)
+
+# mutates lists in place
+def offsets_to_completion(data, prefix, chars, lbytes, words, dwords, resrefs, strrefs, other):
+  for i in data:
+    if 'unused' in i or 'unknown' in i:
+      continue
+    iid = get_offset_id(i, prefix)
+
+    if 'mult' in i: # multiword, multibyte - etc
+      detail = "multi {} {}".format(i['type'], iid)
+    else:
+      detail = "{} {}".format(i['type'], iid)
+
+    item = {"name": iid, "detail": detail, "doc": i['desc']}
+
+    if 'mult' in i:
+      other.append(item)
+      continue
+
+    if i['type'] == 'char':
+      chars.append(item)
+    elif i['type'] == 'byte':
+      lbytes.append(item)
+    elif i['type'] == 'word':
+      words.append(item)
+    elif i['type'] == 'dword':
+      dwords.append(item)
+    elif i['type'] == 'resref':
+      resrefs.append(item)
+    elif i['type'] == 'strref':
+      strrefs.append(item)
+    else:
+      other.append(item)
