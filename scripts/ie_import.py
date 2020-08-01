@@ -51,7 +51,7 @@ def dump_completion(fpath, iedata):
 
     items = sorted(ied['items'], key = lambda k: k['name'])
     data[stanza]["items"] = items
-  check_completion(data)
+  # check_completion(data)
   with open(fpath, 'w') as yf:
     yaml.dump(data, yf)
 
