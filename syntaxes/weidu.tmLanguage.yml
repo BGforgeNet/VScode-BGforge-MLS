@@ -1470,7 +1470,7 @@ repository:
       - match: \b(EFF2_variable)\b
       - match: \b(EFF2_version2)\b
       - match: \b(EFF2_version)\b
-      - match: \b(ITM_H_melee_animation)\b
+      - match: \b(ITM_HEAD_melee_animation)\b
       - match: \b(ITM_animation)\b
       - match: \b(ITM_signature)\b
       - match: \b(ITM_usability_flags)\b
@@ -1493,12 +1493,12 @@ repository:
       - match: \b(EFF2_resource)\b
       - match: \b(EFF_resref_key)\b
       - match: \b(FX_resource)\b
-      - match: \b(ITM_H_use_icon)\b
+      - match: \b(ITM_HEAD_use_icon)\b
       - match: \b(ITM_description_icon)\b
       - match: \b(ITM_ground_icon)\b
       - match: \b(ITM_inventory_icon)\b
       - match: \b(ITM_replacement)\b
-      - match: \b(SPL_H_memorised_icon)\b
+      - match: \b(SPL_HEAD_memorised_icon)\b
       - match: \b(SPL_completion_sound)\b
       - match: \b(SPL_spellbook_icon)\b
   iesdp-dword:
@@ -1541,7 +1541,7 @@ repository:
       - match: \b(FX_save_bonus)\b
       - match: \b(FX_save_type)\b
       - match: \b(FX_stacking_id_Ex)\b
-      - match: \b(ITM_H_flags)\b
+      - match: \b(ITM_HEAD_flags)\b
       - match: \b(ITM_enchantment)\b
       - match: \b(ITM_extended_headers_offset)\b
       - match: \b(ITM_feature_blocks_offset)\b
@@ -1565,18 +1565,18 @@ repository:
       - match: \b(EFF2_timing)\b
       - match: \b(EFF_effect_type)\b
       - match: \b(FX_opcode)\b
-      - match: \b(ITM_H_charges)\b
-      - match: \b(ITM_H_damage_bonus)\b
-      - match: \b(ITM_H_damage_type)\b
-      - match: \b(ITM_H_depletion)\b
-      - match: \b(ITM_H_feature_block_count)\b
-      - match: \b(ITM_H_feature_block_index)\b
-      - match: \b(ITM_H_is_arrow)\b
-      - match: \b(ITM_H_is_bolt)\b
-      - match: \b(ITM_H_is_bullet)\b
-      - match: \b(ITM_H_projectile_animation)\b
-      - match: \b(ITM_H_range)\b
-      - match: \b(ITM_H_thac0_bonus)\b
+      - match: \b(ITM_HEAD_charges)\b
+      - match: \b(ITM_HEAD_damage_bonus)\b
+      - match: \b(ITM_HEAD_damage_type)\b
+      - match: \b(ITM_HEAD_depletion)\b
+      - match: \b(ITM_HEAD_feature_block_count)\b
+      - match: \b(ITM_HEAD_feature_block_index)\b
+      - match: \b(ITM_HEAD_is_arrow)\b
+      - match: \b(ITM_HEAD_is_bolt)\b
+      - match: \b(ITM_HEAD_is_bullet)\b
+      - match: \b(ITM_HEAD_projectile_animation)\b
+      - match: \b(ITM_HEAD_range)\b
+      - match: \b(ITM_HEAD_thac0_bonus)\b
       - match: \b(ITM_extended_headers_count)\b
       - match: \b(ITM_feature_blocks_count)\b
       - match: \b(ITM_feature_blocks_index)\b
@@ -1586,14 +1586,14 @@ repository:
       - match: \b(ITM_min_strength)\b
       - match: \b(ITM_stack_amount)\b
       - match: \b(ITM_type)\b
-      - match: \b(SPL_H_casting_time)\b
-      - match: \b(SPL_H_feature_blocks_count)\b
-      - match: \b(SPL_H_feature_blocks_offset)\b
-      - match: \b(SPL_H_level_required)\b
-      - match: \b(SPL_H_location)\b
-      - match: \b(SPL_H_projectile)\b
-      - match: \b(SPL_H_range)\b
-      - match: \b(SPL_H_times_per_day)\b
+      - match: \b(SPL_HEAD_casting_time)\b
+      - match: \b(SPL_HEAD_feature_blocks_count)\b
+      - match: \b(SPL_HEAD_feature_blocks_offset)\b
+      - match: \b(SPL_HEAD_level_required)\b
+      - match: \b(SPL_HEAD_location)\b
+      - match: \b(SPL_HEAD_projectile)\b
+      - match: \b(SPL_HEAD_range)\b
+      - match: \b(SPL_HEAD_times_per_day)\b
       - match: \b(SPL_casting_feature_blocks_count)\b
       - match: \b(SPL_casting_feature_blocks_offset)\b
       - match: \b(SPL_casting_graphics)\b
@@ -1608,14 +1608,14 @@ repository:
       - match: \b(EFF_resistance)\b
       - match: \b(EFF_target)\b
       - match: \b(EFF_timing_mode)\b
-      - match: \b(ITM_H_alt_damage_bonus)\b
-      - match: \b(ITM_H_alt_dice_thrown)\b
-      - match: \b(ITM_H_dice_sides)\b
-      - match: \b(ITM_H_dice_thrown)\b
-      - match: \b(ITM_H_primary_type)\b
-      - match: \b(ITM_H_projectile_type)\b
-      - match: \b(ITM_H_secondary_type)\b
-      - match: \b(ITM_H_speed)\b
+      - match: \b(ITM_HEAD_alt_damage_bonus)\b
+      - match: \b(ITM_HEAD_alt_dice_thrown)\b
+      - match: \b(ITM_HEAD_dice_sides)\b
+      - match: \b(ITM_HEAD_dice_thrown)\b
+      - match: \b(ITM_HEAD_primary_type)\b
+      - match: \b(ITM_HEAD_projectile_type)\b
+      - match: \b(ITM_HEAD_secondary_type)\b
+      - match: \b(ITM_HEAD_speed)\b
       - match: \b(ITM_kit_usability1)\b
       - match: \b(ITM_kit_usability2)\b
       - match: \b(ITM_kit_usability3)\b
@@ -1636,16 +1636,16 @@ repository:
       - match: \b(FX_resistance)\b
       - match: \b(FX_target)\b
       - match: \b(FX_timing)\b
-      - match: \b(ITM_H_alt_dice_sides)\b
-      - match: \b(ITM_H_attack_type)\b
-      - match: \b(ITM_H_id_required)\b
-      - match: \b(ITM_H_location)\b
-      - match: \b(ITM_H_target_count)\b
-      - match: \b(ITM_H_target)\b
-      - match: \b(SPL_H_form)\b
-      - match: \b(SPL_H_friendly)\b
-      - match: \b(SPL_H_target_number)\b
-      - match: \b(SPL_H_target)\b
+      - match: \b(ITM_HEAD_alt_dice_sides)\b
+      - match: \b(ITM_HEAD_attack_type)\b
+      - match: \b(ITM_HEAD_id_required)\b
+      - match: \b(ITM_HEAD_location)\b
+      - match: \b(ITM_HEAD_target_count)\b
+      - match: \b(ITM_HEAD_target)\b
+      - match: \b(SPL_HEAD_form)\b
+      - match: \b(SPL_HEAD_friendly)\b
+      - match: \b(SPL_HEAD_target_number)\b
+      - match: \b(SPL_HEAD_target)\b
       - match: \b(SPL_sectype)\b
   ielib-patch-functions:
     name: entity.name.class.ielib.patch_function

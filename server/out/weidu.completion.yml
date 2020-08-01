@@ -101,8 +101,8 @@ iesdp-other:
       doc: |
         External EFFs - the field is the same as the version field from the header  
         Embedded EFFs - this field is zeroed out
-    - name: ITM_H_melee_animation
-      detail: multi word ITM_H_melee_animation
+    - name: ITM_HEAD_melee_animation
+      detail: multi word ITM_HEAD_melee_animation
       doc: '[Melee animation](#ExtendedHeader_MeleeAnimation)'
     - name: ITM_animation
       detail: char array ITM_animation
@@ -158,8 +158,8 @@ iesdp-resref:
     - name: FX_resource
       detail: resref FX_resource
       doc: Resource
-    - name: ITM_H_use_icon
-      detail: resref ITM_H_use_icon
+    - name: ITM_HEAD_use_icon
+      detail: resref ITM_HEAD_use_icon
       doc: Use icon
     - name: ITM_description_icon
       detail: resref ITM_description_icon
@@ -178,8 +178,8 @@ iesdp-resref:
 
         PSTEE:  
         Drop sound - played when the item is dropped in the inventory (WAV)
-    - name: SPL_H_memorised_icon
-      detail: resref SPL_H_memorised_icon
+    - name: SPL_HEAD_memorised_icon
+      detail: resref SPL_HEAD_memorised_icon
       doc: Memorised icon (BAM). The engine replaces the last character of this filename with a B.
     - name: SPL_completion_sound
       detail: resref SPL_completion_sound
@@ -359,8 +359,8 @@ iesdp-dword:
         If two effects of the same opcode are applied, both have Limit Effect Stacking bit set, and both have the same stacking ID, then the latter applied effect is suspended in application until the former effect expires. Regardless of whether it is applied, the latter effect will expire at the same time that it would expire if it was applied. In other words, the total duration of some non-stacking effect opcode is not extended because more than one copy of the effect was applied.
 
         Stacking IDs are unique to the opcode being applied. To maintain uniqueness of stacking IDs between different mods, one recommendation is to use the higher word of Special as the modder's Infinity Engine Community Prefix, then use the lower word as an identifying ID. For example, 0x41360001 ('A6' 0x0001).
-    - name: ITM_H_flags
-      detail: dword ITM_H_flags
+    - name: ITM_HEAD_flags
+      detail: dword ITM_HEAD_flags
       doc: '[Flags](#ExtHeader_Flags)'
     - name: ITM_enchantment
       detail: dword ITM_enchantment
@@ -445,14 +445,14 @@ iesdp-word:
     - name: FX_opcode
       detail: word FX_opcode
       doc: Opcode Number
-    - name: ITM_H_charges
-      detail: word ITM_H_charges
+    - name: ITM_HEAD_charges
+      detail: word ITM_HEAD_charges
       doc: Charges
-    - name: ITM_H_damage_bonus
-      detail: word ITM_H_damage_bonus
+    - name: ITM_HEAD_damage_bonus
+      detail: word ITM_HEAD_damage_bonus
       doc: Damage bonus
-    - name: ITM_H_damage_type
-      detail: word ITM_H_damage_type
+    - name: ITM_HEAD_damage_type
+      detail: word ITM_HEAD_damage_type
       doc: |
         Damage type
         - 0 = None
@@ -464,37 +464,37 @@ iesdp-word:
         - 6 = Piercing/Blunt (more) (BG2)
         - 7 = Piercing/Slashing (more) (BG2)
         - 8 = Blunt/Slashing (less) (BG2)
-    - name: ITM_H_depletion
-      detail: word ITM_H_depletion
+    - name: ITM_HEAD_depletion
+      detail: word ITM_HEAD_depletion
       doc: |
         Charge depletion behaviour
         - 0 = Don't vanish
         - 1 = Expended
         - 2 = Expended (w/o sound)
         - 3 = Recharge each day
-    - name: ITM_H_feature_block_count
-      detail: word ITM_H_feature_block_count
+    - name: ITM_HEAD_feature_block_count
+      detail: word ITM_HEAD_feature_block_count
       doc: Count of feature blocks
-    - name: ITM_H_feature_block_index
-      detail: word ITM_H_feature_block_index
+    - name: ITM_HEAD_feature_block_index
+      detail: word ITM_HEAD_feature_block_index
       doc: Index into feature blocks
-    - name: ITM_H_is_arrow
-      detail: word ITM_H_is_arrow
+    - name: ITM_HEAD_is_arrow
+      detail: word ITM_HEAD_is_arrow
       doc: Bow/Arrow qualifier (0=No, 1=Yes)
-    - name: ITM_H_is_bolt
-      detail: word ITM_H_is_bolt
+    - name: ITM_HEAD_is_bolt
+      detail: word ITM_HEAD_is_bolt
       doc: Crossbow/Bolt qualifier (0=No, 1=Yes)
-    - name: ITM_H_is_bullet
-      detail: word ITM_H_is_bullet
+    - name: ITM_HEAD_is_bullet
+      detail: word ITM_HEAD_is_bullet
       doc: Misc. Projectile qualifier (0=No, 1=Yes)
-    - name: ITM_H_projectile_animation
-      detail: word ITM_H_projectile_animation
+    - name: ITM_HEAD_projectile_animation
+      detail: word ITM_HEAD_projectile_animation
       doc: Projectile animation (projectl.ids/missile.ids)
-    - name: ITM_H_range
-      detail: word ITM_H_range
+    - name: ITM_HEAD_range
+      detail: word ITM_HEAD_range
       doc: Range
-    - name: ITM_H_thac0_bonus
-      detail: word ITM_H_thac0_bonus
+    - name: ITM_HEAD_thac0_bonus
+      detail: word ITM_HEAD_thac0_bonus
       doc: |
         THAC0 bonus
 
@@ -529,29 +529,29 @@ iesdp-word:
     - name: ITM_type
       detail: word ITM_type
       doc: '[Item type](#Header_ItemType)'
-    - name: SPL_H_casting_time
-      detail: word SPL_H_casting_time
+    - name: SPL_HEAD_casting_time
+      detail: word SPL_HEAD_casting_time
       doc: Casting Time
-    - name: SPL_H_feature_blocks_count
-      detail: word SPL_H_feature_blocks_count
+    - name: SPL_HEAD_feature_blocks_count
+      detail: word SPL_HEAD_feature_blocks_count
       doc: Count of feature blocks
-    - name: SPL_H_feature_blocks_offset
-      detail: word SPL_H_feature_blocks_offset
+    - name: SPL_HEAD_feature_blocks_offset
+      detail: word SPL_HEAD_feature_blocks_offset
       doc: Offset to feature blocks
-    - name: SPL_H_level_required
-      detail: word SPL_H_level_required
+    - name: SPL_HEAD_level_required
+      detail: word SPL_HEAD_level_required
       doc: Level Required
-    - name: SPL_H_location
-      detail: word SPL_H_location
+    - name: SPL_HEAD_location
+      detail: word SPL_HEAD_location
       doc: Location
-    - name: SPL_H_projectile
-      detail: word SPL_H_projectile
+    - name: SPL_HEAD_projectile
+      detail: word SPL_HEAD_projectile
       doc: 'Projectile (BG2: [projectl.ids](../../ids/bg2/projectl.htm). **Note:** in BG2, this value is off-by-one from projectl.ids value. I.e. binary value of 2 corresponds to 0x1 - ARROW)'
-    - name: SPL_H_range
-      detail: word SPL_H_range
+    - name: SPL_HEAD_range
+      detail: word SPL_HEAD_range
       doc: Range
-    - name: SPL_H_times_per_day
-      detail: word SPL_H_times_per_day
+    - name: SPL_HEAD_times_per_day
+      detail: word SPL_HEAD_times_per_day
       doc: Times per day
     - name: SPL_casting_feature_blocks_count
       detail: word SPL_casting_feature_blocks_count
@@ -608,23 +608,23 @@ iesdp-byte:
     - name: EFF_timing_mode
       detail: byte EFF_timing_mode
       doc: Timing Mode
-    - name: ITM_H_alt_damage_bonus
-      detail: byte ITM_H_alt_damage_bonus
+    - name: ITM_HEAD_alt_damage_bonus
+      detail: byte ITM_HEAD_alt_damage_bonus
       doc: Alternative damage bonus
-    - name: ITM_H_alt_dice_thrown
-      detail: byte ITM_H_alt_dice_thrown
+    - name: ITM_HEAD_alt_dice_thrown
+      detail: byte ITM_HEAD_alt_dice_thrown
       doc: Alternative dice thrown
-    - name: ITM_H_dice_sides
-      detail: byte ITM_H_dice_sides
+    - name: ITM_HEAD_dice_sides
+      detail: byte ITM_HEAD_dice_sides
       doc: Dice sides
-    - name: ITM_H_dice_thrown
-      detail: byte ITM_H_dice_thrown
+    - name: ITM_HEAD_dice_thrown
+      detail: byte ITM_HEAD_dice_thrown
       doc: Dice thrown
-    - name: ITM_H_primary_type
-      detail: byte ITM_H_primary_type
+    - name: ITM_HEAD_primary_type
+      detail: byte ITM_HEAD_primary_type
       doc: Primary type
-    - name: ITM_H_projectile_type
-      detail: byte ITM_H_projectile_type
+    - name: ITM_HEAD_projectile_type
+      detail: byte ITM_HEAD_projectile_type
       doc: |
         Projectile type
         - 0 = None
@@ -633,11 +633,11 @@ iesdp-byte:
         - 3 = Bullet
         - 40 = Spear
         - 100 = Throwing Axe
-    - name: ITM_H_secondary_type
-      detail: byte ITM_H_secondary_type
+    - name: ITM_HEAD_secondary_type
+      detail: byte ITM_HEAD_secondary_type
       doc: Secondary type
-    - name: ITM_H_speed
-      detail: byte ITM_H_speed
+    - name: ITM_HEAD_speed
+      detail: byte ITM_HEAD_speed
       doc: Speed
     - name: ITM_kit_usability1
       detail: byte ITM_kit_usability1
@@ -743,11 +743,11 @@ iesdp-char:
         - 4096 = Absolute duration
 
         NB. all effects except those with Timing mode '9' are removed by death.
-    - name: ITM_H_alt_dice_sides
-      detail: char ITM_H_alt_dice_sides
+    - name: ITM_HEAD_alt_dice_sides
+      detail: char ITM_HEAD_alt_dice_sides
       doc: Alternative dice sides
-    - name: ITM_H_attack_type
-      detail: char ITM_H_attack_type
+    - name: ITM_HEAD_attack_type
+      detail: char ITM_HEAD_attack_type
       doc: |
         Attack type
         - 0 = None
@@ -755,14 +755,14 @@ iesdp-char:
         - 2 = Projectile
         - 3 = Magic
         - 4 = Launcher
-    - name: ITM_H_id_required
-      detail: char ITM_H_id_required
+    - name: ITM_HEAD_id_required
+      detail: char ITM_HEAD_id_required
       doc: |
         ID Req.
         - bit 0: ID Required
         - bit 1: Non-ID Required
-    - name: ITM_H_location
-      detail: char ITM_H_location
+    - name: ITM_HEAD_location
+      detail: char ITM_HEAD_location
       doc: |
         Location
         - 0 = None
@@ -770,8 +770,8 @@ iesdp-char:
         - 2 = Spell
         - 3 = Equipment
         - 4 = Innate
-    - name: ITM_H_target
-      detail: char ITM_H_target
+    - name: ITM_HEAD_target
+      detail: char ITM_HEAD_target
       doc: |
         Target type
         - 0 = Invalid (cannot be selected)
@@ -782,20 +782,20 @@ iesdp-char:
         - 5 = Self
         - 6 = Crash
         - 7 = None (Self, ignores game pause)
-    - name: ITM_H_target_count
-      detail: char ITM_H_target_count
+    - name: ITM_HEAD_target_count
+      detail: char ITM_HEAD_target_count
       doc: Target count
-    - name: SPL_H_form
-      detail: char SPL_H_form
+    - name: SPL_HEAD_form
+      detail: char SPL_HEAD_form
       doc: |
         Spell form
           - 1 - Standard
           - 2 - Projectile
-    - name: SPL_H_friendly
-      detail: char SPL_H_friendly
+    - name: SPL_HEAD_friendly
+      detail: char SPL_HEAD_friendly
       doc: "- bit 2: 'Friendly' ability"
-    - name: SPL_H_target
-      detail: char SPL_H_target
+    - name: SPL_HEAD_target
+      detail: char SPL_HEAD_target
       doc: |
         Target:
         - 0 = Invalid (target cannot be selected)
@@ -806,8 +806,8 @@ iesdp-char:
         - 5 = Self
         - 6 = Crash
         - 7 = None (Self, ignores game pause)
-    - name: SPL_H_target_number
-      detail: char SPL_H_target_number
+    - name: SPL_HEAD_target_number
+      detail: char SPL_HEAD_target_number
       doc: Target Number
     - name: SPL_sectype
       detail: char SPL_sectype
