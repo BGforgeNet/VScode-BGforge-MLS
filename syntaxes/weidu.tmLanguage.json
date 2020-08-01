@@ -19414,6 +19414,10 @@
         {
           "include": "#iesdp-strref",
           "name": "constant.language.weidu.iesdp"
+        },
+        {
+          "include": "#iesdp-other",
+          "name": "constant.language.weidu.iesdp"
         }
       ]
     }

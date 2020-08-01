@@ -5116,3 +5116,4 @@ repository:
       - include: '#iesdp-dword'
       - include: '#iesdp-resref'
       - include: '#iesdp-strref'
+      - include: '#iesdp-other'
