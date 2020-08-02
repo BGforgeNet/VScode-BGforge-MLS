@@ -12,4 +12,4 @@ The theme is best used with [IElib](https://ielib.bgforge.net).
 
 ### BGforge Monokai
 
-![bgforge-monokai example](/resources/bgforge-monokai.png)
+![bgforge monokai example](/resources/bgforge_monokai.png)
