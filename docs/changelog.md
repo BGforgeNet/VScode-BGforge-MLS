@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.13.0
+- General:
+  - Added a custom theme to allow futher tailoring of the style.
+- IE:
+  - Added support for importing file formats from IESDP.
+  - Clearly separated actions from patches, coloring them differently.
+  - Changed tp2 values to be italic blue to distinguish them from actions.
+  - IElib and IESDP constants now display type in tooltip, IElib ones also display value.
+  - Known IElib functions are now colored according to their type, even if invocation is wrong.
+  - Duplicate constants removed from completion.
+- Fallout:
+  - Updated RP and sfall defines.
+
 ## 1.12.0
 - IE:
   - Added weidu's `GET_OFFSET_ARRAY/2` predefined sets to completion.
