@@ -1323,8 +1323,9 @@ sfall-functions:
         Writes an integer or a string value to an ini file in the Fallout directory. If the ini file does not exist, it will be created The setting argument works in the same way as in `get_ini_setting`, seperate the file name, section and key with a "|" character. __Note:__ the file name is limited to 63 chars (including the extension), the section name is limited to 32 characters.
     - name: display_stats
       detail: void display_stats()
-      doc: |-
-        Updates player stats in the inventory screen display window. Works only in opened player inventory.
+      doc: |
+        - Updates player's stats in the inventory display window or on the character screen.
+        - NOTE: works only when the interface window is opened
     - name: inventory_redraw
       detail: void inventory_redraw(invSide)
       doc: |-
@@ -2086,6 +2087,20 @@ sfall-functions:
     - name: get_pc_extra_stat
       detail: int get_pc_extra_stat(int StatID)
       doc: |-
+        The `get/set_pc_base/extra_stat` functions are equivalent to calling `get/set_critter_base/extra_stat` with `dude_obj` as the critter pointer. None of these stat functions take perks into account, and neither do they do range clamping to make sure the stats are valid. Use the normal `get_critter_stat` function to get a correctly perk adjusted and range clamped value for a stat.
+    - name: get_stat_max
+      detail: get_stat_max(stat, bool who = False)
+      doc: |-
+        - Returns the maximum set value of the specified stat (see `set_stat_max` functions)
+        - who: 0 (`false`) or omitting the argument - returns the value of the player, 1 (true) - returns the value set for other critters
+
+        The `get/set_pc_base/extra_stat` functions are equivalent to calling `get/set_critter_base/extra_stat` with `dude_obj` as the critter pointer. None of these stat functions take perks into account, and neither do they do range clamping to make sure the stats are valid. Use the normal `get_critter_stat` function to get a correctly perk adjusted and range clamped value for a stat.
+    - name: get_stat_min
+      detail: get_stat_min(stat, bool who = False)
+      doc: |-
+        - Returns the minimum set value of the specified stat (see `set_stat_min` functions)
+        - who: 0 (`false`) or omitting the argument - returns the value of the player, 1 (true) - returns the value set for other critters
+
         The `get/set_pc_base/extra_stat` functions are equivalent to calling `get/set_critter_base/extra_stat` with `dude_obj` as the critter pointer. None of these stat functions take perks into account, and neither do they do range clamping to make sure the stats are valid. Use the normal `get_critter_stat` function to get a correctly perk adjusted and range clamped value for a stat.
     - name: set_critter_base_stat
       detail: void set_critter_base_stat(CritterPtr, int StatID, int value)

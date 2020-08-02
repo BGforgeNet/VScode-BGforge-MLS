@@ -763,6 +763,8 @@ repository:
       - match: \b(?i)(get_critter_extra_stat)\b
       - match: \b(?i)(get_pc_base_stat)\b
       - match: \b(?i)(get_pc_extra_stat)\b
+      - match: \b(?i)(get_stat_max)\b
+      - match: \b(?i)(get_stat_min)\b
       - match: \b(?i)(set_critter_base_stat)\b
       - match: \b(?i)(set_critter_extra_stat)\b
       - match: \b(?i)(set_pc_base_stat)\b
@@ -2735,6 +2737,7 @@ repository:
       - match: \b(FO_VAR_Educated)\b
       - match: \b(FO_VAR_EncounterMapID)\b
       - match: \b(FO_VAR_Experience_)\b
+      - match: \b(FO_VAR_GNWWin)\b
       - match: \b(FO_VAR_GNW_win_init_flag)\b
       - match: \b(FO_VAR_GoodColor)\b
       - match: \b(FO_VAR_GreenColor)\b
@@ -2794,6 +2797,7 @@ repository:
       - match: \b(FO_VAR_curr_font_num)\b
       - match: \b(FO_VAR_curr_pc_stat)\b
       - match: \b(FO_VAR_curr_stack)\b
+      - match: \b(FO_VAR_currentProgram)\b
       - match: \b(FO_VAR_currentWindow)\b
       - match: \b(FO_VAR_cursor_line)\b
       - match: \b(FO_VAR_debug_func)\b
@@ -2810,11 +2814,15 @@ repository:
       - match: \b(FO_VAR_dialogue_switch_mode)\b
       - match: \b(FO_VAR_displayMapList)\b
       - match: \b(FO_VAR_display_win)\b
+      - match: \b(FO_VAR_doing_refresh_all)\b
       - match: \b(FO_VAR_dropped_explosive)\b
       - match: \b(FO_VAR_drugInfoList)\b
       - match: \b(FO_VAR_edit_win)\b
       - match: \b(FO_VAR_editor_message_file)\b
       - match: \b(FO_VAR_elevation)\b
+      - match: \b(FO_VAR_endgame_subtitle_characters)\b
+      - match: \b(FO_VAR_endgame_subtitle_done)\b
+      - match: \b(FO_VAR_endgame_voiceover_loaded)\b
       - match: \b(FO_VAR_fade_steps)\b
       - match: \b(FO_VAR_fallout_game_time)\b
       - match: \b(FO_VAR_fidgetFID)\b
@@ -2837,10 +2845,12 @@ repository:
       - match: \b(FO_VAR_gcsd)\b
       - match: \b(FO_VAR_gdBarterMod)\b
       - match: \b(FO_VAR_gdNumOptions)\b
+      - match: \b(FO_VAR_gdialog_speech_playing)\b
       - match: \b(FO_VAR_glblmode)\b
       - match: \b(FO_VAR_gmouse_current_cursor)\b
       - match: \b(FO_VAR_gmovie_played_list)\b
       - match: \b(FO_VAR_gsound_initialized)\b
+      - match: \b(FO_VAR_gsound_speech_tag)\b
       - match: \b(FO_VAR_hit_location_penalty)\b
       - match: \b(FO_VAR_holo_flag)\b
       - match: \b(FO_VAR_holodisk)\b
@@ -2876,6 +2886,7 @@ repository:
       - match: \b(FO_VAR_loadingGame)\b
       - match: \b(FO_VAR_lsgwin)\b
       - match: \b(FO_VAR_main_ctd)\b
+      - match: \b(FO_VAR_main_death_voiceover_done)\b
       - match: \b(FO_VAR_main_window)\b
       - match: \b(FO_VAR_mapEntranceElevation)\b
       - match: \b(FO_VAR_mapEntranceTileNum)\b
@@ -2894,6 +2905,7 @@ repository:
       - match: \b(FO_VAR_mouse_y)\b
       - match: \b(FO_VAR_mouse_y_)\b
       - match: \b(FO_VAR_movePointRect)\b
+      - match: \b(FO_VAR_movie_list)\b
       - match: \b(FO_VAR_name_color)\b
       - match: \b(FO_VAR_name_font)\b
       - match: \b(FO_VAR_name_sort_list)\b
@@ -2960,6 +2972,7 @@ repository:
       - match: \b(FO_VAR_sneak_working)\b
       - match: \b(FO_VAR_sound_music_path1)\b
       - match: \b(FO_VAR_sound_music_path2)\b
+      - match: \b(FO_VAR_speech_volume)\b
       - match: \b(FO_VAR_square)\b
       - match: \b(FO_VAR_squares)\b
       - match: \b(FO_VAR_stack)\b
@@ -7206,6 +7219,7 @@ repository:
       - match: \b(SERVANT_QUEST_REFUSED)\b
       - match: \b(SERVANT_TIME_EXTENDED)\b
       - match: \b(SERVANT_TURNED_IN_HARRY)\b
+      - match: \b(SET_HORRIGAN_ENCOUNTER)\b
       - match: \b(SEYMOUR_AGREED)\b
       - match: \b(SEYMOUR_PLANTED)\b
       - match: \b(SEYMOUR_UNKNOWN)\b
@@ -11046,6 +11060,7 @@ repository:
       - match: \b(display_array)\b
       - match: \b(display_mstr)\b
       - match: \b(display_mstr_rand)\b
+      - match: \b(distance_objs)\b
       - match: \b(dlog)\b
       - match: \b(dlogr)\b
       - match: \b(doors_mstr)\b
@@ -11158,11 +11173,15 @@ repository:
       - match: \b(get_myron_flag)\b
       - match: \b(get_mystery_flag)\b
       - match: \b(get_new_reno_flag)\b
+      - match: \b(get_npc_stat_max)\b
+      - match: \b(get_npc_stat_min)\b
       - match: \b(get_object_ai_data)\b
       - match: \b(get_object_data)\b
       - match: \b(get_outline)\b
       - match: \b(get_p_hidden_flag)\b
       - match: \b(get_p_hidden_flag_obj)\b
+      - match: \b(get_pc_stat_max)\b
+      - match: \b(get_pc_stat_min)\b
       - match: \b(get_perception)\b
       - match: \b(get_perk)\b
       - match: \b(get_rads)\b
@@ -11527,6 +11546,7 @@ repository:
       - match: \b(set_guard_assignment)\b
       - match: \b(set_gvar_bit_off)\b
       - match: \b(set_gvar_bit_on)\b
+      - match: \b(set_horrigan_days)\b
       - match: \b(set_iface_tag_text)\b
       - match: \b(set_ini_setting)\b
       - match: \b(set_jack_state)\b

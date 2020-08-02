@@ -2829,6 +2829,14 @@
           "name": "support.function.sfall.ssl"
         },
         {
+          "match": "\\b(?i)(get_stat_max)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(get_stat_min)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
           "match": "\\b(?i)(set_critter_base_stat)\\b",
           "name": "support.function.sfall.ssl"
         },
@@ -10666,6 +10674,10 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(FO_VAR_GNWWin)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(FO_VAR_GNW_win_init_flag)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -10902,6 +10914,10 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(FO_VAR_currentProgram)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(FO_VAR_currentWindow)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -10966,6 +10982,10 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(FO_VAR_doing_refresh_all)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(FO_VAR_dropped_explosive)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -10983,6 +11003,18 @@
         },
         {
           "match": "\\b(FO_VAR_elevation)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_endgame_subtitle_characters)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_endgame_subtitle_done)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_endgame_voiceover_loaded)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -11074,6 +11106,10 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(FO_VAR_gdialog_speech_playing)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(FO_VAR_glblmode)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -11087,6 +11123,10 @@
         },
         {
           "match": "\\b(FO_VAR_gsound_initialized)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_gsound_speech_tag)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -11230,6 +11270,10 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(FO_VAR_main_death_voiceover_done)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(FO_VAR_main_window)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -11299,6 +11343,10 @@
         },
         {
           "match": "\\b(FO_VAR_movePointRect)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_movie_list)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -11563,6 +11611,10 @@
         },
         {
           "match": "\\b(FO_VAR_sound_music_path2)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_speech_volume)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -28550,6 +28602,10 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(SET_HORRIGAN_ENCOUNTER)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(SEYMOUR_AGREED)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -43882,6 +43938,10 @@
           "name": "support.type.define.header.ssl"
         },
         {
+          "match": "\\b(distance_objs)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
           "match": "\\b(dlog)\\b",
           "name": "support.type.define.header.ssl"
         },
@@ -44330,6 +44390,14 @@
           "name": "support.type.define.header.ssl"
         },
         {
+          "match": "\\b(get_npc_stat_max)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(get_npc_stat_min)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
           "match": "\\b(get_object_ai_data)\\b",
           "name": "support.type.define.header.ssl"
         },
@@ -44347,6 +44415,14 @@
         },
         {
           "match": "\\b(get_p_hidden_flag_obj)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(get_pc_stat_max)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(get_pc_stat_min)\\b",
           "name": "support.type.define.header.ssl"
         },
         {
@@ -45803,6 +45879,10 @@
         },
         {
           "match": "\\b(set_gvar_bit_on)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(set_horrigan_days)\\b",
           "name": "support.type.define.header.ssl"
         },
         {
