@@ -4740,7 +4740,7 @@ repository:
     patterns:
       - include: '#weidu-vars'
       - include: '#ielib-constants'
-      - match: (%)((\w*)(%\w+%)(\w*))(%)
+      - match: (%)((\w*)(%[#\-\w]+%)(\w*))(%)
         captures:
           '1':
             name: keyword.control.double-eval.weidu
@@ -4750,7 +4750,7 @@ repository:
             name: keyword.control.double-eval.weidu
           '6':
             name: keyword.control.double-eval.weidu
-      - match: (%\w+%)
+      - match: (%[#\-\w]+%)
 
   vars:
     patterns:

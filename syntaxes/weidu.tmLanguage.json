@@ -18413,7 +18413,7 @@
           "name": "variable.parameter.weidu"
         },
         {
-          "match": "(%)((\\w*)(%\\w+%)(\\w*))(%)",
+          "match": "(%)((\\w*)(%[#\\-\\w]+%)(\\w*))(%)",
           "captures": {
             "1": {
               "name": "keyword.control.double-eval.weidu"
@@ -18431,7 +18431,7 @@
           "name": "variable.parameter.weidu"
         },
         {
-          "match": "(%\\w+%)",
+          "match": "(%[#\\-\\w]+%)",
           "name": "variable.parameter.weidu"
         }
       ]
