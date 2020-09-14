@@ -377,6 +377,10 @@
           "name": "support.function.base.ssl"
         },
         {
+          "match": "\\b(?i)(critter_dmg)\\b",
+          "name": "support.function.base.ssl"
+        },
+        {
           "match": "\\b(?i)(critter_heal)\\b",
           "name": "support.function.base.ssl"
         },

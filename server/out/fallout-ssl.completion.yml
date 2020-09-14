@@ -192,7 +192,12 @@ base-functions:
     - name: critter_damage
       detail: void critter_damage(ObjectPtr who, int dmg_amount)
       doc: |-
-        (Fallout 2 only) Inflicts damage on a critter (who) of a given amount, killing it if necessary.
+        - Macro: `critter_dmg(who, amount, (DMG_normal_dam BWOR DMG_NOANIMATE))`
+        - Inflicts damage on a critter (who) of a given amount, killing it if necessary. Normal damage, no animation.
+    - name: critter_dmg
+      detail: void critter_dmg(ObjectPtr who, int dmg_amount, flags)
+      doc: |-
+        Inflicts damage on a critter (who) of a given amount, killing it if necessary. Use `DMG_*` flags to customize behaviour.
     - name: critter_heal
       detail: void critter_heal(ObjectPtr who, int amount)
       doc: |-
