@@ -9034,6 +9034,10 @@ tp2-component-flag:
       detail: LABEL String
       doc: |-
         Defines the LABEL, or unique textual identifier, of this module. Any component can have zero or more LABELs. Will print a warning if two components in the same tp2 share a LABEL. Do not alter a component's LABEL once you publish that mod.
+    - name: METADATA
+      detail: METADATA String
+      doc: |-
+        Associates a string of metadata with this component. WeiDU does not use the metadata for anything, but external programs might. `METADATA` may be used multiple times per component.
 
 
 
@@ -9386,6 +9390,10 @@ tp2-action:
       detail: DEFINE_ACTION_FUNCTION String [ INT_VAR variable = value ... ] [ STR_VAR variable = String ... ] [ RET variable ... ] [ RET_ARRAY variable ... ] BEGIN TP2 Action list END
       doc: |-
         Define an action function. Refer to the Functions section for additional information.
+    - name: DEFINE_DIMORPHIC_FUNCTION
+      detail: DEFINE_DIMORPHIC_FUNCTION String [ INT_VAR variable = value ... ] [ STR_VAR variable = String ... ] [ RET variable ... ] [ RET_ARRAY variable ... ] BEGIN TP2 Action list END
+      doc: |-
+        As `DEFINE_ACTION_FUNCTION`, except the function is additionally defined as a `PATCH` function.
     - name: DEFINE_ACTION_MACRO
       detail: DEFINE_ACTION_MACRO String BEGIN TP2 Action list END
       doc: |-
@@ -10076,6 +10084,7 @@ tp2-patch:
         - INT_VAR `identify` to the new identification requirement.
         - INT_VAR `location` to the new new ability location.
         - INT_VAR `target` to the new target.
+        - INT_VAR `target_count` to the new target count.
         - INT_VAR `range` to the new range.
         - INT_VAR `launcher` to the new required launcher.
         - INT_VAR `speed` to the new speed factor.
@@ -10097,6 +10106,8 @@ tp2-patch:
         - INT_VAR `bullet` to the new bullet qualifier.
         - INT_VAR `flag_strength` to the new value of the flag known as `add strength bonus` (bit 0).
         - INT_VAR `flag_break` to the new value of the flag known as `breakable` (bit 1).
+        - INT_VAR `flag_strength_damage` to the new value of the flag known as `add strength bonus to damage only` (bit 2). This flag is not available in all games.
+        - INT_VAR `flag_strength_thac0` to the new value of the flag known as `add strength bonus to THAC0 only` (bit 3). This flag is not available in all games.
         - INT_VAR `flag_hostile` to the new value of the flag known as `hostile` (bit 10).
         - INT_VAR `flag_recharge` to the new value of the flag known as `recharges` (bit 11).
         - INT_VAR `flag_bypass` to the new value of the flag known as `bypass armor` (bit 16). This flag is not available in all games.
@@ -10140,6 +10151,7 @@ tp2-patch:
          - INT_VAR `new_header_type` to the value the matched header should be changed into.
          - INT_VAR `location` to the new new ability location.
          - INT_VAR `target` to the new target.
+         - INT_VAR `target_count` to the new target count.
          - INT_VAR `range` to the new range.
          - INT_VAR `min_level` to the new required minimum level.
          - INT_VAR `speed` to the new speed factor.
@@ -10481,6 +10493,7 @@ tp2-patch:
         - STR_VAR `language` to the name of the language directory you wish to convert. The default value of this variable is `\%LANGUAGE\%`, in other words, the directory corresponding to the language the user selected at the start of the installation. You should never need to alter the value of this variable.
         - STR_VAR `default_language` to the name of the directory used by the default language of your mod, if your mod has one. The default language is typically one for which the translation is always complete and up to date and which you use to guard against incomplete translations. `HANDLE_CHARSETS` will convert the `TRA` files of the default language in addition to those of the user-selected language. Should these two languages be the same, the `TRA` files will only be converted once. Additionally, any `TRA` files listed in the `reload_array` (''vide infra'') will be reloaded for the default language before they are reloaded for the user-selected language. The default value of this variable is `~~` (the empty string).
         - STR_VAR `tra_path` to the path where your mod's language directories are located. `%tra_path%/%language%` should be a valid directory containing `TRA` files.
+        - STR_VAR `out_path` to the path to which the converted files should be directed. The default value of this variable is `%tra_path%`, that is, the converted files reversibly overwrite the originals and the conversion is transparent to the rest of your mod. Note that if `%tra_path%` and `%out_path%` are the same directory, the conversion will naturally happen only once regardless of how many times `HANDLE_CHARSETS` are invoked, but if the directories are different, the conversion will happen for every invocation (notably, if `HANDLE_CHARSETS` is invoked among the `ALWAYS` actions).
         - STR_VAR `iconv_path` to the path where iconv.exe is located. Defaults to `%tra_path%/iconv`.
         - STR_VAR `charset_table` to the name of an associative array where the keys are the names of your language directories and the corresponding values are the character sets used by the respective language. The keys must be entirely in lowercase. `charset_table` is not used if you also specify `infer_charsets`.
         - STR_VAR `noconvert_array` to the name of an array indexed by monotonically increasing integers starting from 0. The values should be the names of `TRA` files that should not be converted into `UTF-8`. All `TRA` files in the language directory and its subdirectories except the ones listed in `noconvert_array` will be converted. The .tra file extension is optional. This variable should not be provided if you also provide `convert_array`.
@@ -11351,16 +11364,36 @@ tp2-value:
       doc: |-
         Conjunction. If both values are non-zero, the result is 1. Otherwise, the result is 0. Synonym: `&&`.
     - name: AREA_CITY
+      doc: |-
+        0xFC
     - name: AREA_DAY
+      doc: |-
+        0x104
     - name: AREA_DUNGEON
+      doc: |-
+        0x100
     - name: AREA_FOREST
+      doc: |-
+        0xF8
     - name: AREA_NIGHT
+      doc: |-
+        0x108
     - name: AREA_SCRIPT
+      doc: |-
+        0x94
 
     - name: ATTACK1
+      doc: |-
+        0xDC
     - name: ATTACK2
+      doc: |-
+        0xE0
     - name: ATTACK3
+      doc: |-
+        0xE4
     - name: ATTACK4
+      doc: |-
+        0xE8
     - name: BAND
       detail: value BAND value
       doc: |-
@@ -11372,18 +11405,29 @@ tp2-value:
 
 
     - name: BATTLE_CRY1
+      doc: |-
+        0xC8
     - name: BATTLE_CRY2
+      doc: |-
+        0xCC
     - name: BATTLE_CRY3
+      doc: |-
+        0xD0
     - name: BATTLE_CRY4
+      doc: |-
+        0xD4
     - name: BATTLE_CRY5
+      doc: |-
+        0xD8
     - name: BEGIN
+    - name: ELSE
     - name: BIFF_IS_COMPRESSED
       detail: BIFF_IS_COMPRESSED fileName
       doc: |-
         Evaluates to 1 if the file is a compressed biff. Evaluates to 0 otherwise.FileName must match against the contents of what is stored in chitin.key (similar to how command-line arguments that touch bif files work). For example, data/AREA000A.bif. Notably, SOURCE_BIFF outputs file names compatible with this command.
     - name: BIO
       doc: |-
-        The offset within an infinity engine resource where NPC Biography is stored.
+        The offset within an infinity engine resource where NPC Biography is stored (i.e., 0x1CC).
     - name: BIT0
       doc: |-
         0b00000000000000000000000000000001
@@ -11499,6 +11543,8 @@ tp2-value:
       doc: |-
         Bitwise Or. 0b101 BOR 0b110 = 0b111. Synonym: |.
     - name: BORED
+      doc: |-
+        0xC4
     - name: BUFFER_LENGTH
       doc: |-
         Returns the length of the string currently being patched, or 0 if outside of a patch expression.
@@ -11511,21 +11557,45 @@ tp2-value:
       doc: |-
         The 8-bit value from the file at the given offset.
     - name: COMPLIMENT1
+      doc: |-
+        0x160
     - name: COMPLIMENT2
+      doc: |-
+        0x164
     - name: COMPLIMENT3
+      doc: |-
+        0x168
     - name: CRITICAL_HIT
+      doc: |-
+        0x1A8
     - name: CRITICAL_MISS
+      doc: |-
+        0x1AC
     - name: DAMAGE
+      doc: |-
+        0xEC
     - name: DEATHVAR
+      doc: |-
+        0x280
     - name: DESC
+      doc: |-
+        0x54
     - name: DIALOG
+      doc: |-
+        0x2CC
     - name: DIALOG_DEFAULT
+      doc: |-
+        0x19C
     - name: DIALOG_HOSTILE
+      doc: |-
+        0x198
     - name: DIRECTORY_EXISTS
       detail: DIRECTORY_EXISTS dirName
       doc: |-
         Evaluates to 1 if dirName is a directory and exists in the filesystem and evaluates to 0 otherwise.
     - name: DYING
+      doc: |-
+        0xF0
     - name: EE_LANGUAGE
       doc: |-
         Evaluates to the Enhanced Edition language directory the user has selected, for example, en_US. This variable is undefined on non-EE games.
@@ -11569,6 +11639,8 @@ tp2-value:
     - name: EXISTANCE2
     - name: EXISTANCE3
     - name: EXISTANCE4
+      doc: |-
+        0x1C8
     - name: EXISTANCE5
     - name: FILE_CONTAINS
       detail: FILE_CONTAINS fileName regexp
@@ -11578,6 +11650,10 @@ tp2-value:
       detail: FILE_CONTAINS_EVALUATED ( fileName varsRegexp )
       doc: |-
         First, all WeiDU variables enclosed in %s in varsRegexp and fileName are substituted. The expression is 1 if the resulting regexp occurs in fileName and 0 otherwise. If fileName does not exist or has size 0, the result is 0. The comparison ignores case. See also FILE_CONTAINS. Example: COPY_EXISTING_REGEXP ~.*\.CRE~ ~override~ READ_BYTE 0x273 class READ_ASCII 0x280 deathvar PATCH_IF (class = 14) AND // class 14 = CLERIC_MAGE (NOT FILE_CONTAINS_EVALUATED(~pdialog.2da~ ~%deathvar%~)) THEN BEGIN ADD_CRE_ITEM ~POTN08~ #10 #10 #10 ~IDENTIFIED~ ~INV15~ END BUT_ONLY_IF_IT_CHANGES The example gives ten healing potions to all cleric-mages who cannot join the party. Notably it excludes Aerie since she has the death variable Aerie and pdialog.2da contains AERIE.
+    - name: RESOURCE_CONTAINS
+      detail: RESOURCE_CONTAINS fileName varsRegexp
+      doc: |-
+        `fileName` and `varsRegexp` are evaluated for variables. `fileName` is loaded as a game resource (searching only the `biffs` and the `override` directories) and a regexp search is performed on the file contents. The result is 1 if the regexp `varsRegexp` occurs within `fileName`, or otherwise 0. The comparison ignores case. If `fileName` does not exist or has a file size 0, the result is 0.
     - name: FILE_EXISTS
       detail: FILE_EXISTS fileName
       doc: |-
@@ -11607,8 +11683,14 @@ tp2-value:
       doc: |-
         Returns true if the IE game variant is one of the entries in String, otherwise it returns false. String is a list of whitespace-separated entries, chosen from (case doesn't matter) bg2=soa, tob, iwd2, pst, bg1, totsc, iwd=iwd1, how, totlm, tutu, tutu_totsc, bgt, ca, iwd_in_bg2, bgee, bg2ee, eet, iwdee, pstee. In the list, bg2=soa means that bg2 and soa are synonyms, and you can use whichever one you like. Please note that the items in the list are defined to be mutually exclusive (except tob will detect both plain ToB and ToB with BGT installed, for legacy purposes), so bg2 will detect a SoA-only game, without either ToB or Tutu installed. As such, a mod which is usable with any flavor of BG2 and any flavor of Tutu or BG: EE would contain REQUIRE_PREDICATE GAME_IS ~bg2 tob tutu tutu_totsc bgee bg2ee~ .
     - name: HAPPY
+      doc: |-
+        0xAC
     - name: HIDDEN_IN_SHADOWS
+      doc: |-
+        0x1BC
     - name: HURT
+      doc: |-
+        0xF4
     - name: IDENTIFIED_DESC
       doc: |-
         The offset within an infinity engine resource where the identified description is stored.
@@ -11629,20 +11711,34 @@ tp2-value:
       doc: |-
         Returns the index of the first regexp match of string inside the current string, or -1 if not found. If provided, value specifies from what point of the string the searching should begin (instead of 0).
     - name: INITIAL_MEETING
+      doc: |-
+        0xA4
     - name: INSTALL_ORDER
       detail: INSTALL_ORDER modTp2Name1 modComponent1 BEFORE modTp2Name2 modComponent2
       doc: |-
         Returns true if the modComponent1 of modTp2Name1 is installed before the modComponent2 of modTp2Name2 (and both components are installed). The syntax is the same as with REQUIRE_COMPONENT.
     - name: INSULT
     - name: INTERACTION1
+      doc: |-
+        0x140
     - name: INTERACTION2
+      doc: |-
+        0x144
     - name: INTERACTION3
+      doc: |-
+        0x148
     - name: INTERACTION4
+      doc: |-
+        0x14C
     - name: INTERACTION5
+      doc: |-
+        0x150
     - name: INT_VAR
       doc: |-
         Integer variable
     - name: INVENTORY_FULL
+      doc: |-
+        0x1B4
     - name: IS_AN_INT
       detail: IS_AN_INT String
       doc: |-
@@ -11651,6 +11747,8 @@ tp2-value:
       doc: |-
         Returns true if the output is currently silenced, false otherwise.
     - name: LEADER
+      doc: |-
+        0xBC
     - name: LNL
       doc: |-
         Linux/Unix/OSX new line
@@ -11675,6 +11773,8 @@ tp2-value:
       doc: |-
         Returns true if the modComponent of modTp2Name is installed. The syntax is the same as with REQUIRE_COMPONENT.
     - name: MORALE
+      doc: |-
+        0xA8
     - name: MPSAVE_DIRECTORY
       doc: |-
         Evaluates to the directory in which the current game type stores its multiplayer saved games. The determination is done the same way as with the save directory, but for the directory mpsave instead.
@@ -11696,12 +11796,24 @@ tp2-value:
       doc: |-
         Disjunction. If either value is non-zero, the result is 1. Otherwise, the result is 0. Synonym: `||`.
     - name: PICKED_POCKET
+      doc: |-
+        0x1B8
+    - name: PORTRAIT_SMALL
+      doc: |-
+        0x34
+    - name: PORTRAIT_LARGE
+      doc: |-
+        0x3C
     - name: RANDOM
       detail: RANDOM ( value value )
       doc: |-
         A random-number generator. The first value is the lower bound, the second value is the upper bound. A random integer between the lower bound and the upper bound (inclusive) is returned. Thus RANDOM(3 5) can return 3, 4 or 5. If the lower bound is greater than the upper bound, zero is returned. See also RANDOM_SEED.
     - name: REACT_TO_DIE_GENERAL
+      doc: |-
+        0x178
     - name: REACT_TO_DIE_SPECIFIC
+      doc: |-
+        0x17C
     - name: REGISTRY_BG1_PATH
       doc: |-
         The path of BG1 (as read from the registry), or empty if not available.
@@ -11721,11 +11833,24 @@ tp2-value:
       detail: RESOLVE_STR_REF ( text )
       doc: |-
         Resolves the given text (adding it to the tlk), and returns its TLK index (so you can pass the result of this command to a function which then uses WRITE_LONG rather than SAY).
+    - name: RESPONSE_TO_COMPLIMENT1
+      doc: |-
+        0x180
     - name: RESPONSE_TO_COMPLIMENT2
+      doc: |-
+        0x184
     - name: RESPONSE_TO_COMPLIMENT3
+      doc: |-
+        0x188
     - name: RESPONSE_TO_INSULT1
+      doc: |-
+        0x18C
     - name: RESPONSE_TO_INSULT2
+      doc: |-
+        0x190
     - name: RESPONSE_TO_INSULT3
+      doc: |-
+        0x194
     - name: RET
       doc: |-
         Return value
@@ -11750,26 +11875,68 @@ tp2-value:
       doc: |-
         The 8-bit signed value from the file at the given offset.
     - name: SCRIPT_CLASS
+      doc: |-
+        0x250
     - name: SCRIPT_DEFAULT
+      doc: |-
+        0x268
     - name: SCRIPT_GENERAL
+      doc: |-
+        0x260
     - name: SCRIPT_OVERRIDE
+      doc: |-
+        0x248
     - name: SCRIPT_RACE
+      doc: |-
+        0x258
     - name: SELECT_ACTION1
+      doc: |-
+        0x124
     - name: SELECT_ACTION2
+      doc: |-
+        0x128
     - name: SELECT_ACTION3
+      doc: |-
+        0x12C
     - name: SELECT_ACTION4
+      doc: |-
+        0x130
     - name: SELECT_ACTION5
+      doc: |-
+        0x134
     - name: SELECT_ACTION6
+      doc: |-
+        0x138
     - name: SELECT_ACTION7
+      doc: |-
+        0x13C
     - name: SELECT_COMMON1
+      doc: |-
+        0x10C
     - name: SELECT_COMMON2
+      doc: |-
+        0x110
     - name: SELECT_COMMON3
+      doc: |-
+        0x114
     - name: SELECT_COMMON4
+      doc: |-
+        0x118
     - name: SELECT_COMMON5
+      doc: |-
+        0x11C
     - name: SELECT_COMMON6
+      doc: |-
+        0x120
     - name: SELECT_RARE1
+      doc: |-
+        0x1A0
     - name: SELECT_RARE2
+      doc: |-
+        0x1A4
     - name: SET_A_TRAP
+      doc: |-
+        0x1C4
     - name: SHORT_AT
       detail: SHORT_AT offset
       doc: |-
@@ -11783,9 +11950,17 @@ tp2-value:
       doc: |-
         The 32-bit signed value from the file at the given offset.
     - name: SPECIAL1
+      doc: |-
+        0x16C
     - name: SPECIAL2
+      doc: |-
+        0x170
     - name: SPECIAL3
+      doc: |-
+        0x174
     - name: SPELL_DISRUPTED
+      doc: |-
+        0x1C0
     - name: SSHORT_AT
       detail: SSHORT_AT offset
       doc: |-
@@ -11809,6 +11984,8 @@ tp2-value:
         - `solarom/portuguese/epilogue.tra`
         - `solarom/russian/epilogue.tra`
     - name: STORE_NAME
+      doc: |-
+        0xC
     - name: STRING_COMPARE
       detail: String STRING_COMPARE String
       doc: |-
@@ -11858,14 +12035,24 @@ tp2-value:
 
 
     - name: TARGET_IMMUNE
+      doc: |-
+        0x1B0
     - name: TIRED
+      doc: |-
+        0xC0
     - name: TRA_ENTRY_EXISTS
       detail: TRA_ENTRY_EXISTS ( String String list )
       doc: |-
         returns true if the variable String maps to a valid TRA entry. 	If the String list is empty the tra entry is looked for into the loaded TRAs, 	otherwise it's looked for into the listed TRA files.
     - name: UNHAPPY_ANNOYED
+      doc: |-
+        0xB0
     - name: UNHAPPY_BREAKING
+      doc: |-
+        0xB8
     - name: UNHAPPY_SERIOUS
+      doc: |-
+        0xB4
     - name: UNIDENTIFIED_DESC
       doc: |-
         The offset within an infinity engine resource where the unidentified description is stored.
