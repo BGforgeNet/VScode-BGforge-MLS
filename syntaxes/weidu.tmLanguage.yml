@@ -4205,6 +4205,7 @@ repository:
       - match: \b(DESIGNATED)\b
       - match: \b(NO_LOG_RECORD)\b
       - match: \b(LABEL)\b
+      - match: \b(METADATA)\b
 
   weidu-tp2-action:
     name: support.function.weidu.action
@@ -4605,6 +4606,7 @@ repository:
       - match: \b(STRING_LENGTH)\b
       - match: \b(FILE_CONTAINS)\b
       - match: \b(FILE_CONTAINS_EVALUATED)\b
+      - match: \b(RESOURCE_CONTAINS)\b
       - match: \b(FILE_EXISTS)\b
       - match: \b(DIRECTORY_EXISTS)\b
       - match: \b(FILE_EXISTS_IN_GAME)\b
@@ -4618,6 +4620,7 @@ repository:
       - match: \b(EVALUATE_BUFFER)\b
       - match: \b(WEIDU_ARCH)\b
       - match: \b(WEIDU_OS)\b
+      - match: \b(WEIDU_VER)\b
       - match: \b(COMPONENT_NUMBER)\b
       - match: \b(INTERACTIVE)\b
 
@@ -4676,6 +4679,7 @@ repository:
       - match: (%?TP2_AUTHOR%?)
       - match: (%?TP2_FILE_NAME%?)
       - match: (%?MOD_FOLDER%?)
+      - match: (%?MOD_VERSION%?)
       - match: (%LANGUAGE%)
       - match: (%?SOURCE_DIRECTORY%?)
       - match: (%?SOURCE_FILESPEC%?)
@@ -4857,7 +4861,7 @@ repository:
 
   function-declaration-action:
     name: meta.function.declaration.weidu
-    begin: \b(DEFINE_ACTION_FUNCTION)\s+(.*)
+    begin: (\b(DEFINE_ACTION_FUNCTION)\s+(.*)|\b(DEFINE_DIMORPHIC_FUNCTION)\s+(.*))
     end: \b(BEGIN)\b
     beginCaptures:
       '1':
