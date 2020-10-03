@@ -11798,6 +11798,12 @@ tp2-value:
     - name: PICKED_POCKET
       doc: |-
         0x1B8
+    - name: PORTRAIT_SMALL
+      doc: |-
+        0x34
+    - name: PORTRAIT_LARGE
+      doc: |-
+        0x3C
     - name: RANDOM
       detail: RANDOM ( value value )
       doc: |-
