@@ -16540,6 +16540,10 @@
         {
           "match": "\\b(LABEL)\\b",
           "name": "keyword.other.weidu"
+        },
+        {
+          "match": "\\b(METADATA)\\b",
+          "name": "keyword.other.weidu"
         }
       ]
     },
@@ -18010,6 +18014,10 @@
           "name": "support.class.weidu.tp2value"
         },
         {
+          "match": "\\b(RESOURCE_CONTAINS)\\b",
+          "name": "support.class.weidu.tp2value"
+        },
+        {
           "match": "\\b(FILE_EXISTS)\\b",
           "name": "support.class.weidu.tp2value"
         },
@@ -18059,6 +18067,10 @@
         },
         {
           "match": "\\b(WEIDU_OS)\\b",
+          "name": "support.class.weidu.tp2value"
+        },
+        {
+          "match": "\\b(WEIDU_VER)\\b",
           "name": "support.class.weidu.tp2value"
         },
         {
@@ -18177,6 +18189,10 @@
         },
         {
           "match": "(%?MOD_FOLDER%?)",
+          "name": "constant.language.weidu"
+        },
+        {
+          "match": "(%?MOD_VERSION%?)",
           "name": "constant.language.weidu"
         },
         {
@@ -18612,7 +18628,7 @@
     },
     "function-declaration-action": {
       "name": "meta.function.declaration.weidu",
-      "begin": "\\b(DEFINE_ACTION_FUNCTION)\\s+(.*)",
+      "begin": "(\\b(DEFINE_ACTION_FUNCTION)\\s+(.*)|\\b(DEFINE_DIMORPHIC_FUNCTION)\\s+(.*))",
       "end": "\\b(BEGIN)\\b",
       "beginCaptures": {
         "1": {
