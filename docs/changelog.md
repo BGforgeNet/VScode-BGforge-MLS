@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.14.0
+- IE:
+  - Added support for `TPA`, `TPH`, `TPP` `BAF` and `D` parsing with new WeiDU v247.
+  - New keywords from WeiDU v247.
+  - More details for some WeiDU constants.
+  - Updated IESDP defines.
+- Fallout:
+  - Updated RPU and sfall defines.
+
 ## 1.13.0
 - General:
   - Added a custom theme to allow futher tailoring of the style.
