@@ -38,7 +38,6 @@ let valid_extensions = new Map([
 
 function parse_compile_output(text: string) {
 	let errors_pattern = /\[(\S+)\] PARSE ERROR at line (\d+) column (\d+)-(\d+)/g;
-//	let warnings_pattern = /\[Warning\] <(.+)>:([\d]*):([\d]*):? (.*)/g;
 	let errors = [];
 	let warnings: any[] = [];
 
@@ -76,21 +75,6 @@ function send_diagnostics(text_document: TextDocument, output_text: string) {
 		};
 		diagnostics.push(diagnosic);
 	}
-	/*
-	for (let w of warnings) {
-		let diagnosic: Diagnostic = {
-			severity: DiagnosticSeverity.Warning,
-			range: {
-				start: { line: w.line - 1, character: w.column },
-				end: text_document.positionAt(text_document.offsetAt({ line: w.line, character: 0 }) - 1)
-			},
-			message: `${w.message}`,
-			source: common.diag_src
-		};
-		diagnostics.push(diagnosic);
-	}
-	*/
-	// Send the computed diagnostics to VSCode.
 	connection.sendDiagnostics({ uri: text_document.uri, diagnostics });
 }
 

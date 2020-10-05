@@ -31,7 +31,6 @@ export function activate(context: ExtensionContext) {
 		var text_document = vscode.window.activeTextEditor.document;
 		text_document.save(); //need this for compiler
 		var weidu_path = vscode.workspace.getConfiguration(config_space).get('weidu.path', '~/bin/weidu');
-		//var text_document = last_open_ssl;
 		let params: ExecuteCommandParams = {
 			command: cmd_name,
 			arguments: [fallout_ssl_compile_exe, text_document, fallout_ssl_dst_dir, weidu_path]
@@ -39,19 +38,6 @@ export function activate(context: ExtensionContext) {
 		client.sendRequest(ExecuteCommandRequest.type, params);
 	});
 	context.subscriptions.push(disposable);
-
-	/* doesn't work
-	//vscode loses open file if clicked on console, need to track it
-	disposable = vscode.window.onDidChangeActiveTextEditor((listener) => {
-		let full_path = listener.document.fileName;
-		if (path.extname(full_path) == ssl_ext) {
-			last_open_ssl = listener.document;
-			conlog('changed last editor to ' + full_path);
-		}
-	});
-	context.subscriptions.push(disposable);
-	last_open_ssl = vscode.window.activeTextEditor.document; //initial value
-	*/
 
 	// If the extension is launched in debug mode then the debug server options are used
 	// Otherwise the run options are used
