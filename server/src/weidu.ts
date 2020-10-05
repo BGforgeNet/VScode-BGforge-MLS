@@ -26,7 +26,15 @@ import { connection, documents } from './server';
 import * as path from 'path';
 
 let lang_id = 'weidu';
-let file_ext = '.tp2';
+let valid_extensions = new Map([
+	[ ".tp2", "tp2" ],
+	[ ".tph", "tpa" ],
+	[ ".tpa", "tpa" ],
+	[ ".tpp", "tpp" ],
+	[ ".d", "d" ],
+	[ ".baf", "baf" ]
+]);
+
 
 function parse_compile_output(text: string) {
 	let errors_pattern = /\[(\S+)\] PARSE ERROR at line (\d+) column (\d+)-(\d+)/g;
@@ -95,47 +103,34 @@ export function wcompile(params: any, cancel_token: any) {
 	var cwd_to = path.dirname(filepath);
 	var base_name = path.parse(filepath).base;
 	var ext = path.parse(filepath).ext;
+	ext = ext.toLowerCase();
 	let weidu_path = args[3];
-	let dev_null = get_dev_null();
-	let weidu_args = `--nogame --no-exit-pause --skip-at-view --noautoupdate --uninstall --language 0 --log ${dev_null}`;
-	let weidu_cmd = `${weidu_path} ${weidu_args} ${base_name}`;
+	let weidu_args = `--nogame --no-exit-pause --noautoupdate --debug-assign --parse-check`;
 
 	if (command == "extension.bgforge.compile") {
-		if (ext.toLowerCase() != file_ext) { //vscode loses open file if clicked on console or elsewhere
-			conlog("Not a WeiDU TP2 file! Please focus a WeiDU TP2 file to compile.");
-			connection.window.showInformationMessage("Please focus a WeiDU TP2 file to compile!");
+		let weidu_type = valid_extensions.get(ext);
+		conlog(weidu_type);
+		if (!weidu_type) { //vscode loses open file if clicked on console or elsewhere
+			conlog("Not a WeiDU file (tp2, tph, tpa, tpp, d, baf)! Focus a WeiDU file to parse.");
+			connection.window.showInformationMessage("Focus a WeiDU file to parse!");
 			return;
 		}
 		conlog(`compiling ${base_name}...`);
 		const cp = require('child_process');
 
+		let weidu_cmd = `${weidu_path} ${weidu_args} ${weidu_type} ${base_name} `;
 		cp.exec(weidu_cmd, { cwd: cwd_to }, (err: any, stdout: any, stderr: any) => {
 			conlog('stdout: ' + stdout);
 			let errors_warnings = parse_compile_output(stdout); //dupe, yes
 			if (stderr) { conlog('stderr: ' + stderr); }
 			if (err) {
 				conlog('error: ' + err);
-				connection.window.showErrorMessage(`Failed to compile ${base_name}!`);
-			} else {
-				if (errors_warnings[0].length == 0)  { //weidu returns 0 on parse error
-					connection.window.showInformationMessage(`Succesfully compiled ${base_name}.`);
-				} else {
-					conlog(errors_warnings);
-					connection.window.showErrorMessage(`Failed to compile ${base_name}!`);
-				}
+				conlog(errors_warnings);
+				connection.window.showErrorMessage(`Failed to parse ${base_name}!`);
 				send_diagnostics(documents.get(text_document.uri.external), stdout);
+			} else {
+				connection.window.showInformationMessage(`Succesfully parsed ${base_name}.`);
 			}
 		});
 	}
-}
-
-function get_dev_null() {
-	let os = require('os');
-	let dev_null: string;
-	if (os.platform() == "win32") {
-		dev_null = "nul"
-	} else {
-		dev_null = "/dev/null"
-	}
-	return dev_null;
 }

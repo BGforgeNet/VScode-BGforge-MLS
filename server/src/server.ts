@@ -365,8 +365,8 @@ connection.onExecuteCommand((params, cancel_token) => {
 
 	let scheme = text_document.uri.scheme;
 	if (scheme != "file") {
-		conlog("Please focus a valid file to compile.");
-		connection.window.showWarningMessage("Please focus a valid file to compile!");
+		conlog("Focus a valid file to compile.");
+		connection.window.showInformationMessage("Focus a valid file to compile!");
 	}
 
 	switch (command) {
@@ -376,8 +376,14 @@ connection.onExecuteCommand((params, cancel_token) => {
 					fallout_ssl.sslcompile(params, cancel_token);
 					break;
 				}
-				case "weidu": {
+				case "weidu":
+				case "weidu-baf":
+				case "weidu-dialog": {
 					weidu.wcompile(params, cancel_token);
+					break;
+				}
+				default: {
+					connection.window.showInformationMessage("Focus a valid file to compile!");
 					break;
 				}
 			}
