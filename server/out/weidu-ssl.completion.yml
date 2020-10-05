@@ -50,6 +50,29 @@ actions:
       detail: AddAreaType(I:Type*Areatype)
       doc: |-
         This action will add area type flags (e.g. outdoor, dungeon) to the current area. The areatype value is OR'd, so multiple values can be set. Values are from [areatype.ids](https://gibberlings3.github.io/iesdp/files/ids/bg2/areatype.htm)
+    - name: AddExperienceParty
+      detail: AddExperienceParty(I:XP)
+      doc: |-
+        This action gives the specified amount of experience to the party. The XP amount is distributed among all current living party members. The example script is from ar1300.bcs.
+        ```
+        IF
+          OpenState("Bridge01",TRUE)
+          Global("BridgeOpen","GLOBAL",0)
+          !Dead("Torgal")
+        THEN
+          RESPONSE #100
+          SetGlobal("BridgeOpen","GLOBAL",1)
+          DisplayString(Myself,'The drawbridge has been lowered.')
+          CreateCreature("KPCAPT03",[2400.1592],6)
+          CreateCreature("KPSOLD03",[2425.1676],6)
+          CreateCreature("KPSOLD04",[2371.1754],6)
+          CreateCreature("KPSOLD05",[2315.1805],6)
+          CreateCreature("TROLGI01",[2391.1592],0)
+          CreateCreature("TROLGI02",[2282.1742],0)
+          CreateCreature("KPYUAN01",[2251.1731],0)
+          AddexperienceParty(29750)
+        (cut short for brevity)
+        ```
     - name: AddExperiencePartyGlobal
       detail: AddExperiencePartyGlobal(S:Name, S:Area)
       doc: |-
@@ -136,29 +159,6 @@ actions:
       detail: AddXPObject(O:Object, I:XP)
       doc: |-
         This action adds the specified amount of XP onto the specified object.
-    - name: AddexperienceParty
-      detail: AddexperienceParty(I:XP)
-      doc: |-
-        This action gives the specified amount of experience to the party. The XP amount is distributed among all current living party members. The example script is from ar1300.bcs.
-        ```
-        IF
-          OpenState("Bridge01",TRUE)
-          Global("BridgeOpen","GLOBAL",0)
-          !Dead("Torgal")
-        THEN
-          RESPONSE #100
-          SetGlobal("BridgeOpen","GLOBAL",1)
-          DisplayString(Myself,'The drawbridge has been lowered.')
-          CreateCreature("KPCAPT03",[2400.1592],6)
-          CreateCreature("KPSOLD03",[2425.1676],6)
-          CreateCreature("KPSOLD04",[2371.1754],6)
-          CreateCreature("KPSOLD05",[2315.1805],6)
-          CreateCreature("TROLGI01",[2391.1592],0)
-          CreateCreature("TROLGI02",[2282.1742],0)
-          CreateCreature("KPYUAN01",[2251.1731],0)
-          AddexperienceParty(29750)
-        (cut short for brevity)
-        ```
     - name: AdvanceTime
       detail: AdvanceTime(I:Time*Gtimes)
       doc: |-
@@ -1002,34 +1002,34 @@ actions:
           See([EVILCUTOFF])
           !Range([EVILCUTOFF],4)
           OR(28)
-          !HasItemEquiped("Bow01",())
-          !HasItemEquiped("Bow02",())
-          !HasItemEquiped("Bow03",())
-          !HasItemEquiped("Bow04",())
-          !HasItemEquipedReal("Bow05",())
-          !HasItemEquipedReal("Bow06",())
-          !HasItemEquipedReal("Bow07",())
-          !HasItemEquipedReal("Bow08",())
-          !HasItemEquipedReal("Bow09",())
-          !HasItemEquipedReal("Bow10",())
-          !HasItemEquipedReal("Bow11",())
-          !HasItemEquipedReal("Bow12",())
-          !HasItemEquipedReal("Bow13",())
-          !HasItemEquipedReal("Bow14",())
-          !HasItemEquipedReal("Bow15",())
-          !HasItemEquipedReal("Bow16",())
-          !HasItemEquipedReal("Bow17",())
-          !HasItemEquipedReal("Bow18",())
-          !HasItemEquipedReal("Bow19",())
-          !HasItemEquipedReal("Bow20",())
-          !HasItemEquipedReal("Bow21",())
-          !HasItemEquipedReal("Bow22",())
-          !HasItemEquipedReal("Bow23",())
-          !HasItemEquipedReal("Bow24",())
-          !HasItemEquipedReal("Bow25",())
-          !HasItemEquipedReal("Bow26",())
-          !HasItemEquipedReal("Bow98",())
-          !HasItemEquipedReal("Bow99",())
+            !HasItemEquiped("Bow01",())
+            !HasItemEquiped("Bow02",())
+            !HasItemEquiped("Bow03",())
+            !HasItemEquiped("Bow04",())
+            !HasItemEquipedReal("Bow05",())
+            !HasItemEquipedReal("Bow06",())
+            !HasItemEquipedReal("Bow07",())
+            !HasItemEquipedReal("Bow08",())
+            !HasItemEquipedReal("Bow09",())
+            !HasItemEquipedReal("Bow10",())
+            !HasItemEquipedReal("Bow11",())
+            !HasItemEquipedReal("Bow12",())
+            !HasItemEquipedReal("Bow13",())
+            !HasItemEquipedReal("Bow14",())
+            !HasItemEquipedReal("Bow15",())
+            !HasItemEquipedReal("Bow16",())
+            !HasItemEquipedReal("Bow17",())
+            !HasItemEquipedReal("Bow18",())
+            !HasItemEquipedReal("Bow19",())
+            !HasItemEquipedReal("Bow20",())
+            !HasItemEquipedReal("Bow21",())
+            !HasItemEquipedReal("Bow22",())
+            !HasItemEquipedReal("Bow23",())
+            !HasItemEquipedReal("Bow24",())
+            !HasItemEquipedReal("Bow25",())
+            !HasItemEquipedReal("Bow26",())
+            !HasItemEquipedReal("Bow98",())
+            !HasItemEquipedReal("Bow99",())
         THEN
           RESPONSE #100
             EquipRanged()

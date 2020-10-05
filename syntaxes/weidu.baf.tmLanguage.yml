@@ -433,6 +433,7 @@ repository:
       - match: \b(Activate)\b
       - match: \b(AddAreaFlag)\b
       - match: \b(AddAreaType)\b
+      - match: \b(AddExperienceParty)\b
       - match: \b(AddExperiencePartyGlobal)\b
       - match: \b(AddFamiliar)\b
       - match: \b(AddGlobals)\b
@@ -449,7 +450,6 @@ repository:
       - match: \b(AddXPObject)\b
       - match: \b(AddXPWorth)\b
       - match: \b(AddXPWorthOnce)\b
-      - match: \b(AddexperienceParty)\b
       - match: \b(AdvanceTime)\b
       - match: \b(Ally)\b
       - match: \b(AmbientActivate)\b

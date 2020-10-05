@@ -1469,6 +1469,10 @@
           "name": "support.function.baf.weidu"
         },
         {
+          "match": "\\b(AddExperienceParty)\\b",
+          "name": "support.function.baf.weidu"
+        },
+        {
           "match": "\\b(AddExperiencePartyGlobal)\\b",
           "name": "support.function.baf.weidu"
         },
@@ -1530,10 +1534,6 @@
         },
         {
           "match": "\\b(AddXPWorthOnce)\\b",
-          "name": "support.function.baf.weidu"
-        },
-        {
-          "match": "\\b(AddexperienceParty)\\b",
           "name": "support.function.baf.weidu"
         },
         {
