@@ -6,6 +6,7 @@ _([How to change settings in VScode](https://code.visualstudio.com/docs/getstart
 
 ### WeiDU
 - `bgforge.weidu.path`: Full path to WeiDU binary. (Used for hotkey-based [error reporting](https://github.com/BGforgeNet/VScode-BGforge-MLS/#error-reporting).)
+- `bgforge.weidu.game_path`: Full path to IE game. Needed to parse `BAF` and `D`.
 
 ### Fallout SSL
 - `bgforge.fallout-ssl.compile`: Path to Fallout SSL `compile.exe` plus compilation options. (Used for hotkey-based [error reporting](https://github.com/BGforgeNet/VScode-BGforge-MLS/#error-reporting).)
