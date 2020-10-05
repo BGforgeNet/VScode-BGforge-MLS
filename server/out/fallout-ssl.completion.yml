@@ -888,27 +888,27 @@ sfall-functions:
     - name: set_npc_stat_max
       detail: void set_npc_stat_max(int stat, int value)
       doc: |-
-        The `set_stat_max/min` functions can be used to set the valid ranges on stats. Values returned by `get_current_stat` will be clamped to this range. The `set_pc_` function only effect the player, the `set_npc_` functions only effect other critters, and the `set_` functions effect both.
+        The `set_stat_max/min` functions can be used to set the valid ranges on stats. Values returned by `get_current_stat` will be clamped to this range. The `set_pc_` function only affects the player, the `set_npc_` functions only affects other critters, and the `set_` functions affects both.
     - name: set_npc_stat_min
       detail: void set_npc_stat_min(int stat, int value)
       doc: |-
-        The `set_stat_max/min` functions can be used to set the valid ranges on stats. Values returned by `get_current_stat` will be clamped to this range. The `set_pc_` function only effect the player, the `set_npc_` functions only effect other critters, and the `set_` functions effect both.
+        The `set_stat_max/min` functions can be used to set the valid ranges on stats. Values returned by `get_current_stat` will be clamped to this range. The `set_pc_` function only affects the player, the `set_npc_` functions only affects other critters, and the `set_` functions affects both.
     - name: set_pc_stat_max
       detail: void set_pc_stat_max(int stat, int value)
       doc: |-
-        The `set_stat_max/min` functions can be used to set the valid ranges on stats. Values returned by `get_current_stat` will be clamped to this range. The `set_pc_` function only effect the player, the `set_npc_` functions only effect other critters, and the `set_` functions effect both.
+        The `set_stat_max/min` functions can be used to set the valid ranges on stats. Values returned by `get_current_stat` will be clamped to this range. The `set_pc_` function only affects the player, the `set_npc_` functions only affects other critters, and the `set_` functions affects both.
     - name: set_pc_stat_min
       detail: void set_pc_stat_min(int stat, int value)
       doc: |-
-        The `set_stat_max/min` functions can be used to set the valid ranges on stats. Values returned by `get_current_stat` will be clamped to this range. The `set_pc_` function only effect the player, the `set_npc_` functions only effect other critters, and the `set_` functions effect both.
+        The `set_stat_max/min` functions can be used to set the valid ranges on stats. Values returned by `get_current_stat` will be clamped to this range. The `set_pc_` function only affects the player, the `set_npc_` functions only affects other critters, and the `set_` functions affects both.
     - name: set_stat_max
       detail: void set_stat_max(int stat, int value)
       doc: |-
-        The `set_stat_max/min` functions can be used to set the valid ranges on stats. Values returned by `get_current_stat` will be clamped to this range. The `set_pc_` function only effect the player, the `set_npc_` functions only effect other critters, and the `set_` functions effect both.
+        The `set_stat_max/min` functions can be used to set the valid ranges on stats. Values returned by `get_current_stat` will be clamped to this range. The `set_pc_` function only affects the player, the `set_npc_` functions only affects other critters, and the `set_` functions affects both.
     - name: set_stat_min
       detail: void set_stat_min(int stat, int value)
       doc: |-
-        The `set_stat_max/min` functions can be used to set the valid ranges on stats. Values returned by `get_current_stat` will be clamped to this range. The `set_pc_` function only effect the player, the `set_npc_` functions only effect other critters, and the `set_` functions effect both.
+        The `set_stat_max/min` functions can be used to set the valid ranges on stats. Values returned by `get_current_stat` will be clamped to this range. The `set_pc_` function only affects the player, the `set_npc_` functions only affects other critters, and the `set_` functions affects both.
     - name: reg_anim_animate_and_hide
       detail: void reg_anim_animate_and_hide(ObjectPtr, int animID, int delay)
       doc: |-
@@ -1011,8 +1011,10 @@ sfall-functions:
       detail: int eax_available
     - name: play_sfall_sound
       detail: int play_sfall_sound(string file, int mode)
-      doc: |-
+      doc: |
         Used to play `mp3/wav/wma` files. The path given is relative to the Fallout folder. Specify mode as 1 to loop the file continuously, 2 to replace the current background game music with playing the specified file in loop mode, or 0 to play the file once. If you don't wish to loop, `play_sfall_sound` returns 0. If you do loop, it returns an id which can be passed back to `stop_sfall_sound` when you want to stop the effect. All sounds effects will be stopped on game reload, looping or not. Does not require `AllowDShowSound` to be set to 1 in `ddraw.ini`.
+
+        Starting from sfall 4.2.8/3.8.28, you can pass a value in the `mode` argument for a reduced sound volume. To set the volume, You need to convert the number to hexadecimal and use the argument format `0xZZZZ000Y`, where `ZZZZ` is the volume reduction value in range from 0 to 32767 (the value 32767 is mute), and `Y` is the playback mode.
     - name: set_eax_environment
       detail: void set_eax_environment(int environment)
     - name: stop_sfall_sound
@@ -1413,9 +1415,11 @@ sfall-functions:
       doc: |-
         Returns 1 if interface is currently hidden, 0 otherwise.
     - name: intface_redraw
-      detail: void intface_redraw()
-      doc: |-
+      detail: void intface_redraw(bool eachWin)
+      doc: |
         Redraws main game interface. Useful after direct changes to current player weapons or stats to reflect changes.
+        - redraws main game interface, useful to reflect changes after directly changing current player weapons or stats
+        - `eachWin`: pass True to redraw all interface windows
     - name: intface_show
       detail: void intface_show()
       doc: |-
@@ -1540,6 +1544,14 @@ sfall-functions:
       detail: ObjectPtr dialog_obj()
       doc: |-
         Returns a pointer to the object (critter) the player is having a conversation or bartering with.
+    - name: get_flags
+      detail: int get_flags(ObjectPtr obj)
+      doc: |-
+        Gets the current value of object flags (see `define_extra.h` for available flags).
+    - name: get_object_data
+      detail: get_object_data(ObjectPtr object, int offset)
+      doc: |-
+        Returns the data at the specified offset of an object (see `OBJ_DATA_*` constants in `define_extra.h` for offsets).
     - name: get_script
       detail: int get_script(ObjectPtr)
       doc: |
@@ -1553,6 +1565,14 @@ sfall-functions:
       detail: int (ObjectPtr invenObj, ObjectPtr itemObj)
       doc: |-
         Returns number of `itemObj` inside invenObj's inventory, note that both arguments are object pointers. useful when dealing with different stacks of same item (`obj_is_carrying_obj_pid` just returns total for all stacks of the same PID.)
+    - name: obj_under_cursor
+      detail: ObjectPtr obj_under_cursor(bool onlyCritter, bool includeDude)
+      doc: |
+        Returns the object under the cursor on the main game screen.
+        - onlyCritter:
+          - True - only checks critters and ignores their cover (roof tiles, walls, scenery, etc.)
+          - False - checks all objects (can't check critters under objects)
+        - passing False to the includeDude argument will ignore dude_obj
     - name: real_dude_obj
       detail: ObjectPtr real_dude_obj()
       doc: |-
@@ -1565,6 +1585,14 @@ sfall-functions:
       detail: void set_dude_obj(ObjectPtr critter)
       doc: |-
         Take control of a given critter. Passing value 0 will reset control back to "real" dude.
+    - name: set_flags
+      detail: void set_flags(ObjectPtr obj, int flags)
+      doc: |-
+        Sets the current flags of an object. All flags are rewritten with given integer, so first get current flags with `get_flags` and use `bwor/bwand` to set/remove specific flag.
+    - name: set_object_data
+      detail: set_object_data(ObjectPtr object, int offset, int data)
+      doc: |-
+        Sets the data at the specified offset of an object.
     - name: set_script
       detail: void set_script(ObjectPtr, int scriptid)
       doc: |-
@@ -1578,6 +1606,15 @@ sfall-functions:
         - Calling `self_obj(0)` will also revert `self_obj` to original value. It is recommended to call this after each use of `set_self` in normal scripts in order to avoid unforeseen side effects.
         - `source_obj`, `target_obj`, and similar functions will not work if preceded by `set_self`.
         - __NOTE:__ for `use_obj`, `use_obj_on_obj` vanilla functions to work correctly, it is required to call `set_self` twice.
+    - name: set_unique_id
+      detail: int set_unique_id(ObjectPtr object, int flag)
+      doc: |
+        Assigns a unique ID number to the object and returns it. If a unique ID number has already been assigned to an object, then ID number is returned without reassignment. `flag` is optional.
+        - items with unique IDs will not stack with other items of the same type in the inventory
+        - to just get the current ID number of an object, use `get_object_data(object, OBJ_DATA_ID)`
+        - unique ID numbers are saved in your savegame, and have a range from 0x10000000 to 0x7FFFFFFF
+        - there is also a unique ID number range for the player and party members from 18000 to 83535
+        - to assign a new ID number generated by the engine to the object (i.e. unassign a unique ID), call the function with two arguments and pass -1 for the flag argument
     - name: active_hand
       detail: int active_hand
     - name: add_g_timer_event
@@ -1629,7 +1666,7 @@ sfall-functions:
     - name: get_unspent_ap_perk_bonus
       detail: int get_unspent_ap_perk_bonus()
       doc: |-
-        Similar to `get_unspent_ap_bonus`, but accounts for the extra AC granted by the h2h evade perk. (The default value of this is also 4, equivalent to doubling the original bonus.
+        Similar to `get_unspent_ap_bonus`, but accounts for the extra AC granted by the H2H Evade perk. (The default value of this is also 4, equivalent to doubling the original bonus.
     - name: get_uptime
       detail: int get_uptime()
       doc: |-
@@ -1638,8 +1675,6 @@ sfall-functions:
       detail: int get_viewport_x()
     - name: get_viewport_y
       detail: int get_viewport_y()
-    - name: get_window_under_mouse
-      detail: int get_window_under_mouse()
     - name: get_year
       detail: int get_year
     - name: hero_select_win
@@ -1687,7 +1722,7 @@ sfall-functions:
     - name: set_hit_chance_max
       detail: void set_hit_chance_max(int percentage)
       doc: |-
-        Effects all critters rather than just the player.
+        Effects all critters rather than just the player and can set the maximum in range from 0 to 999.
     - name: set_hp_per_level_mod
       detail: void set_hp_per_level_mod(int mod)
     - name: set_inven_ap_cost
@@ -1697,7 +1732,7 @@ sfall-functions:
     - name: set_pickpocket_max
       detail: void set_pickpocket_max(int percentage)
       doc: |-
-        Effects all critters rather than just the player.
+        Effects all critters rather than just the player and can set the maximum in range from 0 to 999.
     - name: set_pipboy_available
       detail: void set_pipboy_available(int available)
       doc: |-
@@ -1709,11 +1744,11 @@ sfall-functions:
     - name: set_unspent_ap_bonus
       detail: void set_unspent_ap_bonus(int multiplier)
       doc: |-
-        Alter the AC bonus you receive per unused action point at the end of your turn in combat. To allow for fractional values, the value given if divided by 4. (Hence the default value is 4 and not 1.)
+        Alters the AC bonus you receive per unused action point at the end of your turn in combat. To allow for fractional values, the value given if divided by 4. (Hence the default value is 4 and not 1.)
     - name: set_unspent_ap_perk_bonus
       detail: void set_unspent_ap_perk_bonus(int multiplier)
       doc: |-
-        Similar to `set_unspent_ap_bonus`, but effects the extra AC granted by the h2h evade perk. (The default value of this is also 4, equivalent to doubling the original bonus.
+        Similar to `set_unspent_ap_bonus`, but effects the extra AC granted by the H2H Evade perk. (The default value of this is also 4, equivalent to doubling the original bonus.
     - name: set_viewport_x
       detail: void set_viewport_x(int view_x)
     - name: set_viewport_y
@@ -1744,8 +1779,10 @@ sfall-functions:
         Returns an object that is currently highlighted by hovering the mouse above it.
     - name: set_outline
       detail: void set_outline(ObjectPtr obj, int color)
-      doc: |-
-        Sets the outline color of an object. 0 means or any value above 0x00FFFFFF disables the outline. Call `tile_refresh_display` after changing outline of objects to properly redraw the scene.
+      doc: |
+        - sets the outline color of an object (see `OUTLINE_*` constants in `sfall.h`)
+        - can also set a custom color from the game palette by shifting the color index value left by 8 bits: `0xCC00` where `CC` is the palette index (available since sfall 4.2.7/3.8.27)
+        - passing 0 will disable the outline
     - name: apply_heaveho_fix
       detail: void apply_heaveho_fix
     - name: clear_selectable_perks
@@ -1872,10 +1909,6 @@ sfall-functions:
         Alternative form: `int add_extra_msg_file(string fileName, int fileNumber)`
         - `fileNumber`: the file ID number for the `message_str_game` function. The available range is from 0x2000 to 0x2FFF (see `ExtraGameMsgFileList` setting in `ddraw.ini`)
         Use `fileNumber` only if you want to add a message file without editing `ddraw.ini` or existing scripts to support the old way.
-    - name: create_win
-      detail: void create_win(string winName, int x, int y, int width, int height, int flags)
-      doc: |-
-        `flags` argument is optional. Works just like vanilla `CreateWin` function, but creates a window with `MoveOnTop` flag if the flags argument is not specified, and allows to set additional flags for the created window. `MoveOnTop` flag allows the created window to be placed on top of the game interface.
     - name: critter_inven_obj2
       detail: ObjectPtr critter_inven_obj2(ObjectPtr obj, int type)
       doc: |-
@@ -1884,35 +1917,10 @@ sfall-functions:
       detail: void dialog_message(string text)
       doc: |-
         Displays a message in the NPC response window in dialog or barter screen.
-    - name: draw_image
-      detail: void draw_image(string/int pathFile/artId, int frame, int x, int y, bool noTransparent)
-      doc: |
-        - displays the specified PCX or FRM image in the active window created by vanilla `CreateWin` or sfall's `create_win` script function
-        - pathFile/artId: path to the PCX/FRM file (e.g. `art\\inven\\5mmap.frm`), or its FRM ID number (e.g. 117440550, see specification of the FID format)
-        optional arguments:
-        - `frame`: frame number, the first frame starts from zero
-        - `x/y`: offset relative to the top-left corner of the window
-        - `noTransparent`: pass true to display an image without transparent background
-        - NOTE: to omit optional arguments starting from the right, call the functions with different `sfall_funcX` (e.g. `sfall_func4("draw_image", pathFile, frame, x, y))`
-    - name: draw_image_scaled
-      detail: void draw_image_scaled(string/int pathFile/artId, int frame, int x, int y, int width, int height)
-      doc: |
-        - displays the specified PCX or FRM image in the active window created by vanilla `CreateWin` or sfall's `create_win` script function
-        - pathFile/artId: path to the PCX/FRM file (e.g. `art\\inven\\5mmap.frm`), or its FRM ID number (e.g. 117440550, see specification of the FID format)
-        optional arguments:
-        - `frame`: frame number, the first frame starts from zero
-        - `x/y`: offset relative to the top-left corner of the window
-        - `width/height`: image size, used to scale the image when displaying it. Pass -1 to either width or height to keep the aspect ratio when scaling
-        - NOTE: to omit optional arguments starting from the right, call the functions with different `sfall_funcX` (e.g. `sfall_func4("draw_image", pathFile, frame, x, y))`
-        - if called without `x/y/width/height` arguments, the image will be scaled to fit the window without transparent background
     - name: get_current_inven_size
       detail: get_current_inven_size(ObjectPtr object)
       doc: |-
         Returns the current inventory size of the container or the critter.
-    - name: get_flags
-      detail: int get_flags(ObjectPtr obj)
-      doc: |-
-        Gets the current value of object flags (see `define_extra.h` for available flags).
     - name: get_metarule_table
       detail: array get_metarule_table
       doc: |-
@@ -1921,39 +1929,14 @@ sfall-functions:
       detail: int get_object_ai_data(ObjectPtr object, int aiParam)
       doc: |-
         Returns the setting value from the AI packet of an object (critter). Use `AI_CAP_*` constants from `define_extra.h` for the `aiParam` argument to get AI value.
-    - name: get_object_data
-      detail: get_object_data(ObjectPtr object, int offset)
-      doc: |-
-        Returns the data at the specified offset of an object (see `OBJ_DATA_*` constants in `define_extra.h` for offsets).
     - name: get_text_width
       detail: int get_text_width(string text)
       doc: |-
         Returns the text width in pixels for the currently set font.
-    - name: get_window_attribute
-      detail: int sfall_func1("get_window_attribute", int winType)
-      doc: |
-        Alternative form: `int sfall_func2("get_window_attribute", int winType, int attrType)`
-        Returns the attribute of the specified interface window by the attrType argument.
-        ```
-        - winType: the type number of the interface window (see `WINTYPE_*` constants in `sfall.h`)
-        - attrType: 0 - checks and returns a value of 1 if the specified interface window is created by the game (same as without the argument)
-                    1 - X position, 2 - Y position (relative to the top-left corner of the game screen)
-        - returns -1 if the specified attribute cannot be obtained
-        ```
     - name: item_weight
       detail: int item_weight(ObjectPtr obj)
       doc: |-
         Gets the current weight of an object.
-    - name: message_box
-      detail: int sfall_func4("message_box", string message, int flags, int color1, int color2)
-      doc: |
-        Creates a dialog box with text and returns the result of pressing the button: 0 - No (Escape), 1 - Yes/Done (Enter). Returns -1 if for some reason the dialog box cannot be created.
-        ```
-        - message: the text in the dialog box. Use the \n control character to move text to a new line (example: "Hello\nWorld!")
-        optional arguments:
-        - flags: mode flags (see MSGBOX_* constants in define_extra.h). Pass -1 to skip setting the flags (default flags are NORMAL and YESNO)
-        - color1/2: the color index in Fallout palette. color1 sets the text color for the first line, and color2 for all subsequent lines of text (default color is 145)
-        ```
     - name: metarule_exist
       detail: bool metarule_exist(string metaruleName)
       doc: |-
@@ -1962,14 +1945,6 @@ sfall-functions:
       detail: void npc_engine_level_up(bool toggle)
       doc: |-
         Enables/disables the engine function that increases the level of party members in the player leveling process. If the engine function is disabled, the process of leveling up party members should be performed by script functions.
-    - name: obj_under_cursor
-      detail: ObjectPtr obj_under_cursor(bool onlyCritter, bool includeDude)
-      doc: |
-        Returns the object under the cursor on the main game screen.
-        - onlyCritter:
-          - True - only checks critters and ignores their cover (roof tiles, walls, scenery, etc.)
-          - False - checks all objects (can't check critters under objects)
-        - passing False to the includeDude argument will ignore dude_obj
     - name: objects_in_radius
       detail: objects_in_radius", int tile, int radius, int elevation, int type)
       doc: |
@@ -1980,14 +1955,6 @@ sfall-functions:
       detail: void set_drugs_data(int type, int pid, int value)
       doc: |-
         Overrides the parameters of drugs set in the configuration file (`DrugsFile` setting in `ddraw.ini`). Type: 0 - changes the value of `NumEffects` for the drug (see `Drugs.ini` for the description of `NumEffects`), 1 - changes the duration of the addiction effect for the drug (a value of 1 = one game minute).
-    - name: set_flags
-      detail: void set_flags(ObjectPtr obj, int flags)
-      doc: |-
-        Sets the current flags of an object. All flags are rewritten with given integer, so first get current flags with `get_flags` and use `bwor/bwand` to set/remove specific flag.
-    - name: set_object_data
-      detail: set_object_data(ObjectPtr object, int offset, int data)
-      doc: |-
-        Sets the data at the specified offset of an object.
     - name: set_rest_heal_time
       detail: void set_rest_heal_time(int time)
       doc: |-
@@ -1996,23 +1963,6 @@ sfall-functions:
       detail: void set_rest_mode(int flags)
       doc: |-
         Sets the bit flags for the rest mode (see `RESTMODE_*` constants in `sfall.h`). Passing 0 will reset the rest mode. It will also be reset each time the player reloads the game.
-    - name: set_unique_id
-      detail: int set_unique_id(ObjectPtr object, int flag)
-      doc: |
-        Assigns a unique ID number to the object and returns it. If a unique ID number has already been assigned to an object, then ID number is returned without reassignment. `flag` is optional.
-        - items with unique IDs will not stack with other items of the same type in the inventory
-        - to just get the current ID number of an object, use `get_object_data(object, OBJ_DATA_ID)`
-        - unique ID numbers are saved in your savegame, and have a range from 0x10000000 to 0x7FFFFFFF
-        - there is also a unique ID number range for the player and party members from 18000 to 83535
-        - to assign a new ID number generated by the engine to the object (i.e. unassign a unique ID), call the function with two arguments and pass -1 for the flag argument
-    - name: set_window_flag
-      detail: void set_window_flag(string/int winName/winID, int flag, bool value)
-      doc: |
-        Changes the specified flag for the created script or game interface window.
-        - winName: the window name, assigned to the window by the `CreateWin/create_win` function
-        - winID: the ID number of the interface or script window obtained with the `get_window_under_mouse` function, or 0 for the current game interface
-        - flag: the flag to change (see `WIN_FLAG_*` constants in `define_extra.h`)
-        - value: `true` - set the flag, `false` - unset the flag
     - name: sfall_func0("hide_window")
       detail: void sfall_func0("hide_window")
       doc: |-
@@ -2094,14 +2044,14 @@ sfall-functions:
       doc: |-
         The `get/set_pc_base/extra_stat` functions are equivalent to calling `get/set_critter_base/extra_stat` with `dude_obj` as the critter pointer. None of these stat functions take perks into account, and neither do they do range clamping to make sure the stats are valid. Use the normal `get_critter_stat` function to get a correctly perk adjusted and range clamped value for a stat.
     - name: get_stat_max
-      detail: get_stat_max(stat, bool who = False)
+      detail: get_stat_max(int stat, bool who = False)
       doc: |-
         - Returns the maximum set value of the specified stat (see `set_stat_max` functions)
         - who: 0 (`false`) or omitting the argument - returns the value of the player, 1 (true) - returns the value set for other critters
 
         The `get/set_pc_base/extra_stat` functions are equivalent to calling `get/set_critter_base/extra_stat` with `dude_obj` as the critter pointer. None of these stat functions take perks into account, and neither do they do range clamping to make sure the stats are valid. Use the normal `get_critter_stat` function to get a correctly perk adjusted and range clamped value for a stat.
     - name: get_stat_min
-      detail: get_stat_min(stat, bool who = False)
+      detail: get_stat_min(int stat, bool who = False)
       doc: |-
         - Returns the minimum set value of the specified stat (see `set_stat_min` functions)
         - who: 0 (`false`) or omitting the argument - returns the value of the player, 1 (true) - returns the value set for other critters
@@ -2204,7 +2154,7 @@ sfall-functions:
     - name: tile_get_objs
       detail: array tile_get_objs(int tileNum, int elevation)
       doc: |-
-        Returns array of all objects at given tile. It will include any hidden, dead or system objects (like cursor), so make sure to check properly when iterating.
+        Returns an array of all objects at given tile. It will include any hidden, dead or system objects (like cursor), so make sure to check properly when iterating.
     - name: tile_light
       detail: int tile_light(int elevation, int tileNum)
       doc: |-
@@ -2317,6 +2267,97 @@ sfall-functions:
         This also allows to set current charges of a misc item (Geiger counter, etc).
     - name: set_weapon_ammo_pid
       detail: void set_weapon_ammo_pid(ObjectPtr weapon, int pid)
+    - name: create_win
+      detail: void create_win(string winName, int x, int y, int width, int height, int flags)
+      doc: |-
+        `flags` argument is optional. Works just like vanilla `CreateWin` function, but creates a window with `MoveOnTop` flag if the flags argument is not specified, and allows to set additional flags for the created window. `MoveOnTop` flag allows the created window to be placed on top of the game interface.
+    - name: draw_image
+      detail: void draw_image(string/int artFile/artId, int frame, int x, int y, bool noTransparent)
+      doc: |
+        - displays the specified PCX or FRM image in the active window created by vanilla `CreateWin` or sfall's `create_win` script function
+        - artFile/artId: path to the PCX/FRM file (e.g. `art\\inven\\5mmap.frm`), or its FRM ID number (e.g. `0x7000026`, see specification of the FID format)
+        optional arguments:
+        - `frame`: frame number, the first frame starts from zero
+        - `x/y`: offset relative to the top-left corner of the window
+        - `noTransparent`: pass True to display an image without transparent background
+        - NOTE: to omit optional arguments starting from the right, call the functions with different `sfall_funcX` (e.g. `sfall_func4("draw_image", pathFile, frame, x, y))`
+    - name: draw_image_scaled
+      detail: void draw_image_scaled(string/int artFile/artId, int frame, int x, int y, int width, int height)
+      doc: |
+        - displays the specified PCX or FRM image in the active window created by vanilla `CreateWin` or sfall's `create_win` script function
+        - artFile/artId: path to the PCX/FRM file (e.g. `art\\inven\\5mmap.frm`), or its FRM ID number (e.g. `0x7000026`, see specification of the FID format)
+        optional arguments:
+        - `frame`: frame number, the first frame starts from zero
+        - `x/y`: offset relative to the top-left corner of the window
+        - `width/height`: the new width/height to scale the image to. Pass -1 to either width or height to keep the aspect ratio when scaling
+        - NOTE: to omit optional arguments starting from the right, call the functions with different `sfall_funcX` (e.g. `sfall_func4("draw_image", pathFile, frame, x, y))`
+        - if called without `x/y/width/height` arguments, the image will be scaled to fit the window without transparent background
+    - name: get_window_attribute
+      detail: int sfall_func1("get_window_attribute", int winType)
+      doc: |
+        Alternative form: `int sfall_func2("get_window_attribute", int winType, int attrType)`
+        Returns the attribute of the specified interface window by the attrType argument.
+        ```
+        - winType: the type number of the interface window (see `WINTYPE_*` constants in `sfall.h`)
+        - attrType: 0 - checks and returns a value of 1 if the specified interface window is created by the game (same as without the argument)
+                    1 - X position, 2 - Y position (relative to the top-left corner of the game screen)
+        - returns -1 if the specified attribute cannot be obtained
+        ```
+    - name: get_window_under_mouse
+      detail: int get_window_under_mouse()
+    - name: interface_art_draw
+      detail: int sfall_func4("interface_art_draw", int winType, string artFile/int artID, int x, int y)
+      doc: |
+        ```c++
+        int sfall_func4("interface_art_draw", int winType, string artFile/int artID, int x, int y)
+        int sfall_func5("interface_art_draw", int winType, string artFile/int artID, int x, int y, int frame)
+        int sfall_func6("interface_art_draw", int winType, string artFile/int artID, int x, int y, int frame, array param)
+        ```
+        - draws the specified PCX or FRM image in the game interface window, returns -1 in case of any error
+        - `winType`: the type number of the interface window (see `WINTYPE_*` constants in `sfall.h`)
+          this also takes the value of the flag (0x10000) to prevent immediate redrawing of the interface window
+        - `artFile/artId`: path to the PCX/FRM file (e.g. `art\\inven\\5mmap.frm`), or its FRM ID number (e.g. `0x7000026`, see specification of the FID format)
+        - `x/y`: offset relative to the top-left corner of the window
+
+        optional arguments:
+        - `frame`: frame number, the first frame starts from zero
+        - `param`: an array which specifies additional parameters, where:
+          index 0 - sprite direction for multi-directional FRM
+          index 1/index 2 - the new width/height to scale the image to. Pass -1 to use the original width/height
+    - name: message_box
+      detail: int sfall_func4("message_box", string message, int flags, int color1, int color2)
+      doc: |
+        Creates a dialog box with text and returns the result of pressing the button: 0 - No (Escape), 1 - Yes/Done (Enter). Returns -1 if for some reason the dialog box cannot be created.
+        ```
+        - message: the text in the dialog box. Use the \n control character to move text to a new line (example: "Hello\nWorld!")
+        optional arguments:
+        - flags: mode flags (see `MSGBOX_*` constants in define_extra.h). Pass -1 to skip setting the flags (default flags are NORMAL and YESNO)
+        - color1/color2: the color index in Fallout palette. color1 sets the text color for the first line, and color2 for all subsequent lines of text (default color is 145)
+        ```
+    - name: print_text
+      detail: int sfall_func5("print_text", string text, int winType, int x, int y, int color)
+      doc: |
+        ```c++
+        int sfall_func5("print_text", string text, int winType, int x, int y, int color)
+        int sfall_func6("print_text", string text, int winType, int x, int y, int color, int width)
+        ```
+        - displays the text in the specified interface window with the current font. Use vanilla `SetFont` function to set the font
+        - `text`: the text to be printed. Use the `\n` control character to move text to a new line (example: "Hello\nWorld!")
+        - `winType`: the type number of the interface window (see `WINTYPE_*` constants in sfall.h)
+        - `x/y`: offset relative to the top-left corner of the window
+        - `color`: the color index in Fallout palette. Pass 0 if the text color was previously set by vanilla SetTextColor function
+          it can also take additional flags (via `bwor`) for displaying text:
+          `0x0010000` - adds a shadow to the text, the 'textshadow' compiler constant
+          `0x2000000` - fills the background of the text with black color, the 'textnofill' compiler constant (works the other way around)
+        - `width`: the maximum width of the text. The text will be wrapped to fit within the specified width
+    - name: set_window_flag
+      detail: void set_window_flag(string winName/int winID, int flag, bool value)
+      doc: |
+        Changes the specified flag for the created script or game interface window.
+        - winName: the window name, assigned to the window by the `CreateWin/create_win` function
+        - winID: the ID number of the interface or script window obtained with the `get_window_under_mouse` function, or 0 for the current game interface
+        - flag: the flag to change (see `WIN_FLAG_*` constants in `define_extra.h`)
+        - value: `true` - set the flag, `false` - unset the flag
     - name: get_world_map_x_pos
       detail: int get_world_map_x_pos()
       doc: |-
@@ -2645,7 +2686,7 @@ hooks:
         ```
     - name: HOOK_FINDTARGET
       doc: |
-        Runs when the ai is trying to pick a target in combat. Fallout first chooses a list of 4 likely suspects, then normally sorts them in order of weakness/distance/etc depending on the ai caps of the attacker.
+        Runs when the AI is trying to pick a target in combat. Fallout first chooses a list of 4 likely suspects, then normally sorts them in order of weakness/distance/etc depending on the AI caps of the attacker
         This hook replaces that sorting function, allowing you to sort the targets in some arbitrary way.
 
         The return values can include critters that weren't in the list of possible targets, but the additional targets may still be discarded later on in the combat turn if they are out of the attackers perception or the chance of a successful hit is too low. The list of possible targets often includes duplicated entries.
@@ -2907,13 +2948,14 @@ hooks:
         Runs when Fallout is calculating the chances of an attack striking a target. Runs after the hit chance is fully calculated normally, including applying the 95% cap.
 
         ```
-        int     arg1 - The unmodified hit chance
+        int     arg1 - The hit chance (capped)
         critter arg2 - The attacker
         critter arg3 - The target of the attack
         int     arg4 - The targeted bodypart
         int     arg5 - Source tile (may differ from attacker's tile, when AI is considering potential fire position)
         int     arg6 - Attack Type (one of ATKTYPE_*)
-        int     arg7 - Ranged flag (0 or 1, actually passed 1 even for unarmed attacks, may be a vanilla bug)
+        int     arg7 - Ranged flag. 1 means the hit chance is calculated by taking into account the bonuses/penalties of the distance to the target
+        int     arg8 - The raw hit chance before applying the cap
 
         int     ret1 - the new hit chance
         ```
@@ -3001,7 +3043,11 @@ hooks:
         Critter arg1 - Watcher object
         Obj     arg2 - Target object
         int     arg3 - Result of vanilla function: 1 - within perception range, 0 - otherwise
-        int     arg4 - Type of hook: 1 - when being called from obj_can_see_obj script function, 2 when being called from obj_can_hear_obj script function (need to set ObjCanHearObjFix=1 in ddraw.ini), 0 for all other cases
+        int     arg4 - Type of hook:
+            1 - when being called from obj_can_see_obj script function
+            2 - when being called from obj_can_hear_obj script function (need to set ObjCanHearObjFix=1 in ddraw.ini)
+            3 - when AI determines whether it sees a potential target when selecting attack targets
+            0 - all other cases
 
         int     ret1 - overrides the returned result of the function: 0 - not in range (can't see), 1 - in range (will see if not blocked), 2 - forced detection (will see regardless, only used in obj_can_see_obj scripting function which is called by every critter in the game)
         ```

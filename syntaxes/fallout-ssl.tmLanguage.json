@@ -2237,6 +2237,14 @@
           "name": "support.function.sfall.ssl"
         },
         {
+          "match": "\\b(?i)(get_flags)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(get_object_data)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
           "match": "\\b(?i)(get_script)\\b",
           "name": "support.function.sfall.ssl"
         },
@@ -2246,6 +2254,10 @@
         },
         {
           "match": "\\b(?i)(obj_is_carrying_obj)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(obj_under_cursor)\\b",
           "name": "support.function.sfall.ssl"
         },
         {
@@ -2261,11 +2273,23 @@
           "name": "support.function.sfall.ssl"
         },
         {
+          "match": "\\b(?i)(set_flags)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_object_data)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
           "match": "\\b(?i)(set_script)\\b",
           "name": "support.function.sfall.ssl"
         },
         {
           "match": "\\b(?i)(set_self)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_unique_id)\\b",
           "name": "support.function.sfall.ssl"
         },
         {
@@ -2338,10 +2362,6 @@
         },
         {
           "match": "\\b(?i)(get_viewport_y)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(get_window_under_mouse)\\b",
           "name": "support.function.sfall.ssl"
         },
         {
@@ -2649,10 +2669,6 @@
           "name": "support.function.sfall.ssl"
         },
         {
-          "match": "\\b(?i)(create_win)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
           "match": "\\b(?i)(critter_inven_obj2)\\b",
           "name": "support.function.sfall.ssl"
         },
@@ -2661,19 +2677,7 @@
           "name": "support.function.sfall.ssl"
         },
         {
-          "match": "\\b(?i)(draw_image)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(draw_image_scaled)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
           "match": "\\b(?i)(get_current_inven_size)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(get_flags)\\b",
           "name": "support.function.sfall.ssl"
         },
         {
@@ -2685,23 +2689,11 @@
           "name": "support.function.sfall.ssl"
         },
         {
-          "match": "\\b(?i)(get_object_data)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
           "match": "\\b(?i)(get_text_width)\\b",
           "name": "support.function.sfall.ssl"
         },
         {
-          "match": "\\b(?i)(get_window_attribute)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
           "match": "\\b(?i)(item_weight)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(message_box)\\b",
           "name": "support.function.sfall.ssl"
         },
         {
@@ -2713,10 +2705,6 @@
           "name": "support.function.sfall.ssl"
         },
         {
-          "match": "\\b(?i)(obj_under_cursor)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
           "match": "\\b(?i)(objects_in_radius)\\b",
           "name": "support.function.sfall.ssl"
         },
@@ -2725,27 +2713,11 @@
           "name": "support.function.sfall.ssl"
         },
         {
-          "match": "\\b(?i)(set_flags)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_object_data)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
           "match": "\\b(?i)(set_rest_heal_time)\\b",
           "name": "support.function.sfall.ssl"
         },
         {
           "match": "\\b(?i)(set_rest_mode)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_unique_id)\\b",
-          "name": "support.function.sfall.ssl"
-        },
-        {
-          "match": "\\b(?i)(set_window_flag)\\b",
           "name": "support.function.sfall.ssl"
         },
         {
@@ -3054,6 +3026,42 @@
         },
         {
           "match": "\\b(?i)(set_weapon_ammo_pid)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(create_win)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(draw_image)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(draw_image_scaled)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(get_window_attribute)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(get_window_under_mouse)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(interface_art_draw)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(message_box)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(print_text)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(set_window_flag)\\b",
           "name": "support.function.sfall.ssl"
         },
         {
@@ -7378,6 +7386,10 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(DAM_PRESERVE_FLAGS)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(DAM_RANDOM_HIT)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -10678,6 +10690,10 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(FO_VAR_GNW95_isActive)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(FO_VAR_GNWWin)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -11558,7 +11574,15 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(FO_VAR_rectList)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(FO_VAR_retvals)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_rm_FrameCount)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -11574,7 +11598,19 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(FO_VAR_sampleRate)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_scr_blit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(FO_VAR_scr_size)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_screen_buffer)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -11646,6 +11682,10 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(FO_VAR_subtitleList)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(FO_VAR_subtitles)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -11695,6 +11735,14 @@
         },
         {
           "match": "\\b(FO_VAR_text_mono_width)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_text_object_index)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_text_object_list)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -28606,10 +28654,6 @@
           "name": "constant.language.define.ssl"
         },
         {
-          "match": "\\b(SET_HORRIGAN_ENCOUNTER)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
           "match": "\\b(SEYMOUR_AGREED)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -29207,6 +29251,18 @@
         },
         {
           "match": "\\b(SUPER_REPAIR_KIT_SUCCESS)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(SoundVolume25)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(SoundVolume75)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(SoundVolumeHalf)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -30742,6 +30798,10 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(WINTYPE_AUTOMAP)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(WINTYPE_CHARACTER)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -30771,6 +30831,10 @@
         },
         {
           "match": "\\b(WINTYPE_WORLDMAP)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(WIN_FLAG_DONTMOVE)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -32758,6 +32822,10 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(soundraw)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(spatial_proc)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -34111,6 +34179,10 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(Mono16bit)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(NCR_BOMB_JACK)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -34576,6 +34648,10 @@
         },
         {
           "match": "\\b(SUB_DISCOVERED)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(Stereo8bit)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -43470,6 +43546,14 @@
           "name": "support.type.define.header.ssl"
         },
         {
+          "match": "\\b(WRAP_WATCOM_FFUNC8)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(WRAP_WATCOM_FFUNC9)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
           "match": "\\b(WRAP_WATCOM_FUNC0)\\b",
           "name": "support.type.define.header.ssl"
         },
@@ -44670,6 +44754,18 @@
           "name": "support.type.define.header.ssl"
         },
         {
+          "match": "\\b(interface_art_draw)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(interface_art_draw_ex)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(interface_art_draw_frame)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
           "match": "\\b(intface_is_shown)\\b",
           "name": "support.type.define.header.ssl"
         },
@@ -45431,6 +45527,14 @@
         },
         {
           "match": "\\b(print_option)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(print_text)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(print_text_width)\\b",
           "name": "support.type.define.header.ssl"
         },
         {

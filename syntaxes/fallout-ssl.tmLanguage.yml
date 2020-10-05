@@ -615,14 +615,20 @@ repository:
       - match: \b(?i)(set_fake_trait_npc)\b
       - match: \b(?i)(set_selectable_perk_npc)\b
       - match: \b(?i)(dialog_obj)\b
+      - match: \b(?i)(get_flags)\b
+      - match: \b(?i)(get_object_data)\b
       - match: \b(?i)(get_script)\b
       - match: \b(?i)(loot_obj)\b
       - match: \b(?i)(obj_is_carrying_obj)\b
+      - match: \b(?i)(obj_under_cursor)\b
       - match: \b(?i)(real_dude_obj)\b
       - match: \b(?i)(remove_script)\b
       - match: \b(?i)(set_dude_obj)\b
+      - match: \b(?i)(set_flags)\b
+      - match: \b(?i)(set_object_data)\b
       - match: \b(?i)(set_script)\b
       - match: \b(?i)(set_self)\b
+      - match: \b(?i)(set_unique_id)\b
       - match: \b(?i)(active_hand)\b
       - match: \b(?i)(add_g_timer_event)\b
       - match: \b(?i)(add_trait)\b
@@ -641,7 +647,6 @@ repository:
       - match: \b(?i)(get_uptime)\b
       - match: \b(?i)(get_viewport_x)\b
       - match: \b(?i)(get_viewport_y)\b
-      - match: \b(?i)(get_window_under_mouse)\b
       - match: \b(?i)(get_year)\b
       - match: \b(?i)(hero_select_win)\b
       - match: \b(?i)(inc_npc_level)\b
@@ -718,31 +723,19 @@ repository:
       - match: \b(?i)(get_can_rest_on_map)\b
       - match: \b(?i)(set_can_rest_on_map)\b
       - match: \b(?i)(add_extra_msg_file)\b
-      - match: \b(?i)(create_win)\b
       - match: \b(?i)(critter_inven_obj2)\b
       - match: \b(?i)(dialog_message)\b
-      - match: \b(?i)(draw_image)\b
-      - match: \b(?i)(draw_image_scaled)\b
       - match: \b(?i)(get_current_inven_size)\b
-      - match: \b(?i)(get_flags)\b
       - match: \b(?i)(get_metarule_table)\b
       - match: \b(?i)(get_object_ai_data)\b
-      - match: \b(?i)(get_object_data)\b
       - match: \b(?i)(get_text_width)\b
-      - match: \b(?i)(get_window_attribute)\b
       - match: \b(?i)(item_weight)\b
-      - match: \b(?i)(message_box)\b
       - match: \b(?i)(metarule_exist)\b
       - match: \b(?i)(npc_engine_level_up)\b
-      - match: \b(?i)(obj_under_cursor)\b
       - match: \b(?i)(objects_in_radius)\b
       - match: \b(?i)(set_drugs_data)\b
-      - match: \b(?i)(set_flags)\b
-      - match: \b(?i)(set_object_data)\b
       - match: \b(?i)(set_rest_heal_time)\b
       - match: \b(?i)(set_rest_mode)\b
-      - match: \b(?i)(set_unique_id)\b
-      - match: \b(?i)(set_window_flag)\b
       - match: \b(?i)(sfall_func0("hide_window"))\b
       - match: \b(?i)(sfall_func0("show_window"))\b
       - match: \b(?i)(sfall_func1("hide_window", string winName))\b
@@ -820,6 +813,15 @@ repository:
       - match: \b(?i)(get_weapon_ammo_pid)\b
       - match: \b(?i)(set_weapon_ammo_count)\b
       - match: \b(?i)(set_weapon_ammo_pid)\b
+      - match: \b(?i)(create_win)\b
+      - match: \b(?i)(draw_image)\b
+      - match: \b(?i)(draw_image_scaled)\b
+      - match: \b(?i)(get_window_attribute)\b
+      - match: \b(?i)(get_window_under_mouse)\b
+      - match: \b(?i)(interface_art_draw)\b
+      - match: \b(?i)(message_box)\b
+      - match: \b(?i)(print_text)\b
+      - match: \b(?i)(set_window_flag)\b
       - match: \b(?i)(get_world_map_x_pos)\b
       - match: \b(?i)(get_world_map_y_pos)\b
       - match: \b(?i)(set_world_map_pos)\b
@@ -1913,6 +1915,7 @@ repository:
       - match: \b(DAM_LOSE_TURN)\b
       - match: \b(DAM_ON_FIRE)\b
       - match: \b(DAM_PERFORM_REVERSE)\b
+      - match: \b(DAM_PRESERVE_FLAGS)\b
       - match: \b(DAM_RANDOM_HIT)\b
       - match: \b(DAM_STUNNED)\b
       - match: \b(DAM_SURPRISED)\b
@@ -2738,6 +2741,7 @@ repository:
       - match: \b(FO_VAR_Educated)\b
       - match: \b(FO_VAR_EncounterMapID)\b
       - match: \b(FO_VAR_Experience_)\b
+      - match: \b(FO_VAR_GNW95_isActive)\b
       - match: \b(FO_VAR_GNWWin)\b
       - match: \b(FO_VAR_GNW_win_init_flag)\b
       - match: \b(FO_VAR_GoodColor)\b
@@ -2958,11 +2962,16 @@ repository:
       - match: \b(FO_VAR_queue)\b
       - match: \b(FO_VAR_quick_done)\b
       - match: \b(FO_VAR_read_callback)\b
+      - match: \b(FO_VAR_rectList)\b
       - match: \b(FO_VAR_retvals)\b
+      - match: \b(FO_VAR_rm_FrameCount)\b
       - match: \b(FO_VAR_rotation)\b
       - match: \b(FO_VAR_sWindows)\b
       - match: \b(FO_VAR_sad)\b
+      - match: \b(FO_VAR_sampleRate)\b
+      - match: \b(FO_VAR_scr_blit)\b
       - match: \b(FO_VAR_scr_size)\b
+      - match: \b(FO_VAR_screen_buffer)\b
       - match: \b(FO_VAR_scriptListInfo)\b
       - match: \b(FO_VAR_script_engine_running)\b
       - match: \b(FO_VAR_script_path_base)\b
@@ -2980,6 +2989,7 @@ repository:
       - match: \b(FO_VAR_stack_offset)\b
       - match: \b(FO_VAR_stat_data)\b
       - match: \b(FO_VAR_stat_flag)\b
+      - match: \b(FO_VAR_subtitleList)\b
       - match: \b(FO_VAR_subtitles)\b
       - match: \b(FO_VAR_tag_skill)\b
       - match: \b(FO_VAR_target_curr_stack)\b
@@ -2993,6 +3003,8 @@ repository:
       - match: \b(FO_VAR_text_height)\b
       - match: \b(FO_VAR_text_max)\b
       - match: \b(FO_VAR_text_mono_width)\b
+      - match: \b(FO_VAR_text_object_index)\b
+      - match: \b(FO_VAR_text_object_list)\b
       - match: \b(FO_VAR_text_spacing)\b
       - match: \b(FO_VAR_text_to_buf)\b
       - match: \b(FO_VAR_text_width)\b
@@ -7220,7 +7232,6 @@ repository:
       - match: \b(SERVANT_QUEST_REFUSED)\b
       - match: \b(SERVANT_TIME_EXTENDED)\b
       - match: \b(SERVANT_TURNED_IN_HARRY)\b
-      - match: \b(SET_HORRIGAN_ENCOUNTER)\b
       - match: \b(SEYMOUR_AGREED)\b
       - match: \b(SEYMOUR_PLANTED)\b
       - match: \b(SEYMOUR_UNKNOWN)\b
@@ -7371,6 +7382,9 @@ repository:
       - match: \b(SUMMER_MORNING)\b
       - match: \b(SUPER_REPAIR_KIT_ACCEPT)\b
       - match: \b(SUPER_REPAIR_KIT_SUCCESS)\b
+      - match: \b(SoundVolume25)\b
+      - match: \b(SoundVolume75)\b
+      - match: \b(SoundVolumeHalf)\b
       - match: \b(TANKER_MOVIE)\b
       - match: \b(TEAM_ABBEY)\b
       - match: \b(TEAM_ABOLITIONISTS)\b
@@ -7754,6 +7768,7 @@ repository:
       - match: \b(WIDOW_PAID)\b
       - match: \b(WINTER_EVENING)\b
       - match: \b(WINTER_MORNING)\b
+      - match: \b(WINTYPE_AUTOMAP)\b
       - match: \b(WINTYPE_CHARACTER)\b
       - match: \b(WINTYPE_DIALOG)\b
       - match: \b(WINTYPE_ESCMENU)\b
@@ -7762,6 +7777,7 @@ repository:
       - match: \b(WINTYPE_PIPBOY)\b
       - match: \b(WINTYPE_SKILLDEX)\b
       - match: \b(WINTYPE_WORLDMAP)\b
+      - match: \b(WIN_FLAG_DONTMOVE)\b
       - match: \b(WIN_FLAG_EXCLUSIVE)\b
       - match: \b(WIN_FLAG_HIDDEN)\b
       - match: \b(WIN_FLAG_MOVEONTOP)\b
@@ -8258,6 +8274,7 @@ repository:
       - match: \b(snuff_westin_fail)\b
       - match: \b(snuff_westin_none)\b
       - match: \b(snuff_westin_succeed)\b
+      - match: \b(soundraw)\b
       - match: \b(spatial_proc)\b
       - match: \b(special_floater_param)\b
       - match: \b(spouse_female)\b
@@ -8598,6 +8615,7 @@ repository:
       - match: \b(MYRON_STASH_FOUND_BIT)\b
       - match: \b(MYRON_SUPERSTIM_BIT)\b
       - match: \b(MYRON_WHORES_BIT)\b
+      - match: \b(Mono16bit)\b
       - match: \b(NCR_BOMB_JACK)\b
       - match: \b(NCR_CRAPS_KNOWN)\b
       - match: \b(NCR_DOC_REF_RANGERS)\b
@@ -8715,6 +8733,7 @@ repository:
       - match: \b(STRUG_SHIRECRUIT)\b
       - match: \b(SUB_DEACTIVATED)\b
       - match: \b(SUB_DISCOVERED)\b
+      - match: \b(Stereo8bit)\b
       - match: \b(TANK_FOB)\b
       - match: \b(TANK_FUEL)\b
       - match: \b(TANK_KNOWN)\b
@@ -10943,6 +10962,8 @@ repository:
       - match: \b(WRAP_WATCOM_FFUNC5)\b
       - match: \b(WRAP_WATCOM_FFUNC6)\b
       - match: \b(WRAP_WATCOM_FFUNC7)\b
+      - match: \b(WRAP_WATCOM_FFUNC8)\b
+      - match: \b(WRAP_WATCOM_FFUNC9)\b
       - match: \b(WRAP_WATCOM_FUNC0)\b
       - match: \b(WRAP_WATCOM_FUNC1)\b
       - match: \b(WRAP_WATCOM_FUNC2)\b
@@ -11243,6 +11264,9 @@ repository:
       - match: \b(inc_san_fran_rep)\b
       - match: \b(inc_vault13_rep)\b
       - match: \b(inc_vault15_rep)\b
+      - match: \b(interface_art_draw)\b
+      - match: \b(interface_art_draw_ex)\b
+      - match: \b(interface_art_draw_frame)\b
       - match: \b(intface_is_shown)\b
       - match: \b(inven_count)\b
       - match: \b(inven_ptr)\b
@@ -11434,6 +11458,8 @@ repository:
       - match: \b(point_run_next_and_face_Rate)\b
       - match: \b(portal_has_pet)\b
       - match: \b(print_option)\b
+      - match: \b(print_text)\b
+      - match: \b(print_text_width)\b
       - match: \b(raider_add_timer_event)\b
       - match: \b(raider_add_timer_event_rand)\b
       - match: \b(random_tile_in_box)\b
