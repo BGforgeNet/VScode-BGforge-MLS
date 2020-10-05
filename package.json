@@ -271,6 +271,11 @@
 					"type": "string",
 					"default": "~/bin/weidu",
 					"description": "Full path to WeiDU binary"
+				},
+				"bgforge.weidu.game_path": {
+					"type": "string",
+					"default": "",
+					"description": "Full path to IE game. Needed to parse BAF and D."
 				}
 			}
 		},

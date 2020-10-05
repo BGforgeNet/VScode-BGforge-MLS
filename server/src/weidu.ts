@@ -89,7 +89,13 @@ export function wcompile(params: any, cancel_token: any) {
 	var ext = path.parse(filepath).ext;
 	ext = ext.toLowerCase();
 	let weidu_path = args[3];
-	let weidu_args = `--nogame --no-exit-pause --noautoupdate --debug-assign --parse-check`;
+	let game_path = args[4];
+	let weidu_args = "--no-exit-pause --noautoupdate --debug-assign --parse-check";
+	if (game_path == "") { // d and baf need game files
+		weidu_args = `--nogame ${weidu_args}`;
+	} else {
+		weidu_args = `--game ${game_path} ${weidu_args}`;
+	}
 
 	if (command == "extension.bgforge.compile") {
 		let weidu_type = valid_extensions.get(ext);
@@ -99,6 +105,13 @@ export function wcompile(params: any, cancel_token: any) {
 			connection.window.showInformationMessage("Focus a WeiDU file to parse!");
 			return;
 		}
+
+		if ((weidu_type == 'd' || weidu_type == 'baf') && game_path == '') {
+			conlog("Path to IE game is not specified in settings, can't parse D or BAF!");
+			connection.window.showWarningMessage("Path to IE game is not specified in settings, can't parse D or BAF!");
+			return;
+		}
+
 		conlog(`compiling ${base_name}...`);
 		const cp = require('child_process');
 
