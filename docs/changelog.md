@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.14.1
+Fixed 1.14.0 packaging issue.
+
 ## 1.14.0
 - IE:
   - Added support for `TPA`, `TPH`, `TPP` `BAF` and `D` parsing with new WeiDU v247.

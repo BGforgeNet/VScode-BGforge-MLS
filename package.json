@@ -2,7 +2,7 @@
 	"name": "bgforge-mls",
 	"displayName": "BGforge MLS",
 	"description": "BGforge multilanguage server",
-	"version": "1.14.0",
+	"version": "1.14.1",
 	"author": "BGforge",
 	"repository": {
 		"type": "git",
@@ -225,12 +225,12 @@
 			}
 		],
 		"themes": [
-      {
-        "label": "BGforge Monokai",
-        "uiTheme": "vs-dark",
-        "path": "./themes/bgforge-monokai.json"
-      }
-    ],
+			{
+				"label": "BGforge Monokai",
+				"uiTheme": "vs-dark",
+				"path": "./themes/bgforge-monokai.json"
+			}
+		],
 		"configuration": {
 			"type": "object",
 			"title": "BGforge MLS",
@@ -298,7 +298,7 @@
 	},
 	"devDependencies": {
 		"@types/mocha": "^5.2.0",
-		"@types/node": "^8.10.62",
+		"@types/node": "^8.10.64",
 		"typescript": "^3.9.7"
 	},
 	"categories": [
