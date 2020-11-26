@@ -23,5 +23,10 @@
         ["\"", "\""],
         ["'", "'"],
         ["~", "~"]
-    ]
+    ],
+    "indentationRules": {
+        "increaseIndentPattern": "^IF$|OR(\\d+)$|^THEN$|RESPONSE #\\d+$",
+        "decreaseIndentPattern": "^END$| THEN$"
+    }
+
 }

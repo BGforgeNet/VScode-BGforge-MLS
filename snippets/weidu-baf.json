@@ -1,0 +1,9 @@
+{
+  "IF-THEN block": {
+      "prefix": "IF",
+      "body": [
+        "IF\n  $1\nTHEN\n  RESPONSE #100\n    $0\nEND"
+      ],
+      "description": "IF-THEN block"
+  }
+}

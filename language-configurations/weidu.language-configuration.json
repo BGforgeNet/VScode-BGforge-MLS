@@ -36,5 +36,9 @@
         ["'", "'"],
         ["~", "~"],
         ["%", "%"]
-    ]
+    ],
+    "indentationRules": {
+        "increaseIndentPattern": " BEGIN$",
+        "decreaseIndentPattern": " END$"
+    }
 }

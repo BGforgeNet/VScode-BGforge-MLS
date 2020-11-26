@@ -222,6 +222,10 @@
 			{
 				"language": "fallout-ssl",
 				"path": "./snippets/fallout-ssl.json"
+			},
+			{
+				"language": "weidu-baf",
+				"path": "./snippets/weidu-baf.json"
 			}
 		],
 		"themes": [

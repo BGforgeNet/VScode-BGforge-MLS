@@ -28,5 +28,9 @@
         ["(", ")"],
         ["\"", "\""],
         ["'", "'"]
-    ]
+    ],
+    "indentationRules": {
+        "increaseIndentPattern": " begin$",
+        "decreaseIndentPattern": " end$"
+    }
 }
