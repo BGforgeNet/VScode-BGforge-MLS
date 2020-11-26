@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.15
+- Added basic indentation rules for Fallout SSL, WeiDU BAF and TP2.
+- Added IF-THEN block snippet for BAF.
+
 ## 1.14.1
 Fixed 1.14.0 packaging issue.
 
