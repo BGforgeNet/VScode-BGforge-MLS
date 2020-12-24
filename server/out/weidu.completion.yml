@@ -9464,8 +9464,16 @@ tp2-action:
       detail: LAUNCH_ACTION_FUNCTION String [ INT_VAR variable [ = value ] ... ] [ STR_VAR variable [ = [ EVALUATE_BUFFER ] String ] ... ] [ RET variable [ = String ] ... ] [ RET_ARRAY variable [ = String ] ... ] END
       doc: |-
         Launch an action function. Refer to the Functions section for additional information. You may use LAF as a synonym for LAUNCH_ACTION_FUNCTION.
+    - name: LAF
+      detail: LAF String [ INT_VAR variable [ = value ] ... ] [ STR_VAR variable [ = [ EVALUATE_BUFFER ] String ] ... ] [ RET variable [ = String ] ... ] [ RET_ARRAY variable [ = String ] ... ] END
+      doc: |-
+        Launch an action function. Refer to the Functions section for additional information. You may use LAF as a synonym for LAUNCH_ACTION_FUNCTION.
     - name: LAUNCH_ACTION_MACRO
       detail: LAUNCH_ACTION_MACRO String
+      doc: |-
+        Launch an action macro. Refer to the macros section for additional information. You may use LAM as a synonym for LAUNCH_ACTION_MACRO.
+    - name: LAM
+      detail: LAM String
       doc: |-
         Launch an action macro. Refer to the macros section for additional information. You may use LAM as a synonym for LAUNCH_ACTION_MACRO.
     - name: LOAD_TRA
@@ -10563,8 +10571,16 @@ tp2-patch:
       detail: LAUNCH_PATCH_FUNCTION String [ INT_VAR variable [ = value ] ... ] [ STR_VAR variable [ = [ EVALUATE_BUFFER ] String ] ... ] [ RET variable [ = String ] ... ] [ RET_ARRAY variable [ = String ] ... ] END
       doc: |-
         Launch a patch function. Refer to the Functions section for additional information. You may use LPF as a synonym for LAUNCH_PATCH_FUNCTION.
+    - name: LPF
+      detail: LPF String [ INT_VAR variable [ = value ] ... ] [ STR_VAR variable [ = [ EVALUATE_BUFFER ] String ] ... ] [ RET variable [ = String ] ... ] [ RET_ARRAY variable [ = String ] ... ] END
+      doc: |-
+        Launch a patch function. Refer to the Functions section for additional information. You may use LPF as a synonym for LAUNCH_PATCH_FUNCTION.
     - name: LAUNCH_PATCH_MACRO
       detail: LAUNCH_PATCH_MACRO String
+      doc: |-
+        Launch a patch macro. Refer to the macros section for additional information. You may use LPM as a synonym for LAUNCH_PATCH_MACRO.
+    - name: LPM
+      detail: LPM String
       doc: |-
         Launch a patch macro. Refer to the macros section for additional information. You may use LPM as a synonym for LAUNCH_PATCH_MACRO.
     - name: LOOKUP_IDS_SYMBOL_OF_INT
