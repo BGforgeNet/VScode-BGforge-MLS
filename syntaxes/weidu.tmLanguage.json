@@ -4,6 +4,12 @@
   "scopeName": "source.tp2.weidu",
   "patterns": [
     {
+      "include": "#macro-declaration-action"
+    },
+    {
+      "include": "#macro-declaration-patch"
+    },
+    {
       "include": "#comments"
     },
     {
@@ -18628,7 +18634,7 @@
     },
     "function-declaration-action": {
       "name": "meta.function.declaration.weidu",
-      "begin": "(\\b(DEFINE_ACTION_FUNCTION)\\s+(.*)|\\b(DEFINE_DIMORPHIC_FUNCTION)\\s+(.*))",
+      "begin": "\\b(DEFINE_ACTION_FUNCTION|DEFINE_DIMORPHIC_FUNCTION)\\s+(\\S+)",
       "end": "\\b(BEGIN)\\b",
       "beginCaptures": {
         "1": {
@@ -18672,7 +18678,7 @@
     },
     "function-declaration-patch": {
       "name": "meta.function.declaration.weidu",
-      "begin": "\\b(DEFINE_PATCH_FUNCTION)\\s+(.*)",
+      "begin": "\\b(DEFINE_PATCH_FUNCTION)\\s+(\\S+)",
       "end": "\\b(BEGIN)\\b",
       "beginCaptures": {
         "1": {
@@ -18711,6 +18717,44 @@
         {
           "include": "#strings",
           "name": "meta.function.declaration.weidu"
+        }
+      ]
+    },
+    "macro-declaration-patch": {
+      "patterns": [
+        {
+          "match": "\\b(DEFINE_PATCH_MACRO)\\s+(\\S+)",
+          "captures": {
+            "1": {
+              "name": "keyword.control.weidu"
+            },
+            "2": {
+              "patterns": [
+                {
+                  "include": "#function-name-patch"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "macro-declaration-action": {
+      "patterns": [
+        {
+          "match": "\\b(DEFINE_ACTION_MACRO)\\s+(\\S+)",
+          "captures": {
+            "1": {
+              "name": "keyword.control.weidu"
+            },
+            "2": {
+              "patterns": [
+                {
+                  "include": "#function-name-action"
+                }
+              ]
+            }
+          }
         }
       ]
     },
