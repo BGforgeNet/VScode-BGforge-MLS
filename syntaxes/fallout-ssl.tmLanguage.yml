@@ -500,6 +500,7 @@ repository:
       - match: \b(?i)(set_car_intface_art)\b
       - match: \b(?i)(attack_is_aimed)\b
       - match: \b(?i)(block_combat)\b
+      - match: \b(?i)(combat_data)\b
       - match: \b(?i)(disable_aimed_shots)\b
       - match: \b(?i)(force_aimed_shots)\b
       - match: \b(?i)(get_attack_type)\b
@@ -819,9 +820,10 @@ repository:
       - match: \b(?i)(get_window_attribute)\b
       - match: \b(?i)(get_window_under_mouse)\b
       - match: \b(?i)(interface_art_draw)\b
+      - match: \b(?i)(interface_print)\b
       - match: \b(?i)(message_box)\b
-      - match: \b(?i)(print_text)\b
       - match: \b(?i)(set_window_flag)\b
+      - match: \b(?i)(win_fill_color)\b
       - match: \b(?i)(get_world_map_x_pos)\b
       - match: \b(?i)(get_world_map_y_pos)\b
       - match: \b(?i)(set_world_map_pos)\b
@@ -842,6 +844,8 @@ repository:
       - match: \b(?i)(sfall_func4)\b
       - match: \b(?i)(sfall_func5)\b
       - match: \b(?i)(sfall_func6)\b
+      - match: \b(?i)(sfall_func7)\b
+      - match: \b(?i)(sfall_func8)\b
       - match: \b(?i)(read_byte)\b
       - match: \b(?i)(read_int)\b
       - match: \b(?i)(read_short)\b
@@ -1302,6 +1306,7 @@ repository:
       - match: \b(ARMOR_START)\b
       - match: \b(ARRAYFLAG_ASSOC)\b
       - match: \b(ARRAYFLAG_CONSTVAL)\b
+      - match: \b(ARRAYFLAG_RESERVED)\b
       - match: \b(ARRAY_MAX_SIZE)\b
       - match: \b(ARRAY_MAX_STRING)\b
       - match: \b(ARRAY_SET_BLOCK_SIZE)\b
@@ -1862,6 +1867,7 @@ repository:
       - match: \b(C_ATTACK_KNOCKBACK_VALUE5)\b
       - match: \b(C_ATTACK_KNOCKBACK_VALUE6)\b
       - match: \b(C_ATTACK_MAIN_TARGET)\b
+      - match: \b(C_ATTACK_MESSAGE)\b
       - match: \b(C_ATTACK_ROUNDS)\b
       - match: \b(C_ATTACK_SOURCE)\b
       - match: \b(C_ATTACK_TARGET)\b
@@ -1871,44 +1877,28 @@ repository:
       - match: \b(C_ATTACK_TARGET4)\b
       - match: \b(C_ATTACK_TARGET5)\b
       - match: \b(C_ATTACK_TARGET6)\b
+      - match: \b(C_ATTACK_UNUSED)\b
       - match: \b(C_ATTACK_WEAPON)\b
       - match: \b(DALIA_DEAD)\b
       - match: \b(DALIA_KNOWN)\b
       - match: \b(DALIA_ON_15)\b
       - match: \b(DAM_BACKWASH)\b
       - match: \b(DAM_BLIND)\b
-      - match: \b(DAM_BLIND_EYE_LEFT)\b
-      - match: \b(DAM_BLIND_EYE_RIGHT)\b
-      - match: \b(DAM_BREAK_WEAPON)\b
       - match: \b(DAM_BYPASS)\b
       - match: \b(DAM_CRIP_ARM_LEFT)\b
       - match: \b(DAM_CRIP_ARM_RIGHT)\b
-      - match: \b(DAM_CRIP_FOOT_LEFT)\b
-      - match: \b(DAM_CRIP_FOOT_RIGHT)\b
-      - match: \b(DAM_CRIP_HAND_LEFT)\b
-      - match: \b(DAM_CRIP_HAND_RIGHT)\b
       - match: \b(DAM_CRIP_LEG_LEFT)\b
       - match: \b(DAM_CRIP_LEG_RIGHT)\b
       - match: \b(DAM_CRIP_RANDOM)\b
       - match: \b(DAM_CRITICAL)\b
       - match: \b(DAM_DEAD)\b
-      - match: \b(DAM_DEAF)\b
-      - match: \b(DAM_DEATH_1)\b
-      - match: \b(DAM_DEATH_2)\b
-      - match: \b(DAM_DEATH_3)\b
-      - match: \b(DAM_DECAPITATED)\b
       - match: \b(DAM_DESTROY)\b
-      - match: \b(DAM_DODGED)\b
       - match: \b(DAM_DROP)\b
-      - match: \b(DAM_DROP_WEAPON)\b
       - match: \b(DAM_DUD)\b
-      - match: \b(DAM_DUD_SHOT)\b
       - match: \b(DAM_EXPLODE)\b
-      - match: \b(DAM_EXPLODE_WEAPON)\b
       - match: \b(DAM_HIT)\b
       - match: \b(DAM_HIT_SELF)\b
       - match: \b(DAM_HURT_SELF)\b
-      - match: \b(DAM_IGNORE_DR)\b
       - match: \b(DAM_KNOCKED_DOWN)\b
       - match: \b(DAM_KNOCKED_OUT)\b
       - match: \b(DAM_LOSE_AMMO)\b
@@ -1917,11 +1907,6 @@ repository:
       - match: \b(DAM_PERFORM_REVERSE)\b
       - match: \b(DAM_PRESERVE_FLAGS)\b
       - match: \b(DAM_RANDOM_HIT)\b
-      - match: \b(DAM_STUNNED)\b
-      - match: \b(DAM_SURPRISED)\b
-      - match: \b(DAM_UNBALANCED)\b
-      - match: \b(DAM_UNREADY_WEAPON_LEFT)\b
-      - match: \b(DAM_UNREADY_WEAPON_RIGHT)\b
       - match: \b(DAN_DEAD)\b
       - match: \b(DAYS_PER_YEAR)\b
       - match: \b(DAYTIME)\b
@@ -2676,6 +2661,7 @@ repository:
       - match: \b(FID_YODA)\b
       - match: \b(FIELD_DAMAGED)\b
       - match: \b(FIELD_DELAY_COUNT)\b
+      - match: \b(FIELD_DESTROYED)\b
       - match: \b(FIELD_DISABLED)\b
       - match: \b(FIELD_ENABLED)\b
       - match: \b(FIELD_TIMER_CHECK_STATE)\b
@@ -2838,6 +2824,7 @@ repository:
       - match: \b(FO_VAR_folder_card_title)\b
       - match: \b(FO_VAR_folder_card_title2)\b
       - match: \b(FO_VAR_frame_time)\b
+      - match: \b(FO_VAR_freePtr)\b
       - match: \b(FO_VAR_free_perk)\b
       - match: \b(FO_VAR_frstc_draw1)\b
       - match: \b(FO_VAR_gDialogMusicVol)\b
@@ -2933,6 +2920,7 @@ repository:
       - match: \b(FO_VAR_optionsButtonUpKey)\b
       - match: \b(FO_VAR_optnwin)\b
       - match: \b(FO_VAR_outlined_object)\b
+      - match: \b(FO_VAR_pal)\b
       - match: \b(FO_VAR_partyMemberAIOptions)\b
       - match: \b(FO_VAR_partyMemberCount)\b
       - match: \b(FO_VAR_partyMemberLevelUpInfoList)\b
@@ -3820,6 +3808,7 @@ repository:
       - match: \b(PERK_alcohol_hp_bonus2_perk)\b
       - match: \b(PERK_alcohol_hp_neg1_perk)\b
       - match: \b(PERK_alcohol_hp_neg2_perk)\b
+      - match: \b(PERK_animal_friend)\b
       - match: \b(PERK_armor_advanced_1)\b
       - match: \b(PERK_armor_advanced_2)\b
       - match: \b(PERK_armor_charisma)\b
@@ -3849,7 +3838,9 @@ repository:
       - match: \b(PERK_expert_excrement_expediter_perk)\b
       - match: \b(PERK_explorer)\b
       - match: \b(PERK_faster_healing)\b
+      - match: \b(PERK_flower_child)\b
       - match: \b(PERK_fortune_finder)\b
+      - match: \b(PERK_friendly_foe)\b
       - match: \b(PERK_gain_agility_perk)\b
       - match: \b(PERK_gain_charisma_perk)\b
       - match: \b(PERK_gain_endurance_perk)\b
@@ -3875,6 +3866,7 @@ repository:
       - match: \b(PERK_master_thief)\b
       - match: \b(PERK_master_trader)\b
       - match: \b(PERK_medic)\b
+      - match: \b(PERK_mental_block)\b
       - match: \b(PERK_more_criticals)\b
       - match: \b(PERK_mr_fixit)\b
       - match: \b(PERK_mutate)\b
@@ -3894,6 +3886,7 @@ repository:
       - match: \b(PERK_ranger)\b
       - match: \b(PERK_salesman_perk)\b
       - match: \b(PERK_scout)\b
+      - match: \b(PERK_scrounger)\b
       - match: \b(PERK_sharpshooter)\b
       - match: \b(PERK_silent_death)\b
       - match: \b(PERK_silent_running)\b
@@ -7892,12 +7885,14 @@ repository:
       - match: \b(bit_3)\b
       - match: \b(bit_30)\b
       - match: \b(bit_31)\b
+      - match: \b(bit_32)\b
       - match: \b(bit_4)\b
       - match: \b(bit_5)\b
       - match: \b(bit_6)\b
       - match: \b(bit_7)\b
       - match: \b(bit_8)\b
       - match: \b(bit_9)\b
+      - match: \b(bit_ALL)\b
       - match: \b(blow_up_grave_param)\b
       - match: \b(bodies_state_examined)\b
       - match: \b(bodies_state_fake)\b
@@ -8554,7 +8549,6 @@ repository:
       - match: \b(FELIX_FRIENDLY)\b
       - match: \b(FELIX_SENT_BY_WESTIN)\b
       - match: \b(FIELD_DELAY)\b
-      - match: \b(FIELD_DESTROYED)\b
       - match: \b(FIELD_FLICKER)\b
       - match: \b(FIELD_OFF)\b
       - match: \b(FIELD_ON)\b
@@ -11118,6 +11112,7 @@ repository:
       - match: \b(finalize_option)\b
       - match: \b(flee_from_tile)\b
       - match: \b(float_msg_clear)\b
+      - match: \b(floater)\b
       - match: \b(floater_afraid)\b
       - match: \b(floater_afraid_rand)\b
       - match: \b(floater_bad)\b
@@ -11175,6 +11170,9 @@ repository:
       - match: \b(get_guard_assignment)\b
       - match: \b(get_ini_section)\b
       - match: \b(get_ini_sections)\b
+      - match: \b(get_interface_height)\b
+      - match: \b(get_interface_rect)\b
+      - match: \b(get_interface_width)\b
       - match: \b(get_interface_x)\b
       - match: \b(get_interface_y)\b
       - match: \b(get_iq)\b
@@ -11267,6 +11265,8 @@ repository:
       - match: \b(interface_art_draw)\b
       - match: \b(interface_art_draw_ex)\b
       - match: \b(interface_art_draw_frame)\b
+      - match: \b(interface_print)\b
+      - match: \b(interface_print_width)\b
       - match: \b(intface_is_shown)\b
       - match: \b(inven_count)\b
       - match: \b(inven_ptr)\b
@@ -11425,6 +11425,9 @@ repository:
       - match: \b(orlvar)\b
       - match: \b(ormvar)\b
       - match: \b(outcast_num_to_tile)\b
+      - match: \b(overlay_clear)\b
+      - match: \b(overlay_clear_rectangle)\b
+      - match: \b(overlay_create)\b
       - match: \b(override_map_start_hex)\b
       - match: \b(party_bit_hidden)\b
       - match: \b(party_follow_dude_point)\b
@@ -11458,8 +11461,6 @@ repository:
       - match: \b(point_run_next_and_face_Rate)\b
       - match: \b(portal_has_pet)\b
       - match: \b(print_option)\b
-      - match: \b(print_text)\b
-      - match: \b(print_text_width)\b
       - match: \b(raider_add_timer_event)\b
       - match: \b(raider_add_timer_event_rand)\b
       - match: \b(random_tile_in_box)\b
@@ -11841,6 +11842,7 @@ repository:
       - match: \b(who_max_carry)\b
       - match: \b(wield_obj)\b
       - match: \b(win_boxing_match)\b
+      - match: \b(win_fill_color)\b
       - match: \b(wm_get_subtile_state)\b
       - match: \b(xorV15Status)\b
       - match: \b(xorlvar)\b

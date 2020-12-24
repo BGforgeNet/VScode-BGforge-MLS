@@ -1777,6 +1777,10 @@
           "name": "support.function.sfall.ssl"
         },
         {
+          "match": "\\b(?i)(combat_data)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
           "match": "\\b(?i)(disable_aimed_shots)\\b",
           "name": "support.function.sfall.ssl"
         },
@@ -3053,15 +3057,19 @@
           "name": "support.function.sfall.ssl"
         },
         {
+          "match": "\\b(?i)(interface_print)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
           "match": "\\b(?i)(message_box)\\b",
           "name": "support.function.sfall.ssl"
         },
         {
-          "match": "\\b(?i)(print_text)\\b",
+          "match": "\\b(?i)(set_window_flag)\\b",
           "name": "support.function.sfall.ssl"
         },
         {
-          "match": "\\b(?i)(set_window_flag)\\b",
+          "match": "\\b(?i)(win_fill_color)\\b",
           "name": "support.function.sfall.ssl"
         },
         {
@@ -3142,6 +3150,14 @@
         },
         {
           "match": "\\b(?i)(sfall_func6)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(sfall_func7)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
+          "match": "\\b(?i)(sfall_func8)\\b",
           "name": "support.function.sfall.ssl"
         },
         {
@@ -4931,6 +4947,10 @@
         },
         {
           "match": "\\b(ARRAYFLAG_CONSTVAL)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(ARRAYFLAG_RESERVED)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -7174,6 +7194,10 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(C_ATTACK_MESSAGE)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(C_ATTACK_ROUNDS)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -7210,6 +7234,10 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(C_ATTACK_UNUSED)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(C_ATTACK_WEAPON)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -7234,18 +7262,6 @@
           "name": "constant.language.define.ssl"
         },
         {
-          "match": "\\b(DAM_BLIND_EYE_LEFT)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
-          "match": "\\b(DAM_BLIND_EYE_RIGHT)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
-          "match": "\\b(DAM_BREAK_WEAPON)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
           "match": "\\b(DAM_BYPASS)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -7255,22 +7271,6 @@
         },
         {
           "match": "\\b(DAM_CRIP_ARM_RIGHT)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
-          "match": "\\b(DAM_CRIP_FOOT_LEFT)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
-          "match": "\\b(DAM_CRIP_FOOT_RIGHT)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
-          "match": "\\b(DAM_CRIP_HAND_LEFT)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
-          "match": "\\b(DAM_CRIP_HAND_RIGHT)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -7294,31 +7294,7 @@
           "name": "constant.language.define.ssl"
         },
         {
-          "match": "\\b(DAM_DEAF)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
-          "match": "\\b(DAM_DEATH_1)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
-          "match": "\\b(DAM_DEATH_2)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
-          "match": "\\b(DAM_DEATH_3)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
-          "match": "\\b(DAM_DECAPITATED)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
           "match": "\\b(DAM_DESTROY)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
-          "match": "\\b(DAM_DODGED)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -7326,23 +7302,11 @@
           "name": "constant.language.define.ssl"
         },
         {
-          "match": "\\b(DAM_DROP_WEAPON)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
           "match": "\\b(DAM_DUD)\\b",
           "name": "constant.language.define.ssl"
         },
         {
-          "match": "\\b(DAM_DUD_SHOT)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
           "match": "\\b(DAM_EXPLODE)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
-          "match": "\\b(DAM_EXPLODE_WEAPON)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -7355,10 +7319,6 @@
         },
         {
           "match": "\\b(DAM_HURT_SELF)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
-          "match": "\\b(DAM_IGNORE_DR)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -7391,26 +7351,6 @@
         },
         {
           "match": "\\b(DAM_RANDOM_HIT)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
-          "match": "\\b(DAM_STUNNED)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
-          "match": "\\b(DAM_SURPRISED)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
-          "match": "\\b(DAM_UNBALANCED)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
-          "match": "\\b(DAM_UNREADY_WEAPON_LEFT)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
-          "match": "\\b(DAM_UNREADY_WEAPON_RIGHT)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -10430,6 +10370,10 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(FIELD_DESTROYED)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(FIELD_DISABLED)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -11078,6 +11022,10 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(FO_VAR_freePtr)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(FO_VAR_free_perk)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -11455,6 +11403,10 @@
         },
         {
           "match": "\\b(FO_VAR_outlined_object)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_pal)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -15006,6 +14958,10 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(PERK_animal_friend)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(PERK_armor_advanced_1)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -15122,7 +15078,15 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(PERK_flower_child)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(PERK_fortune_finder)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(PERK_friendly_foe)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -15226,6 +15190,10 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(PERK_mental_block)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(PERK_more_criticals)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -15299,6 +15267,10 @@
         },
         {
           "match": "\\b(PERK_scout)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(PERK_scrounger)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -31294,6 +31266,10 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(bit_32)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(bit_4)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -31315,6 +31291,10 @@
         },
         {
           "match": "\\b(bit_9)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(bit_ALL)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -33932,10 +33912,6 @@
         },
         {
           "match": "\\b(FIELD_DELAY)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
-          "match": "\\b(FIELD_DESTROYED)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -44170,6 +44146,10 @@
           "name": "support.type.define.header.ssl"
         },
         {
+          "match": "\\b(floater)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
           "match": "\\b(floater_afraid)\\b",
           "name": "support.type.define.header.ssl"
         },
@@ -44395,6 +44375,18 @@
         },
         {
           "match": "\\b(get_ini_sections)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(get_interface_height)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(get_interface_rect)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(get_interface_width)\\b",
           "name": "support.type.define.header.ssl"
         },
         {
@@ -44763,6 +44755,14 @@
         },
         {
           "match": "\\b(interface_art_draw_frame)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(interface_print)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(interface_print_width)\\b",
           "name": "support.type.define.header.ssl"
         },
         {
@@ -45398,6 +45398,18 @@
           "name": "support.type.define.header.ssl"
         },
         {
+          "match": "\\b(overlay_clear)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(overlay_clear_rectangle)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(overlay_create)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
           "match": "\\b(override_map_start_hex)\\b",
           "name": "support.type.define.header.ssl"
         },
@@ -45527,14 +45539,6 @@
         },
         {
           "match": "\\b(print_option)\\b",
-          "name": "support.type.define.header.ssl"
-        },
-        {
-          "match": "\\b(print_text)\\b",
-          "name": "support.type.define.header.ssl"
-        },
-        {
-          "match": "\\b(print_text_width)\\b",
           "name": "support.type.define.header.ssl"
         },
         {
@@ -47059,6 +47063,10 @@
         },
         {
           "match": "\\b(win_boxing_match)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(win_fill_color)\\b",
           "name": "support.type.define.header.ssl"
         },
         {
