@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.15.1
+- IE
+  - Added `LAF`, `LPM`, `LPF` and `LAM` to tooltips.
+  - For `LAUNCH_ACTION_MACRO`, `LAUNCH_PATCH_MACRO` set proper action/patch color.
+  - Fixed color of `DEFINE_ACTION_MACRO`, `DEFINE_PATCH_MACRO`. Properly color `DEFINE_ACTION_FUNCTION`, `DEFINE_PATCH_FUNCTION` when `BEGIN` is on the same line.
+  - Updated defines from upstream.
+- Fallout
+  - Updated defines from upstream.
+
 ## 1.15.0
 - Added basic indentation rules for Fallout SSL, WeiDU BAF and TP2.
 - Added IF-THEN block snippet for BAF.
