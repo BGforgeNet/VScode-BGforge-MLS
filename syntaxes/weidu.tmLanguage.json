@@ -25,7 +25,10 @@
       "include": "#function-invocation-patch"
     },
     {
-      "include": "#macro-invocation"
+      "include": "#macro-invocation-patch"
+    },
+    {
+      "include": "#macro-invocation-action"
     },
     {
       "include": "#function-declaration-action"
@@ -18480,9 +18483,32 @@
         }
       ]
     },
-    "macro-invocation": {
+    "macro-invocation-action": {
       "name": "meta.macro.invocation.weidu",
-      "begin": "\\b(LAM|LAUNCH_ACTION_MACRO|LPM|LAUNCH_PATCH_MACRO)\\b",
+      "begin": "\\b(LAM|LAUNCH_ACTION_MACRO)\\b",
+      "end": "((\\w+)|(\\S+))",
+      "beginCaptures": {
+        "1": {
+          "name": "support.function.weidu.action"
+        }
+      },
+      "endCaptures": {
+        "2": {
+          "name": "entity.name.function"
+        },
+        "3": {
+          "name": "name.function.weidu",
+          "patterns": [
+            {
+              "include": "#strings"
+            }
+          ]
+        }
+      }
+    },
+    "macro-invocation-patch": {
+      "name": "meta.macro.invocation.weidu",
+      "begin": "\\b(LPM|LAUNCH_PATCH_MACRO)\\b",
       "end": "((\\w+)|(\\S+))",
       "beginCaptures": {
         "1": {
@@ -18491,7 +18517,7 @@
       },
       "endCaptures": {
         "2": {
-          "name": "entity.name.function"
+          "name": "entity.name.function.weidu.patch"
         },
         "3": {
           "name": "name.function.weidu",
