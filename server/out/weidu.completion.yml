@@ -3106,13 +3106,13 @@ ielib-resref:
       detail: resref PALADIN_CURE_DISEASE = "SPCL111"
       doc: IElib define
     - name: PALADIN_DETECT_EVIL
-      detail: resref PALADIN_DETECT_EVIL = "SPCL109"
+      detail: resref PALADIN_DETECT_EVIL = "SPCL212"
       doc: IElib define
     - name: PALADIN_LAY_ON_HANDS
       detail: resref PALADIN_LAY_ON_HANDS = "SPCL211"
       doc: IElib define
     - name: PALADIN_PROTECTION_FROM_EVIL
-      detail: resref PALADIN_PROTECTION_FROM_EVIL = "SPCL212"
+      detail: resref PALADIN_PROTECTION_FROM_EVIL = "SPCL213"
       doc: IElib define
     - name: PALADIN_SMITE_EVIL
       detail: resref PALADIN_SMITE_EVIL = "SPCL122"
@@ -3985,7 +3985,7 @@ ielib-resref:
       detail: resref WIZARD_BLACK_BLADE_OF_DISASTER = "SPWI915"
       doc: IElib define
     - name: WIZARD_BLINDNESS
-      detail: resref WIZARD_BLINDNESS = "SPWI226"
+      detail: resref WIZARD_BLINDNESS = "SPWI106"
       doc: IElib define
     - name: WIZARD_BLIND_OLD
       detail: resref WIZARD_BLIND_OLD = "SPWI106"
@@ -4060,16 +4060,16 @@ ielib-resref:
       detail: resref WIZARD_CONFUSION = "SPWI401"
       doc: IElib define
     - name: WIZARD_CONJURE_AIR_ELEMENTAL
-      detail: resref WIZARD_CONJURE_AIR_ELEMENTAL = "SPWI534"
+      detail: resref WIZARD_CONJURE_AIR_ELEMENTAL = "SPWI621"
       doc: IElib define
     - name: WIZARD_CONJURE_EARTH_ELEMENTAL
-      detail: resref WIZARD_CONJURE_EARTH_ELEMENTAL = "SPWI532"
+      detail: resref WIZARD_CONJURE_EARTH_ELEMENTAL = "SPWI622"
       doc: IElib define
     - name: WIZARD_CONJURE_EARTH_ELEMENTAL_MALAVON
       detail: resref WIZARD_CONJURE_EARTH_ELEMENTAL_MALAVON = "SPWI529"
       doc: IElib define
     - name: WIZARD_CONJURE_FIRE_ELEMENTAL
-      detail: resref WIZARD_CONJURE_FIRE_ELEMENTAL = "SPWI531"
+      detail: resref WIZARD_CONJURE_FIRE_ELEMENTAL = "SPWI620"
       doc: IElib define
     - name: WIZARD_CONJURE_LESSER_AIR_ELEMENTAL
       detail: resref WIZARD_CONJURE_LESSER_AIR_ELEMENTAL = "SPWI520"
@@ -4549,7 +4549,7 @@ ielib-resref:
       detail: resref WIZARD_PROTECTION_FROM_NORMAL_WEAPONS = "SPWI511"
       doc: IElib define
     - name: WIZARD_PROTECTION_FROM_PETRIFICATION
-      detail: resref WIZARD_PROTECTION_FROM_PETRIFICATION = "SPWI227"
+      detail: resref WIZARD_PROTECTION_FROM_PETRIFICATION = "SPWI108"
       doc: IElib define
     - name: WIZARD_PROTECTION_FROM_THE_ELEMENTS
       detail: resref WIZARD_PROTECTION_FROM_THE_ELEMENTS = "SPWI702"
@@ -4747,7 +4747,7 @@ ielib-resref:
       detail: resref WIZARD_TROLLISH_FORTITUDE = "SPWI632"
       doc: IElib define
     - name: WIZARD_TRUE_DISPEL_MAGIC
-      detail: resref WIZARD_TRUE_DISPEL_MAGIC = "SPWI323"
+      detail: resref WIZARD_TRUE_DISPEL_MAGIC = "SPWI326"
       doc: IElib define
     - name: WIZARD_TRUE_SIGHT
       detail: resref WIZARD_TRUE_SIGHT = "SPWI609"

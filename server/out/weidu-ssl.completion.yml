@@ -1,5 +1,17 @@
 # types https://docs.microsoft.com/en-us/dotnet/api/microsoft.visualstudio.languageserver.protocol.completionitemkind?view=visualstudiosdk-2017
 
+keywords:
+  type: 14 #keyword
+  items:
+    - name: IF
+    - name: THEN
+    - name: RESPONSE
+    - name: OR
+    - name: GLOBAL
+    - name: LOCALS
+    - name: MYAREA
+    - name: END
+
 actions:
   type: 3 # function
   items:
@@ -1275,7 +1287,7 @@ actions:
         END
         ```
     - name: ForceSpellPointRES
-      detail: ForceSpellPointRES(S:RES, P:Target)
+      detail: ForceSpellPointRES(S:RES, P:Target, I:CastingLevel)
       doc: |-
         This action causes the active creature to cast the specified spell at the specified point ([x.y]). The spell need not currently be memorised by the caster, and will not be interrupted while being cast. The caster must meet the level requirements of the spell. For the RES version of the action, the spell name can not consist of only numbers, should be written in upper case and should be no more than 7 characters long.
 
@@ -1300,7 +1312,7 @@ actions:
       doc: |-
         It is likely that it will force the specified spell if the point is within range of the spell.
     - name: ForceSpellRES
-      detail: ForceSpellRES(S:RES, O:Target)
+      detail: ForceSpellRES(S:RES, O:Target, I:CastingLevel)
       doc: |-
         This action causes the active creature to cast the specified spell at the target object. The spell need not currently be memorised by the caster, and will not be interrupted while being cast. The caster must meet the level requirements of the spell. For the RES version of the action, the spell name can not consist of only numbers, should be written in upper case and should be no more than 7 characters long. The example script is from suelfw9.bcs.
 
