@@ -30,7 +30,7 @@ export function activate(context: ExtensionContext) {
 		var fallout_ssl_dst_dir = vscode.workspace.getConfiguration(config_space).get('fallout-ssl.output_directory', '.');
 		var text_document = vscode.window.activeTextEditor.document;
 		text_document.save(); //need this for compiler
-		var weidu_path = vscode.workspace.getConfiguration(config_space).get('weidu.path', '~/bin/weidu');
+		var weidu_path = vscode.workspace.getConfiguration(config_space).get('weidu.path', 'weidu');
 		var weidu_game_path = vscode.workspace.getConfiguration(config_space).get('weidu.game_path', '');
 		let params: ExecuteCommandParams = {
 			command: cmd_name,
