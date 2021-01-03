@@ -274,7 +274,7 @@
 				"bgforge.weidu.path": {
 					"type": "string",
 					"default": "weidu",
-					"description": "Path to WeiDU binary"
+					"description": "Path to WeiDU binary. Alternatively, you can add WeiDU to system PATH and leave default here."
 				},
 				"bgforge.weidu.game_path": {
 					"type": "string",
