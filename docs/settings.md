@@ -5,7 +5,7 @@ BGforge MLS contributes a number of settings.
 _([How to change settings in VScode](https://code.visualstudio.com/docs/getstarted/settings).)_
 
 ### WeiDU
-- `bgforge.weidu.path`: Full path to WeiDU binary. (Used for hotkey-based [error reporting](https://github.com/BGforgeNet/VScode-BGforge-MLS/#error-reporting).)
+- `bgforge.weidu.path`: Path to WeiDU binary. (Used for hotkey-based [error reporting](https://github.com/BGforgeNet/VScode-BGforge-MLS/#error-reporting).) If WeiDU is in system `PATH`, no changes necessary.
 - `bgforge.weidu.game_path`: Full path to IE game. Needed to parse `BAF` and `D`. (Requires WeiDU v247+).
 
 ### Fallout SSL
