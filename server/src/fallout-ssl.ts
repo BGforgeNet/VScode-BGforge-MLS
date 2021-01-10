@@ -39,7 +39,7 @@ export function load_defines(completion_map: Map<string, Array<any>>, signature_
 			return (el.label == item.label);
 		})
 		if (present.length == 0) {
-			completion_list.push({ label: item.label, kind: item.kind, documentation: item.source, detail: item.detail, fulltext: item.fulltext, source: item.source });
+			completion_list.push({ label: item.label, kind: item.kind, documentation: {"kind":"markdown","value": item.source}, detail: item.detail, fulltext: item.fulltext, source: item.source });
 		}
 	}
 
@@ -49,7 +49,7 @@ export function load_defines(completion_map: Map<string, Array<any>>, signature_
 			return (el.label == item.label);
 		})
 		if (present.length == 0) {
-			completion_list.push({ label: item.label, kind: item.kind, documentation: item.source, detail: item.detail, source: item.source });
+			completion_list.push({ label: item.label, kind: item.kind, documentation: {"kind":"markdown","value": item.source}, detail: item.detail, source: item.source });
 		}
 	}
 
