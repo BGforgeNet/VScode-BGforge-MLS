@@ -391,11 +391,11 @@ repository:
       - include: '#sfall-functions'
   defines:
     patterns:
-      - match: (?i)(\#ifndef)[[:blank:]]+(\w+)
+      - match: (?i)(\#(ifdef|ifndef))[[:blank:]]+(\w+)
         captures:
           '1':
             name: keyword.control.ssl
-          '2':
+          '3':
             name: entity.other.attribute-name.ssl
       - match: (?i)(\#define)\b[[:blank:]]+(\w+)
         captures:
