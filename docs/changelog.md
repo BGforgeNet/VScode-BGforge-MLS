@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.15.2
+- Fallout
+  - Fixed displaying source files for dynamically loaded defines.
+- IE
+  - WeiDU is now searched in system PATH by default.
+
 ## 1.15.1
 - IE
   - Added `LAF`, `LPM`, `LPF` and `LAM` to tooltips.
