@@ -1,11 +1,25 @@
+# types https://docs.microsoft.com/en-us/dotnet/api/microsoft.visualstudio.languageserver.protocol.completionitemkind?view=visualstudiosdk-2017
+preprocessor_directives:
+  type: 14 # keyword
+  items:
+    - name: 'elif'
+    - name: 'endif'
+#    - name: '#else'
+#    - name: '#if'
+    - name: 'ifdef'
+    - name: 'ifndef'
+    - name: 'include'
+    - name: 'define'
+    - name: 'undef'
+
 keywords:
-  type: 1
+  type: 14 # keyword
   items:
     - name: begin
     - name: end
     - name: procedure
 engine-procedures:
-  type: 3
+  type: 3 # function
   items:
     - name: combat_p_proc
       doc: |-

@@ -4,6 +4,9 @@
   "scopeName": "source.fallout-ssl",
   "patterns": [
     {
+      "include": "#comments"
+    },
+    {
       "include": "#function-invocation"
     },
     {
@@ -14,9 +17,6 @@
     },
     {
       "include": "#strings"
-    },
-    {
-      "include": "#comments"
     },
     {
       "include": "#function-declaration"
@@ -1407,7 +1407,7 @@
     "defines": {
       "patterns": [
         {
-          "match": "(?i)(\\#(ifdef|ifndef))[[:blank:]]+(\\w+)",
+          "match": "(?i)(\\#(define|ifdef|ifndef|undef))[[:blank:]]+(\\w+)",
           "captures": {
             "1": {
               "name": "keyword.control.ssl"
@@ -1418,18 +1418,7 @@
           }
         },
         {
-          "match": "(?i)(\\#define)\\b[[:blank:]]+(\\w+)",
-          "captures": {
-            "1": {
-              "name": "keyword.control.ssl"
-            },
-            "2": {
-              "name": "entity.other.attribute-name.ssl"
-            }
-          }
-        },
-        {
-          "match": "(?i)(\\#endif)\\b",
+          "match": "(?i)(\\#(if|endif|elif|else))\\b",
           "name": "keyword.control.ssl"
         }
       ]
