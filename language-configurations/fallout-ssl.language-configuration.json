@@ -30,7 +30,7 @@
         ["'", "'"]
     ],
     "indentationRules": {
-        "increaseIndentPattern": " begin$",
-        "decreaseIndentPattern": " end$"
+        "increaseIndentPattern": "((\\bbegin\\b)|(#\\b(if|ifdef|ifndef|else|elif)\\b)).*",
+        "decreaseIndentPattern": "((\\bend\\b)|(#\\b(else|elif|endif)\\b))(\\s*(\\/\\/.*)?)"
     }
 }
