@@ -4942,7 +4942,7 @@ repository:
   vars-declaration:
     name: variable.complex.weidu
     patterns:
-      - match: \b([\w]+)\s*(=)\s*(EVAL\s+)?
+      - match: \b([-\w]+)\s*(=)\s*(EVAL\s+)?
         captures:
           '1':
             name: variable.parameter.weidu
