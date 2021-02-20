@@ -3054,6 +3054,10 @@
           "name": "support.function.sfall.ssl"
         },
         {
+          "match": "\\b(?i)(nterface_overlay)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
           "match": "\\b(?i)(set_window_flag)\\b",
           "name": "support.function.sfall.ssl"
         },
@@ -3226,6 +3230,14 @@
           "name": "constant.language.ssl"
         },
         {
+          "match": "\\b(HOOK_ADJUSTPOISON)\\b",
+          "name": "constant.language.ssl"
+        },
+        {
+          "match": "\\b(HOOK_ADJUSTRADS)\\b",
+          "name": "constant.language.ssl"
+        },
+        {
           "match": "\\b(HOOK_AFTERHITROLL)\\b",
           "name": "constant.language.ssl"
         },
@@ -3326,6 +3338,10 @@
           "name": "constant.language.ssl"
         },
         {
+          "match": "\\b(HOOK_ROLLCHECK)\\b",
+          "name": "constant.language.ssl"
+        },
+        {
           "match": "\\b(HOOK_SETGLOBALVAR)\\b",
           "name": "constant.language.ssl"
         },
@@ -3396,6 +3412,10 @@
         },
         {
           "match": "\\b(ACCEPT_DELIVERY_DEATH)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(ACCEPT_DELIVERY_FAILED)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -6131,11 +6151,23 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(CARLSON_ACCEPT_SNUFF)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(CARLSON_DEAD)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(CARLSON_GATE_GUARD_CAPTAIN_TILE)\\b",
           "name": "constant.language.define.ssl"
         },
         {
           "match": "\\b(CARLSON_GUARD_TALK_DIST)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(CARLSON_SECURITY_DUTY)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -10739,6 +10771,10 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(FO_VAR_artCritterFidShouldRunData)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(FO_VAR_art_name)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -10748,6 +10784,10 @@
         },
         {
           "match": "\\b(FO_VAR_art_vault_person_nums)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_attack_str)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -11071,6 +11111,14 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(FO_VAR_gmouse_3d_action_nums)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_gmouse_3d_current_mode)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(FO_VAR_gmouse_current_cursor)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -11187,6 +11235,10 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(FO_VAR_lastWin)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(FO_VAR_last_button_winID)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -11272,6 +11324,10 @@
         },
         {
           "match": "\\b(FO_VAR_maxScriptNum)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_mouse_buttons)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -11724,6 +11780,10 @@
         },
         {
           "match": "\\b(FO_VAR_window)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_window_index)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -12259,6 +12319,14 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(HOOK_ADJUSTPOISON)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(HOOK_ADJUSTRADS)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(HOOK_AFTERHITROLL)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -12368,6 +12436,10 @@
         },
         {
           "match": "\\b(HOOK_RESTTIMER)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(HOOK_ROLLCHECK)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -18671,6 +18743,10 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(PID_PLANT_SPIKE_EPA)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(PID_PLANT_SPRAY)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -22403,10 +22479,6 @@
           "name": "constant.language.define.ssl"
         },
         {
-          "match": "\\b(SCRIPTS_NCELDDOG)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
           "match": "\\b(SCRIPT_2NDST)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -24619,10 +24691,6 @@
           "name": "constant.language.define.ssl"
         },
         {
-          "match": "\\b(SCRIPT_FCELRONB)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
           "match": "\\b(SCRIPT_FCFEMPNK)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -24763,14 +24831,6 @@
           "name": "constant.language.define.ssl"
         },
         {
-          "match": "\\b(SCRIPT_FCTGUNTB)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
-          "match": "\\b(SCRIPT_FCTMERTB)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
           "match": "\\b(SCRIPT_FCTNKBAR)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -24780,10 +24840,6 @@
         },
         {
           "match": "\\b(SCRIPT_FCTNKMER)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
-          "match": "\\b(SCRIPT_FCTNKRDR)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -24800,6 +24856,14 @@
         },
         {
           "match": "\\b(SCRIPT_FIPAPER)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(SCRIPT_FITGUNTB)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(SCRIPT_FITMERTB)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -24880,6 +24944,10 @@
         },
         {
           "match": "\\b(SCRIPT_FSTNKCMP)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(SCRIPT_FSTNKRDR)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -25155,6 +25223,10 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(SCRIPT_HCHEMS)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(SCRIPT_HCHENCH)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -25260,10 +25332,6 @@
         },
         {
           "match": "\\b(SCRIPT_HICHADDR)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
-          "match": "\\b(SCRIPT_HICHEMS)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -25667,10 +25735,6 @@
           "name": "constant.language.define.ssl"
         },
         {
-          "match": "\\b(SCRIPT_MCJKYBOX)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
           "match": "\\b(SCRIPT_MCJO)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -25784,6 +25848,10 @@
         },
         {
           "match": "\\b(SCRIPT_MIGSTPRP)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(SCRIPT_MIJKYBOX)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -25959,6 +26027,10 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(SCRIPT_NCELDDOG)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(SCRIPT_NCELDRID)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -25968,6 +26040,10 @@
         },
         {
           "match": "\\b(SCRIPT_NCEXSPOU)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(SCRIPT_NCFIGHTR)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -26351,10 +26427,6 @@
           "name": "constant.language.define.ssl"
         },
         {
-          "match": "\\b(SCRIPT_NIFIGHTR)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
           "match": "\\b(SCRIPT_NIHSCRAT)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -26640,10 +26712,6 @@
         },
         {
           "match": "\\b(SCRIPT_PATCHINF)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
-          "match": "\\b(SCRIPT_PEASAN)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -27255,6 +27323,10 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(SCRIPT_SFELRONB)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(SCRIPT_SFMBOAT)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -27344,6 +27416,10 @@
         },
         {
           "match": "\\b(SCRIPT_SIPAINT)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(SCRIPT_SIPTBOX)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -29008,6 +29084,50 @@
         },
         {
           "match": "\\b(STANDTILE)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(STATE_ACTIVE)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(STATE_DOOR_CLOSE)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(STATE_DOOR_NOCLOSE)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(STATE_ELECTRIC_LOCK)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(STATE_FRIDGE)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(STATE_INACTIVE)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(STATE_METAL)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(STATE_NON_DESTROY)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(STATE_OTHER)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(STATE_STANDARD_LOCK)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(STATE_WOOD)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -30692,6 +30812,14 @@
         },
         {
           "match": "\\b(WEAPON_TYPE_UNARMED)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(WESTIN_ACCEPT_SNUFF)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(WESTIN_DEAD)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -33672,10 +33800,6 @@
           "name": "constant.language.define.ssl"
         },
         {
-          "match": "\\b(CARLSON_ACCEPT_SNUFF)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
           "match": "\\b(CARLSON_CANCEL_SNUFF)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -33684,19 +33808,11 @@
           "name": "constant.language.define.ssl"
         },
         {
-          "match": "\\b(CARLSON_DEAD)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
           "match": "\\b(CARLSON_FAIL)\\b",
           "name": "constant.language.define.ssl"
         },
         {
           "match": "\\b(CARLSON_GATE_CLOSED)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
-          "match": "\\b(CARLSON_SECURITY_DUTY)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -34672,19 +34788,11 @@
           "name": "constant.language.define.ssl"
         },
         {
-          "match": "\\b(WESTIN_ACCEPT_SNUFF)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
           "match": "\\b(WESTIN_CANCEL_SNUFF)\\b",
           "name": "constant.language.define.ssl"
         },
         {
           "match": "\\b(WESTIN_COMPLETE)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
-          "match": "\\b(WESTIN_DEAD)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -39249,6 +39357,34 @@
           "name": "variable.language.define.ssl"
         },
         {
+          "match": "\\b(LVAR_Explosion_Attempts)\\b",
+          "name": "variable.language.define.ssl"
+        },
+        {
+          "match": "\\b(LVAR_Found_Trap)\\b",
+          "name": "variable.language.define.ssl"
+        },
+        {
+          "match": "\\b(LVAR_Gave_Locks_XP)\\b",
+          "name": "variable.language.define.ssl"
+        },
+        {
+          "match": "\\b(LVAR_Gave_Traps_XP)\\b",
+          "name": "variable.language.define.ssl"
+        },
+        {
+          "match": "\\b(LVAR_Locked)\\b",
+          "name": "variable.language.define.ssl"
+        },
+        {
+          "match": "\\b(LVAR_Set_Door_Status)\\b",
+          "name": "variable.language.define.ssl"
+        },
+        {
+          "match": "\\b(LVAR_Trapped)\\b",
+          "name": "variable.language.define.ssl"
+        },
+        {
           "match": "\\b(LVAR_base_reaction)\\b",
           "name": "variable.language.define.ssl"
         },
@@ -41306,6 +41442,10 @@
           "name": "support.function.header.ssl"
         },
         {
+          "match": "\\b(effective_rep)\\b",
+          "name": "support.function.header.ssl"
+        },
+        {
           "match": "\\b(final_fight_lock_doors)\\b",
           "name": "support.function.header.ssl"
         },
@@ -41331,6 +41471,18 @@
         },
         {
           "match": "\\b(removeVaultBoxerAppearance)\\b",
+          "name": "support.function.header.ssl"
+        },
+        {
+          "match": "\\b(robot_use_obj)\\b",
+          "name": "support.function.header.ssl"
+        },
+        {
+          "match": "\\b(sierra_set_klaxons_off)\\b",
+          "name": "support.function.header.ssl"
+        },
+        {
+          "match": "\\b(sierra_set_klaxons_on)\\b",
           "name": "support.function.header.ssl"
         }
       ]
@@ -43727,6 +43879,18 @@
           "name": "support.type.define.header.ssl"
         },
         {
+          "match": "\\b(bot_display_mstr)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(bot_mstr)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(box_mstr)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
           "match": "\\b(bwandlvar)\\b",
           "name": "support.type.define.header.ssl"
         },
@@ -43736,6 +43900,10 @@
         },
         {
           "match": "\\b(bwxorlvar)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(can_be_gas_poisoned)\\b",
           "name": "support.type.define.header.ssl"
         },
         {
@@ -44003,7 +44171,7 @@
           "name": "support.type.define.header.ssl"
         },
         {
-          "match": "\\b(doors_mstr)\\b",
+          "match": "\\b(door_mstr)\\b",
           "name": "support.type.define.header.ssl"
         },
         {
@@ -44755,6 +44923,10 @@
           "name": "support.type.define.header.ssl"
         },
         {
+          "match": "\\b(interface_redraw_win)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
           "match": "\\b(intface_is_shown)\\b",
           "name": "support.type.define.header.ssl"
         },
@@ -45399,6 +45571,10 @@
           "name": "support.type.define.header.ssl"
         },
         {
+          "match": "\\b(overlay_destroy)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
           "match": "\\b(override_map_start_hex)\\b",
           "name": "support.type.define.header.ssl"
         },
@@ -45436,6 +45612,14 @@
         },
         {
           "match": "\\b(party_member_unhide)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(pcnpc_display_line)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(pcnpc_display_str)\\b",
           "name": "support.type.define.header.ssl"
         },
         {
@@ -45528,6 +45712,14 @@
         },
         {
           "match": "\\b(print_option)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(prone_to_gas)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(protected_from_gas)\\b",
           "name": "support.type.define.header.ssl"
         },
         {

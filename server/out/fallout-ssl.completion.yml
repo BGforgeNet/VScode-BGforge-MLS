@@ -2,15 +2,15 @@
 preprocessor_directives:
   type: 14 # keyword
   items:
-    - name: 'elif'
-    - name: 'endif'
+    - name: elif
+    - name: endif
 #    - name: '#else'
 #    - name: '#if'
-    - name: 'ifdef'
-    - name: 'ifndef'
-    - name: 'include'
-    - name: 'define'
-    - name: 'undef'
+    - name: ifdef
+    - name: ifndef
+    - name: include
+    - name: define
+    - name: undef
 
 keywords:
   type: 14 # keyword
@@ -1438,11 +1438,11 @@ sfall-functions:
       doc: |-
         Returns 1 if interface is currently hidden, 0 otherwise.
     - name: intface_redraw
-      detail: void intface_redraw(bool eachWin)
+      detail: void intface_redraw(bool winType)
       doc: |
         Redraws main game interface. Useful after direct changes to current player weapons or stats to reflect changes.
         - redraws main game interface, useful to reflect changes after directly changing current player weapons or stats
-        - `eachWin`: pass True to redraw all interface windows
+        - `winType`: the type number of the interface window (see `WINTYPE_*` constants in `sfall.h`). Pass `-1` to redraw all interface windows.
     - name: intface_show
       detail: void intface_show()
       doc: |-
@@ -1596,6 +1596,7 @@ sfall-functions:
           - True - only checks critters and ignores their cover (roof tiles, walls, scenery, etc.)
           - False - checks all objects (can't check critters under objects)
         - passing False to the includeDude argument will ignore dude_obj
+        **NOTE:** the function will always return 0 if the cursor is in movement mode (hexagon cursor).
     - name: real_dude_obj
       detail: ObjectPtr real_dude_obj()
       doc: |-
@@ -2376,6 +2377,16 @@ sfall-functions:
         - flags: mode flags (see `MSGBOX_*` constants in define_extra.h). Pass -1 to skip setting the flags (default flags are NORMAL and YESNO)
         - color1/color2: the color index in the game palette. `color1` sets the text color for the first line, and `color2` for all subsequent lines of text (default color is 145)
         ```
+    - name: nterface_overlay
+      detail: sfall_func2("interface_overlay", int winType, int mode)
+      doc: |
+        Alternative form: `int sfall_func6("interface_overlay", int winType, 2, int x, int y, int width, int height)`.
+
+        Creates an additional drawing surface above the graphic layer of the specified interface window. All subsequent calls of `interface_art_draw` and `interface_print` functions will draw on it.
+        - `winType`: the type number of the interface window (see `WINTYPE_*` constants in `sfall.h`)
+        - `mode`: 1 - creates a new overlay surface
+                  2 - clears the overlay area or the specified rectangle defined by the `x`, `y`, `width`, `height` arguments
+                  0 - destroys the created overlay surface (frees up the memory allocated to the surface)
     - name: set_window_flag
       detail: void set_window_flag(string winName/int winID, int flag, bool value)
       doc: |
@@ -2524,6 +2535,27 @@ hooks:
         int     arg1 - the modified FID calculated by the internal sfall code (like Hero Appearance Mod)
 
         int     ret0 - overrides the calculated FID with provided value
+        ```
+    - name: HOOK_ADJUSTPOISON
+      doc: |
+        Runs when a critter's poison level is changed, or when the player takes damage from the poison.
+        ```
+        Critter arg0 - the critter
+        int     arg1 - the amount of poison being added/removed
+        int     arg2 - the damage value at the time of applying the poison effect
+                       (damage from the poison effect is implemented only for the player character; for other critters, this value will always be 0)
+
+        int     ret0 - the new amount of poison being added/removed
+        int     ret1 - the new damage value, only negative values are allowed (will only be valid at the time of taking damage from the poison)
+        ````
+    - name: HOOK_ADJUSTRADS
+      doc: |
+        Runs when a critter's radiation level is changed.
+        ```
+        Critter arg0 - the critter (usually dude_obj)
+        int     arg1 - the amount of radiation being added/removed
+
+        int     ret0 - the new amount of radiation being added/removed
         ```
     - name: HOOK_AFTERHITROLL
       doc: |
@@ -2692,11 +2724,12 @@ hooks:
         ```
     - name: HOOK_DESCRIPTIONOBJ
       doc: |
-        Runs when using the examine action icon to display item description. You can override the description of the item.
+        Runs when using the examine action icon to display the description of an object. You can override the description text.
         An example usage would be to add an additional description to the item based on player's stats/skills.
+        Does not run if the script of the object overrides the description.
 
         ```
-        Obj     arg0 - the item
+        Obj     arg0 - the object
 
         int     ret0 - a pointer to the new text received by using "get_string_pointer" function
         ```
@@ -2815,7 +2848,7 @@ hooks:
         ```
     - name: HOOK_MOUSECLICK
       doc: |
-        Runs once every time when a mouse button was pressed or release.
+        Runs once every time when a mouse button was pressed or released.
 
         ```
         int     arg0 - event type: 1 - pressed, 0 - released
@@ -2875,6 +2908,27 @@ hooks:
         int     arg3 - the minute part of the length of resting time
 
         int     ret0 - pass 1 to interrupt the resting, pass 0 to continue the rest if it was interrupted by pressing ESC key
+        ```
+    - name: HOOK_ROLLCHECK
+      doc: |
+        Runs when a game event performs a random roll to check the chance of success or failure.
+        ```
+        int     arg0 - event type:
+                       1 - checks the chance of an attack hitting the target
+                       2 - checks the chance of a bullet from a burst hitting the target (for burst attacks)
+                       3 - checks the chance when using skills (not listed below)
+                       4 - check the chance of using Repair skill
+                       5 - check the chance of using Doctor skill
+                       6 - check the chance of using Steal skill for the thief (usually the player)
+                       7 - the second Steal skill chance check for the target to catch the thief, in which the target's failure is the thief's success result
+        int     arg1 - the value of roll result (see ROLL_* constants), which is calculated as:
+                       for ROLL_CRITICAL_SUCCESS: random(1, 100) <= (random_chance / 10) + bonus
+                       for ROLL_CRITICAL_FAILURE: random(1, 100) <= -random_chance / 10
+        int     arg2 - the chance value
+        int     arg3 - the bonus value, used when checking critical success
+        int     arg4 - random chance (calculated as: chance - random(1, 100)), where a negative value is a failure check (ROLL_FAILURE)
+
+        int     ret0 - overrides the roll result
         ```
     - name: HOOK_SETGLOBALVAR
       doc: |

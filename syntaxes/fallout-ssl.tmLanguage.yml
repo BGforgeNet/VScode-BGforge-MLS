@@ -816,6 +816,7 @@ repository:
       - match: \b(?i)(interface_art_draw)\b
       - match: \b(?i)(interface_print)\b
       - match: \b(?i)(message_box)\b
+      - match: \b(?i)(nterface_overlay)\b
       - match: \b(?i)(set_window_flag)\b
       - match: \b(?i)(win_fill_color)\b
       - match: \b(?i)(get_world_map_x_pos)\b
@@ -870,6 +871,8 @@ repository:
     name: constant.language.ssl
     patterns:
       - match: \b(HOOK_ADJUSTFID)\b
+      - match: \b(HOOK_ADJUSTPOISON)\b
+      - match: \b(HOOK_ADJUSTRADS)\b
       - match: \b(HOOK_AFTERHITROLL)\b
       - match: \b(HOOK_AMMOCOST)\b
       - match: \b(HOOK_BARTERPRICE)\b
@@ -895,6 +898,7 @@ repository:
       - match: \b(HOOK_ONEXPLOSION)\b
       - match: \b(HOOK_REMOVEINVENOBJ)\b
       - match: \b(HOOK_RESTTIMER)\b
+      - match: \b(HOOK_ROLLCHECK)\b
       - match: \b(HOOK_SETGLOBALVAR)\b
       - match: \b(HOOK_SETLIGHTING)\b
       - match: \b(HOOK_SNEAK)\b
@@ -915,6 +919,7 @@ repository:
     patterns:
       - match: \b(ACCEPT_DELIVERY_ASSIGNED)\b
       - match: \b(ACCEPT_DELIVERY_DEATH)\b
+      - match: \b(ACCEPT_DELIVERY_FAILED)\b
       - match: \b(ACCEPT_DELIVERY_HAPPY)\b
       - match: \b(ACTION_ATTACK)\b
       - match: \b(ACTION_LOCKPICK)\b
@@ -1598,8 +1603,11 @@ repository:
       - match: \b(CARAVAN_STATUS_WAITING)\b
       - match: \b(CARAVAN_THE_DEN)\b
       - match: \b(CARAVAN_VAULT_CITY)\b
+      - match: \b(CARLSON_ACCEPT_SNUFF)\b
+      - match: \b(CARLSON_DEAD)\b
       - match: \b(CARLSON_GATE_GUARD_CAPTAIN_TILE)\b
       - match: \b(CARLSON_GUARD_TALK_DIST)\b
+      - match: \b(CARLSON_SECURITY_DUTY)\b
       - match: \b(CARTUCCI_MOVIE)\b
       - match: \b(CAR_ABBEY_ELEV)\b
       - match: \b(CAR_ABBEY_HEX)\b
@@ -2750,9 +2758,11 @@ repository:
       - match: \b(FO_VAR_anim_set)\b
       - match: \b(FO_VAR_anon_alias)\b
       - match: \b(FO_VAR_art)\b
+      - match: \b(FO_VAR_artCritterFidShouldRunData)\b
       - match: \b(FO_VAR_art_name)\b
       - match: \b(FO_VAR_art_vault_guy_num)\b
       - match: \b(FO_VAR_art_vault_person_nums)\b
+      - match: \b(FO_VAR_attack_str)\b
       - match: \b(FO_VAR_background_volume)\b
       - match: \b(FO_VAR_bboxslot)\b
       - match: \b(FO_VAR_bckgnd)\b
@@ -2833,6 +2843,8 @@ repository:
       - match: \b(FO_VAR_gdNumOptions)\b
       - match: \b(FO_VAR_gdialog_speech_playing)\b
       - match: \b(FO_VAR_glblmode)\b
+      - match: \b(FO_VAR_gmouse_3d_action_nums)\b
+      - match: \b(FO_VAR_gmouse_3d_current_mode)\b
       - match: \b(FO_VAR_gmouse_current_cursor)\b
       - match: \b(FO_VAR_gmovie_played_list)\b
       - match: \b(FO_VAR_gsound_initialized)\b
@@ -2862,6 +2874,7 @@ repository:
       - match: \b(FO_VAR_kb_lock_flags)\b
       - match: \b(FO_VAR_lastMovieH)\b
       - match: \b(FO_VAR_lastMovieW)\b
+      - match: \b(FO_VAR_lastWin)\b
       - match: \b(FO_VAR_last_button_winID)\b
       - match: \b(FO_VAR_last_buttons)\b
       - match: \b(FO_VAR_last_level)\b
@@ -2884,6 +2897,7 @@ repository:
       - match: \b(FO_VAR_master_volume)\b
       - match: \b(FO_VAR_max)\b
       - match: \b(FO_VAR_maxScriptNum)\b
+      - match: \b(FO_VAR_mouse_buttons)\b
       - match: \b(FO_VAR_mouse_hotx)\b
       - match: \b(FO_VAR_mouse_hoty)\b
       - match: \b(FO_VAR_mouse_is_hidden)\b
@@ -2997,6 +3011,7 @@ repository:
       - match: \b(FO_VAR_view_page)\b
       - match: \b(FO_VAR_wd_obj)\b
       - match: \b(FO_VAR_window)\b
+      - match: \b(FO_VAR_window_index)\b
       - match: \b(FO_VAR_wmAreaInfoList)\b
       - match: \b(FO_VAR_wmBkWin)\b
       - match: \b(FO_VAR_wmBkWinBuf)\b
@@ -3130,6 +3145,8 @@ repository:
       - match: \b(HOLODISK_DONE)\b
       - match: \b(HOME_POS)\b
       - match: \b(HOOK_ADJUSTFID)\b
+      - match: \b(HOOK_ADJUSTPOISON)\b
+      - match: \b(HOOK_ADJUSTRADS)\b
       - match: \b(HOOK_AFTERHITROLL)\b
       - match: \b(HOOK_AMMOCOST)\b
       - match: \b(HOOK_BARTERPRICE)\b
@@ -3158,6 +3175,7 @@ repository:
       - match: \b(HOOK_ONEXPLOSION)\b
       - match: \b(HOOK_REMOVEINVENOBJ)\b
       - match: \b(HOOK_RESTTIMER)\b
+      - match: \b(HOOK_ROLLCHECK)\b
       - match: \b(HOOK_SETGLOBALVAR)\b
       - match: \b(HOOK_SETLIGHTING)\b
       - match: \b(HOOK_SNEAK)\b
@@ -4733,6 +4751,7 @@ repository:
       - match: \b(PID_PK12_GAUSS_PISTOL)\b
       - match: \b(PID_PLANK)\b
       - match: \b(PID_PLANT_SPIKE)\b
+      - match: \b(PID_PLANT_SPIKE_EPA)\b
       - match: \b(PID_PLANT_SPRAY)\b
       - match: \b(PID_PLASMA_GRENADE)\b
       - match: \b(PID_PLASMA_PISTOL)\b
@@ -5666,7 +5685,6 @@ repository:
       - match: \b(SAVEGAME)\b
       - match: \b(SCHEDULED_FOR_DESTRUCTION)\b
       - match: \b(SCHEDULED_FOR_REPAIRS)\b
-      - match: \b(SCRIPTS_NCELDDOG)\b
       - match: \b(SCRIPT_2NDST)\b
       - match: \b(SCRIPT_ABBASEM)\b
       - match: \b(SCRIPT_ABBEY)\b
@@ -6220,7 +6238,6 @@ repository:
       - match: \b(SCRIPT_FCDRWONG)\b
       - match: \b(SCRIPT_FCELGRD)\b
       - match: \b(SCRIPT_FCELRIND)\b
-      - match: \b(SCRIPT_FCELRONB)\b
       - match: \b(SCRIPT_FCFEMPNK)\b
       - match: \b(SCRIPT_FCFMATT)\b
       - match: \b(SCRIPT_FCGUDPEA)\b
@@ -6256,16 +6273,15 @@ repository:
       - match: \b(SCRIPT_FCSUBTCO)\b
       - match: \b(SCRIPT_FCSUBTOR)\b
       - match: \b(SCRIPT_FCSUZE)\b
-      - match: \b(SCRIPT_FCTGUNTB)\b
-      - match: \b(SCRIPT_FCTMERTB)\b
       - match: \b(SCRIPT_FCTNKBAR)\b
       - match: \b(SCRIPT_FCTNKGMR)\b
       - match: \b(SCRIPT_FCTNKMER)\b
-      - match: \b(SCRIPT_FCTNKRDR)\b
       - match: \b(SCRIPT_FIELRDSK)\b
       - match: \b(SCRIPT_FIGUNTBL)\b
       - match: \b(SCRIPT_FILAOTBL)\b
       - match: \b(SCRIPT_FIPAPER)\b
+      - match: \b(SCRIPT_FITGUNTB)\b
+      - match: \b(SCRIPT_FITMERTB)\b
       - match: \b(SCRIPT_FSBIOSTA)\b
       - match: \b(SCRIPT_FSBRODOR)\b
       - match: \b(SCRIPT_FSCHESTA)\b
@@ -6286,6 +6302,7 @@ repository:
       - match: \b(SCRIPT_FSSUBINT)\b
       - match: \b(SCRIPT_FSSUBSP)\b
       - match: \b(SCRIPT_FSTNKCMP)\b
+      - match: \b(SCRIPT_FSTNKRDR)\b
       - match: \b(SCRIPT_GAMMOVIE)\b
       - match: \b(SCRIPT_GCBRAIN)\b
       - match: \b(SCRIPT_GCENC)\b
@@ -6354,6 +6371,7 @@ repository:
       - match: \b(SCRIPT_HCGRD2)\b
       - match: \b(SCRIPT_HCGUARD)\b
       - match: \b(SCRIPT_HCGUARD2)\b
+      - match: \b(SCRIPT_HCHEMS)\b
       - match: \b(SCRIPT_HCHENCH)\b
       - match: \b(SCRIPT_HCHUSWIF)\b
       - match: \b(SCRIPT_HCJACOB)\b
@@ -6381,7 +6399,6 @@ repository:
       - match: \b(SCRIPT_HICAVEIN)\b
       - match: \b(SCRIPT_HICDSHLF)\b
       - match: \b(SCRIPT_HICHADDR)\b
-      - match: \b(SCRIPT_HICHEMS)\b
       - match: \b(SCRIPT_HICONSOL)\b
       - match: \b(SCRIPT_HICONTNR)\b
       - match: \b(SCRIPT_HIDEAD)\b
@@ -6482,7 +6499,6 @@ repository:
       - match: \b(SCRIPT_MCDTHCLW)\b
       - match: \b(SCRIPT_MCFARREL)\b
       - match: \b(SCRIPT_MCGRISHA)\b
-      - match: \b(SCRIPT_MCJKYBOX)\b
       - match: \b(SCRIPT_MCJO)\b
       - match: \b(SCRIPT_MCJONNY)\b
       - match: \b(SCRIPT_MCKARL)\b
@@ -6512,6 +6528,7 @@ repository:
       - match: \b(SCRIPT_MIGATE)\b
       - match: \b(SCRIPT_MIGRIBOX)\b
       - match: \b(SCRIPT_MIGSTPRP)\b
+      - match: \b(SCRIPT_MIJKYBOX)\b
       - match: \b(SCRIPT_MIJOBOX)\b
       - match: \b(SCRIPT_MILADDER)\b
       - match: \b(SCRIPT_MILSTFND)\b
@@ -6555,9 +6572,11 @@ repository:
       - match: \b(SCRIPT_NCCOMEDI)\b
       - match: \b(SCRIPT_NCCORBRO)\b
       - match: \b(SCRIPT_NCDRGDLR)\b
+      - match: \b(SCRIPT_NCELDDOG)\b
       - match: \b(SCRIPT_NCELDRID)\b
       - match: \b(SCRIPT_NCETHWRI)\b
       - match: \b(SCRIPT_NCEXSPOU)\b
+      - match: \b(SCRIPT_NCFIGHTR)\b
       - match: \b(SCRIPT_NCFLUFFE)\b
       - match: \b(SCRIPT_NCFTULLY)\b
       - match: \b(SCRIPT_NCHOLLYF)\b
@@ -6653,7 +6672,6 @@ repository:
       - match: \b(SCRIPT_NIELDRLK)\b
       - match: \b(SCRIPT_NIETHBOX)\b
       - match: \b(SCRIPT_NIF2HINT)\b
-      - match: \b(SCRIPT_NIFIGHTR)\b
       - match: \b(SCRIPT_NIHSCRAT)\b
       - match: \b(SCRIPT_NIJULBOX)\b
       - match: \b(SCRIPT_NILYDBOX)\b
@@ -6726,7 +6744,6 @@ repository:
       - match: \b(SCRIPT_OSV13DR)\b
       - match: \b(SCRIPT_OSVDRCMP)\b
       - match: \b(SCRIPT_PATCHINF)\b
-      - match: \b(SCRIPT_PEASAN)\b
       - match: \b(SCRIPT_PEEING)\b
       - match: \b(SCRIPT_QCBIRD)\b
       - match: \b(SCRIPT_QCCURLNG)\b
@@ -6879,6 +6896,7 @@ repository:
       - match: \b(SCRIPT_SFCHINA)\b
       - match: \b(SCRIPT_SFCHINA2)\b
       - match: \b(SCRIPT_SFDOCK)\b
+      - match: \b(SCRIPT_SFELRONB)\b
       - match: \b(SCRIPT_SFMBOAT)\b
       - match: \b(SCRIPT_SFSHENG)\b
       - match: \b(SCRIPT_SFSHUTL1)\b
@@ -6902,6 +6920,7 @@ repository:
       - match: \b(SCRIPT_SIMRKSTR)\b
       - match: \b(SCRIPT_SIMSERUM)\b
       - match: \b(SCRIPT_SIPAINT)\b
+      - match: \b(SCRIPT_SIPTBOX)\b
       - match: \b(SCRIPT_SIPTBOX2)\b
       - match: \b(SCRIPT_SIRAGOBJ)\b
       - match: \b(SCRIPT_SIRNGMAP)\b
@@ -7318,6 +7337,17 @@ repository:
       - match: \b(SP_TALKWONG)\b
       - match: \b(SP_UNPAID)\b
       - match: \b(STANDTILE)\b
+      - match: \b(STATE_ACTIVE)\b
+      - match: \b(STATE_DOOR_CLOSE)\b
+      - match: \b(STATE_DOOR_NOCLOSE)\b
+      - match: \b(STATE_ELECTRIC_LOCK)\b
+      - match: \b(STATE_FRIDGE)\b
+      - match: \b(STATE_INACTIVE)\b
+      - match: \b(STATE_METAL)\b
+      - match: \b(STATE_NON_DESTROY)\b
+      - match: \b(STATE_OTHER)\b
+      - match: \b(STATE_STANDARD_LOCK)\b
+      - match: \b(STATE_WOOD)\b
       - match: \b(STAT_ac)\b
       - match: \b(STAT_ag)\b
       - match: \b(STAT_age)\b
@@ -7739,6 +7769,8 @@ repository:
       - match: \b(WEAPON_TYPE_NONE)\b
       - match: \b(WEAPON_TYPE_THROWN)\b
       - match: \b(WEAPON_TYPE_UNARMED)\b
+      - match: \b(WESTIN_ACCEPT_SNUFF)\b
+      - match: \b(WESTIN_DEAD)\b
       - match: \b(WHIRLY_BEGIN)\b
       - match: \b(WHIRLY_NULL)\b
       - match: \b(WHIRLY_PLANS)\b
@@ -8485,13 +8517,10 @@ repository:
       - match: \b(BigDownReact)\b
       - match: \b(BigUpReact)\b
       - match: \b(CALL_PICKUP)\b
-      - match: \b(CARLSON_ACCEPT_SNUFF)\b
       - match: \b(CARLSON_CANCEL_SNUFF)\b
       - match: \b(CARLSON_COMPLETE)\b
-      - match: \b(CARLSON_DEAD)\b
       - match: \b(CARLSON_FAIL)\b
       - match: \b(CARLSON_GATE_CLOSED)\b
-      - match: \b(CARLSON_SECURITY_DUTY)\b
       - match: \b(CATTLE_ABANDON)\b
       - match: \b(CATTLE_ACCEPT)\b
       - match: \b(CATTLE_AVERAGE)\b
@@ -8735,10 +8764,8 @@ repository:
       - match: \b(VOICEREPAIROBJ)\b
       - match: \b(VOICE_CHIP_PID)\b
       - match: \b(VOTRIS_NCR_MAP)\b
-      - match: \b(WESTIN_ACCEPT_SNUFF)\b
       - match: \b(WESTIN_CANCEL_SNUFF)\b
       - match: \b(WESTIN_COMPLETE)\b
-      - match: \b(WESTIN_DEAD)\b
       - match: \b(WESTIN_DOC_JUB_TALKED)\b
       - match: \b(WESTIN_DRUGS_KNOWN)\b
       - match: \b(WESTIN_FAIL)\b
@@ -9881,6 +9908,13 @@ repository:
       - match: \b(GVAR_WOOZ_STATUS)\b
       - match: \b(GVAR_WRIGHT_FAMILY_COUNTER)\b
       - match: \b(GVAR_WRIGHT_WARNINGS)\b
+      - match: \b(LVAR_Explosion_Attempts)\b
+      - match: \b(LVAR_Found_Trap)\b
+      - match: \b(LVAR_Gave_Locks_XP)\b
+      - match: \b(LVAR_Gave_Traps_XP)\b
+      - match: \b(LVAR_Locked)\b
+      - match: \b(LVAR_Set_Door_Status)\b
+      - match: \b(LVAR_Trapped)\b
       - match: \b(LVAR_base_reaction)\b
       - match: \b(LVAR_got_reaction)\b
       - match: \b(LVAR_reaction)\b
@@ -10397,6 +10431,7 @@ repository:
       - match: \b(checkPartyMembersNearDoor)\b
       - match: \b(check_filesystem_override)\b
       - match: \b(doVaultBoxerAppearance)\b
+      - match: \b(effective_rep)\b
       - match: \b(final_fight_lock_doors)\b
       - match: \b(getTimeBit)\b
       - match: \b(hotkey_pressed)\b
@@ -10404,6 +10439,9 @@ repository:
       - match: \b(min)\b
       - match: \b(party_size_humans)\b
       - match: \b(removeVaultBoxerAppearance)\b
+      - match: \b(robot_use_obj)\b
+      - match: \b(sierra_set_klaxons_off)\b
+      - match: \b(sierra_set_klaxons_on)\b
   header-defines-with-vars:
     name: support.type.define.header.ssl
     patterns:
@@ -11004,9 +11042,13 @@ repository:
       - match: \b(below)\b
       - match: \b(below_equal)\b
       - match: \b(bos_state)\b
+      - match: \b(bot_display_mstr)\b
+      - match: \b(bot_mstr)\b
+      - match: \b(box_mstr)\b
       - match: \b(bwandlvar)\b
       - match: \b(bworlvar)\b
       - match: \b(bwxorlvar)\b
+      - match: \b(can_be_gas_poisoned)\b
       - match: \b(car_booster)\b
       - match: \b(car_give_gas)\b
       - match: \b(car_regulator)\b
@@ -11073,7 +11115,7 @@ repository:
       - match: \b(distance_objs)\b
       - match: \b(dlog)\b
       - match: \b(dlogr)\b
-      - match: \b(doors_mstr)\b
+      - match: \b(door_mstr)\b
       - match: \b(draw_image)\b
       - match: \b(draw_image_scaled)\b
       - match: \b(drug_influence)\b
@@ -11261,6 +11303,7 @@ repository:
       - match: \b(interface_art_draw_frame)\b
       - match: \b(interface_print)\b
       - match: \b(interface_print_width)\b
+      - match: \b(interface_redraw_win)\b
       - match: \b(intface_is_shown)\b
       - match: \b(inven_count)\b
       - match: \b(inven_ptr)\b
@@ -11422,6 +11465,7 @@ repository:
       - match: \b(overlay_clear)\b
       - match: \b(overlay_clear_rectangle)\b
       - match: \b(overlay_create)\b
+      - match: \b(overlay_destroy)\b
       - match: \b(override_map_start_hex)\b
       - match: \b(party_bit_hidden)\b
       - match: \b(party_follow_dude_point)\b
@@ -11432,6 +11476,8 @@ repository:
       - match: \b(party_member_hide)\b
       - match: \b(party_member_options)\b
       - match: \b(party_member_unhide)\b
+      - match: \b(pcnpc_display_line)\b
+      - match: \b(pcnpc_display_str)\b
       - match: \b(pid_cost)\b
       - match: \b(pid_cost_barter)\b
       - match: \b(pid_is_drink_pid)\b
@@ -11455,6 +11501,8 @@ repository:
       - match: \b(point_run_next_and_face_Rate)\b
       - match: \b(portal_has_pet)\b
       - match: \b(print_option)\b
+      - match: \b(prone_to_gas)\b
+      - match: \b(protected_from_gas)\b
       - match: \b(raider_add_timer_event)\b
       - match: \b(raider_add_timer_event_rand)\b
       - match: \b(random_tile_in_box)\b
