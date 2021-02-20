@@ -24,6 +24,7 @@ if [ ! -d "$iesdp_dir" ]; then
   git clone "$iesdp_repo" "$iesdp_dir"
 fi
 cd $iesdp_dir
+git checkout ielib
 git pull
 popd
 ./scripts/iesdp-update.py -s "$iesdp_dir" --completion-baf "$completion_baf" --highlight-baf "$highlight_baf" --completion-weidu "$completion_weidu" --highlight-weidu "$highlight_weidu" --ielib-dir "$ielib_dir"
