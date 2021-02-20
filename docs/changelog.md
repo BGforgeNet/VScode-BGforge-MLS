@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.15.3
+- Fallout
+  - Updated data from upstream.
+  - Added more preprocessor directives: highlighting, completion, indentation.
+  - Moved comments higher in highlighting for better performance.
+- IE
+  - Updated data from upstream.
+  - Fixed highlighting for var names with `-`.
+
 ## 1.15.2
 - Fallout
   - Fixed displaying source files for dynamically loaded defines.
