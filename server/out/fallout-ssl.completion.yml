@@ -792,7 +792,9 @@ base-functions:
       detail: void set_obj_visibility(ObjectPtr obj, bool visibility)
       doc: |-
         Sets the `OBJ_OFF` flag for an object (makes it not drawn).
-        Note: Visibility arg is _inverted_: `set_obj_visibility(who, true)` makes object invisible.
+        Notes:
+          - Visibility arg is _inverted_: `set_obj_visibility(who, true)` makes object invisible.
+          - Cannot be invoked while saving/loading. Use `if not is_loading_game` to avoid polluting debug.log with errors.
     - name: signal_end_game
       detail: void signal_end_game
       doc: |-
