@@ -31,7 +31,10 @@
 		"onLanguage:weidu-dialog",
 		"onLanguage:weidu-baf",
 		"onLanguage:weidu-slb",
-		"onLanguage:weidu-ssl"
+		"onLanguage:weidu-ssl",
+		"onLanguage:weidu-tpl",
+		"onLanguage:weidu-dialog-tpl",
+		"onLanguage:weidu-baf-tpl"
 	],
 	"main": "./client/out/extension",
 	"contributes": {
@@ -95,6 +98,19 @@
 				"configuration": "./language-configurations/weidu.language-configuration.json"
 			},
 			{
+				"id": "weidu-tpl",
+				"aliases": [
+					"weidu template"
+				],
+				"extensions": [
+					".tp2.tpl",
+					".tpa.tpl",
+					".tph.tpl",
+					".tpp.tpl"
+				],
+				"configuration": "./language-configurations/weidu.language-configuration.json"
+			},
+			{
 				"id": "weidu-dialog",
 				"aliases": [
 					"Infinity Engine dialog",
@@ -113,6 +129,26 @@
 				],
 				"extensions": [
 					".baf"
+				],
+				"configuration": "./language-configurations/weidu.baf.language-configuration.json"
+			},
+			{
+				"id": "weidu-dialog-tpl",
+				"aliases": [
+					"Infinity Engine dialog template"
+				],
+				"extensions": [
+					".d.tpl"
+				],
+				"configuration": "./language-configurations/weidu.d.language-configuration.json"
+			},
+			{
+				"id": "weidu-baf-tpl",
+				"aliases": [
+					"Infinity Engine script template"
+				],
+				"extensions": [
+					".baf.tpl"
 				],
 				"configuration": "./language-configurations/weidu.baf.language-configuration.json"
 			},
@@ -194,6 +230,21 @@
 			},
 			{
 				"language": "weidu-baf",
+				"scopeName": "source.baf.weidu",
+				"path": "./syntaxes/weidu.baf.tmLanguage.json"
+			},
+			{
+				"language": "weidu-tpl",
+				"scopeName": "source.tp2.weidu",
+				"path": "./syntaxes/weidu.tmLanguage.json"
+			},
+			{
+				"language": "weidu-dialog-tpl",
+				"scopeName": "source.d.weidu",
+				"path": "./syntaxes/weidu.d.tmLanguage.json"
+			},
+			{
+				"language": "weidu-baf-tpl",
 				"scopeName": "source.baf.weidu",
 				"path": "./syntaxes/weidu.baf.tmLanguage.json"
 			},

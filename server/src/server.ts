@@ -47,6 +47,8 @@ let signature_map = new Map<string, Array<any>>();
 let hover_lang_map = new Map([
 	[ "weidu", "weidu" ],
 	[ "weidu-baf", "weidu-baf" ],
+	[ "weidu-tpl", "weidu" ],
+	[ "weidu-baf-tpl", "weidu-baf" ],
 	[ "weidu-ssl", "weidu-ssl" ],
 	[ "fallout-ssl", "fallout-ssl-codeblock" ]
 ]);
@@ -378,7 +380,10 @@ connection.onExecuteCommand((params, cancel_token) => {
 				}
 				case "weidu":
 				case "weidu-baf":
-				case "weidu-dialog": {
+				case "weidu-dialog":
+				case "weidu-tpl":
+				case "weidu-baf-tpl":
+				case "weidu-dialog-tpl": {
 					weidu.wcompile(params, cancel_token);
 					break;
 				}
