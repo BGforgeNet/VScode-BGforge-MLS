@@ -57,11 +57,11 @@ export function activate(context: ExtensionContext) {
 		documentSelector: [
 			{ scheme: 'file', language: 'fallout-ssl' },
 			{ scheme: 'file', language: 'weidu' },
-			{ scheme: 'file', language: 'weidu-dialog' },
 			{ scheme: 'file', language: 'weidu-baf' },
+			{ scheme: 'file', language: 'weidu-dialog' },
 			{ scheme: 'file', language: 'weidu-tpl' },
 			{ scheme: 'file', language: 'weidu-baf-tpl' },
-			{ scheme: 'file', language: 'weidu-d-tpl' }
+			{ scheme: 'file', language: 'weidu-dialog-tpl' }
 		],
 		synchronize: {
 			// Notify the server about file changes to '.clientrc files contained in the workspace
