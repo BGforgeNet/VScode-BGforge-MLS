@@ -48,7 +48,8 @@
 				"extensions": [
 					".ssl"
 				],
-				"configuration": "./language-configurations/weidu-ssl.language-configuration.json"
+				"configuration": "./language-configurations/weidu-ssl.language-configuration.json",
+				"icon": "test"
 			},
 			{
 				"id": "fallout-ssl",
@@ -339,8 +340,14 @@
 				"command": "extension.bgforge.compile",
 				"key": "ctrl+r"
 			}
-		]
-	},
+		],
+		"iconThemes": [
+      {
+        "id": "bgforge",
+        "label": "BGforge",
+        "path": "./themes/bgforge-icon-theme.json"
+      }
+    ]},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
 		"compile:client": "./scripts/syntaxes_to_json.sh && tsc -p ./client/tsconfig.json",
