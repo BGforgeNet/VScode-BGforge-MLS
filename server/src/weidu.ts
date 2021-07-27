@@ -58,9 +58,35 @@ function parse_compile_output(text: string) {
 	return [errors, warnings];
 }
 
-function send_diagnostics(text_document: TextDocument, output_text: string) {
+function parse_gcc_output(text: string) {
+	let errors_pattern = /((\S+)\.tpl):(\d+):(\d+): error:.*/g;
+	let errors = [];
+	let warnings: any[] = [];
+
+	try {
+		let match: any;
+		while ((match = errors_pattern.exec(text)) != null) {
+			// This is necessary to avoid infinite loops with zero-width matches
+			if (match.index === errors_pattern.lastIndex) {
+				errors_pattern.lastIndex++;
+			}
+			errors.push({ file: match[1], line: parseInt(match[3]), col_start: parseInt(match[4]), col_end: parseInt((match[0]).length), message: text });
+		};
+
+	} catch (err) {
+		conlog(err);
+	}
+	return [errors, warnings];
+}
+
+function send_diagnostics(text_document: TextDocument, output_text: string, format = 'weidu') {
 	conlog(`td3 = ${text_document}`);
-	let errors_warnings = parse_compile_output(output_text);
+	let errors_warnings = [];
+	if (format == 'gcc') {
+		errors_warnings = parse_gcc_output(output_text);
+	} else {
+		errors_warnings = parse_compile_output(output_text);
+	}
 	let errors = errors_warnings[0];
 	let warnings = errors_warnings[1];
 
@@ -85,6 +111,9 @@ export function wcompile(params: any, cancel_token: any) {
 	var command = params.command;
 	var args: Array<any> = params.arguments;
 	var text_document: any = args[1];
+	let uri = documents.get(text_document.uri.external);
+	conlog("uri0" + documents.get(text_document.uri.external));
+	conlog(`uri = ${uri}`);
 	var filepath = text_document.fileName;
 	var cwd_to = path.dirname(filepath);
 	var base_name = path.parse(filepath).base;
@@ -100,6 +129,7 @@ export function wcompile(params: any, cancel_token: any) {
 		conlog(`${real_name}`)
 		ext = path.parse(real_name).ext;
 		conlog(`${ext}`)
+		conlog(`uri = ${uri}`);
 	}
 	let weidu_path = args[3];
 	let game_path = args[4];
@@ -109,8 +139,9 @@ export function wcompile(params: any, cancel_token: any) {
 	} else {
 		weidu_args = `--game ${game_path} ${weidu_args}`;
 	}
-
+	conlog(`uri = ${uri}`);
 	if (command == "extension.bgforge.compile") {
+		conlog(`uri = ${uri}`);
 		let weidu_type = valid_extensions.get(ext);
 		conlog(weidu_type);
 		if (!weidu_type) { //vscode loses open file if clicked on console or elsewhere
@@ -139,7 +170,8 @@ export function wcompile(params: any, cancel_token: any) {
 				conlog('error: ' + result.status);
 				connection.window.showErrorMessage(`Failed to preprocess ${base_name}!`);
 				conlog(`td2 = ${text_document.uri.external}`);
-				// send_diagnostics(documents.get(text_document.uri.external), stdout);
+				conlog(`uri = ${uri}`);
+				send_diagnostics(documents.get(text_document.uri.external), result.stderr, 'gcc');
 				preprocess_failed = true;
 			} else {
 				connection.window.showInformationMessage(`Succesfully preprocessed ${base_name}.`);
@@ -162,12 +194,10 @@ export function wcompile(params: any, cancel_token: any) {
 				conlog('error: ' + err);
 				conlog(errors_warnings);
 				connection.window.showErrorMessage(`Failed to parse ${real_name}!`);
-				// if (tpl == false) {
-					let real_uri = URI.file(real_path);
-					// let real_td = 
-					// vscode.workspace.openTextDocument(real_path);
-					// send_diagnostics(documents.get(real_path), stdout);
-				// }
+				if (tpl == false) {
+					conlog(`td2 = ${text_document.uri.external}`);
+					send_diagnostics(documents.get(text_document.uri.external), stdout);
+				}
 			} else {
 				connection.window.showInformationMessage(`Succesfully parsed ${real_name}.`);
 			}
