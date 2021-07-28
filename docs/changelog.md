@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.16.0
+- Fallout
+  - Updated [RPU](https://github.com/BGforgeNet/Fallout2_Restoration_Project) defines to v21, [sfall](https://github.com/phobos2077/sfall) to 4.3.0.2.
+  - Clarified `set_obj_visibility` description.
+- IE
+  - Updated [IESDP](https://gibberlings3.github.io/iesdp/) and [IElib](https://ielib.bgforge.net/) defines.
+  - Added custom [icon theme](https://github.com/BGforgeNet/VScode-BGforge-MLS/blob/master/docs/icon-theme.md).
+  - Added rudimentary gcc [preprocessing](https://forums.bgforge.net/viewtopic.php?f=35&t=334) support.
+
 ## 1.15.3
 - Fallout
   - Updated data from upstream.
