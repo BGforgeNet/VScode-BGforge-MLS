@@ -25,6 +25,8 @@ if [ ! -d $rpu_dir ]; then
 fi
 cd $rpu_dir
 git pull
+last_v="v$(git tag | grep "^v" | sed 's|^v||' | sort -n | tail -1)"
+git checkout $last_v
 popd
 
 # sfall
@@ -35,6 +37,8 @@ if [ ! -d $sfall_dir ]; then
 fi
 cd $sfall_dir
 git pull
+last_v="v$(git tag | grep "^v" | sed 's|^v||' | sort -n | tail -1)"
+git checkout $last_v
 popd
 
 ./scripts/fallout-update.py -s "$external" --completion-file "$completion_file" --highlight-file "$highlight_file"
