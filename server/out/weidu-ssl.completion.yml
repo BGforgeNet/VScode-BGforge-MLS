@@ -171,6 +171,14 @@ actions:
       detail: AddXPObject(O:Object, I:XP)
       doc: |-
         This action adds the specified amount of XP onto the specified object.
+    - name: AddXPWorth
+      detail: AddXPWorth(O:Object)
+      doc: |-
+        This action gives the amount of experience worth the specified object to the party. The XP amount is distributed among all current living party members.
+    - name: AddXPWorthOnce
+      detail: AddXPWorthOnce(O:Object, I:ClearStat*Boolean)
+      doc: |-
+        This action gives the amount of experience worth the specified object to the party. The XP amount is distributed among all current living party members.
     - name: AdvanceTime
       detail: AdvanceTime(I:Time*Gtimes)
       doc: |-
@@ -201,8 +209,8 @@ actions:
         This action applies a percentage damage (of the specified damage type) to the target object.
     - name: ApplySpell
       detail: ApplySpell(O:Target, I:Spell*Spell)
-      doc: |-
-        This action causes the active creature to cast the specified spell at the target object. The spell is applied instantly; no casting animation is played. The spell cannot be interrupted. For the RES version of the action, the spell name can not consist of only numbers, should be written in upper case and should be no more than 7 characters long. The RES action applies the spell at the lowest casting level - the casting level of the originating creature is ignored. Note that for normal spellcasting the probability dice values for effects are rolled for each spell, whereas spells applied in the same scripting block by ApplySpell use a single dice value. The example script is used to mimic a contingency from mage18y.bcs.
+      doc: |
+        This action causes the active creature to cast the specified spell at the target object. The spell is applied instantly; no casting animation is played. The spell cannot be interrupted. For the RES version of the action, the spell name can not consist of only numbers, should be written in upper case and should be no more than 7 characters long. Both actions apply the spell at the lowest casting level (they will even use a level `0` ability if the spell has one, which other actions cannot do) and ignore its projectile (i.e. they use projectile `#1|None`) - the casting level of the originating creature is ignored. Note that for normal spellcasting the probability dice values for effects are rolled for each spell, whereas spells applied in the same scripting block by `ApplySpell` use a single dice value. The example script is used to mimic a contingency from `"mage18y.bcs"`.
 
         ```
         IF
@@ -219,10 +227,14 @@ actions:
             SetGlobal("Prep","LOCALS",1)
         END
         ```
+
+
+        Scripts can handle `RES` filenames with `+`, Dialogs and the console cannot. Same with the `~`, `` ` ``, `'`, `@`, `$`, `^`, and `&` characters, maybe some more.
+        - This action will default to a spell matching the first 7 characters in Dialogs/Console *IF* the 8<sup>th</sup> character isn't valid.
     - name: ApplySpellRES
       detail: ApplySpellRES(S:RES, O:Target)
-      doc: |-
-        This action causes the active creature to cast the specified spell at the target object. The spell is applied instantly; no casting animation is played. The spell cannot be interrupted. For the RES version of the action, the spell name can not consist of only numbers, should be written in upper case and should be no more than 7 characters long. The RES action applies the spell at the lowest casting level - the casting level of the originating creature is ignored. Note that for normal spellcasting the probability dice values for effects are rolled for each spell, whereas spells applied in the same scripting block by ApplySpell use a single dice value. The example script is used to mimic a contingency from mage18y.bcs.
+      doc: |
+        This action causes the active creature to cast the specified spell at the target object. The spell is applied instantly; no casting animation is played. The spell cannot be interrupted. For the RES version of the action, the spell name can not consist of only numbers, should be written in upper case and should be no more than 7 characters long. Both actions apply the spell at the lowest casting level (they will even use a level `0` ability if the spell has one, which other actions cannot do) and ignore its projectile (i.e. they use projectile `#1|None`) - the casting level of the originating creature is ignored. Note that for normal spellcasting the probability dice values for effects are rolled for each spell, whereas spells applied in the same scripting block by `ApplySpell` use a single dice value. The example script is used to mimic a contingency from `"mage18y.bcs"`.
 
         ```
         IF
@@ -239,6 +251,10 @@ actions:
             SetGlobal("Prep","LOCALS",1)
         END
         ```
+
+
+        Scripts can handle `RES` filenames with `+`, Dialogs and the console cannot. Same with the `~`, `` ` ``, `'`, `@`, `$`, `^`, and `&` characters, maybe some more.
+        - This action will default to a spell matching the first 7 characters in Dialogs/Console *IF* the 8<sup>th</sup> character isn't valid.
     - name: AttachTransitionToDoor
       detail: AttachTransitionToDoor(S:GLOBAL, O:Object)
       doc: |-
@@ -778,8 +794,8 @@ actions:
       detail: DestroyAllEquipment()
       doc: |-
         This action destroys all items on the active creature.
-    - name: DestroyAllFragileDestructableEquipment
-      detail: DestroyAllFragileDestructableEquipment(I:Type*Itemflag)
+    - name: DestroyAllFragileEquipment
+      detail: DestroyAllFragileEquipment(I:Type*Itemflag)
       doc: |-
         This action destroys all destructible equipment on the active creature. Items flagged as indestructible (magical) will not be destroyed.
     - name: DestroyGold
@@ -809,7 +825,9 @@ actions:
     - name: DestroySelf
       detail: DestroySelf()
       doc: |-
-        This action removes the active creature from the game. No death variable is set. The example script is from the Irenicus cutscene at the beginning of the game.
+        This action removes the active creature from the game. No death variable is set. Global creatures like 
+        joinable NPCs, familiars and recipients of `MakeGlobal` are still accessible by script name and are not
+        fully removed. The example script is from the Irenicus cutscene at the beginning of the game.
 
         ```
         IF
@@ -892,7 +910,7 @@ actions:
       detail: DisplayStringHeadNoLog(O:Object, I:StrRef)
       doc: |-
         This action displays the string specified by the StrRef parameter over the head of the given object on the game-screen, but not in the message log.
-        {% capture note %} It is possible to colorize the string. In order to do so, follow the instructions concerning the colorization of the name of your character during [Character Creation](https://gibberlings3.github.io/iesdp/scripting/actions/{{  "/appendices/charactercreation.htm" | relative_url }}|https://gibberlings3.github.io/iesdp/scripting/actions/{{  "/appendices/charactercreation.htm" | relative_url }}). {% endcapture %} {% include info.html %}
+         It is possible to colorize the string. In order to do so, follow the instructions concerning the colorization of the name of your character during [Character Creation](https://gibberlings3.github.io/iesdp/scripting/actions/{{  "/appendices/charactercreation.htm" | relative_url }}|https://gibberlings3.github.io/iesdp/scripting/actions/{{  "/appendices/charactercreation.htm" | relative_url }}). 
     - name: DisplayStringHeadOwner
       detail: DisplayStringHeadOwner(S:Item, I:STRREF)
       doc: |-
@@ -913,7 +931,7 @@ actions:
       detail: DisplayStringPoint(I:Strref, P:Location)
       doc: |-
         Displays a floating message over a point in the script runner's current area.
-        {% capture note %} It is possible to colorize the string. In order to do so, follow the instructions concerning the colorization of the name of your character during [Character Creation](https://gibberlings3.github.io/iesdp/scripting/actions/{{  "/appendices/charactercreation.htm" | relative_url }}|https://gibberlings3.github.io/iesdp/scripting/actions/{{  "/appendices/charactercreation.htm" | relative_url }}). {% endcapture %} {% include info.html %}
+         It is possible to colorize the string. In order to do so, follow the instructions concerning the colorization of the name of your character during [Character Creation](https://gibberlings3.github.io/iesdp/scripting/actions/{{  "/appendices/charactercreation.htm" | relative_url }}|https://gibberlings3.github.io/iesdp/scripting/actions/{{  "/appendices/charactercreation.htm" | relative_url }}). 
     - name: DisplayStringWait
       detail: DisplayStringWait(O:Object, I:StrRef)
       doc: |-
@@ -1086,6 +1104,10 @@ actions:
             EscapeArea()
         END
         ```
+    - name: EscapeAreaNoSee
+      detail: EscapeAreaNoSee()
+      doc: |-
+        This action instructs the active creature to leave the area by choosing the fastest ways out of the sight of the party. The creature disappears as soon as it is out of sight. Otherwise, it disappears after a set amount of time.
     - name: EscapeAreaObject
       detail: EscapeAreaObject(O:Object)
       doc: |-
@@ -1255,7 +1277,7 @@ actions:
         This action will force the party into the selected area on their next worldmap travel. Only one ForceRandomEncounter can be in play at a time so subsequent use will clear the previous one. It will also be cleared once the party arrives in the designated area.
     - name: ForceSpell
       detail: ForceSpell(O:Target, I:Spell*Spell)
-      doc: |-
+      doc: |
         This action causes the active creature to cast the specified spell at the target object. The spell need not currently be memorised by the caster, and will not be interrupted while being cast. The caster must meet the level requirements of the spell. For the RES version of the action, the spell name can not consist of only numbers, should be written in upper case and should be no more than 7 characters long. The example script is from suelfw9.bcs.
 
         ```
@@ -1269,9 +1291,14 @@ actions:
             ForceSpell([ENEMY],WIZARD_POWER_WORD_SLEEP)
         END
         ```
+
+
+        - Scripts can handle `RES` filenames with `+`, Dialogs and the console cannot. Same with the `~`, `` ` ``, `'`, `@`, `$`, `^`, and `&` characters, maybe some more.
+          - This action will default to a spell matching the first 7 characters in Dialogs/Console *IF* the 8<sup>th</sup> character isn't valid.
+        - If `CastingLevel = 0`, then the action will use Caster Level.
     - name: ForceSpellPoint
       detail: ForceSpellPoint(P:Target, I:Spell*Spell)
-      doc: |-
+      doc: |
         This action causes the active creature to cast the specified spell at the specified point ([x.y]). The spell need not currently be memorised by the caster, and will not be interrupted while being cast. The caster must meet the level requirements of the spell. For the RES version of the action, the spell name can not consist of only numbers, should be written in upper case and should be no more than 7 characters long.
 
         ```
@@ -1286,9 +1313,14 @@ actions:
             SetGlobal("AndrisBehavior","AR1009",1)
         END
         ```
+
+
+        - Scripts can handle `RES` filenames with `+`, Dialogs and the console cannot. Same with the `~`, `` ` ``, `'`, `@`, `$`, `^`, and `&` characters, maybe some more.
+          - This action will default to a spell matching the first 7 characters in Dialogs/Console *IF* the 8<sup>th</sup> character isn't valid.
+        - If `CastingLevel = 0`, then the action will use Caster Level.
     - name: ForceSpellPointRES
       detail: ForceSpellPointRES(S:RES, P:Target)
-      doc: |-
+      doc: |
         This action causes the active creature to cast the specified spell at the specified point ([x.y]). The spell need not currently be memorised by the caster, and will not be interrupted while being cast. The caster must meet the level requirements of the spell. For the RES version of the action, the spell name can not consist of only numbers, should be written in upper case and should be no more than 7 characters long.
 
         ```
@@ -1303,17 +1335,30 @@ actions:
             SetGlobal("AndrisBehavior","AR1009",1)
         END
         ```
+
+
+        - Scripts can handle `RES` filenames with `+`, Dialogs and the console cannot. Same with the `~`, `` ` ``, `'`, `@`, `$`, `^`, and `&` characters, maybe some more.
+          - This action will default to a spell matching the first 7 characters in Dialogs/Console *IF* the 8<sup>th</sup> character isn't valid.
+        - If `CastingLevel = 0`, then the action will use Caster Level.
     - name: ForceSpellPointRange
       detail: ForceSpellPointRange(P:Target, I:Spell*Spell)
-      doc: |-
+      doc: |
         It is likely that it will force the specified spell if the point is within range of the spell.
+
+
+        Scripts can handle `RES` filenames with `+`, Dialogs and the console cannot. Same with the `~`, `` ` ``, `'`, `@`, `$`, `^`, and `&` characters, maybe some more.
+        - This action will default to a spell matching the first 7 characters in Dialogs/Console *IF* the 8th character isn't valid.
     - name: ForceSpellPointRangeRES
       detail: ForceSpellPointRangeRES(S:RES, P:Target)
-      doc: |-
+      doc: |
         It is likely that it will force the specified spell if the point is within range of the spell.
+
+
+        Scripts can handle `RES` filenames with `+`, Dialogs and the console cannot. Same with the `~`, `` ` ``, `'`, `@`, `$`, `^`, and `&` characters, maybe some more.
+        - This action will default to a spell matching the first 7 characters in Dialogs/Console *IF* the 8th character isn't valid.
     - name: ForceSpellRES
       detail: ForceSpellRES(S:RES, O:Target)
-      doc: |-
+      doc: |
         This action causes the active creature to cast the specified spell at the target object. The spell need not currently be memorised by the caster, and will not be interrupted while being cast. The caster must meet the level requirements of the spell. For the RES version of the action, the spell name can not consist of only numbers, should be written in upper case and should be no more than 7 characters long. The example script is from suelfw9.bcs.
 
         ```
@@ -1327,14 +1372,27 @@ actions:
             ForceSpell([ENEMY],WIZARD_POWER_WORD_SLEEP)
         END
         ```
+
+
+        - Scripts can handle `RES` filenames with `+`, Dialogs and the console cannot. Same with the `~`, `` ` ``, `'`, `@`, `$`, `^`, and `&` characters, maybe some more.
+          - This action will default to a spell matching the first 7 characters in Dialogs/Console *IF* the 8<sup>th</sup> character isn't valid.
+        - If `CastingLevel = 0`, then the action will use Caster Level.
     - name: ForceSpellRange
       detail: ForceSpellRange(O:Target, I:Spell*Spell)
-      doc: |-
+      doc: |
         It is likely that it will force the specified spell if the target is within range of the spell.
+
+
+        Scripts can handle `RES` filenames with `+`, Dialogs and the console cannot. Same with the `~`, `` ` ``, `'`, `@`, `$`, `^`, and `&` characters, maybe some more.
+        - This action will default to a spell matching the first 7 characters in Dialogs/Console *IF* the 8th character isn't valid.
     - name: ForceSpellRangeRES
       detail: ForceSpellRangeRES(S:RES, O:Target)
-      doc: |-
+      doc: |
         It is likely that it will force the specified spell if the target is within range of the spell.
+
+
+        Scripts can handle `RES` filenames with `+`, Dialogs and the console cannot. Same with the `~`, `` ` ``, `'`, `@`, `$`, `^`, and `&` characters, maybe some more.
+        - This action will default to a spell matching the first 7 characters in Dialogs/Console *IF* the 8th character isn't valid.
     - name: Formation
       detail: Formation(O:Leader, P:Offset)
       doc: |-
@@ -1862,6 +1920,19 @@ actions:
       detail: MoveToObjectNoInterrupt(O:Object)
       doc: |-
         This action instructs the active creature to move to the specified object. The action does not update the current position of the actor, saved in ARE files. Conditions are not checked until the destination point is reached.
+    - name: MoveToObjectOffset
+      detail: MoveToObjectOffset(O:Target, P:Offset)
+      doc: |-
+        This action instructs the active creature to move to a position relative to the specified object. The example script shows the creature moving to a position directly south of Player1.
+        ```
+        IF
+          See(Player1)
+          !Range(Player1,4)
+        THEN
+          RESPONSE #100
+            MoveToObjectOffset(Player1,[0.30])
+        END
+        ```
     - name: MoveToOffset
       detail: MoveToOffset(P:Offset)
       doc: |-
@@ -1962,7 +2033,7 @@ actions:
         END
         ```
 
-        NoAction() is also commonly used as a hanging action in targeting blocks. This is a matter of good practice rather than necessary. The NoAction() action will never be rum since the block always returns false, but the having an action in the scripting block allows scripting programs to accurately check for errors.
+        `NoAction()` is also commonly used as a hanging (dummy) action in targeting blocks. This is a matter of good practice rather than necessary. The `NoAction()` action will never be run since the block always returns false, but having an action in the scripting block allows scripting programs to accurately check for errors.
 
         ```
         IF
@@ -2008,6 +2079,10 @@ actions:
       detail: PauseGame()
       doc: |-
         This action pauses the game. Script processing is halted while the game is paused.
+    - name: PickLock
+      detail: PickLock(O:Object)
+      doc: |-
+        This action instructs the active creature to attempt to pick the lock of the specified object. This action can be used for any creature (not just thieves) though success in picking the lock depends on points in the Open Locks skill.
     - name: PickPockets
       detail: PickPockets(O:Target)
       doc: |-
@@ -2056,7 +2131,7 @@ actions:
     - name: PlaySound
       detail: PlaySound(S:Sound)
       doc: |-
-        This action will cause the active creature to play the specified sound. Both WAV and WAVC files can be played by the action.
+        This action will cause the active creature to play the specified sound. Both WAV and WAVC files can be played by the action. Sound is played through the sound effects channel. Volume fades if the viewport is moved further away from the active creature.
 
         ```
         IF
@@ -2066,6 +2141,14 @@ actions:
             PlaySound("CAS_M06")
         END
         ```
+    - name: PlaySoundNotRanged
+      detail: PlaySoundNotRanged(S:Sound)
+      doc: |-
+        This action will cause the active creature to play the specified sound. Both WAV and WAVC files can be played by the action. Sound is played through the sound effects channel. Volume does not fade if the viewport is moved further away from the active creature.
+    - name: PlaySoundThroughVoice
+      detail: PlaySoundThroughVoice(S:Sound)
+      doc: |-
+        This action will cause the active creature to play the specified sound. Both WAV and WAVC files can be played by the action. Sound is played through the voice channel. Volume does not fade if the viewport is moved further away from the active creature. Note that the voice channel can only play one sound at a time for any given creature.
     - name: PlayerDialog
       detail: PlayerDialog(O:Target)
       doc: |-
@@ -2141,7 +2224,7 @@ actions:
         ```
     - name: RandomTurn
       detail: RandomTurn()
-      doc: |-
+      doc: |+
         This action causes the active creature to turn in a random direction. The example script is from waitturn.bcs.
 
         ```
@@ -2152,9 +2235,15 @@ actions:
             RandomTurn()
         END
         ```
+
+
+        * This action will never stop, (unless interrupted in specific situations), and thus never leave the action list.
+        * Executes [Wait()](https://gibberlings3.github.io/iesdp/scripting/actions/bg2actions.htm#63) for a random amount of time, (1–40 seconds), if the creature goes off-screen.
+        * Waits 1–10 seconds between each evaluation.
+
     - name: RandomWalk
       detail: RandomWalk()
-      doc: |-
+      doc: |+
         This action causes the active creature to walk randomly, staying within the current area. The example script is blbear.bcs; it instructs bears to walk rather than fight if the nearest enemy is a druid.
 
         ```
@@ -2168,21 +2257,42 @@ actions:
             RandomWalk()
         END
         ```
+
+        * This action will never stop, (unless interrupted in specific situations), and thus never leave the action list.
+        * Executes [Wait()](https://gibberlings3.github.io/iesdp/scripting/actions/bg2actions.htm#63) for a random amount of time, (1–40 seconds), if the creature goes off-screen.
+        * Has a 50/50 chance to [MoveToPoint()](https://gibberlings3.github.io/iesdp/scripting/actions/bg2actions.htm#23), or do a pass of [RandomTurn()](https://gibberlings3.github.io/iesdp/scripting/actions/bg2actions.htmhttps://gibberlings3.github.io/iesdp/scripting/actions/bg2actions.htm#130), (including [RandomTurn()](https://gibberlings3.github.io/iesdp/scripting/actions/bg2actions.htmhttps://gibberlings3.github.io/iesdp/scripting/actions/bg2actions.htm#130)'s wait time).
+
     - name: RandomWalkContinuous
       detail: RandomWalkContinuous()
-      doc: |-
+      doc: |
         This action causes the active creature to walk randomly, without pausing.
+
+
+        It is the same as [RandomWalk()](https://gibberlings3.github.io/iesdp/scripting/actions/bg2actions.htm#85), just with the offscreen-wait removed and no [RandomTurn()](https://gibberlings3.github.io/iesdp/scripting/actions/bg2actions.htm#130) chance.
+    - name: RandomWalkContinuousTime
+      detail: RandomWalkContinuousTime(I:Time)
+      doc: |-
+        It is the same as [RandomWalkContinuous()](https://gibberlings3.github.io/iesdp/scripting/actions/bgeeactions.htm#200), where the time parameter represents how many times the action will be ticked before terminating (Actions are normally ticked once per second at 30FPS).
+        See [RandomWalkTime()](https://gibberlings3.github.io/iesdp/scripting/actions/bgeeactions.htm#410) for further details about the time parameter.
+    - name: RandomWalkTime
+      detail: RandomWalkTime(I:Time)
+      doc: |-
+        It is the same as [RandomWalk()](https://gibberlings3.github.io/iesdp/scripting/actions/bgeeactions.htm#85), where the time parameter represents a limit on how many times the action will result in walking. Turning or waiting does not count against this limit. Since it is random, there is no guarantee movement will be immediate.
     - name: RealSetGlobalTimer
       detail: RealSetGlobalTimer(S:Name, S:Area, I:Time*Gtimes)
       doc: |-
         This action sets a global timer measured in seconds (of real time).
     - name: ReallyForceSpell
       detail: ReallyForceSpell(O:Target, I:Spell*Spell)
-      doc: |-
+      doc: |
         This action causes the active creature to cast the specified spell at the target object. The spell need not currently be memorised by the caster, and will not be interrupted while being cast. The spell is cast instantly (i.e. with a casting time of 0). The caster must meet the level requirements of the spell. This action does not work in the script round where the active creature has died.
+
+
+        Scripts can handle `RES` filenames with `+`, Dialogs and the console cannot. Same with the `~`, `` ` ``, `'`, `@`, `$`, `^`, and `&` characters, maybe some more.
+        - This action will default to a spell matching the first 7 characters in Dialogs/Console *IF* the 8th character isn't valid.
     - name: ReallyForceSpellDead
       detail: ReallyForceSpellDead(O:Target, I:Spell*Spell)
-      doc: |-
+      doc: |
         This action causes the active creature to cast the specified spell at the target object. The spell need not currently be memorised by the caster, and will not be interrupted while being cast. The spell is cast instantly (i.e. with a casting time of 0). The caster must meet the level requirements of the spell. For the RES version of the action, the spell name can not consist of only numbers, should be written in upper case and should be no more than 7 characters long. This action works in the script round where the active creature has died.
 
         ```
@@ -2195,9 +2305,13 @@ actions:
             DestroySelf()
         END
         ```
+
+
+        Scripts can handle `RES` filenames with `+`, Dialogs and the console cannot. Same with the `~`, `` ` ``, `'`, `@`, `$`, `^`, and `&` characters, maybe some more.
+        - This action will default to a spell matching the first 7 characters in Dialogs/Console *IF* the 8th character isn't valid.
     - name: ReallyForceSpellDeadRES
       detail: ReallyForceSpellDeadRES(S:RES, O:Target)
-      doc: |-
+      doc: |
         This action causes the active creature to cast the specified spell at the target object. The spell need not currently be memorised by the caster, and will not be interrupted while being cast. The spell is cast instantly (i.e. with a casting time of 0). The caster must meet the level requirements of the spell. For the RES version of the action, the spell name can not consist of only numbers, should be written in upper case and should be no more than 7 characters long. This action works in the script round where the active creature has died.
 
         ```
@@ -2210,18 +2324,34 @@ actions:
             DestroySelf()
         END
         ```
+
+
+        Scripts can handle `RES` filenames with `+`, Dialogs and the console cannot. Same with the `~`, `` ` ``, `'`, `@`, `$`, `^`, and `&` characters, maybe some more.
+        - This action will default to a spell matching the first 7 characters in Dialogs/Console *IF* the 8th character isn't valid.
     - name: ReallyForceSpellPoint
       detail: ReallyForceSpellPoint(P:Target, I:Spell*Spell)
-      doc: |-
+      doc: |
         This action causes the active creature to cast the specified spell at the target point. The spell need not currently be memorised by the caster, and will not be interrupted while being cast. The spell is cast instantly (i.e. with a casting time of 0). The caster must meet the level requirements of the spell. For the RES version of the action, the spell name can not consist of only numbers, should be written in upper case and should be no more than 7 characters long.
+
+
+        Scripts can handle `RES` filenames with `+`, Dialogs and the console cannot. Same with the `~`, `` ` ``, `'`, `@`, `$`, `^`, and `&` characters, maybe some more.
+        - This action will default to a spell matching the first 7 characters in Dialogs/Console *IF* the 8<sup>th</sup> character isn't valid.
     - name: ReallyForceSpellPointRES
       detail: ReallyForceSpellPointRES(S:RES, P:Target)
-      doc: |-
+      doc: |
         This action causes the active creature to cast the specified spell at the target point. The spell need not currently be memorised by the caster, and will not be interrupted while being cast. The spell is cast instantly (i.e. with a casting time of 0). The caster must meet the level requirements of the spell. For the RES version of the action, the spell name can not consist of only numbers, should be written in upper case and should be no more than 7 characters long.
+
+
+        Scripts can handle `RES` filenames with `+`, Dialogs and the console cannot. Same with the `~`, `` ` ``, `'`, `@`, `$`, `^`, and `&` characters, maybe some more.
+        - This action will default to a spell matching the first 7 characters in Dialogs/Console *IF* the 8<sup>th</sup> character isn't valid.
     - name: ReallyForceSpellRES
       detail: ReallyForceSpellRES(S:RES, O:TargetI)
-      doc: |-
+      doc: |
         This action causes the active creature to cast the specified spell at the target object. The spell need not currently be memorised by the caster, and will not be interrupted while being cast. The spell is cast instantly (i.e. with a casting time of 0). The caster must meet the level requirements of the spell. This action does not work in the script round where the active creature has died.
+
+
+        Scripts can handle `RES` filenames with `+`, Dialogs and the console cannot. Same with the `~`, `` ` ``, `'`, `@`, `$`, `^`, and `&` characters, maybe some more.
+        - This action will default to a spell matching the first 7 characters in Dialogs/Console *IF* the 8th character isn't valid.
     - name: Recoil
       detail: Recoil()
       doc: |-
@@ -2269,7 +2399,7 @@ actions:
         This action changes a Ranger to a Fallen Ranger.
     - name: RemoveSpell
       detail: RemoveSpell(I:Spell*Spell)
-      doc: |-
+      doc: |
         This action removes one memorised indtance of the specified spell from the spellbook of the active creature. The spell can be an innate ability, a priest spell or a wizard spell, but must be listed in [spell.ids](https://gibberlings3.github.io/iesdp/files/ids/bg2/spell.htm).
 
         ```
@@ -2283,9 +2413,13 @@ actions:
             SetGlobal("KR_ANTI_PALADIN_CHANGE","LOCALS",2)
         END
         ```
+
+
+        Scripts can handle `RES` filenames with `+`, Dialogs and the console cannot. Same with the `~`, `` ` ``, `'`, `@`, `$`, `^`, and `&` characters, maybe some more.
+        - This action will default to a spell matching the first 7 characters in Dialogs/Console *IF* the 8<sup>th</sup> character isn't valid.
     - name: RemoveSpellRES
       detail: RemoveSpellRES(S:RES)
-      doc: |-
+      doc: |
         This action removes one memorised indtance of the specified spell from the spellbook of the active creature. The spell can be an innate ability, a priest spell or a wizard spell, but must be listed in [spell.ids](https://gibberlings3.github.io/iesdp/files/ids/bg2/spell.htm).
 
         ```
@@ -2299,6 +2433,10 @@ actions:
             SetGlobal("KR_ANTI_PALADIN_CHANGE","LOCALS",2)
         END
         ```
+
+
+        Scripts can handle `RES` filenames with `+`, Dialogs and the console cannot. Same with the `~`, `` ` ``, `'`, `@`, `$`, `^`, and `&` characters, maybe some more.
+        - This action will default to a spell matching the first 7 characters in Dialogs/Console *IF* the 8<sup>th</sup> character isn't valid.
     - name: RemoveStoreItem
       detail: RemoveStoreItem(S:Store, S:Item, I:Count)
       doc: |-
@@ -2387,6 +2525,10 @@ actions:
       detail: RestorePartyLocations()
       doc: |-
         This action moves the party to the stored locations (previously stored with StorePartyLocations). The action clears the stored locations from the GAM file.
+    - name: RestoreZoomLevel
+      detail: RestoreZoomLevel()
+      doc: |-
+        Restores the zoom level stored by a previous call of [StoreZoomLevel()](https://gibberlings3.github.io/iesdp/scripting/actions/bgeeactions.htm#464). The action has no effect if Zoom Lock has been enabled in the game options.
     - name: RevealAreaOnMap
       detail: RevealAreaOnMap(S:ResRef)
       doc: |-
@@ -2727,6 +2869,10 @@ actions:
       detail: SetWorldmap(S:Worldmap)
       doc: |-
         Changes the current worldmap to another .wmp. The old worldmap(s) will still be saved. You can have multiple number of worldmaps.
+    - name: SetZoomViewport
+      detail: SetZoomViewport(P:Point)
+      doc: |-
+        This action changes the current zoom level to match the viewport size specified by the point parameter. The action has no effect if Zoom Lock has been enabled in the game options.
     - name: SetupWish
       detail: SetupWish(I:Column, I:Count)
       doc: |-
@@ -2899,7 +3045,7 @@ actions:
         This action causes an activated spawn point to spawn creatures, regardless of whether the time for spawning has expired. The Object should be the name of the spawn point as written in the ARE file.
     - name: Spell
       detail: Spell(O:Target, I:Spell*Spell)
-      doc: |-
+      doc: |
         This action causes the active creature to cast the specified spell at the target object. The spell must currently be memorised by the caster, and may be interrupted while being cast. The caster must meet the level requirements of the spell. For the RES version of the action, the spell name can not consist of only numbers, should be written in upper case and should be no more than 7 characters long.
 
         ```
@@ -2920,18 +3066,30 @@ actions:
             Spell([EVILCUTOFF],WIZARD_MAGIC_MISSILE)
         END
         ```
+
+
+        Scripts can handle `RES` filenames with `+`, Dialogs and the console cannot. Same with the `~`, `` ` ``, `'`, `@`, `$`, `^`, and `&` characters, maybe some more.
+        - This action will default to a spell matching the first 7 characters in Dialogs/Console **IF** the 8<sup>th</sup> character isn't valid.
     - name: SpellNoDec
       detail: SpellNoDec(O:Target, I:Spell*Spell)
-      doc: |-
+      doc: |
         This action causes the active creature to cast the specified spell at the target object. The spell need not be currently be memorised by the caster, and may be interrupted while being cast. The caster must meet the level requirements of the spell. The spell will not be removed from the casters memory after casting. For the RES version of the action, the spell name can not consist of only numbers, should be written in upper case and should be no more than 7 characters long.
+
+
+        Scripts can handle `RES` filenames with `+`, Dialogs and the console cannot. Same with the `~`, `` ` ``, `'`, `@`, `$`, `^`, and `&` characters, maybe some more.
+        - This action will default to a spell matching the first 7 characters in Dialogs/Console *IF* the 8th character isn't valid.
     - name: SpellNoDecRES
       detail: SpellNoDecRES(S:RES, O:Target)
-      doc: |-
+      doc: |
         This action causes the active creature to cast the specified spell at the target object. The spell need not be currently be memorised by the caster, and may be interrupted while being cast. The caster must meet the level requirements of the spell. The spell will not be removed from the casters memory after casting. For the RES version of the action, the spell name can not consist of only numbers, should be written in upper case and should be no more than 7 characters long.
+
+
+        Scripts can handle `RES` filenames with `+`, Dialogs and the console cannot. Same with the `~`, `` ` ``, `'`, `@`, `$`, `^`, and `&` characters, maybe some more.
+        - This action will default to a spell matching the first 7 characters in Dialogs/Console *IF* the 8th character isn't valid.
     - name: SpellPoint
       detail: SpellPoint(P:Target, I:Spell*Spell)
-      doc: |-
-        This action causes the active creature to cast the specified spell at the specified point ([x.y]). The spell must currently be memorised by the caster, and may be interrupted while being cast. The caster must meet the level requirements of the spell. For the RES version of the action, the spell name can not consist of only numbers, should be written in upper case and should be no more than 7 characters long. The example script is from andris.bcs.
+      doc: |
+        This action causes the active creature to cast the specified spell at the specified point ([x.y]). The spell must currently be memorised by the caster, and may be interrupted while being cast. The caster must meet the level requirements of the spell. For the RES version of the action, the spell name can not consist of only numbers, should be written in upper case and should be no more than 7 characters long. The example script is from `"andris.bcs"`.
 
         ```
         IF
@@ -2945,18 +3103,30 @@ actions:
             SetGlobal("AndrisBehavior","AR1009",1)
         END
         ```
+
+
+        Scripts can handle `RES` filenames with `+`, Dialogs and the console cannot. Same with the `~`, `` ` ``, `'`, `@`, `$`, `^`, and `&` characters, maybe some more.
+        - This action will default to a spell matching the first 7 characters in Dialogs/Console *IF* the 8<sup>th</sup> character isn't valid.
     - name: SpellPointNoDec
       detail: SpellPointNoDec(P:Target, I:Spell*Spell)
-      doc: |-
-        This action causes the active creature to cast the specified spell at the specified point ([x.y]). The spell must currently be memorised by the caster, and may be interrupted while being cast. The caster must meet the level requirements of the spell. The spell will be removed from the casters memory. For the RES version of the action, the spell name can not consist of only numbers, should be written in upper case and should be no more than 7 characters long. The example script is from andris.bcs.
+      doc: |
+        This action causes the active creature to cast the specified spell at the specified point (`[x.y]`). The spell must currently be memorised by the caster, and may be interrupted while being cast. The caster must meet the level requirements of the spell. The spell will be removed from the casters memory. For the RES version of the action, the spell name can not consist of only numbers, should be written in upper case and should be no more than 7 characters long. The example script is from `"andris.bcs"`.
+
+
+        Scripts can handle `RES` filenames with `+`, Dialogs and the console cannot. Same with the `~`, `` ` ``, `'`, `@`, `$`, `^`, and `&` characters, maybe some more.
+        - This action will default to a spell matching the first 7 characters in Dialogs/Console *IF* the 8th character isn't valid.
     - name: SpellPointNoDecRES
       detail: SpellPointNoDecRES(S:RES, P:Target)
-      doc: |-
-        This action causes the active creature to cast the specified spell at the specified point ([x.y]). The spell must currently be memorised by the caster, and may be interrupted while being cast. The caster must meet the level requirements of the spell. The spell will be removed from the casters memory. For the RES version of the action, the spell name can not consist of only numbers, should be written in upper case and should be no more than 7 characters long. The example script is from andris.bcs.
+      doc: |
+        This action causes the active creature to cast the specified spell at the specified point (`[x.y]`). The spell must currently be memorised by the caster, and may be interrupted while being cast. The caster must meet the level requirements of the spell. The spell will be removed from the casters memory. For the RES version of the action, the spell name can not consist of only numbers, should be written in upper case and should be no more than 7 characters long. The example script is from `"andris.bcs"`.
+
+
+        Scripts can handle `RES` filenames with `+`, Dialogs and the console cannot. Same with the `~`, `` ` ``, `'`, `@`, `$`, `^`, and `&` characters, maybe some more.
+        - This action will default to a spell matching the first 7 characters in Dialogs/Console *IF* the 8th character isn't valid.
     - name: SpellPointRES
       detail: SpellPointRES(S:RES, P:Target)
-      doc: |-
-        This action causes the active creature to cast the specified spell at the specified point ([x.y]). The spell must currently be memorised by the caster, and may be interrupted while being cast. The caster must meet the level requirements of the spell. For the RES version of the action, the spell name can not consist of only numbers, should be written in upper case and should be no more than 7 characters long. The example script is from andris.bcs.
+      doc: |
+        This action causes the active creature to cast the specified spell at the specified point ([x.y]). The spell must currently be memorised by the caster, and may be interrupted while being cast. The caster must meet the level requirements of the spell. For the RES version of the action, the spell name can not consist of only numbers, should be written in upper case and should be no more than 7 characters long. The example script is from `"andris.bcs"`.
 
         ```
         IF
@@ -2970,9 +3140,13 @@ actions:
             SetGlobal("AndrisBehavior","AR1009",1)
         END
         ```
+
+
+        Scripts can handle `RES` filenames with `+`, Dialogs and the console cannot. Same with the `~`, `` ` ``, `'`, `@`, `$`, `^`, and `&` characters, maybe some more.
+        - This action will default to a spell matching the first 7 characters in Dialogs/Console *IF* the 8<sup>th</sup> character isn't valid.
     - name: SpellRES
       detail: SpellRES(S:RES, O:Target)
-      doc: |-
+      doc: |
         This action causes the active creature to cast the specified spell at the target object. The spell must currently be memorised by the caster, and may be interrupted while being cast. The caster must meet the level requirements of the spell. For the RES version of the action, the spell name can not consist of only numbers, should be written in upper case and should be no more than 7 characters long.
 
         ```
@@ -2993,6 +3167,10 @@ actions:
             Spell([EVILCUTOFF],WIZARD_MAGIC_MISSILE)
         END
         ```
+
+
+        Scripts can handle `RES` filenames with `+`, Dialogs and the console cannot. Same with the `~`, `` ` ``, `'`, `@`, `$`, `^`, and `&` characters, maybe some more.
+        - This action will default to a spell matching the first 7 characters in Dialogs/Console **IF** the 8<sup>th</sup> character isn't valid.
     - name: StartCombatCounter
       detail: StartCombatCounter()
       doc: |-
@@ -3254,6 +3432,10 @@ actions:
       detail: StorePartyLocations()
       doc: |-
         This action stores the current location of party members in the GAM file.
+    - name: StoreZoomLevel
+      detail: StoreZoomLevel()
+      doc: |-
+        This action stores the current zoom level internally. It can be restored with [RestoreZoomLevel()](https://gibberlings3.github.io/iesdp/scripting/actions/bgeeactions.htm#465). The stored zoom level is not saved in saved games.
     - name: Swing
       detail: Swing()
       doc: |-
@@ -3510,10 +3692,18 @@ actions:
             Wait(4)
         END
         ```
+    - name: WaitForVoiceChannel
+      detail: WaitForVoiceChannel()
+      doc: |-
+        This action delays subsequent script actions until the voice channel of the active creature is ready to play a new sound.
     - name: WaitRandom
       detail: WaitRandom(I:MinTime, I:MaxTime)
       doc: |-
         Similar to [Wait(x)](https://gibberlings3.github.io/iesdp/scripting/actions/bgeeactions.htm#63), but waits at least MinTime and at most MaxTime (seconds).
+    - name: WaitSync
+      detail: WaitSync(I:Amount)
+      doc: |-
+        It is likely that it behaves like a combination of [Wait()](https://gibberlings3.github.io/iesdp/scripting/actions/bgeeactions.htm#63) and [MultiPlayerSync()](https://gibberlings3.github.io/iesdp/scripting/actions/bgeeactions.htm#183).
     - name: WaitWait
       detail: WaitWait(I:Time)
       doc: |-

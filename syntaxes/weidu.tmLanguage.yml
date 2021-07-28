@@ -96,7 +96,7 @@ repository:
     patterns:
       - match: \b(EFF2_signature2)\b
       - match: \b(EFF2_signature)\b
-      - match: \b(EFF2_variable)\b
+      - match: \b(EFF2_variable_name)\b
       - match: \b(EFF2_version2)\b
       - match: \b(EFF2_version)\b
       - match: \b(ITM_HEAD_melee_animation)\b
@@ -105,7 +105,7 @@ repository:
       - match: \b(ITM_usability_flags)\b
       - match: \b(ITM_version)\b
       - match: \b(SPL_signature)\b
-      - match: \b(SPL_versions)\b
+      - match: \b(SPL_version)\b
   iesdp-strref:
     name: constant.language.iesdp.strref
     patterns:
@@ -133,6 +133,7 @@ repository:
   iesdp-dword:
     name: constant.language.iesdp.dword
     patterns:
+      - match: \b(EFF2_caster_level)\b
       - match: \b(EFF2_caster_x_coord)\b
       - match: \b(EFF2_caster_y_coord)\b
       - match: \b(EFF2_dice_sides)\b
@@ -144,8 +145,10 @@ repository:
       - match: \b(EFF2_parameter3)\b
       - match: \b(EFF2_parameter4)\b
       - match: \b(EFF2_parameter5)\b
-      - match: \b(EFF2_parameter6)\b
+      - match: \b(EFF2_parent_resource_flags)\b
+      - match: \b(EFF2_parent_resource_type)\b
       - match: \b(EFF2_power)\b
+      - match: \b(EFF2_projectile)\b
       - match: \b(EFF2_resistance)\b
       - match: \b(EFF2_save_bonus)\b
       - match: \b(EFF2_save_type)\b
@@ -155,16 +158,17 @@ repository:
       - match: \b(EFF2_target_x_coord)\b
       - match: \b(EFF2_target_y_coord)\b
       - match: \b(EFF2_target)\b
-      - match: \b(EFF_dice_count)\b
+      - match: \b(EFF2_time_applied)\b
       - match: \b(EFF_dice_sides)\b
+      - match: \b(EFF_dice_thrown)\b
       - match: \b(EFF_duration)\b
       - match: \b(EFF_parameter1)\b
       - match: \b(EFF_parameter2)\b
       - match: \b(EFF_save_bonus)\b
       - match: \b(EFF_save_type)\b
-      - match: \b(FX_dice_sides)\b
-      - match: \b(FX_dice_thrown)\b
       - match: \b(FX_duration)\b
+      - match: \b(FX_max_level)\b
+      - match: \b(FX_min_level)\b
       - match: \b(FX_parameter1)\b
       - match: \b(FX_parameter2)\b
       - match: \b(FX_save_bonus)\b
@@ -181,8 +185,6 @@ repository:
       - match: \b(SPL_extended_headers_offset)\b
       - match: \b(SPL_feature_blocks_offset)\b
       - match: \b(SPL_flags)\b
-      - match: \b(SPL_identified_desc)\b
-      - match: \b(SPL_identified_name)\b
       - match: \b(SPL_level)\b
       - match: \b(SPL_unidentified_description)\b
       - match: \b(SPL_unidentified_name)\b
@@ -194,7 +196,6 @@ repository:
       - match: \b(EFF2_timing)\b
       - match: \b(EFF_effect_type)\b
       - match: \b(FX_opcode)\b
-      - match: \b(ITM_HEAD_charges)\b
       - match: \b(ITM_HEAD_damage_bonus)\b
       - match: \b(ITM_HEAD_damage_type)\b
       - match: \b(ITM_HEAD_depletion)\b
@@ -203,6 +204,7 @@ repository:
       - match: \b(ITM_HEAD_is_arrow)\b
       - match: \b(ITM_HEAD_is_bolt)\b
       - match: \b(ITM_HEAD_is_bullet)\b
+      - match: \b(ITM_HEAD_max_charges)\b
       - match: \b(ITM_HEAD_projectile_animation)\b
       - match: \b(ITM_HEAD_range)\b
       - match: \b(ITM_HEAD_thac0_bonus)\b
@@ -236,7 +238,6 @@ repository:
       - match: \b(EFF_probability2)\b
       - match: \b(EFF_resistance)\b
       - match: \b(EFF_target)\b
-      - match: \b(EFF_timing_mode)\b
       - match: \b(ITM_HEAD_alt_damage_bonus)\b
       - match: \b(ITM_HEAD_alt_dice_thrown)\b
       - match: \b(ITM_HEAD_dice_sides)\b
@@ -259,6 +260,7 @@ repository:
   iesdp-char:
     name: constant.language.iesdp.char
     patterns:
+      - match: \b(EFF_timing_mode)\b
       - match: \b(FX_power)\b
       - match: \b(FX_probability1)\b
       - match: \b(FX_probability2)\b
@@ -273,7 +275,7 @@ repository:
       - match: \b(ITM_HEAD_target)\b
       - match: \b(SPL_HEAD_form)\b
       - match: \b(SPL_HEAD_friendly)\b
-      - match: \b(SPL_HEAD_target_number)\b
+      - match: \b(SPL_HEAD_target_count)\b
       - match: \b(SPL_HEAD_target)\b
       - match: \b(SPL_sectype)\b
   ielib-patch-functions:
@@ -3598,14 +3600,15 @@ repository:
       - match: \b(OPCODE_berserking)\b
       - match: \b(OPCODE_bless)\b
       - match: \b(OPCODE_blindness)\b
-      - match: \b(OPCODE_bounce_opcode)\b
-      - match: \b(OPCODE_bounce_projectile)\b
-      - match: \b(OPCODE_bounce_school_decrement)\b
-      - match: \b(OPCODE_bounce_secondary_type_decrement)\b
-      - match: \b(OPCODE_bounce_secondary_type)\b
-      - match: \b(OPCODE_bounce_specified_spell)\b
-      - match: \b(OPCODE_bounce_spell_level)\b
-      - match: \b(OPCODE_bounce_spell_school)\b
+      - match: \b(OPCODE_bounce_by_impact_projectile)\b
+      - match: \b(OPCODE_bounce_by_opcode)\b
+      - match: \b(OPCODE_bounce_by_power_level_decrementing)\b
+      - match: \b(OPCODE_bounce_by_power_level)\b
+      - match: \b(OPCODE_bounce_by_resource)\b
+      - match: \b(OPCODE_bounce_by_school_decrementing)\b
+      - match: \b(OPCODE_bounce_by_school)\b
+      - match: \b(OPCODE_bounce_by_secondary_type_decrementing)\b
+      - match: \b(OPCODE_bounce_by_secondary_type)\b
       - match: \b(OPCODE_button_disable_button)\b
       - match: \b(OPCODE_button_enable_button)\b
       - match: \b(OPCODE_can_use_any_item)\b
@@ -3673,13 +3676,11 @@ repository:
       - match: \b(OPCODE_damage_mod)\b
       - match: \b(OPCODE_damage_vs_creature_type_mod)\b
       - match: \b(OPCODE_deafness)\b
-      - match: \b(OPCODE_death_dependent_constitution_loss)\b
+      - match: \b(OPCODE_death_dependent_constitution_loss_familiar_bond)\b
       - match: \b(OPCODE_death_disintegrate)\b
       - match: \b(OPCODE_death_instant_death)\b
       - match: \b(OPCODE_death_kill_60hp)\b
       - match: \b(OPCODE_death_kill_creature_type)\b
-      - match: \b(OPCODE_decrementing_bounce_spells)\b
-      - match: \b(OPCODE_decrementing_spell_immunity)\b
       - match: \b(OPCODE_defrost)\b
       - match: \b(OPCODE_detect_alignment)\b
       - match: \b(OPCODE_detect_evil)\b
@@ -3701,6 +3702,7 @@ repository:
       - match: \b(OPCODE_embalm)\b
       - match: \b(OPCODE_enchantment_bonus)\b
       - match: \b(OPCODE_enchantment_vs_creature_type)\b
+      - match: \b(OPCODE_exceptional_strength_mod)\b
       - match: \b(OPCODE_execute_script_cut250a)\b
       - match: \b(OPCODE_existance_delay_override)\b
       - match: \b(OPCODE_experience_points)\b
@@ -3727,6 +3729,7 @@ repository:
       - match: \b(OPCODE_hide_in_shadows_mod)\b
       - match: \b(OPCODE_hit_point_transfer)\b
       - match: \b(OPCODE_hold_2)\b
+      - match: \b(OPCODE_hold_ii)\b
       - match: \b(OPCODE_hold)\b
       - match: \b(OPCODE_horror)\b
       - match: \b(OPCODE_hp_current_hp_mod)\b
@@ -3740,8 +3743,10 @@ repository:
       - match: \b(OPCODE_ids_sex_change)\b
       - match: \b(OPCODE_ignore_dialog_pause)\b
       - match: \b(OPCODE_image_projection)\b
-      - match: \b(OPCODE_immunity_school_decrement)\b
-      - match: \b(OPCODE_immunity_secondary_type_decrement)\b
+      - match: \b(OPCODE_immunity_by_power_level_decrementing)\b
+      - match: \b(OPCODE_immunity_by_power_level)\b
+      - match: \b(OPCODE_immunity_by_school_decrementing)\b
+      - match: \b(OPCODE_immunity_by_secondary_type_decrementing)\b
       - match: \b(OPCODE_immunity_to_spell_or_item_and_message)\b
       - match: \b(OPCODE_immunity_to_spell_or_item_no_feedback)\b
       - match: \b(OPCODE_immunity_to_turn_undead)\b
@@ -3815,21 +3820,20 @@ repository:
       - match: \b(OPCODE_priest_spell_slots_mod)\b
       - match: \b(OPCODE_proficiency_mod)\b
       - match: \b(OPCODE_protection_backstab)\b
+      - match: \b(OPCODE_protection_by_school)\b
+      - match: \b(OPCODE_protection_by_secondary_type)\b
       - match: \b(OPCODE_protection_free_action)\b
       - match: \b(OPCODE_protection_freedom)\b
       - match: \b(OPCODE_protection_from_creature_type)\b
       - match: \b(OPCODE_protection_from_detection_non_detection)\b
-      - match: \b(OPCODE_protection_from_melee_weapons)\b
       - match: \b(OPCODE_protection_from_opcode)\b
       - match: \b(OPCODE_protection_from_projectile)\b
       - match: \b(OPCODE_protection_from_specific_animation)\b
-      - match: \b(OPCODE_protection_from_spell_levels)\b
-      - match: \b(OPCODE_protection_from_spell_school)\b
-      - match: \b(OPCODE_protection_from_spell_secondary_type)\b
       - match: \b(OPCODE_protection_from_spell)\b
       - match: \b(OPCODE_protection_from_timestop)\b
       - match: \b(OPCODE_protection_from_tracking)\b
-      - match: \b(OPCODE_protection_spell_trap)\b
+      - match: \b(OPCODE_protection_from_weapons)\b
+      - match: \b(OPCODE_protection_spell_trap_by_power_level_decrementing)\b
       - match: \b(OPCODE_protection_stoneskin)\b
       - match: \b(OPCODE_puppet_id)\b
       - match: \b(OPCODE_raise_strength_constitution_dexterity_non_cumulative)\b
@@ -3898,7 +3902,6 @@ repository:
       - match: \b(OPCODE_static_charge)\b
       - match: \b(OPCODE_stealth_mod)\b
       - match: \b(OPCODE_stop_all_actions)\b
-      - match: \b(OPCODE_strength_bonus_mod)\b
       - match: \b(OPCODE_strength_mod)\b
       - match: \b(OPCODE_stun_90hp)\b
       - match: \b(OPCODE_stun)\b

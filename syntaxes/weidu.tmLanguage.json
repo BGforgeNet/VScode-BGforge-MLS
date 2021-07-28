@@ -217,7 +217,7 @@
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(EFF2_variable)\\b",
+          "match": "\\b(EFF2_variable_name)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
@@ -253,7 +253,7 @@
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(SPL_versions)\\b",
+          "match": "\\b(SPL_version)\\b",
           "name": "constant.language.iesdp.other"
         }
       ]
@@ -344,6 +344,10 @@
       "name": "constant.language.iesdp.dword",
       "patterns": [
         {
+          "match": "\\b(EFF2_caster_level)\\b",
+          "name": "constant.language.iesdp.dword"
+        },
+        {
           "match": "\\b(EFF2_caster_x_coord)\\b",
           "name": "constant.language.iesdp.dword"
         },
@@ -388,11 +392,19 @@
           "name": "constant.language.iesdp.dword"
         },
         {
-          "match": "\\b(EFF2_parameter6)\\b",
+          "match": "\\b(EFF2_parent_resource_flags)\\b",
+          "name": "constant.language.iesdp.dword"
+        },
+        {
+          "match": "\\b(EFF2_parent_resource_type)\\b",
           "name": "constant.language.iesdp.dword"
         },
         {
           "match": "\\b(EFF2_power)\\b",
+          "name": "constant.language.iesdp.dword"
+        },
+        {
+          "match": "\\b(EFF2_projectile)\\b",
           "name": "constant.language.iesdp.dword"
         },
         {
@@ -432,11 +444,15 @@
           "name": "constant.language.iesdp.dword"
         },
         {
-          "match": "\\b(EFF_dice_count)\\b",
+          "match": "\\b(EFF2_time_applied)\\b",
           "name": "constant.language.iesdp.dword"
         },
         {
           "match": "\\b(EFF_dice_sides)\\b",
+          "name": "constant.language.iesdp.dword"
+        },
+        {
+          "match": "\\b(EFF_dice_thrown)\\b",
           "name": "constant.language.iesdp.dword"
         },
         {
@@ -460,15 +476,15 @@
           "name": "constant.language.iesdp.dword"
         },
         {
-          "match": "\\b(FX_dice_sides)\\b",
-          "name": "constant.language.iesdp.dword"
-        },
-        {
-          "match": "\\b(FX_dice_thrown)\\b",
-          "name": "constant.language.iesdp.dword"
-        },
-        {
           "match": "\\b(FX_duration)\\b",
+          "name": "constant.language.iesdp.dword"
+        },
+        {
+          "match": "\\b(FX_max_level)\\b",
+          "name": "constant.language.iesdp.dword"
+        },
+        {
+          "match": "\\b(FX_min_level)\\b",
           "name": "constant.language.iesdp.dword"
         },
         {
@@ -536,14 +552,6 @@
           "name": "constant.language.iesdp.dword"
         },
         {
-          "match": "\\b(SPL_identified_desc)\\b",
-          "name": "constant.language.iesdp.dword"
-        },
-        {
-          "match": "\\b(SPL_identified_name)\\b",
-          "name": "constant.language.iesdp.dword"
-        },
-        {
           "match": "\\b(SPL_level)\\b",
           "name": "constant.language.iesdp.dword"
         },
@@ -581,10 +589,6 @@
           "name": "constant.language.iesdp.word"
         },
         {
-          "match": "\\b(ITM_HEAD_charges)\\b",
-          "name": "constant.language.iesdp.word"
-        },
-        {
           "match": "\\b(ITM_HEAD_damage_bonus)\\b",
           "name": "constant.language.iesdp.word"
         },
@@ -614,6 +618,10 @@
         },
         {
           "match": "\\b(ITM_HEAD_is_bullet)\\b",
+          "name": "constant.language.iesdp.word"
+        },
+        {
+          "match": "\\b(ITM_HEAD_max_charges)\\b",
           "name": "constant.language.iesdp.word"
         },
         {
@@ -742,10 +750,6 @@
           "name": "constant.language.iesdp.byte"
         },
         {
-          "match": "\\b(EFF_timing_mode)\\b",
-          "name": "constant.language.iesdp.byte"
-        },
-        {
           "match": "\\b(ITM_HEAD_alt_damage_bonus)\\b",
           "name": "constant.language.iesdp.byte"
         },
@@ -827,6 +831,10 @@
       "name": "constant.language.iesdp.char",
       "patterns": [
         {
+          "match": "\\b(EFF_timing_mode)\\b",
+          "name": "constant.language.iesdp.char"
+        },
+        {
           "match": "\\b(FX_power)\\b",
           "name": "constant.language.iesdp.char"
         },
@@ -883,7 +891,7 @@
           "name": "constant.language.iesdp.char"
         },
         {
-          "match": "\\b(SPL_HEAD_target_number)\\b",
+          "match": "\\b(SPL_HEAD_target_count)\\b",
           "name": "constant.language.iesdp.char"
         },
         {
@@ -14155,35 +14163,39 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(OPCODE_bounce_opcode)\\b",
+          "match": "\\b(OPCODE_bounce_by_impact_projectile)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(OPCODE_bounce_projectile)\\b",
+          "match": "\\b(OPCODE_bounce_by_opcode)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(OPCODE_bounce_school_decrement)\\b",
+          "match": "\\b(OPCODE_bounce_by_power_level_decrementing)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(OPCODE_bounce_secondary_type_decrement)\\b",
+          "match": "\\b(OPCODE_bounce_by_power_level)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(OPCODE_bounce_secondary_type)\\b",
+          "match": "\\b(OPCODE_bounce_by_resource)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(OPCODE_bounce_specified_spell)\\b",
+          "match": "\\b(OPCODE_bounce_by_school_decrementing)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(OPCODE_bounce_spell_level)\\b",
+          "match": "\\b(OPCODE_bounce_by_school)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(OPCODE_bounce_spell_school)\\b",
+          "match": "\\b(OPCODE_bounce_by_secondary_type_decrementing)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
+          "match": "\\b(OPCODE_bounce_by_secondary_type)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -14455,7 +14467,7 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(OPCODE_death_dependent_constitution_loss)\\b",
+          "match": "\\b(OPCODE_death_dependent_constitution_loss_familiar_bond)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -14472,14 +14484,6 @@
         },
         {
           "match": "\\b(OPCODE_death_kill_creature_type)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(OPCODE_decrementing_bounce_spells)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(OPCODE_decrementing_spell_immunity)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -14564,6 +14568,10 @@
         },
         {
           "match": "\\b(OPCODE_enchantment_vs_creature_type)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
+          "match": "\\b(OPCODE_exceptional_strength_mod)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -14671,6 +14679,10 @@
           "name": "constant.language.ielib.int"
         },
         {
+          "match": "\\b(OPCODE_hold_ii)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
           "match": "\\b(OPCODE_hold)\\b",
           "name": "constant.language.ielib.int"
         },
@@ -14723,11 +14735,19 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(OPCODE_immunity_school_decrement)\\b",
+          "match": "\\b(OPCODE_immunity_by_power_level_decrementing)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(OPCODE_immunity_secondary_type_decrement)\\b",
+          "match": "\\b(OPCODE_immunity_by_power_level)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
+          "match": "\\b(OPCODE_immunity_by_school_decrementing)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
+          "match": "\\b(OPCODE_immunity_by_secondary_type_decrementing)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -15023,6 +15043,14 @@
           "name": "constant.language.ielib.int"
         },
         {
+          "match": "\\b(OPCODE_protection_by_school)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
+          "match": "\\b(OPCODE_protection_by_secondary_type)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
           "match": "\\b(OPCODE_protection_free_action)\\b",
           "name": "constant.language.ielib.int"
         },
@@ -15039,10 +15067,6 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(OPCODE_protection_from_melee_weapons)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
           "match": "\\b(OPCODE_protection_from_opcode)\\b",
           "name": "constant.language.ielib.int"
         },
@@ -15052,18 +15076,6 @@
         },
         {
           "match": "\\b(OPCODE_protection_from_specific_animation)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(OPCODE_protection_from_spell_levels)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(OPCODE_protection_from_spell_school)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(OPCODE_protection_from_spell_secondary_type)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -15079,7 +15091,11 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(OPCODE_protection_spell_trap)\\b",
+          "match": "\\b(OPCODE_protection_from_weapons)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
+          "match": "\\b(OPCODE_protection_spell_trap_by_power_level_decrementing)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -15352,10 +15368,6 @@
         },
         {
           "match": "\\b(OPCODE_stop_all_actions)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(OPCODE_strength_bonus_mod)\\b",
           "name": "constant.language.ielib.int"
         },
         {

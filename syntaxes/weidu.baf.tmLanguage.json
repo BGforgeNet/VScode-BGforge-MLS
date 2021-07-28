@@ -1865,7 +1865,7 @@
           "name": "support.function.baf.weidu"
         },
         {
-          "match": "\\b(DestroyAllFragileDestructableEquipment)\\b",
+          "match": "\\b(DestroyAllFragileEquipment)\\b",
           "name": "support.function.baf.weidu"
         },
         {

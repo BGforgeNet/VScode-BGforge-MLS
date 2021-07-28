@@ -532,7 +532,7 @@ repository:
       - match: \b(DemoEnd)\b
       - match: \b(DestroyAllDestructableEquipment)\b
       - match: \b(DestroyAllEquipment)\b
-      - match: \b(DestroyAllFragileDestructableEquipment)\b
+      - match: \b(DestroyAllFragileEquipment)\b
       - match: \b(DestroyGold)\b
       - match: \b(DestroyGroundPiles)\b
       - match: \b(DestroyItem)\b
