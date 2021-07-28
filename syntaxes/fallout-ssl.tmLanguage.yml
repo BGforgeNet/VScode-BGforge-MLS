@@ -715,6 +715,7 @@ repository:
       - match: \b(?i)(set_selectable_perk)\b
       - match: \b(?i)(set_swiftlearner_mod)\b
       - match: \b(?i)(show_real_perks)\b
+      - match: \b(?i)(set_quest_failure_value)\b
       - match: \b(?i)(get_can_rest_on_map)\b
       - match: \b(?i)(set_can_rest_on_map)\b
       - match: \b(?i)(add_extra_msg_file)\b
@@ -876,7 +877,9 @@ repository:
       - match: \b(HOOK_AFTERHITROLL)\b
       - match: \b(HOOK_AMMOCOST)\b
       - match: \b(HOOK_BARTERPRICE)\b
+      - match: \b(HOOK_BESTWEAPON)\b
       - match: \b(HOOK_CALCAPCOST)\b
+      - match: \b(HOOK_CANUSEWEAPON)\b
       - match: \b(HOOK_CARTRAVEL)\b
       - match: \b(HOOK_COMBATDAMAGE)\b
       - match: \b(HOOK_COMBATTURN)\b
@@ -1391,7 +1394,6 @@ repository:
       - match: \b(BASE_ALERT_GAS_STATION)\b
       - match: \b(BASE_ALERT_GATE)\b
       - match: \b(BASE_ALERT_NONE)\b
-      - match: \b(BASE_REACTION)\b
       - match: \b(BLACK_RACE)\b
       - match: \b(BLOCKING_TYPE_AI)\b
       - match: \b(BLOCKING_TYPE_BLOCK)\b
@@ -1798,6 +1800,17 @@ repository:
       - match: \b(CITIZEN_REAL_CITIZEN)\b
       - match: \b(CITIZEN_SKEEVE_GIVEN_FAKE)\b
       - match: \b(CITIZEN_TRUE)\b
+      - match: \b(CITY_ARROYO)\b
+      - match: \b(CITY_BROKEN_HILLS)\b
+      - match: \b(CITY_GECKO)\b
+      - match: \b(CITY_KLAMATH)\b
+      - match: \b(CITY_LINE)\b
+      - match: \b(CITY_MODOC)\b
+      - match: \b(CITY_NCR)\b
+      - match: \b(CITY_REDDING)\b
+      - match: \b(CITY_SAN_FRAN)\b
+      - match: \b(CITY_VAULT_15)\b
+      - match: \b(CITY_VAULT_CITY)\b
       - match: \b(CLEARED_MINE)\b
       - match: \b(COMBAT)\b
       - match: \b(COMBAT_SUBTYPE_HIT_SUCCEEDED)\b
@@ -2044,6 +2057,7 @@ repository:
       - match: \b(DIK_YEN)\b
       - match: \b(DIK_Z)\b
       - match: \b(DL_CRITICALS)\b
+      - match: \b(DL_FIX)\b
       - match: \b(DL_HOOK)\b
       - match: \b(DL_INIT)\b
       - match: \b(DL_MAIN)\b
@@ -2771,6 +2785,7 @@ repository:
       - match: \b(FO_VAR_bottom_line)\b
       - match: \b(FO_VAR_btable)\b
       - match: \b(FO_VAR_btncnt)\b
+      - match: \b(FO_VAR_cap)\b
       - match: \b(FO_VAR_carCurrentArea)\b
       - match: \b(FO_VAR_carGasAmount)\b
       - match: \b(FO_VAR_card_old_fid1)\b
@@ -2789,6 +2804,8 @@ repository:
       - match: \b(FO_VAR_critter_db_handle)\b
       - match: \b(FO_VAR_crnt_func)\b
       - match: \b(FO_VAR_cur_id)\b
+      - match: \b(FO_VAR_curr_anim_counter)\b
+      - match: \b(FO_VAR_curr_anim_set)\b
       - match: \b(FO_VAR_curr_font_num)\b
       - match: \b(FO_VAR_curr_pc_stat)\b
       - match: \b(FO_VAR_curr_stack)\b
@@ -2819,6 +2836,7 @@ repository:
       - match: \b(FO_VAR_endgame_subtitle_done)\b
       - match: \b(FO_VAR_endgame_voiceover_loaded)\b
       - match: \b(FO_VAR_fade_steps)\b
+      - match: \b(FO_VAR_fallout_config)\b
       - match: \b(FO_VAR_fallout_game_time)\b
       - match: \b(FO_VAR_fidgetFID)\b
       - match: \b(FO_VAR_fidgetFp)\b
@@ -2872,6 +2890,7 @@ repository:
       - match: \b(FO_VAR_itemButtonItems)\b
       - match: \b(FO_VAR_itemCurrentItem)\b
       - match: \b(FO_VAR_kb_lock_flags)\b
+      - match: \b(FO_VAR_language)\b
       - match: \b(FO_VAR_lastMovieH)\b
       - match: \b(FO_VAR_lastMovieW)\b
       - match: \b(FO_VAR_lastWin)\b
@@ -2909,6 +2928,7 @@ repository:
       - match: \b(FO_VAR_name_color)\b
       - match: \b(FO_VAR_name_font)\b
       - match: \b(FO_VAR_name_sort_list)\b
+      - match: \b(FO_VAR_num_caps)\b
       - match: \b(FO_VAR_num_game_global_vars)\b
       - match: \b(FO_VAR_num_map_global_vars)\b
       - match: \b(FO_VAR_num_windows)\b
@@ -2950,11 +2970,13 @@ repository:
       - match: \b(FO_VAR_pipmesg)\b
       - match: \b(FO_VAR_preload_list_index)\b
       - match: \b(FO_VAR_procTableStrs)\b
+      - match: \b(FO_VAR_protoLists)\b
       - match: \b(FO_VAR_proto_main_msg_file)\b
       - match: \b(FO_VAR_proto_msg_files)\b
       - match: \b(FO_VAR_ptable)\b
       - match: \b(FO_VAR_pud)\b
       - match: \b(FO_VAR_quest_count)\b
+      - match: \b(FO_VAR_quests)\b
       - match: \b(FO_VAR_queue)\b
       - match: \b(FO_VAR_quick_done)\b
       - match: \b(FO_VAR_read_callback)\b
@@ -3008,6 +3030,7 @@ repository:
       - match: \b(FO_VAR_title_color)\b
       - match: \b(FO_VAR_title_font)\b
       - match: \b(FO_VAR_trait_data)\b
+      - match: \b(FO_VAR_use_language)\b
       - match: \b(FO_VAR_view_page)\b
       - match: \b(FO_VAR_wd_obj)\b
       - match: \b(FO_VAR_window)\b
@@ -3017,6 +3040,7 @@ repository:
       - match: \b(FO_VAR_wmBkWinBuf)\b
       - match: \b(FO_VAR_wmEncounterIconShow)\b
       - match: \b(FO_VAR_wmLastRndTime)\b
+      - match: \b(FO_VAR_wmMaxAreaNum)\b
       - match: \b(FO_VAR_wmMaxMapNum)\b
       - match: \b(FO_VAR_wmMaxTileNum)\b
       - match: \b(FO_VAR_wmMsgFile)\b
@@ -3138,7 +3162,6 @@ repository:
       - match: \b(HEX_MARK1)\b
       - match: \b(HEX_MARK2)\b
       - match: \b(HIDDEN_ITEM)\b
-      - match: \b(HIGH_REACTION)\b
       - match: \b(HOLODISK_ACCEPTED)\b
       - match: \b(HOLODISK_DECLINED)\b
       - match: \b(HOLODISK_DELIVERED)\b
@@ -3150,7 +3173,9 @@ repository:
       - match: \b(HOOK_AFTERHITROLL)\b
       - match: \b(HOOK_AMMOCOST)\b
       - match: \b(HOOK_BARTERPRICE)\b
+      - match: \b(HOOK_BESTWEAPON)\b
       - match: \b(HOOK_CALCAPCOST)\b
+      - match: \b(HOOK_CANUSEWEAPON)\b
       - match: \b(HOOK_CARTRAVEL)\b
       - match: \b(HOOK_COMBATDAMAGE)\b
       - match: \b(HOOK_COMBATTURN)\b
@@ -3309,7 +3334,6 @@ repository:
       - match: \b(LOAD_MAP_WHORE_CUT_JAIL)\b
       - match: \b(LOAD_TILE)\b
       - match: \b(LONG_HAIR)\b
-      - match: \b(LOW_REACTION)\b
       - match: \b(MAGAZINES_ASSIGNED)\b
       - match: \b(MAGAZINES_DONE)\b
       - match: \b(MAGAZINES_NOTHING)\b
@@ -3499,7 +3523,6 @@ repository:
       - match: \b(MAX_BOTS)\b
       - match: \b(MAX_BRAHMIN)\b
       - match: \b(MAX_BROC_FLOWER)\b
-      - match: \b(MAX_REACTION)\b
       - match: \b(MAX_ROTATIONS)\b
       - match: \b(MAX_SCORPS)\b
       - match: \b(MAX_SMALL_GECKO)\b
@@ -3583,7 +3606,6 @@ repository:
       - match: \b(MINOR_BOOST)\b
       - match: \b(MINUTES_PER_HOUR)\b
       - match: \b(MIN_BROC_FLOWER)\b
-      - match: \b(MIN_REACTION)\b
       - match: \b(MIN_SMALL_GECKO)\b
       - match: \b(MIN_TOUGH_GECKO)\b
       - match: \b(MIN_XANDER_ROOT)\b
@@ -3730,10 +3752,8 @@ repository:
       - match: \b(NAVARRO_XARN_FINISHED)\b
       - match: \b(NAVARRO_XARN_KNOW_ABOUT)\b
       - match: \b(NCR_BASE_TIMER)\b
-      - match: \b(NEUTRAL)\b
       - match: \b(NEUTRAL_REACTION)\b
       - match: \b(NIGHTTIME)\b
-      - match: \b(NO_REACTION)\b
       - match: \b(NPC_ARTFID_WEAPON_OFFSET)\b
       - match: \b(NUM_COWS)\b
       - match: \b(OBJECT_AI_PACKET)\b
@@ -5415,6 +5435,8 @@ repository:
       - match: \b(REP_BONUS_KILLED_EVIL_CRITTER)\b
       - match: \b(REP_BONUS_KILLED_NEUTRAL_CRITTER)\b
       - match: \b(REP_BONUS_KILL_EVIL_PLANTS)\b
+      - match: \b(REP_BONUS_KILL_LOPAN)\b
+      - match: \b(REP_BONUS_KILL_LOPAN_ON_MISSION)\b
       - match: \b(REP_BONUS_KILL_METZGER)\b
       - match: \b(REP_BONUS_KLAMATH_HELP_TORR)\b
       - match: \b(REP_BONUS_KLAMATH_REFUEL_STILL)\b
@@ -5476,8 +5498,6 @@ repository:
       - match: \b(REP_BONUS_V15_SAVED_GIRL_ALIVE)\b
       - match: \b(REP_BONUS_V15_SAVED_GIRL_DEAD)\b
       - match: \b(REP_BONUS_VIC_TRADER_LEARNED)\b
-      - match: \b(REP_BOUNS_KILL_LOPAN)\b
-      - match: \b(REP_BOUNS_KILL_LOPAN_ON_MISSION)\b
       - match: \b(REP_HERO_NCR_BECAME_RANGER)\b
       - match: \b(REP_HERO_NCR_FOUND_SPY)\b
       - match: \b(REP_HERO_NCR_FOUND_V13)\b
@@ -8633,6 +8653,7 @@ repository:
       - match: \b(MYRON_SUPERSTIM_BIT)\b
       - match: \b(MYRON_WHORES_BIT)\b
       - match: \b(Mono16bit)\b
+      - match: \b(NAME)\b
       - match: \b(NCR_BOMB_JACK)\b
       - match: \b(NCR_CRAPS_KNOWN)\b
       - match: \b(NCR_DOC_REF_RANGERS)\b
@@ -10428,10 +10449,11 @@ repository:
       - match: \b(Choose_Pid)\b
       - match: \b(InitConfigs)\b
       - match: \b(_PURGE_all_saved_arrays)\b
+      - match: \b(beacon_rep)\b
       - match: \b(checkPartyMembersNearDoor)\b
       - match: \b(check_filesystem_override)\b
+      - match: \b(cult_rep)\b
       - match: \b(doVaultBoxerAppearance)\b
-      - match: \b(effective_rep)\b
       - match: \b(final_fight_lock_doors)\b
       - match: \b(getTimeBit)\b
       - match: \b(hotkey_pressed)\b
@@ -10440,6 +10462,8 @@ repository:
       - match: \b(party_size_humans)\b
       - match: \b(removeVaultBoxerAppearance)\b
       - match: \b(robot_use_obj)\b
+      - match: \b(self_is_evil)\b
+      - match: \b(self_rep)\b
       - match: \b(sierra_set_klaxons_off)\b
       - match: \b(sierra_set_klaxons_on)\b
   header-defines-with-vars:
@@ -10965,6 +10989,7 @@ repository:
       - match: \b(VAR3)\b
       - match: \b(VARA)\b
       - match: \b(VARC)\b
+      - match: \b(VARD)\b
       - match: \b(VARP)\b
       - match: \b(VAR_)\b
       - match: \b(WM_In_Band)\b
@@ -11059,6 +11084,7 @@ repository:
       - match: \b(check_fight_status)\b
       - match: \b(check_give_warning)\b
       - match: \b(check_kill_party_pid)\b
+      - match: \b(check_pid)\b
       - match: \b(check_restock_item)\b
       - match: \b(check_restock_item_min_limit)\b
       - match: \b(check_seat_party_member)\b
@@ -11665,6 +11691,7 @@ repository:
       - match: \b(set_party_bit_hidden)\b
       - match: \b(set_party_bit_unhidden)\b
       - match: \b(set_plastic_damage)\b
+      - match: \b(set_quest_failure_value)\b
       - match: \b(set_redding_problem)\b
       - match: \b(set_rest_heal_time)\b
       - match: \b(set_rest_mode)\b
@@ -11854,6 +11881,9 @@ repository:
       - match: \b(tile_wright_richards_room)\b
       - match: \b(time_has_passed)\b
       - match: \b(town_known)\b
+      - match: \b(town_rep_better_or_equal)\b
+      - match: \b(town_rep_better_than)\b
+      - match: \b(town_rep_worse_than)\b
       - match: \b(transfer_all_pid_between_objs)\b
       - match: \b(transfer_pid_between_objs)\b
       - match: \b(trunc)\b

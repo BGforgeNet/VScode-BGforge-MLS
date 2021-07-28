@@ -2650,6 +2650,10 @@
           "name": "support.function.sfall.ssl"
         },
         {
+          "match": "\\b(?i)(set_quest_failure_value)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
           "match": "\\b(?i)(get_can_rest_on_map)\\b",
           "name": "support.function.sfall.ssl"
         },
@@ -3250,7 +3254,15 @@
           "name": "constant.language.ssl"
         },
         {
+          "match": "\\b(HOOK_BESTWEAPON)\\b",
+          "name": "constant.language.ssl"
+        },
+        {
           "match": "\\b(HOOK_CALCAPCOST)\\b",
+          "name": "constant.language.ssl"
+        },
+        {
+          "match": "\\b(HOOK_CANUSEWEAPON)\\b",
           "name": "constant.language.ssl"
         },
         {
@@ -5303,10 +5315,6 @@
           "name": "constant.language.define.ssl"
         },
         {
-          "match": "\\b(BASE_REACTION)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
           "match": "\\b(BLACK_RACE)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -6931,6 +6939,50 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(CITY_ARROYO)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(CITY_BROKEN_HILLS)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(CITY_GECKO)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(CITY_KLAMATH)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(CITY_LINE)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(CITY_MODOC)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(CITY_NCR)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(CITY_REDDING)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(CITY_SAN_FRAN)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(CITY_VAULT_15)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(CITY_VAULT_CITY)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(CLEARED_MINE)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -7912,6 +7964,10 @@
         },
         {
           "match": "\\b(DL_CRITICALS)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(DL_FIX)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -10823,6 +10879,10 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(FO_VAR_cap)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(FO_VAR_carCurrentArea)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -10892,6 +10952,14 @@
         },
         {
           "match": "\\b(FO_VAR_cur_id)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_curr_anim_counter)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_curr_anim_set)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -11012,6 +11080,10 @@
         },
         {
           "match": "\\b(FO_VAR_fade_steps)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_fallout_config)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -11227,6 +11299,10 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(FO_VAR_language)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(FO_VAR_lastMovieH)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -11372,6 +11448,10 @@
         },
         {
           "match": "\\b(FO_VAR_name_sort_list)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_num_caps)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -11539,6 +11619,10 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(FO_VAR_protoLists)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(FO_VAR_proto_main_msg_file)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -11556,6 +11640,10 @@
         },
         {
           "match": "\\b(FO_VAR_quest_count)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_quests)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -11771,6 +11859,10 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(FO_VAR_use_language)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(FO_VAR_view_page)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -11804,6 +11896,10 @@
         },
         {
           "match": "\\b(FO_VAR_wmLastRndTime)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_wmMaxAreaNum)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -12291,10 +12387,6 @@
           "name": "constant.language.define.ssl"
         },
         {
-          "match": "\\b(HIGH_REACTION)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
           "match": "\\b(HOLODISK_ACCEPTED)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -12339,7 +12431,15 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(HOOK_BESTWEAPON)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(HOOK_CALCAPCOST)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(HOOK_CANUSEWEAPON)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -12972,10 +13072,6 @@
         },
         {
           "match": "\\b(LONG_HAIR)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
-          "match": "\\b(LOW_REACTION)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -13735,10 +13831,6 @@
           "name": "constant.language.define.ssl"
         },
         {
-          "match": "\\b(MAX_REACTION)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
           "match": "\\b(MAX_ROTATIONS)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -14068,10 +14160,6 @@
         },
         {
           "match": "\\b(MIN_BROC_FLOWER)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
-          "match": "\\b(MIN_REACTION)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -14659,19 +14747,11 @@
           "name": "constant.language.define.ssl"
         },
         {
-          "match": "\\b(NEUTRAL)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
           "match": "\\b(NEUTRAL_REACTION)\\b",
           "name": "constant.language.define.ssl"
         },
         {
           "match": "\\b(NIGHTTIME)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
-          "match": "\\b(NO_REACTION)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -21399,6 +21479,14 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(REP_BONUS_KILL_LOPAN)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(REP_BONUS_KILL_LOPAN_ON_MISSION)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(REP_BONUS_KILL_METZGER)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -21640,14 +21728,6 @@
         },
         {
           "match": "\\b(REP_BONUS_VIC_TRADER_LEARNED)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
-          "match": "\\b(REP_BOUNS_KILL_LOPAN)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
-          "match": "\\b(REP_BOUNS_KILL_LOPAN_ON_MISSION)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -34264,6 +34344,10 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(NAME)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(NCR_BOMB_JACK)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -41430,6 +41514,10 @@
           "name": "support.function.header.ssl"
         },
         {
+          "match": "\\b(beacon_rep)\\b",
+          "name": "support.function.header.ssl"
+        },
+        {
           "match": "\\b(checkPartyMembersNearDoor)\\b",
           "name": "support.function.header.ssl"
         },
@@ -41438,11 +41526,11 @@
           "name": "support.function.header.ssl"
         },
         {
-          "match": "\\b(doVaultBoxerAppearance)\\b",
+          "match": "\\b(cult_rep)\\b",
           "name": "support.function.header.ssl"
         },
         {
-          "match": "\\b(effective_rep)\\b",
+          "match": "\\b(doVaultBoxerAppearance)\\b",
           "name": "support.function.header.ssl"
         },
         {
@@ -41475,6 +41563,14 @@
         },
         {
           "match": "\\b(robot_use_obj)\\b",
+          "name": "support.function.header.ssl"
+        },
+        {
+          "match": "\\b(self_is_evil)\\b",
+          "name": "support.function.header.ssl"
+        },
+        {
+          "match": "\\b(self_rep)\\b",
           "name": "support.function.header.ssl"
         },
         {
@@ -43571,6 +43667,10 @@
           "name": "support.type.define.header.ssl"
         },
         {
+          "match": "\\b(VARD)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
           "match": "\\b(VARP)\\b",
           "name": "support.type.define.header.ssl"
         },
@@ -43944,6 +44044,10 @@
         },
         {
           "match": "\\b(check_kill_party_pid)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(check_pid)\\b",
           "name": "support.type.define.header.ssl"
         },
         {
@@ -46371,6 +46475,10 @@
           "name": "support.type.define.header.ssl"
         },
         {
+          "match": "\\b(set_quest_failure_value)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
           "match": "\\b(set_redding_problem)\\b",
           "name": "support.type.define.header.ssl"
         },
@@ -47124,6 +47232,18 @@
         },
         {
           "match": "\\b(town_known)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(town_rep_better_or_equal)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(town_rep_better_than)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(town_rep_worse_than)\\b",
           "name": "support.type.define.header.ssl"
         },
         {
