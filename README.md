@@ -30,7 +30,7 @@ BGforge MLS is a VScode extension adding support for [Star-Trek Scripting Langua
 1. Review [tooltip width](docs/tooltip_width.md).
 1. Review [file associations](docs/file_associations.md).
 1. See [hotkeys](#hotkeys).
-1. (Infinity Engine) Enable [custom theme](docs/theme.md).
+1. (Infinity Engine) Enable [custom theme](docs/theme.md) and [icon theme](docs/icon-theme.md).
 1. (Infinity Engine) Install [IElib](https://ielib.bgforge.net).
 
 #### Hotkeys
