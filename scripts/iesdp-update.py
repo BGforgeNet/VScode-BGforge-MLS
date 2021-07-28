@@ -40,7 +40,6 @@ completion_weidu = args.completion_weidu
 highlight_weidu = args.highlight_weidu
 file_formats_dir = os.path.join(iesdp_dir, "_data", 'file_formats')
 
-
 def get_stanza(dtype):
   try:
     dstanza = stanza[dtype]
@@ -124,6 +123,7 @@ for a in actions_unique:
   if not desc:
     continue
   desc = LS(desc); # format multiline properly
+  desc = strip_liquid(desc)
   action = {"name": a["name"], "detail": action_detail(a), "doc": desc}
   actions_completion.append(action)
 
@@ -195,6 +195,9 @@ for l in [chars, lbytes, words, dwords, resrefs, strrefs, other]:
   if len(non_unique) > 0:
     print("Error: duplicate keys found")
     print(non_unique)
+    for nu in non_unique:
+      for l in [chars, lbytes, words, dwords, resrefs, strrefs, other]:
+        print([x for x in l if x["name"]==nu])
     sys.exit(1)
 
 iesdp_data = {

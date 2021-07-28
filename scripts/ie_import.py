@@ -135,7 +135,7 @@ def offsets_to_completion(data, prefix, chars, lbytes, words, dwords, resrefs, s
     else:
       detail = "{} {}".format(i['type'], iid)
 
-    item = {"name": iid, "detail": detail, "doc": i['desc']}
+    item = {"name": iid, "detail": detail, "doc": strip_liquid(i['desc'])}
 
     if 'mult' in i:
       other.append(item)
@@ -155,3 +155,10 @@ def offsets_to_completion(data, prefix, chars, lbytes, words, dwords, resrefs, s
       strrefs.append(item)
     else:
       other.append(item)
+
+# remove {% capture note %} {% endcapture %} {% include note.html %}
+def strip_liquid(text):
+  text = text.replace('{% capture note %}','')
+  text = text.replace('{% endcapture %} {% include note.html %}','')
+  text = text.replace('{% endcapture %} {% include info.html %}','')
+  return text
