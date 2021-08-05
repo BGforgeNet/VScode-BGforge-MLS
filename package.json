@@ -342,12 +342,13 @@
 			}
 		],
 		"iconThemes": [
-      {
-        "id": "bgforge",
-        "label": "BGforge",
-        "path": "./themes/bgforge-icon-theme.json"
-      }
-    ]},
+			{
+				"id": "bgforge",
+				"label": "BGforge",
+				"path": "./themes/bgforge-icon-theme.json"
+			}
+		]
+	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
 		"compile:client": "./scripts/syntaxes_to_json.sh && tsc -p ./client/tsconfig.json",
@@ -361,7 +362,7 @@
 	"devDependencies": {
 		"@types/mocha": "^5.2.0",
 		"@types/node": "^8.10.66",
-		"typescript": "^3.9.7"
+		"typescript": "^3.9.10"
 	},
 	"categories": [
 		"Programming Languages"
