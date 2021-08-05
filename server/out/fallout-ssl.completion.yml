@@ -815,6 +815,10 @@ base-functions:
       detail: void start_gialog(int msgFileNum, ObjectPtr who, int mood, int headNum, int backgroundIdx)
       doc: |-
         Start the dialogue system focusing on a critter (who) and starting in a given (mood). This call sets up the appropriate dialog windows, head art, etc. If this call is not made before the normal dialog calls (sayReply, sayMessage, sayOption, etc.) then the dialog windows will not come up, and only grey boxes will appear with the text.
+    - name: start_gdialog
+      detail: void start_gdialog(int msgFileNum, ObjectPtr who, int mood, int headNum, int backgroundIdx)
+      doc: |-
+        Start the dialogue system focusing on a critter (who) and starting in a given (mood). This call sets up the appropriate dialog windows, head art, etc. If this call is not made before the normal dialog calls (sayReply, sayMessage, sayOption, etc.) then the dialog windows will not come up, and only grey boxes will appear with the text.
     - name: target_obj
       detail: ObjectPtr target_obj
       doc: |-

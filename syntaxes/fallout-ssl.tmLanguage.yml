@@ -326,6 +326,7 @@ repository:
       - match: \b(?i)(soundstop)\b
       - match: \b(?i)(source_obj)\b
       - match: \b(?i)(start_gdialog)\b
+      - match: \b(?i)(start_gialog)\b
       - match: \b(?i)(stopmovie)\b
       - match: \b(?i)(target_obj)\b
       - match: \b(?i)(terminate_combat)\b
