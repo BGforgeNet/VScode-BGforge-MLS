@@ -539,7 +539,8 @@ base-functions:
     - name: move_to
       detail: int move_to(ObjectPtr obj, int tile_num, int elev)
       doc: |-
-        Immediately moves an object (obj) to the given tile number and elevation (0-2) on the current map.
+        Immediately moves object `obj` to the given tile number and elevation (0-2) on the current map.
+        Using this to change elevations during loading an in-combat save will lead to a crash. If `move_to` called in `map_enter_p_proc`, wrap in `not_is_loading_game` to avoid the crash.
     - name: obj_art_fid
       detail: int obj_art_fid(ObjectPtr obj)
       doc: |-
@@ -794,7 +795,7 @@ base-functions:
         Sets the `OBJ_OFF` flag for an object (makes it not drawn).
         Notes:
           - Visibility arg is _inverted_: `set_obj_visibility(who, true)` makes object invisible.
-          - Cannot be invoked while saving/loading. Use `if not is_loading_game` to avoid polluting debug.log with errors.
+          - Does not work when loading game.
     - name: signal_end_game
       detail: void signal_end_game
       doc: |-
