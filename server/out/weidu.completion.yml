@@ -9433,6 +9433,18 @@ tp2-vars:
       doc: Set by `COPY_*` family of functions. If `COPY fromFile` is `mymod/cre/bigboss.cre`, then `SOURCE_RES` is `bigboss`.
     - name: SOURCE_EXT
       doc: Set by `COPY_*` family of functions. If `COPY fromFile` is `mymod/cre/bigboss.cre`, then `SOURCE_EXT` is `cre`.
+    - name: SOURCE_SIZE
+      doc: Set by `COPY_*` family of functions. It is set to the size (in bytes) of the source file.
+    - name: DEST_FILE
+      doc: Set by `COPY_*` family of functions. Like `SOURCE_FILE`, but based on `toFile`.
+    - name: DEST_DIRECTORY
+      doc: Set by `COPY_*` family of functions. Like `SOURCE_DIRECTORY`, but based on `toFile`.
+    - name: DEST_FILESPEC
+      doc: Set by `COPY_*` family of functions. Like `SOURCE_FILESPEC`, but based on `toFile`.
+    - name: DEST_RES
+      doc: Set by `COPY_*` family of functions. Like `SOURCE_RES`, but based on `toFile`.
+    - name: DEST_EXT
+      doc: Set by `COPY_*` family of functions. Like `SOURCE_EXT`, but based on `toFile`.
 
 tp2-file:
   type: 14 # keyword
