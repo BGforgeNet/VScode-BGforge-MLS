@@ -2043,6 +2043,7 @@ repository:
   spell-ids-iwdee:
     name: constant.other.baf.weidu
     patterns:
+      - match: \b(CLERIC_CURSE)\b
       - match: \b(CLERIC_CAUSE_LIGHT_WOUNDS)\b
       - match: \b(CLERIC_SUNSCORCH)\b
       - match: \b(CLERIC_PROTECT_FROM_GOOD)\b
@@ -2064,7 +2065,7 @@ repository:
       - match: \b(CLERIC_SUMMON_LIZARDMEN)\b
       - match: \b(CLERIC_SUMMON_TROLLS)\b
       - match: \b(CLERIC_CAUSE_MEDIUM_WOUNDS)\b
-      - match: \b(CLERIC_FAVOR_OR_ILMATER)\b
+      - match: \b(CLERIC_FAVOR_OF_ILMATER)\b
       - match: \b(CLERIC_GIANT_INSECT)\b
       - match: \b(CLERIC_PRODUCE_FIRE)\b
       - match: \b(CLERIC_STATIC_CHARGE)\b
