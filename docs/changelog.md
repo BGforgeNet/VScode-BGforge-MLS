@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.16.1
+- Fallout
+  - Added `start_gialog`/`start_gdialog` synonyms.
+  - Added notes about visibility and `move_to` during fallout [game load](https://github.com/phobos2077/sfall/issues/380).
+- IE
+  - Fixed typo in `CLERIC_FAVOR_OR_ILMATER`.
+  - Added some missing `tp2-vars` to autocompletion.
+  - Added one missing spell to `spell-ids-iwdee`.
+  - Allow more char types in weidu var names.
+  - Added some missing STO-related functions.
+
 ## 1.16.0
 - Fallout
   - Updated [RPU](https://github.com/BGforgeNet/Fallout2_Restoration_Project) defines to v21, [sfall](https://github.com/phobos2077/sfall) to 4.3.0.2.
