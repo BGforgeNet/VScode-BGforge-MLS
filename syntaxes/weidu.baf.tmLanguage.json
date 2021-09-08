@@ -7869,6 +7869,10 @@
       "name": "constant.other.baf.weidu",
       "patterns": [
         {
+          "match": "\\b(CLERIC_CURSE)\\b",
+          "name": "constant.other.baf.weidu"
+        },
+        {
           "match": "\\b(CLERIC_CAUSE_LIGHT_WOUNDS)\\b",
           "name": "constant.other.baf.weidu"
         },
@@ -7953,7 +7957,7 @@
           "name": "constant.other.baf.weidu"
         },
         {
-          "match": "\\b(CLERIC_FAVOR_OR_ILMATER)\\b",
+          "match": "\\b(CLERIC_FAVOR_OF_ILMATER)\\b",
           "name": "constant.other.baf.weidu"
         },
         {

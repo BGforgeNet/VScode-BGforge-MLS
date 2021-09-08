@@ -17354,11 +17354,23 @@
           "name": "entity.name.function.weidu.patch"
         },
         {
-          "match": "\\b(ADD_STORE_ITEM)\\b",
+          "match": "\\b(ADD_STORE_ITEM(_EX)?)\\b",
           "name": "entity.name.function.weidu.patch"
         },
         {
-          "match": "\\b(REMOVE_STORE_ITEM)\\b",
+          "match": "\\b(REMOVE_STORE_ITEM(_EX)?)\\b",
+          "name": "entity.name.function.weidu.patch"
+        },
+        {
+          "match": "\\b((ADD|REMOVE)_STORE_PURCHASE)\\b",
+          "name": "entity.name.function.weidu.patch"
+        },
+        {
+          "match": "\\b((ADD|REMOVE)_STORE_CURE)\\b",
+          "name": "entity.name.function.weidu.patch"
+        },
+        {
+          "match": "\\b((ADD|REMOVE)_STORE_DRINK)\\b",
           "name": "entity.name.function.weidu.patch"
         },
         {
@@ -18450,7 +18462,7 @@
           "name": "variable.parameter.weidu"
         },
         {
-          "match": "(%)((\\w*)(%[#\\-\\w]+%)(\\w*))(%)",
+          "match": "(%)((\\w*)(%[#!\\-\\w]+%)(\\w*))(%)",
           "captures": {
             "1": {
               "name": "keyword.control.double-eval.weidu"
@@ -18468,7 +18480,7 @@
           "name": "variable.parameter.weidu"
         },
         {
-          "match": "(%[#\\-\\w]+%)",
+          "match": "(%[#!\\-\\w]+%)",
           "name": "variable.parameter.weidu"
         }
       ]

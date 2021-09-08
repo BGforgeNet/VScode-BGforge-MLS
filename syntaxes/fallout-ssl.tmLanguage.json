@@ -1233,6 +1233,10 @@
           "name": "support.function.base.ssl"
         },
         {
+          "match": "\\b(?i)(start_gialog)\\b",
+          "name": "support.function.base.ssl"
+        },
+        {
           "match": "\\b(?i)(stopmovie)\\b",
           "name": "support.function.base.ssl"
         },
