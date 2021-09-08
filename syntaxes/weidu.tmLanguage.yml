@@ -4428,8 +4428,11 @@ repository:
       - match: \b(REMOVE_2DA_ROW)\b
       - match: \b(PATCH_READLN)\b
       - match: \b(PATCH_RANDOM_SEED)\b
-      - match: \b(ADD_STORE_ITEM)\b
-      - match: \b(REMOVE_STORE_ITEM)\b
+      - match: \b(ADD_STORE_ITEM(_EX)?)\b
+      - match: \b(REMOVE_STORE_ITEM(_EX)?)\b
+      - match: \b((ADD|REMOVE)_STORE_PURCHASE)\b
+      - match: \b((ADD|REMOVE)_STORE_CURE)\b
+      - match: \b((ADD|REMOVE)_STORE_DRINK)\b
       - match: \b(READ_2DA_ENTRY)\b
       - match: \b(READ_2DA_ENTRIES_NOW)\b
       - match: \b(READ_2DA_ENTRY_FORMER)\b

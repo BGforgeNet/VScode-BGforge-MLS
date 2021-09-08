@@ -10368,6 +10368,117 @@ tp2-patch:
       detail: ADD_STORE_ITEM [ + ] itemName [ position ] charge1 charge2 charge3 flags stack [ unlimited ]
       doc: |-
         Add the item itemName to the current STO file. An optional + signifies that the new instance of the item should overwrite any existing instance of the same item. The item's number of charges are given by the respective charge argument, which must take the form of #integer or ( value ). The optional position argument must be one of AFTER String, BEFORE String, LAST, FIRST or AT value. AFTER will place the new item behind the item given by String. BEFORE will place the item before the item provided by String. LAST will place the new item after all existing items. FIRST will place the new item as the first item in the store. AT will place the new item at the position given by value, with the first item having position 0. If no position argument is given, ADD_STORE_ITEM defaults to FIRST. The argument flags must be a string consisting of one of none, identified, unstealable, stolen, identified&stolen or identified&unstealable. The argument stack sets the number of item the store carries in the stack and must take the form of #integer or ( value ). The optional argument unlimited should be one of the strings limited or unlimited and controls whether the store should carry an inexhaustible stack of the new item, or not. limited is the default behaviour. See the ADD_STORE_ITEM tutorial for more information.
+    # Store-related functions (WeiDU v247+)
+    - name: ADD_STORE_ITEM_EX
+      doc: |-
+        Adds an item to the current STO file. This is a PATCH function.
+         - INT_VAR `charge1` to the number of charges of the 1st ability or quantity for stackables. (Default: `0`)
+         - INT_VAR `charge2` to the number of charges of the 2nd ability. (Default: `0`)
+         - INT_VAR `charge3` to the number of charges of the 3rd ability. (Default: `0`)
+         - INT_VAR `stack` to the number of item instances the store carries in the stack. (Default: `1`)
+         - INT_VAR `unlimited` to non-zero if the store should carry an inexhaustible stack of the new item. (Default: `0`)
+         - INT_VAR `overwrite` to non-zero to overwrite any instances of an existing sale entry of matching item resref when found. (Default: `0`)
+         - INT_VAR `expiration` to the item's expiration time, when it will be replaced with the drained item. (Default: `0`)
+         - STR_VAR `item_name` to the resource name (resref) of the item to add.
+         - STR_VAR `position` to the desired position of the item in the list of sale entries. The following syntax is supported (Default: `FIRST`):
+           - `AFTER resref`: Will place the new item directly behind the item given by `resref`.
+                             You can list more than one resref, separated by space. The new item will be
+                             added after the entry of the first matching resref.
+           - `BEFORE resref`: Will place the new item directly before the item given by `resref`.
+                              You can list more than one resref, separated by space. The new item will be
+                              added before the entry of the first matching resref.
+           - `LAST`: Will place the new item after all existing items.
+           - `FIRST`: Will place the new item before all existing items.
+           - `AT value`: Will place the new item at the position given by the number `value`.
+                         Use negative values to place the new item relative to the last item position
+                         in reverse order.
+         - STR_VAR `flags` to numeric values or the following constants: `none`, `identified`, `unstealable`, `stolen`. Constants can be combined by using ampersand (`&`) or space as separators (e.g. `identified&unstealable`). (Default: `none`)
+         - STR_VAR `sale_trigger` Availability trigger (`STO V1.1` only). The following syntax is supported (Default: `#-1`):
+           - `Trigger string`: Example: `GlobalGT("MyCondition","GLOBAL",0)`
+           - `Strref value`: Example: `#1234`
+           - `Translation reference`: Example: `@1000`
+         - RET `index` returns the index of the added item or the last matching index when overwriting items. Returns `-1` if the item could not be added or updated.
+         - RET `offset` returns the offset of the added item or the last matching offset when overwriting items. Returns `-1` if the item could not be added or updated.
+    - name: ADD_STORE_DRINK
+      doc: |-
+        Adds a drink to the current STO file. This is a PATCH function.
+         - INT_VAR `price` to the price of the drink.
+         - INT_VAR `rate` to the rate (%) of displaying a rumor.
+         - INT_VAR `overwrite` to non-zero to overwrite any instances of an existing drink of matching `drink_name` when found. (Default: `0`)
+         - STR_VAR `drink_name` to the name of the drink. The following syntax is supported:
+           - `Literal string`: Example: Elminster's Choice Beer
+           - `Strref value`: Example: `#1234`
+           - `Translation reference`: Example: `@1000`
+         - STR_VAR `position` to the desired position in the list of drinks. Refer to the table below for supported expressions. The following syntax is supported (Default: `FIRST`):
+           - `AFTER name`: Will place the new drink directly behind the drink given by `name`. Name can
+                           either be a strref value (e.g. `#1234`) or a translation reference (e.g. `@1000`).
+                           You can list more than one name, separated by space. The new drink will be
+                           added after the entry of the first matching name.
+           - `BEFORE name`: Will place the new drink directly before the drink given by `name`. Name can
+                            either be a strref value (e.g. `#1234`) or a translation reference (e.g. `@1000`).
+                            You can list more than one name, separated by space. The new drink will be
+                            added before the entry of the first matching name.
+           - `LAST`: Will place the new drink after all existing drinks.
+           - `FIRST`: Will place the new drink before all existing drinks.
+           - `AT value`: Will place the new drink at the position given by the number "value".
+                         Use negative values to place the new drink relative to the last drink position
+                         in reverse order.
+         - RET `index` returns the index of the added drink or the last matching index when overwriting drinks. Returns `-1` if the drink could not be added or updated.
+         - RET `offset` returns the offset of the added drink or the last matching offset when overwriting drinks. Returns `-1` if the drink could not be added or updated.
+    - name: ADD_STORE_CURE
+      doc: |-
+        Adds a cure to the current STO file. This is a PATCH function.
+         - INT_VAR `price` to the spell price.
+         - INT_VAR `overwrite` to non-zero to overwrite any instances of an existing cure entry of matching spell resref when found. (Default: `0`)
+         - STR_VAR `spell_name` to the resource name (resref) of the spell to add.
+         - STR_VAR `position` to the desired position in the list of cures. Refer to the table below for supported expressions. The following syntax is supported (Default: `FIRST`):
+           - `AFTER resref`: Will place the new spell directly behind the spell given by `resref`.
+                             You can list more than one resref, separated by space. The new spell will be
+                             added after the entry of the first matching resref.
+           - `BEFORE resref`: Will place the new spell directly before the spell given by `resref`.
+                              You can list more than one resref, separated by space. The new spell will be
+                              added before the entry of the first matching resref.
+           - `LAST`: Will place the new spell after all existing cures.
+           - `FIRST`: Will place the new spell before all existing cures.
+           - `AT value`: Will place the new spell at the position given by the number `value`.
+                         Use negative values to place the new spell relative to the last spell position
+                         in reverse order.
+         - RET `index` returns the index of the added cure or the last matching index when overwriting cure entries. Returns `-1` if the spell could not be added or updated.
+         - RET `offset` returns the offset of the added cure or the last matching offset when overwriting cures. Returns `-1` if the spell could not be added or updated.
+    - name: ADD_STORE_PURCHASE
+      doc: |-
+        Adds one or more item categories the store will buy to the current STO file. Existing categories will be skipped.
+         - INT_VAR `category` to the item category to add. A nearly complete list of supported item category codes can be found [here](https://gibberlings3.github.io/iesdp/file_formats/ie_formats/sto_v1.htm#tableItemType).
+         - RET `index` returns the index of the added purchase. Returns `-1` if the purchase could not be added.
+         - RET `offset` returns the offset of the added purchase. Returns `-1` if the purchase could not be added.
+    - name: REMOVE_STORE_ITEM_EX
+      doc: |-
+        Removes all sale instances matching the specified item name from the current STO file. This is a patch function.
+         - STR_VAR `item_name` to the resource name (resref) of the item to remove. Regular expression syntax is supported.
+         - RET `index` returns the index of the first removed entry matching the item name, returns `-1` otherwise.
+         - RET `offset` returns the offset of the first removed entry matching the item name, returns `-1` otherwise.
+    - name: REMOVE_STORE_DRINK
+      doc: |-
+        Removes all drink instances matching the specified drink name from the current STO file. This is a patch function.
+         - STR_VAR `drink_name` to the name of the drink. The following syntax is supported:
+           - `Literal string`: Example: Elminster's Choice Beer
+             - Note: Regular expression syntax is supported for literal strings.
+           - `Strref value`: Example: `#1234`
+           - `Translation reference`: Example: `@1000`
+         - RET `index` returns the index of the first removed entry matching the drink name, returns `-1` otherwise.
+         - RET `offset` returns the offset of the first removed entry matching the drink name, returns `-1` otherwise.
+    - name: REMOVE_STORE_CURE
+      doc: |-
+        Removes all cure instances matching the specified spell name from the current STO file. This is a patch function.
+         - STR_VAR `spell_name` to the resource name (resref) of the spell to remove. Regular expression syntax is supported.
+         - RET `index` returns the index of the first removed entry matching the spell name, returns `-1` otherwise.
+         - RET `offset` returns the offset of the first removed entry matching the spell name, returns `-1` otherwise.
+    - name: REMOVE_STORE_PURCHASE
+      doc: |-
+        Removes the specified item category from the current STO file. This is a patch function.
+         - INT_VAR `category` to the item category to remove. A nearly complete list of supported item category codes can be found [here](https://gibberlings3.github.io/iesdp/file_formats/ie_formats/sto_v1.htm#tableItemType).
+         - RET `index` returns the index of the first removed entry matching the category, returns `-1` otherwise.
+         - RET `offset` returns the offset of the first removed entry matching the category, returns `-1` otherwise.
     - name: ADD_WORLDMAP_LINKS
       doc: |-
         Add links from one worldmap area to another. This is a PATCH function.
