@@ -4340,6 +4340,7 @@ repository:
     patterns:
       - match: \b(EXACT_MATCH)\b
       - match: \b(EVALUATE_REGEXP)\b
+      - match: \b(EXACT)\b # AT_EXIT
 
   weidu-tp2-arrarindicessorttype:
     name: constant.language.flag.weidu

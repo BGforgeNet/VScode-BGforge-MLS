@@ -10157,6 +10157,11 @@ tp2-optexact:
     - name: EXACT_MATCH
       doc: |-
         Only the given string is searched for.
+
+    - name: EXACT
+      doc: |-
+        In AT_EXIT and sister ACTIONs, If EXACT is specified, / and \ will be preserved as they are.
+
 tp2-ArrayIndicesSortType:
   type: 14 # keyword
   items:
