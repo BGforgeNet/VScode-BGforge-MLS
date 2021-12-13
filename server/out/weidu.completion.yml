@@ -10047,6 +10047,12 @@ tp2-action:
       detail: OUTER_SET variable = value
       doc: |-
         Update variable so that it is equal to value.
+    - name: LOCAL_SET
+      detail: LOCAL_SET variable = value
+      doc: |-
+        Update variable so that it is equal to value. Only usable in ACTION and PATCH macros.
+
+        Basically, at the beginning of the macro declaration, you may use `LOCAL_SET variable = value` to declare a variable as local, and assign it a new value. Use this for all variables that don't need to be changed by the macro. After computing the macro, these variables are set to the value they had before the macro was processed.
     - name: OUTER_SNPRINT
       detail: OUTER_SNPRINT value variable stringWithVars
       doc: |-
@@ -10055,10 +10061,20 @@ tp2-action:
       detail: OUTER_SPRINT variable stringWithVars
       doc: |-
         Like OUTER_TEXT_SPRINT, but stringWithVars can be an @reference, and will break --traify. Use OUTER_TEXT_SPRINT instead.
+    - name: LOCAL_SPRINT
+      detail: LOCAL_SPRINT variable stringWithVars
+      doc: |-
+        Like LOCAL_TEXT_SPRINT, but stringWithVars can be an @reference, and will break --traify. Use LOCAL_TEXT_SPRINT instead.
     - name: OUTER_TEXT_SPRINT
       detail: OUTER_TEXT_SPRINT variable stringWithVars
       doc: |-
         Any WeiDU variables (enclosed in %s) inside stringWithVars are replaced by their values and the resulting string (constructed at mod-installation time!) is assigned to the variable variable.
+    - name: LOCAL_TEXT_SPRINT
+      detail: LOCAL_TEXT_SPRINT variable stringWithVars
+      doc: |-
+        Any WeiDU variables (enclosed in %s) inside stringWithVars are replaced by their values and the resulting string (constructed at mod-installation time!) is assigned to the variable variable. Only usable in ACTION and PATCH macros.
+
+        Basically, at the beginning of the macro declaration, you may use `LOCAL_TEXT_SPRINT variable stringWithVars` to declare a variable as local, and assign it a new value. Use this for all variables that don't need to be changed by the macro. After computing the macro, these variables are set to the value they had before the macro was processed.
     - name: OUTER_WHILE
       detail: OUTER_WHILE value BEGIN TP2 Action list END
       doc: |-
