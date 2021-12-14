@@ -137,6 +137,7 @@ repository:
       - include: '#seq-ids'
       - include: '#time-ids'
       - include: '#timeoday-ids'
+      - include: '#gtimes-ids'
       - include: '#weather-ids'
       - include: '#xequip-ids'
       - include: '#statmod-ids'
@@ -2753,6 +2754,108 @@ repository:
       - match: \b(DUSK)\b
       - match: \b(NIGHT)\b
       - match: \b(MORNING)\b
+
+  gtimes-ids:
+    name: constant.other.baf.weidu
+    patterns:
+      - match: \b(ONE_MINUTE)\b
+      - match: \b(ONE_ROUND)\b
+      - match: \b(TWO_MINUTES)\b
+      - match: \b(TWO_ROUNDS)\b
+      - match: \b(THREE_MINUTES)\b
+      - match: \b(THREE_ROUNDS)\b
+      - match: \b(FOUR_MINUTES)\b
+      - match: \b(FOUR_ROUNDS)\b
+      - match: \b(FIVE_MINUTES)\b
+      - match: \b(FIVE_ROUNDS)\b
+      - match: \b(SIX_MINUTES)\b
+      - match: \b(SEVEN_MINUTES)\b
+      - match: \b(SIX_ROUNDS)\b
+      - match: \b(EIGHT_MINUTES)\b
+      - match: \b(SEVEN_ROUNDS)\b
+      - match: \b(NINE_MINUTES)\b
+      - match: \b(EIGHT_ROUNDS)\b
+      - match: \b(TEN_MINUTES)\b
+      - match: \b(NINE_ROUNDS)\b
+      - match: \b(ELEVEN_MINUTES)\b
+      - match: \b(TEN_ROUNDS)\b
+      - match: \b(ONE_TURN)\b
+      - match: \b(TWELVE_MINUTES)\b
+      - match: \b(THIRTEEN_MINUTES)\b
+      - match: \b(FOURTEEN_MINUTES)\b
+      - match: \b(FIFTEEN_MINUTES)\b
+      - match: \b(SIXTEEN_MINUTES)\b
+      - match: \b(SEVENTEEN_MINUTES)\b
+      - match: \b(EIGHTEEN_MINUTES)\b
+      - match: \b(NINETEEN_MINUTES)\b
+      - match: \b(TWENTY_MINUTES)\b
+      - match: \b(TWO_TURNS)\b
+      - match: \b(THIRTY_MINUTES)\b
+      - match: \b(THREE_TURNS)\b
+      - match: \b(FORTY_MINUTES)\b
+      - match: \b(FOUR_TURNS)\b
+      - match: \b(FIFTY_MINUTES)\b
+      - match: \b(ONE_HOUR)\b
+      - match: \b(FIVE_TURNS)\b
+      - match: \b(SIX_TURNS)\b
+      - match: \b(SEVEN_TURNS)\b
+      - match: \b(EIGHT_TURNS)\b
+      - match: \b(NINE_TURNS)\b
+      - match: \b(TWO_HOURS)\b
+      - match: \b(TEN_TURNS)\b
+      - match: \b(ELEVEN_TURNS)\b
+      - match: \b(TWELVE_TURNS)\b
+      - match: \b(THIRTEEN_TURNS)\b
+      - match: \b(FOURTEEN_TURNS)\b
+      - match: \b(THREE_HOURS)\b
+      - match: \b(FIFTEEN_TURNS)\b
+      - match: \b(FOUR_HOURS)\b
+      - match: \b(FIVE_HOURS)\b
+      - match: \b(SIX_HOURS)\b
+      - match: \b(SEVEN_HOURS)\b
+      - match: \b(EIGHT_HOURS)\b
+      - match: \b(NINE_HOURS)\b
+      - match: \b(TEN_HOURS)\b
+      - match: \b(ELEVEN_HOURS)\b
+      - match: \b(TWELVE_HOURS)\b
+      - match: \b(THIRTEEN_HOURS)\b
+      - match: \b(FOURTEEN_HOURS)\b
+      - match: \b(FIFTEEN_HOURS)\b
+      - match: \b(SIXTEEN_HOURS)\b
+      - match: \b(SEVENTEEN_HOURS)\b
+      - match: \b(EIGHTEEN_HOURS)\b
+      - match: \b(NINETEEN_HOURS)\b
+      - match: \b(TWENTY_HOURS)\b
+      - match: \b(TWENTYONE_HOURS)\b
+      - match: \b(TWENTYTWO_HOURS)\b
+      - match: \b(TWENTYTHREE_HOURS)\b
+      - match: \b(ONE_DAY)\b
+      - match: \b(TWO_DAYS)\b
+      - match: \b(THREE_DAYS)\b
+      - match: \b(FOUR_DAYS)\b
+      - match: \b(FIVE_DAYS)\b
+      - match: \b(SIX_DAYS)\b
+      - match: \b(SEVEN_DAYS)\b
+      - match: \b(ONE_WEEK)\b
+      - match: \b(EIGHT_DAYS)\b
+      - match: \b(NINE_DAYS)\b
+      - match: \b(TEN_DAYS)\b
+      - match: \b(ELEVEN_DAYS)\b
+      - match: \b(TWELVE_DAYS)\b
+      - match: \b(THIRTEEN_DAYS)\b
+      - match: \b(FOURTEEN_DAYS)\b
+      - match: \b(FIFTEEN_DAYS)\b
+      - match: \b(SIXTEEN_DAYS)\b
+      - match: \b(SEVENTEEN_DAYS)\b
+      - match: \b(EIGHTEEN_DAYS)\b
+      - match: \b(NINETEEN_DAYS)\b
+      - match: \b(TWENTY_DAYS)\b
+      - match: \b(TWENTYTWO_DAYS)\b
+      - match: \b(TWENTYFIVE_DAYS)\b
+      - match: \b(THIRTY_DAYS)\b
+      - match: \b(ONE_MONTH)\b
+      - match: \b(FORTY_DAYS)\b
+      - match: \b(FIFTY_DAYS)\b
 
   weather-ids:
     name: constant.other.baf.weidu
