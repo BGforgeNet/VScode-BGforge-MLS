@@ -17022,6 +17022,10 @@
         {
           "match": "\\b(EVALUATE_REGEXP)\\b",
           "name": "constant.language.flag.weidu"
+        },
+        {
+          "match": "\\b(EXACT)\\b",
+          "name": "constant.language.flag.weidu"
         }
       ]
     },
@@ -17091,6 +17095,10 @@
         },
         {
           "match": "\\b(SPRINTF)\\b",
+          "name": "entity.name.function.weidu.patch"
+        },
+        {
+          "match": "\\b(LOCAL_TEXT_SPRINT)\\b",
           "name": "entity.name.function.weidu.patch"
         },
         {
