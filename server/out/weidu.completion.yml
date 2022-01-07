@@ -12088,6 +12088,17 @@ tp2-value:
         0xD8
     - name: BEGIN
     - name: ELSE
+    - name: WHEN
+      doc: |-
+        For use with `ACTION_MATCH`, `ACTION_TRY`, `PATCH_MATCH` and `PATCH_TRY`.
+    - name: THIS
+      doc: |-
+        Current (unsigned) value.
+        For use with `WRITE_BYTE`, `WRITE_SHORT` and `WRITE_LONG`.
+    - name: STHIS
+      doc: |-
+        Current (signed) value.
+        For use with `WRITE_BYTE`, `WRITE_SHORT` and `WRITE_LONG`.
     - name: BIFF_IS_COMPRESSED
       detail: BIFF_IS_COMPRESSED fileName
       doc: |-
