@@ -4638,7 +4638,7 @@ repository:
   weidu-keywords:
     name: keyword.control.weidu
     patterns:
-      - match: \b(BEGIN|END|THEN|IN|ELSE|WHEN)\b
+      - match: \b(BEGIN|END|THEN|IN|ELSE|WHEN|ANY|ERROR_MESSAGE)\b
       - match: \b(AFTER|BEFORE|LAST|FIRST|AT|S?THIS)\b
       - match: \b(INT_VAR|STR_VAR|RET|RET_ARRAY)\b
 
