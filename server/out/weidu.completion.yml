@@ -12022,6 +12022,9 @@ tp2-value:
     - name: '%WEIDU_OS%'
       doc: |-
         The special variable WEIDU_OS is set to either "win32" or "osx" or "unix" at WeiDU startup and can be used to determine the operating system for which the WeiDU binary was compiled.
+    - name: '%WEIDU_VER%'
+      doc: |-
+        The special variable `WEIDU_VER` gets set at WeiDU startup and can be used to determine the version of the WeiDU binary (e.g., `24800`).
     - name: ABS
       detail: ABS Value
       doc: |-
@@ -12091,6 +12094,50 @@ tp2-value:
     - name: WHEN
       doc: |-
         For use with `ACTION_MATCH`, `ACTION_TRY`, `PATCH_MATCH` and `PATCH_TRY`.
+    - name: ANY
+      doc: |-
+        When using `ACTION_MATCH` and `PATCH_MATCH`, it is also possible to have a condition without a guard, in which case the syntax is:
+
+        ```
+        ACTION_MATCH ~%something%~
+        WITH
+          ANY GAME_IS ~BG1 TotSC~
+          BEGIN
+            // the game is BG1
+          END
+          ANY GAME_IS ~SoA ToB~
+          BEGIN
+            // the game is BG2
+          END
+          DEFAULT
+            // not BG1 or BG2
+        END
+        ```
+    - name: ERROR_MESSAGE
+      doc: |-
+        For use with `ACTION_TRY` and `PATCH_TRY`.
+
+        ```
+        ACTION_TRY
+          COPY ~override/sw1h01.itm~ ~override~
+          DO_SOMETHING_ELSE
+        WITH
+          ~Unix.Unix_error(20, "stat", "override/sw1h01.itm")~
+          BEGIN
+            PRINT ~I caught sw1h01.itm not found!~
+          END
+          ~Unix.Unix_error(20, "stat", "override/.*.itm")~
+          BEGIN
+            PRINT ~I caught another missing item!~
+          END
+          DEFAULT
+            PRINT ~I caught another error!~
+        END
+        ```
+
+        The actions in `ACTION_TRY` are executed. If none of those fails, the `WITH` part is skipped; otherwise, the error message is printed as usual (use `SILENT`), the exception text (from the `ERROR: blah blah` line) is saved to the `%ERROR_MESSAGE%` variable, and a `MATCH` is executed on that.
+
+        After running the correct error handling code, execution continues after the end of the `ACTION_TRY` block. If you still want to block the installation, use `ACTION_RERAISE` (in theory, you could use `FAIL ~%ERROR_MESSAGE%~`, but this changes the exception and its text, which would cause you headaches when nesting multiple `TRY`s).
     - name: THIS
       doc: |-
         Current (unsigned) value.
