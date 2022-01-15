@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.16.2
+- IE
+  -  Added missing "GTIMES.IDS" and "LOCAL_SET/LOCAL_TEXT_SPRINT/LOCAL_SPRINT".
+  - Added some missing WeiDU control keywords,
+
 ## 1.16.1
 - Fallout
   - Added `start_gialog`/`start_gdialog` synonyms.
