@@ -18128,11 +18128,11 @@
       "name": "keyword.control.weidu",
       "patterns": [
         {
-          "match": "\\b(BEGIN|END|THEN|IN|ELSE)\\b",
+          "match": "\\b(BEGIN|END|THEN|IN|ELSE|WHEN|ANY|ERROR_MESSAGE)\\b",
           "name": "keyword.control.weidu"
         },
         {
-          "match": "\\b(AFTER|BEFORE|LAST|FIRST|AT|THIS)\\b",
+          "match": "\\b(AFTER|BEFORE|LAST|FIRST|AT|S?THIS)\\b",
           "name": "keyword.control.weidu"
         },
         {
