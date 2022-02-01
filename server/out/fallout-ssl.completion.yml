@@ -428,6 +428,7 @@ base-functions:
       detail: void giQ_Option(int iq_test, int msg_list, int msg_num, procedure target, int reaction)
       doc: |-
         Sets up an option-choice for a reply block if the player's IQ statistic is equal to or greater than a given value (iq_test), getting the string from the message file (msg_list) and message number (msg_num), which will cause a given reaction (reaction), and if chosen will jump to the given (target) procedure.
+        This is the only function that automatically accounts for Smooth Talker perk.
     - name: give_exp_points
       detail: void give_exp_points
       doc: |-
