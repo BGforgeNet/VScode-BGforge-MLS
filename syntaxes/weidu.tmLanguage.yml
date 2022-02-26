@@ -4593,6 +4593,7 @@ repository:
       - match: \b(STRING_EQUAL_CASE)\b
       - match: \b(STR_EQ)\b
       - match: \b(STRING_MATCHES_REGEXP)\b
+      - match: \b(STRING_COMPARE_REGEXP)\b
       - match: \b(STRING_CONTAINS_REGEXP)\b
       - match: \b(GAME_IS)\b
       - match: \b(ENGINE_IS)\b
