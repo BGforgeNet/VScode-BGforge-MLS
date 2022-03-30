@@ -1042,10 +1042,6 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "(%ARCHER_KIT_BONUS%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "(%ARCHER_PROTECTION%)",
           "name": "constant.language.ielib.resref"
         },
@@ -1083,30 +1079,6 @@
         },
         {
           "match": "(%BARBARIAN_RAGE%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%BARD_SONG_BALLAD%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%BARD_SONG_CURRAN%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%BARD_SONG_KAUDIES%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%BARD_SONG_SIREN%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%BARD_SONG_SITH%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%BARD_SONG_TYMORA%)",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -1206,14 +1178,6 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "(%BLACKGUARD_AURA_OF_DESPAIR%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%BLACKGUARD_SUMMON_FALLEN_DEVA%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "(%BLACK_DRAGON_BREATH%)",
           "name": "constant.language.ielib.resref"
         },
@@ -1251,10 +1215,6 @@
         },
         {
           "match": "(%BODVAM02_MIST_CHANGE%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%BOMBARDIER_BEETLE_CLOUD%)",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -1358,14 +1318,6 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "(%CLERIC_ALICORN_LANCE%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%CLERIC_ANIMAL_RAGE%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "(%CLERIC_ANIMAL_SUMMONING_1%)",
           "name": "constant.language.ielib.resref"
         },
@@ -1394,19 +1346,11 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "(%CLERIC_BEAST_CLAW%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "(%CLERIC_BLADE_BARRIER%)",
           "name": "constant.language.ielib.resref"
         },
         {
           "match": "(%CLERIC_BLESS%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%CLERIC_BLOOD_RAGE%)",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -1423,22 +1367,6 @@
         },
         {
           "match": "(%CLERIC_CAUSE_CRITICAL_WOUNDS%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%CLERIC_CAUSE_DISEASE%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%CLERIC_CAUSE_LIGHT_WOUNDS%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%CLERIC_CAUSE_MEDIUM_WOUNDS%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%CLERIC_CAUSE_MODERATE_WOUNDS%)",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -1462,19 +1390,7 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "(%CLERIC_CIRCLE_OF_BONES%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "(%CLERIC_CLOAK_OF_FEAR%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%CLERIC_CLOUDBURST%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%CLERIC_CLOUD_OF_PESTILENCE%)",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -1518,15 +1434,7 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "(%CLERIC_CURE_MODERATE_WOUNDS%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "(%CLERIC_CURE_SERIOUS_WOUNDS%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%CLERIC_CURSE%)",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -1535,10 +1443,6 @@
         },
         {
           "match": "(%CLERIC_DEFENSIVE_HARMONY%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%CLERIC_DESTRUCTION%)",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -1582,15 +1486,7 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "(%CLERIC_ENERGY_DRAIN%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "(%CLERIC_ENTANGLE%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%CLERIC_ENTROPY_SHIELD%)",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -1602,23 +1498,11 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "(%CLERIC_EXALTATION%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%CLERIC_FAERIE_FIRE%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "(%CLERIC_FALSE_DAWN%)",
           "name": "constant.language.ielib.resref"
         },
         {
           "match": "(%CLERIC_FAR_SIGHT%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%CLERIC_FAVOR_OF_ILMATER%)",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -1654,19 +1538,11 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "(%CLERIC_GIANT_INSECT%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "(%CLERIC_GLOBE_OF_BLADES%)",
           "name": "constant.language.ielib.resref"
         },
         {
           "match": "(%CLERIC_GLYPH_OF_WARDING%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%CLERIC_GOODBERRY%)",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -1682,19 +1558,11 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "(%CLERIC_GREATER_SHIELD_OF_LATHANDER%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "(%CLERIC_HARM%)",
           "name": "constant.language.ielib.resref"
         },
         {
           "match": "(%CLERIC_HEAL%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%CLERIC_HEAVENLY_INFERNO%)",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -1715,10 +1583,6 @@
         },
         {
           "match": "(%CLERIC_HOLY_WORD%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%CLERIC_IMPERVIOUS_SANCTITY_OF_MIND%)",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -1754,10 +1618,6 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "(%CLERIC_MASS_CAUSE_LIGHT_WOUNDS%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "(%CLERIC_MASS_CURE%)",
           "name": "constant.language.ielib.resref"
         },
@@ -1771,18 +1631,6 @@
         },
         {
           "match": "(%CLERIC_MISCAST_MAGIC%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%CLERIC_MIST_OF_ELDATH%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%CLERIC_MOLD_TOUCH%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%CLERIC_MOONBLADE%)",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -1810,14 +1658,6 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "(%CLERIC_PRAYER%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%CLERIC_PRODUCE_FIRE%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "(%CLERIC_PROTECTION_FROM_EVIL_10_FOOT%)",
           "name": "constant.language.ielib.resref"
         },
@@ -1834,19 +1674,11 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "(%CLERIC_PROTECT_FROM_GOOD%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "(%CLERIC_RAISE_DEAD%)",
           "name": "constant.language.ielib.resref"
         },
         {
           "match": "(%CLERIC_RECALL_SPIRIT%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%CLERIC_RECITATION%)",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -1870,10 +1702,6 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "(%CLERIC_RESIST_FIRE_AND_COLD%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "(%CLERIC_RESIST_FIRE%)",
           "name": "constant.language.ielib.resref"
         },
@@ -1890,19 +1718,11 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "(%CLERIC_RIGHTEOUS_WRATH_OF_THE_FAITHFUL%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "(%CLERIC_RIGID_THINKING%)",
           "name": "constant.language.ielib.resref"
         },
         {
           "match": "(%CLERIC_SANCTUARY%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%CLERIC_SHIELD_OF_LATHANDER%)",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -1926,19 +1746,7 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "(%CLERIC_SMASHING_WAVE%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "(%CLERIC_SOL_SEARING_ORB%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%CLERIC_SPIKE_GROWTH%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%CLERIC_SPIKE_STONES%)",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -1954,10 +1762,6 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "(%CLERIC_SPIRITUAL_WRATH%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "(%CLERIC_SPIRIT_FIRE%)",
           "name": "constant.language.ielib.resref"
         },
@@ -1966,23 +1770,7 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "(%CLERIC_STALKER%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%CLERIC_STAR_METAL_CUDGEL%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%CLERIC_STATIC_CHARGE%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "(%CLERIC_STORM_OF_VENGEANCE%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%CLERIC_STORM_SHELL%)",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -2002,19 +1790,7 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "(%CLERIC_SUMMON_LIZARDMEN%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%CLERIC_SUMMON_TROLLS%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "(%CLERIC_SUNRAY%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%CLERIC_SUNSCORCH%)",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -2026,31 +1802,11 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "(%CLERIC_SYMBOL_OF_HOPELESSNESS%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%CLERIC_SYMBOL_OF_PAIN%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "(%CLERIC_SYMBOL_STUN%)",
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "(%CLERIC_THORN_SPRAY%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "(%CLERIC_TRUE_SIGHT%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%CLERIC_UNDEAD_WARD%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%CLERIC_UNFAILING_ENDURANCE%)",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -2059,18 +1815,6 @@
         },
         {
           "match": "(%CLERIC_UNHOLY_WORD%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%CLERIC_WALL_OF_MOONLIGHT%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%CLERIC_WHIRLWIND%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%CLERIC_WITHER%)",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -2183,10 +1927,6 @@
         },
         {
           "match": "(%DAESEWOLF_CHANGE%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%DARK_GIFT%)",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -2522,10 +2262,6 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "(%DRUID_HUMAN_FORM%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "(%DRUID_IMMUNE_POISON%)",
           "name": "constant.language.ielib.resref"
         },
@@ -2538,39 +2274,11 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "(%DRUID_SHAPESHIFT_BORING_BEETLE%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "(%DRUID_SHAPESHIFT_BROWNBEAR%)",
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "(%DRUID_SHAPESHIFT_ELEMENTAL_EARTH%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%DRUID_SHAPESHIFT_ELEMENTAL_FIRE%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%DRUID_SHAPESHIFT_ELEMENTAL_WATER%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "(%DRUID_SHAPESHIFT_FROM_BLACKBEAR%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%DRUID_SHAPESHIFT_NATURAL_FORM%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%DRUID_SHAPESHIFT_POLAR_BEAR%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%DRUID_SHAPESHIFT_WINTER_WOLF%)",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -3050,115 +2758,7 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "(%INNATE_ANIMAL_AFFINITY%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%INNATE_AURA_OF_FEAR%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%INNATE_BEHOLDER_ANTIMAGIC_RAY%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%INNATE_BEHOLDER_CAUSE_SERIOUS_WOUNDS%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%INNATE_BEHOLDER_CHARM_PERSON%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%INNATE_BEHOLDER_DEATH_RAY%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%INNATE_BEHOLDER_DISINTEGRATE%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%INNATE_BEHOLDER_FEAR%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%INNATE_BEHOLDER_FLESH_TO_STONE%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%INNATE_BEHOLDER_SLEEP%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%INNATE_BEHOLDER_SLOW%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%INNATE_BEHOLDER_UNUSED%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%INNATE_BELHIFETS_DEATH_ANIMATION%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%INNATE_BLUE_GLOW%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%INNATE_BOMBARDIER_BEETLE_CLOUD%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%INNATE_CHAMELEON_POWER%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%INNATE_CONTAINER_GLOW_BAD%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%INNATE_CONTAINER_GLOW%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%INNATE_CORNUGON_SUMMON_TRAVEL_ANIMATION%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%INNATE_CRYPT_THING_TELEPORT%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "(%INNATE_CURE_LIGHT_WOUNDS%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%INNATE_D5_HIGH_BAPTISM%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%INNATE_DEATH_KNELL%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%INNATE_DRAGON_BREATH%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%INNATE_DRAGON_DEATH_ANIMATION%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%INNATE_DRAGON_GEM_EFFECTS%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%INNATE_DRAGON_GEM_SUMMONING%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%INNATE_DRAGON_WING_BUFFET%)",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -3166,71 +2766,7 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "(%INNATE_EVERARDS_PORTAL_CLOSING%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%INNATE_FLASH_DESTROY_SUMMON_BELHIFET%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%INNATE_FLASH_DESTROY_SUMMON_YXUNOMEI%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%INNATE_FLASH_DISAPPEAR%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%INNATE_FROST_AURA%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%INNATE_GREAT_ROAR%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%INNATE_HARPY_WAIL_INTERNAL%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%INNATE_HARPY_WAIL%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%INNATE_HOBART_TO_RAKSHASA%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "(%INNATE_HORROR%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%INNATE_ICE_GOLEM_DISAPPEAR%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%INNATE_INCENDIARY_CLOUD_EXPLOSION%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%INNATE_INCENDIARY_CLOUD_IDLING%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%INNATE_INFERNAL_CONVEYANCE%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%INNATE_IRON_GOLEM_CLOUD%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%INNATE_JACKALWERE_GAZE_INTERNAL%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%INNATE_JACKALWERE_GAZE%)",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -3238,107 +2774,11 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "(%INNATE_MOURNFUL_WAIL%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%INNATE_MUSTARD_JELLY_VAPOR%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%INNATE_MYCONID_SPORES%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%INNATE_PHASE_SPIDER_TELEPORT%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%INNATE_POLYMORPH_TO_DOG%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%INNATE_POQUELINS_PORTAL_OPENING%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%INNATE_REMOVE_TERIKANS_ITEM_ANIMATION%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%INNATE_RETRIBUTION%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%INNATE_SALAMANDER_AURA_FIRE%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%INNATE_SALAMANDER_AURA_FROST%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%INNATE_SALAMANDER_AURA_SHIKATA%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%INNATE_SEER_TELEPORT%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%INNATE_SHADOW_PACT%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%INNATE_SHAPESHIFTS_WEREWOLF%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "(%INNATE_SLOW_POISON%)",
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "(%INNATE_SUMMON_GLABREZU%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%INNATE_TELEPORT_WITHOUT_ERROR%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%INNATE_UMBER_HULK_GAZE%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%INNATE_UNDYING_LAMENT%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "(%INNATE_VAMPIRIC_TOUCH%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%INNATE_WAR_CRY%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%INNATE_WEREWOLF_DEATH%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%INNATE_WIND_WALK%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%INNATE_WINTER_WOLF_BREATH%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%INNATE_WYLFDENES_DEATH_ANIMATION%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%INNATE_ZOMBIE_LORD_AURA%)",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -3359,14 +2799,6 @@
         },
         {
           "match": "(%IRENICUS_WORD_OF_POWER%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%IWD_UNKNOWN_2%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%IWD_UNKNOWN_3%)",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -3618,10 +3050,6 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "(%MKHIIN_SUMMON_ANCESTRAL_GUARDIAN%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "(%MONK_LAY_ON_HANDS%)",
           "name": "constant.language.ielib.resref"
         },
@@ -3651,10 +3079,6 @@
         },
         {
           "match": "(%NALMISSRA_CHARM%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%NEOTHELID_BREATH%)",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -3710,10 +3134,6 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "(%PALADIN_CURE_DISEASE%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "(%PALADIN_DETECT_EVIL%)",
           "name": "constant.language.ielib.resref"
         },
@@ -3723,10 +3143,6 @@
         },
         {
           "match": "(%PALADIN_PROTECTION_FROM_EVIL%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%PALADIN_SMITE_EVIL%)",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -3786,15 +3202,7 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "(%PSIONIC_CONTROL_BODY%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "(%PSIONIC_DETONATE%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%PSIONIC_DIMENSION_WALK%)",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -3811,10 +3219,6 @@
         },
         {
           "match": "(%PSIONIC_EMOTION_KILL%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%PSIONIC_ID_INSINUATION%)",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -3843,14 +3247,6 @@
         },
         {
           "match": "(%PSIONIC_SUPERIOR_INVISIBILITY%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%PSIONIC_TASTE_LINK%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%PSIONIC_TELEKINESIS%)",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -3926,10 +3322,6 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "(%RESTORE_FULL_HEALTH_PARTY%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "(%RESTORE_FULL_HEALTH%)",
           "name": "constant.language.ielib.resref"
         },
@@ -3967,10 +3359,6 @@
         },
         {
           "match": "(%ROGUE_SET_TIME_TRAP%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%SAFANA_CHARM%)",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -4034,46 +3422,6 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "(%SET_SNARE_ENEMY%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%SET_SNARE_TRAP%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%SET_SPECIAL_SNARE_TRAP%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%SEVEN_EYES_FORTITUDE%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%SEVEN_EYES_MAGE%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%SEVEN_EYES_MIND%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%SEVEN_EYES_SPIRIT%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%SEVEN_EYES_STONE%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%SEVEN_EYES_SWORD%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%SEVEN_EYES_VENOM%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "(%SHADOWDANCER_SHADOW_FORM%)",
           "name": "constant.language.ielib.resref"
         },
@@ -4127,10 +3475,6 @@
         },
         {
           "match": "(%SHAPECHANGE_MIND_FLAYER%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%SHAPECHANGE_WATER_ELEMENTAL%)",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -4346,10 +3690,6 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "(%SUN_SOUL_FLAMING_FISTS%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "(%SUN_SOUL_GREATER_SUN%)",
           "name": "constant.language.ielib.resref"
         },
@@ -4422,10 +3762,6 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "(%THIEF_STEALTH%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "(%THREE_ROUND_ENCHANTMENT_IMMUNITY%)",
           "name": "constant.language.ielib.resref"
         },
@@ -4494,23 +3830,7 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "(%TRAP_DEATH_FOG%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "(%TRAP_DIRE_CHARM%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%TRAP_DISEASE_DARTS%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%TRAP_FINGER_OF_DEATH%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%TRAP_FIREBALL_4D6%)",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -4522,15 +3842,7 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "(%TRAP_FLESH_TO_STONE%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "(%TRAP_FROST%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%TRAP_GLYPH_OF_WARDING%)",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -4543,10 +3855,6 @@
         },
         {
           "match": "(%TRAP_HOLD_PERSON%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%TRAP_HORROR%)",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -4563,10 +3871,6 @@
         },
         {
           "match": "(%TRAP_LIGHTNING_ORB3%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%TRAP_MAGIC_MISSILE_5%)",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -4590,27 +3894,11 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "(%TRAP_POISON_CONFUSION_DARTS%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%TRAP_POISON_DAMAGE_DARTS%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%TRAP_POISON_PARALYZATION_DARTS%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "(%TRAP_SHADOW_DEATH%)",
           "name": "constant.language.ielib.resref"
         },
         {
           "match": "(%TRAP_SILENCE%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%TRAP_SLEEP%)",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -4790,10 +4078,6 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "(%WHITE_HOLY_MIGHT%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "(%WILD_MAGIC_AREA%)",
           "name": "constant.language.ielib.resref"
         },
@@ -4842,19 +4126,7 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "(%WIZARD_ACID_STORM%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "(%WIZARD_AGANNAZAR_SCORCHER%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%WIZARD_ALARM%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%WIZARD_ANIMATE_DEAD_LICH%)",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -4862,15 +4134,7 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "(%WIZARD_ANTIMAGIC_SHELL%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "(%WIZARD_ARMOR%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%WIZARD_BELTYNS_BURNING_BLOOD%)",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -4890,10 +4154,6 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "(%WIZARD_BLIND_OLD%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "(%WIZARD_BLUR%)",
           "name": "constant.language.ielib.resref"
         },
@@ -4910,23 +4170,7 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "(%WIZARD_CAE_OLD%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "(%WIZARD_CARRION%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%WIZARD_CATS_GRACE%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%WIZARD_CEE_OLD%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%WIZARD_CFE_OLD%)",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -4990,10 +4234,6 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "(%WIZARD_CONJURE_EARTH_ELEMENTAL_MALAVON%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "(%WIZARD_CONJURE_EARTH_ELEMENTAL%)",
           "name": "constant.language.ielib.resref"
         },
@@ -5014,14 +4254,6 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "(%WIZARD_CONJURE_WATER_ELEMENTAL%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%WIZARD_CONTACT_OTHER_PLANE%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "(%WIZARD_CONTAGION%)",
           "name": "constant.language.ielib.resref"
         },
@@ -5031,22 +4263,6 @@
         },
         {
           "match": "(%WIZARD_CONTROL_UNDEAD%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%WIZARD_CWE_OLD%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%WIZARD_DANCING_LIGHTS%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%WIZARD_DARKNESS_15_FOOT%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%WIZARD_DARTS_OF_BONE%)",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -5062,15 +4278,7 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "(%WIZARD_DECASTAVE%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "(%WIZARD_DELAYED_BLAST_FIREBALL%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%WIZARD_DEMI_SHADOW_MONSTERS%)",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -5110,10 +4318,6 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "(%WIZARD_DISPEL_MAGIC%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "(%WIZARD_DOMINATION%)",
           "name": "constant.language.ielib.resref"
         },
@@ -5122,19 +4326,7 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "(%WIZARD_EMOTION_COURAGE%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%WIZARD_EMOTION_FEAR%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "(%WIZARD_EMOTION_HOPELESSNESS%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%WIZARD_EMOTION_HOPE%)",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -5147,10 +4339,6 @@
         },
         {
           "match": "(%WIZARD_ENERGY_DRAIN%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%WIZARD_EXPEDITIOUS_RETREAT%)",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -5238,10 +4426,6 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "(%WIZARD_GREAT_SHOUT%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "(%WIZARD_HASTE%)",
           "name": "constant.language.ielib.resref"
         },
@@ -5262,10 +4446,6 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "(%WIZARD_ICELANCE%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "(%WIZARD_ICE_STORM%)",
           "name": "constant.language.ielib.resref"
         },
@@ -5275,10 +4455,6 @@
         },
         {
           "match": "(%WIZARD_IMPRISONMENT%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%WIZARD_IMPROVED_ALACRITY%)",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -5322,10 +4498,6 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "(%WIZARD_IRON_BODY%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "(%WIZARD_KNOCK%)",
           "name": "constant.language.ielib.resref"
         },
@@ -5334,15 +4506,7 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "(%WIZARD_LANCE_OF_DISRUPTION%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "(%WIZARD_LARLOCH_MINOR_DRAIN%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%WIZARD_LICH_TOUCH%)",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -5363,14 +4527,6 @@
         },
         {
           "match": "(%WIZARD_MAGIC_MISSILE%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%WIZARD_MALAVONS_CORROSIVE_FOG%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%WIZARD_MALAVONS_RAGE%)",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -5395,10 +4551,6 @@
         },
         {
           "match": "(%WIZARD_METEOR_SWARM%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%WIZARD_MIND_BLANK%)",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -5438,30 +4590,6 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "(%WIZARD_MONSTER_SUMMONING_4%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%WIZARD_MONSTER_SUMMONING_5%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%WIZARD_MONSTER_SUMMONING_6%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%WIZARD_MONSTER_SUMMONING_7%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%WIZARD_MONSTER_SUMMONING_VI_MALAVON%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%WIZARD_MORDENKAINENS_FORCE_MISSILES%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "(%WIZARD_MORDENKAINENS_SWORD%)",
           "name": "constant.language.ielib.resref"
         },
@@ -5490,15 +4618,7 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "(%WIZARD_OTILUKES_FREEZING_SPHERE%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "(%WIZARD_OTILUKES_RESILIENT_SPHERE%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%WIZARD_PFP_OLD%)",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -5515,10 +4635,6 @@
         },
         {
           "match": "(%WIZARD_POLYMORPH_BLACK_BEAR%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%WIZARD_POLYMORPH_BORING_BEETLE%)",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -5546,19 +4662,11 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "(%WIZARD_POLYMORPH_POLAR_BEAR%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "(%WIZARD_POLYMORPH_SELF%)",
           "name": "constant.language.ielib.resref"
         },
         {
           "match": "(%WIZARD_POLYMORPH_SPIDER%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%WIZARD_POLYMORPH_WINTER_WOLF%)",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -5674,19 +4782,7 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "(%WIZARD_SEVEN_EYES%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%WIZARD_SHADES%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "(%WIZARD_SHADOW_DOOR%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%WIZARD_SHADOW_MONSTERS%)",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -5699,14 +4795,6 @@
         },
         {
           "match": "(%WIZARD_SHOCKING_GRASP%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%WIZARD_SHOUT%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%WIZARD_SHROUD_OF_FLAME%)",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -5723,14 +4811,6 @@
         },
         {
           "match": "(%WIZARD_SLOW%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%WIZARD_SNILLOCS_SNOWBALL_SWARM%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%WIZARD_SOUL_EATER%)",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -5834,10 +4914,6 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "(%WIZARD_SUFFOCATE%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "(%WIZARD_SUMMON_DJINNI%)",
           "name": "constant.language.ielib.resref"
         },
@@ -5863,10 +4939,6 @@
         },
         {
           "match": "(%WIZARD_SUMMON_PLANATAR_GOOD%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%WIZARD_SUMMON_SHADOW%)",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -5898,10 +4970,6 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "(%WIZARD_TROLLISH_FORTITUDE%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "(%WIZARD_TRUE_DISPEL_MAGIC%)",
           "name": "constant.language.ielib.resref"
         },
@@ -5911,10 +4979,6 @@
         },
         {
           "match": "(%WIZARD_VAMPIRIC_TOUCH%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "(%WIZARD_VITRIOLIC_SPHERE%)",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -6018,10 +5082,6 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(ARCHER_KIT_BONUS)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(ARCHER_PROTECTION)\\b",
           "name": "constant.language.ielib.resref"
         },
@@ -6059,30 +5119,6 @@
         },
         {
           "match": "\\b(BARBARIAN_RAGE)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(BARD_SONG_BALLAD)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(BARD_SONG_CURRAN)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(BARD_SONG_KAUDIES)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(BARD_SONG_SIREN)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(BARD_SONG_SITH)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(BARD_SONG_TYMORA)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -6182,14 +5218,6 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(BLACKGUARD_AURA_OF_DESPAIR)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(BLACKGUARD_SUMMON_FALLEN_DEVA)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(BLACK_DRAGON_BREATH)\\b",
           "name": "constant.language.ielib.resref"
         },
@@ -6227,10 +5255,6 @@
         },
         {
           "match": "\\b(BODVAM02_MIST_CHANGE)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(BOMBARDIER_BEETLE_CLOUD)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -6334,14 +5358,6 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(CLERIC_ALICORN_LANCE)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(CLERIC_ANIMAL_RAGE)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(CLERIC_ANIMAL_SUMMONING_1)\\b",
           "name": "constant.language.ielib.resref"
         },
@@ -6370,19 +5386,11 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(CLERIC_BEAST_CLAW)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(CLERIC_BLADE_BARRIER)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
           "match": "\\b(CLERIC_BLESS)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(CLERIC_BLOOD_RAGE)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -6399,22 +5407,6 @@
         },
         {
           "match": "\\b(CLERIC_CAUSE_CRITICAL_WOUNDS)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(CLERIC_CAUSE_DISEASE)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(CLERIC_CAUSE_LIGHT_WOUNDS)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(CLERIC_CAUSE_MEDIUM_WOUNDS)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(CLERIC_CAUSE_MODERATE_WOUNDS)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -6438,19 +5430,7 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(CLERIC_CIRCLE_OF_BONES)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(CLERIC_CLOAK_OF_FEAR)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(CLERIC_CLOUDBURST)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(CLERIC_CLOUD_OF_PESTILENCE)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -6494,15 +5474,7 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(CLERIC_CURE_MODERATE_WOUNDS)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(CLERIC_CURE_SERIOUS_WOUNDS)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(CLERIC_CURSE)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -6511,10 +5483,6 @@
         },
         {
           "match": "\\b(CLERIC_DEFENSIVE_HARMONY)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(CLERIC_DESTRUCTION)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -6558,15 +5526,7 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(CLERIC_ENERGY_DRAIN)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(CLERIC_ENTANGLE)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(CLERIC_ENTROPY_SHIELD)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -6578,23 +5538,11 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(CLERIC_EXALTATION)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(CLERIC_FAERIE_FIRE)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(CLERIC_FALSE_DAWN)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
           "match": "\\b(CLERIC_FAR_SIGHT)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(CLERIC_FAVOR_OF_ILMATER)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -6630,19 +5578,11 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(CLERIC_GIANT_INSECT)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(CLERIC_GLOBE_OF_BLADES)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
           "match": "\\b(CLERIC_GLYPH_OF_WARDING)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(CLERIC_GOODBERRY)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -6658,19 +5598,11 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(CLERIC_GREATER_SHIELD_OF_LATHANDER)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(CLERIC_HARM)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
           "match": "\\b(CLERIC_HEAL)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(CLERIC_HEAVENLY_INFERNO)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -6691,10 +5623,6 @@
         },
         {
           "match": "\\b(CLERIC_HOLY_WORD)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(CLERIC_IMPERVIOUS_SANCTITY_OF_MIND)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -6730,10 +5658,6 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(CLERIC_MASS_CAUSE_LIGHT_WOUNDS)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(CLERIC_MASS_CURE)\\b",
           "name": "constant.language.ielib.resref"
         },
@@ -6747,18 +5671,6 @@
         },
         {
           "match": "\\b(CLERIC_MISCAST_MAGIC)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(CLERIC_MIST_OF_ELDATH)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(CLERIC_MOLD_TOUCH)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(CLERIC_MOONBLADE)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -6786,14 +5698,6 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(CLERIC_PRAYER)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(CLERIC_PRODUCE_FIRE)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(CLERIC_PROTECTION_FROM_EVIL_10_FOOT)\\b",
           "name": "constant.language.ielib.resref"
         },
@@ -6810,19 +5714,11 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(CLERIC_PROTECT_FROM_GOOD)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(CLERIC_RAISE_DEAD)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
           "match": "\\b(CLERIC_RECALL_SPIRIT)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(CLERIC_RECITATION)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -6846,10 +5742,6 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(CLERIC_RESIST_FIRE_AND_COLD)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(CLERIC_RESIST_FIRE)\\b",
           "name": "constant.language.ielib.resref"
         },
@@ -6866,19 +5758,11 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(CLERIC_RIGHTEOUS_WRATH_OF_THE_FAITHFUL)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(CLERIC_RIGID_THINKING)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
           "match": "\\b(CLERIC_SANCTUARY)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(CLERIC_SHIELD_OF_LATHANDER)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -6902,19 +5786,7 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(CLERIC_SMASHING_WAVE)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(CLERIC_SOL_SEARING_ORB)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(CLERIC_SPIKE_GROWTH)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(CLERIC_SPIKE_STONES)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -6930,10 +5802,6 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(CLERIC_SPIRITUAL_WRATH)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(CLERIC_SPIRIT_FIRE)\\b",
           "name": "constant.language.ielib.resref"
         },
@@ -6942,23 +5810,7 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(CLERIC_STALKER)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(CLERIC_STAR_METAL_CUDGEL)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(CLERIC_STATIC_CHARGE)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(CLERIC_STORM_OF_VENGEANCE)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(CLERIC_STORM_SHELL)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -6978,19 +5830,7 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(CLERIC_SUMMON_LIZARDMEN)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(CLERIC_SUMMON_TROLLS)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(CLERIC_SUNRAY)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(CLERIC_SUNSCORCH)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -7002,31 +5842,11 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(CLERIC_SYMBOL_OF_HOPELESSNESS)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(CLERIC_SYMBOL_OF_PAIN)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(CLERIC_SYMBOL_STUN)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(CLERIC_THORN_SPRAY)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(CLERIC_TRUE_SIGHT)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(CLERIC_UNDEAD_WARD)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(CLERIC_UNFAILING_ENDURANCE)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -7035,18 +5855,6 @@
         },
         {
           "match": "\\b(CLERIC_UNHOLY_WORD)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(CLERIC_WALL_OF_MOONLIGHT)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(CLERIC_WHIRLWIND)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(CLERIC_WITHER)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -7159,10 +5967,6 @@
         },
         {
           "match": "\\b(DAESEWOLF_CHANGE)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(DARK_GIFT)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -7498,10 +6302,6 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(DRUID_HUMAN_FORM)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(DRUID_IMMUNE_POISON)\\b",
           "name": "constant.language.ielib.resref"
         },
@@ -7514,39 +6314,11 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(DRUID_SHAPESHIFT_BORING_BEETLE)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(DRUID_SHAPESHIFT_BROWNBEAR)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(DRUID_SHAPESHIFT_ELEMENTAL_EARTH)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(DRUID_SHAPESHIFT_ELEMENTAL_FIRE)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(DRUID_SHAPESHIFT_ELEMENTAL_WATER)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(DRUID_SHAPESHIFT_FROM_BLACKBEAR)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(DRUID_SHAPESHIFT_NATURAL_FORM)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(DRUID_SHAPESHIFT_POLAR_BEAR)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(DRUID_SHAPESHIFT_WINTER_WOLF)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -8026,115 +6798,7 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(INNATE_ANIMAL_AFFINITY)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(INNATE_AURA_OF_FEAR)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(INNATE_BEHOLDER_ANTIMAGIC_RAY)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(INNATE_BEHOLDER_CAUSE_SERIOUS_WOUNDS)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(INNATE_BEHOLDER_CHARM_PERSON)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(INNATE_BEHOLDER_DEATH_RAY)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(INNATE_BEHOLDER_DISINTEGRATE)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(INNATE_BEHOLDER_FEAR)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(INNATE_BEHOLDER_FLESH_TO_STONE)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(INNATE_BEHOLDER_SLEEP)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(INNATE_BEHOLDER_SLOW)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(INNATE_BEHOLDER_UNUSED)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(INNATE_BELHIFETS_DEATH_ANIMATION)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(INNATE_BLUE_GLOW)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(INNATE_BOMBARDIER_BEETLE_CLOUD)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(INNATE_CHAMELEON_POWER)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(INNATE_CONTAINER_GLOW_BAD)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(INNATE_CONTAINER_GLOW)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(INNATE_CORNUGON_SUMMON_TRAVEL_ANIMATION)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(INNATE_CRYPT_THING_TELEPORT)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(INNATE_CURE_LIGHT_WOUNDS)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(INNATE_D5_HIGH_BAPTISM)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(INNATE_DEATH_KNELL)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(INNATE_DRAGON_BREATH)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(INNATE_DRAGON_DEATH_ANIMATION)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(INNATE_DRAGON_GEM_EFFECTS)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(INNATE_DRAGON_GEM_SUMMONING)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(INNATE_DRAGON_WING_BUFFET)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -8142,71 +6806,7 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(INNATE_EVERARDS_PORTAL_CLOSING)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(INNATE_FLASH_DESTROY_SUMMON_BELHIFET)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(INNATE_FLASH_DESTROY_SUMMON_YXUNOMEI)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(INNATE_FLASH_DISAPPEAR)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(INNATE_FROST_AURA)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(INNATE_GREAT_ROAR)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(INNATE_HARPY_WAIL_INTERNAL)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(INNATE_HARPY_WAIL)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(INNATE_HOBART_TO_RAKSHASA)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(INNATE_HORROR)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(INNATE_ICE_GOLEM_DISAPPEAR)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(INNATE_INCENDIARY_CLOUD_EXPLOSION)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(INNATE_INCENDIARY_CLOUD_IDLING)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(INNATE_INFERNAL_CONVEYANCE)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(INNATE_IRON_GOLEM_CLOUD)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(INNATE_JACKALWERE_GAZE_INTERNAL)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(INNATE_JACKALWERE_GAZE)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -8214,107 +6814,11 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(INNATE_MOURNFUL_WAIL)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(INNATE_MUSTARD_JELLY_VAPOR)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(INNATE_MYCONID_SPORES)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(INNATE_PHASE_SPIDER_TELEPORT)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(INNATE_POLYMORPH_TO_DOG)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(INNATE_POQUELINS_PORTAL_OPENING)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(INNATE_REMOVE_TERIKANS_ITEM_ANIMATION)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(INNATE_RETRIBUTION)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(INNATE_SALAMANDER_AURA_FIRE)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(INNATE_SALAMANDER_AURA_FROST)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(INNATE_SALAMANDER_AURA_SHIKATA)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(INNATE_SEER_TELEPORT)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(INNATE_SHADOW_PACT)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(INNATE_SHAPESHIFTS_WEREWOLF)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(INNATE_SLOW_POISON)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(INNATE_SUMMON_GLABREZU)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(INNATE_TELEPORT_WITHOUT_ERROR)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(INNATE_UMBER_HULK_GAZE)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(INNATE_UNDYING_LAMENT)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(INNATE_VAMPIRIC_TOUCH)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(INNATE_WAR_CRY)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(INNATE_WEREWOLF_DEATH)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(INNATE_WIND_WALK)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(INNATE_WINTER_WOLF_BREATH)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(INNATE_WYLFDENES_DEATH_ANIMATION)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(INNATE_ZOMBIE_LORD_AURA)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -8335,14 +6839,6 @@
         },
         {
           "match": "\\b(IRENICUS_WORD_OF_POWER)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(IWD_UNKNOWN_2)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(IWD_UNKNOWN_3)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -8594,10 +7090,6 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(MKHIIN_SUMMON_ANCESTRAL_GUARDIAN)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(MONK_LAY_ON_HANDS)\\b",
           "name": "constant.language.ielib.resref"
         },
@@ -8627,10 +7119,6 @@
         },
         {
           "match": "\\b(NALMISSRA_CHARM)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(NEOTHELID_BREATH)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -8686,10 +7174,6 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(PALADIN_CURE_DISEASE)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(PALADIN_DETECT_EVIL)\\b",
           "name": "constant.language.ielib.resref"
         },
@@ -8699,10 +7183,6 @@
         },
         {
           "match": "\\b(PALADIN_PROTECTION_FROM_EVIL)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(PALADIN_SMITE_EVIL)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -8762,15 +7242,7 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(PSIONIC_CONTROL_BODY)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(PSIONIC_DETONATE)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(PSIONIC_DIMENSION_WALK)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -8787,10 +7259,6 @@
         },
         {
           "match": "\\b(PSIONIC_EMOTION_KILL)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(PSIONIC_ID_INSINUATION)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -8819,14 +7287,6 @@
         },
         {
           "match": "\\b(PSIONIC_SUPERIOR_INVISIBILITY)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(PSIONIC_TASTE_LINK)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(PSIONIC_TELEKINESIS)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -8902,10 +7362,6 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(RESTORE_FULL_HEALTH_PARTY)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(RESTORE_FULL_HEALTH)\\b",
           "name": "constant.language.ielib.resref"
         },
@@ -8943,10 +7399,6 @@
         },
         {
           "match": "\\b(ROGUE_SET_TIME_TRAP)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(SAFANA_CHARM)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -9010,46 +7462,6 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(SET_SNARE_ENEMY)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(SET_SNARE_TRAP)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(SET_SPECIAL_SNARE_TRAP)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(SEVEN_EYES_FORTITUDE)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(SEVEN_EYES_MAGE)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(SEVEN_EYES_MIND)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(SEVEN_EYES_SPIRIT)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(SEVEN_EYES_STONE)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(SEVEN_EYES_SWORD)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(SEVEN_EYES_VENOM)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(SHADOWDANCER_SHADOW_FORM)\\b",
           "name": "constant.language.ielib.resref"
         },
@@ -9103,10 +7515,6 @@
         },
         {
           "match": "\\b(SHAPECHANGE_MIND_FLAYER)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(SHAPECHANGE_WATER_ELEMENTAL)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -9322,10 +7730,6 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(SUN_SOUL_FLAMING_FISTS)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(SUN_SOUL_GREATER_SUN)\\b",
           "name": "constant.language.ielib.resref"
         },
@@ -9398,10 +7802,6 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(THIEF_STEALTH)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(THREE_ROUND_ENCHANTMENT_IMMUNITY)\\b",
           "name": "constant.language.ielib.resref"
         },
@@ -9470,23 +7870,7 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(TRAP_DEATH_FOG)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(TRAP_DIRE_CHARM)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(TRAP_DISEASE_DARTS)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(TRAP_FINGER_OF_DEATH)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(TRAP_FIREBALL_4D6)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -9498,15 +7882,7 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(TRAP_FLESH_TO_STONE)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(TRAP_FROST)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(TRAP_GLYPH_OF_WARDING)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -9519,10 +7895,6 @@
         },
         {
           "match": "\\b(TRAP_HOLD_PERSON)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(TRAP_HORROR)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -9539,10 +7911,6 @@
         },
         {
           "match": "\\b(TRAP_LIGHTNING_ORB3)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(TRAP_MAGIC_MISSILE_5)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -9566,27 +7934,11 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(TRAP_POISON_CONFUSION_DARTS)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(TRAP_POISON_DAMAGE_DARTS)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(TRAP_POISON_PARALYZATION_DARTS)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(TRAP_SHADOW_DEATH)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
           "match": "\\b(TRAP_SILENCE)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(TRAP_SLEEP)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -9766,10 +8118,6 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(WHITE_HOLY_MIGHT)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(WILD_MAGIC_AREA)\\b",
           "name": "constant.language.ielib.resref"
         },
@@ -9818,19 +8166,7 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(WIZARD_ACID_STORM)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(WIZARD_AGANNAZAR_SCORCHER)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(WIZARD_ALARM)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(WIZARD_ANIMATE_DEAD_LICH)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -9838,15 +8174,7 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(WIZARD_ANTIMAGIC_SHELL)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(WIZARD_ARMOR)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(WIZARD_BELTYNS_BURNING_BLOOD)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -9866,10 +8194,6 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(WIZARD_BLIND_OLD)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(WIZARD_BLUR)\\b",
           "name": "constant.language.ielib.resref"
         },
@@ -9886,23 +8210,7 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(WIZARD_CAE_OLD)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(WIZARD_CARRION)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(WIZARD_CATS_GRACE)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(WIZARD_CEE_OLD)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(WIZARD_CFE_OLD)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -9966,10 +8274,6 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(WIZARD_CONJURE_EARTH_ELEMENTAL_MALAVON)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(WIZARD_CONJURE_EARTH_ELEMENTAL)\\b",
           "name": "constant.language.ielib.resref"
         },
@@ -9990,14 +8294,6 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(WIZARD_CONJURE_WATER_ELEMENTAL)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(WIZARD_CONTACT_OTHER_PLANE)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(WIZARD_CONTAGION)\\b",
           "name": "constant.language.ielib.resref"
         },
@@ -10007,22 +8303,6 @@
         },
         {
           "match": "\\b(WIZARD_CONTROL_UNDEAD)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(WIZARD_CWE_OLD)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(WIZARD_DANCING_LIGHTS)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(WIZARD_DARKNESS_15_FOOT)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(WIZARD_DARTS_OF_BONE)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -10038,15 +8318,7 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(WIZARD_DECASTAVE)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(WIZARD_DELAYED_BLAST_FIREBALL)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(WIZARD_DEMI_SHADOW_MONSTERS)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -10086,10 +8358,6 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(WIZARD_DISPEL_MAGIC)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(WIZARD_DOMINATION)\\b",
           "name": "constant.language.ielib.resref"
         },
@@ -10098,19 +8366,7 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(WIZARD_EMOTION_COURAGE)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(WIZARD_EMOTION_FEAR)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(WIZARD_EMOTION_HOPELESSNESS)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(WIZARD_EMOTION_HOPE)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -10123,10 +8379,6 @@
         },
         {
           "match": "\\b(WIZARD_ENERGY_DRAIN)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(WIZARD_EXPEDITIOUS_RETREAT)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -10214,10 +8466,6 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(WIZARD_GREAT_SHOUT)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(WIZARD_HASTE)\\b",
           "name": "constant.language.ielib.resref"
         },
@@ -10238,10 +8486,6 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(WIZARD_ICELANCE)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(WIZARD_ICE_STORM)\\b",
           "name": "constant.language.ielib.resref"
         },
@@ -10251,10 +8495,6 @@
         },
         {
           "match": "\\b(WIZARD_IMPRISONMENT)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(WIZARD_IMPROVED_ALACRITY)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -10298,10 +8538,6 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(WIZARD_IRON_BODY)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(WIZARD_KNOCK)\\b",
           "name": "constant.language.ielib.resref"
         },
@@ -10310,15 +8546,7 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(WIZARD_LANCE_OF_DISRUPTION)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(WIZARD_LARLOCH_MINOR_DRAIN)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(WIZARD_LICH_TOUCH)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -10339,14 +8567,6 @@
         },
         {
           "match": "\\b(WIZARD_MAGIC_MISSILE)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(WIZARD_MALAVONS_CORROSIVE_FOG)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(WIZARD_MALAVONS_RAGE)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -10371,10 +8591,6 @@
         },
         {
           "match": "\\b(WIZARD_METEOR_SWARM)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(WIZARD_MIND_BLANK)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -10414,30 +8630,6 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(WIZARD_MONSTER_SUMMONING_4)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(WIZARD_MONSTER_SUMMONING_5)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(WIZARD_MONSTER_SUMMONING_6)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(WIZARD_MONSTER_SUMMONING_7)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(WIZARD_MONSTER_SUMMONING_VI_MALAVON)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(WIZARD_MORDENKAINENS_FORCE_MISSILES)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(WIZARD_MORDENKAINENS_SWORD)\\b",
           "name": "constant.language.ielib.resref"
         },
@@ -10466,15 +8658,7 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(WIZARD_OTILUKES_FREEZING_SPHERE)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(WIZARD_OTILUKES_RESILIENT_SPHERE)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(WIZARD_PFP_OLD)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -10491,10 +8675,6 @@
         },
         {
           "match": "\\b(WIZARD_POLYMORPH_BLACK_BEAR)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(WIZARD_POLYMORPH_BORING_BEETLE)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -10522,19 +8702,11 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(WIZARD_POLYMORPH_POLAR_BEAR)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(WIZARD_POLYMORPH_SELF)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
           "match": "\\b(WIZARD_POLYMORPH_SPIDER)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(WIZARD_POLYMORPH_WINTER_WOLF)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -10650,19 +8822,7 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(WIZARD_SEVEN_EYES)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(WIZARD_SHADES)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(WIZARD_SHADOW_DOOR)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(WIZARD_SHADOW_MONSTERS)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -10675,14 +8835,6 @@
         },
         {
           "match": "\\b(WIZARD_SHOCKING_GRASP)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(WIZARD_SHOUT)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(WIZARD_SHROUD_OF_FLAME)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -10699,14 +8851,6 @@
         },
         {
           "match": "\\b(WIZARD_SLOW)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(WIZARD_SNILLOCS_SNOWBALL_SWARM)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(WIZARD_SOUL_EATER)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -10810,10 +8954,6 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(WIZARD_SUFFOCATE)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(WIZARD_SUMMON_DJINNI)\\b",
           "name": "constant.language.ielib.resref"
         },
@@ -10839,10 +8979,6 @@
         },
         {
           "match": "\\b(WIZARD_SUMMON_PLANATAR_GOOD)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(WIZARD_SUMMON_SHADOW)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -10874,10 +9010,6 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "\\b(WIZARD_TROLLISH_FORTITUDE)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "\\b(WIZARD_TRUE_DISPEL_MAGIC)\\b",
           "name": "constant.language.ielib.resref"
         },
@@ -10887,10 +9019,6 @@
         },
         {
           "match": "\\b(WIZARD_VAMPIRIC_TOUCH)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(WIZARD_VITRIOLIC_SPHERE)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -11987,7 +10115,27 @@
           "name": "constant.language.ielib.int"
         },
         {
+          "match": "\\b(CRE_script_class)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
+          "match": "\\b(CRE_script_default)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
+          "match": "\\b(CRE_script_general)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
           "match": "\\b(CRE_script_name)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
+          "match": "\\b(CRE_script_override)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
+          "match": "\\b(CRE_script_race)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -14676,6 +12824,10 @@
         },
         {
           "match": "\\b(OPCODE_hold_2)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
+          "match": "\\b(OPCODE_hold_graphic)\\b",
           "name": "constant.language.ielib.int"
         },
         {

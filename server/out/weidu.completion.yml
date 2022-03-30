@@ -167,6 +167,13 @@ iesdp-resref:
         <b><a name="effv2_Body_0x94">Parent resource</a></b>
 
 
+        This specific field always needs to be in <u><b>ALLCAPS</b></u>.<br />
+        <br />
+
+        Be careful checking it in <a href="https://github.com/Argent77/NearInfinity">Near Infinity</a>, it displays <code>resource</code> fields in ALLCAPS regardless of the actual characters. However, it also always saves those fields in ALLCAPS as well.
+        {% endcapture %} {% include important.html %}
+
+
         - When attaching passive kit bonuses (labeled as `AP_XXXXXXXX` in <code><a href="../../files/2da/2da_bgee/clabxx00.htm">CLAB</a></code> files) to joinable CRE files as <a href="../ie_formats/cre_v1.htm#CREV1_0_Header_0x33_1">V2 Effects</a>, this field should be set to the SPL applying such bonuses.
           - In so doing, such bonuses will not be applied a second time (due to <code><a href="../../files/2da/2da_bgee/clabxx00.htm">CLAB</a></code> processing) when those creatures join the Party.
         - So for instance, when applying +10％ <a href="../../opcodes/bgee.htm#op87">Crushing Resistance</a> to a CRE file whose <code><a href="../ie_formats/cre_v1.htm#CREV1_0_Header_0x244">Kit</a></code> is `BARBARIAN`, set this field to `"SPCL153"`.
@@ -274,7 +281,7 @@ iesdp-dword:
         - bit 12 ⟶ Allow spotting
         - bit 13 ⟶ Outdoors only
         - bit 14 ⟶ Non-magical ability
-        - bit 15 ⟶ Trigger/Contingency
+        - bit 15 ⟶ Ignore Wild Surge
         - bit 16 ⟶ Non-combat ability
     - name: EFF2_parent_resource_type
       detail: dword EFF2_parent_resource_type
@@ -1270,7 +1277,7 @@ iesdp-char:
         This field matters only for <code><a href="../ie_formats/itm_v1.htm#itmv1_Extended_Header_0x0">ITM</a></code>, SPL files shouldn't function any different based on their type (even `0`).
     - name: SPL_HEAD_friendly
       detail: char SPL_HEAD_friendly
-      doc: "- bit 2: 'Friendly' ability"
+      doc: "- bit 2: 'Friendly' ability (PST only)"
     - name: SPL_HEAD_target
       detail: char SPL_HEAD_target
       doc: |
@@ -1605,9 +1612,6 @@ ielib-resref:
     - name: ARCHER_CALL_SHOT
       detail: resref ARCHER_CALL_SHOT = "SPCL121"
       doc: IElib define
-    - name: ARCHER_KIT_BONUS
-      detail: resref ARCHER_KIT_BONUS = "SPCL124"
-      doc: IElib define
     - name: ARCHER_PROTECTION
       detail: resref ARCHER_PROTECTION = "SPIN898"
       doc: IElib define
@@ -1637,24 +1641,6 @@ ielib-resref:
       doc: IElib define
     - name: BARBARIAN_RAGE
       detail: resref BARBARIAN_RAGE = "SPCL152"
-      doc: IElib define
-    - name: BARD_SONG_BALLAD
-      detail: resref BARD_SONG_BALLAD = "SPCL120"
-      doc: IElib define
-    - name: BARD_SONG_CURRAN
-      detail: resref BARD_SONG_CURRAN = "SPCL115"
-      doc: IElib define
-    - name: BARD_SONG_KAUDIES
-      detail: resref BARD_SONG_KAUDIES = "SPCL117"
-      doc: IElib define
-    - name: BARD_SONG_SIREN
-      detail: resref BARD_SONG_SIREN = "SPCL118"
-      doc: IElib define
-    - name: BARD_SONG_SITH
-      detail: resref BARD_SONG_SITH = "SPCL119"
-      doc: IElib define
-    - name: BARD_SONG_TYMORA
-      detail: resref BARD_SONG_TYMORA = "SPCL116"
       doc: IElib define
     - name: BEASTMASTER_FIND_FAMILIAR
       detail: resref BEASTMASTER_FIND_FAMILIAR = "SPCL342"
@@ -1728,12 +1714,6 @@ ielib-resref:
     - name: BLACKGUARD_ANIMATE_DEAD
       detail: resref BLACKGUARD_ANIMATE_DEAD = "SPCL106"
       doc: IElib define
-    - name: BLACKGUARD_AURA_OF_DESPAIR
-      detail: resref BLACKGUARD_AURA_OF_DESPAIR = "SPCL103"
-      doc: IElib define
-    - name: BLACKGUARD_SUMMON_FALLEN_DEVA
-      detail: resref BLACKGUARD_SUMMON_FALLEN_DEVA = "SPCL935"
-      doc: IElib define
     - name: BLACK_DRAGON_BREATH
       detail: resref BLACK_DRAGON_BREATH = "SPIN691"
       doc: IElib define
@@ -1763,9 +1743,6 @@ ielib-resref:
       doc: IElib define
     - name: BODVAM02_MIST_CHANGE
       detail: resref BODVAM02_MIST_CHANGE = "SPIN902"
-      doc: IElib define
-    - name: BOMBARDIER_BEETLE_CLOUD
-      detail: resref BOMBARDIER_BEETLE_CLOUD = "SPIN191"
       doc: IElib define
     - name: BOOK_BEHOLD
       detail: resref BOOK_BEHOLD = "SPIN841"
@@ -1842,12 +1819,6 @@ ielib-resref:
     - name: CLERIC_AID
       detail: resref CLERIC_AID = "SPPR201"
       doc: IElib define
-    - name: CLERIC_ALICORN_LANCE
-      detail: resref CLERIC_ALICORN_LANCE = "SPPR218"
-      doc: IElib define
-    - name: CLERIC_ANIMAL_RAGE
-      detail: resref CLERIC_ANIMAL_RAGE = "SPPR522"
-      doc: IElib define
     - name: CLERIC_ANIMAL_SUMMONING_1
       detail: resref CLERIC_ANIMAL_SUMMONING_1 = "SPPR402"
       doc: IElib define
@@ -1869,17 +1840,11 @@ ielib-resref:
     - name: CLERIC_BARKSKIN
       detail: resref CLERIC_BARKSKIN = "SPPR202"
       doc: IElib define
-    - name: CLERIC_BEAST_CLAW
-      detail: resref CLERIC_BEAST_CLAW = "SPPR219"
-      doc: IElib define
     - name: CLERIC_BLADE_BARRIER
       detail: resref CLERIC_BLADE_BARRIER = "SPPR603"
       doc: IElib define
     - name: CLERIC_BLESS
       detail: resref CLERIC_BLESS = "SPPR101"
-      doc: IElib define
-    - name: CLERIC_BLOOD_RAGE
-      detail: resref CLERIC_BLOOD_RAGE = "SPPR422"
       doc: IElib define
     - name: CLERIC_BOLT_OF_GLORY
       detail: resref CLERIC_BOLT_OF_GLORY = "SPPR612"
@@ -1892,18 +1857,6 @@ ielib-resref:
       doc: IElib define
     - name: CLERIC_CAUSE_CRITICAL_WOUNDS
       detail: resref CLERIC_CAUSE_CRITICAL_WOUNDS = "SPPR510"
-      doc: IElib define
-    - name: CLERIC_CAUSE_DISEASE
-      detail: resref CLERIC_CAUSE_DISEASE = "SPPR320"
-      doc: IElib define
-    - name: CLERIC_CAUSE_LIGHT_WOUNDS
-      detail: resref CLERIC_CAUSE_LIGHT_WOUNDS = "SPPR114"
-      doc: IElib define
-    - name: CLERIC_CAUSE_MEDIUM_WOUNDS
-      detail: resref CLERIC_CAUSE_MEDIUM_WOUNDS = "SPPR330"
-      doc: IElib define
-    - name: CLERIC_CAUSE_MODERATE_WOUNDS
-      detail: resref CLERIC_CAUSE_MODERATE_WOUNDS = "SPPR220"
       doc: IElib define
     - name: CLERIC_CAUSE_SERIOUS_WOUNDS
       detail: resref CLERIC_CAUSE_SERIOUS_WOUNDS = "SPPR414"
@@ -1920,17 +1873,8 @@ ielib-resref:
     - name: CLERIC_CHARM_PERSON
       detail: resref CLERIC_CHARM_PERSON = "SPPR204"
       doc: IElib define
-    - name: CLERIC_CIRCLE_OF_BONES
-      detail: resref CLERIC_CIRCLE_OF_BONES = "SPPR323"
-      doc: IElib define
     - name: CLERIC_CLOAK_OF_FEAR
       detail: resref CLERIC_CLOAK_OF_FEAR = "SPPR416"
-      doc: IElib define
-    - name: CLERIC_CLOUDBURST
-      detail: resref CLERIC_CLOUDBURST = "SPPR325"
-      doc: IElib define
-    - name: CLERIC_CLOUD_OF_PESTILENCE
-      detail: resref CLERIC_CLOUD_OF_PESTILENCE = "SPPR423"
       doc: IElib define
     - name: CLERIC_COMMAND
       detail: resref CLERIC_COMMAND = "SPPR102"
@@ -1962,23 +1906,14 @@ ielib-resref:
     - name: CLERIC_CURE_MEDIUM_WOUNDS
       detail: resref CLERIC_CURE_MEDIUM_WOUNDS = "SPPR315"
       doc: IElib define
-    - name: CLERIC_CURE_MODERATE_WOUNDS
-      detail: resref CLERIC_CURE_MODERATE_WOUNDS = "SPPR217"
-      doc: IElib define
     - name: CLERIC_CURE_SERIOUS_WOUNDS
       detail: resref CLERIC_CURE_SERIOUS_WOUNDS = "SPPR401"
-      doc: IElib define
-    - name: CLERIC_CURSE
-      detail: resref CLERIC_CURSE = "SPPR112"
       doc: IElib define
     - name: CLERIC_DEATH_WARD
       detail: resref CLERIC_DEATH_WARD = "SPPR409"
       doc: IElib define
     - name: CLERIC_DEFENSIVE_HARMONY
       detail: resref CLERIC_DEFENSIVE_HARMONY = "SPPR406"
-      doc: IElib define
-    - name: CLERIC_DESTRUCTION
-      detail: resref CLERIC_DESTRUCTION = "SPPR734"
       doc: IElib define
     - name: CLERIC_DETECT_EVIL
       detail: resref CLERIC_DETECT_EVIL = "SPPR104"
@@ -2010,14 +1945,8 @@ ielib-resref:
     - name: CLERIC_ENERGY_BLADES
       detail: resref CLERIC_ENERGY_BLADES = "SPPR721"
       doc: IElib define
-    - name: CLERIC_ENERGY_DRAIN
-      detail: resref CLERIC_ENERGY_DRAIN = "SPPR739"
-      doc: IElib define
     - name: CLERIC_ENTANGLE
       detail: resref CLERIC_ENTANGLE = "SPPR105"
-      doc: IElib define
-    - name: CLERIC_ENTROPY_SHIELD
-      detail: resref CLERIC_ENTROPY_SHIELD = "SPPR615"
       doc: IElib define
     - name: CLERIC_ETHEREAL_RETRIBUTION
       detail: resref CLERIC_ETHEREAL_RETRIBUTION = "SPPR751"
@@ -2025,20 +1954,11 @@ ielib-resref:
     - name: CLERIC_ETHER_GATE
       detail: resref CLERIC_ETHER_GATE = "SPPR750"
       doc: IElib define
-    - name: CLERIC_EXALTATION
-      detail: resref CLERIC_EXALTATION = "SPPR321"
-      doc: IElib define
-    - name: CLERIC_FAERIE_FIRE
-      detail: resref CLERIC_FAERIE_FIRE = "SPPR116"
-      doc: IElib define
     - name: CLERIC_FALSE_DAWN
       detail: resref CLERIC_FALSE_DAWN = "SPPR609"
       doc: IElib define
     - name: CLERIC_FAR_SIGHT
       detail: resref CLERIC_FAR_SIGHT = "SPPR415"
-      doc: IElib define
-    - name: CLERIC_FAVOR_OF_ILMATER
-      detail: resref CLERIC_FAVOR_OF_ILMATER = "SPPR331"
       doc: IElib define
     - name: CLERIC_FIND_TRAPS
       detail: resref CLERIC_FIND_TRAPS = "SPPR205"
@@ -2064,17 +1984,11 @@ ielib-resref:
     - name: CLERIC_GATE
       detail: resref CLERIC_GATE = "SPPR703"
       doc: IElib define
-    - name: CLERIC_GIANT_INSECT
-      detail: resref CLERIC_GIANT_INSECT = "SPPR418"
-      doc: IElib define
     - name: CLERIC_GLOBE_OF_BLADES
       detail: resref CLERIC_GLOBE_OF_BLADES = "SPPR725"
       doc: IElib define
     - name: CLERIC_GLYPH_OF_WARDING
       detail: resref CLERIC_GLYPH_OF_WARDING = "SPPR304"
-      doc: IElib define
-    - name: CLERIC_GOODBERRY
-      detail: resref CLERIC_GOODBERRY = "SPPR215"
       doc: IElib define
     - name: CLERIC_GOOD_BERRIES
       detail: resref CLERIC_GOOD_BERRIES = "SPPR207"
@@ -2085,17 +1999,11 @@ ielib-resref:
     - name: CLERIC_GREATER_ELEMENTAL_SWARM
       detail: resref CLERIC_GREATER_ELEMENTAL_SWARM = "SPPR724"
       doc: IElib define
-    - name: CLERIC_GREATER_SHIELD_OF_LATHANDER
-      detail: resref CLERIC_GREATER_SHIELD_OF_LATHANDER = "SPPR735"
-      doc: IElib define
     - name: CLERIC_HARM
       detail: resref CLERIC_HARM = "SPPR608"
       doc: IElib define
     - name: CLERIC_HEAL
       detail: resref CLERIC_HEAL = "SPPR607"
-      doc: IElib define
-    - name: CLERIC_HEAVENLY_INFERNO
-      detail: resref CLERIC_HEAVENLY_INFERNO = "SPPR738"
       doc: IElib define
     - name: CLERIC_HOLD_ANIMAL
       detail: resref CLERIC_HOLD_ANIMAL = "SPPR305"
@@ -2111,9 +2019,6 @@ ielib-resref:
       doc: IElib define
     - name: CLERIC_HOLY_WORD
       detail: resref CLERIC_HOLY_WORD = "SPPR710"
-      doc: IElib define
-    - name: CLERIC_IMPERVIOUS_SANCTITY_OF_MIND
-      detail: resref CLERIC_IMPERVIOUS_SANCTITY_OF_MIND = "SPPR733"
       doc: IElib define
     - name: CLERIC_IMPLOSION
       detail: resref CLERIC_IMPLOSION = "SPPR728"
@@ -2139,9 +2044,6 @@ ielib-resref:
     - name: CLERIC_MAGIC_STONE
       detail: resref CLERIC_MAGIC_STONE = "SPPR106"
       doc: IElib define
-    - name: CLERIC_MASS_CAUSE_LIGHT_WOUNDS
-      detail: resref CLERIC_MASS_CAUSE_LIGHT_WOUNDS = "SPPR523"
-      doc: IElib define
     - name: CLERIC_MASS_CURE
       detail: resref CLERIC_MASS_CURE = "SPPR514"
       doc: IElib define
@@ -2153,15 +2055,6 @@ ielib-resref:
       doc: IElib define
     - name: CLERIC_MISCAST_MAGIC
       detail: resref CLERIC_MISCAST_MAGIC = "SPPR310"
-      doc: IElib define
-    - name: CLERIC_MIST_OF_ELDATH
-      detail: resref CLERIC_MIST_OF_ELDATH = "SPPR736"
-      doc: IElib define
-    - name: CLERIC_MOLD_TOUCH
-      detail: resref CLERIC_MOLD_TOUCH = "SPPR326"
-      doc: IElib define
-    - name: CLERIC_MOONBLADE
-      detail: resref CLERIC_MOONBLADE = "SPPR322"
       doc: IElib define
     - name: CLERIC_NATURE_BEAUTY
       detail: resref CLERIC_NATURE_BEAUTY = "SPPR704"
@@ -2181,12 +2074,6 @@ ielib-resref:
     - name: CLERIC_POISON
       detail: resref CLERIC_POISON = "SPPR411"
       doc: IElib define
-    - name: CLERIC_PRAYER
-      detail: resref CLERIC_PRAYER = "SPPR316"
-      doc: IElib define
-    - name: CLERIC_PRODUCE_FIRE
-      detail: resref CLERIC_PRODUCE_FIRE = "SPPR419"
-      doc: IElib define
     - name: CLERIC_PROTECTION_FROM_EVIL_10_FOOT
       detail: resref CLERIC_PROTECTION_FROM_EVIL_10_FOOT = "SPPR408"
       doc: IElib define
@@ -2199,17 +2086,11 @@ ielib-resref:
     - name: CLERIC_PROTECT_FROM_EVIL
       detail: resref CLERIC_PROTECT_FROM_EVIL = "SPPR107"
       doc: IElib define
-    - name: CLERIC_PROTECT_FROM_GOOD
-      detail: resref CLERIC_PROTECT_FROM_GOOD = "SPPR199"
-      doc: IElib define
     - name: CLERIC_RAISE_DEAD
       detail: resref CLERIC_RAISE_DEAD = "SPPR504"
       doc: IElib define
     - name: CLERIC_RECALL_SPIRIT
       detail: resref CLERIC_RECALL_SPIRIT = "SPPR550"
-      doc: IElib define
-    - name: CLERIC_RECITATION
-      detail: resref CLERIC_RECITATION = "SPPR421"
       doc: IElib define
     - name: CLERIC_REGENERATE
       detail: resref CLERIC_REGENERATE = "SPPR711"
@@ -2229,9 +2110,6 @@ ielib-resref:
     - name: CLERIC_RESIST_FIRE
       detail: resref CLERIC_RESIST_FIRE = "SPPR210"
       doc: IElib define
-    - name: CLERIC_RESIST_FIRE_AND_COLD
-      detail: resref CLERIC_RESIST_FIRE_AND_COLD = "SPPR216"
-      doc: IElib define
     - name: CLERIC_RESTORATION
       detail: resref CLERIC_RESTORATION = "SPPR713"
       doc: IElib define
@@ -2241,17 +2119,11 @@ ielib-resref:
     - name: CLERIC_RIGHTEOUS_MAGIC
       detail: resref CLERIC_RIGHTEOUS_MAGIC = "SPPR513"
       doc: IElib define
-    - name: CLERIC_RIGHTEOUS_WRATH_OF_THE_FAITHFUL
-      detail: resref CLERIC_RIGHTEOUS_WRATH_OF_THE_FAITHFUL = "SPPR518"
-      doc: IElib define
     - name: CLERIC_RIGID_THINKING
       detail: resref CLERIC_RIGID_THINKING = "SPPR311"
       doc: IElib define
     - name: CLERIC_SANCTUARY
       detail: resref CLERIC_SANCTUARY = "SPPR109"
-      doc: IElib define
-    - name: CLERIC_SHIELD_OF_LATHANDER
-      detail: resref CLERIC_SHIELD_OF_LATHANDER = "SPPR520"
       doc: IElib define
     - name: CLERIC_SHIELD_OF_THE_ARCHONS
       detail: resref CLERIC_SHIELD_OF_THE_ARCHONS = "SPPR701"
@@ -2268,17 +2140,8 @@ ielib-resref:
     - name: CLERIC_SLOW_POISON
       detail: resref CLERIC_SLOW_POISON = "SPPR212"
       doc: IElib define
-    - name: CLERIC_SMASHING_WAVE
-      detail: resref CLERIC_SMASHING_WAVE = "SPPR426"
-      doc: IElib define
     - name: CLERIC_SOL_SEARING_ORB
       detail: resref CLERIC_SOL_SEARING_ORB = "SPPR614"
-      doc: IElib define
-    - name: CLERIC_SPIKE_GROWTH
-      detail: resref CLERIC_SPIKE_GROWTH = "SPPR324"
-      doc: IElib define
-    - name: CLERIC_SPIKE_STONES
-      detail: resref CLERIC_SPIKE_STONES = "SPPR519"
       doc: IElib define
     - name: CLERIC_SPIRITUAL_CLARITY
       detail: resref CLERIC_SPIRITUAL_CLARITY = "SPPR350"
@@ -2289,29 +2152,14 @@ ielib-resref:
     - name: CLERIC_SPIRITUAL_LOCK
       detail: resref CLERIC_SPIRITUAL_LOCK = "SPPR650"
       doc: IElib define
-    - name: CLERIC_SPIRITUAL_WRATH
-      detail: resref CLERIC_SPIRITUAL_WRATH = "SPPR618"
-      doc: IElib define
     - name: CLERIC_SPIRIT_FIRE
       detail: resref CLERIC_SPIRIT_FIRE = "SPPR450"
       doc: IElib define
     - name: CLERIC_SPIRIT_WARD
       detail: resref CLERIC_SPIRIT_WARD = "SPPR150"
       doc: IElib define
-    - name: CLERIC_STALKER
-      detail: resref CLERIC_STALKER = "SPPR737"
-      doc: IElib define
-    - name: CLERIC_STAR_METAL_CUDGEL
-      detail: resref CLERIC_STAR_METAL_CUDGEL = "SPPR425"
-      doc: IElib define
-    - name: CLERIC_STATIC_CHARGE
-      detail: resref CLERIC_STATIC_CHARGE = "SPPR420"
-      doc: IElib define
     - name: CLERIC_STORM_OF_VENGEANCE
       detail: resref CLERIC_STORM_OF_VENGEANCE = "SPPR722"
-      doc: IElib define
-    - name: CLERIC_STORM_SHELL
-      detail: resref CLERIC_STORM_SHELL = "SPPR327"
       doc: IElib define
     - name: CLERIC_STRENGTH_OF_ONE
       detail: resref CLERIC_STRENGTH_OF_ONE = "SPPR312"
@@ -2325,17 +2173,8 @@ ielib-resref:
     - name: CLERIC_SUMMON_INSECTS
       detail: resref CLERIC_SUMMON_INSECTS = "SPPR319"
       doc: IElib define
-    - name: CLERIC_SUMMON_LIZARDMEN
-      detail: resref CLERIC_SUMMON_LIZARDMEN = "SPPR328"
-      doc: IElib define
-    - name: CLERIC_SUMMON_TROLLS
-      detail: resref CLERIC_SUMMON_TROLLS = "SPPR329"
-      doc: IElib define
     - name: CLERIC_SUNRAY
       detail: resref CLERIC_SUNRAY = "SPPR707"
-      doc: IElib define
-    - name: CLERIC_SUNSCORCH
-      detail: resref CLERIC_SUNSCORCH = "SPPR115"
       doc: IElib define
     - name: CLERIC_SYMBOL_DEATH
       detail: resref CLERIC_SYMBOL_DEATH = "SPPR719"
@@ -2343,41 +2182,17 @@ ielib-resref:
     - name: CLERIC_SYMBOL_FEAR
       detail: resref CLERIC_SYMBOL_FEAR = "SPPR706"
       doc: IElib define
-    - name: CLERIC_SYMBOL_OF_HOPELESSNESS
-      detail: resref CLERIC_SYMBOL_OF_HOPELESSNESS = "SPPR716"
-      doc: IElib define
-    - name: CLERIC_SYMBOL_OF_PAIN
-      detail: resref CLERIC_SYMBOL_OF_PAIN = "SPPR714"
-      doc: IElib define
     - name: CLERIC_SYMBOL_STUN
       detail: resref CLERIC_SYMBOL_STUN = "SPPR718"
       doc: IElib define
-    - name: CLERIC_THORN_SPRAY
-      detail: resref CLERIC_THORN_SPRAY = "SPPR427"
-      doc: IElib define
     - name: CLERIC_TRUE_SIGHT
       detail: resref CLERIC_TRUE_SIGHT = "SPPR505"
-      doc: IElib define
-    - name: CLERIC_UNDEAD_WARD
-      detail: resref CLERIC_UNDEAD_WARD = "SPPR521"
-      doc: IElib define
-    - name: CLERIC_UNFAILING_ENDURANCE
-      detail: resref CLERIC_UNFAILING_ENDURANCE = "SPPR424"
       doc: IElib define
     - name: CLERIC_UNHOLY_BLIGHT
       detail: resref CLERIC_UNHOLY_BLIGHT = "SPPR314"
       doc: IElib define
     - name: CLERIC_UNHOLY_WORD
       detail: resref CLERIC_UNHOLY_WORD = "SPPR715"
-      doc: IElib define
-    - name: CLERIC_WALL_OF_MOONLIGHT
-      detail: resref CLERIC_WALL_OF_MOONLIGHT = "SPPR428"
-      doc: IElib define
-    - name: CLERIC_WHIRLWIND
-      detail: resref CLERIC_WHIRLWIND = "SPPR617"
-      doc: IElib define
-    - name: CLERIC_WITHER
-      detail: resref CLERIC_WITHER = "SPPR740"
       doc: IElib define
     - name: CLERIC_WONDROUS_RECALL
       detail: resref CLERIC_WONDROUS_RECALL = "SPPR611"
@@ -2462,9 +2277,6 @@ ielib-resref:
       doc: IElib define
     - name: DAESEWOLF_CHANGE
       detail: resref DAESEWOLF_CHANGE = "SPWI944"
-      doc: IElib define
-    - name: DARK_GIFT
-      detail: resref DARK_GIFT = "SPCL101"
       doc: IElib define
     - name: DEAD_MAGIC_AREA
       detail: resref DEAD_MAGIC_AREA = "SPIN646"
@@ -2715,9 +2527,6 @@ ielib-resref:
     - name: DROW_CHANGE
       detail: resref DROW_CHANGE = "SPIN825"
       doc: IElib define
-    - name: DRUID_HUMAN_FORM
-      detail: resref DRUID_HUMAN_FORM = "SPIN123"
-      doc: IElib define
     - name: DRUID_IMMUNE_POISON
       detail: resref DRUID_IMMUNE_POISON = "SPCL924"
       doc: IElib define
@@ -2727,32 +2536,11 @@ ielib-resref:
     - name: DRUID_SHAPESHIFT_BLACKBEAR
       detail: resref DRUID_SHAPESHIFT_BLACKBEAR = "SPCL613"
       doc: IElib define
-    - name: DRUID_SHAPESHIFT_BORING_BEETLE
-      detail: resref DRUID_SHAPESHIFT_BORING_BEETLE = "SPCL108"
-      doc: IElib define
     - name: DRUID_SHAPESHIFT_BROWNBEAR
       detail: resref DRUID_SHAPESHIFT_BROWNBEAR = "SPCL611"
       doc: IElib define
-    - name: DRUID_SHAPESHIFT_ELEMENTAL_EARTH
-      detail: resref DRUID_SHAPESHIFT_ELEMENTAL_EARTH = "SPCL113"
-      doc: IElib define
-    - name: DRUID_SHAPESHIFT_ELEMENTAL_FIRE
-      detail: resref DRUID_SHAPESHIFT_ELEMENTAL_FIRE = "SPCL112"
-      doc: IElib define
-    - name: DRUID_SHAPESHIFT_ELEMENTAL_WATER
-      detail: resref DRUID_SHAPESHIFT_ELEMENTAL_WATER = "SPCL114"
-      doc: IElib define
     - name: DRUID_SHAPESHIFT_FROM_BLACKBEAR
       detail: resref DRUID_SHAPESHIFT_FROM_BLACKBEAR = "SPIN123"
-      doc: IElib define
-    - name: DRUID_SHAPESHIFT_NATURAL_FORM
-      detail: resref DRUID_SHAPESHIFT_NATURAL_FORM = "SPCL110"
-      doc: IElib define
-    - name: DRUID_SHAPESHIFT_POLAR_BEAR
-      detail: resref DRUID_SHAPESHIFT_POLAR_BEAR = "SPCL101"
-      doc: IElib define
-    - name: DRUID_SHAPESHIFT_WINTER_WOLF
-      detail: resref DRUID_SHAPESHIFT_WINTER_WOLF = "SPCL107"
       doc: IElib define
     - name: DRUID_SHAPESHIFT_WOLF
       detail: resref DRUID_SHAPESHIFT_WOLF = "SPCL612"
@@ -3111,224 +2899,23 @@ ielib-resref:
     - name: IMPRISONMENT_NO_SAVE
       detail: resref IMPRISONMENT_NO_SAVE = "SPIN580"
       doc: IElib define
-    - name: INNATE_ANIMAL_AFFINITY
-      detail: resref INNATE_ANIMAL_AFFINITY = "SPIN197"
-      doc: IElib define
-    - name: INNATE_AURA_OF_FEAR
-      detail: resref INNATE_AURA_OF_FEAR = "SPIN173"
-      doc: IElib define
-    - name: INNATE_BEHOLDER_ANTIMAGIC_RAY
-      detail: resref INNATE_BEHOLDER_ANTIMAGIC_RAY = "SPIN137"
-      doc: IElib define
-    - name: INNATE_BEHOLDER_CAUSE_SERIOUS_WOUNDS
-      detail: resref INNATE_BEHOLDER_CAUSE_SERIOUS_WOUNDS = "SPIN147"
-      doc: IElib define
-    - name: INNATE_BEHOLDER_CHARM_PERSON
-      detail: resref INNATE_BEHOLDER_CHARM_PERSON = "SPIN141"
-      doc: IElib define
-    - name: INNATE_BEHOLDER_DEATH_RAY
-      detail: resref INNATE_BEHOLDER_DEATH_RAY = "SPIN148"
-      doc: IElib define
-    - name: INNATE_BEHOLDER_DISINTEGRATE
-      detail: resref INNATE_BEHOLDER_DISINTEGRATE = "SPIN144"
-      doc: IElib define
-    - name: INNATE_BEHOLDER_FEAR
-      detail: resref INNATE_BEHOLDER_FEAR = "SPIN145"
-      doc: IElib define
-    - name: INNATE_BEHOLDER_FLESH_TO_STONE
-      detail: resref INNATE_BEHOLDER_FLESH_TO_STONE = "SPIN143"
-      doc: IElib define
-    - name: INNATE_BEHOLDER_SLEEP
-      detail: resref INNATE_BEHOLDER_SLEEP = "SPIN142"
-      doc: IElib define
-    - name: INNATE_BEHOLDER_SLOW
-      detail: resref INNATE_BEHOLDER_SLOW = "SPIN146"
-      doc: IElib define
-    - name: INNATE_BEHOLDER_UNUSED
-      detail: resref INNATE_BEHOLDER_UNUSED = "SPIN136"
-      doc: IElib define
-    - name: INNATE_BELHIFETS_DEATH_ANIMATION
-      detail: resref INNATE_BELHIFETS_DEATH_ANIMATION = "SPIN171"
-      doc: IElib define
-    - name: INNATE_BLUE_GLOW
-      detail: resref INNATE_BLUE_GLOW = "SPIN130"
-      doc: IElib define
-    - name: INNATE_BOMBARDIER_BEETLE_CLOUD
-      detail: resref INNATE_BOMBARDIER_BEETLE_CLOUD = "SPIN191"
-      doc: IElib define
-    - name: INNATE_CHAMELEON_POWER
-      detail: resref INNATE_CHAMELEON_POWER = "SPIN196"
-      doc: IElib define
-    - name: INNATE_CONTAINER_GLOW
-      detail: resref INNATE_CONTAINER_GLOW = "SPIN166"
-      doc: IElib define
-    - name: INNATE_CONTAINER_GLOW_BAD
-      detail: resref INNATE_CONTAINER_GLOW_BAD = "SPIN167"
-      doc: IElib define
-    - name: INNATE_CORNUGON_SUMMON_TRAVEL_ANIMATION
-      detail: resref INNATE_CORNUGON_SUMMON_TRAVEL_ANIMATION = "SPIN168"
-      doc: IElib define
-    - name: INNATE_CRYPT_THING_TELEPORT
-      detail: resref INNATE_CRYPT_THING_TELEPORT = "SPIN140"
-      doc: IElib define
     - name: INNATE_CURE_LIGHT_WOUNDS
       detail: resref INNATE_CURE_LIGHT_WOUNDS = "SPIN101"
-      doc: IElib define
-    - name: INNATE_D5_HIGH_BAPTISM
-      detail: resref INNATE_D5_HIGH_BAPTISM = "SPIN185"
-      doc: IElib define
-    - name: INNATE_DEATH_KNELL
-      detail: resref INNATE_DEATH_KNELL = "SPIN116"
-      doc: IElib define
-    - name: INNATE_DRAGON_BREATH
-      detail: resref INNATE_DRAGON_BREATH = "SPIN134"
-      doc: IElib define
-    - name: INNATE_DRAGON_DEATH_ANIMATION
-      detail: resref INNATE_DRAGON_DEATH_ANIMATION = "SPIN131"
-      doc: IElib define
-    - name: INNATE_DRAGON_GEM_EFFECTS
-      detail: resref INNATE_DRAGON_GEM_EFFECTS = "SPIN133"
-      doc: IElib define
-    - name: INNATE_DRAGON_GEM_SUMMONING
-      detail: resref INNATE_DRAGON_GEM_SUMMONING = "SPIN135"
-      doc: IElib define
-    - name: INNATE_DRAGON_WING_BUFFET
-      detail: resref INNATE_DRAGON_WING_BUFFET = "SPIN132"
       doc: IElib define
     - name: INNATE_DRAW_UPON_HOLY_MIGHT
       detail: resref INNATE_DRAW_UPON_HOLY_MIGHT = "SPIN103"
       doc: IElib define
-    - name: INNATE_EVERARDS_PORTAL_CLOSING
-      detail: resref INNATE_EVERARDS_PORTAL_CLOSING = "SPIN172"
-      doc: IElib define
-    - name: INNATE_FLASH_DESTROY_SUMMON_BELHIFET
-      detail: resref INNATE_FLASH_DESTROY_SUMMON_BELHIFET = "SPIN183"
-      doc: IElib define
-    - name: INNATE_FLASH_DESTROY_SUMMON_YXUNOMEI
-      detail: resref INNATE_FLASH_DESTROY_SUMMON_YXUNOMEI = "SPIN182"
-      doc: IElib define
-    - name: INNATE_FLASH_DISAPPEAR
-      detail: resref INNATE_FLASH_DISAPPEAR = "SPIN184"
-      doc: IElib define
-    - name: INNATE_FROST_AURA
-      detail: resref INNATE_FROST_AURA = "SPIN128"
-      doc: IElib define
-    - name: INNATE_GREAT_ROAR
-      detail: resref INNATE_GREAT_ROAR = "SPIN119"
-      doc: IElib define
-    - name: INNATE_HARPY_WAIL
-      detail: resref INNATE_HARPY_WAIL = "SPIN138"
-      doc: IElib define
-    - name: INNATE_HARPY_WAIL_INTERNAL
-      detail: resref INNATE_HARPY_WAIL_INTERNAL = "SPIN139"
-      doc: IElib define
-    - name: INNATE_HOBART_TO_RAKSHASA
-      detail: resref INNATE_HOBART_TO_RAKSHASA = "SPIN162"
-      doc: IElib define
     - name: INNATE_HORROR
       detail: resref INNATE_HORROR = "SPIN105"
-      doc: IElib define
-    - name: INNATE_ICE_GOLEM_DISAPPEAR
-      detail: resref INNATE_ICE_GOLEM_DISAPPEAR = "SPIN127"
-      doc: IElib define
-    - name: INNATE_INCENDIARY_CLOUD_EXPLOSION
-      detail: resref INNATE_INCENDIARY_CLOUD_EXPLOSION = "SPIN181"
-      doc: IElib define
-    - name: INNATE_INCENDIARY_CLOUD_IDLING
-      detail: resref INNATE_INCENDIARY_CLOUD_IDLING = "SPIN180"
-      doc: IElib define
-    - name: INNATE_INFERNAL_CONVEYANCE
-      detail: resref INNATE_INFERNAL_CONVEYANCE = "SPIN176"
-      doc: IElib define
-    - name: INNATE_IRON_GOLEM_CLOUD
-      detail: resref INNATE_IRON_GOLEM_CLOUD = "SPIN189"
-      doc: IElib define
-    - name: INNATE_JACKALWERE_GAZE
-      detail: resref INNATE_JACKALWERE_GAZE = "SPIN159"
-      doc: IElib define
-    - name: INNATE_JACKALWERE_GAZE_INTERNAL
-      detail: resref INNATE_JACKALWERE_GAZE_INTERNAL = "SPIN161"
       doc: IElib define
     - name: INNATE_LARLOCHS_MINOR_DRAIN
       detail: resref INNATE_LARLOCHS_MINOR_DRAIN = "SPIN104"
       doc: IElib define
-    - name: INNATE_MOURNFUL_WAIL
-      detail: resref INNATE_MOURNFUL_WAIL = "SPIN115"
-      doc: IElib define
-    - name: INNATE_MUSTARD_JELLY_VAPOR
-      detail: resref INNATE_MUSTARD_JELLY_VAPOR = "SPIN164"
-      doc: IElib define
-    - name: INNATE_MYCONID_SPORES
-      detail: resref INNATE_MYCONID_SPORES = "SPIN188"
-      doc: IElib define
-    - name: INNATE_PHASE_SPIDER_TELEPORT
-      detail: resref INNATE_PHASE_SPIDER_TELEPORT = "SPIN186"
-      doc: IElib define
-    - name: INNATE_POLYMORPH_TO_DOG
-      detail: resref INNATE_POLYMORPH_TO_DOG = "SPIN149"
-      doc: IElib define
-    - name: INNATE_POQUELINS_PORTAL_OPENING
-      detail: resref INNATE_POQUELINS_PORTAL_OPENING = "SPIN177"
-      doc: IElib define
-    - name: INNATE_REMOVE_TERIKANS_ITEM_ANIMATION
-      detail: resref INNATE_REMOVE_TERIKANS_ITEM_ANIMATION = "SPIN170"
-      doc: IElib define
-    - name: INNATE_RETRIBUTION
-      detail: resref INNATE_RETRIBUTION = "SPIN120"
-      doc: IElib define
-    - name: INNATE_SALAMANDER_AURA_FIRE
-      detail: resref INNATE_SALAMANDER_AURA_FIRE = "SPIN194"
-      doc: IElib define
-    - name: INNATE_SALAMANDER_AURA_FROST
-      detail: resref INNATE_SALAMANDER_AURA_FROST = "SPIN193"
-      doc: IElib define
-    - name: INNATE_SALAMANDER_AURA_SHIKATA
-      detail: resref INNATE_SALAMANDER_AURA_SHIKATA = "SPIN187"
-      doc: IElib define
-    - name: INNATE_SEER_TELEPORT
-      detail: resref INNATE_SEER_TELEPORT = "SPIN129"
-      doc: IElib define
-    - name: INNATE_SHADOW_PACT
-      detail: resref INNATE_SHADOW_PACT = "SPIN195"
-      doc: IElib define
-    - name: INNATE_SHAPESHIFTS_WEREWOLF
-      detail: resref INNATE_SHAPESHIFTS_WEREWOLF = "SPIN121"
-      doc: IElib define
     - name: INNATE_SLOW_POISON
       detail: resref INNATE_SLOW_POISON = "SPIN102"
       doc: IElib define
-    - name: INNATE_SUMMON_GLABREZU
-      detail: resref INNATE_SUMMON_GLABREZU = "SPIN158"
-      doc: IElib define
-    - name: INNATE_TELEPORT_WITHOUT_ERROR
-      detail: resref INNATE_TELEPORT_WITHOUT_ERROR = "SPIN163"
-      doc: IElib define
-    - name: INNATE_UMBER_HULK_GAZE
-      detail: resref INNATE_UMBER_HULK_GAZE = "SPIN192"
-      doc: IElib define
-    - name: INNATE_UNDYING_LAMENT
-      detail: resref INNATE_UNDYING_LAMENT = "SPIN118"
-      doc: IElib define
     - name: INNATE_VAMPIRIC_TOUCH
       detail: resref INNATE_VAMPIRIC_TOUCH = "SPIN106"
-      doc: IElib define
-    - name: INNATE_WAR_CRY
-      detail: resref INNATE_WAR_CRY = "SPIN117"
-      doc: IElib define
-    - name: INNATE_WEREWOLF_DEATH
-      detail: resref INNATE_WEREWOLF_DEATH = "SPIN125"
-      doc: IElib define
-    - name: INNATE_WIND_WALK
-      detail: resref INNATE_WIND_WALK = "SPIN114"
-      doc: IElib define
-    - name: INNATE_WINTER_WOLF_BREATH
-      detail: resref INNATE_WINTER_WOLF_BREATH = "SPIN169"
-      doc: IElib define
-    - name: INNATE_WYLFDENES_DEATH_ANIMATION
-      detail: resref INNATE_WYLFDENES_DEATH_ANIMATION = "SPIN126"
-      doc: IElib define
-    - name: INNATE_ZOMBIE_LORD_AURA
-      detail: resref INNATE_ZOMBIE_LORD_AURA = "SPIN190"
       doc: IElib define
     - name: INQUIS_DISPEL_MAGIC
       detail: resref INQUIS_DISPEL_MAGIC = "SPCL231"
@@ -3344,12 +2931,6 @@ ielib-resref:
       doc: IElib define
     - name: IRENICUS_WORD_OF_POWER
       detail: resref IRENICUS_WORD_OF_POWER = "SPIN757"
-      doc: IElib define
-    - name: IWD_UNKNOWN_2
-      detail: resref IWD_UNKNOWN_2 = "SPIN174"
-      doc: IElib define
-    - name: IWD_UNKNOWN_3
-      detail: resref IWD_UNKNOWN_3 = "SPIN175"
       doc: IElib define
     - name: JAHEIRA_WEAKNESS
       detail: resref JAHEIRA_WEAKNESS = "SPIN919"
@@ -3537,9 +3118,6 @@ ielib-resref:
     - name: MIST_HORROR
       detail: resref MIST_HORROR = "SPIN675"
       doc: IElib define
-    - name: MKHIIN_SUMMON_ANCESTRAL_GUARDIAN
-      detail: resref MKHIIN_SUMMON_ANCESTRAL_GUARDIAN = "SPIN205"
-      doc: IElib define
     - name: MONK_LAY_ON_HANDS
       detail: resref MONK_LAY_ON_HANDS = "SPCL815"
       doc: IElib define
@@ -3563,9 +3141,6 @@ ielib-resref:
       doc: IElib define
     - name: NALMISSRA_CHARM
       detail: resref NALMISSRA_CHARM = "SPIN553"
-      doc: IElib define
-    - name: NEOTHELID_BREATH
-      detail: resref NEOTHELID_BREATH = "SPIN520"
       doc: IElib define
     - name: NETHER_SCROLL
       detail: resref NETHER_SCROLL = "SPIN664"
@@ -3606,9 +3181,6 @@ ielib-resref:
     - name: PAIN
       detail: resref PAIN = "SPWI955"
       doc: IElib define
-    - name: PALADIN_CURE_DISEASE
-      detail: resref PALADIN_CURE_DISEASE = "SPCL111"
-      doc: IElib define
     - name: PALADIN_DETECT_EVIL
       detail: resref PALADIN_DETECT_EVIL = "SPCL212"
       doc: IElib define
@@ -3617,9 +3189,6 @@ ielib-resref:
       doc: IElib define
     - name: PALADIN_PROTECTION_FROM_EVIL
       detail: resref PALADIN_PROTECTION_FROM_EVIL = "SPCL213"
-      doc: IElib define
-    - name: PALADIN_SMITE_EVIL
-      detail: resref PALADIN_SMITE_EVIL = "SPCL122"
       doc: IElib define
     - name: PALADIN_SUMMON_DEVA
       detail: resref PALADIN_SUMMON_DEVA = "SPCL923"
@@ -3663,14 +3232,8 @@ ielib-resref:
     - name: PSIONIC_BALLISTIC
       detail: resref PSIONIC_BALLISTIC = "SPIN911"
       doc: IElib define
-    - name: PSIONIC_CONTROL_BODY
-      detail: resref PSIONIC_CONTROL_BODY = "SPIN503"
-      doc: IElib define
     - name: PSIONIC_DETONATE
       detail: resref PSIONIC_DETONATE = "SPIN912"
-      doc: IElib define
-    - name: PSIONIC_DIMENSION_WALK
-      detail: resref PSIONIC_DIMENSION_WALK = "SPIN500"
       doc: IElib define
     - name: PSIONIC_DISINTEGRATE
       detail: resref PSIONIC_DISINTEGRATE = "SPIN542"
@@ -3683,9 +3246,6 @@ ielib-resref:
       doc: IElib define
     - name: PSIONIC_EMOTION_KILL
       detail: resref PSIONIC_EMOTION_KILL = "SPIN804"
-      doc: IElib define
-    - name: PSIONIC_ID_INSINUATION
-      detail: resref PSIONIC_ID_INSINUATION = "SPIN502"
       doc: IElib define
     - name: PSIONIC_INERTIAL_BARRIER
       detail: resref PSIONIC_INERTIAL_BARRIER = "SPIN546"
@@ -3707,12 +3267,6 @@ ielib-resref:
       doc: IElib define
     - name: PSIONIC_SUPERIOR_INVISIBILITY
       detail: resref PSIONIC_SUPERIOR_INVISIBILITY = "SPIN544"
-      doc: IElib define
-    - name: PSIONIC_TASTE_LINK
-      detail: resref PSIONIC_TASTE_LINK = "SPIN504"
-      doc: IElib define
-    - name: PSIONIC_TELEKINESIS
-      detail: resref PSIONIC_TELEKINESIS = "SPIN501"
       doc: IElib define
     - name: QUEEN_CHANGE
       detail: resref QUEEN_CHANGE = "SPWI942"
@@ -3771,9 +3325,6 @@ ielib-resref:
     - name: RESTORE_FULL_HEALTH
       detail: resref RESTORE_FULL_HEALTH = "SPIN746"
       doc: IElib define
-    - name: RESTORE_FULL_HEALTH_PARTY
-      detail: resref RESTORE_FULL_HEALTH_PARTY = "SPIN747"
-      doc: IElib define
     - name: REVENANT_CHANGE
       detail: resref REVENANT_CHANGE = "SPIN922"
       doc: IElib define
@@ -3800,9 +3351,6 @@ ielib-resref:
       doc: IElib define
     - name: ROGUE_SET_TIME_TRAP
       detail: resref ROGUE_SET_TIME_TRAP = "SPCL912"
-      doc: IElib define
-    - name: SAFANA_CHARM
-      detail: resref SAFANA_CHARM = "SPIN119"
       doc: IElib define
     - name: SALAMANDER_BREATHE_FIREBALL
       detail: resref SALAMANDER_BREATHE_FIREBALL = "SPIN160"
@@ -3849,36 +3397,6 @@ ielib-resref:
     - name: SENDAI_CHANGE
       detail: resref SENDAI_CHANGE = "SPIN533"
       doc: IElib define
-    - name: SET_SNARE_ENEMY
-      detail: resref SET_SNARE_ENEMY = "SPIN412"
-      doc: IElib define
-    - name: SET_SNARE_TRAP
-      detail: resref SET_SNARE_TRAP = "SPCL412"
-      doc: IElib define
-    - name: SET_SPECIAL_SNARE_TRAP
-      detail: resref SET_SPECIAL_SNARE_TRAP = "SPCL414"
-      doc: IElib define
-    - name: SEVEN_EYES_FORTITUDE
-      detail: resref SEVEN_EYES_FORTITUDE = "SPIN112"
-      doc: IElib define
-    - name: SEVEN_EYES_MAGE
-      detail: resref SEVEN_EYES_MAGE = "SPIN109"
-      doc: IElib define
-    - name: SEVEN_EYES_MIND
-      detail: resref SEVEN_EYES_MIND = "SPIN107"
-      doc: IElib define
-    - name: SEVEN_EYES_SPIRIT
-      detail: resref SEVEN_EYES_SPIRIT = "SPIN111"
-      doc: IElib define
-    - name: SEVEN_EYES_STONE
-      detail: resref SEVEN_EYES_STONE = "SPIN113"
-      doc: IElib define
-    - name: SEVEN_EYES_SWORD
-      detail: resref SEVEN_EYES_SWORD = "SPIN108"
-      doc: IElib define
-    - name: SEVEN_EYES_VENOM
-      detail: resref SEVEN_EYES_VENOM = "SPIN110"
-      doc: IElib define
     - name: SHADOWDANCER_SHADOW_FORM
       detail: resref SHADOWDANCER_SHADOW_FORM = "SPCL938"
       doc: IElib define
@@ -3920,9 +3438,6 @@ ielib-resref:
       doc: IElib define
     - name: SHAPECHANGE_MIND_FLAYER
       detail: resref SHAPECHANGE_MIND_FLAYER = "SPIN152"
-      doc: IElib define
-    - name: SHAPECHANGE_WATER_ELEMENTAL
-      detail: resref SHAPECHANGE_WATER_ELEMENTAL = "SPIN198"
       doc: IElib define
     - name: SHAPESHIFTER_SHAPESHIFT_GREATERWEREWOLF
       detail: resref SHAPESHIFTER_SHAPESHIFT_GREATERWEREWOLF = "SPCL644"
@@ -4083,9 +3598,6 @@ ielib-resref:
     - name: SUMMON_SKELETON_WARRIOR3
       detail: resref SUMMON_SKELETON_WARRIOR3 = "SPWI935"
       doc: IElib define
-    - name: SUN_SOUL_FLAMING_FISTS
-      detail: resref SUN_SOUL_FLAMING_FISTS = "SPCL238"
-      doc: IElib define
     - name: SUN_SOUL_GREATER_SUN
       detail: resref SUN_SOUL_GREATER_SUN = "SPCL237"
       doc: IElib define
@@ -4140,9 +3652,6 @@ ielib-resref:
     - name: THIEF_SET_SPECIAL_SNARE
       detail: resref THIEF_SET_SPECIAL_SNARE = "SPCL414"
       doc: IElib define
-    - name: THIEF_STEALTH
-      detail: resref THIEF_STEALTH = "SPIN413"
-      doc: IElib define
     - name: THREE_ROUND_ENCHANTMENT_IMMUNITY
       detail: resref THREE_ROUND_ENCHANTMENT_IMMUNITY = "SPIN906"
       doc: IElib define
@@ -4194,35 +3703,17 @@ ielib-resref:
     - name: TRAP_DARTS
       detail: resref TRAP_DARTS = "SPIN707"
       doc: IElib define
-    - name: TRAP_DEATH_FOG
-      detail: resref TRAP_DEATH_FOG = "SPWI030"
-      doc: IElib define
     - name: TRAP_DIRE_CHARM
       detail: resref TRAP_DIRE_CHARM = "SPPR982"
-      doc: IElib define
-    - name: TRAP_DISEASE_DARTS
-      detail: resref TRAP_DISEASE_DARTS = "SPWI018"
-      doc: IElib define
-    - name: TRAP_FINGER_OF_DEATH
-      detail: resref TRAP_FINGER_OF_DEATH = "SPWI031"
       doc: IElib define
     - name: TRAP_FIREBALL
       detail: resref TRAP_FIREBALL = "SPWI001"
       doc: IElib define
-    - name: TRAP_FIREBALL_4D6
-      detail: resref TRAP_FIREBALL_4D6 = "SPWI034"
-      doc: IElib define
     - name: TRAP_FLAMESTRIKE
       detail: resref TRAP_FLAMESTRIKE = "SPPR985"
       doc: IElib define
-    - name: TRAP_FLESH_TO_STONE
-      detail: resref TRAP_FLESH_TO_STONE = "SPWI035"
-      doc: IElib define
     - name: TRAP_FROST
       detail: resref TRAP_FROST = "SPWI015"
-      doc: IElib define
-    - name: TRAP_GLYPH_OF_WARDING
-      detail: resref TRAP_GLYPH_OF_WARDING = "SPPR901"
       doc: IElib define
     - name: TRAP_GUILLOTINE
       detail: resref TRAP_GUILLOTINE = "SPWI024"
@@ -4232,9 +3723,6 @@ ielib-resref:
       doc: IElib define
     - name: TRAP_HOLD_PERSON
       detail: resref TRAP_HOLD_PERSON = "SPPR989"
-      doc: IElib define
-    - name: TRAP_HORROR
-      detail: resref TRAP_HORROR = "SPWI036"
       doc: IElib define
     - name: TRAP_LIGHTNING_BOLT
       detail: resref TRAP_LIGHTNING_BOLT = "SPWI002"
@@ -4251,9 +3739,6 @@ ielib-resref:
     - name: TRAP_MAGIC_MISSILE
       detail: resref TRAP_MAGIC_MISSILE = "SPWI003"
       doc: IElib define
-    - name: TRAP_MAGIC_MISSILE_5
-      detail: resref TRAP_MAGIC_MISSILE_5 = "SPWI033"
-      doc: IElib define
     - name: TRAP_MINOR_LIGHTNING_BOLT
       detail: resref TRAP_MINOR_LIGHTNING_BOLT = "SPWI017"
       doc: IElib define
@@ -4266,23 +3751,11 @@ ielib-resref:
     - name: TRAP_MUCK
       detail: resref TRAP_MUCK = "SPWI022"
       doc: IElib define
-    - name: TRAP_POISON_CONFUSION_DARTS
-      detail: resref TRAP_POISON_CONFUSION_DARTS = "SPWI029"
-      doc: IElib define
-    - name: TRAP_POISON_DAMAGE_DARTS
-      detail: resref TRAP_POISON_DAMAGE_DARTS = "SPWI019"
-      doc: IElib define
-    - name: TRAP_POISON_PARALYZATION_DARTS
-      detail: resref TRAP_POISON_PARALYZATION_DARTS = "SPWI028"
-      doc: IElib define
     - name: TRAP_SHADOW_DEATH
       detail: resref TRAP_SHADOW_DEATH = "SPWI023"
       doc: IElib define
     - name: TRAP_SILENCE
       detail: resref TRAP_SILENCE = "SPPR988"
-      doc: IElib define
-    - name: TRAP_SLEEP
-      detail: resref TRAP_SLEEP = "SPWI032"
       doc: IElib define
     - name: TRAP_SLIME
       detail: resref TRAP_SLIME = "SPIN708"
@@ -4416,9 +3889,6 @@ ielib-resref:
     - name: WEREWOLF_CHANGE
       detail: resref WEREWOLF_CHANGE = "SPWI948"
       doc: IElib define
-    - name: WHITE_HOLY_MIGHT
-      detail: resref WHITE_HOLY_MIGHT = "SPWI975"
-      doc: IElib define
     - name: WILD_MAGIC_AREA
       detail: resref WILD_MAGIC_AREA = "SPIN645"
       doc: IElib define
@@ -4455,29 +3925,14 @@ ielib-resref:
     - name: WIZARD_ABSOLUTE_IMMUNITY
       detail: resref WIZARD_ABSOLUTE_IMMUNITY = "SPWI907"
       doc: IElib define
-    - name: WIZARD_ACID_STORM
-      detail: resref WIZARD_ACID_STORM = "SPWI724"
-      doc: IElib define
     - name: WIZARD_AGANNAZAR_SCORCHER
       detail: resref WIZARD_AGANNAZAR_SCORCHER = "SPWI217"
-      doc: IElib define
-    - name: WIZARD_ALARM
-      detail: resref WIZARD_ALARM = "SPWI124"
       doc: IElib define
     - name: WIZARD_ANIMATE_DEAD
       detail: resref WIZARD_ANIMATE_DEAD = "SPWI501"
       doc: IElib define
-    - name: WIZARD_ANIMATE_DEAD_LICH
-      detail: resref WIZARD_ANIMATE_DEAD_LICH = "SPWI530"
-      doc: IElib define
-    - name: WIZARD_ANTIMAGIC_SHELL
-      detail: resref WIZARD_ANTIMAGIC_SHELL = "SPWI610"
-      doc: IElib define
     - name: WIZARD_ARMOR
       detail: resref WIZARD_ARMOR = "SPWI102"
-      doc: IElib define
-    - name: WIZARD_BELTYNS_BURNING_BLOOD
-      detail: resref WIZARD_BELTYNS_BURNING_BLOOD = "SPWI422"
       doc: IElib define
     - name: WIZARD_BIGBYS_CLENCHED_FIST
       detail: resref WIZARD_BIGBYS_CLENCHED_FIST = "SPWI818"
@@ -4491,9 +3946,6 @@ ielib-resref:
     - name: WIZARD_BLINDNESS
       detail: resref WIZARD_BLINDNESS = "SPWI106"
       doc: IElib define
-    - name: WIZARD_BLIND_OLD
-      detail: resref WIZARD_BLIND_OLD = "SPWI106"
-      doc: IElib define
     - name: WIZARD_BLUR
       detail: resref WIZARD_BLUR = "SPWI201"
       doc: IElib define
@@ -4506,20 +3958,8 @@ ielib-resref:
     - name: WIZARD_CACOFIEND
       detail: resref WIZARD_CACOFIEND = "SPWI707"
       doc: IElib define
-    - name: WIZARD_CAE_OLD
-      detail: resref WIZARD_CAE_OLD = "SPWI621"
-      doc: IElib define
     - name: WIZARD_CARRION
       detail: resref WIZARD_CARRION = "SPWI623"
-      doc: IElib define
-    - name: WIZARD_CATS_GRACE
-      detail: resref WIZARD_CATS_GRACE = "SPWI225"
-      doc: IElib define
-    - name: WIZARD_CEE_OLD
-      detail: resref WIZARD_CEE_OLD = "SPWI622"
-      doc: IElib define
-    - name: WIZARD_CFE_OLD
-      detail: resref WIZARD_CFE_OLD = "SPWI620"
       doc: IElib define
     - name: WIZARD_CHAIN_CONTINGENCY
       detail: resref WIZARD_CHAIN_CONTINGENCY = "SPWI908"
@@ -4569,9 +4009,6 @@ ielib-resref:
     - name: WIZARD_CONJURE_EARTH_ELEMENTAL
       detail: resref WIZARD_CONJURE_EARTH_ELEMENTAL = "SPWI622"
       doc: IElib define
-    - name: WIZARD_CONJURE_EARTH_ELEMENTAL_MALAVON
-      detail: resref WIZARD_CONJURE_EARTH_ELEMENTAL_MALAVON = "SPWI529"
-      doc: IElib define
     - name: WIZARD_CONJURE_FIRE_ELEMENTAL
       detail: resref WIZARD_CONJURE_FIRE_ELEMENTAL = "SPWI620"
       doc: IElib define
@@ -4584,12 +4021,6 @@ ielib-resref:
     - name: WIZARD_CONJURE_LESSER_FIRE_ELEMENTAL
       detail: resref WIZARD_CONJURE_LESSER_FIRE_ELEMENTAL = "SPWI516"
       doc: IElib define
-    - name: WIZARD_CONJURE_WATER_ELEMENTAL
-      detail: resref WIZARD_CONJURE_WATER_ELEMENTAL = "SPWI533"
-      doc: IElib define
-    - name: WIZARD_CONTACT_OTHER_PLANE
-      detail: resref WIZARD_CONTACT_OTHER_PLANE = "SPWI528"
-      doc: IElib define
     - name: WIZARD_CONTAGION
       detail: resref WIZARD_CONTAGION = "SPWI409"
       doc: IElib define
@@ -4598,18 +4029,6 @@ ielib-resref:
       doc: IElib define
     - name: WIZARD_CONTROL_UNDEAD
       detail: resref WIZARD_CONTROL_UNDEAD = "SPWI720"
-      doc: IElib define
-    - name: WIZARD_CWE_OLD
-      detail: resref WIZARD_CWE_OLD = "SPWI527"
-      doc: IElib define
-    - name: WIZARD_DANCING_LIGHTS
-      detail: resref WIZARD_DANCING_LIGHTS = "SPWI126"
-      doc: IElib define
-    - name: WIZARD_DARKNESS_15_FOOT
-      detail: resref WIZARD_DARKNESS_15_FOOT = "SPWI228"
-      doc: IElib define
-    - name: WIZARD_DARTS_OF_BONE
-      detail: resref WIZARD_DARTS_OF_BONE = "SPWI630"
       doc: IElib define
     - name: WIZARD_DEAFNESS
       detail: resref WIZARD_DEAFNESS = "SPWI223"
@@ -4620,14 +4039,8 @@ ielib-resref:
     - name: WIZARD_DEATH_SPELL
       detail: resref WIZARD_DEATH_SPELL = "SPWI605"
       doc: IElib define
-    - name: WIZARD_DECASTAVE
-      detail: resref WIZARD_DECASTAVE = "SPWI216"
-      doc: IElib define
     - name: WIZARD_DELAYED_BLAST_FIREBALL
       detail: resref WIZARD_DELAYED_BLAST_FIREBALL = "SPWI712"
-      doc: IElib define
-    - name: WIZARD_DEMI_SHADOW_MONSTERS
-      detail: resref WIZARD_DEMI_SHADOW_MONSTERS = "SPWI525"
       doc: IElib define
     - name: WIZARD_DETECT_EVIL
       detail: resref WIZARD_DETECT_EVIL = "SPWI202"
@@ -4653,9 +4066,6 @@ ielib-resref:
     - name: WIZARD_DISINTEGRATE_IGNORE_RESISTANCE
       detail: resref WIZARD_DISINTEGRATE_IGNORE_RESISTANCE = "SPWI055"
       doc: IElib define
-    - name: WIZARD_DISPEL_MAGIC
-      detail: resref WIZARD_DISPEL_MAGIC = "SPWI302"
-      doc: IElib define
     - name: WIZARD_DISPEL_MAGIC_VISUALS_ONLY
       detail: resref WIZARD_DISPEL_MAGIC_VISUALS_ONLY = "SPWI051"
       doc: IElib define
@@ -4664,15 +4074,6 @@ ielib-resref:
       doc: IElib define
     - name: WIZARD_DRAGONS_BREATH
       detail: resref WIZARD_DRAGONS_BREATH = "SPWI922"
-      doc: IElib define
-    - name: WIZARD_EMOTION_COURAGE
-      detail: resref WIZARD_EMOTION_COURAGE = "SPWI427"
-      doc: IElib define
-    - name: WIZARD_EMOTION_FEAR
-      detail: resref WIZARD_EMOTION_FEAR = "SPWI428"
-      doc: IElib define
-    - name: WIZARD_EMOTION_HOPE
-      detail: resref WIZARD_EMOTION_HOPE = "SPWI429"
       doc: IElib define
     - name: WIZARD_EMOTION_HOPELESSNESS
       detail: resref WIZARD_EMOTION_HOPELESSNESS = "SPWI411"
@@ -4685,9 +4086,6 @@ ielib-resref:
       doc: IElib define
     - name: WIZARD_ENERGY_DRAIN
       detail: resref WIZARD_ENERGY_DRAIN = "SPWI914"
-      doc: IElib define
-    - name: WIZARD_EXPEDITIOUS_RETREAT
-      detail: resref WIZARD_EXPEDITIOUS_RETREAT = "SPWI126"
       doc: IElib define
     - name: WIZARD_EYE
       detail: resref WIZARD_EYE = "SPWI425"
@@ -4752,9 +4150,6 @@ ielib-resref:
     - name: WIZARD_GREATER_MALISON
       detail: resref WIZARD_GREATER_MALISON = "SPWI412"
       doc: IElib define
-    - name: WIZARD_GREAT_SHOUT
-      detail: resref WIZARD_GREAT_SHOUT = "SPWI806"
-      doc: IElib define
     - name: WIZARD_HASTE
       detail: resref WIZARD_HASTE = "SPWI305"
       doc: IElib define
@@ -4770,9 +4165,6 @@ ielib-resref:
     - name: WIZARD_HORROR
       detail: resref WIZARD_HORROR = "SPWI205"
       doc: IElib define
-    - name: WIZARD_ICELANCE
-      detail: resref WIZARD_ICELANCE = "SPWI327"
-      doc: IElib define
     - name: WIZARD_ICE_STORM
       detail: resref WIZARD_ICE_STORM = "SPWI404"
       doc: IElib define
@@ -4781,9 +4173,6 @@ ielib-resref:
       doc: IElib define
     - name: WIZARD_IMPRISONMENT
       detail: resref WIZARD_IMPRISONMENT = "SPWI910"
-      doc: IElib define
-    - name: WIZARD_IMPROVED_ALACRITY
-      detail: resref WIZARD_IMPROVED_ALACRITY = "SPWI921"
       doc: IElib define
     - name: WIZARD_IMPROVED_ALUCRITY
       detail: resref WIZARD_IMPROVED_ALUCRITY = "SPWI921"
@@ -4815,23 +4204,14 @@ ielib-resref:
     - name: WIZARD_INVISIBLE_STALKER
       detail: resref WIZARD_INVISIBLE_STALKER = "SPWI601"
       doc: IElib define
-    - name: WIZARD_IRON_BODY
-      detail: resref WIZARD_IRON_BODY = "SPWI814"
-      doc: IElib define
     - name: WIZARD_KNOCK
       detail: resref WIZARD_KNOCK = "SPWI207"
       doc: IElib define
     - name: WIZARD_KNOW_ALIGNMENT
       detail: resref WIZARD_KNOW_ALIGNMENT = "SPWI208"
       doc: IElib define
-    - name: WIZARD_LANCE_OF_DISRUPTION
-      detail: resref WIZARD_LANCE_OF_DISRUPTION = "SPWI328"
-      doc: IElib define
     - name: WIZARD_LARLOCH_MINOR_DRAIN
       detail: resref WIZARD_LARLOCH_MINOR_DRAIN = "SPWI119"
-      doc: IElib define
-    - name: WIZARD_LICH_TOUCH
-      detail: resref WIZARD_LICH_TOUCH = "SPWI626"
       doc: IElib define
     - name: WIZARD_LIGHTNING_BOLT
       detail: resref WIZARD_LIGHTNING_BOLT = "SPWI308"
@@ -4847,12 +4227,6 @@ ielib-resref:
       doc: IElib define
     - name: WIZARD_MAGIC_MISSILE
       detail: resref WIZARD_MAGIC_MISSILE = "SPWI112"
-      doc: IElib define
-    - name: WIZARD_MALAVONS_CORROSIVE_FOG
-      detail: resref WIZARD_MALAVONS_CORROSIVE_FOG = "SPWI904"
-      doc: IElib define
-    - name: WIZARD_MALAVONS_RAGE
-      detail: resref WIZARD_MALAVONS_RAGE = "SPWI709"
       doc: IElib define
     - name: WIZARD_MANTLE
       detail: resref WIZARD_MANTLE = "SPWI708"
@@ -4871,9 +4245,6 @@ ielib-resref:
       doc: IElib define
     - name: WIZARD_METEOR_SWARM
       detail: resref WIZARD_METEOR_SWARM = "SPWI911"
-      doc: IElib define
-    - name: WIZARD_MIND_BLANK
-      detail: resref WIZARD_MIND_BLANK = "SPWI802"
       doc: IElib define
     - name: WIZARD_MINOR_GLOBE_OF_INVULNERABILITY
       detail: resref WIZARD_MINOR_GLOBE_OF_INVULNERABILITY = "SPWI406"
@@ -4902,24 +4273,6 @@ ielib-resref:
     - name: WIZARD_MONSTER_SUMMONING_3
       detail: resref WIZARD_MONSTER_SUMMONING_3 = "SPWI504"
       doc: IElib define
-    - name: WIZARD_MONSTER_SUMMONING_4
-      detail: resref WIZARD_MONSTER_SUMMONING_4 = "SPWI627"
-      doc: IElib define
-    - name: WIZARD_MONSTER_SUMMONING_5
-      detail: resref WIZARD_MONSTER_SUMMONING_5 = "SPWI706"
-      doc: IElib define
-    - name: WIZARD_MONSTER_SUMMONING_6
-      detail: resref WIZARD_MONSTER_SUMMONING_6 = "SPWI801"
-      doc: IElib define
-    - name: WIZARD_MONSTER_SUMMONING_7
-      detail: resref WIZARD_MONSTER_SUMMONING_7 = "SPWI901"
-      doc: IElib define
-    - name: WIZARD_MONSTER_SUMMONING_VI_MALAVON
-      detail: resref WIZARD_MONSTER_SUMMONING_VI_MALAVON = "SPWI819"
-      doc: IElib define
-    - name: WIZARD_MORDENKAINENS_FORCE_MISSILES
-      detail: resref WIZARD_MORDENKAINENS_FORCE_MISSILES = "SPWI430"
-      doc: IElib define
     - name: WIZARD_MORDENKAINENS_SWORD
       detail: resref WIZARD_MORDENKAINENS_SWORD = "SPWI716"
       doc: IElib define
@@ -4941,14 +4294,8 @@ ielib-resref:
     - name: WIZARD_ORACLE
       detail: resref WIZARD_ORACLE = "SPWI515"
       doc: IElib define
-    - name: WIZARD_OTILUKES_FREEZING_SPHERE
-      detail: resref WIZARD_OTILUKES_FREEZING_SPHERE = "SPWI628"
-      doc: IElib define
     - name: WIZARD_OTILUKES_RESILIENT_SPHERE
       detail: resref WIZARD_OTILUKES_RESILIENT_SPHERE = "SPWI413"
-      doc: IElib define
-    - name: WIZARD_PFP_OLD
-      detail: resref WIZARD_PFP_OLD = "SPWI108"
       doc: IElib define
     - name: WIZARD_PHANTOM_BLADE
       detail: resref WIZARD_PHANTOM_BLADE = "SPWI518"
@@ -4961,9 +4308,6 @@ ielib-resref:
       doc: IElib define
     - name: WIZARD_POLYMORPH_BLACK_BEAR
       detail: resref WIZARD_POLYMORPH_BLACK_BEAR = "SPWI498"
-      doc: IElib define
-    - name: WIZARD_POLYMORPH_BORING_BEETLE
-      detail: resref WIZARD_POLYMORPH_BORING_BEETLE = "SPWI480"
       doc: IElib define
     - name: WIZARD_POLYMORPH_BROWN_BEAR
       detail: resref WIZARD_POLYMORPH_BROWN_BEAR = "SPWI497"
@@ -4983,17 +4327,11 @@ ielib-resref:
     - name: WIZARD_POLYMORPH_OTHER
       detail: resref WIZARD_POLYMORPH_OTHER = "SPWI415"
       doc: IElib define
-    - name: WIZARD_POLYMORPH_POLAR_BEAR
-      detail: resref WIZARD_POLYMORPH_POLAR_BEAR = "SPWI481"
-      doc: IElib define
     - name: WIZARD_POLYMORPH_SELF
       detail: resref WIZARD_POLYMORPH_SELF = "SPWI416"
       doc: IElib define
     - name: WIZARD_POLYMORPH_SPIDER
       detail: resref WIZARD_POLYMORPH_SPIDER = "SPWI495"
-      doc: IElib define
-    - name: WIZARD_POLYMORPH_WINTER_WOLF
-      detail: resref WIZARD_POLYMORPH_WINTER_WOLF = "SPWI482"
       doc: IElib define
     - name: WIZARD_POLYMORPH_WOLF
       detail: resref WIZARD_POLYMORPH_WOLF = "SPWI499"
@@ -5079,17 +4417,8 @@ ielib-resref:
     - name: WIZARD_SECRET_WORD
       detail: resref WIZARD_SECRET_WORD = "SPWI419"
       doc: IElib define
-    - name: WIZARD_SEVEN_EYES
-      detail: resref WIZARD_SEVEN_EYES = "SPWI725"
-      doc: IElib define
-    - name: WIZARD_SHADES
-      detail: resref WIZARD_SHADES = "SPWI629"
-      doc: IElib define
     - name: WIZARD_SHADOW_DOOR
       detail: resref WIZARD_SHADOW_DOOR = "SPWI505"
-      doc: IElib define
-    - name: WIZARD_SHADOW_MONSTERS
-      detail: resref WIZARD_SHADOW_MONSTERS = "SPWI426"
       doc: IElib define
     - name: WIZARD_SHAPECHANGE
       detail: resref WIZARD_SHAPECHANGE = "SPWI916"
@@ -5099,12 +4428,6 @@ ielib-resref:
       doc: IElib define
     - name: WIZARD_SHOCKING_GRASP
       detail: resref WIZARD_SHOCKING_GRASP = "SPWI115"
-      doc: IElib define
-    - name: WIZARD_SHOUT
-      detail: resref WIZARD_SHOUT = "SPWI431"
-      doc: IElib define
-    - name: WIZARD_SHROUD_OF_FLAME
-      detail: resref WIZARD_SHROUD_OF_FLAME = "SPWI524"
       doc: IElib define
     - name: WIZARD_SIMULACRUM
       detail: resref WIZARD_SIMULACRUM = "SPWI804"
@@ -5117,12 +4440,6 @@ ielib-resref:
       doc: IElib define
     - name: WIZARD_SLOW
       detail: resref WIZARD_SLOW = "SPWI312"
-      doc: IElib define
-    - name: WIZARD_SNILLOCS_SNOWBALL_SWARM
-      detail: resref WIZARD_SNILLOCS_SNOWBALL_SWARM = "SPWI204"
-      doc: IElib define
-    - name: WIZARD_SOUL_EATER
-      detail: resref WIZARD_SOUL_EATER = "SPWI631"
       doc: IElib define
     - name: WIZARD_SPELL_DEFLECTION
       detail: resref WIZARD_SPELL_DEFLECTION = "SPWI618"
@@ -5199,9 +4516,6 @@ ielib-resref:
     - name: WIZARD_STRENGTH
       detail: resref WIZARD_STRENGTH = "SPWI214"
       doc: IElib define
-    - name: WIZARD_SUFFOCATE
-      detail: resref WIZARD_SUFFOCATE = "SPWI726"
-      doc: IElib define
     - name: WIZARD_SUMMON_DJINNI
       detail: resref WIZARD_SUMMON_DJINNI = "SPWI718"
       doc: IElib define
@@ -5222,9 +4536,6 @@ ielib-resref:
       doc: IElib define
     - name: WIZARD_SUMMON_PLANATAR_GOOD
       detail: resref WIZARD_SUMMON_PLANATAR_GOOD = "SPWI923"
-      doc: IElib define
-    - name: WIZARD_SUMMON_SHADOW
-      detail: resref WIZARD_SUMMON_SHADOW = "SPWI526"
       doc: IElib define
     - name: WIZARD_SUN_FIRE
       detail: resref WIZARD_SUN_FIRE = "SPWI523"
@@ -5247,9 +4558,6 @@ ielib-resref:
     - name: WIZARD_TIME_STOP
       detail: resref WIZARD_TIME_STOP = "SPWI909"
       doc: IElib define
-    - name: WIZARD_TROLLISH_FORTITUDE
-      detail: resref WIZARD_TROLLISH_FORTITUDE = "SPWI632"
-      doc: IElib define
     - name: WIZARD_TRUE_DISPEL_MAGIC
       detail: resref WIZARD_TRUE_DISPEL_MAGIC = "SPWI326"
       doc: IElib define
@@ -5258,9 +4566,6 @@ ielib-resref:
       doc: IElib define
     - name: WIZARD_VAMPIRIC_TOUCH
       detail: resref WIZARD_VAMPIRIC_TOUCH = "SPWI314"
-      doc: IElib define
-    - name: WIZARD_VITRIOLIC_SPHERE
-      detail: resref WIZARD_VITRIOLIC_SPHERE = "SPWI432"
       doc: IElib define
     - name: WIZARD_VOCALIZE
       detail: resref WIZARD_VOCALIZE = "SPWI219"
@@ -6081,8 +5386,23 @@ ielib-int:
     - name: CRE_save_vs_wand
       detail: int CRE_save_vs_wand = 0x55
       doc: IElib define
+    - name: CRE_script_class
+      detail: int CRE_script_class = 0x250
+      doc: IElib define
+    - name: CRE_script_default
+      detail: int CRE_script_default = 0x268
+      doc: IElib define
+    - name: CRE_script_general
+      detail: int CRE_script_general = 0x260
+      doc: IElib define
     - name: CRE_script_name
       detail: int CRE_script_name = 0x280
+      doc: IElib define
+    - name: CRE_script_override
+      detail: int CRE_script_override = 0x248
+      doc: IElib define
+    - name: CRE_script_race
+      detail: int CRE_script_race = 0x258
       doc: IElib define
     - name: CRE_set_traps
       detail: int CRE_set_traps = 0x65
@@ -8102,6 +7422,9 @@ ielib-int:
       doc: IElib define
     - name: OPCODE_hold_2
       detail: int OPCODE_hold_2 = 175
+      doc: IElib define
+    - name: OPCODE_hold_graphic
+      detail: int OPCODE_hold_graphic = 175
       doc: IElib define
     - name: OPCODE_hold_ii
       detail: int OPCODE_hold_ii = 185

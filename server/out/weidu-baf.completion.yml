@@ -65,7 +65,7 @@ actions:
     - name: AddExperienceParty
       detail: AddExperienceParty(I:XP)
       doc: |-
-        This action gives the specified amount of experience to the party. The XP amount is distributed among all current living party members. The example script is from ar1300.bcs.
+        This action gives (or takes if negative) the specified amount of experience to the party. The XP amount is distributed among all current living party members. The example script is from ar1300.bcs.
         ```
         IF
           OpenState("Bridge01",TRUE)
@@ -1008,6 +1008,24 @@ actions:
             Enemy()
         END
         ```
+    - name: EquipItem
+      detail: EquipItem(S:Object)
+      doc: |
+        This action instructs the active creature to equip the specified item.
+
+
+        - Item must be in the creature's inventory for the script action to function.
+        - Item's global effects (`timing_mode=2`) are applied to the creature each time the action is performed, and avatar animations are updated to reflect the new item.
+    - name: EquipItemEx
+      detail: EquipItemEx(S:Object, I:EquipUnEquip)
+      doc: |
+        This action instructs the active creature to equip/unequip the specified item.
+
+
+        - Item must be in the creature's inventory for the script action to function.
+        - When used to <code><a href="../../files/ids/bgee/xequip.htm#EQUIP">EQUIP</a></code>, item's global effects (`timing_mode=2`) are applied to the creature each time the action is performed, and avatar animations are updated to reflect the new item.
+        - When is used to <code><a href="../../files/ids/bgee/xequip.htm#UNEQUIP">UNEQUIP</a></code>, it removes one instance of the item's global equipped effects (global effects with other timing modes are not removed).
+        - The item itself never moves in the inventory, whether using the <code><a href="../../files/ids/bgee/xequip.htm#EQUIP">EQUIP</a></code> or <code><a href="../../files/ids/bgee/xequip.htm#UNEQUIP">UNEQUIP</a></code> mode, or whether or not the item was in the backpack or equipped.
     - name: EquipMostDamagingMelee
       detail: EquipMostDamagingMelee()
       doc: |-
@@ -1319,7 +1337,7 @@ actions:
           - This action will default to a spell matching the first 7 characters in Dialogs/Console *IF* the 8<sup>th</sup> character isn't valid.
         - If `CastingLevel = 0`, then the action will use Caster Level.
     - name: ForceSpellPointRES
-      detail: ForceSpellPointRES(S:RES, P:Target)
+      detail: ForceSpellPointRES(S:RES, P:Target, I:CastingLevel)
       doc: |
         This action causes the active creature to cast the specified spell at the specified point ([x.y]). The spell need not currently be memorised by the caster, and will not be interrupted while being cast. The caster must meet the level requirements of the spell. For the RES version of the action, the spell name can not consist of only numbers, should be written in upper case and should be no more than 7 characters long.
 
@@ -1357,7 +1375,7 @@ actions:
         Scripts can handle `RES` filenames with `+`, Dialogs and the console cannot. Same with the `~`, `` ` ``, `'`, `@`, `$`, `^`, and `&` characters, maybe some more.
         - This action will default to a spell matching the first 7 characters in Dialogs/Console *IF* the 8th character isn't valid.
     - name: ForceSpellRES
-      detail: ForceSpellRES(S:RES, O:Target)
+      detail: ForceSpellRES(S:RES, O:Target, I:CastingLevel)
       doc: |
         This action causes the active creature to cast the specified spell at the target object. The spell need not currently be memorised by the caster, and will not be interrupted while being cast. The caster must meet the level requirements of the spell. For the RES version of the action, the spell name can not consist of only numbers, should be written in upper case and should be no more than 7 characters long. The example script is from suelfw9.bcs.
 
@@ -1741,9 +1759,9 @@ actions:
       doc: |-
         This action instructs the active creature to leave the current area.
     - name: LeaveAreaLUA
-      detail: LeaveAreaLUA(S:Area, S:Parchment, P:Point, I:Face)
+      detail: LeaveAreaLUA(S:Area, S:Parchment, P:Point, I:Face*Dir)
       doc: |-
-        This action changes the current area.
+        This action changes the current area. Parchment is the MOS image to use in the area transition loading screen. Only EE games support IDS symbols for `Face`.
 
         ```
         IF
@@ -1764,13 +1782,13 @@ actions:
       doc: |-
         This action changes the current area. The active creature will move to the specified entry point (from [ENTRIES.2DA](https://gibberlings3.github.io/iesdp/files/2da/2da_tob/entries.htm)) before travelling. The action appears to only work from a creature script.
     - name: LeaveAreaLUAPanic
-      detail: LeaveAreaLUAPanic(S:Area, S:Parchment, P:Point, I:Face)
+      detail: LeaveAreaLUAPanic(S:Area, S:Parchment, P:Point, I:Face*Dir)
       doc: |-
-        This action changes the current area.
+        This multiplayer-only action changes the current area. Parchment is the MOS image to use in the area transition loading screen. Only EE games support IDS symbols for `Face`.
     - name: LeaveAreaLUAPanicEntry
-      detail: LeaveAreaLUAPanicEntry(S:Area, S:Entry, P:Point, I:Face)
+      detail: LeaveAreaLUAPanicEntry(S:Area, S:Entry, P:Point, I:Face*Dir)
       doc: |-
-        This action changes the current area. The creature moves to the destination point (from [ENTRIES.2DA](https://gibberlings3.github.io/iesdp/files/2da/2da_tob/entries.htm)) before travelling (the point parameter is unused).
+        This multiplayer-only action changes the current area. The creature moves to the destination point (from [ENTRIES.2DA](https://gibberlings3.github.io/iesdp/files/2da/2da_tob/entries.htm)) before travelling (the point parameter is unused). Only EE games support IDS symbols for `Face`.
     - name: LeaveAreaName
       detail: LeaveAreaName(I:Target)
       doc: |-
@@ -1811,11 +1829,11 @@ actions:
     - name: MakeGlobal
       detail: MakeGlobal()
       doc: |-
-        This action adds the active creature to the GAM file.
+        This action adds the active creature to the GAM file (if it isn't there already).
     - name: MakeGlobalOverride
       detail: MakeGlobalOverride()
       doc: |-
-        This action adds the active creature to the GAM file. In contrast to [MakeGlobal()](https://gibberlings3.github.io/iesdp/scripting/actions/bgeeactions.htm#336) calling this action multiple times on the same creature will only update the existing entry of the creature in the GAM file.
+        This action adds the active creature to the GAM file (if it isn't there yet), replacing a global creature that has the same script name (if one exists). Otherwise it behaves like [MakeGlobal()](https://gibberlings3.github.io/iesdp/scripting/actions/bgeeactions.htm#336).
     - name: MakeUnselectable
       detail: MakeUnselectable(I:Time)
       doc: |-
@@ -2082,7 +2100,7 @@ actions:
     - name: PickLock
       detail: PickLock(O:Object)
       doc: |-
-        This action instructs the active creature to attempt to pick the lock of the specified object. This action can be used for any creature (not just thieves) though success in picking the lock depends on points in the Open Locks skill.
+        This action instructs the active <a href="../../file_formats/ie_formats/cre_v1.htm">creature</a> to attempt to pick the lock of the specified object. This action can be used for any creature (not just thieves) though success in picking the lock depends on points in the <code><a href="../../file_formats/ie_formats/cre_v1.htm#CREV1_0_Header_0x67">Open Locks</a></code> skill.
     - name: PickPockets
       detail: PickPockets(O:Target)
       doc: |-
