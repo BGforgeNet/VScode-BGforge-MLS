@@ -55,7 +55,7 @@ def defines_from_file(path, regex):
   return defines
 
 # get various defines from header files
-define_files = find_files(src_dir, "tpp", skip_dirs=["functions"])
+define_files = find_files(src_dir, "tpp", skip_dirs=["functions"], skip_files = ['iesdp.tpp', 'spell_ids_bgee.tpp', 'spell_ids_iwdee.tpp']) # for now only bg2/ee spells
 int_defines = {}
 resref_defines = {}
 for df in define_files:
