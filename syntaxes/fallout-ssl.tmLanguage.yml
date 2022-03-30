@@ -616,12 +616,14 @@ repository:
       - match: \b(?i)(get_script)\b
       - match: \b(?i)(loot_obj)\b
       - match: \b(?i)(obj_is_carrying_obj)\b
+      - match: \b(?i)(obj_is_openable)\b
       - match: \b(?i)(obj_under_cursor)\b
       - match: \b(?i)(real_dude_obj)\b
       - match: \b(?i)(remove_script)\b
       - match: \b(?i)(set_dude_obj)\b
       - match: \b(?i)(set_flags)\b
       - match: \b(?i)(set_object_data)\b
+      - match: \b(?i)(set_scr_name)\b
       - match: \b(?i)(set_script)\b
       - match: \b(?i)(set_self)\b
       - match: \b(?i)(set_unique_id)\b
@@ -2678,7 +2680,6 @@ repository:
       - match: \b(FID_YODA)\b
       - match: \b(FIELD_DAMAGED)\b
       - match: \b(FIELD_DELAY_COUNT)\b
-      - match: \b(FIELD_DESTROYED)\b
       - match: \b(FIELD_DISABLED)\b
       - match: \b(FIELD_ENABLED)\b
       - match: \b(FIELD_TIMER_CHECK_STATE)\b
@@ -2702,6 +2703,7 @@ repository:
       - match: \b(FLAG_MULTIHEX)\b
       - match: \b(FLAG_NOBLOCK)\b
       - match: \b(FLAG_NOHIGHLIGHT)\b
+      - match: \b(FLAG_RESERVED)\b
       - match: \b(FLAG_RIGHT_HAND)\b
       - match: \b(FLAG_SEEN)\b
       - match: \b(FLAG_SHOOTTHRU)\b
@@ -2735,29 +2737,37 @@ repository:
       - match: \b(FOLLOW_DISTANCE_FAR)\b
       - match: \b(FOLLOW_DISTANCE_MEDIUM)\b
       - match: \b(FO_VAR_BlueColor)\b
-      - match: \b(FO_VAR_DARK_GREY_Color)\b
       - match: \b(FO_VAR_DarkGreenColor)\b
       - match: \b(FO_VAR_DarkGreenGreyColor)\b
+      - match: \b(FO_VAR_DarkGreyColor)\b
       - match: \b(FO_VAR_DarkRedColor)\b
       - match: \b(FO_VAR_DarkYellowColor)\b
       - match: \b(FO_VAR_DullPinkColor)\b
       - match: \b(FO_VAR_Educated)\b
       - match: \b(FO_VAR_EncounterMapID)\b
-      - match: \b(FO_VAR_Experience_)\b
+      - match: \b(FO_VAR_Experience_pc)\b
+      - match: \b(FO_VAR_GNW95_DDPrimaryPalette)\b
+      - match: \b(FO_VAR_GNW95_DDPrimarySurface)\b
+      - match: \b(FO_VAR_GNW95_DDRestoreSurface)\b
+      - match: \b(FO_VAR_GNW95_hDDrawLib)\b
+      - match: \b(FO_VAR_GNW95_hwnd)\b
       - match: \b(FO_VAR_GNW95_isActive)\b
+      - match: \b(FO_VAR_GNW95_repeat_delay)\b
+      - match: \b(FO_VAR_GNW95_repeat_rate)\b
       - match: \b(FO_VAR_GNWWin)\b
       - match: \b(FO_VAR_GNW_win_init_flag)\b
       - match: \b(FO_VAR_GoodColor)\b
       - match: \b(FO_VAR_GreenColor)\b
       - match: \b(FO_VAR_In_WorldMap)\b
-      - match: \b(FO_VAR_LIGHT_GREY_Color)\b
-      - match: \b(FO_VAR_LIGHT_RED_Color)\b
       - match: \b(FO_VAR_LSData)\b
-      - match: \b(FO_VAR_Level_)\b
+      - match: \b(FO_VAR_Level_pc)\b
       - match: \b(FO_VAR_Lifegiver)\b
+      - match: \b(FO_VAR_LightGreyColor)\b
+      - match: \b(FO_VAR_LightRedColor)\b
       - match: \b(FO_VAR_Meet_Frank_Horrigan)\b
       - match: \b(FO_VAR_Move_on_Car)\b
       - match: \b(FO_VAR_Mutate_)\b
+      - match: \b(FO_VAR_NearWhiteColor)\b
       - match: \b(FO_VAR_PeanutButter)\b
       - match: \b(FO_VAR_RedColor)\b
       - match: \b(FO_VAR_Tag_)\b
@@ -2778,14 +2788,23 @@ repository:
       - match: \b(FO_VAR_art_vault_guy_num)\b
       - match: \b(FO_VAR_art_vault_person_nums)\b
       - match: \b(FO_VAR_attack_str)\b
+      - match: \b(FO_VAR_backgrndRects)\b
+      - match: \b(FO_VAR_background_fname_requested)\b
       - match: \b(FO_VAR_background_volume)\b
       - match: \b(FO_VAR_bboxslot)\b
       - match: \b(FO_VAR_bckgnd)\b
       - match: \b(FO_VAR_bk_disabled)\b
+      - match: \b(FO_VAR_bk_process_time)\b
       - match: \b(FO_VAR_black_palette)\b
       - match: \b(FO_VAR_bottom_line)\b
       - match: \b(FO_VAR_btable)\b
       - match: \b(FO_VAR_btncnt)\b
+      - match: \b(FO_VAR_buf_length_2)\b
+      - match: \b(FO_VAR_buf_rect_2)\b
+      - match: \b(FO_VAR_buf_size)\b
+      - match: \b(FO_VAR_buf_width_2)\b
+      - match: \b(FO_VAR_button_down_data)\b
+      - match: \b(FO_VAR_button_up_data)\b
       - match: \b(FO_VAR_cap)\b
       - match: \b(FO_VAR_carCurrentArea)\b
       - match: \b(FO_VAR_carGasAmount)\b
@@ -2797,6 +2816,7 @@ repository:
       - match: \b(FO_VAR_combat_end_due_to_load)\b
       - match: \b(FO_VAR_combat_free_move)\b
       - match: \b(FO_VAR_combat_list)\b
+      - match: \b(FO_VAR_combat_obj)\b
       - match: \b(FO_VAR_combat_state)\b
       - match: \b(FO_VAR_combat_turn_obj)\b
       - match: \b(FO_VAR_combat_turn_running)\b
@@ -2814,6 +2834,7 @@ repository:
       - match: \b(FO_VAR_currentWindow)\b
       - match: \b(FO_VAR_cursor_line)\b
       - match: \b(FO_VAR_debug_func)\b
+      - match: \b(FO_VAR_deviceInit)\b
       - match: \b(FO_VAR_dialog_red_button_down_buf)\b
       - match: \b(FO_VAR_dialog_red_button_down_key)\b
       - match: \b(FO_VAR_dialog_red_button_up_buf)\b
@@ -2825,7 +2846,13 @@ repository:
       - match: \b(FO_VAR_dialogue_head)\b
       - match: \b(FO_VAR_dialogue_state)\b
       - match: \b(FO_VAR_dialogue_switch_mode)\b
+      - match: \b(FO_VAR_disp_curr)\b
+      - match: \b(FO_VAR_disp_init)\b
+      - match: \b(FO_VAR_disp_rect)\b
+      - match: \b(FO_VAR_disp_start)\b
       - match: \b(FO_VAR_displayMapList)\b
+      - match: \b(FO_VAR_display_buf)\b
+      - match: \b(FO_VAR_display_string_buf)\b
       - match: \b(FO_VAR_display_win)\b
       - match: \b(FO_VAR_doing_refresh_all)\b
       - match: \b(FO_VAR_dropped_explosive)\b
@@ -2833,9 +2860,12 @@ repository:
       - match: \b(FO_VAR_edit_win)\b
       - match: \b(FO_VAR_editor_message_file)\b
       - match: \b(FO_VAR_elevation)\b
+      - match: \b(FO_VAR_endWindowRect)\b
       - match: \b(FO_VAR_endgame_subtitle_characters)\b
       - match: \b(FO_VAR_endgame_subtitle_done)\b
       - match: \b(FO_VAR_endgame_voiceover_loaded)\b
+      - match: \b(FO_VAR_endgame_window_buffer)\b
+      - match: \b(FO_VAR_fadeEventHandle)\b
       - match: \b(FO_VAR_fade_steps)\b
       - match: \b(FO_VAR_fallout_config)\b
       - match: \b(FO_VAR_fallout_game_time)\b
@@ -2850,6 +2880,7 @@ repository:
       - match: \b(FO_VAR_freePtr)\b
       - match: \b(FO_VAR_free_perk)\b
       - match: \b(FO_VAR_frstc_draw1)\b
+      - match: \b(FO_VAR_gCurrentFont)\b
       - match: \b(FO_VAR_gDialogMusicVol)\b
       - match: \b(FO_VAR_gIsSteal)\b
       - match: \b(FO_VAR_game_config)\b
@@ -2866,6 +2897,7 @@ repository:
       - match: \b(FO_VAR_gmouse_3d_current_mode)\b
       - match: \b(FO_VAR_gmouse_current_cursor)\b
       - match: \b(FO_VAR_gmovie_played_list)\b
+      - match: \b(FO_VAR_gsound_background_fade)\b
       - match: \b(FO_VAR_gsound_initialized)\b
       - match: \b(FO_VAR_gsound_speech_tag)\b
       - match: \b(FO_VAR_hit_location_penalty)\b
@@ -2877,23 +2909,31 @@ repository:
       - match: \b(FO_VAR_i_lhand)\b
       - match: \b(FO_VAR_i_rhand)\b
       - match: \b(FO_VAR_i_wid)\b
+      - match: \b(FO_VAR_i_wid_max_x)\b
+      - match: \b(FO_VAR_i_wid_max_y)\b
       - match: \b(FO_VAR_i_worn)\b
       - match: \b(FO_VAR_idle_func)\b
       - match: \b(FO_VAR_info_line)\b
       - match: \b(FO_VAR_interfaceWindow)\b
       - match: \b(FO_VAR_intfaceEnabled)\b
+      - match: \b(FO_VAR_intface_full_width)\b
       - match: \b(FO_VAR_intotal)\b
       - match: \b(FO_VAR_inven_dude)\b
       - match: \b(FO_VAR_inven_pid)\b
       - match: \b(FO_VAR_inven_scroll_dn_bid)\b
       - match: \b(FO_VAR_inven_scroll_up_bid)\b
       - match: \b(FO_VAR_inventry_message_file)\b
+      - match: \b(FO_VAR_iscr_data)\b
       - match: \b(FO_VAR_itemButtonItems)\b
+      - match: \b(FO_VAR_itemButtonRect)\b
       - match: \b(FO_VAR_itemCurrentItem)\b
       - match: \b(FO_VAR_kb_lock_flags)\b
       - match: \b(FO_VAR_language)\b
       - match: \b(FO_VAR_lastMovieH)\b
       - match: \b(FO_VAR_lastMovieW)\b
+      - match: \b(FO_VAR_lastMovieX)\b
+      - match: \b(FO_VAR_lastMovieY)\b
+      - match: \b(FO_VAR_lastTime)\b
       - match: \b(FO_VAR_lastWin)\b
       - match: \b(FO_VAR_last_button_winID)\b
       - match: \b(FO_VAR_last_buttons)\b
@@ -2907,16 +2947,21 @@ repository:
       - match: \b(FO_VAR_main_ctd)\b
       - match: \b(FO_VAR_main_death_voiceover_done)\b
       - match: \b(FO_VAR_main_window)\b
+      - match: \b(FO_VAR_main_window_buf)\b
       - match: \b(FO_VAR_mapEntranceElevation)\b
       - match: \b(FO_VAR_mapEntranceTileNum)\b
       - match: \b(FO_VAR_map_elevation)\b
       - match: \b(FO_VAR_map_global_vars)\b
+      - match: \b(FO_VAR_map_name)\b
       - match: \b(FO_VAR_map_number)\b
+      - match: \b(FO_VAR_map_scroll_refresh)\b
       - match: \b(FO_VAR_map_state)\b
+      - match: \b(FO_VAR_masterVol)\b
       - match: \b(FO_VAR_master_db_handle)\b
       - match: \b(FO_VAR_master_volume)\b
       - match: \b(FO_VAR_max)\b
       - match: \b(FO_VAR_maxScriptNum)\b
+      - match: \b(FO_VAR_max_disp)\b
       - match: \b(FO_VAR_mouse_buttons)\b
       - match: \b(FO_VAR_mouse_hotx)\b
       - match: \b(FO_VAR_mouse_hoty)\b
@@ -2926,8 +2971,13 @@ repository:
       - match: \b(FO_VAR_mouse_y_)\b
       - match: \b(FO_VAR_movePointRect)\b
       - match: \b(FO_VAR_movie_list)\b
+      - match: \b(FO_VAR_mveBH)\b
+      - match: \b(FO_VAR_mveBW)\b
+      - match: \b(FO_VAR_mve_win_rect)\b
       - match: \b(FO_VAR_name_color)\b
+      - match: \b(FO_VAR_name_critter)\b
       - match: \b(FO_VAR_name_font)\b
+      - match: \b(FO_VAR_name_item)\b
       - match: \b(FO_VAR_name_sort_list)\b
       - match: \b(FO_VAR_num_caps)\b
       - match: \b(FO_VAR_num_game_global_vars)\b
@@ -2982,6 +3032,7 @@ repository:
       - match: \b(FO_VAR_quick_done)\b
       - match: \b(FO_VAR_read_callback)\b
       - match: \b(FO_VAR_rectList)\b
+      - match: \b(FO_VAR_refresh_enabled)\b
       - match: \b(FO_VAR_retvals)\b
       - match: \b(FO_VAR_rm_FrameCount)\b
       - match: \b(FO_VAR_rotation)\b
@@ -2994,6 +3045,8 @@ repository:
       - match: \b(FO_VAR_scriptListInfo)\b
       - match: \b(FO_VAR_script_engine_running)\b
       - match: \b(FO_VAR_script_path_base)\b
+      - match: \b(FO_VAR_scroll_blocking_on)\b
+      - match: \b(FO_VAR_scroll_limiting_on)\b
       - match: \b(FO_VAR_skill_data)\b
       - match: \b(FO_VAR_skldxwin)\b
       - match: \b(FO_VAR_slot_cursor)\b
@@ -3003,11 +3056,13 @@ repository:
       - match: \b(FO_VAR_sound_music_path2)\b
       - match: \b(FO_VAR_speech_volume)\b
       - match: \b(FO_VAR_square)\b
+      - match: \b(FO_VAR_square_rect)\b
       - match: \b(FO_VAR_squares)\b
       - match: \b(FO_VAR_stack)\b
       - match: \b(FO_VAR_stack_offset)\b
       - match: \b(FO_VAR_stat_data)\b
       - match: \b(FO_VAR_stat_flag)\b
+      - match: \b(FO_VAR_subtitleH)\b
       - match: \b(FO_VAR_subtitleList)\b
       - match: \b(FO_VAR_subtitles)\b
       - match: \b(FO_VAR_tag_skill)\b
@@ -3028,6 +3083,13 @@ repository:
       - match: \b(FO_VAR_text_to_buf)\b
       - match: \b(FO_VAR_text_width)\b
       - match: \b(FO_VAR_tile)\b
+      - match: \b(FO_VAR_tile_center_tile)\b
+      - match: \b(FO_VAR_tile_mask)\b
+      - match: \b(FO_VAR_tile_offx)\b
+      - match: \b(FO_VAR_tile_offy)\b
+      - match: \b(FO_VAR_tile_refresh)\b
+      - match: \b(FO_VAR_tile_x)\b
+      - match: \b(FO_VAR_tile_y)\b
       - match: \b(FO_VAR_title_color)\b
       - match: \b(FO_VAR_title_font)\b
       - match: \b(FO_VAR_trait_data)\b
@@ -3040,6 +3102,7 @@ repository:
       - match: \b(FO_VAR_wmBkWin)\b
       - match: \b(FO_VAR_wmBkWinBuf)\b
       - match: \b(FO_VAR_wmEncounterIconShow)\b
+      - match: \b(FO_VAR_wmInterfaceWasInitialized)\b
       - match: \b(FO_VAR_wmLastRndTime)\b
       - match: \b(FO_VAR_wmMaxAreaNum)\b
       - match: \b(FO_VAR_wmMaxMapNum)\b
@@ -3138,7 +3201,6 @@ repository:
       - match: \b(GUARDS_PER_CHECK)\b
       - match: \b(HAIR)\b
       - match: \b(HEAD_BOSS)\b
-      - match: \b(HEAD_CASSIDY)\b
       - match: \b(HEAD_COM_OFFICER)\b
       - match: \b(HEAD_DYING_HAKUNIN)\b
       - match: \b(HEAD_DYING_HAKUNIN_NIGHT)\b
@@ -3152,6 +3214,7 @@ repository:
       - match: \b(HEAD_PRESIDENT)\b
       - match: \b(HEAD_SULIK)\b
       - match: \b(HEAD_TANDI)\b
+      - match: \b(HEALING_ITEM)\b
       - match: \b(HELP)\b
       - match: \b(HENRY_LAB_TILE)\b
       - match: \b(HERD)\b
@@ -3219,6 +3282,13 @@ repository:
       - match: \b(HOOK_WITHINPERCEPTION)\b
       - match: \b(HOSS_KNOWN)\b
       - match: \b(HOURS_PER_DAY)\b
+      - match: \b(HRP_VAR_FOG_OF_WAR)\b
+      - match: \b(HRP_VAR_HR_IFACE_FRM_STR)\b
+      - match: \b(HRP_VAR_IFACE_BAR_MODE)\b
+      - match: \b(HRP_VAR_MOVIE_SIZE)\b
+      - match: \b(HRP_VAR_VERSION_STR)\b
+      - match: \b(HRP_VAR_disp_width)\b
+      - match: \b(HRP_VAR_display_string_buf)\b
       - match: \b(HUBOLOGIST_STASH_HEX)\b
       - match: \b(HUGE_BOOST)\b
       - match: \b(HYPO_GIVEN)\b
@@ -3774,7 +3844,9 @@ repository:
       - match: \b(OBJ_DATA_DAMAGE_LAST_TURN)\b
       - match: \b(OBJ_DATA_ELEVATION)\b
       - match: \b(OBJ_DATA_FID)\b
+      - match: \b(OBJ_DATA_FLAGS)\b
       - match: \b(OBJ_DATA_ID)\b
+      - match: \b(OBJ_DATA_MISC_FLAGS)\b
       - match: \b(OBJ_DATA_PID)\b
       - match: \b(OBJ_DATA_ROTATION)\b
       - match: \b(OBJ_DATA_SCRIPT_INDEX)\b
@@ -5614,6 +5686,7 @@ repository:
       - match: \b(REWARD_NONE)\b
       - match: \b(REWARD_OBTAINED)\b
       - match: \b(REWARD_OFFERED)\b
+      - match: \b(RMOBJ_AI_USE_DRUG_ON)\b
       - match: \b(RMOBJ_ARMOR_EQUIPED)\b
       - match: \b(RMOBJ_CONSUME_DRUG)\b
       - match: \b(RMOBJ_CONTAINER)\b
@@ -8593,6 +8666,7 @@ repository:
       - match: \b(FELIX_FRIENDLY)\b
       - match: \b(FELIX_SENT_BY_WESTIN)\b
       - match: \b(FIELD_DELAY)\b
+      - match: \b(FIELD_DESTROYED)\b
       - match: \b(FIELD_FLICKER)\b
       - match: \b(FIELD_OFF)\b
       - match: \b(FIELD_ON)\b
@@ -10451,6 +10525,7 @@ repository:
       - match: \b(InitConfigs)\b
       - match: \b(_PURGE_all_saved_arrays)\b
       - match: \b(beacon_rep)\b
+      - match: \b(calc_cattle_drive_status)\b
       - match: \b(checkPartyMembersNearDoor)\b
       - match: \b(check_filesystem_override)\b
       - match: \b(cult_rep)\b
@@ -10465,8 +10540,10 @@ repository:
       - match: \b(robot_use_obj)\b
       - match: \b(self_is_evil)\b
       - match: \b(self_rep)\b
+      - match: \b(set_caravan_pos_rnd)\b
       - match: \b(sierra_set_klaxons_off)\b
       - match: \b(sierra_set_klaxons_on)\b
+      - match: \b(too_many_carts)\b
   header-defines-with-vars:
     name: support.type.define.header.ssl
     patterns:
@@ -11023,6 +11100,9 @@ repository:
       - match: \b(WRAP_WATCOM_FUNC4)\b
       - match: \b(WRAP_WATCOM_FUNC5)\b
       - match: \b(WRAP_WATCOM_FUNC6)\b
+      - match: \b(WRAP_WATCOM_FUNC7)\b
+      - match: \b(WRAP_WATCOM_FUNC8)\b
+      - match: \b(WRAP_WATCOM_FUNC9)\b
       - match: \b(War_Cry)\b
       - match: \b(Warn_Player)\b
       - match: \b(_GET_ARG)\b
@@ -11444,6 +11524,7 @@ repository:
       - match: \b(obj_in_party)\b
       - match: \b(obj_in_roses)\b
       - match: \b(obj_in_roses_bedroom)\b
+      - match: \b(obj_is_openable)\b
       - match: \b(obj_is_visible_flag)\b
       - match: \b(obj_junkie_house_property)\b
       - match: \b(obj_mordino_2nd_floor)\b
@@ -11604,6 +11685,8 @@ repository:
       - match: \b(set_carlson_flag)\b
       - match: \b(set_carlson_price)\b
       - match: \b(set_cattle_drive)\b
+      - match: \b(set_current_quick_save_slot)\b
+      - match: \b(set_current_save_slot)\b
       - match: \b(set_cursor_mode)\b
       - match: \b(set_dalia_state)\b
       - match: \b(set_dave_flag)\b
@@ -11700,6 +11783,7 @@ repository:
       - match: \b(set_sad)\b
       - match: \b(set_salvatore_pistol)\b
       - match: \b(set_san_fran_flag)\b
+      - match: \b(set_scr_name)\b
       - match: \b(set_see_vic)\b
       - match: \b(set_selectable_perk_npc)\b
       - match: \b(set_self_ai)\b
@@ -11752,6 +11836,8 @@ repository:
       - match: \b(set_vic_price)\b
       - match: \b(set_warning_on)\b
       - match: \b(set_watcher)\b
+      - match: \b(set_weapon_unusable)\b
+      - match: \b(set_weapon_usable)\b
       - match: \b(set_westin_flag)\b
       - match: \b(set_westin_price)\b
       - match: \b(set_window_flag)\b
@@ -11903,6 +11989,9 @@ repository:
       - match: \b(unset_v13_status)\b
       - match: \b(unwield_slot)\b
       - match: \b(up_sex_status_amt)\b
+      - match: \b(upu_msetting)\b
+      - match: \b(upu_setting)\b
+      - match: \b(upu_string)\b
       - match: \b(use_item_on_dude)\b
       - match: \b(v13_status)\b
       - match: \b(v15_status)\b
@@ -11910,6 +11999,7 @@ repository:
       - match: \b(warning_is_off)\b
       - match: \b(warning_is_on)\b
       - match: \b(weapon_dmg_type)\b
+      - match: \b(weapon_is_unusable)\b
       - match: \b(who_carry_amount)\b
       - match: \b(who_inven_free_amt)\b
       - match: \b(who_max_carry)\b

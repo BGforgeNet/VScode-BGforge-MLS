@@ -17959,6 +17959,10 @@
           "name": "support.class.weidu.tp2value"
         },
         {
+          "match": "\\b(STRING_COMPARE_REGEXP)\\b",
+          "name": "support.class.weidu.tp2value"
+        },
+        {
           "match": "\\b(STRING_CONTAINS_REGEXP)\\b",
           "name": "support.class.weidu.tp2value"
         },

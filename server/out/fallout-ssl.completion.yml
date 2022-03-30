@@ -1597,6 +1597,10 @@ sfall-functions:
       detail: int (ObjectPtr invenObj, ObjectPtr itemObj)
       doc: |-
         Returns number of `itemObj` inside invenObj's inventory, note that both arguments are object pointers. useful when dealing with different stacks of same item (`obj_is_carrying_obj_pid` just returns total for all stacks of the same PID.)
+    - name: obj_is_openable
+      detail: bool obj_is_openable(object obj)
+      doc: |-
+        Returns True if the object is openable (i.e. has an opening/closing animation)
     - name: obj_under_cursor
       detail: ObjectPtr obj_under_cursor(bool onlyCritter, bool includeDude)
       doc: |
@@ -1626,6 +1630,13 @@ sfall-functions:
       detail: set_object_data(ObjectPtr object, int offset, int data)
       doc: |-
         Sets the data at the specified offset of an object.
+    - name: set_scr_name
+      detail: void set_scr_name(string name)
+      doc: |
+        Overrides the name of the script object that was set from `scrname.msg`.
+        - The changed name will be reset each time the player leaves the map or reloads the game
+        - Passing an empty string ("") to the `name` argument or omitting it will allow the game to get the name for the object from pro_*.msg files
+        - __NOTE:__ this function is intended for use in normal game scripts and overrides the name only once for the same object until reset
     - name: set_script
       detail: void set_script(ObjectPtr, int scriptid)
       doc: |-
@@ -1963,7 +1974,7 @@ sfall-functions:
     - name: get_metarule_table
       detail: array get_metarule_table
       doc: |-
-        Returns names of all currently available scripting functions.
+        Returns names of all currently available script functions.
     - name: get_object_ai_data
       detail: int get_object_ai_data(ObjectPtr object, int aiParam)
       doc: |-
@@ -2470,39 +2481,39 @@ sfall-functions:
     - name: sfall_func0
       detail: any sfall_func0(char* funcName)
       doc: |-
-        Calls scripting function with given name and no arguments.
+        Calls script function with given name and no arguments.
     - name: sfall_func1
       detail: any sfall_func1(char* funcName, arg1)
       doc: |-
-        Calls scripting function with given name and 1 argument.
+        Calls script function with given name and 1 argument.
     - name: sfall_func2
       detail: any sfall_func2(char* funcName, arg1, arg2)
       doc: |-
-        Calls scripting function with given name and 2 arguments.
+        Calls script function with given name and 2 arguments.
     - name: sfall_func3
       detail: any sfall_func3(char* funcName, arg1, arg2, arg3)
       doc: |-
-        Calls scripting function with given name and 3 arguments.
+        Calls script function with given name and 3 arguments.
     - name: sfall_func4
       detail: any sfall_func4(char* funcName, arg1, arg2, arg3, arg4)
       doc: |-
-        Calls scripting function with given name and 4 arguments.
+        Calls script function with given name and 4 arguments.
     - name: sfall_func5
       detail: any sfall_func5(char* funcName, arg1, arg2, arg3, arg4, arg5)
       doc: |-
-        Calls scripting function with given name and 5 arguments.
+        Calls script function with given name and 5 arguments.
     - name: sfall_func6
       detail: any sfall_func6(char* funcName, arg1, arg2, arg3, arg4, arg5, arg6)
       doc: |-
-        Calls scripting function with given name and 6 arguments
+        Calls script function with given name and 6 arguments
     - name: sfall_func7
       detail: any sfall_func7(string funcName, arg1, arg2, arg3, arg4, arg5, arg6, arg7)
       doc: |-
-        Calls scripting function with given name and 7 arguments
+        Calls script function with given name and 7 arguments
     - name: sfall_func8
       detail: any sfall_func8(string funcName, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8)
       doc: |-
-        Calls scripting function with given name and 8 arguments
+        Calls script function with given name and 8 arguments
     - name: read_byte
       detail: int read_byte(int address)
       doc: |-
@@ -2592,8 +2603,8 @@ hooks:
     - name: HOOK_AMMOCOST
       doc: |
         Runs when calculating ammo cost for a weapon. Doesn't affect damage, only how much ammo is spent.
-        By default, weapon will shoot when at least 1 round is left, regardless of ammo cost calculations.
-        To add proper check for ammo before shooting and proper calculation of number of burst rounds (hook type 1 and 2 in arg3), set **CheckWeaponAmmoCost=1** in **Misc** section of ddraw.ini.
+        By default, weapons can make attacks when at least 1 ammo is left, regardless of ammo cost calculations.
+        To add proper check for ammo before attacking and proper calculation of the number of burst rounds (hook type 1 and 2 in arg3), set **CheckWeaponAmmoCost=1** in **Misc** section of ddraw.ini.
 
         ```
         Item    arg0 - The weapon
@@ -2747,7 +2758,7 @@ hooks:
         Does not run for critters in the knockdown/out state.
 
         ```
-        Item    arg0 - The pid of the weapon performing the attack. (May be -1 if the attack is unarmed)
+        int     arg0 - The pid of the weapon performing the attack. (May be -1 if the attack is unarmed)
         Critter arg1 - The attacker
         Critter arg2 - The target
         int     arg3 - The amount of damage
@@ -3128,8 +3139,8 @@ hooks:
         Critter arg2 - The target of the attack
         int     arg3 - The targeted bodypart
         int     arg4 - Source tile (may differ from attacker's tile, when AI is considering potential fire position)
-        int     arg5 - Attack Type (one of ATKTYPE_*)
-        int     arg6 - Ranged flag. 1 means the hit chance is calculated by taking into account the bonuses/penalties of the distance to the target
+        int     arg5 - Attack Type (see ATKTYPE_* constants)
+        int     arg6 - Ranged flag. 1 if the hit chance calculation takes into account the distance to the target. This does not mean the attack is a ranged attack
         int     arg7 - The raw hit chance before applying the cap
 
         int     ret0 - the new hit chance
@@ -3231,5 +3242,5 @@ hooks:
         int     ret0 - overrides the returned result of the function:
                        0 - not in range (can't see)
                        1 - in range (will see if not blocked)
-                       2 - forced detection (will see regardless, only used in obj_can_see_obj scripting function which is called by every critter in the game)
+                       2 - forced detection (will see regardless, only used in obj_can_see_obj script function which is called by every critter in the game)
         ```
