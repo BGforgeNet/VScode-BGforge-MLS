@@ -1,8 +1,16 @@
 # Changelog
 
+## 1.16.3
+- IE
+  - Only include BG2/EE `spell.ids` defines from IElib, as some of IWD spells clash with those.
+  - Added missing `STRING_COMPARE_REGEXP` to syntax highlighting.
+- Fallout
+  - Update headers to RPU v26, sfall v4.3.3.1.
+  - Note Smooth Talker for `giQ_Option` tooltip.
+
 ## 1.16.2
 - IE
-  -  Added missing "GTIMES.IDS" and "LOCAL_SET/LOCAL_TEXT_SPRINT/LOCAL_SPRINT".
+  - Added missing "GTIMES.IDS" and "LOCAL_SET/LOCAL_TEXT_SPRINT/LOCAL_SPRINT".
   - Added some missing WeiDU control keywords,
 
 ## 1.16.1
