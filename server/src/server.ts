@@ -3,27 +3,20 @@
 import {
 	createConnection,
 	TextDocuments,
-	TextDocument,
 	Diagnostic,
-	DiagnosticSeverity,
 	ProposedFeatures,
 	InitializeParams,
 	DidChangeConfigurationNotification,
 	CompletionItem,
-	CompletionItemKind,
 	TextDocumentPositionParams,
 	Hover,
 	MarkupKind,
 	SignatureHelp,
-	SignatureInformation,
-	ParameterInformation,
-	SignatureHelpRegistrationOptions,
-} from 'vscode-languageserver';
-import { connect } from 'tls';
-import { ExecSyncOptionsWithStringEncoding } from 'child_process';
+	TextDocumentSyncKind,
+} from 'vscode-languageserver/node';
+import { TextDocument } from 'vscode-languageserver-textdocument';
 import { URI } from 'vscode-uri';
 import * as path from 'path';
-import { ClientRequest } from 'http';
 import * as fallout_ssl from './fallout-ssl';
 import * as weidu from './weidu';
 import * as common from './common';
@@ -36,7 +29,8 @@ export let connection = createConnection(ProposedFeatures.all);
 
 // Create a simple text document manager. The text document manager
 // supports full document sync only
-export let documents: TextDocuments = new TextDocuments();
+export let documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument);
+
 
 let hasConfigurationCapability: boolean = false;
 let hasWorkspaceFolderCapability: boolean = false;
@@ -55,7 +49,6 @@ let hover_lang_map = new Map([
 let config_section = "bgforge";
 let config_prefix = 'bgforge.';
 let fallout_ssl_config = config_prefix + 'fallout-ssl';
-let weidu_config = config_prefix + 'weidu';
 
 connection.onInitialize((params: InitializeParams) => {
 	let capabilities = params.capabilities;
@@ -72,7 +65,7 @@ connection.onInitialize((params: InitializeParams) => {
 
 	return {
 		capabilities: {
-			textDocumentSync: documents.syncKind,
+			textDocumentSync: TextDocumentSyncKind.Full,
 			// Tell the client that the server supports code completion
 			completionProvider: {
 				resolveProvider: true,

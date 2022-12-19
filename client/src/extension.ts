@@ -9,7 +9,7 @@ import {
 	LanguageClientOptions,
 	ServerOptions,
 	TransportKind
-} from 'vscode-languageclient';
+} from 'vscode-languageclient/node';
 import { createConnection } from 'net';
 import { ExecuteCommandRequest, ExecuteCommandParams } from 'vscode-languageserver-protocol';
 
