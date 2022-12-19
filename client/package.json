@@ -7,18 +7,14 @@
 	"publisher": "BGforge",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/BGforgeNet/VScode-BGforge-MLS"
+		"url": "https://github.com/BGforgeNet/VScode-BGforge-MLS/client"
 	},
 	"engines": {
-		"vscode": "^1.26.1"
-	},
-	"scripts": {
-		"update-vscode": "vscode-install",
-		"postinstall": "vscode-install"
+		"vscode": "^1.69.2"
 	},
 	"dependencies": {
-		"vscode": "^1.1.37",
-		"vscode-languageclient": "^4.1.4"
+		"@types/vscode": "1.69.1",
+		"vscode-languageclient": "^8.0.2"
 	},
 	"activationEvents": [
 		"onLanguage:ssl"

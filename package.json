@@ -22,7 +22,7 @@
 	],
 	"icon": "resources/bgforge.png",
 	"engines": {
-		"vscode": "^1.26.0"
+		"vscode": "^1.43.0"
 	},
 	"activationEvents": [
 		"onLanguage:plaintext",
@@ -48,8 +48,7 @@
 				"extensions": [
 					".ssl"
 				],
-				"configuration": "./language-configurations/weidu-ssl.language-configuration.json",
-				"icon": "test"
+				"configuration": "./language-configurations/weidu-ssl.language-configuration.json"
 			},
 			{
 				"id": "fallout-ssl",
@@ -360,9 +359,9 @@
 		"test": "sh ./scripts/e2e.sh"
 	},
 	"devDependencies": {
-		"@types/mocha": "^5.2.0",
-		"@types/node": "^8.10.66",
-		"typescript": "^3.9.10"
+		"@types/mocha": "^10.0.1",
+		"@types/node": "^18.11.17",
+		"typescript": "^4.9.4"
 	},
 	"categories": [
 		"Programming Languages"

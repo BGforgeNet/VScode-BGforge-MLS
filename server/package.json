@@ -5,22 +5,23 @@
 	"author": "BGforge",
 	"license": "SEE LICENSE IN LICENSE.txt",
 	"engines": {
-		"vscode": "^1.43.0",
+		"vscode": "^1.69.2",
 		"node": "*"
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/BGforgeNet/VScode-BGforge-MLS"
+		"url": "https://github.com/BGforgeNet/VScode-BGforge-MLS/server"
 	},
 	"dependencies": {
 		"js-yaml": "^3.12.0",
-		"typescript": "^3.8.3",
-		"vscode-languageserver": "^4.1.3",
+		"typescript": "^4.9.4",
+		"vscode-languageserver": "^8.0.2",
+		"vscode-languageserver-textdocument": "^1.0.8",
 		"vscode-uri": "*"
 	},
 	"devDependencies": {
-		"@types/vscode": "1.43.0",
-		"vscode-test": "^1.3.0"
+		"@types/vscode": "1.69.1",
+		"@vscode/test-electron": "^2.2.1"
 	},
 	"scripts": {}
 }
