@@ -10,29 +10,28 @@ import {
 	ServerOptions,
 	TransportKind
 } from 'vscode-languageclient/node';
-import { createConnection } from 'net';
 import { ExecuteCommandRequest, ExecuteCommandParams } from 'vscode-languageserver-protocol';
 
 let client: LanguageClient;
-let config_space = "bgforge";
-let cmd_name = 'extension.bgforge.compile';
+const config_space = "bgforge";
+const cmd_name = 'extension.bgforge.compile';
 
 export function activate(context: ExtensionContext) {
 	// The server is implemented in node
-	let serverModule = context.asAbsolutePath(
+	const serverModule = context.asAbsolutePath(
 		path.join('server', 'out', 'server.js')
 	);
 	// The debug options for the server
 	// --inspect=6009: runs the server in Node's Inspector mode so VS Code can attach to the server for debugging
-	let debugOptions = { execArgv: ['--nolazy', '--inspect=6009'] };
-	let disposable = vscode.commands.registerCommand(cmd_name, () => {
-		var fallout_ssl_compile_exe = vscode.workspace.getConfiguration(config_space).get('fallout-ssl.compile');
-		var fallout_ssl_dst_dir = vscode.workspace.getConfiguration(config_space).get('fallout-ssl.output_directory', '.');
-		var text_document = vscode.window.activeTextEditor.document;
+	const debugOptions = { execArgv: ['--nolazy', '--inspect=6009'] };
+	const disposable = vscode.commands.registerCommand(cmd_name, () => {
+		const fallout_ssl_compile_exe = vscode.workspace.getConfiguration(config_space).get('fallout-ssl.compile');
+		const fallout_ssl_dst_dir = vscode.workspace.getConfiguration(config_space).get('fallout-ssl.output_directory', '.');
+		const text_document = vscode.window.activeTextEditor.document;
 		text_document.save(); //need this for compiler
-		var weidu_path = vscode.workspace.getConfiguration(config_space).get('weidu.path', 'weidu');
-		var weidu_game_path = vscode.workspace.getConfiguration(config_space).get('weidu.game_path', '');
-		let params: ExecuteCommandParams = {
+		const weidu_path = vscode.workspace.getConfiguration(config_space).get('weidu.path', 'weidu');
+		const weidu_game_path = vscode.workspace.getConfiguration(config_space).get('weidu.game_path', '');
+		const params: ExecuteCommandParams = {
 			command: cmd_name,
 			arguments: [fallout_ssl_compile_exe, text_document, fallout_ssl_dst_dir, weidu_path, weidu_game_path]
 		};
@@ -42,7 +41,7 @@ export function activate(context: ExtensionContext) {
 
 	// If the extension is launched in debug mode then the debug server options are used
 	// Otherwise the run options are used
-	let serverOptions: ServerOptions = {
+	const serverOptions: ServerOptions = {
 		run: { module: serverModule, transport: TransportKind.ipc },
 		debug: {
 			module: serverModule,
@@ -52,7 +51,7 @@ export function activate(context: ExtensionContext) {
 	};
 
 	// Options to control the language client
-	let clientOptions: LanguageClientOptions = {
+	const clientOptions: LanguageClientOptions = {
 		// Register the server for plain text documents
 		documentSelector: [
 			{ scheme: 'file', language: 'fallout-ssl' },

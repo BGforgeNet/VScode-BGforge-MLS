@@ -1,33 +1,16 @@
 'use strict';
 
 import {
-	createConnection,
-	TextDocuments,
-	TextDocument,
 	Diagnostic,
 	DiagnosticSeverity,
-	ProposedFeatures,
-	InitializeParams,
-	DidChangeConfigurationNotification,
-	CompletionItem,
-	CompletionItemKind,
-	TextDocumentPositionParams,
-	Hover,
-	MarkupKind,
-	SignatureHelp,
-	SignatureInformation,
-	ParameterInformation,
-	SignatureHelpRegistrationOptions,
 } from 'vscode-languageserver';
-
-import { URI } from 'vscode-uri';
+import { TextDocument } from 'vscode-languageserver-textdocument';
 import * as common from './common';
 import { conlog } from './common';
 import { connection, documents } from './server';
 import * as path from 'path';
 
-let lang_id = 'weidu';
-let valid_extensions = new Map([
+const valid_extensions = new Map([
 	[".tp2", "tp2"],
 	[".tph", "tpa"],
 	[".tpa", "tpa"],
@@ -38,7 +21,7 @@ let valid_extensions = new Map([
 
 
 function parse_compile_output(text: string) {
-	let errors_pattern = /\[(\S+)\]\s+(?:PARSE\s+)?ERROR at line (\d+) column (\d+)-(\d+)/g;
+	const errors_pattern = /\[(\S+)\]\s+(?:PARSE\s+)?ERROR at line (\d+) column (\d+)-(\d+)/g;
 	let errors = [];
 	let warnings: any[] = [];
 
@@ -59,7 +42,7 @@ function parse_compile_output(text: string) {
 }
 
 function parse_gcc_output(text: string) {
-	let errors_pattern = /((\S+)\.tpl):(\d+):(\d+): error:.*/g;
+	const errors_pattern = /((\S+)\.tpl):(\d+):(\d+): error:.*/g;
 	let errors = [];
 	let warnings: any[] = [];
 
@@ -86,12 +69,12 @@ function send_diagnostics(text_document: TextDocument, output_text: string, form
 	} else {
 		errors_warnings = parse_compile_output(output_text);
 	}
-	let errors = errors_warnings[0];
+	const errors = errors_warnings[0];
 	let warnings = errors_warnings[1];
 
 	let diagnostics: Diagnostic[] = [];
-	for (let e of errors) {
-		let diagnosic: Diagnostic = {
+	for (const e of errors) {
+		const diagnosic: Diagnostic = {
 			severity: DiagnosticSeverity.Error,
 			range: {
 				start: { line: e.line - 1, character: e.col_start - 1 },
@@ -107,13 +90,13 @@ function send_diagnostics(text_document: TextDocument, output_text: string, form
 
 
 export function wcompile(params: any, cancel_token: any) {
-	var command = params.command;
-	var args: Array<any> = params.arguments;
-	var text_document: any = args[1];
-	var filepath = text_document.fileName;
-	var cwd_to = path.dirname(filepath);
-	var base_name = path.parse(filepath).base;
-	var ext = path.parse(filepath).ext;
+	const command = params.command;
+	const args: Array<any> = params.arguments;
+	const text_document: any = args[1];
+	const filepath = text_document.fileName;
+	const cwd_to = path.dirname(filepath);
+	const base_name = path.parse(filepath).base;
+	let ext = path.parse(filepath).ext;
 	ext = ext.toLowerCase();
 	let tpl = false;
 	let real_name = base_name // filename without .tpl
@@ -124,18 +107,18 @@ export function wcompile(params: any, cancel_token: any) {
 		real_path = real_path.substring(0, real_path.length - 4);
 		ext = path.parse(real_name).ext;
 	}
-	let weidu_path = args[3];
-	let game_path = args[4];
+	const weidu_path = args[3];
+	const game_path = args[4];
 	let weidu_args = "--no-exit-pause --noautoupdate --debug-assign --parse-check";
-	if (game_path == "") { // d and baf need game files
+	if (game_path == "") {  // d and baf need game files
 		weidu_args = `--nogame ${weidu_args}`;
 	} else {
 		weidu_args = `--game ${game_path} ${weidu_args}`;
 	}
 
 	if (command == "extension.bgforge.compile") {
-		let weidu_type = valid_extensions.get(ext);
-		if (!weidu_type) { //vscode loses open file if clicked on console or elsewhere
+		const weidu_type = valid_extensions.get(ext);
+		if (!weidu_type) {  // vscode loses open file if clicked on console or elsewhere
 			conlog("Not a WeiDU file (tp2, tph, tpa, tpp, d, baf) or template! Focus a WeiDU file to parse.");
 			connection.window.showInformationMessage("Focus a WeiDU file or template to parse!");
 			return;
@@ -153,8 +136,8 @@ export function wcompile(params: any, cancel_token: any) {
 		let preprocess_failed = false;
 		if (tpl == true) {
 			conlog(`preprocessing ${base_name}...`);
-			let gcc_args = ['-E', '-x', 'c', '-P', '-Wundef', '-Werror', '-Wfatal-errors', '-o', `${real_name}`, `${base_name}`]
-			let result = cp.spawnSync('gcc', gcc_args, { cwd: cwd_to });
+			const gcc_args = ['-E', '-x', 'c', '-P', '-Wundef', '-Werror', '-Wfatal-errors', '-o', `${real_name}`, `${base_name}`]
+			const result = cp.spawnSync('gcc', gcc_args, { cwd: cwd_to });
 			conlog('stdout: ' + result.stdout);
 			if (result.stderr) { conlog('stderr: ' + result.stderr); }
 			if (result.status != 0) {
@@ -170,14 +153,14 @@ export function wcompile(params: any, cancel_token: any) {
 
 		// parse
 		conlog(`parsing ${real_name}...`);
-		let weidu_cmd = `${weidu_path} ${weidu_args} ${weidu_type} ${real_name} `;
+		const weidu_cmd = `${weidu_path} ${weidu_args} ${weidu_type} ${real_name} `;
 		cp.exec(weidu_cmd, { cwd: cwd_to }, (err: any, stdout: any, stderr: any) => {
 			conlog('stdout: ' + stdout);
-			let errors_warnings = parse_compile_output(stdout); //dupe, yes
+			const errors_warnings = parse_compile_output(stdout); //dupe, yes
 			conlog(errors_warnings);
 			if (stderr) { conlog('stderr: ' + stderr); }
 			if ( (err && (err.code != 0))
-					|| (errors_warnings[0].length > 0) // weidu doesn't always return non-zero on parse failure?
+					|| (errors_warnings[0].length > 0)  // weidu doesn't always return non-zero on parse failure?
 					|| (errors_warnings[1].length > 0)
 			) {
 				conlog('error: ' + err);
