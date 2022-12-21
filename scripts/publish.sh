@@ -2,7 +2,7 @@
 
 set -xeu -o pipefail
 
-npm install -g vsce
+npm install -g @vscode/vsce
 vsce publish
 vsce package
 
