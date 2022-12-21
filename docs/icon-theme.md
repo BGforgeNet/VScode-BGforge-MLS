@@ -6,8 +6,8 @@ _([How to change icon theme in VScode](https://code.visualstudio.com/docs/getsta
 
 ### Default icon theme
 
-![default monokai example](/resources/icons-monokai.png)
+![default monokai example](/docs/icons-monokai.png)
 
 ### BGforge icon theme
 
-![bgforge monokai example](/resources/icons-bgforge_monokai.png)
+![bgforge monokai example](/docs/icons-bgforge_monokai.png)
