@@ -8,7 +8,6 @@
 	"typescript.tsdk": "./node_modules/typescript/lib",
 	"typescript.tsc.autoDetect": "off",
 	"npm.exclude": ["**/client", "**/server"],
-	"npm.enableScriptExplorer": true,
 	"python.analysis.extraPaths": [
 		"./scripts"
 	]
