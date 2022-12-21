@@ -354,6 +354,7 @@
 		"esbuild-base-server": "esbuild ./server/src/server.ts --bundle --outfile=server/out/server.js --external:vscode --format=cjs --platform=node",
 		"esbuild-client": "npm run esbuild-base-client -- --sourcemap",
 		"esbuild-server": "npm run esbuild-base-server -- --sourcemap",
+		"esbuild-all": "npm run esbuild-base-client -- --sourcemap && npm run esbuild-base-server -- --sourcemap",
 		"esbuild-watch-client": "npm run esbuild-base-client -- --sourcemap --watch",
 		"esbuild-watch-server": "npm run esbuild-base-server -- --sourcemap --watch",
 		"test-compile": "tsc -p ./",
