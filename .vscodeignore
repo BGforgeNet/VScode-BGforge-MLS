@@ -8,8 +8,15 @@
 .vscode/**
 .vscode-test/**
 
-client/out/test/**
-client/testFixture/**
+client/**
+!client/package.json
+!client/out/extension.js
+
+server/**
+!server/package.json
+!server/out/server.js
+!server/out/*.yml
+
 docs/**
 scripts/**
 syntaxes/*.yml
