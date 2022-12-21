@@ -11,3 +11,4 @@ client/server
 tmp
 external
 scripts/__pycache__/
+syntaxes_to_json.sh.err
