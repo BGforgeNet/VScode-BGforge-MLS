@@ -86,23 +86,3 @@ export function deactivate(): Thenable<void> {
 	}
 	return client.stop();
 }
-
-function conlog(item: any) {
-	switch (typeof (item)) {
-		case "number":
-			console.log(item);
-			break;
-		case "boolean":
-			console.log(item);
-			break;
-		case "undefined":
-			console.log(item);
-			break;
-		case "string":
-			console.log(item);
-			break;
-		default:
-			console.log(JSON.stringify(item));
-			break;
-	}
-}
