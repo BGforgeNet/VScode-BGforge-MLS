@@ -40,10 +40,10 @@ BGforge MLS is a VScode extension adding support for [Star-Trek Scripting Langua
 
 ### Screenshots
 #### Infinity Engine highlighting and completion
-![infinity highlighting and completion example](resources/infinity.png)
+![infinity highlighting and completion example](docs/infinity.png)
 
 #### Fallout highlighting and hovers
-![fallout highlighting and hover example](resources/fallout.png)
+![fallout highlighting and hover example](docs/fallout.png)
 
 #### Error reporting
-![error reporting example](resources/error_reporting.png)
+![error reporting example](docs/error_reporting.png)
