@@ -15,8 +15,5 @@
 	"dependencies": {
 		"@types/vscode": "1.69.1",
 		"vscode-languageclient": "^8.0.2"
-	},
-	"activationEvents": [
-		"onLanguage:ssl"
-	]
+	}
 }
