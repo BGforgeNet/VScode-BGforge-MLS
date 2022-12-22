@@ -8,7 +8,7 @@ export function fname(uri: string) {
 	return path.basename(uri);
 }
 
-export function conlog(item: any) {
+export async function conlog(item: any) {
 	switch (typeof (item)) {
 		case "number":
 			connection.console.log(item.toString());
