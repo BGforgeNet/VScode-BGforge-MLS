@@ -24,7 +24,7 @@ export async function activate(context: ExtensionContext) {
 	// The debug options for the server
 	// --inspect=6009: runs the server in Node's Inspector mode so VS Code can attach to the server for debugging
 	const debugOptions = { execArgv: ['--nolazy', '--inspect=6009'] };
-	const disposable = vscode.commands.registerCommand(cmd_name, () => {
+	const disposable = vscode.commands.registerCommand(cmd_name, async () => {
 		// default to use compilers in PATH
 		const fallout_ssl_compile_exe = vscode.workspace.getConfiguration(config_space).get('fallout-ssl.compile', 'compile');
 		const weidu_path = vscode.workspace.getConfiguration(config_space).get('weidu.path', 'weidu');
@@ -32,18 +32,18 @@ export async function activate(context: ExtensionContext) {
 		// where to put compiled scripts
 		const fallout_ssl_dst_dir = vscode.workspace.getConfiguration(config_space).get('fallout-ssl.output_directory', '.');
 
-		// game path is for parsing baf/d, need IDS files for that
+		// game path is for parsing BAF/D, need IDS files for that
 		const weidu_game_path = vscode.workspace.getConfiguration(config_space).get('weidu.game_path', '');
 
 		// compile.exe and weidu.exe need files saved on disk to parse them
 		const text_document = vscode.window.activeTextEditor.document;
-		text_document.save();
+		await text_document.save();
 
 		const params: ExecuteCommandParams = {
 			command: cmd_name,
 			arguments: [fallout_ssl_compile_exe, text_document, fallout_ssl_dst_dir, weidu_path, weidu_game_path]
 		};
-		client.sendRequest(ExecuteCommandRequest.type, params);
+		await client.sendRequest(ExecuteCommandRequest.type, params);
 	});
 	context.subscriptions.push(disposable);
 
