@@ -136,21 +136,6 @@ connection.onDidChangeConfiguration(change => {
 	documents.all().forEach(validateTextDocument);
 });
 
-function getDocumentSettings(resource: string): Thenable<SSLsettings> {
-	if (!hasConfigurationCapability) {
-		return Promise.resolve(globalSettings);
-	}
-	let result = documentSettings.get(resource);
-	if (!result) {
-		result = connection.workspace.getConfiguration({
-			scopeUri: resource,
-			section: config_section
-		});
-		documentSettings.set(resource, result);
-	}
-	return result;
-}
-
 function get_hover_lang(lang_id: string) {
 	let hover_lang = hover_lang_map.get(lang_id);
 	if (!hover_lang) { hover_lang = "c++" }
