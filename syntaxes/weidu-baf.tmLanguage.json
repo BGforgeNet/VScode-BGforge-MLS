@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
-  "name": "Infinity Engine Weidu script",
+  "name": "WeiDU script",
   "scopeName": "source.baf.weidu",
   "patterns": [
     {

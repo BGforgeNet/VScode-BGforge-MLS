@@ -25,15 +25,15 @@
 		"vscode": "^1.43.0"
 	},
 	"activationEvents": [
-		"onLanguage:plaintext",
 		"onLanguage:fallout-ssl",
-		"onLanguage:weidu",
-		"onLanguage:weidu-dialog",
+		"onLanguage:fallout-msg",
+		"onLanguage:weidu-tp2",
+		"onLanguage:weidu-tp2-tpl",
+		"onLanguage:weidu-d",
 		"onLanguage:weidu-baf",
 		"onLanguage:weidu-slb",
 		"onLanguage:weidu-ssl",
-		"onLanguage:weidu-tpl",
-		"onLanguage:weidu-dialog-tpl",
+		"onLanguage:weidu-d-tpl",
 		"onLanguage:weidu-baf-tpl"
 	],
 	"main": "./client/out/extension",
@@ -42,8 +42,7 @@
 			{
 				"id": "weidu-ssl",
 				"aliases": [
-					"Infinity Engine Sword Coast Stratagems script",
-					"WeiDU SSL"
+					"WeiDU Stratagems script"
 				],
 				"extensions": [
 					".ssl"
@@ -53,8 +52,7 @@
 			{
 				"id": "fallout-ssl",
 				"aliases": [
-					"Fallout Star-Trek Scripting Language",
-					"fallout-ssl"
+					"Fallout Star-Trek scripting language"
 				],
 				"extensions": [
 					".ssl",
@@ -65,7 +63,7 @@
 			{
 				"id": "fallout-ssl-codeblock",
 				"aliases": [
-					"Fallout Star-Trek Scripting Language code block"
+					"Fallout Star-Trek scripting language code block"
 				],
 				"extensions": [
 					".fallout-ssl-codeblock"
@@ -75,8 +73,7 @@
 			{
 				"id": "fallout-msg",
 				"aliases": [
-					"Fallout message",
-					"Fallout MSG"
+					"Fallout message file"
 				],
 				"extensions": [
 					".msg"
@@ -84,10 +81,9 @@
 				"configuration": "./language-configurations/fallout-msg.language-configuration.json"
 			},
 			{
-				"id": "weidu",
+				"id": "weidu-tp2",
 				"aliases": [
-					"Infinity Engine",
-					"weidu"
+					"WeiDU TP2"
 				],
 				"extensions": [
 					".tp2",
@@ -95,12 +91,12 @@
 					".tph",
 					".tpp"
 				],
-				"configuration": "./language-configurations/weidu.language-configuration.json"
+				"configuration": "./language-configurations/weidu-tp2.language-configuration.json"
 			},
 			{
-				"id": "weidu-tpl",
+				"id": "weidu-tp2-tpl",
 				"aliases": [
-					"weidu template"
+					"WeiDU TP2 template"
 				],
 				"extensions": [
 					".tp2.tpl",
@@ -108,39 +104,17 @@
 					".tph.tpl",
 					".tpp.tpl"
 				],
-				"configuration": "./language-configurations/weidu.language-configuration.json"
-			},
-			{
-				"id": "weidu-dialog",
-				"aliases": [
-					"Infinity Engine dialog",
-					"weidu dialog"
-				],
-				"extensions": [
-					".d"
-				],
-				"configuration": "./language-configurations/weidu.d.language-configuration.json"
+				"configuration": "./language-configurations/weidu-tp2.language-configuration.json"
 			},
 			{
 				"id": "weidu-baf",
 				"aliases": [
-					"Infinity Engine script",
-					"weidu baf"
+					"Infinity Engine script"
 				],
 				"extensions": [
 					".baf"
 				],
-				"configuration": "./language-configurations/weidu.baf.language-configuration.json"
-			},
-			{
-				"id": "weidu-dialog-tpl",
-				"aliases": [
-					"Infinity Engine dialog template"
-				],
-				"extensions": [
-					".d.tpl"
-				],
-				"configuration": "./language-configurations/weidu.d.language-configuration.json"
+				"configuration": "./language-configurations/weidu-baf.language-configuration.json"
 			},
 			{
 				"id": "weidu-baf-tpl",
@@ -150,13 +124,32 @@
 				"extensions": [
 					".baf.tpl"
 				],
-				"configuration": "./language-configurations/weidu.baf.language-configuration.json"
+				"configuration": "./language-configurations/weidu-baf.language-configuration.json"
+			},
+			{
+				"id": "weidu-d",
+				"aliases": [
+					"WeiDU dialog"
+				],
+				"extensions": [
+					".d"
+				],
+				"configuration": "./language-configurations/weidu-d.language-configuration.json"
+			},
+			{
+				"id": "weidu-d-tpl",
+				"aliases": [
+					"WeiDU dialog template"
+				],
+				"extensions": [
+					".d.tpl"
+				],
+				"configuration": "./language-configurations/weidu-d.language-configuration.json"
 			},
 			{
 				"id": "weidu-slb",
 				"aliases": [
-					"Infinity Engine Sword Coast Stratagems library",
-					"WeiDU SLB"
+					"WeiDU Stratagems library"
 				],
 				"extensions": [
 					".slb"
@@ -166,8 +159,7 @@
 			{
 				"id": "weidu-tra",
 				"aliases": [
-					"Infinity Engine translation",
-					"WeiDU TRA"
+					"WeiDU translation"
 				],
 				"extensions": [
 					".tra"
@@ -177,8 +169,7 @@
 			{
 				"id": "infinity-2da",
 				"aliases": [
-					"Infinity Engine 2-Dimensional Array",
-					"Infinity 2DA"
+					"Infinity Engine 2DA table"
 				],
 				"extensions": [
 					".2da"
@@ -193,6 +184,11 @@
 			}
 		],
 		"grammars": [
+			{
+				"language": "weidu-ssl",
+				"scopeName": "source.ssl.weidu",
+				"path": "./syntaxes/weidu-ssl.tmLanguage.json"
+			},
 			{
 				"language": "fallout-ssl",
 				"scopeName": "source.fallout-ssl",
@@ -219,44 +215,39 @@
 				}
 			},
 			{
-				"language": "weidu",
+				"language": "weidu-tp2",
 				"scopeName": "source.tp2.weidu",
-				"path": "./syntaxes/weidu.tmLanguage.json"
+				"path": "./syntaxes/weidu-tp2.tmLanguage.json"
 			},
 			{
-				"language": "weidu-dialog",
-				"scopeName": "source.d.weidu",
-				"path": "./syntaxes/weidu.d.tmLanguage.json"
+				"language": "weidu-tp2-tpl",
+				"scopeName": "source.tp2.weidu",
+				"path": "./syntaxes/weidu-tp2.tmLanguage.json"
 			},
 			{
 				"language": "weidu-baf",
 				"scopeName": "source.baf.weidu",
-				"path": "./syntaxes/weidu.baf.tmLanguage.json"
-			},
-			{
-				"language": "weidu-tpl",
-				"scopeName": "source.tp2.weidu",
-				"path": "./syntaxes/weidu.tmLanguage.json"
-			},
-			{
-				"language": "weidu-dialog-tpl",
-				"scopeName": "source.d.weidu",
-				"path": "./syntaxes/weidu.d.tmLanguage.json"
+				"path": "./syntaxes/weidu-baf.tmLanguage.json"
 			},
 			{
 				"language": "weidu-baf-tpl",
 				"scopeName": "source.baf.weidu",
-				"path": "./syntaxes/weidu.baf.tmLanguage.json"
+				"path": "./syntaxes/weidu-baf.tmLanguage.json"
+			},
+			{
+				"language": "weidu-d",
+				"scopeName": "source.d.weidu",
+				"path": "./syntaxes/weidu-d.tmLanguage.json"
+			},
+			{
+				"language": "weidu-d-tpl",
+				"scopeName": "source.d.weidu",
+				"path": "./syntaxes/weidu-d.tmLanguage.json"
 			},
 			{
 				"language": "weidu-slb",
 				"scopeName": "source.slb.weidu",
 				"path": "./syntaxes/weidu-slb.tmLanguage.json"
-			},
-			{
-				"language": "weidu-ssl",
-				"scopeName": "source.ssl.weidu",
-				"path": "./syntaxes/weidu-ssl.tmLanguage.json"
 			},
 			{
 				"language": "weidu-tra",

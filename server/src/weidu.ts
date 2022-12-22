@@ -119,7 +119,7 @@ export function wcompile(params: any, cancel_token: any) {
 	if (command == "extension.bgforge.compile") {
 		const weidu_type = valid_extensions.get(ext);
 		if (!weidu_type) {  // vscode loses open file if clicked on console or elsewhere
-			conlog("Not a WeiDU file (tp2, tph, tpa, tpp, d, baf) or template! Focus a WeiDU file to parse.");
+			conlog("Not a WeiDU file (tp2, tph, tpa, tpp, d, baf, tpl) or template! Focus a WeiDU file to parse.");
 			connection.window.showInformationMessage("Focus a WeiDU file or template to parse!");
 			return;
 		}

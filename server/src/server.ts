@@ -38,14 +38,20 @@ let hasDiagnosticRelatedInformationCapability: boolean = false;
 
 let completion_map = new Map<string, Array<any>>();
 let signature_map = new Map<string, Array<any>>();
+
+// hovers for first value are displayed as second one
 const hover_lang_map = new Map([
-	[ "weidu", "weidu" ],
-	[ "weidu-baf", "weidu-baf" ],
-	[ "weidu-tpl", "weidu" ],
-	[ "weidu-baf-tpl", "weidu-baf" ],
-	[ "weidu-ssl", "weidu-ssl" ],
-	[ "fallout-ssl", "fallout-ssl-codeblock" ]
+	["weidu-tp2", "weidu-tp2"],
+	["weidu-tp2-tpl", "weidu-tp2"],
+	["weidu-baf", "weidu-baf"],
+	["weidu-baf-tpl", "weidu-baf"],
+	["weidu-d", "weidu-d"],
+	["weidu-d-tpl", "weidu-d"],
+	["weidu-ssl", "weidu-ssl"],
+	["weidu-slb", "weidu-slb"],
+	["fallout-ssl", "fallout-ssl-codeblock"]
 ]);
+
 const config_section = "bgforge";
 const config_prefix = 'bgforge.';
 const fallout_ssl_config = config_prefix + 'fallout-ssl';
@@ -186,7 +192,7 @@ connection.onDidChangeWatchedFiles(_change => {
 // This handler provides the initial list of the completion items.
 connection.onCompletion(
 	(_textDocumentPosition: TextDocumentPositionParams): CompletionItem[] => {
-		const lang_id = documents.get(_textDocumentPosition.textDocument.uri).languageId;	
+		const lang_id = documents.get(_textDocumentPosition.textDocument.uri).languageId;
 		let current_list: any;
 		if (lang_id == "fallout-ssl") {
 			current_list = fallout_ssl.filter_completion(completion_map.get(lang_id), _textDocumentPosition.textDocument.uri);
@@ -224,7 +230,7 @@ function load_completion() {
 
 					// strip () from the end of the string (not necessary in Fallout SSL)
 					if (lang_id == "fallout-ssl" && detail.substr(-2) == "()") {
-						detail = detail.substr(0, detail.length-2);
+						detail = detail.substr(0, detail.length - 2);
 					}
 
 					doc = element['doc'] || ''; // allow empty doc, too
@@ -369,12 +375,12 @@ connection.onExecuteCommand((params, cancel_token) => {
 					fallout_ssl.sslcompile(params, cancel_token);
 					break;
 				}
-				case "weidu":
+				case "weidu-tp2":
+				case "weidu-tp2-tpl":
 				case "weidu-baf":
-				case "weidu-dialog":
-				case "weidu-tpl":
 				case "weidu-baf-tpl":
-				case "weidu-dialog-tpl": {
+				case "weidu-d":
+				case "weidu-d-tpl": {
 					weidu.wcompile(params, cancel_token);
 					break;
 				}

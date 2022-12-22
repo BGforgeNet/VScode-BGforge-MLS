@@ -1,5 +1,5 @@
 $schema: https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json
-name: Infinity Engine Weidu dialog
+name: WeiDU dialog
 scopeName: source.d.weidu
 
 patterns:
