@@ -39,6 +39,8 @@ let hasDiagnosticRelatedInformationCapability: boolean = false;
 let completion_map = new Map<string, Array<any>>();
 let signature_map = new Map<string, Array<any>>();
 
+const completion_languages = ["weidu-tp2", "fallout-ssl"]
+
 // hovers for first value are displayed as second one
 const hover_lang_map = new Map([
 	["weidu-tp2", "weidu-tp2"],
@@ -189,60 +191,29 @@ connection.onCompletion(
 );
 
 function load_completion() {
-	const yaml = require('js-yaml');
 	const fs = require('fs');
 
-	const yml_list = fs.readdirSync(__dirname).filter(function (el: any) {
-		return (path.extname(el) == ".yml");
-	});
-	for (const el of yml_list) {
-		const lang_id = path.basename(el).split('.')[0];
-		let completion_list: Array<any>;
+	for (const lang_id of completion_languages) {
 		try {
-			const completion_yaml = yaml.safeLoad(fs.readFileSync(path.join(__dirname, el), 'utf8'));
-			let item: any;
-			completion_list = [];
-
-			for (item in completion_yaml) {
-				const kind = parseInt(completion_yaml[item]['type']);
-				let element: any;
-				let detail: string;
-				let doc: string;
-				for (element of completion_yaml[item]['items']) {
-
-					// copy name to detail if it's empty
-					detail = element['detail'] || element['name'];
-
-					// strip () from the end of the string (not necessary in Fallout SSL)
-					if (lang_id == "fallout-ssl" && detail.substr(-2) == "()") {
-						detail = detail.substr(0, detail.length - 2);
-					}
-
-					doc = element['doc'] || ''; // allow empty doc, too
-					const markdown = {
-						kind: MarkupKind.Markdown,
-						value: doc
-					};
-
-					completion_list.push({ label: element['name'], kind: kind, documentation: markdown, detail: detail, source: "builtin" });
-				}
-			}
+			conlog(lang_id);
+			const file_path = path.join(__dirname, `completion.${lang_id}.json`);
+			const completion_list = JSON.parse(fs.readFileSync(file_path));
 			completion_map.set(lang_id, completion_list);
 		} catch (e) {
 			conlog(e);
 		}
 
-		//Fallout SSL: add completion from headers
-		connection.workspace.getConfiguration(fallout_ssl_config).then(function (conf: any) {
-			if (conf.headers_directory != "NONE") {
-				try {
-					let procdef_list = fallout_ssl.get_defines(conf.headers_directory);
-					fallout_ssl.load_defines(completion_map, signature_map, procdef_list);
-				} catch (e) {
-					conlog(e);
-				}
-			}
-		});
+		// //Fallout SSL: add completion from headers
+		// connection.workspace.getConfiguration(fallout_ssl_config).then(function (conf: any) {
+		// 	if (conf.headers_directory != "NONE") {
+		// 		try {
+		// 			let procdef_list = fallout_ssl.get_defines(conf.headers_directory);
+		// 			fallout_ssl.load_defines(completion_map, signature_map, procdef_list);
+		// 		} catch (e) {
+		// 			conlog(e);
+		// 		}
+		// 	}
+		// });
 
 	}
 	return completion_map;
