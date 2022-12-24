@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 import sys, re
 from bs4 import BeautifulSoup
 from markdown import markdown

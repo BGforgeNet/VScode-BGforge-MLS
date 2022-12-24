@@ -6,7 +6,6 @@ import argparse
 from collections import OrderedDict
 from collections import Counter as collections_counter
 from urllib.parse import urljoin
-from bs4 import BeautifulSoup
 from markdown import markdown
 import functools
 import frontmatter
