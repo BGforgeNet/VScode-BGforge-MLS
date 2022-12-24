@@ -17,9 +17,9 @@ def LS(s):
   return LiteralScalarString(textwrap.dedent(s))
 
 #parse args
-parser = argparse.ArgumentParser(description='Update Fallout syntax highlighting and completion from headers', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+parser = argparse.ArgumentParser(description='Update Fallout syntax data from external sources', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 parser.add_argument('-s', dest='src_dir', help='header directory', required=True)
-parser.add_argument('--completion-file', dest='completion_yaml', help='completion YAML', required=True)
+parser.add_argument('--sfall-file', dest='sfall_yaml', help='sfall data YAML', required=True)
 parser.add_argument('--highlight-file', dest='highlight_yaml', help='syntax highlight YAML', required=True)
 args=parser.parse_args()
 
@@ -28,7 +28,7 @@ functions_yaml_name = "functions.yml"
 hooks_yaml_name = "hooks.yml"
 sfall_functions_stanza = "sfall-functions"
 sfall_hooks_stanza = "hooks"
-completion_yaml = args.completion_yaml
+sfall_yaml = args.sfall_yaml
 highlight_yaml = args.highlight_yaml
 src_dir = args.src_dir
 completion_functions = []
@@ -176,11 +176,11 @@ for h in hooks:
   highlight_hooks.append({ 'match': "\\b({})\\b".format(codename) })
 
 # dump to completion
-with open(completion_yaml) as yf:
+with open(sfall_yaml) as yf:
   data = yaml.load(yf)
-data[sfall_functions_stanza] = {'type': 3, 'items': completion_functions} # type: function
-data[sfall_hooks_stanza] = {'type': 21, 'items': completion_hooks} # type: constant
-with open(completion_yaml, 'w') as yf:
+data[sfall_functions_stanza] = {'type': 3, 'items': completion_functions} # type = function
+data[sfall_hooks_stanza] = {'type': 21, 'items': completion_hooks} # type = constant
+with open(sfall_yaml, 'w') as yf:
   yaml.dump(data, yf)
 
 # dump function and hooks to syntax highlight

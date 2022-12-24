@@ -10,7 +10,7 @@ sfall_branch="better-docs"
 sfall_dir="sfall"
 rpu_repo="https://github.com/BGforgeNet/Fallout2_Restoration_Project"
 rpu_dir="rpu"
-completion_file="server/out/fallout-ssl.completion.yml"
+sfall_file="server/data/fallout-ssl-sfall.yml"
 highlight_file="syntaxes/fallout-ssl.tmLanguage.yml"
 
 if [ ! -d $external ]; then
@@ -24,6 +24,7 @@ if [ ! -d $rpu_dir ]; then
   git clone $rpu_repo $rpu_dir
 fi
 cd $rpu_dir
+git checkout master
 git pull
 last_v="v$(git tag | grep "^v" | sed 's|^v||' | sort -n | tail -1)"
 git checkout $last_v
@@ -36,11 +37,12 @@ if [ ! -d $sfall_dir ]; then
   git clone $sfall_repo $sfall_dir
 fi
 cd $sfall_dir
+git checkout master
 git pull
 last_v="v$(git tag | grep "^v" | sed 's|^v||' | sort -n | tail -1)"
 git checkout $last_v
 popd
 
-./scripts/fallout-update.py -s "$external" --completion-file "$completion_file" --highlight-file "$highlight_file"
+./scripts/fallout-update.py -s "$external" --sfall-file "$sfall_file" --highlight-file "$highlight_file"
 
 ./scripts/syntaxes_to_json.sh
