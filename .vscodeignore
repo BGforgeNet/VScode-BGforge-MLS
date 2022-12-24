@@ -15,7 +15,8 @@ client/**
 server/**
 !server/package.json
 !server/out/server.js
-!server/out/*.yml
+!server/out/completion.*.json
+!server/out/hover.*.json
 
 docs/**
 scripts/**

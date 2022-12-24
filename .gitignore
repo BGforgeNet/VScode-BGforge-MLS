@@ -1,6 +1,6 @@
 *.log
 *.vsix
-
+**/__pycache__/**
 
 .venv/
 .vscode-test/
@@ -11,12 +11,10 @@ client/server
 
 server/node_modules
 server/out/*
-!server/out/*.yml
+!server/out/completion.*.json
+!server/out/hover.*.json
 
 external
 node_modules
-scripts/__pycache__/
 syntaxes_to_json.sh.err
 tmp
-
-**/__pycache__/**
