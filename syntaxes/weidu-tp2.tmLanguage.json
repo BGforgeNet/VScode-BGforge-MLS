@@ -750,6 +750,10 @@
           "name": "constant.language.iesdp.byte"
         },
         {
+          "match": "\\b(EFF_timing_mode)\\b",
+          "name": "constant.language.iesdp.byte"
+        },
+        {
           "match": "\\b(ITM_HEAD_alt_damage_bonus)\\b",
           "name": "constant.language.iesdp.byte"
         },
@@ -830,10 +834,6 @@
     "iesdp-char": {
       "name": "constant.language.iesdp.char",
       "patterns": [
-        {
-          "match": "\\b(EFF_timing_mode)\\b",
-          "name": "constant.language.iesdp.char"
-        },
         {
           "match": "\\b(FX_power)\\b",
           "name": "constant.language.iesdp.char"

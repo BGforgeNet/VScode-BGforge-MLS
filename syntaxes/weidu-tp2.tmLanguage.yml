@@ -238,6 +238,7 @@ repository:
       - match: \b(EFF_probability2)\b
       - match: \b(EFF_resistance)\b
       - match: \b(EFF_target)\b
+      - match: \b(EFF_timing_mode)\b
       - match: \b(ITM_HEAD_alt_damage_bonus)\b
       - match: \b(ITM_HEAD_alt_dice_thrown)\b
       - match: \b(ITM_HEAD_dice_sides)\b
@@ -260,7 +261,6 @@ repository:
   iesdp-char:
     name: constant.language.iesdp.char
     patterns:
-      - match: \b(EFF_timing_mode)\b
       - match: \b(FX_power)\b
       - match: \b(FX_probability1)\b
       - match: \b(FX_probability2)\b

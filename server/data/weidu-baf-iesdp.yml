@@ -1,17 +1,3 @@
-# types https://docs.microsoft.com/en-us/dotnet/api/microsoft.visualstudio.languageserver.protocol.completionitemkind?view=visualstudiosdk-2017
-
-keywords:
-  type: 14 #keyword
-  items:
-    - name: IF
-    - name: THEN
-    - name: RESPONSE
-    - name: OR
-    - name: GLOBAL
-    - name: LOCALS
-    - name: MYAREA
-    - name: END
-
 actions:
   type: 3 # function
   items:

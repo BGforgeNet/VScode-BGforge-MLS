@@ -1,0 +1,11 @@
+keywords:
+  type: 14 #keyword
+  items:
+    - name: IF
+    - name: THEN
+    - name: RESPONSE
+    - name: OR
+    - name: GLOBAL
+    - name: LOCALS
+    - name: MYAREA
+    - name: END

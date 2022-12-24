@@ -93,12 +93,14 @@ iesdp-resref:
         {% endcapture %} {% include important.html %}
 
 
+        - [Global/Casting effects](../ie_formats/spl_v1.htm#splv1_Feature_Block) on [`SPL`](../ie_formats/spl_v1.htm) files have an empty/blank [`Parent resource`](#effv2_Body_0x94) field, allowing them to safely ignore [opcode #206](../../opcodes/bgee.htm#op206)/[opcode #318](../../opcodes/bgee.htm#op318)/[opcode #324](../../opcodes/bgee.htm#op324), as such effects are designed to affect the caster (or the global environment) even when the [`SPL`](../ie_formats/spl_v1.htm) fails.
         - When attaching passive kit bonuses (labeled as `AP_XXXXXXXX` in <code><a href="../../files/2da/2da_bgee/clabxx00.htm">CLAB</a></code> files) to joinable CRE files as <a href="../ie_formats/cre_v1.htm#CREV1_0_Header_0x33_1">V2 Effects</a>, this field should be set to the SPL applying such bonuses.
           - In so doing, such bonuses will not be applied a second time (due to <code><a href="../../files/2da/2da_bgee/clabxx00.htm">CLAB</a></code> processing) when those creatures join the Party.
-        - So for instance, when applying +10％ <a href="../../opcodes/bgee.htm#op87">Crushing Resistance</a> to a CRE file whose <code><a href="../ie_formats/cre_v1.htm#CREV1_0_Header_0x244">Kit</a></code> is `BARBARIAN`, set this field to `"SPCL153"`.
+          - So for instance, when applying +10％ <a href="../../opcodes/bgee.htm#op87">Crushing Resistance</a> to a CRE file whose <code><a href="../ie_formats/cre_v1.htm#CREV1_0_Header_0x244">Kit</a></code> is `BARBARIAN`, set this field to `"SPCL153"`.
     - name: EFF2_resource
       detail: resref EFF2_resource
-      doc: Resource
+      doc: |-
+        <b><a name="effv2_Body_Resource">Resource</a></b>
     - name: EFF2_resource2
       detail: resref EFF2_resource2
       doc: |-
@@ -109,7 +111,8 @@ iesdp-resref:
         <b><a name="effv2_Body_0x78">Resource 3</a></b>
     - name: EFF_resref_key
       detail: resref EFF_resref_key
-      doc: Resref key
+      doc: |-
+        <b><a name="effv1_Header_Resource">Resref key</a></b>
     - name: FX_resource
       detail: resref FX_resource
       doc: Resource
@@ -293,7 +296,9 @@ iesdp-dword:
         - See <code><a href="../../files/2da/2da_bgee/msectype.htm">MSECTYPE.2DA</a></code>.
     - name: EFF2_stacking_id_tobex
       detail: dword EFF2_stacking_id_tobex
-      doc: |
+      doc: |-
+        <b><a name="effv2_Body_Special">Special</a></b> (EE games)
+
         TobEx: Stacking ID. Checked when bit 25 of the Saving Throw Type is set.
 
         If two effects of the same opcode are applied, both have Limit Effect Stacking bit set, and both have the same stacking ID, then the latter applied effect is suspended in application until the former effect expires. Regardless of whether it is applied, the latter effect will expire at the same time that it would expire if it was applied. In other words, the total duration of some non-stacking effect opcode is not extended because more than one copy of the effect was applied.
@@ -524,27 +529,26 @@ iesdp-word:
     - name: EFF2_timing
       detail: word EFF2_timing
       doc: |
-        <b><a name="effv2_Body_0x24">Timing mode</a></b>
+        <a name="effv2_Body_0x24">**Timing mode**</a>
 
-        - 0 ⟶ <b><a name="effv2_Body_0x24_0">Instant/Limited</a></b>
-        - 1 ⟶ <b><a name="effv2_Body_0x24_1">Instant/Permanent</a></b>
-        - 2 ⟶ <b><a name="effv2_Body_0x24_2">Instant/While equipped</a></b>
-        - 3 ⟶ <b><a name="effv2_Body_0x24_3">Delay/Limited</a></b>
-        - 4 ⟶ <b><a name="effv2_Body_0x24_4">Delay/Permanent</a></b>
-        - 5 ⟶ <b><a name="effv2_Body_0x24_5">Delay/While equipped</a></b>
-        - 6 ⟶ <b><a name="effv2_Body_0x24_6">Limited after duration</a></b>
-        - 7 ⟶ <b><a name="effv2_Body_0x24_7">Permanent after duration</a></b>
-        - 8 ⟶ <b><a name="effv2_Body_0x24_8">Equipped after duration</a></b>
-        - 9 ⟶ <b><a name="effv2_Body_0x24_9">Instant/Permanent</a></b> (after Death)
-        - 10 ⟶ <b><a name="effv2_Body_0x24_10">Instant/Limited</a></b>
-        - 4096 ⟶ <b><a name="effv2_Body_0x24_4096">Absolute duration</a></b>
+        - 0 ⟶ [Instant/Limited](../ie_formats/eff_v1.htm#effv1_Header_0xC_0)
+        - 1 ⟶ [Instant/Permanent](../ie_formats/eff_v1.htm#effv1_Header_0xC_1)
+        - 2 ⟶ [Instant/While equipped](../ie_formats/eff_v1.htm#effv1_Header_0xC_2)
+        - 3 ⟶ [Delay/Limited](../ie_formats/eff_v1.htm#effv1_Header_0xC_3)
+        - 4 ⟶ [Delay/Permanent](../ie_formats/eff_v1.htm#effv1_Header_0xC_4)
+        - 5 ⟶ [Delay/While equipped](../ie_formats/eff_v1.htm#effv1_Header_0xC_5)
+        - 6 ⟶ [Limited after duration](../ie_formats/eff_v1.htm#effv1_Header_0xC_6)
+        - 7 ⟶ [Permanent after duration](../ie_formats/eff_v1.htm#effv1_Header_0xC_7)
+        - 8 ⟶ [Equipped after duration](../ie_formats/eff_v1.htm#effv1_Header_0xC_8)
+        - 9 ⟶ [Instant/Permanent](../ie_formats/eff_v1.htm#effv1_Header_0xC_9) (after Death)
+        - 10 ⟶ [Instant/Limited](../ie_formats/eff_v1.htm#effv1_Header_0xC_10)
+        - 4096 ⟶ <a name="effv2_Body_0x24_4096">**Absolute duration**</a>
+          - Effect is applied instantly.
+          - This timing mode treats the [Duration](#effv2_Body_0x28) field as the effect's expiration time (in ticks). Expires at [Gametime](../ie_formats/gam_v2.0.htm#GAMEV2_0_Header_GameTime)`(ticks) >= `[Duration](#effv2_Body_0x28)`(ticks)`.  
+          If the [Duration](#effv2_Body_0x28) field is `108000`, the effect will expire when the game timer reaches 24 hours, or instantly if the game timer has already passed that point. `108000 = 300(1 hour) * 24 * 15 (ticks ➔ seconds)`.
 
 
-        See <a href="../ie_formats/eff_v1.htm#effv1_Header_0xC">here</a> for further details.
-
-
-
-        If called via <a href="../../opcodes/bgee.htm#op177">opcode #177</a>/<a href="../../opcodes/bgee.htm#op183">opcode #183</a>/<a href="../../opcodes/bgee.htm#op283">opcode #283</a>, this field is ignored.
+        If called via [opcode #177](../../opcodes/bgee.htm#op177)/[opcode #183](../../opcodes/bgee.htm#op183)/[opcode #283](../../opcodes/bgee.htm#op283), this field is ignored.
     - name: EFF_effect_type
       detail: word EFF_effect_type
       doc: Effect type
@@ -838,7 +842,7 @@ iesdp-byte:
         - 4 ⟶ <b><a name="effv1_Header_0x2_4">Everyone</a></b>
         - 5 ⟶ <b><a name="effv1_Header_0x2_5">Everyone except party</a></b>
         - 6 ⟶ <b><a name="effv1_Header_0x2_6">Caster group</a></b>
-          - Everyone matching <code><a href="../ie_formats/cre_v1.htm#CREV1_0_Header_0x274">specific</a></code> value of caster.
+          - Everyone matching [`specific`]({{ "/file_formats/ie_formats/cre_v1.htm#CREV1_0_Header_0x274" | prepend: relurl }}) value of caster.
           - If cast by a party member, then it functions as <code><a href="#effv1_Header_0x2_3">Party</a></code>.
           - Ability target (<code><a href="../ie_formats/itm_v1.htm#itmv1_Extended_Header_0xC">ITM</a>/<a href="../ie_formats/spl_v1.htm#splv1_Extended_Header_0xC">SPL</a></code>) doesn't matter.
         - 7 ⟶ <b><a name="effv1_Header_0x2_7">Target group</a></b>
@@ -867,6 +871,72 @@ iesdp-byte:
               op(2), op(3), op(6), op(1), op(4), op(5).
         - Similar to Melee Weapon Attacks, when <code><a href="#effv1_Header_0x2">Target type</a></code>s other than <code><a href="#effv1_Header_0x2_1">1</a></code>, <code><a href="#effv1_Header_0x2_2">2</a></code>, <code><a href="#effv1_Header_0x2_9">9</a></code> apply the effect, they are subjected to <a href="../../opcodes/bgee.htm#op197">opcode #197</a> (`parameter2=0`) but not to <a href="../../opcodes/bgee.htm#op83">opcode #83</a>. (Excluding when they're affecting the caster).
         - Be aware that <a href="../../opcodes/bgee.htm#op146">opcode #146</a><code><small><sup>*</sup></small>p2=2</code>, <a href="../../opcodes/bgee.htm#op326">opcode #326</a>, and <a href="../../opcodes/bgee.htm#op333">opcode #333</a> might behave differently when it comes to <code><a href="#effv1_Header_0x2_1">Self</a></code>/<code><a href="#effv1_Header_0x2_2">Projectile Target</a></code>/<code><a href="#effv1_Header_0x2_9">Original Caster</a></code>.
+    - name: EFF_timing_mode
+      detail: byte EFF_timing_mode
+      doc: |
+        <b><a name="effv1_Header_0xC">Timing mode</a></b>
+
+        - 0 ⟶ <b><a name="effv1_Header_0xC_0">Instant/Limited</a></b>
+          - This timing mode measures <code><a href="#effv1_Header_0xE">Duration</a></code> in seconds.
+          - Instantly converts to <code><a href="../ie_formats/eff_v2.htm#effv2_Body_0x24_4096">Absolute duration</a></code>, <code><a href="../ie_formats/eff_v2.htm#effv2_Body_0x28">new duration</a>(ticks) = <a href="../ie_formats/gam_v2.0.htm#GAMEV2_0_Header_GameTime">Gametime</a>(ticks) + 15 * <a href="#effv1_Header_0xE">Duration</a>(seconds)</code>.
+
+        - 1 ⟶ <b><a name="effv1_Header_0xC_1">Instant/Permanent</a></b>
+          - If the opcode doesn't directly modify a <code><a href="../../files/ids/bgee/stats.htm">STAT</a>/<a href="../../files/ids/bgee/state.htm">STATE</a></code> in the target's <a href="../ie_formats/cre_v1.htm">CRE</a> file, then it will last until removed (or it self-terminates). <code><a href="../ie_formats/eff_v2.htm#effv2_Body_0x28">New duration</a>(ticks) = <a href="#effv1_Header_0xE">Duration</a>(ticks)</code> (mostly unused).
+
+        - 2 ⟶ <b><a name="effv1_Header_0xC_2">Instant/While equipped</a></b>
+          - As global `ITM` effect: Applied when item is equipped, lasts until item is unequipped (or <a href="../../opcodes/bgee.htm#op135">polymorph</a> bug).
+            - "Equipping" also occurs when game loads, and for weapons whenever they are selected from quickbar (even if it's already the active weapon). Never expires, and not considered a "Limited" effect.
+          - As `SPL` or header `ITM` effect: applies instantly, lasts until game is reloaded.
+          - <code><a href="../ie_formats/eff_v2.htm#effv2_Body_0x28">New duration</a>(ticks) = <a href="#effv1_Header_0xE">Duration</a>(ticks)</code> (mostly unused).
+
+        - 3 ⟶ <b><a name="effv1_Header_0xC_3">Delay/Limited</a></b>
+          - This timing mode measures <code><a href="#effv1_Header_0xE">Duration</a></code> in seconds.
+          - Instantly converts to <code><a href="#effv1_Header_0xC_6">Limited after duration</a></code>, <code><a href="../ie_formats/eff_v2.htm#effv2_Body_0x28">new duration</a>(ticks) = <a href="../ie_formats/gam_v2.0.htm#GAMEV2_0_Header_GameTime">Gametime</a>(ticks) + 15 * <a href="#effv1_Header_0xE">Duration</a>(seconds)</code>.
+
+        - 4 ⟶ <b><a name="effv1_Header_0xC_4">Delay/Permanent</a></b>
+          - This timing mode measures <code><a href="#effv1_Header_0xE">Duration</a></code> in seconds.
+          - Instantly converts to <code><a href="#effv1_Header_0xC_7">Permanent after duration</a></code>, <code><a href="../ie_formats/eff_v2.htm#effv2_Body_0x28">new duration</a>(ticks) = <a href="../ie_formats/gam_v2.0.htm#GAMEV2_0_Header_GameTime">Gametime</a>(ticks) + 15 * <a href="#effv1_Header_0xE">Duration</a>(seconds)</code>.
+
+        - 5 ⟶ <b><a name="effv1_Header_0xC_5">Delay/While equipped</a></b>
+          - This timing mode measures <code><a href="#effv1_Header_0xE">Duration</a></code> in seconds.
+          - Instantly converts to <code><a href="#effv1_Header_0xC_8">Equipped after duration</a></code>, <code><a href="../ie_formats/eff_v2.htm#effv2_Body_0x28">new duration</a>(ticks) = <a href="../ie_formats/gam_v2.0.htm#GAMEV2_0_Header_GameTime">Gametime</a>(ticks) + 15 * <a href="#effv1_Header_0xE">Duration</a>(seconds)</code>.
+
+        - 6 ⟶ <b><a name="effv1_Header_0xC_6">Limited after duration</a></b>
+          - This timing mode measures <code><a href="#effv1_Header_0xE">Duration</a></code> in ticks (<small><sup>1</sup>⁄<sub>15</sub></small> second).
+          - At <code><a href="../ie_formats/gam_v2.0.htm#GAMEV2_0_Header_GameTime">Gametime</a>(ticks) >= <a href="#effv1_Header_0xE">Duration</a>(ticks)</code> converts to <code><a href="../ie_formats/eff_v2.htm#effv2_Body_0x24_4096">Absolute duration</a></code>, <code><a href="../ie_formats/eff_v2.htm#effv2_Body_0x28">new duration</a>(ticks) = 2 * <a href="#effv1_Header_0xE">Duration</a>(ticks) - <a href="../ie_formats/eff_v2.htm#effv2_Body_0x6C">Time Applied</a>(ticks)</code>.
+            - (If previously converted from <code><a href="#effv1_Header_0xC_3">Delay/Limited</a></code>)
+          - At <code><a href="../ie_formats/gam_v2.0.htm#GAMEV2_0_Header_GameTime">Gametime</a>(ticks) >= <a href="#effv1_Header_0xE">Duration</a>(ticks)</code> converts to <code><a href="../ie_formats/eff_v2.htm#effv2_Body_0x24_4096">Absolute duration</a></code>, <code><a href="../ie_formats/eff_v2.htm#effv2_Body_0x28">new duration</a>(ticks) = 16 * <a href="#effv1_Header_0xE">Duration</a>(ticks)</code>.
+            - (If effect applied directly with <code><a href="#effv1_Header_0xC_6">Limited after duration</a></code>)
+            - `16 x Duration(ticks) = Duration(ticks) + 15 * Duration(seconds)` (Yes, it calculates a new duration using its current <code><a href="#effv1_Header_0xE">Duration</a></code> field as both ticks and seconds).
+            - It will convert to <code><a href="../ie_formats/eff_v2.htm#effv2_Body_0x24_4096">Absolute duration</a></code> at the same <code><a href="../ie_formats/gam_v2.0.htm#GAMEV2_0_Header_GameTime">Gametime</a></code> (ticks) no matter when the effect was applied.
+            - That <code><a href="../ie_formats/eff_v2.htm#effv2_Body_0x24_4096">Absolute duration</a></code> will expire at the same <code><a href="../ie_formats/gam_v2.0.htm#GAMEV2_0_Header_GameTime">Gametime</a></code> (ticks) no matter when the effect was applied.
+
+        - 7 ⟶ <b><a name="effv1_Header_0xC_7">Permanent after duration</a></b>
+          - This timing mode measures <code><a href="#effv1_Header_0xE">Duration</a></code> in ticks (<small><sup>1</sup>⁄<sub>15</sub></small> second).
+          - At <code><a href="../ie_formats/gam_v2.0.htm#GAMEV2_0_Header_GameTime">Gametime</a>(ticks) >= <a href="#effv1_Header_0xE">Duration</a>(ticks)</code> converts to <code><a href="#effv1_Header_0xC_1">Instant/Permanent</a></code>, <code><a href="../ie_formats/eff_v2.htm#effv2_Body_0x28">new duration</a>(ticks) = 2 * <a href="#effv1_Header_0xE">Duration</a>(ticks) - <a href="../ie_formats/eff_v2.htm#effv2_Body_0x6C">Time Applied</a>(ticks)</code>.
+            - (If previously converted from <code><a href="#effv1_Header_0xC_4">Delay/Permanent</a></code>)
+          - At <code><a href="../ie_formats/gam_v2.0.htm#GAMEV2_0_Header_GameTime">Gametime</a>(ticks) >= <a href="#effv1_Header_0xE">Duration</a>(ticks)</code> converts to <code><a href="#effv1_Header_0xC_1">Instant/Permanent</a></code>, <code><a href="../ie_formats/eff_v2.htm#effv2_Body_0x28">new duration</a>(ticks) = 16 * <a href="#effv1_Header_0xE">Duration</a>(ticks)</code>.
+            - (If effect applied directly with <code><a href="#effv1_Header_0xC_7">Permanent after duration</a></code>)
+            - It will convert to <code><a href="#effv1_Header_0xC_1">Instant/Permanent</a></code> at the same <code><a href="../ie_formats/gam_v2.0.htm#GAMEV2_0_Header_GameTime">Gametime</a></code> (ticks) no matter when the effect was applied.
+
+        - 8 ⟶ <b><a name="effv1_Header_0xC_8">Equipped after duration</a></b>
+          - This timing mode measures <code><a href="#effv1_Header_0xE">Duration</a></code> in ticks (<small><sup>1</sup>⁄<sub>15</sub></small> second).
+          - At <code><a href="../ie_formats/gam_v2.0.htm#GAMEV2_0_Header_GameTime">Gametime</a>(ticks) >= <a href="#effv1_Header_0xE">Duration</a>(ticks)</code> converts to <code><a href="#effv1_Header_0xC_2">Instant/While equipped</a></code>, <code><a href="../ie_formats/eff_v2.htm#effv2_Body_0x28">new duration</a>(ticks) = irrelevant</code>.
+
+        - 9 ⟶ <b><a name="effv1_Header_0xC_9">Instant/Permanent</a></b> (after Death)
+          - Effect is applied instantly.
+          - Never expires, but can terminate or be removed. <code><a href="../ie_formats/eff_v2.htm#effv2_Body_0x28">New duration</a>(ticks) = <a href="#effv1_Header_0xE">Duration</a>(ticks)</code>.
+
+        - 10 ⟶ <b><a name="effv1_Header_0xC_10">Instant/Limited</a></b>
+          - This timing mode measures <code><a href="#effv1_Header_0xE">Duration</a></code> in ticks (<small><sup>1</sup>⁄<sub>15</sub></small> second).
+          - Instantly converts to <code><a href="../ie_formats/eff_v2.htm#effv2_Body_0x24_4096">Absolute duration</a></code>, <code><a href="../ie_formats/eff_v2.htm#effv2_Body_0x28">new duration</a>(ticks) = <a href="../ie_formats/gam_v2.0.htm#GAMEV2_0_Header_GameTime">Gametime</a>(ticks) + <a href="#effv1_Header_0xE">Duration</a>(ticks)</code>.
+          - If <code><a href="#effv1_Header_0xE">Duration</a> = 0</code>, it won't function any differently from timing mode <code><a href="#effv1_Header_0xC_0">0</a></code>.
+
+
+        - All effects except those with Timing mode <code><a href="#effv1_Header_0xC_9">9</a></code> are removed by death.
+        - Some effects use a measurement of <code><a href="../ie_formats/gam_v2.0.htm#GAMEV2_0_Header_GameTime">Gametime</a></code> in seconds, and multiply it by 15, rather than taking the exact <code><a href="../ie_formats/gam_v2.0.htm#GAMEV2_0_Header_GameTime">Gametime</a></code> in ticks.<br/>
+          - This results in them lasting longer/shorter than they should (by up to 14 ticks).
+            - One of such effects is <a href="../../opcodes/bgee.htm#op231">Time Stop</a> (this is in addition to lasting half its specified <code><a href="#effv1_Header_0xE">Duration</a></code>).
     - name: ITM_HEAD_alt_damage_bonus
       detail: byte ITM_HEAD_alt_damage_bonus
       doc: Alternative damage bonus
@@ -916,7 +986,10 @@ iesdp-byte:
         - See <code><a href="../../files/2da/2da_bgee/msectype.htm">MSECTYPE.2DA</a></code>.
     - name: ITM_HEAD_speed
       detail: byte ITM_HEAD_speed
-      doc: Speed
+      doc: |-
+        <b><a name="itmv1_Extended_Header_SpeedFactor">Speed Factor</a></b>
+
+        - See [opcode #190]({{ "/opcodes/bgee.htm#op190" | prepend: relurl }}).
     - name: ITM_kit_usability1
       detail: byte ITM_kit_usability1
       doc: '[Kit Usability 1](#Header_KitUsability)'
@@ -959,66 +1032,6 @@ iesdp-byte:
 iesdp-char:
   type: 21
   items:
-    - name: EFF_timing_mode
-      detail: char EFF_timing_mode
-      doc: |
-        <b><a name="effv1_Header_0xC">Timing mode</a></b>
-
-        - 0 ⟶ <b><a name="effv1_Header_0xC_0">Instant/Limited</a></b>
-          - This timing mode measures <code><a href="#effv1_Header_0xE">Duration</a></code> in seconds.
-          - Instantly converts to <code><a href="#effv1_Header_0xC_4096">Absolute duration</a></code>, <code>new duration(ticks) = Gametime(ticks) + 15 * <a href="#effv1_Header_0xE">Duration</a>(seconds)</code>.
-        - 1 ⟶ <b><a name="effv1_Header_0xC_1">Instant/Permanent</a></b>
-          - If the opcode doesn't directly modify a <code><a href="../../files/ids/bgee/stats.htm">STAT</a>/<a href="../../files/ids/bgee/state.htm">STATE</a></code> in the target's <a href="../ie_formats/cre_v1.htm">CRE</a> file, then it will last until removed (or it self-terminates). <code>New duration(ticks) = <a href="#effv1_Header_0xE">Duration</a>(ticks)</code> (mostly unused).
-        - 2 ⟶ <b><a name="effv1_Header_0xC_2">Instant/While equipped</a></b>
-          - As global `ITM` effect: Applied when item is equipped, lasts until item is unequipped (or <a href="../../opcodes/bgee.htm#op135">polymorph</a> bug).
-            - "Equipping" also occurs when game loads, and for weapons whenever they are selected from quickbar (even if it's already the active weapon). Never expires, and not considered a "Limited" effect.
-          - As `SPL` or header `ITM` effect: applies instantly, lasts until game is reloaded.
-          - <code>New duration(ticks) = <a href="#effv1_Header_0xE">Duration</a>(ticks)</code> (mostly unused).
-        - 3 ⟶ <b><a name="effv1_Header_0xC_3">Delay/Limited</a></b>
-          - This timing mode measures <code><a href="#effv1_Header_0xE">Duration</a></code> in seconds.
-          - Instantly converts to <code><a href="#effv1_Header_0xC_6">Limited after duration</a></code>, <code>new duration(ticks) = Gametime(ticks) + 15 * <a href="#effv1_Header_0xE">Duration</a>(seconds)</code>.
-        - 4 ⟶ <b><a name="effv1_Header_0xC_4">Delay/Permanent</a></b>
-          - This timing mode measures <code><a href="#effv1_Header_0xE">Duration</a></code> in seconds.
-          - Instantly converts to <code><a href="#effv1_Header_0xC_7">Permanent after duration</a></code>, <code>new duration(ticks) = Gametime(ticks) + 15 * <a href="#effv1_Header_0xE">Duration</a>(seconds)</code>.
-        - 5 ⟶ <b><a name="effv1_Header_0xC_5">Delay/While equipped</a></b>
-          - This timing mode measures <code><a href="#effv1_Header_0xE">Duration</a></code> in seconds.
-          - Instantly converts to <code><a href="#effv1_Header_0xC_8">Equipped after duration</a></code>, <code>new duration(ticks) = Gametime(ticks) + 15 * <a href="#effv1_Header_0xE">Duration</a>(seconds)</code>.
-        - 6 ⟶ <b><a name="effv1_Header_0xC_6">Limited after duration</a></b>
-          - This timing mode measures <code><a href="#effv1_Header_0xE">Duration</a></code> in ticks (<small><sup>1</sup>⁄<sub>15</sub></small> second).
-          - At <code>Gametime(ticks) >= <a href="#effv1_Header_0xE">Duration</a>(ticks)</code> converts to <code><a href="#effv1_Header_0xC_4096">Absolute duration</a></code>, <code>new duration(ticks) = 2 * <a href="#effv1_Header_0xE">Duration</a>(ticks) - <a href="../ie_formats/eff_v2.htm#effv2_Body_0x6C">Time Applied</a>(ticks)</code>.
-            - (If previously converted from <code><a href="#effv1_Header_0xC_3">Delay/Limited</a></code>)
-          - At <code>Gametime(ticks) >= <a href="#effv1_Header_0xE">Duration</a>(ticks)</code> converts to <code><a href="#effv1_Header_0xC_4096">Absolute duration</a></code>, <code>new duration(ticks) = 16 * <a href="#effv1_Header_0xE">Duration</a>(ticks)</code>.
-            - (If effect applied directly with <code><a href="#effv1_Header_0xC_6">Limited after duration</a></code>)
-            - `16 x Duration(ticks) = Duration(ticks) + 15 * Duration(seconds)` (Yes, it calculates a new duration using its current <code><a href="#effv1_Header_0xE">Duration</a></code> field as both ticks and seconds).
-            - It will convert to <code><a href="#effv1_Header_0xC_4096">Absolute duration</a></code> at the same `Gametime(ticks)` no matter when the effect was applied.
-            - That <code><a href="#effv1_Header_0xC_4096">Absolute duration</a></code> will expire at the same `Gametime(ticks)` no matter when the effect was applied.
-        - 7 ⟶ <b><a name="effv1_Header_0xC_7">Permanent after duration</a></b>
-          - This timing mode measures <code><a href="#effv1_Header_0xE">Duration</a></code> in ticks (<small><sup>1</sup>⁄<sub>15</sub></small> second).
-          - At <code>Gametime(ticks) >= <a href="#effv1_Header_0xE">Duration</a>(ticks)</code> converts to <code><a href="#effv1_Header_0xC_1">Instant/Permanent</a></code>, <code>new duration(ticks) = 2 * <a href="#effv1_Header_0xE">Duration</a>(ticks) - <a href="../ie_formats/eff_v2.htm#effv2_Body_0x6C">Time Applied</a>(ticks)</code>.
-            - (If previously converted from <code><a href="#effv1_Header_0xC_4">Delay/Permanent</a></code>)
-          - At <code>Gametime(ticks) >= <a href="#effv1_Header_0xE">Duration</a>(ticks)</code> converts to <code><a href="#effv1_Header_0xC_1">Instant/Permanent</a></code>, <code>new duration(ticks) = 16 * <a href="#effv1_Header_0xE">Duration</a>(ticks)</code>.
-            - (If effect applied directly with <code><a href="#effv1_Header_0xC_7">Permanent after duration</a></code>)
-            - It will convert to <code><a href="#effv1_Header_0xC_1">Instant/Permanent</a></code> at the same `Gametime(ticks)` no matter when the effect was applied.
-        - 8 ⟶ <b><a name="effv1_Header_0xC_8">Equipped after duration</a></b>
-          - This timing mode measures <code><a href="#effv1_Header_0xE">Duration</a></code> in ticks (<small><sup>1</sup>⁄<sub>15</sub></small> second).
-          - At <code>Gametime(ticks) >= <a href="#effv1_Header_0xE">Duration</a>(ticks)</code> converts to <code><a href="#effv1_Header_0xC_2">Instant/While equipped</a></code>, <code>new duration(ticks) = irrelevant</code>.
-        - 9 ⟶ <b><a name="effv1_Header_0xC_9">Instant/Permanent</a></b> (after Death)
-          - Effect is applied instantly.
-          - Never expires, but can terminate or be removed. <code>New duration(ticks) = <a href="#effv1_Header_0xE">Duration</a>(ticks)</code>.
-        - 10 ⟶ <b><a name="effv1_Header_0xC_10">Instant/Limited</a></b>
-          - This timing mode measures <code><a href="#effv1_Header_0xE">Duration</a></code> in ticks (<small><sup>1</sup>⁄<sub>15</sub></small> second).
-          - Instantly converts to <code><a href="#effv1_Header_0xC_4096">Absolute duration</a></code>, <code>new duration(ticks) = Gametime(ticks) + <a href="effv1_Header_0xE">Duration</a>(ticks)</code>.
-          - If <code><a href="#effv1_Header_0xE">Duration</a> = 0</code>, it won't function any differently from timing mode <code><a href="#effv1_Header_0xC_0">0</a></code>.
-        - 4096 ⟶ <b><a name="effv1_Header_0xC_4096">Absolute duration</a></b>
-          - Effect is applied instantly.
-          - This timing mode treats the <code><a href="#effv1_Header_0xE">Duration</a></code> field as the effect's expiration time (in ticks). Expires at <code>Gametime(ticks) >= <a href="#effv1_Header_0xE">Duration</a>(ticks)</code>.
-            - If the <code><a href="#effv1_Header_0xE">Duration</a></code> field is 108000, the effect will expire when the game timer reaches 24 hours, or instantly if the game timer has already passed that point. `108000 = 300(1 hour) * 24 * 15 (ticks ➔ seconds)`.
-
-
-        - All effects except those with Timing mode <code><a href="#effv1_Header_0xC_9">9</a></code> are removed by death.
-        - Some effects use a measurement of gametime in seconds, and multiply it by 15, rather than taking the exact gametime in ticks.<br/>
-          - This results in them lasting longer/shorter than they should (by up to 14 ticks).
-            - One of such effects is <a href="../../opcodes/bgee.htm#op231">Time Stop</a> (this is in addition to lasting half its specified <code><a href="#effv1_Header_0xE">Duration</a></code>).
     - name: FX_power
       detail: char FX_power
       doc: Power
