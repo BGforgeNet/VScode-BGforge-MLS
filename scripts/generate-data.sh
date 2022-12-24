@@ -18,3 +18,9 @@ dest_dir="server/out"
     --completion $dest_dir/completion.weidu-tp2.json \
     --hover $dest_dir/hover.weidu-tp2.json \
     --hover-lang weidu-tp2
+
+./scripts/generate-data.py \
+    -i $data_dir/weidu-baf-base.yml $data_dir/weidu-baf-iesdp.yml \
+    --completion $dest_dir/completion.weidu-baf.json \
+    --hover $dest_dir/hover.weidu-baf.json \
+    --hover-lang weidu-baf
