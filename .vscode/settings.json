@@ -10,5 +10,6 @@
 	"npm.exclude": ["**/client", "**/server"],
 	"python.analysis.extraPaths": [
 		"./scripts"
-	]
+	],
+	"python.formatting.provider": "black"
 }
