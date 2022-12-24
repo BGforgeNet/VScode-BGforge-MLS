@@ -21,7 +21,7 @@ ielib_dir="$external/ielib"
 # IESDP - also updates IElib
 pushd .
 if [ ! -d "$iesdp_dir" ]; then
-  git clone "$iesdp_repo" "$iesdp_dir"
+    git clone "$iesdp_repo" "$iesdp_dir"
 fi
 cd $iesdp_dir
 git checkout ielib
@@ -32,7 +32,7 @@ popd
 # IElib
 pushd .
 if [ ! -d "$ielib_dir" ]; then
-  git clone "$ielib_repo" "$ielib_dir"
+    git clone "$ielib_repo" "$ielib_dir"
 fi
 cd "$ielib_dir"
 git pull

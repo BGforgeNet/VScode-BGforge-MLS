@@ -65,8 +65,14 @@ for items_list in data:
             doc = item["doc"]
         except:
             doc = ""
-        markdown = { "kind": "markdown", "value": doc }
-        completion_item = { "label": label, "kind": kind, "documentation": markdown, "detail": detail, "source": "builtin" }
+        markdown = {"kind": "markdown", "value": doc}
+        completion_item = {
+            "label": label,
+            "kind": kind,
+            "documentation": markdown,
+            "detail": detail,
+            "source": "builtin",
+        }
         completion_data.append(completion_item)
 
 

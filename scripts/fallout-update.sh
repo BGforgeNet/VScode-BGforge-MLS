@@ -14,14 +14,14 @@ sfall_file="server/data/fallout-ssl-sfall.yml"
 highlight_file="syntaxes/fallout-ssl.tmLanguage.yml"
 
 if [ ! -d $external ]; then
-  mkdir $external
+    mkdir $external
 fi
 
 # rpu
 pushd .
 cd $external
 if [ ! -d $rpu_dir ]; then
-  git clone $rpu_repo $rpu_dir
+    git clone $rpu_repo $rpu_dir
 fi
 cd $rpu_dir
 git checkout master
@@ -34,7 +34,7 @@ popd
 pushd .
 cd $external
 if [ ! -d $sfall_dir ]; then
-  git clone $sfall_repo $sfall_dir
+    git clone $sfall_repo $sfall_dir
 fi
 cd $sfall_dir
 git checkout master
