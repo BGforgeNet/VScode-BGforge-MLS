@@ -1,7 +1,21 @@
 #!/usr/bin/env python3
-# coding: utf-8
 
-from ie_import import *
+import argparse
+import re
+from ie import (
+    COMPLETION_TYPE_function,
+    find_files,
+    LS,
+    dump_completion,
+    dump_highlight,
+)
+import os
+
+import ruamel.yaml
+
+yaml = ruamel.yaml.YAML(typ="rt")
+yaml.width = 4096
+yaml.indent(mapping=2, sequence=4, offset=2)
 
 # parse args
 parser = argparse.ArgumentParser(

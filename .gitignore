@@ -18,3 +18,5 @@ node_modules
 scripts/__pycache__/
 syntaxes_to_json.sh.err
 tmp
+
+**/__pycache__/**

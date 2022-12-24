@@ -2,21 +2,12 @@
 
 import argparse
 import json
-from collections import OrderedDict
 
 import ruamel.yaml
 
 yaml = ruamel.yaml.YAML(typ="rt")
 yaml.width = 4096
 yaml.indent(mapping=2, sequence=4, offset=2)
-# https://stackoverflow.com/questions/57382525/can-i-control-the-formatting-of-multiline-strings
-from ruamel.yaml.scalarstring import LiteralScalarString
-import textwrap
-
-
-def LS(s):
-    return LiteralScalarString(textwrap.dedent(s))
-
 
 parser = argparse.ArgumentParser(
     description="Generate completion and hover files from data",

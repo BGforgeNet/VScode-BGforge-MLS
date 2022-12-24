@@ -1,7 +1,33 @@
 #!/usr/bin/env python3
-# coding: utf-8
 
-from ie_import import *
+import argparse
+import os
+import sys
+from ie import (
+    find_files,
+    opcode_name_to_id,
+    append_unique,
+    action_desc,
+    LS,
+    strip_liquid,
+    action_detail,
+    get_offset_prefix,
+    offsets_to_definition,
+    offsets_to_completion,
+    dump_definition,
+    dump_completion,
+    dump_highlight,
+)
+import frontmatter
+from collections import OrderedDict
+from collections import Counter as collections_counter
+
+import ruamel.yaml
+
+yaml = ruamel.yaml.YAML(typ="rt")
+yaml.width = 4096
+yaml.indent(mapping=2, sequence=4, offset=2)
+
 
 # parse args
 parser = argparse.ArgumentParser(

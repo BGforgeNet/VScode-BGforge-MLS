@@ -1,20 +1,9 @@
-#!/usr/bin/env python3
-
 # common functions to dump IElib/IESDP data to completion and highlight
-import sys, os, re
-import argparse
-from collections import OrderedDict
-from collections import Counter as collections_counter
-from urllib.parse import urljoin
-from markdown import markdown
+import sys, os
 import functools
-import frontmatter
-
-from ie_actions import *
-from ie_offsets import *
-from ie_opcodes import *
-
 import ruamel.yaml
+
+from .offsets import get_offset_id
 
 yaml = ruamel.yaml.YAML(typ="rt")
 yaml.width = 4096
