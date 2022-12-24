@@ -1,0 +1,1244 @@
+iesdp-other:
+  type: 21
+  items:
+    - name: EFF2_signature
+      detail: char array EFF2_signature
+      doc: Signature ('EFF ')
+    - name: EFF2_signature2
+      detail: char array EFF2_signature2
+      doc: |
+        External EFFs - the field is the same as the signature field from the header  
+        <a href="../ie_formats/cre_v1.htm#CREV1_0_Header_0x33_1">Embedded EFF</a>s - this field is zeroed out
+    - name: EFF2_variable_name
+      detail: bytes EFF2_variable_name
+      doc: |-
+        <b><a name="effv2_Body_0xA8">Variable name</a></b>
+    - name: EFF2_version
+      detail: char array EFF2_version
+      doc: Version ('V2.0')
+    - name: EFF2_version2
+      detail: char array EFF2_version2
+      doc: |
+        External EFFs - the field is the same as the version field from the header  
+        <a href="../ie_formats/cre_v1.htm#CREV1_0_Header_0x33_1">Embedded EFF</a>s - this field is zeroed out
+    - name: ITM_HEAD_melee_animation
+      detail: multi word ITM_HEAD_melee_animation
+      doc: |-
+        <b>[Melee animation](#ExtendedHeader_MeleeAnimation)</b>
+
+        - It should total 100, but not mandatory on EE games.
+        - Not needed if <code><a href="#itmv1_Extended_Header_0x32">Arrow</a></code>/<code><a href="#itmv1_Extended_Header_0x34">Bolt</a></code>/<code><a href="#itmv1_Extended_Header_0x36">Bullet</a></code> is used.
+        - It should work as such:<br/>
+          Engine rolls `0 – 99`.
+          - `overhand range = 0 to (overhand - 1)`
+          - `backhand range = overhand to (overhand + backhand - 1)`
+          - `thrust range = (overhand + backhand) to (overhand + backhand + thrust - 1)`
+
+          A couple of examples:
+          - With values `34`, `33`, and `33`:
+            - `0 – 33`: Overhand
+            - `34 – 66`: Backhand
+            - `67 – 99`: Thrust
+          - With values `100`, `100`, `100`:
+            - `0 – 99`: Overhand
+            - `100 – 199`: Backhand (never used)
+            - `200 – 299`: Thrust (never used)
+        - Along with <code><a href="#itmv1_Extended_Header_0x32">Is arrow?</a></code>/<code><a href="#itmv1_Extended_Header_0x34">Is bolt?</a></code>/<code><a href="#itmv1_Extended_Header_0x36">Is bullet?</a></code>, it is only used for attack animations. If all are zero, no animation will be used for attacking. Activated <code><a href="#itmv1_Extended_Header_0x2_3">Item</a></code> abilities can leave them all `0`, as they are not used.
+    - name: ITM_animation
+      detail: char array ITM_animation
+      doc: '[Item animation](#Header_Animation)'
+    - name: ITM_signature
+      detail: char array ITM_signature
+      doc: Signature ('ITM ')
+    - name: ITM_usability_flags
+      detail: multi byte ITM_usability_flags
+      doc: '[Usability bitmask](#Header_Usability)'
+    - name: ITM_version
+      detail: char array ITM_version
+      doc: Version ('V1  ')
+    - name: SPL_signature
+      detail: char array SPL_signature
+      doc: Signature ('SPL &nbsp;')
+    - name: SPL_version
+      detail: char array SPL_version
+      doc: Version ('V1  ')
+iesdp-strref:
+  type: 21
+  items:
+    - name: ITM_identified_desc
+      detail: strref ITM_identified_desc
+      doc: Identified Description (strref)
+    - name: ITM_identified_name
+      detail: strref ITM_identified_name
+      doc: Identified Name (strref)
+    - name: ITM_unidentified_desc
+      detail: strref ITM_unidentified_desc
+      doc: Unidentified Description (strref)
+    - name: ITM_unidentified_name
+      detail: strref ITM_unidentified_name
+      doc: Unidentified Name (strref)
+iesdp-resref:
+  type: 21
+  items:
+    - name: EFF2_parent_resource
+      detail: resref EFF2_parent_resource
+      doc: |
+        <b><a name="effv2_Body_0x94">Parent resource</a></b>
+
+
+        This specific field always needs to be in <u><b>ALLCAPS</b></u>.<br />
+        <br />
+
+        Be careful checking it in <a href="https://github.com/Argent77/NearInfinity">Near Infinity</a>, it displays <code>resource</code> fields in ALLCAPS regardless of the actual characters. However, it also always saves those fields in ALLCAPS as well.
+        {% endcapture %} {% include important.html %}
+
+
+        - When attaching passive kit bonuses (labeled as `AP_XXXXXXXX` in <code><a href="../../files/2da/2da_bgee/clabxx00.htm">CLAB</a></code> files) to joinable CRE files as <a href="../ie_formats/cre_v1.htm#CREV1_0_Header_0x33_1">V2 Effects</a>, this field should be set to the SPL applying such bonuses.
+          - In so doing, such bonuses will not be applied a second time (due to <code><a href="../../files/2da/2da_bgee/clabxx00.htm">CLAB</a></code> processing) when those creatures join the Party.
+        - So for instance, when applying +10％ <a href="../../opcodes/bgee.htm#op87">Crushing Resistance</a> to a CRE file whose <code><a href="../ie_formats/cre_v1.htm#CREV1_0_Header_0x244">Kit</a></code> is `BARBARIAN`, set this field to `"SPCL153"`.
+    - name: EFF2_resource
+      detail: resref EFF2_resource
+      doc: Resource
+    - name: EFF2_resource2
+      detail: resref EFF2_resource2
+      doc: |-
+        <b><a name="effv2_Body_0x70">Resource 2</a></b> (<a href="../ie_formats/vvc_v1.htm">VVC</a> in many effects)
+    - name: EFF2_resource3
+      detail: resref EFF2_resource3
+      doc: |-
+        <b><a name="effv2_Body_0x78">Resource 3</a></b>
+    - name: EFF_resref_key
+      detail: resref EFF_resref_key
+      doc: Resref key
+    - name: FX_resource
+      detail: resref FX_resource
+      doc: Resource
+    - name: ITM_HEAD_use_icon
+      detail: resref ITM_HEAD_use_icon
+      doc: Use icon
+    - name: ITM_description_icon
+      detail: resref ITM_description_icon
+      doc: Description icon (BAM)
+    - name: ITM_ground_icon
+      detail: resref ITM_ground_icon
+      doc: <b><a name="itmv1_Header_0x44">Ground icon</a></b> (BAM)
+    - name: ITM_inventory_icon
+      detail: resref ITM_inventory_icon
+      doc: Inventory icon (BAM)
+    - name: ITM_replacement
+      detail: resref ITM_replacement
+      doc: |
+        BG1, BG2, BGEE:  
+        <b><a name="itmv1_Header_0x10">Replacement item</a></b> (ITM)
+
+        PSTEE:  
+        Drop sound - played when the item is dropped in the inventory (WAV)
+    - name: SPL_HEAD_memorised_icon
+      detail: resref SPL_HEAD_memorised_icon
+      doc: Memorised icon (BAM). The engine replaces the last character of this filename with a B.
+    - name: SPL_completion_sound
+      detail: resref SPL_completion_sound
+      doc: Completion Sound
+    - name: SPL_spellbook_icon
+      detail: resref SPL_spellbook_icon
+      doc: Spellbook icon (BAM). The engine replaces the last character of this filename with a C.
+iesdp-dword:
+  type: 21
+  items:
+    - name: EFF2_caster_level
+      detail: dword EFF2_caster_level
+      doc: |-
+        <b><a name="effv2_Body_0xC8">Caster level</a></b>
+    - name: EFF2_caster_x_coord
+      detail: dword EFF2_caster_x_coord
+      doc: Caster X coordinate
+    - name: EFF2_caster_y_coord
+      detail: dword EFF2_caster_y_coord
+      doc: Caster Y coordinate
+    - name: EFF2_dice_sides
+      detail: dword EFF2_dice_sides
+      doc: Dice Sides
+    - name: EFF2_dice_thrown
+      detail: dword EFF2_dice_thrown
+      doc: Dice Thrown
+    - name: EFF2_duration
+      detail: dword EFF2_duration
+      doc: |
+        <b><a name="effv2_Body_0x28">Duration</a></b>
+
+        - This field is measured in seconds or ticks (<small><sup>1</sup>⁄<sub>15</sub></small> second), depending on <code><a href="#effv2_Body_0x24">Timing mode</a></code>.
+
+
+        If called via <a href="../../opcodes/bgee.htm#op177">opcode #177</a>/<a href="../../opcodes/bgee.htm#op183">opcode #183</a>/<a href="../../opcodes/bgee.htm#op283">opcode #283</a>, this field is ignored.
+    - name: EFF2_opcode
+      detail: dword EFF2_opcode
+      doc: Opcode number
+    - name: EFF2_parameter1
+      detail: dword EFF2_parameter1
+      doc: Parameter 1
+    - name: EFF2_parameter2
+      detail: dword EFF2_parameter2
+      doc: Parameter 2
+    - name: EFF2_parameter3
+      detail: dword EFF2_parameter3
+      doc: |-
+        <b><a name="effv2_Body_0x60">Parameter 3</a></b>
+    - name: EFF2_parameter4
+      detail: dword EFF2_parameter4
+      doc: |-
+        <b><a name="effv2_Body_0x64">Parameter 4</a></b>
+    - name: EFF2_parameter5
+      detail: dword EFF2_parameter5
+      doc: Parameter 5
+    - name: EFF2_parent_resource_flags
+      detail: dword EFF2_parent_resource_flags
+      doc: |-
+        <b><a name="effv2_Body_0x9C">Parent resource flags</a></b>
+
+        - bit 10 ⟶ <b><a name="effv2_Body_0x9C_BIT10">Hostile</a></b>
+        - bit 11 ⟶ No LOS required
+        - bit 12 ⟶ Allow spotting
+        - bit 13 ⟶ Outdoors only
+        - bit 14 ⟶ Non-magical ability
+        - bit 15 ⟶ Ignore Wild Surge
+        - bit 16 ⟶ Non-combat ability
+    - name: EFF2_parent_resource_type
+      detail: dword EFF2_parent_resource_type
+      doc: |-
+        <b><a name="effv2_Body_0x90">Parent resource type</a></b>
+        - 0 ⟶ <b><a name="effv2_Body_0x90_0">None</a></b>
+        - 1 ⟶ <b><a name="effv2_Body_0x90_1">Spell</a></b>
+        - 2 ⟶ <b><a name="effv2_Body_0x90_2">Item</a></b>
+    - name: EFF2_power
+      detail: dword EFF2_power
+      doc: Power
+    - name: EFF2_projectile
+      detail: dword EFF2_projectile
+      doc: |-
+        <b><a name="effv2_Body_0xA0">Projectile</a></b>
+    - name: EFF2_resistance
+      detail: dword EFF2_resistance
+      doc: |+
+        <b><a name="effv2_Body_0x5C">Dispel/Resistance</a></b>
+
+        The default behaviour is that effects cannot be dispelled and ignore resistance.
+        - bit 0 ⟶ <b><a name="effv2_Body_0x5C_BIT0">Dispel</a></b>
+          - Can be dispelled, affected by Magic Resistance.
+        - bit 1 ⟶ <b><a name="effv2_Body_0x5C_BIT1">Bypass resistance</a></b>
+          - Ignores Magic Resistance.
+        - bit 2 ⟶ <b><a name="effv2_Body_0x5C_BIT2">Bypasses deflection/reflection/trap opcodes</a></b> (only in EE games patched to v2.0+).
+        - bit 3 ⟶ <b><a name="effv2_Body_0x5C_BIT3">Self-targeted</a></b> (only in EE games patched to v2.6+)
+          - Targeting yourself with an ability (Extended Header) will internally set this bit on all effects applied by that ability.
+            - For the caster, it will allow a Magic Resistance check for any effect that has both <code><a href="#effv2_Body_0x5C_BIT0">Dispel</a></code> set and offers some saving throw.
+              - The saving throw doesn't have to succeed, it just has to be offered.
+            - For anyone else hit by the ability, it will allow a Magic Resistance check for any effect that also has <code><a href="#effv2_Body_0x5C_BIT0">Dispel</a></code> set.
+          - Either way, this bit is still overridden by <code><a href="#effv2_Body_0x5C_BIT1">Bypass Resistance</a></code>.
+          - This feature should eliminate the bug/exploit of bypassing other's Magic Resistance by targeting yourself with an <code><a href="../ie_formats/pro_v1.htm#0x8_3">area-effect</a></code> ability.
+        - bit 31 ⟶ <b><a name="effv2_Body_0x5C_BIT31">Effect applied by item</a></b>
+          - Effect was applied by an [ITM](../ie_formats/itm_v1.htm) (only present in EE games patched to v2.0+).
+          - It is set by the engine if the effect's source [ITM](../ie_formats/itm_v1.htm) is identified.
+            - This bit is only used by [opcode #324](../../opcodes/bgee.htm#op324) which checks it to determine whether it should set <code><a href="../../files/2da/2da_bgee/enginest.htm#128">STRREF_FEEDBACK_IMMUNE_RESOURCE</a></code> to the ITM's general or identified name.
+
+        This can also be presented in the more traditional way:
+        - 0 ⟶ Nonmagical
+        - 1 ⟶ Can be dispelled/Affected by resistance
+        - 2 ⟶ Cannot be dispelled/Ignores resistance
+        - 3 ⟶ Can be dispelled/Ignores resistance
+
+
+        If called via <a href="../../opcodes/bgee.htm#op183">opcode #183</a>, this field is ignored.
+
+    - name: EFF2_save_bonus
+      detail: dword EFF2_save_bonus
+      doc: |
+        <b><a name="effv2_Body_0x44">Save bonus</a></b>
+
+
+        If called via <a href="../../opcodes/bgee.htm#op183">opcode #183</a>, this field is ignored.
+    - name: EFF2_save_type
+      detail: dword EFF2_save_type
+      doc: |
+        <b><a name="effv2_Body_0x40">Saving throw type</a></b>
+
+        - bit 0 ⟶ <b><a name="effv2_Body_0x40_BIT0">Spells</a></b>
+        - bit 1 ⟶ <b><a name="effv2_Body_0x40_BIT1">Breath</a></b>
+        - bit 2 ⟶ <b><a name="effv2_Body_0x40_BIT2">Paralyze / Poison / Death</a></b>
+        - bit 3 ⟶ <b><a name="effv2_Body_0x40_BIT3">Wands</a></b>
+        - bit 4 ⟶ <b><a name="effv2_Body_0x40_BIT4">Petrify / Polymorph</a></b>
+        - bit 10 ⟶ <b><a name="effv2_Body_0x40_BIT10">Ignore primary target</a></b> (EE only)
+        - bit 11 ⟶ <b><a name="effv2_Body_0x40_BIT11">Ignore secondary target</a></b> (EE only)
+        - bit 24 ⟶ <b><a name="effv2_Body_0x40_BIT24">Bypass mirror image</a></b> (EE/TobEx only)
+        - bit 25 ⟶
+          - <b><a name="effv2_Body_0x40_BIT25_EE">Ignore difficulty</a></b> (EE only)
+          - <b><a name="effv2_Body_0x40_BIT25_ToBEx">Limit effect stacking</a></b> (ToBEx only)
+        - bit 26 ⟶ TobEx internal (don't use)
+
+
+        See <a href="../ie_formats/eff_v1.htm#effv1_Header_0x24">here</a> for further details.
+
+
+
+        If called via <a href="../../opcodes/bgee.htm#op183">opcode #183</a>, this field is ignored.
+    - name: EFF2_school
+      detail: dword EFF2_school
+      doc: |-
+        <b><a name="effv2_Body_0x4C">Primary Type (School)</a></b>
+
+        - See <code><a href="../../files/2da/2da_bgee/mschool.htm">MSCHOOL.2DA</a></code>.
+    - name: EFF2_sectype
+      detail: dword EFF2_sectype
+      doc: |-
+        <b><a name="effv2_Body_0xD0">Secondary Type</a></b>
+
+        - See <code><a href="../../files/2da/2da_bgee/msectype.htm">MSECTYPE.2DA</a></code>.
+    - name: EFF2_stacking_id_tobex
+      detail: dword EFF2_stacking_id_tobex
+      doc: |
+        TobEx: Stacking ID. Checked when bit 25 of the Saving Throw Type is set.
+
+        If two effects of the same opcode are applied, both have Limit Effect Stacking bit set, and both have the same stacking ID, then the latter applied effect is suspended in application until the former effect expires. Regardless of whether it is applied, the latter effect will expire at the same time that it would expire if it was applied. In other words, the total duration of some non-stacking effect opcode is not extended because more than one copy of the effect was applied.
+
+        Stacking IDs are unique to the opcode being applied. To maintain uniqueness of stacking IDs between different mods, one recommendation is to use the higher word of Special as the modder's Infinity Engine Community Prefix, then use the lower word as an identifying ID. For example, 0x41360001 ('A6' 0x0001).
+    - name: EFF2_target
+      detail: dword EFF2_target
+      doc: |
+        <b><a name="effv2_Body_0x14">Target type</a></b>
+
+        - 0 ⟶ <b><a name="effv2_Body_0x14_0">None</a></b>
+        - 1 ⟶ <b><a name="effv2_Body_0x14_1">Self</a></b>
+        - 2 ⟶ <b><a name="effv2_Body_0x14_2">Projectile target</a></b>
+        - 3 ⟶ <b><a name="effv2_Body_0x14_3">Party</a></b>
+        - 4 ⟶ <b><a name="effv2_Body_0x14_4">Everyone</a></b>
+        - 5 ⟶ <b><a name="effv2_Body_0x14_5">Everyone except party</a></b>
+        - 6 ⟶ <b><a name="effv2_Body_0x14_6">Caster group</a></b>
+        - 7 ⟶ <b><a name="effv2_Body_0x14_7">Target group</a></b>
+        - 8 ⟶ <b><a name="effv2_Body_0x14_8">Everyone except self</a></b>
+        - 9 ⟶ <b><a name="effv2_Body_0x14_9">Original caster</a></b>
+
+
+        - If called via <a href="../../opcodes/bgee.htm#op177">opcode #177</a>/<a href="../../opcodes/bgee.htm#op283">opcode #283</a>/<a href="../../opcodes/bgee.htm#op183">opcode #183</a>/<a href="../../opcodes/bgee.htm#op272">opcode #272</a>, this field is irrelevant (it will affect whatever creature the <a href="../../opcodes/bgee.htm#op177">opcode #177</a>/<a href="../../opcodes/bgee.htm#op283">opcode #283</a>/<a href="../../opcodes/bgee.htm#op183">opcode #183</a>/<a href="../../opcodes/bgee.htm#op272">opcode #272</a> effect is attached to).
+        - If called via <a href="../../opcodes/bgee.htm#op248">opcode #248</a>, this field is irrelevant (it will affect whatever creature was attacked).
+        - If called via <a href="../../opcodes/bgee.htm#op249">opcode #249</a>, this field will function same as in <code><a href="../ie_formats/eff_v1.htm#effv1_Header_0x2">SPL/ITM</a></code> effects, except that <code><a href="#effv2_Body_0x14_0">None</a></code> will default to <code><a href="#effv2_Body_0x14_2">Projectile target</a></code>.
+        - If attached directly to a <a href="../ie_formats/cre_v1.htm">CRE</a> file, this field is irrelevant (it will affect whatever creature it's attached to). Also applies to <a href="../ie_formats/cre_v1.htm#CREV1_0_Header_0x33_0">V1 effects</a> attached directly to <a href="../ie_formats/cre_v1.htm">CRE</a> files.
+    - name: EFF2_target_x_coord
+      detail: dword EFF2_target_x_coord
+      doc: Target X coordinate
+    - name: EFF2_target_y_coord
+      detail: dword EFF2_target_y_coord
+      doc: Target Y coordinate
+    - name: EFF2_time_applied
+      detail: dword EFF2_time_applied
+      doc: |-
+        <b><a name="effv2_Body_0x6C">Time applied</a></b> (ticks)
+
+        - It stores the gametime (ticks) at which the effect was originally applied.
+    - name: EFF_dice_sides
+      detail: dword EFF_dice_sides
+      doc: |
+        <b><a name="effv1_Header_0x20">Dice Sides / Minimum Level</a></b>
+
+        - When this field is non-zero, all opcodes except for <a href="../../opcodes/bgee.htm#op12">opcode #12</a>, <a href="../../opcodes/bgee.htm#op17">opcode #17</a>, <a href="../../opcodes/bgee.htm#op18">opcode #18</a>, <a href="../../opcodes/bgee.htm#op218">opcode #218</a> (only when `parameter2=1`), <a href="../../opcodes/bgee.htm#op331">opcode #331</a>, and <a href="../../opcodes/bgee.htm#op333">opcode #333</a>, treat it as `Minimum Level`, meaning that only creatures whose level attribute is greater than or equal to this value will be affected by the effect.
+
+
+        When this field is used as `Minimum Level`:
+        - A `7 ➔ 1` dual-class character qualifies as HD 7, even though the level 7 class is still inactive.
+        - A `1/7/1` multi-class character qualifies as HD 7, not level 3 (average).
+        - The <a href="../ie_formats/cre_v1.htm#CREV1_0_Header_0x235">2<sup><small>nd</small></sup></a>/<a href="../ie_formats/cre_v1.htm#CREV1_0_Header_0x236">3<sup><small>rd</small></sup></a> class levels are NOT included for single-classes.
+          - A `1/30/1` single-class qualifies as HD 1.
+    - name: EFF_dice_thrown
+      detail: dword EFF_dice_thrown
+      doc: |
+        <b><a name="effv1_Header_0x1C">Dice Thrown / Maximum Level</a></b>
+
+        - When this field is non-zero, all opcodes except for <a href="../../opcodes/bgee.htm#op12">opcode #12</a>, <a href="../../opcodes/bgee.htm#op17">opcode #17</a>, <a href="../../opcodes/bgee.htm#op18">opcode #18</a>, <a href="../../opcodes/bgee.htm#op218">opcode #218</a> (only when `parameter2=1`), <a href="../../opcodes/bgee.htm#op331">opcode #331</a>, and <a href="../../opcodes/bgee.htm#op333">opcode #333</a>, treat it as `Maximum Level`, meaning that only creatures whose level attribute is less than or equal to this value will be affected by the effect.
+
+
+        When this field is used as `Maximum Level`:
+        - A `7 ➔ 1` dual-class character qualifies as HD 7, even though the level 7 class is still inactive.
+        - A `1/7/1` multi-class character qualifies as HD 7, not level 3 (average).
+        - The <a href="../ie_formats/cre_v1.htm#CREV1_0_Header_0x235">2<sup><small>nd</small></sup></a>/<a href="../ie_formats/cre_v1.htm#CREV1_0_Header_0x236">3<sup><small>rd</small></sup></a> class levels are NOT included for single-classes.
+          - A `1/30/1` single-class character qualifies as HD 1.
+    - name: EFF_duration
+      detail: dword EFF_duration
+      doc: |-
+        <b><a name="effv1_Header_0xE">Duration</a></b>
+
+        - This field is measured in seconds or ticks (<small><sup>1</sup>⁄<sub>15</sub></small> second), depending on <code><a href="#effv1_Header_0xC">Timing mode</a></code>.
+    - name: EFF_parameter1
+      detail: dword EFF_parameter1
+      doc: Parameter 1
+    - name: EFF_parameter2
+      detail: dword EFF_parameter2
+      doc: Parameter 2
+    - name: EFF_save_bonus
+      detail: dword EFF_save_bonus
+      doc: Saving throw bonus
+    - name: EFF_save_type
+      detail: dword EFF_save_type
+      doc: |
+        <b><a name="effv1_Header_0x24">Saving throw type</a></b>
+
+        - bit 0 ⟶ <b><a name="effv1_Header_0x24_BIT0">Spells</a></b>
+        - bit 1 ⟶ <b><a name="effv1_Header_0x24_BIT1">Breath</a></b>
+        - bit 2 ⟶ <b><a name="effv1_Header_0x24_BIT2">Paralyze / Poison / Death</a></b>
+        - bit 3 ⟶ <b><a name="effv1_Header_0x24_BIT3">Wands</a></b>
+        - bit 4 ⟶ <b><a name="effv1_Header_0x24_BIT4">Petrify / Polymorph</a></b>
+        - bit 10 ⟶ <b><a name="effv1_Header_0x24_BIT10">Ignore primary target</a></b> (EE only)
+          - <a href="../ie_formats/pro_v1.htm#ExtFlags_BIT14">Line AoE projectile</a> doesn't affect end target.
+        - bit 11 ⟶ <b><a name="effv1_Header_0x24_BIT11">Ignore secondary target</a></b> (EE only)
+          - <a href="../ie_formats/pro_v1.htm#ExtFlags_BIT14">Line AoE projectile</a> doesn't affect bystanders.
+        - bit 24 ⟶ <b><a name="effv1_Header_0x24_BIT24">Bypass mirror image</a></b> (EE/TobEx only)
+          - This bit is only relevant for <a href="../../opcodes/bgee.htm#op12">opcode #12</a> and <a href="../../opcodes/bgee.htm#op25">opcode #25</a>.
+          - All other opcodes bypass Mirror Image by default, setting/unsetting this bit is harmless.
+        - bit 25 ⟶
+          - <b><a name="effv1_Header_0x24_BIT25_EE">Ignore difficulty</a></b> (EE only)
+            - This bit is specific to <a href="../../opcodes/bgee.htm#op12">opcode #12</a> only.
+            - It refers to the damage multiplier to Party Members based on Game Difficulty.
+          - <b><a name="effv1_Header_0x24_BIT25_ToBEx">Limit effect stacking</a></b> (ToBEx only)
+        - bit 26 ⟶ TobEx internal (don't use)
+          - Suspends effect application.
+
+
+        If more than 1 Saving Throw Type is specified (`BIT0 – BIT4`), the target rolls against their best save.
+    - name: FX_duration
+      detail: dword FX_duration
+      doc: <b><a name="V1_Feature_Block_0xE">Duration</a></b>
+    - name: FX_max_level
+      detail: dword FX_max_level
+      doc: |
+        <b><a name="V1_Feature_Block_0x1C">Dice Thrown / Maximum Level</a></b>
+
+
+        See <a href="../ie_formats/eff_v1.htm#effv1_Header_0x1C">here</a> for further details.
+    - name: FX_min_level
+      detail: dword FX_min_level
+      doc: |
+        <b><a name="V1_Feature_Block_0x20">Dice Sides / Minimum Level</a></b>
+
+
+        See <a href="../ie_formats/eff_v1.htm#effv1_Header_0x20">here</a> for further details.
+    - name: FX_parameter1
+      detail: dword FX_parameter1
+      doc: Parameter 1
+    - name: FX_parameter2
+      detail: dword FX_parameter2
+      doc: Parameter 2
+    - name: FX_save_bonus
+      detail: dword FX_save_bonus
+      doc: Saving Throw Bonus
+    - name: FX_save_type
+      detail: dword FX_save_type
+      doc: |
+        <b><a name="V1_Feature_Block_0x24">Saving throw type</a></b>
+
+        - bit 0 ⟶ <b><a name="V1_Feature_Block_0x24_BIT0">Spells</a></b>
+        - bit 1 ⟶ <b><a name="V1_Feature_Block_0x24_BIT1">Breath</a></b>
+        - bit 2 ⟶ <b><a name="V1_Feature_Block_0x24_BIT2">Paralyze / Poison / Death</a></b>
+        - bit 3 ⟶ <b><a name="V1_Feature_Block_0x24_BIT3">Wands</a></b>
+        - bit 4 ⟶ <b><a name="V1_Feature_Block_0x24_BIT4">Petrify / Polymorph</a></b>
+        - bit 10 ⟶ <b><a name="V1_Feature_Block_0x24_BIT10">Ignore primary target</a></b> (EE only)
+        - bit 11 ⟶ <b><a name="V1_Feature_Block_0x24_BIT11">Ignore secondary target</a></b> (EE only)
+        - bit 24 ⟶ <b><a name="V1_Feature_Block_0x24_BIT24">Bypass mirror image</a></b> (EE/TobEx only)
+        - bit 25 ⟶
+          - <b><a name="V1_Feature_Block_0x24_BIT25_EE">Ignore difficulty</a></b> (EE only)
+          - <b><a name="V1_Feature_Block_0x24_BIT25_ToBEx">Limit effect stacking</a></b> (ToBEx only)
+        - bit 26 ⟶ TobEx internal (don't use)
+
+
+        See <a href="../ie_formats/eff_v1.htm#effv1_Header_0x24">here</a> for further details.
+    - name: FX_stacking_id_Ex
+      detail: dword FX_stacking_id_Ex
+      doc: |
+        TobEx: Stacking ID. Checked when bit 25 of the Saving Throw Type is set.
+
+        If two effects of the same opcode are applied, both have Limit Effect Stacking bit set, and both have the same stacking ID, then the latter applied effect is suspended in application until the former effect expires. Regardless of whether it is applied, the latter effect will expire at the same time that it would expire if it was applied. In other words, the total duration of some non-stacking effect opcode is not extended because more than one copy of the effect was applied.
+
+        Stacking IDs are unique to the opcode being applied. To maintain uniqueness of stacking IDs between different mods, one recommendation is to use the higher word of Special as the modder's Infinity Engine Community Prefix, then use the lower word as an identifying ID. For example, 0x41360001 ('A6' 0x0001).
+    - name: ITM_HEAD_flags
+      detail: dword ITM_HEAD_flags
+      doc: '[Flags](#ExtHeader_Flags)'
+    - name: ITM_enchantment
+      detail: dword ITM_enchantment
+      doc: <b><a name="itmv1_Header_0x60">Enchantment</a></b>
+    - name: ITM_extended_headers_offset
+      detail: dword ITM_extended_headers_offset
+      doc: Offset to extended headers
+    - name: ITM_feature_blocks_offset
+      detail: dword ITM_feature_blocks_offset
+      doc: Offset to feature blocks
+    - name: ITM_flags
+      detail: dword ITM_flags
+      doc: '[Flags](#Header_Flags)'
+    - name: ITM_price
+      detail: dword ITM_price
+      doc: Price
+    - name: ITM_weight
+      detail: dword ITM_weight
+      doc: Weight
+    - name: SPL_exclusion_flags
+      detail: dword SPL_exclusion_flags
+      doc: '[Exclusion Flags](#Exclusion_Flags)'
+    - name: SPL_extended_headers_offset
+      detail: dword SPL_extended_headers_offset
+      doc: Extended Header offset
+    - name: SPL_feature_blocks_offset
+      detail: dword SPL_feature_blocks_offset
+      doc: Feature Block Table offset
+    - name: SPL_flags
+      detail: dword SPL_flags
+      doc: '[Flags](#Header_Flags)'
+    - name: SPL_level
+      detail: dword SPL_level
+      doc: |-
+        <b><a name="splv1_Header_0x34">Spell Level</a></b>
+
+        - There is no good reason for a <code><a href="#splv1_Header_0x1C_0">Special</a></code>/<code><a href="#splv1_Header_0x1C_3">Psionic</a></code>/<code><a href="#splv1_Header_0x1C_4">Innate</a></code>/<code><a href="#splv1_Header_0x1C_5">Bard song</a></code> to be any <code><a href="#splv1_Header_0x34">Spell level</a></code> except `1`.
+        - If the SPL is never <a href="../../opcodes/bgee.htm#op147">learned</a>/<a href="../../opcodes/bgee.htm#op171">gained</a> (only force-cast by script/opcode), <code><a href="#splv1_Header_0x34">Spell level</a></code> doesn't matter, but there may be some niche cases that check it (f.i. <code><a href="../../scripting/triggers/bgeetriggers.htm#0x4031">HaveSpell()</a></code>).
+    - name: SPL_unidentified_description
+      detail: dword SPL_unidentified_description
+      doc: Spell Description - Unidentified (strref)
+    - name: SPL_unidentified_name
+      detail: dword SPL_unidentified_name
+      doc: <b><a name="splv1_Header_0x8">Spell Name</a></b> - Unidentified (strref)
+iesdp-word:
+  type: 21
+  items:
+    - name: EFF2_probability1
+      detail: word EFF2_probability1
+      doc: |
+        <b><a name="effv2_Body_0x2C">Probability 1</a></b>
+
+
+        If called via <a href="../../opcodes/bgee.htm#op183">opcode #183</a>, this field is ignored.
+    - name: EFF2_probability2
+      detail: word EFF2_probability2
+      doc: |
+        <b><a name="effv2_Body_0x2E">Probability 2</a></b>
+
+
+        See <a href="../ie_formats/eff_v1.htm#effv1_Header_0x13">here</a> for further details.
+
+
+
+        If called via <a href="../../opcodes/bgee.htm#op183">opcode #183</a>, this field is ignored.
+    - name: EFF2_timing
+      detail: word EFF2_timing
+      doc: |
+        <b><a name="effv2_Body_0x24">Timing mode</a></b>
+
+        - 0 ⟶ <b><a name="effv2_Body_0x24_0">Instant/Limited</a></b>
+        - 1 ⟶ <b><a name="effv2_Body_0x24_1">Instant/Permanent</a></b>
+        - 2 ⟶ <b><a name="effv2_Body_0x24_2">Instant/While equipped</a></b>
+        - 3 ⟶ <b><a name="effv2_Body_0x24_3">Delay/Limited</a></b>
+        - 4 ⟶ <b><a name="effv2_Body_0x24_4">Delay/Permanent</a></b>
+        - 5 ⟶ <b><a name="effv2_Body_0x24_5">Delay/While equipped</a></b>
+        - 6 ⟶ <b><a name="effv2_Body_0x24_6">Limited after duration</a></b>
+        - 7 ⟶ <b><a name="effv2_Body_0x24_7">Permanent after duration</a></b>
+        - 8 ⟶ <b><a name="effv2_Body_0x24_8">Equipped after duration</a></b>
+        - 9 ⟶ <b><a name="effv2_Body_0x24_9">Instant/Permanent</a></b> (after Death)
+        - 10 ⟶ <b><a name="effv2_Body_0x24_10">Instant/Limited</a></b>
+        - 4096 ⟶ <b><a name="effv2_Body_0x24_4096">Absolute duration</a></b>
+
+
+        See <a href="../ie_formats/eff_v1.htm#effv1_Header_0xC">here</a> for further details.
+
+
+
+        If called via <a href="../../opcodes/bgee.htm#op177">opcode #177</a>/<a href="../../opcodes/bgee.htm#op183">opcode #183</a>/<a href="../../opcodes/bgee.htm#op283">opcode #283</a>, this field is ignored.
+    - name: EFF_effect_type
+      detail: word EFF_effect_type
+      doc: Effect type
+    - name: FX_opcode
+      detail: word FX_opcode
+      doc: Opcode Number
+    - name: ITM_HEAD_damage_bonus
+      detail: word ITM_HEAD_damage_bonus
+      doc: <b><a name="itmv1_Extended_Header_0x1A">Damage bonus</a></b>
+    - name: ITM_HEAD_damage_type
+      detail: word ITM_HEAD_damage_type
+      doc: |
+        <b><a name="itmv1_Extended_Header_0x1C">Damage type</a></b>
+
+        - 0 ⟶ <b><a name="itmv1_Extended_Header_0x1C_0">None</a></b>
+          - Deals Crushing damage, uses base AC (ignores all 4 specific AC).
+            - If <code><a href="#itmv1_Extended_Header_0x18">#dice</a> = 0</code>: Deals damage as normal, just no dice amount.
+            - If <code><a href="#itmv1_Extended_Header_0x18">#dice</a> > 0</code>: Sets target's HP to `Damage Dealt`, ignores crushing resistance.
+        - 1 ⟶ <b><a name="itmv1_Extended_Header_0x1C_1">Piercing</a></b>
+        - 2 ⟶ <b><a name="itmv1_Extended_Header_0x1C_2">Crushing</a></b>
+        - 3 ⟶ <b><a name="itmv1_Extended_Header_0x1C_3">Slashing</a></b>
+        - 4 ⟶ <b><a name="itmv1_Extended_Header_0x1C_4">Missile</a></b>
+        - 5 ⟶ <b><a name="itmv1_Extended_Header_0x1C_5">Fist</a></b>
+          - Deals non-lethal damage, but uses Crushing AC.
+        - 6 ⟶ <b><a name="itmv1_Extended_Header_0x1C_6">Piercing/Crushing</a></b> (Better)
+          - Uses whichever damage type and AC the creature has the worst damage resistance against (regardless if its AC is better or worse). Uses `Piercing` if equal resistance.
+        - 7 ⟶ <b><a name="itmv1_Extended_Header_0x1C_7">Piercing/Slashing</a></b> (Better)
+          - Uses whichever damage type and AC the creature has the worst damage resistance against (regardless if its AC is better or worse). Uses `Piercing` if equal resistance.
+        - 8 ⟶ <b><a name="itmv1_Extended_Header_0x1C_8">Crushing/Slashing</a></b> (Worse)
+          - Uses whichever damage type and AC the creature has the better damage resistance against (regardless if its AC is better or worse). Uses `Slashing` if equal resistance.
+        - 9 ⟶ <b><a name="itmv1_Extended_Header_0x1C_9">Blunt Missile</a></b>
+          - Same as <code><a href="#itmv1_Extended_Header_0x1C_0">None</a></code>
+            - Either it's bugged or <code><a href="#itmv1_Extended_Header_0x1C_9">Blunt Missile</a></code> has always been an IWD2-only feature.
+            - It's probably meant to deal crushing damage while using Missile AC.
+        - 10+ ⟶ Same as <code><a href="#itmv1_Extended_Header_0x1C_0">None</a></code>
+
+
+        - ALL values:
+          - If <code><a href="#itmv1_Extended_Header_0x18">Dice thrown</a></code>, <code><a href="#itmv1_Extended_Header_0x16">Dice size</a></code>, and <code><a href="#itmv1_Extended_Header_0x1A">Damage bonus</a></code> are all `0`: Always deals zero damage (ignores all modifiers, like Weapon Proficiency).
+            - If you want zero base damage + modifiers, you can use `1d1 - 1`.
+          - Some edge cases:
+            - <code><a href="#itmv1_Extended_Header_0x18">Dice thrown</a>d<a href="#itmv1_Extended_Header_0x16">Dice size</a> + <a href="#itmv1_Extended_Header_0x1A">Damage bonus</a> = Xd0 + 0</code>: Deals `X` damage, regardless of other modifiers.
+            - <code><a href="#itmv1_Extended_Header_0x18">Dice thrown</a>d<a href="#itmv1_Extended_Header_0x16">Dice size</a> + <a href="#itmv1_Extended_Header_0x1A">Damage bonus</a> = 0d0 + X</code>: Deals `X + modifiers` damage.
+            - <code><a href="#itmv1_Extended_Header_0x18">Dice thrown</a>d<a href="#itmv1_Extended_Header_0x16">Dice size</a> + <a href="#itmv1_Extended_Header_0x1A">Damage bonus</a> = 0dX + 0</code>: Also deals `0` damage.
+        - Values `1–4` don't have any other quirks (<code><a href="#itmv1_Extended_Header_0x1C_1">Piercing</a></code>, <code><a href="#itmv1_Extended_Header_0x1C_2">Crushing</a></code>, <code><a href="#itmv1_Extended_Header_0x1C_3">Slashing</a></code>, <code><a href="#itmv1_Extended_Header_0x1C_4">Missile</a></code>), just each a different damage type.
+    - name: ITM_HEAD_depletion
+      detail: word ITM_HEAD_depletion
+      doc: |
+        <b><a name="itmv1_Extended_Header_0x24">Charge depletion behaviour</a></b>
+
+        - 0 ⟶ <b><a name="itmv1_Extended_Header_0x24_0">Item remains</a></b>
+          - Item becomes unusable (except as a weapon) when <code><a href="#itmv1_Extended_Header_0x22">Max Charges</a></code> reaches zero. Can be recharged by selling or by resting if it has the <code><a href="#ExtHeader_Flags_BIT11">Recharge after resting</a></code> flag.
+        - 1 ⟶ <b><a name="itmv1_Extended_Header_0x24_1">Item vanishes</a></b>
+          - Item disappears when <code><a href="#itmv1_Extended_Header_0x22">Max Charges</a></code> reaches zero. Can be recharged prior to reaching zero (through either method).
+        - 2 ⟶ <b><a name="itmv1_Extended_Header_0x24_2">Replace with used up</a></b>
+          - When <code><a href="#itmv1_Extended_Header_0x22">Max Charges</a></code> reaches zero, item is replaced with the item specified at offset <code><a href="#itmv1_Header_0x10">0x10</a></code>. Can be recharged prior to reaching zero (through either method).
+        - 3 ⟶ <b><a name="itmv1_Extended_Header_0x24_3">Item recharges</a></b>
+          - This is very likely no different from <code><a href="#itmv1_Extended_Header_0x24_0">Item remains</a></code> or `4+`, i.e. defaults to <code><a href="#itmv1_Extended_Header_0x24_0">0</a></code>.
+
+
+        - This field is irrelevant when the <code><a href="#itmv1_Extended_Header_0x22">Max Charges</a></code> field is zero. Item can be used infinitely.
+        - If the item has a <code><a href="#itmv1_Header_0x38">Max Stack Size</a> > 1</code>, this behavior will instead occur when the stack is depleted, not the charges (but still requires a non-zero <code><a href="#itmv1_Extended_Header_0x22">Max Charges</a></code>).
+    - name: ITM_HEAD_feature_block_count
+      detail: word ITM_HEAD_feature_block_count
+      doc: Count of feature blocks
+    - name: ITM_HEAD_feature_block_index
+      detail: word ITM_HEAD_feature_block_index
+      doc: Index into feature blocks
+    - name: ITM_HEAD_is_arrow
+      detail: word ITM_HEAD_is_arrow
+      doc: |-
+        <b><a name="itmv1_Extended_Header_0x32">Arrow qualifier / Is arrow?</a></b>
+        - 0 ⟶ No
+        - 1 ⟶ Yes
+
+        It controls which firing animation the ability will use.
+        It needs to be set on any launcher and/or ammo, but the launcher will override the ammo.
+    - name: ITM_HEAD_is_bolt
+      detail: word ITM_HEAD_is_bolt
+      doc: |-
+        <b><a name="itmv1_Extended_Header_0x34">Bolt qualifier / Is bolt?</a></b>
+        - 0 ⟶ No
+        - 1 ⟶ Yes
+
+        It controls which firing animation the ability will use.
+        It needs to be set on any launcher and/or ammo, but the launcher will override the ammo.
+    - name: ITM_HEAD_is_bullet
+      detail: word ITM_HEAD_is_bullet
+      doc: |-
+        <b><a name="itmv1_Extended_Header_0x36">Bullet qualifier / Is bullet?</a></b>
+        - 0 ⟶ No
+        - 1 ⟶ Yes
+
+        It controls which firing animation the ability will use.
+        It needs to be set on any launcher and/or ammo, but the launcher will override the ammo.
+    - name: ITM_HEAD_max_charges
+      detail: word ITM_HEAD_max_charges
+      doc: <b><a name="itmv1_Extended_Header_0x22">Max Charges</a></b>
+    - name: ITM_HEAD_projectile_animation
+      detail: word ITM_HEAD_projectile_animation
+      doc: |-
+        <b><a name="itmv1_Extended_Header_0x2A">Projectile Animation</a></b> (projectl.ids/missile.ids)
+    - name: ITM_HEAD_range
+      detail: word ITM_HEAD_range
+      doc: <b><a name="itmv1_Extended_Header_0xE">Range</a></b>
+    - name: ITM_HEAD_thac0_bonus
+      detail: word ITM_HEAD_thac0_bonus
+      doc: |
+        THAC0 bonus
+
+        A successful hit will always occur if any of the conditions below is true
+        - This field is set to `32767`.
+        - The target creature(s) is `STATE_HELPLESS`.
+        - The target is affected by <a href="../../opcodes/bgee.htm#op231">Time Stop</a>.
+    - name: ITM_extended_headers_count
+      detail: word ITM_extended_headers_count
+      doc: Count of extended headers
+    - name: ITM_feature_blocks_count
+      detail: word ITM_feature_blocks_count
+      doc: Count of equipping feature blocks
+    - name: ITM_feature_blocks_index
+      detail: word ITM_feature_blocks_index
+      doc: Index into equipping feature blocks
+    - name: ITM_lore_to_id
+      detail: word ITM_lore_to_id
+      doc: Lore to ID
+    - name: ITM_min_charisma
+      detail: word ITM_min_charisma
+      doc: Min Charisma
+    - name: ITM_min_level
+      detail: word ITM_min_level
+      doc: |
+        <b><a name="itmv1_Header_0x24">Min Level</a></b>
+
+        - Treated as average of all active class levels, rounded up.
+
+
+        - This field is basically the ITM counterpart of <code><a href="../ie_formats/spl_v1.htm#splv1_Extended_Header_0x10">Level Required</a></code>.
+        - The only difference is that ITM <a href="#itmv1_Extended_Header">abilities</a> cannot have separate level requirements.
+    - name: ITM_min_strength
+      detail: word ITM_min_strength
+      doc: Min Strength (unused in BG1)
+    - name: ITM_stack_amount
+      detail: word ITM_stack_amount
+      doc: <b><a name="itmv1_Header_0x38">Stack amount</a></b>
+    - name: ITM_type
+      detail: word ITM_type
+      doc: '[Item type](#Header_ItemType)'
+    - name: SPL_HEAD_casting_time
+      detail: word SPL_HEAD_casting_time
+      doc: |
+        <b><a name="splv1_Extended_Header_0x12">Casting Time</a></b>
+
+
+        - This value represents the number of tenths of rounds that it takes to cast the spell.
+        - Combat scripting in the IE gets very dumb when <code><a href="#splv1_Extended_Header_0x12">Casting Time</a></code>s start matching or exceeding `10` (one full round). The engine assumes any spell is cast within a round, and can sometimes just go to the next round's action (f.i. the mage sits there casting for six seconds, then throws the spell away to use a sling).
+          - As a result, you might want to use maximum <code><a href="#splv1_Extended_Header_0x12">Casting Time</a></code>s of `9` (i.e. <sup><small>9</small></sup>⁄<sub><small>10</small></sub>ths of a round) even for spells which are supposed to have a <code><a href="#splv1_Extended_Header_0x12">Casting Time</a></code> of a full round.
+        - As far as subspells are concerned, their speed is only used if cast through <a href="../../opcodes/bgee.htm#op146">opcode #146</a>/<a href="../../opcodes/bgee.htm#op148">opcode #148</a> with the `Cast normally` option.
+    - name: SPL_HEAD_feature_blocks_count
+      detail: word SPL_HEAD_feature_blocks_count
+      doc: Count of feature blocks
+    - name: SPL_HEAD_feature_blocks_offset
+      detail: word SPL_HEAD_feature_blocks_offset
+      doc: Offset to feature blocks
+    - name: SPL_HEAD_level_required
+      detail: word SPL_HEAD_level_required
+      doc: |
+        <b><a name="splv1_Extended_Header_0x10">Level Required</a></b>
+
+
+        Standard spellcasting only utilizes the first byte (`0 – 255`), but opcodes that specify Casting Level (<code><a href="../../opcodes/bgee.htm#op146">146</a><sup><small>*</small></sup>p2=2</code>/<code><a href="../../opcodes/bgee.htm#op326">326</a><sup><small>*</small></sup><a href="../ie_formats/eff_v2.htm#effv2_Body_0xC8">EFF</a></code>/<code><a href="../../opcodes/bgee.htm#op333">333</a></code>) have access to the entire range (`0 – 65535`).
+    - name: SPL_HEAD_location
+      detail: word SPL_HEAD_location
+      doc: |
+        <b><a name="splv1_Extended_Header_0x2">Location</a></b>
+
+        - 0 ⟶ None
+          - Ability will not be selectable through the UI (but still available to scripts and spell-casting opcodes).
+        - 1 ⟶ Weapon
+          - <code><a href="../ie_formats/itm_v1.htm#itmv1_Extended_Header_0x2_1">ITM</a></code> only.
+        - 2 ⟶ <b><a name="splv1_Extended_Header_0x2_2">Spell</a></b>
+          - Ability can be selected from "Cast Spell (F7)" button, and from Quick-spell buttons.
+        - 3 ⟶ Item
+          - <code><a href="../ie_formats/itm_v1.htm#itmv1_Extended_Header_0x2_3">ITM</a></code> only.
+        - 4 ⟶ <b><a name="splv1_Extended_Header_0x2_4">Innate</a></b>
+          - Ability can be selected from "Special Abilities (F12)" button.
+        - 5+ ⟶ As `0`.
+
+
+        Subspells don't require an <code><a href="#splv1_Extended_Header_0x2">Ability Location</a></code>.
+    - name: SPL_HEAD_projectile
+      detail: word SPL_HEAD_projectile
+      doc: |-
+        <b><a name="splv1_Extended_Header_0x26">Projectile</a></b> (BG2: [projectl.ids](../../ids/bg2/projectl.htm). **Note:** in BG2, this value is off-by-one from projectl.ids value. I.e. binary value of `2` corresponds to `0x1 - ARROW`)
+    - name: SPL_HEAD_range
+      detail: word SPL_HEAD_range
+      doc: |
+        <b><a name="splv1_Extended_Header_0xE">Range</a></b>
+
+
+        As far as subspells are concerned, their <code><a href="#splv1_Extended_Header_0xE">Range</a></code> is only checked if cast through <a href="../../opcodes/bgee.htm#op148">opcode #148</a>, <a href="../../opcodes/bgee.htm#op232">opcode #232</a>, <a href="../../opcodes/bgee.htm#op258">opcode #258</a>, or <a href="../../opcodes/bgee.htm#op260">opcode #260</a>.
+    - name: SPL_HEAD_times_per_day
+      detail: word SPL_HEAD_times_per_day
+      doc: Times per day
+    - name: SPL_casting_feature_blocks_count
+      detail: word SPL_casting_feature_blocks_count
+      doc: Casting Feature Block count
+    - name: SPL_casting_feature_blocks_offset
+      detail: word SPL_casting_feature_blocks_offset
+      doc: Casting Feature Block offset (these feature blocks may not use target type 2)
+    - name: SPL_casting_graphics
+      detail: word SPL_casting_graphics
+      doc: '[Casting Graphics](#Header_Casting_Graphics)'
+    - name: SPL_extended_headers_count
+      detail: word SPL_extended_headers_count
+      doc: Extended Header count
+    - name: SPL_type
+      detail: word SPL_type
+      doc: |
+        <b><a name="splv1_Header_0x1C">Spell type</a></b>:
+
+        - 0 ⟶ <b><a name="splv1_Header_0x1C_0">Special</a></b>
+        - 1 ⟶ <b><a name="splv1_Header_0x1C_1">Wizard</a></b>
+        - 2 ⟶ <b><a name="splv1_Header_0x1C_2">Priest</a></b>
+        - 3 ⟶ <b><a name="splv1_Header_0x1C_3">Psionic</a></b>
+        - 4 ⟶ <b><a name="splv1_Header_0x1C_4">Innate</a></b>
+        - 5 ⟶ <b><a name="splv1_Header_0x1C_5">Bard song</a></b>
+
+
+        - <code><a href="#splv1_Header_0x1C_0">Special</a></code>, <code><a href="#splv1_Header_0x1C_3">Psionic</a></code>, <code><a href="#splv1_Header_0x1C_4">Innate</a></code>, and <code><a href="#splv1_Header_0x1C_5">Bard song</a></code> differ only by the string displayed when you cast them. They are all treated as <code><a href="#splv1_Header_0x1C_4">Innate</a></code> abilities, even by <a href="../../opcodes/bgee.htm#op145">opcode #145</a> and the <code><a href="../../scripting/triggers/bgeetriggers.htm#0x00A7">SpellCastInnate()</a></code> trigger.
+        - <code><a href="#splv1_Header_0x1C_0">Special</a></code> and <code><a href="#splv1_Header_0x1C_4">Innate</a></code> will display <code>"(Caster): (<a href="#splv1_Header_0x8">spell name</a>): (target)"</code>.
+        - <code><a href="#splv1_Header_0x1C_3">Psionic</a></code> and <code><a href="#splv1_Header_0x1C_5">Bard song</a></code> will display <code>"(Caster): Casts (<a href="#splv1_Header_0x8">spell name</a>): (target)"</code> (which can be misleading).
+        - <code><a href="#splv1_Header_0x1C_1">Wizard</a></code> and <code><a href="#splv1_Header_0x1C_2">Priest</a></code> will also display <code>"(Caster): Casts (<a href="#splv1_Header_0x8">spell name</a>): (target)"</code>.
+        - Any spell cast by one of the <code><a href="../../scripting/actions/bgeeactions.htm#113">ForceSpell()</a></code> script actions will instead display <code><a href="#splv1_Header_0x1C_0">Special</a></code>/<code><a href="#splv1_Header_0x1C_4">Innate</a></code> casting message.
+        - Any spell cast by the "BattleSong" (Bard Song/Shaman Dance) or <code><a href="../../scripting/actions/bgeeactions.htm#160">ApplySpell()</a></code> script actions will display <code><a href="#splv1_Header_0x1C_0">Special</a></code>/<code><a href="#splv1_Header_0x1C_4">Innate</a></code> casting message.
+        - For any spell cast by another opcode, its casting message will depend on that opcode, but is usually the same as the <code><a href="#splv1_Header_0x1C_0">Special</a></code>/<code><a href="#splv1_Header_0x1C_4">Innate</a></code> casting message.
+        - All other values (`6 – 65535`) functions the same as <code><a href="#splv1_Header_0x1C_3">Psionic</a></code>/<code><a href="#splv1_Header_0x1C_5">Bard song</a></code>.
+        - <code><a href="../../files/ids/bgee/stats.htm#51">SPELLFAILUREMAGE</a></code> is related to Spell type <code><a href="#splv1_Header_0x1C_1">Wizard</a></code>.
+        - <code><a href="../../files/ids/bgee/stats.htm#52">SPELLFAILUREPRIEST</a></code> is related to Spell type <code><a href="#splv1_Header_0x1C_2">Priest</a></code>.
+        - <code><a href="../../files/ids/bgee/stats.htm#194">SPELL_FAILURE_INNATE</a></code> is related to Spell type <code><a href="#splv1_Header_0x1C_3">Psionic</a></code>/<code><a href="#splv1_Header_0x1C_4">Innate</a></code>/<code><a href="#splv1_Header_0x1C_5">Bard song</a></code>.
+        - Normally, any subspells that scale with <code><a href="#splv1_Extended_Header_0x10">Level</a></code> should be of the same <code><a href="#splv1_Header_0x1C">Type</a></code> as the spell casting them.
+          - If they don't scale, it doesn't really matter.
+          - It also doesn't matter when they are applied through <a href="../../opcodes/bgee.htm#op146">opcode #146</a><code><sup><small>*</small></sup>p2=2</code>/<a href="../../opcodes/bgee.htm#op326">opcode #326</a>/<a href="../../opcodes/bgee.htm#op333">opcode #333</a>.
+iesdp-byte:
+  type: 21
+  items:
+    - name: EFF_power
+      detail: byte EFF_power
+      doc: Power
+    - name: EFF_probability1
+      detail: byte EFF_probability1
+      doc: <b><a name="effv1_Header_0x12">Probability 1</a></b>
+    - name: EFF_probability2
+      detail: byte EFF_probability2
+      doc: |
+        <b><a name="effv1_Header_0x13">Probability 2</a></b>
+
+
+        - The `BG1` engine treats probability as a single word, effects are applied in the range `0–probability`.
+        - Other engines treat probability as two values. When an event fires, a random number (let us denote it by `x`) in the `0–99` range is generated. If <code>x <= <a href="#effv1_Header_0x12">Probability1</a> && >= <a href="#effv1_Header_0x13">Probability2</a></code>, the event fires.
+          - Some counter-intuitive cases:
+            - if you set both <code><a href="#effv1_Header_0x12">Probability1</a></code> and <code><a href="#effv1_Header_0x13">Probability2</a></code> to `0`, you get an effect with a 1％ chance of firing (it fires whenever the random number generator spits out zero).
+            - if you set <code><a href="#effv1_Header_0x12">Probability1</a></code> to `1` and <code><a href="#effv1_Header_0x13">Probability2</a></code> to `0` (as, e.g., happens in BGT/BGEE's implementation of the iron crisis), you don't get an effect with a 1％ chance of firing, but one with a 2％ chance of firing.
+    - name: EFF_resistance
+      detail: byte EFF_resistance
+      doc: |-
+        <b><a name="effv1_Header_0xD">Dispel / Resistance</a></b>
+
+        The default behaviour is that effects cannot be dispelled and ignore magic resistance.
+
+        - bit 0 ⟶ Can be dispelled, affected by magic resistance
+        - bit 1 ⟶ Ignores magic resistance (when used in combination with bit 0)
+
+        This can also be presented in the more traditional way:
+        - 0 ⟶ Natural/Nonmagical
+        - 1 ⟶ Can be dispelled/Affected by resistance
+        - 2 ⟶ Cannot be dispelled/Ignores resistance
+        - 3 ⟶ Can be dispelled/Ignores resistance
+
+        The only difference between `0` and `2` is that `0` will automatically convert to `2` when targeting yourself.
+    - name: EFF_target
+      detail: byte EFF_target
+      doc: |
+        <b><a name="effv1_Header_0x2">Target type</a></b>
+
+        - 0 ⟶ None
+        - 1 ⟶ <b><a name="effv1_Header_0x2_1">Self</a></b>
+        - 2 ⟶ <b><a name="effv1_Header_0x2_2">Projectile target</a></b>
+          - Affects each target of the specified projectile, as it impacts them.
+        - 3 ⟶ <b><a name="effv1_Header_0x2_3">Party</a></b>
+        - 4 ⟶ <b><a name="effv1_Header_0x2_4">Everyone</a></b>
+        - 5 ⟶ <b><a name="effv1_Header_0x2_5">Everyone except party</a></b>
+        - 6 ⟶ <b><a name="effv1_Header_0x2_6">Caster group</a></b>
+          - Everyone matching <code><a href="../ie_formats/cre_v1.htm#CREV1_0_Header_0x274">specific</a></code> value of caster.
+          - If cast by a party member, then it functions as <code><a href="#effv1_Header_0x2_3">Party</a></code>.
+          - Ability target (<code><a href="../ie_formats/itm_v1.htm#itmv1_Extended_Header_0xC">ITM</a>/<a href="../ie_formats/spl_v1.htm#splv1_Extended_Header_0xC">SPL</a></code>) doesn't matter.
+        - 7 ⟶ <b><a name="effv1_Header_0x2_7">Target group</a></b>
+          - Everyone matching <code><a href="../ie_formats/cre_v1.htm#CREV1_0_Header_0x274">specific</a></code> value of target.
+          - Ability (<code><a href="../ie_formats/itm_v1.htm#itmv1_Extended_Header_0xC">ITM</a>/<a href="../ie_formats/spl_v1.htm#splv1_Extended_Header_0xC">SPL</a></code>) must target a <a href="../ie_formats/are_v1.htm#formAREAV1_0_Actor">creature</a>, not a location, <a href="../ie_formats/are_v1.htm#formAREAV1_0_Container">container</a>, <a href="../ie_formats/are_v1.htm#formAREAV1_0_Door">door</a>, etc...
+        - 8 ⟶ <b><a name="effv1_Header_0x2_8">Everyone except self</a></b>
+        - 9 ⟶ <b><a name="effv1_Header_0x2_9">Original caster</a></b>
+          - Affects Caster, as the specified projectile impacts its target(s), once or for each target depending on the projectile's flags (see <a href="../ie_formats/pro_v1.htm#ExtFlags_BIT31">here</a>). The specified projectile only determines when/if it's applied.
+
+
+        - `ITM` global (equipped) effects: Target is always the wearer, this field isn't relevant.
+        - `SPL` global (casting) effects: Will not work with <code><a href="#effv1_Header_0x2_2">Projectile Target</a></code>.
+        - `Everyone` stands for "in current area".
+        - Excluding <code><a href="#effv1_Header_0x2">Target type</a></code> <code><a href="#effv1_Header_0x2_2">2</a></code>, all other <code><a href="#effv1_Header_0x2">Target type</a></code>s apply the effect using projectile `#1|None`.
+        - <code><a href="#effv1_Header_0x2">Target type</a></code>s <code><a href="#effv1_Header_0x2_2">2</a></code> and <code><a href="#effv1_Header_0x2_9">9</a></code> are applied in effect order, but always after the others, even when using projectile `#1|None`.
+          - <code><a href="#effv1_Header_0x2">Target type</a></code>s (`1`, `3–8`) are applied in effect order.
+            - If a spell/item has effects listed in this order:
+              - `op(1), target = 2`
+              - `op(2), target = 3`
+              - `op(3), target = 1`
+              - `op(4), target = 9`
+              - `op(5), target = 2`
+              - `op(6), target = 6`
+
+              They will be applied in this order:
+              op(2), op(3), op(6), op(1), op(4), op(5).
+        - Similar to Melee Weapon Attacks, when <code><a href="#effv1_Header_0x2">Target type</a></code>s other than <code><a href="#effv1_Header_0x2_1">1</a></code>, <code><a href="#effv1_Header_0x2_2">2</a></code>, <code><a href="#effv1_Header_0x2_9">9</a></code> apply the effect, they are subjected to <a href="../../opcodes/bgee.htm#op197">opcode #197</a> (`parameter2=0`) but not to <a href="../../opcodes/bgee.htm#op83">opcode #83</a>. (Excluding when they're affecting the caster).
+        - Be aware that <a href="../../opcodes/bgee.htm#op146">opcode #146</a><code><small><sup>*</sup></small>p2=2</code>, <a href="../../opcodes/bgee.htm#op326">opcode #326</a>, and <a href="../../opcodes/bgee.htm#op333">opcode #333</a> might behave differently when it comes to <code><a href="#effv1_Header_0x2_1">Self</a></code>/<code><a href="#effv1_Header_0x2_2">Projectile Target</a></code>/<code><a href="#effv1_Header_0x2_9">Original Caster</a></code>.
+    - name: ITM_HEAD_alt_damage_bonus
+      detail: byte ITM_HEAD_alt_damage_bonus
+      doc: Alternative damage bonus
+    - name: ITM_HEAD_alt_dice_thrown
+      detail: byte ITM_HEAD_alt_dice_thrown
+      doc: Alternative dice thrown
+    - name: ITM_HEAD_dice_sides
+      detail: byte ITM_HEAD_dice_sides
+      doc: <b><a name="itmv1_Extended_Header_0x16">Dice sides</a></b>
+    - name: ITM_HEAD_dice_thrown
+      detail: byte ITM_HEAD_dice_thrown
+      doc: <b><a name="itmv1_Extended_Header_0x18">Dice thrown</a></b>
+    - name: ITM_HEAD_primary_type
+      detail: byte ITM_HEAD_primary_type
+      doc: |-
+        <b><a name="itmv1_Extended_Header_0x17">Primary Type (School)</a></b>
+
+        - See <code><a href="../../files/2da/2da_bgee/mschool.htm">MSCHOOL.2DA</a></code>.
+    - name: ITM_HEAD_projectile_type
+      detail: byte ITM_HEAD_projectile_type
+      doc: |-
+        <b><a name="itmv1_Extended_Header_0x10">Launcher required</a></b>
+
+        - 0 ⟶ None
+        - 1 ⟶ <b><a name="itmv1_Extended_Header_0x10_1">Bow</a></b>
+          - Any <code><a href="#itmv1_Extended_Header_0x0_2">Ranged</a></code> ability with this field set to this value will require a weapon with the corresponding <code><a href="../../files/ids/bgee/itemcat.htm#15">ITEMCAT.IDS</a></code> (Item category) in one of the <code><a href="../../files/ids/bgee/slots.htm#35">mainhand</a></code> weapon slots (not <code><a href="../../files/ids/bgee/slots.htm#9">off-hand</a></code>, <code><a href="../../files/ids/bgee/slots.htm#10">fist</a></code>, or <code><a href="../../files/ids/bgee/slots.htm#34">magical weapon</a></code> slot).
+        - 2 ⟶ <b><a name="itmv1_Extended_Header_0x10_2">Crossbow</a></b>
+          - Any <code><a href="#itmv1_Extended_Header_0x0_2">Ranged</a></code> ability with this field set to this value will require a weapon with the corresponding <code><a href="../../files/ids/bgee/itemcat.htm#27">ITEMCAT.IDS</a></code> (Item category) in one of the <code><a href="../../files/ids/bgee/slots.htm#35">mainhand</a></code> weapon slots (not <code><a href="../../files/ids/bgee/slots.htm#9">off-hand</a></code>, <code><a href="../../files/ids/bgee/slots.htm#10">fist</a></code>, or <code><a href="../../files/ids/bgee/slots.htm#34">magical weapon</a></code> slot).
+        - 3 ⟶ <b><a name="itmv1_Extended_Header_0x10_3">Sling</a></b>
+          - Any <code><a href="#itmv1_Extended_Header_0x0_2">Ranged</a></code> ability with this field set to this value will require a weapon with the corresponding <code><a href="../../files/ids/bgee/itemcat.htm#18">ITEMCAT.IDS</a></code> (Item category) in one of the <code><a href="../../files/ids/bgee/slots.htm#35">mainhand</a></code> weapon slots (not <code><a href="../../files/ids/bgee/slots.htm#9">off-hand</a></code>, <code><a href="../../files/ids/bgee/slots.htm#10">fist</a></code>, or <code><a href="../../files/ids/bgee/slots.htm#34">magical weapon</a></code> slot).
+        - 40 ⟶ Spear
+        - 100 ⟶ Throwing Axe
+
+        In particular:
+        - It ONLY checks items for <code><a href="../../files/ids/bgee/itemcat.htm#15">BOW</a></code> / <code><a href="../../files/ids/bgee/itemcat.htm#27">XBOW</a></code> / <code><a href="../../files/ids/bgee/itemcat.htm#18">SLING</a></code> and will always use that item's first ability header – it doesn't matter what that ability's <code><a href="#itmv1_Extended_Header_0x0">Type</a></code> is (<code><a href="#itmv1_Extended_Header_0x0_1">Melee</a></code>/<code><a href="#itmv1_Extended_Header_0x0_2">Ranged</a></code>/<code><a href="#itmv1_Extended_Header_0x0_3">Magical</a></code>/<code><a href="#itmv1_Extended_Header_0x0_4">Launcher</a></code>).
+          - This also means that you can't make an Arrow that requires being shot out of a Sword.
+        - <code><a href="../../files/ids/bgee/itemcat.htm">ITEMCAT</a></code> is offset <code><a href="#Header_ItemType">0x1C</a></code> of the ITM file (which is also linked to <code><a href="../../files/2da/2da_bgee/itemtype.htm">ITEMTYPE.2DA</a></code>).
+        - Only the <code><a href="../../files/ids/bgee/slots.htm#35">Mainhand</a></code>, <code><a href="../../files/ids/bgee/slots.htm#11">Ammo</a></code>, and <code><a href="../../files/ids/bgee/slots.htm#34">Magical Weapon</a></code> slots can utilize launchers. The <code><a href="../../files/ids/bgee/slots.htm#9">off-hand</a></code> ignores this field, while the <code><a href="../../files/ids/bgee/slots.htm#10">fist</a></code> slot uses it (only to crash).
+        - Weapons of any <code><a href="../../files/ids/bgee/itemcat.htm">ITEMCAT</a></code> can use this field, as long as it is equipped in one of the proper slots.
+          - This also means that you can make a Sword that requires being shot out of a Bow.
+        - Bows, Crossbows, and Slings with multiple abilities can even use themselves as their required launcher.
+    - name: ITM_HEAD_secondary_type
+      detail: byte ITM_HEAD_secondary_type
+      doc: |-
+        <b><a name="itmv1_Extended_Header_0x19">Secondary Type</a></b>
+
+        - See <code><a href="../../files/2da/2da_bgee/msectype.htm">MSECTYPE.2DA</a></code>.
+    - name: ITM_HEAD_speed
+      detail: byte ITM_HEAD_speed
+      doc: Speed
+    - name: ITM_kit_usability1
+      detail: byte ITM_kit_usability1
+      doc: '[Kit Usability 1](#Header_KitUsability)'
+    - name: ITM_kit_usability2
+      detail: byte ITM_kit_usability2
+      doc: '[Kit Usability 2](#Header_KitUsability)'
+    - name: ITM_kit_usability3
+      detail: byte ITM_kit_usability3
+      doc: '[Kit Usability 3](#Header_KitUsability)'
+    - name: ITM_kit_usability4
+      detail: byte ITM_kit_usability4
+      doc: '[Kit Usability 4](#Header_KitUsability)'
+    - name: ITM_min_constitution
+      detail: byte ITM_min_constitution
+      doc: Min Constitution (unused in BG1)
+    - name: ITM_min_dexterity
+      detail: byte ITM_min_dexterity
+      doc: Min Dexterity (unused in BG1)
+    - name: ITM_min_intelligence
+      detail: byte ITM_min_intelligence
+      doc: Min Intelligence (unused in BG1)
+    - name: ITM_min_strength_bonus
+      detail: byte ITM_min_strength_bonus
+      doc: |
+        Min Strength Bonus (unused in BG1)  
+        Note: A strength of 19 or above is considered to have a Strength Bonus of 0, and would therefore not be able to equip any weapon with a Strength Bonus restriction.
+    - name: ITM_min_wisdom
+      detail: byte ITM_min_wisdom
+      doc: Min Wisdom (unused in BG1)
+    - name: ITM_weapon_proficiency
+      detail: byte ITM_weapon_proficiency
+      doc: '[Weapon Proficiency](#Header_Proficiency)'
+    - name: SPL_school
+      detail: byte SPL_school
+      doc: |
+        <b><a name="splv1_Header_0x25">Primary Type (School)</a></b> (IWD: school.2da, BG2:mschool.2da)
+
+
+        For subspells, <code><a href="#splv1_Header_0x25">Primary Type</a></code> should always match parent spell, both for interaction with opcodes <a href="../../opcodes/bgee.htm#op220">#220</a>/<a href="../../opcodes/bgee.htm#op229">#229</a>, and with the specialists save bonus/penalty (and <a href="../../opcodes/bgee.htm#op346">opcode #346</a>).
+iesdp-char:
+  type: 21
+  items:
+    - name: EFF_timing_mode
+      detail: char EFF_timing_mode
+      doc: |
+        <b><a name="effv1_Header_0xC">Timing mode</a></b>
+
+        - 0 ⟶ <b><a name="effv1_Header_0xC_0">Instant/Limited</a></b>
+          - This timing mode measures <code><a href="#effv1_Header_0xE">Duration</a></code> in seconds.
+          - Instantly converts to <code><a href="#effv1_Header_0xC_4096">Absolute duration</a></code>, <code>new duration(ticks) = Gametime(ticks) + 15 * <a href="#effv1_Header_0xE">Duration</a>(seconds)</code>.
+        - 1 ⟶ <b><a name="effv1_Header_0xC_1">Instant/Permanent</a></b>
+          - If the opcode doesn't directly modify a <code><a href="../../files/ids/bgee/stats.htm">STAT</a>/<a href="../../files/ids/bgee/state.htm">STATE</a></code> in the target's <a href="../ie_formats/cre_v1.htm">CRE</a> file, then it will last until removed (or it self-terminates). <code>New duration(ticks) = <a href="#effv1_Header_0xE">Duration</a>(ticks)</code> (mostly unused).
+        - 2 ⟶ <b><a name="effv1_Header_0xC_2">Instant/While equipped</a></b>
+          - As global `ITM` effect: Applied when item is equipped, lasts until item is unequipped (or <a href="../../opcodes/bgee.htm#op135">polymorph</a> bug).
+            - "Equipping" also occurs when game loads, and for weapons whenever they are selected from quickbar (even if it's already the active weapon). Never expires, and not considered a "Limited" effect.
+          - As `SPL` or header `ITM` effect: applies instantly, lasts until game is reloaded.
+          - <code>New duration(ticks) = <a href="#effv1_Header_0xE">Duration</a>(ticks)</code> (mostly unused).
+        - 3 ⟶ <b><a name="effv1_Header_0xC_3">Delay/Limited</a></b>
+          - This timing mode measures <code><a href="#effv1_Header_0xE">Duration</a></code> in seconds.
+          - Instantly converts to <code><a href="#effv1_Header_0xC_6">Limited after duration</a></code>, <code>new duration(ticks) = Gametime(ticks) + 15 * <a href="#effv1_Header_0xE">Duration</a>(seconds)</code>.
+        - 4 ⟶ <b><a name="effv1_Header_0xC_4">Delay/Permanent</a></b>
+          - This timing mode measures <code><a href="#effv1_Header_0xE">Duration</a></code> in seconds.
+          - Instantly converts to <code><a href="#effv1_Header_0xC_7">Permanent after duration</a></code>, <code>new duration(ticks) = Gametime(ticks) + 15 * <a href="#effv1_Header_0xE">Duration</a>(seconds)</code>.
+        - 5 ⟶ <b><a name="effv1_Header_0xC_5">Delay/While equipped</a></b>
+          - This timing mode measures <code><a href="#effv1_Header_0xE">Duration</a></code> in seconds.
+          - Instantly converts to <code><a href="#effv1_Header_0xC_8">Equipped after duration</a></code>, <code>new duration(ticks) = Gametime(ticks) + 15 * <a href="#effv1_Header_0xE">Duration</a>(seconds)</code>.
+        - 6 ⟶ <b><a name="effv1_Header_0xC_6">Limited after duration</a></b>
+          - This timing mode measures <code><a href="#effv1_Header_0xE">Duration</a></code> in ticks (<small><sup>1</sup>⁄<sub>15</sub></small> second).
+          - At <code>Gametime(ticks) >= <a href="#effv1_Header_0xE">Duration</a>(ticks)</code> converts to <code><a href="#effv1_Header_0xC_4096">Absolute duration</a></code>, <code>new duration(ticks) = 2 * <a href="#effv1_Header_0xE">Duration</a>(ticks) - <a href="../ie_formats/eff_v2.htm#effv2_Body_0x6C">Time Applied</a>(ticks)</code>.
+            - (If previously converted from <code><a href="#effv1_Header_0xC_3">Delay/Limited</a></code>)
+          - At <code>Gametime(ticks) >= <a href="#effv1_Header_0xE">Duration</a>(ticks)</code> converts to <code><a href="#effv1_Header_0xC_4096">Absolute duration</a></code>, <code>new duration(ticks) = 16 * <a href="#effv1_Header_0xE">Duration</a>(ticks)</code>.
+            - (If effect applied directly with <code><a href="#effv1_Header_0xC_6">Limited after duration</a></code>)
+            - `16 x Duration(ticks) = Duration(ticks) + 15 * Duration(seconds)` (Yes, it calculates a new duration using its current <code><a href="#effv1_Header_0xE">Duration</a></code> field as both ticks and seconds).
+            - It will convert to <code><a href="#effv1_Header_0xC_4096">Absolute duration</a></code> at the same `Gametime(ticks)` no matter when the effect was applied.
+            - That <code><a href="#effv1_Header_0xC_4096">Absolute duration</a></code> will expire at the same `Gametime(ticks)` no matter when the effect was applied.
+        - 7 ⟶ <b><a name="effv1_Header_0xC_7">Permanent after duration</a></b>
+          - This timing mode measures <code><a href="#effv1_Header_0xE">Duration</a></code> in ticks (<small><sup>1</sup>⁄<sub>15</sub></small> second).
+          - At <code>Gametime(ticks) >= <a href="#effv1_Header_0xE">Duration</a>(ticks)</code> converts to <code><a href="#effv1_Header_0xC_1">Instant/Permanent</a></code>, <code>new duration(ticks) = 2 * <a href="#effv1_Header_0xE">Duration</a>(ticks) - <a href="../ie_formats/eff_v2.htm#effv2_Body_0x6C">Time Applied</a>(ticks)</code>.
+            - (If previously converted from <code><a href="#effv1_Header_0xC_4">Delay/Permanent</a></code>)
+          - At <code>Gametime(ticks) >= <a href="#effv1_Header_0xE">Duration</a>(ticks)</code> converts to <code><a href="#effv1_Header_0xC_1">Instant/Permanent</a></code>, <code>new duration(ticks) = 16 * <a href="#effv1_Header_0xE">Duration</a>(ticks)</code>.
+            - (If effect applied directly with <code><a href="#effv1_Header_0xC_7">Permanent after duration</a></code>)
+            - It will convert to <code><a href="#effv1_Header_0xC_1">Instant/Permanent</a></code> at the same `Gametime(ticks)` no matter when the effect was applied.
+        - 8 ⟶ <b><a name="effv1_Header_0xC_8">Equipped after duration</a></b>
+          - This timing mode measures <code><a href="#effv1_Header_0xE">Duration</a></code> in ticks (<small><sup>1</sup>⁄<sub>15</sub></small> second).
+          - At <code>Gametime(ticks) >= <a href="#effv1_Header_0xE">Duration</a>(ticks)</code> converts to <code><a href="#effv1_Header_0xC_2">Instant/While equipped</a></code>, <code>new duration(ticks) = irrelevant</code>.
+        - 9 ⟶ <b><a name="effv1_Header_0xC_9">Instant/Permanent</a></b> (after Death)
+          - Effect is applied instantly.
+          - Never expires, but can terminate or be removed. <code>New duration(ticks) = <a href="#effv1_Header_0xE">Duration</a>(ticks)</code>.
+        - 10 ⟶ <b><a name="effv1_Header_0xC_10">Instant/Limited</a></b>
+          - This timing mode measures <code><a href="#effv1_Header_0xE">Duration</a></code> in ticks (<small><sup>1</sup>⁄<sub>15</sub></small> second).
+          - Instantly converts to <code><a href="#effv1_Header_0xC_4096">Absolute duration</a></code>, <code>new duration(ticks) = Gametime(ticks) + <a href="effv1_Header_0xE">Duration</a>(ticks)</code>.
+          - If <code><a href="#effv1_Header_0xE">Duration</a> = 0</code>, it won't function any differently from timing mode <code><a href="#effv1_Header_0xC_0">0</a></code>.
+        - 4096 ⟶ <b><a name="effv1_Header_0xC_4096">Absolute duration</a></b>
+          - Effect is applied instantly.
+          - This timing mode treats the <code><a href="#effv1_Header_0xE">Duration</a></code> field as the effect's expiration time (in ticks). Expires at <code>Gametime(ticks) >= <a href="#effv1_Header_0xE">Duration</a>(ticks)</code>.
+            - If the <code><a href="#effv1_Header_0xE">Duration</a></code> field is 108000, the effect will expire when the game timer reaches 24 hours, or instantly if the game timer has already passed that point. `108000 = 300(1 hour) * 24 * 15 (ticks ➔ seconds)`.
+
+
+        - All effects except those with Timing mode <code><a href="#effv1_Header_0xC_9">9</a></code> are removed by death.
+        - Some effects use a measurement of gametime in seconds, and multiply it by 15, rather than taking the exact gametime in ticks.<br/>
+          - This results in them lasting longer/shorter than they should (by up to 14 ticks).
+            - One of such effects is <a href="../../opcodes/bgee.htm#op231">Time Stop</a> (this is in addition to lasting half its specified <code><a href="#effv1_Header_0xE">Duration</a></code>).
+    - name: FX_power
+      detail: char FX_power
+      doc: Power
+    - name: FX_probability1
+      detail: char FX_probability1
+      doc: <b><a name="V1_Feature_Block_0x12">Probability 1</a></b>
+    - name: FX_probability2
+      detail: char FX_probability2
+      doc: |
+        <b><a name="V1_Feature_Block_0x13">Probability 2</a></b>
+
+
+        See <a href="../ie_formats/eff_v1.htm#effv1_Header_0x13">here</a> for further details.
+    - name: FX_resistance
+      detail: char FX_resistance
+      doc: |-
+        <b><a name="V1_Feature_Block_0xD">Dispel / Resistance</a></b>
+
+        The default behaviour is that effects cannot be dispelled and ignore magic resistance.
+
+        - bit 0 ⟶ Can be dispelled, affected by magic resistance
+        - bit 1 ⟶ Ignores magic resistance (when used in combination with bit 0)
+
+        This can also be presented in the more traditional way:
+        - 0 ⟶ Natural/Nonmagical
+        - 1 ⟶ Can be dispelled/Affected by resistance
+        - 2 ⟶ Cannot be dispelled/Ignores resistance
+        - 3 ⟶ Can be dispelled/Ignores resistance
+
+        The only difference between `0` and `2` is that `0` will automatically convert to `2` when targeting yourself.
+    - name: FX_target
+      detail: char FX_target
+      doc: |
+        <b><a name="V1_Feature_Block_0x2">Target type</a></b>
+
+        - 0 ⟶ None
+        - 1 ⟶ <b><a name="V1_Feature_Block_0x2_1">Self</a></b>
+        - 2 ⟶ <b><a name="V1_Feature_Block_0x2_2">Projectile target</a></b>
+        - 3 ⟶ <b><a name="V1_Feature_Block_0x2_3">Party</a></b>
+        - 4 ⟶ <b><a name="V1_Feature_Block_0x2_4">Everyone</a></b>
+        - 5 ⟶ <b><a name="V1_Feature_Block_0x2_5">Everyone except party</a></b>
+        - 6 ⟶ <b><a name="V1_Feature_Block_0x2_6">Caster group</a></b>
+        - 7 ⟶ <b><a name="V1_Feature_Block_0x2_7">Target group</a></b>
+        - 8 ⟶ <b><a name="V1_Feature_Block_0x2_8">Everyone except self</a></b>
+        - 9 ⟶ <b><a name="V1_Feature_Block_0x2_9">Original caster</a></b>
+
+
+        See <a href="../ie_formats/eff_v1.htm#effv1_Header_0x2">here</a> for further details.
+    - name: FX_timing
+      detail: char FX_timing
+      doc: |
+        <b><a name="V1_Feature_Block_0xC">Timing mode</a></b>
+
+        - 0 ⟶ <b><a name="V1_Feature_Block_0xC_0">Instant/Limited</a></b>
+        - 1 ⟶ <b><a name="V1_Feature_Block_0xC_1">Instant/Permanent</a></b>
+        - 2 ⟶ <b><a name="V1_Feature_Block_0xC_2">Instant/While equipped</a></b>
+        - 3 ⟶ <b><a name="V1_Feature_Block_0xC_3">Delay/Limited</a></b>
+        - 4 ⟶ <b><a name="V1_Feature_Block_0xC_4">Delay/Permanent</a></b>
+        - 5 ⟶ <b><a name="V1_Feature_Block_0xC_5">Delay/While equipped</a></b>
+        - 6 ⟶ <b><a name="V1_Feature_Block_0xC_6">Limited after duration</a></b>
+        - 7 ⟶ <b><a name="V1_Feature_Block_0xC_7">Permanent after duration</a></b>
+        - 8 ⟶ <b><a name="V1_Feature_Block_0xC_8">Equipped after duration</a></b>
+        - 9 ⟶ <b><a name="V1_Feature_Block_0xC_9">Instant/Permanent</a></b> (after Death)
+        - 10 ⟶ <b><a name="V1_Feature_Block_0xC_10">Instant/Limited</a></b>
+        - 4096 ⟶ <b><a name="V1_Feature_Block_0xC_4096">Absolute duration</a></b>
+
+
+        See <a href="../ie_formats/eff_v1.htm#effv1_Header_0xC">here</a> for further details.
+    - name: ITM_HEAD_alt_dice_sides
+      detail: char ITM_HEAD_alt_dice_sides
+      doc: Alternative dice sides
+    - name: ITM_HEAD_attack_type
+      detail: char ITM_HEAD_attack_type
+      doc: |-
+        <b><a name="itmv1_Extended_Header_0x0">Attack type</a></b>
+        - 0 ⟶ None
+        - 1 ⟶ <b><a name="itmv1_Extended_Header_0x0_1">Melee</a></b>
+        - 2 ⟶ <b><a name="itmv1_Extended_Header_0x0_2">Ranged</a></b>
+        - 3 ⟶ <b><a name="itmv1_Extended_Header_0x0_3">Magical</a></b>
+        - 4 ⟶ <b><a name="itmv1_Extended_Header_0x0_4">Launcher</a></b>
+
+        For <code><a href="#itmv1_Extended_Header_0x2_3">Item</a></code> abilities:
+        - Do NOT use `0|None`, will crash the game.
+        - Only <code><a href="#itmv1_Extended_Header_0x0_3">Magical</a></code> abilities can be drained (along with <a href="../../opcodes/bgee.htm#op243">opcode #243</a>'s other restrictions).
+        - Type <code><a href="#itmv1_Extended_Header_0x0_4">4</a></code> cannot be used except from scripts (icon won't show up in actionbar).
+
+        For <code><a href="#itmv1_Extended_Header_0x2_1">Weapon</a></code> abilities:
+        - Do NOT use `0|None`, will crash the game.
+        - <code><a href="#itmv1_Extended_Header_0x0_1">Melee</a></code>: Ignores the <code><a href="#itmv1_Extended_Header_0x2A">projectile</a></code> field (always uses `#1|None`). Valid for <a href="../../files/2da/2da_bgee/stylbonu.htm">Weapon Styles</a>.
+        - <code><a href="#itmv1_Extended_Header_0x0_2">Ranged</a></code>:
+          - Utilizes <code><a href="#itmv1_Extended_Header_0x2A">projectile</a></code> field.
+          - Item cannot be equipped in <code><a href="../../files/ids/bgee/slots.htm#9">off-hand</a></code>, unless its <code><a href="#Header_ItemType">itemtype</a></code> can only be equipped in the <code><a href="../../files/ids/bgee/slots.htm#9">off-hand</a></code> slot, from <code><a href="../../files/2da/2da_bgee/itemtype.htm">ITEMTYPE.2DA</a></code>.
+          - If equipped in <code><a href="../../files/ids/bgee/slots.htm#9">off-hand</a></code>, it will attack as normal (at least for the offhand).
+          - <code><a href="../../files/ids/bgee/slots.htm#9">Off-hand</a></code> weapon will be suppressed while this item ability is selected in <code><a href="../../files/ids/bgee/slots.htm#35">mainhand</a></code> (EE only).
+        - <code><a href="#itmv1_Extended_Header_0x0_3">Magical</a></code>: Identical to <code><a href="#itmv1_Extended_Header_0x0_1">Melee</a></code>, except that it can be <a href="../../opcodes/bgee.htm#op243">drained</a>.
+        - <code><a href="#itmv1_Extended_Header_0x0_4">Launcher</a></code>:
+          - In the <code><a href="../../files/ids/bgee/slots.htm#35">mainhand</a></code> slots:
+            - Ability cannot actually be selected, nor is the item considered "equipped" by script triggers or <a href="../../opcodes/bgee.htm#op183">opcode #183</a>.
+            - Equipped effects, stats and on-hit effects are added to the currently selected weapon ability IF that ability requires a <code><a href="#itmv1_Extended_Header_0x10">launcher</a></code> of this type.
+          - In the <code><a href="../../files/ids/bgee/slots.htm#9">off-hand</a></code> slot:
+            - Item cannot be equipped in <code><a href="../../files/ids/bgee/slots.htm#9">off-hand</a></code>, unless its <code><a href="#Header_ItemType">itemtype</a></code> can only be equipped in the <code><a href="../../files/ids/bgee/slots.htm#9">off-hand</a></code> slot, from <code><a href="../../files/2da/2da_bgee/itemtype.htm">ITEMTYPE.2DA</a></code>.
+            - Attack cycle will stop when this weapon would have attacked (must be re-initiated manually or by script).
+              - The creature will stop attacking when the off-hand attack would have occurred. Similar to pressing the group "Stop" button (F3).
+    - name: ITM_HEAD_id_required
+      detail: char ITM_HEAD_id_required
+      doc: |
+        ID Req.
+        - bit 0 ⟶ ID Required
+        - bit 1 ⟶ Non-ID Required
+    - name: ITM_HEAD_location
+      detail: char ITM_HEAD_location
+      doc: |
+        <b><a name="itmv1_Extended_Header_0x2">Location</a></b>
+
+        - 0 ⟶ None
+          - Ability will not be selectable through the UI (but still available to scripts and spell-casting opcodes).
+        - 1 ⟶ <b><a name="itmv1_Extended_Header_0x2_1">Weapon</a></b>
+          - Ability can be used/selected in Quick-weapon slots (when equipped in one of the <code><a href="../../files/ids/bgee/slots.htm#35">mainhand</a></code>/<code><a href="../../files/ids/bgee/slots.htm#11">ammo</a></code>/<code><a href="../../files/ids/bgee/slots.htm#10">fist</a></code>/<code><a href="../../files/ids/bgee/slots.htm#34">magical weapon</a></code> slots).
+        - 2 ⟶ Spell
+          - <code><a href="../ie_formats/spl_v1.htm#splv1_Extended_Header_0x2_2">SPL</a></code> only.
+        - 3 ⟶ <b><a name="itmv1_Extended_Header_0x2_3">Equipment / Item</a></b>
+          - Ability can be selected from Quick-item slots, when equipped in one of those slots, or from the "Use Item (F8)" button if equipped elsewhere (except the <code><a href="../../files/ids/bgee/slots.htm#34">Magical Weapon Slot</a></code>).
+        - 4 ⟶ Innate
+          - <code><a href="../ie_formats/spl_v1.htm#splv1_Extended_Header_0x2_4">SPL</a></code> only.
+        - 5+ ⟶ As `0`.
+
+
+        The first ability header of an item equipped in a <code><a href="../../files/ids/bgee/slots.htm#35">weapon</a></code>/<code><a href="../../files/ids/bgee/slots.htm#9">off-hand</a></code> slot will always be treated as a <code><a href="#itmv1_Extended_Header_0x2_1">weapon</a></code> abillty, even if it lacks the correct <code><a href="#itmv1_Extended_Header_0x2">location</a></code> to be selected as such, unless that item is a <code><a href="../../files/ids/bgee/itemcat.htm#12">shield</a></code> in the <code><a href="../../files/ids/bgee/slots.htm#9">off-hand</a></code>.
+    - name: ITM_HEAD_target
+      detail: char ITM_HEAD_target
+      doc: |
+        <b><a name="itmv1_Extended_Header_0xC">Target type</a></b>
+
+        - 0 ⟶ Invalid (cannot be selected)
+        - 1 ⟶ <b><a name="itmv1_Extended_Header_0xC_1">Living actor</a></b>
+          - Targets Portrait, <a href="../ie_formats/are_v1.htm#formAREAV1_0_Actor">Creature/Actor</a>, <a href="../ie_formats/are_v1.htm#formAREAV1_0_Container">Container</a>, or <a href="../ie_formats/are_v1.htm#formAREAV1_0_Door">Door</a>. Checks <code><a href="#itmv1_Extended_Header_0xE">Range</a></code>.
+        - 2 ⟶ <b><a name="itmv1_Extended_Header_0xC_2">Inventory</a></b>
+          - Can't be activated manually.
+        - 3 ⟶ <b><a name="itmv1_Extended_Header_0xC_3">Dead actor</a></b>
+          - As <code><a href="#itmv1_Extended_Header_0xC_1">Living Actor</a></code>. It really just ignores any <code><a href="#itmv1_Extended_Header_0xE">Range</a></code> requirement, including being in the same area.
+        - 4 ⟶ <b><a name="itmv1_Extended_Header_0xC_4">Any point within range</a></b>
+          - Targets location. Checks <code><a href="#itmv1_Extended_Header_0xE">Range</a></code>.
+        - 5 ⟶ <b><a name="itmv1_Extended_Header_0xC_5">Caster</a></b>
+          - Targets Self.
+        - 6 ⟶ Crash
+          - Can't be activated manually.
+        - 7 ⟶ <b><a name="itmv1_Extended_Header_0xC_7">Caster</a></b> (EE only)
+          - Targets Self. In particular:
+            - Used instantly (even while the game is paused).
+            - Ignores one item per round rule.
+            - Ignores <code><a href="#itmv1_Extended_Header_0x2A">projectile</a></code> (uses `#1|None`).
+
+
+        - This field doesn't matter when the ability is activated/cast by script, when cast by another opcode, or for weapon attacks.
+        - <code><a href="#itmv1_Extended_Header_0x2_1">Weapon</a></code> attacks always use a more restricted form of <code><a href="#itmv1_Extended_Header_0xC_1">Living actor</a></code>, as they cannot target <a href="../ie_formats/are_v1.htm#formAREAV1_0_Container">containers</a> or <a href="../ie_formats/are_v1.htm#formAREAV1_0_Door">doors</a> unless they are locked.
+    - name: ITM_HEAD_target_count
+      detail: char ITM_HEAD_target_count
+      doc: |-
+        <b><a name="itmv1_Extended_Header_0xD">Target count</a></b>
+
+        - Only usable by <code><a href="#itmv1_Extended_Header_0x2_3">Item</a></code> abilities, and only with Ability Targets <code><a href="#itmv1_Extended_Header_0xC_1">1</a></code>, <code><a href="#itmv1_Extended_Header_0xC_3">3</a></code>, or <code><a href="#itmv1_Extended_Header_0xC_4">4</a></code>.
+        - Targeting reticle will display amount remaining while selecting targets.
+        - Double-clicking a target/location will target it for the remaining amount.
+        - Regardless of the number of targets, only a single "Charge" will be expended.
+        - This feature cannot be utilized by scripts.
+          - Scripts will treat this field as if it's always `1`.
+    - name: SPL_HEAD_form
+      detail: char SPL_HEAD_form
+      doc: |
+        Spell form
+          - 1 - Standard
+          - 2 - Projectile
+
+
+        This field matters only for <code><a href="../ie_formats/itm_v1.htm#itmv1_Extended_Header_0x0">ITM</a></code>, SPL files shouldn't function any different based on their type (even `0`).
+    - name: SPL_HEAD_friendly
+      detail: char SPL_HEAD_friendly
+      doc: "- bit 2: 'Friendly' ability (PST only)"
+    - name: SPL_HEAD_target
+      detail: char SPL_HEAD_target
+      doc: |
+        <b><a name="splv1_Extended_Header_0xC">Target</a></b>
+
+        - 0 ⟶ Invalid (cannot be selected)
+        - 1 ⟶ <b><a name="splv1_Extended_Header_0xC_1">Living actor</a></b>
+          - Targets Portrait, <a href="../ie_formats/are_v1.htm#formAREAV1_0_Actor">Creature/Actor</a>, <a href="../ie_formats/are_v1.htm#formAREAV1_0_Container">Container</a>, or <a href="../ie_formats/are_v1.htm#formAREAV1_0_Door">Door</a>. Checks <code><a href="#splv1_Extended_Header_0xE">Range</a></code>.
+        - 2 ⟶ <b><a name="splv1_Extended_Header_0xC_2">Inventory</a></b>
+          - Can't be activated manually.
+        - 3 ⟶ <b><a name="splv1_Extended_Header_0xC_3">Dead actor</a></b>
+          - As <code><a href="#splv1_Extended_Header_0xC_1">Living Actor</a></code>. It really just ignores any <code><a href="#splv1_Extended_Header_0xE">Range</a></code> requirement, including being in the same area.
+        - 4 ⟶ <b><a name="splv1_Extended_Header_0xC_4">Any point within range</a></b>
+          - Targets location. Checks <code><a href="#splv1_Extended_Header_0xE">Range</a></code>.
+        - 5 ⟶ <b><a name="splv1_Extended_Header_0xC_5">Caster</a></b>
+          - Targets Self.
+        - 6 ⟶ Crash
+          - Can't be activated manually.
+        - 7 ⟶ <b><a name="splv1_Extended_Header_0xC_7">Caster</a></b>
+          - Targets Self. In particular:
+            - Cast instantly (even while the game is paused).
+            - Ignores one spell per round rule.
+            - Ignores <a href="../../opcodes/bgee.htm#op38">Silence</a>, <a href="../../opcodes/bgee.htm#op60">Spell Failure</a>, <a href="../../opcodes/bgee.htm#op60">Dead Magic</a>, <a href="../../opcodes/bgee.htm#op280">Wild Surge</a>, <code><a href="#Header_Flags_BIT13">Outdoors Only</a></code>, <code><a href="#Header_Flags_BIT16">Non-combat</a></code>, probably a few other rules.
+
+
+        - This field doesn't matter when the ability is activated/cast by script or when cast by another opcode.
+        - Subspells don't require an <code><a href="#splv1_Extended_Header_0xC">Ability Target</a></code>.
+    - name: SPL_HEAD_target_count
+      detail: char SPL_HEAD_target_count
+      doc: |-
+        <b><a name="splv1_Extended_Header_0xD">Target count</a></b>
+
+        - Only usable with Ability Targets <code><a href="#splv1_Extended_Header_0xC_1">1</a></code>, <code><a href="#splv1_Extended_Header_0xC_3">3</a></code>, or <code><a href="#splv1_Extended_Header_0xC_4">4</a></code>.
+        - Targeting reticle will display amount remaining while selecting targets.
+        - Double-clicking a target/location will target it for the remaining amount.
+        - Regardless of the number of targets, only a single "Memorization" will be expended.
+        - This feature cannot be utilized by scripts.
+          - Scripts will treat this field as if it's always `1`.
+    - name: SPL_sectype
+      detail: char SPL_sectype
+      doc: |
+        <b><a name="splv1_Header_0x27">Secondary Type</a></b> (BG2:msectype.2da)
+
+
+        For subspells, <code><a href="#splv1_Header_0x27">Secondary Type</a></code> should always match parent spell, for interaction with opcodes <a href="../../opcodes/bgee.htm#op221">#221</a>/<a href="../../opcodes/bgee.htm#op230">#230</a>.
