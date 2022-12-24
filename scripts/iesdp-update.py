@@ -9,16 +9,14 @@ parser = argparse.ArgumentParser(
     formatter_class=argparse.ArgumentDefaultsHelpFormatter,
 )
 parser.add_argument("-s", dest="iesdp_dir", help="iesdp directory", required=True)
-parser.add_argument(
-    "--completion-baf", dest="competion_baf", help="BAF completion YAML", required=True
-)
+parser.add_argument("--data-baf", dest="data_baf", help="BAF data YAML", required=True)
 parser.add_argument(
     "--highlight-baf", dest="highlight_baf", help="BAF highlight YAML", required=True
 )
 parser.add_argument(
-    "--completion-weidu",
-    dest="completion_weidu",
-    help="WeiDU completion YAML",
+    "--iesdp-file",
+    dest="iesdp_file",
+    help="IESDP YAML data file for WeiDU",
     required=True,
 )
 parser.add_argument(
@@ -50,12 +48,12 @@ skip_opcode_names = ["empty", "crash", "unknown"]
 # actions
 actions_dir = os.path.join(iesdp_dir, "_data", "actions")
 highlight_baf = args.highlight_baf
-completion_baf = args.competion_baf
+data_baf = args.data_baf
 actions = []
 actions_stanza = "actions"
 
 # iesdp
-completion_weidu = args.completion_weidu
+iesdp_file = args.iesdp_file
 highlight_weidu = args.highlight_weidu
 file_formats_dir = os.path.join(iesdp_dir, "_data", "file_formats")
 
@@ -156,10 +154,10 @@ for a in actions_unique:
 actions_completion = sorted(actions_completion, key=lambda k: k["name"])
 
 # dump to file
-with open(completion_baf) as yf:
+with open(data_baf) as yf:
     data = yaml.load(yf)
     data[actions_stanza]["items"] = actions_completion
-with open(completion_baf, "w") as yf:
+with open(data_baf, "w") as yf:
     yaml.dump(data, yf)
 ### END ACTIONS
 
@@ -267,5 +265,5 @@ iesdp_data = {
     },
 }
 
-dump_completion(completion_weidu, iesdp_data)
+dump_completion(iesdp_file, iesdp_data)
 dump_highlight(highlight_weidu, iesdp_data)

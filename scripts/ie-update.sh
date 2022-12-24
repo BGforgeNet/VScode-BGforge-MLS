@@ -6,11 +6,14 @@ set -xeu -o pipefail
 
 ielib_repo="https://github.com/BGforgeNet/BGforge-MLS-IElib.git"
 ielib_dir="ielib"
-completion_dir="server/out"
-completion_weidu="$completion_dir/weidu.completion.yml"
-completion_baf="$completion_dir/weidu-baf.completion.yml"
-highlight_weidu="syntaxes/weidu.tmLanguage.yml"
-highlight_baf="syntaxes/weidu.baf.tmLanguage.yml"
+data_dir="server/data"
+
+highlight_baf="syntaxes/weidu-baf.tmLanguage.yml"
+highlight_weidu="syntaxes/weidu-tp2.tmLanguage.yml"
+data_dir="server/data"
+data_weidu_iesdp="$data_dir/weidu-tp2-iesdp.yml"
+data_weidu_ielib="$data_dir/weidu-tp2-ielib.yml"
+data_baf="$data_dir/weidu-baf-iesdp.yml"
 
 external="external/ie"
 mkdir -p "$external"
@@ -27,7 +30,12 @@ cd $iesdp_dir
 git checkout ielib
 git pull
 popd
-./scripts/iesdp-update.py -s "$iesdp_dir" --completion-baf "$completion_baf" --highlight-baf "$highlight_baf" --completion-weidu "$completion_weidu" --highlight-weidu "$highlight_weidu" --ielib-dir "$ielib_dir"
+./scripts/iesdp-update.py -s "$iesdp_dir" \
+    --highlight-baf "$highlight_baf" \
+    --data-baf "$data_baf" \
+    --highlight-weidu "$highlight_weidu" \
+    --iesdp-file "$data_weidu_iesdp" \
+    --ielib-dir "$ielib_dir"
 
 # IElib
 pushd .
@@ -37,10 +45,7 @@ fi
 cd "$ielib_dir"
 git pull
 popd
-./scripts/ielib-update.py -s "$ielib_dir" --completion-weidu "$completion_weidu" --highlight-weidu "$highlight_weidu"
-
-# ssl should have the same completion as baf
-cp -f "$completion_dir/weidu-baf.completion.yml" "$completion_dir/weidu-ssl.completion.yml"
+./scripts/ielib-update.py -s "$ielib_dir" --data-file "$data_weidu_ielib" --highlight-weidu "$highlight_weidu"
 
 # convert yaml to json
 ./scripts/syntaxes_to_json.sh

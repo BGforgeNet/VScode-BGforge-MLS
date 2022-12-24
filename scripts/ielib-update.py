@@ -5,20 +5,20 @@ from ie_import import *
 
 # parse args
 parser = argparse.ArgumentParser(
-    description="Update IE syntax highlighting and completion from IElib",
+    description="Update IE syntax highlighting and intellisense from IElib",
     formatter_class=argparse.ArgumentDefaultsHelpFormatter,
 )
 parser.add_argument("-s", dest="src_dir", help="header directory", required=True)
 parser.add_argument(
-    "--completion-weidu",
-    dest="completion_weidu",
-    help="WeiDU completion YAML",
+    "--data-file",
+    dest="data_file",
+    help="IElib intellisense data YAML for WeiDU",
     required=True,
 )
 parser.add_argument(
     "--highlight-weidu",
     dest="highlight_weidu",
-    help="WeidDU syntax highlight YAML",
+    help="WeiDU syntax highlight YAML",
     required=True,
 )
 args = parser.parse_args()
@@ -49,7 +49,7 @@ ielib_data = {
     },
 }
 
-completion_weidu = args.completion_weidu
+data_file = args.data_file
 highlight_weidu = args.highlight_weidu
 src_dir = args.src_dir
 
@@ -195,5 +195,5 @@ ielib_data["patch_functions"]["items"] = patch_functions
 
 ### END FUNCTIONS
 
-dump_completion(completion_weidu, ielib_data)
+dump_completion(data_file, ielib_data)
 dump_highlight(highlight_weidu, ielib_data)
