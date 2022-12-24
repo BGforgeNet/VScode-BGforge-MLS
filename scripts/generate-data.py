@@ -99,7 +99,7 @@ def generate_hover(data, lang_id):
                 detail = item["detail"]
             except:
                 detail = label
-            value = "```${}```\n{}".format(lang_id, detail)
+            value = "```{}\n{}\n```".format(lang_id, detail)
             if "doc" in item:
                 value = "{}\n{}".format(value, item["doc"])
 
