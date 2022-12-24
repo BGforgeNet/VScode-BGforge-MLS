@@ -39,14 +39,14 @@ parser.add_argument(
 )
 
 parser.add_argument(
-    "--lang", dest="lang_id", help="language id", required=True
+    "--hover-lang", dest="hover_lang_id", help="language id", required=True
 )
 
 args = parser.parse_args()
 input_yaml_list = args.input_yaml[0]
 hover_file = args.hover_file
 completion_file = args.completion_file
-lang_id = args.lang_id
+hover_lang_id = args.hover_lang_id
 
 def load_data(yaml_list):
     data = {}
@@ -84,7 +84,7 @@ def generate_completion(data):
             completion_data.append(completion_item)
     return completion_data
 
-def generate_hover(data, lang_id):
+def generate_hover(data, hover_lang_id):
     hover_data = {}
     for items_list in data:
         items = data[items_list]["items"]
@@ -99,7 +99,7 @@ def generate_hover(data, lang_id):
                 detail = item["detail"]
             except:
                 detail = label
-            value = "```{}\n{}\n```".format(lang_id, detail)
+            value = "```{}\n{}\n```".format(hover_lang_id, detail)
             if "doc" in item:
                 value = "{}\n{}".format(value, item["doc"])
 
@@ -111,7 +111,7 @@ def generate_hover(data, lang_id):
 
 data = load_data(input_yaml_list)
 completion_data = generate_completion(data)
-hover_data = generate_hover(data, lang_id)
+hover_data = generate_hover(data, hover_lang_id)
 
 with open(hover_file, "w") as jf:
     json.dump(hover_data, jf, indent=4)

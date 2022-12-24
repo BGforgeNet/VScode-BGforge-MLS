@@ -1,0 +1,40 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "Fallout Star-Trek Scripting Language",
+	"scopeName": "source.fallout-ssl-hover",
+	"patterns": [
+		{
+			"include": "#full"
+		}
+	],
+	"repository": {
+		"full": {
+			"name": "meta.fallout-ssl-hover",
+			"patterns": [
+				{
+					"match": "^\\b(?i)(array|any|bool|int|mixed|float|ObjPtr|ObjectPtr|proc|string|void)\\b[[:blank:]]+\\b(\\w+)\\b",
+					"captures": {
+						"1": {
+							"name": "storage.type.fallout-ssl-hover"
+						},
+						"2": {
+							"name": "entity.name.function"
+						}
+					}
+				},
+				{
+					"match": "\\b(?i)(array|any|bool|int|mixed|float|ObjPtr|ObjectPtr|proc|string|void)\\b",
+					"captures": {
+						"1": {
+							"name": "storage.type.fallout-ssl-hover"
+						}
+					}
+				},
+				{
+					"include": "source.fallout-ssl",
+					"match": "."
+				}
+			]
+		}
+	}
+}

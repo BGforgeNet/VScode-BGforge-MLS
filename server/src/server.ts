@@ -43,7 +43,7 @@ let hover_map = new Map<string, any>();
 const completion_languages = ["weidu-tp2", "fallout-ssl"]
 const hover_languages = ["weidu-tp2", "fallout-ssl"]
 
-// hovers for first value are displayed as second one
+// for language KEY, hovers are searched in VALUE map
 const hover_lang_map = new Map([
 	["weidu-tp2", "weidu-tp2"],
 	["weidu-tp2-tpl", "weidu-tp2"],
@@ -53,7 +53,9 @@ const hover_lang_map = new Map([
 	["weidu-d-tpl", "weidu-d"],
 	["weidu-ssl", "weidu-ssl"],
 	["weidu-slb", "weidu-slb"],
-	["fallout-ssl", "fallout-ssl-codeblock"]
+
+	["fallout-ssl", "fallout-ssl"],
+	["fallout-ssl-hover", "fallout-ssl"]
 ]);
 
 const config_section = "bgforge";

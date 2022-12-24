@@ -61,14 +61,7 @@
 				"configuration": "./language-configurations/fallout-ssl.language-configuration.json"
 			},
 			{
-				"id": "fallout-ssl-codeblock",
-				"aliases": [
-					"Fallout Star-Trek scripting language code block"
-				],
-				"extensions": [
-					".fallout-ssl-codeblock"
-				],
-				"configuration": "./language-configurations/fallout-ssl-codeblock.language-configuration.json"
+				"id": "fallout-ssl-hover"
 			},
 			{
 				"id": "fallout-msg",
@@ -195,24 +188,14 @@
 				"path": "./syntaxes/fallout-ssl.tmLanguage.json"
 			},
 			{
-				"language": "fallout-ssl-codeblock",
-				"scopeName": "source.fallout-ssl-codeblock",
-				"path": "./syntaxes/fallout-ssl-codeblock.tmLanguage.json"
+				"language": "fallout-ssl-hover",
+				"scopeName": "source.fallout-ssl-hover",
+				"path": "./syntaxes/fallout-ssl-hover.tmLanguage.json"
 			},
 			{
 				"language": "fallout-msg",
 				"scopeName": "source.fallout-msg",
 				"path": "./syntaxes/fallout-msg.tmLanguage.json"
-			},
-			{
-				"scopeName": "markdown.fallout-ssl-codeblock",
-				"path": "./syntaxes/fallout-ssl-markdown-injection.tmLanguage.json",
-				"injectTo": [
-					"text.html.markdown"
-				],
-				"embeddedLanguages": {
-					"meta.embedded.block.fallout-ssl-codeblock": "fallout-ssl-codeblock"
-				}
 			},
 			{
 				"language": "weidu-tp2",
