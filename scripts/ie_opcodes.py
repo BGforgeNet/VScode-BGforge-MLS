@@ -3,7 +3,7 @@
 # coding: utf-8
 
 def opcode_name_to_id(name):
-  # these are replace anywhere in the string
+  # these are replaced anywhere in the string
   replacements = {
     ' ': '_',
     ')': '_',
