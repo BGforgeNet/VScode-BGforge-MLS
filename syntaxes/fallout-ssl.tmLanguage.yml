@@ -588,6 +588,7 @@ repository:
       - match: \b(?i)(force_encounter)\b
       - match: \b(?i)(force_encounter_with_flags)\b
       - match: \b(?i)(get_map_enter_position)\b
+      - match: \b(?i)(get_terrain_name)\b
       - match: \b(?i)(in_world_map)\b
       - match: \b(?i)(set_map_enter_position)\b
       - match: \b(?i)(set_map_time_multi)\b
@@ -2680,6 +2681,7 @@ repository:
       - match: \b(FID_YODA)\b
       - match: \b(FIELD_DAMAGED)\b
       - match: \b(FIELD_DELAY_COUNT)\b
+      - match: \b(FIELD_DESTROYED)\b
       - match: \b(FIELD_DISABLED)\b
       - match: \b(FIELD_ENABLED)\b
       - match: \b(FIELD_TIMER_CHECK_STATE)\b
@@ -2695,7 +2697,6 @@ repository:
       - match: \b(FIND_THOMAS_KNOWN)\b
       - match: \b(FIX_GENERATOR_POINTS)\b
       - match: \b(FLAG_FLAT)\b
-      - match: \b(FLAG_HIDDENITEM)\b
       - match: \b(FLAG_LEFT_HAND)\b
       - match: \b(FLAG_LIGHTING)\b
       - match: \b(FLAG_LIGHTTHRU)\b
@@ -2758,6 +2759,7 @@ repository:
       - match: \b(FO_VAR_GNW_win_init_flag)\b
       - match: \b(FO_VAR_GoodColor)\b
       - match: \b(FO_VAR_GreenColor)\b
+      - match: \b(FO_VAR_GreyColor)\b
       - match: \b(FO_VAR_In_WorldMap)\b
       - match: \b(FO_VAR_LSData)\b
       - match: \b(FO_VAR_Level_pc)\b
@@ -2767,6 +2769,7 @@ repository:
       - match: \b(FO_VAR_Meet_Frank_Horrigan)\b
       - match: \b(FO_VAR_Move_on_Car)\b
       - match: \b(FO_VAR_Mutate_)\b
+      - match: \b(FO_VAR_NearBlackColor)\b
       - match: \b(FO_VAR_NearWhiteColor)\b
       - match: \b(FO_VAR_PeanutButter)\b
       - match: \b(FO_VAR_RedColor)\b
@@ -2832,6 +2835,7 @@ repository:
       - match: \b(FO_VAR_curr_stack)\b
       - match: \b(FO_VAR_currentProgram)\b
       - match: \b(FO_VAR_currentWindow)\b
+      - match: \b(FO_VAR_current_palette)\b
       - match: \b(FO_VAR_cursor_line)\b
       - match: \b(FO_VAR_debug_func)\b
       - match: \b(FO_VAR_deviceInit)\b
@@ -3092,6 +3096,7 @@ repository:
       - match: \b(FO_VAR_tile_y)\b
       - match: \b(FO_VAR_title_color)\b
       - match: \b(FO_VAR_title_font)\b
+      - match: \b(FO_VAR_topFileID)\b
       - match: \b(FO_VAR_trait_data)\b
       - match: \b(FO_VAR_use_language)\b
       - match: \b(FO_VAR_view_page)\b
@@ -8666,7 +8671,6 @@ repository:
       - match: \b(FELIX_FRIENDLY)\b
       - match: \b(FELIX_SENT_BY_WESTIN)\b
       - match: \b(FIELD_DELAY)\b
-      - match: \b(FIELD_DESTROYED)\b
       - match: \b(FIELD_FLICKER)\b
       - match: \b(FIELD_OFF)\b
       - match: \b(FIELD_ON)\b
@@ -11364,6 +11368,7 @@ repository:
       - match: \b(get_strength)\b
       - match: \b(get_string_pointer)\b
       - match: \b(get_team)\b
+      - match: \b(get_terrain_name)\b
       - match: \b(get_text_width)\b
       - match: \b(get_track_lloyd)\b
       - match: \b(get_trait)\b

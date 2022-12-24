@@ -2142,6 +2142,10 @@
           "name": "support.function.sfall.ssl"
         },
         {
+          "match": "\\b(?i)(get_terrain_name)\\b",
+          "name": "support.function.sfall.ssl"
+        },
+        {
           "match": "\\b(?i)(in_world_map)\\b",
           "name": "support.function.sfall.ssl"
         },
@@ -10459,6 +10463,10 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(FIELD_DESTROYED)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(FIELD_DISABLED)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -10516,10 +10524,6 @@
         },
         {
           "match": "\\b(FLAG_FLAT)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
-          "match": "\\b(FLAG_HIDDENITEM)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -10771,6 +10775,10 @@
           "name": "constant.language.define.ssl"
         },
         {
+          "match": "\\b(FO_VAR_GreyColor)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
           "match": "\\b(FO_VAR_In_WorldMap)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -10804,6 +10812,10 @@
         },
         {
           "match": "\\b(FO_VAR_Mutate_)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_NearBlackColor)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -11064,6 +11076,10 @@
         },
         {
           "match": "\\b(FO_VAR_currentWindow)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_current_palette)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -12104,6 +12120,10 @@
         },
         {
           "match": "\\b(FO_VAR_title_font)\\b",
+          "name": "constant.language.define.ssl"
+        },
+        {
+          "match": "\\b(FO_VAR_topFileID)\\b",
           "name": "constant.language.define.ssl"
         },
         {
@@ -34396,10 +34416,6 @@
           "name": "constant.language.define.ssl"
         },
         {
-          "match": "\\b(FIELD_DESTROYED)\\b",
-          "name": "constant.language.define.ssl"
-        },
-        {
           "match": "\\b(FIELD_FLICKER)\\b",
           "name": "constant.language.define.ssl"
         },
@@ -45164,6 +45180,10 @@
         },
         {
           "match": "\\b(get_team)\\b",
+          "name": "support.type.define.header.ssl"
+        },
+        {
+          "match": "\\b(get_terrain_name)\\b",
           "name": "support.type.define.header.ssl"
         },
         {
