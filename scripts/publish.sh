@@ -8,7 +8,7 @@ vsce package
 
 version="$(jq -r '.version' package.json)"
 githubrelease release BGforgeNet/VScode-BGforge-MLS create "v$version" --publish --name "v$version" "bgforge-mls-$version.vsix"
-rm -f *.vsix
+rm -f ./*.vsix
 
 #for next release
 npm update

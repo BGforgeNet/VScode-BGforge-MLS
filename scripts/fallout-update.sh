@@ -6,7 +6,6 @@ set -xeu -o pipefail
 
 external="external/fallout"
 sfall_repo="https://github.com/BGforgeNet/sfall.git"
-sfall_branch="better-docs"
 sfall_dir="sfall"
 rpu_repo="https://github.com/BGforgeNet/Fallout2_Restoration_Project"
 rpu_dir="rpu"
@@ -27,7 +26,7 @@ cd $rpu_dir
 git checkout master
 git pull
 last_v="v$(git tag | grep "^v" | sed 's|^v||' | sort -n | tail -1)"
-git checkout $last_v
+git checkout "$last_v"
 popd
 
 # sfall
@@ -40,7 +39,7 @@ cd $sfall_dir
 git checkout master
 git pull
 last_v="v$(git tag | grep "^v" | sed 's|^v||' | sort -n | tail -1)"
-git checkout $last_v
+git checkout "$last_v"
 popd
 
 ./scripts/fallout-update.py -s "$external" --sfall-file "$sfall_file" --highlight-file "$highlight_file"

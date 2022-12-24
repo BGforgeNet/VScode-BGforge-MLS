@@ -1,13 +1,14 @@
 #!/bin/bash
 
+# clean up some non-ascii chars
+
 set -xeu -o pipefail
 
-tools_dir="scripts"
-completion_dir="server/out"
+data_dir="server/data"
 
-for yaml_file in $(ls $completion_dir | grep -i "\.yml"); do
-    sed -i "s|’|'|g" "$completion_dir/$yaml_file"
-    sed -i "s|–|-|g" "$completion_dir/$yaml_file"
+for yaml_file in "$data_dir"/*.yml; do
+    sed -i "s|’|'|g" "$yaml_file"
+    sed -i "s|–|-|g" "$yaml_file"
 done
 
 wait
