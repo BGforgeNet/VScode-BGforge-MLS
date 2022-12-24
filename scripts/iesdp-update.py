@@ -60,14 +60,6 @@ highlight_weidu = args.highlight_weidu
 file_formats_dir = os.path.join(iesdp_dir, "_data", "file_formats")
 
 
-def get_stanza(dtype):
-    try:
-        dstanza = stanza[dtype]
-    except:
-        dstanza = "iesdp-other"
-    return dstanza
-
-
 iesdp_base_url = "https://gibberlings3.github.io/iesdp/"
 iesdp_actions_url = "{}/scripting/actions".format(iesdp_base_url)
 iesdp_games_file = os.path.join(iesdp_dir, "_data", "games.yml")
@@ -84,7 +76,7 @@ for f in files:
 opcodes = sorted(opcodes, key=lambda k: k["n"])
 opcodes_unique = {}
 for o in opcodes:
-    name = opcode_name_to_id(o["name"])
+    name = opcode_name_to_id(o["opname"])
     if name in skip_opcode_names:
         continue
     name_count = len(
