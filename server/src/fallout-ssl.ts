@@ -258,8 +258,8 @@ export function get_defines(headers_dir: string) {
 export function sslcompile(params: any, cancel_token: any) {
 	const command = params.command;
 	const args: Array<any> = params.arguments;
-	const compile_exe = args[0];
-	const text_document: any = args[1];
+	const compile_cmd = args[1];
+	const text_document: any = args[0];
 	const dst_dir = args[2];
 	const filepath = text_document.fileName;
 	const cwd_to = path.dirname(filepath);
@@ -277,7 +277,7 @@ export function sslcompile(params: any, cancel_token: any) {
 		conlog(`compiling ${base_name}...`);
 		const cp = require('child_process');
 
-		cp.exec(compile_exe + " " + base_name + ' -o ' + dst_path, { cwd: cwd_to }, (err: any, stdout: any, stderr: any) => {
+		cp.exec(compile_cmd + " " + base_name + ' -o ' + dst_path, { cwd: cwd_to }, (err: any, stdout: any, stderr: any) => {
 			conlog('stdout: ' + stdout);
 			if (stderr) { conlog('stderr: ' + stderr); }
 			if (err) {

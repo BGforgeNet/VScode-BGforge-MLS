@@ -264,47 +264,35 @@
 			"type": "object",
 			"title": "BGforge MLS",
 			"properties": {
-				"bgforge.trace.server": {
-					"scope": "window",
+				"bgforge.falloutSSL.compilePath": {
 					"type": "string",
-					"enum": [
-						"off",
-						"messages",
-						"verbose"
-					],
-					"default": "off",
-					"description": "Traces the communication between VS Code and the language server."
+					"default": "compile",
+					"description": "Path to compile.exe from sfall modders pack. Alternatively, you can add compile.exe to system PATH and leave default here."
 				},
-				"bgforge.maxNumberOfProblems": {
-					"scope": "resource",
-					"type": "number",
-					"default": 10,
-					"description": "Controls the maximum number of problems produced by the server."
-				},
-				"bgforge.fallout-ssl.compile": {
+				"bgforge.falloutSSL.compileOptions": {
 					"type": "string",
-					"default": "wine ~/bin/compile.exe -q -p -l -O2 -d -s -n",
-					"description": "Path to Fallout SSL compile.exe plus compilation options."
+					"default": "-q -p -l -O2 -d -s -n",
+					"description": "Compilation options for compile.exe from sfall modders pack."
 				},
-				"bgforge.fallout-ssl.output_directory": {
+				"bgforge.falloutSSL.outputDirectory": {
 					"type": "string",
-					"default": ".",
-					"description": "Where to put the compiled Fallout SSL scripts. Absolute path or relative to source directory."
+					"default": "",
+					"description": "Where to put the compiled Fallout SSL scripts, absolute path. Default is to put compiled scripts next to the source file. You'll probably want to set this to data/scripts of your Fallout 2 game directory."
 				},
-				"bgforge.fallout-ssl.headers_directory": {
+				"bgforge.falloutSSL.headersDirectory": {
 					"type": "string",
-					"default": "NONE",
-					"description": "Absolute path to directory containing Fallout headers, searched recursively."
+					"default": "",
+					"description": "Path to directory containing Fallout headers. Default is workspace root."
 				},
 				"bgforge.weidu.path": {
 					"type": "string",
 					"default": "weidu",
 					"description": "Path to WeiDU binary. Alternatively, you can add WeiDU to system PATH and leave default here."
 				},
-				"bgforge.weidu.game_path": {
+				"bgforge.weidu.gamePath": {
 					"type": "string",
 					"default": "",
-					"description": "Full path to IE game. Needed to parse BAF and D."
+					"description": "Absolute path to an IE game. Needed to use parse feature on BAF and D files."
 				}
 			}
 		},

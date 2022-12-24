@@ -331,7 +331,7 @@ connection.onSignatureHelp((textDocumentPosition: TextDocumentPositionParams): S
 connection.onExecuteCommand((params, cancel_token) => {
 	const command = params.command;
 	const args = params.arguments;
-	const text_document = args[1];
+	const text_document = args[0];
 	const lang_id = text_document.languageId;
 
 	const scheme = text_document.uri.scheme;

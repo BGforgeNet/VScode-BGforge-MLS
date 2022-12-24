@@ -92,7 +92,7 @@ function send_diagnostics(text_document: TextDocument, output_text: string, form
 export function wcompile(params: any, cancel_token: any) {
 	const command = params.command;
 	const args: Array<any> = params.arguments;
-	const text_document: any = args[1];
+	const text_document: any = args[0];
 	const filepath = text_document.fileName;
 	const cwd_to = path.dirname(filepath);
 	const base_name = path.parse(filepath).base;
