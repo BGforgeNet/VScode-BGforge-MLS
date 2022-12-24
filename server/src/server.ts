@@ -38,8 +38,10 @@ let hasDiagnosticRelatedInformationCapability: boolean = false;
 
 let completion_map = new Map<string, Array<any>>();
 let signature_map = new Map<string, Array<any>>();
+let hover_map = new Map<string, any>();
 
 const completion_languages = ["weidu-tp2", "fallout-ssl"]
+const hover_languages = ["weidu-tp2", "fallout-ssl"]
 
 // hovers for first value are displayed as second one
 const hover_lang_map = new Map([
@@ -100,8 +102,9 @@ connection.onInitialized(() => {
 		});
 	}
 
-	//load completion
+	// load data
 	completion_map = load_completion();
+	hover_map = load_hover();
 	generate_signatures();
 });
 
@@ -195,7 +198,6 @@ function load_completion() {
 
 	for (const lang_id of completion_languages) {
 		try {
-			conlog(lang_id);
 			const file_path = path.join(__dirname, `completion.${lang_id}.json`);
 			const completion_list = JSON.parse(fs.readFileSync(file_path));
 			completion_map.set(lang_id, completion_list);
@@ -219,6 +221,22 @@ function load_completion() {
 	return completion_map;
 };
 
+function load_hover() {
+	const fs = require('fs');
+
+	for (const lang_id of hover_languages) {
+		try {
+			const file_path = path.join(__dirname, `hover.${lang_id}.json`);
+			const hover_data = JSON.parse(fs.readFileSync(file_path));
+			hover_map.set(lang_id, hover_data);
+		} catch (e) {
+			conlog(e);
+		}
+	}
+	return hover_map;
+};
+
+
 // This handler resolve additional information for the item selected in
 // the completion list.
 connection.onCompletionResolve(
@@ -236,9 +254,12 @@ connection.listen();
 
 
 connection.onHover((textDocumentPosition: TextDocumentPositionParams): Hover => {
-	const text = documents.get(textDocumentPosition.textDocument.uri).getText();
 	const lang_id = documents.get(textDocumentPosition.textDocument.uri).languageId;
-	const completion_list = completion_map.get(lang_id);
+	const hover_lang_id = get_hover_lang(lang_id);
+	const hover_data = hover_map.get(hover_lang_id);
+	if (!hover_data) { return; }
+
+	const text = documents.get(textDocumentPosition.textDocument.uri).getText();
 	const lines = text.split(/\r?\n/g);
 	const position = textDocumentPosition.position;
 	const filename = common.fname(textDocumentPosition.textDocument.uri);
@@ -247,48 +268,39 @@ connection.onHover((textDocumentPosition: TextDocumentPositionParams): Hover => 
 	const pos = position.character;
 	const word = common.get_word_at(str, pos);
 
-	if (completion_list && word) {
+	if (word) {
+		const hover = hover_data[word];
+		if (hover) { return hover; }
 
-		const hover_lang = get_hover_lang(lang_id);
-		let current_list: any[];
-		if (lang_id == "fallout-ssl") {
-			current_list = fallout_ssl.filter_completion(completion_list, filename);
-		} else {
-			current_list = completion_list;
-		}
-
-		const present = current_list.filter(function (el: any) {
-			return (el.label == word);
-		});
-		if (present.length > 0) {
-			const item = present[0];
-			if (item.detail || item.documentation) {
-				let markdown;
-				if (item.fulltext) {  // full text for defines
-					markdown = {
-						kind: MarkupKind.Markdown,
-						value: [
-							'```' + `${hover_lang}`,
-							item.fulltext,
-							'```',
-							item.documentation.value
-						].join('\n')
-					};
-				} else {
-					markdown = {
-						kind: MarkupKind.Markdown,
-						value: [
-							'```' + `${hover_lang}`,
-							item.detail,
-							'```',
-							item.documentation.value
-						].join('\n')
-					};
-				}
-				const hover = { contents: markdown };
-				return hover;
-			}
-		}
+		// if (present.length > 0) {
+		// 	const item = present[0];
+		// 	if (item.detail || item.documentation) {
+		// 		let markdown;
+		// 		if (item.fulltext) {  // full text for defines
+		// 			markdown = {
+		// 				kind: MarkupKind.Markdown,
+		// 				value: [
+		// 					'```' + `${hover_lang}`,
+		// 					item.fulltext,
+		// 					'```',
+		// 					item.documentation.value
+		// 				].join('\n')
+		// 			};
+		// 		} else {
+		// 			markdown = {
+		// 				kind: MarkupKind.Markdown,
+		// 				value: [
+		// 					'```' + `${hover_lang}`,
+		// 					item.detail,
+		// 					'```',
+		// 					item.documentation.value
+		// 				].join('\n')
+		// 			};
+		// 		}
+		// 		const hover = { contents: markdown };
+		// 		return hover;
+		// 	}
+		// }
 	}
 });
 
