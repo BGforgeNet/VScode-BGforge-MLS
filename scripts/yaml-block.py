@@ -1,17 +1,13 @@
 #!/usr/bin/env python3
-# coding: utf-8
 
 import sys
-from collections import OrderedDict
-
 import ruamel.yaml
+from ruamel.yaml.scalarstring import LiteralScalarString
+import textwrap
 
 yaml = ruamel.yaml.YAML(typ="rt")
 yaml.width = 4096
 yaml.indent(mapping=2, sequence=4, offset=2)
-# https://stackoverflow.com/questions/57382525/can-i-control-the-formatting-of-multiline-strings
-from ruamel.yaml.scalarstring import LiteralScalarString
-import textwrap
 
 
 def LS(s):

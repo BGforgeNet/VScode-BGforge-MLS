@@ -2,7 +2,6 @@
 
 import argparse
 import json
-
 import ruamel.yaml
 
 yaml = ruamel.yaml.YAML(typ="rt")
@@ -22,22 +21,17 @@ parser.add_argument(
     nargs="+",
     required=True,
 )
-parser.add_argument(
-    "--hover", dest="hover_file", help="output hover json", required=True
-)
-parser.add_argument(
-    "--completion", dest="completion_file", help="output completion json", required=True
-)
+parser.add_argument("--hover", dest="hover_file", help="output hover json", required=True)
+parser.add_argument("--completion", dest="completion_file", help="output completion json", required=True)
 
-parser.add_argument(
-    "--hover-lang", dest="hover_lang_id", help="language id", required=True
-)
+parser.add_argument("--hover-lang", dest="hover_lang_id", help="language id", required=True)
 
 args = parser.parse_args()
 input_yaml_list = args.input_yaml[0]
 hover_file = args.hover_file
 completion_file = args.completion_file
 hover_lang_id = args.hover_lang_id
+
 
 def load_data(yaml_list):
     data = {}
@@ -49,6 +43,7 @@ def load_data(yaml_list):
         data = {**data, **ydata}
     return data
 
+
 def generate_completion(data):
     completion_data = []
     for items_list in data:
@@ -58,11 +53,11 @@ def generate_completion(data):
             label = item["name"]
             try:
                 detail = item["detail"]
-            except:
+            except:  # noqa: E722
                 detail = label
             try:
                 doc = item["doc"]
-            except:
+            except:  # noqa: E722
                 doc = ""
             markdown = {"kind": "markdown", "value": doc}
             completion_item = {
@@ -74,6 +69,7 @@ def generate_completion(data):
             }
             completion_data.append(completion_item)
     return completion_data
+
 
 def generate_hover(data, hover_lang_id):
     hover_data = {}
@@ -88,14 +84,14 @@ def generate_hover(data, hover_lang_id):
 
             try:
                 detail = item["detail"]
-            except:
+            except:  # noqa: E722
                 detail = label
             value = "```{}\n{}\n```".format(hover_lang_id, detail)
             if "doc" in item:
                 value = "{}\n{}".format(value, item["doc"])
 
-            markdown = { "kind": "markdown", "value": value}
-            hover = { "contents": markdown };
+            markdown = {"kind": "markdown", "value": value}
+            hover = {"contents": markdown}
             hover_data[label] = hover
     return hover_data
 

@@ -1,6 +1,3 @@
-#!/usr/bin/env python3
-
-
 def opcode_name_to_id(name):
     # these are replaced anywhere in the string
     replacements = {
@@ -37,7 +34,7 @@ def opcode_name_to_id(name):
     for r in replacements:
         name = name.replace(r, replacements[r])
     name = name.rstrip("_").lstrip("_")
-    for l in lstrip:
-        if name.startswith(l):
-            name = name[len(l) :]
+    for ls in lstrip:
+        if name.startswith(ls):
+            name = name[len(ls):]
     return name

@@ -1,7 +1,8 @@
-import sys, re
+import re
+import sys
+from collections import OrderedDict
 from bs4 import BeautifulSoup
 from markdown import markdown
-from collections import OrderedDict
 
 
 def get_offset_prefix(file_version, data_file_name):  # eff_v2 / body.yml
@@ -16,7 +17,7 @@ def get_offset_prefix(file_version, data_file_name):  # eff_v2 / body.yml
     fbase_map = {"header": "", "body": "", "extended_header": "head"}
     try:
         suffix = fbase_map[fbase]
-    except:
+    except:  # noqa: E722
         suffix = fbase
 
     prefix = "{}{}_".format(base, version)
@@ -77,11 +78,7 @@ def offsets_to_definition(data, prefix):
     items = OrderedDict()
     for i in data:
         if "offset" in i and i["offset"] != cur_off:
-            print(
-                "Error: offset mismatch. Expected {}, got {} for {}".format(
-                    cur_off, i["offset"], i
-                )
-            )
+            print("Error: offset mismatch. Expected {}, got {} for {}".format(cur_off, i["offset"], i))
 
         size = get_offset_size(i)
 

@@ -1,19 +1,17 @@
 #!/usr/bin/env python3
-# coding: utf-8
 
-import sys, os
+import os
 import argparse
 import re
 from collections import OrderedDict
-
 import ruamel.yaml
+from ruamel.yaml.scalarstring import LiteralScalarString
+import textwrap
 
+# https://stackoverflow.com/questions/57382525/can-i-control-the-formatting-of-multiline-strings
 yaml = ruamel.yaml.YAML(typ="rt")
 yaml.width = 4096
 yaml.indent(mapping=2, sequence=4, offset=2)
-# https://stackoverflow.com/questions/57382525/can-i-control-the-formatting-of-multiline-strings
-from ruamel.yaml.scalarstring import LiteralScalarString
-import textwrap
 
 
 def LS(s):
@@ -26,9 +24,7 @@ parser = argparse.ArgumentParser(
     formatter_class=argparse.ArgumentDefaultsHelpFormatter,
 )
 parser.add_argument("-s", dest="src_dir", help="header directory", required=True)
-parser.add_argument(
-    "--sfall-file", dest="sfall_yaml", help="sfall data YAML", required=True
-)
+parser.add_argument("--sfall-file", dest="sfall_yaml", help="sfall data YAML", required=True)
 parser.add_argument(
     "--highlight-file",
     dest="highlight_yaml",
@@ -69,11 +65,11 @@ def find_files(path, ext):
 
 regex_constant = r"^#define\s+(\w+)\s+\(?([0-9]+)\)?"
 regex_define_with_vars = r"^#define\s+(\w+)\([\w\s,]+\)"  # not perfect, but works
-regex_procedure = (
-    r"^procedure\s+(\w+)(\((variable\s+[\w+])+(\s*,\s*variable\s+[\w+])?\))?\s+begin"
-)
+regex_procedure = r"^procedure\s+(\w+)(\((variable\s+[\w+])+(\s*,\s*variable\s+[\w+])?\))?\s+begin"
 regex_variable = r"^#define\s+((GVAR|MVAR|LVAR)_\w+)\s+\(?([0-9]+)\)?"
-regex_alias = r"^#define\s+(\w+)\s+\(?(\w+)\)?\s*$"  # aliases like: #define FLOAT_COLOR_NORMAL          FLOAT_MSG_YELLOW.
+regex_alias = (
+    r"^#define\s+(\w+)\s+\(?(\w+)\)?\s*$"  # aliases like: #define FLOAT_COLOR_NORMAL          FLOAT_MSG_YELLOW.
+)
 
 
 def defines_from_file(path):
@@ -83,9 +79,7 @@ def defines_from_file(path):
             variable = re.match(regex_variable, line)
             if variable:
                 name = variable.group(1)
-                defines[
-                    name
-                ] = "variable"  # it's actually a constant, but it helps to see XVAR highlighted as vars
+                defines[name] = "variable"  # it's actually a constant, but it helps to see XVAR highlighted as vars
                 continue
             constant = re.match(regex_constant, line)
             if constant:
@@ -180,14 +174,10 @@ for category in categories:
                     doc += "\n" + cdoc  # append
 
             if doc == "":
-                completion_functions.append(
-                    {"name": name, "detail": detail}
-                )  # if doc is still empty
+                completion_functions.append({"name": name, "detail": detail})  # if doc is still empty
             else:
                 doc = LS(doc)
-                completion_functions.append(
-                    {"name": name, "detail": detail, "doc": doc}
-                )  # proper record, all fields
+                completion_functions.append({"name": name, "detail": detail, "doc": doc})  # proper record, all fields
 
 # load hooks
 with open(hooks_yaml) as yf:

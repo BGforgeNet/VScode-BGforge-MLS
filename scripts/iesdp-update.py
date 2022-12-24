@@ -3,26 +3,26 @@
 import argparse
 import os
 import sys
-from ie import (
-    find_files,
-    opcode_name_to_id,
-    append_unique,
-    action_desc,
-    LS,
-    strip_liquid,
-    action_detail,
-    get_offset_prefix,
-    offsets_to_definition,
-    offsets_to_completion,
-    dump_definition,
-    dump_completion,
-    dump_highlight,
-)
-import frontmatter
-from collections import OrderedDict
 from collections import Counter as collections_counter
+from collections import OrderedDict
 
+import frontmatter
 import ruamel.yaml
+from ie import (
+    LS,
+    action_desc,
+    action_detail,
+    append_unique,
+    dump_completion,
+    dump_definition,
+    dump_highlight,
+    find_files,
+    get_offset_prefix,
+    offsets_to_completion,
+    offsets_to_definition,
+    opcode_name_to_id,
+    strip_liquid,
+)
 
 yaml = ruamel.yaml.YAML(typ="rt")
 yaml.width = 4096
@@ -36,9 +36,7 @@ parser = argparse.ArgumentParser(
 )
 parser.add_argument("-s", dest="iesdp_dir", help="iesdp directory", required=True)
 parser.add_argument("--data-baf", dest="data_baf", help="BAF data YAML", required=True)
-parser.add_argument(
-    "--highlight-baf", dest="highlight_baf", help="BAF highlight YAML", required=True
-)
+parser.add_argument("--highlight-baf", dest="highlight_baf", help="BAF highlight YAML", required=True)
 parser.add_argument(
     "--iesdp-file",
     dest="iesdp_file",
@@ -51,9 +49,7 @@ parser.add_argument(
     help="WeiDU highlight YAML",
     required=True,
 )
-parser.add_argument(
-    "--ielib-dir", dest="ielib_dir", help="IElib directory", required=True
-)
+parser.add_argument("--ielib-dir", dest="ielib_dir", help="IElib directory", required=True)
 args = parser.parse_args()
 
 # init vars
@@ -90,7 +86,7 @@ iesdp_games_file = os.path.join(iesdp_dir, "_data", "games.yml")
 with open(iesdp_games_file) as yf:
     iesdp_games = yaml.load(yf)
 
-### OPCODES
+# OPCODES
 files = find_files(opcode_dir, "html")
 for f in files:
     opcode = frontmatter.load(f)
@@ -103,9 +99,7 @@ for o in opcodes:
     name = opcode_name_to_id(o["opname"])
     if name in skip_opcode_names:
         continue
-    name_count = len(
-        [i for i in opcodes_unique if i == name]
-    )  # some name collude, need to make unique
+    name_count = len([i for i in opcodes_unique if i == name])  # some name collude, need to make unique
     if name_count > 0:
         name = name + "_{}".format(name_count + 1)
     opcodes_unique[name] = o["n"]
@@ -115,10 +109,10 @@ for o in opcodes_unique:
 
 with open(opcode_file, "w") as f:
     print(tpp_text, file=f)
-### END OPCODES
+# END OPCODES
 
 
-### ACTIONS
+# ACTIONS
 files = find_files(actions_dir, "yml")
 for f in files:
     with open(f) as yf:
@@ -133,12 +127,8 @@ actions = sorted(actions, key=lambda k: k["n"])
 # highlight
 actions_highlight = [x["name"] for x in actions]
 actions_highlight = set(actions_highlight)
-actions_highlight_patterns = [
-    {"match": "\\b({})\\b".format(x)} for x in actions_highlight
-]
-actions_highlight_patterns = sorted(
-    actions_highlight_patterns, key=lambda k: k["match"]
-)
+actions_highlight_patterns = [{"match": "\\b({})\\b".format(x)} for x in actions_highlight]
+actions_highlight_patterns = sorted(actions_highlight_patterns, key=lambda k: k["match"])
 # dump to file
 with open(highlight_baf) as yf:
     data = yaml.load(yf)
@@ -147,12 +137,10 @@ with open(highlight_baf, "w") as yf:
     yaml.dump(data, yf)
 
 actions_unique = []
-parents_bg2 = [x for x in actions if "bg2" in x and not "alias" in x]
+parents_bg2 = [x for x in actions if "bg2" in x and "alias" not in x]
 aliases_bg2 = [x for x in actions if "bg2" in x and "alias" in x]
-parents_bgee = [
-    x for x in actions if "bgee" in x and not "bg2" in x and not "alias" in x
-]
-aliases_bgee = [x for x in actions if "bgee" in x and not "bg2" in x and "alias" in x]
+parents_bgee = [x for x in actions if "bgee" in x and "bg2" not in x and "alias" not in x]
+aliases_bgee = [x for x in actions if "bgee" in x and "bg2" not in x and "alias" in x]
 
 # Priority: classic actions > classic aliases > EE in the same order
 actions_unique = append_unique(actions_unique, parents_bg2)
@@ -185,10 +173,10 @@ with open(data_baf) as yf:
     data[actions_stanza]["items"] = actions_completion
 with open(data_baf, "w") as yf:
     yaml.dump(data, yf)
-### END ACTIONS
+# END ACTIONS
 
 
-### DATA
+# DATA
 # data lists:
 # chars, lbytes, words, dwords, resrefs, strrefs, other
 
@@ -219,9 +207,7 @@ for ff in formats:
         new_definition_items = offsets_to_definition(offsets, prefix)
         definition_items = {**definition_items, **new_definition_items}
 
-        offsets_to_completion(
-            offsets, prefix, chars, lbytes, words, dwords, resrefs, strrefs, other
-        )
+        offsets_to_completion(offsets, prefix, chars, lbytes, words, dwords, resrefs, strrefs, other)
     dump_definition(prefix, definition_items, structures_dir)
 
 # feature block
@@ -229,28 +215,26 @@ fpath = os.path.join(file_formats_dir, "itm_v1", "feature_block.yml")
 with open(fpath) as yf:
     offsets = yaml.load(yf)
 prefix = "FX_"
-offsets_to_completion(
-    offsets, prefix, chars, lbytes, words, dwords, resrefs, strrefs, other
-)
+offsets_to_completion(offsets, prefix, chars, lbytes, words, dwords, resrefs, strrefs, other)
 
 definition_items = offsets_to_definition(offsets, prefix)
 dump_definition(prefix, definition_items, structures_dir)
 
 
 # sanitising
-for l in [chars, lbytes, words, dwords, resrefs, strrefs, other]:
+for offset_list in [chars, lbytes, words, dwords, resrefs, strrefs, other]:
     # reduce diff noise
-    l = sorted(l, key=lambda k: k["name"])
+    offset_list = sorted(offset_list, key=lambda k: k["name"])
     # check for dupes
-    name_list = [x["name"] for x in l]
-    l_counted = collections_counter(name_list)
-    non_unique = [x for x in l_counted if l_counted[x] > 1]
+    name_list = [x["name"] for x in offset_list]
+    offset_list_counted = collections_counter(name_list)
+    non_unique = [x for x in offset_list_counted if offset_list_counted[x] > 1]
     if len(non_unique) > 0:
         print("Error: duplicate keys found")
         print(non_unique)
         for nu in non_unique:
-            for l in [chars, lbytes, words, dwords, resrefs, strrefs, other]:
-                print([x for x in l if x["name"] == nu])
+            for offset_list in [chars, lbytes, words, dwords, resrefs, strrefs, other]:
+                print([x for x in offset_list if x["name"] == nu])
         sys.exit(1)
 
 iesdp_data = {

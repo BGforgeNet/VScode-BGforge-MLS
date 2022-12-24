@@ -1,16 +1,18 @@
 # common functions to dump IElib/IESDP data to completion and highlight
-import sys, os
 import functools
+
+import os
+import sys
+import textwrap
 import ruamel.yaml
 
+# https://stackoverflow.com/questions/57382525/can-i-control-the-formatting-of-multiline-strings
+from ruamel.yaml.scalarstring import LiteralScalarString
 from .offsets import get_offset_id
 
 yaml = ruamel.yaml.YAML(typ="rt")
 yaml.width = 4096
 yaml.indent(mapping=2, sequence=4, offset=2)
-# https://stackoverflow.com/questions/57382525/can-i-control-the-formatting-of-multiline-strings
-from ruamel.yaml.scalarstring import LiteralScalarString
-import textwrap
 
 
 def LS(s):
@@ -32,7 +34,7 @@ def find_files(path, ext, skip_dirs=[], skip_files=["iesdp.tpp"]):
     for root, dirs, files in os.walk(path, followlinks=True):
         dirs[:] = [d for d in dirs if d not in skip_dirs]
         for f in files:
-            if f.lower().endswith(ext.lower()) and not f in skip_files:
+            if f.lower().endswith(ext.lower()) and f not in skip_files:
                 flist.append(os.path.join(root, f))
     return flist
 
@@ -60,9 +62,9 @@ def dump_completion(fpath, iedata):
         stanza = ied["stanza"]
         try:
             ctype = ied["completion_type"]
-        except:
+        except:  # noqa: E722
             ctype = COMPLETION_TYPE_constant
-        if not stanza in data:
+        if stanza not in data:
             data.insert(1, stanza, {"type": ctype})
         data[stanza]["type"] = ctype
 
@@ -78,7 +80,7 @@ def check_completion(data):
     for d in data:
         items += [i["name"] for i in data[d]["items"]]
     allow_dupes = ["EVALUATE_BUFFER"]  # this is used in both vars and compilation
-    dupes = set([x for x in items if items.count(x) > 1 and not x in allow_dupes])
+    dupes = set([x for x in items if items.count(x) > 1 and x not in allow_dupes])
     if len(dupes) > 0:
         print("Error: duplicated completion items found: {}".format(dupes))
         sys.exit(1)
@@ -93,7 +95,7 @@ def dump_highlight(fpath, iedata):
         stanza = ied["stanza"]
         repository = data["repository"]
 
-        if not stanza in repository:
+        if stanza not in repository:
             repository.insert(1, stanza, {"name": ied["scope"]})
         repository[stanza]["name"] = ied["scope"]
 
@@ -127,9 +129,7 @@ def dump_definition(prefix, items, structures_dir):
 
 
 # mutates lists in place
-def offsets_to_completion(
-    data, prefix, chars, lbytes, words, dwords, resrefs, strrefs, other
-):
+def offsets_to_completion(data, prefix, chars, lbytes, words, dwords, resrefs, strrefs, other):
     for i in data:
         if "unused" in i or "unknown" in i:
             continue

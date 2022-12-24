@@ -1,17 +1,11 @@
 #!/usr/bin/env python3
 
 import argparse
-import re
-from ie import (
-    COMPLETION_TYPE_function,
-    find_files,
-    LS,
-    dump_completion,
-    dump_highlight,
-)
 import os
+import re
 
 import ruamel.yaml
+from ie import LS, COMPLETION_TYPE_function, dump_completion, dump_highlight, find_files
 
 yaml = ruamel.yaml.YAML(typ="rt")
 yaml.width = 4096
@@ -138,11 +132,7 @@ def func_to_item(func):
 
 def params_to_md(func, ptype):
     type_map = {"string_params": "STR_VAR", "int_params": "INT_VAR"}
-    text = (
-        "| **{}** | **Description** | **Type** | **Default** |\n|:-|:-|:-|:-|".format(
-            type_map[ptype]
-        )
-    )
+    text = "| **{}** | **Description** | **Type** | **Default** |\n|:-|:-|:-|:-|".format(type_map[ptype])
     params = sorted(func[ptype], key=lambda k: k["name"])
     for sp in params:
         default = get_default(sp, func)
@@ -167,10 +157,9 @@ def rets_to_md(func):
 
 def get_ptype(tname):
     try:
-        ptype = [x for x in types if x["name"] == tname][0]
         ptext = "[{}]({}/#{})".format(tname, types_url, tname)
         return ptext
-    except:
+    except:  # noqa: E722
         return tname
 
 
@@ -207,7 +196,6 @@ for f in function_files:
 ielib_data["action_functions"]["items"] = action_functions
 ielib_data["patch_functions"]["items"] = patch_functions
 
-### END FUNCTIONS
 
 dump_completion(data_file, ielib_data)
 dump_highlight(highlight_weidu, ielib_data)

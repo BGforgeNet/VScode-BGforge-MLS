@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
-import sys, yaml, json
+import json
+import sys
+import yaml
 
 with open(sys.argv[1]) as jf:
     data = json.load(jf)

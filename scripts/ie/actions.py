@@ -3,14 +3,15 @@
 from urllib.parse import urljoin
 import re
 
+
 # completion
 # alias has no desc of its own
 def action_alias_desc(actions, action):
-    if action["alias"] == True:
+    if action["alias"] is True:
         num = action["n"]
     else:
         num = action["alias"]
-    parent = [x for x in actions if x["n"] == num and not "alias" in x][0]
+    parent = [x for x in actions if x["n"] == num and "alias" not in x][0]
     if "unknown" in parent:
         return False
     return parent["desc"]
@@ -62,7 +63,7 @@ def append_unique(actions, new_actions):
 
 
 def action_detail(action):
-    if not "params" in action:
+    if "params" not in action:
         return "{}()".format(action["name"])
     param_string = ""
     first_param = True
