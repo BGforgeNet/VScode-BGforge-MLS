@@ -43,16 +43,18 @@ let hover_map = new Map<string, any>();
 const completion_languages = ["weidu-tp2", "fallout-ssl"]
 const hover_languages = ["weidu-tp2", "fallout-ssl"]
 
-// for language KEY, hovers are searched in VALUE map
-const hover_lang_map = new Map([
+// for language KEY, hovers and completions are searched in VALUE map
+const lang_data_map = new Map([
 	["weidu-tp2", "weidu-tp2"],
 	["weidu-tp2-tpl", "weidu-tp2"],
-	["weidu-baf", "weidu-baf"],
-	["weidu-baf-tpl", "weidu-baf"],
+
 	["weidu-d", "weidu-d"],
 	["weidu-d-tpl", "weidu-d"],
-	["weidu-ssl", "weidu-ssl"],
-	["weidu-slb", "weidu-slb"],
+
+	["weidu-baf", "weidu-baf"],
+	["weidu-baf-tpl", "weidu-baf"],
+	["weidu-ssl", "weidu-baf"],
+	["weidu-slb", "weidu-baf"],
 
 	["fallout-ssl", "fallout-ssl"],
 	["fallout-ssl-hover", "fallout-ssl"]
@@ -143,10 +145,10 @@ connection.onDidChangeConfiguration(change => {
 	documents.all().forEach(validateTextDocument);
 });
 
-function get_hover_lang(lang_id: string) {
-	let hover_lang = hover_lang_map.get(lang_id);
-	if (!hover_lang) { hover_lang = "c++" }
-	return hover_lang;
+function get_data_lang(lang_id: string) {
+	let data_lang = lang_data_map.get(lang_id);
+	if (!data_lang) { data_lang = "c++" }
+	return data_lang;
 }
 
 // Only keep settings for open documents
@@ -257,7 +259,7 @@ connection.listen();
 
 connection.onHover((textDocumentPosition: TextDocumentPositionParams): Hover => {
 	const lang_id = documents.get(textDocumentPosition.textDocument.uri).languageId;
-	const hover_lang_id = get_hover_lang(lang_id);
+	const hover_lang_id = get_data_lang(lang_id);
 	const hover_data = hover_map.get(hover_lang_id);
 	if (!hover_data) { return; }
 
