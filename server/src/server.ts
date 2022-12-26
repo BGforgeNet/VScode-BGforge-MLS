@@ -10,18 +10,23 @@ import {
 	CompletionItem,
 	TextDocumentPositionParams,
 	Hover,
-	MarkupKind,
 	SignatureHelp,
 	TextDocumentSyncKind,
 } from 'vscode-languageserver/node';
 import { TextDocument } from 'vscode-languageserver-textdocument';
-import { URI } from 'vscode-uri';
 import * as path from 'path';
 import * as fallout_ssl from './fallout-ssl';
 import * as weidu from './weidu';
 import * as common from './common';
-import { conlog } from './common';
+import { conlog, CompletionItemEx, HoverEx } from './common';
 
+
+// single language
+interface CompletionList extends Array<CompletionItem | CompletionItemEx> {}
+interface HoverMap extends Map<string, Hover | HoverEx> {}
+// // all languages
+interface CompletionData extends Map<string, CompletionList> {}
+interface HoverData extends Map<string, HoverMap> {}
 
 // Create a connection for the server. The connection uses Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
@@ -36,9 +41,19 @@ let hasConfigurationCapability: boolean = false;
 let hasWorkspaceFolderCapability: boolean = false;
 let hasDiagnosticRelatedInformationCapability: boolean = false;
 
-let completion_map = new Map<string, Array<any>>();
+// let static_completion = new Map<string, CompletionList>();
+// let static_completion = new Map<string, CompletionList>();
+let static_completion: CompletionData = new Map();
+let dynamic_completion: CompletionData = new Map();
+// let static_hover = new Map<string, Map<string, any>>();
+// let static_hover = new Map<string, HoverMap>();
+// let static_hover = new Map<string, any>();
+// let dynamic_hover = new Map<string, Map<string, HoverEx>>();
+// let dynamic_hover = new Map<string, HoverMap>();
+let static_hover: HoverData = new Map()
+let dynamic_hover: HoverData = new Map()
+
 let signature_map = new Map<string, Array<any>>();
-let hover_map = new Map<string, any>();
 
 const completion_languages = ["weidu-tp2", "fallout-ssl"]
 const hover_languages = ["weidu-tp2", "fallout-ssl"]
@@ -107,13 +122,14 @@ connection.onInitialized(() => {
 	}
 
 	// load data
-	completion_map = load_completion();
-	hover_map = load_hover();
+	load_static_completion();
+	load_static_hover();
+	load_dynamic_intellisense();
 	generate_signatures();
 });
 
 function generate_signatures() {
-	const fallout_ssl_signature_list = fallout_ssl.get_signature_list(completion_map);
+	const fallout_ssl_signature_list = fallout_ssl.get_signature_list(static_completion);
 	signature_map.set("fallout-ssl", fallout_ssl_signature_list);
 }
 
@@ -162,12 +178,12 @@ documents.onDidChangeContent(change => {
 	validateTextDocument(change.document);
 
 	const lang_id = documents.get(change.document.uri).languageId;
-	switch (lang_id) {
-		case 'fallout-ssl': {
-			fallout_ssl.reload_defines(completion_map, signature_map, URI.parse(change.document.uri).fsPath, change.document.getText());
-			break;
-		}
-	}
+	// switch (lang_id) {
+	// 	case 'fallout-ssl': {
+	// 		fallout_ssl.reload_defines(completion_map, signature_map, URI.parse(change.document.uri).fsPath, change.document.getText());
+	// 		break;
+	// 	}
+	// }
 });
 
 async function validateTextDocument(textDocument: TextDocument): Promise<void> {
@@ -187,57 +203,48 @@ connection.onDidChangeWatchedFiles(_change => {
 connection.onCompletion(
 	(_textDocumentPosition: TextDocumentPositionParams): CompletionItem[] => {
 		const lang_id = documents.get(_textDocumentPosition.textDocument.uri).languageId;
-		let current_list: any;
-		if (lang_id == "fallout-ssl") {
-			current_list = fallout_ssl.filter_completion(completion_map.get(lang_id), _textDocumentPosition.textDocument.uri);
-		} else {
-			current_list = completion_map.get(lang_id);
-		}
-		return current_list;
+		const static_list = static_completion.get(lang_id);
+		const dynamic_list = dynamic_completion.get(lang_id);
+		const list = [...static_list, ...dynamic_list];
+		return list;
 	}
 );
 
-function load_completion() {
-	const fs = require('fs');
+async function load_dynamic_intellisense() {
+	const fallout_header_data = await fallout_ssl.load_defines();
+	dynamic_hover.set('fallout-ssl', fallout_header_data.hover);
+	dynamic_completion.set('fallout-ssl', fallout_header_data.completion);
+};
 
+
+function load_static_completion() {
+	const fs = require('fs');
 	for (const lang_id of completion_languages) {
 		try {
 			const file_path = path.join(__dirname, `completion.${lang_id}.json`);
 			const completion_list = JSON.parse(fs.readFileSync(file_path));
-			completion_map.set(lang_id, completion_list);
+			static_completion.set(lang_id, completion_list);
 		} catch (e) {
 			conlog(e);
 		}
-
-		// //Fallout SSL: add completion from headers
-		// connection.workspace.getConfiguration(fallout_ssl_config).then(function (conf: any) {
-		// 	if (conf.headers_directory != "NONE") {
-		// 		try {
-		// 			let procdef_list = fallout_ssl.get_defines(conf.headers_directory);
-		// 			fallout_ssl.load_defines(completion_map, signature_map, procdef_list);
-		// 		} catch (e) {
-		// 			conlog(e);
-		// 		}
-		// 	}
-		// });
-
 	}
-	return completion_map;
 };
 
-function load_hover() {
+function load_static_hover() {
 	const fs = require('fs');
 
 	for (const lang_id of hover_languages) {
 		try {
 			const file_path = path.join(__dirname, `hover.${lang_id}.json`);
-			const hover_data = JSON.parse(fs.readFileSync(file_path));
-			hover_map.set(lang_id, hover_data);
+			conlog(typeof(file_path));
+			const json_data = JSON.parse(fs.readFileSync(file_path));
+			// const hover_data: Map<string, Hover> = JSON.parse(fs.readFileSync(file_path));
+			const hover_data: Map<string, Hover> = new Map(Object.entries(json_data));
+			static_hover.set(lang_id, hover_data);
 		} catch (e) {
 			conlog(e);
 		}
 	}
-	return hover_map;
 };
 
 
@@ -260,51 +267,22 @@ connection.listen();
 connection.onHover((textDocumentPosition: TextDocumentPositionParams): Hover => {
 	const lang_id = documents.get(textDocumentPosition.textDocument.uri).languageId;
 	const hover_lang_id = get_data_lang(lang_id);
-	const hover_data = hover_map.get(hover_lang_id);
-	if (!hover_data) { return; }
+	const static_map = static_hover.get(hover_lang_id);
+	const dynamic_map = dynamic_hover.get(hover_lang_id);
+	const map = new Map([...dynamic_map, ...static_map]);
+	if (!map) { return; }
 
 	const text = documents.get(textDocumentPosition.textDocument.uri).getText();
 	const lines = text.split(/\r?\n/g);
 	const position = textDocumentPosition.position;
-	const filename = common.fname(textDocumentPosition.textDocument.uri);
 
 	const str = lines[position.line];
 	const pos = position.character;
 	const word = common.get_word_at(str, pos);
-
 	if (word) {
-		const hover = hover_data[word];
+		conlog(word);
+		const hover = map.get(word);
 		if (hover) { return hover; }
-
-		// if (present.length > 0) {
-		// 	const item = present[0];
-		// 	if (item.detail || item.documentation) {
-		// 		let markdown;
-		// 		if (item.fulltext) {  // full text for defines
-		// 			markdown = {
-		// 				kind: MarkupKind.Markdown,
-		// 				value: [
-		// 					'```' + `${hover_lang}`,
-		// 					item.fulltext,
-		// 					'```',
-		// 					item.documentation.value
-		// 				].join('\n')
-		// 			};
-		// 		} else {
-		// 			markdown = {
-		// 				kind: MarkupKind.Markdown,
-		// 				value: [
-		// 					'```' + `${hover_lang}`,
-		// 					item.detail,
-		// 					'```',
-		// 					item.documentation.value
-		// 				].join('\n')
-		// 			};
-		// 		}
-		// 		const hover = { contents: markdown };
-		// 		return hover;
-		// 	}
-		// }
 	}
 });
 

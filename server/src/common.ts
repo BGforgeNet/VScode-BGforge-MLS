@@ -1,7 +1,9 @@
 'use strict';
 
 import * as path from 'path';
+import { CompletionItem, Hover } from 'vscode-languageserver/node';
 import { connection } from './server';
+import { Server } from 'http';
 export const diag_src = "BGforge MLS";
 
 export function fname(uri: string) {
@@ -54,4 +56,42 @@ export function get_signature_word(str: string, pos: number) {
 		const word = matches.pop().slice(0, -1);
 		return word;
 	}
+}
+
+// /** return a list of files with given extension in a directory */
+// export function find_files(directoryName: string, ext: string) {
+// 	const fs = require("fs");
+// 	const path = require("path")
+// 	const files = fs.readdirSync(directoryName);
+// 	const result: string[] = [];
+// 	files.forEach(function (file: string) {
+// 		const subfile = fs.statSync(path.join(directoryName, file));
+// 		if (subfile.isDirectory()) {
+// 			for (let subfileName of find_files(path.join(directoryName, file), ext)) {
+// 				if (path.extname(subfileName) == '.h') {
+// 					result.push(path.join(file, subfileName));
+// 				}
+// 			}
+// 		} else {
+// 			if (path.extname(file) == '.h') {
+// 				result.push(file);
+// 			}
+// 		}
+
+// 	})
+// 	return result;
+// }
+
+/** Save item source for defines */
+export interface CompletionItemEx extends CompletionItem {
+	source: string
+}
+
+export interface HoverEx extends Hover {
+	source: string
+}
+
+export interface HeaderData {
+	completion: Array<CompletionItemEx>
+	hover: Map<string, HoverEx>
 }
