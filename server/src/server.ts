@@ -67,29 +67,6 @@ const lang_data_map = new Map([
 
 connection.onInitialize((params: InitializeParams) => {
 	const capabilities = params.capabilities;
-	// Does the client support the `workspace/configuration` request?
-	// If not, we will fall back using global settings
-	hasConfigurationCapability =
-		capabilities.workspace && !!capabilities.workspace.configuration;
-	hasWorkspaceFolderCapability =
-		capabilities.workspace && !!capabilities.workspace.workspaceFolders;
-
-	// yes this is unsafe, just doing something quick and dirty
-	workspace_root = params.workspaceFolders[0].uri as string;
-	return {
-		capabilities: {
-			textDocumentSync: TextDocumentSyncKind.Full,
-			// Tell the client that the server supports code completion
-			completionProvider: {
-				resolveProvider: true,
-			},
-			hoverProvider: true,
-		}
-	};
-});
-
-connection.onInitialize((params: InitializeParams) => {
-	const capabilities = params.capabilities;
 
 	// Does the client support the `workspace/configuration` request?
 	// If not, we fall back using global settings.
@@ -102,11 +79,12 @@ connection.onInitialize((params: InitializeParams) => {
 
 	const result: InitializeResult = {
 		capabilities: {
-			textDocumentSync: TextDocumentSyncKind.Incremental,
+			textDocumentSync: TextDocumentSyncKind.Full,
 			// Tell the client that this server supports code completion.
 			completionProvider: {
 				resolveProvider: true
-			}
+			},
+			hoverProvider: true,
 		}
 	};
 	if (hasWorkspaceFolderCapability) {
@@ -116,6 +94,8 @@ connection.onInitialize((params: InitializeParams) => {
 			}
 		};
 	}
+	// yes this is unsafe, just doing something quick and dirty
+	workspace_root = params.workspaceFolders[0].uri as string;
 	return result;
 });
 
