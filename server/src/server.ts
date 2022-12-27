@@ -112,6 +112,7 @@ connection.onInitialized(() => {
 	load_static_completion();
 	load_static_hover();
 	load_dynamic_intellisense();
+	conlog("initialized");
 });
 
 // The settings
@@ -166,7 +167,7 @@ documents.onDidChangeContent(change => {
 		return;
 	}
 	validateTextDocument(change.document);
-	
+
 	const lang_id = documents.get(change.document.uri).languageId;
 
 	switch (lang_id) {
@@ -210,7 +211,7 @@ connection.onCompletion(
 		const rel_path = path.relative(workspace_root, _textDocumentPosition.textDocument.uri);
 		const self_list = self_completion.get(rel_path) || [];
 		const static_list = static_completion.get(lang_id);
-		const dynamic_list = dynamic_completion.get(lang_id);
+		const dynamic_list = dynamic_completion.get(lang_id) || [];
 		const list = [...self_list, ...static_list, ...dynamic_list];
 		return list;
 	}
@@ -240,7 +241,6 @@ function load_static_hover() {
 	for (const lang_id of hover_languages) {
 		try {
 			const file_path = path.join(__dirname, `hover.${lang_id}.json`);
-			conlog(typeof (file_path));
 			const json_data = JSON.parse(readFileSync(file_path, 'utf-8'));
 			const hover_data: Map<string, Hover> = new Map(Object.entries(json_data));
 			static_hover.set(lang_id, hover_data);
@@ -279,7 +279,6 @@ connection.onHover((textDocumentPosition: TextDocumentPositionParams): Hover => 
 
 	// const map = new Map([...dynamic_map, ...static_map]);
 
-
 	const text = documents.get(textDocumentPosition.textDocument.uri).getText();
 	const lines = text.split(/\r?\n/g);
 	const position = textDocumentPosition.position;
@@ -290,12 +289,19 @@ connection.onHover((textDocumentPosition: TextDocumentPositionParams): Hover => 
 	conlog(word);
 	// faster to check each map than join them
 	if (word) {
-		let hover: Hover | HoverEx = self_map.get(word);
-		if (hover) { return hover; }
-		hover = static_map.get(word);
-		if (hover) { return hover; }
-		hover = dynamic_map.get(word);
-		if (hover) { return hover; }
+		let hover: Hover | HoverEx;
+		if (self_map) {
+			hover = self_map.get(word);
+			if (hover) { return hover; }	
+		}
+		if (static_map) {
+			hover = static_map.get(word);
+			if (hover) { return hover; }	
+		}
+		if (dynamic_map) {
+			hover = dynamic_map.get(word);
+			if (hover) { return hover; }	
+		}
 	}
 });
 
@@ -313,7 +319,7 @@ connection.onExecuteCommand((params) => {
 
 	const uri = args.uri;
 	const document: TextDocument = documents.get(uri);
-	
+
 	const compile_cmd: string = args.compile_cmd;
 	const ssl_dst: string = args.ssl_dst;
 	const weidu_path: string = args.weidu_path;
