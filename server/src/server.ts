@@ -11,7 +11,7 @@ import {
 	TextDocumentPositionParams,
 	Hover,
 	TextDocumentSyncKind,
-	InitializeResult
+	InitializeResult,
 } from 'vscode-languageserver/node';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import * as path from 'path';
@@ -66,6 +66,7 @@ const lang_data_map = new Map([
 ]);
 
 connection.onInitialize((params: InitializeParams) => {
+	conlog("initialize");
 	const capabilities = params.capabilities;
 
 	// Does the client support the `workspace/configuration` request?
@@ -138,9 +139,6 @@ connection.onDidChangeConfiguration(change => {
 			(change.settings.bgforge || defaultSettings)
 		);
 	}
-
-	// Revalidate all open text documents
-	documents.all().forEach(validateTextDocument);
 });
 
 function get_data_lang(lang_id: string) {
@@ -166,42 +164,36 @@ documents.onDidChangeContent(change => {
 		conlog("onDidChangeContent: not initialized yet");
 		return;
 	}
-	validateTextDocument(change.document);
+	reload_self_data(change.document);
+});
 
-	const lang_id = documents.get(change.document.uri).languageId;
+async function reload_self_data(txtDoc: TextDocument) {
+	const lang_id = documents.get(txtDoc.uri).languageId;
 
 	switch (lang_id) {
 		case 'fallout-ssl': {
-			const rel_path = path.relative(workspace_root, change.document.uri);
+			const rel_path = path.relative(workspace_root, txtDoc.uri);
 			if (is_header(rel_path, lang_id)) {
 				const completion = dynamic_completion.get(lang_id);
 				const hover = dynamic_hover.get(lang_id);
-				const new_data = fallout_ssl.reload_data(rel_path, change.document.getText(), completion, hover);
+				const new_data = fallout_ssl.reload_data(rel_path, txtDoc.getText(), completion, hover);
 				dynamic_hover.set(lang_id, new_data.hover);
 				dynamic_completion.set(lang_id, new_data.completion);
 			} else {
 				const completion = self_completion.get(rel_path);
 				const hover = self_hover.get(rel_path);
-				const new_data = fallout_ssl.reload_data(rel_path, change.document.getText(), completion, hover);
+				const new_data = fallout_ssl.reload_data(rel_path, txtDoc.getText(), completion, hover);
 				self_hover.set(rel_path, new_data.hover);
 				self_completion.set(rel_path, new_data.completion);
 			}
 			break;
 		}
 	}
-});
-
-async function validateTextDocument(textDocument: TextDocument): Promise<void> {
-	// In this simple example we get the settings for every validate run.
-	const diagnostics: Diagnostic[] = [];
-	// Send the computed diagnostics to VSCode.
-	connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
 }
 
-// connection.onDidChangeWatchedFiles(_change => {
-// 	// Monitored files have change in VSCode
-// 	conlog('We received an file change event');
-// });
+documents.onDidOpen(event => {
+	reload_self_data(event.document);
+});
 
 
 // This handler provides the initial list of the completion items.
