@@ -43,7 +43,19 @@ export async function activate(context: ExtensionContext) {
 
 		const params: ExecuteCommandParams = {
 			command: cmd_compile,
-			arguments: [text_document, fallout_ssl_compile_cmd, fallout_ssl_dst_dir, weidu_path, weidu_game_path]
+			arguments: [
+				{
+					uri: text_document.uri.toString(),
+					scheme: text_document.uri.scheme,
+					compile_cmd: fallout_ssl_compile_cmd,
+					ssl_dst: fallout_ssl_dst_dir,
+					weidu_path: weidu_path,
+					weidu_game_path: weidu_game_path,
+					
+				}
+			]
+				
+				
 		};
 		await client.sendRequest(ExecuteCommandRequest.type, params);
 	});

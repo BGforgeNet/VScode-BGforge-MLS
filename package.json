@@ -266,7 +266,7 @@
 			"properties": {
 				"bgforge.falloutSSL.compilePath": {
 					"type": "string",
-					"default": "compile",
+					"default": "wine ~/bin/compile",
 					"description": "Path to compile.exe from sfall modders pack. Alternatively, you can add compile.exe to system PATH and leave default here."
 				},
 				"bgforge.falloutSSL.compileOptions": {

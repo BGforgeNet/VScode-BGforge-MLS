@@ -5,15 +5,16 @@ import {
 	Diagnostic,
 	DiagnosticSeverity,
 } from 'vscode-languageserver';
-import { TextDocument } from 'vscode-languageserver-textdocument';
 import * as common from './common';
-import { CompletionItemEx, HoverEx, conlog, CompletionDataEx, HoverDataEx, CompletionList, HoverMap, CompletionListEx, HoverMapEx } from './common';
+import { CompletionItemEx, HoverEx, conlog, CompletionList, HoverMap, CompletionListEx, HoverMapEx } from './common';
 import { connection, documents } from './server';
 import * as path from 'path';
 import { DynamicData } from './common';
 import { readFileSync } from 'fs';
-
+import { sync as fgsync } from 'fast-glob';
 import { MarkupKind } from 'vscode-languageserver/node';
+import * as cp from 'child_process';
+import { URI } from 'vscode-uri';
 
 const fallout_ssl_config = 'bgforge.falloutSSL';
 
@@ -40,10 +41,10 @@ const lang_id = 'fallout-ssl';
 const ssl_ext = '.ssl';
 
 export async function load_data() {
-	let completion_list: Array<CompletionItemEx> = [];
-	let hover_map = new Map<string, HoverEx>();
+	const completion_list: Array<CompletionItemEx> = [];
+	const hover_map = new Map<string, HoverEx>();
 	const config = await connection.workspace.getConfiguration(fallout_ssl_config);
-	let headers_dir = config.headersDirectory;
+	const headers_dir = config.headersDirectory;
 	const headers_list = find_headers(headers_dir);
 
 	for (const header_path of headers_list) {
@@ -58,8 +59,7 @@ export async function load_data() {
 
 function load_procedures(path: string, header_data: HeaderDataList, completion_list: CompletionList, hover_map: HoverMap) {
 	for (const proc of header_data.procedures) {
-		let markdown_value: string;
-		markdown_value = [
+		const markdown_value = [
 			'```' + `${lang_id}`,
 			`${proc.detail}`,
 			'```'
@@ -109,17 +109,15 @@ function load_macros(path: string, header_data: HeaderDataList, completion_list:
 
 export function reload_data(path: string, text: string, completion: CompletionListEx | undefined, hover: HoverMapEx | undefined) {
 	const symbols = find_symbols(text);
-	let new_completion: CompletionListEx;
-	let new_hover: HoverMapEx;
 	if (completion == undefined) {
 		completion = [];
 	}
-	new_completion = completion.filter(item => item.source != path);
+	const new_completion = completion.filter(item => item.source != path);
 	if (hover == undefined) {
 		hover = new Map();
 	}
-	new_hover = new Map(
-		Array.from(hover).filter(([key, value]) => {
+	const new_hover = new Map(
+		Array.from(hover).filter(([key, value]) => {  // eslint-disable-line @typescript-eslint/no-unused-vars
 			if (value.source != path) {
 				return true;
 			}
@@ -135,7 +133,7 @@ export function reload_data(path: string, text: string, completion: CompletionLi
 
 function find_symbols(text: string) {
 	// defines
-	let define_list: DefineList = [];
+	const define_list: DefineList = [];
 	const define_regex = /^#define[ \t]+(\w+)(?:\(([^)]+)\))?[ \t]+(.+)/gm;
 	const constant_regex = /^[A-Z0-9_]+/;
 	let match = define_regex.exec(text);
@@ -158,7 +156,7 @@ function find_symbols(text: string) {
 		// check if it has vars
 		let define_detail = define_name;
 		if (match[2]) {  // function-like macro
-			let define_vars = match[2];
+			const define_vars = match[2];
 			define_detail = `${define_name}(${define_vars})`;
 		}
 
@@ -174,7 +172,7 @@ function find_symbols(text: string) {
 	}
 
 	// procedures
-	let proc_list: ProcList = [];
+	const proc_list: ProcList = [];
 	const proc_regex = /procedure[\s]+(\w+)(?:\(([^)]+)\))?[\s]+begin/gm;
 	const vars_replace_regex = /variable[\s]/gi;  // remove "variable " from tooltip
 
@@ -204,11 +202,11 @@ function find_symbols(text: string) {
 function parse_compile_output(text: string) {
 	const errors_pattern = /\[Error\] <(.+)>:([\d]*):([\d]*):? (.*)/g;
 	const warnings_pattern = /\[Warning\] <(.+)>:([\d]*):([\d]*):? (.*)/g;
-	let errors = [];
-	let warnings = [];
+	const errors = [];
+	const warnings = [];
 
 	try {
-		let match: any;
+		let match: RegExpExecArray;
 		while ((match = errors_pattern.exec(text)) != null) {
 			// This is necessary to avoid infinite loops with zero-width matches
 			if (match.index === errors_pattern.lastIndex) {
@@ -217,29 +215,30 @@ function parse_compile_output(text: string) {
 			let col: string;
 			if (match[3] == "") { col = "0" } else { col = match[3] }
 			errors.push({ file: match[1], line: parseInt(match[2]), column: parseInt(col), message: match[4] });
-		};
+		}
 
 		while ((match = warnings_pattern.exec(text)) != null) {
 			// This is necessary to avoid infinite loops with zero-width matches
 			if (match.index === warnings_pattern.lastIndex) {
 				warnings_pattern.lastIndex++;
-			};
+			}
 			let col: string;
-			if (match[3] == "") { col = "0" } else { col = match[3] };
+			if (match[3] == "") { col = "0" } else { col = match[3] }
 			warnings.push({ file: match[1], line: parseInt(match[2]), column: parseInt(col), message: match[4] });
-		};
+		}
 	} catch (err) {
 		conlog(err);
 	}
 	return [errors, warnings];
 }
 
-function send_diagnostics(text_document: TextDocument, output_text: string) {
+function send_diagnostics(uri: string, output_text: string) {
+	const text_document = documents.get(uri);
 	const errors_warnings = parse_compile_output(output_text);
 	const errors = errors_warnings[0];
 	const warnings = errors_warnings[1];
 
-	let diagnostics: Diagnostic[] = [];
+	const diagnostics: Diagnostic[] = [];
 	for (const e of errors) {
 		const diagnosic: Diagnostic = {
 			severity: DiagnosticSeverity.Error,
@@ -270,92 +269,36 @@ function send_diagnostics(text_document: TextDocument, output_text: string) {
 }
 
 function find_headers(dirName: string) {
-	const fg = require('fast-glob');
-	const entries = fg.sync(['**/*.h'], { cwd: dirName, caseSensitiveMatch: false });
+	const entries = fgsync(['**/*.h'], { cwd: dirName, caseSensitiveMatch: false });
 	return entries;
 }
 
-// export function get_defines(headers_dir: string) {
-// 	const { readdirSync, statSync, stat } = require('fs')
-// 	const path = require('path');
-// 	const walkDirSync = function (directoryName: string) {
-// 		const files = readdirSync(directoryName);
-// 		const result: string[] = [];
-// 		files.forEach(function (file: string) {
-// 			const subfile = statSync(path.join(directoryName, file));
-// 			if (subfile.isDirectory()) {
-// 				for (let subfileName of walkDirSync(path.join(directoryName, file))) {
-// 					if (path.extname(subfileName) == '.h') {
-// 						result.push(path.join(file, subfileName));
-// 					}
-// 				}
-// 			} else {
-// 				if (path.extname(file) == '.h') {
-// 					result.push(file);
-// 				}
-// 			}
-
-// 		})
-// 		return result;
-// 	}
-
-// 	let full_def_list: Array<any> = [];
-// 	let full_proc_list: Array<any> = [];
-// 	for (const file of walkDirSync(headers_dir)) {
-// 		const fs = require('fs');
-// 		const file_path = path.join(headers_dir, file);
-// 		const code = fs.readFileSync(file_path, 'utf8');
-
-// 		const def_list = defines_from_file(code);
-// 		for (let item of def_list) {
-// 			if (item.fulltext && item.vars) {  // only show parenthesis when have vars
-// 				full_def_list.push({ label: item.label, kind: item.kind, detail: `${item.label}(${item.vars})`, source: file, vars: item.vars, fulltext: item.fulltext });
-// 			} else {  // no vars, show only define itself
-// 				full_def_list.push({ label: item.label, kind: item.kind, detail: item.label, source: file, vars: item.vars, fulltext: item.fulltext });
-// 			}
-// 		}
-
-// 		const proc_list = procs_from_file(code);
-// 		for (let item of proc_list)
-// 			full_proc_list.push({ label: item.label, kind: item.kind, detail: item.detail, source: file, vars: item.vars });
-// 	}
-// 	return [full_def_list, full_proc_list];
-// }
-
-export function sslcompile(params: any, cancel_token: any) {
-	const command = params.command;
-	const args: Array<any> = params.arguments;
-	const compile_cmd = args[1];
-	const text_document: any = args[0];
-	const dst_dir = args[2];
-	const filepath = text_document.fileName;
+export function sslcompile(uri_string: string, compile_cmd: string, dst_dir: string) {
+	const filepath = URI.parse(uri_string).fsPath;
 	const cwd_to = path.dirname(filepath);
 	const base_name = path.parse(filepath).base;
 	const base = path.parse(filepath).name;
 	const dst_path = path.join(dst_dir, base + '.int');
 	const ext = path.parse(filepath).ext;
 
-	if (command == "extension.bgforge.compile") {
-		if (ext.toLowerCase() != ssl_ext) {  // vscode loses open file if clicked on console or elsewhere
-			conlog("Not a Fallout SSL file! Please focus a Fallout SSL file to compile.");
-			connection.window.showInformationMessage("Please focus a Fallout SSL file to compile!");
-			return;
-		}
-		conlog(`compiling ${base_name}...`);
-		const cp = require('child_process');
-
-		cp.exec(compile_cmd + " " + base_name + ' -o ' + dst_path, { cwd: cwd_to }, (err: any, stdout: any, stderr: any) => {
-			conlog('stdout: ' + stdout);
-			if (stderr) { conlog('stderr: ' + stderr); }
-			if (err) {
-				conlog('error: ' + err);
-				connection.window.showErrorMessage(`Failed to compile ${base_name}!`);
-			} else {
-				connection.window.showInformationMessage(`Succesfully compiled ${base_name}.`);
-			}
-			send_diagnostics(documents.get(text_document.uri.external), stdout);
-		});
+	if (ext.toLowerCase() != ssl_ext) {  // vscode loses open file if clicked on console or elsewhere
+		conlog("Not a Fallout SSL file! Please focus a Fallout SSL file to compile.");
+		connection.window.showInformationMessage("Please focus a Fallout SSL file to compile!");
+		return;
 	}
+	conlog(`compiling ${base_name}...`);
+
+	cp.exec(compile_cmd + " " + base_name + ' -o ' + dst_path, { cwd: cwd_to }, (err: cp.ExecException, stdout: string, stderr: string) => {
+		conlog('stdout: ' + stdout);
+		if (stderr) { conlog('stderr: ' + stderr); }
+		if (err) {
+			conlog('error: ' + err.message);
+			connection.window.showErrorMessage(`Failed to compile ${base_name}!`);
+		} else {
+			connection.window.showInformationMessage(`Succesfully compiled ${base_name}.`);
+		}
+		send_diagnostics(uri_string, stdout);
+	});
 }
 
 //get everything between parenthesis
@@ -367,25 +310,16 @@ function get_args(str: string) {
 	return "";
 }
 
-// filter out defines from other opened ssl files
-export function filter_completion(completion_list: Array<any>, filename: string) {
-	filename = common.fname(filename);
-	const current_list = completion_list.filter(function (el: any) {
-		return (!el.source.endsWith(".ssl") || (el.source.endsWith(".ssl") && filename == el.source));
-	});
-	return current_list;
-};
-
 export function get_signature_list(completion_map: Map<string, Array<any>>) {
-	let signature_list: Array<any> = [];
-	for (let lang of completion_map.keys()) {
+	const signature_list: Array<any> = [];
+	for (const lang of completion_map.keys()) {
 		const completion_list = completion_map.get(lang);
 		// generate signature list
-		for (let item of completion_list) {
+		for (const item of completion_list) {
 			if (item.detail && (typeof item.detail === 'string') && item.detail.includes("(")) {  // has vars
-				let args = get_args(item.detail);
+				const args = get_args(item.detail);
 				if (args) {
-					let signature = { label: item.label, documentation: `(${args})`, source: item.source };
+					const signature = { label: item.label, documentation: `(${args})`, source: item.source };
 					signature_list.push(signature);
 				}
 			}

@@ -12,17 +12,15 @@ import {
 	Hover,
 	SignatureHelp,
 	TextDocumentSyncKind,
-	WorkspaceChange,
+	InitializeResult
 } from 'vscode-languageserver/node';
-import { URI } from 'vscode-uri'
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import * as path from 'path';
 import * as fallout_ssl from './fallout-ssl';
 import * as weidu from './weidu';
 import * as common from './common';
-import { conlog, CompletionData, HoverData, CompletionDataEx, HoverDataEx, HoverEx  } from './common';
-import { workspace } from 'vscode';
-
+import { conlog, CompletionData, HoverData, CompletionDataEx, HoverDataEx, HoverEx } from './common';
+import { readFileSync } from 'fs';
 
 // Create a connection for the server. The connection uses Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
@@ -33,26 +31,18 @@ export const connection = createConnection(ProposedFeatures.all);
 export const documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument);
 
 
-let hasConfigurationCapability: boolean = false;
-let hasWorkspaceFolderCapability: boolean = false;
-let hasDiagnosticRelatedInformationCapability: boolean = false;
+let hasConfigurationCapability = false;
+let hasWorkspaceFolderCapability = false;
 
-// let static_completion = new Map<string, CompletionList>();
-// let static_completion = new Map<string, CompletionList>();
-let static_completion: CompletionData = new Map();
-let dynamic_completion: CompletionDataEx = new Map();
-let self_completion: CompletionDataEx = new Map();
+const static_completion: CompletionData = new Map();
+const dynamic_completion: CompletionDataEx = new Map();
+const self_completion: CompletionDataEx = new Map();
 
-// let static_hover = new Map<string, Map<string, any>>();
-// let static_hover = new Map<string, HoverMap>();
-// let static_hover = new Map<string, any>();
-// let dynamic_hover = new Map<string, Map<string, HoverEx>>();
-// let dynamic_hover = new Map<string, HoverMap>();
-let static_hover: HoverData = new Map()
-let dynamic_hover: HoverDataEx = new Map()
-let self_hover: HoverDataEx = new Map();
+const static_hover: HoverData = new Map()
+const dynamic_hover: HoverDataEx = new Map()
+const self_hover: HoverDataEx = new Map();
 
-let signature_map = new Map<string, Array<any>>();
+const signature_map = new Map<string, Array<any>>();
 
 const completion_languages = ["weidu-tp2", "fallout-ssl"]
 const hover_languages = ["weidu-tp2", "fallout-ssl"]
@@ -78,38 +68,65 @@ const lang_data_map = new Map([
 	["fallout-ssl-hover", "fallout-ssl"]
 ]);
 
-const config_section = "bgforge";
-const config_prefix = 'bgforge.';
-const fallout_ssl_config = config_prefix + 'fallout-ssl';
+// connection.onInitialize((params: InitializeParams) => {
+// 	const capabilities = params.capabilities;
+// 	// Does the client support the `workspace/configuration` request?
+// 	// If not, we will fall back using global settings
+// 	hasConfigurationCapability =
+// 		capabilities.workspace && !!capabilities.workspace.configuration;
+// 	hasWorkspaceFolderCapability =
+// 		capabilities.workspace && !!capabilities.workspace.workspaceFolders;
+// 	hasDiagnosticRelatedInformationCapability =
+// 		capabilities.textDocument &&
+// 		capabilities.textDocument.publishDiagnostics &&
+// 		capabilities.textDocument.publishDiagnostics.relatedInformation;
+// 	// yes this is unsafe, just doing something quick and dirty
+// 	workspace_root = params.workspaceFolders[0].uri as string;
+// 	conlog(workspace_root);
+// 	return {
+// 		capabilities: {
+// 			textDocumentSync: TextDocumentSyncKind.Full,
+// 			// Tell the client that the server supports code completion
+// 			completionProvider: {
+// 				resolveProvider: true,
+// 			},
+// 			hoverProvider: true,
+// 			signatureHelpProvider: {
+// 				"triggerCharacters": ['(']
+// 			}
+// 		}
+// 	};
+// });
 
 connection.onInitialize((params: InitializeParams) => {
-	let capabilities = params.capabilities;
+	const capabilities = params.capabilities;
+
 	// Does the client support the `workspace/configuration` request?
-	// If not, we will fall back using global settings
-	hasConfigurationCapability =
-		capabilities.workspace && !!capabilities.workspace.configuration;
-	hasWorkspaceFolderCapability =
-		capabilities.workspace && !!capabilities.workspace.workspaceFolders;
-	hasDiagnosticRelatedInformationCapability =
-		capabilities.textDocument &&
-		capabilities.textDocument.publishDiagnostics &&
-		capabilities.textDocument.publishDiagnostics.relatedInformation;
-	// yes this is unsafe, just doing something quick and dirty
-	workspace_root = params.workspaceFolders[0].uri as string;
-	conlog(workspace_root);
-	return {
+	// If not, we fall back using global settings.
+	hasConfigurationCapability = !!(
+		capabilities.workspace && !!capabilities.workspace.configuration
+	);
+	hasWorkspaceFolderCapability = !!(
+		capabilities.workspace && !!capabilities.workspace.workspaceFolders
+	);
+
+	const result: InitializeResult = {
 		capabilities: {
-			textDocumentSync: TextDocumentSyncKind.Full,
-			// Tell the client that the server supports code completion
+			textDocumentSync: TextDocumentSyncKind.Incremental,
+			// Tell the client that this server supports code completion.
 			completionProvider: {
-				resolveProvider: true,
-			},
-			hoverProvider: true,
-			signatureHelpProvider: {
-				"triggerCharacters": ['(']
+				resolveProvider: true
 			}
 		}
 	};
+	if (hasWorkspaceFolderCapability) {
+		result.capabilities.workspace = {
+			workspaceFolders: {
+				supported: true
+			}
+		};
+	}
+	return result;
 });
 
 connection.onInitialized(() => {
@@ -120,11 +137,11 @@ connection.onInitialized(() => {
 			undefined
 		);
 	}
-	if (hasWorkspaceFolderCapability) {
-		connection.workspace.onDidChangeWorkspaceFolders(_event => {
-			conlog('Workspace folder change event received.');
-		});
-	}
+	// if (hasWorkspaceFolderCapability) {
+	// 	connection.workspace.onDidChangeWorkspaceFolders(_event => {
+	// 		conlog('Workspace folder change event received.');
+	// 	});
+	// }
 
 	// load data
 	load_static_completion();
@@ -147,10 +164,10 @@ interface SSLsettings {
 // Please note that this is not the case when using this server with the client provided in this example
 // but could happen with other clients.
 const defaultSettings: SSLsettings = { maxNumberOfProblems: 10 };
-let globalSettings: SSLsettings = defaultSettings;
+export let globalSettings: SSLsettings = defaultSettings;
 
 // Cache the settings of all open documents
-let documentSettings: Map<string, Thenable<SSLsettings>> = new Map();
+const documentSettings: Map<string, Thenable<SSLsettings>> = new Map();
 
 connection.onDidChangeConfiguration(change => {
 	if (hasConfigurationCapability) {
@@ -190,16 +207,18 @@ documents.onDidChangeContent(change => {
 		return;
 	}
 	validateTextDocument(change.document);
+	
 	const lang_id = documents.get(change.document.uri).languageId;
+
 	switch (lang_id) {
 		case 'fallout-ssl': {
 			const rel_path = path.relative(workspace_root, change.document.uri);
 			if (is_header(rel_path, lang_id)) {
 				const completion = dynamic_completion.get(lang_id);
 				const hover = dynamic_hover.get(lang_id);
-				const new_data = fallout_ssl.reload_data(rel_path, change.document.getText(), completion, hover);	
+				const new_data = fallout_ssl.reload_data(rel_path, change.document.getText(), completion, hover);
 				dynamic_hover.set(lang_id, new_data.hover);
-				dynamic_completion.set(lang_id, new_data.completion);	
+				dynamic_completion.set(lang_id, new_data.completion);
 			} else {
 				const completion = self_completion.get(rel_path);
 				const hover = self_hover.get(rel_path);
@@ -219,10 +238,10 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
 	connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
 }
 
-connection.onDidChangeWatchedFiles(_change => {
-	// Monitored files have change in VSCode
-	conlog('We received an file change event');
-});
+// connection.onDidChangeWatchedFiles(_change => {
+// 	// Monitored files have change in VSCode
+// 	conlog('We received an file change event');
+// });
 
 
 // This handler provides the initial list of the completion items.
@@ -243,38 +262,34 @@ async function load_dynamic_intellisense() {
 	dynamic_hover.set('fallout-ssl', fallout_header_data.hover);
 	dynamic_completion.set('fallout-ssl', fallout_header_data.completion);
 	initialized = true;
-};
+}
 
 
 function load_static_completion() {
-	const fs = require('fs');
 	for (const lang_id of completion_languages) {
 		try {
 			const file_path = path.join(__dirname, `completion.${lang_id}.json`);
-			const completion_list = JSON.parse(fs.readFileSync(file_path));
+			const completion_list = JSON.parse(readFileSync(file_path, 'utf-8'));
 			static_completion.set(lang_id, completion_list);
 		} catch (e) {
 			conlog(e);
 		}
 	}
-};
+}
 
 function load_static_hover() {
-	const fs = require('fs');
-
 	for (const lang_id of hover_languages) {
 		try {
 			const file_path = path.join(__dirname, `hover.${lang_id}.json`);
-			conlog(typeof(file_path));
-			const json_data = JSON.parse(fs.readFileSync(file_path));
-			// const hover_data: Map<string, Hover> = JSON.parse(fs.readFileSync(file_path));
+			conlog(typeof (file_path));
+			const json_data = JSON.parse(readFileSync(file_path, 'utf-8'));
 			const hover_data: Map<string, Hover> = new Map(Object.entries(json_data));
 			static_hover.set(lang_id, hover_data);
 		} catch (e) {
 			conlog(e);
 		}
 	}
-};
+}
 
 
 // This handler resolve additional information for the item selected in
@@ -345,40 +360,45 @@ connection.onSignatureHelp((textDocumentPosition: TextDocumentPositionParams): S
 	}
 });
 
-connection.onExecuteCommand((params, cancel_token) => {
+connection.onExecuteCommand((params) => {
 	const command = params.command;
-	const args = params.arguments;
-	const text_document = args[0];
-	const lang_id = text_document.languageId;
+	if (command != "extension.bgforge.compile") { return }
 
-	const scheme = text_document.uri.scheme;
-	if (scheme != "file") {
-		conlog("Focus a valid file to compile.");
+	const args = params.arguments[0];
+
+	if (args.scheme != "file") {
+		conlog("Scheme is not 'file'");
 		connection.window.showInformationMessage("Focus a valid file to compile!");
+		return;
 	}
 
-	switch (command) {
-		case "extension.bgforge.compile": {
-			switch (lang_id) {
-				case "fallout-ssl": {
-					fallout_ssl.sslcompile(params, cancel_token);
-					break;
-				}
-				case "weidu-tp2":
-				case "weidu-tp2-tpl":
-				case "weidu-baf":
-				case "weidu-baf-tpl":
-				case "weidu-d":
-				case "weidu-d-tpl": {
-					weidu.wcompile(params, cancel_token);
-					break;
-				}
-				default: {
-					connection.window.showInformationMessage("Focus a valid file to compile!");
-					break;
-				}
-			}
+	const uri = args.uri;
+	const document: TextDocument = documents.get(uri);
+	
+	const compile_cmd: string = args.compile_cmd;
+	const ssl_dst: string = args.ssl_dst;
+	const weidu_path: string = args.weidu_path;
+	const weidu_game_path: string = args.weidu_game_path;
+	const lang_id = document.languageId;
+
+	switch (lang_id) {
+		case "fallout-ssl": {
+			fallout_ssl.sslcompile(uri, compile_cmd, ssl_dst);
+			break;
+		}
+		case "weidu-tp2":
+		case "weidu-tp2-tpl":
+		case "weidu-baf":
+		case "weidu-baf-tpl":
+		case "weidu-d":
+		case "weidu-d-tpl": {
+			weidu.wcompile(uri, weidu_path, weidu_game_path);
+			break;
+		}
+		default: {
+			conlog("Compile called on a wrong language.");
+			connection.window.showInformationMessage("Can't compile this file.");
+			break;
 		}
 	}
-
 });
