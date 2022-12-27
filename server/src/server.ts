@@ -10,7 +10,6 @@ import {
 	CompletionItem,
 	TextDocumentPositionParams,
 	Hover,
-	SignatureHelp,
 	TextDocumentSyncKind,
 	InitializeResult
 } from 'vscode-languageserver/node';
@@ -42,8 +41,6 @@ const static_hover: HoverData = new Map()
 const dynamic_hover: HoverDataEx = new Map()
 const self_hover: HoverDataEx = new Map();
 
-const signature_map = new Map<string, Array<any>>();
-
 const completion_languages = ["weidu-tp2", "fallout-ssl"]
 const hover_languages = ["weidu-tp2", "fallout-ssl"]
 
@@ -68,35 +65,28 @@ const lang_data_map = new Map([
 	["fallout-ssl-hover", "fallout-ssl"]
 ]);
 
-// connection.onInitialize((params: InitializeParams) => {
-// 	const capabilities = params.capabilities;
-// 	// Does the client support the `workspace/configuration` request?
-// 	// If not, we will fall back using global settings
-// 	hasConfigurationCapability =
-// 		capabilities.workspace && !!capabilities.workspace.configuration;
-// 	hasWorkspaceFolderCapability =
-// 		capabilities.workspace && !!capabilities.workspace.workspaceFolders;
-// 	hasDiagnosticRelatedInformationCapability =
-// 		capabilities.textDocument &&
-// 		capabilities.textDocument.publishDiagnostics &&
-// 		capabilities.textDocument.publishDiagnostics.relatedInformation;
-// 	// yes this is unsafe, just doing something quick and dirty
-// 	workspace_root = params.workspaceFolders[0].uri as string;
-// 	conlog(workspace_root);
-// 	return {
-// 		capabilities: {
-// 			textDocumentSync: TextDocumentSyncKind.Full,
-// 			// Tell the client that the server supports code completion
-// 			completionProvider: {
-// 				resolveProvider: true,
-// 			},
-// 			hoverProvider: true,
-// 			signatureHelpProvider: {
-// 				"triggerCharacters": ['(']
-// 			}
-// 		}
-// 	};
-// });
+connection.onInitialize((params: InitializeParams) => {
+	const capabilities = params.capabilities;
+	// Does the client support the `workspace/configuration` request?
+	// If not, we will fall back using global settings
+	hasConfigurationCapability =
+		capabilities.workspace && !!capabilities.workspace.configuration;
+	hasWorkspaceFolderCapability =
+		capabilities.workspace && !!capabilities.workspace.workspaceFolders;
+
+	// yes this is unsafe, just doing something quick and dirty
+	workspace_root = params.workspaceFolders[0].uri as string;
+	return {
+		capabilities: {
+			textDocumentSync: TextDocumentSyncKind.Full,
+			// Tell the client that the server supports code completion
+			completionProvider: {
+				resolveProvider: true,
+			},
+			hoverProvider: true,
+		}
+	};
+});
 
 connection.onInitialize((params: InitializeParams) => {
 	const capabilities = params.capabilities;
@@ -137,23 +127,12 @@ connection.onInitialized(() => {
 			undefined
 		);
 	}
-	// if (hasWorkspaceFolderCapability) {
-	// 	connection.workspace.onDidChangeWorkspaceFolders(_event => {
-	// 		conlog('Workspace folder change event received.');
-	// 	});
-	// }
 
 	// load data
 	load_static_completion();
 	load_static_hover();
 	load_dynamic_intellisense();
-	generate_signatures();
 });
-
-function generate_signatures() {
-	const fallout_ssl_signature_list = fallout_ssl.get_signature_list(static_completion);
-	signature_map.set("fallout-ssl", fallout_ssl_signature_list);
-}
 
 // The settings
 interface SSLsettings {
@@ -337,26 +316,6 @@ connection.onHover((textDocumentPosition: TextDocumentPositionParams): Hover => 
 		if (hover) { return hover; }
 		hover = dynamic_map.get(word);
 		if (hover) { return hover; }
-	}
-});
-
-connection.onSignatureHelp((textDocumentPosition: TextDocumentPositionParams): SignatureHelp => {
-	const text = documents.get(textDocumentPosition.textDocument.uri).getText();
-	const lines = text.split(/\r?\n/g);
-	const position = textDocumentPosition.position;
-	const str = lines[position.line];
-	const pos = position.character;
-	const word = common.get_signature_word(str, pos);
-	const lang_id = documents.get(textDocumentPosition.textDocument.uri).languageId;
-	const signature_list = signature_map.get(lang_id);
-	if (signature_list && word) {
-		const present = signature_list.filter(function (el: any) {
-			return (el.label == word);
-		});
-		if (present.length > 0) {
-			const sig = present[0];
-			return { signatures: [{ label: sig.label, documentation: sig.documentation, parameters: [] }], activeSignature: 0, activeParameter: null };
-		}
 	}
 });
 

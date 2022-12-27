@@ -45,18 +45,6 @@ export function get_word_at(str: string, pos: number) {
 	return str.slice(left, right + pos);
 }
 
-// get word before cursor's position (for signature)
-export function get_signature_word(str: string, pos: number) {
-	// cut off last character and search for words
-	const sliced = str.slice(0, pos);
-	const lpos = sliced.indexOf(')');
-	const matches = str.slice(lpos > 0 ? lpos : 0, pos).match(/(\w+)\(/g);
-	if (matches) {
-		const word = matches.pop().slice(0, -1);
-		return word;
-	}
-}
-
 /** Save item source for defines */
 export interface CompletionItemEx extends CompletionItem {
 	source: string

@@ -300,30 +300,3 @@ export function sslcompile(uri_string: string, compile_cmd: string, dst_dir: str
 		send_diagnostics(uri_string, stdout);
 	});
 }
-
-//get everything between parenthesis
-function get_args(str: string) {
-	const match = str.match(/\((.*)\)/)
-	if (match && match.length > 1) {
-		return match[1];
-	}
-	return "";
-}
-
-export function get_signature_list(completion_map: Map<string, Array<any>>) {
-	const signature_list: Array<any> = [];
-	for (const lang of completion_map.keys()) {
-		const completion_list = completion_map.get(lang);
-		// generate signature list
-		for (const item of completion_list) {
-			if (item.detail && (typeof item.detail === 'string') && item.detail.includes("(")) {  // has vars
-				const args = get_args(item.detail);
-				if (args) {
-					const signature = { label: item.label, documentation: `(${args})`, source: item.source };
-					signature_list.push(signature);
-				}
-			}
-		}
-	}
-	return signature_list;
-}
