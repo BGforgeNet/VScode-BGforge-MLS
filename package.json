@@ -1,340 +1,341 @@
 {
-	"name": "bgforge-mls",
-	"displayName": "BGforge MLS",
-	"description": "BGforge multilanguage server",
-	"version": "1.16.4",
-	"author": "BGforge",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/BGforgeNet/VScode-BGforge-MLS"
-	},
-	"bugs": {
-		"url": "https://github.com/BGforgeNet/VScode-BGforge-MLS/issues"
-	},
-	"publisher": "BGforge",
-	"license": "SEE LICENSE IN LICENSE.txt",
-	"keywords": [
-		"Fallout",
-		"Star-Trek Scripting Language",
-		"Infinity Engine",
-		"Baldur's Gate",
-		"WeiDU"
-	],
-	"icon": "resources/bgforge.png",
-	"engines": {
-		"vscode": "^1.43.0"
-	},
-	"activationEvents": [
-		"onLanguage:fallout-ssl",
-		"onLanguage:fallout-msg",
-		"onLanguage:weidu-tp2",
-		"onLanguage:weidu-tp2-tpl",
-		"onLanguage:weidu-d",
-		"onLanguage:weidu-baf",
-		"onLanguage:weidu-slb",
-		"onLanguage:weidu-ssl",
-		"onLanguage:weidu-d-tpl",
-		"onLanguage:weidu-baf-tpl"
-	],
-	"main": "./client/out/extension",
-	"contributes": {
-		"languages": [
-			{
-				"id": "weidu-ssl",
-				"aliases": [
-					"WeiDU Stratagems script"
-				],
-				"extensions": [
-					".ssl"
-				],
-				"configuration": "./language-configurations/weidu-ssl.language-configuration.json"
-			},
-			{
-				"id": "fallout-ssl",
-				"aliases": [
-					"Fallout Star-Trek scripting language"
-				],
-				"extensions": [
-					".ssl",
-					".h"
-				],
-				"configuration": "./language-configurations/fallout-ssl.language-configuration.json"
-			},
-			{
-				"id": "fallout-ssl-hover"
-			},
-			{
-				"id": "fallout-msg",
-				"aliases": [
-					"Fallout message file"
-				],
-				"extensions": [
-					".msg"
-				],
-				"configuration": "./language-configurations/fallout-msg.language-configuration.json"
-			},
-			{
-				"id": "weidu-tp2",
-				"aliases": [
-					"WeiDU TP2"
-				],
-				"extensions": [
-					".tp2",
-					".tpa",
-					".tph",
-					".tpp"
-				],
-				"configuration": "./language-configurations/weidu-tp2.language-configuration.json"
-			},
-			{
-				"id": "weidu-tp2-tpl",
-				"aliases": [
-					"WeiDU TP2 template"
-				],
-				"extensions": [
-					".tp2.tpl",
-					".tpa.tpl",
-					".tph.tpl",
-					".tpp.tpl"
-				],
-				"configuration": "./language-configurations/weidu-tp2.language-configuration.json"
-			},
-			{
-				"id": "weidu-baf",
-				"aliases": [
-					"Infinity Engine script"
-				],
-				"extensions": [
-					".baf"
-				],
-				"configuration": "./language-configurations/weidu-baf.language-configuration.json"
-			},
-			{
-				"id": "weidu-baf-tpl",
-				"aliases": [
-					"Infinity Engine script template"
-				],
-				"extensions": [
-					".baf.tpl"
-				],
-				"configuration": "./language-configurations/weidu-baf.language-configuration.json"
-			},
-			{
-				"id": "weidu-d",
-				"aliases": [
-					"WeiDU dialog"
-				],
-				"extensions": [
-					".d"
-				],
-				"configuration": "./language-configurations/weidu-d.language-configuration.json"
-			},
-			{
-				"id": "weidu-d-tpl",
-				"aliases": [
-					"WeiDU dialog template"
-				],
-				"extensions": [
-					".d.tpl"
-				],
-				"configuration": "./language-configurations/weidu-d.language-configuration.json"
-			},
-			{
-				"id": "weidu-slb",
-				"aliases": [
-					"WeiDU Stratagems library"
-				],
-				"extensions": [
-					".slb"
-				],
-				"configuration": "./language-configurations/weidu-slb.language-configuration.json"
-			},
-			{
-				"id": "weidu-tra",
-				"aliases": [
-					"WeiDU translation"
-				],
-				"extensions": [
-					".tra"
-				],
-				"configuration": "./language-configurations/weidu-tra.language-configuration.json"
-			},
-			{
-				"id": "infinity-2da",
-				"aliases": [
-					"Infinity Engine 2DA table"
-				],
-				"extensions": [
-					".2da"
-				],
-				"configuration": "./language-configurations/infinity-2da.language-configuration.json"
-			}
-		],
-		"commands": [
-			{
-				"command": "extension.bgforge.compile",
-				"title": "BGforge MLS: compile"
-			}
-		],
-		"grammars": [
-			{
-				"language": "weidu-ssl",
-				"scopeName": "source.ssl.weidu",
-				"path": "./syntaxes/weidu-ssl.tmLanguage.json"
-			},
-			{
-				"language": "fallout-ssl",
-				"scopeName": "source.fallout-ssl",
-				"path": "./syntaxes/fallout-ssl.tmLanguage.json"
-			},
-			{
-				"language": "fallout-ssl-hover",
-				"scopeName": "source.fallout-ssl-hover",
-				"path": "./syntaxes/fallout-ssl-hover.tmLanguage.json"
-			},
-			{
-				"language": "fallout-msg",
-				"scopeName": "source.fallout-msg",
-				"path": "./syntaxes/fallout-msg.tmLanguage.json"
-			},
-			{
-				"language": "weidu-tp2",
-				"scopeName": "source.tp2.weidu",
-				"path": "./syntaxes/weidu-tp2.tmLanguage.json"
-			},
-			{
-				"language": "weidu-tp2-tpl",
-				"scopeName": "source.tp2.weidu",
-				"path": "./syntaxes/weidu-tp2.tmLanguage.json"
-			},
-			{
-				"language": "weidu-baf",
-				"scopeName": "source.baf.weidu",
-				"path": "./syntaxes/weidu-baf.tmLanguage.json"
-			},
-			{
-				"language": "weidu-baf-tpl",
-				"scopeName": "source.baf.weidu",
-				"path": "./syntaxes/weidu-baf.tmLanguage.json"
-			},
-			{
-				"language": "weidu-d",
-				"scopeName": "source.d.weidu",
-				"path": "./syntaxes/weidu-d.tmLanguage.json"
-			},
-			{
-				"language": "weidu-d-tpl",
-				"scopeName": "source.d.weidu",
-				"path": "./syntaxes/weidu-d.tmLanguage.json"
-			},
-			{
-				"language": "weidu-slb",
-				"scopeName": "source.slb.weidu",
-				"path": "./syntaxes/weidu-slb.tmLanguage.json"
-			},
-			{
-				"language": "weidu-tra",
-				"scopeName": "source.weidu-tra",
-				"path": "./syntaxes/weidu-tra.tmLanguage.json"
-			},
-			{
-				"language": "infinity-2da",
-				"scopeName": "source.infinity-2da",
-				"path": "./syntaxes/infinity-2da.tmLanguage.json"
-			}
-		],
-		"snippets": [
-			{
-				"language": "fallout-ssl",
-				"path": "./snippets/fallout-ssl.json"
-			},
-			{
-				"language": "weidu-baf",
-				"path": "./snippets/weidu-baf.json"
-			}
-		],
-		"themes": [
-			{
-				"label": "BGforge Monokai",
-				"uiTheme": "vs-dark",
-				"path": "./themes/bgforge-monokai.json"
-			}
-		],
-		"configuration": {
-			"type": "object",
-			"title": "BGforge MLS",
-			"properties": {
-				"bgforge.falloutSSL.compilePath": {
-					"type": "string",
-					"default": "wine ~/bin/compile",
-					"description": "Path to compile.exe from sfall modders pack. Alternatively, you can add compile.exe to system PATH and leave default here."
-				},
-				"bgforge.falloutSSL.compileOptions": {
-					"type": "string",
-					"default": "-q -p -l -O2 -d -s -n",
-					"description": "Compilation options for compile.exe from sfall modders pack."
-				},
-				"bgforge.falloutSSL.outputDirectory": {
-					"type": "string",
-					"default": "",
-					"description": "Where to put the compiled Fallout SSL scripts, absolute path. Default is to put compiled scripts next to the source file. You'll probably want to set this to data/scripts of your Fallout 2 game directory."
-				},
-				"bgforge.falloutSSL.headersDirectory": {
-					"type": "string",
-					"default": "",
-					"description": "Path to directory containing Fallout headers. Default is workspace root."
-				},
-				"bgforge.weidu.path": {
-					"type": "string",
-					"default": "weidu",
-					"description": "Path to WeiDU binary. Alternatively, you can add WeiDU to system PATH and leave default here."
-				},
-				"bgforge.weidu.gamePath": {
-					"type": "string",
-					"default": "",
-					"description": "Absolute path to an IE game. Needed to use parse feature on BAF and D files."
-				}
-			}
-		},
-		"keybindings": [
-			{
-				"command": "extension.bgforge.compile",
-				"key": "ctrl+r"
-			}
-		],
-		"iconThemes": [
-			{
-				"id": "bgforge",
-				"label": "BGforge",
-				"path": "./themes/bgforge-icon-theme.json"
-			}
-		]
-	},
-	"scripts": {
-		"vscode:prepublish": "npm run esbuild-base-client -- --minify && npm run esbuild-base-server -- --minify",
-		"esbuild-base-client": "esbuild ./client/src/extension.ts --bundle --outfile=client/out/extension.js --external:vscode --format=cjs --platform=node",
-		"esbuild-base-server": "esbuild ./server/src/server.ts --bundle --outfile=server/out/server.js --external:vscode --format=cjs --platform=node",
-		"esbuild-client": "npm run esbuild-base-client -- --sourcemap",
-		"esbuild-server": "npm run esbuild-base-server -- --sourcemap",
-		"esbuild-all": "npm run esbuild-base-client -- --sourcemap && npm run esbuild-base-server -- --sourcemap",
-		"esbuild-watch-client": "npm run esbuild-base-client -- --sourcemap --watch",
-		"esbuild-watch-server": "npm run esbuild-base-server -- --sourcemap --watch",
-		"test-compile": "tsc -p ./",
-		"compile": "npm run esbuild-client && npm run esbuild-server",
-		"postinstall": "cd client && npm install && cd ../server && npm install && cd ..",
-		"test": "sh ./scripts/e2e.sh"
-	},
-	"devDependencies": {
-		"@types/mocha": "^10.0.1",
-		"@types/node": "^18.11.17",
-		"@typescript-eslint/eslint-plugin": "^5.47.1",
-		"@typescript-eslint/parser": "^5.47.1",
-		"esbuild": "^0.16.10",
-		"eslint": "^8.30.0",
-		"typescript": "^4.9.4"
-	},
-	"categories": [
-		"Programming Languages"
-	],
-	"homepage": "https://forums.bgforge.net/viewforum.php?f=35"
+    "name": "bgforge-mls",
+    "displayName": "BGforge MLS",
+    "description": "BGforge multilanguage server",
+    "version": "1.16.4",
+    "author": "BGforge",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/BGforgeNet/VScode-BGforge-MLS"
+    },
+    "bugs": {
+        "url": "https://github.com/BGforgeNet/VScode-BGforge-MLS/issues"
+    },
+    "publisher": "BGforge",
+    "license": "SEE LICENSE IN LICENSE.txt",
+    "keywords": [
+        "Fallout",
+        "Star-Trek Scripting Language",
+        "Infinity Engine",
+        "Baldur's Gate",
+        "WeiDU"
+    ],
+    "icon": "resources/bgforge.png",
+    "engines": {
+        "vscode": "^1.43.0"
+    },
+    "activationEvents": [
+        "onLanguage:fallout-ssl",
+        "onLanguage:fallout-msg",
+        "onLanguage:weidu-tp2",
+        "onLanguage:weidu-tp2-tpl",
+        "onLanguage:weidu-d",
+        "onLanguage:weidu-baf",
+        "onLanguage:weidu-slb",
+        "onLanguage:weidu-ssl",
+        "onLanguage:weidu-d-tpl",
+        "onLanguage:weidu-baf-tpl"
+    ],
+    "main": "./client/out/extension",
+    "contributes": {
+        "languages": [
+            {
+                "id": "weidu-ssl",
+                "aliases": [
+                    "WeiDU Stratagems script"
+                ],
+                "extensions": [
+                    ".ssl"
+                ],
+                "configuration": "./language-configurations/weidu-ssl.language-configuration.json"
+            },
+            {
+                "id": "fallout-ssl",
+                "aliases": [
+                    "Fallout Star-Trek scripting language"
+                ],
+                "extensions": [
+                    ".ssl",
+                    ".h"
+                ],
+                "configuration": "./language-configurations/fallout-ssl.language-configuration.json"
+            },
+            {
+                "id": "fallout-ssl-hover"
+            },
+            {
+                "id": "fallout-msg",
+                "aliases": [
+                    "Fallout message file"
+                ],
+                "extensions": [
+                    ".msg"
+                ],
+                "configuration": "./language-configurations/fallout-msg.language-configuration.json"
+            },
+            {
+                "id": "weidu-tp2",
+                "aliases": [
+                    "WeiDU TP2"
+                ],
+                "extensions": [
+                    ".tp2",
+                    ".tpa",
+                    ".tph",
+                    ".tpp"
+                ],
+                "configuration": "./language-configurations/weidu-tp2.language-configuration.json"
+            },
+            {
+                "id": "weidu-tp2-tpl",
+                "aliases": [
+                    "WeiDU TP2 template"
+                ],
+                "extensions": [
+                    ".tp2.tpl",
+                    ".tpa.tpl",
+                    ".tph.tpl",
+                    ".tpp.tpl"
+                ],
+                "configuration": "./language-configurations/weidu-tp2.language-configuration.json"
+            },
+            {
+                "id": "weidu-baf",
+                "aliases": [
+                    "Infinity Engine script"
+                ],
+                "extensions": [
+                    ".baf"
+                ],
+                "configuration": "./language-configurations/weidu-baf.language-configuration.json"
+            },
+            {
+                "id": "weidu-baf-tpl",
+                "aliases": [
+                    "Infinity Engine script template"
+                ],
+                "extensions": [
+                    ".baf.tpl"
+                ],
+                "configuration": "./language-configurations/weidu-baf.language-configuration.json"
+            },
+            {
+                "id": "weidu-d",
+                "aliases": [
+                    "WeiDU dialog"
+                ],
+                "extensions": [
+                    ".d"
+                ],
+                "configuration": "./language-configurations/weidu-d.language-configuration.json"
+            },
+            {
+                "id": "weidu-d-tpl",
+                "aliases": [
+                    "WeiDU dialog template"
+                ],
+                "extensions": [
+                    ".d.tpl"
+                ],
+                "configuration": "./language-configurations/weidu-d.language-configuration.json"
+            },
+            {
+                "id": "weidu-slb",
+                "aliases": [
+                    "WeiDU Stratagems library"
+                ],
+                "extensions": [
+                    ".slb"
+                ],
+                "configuration": "./language-configurations/weidu-slb.language-configuration.json"
+            },
+            {
+                "id": "weidu-tra",
+                "aliases": [
+                    "WeiDU translation"
+                ],
+                "extensions": [
+                    ".tra"
+                ],
+                "configuration": "./language-configurations/weidu-tra.language-configuration.json"
+            },
+            {
+                "id": "infinity-2da",
+                "aliases": [
+                    "Infinity Engine 2DA table"
+                ],
+                "extensions": [
+                    ".2da"
+                ],
+                "configuration": "./language-configurations/infinity-2da.language-configuration.json"
+            }
+        ],
+        "commands": [
+            {
+                "command": "extension.bgforge.compile",
+                "title": "BGforge MLS: compile"
+            }
+        ],
+        "grammars": [
+            {
+                "language": "weidu-ssl",
+                "scopeName": "source.ssl.weidu",
+                "path": "./syntaxes/weidu-ssl.tmLanguage.json"
+            },
+            {
+                "language": "fallout-ssl",
+                "scopeName": "source.fallout-ssl",
+                "path": "./syntaxes/fallout-ssl.tmLanguage.json"
+            },
+            {
+                "language": "fallout-ssl-hover",
+                "scopeName": "source.fallout-ssl-hover",
+                "path": "./syntaxes/fallout-ssl-hover.tmLanguage.json"
+            },
+            {
+                "language": "fallout-msg",
+                "scopeName": "source.fallout-msg",
+                "path": "./syntaxes/fallout-msg.tmLanguage.json"
+            },
+            {
+                "language": "weidu-tp2",
+                "scopeName": "source.tp2.weidu",
+                "path": "./syntaxes/weidu-tp2.tmLanguage.json"
+            },
+            {
+                "language": "weidu-tp2-tpl",
+                "scopeName": "source.tp2.weidu",
+                "path": "./syntaxes/weidu-tp2.tmLanguage.json"
+            },
+            {
+                "language": "weidu-baf",
+                "scopeName": "source.baf.weidu",
+                "path": "./syntaxes/weidu-baf.tmLanguage.json"
+            },
+            {
+                "language": "weidu-baf-tpl",
+                "scopeName": "source.baf.weidu",
+                "path": "./syntaxes/weidu-baf.tmLanguage.json"
+            },
+            {
+                "language": "weidu-d",
+                "scopeName": "source.d.weidu",
+                "path": "./syntaxes/weidu-d.tmLanguage.json"
+            },
+            {
+                "language": "weidu-d-tpl",
+                "scopeName": "source.d.weidu",
+                "path": "./syntaxes/weidu-d.tmLanguage.json"
+            },
+            {
+                "language": "weidu-slb",
+                "scopeName": "source.slb.weidu",
+                "path": "./syntaxes/weidu-slb.tmLanguage.json"
+            },
+            {
+                "language": "weidu-tra",
+                "scopeName": "source.weidu-tra",
+                "path": "./syntaxes/weidu-tra.tmLanguage.json"
+            },
+            {
+                "language": "infinity-2da",
+                "scopeName": "source.infinity-2da",
+                "path": "./syntaxes/infinity-2da.tmLanguage.json"
+            }
+        ],
+        "snippets": [
+            {
+                "language": "fallout-ssl",
+                "path": "./snippets/fallout-ssl.json"
+            },
+            {
+                "language": "weidu-baf",
+                "path": "./snippets/weidu-baf.json"
+            }
+        ],
+        "themes": [
+            {
+                "label": "BGforge Monokai",
+                "uiTheme": "vs-dark",
+                "path": "./themes/bgforge-monokai.json"
+            }
+        ],
+        "configuration": {
+            "type": "object",
+            "title": "BGforge MLS",
+            "properties": {
+                "bgforge.falloutSSL.compilePath": {
+                    "type": "string",
+                    "default": "wine ~/bin/compile",
+                    "description": "Path to compile.exe from sfall modders pack. Alternatively, you can add compile.exe to system PATH and leave default here."
+                },
+                "bgforge.falloutSSL.compileOptions": {
+                    "type": "string",
+                    "default": "-q -p -l -O2 -d -s -n",
+                    "description": "Compilation options for compile.exe from sfall modders pack."
+                },
+                "bgforge.falloutSSL.outputDirectory": {
+                    "type": "string",
+                    "default": "",
+                    "description": "Where to put the compiled Fallout SSL scripts, absolute path. Default is to put compiled scripts next to the source file. You'll probably want to set this to data/scripts of your Fallout 2 game directory."
+                },
+                "bgforge.falloutSSL.headersDirectory": {
+                    "type": "string",
+                    "default": "",
+                    "description": "Path to directory containing Fallout headers. Default is workspace root."
+                },
+                "bgforge.weidu.path": {
+                    "type": "string",
+                    "default": "weidu",
+                    "description": "Path to WeiDU binary. Alternatively, you can add WeiDU to system PATH and leave default here."
+                },
+                "bgforge.weidu.gamePath": {
+                    "type": "string",
+                    "default": "",
+                    "description": "Absolute path to an IE game. Needed to use parse feature on BAF and D files."
+                }
+            }
+        },
+        "keybindings": [
+            {
+                "command": "extension.bgforge.compile",
+                "key": "ctrl+r"
+            }
+        ],
+        "iconThemes": [
+            {
+                "id": "bgforge",
+                "label": "BGforge",
+                "path": "./themes/bgforge-icon-theme.json"
+            }
+        ]
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run esbuild-base-client -- --minify && npm run esbuild-base-server -- --minify",
+        "esbuild-base-client": "esbuild ./client/src/extension.ts --bundle --outfile=client/out/extension.js --external:vscode --format=cjs --platform=node",
+        "esbuild-base-server": "esbuild ./server/src/server.ts --bundle --outfile=server/out/server.js --external:vscode --format=cjs --platform=node",
+        "esbuild-client": "npm run esbuild-base-client -- --sourcemap",
+        "esbuild-server": "npm run esbuild-base-server -- --sourcemap",
+        "esbuild-all": "npm run esbuild-base-client -- --sourcemap && npm run esbuild-base-server -- --sourcemap",
+        "esbuild-watch-client": "npm run esbuild-base-client -- --sourcemap --watch",
+        "esbuild-watch-server": "npm run esbuild-base-server -- --sourcemap --watch",
+        "test-compile": "tsc -p ./",
+        "compile": "npm run esbuild-client && npm run esbuild-server",
+        "postinstall": "cd client && npm install && cd ../server && npm install && cd ..",
+        "test": "sh ./scripts/e2e.sh"
+    },
+    "devDependencies": {
+        "@types/mocha": "^10.0.1",
+        "@types/node": "^18.11.17",
+        "@typescript-eslint/eslint-plugin": "^5.47.1",
+        "@typescript-eslint/parser": "^5.47.1",
+        "esbuild": "^0.16.10",
+        "eslint": "^8.30.0",
+        "prettier": "^2.8.1",
+        "typescript": "^4.9.4"
+    },
+    "categories": [
+        "Programming Languages"
+    ],
+    "homepage": "https://forums.bgforge.net/viewforum.php?f=35"
 }
