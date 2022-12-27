@@ -107,17 +107,26 @@ function load_macros(path: string, header_data: HeaderDataList, completion_list:
 	}
 }
 
-export function reload_data(path: string, text: string, completion: CompletionListEx, hover: HoverMapEx) {
+export function reload_data(path: string, text: string, completion: CompletionListEx | undefined, hover: HoverMapEx | undefined) {
 	const symbols = find_symbols(text);
-	const new_completion = completion.filter(item => item.source != path);
-	const new_hover = new Map(
+	let new_completion: CompletionListEx;
+	let new_hover: HoverMapEx;
+	if (completion == undefined) {
+		completion = [];
+	}
+	new_completion = completion.filter(item => item.source != path);
+	if (hover == undefined) {
+		hover = new Map();
+	}
+	new_hover = new Map(
 		Array.from(hover).filter(([key, value]) => {
-			if (value.source != path ) {
+			if (value.source != path) {
 				return true;
 			}
 			return false;
 		}),
 	);
+
 	load_macros(path, symbols, new_completion, new_hover);
 	load_procedures(path, symbols, new_completion, new_hover);
 	const result: DynamicData = { completion: new_completion, hover: new_hover };

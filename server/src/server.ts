@@ -20,7 +20,7 @@ import * as path from 'path';
 import * as fallout_ssl from './fallout-ssl';
 import * as weidu from './weidu';
 import * as common from './common';
-import { conlog, CompletionData, HoverData, CompletionDataEx, HoverDataEx  } from './common';
+import { conlog, CompletionData, HoverData, CompletionDataEx, HoverDataEx, HoverEx  } from './common';
 import { workspace } from 'vscode';
 
 
@@ -41,6 +41,8 @@ let hasDiagnosticRelatedInformationCapability: boolean = false;
 // let static_completion = new Map<string, CompletionList>();
 let static_completion: CompletionData = new Map();
 let dynamic_completion: CompletionDataEx = new Map();
+let self_completion: CompletionDataEx = new Map();
+
 // let static_hover = new Map<string, Map<string, any>>();
 // let static_hover = new Map<string, HoverMap>();
 // let static_hover = new Map<string, any>();
@@ -48,6 +50,7 @@ let dynamic_completion: CompletionDataEx = new Map();
 // let dynamic_hover = new Map<string, HoverMap>();
 let static_hover: HoverData = new Map()
 let dynamic_hover: HoverDataEx = new Map()
+let self_hover: HoverDataEx = new Map();
 
 let signature_map = new Map<string, Array<any>>();
 
@@ -174,6 +177,11 @@ documents.onDidClose(e => {
 	documentSettings.delete(e.document.uri);
 });
 
+function is_header(filepath: string, lang_id: string) {
+	if ((path.extname(filepath) == "h") && (lang_id == 'fallout-ssl')) { return true }
+	return false;
+}
+
 // The content of a text document has changed. This event is emitted
 // when the text document first opened or when its content has changed.
 documents.onDidChangeContent(change => {
@@ -186,11 +194,19 @@ documents.onDidChangeContent(change => {
 	switch (lang_id) {
 		case 'fallout-ssl': {
 			const rel_path = path.relative(workspace_root, change.document.uri);
-			const completion = dynamic_completion.get('fallout-ssl');
-			const hover = dynamic_hover.get('fallout-ssl');
-			const new_data = fallout_ssl.reload_data(rel_path, change.document.getText(), completion, hover);	
-			dynamic_hover.set('fallout-ssl', new_data.hover);
-			dynamic_completion.set('fallout-ssl', new_data.completion);
+			if (is_header(rel_path, lang_id)) {
+				const completion = dynamic_completion.get(lang_id);
+				const hover = dynamic_hover.get(lang_id);
+				const new_data = fallout_ssl.reload_data(rel_path, change.document.getText(), completion, hover);	
+				dynamic_hover.set(lang_id, new_data.hover);
+				dynamic_completion.set(lang_id, new_data.completion);	
+			} else {
+				const completion = self_completion.get(rel_path);
+				const hover = self_hover.get(rel_path);
+				const new_data = fallout_ssl.reload_data(rel_path, change.document.getText(), completion, hover);
+				self_hover.set(rel_path, new_data.hover);
+				self_completion.set(rel_path, new_data.completion);
+			}
 			break;
 		}
 	}
@@ -213,9 +229,11 @@ connection.onDidChangeWatchedFiles(_change => {
 connection.onCompletion(
 	(_textDocumentPosition: TextDocumentPositionParams): CompletionItem[] => {
 		const lang_id = documents.get(_textDocumentPosition.textDocument.uri).languageId;
+		const rel_path = path.relative(workspace_root, _textDocumentPosition.textDocument.uri);
+		const self_list = self_completion.get(rel_path) || [];
 		const static_list = static_completion.get(lang_id);
 		const dynamic_list = dynamic_completion.get(lang_id);
-		const list = [...static_list, ...dynamic_list];
+		const list = [...self_list, ...static_list, ...dynamic_list];
 		return list;
 	}
 );
@@ -277,11 +295,16 @@ connection.listen();
 
 connection.onHover((textDocumentPosition: TextDocumentPositionParams): Hover => {
 	const lang_id = documents.get(textDocumentPosition.textDocument.uri).languageId;
+	const rel_path = path.relative(workspace_root, textDocumentPosition.textDocument.uri);
 	const hover_lang_id = get_data_lang(lang_id);
 	const static_map = static_hover.get(hover_lang_id);
 	const dynamic_map = dynamic_hover.get(hover_lang_id);
-	const map = new Map([...dynamic_map, ...static_map]);
-	if (!map) { return; }
+	const self_map = self_hover.get(rel_path);
+
+	if (!static_map && !dynamic_map && !self_map) { return; }
+
+	// const map = new Map([...dynamic_map, ...static_map]);
+
 
 	const text = documents.get(textDocumentPosition.textDocument.uri).getText();
 	const lines = text.split(/\r?\n/g);
@@ -290,8 +313,14 @@ connection.onHover((textDocumentPosition: TextDocumentPositionParams): Hover => 
 	const str = lines[position.line];
 	const pos = position.character;
 	const word = common.get_word_at(str, pos);
+	conlog(word);
+	// faster to check each map than join them
 	if (word) {
-		const hover = map.get(word);
+		let hover: Hover | HoverEx = self_map.get(word);
+		if (hover) { return hover; }
+		hover = static_map.get(word);
+		if (hover) { return hover; }
+		hover = dynamic_map.get(word);
 		if (hover) { return hover; }
 	}
 });
