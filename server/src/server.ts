@@ -12,21 +12,17 @@ import {
 	Hover,
 	SignatureHelp,
 	TextDocumentSyncKind,
+	WorkspaceChange,
 } from 'vscode-languageserver/node';
+import { URI } from 'vscode-uri'
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import * as path from 'path';
 import * as fallout_ssl from './fallout-ssl';
 import * as weidu from './weidu';
 import * as common from './common';
-import { conlog, CompletionItemEx, HoverEx } from './common';
+import { conlog, CompletionData, HoverData, CompletionDataEx, HoverDataEx  } from './common';
+import { workspace } from 'vscode';
 
-
-// single language
-interface CompletionList extends Array<CompletionItem | CompletionItemEx> {}
-interface HoverMap extends Map<string, Hover | HoverEx> {}
-// // all languages
-interface CompletionData extends Map<string, CompletionList> {}
-interface HoverData extends Map<string, HoverMap> {}
 
 // Create a connection for the server. The connection uses Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
@@ -44,19 +40,23 @@ let hasDiagnosticRelatedInformationCapability: boolean = false;
 // let static_completion = new Map<string, CompletionList>();
 // let static_completion = new Map<string, CompletionList>();
 let static_completion: CompletionData = new Map();
-let dynamic_completion: CompletionData = new Map();
+let dynamic_completion: CompletionDataEx = new Map();
 // let static_hover = new Map<string, Map<string, any>>();
 // let static_hover = new Map<string, HoverMap>();
 // let static_hover = new Map<string, any>();
 // let dynamic_hover = new Map<string, Map<string, HoverEx>>();
 // let dynamic_hover = new Map<string, HoverMap>();
 let static_hover: HoverData = new Map()
-let dynamic_hover: HoverData = new Map()
+let dynamic_hover: HoverDataEx = new Map()
 
 let signature_map = new Map<string, Array<any>>();
 
 const completion_languages = ["weidu-tp2", "fallout-ssl"]
 const hover_languages = ["weidu-tp2", "fallout-ssl"]
+
+
+let workspace_root: string;
+let initialized = false;
 
 // for language KEY, hovers and completions are searched in VALUE map
 const lang_data_map = new Map([
@@ -91,7 +91,9 @@ connection.onInitialize((params: InitializeParams) => {
 		capabilities.textDocument &&
 		capabilities.textDocument.publishDiagnostics &&
 		capabilities.textDocument.publishDiagnostics.relatedInformation;
-
+	// yes this is unsafe, just doing something quick and dirty
+	workspace_root = params.workspaceFolders[0].uri as string;
+	conlog(workspace_root);
 	return {
 		capabilities: {
 			textDocumentSync: TextDocumentSyncKind.Full,
@@ -175,15 +177,23 @@ documents.onDidClose(e => {
 // The content of a text document has changed. This event is emitted
 // when the text document first opened or when its content has changed.
 documents.onDidChangeContent(change => {
+	if (!initialized) { // TODO: get rid of this, use proper async
+		conlog("onDidChangeContent: not initialized yet");
+		return;
+	}
 	validateTextDocument(change.document);
-
 	const lang_id = documents.get(change.document.uri).languageId;
-	// switch (lang_id) {
-	// 	case 'fallout-ssl': {
-	// 		fallout_ssl.reload_defines(completion_map, signature_map, URI.parse(change.document.uri).fsPath, change.document.getText());
-	// 		break;
-	// 	}
-	// }
+	switch (lang_id) {
+		case 'fallout-ssl': {
+			const rel_path = path.relative(workspace_root, change.document.uri);
+			const completion = dynamic_completion.get('fallout-ssl');
+			const hover = dynamic_hover.get('fallout-ssl');
+			const new_data = fallout_ssl.reload_data(rel_path, change.document.getText(), completion, hover);	
+			dynamic_hover.set('fallout-ssl', new_data.hover);
+			dynamic_completion.set('fallout-ssl', new_data.completion);
+			break;
+		}
+	}
 });
 
 async function validateTextDocument(textDocument: TextDocument): Promise<void> {
@@ -211,9 +221,10 @@ connection.onCompletion(
 );
 
 async function load_dynamic_intellisense() {
-	const fallout_header_data = await fallout_ssl.load_defines();
+	const fallout_header_data = await fallout_ssl.load_data();
 	dynamic_hover.set('fallout-ssl', fallout_header_data.hover);
 	dynamic_completion.set('fallout-ssl', fallout_header_data.completion);
+	initialized = true;
 };
 
 
@@ -280,7 +291,6 @@ connection.onHover((textDocumentPosition: TextDocumentPositionParams): Hover => 
 	const pos = position.character;
 	const word = common.get_word_at(str, pos);
 	if (word) {
-		conlog(word);
 		const hover = map.get(word);
 		if (hover) { return hover; }
 	}

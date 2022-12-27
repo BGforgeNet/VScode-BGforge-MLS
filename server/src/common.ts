@@ -91,7 +91,18 @@ export interface HoverEx extends Hover {
 	source: string
 }
 
-export interface HeaderData {
+export interface DynamicData {
 	completion: Array<CompletionItemEx>
 	hover: Map<string, HoverEx>
 }
+
+// single language
+export interface CompletionList extends Array<CompletionItem> {}
+export interface CompletionListEx extends Array<CompletionItemEx> {}
+export interface HoverMap extends Map<string, Hover> {}
+export interface HoverMapEx extends Map<string, HoverEx> {}
+// all languages
+export interface CompletionData extends Map<string, CompletionList | CompletionListEx> {}
+export interface CompletionDataEx extends Map<string, CompletionListEx> {}
+export interface HoverData extends Map<string, HoverMap | HoverMapEx> {}
+export interface HoverDataEx extends Map<string, HoverMapEx> {}

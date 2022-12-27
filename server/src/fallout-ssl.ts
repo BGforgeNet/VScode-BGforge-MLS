@@ -7,10 +7,10 @@ import {
 } from 'vscode-languageserver';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import * as common from './common';
-import { CompletionItemEx, HoverEx, conlog } from './common';
+import { CompletionItemEx, HoverEx, conlog, CompletionDataEx, HoverDataEx, CompletionList, HoverMap, CompletionListEx, HoverMapEx } from './common';
 import { connection, documents } from './server';
 import * as path from 'path';
-import { HeaderData } from './common';
+import { DynamicData } from './common';
 import { readFileSync } from 'fs';
 
 import { MarkupKind } from 'vscode-languageserver/node';
@@ -18,7 +18,7 @@ import { MarkupKind } from 'vscode-languageserver/node';
 const fallout_ssl_config = 'bgforge.falloutSSL';
 
 interface HeaderDataList {
-	defines: DefineList
+	macros: DefineList
 	procedures: ProcList
 }
 
@@ -39,7 +39,7 @@ interface DefineList extends Array<DefineListItem> { }
 const lang_id = 'fallout-ssl';
 const ssl_ext = '.ssl';
 
-export async function load_defines() {
+export async function load_data() {
 	let completion_list: Array<CompletionItemEx> = [];
 	let hover_map = new Map<string, HoverEx>();
 	const config = await connection.workspace.getConfiguration(fallout_ssl_config);
@@ -48,91 +48,83 @@ export async function load_defines() {
 
 	for (const header_path of headers_list) {
 		const text = readFileSync(header_path, 'utf8');
-		const header_data = parse_header(text);
-
-		for (const define of header_data.defines) {
-			let markdown_value: string;
-			if (define.multiline) {
-				markdown_value = [
-					'```' + `${lang_id}`,
-					`${define.detail}`,
-					'```'
-				].join('\n');
-			} else {
-				markdown_value = [
-					'```' + `${lang_id}`,
-					`${define.firstline}`,
-					'```'
-				].join('\n');
-			}
-			let completion_kind;
-			if (define.constant) {
-				completion_kind = CompletionItemKind.Constant;
-			} else {
-				// there's no good icon for macros, using something distinct from function
-				completion_kind = CompletionItemKind.Field;
-			}
-			let markdown = { kind: MarkupKind.Markdown, value: markdown_value };	
-			// const completion_item = { label: define.label, documentation: markdown_content, source: header_path, labelDetails: {detail: "ld1", description: "ld2"}, detail: header_path };
-			const completion_item = { label: define.label, documentation: markdown, source: header_path, detail: header_path, kind: completion_kind };
-			completion_list.push(completion_item);
-
-			markdown_value = `${markdown_value}\n\`${header_path}\``
-			markdown = { kind: MarkupKind.Markdown, value: markdown_value };
-			const hover_item = { contents: markdown, source: header_path };
-			hover_map.set(define.label, hover_item);
-		}
-
-		for (const proc of header_data.procedures) {
-			let markdown_value: string;
-			markdown_value = [
-				'```' + `${lang_id}`,
-				`${proc.detail}`,
-				'```'
-			].join('\n');
-			const markdown_content = { kind: MarkupKind.Markdown, value: markdown_value };
-			const completion_item = { label: proc.label, documentation: markdown_content, source: header_path, detail: header_path, kind: CompletionItemKind.Function };
-			completion_list.push(completion_item);
-			const hover_item = { contents: markdown_content, source: header_path };
-			hover_map.set(proc.label, hover_item);
-		}
-
+		const header_data = find_symbols(text);
+		load_macros(header_path, header_data, completion_list, hover_map);
+		load_procedures(header_path, header_data, completion_list, hover_map);
 	}
-	const result: HeaderData = { completion: completion_list, hover: hover_map };
+	const result: DynamicData = { completion: completion_list, hover: hover_map };
 	return result;
 }
 
-// export function reload_defines(completion_map: Map<string, Array<any>>, signature_map: Map<string, Array<any>>, filename: string, code: string) {
-// 	let completion_list = completion_map.get(lang_id) || [];
-// 	let signature_list = signature_map.get(lang_id) || [];
-// 	const new_defines = defines_from_file(code);
-// 	filename = common.fname(filename);
-// 	for (const item of new_defines) {
-// 		item.source = filename;
-// 	}
-// 	const new_procs = procs_from_file(code);
-// 	for (const item of new_procs) {
-// 		item.source = filename;
-// 	}
-// 	//delete old defs from this file
-// 	completion_list = completion_list.filter(item => item.source !== filename);
-// 	signature_list = signature_list.filter(item => item.source !== filename);
-// 	//delete defines redefined in current file
-// 	completion_list = completion_list.filter(item => new_defines.filter(def_item => def_item.label == item.label).length == 0);
-// 	completion_list = completion_list.filter(item => new_procs.filter(proc_item => proc_item.label == item.label).length == 0);
-// 	load_defines(completion_map, signature_map, [new_defines, new_procs]);
-// }
+function load_procedures(path: string, header_data: HeaderDataList, completion_list: CompletionList, hover_map: HoverMap) {
+	for (const proc of header_data.procedures) {
+		let markdown_value: string;
+		markdown_value = [
+			'```' + `${lang_id}`,
+			`${proc.detail}`,
+			'```'
+		].join('\n');
+		const markdown_content = { kind: MarkupKind.Markdown, value: markdown_value };
+		const completion_item = { label: proc.label, documentation: markdown_content, source: path, detail: path, kind: CompletionItemKind.Function };
+		completion_list.push(completion_item);
+		const hover_item = { contents: markdown_content, source: path };
+		hover_map.set(proc.label, hover_item);
+	}
+}
 
-// 	if (conf.headers_directory != "NONE") {
-// 		try {
-// 			let procdef_list = fallout_ssl.get_defines(conf.headers_directory);
-// 			fallout_ssl.load_defines(completion_map, signature_map, procdef_list);
-// 		} catch (e) {
-// 			conlog(e);
-// 		}
-// 	}
+function load_macros(path: string, header_data: HeaderDataList, completion_list: CompletionList, hover_map: HoverMap) {
+	for (const macro of header_data.macros) {
+		let markdown_value: string;
+		if (macro.multiline) {
+			markdown_value = [
+				'```' + `${lang_id}`,
+				`${macro.detail}`,
+				'```'
+			].join('\n');
+		} else {
+			markdown_value = [
+				'```' + `${lang_id}`,
+				`${macro.firstline}`,
+				'```'
+			].join('\n');
+		}
+		let completion_kind;
+		if (macro.constant) {
+			completion_kind = CompletionItemKind.Constant;
+		} else {
+			// there's no good icon for macros, using something distinct from function
+			completion_kind = CompletionItemKind.Field;
+		}
+		let markdown = { kind: MarkupKind.Markdown, value: markdown_value };
+		// const completion_item = { label: define.label, documentation: markdown_content, source: header_path, labelDetails: {detail: "ld1", description: "ld2"}, detail: header_path };
+		const completion_item = { label: macro.label, documentation: markdown, source: path, detail: path, kind: completion_kind };
+		completion_list.push(completion_item);
 
-function parse_header(text: string) {
+		markdown_value = `${markdown_value}\n\`${path}\``
+		markdown = { kind: MarkupKind.Markdown, value: markdown_value };
+		const hover_item = { contents: markdown, source: path };
+		hover_map.set(macro.label, hover_item);
+	}
+}
+
+export function reload_data(path: string, text: string, completion: CompletionListEx, hover: HoverMapEx) {
+	const symbols = find_symbols(text);
+	const new_completion = completion.filter(item => item.source != path);
+	const new_hover = new Map(
+		Array.from(hover).filter(([key, value]) => {
+			if (value.source != path ) {
+				return true;
+			}
+			return false;
+		}),
+	);
+	load_macros(path, symbols, new_completion, new_hover);
+	load_procedures(path, symbols, new_completion, new_hover);
+	const result: DynamicData = { completion: new_completion, hover: new_hover };
+	return result;
+}
+
+function find_symbols(text: string) {
 	// defines
 	let define_list: DefineList = [];
 	const define_regex = /^#define[ \t]+(\w+)(?:\(([^)]+)\))?[ \t]+(.+)/gm;
@@ -194,7 +186,7 @@ function parse_header(text: string) {
 	}
 
 	const result: HeaderDataList = {
-		defines: define_list,
+		macros: define_list,
 		procedures: proc_list
 	}
 	return result;
