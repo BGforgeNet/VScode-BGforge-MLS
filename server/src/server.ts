@@ -27,7 +27,7 @@ import {
     HoverEx,
     is_subdir,
 } from "./common";
-import { lstatSync, readFileSync, realpathSync } from "fs";
+import { lstatSync, readFileSync } from "fs";
 import { MLSsettings, defaultSettings } from "./settings";
 
 // Create a connection for the server. The connection uses Node's IPC as a transport.
