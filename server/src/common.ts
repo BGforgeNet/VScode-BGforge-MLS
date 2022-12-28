@@ -9,8 +9,8 @@ export function fname(uri: string) {
     return path.basename(uri);
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function conlog(item: any) {
-    // eslint-disable-line @typescript-eslint/no-explicit-any
     switch (typeof item) {
         case "number":
             connection.console.log(item.toString());
