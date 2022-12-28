@@ -46,6 +46,7 @@ def load_data(yaml_list):
 
 def generate_completion(data):
     completion_data = []
+    COMPLETION_TAG_deprecated = 1
     for items_list in data:
         kind = data[items_list]["type"]
         items = data[items_list]["items"]
@@ -59,6 +60,10 @@ def generate_completion(data):
                 doc = item["doc"]
             except:  # noqa: E722
                 doc = ""
+            try:
+                deprecated = item["deprecated"]
+            except:  # noqa: E722
+                deprecated = False
             markdown = {"kind": "markdown", "value": doc}
             completion_item = {
                 "label": label,
@@ -67,6 +72,8 @@ def generate_completion(data):
                 "detail": detail,
                 "source": "builtin",
             }
+            if deprecated:
+                completion_item["tags"] = [COMPLETION_TAG_deprecated]
             completion_data.append(completion_item)
     return completion_data
 
