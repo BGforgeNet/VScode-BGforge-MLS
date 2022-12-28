@@ -1,26 +1,26 @@
 {
-	"name": "bgforge-mls-server",
-	"description": "BGforge multilanguage server",
-	"version": "1.16.2",
-	"author": "BGforge",
-	"license": "SEE LICENSE IN LICENSE.txt",
-	"engines": {
-		"vscode": "^1.69.2",
-		"node": "*"
-	},
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/BGforgeNet/VScode-BGforge-MLS/server"
-	},
-	"dependencies": {
-		"fast-glob": "^3.2.12",
-		"typescript": "^4.9.4",
-		"vscode-languageserver": "^8.0.2",
-		"vscode-languageserver-textdocument": "^1.0.8",
-		"vscode-uri": "*"
-	},
-	"devDependencies": {
-		"@types/vscode": "1.69.1",
-		"@vscode/test-electron": "^2.2.1"
-	}
+    "name": "bgforge-mls-server",
+    "description": "BGforge multilanguage server",
+    "version": "1.16.2",
+    "author": "BGforge",
+    "license": "SEE LICENSE IN LICENSE.txt",
+    "engines": {
+        "vscode": "^1.69.2",
+        "node": "*"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/BGforgeNet/VScode-BGforge-MLS/server"
+    },
+    "dependencies": {
+        "fast-glob": "^3.2.12",
+        "typescript": "^4.9.4",
+        "vscode-languageserver": "^8.0.2",
+        "vscode-languageserver-textdocument": "^1.0.8",
+        "vscode-uri": "*"
+    },
+    "devDependencies": {
+        "@types/vscode": "1.69.1",
+        "@vscode/test-electron": "^2.2.1"
+    }
 }

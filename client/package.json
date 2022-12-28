@@ -1,19 +1,19 @@
 {
-	"name": "bgforge-mls-client",
-	"description": "BGforge multilanguage server client",
-	"author": "BGforge",
-	"license": "SEE LICENSE IN LICENSE.txt",
-	"version": "1.6.0",
-	"publisher": "BGforge",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/BGforgeNet/VScode-BGforge-MLS/client"
-	},
-	"engines": {
-		"vscode": "^1.69.2"
-	},
-	"dependencies": {
-		"@types/vscode": "1.69.1",
-		"vscode-languageclient": "^8.0.2"
-	}
+    "name": "bgforge-mls-client",
+    "description": "BGforge multilanguage server client",
+    "author": "BGforge",
+    "license": "SEE LICENSE IN LICENSE.txt",
+    "version": "1.6.0",
+    "publisher": "BGforge",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/BGforgeNet/VScode-BGforge-MLS/client"
+    },
+    "engines": {
+        "vscode": "^1.69.2"
+    },
+    "dependencies": {
+        "@types/vscode": "1.69.1",
+        "vscode-languageclient": "^8.0.2"
+    }
 }
