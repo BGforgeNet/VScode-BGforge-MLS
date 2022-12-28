@@ -223,6 +223,7 @@ base-functions:
       detail: ObjectPtr critter_inven_obj(ObjectPtr who, int where)
       doc: |-
         Deprecated. Use `critter_inven_obj2` instead.
+
         ---
         Returns a pointer to an object that is in a given spot (NULL if none).
         The appropriate values for where are: `INVEN_TYPE_WORN`, `INVEN_TYPE_RIGHT_HAND`, and `INVEN_TYPE_LEFT_HAND`.
@@ -343,6 +344,7 @@ base-functions:
       detail: int floor(int/float value)
       doc: |-
         Deprecated. Use `floor2` instead.
+
         ---
         Works properly for positive values, but for negative ones functions like `ceil` (rounds up instead of down).
       deprecated: true

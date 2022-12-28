@@ -1488,12 +1488,14 @@ tp2-patch:
     - name: COMPILE_BAF_TO_BCS
       doc: |-
         Deprecated. Use `DECOMPILE_AND_PATCH` instead.
+
         ---
         The current file, which must be a valid BAF script, is compiled to a BCS. In general you should use the COMPILE TP2 Action instead, unless you are using other patch commands to modify the file under consideration.
       deprecated: true
     - name: COMPILE_D_TO_DLG
       doc: |-
         Deprecated. Use `DECOMPILE_AND_PATCH` instead.
+
         ---
         The current file, which must be a valid D file that defines a single DLG file (via an obvious BEGIN action) is compiled to a DLG. Typically this is only used after a DECOMPILE_DLG_TO_D.
       deprecated: true
@@ -1528,12 +1530,14 @@ tp2-patch:
     - name: DECOMPILE_BCS_TO_BAF
       doc: |-
         Deprecated. Use `DECOMPILE_AND_PATCH` instead.
+
         ---
         The current file, which must be a valid BCS script, is decompiled to a BAF.
       deprecated: true
     - name: DECOMPILE_DLG_TO_D
       doc: |-
         Deprecated. Use `DECOMPILE_AND_PATCH` instead.
+
         ---
         The current file, which must be a valid DLG file, is decompile to a textual D file (with string refs and no comments). Once you have a D file you can use other patch commands to change the actions and triggers around. You should use D actions (like REPLACE_ACTION_TEXT) instead whenever possible.
       deprecated: true
