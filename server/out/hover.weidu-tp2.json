@@ -1418,13 +1418,13 @@
     "COMPILE_BAF_TO_BCS": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2\nCOMPILE_BAF_TO_BCS\n```\nDeprecated. Use `DECOMPILE_AND_PATCH` instead.\n---\nThe current file, which must be a valid BAF script, is compiled to a BCS. In general you should use the COMPILE TP2 Action instead, unless you are using other patch commands to modify the file under consideration."
+            "value": "```weidu-tp2\nCOMPILE_BAF_TO_BCS\n```\nDeprecated. Use `DECOMPILE_AND_PATCH` instead.\n\n---\nThe current file, which must be a valid BAF script, is compiled to a BCS. In general you should use the COMPILE TP2 Action instead, unless you are using other patch commands to modify the file under consideration."
         }
     },
     "COMPILE_D_TO_DLG": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2\nCOMPILE_D_TO_DLG\n```\nDeprecated. Use `DECOMPILE_AND_PATCH` instead.\n---\nThe current file, which must be a valid D file that defines a single DLG file (via an obvious BEGIN action) is compiled to a DLG. Typically this is only used after a DECOMPILE_DLG_TO_D."
+            "value": "```weidu-tp2\nCOMPILE_D_TO_DLG\n```\nDeprecated. Use `DECOMPILE_AND_PATCH` instead.\n\n---\nThe current file, which must be a valid D file that defines a single DLG file (via an obvious BEGIN action) is compiled to a DLG. Typically this is only used after a DECOMPILE_DLG_TO_D."
         }
     },
     "COMPRESS_INTO_FILE": {
@@ -1472,13 +1472,13 @@
     "DECOMPILE_BCS_TO_BAF": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2\nDECOMPILE_BCS_TO_BAF\n```\nDeprecated. Use `DECOMPILE_AND_PATCH` instead.\n---\nThe current file, which must be a valid BCS script, is decompiled to a BAF."
+            "value": "```weidu-tp2\nDECOMPILE_BCS_TO_BAF\n```\nDeprecated. Use `DECOMPILE_AND_PATCH` instead.\n\n---\nThe current file, which must be a valid BCS script, is decompiled to a BAF."
         }
     },
     "DECOMPILE_DLG_TO_D": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2\nDECOMPILE_DLG_TO_D\n```\nDeprecated. Use `DECOMPILE_AND_PATCH` instead.\n---\nThe current file, which must be a valid DLG file, is decompile to a textual D file (with string refs and no comments). Once you have a D file you can use other patch commands to change the actions and triggers around. You should use D actions (like REPLACE_ACTION_TEXT) instead whenever possible."
+            "value": "```weidu-tp2\nDECOMPILE_DLG_TO_D\n```\nDeprecated. Use `DECOMPILE_AND_PATCH` instead.\n\n---\nThe current file, which must be a valid DLG file, is decompile to a textual D file (with string refs and no comments). Once you have a D file you can use other patch commands to change the actions and triggers around. You should use D actions (like REPLACE_ACTION_TEXT) instead whenever possible."
         }
     },
     "DECOMPRESS_INTO_FILE": {

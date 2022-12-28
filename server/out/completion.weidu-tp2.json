@@ -2364,20 +2364,26 @@
         "kind": 3,
         "documentation": {
             "kind": "markdown",
-            "value": "Deprecated. Use `DECOMPILE_AND_PATCH` instead.\n---\nThe current file, which must be a valid BAF script, is compiled to a BCS. In general you should use the COMPILE TP2 Action instead, unless you are using other patch commands to modify the file under consideration."
+            "value": "Deprecated. Use `DECOMPILE_AND_PATCH` instead.\n\n---\nThe current file, which must be a valid BAF script, is compiled to a BCS. In general you should use the COMPILE TP2 Action instead, unless you are using other patch commands to modify the file under consideration."
         },
         "detail": "COMPILE_BAF_TO_BCS",
-        "source": "builtin"
+        "source": "builtin",
+        "tags": [
+            1
+        ]
     },
     {
         "label": "COMPILE_D_TO_DLG",
         "kind": 3,
         "documentation": {
             "kind": "markdown",
-            "value": "Deprecated. Use `DECOMPILE_AND_PATCH` instead.\n---\nThe current file, which must be a valid D file that defines a single DLG file (via an obvious BEGIN action) is compiled to a DLG. Typically this is only used after a DECOMPILE_DLG_TO_D."
+            "value": "Deprecated. Use `DECOMPILE_AND_PATCH` instead.\n\n---\nThe current file, which must be a valid D file that defines a single DLG file (via an obvious BEGIN action) is compiled to a DLG. Typically this is only used after a DECOMPILE_DLG_TO_D."
         },
         "detail": "COMPILE_D_TO_DLG",
-        "source": "builtin"
+        "source": "builtin",
+        "tags": [
+            1
+        ]
     },
     {
         "label": "COMPRESS_INTO_FILE",
@@ -2454,20 +2460,26 @@
         "kind": 3,
         "documentation": {
             "kind": "markdown",
-            "value": "Deprecated. Use `DECOMPILE_AND_PATCH` instead.\n---\nThe current file, which must be a valid BCS script, is decompiled to a BAF."
+            "value": "Deprecated. Use `DECOMPILE_AND_PATCH` instead.\n\n---\nThe current file, which must be a valid BCS script, is decompiled to a BAF."
         },
         "detail": "DECOMPILE_BCS_TO_BAF",
-        "source": "builtin"
+        "source": "builtin",
+        "tags": [
+            1
+        ]
     },
     {
         "label": "DECOMPILE_DLG_TO_D",
         "kind": 3,
         "documentation": {
             "kind": "markdown",
-            "value": "Deprecated. Use `DECOMPILE_AND_PATCH` instead.\n---\nThe current file, which must be a valid DLG file, is decompile to a textual D file (with string refs and no comments). Once you have a D file you can use other patch commands to change the actions and triggers around. You should use D actions (like REPLACE_ACTION_TEXT) instead whenever possible."
+            "value": "Deprecated. Use `DECOMPILE_AND_PATCH` instead.\n\n---\nThe current file, which must be a valid DLG file, is decompile to a textual D file (with string refs and no comments). Once you have a D file you can use other patch commands to change the actions and triggers around. You should use D actions (like REPLACE_ACTION_TEXT) instead whenever possible."
         },
         "detail": "DECOMPILE_DLG_TO_D",
-        "source": "builtin"
+        "source": "builtin",
+        "tags": [
+            1
+        ]
     },
     {
         "label": "DECOMPRESS_INTO_FILE",

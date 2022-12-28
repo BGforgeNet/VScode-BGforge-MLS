@@ -624,10 +624,13 @@
         "kind": 3,
         "documentation": {
             "kind": "markdown",
-            "value": "Deprecated. Use `critter_inven_obj2` instead.\n---\nReturns a pointer to an object that is in a given spot (NULL if none).\nThe appropriate values for where are: `INVEN_TYPE_WORN`, `INVEN_TYPE_RIGHT_HAND`, and `INVEN_TYPE_LEFT_HAND`."
+            "value": "Deprecated. Use `critter_inven_obj2` instead.\n\n---\nReturns a pointer to an object that is in a given spot (NULL if none).\nThe appropriate values for where are: `INVEN_TYPE_WORN`, `INVEN_TYPE_RIGHT_HAND`, and `INVEN_TYPE_LEFT_HAND`."
         },
         "detail": "ObjectPtr critter_inven_obj(ObjectPtr who, int where)",
-        "source": "builtin"
+        "source": "builtin",
+        "tags": [
+            1
+        ]
     },
     {
         "label": "critter_is_fleeing",
@@ -914,10 +917,13 @@
         "kind": 3,
         "documentation": {
             "kind": "markdown",
-            "value": "Deprecated. Use `floor2` instead.\n---\nWorks properly for positive values, but for negative ones functions like `ceil` (rounds up instead of down)."
+            "value": "Deprecated. Use `floor2` instead.\n\n---\nWorks properly for positive values, but for negative ones functions like `ceil` (rounds up instead of down)."
         },
         "detail": "int floor(int/float value)",
-        "source": "builtin"
+        "source": "builtin",
+        "tags": [
+            1
+        ]
     },
     {
         "label": "gSay_End",
