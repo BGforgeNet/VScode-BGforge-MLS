@@ -14,7 +14,7 @@ const valid_extensions = new Map([
     [".tpa", "tpa"],
     [".tpp", "tpp"],
     [".d", "d"],
-    s[(".baf", "baf")],
+    [".baf", "baf"],
 ]);
 
 function parse_compile_output(text: string) {
