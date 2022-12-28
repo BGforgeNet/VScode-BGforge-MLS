@@ -1,8 +1,6 @@
 "use strict";
 
-import { Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
-import * as common from "./common";
-import { conlog } from "./common";
+import { conlog, ParseItemList, ParseResult, send_parse_result } from "./common";
 import { connection } from "./server";
 import * as path from "path";
 import * as cp from "child_process";
@@ -17,9 +15,13 @@ const valid_extensions = new Map([
     [".baf", "baf"],
 ]);
 
-function parse_compile_output(text: string) {
+/** `text` looks like this
+ *
+ * `[ua.tp2]  ERROR at line 30 column 1-63` */
+function parse_weidu_output(text: string) {
     const errors_pattern = /\[(\S+)\]\s+(?:PARSE\s+)?ERROR at line (\d+) column (\d+)-(\d+)/g;
-    const errors = [];
+    const errors: ParseItemList = [];
+    const warnings: ParseItemList = [];
 
     try {
         let match: RegExpExecArray;
@@ -31,20 +33,22 @@ function parse_compile_output(text: string) {
             errors.push({
                 file: match[1],
                 line: parseInt(match[2]),
-                col_start: parseInt(match[3]),
-                col_end: parseInt(match[4]),
+                column_start: parseInt(match[3]) - 1, // weidu uses 1-index, while vscode 0 index?
+                column_end: parseInt(match[4]),
                 message: text,
             });
         }
     } catch (err) {
         conlog(err);
     }
-    return [errors, []];
+    const result: ParseResult = { errors: errors, warnings: warnings };
+    return result;
 }
 
 function parse_gcc_output(text: string) {
     const errors_pattern = /((\S+)\.tpl):(\d+):(\d+): error:.*/g;
-    const errors = [];
+    const errors: ParseItemList = [];
+    const warnings: ParseItemList = [];
 
     try {
         let match: RegExpExecArray;
@@ -56,44 +60,30 @@ function parse_gcc_output(text: string) {
             errors.push({
                 file: match[1],
                 line: parseInt(match[3]),
-                col_start: parseInt(match[4]),
-                col_end: match[0].length,
+                column_start: parseInt(match[4]) - 1,
+                column_end: match[0].length,
                 message: text,
             });
         }
     } catch (err) {
         conlog(err);
     }
-    return [errors, []];
+    const result: ParseResult = { errors: errors, warnings: warnings };
+    return result;
 }
 
 function send_diagnostics(uri_string: string, output_text: string, format = "weidu") {
-    let errors_warnings = [];
+    let parse_result: ParseResult;
     if (format == "gcc") {
-        errors_warnings = parse_gcc_output(output_text);
+        parse_result = parse_gcc_output(output_text);
     } else {
-        errors_warnings = parse_compile_output(output_text);
+        parse_result = parse_weidu_output(output_text);
     }
-    const errors = errors_warnings[0];
-
-    const diagnostics: Diagnostic[] = [];
-    for (const e of errors) {
-        const diagnosic: Diagnostic = {
-            severity: DiagnosticSeverity.Error,
-            range: {
-                start: { line: e.line - 1, character: e.col_start - 1 },
-                end: { line: e.line - 1, character: e.col_end },
-            },
-            message: `${e.message}`,
-            source: common.diag_src,
-        };
-        diagnostics.push(diagnosic);
-    }
-    connection.sendDiagnostics({ uri: uri_string, diagnostics });
+    send_parse_result(uri_string, parse_result);
 }
 
 // export function wcompile(params: any) {
-export function wcompile(uri_string: string, weidu_path: string, game_path: string) {
+export function compile(uri_string: string, weidu_path: string, game_path: string) {
     const filepath = URI.parse(uri_string).fsPath;
     const cwd_to = path.dirname(filepath);
     const base_name = path.parse(filepath).base;
@@ -172,18 +162,18 @@ export function wcompile(uri_string: string, weidu_path: string, game_path: stri
     const weidu_cmd = `${weidu_path} ${weidu_args} ${weidu_type} ${real_name} `;
     cp.exec(weidu_cmd, { cwd: cwd_to }, (err: cp.ExecException, stdout: string, stderr: string) => {
         conlog("stdout: " + stdout);
-        const errors_warnings = parse_compile_output(stdout); //dupe, yes
-        conlog(errors_warnings);
+        const parse_result = parse_weidu_output(stdout); //dupe, yes
+        conlog(parse_result);
         if (stderr) {
             conlog("stderr: " + stderr);
         }
         if (
             (err && err.code != 0) ||
-            errors_warnings[0].length > 0 || // weidu doesn't always return non-zero on parse failure?
-            errors_warnings[1].length > 0
+            parse_result.errors.length > 0 || // weidu doesn't always return non-zero on parse failure?
+            parse_result.warnings.length > 0
         ) {
             conlog("error: " + err.message);
-            conlog(errors_warnings);
+            conlog(parse_result);
             connection.window.showErrorMessage(`Failed to parse ${real_name}!`);
             if (tpl == false) {
                 send_diagnostics(uri_string, stdout);

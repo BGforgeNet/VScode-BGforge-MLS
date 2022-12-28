@@ -1,9 +1,8 @@
 "use strict";
 
 import * as path from "path";
-import { CompletionItem, Hover } from "vscode-languageserver/node";
+import { CompletionItem, Hover, DiagnosticSeverity, Diagnostic } from "vscode-languageserver/node";
 import { connection } from "./server";
-export const diag_src = "BGforge MLS";
 
 export function fname(uri: string) {
     return path.basename(uri);
@@ -71,3 +70,53 @@ export interface CompletionData extends Map<string, CompletionList | CompletionL
 export interface CompletionDataEx extends Map<string, CompletionListEx> {}
 export interface HoverData extends Map<string, HoverMap | HoverMapEx> {}
 export interface HoverDataEx extends Map<string, HoverMapEx> {}
+
+export interface ParseItem {
+    file: string;
+    line: number;
+    column_start: number;
+    column_end: number;
+    message: string;
+}
+export interface ParseItemList extends Array<ParseItem> {}
+
+export interface ParseResult {
+    errors: ParseItemList;
+    warnings: ParseItemList;
+}
+
+export function send_parse_result(uri: string, parse_result: ParseResult) {
+    const diag_src = "BGforge MLS";
+    const errors = parse_result.errors;
+    const warnings = parse_result.warnings;
+
+    const diagnostics: Diagnostic[] = [];
+
+    for (const e of errors) {
+        const diagnosic: Diagnostic = {
+            severity: DiagnosticSeverity.Error,
+            range: {
+                start: { line: e.line - 1, character: e.column_start },
+                end: { line: e.line - 1, character: e.column_end },
+            },
+            message: `${e.message}`,
+            source: diag_src,
+        };
+        diagnostics.push(diagnosic);
+    }
+    for (const w of warnings) {
+        const diagnosic: Diagnostic = {
+            severity: DiagnosticSeverity.Warning,
+            range: {
+                start: { line: w.line - 1, character: w.column_start },
+                end: { line: w.line - 1, character: w.column_end },
+            },
+            message: `${w.message}`,
+            source: diag_src,
+        };
+        diagnostics.push(diagnosic);
+    }
+
+    // Send the computed diagnostics to VSCode.
+    connection.sendDiagnostics({ uri: uri, diagnostics: diagnostics });
+}

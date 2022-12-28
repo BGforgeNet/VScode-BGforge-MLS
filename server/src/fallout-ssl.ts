@@ -1,7 +1,6 @@
 "use strict";
 
-import { CompletionItemKind, Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
-import * as common from "./common";
+import { CompletionItemKind } from "vscode-languageserver";
 import {
     CompletionItemEx,
     HoverEx,
@@ -10,6 +9,9 @@ import {
     HoverMap,
     CompletionListEx,
     HoverMapEx,
+    ParseItemList,
+    ParseResult,
+    send_parse_result,
 } from "./common";
 import { connection, documents } from "./server";
 import * as path from "path";
@@ -225,12 +227,17 @@ function find_symbols(text: string) {
     };
     return result;
 }
-
-function parse_compile_output(text: string) {
+/** `text` looks like this
+ *
+ * `[Error] <Semantic> <my_script.ssl>:26:25: Unknown identifier qq.`
+ * Numbers mean line:column
+ */
+function parse_compile_output(text: string, uri: string) {
+    const text_document = documents.get(uri);
     const errors_pattern = /\[Error\] <(.+)>:([\d]*):([\d]*):? (.*)/g;
     const warnings_pattern = /\[Warning\] <(.+)>:([\d]*):([\d]*):? (.*)/g;
-    const errors = [];
-    const warnings = [];
+    const errors: ParseItemList = [];
+    const warnings: ParseItemList = [];
 
     try {
         let match: RegExpExecArray;
@@ -241,14 +248,15 @@ function parse_compile_output(text: string) {
             }
             let col: string;
             if (match[3] == "") {
-                col = "0";
+                col = "1";
             } else {
                 col = match[3];
             }
             errors.push({
                 file: match[1],
                 line: parseInt(match[2]),
-                column: parseInt(col),
+                column_start: 0,
+                column_end: parseInt(col) - 1,
                 message: match[4],
             });
         }
@@ -264,57 +272,26 @@ function parse_compile_output(text: string) {
             } else {
                 col = match[3];
             }
+            const line = parseInt(match[2]);
+            const column_end = text_document.offsetAt({ line: line, character: 0 }) - 1;
             warnings.push({
                 file: match[1],
-                line: parseInt(match[2]),
-                column: parseInt(col),
+                line: line,
+                column_start: parseInt(col),
+                column_end: column_end,
                 message: match[4],
             });
         }
     } catch (err) {
         conlog(err);
     }
-    return [errors, warnings];
+    const result: ParseResult = { errors: errors, warnings };
+    return result;
 }
 
 function send_diagnostics(uri: string, output_text: string) {
-    const text_document = documents.get(uri);
-    const errors_warnings = parse_compile_output(output_text);
-    const errors = errors_warnings[0];
-    const warnings = errors_warnings[1];
-
-    const diagnostics: Diagnostic[] = [];
-    for (const e of errors) {
-        const diagnosic: Diagnostic = {
-            severity: DiagnosticSeverity.Error,
-            range: {
-                start: { line: e.line - 1, character: e.column },
-                end: text_document.positionAt(
-                    text_document.offsetAt({ line: e.line, character: 0 }) - 1
-                ),
-            },
-            message: `${e.message}`,
-            source: common.diag_src,
-        };
-        diagnostics.push(diagnosic);
-    }
-    for (const w of warnings) {
-        const diagnosic: Diagnostic = {
-            severity: DiagnosticSeverity.Warning,
-            range: {
-                start: { line: w.line - 1, character: w.column },
-                end: text_document.positionAt(
-                    text_document.offsetAt({ line: w.line, character: 0 }) - 1
-                ),
-            },
-            message: `${w.message}`,
-            source: common.diag_src,
-        };
-        diagnostics.push(diagnosic);
-    }
-
-    // Send the computed diagnostics to VSCode.
-    connection.sendDiagnostics({ uri: text_document.uri, diagnostics });
+    const parse_result = parse_compile_output(output_text, uri);
+    send_parse_result(uri, parse_result);
 }
 
 function find_headers(dirName: string) {
@@ -322,7 +299,7 @@ function find_headers(dirName: string) {
     return entries;
 }
 
-export function sslcompile(uri_string: string, compile_cmd: string, dst_dir: string) {
+export function compile(uri_string: string, compile_cmd: string, dst_dir: string) {
     const filepath = URI.parse(uri_string).fsPath;
     const cwd_to = path.dirname(filepath);
     const base_name = path.parse(filepath).base;

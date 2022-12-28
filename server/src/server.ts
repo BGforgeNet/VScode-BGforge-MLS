@@ -334,9 +334,13 @@ connection.onExecuteCommand((params) => {
     const weidu_game_path: string = args.weidu_game_path;
     const lang_id = document.languageId;
 
+    // Clear old diagnostics. For some reason not working in send_parse_result.
+    // Probably due to async?
+    connection.sendDiagnostics({ uri: uri, diagnostics: [] });
+
     switch (lang_id) {
         case "fallout-ssl": {
-            fallout_ssl.sslcompile(uri, compile_cmd, ssl_dst);
+            fallout_ssl.compile(uri, compile_cmd, ssl_dst);
             break;
         }
         case "weidu-tp2":
@@ -345,7 +349,7 @@ connection.onExecuteCommand((params) => {
         case "weidu-baf-tpl":
         case "weidu-d":
         case "weidu-d-tpl": {
-            weidu.wcompile(uri, weidu_path, weidu_game_path);
+            weidu.compile(uri, weidu_path, weidu_game_path);
             break;
         }
         default: {
