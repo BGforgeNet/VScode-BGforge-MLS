@@ -136,8 +136,8 @@ export function reload_data(
         hover = new Map();
     }
     const new_hover = new Map(
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         Array.from(hover).filter(([key, value]) => {
-            // eslint-disable-line @typescript-eslint/no-unused-vars
             if (value.source != path) {
                 return true;
             }

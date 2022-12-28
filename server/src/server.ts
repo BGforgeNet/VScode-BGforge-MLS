@@ -3,7 +3,6 @@
 import {
     createConnection,
     TextDocuments,
-    Diagnostic,
     ProposedFeatures,
     InitializeParams,
     DidChangeConfigurationNotification,
