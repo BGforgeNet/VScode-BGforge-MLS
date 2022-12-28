@@ -12,6 +12,7 @@ import {
     TextDocumentSyncKind,
     InitializeResult,
 } from "vscode-languageserver/node";
+import { fileURLToPath } from "node:url";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import * as path from "path";
 import * as fallout_ssl from "./fallout-ssl";
@@ -24,8 +25,10 @@ import {
     CompletionDataEx,
     HoverDataEx,
     HoverEx,
+    is_subdir,
 } from "./common";
-import { readFileSync } from "fs";
+import { lstatSync, readFileSync, realpathSync } from "fs";
+import { MLSsettings, defaultSettings } from "./settings";
 
 // Create a connection for the server. The connection uses Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
@@ -100,43 +103,36 @@ connection.onInitialize((params: InitializeParams) => {
         };
     }
     // yes this is unsafe, just doing something quick and dirty
-    workspace_root = params.workspaceFolders[0].uri as string;
+    workspace_root = fileURLToPath(params.workspaceFolders[0].uri);
     return result;
 });
 
-connection.onInitialized(() => {
+export let globalSettings: MLSsettings = defaultSettings;
+
+connection.onInitialized(async () => {
     if (hasConfigurationCapability) {
         // Register for all configuration changes.
         connection.client.register(DidChangeConfigurationNotification.type, undefined);
     }
-
+    globalSettings = await connection.workspace.getConfiguration({ section: "bgforge" });
     // load data
     load_static_completion();
     load_static_hover();
+    load_external_headers();
     load_dynamic_intellisense();
     conlog("initialized");
 });
 
-// The settings
-interface SSLsettings {
-    maxNumberOfProblems: number;
-}
-
-// The global settings, used when the `workspace/configuration` request is not supported by the client.
-// Please note that this is not the case when using this server with the client provided in this example
-// but could happen with other clients.
-const defaultSettings: SSLsettings = { maxNumberOfProblems: 10 };
-export let globalSettings: SSLsettings = defaultSettings;
-
 // Cache the settings of all open documents
-const documentSettings: Map<string, Thenable<SSLsettings>> = new Map();
+const documentSettings: Map<string, Thenable<MLSsettings>> = new Map();
 
 connection.onDidChangeConfiguration((change) => {
+    conlog("did change configuration");
     if (hasConfigurationCapability) {
         // Reset all cached document settings
         documentSettings.clear();
     } else {
-        globalSettings = <SSLsettings>(change.settings.bgforge || defaultSettings);
+        globalSettings = <MLSsettings>(change.settings.bgforge || defaultSettings);
     }
 });
 
@@ -170,6 +166,21 @@ documents.onDidChangeContent((change) => {
     }
     reload_self_data(change.document);
 });
+
+function getDocumentSettings(resource: string): Thenable<MLSsettings> {
+    if (!hasConfigurationCapability) {
+        return Promise.resolve(globalSettings);
+    }
+    let result = documentSettings.get(resource);
+    if (!result) {
+        result = connection.workspace.getConfiguration({
+            scopeUri: resource,
+            section: "bgforge",
+        });
+        documentSettings.set(resource, result);
+    }
+    return result;
+}
 
 async function reload_self_data(txtDoc: TextDocument) {
     const lang_id = documents.get(txtDoc.uri).languageId;
@@ -220,8 +231,43 @@ connection.onCompletion((_textDocumentPosition: TextDocumentPositionParams): Com
     return list;
 });
 
+/** Loads Fallout header data from a directory outside of workspace, if specified in settings.
+ * These files are not tracked for changes, and data is static.
+ */
+async function load_external_headers() {
+    conlog("loading external headers");
+    const headers_dir = globalSettings.falloutSSL.headersDirectory;
+
+    try {
+        if (!lstatSync(headers_dir).isDirectory) {
+            conlog(`${headers_dir} is not a directory, skipping external headers.`);
+            return;
+        }
+    } catch {
+        conlog(`lstat ${headers_dir} failed, aborting.`);
+        return;
+    }
+    if (is_subdir(workspace_root, headers_dir)) {
+        conlog(`real ${headers_dir} is a subdirectory of workspace ${workspace_root}, aborting.`);
+        return;
+    }
+
+    conlog(`loading external headers from ${headers_dir}`);
+    const fallout_header_data = await fallout_ssl.load_data(headers_dir);
+    const lang_id = "fallout-ssl";
+    const old_completion = static_completion.get(lang_id);
+    const old_hover = static_hover.get(lang_id);
+    const new_completion = [...old_completion, ...fallout_header_data.completion];
+    const new_hover = new Map([...old_hover, ...fallout_header_data.hover]);
+
+    static_hover.set(lang_id, new_hover);
+    static_completion.set(lang_id, new_completion);
+    conlog(`loaded external headers from ${headers_dir}`);
+}
+
+/** loads headers from workspace */
 async function load_dynamic_intellisense() {
-    const fallout_header_data = await fallout_ssl.load_data();
+    const fallout_header_data = await fallout_ssl.load_data("");
     dynamic_hover.set("fallout-ssl", fallout_header_data.hover);
     dynamic_completion.set("fallout-ssl", fallout_header_data.completion);
     initialized = true;
@@ -311,7 +357,7 @@ connection.onHover((textDocumentPosition: TextDocumentPositionParams): Hover => 
     }
 });
 
-connection.onExecuteCommand((params) => {
+connection.onExecuteCommand(async (params) => {
     const command = params.command;
     if (command != "extension.bgforge.compile") {
         return;
@@ -326,12 +372,9 @@ connection.onExecuteCommand((params) => {
     }
 
     const uri = args.uri;
+    const setttings = await getDocumentSettings(uri);
     const document: TextDocument = documents.get(uri);
 
-    const compile_cmd: string = args.compile_cmd;
-    const ssl_dst: string = args.ssl_dst;
-    const weidu_path: string = args.weidu_path;
-    const weidu_game_path: string = args.weidu_game_path;
     const lang_id = document.languageId;
 
     // Clear old diagnostics. For some reason not working in send_parse_result.
@@ -340,7 +383,7 @@ connection.onExecuteCommand((params) => {
 
     switch (lang_id) {
         case "fallout-ssl": {
-            fallout_ssl.compile(uri, compile_cmd, ssl_dst);
+            fallout_ssl.compile(uri, setttings.falloutSSL);
             break;
         }
         case "weidu-tp2":
@@ -349,7 +392,7 @@ connection.onExecuteCommand((params) => {
         case "weidu-baf-tpl":
         case "weidu-d":
         case "weidu-d-tpl": {
-            weidu.compile(uri, weidu_path, weidu_game_path);
+            weidu.compile(uri, setttings.weidu);
             break;
         }
         default: {

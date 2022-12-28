@@ -1,5 +1,6 @@
 "use strict";
 
+import { realpathSync } from "fs";
 import * as path from "path";
 import { CompletionItem, Hover, DiagnosticSeverity, Diagnostic } from "vscode-languageserver/node";
 import { connection } from "./server";
@@ -119,4 +120,15 @@ export function send_parse_result(uri: string, parse_result: ParseResult) {
 
     // Send the computed diagnostics to VSCode.
     connection.sendDiagnostics({ uri: uri, diagnostics: diagnostics });
+}
+
+/** Check if 1st dir contains the 2nd
+ */
+export function is_subdir(outer_path: string, inner_path: string) {
+    const inner_real = realpathSync(inner_path);
+    const outer_real = realpathSync(outer_path);
+    if (inner_real.startsWith(outer_real)) {
+        return true;
+    }
+    return false;
 }

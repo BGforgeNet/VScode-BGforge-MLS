@@ -5,6 +5,7 @@ import { connection } from "./server";
 import * as path from "path";
 import * as cp from "child_process";
 import { URI } from "vscode-uri";
+import { WeiDUsettings } from "./settings";
 
 const valid_extensions = new Map([
     [".tp2", "tp2"],
@@ -83,7 +84,9 @@ function send_diagnostics(uri_string: string, output_text: string, format = "wei
 }
 
 // export function wcompile(params: any) {
-export function compile(uri_string: string, weidu_path: string, game_path: string) {
+export function compile(uri_string: string, settings: WeiDUsettings) {
+    const game_path = settings.gamePath;
+    const weidu_path = settings.path;
     const filepath = URI.parse(uri_string).fsPath;
     const cwd_to = path.dirname(filepath);
     const base_name = path.parse(filepath).base;

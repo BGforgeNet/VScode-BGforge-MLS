@@ -277,12 +277,12 @@
                 "bgforge.falloutSSL.outputDirectory": {
                     "type": "string",
                     "default": "",
-                    "description": "Where to put the compiled Fallout SSL scripts, absolute path. Default is to put compiled scripts next to the source file. You'll probably want to set this to data/scripts of your Fallout 2 game directory."
+                    "description": "Where to put the compiled Fallout SSL scripts, absolute path. Default is to put compiled scripts next to the source file.\nYou'll probably want to set this to data/scripts of your Fallout 2 game directory."
                 },
                 "bgforge.falloutSSL.headersDirectory": {
                     "type": "string",
                     "default": "",
-                    "description": "Path to directory containing Fallout headers. Default is workspace root."
+                    "description": "Path to an additional directory with Fallout headers to scan for defines.\nLeave empty if all your headers are inside workspace directory. Workspace is always scanned."
                 },
                 "bgforge.weidu.path": {
                     "type": "string",
@@ -293,6 +293,16 @@
                     "type": "string",
                     "default": "",
                     "description": "Absolute path to an IE game. Needed to use parse feature on BAF and D files."
+                },
+                "bgforge.validateOnSave": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Run and show diagnostics when saving files."
+                },
+                "bgforge.validateOnType": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Run and show diagnostics repeatedly as you type."
                 }
             }
         },

@@ -21,8 +21,7 @@ import { sync as fgsync } from "fast-glob";
 import { MarkupKind } from "vscode-languageserver/node";
 import * as cp from "child_process";
 import { URI } from "vscode-uri";
-
-const fallout_ssl_config = "bgforge.falloutSSL";
+import { SSLsettings } from "./settings";
 
 interface HeaderDataList {
     macros: DefineList;
@@ -46,15 +45,13 @@ interface DefineList extends Array<DefineListItem> {}
 const lang_id = "fallout-ssl";
 const ssl_ext = ".ssl";
 
-export async function load_data() {
+export async function load_data(headersDirectory: string) {
     const completion_list: Array<CompletionItemEx> = [];
     const hover_map = new Map<string, HoverEx>();
-    const config = await connection.workspace.getConfiguration(fallout_ssl_config);
-    const headers_dir = config.headersDirectory;
-    const headers_list = find_headers(headers_dir);
+    const headers_list = find_headers(headersDirectory);
 
     for (const header_path of headers_list) {
-        const text = readFileSync(header_path, "utf8");
+        const text = readFileSync(path.join(headersDirectory, header_path), "utf8");
         const header_data = find_symbols(text);
         load_macros(header_path, header_data, completion_list, hover_map);
         load_procedures(header_path, header_data, completion_list, hover_map);
@@ -299,12 +296,13 @@ function find_headers(dirName: string) {
     return entries;
 }
 
-export function compile(uri_string: string, compile_cmd: string, dst_dir: string) {
+export function compile(uri_string: string, ssl_settings: SSLsettings) {
     const filepath = URI.parse(uri_string).fsPath;
     const cwd_to = path.dirname(filepath);
     const base_name = path.parse(filepath).base;
     const base = path.parse(filepath).name;
-    const dst_path = path.join(dst_dir, base + ".int");
+    const compile_cmd = `${ssl_settings.compilePath} ${ssl_settings.compileOptions}`;
+    const dst_path = path.join(ssl_settings.outputDirectory, base + ".int");
     const ext = path.parse(filepath).ext;
 
     if (ext.toLowerCase() != ssl_ext) {
