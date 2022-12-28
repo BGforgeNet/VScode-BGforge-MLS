@@ -3,8 +3,8 @@ preprocessor_directives:
   items:
     - name: elif
     - name: endif
-#    - name: '#else'
-#    - name: '#if'
+    #    - name: '#else'
+    #    - name: '#if'
     - name: ifdef
     - name: ifndef
     - name: include
@@ -222,7 +222,11 @@ base-functions:
     - name: critter_inven_obj
       detail: ObjectPtr critter_inven_obj(ObjectPtr who, int where)
       doc: |-
-        Returns a pointer to an object that is in a given spot (NULL if none). The appropriate values for where are: INVEN_TYPE_WORN, INVEN_TYPE_RIGHT_HAND, and INVEN_TYPE_LEFT_HAND.
+        Deprecated. Use `critter_inven_obj2` instead.
+        ---
+        Returns a pointer to an object that is in a given spot (NULL if none).
+        The appropriate values for where are: `INVEN_TYPE_WORN`, `INVEN_TYPE_RIGHT_HAND`, and `INVEN_TYPE_LEFT_HAND`.
+      deprecated: true
     - name: critter_is_fleeing
       detail: int critter_is_fleeing(ObjectPtr who)
       doc: |-
@@ -335,6 +339,13 @@ base-functions:
       detail: void float_msg(ObjectPtr who, string message, int type)
       doc: |-
         Attempts to create a floating-text message (str) attached to an object (who) using colors dictated by type. There are two special types, WARNING and SEQUENTIAL. WARNING is used to print a message centered on the screen (such as for end-of-quest notifications), and SEQUENTIAL will cycle through the colors, in an attempt to give critters different-colored messages to differentiate them.
+    - name: floor
+      detail: int floor(int/float value)
+      doc: |-
+        Deprecated. Use `floor2` instead.
+        ---
+        Works properly for positive values, but for negative ones functions like `ceil` (rounds up instead of down).
+      deprecated: true
     - name: gSay_End
       detail: void gSay_End(unsigned int var_index)
       doc: |-

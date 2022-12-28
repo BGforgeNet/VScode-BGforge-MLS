@@ -110,7 +110,6 @@ tp2-file:
       doc: |-
         The AUTHOR directive gives an email address for users to send bugs to if there are problems during the installation. You may use SUPPORT as an alias for AUTHOR. The TP2_AUTHOR variable is set to the "emailAddress" value.
 
-
     - name: BACKUP
       doc: |-
         The BACKUP declaration tells WeiDU where to put backed-up versions of files that would be overwritten so that they can be uninstalled later. This directory will be created automatically if it is missing.
@@ -132,7 +131,6 @@ tp2-flag:
       doc: |-
         EVALUATE_BUFFER is used whenever variables are evaluated. In particular, you can now "forget" about using it in FUNCTIONs and arrays. Note, TP2 defines multiple instances of EVALUATE_BUFFER, like EVALUATE_BUFFER, but these are not affected by AUTO_EVAL_STRINGS.
 
-
     - name: AUTO_TRA
       detail: AUTO_TRA path
       doc: |-
@@ -153,7 +151,6 @@ tp2-flag:
       doc: |-
         The given file is displayed to the user after choosing the language, but before installing any component. If more than one file name is provided, they are checked for existence in the order they're provided, and the first available one will be opened. If you wish to open multiple readme files, use multiple README statements.
 
-
     - name: SCRIPT_STYLE
       detail: SCRIPT_STYLE style
       doc: |-
@@ -166,7 +163,6 @@ tp2-flag:
         If not specified, the order is MOVE - STRSET - COPY - AT.
         If this is specified, then ALL operations must be specified (if any isn't, a warning is printed). Please note that this means that your mod might start printing warnings three years down the line if a new uninstall action is coded.
 
-
     - name: VERSION
       detail: VERSION String
       doc: |-
@@ -178,7 +174,6 @@ tp2-language:
       detail: LANGUAGE languageName languageDirectory defaultLanguageTRA list
       doc: |-
         The languageName is the name of the language as it is presented to the user. "American English" and "Italiano" are examples. The languageDirectory is the name of the subdirectory in which you have stored the TRA files for that language. Examples include "american" and "spanish". The variable named LANGUAGE is set to languageDirectory if the user selects this language.. Finally, all of the TRA files in the defaultLanguageTRA list are loaded as soon as the user selects a language.
-
 
 tp2-component-flag:
   type: 14 # keyword
@@ -215,8 +210,6 @@ tp2-component-flag:
       doc: |-
         Associates a string of metadata with this component. WeiDU does not use the metadata for anything, but external programs might. `METADATA` may be used multiple times per component.
 
-
-
     - name: NO_LOG_RECORD
       doc: |-
         Normally all module components are recorded in WeiDU.log and can be uninstalled later. This component flag prevents this component from writing a log record when it is successfully installed. As a result it is “invisible” to WeiDU, can be installed multiple times, and cannot be uninstalled with WeiDU. Do not use this flag without a real reason.
@@ -244,12 +237,10 @@ tp2-action:
       doc: |-
         For all files that match directory-file-regexp, sets a bunch of variables and executes the actions for each file found. Assuming the file being copied is somedir/yourfile.cre, the following variables will be set: "%BASH_FOR_DIRECTORY%" = "somedir" "%BASH_FOR_FILESPEC%" = "somedir/yourfile.cre" "%BASH_FOR_FILE%" = "yourfile.cre" "%BASH_FOR_RES%" = "yourfile" "%BASH_FOR_EXT%" = "cre" "%BASH_FOR_SIZE%" = <size of somedir/yourfile.cre>
 
-
     - name: ACTION_CLEAR_ARRAY
       detail: ACTION_CLEAR_ARRAY String
       doc: |-
         'Forgets' that the array string exists until its values are recalled. The actual variables' values are kept, the only effect is that PHP_EACH will not consider old values.
-
 
     - name: ACTION_DEFINE_ARRAY
       detail: ACTION_DEFINE_ARRAY String1 BEGIN String2 list END
@@ -259,7 +250,6 @@ tp2-action:
       detail: ACTION_DEFINE_ASSOCIATIVE_ARRAY String BEGIN key1 [ , key2 ... ] => result1 list END
       doc: |-
         Sets the array $string, indexed by the keys, to the corresponding results. The results can either be Strings or values. Example: ACTION_DEFINE_ASSOCIATIVE_ARRAY mix_with_blue BEGIN red => purple yellow => green END
-
 
     - name: ACTION_FOR_EACH
       detail: ACTION_FOR_EACH String1 IN String list BEGIN TP2 Action list END
@@ -278,7 +268,6 @@ tp2-action:
       doc: |-
         The string reference value is looked up in DIALOGF.TLK and the sound reference associated with the female string is stored in the variable. If there is no DIALOGF.TLK, the sound reference associated with the string from DIALOG.TLK is used instead. If the string has no sound, the empty string is used instead.
 
-
     - name: ACTION_GET_STRREF_S
       detail: ACTION_GET_STRREF_S value variable
       doc: |-
@@ -296,7 +285,6 @@ tp2-action:
       doc: |-
         The value is case-insensitively matched against the guard values. If value matches one of the guard values, the associated action list is executed. If there is a condition, it additionally needs to evaluate to true for the values to match. If none of the values match, the DEFAULT action list is executed. See the MATCH and TRY tutorial for additional information.
 
-
     - name: ACTION_PHP_EACH
       detail: ACTION_PHP_EACH String1 AS String2 => String3 list BEGIN TP2 Action list END
       doc: |-
@@ -306,17 +294,14 @@ tp2-action:
       doc: |-
         Waits for the user to provided an enter-terminated string and store it in variable. Said string will be stored and re-used during non-interactive reinstalls. See the READLN tutorial.
 
-
     - name: ACTION_REINCLUDE
       detail: ACTION_REINCLUDE String list
       doc: |-
         A synonym of REINCLUDE.
 
-
     - name: ACTION_RERAISE
       doc: |-
         When used inside an ACTION_TRY, the matched error is re-raised. See the MATCH and TRY tutorial for additional information.
-
 
     - name: ACTION_SORT_ARRAY_INDICES
       detail: ACTION_SORT_ARRAY_INDICES String ArrayIndicesSortType
@@ -326,8 +311,6 @@ tp2-action:
       detail: ACTION_TIME String BEGIN TP2 Action list END
       doc: |-
         Measure the time taken to execute the TP2 Actions and report it under the label String together with the other time measurements at the end of the mod's debug file.
-
-
 
     - name: ACTION_TO_LOWER
       detail: ACTION_TO_LOWER variable
@@ -342,13 +325,11 @@ tp2-action:
       doc: |-
         If evaluating the action list results in an error, the error is matched, as per ACTION_MATCH. N.B. TRY is generally not safe to use because many errors are intended to be fatal and if the mod installation were to proceed anyway, it might do so in an inconsistent state, with resource leaks or with other errors. ACTION_RERAISE mitigates or eliminates these risks, since the unsafe part is allowing the installation to continue and re-raising the error allows it to fail, like intended. See the MATCH and TRY tutorial for additional information.
 
-
     - name: ADD_AREA_TYPE
       detail: ADD_AREA_TYPE areaTypeName
       doc: |-
         Adds a new (guaranteed-unique) area type to areatype.ids, and sets the areaTypeName variable to the index of the bit the type is associated with: the type can be set with WRITE_SHORT 0x48 THIS | (1 << areaTypeName). If areatype.ids already contains areaTypeName, the variable is set to the type's current identifier and no other operation is performed.
         Also note that only 8 area types can be added to an unmodded installation of BG2; as such, don't add a new area type type unless you really need it (most likely, another modder is already using a type with a similar name, and you can share the type between your mods without issue).
-
 
     - name: ADD_JOURNAL
       detail: ADD_JOURNAL [ EXISTING ] [ MANAGED ] [ TITLE ( text ) ] reference list [ USING traFile list ]
@@ -357,36 +338,31 @@ tp2-action:
         For each of the provided references, which are taken to be journal entries, the first line of text, up to a newline character, is taken to be the title of the journal entry. Titles isolated in this way have any trailing whitespace and full stops trimmed. The title is added as a separate string to the TLK, together with the complete journal entry. The game files patched with the strrefs of the title and journal entry. Each unique title is given a unique quest id and journal entries that share titles end up sharing quest ids.
         If EXISTING is specified, the strref of the title is matched against the existing title strrefs. If a match is found, the journal entry is added under the quest id of the existing quest. Otherwise it is added as a new quest. Note that TITLE should be given a string reference in this case. ADD_JOURNAL cannot guarantee correct results if EXISTING is used without TITLE or if TITLE is given a string or tra reference instead of a string reference.
         If MANAGED is specified, all provided journal entries are given a unique, non-zero quest-group number. They share the same quest-group number regardless of whether they share the same title. If EXISTING is also specified, the quest-group numbers for all existing journal entries that match the provided titles are assigned a quest-group number, provided they do not already have one. This option does nothing unless the game version supports quest groups.
-        If TITLE is specified, the provided text is used as the title for all provided journal entries. The titles of each individual journal entry remains unchanged, they are just all listed under the same title. 
+        If TITLE is specified, the provided text is used as the title for all provided journal entries. The titles of each individual journal entry remains unchanged, they are just all listed under the same title.
     - name: ADD_KIT
       detail: ADD_KIT internalKitName String1 String2 String3 String4 String6 String7 String8 String9 String10 String11 String12 String13 SAY text1 SAY text2 SAY text3
       doc: |-
         This command allows you to add new kits to the BGII. See the example file mymod.tp2 or the tutorial at http://gibberlings3.net/forums/index.php?showtopic=584 for information on how to do this. ADD_KIT sets the variable %internalKitName% to the number your kit occupies in kitlist.2da. This value is exactly 0x4000 less than the number your kit is assigned in kit.ids. Also observe that the kit DWORD in the CRE file format uses a reversed WORD order, unlike all other fields in the CRE file format.
-
 
     - name: ADD_MUSIC
       detail: ADD_MUSIC internalMusicName newMUSFile
       doc: |-
         newMUSFile is copied to the music directory and added to songlist.2da under the name internalMusicName. The variable %internalMusicName% is set to the number of this new entry in songlist.2da. If newMUSFile already exists, the variable %internalMusicName% is set to the existing entry in songlist.2da and all other operations are skipped. Variables are evaluated. Some versions of the Infinity Engine cannot handle more than 100 entries in songlist.2da. ADD_MUSIC will fail under those circumstances unless the appropriate versions of ToB Hacks or ToBEx are installed or the game is GemRB or BGEE.
 
-
     - name: ADD_PROJECTILE
       detail: ADD_PROJECTILE modpath/PROName.PRO
       doc: |-
         Appends an entry for PROName to PROJECTL.IDS and assigns it the next available ProRef number. Then copies the file modpath/PROName.PRO to the override folder. The new ProRef number can be accessed through the variable %PROName% and used to updated the Projectile type field of an ITM or SPL file's Item Ability or Spell Ability sub-structures.
-
 
     - name: ADD_SCHOOL
       detail: ADD_SCHOOL schoolName removalString
       doc: |-
         Creates a new (guaranteed-unique) spell school (as per mschool.2da), associate removalString (can be a tra reference) to its removal, and sets the schoolName variable to the school identifier. If mschool.2da already contains schoolName, the variable is set to the school's current identifier and no other operation is performed.
 
-
     - name: ADD_SECTYPE
       detail: ADD_SECTYPE sectypeName removalString
       doc: |-
         Creates a new (guaranteed-unique) spell secondary type (as per msectype.2da), associate removalString (can be a tra reference) to its removal, and sets the sectypeName variable to the sectype identifier. If msectype.2da already contains sectypeName, the variable is set to the sectype's current identifier and no other operation is performed.
-
 
     - name: ADD_SPELL
       detail: ADD_SPELL newSPLfile type level idsName patch list [ IF_EXISTING patch list END ] [ ON_DISABLE patch list END ]
@@ -396,48 +372,40 @@ tp2-action:
 
         If Spell.ids already contains a spell named idsName, but of of different type and/or level than the one you're adding, then the current reference is removed from spell.ids, and then the action proceeds as usual. In this case, if there is the ON_DISABLE section, the patches declared there will be applied to the older spell.
 
-
     - name: ALTER_TLK
       detail: ALTER_TLK BEGIN patch list END
       doc: |-
         Executes the given patch list on all the strings *currently* in dialog.tlk. This means that strings added in the current mod installation will not be patched, and strings already altered via ALTER_TLK* and/or STRING_SET* will be patched from the pre-patch condition. Consider using ALTER_TLK_RANGE with the base game's boundaries instead.
-
 
     - name: ALTER_TLK_LIST
       detail: ALTER_TLK_LIST BEGIN value list END BEGIN patch list END
       doc: |-
         Executes the given patch list on all the strings *currently* in dialog.tlk from the given list. This means that strings added in the current mod installation will not be patched, and strings already altered via ALTER_TLK* and/or STRING_SET* will be patched from the pre-patch condition.
 
-
     - name: ALTER_TLK_RANGE
       detail: ALTER_TLK_RANGE value value BEGIN patch list END
       doc: |-
         Executes the given patch list on all the strings *currently* in dialog.tlk between the two given values (both inclusive). This means that strings added in the current mod installation will not be patched, and strings already altered via ALTER_TLK* and/or STRING_SET* will be patched from the pre-patch condition.
-
 
     - name: APPEND
       detail: APPEND optNoBackup filename newText when list [ KEEP_CRLF ]
       doc: |-
         If there are no when conditions or they are all true, the ASCII text newText is appended to the existing file filename (which is read from the game BIFFs or the override folder). Any variables in newText are replaced by their values. If KEEP_CRLF is not present, double newlines in the file (but not in newText) will be removed; otherwise, they're kept. In any event, if the file ends with CRLF only newText and an ending CRLF will be written; otherwise, if the file does not end with CRLF, it will be written before newText.
 
-
     - name: APPEND_COL
       detail: APPEND_COL optNoBackup filename newText [ prepend ] when list
       doc: |-
         If there are no when conditions or they are all true, the string newText is appended column-wise to the existing file filename (which is read from the game BIFFs or the override folder). You must have the same number of whitespace-separated words in newText as there are columns in filename. Prepend empty cells are assumed to be at the beginning of newText. A cell containing exactly $ is printed as empty.
-
 
     - name: APPEND_COL_OUTER
       detail: APPEND_COL_OUTER optNoBackup filename newText [ prepend ] when list
       doc: |-
         If there are no when conditions or they are all true, the string newText is appended column-wise to the existing file filename (which is treated as a path to a file). You must have the same number of whitespace-separated words in newText as there are columns in filename. Prepend empty cells are assumed to be at the beginning of newText. A cell containing exactly $ is printed as empty.
 
-
     - name: APPEND_OUTER
       detail: APPEND_OUTER optNoBackup filename newText when list [ KEEP_CRLF ]
       doc: |-
         If there are no when conditions or they are all true, the ASCII text newText is appended to the existing file filename (which is treated as a path to a file). Any variables in newText are replaced by their values. If KEEP_CRLF is not present, double newlines in the file (but not in newText) will be removed; otherwise, they're kept. In any event, if the file ends with CRLF only newText and an ending CRLF will be written; otherwise, if the file does not end with CRLF, it will be written before newText.
-
 
     - name: AT_EXIT
       detail: AT_EXIT commandToRun [ EXACT ]
@@ -449,7 +417,6 @@ tp2-action:
         This causes your README file to be displayed using a system appropriate viewer. Here's a more complicated example that pulls up a language-specific README if one is available:
         ACTION_IF FILE_EXISTS ~mymod\README.%LANGUAGE%.txt~ THEN BEGIN AT_INTERACTIVE_EXIT ~VIEW mymod\README.%LANGUAGE%.txt~ END ELSE BEGIN AT_INTERACTIVE_EXIT ~VIEW mymod\README.txt~ END
 
-
     - name: AT_INTERACTIVE_EXIT
       detail: AT_INTERACTIVE_EXIT commandToRun [ EXACT ]
       doc: |-
@@ -458,7 +425,6 @@ tp2-action:
       detail: AT_INTERACTIVE_NOW [ variable ] commandToRun [ EXACT ]
       doc: |-
         As AT_NOW, but commandToRun is executed only if the installation is run interactively.
-
 
     - name: AT_INTERACTIVE_UNINSTALL
       detail: AT_INTERACTIVE_UNINSTALL commandToRun [ EXACT ]
@@ -499,68 +465,57 @@ tp2-action:
       doc: |-
         Removes all variables from the memory, then reloads the automatic ones (TP2_AUTHOR, TP2_FILE_NAME, TP2_BASE_NAME, MOD_FOLDER, LANGUAGE, WEIDU_ARCH, WEIDU_OS, COMPONENT_NUMBER, all numeric constants such as NAME1, the soundsets, or SCRIPT_OVERRIDE). INTERACTIVE is automatically set when you call the next component. Do not use this feature without a real reason.
 
-
     - name: COMPILE
       detail: COMPILE [ EVALUATE_BUFFER ] sourceFile list [ patch list ] [ USING traFile list ]
       doc: |-
         This command compiles D and BAF source files. If sourceFile is a directory, all D and BAF files within that directory are processed individually. If there is EVALUATE_BUFFER, all %variables% in the files are substituted with their values. After the special EVALUATE_BUFFER is executed, all other patches are executed.
         First, this loads all of the traFiles presented. If any of their paths contain %s, the %s is replaced with the languageDirectory of from the Language the user selected. If you specified AUTO_TRA mymod/%s above, WeiDU will also attempt to load mymod/languageDirectory/sourceFile.tra for every sourceFile in the list. Once all of the TRA files are loaded, the D and BAF files are compiled. Any DLGs or BCSs they create or modify are placed in the override directory.
 
-
     - name: COPY
       detail: COPY optNoBackup optGlob fromFile toFile ... patch list when list
       doc: |-
         You may specify as many fromFile-toFile pairs as you like. Each fromFile is copied to its associated toFile. If there are any WeiDU variables inside explicit %s in toFile or fromFile, they are replaced by their values. All of the patches are applied. If there are any when conditions and any of them are false, the copy does not happen. A typical example is COPY "mymod/sword.itm" "override/m#sword.itm". COPY commands set the user-defined SOURCE_DIRECTORY, SOURCE_FILESPEC, SOURCE_FILE, SOURCE_RES, SOURCE_EXT, DEST_DIRECTORY, DEST_FILESPEC, DEST_FILE,DEST_RES and DEST_EXT variables based on fromFile and toFile as follows. If fromFile is mymod/cre/bigboss.cre, then SOURCE_DIRECTORY is mymod/cre, SOURCE_FILESPEC is mymod/cre/bigboss.cre, SOURCE_FILE is bigboss.cre, SOURCE_RES is bigboss and SOURCE_EXT is cre. The DEST_ variables are similarly based on toFile. In addition, SOURCE_SIZE is set to the size (in bytes) of the source file. This is generally only useful if you have enabled globbing. Any user-defined variables in toFile are replaced with their values. You may also reference these variables in patches.
-
 
     - name: COPY_ALL_GAM_FILES
       detail: COPY_ALL_GAM_FILES patch list when list
       doc: |-
         Copies Default.gam from the biff and the ones in the save/ and mpsave/ saved games, applying the list of patches. If there are any when conditions and any of them are false, the copy does not happen. NO BACKUP is applied to files in the save/ and mpsave/ directories. The savegame from the biffs is backed up as usual.
 
-
     - name: COPY_EXISTING
       detail: COPY_EXISTING optNoBackup fromFile toFile ...
       doc: |-
         Behaves like COPY except that the fromFiles are drawn from the game BIFFs or override directory. This is useful for making changes to files that other mods may have changed as well.
-
 
     - name: COPY_EXISTING_REGEXP
       detail: COPY_EXISTING_REGEXP optNoBackup optGlob fromFileRegexp toDirOrFile ... patch list when list
       doc: |-
         Behaves like COPY_EXISTING except that fromFileRegexp may contain regular expressions (regexps). Additionally, toDirOrFile may reference matched groups in fromFileRegexp with \1, \2, etc. If toDirOrFile is an existing directory or lacks a file extension, it will be treated as a directory and all matching files in the game BIFFs will be copied there. Otherwise, toDirOrFile will be treated as a file. If GLOB is specified, matching files in override will also be patched and copied. If a file appears in both the BIFFs and the override folder, it will only be copied once. For example, if HARM.ITM is in the BIFFs and HARM2.ITM is in override, this code will copy and patch them both: COPY_EXISTING_REGEXP GLOB ~HARM.*.ITM~ ~override~ SAY // ... whatever
 
-
     - name: COPY_KIT
       detail: COPY_KIT oldKit newKit ( diffName diffValue list )
       doc: |-
         Copies a copy of the oldKit kit called newKit. This copy is non-player selectable, while all other fields can be edited by setting diffName to the field to be changed and diffValue to the new value. Valid values for diffName are: clasweap, weapprof, abclasrq, abclsmod, abdcdsrq, abdcscrq, dualclas, alignmnt, clab, lower, mixed, help, luabbr, 25stweap, unusabilities. Currently, lower, mixed and help can only be numbers referring to a TLK string. Unusabilities requires to be both kit and class unusables, there isn't a way to BAND or BOR them.
-
 
     - name: COPY_LARGE
       detail: COPY_LARGE optNoBackup optGlob fromFile toFile ...
       doc: |-
         Behaves like COPY except that the fromFiles can be of arbitrary size (the limit should be over a Gigabyte), but on the other side of the coin you can't apply patches to the copying. Like COPY, COPY_LARGE sets the variables SOURCE_DIRECTORY, SOURCE_FILESPEC, SOURCE_FILE, SOURCE_RES, SOURCE_EXT, SOURCE_SIZE, DEST_DIRECTORY, DEST_FILESPEC, DEST_FILE, DEST_RES and DEST_EXT.
 
-
     - name: COPY_RANDOM
       detail: COPY_RANDOM ( file1 list ) [ ( fileN list ) list ] patch list when list
       doc: |-
         This command works like COPY_EXISTING but the destination for any given source file in the file1-list is some other different file in the file1-list. Similarly, the destination for any file in the fileN-list is some other file in the fileN-list. This allows you to randomly shuffle categories of game resources.
-
 
     - name: CREATE
       detail: CREATE type [ VERSION version ] resref [ patch list ]
       doc: |-
         Creates a new file of the specified type with the resource reference resref and a correct file extension for the file type. If there are any patches, they are applied to contents of the new file. Any existing file with the same name will be backed up, as normal. The file will be created structurally correct but will contain no non-zero data aside from the structural details. The file version will be native to the current game, or default to "V1.0", but can be overridden with the VERSION option, which takes a string specifying the desired version. CREATE supports the file types ARE, CRE, EFF, ITM, SPL and STO and all their known file versions (aside from EFF V1.0, which is never found as a file).
 
-
     - name: DECOMPRESS_BIFF
       detail: DECOMPRESS_BIFF file ...
       doc: |-
         Decompresses one or more biff files from either "BIF V1.0" or "BIFCV1.0" into "BIFFV1 ". The biff file is looked for in /data and the CD paths specified in baldur.ini. You should consequently not specify the biff path, merely the name. All matching biff files are decompressed, even ones that are duplicated between CD paths. The biff file is backed up to another file in the same directory before it is decompressed. Since multiple games can share the same biffs, this action is not uninstalled together with the mod. WeiDU will raise a Failure exception if the biff is not found in any of the paths.
         Decompressing a biff file can be helpful in preventing crashes related to area files, commonly WAV ambient sounds or TIS files. Do not use this action without a real reason.
-
 
     - name: DEFINE_ACTION_FUNCTION
       detail: DEFINE_ACTION_FUNCTION String [ INT_VAR variable = value ... ] [ STR_VAR variable = String ... ] [ RET variable ... ] [ RET_ARRAY variable ... ] BEGIN TP2 Action list END
@@ -587,30 +542,25 @@ tp2-action:
       doc: |-
         Removes one or more files from the file system. If file is a directory, it will be recursively deleted together with anything it contains. Do not use without a real reason.
 
-
     - name: DISABLE_FROM_KEY
       detail: DISABLE_FROM_KEY file ...
       doc: |-
         Removes one or more files from the chitin.key, while leaving the containing bif file itself untouched. Do not use without a real reason.
-
 
     - name: EXTEND_BOTTOM
       detail: EXTEND_BOTTOM existingBCS newFile patch list [ USING traName list ]
       doc: |-
         As EXTEND_TOP, but the newFile file is put at the bottom of the existingBCS file. User variables in the filenames existingFile and newFile are replaced by their values.
 
-
     - name: EXTEND_BOTTOM_REGEXP
       detail: EXTEND_BOTTOM_REGEXP existingBCSregexp newFile patch list [ USING traName list ]
       doc: |-
         See EXTEND_TOP_REGEXP.
 
-
     - name: EXTEND_TOP
       detail: EXTEND_TOP existingBCS newFile patch list [ USING traName list ]
       doc: |-
         Loads existingFile (which may be BAF or BCS), prepends all of newBCS to the top of it, applies all of the patches, and then copies it to the override folder. User variables in the filenames existingFile and newFile are replaced by their values. Use EVALUATE_BUFFER if you want to evaluate variables inside the body of newFile before parsing it.
-
 
     - name: EXTEND_TOP_REGEXP
       detail: EXTEND_TOP_REGEXP existingBCSregexp newFile patch list [ USING traName list ]
@@ -677,12 +627,10 @@ tp2-action:
         MOVE ~sourceFile~ ~destinationFile~ MOVE ~sourceFile~ ~destinationDirectory~ MOVE ~sourceDirectory~ ~destinationDirectory~ MOVE (~sourceDirectory~ ~^[A-M].*\.itm$~) ~destinationDirectory
         Safety notes: when uninstalling, MOVE is restored first, then all generic actions are restored, then AT_*_UNINSTALL is handled. As such, do your AT_NOW, then do your COPY, then do your MOVEs (exception: if you MOVE for biffing purposes, it is safe to call MAKE_BIFF after MOVE. Do not use the --make-biff command-line argument).
 
-
     - name: OUTER_FOR
       detail: OUTER_FOR ( patch list ; value ; patch list ) BEGIN TP2 Action list END
       doc: |-
         The TP2 Action OUTER_FOR (init;pred;inc) BEGIN body END is equivalent to init WHILE pred BEGIN INNER_ACTION BEGIN body END inc END, except that it's considered an action. Note that the predicate value cannot be empty.
-
 
     - name: OUTER_INNER_PATCH
       detail: OUTER_INNER_PATCH buffString BEGIN patch list END
@@ -753,7 +701,6 @@ tp2-action:
       doc: |-
         If filename does not exist (or the bif file is not referenced inside the chitin.key), warningString is displayed and this component cannot be installed. This is checked before any actions are executed.
 
-
     - name: SILENT
       doc: |-
         Makes WeiDU skip all messages; it's reenabled once a component is installed (or fails to), or a PRINT, PATCH_PRINT, VERBOSE or PATCH_VERBOSE is found.
@@ -762,24 +709,20 @@ tp2-action:
       doc: |-
         This command replaces each given string in the user's TLK file with the associated newValue. If a traFile is given, that file is is read once before all of the replacements take place and its contents are forgotten after.
 
-
     - name: STRING_SET_EVALUATE
       detail: STRING_SET_EVALUATE value newValue list [ USING traFile ]
       doc: |-
         This command replaces the string at index value in the user's TLK file with the associated newValue. If a traFile is given, that file is is read once before all of the replacements take place and its contents are forgotten after. If the index value equals the current number of strings in the TLK file (for example, through NEXT_STRREF), newValue will be added to the TLK file as a new string. This addition is made with no deduplication. Use with caution, as this will continue to grow the TLK file each time the mod is reinstalled.
 
-
     - name: STRING_SET_RANGE
-      detail: 'STRING_SET_RANGE #min #max USING traFile'
+      detail: "STRING_SET_RANGE #min #max USING traFile"
       doc: |-
         For every integer i between min and max (inclusive) we do STRING_SET i @i USING traFile (except that this command should be executed more rapidly). The command will fail if @i is not defined (either by traFile or by some other tra file in scope) for some i between min and max.
-
 
     - name: UNINSTALL
       detail: UNINSTALL modToUninstall modComponent
       doc: |-
         If the given component of the given mod is currently installed, uninstall it before proceeding. Do not use this action without a real reason. This should only be used if you release a new version of a component under a new name. For example, many Tactics Mod components replace old Solaufein mod components. In order to prevent such a component from being installed twice, the Tactics version uninstalls the Solaufein version.
-
 
     - name: VERBOSE
       doc: |-
@@ -807,14 +750,12 @@ tp2-optglob:
       doc: |-
         Never use local file system globbing. Or use sane defaults: enable globbing with COPY_EXISTING_REGEXP, disable it with COPY.
 
-
 tp2-optcase:
   type: 14 # keyword
   items:
     - name: CASE_INSENSITIVE
       doc: |-
         Matching is case-insensitive.
-
 
     - name: CASE_SENSITIVE
       doc: |-
@@ -825,7 +766,6 @@ tp2-optexact:
     - name: EVALUATE_REGEXP
       doc: |-
         Matching is evaluated following the usual regexp conventions.
-
 
     - name: EXACT_MATCH
       doc: |-
@@ -845,9 +785,8 @@ tp2-ArrayIndicesSortType:
       doc: |-
         The sorting is in ascending numerical order. This requires that the first column of indices can be interpreted as numbers; any strings will raise a warning and the sort order will be undefined.
 
-
 tp2-patch:
-  type: 3  # function
+  type: 3 # function
   items:
     - name: ADD_AREA_ITEM
       doc: |-
@@ -1548,10 +1487,16 @@ tp2-patch:
         - STR_VAR `resource` to the new effect's resource reference.
     - name: COMPILE_BAF_TO_BCS
       doc: |-
-        DEPRECATED. Use DECOMPILE_AND_PATCH instead.The current file, which must be a valid BAF script, is compiled to a BCS. In general you should use the COMPILE TP2 Action instead, unless you are using other patch commands to modify the file under consideration.
+        Deprecated. Use `DECOMPILE_AND_PATCH` instead.
+        ---
+        The current file, which must be a valid BAF script, is compiled to a BCS. In general you should use the COMPILE TP2 Action instead, unless you are using other patch commands to modify the file under consideration.
+      deprecated: true
     - name: COMPILE_D_TO_DLG
       doc: |-
-        DEPRECATED. Use DECOMPILE_AND_PATCH instead.The current file, which must be a valid D file that defines a single DLG file (via an obvious BEGIN action) is compiled to a DLG. Typically this is only used after a DECOMPILE_DLG_TO_D.
+        Deprecated. Use `DECOMPILE_AND_PATCH` instead.
+        ---
+        The current file, which must be a valid D file that defines a single DLG file (via an obvious BEGIN action) is compiled to a DLG. Typically this is only used after a DECOMPILE_DLG_TO_D.
+      deprecated: true
     - name: COMPRESS_INTO_FILE
       detail: COMPRESS_INTO_FILE start length level overwritefrom overwriteto
       doc: |-
@@ -1582,10 +1527,16 @@ tp2-patch:
         Acts like DECOMPILE_BCS_TO_BAF // or DLG_TO_D patch list COMPILE_BAF_TO_BCS // or D_TO_DLG except it enforces that the DECOMPILE is followed by the compile, can indiscriminately patch BCS and DLG files, and is guaranteed not to leave a decompiled file in the override (if decompiling, patching or recompiling fails, a warning is printed and the original version of the file is left in the override).
     - name: DECOMPILE_BCS_TO_BAF
       doc: |-
-        DEPRECATED. Use DECOMPILE_AND_PATCH instead.The current file, which must be a valid BCS script, is decompiled to a BAF.
+        Deprecated. Use `DECOMPILE_AND_PATCH` instead.
+        ---
+        The current file, which must be a valid BCS script, is decompiled to a BAF.
+      deprecated: true
     - name: DECOMPILE_DLG_TO_D
       doc: |-
-        DEPRECATED. Use DECOMPILE_AND_PATCH instead.The current file, which must be a valid DLG file, is decompile to a textual D file (with string refs and no comments). Once you have a D file you can use other patch commands to change the actions and triggers around. You should use D actions (like REPLACE_ACTION_TEXT) instead whenever possible.
+        Deprecated. Use `DECOMPILE_AND_PATCH` instead.
+        ---
+        The current file, which must be a valid DLG file, is decompile to a textual D file (with string refs and no comments). Once you have a D file you can use other patch commands to change the actions and triggers around. You should use D actions (like REPLACE_ACTION_TEXT) instead whenever possible.
+      deprecated: true
     - name: DECOMPRESS_INTO_FILE
       detail: DECOMPRESS_INTO_FILE start length uncompressedlength overwritefrom overwriteto
       doc: |-
@@ -2147,7 +2098,7 @@ tp2-patch:
       doc: |-
         If the current file is a BCS file, the segment of it corresponding to oldFile is replaced with the contents of newFile. oldFile and newFile may be BCS or BAF files. If they are BAF files they will not get the benefit of AUTO_TRA. If EVALUATE_BUFFER is given, variables inside oldFile and newFile are evaluated, but only they are BAF files. If the segment corresponding to oldFile is not found and the ON_MISMATCH section is present, those patches are run; if oldFile is not found and ON_MISMATCH is not present, a warning message is printed. You may use R_B_B as a synonym for REPLACE_BCS_BLOCK.
     - name: REPLACE_CRE_ITEM
-      detail: 'REPLACE_CRE_ITEM itmName #charge1 #charge2 #charge3 flags slot [ EQUIP ] [ TWOHANDED ]'
+      detail: "REPLACE_CRE_ITEM itmName #charge1 #charge2 #charge3 flags slot [ EQUIP ] [ TWOHANDED ]"
       doc: |-
         If there's an item in the slot position, replace it; otherwise, process ADD_CRE_ITEM
     - name: REPLACE_EVALUATE
@@ -2290,11 +2241,11 @@ tp2-patch:
       doc: |-
         If value is non-zero, execute the given patch list and then repeat, re-evaluating the value. Be very careful when using this command. You can easily describe an infinite loop. See the WHILE loop tutorial for more information.
     - name: WRITE_ASCII
-      detail: 'WRITE_ASCII offset ascString [ #requiredSize ]'
+      detail: "WRITE_ASCII offset ascString [ #requiredSize ]"
       doc: |-
         The ASCII ascString is written to the file starting at offset. If you specify a requiredSize then exactly that many bytes are written (if ascString is smaller, it is padded with NULs; if ascString is larger, it is truncated). If you do not specify a requiredSize, the terminating NUL is not written.
     - name: WRITE_ASCIIE
-      detail: 'WRITE_ASCIIE offset ascString [ #requiredSize ]'
+      detail: "WRITE_ASCIIE offset ascString [ #requiredSize ]"
       doc: |-
         The ASCII ascString is evaluated (so %variable% is replaced by its value) and written to the file starting at offset (as in WRITE_ASCII). You may use WRITE_ASCIIE as a synonym for WRITE_EVALUATED_ASCII.
     - name: WRITE_ASCIIL
@@ -2318,7 +2269,7 @@ tp2-patch:
       doc: |-
         The first argument is the offset at which the second argument (an 8-bit byte value) is written. Performs READ_BYTE offset THIS and READ_SBYTE offset STHIS automatically (you can now write WRITE_BYTE 100 THIS 2).
     - name: WRITE_EVALUATED_ASCII
-      detail: 'WRITE_EVALUATED_ASCII offset ascString [ #requiredSize ]'
+      detail: "WRITE_EVALUATED_ASCII offset ascString [ #requiredSize ]"
       doc: |-
         The ASCII ascString is evaluated (so %variable% is replaced by its value) and written to the file starting at offset (as in WRITE_ASCII). You may use WRITE_ASCIIE as a synonym for WRITE_EVALUATED_ASCII.
     - name: WRITE_FILE
@@ -2655,7 +2606,6 @@ tp2-when:
       doc: |-
         True only if the file exists. For COPY, this check is done with FILE_EXISTS. For COPY_EXISTING, COPY_EXISTING_REGEXP, COPY_RANDOM, APPEND and APPEND_COL this check is done with FILE_EXISTS_IN_GAME. For COPY_ALL_GAM_FILES, this when clause is redundant.
 
-
     - name: IF_SIZE_IS
       detail: IF_SIZE_IS fileSize
       doc: |-
@@ -2667,19 +2617,19 @@ tp2-when:
 tp2-value:
   type: 14 # keyword
   items:
-    - name: '%COMPONENT_NUMBER%'
+    - name: "%COMPONENT_NUMBER%"
       doc: |-
         The special variable COMPONENT_NUMBER is set to the number of the component being installed.
-    - name: '%INTERACTIVE%'
+    - name: "%INTERACTIVE%"
       doc: |-
         The special variable INTERACTIVE is set to 1 if the install is being done interactively (IE you launched setup-mymod.exe and you're installing mymod), or is set to 0 if the install is being done non-interactively (IE you launched setup-mymod.exe and now weidu is reinstalling othermod due to the domino uninstall and reinstall).
-    - name: '%WEIDU_ARCH%'
+    - name: "%WEIDU_ARCH%"
       doc: |-
         The special variable WEIDU_ARCH is set to either "x86", "amd64" or "mac" at WeiDU startup and can be used to determine the architecture of the WeiDU binary.
-    - name: '%WEIDU_OS%'
+    - name: "%WEIDU_OS%"
       doc: |-
         The special variable WEIDU_OS is set to either "win32" or "osx" or "unix" at WeiDU startup and can be used to determine the operating system for which the WeiDU binary was compiled.
-    - name: '%WEIDU_VER%'
+    - name: "%WEIDU_VER%"
       doc: |-
         The special variable `WEIDU_VER` gets set at WeiDU startup and can be used to determine the version of the WeiDU binary (e.g., `24800`).
     - name: ABS
@@ -2729,7 +2679,6 @@ tp2-value:
       detail: value BASR value
       doc: |-
         Bitwise Arithmetic Shift Right. This is an arithmetic shift: the sign bit of the first value is replicated and inserted in the vacated bits. 0b101 BASR 2 = 0b1.
-
 
     - name: BATTLE_CRY1
       doc: |-
@@ -2889,7 +2838,6 @@ tp2-value:
       doc: |-
         0b10000000000000000000000000000000
 
-
     - name: BIT4
       doc: |-
         0b00000000000000000000000000010000
@@ -3014,9 +2962,9 @@ tp2-value:
         ```
         This prints out `y is 82 ; z is tricky 5`. You may also do hackery like `FILE_SIZE "myfile" "%%indirection%%"`. Be very careful with this feature.
 
-#    - name: $array(index
-#      detail: $array(index list)
-#      doc: The so-called array construct. See the tutorial.
+    #    - name: $array(index
+    #      detail: $array(index list)
+    #      doc: The so-called array construct. See the tutorial.
     - name: EXISTANCE1
     - name: EXISTANCE2
     - name: EXISTANCE3
@@ -3240,7 +3188,6 @@ tp2-value:
       doc: |-
         Return value (arrays)
 
-
     - name: RINDEX
       detail: RINDEX ( optcase optexact string1 string2 [ value ] )
       doc: |-
@@ -3414,7 +3361,6 @@ tp2-value:
     - name: TAB
       doc: |-
         tabulation character
-
 
     - name: TARGET_IMMUNE
       doc: |-
