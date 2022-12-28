@@ -624,7 +624,7 @@
         "kind": 3,
         "documentation": {
             "kind": "markdown",
-            "value": "Returns a pointer to an object that is in a given spot (NULL if none). The appropriate values for where are: INVEN_TYPE_WORN, INVEN_TYPE_RIGHT_HAND, and INVEN_TYPE_LEFT_HAND."
+            "value": "Deprecated. Use `critter_inven_obj2` instead.\n---\nReturns a pointer to an object that is in a given spot (NULL if none).\nThe appropriate values for where are: `INVEN_TYPE_WORN`, `INVEN_TYPE_RIGHT_HAND`, and `INVEN_TYPE_LEFT_HAND`."
         },
         "detail": "ObjectPtr critter_inven_obj(ObjectPtr who, int where)",
         "source": "builtin"
@@ -907,6 +907,16 @@
             "value": "Attempts to create a floating-text message (str) attached to an object (who) using colors dictated by type. There are two special types, WARNING and SEQUENTIAL. WARNING is used to print a message centered on the screen (such as for end-of-quest notifications), and SEQUENTIAL will cycle through the colors, in an attempt to give critters different-colored messages to differentiate them."
         },
         "detail": "void float_msg(ObjectPtr who, string message, int type)",
+        "source": "builtin"
+    },
+    {
+        "label": "floor",
+        "kind": 3,
+        "documentation": {
+            "kind": "markdown",
+            "value": "Deprecated. Use `floor2` instead.\n---\nWorks properly for positive values, but for negative ones functions like `ceil` (rounds up instead of down)."
+        },
+        "detail": "int floor(int/float value)",
         "source": "builtin"
     },
     {

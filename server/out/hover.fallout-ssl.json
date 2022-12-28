@@ -308,7 +308,7 @@
     "critter_inven_obj": {
         "contents": {
             "kind": "markdown",
-            "value": "```fallout-ssl-hover\nObjectPtr critter_inven_obj(ObjectPtr who, int where)\n```\nReturns a pointer to an object that is in a given spot (NULL if none). The appropriate values for where are: INVEN_TYPE_WORN, INVEN_TYPE_RIGHT_HAND, and INVEN_TYPE_LEFT_HAND."
+            "value": "```fallout-ssl-hover\nObjectPtr critter_inven_obj(ObjectPtr who, int where)\n```\nDeprecated. Use `critter_inven_obj2` instead.\n---\nReturns a pointer to an object that is in a given spot (NULL if none).\nThe appropriate values for where are: `INVEN_TYPE_WORN`, `INVEN_TYPE_RIGHT_HAND`, and `INVEN_TYPE_LEFT_HAND`."
         }
     },
     "critter_is_fleeing": {
@@ -477,6 +477,12 @@
         "contents": {
             "kind": "markdown",
             "value": "```fallout-ssl-hover\nvoid float_msg(ObjectPtr who, string message, int type)\n```\nAttempts to create a floating-text message (str) attached to an object (who) using colors dictated by type. There are two special types, WARNING and SEQUENTIAL. WARNING is used to print a message centered on the screen (such as for end-of-quest notifications), and SEQUENTIAL will cycle through the colors, in an attempt to give critters different-colored messages to differentiate them."
+        }
+    },
+    "floor": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-hover\nint floor(int/float value)\n```\nDeprecated. Use `floor2` instead.\n---\nWorks properly for positive values, but for negative ones functions like `ceil` (rounds up instead of down)."
         }
     },
     "gSay_End": {
