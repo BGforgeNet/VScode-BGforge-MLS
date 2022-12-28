@@ -286,7 +286,8 @@
 			"name": "Invalid deprecated",
 			"scope": "invalid.deprecated",
 			"settings": {
-				"foreground": "#F8F8F0"
+				"foreground": "#DCDCDC",
+				"fontStyle": "strikethrough"
 			}
 		},
 		{
