@@ -390,7 +390,7 @@
         },
         {
           "match": "\\b(?i)(critter_inven_obj)\\b",
-          "name": "support.function.base.ssl"
+          "name": "invalid.deprecated.ssl"
         },
         {
           "match": "\\b(?i)(critter_is_fleeing)\\b",
@@ -1593,12 +1593,16 @@
     "operators": {
       "patterns": [
         {
-          "match": "(\\b(?i)(and|or|not|band|bwor|bnot|bwxor|bwand|floor)\\b)",
+          "match": "(\\b(?i)(and|or|not|band|bwor|bnot|bwxor|bwand)\\b)",
           "name": "keyword.control.ssl"
         },
         {
           "match": "(=|:|>|<|\\+\\+|\\-|\\+|;|!|%)",
           "name": "keyword.control.ssl"
+        },
+        {
+          "match": "floor",
+          "name": "invalid.deprecated.ssl"
         }
       ]
     },

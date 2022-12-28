@@ -15563,19 +15563,19 @@
         },
         {
           "match": "\\b(COMPILE_BAF_TO_BCS)\\b",
-          "name": "entity.name.function.weidu.patch"
+          "name": "invalid.deprecated.weidu"
         },
         {
           "match": "\\b(DECOMPILE_BCS_TO_BAF)\\b",
-          "name": "entity.name.function.weidu.patch"
+          "name": "invalid.deprecated.weidu"
         },
         {
           "match": "\\b(DECOMPILE_DLG_TO_D)\\b",
-          "name": "entity.name.function.weidu.patch"
+          "name": "invalid.deprecated.weidu"
         },
         {
           "match": "\\b(COMPILE_D_TO_DLG)\\b",
-          "name": "entity.name.function.weidu.patch"
+          "name": "invalid.deprecated.weidu"
         },
         {
           "match": "\\b(DECOMPILE_AND_PATCH)\\b",
