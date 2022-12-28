@@ -1,17 +1,16 @@
 {
-	"files.exclude": {
-		"out": false // set this to true to hide the "out" folder with the compiled JS files
-	},
-	"search.exclude": {
-		"out": true // set this to false to include "out" folder in search results
-	},
-	"typescript.tsdk": "./node_modules/typescript/lib",
-	"typescript.tsc.autoDetect": "off",
-	"npm.exclude": ["**/client", "**/server"],
-	"python.analysis.extraPaths": [
-		"./scripts"
-	],
-	"python.formatting.provider": "black",
-	"python.linting.flake8Enabled": true,
-	"python.linting.enabled": true
+    "files.exclude": {
+        "out": false // set this to true to hide the "out" folder with the compiled JS files
+    },
+    "search.exclude": {
+        "out": true // set this to false to include "out" folder in search results
+    },
+    "typescript.tsdk": "./node_modules/typescript/lib",
+    "typescript.tsc.autoDetect": "off",
+    "npm.exclude": ["**/client", "**/server"],
+    "python.analysis.extraPaths": ["./scripts"],
+    "python.formatting.provider": "black",
+    "python.linting.flake8Enabled": true,
+    "python.linting.enabled": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
 }
