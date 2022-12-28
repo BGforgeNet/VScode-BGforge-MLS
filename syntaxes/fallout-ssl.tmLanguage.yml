@@ -116,6 +116,7 @@ repository:
       - match: \b(?i)(critter_heal)\b
       - match: \b(?i)(critter_injure)\b
       - match: \b(?i)(critter_inven_obj)\b
+        name: invalid.deprecated.ssl
       - match: \b(?i)(critter_is_fleeing)\b
       - match: \b(?i)(critter_mod_skill)\b
       - match: \b(?i)(critter_rm_trait)\b
@@ -447,10 +448,12 @@ repository:
       - match: \b(?i)(while)\b
   operators:
     patterns:
-      - match: (\b(?i)(and|or|not|band|bwor|bnot|bwxor|bwand|floor)\b)
+      - match: (\b(?i)(and|or|not|band|bwor|bnot|bwxor|bwand)\b)
         name: keyword.control.ssl
       - match: (=|:|>|<|\+\+|\-|\+|;|!|%)
         name: keyword.control.ssl
+      - match: floor
+        name: invalid.deprecated.ssl
   sfall-functions:
     name: support.function.sfall.ssl
     patterns:

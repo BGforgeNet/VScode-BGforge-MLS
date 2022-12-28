@@ -3981,9 +3981,13 @@ repository:
       - match: \b(COUNT_REGEXP_INSTANCES)\b
       - match: \b(LOOKUP_IDS_SYMBOL_OF_INT)\b
       - match: \b(COMPILE_BAF_TO_BCS)\b
+        name: invalid.deprecated.weidu
       - match: \b(DECOMPILE_BCS_TO_BAF)\b
+        name: invalid.deprecated.weidu
       - match: \b(DECOMPILE_DLG_TO_D)\b
+        name: invalid.deprecated.weidu
       - match: \b(COMPILE_D_TO_DLG)\b
+        name: invalid.deprecated.weidu
       - match: \b(DECOMPILE_AND_PATCH)\b
       - match: \b(REFACTOR_TRIGGER)\b
       - match: \b(REFACTOR_BAF_TRIGGER)\b
