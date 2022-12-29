@@ -323,8 +323,6 @@ connection.onHover((textDocumentPosition: TextDocumentPositionParams): Hover => 
         return;
     }
 
-    // const map = new Map([...dynamic_map, ...static_map]);
-
     const text = documents.get(textDocumentPosition.textDocument.uri).getText();
     const lines = text.split(/\r?\n/g);
     const position = textDocumentPosition.position;
@@ -377,7 +375,7 @@ connection.onExecuteCommand(async (params) => {
 
     const lang_id = document.languageId;
 
-    // Clear old diagnostics. For some reason not working in send_parse_result.
+    // Clear old diagnostics. For some reason not working in common.send_parse_result.
     // Probably due to async?
     connection.sendDiagnostics({ uri: uri, diagnostics: [] });
 
