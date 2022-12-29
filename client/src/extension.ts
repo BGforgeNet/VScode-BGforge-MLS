@@ -13,7 +13,6 @@ import {
 import { ExecuteCommandRequest, ExecuteCommandParams } from "vscode-languageserver-protocol";
 
 let client: LanguageClient;
-const config_space = "bgforge";
 const cmd_compile = "extension.bgforge.compile";
 
 export async function activate(context: ExtensionContext) {
@@ -53,7 +52,6 @@ export async function activate(context: ExtensionContext) {
 
     // Options to control the language client
     const clientOptions: LanguageClientOptions = {
-        // Register the server for plain text documents
         documentSelector: [
             { scheme: "file", language: "infinity-2da" },
 
