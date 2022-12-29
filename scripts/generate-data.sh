@@ -11,6 +11,7 @@ dest_dir="server/out"
     -i $data_dir/fallout-ssl-base.yml $data_dir/fallout-ssl-sfall.yml \
     --completion $dest_dir/completion.fallout-ssl.json \
     --hover $dest_dir/hover.fallout-ssl.json \
+    --signature $dest_dir/signature.fallout-ssl.json \
     --hover-lang fallout-ssl-hover
 
 ./scripts/generate-data.py \
