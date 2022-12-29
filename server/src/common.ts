@@ -2,7 +2,13 @@
 
 import { realpathSync } from "fs";
 import * as path from "path";
-import { CompletionItem, Hover, DiagnosticSeverity, Diagnostic } from "vscode-languageserver/node";
+import {
+    CompletionItem,
+    Hover,
+    DiagnosticSeverity,
+    Diagnostic,
+    SignatureInformation,
+} from "vscode-languageserver/node";
 import { connection } from "./server";
 
 export function fname(uri: string) {
@@ -66,11 +72,14 @@ export interface CompletionList extends Array<CompletionItem> {}
 export interface CompletionListEx extends Array<CompletionItemEx> {}
 export interface HoverMap extends Map<string, Hover> {}
 export interface HoverMapEx extends Map<string, HoverEx> {}
+export interface SignatureMap extends Map<string, SignatureInformation> {}
+
 // all languages
 export interface CompletionData extends Map<string, CompletionList | CompletionListEx> {}
 export interface CompletionDataEx extends Map<string, CompletionListEx> {}
 export interface HoverData extends Map<string, HoverMap | HoverMapEx> {}
 export interface HoverDataEx extends Map<string, HoverMapEx> {}
+export interface SignatureData extends Map<string, SignatureMap> {}
 
 export interface ParseItem {
     file: string;
@@ -131,4 +140,29 @@ export function is_subdir(outer_path: string, inner_path: string) {
         return true;
     }
     return false;
+}
+
+export interface SigReqData {
+    label: string;
+    parameter: number;
+}
+
+/** Finds label and current parameter index */
+export function find_label_for_signature(line: string, pos: number) {
+    // only left side matters for signature
+    const left = line.slice(0, pos);
+    const last_char = left.slice(-1);
+    // short circuit on closing parenthesis
+    if (last_char == ")") {
+        return null;
+    }
+    const split_on_paren = left.split("(");
+    const args = split_on_paren.pop();
+    const symbol = split_on_paren.pop().split(/(\s+)/).pop();
+    const pos_in_args = pos - (left.length - args.length);
+    // again, right side doesn't matter
+    const args_left = args.slice(0, pos_in_args);
+    const arg_num = args_left.split(",").length - 1;
+    const result: SigReqData = { label: symbol, parameter: arg_num };
+    return result;
 }

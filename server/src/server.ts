@@ -11,6 +11,8 @@ import {
     Hover,
     TextDocumentSyncKind,
     InitializeResult,
+    SignatureHelp,
+    SignatureInformation,
 } from "vscode-languageserver/node";
 import { fileURLToPath } from "node:url";
 import { TextDocument } from "vscode-languageserver-textdocument";
@@ -26,6 +28,9 @@ import {
     HoverDataEx,
     HoverEx,
     is_subdir,
+    find_label_for_signature,
+    SignatureMap,
+    SignatureData,
 } from "./common";
 import { lstatSync, readFileSync } from "fs";
 import { MLSsettings, defaultSettings } from "./settings";
@@ -49,8 +54,11 @@ const static_hover: HoverData = new Map();
 const dynamic_hover: HoverDataEx = new Map();
 const self_hover: HoverDataEx = new Map();
 
+const static_signatures: SignatureData = new Map();
+
 const completion_languages = ["weidu-tp2", "fallout-ssl"];
 const hover_languages = ["weidu-tp2", "fallout-ssl"];
+const signature_languages = ["fallout-ssl"];
 
 let workspace_root: string;
 let initialized = false;
@@ -93,6 +101,9 @@ connection.onInitialize((params: InitializeParams) => {
                 resolveProvider: true,
             },
             hoverProvider: true,
+            signatureHelpProvider: {
+                triggerCharacters: ["("],
+            },
         },
     };
     if (hasWorkspaceFolderCapability) {
@@ -118,6 +129,7 @@ connection.onInitialized(async () => {
     // load data
     load_static_completion();
     load_static_hover();
+    load_static_signatures();
     load_external_headers();
     load_dynamic_intellisense();
     conlog("initialized");
@@ -298,6 +310,19 @@ function load_static_hover() {
     }
 }
 
+function load_static_signatures() {
+    for (const lang_id of signature_languages) {
+        try {
+            const file_path = path.join(__dirname, `signature.${lang_id}.json`);
+            const json_data = JSON.parse(readFileSync(file_path, "utf-8"));
+            const sig_data: SignatureMap = new Map(Object.entries(json_data));
+            static_signatures.set(lang_id, sig_data);
+        } catch (e) {
+            conlog(e);
+        }
+    }
+}
+
 // This handler resolve additional information for the item selected in
 // the completion list.
 connection.onCompletionResolve((item: CompletionItem): CompletionItem => {
@@ -400,3 +425,38 @@ connection.onExecuteCommand(async (params) => {
         }
     }
 });
+
+connection.onSignatureHelp((params: TextDocumentPositionParams): SignatureHelp => {
+    const position = params.position;
+
+    const uri = params.textDocument.uri;
+    const document = documents.get(uri);
+    const text = document.getText();
+    const lines = text.split(/\r?\n/g);
+    const str = lines[position.line];
+    const pos = position.character;
+    const sig_request = find_label_for_signature(str, pos);
+    if (!sig_request) {
+        return;
+    }
+
+    const lang_id = document.languageId;
+    const static_map = static_signatures.get(lang_id);
+
+    let sig: SignatureInformation;
+    if (static_map) {
+        sig = static_map.get(sig_request.label);
+        if (sig) {
+            return sig_response(sig, sig_request.parameter);
+        }
+    }
+});
+
+function sig_response(signature: SignatureInformation, parameter: number) {
+    const result = {
+        signatures: [signature],
+        activeSignature: 0,
+        activeParameter: parameter,
+    };
+    return result;
+}
