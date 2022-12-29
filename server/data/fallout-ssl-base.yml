@@ -233,9 +233,21 @@ base-functions:
       doc: |-
         Returns True if the critter object (who) has its FLEE flag set.
     - name: critter_mod_skill
-      detail: int critter_mod_skill(ObjectPtr who, int skill, int amount)
+      type: int
+      args:
+        - name: who
+          type: ObjectPtr
+          doc: Must be `dude_obj`. Will not work on other critters.
+        - name: skill
+          type: int
+          doc: "`SKILL_*` from `define.h`"
+        - name: amount
+          type: int
+          doc: Can be negative.
       doc: |-
-        Modifies a given skill in a given critter object (who) by a given amount. NOTE: this currently is only valid on the player (obj_dude) object.
+        Modifies a given skill in a given critter object by a given amount.
+
+        Note that for tagged skills, the amount will be rounded down to the closest even number.
     - name: critter_rm_trait
       detail: int critter_rm_trait(ObjectPtr who, int trait_type, int trait, int amount)
       doc: |-
