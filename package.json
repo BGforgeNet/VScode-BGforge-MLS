@@ -61,7 +61,7 @@
                 "configuration": "./language-configurations/fallout-ssl.language-configuration.json"
             },
             {
-                "id": "fallout-ssl-hover"
+                "id": "fallout-ssl-tooltip"
             },
             {
                 "id": "fallout-msg",
@@ -188,9 +188,9 @@
                 "path": "./syntaxes/fallout-ssl.tmLanguage.json"
             },
             {
-                "language": "fallout-ssl-hover",
-                "scopeName": "source.fallout-ssl-hover",
-                "path": "./syntaxes/fallout-ssl-hover.tmLanguage.json"
+                "language": "fallout-ssl-tooltip",
+                "scopeName": "source.fallout-ssl-tooltip",
+                "path": "./syntaxes/fallout-ssl-tooltip.tmLanguage.json"
             },
             {
                 "language": "fallout-msg",

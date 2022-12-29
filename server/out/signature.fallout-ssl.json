@@ -10,21 +10,21 @@
                 "label": "who",
                 "documentation": {
                     "kind": "markdown",
-                    "value": "```fallout-ssl-hover\nObjectPtr who\n```\nMust be `dude_obj`. Will not work on other critters."
+                    "value": "```fallout-ssl-tooltip\nObjectPtr who\n```\nMust be `dude_obj`. Will not work on other critters."
                 }
             },
             {
                 "label": "skill",
                 "documentation": {
                     "kind": "markdown",
-                    "value": "```fallout-ssl-hover\nint skill\n```\n`SKILL_*` from `define.h`"
+                    "value": "```fallout-ssl-tooltip\nint skill\n```\n`SKILL_*` from `define.h`"
                 }
             },
             {
                 "label": "amount",
                 "documentation": {
                     "kind": "markdown",
-                    "value": "```fallout-ssl-hover\nint amount\n```\nCan be negative."
+                    "value": "```fallout-ssl-tooltip\nint amount\n```\nCan be negative."
                 }
             }
         ]

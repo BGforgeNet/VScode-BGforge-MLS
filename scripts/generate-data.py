@@ -24,15 +24,16 @@ parser.add_argument(
 parser.add_argument("--hover", dest="hover_file", help="output hover json", required=True)
 parser.add_argument("--completion", dest="completion_file", help="output completion json", required=True)
 parser.add_argument("--signature", dest="signature_file", help="output signatures json", required=False, default=None)
-
-parser.add_argument("--hover-lang", dest="hover_lang_id", help="language id", required=True)
+parser.add_argument(
+    "--tooltip-lang", dest="tooltip_lang_id", help="language id used in intellisense tooltips", required=True
+)
 
 args = parser.parse_args()
 input_yaml_list = args.input_yaml[0]
 hover_file = args.hover_file
 completion_file = args.completion_file
 signature_file = args.signature_file
-hover_lang_id = args.hover_lang_id
+tooltip_lang_id = args.tooltip_lang_id
 
 
 def load_data(yaml_list):
@@ -116,7 +117,7 @@ def generate_completion(data):
     return completion_data
 
 
-def generate_hover(data, hover_lang_id):
+def generate_hover(data, tooltip_lang_id):
     hover_data = {}
     for items_list in data:
         items = data[items_list]["items"]
@@ -128,7 +129,7 @@ def generate_hover(data, hover_lang_id):
                 continue
 
             detail = get_detail(item)
-            value = "```{}\n{}\n```".format(hover_lang_id, detail)
+            value = "```{}\n{}\n```".format(tooltip_lang_id, detail)
             doc = get_doc(item)
             if doc != "":
                 value = "{}\n{}".format(value, doc)
@@ -167,10 +168,10 @@ def generate_signatures(data, lang_id):
 
 data = load_data(input_yaml_list)
 completion_data = generate_completion(data)
-hover_data = generate_hover(data, hover_lang_id)
+hover_data = generate_hover(data, tooltip_lang_id)
 
 if signature_file:
-    signature_data = generate_signatures(data, hover_lang_id)
+    signature_data = generate_signatures(data, tooltip_lang_id)
 
 with open(hover_file, "w") as jf:
     json.dump(hover_data, jf, indent=4)
