@@ -1,0 +1,32 @@
+{
+    "critter_mod_skill": {
+        "label": "critter_mod_skill(who, skill, amount)",
+        "documentation": {
+            "kind": "markdown",
+            "value": "---\nModifies a given skill in a given critter object by a given amount.\n\nNote that for tagged skills, the amount will be rounded down to the closest even number."
+        },
+        "parameters": [
+            {
+                "label": "who",
+                "documentation": {
+                    "kind": "markdown",
+                    "value": "```fallout-ssl-hover\nObjectPtr who\n```\nMust be `dude_obj`. Will not work on other critters."
+                }
+            },
+            {
+                "label": "skill",
+                "documentation": {
+                    "kind": "markdown",
+                    "value": "```fallout-ssl-hover\nint skill\n```\n`SKILL_*` from `define.h`"
+                }
+            },
+            {
+                "label": "amount",
+                "documentation": {
+                    "kind": "markdown",
+                    "value": "```fallout-ssl-hover\nint amount\n```\nCan be negative."
+                }
+            }
+        ]
+    }
+}

@@ -13,6 +13,7 @@ server/node_modules
 server/out/*
 !server/out/completion.*.json
 !server/out/hover.*.json
+!server/out/signature.*.json
 
 external
 node_modules

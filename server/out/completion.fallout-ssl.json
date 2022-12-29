@@ -647,7 +647,7 @@
         "kind": 3,
         "documentation": {
             "kind": "markdown",
-            "value": "Modifies a given skill in a given critter object (who) by a given amount. NOTE: this currently is only valid on the player (obj_dude) object."
+            "value": "- `who` Must be `dude_obj`. Will not work on other critters.\n- `skill` `SKILL_*` from `define.h`\n- `amount` Can be negative.\n\nModifies a given skill in a given critter object by a given amount.\n\nNote that for tagged skills, the amount will be rounded down to the closest even number."
         },
         "detail": "int critter_mod_skill(ObjectPtr who, int skill, int amount)",
         "source": "builtin"
