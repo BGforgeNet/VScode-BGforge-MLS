@@ -95,20 +95,25 @@ def generate_completion(data):
         items = data[items_list]["items"]
         for item in items:
             label = item["name"]
+
+            # CompletionItem "detail" field is a string in VScode and can't have highlighing
+            # Instead, we add detail on top of documentation, which is MarkupContent
             detail = get_detail(item)
+            value = "```{}\n{}\n```".format(tooltip_lang_id, detail)
             doc = get_doc(item)
+            if doc != "":
+                value = "{}\n{}".format(value, doc)
 
             if "deprecated" in item:
                 deprecated = item["deprecated"]
             else:
                 deprecated = False
 
-            markdown = {"kind": "markdown", "value": doc}
+            markdown = {"kind": "markdown", "value": value}
             completion_item = {
                 "label": label,
                 "kind": kind,
                 "documentation": markdown,
-                "detail": detail,
                 "source": "builtin",
             }
             if deprecated:
