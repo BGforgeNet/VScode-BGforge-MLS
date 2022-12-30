@@ -595,7 +595,7 @@ tp2-action:
           [ RET_ARRAY variable [ = String ] ... ]
         END
       doc: |-
-        Launch an action function. Refer to the Functions section for additional information. You may use `LAF` as a synonym for `LAUNCH_ACTION_FUNCTION`.
+        Launch an action function. Refer to the [Functions](https://weidu.org/~thebigg/README-WeiDU.html#sec-functions) section for additional information. You may use `LAF` as a synonym for `LAUNCH_ACTION_FUNCTION`.
     - name: LAF
       detail: |-
         LAF String
@@ -605,7 +605,7 @@ tp2-action:
           [ RET_ARRAY variable [ = String ] ... ]
         END
       doc: |-
-        Launch an action function. Refer to the Functions section for additional information. You may use `LAF` as a synonym for `LAUNCH_ACTION_FUNCTION`.
+        Launch an action function. Refer to the [Functions](https://weidu.org/~thebigg/README-WeiDU.html#sec-functions) section for additional information. You may use `LAF` as a synonym for `LAUNCH_ACTION_FUNCTION`.
     - name: LAUNCH_ACTION_MACRO
       detail: LAUNCH_ACTION_MACRO String
       doc: |-
@@ -1843,13 +1843,25 @@ tp2-patch:
          - SET `insert_point` to the index into the spell file at which the effects should be inserted. A value of 0 will have the effects inserted as the first effects of the spell. Effects are inserted as the last effects by default.
          - SPRINT `new_itm_spl` to a spell you want to copy effects to.
     - name: LAUNCH_PATCH_FUNCTION
-      detail: LAUNCH_PATCH_FUNCTION String [ INT_VAR variable [ = value ] ... ] [ STR_VAR variable [ = [ EVALUATE_BUFFER ] String ] ... ] [ RET variable [ = String ] ... ] [ RET_ARRAY variable [ = String ] ... ] END
+      detail: |-
+        LAUNCH_PATCH_FUNCTION String
+          [ INT_VAR variable [ = value ] ... ]
+          [ STR_VAR variable [ = [ EVALUATE_BUFFER ] String ] ... ]
+          [ RET variable [ = String ] ... ]
+          [ RET_ARRAY variable [ = String ] ... ]
+        END
       doc: |-
-        Launch a patch function. Refer to the Functions section for additional information. You may use LPF as a synonym for LAUNCH_PATCH_FUNCTION.
+        Launch a patch function. Refer to the [Functions](https://weidu.org/~thebigg/README-WeiDU.html#sec-functions) section for additional information. You may use `LPF` as a synonym for `LAUNCH_PATCH_FUNCTION`.
     - name: LPF
-      detail: LPF String [ INT_VAR variable [ = value ] ... ] [ STR_VAR variable [ = [ EVALUATE_BUFFER ] String ] ... ] [ RET variable [ = String ] ... ] [ RET_ARRAY variable [ = String ] ... ] END
+      detail: |-
+        LPF String
+          [ INT_VAR variable [ = value ] ... ]
+          [ STR_VAR variable [ = [ EVALUATE_BUFFER ] String ] ... ]
+          [ RET variable [ = String ] ... ]
+          [ RET_ARRAY variable [ = String ] ... ]
+        END
       doc: |-
-        Launch a patch function. Refer to the Functions section for additional information. You may use LPF as a synonym for LAUNCH_PATCH_FUNCTION.
+        Launch a patch function. Refer to the [Functions](https://weidu.org/~thebigg/README-WeiDU.html#sec-functions) section for additional information. You may use `LPF` as a synonym for `LAUNCH_PATCH_FUNCTION`.
     - name: LAUNCH_PATCH_MACRO
       detail: LAUNCH_PATCH_MACRO String
       doc: |-

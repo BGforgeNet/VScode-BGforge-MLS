@@ -902,7 +902,7 @@
     "GET_FILE_ARRAY": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nGET_FILE_ARRAY String path regexp\n```\nThe array $string(0), $string{1} etc is set to the file names, including path, that match regexp in path. The path is relative to the installation directory (e.g. save/000000000-Auto-Save)."
+            "value": "```weidu-tp2-tooltip\nGET_FILE_ARRAY String path regexp\n```\nThe array `$string(0), $string{1}` etc is set to the file names, including `path`, that match `regexp` in `path`. The `path` is relative to the installation directory (e.g. `save/000000000-Auto-Save`)."
         }
     },
     "INCLUDE": {
@@ -914,13 +914,13 @@
     "LAUNCH_ACTION_FUNCTION": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nLAUNCH_ACTION_FUNCTION String\n  [ INT_VAR variable [ = value ] ... ]\n  [ STR_VAR variable [ = [ EVALUATE_BUFFER ] String ] ... ]\n  [ RET variable [ = String ] ... ]\n  [ RET_ARRAY variable [ = String ] ... ]\nEND\n```\nLaunch an action function. Refer to the Functions section for additional information. You may use `LAF` as a synonym for `LAUNCH_ACTION_FUNCTION`."
+            "value": "```weidu-tp2-tooltip\nLAUNCH_ACTION_FUNCTION String\n  [ INT_VAR variable [ = value ] ... ]\n  [ STR_VAR variable [ = [ EVALUATE_BUFFER ] String ] ... ]\n  [ RET variable [ = String ] ... ]\n  [ RET_ARRAY variable [ = String ] ... ]\nEND\n```\nLaunch an action function. Refer to the [Functions](https://weidu.org/~thebigg/README-WeiDU.html#sec-functions) section for additional information. You may use `LAF` as a synonym for `LAUNCH_ACTION_FUNCTION`."
         }
     },
     "LAF": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nLAF String\n  [ INT_VAR variable [ = value ] ... ]\n  [ STR_VAR variable [ = [ EVALUATE_BUFFER ] String ] ... ]\n  [ RET variable [ = String ] ... ]\n  [ RET_ARRAY variable [ = String ] ... ]\nEND\n```\nLaunch an action function. Refer to the Functions section for additional information. You may use `LAF` as a synonym for `LAUNCH_ACTION_FUNCTION`."
+            "value": "```weidu-tp2-tooltip\nLAF String\n  [ INT_VAR variable [ = value ] ... ]\n  [ STR_VAR variable [ = [ EVALUATE_BUFFER ] String ] ... ]\n  [ RET variable [ = String ] ... ]\n  [ RET_ARRAY variable [ = String ] ... ]\nEND\n```\nLaunch an action function. Refer to the [Functions](https://weidu.org/~thebigg/README-WeiDU.html#sec-functions) section for additional information. You may use `LAF` as a synonym for `LAUNCH_ACTION_FUNCTION`."
         }
     },
     "LAUNCH_ACTION_MACRO": {
@@ -1766,13 +1766,13 @@
     "LAUNCH_PATCH_FUNCTION": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nLAUNCH_PATCH_FUNCTION String [ INT_VAR variable [ = value ] ... ] [ STR_VAR variable [ = [ EVALUATE_BUFFER ] String ] ... ] [ RET variable [ = String ] ... ] [ RET_ARRAY variable [ = String ] ... ] END\n```\nLaunch a patch function. Refer to the Functions section for additional information. You may use LPF as a synonym for LAUNCH_PATCH_FUNCTION."
+            "value": "```weidu-tp2-tooltip\nLAUNCH_PATCH_FUNCTION String\n  [ INT_VAR variable [ = value ] ... ]\n  [ STR_VAR variable [ = [ EVALUATE_BUFFER ] String ] ... ]\n  [ RET variable [ = String ] ... ]\n  [ RET_ARRAY variable [ = String ] ... ]\nEND\n```\nLaunch a patch function. Refer to the [Functions](https://weidu.org/~thebigg/README-WeiDU.html#sec-functions) section for additional information. You may use `LPF` as a synonym for `LAUNCH_PATCH_FUNCTION`."
         }
     },
     "LPF": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nLPF String [ INT_VAR variable [ = value ] ... ] [ STR_VAR variable [ = [ EVALUATE_BUFFER ] String ] ... ] [ RET variable [ = String ] ... ] [ RET_ARRAY variable [ = String ] ... ] END\n```\nLaunch a patch function. Refer to the Functions section for additional information. You may use LPF as a synonym for LAUNCH_PATCH_FUNCTION."
+            "value": "```weidu-tp2-tooltip\nLPF String\n  [ INT_VAR variable [ = value ] ... ]\n  [ STR_VAR variable [ = [ EVALUATE_BUFFER ] String ] ... ]\n  [ RET variable [ = String ] ... ]\n  [ RET_ARRAY variable [ = String ] ... ]\nEND\n```\nLaunch a patch function. Refer to the [Functions](https://weidu.org/~thebigg/README-WeiDU.html#sec-functions) section for additional information. You may use `LPF` as a synonym for `LAUNCH_PATCH_FUNCTION`."
         }
     },
     "LAUNCH_PATCH_MACRO": {
