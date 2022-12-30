@@ -1,40 +1,43 @@
 {
-    "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
-    "name": "Fallout Star-Trek Scripting Language tooltip",
-    "scopeName": "source.fallout-ssl-tooltip",
-    "patterns": [
-        {
-            "include": "#full"
-        }
-    ],
-    "repository": {
-        "full": {
-            "name": "meta.fallout-ssl-tooltip",
-            "patterns": [
-                {
-                    "match": "^\\b(?i)(array|any|bool|int|mixed|float|ObjPtr|ObjectPtr|proc|string|void)\\b[[:blank:]]+\\b(\\w+)\\b",
-                    "captures": {
-                        "1": {
-                            "name": "storage.type.fallout-ssl-tooltip"
-                        },
-                        "2": {
-                            "name": "entity.name.function"
-                        }
-                    }
-                },
-                {
-                    "match": "\\b(?i)(array|any|bool|int|mixed|float|ObjPtr|ObjectPtr|proc|string|void)\\b",
-                    "captures": {
-                        "1": {
-                            "name": "storage.type.fallout-ssl-tooltip"
-                        }
-                    }
-                },
-                {
-                    "include": "source.fallout-ssl",
-                    "match": "."
-                }
-            ]
-        }
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Fallout Star-Trek Scripting Language tooltip",
+  "scopeName": "source.fallout-ssl-tooltip",
+  "patterns": [
+    {
+      "include": "#full"
     }
+  ],
+  "repository": {
+    "full": {
+      "name": "meta.fallout-ssl-tooltip",
+      "patterns": [
+        {
+          "captures": {
+            "1": {
+              "name": "storage.type.fallout-ssl-tooltip"
+            },
+            "2": {
+              "name": "entity.name.function"
+            }
+          },
+          "match": "^\\b(?i)(array|any|bool|int|mixed|float|ObjPtr|ObjectPtr|proc|string|void)\\b[[:blank:]]+\\b(\\w+)\\b",
+          "name": "meta.fallout-ssl-tooltip"
+        },
+        {
+          "captures": {
+            "1": {
+              "name": "storage.type.fallout-ssl-tooltip"
+            }
+          },
+          "match": "\\b(?i)(array|any|bool|int|mixed|float|ObjPtr|ObjectPtr|proc|string|void)\\b",
+          "name": "meta.fallout-ssl-tooltip"
+        },
+        {
+          "include": "source.fallout-ssl",
+          "match": ".",
+          "name": "meta.fallout-ssl-tooltip"
+        }
+      ]
+    }
+  }
 }
