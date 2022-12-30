@@ -10,6 +10,16 @@
         "source": "builtin"
     },
     {
+        "label": "define",
+        "kind": 14,
+        "source": "builtin"
+    },
+    {
+        "label": "undef",
+        "kind": 14,
+        "source": "builtin"
+    },
+    {
         "label": "ifdef",
         "kind": 14,
         "source": "builtin"
@@ -21,16 +31,6 @@
     },
     {
         "label": "include",
-        "kind": 14,
-        "source": "builtin"
-    },
-    {
-        "label": "define",
-        "kind": 14,
-        "source": "builtin"
-    },
-    {
-        "label": "undef",
         "kind": 14,
         "source": "builtin"
     },
@@ -51,6 +51,11 @@
     },
     {
         "label": "if",
+        "kind": 14,
+        "source": "builtin"
+    },
+    {
+        "label": "then",
         "kind": 14,
         "source": "builtin"
     },

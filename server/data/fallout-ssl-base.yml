@@ -1,15 +1,21 @@
 preprocessor_directives:
   type: 14 # keyword
+  # Completion provider doesn't trigger on # character by default.
+  # It's possible to modifye trigger characters, however what will require additional filtering based on language id and the actual word.
+  # For now it's easier to just type a few more charactes to get a suggestion.
+  # Or call it manually with ctrl-space.
   items:
-    - name: elif
-    - name: endif
-    #    - name: '#else'
-    #    - name: '#if'
-    - name: ifdef
-    - name: ifndef
-    - name: include
-    - name: define
-    - name: undef
+    # - name: "#if"
+    - name: "elif"
+    # - name: "#else"
+    - name: "endif"
+
+    - name: "define"
+    - name: "undef"
+    - name: "ifdef"
+    - name: "ifndef"
+
+    - name: "include"
 
 keywords:
   type: 14 # keyword
@@ -18,7 +24,9 @@ keywords:
     - name: end
     - name: procedure
     - name: if
+    - name: then
     - name: else
+
 engine-procedures:
   type: 3 # function
   items:
