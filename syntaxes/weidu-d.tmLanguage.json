@@ -75,115 +75,115 @@
       ]
     },
     "d-action": {
-      "name": "keyword.other.weidu-d",
+      "name": "support.function.weidu-baf.action",
       "patterns": [
         {
           "match": "\\b(BEGIN)\\b",
-          "name": "keyword.other.weidu-d"
+          "name": "support.function.weidu-baf.action"
         },
         {
           "match": "\\b(APPEND)\\b",
-          "name": "keyword.other.weidu-d"
+          "name": "support.function.weidu-baf.action"
         },
         {
           "match": "\\b(APPEND_EARLY)\\b",
-          "name": "keyword.other.weidu-d"
+          "name": "support.function.weidu-baf.action"
         },
         {
           "match": "\\b(CHAIN)\\b",
-          "name": "keyword.other.weidu-d"
+          "name": "support.function.weidu-baf.action"
         },
         {
           "match": "\\b(INTERJECT)\\b",
-          "name": "keyword.other.weidu-d"
+          "name": "support.function.weidu-baf.action"
         },
         {
           "match": "\\b(INTERJECT_COPY_TRANS)\\b",
-          "name": "keyword.other.weidu-d"
+          "name": "support.function.weidu-baf.action"
         },
         {
           "match": "\\b(INTERJECT_COPY_TRANS2)\\b",
-          "name": "keyword.other.weidu-d"
+          "name": "support.function.weidu-baf.action"
         },
         {
           "match": "\\b(INTERJECT_COPY_TRANS3)\\b",
-          "name": "keyword.other.weidu-d"
+          "name": "support.function.weidu-baf.action"
         },
         {
           "match": "\\b(INTERJECT_COPY_TRANS4)\\b",
-          "name": "keyword.other.weidu-d"
+          "name": "support.function.weidu-baf.action"
         },
         {
           "match": "\\b(EXTEND_TOP)\\b",
-          "name": "keyword.other.weidu-d"
+          "name": "support.function.weidu-baf.action"
         },
         {
           "match": "\\b(EXTEND_BOTTOM)\\b",
-          "name": "keyword.other.weidu-d"
+          "name": "support.function.weidu-baf.action"
         },
         {
           "match": "\\b(ADD_STATE_TRIGGER)\\b",
-          "name": "keyword.other.weidu-d"
+          "name": "support.function.weidu-baf.action"
         },
         {
           "match": "\\b(ADD_TRANS_TRIGGER)\\b",
-          "name": "keyword.other.weidu-d"
+          "name": "support.function.weidu-baf.action"
         },
         {
           "match": "\\b(ADD_TRANS_ACTION)\\b",
-          "name": "keyword.other.weidu-d"
+          "name": "support.function.weidu-baf.action"
         },
         {
           "match": "\\b(REPLACE_TRANS_ACTION)\\b",
-          "name": "keyword.other.weidu-d"
+          "name": "support.function.weidu-baf.action"
         },
         {
           "match": "\\b(REPLACE_TRANS_TRIGGER)\\b",
-          "name": "keyword.other.weidu-d"
+          "name": "support.function.weidu-baf.action"
         },
         {
           "match": "\\b(ALTER_TRANS)\\b",
-          "name": "keyword.other.weidu-d"
+          "name": "support.function.weidu-baf.action"
         },
         {
           "match": "\\b(REPLACE)\\b",
-          "name": "keyword.other.weidu-d"
+          "name": "support.function.weidu-baf.action"
         },
         {
           "match": "\\b(SET_WEIGHT)\\b",
-          "name": "keyword.other.weidu-d"
+          "name": "support.function.weidu-baf.action"
         },
         {
           "match": "\\b(REPLACE_SAY)\\b",
-          "name": "keyword.other.weidu-d"
+          "name": "support.function.weidu-baf.action"
         },
         {
           "match": "\\b(REPLACE_STATE_TRIGGER)\\b",
-          "name": "keyword.other.weidu-d"
+          "name": "support.function.weidu-baf.action"
         },
         {
           "match": "\\b(REPLACE_TRIGGER_TEXT)\\b",
-          "name": "keyword.other.weidu-d"
+          "name": "support.function.weidu-baf.action"
         },
         {
           "match": "\\b(REPLACE_TRIGGER_TEXT_REGEXP)\\b",
-          "name": "keyword.other.weidu-d"
+          "name": "support.function.weidu-baf.action"
         },
         {
           "match": "\\b(REPLACE_ACTION_TEXT)\\b",
-          "name": "keyword.other.weidu-d"
+          "name": "support.function.weidu-baf.action"
         },
         {
           "match": "\\b(REPLACE_ACTION_TEXT_REGEXP)\\b",
-          "name": "keyword.other.weidu-d"
+          "name": "support.function.weidu-baf.action"
         },
         {
           "match": "\\b(REPLACE_ACTION_TEXT_PROCESS)\\b",
-          "name": "keyword.other.weidu-d"
+          "name": "support.function.weidu-baf.action"
         },
         {
           "match": "\\b(R_A_T_P_R)\\b",
-          "name": "keyword.other.weidu-d"
+          "name": "support.function.weidu-baf.action"
         }
       ]
     },

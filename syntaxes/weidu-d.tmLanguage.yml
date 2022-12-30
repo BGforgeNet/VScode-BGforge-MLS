@@ -36,7 +36,7 @@ repository:
       name: "constant.numeric.weidu-d"
 
   d-action:
-    name: keyword.other.weidu-d
+    name: support.function.weidu-baf.action
     patterns:
     - match: \b(BEGIN)\b
     - match: \b(APPEND)\b

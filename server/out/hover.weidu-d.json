@@ -161,12 +161,6 @@
             "value": "```weidu-d\nR_A_T_P_R filenameRegexp oldText newText [ moreFilenameRegexps ] dActionWhen list\n```\nJust like REPLACE_ACTION_TEXT_PROCESS, but the filenames are regexps. The .DLG is implied. R_A_T_P_R is shorthand for REPLACE_ACTION_TEXT_PROCESS_REGEXP (to avoid undue scrollbars in the readme on a 1024x768 monitor)."
         }
     },
-    "IF": {
-        "contents": {
-            "kind": "markdown",
-            "value": "```weidu-d\nIF transTriggerString [ THEN ] transFeature list transNext\n```\nIf the transTriggerString evaluates to true or is empty, this transition is viable. If it contains no replyText within its transFeature list, it is immediately taken. Otherwise, the replyText is presented as an option to the user. If the transition is taken, any actions in the transFeature list are performed and the dialogue flows to the point indicated by the transNext. transitions are evaluated in \"reverse order\". That is, the \"bottom\" or \"last\" response for a state is checked first. If its transTriggerString evaluates to true and it has no REPLY text, that transition is immediately taken. See SAREV25A state 1 for an example of a state with all kinds of transitions."
-        }
-    },
     "UNLESS": {
         "contents": {
             "kind": "markdown",
@@ -176,7 +170,7 @@
     "END": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-d\nEND transition list\n```\nExecute the given transitions after the final state in the CHAIN."
+            "value": "```weidu-d\nEND filename stateNumber | END transition list\n```\nChain epilogue.\n\n`END filename stateNumber`\n\nTransfer to the given state in the given dialogue file.\n\n---\n`END transition list`\n\nExecute the given transitions after the final state in the CHAIN."
         }
     },
     "EXTERN": {
@@ -224,7 +218,7 @@
     "+": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-d\n+ stateLabel\n```\nThis is a synonym for GOTO."
+            "value": "```weidu-d\n+ [ transTriggerString ] + replyText transFeature list transNext\n```\nThis abbreviated syntax for transitions that would contain REPLY (which is by far the most common case) allows you to save yourself some time and typing. It behaves like the full form above."
         }
     },
     "REPLY": {
@@ -269,76 +263,16 @@
             "value": "```weidu-d\nGOTO stateLabel\n```\nThe dialogue continues at the state with label stateLabel in the same DLG file as the current state."
         }
     },
-    "[": {
+    "IF": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-d\n[ == [ IF_FILE_EXISTS ] fileName [ IF transTriggerString THEN ] sayText = sayText ... ]\n```\nThe == (that's two consecutive equal signs) marks the beginning of a new speaker (indicated by fileName). If the transTriggerString is true or if it is not present, this new speaker says all of its sayText in order. If the IF_FILE_EXISTS part is present, these lines are not compiled at all if the current file is not missing."
+            "value": "```weidu-d\nIF\n```\nTransition: `IF transTriggerString [ THEN ] transFeature list transNext`\n\nIf the transTriggerString evaluates to true or is empty, this transition is viable. If it contains no replyText within its transFeature list, it is immediately taken. Otherwise, the replyText is presented as an option to the user. If the transition is taken, any actions in the transFeature list are performed and the dialogue flows to the point indicated by the transNext. transitions are evaluated in \"reverse order\".\n\n---\nAction condition: `IF String`.\n\nThe action is processed if the element being altered/replaced/added to contains a substring matching against the String regexp.\n\n---\nState: `IF [ WEIGHT #weightNumber ] stateTriggerString [ THEN ] [ BEGIN ] stateLabel SAY sayText [ = sayText ... ] transition list END`\n\n[Online documentation](https://weidu.org/~thebigg/README-WeiDU.html#state)"
         }
     },
-    "BRANCH": {
-        "contents": {
-            "kind": "markdown",
-            "value": "```weidu-d\nBRANCH transTriggerString BEGIN [ == [ IF_FILE_EXISTS ] fileName [ IF transTriggerString THEN ] sayText = sayText ... ] END\n```\nAs above, except that the first transTriggerString is appended to all existing dialogue units."
-        }
-    },
-    "String": {
+    "^": {
         "contents": {
             "kind": "markdown",
             "value": "```weidu-d\nString ^ String\n```\nString literal concatenation. The second string is appended to the first string. No whitespace is added. Thus \"hello\" ^ \"World\" is the same as \"helloWorld\"."
-        }
-    },
-    "!integer": {
-        "contents": {
-            "kind": "markdown",
-            "value": "```weidu-d\n!integer text\n```\nForced String Reference. As with text in general, but rather than being assigned a new, previously-unused DIALOG.TLK string entry (or merging with an existing one that has the same text), this text is written over DIALOG.TLK string entry #integer. Do not use this without a real reason."
-        }
-    },
-    "reference": {
-        "contents": {
-            "kind": "markdown",
-            "value": "```weidu-d\nreference\n```"
-        }
-    },
-    "#integer": {
-        "contents": {
-            "kind": "markdown",
-            "value": "```weidu-d\n#integer\n```\nThe string with reference number #integer from DIALOG.TLK should be used unchanged."
-        }
-    },
-    "@integer": {
-        "contents": {
-            "kind": "markdown",
-            "value": "```weidu-d\n@integer\n```\nThe last definition of the translation string @integer given in any TRA file should be used."
-        }
-    },
-    "(": {
-        "contents": {
-            "kind": "markdown",
-            "value": "```weidu-d\n( AT \"var\" )\n```\nThe last definition of the translation string (with value defined by a variable) given in any TRA file should be used."
-        }
-    },
-    "\"abcdef\"": {
-        "contents": {
-            "kind": "markdown",
-            "value": "```weidu-d\n\"abcdef\"\n```\nA string can be any sequence of characters not including a \" that is enclosed in \"\"s."
-        }
-    },
-    "~abcdef~": {
-        "contents": {
-            "kind": "markdown",
-            "value": "```weidu-d\n~abcdef~\n```\nA string can be any sequence of characters not including a ~ that is enclosed in ~~s."
-        }
-    },
-    "%abcdef%": {
-        "contents": {
-            "kind": "markdown",
-            "value": "```weidu-d\n%abcdef%\n```\nA string can be any sequence of characters not including a % that is enclosed in %%s. This is handy for Big5 translations, since \" and ~ can be part of Big5-encoded characters."
-        }
-    },
-    "~~~~~abcdef~~~~~": {
-        "contents": {
-            "kind": "markdown",
-            "value": "```weidu-d\n~~~~~abcdef~~~~~\n```\nThat's five consecutive tildes on each side. A string can be any sequence of characters not including ~~~~~ that is enclosed in ~~~~~s. For example, string #8750 is ~!@#$\\%^&*()_+-=[]{}\\|;:'\",<.>/? and can be given to WeiDU as ~~~~~~!@#$\\%^&*()_+-=[]{}\\|;:'\",<.>/?~~~~~ (the content of the string is shown in red for clarity)."
         }
     }
 }

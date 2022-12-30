@@ -1,14 +1,12 @@
 keywords:
   type: 14 #keyword
   items:
-    - name: IF
     - name: THEN
     - name: RESPONSE
     - name: OR
     - name: GLOBAL
     - name: LOCALS
     - name: MYAREA
-    - name: END
 
 actions:
   type: 3 # function
@@ -98,9 +96,6 @@ actions:
 when:
   type: 14 #keyword
   items:
-    - name: IF
-      detail: IF String
-      doc: The action is processed if the element being altered/replaced/added to contains a substring matching against the String regexp.
     - name: UNLESS
       detail: UNLESS String
       doc: The action is not processed if the element being altered/replaced/added to contains a substring matching against the String regexp.
@@ -109,8 +104,18 @@ chain_epilogue:
   type: 14 #keyword
   items:
     - name: END
-      detail: END filename stateNumber
-      doc: Transfer to the given state in the given dialogue file.
+      detail: END filename stateNumber | END transition list
+      doc: |-
+        Chain epilogue.
+
+        `END filename stateNumber`
+
+        Transfer to the given state in the given dialogue file.
+
+        ---
+        `END transition list`
+
+        Execute the given transitions after the final state in the CHAIN.
     - name: EXTERN
       detail: EXTERN filename stateNumber
       doc: Transfer to the given state in the given dialogue file.
@@ -123,16 +128,13 @@ chain_epilogue:
     - name: EXIT
       detail: EXIT
       doc: At the end of the CHAIN text, exit the dialogue.
-    - name: END
-      detail: END transition list
-      doc: Execute the given transitions after the final state in the CHAIN.
+    # - name: END
+    #   detail: END transition list
+    #   doc: Execute the given transitions after the final state in the CHAIN.
 
 state:
   type: 14 #keyword
   items:
-    - name: IF
-      detail: "IF [ WEIGHT #weightNumber ] stateTriggerString [ THEN ] [ BEGIN ] stateLabel SAY sayText [ = sayText ... ] transition list END"
-      doc: When you start conversing with a creature that uses a DLG file, the Infinity Engine searches through all of the states in that file in order of increasing WEIGHT and selects the first one it finds for which the stateTriggerString is both true and not empty. The creature then says all of the associated sayText. Finally, the transitions are evaluated in bottom-up (i.e., reverse) order. If a transition is found with a transTriggerString that evaluates to True and no replyText, that transition is immediately executed. Otherwise, all of the transitions are presented as options to the PC. If a stateLabel is an integer it is called a stateNumber. All of the states in the DLG files that come with the original game use stateNumbers. Only D files use symbolic strings for stateLabels. Including more than one bit of sayText here is often called Multisay. Finally, once you are familiar with the syntax you may omit the THEN and BEGIN keywords if you like.
     - name: APPENDI
       detail: APPENDI filename state list END
       doc: This is legacy syntax that behaves just like the D Action APPEND but is considered a state. Avoid it.
@@ -150,9 +152,6 @@ say_text:
 transition:
   type: 14 #keyword
   items:
-    - name: IF
-      detail: IF transTriggerString [ THEN ] transFeature list transNext
-      doc: If the transTriggerString evaluates to true or is empty, this transition is viable. If it contains no replyText within its transFeature list, it is immediately taken. Otherwise, the replyText is presented as an option to the user. If the transition is taken, any actions in the transFeature list are performed and the dialogue flows to the point indicated by the transNext. transitions are evaluated in "reverse order". That is, the "bottom" or "last" response for a state is checked first. If its transTriggerString evaluates to true and it has no REPLY text, that transition is immediately taken. See SAREV25A state 1 for an example of a state with all kinds of transitions.
     - name: +
       detail: + [ transTriggerString ] + replyText transFeature list transNext
       doc: This abbreviated syntax for transitions that would contain REPLY (which is by far the most common case) allows you to save yourself some time and typing. It behaves like the full form above.
@@ -197,67 +196,79 @@ tran_next:
     - name: EXIT
       detail: EXIT
       doc: The conversation ends.
-    - name: +
-      detail: + stateLabel
-      doc: This is a synonym for GOTO.
 
-chain_text:
+# D format is quirky, it's hard to figure out the context.
+# Items with same label and different usages are temporarily placed here, their docs joined.
+multi:
   type: 14 #keyword
   items:
-    - name: "["
-      detail: "[ IF transTriggerString THEN ] sayText = sayText ..."
-      doc: ""
-    - name: "["
-      detail: "[ == [ IF_FILE_EXISTS ] fileName [ IF transTriggerString THEN ] sayText = sayText ... ]"
-      doc: The == (that's two consecutive equal signs) marks the beginning of a new speaker (indicated by fileName). If the transTriggerString is true or if it is not present, this new speaker says all of its sayText in order. If the IF_FILE_EXISTS part is present, these lines are not compiled at all if the current file is not missing.
-    - name: BRANCH
-      detail: BRANCH transTriggerString BEGIN [ == [ IF_FILE_EXISTS ] fileName [ IF transTriggerString THEN ] sayText = sayText ... ] END
-      doc: As above, except that the first transTriggerString is appended to all existing dialogue units.
+    - name: IF
+      detail: IF
+      doc: |-
+        Transition: `IF transTriggerString [ THEN ] transFeature list transNext`
 
-text:
-  type: 14 #keyword
-  items:
-    - name: String
-      detail: String [ [WAVEFILE] ]
-      doc: The given string is used for both male and female players. The optional [WAVEFILE] is the associated sound.
-    - name: String
-      detail: String [ [WAVEFILE] ] String [ [WAVEFILE] ]
-      doc: The first string and sound file are used if the PC is male, the second string and sound file are used if the PC is female. This is useful mainly for international versions of Infinity Engine games.
-    - name: "!integer"
-      detail: "!integer text"
-      doc: "Forced String Reference. As with text in general, but rather than being assigned a new, previously-unused DIALOG.TLK string entry (or merging with an existing one that has the same text), this text is written over DIALOG.TLK string entry #integer. Do not use this without a real reason."
+        If the transTriggerString evaluates to true or is empty, this transition is viable. If it contains no replyText within its transFeature list, it is immediately taken. Otherwise, the replyText is presented as an option to the user. If the transition is taken, any actions in the transFeature list are performed and the dialogue flows to the point indicated by the transNext. transitions are evaluated in "reverse order".
 
-reference:
-  type: 14 #keyword
-  items:
-    - name: reference
-      detail: reference
-      doc: ""
-    - name: "#integer"
-      detail: "#integer"
-      doc: "The string with reference number #integer from DIALOG.TLK should be used unchanged."
-    - name: "@integer"
-      detail: "@integer"
-      doc: The last definition of the translation string @integer given in any TRA file should be used.
-    - name: (
-      detail: ( AT "var" )
-      doc: The last definition of the translation string (with value defined by a variable) given in any TRA file should be used.
+        ---
+        Action condition: `IF String`.
+
+        The action is processed if the element being altered/replaced/added to contains a substring matching against the String regexp.
+
+        ---
+        State: `IF [ WEIGHT #weightNumber ] stateTriggerString [ THEN ] [ BEGIN ] stateLabel SAY sayText [ = sayText ... ] transition list END`
+
+        [Online documentation](https://weidu.org/~thebigg/README-WeiDU.html#state)
+
+  #     # can't show this for all +'s
+  #     - name: +
+  #       detail: + stateLabel
+  #       doc: This is a synonym for GOTO.
+
+# # this is hard...
+# chain_text:
+#   type: 14 #keyword
+#   items:
+#     - name: "["
+#       detail: "[ IF transTriggerString THEN ] sayText = sayText ..."
+#       doc: ""
+#     - name: "["
+#       detail: "[ == [ IF_FILE_EXISTS ] fileName [ IF transTriggerString THEN ] sayText = sayText ... ]"
+#       doc: The == (that's two consecutive equal signs) marks the beginning of a new speaker (indicated by fileName). If the transTriggerString is true or if it is not present, this new speaker says all of its sayText in order. If the IF_FILE_EXISTS part is present, these lines are not compiled at all if the current file is not missing.
+#     - name: BRANCH
+#       detail: BRANCH transTriggerString BEGIN [ == [ IF_FILE_EXISTS ] fileName [ IF transTriggerString THEN ] sayText = sayText ... ] END
+#       doc: As above, except that the first transTriggerString is appended to all existing dialogue units.
+
+# # how to use this?
+# text:
+#   type: 14 #keyword
+#   items:
+#     - name: String
+#       detail: String [ [WAVEFILE] ]
+#       doc: The given string is used for both male and female players. The optional [WAVEFILE] is the associated sound.
+#     - name: String
+#       detail: String [ [WAVEFILE] ] String [ [WAVEFILE] ]
+#       doc: The first string and sound file are used if the PC is male, the second string and sound file are used if the PC is female. This is useful mainly for international versions of Infinity Engine games.
+#     - name: "!integer"
+#       detail: "!integer text"
+#       doc: "Forced String Reference. As with text in general, but rather than being assigned a new, previously-unused DIALOG.TLK string entry (or merging with an existing one that has the same text), this text is written over DIALOG.TLK string entry #integer. Do not use this without a real reason."
+
+# # how to use this?
+# reference:
+#   type: 14 #keyword
+#   items:
+#     - name: "#integer"
+#       detail: "#integer"
+#       doc: "The string with reference number #integer from DIALOG.TLK should be used unchanged."
+#     - name: "@integer"
+#       detail: "@integer"
+#       doc: The last definition of the translation string @integer given in any TRA file should be used.
+#     - name: (
+#       detail: ( AT "var" )
+#       doc: The last definition of the translation string (with value defined by a variable) given in any TRA file should be used.
 
 string:
   type: 14 #keyword
   items:
-    - name: '"abcdef"'
-      detail: '"abcdef"'
-      doc: A string can be any sequence of characters not including a " that is enclosed in ""s.
-    - name: ~abcdef~
-      detail: ~abcdef~
-      doc: A string can be any sequence of characters not including a ~ that is enclosed in ~~s.
-    - name: "%abcdef%"
-      detail: "%abcdef%"
-      doc: A string can be any sequence of characters not including a % that is enclosed in %%s. This is handy for Big5 translations, since " and ~ can be part of Big5-encoded characters.
-    - name: ~~~~~abcdef~~~~~
-      detail: ~~~~~abcdef~~~~~
-      doc: "That's five consecutive tildes on each side. A string can be any sequence of characters not including ~~~~~ that is enclosed in ~~~~~s. For example, string #8750 is ~!@#$\\%^&*()_+-=[]{}\\|;:'\",<.>/? and can be given to WeiDU as ~~~~~~!@#$\\%^&*()_+-=[]{}\\|;:'\",<.>/?~~~~~ (the content of the string is shown in red for clarity)."
-    - name: String
+    - name: ^
       detail: "String ^ String"
       doc: String literal concatenation. The second string is appended to the first string. No whitespace is added. Thus "hello" ^ "World" is the same as "helloWorld".

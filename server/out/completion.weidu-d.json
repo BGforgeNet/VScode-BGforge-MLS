@@ -1,10 +1,5 @@
 [
     {
-        "label": "IF",
-        "kind": 14,
-        "source": "builtin"
-    },
-    {
         "label": "THEN",
         "kind": 14,
         "source": "builtin"
@@ -31,11 +26,6 @@
     },
     {
         "label": "MYAREA",
-        "kind": 14,
-        "source": "builtin"
-    },
-    {
-        "label": "END",
         "kind": 14,
         "source": "builtin"
     },
@@ -283,15 +273,6 @@
         }
     },
     {
-        "label": "IF",
-        "kind": 14,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-d\nIF String\n```\nThe action is processed if the element being altered/replaced/added to contains a substring matching against the String regexp."
-        }
-    },
-    {
         "label": "UNLESS",
         "kind": 14,
         "source": "builtin",
@@ -306,7 +287,7 @@
         "source": "builtin",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-d\nEND filename stateNumber\n```\nTransfer to the given state in the given dialogue file."
+            "value": "```weidu-d\nEND filename stateNumber | END transition list\n```\nChain epilogue.\n\n`END filename stateNumber`\n\nTransfer to the given state in the given dialogue file.\n\n---\n`END transition list`\n\nExecute the given transitions after the final state in the CHAIN."
         }
     },
     {
@@ -346,24 +327,6 @@
         }
     },
     {
-        "label": "END",
-        "kind": 14,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-d\nEND transition list\n```\nExecute the given transitions after the final state in the CHAIN."
-        }
-    },
-    {
-        "label": "IF",
-        "kind": 14,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-d\nIF [ WEIGHT #weightNumber ] stateTriggerString [ THEN ] [ BEGIN ] stateLabel SAY sayText [ = sayText ... ] transition list END\n```\nWhen you start conversing with a creature that uses a DLG file, the Infinity Engine searches through all of the states in that file in order of increasing WEIGHT and selects the first one it finds for which the stateTriggerString is both true and not empty. The creature then says all of the associated sayText. Finally, the transitions are evaluated in bottom-up (i.e., reverse) order. If a transition is found with a transTriggerString that evaluates to True and no replyText, that transition is immediately executed. Otherwise, all of the transitions are presented as options to the PC. If a stateLabel is an integer it is called a stateNumber. All of the states in the DLG files that come with the original game use stateNumbers. Only D files use symbolic strings for stateLabels. Including more than one bit of sayText here is often called Multisay. Finally, once you are familiar with the syntax you may omit the THEN and BEGIN keywords if you like."
-        }
-    },
-    {
         "label": "APPENDI",
         "kind": 14,
         "source": "builtin",
@@ -388,15 +351,6 @@
         "documentation": {
             "kind": "markdown",
             "value": "```weidu-d\ntext\n```\nsayText and replyText are both text."
-        }
-    },
-    {
-        "label": "IF",
-        "kind": 14,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-d\nIF transTriggerString [ THEN ] transFeature list transNext\n```\nIf the transTriggerString evaluates to true or is empty, this transition is viable. If it contains no replyText within its transFeature list, it is immediately taken. Otherwise, the replyText is presented as an option to the user. If the transition is taken, any actions in the transFeature list are performed and the dialogue flows to the point indicated by the transNext. transitions are evaluated in \"reverse order\". That is, the \"bottom\" or \"last\" response for a state is checked first. If its transTriggerString evaluates to true and it has no REPLY text, that transition is immediately taken. See SAREV25A state 1 for an example of a state with all kinds of transitions."
         }
     },
     {
@@ -508,138 +462,16 @@
         }
     },
     {
-        "label": "+",
+        "label": "IF",
         "kind": 14,
         "source": "builtin",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-d\n+ stateLabel\n```\nThis is a synonym for GOTO."
+            "value": "```weidu-d\nIF\n```\nTransition: `IF transTriggerString [ THEN ] transFeature list transNext`\n\nIf the transTriggerString evaluates to true or is empty, this transition is viable. If it contains no replyText within its transFeature list, it is immediately taken. Otherwise, the replyText is presented as an option to the user. If the transition is taken, any actions in the transFeature list are performed and the dialogue flows to the point indicated by the transNext. transitions are evaluated in \"reverse order\".\n\n---\nAction condition: `IF String`.\n\nThe action is processed if the element being altered/replaced/added to contains a substring matching against the String regexp.\n\n---\nState: `IF [ WEIGHT #weightNumber ] stateTriggerString [ THEN ] [ BEGIN ] stateLabel SAY sayText [ = sayText ... ] transition list END`\n\n[Online documentation](https://weidu.org/~thebigg/README-WeiDU.html#state)"
         }
     },
     {
-        "label": "[",
-        "kind": 14,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-d\n[ IF transTriggerString THEN ] sayText = sayText ...\n```"
-        }
-    },
-    {
-        "label": "[",
-        "kind": 14,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-d\n[ == [ IF_FILE_EXISTS ] fileName [ IF transTriggerString THEN ] sayText = sayText ... ]\n```\nThe == (that's two consecutive equal signs) marks the beginning of a new speaker (indicated by fileName). If the transTriggerString is true or if it is not present, this new speaker says all of its sayText in order. If the IF_FILE_EXISTS part is present, these lines are not compiled at all if the current file is not missing."
-        }
-    },
-    {
-        "label": "BRANCH",
-        "kind": 14,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-d\nBRANCH transTriggerString BEGIN [ == [ IF_FILE_EXISTS ] fileName [ IF transTriggerString THEN ] sayText = sayText ... ] END\n```\nAs above, except that the first transTriggerString is appended to all existing dialogue units."
-        }
-    },
-    {
-        "label": "String",
-        "kind": 14,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-d\nString [ [WAVEFILE] ]\n```\nThe given string is used for both male and female players. The optional [WAVEFILE] is the associated sound."
-        }
-    },
-    {
-        "label": "String",
-        "kind": 14,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-d\nString [ [WAVEFILE] ] String [ [WAVEFILE] ]\n```\nThe first string and sound file are used if the PC is male, the second string and sound file are used if the PC is female. This is useful mainly for international versions of Infinity Engine games."
-        }
-    },
-    {
-        "label": "!integer",
-        "kind": 14,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-d\n!integer text\n```\nForced String Reference. As with text in general, but rather than being assigned a new, previously-unused DIALOG.TLK string entry (or merging with an existing one that has the same text), this text is written over DIALOG.TLK string entry #integer. Do not use this without a real reason."
-        }
-    },
-    {
-        "label": "reference",
-        "kind": 14,
-        "source": "builtin"
-    },
-    {
-        "label": "#integer",
-        "kind": 14,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-d\n#integer\n```\nThe string with reference number #integer from DIALOG.TLK should be used unchanged."
-        }
-    },
-    {
-        "label": "@integer",
-        "kind": 14,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-d\n@integer\n```\nThe last definition of the translation string @integer given in any TRA file should be used."
-        }
-    },
-    {
-        "label": "(",
-        "kind": 14,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-d\n( AT \"var\" )\n```\nThe last definition of the translation string (with value defined by a variable) given in any TRA file should be used."
-        }
-    },
-    {
-        "label": "\"abcdef\"",
-        "kind": 14,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-d\n\"abcdef\"\n```\nA string can be any sequence of characters not including a \" that is enclosed in \"\"s."
-        }
-    },
-    {
-        "label": "~abcdef~",
-        "kind": 14,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-d\n~abcdef~\n```\nA string can be any sequence of characters not including a ~ that is enclosed in ~~s."
-        }
-    },
-    {
-        "label": "%abcdef%",
-        "kind": 14,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-d\n%abcdef%\n```\nA string can be any sequence of characters not including a % that is enclosed in %%s. This is handy for Big5 translations, since \" and ~ can be part of Big5-encoded characters."
-        }
-    },
-    {
-        "label": "~~~~~abcdef~~~~~",
-        "kind": 14,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-d\n~~~~~abcdef~~~~~\n```\nThat's five consecutive tildes on each side. A string can be any sequence of characters not including ~~~~~ that is enclosed in ~~~~~s. For example, string #8750 is ~!@#$\\%^&*()_+-=[]{}\\|;:'\",<.>/? and can be given to WeiDU as ~~~~~~!@#$\\%^&*()_+-=[]{}\\|;:'\",<.>/?~~~~~ (the content of the string is shown in red for clarity)."
-        }
-    },
-    {
-        "label": "String",
+        "label": "^",
         "kind": 14,
         "source": "builtin",
         "documentation": {
