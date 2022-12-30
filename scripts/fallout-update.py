@@ -41,8 +41,8 @@ sfall_hooks_stanza = "hooks"
 sfall_yaml = args.sfall_yaml
 highlight_yaml = args.highlight_yaml
 src_dir = args.src_dir
-completion_functions = []
-completion_hooks = []
+sfall_functions = []
+sfall_hooks = []
 highlight_functions = []
 highlight_hooks = []
 header_defines = {}
@@ -160,24 +160,31 @@ for category in categories:
             # highlighting first
             if name != "^":  # sorry, exponentiation
                 highlight_functions.append({"match": "\\b(?i)({})\\b".format(name)})
+
             # and now completion
-            detail = f["detail"]
+            completion_item = {"name": name}
+
+            if "detail" in f:  # this should be eventually deprecated and replaced with args below
+                completion_item["detail"] = f["detail"]
+
             doc = ""
             if "doc" in f:
                 doc = f["doc"]
-
-            # if caterory doc is not empty
+            # if category doc is not empty
             if cdoc != "":
                 if doc == "":  # if function doc is empty
                     doc = cdoc  # replace
                 else:
                     doc += "\n" + cdoc  # append
-
-            if doc == "":
-                completion_functions.append({"name": name, "detail": detail})  # if doc is still empty
-            else:
+            if doc != "":
                 doc = LS(doc)
-                completion_functions.append({"name": name, "detail": detail, "doc": doc})  # proper record, all fields
+                completion_item["doc"] = doc
+
+            if "args" in f:
+                completion_item["args"] = f["args"]
+                completion_item["type"] = f["type"]
+
+            sfall_functions.append(completion_item)
 
 # load hooks
 with open(hooks_yaml) as yf:
@@ -189,7 +196,7 @@ for h in hooks:
     doc = h["doc"]
     doc = LS(doc)
     codename = "HOOK_" + name.upper()
-    completion_hooks.append({"name": codename, "doc": doc})
+    sfall_hooks.append({"name": codename, "doc": doc})
     highlight_hooks.append({"match": "\\b({})\\b".format(codename)})
 
 # dump to completion
@@ -197,9 +204,9 @@ with open(sfall_yaml) as yf:
     data = yaml.load(yf)
 data[sfall_functions_stanza] = {
     "type": 3,
-    "items": completion_functions,
+    "items": sfall_functions,
 }  # type = function
-data[sfall_hooks_stanza] = {"type": 21, "items": completion_hooks}  # type = constant
+data[sfall_hooks_stanza] = {"type": 21, "items": sfall_hooks}  # type = constant
 with open(sfall_yaml, "w") as yf:
     yaml.dump(data, yf)
 
