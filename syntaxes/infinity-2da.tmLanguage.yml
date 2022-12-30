@@ -1,0 +1,32 @@
+$schema: https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json
+name: Infinity Engine 2-Dimensional Array
+scopeName: source.infinity-2da
+patterns:
+  - include: "#header"
+  - include: "#column_names"
+  - include: "#rows"
+repository:
+  column_names:
+    patterns:
+      - match: ^\s+(.+)
+        name: support.function.infinity-2da
+  header:
+    patterns:
+      - begin: (2DA V)(1.0)
+        beginCaptures:
+          "1":
+            name: keyword.control.infinity-2da
+          "2":
+            name: constant.language.infinity-2da
+        end: (\w+)
+        endCaptures:
+          "1":
+            name: constant.language.infinity-2da
+  rows:
+    patterns:
+      - captures:
+          "1":
+            name: entity.name.function.infinity-2da
+          "2":
+            name: string.infinity-2da
+        match: ^(\S+)\s(.+)

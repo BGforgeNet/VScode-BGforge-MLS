@@ -1,0 +1,30 @@
+$schema: https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json
+name: Fallout Star-Trek Scripting Language message
+scopeName: source.fallout-msg
+patterns:
+  - include: "#strings"
+  - include: "#comments"
+repository:
+  comments:
+    patterns:
+      - match: (.)
+        name: comment.block.fallout-msg
+  strings:
+    patterns:
+      - begin: ({)(\d+)(}{)([^}]*)(}{)
+        beginCaptures:
+          "1":
+            name: keyword.control.fallout-msg
+          "2":
+            name: constant.other.linenum.fallout-msg
+          "3":
+            name: keyword.control.fallout-msg
+          "4":
+            name: entity.name.function.sound.fallout-msg
+          "5":
+            name: keyword.control.fallout-msg
+        end: (})
+        endCaptures:
+          "1":
+            name: keyword.control.fallout-msg
+        name: string.quoted.fallout-msg

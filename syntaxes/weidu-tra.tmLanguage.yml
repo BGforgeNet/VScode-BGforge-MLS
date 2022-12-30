@@ -1,0 +1,71 @@
+$schema: https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json
+name: WeiDU translation
+scopeName: source.weidu-tra
+patterns:
+  - include: "#comments"
+  - include: "#line_numbers"
+  - include: "#strings"
+  - include: "#sounds"
+repository:
+  comments:
+    patterns:
+      - match: (//).*
+        name: comment.line.weidu-tra
+      - begin: /\*
+        end: \*/
+        name: comment.block.weidu-tra
+  line_numbers:
+    patterns:
+      - captures:
+          "1":
+            name: keyword.control.weidu-tra
+          "2":
+            name: constant.language.weidu-tra
+          "3":
+            name: keyword.control.weidu-tra
+        match: (@)(\d+)\s*(=)
+  sounds:
+    patterns:
+      - captures:
+          "1":
+            name: keyword.control.weidu-tra
+          "3":
+            name: keyword.control.weidu-tra
+        match: (\[)(\w+)(\])
+        name: entity.name.function.sound.weidu-tra
+  strings:
+    patterns:
+      - begin: (~)
+        beginCaptures:
+          "1":
+            name: keyword.control.weidu-tra
+        end: (~)
+        endCaptures:
+          "1":
+            name: keyword.control.weidu-tra
+        name: string.quoted.weidu-tra
+        patterns:
+          - include: "#tokens"
+          - include: source.tp2.weidu#non-weidu-vars
+      - begin: (")
+        beginCaptures:
+          "1":
+            name: keyword.control.weidu-tra
+        end: (")
+        endCaptures:
+          "1":
+            name: keyword.control.weidu-tra
+        name: string.quoted.weidu-tra
+        patterns:
+          - include: "#tokens"
+          - include: source.tp2.weidu#non-weidu-vars
+  tokens:
+    patterns:
+      - captures:
+          "1":
+            name: keyword.control.weidu-tra
+          "2":
+            name: constant.language.weidu-tra
+          "3":
+            name: keyword.control.weidu-tra
+        match: (<)(BROTHERSISTER|CHARNAME|DAYANDMONTH|DAYNIGHT|DAYNIGHTALL|GABBER|GAMEDAY|GAMEDAYS|GIRLBOY|HESHE|HIMHER|HISHER|LADYLORD|LEVEL|MALEFEMALE|MANWOMAN|MONTH|MONTHNAME|PLAYER1|PLAYER2|PLAYER3|PLAYER4|PLAYER5|PLAYER6|PRO_BROTHERSISTER|PRO_GIRLBOY|PRO_HESHE|PRO_HIMHER|PRO_HISHER|PRO_LADYLORD|PRO_MALEFEMALE|PRO_MANWOMAN|PRO_RACE|PRO_SIRMAAM|PRO_SONDAUGHTER|RACE|SIRMAAM|SONDAUGHTER|TM|YEAR)(>)
