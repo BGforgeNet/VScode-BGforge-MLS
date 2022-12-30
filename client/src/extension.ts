@@ -14,6 +14,7 @@ import { ExecuteCommandRequest, ExecuteCommandParams } from "vscode-languageserv
 
 let client: LanguageClient;
 const cmd_compile = "extension.bgforge.compile";
+let settings: vscode.WorkspaceConfiguration;
 
 export async function activate(context: ExtensionContext) {
     // The server is implemented in node
@@ -68,6 +69,7 @@ export async function activate(context: ExtensionContext) {
 
     // Start the client. This will also launch the server
     await client.start();
+    settings = vscode.workspace.getConfiguration("bgforge");
     conlog("BGforge MLS client started");
 }
 
@@ -99,6 +101,14 @@ async function compile(
     await client.sendRequest(ExecuteCommandRequest.type, params);
 }
 
+// cache settings
+vscode.workspace.onDidChangeConfiguration(async (change) => {
+    const affects = change.affectsConfiguration("bgforge");
+    if (affects) {
+        settings = vscode.workspace.getConfiguration("bgforge");
+    }
+});
+
 vscode.workspace.onDidChangeTextDocument(async (change) => {
     // same list is checked in server, update both if changing
     const compile_languages = [
@@ -114,7 +124,7 @@ vscode.workspace.onDidChangeTextDocument(async (change) => {
     if (!compile_languages.includes(lang_id)) {
         return;
     }
-    const validate_on_change = vscode.workspace.getConfiguration("bgforge").get("validateOnType");
+    const validate_on_change = settings.get("validateOnChange");
     if (!validate_on_change) {
         return;
     }

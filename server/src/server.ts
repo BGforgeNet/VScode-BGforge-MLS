@@ -496,7 +496,7 @@ documents.onDidSave(async (change) => {
         return;
     }
     const settings = await getDocumentSettings(uri);
-    if (settings.validateOnSave || settings.validateOnType) {
+    if (settings.validateOnSave || settings.validateOnChange) {
         compile(uri);
     }
 });

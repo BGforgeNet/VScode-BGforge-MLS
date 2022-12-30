@@ -16,7 +16,7 @@ export interface MLSsettings {
     falloutSSL: SSLsettings;
     weidu: WeiDUsettings;
     validateOnSave: boolean;
-    validateOnType: boolean;
+    validateOnChange: boolean;
 }
 
 // The global settings, used when the `workspace/configuration` request is not supported by the client.
@@ -32,5 +32,5 @@ export const defaultSettings: MLSsettings = {
     },
     weidu: { path: "weidu", gamePath: "" },
     validateOnSave: true,
-    validateOnType: false,
+    validateOnChange: false,
 };
