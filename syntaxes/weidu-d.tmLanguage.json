@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
   "name": "WeiDU dialog",
-  "scopeName": "source.d.weidu",
+  "scopeName": "source.weidu-d",
   "patterns": [
     {
       "include": "#condition"
@@ -48,12 +48,12 @@
       "patterns": [
         {
           "match": "(//).*",
-          "name": "comment.line.d.weidu"
+          "name": "comment.line.weidu-d"
         },
         {
           "begin": "/\\*",
           "end": "\\*/",
-          "name": "comment.block.d.weidu"
+          "name": "comment.block.weidu-d"
         }
       ]
     },
@@ -61,298 +61,298 @@
       "patterns": [
         {
           "match": "\\b(([0-9]+)|(0x[0-9a-fA-F]+))\\b",
-          "name": "constant.numeric.d.weidu"
+          "name": "constant.numeric.weidu-d"
         }
       ]
     },
     "d-action": {
-      "name": "keyword.other.d.weidu",
+      "name": "keyword.other.weidu-d",
       "patterns": [
         {
           "match": "\\b(BEGIN)\\b",
-          "name": "keyword.other.d.weidu"
+          "name": "keyword.other.weidu-d"
         },
         {
           "match": "\\b(APPEND)\\b",
-          "name": "keyword.other.d.weidu"
+          "name": "keyword.other.weidu-d"
         },
         {
           "match": "\\b(APPEND_EARLY)\\b",
-          "name": "keyword.other.d.weidu"
+          "name": "keyword.other.weidu-d"
         },
         {
           "match": "\\b(CHAIN)\\b",
-          "name": "keyword.other.d.weidu"
+          "name": "keyword.other.weidu-d"
         },
         {
           "match": "\\b(INTERJECT)\\b",
-          "name": "keyword.other.d.weidu"
+          "name": "keyword.other.weidu-d"
         },
         {
           "match": "\\b(INTERJECT_COPY_TRANS)\\b",
-          "name": "keyword.other.d.weidu"
+          "name": "keyword.other.weidu-d"
         },
         {
           "match": "\\b(INTERJECT_COPY_TRANS2)\\b",
-          "name": "keyword.other.d.weidu"
+          "name": "keyword.other.weidu-d"
         },
         {
           "match": "\\b(INTERJECT_COPY_TRANS3)\\b",
-          "name": "keyword.other.d.weidu"
+          "name": "keyword.other.weidu-d"
         },
         {
           "match": "\\b(INTERJECT_COPY_TRANS4)\\b",
-          "name": "keyword.other.d.weidu"
+          "name": "keyword.other.weidu-d"
         },
         {
           "match": "\\b(EXTEND_TOP)\\b",
-          "name": "keyword.other.d.weidu"
+          "name": "keyword.other.weidu-d"
         },
         {
           "match": "\\b(EXTEND_BOTTOM)\\b",
-          "name": "keyword.other.d.weidu"
+          "name": "keyword.other.weidu-d"
         },
         {
           "match": "\\b(ADD_STATE_TRIGGER)\\b",
-          "name": "keyword.other.d.weidu"
+          "name": "keyword.other.weidu-d"
         },
         {
           "match": "\\b(ADD_TRANS_TRIGGER)\\b",
-          "name": "keyword.other.d.weidu"
+          "name": "keyword.other.weidu-d"
         },
         {
           "match": "\\b(ADD_TRANS_ACTION)\\b",
-          "name": "keyword.other.d.weidu"
+          "name": "keyword.other.weidu-d"
         },
         {
           "match": "\\b(REPLACE_TRANS_ACTION)\\b",
-          "name": "keyword.other.d.weidu"
+          "name": "keyword.other.weidu-d"
         },
         {
           "match": "\\b(REPLACE_TRANS_TRIGGER)\\b",
-          "name": "keyword.other.d.weidu"
+          "name": "keyword.other.weidu-d"
         },
         {
           "match": "\\b(ALTER_TRANS)\\b",
-          "name": "keyword.other.d.weidu"
+          "name": "keyword.other.weidu-d"
         },
         {
           "match": "\\b(REPLACE)\\b",
-          "name": "keyword.other.d.weidu"
+          "name": "keyword.other.weidu-d"
         },
         {
           "match": "\\b(SET_WEIGHT)\\b",
-          "name": "keyword.other.d.weidu"
+          "name": "keyword.other.weidu-d"
         },
         {
           "match": "\\b(REPLACE_SAY)\\b",
-          "name": "keyword.other.d.weidu"
+          "name": "keyword.other.weidu-d"
         },
         {
           "match": "\\b(REPLACE_STATE_TRIGGER)\\b",
-          "name": "keyword.other.d.weidu"
+          "name": "keyword.other.weidu-d"
         },
         {
           "match": "\\b(REPLACE_TRIGGER_TEXT)\\b",
-          "name": "keyword.other.d.weidu"
+          "name": "keyword.other.weidu-d"
         },
         {
           "match": "\\b(REPLACE_TRIGGER_TEXT_REGEXP)\\b",
-          "name": "keyword.other.d.weidu"
+          "name": "keyword.other.weidu-d"
         },
         {
           "match": "\\b(REPLACE_ACTION_TEXT)\\b",
-          "name": "keyword.other.d.weidu"
+          "name": "keyword.other.weidu-d"
         },
         {
           "match": "\\b(REPLACE_ACTION_TEXT_REGEXP)\\b",
-          "name": "keyword.other.d.weidu"
+          "name": "keyword.other.weidu-d"
         },
         {
           "match": "\\b(REPLACE_ACTION_TEXT_PROCESS)\\b",
-          "name": "keyword.other.d.weidu"
+          "name": "keyword.other.weidu-d"
         },
         {
           "match": "\\b(R_A_T_P_R)\\b",
-          "name": "keyword.other.d.weidu"
+          "name": "keyword.other.weidu-d"
         }
       ]
     },
     "action-when": {
-      "name": "keyword.other.d.weidu",
+      "name": "keyword.other.weidu-d",
       "patterns": [
         {
           "match": "\\b(IF)\\b",
-          "name": "keyword.other.d.weidu"
+          "name": "keyword.other.weidu-d"
         },
         {
           "match": "\\b(UNLESS)\\b",
-          "name": "keyword.other.d.weidu"
+          "name": "keyword.other.weidu-d"
         }
       ]
     },
     "chain-epilogue": {
-      "name": "keyword.other.d.weidu",
+      "name": "keyword.other.weidu-d",
       "patterns": [
         {
           "match": "\\b(END)\\b",
-          "name": "keyword.other.d.weidu"
+          "name": "keyword.other.weidu-d"
         },
         {
           "match": "\\b(EXTERN)\\b",
-          "name": "keyword.other.d.weidu"
+          "name": "keyword.other.weidu-d"
         },
         {
           "match": "\\b(SAFE)\\b",
-          "name": "keyword.other.d.weidu"
+          "name": "keyword.other.weidu-d"
         },
         {
           "match": "\\b(EXIT)\\b",
-          "name": "keyword.other.d.weidu"
+          "name": "keyword.other.weidu-d"
         }
       ]
     },
     "state": {
-      "name": "keyword.other.d.weidu",
+      "name": "keyword.other.weidu-d",
       "patterns": [
         {
           "match": "\\b(APPENDI)\\b",
-          "name": "keyword.other.d.weidu"
+          "name": "keyword.other.weidu-d"
         },
         {
           "match": "\\b(CHAIN2)\\b",
-          "name": "keyword.other.d.weidu"
+          "name": "keyword.other.weidu-d"
         },
         {
           "match": "\\b(SAY)\\b",
-          "name": "keyword.other.d.weidu"
+          "name": "keyword.other.weidu-d"
         }
       ]
     },
     "transition": {
-      "name": "keyword.other.d.weidu",
+      "name": "keyword.other.weidu-d",
       "patterns": [
         {
           "match": "\\b(COPY_TRANS)\\b",
-          "name": "keyword.other.d.weidu"
+          "name": "keyword.other.weidu-d"
         },
         {
           "match": "\\b(COPY_TRANS_LATE)\\b",
-          "name": "keyword.other.d.weidu"
+          "name": "keyword.other.weidu-d"
         }
       ]
     },
     "transfeature": {
-      "name": "keyword.other.d.weidu",
+      "name": "keyword.other.weidu-d",
       "patterns": [
         {
           "match": "\\b(REPLY)\\b",
-          "name": "keyword.other.d.weidu"
+          "name": "keyword.other.weidu-d"
         },
         {
           "match": "\\b(DO)\\b",
-          "name": "keyword.other.d.weidu"
+          "name": "keyword.other.weidu-d"
         },
         {
           "match": "\\b(JOURNAL)\\b",
-          "name": "keyword.other.d.weidu"
+          "name": "keyword.other.weidu-d"
         },
         {
           "match": "\\b(SOLVED_JOURNAL)\\b",
-          "name": "keyword.other.d.weidu"
+          "name": "keyword.other.weidu-d"
         },
         {
           "match": "\\b(UNSOLVED_JOURNAL)\\b",
-          "name": "keyword.other.d.weidu"
+          "name": "keyword.other.weidu-d"
         },
         {
           "match": "\\b(FLAGS)\\b",
-          "name": "keyword.other.d.weidu"
+          "name": "keyword.other.weidu-d"
         }
       ]
     },
     "transnext": {
-      "name": "keyword.other.d.weidu",
+      "name": "keyword.other.weidu-d",
       "patterns": [
         {
           "match": "\\b(EXTERN)\\b",
-          "name": "keyword.other.d.weidu"
+          "name": "keyword.other.weidu-d"
         },
         {
           "match": "\\b(GOTO)\\b",
-          "name": "keyword.other.d.weidu"
+          "name": "keyword.other.weidu-d"
         }
       ]
     },
     "reference": {
-      "name": "variable.parameter.tra.weidu",
+      "name": "variable.parameter.weidu-tra",
       "patterns": [
         {
           "match": "\\s(@)([0-9]+)\\s",
-          "name": "variable.parameter.tra.weidu"
+          "name": "variable.parameter.weidu-tra"
         },
         {
           "match": "\\s(#)([0-9]+)\\s",
-          "name": "variable.parameter.tra.weidu"
+          "name": "variable.parameter.weidu-tra"
         },
         {
           "match": "\\s(\\( AT \"(\\w+)\"\\))\\s",
-          "name": "variable.parameter.tra.weidu"
+          "name": "variable.parameter.weidu-tra"
         }
       ]
     },
     "condition": {
-      "name": "meta.weidu.script.condition",
+      "name": "meta.weidu-d.condition",
       "begin": "\\b(IF)\\b\\s+(~)",
       "beginCaptures": {
         "1": {
-          "name": "keyword.other.d.weidu"
+          "name": "keyword.other.weidu-d"
         },
         "2": {
-          "name": "string.quoted.tilde.weidu"
+          "name": "string.quoted.tilde.weidu-d"
         }
       },
       "end": "(~)",
       "endCaptures": {
         "1": {
-          "name": "string.quoted.tilde.weidu"
+          "name": "string.quoted.tilde.weidu-d"
         }
       },
       "patterns": [
         {
-          "include": "source.baf.weidu#condition-body",
-          "name": "meta.weidu.script.condition"
+          "include": "source.weidu-baf#condition-body",
+          "name": "meta.weidu-d.condition"
         }
       ]
     },
     "action": {
-      "name": "meta.weidu.script.action",
+      "name": "meta.weidu-d.action",
       "begin": "\\b(DO)\\b\\s+(~)",
       "beginCaptures": {
         "1": {
-          "name": "keyword.other.d.weidu"
+          "name": "keyword.other.weidu-d"
         },
         "2": {
-          "name": "string.quoted.tilde.weidu"
+          "name": "string.quoted.tilde.weidu-d"
         }
       },
       "end": "(~)",
       "endCaptures": {
         "1": {
-          "name": "string.quoted.tilde.weidu"
+          "name": "string.quoted.tilde.weidu-d"
         }
       },
       "patterns": [
         {
-          "include": "source.baf.weidu#action-body",
-          "name": "meta.weidu.script.action"
+          "include": "source.weidu-baf#action-body",
+          "name": "meta.weidu-d.action"
         }
       ]
     },
     "strings": {
       "patterns": [
         {
-          "name": "string.quoted.tilde.weidu",
+          "name": "string.quoted.tilde.weidu-d",
           "begin": "~",
           "end": "~",
           "patterns": [

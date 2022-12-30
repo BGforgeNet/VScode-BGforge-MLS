@@ -1,30 +1,30 @@
 $schema: https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json
-name: Infinity Engine Sword Coast Stratagems script
-scopeName: source.ssl.weidu
+name: Sword Coast Stratagems script
+scopeName: source.weidu-ssl
 
 patterns:
   - include: "#action-definition-start"
   - include: "#action-definition-end"
   - include: "#condition"
   - include: "#action"
-  - include: "source.baf.weidu"
+  - include: "source.weidu-baf"
   - include: "#keywords"
 
 repository:
   operators:
     patterns:
       - match: (\&)|(\|)|(;)
-        name: keyword.control.ssl.weidu
+        name: keyword.control.weidu-ssl
 
   loop:
     patterns:
     - match: \b(BEGIN|END)\s+(LOOP)\b
-      name: keyword.control.ssl.weidu
+      name: keyword.control.weidu-ssl
 
   keywords:
     patterns:
     - match: \b(TRIGGER|ACTION)\b
-      name: "keyword.control.ssl.weidu"
+      name: "keyword.control.weidu-ssl"
     - include: "#loop"
     - include: "#include-file"
 
@@ -33,95 +33,95 @@ repository:
       - match: \b(INCLUDE\s+FILE)(\()([^)]+)(\))
         captures:
           "1":
-            name: keyword.control.ssl.weidu
+            name: keyword.control.weidu-ssl
           "2":
-            name: keyword.control.ssl.weidu
+            name: keyword.control.weidu-ssl
           '3':
-            name: string.quoted.double.ssl.weidu
+            name: string.quoted.double.weidu-ssl
             patterns:
-              - include: 'source.baf.weidu#vars'
+              - include: 'source.weidu-baf#vars'
           "4":
-            name: keyword.control.ssl.weidu
+            name: keyword.control.weidu-ssl
             
   action-definition-start:
     begin: \b(BEGIN_ACTION_DEFINITION)\b
     end: \b(ACTION)\b
-    name: meta.action-definition.ssl.weidu
+    name: meta.action-definition.weidu-ssl
     beginCaptures:
       '1':
-        name: keyword.control.baf.weidu
+        name: keyword.control.weidu-baf
     endCaptures:
       '1':
-        name: keyword.control.baf.weidu
+        name: keyword.control.weidu-baf
     patterns:
       - include: '#keywords'
       - include: '#condition-body'
 
   action-definition-end:
-    name: meta.action-definition.ssl.weidu
+    name: meta.action-definition.weidu-ssl
     begin: \b(RESPONSE)\b\s+(#\w+) #first response line colored individially
     end: \b(END)\b
     beginCaptures:
       '1':
-        name: keyword.control.ssl.weidu
+        name: keyword.control.weidu-ssl
       '2':
-        name: constant.other.ssl.weidu
+        name: constant.other.weidu-ssl
     endCaptures:
       '1':
-        name: keyword.control.ssl.weidu
+        name: keyword.control.weidu-ssl
     patterns:
-      - include: 'source.baf.weidu#action-body'
+      - include: 'source.weidu-baf#action-body'
 
   triggers:
     patterns:
       - match: \b(ConditionalTargetBlock|IgnoreBlock|RequireBlock|Target|TargetBlock|TriggerBlock|SSLBoolean)\b\(([\S]+)\)
         captures:
           '1':
-            name: entity.name.function.trigger.ssl.weidu
+            name: entity.name.function.trigger.weidu-ssl
           '2':
             patterns:
               - include: '#operators'
 
   condition-body:
-    name: meta.condition-body.ssl.weidu
+    name: meta.condition-body.weidu-ssl
     patterns:
-      - include: 'source.baf.weidu#condition-body'
+      - include: 'source.weidu-baf#condition-body'
       - include: '#triggers'
       - include: '#loop'
       - include: '#operators'
 
   condition:
-    name: meta.condition.ssl.weidu
+    name: meta.condition.weidu-ssl
     begin: \b(IF)\b\s+(TRIGGER)\b
     end: \b(THEN)\b
     beginCaptures:
       '1':
-        name: keyword.control.ssl.weidu
+        name: keyword.control.weidu-ssl
       '2':
-        name: keyword.control.ssl.weidu
+        name: keyword.control.weidu-ssl
     endCaptures:
       '1':
-        name: keyword.control.ssl.weidu
+        name: keyword.control.weidu-ssl
     patterns:
       - include: '#condition-body'
 
   action:
-    name: meta.action.ssl.weidu
+    name: meta.action.weidu-ssl
     begin: \b(DO)\b
     end: \b(END)\b
     beginCaptures:
       '1':
-        name: keyword.control.ssl.weidu
+        name: keyword.control.weidu-ssl
     endCaptures:
       '1':
-        name: keyword.control.ssl.weidu
+        name: keyword.control.weidu-ssl
     patterns:
-      - include: 'source.baf.weidu#action-body'
+      - include: 'source.weidu-baf#action-body'
       - include: '#actions'
       - include: '#operators'
 
   actions:
-    name: support.function.ssl.weidu
+    name: support.function.weidu-ssl
     patterns:
       - match: \b(?i)(Action)\b
       - match: \b(?i)(Combine)\b

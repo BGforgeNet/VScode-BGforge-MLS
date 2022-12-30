@@ -87,6 +87,9 @@
                 "configuration": "./language-configurations/weidu-tp2.language-configuration.json"
             },
             {
+                "id": "weidu-tp2-tooltip"
+            },
+            {
                 "id": "weidu-tp2-tpl",
                 "aliases": [
                     "WeiDU TP2 template"
@@ -179,7 +182,7 @@
         "grammars": [
             {
                 "language": "weidu-ssl",
-                "scopeName": "source.ssl.weidu",
+                "scopeName": "source.weidu-ssl",
                 "path": "./syntaxes/weidu-ssl.tmLanguage.json"
             },
             {
@@ -199,37 +202,42 @@
             },
             {
                 "language": "weidu-tp2",
-                "scopeName": "source.tp2.weidu",
+                "scopeName": "source.weidu-tp2",
                 "path": "./syntaxes/weidu-tp2.tmLanguage.json"
             },
             {
+                "language": "weidu-tp2-tooltip",
+                "scopeName": "source.weidu-tp2-tooltip",
+                "path": "./syntaxes/weidu-tp2-tooltip.tmLanguage.json"
+            },
+            {
                 "language": "weidu-tp2-tpl",
-                "scopeName": "source.tp2.weidu",
+                "scopeName": "source.weidu-tp2",
                 "path": "./syntaxes/weidu-tp2.tmLanguage.json"
             },
             {
                 "language": "weidu-baf",
-                "scopeName": "source.baf.weidu",
+                "scopeName": "source.weidu-baf",
                 "path": "./syntaxes/weidu-baf.tmLanguage.json"
             },
             {
                 "language": "weidu-baf-tpl",
-                "scopeName": "source.baf.weidu",
+                "scopeName": "source.weidu-baf",
                 "path": "./syntaxes/weidu-baf.tmLanguage.json"
             },
             {
                 "language": "weidu-d",
-                "scopeName": "source.d.weidu",
+                "scopeName": "source.weidu-d",
                 "path": "./syntaxes/weidu-d.tmLanguage.json"
             },
             {
                 "language": "weidu-d-tpl",
-                "scopeName": "source.d.weidu",
+                "scopeName": "source.weidu-d",
                 "path": "./syntaxes/weidu-d.tmLanguage.json"
             },
             {
                 "language": "weidu-slb",
-                "scopeName": "source.slb.weidu",
+                "scopeName": "source.weidu-slb",
                 "path": "./syntaxes/weidu-slb.tmLanguage.json"
             },
             {

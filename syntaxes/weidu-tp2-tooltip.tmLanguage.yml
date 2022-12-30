@@ -1,0 +1,28 @@
+$schema: https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json
+name: WeiDU TP2 tooltip
+scopeName: source.weidu-tp2-tooltip
+
+patterns:
+  - include: '#full'
+
+repository:
+  full:
+    - include: '#strings'
+    - include: '#variables'
+    - include: source.weidu-tp2
+      match: "."
+
+  strings:
+    name: string.weidu-tp2-tooltip
+    patterns:
+      - match: \b(String10|String11|String12|String13)\b
+      - match: \b(String1|String2|String3|String4|String5|String6|String7|String8|String9|String)\b
+      - match: \b(warningString|displayString|buffString\|ascString|stringWithVars)\b
+      - match: \b(String|string)\b
+      - match: \b(oldText|newText)\b
+      - match: \b(text1|text2|text3|text)\b
+
+  variables:
+    name: variable.weidu-tp2-tooltip
+    patterns:
+      - match: \b(variable)\b

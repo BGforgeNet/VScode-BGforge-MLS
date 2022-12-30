@@ -1,6 +1,6 @@
 $schema: https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json
 name: WeiDU dialog
-scopeName: source.d.weidu
+scopeName: source.weidu-d
 
 patterns:
 - include: '#condition'
@@ -22,18 +22,18 @@ repository:
   comments:
     patterns:
     - match: (//).*
-      name: comment.line.d.weidu
+      name: comment.line.weidu-d
     - begin: /\*
       end: \*/
-      name: comment.block.d.weidu
+      name: comment.block.weidu-d
 
   numbers:
     patterns:
     - match: \b(([0-9]+)|(0x[0-9a-fA-F]+))\b
-      name: "constant.numeric.d.weidu"
+      name: "constant.numeric.weidu-d"
 
   d-action:
-    name: keyword.other.d.weidu
+    name: keyword.other.weidu-d
     patterns:
     - match: \b(BEGIN)\b
     - match: \b(APPEND)\b
@@ -64,13 +64,13 @@ repository:
     - match: \b(R_A_T_P_R)\b
 
   action-when:
-    name: keyword.other.d.weidu
+    name: keyword.other.weidu-d
     patterns:
     - match: \b(IF)\b
     - match: \b(UNLESS)\b
   
   chain-epilogue:
-    name: keyword.other.d.weidu
+    name: keyword.other.weidu-d
     patterns:
     - match: \b(END)\b
     - match: \b(EXTERN)\b
@@ -78,20 +78,20 @@ repository:
     - match: \b(EXIT)\b
 
   state:
-    name: keyword.other.d.weidu
+    name: keyword.other.weidu-d
     patterns:
     - match: \b(APPENDI)\b
     - match: \b(CHAIN2)\b
     - match: \b(SAY)\b
 
   transition:
-    name: keyword.other.d.weidu
+    name: keyword.other.weidu-d
     patterns:
     - match: \b(COPY_TRANS)\b
     - match: \b(COPY_TRANS_LATE)\b
 
   transfeature:
-    name: keyword.other.d.weidu
+    name: keyword.other.weidu-d
     patterns:
     - match: \b(REPLY)\b
     - match: \b(DO)\b
@@ -101,51 +101,51 @@ repository:
     - match: \b(FLAGS)\b
 
   transnext:
-    name: keyword.other.d.weidu
+    name: keyword.other.weidu-d
     patterns:
     - match: \b(EXTERN)\b
     - match: \b(GOTO)\b
 
   reference:
-    name: variable.parameter.tra.weidu
+    name: variable.parameter.weidu-tra
     patterns:
     - match: \s(@)([0-9]+)\s
     - match: \s(#)([0-9]+)\s
     - match: \s(\( AT "(\w+)"\))\s
 
   condition:
-    name: meta.weidu.script.condition
+    name: meta.weidu-d.condition
     begin: '\b(IF)\b\s+(~)'
     beginCaptures:
       "1":
-        name: keyword.other.d.weidu
+        name: keyword.other.weidu-d
       "2":
-        name: string.quoted.tilde.weidu
+        name: string.quoted.tilde.weidu-d
     end: '(~)'
     endCaptures:
       "1":
-        name: string.quoted.tilde.weidu
+        name: string.quoted.tilde.weidu-d
     patterns:
-      - include: source.baf.weidu#condition-body
+      - include: source.weidu-baf#condition-body
 
   action:
-    name: meta.weidu.script.action
+    name: meta.weidu-d.action
     begin: '\b(DO)\b\s+(~)'
     beginCaptures:
       "1":
-        name: keyword.other.d.weidu
+        name: keyword.other.weidu-d
       "2":
-        name: string.quoted.tilde.weidu
+        name: string.quoted.tilde.weidu-d
     end: '(~)'
     endCaptures:
       "1":
-        name: string.quoted.tilde.weidu
+        name: string.quoted.tilde.weidu-d
     patterns:
-      - include: source.baf.weidu#action-body
+      - include: source.weidu-baf#action-body
 
   strings:
     patterns:
-    - name: string.quoted.tilde.weidu
+    - name: string.quoted.tilde.weidu-d
       begin: '~'
       end: '~'
       patterns:

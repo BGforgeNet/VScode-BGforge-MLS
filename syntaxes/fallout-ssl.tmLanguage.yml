@@ -24,20 +24,20 @@ repository:
   comments:
     patterns:
       - match: (//).*
-        name: comment.line.ssl
+        name: comment.line.fallout-ssl
       - begin: /\*
         end: \*/
-        name: comment.block.ssl
+        name: comment.block.fallout-ssl
   local-vars:
     patterns:
       - match: \b(LVAR_\w+)\b
-        name: variable.language.local.ssl
+        name: variable.language.local.fallout-ssl
   constants:
     patterns:
       - match: \b(?i)(true|false)\b
-        name: constant.language.ssl
+        name: constant.language.fallout-ssl
   constants-defined:
-    name: support.constant.ssl
+    name: support.constant.fallout-ssl
     patterns:
       - match: \b(?i)(buttontab)\b
       - match: \b(?i)(justifycenter)\b
@@ -69,7 +69,7 @@ repository:
       - match: \b(?i)(texttrunc)\b
       - match: \b(?i)(textunderline)\b
   fallout-base-functions:
-    name: support.function.base.ssl
+    name: support.function.base.fallout-ssl
     patterns:
       - match: \b(?i)(baction_being_used)\b
       - match: \b(?i)(activateregion)\b
@@ -116,7 +116,7 @@ repository:
       - match: \b(?i)(critter_heal)\b
       - match: \b(?i)(critter_injure)\b
       - match: \b(?i)(critter_inven_obj)\b
-        name: invalid.deprecated.ssl
+        name: invalid.deprecated.fallout-ssl
       - match: \b(?i)(critter_is_fleeing)\b
       - match: \b(?i)(critter_mod_skill)\b
       - match: \b(?i)(critter_rm_trait)\b
@@ -350,25 +350,25 @@ repository:
       - match: \b(?i)(wm_area_set_pos)\b
       - match: \b(?i)(world_map)\b
   function-declaration:
-    name: meta.function.dec.ssl
+    name: meta.function.dec.fallout-ssl
     patterns:
       - captures:
           '1':
-            name: support.type.procedure.ssl
+            name: support.type.procedure.fallout-ssl
           '2':
             name: entity.name.function
           '3':
             patterns:
               - include: '#variable'
           '4':
-            name: keyword.control.ssl
+            name: keyword.control.fallout-ssl
         match: \b(?i)(procedure)\b[[:blank:]]+(\w+)(\(.+\))?[[:blank:]]*(;)
   function-definition:
-    name: meta.function.def.ssl
+    name: meta.function.def.fallout-ssl
     patterns:
       - captures:
           '1':
-            name: support.type.procedure.ssl
+            name: support.type.procedure.fallout-ssl
           '2':
             name: entity.name.function
           '3':
@@ -376,18 +376,18 @@ repository:
               - include: '#variable'
         match: \b(?i)(procedure)\b[[:blank:]]+(\w+)(\(.+\))?\b
   function-invocation:
-    name: meta.function.inv.ssl
+    name: meta.function.inv.fallout-ssl
     patterns:
       - captures:
           '1':
-            name: keyword.control.ssl
+            name: keyword.control.fallout-ssl
           '2':
-            name: support.function.ssl
+            name: support.function.fallout-ssl
           '3':
             patterns:
               - include: $self
           '4':
-            name: keyword.control.ssl
+            name: keyword.control.fallout-ssl
         match: \b(?i)(call)\b[[:blank:]]+(\w+)[[:blank:]]*(\(.*\))??(;)
       - include: '#fallout-base-functions'
       - include: '#sfall-functions'
@@ -396,19 +396,19 @@ repository:
       - match: (?i)(\#(define|ifdef|ifndef|undef))[[:blank:]]+(\w+)
         captures:
           '1':
-            name: keyword.control.ssl
+            name: keyword.control.fallout-ssl
           '3':
-            name: entity.other.attribute-name.ssl
+            name: entity.other.attribute-name.fallout-ssl
       - match: (?i)(\#(if|endif|elif|else))\b
-        name: keyword.control.ssl
+        name: keyword.control.fallout-ssl
   keywords:
     patterns:
       - match: (\#include)
-        name: keyword.control.import.ssl
+        name: keyword.control.import.fallout-ssl
       - include: '#operators'
       - include: '#keywords-core'
   keywords-core:
-    name: keyword.control.core.ssl
+    name: keyword.control.core.fallout-ssl
     patterns:
       - match: \b(?i)(begin)\b
       - match: \b(?i)(break)\b
@@ -449,13 +449,13 @@ repository:
   operators:
     patterns:
       - match: (\b(?i)(and|or|not|band|bwor|bnot|bwxor|bwand)\b)
-        name: keyword.control.ssl
+        name: keyword.control.fallout-ssl
       - match: (=|:|>|<|\+\+|\-|\+|;|!|%)
-        name: keyword.control.ssl
+        name: keyword.control.fallout-ssl
       - match: floor
-        name: invalid.deprecated.ssl
+        name: invalid.deprecated.fallout-ssl
   sfall-functions:
-    name: support.function.sfall.ssl
+    name: support.function.sfall.fallout-ssl
     patterns:
       - match: \b(?i)(set_npc_stat_max)\b
       - match: \b(?i)(set_npc_stat_min)\b
@@ -860,23 +860,23 @@ repository:
   strings:
     begin: '"'
     end: '"'
-    name: string.quoted.double.ssl
+    name: string.quoted.double.fallout-ssl
     patterns:
       - match: .
   types:
     patterns:
       - match: \b(?i)(int|string|ObjectPtr)\b
-        name: support.type.ssl
+        name: support.type.fallout-ssl
   variable:
     patterns:
       - match: \b(?i)(variable)\b
-        name: keyword.control.ssl
+        name: keyword.control.fallout-ssl
   numbers:
     patterns:
       - match: \b(([0-9]+)|(0x[0-9a-fA-F]+))\b
-        name: constant.numeric.ssl
+        name: constant.numeric.fallout-ssl
   hooks:
-    name: constant.language.ssl
+    name: constant.language.fallout-ssl
     patterns:
       - match: \b(HOOK_ADJUSTFID)\b
       - match: \b(HOOK_ADJUSTPOISON)\b
@@ -925,7 +925,7 @@ repository:
       - match: \b(HOOK_USESKILLON)\b
       - match: \b(HOOK_WITHINPERCEPTION)\b
   header-constants:
-    name: constant.language.define.ssl
+    name: constant.language.define.fallout-ssl
     patterns:
       - match: \b(ACCEPT_DELIVERY_ASSIGNED)\b
       - match: \b(ACCEPT_DELIVERY_DEATH)\b
@@ -8603,7 +8603,7 @@ repository:
       - match: \b(well_tile)\b
       - match: \b(wright_house_heart)\b
   header-aliases:
-    name: constant.language.define.ssl
+    name: constant.language.define.fallout-ssl
     patterns:
       - match: \b(ALL_LEAVE_BIT)\b
       - match: \b(ARTHUR_IN_POS)\b
@@ -9219,7 +9219,7 @@ repository:
       - match: \b(wright_known_bit)\b
       - match: \b(wright_permission_bit)\b
   header-variables:
-    name: variable.language.define.ssl
+    name: variable.language.define.fallout-ssl
     patterns:
       - match: \b(GVAR_8_BALL_TOILET_SECRET)\b
       - match: \b(GVAR_8_BALL_TRASH_SECRET)\b
@@ -10514,7 +10514,7 @@ repository:
       - match: \b(MVAR_said_borrow_from_frankie)\b
       - match: \b(MVAR_told_billy_to_split)\b
   header-procedures:
-    name: support.function.header.ssl
+    name: support.function.header.fallout-ssl
     patterns:
       - match: \b(CLICK_0)\b
       - match: \b(CLICK_1)\b
@@ -10552,7 +10552,7 @@ repository:
       - match: \b(sierra_set_klaxons_on)\b
       - match: \b(too_many_carts)\b
   header-defines-with-vars:
-    name: support.type.define.header.ssl
+    name: support.type.define.header.fallout-ssl
     patterns:
       - match: \b(BIT_NOTIFY_GUARD_OFF)\b
       - match: \b(BLowOption)\b

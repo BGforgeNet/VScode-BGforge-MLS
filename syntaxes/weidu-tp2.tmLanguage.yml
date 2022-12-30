@@ -1,6 +1,6 @@
 $schema: https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json
 name: WeiDU TP2
-scopeName: source.tp2.weidu
+scopeName: source.weidu-tp2
 
 patterns:
   - include: '#macro-declaration-action'
@@ -45,19 +45,19 @@ repository:
   comments:
     patterns:
       - match: (//).*
-        name: comment.line.weidu
+        name: comment.line.weidu-tp2
       - begin: /\*
         end: \*/
-        name: comment.block.weidu
+        name: comment.block.weidu-tp2
 
   datatypes: # completion tooltips
     patterns:
       - match: \b(multi )?(int|byte|char array|char|word|dword|resref|strref)\b
-        name: support.type.weidu.datatype
+        name: support.type.weidu-tp2.datatype
       - match: \b(action) (function) (\w+)\b
         captures:
           '1':
-            name: support.type.weidu.datatype
+            name: support.type.weidu-tp2.datatype
           '2':
             name: comment
           '3':
@@ -66,7 +66,7 @@ repository:
       - match: \b(patch) (function) (\w+)\b
         captures:
           '1':
-            name: entity.name.function.weidu.patch
+            name: entity.name.function.weidu-tp2.patch
           '2':
             name: comment
           '3':
@@ -83,7 +83,7 @@ repository:
     patterns:
       - include: '#known-functions'
       - match: \b(\w+)\b
-        name: support.function.weidu.action_function # fallback: default style
+        name: support.function.weidu-tp2.action_function # fallback: default style
 
   patch-functions:
     patterns:
@@ -293,7 +293,7 @@ repository:
       - match: \b(REPLACE_STORE_ITEM_MATCH)\b
       - match: \b(REPLACE_STRREF_TRA)\b
   ielib-action-functions:
-    name: support.function.weidu.action_function
+    name: support.function.weidu-tp2.action_function
     patterns:
       - match: \b(CREATE_MINION)\b
       - match: \b(IS_ITEM_GIVEN_OR_CREATED_IN_DIALOG_OR_SCRIPT)\b
@@ -3708,19 +3708,19 @@ repository:
       - match: \b(TIMING_permanent)\b
       - match: \b(TIMING_while_equipped)\b
   weidu-tp2-file:
-    name: keyword.other.weidu
+    name: keyword.other.weidu-tp2
     patterns:
       - match: \b(BACKUP)\b
       - match: \b(AUTHOR|SUPPORT)\b
 
   weidu-tp2-flag:
-    name: keyword.other.weidu
+    name: keyword.other.weidu-tp2
     patterns:
       - match: \b(AUTO_TRA)\b
       - match: \b(ALLOW_MISSING)\b
       - match: \b(ASK_EVERY_COMPONENT)\b
       - match: \b(ALWAYS)\b
-        name: keyword.control.weidu
+        name: keyword.control.weidu-tp2
       - match: \b(README)\b
       - match: \b(UNINSTALL_ORDER)\b
       - match: \b(MODDER)\b
@@ -3731,12 +3731,12 @@ repository:
       - match: \b(AUTO_EVAL_STRINGS)\b
 
   weidu-tp2-language:
-    name: keyword.other.weidu
+    name: keyword.other.weidu-tp2
     patterns:
       - match: \b(LANGUAGE)\b
 
   weidu-tp2-component-flag:
-    name: keyword.other.weidu
+    name: keyword.other.weidu-tp2
     patterns:
       - match: \b(DEPRECATED)\b
       - match: \b(REQUIRE_COMPONENT)\b
@@ -3752,7 +3752,7 @@ repository:
       - match: \b(METADATA)\b
 
   weidu-tp2-action:
-    name: support.function.weidu.action
+    name: support.function.weidu-tp2.action
     patterns:
       - match: \b(COPY)\b
       - match: \b(COPY_EXISTING)\b
@@ -3842,7 +3842,7 @@ repository:
       - match: \b(ACTION_REINCLUDE)\b
 
   weidu-tp2-action-flow:
-    name: keyword.control.action.weidu
+    name: keyword.control.action.weidu-tp2
     patterns:
       - match: \b(ACTION_IF)\b
       - match: \b(ACTION_MATCH)\b
@@ -3862,32 +3862,32 @@ repository:
       - match: \b(AS)\b
 
   weidu-tp2-optglob:
-    name: constant.language.flag.weidu
+    name: constant.language.flag.weidu-tp2
     patterns:
       - match: \b(GLOB)\b
       - match: \b(NOGLOB)\b
 
   weidu-tp2-optcase:
-    name: constant.language.flag.weidu
+    name: constant.language.flag.weidu-tp2
     patterns:
       - match: \b(CASE_SENSITIVE)\b
       - match: \b(CASE_INSENSITIVE)\b
 
   weidu-tp2-optexact:
-    name: constant.language.flag.weidu
+    name: constant.language.flag.weidu-tp2
     patterns:
       - match: \b(EXACT_MATCH)\b
       - match: \b(EVALUATE_REGEXP)\b
       - match: \b(EXACT)\b # AT_EXIT
 
   weidu-tp2-arrarindicessorttype:
-    name: constant.language.flag.weidu
+    name: constant.language.flag.weidu-tp2
     patterns:
       - match: \b(LEXICOGRAPHICALLY)\b
       - match: \b(NUMERICALLY)\b
 
   weidu-tp2-patch:
-    name: entity.name.function.weidu.patch
+    name: entity.name.function.weidu-tp2.patch
     patterns:
       - match: \b(SAY)\b
       - match: \b(PATCH_FAIL)\b
@@ -3981,13 +3981,13 @@ repository:
       - match: \b(COUNT_REGEXP_INSTANCES)\b
       - match: \b(LOOKUP_IDS_SYMBOL_OF_INT)\b
       - match: \b(COMPILE_BAF_TO_BCS)\b
-        name: invalid.deprecated.weidu
+        name: invalid.deprecated.weidu-tp2
       - match: \b(DECOMPILE_BCS_TO_BAF)\b
-        name: invalid.deprecated.weidu
+        name: invalid.deprecated.weidu-tp2
       - match: \b(DECOMPILE_DLG_TO_D)\b
-        name: invalid.deprecated.weidu
+        name: invalid.deprecated.weidu-tp2
       - match: \b(COMPILE_D_TO_DLG)\b
-        name: invalid.deprecated.weidu
+        name: invalid.deprecated.weidu-tp2
       - match: \b(DECOMPILE_AND_PATCH)\b
       - match: \b(REFACTOR_TRIGGER)\b
       - match: \b(REFACTOR_BAF_TRIGGER)\b
@@ -4017,7 +4017,7 @@ repository:
       - match: \b(COMPRESS_INTO_VAR)\b
 
   weidu-tp2-macro:
-    name: support.function.tp2.weidu
+    name: support.function.weidu-tp2
     patterns:
       - match: \b(ADD_ITEM_EQEFFECT)\b
       - match: \b(ADD_ITEM_EFFECT)\b
@@ -4080,7 +4080,7 @@ repository:
       - match: \b(HANDLE_CHARSETS)\b
 
   weidu-tp2-patch-controls:
-    name: keyword.control.patch.weidu
+    name: keyword.control.patch.weidu-tp2
     patterns:
       - match: \b(SET)\b
       - match: \b(WHILE)\b
@@ -4104,7 +4104,7 @@ repository:
       - match: \b(WITH)\b
 
   weidu-tp2-when:
-    name: keyword.control.when.weidu
+    name: keyword.control.when.weidu-tp2
     patterns:
       - match: \b(IF_SIZE_IS)\b
       - match: \b(I_S_I)\b
@@ -4115,13 +4115,13 @@ repository:
       - match: \b(IF_EXISTS)\b
 
   weidu-tp2-value-operators:
-    name: keyword.control.value.weidu
+    name: keyword.control.value.weidu-tp2
     patterns:
       - match: (\=\>|\+|-|\*|\/|=|\*|!|>|<|\?|:)
       - match: \b(MODULO|REM|NOT|OR|AND|BAND|BOR|BXOR|BNOT|BLSL|BASR|EVAL)\b
 
   weidu-tp2-values:
-    name: support.class.weidu.tp2value
+    name: support.class.weidu-tp2.value
     patterns:
       - match: \b(BYTE_AT)\b
       - match: \b(SBYTE_AT)\b
@@ -4179,7 +4179,7 @@ repository:
       - match: \b(INTERACTIVE)\b
 
   weidu-keywords:
-    name: keyword.control.weidu
+    name: keyword.control.weidu-tp2
     patterns:
       - match: \b(BEGIN|END|THEN|IN|ELSE|WHEN|ANY|ERROR_MESSAGE)\b
       - match: \b(AFTER|BEFORE|LAST|FIRST|AT|S?THIS)\b
@@ -4187,12 +4187,12 @@ repository:
 
   strings:
     patterns:
-      - name: string.quoted.double.weidu
+      - name: string.quoted.double.weidu-tp2
         begin: '"'
         end: '"'
         patterns:
           - include: '#non-weidu-vars'
-      - name: string.quoted.5tildes.weidu
+      - name: string.quoted.5tildes.weidu-tp2
         begin: ~~~~~
         end: ~~~~~
         patterns:
@@ -4200,11 +4200,11 @@ repository:
       - match: \s(@)([0-9]+)\s
         captures:
           '1':
-            name: keyword.weidu.trastart
+            name: keyword.weidu-tp2.trastart
           '2':
-            name: variable.parameter.tra.weidu
+            name: variable.parameter.tra.weidu-tp2
 
-      - name: string.quoted.tilde.weidu
+      - name: string.quoted.tilde.weidu-tp2
         begin: '~'
         end: '~'
         patterns:
@@ -4215,20 +4215,20 @@ repository:
       - match: (\$)(\w+)(\()([^)]+)(\))
         captures:
           '1':
-            name: keyword.array-construct.weidu
+            name: keyword.array-construct.weidu-tp2
           '2':
-            name: variable.parameter.array-construct.weidu
+            name: variable.parameter.array-construct.weidu-tp2
           '3':
-            name: keyword.array-construct.weidu
+            name: keyword.array-construct.weidu-tp2
           '4':
             patterns:
               - include: '#strings'
               - include: '#vars'
           '5':
-            name: keyword.array-construct.weidu
+            name: keyword.array-construct.weidu-tp2
 
   weidu-vars:
-    name: constant.language.weidu
+    name: constant.language.weidu-tp2
     patterns:
       - match: (%?TP2_AUTHOR%?)
       - match: (%?TP2_FILE_NAME%?)
@@ -4294,20 +4294,20 @@ repository:
       - match: (%?WMP_EAST_LINKS%?)
 
   non-weidu-vars:
-    name: variable.parameter.weidu
+    name: variable.parameter.weidu-tp2
     patterns:
       - include: '#weidu-vars'
       - include: '#ielib-constants'
       - match: (%)((\w*)(%[#!\-\w]+%)(\w*))(%)
         captures:
           '1':
-            name: keyword.control.double-eval.weidu
+            name: keyword.control.double-eval.weidu-tp2
           '3':
-            name: keyword.control.double-eval.weidu
+            name: keyword.control.double-eval.weidu-tp2
           '5':
-            name: keyword.control.double-eval.weidu
+            name: keyword.control.double-eval.weidu-tp2
           '6':
-            name: keyword.control.double-eval.weidu
+            name: keyword.control.double-eval.weidu-tp2
       - match: (%[#!\-\w]+%)
 
   vars:
@@ -4318,71 +4318,71 @@ repository:
   numbers:
     patterns:
       - match: \b(([0-9]+)|(0x[0-9a-fA-F]+)|(0b[0-1]+))\b
-        name: constant.numeric.weidu
+        name: constant.numeric.weidu-tp2
       - match: \s(#?[0-9]+)\b
-        name: constant.numeric.weidu
+        name: constant.numeric.weidu-tp2
 
   macro-invocation-action:
-    name: meta.macro.invocation.weidu
+    name: meta.macro.invocation.weidu-tp2
     begin: \b(LAM|LAUNCH_ACTION_MACRO)\b
     end: ((\w+)|(\S+))
     beginCaptures:
       '1':
-        name: support.function.weidu.action
+        name: support.function.weidu-tp2.action
     endCaptures:
       '2':
         name: entity.name.function
       '3':
-        name: name.function.weidu
+        name: name.function.weidu-tp2
         patterns:
           - include: '#strings'
 
   macro-invocation-patch:
-    name: meta.macro.invocation.weidu
+    name: meta.macro.invocation.weidu-tp2
     begin: \b(LPM|LAUNCH_PATCH_MACRO)\b
     end: ((\w+)|(\S+))
     beginCaptures:
       '1':
-        name: keyword.control.weidu
+        name: keyword.control.weidu-tp2
     endCaptures:
       '2':
-        name: entity.name.function.weidu.patch
+        name: entity.name.function.weidu-tp2.patch
       '3':
-        name: name.function.weidu
+        name: name.function.weidu-tp2
         patterns:
           - include: '#strings'
 
   function-invocation-action:
-    name: meta.function.invocation.weidu
+    name: meta.function.invocation.weidu-tp2
     begin: \b(LAF|LAUNCH_ACTION_FUNCTION)\b
     end: ((\w+)|(\S+))
     beginCaptures:
       '1':
-        name: support.function.weidu.action
+        name: support.function.weidu-tp2.action
     endCaptures:
       '2':
-        # name: support.function.weidu.action_function
+        # name: support.function.weidu-tp2.action_function
         patterns:
           - include: '#action-functions'
       '3':
-        name: name.function.weidu
+        name: name.function.weidu-tp2
         patterns:
           - include: '#action-functions'
           - include: '#strings'
 
   function-invocation-patch:
-    name: meta.function.invocation.weidu
+    name: meta.function.invocation.weidu-tp2
     begin: \b(LPF|LAUNCH_PATCH_FUNCTION)\b
     end: ((\w+)|(\S+))
     beginCaptures:
       '1':
-        name: entity.name.function.weidu.patch
+        name: entity.name.function.weidu-tp2.patch
     endCaptures:
       '2':
         patterns:
           - include: '#patch-functions'
       '3':
-        name: name.function.weidu
+        name: name.function.weidu-tp2
         patterns:
           - include: '#strings'
 
@@ -4391,80 +4391,80 @@ repository:
       - match: (~)(\S+)(~)
         captures:
           '1':
-            name: keyword.control.weidu
+            name: keyword.control.weidu-tp2
           '2':
-            name: support.function.weidu.action_function
+            name: support.function.weidu-tp2.action_function
           '3':
-            name: keyword.control.weidu
+            name: keyword.control.weidu-tp2
       - match: (")(\S+)(")
         captures:
           '1':
-            name: keyword.control.weidu
+            name: keyword.control.weidu-tp2
           '2':
-            name: support.function.weidu.action_function
+            name: support.function.weidu-tp2.action_function
           '3':
-            name: keyword.control.weidu
+            name: keyword.control.weidu-tp2
       - match: (\S+)
-        name: support.function.weidu.action_function
+        name: support.function.weidu-tp2.action_function
 
   function-name-patch:
     patterns:
       - match: (~)(\S+)(~)
         captures:
           '1':
-            name: keyword.control.weidu
+            name: keyword.control.weidu-tp2
           '2':
-            name: entity.name.class.weidu.patch_function
+            name: entity.name.class.weidu-tp2.patch_function
           '3':
-            name: keyword.control.weidu
+            name: keyword.control.weidu-tp2
       - match: (")(\S+)(")
         captures:
           '1':
-            name: keyword.control.weidu
+            name: keyword.control.weidu-tp2
           '2':
-            name: entity.name.class.weidu.patch_function
+            name: entity.name.class.weidu-tp2.patch_function
           '3':
-            name: keyword.control.weidu
+            name: keyword.control.weidu-tp2
       - match: (\S+)
-        name: entity.name.class.weidu.patch_function
+        name: entity.name.class.weidu-tp2.patch_function
 
   function-declaration-action:
-    name: meta.function.declaration.weidu
+    name: meta.function.declaration.weidu-tp2
     begin: \b(DEFINE_ACTION_FUNCTION|DEFINE_DIMORPHIC_FUNCTION)\s+(\S+)
     end: \b(BEGIN)\b
     beginCaptures:
       '1':
-        name: keyword.control.weidu
+        name: keyword.control.weidu-tp2
       '2':
         patterns:
           - include: '#function-name-action'
     endCaptures:
       '1':
-        name: keyword.control.weidu
+        name: keyword.control.weidu-tp2
     patterns:
       - match: \b(STR_VAR|INT_VAR|RET|RET_ARRAY)\b
-        name: keyword.control.weidu
+        name: keyword.control.weidu-tp2
       - include: '#vars-declaration'
       - include: '#comments'
       - include: '#numbers'
       - include: '#strings'
 
   function-declaration-patch:
-    name: meta.function.declaration.weidu
+    name: meta.function.declaration.weidu-tp2
     begin: \b(DEFINE_PATCH_FUNCTION)\s+(\S+)
     end: \b(BEGIN)\b
     beginCaptures:
       '1':
-        name: keyword.control.weidu
+        name: keyword.control.weidu-tp2
       '2':
         patterns:
           - include: '#function-name-patch'
     endCaptures:
       '1':
-        name: keyword.control.weidu
+        name: keyword.control.weidu-tp2
     patterns:
       - match: \b(STR_VAR|INT_VAR|RET|RET_ARRAY)\b
-        name: keyword.control.weidu
+        name: keyword.control.weidu-tp2
       - include: '#vars-declaration'
       - include: '#comments'
       - include: '#numbers'
@@ -4475,7 +4475,7 @@ repository:
       - match: \b(DEFINE_PATCH_MACRO)\s+(\S+)
         captures:
           '1':
-            name: keyword.control.weidu
+            name: keyword.control.weidu-tp2
           '2':
             patterns:
               - include: '#function-name-patch'
@@ -4485,25 +4485,25 @@ repository:
       - match: \b(DEFINE_ACTION_MACRO)\s+(\S+)
         captures:
           '1':
-            name: keyword.control.weidu
+            name: keyword.control.weidu-tp2
           '2':
             patterns:
               - include: '#function-name-action'
 
   vars-declaration:
-    name: variable.complex.weidu
+    name: variable.complex.weidu-tp2
     patterns:
       - match: \b([-\w]+)\s*(=)\s*(EVAL\s+)?
         captures:
           '1':
-            name: variable.parameter.weidu
+            name: variable.parameter.weidu-tp2
           '2':
-            name: keyword.control.weidu
+            name: keyword.control.weidu-tp2
           '3':
-            name: keyword.control.weidu
+            name: keyword.control.weidu-tp2
 
   infinity-constants:
-    name: constant.language.infinity.weidu
+    name: constant.language.infinity.weidu-tp2
     patterns:
       - match: \b(NAME1)\b
       - match: \b(NAME2)\b
@@ -4663,44 +4663,44 @@ repository:
       - match: \b(EE_LANGUAGE)\b
 
   inlined-d:
-    name: meta.weidu.inlined.d
+    name: meta.weidu-tp2.inlined.d
     begin: (<<<<<<<<)\s+(\S+\.d)\b
     beginCaptures:
       '1':
-        name: keyword.other.weidu
+        name: keyword.other.weidu-tp2
       '2':
-        name: variable.language.inlined-file.weidu
+        name: variable.language.inlined-file.weidu-tp2
     end: (>>>>>>>>)
     endCaptures:
       '1':
-        name: keyword.other.weidu
+        name: keyword.other.weidu-tp2
     patterns:
-      - include: source.d.weidu
+      - include: source.weidu-d
 
   inlined-baf:
-    name: meta.weidu.inlined.baf
+    name: meta.weidu-tp2.inlined.baf
     begin: (<<<<<<<<)\s+(\S+\.baf)\b
     beginCaptures:
       '1':
-        name: keyword.other.weidu
+        name: keyword.other.weidu-tp2
       '2':
-        name: variable.language.inlined-file.weidu
+        name: variable.language.inlined-file.weidu-tp2
     end: (>>>>>>>>)
     endCaptures:
       '1':
-        name: keyword.other.weidu
+        name: keyword.other.weidu-tp2
     patterns:
-      - include: source.baf.weidu
+      - include: source.weidu-baf
 
   ielib-constants:
-    name: constant.language.weidu.ielib
+    name: constant.language.weidu-tp2.ielib
     patterns:
       - include: '#iesdp-constants'
       - include: '#ielib-int'
       - include: '#ielib-resref'
 
   iesdp-constants:
-    name: constant.language.weidu.iesdp
+    name: constant.language.weidu-tp2.iesdp
     patterns:
       - include: '#iesdp-char'
       - include: '#iesdp-byte'

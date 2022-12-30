@@ -1,6 +1,6 @@
 $schema: https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json
 name: WeiDU script
-scopeName: source.baf.weidu
+scopeName: source.weidu-baf
 
 patterns:
   - include: '#comments'
@@ -14,31 +14,31 @@ repository:
   comments:
     patterns:
       - match: (//).*
-        name: comment.line.baf.weidu
+        name: comment.line.weidu-baf
       - begin: /\*
         end: \*/
-        name: comment.block.baf.weidu
+        name: comment.block.weidu-baf
 
   numbers:
     patterns:
       - match: \b(([0-9]+)|(0x[0-9a-fA-F]+))\b
-        name: constant.numeric.baf.weidu
+        name: constant.numeric.weidu-baf
 
   condition:
     begin: \b(IF)\b
     end: \b(THEN)\b
-    name: meta.condition.baf.weidu
+    name: meta.condition.weidu-baf
     beginCaptures:
       '1':
-        name: keyword.control.baf.weidu
+        name: keyword.control.weidu-baf
     endCaptures:
       '1':
-        name: keyword.control.baf.weidu
+        name: keyword.control.weidu-baf
     patterns:
       - include: '#condition-body'
 
   condition-body: # for inclusion in .d
-    name: meta.condition-body.baf.weidu
+    name: meta.condition-body.weidu-baf
     patterns:
       - include: '#identifiers'
       - include: '#comments'
@@ -50,17 +50,17 @@ repository:
       - include: '#vars'
 
   action:
-    name: meta.action.baf.weidu
+    name: meta.action.weidu-baf
     begin: \b(RESPONSE)\b\s+(#[0-9]+) #first response line colored individially
     beginCaptures:
       '1':
-        name: keyword.control.baf.weidu
+        name: keyword.control.weidu-baf
       '2':
-        name: constant.numeric.baf.weidu
+        name: constant.numeric.weidu-baf
     end: \b(END)\b
     endCaptures:
       '1':
-        name: keyword.control.baf.weidu
+        name: keyword.control.weidu-baf
     patterns:
       - include: '#action-body'
 
@@ -78,31 +78,31 @@ repository:
       - include: '#vars'
 
   response:
-    name: keyword.control.baf.weidu
+    name: keyword.control.weidu-baf
     patterns:
       - match: \b(RESPONSE)\b\s+(#[0-9]+)
         captures:
           '2':
-            name: constant.numeric.baf.weidu
+            name: constant.numeric.weidu-baf
 
   vartype:
-    name: keyword.control.baf.weidu
+    name: keyword.control.weidu-baf
     patterns:
       - match: (")\b(LOCALS|GLOBAL|MYAREA)\b(")
         captures:
           '1':
-            name: string.quoted.double.baf.weidu
+            name: string.quoted.double.weidu-baf
           '3':
-            name: string.quoted.double.baf.weidu
+            name: string.quoted.double.weidu-baf
 
   operators:
-    name: keyword.control.baf.weidu
+    name: keyword.control.weidu-baf
     patterns:
       - match: \b(OR)\b|(!)|(@)
 
   strings:
     patterns:
-      - name: string.quoted.double.baf.weidu
+      - name: string.quoted.double.weidu-baf
         begin: '"'
         end: '"'
         patterns:
@@ -114,7 +114,7 @@ repository:
       - match: (%[^%]+%)
 
   identifiers:
-    name: constant.other.baf.weidu
+    name: constant.other.weidu-baf
     patterns:
       - include: '#object-ids'
       - include: '#spell-ids'
@@ -161,7 +161,7 @@ repository:
 
 
   triggers:
-    name: entity.name.function.trigger.baf.weidu
+    name: entity.name.function.trigger.weidu-baf
     patterns:
       - match: \b(Acquired)\b
       - match: \b(ActionListEmpty)\b
@@ -428,7 +428,7 @@ repository:
       - match: \b(XPLT)\b
 
   actions:
-    name: support.function.baf.weidu
+    name: support.function.weidu-baf
     patterns:
       - match: \b(ActionOverride)\b
       - match: \b(Activate)\b
@@ -875,7 +875,7 @@ repository:
       - match: \b(ZoomLock)\b
       - match: \b(reserved)\b
   actions-extras:
-    name: support.function.baf.weidu
+    name: support.function.weidu-baf
     patterns:
       - match: \b(ForceSpellLevelRES)\b
       - match: \b(ForceSpellPointLevelRES)\b
@@ -884,7 +884,7 @@ repository:
       - match: \b(ReallyForceSpellPointLevelRES)\b
 
   object-ids:
-    name: constant.other.baf.weidu
+    name: constant.other.weidu-baf
     patterns:
       - match: \b(Nothing)\b
       - match: \b(Myself)\b
@@ -1005,7 +1005,7 @@ repository:
       - match: \b(TenthFarthestEnemyOf)\b
 
   spell-ids:
-    name: constant.other.baf.weidu
+    name: constant.other.weidu-baf
     patterns:
       - match: \b(CLERIC_BLESS)\b
       - match: \b(CLERIC_COMMAND)\b
@@ -2042,7 +2042,7 @@ repository:
       - match: \b(SHAMAN_FAVORED_OF_THE_SPIRITS)\b
 
   spell-ids-iwdee:
-    name: constant.other.baf.weidu
+    name: constant.other.weidu-baf
     patterns:
       - match: \b(CLERIC_CURSE)\b
       - match: \b(CLERIC_CAUSE_LIGHT_WOUNDS)\b
@@ -2138,7 +2138,7 @@ repository:
       - match: \b(CRUSHING_TRAP)\b
 
   stats-ids:
-    name: constant.other.baf.weidu
+    name: constant.other.weidu-baf
     patterns:
       - match: \b(CURHITPOINTS)\b
       - match: \b(MAXHITPOINTS)\b
@@ -2366,7 +2366,7 @@ repository:
       - match: \b(IGNOREDRAINDEATH)\b
 
   splstate-ids:
-    name: constant.other.baf.weidu
+    name: constant.other.weidu-baf
     patterns:
       - match: \b(HOPELESSNESS)\b
       - match: \b(PROTECTION_FROM_EVIL)\b
@@ -2502,7 +2502,7 @@ repository:
       - match: \b(CYNICISM_EQUIPPED)\b
 
   state-ids:
-    name: constant.other.baf.weidu
+    name: constant.other.weidu-baf
     patterns:
       - match: \b(STATE_NORMAL)\b
       - match: \b(STATE_SLEEPING)\b
@@ -2550,7 +2550,7 @@ repository:
       - match: \b(STATE_NOT_APPROACHABLE)\b
 
   ea-ids:
-    name: constant.other.baf.weidu
+    name: constant.other.weidu-baf
     patterns:
       - match: \b(ANYONE)\b
       - match: \b(INANIMATE)\b
@@ -2573,7 +2573,7 @@ repository:
       - match: \b(ENEMY)\b
 
   align-ids:
-    name: constant.other.baf.weidu
+    name: constant.other.weidu-baf
     patterns:
       - match: \b(LAWFUL_GOOD)\b
       - match: \b(LAWFUL_NEUTRAL)\b
@@ -2592,7 +2592,7 @@ repository:
       - match: \b(MASK_CHAOTIC)\b
 
   general-ids:
-    name: constant.other.baf.weidu
+    name: constant.other.weidu-baf
     patterns:
       - match: \b(HUMANOID)\b
       - match: \b(ANIMAL)\b
@@ -2618,7 +2618,7 @@ repository:
       - match: \b(GLOVES)\b
 
   gender-ids:
-    name: constant.other.baf.weidu
+    name: constant.other.weidu-baf
     patterns:
       - match: \b(MALE)\b
       - match: \b(FEMALE)\b
@@ -2631,14 +2631,14 @@ repository:
       - match: \b(SUMMONED_DEMON)\b
 
   hand-ids:
-    name: constant.other.baf.weidu
+    name: constant.other.weidu-baf
     patterns:
       - match: \b(MAINHAND)\b
       - match: \b(OFFHAND)\b
       - match: \b(BOTH)\b
 
   areaflag-ids:
-    name: constant.other.baf.weidu
+    name: constant.other.weidu-baf
     patterns:
       - match: \b(NOSAVE)\b
       - match: \b(TUTORIALAREA)\b
@@ -2649,7 +2649,7 @@ repository:
       - match: \b(NOTRAVEL)\b
 
   areatype-ids:
-    name: constant.other.baf.weidu
+    name: constant.other.weidu-baf
     patterns:
       - match: \b(OUTDOOR)\b
       - match: \b(DAYNIGHT)\b
@@ -2660,7 +2660,7 @@ repository:
       - match: \b(EXTENDEDNIGHT)\b
 
   button-ids:
-    name: constant.other.baf.weidu
+    name: constant.other.weidu-baf
     patterns:
       - match: \b(BUTTON_STEALTH)\b
       - match: \b(BUTTON_THIEVING)\b
@@ -2679,7 +2679,7 @@ repository:
       - match: \b(SCREEN_INVENTORY)\b
 
   classcat-ids:
-    name: constant.other.baf.weidu
+    name: constant.other.weidu-baf
     patterns:
       - match: \b(WIZARD)\b
       - match: \b(WARRIOR)\b
@@ -2687,7 +2687,7 @@ repository:
       - match: \b(ROGUE)\b
 
   difflev-ids:
-    name: constant.other.baf.weidu
+    name: constant.other.weidu-baf
     patterns:
       - match: \b(EASIEST)\b
       - match: \b(EASY)\b
@@ -2696,7 +2696,7 @@ repository:
       - match: \b(HARDEST)\b
 
   modal-ids:
-    name: constant.other.baf.weidu
+    name: constant.other.weidu-baf
     patterns:
       - match: \b(NONE)\b
       - match: \b(BATTLESONG)\b
@@ -2706,7 +2706,7 @@ repository:
       - match: \b(SHAMANDANCE)\b
 
   scrlev-ids:
-    name: constant.other.baf.weidu
+    name: constant.other.weidu-baf
     patterns:
       - match: \b(OVERRIDE)\b
       - match: \b(AREA)\b
@@ -2717,7 +2717,7 @@ repository:
       - match: \b(DEFAULT)\b
 
   seq-ids:
-    name: constant.other.baf.weidu
+    name: constant.other.weidu-baf
     patterns:
       - match: \b(SEQ_ATTACK)\b
       - match: \b(SEQ_AWAKE)\b
@@ -2738,7 +2738,7 @@ repository:
       - match: \b(SEQ_SLEEP)\b
 
   time-ids:
-    name: constant.other.baf.weidu
+    name: constant.other.weidu-baf
     patterns:
       - match: \b(MIDNIGHT)\b
       - match: \b(NOON)\b
@@ -2748,7 +2748,7 @@ repository:
       - match: \b(DUSK_END)\b
 
   timeoday-ids:
-    name: constant.other.baf.weidu
+    name: constant.other.weidu-baf
     patterns:
       - match: \b(DAY)\b
       - match: \b(DUSK)\b
@@ -2756,7 +2756,7 @@ repository:
       - match: \b(MORNING)\b
 
   gtimes-ids:
-    name: constant.other.baf.weidu
+    name: constant.other.weidu-baf
     patterns:
       - match: \b(ONE_MINUTE)\b
       - match: \b(ONE_ROUND)\b
@@ -2858,7 +2858,7 @@ repository:
       - match: \b(FIFTY_DAYS)\b
 
   weather-ids:
-    name: constant.other.baf.weidu
+    name: constant.other.weidu-baf
     patterns:
       - match: \b(NOWEATHER)\b
       - match: \b(RAIN)\b
@@ -2866,19 +2866,19 @@ repository:
       - match: \b(FOG)\b
 
   xequip-ids:
-    name: constant.other.baf.weidu
+    name: constant.other.weidu-baf
     patterns:
       - match: \b(UNEQUIP)\b
       - match: \b(EQUIP)\b
 
   statmod-ids:
-    name: constant.other.baf.weidu
+    name: constant.other.weidu-baf
     patterns:
       - match: \b(ADD)\b
       - match: \b(SET)\b
 
   wprof-ids:
-    name: constant.other.baf.weidu
+    name: constant.other.weidu-baf
     patterns:
       - match: \b(PROFICIENCYBASTARDSWORD)\b
       - match: \b(PROFICIENCYLONGSWORD)\b
@@ -2907,7 +2907,7 @@ repository:
       - match: \b(PROFICIENCYCLUB)\b
 
   dir-ids:
-    name: constant.other.baf.weidu
+    name: constant.other.weidu-baf
     patterns:
       - match: \b(S)\b
       - match: \b(SSW)\b
@@ -2927,20 +2927,20 @@ repository:
       - match: \b(SSE)\b
 
   boolean-ids:
-    name: constant.other.baf.weidu
+    name: constant.other.weidu-baf
     patterns:
       - match: \b(FALSE)\b
       - match: \b(TRUE)\b
 
   astyles-ids:
-    name: constant.other.baf.weidu
+    name: constant.other.weidu-baf
     patterns:
       - match: \b(DEFAULT)\b
       - match: \b(MELEE)\b
       - match: \b(RANGED)\b
 
   invitem-ids:
-    name: constant.other.baf.weidu
+    name: constant.other.weidu-baf
     patterns:
       - match: \b(IDENTIFIED)\b
       - match: \b(NONSTEALABLE)\b
@@ -2948,7 +2948,7 @@ repository:
       - match: \b(NONDROPABLE)\b
 
   itemflag-ids:
-    name: constant.other.baf.weidu
+    name: constant.other.weidu-baf
     patterns:
       - match: \b(INDESTRUCTIBLE)\b
       - match: \b(TWOHANDED)\b
@@ -2969,7 +2969,7 @@ repository:
       - match: \b(CRITICAL_HIT)\b
 
   jourtype-ids:
-    name: constant.other.baf.weidu
+    name: constant.other.weidu-baf
     patterns:
       - match: \b(USER)\b
       - match: \b(QUEST)\b
@@ -2977,7 +2977,7 @@ repository:
       - match: \b(INFO)\b
 
   mflags-ids:
-    name: constant.other.baf.weidu
+    name: constant.other.weidu-baf
     patterns:
       - match: \b(FORCE)\b
       - match: \b(PLAY)\b
@@ -2985,7 +2985,7 @@ repository:
       - match: \b(SLOW_FADE)\b
 
   music-ids:
-    name: constant.other.baf.weidu
+    name: constant.other.weidu-baf
     patterns:
       - match: \b(DAY)\b
       - match: \b(NIGHT)\b
@@ -2999,7 +2999,7 @@ repository:
       - match: \b(MISC4)\b
 
   reaction-ids:
-    name: constant.other.baf.weidu
+    name: constant.other.weidu-baf
     patterns:
       - match: \b(FRIENDLY_LOWER)\b
       - match: \b(FRIENDLY_UPPER)\b
@@ -3009,7 +3009,7 @@ repository:
       - match: \b(HOSTILE_LOWER)\b
 
   shoutids-ids:
-    name: constant.other.baf.weidu
+    name: constant.other.weidu-baf
     patterns:
       - match: \b(HEALME)\b
       - match: \b(ASSIST)\b
@@ -3017,7 +3017,7 @@ repository:
       - match: \b(SOLAR_STANCE)\b
 
   happy-ids:
-    name: constant.other.baf.weidu
+    name: constant.other.weidu-baf
     patterns:
       - match: \b(UNHAPPY_BREAKING_BOUNDARY)\b
       - match: \b(UNHAPPY_ANGRY_BOUNDARY)\b
@@ -3025,7 +3025,7 @@ repository:
       - match: \b(HAPPY_HAPPY_BOUNDARY)\b
 
   race-ids:
-    name: constant.other.baf.weidu
+    name: constant.other.weidu-baf
     patterns:
       - match: \b(HUMAN)\b
       - match: \b(ELF)\b
@@ -3136,7 +3136,7 @@ repository:
       - match: \b(NO_RACE)\b
 
   race-ids-iwdee:
-    name: constant.other.baf.weidu
+    name: constant.other.weidu-baf
     patterns:
       - match: \b(SVIRFNEBLIN)\b
       - match: \b(SNOW_TROLL)\b
@@ -3146,7 +3146,7 @@ repository:
       - match: \b(POMAB_IMAGE)\b
 
   class-ids:
-    name: constant.other.baf.weidu
+    name: constant.other.weidu-baf
     patterns:
       - match: \b(MAGE)\b
       - match: \b(FIGHTER)\b
@@ -3291,7 +3291,7 @@ repository:
       - match: \b(NO_CLASS)\b
 
   class-ids-iwdee:
-    name: constant.other.baf.weidu
+    name: constant.other.weidu-baf
     patterns:
       - match: \b(SALAMANDER_FIRE)\b
       - match: \b(SALAMANDER_FROST)\b
@@ -3300,7 +3300,7 @@ repository:
       - match: \b(BEETLE_RHINO)\b
 
   kit-ids:
-    name: constant.other.baf.weidu
+    name: constant.other.weidu-baf
     patterns:
       - match: \b(TRUECLASS)\b
       - match: \b(BERSERKER)\b

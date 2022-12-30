@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
-  "name": "Infinity Engine Sword Coast Stratagems script",
-  "scopeName": "source.ssl.weidu",
+  "name": "Sword Coast Stratagems script",
+  "scopeName": "source.weidu-ssl",
   "patterns": [
     {
       "include": "#action-definition-start"
@@ -16,7 +16,7 @@
       "include": "#action"
     },
     {
-      "include": "source.baf.weidu"
+      "include": "source.weidu-baf"
     },
     {
       "include": "#keywords"
@@ -27,7 +27,7 @@
       "patterns": [
         {
           "match": "(\\&)|(\\|)|(;)",
-          "name": "keyword.control.ssl.weidu"
+          "name": "keyword.control.weidu-ssl"
         }
       ]
     },
@@ -35,7 +35,7 @@
       "patterns": [
         {
           "match": "\\b(BEGIN|END)\\s+(LOOP)\\b",
-          "name": "keyword.control.ssl.weidu"
+          "name": "keyword.control.weidu-ssl"
         }
       ]
     },
@@ -43,7 +43,7 @@
       "patterns": [
         {
           "match": "\\b(TRIGGER|ACTION)\\b",
-          "name": "keyword.control.ssl.weidu"
+          "name": "keyword.control.weidu-ssl"
         },
         {
           "include": "#loop"
@@ -59,21 +59,21 @@
           "match": "\\b(INCLUDE\\s+FILE)(\\()([^)]+)(\\))",
           "captures": {
             "1": {
-              "name": "keyword.control.ssl.weidu"
+              "name": "keyword.control.weidu-ssl"
             },
             "2": {
-              "name": "keyword.control.ssl.weidu"
+              "name": "keyword.control.weidu-ssl"
             },
             "3": {
-              "name": "string.quoted.double.ssl.weidu",
+              "name": "string.quoted.double.weidu-ssl",
               "patterns": [
                 {
-                  "include": "source.baf.weidu#vars"
+                  "include": "source.weidu-baf#vars"
                 }
               ]
             },
             "4": {
-              "name": "keyword.control.ssl.weidu"
+              "name": "keyword.control.weidu-ssl"
             }
           }
         }
@@ -82,49 +82,49 @@
     "action-definition-start": {
       "begin": "\\b(BEGIN_ACTION_DEFINITION)\\b",
       "end": "\\b(ACTION)\\b",
-      "name": "meta.action-definition.ssl.weidu",
+      "name": "meta.action-definition.weidu-ssl",
       "beginCaptures": {
         "1": {
-          "name": "keyword.control.baf.weidu"
+          "name": "keyword.control.weidu-baf"
         }
       },
       "endCaptures": {
         "1": {
-          "name": "keyword.control.baf.weidu"
+          "name": "keyword.control.weidu-baf"
         }
       },
       "patterns": [
         {
           "include": "#keywords",
-          "name": "meta.action-definition.ssl.weidu"
+          "name": "meta.action-definition.weidu-ssl"
         },
         {
           "include": "#condition-body",
-          "name": "meta.action-definition.ssl.weidu"
+          "name": "meta.action-definition.weidu-ssl"
         }
       ]
     },
     "action-definition-end": {
-      "name": "meta.action-definition.ssl.weidu",
+      "name": "meta.action-definition.weidu-ssl",
       "begin": "\\b(RESPONSE)\\b\\s+(#\\w+)",
       "end": "\\b(END)\\b",
       "beginCaptures": {
         "1": {
-          "name": "keyword.control.ssl.weidu"
+          "name": "keyword.control.weidu-ssl"
         },
         "2": {
-          "name": "constant.other.ssl.weidu"
+          "name": "constant.other.weidu-ssl"
         }
       },
       "endCaptures": {
         "1": {
-          "name": "keyword.control.ssl.weidu"
+          "name": "keyword.control.weidu-ssl"
         }
       },
       "patterns": [
         {
-          "include": "source.baf.weidu#action-body",
-          "name": "meta.action-definition.ssl.weidu"
+          "include": "source.weidu-baf#action-body",
+          "name": "meta.action-definition.weidu-ssl"
         }
       ]
     },
@@ -134,7 +134,7 @@
           "match": "\\b(ConditionalTargetBlock|IgnoreBlock|RequireBlock|Target|TargetBlock|TriggerBlock|SSLBoolean)\\b\\(([\\S]+)\\)",
           "captures": {
             "1": {
-              "name": "entity.name.function.trigger.ssl.weidu"
+              "name": "entity.name.function.trigger.weidu-ssl"
             },
             "2": {
               "patterns": [
@@ -148,93 +148,93 @@
       ]
     },
     "condition-body": {
-      "name": "meta.condition-body.ssl.weidu",
+      "name": "meta.condition-body.weidu-ssl",
       "patterns": [
         {
-          "include": "source.baf.weidu#condition-body",
-          "name": "meta.condition-body.ssl.weidu"
+          "include": "source.weidu-baf#condition-body",
+          "name": "meta.condition-body.weidu-ssl"
         },
         {
           "include": "#triggers",
-          "name": "meta.condition-body.ssl.weidu"
+          "name": "meta.condition-body.weidu-ssl"
         },
         {
           "include": "#loop",
-          "name": "meta.condition-body.ssl.weidu"
+          "name": "meta.condition-body.weidu-ssl"
         },
         {
           "include": "#operators",
-          "name": "meta.condition-body.ssl.weidu"
+          "name": "meta.condition-body.weidu-ssl"
         }
       ]
     },
     "condition": {
-      "name": "meta.condition.ssl.weidu",
+      "name": "meta.condition.weidu-ssl",
       "begin": "\\b(IF)\\b\\s+(TRIGGER)\\b",
       "end": "\\b(THEN)\\b",
       "beginCaptures": {
         "1": {
-          "name": "keyword.control.ssl.weidu"
+          "name": "keyword.control.weidu-ssl"
         },
         "2": {
-          "name": "keyword.control.ssl.weidu"
+          "name": "keyword.control.weidu-ssl"
         }
       },
       "endCaptures": {
         "1": {
-          "name": "keyword.control.ssl.weidu"
+          "name": "keyword.control.weidu-ssl"
         }
       },
       "patterns": [
         {
           "include": "#condition-body",
-          "name": "meta.condition.ssl.weidu"
+          "name": "meta.condition.weidu-ssl"
         }
       ]
     },
     "action": {
-      "name": "meta.action.ssl.weidu",
+      "name": "meta.action.weidu-ssl",
       "begin": "\\b(DO)\\b",
       "end": "\\b(END)\\b",
       "beginCaptures": {
         "1": {
-          "name": "keyword.control.ssl.weidu"
+          "name": "keyword.control.weidu-ssl"
         }
       },
       "endCaptures": {
         "1": {
-          "name": "keyword.control.ssl.weidu"
+          "name": "keyword.control.weidu-ssl"
         }
       },
       "patterns": [
         {
-          "include": "source.baf.weidu#action-body",
-          "name": "meta.action.ssl.weidu"
+          "include": "source.weidu-baf#action-body",
+          "name": "meta.action.weidu-ssl"
         },
         {
           "include": "#actions",
-          "name": "meta.action.ssl.weidu"
+          "name": "meta.action.weidu-ssl"
         },
         {
           "include": "#operators",
-          "name": "meta.action.ssl.weidu"
+          "name": "meta.action.weidu-ssl"
         }
       ]
     },
     "actions": {
-      "name": "support.function.ssl.weidu",
+      "name": "support.function.weidu-ssl",
       "patterns": [
         {
           "match": "\\b(?i)(Action)\\b",
-          "name": "support.function.ssl.weidu"
+          "name": "support.function.weidu-ssl"
         },
         {
           "match": "\\b(?i)(Combine)\\b",
-          "name": "support.function.ssl.weidu"
+          "name": "support.function.weidu-ssl"
         },
         {
           "match": "\\b(?i)(ActionCondition)\\b",
-          "name": "support.function.ssl.weidu"
+          "name": "support.function.weidu-ssl"
         }
       ]
     }
