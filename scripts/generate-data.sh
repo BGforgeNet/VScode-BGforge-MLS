@@ -18,7 +18,7 @@ dest_dir="server/out"
     -i $data_dir/weidu-tp2-base.yml $data_dir/weidu-tp2-iesdp.yml $data_dir/weidu-tp2-ielib.yml \
     --completion $dest_dir/completion.weidu-tp2.json \
     --hover $dest_dir/hover.weidu-tp2.json \
-    --tooltip-lang weidu-tp2
+    --tooltip-lang weidu-tp2-tooltip
 
 ./scripts/generate-data.py \
     -i $data_dir/weidu-baf-base.yml $data_dir/weidu-baf-iesdp.yml \

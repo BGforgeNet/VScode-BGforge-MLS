@@ -7,10 +7,12 @@ patterns:
 
 repository:
   full:
-    - include: '#strings'
-    - include: '#variables'
-    - include: source.weidu-tp2
-      match: "."
+    name: meta.weidu-tp2-tooltip
+    patterns:
+      - include: '#strings'
+      - include: '#variables'
+      - include: source.weidu-tp2
+        match: "."
 
   strings:
     name: string.weidu-tp2-tooltip

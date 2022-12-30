@@ -8,18 +8,24 @@
     }
   ],
   "repository": {
-    "full": [
-      {
-        "include": "#strings"
-      },
-      {
-        "include": "#variables"
-      },
-      {
-        "include": "source.weidu-tp2",
-        "match": "."
-      }
-    ],
+    "full": {
+      "name": "meta.weidu-tp2-tooltip",
+      "patterns": [
+        {
+          "include": "#strings",
+          "name": "meta.weidu-tp2-tooltip"
+        },
+        {
+          "include": "#variables",
+          "name": "meta.weidu-tp2-tooltip"
+        },
+        {
+          "include": "source.weidu-tp2",
+          "match": ".",
+          "name": "meta.weidu-tp2-tooltip"
+        }
+      ]
+    },
     "strings": {
       "name": "string.weidu-tp2-tooltip",
       "patterns": [
