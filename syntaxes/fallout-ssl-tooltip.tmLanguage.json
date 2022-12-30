@@ -1,6 +1,6 @@
 {
     "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
-    "name": "Fallout Star-Trek Scripting Language",
+    "name": "Fallout Star-Trek Scripting Language tooltip",
     "scopeName": "source.fallout-ssl-tooltip",
     "patterns": [
         {
