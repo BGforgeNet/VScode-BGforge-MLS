@@ -21,22 +21,7 @@ export async function activate(context: ExtensionContext) {
     // The debug options for the server
     // --inspect=6009: runs the server in Node's Inspector mode so VS Code can attach to the server for debugging
     const debugOptions = { execArgv: ["--nolazy", "--inspect=6009"] };
-    const disposable = vscode.commands.registerCommand(cmd_compile, async () => {
-        // compile.exe and weidu.exe need files saved on disk to parse them
-        const text_document = vscode.window.activeTextEditor.document;
-        await text_document.save();
-
-        const params: ExecuteCommandParams = {
-            command: cmd_compile,
-            arguments: [
-                {
-                    uri: text_document.uri.toString(),
-                    scheme: text_document.uri.scheme,
-                },
-            ],
-        };
-        await client.sendRequest(ExecuteCommandRequest.type, params);
-    });
+    const disposable = vscode.commands.registerCommand(cmd_compile, compile);
     context.subscriptions.push(disposable);
 
     // If the extension is launched in debug mode then the debug server options are used
@@ -83,6 +68,7 @@ export async function activate(context: ExtensionContext) {
 
     // Start the client. This will also launch the server
     await client.start();
+    conlog("BGforge MLS client started");
 }
 
 export async function deactivate(): Promise<void> {
@@ -90,4 +76,72 @@ export async function deactivate(): Promise<void> {
         return undefined;
     }
     return await client.stop();
+}
+
+async function compile(
+    document = vscode.window.activeTextEditor.document,
+    triggered_by_save = false
+) {
+    // compile.exe and weidu.exe need files saved on disk to parse them
+    if (!triggered_by_save) {
+        await document.save();
+    }
+    const uri = document.uri;
+    const params: ExecuteCommandParams = {
+        command: cmd_compile,
+        arguments: [
+            {
+                uri: uri.toString(),
+                scheme: uri.scheme,
+            },
+        ],
+    };
+    await client.sendRequest(ExecuteCommandRequest.type, params);
+}
+
+vscode.workspace.onDidChangeTextDocument(async (change) => {
+    // same list is checked in server, update both if changing
+    const compile_languages = [
+        "weidu-tp2",
+        "weidu-tp2-tpl",
+        "weidu-d",
+        "weidu-d-tpl",
+        "weidu-baf",
+        "weidu-baf-tpl",
+        "fallout-ssl",
+    ];
+    const lang_id = change.document.languageId;
+    if (!compile_languages.includes(lang_id)) {
+        return;
+    }
+    const validate_on_change = vscode.workspace.getConfiguration("bgforge").get("validateOnType");
+    if (!validate_on_change) {
+        return;
+    }
+    change.document.save(); // automatically triggers compile on server
+});
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function conlog(item: any) {
+    switch (typeof item) {
+        case "number":
+            console.log(item.toString());
+            break;
+        case "boolean":
+            console.log(item.toString());
+            break;
+        case "undefined":
+            console.log(item);
+            break;
+        case "string":
+            console.log(item);
+            break;
+        default:
+            if (item.size && item.size > 0 && JSON.stringify(item) == "{}") {
+                console.log(JSON.stringify([...item]));
+            } else {
+                console.log(JSON.stringify(item));
+            }
+            break;
+    }
 }

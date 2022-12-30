@@ -84,7 +84,7 @@ function send_diagnostics(uri_string: string, output_text: string, format = "wei
 }
 
 // export function wcompile(params: any) {
-export function compile(uri_string: string, settings: WeiDUsettings) {
+export function compile(uri_string: string, settings: WeiDUsettings, interactive = false) {
     const game_path = settings.gamePath;
     const weidu_path = settings.path;
     const filepath = URI.parse(uri_string).fsPath;
@@ -114,15 +114,20 @@ export function compile(uri_string: string, settings: WeiDUsettings) {
         conlog(
             "Not a WeiDU file (tp2, tph, tpa, tpp, d, baf, tpl) or template! Focus a WeiDU file to parse."
         );
-        connection.window.showInformationMessage("Focus a WeiDU file or template to parse!");
+        if (interactive) {
+            connection.window.showInformationMessage("Focus a WeiDU file or template to parse!");
+        }
+
         return;
     }
 
     if ((weidu_type == "d" || weidu_type == "baf") && game_path == "") {
         conlog("Path to IE game is not specified in settings, can't parse D or BAF!");
-        connection.window.showWarningMessage(
-            "Path to IE game is not specified in settings, can't parse D or BAF!"
-        );
+        if (interactive) {
+            connection.window.showWarningMessage(
+                "Path to IE game is not specified in settings, can't parse D or BAF!"
+            );
+        }
         return;
     }
 
@@ -149,11 +154,15 @@ export function compile(uri_string: string, settings: WeiDUsettings) {
         }
         if (result.status != 0) {
             conlog("error: " + result.status);
-            connection.window.showErrorMessage(`Failed to preprocess ${base_name}!`);
+            if (interactive) {
+                connection.window.showErrorMessage(`Failed to preprocess ${base_name}!`);
+            }
             send_diagnostics(uri_string, result.stderr.toString(), "gcc");
             preprocess_failed = true;
         } else {
-            connection.window.showInformationMessage(`Succesfully preprocessed ${base_name}.`);
+            if (interactive) {
+                connection.window.showInformationMessage(`Succesfully preprocessed ${base_name}.`);
+            }
         }
     }
     if (preprocess_failed) {
@@ -165,7 +174,7 @@ export function compile(uri_string: string, settings: WeiDUsettings) {
     const weidu_cmd = `${weidu_path} ${weidu_args} ${weidu_type} ${real_name} `;
     cp.exec(weidu_cmd, { cwd: cwd_to }, (err: cp.ExecException, stdout: string, stderr: string) => {
         conlog("stdout: " + stdout);
-        const parse_result = parse_weidu_output(stdout); //dupe, yes
+        const parse_result = parse_weidu_output(stdout); // dupe, yes
         conlog(parse_result);
         if (stderr) {
             conlog("stderr: " + stderr);
@@ -177,12 +186,16 @@ export function compile(uri_string: string, settings: WeiDUsettings) {
         ) {
             conlog("error: " + err.message);
             conlog(parse_result);
-            connection.window.showErrorMessage(`Failed to parse ${real_name}!`);
+            if (interactive) {
+                connection.window.showErrorMessage(`Failed to parse ${real_name}!`);
+            }
             if (tpl == false) {
                 send_diagnostics(uri_string, stdout);
             }
         } else {
-            connection.window.showInformationMessage(`Succesfully parsed ${real_name}.`);
+            if (interactive) {
+                connection.window.showInformationMessage(`Succesfully parsed ${real_name}.`);
+            }
         }
     });
 }

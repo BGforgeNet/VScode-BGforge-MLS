@@ -59,6 +59,18 @@ const static_signatures: SignatureData = new Map();
 const completion_languages = ["weidu-tp2", "fallout-ssl"];
 const hover_languages = ["weidu-tp2", "fallout-ssl"];
 const signature_languages = ["fallout-ssl"];
+/** Only these languages can be compiled */
+const compile_languages = [
+    "weidu-tp2",
+    "weidu-tp2-tpl",
+    "weidu-d",
+    "weidu-d-tpl",
+    "weidu-baf",
+    "weidu-baf-tpl",
+    "fallout-ssl",
+];
+/** These languages require game path to compile */
+const compile_languages_with_game = ["weidu-d", "weidu-d-tpl", "weidu-baf", "weidu-baf-tpl"];
 
 let workspace_root: string;
 let initialized = false;
@@ -389,13 +401,16 @@ connection.onExecuteCommand(async (params) => {
     const args = params.arguments[0];
 
     if (args.scheme != "file") {
-        conlog("Scheme is not 'file'");
+        conlog("Compile: scheme is not 'file'");
         connection.window.showInformationMessage("Focus a valid file to compile!");
         return;
     }
-
     const uri = args.uri;
-    const setttings = await getDocumentSettings(uri);
+    compile(uri, true);
+});
+
+async function compile(uri: string, interactive = false) {
+    const settings = await getDocumentSettings(uri);
     const document: TextDocument = documents.get(uri);
 
     const lang_id = document.languageId;
@@ -406,7 +421,7 @@ connection.onExecuteCommand(async (params) => {
 
     switch (lang_id) {
         case "fallout-ssl": {
-            fallout_ssl.compile(uri, setttings.falloutSSL);
+            fallout_ssl.compile(uri, settings.falloutSSL, interactive);
             break;
         }
         case "weidu-tp2":
@@ -415,16 +430,18 @@ connection.onExecuteCommand(async (params) => {
         case "weidu-baf-tpl":
         case "weidu-d":
         case "weidu-d-tpl": {
-            weidu.compile(uri, setttings.weidu);
+            weidu.compile(uri, settings.weidu, interactive);
             break;
         }
         default: {
             conlog("Compile called on a wrong language.");
-            connection.window.showInformationMessage("Can't compile this file.");
+            if (interactive) {
+                connection.window.showInformationMessage(`Can't compile ${uri}.`);
+            }
             break;
         }
     }
-});
+}
 
 connection.onSignatureHelp((params: TextDocumentPositionParams): SignatureHelp => {
     const position = params.position;
@@ -460,3 +477,26 @@ function sig_response(signature: SignatureInformation, parameter: number) {
     };
     return result;
 }
+
+async function can_compile(document: TextDocument) {
+    const lang_id = document.languageId;
+    if (!compile_languages.includes(lang_id)) {
+        return false;
+    }
+    const settings = await getDocumentSettings(document.uri);
+    if (compile_languages_with_game.includes(lang_id) && settings.weidu.gamePath == "") {
+        return false;
+    }
+    return true;
+}
+
+documents.onDidSave(async (change) => {
+    const uri = change.document.uri;
+    if (!can_compile(change.document)) {
+        return;
+    }
+    const settings = await getDocumentSettings(uri);
+    if (settings.validateOnSave || settings.validateOnType) {
+        compile(uri);
+    }
+});

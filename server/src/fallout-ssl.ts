@@ -296,7 +296,7 @@ function find_headers(dirName: string) {
     return entries;
 }
 
-export function compile(uri_string: string, ssl_settings: SSLsettings) {
+export function compile(uri_string: string, ssl_settings: SSLsettings, interactive = false) {
     const filepath = URI.parse(uri_string).fsPath;
     const cwd_to = path.dirname(filepath);
     const base_name = path.parse(filepath).base;
@@ -308,7 +308,9 @@ export function compile(uri_string: string, ssl_settings: SSLsettings) {
     if (ext.toLowerCase() != ssl_ext) {
         // vscode loses open file if clicked on console or elsewhere
         conlog("Not a Fallout SSL file! Please focus a Fallout SSL file to compile.");
-        connection.window.showInformationMessage("Please focus a Fallout SSL file to compile!");
+        if (interactive) {
+            connection.window.showInformationMessage("Please focus a Fallout SSL file to compile!");
+        }
         return;
     }
     conlog(`compiling ${base_name}...`);
@@ -323,9 +325,13 @@ export function compile(uri_string: string, ssl_settings: SSLsettings) {
             }
             if (err) {
                 conlog("error: " + err.message);
-                connection.window.showErrorMessage(`Failed to compile ${base_name}!`);
+                if (interactive) {
+                    connection.window.showErrorMessage(`Failed to compile ${base_name}!`);
+                }
             } else {
-                connection.window.showInformationMessage(`Succesfully compiled ${base_name}.`);
+                if (interactive) {
+                    connection.window.showInformationMessage(`Succesfully compiled ${base_name}.`);
+                }
             }
             send_diagnostics(uri_string, stdout);
         }
