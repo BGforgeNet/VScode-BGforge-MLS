@@ -17,6 +17,8 @@ keywords:
     - name: begin
     - name: end
     - name: procedure
+    - name: if
+    - name: else
 engine-procedures:
   type: 3 # function
   items:
