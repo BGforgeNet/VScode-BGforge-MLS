@@ -20,6 +20,10 @@
           "name": "meta.weidu-tp2-tooltip"
         },
         {
+          "include": "#keywords",
+          "name": "meta.weidu-tp2-tooltip"
+        },
+        {
           "include": "source.weidu-tp2",
           "match": ".",
           "name": "meta.weidu-tp2-tooltip"
@@ -52,6 +56,23 @@
         {
           "match": "\\b(text1|text2|text3|text)\\b",
           "name": "string.weidu-tp2-tooltip"
+        }
+      ]
+    },
+    "keywords": {
+      "name": "support.class.weidu-tp2-tooltip",
+      "patterns": [
+        {
+          "match": "(\\.\\.\\.)",
+          "name": "support.class.weidu-tp2-tooltip"
+        },
+        {
+          "match": "(\\[)",
+          "name": "support.class.weidu-tp2-tooltip"
+        },
+        {
+          "match": "(\\])",
+          "name": "support.class.weidu-tp2-tooltip"
         }
       ]
     },

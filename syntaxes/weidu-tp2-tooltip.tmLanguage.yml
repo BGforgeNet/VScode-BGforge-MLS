@@ -11,6 +11,7 @@ repository:
     patterns:
       - include: '#strings'
       - include: '#variables'
+      - include: '#keywords'
       - include: source.weidu-tp2
         match: "."
 
@@ -23,6 +24,13 @@ repository:
       - match: \b(String|string)\b
       - match: \b(oldText|newText)\b
       - match: \b(text1|text2|text3|text)\b
+
+  keywords:
+    name: keyword.weidu-tp2-tooltip
+    patterns:
+      - match: (\.\.\.)
+      - match: (\[)
+      - match: (\])
 
   variables:
     name: variable.weidu-tp2-tooltip
