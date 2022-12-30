@@ -13,6 +13,9 @@
       "include": "#comments"
     },
     {
+      "include": "#condition-abbreviated"
+    },
+    {
       "include": "#d-action"
     },
     {
@@ -41,6 +44,12 @@
     },
     {
       "include": "#strings"
+    },
+    {
+      "include": "#vars"
+    },
+    {
+      "include": "#sugar"
     }
   ],
   "repository": {
@@ -309,19 +318,41 @@
           "name": "keyword.other.weidu-d"
         },
         "2": {
-          "name": "string.quoted.tilde.weidu-d"
+          "name": "string.quoted.weidu-d.tilde"
         }
       },
       "end": "(~)",
       "endCaptures": {
         "1": {
-          "name": "string.quoted.tilde.weidu-d"
+          "name": "string.quoted.weidu-d.tilde"
         }
       },
       "patterns": [
         {
           "include": "source.weidu-baf#condition-body",
           "name": "meta.weidu-d.condition"
+        }
+      ]
+    },
+    "condition-abbreviated": {
+      "begin": "\\s+(\\+)\\s+(~)",
+      "beginCaptures": {
+        "1": {
+          "name": "keyword.other.weidu-d"
+        },
+        "2": {
+          "name": "string.quoted.weidu-d.tilde"
+        }
+      },
+      "end": "(~)",
+      "endCaptures": {
+        "1": {
+          "name": "string.quoted.weidu-d.tilde"
+        }
+      },
+      "patterns": [
+        {
+          "include": "source.weidu-baf#condition-body"
         }
       ]
     },
@@ -369,6 +400,14 @@
         {
           "match": "(%[^%]+%)",
           "name": "variable.parameter.weidu-d"
+        }
+      ]
+    },
+    "sugar": {
+      "patterns": [
+        {
+          "name": "keyword.weidu-d",
+          "match": "\\+"
         }
       ]
     }

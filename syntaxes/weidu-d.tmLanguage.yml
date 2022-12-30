@@ -6,6 +6,7 @@ patterns:
 - include: '#condition'
 - include: '#action'
 - include: '#comments'
+- include: '#condition-abbreviated'
 - include: '#d-action'
 - include: '#action-when'
 - include: '#chain-epilogue'
@@ -16,6 +17,8 @@ patterns:
 - include: '#reference'
 - include: '#numbers'
 - include: '#strings'
+- include: '#vars' # D can be COMPILE EVAL
+- include: '#sugar'
 
 
 repository:
@@ -120,11 +123,26 @@ repository:
       "1":
         name: keyword.other.weidu-d
       "2":
-        name: string.quoted.tilde.weidu-d
+        name: string.quoted.weidu-d.tilde
     end: '(~)'
     endCaptures:
       "1":
-        name: string.quoted.tilde.weidu-d
+        name: string.quoted.weidu-d.tilde
+    patterns:
+      - include: source.weidu-baf#condition-body
+
+  # this one is harder
+  condition-abbreviated:
+    begin: '\s+(\+)\s+(~)'
+    beginCaptures:
+      "1":
+        name: keyword.other.weidu-d
+      "2":
+        name: string.quoted.weidu-d.tilde
+    end: '(~)'
+    endCaptures:
+      "1":
+        name: string.quoted.weidu-d.tilde
     patterns:
       - include: source.weidu-baf#condition-body
 
@@ -155,3 +173,9 @@ repository:
     name: variable.parameter.weidu-d
     patterns:
     - match: '(%[^%]+%)'
+
+  # various syntax sugar
+  sugar:
+    patterns:
+      - name: keyword.weidu-d
+        match: \+

@@ -60,19 +60,19 @@
       ]
     },
     "keywords": {
-      "name": "support.class.weidu-tp2-tooltip",
+      "name": "keyword.weidu-tp2-tooltip",
       "patterns": [
         {
           "match": "(\\.\\.\\.)",
-          "name": "support.class.weidu-tp2-tooltip"
+          "name": "keyword.weidu-tp2-tooltip"
         },
         {
           "match": "(\\[)",
-          "name": "support.class.weidu-tp2-tooltip"
+          "name": "keyword.weidu-tp2-tooltip"
         },
         {
           "match": "(\\])",
-          "name": "support.class.weidu-tp2-tooltip"
+          "name": "keyword.weidu-tp2-tooltip"
         }
       ]
     },
