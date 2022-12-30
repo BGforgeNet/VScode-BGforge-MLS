@@ -48,4 +48,4 @@ popd
 ./scripts/ielib-update.py -s "$ielib_dir" --data-file "$data_weidu_ielib" --highlight-weidu "$highlight_weidu"
 
 # convert yaml to json
-./scripts/syntaxes_to_json.sh
+./scripts/syntaxes-to-json.sh
