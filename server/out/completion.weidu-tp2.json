@@ -1373,7 +1373,7 @@
         "source": "builtin",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nLAUNCH_ACTION_FUNCTION String [ INT_VAR variable [ = value ] ... ] [ STR_VAR variable [ = [ EVALUATE_BUFFER ] String ] ... ] [ RET variable [ = String ] ... ] [ RET_ARRAY variable [ = String ] ... ] END\n```\nLaunch an action function. Refer to the Functions section for additional information. You may use LAF as a synonym for LAUNCH_ACTION_FUNCTION."
+            "value": "```weidu-tp2-tooltip\nLAUNCH_ACTION_FUNCTION String\n  [ INT_VAR variable [ = value ] ... ]\n  [ STR_VAR variable [ = [ EVALUATE_BUFFER ] String ] ... ]\n  [ RET variable [ = String ] ... ]\n  [ RET_ARRAY variable [ = String ] ... ]\nEND\n```\nLaunch an action function. Refer to the Functions section for additional information. You may use `LAF` as a synonym for `LAUNCH_ACTION_FUNCTION`."
         }
     },
     {
@@ -1382,7 +1382,7 @@
         "source": "builtin",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nLAF String [ INT_VAR variable [ = value ] ... ] [ STR_VAR variable [ = [ EVALUATE_BUFFER ] String ] ... ] [ RET variable [ = String ] ... ] [ RET_ARRAY variable [ = String ] ... ] END\n```\nLaunch an action function. Refer to the Functions section for additional information. You may use LAF as a synonym for LAUNCH_ACTION_FUNCTION."
+            "value": "```weidu-tp2-tooltip\nLAF String\n  [ INT_VAR variable [ = value ] ... ]\n  [ STR_VAR variable [ = [ EVALUATE_BUFFER ] String ] ... ]\n  [ RET variable [ = String ] ... ]\n  [ RET_ARRAY variable [ = String ] ... ]\nEND\n```\nLaunch an action function. Refer to the Functions section for additional information. You may use `LAF` as a synonym for `LAUNCH_ACTION_FUNCTION`."
         }
     },
     {

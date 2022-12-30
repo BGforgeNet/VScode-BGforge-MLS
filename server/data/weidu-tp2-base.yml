@@ -581,19 +581,31 @@ tp2-action:
     - name: GET_FILE_ARRAY
       detail: GET_FILE_ARRAY String path regexp
       doc: |-
-        The array $string(0), $string{1} etc is set to the file names, including path, that match regexp in path. The path is relative to the installation directory (e.g. save/000000000-Auto-Save).
+        The array `$string(0), $string{1}` etc is set to the file names, including `path`, that match `regexp` in `path`. The `path` is relative to the installation directory (e.g. `save/000000000-Auto-Save`).
     - name: INCLUDE
       detail: INCLUDE String list
       doc: |-
         Loads the file string as if it were a list of tp2 actions and executes it (as if it had been typed inside your tp2). These files have by convenience tph as an extension, due to no reason other than randomness (you can use .tp1 or .xyzsucks if you're so oriented). Please note that, to speed up inclusions, tph files are stored in memory, rather than re-read each time from the hard-disk. If you need automorphing code (IE, you want to edit your tph file), you can use REINCLUDE instead.
     - name: LAUNCH_ACTION_FUNCTION
-      detail: LAUNCH_ACTION_FUNCTION String [ INT_VAR variable [ = value ] ... ] [ STR_VAR variable [ = [ EVALUATE_BUFFER ] String ] ... ] [ RET variable [ = String ] ... ] [ RET_ARRAY variable [ = String ] ... ] END
+      detail: |-
+        LAUNCH_ACTION_FUNCTION String
+          [ INT_VAR variable [ = value ] ... ]
+          [ STR_VAR variable [ = [ EVALUATE_BUFFER ] String ] ... ]
+          [ RET variable [ = String ] ... ]
+          [ RET_ARRAY variable [ = String ] ... ]
+        END
       doc: |-
-        Launch an action function. Refer to the Functions section for additional information. You may use LAF as a synonym for LAUNCH_ACTION_FUNCTION.
+        Launch an action function. Refer to the Functions section for additional information. You may use `LAF` as a synonym for `LAUNCH_ACTION_FUNCTION`.
     - name: LAF
-      detail: LAF String [ INT_VAR variable [ = value ] ... ] [ STR_VAR variable [ = [ EVALUATE_BUFFER ] String ] ... ] [ RET variable [ = String ] ... ] [ RET_ARRAY variable [ = String ] ... ] END
+      detail: |-
+        LAF String
+          [ INT_VAR variable [ = value ] ... ]
+          [ STR_VAR variable [ = [ EVALUATE_BUFFER ] String ] ... ]
+          [ RET variable [ = String ] ... ]
+          [ RET_ARRAY variable [ = String ] ... ]
+        END
       doc: |-
-        Launch an action function. Refer to the Functions section for additional information. You may use LAF as a synonym for LAUNCH_ACTION_FUNCTION.
+        Launch an action function. Refer to the Functions section for additional information. You may use `LAF` as a synonym for `LAUNCH_ACTION_FUNCTION`.
     - name: LAUNCH_ACTION_MACRO
       detail: LAUNCH_ACTION_MACRO String
       doc: |-
