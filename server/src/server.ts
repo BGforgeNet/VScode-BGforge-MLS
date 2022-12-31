@@ -29,10 +29,10 @@ import {
 } from "./completion";
 import { dynamic_hover, HoverEx, load_static_hover, self_hover, static_hover } from "./hover";
 import {
-    find_label_for_signature,
     load_static_signatures,
     sig_response,
     static_signatures,
+    get_signature_label,
 } from "./signature";
 
 // Create a connection for the server. The connection uses Node's IPC as a transport.
@@ -338,15 +338,10 @@ async function compile(uri: string, interactive = false) {
 }
 
 connection.onSignatureHelp((params: TextDocumentPositionParams): SignatureHelp => {
-    const position = params.position;
-
     const uri = params.textDocument.uri;
     const document = documents.get(uri);
     const text = document.getText();
-    const lines = text.split(/\r?\n/g);
-    const str = lines[position.line];
-    const pos = position.character;
-    const sig_request = find_label_for_signature(str, pos);
+    const sig_request = get_signature_label(text, params.position);
     if (!sig_request) {
         return;
     }

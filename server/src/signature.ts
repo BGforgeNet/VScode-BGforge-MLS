@@ -1,6 +1,6 @@
 import { readFileSync } from "fs";
 import path = require("path");
-import { SignatureInformation } from "vscode-languageserver/node";
+import { Position, SignatureInformation } from "vscode-languageserver/node";
 import { conlog } from "./common";
 
 export interface SignatureMap extends Map<string, SignatureInformation> {}
@@ -37,7 +37,11 @@ export interface SigReqData {
 }
 
 /** Finds label and current parameter index */
-export function find_label_for_signature(line: string, pos: number) {
+export function get_signature_label(text: string, position: Position) {
+    const lines = text.split(/\r?\n/g);
+    const line = lines[position.line];
+    const pos = position.character;
+
     // only left side matters for signature
     const left = line.slice(0, pos);
     const last_char = left.slice(-1);
