@@ -18,6 +18,7 @@ import * as path from "path";
 import * as fallout_ssl from "./fallout-ssl";
 import * as weidu from "./weidu";
 import * as common from "./common";
+import { compileable } from "./compile";
 import { conlog, is_header } from "./common";
 import { MLSsettings, defaultSettings } from "./settings";
 import {
@@ -44,19 +45,6 @@ export const documents: TextDocuments<TextDocument> = new TextDocuments(TextDocu
 
 let hasConfigurationCapability = false;
 let hasWorkspaceFolderCapability = false;
-
-/** Only these languages can be compiled */
-const compile_languages = [
-    "weidu-tp2",
-    "weidu-tp2-tpl",
-    "weidu-d",
-    "weidu-d-tpl",
-    "weidu-baf",
-    "weidu-baf-tpl",
-    "fallout-ssl",
-];
-/** These languages require game path to compile */
-const compile_languages_with_game = ["weidu-d", "weidu-d-tpl", "weidu-baf", "weidu-baf-tpl"];
 
 let workspace_root: string;
 let initialized = false;
@@ -169,7 +157,8 @@ documents.onDidChangeContent((change) => {
     }
     reload_self_data(change.document);
 });
-function getDocumentSettings(resource: string): Thenable<MLSsettings> {
+
+export function getDocumentSettings(resource: string): Thenable<MLSsettings> {
     if (!hasConfigurationCapability) {
         return Promise.resolve(globalSettings);
     }
@@ -374,21 +363,9 @@ connection.onSignatureHelp((params: TextDocumentPositionParams): SignatureHelp =
     }
 });
 
-async function can_compile(document: TextDocument) {
-    const lang_id = document.languageId;
-    if (!compile_languages.includes(lang_id)) {
-        return false;
-    }
-    const settings = await getDocumentSettings(document.uri);
-    if (compile_languages_with_game.includes(lang_id) && settings.weidu.gamePath == "") {
-        return false;
-    }
-    return true;
-}
-
 documents.onDidSave(async (change) => {
     const uri = change.document.uri;
-    if (!can_compile(change.document)) {
+    if (!compileable(change.document)) {
         return;
     }
     const settings = await getDocumentSettings(uri);
