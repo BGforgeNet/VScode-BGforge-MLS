@@ -390,7 +390,7 @@
         },
         {
           "match": "\\b(?i)(critter_inven_obj)\\b",
-          "name": "invalid.deprecated.fallout-ssl"
+          "name": "invalid.deprecated.bgforge"
         },
         {
           "match": "\\b(?i)(critter_is_fleeing)\\b",
@@ -1602,7 +1602,7 @@
         },
         {
           "match": "floor",
-          "name": "invalid.deprecated.fallout-ssl"
+          "name": "invalid.deprecated.bgforge"
         }
       ]
     },

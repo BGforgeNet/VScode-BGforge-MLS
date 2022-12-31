@@ -116,7 +116,7 @@ repository:
       - match: \b(?i)(critter_heal)\b
       - match: \b(?i)(critter_injure)\b
       - match: \b(?i)(critter_inven_obj)\b
-        name: invalid.deprecated.fallout-ssl
+        name: invalid.deprecated.bgforge
       - match: \b(?i)(critter_is_fleeing)\b
       - match: \b(?i)(critter_mod_skill)\b
       - match: \b(?i)(critter_rm_trait)\b
@@ -453,7 +453,7 @@ repository:
       - match: (=|:|>|<|\+\+|\-|\+|;|!|%)
         name: keyword.control.fallout-ssl
       - match: floor
-        name: invalid.deprecated.fallout-ssl
+        name: invalid.deprecated.bgforge
   sfall-functions:
     name: support.function.sfall.fallout-ssl
     patterns:
