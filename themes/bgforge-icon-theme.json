@@ -22,6 +22,9 @@
 		}
 	],
 	"iconDefinitions": {
+		"fallout-ssl": {
+			"iconPath": "./icons/fallout-ssl.svg"
+		},
 		"weidu-tp2": {
 			"iconPath": "./icons/weidu-tp2.png"
 		},
@@ -1891,6 +1894,7 @@
 		"npm-debug.log": "_npm_ignored"
 	},
 	"languageIds": {
+		"fallout-ssl": "fallout-ssl",
 		"weidu-tp2": "weidu-tp2",
 		"weidu-tp2-tpl": "weidu-tp2-tpl",
 		"weidu-baf": "weidu-baf",
