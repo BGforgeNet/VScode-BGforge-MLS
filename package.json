@@ -113,6 +113,9 @@
                 "configuration": "./language-configurations/weidu-baf.language-configuration.json"
             },
             {
+                "id": "weidu-baf-tooltip"
+            },
+            {
                 "id": "weidu-baf-tpl",
                 "aliases": [
                     "Infinity Engine script template"
@@ -222,6 +225,11 @@
                 "language": "weidu-baf",
                 "scopeName": "source.weidu-baf",
                 "path": "./syntaxes/weidu-baf.tmLanguage.json"
+            },
+            {
+                "language": "weidu-baf-tooltip",
+                "scopeName": "source.weidu-baf-tooltip",
+                "path": "./syntaxes/weidu-baf-tooltip.tmLanguage.json"
             },
             {
                 "language": "weidu-baf-tpl",

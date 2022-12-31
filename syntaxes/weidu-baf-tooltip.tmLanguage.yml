@@ -1,0 +1,28 @@
+$schema: https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json
+name: WeiDU BAF tooltip
+scopeName: source.weidu-baf-tooltip
+
+patterns:
+  - include: '#function'
+  - include: '#variables'
+
+repository:
+
+  function:
+    patterns:
+      - match: (\w+)\((.*)\)
+        captures:
+          '1':
+            name: support.function.weidu-baf-tooltip
+          '2':
+            patterns:
+              - include: "#variables"
+
+  variables:
+    patterns:
+      - match: (\w+)(:)(\w+)
+        captures:
+          '1':
+            name: support.function.weidu-baf-tooltip
+          '2':
+            name: keyword.weidu-baf-tooltip
