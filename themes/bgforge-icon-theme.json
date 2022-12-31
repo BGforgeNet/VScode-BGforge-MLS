@@ -12,7 +12,7 @@
 			"id": "seti",
 			"src": [
 				{
-					"path": "./icons/seti.woff",
+					"path": "./seti.woff",
 					"format": "woff"
 				}
 			],
