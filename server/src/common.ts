@@ -2,13 +2,9 @@
 
 import { realpathSync } from "fs";
 import * as path from "path";
-import {
-    CompletionItem,
-    Hover,
-    DiagnosticSeverity,
-    Diagnostic,
-    SignatureInformation,
-} from "vscode-languageserver/node";
+import { DiagnosticSeverity, Diagnostic } from "vscode-languageserver/node";
+import { CompletionItemEx } from "./completion";
+import { HoverEx } from "./hover";
 import { connection } from "./server";
 
 export function fname(uri: string) {
@@ -53,33 +49,10 @@ export function get_word_at(str: string, pos: number) {
     return str.slice(left, right + pos);
 }
 
-/** Save item source for defines */
-export interface CompletionItemEx extends CompletionItem {
-    source: string;
-}
-
-export interface HoverEx extends Hover {
-    source: string;
-}
-
 export interface DynamicData {
     completion: Array<CompletionItemEx>;
     hover: Map<string, HoverEx>;
 }
-
-// single language
-export interface CompletionList extends Array<CompletionItem> {}
-export interface CompletionListEx extends Array<CompletionItemEx> {}
-export interface HoverMap extends Map<string, Hover> {}
-export interface HoverMapEx extends Map<string, HoverEx> {}
-export interface SignatureMap extends Map<string, SignatureInformation> {}
-
-// all languages
-export interface CompletionData extends Map<string, CompletionList | CompletionListEx> {}
-export interface CompletionDataEx extends Map<string, CompletionListEx> {}
-export interface HoverData extends Map<string, HoverMap | HoverMapEx> {}
-export interface HoverDataEx extends Map<string, HoverMapEx> {}
-export interface SignatureData extends Map<string, SignatureMap> {}
 
 export interface ParseItem {
     file: string;

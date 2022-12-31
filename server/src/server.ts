@@ -20,20 +20,17 @@ import * as path from "path";
 import * as fallout_ssl from "./fallout-ssl";
 import * as weidu from "./weidu";
 import * as common from "./common";
-import {
-    conlog,
-    CompletionData,
-    HoverData,
-    CompletionDataEx,
-    HoverDataEx,
-    HoverEx,
-    is_subdir,
-    find_label_for_signature,
-    SignatureMap,
-    SignatureData,
-} from "./common";
-import { lstatSync, readFileSync } from "fs";
+import { conlog, is_subdir, find_label_for_signature } from "./common";
+import { lstatSync } from "fs";
 import { MLSsettings, defaultSettings } from "./settings";
+import {
+    dynamic_completion,
+    load_static_completion,
+    self_completion,
+    static_completion,
+} from "./completion";
+import { dynamic_hover, HoverEx, load_static_hover, self_hover, static_hover } from "./hover";
+import { load_static_signatures, static_signatures } from "./signature";
 
 // Create a connection for the server. The connection uses Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
@@ -46,19 +43,6 @@ export const documents: TextDocuments<TextDocument> = new TextDocuments(TextDocu
 let hasConfigurationCapability = false;
 let hasWorkspaceFolderCapability = false;
 
-const static_completion: CompletionData = new Map();
-const dynamic_completion: CompletionDataEx = new Map();
-const self_completion: CompletionDataEx = new Map();
-
-const static_hover: HoverData = new Map();
-const dynamic_hover: HoverDataEx = new Map();
-const self_hover: HoverDataEx = new Map();
-
-const static_signatures: SignatureData = new Map();
-
-const completion_languages = ["weidu-tp2", "fallout-ssl", "weidu-d", "weidu-baf"];
-const hover_languages = ["weidu-tp2", "fallout-ssl", "weidu-d", "weidu-baf"];
-const signature_languages = ["fallout-ssl"];
 /** Only these languages can be compiled */
 const compile_languages = [
     "weidu-tp2",
@@ -295,44 +279,6 @@ async function load_dynamic_intellisense() {
     dynamic_hover.set("fallout-ssl", fallout_header_data.hover);
     dynamic_completion.set("fallout-ssl", fallout_header_data.completion);
     initialized = true;
-}
-
-function load_static_completion() {
-    for (const lang_id of completion_languages) {
-        try {
-            const file_path = path.join(__dirname, `completion.${lang_id}.json`);
-            const completion_list = JSON.parse(readFileSync(file_path, "utf-8"));
-            static_completion.set(lang_id, completion_list);
-        } catch (e) {
-            conlog(e);
-        }
-    }
-}
-
-function load_static_hover() {
-    for (const lang_id of hover_languages) {
-        try {
-            const file_path = path.join(__dirname, `hover.${lang_id}.json`);
-            const json_data = JSON.parse(readFileSync(file_path, "utf-8"));
-            const hover_data: Map<string, Hover> = new Map(Object.entries(json_data));
-            static_hover.set(lang_id, hover_data);
-        } catch (e) {
-            conlog(e);
-        }
-    }
-}
-
-function load_static_signatures() {
-    for (const lang_id of signature_languages) {
-        try {
-            const file_path = path.join(__dirname, `signature.${lang_id}.json`);
-            const json_data = JSON.parse(readFileSync(file_path, "utf-8"));
-            const sig_data: SignatureMap = new Map(Object.entries(json_data));
-            static_signatures.set(lang_id, sig_data);
-        } catch (e) {
-            conlog(e);
-        }
-    }
 }
 
 // This handler resolve additional information for the item selected in
