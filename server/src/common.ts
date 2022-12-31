@@ -34,19 +34,6 @@ export async function conlog(item: any) {
     }
 }
 
-// get word under cursor
-export function get_word_at(str: string, pos: number) {
-    // Search for the word's beginning and end.
-    const left = str.slice(0, pos + 1).search(/\w+$/),
-        right = str.slice(pos).search(/\W/);
-    // The last word in the string is a special case.
-    if (right < 0) {
-        return str.slice(left);
-    }
-    // Return the word, using the located bounds to extract it from the string.
-    return str.slice(left, right + pos);
-}
-
 export interface DynamicData {
     completion: Array<CompletionItemEx>;
     hover: Map<string, HoverEx>;

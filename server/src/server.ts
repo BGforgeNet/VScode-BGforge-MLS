@@ -17,7 +17,6 @@ import { TextDocument } from "vscode-languageserver-textdocument";
 import * as path from "path";
 import * as fallout_ssl from "./fallout-ssl";
 import * as weidu from "./weidu";
-import * as common from "./common";
 import { compileable } from "./compile";
 import { conlog, is_header } from "./common";
 import { MLSsettings, defaultSettings } from "./settings";
@@ -27,7 +26,14 @@ import {
     self_completion,
     static_completion,
 } from "./completion";
-import { dynamic_hover, HoverEx, load_static_hover, self_hover, static_hover } from "./hover";
+import {
+    dynamic_hover,
+    HoverEx,
+    load_static_hover,
+    self_hover,
+    static_hover,
+    get_word_at,
+} from "./hover";
 import {
     load_static_signatures,
     sig_response,
@@ -256,13 +262,8 @@ connection.onHover((textDocumentPosition: TextDocumentPositionParams): Hover => 
     }
 
     const text = documents.get(textDocumentPosition.textDocument.uri).getText();
-    const lines = text.split(/\r?\n/g);
-    const position = textDocumentPosition.position;
+    const word = get_word_at(text, textDocumentPosition.position);
 
-    const str = lines[position.line];
-    const pos = position.character;
-    const word = common.get_word_at(str, pos);
-    conlog(word);
     // faster to check each map than join them
     if (word) {
         let hover: Hover | HoverEx;

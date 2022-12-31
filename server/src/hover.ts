@@ -1,5 +1,6 @@
 import { readFileSync } from "fs";
 import path = require("path");
+import { Position } from "vscode-languageserver-textdocument";
 import { Hover } from "vscode-languageserver/node";
 import { conlog } from "./common";
 
@@ -28,4 +29,21 @@ export function load_static_hover() {
             conlog(e);
         }
     }
+}
+
+/** get word under cursor */
+export function get_word_at(text: string, position: Position) {
+    const lines = text.split(/\r?\n/g);
+    const str = lines[position.line];
+    const pos = position.character;
+
+    // Search for the word's beginning and end.
+    const left = str.slice(0, pos + 1).search(/\w+$/),
+        right = str.slice(pos).search(/\W/);
+    // The last word in the string is a special case.
+    if (right < 0) {
+        return str.slice(left);
+    }
+    // Return the word, using the located bounds to extract it from the string.
+    return str.slice(left, right + pos);
 }
