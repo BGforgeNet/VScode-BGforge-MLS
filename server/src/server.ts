@@ -56,8 +56,8 @@ const self_hover: HoverDataEx = new Map();
 
 const static_signatures: SignatureData = new Map();
 
-const completion_languages = ["weidu-tp2", "fallout-ssl", "weidu-d"];
-const hover_languages = ["weidu-tp2", "fallout-ssl", "weidu-d"];
+const completion_languages = ["weidu-tp2", "fallout-ssl", "weidu-d", "weidu-baf"];
+const hover_languages = ["weidu-tp2", "fallout-ssl", "weidu-d", "weidu-baf"];
 const signature_languages = ["fallout-ssl"];
 /** Only these languages can be compiled */
 const compile_languages = [
