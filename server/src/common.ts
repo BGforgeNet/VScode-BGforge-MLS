@@ -139,3 +139,10 @@ export function find_label_for_signature(line: string, pos: number) {
     const result: SigReqData = { label: symbol, parameter: arg_num };
     return result;
 }
+
+export function is_header(filepath: string, lang_id: string) {
+    if (path.extname(filepath) == "h" && lang_id == "fallout-ssl") {
+        return true;
+    }
+    return false;
+}

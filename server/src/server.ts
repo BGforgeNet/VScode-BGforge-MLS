@@ -20,8 +20,7 @@ import * as path from "path";
 import * as fallout_ssl from "./fallout-ssl";
 import * as weidu from "./weidu";
 import * as common from "./common";
-import { conlog, is_subdir, find_label_for_signature } from "./common";
-import { lstatSync } from "fs";
+import { conlog, find_label_for_signature, is_header } from "./common";
 import { MLSsettings, defaultSettings } from "./settings";
 import {
     dynamic_completion,
@@ -126,7 +125,7 @@ connection.onInitialized(async () => {
     load_static_completion();
     load_static_hover();
     load_static_signatures();
-    load_external_headers();
+    fallout_ssl.load_external_headers(workspace_root, globalSettings.falloutSSL.headersDirectory);
     load_dynamic_intellisense();
     conlog("initialized");
 });
@@ -156,13 +155,6 @@ function get_data_lang(lang_id: string) {
 documents.onDidClose((e) => {
     documentSettings.delete(e.document.uri);
 });
-
-function is_header(filepath: string, lang_id: string) {
-    if (path.extname(filepath) == "h" && lang_id == "fallout-ssl") {
-        return true;
-    }
-    return false;
-}
 
 // The content of a text document has changed. This event is emitted
 // when the text document first opened or when its content has changed.
@@ -238,40 +230,6 @@ connection.onCompletion((_textDocumentPosition: TextDocumentPositionParams): Com
     const list = [...self_list, ...static_list, ...dynamic_list];
     return list;
 });
-
-/** Loads Fallout header data from a directory outside of workspace, if specified in settings.
- * These files are not tracked for changes, and data is static.
- */
-async function load_external_headers() {
-    conlog("loading external headers");
-    const headers_dir = globalSettings.falloutSSL.headersDirectory;
-
-    try {
-        if (!lstatSync(headers_dir).isDirectory) {
-            conlog(`${headers_dir} is not a directory, skipping external headers.`);
-            return;
-        }
-    } catch {
-        conlog(`lstat ${headers_dir} failed, aborting.`);
-        return;
-    }
-    if (is_subdir(workspace_root, headers_dir)) {
-        conlog(`real ${headers_dir} is a subdirectory of workspace ${workspace_root}, aborting.`);
-        return;
-    }
-
-    conlog(`loading external headers from ${headers_dir}`);
-    const fallout_header_data = await fallout_ssl.load_data(headers_dir);
-    const lang_id = "fallout-ssl";
-    const old_completion = static_completion.get(lang_id);
-    const old_hover = static_hover.get(lang_id);
-    const new_completion = [...old_completion, ...fallout_header_data.completion];
-    const new_hover = new Map([...old_hover, ...fallout_header_data.hover]);
-
-    static_hover.set(lang_id, new_hover);
-    static_completion.set(lang_id, new_completion);
-    conlog(`loaded external headers from ${headers_dir}`);
-}
 
 /** loads headers from workspace */
 async function load_dynamic_intellisense() {

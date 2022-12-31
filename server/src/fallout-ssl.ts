@@ -1,27 +1,23 @@
 "use strict";
 
 import { CompletionItemKind } from "vscode-languageserver";
-import {
-    CompletionItemEx,
-    HoverEx,
-    conlog,
-    CompletionList,
-    HoverMap,
-    CompletionListEx,
-    HoverMapEx,
-    ParseItemList,
-    ParseResult,
-    send_parse_result,
-} from "./common";
+import { conlog, ParseItemList, ParseResult, send_parse_result, is_subdir } from "./common";
 import { connection, documents } from "./server";
 import * as path from "path";
 import { DynamicData } from "./common";
-import { readFileSync } from "fs";
+import { lstatSync, readFileSync } from "fs";
 import { sync as fgsync } from "fast-glob";
 import { MarkupKind } from "vscode-languageserver/node";
 import * as cp from "child_process";
 import { URI } from "vscode-uri";
 import { SSLsettings } from "./settings";
+import {
+    CompletionItemEx,
+    CompletionList,
+    CompletionListEx,
+    static_completion,
+} from "./completion";
+import { HoverEx, HoverMap, HoverMapEx, static_hover } from "./hover";
 
 interface HeaderDataList {
     macros: DefineList;
@@ -336,4 +332,37 @@ export function compile(uri_string: string, ssl_settings: SSLsettings, interacti
             send_diagnostics(uri_string, stdout);
         }
     );
+}
+
+/** Loads Fallout header data from a directory outside of workspace, if specified in settings.
+ * These files are not tracked for changes, and data is static.
+ */
+export async function load_external_headers(workspace_root: string, headers_dir: string) {
+    conlog("loading external headers");
+
+    try {
+        if (!lstatSync(headers_dir).isDirectory) {
+            conlog(`${headers_dir} is not a directory, skipping external headers.`);
+            return;
+        }
+    } catch {
+        conlog(`lstat ${headers_dir} failed, aborting.`);
+        return;
+    }
+    if (is_subdir(workspace_root, headers_dir)) {
+        conlog(`real ${headers_dir} is a subdirectory of workspace ${workspace_root}, aborting.`);
+        return;
+    }
+
+    conlog(`loading external headers from ${headers_dir}`);
+    const fallout_header_data = await load_data(headers_dir);
+    const lang_id = "fallout-ssl";
+    const old_completion = static_completion.get(lang_id);
+    const old_hover = static_hover.get(lang_id);
+    const new_completion = [...old_completion, ...fallout_header_data.completion];
+    const new_hover = new Map([...old_hover, ...fallout_header_data.hover]);
+
+    static_hover.set(lang_id, new_hover);
+    static_completion.set(lang_id, new_completion);
+    conlog(`loaded external headers from ${headers_dir}`);
 }
