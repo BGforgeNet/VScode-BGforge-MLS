@@ -26,14 +26,7 @@ import {
     self_completion,
     static_completion,
 } from "./completion";
-import {
-    dynamic_hover,
-    HoverEx,
-    load_static_hover,
-    self_hover,
-    static_hover,
-    get_word_at,
-} from "./hover";
+import * as hover from "./hover";
 import {
     load_static_signatures,
     sig_response,
@@ -120,7 +113,7 @@ connection.onInitialized(async () => {
     globalSettings = await connection.workspace.getConfiguration({ section: "bgforge" });
     // load data
     load_static_completion();
-    load_static_hover();
+    hover.load_static();
     load_static_signatures();
     fallout_ssl.load_external_headers(workspace_root, globalSettings.falloutSSL.headersDirectory);
     load_dynamic_intellisense();
@@ -186,26 +179,26 @@ async function reload_self_data(txtDoc: TextDocument) {
         case "fallout-ssl": {
             const rel_path = path.relative(workspace_root, txtDoc.uri);
             if (is_header(rel_path, lang_id)) {
-                const completion = dynamic_completion.get(lang_id);
-                const hover = dynamic_hover.get(lang_id);
+                const old_completion = dynamic_completion.get(lang_id);
+                const old_hover = hover.data_dynamic.get(lang_id);
                 const new_data = fallout_ssl.reload_data(
                     rel_path,
                     txtDoc.getText(),
-                    completion,
-                    hover
+                    old_completion,
+                    old_hover
                 );
-                dynamic_hover.set(lang_id, new_data.hover);
+                hover.data_dynamic.set(lang_id, new_data.hover);
                 dynamic_completion.set(lang_id, new_data.completion);
             } else {
-                const completion = self_completion.get(rel_path);
-                const hover = self_hover.get(rel_path);
+                const old_completion = self_completion.get(rel_path);
+                const old_hover = hover.data_self.get(rel_path);
                 const new_data = fallout_ssl.reload_data(
                     rel_path,
                     txtDoc.getText(),
-                    completion,
-                    hover
+                    old_completion,
+                    old_hover
                 );
-                self_hover.set(rel_path, new_data.hover);
+                hover.data_self.set(rel_path, new_data.hover);
                 self_completion.set(rel_path, new_data.completion);
             }
             break;
@@ -231,7 +224,7 @@ connection.onCompletion((_textDocumentPosition: TextDocumentPositionParams): Com
 /** loads headers from workspace */
 async function load_dynamic_intellisense() {
     const fallout_header_data = await fallout_ssl.load_data("");
-    dynamic_hover.set("fallout-ssl", fallout_header_data.hover);
+    hover.data_dynamic.set("fallout-ssl", fallout_header_data.hover);
     dynamic_completion.set("fallout-ssl", fallout_header_data.completion);
     initialized = true;
 }
@@ -253,20 +246,21 @@ connection.onHover((textDocumentPosition: TextDocumentPositionParams): Hover => 
     const lang_id = documents.get(textDocumentPosition.textDocument.uri).languageId;
     const rel_path = path.relative(workspace_root, textDocumentPosition.textDocument.uri);
     const hover_lang_id = get_data_lang(lang_id);
-    const static_map = static_hover.get(hover_lang_id);
-    const dynamic_map = dynamic_hover.get(hover_lang_id);
-    const self_map = self_hover.get(rel_path);
+    const static_map = hover.data_static.get(hover_lang_id);
+    const dynamic_map = hover.data_dynamic.get(hover_lang_id);
+    const self_map = hover.data_self.get(rel_path);
 
     if (!static_map && !dynamic_map && !self_map) {
         return;
     }
 
     const text = documents.get(textDocumentPosition.textDocument.uri).getText();
-    const word = get_word_at(text, textDocumentPosition.position);
+    const word = hover.symbol_at_position(text, textDocumentPosition.position);
 
     // faster to check each map than join them
     if (word) {
-        let hover: Hover | HoverEx;
+        conlog(word);
+        let hover: Hover | hover.HoverEx;
         if (self_map) {
             hover = self_map.get(word);
             if (hover) {

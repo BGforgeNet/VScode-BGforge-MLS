@@ -15,7 +15,8 @@ import {
     CompletionListEx,
     static_completion,
 } from "./completion";
-import { HoverEx, HoverMap, HoverMapEx, static_hover } from "./hover";
+import { HoverEx, HoverMap, HoverMapEx } from "./hover";
+import * as hover from "./hover";
 
 interface HeaderDataList {
     macros: DefineList;
@@ -356,11 +357,11 @@ export async function load_external_headers(workspace_root: string, headers_dir:
     const fallout_header_data = await load_data(headers_dir);
     const lang_id = "fallout-ssl";
     const old_completion = static_completion.get(lang_id);
-    const old_hover = static_hover.get(lang_id);
+    const old_hover = hover.data_static.get(lang_id);
     const new_completion = [...old_completion, ...fallout_header_data.completion];
     const new_hover = new Map([...old_hover, ...fallout_header_data.hover]);
 
-    static_hover.set(lang_id, new_hover);
+    hover.data_static.set(lang_id, new_hover);
     static_completion.set(lang_id, new_completion);
     conlog(`loaded external headers from ${headers_dir}`);
 }
