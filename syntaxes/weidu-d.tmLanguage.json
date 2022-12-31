@@ -335,7 +335,7 @@
       ]
     },
     "condition-abbreviated": {
-      "begin": "\\s+(\\+)\\s+(~)",
+      "begin": "\\s+(\\+)\\s*(~)",
       "beginCaptures": {
         "1": {
           "name": "keyword.other.weidu-d"
@@ -408,6 +408,10 @@
         {
           "name": "keyword.weidu-d",
           "match": "\\+"
+        },
+        {
+          "name": "keyword.weidu-d",
+          "match": "\\b(IF_FILE_EXISTS|WEIGHT|SAFE|THEN|nonPausing)\\b"
         }
       ]
     }

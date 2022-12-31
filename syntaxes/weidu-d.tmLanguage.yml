@@ -131,9 +131,9 @@ repository:
     patterns:
       - include: source.weidu-baf#condition-body
 
-  # this one is harder
+  # this one should come later, when most of the text is taken
   condition-abbreviated:
-    begin: '\s+(\+)\s+(~)'
+    begin: '\s+(\+)\s*(~)'
     beginCaptures:
       "1":
         name: keyword.other.weidu-d
@@ -179,3 +179,5 @@ repository:
     patterns:
       - name: keyword.weidu-d
         match: \+
+      - name: keyword.weidu-d
+        match: \b(IF_FILE_EXISTS|WEIGHT|SAFE|THEN|nonPausing)\b

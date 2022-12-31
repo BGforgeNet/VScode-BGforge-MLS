@@ -1,0 +1,114 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "WeiDU D tooltip",
+  "scopeName": "source.weidu-d-tooltip",
+  "patterns": [
+    {
+      "include": "#full"
+    }
+  ],
+  "repository": {
+    "full": {
+      "name": "meta.weidu-d-tooltip",
+      "patterns": [
+        {
+          "include": "#strings",
+          "name": "meta.weidu-d-tooltip"
+        },
+        {
+          "include": "#variables",
+          "name": "meta.weidu-d-tooltip"
+        },
+        {
+          "include": "#keywords",
+          "name": "meta.weidu-d-tooltip"
+        },
+        {
+          "include": "#constants",
+          "name": "meta.weidu-d-tooltip"
+        },
+        {
+          "include": "source.weidu-d",
+          "match": ".",
+          "name": "meta.weidu-d-tooltip"
+        }
+      ]
+    },
+    "strings": {
+      "name": "string.weidu-d-tooltip",
+      "patterns": [
+        {
+          "match": "\\b(filename|entryFilename|exitFilename|filenameRegexp|moreFilenameRegexps|WAVEFILE)\\b",
+          "name": "string.weidu-d-tooltip"
+        },
+        {
+          "match": "\\b(String|stateTriggerString|transActionString|stateActionString)\\b",
+          "name": "string.weidu-d-tooltip"
+        },
+        {
+          "match": "\\b(globalVariable)\\b",
+          "name": "string.weidu-d-tooltip"
+        },
+        {
+          "match": "\\b(text|sayText|replyText)\\b",
+          "name": "string.weidu-d-tooltip"
+        },
+        {
+          "match": "\\b(entryLabel|exitLabel|stateLabel)\\b",
+          "name": "string.weidu-d-tooltip"
+        }
+      ]
+    },
+    "constants": {
+      "name": "constant.weidu-d-tooltip",
+      "patterns": [
+        {
+          "match": "\\b(transNumber|stateNumber)\\b",
+          "name": "constant.weidu-d-tooltip"
+        },
+        {
+          "match": "\\b(integer)\\b",
+          "name": "constant.weidu-d-tooltip"
+        },
+        {
+          "match": "(#)(positionNumber|weight|stateWeight|weightNumber)\\b",
+          "captures": {
+            "1": {
+              "name": "keyword.weidu-d-tooltip"
+            },
+            "2": {
+              "name": "constant.numeric.weidu-baf"
+            }
+          },
+          "name": "constant.weidu-d-tooltip"
+        }
+      ]
+    },
+    "keywords": {
+      "name": "keyword.weidu-d-tooltip",
+      "patterns": [
+        {
+          "match": "\\b(list)\\b",
+          "name": "keyword.weidu-d-tooltip"
+        },
+        {
+          "match": "\\b(dActionWhen)\\b",
+          "name": "keyword.weidu-d-tooltip"
+        },
+        {
+          "match": "\\b(IF_FILE_EXISTS)\\b",
+          "name": "keyword.weidu-d-tooltip"
+        }
+      ]
+    },
+    "variables": {
+      "name": "variable.weidu-d-tooltip",
+      "patterns": [
+        {
+          "match": "\\b(globalVariable)\\b",
+          "name": "variable.weidu-d-tooltip"
+        }
+      ]
+    }
+  }
+}

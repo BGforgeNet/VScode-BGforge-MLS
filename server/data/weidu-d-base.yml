@@ -7,6 +7,7 @@ keywords:
     - name: GLOBAL
     - name: LOCALS
     - name: MYAREA
+    - name: END
 
 actions:
   type: 3 # function
@@ -21,7 +22,12 @@ actions:
       detail: APPEND_EARLY [ IF_FILE_EXISTS ] filename state list END
       doc: Works like APPEND, but the states are added early on in the compilation timeline (just after BEGIN is processed). Thus they can be the targets for INTERJECT_COPY_TRANS and friends.
     - name: CHAIN
-      detail: "CHAIN [ IF [ WEIGHT #weight ] stateTriggerString THEN ] [ IF_FILE_EXISTS ] entryFilename entryLabel chainText list chainEpilogue"
+      detail: |-
+        CHAIN
+          [ IF [ WEIGHT #weight ] stateTriggerString THEN ]
+          [ IF_FILE_EXISTS ] entryFilename entryLabel
+          chainText list
+          chainEpilogue
       doc: This instructs WeiDU to make a long conversation in which the PC can say nothing. This is useful when you want the NPCs to talk among themselves for a long time. It and its friends, INTERJECT and INTERJECT_COPY_TRANS can incredible time-savers when you're writing non-trivial dialogue. See the examples for ideas. CHAIN will only append to existing dialogues. You cannot use CHAIN to create a new DLG. If the entryFilename file is missing and there is IF_FILE_EXISTS, the whole CHAIN is not compiled.
     - name: INTERJECT
       detail: INTERJECT entryFilename entryLabel globalVariable chainText list chainEpilogue
@@ -103,19 +109,20 @@ when:
 chain_epilogue:
   type: 14 #keyword
   items:
-    - name: END
-      detail: END filename stateNumber | END transition list
-      doc: |-
-        Chain epilogue.
+    # # even with merging, it still collides with APPEND... END and other items
+    # - name: END
+    #   detail: END filename stateNumber | END transition list
+    #   doc: |-
+    #     Chain epilogue.
 
-        `END filename stateNumber`
+    #     `END filename stateNumber`
 
-        Transfer to the given state in the given dialogue file.
+    #     Transfer to the given state in the given dialogue file.
 
-        ---
-        `END transition list`
+    #     ---
+    #     `END transition list`
 
-        Execute the given transitions after the final state in the CHAIN.
+    #     Execute the given transitions after the final state in the CHAIN.
     - name: EXTERN
       detail: EXTERN filename stateNumber
       doc: Transfer to the given state in the given dialogue file.

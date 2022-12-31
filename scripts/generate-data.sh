@@ -30,4 +30,4 @@ dest_dir="server/out"
     -i $data_dir/weidu-d-base.yml \
     --completion $dest_dir/completion.weidu-d.json \
     --hover $dest_dir/hover.weidu-d.json \
-    --tooltip-lang weidu-d
+    --tooltip-lang weidu-d-tooltip

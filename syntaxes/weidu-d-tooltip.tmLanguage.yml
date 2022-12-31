@@ -1,0 +1,50 @@
+$schema: https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json
+name: WeiDU D tooltip
+scopeName: source.weidu-d-tooltip
+
+patterns:
+  - include: '#full'
+
+repository:
+  full:
+    name: meta.weidu-d-tooltip
+    patterns:
+      - include: '#strings'
+      - include: '#variables'
+      - include: '#keywords'
+      - include: '#constants'
+      - include: source.weidu-d
+        match: "."
+
+  strings:
+    name: string.weidu-d-tooltip
+    patterns:
+      - match: \b(filename|entryFilename|exitFilename|filenameRegexp|moreFilenameRegexps|WAVEFILE)\b
+      - match: \b(String|stateTriggerString|transActionString|stateActionString)\b
+      - match: \b(globalVariable)\b
+      - match: \b(text|sayText|replyText)\b
+      - match: \b(entryLabel|exitLabel|stateLabel)\b
+
+  constants:
+    name: constant.weidu-d-tooltip
+    patterns:
+      - match: \b(transNumber|stateNumber)\b
+      - match: \b(integer)\b
+      - match: (#)(positionNumber|weight|stateWeight|weightNumber)\b
+        captures:
+          '1':
+            name: keyword.weidu-d-tooltip
+          '2':
+            name: constant.numeric.weidu-baf
+
+  keywords:
+    name: keyword.weidu-d-tooltip
+    patterns:
+      - match: \b(list)\b
+      - match: \b(dActionWhen)\b
+      - match: \b(IF_FILE_EXISTS)\b
+
+  variables:
+    name: variable.weidu-d-tooltip
+    patterns:
+      - match: \b(globalVariable)\b

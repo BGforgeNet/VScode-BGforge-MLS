@@ -133,6 +133,9 @@
                 "configuration": "./language-configurations/weidu-d.language-configuration.json"
             },
             {
+                "id": "weidu-d-tooltip"
+            },
+            {
                 "id": "weidu-d-tpl",
                 "aliases": [
                     "WeiDU dialog template"
@@ -229,6 +232,11 @@
                 "language": "weidu-d",
                 "scopeName": "source.weidu-d",
                 "path": "./syntaxes/weidu-d.tmLanguage.json"
+            },
+            {
+                "language": "weidu-d-tooltip",
+                "scopeName": "source.weidu-d-tooltip",
+                "path": "./syntaxes/weidu-d-tooltip.tmLanguage.json"
             },
             {
                 "language": "weidu-d-tpl",
