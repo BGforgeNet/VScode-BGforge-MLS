@@ -1,5 +1,3 @@
-// The settings
-
 export interface SSLsettings {
     compilePath: string;
     compileOptions: string;

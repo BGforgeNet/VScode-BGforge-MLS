@@ -1,5 +1,3 @@
-"use strict";
-
 import { CompletionItemKind } from "vscode-languageserver";
 import { conlog, ParseItemList, ParseResult, send_parse_result, is_subdir } from "./common";
 import { connection, documents } from "./server";

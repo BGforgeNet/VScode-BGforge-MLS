@@ -1,5 +1,3 @@
-"use strict";
-
 import {
     createConnection,
     TextDocuments,
@@ -20,7 +18,7 @@ import * as path from "path";
 import * as fallout_ssl from "./fallout-ssl";
 import * as weidu from "./weidu";
 import * as common from "./common";
-import { conlog, find_label_for_signature, is_header } from "./common";
+import { conlog, is_header } from "./common";
 import { MLSsettings, defaultSettings } from "./settings";
 import {
     dynamic_completion,
@@ -29,7 +27,12 @@ import {
     static_completion,
 } from "./completion";
 import { dynamic_hover, HoverEx, load_static_hover, self_hover, static_hover } from "./hover";
-import { load_static_signatures, static_signatures } from "./signature";
+import {
+    find_label_for_signature,
+    load_static_signatures,
+    sig_response,
+    static_signatures,
+} from "./signature";
 
 // Create a connection for the server. The connection uses Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
@@ -166,7 +169,6 @@ documents.onDidChangeContent((change) => {
     }
     reload_self_data(change.document);
 });
-
 function getDocumentSettings(resource: string): Thenable<MLSsettings> {
     if (!hasConfigurationCapability) {
         return Promise.resolve(globalSettings);
@@ -316,7 +318,6 @@ connection.onExecuteCommand(async (params) => {
 async function compile(uri: string, interactive = false) {
     const settings = await getDocumentSettings(uri);
     const document: TextDocument = documents.get(uri);
-
     const lang_id = document.languageId;
 
     // Clear old diagnostics. For some reason not working in common.send_parse_result.
@@ -372,15 +373,6 @@ connection.onSignatureHelp((params: TextDocumentPositionParams): SignatureHelp =
         }
     }
 });
-
-function sig_response(signature: SignatureInformation, parameter: number) {
-    const result = {
-        signatures: [signature],
-        activeSignature: 0,
-        activeParameter: parameter,
-    };
-    return result;
-}
 
 async function can_compile(document: TextDocument) {
     const lang_id = document.languageId;

@@ -1,5 +1,3 @@
-"use strict";
-
 import { conlog, ParseItemList, ParseResult, send_parse_result } from "./common";
 import { connection } from "./server";
 import * as path from "path";
