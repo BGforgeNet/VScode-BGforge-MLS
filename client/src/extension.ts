@@ -110,7 +110,12 @@ vscode.workspace.onDidChangeConfiguration(async (change) => {
 });
 
 vscode.workspace.onDidChangeTextDocument(async (change) => {
-    // same list is checked in server, update both if changing
+    const validate_on_change = settings.get("validateOnChange");
+    if (!validate_on_change) {
+        return;
+    }
+
+    /** Same list is checked in server, update both if changing. */
     const compile_languages = [
         "weidu-tp2",
         "weidu-tp2-tpl",
@@ -124,10 +129,13 @@ vscode.workspace.onDidChangeTextDocument(async (change) => {
     if (!compile_languages.includes(lang_id)) {
         return;
     }
-    const validate_on_change = settings.get("validateOnChange");
-    if (!validate_on_change) {
+
+    /** These languages require game path to compile. Same list is checked in server, update both if changing. */
+    const compile_languages_with_game = ["weidu-d", "weidu-d-tpl", "weidu-baf", "weidu-baf-tpl"];
+    if (compile_languages_with_game.includes(lang_id) && settings.weidu.gamePath == "") {
         return;
     }
+
     change.document.save(); // automatically triggers compile on server
 });
 
