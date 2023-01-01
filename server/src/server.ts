@@ -375,8 +375,11 @@ documents.onDidSave(async (change) => {
     if (!compileable(change.document)) {
         return;
     }
-    const settings = await getDocumentSettings(uri);
-    if (settings.validateOnSave || settings.validateOnChange) {
+    const doc_settings = await getDocumentSettings(uri);
+    if (doc_settings.validateOnSave || doc_settings.validateOnChange) {
         compile(uri);
+    }
+    if (path.relative(workspace_root, change.document.uri) == ".bgforge.yml") {
+        project_settings = await settings.project(workspace_root);
     }
 });
