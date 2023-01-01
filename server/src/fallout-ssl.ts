@@ -69,19 +69,17 @@ function load_procedures(
     hover_map: HoverMap
 ) {
     for (const proc of header_data.procedures) {
-        let markdown_value = ["```" + `${lang_id}`, `${proc.detail}`, "```"].join("\n");
-        let markdown_contents = { kind: MarkupKind.Markdown, value: markdown_value };
+        const markdown_value = ["```" + `${lang_id}`, `${proc.detail}`, "```", `\`${path}\``].join(
+            "\n"
+        );
+        const markdown_contents = { kind: MarkupKind.Markdown, value: markdown_value };
         const completion_item = {
             label: proc.label,
             documentation: markdown_contents,
             source: path,
-            detail: path,
             kind: CompletionItemKind.Function,
         };
         completion_list.push(completion_item);
-
-        markdown_value = `${markdown_value}\n\`${path}\``;
-        markdown_contents = { kind: MarkupKind.Markdown, value: markdown_value };
         const hover_item = { contents: markdown_contents, source: path };
         hover_map.set(proc.label, hover_item);
     }
@@ -206,7 +204,6 @@ function find_symbols(text: string) {
     // procedures
     const proc_list: ProcList = [];
     const proc_regex = /procedure[\s]+(\w+)(?:\(([^)]+)\))?[\s]+begin/gm;
-    const vars_replace_regex = /variable[\s]/gi; // remove "variable " from tooltip
 
     match = proc_regex.exec(text);
     while (match != null) {
@@ -217,8 +214,7 @@ function find_symbols(text: string) {
         const proc_name = match[1];
         let proc_detail = proc_name;
         if (match[2]) {
-            const proc_vars = match[2].replace(vars_replace_regex, "");
-            proc_detail = `${proc_name}(${proc_vars})`;
+            proc_detail = `procedure ${proc_name}(${match[2]})`;
         }
         proc_list.push({ label: proc_name, detail: proc_detail });
         match = proc_regex.exec(text);
