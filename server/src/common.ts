@@ -4,6 +4,7 @@ import { DiagnosticSeverity, Diagnostic } from "vscode-languageserver/node";
 import { CompletionItemEx } from "./completion";
 import { HoverEx } from "./hover";
 import { connection } from "./server";
+import * as fg from "fast-glob";
 
 export function fname(uri: string) {
     return path.basename(uri);
@@ -105,4 +106,9 @@ export function is_header(filepath: string, lang_id: string) {
         return true;
     }
     return false;
+}
+
+export function find_files(dirName: string, extension: string) {
+    const entries = fg.sync(`**/*.${extension}`, { cwd: dirName, caseSensitiveMatch: false });
+    return entries;
 }

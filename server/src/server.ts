@@ -20,6 +20,7 @@ import * as weidu from "./weidu";
 import { compileable } from "./compile";
 import { conlog, is_header } from "./common";
 import { MLSsettings, defaultSettings } from "./settings";
+import * as settings from "./settings";
 import {
     dynamic_completion,
     load_static_completion,
@@ -47,6 +48,7 @@ let hasWorkspaceFolderCapability = false;
 
 let workspace_root: string;
 let initialized = false;
+let project_settings: settings.ProjectSettings;
 
 // for language KEY, hovers and completions are searched in VALUE map
 const lang_data_map = new Map([
@@ -112,8 +114,11 @@ connection.onInitialized(async () => {
     }
     globalSettings = await connection.workspace.getConfiguration({ section: "bgforge" });
     // load data
+    project_settings = await settings.project(workspace_root);
+    conlog(project_settings);
     load_static_completion();
     hover.load_static();
+    hover.load_translation(project_settings.translation);
     load_static_signatures();
     fallout_ssl.load_external_headers(workspace_root, globalSettings.falloutSSL.headersDirectory);
     load_dynamic_intellisense();
@@ -257,27 +262,38 @@ connection.onHover((textDocumentPosition: TextDocumentPositionParams): Hover => 
     const text = documents.get(textDocumentPosition.textDocument.uri).getText();
     const word = hover.symbol_at_position(text, textDocumentPosition.position);
 
+    if (!word) {
+        return;
+    }
+    conlog(word);
+
+    if (word.startsWith("@")) {
+        const result = hover.get_tra_for(word, text, project_settings.translation);
+        if (result) {
+            return result;
+        } else {
+            return;
+        }
+    }
+
     // faster to check each map than join them
-    if (word) {
-        conlog(word);
-        let hover: Hover | hover.HoverEx;
-        if (self_map) {
-            hover = self_map.get(word);
-            if (hover) {
-                return hover;
-            }
+    let result: Hover | hover.HoverEx;
+    if (self_map) {
+        result = self_map.get(word);
+        if (result) {
+            return result;
         }
-        if (static_map) {
-            hover = static_map.get(word);
-            if (hover) {
-                return hover;
-            }
+    }
+    if (static_map) {
+        result = static_map.get(word);
+        if (result) {
+            return result;
         }
-        if (dynamic_map) {
-            hover = dynamic_map.get(word);
-            if (hover) {
-                return hover;
-            }
+    }
+    if (dynamic_map) {
+        result = dynamic_map.get(word);
+        if (hover) {
+            return result;
         }
     }
 });

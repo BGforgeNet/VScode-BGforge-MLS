@@ -1,0 +1,10 @@
+$schema: https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json
+name: WeiDU translation string
+scopeName: source.weidu-tra-string
+patterns:
+  - include: "#string"
+repository:
+  string:
+    patterns:
+      - match: .
+        name: string.weidu-tra-string

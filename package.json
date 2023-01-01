@@ -169,6 +169,9 @@
                 "configuration": "./language-configurations/weidu-tra.language-configuration.json"
             },
             {
+                "id": "weidu-tra-string"
+            },
+            {
                 "id": "infinity-2da",
                 "aliases": [
                     "Infinity Engine 2DA table"
@@ -260,6 +263,11 @@
                 "language": "weidu-tra",
                 "scopeName": "source.weidu-tra",
                 "path": "./syntaxes/weidu-tra.tmLanguage.json"
+            },
+            {
+                "language": "weidu-tra-string",
+                "scopeName": "source.weidu-tra-string",
+                "path": "./syntaxes/weidu-tra-string.tmLanguage.json"
             },
             {
                 "language": "infinity-2da",
