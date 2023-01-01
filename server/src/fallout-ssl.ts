@@ -1,5 +1,5 @@
 import { CompletionItemKind } from "vscode-languageserver";
-import { conlog, ParseItemList, ParseResult, send_parse_result, is_subdir } from "./common";
+import { conlog, ParseItemList, ParseResult, send_parse_result, is_subpath } from "./common";
 import { connection, documents } from "./server";
 import * as path from "path";
 import { DynamicData } from "./common";
@@ -348,7 +348,7 @@ export async function load_external_headers(workspace_root: string, headers_dir:
         conlog(`lstat ${headers_dir} failed, aborting.`);
         return;
     }
-    if (is_subdir(workspace_root, headers_dir)) {
+    if (is_subpath(workspace_root, headers_dir)) {
         conlog(`real ${headers_dir} is a subdirectory of workspace ${workspace_root}, aborting.`);
         return;
     }

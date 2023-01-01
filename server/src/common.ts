@@ -1,4 +1,4 @@
-import { realpathSync } from "fs";
+import * as fs from "fs";
 import * as path from "path";
 import { DiagnosticSeverity, Diagnostic } from "vscode-languageserver/node";
 import { CompletionItemEx } from "./completion";
@@ -92,13 +92,17 @@ export function send_parse_result(uri: string, parse_result: ParseResult) {
 
 /** Check if 1st dir contains the 2nd
  */
-export function is_subdir(outer_path: string, inner_path: string) {
-    const inner_real = realpathSync(inner_path);
-    const outer_real = realpathSync(outer_path);
+export function is_subpath(outer_path: string, inner_path: string) {
+    const inner_real = fs.realpathSync(inner_path);
+    const outer_real = fs.realpathSync(outer_path);
     if (inner_real.startsWith(outer_real)) {
         return true;
     }
     return false;
+}
+
+export function is_directory(fspath: string) {
+    return fs.lstatSync(fspath).isDirectory;
 }
 
 export function is_header(filepath: string, lang_id: string) {
@@ -111,4 +115,8 @@ export function is_header(filepath: string, lang_id: string) {
 export function find_files(dirName: string, extension: string) {
     const entries = fg.sync(`**/*.${extension}`, { cwd: dirName, caseSensitiveMatch: false });
     return entries;
+}
+
+export function relpath(root: string, uri: string) {
+    return path.relative(root, uri);
 }

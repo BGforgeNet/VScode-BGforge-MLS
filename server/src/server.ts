@@ -18,7 +18,7 @@ import * as path from "path";
 import * as fallout_ssl from "./fallout-ssl";
 import * as weidu from "./weidu";
 import { compileable } from "./compile";
-import { conlog, is_header } from "./common";
+import { conlog, is_directory, is_header, is_subpath, relpath } from "./common";
 import { MLSsettings, defaultSettings } from "./settings";
 import * as settings from "./settings";
 import {
@@ -34,6 +34,7 @@ import {
     static_signatures,
     get_signature_label,
 } from "./signature";
+import * as url from "url";
 
 // Create a connection for the server. The connection uses Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
@@ -102,6 +103,7 @@ connection.onInitialize((params: InitializeParams) => {
     }
     // yes this is unsafe, just doing something quick and dirty
     workspace_root = fileURLToPath(params.workspaceFolders[0].uri);
+    conlog(`workspace_root = ${workspace_root}`);
     return result;
 });
 
@@ -372,6 +374,8 @@ connection.onSignatureHelp((params: TextDocumentPositionParams): SignatureHelp =
 
 documents.onDidSave(async (change) => {
     const uri = change.document.uri;
+
+    // try and parse document if possible
     if (!compileable(change.document)) {
         return;
     }
@@ -379,7 +383,22 @@ documents.onDidSave(async (change) => {
     if (doc_settings.validateOnSave || doc_settings.validateOnChange) {
         compile(uri);
     }
+
+    // reload translation settings
     if (path.relative(workspace_root, change.document.uri) == ".bgforge.yml") {
         project_settings = await settings.project(workspace_root);
+    }
+
+    // reload translation
+    const tra_dir = project_settings.translation.directory;
+    if (is_directory(tra_dir)) {
+        let fpath = url.fileURLToPath(uri);
+        // relative to root
+        fpath = relpath(workspace_root, fpath);
+        if (is_subpath(tra_dir, fpath)) {
+            // relative to tra dir
+            const rel_path = relpath(tra_dir, fpath);
+            hover.reload_tra_file(tra_dir, rel_path);
+        }
     }
 });

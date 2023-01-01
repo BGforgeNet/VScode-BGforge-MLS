@@ -2,7 +2,7 @@ import * as fs from "fs";
 import * as path from "path";
 import { Position } from "vscode-languageserver-textdocument";
 import { Hover } from "vscode-languageserver/node";
-import { conlog, find_files } from "./common";
+import { conlog, find_files, is_directory } from "./common";
 import { ProjectTraSettings } from "./settings";
 
 export interface HoverEx extends Hover {
@@ -59,7 +59,7 @@ export function symbol_at_position(text: string, position: Position) {
 export function load_translation(traSettings: ProjectTraSettings) {
     const tra_dir = traSettings.directory;
     conlog(tra_dir);
-    if (!fs.lstatSync(tra_dir).isDirectory()) {
+    if (!is_directory(tra_dir)) {
         conlog(`${tra_dir} is not a directory, aborting tra load`);
         return;
     }
@@ -71,10 +71,16 @@ export function load_translation(traSettings: ProjectTraSettings) {
     }
 }
 
+export function reload_tra_file(tra_dir: string, tra_path: string) {
+    const lines = load_tra_file(path.join(tra_dir, tra_path));
+    const tra_key = tra_path.slice(0, -4);
+    data_tra.set(tra_key, lines);
+    conlog(`reloaded ${tra_dir} / ${tra_path}`);
+}
+
 /** Loads a .tra file and return a map of num > string */
-function load_tra_file(path: string) {
-    conlog(path);
-    const text = fs.readFileSync(path, "utf8");
+function load_tra_file(fpath: string) {
+    const text = fs.readFileSync(fpath, "utf8");
     const regex = /@(\d+)\s*=\s*~([^~]*)~/gm;
     const lines: TraEntries = new Map();
     let match = regex.exec(text);
@@ -92,7 +98,6 @@ function load_tra_file(path: string) {
 
 function get_tra_file_key(fpath: string, full_text: string, settings: ProjectTraSettings) {
     const first_line = full_text.split(/\r?\n/g)[0];
-    conlog(first_line);
     const regex = /^\/\*\* mls.tra: ([\w-]+)\.tra \*\//gm;
     const match = regex.exec(first_line);
     if (match) {
