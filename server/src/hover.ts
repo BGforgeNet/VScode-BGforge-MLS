@@ -90,17 +90,26 @@ function load_tra_file(path: string) {
     return lines;
 }
 
-export function get_tra_for(id: string, full_text: string, settings: ProjectTraSettings) {
-    conlog(id);
-    id = id.substring(1);
+function get_tra_file_key(fpath: string, full_text: string, settings: ProjectTraSettings) {
     const first_line = full_text.split(/\r?\n/g)[0];
     conlog(first_line);
     const regex = /^\/\*\* mls.tra: ([\w-]+)\.tra \*\//gm;
     const match = regex.exec(first_line);
-    if (!match) {
-        return;
+    if (match) {
+        return match[1];
     }
-    const file_key = match[1];
+    if (settings.auto_tra) {
+        return path.parse(fpath).name;
+    }
+}
+
+export function get_tra_for(
+    id: string,
+    full_text: string,
+    settings: ProjectTraSettings,
+    fpath: string
+) {
+    const file_key = get_tra_file_key(fpath, full_text, settings);
     const tra_file = data_tra.get(file_key);
     let result: Hover;
 
@@ -114,6 +123,8 @@ export function get_tra_for(id: string, full_text: string, settings: ProjectTraS
         return result;
     }
 
+    conlog(id);
+    id = id.substring(1);
     const tra = tra_file.get(id);
     if (!tra) {
         result = {

@@ -248,8 +248,9 @@ documents.listen(connection);
 connection.listen();
 
 connection.onHover((textDocumentPosition: TextDocumentPositionParams): Hover => {
-    const lang_id = documents.get(textDocumentPosition.textDocument.uri).languageId;
-    const rel_path = path.relative(workspace_root, textDocumentPosition.textDocument.uri);
+    const uri = textDocumentPosition.textDocument.uri;
+    const lang_id = documents.get(uri).languageId;
+    const rel_path = path.relative(workspace_root, uri);
     const hover_lang_id = get_data_lang(lang_id);
     const static_map = hover.data_static.get(hover_lang_id);
     const dynamic_map = hover.data_dynamic.get(hover_lang_id);
@@ -259,7 +260,7 @@ connection.onHover((textDocumentPosition: TextDocumentPositionParams): Hover => 
         return;
     }
 
-    const text = documents.get(textDocumentPosition.textDocument.uri).getText();
+    const text = documents.get(uri).getText();
     const word = hover.symbol_at_position(text, textDocumentPosition.position);
 
     if (!word) {
@@ -268,7 +269,7 @@ connection.onHover((textDocumentPosition: TextDocumentPositionParams): Hover => 
     conlog(word);
 
     if (word.startsWith("@")) {
-        const result = hover.get_tra_for(word, text, project_settings.translation);
+        const result = hover.get_tra_for(word, text, project_settings.translation, uri);
         if (result) {
             return result;
         } else {
