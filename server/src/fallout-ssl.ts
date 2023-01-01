@@ -1,9 +1,15 @@
 import { CompletionItemKind } from "vscode-languageserver";
-import { conlog, ParseItemList, ParseResult, send_parse_result, is_subpath } from "./common";
+import {
+    conlog,
+    ParseItemList,
+    ParseResult,
+    send_parse_result,
+    is_subpath,
+    is_directory,
+} from "./common";
 import { connection, documents } from "./server";
 import * as path from "path";
 import { DynamicData } from "./common";
-import { lstatSync, readFileSync } from "fs";
 import { sync as fgsync } from "fast-glob";
 import { MarkupKind } from "vscode-languageserver/node";
 import * as cp from "child_process";
@@ -17,6 +23,7 @@ import {
 } from "./completion";
 import { HoverEx, HoverMap, HoverMapEx } from "./hover";
 import * as hover from "./hover";
+import * as fs from "fs";
 
 interface HeaderDataList {
     macros: DefineList;
@@ -46,7 +53,7 @@ export async function load_data(headersDirectory: string) {
     const headers_list = find_headers(headersDirectory);
 
     for (const header_path of headers_list) {
-        const text = readFileSync(path.join(headersDirectory, header_path), "utf8");
+        const text = fs.readFileSync(path.join(headersDirectory, header_path), "utf8");
         const header_data = find_symbols(text);
         load_macros(header_path, header_data, completion_list, hover_map);
         load_procedures(header_path, header_data, completion_list, hover_map);
@@ -340,7 +347,7 @@ export async function load_external_headers(workspace_root: string, headers_dir:
     conlog("loading external headers");
 
     try {
-        if (!lstatSync(headers_dir).isDirectory) {
+        if (!is_directory(headers_dir)) {
             conlog(`${headers_dir} is not a directory, skipping external headers.`);
             return;
         }
