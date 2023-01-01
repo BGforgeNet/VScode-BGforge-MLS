@@ -25,6 +25,10 @@
 		"fallout-ssl": {
 			"iconPath": "./icons/fallout-ssl.svg"
 		},
+		"fallout-msg": {
+			"fontCharacter": "\\E033",
+			"fontColor": "#498ba7"
+		},
 		"weidu-tp2": {
 			"iconPath": "./icons/weidu-tp2.png"
 		},
@@ -45,6 +49,10 @@
 		},
 		"weidu-d-tpl": {
 			"iconPath": "./icons/weidu-d-tpl.png"
+		},
+		"weidu-tra": {
+			"fontCharacter": "\\E033",
+			"fontColor": "#498ba7"
 		},
 		"_R_light": {
 			"fontCharacter": "\\E001",
@@ -1895,11 +1903,13 @@
 	},
 	"languageIds": {
 		"fallout-ssl": "fallout-ssl",
+		"fallout-msg": "fallout-msg",
 		"weidu-tp2": "weidu-tp2",
 		"weidu-tp2-tpl": "weidu-tp2-tpl",
 		"weidu-baf": "weidu-baf",
 		"weidu-baf-tpl": "weidu-baf-tpl",
 		"weidu-d-tpl": "weidu-d-tpl",
+		"weidu-tra": "weidu-tra",
 		"bat": "_windows",
 		"clojure": "_clojure",
 		"coffeescript": "_coffee",
