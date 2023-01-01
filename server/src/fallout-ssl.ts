@@ -69,17 +69,20 @@ function load_procedures(
     hover_map: HoverMap
 ) {
     for (const proc of header_data.procedures) {
-        const markdown_value = ["```" + `${lang_id}`, `${proc.detail}`, "```"].join("\n");
-        const markdown_content = { kind: MarkupKind.Markdown, value: markdown_value };
+        let markdown_value = ["```" + `${lang_id}`, `${proc.detail}`, "```"].join("\n");
+        let markdown_contents = { kind: MarkupKind.Markdown, value: markdown_value };
         const completion_item = {
             label: proc.label,
-            documentation: markdown_content,
+            documentation: markdown_contents,
             source: path,
             detail: path,
             kind: CompletionItemKind.Function,
         };
         completion_list.push(completion_item);
-        const hover_item = { contents: markdown_content, source: path };
+
+        markdown_value = `${markdown_value}\n\`${path}\``;
+        markdown_contents = { kind: MarkupKind.Markdown, value: markdown_value };
+        const hover_item = { contents: markdown_contents, source: path };
         hover_map.set(proc.label, hover_item);
     }
 }
@@ -104,11 +107,12 @@ function load_macros(
             // there's no good icon for macros, using something distinct from function
             completion_kind = CompletionItemKind.Field;
         }
-        let markdown = { kind: MarkupKind.Markdown, value: markdown_value };
+        let markdown_contents = { kind: MarkupKind.Markdown, value: markdown_value };
+        // TODO: labelDetails are disappearing on selection, try them again
         // const completion_item = { label: define.label, documentation: markdown_content, source: header_path, labelDetails: {detail: "ld1", description: "ld2"}, detail: header_path };
         const completion_item = {
             label: macro.label,
-            documentation: markdown,
+            documentation: markdown_contents,
             source: path,
             detail: path,
             kind: completion_kind,
@@ -116,8 +120,8 @@ function load_macros(
         completion_list.push(completion_item);
 
         markdown_value = `${markdown_value}\n\`${path}\``;
-        markdown = { kind: MarkupKind.Markdown, value: markdown_value };
-        const hover_item = { contents: markdown, source: path };
+        markdown_contents = { kind: MarkupKind.Markdown, value: markdown_value };
+        const hover_item = { contents: markdown_contents, source: path };
         hover_map.set(macro.label, hover_item);
     }
 }
