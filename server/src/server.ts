@@ -249,6 +249,10 @@ documents.listen(connection);
 // Listen on the connection
 connection.listen();
 
+function endsWithNumber(str: string) {
+    return /[0-9]$/.test(str);
+}
+
 connection.onHover((textDocumentPosition: TextDocumentPositionParams): Hover => {
     const uri = textDocumentPosition.textDocument.uri;
     const lang_id = documents.get(uri).languageId;
@@ -276,6 +280,14 @@ connection.onHover((textDocumentPosition: TextDocumentPositionParams): Hover => 
             return result;
         } else {
             return;
+        }
+    }
+    if (lang_id == "fallout-ssl") {
+        if (endsWithNumber(word)) {
+            const result = hover.get_msg_for(word, text, project_settings.translation, uri);
+            if (result) {
+                return result;
+            }
         }
     }
 

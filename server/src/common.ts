@@ -102,7 +102,9 @@ export function is_subpath(outer_path: string, inner_path: string) {
 }
 
 export function is_directory(fspath: string) {
-    return fs.lstatSync(fspath).isDirectory;
+    if (fs.existsSync(fspath)) {
+        return fs.lstatSync(fspath).isDirectory;
+    }
 }
 
 export function is_header(filepath: string, lang_id: string) {
@@ -112,6 +114,7 @@ export function is_header(filepath: string, lang_id: string) {
     return false;
 }
 
+/** find files in directory by extension */
 export function find_files(dirName: string, extension: string) {
     const entries = fg.sync(`**/*.${extension}`, { cwd: dirName, caseSensitiveMatch: false });
     return entries;
