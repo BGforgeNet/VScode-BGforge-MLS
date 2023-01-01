@@ -318,17 +318,20 @@ connection.onExecuteCommand(async (params) => {
     compile(uri, true);
 });
 
+function clear_diagnostics(uri: string) {
+    // Clear old diagnostics. For some reason not working in common.send_parse_result.
+    // Probably due to async?
+    connection.sendDiagnostics({ uri: uri, diagnostics: [] });
+}
+
 async function compile(uri: string, interactive = false) {
     const settings = await getDocumentSettings(uri);
     const document: TextDocument = documents.get(uri);
     const lang_id = document.languageId;
 
-    // Clear old diagnostics. For some reason not working in common.send_parse_result.
-    // Probably due to async?
-    connection.sendDiagnostics({ uri: uri, diagnostics: [] });
-
     switch (lang_id) {
         case "fallout-ssl": {
+            clear_diagnostics(uri);
             fallout_ssl.compile(uri, settings.falloutSSL, interactive);
             break;
         }
@@ -338,6 +341,7 @@ async function compile(uri: string, interactive = false) {
         case "weidu-baf-tpl":
         case "weidu-d":
         case "weidu-d-tpl": {
+            clear_diagnostics(uri);
             weidu.compile(uri, settings.weidu, interactive);
             break;
         }
