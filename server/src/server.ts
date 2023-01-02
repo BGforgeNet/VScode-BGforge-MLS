@@ -18,7 +18,7 @@ import * as path from "path";
 import * as fallout_ssl from "./fallout-ssl";
 import * as weidu from "./weidu";
 import { compileable } from "./compile";
-import { conlog, is_directory, is_header, is_subpath, relpath } from "./common";
+import { conlog, fullpath, is_directory, is_header, is_subpath, relpath } from "./common";
 import { MLSsettings, defaultSettings } from "./settings";
 import * as settings from "./settings";
 import {
@@ -181,10 +181,11 @@ export function getDocumentSettings(resource: string): Thenable<MLSsettings> {
 
 async function reload_self_data(txtDoc: TextDocument) {
     const lang_id = documents.get(txtDoc.uri).languageId;
+    const docpath = fullpath(txtDoc.uri);
 
     switch (lang_id) {
         case "fallout-ssl": {
-            const rel_path = path.relative(workspace_root, txtDoc.uri);
+            const rel_path = path.relative(workspace_root, docpath);
             if (is_header(rel_path, lang_id)) {
                 const old_completion = dynamic_completion.get(lang_id);
                 const old_hover = hover.data_dynamic.get(lang_id);
