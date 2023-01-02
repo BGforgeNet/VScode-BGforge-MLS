@@ -32,6 +32,7 @@ repository:
       - match: (\.\.\.)
       - match: (\[)
       - match: (\])
+      - match: \b(list)\b
 
   variables:
     name: variable.weidu-tp2-tooltip
