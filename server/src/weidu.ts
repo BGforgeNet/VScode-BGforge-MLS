@@ -25,8 +25,6 @@ const valid_extensions = new Map([
     [".baf", "baf"],
 ]);
 
-const lang_id = "weidu-tp2";
-
 interface DefineItem {
     name: string;
     context: "action" | "patch";
@@ -272,6 +270,7 @@ function load_functions(
     completion_list: CompletionList,
     hover_map: HoverMap
 ) {
+    const lang_id = "weidu-tp2-tooltip";
     for (const define of define_list) {
         const markdown_value = [
             "```" + `${lang_id}`,
