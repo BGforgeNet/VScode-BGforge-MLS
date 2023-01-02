@@ -233,6 +233,9 @@ async function load_dynamic_intellisense() {
     const fallout_header_data = await fallout_ssl.load_data("");
     hover.data_dynamic.set("fallout-ssl", fallout_header_data.hover);
     dynamic_completion.set("fallout-ssl", fallout_header_data.completion);
+    const weidu_header_data = await weidu.load_data("");
+    hover.data_dynamic.set("weidu-tp2", weidu_header_data.hover);
+    dynamic_completion.set("weidu-tp2", weidu_header_data.completion);
     initialized = true;
 }
 
