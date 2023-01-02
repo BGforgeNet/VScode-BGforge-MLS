@@ -69,7 +69,7 @@ repository:
       - match: \b(?i)(texttrunc)\b
       - match: \b(?i)(textunderline)\b
   fallout-base-functions:
-    name: support.function.base.fallout-ssl
+    name: support.function.fallout-ssl.base
     patterns:
       - match: \b(?i)(baction_being_used)\b
       - match: \b(?i)(activateregion)\b
@@ -198,6 +198,7 @@ repository:
       - match: \b(?i)(loadpalettetable)\b
       - match: \b(?i)(local_var)\b
       - match: \b(?i)(make_daytime)\b
+      - match: \b(?i)(map_first_run)\b
       - match: \b(?i)(map_var)\b
       - match: \b(?i)(mark_area_known)\b
       - match: \b(?i)(message_str)\b
@@ -350,13 +351,12 @@ repository:
       - match: \b(?i)(wm_area_set_pos)\b
       - match: \b(?i)(world_map)\b
   function-declaration:
-    name: meta.function.dec.fallout-ssl
     patterns:
       - captures:
           '1':
-            name: support.type.procedure.fallout-ssl
+            name: support.type.fallout-ssl.procedure
           '2':
-            name: entity.name.function
+            name: entity.name.function.fallout-ssl
           '3':
             patterns:
               - include: '#variable'
@@ -364,25 +364,23 @@ repository:
             name: keyword.control.fallout-ssl
         match: \b(?i)(procedure)\b[[:blank:]]+(\w+)(\(.+\))?[[:blank:]]*(;)
   function-definition:
-    name: meta.function.def.fallout-ssl
     patterns:
       - captures:
           '1':
-            name: support.type.procedure.fallout-ssl
+            name: support.type.fallout-ssl.procedure
           '2':
-            name: entity.name.function
+            name: entity.name.function.fallout-ssl
           '3':
             patterns:
               - include: '#variable'
         match: \b(?i)(procedure)\b[[:blank:]]+(\w+)(\(.+\))?\b
   function-invocation:
-    name: meta.function.inv.fallout-ssl
     patterns:
       - captures:
           '1':
             name: keyword.control.fallout-ssl
           '2':
-            name: support.function.fallout-ssl
+            name: entity.name.function.fallout-ssl
           '3':
             patterns:
               - include: $self
@@ -455,7 +453,7 @@ repository:
       - match: floor
         name: invalid.deprecated.bgforge
   sfall-functions:
-    name: support.function.sfall.fallout-ssl
+    name: support.function.fallout-ssl.sfall
     patterns:
       - match: \b(?i)(set_npc_stat_max)\b
       - match: \b(?i)(set_npc_stat_min)\b
@@ -925,7 +923,7 @@ repository:
       - match: \b(HOOK_USESKILLON)\b
       - match: \b(HOOK_WITHINPERCEPTION)\b
   header-constants:
-    name: constant.language.define.fallout-ssl
+    name: constant.language.fallout-ssl.macro-constant
     patterns:
       - match: \b(ACCEPT_DELIVERY_ASSIGNED)\b
       - match: \b(ACCEPT_DELIVERY_DEATH)\b
@@ -8603,7 +8601,7 @@ repository:
       - match: \b(well_tile)\b
       - match: \b(wright_house_heart)\b
   header-aliases:
-    name: constant.language.define.fallout-ssl
+    name: constant.language.fallout-ssl.macro-alias
     patterns:
       - match: \b(ALL_LEAVE_BIT)\b
       - match: \b(ARTHUR_IN_POS)\b
@@ -9219,7 +9217,7 @@ repository:
       - match: \b(wright_known_bit)\b
       - match: \b(wright_permission_bit)\b
   header-variables:
-    name: variable.language.define.fallout-ssl
+    name: constant.language.fallout-ssl.macro-var
     patterns:
       - match: \b(GVAR_8_BALL_TOILET_SECRET)\b
       - match: \b(GVAR_8_BALL_TRASH_SECRET)\b
@@ -10552,7 +10550,7 @@ repository:
       - match: \b(sierra_set_klaxons_on)\b
       - match: \b(too_many_carts)\b
   header-defines-with-vars:
-    name: support.type.define.header.fallout-ssl
+    name: support.type.fallout-ssl.define.header
     patterns:
       - match: \b(BIT_NOTIFY_GUARD_OFF)\b
       - match: \b(BLowOption)\b
