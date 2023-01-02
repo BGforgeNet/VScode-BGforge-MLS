@@ -9,6 +9,7 @@ repository:
   full:
     name: meta.weidu-tp2-tooltip
     patterns:
+      - include: '#datatypes'
       - include: '#strings'
       - include: '#variables'
       - include: '#keywords'
@@ -36,3 +37,24 @@ repository:
     name: variable.weidu-tp2-tooltip
     patterns:
       - match: \b(variable)\b
+
+  datatypes:
+    patterns:
+      - match: \b(multi )?(int|byte|char array|char|word|dword|resref|strref)\b
+        name: support.type.weidu-tp2-tooltip.datatype
+      - match: ^(action) (function|macro) (\w+)$
+        captures:
+          '1':
+            name: comment
+          '2':
+            name: comment
+          '3':
+            name: support.type.weidu-tp2.function-name
+      - match: \b(patch) (function|macro) (\w+)\b
+        captures:
+          '1':
+            name: comment
+          '2':
+            name: comment
+          '3':
+            name: entity.name.function.weidu-tp2.patch
