@@ -1,18 +1,18 @@
 {
   "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
-  "name": "WeiDU translation string",
-  "scopeName": "source.weidu-tra-string",
+  "name": "BGforge MLS comment",
+  "scopeName": "source.bgforge-mls-comment",
   "patterns": [
     {
-      "include": "#string"
+      "include": "#full"
     }
   ],
   "repository": {
-    "string": {
+    "full": {
       "patterns": [
         {
           "match": ".",
-          "name": "string.weidu-tra-string"
+          "name": "comment.bgforge-mls-comment"
         }
       ]
     }

@@ -1,0 +1,10 @@
+$schema: https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json
+name: BGforge MLS string
+scopeName: source.bgforge-mls-string
+patterns:
+  - include: "#full"
+repository:
+  full:
+    patterns:
+      - match: .
+        name: string.bgforge-mls-string

@@ -73,8 +73,8 @@ function load_procedures(
             "```" + `${lang_id}`,
             `${proc.detail}`,
             "```",
-            "\n```yaml\n",
-            `# ${path}`,
+            "\n```bgforge-mls-comment\n",
+            `${path}`,
             "```",
         ].join("\n");
         const markdown_contents = { kind: MarkupKind.Markdown, value: markdown_value };
@@ -108,8 +108,8 @@ function load_macros(
             "```" + `${lang_id}`,
             `${detail}`,
             "```",
-            "\n```yaml\n",
-            `# ${path}`,
+            "\n```bgforge-mls-comment\n",
+            `${path}`,
             "```",
         ].join("\n");
         // for single line ones, show full line too

@@ -180,7 +180,7 @@ export function get_tra_for(
     }
 
     result = {
-        contents: { kind: "markdown", value: "```weidu-tra-string\n" + `${tra}` + "\n```" },
+        contents: { kind: "markdown", value: "```bgforge-mls-string\n" + `${tra}` + "\n```" },
     };
     return result;
 }

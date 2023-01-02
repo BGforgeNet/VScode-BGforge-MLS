@@ -169,7 +169,10 @@
                 "configuration": "./language-configurations/weidu-tra.language-configuration.json"
             },
             {
-                "id": "weidu-tra-string"
+                "id": "bgforge-mls-comment"
+            },
+            {
+                "id": "bgforge-mls-string"
             },
             {
                 "id": "infinity-2da",
@@ -265,9 +268,14 @@
                 "path": "./syntaxes/weidu-tra.tmLanguage.json"
             },
             {
-                "language": "weidu-tra-string",
-                "scopeName": "source.weidu-tra-string",
-                "path": "./syntaxes/weidu-tra-string.tmLanguage.json"
+                "language": "bgforge-mls-comment",
+                "scopeName": "source.bgforge-mls-comment",
+                "path": "./syntaxes/bgforge-mls-comment.tmLanguage.json"
+            },
+            {
+                "language": "bgforge-mls-string",
+                "scopeName": "source.bgforge-mls-string",
+                "path": "./syntaxes/bgforge-mls-string.tmLanguage.json"
             },
             {
                 "language": "infinity-2da",

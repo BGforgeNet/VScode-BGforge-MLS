@@ -77,6 +77,10 @@
         {
           "match": "(\\])",
           "name": "keyword.weidu-tp2-tooltip"
+        },
+        {
+          "match": "\\b(list)\\b",
+          "name": "keyword.weidu-tp2-tooltip"
         }
       ]
     },

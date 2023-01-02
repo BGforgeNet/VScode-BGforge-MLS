@@ -271,13 +271,17 @@ function load_functions(
     hover_map: HoverMap
 ) {
     const lang_id = "weidu-tp2-tooltip";
+
     for (const define of define_list) {
         const markdown_value = [
             "```" + `${lang_id}`,
             `${define.context} ${define.dtype} ${define.name}`,
             "```",
-            `\`${path}\``,
+            "\n```bgforge-mls-comment\n",
+            `${path}`,
+            "```",
         ].join("\n");
+
         const markdown_contents = { kind: MarkupKind.Markdown, value: markdown_value };
         const completion_item = {
             label: define.name,
