@@ -6,11 +6,11 @@ import {
     send_parse_result,
     is_subpath,
     is_directory,
+    find_files,
 } from "./common";
 import { connection, documents } from "./server";
 import * as path from "path";
 import { DynamicData } from "./common";
-import { sync as fgsync } from "fast-glob";
 import { MarkupKind } from "vscode-languageserver/node";
 import * as cp from "child_process";
 import { URI } from "vscode-uri";
@@ -50,7 +50,7 @@ const ssl_ext = ".ssl";
 export async function load_data(headersDirectory: string) {
     const completion_list: Array<CompletionItemEx> = [];
     const hover_map = new Map<string, HoverEx>();
-    const headers_list = find_headers(headersDirectory);
+    const headers_list = find_files(headersDirectory, "h");
 
     for (const header_path of headers_list) {
         const text = fs.readFileSync(path.join(headersDirectory, header_path), "utf8");
@@ -295,11 +295,6 @@ function parse_compile_output(text: string, uri: string) {
 function send_diagnostics(uri: string, output_text: string) {
     const parse_result = parse_compile_output(output_text, uri);
     send_parse_result(uri, parse_result);
-}
-
-function find_headers(dirName: string) {
-    const entries = fgsync(["**/*.h"], { cwd: dirName, caseSensitiveMatch: false });
-    return entries;
 }
 
 export function compile(uri_string: string, ssl_settings: SSLsettings, interactive = false) {
