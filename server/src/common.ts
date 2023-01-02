@@ -5,6 +5,7 @@ import { CompletionItemEx } from "./completion";
 import { HoverEx } from "./hover";
 import { connection } from "./server";
 import * as fg from "fast-glob";
+import { URI } from "vscode-uri";
 
 export function fname(uri: string) {
     return path.basename(uri);
@@ -120,6 +121,10 @@ export function find_files(dirName: string, extension: string) {
     return entries;
 }
 
-export function relpath(root: string, uri: string) {
-    return path.relative(root, uri);
+export function relpath(root: string, other_dir: string) {
+    return path.relative(root, other_dir);
+}
+
+export function fullpath(uri_string: string) {
+    return URI.parse(uri_string).fsPath;
 }

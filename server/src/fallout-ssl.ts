@@ -7,13 +7,13 @@ import {
     is_subpath,
     is_directory,
     find_files,
+    fullpath,
 } from "./common";
 import { connection, documents } from "./server";
 import * as path from "path";
 import { DynamicData } from "./common";
 import { MarkupKind } from "vscode-languageserver/node";
 import * as cp from "child_process";
-import { URI } from "vscode-uri";
 import { SSLsettings } from "./settings";
 import {
     CompletionItemEx,
@@ -297,8 +297,8 @@ function send_diagnostics(uri: string, output_text: string) {
     send_parse_result(uri, parse_result);
 }
 
-export function compile(uri_string: string, ssl_settings: SSLsettings, interactive = false) {
-    const filepath = URI.parse(uri_string).fsPath;
+export function compile(uri: string, ssl_settings: SSLsettings, interactive = false) {
+    const filepath = fullpath(uri);
     const cwd_to = path.dirname(filepath);
     const base_name = path.parse(filepath).base;
     const base = path.parse(filepath).name;
@@ -334,7 +334,7 @@ export function compile(uri_string: string, ssl_settings: SSLsettings, interacti
                     connection.window.showInformationMessage(`Succesfully compiled ${base_name}.`);
                 }
             }
-            send_diagnostics(uri_string, stdout);
+            send_diagnostics(uri, stdout);
         }
     );
 }

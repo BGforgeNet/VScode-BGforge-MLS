@@ -2,6 +2,7 @@ import {
     conlog,
     DynamicData,
     find_files,
+    fullpath,
     ParseItemList,
     ParseResult,
     send_parse_result,
@@ -9,7 +10,6 @@ import {
 import { connection } from "./server";
 import * as path from "path";
 import * as cp from "child_process";
-import { URI } from "vscode-uri";
 import { WeiDUsettings } from "./settings";
 import * as fs from "fs";
 import { CompletionItemEx, CompletionList } from "./completion";
@@ -89,21 +89,21 @@ function parse_gcc_output(text: string) {
     return result;
 }
 
-function send_diagnostics(uri_string: string, output_text: string, format = "weidu") {
+function send_diagnostics(uri: string, output_text: string, format = "weidu") {
     let parse_result: ParseResult;
     if (format == "gcc") {
         parse_result = parse_gcc_output(output_text);
     } else {
         parse_result = parse_weidu_output(output_text);
     }
-    send_parse_result(uri_string, parse_result);
+    send_parse_result(uri, parse_result);
 }
 
 // export function wcompile(params: any) {
-export function compile(uri_string: string, settings: WeiDUsettings, interactive = false) {
+export function compile(uri: string, settings: WeiDUsettings, interactive = false) {
     const game_path = settings.gamePath;
     const weidu_path = settings.path;
-    const filepath = URI.parse(uri_string).fsPath;
+    const filepath = fullpath(uri);
     const cwd_to = path.dirname(filepath);
     const base_name = path.parse(filepath).base;
     let ext = path.parse(filepath).ext;
@@ -173,7 +173,7 @@ export function compile(uri_string: string, settings: WeiDUsettings, interactive
             if (interactive) {
                 connection.window.showErrorMessage(`Failed to preprocess ${base_name}!`);
             }
-            send_diagnostics(uri_string, result.stderr.toString(), "gcc");
+            send_diagnostics(uri, result.stderr.toString(), "gcc");
             preprocess_failed = true;
         } else {
             if (interactive) {
@@ -206,7 +206,7 @@ export function compile(uri_string: string, settings: WeiDUsettings, interactive
                 connection.window.showErrorMessage(`Failed to parse ${real_name}!`);
             }
             if (tpl == false) {
-                send_diagnostics(uri_string, stdout);
+                send_diagnostics(uri, stdout);
             }
         } else {
             if (interactive) {
