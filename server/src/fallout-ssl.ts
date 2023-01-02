@@ -69,9 +69,14 @@ function load_procedures(
     hover_map: HoverMap
 ) {
     for (const proc of header_data.procedures) {
-        const markdown_value = ["```" + `${lang_id}`, `${proc.detail}`, "```", `\`${path}\``].join(
-            "\n"
-        );
+        const markdown_value = [
+            "```" + `${lang_id}`,
+            `${proc.detail}`,
+            "```",
+            "\n```yaml\n",
+            `# ${path}`,
+            "```",
+        ].join("\n");
         const markdown_contents = { kind: MarkupKind.Markdown, value: markdown_value };
         const completion_item = {
             label: proc.label,
@@ -98,7 +103,15 @@ function load_macros(
         if (macro.constant) {
             detail = macro.firstline;
         }
-        markdown_value = ["```" + `${lang_id}`, `${detail}`, "```", `\n\`${path}\``].join("\n");
+
+        markdown_value = [
+            "```" + `${lang_id}`,
+            `${detail}`,
+            "```",
+            "\n```yaml\n",
+            `# ${path}`,
+            "```",
+        ].join("\n");
         // for single line ones, show full line too
         if (!macro.multiline && !macro.constant) {
             markdown_value += ["\n```" + `${lang_id}`, `${macro.firstline}`, "```"].join("\n");
