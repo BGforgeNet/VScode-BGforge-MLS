@@ -112,7 +112,7 @@
       "include": "#numbers"
     },
     {
-      "include": "#datatypes"
+      "include": "#ielib-functions"
     }
   ],
   "repository": {
@@ -129,51 +129,7 @@
         }
       ]
     },
-    "datatypes": {
-      "patterns": [
-        {
-          "match": "\\b(multi )?(int|byte|char array|char|word|dword|resref|strref)\\b",
-          "name": "support.type.weidu-tp2.datatype"
-        },
-        {
-          "match": "\\b(action) (function) (\\w+)\\b",
-          "captures": {
-            "1": {
-              "name": "support.type.weidu-tp2.datatype"
-            },
-            "2": {
-              "name": "comment"
-            },
-            "3": {
-              "patterns": [
-                {
-                  "include": "#known-functions"
-                }
-              ]
-            }
-          }
-        },
-        {
-          "match": "\\b(patch) (function) (\\w+)\\b",
-          "captures": {
-            "1": {
-              "name": "entity.name.function.weidu-tp2.patch"
-            },
-            "2": {
-              "name": "comment"
-            },
-            "3": {
-              "patterns": [
-                {
-                  "include": "#known-functions"
-                }
-              ]
-            }
-          }
-        }
-      ]
-    },
-    "known-functions": {
+    "ielib-functions": {
       "patterns": [
         {
           "include": "#ielib-action-functions"
@@ -186,7 +142,7 @@
     "action-functions": {
       "patterns": [
         {
-          "include": "#known-functions"
+          "include": "#ielib-functions"
         },
         {
           "match": "\\b(\\w+)\\b",
@@ -197,7 +153,7 @@
     "patch-functions": {
       "patterns": [
         {
-          "include": "#known-functions"
+          "include": "#ielib-functions"
         },
         {
           "match": "\\b(\\w+)\\b",
