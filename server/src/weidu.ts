@@ -220,7 +220,6 @@ export async function load_data(headersDirectory: string) {
     const completion_list: Array<CompletionItemEx> = [];
     const hover_map = new Map<string, HoverEx>();
     const headers_list = find_files(headersDirectory, "tph");
-    conlog(headers_list);
 
     for (const header_path of headers_list) {
         const text = fs.readFileSync(path.join(headersDirectory, header_path), "utf8");
@@ -228,7 +227,6 @@ export async function load_data(headersDirectory: string) {
         load_functions(header_path, header_data, completion_list, hover_map);
     }
     const result: DynamicData = { completion: completion_list, hover: hover_map };
-    conlog(result);
     return result;
 }
 
@@ -239,13 +237,11 @@ function find_symbols(text: string) {
 
     let match = action_regex.exec(text);
     while (match != null) {
-        conlog(match);
         // This is necessary to avoid infinite loops with zero-width matches
         if (match.index === action_regex.lastIndex) {
             action_regex.lastIndex++;
         }
         const name = match[2];
-        conlog(name);
         let context: "action" | "patch";
         let dtype: "function" | "macro";
         if (match[1].startsWith("DEFINE_ACTION")) {
