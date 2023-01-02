@@ -93,10 +93,15 @@ function load_macros(
 ) {
     for (const macro of header_data.macros) {
         let markdown_value: string;
-        if (macro.multiline) {
-            markdown_value = ["```" + `${lang_id}`, `${macro.detail}`, "```"].join("\n");
-        } else {
-            markdown_value = ["```" + `${lang_id}`, `${macro.firstline}`, "```"].join("\n");
+        let detail = macro.detail;
+        // for a constant, show just value
+        if (macro.constant) {
+            detail = macro.firstline;
+        }
+        markdown_value = ["```" + `${lang_id}`, `${detail}`, "```", `\n\`${path}\``].join("\n");
+        // for single line ones, show full line too
+        if (!macro.multiline && !macro.constant) {
+            markdown_value += ["\n```" + `${lang_id}`, `${macro.firstline}`, "```"].join("\n");
         }
         let completion_kind;
         if (macro.constant) {
@@ -105,20 +110,17 @@ function load_macros(
             // there's no good icon for macros, using something distinct from function
             completion_kind = CompletionItemKind.Field;
         }
-        let markdown_contents = { kind: MarkupKind.Markdown, value: markdown_value };
+        const markdown_contents = { kind: MarkupKind.Markdown, value: markdown_value };
         // TODO: labelDetails are disappearing on selection, try them again
         // const completion_item = { label: define.label, documentation: markdown_content, source: header_path, labelDetails: {detail: "ld1", description: "ld2"}, detail: header_path };
         const completion_item = {
             label: macro.label,
             documentation: markdown_contents,
             source: path,
-            detail: path,
             kind: completion_kind,
         };
         completion_list.push(completion_item);
 
-        markdown_value = `${markdown_value}\n\`${path}\``;
-        markdown_contents = { kind: MarkupKind.Markdown, value: markdown_value };
         const hover_item = { contents: markdown_contents, source: path };
         hover_map.set(macro.label, hover_item);
     }
@@ -215,6 +217,8 @@ function find_symbols(text: string) {
         let proc_detail = proc_name;
         if (match[2]) {
             proc_detail = `procedure ${proc_name}(${match[2]})`;
+        } else {
+            proc_detail = `procedure ${proc_name}()`;
         }
         proc_list.push({ label: proc_name, detail: proc_detail });
         match = proc_regex.exec(text);
