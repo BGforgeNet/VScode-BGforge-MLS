@@ -24,6 +24,7 @@ import {
 import { HoverEx, HoverMap, HoverMapEx } from "./hover";
 import * as hover from "./hover";
 import * as fs from "fs";
+import * as jsdoc from "./jsdoc";
 
 interface HeaderDataList {
     macros: DefineList;
@@ -218,20 +219,27 @@ function find_symbols(text: string) {
 
     // procedures
     const proc_list: ProcList = [];
-    const proc_regex = /procedure[\s]+(\w+)(?:\(([^)]+)\))?[\s]+begin/gm;
-
+    // multiline jsdoc regex: (\/\*\*\s*\n([^*]|(\*(?!\/)))*\*\/)
+    // from here https://stackoverflow.com/questions/35905181/regex-for-jsdoc-comments
+    // procedure regex: procedure[\s]+(\w+)(?:\(([^)]+)\))?[\s]+begin
+    const proc_regex =
+        /(\/\*\*\s*\n([^*]|(\*(?!\/)))*\*\/)\r?\n??procedure[\s]+(\w+)(?:\(([^)]+)\))?[\s]+begin/gm;
     match = proc_regex.exec(text);
     while (match != null) {
         // This is necessary to avoid infinite loops with zero-width matches
         if (match.index === proc_regex.lastIndex) {
             proc_regex.lastIndex++;
         }
-        const proc_name = match[1];
+        const proc_name = match[4];
         let proc_detail = proc_name;
-        if (match[2]) {
-            proc_detail = `procedure ${proc_name}(${match[2]})`;
+        if (match[5]) {
+            proc_detail = `procedure ${proc_name}(${match[5]})`;
         } else {
             proc_detail = `procedure ${proc_name}()`;
+        }
+        if (match[1]) {
+            conlog(`jsdoc: ${match[1]}`);
+            conlog(jsdoc.parse(match[1]));
         }
         proc_list.push({ label: proc_name, detail: proc_detail });
         match = proc_regex.exec(text);

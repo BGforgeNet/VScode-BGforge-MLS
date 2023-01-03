@@ -35,6 +35,14 @@ import {
     get_signature_label,
 } from "./signature";
 import * as url from "url";
+// import * as jsdoc from "jsdoc/lib"
+// import jsdoc = require("jsdoc-api");
+// import * as jsd from "jsdoc/parse";
+// import * as jsd from "jsdoc-parse";
+// const jsdoc = require("jsdoc-parse");
+// import * as jsd from "jsdoc-to-markdown";
+// const dox = require('dox');
+
 
 // Create a connection for the server. The connection uses Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
@@ -125,6 +133,15 @@ connection.onInitialized(async () => {
     fallout_ssl.load_external_headers(workspace_root, globalSettings.falloutSSL.headersDirectory);
     load_dynamic_intellisense();
     conlog("initialized");
+    // // const jsdoc = require('jsdoc-api');
+    // const test2 = "/**\n    * Blend two colors together.\n    * @param {string} color1 - The first color, in hexadecimal format.\n    * @param {string} color2 - The second color, in hexadecimal format.\n    * @return {string} The blended color.\n    */var x=0";
+    // // const test1 = jsdoc.explainSync({ source: "/** example doclet */ \n var example = true" });
+    // // const test1 = jsdoc.explainSync({ source: test2 });
+    // const test1 = dox.parseComments(test2);
+    // // const test1 = jsd.renderSync(test2);
+    // conlog("jsdoc start");
+    // conlog(test1);
+    // conlog("jsdoc end");
 });
 
 // Cache the settings of all open documents
