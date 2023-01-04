@@ -23,12 +23,8 @@ import { MLSsettings, defaultSettings } from "./settings";
 import * as settings from "./settings";
 import * as hover from "./hover";
 import * as completion from "./completion";
-import {
-    loadStaticSignatures,
-    sigResponse,
-    staticSignatures,
-    getSignatureLabel,
-} from "./signature";
+import * as signature from "./signature";
+import { sigResponse, staticSignatures, getSignatureLabel } from "./signature";
 import * as url from "url";
 
 // Create a connection for the server. The connection uses Node's IPC as a transport.
@@ -114,11 +110,7 @@ connection.onInitialized(async () => {
     // load data
     projectSettings = await settings.project(workspaceRoot);
     conlog(projectSettings);
-    completion.loadStatic();
-    hover.loadStatic();
-    hover.loadTranslation(projectSettings.translation);
-    loadStaticSignatures();
-    fallout_ssl.load_external_headers(workspaceRoot, globalSettings.falloutSSL.headersDirectory);
+    loadStaticIntellisense();
     loadDynamicIntellisense();
     conlog("initialized");
 });
@@ -135,6 +127,14 @@ connection.onDidChangeConfiguration((change) => {
         globalSettings = <MLSsettings>(change.settings.bgforge || defaultSettings);
     }
 });
+
+function loadStaticIntellisense() {
+    completion.loadStatic();
+    hover.loadStatic();
+    hover.loadTranslation(projectSettings.translation);
+    signature.loadStatic();
+    fallout_ssl.load_external_headers(workspaceRoot, globalSettings.falloutSSL.headersDirectory);
+}
 
 function getDataLang(lang_id: string) {
     let data_lang = lang_data_map.get(lang_id);

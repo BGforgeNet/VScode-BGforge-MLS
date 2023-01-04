@@ -9,7 +9,7 @@ export interface SignatureData extends Map<string, SignatureMap> {}
 export const staticSignatures: SignatureData = new Map();
 export const signatureLanguages = ["fallout-ssl"];
 
-export function loadStaticSignatures() {
+export function loadStatic() {
     for (const langId of signatureLanguages) {
         try {
             const filePath = path.join(__dirname, `signature.${langId}.json`);
