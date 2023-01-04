@@ -231,7 +231,6 @@ function find_symbols(text: string) {
                 multiline: multiline,
                 firstline: define_firstline,
             };
-            conlog(item);
             define_list.push(item);
         }
         match = define_regex.exec(text);
