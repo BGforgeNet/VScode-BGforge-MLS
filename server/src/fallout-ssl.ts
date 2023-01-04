@@ -29,6 +29,7 @@ interface HeaderDataList {
 interface ProcListItem {
     label: string;
     detail: string;
+    jsdoc?: jsdoc.JSdoc;
 }
 interface ProcList extends Array<ProcListItem> {}
 interface DefineListItem {
@@ -37,6 +38,7 @@ interface DefineListItem {
     constant: boolean;
     multiline: boolean;
     firstline: string;
+    jsdoc?: jsdoc.JSdoc;
 }
 interface DefineList extends Array<DefineListItem> {}
 
@@ -65,7 +67,7 @@ function load_procedures(
     hover_map: HoverMap
 ) {
     for (const proc of header_data.procedures) {
-        const markdown_value = [
+        let markdown_value = [
             "```" + `${lang_id}`,
             `${proc.detail}`,
             "```",
@@ -73,6 +75,10 @@ function load_procedures(
             `${path}`,
             "```",
         ].join("\n");
+        if (proc.jsdoc) {
+            const jsdmd = jsdocToMD(proc.jsdoc);
+            markdown_value += jsdmd;
+        }
         const markdown_contents = { kind: MarkupKind.Markdown, value: markdown_value };
         const completion_item = {
             label: proc.label,
@@ -125,10 +131,9 @@ function load_macros(
             documentation: markdown_contents,
             source: path,
             kind: completion_kind,
-            labelDetails: {description: path},
-            
+            labelDetails: { description: path },
         };
-    
+
         completion_list.push(completion_item);
 
         const hover_item = { contents: markdown_contents, source: path };
@@ -234,10 +239,17 @@ function find_symbols(text: string) {
         } else {
             proc_detail = `procedure ${proc_name}()`;
         }
+
+        // if jsdoc found
         if (match[1]) {
-            proc_detail = jsdoc_to_detail(proc_name, match[1]);
+            const jsd = jsdoc.parse(match[1]);
+            proc_detail = jsdocToDetail(proc_name, jsd);
+            const item = { label: proc_name, detail: proc_detail, jsdoc: jsd };
+            proc_list.push(item);
+        } else {
+            const item = { label: proc_name, detail: proc_detail };
+            proc_list.push(item);
         }
-        proc_list.push({ label: proc_name, detail: proc_detail });
         match = proc_regex.exec(text);
     }
 
@@ -248,12 +260,27 @@ function find_symbols(text: string) {
     return result;
 }
 
-function jsdoc_to_detail(label: string, jsdoc_string: string) {
-    const jsd = jsdoc.parse(jsdoc_string);
+function jsdocToMD(jsd: jsdoc.JSdoc) {
+    let md = "\n---\n";
+    if (jsd.desc) {
+        md += `\n${jsd.desc}`;
+    }
+    if (jsd.args.length > 0) {
+        for (const arg of jsd.args) {
+            md += `\n- \`${arg.type}\` ${arg.name}`;
+        }
+    }
+    if (jsd.ret) {
+        md += `\n\n Returns \`${jsd.ret.type}\``;
+    }
+    return md;
+}
+
+function jsdocToDetail(label: string, jsd: jsdoc.JSdoc) {
     const type = jsd.ret ? jsd.ret.type : "void";
-    const args = jsd.args.map(({type, name}) => (`${type} ${name}`));
+    const args = jsd.args.map(({ type, name }) => `${type} ${name}`);
     const args_string = args.join(", ");
-    const detail = `${type} ${label}(${args_string})`
+    const detail = `${type} ${label}(${args_string})`;
     return detail;
 }
 
