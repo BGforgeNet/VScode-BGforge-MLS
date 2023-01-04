@@ -186,7 +186,7 @@ async function reload_self_data(txtDoc: TextDocument) {
                 conlog("is header");
                 const old_completion = completion.dynamicData.get(lang_id);
                 const old_hover = hover.dynamicData.get(lang_id);
-                const new_data = fallout_ssl.reload_data(
+                const new_data = fallout_ssl.reloadData(
                     rel_path,
                     txtDoc.getText(),
                     old_completion,
@@ -198,7 +198,7 @@ async function reload_self_data(txtDoc: TextDocument) {
                 conlog("not header");
                 const old_completion = completion.selfData.get(rel_path);
                 const old_hover = hover.selfData.get(rel_path);
-                const new_data = fallout_ssl.reload_data(
+                const new_data = fallout_ssl.reloadData(
                     rel_path,
                     txtDoc.getText(),
                     old_completion,
@@ -231,7 +231,7 @@ connection.onCompletion((_textDocumentPosition: TextDocumentPositionParams): Com
 
 /** loads headers from workspace */
 async function load_dynamic_intellisense() {
-    const fallout_header_data = await fallout_ssl.load_data("");
+    const fallout_header_data = await fallout_ssl.loadData("");
     hover.dynamicData.set("fallout-ssl", fallout_header_data.hover);
     completion.dynamicData.set("fallout-ssl", fallout_header_data.completion);
     const weidu_header_data = await weidu.load_data("");

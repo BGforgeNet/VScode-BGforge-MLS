@@ -3,7 +3,7 @@ import {
     conlog,
     ParseItemList,
     ParseResult,
-    send_parse_result,
+    send_parse_result as sendParseResult,
     is_subpath,
     is_directory,
     find_files,
@@ -45,29 +45,29 @@ interface DefineList extends Array<DefineListItem> {}
 const lang_id = "fallout-ssl";
 const ssl_ext = ".ssl";
 
-export async function load_data(headersDirectory: string) {
-    const completion_list: Array<completion.CompletionItemEx> = [];
-    const hover_map = new Map<string, HoverEx>();
-    const headers_list = find_files(headersDirectory, "h");
+export async function loadData(headersDirectory: string) {
+    const completionList: Array<completion.CompletionItemEx> = [];
+    const hoverMap = new Map<string, HoverEx>();
+    const headersList = find_files(headersDirectory, "h");
 
-    for (const header_path of headers_list) {
-        const text = fs.readFileSync(path.join(headersDirectory, header_path), "utf8");
-        const header_data = find_symbols(text);
-        load_macros(header_path, header_data, completion_list, hover_map);
-        load_procedures(header_path, header_data, completion_list, hover_map);
+    for (const headerPath of headersList) {
+        const text = fs.readFileSync(path.join(headersDirectory, headerPath), "utf8");
+        const headerData = find_symbols(text);
+        loadMacros(headerPath, headerData, completionList, hoverMap);
+        loadProcedures(headerPath, headerData, completionList, hoverMap);
     }
-    const result: DynamicData = { completion: completion_list, hover: hover_map };
+    const result: DynamicData = { completion: completionList, hover: hoverMap };
     return result;
 }
 
-function load_procedures(
+function loadProcedures(
     path: string,
     header_data: HeaderDataList,
     completion_list: completion.CompletionList,
     hover_map: HoverMap
 ) {
     for (const proc of header_data.procedures) {
-        let markdown_value = [
+        let markdownValue = [
             "```" + `${lang_id}`,
             `${proc.detail}`,
             "```",
@@ -77,36 +77,36 @@ function load_procedures(
         ].join("\n");
         if (proc.jsdoc) {
             const jsdmd = jsdocToMD(proc.jsdoc);
-            markdown_value += jsdmd;
+            markdownValue += jsdmd;
         }
-        const markdown_contents = { kind: MarkupKind.Markdown, value: markdown_value };
-        const completion_item = {
+        const markdownContents = { kind: MarkupKind.Markdown, value: markdownValue };
+        const completionItem = {
             label: proc.label,
-            documentation: markdown_contents,
+            documentation: markdownContents,
             source: path,
             kind: CompletionItemKind.Function,
         };
-        completion_list.push(completion_item);
-        const hover_item = { contents: markdown_contents, source: path };
-        hover_map.set(proc.label, hover_item);
+        completion_list.push(completionItem);
+        const hoverItem = { contents: markdownContents, source: path };
+        hover_map.set(proc.label, hoverItem);
     }
 }
 
-function load_macros(
+function loadMacros(
     path: string,
-    header_data: HeaderDataList,
-    completion_list: completion.CompletionList,
-    hover_map: HoverMap
+    headerData: HeaderDataList,
+    completionList: completion.CompletionList,
+    hoverMap: HoverMap
 ) {
-    for (const macro of header_data.macros) {
-        let markdown_value: string;
+    for (const macro of headerData.macros) {
+        let markdownValue: string;
         let detail = macro.detail;
         // for a constant, show just value
         if (macro.constant) {
             detail = macro.firstline;
         }
 
-        markdown_value = [
+        markdownValue = [
             "```" + `${lang_id}`,
             `${detail}`,
             "```",
@@ -116,32 +116,32 @@ function load_macros(
         ].join("\n");
         // for single line ones, show full line too
         if (!macro.multiline && !macro.constant) {
-            markdown_value += ["\n```" + `${lang_id}`, `${macro.firstline}`, "```"].join("\n");
+            markdownValue += ["\n```" + `${lang_id}`, `${macro.firstline}`, "```"].join("\n");
         }
-        let completion_kind;
+        let completionKind;
         if (macro.constant) {
-            completion_kind = CompletionItemKind.Constant;
+            completionKind = CompletionItemKind.Constant;
         } else {
             // there's no good icon for macros, using something distinct from function
-            completion_kind = CompletionItemKind.Field;
+            completionKind = CompletionItemKind.Field;
         }
-        const markdown_contents = { kind: MarkupKind.Markdown, value: markdown_value };
-        const completion_item = {
+        const markdownContents = { kind: MarkupKind.Markdown, value: markdownValue };
+        const completionItem = {
             label: macro.label,
-            documentation: markdown_contents,
+            documentation: markdownContents,
             source: path,
-            kind: completion_kind,
+            kind: completionKind,
             labelDetails: { description: path },
         };
 
-        completion_list.push(completion_item);
+        completionList.push(completionItem);
 
-        const hover_item = { contents: markdown_contents, source: path };
-        hover_map.set(macro.label, hover_item);
+        const hover_item = { contents: markdownContents, source: path };
+        hoverMap.set(macro.label, hover_item);
     }
 }
 
-export function reload_data(
+export function reloadData(
     path: string,
     text: string,
     completion: completion.CompletionListEx | undefined,
@@ -151,11 +151,11 @@ export function reload_data(
     if (completion == undefined) {
         completion = [];
     }
-    const new_completion = completion.filter((item) => item.source != path);
+    const newCompletion = completion.filter((item) => item.source != path);
     if (hover == undefined) {
         hover = new Map();
     }
-    const new_hover = new Map(
+    const newHover = new Map(
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         Array.from(hover).filter(([key, value]) => {
             if (value.source != path) {
@@ -165,114 +165,114 @@ export function reload_data(
         })
     );
 
-    load_macros(path, symbols, new_completion, new_hover);
-    load_procedures(path, symbols, new_completion, new_hover);
-    const result: DynamicData = { completion: new_completion, hover: new_hover };
+    loadMacros(path, symbols, newCompletion, newHover);
+    loadProcedures(path, symbols, newCompletion, newHover);
+    const result: DynamicData = { completion: newCompletion, hover: newHover };
     conlog("reload data");
     return result;
 }
 
 function find_symbols(text: string) {
     // defines
-    const define_list: DefineList = [];
-    const define_regex =
+    const defineList: DefineList = [];
+    const defineRegex =
         /((\/\*\*\s*\n([^*]|(\*(?!\/)))*\*\/)\r?\n)?#define[ \t]+(\w+)(?:\(([^)]+)\))?[ \t]+(.+)/gm;
-    const constant_regex = /^[A-Z0-9_]+/;
-    let match = define_regex.exec(text);
+    const constantRegex = /^[A-Z0-9_]+/;
+    let match = defineRegex.exec(text);
     while (match != null) {
         // This is necessary to avoid infinite loops with zero-width matches
-        if (match.index === define_regex.lastIndex) {
-            define_regex.lastIndex++;
+        if (match.index === defineRegex.lastIndex) {
+            defineRegex.lastIndex++;
         }
 
-        const define_name = match[5];
-        let define_firstline = match[7];
-        define_firstline = define_firstline.trimEnd();
+        const defineName = match[5];
+        let defineFirstline = match[7];
+        defineFirstline = defineFirstline.trimEnd();
 
         // check if it's multiline
         let multiline = false;
-        if (define_firstline.endsWith("\\")) {
+        if (defineFirstline.endsWith("\\")) {
             multiline = true;
         }
 
         // check if it has vars
-        let define_detail = define_name;
+        let defineDetail = defineName;
         if (match[6]) {
             // function-like macro
-            const define_vars = match[6];
-            define_detail = `${define_name}(${define_vars})`;
+            const defineVars = match[6];
+            defineDetail = `${defineName}(${defineVars})`;
         }
 
         // check if it's looks like a constant
         // a more elaborate analysis could catch more constants
         // this is deliberately simple to encourage better and more consistent code style
         let constant = false;
-        if (!multiline && constant_regex.test(define_name)) {
+        if (!multiline && constantRegex.test(defineName)) {
             constant = true;
         }
         // if jsdoc found
         if (match[2]) {
             const jsd = jsdoc.parse(match[2]);
-            define_detail = jsdocToDetail(define_name, jsd);
+            defineDetail = jsdocToDetail(defineName, jsd);
             const item = {
-                label: define_name,
+                label: defineName,
                 constant: constant,
-                detail: define_detail,
+                detail: defineDetail,
                 multiline: multiline,
-                firstline: define_firstline,
+                firstline: defineFirstline,
                 jsdoc: jsd,
             };
-            define_list.push(item);
+            defineList.push(item);
         } else {
             const item = {
-                label: define_name,
+                label: defineName,
                 constant: constant,
-                detail: define_detail,
+                detail: defineDetail,
                 multiline: multiline,
-                firstline: define_firstline,
+                firstline: defineFirstline,
             };
-            define_list.push(item);
+            defineList.push(item);
         }
-        match = define_regex.exec(text);
+        match = defineRegex.exec(text);
     }
 
     // procedures
-    const proc_list: ProcList = [];
+    const procList: ProcList = [];
     // multiline jsdoc regex: (\/\*\*\s*\n([^*]|(\*(?!\/)))*\*\/)
     // from here https://stackoverflow.com/questions/35905181/regex-for-jsdoc-comments
     // procedure regex: procedure[\s]+(\w+)(?:\(([^)]+)\))?[\s]+begin
-    const proc_regex =
+    const procRegex =
         /((\/\*\*\s*\n([^*]|(\*(?!\/)))*\*\/)\r?\n)?procedure[\s]+(\w+)(?:\(([^)]+)\))?[\s]+begin/gm;
-    match = proc_regex.exec(text);
+    match = procRegex.exec(text);
     while (match != null) {
         // This is necessary to avoid infinite loops with zero-width matches
-        if (match.index === proc_regex.lastIndex) {
-            proc_regex.lastIndex++;
+        if (match.index === procRegex.lastIndex) {
+            procRegex.lastIndex++;
         }
-        const proc_name = match[5];
-        let proc_detail = proc_name;
+        const procName = match[5];
+        let procDetail = procName;
         if (match[6]) {
-            proc_detail = `procedure ${proc_name}(${match[6]})`;
+            procDetail = `procedure ${procName}(${match[6]})`;
         } else {
-            proc_detail = `procedure ${proc_name}()`;
+            procDetail = `procedure ${procName}()`;
         }
 
         // if jsdoc found
         if (match[2]) {
             const jsd = jsdoc.parse(match[2]);
-            proc_detail = jsdocToDetail(proc_name, jsd);
-            const item = { label: proc_name, detail: proc_detail, jsdoc: jsd };
-            proc_list.push(item);
+            procDetail = jsdocToDetail(procName, jsd);
+            const item = { label: procName, detail: procDetail, jsdoc: jsd };
+            procList.push(item);
         } else {
-            const item = { label: proc_name, detail: proc_detail };
-            proc_list.push(item);
+            const item = { label: procName, detail: procDetail };
+            procList.push(item);
         }
-        match = proc_regex.exec(text);
+        match = procRegex.exec(text);
     }
 
     const result: HeaderDataList = {
-        macros: define_list,
-        procedures: proc_list,
+        macros: defineList,
+        procedures: procList,
     };
     return result;
 }
@@ -296,8 +296,8 @@ function jsdocToMD(jsd: jsdoc.JSdoc) {
 function jsdocToDetail(label: string, jsd: jsdoc.JSdoc) {
     const type = jsd.ret ? jsd.ret.type : "void";
     const args = jsd.args.map(({ type, name }) => `${type} ${name}`);
-    const args_string = args.join(", ");
-    const detail = `${type} ${label}(${args_string})`;
+    const argsString = args.join(", ");
+    const detail = `${type} ${label}(${argsString})`;
     return detail;
 }
 
@@ -306,19 +306,19 @@ function jsdocToDetail(label: string, jsd: jsdoc.JSdoc) {
  * `[Error] <Semantic> <my_script.ssl>:26:25: Unknown identifier qq.`
  * Numbers mean line:column
  */
-function parse_compile_output(text: string, uri: string) {
-    const text_document = documents.get(uri);
-    const errors_pattern = /\[Error\] <(.+)>:([\d]*):([\d]*):? (.*)/g;
-    const warnings_pattern = /\[Warning\] <(.+)>:([\d]*):([\d]*):? (.*)/g;
+function parseCompileOutput(text: string, uri: string) {
+    const textDocument = documents.get(uri);
+    const errorsRegex = /\[Error\] <(.+)>:([\d]*):([\d]*):? (.*)/g;
+    const warningsRegex = /\[Warning\] <(.+)>:([\d]*):([\d]*):? (.*)/g;
     const errors: ParseItemList = [];
     const warnings: ParseItemList = [];
 
     try {
         let match: RegExpExecArray;
-        while ((match = errors_pattern.exec(text)) != null) {
+        while ((match = errorsRegex.exec(text)) != null) {
             // This is necessary to avoid infinite loops with zero-width matches
-            if (match.index === errors_pattern.lastIndex) {
-                errors_pattern.lastIndex++;
+            if (match.index === errorsRegex.lastIndex) {
+                errorsRegex.lastIndex++;
             }
             let col: string;
             if (match[3] == "") {
@@ -335,10 +335,10 @@ function parse_compile_output(text: string, uri: string) {
             });
         }
 
-        while ((match = warnings_pattern.exec(text)) != null) {
+        while ((match = warningsRegex.exec(text)) != null) {
             // This is necessary to avoid infinite loops with zero-width matches
-            if (match.index === warnings_pattern.lastIndex) {
-                warnings_pattern.lastIndex++;
+            if (match.index === warningsRegex.lastIndex) {
+                warningsRegex.lastIndex++;
             }
             let col: string;
             if (match[3] == "") {
@@ -347,7 +347,7 @@ function parse_compile_output(text: string, uri: string) {
                 col = match[3];
             }
             const line = parseInt(match[2]);
-            const column_end = text_document.offsetAt({ line: line, character: 0 }) - 1;
+            const column_end = textDocument.offsetAt({ line: line, character: 0 }) - 1;
             warnings.push({
                 file: match[1],
                 line: line,
@@ -363,9 +363,9 @@ function parse_compile_output(text: string, uri: string) {
     return result;
 }
 
-function send_diagnostics(uri: string, output_text: string) {
-    const parse_result = parse_compile_output(output_text, uri);
-    send_parse_result(uri, parse_result);
+function sendDiagnostics(uri: string, output_text: string) {
+    const parse_result = parseCompileOutput(output_text, uri);
+    sendParseResult(uri, parse_result);
 }
 
 export function compile(uri: string, ssl_settings: SSLsettings, interactive = false) {
@@ -405,7 +405,7 @@ export function compile(uri: string, ssl_settings: SSLsettings, interactive = fa
                     connection.window.showInformationMessage(`Succesfully compiled ${base_name}.`);
                 }
             }
-            send_diagnostics(uri, stdout);
+            sendDiagnostics(uri, stdout);
         }
     );
 }
@@ -431,14 +431,14 @@ export async function load_external_headers(workspace_root: string, headers_dir:
     }
 
     conlog(`loading external headers from ${headers_dir}`);
-    const fallout_header_data = await load_data(headers_dir);
-    const lang_id = "fallout-ssl";
-    const old_completion = completion.staticData.get(lang_id);
-    const old_hover = hover.staticData.get(lang_id);
-    const new_completion = [...old_completion, ...fallout_header_data.completion];
-    const new_hover = new Map([...old_hover, ...fallout_header_data.hover]);
+    const falloutHeaderData = await loadData(headers_dir);
+    const langId = "fallout-ssl";
+    const oldCompletion = completion.staticData.get(langId);
+    const oldHover = hover.staticData.get(langId);
+    const newCompletion = [...oldCompletion, ...falloutHeaderData.completion];
+    const newHover = new Map([...oldHover, ...falloutHeaderData.hover]);
 
-    hover.staticData.set(lang_id, new_hover);
-    completion.staticData.set(lang_id, new_completion);
+    hover.staticData.set(langId, newHover);
+    completion.staticData.set(langId, newCompletion);
     conlog(`loaded external headers from ${headers_dir}`);
 }
