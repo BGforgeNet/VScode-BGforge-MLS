@@ -223,14 +223,14 @@ export async function loadData(headersDirectory: string) {
 
     for (const headerPath of headersList) {
         const text = fs.readFileSync(path.join(headersDirectory, headerPath), "utf8");
-        const headerData = find_symbols(text);
+        const headerData = findSymbols(text);
         loadFunctions(headerPath, headerData, completionList, hoverMap);
     }
     const result: DynamicData = { completion: completionList, hover: hoverMap };
     return result;
 }
 
-function find_symbols(text: string) {
+function findSymbols(text: string) {
     const defineList: DefineList = [];
     const actionRegex =
         /^(DEFINE_ACTION_FUNCTION|DEFINE_ACTION_MACRO|DEFINE_PATCH_FUNCTION|DEFINE_PATCH_MACRO)\s+(\w+)/gm;
