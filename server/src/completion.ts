@@ -20,11 +20,11 @@ export const selfData: CompletionDataEx = new Map();
 export const completion_languages = ["weidu-tp2", "fallout-ssl", "weidu-d", "weidu-baf"];
 
 export function loadStatic() {
-    for (const lang_id of completion_languages) {
+    for (const langId of completion_languages) {
         try {
-            const file_path = path.join(__dirname, `completion.${lang_id}.json`);
-            const completion_list = JSON.parse(readFileSync(file_path, "utf-8"));
-            staticData.set(lang_id, completion_list);
+            const filePath = path.join(__dirname, `completion.${langId}.json`);
+            const completionList = JSON.parse(readFileSync(filePath, "utf-8"));
+            staticData.set(langId, completionList);
         } catch (e) {
             conlog(e);
         }

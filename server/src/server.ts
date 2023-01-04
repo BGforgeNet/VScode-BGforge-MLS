@@ -25,9 +25,9 @@ import * as hover from "./hover";
 import * as completion from "./completion";
 import {
     load_static_signatures,
-    sig_response,
+    sigResponse,
     static_signatures,
-    get_signature_label,
+    getSignatureLabel,
 } from "./signature";
 import * as url from "url";
 
@@ -116,7 +116,7 @@ connection.onInitialized(async () => {
     conlog(project_settings);
     completion.loadStatic();
     hover.load_static();
-    hover.load_translation(project_settings.translation);
+    hover.loadTranslation(project_settings.translation);
     load_static_signatures();
     fallout_ssl.load_external_headers(workspace_root, globalSettings.falloutSSL.headersDirectory);
     load_dynamic_intellisense();
@@ -234,7 +234,7 @@ async function load_dynamic_intellisense() {
     const fallout_header_data = await fallout_ssl.loadData("");
     hover.dynamicData.set("fallout-ssl", fallout_header_data.hover);
     completion.dynamicData.set("fallout-ssl", fallout_header_data.completion);
-    const weidu_header_data = await weidu.load_data("");
+    const weidu_header_data = await weidu.loadData("");
     hover.dynamicData.set("weidu-tp2", weidu_header_data.hover);
     completion.dynamicData.set("weidu-tp2", weidu_header_data.completion);
     initialized = true;
@@ -272,7 +272,7 @@ connection.onHover((textDocumentPosition: TextDocumentPositionParams): Hover => 
     }
 
     const text = documents.get(uri).getText();
-    const word = hover.symbol_at_position(text, textDocumentPosition.position);
+    const word = hover.symbolAtPosition(text, textDocumentPosition.position);
 
     if (!word) {
         return;
@@ -280,7 +280,7 @@ connection.onHover((textDocumentPosition: TextDocumentPositionParams): Hover => 
     conlog(word);
 
     if (word.startsWith("@")) {
-        const result = hover.get_tra_for(word, text, project_settings.translation, uri);
+        const result = hover.getTraFor(word, text, project_settings.translation, uri);
         if (result) {
             return result;
         } else {
@@ -376,7 +376,7 @@ connection.onSignatureHelp((params: TextDocumentPositionParams): SignatureHelp =
     const uri = params.textDocument.uri;
     const document = documents.get(uri);
     const text = document.getText();
-    const sig_request = get_signature_label(text, params.position);
+    const sig_request = getSignatureLabel(text, params.position);
     if (!sig_request) {
         return;
     }
@@ -388,7 +388,7 @@ connection.onSignatureHelp((params: TextDocumentPositionParams): SignatureHelp =
     if (static_map) {
         sig = static_map.get(sig_request.label);
         if (sig) {
-            return sig_response(sig, sig_request.parameter);
+            return sigResponse(sig, sig_request.parameter);
         }
     }
 });
@@ -419,7 +419,7 @@ documents.onDidSave(async (change) => {
         if (is_subpath(tra_dir, fpath)) {
             // relative to tra dir
             const rel_path = relpath(tra_dir, fpath);
-            hover.reload_tra_file(tra_dir, rel_path);
+            hover.reloadTraFile(tra_dir, rel_path);
         }
     }
 });

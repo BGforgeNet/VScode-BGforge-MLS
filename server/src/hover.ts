@@ -2,7 +2,7 @@ import * as fs from "fs";
 import * as path from "path";
 import { Position } from "vscode-languageserver-textdocument";
 import { Hover } from "vscode-languageserver/node";
-import { conlog, find_files, is_directory } from "./common";
+import { conlog, find_files as findFiles, is_directory } from "./common";
 import { ProjectTraSettings } from "./settings";
 
 export interface HoverEx extends Hover {
@@ -21,15 +21,15 @@ export const dynamicData: HoverDataEx = new Map();
 export const selfData: HoverDataEx = new Map();
 export const traData: TraFiles = new Map();
 
-const hover_languages = ["weidu-tp2", "fallout-ssl", "weidu-d", "weidu-baf"];
+const hoverLanguages = ["weidu-tp2", "fallout-ssl", "weidu-d", "weidu-baf"];
 
 export function load_static() {
-    for (const lang_id of hover_languages) {
+    for (const langId of hoverLanguages) {
         try {
-            const file_path = path.join(__dirname, `hover.${lang_id}.json`);
-            const json_data = JSON.parse(fs.readFileSync(file_path, "utf-8"));
-            const hover_data: Map<string, Hover> = new Map(Object.entries(json_data));
-            staticData.set(lang_id, hover_data);
+            const filePath = path.join(__dirname, `hover.${langId}.json`);
+            const jsonData = JSON.parse(fs.readFileSync(filePath, "utf-8"));
+            const hoverData: Map<string, Hover> = new Map(Object.entries(jsonData));
+            staticData.set(langId, hoverData);
         } catch (e) {
             conlog(e);
         }
@@ -41,7 +41,7 @@ function onlyDigits(value: string) {
 }
 
 /** get word under cursor, for which we want to find a hover */
-export function symbol_at_position(text: string, position: Position) {
+export function symbolAtPosition(text: string, position: Position) {
     const lines = text.split(/\r?\n/g);
     const str = lines[position.line];
     const pos = position.character;
@@ -79,39 +79,39 @@ export function symbol_at_position(text: string, position: Position) {
 }
 
 /** Loads all tra files in a directory to a map of maps of strings */
-export function load_translation(traSettings: ProjectTraSettings) {
+export function loadTranslation(traSettings: ProjectTraSettings) {
     const tra_dir = traSettings.directory;
     if (!is_directory(tra_dir)) {
         conlog(`${tra_dir} is not a directory, aborting tra load`);
         return;
     }
-    const tra_files = find_files(tra_dir, "tra");
-    for (const tf of tra_files) {
-        const lines = load_tra_file(path.join(tra_dir, tf), "tra");
-        const tra_key = tf.slice(0, -4);
-        traData.set(tra_key, lines);
+    const traFiles = findFiles(tra_dir, "tra");
+    for (const tf of traFiles) {
+        const lines = loadTraFile(path.join(tra_dir, tf), "tra");
+        const traKey = tf.slice(0, -4);
+        traData.set(traKey, lines);
     }
     // hardly in any project there will be both tra and msg files
-    const msg_files = find_files(tra_dir, "msg");
-    for (const tf of msg_files) {
-        const lines = load_tra_file(path.join(tra_dir, tf), "msg");
-        const tra_key = tf.slice(0, -4);
-        traData.set(tra_key, lines);
+    const msgFiles = findFiles(tra_dir, "msg");
+    for (const tf of msgFiles) {
+        const lines = loadTraFile(path.join(tra_dir, tf), "msg");
+        const traKey = tf.slice(0, -4);
+        traData.set(traKey, lines);
     }
 }
 
-export function reload_tra_file(tra_dir: string, tra_path: string) {
-    const lines = load_tra_file(path.join(tra_dir, tra_path), "tra");
-    const tra_key = tra_path.slice(0, -4);
-    traData.set(tra_key, lines);
-    conlog(`reloaded ${tra_dir} / ${tra_path}`);
+export function reloadTraFile(traDir: string, traPath: string) {
+    const lines = loadTraFile(path.join(traDir, traPath), "tra");
+    const traKey = traPath.slice(0, -4);
+    traData.set(traKey, lines);
+    conlog(`reloaded ${traDir} / ${traPath}`);
 }
 
 /** Loads a .tra file and return a map of num > string */
-function load_tra_file(fpath: string, tra_type: "tra" | "msg") {
+function loadTraFile(fpath: string, traType: "tra" | "msg") {
     const text = fs.readFileSync(fpath, "utf8");
     let regex: RegExp;
-    if (tra_type == "tra") {
+    if (traType == "tra") {
         regex = /@(\d+)\s*=\s*~([^~]*)~/gm;
     } else {
         regex = /{(\d+)}\s*{\w*}\s*{([^}]*)}/gm;
@@ -130,10 +130,10 @@ function load_tra_file(fpath: string, tra_type: "tra" | "msg") {
     return lines;
 }
 
-function get_tra_file_key(fpath: string, full_text: string, settings: ProjectTraSettings) {
-    const first_line = full_text.split(/\r?\n/g)[0];
+function getTraFileKey(fpath: string, fullText: string, settings: ProjectTraSettings) {
+    const firstLine = fullText.split(/\r?\n/g)[0];
     const regex = /^\/\*\* mls.tra: ([\w-]+)\.tra \*\//gm;
-    const match = regex.exec(first_line);
+    const match = regex.exec(firstLine);
     if (match) {
         return match[1];
     }
@@ -142,38 +142,38 @@ function get_tra_file_key(fpath: string, full_text: string, settings: ProjectTra
     }
 }
 
-export function get_tra_for(
+export function getTraFor(
     id: string,
-    full_text: string,
+    fullText: string,
     settings: ProjectTraSettings,
     fpath: string,
-    tra_type: "tra" | "msg" = "tra"
+    traType: "tra" | "msg" = "tra"
 ) {
-    const file_key = get_tra_file_key(fpath, full_text, settings);
-    const tra_file = traData.get(file_key);
+    const fileKey = getTraFileKey(fpath, fullText, settings);
+    const traFile = traData.get(fileKey);
     let result: Hover;
 
-    if (!tra_file) {
+    if (!traFile) {
         result = {
             contents: {
                 kind: "plaintext",
-                value: "Error: file " + `${file_key}.${tra_type}` + " not found.",
+                value: "Error: file " + `${fileKey}.${traType}` + " not found.",
             },
         };
         return result;
     }
 
     // remove @ from tra key start, leave for msg
-    if (tra_type != "msg") {
+    if (traType != "msg") {
         id = id.substring(1);
     }
 
-    const tra = tra_file.get(id);
+    const tra = traFile.get(id);
     if (!tra) {
         result = {
             contents: {
                 kind: "plaintext",
-                value: "Error: entry " + `${id}` + " not found in " + `${file_key}.${tra_type}.`,
+                value: "Error: entry " + `${id}` + " not found in " + `${fileKey}.${traType}.`,
             },
         };
         return result;
@@ -194,7 +194,7 @@ export function get_msg_for(
     const regex = /(Reply|NOption|GOption|BOption|mstr|display_mstr|floater)\((\d+)/;
     const match = regex.exec(id);
     if (match) {
-        const result = get_tra_for(match[2], full_text, settings, fpath, "msg");
+        const result = getTraFor(match[2], full_text, settings, fpath, "msg");
         return result;
     }
 }

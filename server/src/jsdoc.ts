@@ -28,16 +28,16 @@ export function parse(text: string) {
         if (!l2.startsWith("@")) {
             lines2.push(l2);
         }
-        const arg_match = l2.match(/@(arg|param) {(.*)} (\w+)/);
-        if (arg_match) {
-            args.push({ name: arg_match[3], type: arg_match[2] });
+        const argMatch = l2.match(/@(arg|param) {(.*)} (\w+)/);
+        if (argMatch) {
+            args.push({ name: argMatch[3], type: argMatch[2] });
         }
-        const ret_match = l2.match(/@(ret|return|returns) {(.*)}/);
-        if (ret_match) {
-            ret = {type: ret_match[2] };
+        const retMatch = l2.match(/@(ret|return|returns) {(.*)}/);
+        if (retMatch) {
+            ret = {type: retMatch[2] };
         }
-        const dep_match = l2.match(/@(deprecated)/);
-        if (dep_match) {
+        const depMatch = l2.match(/@(deprecated)/);
+        if (depMatch) {
             deprecated = true;
         }
     }

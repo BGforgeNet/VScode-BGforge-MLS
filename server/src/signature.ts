@@ -12,17 +12,17 @@ export const signature_languages = ["fallout-ssl"];
 export function load_static_signatures() {
     for (const lang_id of signature_languages) {
         try {
-            const file_path = path.join(__dirname, `signature.${lang_id}.json`);
-            const json_data = JSON.parse(readFileSync(file_path, "utf-8"));
-            const sig_data: SignatureMap = new Map(Object.entries(json_data));
-            static_signatures.set(lang_id, sig_data);
+            const filePath = path.join(__dirname, `signature.${lang_id}.json`);
+            const jsonData = JSON.parse(readFileSync(filePath, "utf-8"));
+            const sigData: SignatureMap = new Map(Object.entries(jsonData));
+            static_signatures.set(lang_id, sigData);
         } catch (e) {
             conlog(e);
         }
     }
 }
 
-export function sig_response(signature: SignatureInformation, parameter: number) {
+export function sigResponse(signature: SignatureInformation, parameter: number) {
     const result = {
         signatures: [signature],
         activeSignature: 0,
@@ -37,25 +37,25 @@ export interface SigReqData {
 }
 
 /** Finds label and current parameter index */
-export function get_signature_label(text: string, position: Position) {
+export function getSignatureLabel(text: string, position: Position) {
     const lines = text.split(/\r?\n/g);
     const line = lines[position.line];
     const pos = position.character;
 
     // only left side matters for signature
     const left = line.slice(0, pos);
-    const last_char = left.slice(-1);
+    const lastChar = left.slice(-1);
     // short circuit on closing parenthesis
-    if (last_char == ")") {
+    if (lastChar == ")") {
         return null;
     }
-    const split_on_paren = left.split("(");
-    const args = split_on_paren.pop();
-    const symbol = split_on_paren.pop().split(/(\s+)/).pop();
-    const pos_in_args = pos - (left.length - args.length);
+    const splitOnParen = left.split("(");
+    const args = splitOnParen.pop();
+    const symbol = splitOnParen.pop().split(/(\s+)/).pop();
+    const posInArgs = pos - (left.length - args.length);
     // again, right side doesn't matter
-    const args_left = args.slice(0, pos_in_args);
-    const arg_num = args_left.split(",").length - 1;
-    const result: SigReqData = { label: symbol, parameter: arg_num };
+    const argsLeft = args.slice(0, posInArgs);
+    const argNum = argsLeft.split(",").length - 1;
+    const result: SigReqData = { label: symbol, parameter: argNum };
     return result;
 }
