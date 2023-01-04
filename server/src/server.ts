@@ -157,7 +157,6 @@ documents.onDidChangeContent((change) => {
         conlog("onDidChangeContent: not initialized yet");
         return;
     }
-    reloadSelfData(change.document);
 });
 
 export function getDocumentSettings(resource: string): Thenable<MLSsettings> {
@@ -225,6 +224,8 @@ async function reloadSelfData(txtDoc: TextDocument) {
 }
 
 documents.onDidOpen((event) => {
+    // TODO: this doesn't work for the first open doc, since the server is not initalized yet
+    // need to do proper async here
     reloadSelfData(event.document);
 });
 
@@ -406,6 +407,8 @@ connection.onSignatureHelp((params: TextDocumentPositionParams): SignatureHelp =
 });
 
 documents.onDidSave(async (change) => {
+    reloadSelfData(change.document);
+
     const uri = change.document.uri;
 
     // try and parse document if possible
