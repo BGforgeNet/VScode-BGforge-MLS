@@ -240,6 +240,7 @@ function find_symbols(text: string) {
         if (match[1]) {
             conlog(`jsdoc: ${match[1]}`);
             conlog(jsdoc.parse(match[1]));
+            proc_detail = jsdoc_to_detail(proc_name, match[1]);
         }
         proc_list.push({ label: proc_name, detail: proc_detail });
         match = proc_regex.exec(text);
@@ -251,6 +252,15 @@ function find_symbols(text: string) {
     };
     return result;
 }
+
+function jsdoc_to_detail(label: string, jsdoc_string: string) {
+    const jsd = jsdoc.parse(jsdoc_string);
+    const type = jsd.ret ? jsd.ret.type : "void";
+    const args_string = jsd.args.join(", ");
+    const detail = `${type} ${label}(${args_string})`
+    return detail;
+}
+
 /** `text` looks like this
  *
  * `[Error] <Semantic> <my_script.ssl>:26:25: Unknown identifier qq.`
