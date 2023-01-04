@@ -16,10 +16,14 @@ interface arg {
     default?: string;
 }
 
+interface ret {
+    type: string;
+}
+
 export interface JSdoc {
     desc?: string;
-    args?: arg[];
-    ret?: arg;
+    args: arg[];
+    ret?: ret;
     deprecated?: boolean;
 }
 
@@ -36,11 +40,11 @@ export function parse(text: string) {
         if (!l2.startsWith("@")) {
             lines2.push(l2);
         }
-        const arg_match = l2.match(/@(arg|param) {(.*)} (\w)/);
+        const arg_match = l2.match(/@(arg|param) {(.*)} (\w+)/);
         if (arg_match) {
             args.push({ name: arg_match[3], type: arg_match[2] });
         }
-        const ret_match = l2.match(/@(ret|return|returns) {(.*)} (\w)/);
+        const ret_match = l2.match(/@(ret|return|returns) {(.*)} (\w+)/);
         if (ret_match) {
             ret = { name: ret_match[3], type: ret_match[2] };
         }
@@ -53,7 +57,7 @@ export function parse(text: string) {
     // conlog(text);
     // let desc = text.match(/^[^@].*/gm)[0];
     // desc = desc.trim();
-    const jsdoc: JSdoc = {};
+    const jsdoc: JSdoc = {args: []};
     if (deprecated) {
         jsdoc.deprecated = true;
     }
