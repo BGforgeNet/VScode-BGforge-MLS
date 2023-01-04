@@ -85,6 +85,7 @@ function loadProcedures(
             documentation: markdownContents,
             source: path,
             kind: CompletionItemKind.Function,
+            labelDetails: { description: path },
         };
         completion_list.push(completionItem);
         const hoverItem = { contents: markdownContents, source: path };

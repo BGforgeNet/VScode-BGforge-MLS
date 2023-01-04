@@ -316,6 +316,7 @@ function loadFunctions(
             documentation: markdownContents,
             source: path,
             kind: CompletionItemKind.Function,
+            labelDetails: { description: path },
         };
         completionList.push(completionItem);
         const hoverItem = { contents: markdownContents, source: path };
