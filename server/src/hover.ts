@@ -16,10 +16,10 @@ export interface HoverDataEx extends Map<string, HoverMapEx> {}
 interface TraEntries extends Map<string, string> {}
 interface TraFiles extends Map<string, TraEntries> {}
 
-export const data_static: HoverData = new Map();
-export const data_dynamic: HoverDataEx = new Map();
-export const data_self: HoverDataEx = new Map();
-export const data_tra: TraFiles = new Map();
+export const staticData: HoverData = new Map();
+export const dynamicData: HoverDataEx = new Map();
+export const selfData: HoverDataEx = new Map();
+export const traData: TraFiles = new Map();
 
 const hover_languages = ["weidu-tp2", "fallout-ssl", "weidu-d", "weidu-baf"];
 
@@ -29,7 +29,7 @@ export function load_static() {
             const file_path = path.join(__dirname, `hover.${lang_id}.json`);
             const json_data = JSON.parse(fs.readFileSync(file_path, "utf-8"));
             const hover_data: Map<string, Hover> = new Map(Object.entries(json_data));
-            data_static.set(lang_id, hover_data);
+            staticData.set(lang_id, hover_data);
         } catch (e) {
             conlog(e);
         }
@@ -89,21 +89,21 @@ export function load_translation(traSettings: ProjectTraSettings) {
     for (const tf of tra_files) {
         const lines = load_tra_file(path.join(tra_dir, tf), "tra");
         const tra_key = tf.slice(0, -4);
-        data_tra.set(tra_key, lines);
+        traData.set(tra_key, lines);
     }
     // hardly in any project there will be both tra and msg files
     const msg_files = find_files(tra_dir, "msg");
     for (const tf of msg_files) {
         const lines = load_tra_file(path.join(tra_dir, tf), "msg");
         const tra_key = tf.slice(0, -4);
-        data_tra.set(tra_key, lines);
+        traData.set(tra_key, lines);
     }
 }
 
 export function reload_tra_file(tra_dir: string, tra_path: string) {
     const lines = load_tra_file(path.join(tra_dir, tra_path), "tra");
     const tra_key = tra_path.slice(0, -4);
-    data_tra.set(tra_key, lines);
+    traData.set(tra_key, lines);
     conlog(`reloaded ${tra_dir} / ${tra_path}`);
 }
 
@@ -150,7 +150,7 @@ export function get_tra_for(
     tra_type: "tra" | "msg" = "tra"
 ) {
     const file_key = get_tra_file_key(fpath, full_text, settings);
-    const tra_file = data_tra.get(file_key);
+    const tra_file = traData.get(file_key);
     let result: Hover;
 
     if (!tra_file) {

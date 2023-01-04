@@ -15,12 +15,7 @@ import { DynamicData } from "./common";
 import { MarkupKind } from "vscode-languageserver/node";
 import * as cp from "child_process";
 import { SSLsettings } from "./settings";
-import {
-    CompletionItemEx,
-    CompletionList,
-    CompletionListEx,
-    static_completion,
-} from "./completion";
+import * as completion from "./completion";
 import { HoverEx, HoverMap, HoverMapEx } from "./hover";
 import * as hover from "./hover";
 import * as fs from "fs";
@@ -49,7 +44,7 @@ const lang_id = "fallout-ssl";
 const ssl_ext = ".ssl";
 
 export async function load_data(headersDirectory: string) {
-    const completion_list: Array<CompletionItemEx> = [];
+    const completion_list: Array<completion.CompletionItemEx> = [];
     const hover_map = new Map<string, HoverEx>();
     const headers_list = find_files(headersDirectory, "h");
 
@@ -66,7 +61,7 @@ export async function load_data(headersDirectory: string) {
 function load_procedures(
     path: string,
     header_data: HeaderDataList,
-    completion_list: CompletionList,
+    completion_list: completion.CompletionList,
     hover_map: HoverMap
 ) {
     for (const proc of header_data.procedures) {
@@ -94,7 +89,7 @@ function load_procedures(
 function load_macros(
     path: string,
     header_data: HeaderDataList,
-    completion_list: CompletionList,
+    completion_list: completion.CompletionList,
     hover_map: HoverMap
 ) {
     for (const macro of header_data.macros) {
@@ -126,13 +121,23 @@ function load_macros(
         }
         const markdown_contents = { kind: MarkupKind.Markdown, value: markdown_value };
         // TODO: labelDetails are disappearing on selection, try them again
-        // const completion_item = { label: define.label, documentation: markdown_content, source: header_path, labelDetails: {detail: "ld1", description: "ld2"}, detail: header_path };
+        // const completion_item = { label: define.label, documentation: markdown_content, source: header_path, , detail: header_path };
+        // const completion_item = {
+        //     label: macro.label,
+        //     documentation: markdown_contents,
+        //     source: path,
+        //     kind: completion_kind,
+        // };
         const completion_item = {
             label: macro.label,
             documentation: markdown_contents,
             source: path,
             kind: completion_kind,
+            // detail: "dtl",
+            labelDetails: {detail: "ld1", description: path},
+            
         };
+    
         completion_list.push(completion_item);
 
         const hover_item = { contents: markdown_contents, source: path };
@@ -143,7 +148,7 @@ function load_macros(
 export function reload_data(
     path: string,
     text: string,
-    completion: CompletionListEx | undefined,
+    completion: completion.CompletionListEx | undefined,
     hover: HoverMapEx | undefined
 ) {
     const symbols = find_symbols(text);
@@ -167,6 +172,8 @@ export function reload_data(
     load_macros(path, symbols, new_completion, new_hover);
     load_procedures(path, symbols, new_completion, new_hover);
     const result: DynamicData = { completion: new_completion, hover: new_hover };
+    conlog("reload data");
+    conlog(result);
     return result;
 }
 
@@ -256,7 +263,8 @@ function find_symbols(text: string) {
 function jsdoc_to_detail(label: string, jsdoc_string: string) {
     const jsd = jsdoc.parse(jsdoc_string);
     const type = jsd.ret ? jsd.ret.type : "void";
-    const args_string = jsd.args.join(", ");
+    const args = jsd.args.map(({type, name}) => (`${type} ${name}`));
+    const args_string = args.join(", ");
     const detail = `${type} ${label}(${args_string})`
     return detail;
 }
@@ -393,12 +401,12 @@ export async function load_external_headers(workspace_root: string, headers_dir:
     conlog(`loading external headers from ${headers_dir}`);
     const fallout_header_data = await load_data(headers_dir);
     const lang_id = "fallout-ssl";
-    const old_completion = static_completion.get(lang_id);
-    const old_hover = hover.data_static.get(lang_id);
+    const old_completion = completion.staticData.get(lang_id);
+    const old_hover = hover.staticData.get(lang_id);
     const new_completion = [...old_completion, ...fallout_header_data.completion];
     const new_hover = new Map([...old_hover, ...fallout_header_data.hover]);
 
-    hover.data_static.set(lang_id, new_hover);
-    static_completion.set(lang_id, new_completion);
+    hover.staticData.set(lang_id, new_hover);
+    completion.staticData.set(lang_id, new_completion);
     conlog(`loaded external headers from ${headers_dir}`);
 }

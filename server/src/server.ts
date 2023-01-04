@@ -21,13 +21,8 @@ import { compileable } from "./compile";
 import { conlog, fullpath, is_directory, is_header, is_subpath, relpath } from "./common";
 import { MLSsettings, defaultSettings } from "./settings";
 import * as settings from "./settings";
-import {
-    dynamic_completion,
-    load_static_completion,
-    self_completion,
-    static_completion,
-} from "./completion";
 import * as hover from "./hover";
+import * as completion from "./completion";
 import {
     load_static_signatures,
     sig_response,
@@ -35,14 +30,6 @@ import {
     get_signature_label,
 } from "./signature";
 import * as url from "url";
-// import * as jsdoc from "jsdoc/lib"
-// import jsdoc = require("jsdoc-api");
-// import * as jsd from "jsdoc/parse";
-// import * as jsd from "jsdoc-parse";
-// const jsdoc = require("jsdoc-parse");
-// import * as jsd from "jsdoc-to-markdown";
-// const dox = require('dox');
-
 
 // Create a connection for the server. The connection uses Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
@@ -95,6 +82,7 @@ connection.onInitialize((params: InitializeParams) => {
             // Tell the client that this server supports code completion.
             completionProvider: {
                 resolveProvider: true,
+                completionItem: { labelDetailsSupport: true },
             },
             hoverProvider: true,
             signatureHelpProvider: {
@@ -126,7 +114,7 @@ connection.onInitialized(async () => {
     // load data
     project_settings = await settings.project(workspace_root);
     conlog(project_settings);
-    load_static_completion();
+    completion.loadStatic();
     hover.load_static();
     hover.load_translation(project_settings.translation);
     load_static_signatures();
@@ -204,27 +192,38 @@ async function reload_self_data(txtDoc: TextDocument) {
         case "fallout-ssl": {
             const rel_path = path.relative(workspace_root, docpath);
             if (is_header(rel_path, lang_id)) {
-                const old_completion = dynamic_completion.get(lang_id);
-                const old_hover = hover.data_dynamic.get(lang_id);
+                conlog("is header");
+                const old_completion = completion.dynamicData.get(lang_id);
+                const old_hover = hover.dynamicData.get(lang_id);
                 const new_data = fallout_ssl.reload_data(
                     rel_path,
                     txtDoc.getText(),
                     old_completion,
                     old_hover
                 );
-                hover.data_dynamic.set(lang_id, new_data.hover);
-                dynamic_completion.set(lang_id, new_data.completion);
+                hover.dynamicData.set(lang_id, new_data.hover);
+                completion.dynamicData.set(lang_id, new_data.completion);
             } else {
-                const old_completion = self_completion.get(rel_path);
-                const old_hover = hover.data_self.get(rel_path);
+                conlog("not header");
+                const old_completion = completion.selfData.get(rel_path);
+                const old_hover = hover.selfData.get(rel_path);
                 const new_data = fallout_ssl.reload_data(
                     rel_path,
                     txtDoc.getText(),
                     old_completion,
                     old_hover
                 );
-                hover.data_self.set(rel_path, new_data.hover);
-                self_completion.set(rel_path, new_data.completion);
+                conlog("new hover");
+                conlog(new_data.hover);
+                conlog("new completion");
+                conlog(new_data.completion);
+                hover.selfData.set(rel_path, new_data.hover);
+                const self_map = hover.selfData.get(rel_path);
+                conlog("hover self data get 1");
+                conlog(hover.selfData);
+                conlog(self_map);
+                conlog(rel_path);
+                completion.selfData.set(rel_path, new_data.completion);
             }
             break;
         }
@@ -237,11 +236,13 @@ documents.onDidOpen((event) => {
 
 // This handler provides the initial list of the completion items.
 connection.onCompletion((_textDocumentPosition: TextDocumentPositionParams): CompletionItem[] => {
-    const lang_id = documents.get(_textDocumentPosition.textDocument.uri).languageId;
-    const rel_path = path.relative(workspace_root, _textDocumentPosition.textDocument.uri);
-    const self_list = self_completion.get(rel_path) || [];
-    const static_list = static_completion.get(lang_id);
-    const dynamic_list = dynamic_completion.get(lang_id) || [];
+    const uri = _textDocumentPosition.textDocument.uri;
+    const lang_id = documents.get(uri).languageId;
+    const filePath = fullpath(uri);
+    const relPath = relpath(workspace_root, filePath);
+    const self_list = completion.selfData.get(relPath) || [];
+    const static_list = completion.staticData.get(lang_id);
+    const dynamic_list = completion.dynamicData.get(lang_id) || [];
     const list = [...self_list, ...static_list, ...dynamic_list];
     return list;
 });
@@ -249,11 +250,11 @@ connection.onCompletion((_textDocumentPosition: TextDocumentPositionParams): Com
 /** loads headers from workspace */
 async function load_dynamic_intellisense() {
     const fallout_header_data = await fallout_ssl.load_data("");
-    hover.data_dynamic.set("fallout-ssl", fallout_header_data.hover);
-    dynamic_completion.set("fallout-ssl", fallout_header_data.completion);
+    hover.dynamicData.set("fallout-ssl", fallout_header_data.hover);
+    completion.dynamicData.set("fallout-ssl", fallout_header_data.completion);
     const weidu_header_data = await weidu.load_data("");
-    hover.data_dynamic.set("weidu-tp2", weidu_header_data.hover);
-    dynamic_completion.set("weidu-tp2", weidu_header_data.completion);
+    hover.dynamicData.set("weidu-tp2", weidu_header_data.hover);
+    completion.dynamicData.set("weidu-tp2", weidu_header_data.completion);
     initialized = true;
 }
 
@@ -277,12 +278,17 @@ function endsWithNumber(str: string) {
 connection.onHover((textDocumentPosition: TextDocumentPositionParams): Hover => {
     const uri = textDocumentPosition.textDocument.uri;
     const lang_id = documents.get(uri).languageId;
-    const rel_path = path.relative(workspace_root, uri);
+    const filePath = fullpath(uri);
+    const relPath = relpath(workspace_root, filePath);
     const hover_lang_id = get_data_lang(lang_id);
-    const static_map = hover.data_static.get(hover_lang_id);
-    const dynamic_map = hover.data_dynamic.get(hover_lang_id);
-    const self_map = hover.data_self.get(rel_path);
+    const static_map = hover.staticData.get(hover_lang_id);
+    const dynamic_map = hover.dynamicData.get(hover_lang_id);
+    const self_map = hover.selfData.get(relPath);
 
+    conlog("hover self data get 2");
+    conlog(relPath);
+    conlog(hover.selfData);
+    conlog(self_map);
     if (!static_map && !dynamic_map && !self_map) {
         return;
     }
