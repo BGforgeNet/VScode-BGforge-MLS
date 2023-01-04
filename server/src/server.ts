@@ -181,7 +181,7 @@ async function reloadSelfData(txtDoc: TextDocument) {
 
     switch (langId) {
         case "fallout-ssl": {
-            const relPath = path.relative(workspaceRoot, docPath);
+            const relPath = getRelPath(workspaceRoot, docPath);
             if (isHeader(relPath, langId)) {
                 conlog("is header");
                 const oldCompletion = completion.dynamicData.get(langId);
@@ -208,6 +208,18 @@ async function reloadSelfData(txtDoc: TextDocument) {
                 completion.selfData.set(relPath, newData.completion);
             }
             break;
+        }
+        case "weidu-tp2": {
+            const relPath = getRelPath(workspaceRoot, docPath);
+            const oldCompletion = completion.dynamicData.get(langId);
+            const oldHover = hover.dynamicData.get(langId);
+            const newData = weidu.reloadData(relPath, txtDoc.getText(), oldCompletion, oldHover);
+            hover.dynamicData.set(langId, newData.hover);
+            completion.dynamicData.set(langId, newData.completion);
+            break;
+        }
+        default: {
+            return;
         }
     }
 }

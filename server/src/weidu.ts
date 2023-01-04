@@ -13,8 +13,8 @@ import * as cp from "child_process";
 import { WeiDUsettings } from "./settings";
 import * as fs from "fs";
 import * as jsdoc from "./jsdoc";
-import { CompletionItemEx, CompletionList } from "./completion";
-import { HoverEx, HoverMap } from "./hover";
+import * as completion from "./completion";
+import * as hover from "./hover";
 import { CompletionItemKind, MarkupKind } from "vscode-languageserver/node";
 
 const valid_extensions = new Map([
@@ -219,8 +219,8 @@ export function compile(uri: string, settings: WeiDUsettings, interactive = fals
 }
 
 export async function loadData(headersDirectory: string) {
-    const completionList: Array<CompletionItemEx> = [];
-    const hoverMap = new Map<string, HoverEx>();
+    const completionList: Array<completion.CompletionItemEx> = [];
+    const hoverMap = new Map<string, hover.HoverEx>();
     const headersList = findFiles(headersDirectory, "tph");
 
     for (const headerPath of headersList) {
@@ -290,8 +290,8 @@ function jsdocToMD(jsd: jsdoc.JSdoc) {
 function loadFunctions(
     path: string,
     defineList: DefineList,
-    completionList: CompletionList,
-    hoverMap: HoverMap
+    completionList: completion.CompletionList,
+    hoverMap: hover.HoverMap
 ) {
     const langId = "weidu-tp2-tooltip";
 
@@ -322,4 +322,34 @@ function loadFunctions(
         const hoverItem = { contents: markdownContents, source: path };
         hoverMap.set(define.name, hoverItem);
     }
+}
+
+export function reloadData(
+    path: string,
+    text: string,
+    completion: completion.CompletionListEx | undefined,
+    hover: hover.HoverMapEx | undefined
+) {
+    const symbols = findSymbols(text);
+    if (completion == undefined) {
+        completion = [];
+    }
+    const newCompletion = completion.filter((item) => item.source != path);
+    if (hover == undefined) {
+        hover = new Map();
+    }
+    const newHover = new Map(
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        Array.from(hover).filter(([key, value]) => {
+            if (value.source != path) {
+                return true;
+            }
+            return false;
+        })
+    );
+        conlog(symbols);
+    loadFunctions(path, symbols, newCompletion, newHover);
+    const result: DynamicData = { completion: newCompletion, hover: newHover };
+    conlog("reload data");
+    return result;
 }
