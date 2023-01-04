@@ -1,15 +1,3 @@
-import { conlog } from "./common";
-/**
- * Add two numbers.
- * or more
- * @param {number} a
- * @param {number} b
- * @returns {number}
- */
-// function add(a, b) {
-//     return a + b;
-// }
-
 interface arg {
     name: string;
     type: string;

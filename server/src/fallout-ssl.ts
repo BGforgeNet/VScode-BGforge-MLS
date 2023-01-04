@@ -120,21 +120,12 @@ function load_macros(
             completion_kind = CompletionItemKind.Field;
         }
         const markdown_contents = { kind: MarkupKind.Markdown, value: markdown_value };
-        // TODO: labelDetails are disappearing on selection, try them again
-        // const completion_item = { label: define.label, documentation: markdown_content, source: header_path, , detail: header_path };
-        // const completion_item = {
-        //     label: macro.label,
-        //     documentation: markdown_contents,
-        //     source: path,
-        //     kind: completion_kind,
-        // };
         const completion_item = {
             label: macro.label,
             documentation: markdown_contents,
             source: path,
             kind: completion_kind,
-            // detail: "dtl",
-            labelDetails: {detail: "ld1", description: path},
+            labelDetails: {description: path},
             
         };
     
@@ -173,7 +164,6 @@ export function reload_data(
     load_procedures(path, symbols, new_completion, new_hover);
     const result: DynamicData = { completion: new_completion, hover: new_hover };
     conlog("reload data");
-    conlog(result);
     return result;
 }
 
@@ -245,8 +235,6 @@ function find_symbols(text: string) {
             proc_detail = `procedure ${proc_name}()`;
         }
         if (match[1]) {
-            conlog(`jsdoc: ${match[1]}`);
-            conlog(jsdoc.parse(match[1]));
             proc_detail = jsdoc_to_detail(proc_name, match[1]);
         }
         proc_list.push({ label: proc_name, detail: proc_detail });

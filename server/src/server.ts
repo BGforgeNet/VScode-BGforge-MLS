@@ -121,15 +121,6 @@ connection.onInitialized(async () => {
     fallout_ssl.load_external_headers(workspace_root, globalSettings.falloutSSL.headersDirectory);
     load_dynamic_intellisense();
     conlog("initialized");
-    // // const jsdoc = require('jsdoc-api');
-    // const test2 = "/**\n    * Blend two colors together.\n    * @param {string} color1 - The first color, in hexadecimal format.\n    * @param {string} color2 - The second color, in hexadecimal format.\n    * @return {string} The blended color.\n    */var x=0";
-    // // const test1 = jsdoc.explainSync({ source: "/** example doclet */ \n var example = true" });
-    // // const test1 = jsdoc.explainSync({ source: test2 });
-    // const test1 = dox.parseComments(test2);
-    // // const test1 = jsd.renderSync(test2);
-    // conlog("jsdoc start");
-    // conlog(test1);
-    // conlog("jsdoc end");
 });
 
 // Cache the settings of all open documents
@@ -213,16 +204,7 @@ async function reload_self_data(txtDoc: TextDocument) {
                     old_completion,
                     old_hover
                 );
-                conlog("new hover");
-                conlog(new_data.hover);
-                conlog("new completion");
-                conlog(new_data.completion);
                 hover.selfData.set(rel_path, new_data.hover);
-                const self_map = hover.selfData.get(rel_path);
-                conlog("hover self data get 1");
-                conlog(hover.selfData);
-                conlog(self_map);
-                conlog(rel_path);
                 completion.selfData.set(rel_path, new_data.completion);
             }
             break;
@@ -285,10 +267,6 @@ connection.onHover((textDocumentPosition: TextDocumentPositionParams): Hover => 
     const dynamic_map = hover.dynamicData.get(hover_lang_id);
     const self_map = hover.selfData.get(relPath);
 
-    conlog("hover self data get 2");
-    conlog(relPath);
-    conlog(hover.selfData);
-    conlog(self_map);
     if (!static_map && !dynamic_map && !self_map) {
         return;
     }
