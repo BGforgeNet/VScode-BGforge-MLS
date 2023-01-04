@@ -175,7 +175,8 @@ export function reload_data(
 function find_symbols(text: string) {
     // defines
     const define_list: DefineList = [];
-    const define_regex = /^#define[ \t]+(\w+)(?:\(([^)]+)\))?[ \t]+(.+)/gm;
+    const define_regex =
+        /((\/\*\*\s*\n([^*]|(\*(?!\/)))*\*\/)\r?\n)?#define[ \t]+(\w+)(?:\(([^)]+)\))?[ \t]+(.+)/gm;
     const constant_regex = /^[A-Z0-9_]+/;
     let match = define_regex.exec(text);
     while (match != null) {
@@ -184,8 +185,8 @@ function find_symbols(text: string) {
             define_regex.lastIndex++;
         }
 
-        const define_name = match[1];
-        let define_firstline = match[3];
+        const define_name = match[5];
+        let define_firstline = match[7];
         define_firstline = define_firstline.trimEnd();
 
         // check if it's multiline
@@ -196,9 +197,9 @@ function find_symbols(text: string) {
 
         // check if it has vars
         let define_detail = define_name;
-        if (match[2]) {
+        if (match[6]) {
             // function-like macro
-            const define_vars = match[2];
+            const define_vars = match[6];
             define_detail = `${define_name}(${define_vars})`;
         }
 
@@ -209,13 +210,30 @@ function find_symbols(text: string) {
         if (!multiline && constant_regex.test(define_name)) {
             constant = true;
         }
-        define_list.push({
-            label: define_name,
-            constant: constant,
-            detail: define_detail,
-            multiline: multiline,
-            firstline: define_firstline,
-        });
+        // if jsdoc found
+        if (match[2]) {
+            const jsd = jsdoc.parse(match[2]);
+            define_detail = jsdocToDetail(define_name, jsd);
+            const item = {
+                label: define_name,
+                constant: constant,
+                detail: define_detail,
+                multiline: multiline,
+                firstline: define_firstline,
+                jsdoc: jsd,
+            };
+            define_list.push(item);
+        } else {
+            const item = {
+                label: define_name,
+                constant: constant,
+                detail: define_detail,
+                multiline: multiline,
+                firstline: define_firstline,
+            };
+            conlog(item);
+            define_list.push(item);
+        }
         match = define_regex.exec(text);
     }
 
@@ -225,24 +243,24 @@ function find_symbols(text: string) {
     // from here https://stackoverflow.com/questions/35905181/regex-for-jsdoc-comments
     // procedure regex: procedure[\s]+(\w+)(?:\(([^)]+)\))?[\s]+begin
     const proc_regex =
-        /(\/\*\*\s*\n([^*]|(\*(?!\/)))*\*\/)\r?\n??procedure[\s]+(\w+)(?:\(([^)]+)\))?[\s]+begin/gm;
+        /((\/\*\*\s*\n([^*]|(\*(?!\/)))*\*\/)\r?\n)?procedure[\s]+(\w+)(?:\(([^)]+)\))?[\s]+begin/gm;
     match = proc_regex.exec(text);
     while (match != null) {
         // This is necessary to avoid infinite loops with zero-width matches
         if (match.index === proc_regex.lastIndex) {
             proc_regex.lastIndex++;
         }
-        const proc_name = match[4];
+        const proc_name = match[5];
         let proc_detail = proc_name;
-        if (match[5]) {
-            proc_detail = `procedure ${proc_name}(${match[5]})`;
+        if (match[6]) {
+            proc_detail = `procedure ${proc_name}(${match[6]})`;
         } else {
             proc_detail = `procedure ${proc_name}()`;
         }
 
         // if jsdoc found
-        if (match[1]) {
-            const jsd = jsdoc.parse(match[1]);
+        if (match[2]) {
+            const jsd = jsdoc.parse(match[2]);
             proc_detail = jsdocToDetail(proc_name, jsd);
             const item = { label: proc_name, detail: proc_detail, jsdoc: jsd };
             proc_list.push(item);
