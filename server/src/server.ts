@@ -18,15 +18,15 @@ import * as path from "path";
 import * as fallout_ssl from "./fallout-ssl";
 import * as weidu from "./weidu";
 import { compileable } from "./compile";
-import { conlog, fullpath, is_directory, is_header, is_subpath, relpath } from "./common";
+import { conlog, getFullPath, isDirectory, isHeader, isSubpath, getRelPath } from "./common";
 import { MLSsettings, defaultSettings } from "./settings";
 import * as settings from "./settings";
 import * as hover from "./hover";
 import * as completion from "./completion";
 import {
-    load_static_signatures,
+    loadStaticSignatures,
     sigResponse,
-    static_signatures,
+    staticSignatures,
     getSignatureLabel,
 } from "./signature";
 import * as url from "url";
@@ -42,9 +42,9 @@ export const documents: TextDocuments<TextDocument> = new TextDocuments(TextDocu
 let hasConfigurationCapability = false;
 let hasWorkspaceFolderCapability = false;
 
-let workspace_root: string;
+let workspaceRoot: string;
 let initialized = false;
-let project_settings: settings.ProjectSettings;
+let projectSettings: settings.ProjectSettings;
 
 // for language KEY, hovers and completions are searched in VALUE map
 const lang_data_map = new Map([
@@ -98,8 +98,8 @@ connection.onInitialize((params: InitializeParams) => {
         };
     }
     // yes this is unsafe, just doing something quick and dirty
-    workspace_root = fileURLToPath(params.workspaceFolders[0].uri);
-    conlog(`workspace_root = ${workspace_root}`);
+    workspaceRoot = fileURLToPath(params.workspaceFolders[0].uri);
+    conlog(`workspace_root = ${workspaceRoot}`);
     return result;
 });
 
@@ -112,14 +112,14 @@ connection.onInitialized(async () => {
     }
     globalSettings = await connection.workspace.getConfiguration({ section: "bgforge" });
     // load data
-    project_settings = await settings.project(workspace_root);
-    conlog(project_settings);
+    projectSettings = await settings.project(workspaceRoot);
+    conlog(projectSettings);
     completion.loadStatic();
-    hover.load_static();
-    hover.loadTranslation(project_settings.translation);
-    load_static_signatures();
-    fallout_ssl.load_external_headers(workspace_root, globalSettings.falloutSSL.headersDirectory);
-    load_dynamic_intellisense();
+    hover.loadStatic();
+    hover.loadTranslation(projectSettings.translation);
+    loadStaticSignatures();
+    fallout_ssl.load_external_headers(workspaceRoot, globalSettings.falloutSSL.headersDirectory);
+    loadDynamicIntellisense();
     conlog("initialized");
 });
 
@@ -136,7 +136,7 @@ connection.onDidChangeConfiguration((change) => {
     }
 });
 
-function get_data_lang(lang_id: string) {
+function getDataLang(lang_id: string) {
     let data_lang = lang_data_map.get(lang_id);
     if (!data_lang) {
         data_lang = "c++";
@@ -157,7 +157,7 @@ documents.onDidChangeContent((change) => {
         conlog("onDidChangeContent: not initialized yet");
         return;
     }
-    reload_self_data(change.document);
+    reloadSelfData(change.document);
 });
 
 export function getDocumentSettings(resource: string): Thenable<MLSsettings> {
@@ -175,37 +175,37 @@ export function getDocumentSettings(resource: string): Thenable<MLSsettings> {
     return result;
 }
 
-async function reload_self_data(txtDoc: TextDocument) {
-    const lang_id = documents.get(txtDoc.uri).languageId;
-    const docpath = fullpath(txtDoc.uri);
+async function reloadSelfData(txtDoc: TextDocument) {
+    const langId = documents.get(txtDoc.uri).languageId;
+    const docPath = getFullPath(txtDoc.uri);
 
-    switch (lang_id) {
+    switch (langId) {
         case "fallout-ssl": {
-            const rel_path = path.relative(workspace_root, docpath);
-            if (is_header(rel_path, lang_id)) {
+            const relPath = path.relative(workspaceRoot, docPath);
+            if (isHeader(relPath, langId)) {
                 conlog("is header");
-                const old_completion = completion.dynamicData.get(lang_id);
-                const old_hover = hover.dynamicData.get(lang_id);
-                const new_data = fallout_ssl.reloadData(
-                    rel_path,
+                const oldCompletion = completion.dynamicData.get(langId);
+                const oldHover = hover.dynamicData.get(langId);
+                const newData = fallout_ssl.reloadData(
+                    relPath,
                     txtDoc.getText(),
-                    old_completion,
-                    old_hover
+                    oldCompletion,
+                    oldHover
                 );
-                hover.dynamicData.set(lang_id, new_data.hover);
-                completion.dynamicData.set(lang_id, new_data.completion);
+                hover.dynamicData.set(langId, newData.hover);
+                completion.dynamicData.set(langId, newData.completion);
             } else {
                 conlog("not header");
-                const old_completion = completion.selfData.get(rel_path);
-                const old_hover = hover.selfData.get(rel_path);
-                const new_data = fallout_ssl.reloadData(
-                    rel_path,
+                const oldCompletion = completion.selfData.get(relPath);
+                const oldHover = hover.selfData.get(relPath);
+                const newData = fallout_ssl.reloadData(
+                    relPath,
                     txtDoc.getText(),
-                    old_completion,
-                    old_hover
+                    oldCompletion,
+                    oldHover
                 );
-                hover.selfData.set(rel_path, new_data.hover);
-                completion.selfData.set(rel_path, new_data.completion);
+                hover.selfData.set(relPath, newData.hover);
+                completion.selfData.set(relPath, newData.completion);
             }
             break;
         }
@@ -213,30 +213,30 @@ async function reload_self_data(txtDoc: TextDocument) {
 }
 
 documents.onDidOpen((event) => {
-    reload_self_data(event.document);
+    reloadSelfData(event.document);
 });
 
 // This handler provides the initial list of the completion items.
 connection.onCompletion((_textDocumentPosition: TextDocumentPositionParams): CompletionItem[] => {
     const uri = _textDocumentPosition.textDocument.uri;
-    const lang_id = documents.get(uri).languageId;
-    const filePath = fullpath(uri);
-    const relPath = relpath(workspace_root, filePath);
-    const self_list = completion.selfData.get(relPath) || [];
-    const static_list = completion.staticData.get(lang_id);
-    const dynamic_list = completion.dynamicData.get(lang_id) || [];
-    const list = [...self_list, ...static_list, ...dynamic_list];
+    const langId = documents.get(uri).languageId;
+    const filePath = getFullPath(uri);
+    const relPath = getRelPath(workspaceRoot, filePath);
+    const selfList = completion.selfData.get(relPath) || [];
+    const staticList = completion.staticData.get(langId);
+    const dynamicList = completion.dynamicData.get(langId) || [];
+    const list = [...selfList, ...staticList, ...dynamicList];
     return list;
 });
 
 /** loads headers from workspace */
-async function load_dynamic_intellisense() {
-    const fallout_header_data = await fallout_ssl.loadData("");
-    hover.dynamicData.set("fallout-ssl", fallout_header_data.hover);
-    completion.dynamicData.set("fallout-ssl", fallout_header_data.completion);
-    const weidu_header_data = await weidu.loadData("");
-    hover.dynamicData.set("weidu-tp2", weidu_header_data.hover);
-    completion.dynamicData.set("weidu-tp2", weidu_header_data.completion);
+async function loadDynamicIntellisense() {
+    const falloutHeaderData = await fallout_ssl.loadData("");
+    hover.dynamicData.set("fallout-ssl", falloutHeaderData.hover);
+    completion.dynamicData.set("fallout-ssl", falloutHeaderData.completion);
+    const weiduHeaderData = await weidu.loadData("");
+    hover.dynamicData.set("weidu-tp2", weiduHeaderData.hover);
+    completion.dynamicData.set("weidu-tp2", weiduHeaderData.completion);
     initialized = true;
 }
 
@@ -259,15 +259,15 @@ function endsWithNumber(str: string) {
 
 connection.onHover((textDocumentPosition: TextDocumentPositionParams): Hover => {
     const uri = textDocumentPosition.textDocument.uri;
-    const lang_id = documents.get(uri).languageId;
-    const filePath = fullpath(uri);
-    const relPath = relpath(workspace_root, filePath);
-    const hover_lang_id = get_data_lang(lang_id);
-    const static_map = hover.staticData.get(hover_lang_id);
-    const dynamic_map = hover.dynamicData.get(hover_lang_id);
-    const self_map = hover.selfData.get(relPath);
+    const langId = documents.get(uri).languageId;
+    const filePath = getFullPath(uri);
+    const relPath = getRelPath(workspaceRoot, filePath);
+    const hoverLangId = getDataLang(langId);
+    const staticMap = hover.staticData.get(hoverLangId);
+    const dynamicMap = hover.dynamicData.get(hoverLangId);
+    const selfMap = hover.selfData.get(relPath);
 
-    if (!static_map && !dynamic_map && !self_map) {
+    if (!staticMap && !dynamicMap && !selfMap) {
         return;
     }
 
@@ -280,16 +280,16 @@ connection.onHover((textDocumentPosition: TextDocumentPositionParams): Hover => 
     conlog(word);
 
     if (word.startsWith("@")) {
-        const result = hover.getTraFor(word, text, project_settings.translation, uri);
+        const result = hover.getTraFor(word, text, projectSettings.translation, uri);
         if (result) {
             return result;
         } else {
             return;
         }
     }
-    if (lang_id == "fallout-ssl") {
+    if (langId == "fallout-ssl") {
         if (endsWithNumber(word)) {
-            const result = hover.get_msg_for(word, text, project_settings.translation, uri);
+            const result = hover.get_msg_for(word, text, projectSettings.translation, uri);
             if (result) {
                 return result;
             }
@@ -298,20 +298,20 @@ connection.onHover((textDocumentPosition: TextDocumentPositionParams): Hover => 
 
     // faster to check each map than join them
     let result: Hover | hover.HoverEx;
-    if (self_map) {
-        result = self_map.get(word);
+    if (selfMap) {
+        result = selfMap.get(word);
         if (result) {
             return result;
         }
     }
-    if (static_map) {
-        result = static_map.get(word);
+    if (staticMap) {
+        result = staticMap.get(word);
         if (result) {
             return result;
         }
     }
-    if (dynamic_map) {
-        result = dynamic_map.get(word);
+    if (dynamicMap) {
+        result = dynamicMap.get(word);
         if (hover) {
             return result;
         }
@@ -335,7 +335,7 @@ connection.onExecuteCommand(async (params) => {
     compile(uri, true);
 });
 
-function clear_diagnostics(uri: string) {
+function clearDiagnostics(uri: string) {
     // Clear old diagnostics. For some reason not working in common.send_parse_result.
     // Probably due to async?
     connection.sendDiagnostics({ uri: uri, diagnostics: [] });
@@ -348,7 +348,7 @@ async function compile(uri: string, interactive = false) {
 
     switch (lang_id) {
         case "fallout-ssl": {
-            clear_diagnostics(uri);
+            clearDiagnostics(uri);
             fallout_ssl.compile(uri, settings.falloutSSL, interactive);
             break;
         }
@@ -358,7 +358,7 @@ async function compile(uri: string, interactive = false) {
         case "weidu-baf-tpl":
         case "weidu-d":
         case "weidu-d-tpl": {
-            clear_diagnostics(uri);
+            clearDiagnostics(uri);
             weidu.compile(uri, settings.weidu, interactive);
             break;
         }
@@ -376,19 +376,19 @@ connection.onSignatureHelp((params: TextDocumentPositionParams): SignatureHelp =
     const uri = params.textDocument.uri;
     const document = documents.get(uri);
     const text = document.getText();
-    const sig_request = getSignatureLabel(text, params.position);
-    if (!sig_request) {
+    const sigRequest = getSignatureLabel(text, params.position);
+    if (!sigRequest) {
         return;
     }
 
-    const lang_id = document.languageId;
-    const static_map = static_signatures.get(lang_id);
+    const langId = document.languageId;
+    const staticMap = staticSignatures.get(langId);
 
     let sig: SignatureInformation;
-    if (static_map) {
-        sig = static_map.get(sig_request.label);
+    if (staticMap) {
+        sig = staticMap.get(sigRequest.label);
         if (sig) {
-            return sigResponse(sig, sig_request.parameter);
+            return sigResponse(sig, sigRequest.parameter);
         }
     }
 });
@@ -400,26 +400,26 @@ documents.onDidSave(async (change) => {
     if (!compileable(change.document)) {
         return;
     }
-    const doc_settings = await getDocumentSettings(uri);
-    if (doc_settings.validateOnSave || doc_settings.validateOnChange) {
+    const docSettings = await getDocumentSettings(uri);
+    if (docSettings.validateOnSave || docSettings.validateOnChange) {
         compile(uri);
     }
 
     // reload translation settings
-    if (path.relative(workspace_root, change.document.uri) == ".bgforge.yml") {
-        project_settings = await settings.project(workspace_root);
+    if (path.relative(workspaceRoot, change.document.uri) == ".bgforge.yml") {
+        projectSettings = await settings.project(workspaceRoot);
     }
 
     // reload translation
-    const tra_dir = project_settings.translation.directory;
-    if (is_directory(tra_dir)) {
+    const traDir = projectSettings.translation.directory;
+    if (isDirectory(traDir)) {
         let fpath = url.fileURLToPath(uri);
         // relative to root
-        fpath = relpath(workspace_root, fpath);
-        if (is_subpath(tra_dir, fpath)) {
+        fpath = getRelPath(workspaceRoot, fpath);
+        if (isSubpath(traDir, fpath)) {
             // relative to tra dir
-            const rel_path = relpath(tra_dir, fpath);
-            hover.reloadTraFile(tra_dir, rel_path);
+            const relPath = getRelPath(traDir, fpath);
+            hover.reloadTraFile(traDir, relPath);
         }
     }
 });

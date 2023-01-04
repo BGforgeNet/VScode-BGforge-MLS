@@ -3,11 +3,11 @@ import {
     conlog,
     ParseItemList,
     ParseResult,
-    send_parse_result as sendParseResult,
-    is_subpath,
-    is_directory,
-    find_files,
-    fullpath,
+    sendParseResult as sendParseResult,
+    isSubpath,
+    isDirectory,
+    findFiles,
+    getFullPath,
 } from "./common";
 import { connection, documents } from "./server";
 import * as path from "path";
@@ -48,7 +48,7 @@ const ssl_ext = ".ssl";
 export async function loadData(headersDirectory: string) {
     const completionList: Array<completion.CompletionItemEx> = [];
     const hoverMap = new Map<string, HoverEx>();
-    const headersList = find_files(headersDirectory, "h");
+    const headersList = findFiles(headersDirectory, "h");
 
     for (const headerPath of headersList) {
         const text = fs.readFileSync(path.join(headersDirectory, headerPath), "utf8");
@@ -369,7 +369,7 @@ function sendDiagnostics(uri: string, output_text: string) {
 }
 
 export function compile(uri: string, ssl_settings: SSLsettings, interactive = false) {
-    const filepath = fullpath(uri);
+    const filepath = getFullPath(uri);
     const cwd_to = path.dirname(filepath);
     const base_name = path.parse(filepath).base;
     const base = path.parse(filepath).name;
@@ -417,7 +417,7 @@ export async function load_external_headers(workspace_root: string, headers_dir:
     conlog("loading external headers");
 
     try {
-        if (!is_directory(headers_dir)) {
+        if (!isDirectory(headers_dir)) {
             conlog(`${headers_dir} is not a directory, skipping external headers.`);
             return;
         }
@@ -425,7 +425,7 @@ export async function load_external_headers(workspace_root: string, headers_dir:
         conlog(`lstat ${headers_dir} failed, aborting.`);
         return;
     }
-    if (is_subpath(workspace_root, headers_dir)) {
+    if (isSubpath(workspace_root, headers_dir)) {
         conlog(`real ${headers_dir} is a subdirectory of workspace ${workspace_root}, aborting.`);
         return;
     }

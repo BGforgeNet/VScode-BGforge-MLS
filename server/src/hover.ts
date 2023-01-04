@@ -2,7 +2,7 @@ import * as fs from "fs";
 import * as path from "path";
 import { Position } from "vscode-languageserver-textdocument";
 import { Hover } from "vscode-languageserver/node";
-import { conlog, find_files as findFiles, is_directory } from "./common";
+import { conlog, findFiles as findFiles, isDirectory } from "./common";
 import { ProjectTraSettings } from "./settings";
 
 export interface HoverEx extends Hover {
@@ -23,7 +23,7 @@ export const traData: TraFiles = new Map();
 
 const hoverLanguages = ["weidu-tp2", "fallout-ssl", "weidu-d", "weidu-baf"];
 
-export function load_static() {
+export function loadStatic() {
     for (const langId of hoverLanguages) {
         try {
             const filePath = path.join(__dirname, `hover.${langId}.json`);
@@ -81,7 +81,7 @@ export function symbolAtPosition(text: string, position: Position) {
 /** Loads all tra files in a directory to a map of maps of strings */
 export function loadTranslation(traSettings: ProjectTraSettings) {
     const tra_dir = traSettings.directory;
-    if (!is_directory(tra_dir)) {
+    if (!isDirectory(tra_dir)) {
         conlog(`${tra_dir} is not a directory, aborting tra load`);
         return;
     }

@@ -1,11 +1,11 @@
 import {
     conlog,
     DynamicData,
-    find_files,
-    fullpath,
+    findFiles,
+    getFullPath,
     ParseItemList,
     ParseResult,
-    send_parse_result as sendParseResult,
+    sendParseResult as sendParseResult,
 } from "./common";
 import { connection } from "./server";
 import * as path from "path";
@@ -103,7 +103,7 @@ function sendDiagnostics(uri: string, output_text: string, format = "weidu") {
 export function compile(uri: string, settings: WeiDUsettings, interactive = false) {
     const gamePath = settings.gamePath;
     const weiduPath = settings.path;
-    const filepath = fullpath(uri);
+    const filepath = getFullPath(uri);
     const cwdTo = path.dirname(filepath);
     const baseName = path.parse(filepath).base;
     let ext = path.parse(filepath).ext;
@@ -219,7 +219,7 @@ export function compile(uri: string, settings: WeiDUsettings, interactive = fals
 export async function loadData(headersDirectory: string) {
     const completionList: Array<CompletionItemEx> = [];
     const hoverMap = new Map<string, HoverEx>();
-    const headersList = find_files(headersDirectory, "tph");
+    const headersList = findFiles(headersDirectory, "tph");
 
     for (const headerPath of headersList) {
         const text = fs.readFileSync(path.join(headersDirectory, headerPath), "utf8");

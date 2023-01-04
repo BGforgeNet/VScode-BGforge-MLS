@@ -6,16 +6,16 @@ import { conlog } from "./common";
 export interface SignatureMap extends Map<string, SignatureInformation> {}
 export interface SignatureData extends Map<string, SignatureMap> {}
 
-export const static_signatures: SignatureData = new Map();
-export const signature_languages = ["fallout-ssl"];
+export const staticSignatures: SignatureData = new Map();
+export const signatureLanguages = ["fallout-ssl"];
 
-export function load_static_signatures() {
-    for (const lang_id of signature_languages) {
+export function loadStaticSignatures() {
+    for (const langId of signatureLanguages) {
         try {
-            const filePath = path.join(__dirname, `signature.${lang_id}.json`);
+            const filePath = path.join(__dirname, `signature.${langId}.json`);
             const jsonData = JSON.parse(readFileSync(filePath, "utf-8"));
             const sigData: SignatureMap = new Map(Object.entries(jsonData));
-            static_signatures.set(lang_id, sigData);
+            staticSignatures.set(langId, sigData);
         } catch (e) {
             conlog(e);
         }

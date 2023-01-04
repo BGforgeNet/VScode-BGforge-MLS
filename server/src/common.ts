@@ -55,10 +55,10 @@ export interface ParseResult {
     warnings: ParseItemList;
 }
 
-export function send_parse_result(uri: string, parse_result: ParseResult) {
-    const diag_src = "BGforge MLS";
-    const errors = parse_result.errors;
-    const warnings = parse_result.warnings;
+export function sendParseResult(uri: string, parseResult: ParseResult) {
+    const diagSource = "BGforge MLS";
+    const errors = parseResult.errors;
+    const warnings = parseResult.warnings;
 
     const diagnostics: Diagnostic[] = [];
 
@@ -70,7 +70,7 @@ export function send_parse_result(uri: string, parse_result: ParseResult) {
                 end: { line: e.line - 1, character: e.column_end },
             },
             message: `${e.message}`,
-            source: diag_src,
+            source: diagSource,
         };
         diagnostics.push(diagnosic);
     }
@@ -82,7 +82,7 @@ export function send_parse_result(uri: string, parse_result: ParseResult) {
                 end: { line: w.line - 1, character: w.column_end },
             },
             message: `${w.message}`,
-            source: diag_src,
+            source: diagSource,
         };
         diagnostics.push(diagnosic);
     }
@@ -93,22 +93,22 @@ export function send_parse_result(uri: string, parse_result: ParseResult) {
 
 /** Check if 1st dir contains the 2nd
  */
-export function is_subpath(outer_path: string, inner_path: string) {
-    const inner_real = fs.realpathSync(inner_path);
-    const outer_real = fs.realpathSync(outer_path);
-    if (inner_real.startsWith(outer_real)) {
+export function isSubpath(outer_path: string, inner_path: string) {
+    const innerReal = fs.realpathSync(inner_path);
+    const outerReal = fs.realpathSync(outer_path);
+    if (innerReal.startsWith(outerReal)) {
         return true;
     }
     return false;
 }
 
-export function is_directory(fspath: string) {
+export function isDirectory(fspath: string) {
     if (fs.existsSync(fspath)) {
         return fs.lstatSync(fspath).isDirectory;
     }
 }
 
-export function is_header(filepath: string, lang_id: string) {
+export function isHeader(filepath: string, lang_id: string) {
     if (path.extname(filepath) == "h" && lang_id == "fallout-ssl") {
         return true;
     }
@@ -116,15 +116,15 @@ export function is_header(filepath: string, lang_id: string) {
 }
 
 /** find files in directory by extension */
-export function find_files(dirName: string, extension: string) {
+export function findFiles(dirName: string, extension: string) {
     const entries = fg.sync(`**/*.${extension}`, { cwd: dirName, caseSensitiveMatch: false });
     return entries;
 }
 
-export function relpath(root: string, other_dir: string) {
+export function getRelPath(root: string, other_dir: string) {
     return path.relative(root, other_dir);
 }
 
-export function fullpath(uri_string: string) {
+export function getFullPath(uri_string: string) {
     return URI.parse(uri_string).fsPath;
 }
