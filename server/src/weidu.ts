@@ -12,6 +12,7 @@ import * as path from "path";
 import * as cp from "child_process";
 import { WeiDUsettings } from "./settings";
 import * as fs from "fs";
+import * as jsdoc from "./jsdoc";
 import { CompletionItemEx, CompletionList } from "./completion";
 import { HoverEx, HoverMap } from "./hover";
 import { CompletionItemKind, MarkupKind } from "vscode-languageserver/node";
@@ -29,6 +30,7 @@ interface DefineItem {
     name: string;
     context: "action" | "patch";
     dtype: "function" | "macro";
+    jsdoc?: jsdoc.JSdoc;
 }
 interface DefineList extends Array<DefineItem> {}
 
@@ -232,44 +234,69 @@ export async function loadData(headersDirectory: string) {
 
 function findSymbols(text: string) {
     const defineList: DefineList = [];
-    const actionRegex =
-        /^(DEFINE_ACTION_FUNCTION|DEFINE_ACTION_MACRO|DEFINE_PATCH_FUNCTION|DEFINE_PATCH_MACRO)\s+(\w+)/gm;
+    const defineRegex =
+        /((\/\*\*\s*\n([^*]|(\*(?!\/)))*\*\/)\r?\n)?(DEFINE_ACTION_FUNCTION|DEFINE_ACTION_MACRO|DEFINE_PATCH_FUNCTION|DEFINE_PATCH_MACRO)\s+(\w+)/gm;
 
-    let match = actionRegex.exec(text);
+    let match = defineRegex.exec(text);
     while (match != null) {
         // This is necessary to avoid infinite loops with zero-width matches
-        if (match.index === actionRegex.lastIndex) {
-            actionRegex.lastIndex++;
+        if (match.index === defineRegex.lastIndex) {
+            defineRegex.lastIndex++;
         }
-        const name = match[2];
+        const name = match[6];
         let context: "action" | "patch";
         let dtype: "function" | "macro";
-        if (match[1].startsWith("DEFINE_ACTION")) {
+        if (match[5].startsWith("DEFINE_ACTION")) {
             context = "action";
         } else {
             context = "patch";
         }
-        if (match[1].endsWith("FUNCTION")) {
+        if (match[5].endsWith("FUNCTION")) {
             dtype = "function";
         } else {
             dtype = "macro";
         }
-        defineList.push({ name: name, context: context, dtype: dtype });
-        match = actionRegex.exec(text);
+
+        const item: DefineItem = { name: name, context: context, dtype: dtype };
+
+        // check for docstring
+        if (match[2]) {
+            const jsd = jsdoc.parse(match[2]);
+            item.jsdoc = jsd;
+        }
+
+        defineList.push(item);
+        match = defineRegex.exec(text);
     }
     return defineList;
 }
 
+function jsdocToMD(jsd: jsdoc.JSdoc) {
+    let md = "\n---\n";
+    if (jsd.desc) {
+        md += `\n${jsd.desc}`;
+    }
+    if (jsd.args.length > 0) {
+        for (const arg of jsd.args) {
+            md += `\n- \`${arg.type}\` ${arg.name}`;
+        }
+    }
+    if (jsd.ret) {
+        md += `\n\n Returns \`${jsd.ret.type}\``;
+    }
+    return md;
+}
+
 function loadFunctions(
     path: string,
-    define_list: DefineList,
+    defineList: DefineList,
     completion_list: CompletionList,
     hover_map: HoverMap
 ) {
     const langId = "weidu-tp2-tooltip";
 
-    for (const define of define_list) {
-        const markdownValue = [
+    for (const define of defineList) {
+        let markdownValue = [
             "```" + `${langId}`,
             `${define.context} ${define.dtype} ${define.name}`,
             "```",
@@ -277,6 +304,11 @@ function loadFunctions(
             `${path}`,
             "```",
         ].join("\n");
+
+        if (define.jsdoc) {
+            const jsdmd = jsdocToMD(define.jsdoc);
+            markdownValue += jsdmd;
+        }
 
         const markdownContents = { kind: MarkupKind.Markdown, value: markdownValue };
         const completionItem = {
