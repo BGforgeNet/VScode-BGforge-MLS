@@ -15,7 +15,7 @@ import {
 import { fileURLToPath } from "node:url";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import * as path from "path";
-import * as fallout_ssl from "./fallout-ssl";
+import * as fallout from "./fallout-ssl";
 import * as weidu from "./weidu";
 import { compileable } from "./compile";
 import { conlog, getFullPath, isDirectory, isHeader, isSubpath, getRelPath } from "./common";
@@ -133,7 +133,7 @@ function loadStaticIntellisense() {
     hover.loadStatic();
     hover.loadTranslation(projectSettings.translation);
     signature.loadStatic();
-    fallout_ssl.load_external_headers(workspaceRoot, globalSettings.falloutSSL.headersDirectory);
+    fallout.load_external_headers(workspaceRoot, globalSettings.falloutSSL.headersDirectory);
 }
 
 function getDataLang(lang_id: string) {
@@ -186,7 +186,7 @@ async function reloadSelfData(txtDoc: TextDocument) {
                 conlog("is header");
                 const oldCompletion = completion.dynamicData.get(langId);
                 const oldHover = hover.dynamicData.get(langId);
-                const newData = fallout_ssl.reloadData(
+                const newData = fallout.reloadData(
                     relPath,
                     txtDoc.getText(),
                     oldCompletion,
@@ -198,7 +198,7 @@ async function reloadSelfData(txtDoc: TextDocument) {
                 conlog("not header");
                 const oldCompletion = completion.selfData.get(relPath);
                 const oldHover = hover.selfData.get(relPath);
-                const newData = fallout_ssl.reloadData(
+                const newData = fallout.reloadData(
                     relPath,
                     txtDoc.getText(),
                     oldCompletion,
@@ -231,7 +231,7 @@ connection.onCompletion((_textDocumentPosition: TextDocumentPositionParams): Com
 
 /** loads headers from workspace */
 async function loadDynamicIntellisense() {
-    const falloutHeaderData = await fallout_ssl.loadData("");
+    const falloutHeaderData = await fallout.loadData("");
     hover.dynamicData.set("fallout-ssl", falloutHeaderData.hover);
     completion.dynamicData.set("fallout-ssl", falloutHeaderData.completion);
     const weiduHeaderData = await weidu.loadData("");
@@ -349,7 +349,7 @@ async function compile(uri: string, interactive = false) {
     switch (lang_id) {
         case "fallout-ssl": {
             clearDiagnostics(uri);
-            fallout_ssl.compile(uri, settings.falloutSSL, interactive);
+            fallout.compile(uri, settings.falloutSSL, interactive);
             break;
         }
         case "weidu-tp2":
