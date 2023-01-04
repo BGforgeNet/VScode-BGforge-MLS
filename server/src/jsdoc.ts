@@ -31,7 +31,7 @@ export function parse(text: string) {
     const args = [];
     const lines = text.split("\n");
     const lines2 = [];
-    let ret: arg | null = null;
+    let ret: ret | null = null;
     lines.shift();
     lines.pop();
     let deprecated = false;
@@ -44,9 +44,9 @@ export function parse(text: string) {
         if (arg_match) {
             args.push({ name: arg_match[3], type: arg_match[2] });
         }
-        const ret_match = l2.match(/@(ret|return|returns) {(.*)} (\w+)/);
+        const ret_match = l2.match(/@(ret|return|returns) {(.*)}/);
         if (ret_match) {
-            ret = { name: ret_match[3], type: ret_match[2] };
+            ret = {type: ret_match[2] };
         }
         const dep_match = l2.match(/@(deprecated)/);
         if (dep_match) {
