@@ -290,8 +290,8 @@ function jsdocToMD(jsd: jsdoc.JSdoc) {
 function loadFunctions(
     path: string,
     defineList: DefineList,
-    completion_list: CompletionList,
-    hover_map: HoverMap
+    completionList: CompletionList,
+    hoverMap: HoverMap
 ) {
     const langId = "weidu-tp2-tooltip";
 
@@ -317,8 +317,8 @@ function loadFunctions(
             source: path,
             kind: CompletionItemKind.Function,
         };
-        completion_list.push(completionItem);
+        completionList.push(completionItem);
         const hoverItem = { contents: markdownContents, source: path };
-        hover_map.set(define.name, hoverItem);
+        hoverMap.set(define.name, hoverItem);
     }
 }

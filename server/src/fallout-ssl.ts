@@ -52,7 +52,7 @@ export async function loadData(headersDirectory: string) {
 
     for (const headerPath of headersList) {
         const text = fs.readFileSync(path.join(headersDirectory, headerPath), "utf8");
-        const headerData = find_symbols(text);
+        const headerData = findSymbols(text);
         loadMacros(headerPath, headerData, completionList, hoverMap);
         loadProcedures(headerPath, headerData, completionList, hoverMap);
     }
@@ -147,7 +147,7 @@ export function reloadData(
     completion: completion.CompletionListEx | undefined,
     hover: HoverMapEx | undefined
 ) {
-    const symbols = find_symbols(text);
+    const symbols = findSymbols(text);
     if (completion == undefined) {
         completion = [];
     }
@@ -172,7 +172,7 @@ export function reloadData(
     return result;
 }
 
-function find_symbols(text: string) {
+function findSymbols(text: string) {
     // defines
     const defineList: DefineList = [];
     const defineRegex =
