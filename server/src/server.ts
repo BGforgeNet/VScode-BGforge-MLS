@@ -413,12 +413,11 @@ documents.onDidSave(async (change) => {
     const uri = change.document.uri;
 
     // try and parse document if possible
-    if (!compileable(change.document)) {
-        return;
-    }
-    const docSettings = await getDocumentSettings(uri);
-    if (docSettings.validateOnSave || docSettings.validateOnChange) {
-        compile(uri);
+    if (compileable(change.document)) {
+        const docSettings = await getDocumentSettings(uri);
+        if (docSettings.validateOnSave || docSettings.validateOnChange) {
+            compile(uri);
+        }
     }
 
     // reload translation settings
