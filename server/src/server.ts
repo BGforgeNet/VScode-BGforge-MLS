@@ -14,7 +14,6 @@ import {
 } from "vscode-languageserver/node";
 import { fileURLToPath } from "node:url";
 import { TextDocument } from "vscode-languageserver-textdocument";
-import * as path from "path";
 import * as fallout from "./fallout-ssl";
 import * as weidu from "./weidu";
 import { compileable } from "./compile";
@@ -25,7 +24,6 @@ import * as hover from "./hover";
 import * as completion from "./completion";
 import * as signature from "./signature";
 import { sigResponse, staticSignatures, getSignatureLabel } from "./signature";
-import * as url from "url";
 
 // Create a connection for the server. The connection uses Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
@@ -421,20 +419,19 @@ documents.onDidSave(async (change) => {
     }
 
     // reload translation settings
-    if (path.relative(workspaceRoot, change.document.uri) == ".bgforge.yml") {
+    const realPath = getFullPath(uri);
+    const relPath = getRelPath(workspaceRoot, realPath);
+    if (relPath == ".bgforge.yml") {
         projectSettings = await settings.project(workspaceRoot);
     }
 
     // reload translation
     const traDir = projectSettings.translation.directory;
     if (isDirectory(traDir)) {
-        let fpath = url.fileURLToPath(uri);
-        // relative to root
-        fpath = getRelPath(workspaceRoot, fpath);
-        if (isSubpath(traDir, fpath)) {
+        if (isSubpath(traDir, relPath)) {
             // relative to tra dir
-            const relPath = getRelPath(traDir, fpath);
-            hover.reloadTraFile(traDir, relPath);
+            const relPath2 = getRelPath(traDir, relPath);
+            hover.reloadTraFile(traDir, relPath2);
         }
     }
 });
