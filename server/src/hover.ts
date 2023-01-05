@@ -191,7 +191,7 @@ export function get_msg_for(
     settings: ProjectTraSettings,
     fpath: string
 ) {
-    const regex = /(Reply|NOption|GOption|BOption|mstr|display_mstr|floater)\((\d+)/;
+    const regex = /(Reply|NOption|GOption|BOption|mstr|display_mstr|floater|NLowOption|BLowOption|GLowOption)\((\d+)/;
     const match = regex.exec(id);
     if (match) {
         const result = getTraFor(match[2], full_text, settings, fpath, "msg");
