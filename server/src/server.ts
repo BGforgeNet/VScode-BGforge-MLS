@@ -151,6 +151,7 @@ documents.onDidClose((e) => {
 
 // The content of a text document has changed. This event is emitted
 // when the text document first opened or when its content has changed.
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 documents.onDidChangeContent((change) => {
     if (!initialized) {
         // TODO: get rid of this, use proper async
