@@ -161,16 +161,6 @@ documents.onDidChangeContent(async (change) => {
         conlog("onDidChangeContent: not initialized yet");
         return;
     }
-    const document = change.document;
-    const langId = document.languageId;
-    if (translation.canTranslate(langId)) {
-        conlog("preloading hints");
-        const uri = document.uri;
-        const text = document.getText();
-        const fullPath = getFullPath(uri);
-        const relPath = getRelPath(workspaceRoot, fullPath);
-        inlay.preloadHints(text, projectSettings.translation, relPath, langId);
-    }
 });
 
 export function getDocumentSettings(resource: string): Thenable<MLSsettings> {
@@ -445,16 +435,14 @@ documents.onDidSave(async (change) => {
 });
 
 connection.onRequest((method, params: InlayHintParams) => {
-    conlog(method);
-    // if ((method == InlayHintRequest.method) && (params is InlayHintParams)) {
     if (method == InlayHintRequest.method) {
-        conlog("inlay hint req");
         const uri = params.textDocument.uri;
         const filePath = getFullPath(uri);
         const relPath = getRelPath(workspaceRoot, filePath);
-        conlog(params.range);
-        const hints = inlay.getHints(relPath, params.range);
-        conlog(hints);
+        const document = documents.get(uri);
+        const text = document.getText();
+        const langId = document.languageId;
+        const hints = inlay.getHints(text, projectSettings.translation, relPath, langId, params.range);
         return hints;
     }
 });
