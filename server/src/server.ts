@@ -11,6 +11,8 @@ import {
     InitializeResult,
     SignatureHelp,
     SignatureInformation,
+    InlayHintRequest,
+    InlayHintParams,
 } from "vscode-languageserver/node";
 import { fileURLToPath } from "node:url";
 import { TextDocument } from "vscode-languageserver-textdocument";
@@ -23,7 +25,9 @@ import * as settings from "./settings";
 import * as hover from "./hover";
 import * as completion from "./completion";
 import * as signature from "./signature";
+import * as inlay from "./inlay";
 import { sigResponse, staticSignatures, getSignatureLabel } from "./signature";
+import * as translation from "./translation";
 
 // Create a connection for the server. The connection uses Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
@@ -82,6 +86,7 @@ connection.onInitialize((params: InitializeParams) => {
             signatureHelpProvider: {
                 triggerCharacters: ["("],
             },
+            inlayHintProvider: true,
         },
     };
     if (hasWorkspaceFolderCapability) {
@@ -129,7 +134,7 @@ connection.onDidChangeConfiguration((change) => {
 function loadStaticIntellisense() {
     completion.loadStatic();
     hover.loadStatic();
-    hover.loadTranslation(projectSettings.translation);
+    translation.loadTranslation(projectSettings.translation);
     signature.loadStatic();
     fallout.load_external_headers(workspaceRoot, globalSettings.falloutSSL.headersDirectory);
 }
@@ -265,18 +270,13 @@ documents.listen(connection);
 // Listen on the connection
 connection.listen();
 
-function endsWithNumber(str: string) {
-    return /[0-9]$/.test(str);
-}
-
 connection.onHover((textDocumentPosition: TextDocumentPositionParams): Hover => {
     const uri = textDocumentPosition.textDocument.uri;
     const langId = documents.get(uri).languageId;
     const filePath = getFullPath(uri);
     const relPath = getRelPath(workspaceRoot, filePath);
-    const hoverLangId = getDataLang(langId);
-    const staticMap = hover.staticData.get(hoverLangId);
-    const dynamicMap = hover.dynamicData.get(hoverLangId);
+    const staticMap = hover.staticData.get(langId);
+    const dynamicMap = hover.dynamicData.get(langId);
     const selfMap = hover.selfData.get(relPath);
 
     if (!staticMap && !dynamicMap && !selfMap) {
@@ -291,20 +291,18 @@ connection.onHover((textDocumentPosition: TextDocumentPositionParams): Hover => 
     }
     conlog(word);
 
-    if (word.startsWith("@")) {
-        const result = hover.getTraFor(word, text, projectSettings.translation, uri);
+    if (translation.isTraRef(word, langId)) {
+        const result = translation.getHover(
+            word,
+            text,
+            projectSettings.translation,
+            relPath,
+            langId
+        );
         if (result) {
             return result;
         } else {
             return;
-        }
-    }
-    if (langId == "fallout-ssl") {
-        if (endsWithNumber(word)) {
-            const result = hover.get_msg_for(word, text, projectSettings.translation, uri);
-            if (result) {
-                return result;
-            }
         }
     }
 
@@ -356,9 +354,9 @@ function clearDiagnostics(uri: string) {
 async function compile(uri: string, interactive = false) {
     const settings = await getDocumentSettings(uri);
     const document: TextDocument = documents.get(uri);
-    const lang_id = document.languageId;
+    const langId = document.languageId;
 
-    switch (lang_id) {
+    switch (langId) {
         case "fallout-ssl": {
             clearDiagnostics(uri);
             fallout.compile(uri, settings.falloutSSL, interactive);
@@ -431,7 +429,33 @@ documents.onDidSave(async (change) => {
         if (isSubpath(traDir, relPath)) {
             // relative to tra dir
             const relPath2 = getRelPath(traDir, relPath);
-            hover.reloadTraFile(traDir, relPath2);
+            translation.reloadTraFile(traDir, relPath2);
         }
+    }
+});
+
+connection.onRequest((method, params: InlayHintParams) => {
+    conlog(method);
+    // if ((method == InlayHintRequest.method) && (params is InlayHintParams)) {
+    if (method == InlayHintRequest.method) {
+        conlog("inlay hint req");
+        const uri = params.textDocument.uri;
+        const document = documents.get(uri);
+        const langId = document.languageId;
+        const filePath = getFullPath(uri);
+        const text = document.getText();
+
+        conlog(params.range);
+        const hints = inlay.getHints(
+            params.range,
+            text,
+            projectSettings.translation,
+            filePath,
+            langId
+        );
+        // conlog(`inlay response:`);
+        // conlog(hints);
+        // inlay.prepareHints(text, "msg");
+        return hints;
     }
 });
