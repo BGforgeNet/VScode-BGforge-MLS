@@ -50,7 +50,7 @@ export interface ProjectSettings {
 const defaultProjectSettings: ProjectSettings = {
     translation: {
         directory: "tra",
-        auto_tra: false,
+        auto_tra: true,
     },
 };
 
