@@ -103,7 +103,7 @@ export function getTraFileKey(
     langId: string
 ) {
     const firstLine = fullText.split(/\r?\n/g)[0];
-    const regex = /^\/\*\* @tra ([\w-]+)\. \*\//gm;
+    const regex = /^\/\*\* @tra ((\w+)\.(tra|msg)) \*\//g;
     const match = regex.exec(firstLine);
     if (match) {
         return match[1];
@@ -165,6 +165,11 @@ export function getHover(
     }
 
     const fileKey = getTraFileKey(relPath, text, traSettings, langId);
+    // if auto_tra is unset, and no tra file set in top comment
+    if (!fileKey) {
+        return;
+    }
+
     const traFile = traData.get(fileKey);
     if (!traFile) {
         result = {

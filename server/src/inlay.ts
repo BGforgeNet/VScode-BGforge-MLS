@@ -25,8 +25,11 @@ export function getHints(
     langId: string,
     range: Range
 ) {
-    const hints = [];
+    const hints: InlayHint[] = [];
     const traFileKey = translation.getTraFileKey(relPath, text, traSettings, langId);
+    if (!traFileKey) {
+        return hints;
+    }
     const traEntries = translation.getTraEntries(traFileKey);
     const traExt = translation.getTraExt(langId);
     let lines = text.split("\n");
@@ -45,7 +48,12 @@ export function getHints(
         const matches = l.matchAll(regex);
         for (const m of matches) {
             const char_end = m.index + m[0].length;
-            const lineKey = m[2]
+            let lineKey: string;
+            if (traExt == "msg") {
+                lineKey = m[2];
+            } else {
+                lineKey = m[1];
+            }
             const pos = { line: range.start.line + i, character: char_end };
             const value = getHintString(traEntries, traFileKey, lineKey);
             const hint: InlayHint = {
