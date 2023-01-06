@@ -205,8 +205,8 @@ function stringToInlay(text: string) {
     let line: string;
     line = text.replace("\r", "");
     line = line.replace("\n", "\\n");
-    if (line.length > 45) {
-        line = line.slice(0, 42) + "...";
+    if (line.length > 35) {
+        line = line.slice(0, 32) + "...";
     }
     line = `/* ${line} */`;
     return line;
