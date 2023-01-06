@@ -111,11 +111,11 @@ export function compile(uri: string, settings: WeiDUsettings, interactive = fals
     let ext = path.parse(filepath).ext;
     ext = ext.toLowerCase();
     let tpl = false;
-    let real_name = baseName; // filename without .tpl
+    let realName = baseName; // filename without .tpl
     if (ext == ".tpl") {
         tpl = true;
-        real_name = baseName.substring(0, baseName.length - 4);
-        ext = path.parse(real_name).ext;
+        realName = baseName.substring(0, baseName.length - 4);
+        ext = path.parse(realName).ext;
     }
 
     let weiduArgs = "--no-exit-pause --noautoupdate --debug-assign --parse-check";
@@ -150,10 +150,10 @@ export function compile(uri: string, settings: WeiDUsettings, interactive = fals
     }
 
     // preprocess
-    let preprocess_failed = false;
+    let preprocessFailed = false;
     if (tpl == true) {
         conlog(`preprocessing ${baseName}...`);
-        const gcc_args = [
+        const gccArgs = [
             "-E",
             "-x",
             "c",
@@ -162,10 +162,10 @@ export function compile(uri: string, settings: WeiDUsettings, interactive = fals
             "-Werror",
             "-Wfatal-errors",
             "-o",
-            `${real_name}`,
+            `${realName}`,
             `${baseName}`,
         ];
-        const result = cp.spawnSync("gcc", gcc_args, { cwd: cwdTo });
+        const result = cp.spawnSync("gcc", gccArgs, { cwd: cwdTo });
         conlog("stdout: " + result.stdout);
         if (result.stderr) {
             conlog("stderr: " + result.stderr);
@@ -176,43 +176,43 @@ export function compile(uri: string, settings: WeiDUsettings, interactive = fals
                 connection.window.showErrorMessage(`Failed to preprocess ${baseName}!`);
             }
             sendDiagnostics(uri, result.stderr.toString(), "gcc");
-            preprocess_failed = true;
+            preprocessFailed = true;
         } else {
             if (interactive) {
                 connection.window.showInformationMessage(`Succesfully preprocessed ${baseName}.`);
             }
         }
     }
-    if (preprocess_failed) {
+    if (preprocessFailed) {
         return 1;
     }
 
     // parse
-    conlog(`parsing ${real_name}...`);
-    const weidu_cmd = `${weiduPath} ${weiduArgs} ${weiduType} ${real_name} `;
-    cp.exec(weidu_cmd, { cwd: cwdTo }, (err: cp.ExecException, stdout: string, stderr: string) => {
+    conlog(`parsing ${realName}...`);
+    const weiduCmd = `${weiduPath} ${weiduArgs} ${weiduType} ${realName} `;
+    cp.exec(weiduCmd, { cwd: cwdTo }, (err: cp.ExecException, stdout: string, stderr: string) => {
         conlog("stdout: " + stdout);
-        const parse_result = parseWeiduOutput(stdout); // dupe, yes
-        conlog(parse_result);
+        const parseResult = parseWeiduOutput(stdout); // dupe, yes
+        conlog(parseResult);
         if (stderr) {
             conlog("stderr: " + stderr);
         }
         if (
             (err && err.code != 0) ||
-            parse_result.errors.length > 0 || // weidu doesn't always return non-zero on parse failure?
-            parse_result.warnings.length > 0
+            parseResult.errors.length > 0 || // weidu doesn't always return non-zero on parse failure?
+            parseResult.warnings.length > 0
         ) {
             conlog("error: " + err.message);
-            conlog(parse_result);
+            conlog(parseResult);
             if (interactive) {
-                connection.window.showErrorMessage(`Failed to parse ${real_name}!`);
+                connection.window.showErrorMessage(`Failed to parse ${realName}!`);
             }
             if (tpl == false) {
                 sendDiagnostics(uri, stdout);
             }
         } else {
             if (interactive) {
-                connection.window.showInformationMessage(`Succesfully parsed ${real_name}.`);
+                connection.window.showInformationMessage(`Succesfully parsed ${realName}.`);
             }
         }
     });

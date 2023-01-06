@@ -2,7 +2,7 @@ import { getDocumentSettings } from "./server";
 import { TextDocument } from "vscode-languageserver-textdocument";
 
 /** Only these languages can be compiled */
-const compile_languages = [
+const languages = [
     "weidu-tp2",
     "weidu-tp2-tpl",
     "weidu-d",
@@ -12,16 +12,16 @@ const compile_languages = [
     "fallout-ssl",
 ];
 /** These languages require game path to compile */
-const compile_languages_with_game = ["weidu-d", "weidu-d-tpl", "weidu-baf", "weidu-baf-tpl"];
+const languagesRequireGame = ["weidu-d", "weidu-d-tpl", "weidu-baf", "weidu-baf-tpl"];
 
 /** Can we compile this file? */
 export async function compileable(document: TextDocument) {
-    const lang_id = document.languageId;
-    if (!compile_languages.includes(lang_id)) {
+    const langId = document.languageId;
+    if (!languages.includes(langId)) {
         return false;
     }
     const settings = await getDocumentSettings(document.uri);
-    if (compile_languages_with_game.includes(lang_id) && settings.weidu.gamePath == "") {
+    if (languagesRequireGame.includes(langId) && settings.weidu.gamePath == "") {
         return false;
     }
     return true;

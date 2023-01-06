@@ -16,10 +16,10 @@ export const staticData: HoverData = new Map();
 export const dynamicData: HoverDataEx = new Map();
 export const selfData: HoverDataEx = new Map();
 
-const hoverLanguages = ["weidu-tp2", "fallout-ssl", "weidu-d", "weidu-baf"];
+const languages = ["weidu-tp2", "fallout-ssl", "weidu-d", "weidu-baf"];
 
 export function loadStatic() {
-    for (const langId of hoverLanguages) {
+    for (const langId of languages) {
         try {
             const filePath = path.join(__dirname, `hover.${langId}.json`);
             const jsonData = JSON.parse(fs.readFileSync(filePath, "utf-8"));

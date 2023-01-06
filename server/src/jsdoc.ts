@@ -42,9 +42,6 @@ export function parse(text: string) {
         }
     }
     const desc = lines2.join("\n").trim();
-    // conlog(text);
-    // let desc = text.match(/^[^@].*/gm)[0];
-    // desc = desc.trim();
     const jsdoc: JSdoc = {args: []};
     if (deprecated) {
         jsdoc.deprecated = true;

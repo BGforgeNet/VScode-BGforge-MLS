@@ -26,7 +26,6 @@ import * as hover from "./hover";
 import * as completion from "./completion";
 import * as signature from "./signature";
 import * as inlay from "./inlay";
-import { sigResponse, staticSignatures, getSignatureLabel } from "./signature";
 import * as translation from "./translation";
 
 // Create a connection for the server. The connection uses Node's IPC as a transport.
@@ -388,20 +387,20 @@ connection.onSignatureHelp((params: TextDocumentPositionParams): SignatureHelp =
     const uri = params.textDocument.uri;
     const document = documents.get(uri);
     const text = document.getText();
-    const sigRequest = getSignatureLabel(text, params.position);
+    const sigRequest = signature.getLabel(text, params.position);
     if (!sigRequest) {
         return;
     }
 
     let langId = documents.get(uri).languageId;
     langId = getDataLangId(langId);
-    const staticMap = staticSignatures.get(langId);
+    const staticMap = signature.staticData.get(langId);
 
     let sig: SignatureInformation;
     if (staticMap) {
         sig = staticMap.get(sigRequest.label);
         if (sig) {
-            return sigResponse(sig, sigRequest.parameter);
+            return signature.getResponse(sig, sigRequest.parameter);
         }
     }
 });

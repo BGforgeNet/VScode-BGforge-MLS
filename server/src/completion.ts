@@ -17,10 +17,10 @@ export const staticData: CompletionData = new Map();
 export const dynamicData: CompletionDataEx = new Map();
 export const selfData: CompletionDataEx = new Map();
 
-export const completion_languages = ["weidu-tp2", "fallout-ssl", "weidu-d", "weidu-baf"];
+export const languages = ["weidu-tp2", "fallout-ssl", "weidu-d", "weidu-baf"];
 
 export function loadStatic() {
-    for (const langId of completion_languages) {
+    for (const langId of languages) {
         try {
             const filePath = path.join(__dirname, `completion.${langId}.json`);
             const completionList = JSON.parse(readFileSync(filePath, "utf-8"));

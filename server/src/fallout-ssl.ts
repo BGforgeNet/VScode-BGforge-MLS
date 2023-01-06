@@ -42,8 +42,8 @@ interface DefineListItem {
 }
 interface DefineList extends Array<DefineListItem> {}
 
-const lang_id = "fallout-ssl";
-const ssl_ext = ".ssl";
+const langId = "fallout-ssl";
+const sslExt = ".ssl";
 
 export async function loadData(headersDirectory: string) {
     const completionList: Array<completion.CompletionItemEx> = [];
@@ -62,13 +62,13 @@ export async function loadData(headersDirectory: string) {
 
 function loadProcedures(
     path: string,
-    header_data: HeaderDataList,
-    completion_list: completion.CompletionList,
-    hover_map: HoverMap
+    headerData: HeaderDataList,
+    completionList: completion.CompletionList,
+    hoverMap: HoverMap
 ) {
-    for (const proc of header_data.procedures) {
+    for (const proc of headerData.procedures) {
         let markdownValue = [
-            "```" + `${lang_id}`,
+            "```" + `${langId}`,
             `${proc.detail}`,
             "```",
             "\n```bgforge-mls-comment\n",
@@ -87,9 +87,9 @@ function loadProcedures(
             kind: CompletionItemKind.Function,
             labelDetails: { description: path },
         };
-        completion_list.push(completionItem);
+        completionList.push(completionItem);
         const hoverItem = { contents: markdownContents, source: path };
-        hover_map.set(proc.label, hoverItem);
+        hoverMap.set(proc.label, hoverItem);
     }
 }
 
@@ -108,7 +108,7 @@ function loadMacros(
         }
 
         markdownValue = [
-            "```" + `${lang_id}`,
+            "```" + `${langId}`,
             `${detail}`,
             "```",
             "\n```bgforge-mls-comment\n",
@@ -117,7 +117,7 @@ function loadMacros(
         ].join("\n");
         // for single line ones, show full line too
         if (!macro.multiline && !macro.constant) {
-            markdownValue += ["\n```" + `${lang_id}`, `${macro.firstline}`, "```"].join("\n");
+            markdownValue += ["\n```" + `${langId}`, `${macro.firstline}`, "```"].join("\n");
         }
         let completionKind;
         if (macro.constant) {
@@ -371,14 +371,14 @@ function sendDiagnostics(uri: string, output_text: string) {
 
 export function compile(uri: string, ssl_settings: SSLsettings, interactive = false) {
     const filepath = getFullPath(uri);
-    const cwd_to = path.dirname(filepath);
-    const base_name = path.parse(filepath).base;
+    const cwdTo = path.dirname(filepath);
+    const baseName = path.parse(filepath).base;
     const base = path.parse(filepath).name;
-    const compile_cmd = `${ssl_settings.compilePath} ${ssl_settings.compileOptions}`;
-    const dst_path = path.join(ssl_settings.outputDirectory, base + ".int");
+    const compileCmd = `${ssl_settings.compilePath} ${ssl_settings.compileOptions}`;
+    const dstPath = path.join(ssl_settings.outputDirectory, base + ".int");
     const ext = path.parse(filepath).ext;
 
-    if (ext.toLowerCase() != ssl_ext) {
+    if (ext.toLowerCase() != sslExt) {
         // vscode loses open file if clicked on console or elsewhere
         conlog("Not a Fallout SSL file! Please focus a Fallout SSL file to compile.");
         if (interactive) {
@@ -386,11 +386,11 @@ export function compile(uri: string, ssl_settings: SSLsettings, interactive = fa
         }
         return;
     }
-    conlog(`compiling ${base_name}...`);
+    conlog(`compiling ${baseName}...`);
 
     cp.exec(
-        compile_cmd + " " + base_name + " -o " + dst_path,
-        { cwd: cwd_to },
+        compileCmd + " " + baseName + " -o " + dstPath,
+        { cwd: cwdTo },
         (err: cp.ExecException, stdout: string, stderr: string) => {
             conlog("stdout: " + stdout);
             if (stderr) {
@@ -399,11 +399,11 @@ export function compile(uri: string, ssl_settings: SSLsettings, interactive = fa
             if (err) {
                 conlog("error: " + err.message);
                 if (interactive) {
-                    connection.window.showErrorMessage(`Failed to compile ${base_name}!`);
+                    connection.window.showErrorMessage(`Failed to compile ${baseName}!`);
                 }
             } else {
                 if (interactive) {
-                    connection.window.showInformationMessage(`Succesfully compiled ${base_name}.`);
+                    connection.window.showInformationMessage(`Succesfully compiled ${baseName}.`);
                 }
             }
             sendDiagnostics(uri, stdout);
