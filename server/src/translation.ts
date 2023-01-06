@@ -88,7 +88,7 @@ function loadTraFile(fpath: string, traType: "tra" | "msg") {
         const hover: Hover = {
             contents: { kind: "markdown", value: "```bgforge-mls-string\n" + `${str}` + "\n```" },
         };
-        const inlay = `/* ${str} */`;
+        const inlay = stringToInlay(str);
         const entry = { source: str, hover: hover, inlay: inlay };
         lines.set(num, entry);
         match = regex.exec(text);
@@ -194,4 +194,15 @@ export function getHover(
     }
 
     return traEntry.hover;
+}
+
+function stringToInlay(text: string) {
+    let line: string;
+    line = text.replace("\r", "");
+    line = line.replace("\n", "\\n");
+    if (line.length > 45) {
+        line = line.slice(0, 42) + "...";
+    }
+    line = `/* ${line} */`;
+    return line;
 }
