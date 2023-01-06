@@ -45,7 +45,7 @@ let initialized = false;
 let projectSettings: settings.ProjectSettings;
 
 // for language KEY, hovers and completions are searched in VALUE map
-const lang_data_map = new Map([
+const langDataMap = new Map([
     ["weidu-tp2", "weidu-tp2"],
     ["weidu-tp2-tpl", "weidu-tp2"],
 
@@ -139,12 +139,12 @@ function loadStaticIntellisense() {
     fallout.load_external_headers(workspaceRoot, globalSettings.falloutSSL.headersDirectory);
 }
 
-function getDataLang(lang_id: string) {
-    let data_lang = lang_data_map.get(lang_id);
-    if (!data_lang) {
-        data_lang = "c++";
+function getDataLangId(langId: string) {
+    const dataLangId = langDataMap.get(langId);
+    if (!dataLangId) {
+        return langId;
     }
-    return data_lang;
+    return dataLangId;
 }
 
 // Only keep settings for open documents
@@ -236,7 +236,8 @@ documents.onDidOpen((event) => {
 // This handler provides the initial list of the completion items.
 connection.onCompletion((_textDocumentPosition: TextDocumentPositionParams): CompletionItem[] => {
     const uri = _textDocumentPosition.textDocument.uri;
-    const langId = documents.get(uri).languageId;
+    let langId = documents.get(uri).languageId;
+    langId = getDataLangId(langId);
     const filePath = getFullPath(uri);
     const relPath = getRelPath(workspaceRoot, filePath);
     const selfList = completion.selfData.get(relPath) || [];
@@ -272,7 +273,8 @@ connection.listen();
 
 connection.onHover((textDocumentPosition: TextDocumentPositionParams): Hover => {
     const uri = textDocumentPosition.textDocument.uri;
-    const langId = documents.get(uri).languageId;
+    let langId = documents.get(uri).languageId;
+    langId = getDataLangId(langId);
     const filePath = getFullPath(uri);
     const relPath = getRelPath(workspaceRoot, filePath);
     const staticMap = hover.staticData.get(langId);
@@ -391,7 +393,8 @@ connection.onSignatureHelp((params: TextDocumentPositionParams): SignatureHelp =
         return;
     }
 
-    const langId = document.languageId;
+    let langId = documents.get(uri).languageId;
+    langId = getDataLangId(langId);
     const staticMap = staticSignatures.get(langId);
 
     let sig: SignatureInformation;
