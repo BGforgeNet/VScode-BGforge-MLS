@@ -1,30 +1,42 @@
+import { InlayHint } from "vscode-languageserver";
 import { Range } from "vscode-languageserver-textdocument";
 import { conlog } from "./common";
 import { ProjectTraSettings } from "./settings";
 import * as translation from "./translation";
-// const hints = new Map<string, []>();
+
+export interface HintData extends Map<string, Array<InlayHint>> {}
+
+const hintData: HintData = new Map();
 
 function getHintString(traEntries: translation.TraEntries, traFileKey: string, lineKey: string) {
     let value: string;
     if (!traEntries) {
-        value = `/* Error: no such file ${traFileKey} */`
+        value = `/* Error: no such file ${traFileKey} */`;
     } else {
-        value = traEntries.get(lineKey);
-        if (!value) {
-            value = `/* Error: no such string ${traFileKey}:${lineKey} */`
+        const traEntry = traEntries.get(lineKey);
+        if (!traEntry) {
+            value = `/* Error: no such string ${traFileKey}:${lineKey} */`;
+        } else {
+            value = traEntry.inlay;
         }
     }
-    return `/* ${value} */`;
+    return value;
 }
 
-export function preloadHints(text: string, traType: "msg" | "tra", traSettings: ProjectTraSettings, filePath: string, langId: string) {
+export function preloadHints(
+    text: string,
+    traSettings: ProjectTraSettings,
+    relPath: string,
+    langId: string
+) {
     const hints = [];
-    const traFileKey = translation.getTraFileKey(filePath, text, traSettings,langId);
+    const traFileKey = translation.getTraFileKey(relPath, text, traSettings, langId);
     const traEntries = translation.getTraEntries(traFileKey);
+    const traExt = translation.getTraExt(langId);
     conlog("preparing hints");
     const lines = text.split("\n");
     let regex: RegExp;
-    if (traType == "msg") {
+    if (traExt == "msg") {
         regex =
             /(Reply|NOption|GOption|BOption|mstr|display_mstr|floater|NLowOption|BLowOption|GLowOption)\((\d+)/g;
     } else {
@@ -35,19 +47,40 @@ export function preloadHints(text: string, traType: "msg" | "tra", traSettings: 
         const matches = l.matchAll(regex);
         for (const m of matches) {
             const char_end = m.index + m[0].length;
+            const lineKey = m[2]
             const pos = { line: i, character: char_end };
-            const value = getHintString(traEntries, traFileKey, m[2]);
-            const hint = { position: pos, label: value,  kind: 2, paddingLeft: true, paddingRight: true };
+            const value = getHintString(traEntries, traFileKey, lineKey);
+            const hint: InlayHint = {
+                position: pos,
+                label: value,
+                kind: 2,
+                paddingLeft: true,
+                paddingRight: true,
+            };
             hints.push(hint);
         }
     }
-    return hints;
+    hintData.set(relPath, hints);
 }
 
-export function getHints(range: Range, text: string, traSettings: ProjectTraSettings, filePath: string, langId: string) {
-    const hints = preloadHints(text, "msg", traSettings, filePath, langId);
+/**
+ * Returns all hints in range from a pregenerated map
+ * @param relPath 
+ * @param range 
+ * @returns array of hints
+ */
+export function getHints(relPath: string, range: Range) {
+    let hints = hintData.get(relPath);
+    if (!hints) {
+        return;
+    }
     const line1 = range.start.line;
     const line2 = range.end.line;
-    conlog(`lines length is $lines.length}`);
+    hints = hints.filter((hint) => {
+        if (hint.position.line < line1 || hint.position.line > line2) {
+            return false;
+        }
+        return true;
+    });
     return hints;
 }

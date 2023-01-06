@@ -155,11 +155,21 @@ documents.onDidClose((e) => {
 // The content of a text document has changed. This event is emitted
 // when the text document first opened or when its content has changed.
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-documents.onDidChangeContent((change) => {
+documents.onDidChangeContent(async (change) => {
     if (!initialized) {
         // TODO: get rid of this, use proper async
         conlog("onDidChangeContent: not initialized yet");
         return;
+    }
+    const document = change.document;
+    const langId = document.languageId;
+    if (translation.canTranslate(langId)) {
+        conlog("preloading hints");
+        const uri = document.uri;
+        const text = document.getText();
+        const fullPath = getFullPath(uri);
+        const relPath = getRelPath(workspaceRoot, fullPath);
+        inlay.preloadHints(text, projectSettings.translation, relPath, langId);
     }
 });
 
@@ -440,22 +450,11 @@ connection.onRequest((method, params: InlayHintParams) => {
     if (method == InlayHintRequest.method) {
         conlog("inlay hint req");
         const uri = params.textDocument.uri;
-        const document = documents.get(uri);
-        const langId = document.languageId;
         const filePath = getFullPath(uri);
-        const text = document.getText();
-
+        const relPath = getRelPath(workspaceRoot, filePath);
         conlog(params.range);
-        const hints = inlay.getHints(
-            params.range,
-            text,
-            projectSettings.translation,
-            filePath,
-            langId
-        );
-        // conlog(`inlay response:`);
-        // conlog(hints);
-        // inlay.prepareHints(text, "msg");
+        const hints = inlay.getHints(relPath, params.range);
+        conlog(hints);
         return hints;
     }
 });

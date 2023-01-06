@@ -4,10 +4,16 @@ import { conlog, findFiles as findFiles, isDirectory } from "./common";
 import { ProjectTraSettings } from "./settings";
 import { Hover } from "vscode-languageserver/node";
 
-export interface TraEntries extends Map<string, string> {}
-interface TraFiles extends Map<string, TraEntries> {}
+interface TraEntry {
+    source: string;
+    hover: Hover;
+    inlay: string;
+}
 
-export const traData: TraFiles = new Map();
+export interface TraEntries extends Map<string, TraEntry> {}
+export interface TraData extends Map<string, TraEntries> {}
+
+export const traData: TraData = new Map();
 
 const traLanguages = [
     "weidu-baf",
@@ -20,7 +26,14 @@ const traLanguages = [
 ];
 const msgLanguages = ["fallout-ssl"];
 
-function getTraExt(langId: string) {
+export function canTranslate(langId: string) {
+    if (traLanguages.includes(langId) || msgLanguages.includes(langId)) {
+        return true;
+    }
+    return false;
+}
+
+export function getTraExt(langId: string) {
     if (traLanguages.includes(langId)) {
         return "tra";
     }
@@ -72,7 +85,12 @@ function loadTraFile(fpath: string, traType: "tra" | "msg") {
         }
         const num = match[1];
         const str = match[2];
-        lines.set(num, str);
+        const hover: Hover = {
+            contents: { kind: "markdown", value: "```bgforge-mls-string\n" + `${str}` + "\n```" },
+        };
+        const inlay = `/* ${str} */`;
+        const entry = { source: str, hover: hover, inlay: inlay };
+        lines.set(num, entry);
         match = regex.exec(text);
     }
     return lines;
@@ -164,20 +182,16 @@ export function getHover(
         return;
     }
 
-    const line = traFile.get(lineKey);
-    if (!line) {
+    const traEntry = traFile.get(lineKey);
+    if (!traEntry) {
         result = {
             contents: {
                 kind: "plaintext",
-                value: "Error: entry " + `${line}` + " not found in " + `${fileKey}.`,
+                value: "Error: entry " + `${lineKey}` + " not found in " + `${fileKey}.`,
             },
         };
         return result;
     }
 
-    // all good, found a line
-    result = {
-        contents: { kind: "markdown", value: "```bgforge-mls-string\n" + `${line}` + "\n```" },
-    };
-    return result;
+    return traEntry.hover;
 }
