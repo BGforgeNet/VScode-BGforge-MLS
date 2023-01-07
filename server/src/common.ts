@@ -93,23 +93,23 @@ export function sendParseResult(uri: string, parseResult: ParseResult) {
 
 /** Check if 1st dir contains the 2nd
  */
-export function isSubpath(outer_path: string, inner_path: string) {
-    const innerReal = fs.realpathSync(inner_path);
-    const outerReal = fs.realpathSync(outer_path);
+export function isSubpath(outerPath: string, innerPath: string) {
+    const innerReal = fs.realpathSync(innerPath);
+    const outerReal = fs.realpathSync(outerPath);
     if (innerReal.startsWith(outerReal)) {
         return true;
     }
     return false;
 }
 
-export function isDirectory(fspath: string) {
-    if (fs.existsSync(fspath)) {
-        return fs.lstatSync(fspath).isDirectory;
+export function isDirectory(fsPath: string) {
+    if (fs.existsSync(fsPath)) {
+        return fs.lstatSync(fsPath).isDirectory;
     }
 }
 
-export function isHeader(filepath: string, lang_id: string) {
-    if (path.extname(filepath) == "h" && lang_id == "fallout-ssl") {
+export function isHeader(filePath: string, langId: string) {
+    if (path.extname(filePath) == "h" && langId == "fallout-ssl") {
         return true;
     }
     return false;
