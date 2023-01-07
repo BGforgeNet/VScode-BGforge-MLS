@@ -330,8 +330,8 @@ function parseCompileOutput(text: string, uri: string) {
             errors.push({
                 file: match[1],
                 line: parseInt(match[2]),
-                column_start: 0,
-                column_end: parseInt(col) - 1,
+                columnStart: 0,
+                columnEnd: parseInt(col) - 1,
                 message: match[4],
             });
         }
@@ -352,8 +352,8 @@ function parseCompileOutput(text: string, uri: string) {
             warnings.push({
                 file: match[1],
                 line: line,
-                column_start: parseInt(col),
-                column_end: column_end,
+                columnStart: parseInt(col),
+                columnEnd: column_end,
                 message: match[4],
             });
         }

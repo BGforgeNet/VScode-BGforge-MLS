@@ -52,8 +52,8 @@ function parseWeiduOutput(text: string) {
             errors.push({
                 file: match[1],
                 line: parseInt(match[2]),
-                column_start: parseInt(match[3]) - 1, // weidu uses 1-index, while vscode 0 index?
-                column_end: parseInt(match[4]),
+                columnStart: parseInt(match[3]) - 1, // weidu uses 1-index, while vscode 0 index?
+                columnEnd: parseInt(match[4]),
                 message: text,
             });
         }
@@ -79,8 +79,8 @@ function parseGccOutput(text: string) {
             errors.push({
                 file: match[1],
                 line: parseInt(match[3]),
-                column_start: parseInt(match[4]) - 1,
-                column_end: match[0].length,
+                columnStart: parseInt(match[4]) - 1,
+                columnEnd: match[0].length,
                 message: text,
             });
         }

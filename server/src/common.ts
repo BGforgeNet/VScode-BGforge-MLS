@@ -44,8 +44,8 @@ export interface DynamicData {
 export interface ParseItem {
     file: string;
     line: number;
-    column_start: number;
-    column_end: number;
+    columnStart: number;
+    columnEnd: number;
     message: string;
 }
 export interface ParseItemList extends Array<ParseItem> {}
@@ -66,8 +66,8 @@ export function sendParseResult(uri: string, parseResult: ParseResult) {
         const diagnosic: Diagnostic = {
             severity: DiagnosticSeverity.Error,
             range: {
-                start: { line: e.line - 1, character: e.column_start },
-                end: { line: e.line - 1, character: e.column_end },
+                start: { line: e.line - 1, character: e.columnStart },
+                end: { line: e.line - 1, character: e.columnEnd },
             },
             message: `${e.message}`,
             source: diagSource,
@@ -78,8 +78,8 @@ export function sendParseResult(uri: string, parseResult: ParseResult) {
         const diagnosic: Diagnostic = {
             severity: DiagnosticSeverity.Warning,
             range: {
-                start: { line: w.line - 1, character: w.column_start },
-                end: { line: w.line - 1, character: w.column_end },
+                start: { line: w.line - 1, character: w.columnStart },
+                end: { line: w.line - 1, character: w.columnEnd },
             },
             message: `${w.message}`,
             source: diagSource,
