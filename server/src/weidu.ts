@@ -237,21 +237,17 @@ function findSymbols(text: string) {
     const defineRegex =
         /((\/\*\*\s*\n([^*]|(\*(?!\/)))*\*\/)\r?\n)?(DEFINE_ACTION_FUNCTION|DEFINE_ACTION_MACRO|DEFINE_PATCH_FUNCTION|DEFINE_PATCH_MACRO)\s+(\w+)/gm;
 
-    let match = defineRegex.exec(text);
-    while (match != null) {
-        // This is necessary to avoid infinite loops with zero-width matches
-        if (match.index === defineRegex.lastIndex) {
-            defineRegex.lastIndex++;
-        }
-        const name = match[6];
+    const matches = text.matchAll(defineRegex);
+    for (const m of matches) {
+        const name = m[6];
         let context: "action" | "patch";
         let dtype: "function" | "macro";
-        if (match[5].startsWith("DEFINE_ACTION")) {
+        if (m[5].startsWith("DEFINE_ACTION")) {
             context = "action";
         } else {
             context = "patch";
         }
-        if (match[5].endsWith("FUNCTION")) {
+        if (m[5].endsWith("FUNCTION")) {
             dtype = "function";
         } else {
             dtype = "macro";
@@ -260,13 +256,12 @@ function findSymbols(text: string) {
         const item: DefineItem = { name: name, context: context, dtype: dtype };
 
         // check for docstring
-        if (match[2]) {
-            const jsd = jsdoc.parse(match[2]);
+        if (m[2]) {
+            const jsd = jsdoc.parse(m[2]);
             item.jsdoc = jsd;
         }
 
         defineList.push(item);
-        match = defineRegex.exec(text);
     }
     return defineList;
 }
@@ -347,9 +342,7 @@ export function reloadData(
             return false;
         })
     );
-        conlog(symbols);
     loadFunctions(path, symbols, newCompletion, newHover);
     const result: DynamicData = { completion: newCompletion, hover: newHover };
-    conlog("reload data");
     return result;
 }

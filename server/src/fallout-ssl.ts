@@ -179,15 +179,10 @@ function findSymbols(text: string) {
     const defineRegex =
         /((\/\*\*\s*\n([^*]|(\*(?!\/)))*\*\/)\r?\n)?#define[ \t]+(\w+)(?:\(([^)]+)\))?[ \t]+(.+)/gm;
     const constantRegex = /^[A-Z0-9_]+/;
-    let match = defineRegex.exec(text);
-    while (match != null) {
-        // This is necessary to avoid infinite loops with zero-width matches
-        if (match.index === defineRegex.lastIndex) {
-            defineRegex.lastIndex++;
-        }
-
-        const defineName = match[5];
-        let defineFirstline = match[7];
+    let matches = text.matchAll(defineRegex);
+    for (const m of matches) {
+        const defineName = m[5];
+        let defineFirstline = m[7];
         defineFirstline = defineFirstline.trimEnd();
 
         // check if it's multiline
@@ -198,9 +193,9 @@ function findSymbols(text: string) {
 
         // check if it has vars
         let defineDetail = defineName;
-        if (match[6]) {
+        if (m[6]) {
             // function-like macro
-            const defineVars = match[6];
+            const defineVars = m[6];
             defineDetail = `${defineName}(${defineVars})`;
         }
 
@@ -212,8 +207,8 @@ function findSymbols(text: string) {
             constant = true;
         }
         // if jsdoc found
-        if (match[2]) {
-            const jsd = jsdoc.parse(match[2]);
+        if (m[2]) {
+            const jsd = jsdoc.parse(m[2]);
             defineDetail = jsdocToDetail(defineName, jsd);
             const item = {
                 label: defineName,
@@ -234,7 +229,6 @@ function findSymbols(text: string) {
             };
             defineList.push(item);
         }
-        match = defineRegex.exec(text);
     }
 
     // procedures
@@ -244,23 +238,19 @@ function findSymbols(text: string) {
     // procedure regex: procedure[\s]+(\w+)(?:\(([^)]+)\))?[\s]+begin
     const procRegex =
         /((\/\*\*\s*\n([^*]|(\*(?!\/)))*\*\/)\r?\n)?procedure[\s]+(\w+)(?:\(([^)]+)\))?[\s]+begin/gm;
-    match = procRegex.exec(text);
-    while (match != null) {
-        // This is necessary to avoid infinite loops with zero-width matches
-        if (match.index === procRegex.lastIndex) {
-            procRegex.lastIndex++;
-        }
-        const procName = match[5];
+    matches = text.matchAll(procRegex);
+    for (const m of matches) {
+        const procName = m[5];
         let procDetail = procName;
-        if (match[6]) {
-            procDetail = `procedure ${procName}(${match[6]})`;
+        if (m[6]) {
+            procDetail = `procedure ${procName}(${m[6]})`;
         } else {
             procDetail = `procedure ${procName}()`;
         }
 
         // if jsdoc found
-        if (match[2]) {
-            const jsd = jsdoc.parse(match[2]);
+        if (m[2]) {
+            const jsd = jsdoc.parse(m[2]);
             procDetail = jsdocToDetail(procName, jsd);
             const item = { label: procName, detail: procDetail, jsdoc: jsd };
             procList.push(item);
@@ -268,7 +258,6 @@ function findSymbols(text: string) {
             const item = { label: procName, detail: procDetail };
             procList.push(item);
         }
-        match = procRegex.exec(text);
     }
 
     const result: HeaderDataList = {
