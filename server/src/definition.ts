@@ -1,5 +1,4 @@
 import { Location } from "vscode-languageserver";
-import { conlog } from "./common";
 
 export const staticData = new Map();
 export const dynamicData = new Map();

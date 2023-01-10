@@ -206,6 +206,7 @@ export function reloadData(
             return false;
         })
     );
+    loadDefinitions(filePath, symbols, newDefinition);
 
     const result: DynamicData = {
         completion: newCompletion,

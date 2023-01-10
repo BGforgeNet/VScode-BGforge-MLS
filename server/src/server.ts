@@ -200,6 +200,7 @@ async function reloadSelfData(txtDoc: TextDocument) {
                 );
                 hover.dynamicData.set(langId, newData.hover);
                 completion.dynamicData.set(langId, newData.completion);
+                definition.dynamicData.set(langId, newData.definition);
             } else {
                 conlog("not header");
                 const oldCompletion = completion.selfData.get(relPath);
@@ -214,6 +215,7 @@ async function reloadSelfData(txtDoc: TextDocument) {
                 );
                 hover.selfData.set(relPath, newData.hover);
                 completion.selfData.set(relPath, newData.completion);
+                definition.selfData.set(txtDoc.uri, newData.definition);
             }
             break;
         }
@@ -465,6 +467,7 @@ connection.onRequest((method, params: InlayHintParams) => {
 });
 
 connection.onDefinition((params) => {
+    conlog("definition request:");
     conlog(params);
     const textDocId = params.textDocument;
     const uri = textDocId.uri;
