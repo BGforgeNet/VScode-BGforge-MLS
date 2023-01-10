@@ -2,7 +2,7 @@ import {
     conlog,
     DynamicData,
     findFiles,
-    getFullPath,
+    uriToPath,
     ParseItemList,
     ParseResult,
     sendParseResult as sendParseResult,
@@ -16,6 +16,7 @@ import * as jsdoc from "./jsdoc";
 import * as completion from "./completion";
 import * as hover from "./hover";
 import { CompletionItemKind, MarkupKind } from "vscode-languageserver/node";
+import { Definition } from "./definition";
 
 const valid_extensions = new Map([
     [".tp2", "tp2"],
@@ -105,7 +106,7 @@ function sendDiagnostics(uri: string, output_text: string, format = "weidu") {
 export function compile(uri: string, settings: WeiDUsettings, interactive = false) {
     const gamePath = settings.gamePath;
     const weiduPath = settings.path;
-    const filepath = getFullPath(uri);
+    const filepath = uriToPath(uri);
     const cwdTo = path.dirname(filepath);
     const baseName = path.parse(filepath).base;
     let ext = path.parse(filepath).ext;
@@ -221,6 +222,7 @@ export function compile(uri: string, settings: WeiDUsettings, interactive = fals
 export async function loadData(headersDirectory: string) {
     const completionList: Array<completion.CompletionItemEx> = [];
     const hoverMap = new Map<string, hover.HoverEx>();
+    const definitionMap: Definition = new Map();
     const headersList = findFiles(headersDirectory, "tph");
 
     for (const headerPath of headersList) {
@@ -228,7 +230,7 @@ export async function loadData(headersDirectory: string) {
         const headerData = findSymbols(text);
         loadFunctions(headerPath, headerData, completionList, hoverMap);
     }
-    const result: DynamicData = { completion: completionList, hover: hoverMap };
+    const result: DynamicData = { completion: completionList, hover: hoverMap, definition: definitionMap };
     return result;
 }
 
@@ -343,6 +345,7 @@ export function reloadData(
         })
     );
     loadFunctions(path, symbols, newCompletion, newHover);
-    const result: DynamicData = { completion: newCompletion, hover: newHover };
+    const definitionMap: Definition = new Map();
+    const result: DynamicData = { completion: newCompletion, hover: newHover, definition: definitionMap };
     return result;
 }

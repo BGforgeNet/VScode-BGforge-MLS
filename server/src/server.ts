@@ -19,7 +19,7 @@ import { TextDocument } from "vscode-languageserver-textdocument";
 import * as fallout from "./fallout-ssl";
 import * as weidu from "./weidu";
 import { compileable } from "./compile";
-import { conlog, getFullPath, isDirectory, isHeader, isSubpath, getRelPath } from "./common";
+import { conlog, uriToPath, isDirectory, isHeader, isSubpath, getRelPath } from "./common";
 import { MLSsettings, defaultSettings } from "./settings";
 import * as settings from "./settings";
 import * as hover from "./hover";
@@ -27,6 +27,7 @@ import * as completion from "./completion";
 import * as signature from "./signature";
 import * as inlay from "./inlay";
 import * as translation from "./translation";
+import * as definition from "./definition";
 
 // Create a connection for the server. The connection uses Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
@@ -86,6 +87,7 @@ connection.onInitialize((params: InitializeParams) => {
                 triggerCharacters: ["("],
             },
             inlayHintProvider: true,
+            definitionProvider: true,
         },
     };
     if (hasWorkspaceFolderCapability) {
@@ -135,7 +137,7 @@ function loadStaticIntellisense() {
     hover.loadStatic();
     translation.loadTranslation(projectSettings.translation);
     signature.loadStatic();
-    fallout.load_external_headers(workspaceRoot, globalSettings.falloutSSL.headersDirectory);
+    fallout.loadExternalHeaders(workspaceRoot, globalSettings.falloutSSL.headersDirectory);
 }
 
 function getDataLangId(langId: string) {
@@ -179,7 +181,7 @@ export function getDocumentSettings(resource: string): Thenable<MLSsettings> {
 
 async function reloadSelfData(txtDoc: TextDocument) {
     const langId = documents.get(txtDoc.uri).languageId;
-    const docPath = getFullPath(txtDoc.uri);
+    const docPath = uriToPath(txtDoc.uri);
 
     switch (langId) {
         case "fallout-ssl": {
@@ -188,11 +190,13 @@ async function reloadSelfData(txtDoc: TextDocument) {
                 conlog("is header");
                 const oldCompletion = completion.dynamicData.get(langId);
                 const oldHover = hover.dynamicData.get(langId);
+                const oldDefinition = definition.dynamicData.get(langId);
                 const newData = fallout.reloadData(
                     relPath,
                     txtDoc.getText(),
                     oldCompletion,
-                    oldHover
+                    oldHover,
+                    oldDefinition
                 );
                 hover.dynamicData.set(langId, newData.hover);
                 completion.dynamicData.set(langId, newData.completion);
@@ -200,11 +204,13 @@ async function reloadSelfData(txtDoc: TextDocument) {
                 conlog("not header");
                 const oldCompletion = completion.selfData.get(relPath);
                 const oldHover = hover.selfData.get(relPath);
+                const oldDefinition = definition.selfData.get(txtDoc.uri);
                 const newData = fallout.reloadData(
                     relPath,
                     txtDoc.getText(),
                     oldCompletion,
-                    oldHover
+                    oldHover,
+                    oldDefinition
                 );
                 hover.selfData.set(relPath, newData.hover);
                 completion.selfData.set(relPath, newData.completion);
@@ -237,7 +243,7 @@ connection.onCompletion((_textDocumentPosition: TextDocumentPositionParams): Com
     const uri = _textDocumentPosition.textDocument.uri;
     let langId = documents.get(uri).languageId;
     langId = getDataLangId(langId);
-    const filePath = getFullPath(uri);
+    const filePath = uriToPath(uri);
     const relPath = getRelPath(workspaceRoot, filePath);
     const selfList = completion.selfData.get(relPath) || [];
     const staticList = completion.staticData.get(langId);
@@ -251,9 +257,12 @@ async function loadDynamicIntellisense() {
     const falloutHeaderData = await fallout.loadData("");
     hover.dynamicData.set("fallout-ssl", falloutHeaderData.hover);
     completion.dynamicData.set("fallout-ssl", falloutHeaderData.completion);
+    definition.dynamicData.set("fallout-ssl", falloutHeaderData.definition);
+
     const weiduHeaderData = await weidu.loadData("");
     hover.dynamicData.set("weidu-tp2", weiduHeaderData.hover);
     completion.dynamicData.set("weidu-tp2", weiduHeaderData.completion);
+
     initialized = true;
 }
 
@@ -274,7 +283,7 @@ connection.onHover((textDocumentPosition: TextDocumentPositionParams): Hover => 
     const uri = textDocumentPosition.textDocument.uri;
     let langId = documents.get(uri).languageId;
     langId = getDataLangId(langId);
-    const filePath = getFullPath(uri);
+    const filePath = uriToPath(uri);
     const relPath = getRelPath(workspaceRoot, filePath);
     const staticMap = hover.staticData.get(langId);
     const dynamicMap = hover.dynamicData.get(langId);
@@ -419,7 +428,7 @@ documents.onDidSave(async (change) => {
     }
 
     // reload translation settings
-    const realPath = getFullPath(uri);
+    const realPath = uriToPath(uri);
     const relPath = getRelPath(workspaceRoot, realPath);
     if (relPath == ".bgforge.yml") {
         projectSettings = await settings.project(workspaceRoot);
@@ -439,12 +448,32 @@ documents.onDidSave(async (change) => {
 connection.onRequest((method, params: InlayHintParams) => {
     if (method == InlayHintRequest.method) {
         const uri = params.textDocument.uri;
-        const filePath = getFullPath(uri);
+        const filePath = uriToPath(uri);
         const relPath = getRelPath(workspaceRoot, filePath);
         const document = documents.get(uri);
         const text = document.getText();
         const langId = document.languageId;
-        const hints = inlay.getHints(text, projectSettings.translation, relPath, langId, params.range);
+        const hints = inlay.getHints(
+            text,
+            projectSettings.translation,
+            relPath,
+            langId,
+            params.range
+        );
         return hints;
     }
+});
+
+connection.onDefinition((params) => {
+    conlog(params);
+    const textDocId = params.textDocument;
+    const uri = textDocId.uri;
+    const textDoc = documents.get(uri);
+    const langId = textDoc.languageId;
+    const text = textDoc.getText();
+    const symbol = hover.symbolAtPosition(text, params.position);
+    const result = definition.getLocation(langId, uri, symbol);
+    conlog("definition response:");
+    conlog(result);
+    return result;
 });

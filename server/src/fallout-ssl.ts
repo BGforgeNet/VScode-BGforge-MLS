@@ -7,7 +7,9 @@ import {
     isSubpath,
     isDirectory,
     findFiles,
-    getFullPath,
+    uriToPath,
+    RegExpMatchArrayWithIndices,
+    pathToUri,
 } from "./common";
 import { connection, documents } from "./server";
 import * as path from "path";
@@ -16,6 +18,8 @@ import { MarkupKind } from "vscode-languageserver/node";
 import * as cp from "child_process";
 import { SSLsettings } from "./settings";
 import * as completion from "./completion";
+import { DefinitionItem, DefinitionList, Definition } from "./definition";
+import * as definition from "./definition";
 import { HoverEx, HoverMap, HoverMapEx } from "./hover";
 import * as hover from "./hover";
 import * as fs from "fs";
@@ -24,6 +28,7 @@ import * as jsdoc from "./jsdoc";
 interface HeaderDataList {
     macros: DefineList;
     procedures: ProcList;
+    definitions: DefinitionList;
 }
 
 interface ProcListItem {
@@ -48,6 +53,7 @@ const sslExt = ".ssl";
 export async function loadData(headersDirectory: string) {
     const completionList: Array<completion.CompletionItemEx> = [];
     const hoverMap = new Map<string, HoverEx>();
+    const definitionMap: Definition = new Map();
     const headersList = findFiles(headersDirectory, "h");
 
     for (const headerPath of headersList) {
@@ -55,8 +61,13 @@ export async function loadData(headersDirectory: string) {
         const headerData = findSymbols(text);
         loadMacros(headerPath, headerData, completionList, hoverMap);
         loadProcedures(headerPath, headerData, completionList, hoverMap);
+        loadDefinitions(headerPath, headerData, definitionMap);
     }
-    const result: DynamicData = { completion: completionList, hover: hoverMap };
+    const result: DynamicData = {
+        completion: completionList,
+        hover: hoverMap,
+        definition: definitionMap,
+    };
     return result;
 }
 
@@ -90,6 +101,18 @@ function loadProcedures(
         completionList.push(completionItem);
         const hoverItem = { contents: markdownContents, source: path };
         hoverMap.set(proc.label, hoverItem);
+    }
+}
+
+function loadDefinitions(path: string, headerData: HeaderDataList, definitionMap: Definition) {
+    const uri = pathToUri(path);
+    for (const def of headerData.definitions) {
+        const range = {
+            start: { line: def.line, character: def.start },
+            end: { line: def.line, character: def.end },
+        };
+        const item = { uri: uri, range: range };
+        definitionMap.set(def.name, item);
     }
 }
 
@@ -143,32 +166,52 @@ function loadMacros(
 }
 
 export function reloadData(
-    path: string,
+    filePath: string,
     text: string,
     completion: completion.CompletionListEx | undefined,
-    hover: HoverMapEx | undefined
+    hover: HoverMapEx | undefined,
+    definition: Definition | undefined
 ) {
     const symbols = findSymbols(text);
     if (completion == undefined) {
         completion = [];
     }
-    const newCompletion = completion.filter((item) => item.source != path);
+    const newCompletion = completion.filter((item) => item.source != filePath);
     if (hover == undefined) {
         hover = new Map();
     }
     const newHover = new Map(
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         Array.from(hover).filter(([key, value]) => {
-            if (value.source != path) {
+            if (value.source != filePath) {
                 return true;
             }
             return false;
         })
     );
 
-    loadMacros(path, symbols, newCompletion, newHover);
-    loadProcedures(path, symbols, newCompletion, newHover);
-    const result: DynamicData = { completion: newCompletion, hover: newHover };
+    loadMacros(filePath, symbols, newCompletion, newHover);
+    loadProcedures(filePath, symbols, newCompletion, newHover);
+
+    const uri = pathToUri(filePath);
+    if (definition == undefined) {
+        definition = new Map();
+    }
+    const newDefinition = new Map(
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        Array.from(definition).filter(([key, value]) => {
+            if (value.uri != uri) {
+                return true;
+            }
+            return false;
+        })
+    );
+
+    const result: DynamicData = {
+        completion: newCompletion,
+        hover: newHover,
+        definition: newDefinition,
+    };
     conlog("reload data");
     return result;
 }
@@ -259,12 +302,45 @@ function findSymbols(text: string) {
             procList.push(item);
         }
     }
+    const definitions = findDefinitions(text);
 
     const result: HeaderDataList = {
         macros: defineList,
         procedures: procList,
+        definitions: definitions,
     };
     return result;
+}
+
+function findDefinitions(text: string) {
+    const definitions = [];
+    const lines = text.split("\n");
+    const procRegex = /^procedure[\s]+(\w+)(?:\(([^)]+)\))?[\s]+begin/d;
+    const defineRegex = /^#define[ \t]+(\w+)(?:\(([^)]+)\))?[ \t]+(.+)/d;
+    for (let i = 0; i < lines.length; i++) {
+        const l = lines[i];
+        let match = procRegex.exec(l);
+        if (match) {
+            const name = match[1];
+            const index = (match as RegExpMatchArrayWithIndices).indices[1];
+            const item: DefinitionItem = { name: name, line: i, start: index[0], end: index[1] };
+            definitions.push(item);
+        } else {
+            match = defineRegex.exec(l);
+            if (match) {
+                const name = match[1];
+                const index = (match as RegExpMatchArrayWithIndices).indices[1];
+                const item: DefinitionItem = {
+                    name: name,
+                    line: i,
+                    start: index[0],
+                    end: index[1],
+                };
+                definitions.push(item);
+            }
+        }
+    }
+    return definitions;
 }
 
 function jsdocToMD(jsd: jsdoc.JSdoc) {
@@ -353,18 +429,18 @@ function parseCompileOutput(text: string, uri: string) {
     return result;
 }
 
-function sendDiagnostics(uri: string, output_text: string) {
-    const parse_result = parseCompileOutput(output_text, uri);
-    sendParseResult(uri, parse_result);
+function sendDiagnostics(uri: string, outputText: string) {
+    const parseResult = parseCompileOutput(outputText, uri);
+    sendParseResult(uri, parseResult);
 }
 
-export function compile(uri: string, ssl_settings: SSLsettings, interactive = false) {
-    const filepath = getFullPath(uri);
+export function compile(uri: string, sslSettings: SSLsettings, interactive = false) {
+    const filepath = uriToPath(uri);
     const cwdTo = path.dirname(filepath);
     const baseName = path.parse(filepath).base;
     const base = path.parse(filepath).name;
-    const compileCmd = `${ssl_settings.compilePath} ${ssl_settings.compileOptions}`;
-    const dstPath = path.join(ssl_settings.outputDirectory, base + ".int");
+    const compileCmd = `${sslSettings.compilePath} ${sslSettings.compileOptions}`;
+    const dstPath = path.join(sslSettings.outputDirectory, base + ".int");
     const ext = path.parse(filepath).ext;
 
     if (ext.toLowerCase() != sslExt) {
@@ -403,32 +479,35 @@ export function compile(uri: string, ssl_settings: SSLsettings, interactive = fa
 /** Loads Fallout header data from a directory outside of workspace, if specified in settings.
  * These files are not tracked for changes, and data is static.
  */
-export async function load_external_headers(workspace_root: string, headers_dir: string) {
+export async function loadExternalHeaders(workspaceRoot: string, headersDir: string) {
     conlog("loading external headers");
 
     try {
-        if (!isDirectory(headers_dir)) {
-            conlog(`${headers_dir} is not a directory, skipping external headers.`);
+        if (!isDirectory(headersDir)) {
+            conlog(`${headersDir} is not a directory, skipping external headers.`);
             return;
         }
     } catch {
-        conlog(`lstat ${headers_dir} failed, aborting.`);
+        conlog(`lstat ${headersDir} failed, aborting.`);
         return;
     }
-    if (isSubpath(workspace_root, headers_dir)) {
-        conlog(`real ${headers_dir} is a subdirectory of workspace ${workspace_root}, aborting.`);
+    if (isSubpath(workspaceRoot, headersDir)) {
+        conlog(`real ${headersDir} is a subdirectory of workspace ${workspaceRoot}, aborting.`);
         return;
     }
 
-    conlog(`loading external headers from ${headers_dir}`);
-    const falloutHeaderData = await loadData(headers_dir);
+    conlog(`loading external headers from ${headersDir}`);
+    const falloutHeaderData = await loadData(headersDir);
     const langId = "fallout-ssl";
     const oldCompletion = completion.staticData.get(langId);
     const oldHover = hover.staticData.get(langId);
+    const oldDefinition = definition.staticData.get(langId);
     const newCompletion = [...oldCompletion, ...falloutHeaderData.completion];
     const newHover = new Map([...oldHover, ...falloutHeaderData.hover]);
+    const newDefinition = new Map([...oldDefinition, ...falloutHeaderData.definition]);
 
     hover.staticData.set(langId, newHover);
     completion.staticData.set(langId, newCompletion);
-    conlog(`loaded external headers from ${headers_dir}`);
+    definition.staticData.set(langId, newDefinition);
+    conlog(`loaded external headers from ${headersDir}`);
 }

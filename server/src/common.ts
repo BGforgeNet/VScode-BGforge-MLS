@@ -6,6 +6,8 @@ import { HoverEx } from "./hover";
 import { connection } from "./server";
 import * as fg from "fast-glob";
 import { URI } from "vscode-uri";
+import { Definition } from "./definition";
+import { pathToFileURL } from 'node:url';
 
 export function fname(uri: string) {
     return path.basename(uri);
@@ -39,6 +41,7 @@ export async function conlog(item: any) {
 export interface DynamicData {
     completion: Array<CompletionItemEx>;
     hover: Map<string, HoverEx>;
+    definition: Definition;
 }
 
 export interface ParseItem {
@@ -125,6 +128,17 @@ export function getRelPath(root: string, other_dir: string) {
     return path.relative(root, other_dir);
 }
 
-export function getFullPath(uri_string: string) {
+export function uriToPath(uri_string: string) {
     return URI.parse(uri_string).fsPath;
 }
+
+export function pathToUri(filePath: string) {
+    const cwd = process.cwd();
+    const fullPath = path.join(cwd, filePath);
+    const uri = pathToFileURL(fullPath)
+    return uri.toString();
+}
+
+// https://stackoverflow.com/questions/72119570/why-doesnt-vs-code-typescript-recognize-the-indices-property-on-the-result-of-r
+// https://github.com/microsoft/TypeScript/issues/44227
+export type RegExpMatchArrayWithIndices = RegExpMatchArray & { indices: Array<[number, number]> };
