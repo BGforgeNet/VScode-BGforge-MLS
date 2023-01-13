@@ -22,18 +22,10 @@ import * as jsdoc from "./jsdoc";
 import { HeaderData as LanguageHeaderData } from "./language";
 import PromisePool from "@supercharge/promise-pool";
 
-export interface DefinitionItem {
-    name: string;
-    line: number;
-    start: number;
-    end: number;
-}
-export interface DefinitionList extends Array<DefinitionItem> {}
-
 interface FalloutHeaderData {
     macros: DefineList;
     procedures: ProcList;
-    definitions: DefinitionList;
+    definitions: definition.DefinitionList;
 }
 
 interface ProcListItem {
@@ -132,19 +124,6 @@ function loadProcedures(uri: string, headerData: FalloutHeaderData, filePath: st
     return { completion: completions, hover: hovers };
 }
 
-function loadDefinitions(uri: string, headerData: FalloutHeaderData) {
-    const definitions: definition.Data = new Map();
-    for (const def of headerData.definitions) {
-        const range = {
-            start: { line: def.line, character: def.start },
-            end: { line: def.line, character: def.end },
-        };
-        const item = { uri: uri, range: range };
-        definitions.set(def.name, item);
-    }
-    return definitions;
-}
-
 function loadMacros(uri: string, headerData: FalloutHeaderData, filePath: string) {
     const completions: completion.CompletionListEx = [];
     const hovers: hover.HoverMapEx = new Map();
@@ -206,7 +185,7 @@ export function loadFileData(uri: string, text: string, filePath: string) {
     const macros = loadMacros(uri, symbols, filePath);
     const completions = [...procs.completion, ...macros.completion];
     const hovers = new Map([...procs.hover, ...macros.hover]);
-    const definitions = loadDefinitions(uri, symbols);
+    const definitions = definition.load(uri, symbols.definitions);
     const result: LanguageHeaderData = {
         hover: hovers,
         completion: completions,
@@ -322,14 +301,19 @@ function findDefinitions(text: string) {
         if (match) {
             const name = match[1];
             const index = (match as RegExpMatchArrayWithIndices).indices[1];
-            const item: DefinitionItem = { name: name, line: i, start: index[0], end: index[1] };
+            const item: definition.DefinitionItem = {
+                name: name,
+                line: i,
+                start: index[0],
+                end: index[1],
+            };
             definitions.push(item);
         } else {
             match = defineRegex.exec(l);
             if (match) {
                 const name = match[1];
                 const index = (match as RegExpMatchArrayWithIndices).indices[1];
-                const item: DefinitionItem = {
+                const item: definition.DefinitionItem = {
                     name: name,
                     line: i,
                     start: index[0],

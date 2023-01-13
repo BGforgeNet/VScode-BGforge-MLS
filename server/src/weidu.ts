@@ -6,6 +6,7 @@ import {
     ParseResult,
     sendParseResult as sendParseResult,
     pathToUri,
+    RegExpMatchArrayWithIndices,
 } from "./common";
 import { connection } from "./server";
 import * as path from "path";
@@ -18,6 +19,7 @@ import * as hover from "./hover";
 import { CompletionItemKind, MarkupKind } from "vscode-languageserver/node";
 import { HeaderData as LanguageHeaderData } from "./language";
 import PromisePool from "@supercharge/promise-pool";
+import * as definition from "./definition";
 
 const valid_extensions = new Map([
     [".tp2", "tp2"],
@@ -27,6 +29,11 @@ const valid_extensions = new Map([
     [".d", "d"],
     [".baf", "baf"],
 ]);
+
+interface WeiduHeaderData {
+    defines: Defines;
+    definitions: definition.DefinitionList;
+}
 
 interface Define {
     name: string;
@@ -223,6 +230,7 @@ export function compile(uri: string, settings: WeiDUsettings, interactive = fals
 export async function loadHeaders(headersDirectory: string) {
     let completions: completion.CompletionListEx = [];
     const hovers: hover.HoverMapEx = new Map();
+    const definitions: definition.Data = new Map();
     const headerFiles = findFiles(headersDirectory, "tph");
 
     const { results, errors } = await PromisePool.withConcurrency(4)
@@ -245,11 +253,15 @@ export async function loadHeaders(headersDirectory: string) {
         for (const [key, value] of x.hover) {
             hovers.set(key, value);
         }
+        for (const [key, value] of x.definition) {
+            definitions.set(key, value);
+        }
     });
 
     const result: LanguageHeaderData = {
         completion: completions,
         hover: hovers,
+        definition: definitions,
     };
     return result;
 }
@@ -285,7 +297,9 @@ function findSymbols(text: string) {
 
         defineList.push(item);
     }
-    return defineList;
+    const definitions = findDefinitions(text);
+    const result: WeiduHeaderData = { defines: defineList, definitions: definitions };
+    return result;
 }
 
 function jsdocToMD(jsd: jsdoc.JSdoc) {
@@ -312,10 +326,12 @@ function jsdocToMD(jsd: jsdoc.JSdoc) {
  */
 export function loadFileData(uri: string, text: string, filePath: string) {
     const symbols = findSymbols(text);
-    const functions = loadFunctions(uri, symbols, filePath);
+    const functions = loadFunctions(uri, symbols.defines, filePath);
+    const definitions = definition.load(uri, symbols.definitions);
     const result: LanguageHeaderData = {
         hover: functions.hovers,
         completion: functions.completions,
+        definition: definitions,
     };
     return result;
 }
@@ -354,4 +370,27 @@ function loadFunctions(uri: string, symbols: Defines, filePath: string) {
         hovers.set(symbol.name, hoverItem);
     }
     return { completions: completions, hovers: hovers };
+}
+
+function findDefinitions(text: string) {
+    const definitions = [];
+    const lines = text.split("\n");
+    const defineRegex =
+        /^(DEFINE_ACTION_FUNCTION|DEFINE_ACTION_MACRO|DEFINE_PATCH_FUNCTION|DEFINE_PATCH_MACRO)\s+(\w+)/d;
+    for (let i = 0; i < lines.length; i++) {
+        const l = lines[i];
+        const match = defineRegex.exec(l);
+        if (match) {
+            const name = match[2];
+            const index = (match as RegExpMatchArrayWithIndices).indices[2];
+            const item: definition.DefinitionItem = {
+                name: name,
+                line: i,
+                start: index[0],
+                end: index[1],
+            };
+            definitions.push(item);
+        }
+    }
+    return definitions;
 }
