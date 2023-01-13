@@ -178,7 +178,7 @@ const languages: LanguageList = [
             definition: true,
             hover: true,
             udf: true,
-            headers: true,
+            headers: false,
             externalHeaders: false,
             parse: true,
             parse_requires_game: false,

@@ -45,7 +45,7 @@ interface Data {
 
 export interface Language {
     id: string;
-    dataId: string; // copy completions and hover from this language id
+    dataId: string; // search completions and hover from this language id
     features: Features;
     data: Data;
     externalHeadersDirectory?: string;
