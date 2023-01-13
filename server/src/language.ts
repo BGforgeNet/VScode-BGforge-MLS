@@ -256,6 +256,24 @@ export class Language implements Language {
         return newHover;
     }
 
+    private reloadFileDefinition(
+        oldDefinition: definition.Data,
+        fileDefinition: definition.Data,
+        uri: string
+    ) {
+        let newDefinition = new Map(
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            Array.from(oldDefinition).filter(([key, value]) => {
+                if (value.uri != uri) {
+                    return true;
+                }
+                return false;
+            })
+        );
+        newDefinition = new Map([...newDefinition, ...fileDefinition]);
+        return newDefinition;
+    }
+
     reloadFileData(uri: string, text: string) {
         let fileData: HeaderData;
         const filePath = this.displayPath(uri);
@@ -312,6 +330,14 @@ export class Language implements Language {
             const newHover = this.reloadFileHover(oldHover, fileData.hover, uri);
             this.data.completion.self.set(uri, newCompletion);
             this.data.hover.self.set(uri, newHover);
+        }
+
+        if (this.features.definition) {
+            this.data.definition = this.reloadFileDefinition(
+                this.data.definition,
+                fileData.definition,
+                uri
+            );
         }
     }
 
