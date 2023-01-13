@@ -38,6 +38,9 @@ export async function conlog(item: any) {
     }
 }
 
+
+export type DataType = "static" | "header" | "self";
+
 export interface DynamicData {
     completion: Array<CompletionItemEx>;
     hover: Map<string, HoverEx>;
@@ -129,7 +132,7 @@ export function getRelPath(root: string, other_dir: string) {
 }
 
 export function uriToPath(uri_string: string) {
-    return URI.parse(uri_string).fsPath;
+    return URI.parse(uri_string).path;
 }
 
 export function pathToUri(filePath: string) {

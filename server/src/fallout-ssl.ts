@@ -25,7 +25,7 @@ import * as hover from "./hover";
 import * as fs from "fs";
 import * as jsdoc from "./jsdoc";
 
-interface HeaderDataList {
+interface HeaderData {
     macros: DefineList;
     procedures: ProcList;
     definitions: DefinitionList;
@@ -50,40 +50,45 @@ interface DefineList extends Array<DefineListItem> {}
 const langId = "fallout-ssl";
 const sslExt = ".ssl";
 
-export async function loadData(headersDirectory: string) {
-    const completionList: Array<completion.CompletionItemEx> = [];
-    const hoverMap = new Map<string, HoverEx>();
-    const definitionMap: Definition = new Map();
-    const headersList = findFiles(headersDirectory, "h");
+export function loadHeaders(headersDirectory: string, external = false) {
+    let completions: completion.CompletionListEx = [];
+    let hovers: hover.HoverMapEx = new Map();
+    // const definitionMap: Definition = new Map();
+    const headerFiles = findFiles(headersDirectory, "h");
 
-    for (const headerPath of headersList) {
-        const text = fs.readFileSync(path.join(headersDirectory, headerPath), "utf8");
-        const headerData = findSymbols(text);
-        loadMacros(headerPath, headerData, completionList, hoverMap);
-        loadProcedures(headerPath, headerData, completionList, hoverMap);
-        loadDefinitions(headerPath, headerData, definitionMap);
+    for (const relPath of headerFiles) {
+        const absPath = path.join(headersDirectory, relPath);
+        const text = fs.readFileSync(absPath, "utf8");
+        const uri = pathToUri(absPath);
+        let pathString: string;
+        if (external) {
+            pathString = absPath;
+        } else {
+            pathString = relPath;
+        }
+        const fileData = loadFileData(uri, text, pathString);
+        completions = [...completions, ...fileData.completion];
+        hovers = new Map([...hovers, ...fileData.hover]);
+        // loadDefinitions(headerPath, headerData, definitionMap);
     }
-    const result: DynamicData = {
-        completion: completionList,
-        hover: hoverMap,
-        definition: definitionMap,
+    const result = {
+        completion: completions,
+        hover: hovers,
+        // definition: definitionMap,
     };
     return result;
 }
 
-function loadProcedures(
-    path: string,
-    headerData: HeaderDataList,
-    completionList: completion.CompletionList,
-    hoverMap: HoverMap
-) {
+function loadProcedures(uri: string, headerData: HeaderData, filePath: string) {
+    const completions: completion.CompletionListEx = [];
+    const hovers: hover.HoverMapEx = new Map();
     for (const proc of headerData.procedures) {
         let markdownValue = [
             "```" + `${langId}`,
             `${proc.detail}`,
             "```",
             "\n```bgforge-mls-comment\n",
-            `${path}`,
+            `${filePath}`,
             "```",
         ].join("\n");
         if (proc.jsdoc) {
@@ -94,17 +99,19 @@ function loadProcedures(
         const completionItem = {
             label: proc.label,
             documentation: markdownContents,
-            source: path,
+            source: filePath,
+            uri: uri,
             kind: CompletionItemKind.Function,
-            labelDetails: { description: path },
+            labelDetails: { description: filePath },
         };
-        completionList.push(completionItem);
-        const hoverItem = { contents: markdownContents, source: path };
-        hoverMap.set(proc.label, hoverItem);
+        completions.push(completionItem);
+        const hoverItem = { contents: markdownContents, source: filePath, uri: uri };
+        hovers.set(proc.label, hoverItem);
     }
+    return { completion: completions, hover: hovers };
 }
 
-function loadDefinitions(path: string, headerData: HeaderDataList, definitionMap: Definition) {
+function loadDefinitions(path: string, headerData: HeaderData, definitionMap: Definition) {
     const uri = pathToUri(path);
     for (const def of headerData.definitions) {
         const range = {
@@ -116,12 +123,9 @@ function loadDefinitions(path: string, headerData: HeaderDataList, definitionMap
     }
 }
 
-function loadMacros(
-    path: string,
-    headerData: HeaderDataList,
-    completionList: completion.CompletionList,
-    hoverMap: HoverMap
-) {
+function loadMacros(uri: string, headerData: HeaderData, filePath: string) {
+    const completions: completion.CompletionListEx = [];
+    const hovers: hover.HoverMapEx = new Map();
     for (const macro of headerData.macros) {
         let markdownValue: string;
         let detail = macro.detail;
@@ -135,7 +139,7 @@ function loadMacros(
             `${detail}`,
             "```",
             "\n```bgforge-mls-comment\n",
-            `${path}`,
+            `${filePath}`,
             "```",
         ].join("\n");
         // for single line ones, show full line too
@@ -153,69 +157,78 @@ function loadMacros(
         const completionItem = {
             label: macro.label,
             documentation: markdownContents,
-            source: path,
+            source: filePath,
+            uri: uri,
             kind: completionKind,
-            labelDetails: { description: path },
+            labelDetails: { description: filePath },
         };
 
-        completionList.push(completionItem);
+        completions.push(completionItem);
 
-        const hover_item = { contents: markdownContents, source: path };
-        hoverMap.set(macro.label, hover_item);
+        const hoverItem = { contents: markdownContents, source: filePath, uri: uri };
+        hovers.set(macro.label, hoverItem);
     }
+    return { completion: completions, hover: hovers };
 }
 
-export function reloadData(
-    filePath: string,
-    text: string,
-    completion: completion.CompletionListEx | undefined,
-    hover: HoverMapEx | undefined,
-    definition: Definition | undefined
-) {
+/**
+ * 
+ * @param uri 
+ * @param text 
+ * @param filePath cosmetic only, relative or absolute path
+ * @returns 
+ */
+export function loadFileData(uri: string, text: string, filePath: string) {
     const symbols = findSymbols(text);
-    if (completion == undefined) {
-        completion = [];
-    }
-    const newCompletion = completion.filter((item) => item.source != filePath);
-    if (hover == undefined) {
-        hover = new Map();
-    }
-    const newHover = new Map(
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        Array.from(hover).filter(([key, value]) => {
-            if (value.source != filePath) {
-                return true;
-            }
-            return false;
-        })
-    );
-
-    loadMacros(filePath, symbols, newCompletion, newHover);
-    loadProcedures(filePath, symbols, newCompletion, newHover);
-
-    const uri = pathToUri(filePath);
-    if (definition == undefined) {
-        definition = new Map();
-    }
-    const newDefinition = new Map(
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        Array.from(definition).filter(([key, value]) => {
-            if (value.uri != uri) {
-                return true;
-            }
-            return false;
-        })
-    );
-    loadDefinitions(filePath, symbols, newDefinition);
-
-    const result: DynamicData = {
-        completion: newCompletion,
-        hover: newHover,
-        definition: newDefinition,
-    };
-    conlog("reload data");
-    return result;
+    const procs = loadProcedures(uri, symbols, filePath);
+    const macros = loadMacros(uri, symbols, filePath);
+    const completions = [...procs.completion, ...macros.completion];
+    const hovers = new Map([...procs.hover, ...macros.hover]);
+    return { hover: hovers, completion: completions };
 }
+
+// export function reloadData(
+//     uri: string,
+//     text: string,
+//     completion: completion.CompletionListEx = [],
+//     hover: HoverMapEx = new Map(),
+//     definition: Definition = new Map()
+// ) {
+//     const symbols = findSymbols(text);
+//     const newCompletion = completion.filter((item) => item.uri != uri);
+//     const newHover = new Map(
+//         // eslint-disable-next-line @typescript-eslint/no-unused-vars
+//         Array.from(hover).filter(([key, value]) => {
+//             if (value.uri != uri) {
+//                 return true;
+//             }
+//             return false;
+//         })
+//     );
+//     const filePath = uriToPath(uri);
+
+//     loadMacros(filePath, symbols, newCompletion, newHover);
+//     loadProcedures(filePath, symbols, newCompletion, newHover);
+
+//     const newDefinition = new Map(
+//         // eslint-disable-next-line @typescript-eslint/no-unused-vars
+//         Array.from(definition).filter(([key, value]) => {
+//             if (value.uri != uri) {
+//                 return true;
+//             }
+//             return false;
+//         })
+//     );
+//     loadDefinitions(filePath, symbols, newDefinition);
+
+//     const result: DynamicData = {
+//         completion: newCompletion,
+//         hover: newHover,
+//         definition: newDefinition,
+//     };
+//     conlog("reload data");
+//     return result;
+// }
 
 function findSymbols(text: string) {
     // defines
@@ -305,7 +318,7 @@ function findSymbols(text: string) {
     }
     const definitions = findDefinitions(text);
 
-    const result: HeaderDataList = {
+    const result: HeaderData = {
         macros: defineList,
         procedures: procList,
         definitions: definitions,
@@ -498,17 +511,17 @@ export async function loadExternalHeaders(workspaceRoot: string, headersDir: str
     }
 
     conlog(`loading external headers from ${headersDir}`);
-    const falloutHeaderData = await loadData(headersDir);
+    const falloutHeaderData = await loadHeaders(headersDir);
     const langId = "fallout-ssl";
     const oldCompletion = completion.staticData.get(langId);
     const oldHover = hover.staticData.get(langId);
     const oldDefinition = definition.staticData.get(langId);
     const newCompletion = [...oldCompletion, ...falloutHeaderData.completion];
     const newHover = new Map([...oldHover, ...falloutHeaderData.hover]);
-    const newDefinition = new Map([...oldDefinition, ...falloutHeaderData.definition]);
+    // const newDefinition = new Map([...oldDefinition, ...falloutHeaderData.definition]);
 
     hover.staticData.set(langId, newHover);
     completion.staticData.set(langId, newCompletion);
-    definition.staticData.set(langId, newDefinition);
+    // definition.staticData.set(langId, newDefinition);
     conlog(`loaded external headers from ${headersDir}`);
 }
