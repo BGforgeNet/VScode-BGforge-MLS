@@ -1,5 +1,5 @@
 import { readFileSync } from "fs";
-import path = require("path");
+import * as path from "path";
 import { CompletionItem } from "vscode-languageserver/node";
 import { conlog } from "./common";
 
@@ -11,9 +11,6 @@ export interface CompletionItemEx extends CompletionItem {
 export interface CompletionList extends Array<CompletionItem> {}
 export interface CompletionListEx extends Array<CompletionItemEx> {}
 
-export interface CompletionData extends Map<string, CompletionList | CompletionListEx> {}
-export interface CompletionDataEx extends Map<string, CompletionListEx> {}
-
 /** uri => [item list] */
 export interface SelfMap extends Map<string, CompletionListEx> {}
 export interface Data {
@@ -22,12 +19,6 @@ export interface Data {
     extHeaders?: CompletionListEx;
     static: CompletionList;
 }
-
-export const staticData: CompletionData = new Map();
-export const dynamicData: CompletionDataEx = new Map();
-export const selfData: CompletionDataEx = new Map();
-
-export const languages = ["weidu-tp2", "fallout-ssl", "weidu-d", "weidu-baf"];
 
 export function loadStatic(langId: string): CompletionList {
     try {

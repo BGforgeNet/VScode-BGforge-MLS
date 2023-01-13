@@ -136,7 +136,7 @@ const languages: LanguageList = [
         },
     },
     {
-        id: "weidu-d-ssl",
+        id: "weidu-ssl",
         dataId: "weidu-baf",
         features: {
             completion: true,

@@ -10,8 +10,6 @@ export interface HoverEx extends Hover {
 }
 export interface HoverMap extends Map<string, Hover> {}
 export interface HoverMapEx extends Map<string, HoverEx> {}
-export interface HoverData extends Map<string, HoverMap | HoverMapEx> {}
-export interface HoverDataEx extends Map<string, HoverMapEx> {}
 
 /** uri => [item list] */
 export interface SelfMap extends Map<string, HoverMap> {}
@@ -21,12 +19,6 @@ export interface Data {
     extHeaders?: HoverMapEx;
     static: HoverMap;
 }
-
-export const staticData: HoverData = new Map();
-export const dynamicData: HoverDataEx = new Map();
-export const selfData: HoverDataEx = new Map();
-
-const languages = ["weidu-tp2", "fallout-ssl", "weidu-d", "weidu-baf"];
 
 export function loadStatic(langId: string): HoverMap {
     try {
