@@ -15,9 +15,8 @@ import {
 } from "vscode-languageserver/node";
 import { fileURLToPath } from "node:url";
 import { TextDocument } from "vscode-languageserver-textdocument";
-import * as fallout from "./fallout-ssl";
-import * as weidu from "./weidu";
 import { conlog, uriToPath, isDirectory, isSubpath, getRelPath, symbolAtPosition } from "./common";
+import { compile, COMMAND_compile } from "./compile";
 import { MLSsettings, defaultSettings } from "./settings";
 import * as settings from "./settings";
 import * as inlay from "./inlay";
@@ -195,7 +194,7 @@ connection.onHover((textDocumentPosition: TextDocumentPositionParams): Hover => 
 
 connection.onExecuteCommand(async (params) => {
     const command = params.command;
-    if (command != "extension.bgforge.compile") {
+    if (command != COMMAND_compile) {
         return;
     }
 
@@ -206,46 +205,9 @@ connection.onExecuteCommand(async (params) => {
         connection.window.showInformationMessage("Focus a valid file to compile!");
         return;
     }
-    const uri = args.uri;
-    compile(uri, true);
+    const langId = documents.get(args.uri).languageId;
+    compile(args.uri, langId, true);
 });
-
-function clearDiagnostics(uri: string) {
-    // Clear old diagnostics. For some reason not working in common.send_parse_result.
-    // Probably due to async?
-    connection.sendDiagnostics({ uri: uri, diagnostics: [] });
-}
-
-async function compile(uri: string, interactive = false) {
-    const settings = await getDocumentSettings(uri);
-    const document: TextDocument = documents.get(uri);
-    const langId = document.languageId;
-
-    switch (langId) {
-        case "fallout-ssl": {
-            clearDiagnostics(uri);
-            fallout.compile(uri, settings.falloutSSL, interactive);
-            break;
-        }
-        case "weidu-tp2":
-        case "weidu-tp2-tpl":
-        case "weidu-baf":
-        case "weidu-baf-tpl":
-        case "weidu-d":
-        case "weidu-d-tpl": {
-            clearDiagnostics(uri);
-            weidu.compile(uri, settings.weidu, interactive);
-            break;
-        }
-        default: {
-            conlog("Compile called on a wrong language.");
-            if (interactive) {
-                connection.window.showInformationMessage(`Can't compile ${uri}.`);
-            }
-            break;
-        }
-    }
-}
 
 connection.onSignatureHelp((params: TextDocumentPositionParams): SignatureHelp => {
     const uri = params.textDocument.uri;
