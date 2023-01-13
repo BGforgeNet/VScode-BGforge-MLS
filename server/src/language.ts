@@ -268,8 +268,12 @@ export class Language implements Language {
             case "fallout-ssl":
                 fileData = fallout.loadFileData(uri, text, filePath);
                 break;
+            case "weidu-tp2":
+            case "weidu-tp2-tpl":
+                fileData = weidu.loadFileData(uri, text, filePath);
+                break;
             default:
-                conlog(`Error: language ${this.id} doesn't support reload.`);
+                conlog(`Language ${this.id} doesn't support reload.`);
                 return;
         }
 

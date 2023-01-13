@@ -1,11 +1,11 @@
 import {
     conlog,
-    DynamicData,
     findFiles,
     uriToPath,
     ParseItemList,
     ParseResult,
     sendParseResult as sendParseResult,
+    pathToUri,
 } from "./common";
 import { connection } from "./server";
 import * as path from "path";
@@ -16,7 +16,8 @@ import * as jsdoc from "./jsdoc";
 import * as completion from "./completion";
 import * as hover from "./hover";
 import { CompletionItemKind, MarkupKind } from "vscode-languageserver/node";
-import { Definition } from "./definition";
+import { HeaderData as LanguageHeaderData } from "./language";
+import PromisePool from "@supercharge/promise-pool";
 
 const valid_extensions = new Map([
     [".tp2", "tp2"],
@@ -27,13 +28,13 @@ const valid_extensions = new Map([
     [".baf", "baf"],
 ]);
 
-interface DefineItem {
+interface Define {
     name: string;
     context: "action" | "patch";
     dtype: "function" | "macro";
     jsdoc?: jsdoc.JSdoc;
 }
-interface DefineList extends Array<DefineItem> {}
+interface Defines extends Array<Define> {}
 
 /** `text` looks like this
  *
@@ -219,23 +220,42 @@ export function compile(uri: string, settings: WeiDUsettings, interactive = fals
     });
 }
 
-export async function loadData(headersDirectory: string) {
-    const completionList: Array<completion.CompletionItemEx> = [];
-    const hoverMap = new Map<string, hover.HoverEx>();
-    const definitionMap: Definition = new Map();
-    const headersList = findFiles(headersDirectory, "tph");
+export async function loadHeaders(headersDirectory: string) {
+    let completions: completion.CompletionListEx = [];
+    const hovers: hover.HoverMapEx = new Map();
+    const headerFiles = findFiles(headersDirectory, "tph");
 
-    for (const headerPath of headersList) {
-        const text = fs.readFileSync(path.join(headersDirectory, headerPath), "utf8");
-        const headerData = findSymbols(text);
-        loadFunctions(headerPath, headerData, completionList, hoverMap);
+    const { results, errors } = await PromisePool.withConcurrency(4)
+        .for(headerFiles)
+        .process(async (relPath) => {
+            const absPath = path.join(headersDirectory, relPath);
+            const text = fs.readFileSync(absPath, "utf8");
+            const uri = pathToUri(absPath);
+            const res = loadFileData(uri, text, relPath);
+            return res;
+        });
+
+    if (errors.length > 0) {
+        conlog(errors);
     }
-    const result: DynamicData = { completion: completionList, hover: hoverMap, definition: definitionMap };
+
+    results.map((x) => {
+        completions = completions.concat(x.completion);
+
+        for (const [key, value] of x.hover) {
+            hovers.set(key, value);
+        }
+    });
+
+    const result: LanguageHeaderData = {
+        completion: completions,
+        hover: hovers,
+    };
     return result;
 }
 
 function findSymbols(text: string) {
-    const defineList: DefineList = [];
+    const defineList: Defines = [];
     const defineRegex =
         /((\/\*\*\s*\n([^*]|(\*(?!\/)))*\*\/)\r?\n)?(DEFINE_ACTION_FUNCTION|DEFINE_ACTION_MACRO|DEFINE_PATCH_FUNCTION|DEFINE_PATCH_MACRO)\s+(\w+)/gm;
 
@@ -255,7 +275,7 @@ function findSymbols(text: string) {
             dtype = "macro";
         }
 
-        const item: DefineItem = { name: name, context: context, dtype: dtype };
+        const item: Define = { name: name, context: context, dtype: dtype };
 
         // check for docstring
         if (m[2]) {
@@ -284,68 +304,54 @@ function jsdocToMD(jsd: jsdoc.JSdoc) {
     return md;
 }
 
-function loadFunctions(
-    path: string,
-    defineList: DefineList,
-    completionList: completion.CompletionList,
-    hoverMap: hover.HoverMap
-) {
-    const langId = "weidu-tp2-tooltip";
+/**
+ * @param uri
+ * @param text
+ * @param filePath cosmetic only, relative path
+ * @returns
+ */
+export function loadFileData(uri: string, text: string, filePath: string) {
+    const symbols = findSymbols(text);
+    const functions = loadFunctions(uri, symbols, filePath);
+    const result: LanguageHeaderData = {
+        hover: functions.hovers,
+        completion: functions.completions,
+    };
+    return result;
+}
 
-    for (const define of defineList) {
+function loadFunctions(uri: string, symbols: Defines, filePath: string) {
+    const langId = "weidu-tp2-tooltip";
+    const completions: completion.CompletionListEx = [];
+    const hovers: hover.HoverMapEx = new Map();
+
+    for (const symbol of symbols) {
         let markdownValue = [
             "```" + `${langId}`,
-            `${define.context} ${define.dtype} ${define.name}`,
+            `${symbol.context} ${symbol.dtype} ${symbol.name}`,
             "```",
             "\n```bgforge-mls-comment\n",
-            `${path}`,
+            `${filePath}`,
             "```",
         ].join("\n");
 
-        if (define.jsdoc) {
-            const jsdmd = jsdocToMD(define.jsdoc);
+        if (symbol.jsdoc) {
+            const jsdmd = jsdocToMD(symbol.jsdoc);
             markdownValue += jsdmd;
         }
 
         const markdownContents = { kind: MarkupKind.Markdown, value: markdownValue };
         const completionItem = {
-            label: define.name,
+            label: symbol.name,
             documentation: markdownContents,
-            source: path,
+            source: filePath,
             kind: CompletionItemKind.Function,
-            labelDetails: { description: path },
+            labelDetails: { description: filePath },
+            uri: uri,
         };
-        completionList.push(completionItem);
-        const hoverItem = { contents: markdownContents, source: path };
-        hoverMap.set(define.name, hoverItem);
+        completions.push(completionItem);
+        const hoverItem = { contents: markdownContents, source: filePath, uri: uri };
+        hovers.set(symbol.name, hoverItem);
     }
-}
-
-export function reloadData(
-    path: string,
-    text: string,
-    completion: completion.CompletionListEx | undefined,
-    hover: hover.HoverMapEx | undefined
-) {
-    const symbols = findSymbols(text);
-    if (completion == undefined) {
-        completion = [];
-    }
-    const newCompletion = completion.filter((item) => item.source != path);
-    if (hover == undefined) {
-        hover = new Map();
-    }
-    const newHover = new Map(
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        Array.from(hover).filter(([key, value]) => {
-            if (value.source != path) {
-                return true;
-            }
-            return false;
-        })
-    );
-    loadFunctions(path, symbols, newCompletion, newHover);
-    const definitionMap: Definition = new Map();
-    const result: DynamicData = { completion: newCompletion, hover: newHover, definition: definitionMap };
-    return result;
+    return { completions: completions, hovers: hovers };
 }
