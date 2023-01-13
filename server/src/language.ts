@@ -53,7 +53,6 @@ export interface Language {
 
 export class Language implements Language {
     id: string;
-    dataId: string;
     features: Features;
     data: Data;
     workspaceRoot: string;
@@ -63,16 +62,10 @@ export class Language implements Language {
         id: string,
         features: Features,
         workspaceRoot: string,
-        dataId?: string,
         externalHeadersDirectory = ""
     ) {
         this.id = id;
         this.features = features;
-        if (dataId) {
-            this.dataId = dataId;
-        } else {
-            this.dataId = id;
-        }
         this.externalHeadersDirectory = externalHeadersDirectory;
         this.workspaceRoot = workspaceRoot;
     }

@@ -23,7 +23,7 @@ export interface Galactus {
 
 interface LanguageItem {
     id: string;
-    dataId?: string;
+    dataFrom?: string;
     features: language.Features;
 }
 interface LanguageList extends Array<LanguageItem> {}
@@ -66,7 +66,7 @@ const languages: LanguageList = [
     },
     {
         id: "weidu-baf-tpl",
-        dataId: "weidu-baf",
+        dataFrom: "weidu-baf",
         features: {
             completion: true,
             definition: false,
@@ -77,8 +77,8 @@ const languages: LanguageList = [
             parse: true,
             parseRequiresGame: true,
             signature: false,
-            staticCompletion: true,
-            staticHover: true,
+            staticCompletion: false,
+            staticHover: false,
             staticSignature: false,
         },
     },
@@ -101,7 +101,7 @@ const languages: LanguageList = [
     },
     {
         id: "weidu-d-tpl",
-        dataId: "weidu-d",
+        dataFrom: "weidu-d",
         features: {
             completion: true,
             definition: false,
@@ -112,14 +112,14 @@ const languages: LanguageList = [
             parse: true,
             parseRequiresGame: true,
             signature: false,
-            staticCompletion: true,
-            staticHover: true,
+            staticCompletion: false,
+            staticHover: false,
             staticSignature: false,
         },
     },
     {
         id: "weidu-slb",
-        dataId: "weidu-baf",
+        dataFrom: "weidu-baf",
         features: {
             completion: true,
             definition: false,
@@ -130,14 +130,14 @@ const languages: LanguageList = [
             parse: false,
             parseRequiresGame: false,
             signature: false,
-            staticCompletion: true,
-            staticHover: true,
+            staticCompletion: false,
+            staticHover: false,
             staticSignature: false,
         },
     },
     {
         id: "weidu-ssl",
-        dataId: "weidu-baf",
+        dataFrom: "weidu-baf",
         features: {
             completion: true,
             definition: false,
@@ -148,8 +148,8 @@ const languages: LanguageList = [
             parse: false,
             parseRequiresGame: false,
             signature: false,
-            staticCompletion: true,
-            staticHover: true,
+            staticCompletion: false,
+            staticHover: false,
             staticSignature: false,
         },
     },
@@ -167,12 +167,12 @@ const languages: LanguageList = [
             signature: false,
             staticCompletion: true,
             staticHover: true,
-            staticSignature: true,
+            staticSignature: false,
         },
     },
     {
         id: "weidu-tp2-tpl",
-        dataId: "weidu-tp2",
+        dataFrom: "weidu-tp2",
         features: {
             completion: true,
             definition: true,
@@ -183,9 +183,9 @@ const languages: LanguageList = [
             parse: true,
             parseRequiresGame: false,
             signature: false,
-            staticCompletion: true,
-            staticHover: true,
-            staticSignature: true,
+            staticCompletion: false,
+            staticHover: false,
+            staticSignature: false,
         },
     },
 ];
@@ -194,7 +194,7 @@ export class Galactus {
     languages: Languages;
     workspaceRoot: string;
     translation: Translation;
-    dataLangIds: Map<string, string>;
+    dataFrom: Map<string, string>;
 
     public async init(
         workspaceRoot: string,
@@ -202,7 +202,7 @@ export class Galactus {
         traSettings: ProjectTraSettings
     ) {
         this.workspaceRoot = workspaceRoot;
-        this.dataLangIds = new Map();
+        this.dataFrom = new Map();
 
         const langs: Languages = new Map();
         for (const l of languages) {
@@ -213,7 +213,6 @@ export class Galactus {
                     l.id,
                     l.features,
                     workspaceRoot,
-                    l.id,
                     settings.falloutSSL.headersDirectory
                 );
             } else {
@@ -222,26 +221,24 @@ export class Galactus {
             await language.init();
             langs.set(l.id, language);
 
-            if (l.dataId) {
-                this.dataLangIds.set(l.id, l.dataId);
-            } else {
-                this.dataLangIds.set(l.id, l.id);
+            if (l.dataFrom) {
+                this.dataFrom.set(l.id, l.dataFrom);
             }
         }
         this.languages = langs;
         this.translation = new Translation(traSettings);
     }
 
-    /** data langa id */
+    /** Several languages draw data from other language ids */
     dataLang(langId: string) {
-        return this.dataLangIds.get(langId);
+        if (this.dataFrom.has(langId)) {
+            return this.dataFrom.get(langId);
+        }
+        return langId;
     }
 
     completion(langId: string, uri: string) {
         langId = this.dataLang(langId);
-        if (!langId) {
-            return;
-        }
         const language = this.languages.get(langId);
         if (language) {
             return language.completion(uri);
@@ -250,10 +247,6 @@ export class Galactus {
 
     hover(langId: string, uri: string, symbol: string, text: string) {
         langId = this.dataLang(langId);
-        if (!langId) {
-            return;
-        }
-
         // check for translation first
         if (isTraRef(symbol, langId) && translatableLanguages.includes(langId)) {
             const filePath = uriToPath(uri);
@@ -271,9 +264,6 @@ export class Galactus {
 
     definition(langId: string, symbol: string) {
         langId = this.dataLang(langId);
-        if (!langId) {
-            return;
-        }
         const language = this.languages.get(langId);
         if (language) {
             return language.definition(symbol);
