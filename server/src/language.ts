@@ -5,6 +5,7 @@ import * as signature from "./signature";
 import { conlog, getRelPath, isDirectory, isSubpath, uriToPath } from "./common";
 import { Hover } from "vscode-languageserver/node";
 import * as fallout from "./fallout-ssl";
+import * as weidu from "./weidu";
 
 export interface Features {
     completion: boolean;
@@ -24,6 +25,14 @@ export interface Features {
     staticCompletion: boolean;
     staticHover: boolean;
     staticSignature: boolean;
+}
+
+/** Generic processed data from headers */
+export interface HeaderData {
+    completion: completion.CompletionListEx;
+    hover: hover.HoverMapEx;
+    definition?: definition.Data;
+    signature?: signature.Data;
 }
 
 interface Data {
@@ -66,8 +75,10 @@ export class Language implements Language {
         }
         this.externalHeadersDirectory = externalHeadersDirectory;
         this.workspaceRoot = workspaceRoot;
+    }
 
-        this.data = this.loadData();
+    public async init() {
+        this.data = await this.loadData();
     }
 
     private loadStaticCompletion(): completion.CompletionList {
@@ -91,15 +102,19 @@ export class Language implements Language {
         return new Map();
     }
 
-    private loadHeaders() {
+    private async loadHeaders() {
         if (this.id == "fallout-ssl") {
-            const res = fallout.loadHeaders(this.workspaceRoot);
+            const res = await fallout.loadHeaders(this.workspaceRoot);
+            return res;
+        }
+        if (this.id == "weidu-tp2") {
+            const res = weidu.loadHeaders(this.workspaceRoot);
             return res;
         }
         conlog(`Unknown language id ${this.id}, can't load headers.`);
     }
 
-    private loadExternalHeaders() {
+    private async loadExternalHeaders() {
         conlog(`Loading external headers for ${this.id}`);
         try {
             if (!isDirectory(this.externalHeadersDirectory)) {
@@ -120,13 +135,13 @@ export class Language implements Language {
         }
 
         if (this.id == "fallout-ssl") {
-            const res = fallout.loadHeaders(this.externalHeadersDirectory, true);
+            const res = await fallout.loadHeaders(this.externalHeadersDirectory, true);
             return res;
         }
         conlog(`Unknown language id ${this.id}, can't load external headers.`);
     }
 
-    private loadData() {
+    private async loadData() {
         const completionData: completion.Data = { self: new Map(), headers: [], static: [] };
         const hoverData: hover.Data = { self: new Map(), headers: new Map(), static: new Map() };
         const definitionData: definition.Data = new Map();
@@ -149,7 +164,7 @@ export class Language implements Language {
         };
 
         if (this.features.headers) {
-            const headerData = this.loadHeaders();
+            const headerData = await this.loadHeaders();
             if (headerData) {
                 data.completion.headers = headerData.completion;
                 data.hover.headers = headerData.hover;
@@ -157,7 +172,7 @@ export class Language implements Language {
             }
 
             if (this.features.externalHeaders && this.externalHeadersDirectory != "") {
-                const externalHeaderData = this.loadExternalHeaders();
+                const externalHeaderData = await this.loadExternalHeaders();
                 if (externalHeaderData) {
                     data.completion.extHeaders = externalHeaderData.completion;
                     data.hover.extHeaders = externalHeaderData.hover;
@@ -195,6 +210,9 @@ export class Language implements Language {
 
     private isHeader(uri: string) {
         if (this.id == "fallout-ssl" && uri.endsWith(".h")) {
+            return true;
+        }
+        if (this.id == "weidu-tp2" && uri.endsWith(".tph")) {
             return true;
         }
         return false;
@@ -239,12 +257,7 @@ export class Language implements Language {
     }
 
     reloadFileData(uri: string, text: string) {
-        let fileData: {
-            hover: hover.HoverMapEx;
-            completion: completion.CompletionListEx;
-            definition: definition.Data;
-            signature?: signature.Data;
-        };
+        let fileData: HeaderData;
         const filePath = this.displayPath(uri);
 
         if (!this.features.udf) {

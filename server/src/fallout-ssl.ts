@@ -19,7 +19,8 @@ import * as definition from "./definition";
 import * as hover from "./hover";
 import * as fs from "fs";
 import * as jsdoc from "./jsdoc";
-
+import { HeaderData as LanguageHeaderData } from "./language";
+import PromisePool from "@supercharge/promise-pool";
 
 export interface DefinitionItem {
     name: string;
@@ -29,7 +30,7 @@ export interface DefinitionItem {
 }
 export interface DefinitionList extends Array<DefinitionItem> {}
 
-interface HeaderData {
+interface FalloutHeaderData {
     macros: DefineList;
     procedures: ProcList;
     definitions: DefinitionList;
@@ -54,28 +55,43 @@ interface DefineList extends Array<DefineListItem> {}
 const langId = "fallout-ssl";
 const sslExt = ".ssl";
 
-export function loadHeaders(headersDirectory: string, external = false) {
+export async function loadHeaders(headersDirectory: string, external = false) {
     let completions: completion.CompletionListEx = [];
-    let hovers: hover.HoverMapEx = new Map();
-    let definitions: definition.Data = new Map();
+    const hovers: hover.HoverMapEx = new Map();
+    const definitions: definition.Data = new Map();
     const headerFiles = findFiles(headersDirectory, "h");
 
-    for (const relPath of headerFiles) {
-        const absPath = path.join(headersDirectory, relPath);
-        const text = fs.readFileSync(absPath, "utf8");
-        const uri = pathToUri(absPath);
-        let pathString: string;
-        if (external) {
-            pathString = absPath;
-        } else {
-            pathString = relPath;
-        }
-        const fileData = loadFileData(uri, text, pathString);
-        completions = [...completions, ...fileData.completion];
-        hovers = new Map([...hovers, ...fileData.hover]);
-        definitions = new Map([...definitions, ...fileData.definition]);
+    const { results, errors } = await PromisePool.withConcurrency(4)
+        .for(headerFiles)
+        .process(async (relPath) => {
+            const absPath = path.join(headersDirectory, relPath);
+            const text = fs.readFileSync(absPath, "utf8");
+            const uri = pathToUri(absPath);
+            let pathString: string;
+            if (external) {
+                pathString = absPath;
+            } else {
+                pathString = relPath;
+            }
+            return loadFileData(uri, text, pathString);
+        });
+
+    if (errors.length > 0) {
+        conlog(errors);
     }
-    const result = {
+
+    results.map((x) => {
+        completions = completions.concat(x.completion);
+
+        for (const key in x.hover) {
+            hovers.set(key, x.hover.get(key));
+        }
+        for (const key in x.definition) {
+            definitions.set(key, x.definition.get(key));
+        }
+    });
+
+    const result: LanguageHeaderData = {
         completion: completions,
         hover: hovers,
         definition: definitions,
@@ -83,7 +99,7 @@ export function loadHeaders(headersDirectory: string, external = false) {
     return result;
 }
 
-function loadProcedures(uri: string, headerData: HeaderData, filePath: string) {
+function loadProcedures(uri: string, headerData: FalloutHeaderData, filePath: string) {
     const completions: completion.CompletionListEx = [];
     const hovers: hover.HoverMapEx = new Map();
     for (const proc of headerData.procedures) {
@@ -115,7 +131,7 @@ function loadProcedures(uri: string, headerData: HeaderData, filePath: string) {
     return { completion: completions, hover: hovers };
 }
 
-function loadDefinitions(uri: string, headerData: HeaderData) {
+function loadDefinitions(uri: string, headerData: FalloutHeaderData) {
     const definitions: definition.Data = new Map();
     for (const def of headerData.definitions) {
         const range = {
@@ -128,7 +144,7 @@ function loadDefinitions(uri: string, headerData: HeaderData) {
     return definitions;
 }
 
-function loadMacros(uri: string, headerData: HeaderData, filePath: string) {
+function loadMacros(uri: string, headerData: FalloutHeaderData, filePath: string) {
     const completions: completion.CompletionListEx = [];
     const hovers: hover.HoverMapEx = new Map();
     for (const macro of headerData.macros) {
@@ -177,11 +193,11 @@ function loadMacros(uri: string, headerData: HeaderData, filePath: string) {
 }
 
 /**
- * 
- * @param uri 
- * @param text 
+ *
+ * @param uri
+ * @param text
  * @param filePath cosmetic only, relative or absolute path
- * @returns 
+ * @returns
  */
 export function loadFileData(uri: string, text: string, filePath: string) {
     const symbols = findSymbols(text);
@@ -190,7 +206,12 @@ export function loadFileData(uri: string, text: string, filePath: string) {
     const completions = [...procs.completion, ...macros.completion];
     const hovers = new Map([...procs.hover, ...macros.hover]);
     const definitions = loadDefinitions(uri, symbols);
-    return { hover: hovers, completion: completions, definition: definitions };
+    const result: LanguageHeaderData = {
+        hover: hovers,
+        completion: completions,
+        definition: definitions,
+    };
+    return result;
 }
 
 function findSymbols(text: string) {
@@ -281,7 +302,7 @@ function findSymbols(text: string) {
     }
     const definitions = findDefinitions(text);
 
-    const result: HeaderData = {
+    const result: FalloutHeaderData = {
         macros: defineList,
         procedures: procList,
         definitions: definitions,

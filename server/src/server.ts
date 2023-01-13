@@ -38,7 +38,6 @@ let gala: Galactus;
 connection.onInitialize((params: InitializeParams) => {
     conlog("initialize");
     const capabilities = params.capabilities;
-
     // Does the client support the `workspace/configuration` request?
     // If not, we fall back using global settings.
     hasConfigurationCapability = !!(
@@ -88,8 +87,13 @@ connection.onInitialized(async () => {
     // load data
     projectSettings = settings.project(workspaceRoot);
     conlog(projectSettings);
-    gala = new Galactus(workspaceRoot, globalSettings, projectSettings.translation);
+    const myGala = new Galactus();
+    await myGala.init(workspaceRoot, globalSettings, projectSettings.translation);
+    gala = myGala;
     conlog("initialized");
+    for (const document of documents.all()) {
+        gala.reloadFileData(document.uri, document.languageId, document.getText());
+    }
 });
 
 // Cache the settings of all open documents
@@ -131,14 +135,14 @@ documents.onDidOpen((event) => {
     const uri = event.document.uri;
     const langId = event.document.languageId;
     const text = event.document.getText();
-    gala.reloadFileData(uri, langId, text);
+    gala?.reloadFileData(uri, langId, text);
 });
 
 // This handler provides the initial list of the completion items.
 connection.onCompletion((_textDocumentPosition: TextDocumentPositionParams): CompletionItem[] => {
     const uri = _textDocumentPosition.textDocument.uri;
     const langId = documents.get(uri).languageId;
-    const result = gala.completion(langId, uri);
+    const result = gala?.completion(langId, uri);
     return result;
 });
 
@@ -164,7 +168,7 @@ connection.onHover((textDocumentPosition: TextDocumentPositionParams): Hover => 
     if (!symbol) {
         return;
     }
-    return gala.hover(langId, uri, symbol, text);
+    return gala?.hover(langId, uri, symbol, text);
 });
 
 connection.onExecuteCommand(async (params) => {
@@ -189,14 +193,14 @@ connection.onSignatureHelp((params: TextDocumentPositionParams): SignatureHelp =
     const document = documents.get(uri);
     const text = document.getText();
     const langId = document.languageId;
-    return gala.signature(langId, text, params.position);
+    return gala?.signature(langId, text, params.position);
 });
 
 documents.onDidSave(async (change) => {
     const uri = change.document.uri;
     const langId = change.document.languageId;
     const text = change.document.getText();
-    gala.reloadFileData(uri, langId, text);
+    gala?.reloadFileData(uri, langId, text);
 });
 
 connection.languages.inlayHint.on((params) => {
@@ -204,8 +208,7 @@ connection.languages.inlayHint.on((params) => {
     const document = documents.get(uri);
     const text = document.getText();
     const langId = document.languageId;
-    const result = gala.inlay(uri, langId, text, params.range);
-    return result;
+    return gala?.inlay(uri, langId, text, params.range);
 });
 
 connection.onDefinition((params) => {
@@ -215,6 +218,5 @@ connection.onDefinition((params) => {
     const langId = textDoc.languageId;
     const text = textDoc.getText();
     const symbol = symbolAtPosition(text, params.position);
-    const result = gala.definition(langId, symbol);
-    return result;
+    return gala?.definition(langId, symbol);
 });

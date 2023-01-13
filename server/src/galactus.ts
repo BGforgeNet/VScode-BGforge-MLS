@@ -1,5 +1,5 @@
 import { Position, Range } from "vscode-languageserver-textdocument";
-import { getRelPath, isSubpath, uriToPath } from "./common";
+import { conlog, getRelPath, isSubpath, uriToPath } from "./common";
 import * as language from "./language";
 import { Language } from "./language";
 import { MLSsettings, ProjectTraSettings } from "./settings";
@@ -23,9 +23,12 @@ export interface Galactus {
 
 interface LanguageItem {
     id: string;
+    dataId?: string;
     features: language.Features;
 }
 interface LanguageList extends Array<LanguageItem> {}
+
+/** List of languages having any intellisense features */
 const languages: LanguageList = [
     {
         id: "fallout-ssl",
@@ -44,15 +47,162 @@ const languages: LanguageList = [
             staticSignature: true,
         },
     },
+    {
+        id: "weidu-baf",
+        features: {
+            completion: true,
+            definition: false,
+            hover: true,
+            udf: false,
+            headers: false,
+            externalHeaders: false,
+            parse: true,
+            parse_requires_game: true,
+            signature: false,
+            staticCompletion: true,
+            staticHover: true,
+            staticSignature: false,
+        },
+    },
+    {
+        id: "weidu-baf-tpl",
+        dataId: "weidu-baf",
+        features: {
+            completion: true,
+            definition: false,
+            hover: true,
+            udf: false,
+            headers: false,
+            externalHeaders: false,
+            parse: true,
+            parse_requires_game: true,
+            signature: false,
+            staticCompletion: true,
+            staticHover: true,
+            staticSignature: false,
+        },
+    },
+    {
+        id: "weidu-d",
+        features: {
+            completion: true,
+            definition: false,
+            hover: true,
+            udf: false,
+            headers: false,
+            externalHeaders: false,
+            parse: true,
+            parse_requires_game: true,
+            signature: false,
+            staticCompletion: true,
+            staticHover: true,
+            staticSignature: false,
+        },
+    },
+    {
+        id: "weidu-d-tpl",
+        dataId: "weidu-d",
+        features: {
+            completion: true,
+            definition: false,
+            hover: true,
+            udf: false,
+            headers: false,
+            externalHeaders: false,
+            parse: true,
+            parse_requires_game: true,
+            signature: false,
+            staticCompletion: true,
+            staticHover: true,
+            staticSignature: false,
+        },
+    },
+    {
+        id: "weidu-slb",
+        dataId: "weidu-baf",
+        features: {
+            completion: true,
+            definition: false,
+            hover: true,
+            udf: false,
+            headers: false,
+            externalHeaders: false,
+            parse: false,
+            parse_requires_game: false,
+            signature: false,
+            staticCompletion: true,
+            staticHover: true,
+            staticSignature: false,
+        },
+    },
+    {
+        id: "weidu-d-ssl",
+        dataId: "weidu-baf",
+        features: {
+            completion: true,
+            definition: false,
+            hover: true,
+            udf: false,
+            headers: false,
+            externalHeaders: false,
+            parse: false,
+            parse_requires_game: false,
+            signature: false,
+            staticCompletion: true,
+            staticHover: true,
+            staticSignature: false,
+        },
+    },
+    {
+        id: "weidu-tp2",
+        features: {
+            completion: true,
+            definition: true,
+            hover: true,
+            udf: true,
+            headers: true,
+            externalHeaders: false,
+            parse: true,
+            parse_requires_game: false,
+            signature: false,
+            staticCompletion: true,
+            staticHover: true,
+            staticSignature: true,
+        },
+    },
+    {
+        id: "weidu-tp2-tpl",
+        dataId: "weidu-tp2",
+        features: {
+            completion: true,
+            definition: true,
+            hover: true,
+            udf: true,
+            headers: true,
+            externalHeaders: false,
+            parse: true,
+            parse_requires_game: false,
+            signature: false,
+            staticCompletion: true,
+            staticHover: true,
+            staticSignature: true,
+        },
+    },
 ];
 
 export class Galactus {
     languages: Languages;
     workspaceRoot: string;
     translation: Translation;
+    dataLangIds: Map<string, string>;
 
-    constructor(workspaceRoot: string, settings: MLSsettings, traSettings: ProjectTraSettings) {
+    public async init(
+        workspaceRoot: string,
+        settings: MLSsettings,
+        traSettings: ProjectTraSettings
+    ) {
         this.workspaceRoot = workspaceRoot;
+        this.dataLangIds = new Map();
 
         const langs: Languages = new Map();
         for (const l of languages) {
@@ -69,18 +219,41 @@ export class Galactus {
             } else {
                 language = new Language(l.id, l.features, workspaceRoot);
             }
+            await language.init();
             langs.set(l.id, language);
+
+            if (l.dataId) {
+                this.dataLangIds.set(l.id, l.dataId);
+            } else {
+                this.dataLangIds.set(l.id, l.id);
+            }
         }
         this.languages = langs;
         this.translation = new Translation(traSettings);
     }
 
+    /** data langa id */
+    dataLang(langId: string) {
+        return this.dataLangIds.get(langId);
+    }
+
     completion(langId: string, uri: string) {
+        langId = this.dataLang(langId);
+        if (!langId) {
+            return;
+        }
         const language = this.languages.get(langId);
-        return language.completion(uri);
+        if (language) {
+            return language.completion(uri);
+        }
     }
 
     hover(langId: string, uri: string, symbol: string, text: string) {
+        langId = this.dataLang(langId);
+        if (!langId) {
+            return;
+        }
+
         // check for translation first
         if (isTraRef(symbol, langId) && translatableLanguages.includes(langId)) {
             const filePath = uriToPath(uri);
@@ -97,6 +270,10 @@ export class Galactus {
     }
 
     definition(langId: string, symbol: string) {
+        langId = this.dataLang(langId);
+        if (!langId) {
+            return;
+        }
         const language = this.languages.get(langId);
         if (language) {
             return language.definition(symbol);
@@ -104,6 +281,7 @@ export class Galactus {
     }
 
     signature(langId: string, text: string, position: Position) {
+        langId = this.dataLang(langId);
         const language = this.languages.get(langId);
         if (!language) {
             return;
@@ -116,6 +294,7 @@ export class Galactus {
     }
 
     reloadFileData(uri: string, langId: string, text: string) {
+        conlog("reload filedata " + uri);
         // reload translation
         if (translationLanguages.includes(langId)) {
             const wsPath = this.workspacePath(uri);
