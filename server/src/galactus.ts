@@ -1,5 +1,5 @@
 import * as language from "./language";
-import { Language, Features } from "./language";
+import { Language } from "./language";
 import { MLSsettings } from "./settings";
 
 interface Languages extends Map<string, Language> {}
@@ -70,6 +70,12 @@ export class Galactus {
         const language = this.languages.get(langId);
         return language.hover(uri, symbol);
     }
+
+    definition(langId: string, uri: string, symbol: string) {
+        const language = this.languages.get(langId);
+        return language.definition(symbol);
+    }
+
     reloadFileData(uri: string, langId: string, text: string) {
         const language = this.languages.get(langId);
         if (language) {

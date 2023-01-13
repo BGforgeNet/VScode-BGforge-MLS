@@ -1,13 +1,10 @@
 import * as fs from "fs";
 import * as path from "path";
-import { DiagnosticSeverity, Diagnostic } from "vscode-languageserver/node";
-import { CompletionItemEx } from "./completion";
-import { HoverEx } from "./hover";
+import { DiagnosticSeverity, Diagnostic, Position } from "vscode-languageserver/node";
 import { connection } from "./server";
 import * as fg from "fast-glob";
 import { URI } from "vscode-uri";
-import { Definition } from "./definition";
-import { pathToFileURL } from 'node:url';
+import { pathToFileURL } from "node:url";
 
 export function fname(uri: string) {
     return path.basename(uri);
@@ -36,15 +33,6 @@ export async function conlog(item: any) {
             }
             break;
     }
-}
-
-
-export type DataType = "static" | "header" | "self";
-
-export interface DynamicData {
-    completion: Array<CompletionItemEx>;
-    hover: Map<string, HoverEx>;
-    definition: Definition;
 }
 
 export interface ParseItem {
@@ -136,12 +124,52 @@ export function uriToPath(uri_string: string) {
 }
 
 export function pathToUri(filePath: string) {
-    const cwd = process.cwd();
-    const fullPath = path.join(cwd, filePath);
-    const uri = pathToFileURL(fullPath)
+    const uri = pathToFileURL(filePath);
     return uri.toString();
 }
 
 // https://stackoverflow.com/questions/72119570/why-doesnt-vs-code-typescript-recognize-the-indices-property-on-the-result-of-r
 // https://github.com/microsoft/TypeScript/issues/44227
 export type RegExpMatchArrayWithIndices = RegExpMatchArray & { indices: Array<[number, number]> };
+
+/** get word under cursor, for which we want to find a hover */
+export function symbolAtPosition(text: string, position: Position) {
+    const lines = text.split(/\r?\n/g);
+    const str = lines[position.line];
+    const pos = position.character;
+
+    // Search for the word's beginning and end.
+    let left = str.slice(0, pos + 1).search(/\w+$/),
+        right = str.slice(pos).search(/\W/);
+
+    let result: string;
+    // The last word in the string is a special case.
+    if (right < 0) {
+        result = str.slice(left);
+    } else {
+        // Return the word, using the located bounds to extract it from the string.
+        result = str.slice(left, right + pos);
+    }
+
+    // if a proper symbol, return
+    if (!onlyDigits(result)) {
+        return result;
+    }
+
+    // and if pure numeric, check if it's a tra reference
+    if (onlyDigits(result)) {
+        left = str.slice(0, pos + 1).search(/\S+$/);
+        right = str.slice(pos).search(/\W/);
+        if (right < 0) {
+            result = str.slice(left);
+        } else {
+            result = str.slice(left, right + pos);
+        }
+    }
+
+    return result;
+}
+
+function onlyDigits(value: string) {
+    return /^\d+$/.test(value);
+}

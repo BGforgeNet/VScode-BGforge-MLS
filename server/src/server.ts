@@ -18,14 +18,12 @@ import { fileURLToPath } from "node:url";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import * as fallout from "./fallout-ssl";
 import * as weidu from "./weidu";
-import { conlog, uriToPath, isDirectory, isSubpath, getRelPath } from "./common";
+import { conlog, uriToPath, isDirectory, isSubpath, getRelPath, symbolAtPosition } from "./common";
 import { MLSsettings, defaultSettings } from "./settings";
 import * as settings from "./settings";
-import * as hover from "./hover";
 import * as signature from "./signature";
 import * as inlay from "./inlay";
 import * as translation from "./translation";
-import * as definition from "./definition";
 import { Galactus } from "./galactus"
 
 // Create a connection for the server. The connection uses Node's IPC as a transport.
@@ -200,7 +198,7 @@ connection.onHover((textDocumentPosition: TextDocumentPositionParams): Hover => 
     const relPath = getRelPath(workspaceRoot, filePath);
 
     const text = documents.get(uri).getText();
-    const word = hover.symbolAtPosition(text, textDocumentPosition.position);
+    const word = symbolAtPosition(text, textDocumentPosition.position);
 
     if (!word) {
         return;
@@ -345,16 +343,12 @@ connection.onRequest((method, params: InlayHintParams) => {
 });
 
 connection.onDefinition((params) => {
-    conlog("definition request:");
-    conlog(params);
     const textDocId = params.textDocument;
     const uri = textDocId.uri;
     const textDoc = documents.get(uri);
     const langId = textDoc.languageId;
     const text = textDoc.getText();
-    const symbol = hover.symbolAtPosition(text, params.position);
-    const result = definition.getLocation(langId, uri, symbol);
-    conlog("definition response:");
-    conlog(result);
+    const symbol = symbolAtPosition(text, params.position);
+    const result = gala.definition(langId, uri, symbol);
     return result;
 });

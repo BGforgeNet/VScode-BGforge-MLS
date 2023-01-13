@@ -1,13 +1,9 @@
 import * as hover from "./hover";
 import * as completion from "./completion";
-import * as signature from "./signature";
-import * as inlay from "./inlay";
-import * as translation from "./translation";
 import * as definition from "./definition";
-import { conlog, getRelPath, isDirectory, isSubpath, pathToUri, uriToPath } from "./common";
+import { conlog, getRelPath, isDirectory, isSubpath, uriToPath } from "./common";
 import { Hover } from "vscode-languageserver/node";
 import * as fallout from "./fallout-ssl";
-import { fileURLToPath } from "url";
 
 export interface Features {
     completion: boolean;
@@ -31,7 +27,7 @@ export interface Features {
 
 interface Data {
     completion?: completion.Data;
-    // definition?: definition.DefinitionMap;
+    definition?: definition.Data;
     hover?: hover.Data;
     // inlay: boolean;
     // signature?: signature.SignatureData;
@@ -125,17 +121,19 @@ export class Language implements Language {
     private loadData() {
         const completionData: completion.Data = { self: new Map(), headers: [], static: [] };
         const hoverData: hover.Data = { self: new Map(), headers: new Map(), static: new Map() };
+        const definitionData: definition.Data = new Map();
 
         completionData.static = this.loadStaticCompletion();
         hoverData.static = this.loadStaticHover();
 
-        const data: Data = { completion: completionData, hover: hoverData };
+        const data: Data = { completion: completionData, hover: hoverData, definition: definitionData };
 
         if (this.features.headers) {
             const headerData = this.loadHeaders();
             if (headerData) {
                 data.completion.headers = headerData.completion;
                 data.hover.headers = headerData.hover;
+                data.definition = headerData.definition;
             }
 
             if (this.features.externalHeaders && this.externalHeadersDirectory != "") {
@@ -143,6 +141,7 @@ export class Language implements Language {
                 if (externalHeaderData) {
                     data.completion.extHeaders = externalHeaderData.completion;
                     data.hover.extHeaders = externalHeaderData.hover;
+                    data.definition = new Map([...data.definition, ...externalHeaderData.definition]);
                 }
             }
         }
@@ -150,7 +149,7 @@ export class Language implements Language {
         return data;
     }
 
-    inWorkspace(uri: string) {
+    private inWorkspace(uri: string) {
         const realPath = uriToPath(uri);
         if (isSubpath(this.workspaceRoot, realPath)) {
             return true;
@@ -163,7 +162,7 @@ export class Language implements Language {
      * If in workspace, path is relative to workspace root.
      * Else, it's absolute.
      */
-    displayPath(uri: string) {
+    private displayPath(uri: string) {
         const absPath = uriToPath(uri);
         if (this.inWorkspace(uri)) {
             return getRelPath(this.workspaceRoot, absPath);
@@ -171,14 +170,14 @@ export class Language implements Language {
         return absPath;
     }
 
-    isHeader(uri: string) {
+    private isHeader(uri: string) {
         if (this.id == "fallout-ssl" && uri.endsWith(".h")) {
             return true;
         }
         return false;
     }
 
-    inExternalHeadersDirectory(uri: string) {
+    private inExternalHeadersDirectory(uri: string) {
         if (!this.features.externalHeaders) {
             return false;
         }
@@ -217,7 +216,7 @@ export class Language implements Language {
     }
 
     reloadFileData(uri: string, text: string) {
-        let fileData: { hover: hover.HoverMapEx; completion: completion.CompletionListEx };
+        let fileData: { hover: hover.HoverMapEx; completion: completion.CompletionListEx, definition: definition.Data};
         const filePath = this.displayPath(uri);
 
         if (!this.features.udf) {
@@ -312,4 +311,12 @@ export class Language implements Language {
             }
         }
     }
+
+    definition(symbol: string) {
+        const result = this.data.definition.get(symbol);
+        if (result) {
+            return result;
+        }
+    }
+
 }
