@@ -18,12 +18,10 @@ import { fileURLToPath } from "node:url";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import * as fallout from "./fallout-ssl";
 import * as weidu from "./weidu";
-import { compileable } from "./compile";
-import { conlog, uriToPath, isDirectory, isHeader, isSubpath, getRelPath } from "./common";
+import { conlog, uriToPath, isDirectory, isSubpath, getRelPath } from "./common";
 import { MLSsettings, defaultSettings } from "./settings";
 import * as settings from "./settings";
 import * as hover from "./hover";
-import * as completion from "./completion";
 import * as signature from "./signature";
 import * as inlay from "./inlay";
 import * as translation from "./translation";
@@ -42,7 +40,6 @@ let hasConfigurationCapability = false;
 let hasWorkspaceFolderCapability = false;
 
 let workspaceRoot: string;
-let initialized = false;
 let projectSettings: settings.ProjectSettings;
 
 // for language KEY, hovers and completions are searched in VALUE map
@@ -119,8 +116,6 @@ connection.onInitialized(async () => {
     projectSettings = settings.project(workspaceRoot);
     conlog(projectSettings);
     gala = new Galactus(workspaceRoot, globalSettings);
-    // loadStaticIntellisense();
-    // loadDynamicIntellisense();
     conlog("initialized");
 });
 
@@ -137,14 +132,6 @@ connection.onDidChangeConfiguration((change) => {
     }
 });
 
-// function loadStaticIntellisense() {
-//     completion.loadStatic();
-//     hover.loadStatic();
-//     translation.loadTranslation(projectSettings.translation);
-//     signature.loadStatic();
-//     fallout.loadExternalHeaders(workspaceRoot, globalSettings.falloutSSL.headersDirectory);
-// }
-
 function getDataLangId(langId: string) {
     const dataLangId = langDataMap.get(langId);
     if (!dataLangId) {
@@ -156,17 +143,6 @@ function getDataLangId(langId: string) {
 // Only keep settings for open documents
 documents.onDidClose((e) => {
     documentSettings.delete(e.document.uri);
-});
-
-// The content of a text document has changed. This event is emitted
-// when the text document first opened or when its content has changed.
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-documents.onDidChangeContent(async (change) => {
-    if (!initialized) {
-        // TODO: get rid of this, use proper async
-        conlog("onDidChangeContent: not initialized yet");
-        return;
-    }
 });
 
 export function getDocumentSettings(resource: string): Thenable<MLSsettings> {
@@ -184,66 +160,9 @@ export function getDocumentSettings(resource: string): Thenable<MLSsettings> {
     return result;
 }
 
-// async function reloadSelfData(txtDoc: TextDocument) {
-//     const langId = documents.get(txtDoc.uri).languageId;
-//     const docPath = uriToPath(txtDoc.uri);
-
-//     switch (langId) {
-//         case "fallout-ssl": {
-//             const relPath = getRelPath(workspaceRoot, docPath);
-//             if (isHeader(relPath, langId)) {
-//                 conlog("is header");
-//                 const oldCompletion = completion.dynamicData.get(langId);
-//                 const oldHover = hover.dynamicData.get(langId);
-//                 const oldDefinition = definition.dynamicData.get(langId);
-//                 const newData = fallout.reloadData(
-//                     relPath,
-//                     txtDoc.getText(),
-//                     oldCompletion,
-//                     oldHover,
-//                     oldDefinition
-//                 );
-//                 hover.dynamicData.set(langId, newData.hover);
-//                 completion.dynamicData.set(langId, newData.completion);
-//                 definition.dynamicData.set(langId, newData.definition);
-//             } else {
-//                 conlog("not header");
-//                 const oldCompletion = completion.selfData.get(relPath);
-//                 const oldHover = hover.selfData.get(relPath);
-//                 const oldDefinition = definition.selfData.get(txtDoc.uri);
-//                 const newData = fallout.reloadData(
-//                     relPath,
-//                     txtDoc.getText(),
-//                     oldCompletion,
-//                     oldHover,
-//                     oldDefinition
-//                 );
-//                 hover.selfData.set(relPath, newData.hover);
-//                 completion.selfData.set(relPath, newData.completion);
-//                 definition.selfData.set(txtDoc.uri, newData.definition);
-//             }
-//             break;
-//         }
-//         case "weidu-tp2": {
-//             const relPath = getRelPath(workspaceRoot, docPath);
-//             const oldCompletion = completion.dynamicData.get(langId);
-//             const oldHover = hover.dynamicData.get(langId);
-//             const newData = weidu.reloadData(relPath, txtDoc.getText(), oldCompletion, oldHover);
-//             hover.dynamicData.set(langId, newData.hover);
-//             completion.dynamicData.set(langId, newData.completion);
-//             break;
-//         }
-//         default: {
-//             return;
-//         }
-//     }
-// }
-
 documents.onDidOpen((event) => {
     // TODO: this doesn't work for the first open doc, since the server is not initalized yet
     // need to do proper async here
-    // reloadSelfData(event.document);
-
     const uri = event.document.uri;
     const langId = event.document.languageId;
     const text = event.document.getText();
@@ -258,32 +177,7 @@ connection.onCompletion((_textDocumentPosition: TextDocumentPositionParams): Com
     langId = getDataLangId(langId);
     const result = gala.completion(langId, uri);
     return result;
-
-    // const uri = _textDocumentPosition.textDocument.uri;
-    // let langId = documents.get(uri).languageId;
-    // langId = getDataLangId(langId);
-    // const filePath = uriToPath(uri);
-    // const relPath = getRelPath(workspaceRoot, filePath);
-    // const selfList = completion.selfData.get(relPath) || [];
-    // const staticList = completion.staticData.get(langId);
-    // const dynamicList = completion.dynamicData.get(langId) || [];
-    // const list = [...selfList, ...staticList, ...dynamicList];
-    // return list;
 });
-
-/** loads headers from workspace */
-async function loadDynamicIntellisense() {
-    const falloutHeaderData = await fallout.loadHeaders("");
-    hover.dynamicData.set("fallout-ssl", falloutHeaderData.hover);
-    completion.dynamicData.set("fallout-ssl", falloutHeaderData.completion);
-    // definition.dynamicData.set("fallout-ssl", falloutHeaderData.definition);
-
-    const weiduHeaderData = await weidu.loadData("");
-    hover.dynamicData.set("weidu-tp2", weiduHeaderData.hover);
-    completion.dynamicData.set("weidu-tp2", weiduHeaderData.completion);
-
-    initialized = true;
-}
 
 // This handler resolve additional information for the item selected in
 // the completion list.
@@ -304,13 +198,6 @@ connection.onHover((textDocumentPosition: TextDocumentPositionParams): Hover => 
     langId = getDataLangId(langId);
     const filePath = uriToPath(uri);
     const relPath = getRelPath(workspaceRoot, filePath);
-    // const staticMap = hover.staticData.get(langId);
-    // const dynamicMap = hover.dynamicData.get(langId);
-    // const selfMap = hover.selfData.get(relPath);
-
-    // if (!staticMap && !dynamicMap && !selfMap) {
-    //     return;
-    // }
 
     const text = documents.get(uri).getText();
     const word = hover.symbolAtPosition(text, textDocumentPosition.position);
@@ -336,26 +223,6 @@ connection.onHover((textDocumentPosition: TextDocumentPositionParams): Hover => 
     }
 
     return gala.hover(langId, uri, word);
-    // // faster to check each map than join them
-    // let result: Hover | hover.HoverEx;
-    // if (selfMap) {
-    //     result = selfMap.get(word);
-    //     if (result) {
-    //         return result;
-    //     }
-    // }
-    // if (staticMap) {
-    //     result = staticMap.get(word);
-    //     if (result) {
-    //         return result;
-    //     }
-    // }
-    // if (dynamicMap) {
-    //     result = dynamicMap.get(word);
-    //     if (hover) {
-    //         return result;
-    //     }
-    // }
 });
 
 connection.onExecuteCommand(async (params) => {
@@ -439,18 +306,6 @@ documents.onDidSave(async (change) => {
     const langId = change.document.languageId;
     const text = change.document.getText();
     gala.reloadFileData(uri, langId, text);
-
-    // reloadSelfData(change.document);
-
-    // const uri = change.document.uri;
-
-    // // try and parse document if possible
-    // if (compileable(change.document)) {
-    //     const docSettings = await getDocumentSettings(uri);
-    //     if (docSettings.validateOnSave || docSettings.validateOnChange) {
-    //         compile(uri);
-    //     }
-    // }
 
     // reload translation settings
     const realPath = uriToPath(uri);

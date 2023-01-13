@@ -13,14 +13,12 @@ import {
 } from "./common";
 import { connection, documents } from "./server";
 import * as path from "path";
-import { DynamicData } from "./common";
 import { MarkupKind } from "vscode-languageserver/node";
 import * as cp from "child_process";
 import { SSLsettings } from "./settings";
 import * as completion from "./completion";
 import { DefinitionItem, DefinitionList, Definition } from "./definition";
 import * as definition from "./definition";
-import { HoverEx, HoverMap, HoverMapEx } from "./hover";
 import * as hover from "./hover";
 import * as fs from "fs";
 import * as jsdoc from "./jsdoc";
@@ -186,49 +184,6 @@ export function loadFileData(uri: string, text: string, filePath: string) {
     const hovers = new Map([...procs.hover, ...macros.hover]);
     return { hover: hovers, completion: completions };
 }
-
-// export function reloadData(
-//     uri: string,
-//     text: string,
-//     completion: completion.CompletionListEx = [],
-//     hover: HoverMapEx = new Map(),
-//     definition: Definition = new Map()
-// ) {
-//     const symbols = findSymbols(text);
-//     const newCompletion = completion.filter((item) => item.uri != uri);
-//     const newHover = new Map(
-//         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-//         Array.from(hover).filter(([key, value]) => {
-//             if (value.uri != uri) {
-//                 return true;
-//             }
-//             return false;
-//         })
-//     );
-//     const filePath = uriToPath(uri);
-
-//     loadMacros(filePath, symbols, newCompletion, newHover);
-//     loadProcedures(filePath, symbols, newCompletion, newHover);
-
-//     const newDefinition = new Map(
-//         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-//         Array.from(definition).filter(([key, value]) => {
-//             if (value.uri != uri) {
-//                 return true;
-//             }
-//             return false;
-//         })
-//     );
-//     loadDefinitions(filePath, symbols, newDefinition);
-
-//     const result: DynamicData = {
-//         completion: newCompletion,
-//         hover: newHover,
-//         definition: newDefinition,
-//     };
-//     conlog("reload data");
-//     return result;
-// }
 
 function findSymbols(text: string) {
     // defines
