@@ -3,22 +3,27 @@ import path = require("path");
 import { Position, SignatureInformation } from "vscode-languageserver/node";
 import { conlog } from "./common";
 
-export interface SignatureMap extends Map<string, SignatureInformation> {}
-export interface SignatureData extends Map<string, SignatureMap> {}
+export interface SigMap extends Map<string, SignatureInformation> {}
 
-export const staticData: SignatureData = new Map();
+/** uri => [item list] */
+export interface SelfMap extends Map<string, SigMap> {}
+export interface Data {
+    self: SelfMap;
+    headers: SigMap;
+    extHeaders?: SigMap;
+    static: SigMap;
+}
+
 export const languages = ["fallout-ssl"];
 
-export function loadStatic() {
-    for (const langId of languages) {
-        try {
-            const filePath = path.join(__dirname, `signature.${langId}.json`);
-            const jsonData = JSON.parse(readFileSync(filePath, "utf-8"));
-            const sigData: SignatureMap = new Map(Object.entries(jsonData));
-            staticData.set(langId, sigData);
-        } catch (e) {
-            conlog(e);
-        }
+export function loadStatic(langId: string): SigMap {
+    try {
+        const filePath = path.join(__dirname, `signature.${langId}.json`);
+        const jsonData = JSON.parse(readFileSync(filePath, "utf-8"));
+        const sigData: SigMap = new Map(Object.entries(jsonData));
+        return sigData;
+    } catch (e) {
+        conlog(e);
     }
 }
 
@@ -31,13 +36,13 @@ export function getResponse(signature: SignatureInformation, parameter: number) 
     return result;
 }
 
-export interface SigReqData {
-    label: string;
+export interface Request {
+    symbol: string;
     parameter: number;
 }
 
 /** Finds label and current parameter index */
-export function getLabel(text: string, position: Position) {
+export function getRequest(text: string, position: Position) {
     const lines = text.split(/\r?\n/g);
     const line = lines[position.line];
     const pos = position.character;
@@ -56,6 +61,6 @@ export function getLabel(text: string, position: Position) {
     // again, right side doesn't matter
     const argsLeft = args.slice(0, posInArgs);
     const argNum = argsLeft.split(",").length - 1;
-    const result: SigReqData = { label: symbol, parameter: argNum };
-    return result;
+    const request: Request = { symbol: symbol, parameter: argNum };
+    return request;
 }

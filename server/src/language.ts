@@ -1,6 +1,7 @@
 import * as hover from "./hover";
 import * as completion from "./completion";
 import * as definition from "./definition";
+import * as signature from "./signature";
 import { conlog, getRelPath, isDirectory, isSubpath, uriToPath } from "./common";
 import { Hover } from "vscode-languageserver/node";
 import * as fallout from "./fallout-ssl";
@@ -30,7 +31,7 @@ interface Data {
     definition?: definition.Data;
     hover?: hover.Data;
     // inlay: boolean;
-    // signature?: signature.SignatureData;
+    signature?: signature.Data;
 }
 
 export interface Language {
@@ -83,6 +84,13 @@ export class Language implements Language {
         return new Map();
     }
 
+    private loadStaticSignature(): signature.SigMap {
+        if (this.features.staticSignature) {
+            return signature.loadStatic(this.id);
+        }
+        return new Map();
+    }
+
     private loadHeaders() {
         if (this.id == "fallout-ssl") {
             const res = fallout.loadHeaders(this.workspaceRoot);
@@ -122,11 +130,23 @@ export class Language implements Language {
         const completionData: completion.Data = { self: new Map(), headers: [], static: [] };
         const hoverData: hover.Data = { self: new Map(), headers: new Map(), static: new Map() };
         const definitionData: definition.Data = new Map();
+        const signatureData: signature.Data = {
+            self: new Map(),
+            headers: new Map(),
+            static: new Map(),
+        };
 
         completionData.static = this.loadStaticCompletion();
         hoverData.static = this.loadStaticHover();
+        // TODO: support signatures from jsdoc
+        signatureData.static = this.loadStaticSignature();
 
-        const data: Data = { completion: completionData, hover: hoverData, definition: definitionData };
+        const data: Data = {
+            completion: completionData,
+            hover: hoverData,
+            definition: definitionData,
+            signature: signatureData,
+        };
 
         if (this.features.headers) {
             const headerData = this.loadHeaders();
@@ -141,7 +161,10 @@ export class Language implements Language {
                 if (externalHeaderData) {
                     data.completion.extHeaders = externalHeaderData.completion;
                     data.hover.extHeaders = externalHeaderData.hover;
-                    data.definition = new Map([...data.definition, ...externalHeaderData.definition]);
+                    data.definition = new Map([
+                        ...data.definition,
+                        ...externalHeaderData.definition,
+                    ]);
                 }
             }
         }
@@ -216,7 +239,12 @@ export class Language implements Language {
     }
 
     reloadFileData(uri: string, text: string) {
-        let fileData: { hover: hover.HoverMapEx; completion: completion.CompletionListEx, definition: definition.Data};
+        let fileData: {
+            hover: hover.HoverMapEx;
+            completion: completion.CompletionListEx;
+            definition: definition.Data;
+            signature?: signature.Data;
+        };
         const filePath = this.displayPath(uri);
 
         if (!this.features.udf) {
@@ -271,6 +299,9 @@ export class Language implements Language {
     }
 
     completion(uri: string) {
+        if (!this.features.completion) {
+            return;
+        }
         let result: completion.CompletionList;
         result = this.data.completion.self.get(uri) || [];
         result = [...result, ...this.data.completion.static];
@@ -284,6 +315,9 @@ export class Language implements Language {
     }
 
     hover(uri: string, symbol: string) {
+        if (!this.features.hover) {
+            return;
+        }
         let result: Hover | hover.HoverEx;
 
         const selfMap = this.data.hover.self.get(uri);
@@ -313,10 +347,24 @@ export class Language implements Language {
     }
 
     definition(symbol: string) {
+        if (!this.features.definition) {
+            return;
+        }
         const result = this.data.definition.get(symbol);
         if (result) {
             return result;
         }
     }
 
+    signature(request: signature.Request) {
+        if (!this.features.signature) {
+            return;
+        }
+        if (this.data.signature.static) {
+            const sig = this.data.signature.static.get(request.symbol);
+            if (sig) {
+                return signature.getResponse(sig, request.parameter);
+            }
+        }
+    }
 }

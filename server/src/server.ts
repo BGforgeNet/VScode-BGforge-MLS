@@ -10,7 +10,6 @@ import {
     TextDocumentSyncKind,
     InitializeResult,
     SignatureHelp,
-    SignatureInformation,
     InlayHintRequest,
     InlayHintParams,
 } from "vscode-languageserver/node";
@@ -21,7 +20,6 @@ import * as weidu from "./weidu";
 import { conlog, uriToPath, isDirectory, isSubpath, getRelPath, symbolAtPosition } from "./common";
 import { MLSsettings, defaultSettings } from "./settings";
 import * as settings from "./settings";
-import * as signature from "./signature";
 import * as inlay from "./inlay";
 import * as translation from "./translation";
 import { Galactus } from "./galactus"
@@ -39,23 +37,6 @@ let hasWorkspaceFolderCapability = false;
 
 let workspaceRoot: string;
 let projectSettings: settings.ProjectSettings;
-
-// for language KEY, hovers and completions are searched in VALUE map
-const langDataMap = new Map([
-    ["weidu-tp2", "weidu-tp2"],
-    ["weidu-tp2-tpl", "weidu-tp2"],
-
-    ["weidu-d", "weidu-d"],
-    ["weidu-d-tpl", "weidu-d"],
-
-    ["weidu-baf", "weidu-baf"],
-    ["weidu-baf-tpl", "weidu-baf"],
-    ["weidu-ssl", "weidu-baf"],
-    ["weidu-slb", "weidu-baf"],
-
-    ["fallout-ssl", "fallout-ssl"],
-    ["fallout-ssl-hover", "fallout-ssl"],
-]);
 
 let gala: Galactus;
 
@@ -129,14 +110,6 @@ connection.onDidChangeConfiguration((change) => {
         globalSettings = <MLSsettings>(change.settings.bgforge || defaultSettings);
     }
 });
-
-function getDataLangId(langId: string) {
-    const dataLangId = langDataMap.get(langId);
-    if (!dataLangId) {
-        return langId;
-    }
-    return dataLangId;
-}
 
 // Only keep settings for open documents
 documents.onDidClose((e) => {
@@ -278,22 +251,8 @@ connection.onSignatureHelp((params: TextDocumentPositionParams): SignatureHelp =
     const uri = params.textDocument.uri;
     const document = documents.get(uri);
     const text = document.getText();
-    const sigRequest = signature.getLabel(text, params.position);
-    if (!sigRequest) {
-        return;
-    }
-
-    let langId = documents.get(uri).languageId;
-    langId = getDataLangId(langId);
-    const staticMap = signature.staticData.get(langId);
-
-    let sig: SignatureInformation;
-    if (staticMap) {
-        sig = staticMap.get(sigRequest.label);
-        if (sig) {
-            return signature.getResponse(sig, sigRequest.parameter);
-        }
-    }
+    const langId = document.languageId;
+    return gala.signature(langId, text, params.position);
 });
 
 documents.onDidSave(async (change) => {

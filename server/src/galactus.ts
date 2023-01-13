@@ -1,6 +1,8 @@
+import { Position } from "vscode-languageserver-textdocument";
 import * as language from "./language";
 import { Language } from "./language";
 import { MLSsettings } from "./settings";
+import { getRequest as getSignatureRequest } from "./signature";
 
 interface Languages extends Map<string, Language> {}
 
@@ -74,6 +76,15 @@ export class Galactus {
     definition(langId: string, uri: string, symbol: string) {
         const language = this.languages.get(langId);
         return language.definition(symbol);
+    }
+
+    signature(langId: string, text: string, position: Position) {
+        const language = this.languages.get(langId);
+        const request = getSignatureRequest(text, position);
+        if (!request) {
+            return;
+        }
+        return language.signature(request);
     }
 
     reloadFileData(uri: string, langId: string, text: string) {
