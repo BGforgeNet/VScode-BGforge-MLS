@@ -171,8 +171,7 @@ documents.onDidOpen((event) => {
 // This handler provides the initial list of the completion items.
 connection.onCompletion((_textDocumentPosition: TextDocumentPositionParams): CompletionItem[] => {
     const uri = _textDocumentPosition.textDocument.uri;
-    let langId = documents.get(uri).languageId;
-    langId = getDataLangId(langId);
+    const langId = documents.get(uri).languageId;
     const result = gala.completion(langId, uri);
     return result;
 });
@@ -192,22 +191,20 @@ connection.listen();
 
 connection.onHover((textDocumentPosition: TextDocumentPositionParams): Hover => {
     const uri = textDocumentPosition.textDocument.uri;
-    let langId = documents.get(uri).languageId;
-    langId = getDataLangId(langId);
+    const langId = documents.get(uri).languageId;
     const filePath = uriToPath(uri);
     const relPath = getRelPath(workspaceRoot, filePath);
 
     const text = documents.get(uri).getText();
-    const word = symbolAtPosition(text, textDocumentPosition.position);
+    const symbol = symbolAtPosition(text, textDocumentPosition.position);
 
-    if (!word) {
+    if (!symbol) {
         return;
     }
-    conlog(word);
 
-    if (translation.isTraRef(word, langId)) {
+    if (translation.isTraRef(symbol, langId)) {
         const result = translation.getHover(
-            word,
+            symbol,
             text,
             projectSettings.translation,
             relPath,
@@ -220,7 +217,7 @@ connection.onHover((textDocumentPosition: TextDocumentPositionParams): Hover => 
         }
     }
 
-    return gala.hover(langId, uri, word);
+    return gala.hover(langId, uri, symbol);
 });
 
 connection.onExecuteCommand(async (params) => {
