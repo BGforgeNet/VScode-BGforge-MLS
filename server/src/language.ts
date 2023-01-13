@@ -18,7 +18,7 @@ export interface Features {
 
     // inlay: boolean;
     parse: boolean;
-    parse_requires_game: boolean;
+    parseRequiresGame: boolean;
     signature: boolean;
 
     // these are loaded from server/out/*.json
