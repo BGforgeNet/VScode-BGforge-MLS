@@ -36,7 +36,7 @@ let projectSettings: settings.ProjectSettings;
 let gala: Galactus;
 
 connection.onInitialize((params: InitializeParams) => {
-    conlog("initialize");
+    conlog("onInitialize started");
     const capabilities = params.capabilities;
     // Does the client support the `workspace/configuration` request?
     // If not, we fall back using global settings.
@@ -73,12 +73,14 @@ connection.onInitialize((params: InitializeParams) => {
     // yes this is unsafe, just doing something quick and dirty
     workspaceRoot = fileURLToPath(params.workspaceFolders[0].uri);
     conlog(`workspace_root = ${workspaceRoot}`);
+    conlog("onInitialize completed");
     return result;
 });
 
 export let globalSettings: MLSsettings = defaultSettings;
 
 connection.onInitialized(async () => {
+    conlog("onInitialized started");
     if (hasConfigurationCapability) {
         // Register for all configuration changes.
         connection.client.register(DidChangeConfigurationNotification.type, undefined);
@@ -86,14 +88,13 @@ connection.onInitialized(async () => {
     globalSettings = await connection.workspace.getConfiguration({ section: "bgforge" });
     // load data
     projectSettings = settings.project(workspaceRoot);
-    conlog(projectSettings);
     const myGala = new Galactus();
     await myGala.init(workspaceRoot, globalSettings, projectSettings.translation);
     gala = myGala;
-    conlog("initialized");
     for (const document of documents.all()) {
         gala.reloadFileData(document.uri, document.languageId, document.getText());
     }
+    conlog("onInitialized completed");
 });
 
 // Cache the settings of all open documents

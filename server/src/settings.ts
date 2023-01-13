@@ -60,7 +60,6 @@ export function project(dir: string) {
     try {
         const file = fs.readFileSync(path.join(dir, ".bgforge.yml"), "utf8");
         const yml_settings = yaml.parse(file).mls;
-        conlog(yml_settings);
         settings = { ...settings, ...yml_settings };
     } catch (e) {
         conlog(e);
