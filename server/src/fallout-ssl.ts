@@ -83,11 +83,12 @@ export async function loadHeaders(headersDirectory: string, external = false) {
     results.map((x) => {
         completions = completions.concat(x.completion);
 
-        for (const key in x.hover) {
-            hovers.set(key, x.hover.get(key));
+        for (const [key, value] of x.hover) {
+            hovers.set(key, value);
         }
-        for (const key in x.definition) {
-            definitions.set(key, x.definition.get(key));
+
+        for (const [key, value] of x.definition) {
+            definitions.set(key, value);
         }
     });
 
