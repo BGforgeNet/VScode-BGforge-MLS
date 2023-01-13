@@ -1,9 +1,8 @@
 import { InlayHint } from "vscode-languageserver";
 import { Range } from "vscode-languageserver-textdocument";
-import { ProjectTraSettings } from "./settings";
-import * as translation from "./translation";
+import { TraEntries, TraExt } from "./translation";
 
-function getHintString(traEntries: translation.TraEntries, traFileKey: string, lineKey: string) {
+function getHintString(traEntries: TraEntries, traFileKey: string, lineKey: string) {
     let value: string;
     if (!traEntries) {
         value = `/* Error: no such file ${traFileKey} */`;
@@ -19,19 +18,17 @@ function getHintString(traEntries: translation.TraEntries, traFileKey: string, l
 }
 
 export function getHints(
+    traFileKey: string,
+    traEntries: TraEntries,
+    traExt: TraExt,
     text: string,
-    traSettings: ProjectTraSettings,
-    relPath: string,
-    langId: string,
     range: Range
 ) {
     const hints: InlayHint[] = [];
-    const traFileKey = translation.getTraFileKey(relPath, text, traSettings, langId);
     if (!traFileKey) {
         return hints;
     }
-    const traEntries = translation.getTraEntries(traFileKey);
-    const traExt = translation.getTraExt(langId);
+
     let lines = text.split("\n");
     lines = lines.slice(range.start.line, range.end.line);
 

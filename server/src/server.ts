@@ -10,18 +10,14 @@ import {
     TextDocumentSyncKind,
     InitializeResult,
     SignatureHelp,
-    InlayHintRequest,
-    InlayHintParams,
 } from "vscode-languageserver/node";
 import { fileURLToPath } from "node:url";
 import { TextDocument } from "vscode-languageserver-textdocument";
-import { conlog, uriToPath, isDirectory, isSubpath, getRelPath, symbolAtPosition } from "./common";
+import { conlog, symbolAtPosition } from "./common";
 import { compile, COMMAND_compile } from "./compile";
 import { MLSsettings, defaultSettings } from "./settings";
 import * as settings from "./settings";
-import * as inlay from "./inlay";
-import * as translation from "./translation";
-import { Galactus } from "./galactus"
+import { Galactus } from "./galactus";
 
 // Create a connection for the server. The connection uses Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
@@ -83,7 +79,6 @@ connection.onInitialize((params: InitializeParams) => {
 
 export let globalSettings: MLSsettings = defaultSettings;
 
-
 connection.onInitialized(async () => {
     if (hasConfigurationCapability) {
         // Register for all configuration changes.
@@ -93,7 +88,7 @@ connection.onInitialized(async () => {
     // load data
     projectSettings = settings.project(workspaceRoot);
     conlog(projectSettings);
-    gala = new Galactus(workspaceRoot, globalSettings);
+    gala = new Galactus(workspaceRoot, globalSettings, projectSettings.translation);
     conlog("initialized");
 });
 
@@ -137,7 +132,6 @@ documents.onDidOpen((event) => {
     const langId = event.document.languageId;
     const text = event.document.getText();
     gala.reloadFileData(uri, langId, text);
-
 });
 
 // This handler provides the initial list of the completion items.
@@ -164,32 +158,13 @@ connection.listen();
 connection.onHover((textDocumentPosition: TextDocumentPositionParams): Hover => {
     const uri = textDocumentPosition.textDocument.uri;
     const langId = documents.get(uri).languageId;
-    const filePath = uriToPath(uri);
-    const relPath = getRelPath(workspaceRoot, filePath);
-
     const text = documents.get(uri).getText();
     const symbol = symbolAtPosition(text, textDocumentPosition.position);
 
     if (!symbol) {
         return;
     }
-
-    if (translation.isTraRef(symbol, langId)) {
-        const result = translation.getHover(
-            symbol,
-            text,
-            projectSettings.translation,
-            relPath,
-            langId
-        );
-        if (result) {
-            return result;
-        } else {
-            return;
-        }
-    }
-
-    return gala.hover(langId, uri, symbol);
+    return gala.hover(langId, uri, symbol, text);
 });
 
 connection.onExecuteCommand(async (params) => {
@@ -222,42 +197,15 @@ documents.onDidSave(async (change) => {
     const langId = change.document.languageId;
     const text = change.document.getText();
     gala.reloadFileData(uri, langId, text);
-
-    // reload translation settings
-    const realPath = uriToPath(uri);
-    const relPath = getRelPath(workspaceRoot, realPath);
-    if (relPath == ".bgforge.yml") {
-        projectSettings = await settings.project(workspaceRoot);
-    }
-
-    // reload translation
-    const traDir = projectSettings.translation.directory;
-    if (isDirectory(traDir)) {
-        if (isSubpath(traDir, relPath)) {
-            // relative to tra dir
-            const relPath2 = getRelPath(traDir, relPath);
-            translation.reloadTraFile(traDir, relPath2);
-        }
-    }
 });
 
-connection.onRequest((method, params: InlayHintParams) => {
-    if (method == InlayHintRequest.method) {
-        const uri = params.textDocument.uri;
-        const filePath = uriToPath(uri);
-        const relPath = getRelPath(workspaceRoot, filePath);
-        const document = documents.get(uri);
-        const text = document.getText();
-        const langId = document.languageId;
-        const hints = inlay.getHints(
-            text,
-            projectSettings.translation,
-            relPath,
-            langId,
-            params.range
-        );
-        return hints;
-    }
+connection.languages.inlayHint.on((params) => {
+    const uri = params.textDocument.uri;
+    const document = documents.get(uri);
+    const text = document.getText();
+    const langId = document.languageId;
+    const result = gala.inlay(uri, langId, text, params.range);
+    return result;
 });
 
 connection.onDefinition((params) => {
@@ -267,6 +215,6 @@ connection.onDefinition((params) => {
     const langId = textDoc.languageId;
     const text = textDoc.getText();
     const symbol = symbolAtPosition(text, params.position);
-    const result = gala.definition(langId, uri, symbol);
+    const result = gala.definition(langId, symbol);
     return result;
 });
