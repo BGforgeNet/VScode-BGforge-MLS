@@ -79,8 +79,10 @@ export async function loadHeaders(headersDirectory: string, external = false) {
             hovers.set(key, value);
         }
 
-        for (const [key, value] of x.definition) {
-            definitions.set(key, value);
+        if (x.definition) {
+            for (const [key, value] of x.definition) {
+                definitions.set(key, value);
+            }    
         }
     });
 
@@ -357,14 +359,17 @@ function jsdocToDetail(label: string, jsd: jsdoc.JSdoc) {
  */
 function parseCompileOutput(text: string, uri: string) {
     const textDocument = documents.get(uri);
+    if (!textDocument) {
+        return { errors: [], warnings: []};
+    }
     const errorsRegex = /\[Error\] <(.+)>:([\d]*):([\d]*):? (.*)/g;
     const warningsRegex = /\[Warning\] <(.+)>:([\d]*):([\d]*):? (.*)/g;
     const errors: ParseItemList = [];
     const warnings: ParseItemList = [];
 
     try {
-        let match: RegExpExecArray;
-        while ((match = errorsRegex.exec(text)) != null) {
+        let match = errorsRegex.exec(text);
+        while (match != null) {
             // This is necessary to avoid infinite loops with zero-width matches
             if (match.index === errorsRegex.lastIndex) {
                 errorsRegex.lastIndex++;
@@ -382,9 +387,11 @@ function parseCompileOutput(text: string, uri: string) {
                 columnEnd: parseInt(col) - 1,
                 message: match[4],
             });
+            match = errorsRegex.exec(text);
         }
 
-        while ((match = warningsRegex.exec(text)) != null) {
+        match = warningsRegex.exec(text);
+        while (match != null) {
             // This is necessary to avoid infinite loops with zero-width matches
             if (match.index === warningsRegex.lastIndex) {
                 warningsRegex.lastIndex++;
@@ -404,11 +411,12 @@ function parseCompileOutput(text: string, uri: string) {
                 columnEnd: column_end,
                 message: match[4],
             });
+            match = warningsRegex.exec(text);
         }
     } catch (err) {
         conlog(err);
     }
-    const result: ParseResult = { errors: errors, warnings };
+    const result: ParseResult = { errors: errors, warnings: warnings };
     return result;
 }
 
@@ -439,7 +447,7 @@ export function compile(uri: string, sslSettings: SSLsettings, interactive = fal
     cp.exec(
         compileCmd + " " + baseName + " -o " + dstPath,
         { cwd: cwdTo },
-        (err: cp.ExecException, stdout: string, stderr: string) => {
+        (err, stdout: string, stderr: string) => {
             conlog("stdout: " + stdout);
             if (stderr) {
                 conlog("stderr: " + stderr);

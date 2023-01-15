@@ -31,16 +31,16 @@ export interface Features {
 export interface HeaderData {
     completion: completion.CompletionListEx;
     hover: hover.HoverMapEx;
-    definition?: definition.Data;
+    definition: definition.Data;
     signature?: signature.Data;
 }
 
 interface Data {
-    completion?: completion.Data;
-    definition?: definition.Data;
-    hover?: hover.Data;
+    completion: completion.Data;
+    definition: definition.Data;
+    hover: hover.Data;
     // inlay: boolean;
-    signature?: signature.Data;
+    signature: signature.Data;
 }
 
 export interface Language {
@@ -48,15 +48,16 @@ export interface Language {
     dataId: string; // search completions and hover from this language id
     features: Features;
     data: Data;
-    externalHeadersDirectory?: string;
+    externalHeadersDirectory: string;
 }
 
 export class Language implements Language {
     id: string;
     features: Features;
+    // @ts-expect-error: ts2564 because we init the instance with async init() method explicitly.
     data: Data;
     workspaceRoot: string;
-    externalHeadersDirectory?: string;
+    externalHeadersDirectory: string;
 
     constructor(
         id: string,
@@ -301,11 +302,19 @@ export class Language implements Language {
                     uri
                 );
             } else if (this.inExternalHeadersDirectory(uri)) {
+                // make tslint happy
+                if (!this.data.completion.extHeaders) {
+                    this.data.completion.extHeaders = [];
+                }
                 this.data.completion.extHeaders = this.reloadFileCompletion(
                     this.data.completion.extHeaders,
                     fileData.completion,
                     uri
                 );
+                // make tslint happy
+                if (!this.data.hover.extHeaders) {
+                    this.data.hover.extHeaders = new Map();
+                }
                 this.data.hover.extHeaders = this.reloadFileHover(
                     this.data.hover.extHeaders,
                     fileData.hover,
@@ -354,7 +363,7 @@ export class Language implements Language {
         if (!this.features.hover) {
             return;
         }
-        let result: Hover | hover.HoverEx;
+        let result: Hover | hover.HoverEx | undefined;
 
         const selfMap = this.data.hover.self.get(uri);
         if (selfMap) {

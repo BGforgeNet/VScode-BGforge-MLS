@@ -113,6 +113,10 @@ export class Translation implements Translation {
     /** wsPath must be relative to workspace root */
     reloadFileLines(wsPath: string, text: string) {
         const traPath = this.getTraPath(wsPath);
+        if (!traPath) {
+            conlog(`Error: can't detect tra file path for ${wsPath}, aborting translation reload.`);
+            return;
+        }
         const ext = path.parse(traPath).ext.slice(-3);
         if (ext != "tra" && ext != "msg") {
             conlog(`Unknown traslation file extension ${ext}.`);

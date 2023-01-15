@@ -20,7 +20,7 @@ export async function conlog(item: any) {
             connection.console.log(item.toString());
             break;
         case "undefined":
-            connection.console.log(item);
+            connection.console.log("undefined");
             break;
         case "string":
             connection.console.log(item);

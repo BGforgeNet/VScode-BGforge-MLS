@@ -28,4 +28,5 @@ export function loadStatic(langId: string): CompletionList {
     } catch (e) {
         conlog(e);
     }
+    return [];
 }

@@ -20,7 +20,7 @@ export interface Data {
     static: HoverMap;
 }
 
-export function loadStatic(langId: string): HoverMap {
+export function loadStatic(langId: string) {
     try {
         const filePath = path.join(__dirname, `hover.${langId}.json`);
         const jsonData = JSON.parse(fs.readFileSync(filePath, "utf-8"));
@@ -29,4 +29,5 @@ export function loadStatic(langId: string): HoverMap {
     } catch (e) {
         conlog(e);
     }
+    return new Map();
 }

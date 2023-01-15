@@ -44,6 +44,9 @@ export function getHints(
         const l = lines[i];
         const matches = l.matchAll(regex);
         for (const m of matches) {
+            if (!m.index) {
+                continue;
+            }
             const char_end = m.index + m[0].length;
             let lineKey: string;
             if (traExt == "msg") {

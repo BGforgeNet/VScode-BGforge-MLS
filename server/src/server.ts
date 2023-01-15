@@ -6,10 +6,8 @@ import {
     DidChangeConfigurationNotification,
     CompletionItem,
     TextDocumentPositionParams,
-    Hover,
     TextDocumentSyncKind,
     InitializeResult,
-    SignatureHelp,
 } from "vscode-languageserver/node";
 import { fileURLToPath } from "node:url";
 import { TextDocument } from "vscode-languageserver-textdocument";
@@ -71,8 +69,11 @@ connection.onInitialize((params: InitializeParams) => {
         };
     }
     // yes this is unsafe, just doing something quick and dirty
-    workspaceRoot = fileURLToPath(params.workspaceFolders[0].uri);
-    conlog(`workspace_root = ${workspaceRoot}`);
+    if (params.workspaceFolders) {
+        // this better exist or we don't know what to do
+        workspaceRoot = fileURLToPath(params.workspaceFolders[0].uri);
+        conlog(`workspace_root = ${workspaceRoot}`);
+    }
     conlog("onInitialize completed");
     return result;
 });
@@ -140,8 +141,9 @@ documents.onDidOpen((event) => {
 });
 
 // This handler provides the initial list of the completion items.
-connection.onCompletion((_textDocumentPosition: TextDocumentPositionParams): CompletionItem[] => {
+connection.onCompletion((_textDocumentPosition: TextDocumentPositionParams) => {
     const uri = _textDocumentPosition.textDocument.uri;
+    // @ts-expect-error: ts2532 because we get uri from a hook, which implies it exists
     const langId = documents.get(uri).languageId;
     const result = gala?.completion(langId, uri);
     return result;
@@ -160,10 +162,12 @@ documents.listen(connection);
 // Listen on the connection
 connection.listen();
 
-connection.onHover((textDocumentPosition: TextDocumentPositionParams): Hover => {
+connection.onHover((textDocumentPosition: TextDocumentPositionParams) => {
     const uri = textDocumentPosition.textDocument.uri;
-    const langId = documents.get(uri).languageId;
-    const text = documents.get(uri).getText();
+    // @ts-expect-error: ts2232 because we get uri from a hook, which implies it exists
+    const textDoc: TextDocument = documents.get(uri);
+    const langId = textDoc.languageId;
+    const text = textDoc.getText();
     const symbol = symbolAtPosition(text, textDocumentPosition.position);
 
     if (!symbol) {
@@ -178,6 +182,9 @@ connection.onExecuteCommand(async (params) => {
         return;
     }
 
+    if (!params.arguments) {
+        return;
+    }
     const args = params.arguments[0];
 
     if (args.scheme != "file") {
@@ -185,13 +192,20 @@ connection.onExecuteCommand(async (params) => {
         connection.window.showInformationMessage("Focus a valid file to compile!");
         return;
     }
-    const langId = documents.get(args.uri).languageId;
+    const textDoc = documents.get(args.uri);
+    if (!textDoc) {
+        return;
+    }
+    const langId = textDoc.languageId;
     compile(args.uri, langId, true);
 });
 
-connection.onSignatureHelp((params: TextDocumentPositionParams): SignatureHelp => {
+connection.onSignatureHelp((params: TextDocumentPositionParams) => {
     const uri = params.textDocument.uri;
     const document = documents.get(uri);
+    if (!document) {
+        return;
+    }
     const text = document.getText();
     const langId = document.languageId;
     return gala?.signature(langId, text, params.position);
@@ -207,6 +221,9 @@ documents.onDidSave(async (change) => {
 connection.languages.inlayHint.on((params) => {
     const uri = params.textDocument.uri;
     const document = documents.get(uri);
+    if (!document) {
+        return;
+    }
     const text = document.getText();
     const langId = document.languageId;
     return gala?.inlay(uri, langId, text, params.range);
@@ -216,6 +233,9 @@ connection.onDefinition((params) => {
     const textDocId = params.textDocument;
     const uri = textDocId.uri;
     const textDoc = documents.get(uri);
+    if (!textDoc) {
+        return;
+    }
     const langId = textDoc.languageId;
     const text = textDoc.getText();
     const symbol = symbolAtPosition(text, params.position);

@@ -191,9 +191,13 @@ const languages: LanguageList = [
 ];
 
 export class Galactus {
+    // @ts-expect-error: ts2564 because we init the instance with async init() method explicitly.
     languages: Languages;
+    // @ts-expect-error: ts2564 because we init the instance with async init() method explicitly.
     workspaceRoot: string;
+    // @ts-expect-error: ts2564 because we init the instance with async init() method explicitly.
     translation: Translation;
+    // @ts-expect-error: ts2564 because we init the instance with async init() method explicitly.
     dataFrom: Map<string, string>;
 
     public async init(
@@ -231,8 +235,9 @@ export class Galactus {
 
     /** Several languages draw data from other language ids */
     dataLang(langId: string) {
-        if (this.dataFrom.has(langId)) {
-            return this.dataFrom.get(langId);
+        const result = this.dataFrom.get(langId);
+        if (result) {
+            return result;
         }
         return langId;
     }
@@ -307,7 +312,13 @@ export class Galactus {
         }
 
         const traEntries = this.translation.entries(traFileKey);
+        if (!traEntries) {
+            return;
+        }
         const traExt = translation.getTraExt(langId);
+        if (!traExt) {
+            return;
+        }
         const hints = inlay.getHints(traFileKey, traEntries, traExt, text, range);
         return hints;
     }

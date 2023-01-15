@@ -52,8 +52,8 @@ function parseWeiduOutput(text: string) {
     const warnings: ParseItemList = [];
 
     try {
-        let match: RegExpExecArray;
-        while ((match = errorsRegex.exec(text)) != null) {
+        let match = errorsRegex.exec(text);
+        while (match != null) {
             // This is necessary to avoid infinite loops with zero-width matches
             if (match.index === errorsRegex.lastIndex) {
                 errorsRegex.lastIndex++;
@@ -65,6 +65,7 @@ function parseWeiduOutput(text: string) {
                 columnEnd: parseInt(match[4]),
                 message: text,
             });
+            match = errorsRegex.exec(text);
         }
     } catch (err) {
         conlog(err);
@@ -79,8 +80,8 @@ function parseGccOutput(text: string) {
     const warnings: ParseItemList = [];
 
     try {
-        let match: RegExpExecArray;
-        while ((match = errorsRegex.exec(text)) != null) {
+        let match = errorsRegex.exec(text);
+        while (match != null) {
             // This is necessary to avoid infinite loops with zero-width matches
             if (match.index === errorsRegex.lastIndex) {
                 errorsRegex.lastIndex++;
@@ -92,6 +93,7 @@ function parseGccOutput(text: string) {
                 columnEnd: match[0].length,
                 message: text,
             });
+            match = errorsRegex.exec(text);
         }
     } catch (err) {
         conlog(err);
@@ -199,19 +201,21 @@ export function compile(uri: string, settings: WeiDUsettings, interactive = fals
     // parse
     conlog(`parsing ${realName}...`);
     const weiduCmd = `${weiduPath} ${weiduArgs} ${weiduType} ${realName} `;
-    cp.exec(weiduCmd, { cwd: cwdTo }, (err: cp.ExecException, stdout: string, stderr: string) => {
+    cp.exec(weiduCmd, { cwd: cwdTo }, (err, stdout: string, stderr: string) => {
         conlog("stdout: " + stdout);
         const parseResult = parseWeiduOutput(stdout); // dupe, yes
         conlog(parseResult);
         if (stderr) {
-            conlog("stderr: " + stderr);
+            conlog("Parse stderr: " + stderr);
         }
         if (
             (err && err.code != 0) ||
             parseResult.errors.length > 0 || // weidu doesn't always return non-zero on parse failure?
             parseResult.warnings.length > 0
         ) {
-            conlog("error: " + err.message);
+            if (err) {
+                conlog("Parse  error: " + err.message);
+            }
             conlog(parseResult);
             if (interactive) {
                 connection.window.showErrorMessage(`Failed to parse ${realName}!`);

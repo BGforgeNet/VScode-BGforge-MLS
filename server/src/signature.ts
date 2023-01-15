@@ -25,6 +25,7 @@ export function loadStatic(langId: string): SigMap {
     } catch (e) {
         conlog(e);
     }
+    return new Map();
 }
 
 export function getResponse(signature: SignatureInformation, parameter: number) {
@@ -52,11 +53,17 @@ export function getRequest(text: string, position: Position) {
     const lastChar = left.slice(-1);
     // short circuit on closing parenthesis
     if (lastChar == ")") {
-        return null;
+        return;
     }
     const splitOnParen = left.split("(");
     const args = splitOnParen.pop();
-    const symbol = splitOnParen.pop().split(/(\s+)/).pop();
+    if (!args) {
+        return;
+    }
+    const symbol = args.split(/(\s+)/).pop();
+    if (!symbol) {
+        return;
+    }
     const posInArgs = pos - (left.length - args.length);
     // again, right side doesn't matter
     const argsLeft = args.slice(0, posInArgs);
