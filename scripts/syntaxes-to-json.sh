@@ -9,6 +9,7 @@ error_file="$(basename "$0").err"
 
 function convert() {
     yaml_file="$1"
+    # shellcheck disable=SC2001
     json_file="$(echo "$yaml_file" | sed 's|\.yml$|.json|i')"
     $yaml2json "$yaml_file" "$json_file"
 }
