@@ -14,3 +14,7 @@ plugins:
     - "@typescript-eslint"
 rules:
     "@typescript-eslint/no-empty-interface": "off"
+    "@typescript-eslint/ban-ts-comment":
+        - "error"
+        - "ts-expect-error":
+            "descriptionFormat": '^: (ts|TS)\d+ because .+$'
