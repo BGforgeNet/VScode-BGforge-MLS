@@ -8,18 +8,12 @@
             "name": "Launch Client",
             "runtimeExecutable": "${execPath}",
             "args": ["--extensionDevelopmentPath=${workspaceRoot}"],
-            "sourceMaps": true,
             "outFiles": ["${workspaceRoot}/client/out/**/*.js"],
-            "preLaunchTask": "npm: esbuild-all"
-        },
-        {
-            "type": "node",
-            "request": "attach",
-            "name": "Attach to Server",
-            "address": "localhost",
-            "port": 6009,
-            "sourceMaps": true,
-            "outFiles": ["${workspaceRoot}/server/out/**/*.js"]
+            "autoAttachChildProcesses": true,
+            "preLaunchTask": {
+                "type": "npm",
+                "script": "esbuild-all"
+            }
         },
         {
             "name": "Language Server E2E Test",
@@ -28,17 +22,10 @@
             "runtimeExecutable": "${execPath}",
             "args": [
                 "--extensionDevelopmentPath=${workspaceRoot}",
-                "--extensionTestsPath=${workspaceRoot}/client/out/test",
+                "--extensionTestsPath=${workspaceRoot}/client/out/test/index",
                 "${workspaceRoot}/client/testFixture"
             ],
-            "sourceMaps": true,
             "outFiles": ["${workspaceRoot}/client/out/test/**/*.js"]
-        }
-    ],
-    "compounds": [
-        {
-            "name": "Client + Server",
-            "configurations": ["Launch Client", "Attach to Server"]
         }
     ]
 }
