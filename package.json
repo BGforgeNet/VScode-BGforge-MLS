@@ -367,7 +367,7 @@
         "esbuild-client": "npm run esbuild-base-client -- --sourcemap",
         "esbuild-server": "npm run esbuild-base-server -- --sourcemap",
         "esbuild-test": "esbuild ./client/src/test/*.ts --outdir=client/out/test --external:vscode --external:'./reporters/parallel-buffered' --external:'./worker.js' --format=cjs --platform=node --sourcemap --bundle",
-        "esbuild-all": "npm run esbuild-base-client -- --sourcemap && npm run esbuild-base-server -- --sourcemap",
+        "esbuild-all": "npm run esbuild-client && npm run esbuild-server && npm run esbuild-test",
         "esbuild-watch-client": "npm run esbuild-base-client -- --sourcemap --watch",
         "esbuild-watch-server": "npm run esbuild-base-server -- --sourcemap --watch",
         "test-compile": "tsc -p ./",
@@ -377,13 +377,13 @@
     },
     "devDependencies": {
         "@types/mocha": "^10.0.1",
-        "mocha": "^10.2.0",
         "@types/node": "^18.11.17",
         "@typescript-eslint/eslint-plugin": "^5.47.1",
         "@typescript-eslint/parser": "^5.47.1",
         "esbuild": "^0.16.10",
         "eslint": "^8.30.0",
         "eslint-config-prettier": "^8.5.0",
+        "mocha": "^10.2.0",
         "prettier": "^2.8.1",
         "typescript": "^4.9.4"
     },
