@@ -164,8 +164,10 @@ connection.listen();
 
 connection.onHover((textDocumentPosition: TextDocumentPositionParams) => {
     const uri = textDocumentPosition.textDocument.uri;
-    // @ts-expect-error: ts2232 because we get uri from a hook, which implies it exists
-    const textDoc: TextDocument = documents.get(uri);
+    const textDoc = documents.get(uri);
+    if (!textDoc) {
+        return;
+    }
     const langId = textDoc.languageId;
     const text = textDoc.getText();
     const symbol = symbolAtPosition(text, textDocumentPosition.position);
