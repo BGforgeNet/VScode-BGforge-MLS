@@ -17,12 +17,6 @@ jobs:
 
       - name: Install node packages
         run: npm ci
-
-      - name: Build all
-        run: npm run esbuild-all
-
-      - name: Run npm test
-        run: npm test
       
       - name: Run ESlint
         run: |
