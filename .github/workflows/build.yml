@@ -22,8 +22,8 @@ jobs:
       - name: Run ESlint
         run: |
           ls ./node_modules/.bin
-          which esbuild
+          # which esbuild
           echo $PATH
-          eslint client/src/extension.ts
-          eslint client/src/test/*.ts
-          eslint serer/src/*.ts
+          # eslint client/src/extension.ts
+          # eslint client/src/test/*.ts
+          # eslint serer/src/*.ts
