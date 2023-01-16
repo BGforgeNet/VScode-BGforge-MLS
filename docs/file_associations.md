@@ -13,4 +13,5 @@ Both Star-Trek Scripting Language and Sword Coast Stratagems Scripting Language 
 This can be set globally, or per project, so you can work on both types of projects simultaneously.
 
 ### H
+
 The same method goes for `.h` headers of C++, if you use those.

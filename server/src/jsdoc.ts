@@ -34,7 +34,7 @@ export function parse(text: string) {
         }
         const retMatch = l2.match(/@(ret|return|returns) {(.*)}/);
         if (retMatch) {
-            ret = {type: retMatch[2] };
+            ret = { type: retMatch[2] };
         }
         const depMatch = l2.match(/@(deprecated)/);
         if (depMatch) {
@@ -42,7 +42,7 @@ export function parse(text: string) {
         }
     }
     const desc = lines2.join("\n").trim();
-    const jsdoc: JSdoc = {args: []};
+    const jsdoc: JSdoc = { args: [] };
     if (deprecated) {
         jsdoc.deprecated = true;
     }

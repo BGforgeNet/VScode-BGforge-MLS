@@ -38,8 +38,8 @@ async function testHover(
         position
     )) as vscode.Hover[];
     const { contents } = actualHover[0];
-	// Hover doesn't expose contents properly for some reason
-	// Inspired by https://github.com/microsoft/vscode-extension-samples/issues/434
+    // Hover doesn't expose contents properly for some reason
+    // Inspired by https://github.com/microsoft/vscode-extension-samples/issues/434
     assert.equal(
         typeof contents[0] === "string" ? contents[0] : contents[0].value,
         typeof expectedHover.contents[0] === "string"

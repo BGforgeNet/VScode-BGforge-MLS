@@ -82,7 +82,7 @@ export async function loadHeaders(headersDirectory: string, external = false) {
         if (x.definition) {
             for (const [key, value] of x.definition) {
                 definitions.set(key, value);
-            }    
+            }
         }
     });
 
@@ -360,7 +360,7 @@ function jsdocToDetail(label: string, jsd: jsdoc.JSdoc) {
 function parseCompileOutput(text: string, uri: string) {
     const textDocument = documents.get(uri);
     if (!textDocument) {
-        return { errors: [], warnings: []};
+        return { errors: [], warnings: [] };
     }
     const errorsRegex = /\[Error\] <(.+)>:([\d]*):([\d]*):? (.*)/g;
     const warningsRegex = /\[Warning\] <(.+)>:([\d]*):([\d]*):? (.*)/g;

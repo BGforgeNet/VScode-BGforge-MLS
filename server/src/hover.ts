@@ -6,7 +6,7 @@ import { conlog } from "./common";
 /** source is path, relative to workspace root, or absolute if not in workspace */
 export interface HoverEx extends Hover {
     source: string;
-    uri: string
+    uri: string;
 }
 export interface HoverMap extends Map<string, Hover> {}
 export interface HoverMapEx extends Map<string, HoverEx> {}
