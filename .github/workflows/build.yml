@@ -24,11 +24,11 @@ jobs:
         run: npm ci
 
       - name: ESlint
-        run: |
-          npm run eslint
+        run: npm run eslint
 
       - name: Pylint
         run: |
+          pip install pylint
           pylint scripts
 
       - name: Prettier
