@@ -374,7 +374,7 @@
         "compile": "npm run esbuild-client && npm run esbuild-server",
         "postinstall": "cd client && npm install && cd ../server && npm install && cd ..",
         "test": "sh ./scripts/e2e.sh",
-        "eslint": "eslint client/src/extension.ts && eslint client/src/test/*.ts && eslint serer/src/*.ts"
+        "eslint": "eslint client/src/extension.ts && eslint client/src/test/*.ts && eslint server/src/*.ts"
     },
     "devDependencies": {
         "@types/mocha": "^10.0.1",
