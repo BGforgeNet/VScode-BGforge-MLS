@@ -11,20 +11,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
+      - name: ShellCheck
+        uses: ludeeus/action-shellcheck@master
+
       - uses: actions/setup-node@v3
         with:
           node-version: 18
-          cache: 'npm'
+          cache: "npm"
 
       - name: Install node packages
         run: npm ci
-      
+
       - name: Run ESlint
         run: |
           npm run eslint
-          # ls ./node_modules/.bin
-          # which esbuild
-          # echo $PATH
-          # eslint client/src/extension.ts
-          # eslint client/src/test/*.ts
-          # eslint serer/src/*.ts
