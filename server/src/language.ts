@@ -4,7 +4,7 @@ import * as definition from "./definition";
 import * as signature from "./signature";
 import { conlog, getRelPath, isDirectory, isSubpath, uriToPath } from "./common";
 import { Hover } from "vscode-languageserver/node";
-import * as fallout from "./fallout-ssl";
+import * as fallout from "./fallout";
 import * as weidu from "./weidu";
 
 export interface Features {

@@ -1,6 +1,6 @@
 import { connection, getDocumentSettings } from "./server";
 import { TextDocument } from "vscode-languageserver-textdocument";
-import * as fallout from "./fallout-ssl";
+import * as fallout from "./fallout";
 import * as weidu from "./weidu";
 import { conlog } from "./common";
 
