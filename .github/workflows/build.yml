@@ -23,9 +23,13 @@ jobs:
       - name: Install node packages
         run: npm ci
 
-      - name: Run ESlint
+      - name: ESlint
         run: |
           npm run eslint
+
+      - name: Pylint
+        run: |
+          pylint scripts
 
       - name: Prettier
         uses: creyD/prettier_action@v4.2
