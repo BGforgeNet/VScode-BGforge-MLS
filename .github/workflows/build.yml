@@ -26,3 +26,9 @@ jobs:
       - name: Run ESlint
         run: |
           npm run eslint
+
+      - name: Prettier
+        uses: creyD/prettier_action@v4.2
+        with:
+          dry: true
+          prettier_options: --check
