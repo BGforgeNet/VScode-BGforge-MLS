@@ -1,6 +1,5 @@
 # common functions to dump IElib/IESDP data to completion and highlight
 import functools
-
 import os
 import sys
 import textwrap
@@ -8,7 +7,6 @@ import ruamel.yaml
 
 # https://stackoverflow.com/questions/57382525/can-i-control-the-formatting-of-multiline-strings
 from ruamel.yaml.scalarstring import LiteralScalarString
-from .offsets import get_offset_id
 
 yaml = ruamel.yaml.YAML(typ="rt")
 yaml.width = 4096
@@ -27,6 +25,7 @@ def find_file(path, name):
     for root, dirs, files in os.walk(path, followlinks=True):  # pylint: disable=unused-variable
         if name in files:
             return os.path.join(root, name)
+    return None
 
 
 def find_files(path, ext, skip_dirs=None, skip_files=None):
@@ -84,7 +83,7 @@ def check_completion(data):
     for dataitem in data:
         items += [i["name"] for i in data[dataitem]["items"]]
     allow_dupes = ["EVALUATE_BUFFER"]  # this is used in both vars and compilation
-    dupes = set([x for x in items if items.count(x) > 1 and x not in allow_dupes])
+    dupes = {x for x in items if items.count(x) > 1 and x not in allow_dupes}
     if len(dupes) > 0:
         print(f"Error: duplicated completion items found: {dupes}")
         sys.exit(1)
@@ -130,40 +129,6 @@ def dump_definition(prefix, items, structures_dir):
         text += f"{i} = {items[i]}\n"
     with open(output_file, "w", encoding="utf8") as fhandle:
         print(text, file=fhandle)
-
-
-# mutates lists in place
-def offsets_to_completion(data, prefix, chars, lbytes, words, dwords, resrefs, strrefs, other):
-    for i in data:
-        if "unused" in i or "unknown" in i:
-            continue
-        iid = get_offset_id(i, prefix)
-
-        if "mult" in i:  # multiword, multibyte - etc
-            detail = f"multi {i['type']} {iid}"
-        else:
-            detail = "{i['type']} {iid}"
-
-        item = {"name": iid, "detail": detail, "doc": strip_liquid(i["desc"])}
-
-        if "mult" in i:
-            other.append(item)
-            continue
-
-        if i["type"] == "char":
-            chars.append(item)
-        elif i["type"] == "byte":
-            lbytes.append(item)
-        elif i["type"] == "word":
-            words.append(item)
-        elif i["type"] == "dword":
-            dwords.append(item)
-        elif i["type"] == "resref":
-            resrefs.append(item)
-        elif i["type"] == "strref":
-            strrefs.append(item)
-        else:
-            other.append(item)
 
 
 # remove {% capture note %} {% endcapture %} {% include note.html %}

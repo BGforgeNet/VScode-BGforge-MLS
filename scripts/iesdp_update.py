@@ -5,6 +5,7 @@ import os
 import sys
 from collections import Counter as collections_counter
 from collections import OrderedDict
+from dataclasses import dataclass
 
 import frontmatter
 import ruamel.yaml
@@ -17,8 +18,8 @@ from ie import (
     dump_definition,
     dump_highlight,
     find_files,
+    get_offset_id,
     get_offset_prefix,
-    offsets_to_completion,
     offsets_to_definition,
     opcode_name_to_id,
     strip_liquid,
@@ -85,6 +86,85 @@ IESDP_ACTIONS_URL = f"{IESDP_BASE_URL}/scripting/actions"
 iesdp_games_file = os.path.join(iesdp_dir, "_data", "games.yml")
 with open(iesdp_games_file, encoding="utf8") as yf:
     iesdp_games = yaml.load(yf)
+
+
+@dataclass
+class ProcessedOffsetData:
+    """List of all offset items, ready for consumption"""
+
+    chars: []
+    lbytes: []
+    words: []
+    dwords: []
+    resrefs: []
+    strrefs: []
+    other: []
+
+    def append(self, offset_data, offset_prefix):
+        for i in offset_data:
+            if "unused" in i or "unknown" in i:
+                continue
+            iid = get_offset_id(i, offset_prefix)
+
+            if "mult" in i:  # multiword, multibyte - etc
+                detail = f"multi {i['type']} {iid}"
+            else:
+                detail = "{i['type']} {iid}"
+
+            item = {"name": iid, "detail": detail, "doc": strip_liquid(i["desc"])}
+
+            if "mult" in i:
+                self.other.append(item)
+                continue
+
+            if i["type"] == "char":
+                self.chars.append(item)
+            elif i["type"] == "byte":
+                self.lbytes.append(item)
+            elif i["type"] == "word":
+                self.words.append(item)
+            elif i["type"] == "dword":
+                self.dwords.append(item)
+            elif i["type"] == "resref":
+                self.resrefs.append(item)
+            elif i["type"] == "strref":
+                self.strrefs.append(item)
+            else:
+                self.other.append(item)
+
+    def sanitise_list(self, offset_list):
+        # for offset_list in [chars, lbytes, words, dwords, resrefs, strrefs, other]:
+        # reduce diff noise
+        offset_list = sorted(offset_list, key=lambda k: k["name"])
+        # check for dupes
+        name_list = [x["name"] for x in offset_list]
+        offset_list_counted = collections_counter(name_list)
+        non_unique = [x for x in offset_list_counted if offset_list_counted[x] > 1]
+        if len(non_unique) > 0:
+            print("Error: duplicate keys found")
+            print(non_unique)
+            for nu_item in non_unique:
+                for off_list in [
+                    self.chars,
+                    self.lbytes,
+                    self.words,
+                    self.dwords,
+                    self.resrefs,
+                    self.strrefs,
+                    self.other,
+                ]:
+                    print([x for x in off_list if x["name"] == nu_item])
+            sys.exit(1)
+
+    def sanitise(self):
+        self.sanitise_list(self.chars)
+        self.sanitise_list(self.lbytes)
+        self.sanitise_list(self.words)
+        self.sanitise_list(self.dwords)
+        self.sanitise_list(self.resrefs)
+        self.sanitise_list(self.strrefs)
+        self.sanitise_list(self.other)
+
 
 # OPCODES
 files = find_files(opcode_dir, "html")
@@ -180,14 +260,7 @@ with open(data_baf, "w", encoding="utf8") as yf:
 # data lists:
 # chars, lbytes, words, dwords, resrefs, strrefs, other
 
-
-chars = []
-lbytes = []
-words = []
-dwords = []
-resrefs = []
-strrefs = []
-other = []
+pod = ProcessedOffsetData([], [], [], [], [], [], [])
 formats = os.listdir(file_formats_dir)
 structures_dir = os.path.join(ielib_dir, "structures")
 
@@ -207,7 +280,7 @@ for ff in formats:
         new_definition_items = offsets_to_definition(offsets, prefix)
         definition_items = {**definition_items, **new_definition_items}
 
-        offsets_to_completion(offsets, prefix, chars, lbytes, words, dwords, resrefs, strrefs, other)
+        pod.append(offsets, prefix)
     dump_definition(prefix, definition_items, structures_dir)
 
 # feature block
@@ -215,62 +288,47 @@ fpath = os.path.join(file_formats_dir, "itm_v1", "feature_block.yml")
 with open(fpath, encoding="utf8") as yf:
     offsets = yaml.load(yf)
 PREFIX_FX = "FX_"
-offsets_to_completion(offsets, PREFIX_FX, chars, lbytes, words, dwords, resrefs, strrefs, other)
+pod.append(offsets, PREFIX_FX)
 
 definition_items = offsets_to_definition(offsets, PREFIX_FX)
 dump_definition(PREFIX_FX, definition_items, structures_dir)
 
-
-# sanitising
-for offset_list in [chars, lbytes, words, dwords, resrefs, strrefs, other]:
-    # reduce diff noise
-    offset_list = sorted(offset_list, key=lambda k: k["name"])
-    # check for dupes
-    name_list = [x["name"] for x in offset_list]
-    offset_list_counted = collections_counter(name_list)
-    non_unique = [x for x in offset_list_counted if offset_list_counted[x] > 1]
-    if len(non_unique) > 0:
-        print("Error: duplicate keys found")
-        print(non_unique)
-        for nu in non_unique:
-            for offset_list in [chars, lbytes, words, dwords, resrefs, strrefs, other]:
-                print([x for x in offset_list if x["name"] == nu])
-        sys.exit(1)
+pod.sanitise()
 
 iesdp_data = {
     "chars": {
         "stanza": "iesdp-char",
-        "items": chars,
+        "items": pod.chars,
         "scope": "constant.language.iesdp.char",
     },
     "bytes": {
         "stanza": "iesdp-byte",
-        "items": lbytes,
+        "items": pod.lbytes,
         "scope": "constant.language.iesdp.byte",
     },
     "words": {
         "stanza": "iesdp-word",
-        "items": words,
+        "items": pod.words,
         "scope": "constant.language.iesdp.word",
     },
     "dwords": {
         "stanza": "iesdp-dword",
-        "items": dwords,
+        "items": pod.dwords,
         "scope": "constant.language.iesdp.dword",
     },
     "resrefs": {
         "stanza": "iesdp-resref",
-        "items": resrefs,
+        "items": pod.resrefs,
         "scope": "constant.language.iesdp.resref",
     },
     "strrefs": {
         "stanza": "iesdp-strref",
-        "items": strrefs,
+        "items": pod.strrefs,
         "scope": "constant.language.iesdp.strref",
     },
     "other": {
         "stanza": "iesdp-other",
-        "items": other,
+        "items": pod.other,
         "scope": "constant.language.iesdp.other",
     },
 }

@@ -52,9 +52,9 @@ def get_offset_id(item, prefix):
     # id must be alnum + '_' only
     if re.match(r"^[a-zA-Z0-9_]+$", iid):
         return iid
-    else:
-        print('Bad id: "{iid}". Aborting.')
-        sys.exit(1)
+    # no good id found, aborting
+    print('Bad id: "{iid}". Aborting.')
+    sys.exit(1)
 
 
 def get_offset_size(item):
