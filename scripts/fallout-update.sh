@@ -42,6 +42,6 @@ last_v="v$(git tag | grep "^v" | sed 's|^v||' | sort -n | tail -1)"
 git checkout "$last_v"
 popd
 
-./scripts/fallout-update.py -s "$external" --sfall-file "$sfall_file" --highlight-file "$highlight_file"
+./scripts/fallout_update.py -s "$external" --sfall-file "$sfall_file" --highlight-file "$highlight_file"
 
 ./scripts/syntaxes_to_json.sh

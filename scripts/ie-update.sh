@@ -30,7 +30,7 @@ cd $iesdp_dir
 git checkout ielib
 git pull
 popd
-./scripts/iesdp-update.py -s "$iesdp_dir" \
+./scripts/iesdp_update.py -s "$iesdp_dir" \
     --highlight-baf "$highlight_baf" \
     --data-baf "$data_baf" \
     --highlight-weidu "$highlight_weidu" \
@@ -45,7 +45,7 @@ fi
 cd "$ielib_dir"
 git pull
 popd
-./scripts/ielib-update.py -s "$ielib_dir" --data-file "$data_weidu_ielib" --highlight-weidu "$highlight_weidu"
+./scripts/ielib_update.py -s "$ielib_dir" --data-file "$data_weidu_ielib" --highlight-weidu "$highlight_weidu"
 
 # convert yaml to json
 ./scripts/syntaxes-to-json.sh
