@@ -15,14 +15,11 @@ def get_offset_prefix(file_version, data_file_name):  # eff_v2 / body.yml
     # custom prefix for some data structures
     fbase = data_file_name.replace(".yml", "")
     fbase_map = {"header": "", "body": "", "extended_header": "head"}
-    try:
-        suffix = fbase_map[fbase]
-    except:  # noqa: E722
-        suffix = fbase
+    suffix = fbase_map.get(fbase, fbase)
 
-    prefix = "{}{}_".format(base, version)
+    prefix = f"{base}{version}_"
     if suffix != "":
-        prefix = prefix + "{}_".format(suffix)
+        prefix = prefix + f"{suffix}_"
     prefix = prefix.upper()
     return prefix
 
@@ -56,7 +53,7 @@ def get_offset_id(item, prefix):
     if re.match(r"^[a-zA-Z0-9_]+$", iid):
         return iid
     else:
-        print('Bad id: "{}". Aborting.'.format(iid))
+        print('Bad id: "{iid}". Aborting.')
         sys.exit(1)
 
 
@@ -78,7 +75,7 @@ def offsets_to_definition(data, prefix):
     items = OrderedDict()
     for i in data:
         if "offset" in i and i["offset"] != cur_off:
-            print("Error: offset mismatch. Expected {}, got {} for {}".format(cur_off, i["offset"], i))
+            print(f"Error: offset mismatch. Expected {cur_off}, got {i['offset']} for {i}")
 
         size = get_offset_size(i)
 

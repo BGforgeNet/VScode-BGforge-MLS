@@ -9,7 +9,7 @@ from collections import OrderedDict
 import frontmatter
 import ruamel.yaml
 from ie import (
-    LS,
+    litscal,
     action_desc,
     action_detail,
     append_unique,
@@ -63,8 +63,8 @@ opcode_file = os.path.join(ielib_dir, "misc", "opcode.tpp")
 opcode_dir = os.path.join(iesdp_dir, "_opcodes")
 opcodes = []
 opcodes_ee = []
-ee_min_opcode = 318  # everything lower tha this this doesn't make it to opcode_ee.tpp
-tpp_text = ""
+EE_MIN_OPCODE = 318  # everything lower tha this this doesn't make it to opcode_ee.tpp
+tpp_text = ""  # pylint: disable=invalid-name # not sure why pylint thinks it's a constant
 skip_opcode_names = ["empty", "crash", "unknown"]
 
 # actions
@@ -72,7 +72,7 @@ actions_dir = os.path.join(iesdp_dir, "_data", "actions")
 highlight_baf = args.highlight_baf
 data_baf = args.data_baf
 actions = []
-actions_stanza = "actions"
+ACTIONS_STANZA = "actions"
 
 # iesdp
 iesdp_file = args.iesdp_file
@@ -80,10 +80,10 @@ highlight_weidu = args.highlight_weidu
 file_formats_dir = os.path.join(iesdp_dir, "_data", "file_formats")
 
 
-iesdp_base_url = "https://gibberlings3.github.io/iesdp/"
-iesdp_actions_url = "{}/scripting/actions".format(iesdp_base_url)
+IESDP_BASE_URL = "https://gibberlings3.github.io/iesdp/"
+IESDP_ACTIONS_URL = f"{IESDP_BASE_URL}/scripting/actions"
 iesdp_games_file = os.path.join(iesdp_dir, "_data", "games.yml")
-with open(iesdp_games_file) as yf:
+with open(iesdp_games_file, encoding="utf8") as yf:
     iesdp_games = yaml.load(yf)
 
 # OPCODES
@@ -101,13 +101,13 @@ for o in opcodes:
         continue
     name_count = len([i for i in opcodes_unique if i == name])  # some name collude, need to make unique
     if name_count > 0:
-        name = name + "_{}".format(name_count + 1)
+        name = name + f"_{name_count + 1}"
     opcodes_unique[name] = o["n"]
 
-for o in opcodes_unique:
-    tpp_text += "OPCODE_{} = {}\n".format(o, opcodes_unique[o])
+for name, value in opcodes_unique.items():
+    tpp_text += f"OPCODE_{name} = {value}\n"
 
-with open(opcode_file, "w") as f:
+with open(opcode_file, "w", encoding="utf8") as f:
     print(tpp_text, file=f)
 # END OPCODES
 
@@ -115,7 +115,7 @@ with open(opcode_file, "w") as f:
 # ACTIONS
 files = find_files(actions_dir, "yml")
 for f in files:
-    with open(f) as yf:
+    with open(f, encoding="utf8") as yf:
         action = yaml.load(yf)
     if ("bg2" in action and action["bg2"] == 1) or (
         "bgee" in action and action["bgee"] == 1
@@ -127,13 +127,13 @@ actions = sorted(actions, key=lambda k: k["n"])
 # highlight
 actions_highlight = [x["name"] for x in actions]
 actions_highlight = set(actions_highlight)
-actions_highlight_patterns = [{"match": "\\b({})\\b".format(x)} for x in actions_highlight]
+actions_highlight_patterns = [{"match": f"\\b({x})\\b"} for x in actions_highlight]
 actions_highlight_patterns = sorted(actions_highlight_patterns, key=lambda k: k["match"])
 # dump to file
-with open(highlight_baf) as yf:
+with open(highlight_baf, encoding="utf8") as yf:
     data = yaml.load(yf)
-    data["repository"][actions_stanza]["patterns"] = actions_highlight_patterns
-with open(highlight_baf, "w") as yf:
+    data["repository"][ACTIONS_STANZA]["patterns"] = actions_highlight_patterns
+with open(highlight_baf, "w", encoding="utf8") as yf:
     yaml.dump(data, yf)
 
 actions_unique = []
@@ -156,10 +156,10 @@ for a in actions_unique:
         continue
     if "Dialogue" in a["name"]:
         continue  # dupes of Dialog
-    desc = action_desc(actions_unique, a, iesdp_games, iesdp_base_url)
+    desc = action_desc(actions_unique, a, iesdp_games, IESDP_BASE_URL)
     if not desc:
         continue
-    desc = LS(desc)
+    desc = litscal(desc)
     # format multiline properly
     desc = strip_liquid(desc)
     action = {"name": a["name"], "detail": action_detail(a), "doc": desc}
@@ -168,10 +168,10 @@ for a in actions_unique:
 actions_completion = sorted(actions_completion, key=lambda k: k["name"])
 
 # dump to file
-with open(data_baf) as yf:
+with open(data_baf, encoding="utf8") as yf:
     data = yaml.load(yf)
-    data[actions_stanza]["items"] = actions_completion
-with open(data_baf, "w") as yf:
+    data[ACTIONS_STANZA]["items"] = actions_completion
+with open(data_baf, "w", encoding="utf8") as yf:
     yaml.dump(data, yf)
 # END ACTIONS
 
@@ -201,7 +201,7 @@ for ff in formats:
             continue
         prefix = get_offset_prefix(ff, f)
         fpath = os.path.join(ff_dir, f)
-        with open(fpath) as yf:
+        with open(fpath, encoding="utf8") as yf:
             offsets = yaml.load(yf)
 
         new_definition_items = offsets_to_definition(offsets, prefix)
@@ -212,13 +212,13 @@ for ff in formats:
 
 # feature block
 fpath = os.path.join(file_formats_dir, "itm_v1", "feature_block.yml")
-with open(fpath) as yf:
+with open(fpath, encoding="utf8") as yf:
     offsets = yaml.load(yf)
-prefix = "FX_"
-offsets_to_completion(offsets, prefix, chars, lbytes, words, dwords, resrefs, strrefs, other)
+PREFIX_FX = "FX_"
+offsets_to_completion(offsets, PREFIX_FX, chars, lbytes, words, dwords, resrefs, strrefs, other)
 
-definition_items = offsets_to_definition(offsets, prefix)
-dump_definition(prefix, definition_items, structures_dir)
+definition_items = offsets_to_definition(offsets, PREFIX_FX)
+dump_definition(PREFIX_FX, definition_items, structures_dir)
 
 
 # sanitising

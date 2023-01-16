@@ -15,55 +15,59 @@ yaml.width = 4096
 yaml.indent(mapping=2, sequence=4, offset=2)
 
 
-def LS(s):
-    return LiteralScalarString(textwrap.dedent(s))
+def litscal(string):
+    return LiteralScalarString(textwrap.dedent(string))
 
 
-COMPLETION_TYPE_constant = 21
-COMPLETION_TYPE_function = 3
+COMPLETION_TYPE_CONSTANT = 21
+COMPLETION_TYPE_FUNCTION = 3
 
 
 def find_file(path, name):
-    for root, dirs, files in os.walk(path, followlinks=True):
+    for root, dirs, files in os.walk(path, followlinks=True):  # pylint: disable=unused-variable
         if name in files:
             return os.path.join(root, name)
 
 
-def find_files(path, ext, skip_dirs=[], skip_files=["iesdp.tpp"]):
+def find_files(path, ext, skip_dirs=None, skip_files=None):
+    if skip_dirs is None:
+        skip_dirs = []
+    if skip_files is None:
+        skip_files = ["iesdp.tpp"]
     flist = []
     for root, dirs, files in os.walk(path, followlinks=True):
         dirs[:] = [d for d in dirs if d not in skip_dirs]
-        for f in files:
-            if f.lower().endswith(ext.lower()) and f not in skip_files:
-                flist.append(os.path.join(root, f))
+        for fname in files:
+            if fname.lower().endswith(ext.lower()) and fname not in skip_files:
+                flist.append(os.path.join(root, fname))
     return flist
 
 
 # https://stackoverflow.com/questions/42899405/sort-a-list-with-longest-items-first
-def sort_longer_first(s, t):
-    for p, q in zip(s, t):
-        if p < q:
+def sort_longer_first(key1, key2):
+    for key12, key22 in zip(key1, key2):
+        if key12 < key22:
             return -1
-        if q < p:
+        if key22 < key12:
             return 1
-    if len(s) > len(t):
+    if len(key1) > len(key2):
         return -1
-    elif len(t) > len(s):
+    if len(key2) > len(key1):
         return 1
     return 0
 
 
 def dump_completion(fpath, iedata):
     # dump to completion
-    with open(fpath) as yf:
-        data = yaml.load(yf)
+    with open(fpath, encoding="utf8") as yaf:
+        data = yaml.load(yaf)
     for k in iedata:
         ied = iedata[k]
         stanza = ied["stanza"]
         try:
             ctype = ied["completion_type"]
-        except:  # noqa: E722
-            ctype = COMPLETION_TYPE_constant
+        except:  # noqa: E722 # pylint: disable=bare-except
+            ctype = COMPLETION_TYPE_CONSTANT
         if stanza not in data:
             data.insert(1, stanza, {"type": ctype})
         data[stanza]["type"] = ctype
@@ -71,25 +75,25 @@ def dump_completion(fpath, iedata):
         items = sorted(ied["items"], key=lambda k: k["name"])
         data[stanza]["items"] = items
     check_completion(data)
-    with open(fpath, "w") as yf:
-        yaml.dump(data, yf)
+    with open(fpath, "w", encoding="utf8") as yaf:
+        yaml.dump(data, yaf)
 
 
 def check_completion(data):
     items = []
-    for d in data:
-        items += [i["name"] for i in data[d]["items"]]
+    for dataitem in data:
+        items += [i["name"] for i in data[dataitem]["items"]]
     allow_dupes = ["EVALUATE_BUFFER"]  # this is used in both vars and compilation
     dupes = set([x for x in items if items.count(x) > 1 and x not in allow_dupes])
     if len(dupes) > 0:
-        print("Error: duplicated completion items found: {}".format(dupes))
+        print(f"Error: duplicated completion items found: {dupes}")
         sys.exit(1)
 
 
 def dump_highlight(fpath, iedata):
     # dump to syntax highlight
-    with open(fpath) as yf:
-        data = yaml.load(yf)
+    with open(fpath, encoding="utf8") as yaf:
+        data = yaml.load(yaf)
     for k in iedata:
         ied = iedata[k]
         stanza = ied["stanza"]
@@ -104,16 +108,16 @@ def dump_highlight(fpath, iedata):
 
         items = [x["name"] for x in ied["items"]]
         items = sorted(items, key=functools.cmp_to_key(sort_longer_first))
-        items = [{"match": "\\b({})\\b".format(x)} for x in items]
+        items = [{"match": f"\\b({x})\\b"} for x in items]
 
         string_items = [x["name"] for x in string_items]
         string_items = sorted(string_items, key=functools.cmp_to_key(sort_longer_first))
-        string_items = [{"match": "(%{}%)".format(x)} for x in string_items]
+        string_items = [{"match": f"(%{x}%)"} for x in string_items]
 
         items = string_items + items
         repository[stanza]["patterns"] = items
-    with open(fpath, "w") as yf:
-        yaml.dump(data, yf)
+    with open(fpath, "w", encoding="utf8") as yaf:
+        yaml.dump(data, yaf)
 
 
 # dump dict of items to iesdp.tpp in the corresponding dir
@@ -123,9 +127,9 @@ def dump_definition(prefix, items, structures_dir):
     os.makedirs(output_dir, exist_ok=True)
     text = ""
     for i in items:
-        text += "{} = {}\n".format(i, items[i])
-    with open(output_file, "w") as fh:
-        print(text, file=fh)
+        text += f"{i} = {items[i]}\n"
+    with open(output_file, "w", encoding="utf8") as fhandle:
+        print(text, file=fhandle)
 
 
 # mutates lists in place
@@ -136,9 +140,9 @@ def offsets_to_completion(data, prefix, chars, lbytes, words, dwords, resrefs, s
         iid = get_offset_id(i, prefix)
 
         if "mult" in i:  # multiword, multibyte - etc
-            detail = "multi {} {}".format(i["type"], iid)
+            detail = f"multi {i['type']} {iid}"
         else:
-            detail = "{} {}".format(i["type"], iid)
+            detail = "{i['type']} {iid}"
 
         item = {"name": iid, "detail": detail, "doc": strip_liquid(i["desc"])}
 

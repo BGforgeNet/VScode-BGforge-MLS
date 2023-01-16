@@ -55,23 +55,23 @@ def action_desc_absolute_urls(desc, games, game_name, iesdp_base_url):
 
 
 def append_unique(actions, new_actions):
-    for na in new_actions:
-        existing = [x for x in actions if x["name"] == na["name"]]
+    for new_action in new_actions:
+        existing = [x for x in actions if x["name"] == new_action["name"]]
         if len(existing) == 0:
-            actions.append(na)
+            actions.append(new_action)
     return actions
 
 
 def action_detail(action):
     if "params" not in action:
-        return "{}()".format(action["name"])
+        return "{action['name']}()"
     param_string = ""
     first_param = True
-    for p in action["params"]:
+    for param in action["params"]:
         if not first_param:
             param_string = param_string + ", "
         first_param = False
-        param_string = param_string + "{}:{}".format(p["type"].upper(), p["name"])
-        if "ids" in p:
-            param_string = param_string + "*{}".format(p["ids"].title())
-    return "{}({})".format(action["name"], param_string)
+        param_string = param_string + f"{param['type'].upper()}:{param['name']}"
+        if "ids" in param:
+            param_string = param_string + f"*{param['ids'].title()}"
+    return f"{action['name']}({param_string})"

@@ -37,14 +37,14 @@ tooltip_lang_id = args.tooltip_lang_id
 
 
 def load_data(yaml_list):
-    data = {}
+    result = {}
     for ypath in yaml_list:
         print(ypath)
-        with open(ypath) as yf:
-            ydata = yaml.load(yf)
+        with open(ypath, encoding="utf8") as yaf:
+            ydata = yaml.load(yaf)
         # merge, keep order
-        data = {**data, **ydata}
-    return data
+        result = {**result, **ydata}
+    return result
 
 
 def get_detail(item, include_types=True):
@@ -55,13 +55,13 @@ def get_detail(item, include_types=True):
     if "args" in item:
         # this is for hover and completion
         if include_types:
-            args_with_type = ["{} {}".format(a["type"], a["name"]) for a in item["args"]]
+            args_with_type = [f"{a['type']} {a['name']}" for a in item["args"]]
             args_string = ", ".join(args_with_type)
-            detail = "{} {}({})".format(item["type"], item["name"], args_string)
+            detail = f"{item['type']} {item['name']}({args_string})"
         else:  # and this is for signature
             args_no_type = [a["name"] for a in item["args"]]
             args_string = ", ".join(args_no_type)
-            detail = "{}({})".format(item["name"], args_string)
+            detail = f"{item['name']}({args_string})"
     else:
         if "detail" in item:
             detail = item["detail"]
@@ -76,10 +76,10 @@ def get_doc(item):
     """
     doc = ""
     if "args" in item:
-        for a in item["args"]:
+        for arg in item["args"]:
             # doc = doc + "- `{} {}` {}\n".format(a["type"], a["name"], a["doc"])
             # type is already shown in detail
-            doc = doc + "- `{}` {}\n".format(a["name"], a["doc"])
+            doc = doc + f"- `{arg['name']}` {arg['doc']}\n"
     if "args" in item and "doc" in item:
         doc += "\n"
     if "doc" in item:
@@ -88,8 +88,8 @@ def get_doc(item):
 
 
 def generate_completion(data):
-    completion_data = []
-    COMPLETION_TAG_deprecated = 1
+    result = []
+    COMPLETION_TAG_deprecated = 1  # pylint: disable=invalid-name
     for items_list in data:
         kind = data[items_list]["type"]
         items = data[items_list]["items"]
@@ -103,11 +103,11 @@ def generate_completion(data):
             detail = get_detail(item)
             doc = get_doc(item)
             if (detail != label) or (doc != ""):
-                md_value = "```{}\n{}\n```".format(tooltip_lang_id, detail)
+                md_value = f"```{tooltip_lang_id}\n{detail}\n```"
                 if doc != "":
-                    md_value = "{}\n{}".format(md_value, doc)
-                markdown = {"kind": "markdown", "value": md_value}
-                completion_item["documentation"] = markdown
+                    md_value = f"{md_value}\n{doc}"
+                markdown_contents = {"kind": "markdown", "value": md_value}
+                completion_item["documentation"] = markdown_contents
 
             if "deprecated" in item:
                 deprecated = item["deprecated"]
@@ -116,12 +116,12 @@ def generate_completion(data):
             if deprecated:
                 completion_item["tags"] = [COMPLETION_TAG_deprecated]
 
-            completion_data.append(completion_item)
-    return completion_data
+            result.append(completion_item)
+    return result
 
 
-def generate_hover(data, tooltip_lang_id):
-    hover_data = {}
+def generate_hover(data, lang_id):
+    result = {}
     for items_list in data:
         items = data[items_list]["items"]
         for item in items:
@@ -132,15 +132,15 @@ def generate_hover(data, tooltip_lang_id):
                 continue
 
             detail = get_detail(item)
-            value = "```{}\n{}\n```".format(tooltip_lang_id, detail)
+            value = f"```{lang_id}\n{detail}\n```"
             doc = get_doc(item)
             if doc != "":
-                value = "{}\n{}".format(value, doc)
+                value = f"{value}\n{doc}"
 
-            markdown = {"kind": "markdown", "value": value}
-            hover = {"contents": markdown}
-            hover_data[label] = hover
-    return hover_data
+            markdown_contents = {"kind": "markdown", "value": value}
+            hover = {"contents": markdown_contents}
+            result[label] = hover
+    return result
 
 
 def markdown(string):
@@ -160,28 +160,28 @@ def generate_signatures(data, lang_id):
 
             label = get_detail(item, include_types=False)
             parameters = []
-            for a in item["args"]:
-                doc = "```{}\n{} {}\n```\n{}".format(lang_id, a["type"], a["name"], a["doc"])
-                parameters.append({"label": a["name"], "documentation": markdown(doc)})
+            for arg in item["args"]:
+                doc = f"```{lang_id}\n{arg['type']} {arg['name']}\n```\n{arg['doc']}"
+                parameters.append({"label": arg["name"], "documentation": markdown(doc)})
 
-            function_doc = markdown("---\n{}".format(item["doc"]))
+            function_doc = markdown(f"---\n{item['doc']}")
             sig_data[name] = {"label": label, "documentation": function_doc, "parameters": parameters}
     return sig_data
 
 
-data = load_data(input_yaml_list)
-completion_data = generate_completion(data)
-hover_data = generate_hover(data, tooltip_lang_id)
+input_data = load_data(input_yaml_list)
+completion_data = generate_completion(input_data)
+hover_data = generate_hover(input_data, tooltip_lang_id)
 
 if signature_file:
-    signature_data = generate_signatures(data, tooltip_lang_id)
+    signature_data = generate_signatures(input_data, tooltip_lang_id)
 
-with open(hover_file, "w") as jf:
+with open(hover_file, "w", encoding="utf8") as jf:
     json.dump(hover_data, jf, indent=4)
 
-with open(completion_file, "w") as jf:
+with open(completion_file, "w", encoding="utf8") as jf:
     json.dump(completion_data, jf, indent=4)
 
 if signature_file:
-    with open(signature_file, "w") as jf:
+    with open(signature_file, "w", encoding="utf8") as jf:
         json.dump(signature_data, jf, indent=4)

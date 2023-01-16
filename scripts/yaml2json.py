@@ -9,7 +9,7 @@ yaml = ruamel.yaml.YAML(typ="rt")
 yaml.width = 4096
 yaml.indent(mapping=2, sequence=4, offset=2)
 
-with open(sys.argv[1]) as yf:
+with open(sys.argv[1], encoding="utf8") as yf:
     data = yaml.load(yf)
 
 for rep_item in data["repository"]:  # allow to use shorthand syntax in yaml
@@ -19,5 +19,5 @@ for rep_item in data["repository"]:  # allow to use shorthand syntax in yaml
             if "name" not in item:
                 item["name"] = rep_data["name"]
 
-with open(sys.argv[2], "w") as jf:
+with open(sys.argv[2], "w", encoding="utf8") as jf:
     json.dump(data, jf, indent=2)

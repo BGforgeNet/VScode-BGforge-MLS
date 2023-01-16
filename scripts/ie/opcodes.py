@@ -18,10 +18,9 @@ def opcode_name_to_id(name):
         "____": "_",
         "___": "_",
         "__": "_",
-        "__": "_",  # intentional
     }
     # these are stripped from left part
-    lstrip = [
+    left_strip = [
         "item_",
         "graphics_",
         "spell_effect_",  # should be before _spell
@@ -31,10 +30,11 @@ def opcode_name_to_id(name):
         "summon_",
     ]
     name = name.lower()
-    for r in replacements:
-        name = name.replace(r, replacements[r])
+    for orig, repl in replacements.items():
+        name = name.replace(orig, repl)
+    name = name.replace("__", "_")  # intentional
     name = name.rstrip("_").lstrip("_")
-    for ls in lstrip:
-        if name.startswith(ls):
-            name = name[len(ls):]
+    for left in left_strip:
+        if name.startswith(left):
+            name = name[len(left):]
     return name
