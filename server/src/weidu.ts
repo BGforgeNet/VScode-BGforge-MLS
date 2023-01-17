@@ -312,8 +312,58 @@ function jsdocToMD(jsd: jsdoc.JSdoc) {
         md += `\n${jsd.desc}`;
     }
     if (jsd.args.length > 0) {
-        for (const arg of jsd.args) {
-            md += `\n- \`${arg.type}\` ${arg.name}`;
+        // types from IElib https://ielib.bgforge.net/types/
+        const intVars = jsd.args.filter((item) => {
+            switch (item.type) {
+                case "bool":
+                case "int":
+                    return true;
+                default:
+                    return false;
+            }
+        });
+        const strVars = jsd.args.filter((item) => {
+            switch (item.type) {
+                case "ids":
+                case "resref":
+                case "filename":
+                case "string":
+                    return true;
+                default:
+                    return false;
+            }
+        });
+        if (intVars.length > 0) {
+            md += "\n\n|INT_VAR|Name|Default|Description|\n|:-|:-|:-:|:-|";
+            for (const arg of intVars) {
+                md += `\n| \`${arg.type}\` | ${arg.name} |`;
+                if (arg.default) {
+                    md += `${arg.default}`;
+                }
+                md += "|";
+                if (arg.description) {
+                    md += `${arg.description}`;
+                }
+                md += "|";
+            }
+        }
+        if (strVars.length > 0) {
+            if (intVars.length == 0) {
+                md += "\n\n|STR_VAR|Name|Default|Description|\n|:-|:-|:-:|:-|";
+            } else {
+                md += "\n|**STR_VAR**||||";
+            }
+            for (const arg of strVars) {
+                md += `\n| \`${arg.type}\` | ${arg.name} |`;
+                if (arg.default) {
+                    md += `${arg.default}`;
+                }
+                md += "|";
+                if (arg.description) {
+                    md += `${arg.description}`;
+                }
+                md += "|";
+            }
         }
     }
     if (jsd.ret) {
