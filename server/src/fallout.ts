@@ -44,7 +44,7 @@ interface DefineListItem {
 }
 interface DefineList extends Array<DefineListItem> {}
 
-const langId = "fallout-ssl";
+const tooltipLangId = "fallout-ssl-tooltip";
 const sslExt = ".ssl";
 
 export async function loadHeaders(headersDirectory: string, external = false) {
@@ -99,7 +99,7 @@ function loadProcedures(uri: string, headerData: FalloutHeaderData, filePath: st
     const hovers: hover.HoverMapEx = new Map();
     for (const proc of headerData.procedures) {
         let markdownValue = [
-            "```" + `${langId}`,
+            "```" + `${tooltipLangId}`,
             `${proc.detail}`,
             "```",
             "\n```bgforge-mls-comment\n",
@@ -138,7 +138,7 @@ function loadMacros(uri: string, headerData: FalloutHeaderData, filePath: string
         }
 
         markdownValue = [
-            "```" + `${langId}`,
+            "```" + `${tooltipLangId}`,
             `${detail}`,
             "```",
             "\n```bgforge-mls-comment\n",
@@ -147,7 +147,7 @@ function loadMacros(uri: string, headerData: FalloutHeaderData, filePath: string
         ].join("\n");
         // for single line ones, show full line too
         if (!macro.multiline && !macro.constant) {
-            markdownValue += ["\n```" + `${langId}`, `${macro.firstline}`, "```"].join("\n");
+            markdownValue += ["\n```" + `${tooltipLangId}`, `${macro.firstline}`, "```"].join("\n");
         }
         let completionKind;
         if (macro.constant) {
@@ -325,12 +325,22 @@ function jsdocToMD(jsd: jsdoc.JSdoc) {
         md += `\n${jsd.desc}`;
     }
     if (jsd.args.length > 0) {
+        md += "\n\n|type|name|default|description|\n|:-|:-|:-|:-|";
+        // md += "\n\n|Parameters||\n|:-|:-|"
         for (const arg of jsd.args) {
-            md += `\n- \`${arg.type}\` ${arg.name}`;
+            md += `\n| \`${arg.type}\` | ${arg.name} |`;
+            if (arg.default) {
+                md += `${arg.default}`;
+            }
+            md += "|";
+            if (arg.description) {
+                md += `${arg.description}`;
+            }
+            md += "|";
         }
     }
     if (jsd.ret) {
-        md += `\n\n Returns \`${jsd.ret.type}\``;
+        md += `\n\n**Returns** \`${jsd.ret.type}\``;
     }
     return md;
 }
