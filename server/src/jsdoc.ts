@@ -1,25 +1,26 @@
-interface arg {
+interface Arg {
     name: string;
     type: string;
     default?: string;
+    description?: string
 }
 
-interface ret {
+interface Ret {
     type: string;
 }
 
 export interface JSdoc {
     desc?: string;
-    args: arg[];
-    ret?: ret;
+    args: Arg[];
+    ret?: Ret;
     deprecated?: boolean;
 }
 
 export function parse(text: string) {
-    const args = [];
+    const args: Arg[] = [];
     const lines = text.split("\n");
     const lines2 = [];
-    let ret: ret | null = null;
+    let ret: Ret | null = null;
     lines.shift();
     lines.pop();
     let deprecated = false;
@@ -28,11 +29,22 @@ export function parse(text: string) {
         if (!l2.startsWith("@")) {
             lines2.push(l2);
         }
-        const argMatch = l2.match(/@(arg|param) {(.*)} (\w+)/);
+        const argMatch = l2.match(/@(arg|param) {(\w+)} ((\w+)|(\[(\w+)=(.+)\]))(\s+-\s+|\s+)(\w.*)?/);
         if (argMatch) {
-            args.push({ name: argMatch[3], type: argMatch[2] });
+            const arg: Arg = { name: "", type: argMatch[2]};
+            // args.push({ name: argMatch[3], type: argMatch[2] });
+            if (argMatch[6]) {
+                arg.name = argMatch[6];
+                arg.default = argMatch[7];
+            } else {
+                arg.name = argMatch[4];
+            }
+            if (argMatch[9]) {
+                arg.description = argMatch[9];
+            }
+            args.push(arg);
         }
-        const retMatch = l2.match(/@(ret|return|returns) {(.*)}/);
+        const retMatch = l2.match(/@(ret|return|returns) {(\w+)}/);
         if (retMatch) {
             ret = { type: retMatch[2] };
         }
