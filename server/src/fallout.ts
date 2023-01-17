@@ -201,7 +201,7 @@ function findSymbols(text: string) {
     const defineList: DefineList = [];
     const defineRegex =
         /((\/\*\*\s*\n([^*]|(\*(?!\/)))*\*\/)\r?\n)?#define[ \t]+(\w+)(?:\(([^)]+)\))?[ \t]+(.+)/gm;
-    const constantRegex = /^[A-Z0-9_]+/;
+    const constantRegex = /^[A-Z][A-Z0-9_]+/;
     let matches = text.matchAll(defineRegex);
     for (const m of matches) {
         const defineName = m[5];
@@ -223,12 +223,11 @@ function findSymbols(text: string) {
         }
 
         // check if it's looks like a constant
-        // a more elaborate analysis could catch more constants
-        // this is deliberately simple to encourage better and more consistent code style
         let constant = false;
         if (!multiline && constantRegex.test(defineName)) {
             constant = true;
         }
+
         // if jsdoc found
         if (m[2]) {
             const jsd = jsdoc.parse(m[2]);
