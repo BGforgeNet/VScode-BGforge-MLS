@@ -228,29 +228,21 @@ function findSymbols(text: string) {
             constant = true;
         }
 
+        const item: DefineListItem = {
+            label: defineName,
+            constant: constant,
+            detail: defineDetail,
+            multiline: multiline,
+            firstline: defineFirstline,
+        };
         // if jsdoc found
         if (m[2]) {
             const jsd = jsdoc.parse(m[2]);
-            defineDetail = jsdocToDetail(defineName, jsd);
-            const item = {
-                label: defineName,
-                constant: constant,
-                detail: defineDetail,
-                multiline: multiline,
-                firstline: defineFirstline,
-                jsdoc: jsd,
-            };
-            defineList.push(item);
-        } else {
-            const item = {
-                label: defineName,
-                constant: constant,
-                detail: defineDetail,
-                multiline: multiline,
-                firstline: defineFirstline,
-            };
+            item.jsdoc = jsd;
+            item.detail = jsdocToDetail(defineName, jsd);
             defineList.push(item);
         }
+        defineList.push(item);
     }
 
     // procedures
