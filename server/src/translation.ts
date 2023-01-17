@@ -8,6 +8,7 @@ interface TraEntry {
     source: string;
     hover: Hover;
     inlay: string;
+    inlayTooltip?: string;
 }
 
 /** Single file entries */
@@ -103,7 +104,10 @@ export class Translation implements Translation {
                 },
             };
             const inlay = stringToInlay(str);
-            const entry = { source: str, hover: hover, inlay: inlay };
+            const entry: TraEntry = { source: str, hover: hover, inlay: inlay };
+            if (str != inlay) {
+                entry.inlayTooltip = str;
+            }
             lines.set(num, entry);
             match = regex.exec(text);
         }

@@ -2,8 +2,15 @@ import { InlayHint } from "vscode-languageserver";
 import { Range } from "vscode-languageserver-textdocument";
 import { TraEntries, TraExt } from "./translation";
 
+interface HintValue {
+    label: string;
+    tooltip?: string;
+}
+
 function getHintString(traEntries: TraEntries, traFileKey: string, lineKey: string) {
     let value: string;
+    let tooltip = "";
+    // let tooltip: MarkupContent = { kind: "plaintext", value: "" };
     if (!traEntries) {
         value = `/* Error: no such file ${traFileKey} */`;
     } else {
@@ -12,9 +19,13 @@ function getHintString(traEntries: TraEntries, traFileKey: string, lineKey: stri
             value = `/* Error: no such string ${traFileKey}:${lineKey} */`;
         } else {
             value = traEntry.inlay;
+            if (traEntry.inlayTooltip) {
+                tooltip = traEntry.inlayTooltip;
+            }
         }
     }
-    return value;
+    const result: HintValue = { label: value, tooltip: tooltip };
+    return result;
 }
 
 export function getHints(
@@ -55,10 +66,11 @@ export function getHints(
                 lineKey = m[1];
             }
             const pos = { line: range.start.line + i, character: char_end };
-            const value = getHintString(traEntries, traFileKey, lineKey);
+            const hintValue = getHintString(traEntries, traFileKey, lineKey);
             const hint: InlayHint = {
                 position: pos,
-                label: value,
+                label: hintValue.label,
+                tooltip: hintValue.tooltip,
                 kind: 2,
                 paddingLeft: true,
                 paddingRight: true,
