@@ -326,7 +326,6 @@ function jsdocToMD(jsd: jsdoc.JSdoc) {
     }
     if (jsd.args.length > 0) {
         md += "\n\n|type|name|default|description|\n|:-|:-|:-|:-|";
-        // md += "\n\n|Parameters||\n|:-|:-|"
         for (const arg of jsd.args) {
             md += `\n| \`${arg.type}\` | ${arg.name} |`;
             if (arg.default) {
