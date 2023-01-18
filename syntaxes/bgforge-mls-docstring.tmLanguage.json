@@ -1,0 +1,70 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "BGforge MLS docstring",
+  "scopeName": "source.bgforge-mls-docstring",
+  "patterns": [
+    {
+      "include": "#arg"
+    },
+    {
+      "include": "#comment"
+    }
+  ],
+  "repository": {
+    "arg": {
+      "patterns": [
+        {
+          "match": "(@arg|@param|@ret)(\\s+{(\\w+)})?((\\s+\\w+)|(\\s+\\[(\\w+)=(.+)\\]))?",
+          "captures": {
+            "1": {
+              "name": "support.function.bgforge-mls-docstring"
+            },
+            "2": {
+              "name": "keyword.bgforge-mls-docstring"
+            },
+            "3": {
+              "name": "comment.bgforge-mls-docstring",
+              "patterns": [
+                {
+                  "include": "#type"
+                }
+              ]
+            },
+            "4": {
+              "name": "variable.bgforge-mls-docstring"
+            },
+            "6": {
+              "name": "keyword.bgforge-mls-docstring"
+            },
+            "7": {
+              "name": "variable.bgforge-mls-docstring"
+            },
+            "8": {
+              "name": "variable.bgforge-mls-docstring"
+            }
+          }
+        }
+      ]
+    },
+    "type": {
+      "patterns": [
+        {
+          "match": "\\b(array|any|bool|int|mixed|float|ObjPtr|ObjectPtr|string)\\b",
+          "name": "support.type.bgforge-mls-docstring"
+        },
+        {
+          "match": "\\b(ids|resref|filename)\\b",
+          "name": "support.type.bgforge-mls-docstring"
+        }
+      ]
+    },
+    "comment": {
+      "patterns": [
+        {
+          "match": ".",
+          "name": "comment.bgforge-mls-docstring"
+        }
+      ]
+    }
+  }
+}

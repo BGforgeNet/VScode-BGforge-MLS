@@ -4,6 +4,9 @@
   "scopeName": "source.fallout-ssl",
   "patterns": [
     {
+      "include": "#docstring"
+    },
+    {
       "include": "#comments"
     },
     {
@@ -59,6 +62,25 @@
     }
   ],
   "repository": {
+    "docstring": {
+      "begin": "(/\\*\\*)",
+      "end": "(\\*/)",
+      "beginCaptures": {
+        "1": {
+          "name": "comment.block.fallout-ssl"
+        }
+      },
+      "endCaptures": {
+        "1": {
+          "name": "comment.block.fallout-ssl"
+        }
+      },
+      "patterns": [
+        {
+          "include": "source.bgforge-mls-docstring"
+        }
+      ]
+    },
     "comments": {
       "patterns": [
         {

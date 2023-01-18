@@ -5,6 +5,7 @@ scopeName: source.weidu-tp2
 patterns:
   - include: '#macro-declaration-action'
   - include: '#macro-declaration-patch'
+  - include: '#docstring'
   - include: '#comments'
   - include: '#inlined-d'
   - include: '#inlined-baf'
@@ -42,6 +43,18 @@ patterns:
   - include: '#ielib-functions'
 
 repository:
+  docstring:
+    begin: (/\*\*)
+    end: (\*/)
+    beginCaptures:
+      '1':
+        name: comment.block.fallout-ssl
+    endCaptures:
+      '1':
+        name: comment.block.fallout-ssl
+    patterns:
+      - include: source.bgforge-mls-docstring
+
   comments:
     patterns:
       - match: (//).*

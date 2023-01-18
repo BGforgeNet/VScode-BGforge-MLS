@@ -2,6 +2,7 @@ $schema: https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlangua
 name: Fallout Star-Trek Scripting Language
 scopeName: source.fallout-ssl
 patterns:
+  - include: '#docstring'
   - include: '#comments'
   - include: '#function-invocation'
   - include: '#keywords'
@@ -21,6 +22,17 @@ patterns:
   - include: '#local-vars'
   - include: '#defines'
 repository:
+  docstring:
+    begin: (/\*\*)
+    end: (\*/)
+    beginCaptures:
+      '1':
+        name: comment.block.fallout-ssl
+    endCaptures:
+      '1':
+        name: comment.block.fallout-ssl
+    patterns:
+      - include: source.bgforge-mls-docstring
   comments:
     patterns:
       - match: (//).*

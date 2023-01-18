@@ -175,6 +175,9 @@
                 "id": "bgforge-mls-string"
             },
             {
+                "id": "bgforge-mls-docstring"
+            },
+            {
                 "id": "infinity-2da",
                 "aliases": [
                     "Infinity Engine 2DA table"
@@ -276,6 +279,11 @@
                 "language": "bgforge-mls-string",
                 "scopeName": "source.bgforge-mls-string",
                 "path": "./syntaxes/bgforge-mls-string.tmLanguage.json"
+            },
+            {
+                "language": "bgforge-mls-docstring",
+                "scopeName": "source.bgforge-mls-docstring",
+                "path": "./syntaxes/bgforge-mls-docstring.tmLanguage.json"
             },
             {
                 "language": "infinity-2da",
