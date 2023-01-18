@@ -275,7 +275,7 @@ export class Galactus {
         }
     }
 
-    signature(langId: string, text: string, position: Position) {
+    signature(langId: string, text: string, position: Position, uri: string) {
         langId = this.dataLang(langId);
         const language = this.languages.get(langId);
         if (!language) {
@@ -285,7 +285,7 @@ export class Galactus {
         if (!request) {
             return;
         }
-        return language.signature(request);
+        return language.signature(uri, request);
     }
 
     reloadFileData(uri: string, langId: string, text: string) {

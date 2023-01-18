@@ -26,8 +26,13 @@ export async function conlog(item: any) {
             connection.console.log(item);
             break;
         default:
-            if (item.size && item.size > 0 && JSON.stringify(item) == "{}") {
-                connection.console.log(JSON.stringify([...item]));
+            if (item && item.size && item.size > 0 && JSON.stringify(item) == "{}") {
+                if (JSON.stringify([...item]) == "{}") { // map
+                    connection.console.log(item);
+                }
+                else {
+                    connection.console.log(JSON.stringify([...item]));
+                }
             } else {
                 connection.console.log(JSON.stringify(item));
             }

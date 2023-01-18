@@ -3,7 +3,10 @@ import path = require("path");
 import { Position, SignatureInformation } from "vscode-languageserver/node";
 import { conlog } from "./common";
 
-export interface SigMap extends Map<string, SignatureInformation> {}
+export interface SigInfoEx extends SignatureInformation {
+    uri: string;
+}
+export interface SigMap extends Map<string, SigInfoEx> {}
 
 /** uri => [item list] */
 export interface SelfMap extends Map<string, SigMap> {}
@@ -51,16 +54,24 @@ export function getRequest(text: string, position: Position) {
     // only left side matters for signature
     const left = line.slice(0, pos);
     const lastChar = left.slice(-1);
+
     // short circuit on closing parenthesis
     if (lastChar == ")") {
         return;
     }
     const splitOnParen = left.split("(");
     const args = splitOnParen.pop();
-    if (!args) {
+    if (!args && args != "") {
         return;
     }
-    const symbol = args.split(/(\s+)/).pop();
+
+    // get last element from left side
+    let symbol = splitOnParen.at(-1);
+    if (!symbol) {
+        return;
+    }
+    // split it again on whitespace
+    symbol = symbol.split(" ").at(-1);
     if (!symbol) {
         return;
     }

@@ -32,7 +32,7 @@ const valid_extensions = new Map([
 
 interface WeiduHeaderData {
     defines: Defines;
-    definitions: definition.DefinitionList;
+    definitions: definition.Definitions;
 }
 
 interface Define {
@@ -437,7 +437,7 @@ function findDefinitions(text: string) {
         if (match) {
             const name = match[2];
             const index = (match as RegExpMatchArrayWithIndices).indices[2];
-            const item: definition.DefinitionItem = {
+            const item: definition.Definition = {
                 name: name,
                 line: i,
                 start: index[0],

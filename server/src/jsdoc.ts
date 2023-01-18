@@ -29,18 +29,17 @@ export function parse(text: string) {
         if (!l2.startsWith("@")) {
             lines2.push(l2);
         }
-        const argMatch = l2.match(/@(arg|param) {(\w+)} ((\w+)|(\[(\w+)=(.+)\]))(\s+-\s+|\s+)(\w.*)?/);
+        const argMatch = l2.match(/@(arg|param) {(\w+)} ((\w+)|(\[(\w+)=(.+)\]))((\s+-\s+|\s+)(\w.*))?/);
         if (argMatch) {
             const arg: Arg = { name: "", type: argMatch[2]};
-            // args.push({ name: argMatch[3], type: argMatch[2] });
             if (argMatch[6]) {
                 arg.name = argMatch[6];
                 arg.default = argMatch[7];
             } else {
                 arg.name = argMatch[4];
             }
-            if (argMatch[9]) {
-                arg.description = argMatch[9];
+            if (argMatch[10]) {
+                arg.description = argMatch[10];
             }
             args.push(arg);
         }

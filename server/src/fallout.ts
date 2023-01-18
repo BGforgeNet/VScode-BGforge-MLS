@@ -1,4 +1,4 @@
-import { CompletionItemKind } from "vscode-languageserver";
+import { CompletionItemKind, ParameterInformation } from "vscode-languageserver";
 import {
     conlog,
     ParseItemList,
@@ -16,6 +16,7 @@ import * as cp from "child_process";
 import { SSLsettings } from "./settings";
 import * as completion from "./completion";
 import * as definition from "./definition";
+import * as signature from "./signature";
 import * as hover from "./hover";
 import * as fs from "fs";
 import * as jsdoc from "./jsdoc";
@@ -23,18 +24,18 @@ import { HeaderData as LanguageHeaderData } from "./language";
 import PromisePool from "@supercharge/promise-pool";
 
 interface FalloutHeaderData {
-    macros: DefineList;
-    procedures: ProcList;
-    definitions: definition.DefinitionList;
+    macros: Macros;
+    procedures: Procedures;
+    definitions: definition.Definitions;
 }
 
-interface ProcListItem {
+interface Procedure {
     label: string;
     detail: string;
     jsdoc?: jsdoc.JSdoc;
 }
-interface ProcList extends Array<ProcListItem> {}
-interface DefineListItem {
+interface Procedures extends Array<Procedure> {}
+interface Macro {
     label: string;
     detail: string;
     constant: boolean;
@@ -42,7 +43,7 @@ interface DefineListItem {
     firstline: string;
     jsdoc?: jsdoc.JSdoc;
 }
-interface DefineList extends Array<DefineListItem> {}
+interface Macros extends Array<Macro> {}
 
 const tooltipLangId = "fallout-ssl-tooltip";
 const sslExt = ".ssl";
@@ -51,6 +52,7 @@ export async function loadHeaders(headersDirectory: string, external = false) {
     let completions: completion.CompletionListEx = [];
     const hovers: hover.HoverMapEx = new Map();
     const definitions: definition.Data = new Map();
+    const signatures: signature.SigMap = new Map();
     const headerFiles = findFiles(headersDirectory, "h");
 
     const { results, errors } = await PromisePool.withConcurrency(4)
@@ -84,12 +86,19 @@ export async function loadHeaders(headersDirectory: string, external = false) {
                 definitions.set(key, value);
             }
         }
+
+        if (x.signature) {
+            for (const [key, value] of x.signature) {
+                signatures.set(key, value);
+            }
+        }
     });
 
     const result: LanguageHeaderData = {
         completion: completions,
         hover: hovers,
         definition: definitions,
+        signature: signatures,
     };
     return result;
 }
@@ -188,17 +197,68 @@ export function loadFileData(uri: string, text: string, filePath: string) {
     const completions = [...procs.completion, ...macros.completion];
     const hovers = new Map([...procs.hover, ...macros.hover]);
     const definitions = definition.load(uri, symbols.definitions);
+    const signatures = getSignatures(symbols, uri);
     const result: LanguageHeaderData = {
         hover: hovers,
         completion: completions,
         definition: definitions,
+        signature: signatures,
     };
     return result;
 }
 
+function getSignatures(symbols: FalloutHeaderData, uri: string) {
+    const signatures: signature.SigMap = new Map();
+
+    for (const macro of symbols.macros) {
+        if (macro.jsdoc && macro.jsdoc.args.length > 0) {
+            const key = macro.label;
+            const sig = jsdocToSig(macro.label, macro.jsdoc, uri);
+            signatures.set(key, sig);
+        }
+    }
+    // dupe code because of different types
+    for (const procedure of symbols.procedures) {
+        if (procedure.jsdoc && procedure.jsdoc.args.length > 0) {
+            const key = procedure.label;
+            const sig = jsdocToSig(procedure.label, procedure.jsdoc, uri);
+            signatures.set(key, sig);
+        }
+    }
+
+    return signatures;
+}
+
+function jsdocToSig(label: string, jsd: jsdoc.JSdoc, uri: string) {
+    const argNames = jsd.args.map((item) => {
+        return item.name;
+    });
+    const sigLabel = label + "(" + argNames.join(", ") + ")";
+    const sig: signature.SigInfoEx = { label: sigLabel, uri: uri };
+    if (jsd.desc) {
+        sig.documentation = {
+            kind: "markdown",
+            value: "\n---\n" + jsd.desc,
+        };
+    }
+    const parameters: ParameterInformation[] = [];
+    for (const arg of jsd.args) {
+        const info: ParameterInformation = { label: arg.name };
+        let doc = ["```" + `${tooltipLangId}`, `${arg.type} ${arg.name}`, "```"].join("\n");
+        if (arg.description) {
+            doc += "\n";
+            doc += arg.description;
+        }
+        info.documentation = { kind: "markdown", value: doc };
+        parameters.push(info);
+    }
+    sig.parameters = parameters;
+    return sig;
+}
+
 function findSymbols(text: string) {
     // defines
-    const defineList: DefineList = [];
+    const defineList: Macros = [];
     const defineRegex =
         /((\/\*\*\s*\n([^*]|(\*(?!\/)))*\*\/)\r?\n)?#define[ \t]+(\w+)(?:\(([^)]+)\))?[ \t]+(.+)/gm;
     const constantRegex = /^[A-Z][A-Z0-9_]+/;
@@ -228,7 +288,7 @@ function findSymbols(text: string) {
             constant = true;
         }
 
-        const item: DefineListItem = {
+        const item: Macro = {
             label: defineName,
             constant: constant,
             detail: defineDetail,
@@ -246,7 +306,7 @@ function findSymbols(text: string) {
     }
 
     // procedures
-    const procList: ProcList = [];
+    const procList: Procedures = [];
     // multiline jsdoc regex: (\/\*\*\s*\n([^*]|(\*(?!\/)))*\*\/)
     // from here https://stackoverflow.com/questions/35905181/regex-for-jsdoc-comments
     // procedure regex: procedure[\s]+(\w+)(?:\(([^)]+)\))?[\s]+begin
@@ -294,7 +354,7 @@ function findDefinitions(text: string) {
         if (match) {
             const name = match[1];
             const index = (match as RegExpMatchArrayWithIndices).indices[1];
-            const item: definition.DefinitionItem = {
+            const item: definition.Definition = {
                 name: name,
                 line: i,
                 start: index[0],
@@ -306,7 +366,7 @@ function findDefinitions(text: string) {
             if (match) {
                 const name = match[1];
                 const index = (match as RegExpMatchArrayWithIndices).indices[1];
-                const item: definition.DefinitionItem = {
+                const item: definition.Definition = {
                     name: name,
                     line: i,
                     start: index[0],

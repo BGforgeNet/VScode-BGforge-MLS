@@ -202,15 +202,15 @@ connection.onExecuteCommand(async (params) => {
     compile(args.uri, langId, true);
 });
 
-connection.onSignatureHelp((params: TextDocumentPositionParams) => {
+connection.onSignatureHelp((params) => {
     const uri = params.textDocument.uri;
     const document = documents.get(uri);
     if (!document) {
-        return;
+        return null;
     }
     const text = document.getText();
     const langId = document.languageId;
-    return gala?.signature(langId, text, params.position);
+    return gala?.signature(langId, text, params.position, uri);
 });
 
 documents.onDidSave(async (change) => {

@@ -32,7 +32,7 @@ export interface HeaderData {
     completion: completion.CompletionListEx;
     hover: hover.HoverMapEx;
     definition: definition.Data;
-    signature?: signature.Data;
+    signature?: signature.SigMap;
 }
 
 interface Data {
@@ -163,6 +163,9 @@ export class Language implements Language {
                 data.completion.headers = headerData.completion;
                 data.hover.headers = headerData.hover;
                 data.definition = headerData.definition;
+                if (headerData.signature) {
+                    data.signature.headers = headerData.signature;
+                }
             }
 
             if (this.features.externalHeaders && this.externalHeadersDirectory != "") {
@@ -174,6 +177,9 @@ export class Language implements Language {
                         ...data.definition,
                         ...externalHeaderData.definition,
                     ]);
+                    if (externalHeaderData.signature) {
+                        data.signature.extHeaders = externalHeaderData.signature;
+                    }
                 }
             }
         }
@@ -268,6 +274,24 @@ export class Language implements Language {
         return newDefinition;
     }
 
+    private reloadFileSignature(
+        oldSignature: signature.SigMap,
+        fileSignature: signature.SigMap,
+        uri: string
+    ) {
+        let newSignature = new Map(
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            Array.from(oldSignature).filter(([key, value]) => {
+                if (value.uri != uri) {
+                    return true;
+                }
+                return false;
+            })
+        );
+        newSignature = new Map([...newSignature, ...fileSignature]);
+        return newSignature;
+    }
+
     reloadFileData(uri: string, text: string) {
         let fileData: HeaderData;
         const filePath = this.displayPath(uri);
@@ -301,6 +325,15 @@ export class Language implements Language {
                     fileData.hover,
                     uri
                 );
+
+                if (this.features.signature && fileData.signature) {
+                    const newSignature = this.reloadFileSignature(
+                        this.data.signature.headers,
+                        fileData.signature,
+                        uri
+                    );
+                    this.data.signature.self.set(uri, newSignature);
+                }
             } else if (this.inExternalHeadersDirectory(uri)) {
                 // make tslint happy
                 if (!this.data.completion.extHeaders) {
@@ -320,18 +353,41 @@ export class Language implements Language {
                     fileData.hover,
                     uri
                 );
+
+                if (this.features.signature && fileData.signature) {
+                    if (!this.data.signature.extHeaders) {
+                        this.data.signature.extHeaders = new Map();
+                    }
+                    const newSignature = this.reloadFileSignature(
+                        this.data.signature.extHeaders,
+                        fileData.signature,
+                        uri
+                    );
+                    this.data.signature.self.set(uri, newSignature);
+                }
             }
         } else {
             const oldCompletion = this.data.completion.self.get(uri) || [];
-            const oldHover = this.data.hover.self.get(uri) || new Map();
             const newCompletion = this.reloadFileCompletion(
                 oldCompletion,
                 fileData.completion,
                 uri
             );
-            const newHover = this.reloadFileHover(oldHover, fileData.hover, uri);
             this.data.completion.self.set(uri, newCompletion);
+
+            const oldHover = this.data.hover.self.get(uri) || new Map();
+            const newHover = this.reloadFileHover(oldHover, fileData.hover, uri);
             this.data.hover.self.set(uri, newHover);
+
+            if (this.features.signature && fileData.signature) {
+                const oldSignature = this.data.signature.self.get(uri) || new Map();
+                const newSignature = this.reloadFileSignature(
+                    oldSignature,
+                    fileData.signature,
+                    uri
+                );
+                this.data.signature.self.set(uri, newSignature);
+            }
         }
 
         if (this.features.definition) {
@@ -401,12 +457,35 @@ export class Language implements Language {
         }
     }
 
-    signature(request: signature.Request) {
+    signature(uri: string, request: signature.Request) {
         if (!this.features.signature) {
             return;
         }
+
         if (this.data.signature.static) {
             const sig = this.data.signature.static.get(request.symbol);
+            if (sig) {
+                return signature.getResponse(sig, request.parameter);
+            }
+        }
+
+        const selfMap = this.data.signature.self.get(uri);
+        if (selfMap) {
+            const sig = selfMap.get(request.symbol);
+            if (sig) {
+                return signature.getResponse(sig, request.parameter);
+            }
+        }
+
+        if (this.data.signature.headers) {
+            const sig = this.data.signature.headers.get(request.symbol);
+            if (sig) {
+                return signature.getResponse(sig, request.parameter);
+            }
+        }
+
+        if (this.data.signature.extHeaders) {
+            const sig = this.data.signature.extHeaders.get(request.symbol);
             if (sig) {
                 return signature.getResponse(sig, request.parameter);
             }

@@ -40,6 +40,13 @@ export function clearDiagnostics(uri: string) {
     connection.sendDiagnostics({ uri: uri, diagnostics: [] });
 }
 
+/**
+ * 
+ * @param uri 
+ * @param langId 
+ * @param interactive - set if it's run manually by command
+ * @returns void
+ */
 export async function compile(uri: string, langId: string, interactive = false) {
     const settings = await getDocumentSettings(uri);
 
