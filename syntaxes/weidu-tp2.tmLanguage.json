@@ -124,12 +124,12 @@
       "end": "(\\*/)",
       "beginCaptures": {
         "1": {
-          "name": "comment.block.fallout-ssl"
+          "name": "comment.block.weidu-tp2"
         }
       },
       "endCaptures": {
         "1": {
-          "name": "comment.block.fallout-ssl"
+          "name": "comment.block.weidu-tp2"
         }
       },
       "patterns": [
