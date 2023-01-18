@@ -1,8 +1,8 @@
-import { connection, getDocumentSettings } from "./server";
 import { TextDocument } from "vscode-languageserver-textdocument";
-import * as fallout from "./fallout";
-import * as weidu from "./weidu";
 import { conlog } from "./common";
+import * as fallout from "./fallout";
+import { connection, getDocumentSettings } from "./server";
+import * as weidu from "./weidu";
 
 /** Only these languages can be compiled */
 const falloutLanguages = ["fallout-ssl"];
@@ -41,7 +41,6 @@ export function clearDiagnostics(uri: string) {
 }
 
 /**
- *
  * @param uri
  * @param langId
  * @param interactive - set if it's run manually by command
