@@ -27,10 +27,10 @@ export async function conlog(item: any) {
             break;
         default:
             if (item && item.size && item.size > 0 && JSON.stringify(item) == "{}") {
-                if (JSON.stringify([...item]) == "{}") { // map
+                if (JSON.stringify([...item]) == "{}") {
+                    // map
                     connection.console.log(item);
-                }
-                else {
+                } else {
                     connection.console.log(JSON.stringify([...item]));
                 }
             } else {

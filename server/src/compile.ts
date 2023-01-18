@@ -41,9 +41,9 @@ export function clearDiagnostics(uri: string) {
 }
 
 /**
- * 
- * @param uri 
- * @param langId 
+ *
+ * @param uri
+ * @param langId
  * @param interactive - set if it's run manually by command
  * @returns void
  */

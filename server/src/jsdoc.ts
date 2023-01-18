@@ -2,7 +2,7 @@ interface Arg {
     name: string;
     type: string;
     default?: string;
-    description?: string
+    description?: string;
 }
 
 interface Ret {
@@ -29,9 +29,11 @@ export function parse(text: string) {
         if (!l2.startsWith("@")) {
             lines2.push(l2);
         }
-        const argMatch = l2.match(/@(arg|param) {(\w+)} ((\w+)|(\[(\w+)=(.+)\]))((\s+-\s+|\s+)(\w.*))?/);
+        const argMatch = l2.match(
+            /@(arg|param) {(\w+)} ((\w+)|(\[(\w+)=(.+)\]))((\s+-\s+|\s+)(\w.*))?/
+        );
         if (argMatch) {
-            const arg: Arg = { name: "", type: argMatch[2]};
+            const arg: Arg = { name: "", type: argMatch[2] };
             if (argMatch[6]) {
                 arg.name = argMatch[6];
                 arg.default = argMatch[7];
