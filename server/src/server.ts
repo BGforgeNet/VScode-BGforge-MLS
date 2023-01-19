@@ -95,6 +95,7 @@ connection.onInitialized(async () => {
     for (const document of documents.all()) {
         gala.reloadFileData(document.uri, document.languageId, document.getText());
     }
+    connection.sendNotification("bgforge-mls-load-finished");
     conlog("onInitialized completed");
 });
 

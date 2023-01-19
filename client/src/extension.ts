@@ -1,18 +1,21 @@
 "use strict";
 
 import * as path from "path";
-import { workspace, ExtensionContext } from "vscode";
 import * as vscode from "vscode";
-
+import { ExtensionContext, workspace } from "vscode";
 import {
     LanguageClient,
     LanguageClientOptions,
     ServerOptions,
     TransportKind,
 } from "vscode-languageclient/node";
-import { ExecuteCommandRequest, ExecuteCommandParams } from "vscode-languageserver-protocol";
+import { ExecuteCommandParams, ExecuteCommandRequest } from "vscode-languageserver-protocol";
+import { ServerInitializingIndicator } from "./indicator";
 
 let client: LanguageClient;
+const loadingIndicator = new ServerInitializingIndicator(() => {
+    conlog("loading start");
+});
 const cmd_compile = "extension.bgforge.compile";
 let settings: vscode.WorkspaceConfiguration;
 
@@ -67,10 +70,15 @@ export async function activate(context: ExtensionContext) {
     // Create the language client and start the client.
     client = new LanguageClient("bgforge-mls", "BGforge MLS", serverOptions, clientOptions);
 
+    loadingIndicator.startedLoadingProject("");
+
     // Start the client. This will also launch the server
     await client.start();
     settings = vscode.workspace.getConfiguration("bgforge");
     conlog("BGforge MLS client started");
+    client.onNotification("bgforge-mls-load-finished", () => {
+        loadingIndicator.finishedLoadingProject("");
+    });
 }
 
 export async function deactivate(): Promise<void> {
