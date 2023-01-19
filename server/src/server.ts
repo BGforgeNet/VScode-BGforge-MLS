@@ -12,7 +12,7 @@ import {
     TextDocumentSyncKind,
 } from "vscode-languageserver/node";
 import { conlog, symbolAtPosition } from "./common";
-import { COMMAND_compile, compile } from "./compile";
+import { clearDiagnostics, COMMAND_compile, compile } from "./compile";
 import { Galactus } from "./galactus";
 import * as settings from "./settings";
 import { defaultSettings, MLSsettings } from "./settings";
@@ -220,6 +220,22 @@ documents.onDidSave(async (change) => {
     const langId = change.document.languageId;
     const text = change.document.getText();
     gala?.reloadFileData(uri, langId, text);
+
+    const validateOnSave = (await getDocumentSettings(uri)).validateOnSave;
+    if (validateOnSave) {
+        compile(uri, langId, false, text);
+    }
+});
+
+documents.onDidChangeContent(async (event) => {
+    const uri = event.document.uri;
+    clearDiagnostics(uri);
+
+    const validateOnChange = (await getDocumentSettings(uri)).validateOnChange;
+    if (validateOnChange) {
+        const text = event.document.getText();
+        compile(uri, event.document.languageId, false, text);
+    }
 });
 
 connection.languages.inlayHint.on((params) => {

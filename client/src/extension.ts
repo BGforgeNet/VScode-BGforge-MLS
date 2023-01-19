@@ -17,7 +17,6 @@ const loadingIndicator = new ServerInitializingIndicator(() => {
     conlog("loading start");
 });
 const cmd_compile = "extension.bgforge.compile";
-let settings: vscode.WorkspaceConfiguration;
 
 export async function activate(context: ExtensionContext) {
     // The server is implemented in node
@@ -74,7 +73,6 @@ export async function activate(context: ExtensionContext) {
 
     // Start the client. This will also launch the server
     await client.start();
-    settings = vscode.workspace.getConfiguration("bgforge");
     conlog("BGforge MLS client started");
     client.onNotification("bgforge-mls-load-finished", () => {
         loadingIndicator.finishedLoadingProject("");
@@ -88,14 +86,7 @@ export async function deactivate(): Promise<void> {
     return await client.stop();
 }
 
-async function compile(
-    document = vscode.window.activeTextEditor.document,
-    triggered_by_save = false
-) {
-    // compile.exe and weidu.exe need files saved on disk to parse them
-    if (!triggered_by_save) {
-        await document.save();
-    }
+async function compile(document = vscode.window.activeTextEditor.document) {
     const uri = document.uri;
     const params: ExecuteCommandParams = {
         command: cmd_compile,
@@ -108,44 +99,6 @@ async function compile(
     };
     await client.sendRequest(ExecuteCommandRequest.type, params);
 }
-
-// cache settings
-vscode.workspace.onDidChangeConfiguration(async (change) => {
-    const affects = change.affectsConfiguration("bgforge");
-    if (affects) {
-        settings = vscode.workspace.getConfiguration("bgforge");
-    }
-});
-
-vscode.workspace.onDidChangeTextDocument(async (change) => {
-    const validate_on_change = settings.get("validateOnChange");
-    if (!validate_on_change) {
-        return;
-    }
-
-    /** Same list is checked in server, update both if changing. */
-    const compile_languages = [
-        "weidu-tp2",
-        "weidu-tp2-tpl",
-        "weidu-d",
-        "weidu-d-tpl",
-        "weidu-baf",
-        "weidu-baf-tpl",
-        "fallout-ssl",
-    ];
-    const lang_id = change.document.languageId;
-    if (!compile_languages.includes(lang_id)) {
-        return;
-    }
-
-    /** These languages require game path to compile. Same list is checked in server, update both if changing. */
-    const compile_languages_with_game = ["weidu-d", "weidu-d-tpl", "weidu-baf", "weidu-baf-tpl"];
-    if (compile_languages_with_game.includes(lang_id) && settings.weidu.gamePath == "") {
-        return;
-    }
-
-    change.document.save(); // automatically triggers compile on server
-});
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function conlog(item: any) {

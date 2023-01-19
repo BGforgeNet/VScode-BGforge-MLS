@@ -350,7 +350,7 @@
                 "bgforge.validateOnChange": {
                     "type": "boolean",
                     "default": false,
-                    "markdownDescription": "Run and show diagnostics repeatedly as you edit the files.\n\n**Note:** validation requires files to be saved to disk, so with this setting on, your changes will be continuously saved. Also, `validateOnSave` is implied when using this mode."
+                    "markdownDescription": "Run and show diagnostics repeatedly as you edit the files.\n\n**Note:** this can be disk intensive, as validation requires files to be saved to disk."
                 }
             }
         },
