@@ -9,28 +9,22 @@
   ],
   "repository": {
     "full": {
-      "name": "meta.weidu-tp2-tooltip",
       "patterns": [
         {
-          "include": "#datatypes",
-          "name": "meta.weidu-tp2-tooltip"
+          "include": "#datatypes"
         },
         {
-          "include": "#strings",
-          "name": "meta.weidu-tp2-tooltip"
+          "include": "#strings"
         },
         {
-          "include": "#variables",
-          "name": "meta.weidu-tp2-tooltip"
+          "include": "#variables"
         },
         {
-          "include": "#keywords",
-          "name": "meta.weidu-tp2-tooltip"
+          "include": "#keywords"
         },
         {
           "include": "source.weidu-tp2",
-          "match": ".",
-          "name": "meta.weidu-tp2-tooltip"
+          "match": "."
         }
       ]
     },
@@ -109,7 +103,7 @@
               "name": "comment"
             },
             "3": {
-              "name": "support.type.weidu-tp2.function-name"
+              "name": "support.function.weidu-tp2.action-function-name"
             }
           }
         },
@@ -123,7 +117,7 @@
               "name": "comment"
             },
             "3": {
-              "name": "entity.name.function.weidu-tp2.patch"
+              "name": "entity.name.function.weidu-tp2.patch-function-name"
             }
           }
         }
