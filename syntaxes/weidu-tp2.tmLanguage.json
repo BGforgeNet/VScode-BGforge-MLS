@@ -15276,39 +15276,7 @@
           "name": "entity.name.function.weidu-tp2.patch"
         },
         {
-          "match": "\\b(WRITE_BYTE)\\b",
-          "name": "entity.name.function.weidu-tp2.patch"
-        },
-        {
           "match": "\\b(WRITE_SHORT)\\b",
-          "name": "entity.name.function.weidu-tp2.patch"
-        },
-        {
-          "match": "\\b(WRITE_LONG)\\b",
-          "name": "entity.name.function.weidu-tp2.patch"
-        },
-        {
-          "match": "\\b(WRITE_ASCII)\\b",
-          "name": "entity.name.function.weidu-tp2.patch"
-        },
-        {
-          "match": "\\b(WRITE_ASCII_LIST)\\b",
-          "name": "entity.name.function.weidu-tp2.patch"
-        },
-        {
-          "match": "\\b(WRITE_ASCII_TERMINATE)\\b",
-          "name": "entity.name.function.weidu-tp2.patch"
-        },
-        {
-          "match": "\\b(WRITE_ASCIIT)\\b",
-          "name": "entity.name.function.weidu-tp2.patch"
-        },
-        {
-          "match": "\\b(WRITE_EVALUATED_ASCII)\\b",
-          "name": "entity.name.function.weidu-tp2.patch"
-        },
-        {
-          "match": "\\b(WRITE_ASCIIE)\\b",
           "name": "entity.name.function.weidu-tp2.patch"
         },
         {
@@ -15348,47 +15316,11 @@
           "name": "entity.name.function.weidu-tp2.patch"
         },
         {
-          "match": "\\b(READ_BYTE)\\b",
-          "name": "entity.name.function.weidu-tp2.patch"
-        },
-        {
-          "match": "\\b(READ_SBYTE)\\b",
-          "name": "entity.name.function.weidu-tp2.patch"
-        },
-        {
           "match": "\\b(READ_SHORT)\\b",
           "name": "entity.name.function.weidu-tp2.patch"
         },
         {
           "match": "\\b(READ_SSHORT)\\b",
-          "name": "entity.name.function.weidu-tp2.patch"
-        },
-        {
-          "match": "\\b(READ_LONG)\\b",
-          "name": "entity.name.function.weidu-tp2.patch"
-        },
-        {
-          "match": "\\b(READ_SLONG)\\b",
-          "name": "entity.name.function.weidu-tp2.patch"
-        },
-        {
-          "match": "\\b(READ_ASCII)\\b",
-          "name": "entity.name.function.weidu-tp2.patch"
-        },
-        {
-          "match": "\\b(READ_STRREF)\\b",
-          "name": "entity.name.function.weidu-tp2.patch"
-        },
-        {
-          "match": "\\b(READ_STRREF_F)\\b",
-          "name": "entity.name.function.weidu-tp2.patch"
-        },
-        {
-          "match": "\\b(READ_STRREF_S)\\b",
-          "name": "entity.name.function.weidu-tp2.patch"
-        },
-        {
-          "match": "\\b(READ_STRREF_FS)\\b",
           "name": "entity.name.function.weidu-tp2.patch"
         },
         {
@@ -15662,6 +15594,101 @@
         {
           "match": "\\b(COMPRESS_INTO_VAR)\\b",
           "name": "entity.name.function.weidu-tp2.patch"
+        },
+        {
+          "include": "#weidu-tp2-patch-byte",
+          "name": "entity.name.function.weidu-tp2.patch"
+        },
+        {
+          "include": "#weidu-tp2-patch-long",
+          "name": "entity.name.function.weidu-tp2.patch"
+        },
+        {
+          "include": "#weidu-tp2-patch-string",
+          "name": "entity.name.function.weidu-tp2.patch"
+        }
+      ]
+    },
+    "weidu-tp2-patch-byte": {
+      "name": "entity.name.function.weidu-tp2.patch-byte",
+      "patterns": [
+        {
+          "match": "\\b(READ_BYTE)\\b",
+          "name": "entity.name.function.weidu-tp2.patch-byte"
+        },
+        {
+          "match": "\\b(READ_SBYTE)\\b",
+          "name": "entity.name.function.weidu-tp2.patch-byte"
+        },
+        {
+          "match": "\\b(WRITE_BYTE)\\b",
+          "name": "entity.name.function.weidu-tp2.patch-byte"
+        }
+      ]
+    },
+    "weidu-tp2-patch-long": {
+      "name": "entity.name.function.weidu-tp2.patch-long",
+      "patterns": [
+        {
+          "match": "\\b(READ_LONG)\\b",
+          "name": "entity.name.function.weidu-tp2.patch-long"
+        },
+        {
+          "match": "\\b(READ_SLONG)\\b",
+          "name": "entity.name.function.weidu-tp2.patch-long"
+        },
+        {
+          "match": "\\b(WRITE_LONG)\\b",
+          "name": "entity.name.function.weidu-tp2.patch-long"
+        }
+      ]
+    },
+    "weidu-tp2-patch-string": {
+      "name": "entity.name.function.weidu-tp2.patch-string",
+      "patterns": [
+        {
+          "match": "\\b(READ_ASCII)\\b",
+          "name": "entity.name.function.weidu-tp2.patch-string"
+        },
+        {
+          "match": "\\b(READ_STRREF)\\b",
+          "name": "entity.name.function.weidu-tp2.patch-string"
+        },
+        {
+          "match": "\\b(READ_STRREF_F)\\b",
+          "name": "entity.name.function.weidu-tp2.patch-string"
+        },
+        {
+          "match": "\\b(READ_STRREF_S)\\b",
+          "name": "entity.name.function.weidu-tp2.patch-string"
+        },
+        {
+          "match": "\\b(READ_STRREF_FS)\\b",
+          "name": "entity.name.function.weidu-tp2.patch-string"
+        },
+        {
+          "match": "\\b(WRITE_ASCII)\\b",
+          "name": "entity.name.function.weidu-tp2.patch-string"
+        },
+        {
+          "match": "\\b(WRITE_ASCII_LIST)\\b",
+          "name": "entity.name.function.weidu-tp2.patch-string"
+        },
+        {
+          "match": "\\b(WRITE_ASCII_TERMINATE)\\b",
+          "name": "entity.name.function.weidu-tp2.patch-string"
+        },
+        {
+          "match": "\\b(WRITE_ASCIIT)\\b",
+          "name": "entity.name.function.weidu-tp2.patch-string"
+        },
+        {
+          "match": "\\b(WRITE_EVALUATED_ASCII)\\b",
+          "name": "entity.name.function.weidu-tp2.patch-string"
+        },
+        {
+          "match": "\\b(WRITE_ASCIIE)\\b",
+          "name": "entity.name.function.weidu-tp2.patch-string"
         }
       ]
     },

@@ -485,56 +485,46 @@
 		},
 		{
 			"name": "weidu action function",
-			"scope": "support.function.weidu.action_function",
+			"scope": "support.function.weidu-tp2.action-function",
 			"settings": {
 				"fontStyle": "underline"
 			}
 		},
 		{
 			"name": "weidu tra start",
-			"scope": "keyword.weidu.trastart",
+			"scope": "keyword.weidu-tp2.trastart",
 			"settings": {
 				"fontStyle": "italic"
 			}
 		},
 		{
-			"name": "iesdp constant byte",
-			"scope": "constant.language.iesdp.byte",
+			"name": "tp2 constant byte",
+			"scope": [
+				"constant.language.iesdp.byte",
+				"constant.language.iesdp.char",
+				"entity.name.function.weidu-tp2.patch-byte"
+			],
 			"settings": {
 				"fontStyle": "italic"
 			}
 		},
 		{
-			"name": "iesdp constant char",
-			"scope": "constant.language.iesdp.char",
-			"settings": {
-				"fontStyle": "italic"
-			}
-		},
-		{
-			"name": "iesdp constant word",
-			"scope": "constant.language.iesdp.word",
-			"settings": {
-				"fontStyle": "bold italic"
-			}
-		},
-		{
-			"name": "iesdp constant dword",
-			"scope": "constant.language.iesdp.dword",
+			"name": "tp2 constant dword",
+			"scope": [
+				"constant.language.iesdp.dword",
+				"entity.name.function.weidu-tp2.patch-long"
+			],
 			"settings": {
 				"fontStyle": "bold"
 			}
 		},
 		{
-			"name": "iesdp constant resref",
-			"scope": "constant.language.iesdp.resref",
-			"settings": {
-				"fontStyle": "underline"
-			}
-		},
-		{
-			"name": "ielib constant resref",
-			"scope": "constant.language.ielib.resref",
+			"name": "tp2 constant string/resref",
+			"scope": [
+				"constant.language.iesdp.resref",
+				"constant.language.ielib.resref",
+				"entity.name.function.weidu-tp2.patch-string"
+			],
 			"settings": {
 				"fontStyle": "underline"
 			}
@@ -543,7 +533,7 @@
 			"name": "BGforge invalid deprecated",
 			"scope": "invalid.deprecated.bgforge",
 			"settings": {
-				"foreground": "#DCDCDC",
+				"foreground": "#dcdcdc",
 				"fontStyle": "strikethrough"			}
 		}
 	],
