@@ -44,10 +44,6 @@ export function clearDiagnostics(uri: string) {
 }
 
 export const tmpDir = path.join(os.tmpdir(), "bgforge-mls");
-/** preprocessed file */
-export const tmpFile = path.join(tmpDir, "tmp.txt");
-/** not preprocessed (template) */
-export const tmpFileGcc = path.join(tmpDir, "tmp-gcc.txt");
 /**
  * Copies files to tmpdir and parses it there, then send diagnostic to the real file.
  * Because weidu and compile.exe require file on disk to parse.
@@ -65,7 +61,7 @@ export async function compile(uri: string, langId: string, interactive = false, 
 
     if (falloutLanguages.includes(langId)) {
         clearDiagnostics(uri);
-        fallout.compile(uri, settings.falloutSSL, interactive);
+        fallout.compile(uri, settings.falloutSSL, interactive, text);
         return;
     }
 

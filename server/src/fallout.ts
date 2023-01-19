@@ -1,27 +1,27 @@
+import PromisePool from "@supercharge/promise-pool";
+import * as cp from "child_process";
+import * as fs from "fs";
+import * as path from "path";
 import { CompletionItemKind, ParameterInformation } from "vscode-languageserver";
+import { MarkupKind } from "vscode-languageserver/node";
 import {
     conlog,
+    findFiles,
     ParseItemList,
     ParseResult,
-    sendParseResult as sendParseResult,
-    findFiles,
-    uriToPath,
-    RegExpMatchArrayWithIndices,
     pathToUri,
+    RegExpMatchArrayWithIndices,
+    sendParseResult,
+    uriToPath,
 } from "./common";
-import { connection, documents } from "./server";
-import * as path from "path";
-import { MarkupKind } from "vscode-languageserver/node";
-import * as cp from "child_process";
-import { SSLsettings } from "./settings";
 import * as completion from "./completion";
 import * as definition from "./definition";
-import * as signature from "./signature";
 import * as hover from "./hover";
-import * as fs from "fs";
 import * as jsdoc from "./jsdoc";
 import { HeaderData as LanguageHeaderData } from "./language";
-import PromisePool from "@supercharge/promise-pool";
+import { connection, documents } from "./server";
+import { SSLsettings } from "./settings";
+import * as signature from "./signature";
 
 interface FalloutHeaderData {
     macros: Macros;
@@ -485,9 +485,11 @@ function sendDiagnostics(uri: string, outputText: string) {
     sendParseResult(uri, parseResult);
 }
 
-export function compile(uri: string, sslSettings: SSLsettings, interactive = false) {
+export function compile(uri: string, sslSettings: SSLsettings, interactive = false, text: string) {
     const filepath = uriToPath(uri);
     const cwdTo = path.dirname(filepath);
+    // tmp file has to be in the same dir, because includes can be relative or absolute
+    const tmpFile = path.join(cwdTo, ".tmp.ssl");
     const baseName = path.parse(filepath).base;
     const base = path.parse(filepath).name;
     const compileCmd = `${sslSettings.compilePath} ${sslSettings.compileOptions}`;
@@ -504,8 +506,9 @@ export function compile(uri: string, sslSettings: SSLsettings, interactive = fal
     }
     conlog(`compiling ${baseName}...`);
 
+    fs.writeFileSync(tmpFile, text);
     cp.exec(
-        compileCmd + " " + baseName + " -o " + dstPath,
+        compileCmd + " " + tmpFile + " -o " + dstPath,
         { cwd: cwdTo },
         (err, stdout: string, stderr: string) => {
             conlog("stdout: " + stdout);
@@ -523,6 +526,7 @@ export function compile(uri: string, sslSettings: SSLsettings, interactive = fal
                 }
             }
             sendDiagnostics(uri, stdout);
+            fs.unlinkSync(tmpFile);
         }
     );
 }

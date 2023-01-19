@@ -13,7 +13,7 @@ import {
     sendParseResult,
     uriToPath,
 } from "./common";
-import { tmpDir, tmpFile, tmpFileGcc } from "./compile";
+import { tmpDir } from "./compile";
 import * as completion from "./completion";
 import * as definition from "./definition";
 import * as hover from "./hover";
@@ -115,6 +115,10 @@ function sendDiagnostics(uri: string, output_text: string, format = "weidu") {
 
 // export function wcompile(params: any) {
 export function compile(uri: string, settings: WeiDUsettings, interactive = false, text: string) {
+    /** preprocessed file */
+    const tmpFile = path.join(tmpDir, "tmp.txt");
+    /** not preprocessed (template) */
+    const tmpFileGcc = path.join(tmpDir, "tmp-gcc.txt");
     const gamePath = settings.gamePath;
     const weiduPath = settings.path;
     const filePath = uriToPath(uri);
