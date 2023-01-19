@@ -1,4 +1,3 @@
-import PromisePool from "@supercharge/promise-pool";
 import * as cp from "child_process";
 import * as fs from "fs";
 import * as path from "path";
@@ -8,7 +7,6 @@ import {
     findFiles,
     ParseItemList,
     ParseResult,
-    pathToUri,
     RegExpMatchArrayWithIndices,
     sendParseResult,
     uriToPath,
@@ -19,6 +17,7 @@ import * as definition from "./definition";
 import * as hover from "./hover";
 import * as jsdoc from "./jsdoc";
 import { HeaderData as LanguageHeaderData } from "./language";
+import * as pool from "./pool";
 import { connection } from "./server";
 import { WeiDUsettings } from "./settings";
 
@@ -245,15 +244,11 @@ export async function loadHeaders(headersDirectory: string) {
     const definitions: definition.Data = new Map();
     const headerFiles = findFiles(headersDirectory, "tph");
 
-    const { results, errors } = await PromisePool.withConcurrency(4)
-        .for(headerFiles)
-        .process(async (relPath) => {
-            const absPath = path.join(headersDirectory, relPath);
-            const text = fs.readFileSync(absPath, "utf8");
-            const uri = pathToUri(absPath);
-            const res = loadFileData(uri, text, relPath);
-            return res;
-        });
+    const { results, errors } = await pool.processHeaders(
+        headerFiles,
+        headersDirectory,
+        loadFileData
+    );
 
     if (errors.length > 0) {
         conlog(errors);

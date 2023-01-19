@@ -1,4 +1,3 @@
-import PromisePool from "@supercharge/promise-pool";
 import * as cp from "child_process";
 import * as fs from "fs";
 import * as path from "path";
@@ -9,7 +8,6 @@ import {
     findFiles,
     ParseItemList,
     ParseResult,
-    pathToUri,
     RegExpMatchArrayWithIndices,
     sendParseResult,
     uriToPath,
@@ -19,6 +17,7 @@ import * as definition from "./definition";
 import * as hover from "./hover";
 import * as jsdoc from "./jsdoc";
 import { HeaderData as LanguageHeaderData } from "./language";
+import * as pool from "./pool";
 import { connection, documents } from "./server";
 import { SSLsettings } from "./settings";
 import * as signature from "./signature";
@@ -55,20 +54,12 @@ export async function loadHeaders(headersDirectory: string, external = false) {
     const signatures: signature.SigMap = new Map();
     const headerFiles = findFiles(headersDirectory, "h");
 
-    const { results, errors } = await PromisePool.withConcurrency(4)
-        .for(headerFiles)
-        .process(async (relPath) => {
-            const absPath = path.join(headersDirectory, relPath);
-            const text = fs.readFileSync(absPath, "utf8");
-            const uri = pathToUri(absPath);
-            let pathString: string;
-            if (external) {
-                pathString = absPath;
-            } else {
-                pathString = relPath;
-            }
-            return loadFileData(uri, text, pathString);
-        });
+    const { results, errors } = await pool.processHeaders(
+        headerFiles,
+        headersDirectory,
+        loadFileData,
+        external
+    );
 
     if (errors.length > 0) {
         conlog(errors);
