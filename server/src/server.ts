@@ -200,7 +200,8 @@ connection.onExecuteCommand(async (params) => {
         return;
     }
     const langId = textDoc.languageId;
-    compile(args.uri, langId, true);
+    const text = textDoc.getText();
+    compile(args.uri, langId, true, text);
 });
 
 connection.onSignatureHelp((params) => {

@@ -1,5 +1,8 @@
+import * as fs from "fs";
+import * as os from "os";
+import * as path from "path";
 import { TextDocument } from "vscode-languageserver-textdocument";
-import { conlog } from "./common";
+import { conlog, isDirectory } from "./common";
 import * as fallout from "./fallout";
 import { connection, getDocumentSettings } from "./server";
 import * as weidu from "./weidu";
@@ -40,14 +43,25 @@ export function clearDiagnostics(uri: string) {
     connection.sendDiagnostics({ uri: uri, diagnostics: [] });
 }
 
+export const tmpDir = path.join(os.tmpdir(), "bgforge-mls");
+/** preprocessed file */
+export const tmpFile = path.join(tmpDir, "tmp.txt");
+/** not preprocessed (template) */
+export const tmpFileGcc = path.join(tmpDir, "tmp-gcc.txt");
 /**
+ * Copies files to tmpdir and parses it there, then send diagnostic to the real file.
+ * Because weidu and compile.exe require file on disk to parse.
  * @param uri
  * @param langId
  * @param interactive - set if it's run manually by command
+ * @param text - current full text (which could be different from on-disk version)
  * @returns void
  */
-export async function compile(uri: string, langId: string, interactive = false) {
+export async function compile(uri: string, langId: string, interactive = false, text: string) {
     const settings = await getDocumentSettings(uri);
+    if (!isDirectory(tmpDir)) {
+        fs.mkdirSync(tmpDir);
+    }
 
     if (falloutLanguages.includes(langId)) {
         clearDiagnostics(uri);
@@ -57,7 +71,7 @@ export async function compile(uri: string, langId: string, interactive = false) 
 
     if (weiduLanguages.includes(langId)) {
         clearDiagnostics(uri);
-        weidu.compile(uri, settings.weidu, interactive);
+        weidu.compile(uri, settings.weidu, interactive, text);
         return;
     }
 

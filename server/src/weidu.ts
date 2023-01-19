@@ -1,25 +1,26 @@
+import PromisePool from "@supercharge/promise-pool";
+import * as cp from "child_process";
+import * as fs from "fs";
+import * as path from "path";
+import { CompletionItemKind, MarkupKind } from "vscode-languageserver/node";
 import {
     conlog,
     findFiles,
-    uriToPath,
     ParseItemList,
     ParseResult,
-    sendParseResult as sendParseResult,
     pathToUri,
     RegExpMatchArrayWithIndices,
+    sendParseResult,
+    uriToPath,
 } from "./common";
-import { connection } from "./server";
-import * as path from "path";
-import * as cp from "child_process";
-import { WeiDUsettings } from "./settings";
-import * as fs from "fs";
-import * as jsdoc from "./jsdoc";
+import { tmpDir, tmpFile, tmpFileGcc } from "./compile";
 import * as completion from "./completion";
-import * as hover from "./hover";
-import { CompletionItemKind, MarkupKind } from "vscode-languageserver/node";
-import { HeaderData as LanguageHeaderData } from "./language";
-import PromisePool from "@supercharge/promise-pool";
 import * as definition from "./definition";
+import * as hover from "./hover";
+import * as jsdoc from "./jsdoc";
+import { HeaderData as LanguageHeaderData } from "./language";
+import { connection } from "./server";
+import { WeiDUsettings } from "./settings";
 
 const valid_extensions = new Map([
     [".tp2", "tp2"],
@@ -113,13 +114,13 @@ function sendDiagnostics(uri: string, output_text: string, format = "weidu") {
 }
 
 // export function wcompile(params: any) {
-export function compile(uri: string, settings: WeiDUsettings, interactive = false) {
+export function compile(uri: string, settings: WeiDUsettings, interactive = false, text: string) {
     const gamePath = settings.gamePath;
     const weiduPath = settings.path;
-    const filepath = uriToPath(uri);
-    const cwdTo = path.dirname(filepath);
-    const baseName = path.parse(filepath).base;
-    let ext = path.parse(filepath).ext;
+    const filePath = uriToPath(uri);
+    const cwdTo = tmpDir;
+    const baseName = path.parse(filePath).base;
+    let ext = path.parse(filePath).ext;
     ext = ext.toLowerCase();
     let tpl = false;
     let realName = baseName; // filename without .tpl
@@ -164,6 +165,8 @@ export function compile(uri: string, settings: WeiDUsettings, interactive = fals
     let preprocessFailed = false;
     if (tpl == true) {
         conlog(`preprocessing ${baseName}...`);
+
+        fs.writeFileSync(tmpFileGcc, text);
         const gccArgs = [
             "-E",
             "-x",
@@ -173,8 +176,8 @@ export function compile(uri: string, settings: WeiDUsettings, interactive = fals
             "-Werror",
             "-Wfatal-errors",
             "-o",
-            `${realName}`,
-            `${baseName}`,
+            `${tmpFile}`,
+            `${tmpFileGcc}`,
         ];
         const result = cp.spawnSync("gcc", gccArgs, { cwd: cwdTo });
         conlog("stdout: " + result.stdout);
@@ -200,7 +203,8 @@ export function compile(uri: string, settings: WeiDUsettings, interactive = fals
 
     // parse
     conlog(`parsing ${realName}...`);
-    const weiduCmd = `${weiduPath} ${weiduArgs} ${weiduType} ${realName} `;
+    fs.writeFileSync(tmpFile, text);
+    const weiduCmd = `${weiduPath} ${weiduArgs} ${weiduType} ${tmpFile} `;
     cp.exec(weiduCmd, { cwd: cwdTo }, (err, stdout: string, stderr: string) => {
         conlog("stdout: " + stdout);
         const parseResult = parseWeiduOutput(stdout); // dupe, yes
