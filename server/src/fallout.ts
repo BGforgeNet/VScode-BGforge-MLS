@@ -526,7 +526,10 @@ export function compile(uri: string, sslSettings: SSLsettings, interactive = fal
                 }
             }
             sendDiagnostics(uri, stdout);
-            fs.unlinkSync(tmpFile);
+            // sometimes it gets deleted due to async runs?
+            if (fs.existsSync(tmpFile)) {
+                fs.unlinkSync(tmpFile);
+            }
         }
     );
 }
