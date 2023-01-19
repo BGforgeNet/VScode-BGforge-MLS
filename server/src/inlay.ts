@@ -10,7 +10,6 @@ interface HintValue {
 function getHintString(traEntries: TraEntries, traFileKey: string, lineKey: string) {
     let value: string;
     let tooltip = "";
-    // let tooltip: MarkupContent = { kind: "plaintext", value: "" };
     if (!traEntries) {
         value = `/* Error: no such file ${traFileKey} */`;
     } else {

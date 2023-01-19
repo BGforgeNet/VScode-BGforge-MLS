@@ -131,7 +131,7 @@ export class Translation implements Translation {
             };
             const inlay = stringToInlay(str);
             const entry: TraEntry = { source: str, hover: hover, inlay: inlay };
-            if (str != inlay) {
+            if (`/* ${str} */` != inlay) {
                 entry.inlayTooltip = str;
             }
             lines.set(num, entry);
