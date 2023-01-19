@@ -217,7 +217,7 @@ export class Translation implements Translation {
 
         const lineKey = getLineKey(word, ext);
         if (!lineKey) {
-            conlog(`Error: line key ${lineKey} not found`);
+            conlog(`Error: line key ${lineKey} not found for ${word}`);
             return;
         }
 
@@ -236,12 +236,14 @@ export class Translation implements Translation {
     }
 }
 
+const regexMsg =
+    /^(Reply|NOption|GOption|BOption|mstr|display_mstr|floater|NLowOption|BLowOption|GLowOption)\((\d+)$/;
+const regexTra = /^@[0-9]+$/;
+
 function getLineKey(word: string, ext: "tra" | "msg") {
     if (ext == "msg") {
         // remove "NOption(" from "NOption(123"
-        const regex =
-            /(Reply|NOption|GOption|BOption|mstr|display_mstr|floater|NLowOption|BLowOption|GLowOption)\((\d+)/;
-        const match = regex.exec(word);
+        const match = regexMsg.exec(word);
         if (match) {
             return match[2];
         }
@@ -253,17 +255,13 @@ function getLineKey(word: string, ext: "tra" | "msg") {
 }
 
 export function isTraRef(word: string, langId: string) {
-    if (traLanguages.includes(langId) && word.startsWith("@")) {
+    if (traLanguages.includes(langId) && word.match(regexTra)) {
         return true;
     }
-    if (msgLanguages.includes(langId) && endsWithNumber(word)) {
+    if (msgLanguages.includes(langId) && word.match(regexMsg)) {
         return true;
     }
     return false;
-}
-
-function endsWithNumber(str: string) {
-    return /[0-9]$/.test(str);
 }
 
 function stringToInlay(text: string) {

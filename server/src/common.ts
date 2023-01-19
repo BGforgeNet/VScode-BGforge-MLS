@@ -1,10 +1,10 @@
-import * as fs from "fs";
-import * as path from "path";
-import { DiagnosticSeverity, Diagnostic, Position } from "vscode-languageserver/node";
-import { connection } from "./server";
 import * as fg from "fast-glob";
-import { URI } from "vscode-uri";
+import * as fs from "fs";
 import { pathToFileURL } from "node:url";
+import * as path from "path";
+import { Diagnostic, DiagnosticSeverity, Position } from "vscode-languageserver/node";
+import { URI } from "vscode-uri";
+import { connection } from "./server";
 
 export function fname(uri: string) {
     return path.basename(uri);
@@ -137,7 +137,12 @@ export function pathToUri(filePath: string) {
 // https://github.com/microsoft/TypeScript/issues/44227
 export type RegExpMatchArrayWithIndices = RegExpMatchArray & { indices: Array<[number, number]> };
 
-/** get word under cursor, for which we want to find a hover */
+/**
+ * Get word under cursor, for which we want to find a hover
+ * This a preliminary non-whitespace symbol, could look like `NOption(154,Node003,004`
+ * or `NOption(154` or `NOption`
+ * From that hover will extract the actual symbol or tra reference to search for.
+ */
 export function symbolAtPosition(text: string, position: Position) {
     const lines = text.split(/\r?\n/g);
     const str = lines[position.line];
