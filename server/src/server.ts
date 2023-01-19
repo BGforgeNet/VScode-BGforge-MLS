@@ -1,21 +1,21 @@
-import {
-    createConnection,
-    TextDocuments,
-    ProposedFeatures,
-    InitializeParams,
-    DidChangeConfigurationNotification,
-    CompletionItem,
-    TextDocumentPositionParams,
-    TextDocumentSyncKind,
-    InitializeResult,
-} from "vscode-languageserver/node";
 import { fileURLToPath } from "node:url";
 import { TextDocument } from "vscode-languageserver-textdocument";
+import {
+    CompletionItem,
+    createConnection,
+    DidChangeConfigurationNotification,
+    InitializeParams,
+    InitializeResult,
+    ProposedFeatures,
+    TextDocumentPositionParams,
+    TextDocuments,
+    TextDocumentSyncKind,
+} from "vscode-languageserver/node";
 import { conlog, symbolAtPosition } from "./common";
-import { compile, COMMAND_compile } from "./compile";
-import { MLSsettings, defaultSettings } from "./settings";
-import * as settings from "./settings";
+import { COMMAND_compile, compile } from "./compile";
 import { Galactus } from "./galactus";
+import * as settings from "./settings";
+import { defaultSettings, MLSsettings } from "./settings";
 
 // Create a connection for the server. The connection uses Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
