@@ -20,7 +20,7 @@
               "name": "entity.name.function"
             }
           },
-          "match": "^\\b(?i)(array|any|bool|int|mixed|float|ObjPtr|ObjectPtr|proc|string|void)\\b[[:blank:]]+\\b(\\w+)\\b",
+          "match": "^\\b(?i)(array|any|bool|int|list|map|mixed|float|ObjPtr|ObjectPtr|proc|string|void)\\b[[:blank:]]+\\b(\\w+)\\b",
           "name": "meta.fallout-ssl-tooltip"
         },
         {
@@ -29,7 +29,7 @@
               "name": "storage.type.fallout-ssl-tooltip"
             }
           },
-          "match": "\\b(?i)(array|any|bool|int|mixed|float|ObjPtr|ObjectPtr|proc|string|void)\\b",
+          "match": "\\b(?i)(array|any|bool|int|list|map|mixed|float|ObjPtr|ObjectPtr|proc|string|void)\\b",
           "name": "meta.fallout-ssl-tooltip"
         },
         {
