@@ -3831,7 +3831,7 @@ repository:
       - match: \b(ACTION_REINCLUDE)\b
 
   weidu-tp2-action-flow:
-    name: keyword.control.action.weidu-tp2
+    name: support.function.weidu-tp2.action
     patterns:
       - match: \b(ACTION_IF)\b
       - match: \b(ACTION_MATCH)\b
@@ -4084,7 +4084,7 @@ repository:
       - match: \b(HANDLE_CHARSETS)\b
 
   weidu-tp2-patch-controls:
-    name: keyword.control.patch.weidu-tp2
+    name: support.function.weidu-tp2
     patterns:
       - match: \b(SET)\b
       - match: \b(WHILE)\b
