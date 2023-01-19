@@ -1,8 +1,9 @@
+import PromisePool from "@supercharge/promise-pool";
 import * as fs from "fs";
 import * as path from "path";
-import { conlog, findFiles as findFiles, getRelPath, isDirectory, isSubpath } from "./common";
-import { ProjectTraSettings } from "./settings";
 import { Hover } from "vscode-languageserver/node";
+import { conlog, findFiles, getRelPath, isDirectory, isSubpath } from "./common";
+import { ProjectTraSettings } from "./settings";
 
 interface TraEntry {
     source: string;
@@ -11,13 +12,15 @@ interface TraEntry {
     inlayTooltip?: string;
 }
 
-/** Single file entries */
+/** Single file: index => entry */
 export interface TraEntries extends Map<string, TraEntry> {}
-/** Relative file path => entries */
+/** Relative file: path => entries */
 export interface TraData extends Map<string, TraEntries> {}
 export interface Translation {
     directory: string;
     data: TraData;
+    settings: ProjectTraSettings;
+    initialized: boolean;
 }
 
 const traLanguages = [
@@ -34,7 +37,7 @@ const msgLanguages = ["fallout-ssl"];
 export const translatableLanguages = [...traLanguages, ...msgLanguages];
 
 export const languages = ["fallout-msg", "weidu-tra"];
-export const extensions = ["msg", "tra"];
+export const extensions: Array<TraExt> = ["msg", "tra"];
 
 export function getTraExt(langId: string) {
     if (traLanguages.includes(langId)) {
@@ -51,34 +54,57 @@ export class Translation implements Translation {
     directory: string;
     data: TraData;
     settings: ProjectTraSettings;
+    initialized: boolean;
 
     constructor(settings: ProjectTraSettings) {
+        conlog("initializing translation");
         this.settings = settings;
         this.directory = settings.directory;
-        this.data = this.loadDir(settings.directory);
+        this.initialized = false;
+        this.data = new Map();
+    }
+
+    async init() {
+        this.data = await this.loadDir(this.settings.directory);
+        this.initialized = true;
+        conlog("initialized");
     }
 
     /** Loads all tra files in a directory to a map of maps of strings */
-    loadDir(traDir: string) {
+    async loadDir(traDir: string) {
         const traData: TraData = new Map();
         if (!isDirectory(traDir)) {
             conlog(`${traDir} is not a directory, aborting tra load`);
             return traData;
         }
-        const traFiles = findFiles(traDir, "tra");
-        for (const tf of traFiles) {
-            const text = fs.readFileSync(path.join(traDir, tf), "utf8");
-            const lines = this.linesFromText(text, "tra");
-            traData.set(tf, lines);
-        }
-        // hardly in any project there will be both tra and msg files
-        const msgFiles = findFiles(traDir, "msg");
-        for (const tf of msgFiles) {
-            const text = fs.readFileSync(path.join(traDir, tf), "utf8");
-            const lines = this.linesFromText(text, "msg");
-            traData.set(tf, lines);
+
+        for (const ext of extensions) {
+            const traFiles = findFiles(traDir, ext);
+            const { results, errors } = await this.loadFiles(traDir, traFiles, ext);
+            if (errors.length > 0) {
+                conlog(errors);
+            }
+            results.map((x) => {
+                for (const [key, value] of x) {
+                    traData.set(key, value);
+                }
+            });
         }
         return traData;
+    }
+
+    // load multiple files in parallel
+    private async loadFiles(traDir: string, files: string[], ext: TraExt) {
+        const { results, errors } = await PromisePool.withConcurrency(4)
+            .for(files)
+            .process(async (relPath) => {
+                const result: TraData = new Map();
+                const text = fs.readFileSync(path.join(traDir, relPath), "utf8");
+                const lines = this.linesFromText(text, ext);
+                result.set(relPath, lines);
+                return result;
+            });
+        return { results, errors };
     }
 
     /** Parses text and returns a map of index > string */

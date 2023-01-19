@@ -1,17 +1,17 @@
 import { Position, Range } from "vscode-languageserver-textdocument";
 import { conlog, getRelPath, isSubpath, uriToPath } from "./common";
+import * as inlay from "./inlay";
 import * as language from "./language";
 import { Language } from "./language";
 import { MLSsettings, ProjectTraSettings } from "./settings";
 import { getRequest as getSignatureRequest } from "./signature";
+import * as translation from "./translation";
 import {
-    Translation,
     isTraRef,
     languages as translationLanguages,
     translatableLanguages,
+    Translation,
 } from "./translation";
-import * as translation from "./translation";
-import * as inlay from "./inlay";
 
 interface Languages extends Map<string, Language> {}
 
@@ -231,6 +231,7 @@ export class Galactus {
         }
         this.languages = langs;
         this.translation = new Translation(traSettings);
+        this.translation.init();
     }
 
     /** Several languages draw data from other language ids */
@@ -253,7 +254,11 @@ export class Galactus {
     hover(langId: string, uri: string, symbol: string, text: string) {
         langId = this.dataLang(langId);
         // check for translation first
-        if (isTraRef(symbol, langId) && translatableLanguages.includes(langId)) {
+        if (
+            this.translation.initialized &&
+            isTraRef(symbol, langId) &&
+            translatableLanguages.includes(langId)
+        ) {
             const filePath = uriToPath(uri);
             const relPath = getRelPath(this.workspaceRoot, filePath);
             const result = this.translation.hover(symbol, text, relPath, langId);
@@ -291,7 +296,7 @@ export class Galactus {
     reloadFileData(uri: string, langId: string, text: string) {
         conlog("reload filedata " + uri);
         // reload translation
-        if (translationLanguages.includes(langId)) {
+        if (this.translation.initialized && translationLanguages.includes(langId)) {
             const wsPath = this.workspacePath(uri);
             if (wsPath) {
                 this.translation.reloadFileLines(wsPath, text);
@@ -305,6 +310,9 @@ export class Galactus {
         }
     }
     inlay(uri: string, langId: string, text: string, range: Range) {
+        if (!this.translation.initialized) {
+            return;
+        }
         const filePath = uriToPath(uri);
         const traFileKey = this.translation.traFileKey(filePath, text, langId);
         if (!traFileKey) {
