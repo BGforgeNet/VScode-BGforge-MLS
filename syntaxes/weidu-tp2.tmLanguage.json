@@ -15048,71 +15048,71 @@
       ]
     },
     "weidu-tp2-action-flow": {
-      "name": "keyword.control.action.weidu-tp2",
+      "name": "support.function.weidu-tp2.action",
       "patterns": [
         {
           "match": "\\b(ACTION_IF)\\b",
-          "name": "keyword.control.action.weidu-tp2"
+          "name": "support.function.weidu-tp2.action"
         },
         {
           "match": "\\b(ACTION_MATCH)\\b",
-          "name": "keyword.control.action.weidu-tp2"
+          "name": "support.function.weidu-tp2.action"
         },
         {
           "match": "\\b(ACTION_TRY)\\b",
-          "name": "keyword.control.action.weidu-tp2"
+          "name": "support.function.weidu-tp2.action"
         },
         {
           "match": "\\b(ACTION_RERAISE)\\b",
-          "name": "keyword.control.action.weidu-tp2"
+          "name": "support.function.weidu-tp2.action"
         },
         {
           "match": "\\b(AT_EXIT)\\b",
-          "name": "keyword.control.action.weidu-tp2"
+          "name": "support.function.weidu-tp2.action"
         },
         {
           "match": "\\b(AT_INTERACTIVE_EXIT)\\b",
-          "name": "keyword.control.action.weidu-tp2"
+          "name": "support.function.weidu-tp2.action"
         },
         {
           "match": "\\b(AT_UNINSTALL)\\b",
-          "name": "keyword.control.action.weidu-tp2"
+          "name": "support.function.weidu-tp2.action"
         },
         {
           "match": "\\b(AT_INTERACTIVE_UNINSTALL)\\b",
-          "name": "keyword.control.action.weidu-tp2"
+          "name": "support.function.weidu-tp2.action"
         },
         {
           "match": "\\b(AT_UNINSTALL_EXIT)\\b",
-          "name": "keyword.control.action.weidu-tp2"
+          "name": "support.function.weidu-tp2.action"
         },
         {
           "match": "\\b(AT_INTERACTIVE_UNINSTALL_EXIT)\\b",
-          "name": "keyword.control.action.weidu-tp2"
+          "name": "support.function.weidu-tp2.action"
         },
         {
           "match": "\\b(AT_NOW)\\b",
-          "name": "keyword.control.action.weidu-tp2"
+          "name": "support.function.weidu-tp2.action"
         },
         {
           "match": "\\b(AT_INTERACTIVE_NOW)\\b",
-          "name": "keyword.control.action.weidu-tp2"
+          "name": "support.function.weidu-tp2.action"
         },
         {
           "match": "\\b(ACTION_FOR_EACH)\\b",
-          "name": "keyword.control.action.weidu-tp2"
+          "name": "support.function.weidu-tp2.action"
         },
         {
           "match": "\\b(ACTION_PHP_EACH)\\b",
-          "name": "keyword.control.action.weidu-tp2"
+          "name": "support.function.weidu-tp2.action"
         },
         {
           "match": "\\b(USING)\\b",
-          "name": "keyword.control.action.weidu-tp2"
+          "name": "support.function.weidu-tp2.action"
         },
         {
           "match": "\\b(AS)\\b",
-          "name": "keyword.control.action.weidu-tp2"
+          "name": "support.function.weidu-tp2.action"
         }
       ]
     },
@@ -15934,87 +15934,87 @@
       ]
     },
     "weidu-tp2-patch-controls": {
-      "name": "keyword.control.patch.weidu-tp2",
+      "name": "support.function.weidu-tp2",
       "patterns": [
         {
           "match": "\\b(SET)\\b",
-          "name": "keyword.control.patch.weidu-tp2"
+          "name": "support.function.weidu-tp2"
         },
         {
           "match": "\\b(WHILE)\\b",
-          "name": "keyword.control.patch.weidu-tp2"
+          "name": "support.function.weidu-tp2"
         },
         {
           "match": "\\b(FOR)\\b",
-          "name": "keyword.control.patch.weidu-tp2"
+          "name": "support.function.weidu-tp2"
         },
         {
           "match": "\\b(PATCH_BASH_FOR)\\b",
-          "name": "keyword.control.patch.weidu-tp2"
+          "name": "support.function.weidu-tp2"
         },
         {
           "match": "\\b(PATCH_FOR_EACH)\\b",
-          "name": "keyword.control.patch.weidu-tp2"
+          "name": "support.function.weidu-tp2"
         },
         {
           "match": "\\b(PHP_EACH)\\b",
-          "name": "keyword.control.patch.weidu-tp2"
+          "name": "support.function.weidu-tp2"
         },
         {
           "match": "\\b(PATCH_PHP_EACH)\\b",
-          "name": "keyword.control.patch.weidu-tp2"
+          "name": "support.function.weidu-tp2"
         },
         {
           "match": "\\b(PATCH_IF)\\b",
-          "name": "keyword.control.patch.weidu-tp2"
+          "name": "support.function.weidu-tp2"
         },
         {
           "match": "\\b(ELSE)\\b",
-          "name": "keyword.control.patch.weidu-tp2"
+          "name": "support.function.weidu-tp2"
         },
         {
           "match": "\\b(PATCH_MATCH)\\b",
-          "name": "keyword.control.patch.weidu-tp2"
+          "name": "support.function.weidu-tp2"
         },
         {
           "match": "\\b(PATCH_TRY)\\b",
-          "name": "keyword.control.patch.weidu-tp2"
+          "name": "support.function.weidu-tp2"
         },
         {
           "match": "\\b(PATCH_SILENT)\\b",
-          "name": "keyword.control.patch.weidu-tp2"
+          "name": "support.function.weidu-tp2"
         },
         {
           "match": "\\b(PATCH_VERBOSE)\\b",
-          "name": "keyword.control.patch.weidu-tp2"
+          "name": "support.function.weidu-tp2"
         },
         {
           "match": "\\b(INNER_PATCH)\\b",
-          "name": "keyword.control.patch.weidu-tp2"
+          "name": "support.function.weidu-tp2"
         },
         {
           "match": "\\b(INNER_PATCH_SAVE)\\b",
-          "name": "keyword.control.patch.weidu-tp2"
+          "name": "support.function.weidu-tp2"
         },
         {
           "match": "\\b(INNER_PATCH_FILE)\\b",
-          "name": "keyword.control.patch.weidu-tp2"
+          "name": "support.function.weidu-tp2"
         },
         {
           "match": "\\b(INNER_ACTION)\\b",
-          "name": "keyword.control.patch.weidu-tp2"
+          "name": "support.function.weidu-tp2"
         },
         {
           "match": "\\b(PATCH_TIME)\\b",
-          "name": "keyword.control.patch.weidu-tp2"
+          "name": "support.function.weidu-tp2"
         },
         {
           "match": "\\b(DEFAULT)\\b",
-          "name": "keyword.control.patch.weidu-tp2"
+          "name": "support.function.weidu-tp2"
         },
         {
           "match": "\\b(WITH)\\b",
-          "name": "keyword.control.patch.weidu-tp2"
+          "name": "support.function.weidu-tp2"
         }
       ]
     },
@@ -16686,14 +16686,10 @@
         }
       },
       "endCaptures": {
-        "2": {
-          "name": "entity.name.function"
-        },
-        "3": {
-          "name": "name.function.weidu-tp2",
+        "1": {
           "patterns": [
             {
-              "include": "#strings"
+              "include": "#function-name-action"
             }
           ]
         }
@@ -16705,18 +16701,14 @@
       "end": "((\\w+)|(\\S+))",
       "beginCaptures": {
         "1": {
-          "name": "keyword.control.weidu-tp2"
+          "name": "entity.name.function.weidu-tp2.patch"
         }
       },
       "endCaptures": {
-        "2": {
-          "name": "entity.name.function.weidu-tp2.patch"
-        },
-        "3": {
-          "name": "name.function.weidu-tp2",
+        "1": {
           "patterns": [
             {
-              "include": "#strings"
+              "include": "#function-name-patch"
             }
           ]
         }
@@ -16732,28 +16724,16 @@
         }
       },
       "endCaptures": {
-        "2": {
+        "1": {
           "patterns": [
             {
-              "include": "#action-functions"
-            }
-          ]
-        },
-        "3": {
-          "name": "name.function.weidu-tp2",
-          "patterns": [
-            {
-              "include": "#action-functions"
-            },
-            {
-              "include": "#strings"
+              "include": "#function-name-action"
             }
           ]
         }
       }
     },
     "function-invocation-patch": {
-      "name": "meta.function.invocation.weidu-tp2",
       "begin": "\\b(LPF|LAUNCH_PATCH_FUNCTION)\\b",
       "end": "((\\w+)|(\\S+))",
       "beginCaptures": {
@@ -16762,18 +16742,10 @@
         }
       },
       "endCaptures": {
-        "2": {
+        "1": {
           "patterns": [
             {
-              "include": "#patch-functions"
-            }
-          ]
-        },
-        "3": {
-          "name": "name.function.weidu-tp2",
-          "patterns": [
-            {
-              "include": "#strings"
+              "include": "#function-name-patch"
             }
           ]
         }
@@ -16788,7 +16760,7 @@
               "name": "keyword.control.weidu-tp2"
             },
             "2": {
-              "name": "support.function.weidu-tp2.action_function"
+              "name": "support.function.weidu-tp2.action-function-name"
             },
             "3": {
               "name": "keyword.control.weidu-tp2"
@@ -16802,7 +16774,7 @@
               "name": "keyword.control.weidu-tp2"
             },
             "2": {
-              "name": "support.function.weidu-tp2.action_function"
+              "name": "support.function.weidu-tp2.action-function-name"
             },
             "3": {
               "name": "keyword.control.weidu-tp2"
@@ -16811,7 +16783,7 @@
         },
         {
           "match": "(\\S+)",
-          "name": "support.function.weidu-tp2.action_function"
+          "name": "support.function.weidu-tp2.action-function-name"
         }
       ]
     },
@@ -16824,7 +16796,7 @@
               "name": "keyword.control.weidu-tp2"
             },
             "2": {
-              "name": "entity.name.class.weidu-tp2.patch_function"
+              "name": "entity.name.function.weidu-tp2.patch-function-name"
             },
             "3": {
               "name": "keyword.control.weidu-tp2"
@@ -16838,7 +16810,7 @@
               "name": "keyword.control.weidu-tp2"
             },
             "2": {
-              "name": "entity.name.class.weidu-tp2.patch_function"
+              "name": "entity.name.function.weidu-tp2.patch-function-name"
             },
             "3": {
               "name": "keyword.control.weidu-tp2"
@@ -16847,7 +16819,7 @@
         },
         {
           "match": "(\\S+)",
-          "name": "entity.name.class.weidu-tp2.patch_function"
+          "name": "entity.name.function.weidu-tp2.patch-function-name"
         }
       ]
     },
@@ -16857,7 +16829,7 @@
       "end": "\\b(BEGIN)\\b",
       "beginCaptures": {
         "1": {
-          "name": "keyword.control.weidu-tp2"
+          "name": "support.function.weidu-tp2.action"
         },
         "2": {
           "patterns": [

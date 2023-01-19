@@ -484,8 +484,11 @@
 			}
 		},
 		{
-			"name": "weidu action function",
-			"scope": "support.function.weidu-tp2.action-function",
+			"name": "weidu function name",
+			"scope": [
+				"support.function.weidu-tp2.action-function-name",
+				"entity.name.function.weidu-tp2.patch-function-name"
+			],
 			"settings": {
 				"fontStyle": "underline"
 			}

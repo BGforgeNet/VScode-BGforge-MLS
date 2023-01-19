@@ -4334,12 +4334,9 @@ repository:
       '1':
         name: support.function.weidu-tp2.action
     endCaptures:
-      '2':
-        name: entity.name.function
-      '3':
-        name: name.function.weidu-tp2
+      '1':
         patterns:
-          - include: '#strings'
+          - include: '#function-name-action'
 
   macro-invocation-patch:
     name: meta.macro.invocation.weidu-tp2
@@ -4347,14 +4344,11 @@ repository:
     end: ((\w+)|(\S+))
     beginCaptures:
       '1':
-        name: keyword.control.weidu-tp2
-    endCaptures:
-      '2':
         name: entity.name.function.weidu-tp2.patch
-      '3':
-        name: name.function.weidu-tp2
+    endCaptures:
+      '1':
         patterns:
-          - include: '#strings'
+          - include: '#function-name-patch'
 
   function-invocation-action:
     name: meta.function.invocation.weidu-tp2
@@ -4364,31 +4358,20 @@ repository:
       '1':
         name: support.function.weidu-tp2.action
     endCaptures:
-      '2':
-        # name: support.function.weidu-tp2.action_function
+      '1':
         patterns:
-          - include: '#action-functions'
-      '3':
-        name: name.function.weidu-tp2
-        patterns:
-          - include: '#action-functions'
-          - include: '#strings'
+          - include: '#function-name-action'
 
   function-invocation-patch:
-    name: meta.function.invocation.weidu-tp2
     begin: \b(LPF|LAUNCH_PATCH_FUNCTION)\b
     end: ((\w+)|(\S+))
     beginCaptures:
       '1':
         name: entity.name.function.weidu-tp2.patch
     endCaptures:
-      '2':
+      '1':
         patterns:
-          - include: '#patch-functions'
-      '3':
-        name: name.function.weidu-tp2
-        patterns:
-          - include: '#strings'
+          - include: '#function-name-patch'
 
   function-name-action:
     patterns:
@@ -4397,7 +4380,7 @@ repository:
           '1':
             name: keyword.control.weidu-tp2
           '2':
-            name: support.function.weidu-tp2.action_function
+            name: support.function.weidu-tp2.action-function-name
           '3':
             name: keyword.control.weidu-tp2
       - match: (")(\S+)(")
@@ -4405,11 +4388,11 @@ repository:
           '1':
             name: keyword.control.weidu-tp2
           '2':
-            name: support.function.weidu-tp2.action_function
+            name: support.function.weidu-tp2.action-function-name
           '3':
             name: keyword.control.weidu-tp2
       - match: (\S+)
-        name: support.function.weidu-tp2.action_function
+        name: support.function.weidu-tp2.action-function-name
 
   function-name-patch:
     patterns:
@@ -4418,7 +4401,7 @@ repository:
           '1':
             name: keyword.control.weidu-tp2
           '2':
-            name: entity.name.class.weidu-tp2.patch_function
+            name: entity.name.function.weidu-tp2.patch-function-name
           '3':
             name: keyword.control.weidu-tp2
       - match: (")(\S+)(")
@@ -4426,11 +4409,11 @@ repository:
           '1':
             name: keyword.control.weidu-tp2
           '2':
-            name: entity.name.class.weidu-tp2.patch_function
+            name: entity.name.function.weidu-tp2.patch-function-name
           '3':
             name: keyword.control.weidu-tp2
       - match: (\S+)
-        name: entity.name.class.weidu-tp2.patch_function
+        name: entity.name.function.weidu-tp2.patch-function-name
 
   function-declaration-action:
     name: meta.function.declaration.weidu-tp2
@@ -4438,7 +4421,7 @@ repository:
     end: \b(BEGIN)\b
     beginCaptures:
       '1':
-        name: keyword.control.weidu-tp2
+        name: support.function.weidu-tp2.action
       '2':
         patterns:
           - include: '#function-name-action'
