@@ -34,6 +34,9 @@ repository:
       # weidu additional
       - match: \b(ids|resref|filename)\b
         name: support.type.bgforge-mls-docstring
+      # custom
+      - match: \b(list|map)\b
+        name: support.type.bgforge-mls-docstring
 
   comment:
     patterns:
