@@ -107,6 +107,10 @@
         {
           "match": "\\b(?i)(true|false)\\b",
           "name": "constant.language.fallout-ssl"
+        },
+        {
+          "match": "\\b([A-Z][A-Z0-9]*(_[\\w]+)?)\\b",
+          "name": "constant.language.fallout-ssl"
         }
       ]
     },
