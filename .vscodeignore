@@ -1,27 +1,23 @@
-**/*.ts
-**/tsconfig.json
-**/tsconfig.base.json
+**/*
 
-.github/**
-.gitignore
-.venv/**
-.vscode/**
-.vscode-test/**
-
-client/**
 !client/package.json
 !client/out/extension.js
 
-server/**
+!LICENSE.txt
+!resources/bgforge.png
+
 !server/package.json
 !server/out/server.js
 !server/out/completion.*.json
 !server/out/hover.*.json
+!server/out/signature.*.json
 
-docs/**
-scripts/**
-syntaxes/*.yml
-themes/vscode-monokai.json
-themes/vs-seti-icon-theme.json
+!language-configurations/*.json
+!snippets/*.json
+!syntaxes/*.json
 
-README.md
+!themes/bgforge-icon-theme.json
+!themes/bgforge-monokai.json
+!themes/seti.woff
+!themes/icons/*.png
+!themes/icons/*.svg
