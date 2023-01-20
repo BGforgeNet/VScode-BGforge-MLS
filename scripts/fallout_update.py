@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 
-import os
 import argparse
+import os
 import re
-from collections import OrderedDict
 import textwrap
+from collections import OrderedDict
+
 import ruamel.yaml
 from ruamel.yaml.scalarstring import LiteralScalarString
 
@@ -64,7 +65,8 @@ def find_files(path, ext):
     return flist
 
 
-REGEX_CONSTANT = r"^#define\s+(\w+)\s+\(?([0-9]+)\)?"
+REGEX_CONSTANT = r"^#define\s+(\w+)\s+\(?([0-9]+)\)?"  # include all constants
+REGEX_CONSTANT_REAL = r"([A-Z]+(_\w+)?)"  # but skip those that already are named properly
 REGEX_DEFINE_WITH_ARGS = r"^#define\s+(\w+)\([\w\s,]+\)"  # not perfect, but works
 REGEX_PROCEDURE = r"^procedure\s+(\w+)(\((variable\s+[\w+])+(\s*,\s*variable\s+[\w+])?\))?\s+begin"
 REGEX_VARIABLE = r"^#define\s+((GVAR|MVAR|LVAR)_\w+)\s+\(?([0-9]+)\)?"
@@ -85,7 +87,8 @@ def defines_from_file(path):
             constant = re.match(REGEX_CONSTANT, line)
             if constant:
                 defname = constant.group(1)
-                defines[defname] = "constant"
+                if not re.match(REGEX_CONSTANT_REAL, defname):
+                    defines[defname] = "constant"
                 continue
             define_with_vars = re.match(REGEX_DEFINE_WITH_ARGS, line)
             if define_with_vars:
