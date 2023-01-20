@@ -937,6 +937,9 @@ repository:
   header-constants:
     name: constant.language.fallout-ssl.macro-constant
     patterns:
+      - match: \b(SoundVolume25)\b
+      - match: \b(SoundVolume75)\b
+      - match: \b(SoundVolumeHalf)\b
       - match: \b(ai_area_always)\b
       - match: \b(ai_area_be_absolutely_sure)\b
       - match: \b(ai_area_be_careful)\b
@@ -1143,26 +1146,8 @@ repository:
   header-aliases:
     name: constant.language.fallout-ssl.macro-alias
     patterns:
-      - match: \b(FLOAT_COLOR_AFRAID)\b
-      - match: \b(FLOAT_COLOR_BAD)\b
-      - match: \b(FLOAT_COLOR_GOOD)\b
-      - match: \b(FLOAT_COLOR_HIGH)\b
-      - match: \b(FLOAT_COLOR_NORMAL)\b
-      - match: \b(FLOAT_COLOR_PAIN)\b
-      - match: \b(FLOAT_COLOR_SAD)\b
-      - match: \b(FLOAT_COLOR_SFX)\b
-      - match: \b(FLOAT_COLOR_SICK)\b
-      - match: \b(FLOAT_COLOR_WHISPER)\b
       - match: \b(Mono16bit)\b
-      - match: \b(PROTO_IT_FLAG)\b
-      - match: \b(PROTO_IT_FLAGS)\b
-      - match: \b(PROTO_IT_LDIST)\b
-      - match: \b(PROTO_IT_LINT)\b
-      - match: \b(PROTO_IT_SCRIPTID)\b
-      - match: \b(STAT_max_derived)\b
-      - match: \b(STAT_max_stat)\b
       - match: \b(Stereo8bit)\b
-      - match: \b(WINVER)\b
       - match: \b(_WIN32_WINNT)\b
       - match: \b(destroy_me_bit)\b
       - match: \b(dude_is_pornstar)\b

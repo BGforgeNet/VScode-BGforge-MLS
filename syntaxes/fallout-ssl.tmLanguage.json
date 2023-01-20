@@ -3457,6 +3457,18 @@
       "name": "constant.language.fallout-ssl.macro-constant",
       "patterns": [
         {
+          "match": "\\b(SoundVolume25)\\b",
+          "name": "constant.language.fallout-ssl.macro-constant"
+        },
+        {
+          "match": "\\b(SoundVolume75)\\b",
+          "name": "constant.language.fallout-ssl.macro-constant"
+        },
+        {
+          "match": "\\b(SoundVolumeHalf)\\b",
+          "name": "constant.language.fallout-ssl.macro-constant"
+        },
+        {
           "match": "\\b(ai_area_always)\\b",
           "name": "constant.language.fallout-ssl.macro-constant"
         },
@@ -4274,83 +4286,11 @@
       "name": "constant.language.fallout-ssl.macro-alias",
       "patterns": [
         {
-          "match": "\\b(FLOAT_COLOR_AFRAID)\\b",
-          "name": "constant.language.fallout-ssl.macro-alias"
-        },
-        {
-          "match": "\\b(FLOAT_COLOR_BAD)\\b",
-          "name": "constant.language.fallout-ssl.macro-alias"
-        },
-        {
-          "match": "\\b(FLOAT_COLOR_GOOD)\\b",
-          "name": "constant.language.fallout-ssl.macro-alias"
-        },
-        {
-          "match": "\\b(FLOAT_COLOR_HIGH)\\b",
-          "name": "constant.language.fallout-ssl.macro-alias"
-        },
-        {
-          "match": "\\b(FLOAT_COLOR_NORMAL)\\b",
-          "name": "constant.language.fallout-ssl.macro-alias"
-        },
-        {
-          "match": "\\b(FLOAT_COLOR_PAIN)\\b",
-          "name": "constant.language.fallout-ssl.macro-alias"
-        },
-        {
-          "match": "\\b(FLOAT_COLOR_SAD)\\b",
-          "name": "constant.language.fallout-ssl.macro-alias"
-        },
-        {
-          "match": "\\b(FLOAT_COLOR_SFX)\\b",
-          "name": "constant.language.fallout-ssl.macro-alias"
-        },
-        {
-          "match": "\\b(FLOAT_COLOR_SICK)\\b",
-          "name": "constant.language.fallout-ssl.macro-alias"
-        },
-        {
-          "match": "\\b(FLOAT_COLOR_WHISPER)\\b",
-          "name": "constant.language.fallout-ssl.macro-alias"
-        },
-        {
           "match": "\\b(Mono16bit)\\b",
           "name": "constant.language.fallout-ssl.macro-alias"
         },
         {
-          "match": "\\b(PROTO_IT_FLAG)\\b",
-          "name": "constant.language.fallout-ssl.macro-alias"
-        },
-        {
-          "match": "\\b(PROTO_IT_FLAGS)\\b",
-          "name": "constant.language.fallout-ssl.macro-alias"
-        },
-        {
-          "match": "\\b(PROTO_IT_LDIST)\\b",
-          "name": "constant.language.fallout-ssl.macro-alias"
-        },
-        {
-          "match": "\\b(PROTO_IT_LINT)\\b",
-          "name": "constant.language.fallout-ssl.macro-alias"
-        },
-        {
-          "match": "\\b(PROTO_IT_SCRIPTID)\\b",
-          "name": "constant.language.fallout-ssl.macro-alias"
-        },
-        {
-          "match": "\\b(STAT_max_derived)\\b",
-          "name": "constant.language.fallout-ssl.macro-alias"
-        },
-        {
-          "match": "\\b(STAT_max_stat)\\b",
-          "name": "constant.language.fallout-ssl.macro-alias"
-        },
-        {
           "match": "\\b(Stereo8bit)\\b",
-          "name": "constant.language.fallout-ssl.macro-alias"
-        },
-        {
-          "match": "\\b(WINVER)\\b",
           "name": "constant.language.fallout-ssl.macro-alias"
         },
         {

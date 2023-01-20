@@ -66,12 +66,12 @@ def find_files(path, ext):
 
 
 REGEX_CONSTANT = r"^#define\s+(\w+)\s+\(?([0-9]+)\)?"  # include all constants
-REGEX_CONSTANT_REAL = r"([A-Z]+(_\w+)?)"  # but skip those that already are named properly
+REGEX_CONSTANT_REAL = r"^([A-Z][A-Z0-9]*(_[\w]+)?)$"  # but skip those that already are named properly
 REGEX_DEFINE_WITH_ARGS = r"^#define\s+(\w+)\([\w\s,]+\)"  # not perfect, but works
 REGEX_PROCEDURE = r"^procedure\s+(\w+)(\((variable\s+[\w+])+(\s*,\s*variable\s+[\w+])?\))?\s+begin"
 REGEX_VARIABLE = r"^#define\s+((GVAR|MVAR|LVAR)_\w+)\s+\(?([0-9]+)\)?"
 REGEX_ALIAS = (
-    r"^#define\s+(\w+)\s+\(?(\w+)\)?\s*$"  # aliases like: #define FLOAT_COLOR_NORMAL          FLOAT_MSG_YELLOW.
+    r"^#define\s+(\w+)\s+\(?(\w+)\)?\s*$"  # aliases like: "#define FLOAT_COLOR_NORMAL          FLOAT_MSG_YELLOW"
 )
 
 
@@ -98,7 +98,8 @@ def defines_from_file(path):
             alias = re.match(REGEX_ALIAS, line)
             if alias:
                 defname = alias.group(1)
-                defines[defname] = "alias"
+                if not re.match(REGEX_CONSTANT_REAL, defname):
+                    defines[defname] = "alias"
                 continue
             procedure = re.match(REGEX_PROCEDURE, line)
             if procedure:
