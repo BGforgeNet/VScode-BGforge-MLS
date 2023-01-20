@@ -47,8 +47,18 @@ interface Macros extends Array<Macro> {}
 const tooltipLangId = "fallout-ssl-tooltip";
 const sslExt = ".ssl";
 
-export async function loadHeaders(headersDirectory: string, external = false) {
-    let completions: completion.CompletionListEx = [];
+/**
+ * @param headersDirectory
+ * @param external
+ * @param staticHover - Used to skip dupes from headers, such as sfall macros, which are imported statically.
+ * @returns
+ */
+export async function loadHeaders(
+    headersDirectory: string,
+    external = false,
+    staticHover: hover.HoverMap = new Map()
+) {
+    const completions: completion.CompletionListEx = [];
     const hovers: hover.HoverMapEx = new Map();
     const definitions: definition.Data = new Map();
     const signatures: signature.SigMap = new Map();
@@ -66,21 +76,31 @@ export async function loadHeaders(headersDirectory: string, external = false) {
     }
 
     results.map((x) => {
-        completions = completions.concat(x.completion);
+        for (const item of x.completion) {
+            if (!staticHover.has(item.label)) {
+                completions.push(item);
+            }
+        }
 
         for (const [key, value] of x.hover) {
-            hovers.set(key, value);
+            if (!staticHover.has(key)) {
+                hovers.set(key, value);
+            }
         }
 
         if (x.definition) {
             for (const [key, value] of x.definition) {
-                definitions.set(key, value);
+                if (!staticHover.has(key)) {
+                    definitions.set(key, value);
+                }
             }
         }
 
         if (x.signature) {
             for (const [key, value] of x.signature) {
-                signatures.set(key, value);
+                if (!staticHover.has(key)) {
+                    signatures.set(key, value);
+                }
             }
         }
     });

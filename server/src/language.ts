@@ -1,10 +1,10 @@
-import * as hover from "./hover";
+import { Hover } from "vscode-languageserver/node";
+import { conlog, getRelPath, isDirectory, isSubpath, uriToPath } from "./common";
 import * as completion from "./completion";
 import * as definition from "./definition";
-import * as signature from "./signature";
-import { conlog, getRelPath, isDirectory, isSubpath, uriToPath } from "./common";
-import { Hover } from "vscode-languageserver/node";
 import * as fallout from "./fallout";
+import * as hover from "./hover";
+import * as signature from "./signature";
 import * as weidu from "./weidu";
 
 export interface Features {
@@ -96,9 +96,9 @@ export class Language implements Language {
         return new Map();
     }
 
-    private async loadHeaders() {
+    private async loadHeaders(staticHover: hover.HoverMap = new Map()) {
         if (this.id == "fallout-ssl") {
-            const res = await fallout.loadHeaders(this.workspaceRoot);
+            const res = await fallout.loadHeaders(this.workspaceRoot, false, staticHover);
             return res;
         }
         if (this.id == "weidu-tp2") {
@@ -108,7 +108,7 @@ export class Language implements Language {
         conlog(`Unknown language id ${this.id}, can't load headers.`);
     }
 
-    private async loadExternalHeaders() {
+    private async loadExternalHeaders(staticHover: hover.HoverMap = new Map()) {
         conlog(`Loading external headers for ${this.id}`);
         try {
             if (!isDirectory(this.externalHeadersDirectory)) {
@@ -129,7 +129,7 @@ export class Language implements Language {
         }
 
         if (this.id == "fallout-ssl") {
-            const res = await fallout.loadHeaders(this.externalHeadersDirectory, true);
+            const res = await fallout.loadHeaders(this.externalHeadersDirectory, true, staticHover);
             return res;
         }
         conlog(`Unknown language id ${this.id}, can't load external headers.`);
@@ -147,7 +147,6 @@ export class Language implements Language {
 
         completionData.static = this.loadStaticCompletion();
         hoverData.static = this.loadStaticHover();
-        // TODO: support signatures from jsdoc
         signatureData.static = this.loadStaticSignature();
 
         const data: Data = {
@@ -158,7 +157,13 @@ export class Language implements Language {
         };
 
         if (this.features.headers) {
-            const headerData = await this.loadHeaders();
+            let headerData: HeaderData | undefined;
+            // hack: skip sfall macro dupes from headers
+            if (this.id == "fallout-ssl") {
+                headerData = await this.loadHeaders(data.hover.static);
+            } else {
+                headerData = await this.loadHeaders();
+            }
             if (headerData) {
                 data.completion.headers = headerData.completion;
                 data.hover.headers = headerData.hover;
@@ -169,7 +174,13 @@ export class Language implements Language {
             }
 
             if (this.features.externalHeaders && this.externalHeadersDirectory != "") {
-                const externalHeaderData = await this.loadExternalHeaders();
+                let externalHeaderData: HeaderData | undefined;
+                // hack: skip sfall macro dupes from headers
+                if (this.id == "fallout-ssl") {
+                    externalHeaderData = await this.loadExternalHeaders(data.hover.static);
+                } else {
+                    externalHeaderData = await this.loadExternalHeaders();
+                }
                 if (externalHeaderData) {
                     data.completion.extHeaders = externalHeaderData.completion;
                     data.hover.extHeaders = externalHeaderData.hover;
