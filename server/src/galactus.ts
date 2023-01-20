@@ -256,8 +256,8 @@ export class Galactus {
         // check for translation first
         if (
             this.translation.initialized &&
-            isTraRef(symbol, langId) &&
-            translatableLanguages.includes(langId)
+            translatableLanguages.includes(langId) &&
+            isTraRef(symbol, langId)
         ) {
             const filePath = uriToPath(uri);
             const relPath = getRelPath(this.workspaceRoot, filePath);

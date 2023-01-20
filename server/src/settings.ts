@@ -1,6 +1,6 @@
 import * as fs from "fs";
-import * as yaml from "yaml";
 import * as path from "path";
+import * as yaml from "yaml";
 import { conlog } from "./common";
 
 export interface SSLsettings {
@@ -56,11 +56,18 @@ const defaultProjectSettings: ProjectSettings = {
 
 /** get project settings from .bgforge.yml */
 export function project(dir: string) {
-    let settings = defaultProjectSettings;
+    const settings = defaultProjectSettings;
     try {
         const file = fs.readFileSync(path.join(dir, ".bgforge.yml"), "utf8");
         const yml_settings = yaml.parse(file).mls;
-        settings = { ...settings, ...yml_settings };
+        if (yml_settings.translation) {
+            if (yml_settings.translation.directory) {
+                settings.translation.directory = yml_settings.translation.directory;
+            }
+            if (yml_settings.translation.auto_tra) {
+                settings.translation.auto_tra = yml_settings.translation.auto_tra;
+            }
+        }
     } catch (e) {
         conlog(e);
     }
