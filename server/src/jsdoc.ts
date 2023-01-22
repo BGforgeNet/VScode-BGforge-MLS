@@ -49,7 +49,7 @@ export function parse(text: string) {
         if (retMatch) {
             ret = { type: retMatch[2] };
         }
-        const depMatch = l2.match(/@(deprecated)/);
+        const depMatch = l2.match(/@deprecated/);
         if (depMatch) {
             deprecated = true;
         }

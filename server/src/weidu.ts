@@ -414,7 +414,7 @@ function loadFunctions(uri: string, symbols: Defines, filePath: string) {
         }
 
         const markdownContents = { kind: MarkupKind.Markdown, value: markdownValue };
-        const completionItem = {
+        const completionItem: completion.CompletionItemEx = {
             label: symbol.name,
             documentation: markdownContents,
             source: filePath,
@@ -422,6 +422,10 @@ function loadFunctions(uri: string, symbols: Defines, filePath: string) {
             labelDetails: { description: filePath },
             uri: uri,
         };
+        if (symbol.jsdoc?.deprecated) {
+            const COMPLETION_TAG_deprecated = 1;
+            completionItem.tags = [COMPLETION_TAG_deprecated];
+        }
         completions.push(completionItem);
         const hoverItem = { contents: markdownContents, source: filePath, uri: uri };
         hovers.set(symbol.name, hoverItem);

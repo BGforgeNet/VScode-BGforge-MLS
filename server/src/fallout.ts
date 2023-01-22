@@ -132,7 +132,7 @@ function loadProcedures(uri: string, headerData: FalloutHeaderData, filePath: st
             markdownValue += jsdmd;
         }
         const markdownContents = { kind: MarkupKind.Markdown, value: markdownValue };
-        const completionItem = {
+        const completionItem: completion.CompletionItemEx = {
             label: proc.label,
             documentation: markdownContents,
             source: filePath,
@@ -140,6 +140,10 @@ function loadProcedures(uri: string, headerData: FalloutHeaderData, filePath: st
             kind: CompletionItemKind.Function,
             labelDetails: { description: filePath },
         };
+        if (proc.jsdoc?.deprecated) {
+            const COMPLETION_TAG_deprecated = 1;
+            completionItem.tags = [COMPLETION_TAG_deprecated];
+        }
         completions.push(completionItem);
         const hoverItem = { contents: markdownContents, source: filePath, uri: uri };
         hovers.set(proc.label, hoverItem);
@@ -178,7 +182,7 @@ function loadMacros(uri: string, headerData: FalloutHeaderData, filePath: string
             completionKind = CompletionItemKind.Field;
         }
         const markdownContents = { kind: MarkupKind.Markdown, value: markdownValue };
-        const completionItem = {
+        const completionItem: completion.CompletionItemEx = {
             label: macro.label,
             documentation: markdownContents,
             source: filePath,
@@ -186,7 +190,10 @@ function loadMacros(uri: string, headerData: FalloutHeaderData, filePath: string
             kind: completionKind,
             labelDetails: { description: filePath },
         };
-
+        if (macro.jsdoc?.deprecated) {
+            const COMPLETION_TAG_deprecated = 1;
+            completionItem.tags = [COMPLETION_TAG_deprecated];
+        }
         completions.push(completionItem);
 
         const hoverItem = { contents: markdownContents, source: filePath, uri: uri };
