@@ -13,7 +13,7 @@ export interface JSdoc {
     desc?: string;
     args: Arg[];
     ret?: Ret;
-    deprecated?: boolean;
+    deprecated?: string | true;
 }
 
 export function parse(text: string) {
@@ -23,7 +23,7 @@ export function parse(text: string) {
     let ret: Ret | null = null;
     lines.shift();
     lines.pop();
-    let deprecated = false;
+    let deprecated: string | undefined | true;
     for (const l of lines) {
         const l2 = l.replace(" * ", "");
         if (!l2.startsWith("@")) {
@@ -49,15 +49,24 @@ export function parse(text: string) {
         if (retMatch) {
             ret = { type: retMatch[2] };
         }
-        const depMatch = l2.match(/@deprecated/);
+        const depMatch = l2.match(/@deprecated(.*)/);
         if (depMatch) {
-            deprecated = true;
+            if (depMatch[1] !== null) {
+                const depString = depMatch[1].trim();
+                if (depString == "") {
+                    deprecated = true;
+                } else {
+                    deprecated = depString;
+                }
+            } else {
+                deprecated = true;
+            }
         }
     }
     const desc = lines2.join("\n").trim();
     const jsdoc: JSdoc = { args: [] };
-    if (deprecated) {
-        jsdoc.deprecated = true;
+    if (deprecated !== undefined) {
+        jsdoc.deprecated = deprecated;
     }
     if (desc != "") {
         jsdoc.desc = desc;

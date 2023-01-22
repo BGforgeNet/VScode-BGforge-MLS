@@ -140,9 +140,11 @@ function loadProcedures(uri: string, headerData: FalloutHeaderData, filePath: st
             kind: CompletionItemKind.Function,
             labelDetails: { description: filePath },
         };
+        conlog(proc.jsdoc);
         if (proc.jsdoc?.deprecated) {
             const COMPLETION_TAG_deprecated = 1;
             completionItem.tags = [COMPLETION_TAG_deprecated];
+            conlog("deprecated");
         }
         completions.push(completionItem);
         const hoverItem = { contents: markdownContents, source: filePath, uri: uri };
@@ -174,6 +176,12 @@ function loadMacros(uri: string, headerData: FalloutHeaderData, filePath: string
         if (!macro.multiline && !macro.constant) {
             markdownValue += ["\n```" + `${tooltipLangId}`, `${macro.firstline}`, "```"].join("\n");
         }
+
+        if (macro.jsdoc) {
+            const jsdmd = jsdocToMD(macro.jsdoc);
+            markdownValue += jsdmd;
+        }
+
         let completionKind;
         if (macro.constant) {
             completionKind = CompletionItemKind.Constant;
@@ -419,6 +427,13 @@ function jsdocToMD(jsd: jsdoc.JSdoc) {
     }
     if (jsd.ret) {
         md += `\n\n**Returns** \`${jsd.ret.type}\``;
+    }
+    if (jsd.deprecated) {
+        if (jsd.deprecated === true) {
+            md += "\n\n---\n\nDeprecated.";
+        } else {
+            md += `\n\n---\n\nDeprecated: ${jsd.deprecated}`;
+        }
     }
     return md;
 }

@@ -372,6 +372,13 @@ function jsdocToMD(jsd: jsdoc.JSdoc) {
     if (jsd.ret) {
         md += `\n\n Returns \`${jsd.ret.type}\``;
     }
+    if (jsd.deprecated) {
+        if (jsd.deprecated === true) {
+            md += "\n\n---\n\nDeprecated.";
+        } else {
+            md += `\n\n---\n\nDeprecated: ${jsd.deprecated}`;
+        }
+    }
     return md;
 }
 
