@@ -41,6 +41,7 @@ jobs:
           pip install -r scripts/requirements.txt
           pip install -r scripts/requirements-dev.txt
           pylint scripts
+          ls
 
       - name: Prettier
         uses: creyD/prettier_action@v4.2
