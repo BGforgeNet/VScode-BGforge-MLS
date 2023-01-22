@@ -28,7 +28,10 @@ jobs:
           cache: "npm"
 
       - name: Install node packages
-        run: npm ci
+        run: |
+          ls
+          npm ci
+          ls
 
       - name: ESlint
         run: npm run eslint
