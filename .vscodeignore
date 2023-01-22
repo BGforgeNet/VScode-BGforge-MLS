@@ -12,6 +12,11 @@
 !server/out/hover.*.json
 !server/out/signature.*.json
 
+!preview/package.json
+!preview/out/index.html
+!preview/out/index.css
+!preview/out/index.js
+
 !language-configurations/*.json
 !snippets/*.json
 !syntaxes/*.json

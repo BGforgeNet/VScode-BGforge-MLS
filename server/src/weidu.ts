@@ -9,9 +9,9 @@ import {
     ParseResult,
     RegExpMatchArrayWithIndices,
     sendParseResult,
+    tmpDir,
     uriToPath,
 } from "./common";
-import { tmpDir } from "./compile";
 import * as completion from "./completion";
 import * as definition from "./definition";
 import * as hover from "./hover";

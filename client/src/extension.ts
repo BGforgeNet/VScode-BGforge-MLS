@@ -1,5 +1,6 @@
 "use strict";
 
+import * as os from "os";
 import * as path from "path";
 import * as vscode from "vscode";
 import { ExtensionContext, workspace } from "vscode";
@@ -17,6 +18,10 @@ const loadingIndicator = new ServerInitializingIndicator(() => {
     conlog("loading start");
 });
 const cmd_compile = "extension.bgforge.compile";
+const cmd_preview = "extension.bgforge.preview";
+let previewSrcDir: string;
+const tmpDir = path.join(os.tmpdir(), "bgforge-mls");
+const previewIndexHtml = path.join(tmpDir, "preview", "index.html");
 
 export async function activate(context: ExtensionContext) {
     // The server is implemented in node
@@ -24,8 +29,11 @@ export async function activate(context: ExtensionContext) {
     // The debug options for the server
     // --inspect=6009: runs the server in Node's Inspector mode so VS Code can attach to the server for debugging
     const debugOptions = { execArgv: ["--nolazy", "--inspect=6009"] };
-    const disposable = vscode.commands.registerCommand(cmd_compile, compile);
+    let disposable = vscode.commands.registerCommand(cmd_compile, compile);
     context.subscriptions.push(disposable);
+    disposable = vscode.commands.registerCommand(cmd_preview, preview);
+    context.subscriptions.push(disposable);
+    previewSrcDir = context.asAbsolutePath(path.join("preview", "out"));
 
     // If the extension is launched in debug mode then the debug server options are used
     // Otherwise the run options are used
@@ -74,9 +82,38 @@ export async function activate(context: ExtensionContext) {
     // Start the client. This will also launch the server
     await client.start();
     conlog("BGforge MLS client started");
-    client.onNotification("bgforge-mls-load-finished", () => {
+
+    client.onNotification("bgforge-mls/load-finished", () => {
         loadingIndicator.finishedLoadingProject("");
     });
+
+    client.onNotification("bgforge-mls/start-preview", () => {
+        vscode.commands.executeCommand("livePreview.start.preview.atFileString", previewIndexHtml);
+    });
+}
+
+function preview() {
+    if (!vscode.extensions.getExtension("ms-vscode.live-server")) {
+        conlog("Live preview not installed, pass");
+        vscode.window.showInformationMessage(
+            "Install Microsoft Live Preview extenstion (ms-vscode.live-server) to view callgraphs."
+        );
+        return;
+    }
+    const document = vscode.window.activeTextEditor.document;
+    const uri = document.uri;
+    const params: ExecuteCommandParams = {
+        command: cmd_preview,
+        arguments: [
+            {
+                uri: uri.toString(),
+                scheme: uri.scheme,
+                previewSrcDir: previewSrcDir,
+            },
+        ],
+    };
+
+    client.sendRequest(ExecuteCommandRequest.type, params);
 }
 
 export async function deactivate(): Promise<void> {

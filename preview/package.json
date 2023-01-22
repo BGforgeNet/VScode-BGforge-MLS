@@ -1,0 +1,20 @@
+{
+    "name": "bgforge-mls-preview",
+    "description": "BGforge MLS preview",
+    "author": "BGforge",
+    "license": "SEE LICENSE IN LICENSE.txt",
+    "version": "1.6.0",
+    "publisher": "BGforge",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/BGforgeNet/VScode-BGforge-MLS/preview"
+    },
+    "dependencies": {
+        "cytoscape": "^3.23.0",
+        "cytoscape-fcose": "^2.2.0"
+    },
+    "devDependencies": {
+        "@types/cytoscape": "^3.19.9",
+        "@types/cytoscape-fcose": "^2.1.0"
+    }
+}

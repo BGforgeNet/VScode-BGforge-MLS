@@ -15,6 +15,11 @@ server/out/*
 !server/out/hover.*.json
 !server/out/signature.*.json
 
+preview/node_modules/
+preview/out/
+!preview/out/index.html
+!preview/out/index.css
+
 external
 node_modules
 syntaxes_to_json.sh.err

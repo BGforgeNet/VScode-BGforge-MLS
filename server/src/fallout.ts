@@ -18,6 +18,7 @@ import * as hover from "./hover";
 import * as jsdoc from "./jsdoc";
 import { HeaderData as LanguageHeaderData } from "./language";
 import * as pool from "./pool";
+import { Edge, Node } from "./preview";
 import { connection, documents } from "./server";
 import { SSLsettings } from "./settings";
 import * as signature from "./signature";
@@ -543,4 +544,51 @@ export function compile(uri: string, sslSettings: SSLsettings, interactive = fal
             }
         }
     );
+}
+
+export function getPreviewData(text: string) {
+    const regex = /^procedure\s+(\w+).*?begin([\S\s]*?)\nend/gm;
+    const matches = text.matchAll(regex);
+    if (!matches) {
+        return;
+    }
+    const nodes: Node[] = [];
+    const edges: Edge[] = [];
+    const procs = new Map<string, string>();
+
+    for (const match of matches) {
+        const name = match[1];
+        const body = match[2];
+        procs.set(name, body);
+    }
+
+    for (const [name, body] of procs) {
+        const nodeItem = { data: { id: name } };
+        if (!nodes.includes(nodeItem)) {
+            nodes.push(nodeItem);
+        }
+        if (body) {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            for (const [name2, body2] of procs) {
+                const pattern = `\\b(${name2})\\b`;
+                const nameRegex = new RegExp(pattern, "g");
+                const childMatches = body.matchAll(nameRegex);
+                let children: string[] = [];
+                for (const cm of childMatches) {
+                    children.push(cm[0]);
+                }
+                // make sure we only have unique edges
+                children = [...new Set(children)];
+                for (const child of children) {
+                    const edgeItem = {
+                        data: { id: `${name}-${name2}`, source: name, target: child },
+                    };
+                    if (!edges.includes(edgeItem)) {
+                        edges.push(edgeItem);
+                    }
+                }
+            }
+        }
+    }
+    return { nodes: nodes, edges: edges };
 }

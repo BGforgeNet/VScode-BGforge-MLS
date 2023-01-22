@@ -1,6 +1,7 @@
 import * as fg from "fast-glob";
 import * as fs from "fs";
 import { pathToFileURL } from "node:url";
+import * as os from "os";
 import * as path from "path";
 import { Diagnostic, DiagnosticSeverity, Position } from "vscode-languageserver/node";
 import { URI } from "vscode-uri";
@@ -9,6 +10,8 @@ import { connection } from "./server";
 export function fname(uri: string) {
     return path.basename(uri);
 }
+
+export const tmpDir = path.join(os.tmpdir(), "bgforge-mls");
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function conlog(item: any) {

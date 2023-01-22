@@ -14,6 +14,7 @@ import {
 import { conlog, symbolAtPosition } from "./common";
 import { clearDiagnostics, COMMAND_compile, compile } from "./compile";
 import { Galactus } from "./galactus";
+import { preview } from "./preview";
 import * as settings from "./settings";
 import { defaultSettings, MLSsettings } from "./settings";
 
@@ -95,7 +96,7 @@ connection.onInitialized(async () => {
     for (const document of documents.all()) {
         gala.reloadFileData(document.uri, document.languageId, document.getText());
     }
-    connection.sendNotification("bgforge-mls-load-finished");
+    connection.sendNotification("bgforge-mls/load-finished");
     conlog("onInitialized completed");
 });
 
@@ -181,7 +182,8 @@ connection.onHover((textDocumentPosition: TextDocumentPositionParams) => {
 
 connection.onExecuteCommand(async (params) => {
     const command = params.command;
-    if (command != COMMAND_compile) {
+    const COMMAND_preview = "extension.bgforge.preview";
+    if (command != COMMAND_compile && command != COMMAND_preview) {
         return;
     }
 
@@ -192,16 +194,27 @@ connection.onExecuteCommand(async (params) => {
 
     if (args.scheme != "file") {
         conlog("Compile: scheme is not 'file'");
-        connection.window.showInformationMessage("Focus a valid file to compile!");
+        connection.window.showInformationMessage("Focus a valid file to run commands!");
         return;
     }
+
     const textDoc = documents.get(args.uri);
     if (!textDoc) {
         return;
     }
     const langId = textDoc.languageId;
     const text = textDoc.getText();
-    compile(args.uri, langId, true, text);
+
+    if (command == COMMAND_compile) {
+        compile(args.uri, langId, true, text);
+    }
+
+    if (command == COMMAND_preview) {
+        const willPreview = preview(text, langId, args.previewSrcDir);
+        if (willPreview) {
+            connection.sendNotification("bgforge-mls/start-preview");
+        }
+    }
 });
 
 connection.onSignatureHelp((params) => {

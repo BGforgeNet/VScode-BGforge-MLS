@@ -1,8 +1,6 @@
 import * as fs from "fs";
-import * as os from "os";
-import * as path from "path";
 import { TextDocument } from "vscode-languageserver-textdocument";
-import { conlog, isDirectory } from "./common";
+import { conlog, isDirectory, tmpDir } from "./common";
 import * as fallout from "./fallout";
 import { connection, getDocumentSettings } from "./server";
 import * as weidu from "./weidu";
@@ -43,7 +41,6 @@ export function clearDiagnostics(uri: string) {
     connection.sendDiagnostics({ uri: uri, diagnostics: [] });
 }
 
-export const tmpDir = path.join(os.tmpdir(), "bgforge-mls");
 /**
  * Copies files to tmpdir and parses it there, then send diagnostic to the real file.
  * Because weidu and compile.exe require file on disk to parse.
