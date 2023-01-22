@@ -10,7 +10,6 @@ from dataclasses import dataclass
 import frontmatter
 import ruamel.yaml
 from ie import (
-    litscal,
     action_desc,
     action_detail,
     append_unique,
@@ -20,6 +19,7 @@ from ie import (
     find_files,
     get_offset_id,
     get_offset_prefix,
+    litscal,
     offsets_to_definition,
     opcode_name_to_id,
     strip_liquid,
@@ -109,7 +109,7 @@ class ProcessedOffsetData:
             if "mult" in i:  # multiword, multibyte - etc
                 detail = f"multi {i['type']} {iid}"
             else:
-                detail = "{i['type']} {iid}"
+                detail = f"{i['type']} {iid}"
 
             item = {"name": iid, "detail": detail, "doc": strip_liquid(i["desc"])}
 

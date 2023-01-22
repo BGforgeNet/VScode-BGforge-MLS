@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
-from urllib.parse import urljoin
 import re
+from urllib.parse import urljoin
 
 
 # completion
@@ -64,7 +64,7 @@ def append_unique(actions, new_actions):
 
 def action_detail(action):
     if "params" not in action:
-        return "{action['name']}()"
+        return f"{action['name']}()"
     param_string = ""
     first_param = True
     for param in action["params"]:

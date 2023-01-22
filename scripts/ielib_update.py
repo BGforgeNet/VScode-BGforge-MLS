@@ -3,9 +3,10 @@
 import argparse
 import os
 import re
+import sys
 
 import ruamel.yaml
-from ie import litscal, COMPLETION_TYPE_FUNCTION, dump_completion, dump_highlight, find_files
+from ie import COMPLETION_TYPE_FUNCTION, dump_completion, dump_highlight, find_files, litscal
 
 yaml = ruamel.yaml.YAML(typ="rt")
 yaml.width = 4096
@@ -47,12 +48,12 @@ ielib_data = {
     },
     "action_functions": {
         "stanza": "ielib-action-functions",
-        "scope": "support.function.weidu.action_function",
+        "scope": "support.function.weidu-tp2.action-function-name",
         "completion_type": COMPLETION_TYPE_FUNCTION,
     },
     "patch_functions": {
         "stanza": "ielib-patch-functions",
-        "scope": "entity.name.class.ielib.patch_function",
+        "scope": "entity.name.function.weidu-tp2.patch-function-name",
         "completion_type": COMPLETION_TYPE_FUNCTION,
     },
 }
@@ -118,7 +119,7 @@ def func_to_item(func):
     result = {}
     result["name"] = func["name"]
     result["detail"] = f"{func['type']} function {func['name']}"
-    text = "{func['desc']}\n\n"
+    text = f"{func['desc']}\n\n"
     if "int_params" in func:
         text += params_to_md(func, "int_params")
     if "string_params" in func:
@@ -156,11 +157,12 @@ def rets_to_md(func):
 
 
 def get_ptype(tname):
-    ptype = [x for x in TYPES if x["name"] == tname][0]
-    if ptype.len() > 0:
-        ptext = f"[{tname}]({TYPES_URL}/#{tname})"
-        return ptext
-    return tname
+    ptype = [x for x in TYPES if x["name"] == tname]
+    if len(ptype) == 0:
+        print(f"Error: unknown parameter type {tname}")
+        sys.exit(1)
+    ptext = f"[{tname}]({TYPES_URL}/#{tname})"
+    return ptext
 
 
 def get_default(param, func):
@@ -174,18 +176,18 @@ def get_default(param, func):
     return ""
 
 
-data_dir = os.path.join(src_dir, "docs", "data")
-functions_dir = os.path.join(data_dir, "functions")
-function_files = find_files(functions_dir, "yml")
-types_file = os.path.join(data_dir, "types.yml")
+DATA_DIR = os.path.join(src_dir, "docs", "data")
+FUNCTION_DIR = os.path.join(DATA_DIR, "functions")
+function_files = find_files(FUNCTION_DIR, "yml")
+TYPES_FILES = os.path.join(DATA_DIR, "types.yml")
 action_functions = []
 patch_functions = []
 
-with open(types_file, encoding='utf8') as yf:
+with open(TYPES_FILES, encoding="utf8") as yf:
     TYPES = yaml.load(yf)
 
 for f in function_files:
-    with open(f, encoding='utf8') as yf:
+    with open(f, encoding="utf8") as yf:
         data = yaml.load(yf)
     data = sorted(data, key=lambda k: k["name"])
     for i in data:
