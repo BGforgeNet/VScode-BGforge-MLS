@@ -883,88 +883,88 @@
       ]
     },
     "ielib-patch-functions": {
-      "name": "entity.name.class.ielib.patch_function",
+      "name": "entity.name.function.weidu-tp2.patch-function-name",
       "patterns": [
         {
           "match": "\\b(ALTER_AREA_REGION_MATCH)\\b",
-          "name": "entity.name.class.ielib.patch_function"
+          "name": "entity.name.function.weidu-tp2.patch-function-name"
         },
         {
           "match": "\\b(ALTER_AREA_STRUCTURE_SCRIPT)\\b",
-          "name": "entity.name.class.ielib.patch_function"
+          "name": "entity.name.function.weidu-tp2.patch-function-name"
         },
         {
           "match": "\\b(GET_2DA_INDEX)\\b",
-          "name": "entity.name.class.ielib.patch_function"
+          "name": "entity.name.function.weidu-tp2.patch-function-name"
         },
         {
           "match": "\\b(GET_AREA_STRUCTURE_CENTER_POINT)\\b",
-          "name": "entity.name.class.ielib.patch_function"
+          "name": "entity.name.function.weidu-tp2.patch-function-name"
         },
         {
           "match": "\\b(GET_ARMOR_BASE_AC)\\b",
-          "name": "entity.name.class.ielib.patch_function"
+          "name": "entity.name.function.weidu-tp2.patch-function-name"
         },
         {
           "match": "\\b(INFER_ARMOR_ENCHANTMENT)\\b",
-          "name": "entity.name.class.ielib.patch_function"
+          "name": "entity.name.function.weidu-tp2.patch-function-name"
         },
         {
           "match": "\\b(INFER_ARMOR_TYPE)\\b",
-          "name": "entity.name.class.ielib.patch_function"
+          "name": "entity.name.function.weidu-tp2.patch-function-name"
         },
         {
           "match": "\\b(REPLACE_AREA_ITEM_MATCH)\\b",
-          "name": "entity.name.class.ielib.patch_function"
+          "name": "entity.name.function.weidu-tp2.patch-function-name"
         },
         {
           "match": "\\b(REPLACE_CRE_ITEM_MATCH)\\b",
-          "name": "entity.name.class.ielib.patch_function"
+          "name": "entity.name.function.weidu-tp2.patch-function-name"
         },
         {
           "match": "\\b(REPLACE_STORE_ITEM_MATCH)\\b",
-          "name": "entity.name.class.ielib.patch_function"
+          "name": "entity.name.function.weidu-tp2.patch-function-name"
         },
         {
           "match": "\\b(REPLACE_STRREF_TRA)\\b",
-          "name": "entity.name.class.ielib.patch_function"
+          "name": "entity.name.function.weidu-tp2.patch-function-name"
         }
       ]
     },
     "ielib-action-functions": {
-      "name": "support.function.weidu-tp2.action_function",
+      "name": "support.function.weidu-tp2.action-function-name",
       "patterns": [
         {
           "match": "\\b(CREATE_MINION)\\b",
-          "name": "support.function.weidu-tp2.action_function"
+          "name": "support.function.weidu-tp2.action-function-name"
         },
         {
           "match": "\\b(IS_ITEM_GIVEN_OR_CREATED_IN_DIALOG_OR_SCRIPT)\\b",
-          "name": "support.function.weidu-tp2.action_function"
+          "name": "support.function.weidu-tp2.action-function-name"
         },
         {
           "match": "\\b(IS_ITEM_GIVEN_OR_CREATED_IN_DIALOG)\\b",
-          "name": "support.function.weidu-tp2.action_function"
+          "name": "support.function.weidu-tp2.action-function-name"
         },
         {
           "match": "\\b(IS_ITEM_GIVEN_OR_CREATED_IN_SCRIPT)\\b",
-          "name": "support.function.weidu-tp2.action_function"
+          "name": "support.function.weidu-tp2.action-function-name"
         },
         {
           "match": "\\b(IS_ITEM_IN_AREA)\\b",
-          "name": "support.function.weidu-tp2.action_function"
+          "name": "support.function.weidu-tp2.action-function-name"
         },
         {
           "match": "\\b(IS_ITEM_IN_RESOURCE)\\b",
-          "name": "support.function.weidu-tp2.action_function"
+          "name": "support.function.weidu-tp2.action-function-name"
         },
         {
           "match": "\\b(IS_ITEM_IN_STORE)\\b",
-          "name": "support.function.weidu-tp2.action_function"
+          "name": "support.function.weidu-tp2.action-function-name"
         },
         {
           "match": "\\b(IS_ITEM_ON_CREATURE)\\b",
-          "name": "support.function.weidu-tp2.action_function"
+          "name": "support.function.weidu-tp2.action-function-name"
         }
       ]
     },

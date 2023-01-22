@@ -268,7 +268,7 @@ repository:
       - match: \b(SPL_HEAD_target)\b
       - match: \b(SPL_sectype)\b
   ielib-patch-functions:
-    name: entity.name.class.ielib.patch_function
+    name: entity.name.function.weidu-tp2.patch-function-name
     patterns:
       - match: \b(ALTER_AREA_REGION_MATCH)\b
       - match: \b(ALTER_AREA_STRUCTURE_SCRIPT)\b
@@ -282,7 +282,7 @@ repository:
       - match: \b(REPLACE_STORE_ITEM_MATCH)\b
       - match: \b(REPLACE_STRREF_TRA)\b
   ielib-action-functions:
-    name: support.function.weidu-tp2.action_function
+    name: support.function.weidu-tp2.action-function-name
     patterns:
       - match: \b(CREATE_MINION)\b
       - match: \b(IS_ITEM_GIVEN_OR_CREATED_IN_DIALOG_OR_SCRIPT)\b
