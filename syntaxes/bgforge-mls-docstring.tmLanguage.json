@@ -7,6 +7,9 @@
       "include": "#arg"
     },
     {
+      "include": "#deprecated"
+    },
+    {
       "include": "#comment"
     }
   ],
@@ -43,6 +46,14 @@
               "name": "variable.bgforge-mls-docstring"
             }
           }
+        }
+      ]
+    },
+    "deprecated": {
+      "patterns": [
+        {
+          "match": "(@deprecated)",
+          "name": "support.function.bgforge-mls-docstring"
         }
       ]
     },

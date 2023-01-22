@@ -3,6 +3,7 @@ name: BGforge MLS docstring
 scopeName: source.bgforge-mls-docstring
 patterns:
   - include: "#arg"
+  - include: "#deprecated"
   - include: "#comment"
 repository:
   arg:
@@ -25,6 +26,11 @@ repository:
             name: variable.bgforge-mls-docstring
           '8':
             name: variable.bgforge-mls-docstring
+
+  deprecated:
+    patterns:
+      - match: '(@deprecated)'
+        name: support.function.bgforge-mls-docstring
 
   type:
     patterns:
