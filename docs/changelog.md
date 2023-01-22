@@ -1,5 +1,27 @@
 # Changelog
 
+## 2.0.0
+
+- New feature: docstrings.
+- Settings reworked, now with pretty names and sfall compile path is separate from options.
+- RPU defines are no longer loaded statically, instead all headers are searched at runtime.
+- Completion and hover items show source file.
+- New feature: go to definition.
+- New feature: functions can be marked as deprecated.
+- New features: validate on save, validate on change.
+- Prettier completion items (less plaintext, more markdown).
+- Completion and hovers for WeiDU `D` format.
+- Added file icons for `TRA`, `MSG`, `SSL` files.
+- New feature: hover tooltips for `TRA`/`MSG` references.
+- New feature: header support for WeiDU (`TPH`). Completion, hover, go to definition.
+- Improved `TP2` tooltip highlighting.
+- New feature: inlay hints for `TRA`/`MSG` references.
+- For `TP2`, `READ_*` and `WRITE_*` patch highlitht style aligned with corresponding IElib types' styles.
+- In `TP2`, action and patch flow control tokens switched to native action/patch highlight style.
+- New feature: callgraph for `SSL`.
+- Various smaller changes, mostly styling.
+- Minimal VScode version is 1.69.2.
+
 ## 1.16.3
 
 - IE
