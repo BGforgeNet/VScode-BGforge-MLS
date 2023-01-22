@@ -16,7 +16,7 @@ server/out/*
 !server/out/signature.*.json
 
 preview/node_modules/
-preview/out/
+preview/out/*
 !preview/out/index.html
 !preview/out/index.css
 
