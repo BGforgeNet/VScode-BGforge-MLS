@@ -47,7 +47,9 @@ jobs:
 
       - name: Package nightly build
         if: "!startsWith(github.ref, 'refs/tags/')"
-        run: vsce package
+        run: |
+          npm i --global @vscode/vsce
+          vsce package
 
       - name: Upload nightly build
         uses: actions/upload-artifact@v3
