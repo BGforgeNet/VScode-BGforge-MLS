@@ -4742,7 +4742,7 @@
     "GET_2DA_INDEX": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\npatch function GET_2DA_INDEX\n```\nReturns arrays containing current 2DA row and column names, for usage in `SET_2DA_ENTRY_LATER`:\n```\nCOPY_EXISTING ~clsrcreq.2da~ override\n  LPF GET_2DA_INDEX RET_ARRAY row_index col_index END\n  SET_2DA_ENTRY_LATER new_rows $row_index(CLERIC_MAGE) $col_index(ELF) 1\n```\n\n\n\n| RET vars | Description | Type |\n|:--------|:-----|:--------|\n| col_index | column name => index | [array](https://ielib.bgforge.net/types/#array) |\n| row_index | row name => index | [array](https://ielib.bgforge.net/types/#array) |\n"
+            "value": "```weidu-tp2-tooltip\npatch function GET_2DA_INDEX\n```\nReturns associative arrays containing current 2DA row and column names, for usage in `SET_2DA_ENTRY_LATER`:\n```\nCOPY_EXISTING ~clsrcreq.2da~ override\n  LPF GET_2DA_INDEX RET_ARRAY row_index col_index END\n  SET_2DA_ENTRY_LATER new_rows $row_index(CLERIC_MAGE) $col_index(ELF) 1\n```\n\n\n\n| RET vars | Description | Type |\n|:--------|:-----|:--------|\n| col_index | column name => index | [map](https://ielib.bgforge.net/types/#map) |\n| row_index | row name => index | [map](https://ielib.bgforge.net/types/#map) |\n"
         }
     },
     "GET_AREA_STRUCTURE_CENTER_POINT": {
