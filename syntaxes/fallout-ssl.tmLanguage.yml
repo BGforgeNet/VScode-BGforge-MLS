@@ -85,7 +85,7 @@ repository:
   fallout-base-functions:
     name: support.function.fallout-ssl.base
     patterns:
-      - match: \b(?i)(baction_being_used)\b
+      - match: \b(?i)(action_being_used)\b
       - match: \b(?i)(activateregion)\b
       - match: \b(?i)(addbutton)\b
       - match: \b(?i)(addbuttonflag)\b
@@ -1164,7 +1164,7 @@ repository:
     name: constant.language.fallout-ssl.macro-var
     patterns: []
   header-procedures:
-    name: support.function.header.fallout-ssl
+    name: entity.name.function.fallout-ssl.header-functions
     patterns:
       - match: \b(InitConfigs)\b
       - match: \b(_PURGE_all_saved_arrays)\b
@@ -1172,7 +1172,7 @@ repository:
       - match: \b(max)\b
       - match: \b(min)\b
   header-defines-with-vars:
-    name: support.type.fallout-ssl.define.header
+    name: entity.name.function.fallout-ssl.header-defines
     patterns:
       - match: \b(BLowOption)\b
       - match: \b(BMessage)\b

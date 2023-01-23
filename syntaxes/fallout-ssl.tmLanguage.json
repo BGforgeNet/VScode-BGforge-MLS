@@ -239,7 +239,7 @@
       "name": "support.function.fallout-ssl.base",
       "patterns": [
         {
-          "match": "\\b(?i)(baction_being_used)\\b",
+          "match": "\\b(?i)(action_being_used)\\b",
           "name": "support.function.fallout-ssl.base"
         },
         {
@@ -4344,1480 +4344,1480 @@
       "patterns": []
     },
     "header-procedures": {
-      "name": "support.function.header.fallout-ssl",
+      "name": "entity.name.function.fallout-ssl.header-functions",
       "patterns": [
         {
           "match": "\\b(InitConfigs)\\b",
-          "name": "support.function.header.fallout-ssl"
+          "name": "entity.name.function.fallout-ssl.header-functions"
         },
         {
           "match": "\\b(_PURGE_all_saved_arrays)\\b",
-          "name": "support.function.header.fallout-ssl"
+          "name": "entity.name.function.fallout-ssl.header-functions"
         },
         {
           "match": "\\b(hotkey_pressed)\\b",
-          "name": "support.function.header.fallout-ssl"
+          "name": "entity.name.function.fallout-ssl.header-functions"
         },
         {
           "match": "\\b(max)\\b",
-          "name": "support.function.header.fallout-ssl"
+          "name": "entity.name.function.fallout-ssl.header-functions"
         },
         {
           "match": "\\b(min)\\b",
-          "name": "support.function.header.fallout-ssl"
+          "name": "entity.name.function.fallout-ssl.header-functions"
         }
       ]
     },
     "header-defines-with-vars": {
-      "name": "support.type.fallout-ssl.define.header",
+      "name": "entity.name.function.fallout-ssl.header-defines",
       "patterns": [
         {
           "match": "\\b(BLowOption)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(BMessage)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(BOption)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(CRITTER_SKILL_LEVEL)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(FUNC)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(GLowOption)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(GMessage)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(GOption)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(INV)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(MAX)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(MIN)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(NLowOption)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(NMessage)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(NOption)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(Reply)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(Reply_Rand)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(VAR2)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(VAR3)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(VARA)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(VARC)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(VARD)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(VARP)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(VAR_)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(WRAP_WATCOM_FFUNC1)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(WRAP_WATCOM_FFUNC2)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(WRAP_WATCOM_FFUNC3)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(WRAP_WATCOM_FFUNC4)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(WRAP_WATCOM_FFUNC5)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(WRAP_WATCOM_FFUNC6)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(WRAP_WATCOM_FFUNC7)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(WRAP_WATCOM_FFUNC8)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(WRAP_WATCOM_FFUNC9)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(WRAP_WATCOM_FUNC0)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(WRAP_WATCOM_FUNC1)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(WRAP_WATCOM_FUNC2)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(WRAP_WATCOM_FUNC3)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(WRAP_WATCOM_FUNC4)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(WRAP_WATCOM_FUNC5)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(WRAP_WATCOM_FUNC6)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(WRAP_WATCOM_FUNC7)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(WRAP_WATCOM_FUNC8)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(WRAP_WATCOM_FUNC9)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(_GET_ARG)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(_GET_ARG_INT)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(_ITEM_NAME)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(_J_RET_VAL_TYPE)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(above)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(above_equal)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(add_extra_msg_file)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(add_global_timer_event)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(add_item_pid)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(add_trait)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(amt_cost_barter)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(amt_time_has_passed)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(array_exists)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(array_is_map)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(art_change_fid_num)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(attack)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(below)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(below_equal)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(car_give_gas)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(change_status_off)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(change_status_on)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(check_pid)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(check_set_obj_visiblility)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(chem_use_level)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(clear_array)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(create_array_list)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(create_object)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(create_win)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(create_win_flag)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(critter_can_barter)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(critter_damage)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(critter_inven_obj2)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(critter_is_armed)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(critter_kill_type)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(critter_skill_level)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(critter_uninjure)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(critter_wearing_armor)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(critter_weight)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(dec_global_var)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(dec_global_var_amt)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(dec_local_var)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(dec_local_var_amt)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(dec_map_var)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(dec_map_var_amt)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(dialog_message)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(display_array)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(display_mstr)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(display_mstr_rand)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(distance_objs)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(dlog)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(dlogr)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(draw_image)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(draw_image_scaled)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(drug_influence)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(dude_floater)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(dude_floater_bad)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(dude_floater_rand)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(dude_floater_sick)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(dude_item)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(dude_item_count)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(dude_skill)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(dude_stat_lose)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(dude_stat_tie)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(dude_stat_win)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(elevator)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(float_msg_clear)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(floater)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(floater_afraid)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(floater_afraid_rand)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(floater_bad)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(floater_bad_rand)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(floater_good)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(floater_good_rand)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(floater_high)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(floater_high_rand)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(floater_rand)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(floater_sick)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(floater_sick_rand)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(floater_type)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(floater_type_msg)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(floor2)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(flush_add_timer_event)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(flush_add_timer_event_sec)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(g_mstr)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(game_time_advance_hour)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(get_can_rest_on_map)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(get_current_inven_size)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(get_explosion_damage)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(get_flags)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(get_ini_section)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(get_ini_sections)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(get_interface_height)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(get_interface_rect)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(get_interface_width)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(get_interface_x)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(get_interface_y)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(get_npc_stat_max)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(get_npc_stat_min)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(get_object_ai_data)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(get_object_data)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(get_outline)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(get_pc_stat_max)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(get_pc_stat_min)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(get_saved_array_new_map)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(get_sfall_arg_at)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(get_string_pointer)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(get_terrain_name)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(get_text_width)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(give_character_points)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(gvar_bit)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(has_fake_perk_npc)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(has_fake_trait_npc)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(hide_window)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(in_range)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(inc_global_var)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(inc_global_var_amt)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(inc_local_var)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(inc_local_var_amt)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(inc_map_var)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(inc_map_var_amt)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(interface_art_draw)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(interface_art_draw_ex)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(interface_art_draw_frame)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(interface_print)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(interface_print_width)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(interface_redraw_win)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(intface_is_shown)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(inven_count)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(inven_ptr)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(inven_unwield)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(inventory_redraw)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(is_critter_dead)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(is_critter_prone)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(is_in_array)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(is_in_string)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(is_skill_tagged)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(item_make_explosive)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(item_weight)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(key_pressed_vk)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(load_create_array_map)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(lock_is_jammed)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(lvar_bit)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(map_is_known)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(mark_map_entrance_elev_state)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(mark_map_entrance_state)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(mark_on_map)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(mark_world_subtile_visited)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(message_box)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(metarule_exist)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(mstr)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(mstr_ai)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(mstr_combat)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(mstr_custom)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(mstr_inventry)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(mstr_item)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(mstr_lsgame)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(mstr_map)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(mstr_misc)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(mstr_options)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(mstr_perk)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(mstr_pipboy)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(mstr_proto)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(mstr_quests)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(mstr_script)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(mstr_scrname)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(mstr_skill)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(mstr_skilldex)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(mstr_stat)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(mstr_trait)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(mstr_worldmap)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(mvar_bit)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(npc_engine_level_up)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(num_to_num_text)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(obj_cost)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(obj_cost_barter)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(obj_drop_everything)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(obj_floater_type)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(obj_get_rot)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(obj_in_party)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(obj_is_openable)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(obj_is_visible_flag)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(obj_under_cursor)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(obj_weight)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(objects_in_radius)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(one_day_passed)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(one_hour_passed)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(one_minute_passed)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(one_month_passed)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(one_second_passed)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(one_week_passed)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(overlay_clear)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(overlay_clear_rectangle)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(overlay_create)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(overlay_destroy)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(party_member_count)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(pid_cost)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(pid_cost_barter)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(pid_weight)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(player_kill_count)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(remove_all_items_pid)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(remove_item_pid)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(remove_timer_event)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(reverse_array)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(rm_fixed_timer_event)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(self_item)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(self_item_count)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(set_attack_explosion_art)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(set_attack_explosion_pattern)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(set_attack_explosion_radius)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(set_attack_is_explosion)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(set_can_rest_on_map)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(set_car_carry_amount)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(set_car_intface_art)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(set_current_quick_save_slot)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(set_current_save_slot)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(set_cursor_mode)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(set_drugs_data)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(set_dude_obj)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(set_dynamite_damage)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(set_explosion_max_targets)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(set_explosion_radius)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(set_fake_perk_npc)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(set_fake_trait_npc)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(set_flags)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(set_gvar_bit_off)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(set_gvar_bit_on)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(set_horrigan_days)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(set_iface_tag_text)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(set_ini_setting)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(set_lvar_bit_off)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(set_lvar_bit_on)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(set_map_enter_position)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(set_map_exit_tiles)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(set_mvar_bit_off)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(set_mvar_bit_on)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(set_object_data)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(set_outline)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(set_plastic_damage)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(set_quest_failure_value)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(set_rest_heal_time)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(set_rest_mode)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(set_scr_name)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(set_selectable_perk_npc)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(set_status_assassinated)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(set_status_attacked)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(set_status_dead)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(set_status_in_party)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(set_status_killed)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(set_status_known)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(set_status_not_in_party)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(set_status_sex)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(set_status_special)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(set_status_special_2)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(set_status_spoken_to)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(set_status_spoken_to_special)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(set_status_warned)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(set_terrain_name)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(set_town_title)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(set_unique_id)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(set_unjam_locks_time)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(set_weapon_unusable)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(set_weapon_usable)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(set_window_flag)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(show_window)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(shuffle_array)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(skill_success)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(sort_array)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(sort_array_reverse)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(sort_map_reverse)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(sort_map_value)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(spatial_radius)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(start_dialogue)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(stat_success)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(status_is)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(status_is_alive)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(status_is_assassinated)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(status_is_attacked)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(status_is_dead)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(status_is_in_party)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(status_is_killed)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(status_is_known)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(status_is_not_in_party)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(status_is_sex)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(status_is_special)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(status_is_special_2)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(status_is_spoken_to)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(status_is_spoken_to_special)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(status_is_unknown)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(status_is_warned)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(string_compare)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(string_compare_locale)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(string_format)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(string_replace)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(string_starts_with)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(string_tolower)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(string_toupper)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(temp_array_list)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(ticks_til_hour)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(tile_behind_obj)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(tile_by_position)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(tile_get_next_critter)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(tile_set_center)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(time_has_passed)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(town_known)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(trunc)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(unjam_lock)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(unmark_on_map)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(unsave_array)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(unset_array)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(unset_unique_id)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(unwield_slot)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(use_item_on_dude)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(weapon_dmg_type)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(weapon_is_unusable)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(who_carry_amount)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(who_inven_free_amt)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(who_max_carry)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(wield_obj)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(win_fill_color)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
           "match": "\\b(wm_get_subtile_state)\\b",
-          "name": "support.type.fallout-ssl.define.header"
+          "name": "entity.name.function.fallout-ssl.header-defines"
         }
       ]
     }
