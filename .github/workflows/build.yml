@@ -57,3 +57,28 @@ jobs:
         with:
           name: bgforge-mls
           path: "*.vsix"
+
+      - name: Publish to Open VSX Registry
+        if: "startsWith(github.ref, 'refs/tags/')"
+        uses: HaaLeo/publish-vscode-extension@v1
+        id: publishToOpenVSX
+        with:
+          pat: ${{ secrets.OPEN_VSX_TOKEN }}
+          dryRun: true
+
+      - name: Publish to Visual Studio Marketplace
+        if: "startsWith(github.ref, 'refs/tags/')"
+        uses: HaaLeo/publish-vscode-extension@v1
+        with:
+          pat: ${{ secrets.VS_MARKETPLACE_TOKEN }}
+          registryUrl: https://marketplace.visualstudio.com
+          extensionFile: ${{ steps.publishToOpenVSX.outputs.vsixPath }}
+          dryRun: true
+
+      # - name: GitHub Release
+      #   if: "startsWith(github.ref, 'refs/tags/')"
+      #   uses: softprops/action-gh-release@v1
+      #   with:
+      #     name: ${{ github.ref_name }}
+      #     fail_on_unmatched_files: true
+      #     files: ${{ steps.publishToOpenVSX.outputs.vsixPath }}
