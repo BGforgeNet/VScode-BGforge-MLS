@@ -13,29 +13,22 @@
 
 BGforge MLS is a VScode extension adding support for [Star-Trek Scripting Language](https://falloutmods.fandom.com/wiki/Fallout_1_and_Fallout_2_scripting_-_commands,_reference,_tutorials) (`ssl`) used in Fallout 1 and 2 games, and several file formats (`d`, `baf`, `tp2`, `tra`, `2da`) used by [WeiDU](https://weidu.org/~thebigg/README-WeiDU.html) and [Infinity Engine](https://iesdp.bgforge.net), as well as [Sword Coast Stratagems Scripting Language](https://www.gibberlings3.net/forums/topic/13725-coding-scripts-in-ssl-some-lessons/) (`ssl`/`slb`).
 
-[Roadmap](https://forums.bgforge.net/viewtopic.php?f=35&t=174&p=506), [changelog](docs/changelog.md).
-
-**IE modders:** consider also installing MLS companion library - [IElib](https://github.com/BGforgeNet/BGforge-MLS-IElib).
-
 ### Features
 
 - [Syntax highlighting](#screenshots)
 - [Completion](#infinity-engine-highlighting-and-completion)
 - [Hovers](#fallout-highlighting-and-hovers)
-- Signature help
-- Diagnostics
 - [Error reporting](#error-reporting)
-- [More coming](https://forums.bgforge.net/viewtopic.php?f=35&t=174&p=506).
+- Signature help, diagnostics, docstrings, etc. See the [forum](https://forums.bgforge.net/viewforum.php?f=35).
 
 ### Installation
 
 1. Search for BGforge in VScode marketplace, like any other extension.
    (Alternatively, download the package from [Github releases](https://github.com/BGforgeNet/vscode-bgforge-mls/releases) tab and install it manually.)
-1. Review [general settings](docs/settings.md).
-1. Review [tooltip width](docs/tooltip_width.md).
-1. Review [file associations](docs/file_associations.md).
-1. See [hotkeys](#hotkeys).
-1. (Infinity Engine) Enable [custom theme](docs/theme.md) and [icon theme](docs/icon-theme.md).
+1. Check [general settings](docs/settings.md).
+1. Check [file associations](docs/file_associations.md).
+1. Check [hotkeys](#hotkeys).
+1. Enable [custom theme](docs/theme.md) and [icon theme](docs/icon-theme.md).
 1. (Infinity Engine) Install [IElib](https://ielib.bgforge.net).
 
 #### Hotkeys
