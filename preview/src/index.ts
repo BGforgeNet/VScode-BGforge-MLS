@@ -121,6 +121,9 @@ function drawGraph(elements) {
                     height: 50,
                     "background-color": "#61bffc",
                     content: "data(id)",
+                    "text-halign": "center",
+                    "text-valign": "center",
+                    "text-rotation": 0.3,
                 },
             },
             {
