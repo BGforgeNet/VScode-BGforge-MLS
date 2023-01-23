@@ -537,7 +537,8 @@
 			"scope": "invalid.deprecated.bgforge",
 			"settings": {
 				"foreground": "#dcdcdc",
-				"fontStyle": "strikethrough"			}
+				"fontStyle": "strikethrough"
+			}
 		}
 	],
 	"semanticHighlighting": true
