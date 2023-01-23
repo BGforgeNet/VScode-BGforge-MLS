@@ -1402,6 +1402,7 @@
     "function-invocation": {
       "patterns": [
         {
+          "match": "\\b(?i)(call)\\b[[:blank:]]+(\\w+)[[:blank:]]*(\\(.*\\))??(;)",
           "captures": {
             "1": {
               "name": "keyword.control.fallout-ssl"
@@ -1419,14 +1420,39 @@
             "4": {
               "name": "keyword.control.fallout-ssl"
             }
-          },
-          "match": "\\b(?i)(call)\\b[[:blank:]]+(\\w+)[[:blank:]]*(\\(.*\\))??(;)"
+          }
         },
         {
           "include": "#fallout-base-functions"
         },
         {
           "include": "#sfall-functions"
+        },
+        {
+          "match": "(?i)[[:blank:]]+(\\w+)[[:blank:]]*(\\(.*\\))(;)",
+          "captures": {
+            "1": {
+              "name": "entity.name.function.fallout-ssl",
+              "patterns": [
+                {
+                  "include": "#fallout-base-functions"
+                },
+                {
+                  "include": "#sfall-functions"
+                }
+              ]
+            },
+            "2": {
+              "patterns": [
+                {
+                  "include": "$self"
+                }
+              ]
+            },
+            "3": {
+              "name": "keyword.control.fallout-ssl"
+            }
+          }
         }
       ]
     },
