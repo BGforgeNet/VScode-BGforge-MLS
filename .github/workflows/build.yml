@@ -64,7 +64,6 @@ jobs:
         id: publishToOpenVSX
         with:
           pat: ${{ secrets.OPEN_VSX_TOKEN }}
-          dryRun: true
 
       - name: Publish to Visual Studio Marketplace
         if: "startsWith(github.ref, 'refs/tags/')"
@@ -73,12 +72,11 @@ jobs:
           pat: ${{ secrets.VS_MARKETPLACE_TOKEN }}
           registryUrl: https://marketplace.visualstudio.com
           extensionFile: ${{ steps.publishToOpenVSX.outputs.vsixPath }}
-          dryRun: true
 
-      # - name: GitHub Release
-      #   if: "startsWith(github.ref, 'refs/tags/')"
-      #   uses: softprops/action-gh-release@v1
-      #   with:
-      #     name: ${{ github.ref_name }}
-      #     fail_on_unmatched_files: true
-      #     files: ${{ steps.publishToOpenVSX.outputs.vsixPath }}
+      - name: GitHub Release
+        if: "startsWith(github.ref, 'refs/tags/')"
+        uses: softprops/action-gh-release@v1
+        with:
+          name: ${{ github.ref_name }}
+          fail_on_unmatched_files: true
+          files: ${{ steps.publishToOpenVSX.outputs.vsixPath }}
