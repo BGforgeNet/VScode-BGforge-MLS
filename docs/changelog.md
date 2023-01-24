@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.1
+
+Fixed crash on mod directory open on Windows.
+
 ## 2.0.0
 
 - New feature: docstrings.
