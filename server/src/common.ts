@@ -131,7 +131,6 @@ export function uriToPath(uri_string: string) {
     return fileURLToPath(uri_string);
 }
 
-
 export function pathToUri(filePath: string) {
     const uri = pathToFileURL(filePath);
     return uri.toString();
