@@ -123,7 +123,6 @@ function drawGraph(elements) {
                     content: "data(id)",
                     "text-halign": "center",
                     "text-valign": "center",
-                    "text-rotation": 0.3,
                 },
             },
             {
@@ -138,9 +137,6 @@ function drawGraph(elements) {
             },
         ],
         elements: elements,
-        layout: {
-            name: "fcose",
-        },
     });
     cy.layout(options).run();
 }
