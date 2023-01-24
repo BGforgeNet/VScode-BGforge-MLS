@@ -3,8 +3,8 @@ import * as fs from "fs";
 import { pathToFileURL } from "node:url";
 import * as os from "os";
 import * as path from "path";
+import { fileURLToPath } from "url";
 import { Diagnostic, DiagnosticSeverity, Position } from "vscode-languageserver/node";
-import { URI } from "vscode-uri";
 import { connection } from "./server";
 
 export function fname(uri: string) {
@@ -128,8 +128,9 @@ export function getRelPath(root: string, other_dir: string) {
 }
 
 export function uriToPath(uri_string: string) {
-    return URI.parse(uri_string).path;
+    return fileURLToPath(uri_string);
 }
+
 
 export function pathToUri(filePath: string) {
     const uri = pathToFileURL(filePath);
