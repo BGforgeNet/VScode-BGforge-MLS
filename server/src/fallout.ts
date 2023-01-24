@@ -140,11 +140,9 @@ function loadProcedures(uri: string, headerData: FalloutHeaderData, filePath: st
             kind: CompletionItemKind.Function,
             labelDetails: { description: filePath },
         };
-        conlog(proc.jsdoc);
         if (proc.jsdoc?.deprecated) {
             const COMPLETION_TAG_deprecated = 1;
             completionItem.tags = [COMPLETION_TAG_deprecated];
-            conlog("deprecated");
         }
         completions.push(completionItem);
         const hoverItem = { contents: markdownContents, source: filePath, uri: uri };
