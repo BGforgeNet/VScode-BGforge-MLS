@@ -16,7 +16,6 @@
         { "open": "{", "close": "}" },
         { "open": "[", "close": "]" },
         { "open": "(", "close": ")" },
-        { "open": "'", "close": "'", "notIn": ["string", "comment"] },
         { "open": "\"", "close": "\"", "notIn": ["string"] },
         { "open": "/**", "close": " */", "notIn": ["string"] }
     ],
@@ -26,8 +25,7 @@
         ["{", "}"],
         ["[", "]"],
         ["(", ")"],
-        ["\"", "\""],
-        ["'", "'"]
+        ["\"", "\""]
     ],
     "indentationRules": {
         "increaseIndentPattern": "((\\bbegin\\b)|(#\\b(if|ifdef|ifndef|else|elif)\\b)).*",
