@@ -10,8 +10,6 @@
         ["{", "}"],
         ["[", "]"],
         ["(", ")"],
-        // ["begin", "end"],
-        // ["if", "then"]
     ],
     // symbols that are auto closed when typing
     "autoClosingPairs": [
