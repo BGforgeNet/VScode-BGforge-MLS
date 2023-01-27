@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.0.2
+
+- SSL constant defines colored as constants.
+- `scripts.lst` highlighting.
+- Local functions definitions no longer override builtin language functions for SSL.
+- Removed single quotes from SSL autoclose, as they don't work for quoting.
+- Prettier builtin functions descriptions for SSL.
+
 ## 2.0.1
 
 Fixed crash on mod directory open on Windows.
