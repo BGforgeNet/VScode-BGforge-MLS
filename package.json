@@ -2,7 +2,7 @@
     "name": "bgforge-mls",
     "displayName": "BGforge MLS",
     "description": "BGforge multilanguage server",
-    "version": "2.0.1",
+    "version": "2.0.2",
     "author": "BGforge",
     "repository": {
         "type": "git",
@@ -62,6 +62,12 @@
             },
             {
                 "id": "fallout-ssl-tooltip"
+            },
+            {
+                "id": "fallout-scripts-lst",
+                "filenames": [
+                    "scripts.lst"
+                ]
             },
             {
                 "id": "fallout-msg",
@@ -218,6 +224,11 @@
                 "language": "fallout-msg",
                 "scopeName": "source.fallout-msg",
                 "path": "./syntaxes/fallout-msg.tmLanguage.json"
+            },
+            {
+                "language": "fallout-scripts-lst",
+                "scopeName": "source.fallout-scripts-lst",
+                "path": "./syntaxes/fallout-scripts-lst.tmLanguage.json"
             },
             {
                 "language": "weidu-tp2",
