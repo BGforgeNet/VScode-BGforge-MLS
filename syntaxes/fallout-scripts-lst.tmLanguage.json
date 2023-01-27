@@ -1,0 +1,36 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Fallout scripts.lst",
+  "scopeName": "source.fallout-scripts-lst",
+  "patterns": [
+    {
+      "include": "#line"
+    }
+  ],
+  "repository": {
+    "line": {
+      "patterns": [
+        {
+          "match": "^(\\w+.int)\\s+(;[^#]+)?(#\\s+(local_vars)?(=)?(\\d+)?)?",
+          "captures": {
+            "1": {
+              "name": "string.fallout-scripts-lst"
+            },
+            "2": {
+              "name": "comment.fallout-scripts-lst"
+            },
+            "3": {
+              "name": "keyword.fallout-scripts-lst"
+            },
+            "4": {
+              "name": "variable.language.fallout-scripts-lst"
+            },
+            "6": {
+              "name": "constant.numeric.fallout-scripts-lst"
+            }
+          }
+        }
+      ]
+    }
+  }
+}
