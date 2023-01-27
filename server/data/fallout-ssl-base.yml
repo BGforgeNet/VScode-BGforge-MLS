@@ -31,53 +31,73 @@ engine-procedures:
   type: 3 # function
   items:
     - name: combat_p_proc
+      detail: void combat_p_proc()
       doc: |-
         Called in combat (every turn?).
     - name: critter_p_proc
+      detail: void critter_p_proc()
       doc: |-
         This procedure is called every "heartbeat", which means it's run ten times each second, except during combat.
     - name: damage_p_proc
+      detail: void damage_p_proc()
       doc: |-
         Called when the critter takes damage.
     - name: description_p_proc
+      detail: void description_p_proc()
       doc: |-
         Called when the player inspects the object (binoculars).
     - name: destroy_p_proc
+      detail: void destroy_p_proc()
       doc: |-
         Called on death of the critter or destruction of the object (except when using `destroy_object(self_obj)`).
     - name: look_at_p_proc
+      detail: void look_at_p_proc()
       doc: |-
         Called when the player passes the cursor over any object.
     - name: map_enter_p_proc
+      detail: void map_enter_p_proc()
       doc: |-
         Called once by the engine each time the map is entered from another map. It is not run when the elevation is changed.
     - name: map_update_p_proc
+      detail: void map_update_p_proc()
       doc: |-
         Called roughly once every 30 seconds. It is also called each time you exit a dialogue, each time you exit the pipboy screen and each time you use an item. In addition to that, it is run once when you enter the map, and, seemingly, twice when you change elevation.
     - name: pickup_p_proc
+      detail: void pickup_p_proc()
       doc: |-
         Called when the player is caught stealing from this critter.
     - name: start
+      detail: void start()
       doc: |-
         This procedure is only supposed to be called by the engine when the script is first run, then never again, unless specifically called from somewhere else.
     - name: talk_p_proc
+      detail: void talk_p_proc()
       doc: |-
         Called when the player tries to initiate dialogue with the critter.
     - name: timed_event_p_proc
+      detail: void timed_event_p_proc()
       doc: |-
-        This procedure is called by the function `add_timer_event(ObjPtr obj, int time, int fixed_param)`. ObjPtr points to the object whose script's `timed_event_p_proc` procedure you want to access. Time is the number of game ticks (1 game tick = 1/10 seconds) you want to pass before the `timed_event_p_proc` is called. `fixed_param` is a variable you can set to differentiate between various timed events. In `timed_event_p_proc`, you can check the value of `fixed_param` against whatever number you used when calling `add_timer_event`. This allows for multiple uses of `timed_event_p_proc` in the same script.
+        This procedure is called by the function `add_timer_event(ObjPtr obj, int time, int fixed_param)`.
+        `ObjPtr` points to the object whose script's `timed_event_p_proc` procedure you want to access.
+        Time is the number of game ticks (1 game tick = 1/10 seconds) you want to pass before the `timed_event_p_proc` is called.
+        `fixed_param` is a variable you can set to differentiate between various timed events.
+        In `timed_event_p_proc`, you can check the value of `fixed_param` against whatever number you used when calling `add_timer_event`.
+        This allows for multiple uses of `timed_event_p_proc` in the same script.
     - name: use_obj_on_p_proc
+      detail: void use_obj_on_p_proc()
       doc: |
         Called when:
         - A critter uses an object on another critter. (Or themselves).
         - A critter uses an object from inventory screen AND this object does not have "Use" action flag set and it's not active flare or explosive.
         - Player or AI uses any drug.
     - name: use_p_proc
+      detail: void use_p_proc()
       doc: |
         Called when:
         - A critter uses an object from inventory which have "Use" action flag set or it's an active flare or dynamite.
         - Player uses an object from main interface.
     - name: use_skill_on_p_proc
+      detail: void use_skill_on_p_proc()
       doc: |-
         Called when a skill is used on the object.
 base-functions:
