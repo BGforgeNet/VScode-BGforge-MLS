@@ -288,13 +288,6 @@ export class Language implements Language {
                 return false;
             })
         );
-        fileDefinition = new Map(
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            Array.from(fileDefinition).filter(([key, value]) => {
-                !this.data.hover.static.has(key);
-            })
-        );
-
         newDefinition = new Map([...newDefinition, ...fileDefinition]);
         return newDefinition;
     }
