@@ -1465,7 +1465,16 @@
               "name": "keyword.control.fallout-ssl"
             },
             "3": {
-              "name": "entity.other.attribute-name.fallout-ssl"
+              "patterns": [
+                {
+                  "match": "\\b([A-Z][A-Z0-9]*(_[\\w]+)?)\\b",
+                  "name": "constant.language.fallout-ssl"
+                },
+                {
+                  "match": ".",
+                  "name": "entity.other.attribute-name.fallout-ssl"
+                }
+              ]
             }
           }
         },
