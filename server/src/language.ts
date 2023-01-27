@@ -249,6 +249,7 @@ export class Language implements Language {
         uri: string
     ) {
         let newCompletion = oldCompletion.filter((item) => item.uri != uri);
+        fileCompletion = fileCompletion.filter((item) => !this.data.hover.static.has(item.label));
         newCompletion = [...newCompletion, ...fileCompletion];
         return newCompletion;
     }
@@ -261,6 +262,12 @@ export class Language implements Language {
                     return true;
                 }
                 return false;
+            })
+        );
+        fileHover = new Map(
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            Array.from(fileHover).filter(([key, value]) => {
+                !this.data.hover.static.has(key);
             })
         );
         newHover = new Map([...newHover, ...fileHover]);
@@ -281,6 +288,13 @@ export class Language implements Language {
                 return false;
             })
         );
+        fileDefinition = new Map(
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            Array.from(fileDefinition).filter(([key, value]) => {
+                !this.data.hover.static.has(key);
+            })
+        );
+
         newDefinition = new Map([...newDefinition, ...fileDefinition]);
         return newDefinition;
     }
@@ -297,6 +311,12 @@ export class Language implements Language {
                     return true;
                 }
                 return false;
+            })
+        );
+        fileSignature = new Map(
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            Array.from(fileSignature).filter(([key, value]) => {
+                !this.data.hover.static.has(key);
             })
         );
         newSignature = new Map([...newSignature, ...fileSignature]);
