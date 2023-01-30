@@ -4084,7 +4084,7 @@ repository:
       - match: \b(HANDLE_CHARSETS)\b
 
   weidu-tp2-patch-controls:
-    name: support.function.weidu-tp2
+    name: entity.name.function.weidu-tp2.patch
     patterns:
       - match: \b(SET)\b
       - match: \b(WHILE)\b

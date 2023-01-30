@@ -15934,87 +15934,87 @@
       ]
     },
     "weidu-tp2-patch-controls": {
-      "name": "support.function.weidu-tp2",
+      "name": "entity.name.function.weidu-tp2.patch",
       "patterns": [
         {
           "match": "\\b(SET)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "entity.name.function.weidu-tp2.patch"
         },
         {
           "match": "\\b(WHILE)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "entity.name.function.weidu-tp2.patch"
         },
         {
           "match": "\\b(FOR)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "entity.name.function.weidu-tp2.patch"
         },
         {
           "match": "\\b(PATCH_BASH_FOR)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "entity.name.function.weidu-tp2.patch"
         },
         {
           "match": "\\b(PATCH_FOR_EACH)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "entity.name.function.weidu-tp2.patch"
         },
         {
           "match": "\\b(PHP_EACH)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "entity.name.function.weidu-tp2.patch"
         },
         {
           "match": "\\b(PATCH_PHP_EACH)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "entity.name.function.weidu-tp2.patch"
         },
         {
           "match": "\\b(PATCH_IF)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "entity.name.function.weidu-tp2.patch"
         },
         {
           "match": "\\b(ELSE)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "entity.name.function.weidu-tp2.patch"
         },
         {
           "match": "\\b(PATCH_MATCH)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "entity.name.function.weidu-tp2.patch"
         },
         {
           "match": "\\b(PATCH_TRY)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "entity.name.function.weidu-tp2.patch"
         },
         {
           "match": "\\b(PATCH_SILENT)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "entity.name.function.weidu-tp2.patch"
         },
         {
           "match": "\\b(PATCH_VERBOSE)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "entity.name.function.weidu-tp2.patch"
         },
         {
           "match": "\\b(INNER_PATCH)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "entity.name.function.weidu-tp2.patch"
         },
         {
           "match": "\\b(INNER_PATCH_SAVE)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "entity.name.function.weidu-tp2.patch"
         },
         {
           "match": "\\b(INNER_PATCH_FILE)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "entity.name.function.weidu-tp2.patch"
         },
         {
           "match": "\\b(INNER_ACTION)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "entity.name.function.weidu-tp2.patch"
         },
         {
           "match": "\\b(PATCH_TIME)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "entity.name.function.weidu-tp2.patch"
         },
         {
           "match": "\\b(DEFAULT)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "entity.name.function.weidu-tp2.patch"
         },
         {
           "match": "\\b(WITH)\\b",
-          "name": "support.function.weidu-tp2"
+          "name": "entity.name.function.weidu-tp2.patch"
         }
       ]
     },
