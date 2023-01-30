@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.3
+
+Fixed patch flow control keyword color for tp2.
+
 ## 2.0.2
 
 - SSL constant defines colored as constants.
