@@ -112,7 +112,6 @@ function sendDiagnostics(uri: string, output_text: string, format = "weidu") {
     sendParseResult(uri, parseResult);
 }
 
-// export function wcompile(params: any) {
 export function compile(uri: string, settings: WeiDUsettings, interactive = false, text: string) {
     /** preprocessed file */
     const tmpFile = path.join(tmpDir, "tmp.txt");

@@ -540,7 +540,7 @@ export function compile(uri: string, sslSettings: SSLsettings, interactive = fal
 
     fs.writeFileSync(tmpFile, text);
     cp.exec(
-        compileCmd + " " + tmpFile + " -o " + dstPath,
+        `${compileCmd} ${tmpFile} -o "${dstPath}"`,
         { cwd: cwdTo },
         (err, stdout: string, stderr: string) => {
             conlog("stdout: " + stdout);
