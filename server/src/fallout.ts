@@ -10,7 +10,7 @@ import {
     ParseResult,
     RegExpMatchArrayWithIndices,
     sendParseResult,
-    uriToPath
+    uriToPath,
 } from "./common";
 import * as completion from "./completion";
 import * as definition from "./definition";
