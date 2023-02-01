@@ -10,7 +10,7 @@ import {
     ParseResult,
     RegExpMatchArrayWithIndices,
     sendParseResult,
-    uriToPath,
+    uriToPath
 } from "./common";
 import * as completion from "./completion";
 import * as definition from "./definition";
@@ -539,6 +539,7 @@ export function compile(uri: string, sslSettings: SSLsettings, interactive = fal
     conlog(`compiling ${baseName}...`);
 
     fs.writeFileSync(tmpFile, text);
+    conlog(`${compileCmd} ${tmpFile} -o "${dstPath}"`);
     cp.exec(
         `${compileCmd} ${tmpFile} -o "${dstPath}"`,
         { cwd: cwdTo },
