@@ -539,9 +539,9 @@ export function compile(uri: string, sslSettings: SSLsettings, interactive = fal
     conlog(`compiling ${baseName}...`);
 
     fs.writeFileSync(tmpFile, text);
-    conlog(`${compileCmd} ${tmpFile} -o "${dstPath}"`);
+    conlog(`${compileCmd} "${tmpFile}" -o "${dstPath}"`);
     cp.exec(
-        `${compileCmd} ${tmpFile} -o "${dstPath}"`,
+        `${compileCmd} "${tmpFile}" -o "${dstPath}"`,
         { cwd: cwdTo },
         (err, stdout: string, stderr: string) => {
             conlog("stdout: " + stdout);
