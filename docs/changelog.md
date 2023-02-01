@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.4
+
+Fixed SSL compile when source or destination directory contains spaces.
+
 ## 2.0.3
 
 Fixed patch flow control keyword color for tp2.
