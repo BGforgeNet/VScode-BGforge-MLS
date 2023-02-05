@@ -3848,7 +3848,9 @@ repository:
       - match: \b(ACTION_FOR_EACH)\b
       - match: \b(ACTION_PHP_EACH)\b
       - match: \b(USING)\b
+        name: keyword.control.weidu-tp2.action
       - match: \b(AS)\b
+        name: keyword.control.weidu-tp2.action
 
   weidu-tp2-optglob:
     name: constant.language.flag.weidu-tp2

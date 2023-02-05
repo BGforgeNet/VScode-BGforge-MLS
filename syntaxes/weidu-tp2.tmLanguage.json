@@ -15108,11 +15108,11 @@
         },
         {
           "match": "\\b(USING)\\b",
-          "name": "support.function.weidu-tp2.action"
+          "name": "keyword.control.weidu-tp2.action"
         },
         {
           "match": "\\b(AS)\\b",
-          "name": "support.function.weidu-tp2.action"
+          "name": "keyword.control.weidu-tp2.action"
         }
       ]
     },
