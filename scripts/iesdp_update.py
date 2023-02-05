@@ -9,21 +9,10 @@ from dataclasses import dataclass
 
 import frontmatter
 import ruamel.yaml
-from ie import (
-    action_desc,
-    action_detail,
-    append_unique,
-    dump_completion,
-    dump_definition,
-    dump_highlight,
-    find_files,
-    get_offset_id,
-    get_offset_prefix,
-    litscal,
-    offsets_to_definition,
-    opcode_name_to_id,
-    strip_liquid,
-)
+from ie import (action_desc, action_detail, append_unique, dump_completion,
+                dump_definition, dump_highlight, find_files, get_offset_id,
+                get_offset_prefix, get_offset_size, litscal,
+                offsets_to_definition, opcode_name_to_id, strip_liquid)
 
 yaml = ruamel.yaml.YAML(typ="rt")
 yaml.width = 4096
@@ -101,20 +90,32 @@ class ProcessedOffsetData:
     other: []
 
     def append(self, offset_data, offset_prefix):
-        for i in offset_data:
-            if "unused" in i or "unknown" in i:
-                continue
-            iid = get_offset_id(i, offset_prefix)
+        cur_off = 0
+        if "offset" in offset_data[0]:
+            cur_off = offset_data[0]["offset"]
 
+        for i in offset_data:
+            if "offset" in i and i["offset"] != cur_off:
+                print(f"Error: offset mismatch. Expected {cur_off}, got {i['offset']} for {i}")
+
+            size = get_offset_size(i)
+
+            if "unused" in i or "unknown" in i:
+                cur_off += size
+                continue
+
+            iid = get_offset_id(i, offset_prefix)
+            item_off = hex(cur_off)
+
+            detail = f"{i['type']} offset {iid} = {item_off}"
             if "mult" in i:  # multiword, multibyte - etc
-                detail = f"multi {i['type']} {iid}"
-            else:
-                detail = f"{i['type']} {iid}"
+                detail = f"multi {detail}"
 
             item = {"name": iid, "detail": detail, "doc": strip_liquid(i["desc"])}
 
             if "mult" in i:
                 self.other.append(item)
+                cur_off += size
                 continue
 
             if i["type"] == "char":
@@ -131,6 +132,7 @@ class ProcessedOffsetData:
                 self.strrefs.append(item)
             else:
                 self.other.append(item)
+            cur_off += size
 
     def sanitise_list(self, offset_list):
         # for offset_list in [chars, lbytes, words, dwords, resrefs, strrefs, other]:

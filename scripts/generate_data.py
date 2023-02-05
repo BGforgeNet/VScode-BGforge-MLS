@@ -2,6 +2,7 @@
 
 import argparse
 import json
+
 import ruamel.yaml
 
 yaml = ruamel.yaml.YAML(typ="rt")
