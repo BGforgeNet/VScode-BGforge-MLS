@@ -94,6 +94,10 @@
           "name": "support.type.weidu-tp2-tooltip.datatype"
         },
         {
+          "match": "\\b(offset)\\b",
+          "name": "comment"
+        },
+        {
           "match": "^(action) (function|macro) (\\w+)$",
           "captures": {
             "1": {

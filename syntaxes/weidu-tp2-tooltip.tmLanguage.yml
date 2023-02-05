@@ -42,6 +42,10 @@ repository:
     patterns:
       - match: \b(multi )?(int|byte|char array|char|word|dword|resref|strref)\b
         name: support.type.weidu-tp2-tooltip.datatype
+
+      - match: \b(offset)\b
+        name: comment
+
       - match: ^(action) (function|macro) (\w+)$
         captures:
           '1':
@@ -50,6 +54,7 @@ repository:
             name: comment
           '3':
             name: support.function.weidu-tp2.action-function-name
+
       - match: \b(patch) (function|macro) (\w+)\b
         captures:
           '1':

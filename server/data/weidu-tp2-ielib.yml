@@ -89,6 +89,9 @@ ielib-patch-functions:
       doc: |
         Returns current armor type.
 
+        | **INT_VAR** | **Description** | **Type** | **Default** |
+        |:-|:-|:-|:-|
+        | warn | Warn if the item is not an armor | [bool](https://ielib.bgforge.net/types/#bool) | True |
 
         | RET vars | Description | Type |
         |:--------|:-----|:--------|
