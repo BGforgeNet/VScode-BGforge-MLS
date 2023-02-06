@@ -18,5 +18,6 @@
     "editor.codeActionsOnSave": {
         "source.organizeImports": true,
         "source.fixAll.eslint": true
-    }
+    },
+    "python.linting.pylintCategorySeverity.refactor": "Information"
 }
