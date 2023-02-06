@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.0.5
+
+- Added "offset" to offset tooltips, and their values too.
+- Prettified doc for `GET_OFFSET_ARRAY`, `GET_OFFSET_ARRAY2`.
+- Colored `AS` ans `USING` back as keywords in TP2.
+
 ## 2.0.4
 
 Fixed SSL compile when source or destination directory contains spaces.
