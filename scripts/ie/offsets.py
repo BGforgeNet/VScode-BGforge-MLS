@@ -1,6 +1,7 @@
 import re
 import sys
 from collections import OrderedDict
+
 from bs4 import BeautifulSoup
 from markdown import markdown
 
@@ -67,6 +68,12 @@ def get_offset_size(item):
     return size
 
 
+def validate_offset(current_offset, item):
+    if "offset" in item and item["offset"] != current_offset:
+        print(f"Error: offset mismatch. Expected {current_offset}, got {item['offset']} for {item}")
+        sys.exit(1)
+
+
 def offsets_to_definition(data, prefix):
     cur_off = 0
     if "offset" in data[0]:
@@ -74,8 +81,7 @@ def offsets_to_definition(data, prefix):
 
     items = OrderedDict()
     for i in data:
-        if "offset" in i and i["offset"] != cur_off:
-            print(f"Error: offset mismatch. Expected {cur_off}, got {i['offset']} for {i}")
+        validate_offset(cur_off, i)
 
         size = get_offset_size(i)
 

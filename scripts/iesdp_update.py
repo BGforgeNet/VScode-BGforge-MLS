@@ -9,10 +9,23 @@ from dataclasses import dataclass
 
 import frontmatter
 import ruamel.yaml
-from ie import (action_desc, action_detail, append_unique, dump_completion,
-                dump_definition, dump_highlight, find_files, get_offset_id,
-                get_offset_prefix, get_offset_size, litscal,
-                offsets_to_definition, opcode_name_to_id, strip_liquid)
+from ie import (
+    action_desc,
+    action_detail,
+    append_unique,
+    dump_completion,
+    dump_definition,
+    dump_highlight,
+    find_files,
+    get_offset_id,
+    get_offset_prefix,
+    get_offset_size,
+    litscal,
+    offsets_to_definition,
+    opcode_name_to_id,
+    strip_liquid,
+    validate_offset,
+)
 
 yaml = ruamel.yaml.YAML(typ="rt")
 yaml.width = 4096
@@ -95,8 +108,7 @@ class ProcessedOffsetData:
             cur_off = offset_data[0]["offset"]
 
         for i in offset_data:
-            if "offset" in i and i["offset"] != cur_off:
-                print(f"Error: offset mismatch. Expected {cur_off}, got {i['offset']} for {i}")
+            validate_offset(cur_off, i)
 
             size = get_offset_size(i)
 
