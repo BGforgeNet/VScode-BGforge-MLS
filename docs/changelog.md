@@ -2,9 +2,11 @@
 
 ## 2.0.5
 
+- Fixed missing hovers for defines from the same file.
 - Added "offset" to offset tooltips, and their values too.
 - Prettified doc for `GET_OFFSET_ARRAY`, `GET_OFFSET_ARRAY2`.
 - Colored `AS` ans `USING` back as keywords in TP2.
+- STO v1 and item types are now imported from IESDP.
 
 ## 2.0.4
 
