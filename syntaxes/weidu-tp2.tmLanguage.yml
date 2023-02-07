@@ -95,6 +95,8 @@ repository:
       - match: \b(ITM_version)\b
       - match: \b(SPL_signature)\b
       - match: \b(SPL_version)\b
+      - match: \b(STO_signature)\b
+      - match: \b(STO_version)\b
   iesdp-strref:
     name: constant.language.iesdp.strref
     patterns:
@@ -102,6 +104,8 @@ repository:
       - match: \b(ITM_identified_name)\b
       - match: \b(ITM_unidentified_desc)\b
       - match: \b(ITM_unidentified_name)\b
+      - match: \b(STO_DRINK_name)\b
+      - match: \b(STO_name)\b
   iesdp-resref:
     name: constant.language.iesdp.resref
     patterns:
@@ -119,6 +123,11 @@ repository:
       - match: \b(SPL_HEAD_memorised_icon)\b
       - match: \b(SPL_completion_sound)\b
       - match: \b(SPL_spellbook_icon)\b
+      - match: \b(STO_CURE_spellname)\b
+      - match: \b(STO_DRINK_rumor)\b
+      - match: \b(STO_ITEM_name)\b
+      - match: \b(STO_rumors_tavern)\b
+      - match: \b(STO_rumors_temple)\b
   iesdp-dword:
     name: constant.language.iesdp.dword
     patterns:
@@ -177,6 +186,32 @@ repository:
       - match: \b(SPL_level)\b
       - match: \b(SPL_unidentified_description)\b
       - match: \b(SPL_unidentified_name)\b
+      - match: \b(STO_CURE_price)\b
+      - match: \b(STO_DRINK_price)\b
+      - match: \b(STO_DRINK_strength)\b
+      - match: \b(STO_ITEM_amount)\b
+      - match: \b(STO_ITEM_flags)\b
+      - match: \b(STO_ITEM_infinite)\b
+      - match: \b(STO_buy_count)\b
+      - match: \b(STO_buy_markup)\b
+      - match: \b(STO_buy_offset)\b
+      - match: \b(STO_cures_count)\b
+      - match: \b(STO_cures_offset)\b
+      - match: \b(STO_depreciation)\b
+      - match: \b(STO_drinks_counts)\b
+      - match: \b(STO_drinks_offset)\b
+      - match: \b(STO_flags)\b
+      - match: \b(STO_identification_price)\b
+      - match: \b(STO_items_count)\b
+      - match: \b(STO_items_offset)\b
+      - match: \b(STO_lore)\b
+      - match: \b(STO_room_flags)\b
+      - match: \b(STO_room_price_merchant)\b
+      - match: \b(STO_room_price_noble)\b
+      - match: \b(STO_room_price_peasant)\b
+      - match: \b(STO_room_price_royal)\b
+      - match: \b(STO_sell_markup)\b
+      - match: \b(STO_type)\b
   iesdp-word:
     name: constant.language.iesdp.word
     patterns:
@@ -219,6 +254,12 @@ repository:
       - match: \b(SPL_casting_graphics)\b
       - match: \b(SPL_extended_headers_count)\b
       - match: \b(SPL_type)\b
+      - match: \b(STO_ITEM_charges1)\b
+      - match: \b(STO_ITEM_charges2)\b
+      - match: \b(STO_ITEM_charges3)\b
+      - match: \b(STO_ITEM_expiration_time)\b
+      - match: \b(STO_capacity)\b
+      - match: \b(STO_chance_of_steal_failure)\b
   iesdp-byte:
     name: constant.language.iesdp.byte
     patterns:
@@ -2749,10 +2790,6 @@ repository:
       - match: \b(FLAG_HEAD_recharge_after_rest)\b
       - match: \b(FLAG_HEAD_thac0_strength_bonus_EE)\b
       - match: \b(FLAG_HEAD_toggle_backstab_Ex)\b
-      - match: \b(FLAG_ITEM_SALE_identified)\b
-      - match: \b(FLAG_ITEM_SALE_stolen)\b
-      - match: \b(FLAG_ITEM_SALE_undroppable)\b
-      - match: \b(FLAG_ITEM_SALE_unstealable)\b
       - match: \b(FLAG_SAVINGTHROW_breath)\b
       - match: \b(FLAG_SAVINGTHROW_bypass_mirror_image_EE)\b
       - match: \b(FLAG_SAVINGTHROW_death)\b
@@ -2773,16 +2810,20 @@ repository:
       - match: \b(FLAG_SPL_no_LoS)\b
       - match: \b(FLAG_SPL_not_in_combat)\b
       - match: \b(FLAG_SPL_outdoors_only)\b
-      - match: \b(FLAG_STO_buys_critical_items_bgee)\b
+      - match: \b(FLAG_STO_ITEM_identified)\b
+      - match: \b(FLAG_STO_ITEM_stolen)\b
+      - match: \b(FLAG_STO_ITEM_undroppable)\b
+      - match: \b(FLAG_STO_ITEM_unstealable)\b
+      - match: \b(FLAG_STO_buys_critical_EE)\b
       - match: \b(FLAG_STO_buys_fenced)\b
       - match: \b(FLAG_STO_buys)\b
-      - match: \b(FLAG_STO_can_done)\b
-      - match: \b(FLAG_STO_can_identify)\b
+      - match: \b(FLAG_STO_can_donate)\b
       - match: \b(FLAG_STO_can_steal)\b
       - match: \b(FLAG_STO_has_cures)\b
       - match: \b(FLAG_STO_has_drinks)\b
-      - match: \b(FLAG_STO_recharges_items_ex)\b
-      - match: \b(FLAG_STO_repucation_has_no_effect_bgee)\b
+      - match: \b(FLAG_STO_identifies)\b
+      - match: \b(FLAG_STO_recharges_items_EX)\b
+      - match: \b(FLAG_STO_reputation_has_no_effect_EE)\b
       - match: \b(FLAG_STO_sells)\b
       - match: \b(ICON_ability_score_drained)\b
       - match: \b(ICON_able_to_poison_weapons)\b
@@ -3639,39 +3680,6 @@ repository:
       - match: \b(SECTYPE_spell_protections)\b
       - match: \b(SPELL_FORM_projectile)\b
       - match: \b(SPELL_FORM_standard)\b
-      - match: \b(STO_ITEM_SALE_amount)\b
-      - match: \b(STO_ITEM_SALE_charges1)\b
-      - match: \b(STO_ITEM_SALE_charges2)\b
-      - match: \b(STO_ITEM_SALE_charges3)\b
-      - match: \b(STO_ITEM_SALE_expiration_time)\b
-      - match: \b(STO_ITEM_SALE_flags)\b
-      - match: \b(STO_ITEM_SALE_infinite)\b
-      - match: \b(STO_ITEM_SALE_name)\b
-      - match: \b(STO_buy_price_markup)\b
-      - match: \b(STO_capacity)\b
-      - match: \b(STO_chance_of_steal_failure)\b
-      - match: \b(STO_cures_count)\b
-      - match: \b(STO_cures_offset)\b
-      - match: \b(STO_depreciation_rate)\b
-      - match: \b(STO_drinks_count)\b
-      - match: \b(STO_drinks_offset)\b
-      - match: \b(STO_flags)\b
-      - match: \b(STO_id_price)\b
-      - match: \b(STO_items_for_sale_count)\b
-      - match: \b(STO_items_for_sale_offset)\b
-      - match: \b(STO_items_purchased_count)\b
-      - match: \b(STO_items_purchased_offset)\b
-      - match: \b(STO_lore)\b
-      - match: \b(STO_name)\b
-      - match: \b(STO_price_of_a_merchant_room)\b
-      - match: \b(STO_price_of_a_noble_room)\b
-      - match: \b(STO_price_of_a_peasant_room)\b
-      - match: \b(STO_price_of_a_royal_room)\b
-      - match: \b(STO_room_flags)\b
-      - match: \b(STO_rumours_tavern)\b
-      - match: \b(STO_rumours_temple)\b
-      - match: \b(STO_sell_price_markup)\b
-      - match: \b(STO_type)\b
       - match: \b(TARGET_FX_everyone_except_party)\b
       - match: \b(TARGET_FX_everyone_except_self)\b
       - match: \b(TARGET_FX_everyone_match_specific_caster)\b

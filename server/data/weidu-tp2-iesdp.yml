@@ -62,6 +62,12 @@ iesdp-other:
     - name: SPL_version
       detail: char array offset SPL_version = 0x4
       doc: Version ('V1  ')
+    - name: STO_signature
+      detail: char array offset STO_signature = 0x0
+      doc: Signature ('STOR')
+    - name: STO_version
+      detail: char array offset STO_version = 0x4
+      doc: Version ('V1.0')
 iesdp-strref:
   type: 21
   items:
@@ -77,6 +83,12 @@ iesdp-strref:
     - name: ITM_unidentified_name
       detail: strref offset ITM_unidentified_name = 0x8
       doc: Unidentified Name (strref)
+    - name: STO_DRINK_name
+      detail: strref offset STO_DRINK_name = 0x8
+      doc: Drink name strref
+    - name: STO_name
+      detail: strref offset STO_name = 0xc
+      doc: name
 iesdp-resref:
   type: 21
   items:
@@ -145,6 +157,21 @@ iesdp-resref:
     - name: SPL_spellbook_icon
       detail: resref offset SPL_spellbook_icon = 0x3a
       doc: Spellbook icon (BAM). The engine replaces the last character of this filename with a C.
+    - name: STO_CURE_spellname
+      detail: resref offset STO_CURE_spellname = 0x0
+      doc: Filename of SPL
+    - name: STO_DRINK_rumor
+      detail: resref offset STO_DRINK_rumor = 0x0
+      doc: Rumour resource
+    - name: STO_ITEM_name
+      detail: resref offset STO_ITEM_name = 0x0
+      doc: Filename of ITM
+    - name: STO_rumors_tavern
+      detail: resref offset STO_rumors_tavern = 0x44
+      doc: Rumours (Tavern)
+    - name: STO_rumors_temple
+      detail: resref offset STO_rumors_temple = 0x54
+      doc: Rumours (Temple)
 iesdp-dword:
   type: 21
   items:
@@ -505,6 +532,114 @@ iesdp-dword:
     - name: SPL_unidentified_name
       detail: dword offset SPL_unidentified_name = 0x8
       doc: <b><a name="splv1_Header_0x8">Spell Name</a></b> - Unidentified (strref)
+    - name: STO_CURE_price
+      detail: dword offset STO_CURE_price = 0x8
+      doc: Spell price
+    - name: STO_DRINK_price
+      detail: dword offset STO_DRINK_price = 0xc
+      doc: Drink price
+    - name: STO_DRINK_strength
+      detail: dword offset STO_DRINK_strength = 0x10
+      doc: Alcoholic strength
+    - name: STO_ITEM_amount
+      detail: dword offset STO_ITEM_amount = 0x14
+      doc: Amount of this item in stock
+    - name: STO_ITEM_flags
+      detail: dword offset STO_ITEM_flags = 0x10
+      doc: |
+        Flags
+        - bit 0: Identified
+        - bit 1: Unstealable
+        - bit 2: Stolen
+        - bit 3: <a name="storv1_0_Sale_0x10_BIT3">**Undroppable**</a>
+    - name: STO_ITEM_infinite
+      detail: dword offset STO_ITEM_infinite = 0x18
+      doc: |
+        Infinite supply flag (0=limited stock, 1=infinite stock)
+
+        Items with this flag set are automatically shown as identified
+    - name: STO_buy_count
+      detail: dword offset STO_buy_count = 0x30
+      doc: Count of items in [items purchased](#storv1_0_Buy) section
+    - name: STO_buy_markup
+      detail: dword offset STO_buy_markup = 0x18
+      doc: Store "buy price markup" (percentage of base price store is willing to pay)
+    - name: STO_buy_offset
+      detail: dword offset STO_buy_offset = 0x2c
+      doc: Offset to [items purchased](#storv1_0_Buy) section
+    - name: STO_cures_count
+      detail: dword offset STO_cures_count = 0x74
+      doc: Count of [cures](#storv1_0_Cure)
+    - name: STO_cures_offset
+      detail: dword offset STO_cures_offset = 0x70
+      doc: Offset to [cures](#storv1_0_Cure) section
+    - name: STO_depreciation
+      detail: dword offset STO_depreciation = 0x1c
+      doc: Depreciation rate
+    - name: STO_drinks_counts
+      detail: dword offset STO_drinks_counts = 0x50
+      doc: Count of [drinks](#storv1_0_Drink)
+    - name: STO_drinks_offset
+      detail: dword offset STO_drinks_offset = 0x4c
+      doc: Offset to [drinks](#storv1_0_Drink) section
+    - name: STO_flags
+      detail: dword offset STO_flags = 0x10
+      doc: |
+        Flags
+        - bit 0: User allowed to buy
+        - bit 1: User allowed to sell
+        - bit 2: User allowed to identify items
+        - bit 3: User allowed to steal
+        - bit 4: User allowed to donate money
+        - bit 5: User allowed to purchase cures
+        - bit 6: User allowed to purchase drinks
+        - bit 7: Unknown
+        - bit 8: Unknown
+        - bit 9: Quality 1 (tvrnqul0-3)
+        - bit 10: Quality 2 (tvrnqul0-3)
+        - bit 11: Unknown
+        - bit 12: Buy Fenced Goods
+        - bit 13: Reputation doesn't affect prices (BGEE)
+        - bit 14: Toggle item recharge (TobEx)
+        - bit 15: **User allowed to sell [critical]({{ "/file_formats/ie_formats/itm_v1.htm#Header_Flags_BIT0" | prepend: relurl }}) items** (BGEE)
+    - name: STO_identification_price
+      detail: dword offset STO_identification_price = 0x40
+      doc: ID Price
+    - name: STO_items_count
+      detail: dword offset STO_items_count = 0x38
+      doc: Count of [items for sale](#storv1_0_Sale)
+    - name: STO_items_offset
+      detail: dword offset STO_items_offset = 0x34
+      doc: Offset to [items for sale](#storv1_0_Sale) section
+    - name: STO_lore
+      detail: dword offset STO_lore = 0x3c
+      doc: Lore
+    - name: STO_room_flags
+      detail: dword offset STO_room_flags = 0x5c
+      doc: |
+        Room flags
+        - bit 0: Peasant
+        - bit 1: Merchant
+        - bit 2: Noble
+        - bit 3: Royal
+    - name: STO_room_price_merchant
+      detail: dword offset STO_room_price_merchant = 0x64
+      doc: Price of a merchant room
+    - name: STO_room_price_noble
+      detail: dword offset STO_room_price_noble = 0x68
+      doc: Price of a noble room
+    - name: STO_room_price_peasant
+      detail: dword offset STO_room_price_peasant = 0x60
+      doc: Price of a peasant room
+    - name: STO_room_price_royal
+      detail: dword offset STO_room_price_royal = 0x6c
+      doc: Price of a royal room
+    - name: STO_sell_markup
+      detail: dword offset STO_sell_markup = 0x14
+      doc: Store "sell price markup" (percentage of base price store charges for items)
+    - name: STO_type
+      detail: dword offset STO_type = 0x8
+      doc: Type (0=Store, 1=Tavern, 2=Inn, 3=Temple, 5=Container)
 iesdp-word:
   type: 21
   items:
@@ -792,6 +927,24 @@ iesdp-word:
         - Normally, any subspells that scale with <code><a href="#splv1_Extended_Header_0x10">Level</a></code> should be of the same <code><a href="#splv1_Header_0x1C">Type</a></code> as the spell casting them.
           - If they don't scale, it doesn't really matter.
           - It also doesn't matter when they are applied through <a href="../../opcodes/bgee.htm#op146">opcode #146</a><code><sup><small>*</small></sup>p2=2</code>/<a href="../../opcodes/bgee.htm#op326">opcode #326</a>/<a href="../../opcodes/bgee.htm#op333">opcode #333</a>.
+    - name: STO_ITEM_charges1
+      detail: word offset STO_ITEM_charges1 = 0xa
+      doc: Quantity/Charges 1
+    - name: STO_ITEM_charges2
+      detail: word offset STO_ITEM_charges2 = 0xc
+      doc: Quantity/Charges 2
+    - name: STO_ITEM_charges3
+      detail: word offset STO_ITEM_charges3 = 0xe
+      doc: Quantity/Charges 3
+    - name: STO_ITEM_expiration_time
+      detail: word offset STO_ITEM_expiration_time = 0x8
+      doc: Item expiration time (replace with drained item)
+    - name: STO_capacity
+      detail: word offset STO_capacity = 0x22
+      doc: Capacity (0=unlimited)
+    - name: STO_chance_of_steal_failure
+      detail: word offset STO_chance_of_steal_failure = 0x20
+      doc: '% chance of steal failure'
 iesdp-byte:
   type: 21
   items:

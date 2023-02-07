@@ -233,6 +233,14 @@
         {
           "match": "\\b(SPL_version)\\b",
           "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(STO_signature)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(STO_version)\\b",
+          "name": "constant.language.iesdp.other"
         }
       ]
     },
@@ -253,6 +261,14 @@
         },
         {
           "match": "\\b(ITM_unidentified_name)\\b",
+          "name": "constant.language.iesdp.strref"
+        },
+        {
+          "match": "\\b(STO_DRINK_name)\\b",
+          "name": "constant.language.iesdp.strref"
+        },
+        {
+          "match": "\\b(STO_name)\\b",
           "name": "constant.language.iesdp.strref"
         }
       ]
@@ -314,6 +330,26 @@
         },
         {
           "match": "\\b(SPL_spellbook_icon)\\b",
+          "name": "constant.language.iesdp.resref"
+        },
+        {
+          "match": "\\b(STO_CURE_spellname)\\b",
+          "name": "constant.language.iesdp.resref"
+        },
+        {
+          "match": "\\b(STO_DRINK_rumor)\\b",
+          "name": "constant.language.iesdp.resref"
+        },
+        {
+          "match": "\\b(STO_ITEM_name)\\b",
+          "name": "constant.language.iesdp.resref"
+        },
+        {
+          "match": "\\b(STO_rumors_tavern)\\b",
+          "name": "constant.language.iesdp.resref"
+        },
+        {
+          "match": "\\b(STO_rumors_temple)\\b",
           "name": "constant.language.iesdp.resref"
         }
       ]
@@ -540,6 +576,110 @@
         {
           "match": "\\b(SPL_unidentified_name)\\b",
           "name": "constant.language.iesdp.dword"
+        },
+        {
+          "match": "\\b(STO_CURE_price)\\b",
+          "name": "constant.language.iesdp.dword"
+        },
+        {
+          "match": "\\b(STO_DRINK_price)\\b",
+          "name": "constant.language.iesdp.dword"
+        },
+        {
+          "match": "\\b(STO_DRINK_strength)\\b",
+          "name": "constant.language.iesdp.dword"
+        },
+        {
+          "match": "\\b(STO_ITEM_amount)\\b",
+          "name": "constant.language.iesdp.dword"
+        },
+        {
+          "match": "\\b(STO_ITEM_flags)\\b",
+          "name": "constant.language.iesdp.dword"
+        },
+        {
+          "match": "\\b(STO_ITEM_infinite)\\b",
+          "name": "constant.language.iesdp.dword"
+        },
+        {
+          "match": "\\b(STO_buy_count)\\b",
+          "name": "constant.language.iesdp.dword"
+        },
+        {
+          "match": "\\b(STO_buy_markup)\\b",
+          "name": "constant.language.iesdp.dword"
+        },
+        {
+          "match": "\\b(STO_buy_offset)\\b",
+          "name": "constant.language.iesdp.dword"
+        },
+        {
+          "match": "\\b(STO_cures_count)\\b",
+          "name": "constant.language.iesdp.dword"
+        },
+        {
+          "match": "\\b(STO_cures_offset)\\b",
+          "name": "constant.language.iesdp.dword"
+        },
+        {
+          "match": "\\b(STO_depreciation)\\b",
+          "name": "constant.language.iesdp.dword"
+        },
+        {
+          "match": "\\b(STO_drinks_counts)\\b",
+          "name": "constant.language.iesdp.dword"
+        },
+        {
+          "match": "\\b(STO_drinks_offset)\\b",
+          "name": "constant.language.iesdp.dword"
+        },
+        {
+          "match": "\\b(STO_flags)\\b",
+          "name": "constant.language.iesdp.dword"
+        },
+        {
+          "match": "\\b(STO_identification_price)\\b",
+          "name": "constant.language.iesdp.dword"
+        },
+        {
+          "match": "\\b(STO_items_count)\\b",
+          "name": "constant.language.iesdp.dword"
+        },
+        {
+          "match": "\\b(STO_items_offset)\\b",
+          "name": "constant.language.iesdp.dword"
+        },
+        {
+          "match": "\\b(STO_lore)\\b",
+          "name": "constant.language.iesdp.dword"
+        },
+        {
+          "match": "\\b(STO_room_flags)\\b",
+          "name": "constant.language.iesdp.dword"
+        },
+        {
+          "match": "\\b(STO_room_price_merchant)\\b",
+          "name": "constant.language.iesdp.dword"
+        },
+        {
+          "match": "\\b(STO_room_price_noble)\\b",
+          "name": "constant.language.iesdp.dword"
+        },
+        {
+          "match": "\\b(STO_room_price_peasant)\\b",
+          "name": "constant.language.iesdp.dword"
+        },
+        {
+          "match": "\\b(STO_room_price_royal)\\b",
+          "name": "constant.language.iesdp.dword"
+        },
+        {
+          "match": "\\b(STO_sell_markup)\\b",
+          "name": "constant.language.iesdp.dword"
+        },
+        {
+          "match": "\\b(STO_type)\\b",
+          "name": "constant.language.iesdp.dword"
         }
       ]
     },
@@ -700,6 +840,30 @@
         },
         {
           "match": "\\b(SPL_type)\\b",
+          "name": "constant.language.iesdp.word"
+        },
+        {
+          "match": "\\b(STO_ITEM_charges1)\\b",
+          "name": "constant.language.iesdp.word"
+        },
+        {
+          "match": "\\b(STO_ITEM_charges2)\\b",
+          "name": "constant.language.iesdp.word"
+        },
+        {
+          "match": "\\b(STO_ITEM_charges3)\\b",
+          "name": "constant.language.iesdp.word"
+        },
+        {
+          "match": "\\b(STO_ITEM_expiration_time)\\b",
+          "name": "constant.language.iesdp.word"
+        },
+        {
+          "match": "\\b(STO_capacity)\\b",
+          "name": "constant.language.iesdp.word"
+        },
+        {
+          "match": "\\b(STO_chance_of_steal_failure)\\b",
           "name": "constant.language.iesdp.word"
         }
       ]
@@ -10781,22 +10945,6 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(FLAG_ITEM_SALE_identified)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(FLAG_ITEM_SALE_stolen)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(FLAG_ITEM_SALE_undroppable)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(FLAG_ITEM_SALE_unstealable)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
           "match": "\\b(FLAG_SAVINGTHROW_breath)\\b",
           "name": "constant.language.ielib.int"
         },
@@ -10877,7 +11025,23 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(FLAG_STO_buys_critical_items_bgee)\\b",
+          "match": "\\b(FLAG_STO_ITEM_identified)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
+          "match": "\\b(FLAG_STO_ITEM_stolen)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
+          "match": "\\b(FLAG_STO_ITEM_undroppable)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
+          "match": "\\b(FLAG_STO_ITEM_unstealable)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
+          "match": "\\b(FLAG_STO_buys_critical_EE)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -10889,11 +11053,7 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(FLAG_STO_can_done)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(FLAG_STO_can_identify)\\b",
+          "match": "\\b(FLAG_STO_can_donate)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -10909,11 +11069,15 @@
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(FLAG_STO_recharges_items_ex)\\b",
+          "match": "\\b(FLAG_STO_identifies)\\b",
           "name": "constant.language.ielib.int"
         },
         {
-          "match": "\\b(FLAG_STO_repucation_has_no_effect_bgee)\\b",
+          "match": "\\b(FLAG_STO_recharges_items_EX)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
+          "match": "\\b(FLAG_STO_reputation_has_no_effect_EE)\\b",
           "name": "constant.language.ielib.int"
         },
         {
@@ -14338,138 +14502,6 @@
         },
         {
           "match": "\\b(SPELL_FORM_standard)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(STO_ITEM_SALE_amount)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(STO_ITEM_SALE_charges1)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(STO_ITEM_SALE_charges2)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(STO_ITEM_SALE_charges3)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(STO_ITEM_SALE_expiration_time)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(STO_ITEM_SALE_flags)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(STO_ITEM_SALE_infinite)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(STO_ITEM_SALE_name)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(STO_buy_price_markup)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(STO_capacity)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(STO_chance_of_steal_failure)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(STO_cures_count)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(STO_cures_offset)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(STO_depreciation_rate)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(STO_drinks_count)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(STO_drinks_offset)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(STO_flags)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(STO_id_price)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(STO_items_for_sale_count)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(STO_items_for_sale_offset)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(STO_items_purchased_count)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(STO_items_purchased_offset)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(STO_lore)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(STO_name)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(STO_price_of_a_merchant_room)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(STO_price_of_a_noble_room)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(STO_price_of_a_peasant_room)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(STO_price_of_a_royal_room)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(STO_room_flags)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(STO_rumours_tavern)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(STO_rumours_temple)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(STO_sell_price_markup)\\b",
-          "name": "constant.language.ielib.int"
-        },
-        {
-          "match": "\\b(STO_type)\\b",
           "name": "constant.language.ielib.int"
         },
         {

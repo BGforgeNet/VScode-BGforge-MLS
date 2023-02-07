@@ -4580,18 +4580,6 @@ ielib-int:
     - name: FLAG_HEAD_toggle_backstab_Ex
       detail: int FLAG_HEAD_toggle_backstab_Ex = BIT25
       doc: IElib define
-    - name: FLAG_ITEM_SALE_identified
-      detail: int FLAG_ITEM_SALE_identified = BIT0
-      doc: IElib define
-    - name: FLAG_ITEM_SALE_stolen
-      detail: int FLAG_ITEM_SALE_stolen = BIT2
-      doc: IElib define
-    - name: FLAG_ITEM_SALE_undroppable
-      detail: int FLAG_ITEM_SALE_undroppable = BIT3
-      doc: IElib define
-    - name: FLAG_ITEM_SALE_unstealable
-      detail: int FLAG_ITEM_SALE_unstealable = BIT1
-      doc: IElib define
     - name: FLAG_SAVINGTHROW_breath
       detail: int FLAG_SAVINGTHROW_breath = BIT1
       doc: IElib define
@@ -4652,20 +4640,29 @@ ielib-int:
     - name: FLAG_SPL_outdoors_only
       detail: int FLAG_SPL_outdoors_only = BIT13
       doc: IElib define
+    - name: FLAG_STO_ITEM_identified
+      detail: int FLAG_STO_ITEM_identified = BIT0
+      doc: IElib define
+    - name: FLAG_STO_ITEM_stolen
+      detail: int FLAG_STO_ITEM_stolen = BIT2
+      doc: IElib define
+    - name: FLAG_STO_ITEM_undroppable
+      detail: int FLAG_STO_ITEM_undroppable = BIT3
+      doc: IElib define
+    - name: FLAG_STO_ITEM_unstealable
+      detail: int FLAG_STO_ITEM_unstealable = BIT1
+      doc: IElib define
     - name: FLAG_STO_buys
       detail: int FLAG_STO_buys = BIT1
       doc: IElib define
-    - name: FLAG_STO_buys_critical_items_bgee
-      detail: int FLAG_STO_buys_critical_items_bgee = BIT15
+    - name: FLAG_STO_buys_critical_EE
+      detail: int FLAG_STO_buys_critical_EE = BIT15
       doc: IElib define
     - name: FLAG_STO_buys_fenced
       detail: int FLAG_STO_buys_fenced = BIT12
       doc: IElib define
-    - name: FLAG_STO_can_done
-      detail: int FLAG_STO_can_done = BIT4
-      doc: IElib define
-    - name: FLAG_STO_can_identify
-      detail: int FLAG_STO_can_identify = BIT2
+    - name: FLAG_STO_can_donate
+      detail: int FLAG_STO_can_donate = BIT4
       doc: IElib define
     - name: FLAG_STO_can_steal
       detail: int FLAG_STO_can_steal = BIT3
@@ -4676,11 +4673,14 @@ ielib-int:
     - name: FLAG_STO_has_drinks
       detail: int FLAG_STO_has_drinks = BIT6
       doc: IElib define
-    - name: FLAG_STO_recharges_items_ex
-      detail: int FLAG_STO_recharges_items_ex = BIT14
+    - name: FLAG_STO_identifies
+      detail: int FLAG_STO_identifies = BIT2
       doc: IElib define
-    - name: FLAG_STO_repucation_has_no_effect_bgee
-      detail: int FLAG_STO_repucation_has_no_effect_bgee = BIT13
+    - name: FLAG_STO_recharges_items_EX
+      detail: int FLAG_STO_recharges_items_EX = BIT14
+      doc: IElib define
+    - name: FLAG_STO_reputation_has_no_effect_EE
+      detail: int FLAG_STO_reputation_has_no_effect_EE = BIT13
       doc: IElib define
     - name: FLAG_STO_sells
       detail: int FLAG_STO_sells = BIT0
@@ -7249,105 +7249,6 @@ ielib-int:
       doc: IElib define
     - name: SPELL_FORM_standard
       detail: int SPELL_FORM_standard = 1
-      doc: IElib define
-    - name: STO_ITEM_SALE_amount
-      detail: int STO_ITEM_SALE_amount = 0x14
-      doc: IElib define
-    - name: STO_ITEM_SALE_charges1
-      detail: int STO_ITEM_SALE_charges1 = 0xa
-      doc: IElib define
-    - name: STO_ITEM_SALE_charges2
-      detail: int STO_ITEM_SALE_charges2 = 0xc
-      doc: IElib define
-    - name: STO_ITEM_SALE_charges3
-      detail: int STO_ITEM_SALE_charges3 = 0xe
-      doc: IElib define
-    - name: STO_ITEM_SALE_expiration_time
-      detail: int STO_ITEM_SALE_expiration_time = 0x8
-      doc: IElib define
-    - name: STO_ITEM_SALE_flags
-      detail: int STO_ITEM_SALE_flags = 0x10
-      doc: IElib define
-    - name: STO_ITEM_SALE_infinite
-      detail: int STO_ITEM_SALE_infinite = 0x18
-      doc: IElib define
-    - name: STO_ITEM_SALE_name
-      detail: int STO_ITEM_SALE_name = 0
-      doc: IElib define
-    - name: STO_buy_price_markup
-      detail: int STO_buy_price_markup = 0x18
-      doc: IElib define
-    - name: STO_capacity
-      detail: int STO_capacity = 0x22
-      doc: IElib define
-    - name: STO_chance_of_steal_failure
-      detail: int STO_chance_of_steal_failure = 0x20
-      doc: IElib define
-    - name: STO_cures_count
-      detail: int STO_cures_count = 0x74
-      doc: IElib define
-    - name: STO_cures_offset
-      detail: int STO_cures_offset = 0x70
-      doc: IElib define
-    - name: STO_depreciation_rate
-      detail: int STO_depreciation_rate = 0x1c
-      doc: IElib define
-    - name: STO_drinks_count
-      detail: int STO_drinks_count = 0x50
-      doc: IElib define
-    - name: STO_drinks_offset
-      detail: int STO_drinks_offset = 0x4c
-      doc: IElib define
-    - name: STO_flags
-      detail: int STO_flags = 0x10
-      doc: IElib define
-    - name: STO_id_price
-      detail: int STO_id_price = 0x40
-      doc: IElib define
-    - name: STO_items_for_sale_count
-      detail: int STO_items_for_sale_count = 0x38
-      doc: IElib define
-    - name: STO_items_for_sale_offset
-      detail: int STO_items_for_sale_offset = 0x34
-      doc: IElib define
-    - name: STO_items_purchased_count
-      detail: int STO_items_purchased_count = 0x30
-      doc: IElib define
-    - name: STO_items_purchased_offset
-      detail: int STO_items_purchased_offset = 0x2c
-      doc: IElib define
-    - name: STO_lore
-      detail: int STO_lore = 0x3c
-      doc: IElib define
-    - name: STO_name
-      detail: int STO_name = 0xc
-      doc: IElib define
-    - name: STO_price_of_a_merchant_room
-      detail: int STO_price_of_a_merchant_room = 0x64
-      doc: IElib define
-    - name: STO_price_of_a_noble_room
-      detail: int STO_price_of_a_noble_room = 0x68
-      doc: IElib define
-    - name: STO_price_of_a_peasant_room
-      detail: int STO_price_of_a_peasant_room = 0x60
-      doc: IElib define
-    - name: STO_price_of_a_royal_room
-      detail: int STO_price_of_a_royal_room = 0x6c
-      doc: IElib define
-    - name: STO_room_flags
-      detail: int STO_room_flags = 0x5c
-      doc: IElib define
-    - name: STO_rumours_tavern
-      detail: int STO_rumours_tavern = 0x44
-      doc: IElib define
-    - name: STO_rumours_temple
-      detail: int STO_rumours_temple = 0x54
-      doc: IElib define
-    - name: STO_sell_price_markup
-      detail: int STO_sell_price_markup = 0x14
-      doc: IElib define
-    - name: STO_type
-      detail: int STO_type = 0x8
       doc: IElib define
     - name: TARGET_FX_everyone
       detail: int TARGET_FX_everyone = 4
