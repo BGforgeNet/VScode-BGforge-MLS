@@ -391,26 +391,10 @@ export class Language implements Language {
                 }
             }
         } else {
-            const oldCompletion = this.data.completion.self.get(uri) || [];
-            const newCompletion = this.reloadFileCompletion(
-                oldCompletion,
-                fileData.completion,
-                uri
-            );
-            this.data.completion.self.set(uri, newCompletion);
-
-            const oldHover = this.data.hover.self.get(uri) || new Map();
-            const newHover = this.reloadFileHover(oldHover, fileData.hover, uri);
-            this.data.hover.self.set(uri, newHover);
-
+            this.data.completion.self.set(uri, fileData.completion);
+            this.data.hover.self.set(uri, fileData.hover);
             if (this.features.signature && fileData.signature) {
-                const oldSignature = this.data.signature.self.get(uri) || new Map();
-                const newSignature = this.reloadFileSignature(
-                    oldSignature,
-                    fileData.signature,
-                    uri
-                );
-                this.data.signature.self.set(uri, newSignature);
+                this.data.signature.self.set(uri, fileData.signature);
             }
         }
 
