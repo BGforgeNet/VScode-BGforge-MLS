@@ -3,6 +3,7 @@ import functools
 import os
 import sys
 import textwrap
+
 import ruamel.yaml
 
 # https://stackoverflow.com/questions/57382525/can-i-control-the-formatting-of-multiline-strings
@@ -119,13 +120,20 @@ def dump_highlight(fpath, iedata):
         yaml.dump(data, yaf)
 
 
-# dump dict of items to iesdp.tpp in the corresponding dir
 def dump_definition(prefix, items, structures_dir):
+    """
+    Dump dict of items (IESDP constants, usually offsets) to iesdp.tpp in the corresponding IElib dir
+
+    @arg prefix - file format from which items are source, e.g. "EFF_V2"
+    @arg items - dict {name: value}
+    @arg structures_dir - path to ielib/structures
+    """
     output_dir = os.path.join(structures_dir, prefix.lower().replace("_", ""))
     output_file = os.path.join(output_dir, "iesdp.tpp")
     os.makedirs(output_dir, exist_ok=True)
     text = ""
-    for i in items:
+    sorted_items = dict(sorted(items.items()))
+    for i in sorted_items:
         text += f"{i} = {items[i]}\n"
     with open(output_file, "w", encoding="utf8") as fhandle:
         print(text, file=fhandle)
