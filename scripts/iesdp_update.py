@@ -26,6 +26,9 @@ from ie import (
     opcode_name_to_id,
     strip_liquid,
     validate_offset,
+    get_itemtypes,
+    save_itemtypes_ielib,
+    get_itemtypes_isense,
 )
 
 yaml = ruamel.yaml.YAML(typ="rt")
@@ -57,14 +60,14 @@ parser.add_argument("--ielib-dir", dest="ielib_dir", help="IElib directory", req
 args = parser.parse_args()
 
 # init vars
-iesdp_dir = args.iesdp_dir
+IESDP_DIR = args.iesdp_dir
+IESDP_FILE_FORMATS_DIR = os.path.join(IESDP_DIR, "_data", "file_formats")
+IELIB_DIR = args.ielib_dir
+IELIB_STRUCTURES_DIR = os.path.join(IELIB_DIR, "structures")
 
-# ielib
-ielib_dir = args.ielib_dir
-file_formats_dir = os.path.join(iesdp_dir, "_data", "file_formats")
 # opcodes
-opcode_file = os.path.join(ielib_dir, "misc", "opcode.tpp")
-opcode_dir = os.path.join(iesdp_dir, "_opcodes")
+opcode_file = os.path.join(IELIB_DIR, "misc", "opcode.tpp")
+opcode_dir = os.path.join(IESDP_DIR, "_opcodes")
 opcodes = []
 opcodes_ee = []
 EE_MIN_OPCODE = 318  # everything lower tha this this doesn't make it to opcode_ee.tpp
@@ -72,7 +75,7 @@ tpp_text = ""  # pylint: disable=invalid-name # not sure why pylint thinks it's 
 skip_opcode_names = ["empty", "crash", "unknown"]
 
 # actions
-actions_dir = os.path.join(iesdp_dir, "_data", "actions")
+actions_dir = os.path.join(IESDP_DIR, "_data", "actions")
 highlight_baf = args.highlight_baf
 data_baf = args.data_baf
 actions = []
@@ -81,19 +84,21 @@ ACTIONS_STANZA = "actions"
 # iesdp
 iesdp_file = args.iesdp_file
 highlight_weidu = args.highlight_weidu
-file_formats_dir = os.path.join(iesdp_dir, "_data", "file_formats")
 
 
 IESDP_BASE_URL = "https://gibberlings3.github.io/iesdp/"
 IESDP_ACTIONS_URL = f"{IESDP_BASE_URL}/scripting/actions"
-iesdp_games_file = os.path.join(iesdp_dir, "_data", "games.yml")
+iesdp_games_file = os.path.join(IESDP_DIR, "_data", "games.yml")
 with open(iesdp_games_file, encoding="utf8") as yf:
     iesdp_games = yaml.load(yf)
 
 
 @dataclass
-class ProcessedOffsetData:
-    """List of all offset items, ready for consumption"""
+class ProcessedIESDPData:
+    """
+    List of all IESDP items, ready for consumption
+    Mainly offsets
+    """
 
     chars: []
     lbytes: []
@@ -103,7 +108,13 @@ class ProcessedOffsetData:
     strrefs: []
     other: []
 
-    def append(self, offset_data, offset_prefix):
+    def append_generic(self, items):
+        """
+        Append a prepared list of items into "other" field
+        """
+        self.other = self.other + items
+
+    def append_offsets(self, offset_data, offset_prefix):
         cur_off = 0
         if "offset" in offset_data[0]:
             cur_off = offset_data[0]["offset"]
@@ -147,19 +158,18 @@ class ProcessedOffsetData:
                 self.other.append(item)
             cur_off += size
 
-    def sanitise_list(self, offset_list):
-        # for offset_list in [chars, lbytes, words, dwords, resrefs, strrefs, other]:
+    def sanitise_list(self, items):
         # reduce diff noise
-        offset_list = sorted(offset_list, key=lambda k: k["name"])
+        items = sorted(items, key=lambda k: k["name"])
         # check for dupes
-        name_list = [x["name"] for x in offset_list]
-        offset_list_counted = collections_counter(name_list)
-        non_unique = [x for x in offset_list_counted if offset_list_counted[x] > 1]
+        names = [x["name"] for x in items]
+        items_counted = collections_counter(names)
+        non_unique = [x for x in items_counted if items_counted[x] > 1]
         if len(non_unique) > 0:
             print("Error: duplicate keys found")
             print(non_unique)
             for nu_item in non_unique:
-                for off_list in [
+                for item_list in [
                     self.chars,
                     self.lbytes,
                     self.words,
@@ -168,7 +178,7 @@ class ProcessedOffsetData:
                     self.strrefs,
                     self.other,
                 ]:
-                    print([x for x in off_list if x["name"] == nu_item])
+                    print([x for x in item_list if x["name"] == nu_item])
             sys.exit(1)
 
     def sanitise(self):
@@ -206,6 +216,9 @@ with open(opcode_file, "w", encoding="utf8") as f:
     print(tpp_text, file=f)
 # END OPCODES
 
+
+item_types = get_itemtypes(IESDP_FILE_FORMATS_DIR)
+save_itemtypes_ielib(IELIB_STRUCTURES_DIR, item_types)
 
 # ACTIONS
 files = find_files(actions_dir, "yml")
@@ -274,14 +287,13 @@ with open(data_baf, "w", encoding="utf8") as yf:
 # DATA
 # data lists:
 # chars, lbytes, words, dwords, resrefs, strrefs, other
-pod = ProcessedOffsetData([], [], [], [], [], [], [])
-formats = os.listdir(file_formats_dir)
-formats = [x for x in formats if os.path.isdir(os.path.join(file_formats_dir, x))]
-structures_dir = os.path.join(ielib_dir, "structures")
+pod = ProcessedIESDPData([], [], [], [], [], [], [])
+formats = os.listdir(IESDP_FILE_FORMATS_DIR)
+formats = [x for x in formats if os.path.isdir(os.path.join(IESDP_FILE_FORMATS_DIR, x))]
 
 for ff in formats:
     print(ff)
-    ff_dir = os.path.join(file_formats_dir, ff)
+    ff_dir = os.path.join(IESDP_FILE_FORMATS_DIR, ff)
 
     definition_items = OrderedDict()
 
@@ -297,18 +309,23 @@ for ff in formats:
         new_definition_items = offsets_to_definition(offsets, prefix)
         definition_items = {**definition_items, **new_definition_items}
 
-        pod.append(offsets, prefix)
-    dump_definition(prefix, definition_items, structures_dir)
+        pod.append_offsets(offsets, prefix)
+    dump_definition(prefix, definition_items, IELIB_STRUCTURES_DIR)
 
 # feature block
-fpath = os.path.join(file_formats_dir, "itm_v1", "feature_block.yml")
+fpath = os.path.join(IESDP_FILE_FORMATS_DIR, "itm_v1", "feature_block.yml")
 with open(fpath, encoding="utf8") as yf:
     offsets = yaml.load(yf)
 PREFIX_FX = "FX_"
-pod.append(offsets, PREFIX_FX)
+pod.append_offsets(offsets, PREFIX_FX)
 
 definition_items = offsets_to_definition(offsets, PREFIX_FX)
-dump_definition(PREFIX_FX, definition_items, structures_dir)
+dump_definition(PREFIX_FX, definition_items, IELIB_STRUCTURES_DIR)
+
+
+# add item types
+item_types_isense = get_itemtypes_isense(item_types)
+pod.append_generic(item_types_isense)
 
 pod.sanitise()
 

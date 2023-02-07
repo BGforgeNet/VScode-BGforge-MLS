@@ -82,7 +82,7 @@ define_files = find_files(
     src_dir,
     "tpp",
     skip_dirs=["functions"],
-    skip_files=["iesdp.tpp", "spell_ids_bgee.tpp", "spell_ids_iwdee.tpp"],
+    skip_files=["iesdp.tpp", "spell_ids_bgee.tpp", "spell_ids_iwdee.tpp", "item_types.tpp"],
 )  # for now only bg2/ee spells
 int_defines = {}
 resref_defines = {}

@@ -26,14 +26,23 @@ def get_offset_prefix(file_version, data_file_name):  # eff_v2 / body.yml
 
 
 def get_offset_id(item, prefix):
+    """
+    Tries to get an id for an offset item
+    """
     # custom IElib id
     if "id" in item:
         return prefix + item["id"]
 
     # no custom id, constructing from description
-    desc = item["desc"]
-    # iid = desc.split('\n', 1)[0].lower()
-    iid = desc.lower()
+    iid = string_to_id(item["desc"], prefix)
+    return iid
+
+
+def string_to_id(line, prefix):
+    """
+    Tries to convert a string to an id suitable for a define
+    """
+    iid = line.lower()
 
     # strip links
     html = markdown(iid)
@@ -54,7 +63,7 @@ def get_offset_id(item, prefix):
     if re.match(r"^[a-zA-Z0-9_]+$", iid):
         return iid
     # no good id found, aborting
-    print(f'Bad offset id: "{iid}". Aborting.')
+    print(f'Bad id: "{iid}". Aborting.')
     sys.exit(1)
 
 
