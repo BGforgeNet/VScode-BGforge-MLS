@@ -21,6 +21,222 @@ iesdp-other:
       doc: |
         External EFFs - the field is the same as the version field from the header  
         <a href="../ie_formats/cre_v1.htm#CREV1_0_Header_0x33_1">Embedded EFF</a>s - this field is zeroed out
+    - name: ITEMTYPE_amulet
+      detail: int ITEMTYPE_amulet = 0x01
+      doc: Amulets and necklaces
+    - name: ITEMTYPE_armor
+      detail: int ITEMTYPE_armor = 0x02
+      doc: Armor
+    - name: ITEMTYPE_arrow
+      detail: int ITEMTYPE_arrow = 0x05
+      doc: <b><a name="Header_ItemType_5">Arrows</a></b>
+    - name: ITEMTYPE_axe
+      detail: int ITEMTYPE_axe = 0x19
+      doc: Axes (specifically, 1-handed axes -- halberds and 2-handed polearms not included)
+    - name: ITEMTYPE_bastard_sword
+      detail: int ITEMTYPE_bastard_sword = 0x45
+      doc: Bastard Sword
+    - name: ITEMTYPE_belt
+      detail: int ITEMTYPE_belt = 0x03
+      doc: Belts and girdles
+    - name: ITEMTYPE_bolt
+      detail: int ITEMTYPE_bolt = 0x1f
+      doc: <b><a name="Header_ItemType_31">Crossbow bolts</a></b>
+    - name: ITEMTYPE_book
+      detail: int ITEMTYPE_book = 0x25
+      doc: Books/Broken shields/bracelets
+    - name: ITEMTYPE_boots
+      detail: int ITEMTYPE_boots = 0x04
+      doc: Boots
+    - name: ITEMTYPE_bow
+      detail: int ITEMTYPE_bow = 0x0f
+      doc: Bows
+    - name: ITEMTYPE_bracelet
+      detail: int ITEMTYPE_bracelet = 0x25
+      doc: Books/Broken shields/bracelets
+    - name: ITEMTYPE_bracers
+      detail: int ITEMTYPE_bracers = 0x06
+      doc: Bracers and gauntlets
+    - name: ITEMTYPE_broken_armor
+      detail: int ITEMTYPE_broken_armor = 0x24
+      doc: Containers/eye/broken armor
+    - name: ITEMTYPE_broken_shield
+      detail: int ITEMTYPE_broken_shield = 0x25
+      doc: Books/Broken shields/bracelets
+    - name: ITEMTYPE_broken_sword
+      detail: int ITEMTYPE_broken_sword = 0x26
+      doc: Familiars/Broken swords/earrings
+    - name: ITEMTYPE_buckler
+      detail: int ITEMTYPE_buckler = 0x29
+      doc: Bucklers/teeth
+    - name: ITEMTYPE_bullet
+      detail: int ITEMTYPE_bullet = 0x0e
+      doc: <b><a name="Header_ItemType_14">Bullets</a></b> (for a sling)
+    - name: ITEMTYPE_candles
+      detail: int ITEMTYPE_candles = 0x2a
+      doc: Candles
+    - name: ITEMTYPE_chain_mail
+      detail: int ITEMTYPE_chain_mail = 0x3e
+      doc: Chain Mail
+    - name: ITEMTYPE_cloak
+      detail: int ITEMTYPE_cloak = 0x20
+      doc: Cloaks and robes
+    - name: ITEMTYPE_clubs_iwd
+      detail: int ITEMTYPE_clubs_iwd = 0x2c
+      doc: Clubs (IWD)
+    - name: ITEMTYPE_container
+      detail: int ITEMTYPE_container = 0x24
+      doc: Containers/eye/broken armor
+    - name: ITEMTYPE_crossbow
+      detail: int ITEMTYPE_crossbow = 0x1b
+      doc: Crossbow
+    - name: ITEMTYPE_dagger
+      detail: int ITEMTYPE_dagger = 0x10
+      doc: Daggers
+    - name: ITEMTYPE_dart
+      detail: int ITEMTYPE_dart = 0x18
+      doc: Darts
+    - name: ITEMTYPE_drink_iwd
+      detail: int ITEMTYPE_drink_iwd = 0x38
+      doc: Drinks (IWD)
+    - name: ITEMTYPE_earring
+      detail: int ITEMTYPE_earring = 0x26
+      doc: Familiars/Broken swords/earrings
+    - name: ITEMTYPE_eye
+      detail: int ITEMTYPE_eye = 0x24
+      doc: Containers/eye/broken armor
+    - name: ITEMTYPE_familiar
+      detail: int ITEMTYPE_familiar = 0x26
+      doc: Familiars/Broken swords/earrings
+    - name: ITEMTYPE_flail
+      detail: int ITEMTYPE_flail = 0x17
+      doc: Flails
+    - name: ITEMTYPE_food
+      detail: int ITEMTYPE_food = 0x0d
+      doc: Food
+    - name: ITEMTYPE_food_iwd2
+      detail: int ITEMTYPE_food_iwd2 = 0x47
+      doc: Food (IWD2)
+    - name: ITEMTYPE_full_plate
+      detail: int ITEMTYPE_full_plate = 0x41
+      doc: Full Plate
+    - name: ITEMTYPE_gauntlet
+      detail: int ITEMTYPE_gauntlet = 0x49
+      doc: Gauntlet
+    - name: ITEMTYPE_gem
+      detail: int ITEMTYPE_gem = 0x22
+      doc: Gems
+    - name: ITEMTYPE_gold_piece
+      detail: int ITEMTYPE_gold_piece = 0x21
+      doc: Gold pieces (not an inventory item, but can appear as "monster dropped" treasure)
+    - name: ITEMTYPE_great_sword_iwd
+      detail: int ITEMTYPE_great_sword_iwd = 0x39
+      doc: Great Swords (IWD)
+    - name: ITEMTYPE_halberd
+      detail: int ITEMTYPE_halberd = 0x1e
+      doc: Halberds (2-handed polearms)
+    - name: ITEMTYPE_hammer
+      detail: int ITEMTYPE_hammer = 0x15
+      doc: Hammers
+    - name: ITEMTYPE_hand_to_hand
+      detail: int ITEMTYPE_hand_to_hand = 0x1c
+      doc: Hand-to-hand weapons (fist, fist irons, punch daggers, etc)
+    - name: ITEMTYPE_hat
+      detail: int ITEMTYPE_hat = 0x48
+      doc: Hat
+    - name: ITEMTYPE_helm
+      detail: int ITEMTYPE_helm = 0x07
+      doc: <a name="Header_ItemType_7">Headgear</a></b> (Helms, hats, and other head-wear)
+    - name: ITEMTYPE_hide_armor
+      detail: int ITEMTYPE_hide_armor = 0x42
+      doc: Hide Armor
+    - name: ITEMTYPE_key
+      detail: int ITEMTYPE_key = 0x08
+      doc: Keys (not in Icewind Dale?)
+    - name: ITEMTYPE_large_shield_iwd
+      detail: int ITEMTYPE_large_shield_iwd = 0x2f
+      doc: Large Shields (IWD)
+    - name: ITEMTYPE_large_sword
+      detail: int ITEMTYPE_large_sword = 0x14
+      doc: Large swords
+    - name: ITEMTYPE_leather_armor
+      detail: int ITEMTYPE_leather_armor = 0x3c
+      doc: Leather Armor
+    - name: ITEMTYPE_lenses
+      detail: int ITEMTYPE_lenses = 0x28
+      doc: Lenses (PST)
+    - name: ITEMTYPE_mace
+      detail: int ITEMTYPE_mace = 0x11
+      doc: Maces (in BG, this includes clubs)
+    - name: ITEMTYPE_medium_shield_iwd
+      detail: int ITEMTYPE_medium_shield_iwd = 0x31
+      doc: Medium Shields (IWD)
+    - name: ITEMTYPE_misc
+      detail: int ITEMTYPE_misc = 0x00
+      doc: Books/misc
+    - name: ITEMTYPE_morning_star
+      detail: int ITEMTYPE_morning_star = 0x16
+      doc: Morning stars
+    - name: ITEMTYPE_notes
+      detail: int ITEMTYPE_notes = 0x32
+      doc: Notes
+    - name: ITEMTYPE_pelt
+      detail: int ITEMTYPE_pelt = 0x3b
+      doc: Fur/pelt
+    - name: ITEMTYPE_plate_mail
+      detail: int ITEMTYPE_plate_mail = 0x40
+      doc: Half Plate
+    - name: ITEMTYPE_potion
+      detail: int ITEMTYPE_potion = 0x09
+      doc: Potions
+    - name: ITEMTYPE_quarterstaff
+      detail: int ITEMTYPE_quarterstaff = 0x1a
+      doc: Quarterstaff
+    - name: ITEMTYPE_ring
+      detail: int ITEMTYPE_ring = 0x0a
+      doc: Rings
+    - name: ITEMTYPE_robe
+      detail: int ITEMTYPE_robe = 0x43
+      doc: Robe
+    - name: ITEMTYPE_scarf
+      detail: int ITEMTYPE_scarf = 0x46
+      doc: Scarf
+    - name: ITEMTYPE_scroll
+      detail: int ITEMTYPE_scroll = 0x0b
+      doc: Scrolls
+    - name: ITEMTYPE_shield
+      detail: int ITEMTYPE_shield = 0x0c
+      doc: Shields (not in IWD)
+    - name: ITEMTYPE_sling
+      detail: int ITEMTYPE_sling = 0x12
+      doc: Slings
+    - name: ITEMTYPE_small_shied_iwd
+      detail: int ITEMTYPE_small_shied_iwd = 0x35
+      doc: Small Shields (IWD)
+    - name: ITEMTYPE_small_sword
+      detail: int ITEMTYPE_small_sword = 0x13
+      doc: Small swords
+    - name: ITEMTYPE_spear
+      detail: int ITEMTYPE_spear = 0x1d
+      doc: Spears
+    - name: ITEMTYPE_splint_mail
+      detail: int ITEMTYPE_splint_mail = 0x3f
+      doc: Splint Mail
+    - name: ITEMTYPE_studded_leather
+      detail: int ITEMTYPE_studded_leather = 0x3d
+      doc: Studded Leather Armor
+    - name: ITEMTYPE_tattoo
+      detail: int ITEMTYPE_tattoo = 0x27
+      doc: Tattoos (PST)
+    - name: ITEMTYPE_teeth
+      detail: int ITEMTYPE_teeth = 0x29
+      doc: Bucklers/teeth
+    - name: ITEMTYPE_telescope_iwd
+      detail: int ITEMTYPE_telescope_iwd = 0x37
+      doc: Telescopes (IWD)
+    - name: ITEMTYPE_wand
+      detail: int ITEMTYPE_wand = 0x23
+      doc: Wands
     - name: ITM_HEAD_melee_animation
       detail: multi word offset ITM_HEAD_melee_animation = 0x2c
       doc: |-

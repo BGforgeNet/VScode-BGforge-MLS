@@ -207,6 +207,294 @@
           "name": "constant.language.iesdp.other"
         },
         {
+          "match": "\\b(ITEMTYPE_amulet)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_armor)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_arrow)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_axe)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_bastard_sword)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_belt)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_bolt)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_book)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_boots)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_bow)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_bracelet)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_bracers)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_broken_armor)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_broken_shield)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_broken_sword)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_buckler)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_bullet)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_candles)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_chain_mail)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_cloak)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_clubs_iwd)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_container)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_crossbow)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_dagger)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_dart)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_drink_iwd)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_earring)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_eye)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_familiar)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_flail)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_food_iwd2)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_food)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_full_plate)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_gauntlet)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_gem)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_gold_piece)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_great_sword_iwd)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_halberd)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_hammer)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_hand_to_hand)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_hat)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_helm)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_hide_armor)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_key)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_large_shield_iwd)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_large_sword)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_leather_armor)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_lenses)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_mace)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_medium_shield_iwd)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_misc)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_morning_star)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_notes)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_pelt)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_plate_mail)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_potion)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_quarterstaff)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_ring)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_robe)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_scarf)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_scroll)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_shield)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_sling)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_small_shied_iwd)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_small_sword)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_spear)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_splint_mail)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_studded_leather)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_tattoo)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_teeth)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_telescope_iwd)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
+          "match": "\\b(ITEMTYPE_wand)\\b",
+          "name": "constant.language.iesdp.other"
+        },
+        {
           "match": "\\b(ITM_HEAD_melee_animation)\\b",
           "name": "constant.language.iesdp.other"
         },
