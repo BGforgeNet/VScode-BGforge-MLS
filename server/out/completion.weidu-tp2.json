@@ -5709,6 +5709,654 @@
         }
     },
     {
+        "label": "ITEMTYPE_amulet",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_amulet = 0x01\n```\nAmulets and necklaces"
+        }
+    },
+    {
+        "label": "ITEMTYPE_armor",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_armor = 0x02\n```\nArmor"
+        }
+    },
+    {
+        "label": "ITEMTYPE_arrow",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_arrow = 0x05\n```\n<b><a name=\"Header_ItemType_5\">Arrows</a></b>"
+        }
+    },
+    {
+        "label": "ITEMTYPE_axe",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_axe = 0x19\n```\nAxes (specifically, 1-handed axes -- halberds and 2-handed polearms not included)"
+        }
+    },
+    {
+        "label": "ITEMTYPE_bastard_sword",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_bastard_sword = 0x45\n```\nBastard Sword"
+        }
+    },
+    {
+        "label": "ITEMTYPE_belt",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_belt = 0x03\n```\nBelts and girdles"
+        }
+    },
+    {
+        "label": "ITEMTYPE_bolt",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_bolt = 0x1f\n```\n<b><a name=\"Header_ItemType_31\">Crossbow bolts</a></b>"
+        }
+    },
+    {
+        "label": "ITEMTYPE_book",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_book = 0x25\n```\nBooks/Broken shields/bracelets"
+        }
+    },
+    {
+        "label": "ITEMTYPE_boots",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_boots = 0x04\n```\nBoots"
+        }
+    },
+    {
+        "label": "ITEMTYPE_bow",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_bow = 0x0f\n```\nBows"
+        }
+    },
+    {
+        "label": "ITEMTYPE_bracelet",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_bracelet = 0x25\n```\nBooks/Broken shields/bracelets"
+        }
+    },
+    {
+        "label": "ITEMTYPE_bracers",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_bracers = 0x06\n```\nBracers and gauntlets"
+        }
+    },
+    {
+        "label": "ITEMTYPE_broken_armor",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_broken_armor = 0x24\n```\nContainers/eye/broken armor"
+        }
+    },
+    {
+        "label": "ITEMTYPE_broken_shield",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_broken_shield = 0x25\n```\nBooks/Broken shields/bracelets"
+        }
+    },
+    {
+        "label": "ITEMTYPE_broken_sword",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_broken_sword = 0x26\n```\nFamiliars/Broken swords/earrings"
+        }
+    },
+    {
+        "label": "ITEMTYPE_buckler",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_buckler = 0x29\n```\nBucklers/teeth"
+        }
+    },
+    {
+        "label": "ITEMTYPE_bullet",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_bullet = 0x0e\n```\n<b><a name=\"Header_ItemType_14\">Bullets</a></b> (for a sling)"
+        }
+    },
+    {
+        "label": "ITEMTYPE_candles",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_candles = 0x2a\n```\nCandles"
+        }
+    },
+    {
+        "label": "ITEMTYPE_chain_mail",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_chain_mail = 0x3e\n```\nChain Mail"
+        }
+    },
+    {
+        "label": "ITEMTYPE_cloak",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_cloak = 0x20\n```\nCloaks and robes"
+        }
+    },
+    {
+        "label": "ITEMTYPE_clubs_iwd",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_clubs_iwd = 0x2c\n```\nClubs (IWD)"
+        }
+    },
+    {
+        "label": "ITEMTYPE_container",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_container = 0x24\n```\nContainers/eye/broken armor"
+        }
+    },
+    {
+        "label": "ITEMTYPE_crossbow",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_crossbow = 0x1b\n```\nCrossbow"
+        }
+    },
+    {
+        "label": "ITEMTYPE_dagger",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_dagger = 0x10\n```\nDaggers"
+        }
+    },
+    {
+        "label": "ITEMTYPE_dart",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_dart = 0x18\n```\nDarts"
+        }
+    },
+    {
+        "label": "ITEMTYPE_drink_iwd",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_drink_iwd = 0x38\n```\nDrinks (IWD)"
+        }
+    },
+    {
+        "label": "ITEMTYPE_earring",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_earring = 0x26\n```\nFamiliars/Broken swords/earrings"
+        }
+    },
+    {
+        "label": "ITEMTYPE_eye",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_eye = 0x24\n```\nContainers/eye/broken armor"
+        }
+    },
+    {
+        "label": "ITEMTYPE_familiar",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_familiar = 0x26\n```\nFamiliars/Broken swords/earrings"
+        }
+    },
+    {
+        "label": "ITEMTYPE_flail",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_flail = 0x17\n```\nFlails"
+        }
+    },
+    {
+        "label": "ITEMTYPE_food",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_food = 0x0d\n```\nFood"
+        }
+    },
+    {
+        "label": "ITEMTYPE_food_iwd2",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_food_iwd2 = 0x47\n```\nFood (IWD2)"
+        }
+    },
+    {
+        "label": "ITEMTYPE_full_plate",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_full_plate = 0x41\n```\nFull Plate"
+        }
+    },
+    {
+        "label": "ITEMTYPE_gauntlet",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_gauntlet = 0x49\n```\nGauntlet"
+        }
+    },
+    {
+        "label": "ITEMTYPE_gem",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_gem = 0x22\n```\nGems"
+        }
+    },
+    {
+        "label": "ITEMTYPE_gold_piece",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_gold_piece = 0x21\n```\nGold pieces (not an inventory item, but can appear as \"monster dropped\" treasure)"
+        }
+    },
+    {
+        "label": "ITEMTYPE_great_sword_iwd",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_great_sword_iwd = 0x39\n```\nGreat Swords (IWD)"
+        }
+    },
+    {
+        "label": "ITEMTYPE_halberd",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_halberd = 0x1e\n```\nHalberds (2-handed polearms)"
+        }
+    },
+    {
+        "label": "ITEMTYPE_hammer",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_hammer = 0x15\n```\nHammers"
+        }
+    },
+    {
+        "label": "ITEMTYPE_hand_to_hand",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_hand_to_hand = 0x1c\n```\nHand-to-hand weapons (fist, fist irons, punch daggers, etc)"
+        }
+    },
+    {
+        "label": "ITEMTYPE_hat",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_hat = 0x48\n```\nHat"
+        }
+    },
+    {
+        "label": "ITEMTYPE_helm",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_helm = 0x07\n```\n<a name=\"Header_ItemType_7\">Headgear</a></b> (Helms, hats, and other head-wear)"
+        }
+    },
+    {
+        "label": "ITEMTYPE_hide_armor",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_hide_armor = 0x42\n```\nHide Armor"
+        }
+    },
+    {
+        "label": "ITEMTYPE_key",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_key = 0x08\n```\nKeys (not in Icewind Dale?)"
+        }
+    },
+    {
+        "label": "ITEMTYPE_large_shield_iwd",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_large_shield_iwd = 0x2f\n```\nLarge Shields (IWD)"
+        }
+    },
+    {
+        "label": "ITEMTYPE_large_sword",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_large_sword = 0x14\n```\nLarge swords"
+        }
+    },
+    {
+        "label": "ITEMTYPE_leather_armor",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_leather_armor = 0x3c\n```\nLeather Armor"
+        }
+    },
+    {
+        "label": "ITEMTYPE_lenses",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_lenses = 0x28\n```\nLenses (PST)"
+        }
+    },
+    {
+        "label": "ITEMTYPE_mace",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_mace = 0x11\n```\nMaces (in BG, this includes clubs)"
+        }
+    },
+    {
+        "label": "ITEMTYPE_medium_shield_iwd",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_medium_shield_iwd = 0x31\n```\nMedium Shields (IWD)"
+        }
+    },
+    {
+        "label": "ITEMTYPE_misc",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_misc = 0x00\n```\nBooks/misc"
+        }
+    },
+    {
+        "label": "ITEMTYPE_morning_star",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_morning_star = 0x16\n```\nMorning stars"
+        }
+    },
+    {
+        "label": "ITEMTYPE_notes",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_notes = 0x32\n```\nNotes"
+        }
+    },
+    {
+        "label": "ITEMTYPE_pelt",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_pelt = 0x3b\n```\nFur/pelt"
+        }
+    },
+    {
+        "label": "ITEMTYPE_plate_mail",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_plate_mail = 0x40\n```\nHalf Plate"
+        }
+    },
+    {
+        "label": "ITEMTYPE_potion",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_potion = 0x09\n```\nPotions"
+        }
+    },
+    {
+        "label": "ITEMTYPE_quarterstaff",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_quarterstaff = 0x1a\n```\nQuarterstaff"
+        }
+    },
+    {
+        "label": "ITEMTYPE_ring",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_ring = 0x0a\n```\nRings"
+        }
+    },
+    {
+        "label": "ITEMTYPE_robe",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_robe = 0x43\n```\nRobe"
+        }
+    },
+    {
+        "label": "ITEMTYPE_scarf",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_scarf = 0x46\n```\nScarf"
+        }
+    },
+    {
+        "label": "ITEMTYPE_scroll",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_scroll = 0x0b\n```\nScrolls"
+        }
+    },
+    {
+        "label": "ITEMTYPE_shield",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_shield = 0x0c\n```\nShields (not in IWD)"
+        }
+    },
+    {
+        "label": "ITEMTYPE_sling",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_sling = 0x12\n```\nSlings"
+        }
+    },
+    {
+        "label": "ITEMTYPE_small_shied_iwd",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_small_shied_iwd = 0x35\n```\nSmall Shields (IWD)"
+        }
+    },
+    {
+        "label": "ITEMTYPE_small_sword",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_small_sword = 0x13\n```\nSmall swords"
+        }
+    },
+    {
+        "label": "ITEMTYPE_spear",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_spear = 0x1d\n```\nSpears"
+        }
+    },
+    {
+        "label": "ITEMTYPE_splint_mail",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_splint_mail = 0x3f\n```\nSplint Mail"
+        }
+    },
+    {
+        "label": "ITEMTYPE_studded_leather",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_studded_leather = 0x3d\n```\nStudded Leather Armor"
+        }
+    },
+    {
+        "label": "ITEMTYPE_tattoo",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_tattoo = 0x27\n```\nTattoos (PST)"
+        }
+    },
+    {
+        "label": "ITEMTYPE_teeth",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_teeth = 0x29\n```\nBucklers/teeth"
+        }
+    },
+    {
+        "label": "ITEMTYPE_telescope_iwd",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_telescope_iwd = 0x37\n```\nTelescopes (IWD)"
+        }
+    },
+    {
+        "label": "ITEMTYPE_wand",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_wand = 0x23\n```\nWands"
+        }
+    },
+    {
         "label": "ITM_HEAD_melee_animation",
         "kind": 21,
         "source": "builtin",
@@ -5772,6 +6420,24 @@
         }
     },
     {
+        "label": "STO_signature",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nchar array offset STO_signature = 0x0\n```\nSignature ('STOR')"
+        }
+    },
+    {
+        "label": "STO_version",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nchar array offset STO_version = 0x4\n```\nVersion ('V1.0')"
+        }
+    },
+    {
         "label": "ITM_identified_desc",
         "kind": 21,
         "source": "builtin",
@@ -5805,6 +6471,24 @@
         "documentation": {
             "kind": "markdown",
             "value": "```weidu-tp2-tooltip\nstrref offset ITM_unidentified_name = 0x8\n```\nUnidentified Name (strref)"
+        }
+    },
+    {
+        "label": "STO_DRINK_name",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nstrref offset STO_DRINK_name = 0x8\n```\nDrink name strref"
+        }
+    },
+    {
+        "label": "STO_name",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nstrref offset STO_name = 0xc\n```\nname"
         }
     },
     {
@@ -5931,6 +6615,51 @@
         "documentation": {
             "kind": "markdown",
             "value": "```weidu-tp2-tooltip\nresref offset SPL_spellbook_icon = 0x3a\n```\nSpellbook icon (BAM). The engine replaces the last character of this filename with a C."
+        }
+    },
+    {
+        "label": "STO_CURE_spellname",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref offset STO_CURE_spellname = 0x0\n```\nFilename of SPL"
+        }
+    },
+    {
+        "label": "STO_DRINK_rumor",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref offset STO_DRINK_rumor = 0x0\n```\nRumour resource"
+        }
+    },
+    {
+        "label": "STO_ITEM_name",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref offset STO_ITEM_name = 0x0\n```\nFilename of ITM"
+        }
+    },
+    {
+        "label": "STO_rumors_tavern",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref offset STO_rumors_tavern = 0x44\n```\nRumours (Tavern)"
+        }
+    },
+    {
+        "label": "STO_rumors_temple",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref offset STO_rumors_temple = 0x54\n```\nRumours (Temple)"
         }
     },
     {
@@ -6429,6 +7158,240 @@
         }
     },
     {
+        "label": "STO_CURE_price",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\ndword offset STO_CURE_price = 0x8\n```\nSpell price"
+        }
+    },
+    {
+        "label": "STO_DRINK_price",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\ndword offset STO_DRINK_price = 0xc\n```\nDrink price"
+        }
+    },
+    {
+        "label": "STO_DRINK_strength",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\ndword offset STO_DRINK_strength = 0x10\n```\nAlcoholic strength"
+        }
+    },
+    {
+        "label": "STO_ITEM_amount",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\ndword offset STO_ITEM_amount = 0x14\n```\nAmount of this item in stock"
+        }
+    },
+    {
+        "label": "STO_ITEM_flags",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\ndword offset STO_ITEM_flags = 0x10\n```\nFlags\n- bit 0: Identified\n- bit 1: Unstealable\n- bit 2: Stolen\n- bit 3: <a name=\"storv1_0_Sale_0x10_BIT3\">**Undroppable**</a>\n"
+        }
+    },
+    {
+        "label": "STO_ITEM_infinite",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\ndword offset STO_ITEM_infinite = 0x18\n```\nInfinite supply flag (0=limited stock, 1=infinite stock)\n\nItems with this flag set are automatically shown as identified\n"
+        }
+    },
+    {
+        "label": "STO_buy_count",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\ndword offset STO_buy_count = 0x30\n```\nCount of items in [items purchased](#storv1_0_Buy) section"
+        }
+    },
+    {
+        "label": "STO_buy_markup",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\ndword offset STO_buy_markup = 0x18\n```\nStore \"buy price markup\" (percentage of base price store is willing to pay)"
+        }
+    },
+    {
+        "label": "STO_buy_offset",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\ndword offset STO_buy_offset = 0x2c\n```\nOffset to [items purchased](#storv1_0_Buy) section"
+        }
+    },
+    {
+        "label": "STO_cures_count",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\ndword offset STO_cures_count = 0x74\n```\nCount of [cures](#storv1_0_Cure)"
+        }
+    },
+    {
+        "label": "STO_cures_offset",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\ndword offset STO_cures_offset = 0x70\n```\nOffset to [cures](#storv1_0_Cure) section"
+        }
+    },
+    {
+        "label": "STO_depreciation",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\ndword offset STO_depreciation = 0x1c\n```\nDepreciation rate"
+        }
+    },
+    {
+        "label": "STO_drinks_counts",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\ndword offset STO_drinks_counts = 0x50\n```\nCount of [drinks](#storv1_0_Drink)"
+        }
+    },
+    {
+        "label": "STO_drinks_offset",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\ndword offset STO_drinks_offset = 0x4c\n```\nOffset to [drinks](#storv1_0_Drink) section"
+        }
+    },
+    {
+        "label": "STO_flags",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\ndword offset STO_flags = 0x10\n```\nFlags\n- bit 0: User allowed to buy\n- bit 1: User allowed to sell\n- bit 2: User allowed to identify items\n- bit 3: User allowed to steal\n- bit 4: User allowed to donate money\n- bit 5: User allowed to purchase cures\n- bit 6: User allowed to purchase drinks\n- bit 7: Unknown\n- bit 8: Unknown\n- bit 9: Quality 1 (tvrnqul0-3)\n- bit 10: Quality 2 (tvrnqul0-3)\n- bit 11: Unknown\n- bit 12: Buy Fenced Goods\n- bit 13: Reputation doesn't affect prices (BGEE)\n- bit 14: Toggle item recharge (TobEx)\n- bit 15: **User allowed to sell [critical]({{ \"/file_formats/ie_formats/itm_v1.htm#Header_Flags_BIT0\" | prepend: relurl }}) items** (BGEE)\n"
+        }
+    },
+    {
+        "label": "STO_identification_price",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\ndword offset STO_identification_price = 0x40\n```\nID Price"
+        }
+    },
+    {
+        "label": "STO_items_count",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\ndword offset STO_items_count = 0x38\n```\nCount of [items for sale](#storv1_0_Sale)"
+        }
+    },
+    {
+        "label": "STO_items_offset",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\ndword offset STO_items_offset = 0x34\n```\nOffset to [items for sale](#storv1_0_Sale) section"
+        }
+    },
+    {
+        "label": "STO_lore",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\ndword offset STO_lore = 0x3c\n```\nLore"
+        }
+    },
+    {
+        "label": "STO_room_flags",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\ndword offset STO_room_flags = 0x5c\n```\nRoom flags\n- bit 0: Peasant\n- bit 1: Merchant\n- bit 2: Noble\n- bit 3: Royal\n"
+        }
+    },
+    {
+        "label": "STO_room_price_merchant",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\ndword offset STO_room_price_merchant = 0x64\n```\nPrice of a merchant room"
+        }
+    },
+    {
+        "label": "STO_room_price_noble",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\ndword offset STO_room_price_noble = 0x68\n```\nPrice of a noble room"
+        }
+    },
+    {
+        "label": "STO_room_price_peasant",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\ndword offset STO_room_price_peasant = 0x60\n```\nPrice of a peasant room"
+        }
+    },
+    {
+        "label": "STO_room_price_royal",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\ndword offset STO_room_price_royal = 0x6c\n```\nPrice of a royal room"
+        }
+    },
+    {
+        "label": "STO_sell_markup",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\ndword offset STO_sell_markup = 0x14\n```\nStore \"sell price markup\" (percentage of base price store charges for items)"
+        }
+    },
+    {
+        "label": "STO_type",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\ndword offset STO_type = 0x8\n```\nType (0=Store, 1=Tavern, 2=Inn, 3=Temple, 5=Container)"
+        }
+    },
+    {
         "label": "EFF2_probability1",
         "kind": 21,
         "source": "builtin",
@@ -6777,6 +7740,60 @@
         "documentation": {
             "kind": "markdown",
             "value": "```weidu-tp2-tooltip\nword offset SPL_type = 0x1c\n```\n<b><a name=\"splv1_Header_0x1C\">Spell type</a></b>:\n\n- 0 \u27f6 <b><a name=\"splv1_Header_0x1C_0\">Special</a></b>\n- 1 \u27f6 <b><a name=\"splv1_Header_0x1C_1\">Wizard</a></b>\n- 2 \u27f6 <b><a name=\"splv1_Header_0x1C_2\">Priest</a></b>\n- 3 \u27f6 <b><a name=\"splv1_Header_0x1C_3\">Psionic</a></b>\n- 4 \u27f6 <b><a name=\"splv1_Header_0x1C_4\">Innate</a></b>\n- 5 \u27f6 <b><a name=\"splv1_Header_0x1C_5\">Bard song</a></b>\n\n\n- <code><a href=\"#splv1_Header_0x1C_0\">Special</a></code>, <code><a href=\"#splv1_Header_0x1C_3\">Psionic</a></code>, <code><a href=\"#splv1_Header_0x1C_4\">Innate</a></code>, and <code><a href=\"#splv1_Header_0x1C_5\">Bard song</a></code> differ only by the string displayed when you cast them. They are all treated as <code><a href=\"#splv1_Header_0x1C_4\">Innate</a></code> abilities, even by <a href=\"../../opcodes/bgee.htm#op145\">opcode #145</a> and the <code><a href=\"../../scripting/triggers/bgeetriggers.htm#0x00A7\">SpellCastInnate()</a></code> trigger.\n- <code><a href=\"#splv1_Header_0x1C_0\">Special</a></code> and <code><a href=\"#splv1_Header_0x1C_4\">Innate</a></code> will display <code>\"(Caster): (<a href=\"#splv1_Header_0x8\">spell name</a>): (target)\"</code>.\n- <code><a href=\"#splv1_Header_0x1C_3\">Psionic</a></code> and <code><a href=\"#splv1_Header_0x1C_5\">Bard song</a></code> will display <code>\"(Caster): Casts (<a href=\"#splv1_Header_0x8\">spell name</a>): (target)\"</code> (which can be misleading).\n- <code><a href=\"#splv1_Header_0x1C_1\">Wizard</a></code> and <code><a href=\"#splv1_Header_0x1C_2\">Priest</a></code> will also display <code>\"(Caster): Casts (<a href=\"#splv1_Header_0x8\">spell name</a>): (target)\"</code>.\n- Any spell cast by one of the <code><a href=\"../../scripting/actions/bgeeactions.htm#113\">ForceSpell()</a></code> script actions will instead display <code><a href=\"#splv1_Header_0x1C_0\">Special</a></code>/<code><a href=\"#splv1_Header_0x1C_4\">Innate</a></code> casting message.\n- Any spell cast by the \"BattleSong\" (Bard Song/Shaman Dance) or <code><a href=\"../../scripting/actions/bgeeactions.htm#160\">ApplySpell()</a></code> script actions will display <code><a href=\"#splv1_Header_0x1C_0\">Special</a></code>/<code><a href=\"#splv1_Header_0x1C_4\">Innate</a></code> casting message.\n- For any spell cast by another opcode, its casting message will depend on that opcode, but is usually the same as the <code><a href=\"#splv1_Header_0x1C_0\">Special</a></code>/<code><a href=\"#splv1_Header_0x1C_4\">Innate</a></code> casting message.\n- All other values (`6 \u2013 65535`) functions the same as <code><a href=\"#splv1_Header_0x1C_3\">Psionic</a></code>/<code><a href=\"#splv1_Header_0x1C_5\">Bard song</a></code>.\n- <code><a href=\"../../files/ids/bgee/stats.htm#51\">SPELLFAILUREMAGE</a></code> is related to Spell type <code><a href=\"#splv1_Header_0x1C_1\">Wizard</a></code>.\n- <code><a href=\"../../files/ids/bgee/stats.htm#52\">SPELLFAILUREPRIEST</a></code> is related to Spell type <code><a href=\"#splv1_Header_0x1C_2\">Priest</a></code>.\n- <code><a href=\"../../files/ids/bgee/stats.htm#194\">SPELL_FAILURE_INNATE</a></code> is related to Spell type <code><a href=\"#splv1_Header_0x1C_3\">Psionic</a></code>/<code><a href=\"#splv1_Header_0x1C_4\">Innate</a></code>/<code><a href=\"#splv1_Header_0x1C_5\">Bard song</a></code>.\n- Normally, any subspells that scale with <code><a href=\"#splv1_Extended_Header_0x10\">Level</a></code> should be of the same <code><a href=\"#splv1_Header_0x1C\">Type</a></code> as the spell casting them.\n  - If they don't scale, it doesn't really matter.\n  - It also doesn't matter when they are applied through <a href=\"../../opcodes/bgee.htm#op146\">opcode #146</a><code><sup><small>*</small></sup>p2=2</code>/<a href=\"../../opcodes/bgee.htm#op326\">opcode #326</a>/<a href=\"../../opcodes/bgee.htm#op333\">opcode #333</a>.\n"
+        }
+    },
+    {
+        "label": "STO_ITEM_charges1",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nword offset STO_ITEM_charges1 = 0xa\n```\nQuantity/Charges 1"
+        }
+    },
+    {
+        "label": "STO_ITEM_charges2",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nword offset STO_ITEM_charges2 = 0xc\n```\nQuantity/Charges 2"
+        }
+    },
+    {
+        "label": "STO_ITEM_charges3",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nword offset STO_ITEM_charges3 = 0xe\n```\nQuantity/Charges 3"
+        }
+    },
+    {
+        "label": "STO_ITEM_expiration_time",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nword offset STO_ITEM_expiration_time = 0x8\n```\nItem expiration time (replace with drained item)"
+        }
+    },
+    {
+        "label": "STO_capacity",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nword offset STO_capacity = 0x22\n```\nCapacity (0=unlimited)"
+        }
+    },
+    {
+        "label": "STO_chance_of_steal_failure",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nword offset STO_chance_of_steal_failure = 0x20\n```\n% chance of steal failure"
         }
     },
     {
@@ -20298,42 +21315,6 @@
         }
     },
     {
-        "label": "FLAG_ITEM_SALE_identified",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint FLAG_ITEM_SALE_identified = BIT0\n```\nIElib define"
-        }
-    },
-    {
-        "label": "FLAG_ITEM_SALE_stolen",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint FLAG_ITEM_SALE_stolen = BIT2\n```\nIElib define"
-        }
-    },
-    {
-        "label": "FLAG_ITEM_SALE_undroppable",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint FLAG_ITEM_SALE_undroppable = BIT3\n```\nIElib define"
-        }
-    },
-    {
-        "label": "FLAG_ITEM_SALE_unstealable",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint FLAG_ITEM_SALE_unstealable = BIT1\n```\nIElib define"
-        }
-    },
-    {
         "label": "FLAG_SAVINGTHROW_breath",
         "kind": 21,
         "source": "builtin",
@@ -20514,6 +21495,42 @@
         }
     },
     {
+        "label": "FLAG_STO_ITEM_identified",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint FLAG_STO_ITEM_identified = BIT0\n```\nIElib define"
+        }
+    },
+    {
+        "label": "FLAG_STO_ITEM_stolen",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint FLAG_STO_ITEM_stolen = BIT2\n```\nIElib define"
+        }
+    },
+    {
+        "label": "FLAG_STO_ITEM_undroppable",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint FLAG_STO_ITEM_undroppable = BIT3\n```\nIElib define"
+        }
+    },
+    {
+        "label": "FLAG_STO_ITEM_unstealable",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint FLAG_STO_ITEM_unstealable = BIT1\n```\nIElib define"
+        }
+    },
+    {
         "label": "FLAG_STO_buys",
         "kind": 21,
         "source": "builtin",
@@ -20523,12 +21540,12 @@
         }
     },
     {
-        "label": "FLAG_STO_buys_critical_items_bgee",
+        "label": "FLAG_STO_buys_critical_EE",
         "kind": 21,
         "source": "builtin",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint FLAG_STO_buys_critical_items_bgee = BIT15\n```\nIElib define"
+            "value": "```weidu-tp2-tooltip\nint FLAG_STO_buys_critical_EE = BIT15\n```\nIElib define"
         }
     },
     {
@@ -20541,21 +21558,12 @@
         }
     },
     {
-        "label": "FLAG_STO_can_done",
+        "label": "FLAG_STO_can_donate",
         "kind": 21,
         "source": "builtin",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint FLAG_STO_can_done = BIT4\n```\nIElib define"
-        }
-    },
-    {
-        "label": "FLAG_STO_can_identify",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint FLAG_STO_can_identify = BIT2\n```\nIElib define"
+            "value": "```weidu-tp2-tooltip\nint FLAG_STO_can_donate = BIT4\n```\nIElib define"
         }
     },
     {
@@ -20586,21 +21594,30 @@
         }
     },
     {
-        "label": "FLAG_STO_recharges_items_ex",
+        "label": "FLAG_STO_identifies",
         "kind": 21,
         "source": "builtin",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint FLAG_STO_recharges_items_ex = BIT14\n```\nIElib define"
+            "value": "```weidu-tp2-tooltip\nint FLAG_STO_identifies = BIT2\n```\nIElib define"
         }
     },
     {
-        "label": "FLAG_STO_repucation_has_no_effect_bgee",
+        "label": "FLAG_STO_recharges_items_EX",
         "kind": 21,
         "source": "builtin",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint FLAG_STO_repucation_has_no_effect_bgee = BIT13\n```\nIElib define"
+            "value": "```weidu-tp2-tooltip\nint FLAG_STO_recharges_items_EX = BIT14\n```\nIElib define"
+        }
+    },
+    {
+        "label": "FLAG_STO_reputation_has_no_effect_EE",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nint FLAG_STO_reputation_has_no_effect_EE = BIT13\n```\nIElib define"
         }
     },
     {
@@ -22680,699 +23697,6 @@
         "documentation": {
             "kind": "markdown",
             "value": "```weidu-tp2-tooltip\nint ITM_DAMAGE_TYPE_slashing = 3\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_amulet",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_amulet = 0x1\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_armor",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_armor = 0x2\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_arrows",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_arrows = 0x5\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_axe",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_axe = 0x19\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_bastard_sword",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_bastard_sword = 0x45\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_belt",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_belt = 0x3\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_bolts",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_bolts = 0x1f\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_book",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_book = 0\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_boots",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_boots = 0x4\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_bow",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_bow = 0xf\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_bracelet",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_bracelet = 0x25\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_bracers",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_bracers = 0x6\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_broken_armor",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_broken_armor = 0x24\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_broken_shield",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_broken_shield = 0x25\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_broken_sword",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_broken_sword = 0x26\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_buckler",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_buckler = 0x29\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_bullets",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_bullets = 0xe\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_candle",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_candle = 0x2a\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_chain_mail",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_chain_mail = 0x3e\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_cloak",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_cloak = 0x20\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_club_iwd",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_club_iwd = 0x2c\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_container",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_container = 0x3a\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_crossbow",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_crossbow = 0x1b\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_dagger",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_dagger = 0x10\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_dart",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_dart = 0x18\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_drink_iwd",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_drink_iwd = 0x38\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_earring",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_earring = 0x26\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_eye",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_eye = 0x24\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_familiar",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_familiar = 0x26\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_flail",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_flail = 0x17\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_food",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_food = 0xd\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_food_iwd2",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_food_iwd2 = 0x47\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_full_plate",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_full_plate = 0x41\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_fur",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_fur = 0x3b\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_gauntlet",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_gauntlet = 0x49\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_gauntlets",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_gauntlets = 0x6\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_gem",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_gem = 0x22\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_girdle",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_girdle = 0x3\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_gold_pieces",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_gold_pieces = 0x21\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_great_sword_iwd",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_great_sword_iwd = 0x39\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_halberd",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_halberd = 0x1e\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_half_plate",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_half_plate = 0x40\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_hammer",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_hammer = 0x15\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_hand_to_hand_hth",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_hand_to_hand_hth = 0x1c\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_hat",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_hat = 0x48\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_helm",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_helm = 0x7\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_hide_armor",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_hide_armor = 0x42\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_key",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_key = 0x8\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_large_shield_iwd",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_large_shield_iwd = 0x2f\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_large_sword",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_large_sword = 0x14\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_leather_armor",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_leather_armor = 0x3c\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_lense_pst",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_lense_pst = 0x28\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_mace",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_mace = 0x11\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_medium_shield_iwd",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_medium_shield_iwd = 0x31\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_misc",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_misc = 0\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_morning_star",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_morning_star = 0x16\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_necklace",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_necklace = 0x1\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_note",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_note = 0x32\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_pelt",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_pelt = 0x3b\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_polearm",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_polearm = 0x1e\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_potion",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_potion = 0x9\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_quarterstaff",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_quarterstaff = 0x1a\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_ring",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_ring = 0xa\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_robe",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_robe = 0x43\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_scarf",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_scarf = 0x46\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_scroll",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_scroll = 0xb\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_shield_not_in_iwd",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_shield_not_in_iwd = 0xc\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_sling",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_sling = 0x12\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_small_shield_iwd",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_small_shield_iwd = 0x35\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_small_sword",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_small_sword = 0x13\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_spear",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_spear = 0x1d\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_splint_mail",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_splint_mail = 0x3f\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_studded_leather_armor",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_studded_leather_armor = 0x3d\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_tattoo_pst",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_tattoo_pst = 0x27\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_teeth",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_teeth = 0x29\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_telescope_iwd",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_telescope_iwd = 0x37\n```\nIElib define"
-        }
-    },
-    {
-        "label": "ITM_TYPE_wand",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITM_TYPE_wand = 0x23\n```\nIElib define"
         }
     },
     {
@@ -28305,303 +28629,6 @@
         "documentation": {
             "kind": "markdown",
             "value": "```weidu-tp2-tooltip\nint SPELL_FORM_standard = 1\n```\nIElib define"
-        }
-    },
-    {
-        "label": "STO_ITEM_SALE_amount",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint STO_ITEM_SALE_amount = 0x14\n```\nIElib define"
-        }
-    },
-    {
-        "label": "STO_ITEM_SALE_charges1",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint STO_ITEM_SALE_charges1 = 0xa\n```\nIElib define"
-        }
-    },
-    {
-        "label": "STO_ITEM_SALE_charges2",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint STO_ITEM_SALE_charges2 = 0xc\n```\nIElib define"
-        }
-    },
-    {
-        "label": "STO_ITEM_SALE_charges3",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint STO_ITEM_SALE_charges3 = 0xe\n```\nIElib define"
-        }
-    },
-    {
-        "label": "STO_ITEM_SALE_expiration_time",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint STO_ITEM_SALE_expiration_time = 0x8\n```\nIElib define"
-        }
-    },
-    {
-        "label": "STO_ITEM_SALE_flags",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint STO_ITEM_SALE_flags = 0x10\n```\nIElib define"
-        }
-    },
-    {
-        "label": "STO_ITEM_SALE_infinite",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint STO_ITEM_SALE_infinite = 0x18\n```\nIElib define"
-        }
-    },
-    {
-        "label": "STO_ITEM_SALE_name",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint STO_ITEM_SALE_name = 0\n```\nIElib define"
-        }
-    },
-    {
-        "label": "STO_buy_price_markup",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint STO_buy_price_markup = 0x18\n```\nIElib define"
-        }
-    },
-    {
-        "label": "STO_capacity",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint STO_capacity = 0x22\n```\nIElib define"
-        }
-    },
-    {
-        "label": "STO_chance_of_steal_failure",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint STO_chance_of_steal_failure = 0x20\n```\nIElib define"
-        }
-    },
-    {
-        "label": "STO_cures_count",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint STO_cures_count = 0x74\n```\nIElib define"
-        }
-    },
-    {
-        "label": "STO_cures_offset",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint STO_cures_offset = 0x70\n```\nIElib define"
-        }
-    },
-    {
-        "label": "STO_depreciation_rate",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint STO_depreciation_rate = 0x1c\n```\nIElib define"
-        }
-    },
-    {
-        "label": "STO_drinks_count",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint STO_drinks_count = 0x50\n```\nIElib define"
-        }
-    },
-    {
-        "label": "STO_drinks_offset",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint STO_drinks_offset = 0x4c\n```\nIElib define"
-        }
-    },
-    {
-        "label": "STO_flags",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint STO_flags = 0x10\n```\nIElib define"
-        }
-    },
-    {
-        "label": "STO_id_price",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint STO_id_price = 0x40\n```\nIElib define"
-        }
-    },
-    {
-        "label": "STO_items_for_sale_count",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint STO_items_for_sale_count = 0x38\n```\nIElib define"
-        }
-    },
-    {
-        "label": "STO_items_for_sale_offset",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint STO_items_for_sale_offset = 0x34\n```\nIElib define"
-        }
-    },
-    {
-        "label": "STO_items_purchased_count",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint STO_items_purchased_count = 0x30\n```\nIElib define"
-        }
-    },
-    {
-        "label": "STO_items_purchased_offset",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint STO_items_purchased_offset = 0x2c\n```\nIElib define"
-        }
-    },
-    {
-        "label": "STO_lore",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint STO_lore = 0x3c\n```\nIElib define"
-        }
-    },
-    {
-        "label": "STO_name",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint STO_name = 0xc\n```\nIElib define"
-        }
-    },
-    {
-        "label": "STO_price_of_a_merchant_room",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint STO_price_of_a_merchant_room = 0x64\n```\nIElib define"
-        }
-    },
-    {
-        "label": "STO_price_of_a_noble_room",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint STO_price_of_a_noble_room = 0x68\n```\nIElib define"
-        }
-    },
-    {
-        "label": "STO_price_of_a_peasant_room",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint STO_price_of_a_peasant_room = 0x60\n```\nIElib define"
-        }
-    },
-    {
-        "label": "STO_price_of_a_royal_room",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint STO_price_of_a_royal_room = 0x6c\n```\nIElib define"
-        }
-    },
-    {
-        "label": "STO_room_flags",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint STO_room_flags = 0x5c\n```\nIElib define"
-        }
-    },
-    {
-        "label": "STO_rumours_tavern",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint STO_rumours_tavern = 0x44\n```\nIElib define"
-        }
-    },
-    {
-        "label": "STO_rumours_temple",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint STO_rumours_temple = 0x54\n```\nIElib define"
-        }
-    },
-    {
-        "label": "STO_sell_price_markup",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint STO_sell_price_markup = 0x14\n```\nIElib define"
-        }
-    },
-    {
-        "label": "STO_type",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint STO_type = 0x8\n```\nIElib define"
         }
     },
     {
