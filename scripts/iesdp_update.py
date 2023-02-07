@@ -21,6 +21,7 @@ from ie import (
     get_offset_prefix,
     get_offset_size,
     litscal,
+    offset_is_unused,
     offsets_to_definition,
     opcode_name_to_id,
     strip_liquid,
@@ -112,7 +113,7 @@ class ProcessedOffsetData:
 
             size = get_offset_size(i)
 
-            if "unused" in i or "unknown" in i:
+            if offset_is_unused(i):
                 cur_off += size
                 continue
 
@@ -273,12 +274,13 @@ with open(data_baf, "w", encoding="utf8") as yf:
 # DATA
 # data lists:
 # chars, lbytes, words, dwords, resrefs, strrefs, other
-
 pod = ProcessedOffsetData([], [], [], [], [], [], [])
 formats = os.listdir(file_formats_dir)
+formats = [x for x in formats if os.path.isdir(os.path.join(file_formats_dir, x))]
 structures_dir = os.path.join(ielib_dir, "structures")
 
 for ff in formats:
+    print(ff)
     ff_dir = os.path.join(file_formats_dir, ff)
 
     definition_items = OrderedDict()
@@ -286,6 +288,7 @@ for ff in formats:
     for f in os.listdir(ff_dir):
         if f == "feature_block.yml":  # feature blocks handled separately
             continue
+        print(f)
         prefix = get_offset_prefix(ff, f)
         fpath = os.path.join(ff_dir, f)
         with open(fpath, encoding="utf8") as yf:
