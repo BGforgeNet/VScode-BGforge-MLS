@@ -54,7 +54,7 @@ def get_offset_id(item, prefix):
     if re.match(r"^[a-zA-Z0-9_]+$", iid):
         return iid
     # no good id found, aborting
-    print('Bad id: "{iid}". Aborting.')
+    print(f'Bad offset id: "{iid}". Aborting.')
     sys.exit(1)
 
 
@@ -69,9 +69,24 @@ def get_offset_size(item):
 
 
 def validate_offset(current_offset, item):
+    """
+    Check offset item against current offset, fail on mismatch.
+    Mismatch probably means a bug in data.
+    """
     if "offset" in item and item["offset"] != current_offset:
         print(f"Error: offset mismatch. Expected {current_offset}, got {item['offset']} for {item}")
         sys.exit(1)
+
+
+def offset_is_unused(offset):
+    """
+    Checks if an IESDP offset item is unused
+
+    @arg item - an offset loaded from IESDP _data/file_formats
+    """
+    if "unused" in offset or "unknown" in offset or ("desc" in offset and offset["desc"].lower() == "unknown"):
+        return True
+    return False
 
 
 def offsets_to_definition(data, prefix):
@@ -85,7 +100,7 @@ def offsets_to_definition(data, prefix):
 
         size = get_offset_size(i)
 
-        if "unused" in i or "unknown" in i:
+        if offset_is_unused(i):
             cur_off += size
             continue
 
