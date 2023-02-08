@@ -817,9 +817,11 @@ base-functions:
       doc: |-
         Returns a pointer to the object connected to this script.
     - name: set_critter_stat
-      detail: int set_critter_stat(ObjectPtr who, int stat, int val)
+      detail: int set_critter_stat(ObjectPtr who, int stat, int mod)
       doc: |-
-        Sets the value of a desired attribute/stat in a critter (who) to a given value (val).
+        DOES NOT SET THE STAT.
+
+        **Modifies** attribute `stat` in a critter `who` by value `mod`.
     - name: set_exit_grids
       detail: void set_exit_grids(elevation markElev, int mapID, int elevation, int tileNum, int rotation)
       doc: |-

@@ -1124,7 +1124,7 @@
     "set_critter_stat": {
         "contents": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nint set_critter_stat(ObjectPtr who, int stat, int val)\n```\nSets the value of a desired attribute/stat in a critter (who) to a given value (val)."
+            "value": "```fallout-ssl-tooltip\nint set_critter_stat(ObjectPtr who, int stat, int mod)\n```\nDOES NOT SET THE STAT.\n\n**Modifies** attribute `stat` in a critter `who` by value `mod`."
         }
     },
     "set_exit_grids": {
