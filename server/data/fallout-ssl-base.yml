@@ -821,7 +821,7 @@ base-functions:
       doc: |-
         DOES NOT SET THE STAT.
 
-        **Modifies** attribute `stat` in a critter `who` by value `mod`.
+        **Modifies** attribute `stat` in critter `who` by value `mod`.
     - name: set_exit_grids
       detail: void set_exit_grids(elevation markElev, int mapID, int elevation, int tileNum, int rotation)
       doc: |-
