@@ -3761,436 +3761,436 @@
             "value": "```weidu-tp2-tooltip\nchar array offset EFF2_version2 = 0xc\n```\nExternal EFFs - the field is the same as the version field from the header  \n<a href=\"../ie_formats/cre_v1.htm#CREV1_0_Header_0x33_1\">Embedded EFF</a>s - this field is zeroed out\n"
         }
     },
-    "ITEMTYPE_amulet": {
+    "ITEM_TYPE_amulet": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_amulet = 0x01\n```\nAmulets and necklaces"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_amulet = 0x01\n```\nAmulets and necklaces"
         }
     },
-    "ITEMTYPE_armor": {
+    "ITEM_TYPE_armor": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_armor = 0x02\n```\nArmor"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_armor = 0x02\n```\nArmor"
         }
     },
-    "ITEMTYPE_arrow": {
+    "ITEM_TYPE_arrow": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_arrow = 0x05\n```\n<b><a name=\"Header_ItemType_5\">Arrows</a></b>"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_arrow = 0x05\n```\n<b><a name=\"Header_ItemType_5\">Arrows</a></b>"
         }
     },
-    "ITEMTYPE_axe": {
+    "ITEM_TYPE_axe": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_axe = 0x19\n```\nAxes (specifically, 1-handed axes -- halberds and 2-handed polearms not included)"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_axe = 0x19\n```\nAxes (specifically, 1-handed axes -- halberds and 2-handed polearms not included)"
         }
     },
-    "ITEMTYPE_bastard_sword": {
+    "ITEM_TYPE_bastard_sword": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_bastard_sword = 0x45\n```\nBastard Sword"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_bastard_sword = 0x45\n```\nBastard Sword"
         }
     },
-    "ITEMTYPE_belt": {
+    "ITEM_TYPE_belt": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_belt = 0x03\n```\nBelts and girdles"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_belt = 0x03\n```\nBelts and girdles"
         }
     },
-    "ITEMTYPE_bolt": {
+    "ITEM_TYPE_bolt": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_bolt = 0x1f\n```\n<b><a name=\"Header_ItemType_31\">Crossbow bolts</a></b>"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_bolt = 0x1f\n```\n<b><a name=\"Header_ItemType_31\">Crossbow bolts</a></b>"
         }
     },
-    "ITEMTYPE_book": {
+    "ITEM_TYPE_book": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_book = 0x25\n```\nBooks/Broken shields/bracelets"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_book = 0x25\n```\nBooks/Broken shields/bracelets"
         }
     },
-    "ITEMTYPE_boots": {
+    "ITEM_TYPE_boots": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_boots = 0x04\n```\nBoots"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_boots = 0x04\n```\nBoots"
         }
     },
-    "ITEMTYPE_bow": {
+    "ITEM_TYPE_bow": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_bow = 0x0f\n```\nBows"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_bow = 0x0f\n```\nBows"
         }
     },
-    "ITEMTYPE_bracelet": {
+    "ITEM_TYPE_bracelet": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_bracelet = 0x25\n```\nBooks/Broken shields/bracelets"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_bracelet = 0x25\n```\nBooks/Broken shields/bracelets"
         }
     },
-    "ITEMTYPE_bracers": {
+    "ITEM_TYPE_bracers": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_bracers = 0x06\n```\nBracers and gauntlets"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_bracers = 0x06\n```\nBracers and gauntlets"
         }
     },
-    "ITEMTYPE_broken_armor": {
+    "ITEM_TYPE_broken_armor": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_broken_armor = 0x24\n```\nContainers/eye/broken armor"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_broken_armor = 0x24\n```\nContainers/eye/broken armor"
         }
     },
-    "ITEMTYPE_broken_shield": {
+    "ITEM_TYPE_broken_shield": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_broken_shield = 0x25\n```\nBooks/Broken shields/bracelets"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_broken_shield = 0x25\n```\nBooks/Broken shields/bracelets"
         }
     },
-    "ITEMTYPE_broken_sword": {
+    "ITEM_TYPE_broken_sword": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_broken_sword = 0x26\n```\nFamiliars/Broken swords/earrings"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_broken_sword = 0x26\n```\nFamiliars/Broken swords/earrings"
         }
     },
-    "ITEMTYPE_buckler": {
+    "ITEM_TYPE_buckler": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_buckler = 0x29\n```\nBucklers/teeth"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_buckler = 0x29\n```\nBucklers/teeth"
         }
     },
-    "ITEMTYPE_bullet": {
+    "ITEM_TYPE_bullet": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_bullet = 0x0e\n```\n<b><a name=\"Header_ItemType_14\">Bullets</a></b> (for a sling)"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_bullet = 0x0e\n```\n<b><a name=\"Header_ItemType_14\">Bullets</a></b> (for a sling)"
         }
     },
-    "ITEMTYPE_candles": {
+    "ITEM_TYPE_candles": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_candles = 0x2a\n```\nCandles"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_candles = 0x2a\n```\nCandles"
         }
     },
-    "ITEMTYPE_chain_mail": {
+    "ITEM_TYPE_chain_mail": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_chain_mail = 0x3e\n```\nChain Mail"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_chain_mail = 0x3e\n```\nChain Mail"
         }
     },
-    "ITEMTYPE_cloak": {
+    "ITEM_TYPE_cloak": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_cloak = 0x20\n```\nCloaks and robes"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_cloak = 0x20\n```\nCloaks and robes"
         }
     },
-    "ITEMTYPE_clubs_iwd": {
+    "ITEM_TYPE_clubs_iwd": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_clubs_iwd = 0x2c\n```\nClubs (IWD)"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_clubs_iwd = 0x2c\n```\nClubs (IWD)"
         }
     },
-    "ITEMTYPE_container": {
+    "ITEM_TYPE_container": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_container = 0x24\n```\nContainers/eye/broken armor"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_container = 0x24\n```\nContainers/eye/broken armor"
         }
     },
-    "ITEMTYPE_crossbow": {
+    "ITEM_TYPE_crossbow": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_crossbow = 0x1b\n```\nCrossbow"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_crossbow = 0x1b\n```\nCrossbow"
         }
     },
-    "ITEMTYPE_dagger": {
+    "ITEM_TYPE_dagger": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_dagger = 0x10\n```\nDaggers"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_dagger = 0x10\n```\nDaggers"
         }
     },
-    "ITEMTYPE_dart": {
+    "ITEM_TYPE_dart": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_dart = 0x18\n```\nDarts"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_dart = 0x18\n```\nDarts"
         }
     },
-    "ITEMTYPE_drink_iwd": {
+    "ITEM_TYPE_drink_iwd": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_drink_iwd = 0x38\n```\nDrinks (IWD)"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_drink_iwd = 0x38\n```\nDrinks (IWD)"
         }
     },
-    "ITEMTYPE_earring": {
+    "ITEM_TYPE_earring": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_earring = 0x26\n```\nFamiliars/Broken swords/earrings"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_earring = 0x26\n```\nFamiliars/Broken swords/earrings"
         }
     },
-    "ITEMTYPE_eye": {
+    "ITEM_TYPE_eye": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_eye = 0x24\n```\nContainers/eye/broken armor"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_eye = 0x24\n```\nContainers/eye/broken armor"
         }
     },
-    "ITEMTYPE_familiar": {
+    "ITEM_TYPE_familiar": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_familiar = 0x26\n```\nFamiliars/Broken swords/earrings"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_familiar = 0x26\n```\nFamiliars/Broken swords/earrings"
         }
     },
-    "ITEMTYPE_flail": {
+    "ITEM_TYPE_flail": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_flail = 0x17\n```\nFlails"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_flail = 0x17\n```\nFlails"
         }
     },
-    "ITEMTYPE_food": {
+    "ITEM_TYPE_food": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_food = 0x0d\n```\nFood"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_food = 0x0d\n```\nFood"
         }
     },
-    "ITEMTYPE_food_iwd2": {
+    "ITEM_TYPE_food_iwd2": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_food_iwd2 = 0x47\n```\nFood (IWD2)"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_food_iwd2 = 0x47\n```\nFood (IWD2)"
         }
     },
-    "ITEMTYPE_full_plate": {
+    "ITEM_TYPE_full_plate": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_full_plate = 0x41\n```\nFull Plate"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_full_plate = 0x41\n```\nFull Plate"
         }
     },
-    "ITEMTYPE_gauntlet": {
+    "ITEM_TYPE_gauntlet": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_gauntlet = 0x49\n```\nGauntlet"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_gauntlet = 0x49\n```\nGauntlet"
         }
     },
-    "ITEMTYPE_gem": {
+    "ITEM_TYPE_gem": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_gem = 0x22\n```\nGems"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_gem = 0x22\n```\nGems"
         }
     },
-    "ITEMTYPE_gold_piece": {
+    "ITEM_TYPE_gold_piece": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_gold_piece = 0x21\n```\nGold pieces (not an inventory item, but can appear as \"monster dropped\" treasure)"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_gold_piece = 0x21\n```\nGold pieces (not an inventory item, but can appear as \"monster dropped\" treasure)"
         }
     },
-    "ITEMTYPE_great_sword_iwd": {
+    "ITEM_TYPE_great_sword_iwd": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_great_sword_iwd = 0x39\n```\nGreat Swords (IWD)"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_great_sword_iwd = 0x39\n```\nGreat Swords (IWD)"
         }
     },
-    "ITEMTYPE_halberd": {
+    "ITEM_TYPE_halberd": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_halberd = 0x1e\n```\nHalberds (2-handed polearms)"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_halberd = 0x1e\n```\nHalberds (2-handed polearms)"
         }
     },
-    "ITEMTYPE_hammer": {
+    "ITEM_TYPE_hammer": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_hammer = 0x15\n```\nHammers"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_hammer = 0x15\n```\nHammers"
         }
     },
-    "ITEMTYPE_hand_to_hand": {
+    "ITEM_TYPE_hand_to_hand": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_hand_to_hand = 0x1c\n```\nHand-to-hand weapons (fist, fist irons, punch daggers, etc)"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_hand_to_hand = 0x1c\n```\nHand-to-hand weapons (fist, fist irons, punch daggers, etc)"
         }
     },
-    "ITEMTYPE_hat": {
+    "ITEM_TYPE_hat": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_hat = 0x48\n```\nHat"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_hat = 0x48\n```\nHat"
         }
     },
-    "ITEMTYPE_helm": {
+    "ITEM_TYPE_helm": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_helm = 0x07\n```\n<a name=\"Header_ItemType_7\">Headgear</a></b> (Helms, hats, and other head-wear)"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_helm = 0x07\n```\n<a name=\"Header_ItemType_7\">Headgear</a></b> (Helms, hats, and other head-wear)"
         }
     },
-    "ITEMTYPE_hide_armor": {
+    "ITEM_TYPE_hide_armor": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_hide_armor = 0x42\n```\nHide Armor"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_hide_armor = 0x42\n```\nHide Armor"
         }
     },
-    "ITEMTYPE_key": {
+    "ITEM_TYPE_key": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_key = 0x08\n```\nKeys (not in Icewind Dale?)"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_key = 0x08\n```\nKeys (not in Icewind Dale?)"
         }
     },
-    "ITEMTYPE_large_shield_iwd": {
+    "ITEM_TYPE_large_shield_iwd": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_large_shield_iwd = 0x2f\n```\nLarge Shields (IWD)"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_large_shield_iwd = 0x2f\n```\nLarge Shields (IWD)"
         }
     },
-    "ITEMTYPE_large_sword": {
+    "ITEM_TYPE_large_sword": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_large_sword = 0x14\n```\nLarge swords"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_large_sword = 0x14\n```\nLarge swords"
         }
     },
-    "ITEMTYPE_leather_armor": {
+    "ITEM_TYPE_leather_armor": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_leather_armor = 0x3c\n```\nLeather Armor"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_leather_armor = 0x3c\n```\nLeather Armor"
         }
     },
-    "ITEMTYPE_lenses": {
+    "ITEM_TYPE_lenses": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_lenses = 0x28\n```\nLenses (PST)"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_lenses = 0x28\n```\nLenses (PST)"
         }
     },
-    "ITEMTYPE_mace": {
+    "ITEM_TYPE_mace": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_mace = 0x11\n```\nMaces (in BG, this includes clubs)"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_mace = 0x11\n```\nMaces (in BG, this includes clubs)"
         }
     },
-    "ITEMTYPE_medium_shield_iwd": {
+    "ITEM_TYPE_medium_shield_iwd": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_medium_shield_iwd = 0x31\n```\nMedium Shields (IWD)"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_medium_shield_iwd = 0x31\n```\nMedium Shields (IWD)"
         }
     },
-    "ITEMTYPE_misc": {
+    "ITEM_TYPE_misc": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_misc = 0x00\n```\nBooks/misc"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_misc = 0x00\n```\nBooks/misc"
         }
     },
-    "ITEMTYPE_morning_star": {
+    "ITEM_TYPE_morning_star": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_morning_star = 0x16\n```\nMorning stars"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_morning_star = 0x16\n```\nMorning stars"
         }
     },
-    "ITEMTYPE_notes": {
+    "ITEM_TYPE_notes": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_notes = 0x32\n```\nNotes"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_notes = 0x32\n```\nNotes"
         }
     },
-    "ITEMTYPE_pelt": {
+    "ITEM_TYPE_pelt": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_pelt = 0x3b\n```\nFur/pelt"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_pelt = 0x3b\n```\nFur/pelt"
         }
     },
-    "ITEMTYPE_plate_mail": {
+    "ITEM_TYPE_plate_mail": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_plate_mail = 0x40\n```\nHalf Plate"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_plate_mail = 0x40\n```\nHalf Plate"
         }
     },
-    "ITEMTYPE_potion": {
+    "ITEM_TYPE_potion": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_potion = 0x09\n```\nPotions"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_potion = 0x09\n```\nPotions"
         }
     },
-    "ITEMTYPE_quarterstaff": {
+    "ITEM_TYPE_quarterstaff": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_quarterstaff = 0x1a\n```\nQuarterstaff"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_quarterstaff = 0x1a\n```\nQuarterstaff"
         }
     },
-    "ITEMTYPE_ring": {
+    "ITEM_TYPE_ring": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_ring = 0x0a\n```\nRings"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_ring = 0x0a\n```\nRings"
         }
     },
-    "ITEMTYPE_robe": {
+    "ITEM_TYPE_robe": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_robe = 0x43\n```\nRobe"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_robe = 0x43\n```\nRobe"
         }
     },
-    "ITEMTYPE_scarf": {
+    "ITEM_TYPE_scarf": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_scarf = 0x46\n```\nScarf"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_scarf = 0x46\n```\nScarf"
         }
     },
-    "ITEMTYPE_scroll": {
+    "ITEM_TYPE_scroll": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_scroll = 0x0b\n```\nScrolls"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_scroll = 0x0b\n```\nScrolls"
         }
     },
-    "ITEMTYPE_shield": {
+    "ITEM_TYPE_shield": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_shield = 0x0c\n```\nShields (not in IWD)"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_shield = 0x0c\n```\nShields (not in IWD)"
         }
     },
-    "ITEMTYPE_sling": {
+    "ITEM_TYPE_sling": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_sling = 0x12\n```\nSlings"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_sling = 0x12\n```\nSlings"
         }
     },
-    "ITEMTYPE_small_shied_iwd": {
+    "ITEM_TYPE_small_shied_iwd": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_small_shied_iwd = 0x35\n```\nSmall Shields (IWD)"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_small_shied_iwd = 0x35\n```\nSmall Shields (IWD)"
         }
     },
-    "ITEMTYPE_small_sword": {
+    "ITEM_TYPE_small_sword": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_small_sword = 0x13\n```\nSmall swords"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_small_sword = 0x13\n```\nSmall swords"
         }
     },
-    "ITEMTYPE_spear": {
+    "ITEM_TYPE_spear": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_spear = 0x1d\n```\nSpears"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_spear = 0x1d\n```\nSpears"
         }
     },
-    "ITEMTYPE_splint_mail": {
+    "ITEM_TYPE_splint_mail": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_splint_mail = 0x3f\n```\nSplint Mail"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_splint_mail = 0x3f\n```\nSplint Mail"
         }
     },
-    "ITEMTYPE_studded_leather": {
+    "ITEM_TYPE_studded_leather": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_studded_leather = 0x3d\n```\nStudded Leather Armor"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_studded_leather = 0x3d\n```\nStudded Leather Armor"
         }
     },
-    "ITEMTYPE_tattoo": {
+    "ITEM_TYPE_tattoo": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_tattoo = 0x27\n```\nTattoos (PST)"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_tattoo = 0x27\n```\nTattoos (PST)"
         }
     },
-    "ITEMTYPE_teeth": {
+    "ITEM_TYPE_teeth": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_teeth = 0x29\n```\nBucklers/teeth"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_teeth = 0x29\n```\nBucklers/teeth"
         }
     },
-    "ITEMTYPE_telescope_iwd": {
+    "ITEM_TYPE_telescope_iwd": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_telescope_iwd = 0x37\n```\nTelescopes (IWD)"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_telescope_iwd = 0x37\n```\nTelescopes (IWD)"
         }
     },
-    "ITEMTYPE_wand": {
+    "ITEM_TYPE_wand": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nint ITEMTYPE_wand = 0x23\n```\nWands"
+            "value": "```weidu-tp2-tooltip\nint ITEM_TYPE_wand = 0x23\n```\nWands"
         }
     },
     "ITM_HEAD_melee_animation": {
