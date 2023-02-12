@@ -314,6 +314,10 @@
             {
                 "language": "weidu-baf",
                 "path": "./snippets/weidu-baf.json"
+            },
+            {
+                "language": "weidu-tp2",
+                "path": "./snippets/weidu-tp2.json"
             }
         ],
         "themes": [

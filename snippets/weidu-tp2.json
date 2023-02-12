@@ -1,0 +1,7 @@
+{
+    "BEGIN-END block": {
+        "prefix": "BEGIN",
+        "body": ["BEGIN\n    $0\nEND\n"],
+        "description": "BEGIN-END block"
+    }
+}
