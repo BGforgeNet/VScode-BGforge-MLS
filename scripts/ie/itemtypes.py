@@ -15,7 +15,7 @@ def get_itemtypes(iesdp_file_formats_dir):
     itypes = []
     for i in items:
         iid = get_itemtype_id(i)
-        if iid == "ITEMTYPE_unknown":
+        if iid == "ITEM_TYPE_unknown":
             continue
         itypes.append({"id": iid, "desc": i["type"], "value": i["code"]})
     return itypes
@@ -25,7 +25,7 @@ def get_itemtype_id(item):
     """
     Tries to get an id for an item type
     """
-    iprefix = "ITEMTYPE_"
+    iprefix = "ITEM_TYPE_"
     # custom id
     if "id" in item:
         return iprefix + item["id"]
