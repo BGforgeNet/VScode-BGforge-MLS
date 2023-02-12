@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.0.6
+
+- Prettified `GAME_IS`, `GAME_INCLUDES` doc.
+- Fixed `set_critter_stat` doc.
+- Added begin-end snippet in TP2.
+- Disabled outdent on `END` in TP2.
+- IElib `ITEMTYPE_` constants renamed to `ITEM_TYPE_`.
+
 ## 2.0.5
 
 - Fixed missing hovers for defines from the same file.
