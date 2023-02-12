@@ -207,291 +207,291 @@
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_amulet)\\b",
+          "match": "\\b(ITEM_TYPE_amulet)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_armor)\\b",
+          "match": "\\b(ITEM_TYPE_armor)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_arrow)\\b",
+          "match": "\\b(ITEM_TYPE_arrow)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_axe)\\b",
+          "match": "\\b(ITEM_TYPE_axe)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_bastard_sword)\\b",
+          "match": "\\b(ITEM_TYPE_bastard_sword)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_belt)\\b",
+          "match": "\\b(ITEM_TYPE_belt)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_bolt)\\b",
+          "match": "\\b(ITEM_TYPE_bolt)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_book)\\b",
+          "match": "\\b(ITEM_TYPE_book)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_boots)\\b",
+          "match": "\\b(ITEM_TYPE_boots)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_bow)\\b",
+          "match": "\\b(ITEM_TYPE_bow)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_bracelet)\\b",
+          "match": "\\b(ITEM_TYPE_bracelet)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_bracers)\\b",
+          "match": "\\b(ITEM_TYPE_bracers)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_broken_armor)\\b",
+          "match": "\\b(ITEM_TYPE_broken_armor)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_broken_shield)\\b",
+          "match": "\\b(ITEM_TYPE_broken_shield)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_broken_sword)\\b",
+          "match": "\\b(ITEM_TYPE_broken_sword)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_buckler)\\b",
+          "match": "\\b(ITEM_TYPE_buckler)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_bullet)\\b",
+          "match": "\\b(ITEM_TYPE_bullet)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_candles)\\b",
+          "match": "\\b(ITEM_TYPE_candles)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_chain_mail)\\b",
+          "match": "\\b(ITEM_TYPE_chain_mail)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_cloak)\\b",
+          "match": "\\b(ITEM_TYPE_cloak)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_clubs_iwd)\\b",
+          "match": "\\b(ITEM_TYPE_clubs_iwd)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_container)\\b",
+          "match": "\\b(ITEM_TYPE_container)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_crossbow)\\b",
+          "match": "\\b(ITEM_TYPE_crossbow)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_dagger)\\b",
+          "match": "\\b(ITEM_TYPE_dagger)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_dart)\\b",
+          "match": "\\b(ITEM_TYPE_dart)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_drink_iwd)\\b",
+          "match": "\\b(ITEM_TYPE_drink_iwd)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_earring)\\b",
+          "match": "\\b(ITEM_TYPE_earring)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_eye)\\b",
+          "match": "\\b(ITEM_TYPE_eye)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_familiar)\\b",
+          "match": "\\b(ITEM_TYPE_familiar)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_flail)\\b",
+          "match": "\\b(ITEM_TYPE_flail)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_food_iwd2)\\b",
+          "match": "\\b(ITEM_TYPE_food_iwd2)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_food)\\b",
+          "match": "\\b(ITEM_TYPE_food)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_full_plate)\\b",
+          "match": "\\b(ITEM_TYPE_full_plate)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_gauntlet)\\b",
+          "match": "\\b(ITEM_TYPE_gauntlet)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_gem)\\b",
+          "match": "\\b(ITEM_TYPE_gem)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_gold_piece)\\b",
+          "match": "\\b(ITEM_TYPE_gold_piece)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_great_sword_iwd)\\b",
+          "match": "\\b(ITEM_TYPE_great_sword_iwd)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_halberd)\\b",
+          "match": "\\b(ITEM_TYPE_halberd)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_hammer)\\b",
+          "match": "\\b(ITEM_TYPE_hammer)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_hand_to_hand)\\b",
+          "match": "\\b(ITEM_TYPE_hand_to_hand)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_hat)\\b",
+          "match": "\\b(ITEM_TYPE_hat)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_helm)\\b",
+          "match": "\\b(ITEM_TYPE_helm)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_hide_armor)\\b",
+          "match": "\\b(ITEM_TYPE_hide_armor)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_key)\\b",
+          "match": "\\b(ITEM_TYPE_key)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_large_shield_iwd)\\b",
+          "match": "\\b(ITEM_TYPE_large_shield_iwd)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_large_sword)\\b",
+          "match": "\\b(ITEM_TYPE_large_sword)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_leather_armor)\\b",
+          "match": "\\b(ITEM_TYPE_leather_armor)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_lenses)\\b",
+          "match": "\\b(ITEM_TYPE_lenses)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_mace)\\b",
+          "match": "\\b(ITEM_TYPE_mace)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_medium_shield_iwd)\\b",
+          "match": "\\b(ITEM_TYPE_medium_shield_iwd)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_misc)\\b",
+          "match": "\\b(ITEM_TYPE_misc)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_morning_star)\\b",
+          "match": "\\b(ITEM_TYPE_morning_star)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_notes)\\b",
+          "match": "\\b(ITEM_TYPE_notes)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_pelt)\\b",
+          "match": "\\b(ITEM_TYPE_pelt)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_plate_mail)\\b",
+          "match": "\\b(ITEM_TYPE_plate_mail)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_potion)\\b",
+          "match": "\\b(ITEM_TYPE_potion)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_quarterstaff)\\b",
+          "match": "\\b(ITEM_TYPE_quarterstaff)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_ring)\\b",
+          "match": "\\b(ITEM_TYPE_ring)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_robe)\\b",
+          "match": "\\b(ITEM_TYPE_robe)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_scarf)\\b",
+          "match": "\\b(ITEM_TYPE_scarf)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_scroll)\\b",
+          "match": "\\b(ITEM_TYPE_scroll)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_shield)\\b",
+          "match": "\\b(ITEM_TYPE_shield)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_sling)\\b",
+          "match": "\\b(ITEM_TYPE_sling)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_small_shied_iwd)\\b",
+          "match": "\\b(ITEM_TYPE_small_shied_iwd)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_small_sword)\\b",
+          "match": "\\b(ITEM_TYPE_small_sword)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_spear)\\b",
+          "match": "\\b(ITEM_TYPE_spear)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_splint_mail)\\b",
+          "match": "\\b(ITEM_TYPE_splint_mail)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_studded_leather)\\b",
+          "match": "\\b(ITEM_TYPE_studded_leather)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_tattoo)\\b",
+          "match": "\\b(ITEM_TYPE_tattoo)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_teeth)\\b",
+          "match": "\\b(ITEM_TYPE_teeth)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_telescope_iwd)\\b",
+          "match": "\\b(ITEM_TYPE_telescope_iwd)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
-          "match": "\\b(ITEMTYPE_wand)\\b",
+          "match": "\\b(ITEM_TYPE_wand)\\b",
           "name": "constant.language.iesdp.other"
         },
         {
