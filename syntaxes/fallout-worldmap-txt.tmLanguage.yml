@@ -43,6 +43,7 @@ repository:
       - match: ^\b(team_num|position|lookup_name|maps)\b
         name: entity.name.function.fallout-worldmap-txt
       - match: ^\b(art_idx|encounter_difficulty|walk_mask_name|num_horizontal_tiles)\b
+        name: entity.name.function.fallout-worldmap-txt
       - match: .*
         name: variable.parameter.fallout-worldmap-txt
 
