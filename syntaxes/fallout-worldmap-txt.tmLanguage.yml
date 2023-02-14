@@ -1,0 +1,186 @@
+$schema: https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json
+name: Fallout worldmap.txt
+scopeName: source.fallout-worldmap-txt
+patterns:
+  - include: "#comment"
+  - include: "#section_name"
+  - include: "#line"
+
+repository:
+  comment:
+    patterns:
+      - match: (;).*
+        name: comment.line.fallout-worldmap-txt
+
+  section_name:
+    patterns:
+      - include: "#comment"
+      - match: ^\[(.*)\]
+        name: keyword.control.fallout-worldmap-txt
+        captures:
+          '1':
+            name: string.quoted.fallout-worldmap-txt
+
+  line:
+    patterns:
+      - include: "#comment"
+      - match: ^(\w+)(=)([^;]*)
+        captures:
+          '1':
+            patterns:
+              - include: "#key"
+          '2':
+            name: keyword.control.fallout-worldmap-txt
+          '3':
+            patterns:
+              - include: "#value"
+              - match: \b\d+\b
+                name: constant.numeric.fallout-worldmap-txt
+
+  # known keys
+  key:
+    patterns:
+      - match: ^\b(team_num|position|lookup_name|maps)\b
+        name: entity.name.function.fallout-worldmap-txt
+      - match: ^\b(art_idx|encounter_difficulty|walk_mask_name|num_horizontal_tiles)\b
+      - match: .*
+        name: variable.parameter.fallout-worldmap-txt
+
+  value:
+    patterns:
+      - include: "#value_directive"
+
+  value_directive:
+    patterns:
+      - match: \b(?i)(Chance|Ratio):(\d+)%
+        name: keyword.control.fallout-worldmap-txt
+        captures:
+          '1':
+            name: support.function.fallout-worldmap-txt
+          '2':
+            name: constant.numeric.fallout-worldmap-txt
+
+      - match: \b(?i)(Item):(\d+)([^;,]+)?
+        name: keyword.control.fallout-worldmap-txt
+        captures:
+          '1':
+            name: support.function.fallout-worldmap-txt
+          '2':
+            name: constant.numeric.fallout-worldmap-txt
+          '3':
+            patterns:
+              - include: "#wielded"
+
+      # Item:(0-10)41
+      - match: \b(?i)(Item):\((\d+)-(\d+)\)(\d+)
+        name: keyword.control.fallout-worldmap-txt
+        captures:
+          '1':
+            name: support.function.fallout-worldmap-txt
+          '2':
+            name: constant.numeric.fallout-worldmap-txt
+          '3':
+            name: constant.numeric.fallout-worldmap-txt
+          '4':
+            name: constant.numeric.fallout-worldmap-txt
+
+      - include: "#enc"
+
+      - include: "#positions"
+
+      - match: \b(Map)(:)([^;,]+)
+        captures:
+          '1':
+            name: support.function.fallout-worldmap-txt
+          '2':
+            name: keyword.control.fallout-worldmap-txt
+          '3':
+            name: string.quoted.fallout-worldmap-txt
+
+      - match: \b(Special|Dead)\b
+        captures:
+          '1':
+            name: support.function.fallout-worldmap-txt
+
+      - match: \b(\w+)(:)(\s*\d+)?
+        captures:
+          '1':
+            patterns:
+              - include: "#value_directive_name"
+          '2':
+            name: keyword.control.fallout-worldmap-txt
+          '3':
+            name: constant.numeric.fallout-worldmap-txt
+
+      - match: \b(?i)If\s*([^;,]+)
+      # - match: \b(?i)If\(
+        name: keyword.control.fallout-worldmap-txt
+        captures:
+          '1':
+            patterns:
+              - include: "#condition"
+
+  condition:
+    patterns:
+      - match: \b(Global|Player)\b
+        name: support.function.fallout-worldmap-txt
+      - match: \bLevel\b
+        name: constant.language.fallout-worldmap-txt
+      - match: -?\d+
+        name: constant.numeric.fallout-worldmap-txt
+      - match: (Rand)\((\d+)%\)
+        name: keyword.control.fallout-worldmap-txt
+        captures:
+          '1':
+            name: support.function.fallout-worldmap-txt
+          '2':
+            name: constant.numeric.fallout-worldmap-txt
+
+  enc:
+    patterns:
+      - match: (Enc)(:)([^,;]+)
+        captures:
+          '1':
+            name: support.function.fallout-worldmap-txt
+          '2':
+            name: keyword.control.fallout-worldmap-txt
+          '3':
+            name: string.quoted.fallout-worldmap-txt
+            patterns:
+              - include: "#enc_value"
+  enc_value:
+    patterns:
+      - match: \b(AMBUSH|FIGHTING)\b
+        name: entity.name.function.fallout-worldmap-txt
+      - match: \b(Player)\b
+        name: constant.language.fallout-worldmap-txt
+      - match: \((\d+)-(\d+)\)
+        name: keyword.control.fallout-worldmap-txt
+        captures:
+          '1':
+            name: constant.numeric.fallout-worldmap-txt
+          '2':
+            name: constant.numeric.fallout-worldmap-txt
+
+  wielded:
+    patterns:
+      - match: (?i){(Wielded)}
+        name: keyword.control.fallout-worldmap-txt
+        captures:
+          '1':
+            name: constant.language.fallout-worldmap-txt
+      - match: (?i)\((Wielded)\)
+        name: keyword.control.fallout-worldmap-txt
+        captures:
+          '1':
+            name: constant.language.fallout-worldmap-txt
+
+  value_directive_name:
+    patterns:
+      - match: \b(?i)(pid|Script|Dead|Spacing|Distance|Counter|Special)\b
+        name: support.function.fallout-worldmap-txt
+
+  positions:
+    patterns:
+      - match: \b(?i)(surrounding|straight_line|double_line|wedge|cone|huddle)\b
+        name: constant.language.fallout-worldmap-txt

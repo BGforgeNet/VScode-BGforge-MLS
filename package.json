@@ -27,6 +27,8 @@
     "activationEvents": [
         "onLanguage:fallout-ssl",
         "onLanguage:fallout-msg",
+        "onLanguage:fallout-scripts-lst",
+        "onLanguage:fallout-worldmap-txt",
         "onLanguage:weidu-tp2",
         "onLanguage:weidu-tp2-tpl",
         "onLanguage:weidu-d",
@@ -68,6 +70,13 @@
                 "filenames": [
                     "scripts.lst"
                 ]
+            },
+            {
+                "id": "fallout-worldmap-txt",
+                "filenames": [
+                    "worldmap.txt"
+                ],
+                "configuration": "./language-configurations/fallout-worldmap-txt.language-configuration.json"
             },
             {
                 "id": "fallout-msg",
@@ -229,6 +238,11 @@
                 "language": "fallout-scripts-lst",
                 "scopeName": "source.fallout-scripts-lst",
                 "path": "./syntaxes/fallout-scripts-lst.tmLanguage.json"
+            },
+            {
+                "language": "fallout-worldmap-txt",
+                "scopeName": "source.fallout-worldmap-txt",
+                "path": "./syntaxes/fallout-worldmap-txt.tmLanguage.json"
             },
             {
                 "language": "weidu-tp2",
