@@ -44,6 +44,9 @@
           "include": "#comment"
         },
         {
+          "include": "#line_data"
+        },
+        {
           "match": "^(\\w+)(=)([^;]*)",
           "captures": {
             "1": {
@@ -57,6 +60,7 @@
               "name": "keyword.control.fallout-worldmap-txt"
             },
             "3": {
+              "name": "string.quoted.fallout-worldmap-txt",
               "patterns": [
                 {
                   "include": "#value"
@@ -64,6 +68,74 @@
                 {
                   "match": "\\b\\d+\\b",
                   "name": "constant.numeric.fallout-worldmap-txt"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "line_data": {
+      "patterns": [
+        {
+          "match": "^(Forced|Frequent|Common|Uncommon|Rare|None)=(\\d+)%",
+          "name": "keyword.control.fallout-worldmap-txt",
+          "captures": {
+            "1": {
+              "name": "entity.name.function.fallout-worldmap-txt"
+            },
+            "2": {
+              "name": "constant.numeric.fallout-worldmap-txt"
+            }
+          }
+        },
+        {
+          "match": "^(terrain_types)(=)([^;]+)",
+          "captures": {
+            "1": {
+              "name": "entity.name.function.fallout-worldmap-txt"
+            },
+            "2": {
+              "name": "keyword.control.fallout-worldmap-txt"
+            },
+            "3": {
+              "patterns": [
+                {
+                  "match": "(\\w+)(:)(\\d)",
+                  "captures": {
+                    "1": {
+                      "name": "string.quoted.fallout-worldmap-txt"
+                    },
+                    "2": {
+                      "name": "keyword.control.fallout-worldmap-txt"
+                    },
+                    "3": {
+                      "name": "constant.numeric.fallout-worldmap-txt"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "match": "^(terrain_short_names)(=)([^;]+)",
+          "captures": {
+            "1": {
+              "name": "entity.name.function.fallout-worldmap-txt"
+            },
+            "2": {
+              "name": "keyword.control.fallout-worldmap-txt"
+            },
+            "3": {
+              "patterns": [
+                {
+                  "match": "(\\w+)",
+                  "captures": {
+                    "1": {
+                      "name": "string.quoted.fallout-worldmap-txt"
+                    }
+                  }
                 }
               ]
             }
