@@ -3122,6 +3122,7 @@ tp2-value:
         - tob
         - totlm
         - totsc
+
         In the list, `bg2=soa` means that `bg2` and `soa` are synonyms, and you can use whichever one you like.
         Please note that unlike `GAME_IS` you only specify a single game, rather than a list of games.
         As an example, `GAME_INCLUDES ~tob~` will return true for any game which includes the ToB content, such as ToB itself, BGT or BG2EE.
@@ -3149,6 +3150,7 @@ tp2-value:
         - totlm
         - tutu
         - tutu_totsc
+
         In the list, `bg2=soa` means that `bg2` and `soa` are synonyms, and you can use whichever one you like.
         Please note that the items in the list are defined to be mutually exclusive
         (except `tob` will detect both plain ToB and ToB with BGT installed, for legacy purposes),
