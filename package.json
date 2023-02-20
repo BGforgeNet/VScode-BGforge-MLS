@@ -53,12 +53,18 @@
             },
             {
                 "id": "fallout-scripts-lst",
+                "aliases": [
+                    "Fallout scripts list"
+                ],
                 "filenames": [
                     "scripts.lst"
                 ]
             },
             {
                 "id": "fallout-worldmap-txt",
+                "aliases": [
+                    "Fallout worldmap"
+                ],
                 "filenames": [
                     "worldmap.txt"
                 ],
