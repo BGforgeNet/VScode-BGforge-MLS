@@ -38,4 +38,4 @@ base-functions:
     ...
 ```
 
-Item types [reference](#https://docs.microsoft.com/en-us/dotnet/api/microsoft.visualstudio.languageserver.protocol.completionitemkind?view=visualstudiosdk-2017).
+Item types [reference](https://docs.microsoft.com/en-us/dotnet/api/microsoft.visualstudio.languageserver.protocol.completionitemkind?view=visualstudiosdk-2017).
