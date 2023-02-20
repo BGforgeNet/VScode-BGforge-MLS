@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.1.0
+
+- Support for Fallout `worldmap.txt`.
+- Prettier `GAME_IS/INCLUDES` doc.
+
 ## 2.0.6
 
 - Prettified `GAME_IS`, `GAME_INCLUDES` doc.
