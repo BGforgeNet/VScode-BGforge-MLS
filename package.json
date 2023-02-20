@@ -24,20 +24,6 @@
     "engines": {
         "vscode": "^1.43.0"
     },
-    "activationEvents": [
-        "onLanguage:fallout-ssl",
-        "onLanguage:fallout-msg",
-        "onLanguage:fallout-scripts-lst",
-        "onLanguage:fallout-worldmap-txt",
-        "onLanguage:weidu-tp2",
-        "onLanguage:weidu-tp2-tpl",
-        "onLanguage:weidu-d",
-        "onLanguage:weidu-baf",
-        "onLanguage:weidu-slb",
-        "onLanguage:weidu-ssl",
-        "onLanguage:weidu-d-tpl",
-        "onLanguage:weidu-baf-tpl"
-    ],
     "main": "./client/out/extension",
     "contributes": {
         "languages": [
