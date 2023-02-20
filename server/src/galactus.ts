@@ -48,6 +48,23 @@ const languages: LanguageList = [
         },
     },
     {
+        id: "fallout-worldmap-txt",
+        features: {
+            completion: true,
+            definition: false,
+            hover: true,
+            udf: false,
+            headers: false,
+            externalHeaders: false,
+            parse: false,
+            parseRequiresGame: false,
+            signature: false,
+            staticCompletion: true,
+            staticHover: true,
+            staticSignature: false,
+        },
+    },
+    {
         id: "weidu-baf",
         features: {
             completion: true,

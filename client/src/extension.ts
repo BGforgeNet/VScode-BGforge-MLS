@@ -53,6 +53,7 @@ export async function activate(context: ExtensionContext) {
 
             { scheme: "file", language: "fallout-msg" },
             { scheme: "file", language: "fallout-ssl" },
+            { scheme: "file", language: "fallout-worldmap-txt" },
 
             { scheme: "file", language: "weidu-tp2" },
             { scheme: "file", language: "weidu-tp2-tpl" },

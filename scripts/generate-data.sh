@@ -15,6 +15,12 @@ dest_dir="server/out"
     --tooltip-lang fallout-ssl-tooltip
 
 ./scripts/generate_data.py \
+    -i $data_dir/fallout-worldmap-txt.yml \
+    --completion $dest_dir/completion.fallout-worldmap-txt.json \
+    --hover $dest_dir/hover.fallout-worldmap-txt.json \
+    --tooltip-lang fallout-worldmap-txt
+
+./scripts/generate_data.py \
     -i $data_dir/weidu-tp2-base.yml $data_dir/weidu-tp2-iesdp.yml $data_dir/weidu-tp2-ielib.yml \
     --completion $dest_dir/completion.weidu-tp2.json \
     --hover $dest_dir/hover.weidu-tp2.json \
