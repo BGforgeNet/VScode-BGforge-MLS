@@ -2048,6 +2048,45 @@ ielib-resref:
     - name: SAR_DIVINATION
       detail: resref SAR_DIVINATION = "SPIN541"
       doc: IElib define
+    - name: SCROLL_CLERIC_CHAMPIONS_STRENGTH
+      detail: resref SCROLL_CLERIC_CHAMPIONS_STRENGTH = "SCRL5E"
+      doc: IElib define
+    - name: SCROLL_CLERIC_CHAOTIC_COMMANDS
+      detail: resref SCROLL_CLERIC_CHAOTIC_COMMANDS = "SCRL5F"
+      doc: IElib define
+    - name: SCROLL_CLERIC_CURE_CRITICAL_WOUNDS
+      detail: resref SCROLL_CLERIC_CURE_CRITICAL_WOUNDS = "SCRL61"
+      doc: IElib define
+    - name: SCROLL_CLERIC_CURE_SERIOUS_WOUNDS
+      detail: resref SCROLL_CLERIC_CURE_SERIOUS_WOUNDS = "SCRL56"
+      doc: IElib define
+    - name: SCROLL_CLERIC_DEFENSIVE_HARMONY
+      detail: resref SCROLL_CLERIC_DEFENSIVE_HARMONY = "SCRL5B"
+      doc: IElib define
+    - name: SCROLL_CLERIC_FLAME_STRIKE
+      detail: resref SCROLL_CLERIC_FLAME_STRIKE = "SCRL62"
+      doc: IElib define
+    - name: SCROLL_CLERIC_FREE_ACTION
+      detail: resref SCROLL_CLERIC_FREE_ACTION = "SCRL58"
+      doc: IElib define
+    - name: SCROLL_CLERIC_LESSER_RESTORATION
+      detail: resref SCROLL_CLERIC_LESSER_RESTORATION = "RESTORE"
+      doc: IElib define
+    - name: SCROLL_CLERIC_MENTAL_DOMINATION
+      detail: resref SCROLL_CLERIC_MENTAL_DOMINATION = "SCRL5A"
+      doc: IElib define
+    - name: SCROLL_CLERIC_NEUTRALIZE_POISON
+      detail: resref SCROLL_CLERIC_NEUTRALIZE_POISON = "SCRL59"
+      doc: IElib define
+    - name: SCROLL_CLERIC_PROTECTION_FROM_EVIL_10_FOOT
+      detail: resref SCROLL_CLERIC_PROTECTION_FROM_EVIL_10_FOOT = "SCRL5D"
+      doc: IElib define
+    - name: SCROLL_CLERIC_PROTECTION_FROM_LIGHTNING
+      detail: resref SCROLL_CLERIC_PROTECTION_FROM_LIGHTNING = "SCRL5C"
+      doc: IElib define
+    - name: SCROLL_CLERIC_RAISE_DEAD
+      detail: resref SCROLL_CLERIC_RAISE_DEAD = "SCRL63"
+      doc: IElib define
     - name: SCROLL_WIZARD_ABI_DALZIMS_HORRID_WILTING
       detail: resref SCROLL_WIZARD_ABI_DALZIMS_HORRID_WILTING = "SPWI805X"
       doc: IElib define

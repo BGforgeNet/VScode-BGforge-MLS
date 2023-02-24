@@ -9107,6 +9107,84 @@
             "value": "```weidu-tp2-tooltip\nresref SAR_DIVINATION = \"SPIN541\"\n```\nIElib define"
         }
     },
+    "SCROLL_CLERIC_CHAMPIONS_STRENGTH": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_CLERIC_CHAMPIONS_STRENGTH = \"SCRL5E\"\n```\nIElib define"
+        }
+    },
+    "SCROLL_CLERIC_CHAOTIC_COMMANDS": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_CLERIC_CHAOTIC_COMMANDS = \"SCRL5F\"\n```\nIElib define"
+        }
+    },
+    "SCROLL_CLERIC_CURE_CRITICAL_WOUNDS": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_CLERIC_CURE_CRITICAL_WOUNDS = \"SCRL61\"\n```\nIElib define"
+        }
+    },
+    "SCROLL_CLERIC_CURE_SERIOUS_WOUNDS": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_CLERIC_CURE_SERIOUS_WOUNDS = \"SCRL56\"\n```\nIElib define"
+        }
+    },
+    "SCROLL_CLERIC_DEFENSIVE_HARMONY": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_CLERIC_DEFENSIVE_HARMONY = \"SCRL5B\"\n```\nIElib define"
+        }
+    },
+    "SCROLL_CLERIC_FLAME_STRIKE": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_CLERIC_FLAME_STRIKE = \"SCRL62\"\n```\nIElib define"
+        }
+    },
+    "SCROLL_CLERIC_FREE_ACTION": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_CLERIC_FREE_ACTION = \"SCRL58\"\n```\nIElib define"
+        }
+    },
+    "SCROLL_CLERIC_LESSER_RESTORATION": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_CLERIC_LESSER_RESTORATION = \"RESTORE\"\n```\nIElib define"
+        }
+    },
+    "SCROLL_CLERIC_MENTAL_DOMINATION": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_CLERIC_MENTAL_DOMINATION = \"SCRL5A\"\n```\nIElib define"
+        }
+    },
+    "SCROLL_CLERIC_NEUTRALIZE_POISON": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_CLERIC_NEUTRALIZE_POISON = \"SCRL59\"\n```\nIElib define"
+        }
+    },
+    "SCROLL_CLERIC_PROTECTION_FROM_EVIL_10_FOOT": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_CLERIC_PROTECTION_FROM_EVIL_10_FOOT = \"SCRL5D\"\n```\nIElib define"
+        }
+    },
+    "SCROLL_CLERIC_PROTECTION_FROM_LIGHTNING": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_CLERIC_PROTECTION_FROM_LIGHTNING = \"SCRL5C\"\n```\nIElib define"
+        }
+    },
+    "SCROLL_CLERIC_RAISE_DEAD": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_CLERIC_RAISE_DEAD = \"SCRL63\"\n```\nIElib define"
+        }
+    },
     "SCROLL_WIZARD_ABI_DALZIMS_HORRID_WILTING": {
         "contents": {
             "kind": "markdown",

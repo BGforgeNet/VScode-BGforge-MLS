@@ -3816,6 +3816,58 @@
           "name": "constant.language.ielib.resref"
         },
         {
+          "match": "(%SCROLL_CLERIC_CHAMPIONS_STRENGTH%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_CLERIC_CHAOTIC_COMMANDS%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_CLERIC_CURE_CRITICAL_WOUNDS%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_CLERIC_CURE_SERIOUS_WOUNDS%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_CLERIC_DEFENSIVE_HARMONY%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_CLERIC_FLAME_STRIKE%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_CLERIC_FREE_ACTION%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_CLERIC_LESSER_RESTORATION%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_CLERIC_MENTAL_DOMINATION%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_CLERIC_NEUTRALIZE_POISON%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_CLERIC_PROTECTION_FROM_EVIL_10_FOOT%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_CLERIC_PROTECTION_FROM_LIGHTNING%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_CLERIC_RAISE_DEAD%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
           "match": "(%SCROLL_WIZARD_ABI_DALZIMS_HORRID_WILTING%)",
           "name": "constant.language.ielib.resref"
         },
@@ -8757,6 +8809,58 @@
         },
         {
           "match": "\\b(SAR_DIVINATION)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_CLERIC_CHAMPIONS_STRENGTH)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_CLERIC_CHAOTIC_COMMANDS)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_CLERIC_CURE_CRITICAL_WOUNDS)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_CLERIC_CURE_SERIOUS_WOUNDS)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_CLERIC_DEFENSIVE_HARMONY)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_CLERIC_FLAME_STRIKE)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_CLERIC_FREE_ACTION)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_CLERIC_LESSER_RESTORATION)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_CLERIC_MENTAL_DOMINATION)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_CLERIC_NEUTRALIZE_POISON)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_CLERIC_PROTECTION_FROM_EVIL_10_FOOT)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_CLERIC_PROTECTION_FROM_LIGHTNING)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_CLERIC_RAISE_DEAD)\\b",
           "name": "constant.language.ielib.resref"
         },
         {

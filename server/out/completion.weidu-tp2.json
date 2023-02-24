@@ -13728,6 +13728,123 @@
         }
     },
     {
+        "label": "SCROLL_CLERIC_CHAMPIONS_STRENGTH",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_CLERIC_CHAMPIONS_STRENGTH = \"SCRL5E\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_CLERIC_CHAOTIC_COMMANDS",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_CLERIC_CHAOTIC_COMMANDS = \"SCRL5F\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_CLERIC_CURE_CRITICAL_WOUNDS",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_CLERIC_CURE_CRITICAL_WOUNDS = \"SCRL61\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_CLERIC_CURE_SERIOUS_WOUNDS",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_CLERIC_CURE_SERIOUS_WOUNDS = \"SCRL56\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_CLERIC_DEFENSIVE_HARMONY",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_CLERIC_DEFENSIVE_HARMONY = \"SCRL5B\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_CLERIC_FLAME_STRIKE",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_CLERIC_FLAME_STRIKE = \"SCRL62\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_CLERIC_FREE_ACTION",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_CLERIC_FREE_ACTION = \"SCRL58\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_CLERIC_LESSER_RESTORATION",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_CLERIC_LESSER_RESTORATION = \"RESTORE\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_CLERIC_MENTAL_DOMINATION",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_CLERIC_MENTAL_DOMINATION = \"SCRL5A\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_CLERIC_NEUTRALIZE_POISON",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_CLERIC_NEUTRALIZE_POISON = \"SCRL59\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_CLERIC_PROTECTION_FROM_EVIL_10_FOOT",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_CLERIC_PROTECTION_FROM_EVIL_10_FOOT = \"SCRL5D\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_CLERIC_PROTECTION_FROM_LIGHTNING",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_CLERIC_PROTECTION_FROM_LIGHTNING = \"SCRL5C\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_CLERIC_RAISE_DEAD",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_CLERIC_RAISE_DEAD = \"SCRL63\"\n```\nIElib define"
+        }
+    },
+    {
         "label": "SCROLL_WIZARD_ABI_DALZIMS_HORRID_WILTING",
         "kind": 21,
         "source": "builtin",
