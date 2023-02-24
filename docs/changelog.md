@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1.2
+
+Updated IElib, now including cleric scrolls.
+
 ## 2.1.1
 
 Fixed `TEXT_SPRINT` imports from IElib.
