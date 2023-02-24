@@ -64,7 +64,7 @@ src_dir = args.src_dir
 
 # CONSTANTS
 REGEX_NUMERIC = r"^(\w+)\s*=\s*(\w+)"  # can be hex or bin numbers
-REGEX_TEXT = r"^TEXT_SPRINT\s+(\w+)\s+~(\w+)~"
+REGEX_TEXT = r"^TEXT_SPRINT\s+~?(\w+)~?\s+~(\w+)~"
 
 
 def defines_from_file(path, regex):
