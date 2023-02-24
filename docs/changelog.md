@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1.1
+
+Fixed `TEXT_SPRINT` imports from IElib.
+
 ## 2.1.0
 
 - Support for Fallout `worldmap.txt`.
