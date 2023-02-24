@@ -3816,6 +3816,910 @@
           "name": "constant.language.ielib.resref"
         },
         {
+          "match": "(%SCROLL_WIZARD_ABI_DALZIMS_HORRID_WILTING%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_ABSOLUTE_IMMUNITY%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_ACID_STORM%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_AGANNAZAR_SCORCHER%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_ANIMATE_DEAD%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_ANTIMAGIC_SHELL%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_ARMOR%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_BELTYNS_BURNING_BLOOD%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_BIGBYS_CLENCHED_FIST%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_BIGBYS_CRUSHING_HAND%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_BLACK_BLADE_OF_DISASTER%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_BLINDNESS%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_BLUR%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_BREACH%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_BURNING_HANDS%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_CACOFIEND%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_CARRION%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_CATS_GRACE%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_CHAIN_CONTINGENCY%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_CHAIN_LIGHTNING%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_CHAOS%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_CHARM_PERSON%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_CHILL_TOUCH%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_CHROMATIC_ORB%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_CLAIRVOYANCE%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_CLOUDKILL%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_COLOR_SPRAY%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_CONE_OF_COLD%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_CONFUSION%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_CONJURE_AIR_ELEMENTAL%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_CONJURE_EARTH_ELEMENTAL%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_CONJURE_FIRE_ELEMENTAL%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_CONJURE_LESSER_AIR_ELEMENTAL%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_CONJURE_LESSER_EARTH_ELEMENTAL%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_CONJURE_LESSER_FIRE_ELEMENTAL%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_CONJURE_WATER_ELEMENTAL%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_CONTACT_OTHER_PLANE%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_CONTAGION%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_CONTINGENCY%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_CONTROL_UNDEAD%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_DARTS_OF_BONE%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_DEAFNESS%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_DEATH_FOG%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_DEATH_SPELL%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_DECASTAVE%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_DELAYED_BLAST_FIREBALL%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_DEMI_SHADOW_MONSTERS%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_DETECT_EVIL%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_DETECT_ILLUSION%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_DETECT_INVISIBILITY%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_DIMENSION_DOOR%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_DIRE_CHARM%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_DISINTEGRATE%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_DISPEL_MAGIC%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_DOMINATION%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_EMOTION_COURAGE%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_EMOTION_FEAR%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_EMOTION_HOPELESSNESS%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_EMOTION_HOPE%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_ENCHANTED_WEAPON%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_ENERGY_DRAIN%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_EXPEDITIOUS_RETREAT%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_EYE%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_FAR_SIGHT%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_FEEBLEMIND%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_FIND_FAMILAR%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_FINGER_OF_DEATH%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_FIREBALL%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_FIRE_SHIELD_BLUE%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_FIRE_SHIELD_RED%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_FLAME_ARROW%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_FLESH_TO_STONE%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_FREEDOM%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_FRIENDS%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_GATE%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_GHOST_ARMOR%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_GHOUL_TOUCH%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_GLITTERDUST%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_GLOBE_OF_INVULNERABILITY%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_GREASE%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_GREATER_MALISON%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_GREAT_SHOUT%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_HASTE%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_HOLD_MONSTER%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_HOLD_PERSON%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_HOLD_UNDEAD%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_HORROR%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_ICELANCE%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_ICE_STORM%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_IDENTIFY%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_IMPRISONMENT%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_IMPROVED_HASTE%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_IMPROVED_INVISIBILITY%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_IMPROVED_MANTLE%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_INCENDIARY_CLOUD%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_INFRAVISION%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_INVISIBILITY_10_FOOT%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_INVISIBILITY%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_INVISIBLE_STALKER%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_IRON_BODY%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_KNOCK%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_KNOW_ALIGNMENT%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_LANCE_OF_DISRUPTION%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_LARLOCH_MINOR_DRAIN%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_LICH_TOUCH%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_LIGHTNING_BOLT%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_LIMITED_WISH%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_LOWER_RESISTANCE%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_LUCK%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_MAGIC_MISSILE%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_MALAVONS_RAGE%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_MANTLE%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_MASS_INVISIBILITY%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_MAZE%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_MELF_ACID_ARROW%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_MELF_METEOR%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_METEOR_SWARM%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_MIND_BLANK%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_MINOR_GLOBE_OF_INVULNERABILITY%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_MINOR_SEQUENCER%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_MINOR_SPELL_DEFLECTION%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_MINOR_SPELL_TURNING%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_MIRROR_IMAGE%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_MISLEAD%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_MONSTER_SUMMONING_1%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_MONSTER_SUMMONING_2%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_MONSTER_SUMMONING_3%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_MONSTER_SUMMONING_4%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_MONSTER_SUMMONING_5%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_MONSTER_SUMMONING_6%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_MONSTER_SUMMONING_7%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_MORDENKAINENS_FORCE_MISSILES%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_MORDENKAINENS_SWORD%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_NON_DETECTION%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_ORACLE%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_OTILUKES_FREEZING_SPHERE%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_OTILUKES_RESILIENT_SPHERE%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_PHANTOM_BLADE%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_PIERCE_MAGIC%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_PIERCE_SHIELD%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_POLYMORPH_OTHER%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_POLYMORPH_SELF%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_POWER_WORD_BLIND%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_POWER_WORD_KILL%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_POWER_WORD_SILENCE%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_POWER_WORD_SLEEP%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_POWER_WORD_STUN%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_PRISMATIC_SPRAY%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_PROJECT_IMAGE%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_PROTECTION_FROM_ACID%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_PROTECTION_FROM_COLD%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_PROTECTION_FROM_ELECTRICITY%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_PROTECTION_FROM_ENERGY%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_PROTECTION_FROM_EVIL%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_PROTECTION_FROM_FIRE%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_PROTECTION_FROM_MAGIC_ENERGY%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_PROTECTION_FROM_MAGIC_WEAPONS%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_PROTECTION_FROM_NORMAL_MISSILES%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_PROTECTION_FROM_NORMAL_WEAPONS%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_PROTECTION_FROM_PETRIFICATION%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_PROTECTION_FROM_THE_ELEMENTS%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_RAY_OF_ENFEEBLEMENT%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_REFLECTED_IMAGE%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_REMOVE_CURSE%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_REMOVE_MAGIC%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_RESIST_FEAR%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_RUBY_RAY_OF_REVERSAL%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_SECRET_WORD%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_SEVEN_EYES%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_SHADES%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_SHADOW_DOOR%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_SHADOW_MONSTERS%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_SHAPECHANGE%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_SHIELD%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_SHOCKING_GRASP%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_SHOUT%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_SHROUD_OF_FLAME%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_SIMULACRUM%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_SKULL_TRAP%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_SLEEP%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_SLOW%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_SNILLOCS_SNOWBALL_SWARM%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_SOUL_EATER%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_SPELL_DEFLECTION%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_SPELL_IMMUNITY%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_SPELL_SEQUENCER%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_SPELL_SHIELD%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_SPELL_STRIKE%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_SPELL_THRUST%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_SPELL_TRAP%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_SPELL_TRIGGER%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_SPELL_TURNING%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_SPHERE_OF_CHAOS%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_SPIDER_SPAWN%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_SPIRIT_ARMOR%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_SPOOK%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_STINKING_CLOUD%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_STONE_SKIN%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_STONE_TO_FLESH%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_STRENGTH%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_SUFFOCATE%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_SUMMON_DJINNI%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_SUMMON_EFREET%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_SUMMON_FIEND%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_SUMMON_HAKEASHAR%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_SUMMON_NISHRUU%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_SUMMON_SHADOW%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_SUN_FIRE%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_SYMBOL_DEATH%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_SYMBOL_FEAR%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_SYMBOL_STUN%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_TELEPORT_FIELD%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_TENSERS_TRANSFORMATION%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_TIME_STOP%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_TROLLISH_FORTITUDE%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_TRUE_DISPEL_MAGIC%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_TRUE_SIGHT%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_VAMPIRIC_TOUCH%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_VITRIOLIC_SPHERE%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_VOCALIZE%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_WAIL_OF_THE_BANSHEE%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_WARDING_WHIP%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_WEB%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_WISH%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_WRAITH_FORM%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "(%SCROLL_WIZARD_WYVERN_CALL%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
           "match": "(%SCROLL_protection_from_acid%)",
           "name": "constant.language.ielib.resref"
         },
@@ -7853,6 +8757,910 @@
         },
         {
           "match": "\\b(SAR_DIVINATION)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_ABI_DALZIMS_HORRID_WILTING)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_ABSOLUTE_IMMUNITY)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_ACID_STORM)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_AGANNAZAR_SCORCHER)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_ANIMATE_DEAD)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_ANTIMAGIC_SHELL)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_ARMOR)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_BELTYNS_BURNING_BLOOD)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_BIGBYS_CLENCHED_FIST)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_BIGBYS_CRUSHING_HAND)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_BLACK_BLADE_OF_DISASTER)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_BLINDNESS)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_BLUR)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_BREACH)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_BURNING_HANDS)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_CACOFIEND)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_CARRION)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_CATS_GRACE)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_CHAIN_CONTINGENCY)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_CHAIN_LIGHTNING)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_CHAOS)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_CHARM_PERSON)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_CHILL_TOUCH)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_CHROMATIC_ORB)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_CLAIRVOYANCE)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_CLOUDKILL)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_COLOR_SPRAY)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_CONE_OF_COLD)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_CONFUSION)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_CONJURE_AIR_ELEMENTAL)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_CONJURE_EARTH_ELEMENTAL)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_CONJURE_FIRE_ELEMENTAL)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_CONJURE_LESSER_AIR_ELEMENTAL)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_CONJURE_LESSER_EARTH_ELEMENTAL)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_CONJURE_LESSER_FIRE_ELEMENTAL)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_CONJURE_WATER_ELEMENTAL)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_CONTACT_OTHER_PLANE)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_CONTAGION)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_CONTINGENCY)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_CONTROL_UNDEAD)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_DARTS_OF_BONE)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_DEAFNESS)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_DEATH_FOG)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_DEATH_SPELL)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_DECASTAVE)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_DELAYED_BLAST_FIREBALL)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_DEMI_SHADOW_MONSTERS)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_DETECT_EVIL)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_DETECT_ILLUSION)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_DETECT_INVISIBILITY)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_DIMENSION_DOOR)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_DIRE_CHARM)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_DISINTEGRATE)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_DISPEL_MAGIC)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_DOMINATION)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_EMOTION_COURAGE)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_EMOTION_FEAR)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_EMOTION_HOPELESSNESS)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_EMOTION_HOPE)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_ENCHANTED_WEAPON)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_ENERGY_DRAIN)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_EXPEDITIOUS_RETREAT)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_EYE)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_FAR_SIGHT)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_FEEBLEMIND)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_FIND_FAMILAR)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_FINGER_OF_DEATH)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_FIREBALL)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_FIRE_SHIELD_BLUE)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_FIRE_SHIELD_RED)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_FLAME_ARROW)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_FLESH_TO_STONE)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_FREEDOM)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_FRIENDS)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_GATE)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_GHOST_ARMOR)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_GHOUL_TOUCH)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_GLITTERDUST)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_GLOBE_OF_INVULNERABILITY)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_GREASE)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_GREATER_MALISON)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_GREAT_SHOUT)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_HASTE)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_HOLD_MONSTER)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_HOLD_PERSON)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_HOLD_UNDEAD)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_HORROR)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_ICELANCE)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_ICE_STORM)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_IDENTIFY)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_IMPRISONMENT)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_IMPROVED_HASTE)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_IMPROVED_INVISIBILITY)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_IMPROVED_MANTLE)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_INCENDIARY_CLOUD)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_INFRAVISION)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_INVISIBILITY_10_FOOT)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_INVISIBILITY)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_INVISIBLE_STALKER)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_IRON_BODY)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_KNOCK)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_KNOW_ALIGNMENT)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_LANCE_OF_DISRUPTION)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_LARLOCH_MINOR_DRAIN)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_LICH_TOUCH)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_LIGHTNING_BOLT)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_LIMITED_WISH)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_LOWER_RESISTANCE)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_LUCK)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_MAGIC_MISSILE)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_MALAVONS_RAGE)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_MANTLE)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_MASS_INVISIBILITY)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_MAZE)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_MELF_ACID_ARROW)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_MELF_METEOR)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_METEOR_SWARM)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_MIND_BLANK)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_MINOR_GLOBE_OF_INVULNERABILITY)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_MINOR_SEQUENCER)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_MINOR_SPELL_DEFLECTION)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_MINOR_SPELL_TURNING)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_MIRROR_IMAGE)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_MISLEAD)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_MONSTER_SUMMONING_1)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_MONSTER_SUMMONING_2)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_MONSTER_SUMMONING_3)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_MONSTER_SUMMONING_4)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_MONSTER_SUMMONING_5)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_MONSTER_SUMMONING_6)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_MONSTER_SUMMONING_7)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_MORDENKAINENS_FORCE_MISSILES)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_MORDENKAINENS_SWORD)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_NON_DETECTION)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_ORACLE)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_OTILUKES_FREEZING_SPHERE)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_OTILUKES_RESILIENT_SPHERE)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_PHANTOM_BLADE)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_PIERCE_MAGIC)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_PIERCE_SHIELD)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_POLYMORPH_OTHER)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_POLYMORPH_SELF)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_POWER_WORD_BLIND)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_POWER_WORD_KILL)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_POWER_WORD_SILENCE)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_POWER_WORD_SLEEP)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_POWER_WORD_STUN)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_PRISMATIC_SPRAY)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_PROJECT_IMAGE)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_PROTECTION_FROM_ACID)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_PROTECTION_FROM_COLD)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_PROTECTION_FROM_ELECTRICITY)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_PROTECTION_FROM_ENERGY)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_PROTECTION_FROM_EVIL)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_PROTECTION_FROM_FIRE)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_PROTECTION_FROM_MAGIC_ENERGY)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_PROTECTION_FROM_MAGIC_WEAPONS)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_PROTECTION_FROM_NORMAL_MISSILES)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_PROTECTION_FROM_NORMAL_WEAPONS)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_PROTECTION_FROM_PETRIFICATION)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_PROTECTION_FROM_THE_ELEMENTS)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_RAY_OF_ENFEEBLEMENT)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_REFLECTED_IMAGE)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_REMOVE_CURSE)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_REMOVE_MAGIC)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_RESIST_FEAR)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_RUBY_RAY_OF_REVERSAL)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_SECRET_WORD)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_SEVEN_EYES)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_SHADES)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_SHADOW_DOOR)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_SHADOW_MONSTERS)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_SHAPECHANGE)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_SHIELD)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_SHOCKING_GRASP)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_SHOUT)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_SHROUD_OF_FLAME)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_SIMULACRUM)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_SKULL_TRAP)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_SLEEP)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_SLOW)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_SNILLOCS_SNOWBALL_SWARM)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_SOUL_EATER)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_SPELL_DEFLECTION)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_SPELL_IMMUNITY)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_SPELL_SEQUENCER)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_SPELL_SHIELD)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_SPELL_STRIKE)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_SPELL_THRUST)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_SPELL_TRAP)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_SPELL_TRIGGER)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_SPELL_TURNING)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_SPHERE_OF_CHAOS)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_SPIDER_SPAWN)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_SPIRIT_ARMOR)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_SPOOK)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_STINKING_CLOUD)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_STONE_SKIN)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_STONE_TO_FLESH)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_STRENGTH)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_SUFFOCATE)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_SUMMON_DJINNI)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_SUMMON_EFREET)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_SUMMON_FIEND)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_SUMMON_HAKEASHAR)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_SUMMON_NISHRUU)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_SUMMON_SHADOW)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_SUN_FIRE)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_SYMBOL_DEATH)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_SYMBOL_FEAR)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_SYMBOL_STUN)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_TELEPORT_FIELD)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_TENSERS_TRANSFORMATION)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_TIME_STOP)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_TROLLISH_FORTITUDE)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_TRUE_DISPEL_MAGIC)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_TRUE_SIGHT)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_VAMPIRIC_TOUCH)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_VITRIOLIC_SPHERE)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_VOCALIZE)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_WAIL_OF_THE_BANSHEE)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_WARDING_WHIP)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_WEB)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_WISH)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_WRAITH_FORM)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_WYVERN_CALL)\\b",
           "name": "constant.language.ielib.resref"
         },
         {

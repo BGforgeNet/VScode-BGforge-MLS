@@ -338,7 +338,7 @@ actions:
     - name: Calm
       detail: Calm(O:Object)
       doc: |-
-        This action reverses the effect of the Panic action, and may also remove other effects.
+        This action removes the berserking state and effect by applying the `Cure:Berserk` opcode.
     - name: ChangeAIScript
       detail: ChangeAIScript(S:ScriptFile, I:Level*Scrlev)
       doc: |-
