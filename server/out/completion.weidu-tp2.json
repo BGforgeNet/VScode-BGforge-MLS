@@ -13728,6 +13728,2040 @@
         }
     },
     {
+        "label": "SCROLL_WIZARD_ABI_DALZIMS_HORRID_WILTING",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_ABI_DALZIMS_HORRID_WILTING = \"SPWI805X\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_ABSOLUTE_IMMUNITY",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_ABSOLUTE_IMMUNITY = \"SCRL9P\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_ACID_STORM",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_ACID_STORM = \"SCACID\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_AGANNAZAR_SCORCHER",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_AGANNAZAR_SCORCHER = \"SCRL1B\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_ANIMATE_DEAD",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_ANIMATE_DEAD = \"SCRL2D\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_ANTIMAGIC_SHELL",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_ANTIMAGIC_SHELL = \"SCAMS\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_ARMOR",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_ARMOR = \"SCRL67\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_BELTYNS_BURNING_BLOOD",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_BELTYNS_BURNING_BLOOD = \"SCBLOO\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_BIGBYS_CLENCHED_FIST",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_BIGBYS_CLENCHED_FIST = \"SCRLB1\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_BIGBYS_CRUSHING_HAND",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_BIGBYS_CRUSHING_HAND = \"SCRLB2\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_BLACK_BLADE_OF_DISASTER",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_BLACK_BLADE_OF_DISASTER = \"SCRL9X\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_BLINDNESS",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_BLINDNESS = \"SCRL71\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_BLUR",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_BLUR = \"SCRL85\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_BREACH",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_BREACH = \"SCRL6U\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_BURNING_HANDS",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_BURNING_HANDS = \"SCRL68\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_CACOFIEND",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_CACOFIEND = \"SCRL8I\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_CARRION",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_CARRION = \"SCRL8A\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_CATS_GRACE",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_CATS_GRACE = \"SPWI223A\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_CHAIN_CONTINGENCY",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_CHAIN_CONTINGENCY = \"SCRL9Q\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_CHAIN_LIGHTNING",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_CHAIN_LIGHTNING = \"SCCLITE\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_CHAOS",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_CHAOS = \"SCCHAO\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_CHARM_PERSON",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_CHARM_PERSON = \"SCRL69\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_CHILL_TOUCH",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_CHILL_TOUCH = \"SCRL82\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_CHROMATIC_ORB",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_CHROMATIC_ORB = \"SCRL83\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_CLAIRVOYANCE",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_CLAIRVOYANCE = \"SCRL1D\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_CLOUDKILL",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_CLOUDKILL = \"SCRL2E\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_COLOR_SPRAY",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_COLOR_SPRAY = \"SCRL70\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_CONE_OF_COLD",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_CONE_OF_COLD = \"SCRL2F\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_CONFUSION",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_CONFUSION = \"SCRL1U\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_CONJURE_AIR_ELEMENTAL",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_CONJURE_AIR_ELEMENTAL = \"SCCAE\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_CONJURE_EARTH_ELEMENTAL",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_CONJURE_EARTH_ELEMENTAL = \"SCCEE\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_CONJURE_FIRE_ELEMENTAL",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_CONJURE_FIRE_ELEMENTAL = \"SCCFE\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_CONJURE_LESSER_AIR_ELEMENTAL",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_CONJURE_LESSER_AIR_ELEMENTAL = \"SCRL7B\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_CONJURE_LESSER_EARTH_ELEMENTAL",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_CONJURE_LESSER_EARTH_ELEMENTAL = \"SCRL7C\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_CONJURE_LESSER_FIRE_ELEMENTAL",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_CONJURE_LESSER_FIRE_ELEMENTAL = \"SCRL6X\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_CONJURE_WATER_ELEMENTAL",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_CONJURE_WATER_ELEMENTAL = \"SCCWE\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_CONTACT_OTHER_PLANE",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_CONTACT_OTHER_PLANE = \"SPWI517X\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_CONTAGION",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_CONTAGION = \"SCRLA8\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_CONTINGENCY",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_CONTINGENCY = \"SCRL7U\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_CONTROL_UNDEAD",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_CONTROL_UNDEAD = \"SCRL8V\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_DARTS_OF_BONE",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_DARTS_OF_BONE = \"SPWI618X\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_DEAFNESS",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_DEAFNESS = \"SCRLA2\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_DEATH_FOG",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_DEATH_FOG = \"SCDFOG\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_DEATH_SPELL",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_DEATH_SPELL = \"SCDSPEL\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_DECASTAVE",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_DECASTAVE = \"SCDECA\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_DELAYED_BLAST_FIREBALL",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_DELAYED_BLAST_FIREBALL = \"SCRL8N\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_DEMI_SHADOW_MONSTERS",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_DEMI_SHADOW_MONSTERS = \"SCDMS\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_DETECT_EVIL",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_DETECT_EVIL = \"SCRL86\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_DETECT_ILLUSION",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_DETECT_ILLUSION = \"SCRL6K\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_DETECT_INVISIBILITY",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_DETECT_INVISIBILITY = \"SCRL87\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_DIMENSION_DOOR",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_DIMENSION_DOOR = \"SCRL1V\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_DIRE_CHARM",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_DIRE_CHARM = \"SCRL1S\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_DISINTEGRATE",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_DISINTEGRATE = \"SCDISI\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_DISPEL_MAGIC",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_DISPEL_MAGIC = \"SCRLA7\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_DOMINATION",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_DOMINATION = \"SCDOMI\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_EMOTION_COURAGE",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_EMOTION_COURAGE = \"SCCOUR\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_EMOTION_FEAR",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_EMOTION_FEAR = \"SCFEAR\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_EMOTION_HOPE",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_EMOTION_HOPE = \"SCEMOT\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_EMOTION_HOPELESSNESS",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_EMOTION_HOPELESSNESS = \"SCHOPE\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_ENCHANTED_WEAPON",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_ENCHANTED_WEAPON = \"SCRL6M\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_ENERGY_DRAIN",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_ENERGY_DRAIN = \"SCRL9W\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_EXPEDITIOUS_RETREAT",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_EXPEDITIOUS_RETREAT = \"SPWI126X\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_EYE",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_EYE = \"SCRLA1\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_FAR_SIGHT",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_FAR_SIGHT = \"SCRLAQ\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_FEEBLEMIND",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_FEEBLEMIND = \"SCFEEB\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_FIND_FAMILAR",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_FIND_FAMILAR = \"SCRL6D\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_FINGER_OF_DEATH",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_FINGER_OF_DEATH = \"SCFING\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_FIREBALL",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_FIREBALL = \"SCRL1G\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_FIRE_SHIELD_BLUE",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_FIRE_SHIELD_BLUE = \"SCRL1W\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_FIRE_SHIELD_RED",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_FIRE_SHIELD_RED = \"SCRL6N\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_FLAME_ARROW",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_FLAME_ARROW = \"SCRL1F\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_FLESH_TO_STONE",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_FLESH_TO_STONE = \"SCFTS\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_FREEDOM",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_FREEDOM = \"SCRL9Z\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_FRIENDS",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_FRIENDS = \"SCRL72\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_GATE",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_GATE = \"SCRL9N\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_GHOST_ARMOR",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_GHOST_ARMOR = \"SCRL1T\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_GHOUL_TOUCH",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_GHOUL_TOUCH = \"SCRL1C\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_GLITTERDUST",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_GLITTERDUST = \"SCRLA3\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_GLOBE_OF_INVULNERABILITY",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_GLOBE_OF_INVULNERABILITY = \"SCGLOB\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_GREASE",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_GREASE = \"SCRL66\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_GREATER_MALISON",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_GREATER_MALISON = \"SCMALI\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_GREAT_SHOUT",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_GREAT_SHOUT = \"SPWI806X\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_HASTE",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_HASTE = \"SCRL1H\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_HOLD_MONSTER",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_HOLD_MONSTER = \"SCHMON\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_HOLD_PERSON",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_HOLD_PERSON = \"SCRL1I\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_HOLD_UNDEAD",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_HOLD_UNDEAD = \"SCRL6L\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_HORROR",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_HORROR = \"SCRL89\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_ICELANCE",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_ICELANCE = \"SCICE\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_ICE_STORM",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_ICE_STORM = \"SCSTOR\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_IDENTIFY",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_IDENTIFY = \"SCRL75\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_IMPRISONMENT",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_IMPRISONMENT = \"SCRL9S\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_IMPROVED_HASTE",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_IMPROVED_HASTE = \"SCRL7Q\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_IMPROVED_INVISIBILITY",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_IMPROVED_INVISIBILITY = \"SCRL1Y\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_IMPROVED_MANTLE",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_IMPROVED_MANTLE = \"SCRL9C\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_INCENDIARY_CLOUD",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_INCENDIARY_CLOUD = \"SCINCIN\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_INFRAVISION",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_INFRAVISION = \"SCRL76\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_INVISIBILITY",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_INVISIBILITY = \"SCRL90\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_INVISIBILITY_10_FOOT",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_INVISIBILITY_10_FOOT = \"SCRL1J\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_INVISIBLE_STALKER",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_INVISIBLE_STALKER = \"SCISTAL\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_IRON_BODY",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_IRON_BODY = \"SPWI807X\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_KNOCK",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_KNOCK = \"SCRL91\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_KNOW_ALIGNMENT",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_KNOW_ALIGNMENT = \"SCRL92\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_LANCE_OF_DISRUPTION",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_LANCE_OF_DISRUPTION = \"SPWI319X\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_LARLOCH_MINOR_DRAIN",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_LARLOCH_MINOR_DRAIN = \"SCRL84\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_LICH_TOUCH",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_LICH_TOUCH = \"SCLICH\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_LIGHTNING_BOLT",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_LIGHTNING_BOLT = \"SCRL1K\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_LIMITED_WISH",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_LIMITED_WISH = \"SCRLA4\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_LOWER_RESISTANCE",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_LOWER_RESISTANCE = \"SPWI518X\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_LUCK",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_LUCK = \"SCRL93\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_MAGIC_MISSILE",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_MAGIC_MISSILE = \"SCRL77\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_MALAVONS_RAGE",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_MALAVONS_RAGE = \"SCMALA\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_MANTLE",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_MANTLE = \"SCRL8J\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_MASS_INVISIBILITY",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_MASS_INVISIBILITY = \"SCMINVI\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_MAZE",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_MAZE = \"SCRL9H\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_MELF_ACID_ARROW",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_MELF_ACID_ARROW = \"SCRL95\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_MELF_METEOR",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_MELF_METEOR = \"SCRLA5\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_METEOR_SWARM",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_METEOR_SWARM = \"SCRL9T\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_MIND_BLANK",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_MIND_BLANK = \"SCBLANK\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_MINOR_GLOBE_OF_INVULNERABILITY",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_MINOR_GLOBE_OF_INVULNERABILITY = \"SCRL1Z\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_MINOR_SEQUENCER",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_MINOR_SEQUENCER = \"SCRL6P\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_MINOR_SPELL_DEFLECTION",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_MINOR_SPELL_DEFLECTION = \"SCRL6G\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_MINOR_SPELL_TURNING",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_MINOR_SPELL_TURNING = \"SCRL7D\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_MIRROR_IMAGE",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_MIRROR_IMAGE = \"SCRL96\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_MISLEAD",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_MISLEAD = \"SCRL7K\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_MONSTER_SUMMONING_1",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_MONSTER_SUMMONING_1 = \"SCRL1L\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_MONSTER_SUMMONING_2",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_MONSTER_SUMMONING_2 = \"SCRL2A\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_MONSTER_SUMMONING_3",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_MONSTER_SUMMONING_3 = \"SCRL2G\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_MONSTER_SUMMONING_4",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_MONSTER_SUMMONING_4 = \"SCMSIV\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_MONSTER_SUMMONING_5",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_MONSTER_SUMMONING_5 = \"SCMSV\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_MONSTER_SUMMONING_6",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_MONSTER_SUMMONING_6 = \"SCMSVI\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_MONSTER_SUMMONING_7",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_MONSTER_SUMMONING_7 = \"SCMSVII\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_MORDENKAINENS_FORCE_MISSILES",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_MORDENKAINENS_FORCE_MISSILES = \"SPWI422X\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_MORDENKAINENS_SWORD",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_MORDENKAINENS_SWORD = \"SCMORD\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_NON_DETECTION",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_NON_DETECTION = \"SCRL1M\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_ORACLE",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_ORACLE = \"SCRL6W\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_OTILUKES_FREEZING_SPHERE",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_OTILUKES_FREEZING_SPHERE = \"SCOFS\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_OTILUKES_RESILIENT_SPHERE",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_OTILUKES_RESILIENT_SPHERE = \"SCOTIL\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_PHANTOM_BLADE",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_PHANTOM_BLADE = \"SCRL6Z\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_PIERCE_MAGIC",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_PIERCE_MAGIC = \"SCRL7L\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_PIERCE_SHIELD",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_PIERCE_SHIELD = \"SCRL9A\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_POLYMORPH_OTHER",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_POLYMORPH_OTHER = \"SCRL5L\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_POLYMORPH_SELF",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_POLYMORPH_SELF = \"SCRL5M\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_POWER_WORD_BLIND",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_POWER_WORD_BLIND = \"SPWI808X\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_POWER_WORD_KILL",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_POWER_WORD_KILL = \"SCKILL\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_POWER_WORD_SILENCE",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_POWER_WORD_SILENCE = \"SCPWS\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_POWER_WORD_SLEEP",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_POWER_WORD_SLEEP = \"SCRL6E\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_POWER_WORD_STUN",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_POWER_WORD_STUN = \"SCSTUN\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_PRISMATIC_SPRAY",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_PRISMATIC_SPRAY = \"SCPRISM\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_PROJECT_IMAGE",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_PROJECT_IMAGE = \"SCRL8F\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_PROTECTION_FROM_ACID",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_PROTECTION_FROM_ACID = \"SCRL6Y\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_PROTECTION_FROM_COLD",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_PROTECTION_FROM_COLD = \"SCRL6I\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_PROTECTION_FROM_ELECTRICITY",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_PROTECTION_FROM_ELECTRICITY = \"SCRL5T\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_PROTECTION_FROM_ENERGY",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_PROTECTION_FROM_ENERGY = \"SCRL8Y\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_PROTECTION_FROM_EVIL",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_PROTECTION_FROM_EVIL = \"SCRL78\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_PROTECTION_FROM_FIRE",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_PROTECTION_FROM_FIRE = \"SCRL6H\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_PROTECTION_FROM_MAGIC_ENERGY",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_PROTECTION_FROM_MAGIC_ENERGY = \"SCRL7J\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_PROTECTION_FROM_MAGIC_WEAPONS",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_PROTECTION_FROM_MAGIC_WEAPONS = \"SCRL7O\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_PROTECTION_FROM_NORMAL_MISSILES",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_PROTECTION_FROM_NORMAL_MISSILES = \"SCRL1N\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_PROTECTION_FROM_NORMAL_WEAPONS",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_PROTECTION_FROM_NORMAL_WEAPONS = \"SCRL6T\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_PROTECTION_FROM_PETRIFICATION",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_PROTECTION_FROM_PETRIFICATION = \"SCRL73\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_PROTECTION_FROM_THE_ELEMENTS",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_PROTECTION_FROM_THE_ELEMENTS = \"SCRL8E\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_RAY_OF_ENFEEBLEMENT",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_RAY_OF_ENFEEBLEMENT = \"SCRLAI\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_REFLECTED_IMAGE",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_REFLECTED_IMAGE = \"SCRL5U\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_REMOVE_CURSE",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_REMOVE_CURSE = \"SCREM\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_REMOVE_MAGIC",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_REMOVE_MAGIC = \"SCRLA7\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_RESIST_FEAR",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_RESIST_FEAR = \"SCRL94\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_RUBY_RAY_OF_REVERSAL",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_RUBY_RAY_OF_REVERSAL = \"SCRL8G\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_SECRET_WORD",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_SECRET_WORD = \"SCRL6O\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_SEVEN_EYES",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_SEVEN_EYES = \"SPWI710X\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_SHADES",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_SHADES = \"SCSHDS\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_SHADOW_DOOR",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_SHADOW_DOOR = \"SCRL2H\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_SHADOW_MONSTERS",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_SHADOW_MONSTERS = \"SCSHAD\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_SHAPECHANGE",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_SHAPECHANGE = \"SCRL9Y\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_SHIELD",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_SHIELD = \"SCRL79\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_SHOCKING_GRASP",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_SHOCKING_GRASP = \"SCRL80\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_SHOUT",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_SHOUT = \"SPWI423X\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_SHROUD_OF_FLAME",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_SHROUD_OF_FLAME = \"SCSHRO\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_SIMULACRUM",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_SIMULACRUM = \"SCRL8Z\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_SKULL_TRAP",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_SKULL_TRAP = \"SCRL1P\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_SLEEP",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_SLEEP = \"SCRL81\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_SLOW",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_SLOW = \"SCRL1O\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_SNILLOCS_SNOWBALL_SWARM",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_SNILLOCS_SNOWBALL_SWARM = \"SCSNILL\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_SOUL_EATER",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_SOUL_EATER = \"SPWI619X\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_SPELL_DEFLECTION",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_SPELL_DEFLECTION = \"SCRL7V\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_SPELL_IMMUNITY",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_SPELL_IMMUNITY = \"SCRL6S\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_SPELL_SEQUENCER",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_SPELL_SEQUENCER = \"SCRL8L\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_SPELL_SHIELD",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_SPELL_SHIELD = \"SCRL8X\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_SPELL_STRIKE",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_SPELL_STRIKE = \"SCRL9M\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_SPELL_THRUST",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_SPELL_THRUST = \"SCRL6J\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_SPELL_TRAP",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_SPELL_TRAP = \"SCRL9L\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_SPELL_TRIGGER",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_SPELL_TRIGGER = \"SCRL9D\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_SPELL_TURNING",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_SPELL_TURNING = \"SCRL8D\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_SPHERE_OF_CHAOS",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_SPHERE_OF_CHAOS = \"SCRL8M\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_SPIDER_SPAWN",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_SPIDER_SPAWN = \"SCRL6R\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_SPIRIT_ARMOR",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_SPIRIT_ARMOR = \"SCSPIR\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_SPOOK",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_SPOOK = \"SCRLA6\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_STINKING_CLOUD",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_STINKING_CLOUD = \"SCRL97\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_STONE_SKIN",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_STONE_SKIN = \"SCSTON\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_STONE_TO_FLESH",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_STONE_TO_FLESH = \"SCSTF\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_STRENGTH",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_STRENGTH = \"SCRL98\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_SUFFOCATE",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_SUFFOCATE = \"SPWI711X\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_SUMMON_DJINNI",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_SUMMON_DJINNI = \"SCRL8T\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_SUMMON_EFREET",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_SUMMON_EFREET = \"SCRL8S\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_SUMMON_FIEND",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_SUMMON_FIEND = \"SCRL9B\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_SUMMON_HAKEASHAR",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_SUMMON_HAKEASHAR = \"SCRL8U\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_SUMMON_NISHRUU",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_SUMMON_NISHRUU = \"SCRL8B\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_SUMMON_SHADOW",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_SUMMON_SHADOW = \"SCSSHA\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_SUN_FIRE",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_SUN_FIRE = \"SPWI519X\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_SYMBOL_DEATH",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_SYMBOL_DEATH = \"SCRLAO\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_SYMBOL_FEAR",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_SYMBOL_FEAR = \"SCRL9F\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_SYMBOL_STUN",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_SYMBOL_STUN = \"SCRLAP\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_TELEPORT_FIELD",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_TELEPORT_FIELD = \"SCRL6Q\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_TENSERS_TRANSFORMATION",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_TENSERS_TRANSFORMATION = \"SCTENS\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_TIME_STOP",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_TIME_STOP = \"SCRL9R\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_TROLLISH_FORTITUDE",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_TROLLISH_FORTITUDE = \"SPWI620X\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_TRUE_DISPEL_MAGIC",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_TRUE_DISPEL_MAGIC = \"SCRL1E\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_TRUE_SIGHT",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_TRUE_SIGHT = \"SCRL7M\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_VAMPIRIC_TOUCH",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_VAMPIRIC_TOUCH = \"SCRL1Q\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_VITRIOLIC_SPHERE",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_VITRIOLIC_SPHERE = \"SPWI424X\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_VOCALIZE",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_VOCALIZE = \"SCRL3G\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_WAIL_OF_THE_BANSHEE",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_WAIL_OF_THE_BANSHEE = \"SCRL9V\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_WARDING_WHIP",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_WARDING_WHIP = \"SCRL8H\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_WEB",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_WEB = \"SCRL99\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_WISH",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_WISH = \"SCRLB4\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_WRAITH_FORM",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_WRAITH_FORM = \"SCRL1R\"\n```\nIElib define"
+        }
+    },
+    {
+        "label": "SCROLL_WIZARD_WYVERN_CALL",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_WYVERN_CALL = \"SCRL7W\"\n```\nIElib define"
+        }
+    },
+    {
         "label": "SCROLL_protection_from_acid",
         "kind": 21,
         "source": "builtin",

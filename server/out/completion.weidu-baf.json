@@ -414,7 +414,7 @@
         "source": "builtin",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-baf-tooltip\nCalm(O:Object)\n```\nThis action reverses the effect of the Panic action, and may also remove other effects."
+            "value": "```weidu-baf-tooltip\nCalm(O:Object)\n```\nThis action removes the berserking state and effect by applying the `Cure:Berserk` opcode."
         }
     },
     {
