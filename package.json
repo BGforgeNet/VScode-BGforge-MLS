@@ -2,7 +2,7 @@
     "name": "bgforge-mls",
     "displayName": "BGforge MLS",
     "description": "BGforge multilanguage server",
-    "version": "2.1.2",
+    "version": "2.1.3",
     "author": "BGforge",
     "repository": {
         "type": "git",

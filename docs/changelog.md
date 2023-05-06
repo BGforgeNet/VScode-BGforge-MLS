@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1.3
+
+[Fixed](https://github.com/BGforgeNet/VScode-BGforge-MLS/issues/61) diagnostics being attributed to the wrong file when there are errors in included files.
+
 ## 2.1.2
 
 Updated IElib, now including cleric scrolls.
