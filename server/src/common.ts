@@ -44,7 +44,7 @@ export async function conlog(item: any) {
 }
 
 export interface ParseItem {
-    file: string;
+    uri: string;
     line: number;
     columnStart: number;
     columnEnd: number;
@@ -57,15 +57,24 @@ export interface ParseResult {
     warnings: ParseItemList;
 }
 
-export function sendParseResult(uri: string, parseResult: ParseResult) {
+export interface Diagnostics extends Map<string, Diagnostic> {}
+
+/**
+ * Compilers may output results for different files.
+ * If we use tmp file for processing, then tmp file uri should be replaced with main file uri
+ * @param parseResult ParseResult
+ * @param mainUri uri of the file we're parsing
+ * @param tmpUri uri of tmpFile used to dump unsaved changed to for parsing
+ */
+export function sendParseResult(parseResult: ParseResult, mainUri: string, tmpUri: string) {
     const diagSource = "BGforge MLS";
     const errors = parseResult.errors;
     const warnings = parseResult.warnings;
 
-    const diagnostics: Diagnostic[] = [];
+    const diagnostics: Diagnostics = new Map();
 
     for (const e of errors) {
-        const diagnosic: Diagnostic = {
+        const diagnostic: Diagnostic = {
             severity: DiagnosticSeverity.Error,
             range: {
                 start: { line: e.line - 1, character: e.columnStart },
@@ -74,7 +83,11 @@ export function sendParseResult(uri: string, parseResult: ParseResult) {
             message: `${e.message}`,
             source: diagSource,
         };
-        diagnostics.push(diagnosic);
+        let uri = e.uri;
+        if (uri == tmpUri) {
+            uri = mainUri;
+        }
+        diagnostics.set(uri, diagnostic);
     }
     for (const w of warnings) {
         const diagnostic: Diagnostic = {
@@ -86,11 +99,17 @@ export function sendParseResult(uri: string, parseResult: ParseResult) {
             message: `${w.message}`,
             source: diagSource,
         };
-        diagnostics.push(diagnostic);
+        let uri = w.uri;
+        if (uri == tmpUri) {
+            uri = mainUri;
+        }
+        diagnostics.set(w.uri, diagnostic);
     }
 
-    // Send the computed diagnostics to VSCode.
-    connection.sendDiagnostics({ uri: uri, diagnostics: diagnostics });
+    for (const [uri, diag] of diagnostics) {
+        // Send the computed diagnostics to VSCode.
+        connection.sendDiagnostics({ uri: uri, diagnostics: [diag] });
+    }
 }
 
 /** Check if 1st dir contains the 2nd

@@ -8,6 +8,7 @@ import {
     findFiles,
     ParseItemList,
     ParseResult,
+    pathToUri,
     RegExpMatchArrayWithIndices,
     sendParseResult,
     uriToPath,
@@ -459,6 +460,11 @@ function parseCompileOutput(text: string, uri: string) {
     const errors: ParseItemList = [];
     const warnings: ParseItemList = [];
 
+    // compile.exe may show errors and warnings for included files, not just current one
+    // So we need to get uri's for those
+    const filePath = uriToPath(uri);
+    const fileDir = path.dirname(filePath);
+
     try {
         let match = errorsRegex.exec(text);
         while (match != null) {
@@ -472,8 +478,14 @@ function parseCompileOutput(text: string, uri: string) {
             } else {
                 col = match[3];
             }
+
+            // calculate uri for actual file where error is found
+            const errorFile = match[1];
+            const errorFilePath = path.join(fileDir, errorFile);
+            const errorFileUri = pathToUri(errorFilePath);
+
             errors.push({
-                file: match[1],
+                uri: errorFileUri,
                 line: parseInt(match[2]),
                 columnStart: 0,
                 columnEnd: parseInt(col) - 1,
@@ -496,8 +508,14 @@ function parseCompileOutput(text: string, uri: string) {
             }
             const line = parseInt(match[2]);
             const column_end = textDocument.offsetAt({ line: line, character: 0 }) - 1;
+
+            // calculate uri for actual file where error is found
+            const errorFile = match[1];
+            const errorFilePath = path.join(fileDir, errorFile);
+            const errorFileUri = pathToUri(errorFilePath);
+
             warnings.push({
-                file: match[1],
+                uri: errorFileUri,
                 line: line,
                 columnStart: parseInt(col),
                 columnEnd: column_end,
@@ -512,9 +530,9 @@ function parseCompileOutput(text: string, uri: string) {
     return result;
 }
 
-function sendDiagnostics(uri: string, outputText: string) {
+function sendDiagnostics(uri: string, outputText: string, tmpUri: string) {
     const parseResult = parseCompileOutput(outputText, uri);
-    sendParseResult(uri, parseResult);
+    sendParseResult(parseResult, uri, tmpUri);
 }
 
 export function compile(uri: string, sslSettings: SSLsettings, interactive = false, text: string) {
@@ -522,6 +540,7 @@ export function compile(uri: string, sslSettings: SSLsettings, interactive = fal
     const cwdTo = path.dirname(filepath);
     // tmp file has to be in the same dir, because includes can be relative or absolute
     const tmpFile = path.join(cwdTo, ".tmp.ssl");
+    const tmpUri = pathToUri(tmpFile);
     const baseName = path.parse(filepath).base;
     const base = path.parse(filepath).name;
     const compileCmd = `${sslSettings.compilePath} ${sslSettings.compileOptions}`;
@@ -558,7 +577,7 @@ export function compile(uri: string, sslSettings: SSLsettings, interactive = fal
                     connection.window.showInformationMessage(`Succesfully compiled ${baseName}.`);
                 }
             }
-            sendDiagnostics(uri, stdout);
+            sendDiagnostics(uri, stdout, tmpUri);
             // sometimes it gets deleted due to async runs?
             if (fs.existsSync(tmpFile)) {
                 fs.unlinkSync(tmpFile);

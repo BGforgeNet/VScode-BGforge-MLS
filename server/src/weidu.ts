@@ -7,6 +7,7 @@ import {
     findFiles,
     ParseItemList,
     ParseResult,
+    pathToUri,
     RegExpMatchArrayWithIndices,
     sendParseResult,
     tmpDir,
@@ -59,7 +60,7 @@ function parseWeiduOutput(text: string) {
                 errorsRegex.lastIndex++;
             }
             errors.push({
-                file: match[1],
+                uri: pathToUri(match[1]),
                 line: parseInt(match[2]),
                 columnStart: parseInt(match[3]) - 1, // weidu uses 1-index, while vscode 0 index?
                 columnEnd: parseInt(match[4]),
@@ -87,7 +88,7 @@ function parseGccOutput(text: string) {
                 errorsRegex.lastIndex++;
             }
             errors.push({
-                file: match[1],
+                uri: pathToUri(match[1]),
                 line: parseInt(match[3]),
                 columnStart: parseInt(match[4]) - 1,
                 columnEnd: match[0].length,
@@ -102,21 +103,28 @@ function parseGccOutput(text: string) {
     return result;
 }
 
-function sendDiagnostics(uri: string, output_text: string, format = "weidu") {
+function sendDiagnostics(
+    uri: string,
+    output_text: string,
+    tmpUri: string,
+    format: "gcc" | "weidu" = "weidu"
+) {
     let parseResult: ParseResult;
     if (format == "gcc") {
         parseResult = parseGccOutput(output_text);
     } else {
         parseResult = parseWeiduOutput(output_text);
     }
-    sendParseResult(uri, parseResult);
+    sendParseResult(parseResult, uri, tmpUri);
 }
 
 export function compile(uri: string, settings: WeiDUsettings, interactive = false, text: string) {
     /** preprocessed file */
     const tmpFile = path.join(tmpDir, "tmp.txt");
+    const tmpUri = pathToUri(tmpFile);
     /** not preprocessed (template) */
     const tmpFileGcc = path.join(tmpDir, "tmp-gcc.txt");
+    const tmpUriGcc = pathToUri(tmpFileGcc);
     const gamePath = settings.gamePath;
     const weiduPath = settings.path;
     const filePath = uriToPath(uri);
@@ -191,7 +199,7 @@ export function compile(uri: string, settings: WeiDUsettings, interactive = fals
             if (interactive) {
                 connection.window.showErrorMessage(`Failed to preprocess ${baseName}!`);
             }
-            sendDiagnostics(uri, result.stderr.toString(), "gcc");
+            sendDiagnostics(uri, result.stderr.toString(), tmpUriGcc, "gcc");
             preprocessFailed = true;
         } else {
             if (interactive) {
@@ -227,7 +235,7 @@ export function compile(uri: string, settings: WeiDUsettings, interactive = fals
                 connection.window.showErrorMessage(`Failed to parse ${realName}!`);
             }
             if (tpl == false) {
-                sendDiagnostics(uri, stdout);
+                sendDiagnostics(uri, stdout, tmpUri);
             }
         } else {
             if (interactive) {
