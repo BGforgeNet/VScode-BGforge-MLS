@@ -77,7 +77,7 @@ export function sendParseResult(uri: string, parseResult: ParseResult) {
         diagnostics.push(diagnosic);
     }
     for (const w of warnings) {
-        const diagnosic: Diagnostic = {
+        const diagnostic: Diagnostic = {
             severity: DiagnosticSeverity.Warning,
             range: {
                 start: { line: w.line - 1, character: w.columnStart },
@@ -86,7 +86,7 @@ export function sendParseResult(uri: string, parseResult: ParseResult) {
             message: `${w.message}`,
             source: diagSource,
         };
-        diagnostics.push(diagnosic);
+        diagnostics.push(diagnostic);
     }
 
     // Send the computed diagnostics to VSCode.
