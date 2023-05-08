@@ -445,8 +445,11 @@ function jsdocToDetail(label: string, jsd: jsdoc.JSdoc) {
     return detail;
 }
 
-/** `text` looks like this
- *
+/**
+ * Parse compile.exe output with regex and return found matches.
+ * `text` looks like this
+ * `[Error] <1.ssl.tmp>:2:8: Expecting top-level statement`
+ * or
  * `[Error] <Semantic> <my_script.ssl>:26:25: Unknown identifier qq.`
  * Numbers mean line:column
  */
@@ -455,7 +458,7 @@ function parseCompileOutput(text: string, uri: string) {
     if (!textDocument) {
         return { errors: [], warnings: [] };
     }
-    const errorsRegex = /\[Error\] <(.+)>:([\d]*):([\d]*):? (.*)/g;
+    const errorsRegex = /\[Error\]( <Semantic>)? <(.+)>:([\d]*):([\d]*):? (.*)/g;
     const warningsRegex = /\[Warning\] <(.+)>:([\d]*):([\d]*):? (.*)/g;
     const errors: ParseItemList = [];
     const warnings: ParseItemList = [];
@@ -473,23 +476,23 @@ function parseCompileOutput(text: string, uri: string) {
                 errorsRegex.lastIndex++;
             }
             let col: string;
-            if (match[3] == "") {
+            if (match[4] == "") {
                 col = "1";
             } else {
-                col = match[3];
+                col = match[4];
             }
 
             // calculate uri for actual file where error is found
-            const errorFile = match[1];
+            const errorFile = match[2];
             const errorFilePath = path.join(fileDir, errorFile);
             const errorFileUri = pathToUri(errorFilePath);
 
             errors.push({
                 uri: errorFileUri,
-                line: parseInt(match[2]),
+                line: parseInt(match[3]),
                 columnStart: 0,
                 columnEnd: parseInt(col) - 1,
-                message: match[4],
+                message: match[5],
             });
             match = errorsRegex.exec(text);
         }
