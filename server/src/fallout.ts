@@ -23,6 +23,7 @@ import { Edge, Node } from "./preview";
 import { connection, documents } from "./server";
 import { SSLsettings } from "./settings";
 import * as signature from "./signature";
+import * as os from "os";
 
 interface FalloutHeaderData {
     macros: Macros;
@@ -446,12 +447,34 @@ function jsdocToDetail(label: string, jsd: jsdoc.JSdoc) {
 }
 
 /**
+ * Wine gives network-mapped looking path to compile.exe
+ * @param path looks like this `Z:/Downloads/1/_mls_test.h`, should be this `/home/user/Downloads/1/_mls_test.h`
+ * Imperfect, but works.
+ */
+function fixWinePath(filePath: string) {
+    if (os.platform() == "win32") {
+        return filePath;
+    }
+    if (!filePath.startsWith("Z:/")) {
+        return filePath;
+    }
+
+    const homeDir = os.homedir();
+    const relPath = filePath.replace("Z:/", "");
+    const realPath = path.join(homeDir, relPath);
+    return realPath;
+}
+
+/**
  * Parse compile.exe output with regex and return found matches.
  * `text` looks like this
  * `[Error] <1.ssl.tmp>:2:8: Expecting top-level statement`
  * or
  * `[Error] <Semantic> <my_script.ssl>:26:25: Unknown identifier qq.`
- * Numbers mean line:column
+ * or (wine)
+ * `[Error] <Z:/Downloads/1/_mls_test.h>:1: Illegal parameter "1"`
+ *
+ * Numbers mean line:column, if column is absent, it means first column.
  */
 function parseCompileOutput(text: string, uri: string) {
     const textDocument = documents.get(uri);
@@ -465,6 +488,7 @@ function parseCompileOutput(text: string, uri: string) {
 
     // compile.exe may show errors and warnings for included files, not just current one
     // So we need to get uri's for those
+    // They could be relative to the original file path
     const filePath = uriToPath(uri);
     const fileDir = path.dirname(filePath);
 
@@ -482,9 +506,14 @@ function parseCompileOutput(text: string, uri: string) {
                 col = match[4];
             }
 
-            // calculate uri for actual file where error is found
-            const errorFile = match[2];
-            const errorFilePath = path.join(fileDir, errorFile);
+            // calculate uri for actual file where the error is found
+            const errorFile = fixWinePath(match[2]);
+            let errorFilePath: string;
+            if (path.isAbsolute(errorFile)) {
+                errorFilePath = errorFile;
+            } else {
+                errorFilePath = path.join(fileDir, errorFile);
+            }
             const errorFileUri = pathToUri(errorFilePath);
 
             errors.push({
@@ -512,8 +541,8 @@ function parseCompileOutput(text: string, uri: string) {
             const line = parseInt(match[2]);
             const column_end = textDocument.offsetAt({ line: line, character: 0 }) - 1;
 
-            // calculate uri for actual file where error is found
-            const errorFile = match[1];
+            // calculate uri for actual file where the warning is found
+            const errorFile = fixWinePath(match[1]);
             const errorFilePath = path.join(fileDir, errorFile);
             const errorFileUri = pathToUri(errorFilePath);
 
@@ -542,8 +571,9 @@ export function compile(uri: string, sslSettings: SSLsettings, interactive = fal
     const filepath = uriToPath(uri);
     const cwdTo = path.dirname(filepath);
     // tmp file has to be in the same dir, because includes can be relative or absolute
-    const tmpFile = path.join(cwdTo, ".tmp.ssl");
-    const tmpUri = pathToUri(tmpFile);
+    const tmpName = ".tmp.ssl";
+    const tmpPath = path.join(cwdTo, tmpName);
+    const tmpUri = pathToUri(tmpPath);
     const baseName = path.parse(filepath).base;
     const base = path.parse(filepath).name;
     const compileCmd = `${sslSettings.compilePath} ${sslSettings.compileOptions}`;
@@ -560,10 +590,10 @@ export function compile(uri: string, sslSettings: SSLsettings, interactive = fal
     }
     conlog(`compiling ${baseName}...`);
 
-    fs.writeFileSync(tmpFile, text);
-    conlog(`${compileCmd} "${tmpFile}" -o "${dstPath}"`);
+    fs.writeFileSync(tmpPath, text);
+    conlog(`${compileCmd} "${tmpName}" -o "${dstPath}"`);
     cp.exec(
-        `${compileCmd} "${tmpFile}" -o "${dstPath}"`,
+        `${compileCmd} "${tmpName}" -o "${dstPath}"`,
         { cwd: cwdTo },
         (err, stdout: string, stderr: string) => {
             conlog("stdout: " + stdout);
@@ -582,8 +612,8 @@ export function compile(uri: string, sslSettings: SSLsettings, interactive = fal
             }
             sendDiagnostics(uri, stdout, tmpUri);
             // sometimes it gets deleted due to async runs?
-            if (fs.existsSync(tmpFile)) {
-                fs.unlinkSync(tmpFile);
+            if (fs.existsSync(tmpPath)) {
+                fs.unlinkSync(tmpPath);
             }
         }
     );
