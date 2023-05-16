@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.1.4
+
+- Fixed wrong paths being reported by diagnostics on Linux/wine.
+- Fixed compile.exe reported problems not clearing on Windows due to incorrect paths.
+
 ## 2.1.3
 
 [Fixed](https://github.com/BGforgeNet/VScode-BGforge-MLS/issues/61) diagnostics being attributed to the wrong file when there are errors in included files.
