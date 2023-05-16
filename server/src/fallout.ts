@@ -543,7 +543,12 @@ function parseCompileOutput(text: string, uri: string) {
 
             // calculate uri for actual file where the warning is found
             const errorFile = fixWinePath(match[1]);
-            const errorFilePath = path.join(fileDir, errorFile);
+            let errorFilePath: string;
+            if (path.isAbsolute(errorFile)) {
+                errorFilePath = errorFile;
+            } else {
+                errorFilePath = path.join(fileDir, errorFile);
+            }
             const errorFileUri = pathToUri(errorFilePath);
 
             warnings.push({
