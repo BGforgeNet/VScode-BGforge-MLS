@@ -15,6 +15,7 @@ This can be set globally, or per project, so you can work on both types of proje
 ### H
 
 The same method goes for `.h` headers of C++, if you use those:
+
 ```json
 "files.associations": {
     "*.h": "cpp"
