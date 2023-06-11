@@ -237,7 +237,7 @@ export class Translation implements Translation {
 }
 
 const regexMsg =
-    /^(Reply|NOption|GOption|BOption|mstr|display_mstr|floater|NLowOption|BLowOption|GLowOption)\((\d+)$/;
+    /^(Reply|NOption|GOption|BOption|mstr|display_mstr|floater|NLowOption|BLowOption|GLowOption|GMessage|NMessage|BMessage)\((\d+)$/;
 const regexTra = /^@[0-9]+$/;
 
 function getLineKey(word: string, ext: "tra" | "msg") {
