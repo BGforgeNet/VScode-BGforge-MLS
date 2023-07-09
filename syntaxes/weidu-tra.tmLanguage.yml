@@ -23,7 +23,7 @@ repository:
             name: constant.language.weidu-tra
           "3":
             name: keyword.control.weidu-tra
-        match: (@)(\d+)\s*(=)
+        match: (@)-?(\d+)\s*(=)
   sounds:
     patterns:
       - captures:
