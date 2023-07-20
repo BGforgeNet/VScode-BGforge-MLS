@@ -14,6 +14,8 @@ client/out
 server/node_modules
 server/out/*
 
+preview/out
+
 external
 node_modules
 syntaxes_to_json.sh.err
