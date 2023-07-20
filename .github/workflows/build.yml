@@ -27,7 +27,7 @@ jobs:
           cache: "npm"
 
       - name: Prettier
-        uses: creyD/prettier_action@master
+        uses: creyD/prettier_action@4.3
         with:
           dry: true
           prettier_options: --check .
