@@ -3,6 +3,7 @@ themes/*.*
 *.log
 *.vsix
 **/__pycache__/**
+.mypy_cache/**
 
 .venv/
 .vscode-test/
