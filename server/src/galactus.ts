@@ -277,9 +277,11 @@ export class Galactus {
             isTraRef(symbol, langId)
         ) {
             const filePath = uriToPath(uri);
-            const relPath = getRelPath(this.workspaceRoot, filePath);
-            const result = this.translation.hover(symbol, text, relPath, langId);
-            return result;
+            if (isSubpath(this.workspaceRoot, filePath)) {
+                const relPath = getRelPath(this.workspaceRoot, filePath);
+                const result = this.translation.hover(symbol, text, relPath, langId);
+                return result;
+            }
         }
 
         // no translation, now check real languages
