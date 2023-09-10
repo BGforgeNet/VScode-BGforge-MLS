@@ -46,7 +46,10 @@ jobs:
           prettier_version: 2.8.8
 
       - name: ESlint
-        run: pnpm eslint
+        run: |
+          eslint -v
+          which eslint
+          pnpm eslint
 
       - name: Pylint
         run: |
