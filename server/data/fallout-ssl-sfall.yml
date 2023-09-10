@@ -40,7 +40,7 @@ sfall-functions:
     - name: reg_anim_combat_check
       detail: void reg_anim_combat_check(int enable)
       doc: |-
-        Allows to enable all `reg_anim_*` functions in combat (including vanilla functions) if set to 0. It is automatically reset at the end of each frame, so you need to call it before `reg_anim_begin` - `reg_anim_end` block.
+        Allows enabling all `reg_anim_*` functions in combat (including vanilla functions) if set to 0. It is automatically reset at the end of each frame, so you need to call it before `reg_anim_begin` - `reg_anim_end` block.
     - name: reg_anim_destroy
       detail: void reg_anim_destroy(ObjectPtr)
       doc: |-
@@ -56,7 +56,7 @@ sfall-functions:
     - name: reg_anim_turn_towards
       detail: void reg_anim_turn_towards(ObjectPtr, int tile/target, delay)
       doc: |-
-        Makes object change its direction to face given tile num or target object.
+        Makes object change its direction to face given tile number or target object.
     - name: array_key
       detail: mixed array_key(int arrayID, int index)
       doc: |-
@@ -79,8 +79,9 @@ sfall-functions:
         Deletes any array.
     - name: get_array
       detail: mixed get_array(int arrayID, mixed key)
-      doc: |-
+      doc: |
         Returns array value by key or index (shorthand: arrayID[key]).
+        - If array with given arrayID doesn't exist, returns 0.
     - name: len_array
       detail: int len_array(int arrayID)
       doc: |-
@@ -184,10 +185,14 @@ sfall-functions:
       detail: int get_bodypart_hit_modifier(int bodypart)
       doc: |-
         Gets the hit percentage modifiers for aiming at specific bodyparts. Valid bodypart id's are from 0 to 8.
+    - name: get_combat_free_move
+      detail: int get_combat_free_move()
+      doc: |-
+        Returns available "bonus move" points of the current critter's turn. For NPCs, this is always 0 unless changed by `set_combat_free_move`
     - name: get_critical_table
       detail: int get_critical_table(int crittertype, int bodypart, int level, int valuetype)
       doc: |-
-        Gets current critical table. For details see [critical hit tables](http://falloutmods.wikia.com/wiki/Critical_hit_tables). Requires `OverrideCriticalTable` to be set to 1 in `ddraw.ini`. (Disabled by default, because it noticably increases loading times.)
+        Gets current critical table. For details see [critical hit tables](http://falloutmods.wikia.com/wiki/Critical_hit_tables). Requires `OverrideCriticalTable` to be enabled in `ddraw.ini` (already enabled by default).
     - name: get_critter_current_ap
       detail: int get_critter_current_ap(CritterPtr)
       doc: |-
@@ -208,16 +213,30 @@ sfall-functions:
       detail: void set_bodypart_hit_modifier(int bodypart, int value)
       doc: |-
         Alters the hit percentage modifiers for aiming at specific bodyparts. Valid bodypart id's are from 0 to 8. Changes are not saved, and will reset to the defaults (or to the values specified in ddraw.ini if they exist) at each reload.
+    - name: set_combat_free_move
+      detail: void set_combat_free_move(int value)
+      doc: |
+        Allows changing "bonus move" points (yellow lights on the interface bar) that can only be used for movement, not attacking
+        - Can be called from `HOOK_COMBATTURN` at the start of the turn (will not work on `dude_obj`)
+        - Can be called from `HOOK_STDPROCEDURE` with `combat_proc` event (will work on both NPCs and `dude_obj`)
     - name: set_critical_table
       detail: void set_critical_table(int crittertype, int bodypart, int level, int valuetype, int value)
       doc: |-
-        Used for modifying the critical table. For details see [critical hit tables](http://falloutmods.wikia.com/wiki/Critical_hit_tables). Changes are not saved, and will reset to the defaults, (or to the contents of `CriticalOverrides.ini`, if it exists) at each game reload. Requires `OverrideCriticalTable` to be set to 1 in `ddraw.ini`. (Disabled by default, because it noticably increases loading times.)
+        Used for modifying the critical table. For details see [critical hit tables](http://falloutmods.wikia.com/wiki/Critical_hit_tables). Changes are not saved, and will reset to the defaults (or to the contents of `CriticalOverrides.ini`, if it exists) at each game reload. Requires `OverrideCriticalTable` to be enabled in `ddraw.ini` (already enabled by default).
     - name: set_critter_burst_disable
       detail: void set_critter_burst_disable(int critter, int disable)
     - name: set_critter_current_ap
       detail: void set_critter_current_ap(CritterPtr, int ap)
       doc: |-
         Should only be used during the target critters turn while in combat.
+    - name: set_spray_settings
+      detail: void set_spray_settings(int centerMult, int centerDiv, int targetMult, int targetDiv)
+      doc: |
+        Allows changing the multipliers and divisors for the bullet distribution of burst attacks dynamically. All settings are automatically reset to default values (**ComputeSpray_\*** settings in ddraw.ini) after each attack action
+        - Should be called before the calculation of the bullet distribution (e.g. in `HOOK_TOHIT` or `HOOK_AMMOCOST`)
+        - `centerDiv/targetDiv`: the minimum value of divisor is 1
+        - `centerMult/targetMult`: multiplier values are capped at divisor values
+        - __NOTE:__ refer to the description of **ComputeSpray_\*** settings in ddraw.ini for details of the bullet distribution of burst attacks
     - name: get_cursor_mode
       detail: int get_cursor_mode()
       doc: |-
@@ -236,14 +255,14 @@ sfall-functions:
         - makes the specified item (pid) an explosive item like Dynamite or Plastic Explosives
         - `maxDamage` is optional
         - `activePid` is for an item with an active timer, can be the same as the `pid` argument
-        - the item proto must be "Misc Item" type and have "Use" action flag
+        - the item proto must be the **Misc Item** type and have the **Use** action flag
         - minDamage/maxDamage are the minimum and maximum explosion damage
         - using the function on an item that is already set as an explosive will override its previous settings
         - NOTE: this function does not work for pids of Dynamite and Plastic Explosives
     - name: metarule2_explosions
       detail: int metarule2_explosions(int arg1, int arg2)
       doc: |-
-        Was made as a dirty easy hack to allow dynamically change some explosion parameters (ranged attack). All changed parameters are reset to vanilla state automatically after each attack action.
+        Was made as a quick-and-dirty hack to enable dynamic changes to some explosion parameters for ranged attacks. All changed parameters are automatically reset to vanilla state after each attack action.
     - name: set_attack_explosion_art
       detail: void set_attack_explosion_art(x, y)
       doc: |-
@@ -385,29 +404,29 @@ sfall-functions:
     - name: register_hook
       detail: void register_hook(int hookID)
       doc: |-
-        Used from a normal global script if you want to run it at the same point a full hook script would normally run. In case of this function, `start` proc will be executed in current global script. You can use all above functions like normal.
+        Used from a normal global script if you want to run it at the same point a full hook script would normally run. In case of this function, `start` procedure will be executed in current global script. You can use all above functions like normal.
     - name: register_hook_proc
       detail: void register_hook_proc(int hookID, proc procedure)
       doc: |
-        The same as `register_hook`, except that you specifically define which procedure in the current script should be called as a hook (instead of "start" by default). Pass procedure the same as how you use dialog option functions. This IS the recommended way to use hook scripts, as it gives both modularity (each mod logic in a separate global script, no conflicts if you don't use "hs_*.int" scripts) and flexibility (you can place all related hook scripts for specific mod in a single script!).
+        The same as `register_hook`, except that you specifically define which procedure in the current script should be called as a hook (instead of "start" by default). Pass procedure the same as how you use dialog option functions. This IS the recommended way to use hook scripts, as it gives both modularity (each mod logic in a separate global script with no conflicts) and flexibility. You can place all related hook scripts for a specific mod in one global script!
 
         Use zero (0) as second argument to unregister hook script from current global script.
 
-        __NOTE:__ you can hook several scripts to a single hook point, for example if it's different mods from different authors or just some different aspects of one larger mod. In this case scripts are executed in reverse order of how they were registered. When one of the scripts in a chain returns value with `set_sfall_return`, the next script may override this value if calls `set_sfall_return` again. Sometimes you need to multiply certain value in a chain of hook scripts.
+        __NOTE:__ you can hook several scripts to a single hook point, for example if it's different mods from different authors or just some different aspects of one larger mod. When one of the scripts in a chain returns value with `set_sfall_return`, the next script may override this value if calls `set_sfall_return` again.
 
-        Example: let's say we have a Mod A which reduces all "to hit" chances by 50%. The code might look like this:
+        __Example:__ Sometimes you need to multiply certain value in a chain of hook scripts. Let's say we have a **Mod A** which reduces all "to hit" chances by 50%. The code might look like this:
 
         ```js
         original_chance = get_sfall_arg;
         set_sfall_return(original_chance / 2);
         ```
 
-        Mod B also want to affect hit chances globally, by increasing them by 50%. Now in order for both mods to work well together, we need to add this line to Mod A hook script:
+        **Mod B** also want to affect hit chances globally, by increasing them by 50%. Now in order for both mods to work well together, we need to add this line to **Mod A** hook script:
         ```js
         set_sfall_arg(0, (original_chance / 2));
         ```
 
-        This basically changes hook argument for the next script. Mod B code:
+        This basically changes hook argument for the next script. **Mod B** code:
         ```js
         original_chance = get_sfall_arg;
         set_sfall_return(original_chance * 1.5);
@@ -420,35 +439,52 @@ sfall-functions:
     - name: register_hook_proc_spec
       detail: void register_hook_proc_spec(int hookID, procedure proc)
       doc: |-
-        Works very similar to `register_hook_proc`, except that it registers the current script at the end of the hook script execution chain (i.e. the script will be executed after all previously registered scripts for the same hook, including the `hs_*.int` script). All scripts hooked to a single hook point with this function are executed in exact order of how they were registered, as opposed to the description below, which refers to using `register_hook/register_hook_proc` functions.
+        Works the same as `register_hook_proc`, except that it registers the current script at the end of the hook script execution chain (i.e. the script will be executed after all previously registered scripts for the same hook, including the `hs_<name>.int` script). In addition, all scripts hooked to a single hook point with this function are executed in the exact order of how they were registered. In the case of using `register_hook` and `register_hook_proc` functions, scripts are executed in reverse order of how they were registered.
+        **The execution chain of script procedures for a hook is as follows:** 1. Procedures registered with `register_hook` and `register_hook_proc` functions (executed in reverse order of registration). 2. The `hs_<name>.int` script. 3. Procedures registered with the `register_hook_proc_spec` function (executed in the exact order of registration).
     - name: set_sfall_arg
       detail: void set_sfall_arg(int argNum, int value)
       doc: |-
-        Changes argument value. The argument number (argNum) is 0-indexed. This is useful if you have several hook scripts attached to one hook point (see `register_hook_proc`).
+        Changes argument value. The argument number (`argNum`) is 0-indexed. This is useful if you have several hook scripts attached to one hook point (see `register_hook_proc`).
     - name: set_sfall_return
       detail: void set_sfall_return(int value)
       doc: |-
         Used to return the new values from the script. Each time it's called it sets the next value, or if you've already set all return values it does nothing.
+    - name: get_ini_config
+      detail: array get_ini_config(string file)
+      doc: |
+        Loads a given INI file and returns a permanent array (map) where keys are section names and values are permanent sub-arrays (maps) where keys and values are strings.
+        - Searches the file in the regular file system, like with all other ini-related functions.
+        - Subsequent calls for the same file will return the same array, unless it was disposed using `free_array`.
+    - name: get_ini_config_db
+      detail: array get_ini_config_db(string file)
+      doc: |-
+        Works exactly like `get_ini_config`, except it searches the file in database (DAT) files. If not found, then it will try the regular file system.
     - name: get_ini_section
       detail: array get_ini_section(string file, string sect)
-      doc: |-
-        Returns an associative array of keys and values for a given INI file and section. NOTE: all keys and their values will be of String type.
+      doc: |
+        Returns an associative array of keys and values for a given INI file and section.
+        - If the INI file is not found, it returns an empty array.
+        - __NOTE:__ all keys and their values will be of String type.
     - name: get_ini_sections
       detail: array get_ini_sections(string file)
-      doc: |-
+      doc: |
         Returns an array of names of all sections in a given INI file.
+        - If the INI file is not found, it returns an empty array.
     - name: get_ini_setting
       detail: int get_ini_setting(string setting)
       doc: |
-        - Reads an integer value from an ini file in the fallout directory.
-        - It only takes a single argument; seperate the file name, section and key with a "\|" character; e.g. `myvar:=get_ini_setting("myini.ini|mysec|var1")` If the file or key cannot be found, -1 is returned.
+        Reads an integer value from an ini file in the Fallout directory.
+        - It only takes a single argument; seperate the file name, section and key with a "\|" character; e.g. `myvar:=get_ini_setting("myini.ini|mysec|var1")`
+        - If the file or key cannot be found or the setting argument is in an invalid format, it returns -1.
         - The file name is limited to 63 chars, including the extension.
         - The section name is limited to 32 characters.
-        - It can also be used to get sfall's settings, by using `ddraw.ini` as the file name.
+        - It can also be used to get sfall settings by using **ddraw.ini** as the file name.
     - name: get_ini_string
       detail: string get_ini_string(string setting)
-      doc: |-
-        Reads a string value from an ini file in the fallout directory.
+      doc: |
+        Reads a string value from an ini file in the Fallout directory.
+        - If the file or key cannot be found, it returns an empty string.
+        - If the setting argument is in an invalid format, it returns -1 (integer).
     - name: modified_ini
       detail: int modified_ini
       doc: |-
@@ -631,8 +667,9 @@ sfall-functions:
         E^X
     - name: floor2
       detail: int floor2(int/float value)
-      doc: |-
-        Works just like vanilla floor function, but returns correct integers for negative values (vanilla floor function works exactly the same as `ceil` for negative values, much like `trunc` in C/C++).
+      doc: |
+        Works just like vanilla floor function, but returns correct integers for negative floats.
+        - __NOTE:__ vanilla `floor` function works exactly the same as `ceil` for negative floats (i.e. basically `trunc` in C/C++).
     - name: log
       detail: float log(float x)
       doc: |-
@@ -686,7 +723,7 @@ sfall-functions:
       doc: |-
         Returns the data at the specified offset of an object (see `OBJ_DATA_*` constants in `define_extra.h` for offsets).
     - name: get_script
-      detail: int get_script(ObjectPtr)
+      detail: int get_script(ObjectPtr obj)
       doc: |
         - accepts a pointer to an object and returns its scriptID (line number in `scripts.lst`), or 0 if the object is unscripted.
         - returns -1 on argument error.
@@ -701,7 +738,7 @@ sfall-functions:
     - name: obj_is_openable
       detail: bool obj_is_openable(object obj)
       doc: |-
-        Returns True if the object is openable (i.e. has an opening/closing animation)
+        Returns True if the object is openable (i.e. has an opening/closing animation), False otherwise
     - name: obj_under_cursor
       detail: ObjectPtr obj_under_cursor(bool onlyCritter, bool includeDude)
       doc: |
@@ -716,7 +753,7 @@ sfall-functions:
       doc: |-
         Returns the initial `dude_obj` after `set_dude_obj` was used.
     - name: remove_script
-      detail: void remove_script(ObjectPtr)
+      detail: void remove_script(ObjectPtr obj)
       doc: |-
         Accepts a pointer to an object and will remove the script from that object.
     - name: set_dude_obj
@@ -739,11 +776,11 @@ sfall-functions:
         - Passing an empty string ("") to the `name` argument or omitting it will allow the game to get the name for the object from pro_*.msg files
         - __NOTE:__ this function is intended for use in normal game scripts and overrides the name only once for the same object until reset
     - name: set_script
-      detail: void set_script(ObjectPtr, int scriptid)
+      detail: void set_script(ObjectPtr obj, int scriptID)
       doc: |-
         Accepts a pointer to an object and scriptID, and applies the given script to an object (scriptID accept the same values as `create_object_sid `from sfall 3.6). If used on an object that is already scripted, it will remove the existing script first; you cannot have multiple scripts attached to a single object. Calling `set_script` on `self_obj` will have all sorts of wacky side effects, and should be avoided. If you add 0x80000000 to the sid when calling `set_script`, `map_enter_p_proc` will be SKIPPED. The `start` proc will always be run.
     - name: set_self
-      detail: void set_self(ObjectPtr)
+      detail: void set_self(ObjectPtr setObj)
       doc: |
         Overrides the script's `self_obj` for the next function call.
         - It is primarily used to allow the calling of functions which take an implicit `self_obj` parameter (e.g. `drop_obj`) from global scripts, but it can also be used from normal scripts.
@@ -881,7 +918,7 @@ sfall-functions:
     - name: set_pipboy_available
       detail: void set_pipboy_available(int available)
       doc: |-
-        Will only accept 0 or 1 as an argument. Using any other value will cause the function to have no effect. Use 0 to disable the pipboy, and 1 to enable it.
+        Sets the availability of the pipboy in the game. Use 0 to disable the pipboy, and 1 or 2 to enable it (value 2 does not mark the `VSUIT_MOVIE` movie as "played").
     - name: set_proto_data
       detail: void set_proto_data(int pid, int offset, int value)
       doc: |-
@@ -1198,14 +1235,14 @@ sfall-functions:
       detail: get_stat_max(int stat, bool who = False)
       doc: |-
         - Returns the maximum set value of the specified stat (see `set_stat_max` functions)
-        - who: 0 (`false`) or omitting the argument - returns the value of the player, 1 (true) - returns the value set for other critters
+        - who: 0 (`False`) or omitting the argument - returns the value of the player, 1 (`True`) - returns the value set for other critters
 
         The `get/set_pc_base/extra_stat` functions are equivalent to calling `get/set_critter_base/extra_stat` with `dude_obj` as the critter pointer. None of these stat functions take perks into account, and neither do they do range clamping to make sure the stats are valid. Use the normal `get_critter_stat` function to get a correctly perk adjusted and range clamped value for a stat.
     - name: get_stat_min
       detail: get_stat_min(int stat, bool who = False)
       doc: |-
         - Returns the minimum set value of the specified stat (see `set_stat_min` functions)
-        - who: 0 (`false`) or omitting the argument - returns the value of the player, 1 (true) - returns the value set for other critters
+        - who: 0 (`False`) or omitting the argument - returns the value of the player, 1 (`True`) - returns the value set for other critters
 
         The `get/set_pc_base/extra_stat` functions are equivalent to calling `get/set_critter_base/extra_stat` with `dude_obj` as the critter pointer. None of these stat functions take perks into account, and neither do they do range clamping to make sure the stats are valid. Use the normal `get_critter_stat` function to get a correctly perk adjusted and range clamped value for a stat.
     - name: set_critter_base_stat
@@ -1230,15 +1267,33 @@ sfall-functions:
         Returns ASCII code for the first character in given string.
     - name: get_string_pointer
       detail: int get_string_pointer(string text)
+      doc: |
+        (DEPRECATED) Returns a pointer to a string variable or to a text
+        - __NOTE:__ this function is intended for use only in `HOOK_DESCRIPTIONOBJ`. Starting from sfall 4.4/3.8.40, you can return normal strings directly in the hook without calling the function
+    - name: string_find
+      detail: int string_find(string haystack, string needle)
       doc: |-
-        Returns a pointer to a string variable or to a text.
+        Returns the position of the first occurrence of a `needle` string in a `haystack` string, or -1 if not found. The first character position is 0 (zero).
+    - name: string_find_from
+      detail: int string_find_from(string haystack, string needle, int pos)
+      doc: |
+        Works the same as `string_find`, except you can specify the position to start the search.
+        - If `pos` is negative - it indicates a position starting from the end of the string, similar to `substr()`.
     - name: string_format
       detail: string string_format(string format, any val1, any val2, ...)
       doc: |
-        Formats given value using standard syntax of C printf function (google "printf" for format details). However it is limited to formatting up to 4 values.
-        - formatting is only supported for %s and %d, and the format string is limited to 1024 characters
+        Formats given values using standard syntax of C `printf` function (google "printf" for format details). However, it is limited to formatting up to 7 values.
+        - The format string is limited to 1024 characters
+    - name: string_format_array
+      detail: string string_format_array(string format, int array)
+      doc: |-
+        The same as string_format, but accepts an array of parameters.
+    - name: string_replace
+      detail: string string_replace(string str, string search, string replace)
+      doc: |-
+        Replaces all occurances of a given search string in a string with a given replacement string.
     - name: string_split
-      detail: array string_split(string, split)
+      detail: array string_split(string text, split)
       doc: |-
         Takes a string and a seperator, searches the string for all instances of the seperator, and returns a temp array filled with the pieces of the string split at each instance. If you give an empty string as the seperator, the string is split into individual characters. You can use this to search for a substring in a string like this: `strlen(get_array(string_split(haystack, needle), 0))`
     - name: string_to_case
@@ -1254,12 +1309,12 @@ sfall-functions:
       doc: |-
         Returns string length.
     - name: substr
-      detail: string substr(string, start, length)
+      detail: string substr(string text, int start, int length)
       doc: |
         Cuts a substring from a string starting at "start" up to "length" characters. The first character position is 0 (zero).
-        - If start is negative - it indicates starting position from the end of the string (for example `substr("test", -2, 2)` will return last 2 charactes: "st").
+        - If start is negative - it indicates a position starting from the end of the string (for example `substr("test", -2, 2)` will return last 2 charactes: "st").
         - If length is negative - it means so many characters will be omitted from the end of string (example: `substr("test", 0, -2)` will return string without last 2 characters: "te").
-        - If length is zero - it will return a string from the starting position to the end of the string **New behavior** for sfall 4.2.2/3.8.22
+        - If length is zero - it will return a string from the starting position to the end of the string. **New behavior** for sfall 4.2.2/3.8.22
     - name: add_iface_tag
       detail: void add_iface_tag()
       doc: |-
@@ -1284,7 +1339,19 @@ sfall-functions:
       doc: |-
         show_iface_tag, hide_iface_tag and is_iface_tag_active relate to the boxes that appear above the interface such as SNEAK and LEVEL. You can use 3 for LEVEL and 4 for ADDICT, or the range from 5 to (4 + the value of BoxBarCount in `ddraw.ini`) for custom boxes. Remember to add your messages to `intrface.msg` and set up the font colours in `ddraw.ini` if you're going to use custom boxes. Starting from sfall 4.1/3.8.12, is_iface_tag_active can also be used to check 0 for SNEAK, 1 for POISONED, and 2 for RADIATED.
     - name: get_tile_fid
-      detail: int get_tile_fid(int tile)
+      detail: int get_tile_fid(int tileData)
+      doc: |
+        - Returns FID information about the square under the given tile at elevation 0
+        - Pass elevation as 4-bit number in bits 25-28 to access other elevations
+        - Pass result mode in bits 29-32: 0 - ground FID, 1 - roof FID, 2 - raw data.
+    - name: get_tile_ground_fid
+      detail: int get_tile_ground_fid(int tileNum, int elevation)
+      doc: |-
+        Returns FID of a ground tile at given tile number and elevation.
+    - name: get_tile_roof_fid
+      detail: int get_tile_roof_fid(int tileNum, int elevation)
+      doc: |-
+        Returns FID of a roof tile at given tile number and elevation. Note that FID of 1 is used when there is no actual roof.
     - name: obj_blocking_line
       detail: ObjectPtr obj_blocking_line(ObjectPtr objFrom, int tileTo, int blockingType)
       doc: |-
@@ -1322,8 +1389,9 @@ sfall-functions:
       detail: int atoi(string text)
     - name: sprintf
       detail: string sprintf(string format, any value)
-      doc: |-
-        Formats given value using standart syntax of C printf function (google "printf" for format details). However it is limited to formatting only 1 value. Can be used to get character by ASCII code ("%c").
+      doc: |
+        Formats given value using standart syntax of C `printf` function (google "printf" for format details). However, it is limited to formatting only 1 value.
+        - Can be used to get character by ASCII code ("%c").
     - name: typeof
       detail: int typeof(any value)
       doc: |-
@@ -1521,7 +1589,7 @@ sfall-functions:
         - winName: the window name, assigned to the window by the `CreateWin/create_win` function
         - winID: the ID number of the interface or script window obtained with the `get_window_under_mouse` function, or 0 for the current game interface
         - flag: the flag to change (see `WIN_FLAG_*` constants in `define_extra.h`)
-        - value: `true` - set the flag, `false` - unset the flag
+        - value: `True` - set the flag, `False` - unset the flag
     - name: win_fill_color
       detail: int win_fill_color(int x, int y, int width, int height, int color)
       doc: |
@@ -1704,8 +1772,10 @@ hooks:
     - name: HOOK_AMMOCOST
       doc: |
         Runs when calculating ammo cost for a weapon. Doesn't affect damage, only how much ammo is spent.<br>
-        By default, weapons can make attacks when at least 1 ammo is left, regardless of ammo cost calculations.<br>
-        To add proper check for ammo before attacking and proper calculation of the number of burst rounds (hook type 1 and 2 in `arg3`), set **CheckWeaponAmmoCost=1** in **Misc** section of ddraw.ini.
+        By default, a weapon can perform an attack with at least one ammo, regardless of ammo cost calculation.<br>
+        To add proper checks for ammo before attacking (hook type 1 `arg3`), set **CheckWeaponAmmoCost=1** in **Misc** section of ddraw.ini.
+
+        __NOTE:__ The return value must be greater than or equal to 0 to be valid.
 
         ```
         Item    arg0 - The weapon
@@ -1731,7 +1801,7 @@ hooks:
         Critter arg1 - the critter being bartered with
         int     arg2 - the default value of the goods
         Critter arg3 - table of requested goods (being bought from NPC)
-        int     arg4 - the amount of actual caps in the barter stack (as opposed to goods)
+        int     arg4 - the number of actual caps in the barter stack (as opposed to goods)
         int     arg5 - the value of all goods being traded before skill modifications
         Critter arg6 - table of offered goods (being sold to NPC)
         int     arg7 - the total cost of the goods offered by the player
@@ -1779,7 +1849,7 @@ hooks:
         Critter arg0 - the critter doing the check
         Item    arg1 - the weapon being checked
         int     arg2 - attack type (see ATKTYPE_* constants)
-        int     arg3 - original result of engine function: 1 - can use, 0 - can't use
+        int     arg3 - original result of engine function: 1 - can use, 0 - cannot use
 
         int     ret0 - overrides the result of engine function. Any non-zero value allows using the weapon
         ```
@@ -1809,7 +1879,7 @@ hooks:
         int     arg3  - The amount of damage to the attacker
         int     arg4  - The special effect flags for the target (use bwand DAM_* to check specific flags)
         int     arg5  - The special effect flags for the attacker (use bwand DAM_* to check specific flags)
-        int     arg6  - The weapon used in the attack
+        Item    arg6  - The weapon used in the attack
         int     arg7  - The bodypart that was struck
         int     arg8  - Damage Multiplier (this is divided by 2, so a value of 3 does 1.5x damage, and 8 does 4x damage. Usually it's 2; for critical hits, the value is taken from the critical table; with Silent Death perk and the corresponding attack conditions, the value will be doubled)
         int     arg9 - Number of bullets actually hit the target (1 for melee attacks)
@@ -1898,10 +1968,12 @@ hooks:
 
         Does not run if the script of the object overrides the description.
 
+        __NOTE:__ Returning a pointer to the new text received from the `get_string_pointer` function is still valid, but the method is DEPRECATED and is left for backward compatibility only.
+
         ```
         Obj     arg0 - the object
 
-        int     ret0 - a pointer to the new text received by using "get_string_pointer" function
+        String  ret0 - the new description text to use
         ```
     - name: HOOK_ENCOUNTER
       doc: |
@@ -1982,6 +2054,7 @@ hooks:
     - name: HOOK_INVENTORYMOVE
       doc: |
         Runs before moving items between inventory slots in dude interface. You can override the action.
+
         What you can NOT do with this hook:
         - force moving items to inappropriate slots (like gun in armor slot)
         What you can do:
@@ -2005,6 +2078,11 @@ hooks:
 
         int     ret0 - Override setting (-1 - use engine handler, any other value - prevent relocation of item/reloading weapon/picking up item)
         ```
+
+        Notes for the event of dropping items on the ground:
+        - the event is called for each item when dropping multiple items from the stack
+        - for ammo type items, the number of dropped ammo in a pack can be found by using the `get_weapon_ammo_count` function
+        - for the `PID_BOTTLE_CAPS` item, the event is called only once, and the number of dropped units can be found from the value of the `OBJ_DATA_CUR_CHARGES` object field (or with the `get_weapon_ammo_count` function)
     - name: HOOK_ITEMDAMAGE
       doc: |
         Runs when retrieving the damage rating of the player's used weapon. (Which may be their fists.)
@@ -2163,9 +2241,12 @@ hooks:
         NOTE: this hook will not be executed for `start`, `critter_p_proc`, `timed_event_p_proc`, and `map_update_p_proc` procedures.
 
         ```
-        int     arg0 - the number of the standard script handler (see define.h)
+        int     arg0 - the number of the standard script handler (see *_proc in define.h)
         Obj     arg1 - the object that owns this handler (self_obj)
         Obj     arg2 - the object that called this handler (source_obj, can be 0)
+        int     arg3 - always 0 (1 for _END version)
+        Obj     arg4 - the object that is acted upon by this handler (target_obj, can be 0)
+        int     arg5 - the parameter of this call (fixed_param), useful for combat_proc
 
         int     ret0 - pass -1 to cancel the execution of the handler
         ```
@@ -2175,10 +2256,12 @@ hooks:
         NOTE: this hook will not be executed for `start`, `critter_p_proc`, `timed_event_p_proc`, and `map_update_p_proc` procedures.
 
         ```
-        int     arg0 - the number of the standard script handler (see define.h)
+        int     arg0 - the number of the standard script handler (see *_proc in define.h)
         Obj     arg1 - the object that owns this handler (self_obj)
         Obj     arg2 - the object that called this handler (source_obj, can be 0)
-        int     arg3 - 1 after procedure execution
+        int     arg3 - always 1 (procedure end)
+        Obj     arg4 - the object that is acted upon by this handler (target_obj, can be 0)
+        int     arg5 - the parameter of this call (fixed_param), useful for combat_proc
         ```
     - name: HOOK_STEAL
       doc: |
@@ -2191,10 +2274,12 @@ hooks:
         ```
         Critter arg0 - Thief
         Obj     arg1 - The target
-        Item    arg2 - Item being stolen/planted
+        Item    arg2 - The item being stolen/planted
         int     arg3 - 0 when stealing, 1 when planting
+        int     arg4 - quantity of the item being stolen/planted
 
-        int     ret0 - overrides hard-coded handler (1 - force success, 0 - force fail, -1 - use engine handler)
+        int     ret0 - overrides hard-coded handler (2 - force fail without closing window, 1 - force success, 0 - force fail, -1 - use engine handler)
+        int     ret1 - overrides experience points gained for stealing this item (must be greater than or equal to 0)
         ```
     - name: HOOK_SUBCOMBATDAMAGE
       doc: |
@@ -2248,7 +2333,7 @@ hooks:
         int     arg6 - Ranged flag. 1 if the hit chance calculation takes into account the distance to the target. This does not mean the attack is a ranged attack
         int     arg7 - The raw hit chance before applying the cap
 
-        int     ret0 - the new hit chance
+        int     ret0 - The new hit chance. The value is limited to the range of -99 to 999
         ```
     - name: HOOK_USEANIMOBJ
       doc: |
@@ -2324,7 +2409,7 @@ hooks:
         int     arg2 - skill being used
 
         int     ret0 - a new critter to override the user critter. Pass -1 to cancel the skill use, pass 0 to skip this return value
-        int     ret1 - pass 1 to allow the skill being used in combat (only for dude_obj or critter being controlled by the player)
+        int     ret1 - pass 1 to allow the skill to be used in combat (only for dude_obj or critter being controlled by the player)
         ```
     - name: HOOK_WITHINPERCEPTION
       doc: |

@@ -534,15 +534,18 @@ repository:
       - match: \b(?i)(force_aimed_shots)\b
       - match: \b(?i)(get_attack_type)\b
       - match: \b(?i)(get_bodypart_hit_modifier)\b
+      - match: \b(?i)(get_combat_free_move)\b
       - match: \b(?i)(get_critical_table)\b
       - match: \b(?i)(get_critter_current_ap)\b
       - match: \b(?i)(get_last_attacker)\b
       - match: \b(?i)(get_last_target)\b
       - match: \b(?i)(reset_critical_table)\b
       - match: \b(?i)(set_bodypart_hit_modifier)\b
+      - match: \b(?i)(set_combat_free_move)\b
       - match: \b(?i)(set_critical_table)\b
       - match: \b(?i)(set_critter_burst_disable)\b
       - match: \b(?i)(set_critter_current_ap)\b
+      - match: \b(?i)(set_spray_settings)\b
       - match: \b(?i)(get_cursor_mode)\b
       - match: \b(?i)(set_cursor_mode)\b
       - match: \b(?i)(get_explosion_damage)\b
@@ -587,6 +590,8 @@ repository:
       - match: \b(?i)(register_hook_proc_spec)\b
       - match: \b(?i)(set_sfall_arg)\b
       - match: \b(?i)(set_sfall_return)\b
+      - match: \b(?i)(get_ini_config)\b
+      - match: \b(?i)(get_ini_config_db)\b
       - match: \b(?i)(get_ini_section)\b
       - match: \b(?i)(get_ini_sections)\b
       - match: \b(?i)(get_ini_setting)\b
@@ -799,7 +804,11 @@ repository:
       - match: \b(?i)(set_pc_extra_stat)\b
       - match: \b(?i)(charcode)\b
       - match: \b(?i)(get_string_pointer)\b
+      - match: \b(?i)(string_find)\b
+      - match: \b(?i)(string_find_from)\b
       - match: \b(?i)(string_format)\b
+      - match: \b(?i)(string_format_array)\b
+      - match: \b(?i)(string_replace)\b
       - match: \b(?i)(string_split)\b
       - match: \b(?i)(string_to_case)\b
       - match: \b(?i)(strlen)\b
@@ -810,6 +819,8 @@ repository:
       - match: \b(?i)(set_iface_tag_text)\b
       - match: \b(?i)(show_iface_tag)\b
       - match: \b(?i)(get_tile_fid)\b
+      - match: \b(?i)(get_tile_ground_fid)\b
+      - match: \b(?i)(get_tile_roof_fid)\b
       - match: \b(?i)(obj_blocking_line)\b
       - match: \b(?i)(obj_blocking_tile)\b
       - match: \b(?i)(path_find_to)\b
@@ -1188,8 +1199,6 @@ repository:
       - match: \b(InitConfigs)\b
       - match: \b(_PURGE_all_saved_arrays)\b
       - match: \b(hotkey_pressed)\b
-      - match: \b(max)\b
-      - match: \b(min)\b
   header-defines-with-vars:
     name: entity.name.function.fallout-ssl.header-defines
     patterns:
@@ -1239,8 +1248,7 @@ repository:
       - match: \b(_GET_ARG_INT)\b
       - match: \b(_ITEM_NAME)\b
       - match: \b(_J_RET_VAL_TYPE)\b
-      - match: \b(above)\b
-      - match: \b(above_equal)\b
+      - match: \b(_value)\b
       - match: \b(add_extra_msg_file)\b
       - match: \b(add_global_timer_event)\b
       - match: \b(add_item_pid)\b
@@ -1251,8 +1259,6 @@ repository:
       - match: \b(array_is_map)\b
       - match: \b(art_change_fid_num)\b
       - match: \b(attack)\b
-      - match: \b(below)\b
-      - match: \b(below_equal)\b
       - match: \b(car_give_gas)\b
       - match: \b(change_status_off)\b
       - match: \b(change_status_on)\b
@@ -1273,6 +1279,7 @@ repository:
       - match: \b(critter_uninjure)\b
       - match: \b(critter_wearing_armor)\b
       - match: \b(critter_weight)\b
+      - match: \b(debug_array_str)\b
       - match: \b(dec_global_var)\b
       - match: \b(dec_global_var_amt)\b
       - match: \b(dec_local_var)\b
@@ -1295,10 +1302,12 @@ repository:
       - match: \b(dude_floater_sick)\b
       - match: \b(dude_item)\b
       - match: \b(dude_item_count)\b
+      - match: \b(dude_perk)\b
       - match: \b(dude_skill)\b
       - match: \b(dude_stat_lose)\b
       - match: \b(dude_stat_tie)\b
       - match: \b(dude_stat_win)\b
+      - match: \b(dude_trait)\b
       - match: \b(elevator)\b
       - match: \b(float_msg_clear)\b
       - match: \b(floater)\b
@@ -1320,10 +1329,21 @@ repository:
       - match: \b(flush_add_timer_event_sec)\b
       - match: \b(g_mstr)\b
       - match: \b(game_time_advance_hour)\b
+      - match: \b(get_active_weapon)\b
+      - match: \b(get_agility)\b
+      - match: \b(get_ai)\b
+      - match: \b(get_armor)\b
       - match: \b(get_can_rest_on_map)\b
+      - match: \b(get_charisma)\b
+      - match: \b(get_cur_hits)\b
+      - match: \b(get_cur_rot)\b
       - match: \b(get_current_inven_size)\b
+      - match: \b(get_endurance)\b
       - match: \b(get_explosion_damage)\b
       - match: \b(get_flags)\b
+      - match: \b(get_gender)\b
+      - match: \b(get_ini_config)\b
+      - match: \b(get_ini_config_db)\b
       - match: \b(get_ini_section)\b
       - match: \b(get_ini_sections)\b
       - match: \b(get_interface_height)\b
@@ -1331,6 +1351,11 @@ repository:
       - match: \b(get_interface_width)\b
       - match: \b(get_interface_x)\b
       - match: \b(get_interface_y)\b
+      - match: \b(get_iq)\b
+      - match: \b(get_item)\b
+      - match: \b(get_item_count)\b
+      - match: \b(get_luck)\b
+      - match: \b(get_max_hits)\b
       - match: \b(get_npc_stat_max)\b
       - match: \b(get_npc_stat_min)\b
       - match: \b(get_object_ai_data)\b
@@ -1338,17 +1363,23 @@ repository:
       - match: \b(get_outline)\b
       - match: \b(get_pc_stat_max)\b
       - match: \b(get_pc_stat_min)\b
+      - match: \b(get_perception)\b
+      - match: \b(get_perk)\b
       - match: \b(get_saved_array_new_map)\b
       - match: \b(get_sfall_arg_at)\b
-      - match: \b(get_string_pointer)\b
+      - match: \b(get_strength)\b
+      - match: \b(get_team)\b
       - match: \b(get_terrain_name)\b
       - match: \b(get_text_width)\b
+      - match: \b(get_tile_fid_ext)\b
+      - match: \b(get_tile_ground_fid)\b
+      - match: \b(get_tile_roof_fid)\b
+      - match: \b(get_trait)\b
       - match: \b(give_character_points)\b
       - match: \b(gvar_bit)\b
       - match: \b(has_fake_perk_npc)\b
       - match: \b(has_fake_trait_npc)\b
       - match: \b(hide_window)\b
-      - match: \b(in_range)\b
       - match: \b(inc_global_var)\b
       - match: \b(inc_global_var_amt)\b
       - match: \b(inc_local_var)\b
@@ -1368,9 +1399,11 @@ repository:
       - match: \b(inventory_redraw)\b
       - match: \b(is_critter_dead)\b
       - match: \b(is_critter_prone)\b
+      - match: \b(is_female)\b
       - match: \b(is_in_array)\b
-      - match: \b(is_in_string)\b
+      - match: \b(is_male)\b
       - match: \b(is_skill_tagged)\b
+      - match: \b(is_visible)\b
       - match: \b(item_make_explosive)\b
       - match: \b(item_weight)\b
       - match: \b(key_pressed_vk)\b
@@ -1382,10 +1415,14 @@ repository:
       - match: \b(mark_map_entrance_state)\b
       - match: \b(mark_on_map)\b
       - match: \b(mark_world_subtile_visited)\b
+      - match: \b(math_in_range)\b
+      - match: \b(math_max)\b
+      - match: \b(math_min)\b
       - match: \b(message_box)\b
       - match: \b(metarule_exist)\b
       - match: \b(mstr)\b
       - match: \b(mstr_ai)\b
+      - match: \b(mstr_character)\b
       - match: \b(mstr_combat)\b
       - match: \b(mstr_custom)\b
       - match: \b(mstr_inventry)\b
@@ -1408,14 +1445,17 @@ repository:
       - match: \b(mvar_bit)\b
       - match: \b(npc_engine_level_up)\b
       - match: \b(num_to_num_text)\b
+      - match: \b(obj_can_hear_and_shoot_obj)\b
       - match: \b(obj_cost)\b
       - match: \b(obj_cost_barter)\b
       - match: \b(obj_drop_everything)\b
       - match: \b(obj_floater_type)\b
       - match: \b(obj_get_rot)\b
+      - match: \b(obj_has_lof_to_obj)\b
       - match: \b(obj_in_party)\b
       - match: \b(obj_is_openable)\b
       - match: \b(obj_is_visible_flag)\b
+      - match: \b(obj_name_safe)\b
       - match: \b(obj_under_cursor)\b
       - match: \b(obj_weight)\b
       - match: \b(objects_in_radius)\b
@@ -1441,6 +1481,9 @@ repository:
       - match: \b(rm_fixed_timer_event)\b
       - match: \b(self_item)\b
       - match: \b(self_item_count)\b
+      - match: \b(self_perk)\b
+      - match: \b(self_trait)\b
+      - match: \b(set_ai)\b
       - match: \b(set_attack_explosion_art)\b
       - match: \b(set_attack_explosion_pattern)\b
       - match: \b(set_attack_explosion_radius)\b
@@ -1448,6 +1491,7 @@ repository:
       - match: \b(set_can_rest_on_map)\b
       - match: \b(set_car_carry_amount)\b
       - match: \b(set_car_intface_art)\b
+      - match: \b(set_combat_free_move)\b
       - match: \b(set_current_quick_save_slot)\b
       - match: \b(set_current_save_slot)\b
       - match: \b(set_cursor_mode)\b
@@ -1470,6 +1514,8 @@ repository:
       - match: \b(set_map_exit_tiles)\b
       - match: \b(set_mvar_bit_off)\b
       - match: \b(set_mvar_bit_on)\b
+      - match: \b(set_obj_invisible)\b
+      - match: \b(set_obj_visible)\b
       - match: \b(set_object_data)\b
       - match: \b(set_outline)\b
       - match: \b(set_plastic_damage)\b
@@ -1478,6 +1524,9 @@ repository:
       - match: \b(set_rest_mode)\b
       - match: \b(set_scr_name)\b
       - match: \b(set_selectable_perk_npc)\b
+      - match: \b(set_self_ai)\b
+      - match: \b(set_self_team)\b
+      - match: \b(set_spray_settings)\b
       - match: \b(set_status_assassinated)\b
       - match: \b(set_status_attacked)\b
       - match: \b(set_status_dead)\b
@@ -1491,6 +1540,7 @@ repository:
       - match: \b(set_status_spoken_to)\b
       - match: \b(set_status_spoken_to_special)\b
       - match: \b(set_status_warned)\b
+      - match: \b(set_team)\b
       - match: \b(set_terrain_name)\b
       - match: \b(set_town_title)\b
       - match: \b(set_unique_id)\b
@@ -1506,6 +1556,7 @@ repository:
       - match: \b(sort_map_reverse)\b
       - match: \b(sort_map_value)\b
       - match: \b(spatial_radius)\b
+      - match: \b(sprintf2)\b
       - match: \b(start_dialogue)\b
       - match: \b(stat_success)\b
       - match: \b(status_is)\b
@@ -1526,7 +1577,17 @@ repository:
       - match: \b(status_is_warned)\b
       - match: \b(string_compare)\b
       - match: \b(string_compare_locale)\b
-      - match: \b(string_format)\b
+      - match: \b(string_contains)\b
+      - match: \b(string_find)\b
+      - match: \b(string_find_from)\b
+      - match: \b(string_format1)\b
+      - match: \b(string_format2)\b
+      - match: \b(string_format3)\b
+      - match: \b(string_format4)\b
+      - match: \b(string_format5)\b
+      - match: \b(string_format6)\b
+      - match: \b(string_format7)\b
+      - match: \b(string_format_array)\b
       - match: \b(string_replace)\b
       - match: \b(string_starts_with)\b
       - match: \b(string_tolower)\b
@@ -1534,6 +1595,7 @@ repository:
       - match: \b(temp_array_list)\b
       - match: \b(ticks_til_hour)\b
       - match: \b(tile_behind_obj)\b
+      - match: \b(tile_behind_obj_rng)\b
       - match: \b(tile_by_position)\b
       - match: \b(tile_get_next_critter)\b
       - match: \b(tile_set_center)\b
@@ -1547,6 +1609,9 @@ repository:
       - match: \b(unset_unique_id)\b
       - match: \b(unwield_slot)\b
       - match: \b(use_item_on_dude)\b
+      - match: \b(weapon_attack_mode)\b
+      - match: \b(weapon_attack_mode1)\b
+      - match: \b(weapon_attack_mode2)\b
       - match: \b(weapon_dmg_type)\b
       - match: \b(weapon_is_unusable)\b
       - match: \b(who_carry_amount)\b
