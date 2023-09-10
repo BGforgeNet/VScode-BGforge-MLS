@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.1.5
+
+- Added translation hints to `GMessage/NMessage/BMessage`.
+- Fixed highlighting for tra references with negative numbers.
+- Fixed extension crash when opening a single file instead of a directory.
+
 ## 2.1.4
 
 - Fixed wrong paths being reported by diagnostics on Linux/wine.
