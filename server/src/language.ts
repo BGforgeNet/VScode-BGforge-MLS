@@ -97,17 +97,18 @@ export class Language implements Language {
     }
 
     private async loadHeaders(staticHover: hover.HoverMap = new Map()) {
-        if (this.workspaceRoot !== undefined) {
-            if (this.id == "fallout-ssl") {
-                const res = await fallout.loadHeaders(this.workspaceRoot, false, staticHover);
-                return res;
-            }
-            if (this.id == "weidu-tp2") {
-                const res = weidu.loadHeaders(this.workspaceRoot);
-                return res;
-            }
-            conlog(`Unknown language id ${this.id}, can't load headers.`);
+        if (this.workspaceRoot === undefined) {
+            return;
         }
+        if (this.id == "fallout-ssl") {
+            const res = await fallout.loadHeaders(this.workspaceRoot, false, staticHover);
+            return res;
+        }
+        if (this.id == "weidu-tp2") {
+            const res = weidu.loadHeaders(this.workspaceRoot);
+            return res;
+        }
+        conlog(`Unknown language id ${this.id}, can't load headers.`);
     }
 
     private async loadExternalHeaders(staticHover: hover.HoverMap = new Map()) {

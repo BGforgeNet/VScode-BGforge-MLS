@@ -57,21 +57,22 @@ const defaultProjectSettings: ProjectSettings = {
 /** get project settings from .bgforge.yml */
 export function project(dir: string) {
     const settings = defaultProjectSettings;
-    if (dir !== undefined) {
-        try {
-            const file = fs.readFileSync(path.join(dir, ".bgforge.yml"), "utf8");
-            const yml_settings = yaml.parse(file).mls;
-            if (yml_settings.translation) {
-                if (yml_settings.translation.directory) {
-                    settings.translation.directory = yml_settings.translation.directory;
-                }
-                if (yml_settings.translation.auto_tra) {
-                    settings.translation.auto_tra = yml_settings.translation.auto_tra;
-                }
+    if (dir === undefined) {
+        return settings;
+    }
+    try {
+        const file = fs.readFileSync(path.join(dir, ".bgforge.yml"), "utf8");
+        const yml_settings = yaml.parse(file).mls;
+        if (yml_settings.translation) {
+            if (yml_settings.translation.directory) {
+                settings.translation.directory = yml_settings.translation.directory;
             }
-        } catch (e) {
-            conlog(e);
+            if (yml_settings.translation.auto_tra) {
+                settings.translation.auto_tra = yml_settings.translation.auto_tra;
+            }
         }
+    } catch (e) {
+        conlog(e);
     }
     return settings;
 }
