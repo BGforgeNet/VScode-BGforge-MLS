@@ -987,7 +987,7 @@ actions:
 
         ```
         IF
-          AttackedBy([GOODCUTOFF],Myself)
+          AttackedBy([GOODCUTOFF],DEFAULT)
           Allegiance(Myself,NEUTRAL)
         THEN
           RESPONSE #100
