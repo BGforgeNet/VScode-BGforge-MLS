@@ -65,7 +65,7 @@ jobs:
         if: "!startsWith(github.ref, 'refs/tags/')"
         run: |
           pnpm i --global @vscode/vsce
-          vsce package
+          pnpm package
 
       - name: Upload nightly build
         uses: actions/upload-artifact@v3
@@ -80,6 +80,10 @@ jobs:
         id: publishToOpenVSX
         with:
           pat: ${{ secrets.OPEN_VSX_TOKEN }}
+          # don't need deps, we bundle
+          # see https://github.com/microsoft/vscode-vsce/issues/421
+          # and https://github.com/HaaLeo/publish-vscode-extension/issues/36
+          dependencies: false
 
       - name: Publish to Visual Studio Marketplace
         if: "startsWith(github.ref, 'refs/tags/')"
@@ -88,6 +92,7 @@ jobs:
           pat: ${{ secrets.VS_MARKETPLACE_TOKEN }}
           registryUrl: https://marketplace.visualstudio.com
           extensionFile: ${{ steps.publishToOpenVSX.outputs.vsixPath }}
+          dependencies: false
 
       - name: GitHub Release
         if: "startsWith(github.ref, 'refs/tags/')"
