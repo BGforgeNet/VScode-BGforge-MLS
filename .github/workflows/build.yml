@@ -47,6 +47,8 @@ jobs:
 
       - name: ESlint
         run: |
+          pwd
+          ls -la
           eslint -v
           which eslint
           pnpm eslint
