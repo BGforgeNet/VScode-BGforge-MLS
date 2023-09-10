@@ -723,6 +723,9 @@ iesdp-dword:
     - name: ITM_weight
       detail: dword offset ITM_weight = 0x4c
       doc: Weight
+    - name: SPL_description
+      detail: dword offset SPL_description = 0x50
+      doc: Spell Description
     - name: SPL_exclusion_flags
       detail: dword offset SPL_exclusion_flags = 0x1e
       doc: '[Exclusion Flags](#Exclusion_Flags)'
@@ -742,9 +745,6 @@ iesdp-dword:
 
         - There is no good reason for a <code><a href="#splv1_Header_0x1C_0">Special</a></code>/<code><a href="#splv1_Header_0x1C_3">Psionic</a></code>/<code><a href="#splv1_Header_0x1C_4">Innate</a></code>/<code><a href="#splv1_Header_0x1C_5">Bard song</a></code> to be any <code><a href="#splv1_Header_0x34">Spell level</a></code> except `1`.
         - If the SPL is never <a href="../../opcodes/bgee.htm#op147">learned</a>/<a href="../../opcodes/bgee.htm#op171">gained</a> (only force-cast by script/opcode), <code><a href="#splv1_Header_0x34">Spell level</a></code> doesn't matter, but there may be some niche cases that check it (f.i. <code><a href="../../scripting/triggers/bgeetriggers.htm#0x4031">HaveSpell()</a></code>).
-    - name: SPL_unidentified_description
-      detail: dword offset SPL_unidentified_description = 0x50
-      doc: Spell Description - Unidentified (strref)
     - name: SPL_unidentified_name
       detail: dword offset SPL_unidentified_name = 0x8
       doc: <b><a name="splv1_Header_0x8">Spell Name</a></b> - Unidentified (strref)

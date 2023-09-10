@@ -251,12 +251,12 @@ repository:
       - match: \b(ITM_flags)\b
       - match: \b(ITM_price)\b
       - match: \b(ITM_weight)\b
+      - match: \b(SPL_description)\b
       - match: \b(SPL_exclusion_flags)\b
       - match: \b(SPL_extended_headers_offset)\b
       - match: \b(SPL_feature_blocks_offset)\b
       - match: \b(SPL_flags)\b
       - match: \b(SPL_level)\b
-      - match: \b(SPL_unidentified_description)\b
       - match: \b(SPL_unidentified_name)\b
       - match: \b(STO_CURE_price)\b
       - match: \b(STO_DRINK_price)\b
