@@ -97,6 +97,9 @@ export class Language implements Language {
     }
 
     private async loadHeaders(staticHover: hover.HoverMap = new Map()) {
+        if (this.workspaceRoot === undefined) {
+            return;
+        }
         if (this.id == "fallout-ssl") {
             const res = await fallout.loadHeaders(this.workspaceRoot, false, staticHover);
             return res;

@@ -57,6 +57,9 @@ const defaultProjectSettings: ProjectSettings = {
 /** get project settings from .bgforge.yml */
 export function project(dir: string) {
     const settings = defaultProjectSettings;
+    if (dir === undefined) {
+        return settings;
+    }
     try {
         const file = fs.readFileSync(path.join(dir, ".bgforge.yml"), "utf8");
         const yml_settings = yaml.parse(file).mls;

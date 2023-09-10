@@ -115,6 +115,10 @@ export function sendParseResult(parseResult: ParseResult, mainUri: string, tmpUr
 /** Check if 1st dir contains the 2nd
  */
 export function isSubpath(outerPath: string, innerPath: string) {
+    // hack: don't crash when workspaceRoot is undefined
+    if (outerPath === undefined) {
+        return false;
+    }
     const innerReal = fs.realpathSync(innerPath);
     const outerReal = fs.realpathSync(outerPath);
     if (innerReal.startsWith(outerReal)) {
