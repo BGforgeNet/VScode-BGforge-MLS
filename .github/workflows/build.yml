@@ -47,13 +47,7 @@ jobs:
           clean_node_folder: false
 
       - name: ESlint
-        run: |
-          pwd
-          ls -la
-          ls -la ./node_modules/
-          ls -la ./node_modules/.bin
-          ls -la ./node_modules/.bin/eslint
-          pnpm eslint
+        run: pnpm eslint
 
       - name: Pylint
         run: |
