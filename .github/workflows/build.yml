@@ -53,8 +53,6 @@ jobs:
           ls -la ./node_modules/
           ls -la ./node_modules/.bin
           ls -la ./node_modules/.bin/eslint
-          eslint -v
-          which eslint
           pnpm eslint
 
       - name: Pylint
