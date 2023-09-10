@@ -23,3 +23,6 @@ tmp
 
 language-configurations/*.json
 server/data/*.yml
+
+# written by pnpm only
+**/pnpm-lock.yaml
