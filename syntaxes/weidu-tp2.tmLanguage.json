@@ -17599,6 +17599,10 @@
           "name": "entity.name.function.weidu-tp2.patch-string"
         },
         {
+          "match": "\\b(WRITE_ASCIIL)\\b",
+          "name": "entity.name.function.weidu-tp2.patch-string"
+        },
+        {
           "match": "\\b(WRITE_ASCII_TERMINATE)\\b",
           "name": "entity.name.function.weidu-tp2.patch-string"
         },

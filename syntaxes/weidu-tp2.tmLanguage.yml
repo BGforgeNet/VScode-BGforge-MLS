@@ -4498,6 +4498,7 @@ repository:
       - match: \b(READ_STRREF_FS)\b
       - match: \b(WRITE_ASCII)\b
       - match: \b(WRITE_ASCII_LIST)\b
+      - match: \b(WRITE_ASCIIL)\b
       - match: \b(WRITE_ASCII_TERMINATE)\b
       - match: \b(WRITE_ASCIIT)\b
       - match: \b(WRITE_EVALUATED_ASCII)\b
