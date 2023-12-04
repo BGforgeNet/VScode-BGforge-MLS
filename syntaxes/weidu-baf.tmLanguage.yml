@@ -858,6 +858,7 @@ repository:
       - match: \b(UseContainer)\b
       - match: \b(UseDoor)\b
       - match: \b(UseItem)\b
+      - match: \b(UseItemAbility)\b
       - match: \b(UseItemPoint)\b
       - match: \b(UseItemPointSlot)\b
       - match: \b(UseItemSlot)\b

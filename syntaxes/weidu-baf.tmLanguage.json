@@ -3169,6 +3169,10 @@
           "name": "support.function.weidu-baf"
         },
         {
+          "match": "\\b(UseItemAbility)\\b",
+          "name": "support.function.weidu-baf"
+        },
+        {
           "match": "\\b(UseItemPoint)\\b",
           "name": "support.function.weidu-baf"
         },
