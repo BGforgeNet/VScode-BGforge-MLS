@@ -1072,7 +1072,6 @@ repository:
       - match: (%SCROLL_WIZARD_DIMENSION_DOOR%)
       - match: (%SCROLL_WIZARD_DIRE_CHARM%)
       - match: (%SCROLL_WIZARD_DISINTEGRATE%)
-      - match: (%SCROLL_WIZARD_DISPEL_MAGIC%)
       - match: (%SCROLL_WIZARD_DOMINATION%)
       - match: (%SCROLL_WIZARD_EMOTION_COURAGE%)
       - match: (%SCROLL_WIZARD_EMOTION_FEAR%)
@@ -1235,7 +1234,6 @@ repository:
       - match: (%SCROLL_WIZARD_TIME_STOP%)
       - match: (%SCROLL_WIZARD_TROLLISH_FORTITUDE%)
       - match: (%SCROLL_WIZARD_TRUE_DISPEL_MAGIC%)
-      - match: (%SCROLL_WIZARD_DISPEL_MAGIC%)
       - match: (%SCROLL_WIZARD_TRUE_SIGHT%)
       - match: (%SCROLL_WIZARD_VAMPIRIC_TOUCH%)
       - match: (%SCROLL_WIZARD_VITRIOLIC_SPHERE%)
@@ -1643,7 +1641,6 @@ repository:
       - match: (%WIZARD_TENSERS_TRANSFORMATION%)
       - match: (%WIZARD_TIME_STOP%)
       - match: (%WIZARD_TRUE_DISPEL_MAGIC%)
-      - match: (%WIZARD_DISPEL_MAGIC%)
       - match: (%WIZARD_TRUE_SIGHT%)
       - match: (%WIZARD_VAMPIRIC_TOUCH%)
       - match: (%WIZARD_VOCALIZE%)
@@ -2323,7 +2320,6 @@ repository:
       - match: \b(SCROLL_WIZARD_DIMENSION_DOOR)\b
       - match: \b(SCROLL_WIZARD_DIRE_CHARM)\b
       - match: \b(SCROLL_WIZARD_DISINTEGRATE)\b
-      - match: \b(SCROLL_WIZARD_DISPEL_MAGIC)\b
       - match: \b(SCROLL_WIZARD_DOMINATION)\b
       - match: \b(SCROLL_WIZARD_EMOTION_COURAGE)\b
       - match: \b(SCROLL_WIZARD_EMOTION_FEAR)\b
@@ -2486,7 +2482,6 @@ repository:
       - match: \b(SCROLL_WIZARD_TIME_STOP)\b
       - match: \b(SCROLL_WIZARD_TROLLISH_FORTITUDE)\b
       - match: \b(SCROLL_WIZARD_TRUE_DISPEL_MAGIC)\b
-      - match: \b(SCROLL_WIZARD_DISPEL_MAGIC)\b
       - match: \b(SCROLL_WIZARD_TRUE_SIGHT)\b
       - match: \b(SCROLL_WIZARD_VAMPIRIC_TOUCH)\b
       - match: \b(SCROLL_WIZARD_VITRIOLIC_SPHERE)\b
@@ -2894,7 +2889,6 @@ repository:
       - match: \b(WIZARD_TENSERS_TRANSFORMATION)\b
       - match: \b(WIZARD_TIME_STOP)\b
       - match: \b(WIZARD_TRUE_DISPEL_MAGIC)\b
-      - match: \b(WIZARD_DISPEL_MAGIC)\b
       - match: \b(WIZARD_TRUE_SIGHT)\b
       - match: \b(WIZARD_VAMPIRIC_TOUCH)\b
       - match: \b(WIZARD_VOCALIZE)\b
