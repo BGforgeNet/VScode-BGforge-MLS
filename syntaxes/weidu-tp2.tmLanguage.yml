@@ -1072,7 +1072,6 @@ repository:
       - match: (%SCROLL_WIZARD_DIMENSION_DOOR%)
       - match: (%SCROLL_WIZARD_DIRE_CHARM%)
       - match: (%SCROLL_WIZARD_DISINTEGRATE%)
-      - match: (%SCROLL_WIZARD_DISPEL_MAGIC%)
       - match: (%SCROLL_WIZARD_DOMINATION%)
       - match: (%SCROLL_WIZARD_EMOTION_COURAGE%)
       - match: (%SCROLL_WIZARD_EMOTION_FEAR%)
@@ -2321,7 +2320,6 @@ repository:
       - match: \b(SCROLL_WIZARD_DIMENSION_DOOR)\b
       - match: \b(SCROLL_WIZARD_DIRE_CHARM)\b
       - match: \b(SCROLL_WIZARD_DISINTEGRATE)\b
-      - match: \b(SCROLL_WIZARD_DISPEL_MAGIC)\b
       - match: \b(SCROLL_WIZARD_DOMINATION)\b
       - match: \b(SCROLL_WIZARD_EMOTION_COURAGE)\b
       - match: \b(SCROLL_WIZARD_EMOTION_FEAR)\b
@@ -4606,7 +4604,8 @@ repository:
     name: keyword.control.value.weidu-tp2
     patterns:
       - match: (\=\>|\+|-|\*|\/|=|\*|!|>|<|\?|:)
-      - match: \b(MODULO|REM|NOT|OR|AND|BAND|BOR|BXOR|BNOT|BLSL|BASR|EVAL)\b
+      - match: (&&?|\|(\|)?|^^|`)
+      - match: \b(MODULO|REM|NOT|OR|AND|BAND|BOR|BXOR|BNOT|BLSL|BLSR|BASR|EVAL)\b
 
   weidu-tp2-values:
     name: support.class.weidu-tp2.value
@@ -4622,6 +4621,7 @@ repository:
       - match: \b(STRING_EQUAL)\b
       - match: \b(STRING_EQUAL_CASE)\b
       - match: \b(STR_EQ)\b
+      - match: \b(STR_CMP)\b
       - match: \b(STRING_MATCHES_REGEXP)\b
       - match: \b(STRING_COMPARE_REGEXP)\b
       - match: \b(STRING_CONTAINS_REGEXP)\b
@@ -4661,6 +4661,7 @@ repository:
       - match: \b(VALID_SCRIPT_TRIGGERS)\b
       - match: \b(EVALUATE_BUFFER)\b
       - match: \b(WEIDU_ARCH)\b
+      - match: \b(WEIDU_EXECUTABLE)\b
       - match: \b(WEIDU_OS)\b
       - match: \b(WEIDU_VER)\b
       - match: \b(COMPONENT_NUMBER)\b
