@@ -4803,7 +4803,7 @@ repository:
             name: keyword.control.double-eval.weidu-tp2
           '6':
             name: keyword.control.double-eval.weidu-tp2
-      - match: (%[#!\-\w]+%)
+      - match: (%[#!<>=\-\w]+%)
 
   vars:
     patterns:
