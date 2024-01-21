@@ -350,9 +350,10 @@ tp2-action:
         newMUSFile is copied to the music directory and added to songlist.2da under the name internalMusicName. The variable %internalMusicName% is set to the number of this new entry in songlist.2da. If newMUSFile already exists, the variable %internalMusicName% is set to the existing entry in songlist.2da and all other operations are skipped. Variables are evaluated. Some versions of the Infinity Engine cannot handle more than 100 entries in songlist.2da. ADD_MUSIC will fail under those circumstances unless the appropriate versions of ToB Hacks or ToBEx are installed or the game is GemRB or BGEE.
 
     - name: ADD_PROJECTILE
-      detail: ADD_PROJECTILE modpath/PROName.PRO
+      detail: ADD_PROJECTILE modpath/PROName.PRO idsName
       doc: |-
         Appends an entry for PROName to PROJECTL.IDS and assigns it the next available ProRef number. Then copies the file modpath/PROName.PRO to the override folder. The new ProRef number can be accessed through the variable %PROName% and used to updated the Projectile type field of an ITM or SPL file's Item Ability or Spell Ability sub-structures.
+        If `idsName` is specified, then it will give the projectile the name `idsName` in `MISSILE.IDS`.
 
     - name: ADD_SCHOOL
       detail: ADD_SCHOOL schoolName removalString
@@ -2794,6 +2795,9 @@ tp2-value:
     - name: "%WEIDU_ARCH%"
       doc: |-
         The special variable WEIDU_ARCH is set to either "x86", "amd64" or "mac" at WeiDU startup and can be used to determine the architecture of the WeiDU binary.
+    - name: "%WEIDU_EXECUTABLE%"
+      doc: |-
+        The special variable WEIDU_EXECUTABLE contains the full path of the current WeiDU binary.
     - name: "%WEIDU_OS%"
       doc: |-
         The special variable WEIDU_OS is set to either "win32" or "osx" or "unix" at WeiDU startup and can be used to determine the operating system for which the WeiDU binary was compiled.

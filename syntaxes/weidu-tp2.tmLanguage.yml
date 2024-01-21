@@ -1235,6 +1235,7 @@ repository:
       - match: (%SCROLL_WIZARD_TIME_STOP%)
       - match: (%SCROLL_WIZARD_TROLLISH_FORTITUDE%)
       - match: (%SCROLL_WIZARD_TRUE_DISPEL_MAGIC%)
+      - match: (%SCROLL_WIZARD_DISPEL_MAGIC%)
       - match: (%SCROLL_WIZARD_TRUE_SIGHT%)
       - match: (%SCROLL_WIZARD_VAMPIRIC_TOUCH%)
       - match: (%SCROLL_WIZARD_VITRIOLIC_SPHERE%)
@@ -1642,6 +1643,7 @@ repository:
       - match: (%WIZARD_TENSERS_TRANSFORMATION%)
       - match: (%WIZARD_TIME_STOP%)
       - match: (%WIZARD_TRUE_DISPEL_MAGIC%)
+      - match: (%WIZARD_DISPEL_MAGIC%)
       - match: (%WIZARD_TRUE_SIGHT%)
       - match: (%WIZARD_VAMPIRIC_TOUCH%)
       - match: (%WIZARD_VOCALIZE%)
@@ -2484,6 +2486,7 @@ repository:
       - match: \b(SCROLL_WIZARD_TIME_STOP)\b
       - match: \b(SCROLL_WIZARD_TROLLISH_FORTITUDE)\b
       - match: \b(SCROLL_WIZARD_TRUE_DISPEL_MAGIC)\b
+      - match: \b(SCROLL_WIZARD_DISPEL_MAGIC)\b
       - match: \b(SCROLL_WIZARD_TRUE_SIGHT)\b
       - match: \b(SCROLL_WIZARD_VAMPIRIC_TOUCH)\b
       - match: \b(SCROLL_WIZARD_VITRIOLIC_SPHERE)\b
@@ -2891,6 +2894,7 @@ repository:
       - match: \b(WIZARD_TENSERS_TRANSFORMATION)\b
       - match: \b(WIZARD_TIME_STOP)\b
       - match: \b(WIZARD_TRUE_DISPEL_MAGIC)\b
+      - match: \b(WIZARD_DISPEL_MAGIC)\b
       - match: \b(WIZARD_TRUE_SIGHT)\b
       - match: \b(WIZARD_VAMPIRIC_TOUCH)\b
       - match: \b(WIZARD_VOCALIZE)\b
@@ -4606,7 +4610,8 @@ repository:
     name: keyword.control.value.weidu-tp2
     patterns:
       - match: (\=\>|\+|-|\*|\/|=|\*|!|>|<|\?|:)
-      - match: \b(MODULO|REM|NOT|OR|AND|BAND|BOR|BXOR|BNOT|BLSL|BASR|EVAL)\b
+      - match: (&&?|\|(\|)?|^^|`)
+      - match: \b(MODULO|REM|NOT|OR|AND|BAND|BOR|BXOR|BNOT|BLSL|BLSR|BASR|EVAL)\b
 
   weidu-tp2-values:
     name: support.class.weidu-tp2.value
@@ -4622,6 +4627,7 @@ repository:
       - match: \b(STRING_EQUAL)\b
       - match: \b(STRING_EQUAL_CASE)\b
       - match: \b(STR_EQ)\b
+      - match: \b(STR_CMP)\b
       - match: \b(STRING_MATCHES_REGEXP)\b
       - match: \b(STRING_COMPARE_REGEXP)\b
       - match: \b(STRING_CONTAINS_REGEXP)\b
@@ -4661,6 +4667,7 @@ repository:
       - match: \b(VALID_SCRIPT_TRIGGERS)\b
       - match: \b(EVALUATE_BUFFER)\b
       - match: \b(WEIDU_ARCH)\b
+      - match: \b(WEIDU_EXECUTABLE)\b
       - match: \b(WEIDU_OS)\b
       - match: \b(WEIDU_VER)\b
       - match: \b(COMPONENT_NUMBER)\b
@@ -4786,7 +4793,7 @@ repository:
     patterns:
       - include: '#weidu-vars'
       - include: '#ielib-constants'
-      - match: (%)((\w*)(%[#!\-\w]+%)(\w*))(%)
+      - match: (%)((\w*)(%[#!<>=\-\w]+%)(\w*))(%)
         captures:
           '1':
             name: keyword.control.double-eval.weidu-tp2

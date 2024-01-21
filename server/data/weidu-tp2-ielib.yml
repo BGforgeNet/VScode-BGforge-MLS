@@ -3803,6 +3803,9 @@ ielib-resref:
     - name: WIZARD_REMOVE_MAGIC
       detail: resref WIZARD_REMOVE_MAGIC = "SPWI302"
       doc: IElib define
+    - name: WIZARD_DISPEL_MAGIC
+      detail: resref WIZARD_DISPEL_MAGIC = "SPWI302"
+      doc: IElib define
     - name: WIZARD_RESIST_FEAR
       detail: resref WIZARD_RESIST_FEAR = "SPWI210"
       doc: IElib define
