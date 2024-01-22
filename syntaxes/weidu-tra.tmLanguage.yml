@@ -46,7 +46,7 @@ repository:
         name: string.quoted.weidu-tra
         patterns:
           - include: "#tokens"
-          - include: source.tp2.weidu#non-weidu-vars
+          - include: source.weidu-tp2#non-weidu-vars
       - begin: (")
         beginCaptures:
           "1":
@@ -58,7 +58,7 @@ repository:
         name: string.quoted.weidu-tra
         patterns:
           - include: "#tokens"
-          - include: source.tp2.weidu#non-weidu-vars
+          - include: source.weidu-tp2#non-weidu-vars
   tokens:
     patterns:
       - captures:

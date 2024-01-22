@@ -4080,10 +4080,6 @@
           "name": "constant.language.ielib.resref"
         },
         {
-          "match": "(%SCROLL_WIZARD_DISPEL_MAGIC%)",
-          "name": "constant.language.ielib.resref"
-        },
-        {
           "match": "(%SCROLL_WIZARD_DOMINATION%)",
           "name": "constant.language.ielib.resref"
         },
@@ -9073,10 +9069,6 @@
         },
         {
           "match": "\\b(SCROLL_WIZARD_DISINTEGRATE)\\b",
-          "name": "constant.language.ielib.resref"
-        },
-        {
-          "match": "\\b(SCROLL_WIZARD_DISPEL_MAGIC)\\b",
           "name": "constant.language.ielib.resref"
         },
         {
@@ -17987,7 +17979,11 @@
           "name": "keyword.control.value.weidu-tp2"
         },
         {
-          "match": "\\b(MODULO|REM|NOT|OR|AND|BAND|BOR|BXOR|BNOT|BLSL|BASR|EVAL)\\b",
+          "match": "(&&?|\\|(\\|)?|^^|`)",
+          "name": "keyword.control.value.weidu-tp2"
+        },
+        {
+          "match": "\\b(MODULO|REM|NOT|OR|AND|BAND|BOR|BXOR|BNOT|BLSL|BLSR|BASR|EVAL)\\b",
           "name": "keyword.control.value.weidu-tp2"
         }
       ]
@@ -18037,6 +18033,10 @@
         },
         {
           "match": "\\b(STR_EQ)\\b",
+          "name": "support.class.weidu-tp2.value"
+        },
+        {
+          "match": "\\b(STR_CMP)\\b",
           "name": "support.class.weidu-tp2.value"
         },
         {
@@ -18193,6 +18193,10 @@
         },
         {
           "match": "\\b(WEIDU_ARCH)\\b",
+          "name": "support.class.weidu-tp2.value"
+        },
+        {
+          "match": "\\b(WEIDU_EXECUTABLE)\\b",
           "name": "support.class.weidu-tp2.value"
         },
         {
