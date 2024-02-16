@@ -7,29 +7,29 @@ settings:
 dependencies:
   cytoscape:
     specifier: ^3.23.0
-    version: 3.26.0
+    version: 3.28.1
   cytoscape-fcose:
     specifier: ^2.2.0
-    version: 2.2.0(cytoscape@3.26.0)
+    version: 2.2.0(cytoscape@3.28.1)
 
 devDependencies:
   '@types/cytoscape':
     specifier: ^3.19.9
-    version: 3.19.11
+    version: 3.19.16
   '@types/cytoscape-fcose':
     specifier: ^2.1.0
-    version: 2.2.2
+    version: 2.2.4
 
 packages:
 
-  /@types/cytoscape-fcose@2.2.2:
-    resolution: {integrity: sha512-C576Xjaga9/he4Isef5HiBbN8KWZRWRh1V2fvFsKezmwhPlE6op25CtX5xYgSq0CO45j/FyNmRwlEritT93bOA==}
+  /@types/cytoscape-fcose@2.2.4:
+    resolution: {integrity: sha512-QwWtnT8HI9h+DHhG5krGc1ZY0Ex+cn85MvX96ZNAjSxuXiZDnjIZW/ypVkvvubTjIY4rSdkJY1D/Nsn8NDpmAw==}
     dependencies:
-      '@types/cytoscape': 3.19.11
+      '@types/cytoscape': 3.19.16
     dev: true
 
-  /@types/cytoscape@3.19.11:
-    resolution: {integrity: sha512-ny4i4BOoZxdc9DrSa9RrasXHPRFgt0PeINgj/CegzKu7CJO+UQP0KnjebYJ+KoLymyUbCX86vmqz5B3LK10w5Q==}
+  /@types/cytoscape@3.19.16:
+    resolution: {integrity: sha512-A3zkjaZ6cOGyqEvrVuC1YUgiRSJhDZOj8Qhd1ALH2/+YxH2za1BOmR4RWQsKYHsc+aMP/IWoqg1COuUbZ39t/g==}
     dev: true
 
   /cose-base@2.2.0:
@@ -38,17 +38,17 @@ packages:
       layout-base: 2.0.1
     dev: false
 
-  /cytoscape-fcose@2.2.0(cytoscape@3.26.0):
+  /cytoscape-fcose@2.2.0(cytoscape@3.28.1):
     resolution: {integrity: sha512-ki1/VuRIHFCzxWNrsshHYPs6L7TvLu3DL+TyIGEsRcvVERmxokbf5Gdk7mFxZnTdiGtnA4cfSmjZJMviqSuZrQ==}
     peerDependencies:
       cytoscape: ^3.2.0
     dependencies:
       cose-base: 2.2.0
-      cytoscape: 3.26.0
+      cytoscape: 3.28.1
     dev: false
 
-  /cytoscape@3.26.0:
-    resolution: {integrity: sha512-IV+crL+KBcrCnVVUCZW+zRRRFUZQcrtdOPXki+o4CFUWLdAEYvuZLcBSJC9EBK++suamERKzeY7roq2hdovV3w==}
+  /cytoscape@3.28.1:
+    resolution: {integrity: sha512-xyItz4O/4zp9/239wCcH8ZcFuuZooEeF8KHRmzjDfGdXsj3OG9MFSMA0pJE0uX3uCN/ygof6hHf4L7lst+JaDg==}
     engines: {node: '>=0.10'}
     dependencies:
       heap: 0.2.7
