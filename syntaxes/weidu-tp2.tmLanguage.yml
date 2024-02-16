@@ -4606,7 +4606,7 @@ repository:
     name: keyword.control.value.weidu-tp2
     patterns:
       - match: (\=\>|\+|-|\*|\/|=|\*|!|>|<|\?|:)
-      - match: (&&?|\|(\|)?|^^|`)
+      - match: (&&?|\|(\|)?|\^\^|`)
       - match: \b(MODULO|REM|NOT|OR|AND|BAND|BOR|BXOR|BNOT|BLSL|BLSR|BASR|EVAL)\b
 
   weidu-tp2-values:

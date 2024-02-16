@@ -17987,7 +17987,7 @@
           "name": "keyword.control.value.weidu-tp2"
         },
         {
-          "match": "(&&?|\\|(\\|)?|^^|`)",
+          "match": "(&&?|\\|(\\|)?|\\^\\^|`)",
           "name": "keyword.control.value.weidu-tp2"
         },
         {
