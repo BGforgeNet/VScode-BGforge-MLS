@@ -4080,6 +4080,10 @@
           "name": "constant.language.ielib.resref"
         },
         {
+          "match": "(%SCROLL_WIZARD_DISPEL_MAGIC%)",
+          "name": "constant.language.ielib.resref"
+        },
+        {
           "match": "(%SCROLL_WIZARD_DOMINATION%)",
           "name": "constant.language.ielib.resref"
         },
@@ -9069,6 +9073,10 @@
         },
         {
           "match": "\\b(SCROLL_WIZARD_DISINTEGRATE)\\b",
+          "name": "constant.language.ielib.resref"
+        },
+        {
+          "match": "\\b(SCROLL_WIZARD_DISPEL_MAGIC)\\b",
           "name": "constant.language.ielib.resref"
         },
         {

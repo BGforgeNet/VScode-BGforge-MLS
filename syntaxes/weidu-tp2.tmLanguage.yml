@@ -1072,6 +1072,7 @@ repository:
       - match: (%SCROLL_WIZARD_DIMENSION_DOOR%)
       - match: (%SCROLL_WIZARD_DIRE_CHARM%)
       - match: (%SCROLL_WIZARD_DISINTEGRATE%)
+      - match: (%SCROLL_WIZARD_DISPEL_MAGIC%)
       - match: (%SCROLL_WIZARD_DOMINATION%)
       - match: (%SCROLL_WIZARD_EMOTION_COURAGE%)
       - match: (%SCROLL_WIZARD_EMOTION_FEAR%)
@@ -2320,6 +2321,7 @@ repository:
       - match: \b(SCROLL_WIZARD_DIMENSION_DOOR)\b
       - match: \b(SCROLL_WIZARD_DIRE_CHARM)\b
       - match: \b(SCROLL_WIZARD_DISINTEGRATE)\b
+      - match: \b(SCROLL_WIZARD_DISPEL_MAGIC)\b
       - match: \b(SCROLL_WIZARD_DOMINATION)\b
       - match: \b(SCROLL_WIZARD_EMOTION_COURAGE)\b
       - match: \b(SCROLL_WIZARD_EMOTION_FEAR)\b
