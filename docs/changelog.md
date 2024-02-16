@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.1.6
+
+- Fallout
+  - Sfall data update as of 4.4.2.
+- IE
+  - Added `WEIDU_EXECUTABLE`, `ADD_PROJECTILE` to intellisense.
+  - Added `STR_CMP`, `WRITE_ASCIIL`, additional value operators to highlighting.
+  - Variables in trarefs are also highlighted now.
+  - IESDP data update as of 2024.02.24.
+
 ## 2.1.5
 
 - Added translation hints to `GMessage/NMessage/BMessage`.
