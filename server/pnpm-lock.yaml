@@ -18,7 +18,7 @@ dependencies:
     specifier: ^4.9.4
     version: 4.9.5
   vscode-languageserver:
-    specifier: ^8.0.2
+    specifier: 8.1.0
     version: 8.1.0
   vscode-languageserver-textdocument:
     specifier: ^1.0.8
