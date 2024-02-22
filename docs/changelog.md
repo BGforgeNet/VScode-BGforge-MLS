@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1.7
+
+Fixed compile/parse issue introduced in 2.1.6.
+
 ## 2.1.6
 
 - Fallout
