@@ -28,12 +28,12 @@ dependencies:
     version: 3.0.8
   yaml:
     specifier: ^2.2.2
-    version: 2.3.4
+    version: 2.4.0
 
 devDependencies:
   '@types/vscode':
     specifier: ^1.69.1
-    version: 1.86.0
+    version: 1.87.0
   '@vscode/test-electron':
     specifier: ^2.2.1
     version: 2.3.9
@@ -71,8 +71,8 @@ packages:
     engines: {node: '>= 6'}
     dev: true
 
-  /@types/vscode@1.86.0:
-    resolution: {integrity: sha512-DnIXf2ftWv+9LWOB5OJeIeaLigLHF7fdXF6atfc7X5g2w/wVZBgk0amP7b+ub5xAuW1q7qP5YcFvOcit/DtyCQ==}
+  /@types/vscode@1.87.0:
+    resolution: {integrity: sha512-y3yYJV2esWr8LNjp3VNbSMWG7Y43jC8pCldG8YwiHGAQbsymkkMMt0aDT1xZIOFM2eFcNiUc+dJMx1+Z0UT8fg==}
     dev: true
 
   /@vscode/test-electron@2.3.9:
@@ -365,7 +365,8 @@ packages:
     resolution: {integrity: sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==}
     dev: true
 
-  /yaml@2.3.4:
-    resolution: {integrity: sha512-8aAvwVUSHpfEqTQ4w/KMlf3HcRdt50E5ODIQJBw1fQ5RL34xabzxtUlzTXVqc4rkZsPbvrXKWnABCD7kWSmocA==}
+  /yaml@2.4.0:
+    resolution: {integrity: sha512-j9iR8g+/t0lArF4V6NE/QCfT+CO7iLqrXAHZbJdo+LfjqP1vR8Fg5bSiaq6Q2lOD1AUEVrEVIgABvBFYojJVYQ==}
     engines: {node: '>= 14'}
+    hasBin: true
     dev: false
