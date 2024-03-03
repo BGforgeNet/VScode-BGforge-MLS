@@ -270,7 +270,7 @@ export class Language implements Language {
         fileHover = new Map(
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             Array.from(fileHover).filter(([key, value]) => {
-                !this.data.hover.static.has(key);
+                return !this.data.hover.static.has(key);
             })
         );
         newHover = new Map([...newHover, ...fileHover]);
@@ -312,7 +312,7 @@ export class Language implements Language {
         fileSignature = new Map(
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             Array.from(fileSignature).filter(([key, value]) => {
-                !this.data.hover.static.has(key);
+                return !this.data.hover.static.has(key);
             })
         );
         newSignature = new Map([...newSignature, ...fileSignature]);
