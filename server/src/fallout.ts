@@ -309,7 +309,7 @@ function findSymbols(text: string) {
             defineDetail = `${defineName}(${defineVars})`;
         }
 
-        // check if it's looks like a constant
+        // check if it looks like a constant
         let constant = false;
         if (!multiline && constantRegex.test(defineName)) {
             constant = true;
@@ -448,7 +448,7 @@ function jsdocToDetail(label: string, jsd: jsdoc.JSdoc) {
 
 /**
  * Wine gives network-mapped looking path to compile.exe
- * @param path looks like this `Z:/Downloads/1/_mls_test.h`, should be this `/home/user/Downloads/1/_mls_test.h`
+ * @param filePath looks like this `Z:/Downloads/1/_mls_test.h`, should be this `/home/user/Downloads/1/_mls_test.h`
  * Imperfect, but works.
  */
 function fixWinePath(filePath: string) {
