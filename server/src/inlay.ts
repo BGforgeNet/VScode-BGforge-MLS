@@ -45,7 +45,7 @@ export function getHints(
     let regex: RegExp;
     if (traExt == "msg") {
         regex =
-            /(Reply|NOption|GOption|BOption|mstr|display_mstr|floater|NLowOption|BLowOption|GLowOption)\((\d+)/g;
+            /(Reply|NOption|GOption|BOption|mstr|display_mstr|floater|NLowOption|BLowOption|GLowOption|GMessage|NMessage|BMessage|CompOption)\((\d+)/g;
     } else {
         regex = /@(\d+)/g;
     }
