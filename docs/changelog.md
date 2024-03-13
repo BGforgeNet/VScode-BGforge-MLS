@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1.9
+
+Added `CompOption` to translation and inlay hints, also `GMessage/NMessage/BMessage` to inlay.
+
 ## 2.1.8
 
 Fixed some hovers and signatures missing after opening their source files.
