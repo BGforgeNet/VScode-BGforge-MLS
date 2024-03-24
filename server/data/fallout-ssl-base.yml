@@ -865,18 +865,25 @@ base-functions:
       detail: ObjectPtr source_obj
       doc: |-
         Returns a pointer to the source object (activator) for this action. The source object for a pickup_proc (pickup an object script_action) would be the critter picking the object up, for instance.
-    - name: start_dialogue
-      detail: void start_dialogue(ObjectPtr who, int mood)
-      doc: |-
-        Start the dialogue system focusing on a critter (who) and starting in a given (mood). This call sets up the appropriate dialog windows, head art, etc. If this call is not made before the normal dialog calls (sayReply, sayMessage, sayOption, etc.) then the dialog windows will not come up, and only grey boxes will appear with the text.
-    - name: start_gialog
-      detail: void start_gialog(int msgFileNum, ObjectPtr who, int mood, int headNum, int backgroundIdx)
-      doc: |-
-        Start the dialogue system focusing on a critter (who) and starting in a given (mood). This call sets up the appropriate dialog windows, head art, etc. If this call is not made before the normal dialog calls (sayReply, sayMessage, sayOption, etc.) then the dialog windows will not come up, and only grey boxes will appear with the text.
+
+    # https://github.com/sfall-team/sfall/blob/a89e6723552c39a4522c8572260f1ca1ec3cc924/artifacts/ddraw.ini#L733
+    # https://github.com/alexbatalov/fallout2-ce/blob/31afb4d56817a7473c949aafd9070bd3a26a9d7b/src/interpreter_extra.cc#L1897
     - name: start_gdialog
       detail: void start_gdialog(int msgFileNum, ObjectPtr who, int mood, int headNum, int backgroundIdx)
       doc: |-
-        Start the dialogue system focusing on a critter (who) and starting in a given (mood). This call sets up the appropriate dialog windows, head art, etc. If this call is not made before the normal dialog calls (sayReply, sayMessage, sayOption, etc.) then the dialog windows will not come up, and only grey boxes will appear with the text.
+        Start the dialogue system focusing on a critter `who` and in a given `mood`.
+        This call sets up the appropriate dialog windows, head art, etc.
+        If this call is not made before the normal dialog calls (`sayReply`, `sayMessage`, `sayOption`, etc.) then the dialog windows will not come up, and only grey boxes will appear with the text.
+
+        `mood` argument is unused in vanilla. Instead, the function checks LVAR 0 of the script:
+        - `LVAR > 10` - good reaction (happy head).
+        - `-10 > LVAR >= 10` - neutral.
+        - Else, angry head.
+
+        If sfall is installed, and `StartGDialogFix` is enabled, argument `mood` does work:
+        - If `mood == -1`, use vanilla behaviour (check LVAR 0).
+        - Else, use argument value. Same thresholds apply.
+
     - name: target_obj
       detail: ObjectPtr target_obj
       doc: |-

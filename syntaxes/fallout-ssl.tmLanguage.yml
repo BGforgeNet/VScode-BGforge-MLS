@@ -342,7 +342,6 @@ repository:
       - match: \b(?i)(soundstop)\b
       - match: \b(?i)(source_obj)\b
       - match: \b(?i)(start_gdialog)\b
-      - match: \b(?i)(start_gialog)\b
       - match: \b(?i)(stopmovie)\b
       - match: \b(?i)(target_obj)\b
       - match: \b(?i)(terminate_combat)\b
@@ -1557,7 +1556,6 @@ repository:
       - match: \b(sort_map_value)\b
       - match: \b(spatial_radius)\b
       - match: \b(sprintf2)\b
-      - match: \b(start_dialogue)\b
       - match: \b(stat_success)\b
       - match: \b(status_is)\b
       - match: \b(status_is_alive)\b
