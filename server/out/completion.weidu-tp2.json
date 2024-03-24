@@ -914,7 +914,7 @@
         "source": "builtin",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nADD_PROJECTILE modpath/PROName.PRO\n```\nAppends an entry for PROName to PROJECTL.IDS and assigns it the next available ProRef number. Then copies the file modpath/PROName.PRO to the override folder. The new ProRef number can be accessed through the variable %PROName% and used to updated the Projectile type field of an ITM or SPL file's Item Ability or Spell Ability sub-structures."
+            "value": "```weidu-tp2-tooltip\nADD_PROJECTILE modpath/PROName.PRO [idsName]\n```\nAppends an entry for PROName to PROJECTL.IDS and assigns it the next available ProRef number. Then copies the file modpath/PROName.PRO to the override folder. The new ProRef number can be accessed through the variable %PROName% and used to updated the Projectile type field of an ITM or SPL file's Item Ability or Spell Ability sub-structures.\nIf `idsName` is specified, then it will give the projectile the name `idsName` in `MISSILE.IDS`."
         }
     },
     {
@@ -3744,6 +3744,15 @@
         "documentation": {
             "kind": "markdown",
             "value": "```weidu-tp2-tooltip\n%WEIDU_ARCH%\n```\nThe special variable WEIDU_ARCH is set to either \"x86\", \"amd64\" or \"mac\" at WeiDU startup and can be used to determine the architecture of the WeiDU binary."
+        }
+    },
+    {
+        "label": "%WEIDU_EXECUTABLE%",
+        "kind": 14,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\n%WEIDU_EXECUTABLE%\n```\nThe special variable WEIDU_EXECUTABLE contains the full path of the current WeiDU binary."
         }
     },
     {
@@ -7095,6 +7104,15 @@
         }
     },
     {
+        "label": "SPL_description",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\ndword offset SPL_description = 0x50\n```\nSpell Description"
+        }
+    },
+    {
         "label": "SPL_exclusion_flags",
         "kind": 21,
         "source": "builtin",
@@ -7137,15 +7155,6 @@
         "documentation": {
             "kind": "markdown",
             "value": "```weidu-tp2-tooltip\ndword offset SPL_level = 0x34\n```\n<b><a name=\"splv1_Header_0x34\">Spell Level</a></b>\n\n- There is no good reason for a <code><a href=\"#splv1_Header_0x1C_0\">Special</a></code>/<code><a href=\"#splv1_Header_0x1C_3\">Psionic</a></code>/<code><a href=\"#splv1_Header_0x1C_4\">Innate</a></code>/<code><a href=\"#splv1_Header_0x1C_5\">Bard song</a></code> to be any <code><a href=\"#splv1_Header_0x34\">Spell level</a></code> except `1`.\n- If the SPL is never <a href=\"../../opcodes/bgee.htm#op147\">learned</a>/<a href=\"../../opcodes/bgee.htm#op171\">gained</a> (only force-cast by script/opcode), <code><a href=\"#splv1_Header_0x34\">Spell level</a></code> doesn't matter, but there may be some niche cases that check it (f.i. <code><a href=\"../../scripting/triggers/bgeetriggers.htm#0x4031\">HaveSpell()</a></code>)."
-        }
-    },
-    {
-        "label": "SPL_unidentified_description",
-        "kind": 21,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\ndword offset SPL_unidentified_description = 0x50\n```\nSpell Description - Unidentified (strref)"
         }
     },
     {

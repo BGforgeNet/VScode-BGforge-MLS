@@ -1263,10 +1263,6 @@
           "name": "support.function.fallout-ssl.base"
         },
         {
-          "match": "\\b(?i)(start_gialog)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
           "match": "\\b(?i)(stopmovie)\\b",
           "name": "support.function.fallout-ssl.base"
         },
@@ -5860,10 +5856,6 @@
         },
         {
           "match": "\\b(sprintf2)\\b",
-          "name": "entity.name.function.fallout-ssl.header-defines"
-        },
-        {
-          "match": "\\b(start_dialogue)\\b",
           "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
