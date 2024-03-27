@@ -391,7 +391,7 @@ base-functions:
         Works properly for positive values, but for negative ones functions like `ceil` (rounds up instead of down).
       deprecated: true
     - name: gSay_End
-      detail: void gSay_End(unsigned int var_index)
+      detail: void gSay_End(uint var_index)
       doc: |-
         Ends a dialog sequence, which will bring up the sequence (actually display it).
     - name: gSay_Message
@@ -564,7 +564,7 @@ base-functions:
       doc: |-
         Loads a new map (map_name), removing all scripts currently running and passing on the entrance location (start_location) to the new map's map_init script. Can also use the number representing the map in the map list (for example, between 0 to 64 in Fallout 1)
     - name: local_var
-      detail: int local_var(unsigned int var_index)
+      detail: int local_var(uint var_index)
       doc: |-
         Returns the value of a local variable of given index # (var_index). If the user is not allowed local vars up to this number in the list of critters, this can generate errors.
     - name: map_first_run
@@ -580,7 +580,7 @@ base-functions:
       doc: |-
         Returns True if a given map # (mapNum) is known, False otherwise.
     - name: map_var
-      detail: int map_var(unsigned int var_index)
+      detail: int map_var(uint var_index)
       doc: |-
         Returns the value of a map-global variable of a given index # (var_index).
     - name: message_str
@@ -827,7 +827,7 @@ base-functions:
       doc: |-
         Sets all exit grids on a given elevation (markElev) to point to a destination mapID (may be -1 which means stay on this map), elevation, tileNum, and rotation.
     - name: set_global_var
-      detail: void set_global_var(unsigned int var_index, int value)
+      detail: void set_global_var(uint var_index, int value)
       doc: |-
         Sets the value of a global variable (var_index) to a given (value).
     - name: set_light_level
@@ -835,7 +835,7 @@ base-functions:
       doc: |-
         Sets the ambient light level (1-100). The range is Full Darkness to Full Daylight. NOTE: level is NOT percentange, full darkness is not black screen. set_light_level(0) actually corresponds to 25% brightness, and as level increases, brightness makes 2 huge jumps in the middle (49-51). Thus, certain brightness levels simply cannot be set.
     - name: set_local_var
-      detail: void set_local_var(unsigned int var_index, int value)
+      detail: void set_local_var(uint var_index, int value)
       doc: |-
         Sets the value of a local variable (var_index) to a given (value).
     - name: set_map_start
@@ -843,7 +843,7 @@ base-functions:
       doc: |-
         Sets the start location & rotation (0-5) for the next time this map is entered (loaded & run).
     - name: set_map_var
-      detail: void set_map_var(unsigned int var_index, int value)
+      detail: void set_map_var(uint var_index, int value)
       doc: |-
         Sets the value of a map-global variable (var_index) to a given (value).
     - name: set_obj_visibility
