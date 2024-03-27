@@ -158,7 +158,8 @@ function loadMacros(uri: string, headerData: FalloutHeaderData, filePath: string
     const hovers: hover.HoverMapEx = new Map();
     for (const macro of headerData.macros) {
         let markdownValue: string;
-        let detail = macro.detail;
+        let detail = `macro ${macro.detail}`;
+
         // for a constant, show just value
         if (macro.constant) {
             detail = macro.firstline;
@@ -288,7 +289,7 @@ function findSymbols(text: string) {
     const defineList: Macros = [];
     const defineRegex =
         /((\/\*\*\s*\n([^*]|(\*(?!\/)))*\*\/)\r?\n)?#define[ \t]+(\w+)(?:\(([^)]+)\))?[ \t]+(.+)/gm;
-    const constantRegex = /^[A-Z][A-Z0-9_]+/;
+    const constantRegex = /^[A-Z][A-Z0-9_]+$/;
     let matches = text.matchAll(defineRegex);
     for (const m of matches) {
         const defineName = m[5];
@@ -326,7 +327,7 @@ function findSymbols(text: string) {
         if (m[2]) {
             const jsd = jsdoc.parse(m[2]);
             item.jsdoc = jsd;
-            item.detail = jsdocToDetail(defineName, jsd);
+            item.detail = jsdocToDetail(defineName, jsd, "macro");
             defineList.push(item);
         }
         defineList.push(item);
@@ -438,11 +439,28 @@ function jsdocToMD(jsd: jsdoc.JSdoc) {
     return md;
 }
 
-function jsdocToDetail(label: string, jsd: jsdoc.JSdoc) {
-    const type = jsd.ret ? jsd.ret.type : "void";
+function jsdocToDetail(label: string, jsd: jsdoc.JSdoc, tokenType: "proc" | "macro" = "proc") {
+    let retType = "";
+    if (jsd.ret) {
+        retType = jsd.ret.type;
+    } else {
+        if (tokenType == "proc") {
+            retType = "void";
+        }
+    }
+    // add space if not empty
+    if (retType != "") {
+        retType = `${retType} `;
+    }
+
+    // functions with no arguments get empty parentheses
+    // macros don't
     const args = jsd.args.map(({ type, name }) => `${type} ${name}`);
-    const argsString = args.join(", ");
-    const detail = `${type} ${label}(${argsString})`;
+    let argsString = args.join(", ");
+    if (argsString != "" || tokenType != "macro") {
+        argsString = `(${argsString})`;
+    }
+    const detail = `${retType}${label}${argsString}`;
     return detail;
 }
 
