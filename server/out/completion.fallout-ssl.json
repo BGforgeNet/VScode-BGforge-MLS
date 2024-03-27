@@ -810,7 +810,7 @@
         "source": "builtin",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nvoid gSay_End(unsigned int var_index)\n```\nEnds a dialog sequence, which will bring up the sequence (actually display it)."
+            "value": "```fallout-ssl-tooltip\nvoid gSay_End(uint var_index)\n```\nEnds a dialog sequence, which will bring up the sequence (actually display it)."
         }
     },
     {
@@ -1197,7 +1197,7 @@
         "source": "builtin",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nint local_var(unsigned int var_index)\n```\nReturns the value of a local variable of given index # (var_index). If the user is not allowed local vars up to this number in the list of critters, this can generate errors."
+            "value": "```fallout-ssl-tooltip\nint local_var(uint var_index)\n```\nReturns the value of a local variable of given index # (var_index). If the user is not allowed local vars up to this number in the list of critters, this can generate errors."
         }
     },
     {
@@ -1233,7 +1233,7 @@
         "source": "builtin",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nint map_var(unsigned int var_index)\n```\nReturns the value of a map-global variable of a given index # (var_index)."
+            "value": "```fallout-ssl-tooltip\nint map_var(uint var_index)\n```\nReturns the value of a map-global variable of a given index # (var_index)."
         }
     },
     {
@@ -1782,7 +1782,7 @@
         "source": "builtin",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nvoid set_global_var(unsigned int var_index, int value)\n```\nSets the value of a global variable (var_index) to a given (value)."
+            "value": "```fallout-ssl-tooltip\nvoid set_global_var(uint var_index, int value)\n```\nSets the value of a global variable (var_index) to a given (value)."
         }
     },
     {
@@ -1800,7 +1800,7 @@
         "source": "builtin",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nvoid set_local_var(unsigned int var_index, int value)\n```\nSets the value of a local variable (var_index) to a given (value)."
+            "value": "```fallout-ssl-tooltip\nvoid set_local_var(uint var_index, int value)\n```\nSets the value of a local variable (var_index) to a given (value)."
         }
     },
     {
@@ -1818,7 +1818,7 @@
         "source": "builtin",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nvoid set_map_var(unsigned int var_index, int value)\n```\nSets the value of a map-global variable (var_index) to a given (value)."
+            "value": "```fallout-ssl-tooltip\nvoid set_map_var(uint var_index, int value)\n```\nSets the value of a map-global variable (var_index) to a given (value)."
         }
     },
     {
