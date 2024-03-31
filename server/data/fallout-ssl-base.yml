@@ -217,15 +217,15 @@ base-functions:
       doc: |-
         Returns True if the system is currently in combat mode, False otherwise.
     - name: create_object
-      detail: ObjectPtr create_object(int pid, int tile_num, int elev
+      detail: ObjectPtr create_object(int pid, int tile_num, int elev)
       doc: |-
         Creates a new object of prototype (pid), placing it at a given tile number and at a given elevation (0-2). If the prototype indicates a script should be attached, then it will be.
     - name: create_object_sid
-      detail: ObjectPtr create_object_sid(int pid, int tile_num, int elev, int sid
+      detail: ObjectPtr create_object_sid(int pid, int tile_num, int elev, int sid)
       doc: |-
         Creates a new object of prototype (pid), placing it at a given tile # and at a given elevation (0-2). If sid is not -1, then it indicates that the default script should be overriden by this new script #.
     - name: critter_add_trait
-      detail: int critter_add_trait(ObjectPtr who, int trait_type, int trait, int amount
+      detail: int critter_add_trait(ObjectPtr who, int trait_type, int trait, int amount)
       doc: |-
         Adds a particular trait (trait) of a given type (trait_type) to a particular critter (who). Possible traits under the SPECIAL system are limited to Perks, Traits, Object-instance information (such as team #'s, ai-packet #'s, etc.)
     - name: critter_attempt_placement
