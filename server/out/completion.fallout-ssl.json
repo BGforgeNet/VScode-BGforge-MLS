@@ -1098,7 +1098,7 @@
         "source": "builtin",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nbool is_critical(int val)\n```\nReturns True if a given contest roll result is a critical result, otherwise False."
+            "value": "```fallout-ssl-tooltip\nbool is_critical(int rollResult)\n```\nReturns `True` if a given contest roll result is a critical result, otherwise `False`."
         }
     },
     {
@@ -1125,7 +1125,7 @@
         "source": "builtin",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nint is_success(int val)\n```\nReturns True if a given contest roll result value is a success, otherwise False. Can generate Critical Success or Critical Failure as well."
+            "value": "```fallout-ssl-tooltip\nint is_success(int rollResult)\n```\nReturn `True` if a given contest roll result value is a success (including critical success), otherwise `False`."
         }
     },
     {

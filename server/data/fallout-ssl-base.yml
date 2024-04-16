@@ -520,9 +520,9 @@ base-functions:
       doc: |-
         Attempts to cause a critter to unwield any wielded weapons/items. If animations are currently disabled, it will just instantly change the art.
     - name: is_critical
-      detail: bool is_critical(int val)
+      detail: bool is_critical(int rollResult)
       doc: |-
-        Returns True if a given contest roll result is a critical result, otherwise False.
+        Returns `True` if a given contest roll result is a critical result, otherwise `False`.
     - name: is_loading_game
       detail: bool is_loading_game
       doc: |-
@@ -532,9 +532,9 @@ base-functions:
       doc: |-
         Returns True if a given skill is tagged.
     - name: is_success
-      detail: int is_success(int val)
+      detail: int is_success(int rollResult)
       doc: |-
-        Returns True if a given contest roll result value is a success, otherwise False. Can generate Critical Success or Critical Failure as well.
+        Return `True` if a given contest roll result value is a success (including critical success), otherwise `False`.
     - name: item_caps_adjust
       detail: int item_caps_adjust(ObjectPtr obj, int amount)
       doc: |-
