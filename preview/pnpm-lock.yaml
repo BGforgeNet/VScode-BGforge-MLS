@@ -1,68 +1,67 @@
-lockfileVersion: '6.0'
+lockfileVersion: '9.0'
 
 settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-dependencies:
-  cytoscape:
-    specifier: ^3.23.0
-    version: 3.28.1
-  cytoscape-fcose:
-    specifier: ^2.2.0
-    version: 2.2.0(cytoscape@3.28.1)
+importers:
 
-devDependencies:
-  '@types/cytoscape':
-    specifier: ^3.19.9
-    version: 3.19.16
-  '@types/cytoscape-fcose':
-    specifier: ^2.1.0
-    version: 2.2.4
+  .:
+    dependencies:
+      cytoscape:
+        specifier: ^3.23.0
+        version: 3.29.0
+      cytoscape-fcose:
+        specifier: ^2.2.0
+        version: 2.2.0(cytoscape@3.29.0)
+    devDependencies:
+      '@types/cytoscape':
+        specifier: ^3.19.9
+        version: 3.21.0
+      '@types/cytoscape-fcose':
+        specifier: ^2.1.0
+        version: 2.2.4
 
 packages:
 
-  /@types/cytoscape-fcose@2.2.4:
+  '@types/cytoscape-fcose@2.2.4':
     resolution: {integrity: sha512-QwWtnT8HI9h+DHhG5krGc1ZY0Ex+cn85MvX96ZNAjSxuXiZDnjIZW/ypVkvvubTjIY4rSdkJY1D/Nsn8NDpmAw==}
-    dependencies:
-      '@types/cytoscape': 3.19.16
-    dev: true
 
-  /@types/cytoscape@3.19.16:
-    resolution: {integrity: sha512-A3zkjaZ6cOGyqEvrVuC1YUgiRSJhDZOj8Qhd1ALH2/+YxH2za1BOmR4RWQsKYHsc+aMP/IWoqg1COuUbZ39t/g==}
-    dev: true
+  '@types/cytoscape@3.21.0':
+    resolution: {integrity: sha512-RN5SPiyVDpUP+LoOlxxlOYAMzkE7iuv3gA1jt3Hx2qTwArpZVPPdO+SI0hUj49OAn4QABR7JK9Gi0hibzGE0Aw==}
 
-  /cose-base@2.2.0:
+  cose-base@2.2.0:
     resolution: {integrity: sha512-AzlgcsCbUMymkADOJtQm3wO9S3ltPfYOFD5033keQn9NJzIbtnZj+UdBJe7DYml/8TdbtHJW3j58SOnKhWY/5g==}
-    dependencies:
-      layout-base: 2.0.1
-    dev: false
 
-  /cytoscape-fcose@2.2.0(cytoscape@3.28.1):
+  cytoscape-fcose@2.2.0:
     resolution: {integrity: sha512-ki1/VuRIHFCzxWNrsshHYPs6L7TvLu3DL+TyIGEsRcvVERmxokbf5Gdk7mFxZnTdiGtnA4cfSmjZJMviqSuZrQ==}
     peerDependencies:
       cytoscape: ^3.2.0
+
+  cytoscape@3.29.0:
+    resolution: {integrity: sha512-ADqhlrCKhhQF8s/s3hTpvVAIyWwsfgFI/hD2vhAXc2ndncJFVZaq3/uBkDIhf4RrNwPw93vUarW36x6rFbUk0Q==}
+    engines: {node: '>=0.10'}
+
+  layout-base@2.0.1:
+    resolution: {integrity: sha512-dp3s92+uNI1hWIpPGH3jK2kxE2lMjdXdr+DH8ynZHpd6PUlH6x6cbuXnoMmiNumznqaNO31xu9e79F0uuZ0JFg==}
+
+snapshots:
+
+  '@types/cytoscape-fcose@2.2.4':
+    dependencies:
+      '@types/cytoscape': 3.21.0
+
+  '@types/cytoscape@3.21.0': {}
+
+  cose-base@2.2.0:
+    dependencies:
+      layout-base: 2.0.1
+
+  cytoscape-fcose@2.2.0(cytoscape@3.29.0):
     dependencies:
       cose-base: 2.2.0
-      cytoscape: 3.28.1
-    dev: false
+      cytoscape: 3.29.0
 
-  /cytoscape@3.28.1:
-    resolution: {integrity: sha512-xyItz4O/4zp9/239wCcH8ZcFuuZooEeF8KHRmzjDfGdXsj3OG9MFSMA0pJE0uX3uCN/ygof6hHf4L7lst+JaDg==}
-    engines: {node: '>=0.10'}
-    dependencies:
-      heap: 0.2.7
-      lodash: 4.17.21
-    dev: false
+  cytoscape@3.29.0: {}
 
-  /heap@0.2.7:
-    resolution: {integrity: sha512-2bsegYkkHO+h/9MGbn6KWcE45cHZgPANo5LXF7EvWdT0yT2EguSVO1nDgU5c8+ZOPwp2vMNa7YFsJhVcDR9Sdg==}
-    dev: false
-
-  /layout-base@2.0.1:
-    resolution: {integrity: sha512-dp3s92+uNI1hWIpPGH3jK2kxE2lMjdXdr+DH8ynZHpd6PUlH6x6cbuXnoMmiNumznqaNO31xu9e79F0uuZ0JFg==}
-    dev: false
-
-  /lodash@4.17.21:
-    resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
-    dev: false
+  layout-base@2.0.1: {}
