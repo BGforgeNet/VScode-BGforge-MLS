@@ -5859,6 +5859,10 @@
           "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
+          "match": "\\b(start_dialogue)\\b",
+          "name": "entity.name.function.fallout-ssl.header-defines"
+        },
+        {
           "match": "\\b(stat_success)\\b",
           "name": "entity.name.function.fallout-ssl.header-defines"
         },
