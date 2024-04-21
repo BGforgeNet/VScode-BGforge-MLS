@@ -1,5 +1,18 @@
 # Changelog
 
+## 2.1.10
+
+- Fallout
+  - Updated `is_success`, `is_critical` description ([related](https://github.com/BGforgeNet/Fallout2_Unofficial_Patch/issues/112)).
+  - Sfall data updated to 4.4.1.
+  - `unsigned int` renamed to `uint` in tooltips.
+  - Updated `start_gdialog` description to include usage with sfall.
+  - Macros are marked as such in tooltips.
+  - Fixed some macros erroneously recognized as constants.
+  - Enabled displaying return type for macro as specified in its docstring.
+- IE
+  - IESDP data update as of 2024.04.21.
+
 ## 2.1.9
 
 Added `CompOption` to translation and inlay hints, also `GMessage/NMessage/BMessage` to inlay.
