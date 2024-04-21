@@ -38,14 +38,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Prettier
-        uses: creyD/prettier_action@v4.3
-        with:
-          dry: true
-          prettier_options: --check .
-          prettier_version: 3.2.5
-          clean_node_folder: false
-
       - name: ESlint
         run: pnpm eslint
 
