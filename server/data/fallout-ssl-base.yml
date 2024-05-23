@@ -26,6 +26,7 @@ keywords:
     - name: if
     - name: then
     - name: else
+    - name: variable
 
 engine-procedures:
   type: 3 # function

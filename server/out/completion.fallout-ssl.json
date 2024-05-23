@@ -65,6 +65,11 @@
         "source": "builtin"
     },
     {
+        "label": "variable",
+        "kind": 14,
+        "source": "builtin"
+    },
+    {
         "label": "combat_p_proc",
         "kind": 3,
         "source": "builtin",
