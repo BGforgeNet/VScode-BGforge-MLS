@@ -353,7 +353,9 @@ function findSymbols(text: string) {
         // if jsdoc found
         if (m[2]) {
             const jsd = jsdoc.parse(m[2]);
+            // If JSdoc has no arguments specified, but function has them, keep the default detail form
             if (!(m[6] && jsd.args.length == 0)) {
+                // else, use detail from JSdoc.
                 procDetail = jsdocToDetail(procName, jsd);
             }
             const item = { label: procName, detail: procDetail, jsdoc: jsd };
