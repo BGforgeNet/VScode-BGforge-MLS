@@ -59,7 +59,7 @@ const sslExt = ".ssl";
 export async function loadHeaders(
     headersDirectory: string,
     external = false,
-    staticHover: hover.HoverMap = new Map()
+    staticHover: hover.HoverMap = new Map(),
 ) {
     const completions: completion.CompletionListEx = [];
     const hovers: hover.HoverMapEx = new Map();
@@ -71,7 +71,7 @@ export async function loadHeaders(
         headerFiles,
         headersDirectory,
         loadFileData,
-        external
+        external,
     );
 
     if (errors.length > 0) {
@@ -353,7 +353,9 @@ function findSymbols(text: string) {
         // if jsdoc found
         if (m[2]) {
             const jsd = jsdoc.parse(m[2]);
-            procDetail = jsdocToDetail(procName, jsd);
+            if (!(m[6] && jsd.args.length == 0)) {
+                procDetail = jsdocToDetail(procName, jsd);
+            }
             const item = { label: procName, detail: procDetail, jsdoc: jsd };
             procList.push(item);
         } else {
@@ -638,7 +640,7 @@ export function compile(uri: string, sslSettings: SSLsettings, interactive = fal
             if (fs.existsSync(tmpPath)) {
                 fs.unlinkSync(tmpPath);
             }
-        }
+        },
     );
 }
 
