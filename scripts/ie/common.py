@@ -124,7 +124,7 @@ def dump_definition(prefix, items, structures_dir):
     """
     Dump dict of items (IESDP constants, usually offsets) to iesdp.tpp in the corresponding IElib dir
 
-    @arg prefix - file format from which items are source, e.g. "EFF_V2"
+    @arg prefix - file format from which items are sourced, e.g. "EFF_V2"
     @arg items - dict {name: value}
     @arg structures_dir - path to ielib/structures
     """

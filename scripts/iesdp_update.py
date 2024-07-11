@@ -29,6 +29,7 @@ from ie import (
     get_itemtypes,
     save_itemtypes_ielib,
     get_itemtypes_isense,
+    get_format_version,
 )
 
 yaml = ruamel.yaml.YAML(typ="rt")
@@ -310,7 +311,8 @@ for ff in formats:
         definition_items = {**definition_items, **new_definition_items}
 
         pod.append_offsets(offsets, prefix)
-    dump_definition(prefix, definition_items, IELIB_STRUCTURES_DIR)
+    prefix_dir = get_format_version(ff)
+    dump_definition(prefix_dir, definition_items, IELIB_STRUCTURES_DIR)
 
 # feature block
 fpath = os.path.join(IESDP_FILE_FORMATS_DIR, "itm_v1", "feature_block.yml")
