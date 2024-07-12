@@ -5402,6 +5402,63 @@ ielib-int:
     - name: FLAG_STO_sells
       detail: int FLAG_STO_sells = BIT0
       doc: IElib define
+    - name: GENDER_both
+      detail: int GENDER_both = 5
+      doc: IElib define
+    - name: GENDER_extra
+      detail: int GENDER_extra = 8
+      doc: IElib define
+    - name: GENDER_extra10
+      detail: int GENDER_extra10 = 18
+      doc: IElib define
+    - name: GENDER_extra2
+      detail: int GENDER_extra2 = 10
+      doc: IElib define
+    - name: GENDER_extra3
+      detail: int GENDER_extra3 = 11
+      doc: IElib define
+    - name: GENDER_extra4
+      detail: int GENDER_extra4 = 12
+      doc: IElib define
+    - name: GENDER_extra5
+      detail: int GENDER_extra5 = 13
+      doc: IElib define
+    - name: GENDER_extra6
+      detail: int GENDER_extra6 = 14
+      doc: IElib define
+    - name: GENDER_extra7
+      detail: int GENDER_extra7 = 15
+      doc: IElib define
+    - name: GENDER_extra8
+      detail: int GENDER_extra8 = 16
+      doc: IElib define
+    - name: GENDER_extra9
+      detail: int GENDER_extra9 = 17
+      doc: IElib define
+    - name: GENDER_female
+      detail: int GENDER_female = 2
+      doc: IElib define
+    - name: GENDER_illusionary
+      detail: int GENDER_illusionary = 7
+      doc: IElib define
+    - name: GENDER_imprisoned_summoned
+      detail: int GENDER_imprisoned_summoned = 66
+      doc: IElib define
+    - name: GENDER_male
+      detail: int GENDER_male = 1
+      doc: IElib define
+    - name: GENDER_niether
+      detail: int GENDER_niether = 4
+      doc: IElib define
+    - name: GENDER_other
+      detail: int GENDER_other = 3
+      doc: IElib define
+    - name: GENDER_summoned
+      detail: int GENDER_summoned = 6
+      doc: IElib define
+    - name: GENDER_summoned_demon
+      detail: int GENDER_summoned_demon = 9
+      doc: IElib define
     - name: ICON_ability_score_drained
       detail: int ICON_ability_score_drained = 91
       doc: IElib define

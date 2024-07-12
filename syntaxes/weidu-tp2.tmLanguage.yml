@@ -3375,6 +3375,25 @@ repository:
       - match: \b(FLAG_STO_recharges_items_EX)\b
       - match: \b(FLAG_STO_reputation_has_no_effect_EE)\b
       - match: \b(FLAG_STO_sells)\b
+      - match: \b(GENDER_both)\b
+      - match: \b(GENDER_extra10)\b
+      - match: \b(GENDER_extra2)\b
+      - match: \b(GENDER_extra3)\b
+      - match: \b(GENDER_extra4)\b
+      - match: \b(GENDER_extra5)\b
+      - match: \b(GENDER_extra6)\b
+      - match: \b(GENDER_extra7)\b
+      - match: \b(GENDER_extra8)\b
+      - match: \b(GENDER_extra9)\b
+      - match: \b(GENDER_extra)\b
+      - match: \b(GENDER_female)\b
+      - match: \b(GENDER_illusionary)\b
+      - match: \b(GENDER_imprisoned_summoned)\b
+      - match: \b(GENDER_male)\b
+      - match: \b(GENDER_niether)\b
+      - match: \b(GENDER_other)\b
+      - match: \b(GENDER_summoned_demon)\b
+      - match: \b(GENDER_summoned)\b
       - match: \b(ICON_ability_score_drained)\b
       - match: \b(ICON_able_to_poison_weapons)\b
       - match: \b(ICON_absolute_immunity)\b

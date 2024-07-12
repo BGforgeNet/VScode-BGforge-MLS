@@ -13285,6 +13285,82 @@
           "name": "constant.language.ielib.int"
         },
         {
+          "match": "\\b(GENDER_both)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
+          "match": "\\b(GENDER_extra10)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
+          "match": "\\b(GENDER_extra2)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
+          "match": "\\b(GENDER_extra3)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
+          "match": "\\b(GENDER_extra4)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
+          "match": "\\b(GENDER_extra5)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
+          "match": "\\b(GENDER_extra6)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
+          "match": "\\b(GENDER_extra7)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
+          "match": "\\b(GENDER_extra8)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
+          "match": "\\b(GENDER_extra9)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
+          "match": "\\b(GENDER_extra)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
+          "match": "\\b(GENDER_female)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
+          "match": "\\b(GENDER_illusionary)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
+          "match": "\\b(GENDER_imprisoned_summoned)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
+          "match": "\\b(GENDER_male)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
+          "match": "\\b(GENDER_niether)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
+          "match": "\\b(GENDER_other)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
+          "match": "\\b(GENDER_summoned_demon)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
+          "match": "\\b(GENDER_summoned)\\b",
+          "name": "constant.language.ielib.int"
+        },
+        {
           "match": "\\b(ICON_ability_score_drained)\\b",
           "name": "constant.language.ielib.int"
         },
