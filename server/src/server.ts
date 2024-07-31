@@ -17,6 +17,7 @@ import { Galactus } from "./galactus";
 import { preview } from "./preview";
 import * as settings from "./settings";
 import { defaultSettings, MLSsettings } from "./settings";
+import { findSymbolAtPosition as findTransitionAtPosition } from "./d";
 
 // Create a connection for the server. The connection uses Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
@@ -271,6 +272,9 @@ connection.onDefinition((params) => {
     }
     const langId = textDoc.languageId;
     const text = textDoc.getText();
-    const symbol = symbolAtPosition(text, params.position);
+    let symbol = symbolAtPosition(text, params.position);
+    if (langId == "weidu-d") {
+        symbol = findTransitionAtPosition(text, params.position);
+    }
     return gala?.definition(langId, symbol);
 });
