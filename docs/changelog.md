@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.1.11
+
+- Fallout
+  - Sfall data updated to 4.4.4.
+  - Added `variable` to completion.
+  - Tooltips now show function arguments, even if they are missing from JSdoc comment.
+- IE
+  - IESDP data update as of 2024.08.15.
+
 ## 2.1.10
 
 - Fallout
