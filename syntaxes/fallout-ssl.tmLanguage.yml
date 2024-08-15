@@ -494,6 +494,7 @@ repository:
       - match: \b(?i)(set_stat_max)\b
       - match: \b(?i)(set_stat_min)\b
       - match: \b(?i)(reg_anim_animate_and_hide)\b
+      - match: \b(?i)(reg_anim_animate_and_move)\b
       - match: \b(?i)(reg_anim_callback)\b
       - match: \b(?i)(reg_anim_change_fid)\b
       - match: \b(?i)(reg_anim_combat_check)\b
@@ -1473,6 +1474,7 @@ repository:
       - match: \b(pid_cost_barter)\b
       - match: \b(pid_weight)\b
       - match: \b(player_kill_count)\b
+      - match: \b(reg_anim_animate_and_move)\b
       - match: \b(remove_all_items_pid)\b
       - match: \b(remove_item_pid)\b
       - match: \b(remove_timer_event)\b

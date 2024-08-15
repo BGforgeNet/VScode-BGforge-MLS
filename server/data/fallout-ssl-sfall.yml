@@ -27,8 +27,14 @@ sfall-functions:
         The `set_stat_max/min` functions can be used to set the valid ranges on stats. Values returned by `get_current_stat` will be clamped to this range. The `set_pc_` function only affects the player, the `set_npc_` functions only affects other critters, and the `set_` functions affects both.
     - name: reg_anim_animate_and_hide
       detail: void reg_anim_animate_and_hide(ObjectPtr, int animID, int delay)
-      doc: |-
-        Exactly like `reg_anim_animate` but the object will automatically disappear after the last animation frame (but not destroyed).
+      doc: |
+        Works exactly like `reg_anim_animate` but the object will automatically disappear after the last animation frame (but not destroyed).
+        - `delay`: delay from the previous animation. A value of -1 will execute the specified animation immediately after the previous one in the sequence ends.
+    - name: reg_anim_animate_and_move
+      detail: void reg_anim_animate_and_move(ObjectPtr, int tile, int animID, int delay)
+      doc: |
+        Plays the specified animation while simultaneously moving the object to the given tile.
+        - `delay`: delay from the previous animation. A value of -1 will execute the specified animation immediately after the previous one in the sequence ends.
     - name: reg_anim_callback
       detail: void reg_anim_callback(procedure proc)
       doc: |-

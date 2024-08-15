@@ -1691,6 +1691,10 @@
           "name": "support.function.fallout-ssl.sfall"
         },
         {
+          "match": "\\b(?i)(reg_anim_animate_and_move)\\b",
+          "name": "support.function.fallout-ssl.sfall"
+        },
+        {
           "match": "\\b(?i)(reg_anim_callback)\\b",
           "name": "support.function.fallout-ssl.sfall"
         },
@@ -5524,6 +5528,10 @@
         },
         {
           "match": "\\b(player_kill_count)\\b",
+          "name": "entity.name.function.fallout-ssl.header-defines"
+        },
+        {
+          "match": "\\b(reg_anim_animate_and_move)\\b",
           "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
