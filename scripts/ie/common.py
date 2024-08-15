@@ -38,7 +38,8 @@ def find_files(path, ext, skip_dirs=None, skip_files=None):
     for root, dirs, files in os.walk(path, followlinks=True):
         dirs[:] = [d for d in dirs if d not in skip_dirs]
         for fname in files:
-            if fname.lower().endswith(ext.lower()) and fname not in skip_files:
+            file_ext = os.path.splitext(fname)[1]
+            if (file_ext.lower() == "." + ext.lower()) and (fname not in skip_files):
                 flist.append(os.path.join(root, fname))
     return flist
 
