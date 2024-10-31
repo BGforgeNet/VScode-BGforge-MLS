@@ -29,6 +29,12 @@
     "contributes": {
         "languages": [
             {
+                "id": "typescript",
+                "extensions": [
+                    ".tbaf"
+                ]
+            },
+            {
                 "id": "weidu-ssl",
                 "aliases": [
                     "WeiDU Stratagems script"
