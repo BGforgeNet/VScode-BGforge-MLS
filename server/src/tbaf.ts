@@ -1,4 +1,15 @@
-import { Project, FunctionDeclaration, IfStatement, ForStatement, Block, SyntaxKind, CallExpression, SourceFile, Statement, VariableDeclaration } from 'ts-morph';
+import {
+    Project,
+    FunctionDeclaration,
+    IfStatement,
+    ForStatement,
+    Block,
+    SyntaxKind,
+    CallExpression,
+    SourceFile,
+    Statement,
+    VariableDeclaration
+} from 'ts-morph';
 import * as fs from "fs";
 import * as path from "path";
 import { conlog, tmpDir, uriToPath } from "./common";
