@@ -8,7 +8,6 @@ import {
     IfStatement,
     Project,
     SourceFile,
-    Statement,
     SyntaxKind,
     VariableDeclaration
 } from 'ts-morph';
@@ -322,43 +321,6 @@ function flattenIfStatements(sourceFile: SourceFile) {
 }
 
 /**
- * Helper function to process a for loop and generate unrolled code
- * @param forStatement 
- * @returns 
- */
-function processForLoop(forStatement: ForStatement): string | null {
-    const initializer = forStatement.getInitializer();
-    const condition = forStatement.getCondition();
-    const incrementor = forStatement.getIncrementor();
-    const loopBody = forStatement.getStatement();
-
-    if (initializer && condition && incrementor) {
-        const initText = initializer.getText();
-        const conditionText = condition.getText();
-        const incrementorText = incrementor.getText();
-
-        // Match variable declaration like `let i = 0`
-        const loopVarMatch = /let\s+(\w+)\s*=\s*(\d+)/.exec(initText);
-        const conditionMatch = /(\w+)\s*<\s*(\d+)/.exec(conditionText); // For `i < 10`
-
-        if (loopVarMatch && conditionMatch) {
-            const loopVar = loopVarMatch[1];
-            const startValue = parseInt(loopVarMatch[2]);
-            const endValue = parseInt(conditionMatch[2]);
-
-            // Determine the increment (supports i++, i--, i += 2, etc.)
-            const step = getStepFromIncrementor(incrementorText);
-
-            if (step !== null) {
-                return generateUnrolledCode(loopVar, startValue, endValue, step, loopBody);
-            }
-        }
-    }
-
-    return null;
-}
-
-/**
  * Function to determine the step of the loop (i++, i--, i += 2, etc.)
  * @param incrementorText 
  * @returns 
@@ -375,44 +337,6 @@ function getStepFromIncrementor(incrementorText: string): number | null {
         }
     }
     return null; // No valid step found
-}
-
-/**
- * Function to generate unrolled code from a loop
- * @param loopVar 
- * @param startValue 
- * @param endValue 
- * @param step 
- * @param loopBody 
- * @returns 
- */
-function generateUnrolledCode(loopVar: string, startValue: number, endValue: number, step: number, loopBody: Statement): string {
-    let unrolledCode = '';
-
-    for (let i = startValue; (step > 0 ? i < endValue : i > endValue); i += step) {
-        if (loopBody instanceof Block) {
-            // If loop body is a block, handle the statements inside it
-            loopBody.getStatements().forEach(innerStatement => {
-                if (innerStatement.isKind(SyntaxKind.ForStatement)) {
-                    // Recursively unroll nested loops
-                    const innerUnrolled = processForLoop(innerStatement as ForStatement);
-                    if (innerUnrolled) {
-                        unrolledCode += innerUnrolled.replace(new RegExp(`\\b${loopVar}\\b`, 'g'), i.toString()) + '\n';
-                    }
-                } else {
-                    // Replace loop variable in the loop body
-                    const newBodyText = innerStatement.getText().replace(new RegExp(`\\b${loopVar}\\b`, 'g'), i.toString());
-                    unrolledCode += newBodyText + '\n';
-                }
-            });
-        } else {
-            // If loop body is a single statement, replace loop variable directly
-            const newBodyText = loopBody.getText().replace(new RegExp(`\\b${loopVar}\\b`, 'g'), i.toString());
-            unrolledCode += newBodyText + '\n';
-        }
-    }
-
-    return unrolledCode.trim();
 }
 
 /**
