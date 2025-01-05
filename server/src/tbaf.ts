@@ -1,17 +1,17 @@
-import {
-    Project,
-    FunctionDeclaration,
-    IfStatement,
-    ForStatement,
-    Block,
-    SyntaxKind,
-    CallExpression,
-    SourceFile,
-    Statement,
-    VariableDeclaration
-} from 'ts-morph';
 import * as fs from "fs";
 import * as path from "path";
+import {
+    Block,
+    CallExpression,
+    ForStatement,
+    FunctionDeclaration,
+    IfStatement,
+    Project,
+    SourceFile,
+    Statement,
+    SyntaxKind,
+    VariableDeclaration
+} from 'ts-morph';
 import { conlog, tmpDir, uriToPath } from "./common";
 import { connection } from "./server";
 
@@ -34,6 +34,13 @@ export function compile(uri: string) {
         connection.window.showInformationMessage(`${uri} is not a .tbaf file, cannot process!`);
         return;
     }
+
+    // Re-read the file. Otherwise TSM uses a cached copy.
+    const existingFile = project.getSourceFile(filePath);
+    if (existingFile) {
+        project.removeSourceFile(existingFile);
+    }
+
     const sourceFile = project.addSourceFileAtPath(filePath);
     const tmpFile = path.join(tmpDir, "tmp-baf.ts");
 
@@ -489,6 +496,10 @@ function substituteVariables(sourceFile: SourceFile) {
     });
 }
 
+/**
+ * Unroll all for loops.
+ * @param sourceFile 
+ */
 function unrollForLoops(sourceFile: SourceFile) {
     sourceFile.forEachDescendant((node) => {
         if (node.isKind(SyntaxKind.ForStatement)) {
@@ -499,6 +510,10 @@ function unrollForLoops(sourceFile: SourceFile) {
     });
 }
 
+/**
+ * Unroll a for loop recursively.
+ * @param forStatement 
+ */
 function unrollForLoop(forStatement: ForStatement) {
     const initializer = forStatement.getInitializer();
     const condition = forStatement.getCondition();
@@ -563,9 +578,10 @@ function unrollForLoop(forStatement: ForStatement) {
     }
 }
 
+
 /**
  * Export typescript code as BAF
- * */
+ */
 function exportBAF(sourceFile: SourceFile, filePath: string): void {
     let exportContent = "";
 
@@ -587,10 +603,24 @@ function exportBAF(sourceFile: SourceFile, filePath: string): void {
         }
     });
 
+    exportContent = applyBAFhacks(exportContent);
     // Write the content to the specified file
-    fs.writeFileSync(filePath, exportContent.trim(), 'utf-8'); // Remove any extra trailing newlines
+    fs.writeFileSync(filePath, exportContent, 'utf-8'); // Remove any extra trailing newlines
     console.log(`Content saved to ${filePath}`);
 }
+
+/**
+ * Apply final BAF hacks: GLOBAL, LOCALS, obj() replacement.
+ */
+function applyBAFhacks(text: string): string {
+    let result = text.replace(/, LOCALS/g, ', "LOCALS"');
+    result = result.replace(/, GLOBAL,/g, ', "GLOBAL"');
+    // obj specifier replacement: obj("[ANYONE]") => [ANYONE]
+    result = result.replace(/obj\("\[(.*?)\]"\)/g, '[$1]');
+    result = result.trim() + "\n";
+    return result;
+}
+
 
 /**
  * Convert "if" condition to BAF format.
