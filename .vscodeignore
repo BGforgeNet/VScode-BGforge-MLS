@@ -11,6 +11,8 @@
 !server/out/completion.*.json
 !server/out/hover.*.json
 !server/out/signature.*.json
+# Can't figure out how to bundle tslib
+!server/node_modules/tslib/
 
 !preview/package.json
 !preview/out/index.html

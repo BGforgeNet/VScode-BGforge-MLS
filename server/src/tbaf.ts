@@ -3,28 +3,49 @@ import * as path from "path";
 import {
     Block,
     CallExpression,
+    ForOfStatement,
     ForStatement,
     FunctionDeclaration,
     IfStatement,
     Project,
     SourceFile,
     SyntaxKind,
-    VariableDeclaration
+    VariableDeclaration,
+    VariableDeclarationKind,
+    VariableDeclarationList
 } from 'ts-morph';
-import { conlog, tmpDir, uriToPath } from "./common";
+import { conlog, getRelPath2, tmpDir, uriToPath } from "./common";
 import { connection } from "./server";
+
+import typescript from "@rollup/plugin-typescript";
+import { cwd } from "process";
+import { rollup } from 'rollup';
 
 export const EXT_TBAF = ".tbaf";
 
-// Initialize the TypeScript project
-const project = new Project();
+/**
+ * Initial Rollup bundle is saved here.
+ */
+const TMP_BUNDLED = path.join(tmpDir, "tbaf-bundled.ts");
+
+/**
+ * TS compiler refuses to recognize tbaf, so we have to copy.
+ * Located in the same directory as the file being compiled.
+ * Cannot be ".tmp.ts", TS/Rollup refuse that too.
+ */
+const TMP_COPIED = "tbaf.tmp.ts";
+
+/**
+ * Final TS code ends up here
+ */
+const TMP_FINAL = path.join(tmpDir, "tbaf-final.ts");
 
 /**
  * Convert TBAF to BAF.
  * @param uri 
  * @returns 
  */
-export function compile(uri: string) {
+export async function compile(uri: string) {
     const filePath = uriToPath(uri);
     let ext = path.parse(filePath).ext;
     ext = ext.toLowerCase();
@@ -34,171 +55,266 @@ export function compile(uri: string) {
         return;
     }
 
-    // Re-read the file. Otherwise TSM uses a cached copy.
-    const existingFile = project.getSourceFile(filePath);
-    if (existingFile) {
-        project.removeSourceFile(existingFile);
-    }
+    // Initialize the TypeScript project
+    // Read all files anew to avoid ts-morph caching.
+    const project = new Project();
 
-    const sourceFile = project.addSourceFileAtPath(filePath);
-    const tmpFile = path.join(tmpDir, "tmp-baf.ts");
+    await bundle(filePath);
+
+    const sourceFile = project.addSourceFileAtPath(TMP_BUNDLED);
 
     // Apply transformations
     applyTransformations(sourceFile);
     // Save the transformed file to the specified output file
-    project.createSourceFile(tmpFile, sourceFile.getText(), { overwrite: true }).saveSync();
-    console.log(`\nTransformed code saved to ${tmpFile}`);
+    const finalTS = project.createSourceFile(TMP_FINAL, sourceFile.getText(), { overwrite: true });
+    finalTS.saveSync();
+    console.log(`\nTransformed code saved to ${TMP_FINAL}`);
 
     // Save to BAF file, same directory
     const dirName = path.parse(filePath).dir;
     const baseName = path.parse(filePath).name;
     const bafName = path.join(dirName, `${baseName}.baf`)
-    exportBAF(sourceFile, bafName);
+    exportBAF(finalTS, bafName);
+}
+
+
+/**
+ * For tracking variable values in context
+ */
+type varsContext = Map<string, string>;
+/**
+ * Inline and unroll loops and other constructs.
+ * @param sourceFile The source file to modify.
+ */
+/**
+ * Inline and unroll loops and other constructs.
+ * @param sourceFile The source file to modify.
+ */
+function inlineUnroll(sourceFile: SourceFile) {
+    const functionDeclarations = sourceFile.getFunctions();
+    const variablesContext: varsContext = new Map(); // Track const declarations
+
+    sourceFile.forEachDescendant(node => {
+        switch (node.getKind()) {
+            // Collect const variables
+            case SyntaxKind.VariableDeclaration:
+                const variableDeclaration = node as VariableDeclaration;
+                const parentDeclarationList = variableDeclaration.getParent() as VariableDeclarationList;
+
+                if (parentDeclarationList.getDeclarationKind() === VariableDeclarationKind.Const) {
+                    const name = variableDeclaration.getName();
+                    const initializer = variableDeclaration.getInitializer()?.getText() || "undefined";
+                    variablesContext.set(name, initializer);
+                    console.log(`Collected const variable: ${name} = ${initializer}`);
+                }
+                break;
+
+            // Unroll for...of loops
+            case SyntaxKind.ForOfStatement:
+                unrollForOfLoop(node as ForOfStatement, variablesContext);
+                break;
+
+            // Unroll for loops
+            case SyntaxKind.ForStatement:
+                unrollForLoop(node as ForStatement, variablesContext);
+                break;
+
+            // Handle function calls
+            case SyntaxKind.CallExpression:
+                const callExpr = node as CallExpression;
+                const functionName = callExpr.getExpression().getText();
+
+                // Check if it's a local function
+                if (functionDeclarations.some(func => func.getName() === functionName)) {
+                    inlineFunction(callExpr, functionDeclarations, variablesContext);
+                } else {
+                    substituteVariables(callExpr, variablesContext);
+                }
+                break;
+
+            default:
+                break;
+        }
+    });
 }
 
 /**
- * Function to replace parameters with arguments in the function body, supporting default values
- * @param func TS-morph function declaration
- * @param args 
- * @returns body text with substituted arguments
+ * Substitute variables in non-local function calls using the provided variable context.
+ * @param callExpression The call expression to substitute variables in.
+ * @param vars The context of variable declarations.
  */
-function substituteParameters(func: FunctionDeclaration, args: string[]): string {
-    const parameters = func.getParameters();
-    let bodyText = func.getBodyText() || '';
+function substituteVariables(callExpression: CallExpression, vars: varsContext) {
+    const args = callExpression.getArguments();
 
-    // Replace each parameter with the corresponding argument or default value
+    args.forEach(arg => {
+        const argText = arg.getText();
+
+        if (vars.has(argText)) {
+            const replacementValue = vars.get(argText)!;
+            console.log(`Substituting ${argText} with ${replacementValue}`);
+            arg.replaceWithText(replacementValue);
+        }
+    });
+}
+
+
+/**
+ * Inline a local function call expression.
+ * @param callExpression The call expression to inline.
+ * @param functionDeclarations The list of local function declarations in the file.
+ * @param vars The context of variable declarations.
+ */
+function inlineFunction(callExpression: CallExpression, functionDeclarations: FunctionDeclaration[], vars: varsContext) {
+    const functionName = callExpression.getExpression().getText();
+
+    // Find the corresponding local function declaration
+    const functionDecl = functionDeclarations.find(func => func.getName() === functionName);
+    if (!functionDecl) {
+        console.log(`Skipping function: ${functionName}, not a local function.`);
+        return;
+    }
+
+    // Get the function body and parameters
+    const functionBody = functionDecl.getBody();
+    if (!functionBody) return;
+
+    const statements = functionBody.asKindOrThrow(SyntaxKind.Block).getStatements();
+
+    // Map parameters to arguments
+    const parameters = functionDecl.getParameters();
+    const args = callExpression.getArguments();
+    const paramArgMap = new Map<string, string>();
+
     parameters.forEach((param, index) => {
         const paramName = param.getName();
-        const argument = args[index];
+        let argText = args[index]?.getText() || param.getInitializer()?.getText() || "undefined";
 
-        // Get the default value, if any
-        const defaultValue = param.getInitializer()?.getText() || '';
+        // Resolve variable value from context if it's a const variable
+        if (vars.has(argText)) {
+            argText = vars.get(argText)!;
+        }
 
-        // If the argument is undefined, use the default value
-        const valueToSubstitute = argument !== undefined ? argument : defaultValue;
-
-        // Word boundary regex to safely replace the parameter name
-        const regex = new RegExp(`\\b${paramName}\\b`, 'g');
-        bodyText = bodyText.replace(regex, valueToSubstitute);
+        paramArgMap.set(paramName, argText);
     });
 
-    return bodyText;
-}
+    // Replace parameters in the function body
+    let inlinedCode = statements.map(stmt => stmt.getText()).join("\n");
+    paramArgMap.forEach((arg, param) => {
+        const regex = new RegExp(`\\b${param}\\b`, "g");
+        inlinedCode = inlinedCode.replace(regex, arg);
+    });
 
-/**
- * Helper function to clean up extra trailing semicolons after inlining functions
- */
-function removeTrailingSemicolon(inlinedBody: string): string {
-    if (inlinedBody.endsWith(";;")) {
-        return inlinedBody.slice(0, -1);
+    // Resolve any const variables in the inlined code
+    vars.forEach((value, variable) => {
+        const regex = new RegExp(`\\b${variable}\\b`, "g");
+        inlinedCode = inlinedCode.replace(regex, value);
+    });
+
+    // Replace the parent statement if possible
+    const parent = callExpression.getParent();
+    if (parent && parent.isKind(SyntaxKind.ExpressionStatement)) {
+        try {
+            parent.replaceWithText(inlinedCode);
+            console.log(`Successfully replaced ${functionName}() with inlined code.`);
+        } catch (error) {
+            console.error(`Error replacing ${functionName}():`, error);
+        }
+    } else {
+        console.error(`Unable to replace ${functionName}() because it's not part of an expression statement.`);
     }
-    return inlinedBody;
+}
+
+
+/**
+ * Unroll a single for...of loop.
+ * @param forOfStatement The for...of statement to unroll.
+ * @param vars The context of variable declarations.
+ */
+function unrollForOfLoop(forOfStatement: ForOfStatement, vars: varsContext) {
+    // Get array expression (e.g., `players` in `for (const player of players)`)
+    let arrayExpression = forOfStatement.getExpression().getText();
+
+    // Resolve the array expression if it's a const variable
+    if (vars.has(arrayExpression)) {
+        arrayExpression = vars.get(arrayExpression)!;
+    }
+
+    console.log("Array Expression:", arrayExpression);
+
+    // Check if the resolved array expression is a literal array
+    const arrayLiteral = forOfStatement.getSourceFile().getDescendantsOfKind(SyntaxKind.ArrayLiteralExpression)
+        .find(literal => literal.getText() === arrayExpression);
+
+    if (!arrayLiteral) {
+        console.log("Not a literal array, skipping...");
+        return;
+    }
+
+    // Get loop variable name (e.g., `target` in `for (const target of players)`)
+    const loopVariable = forOfStatement.getInitializer().getText().replace(/^const\s+/, '');
+    console.log("Loop Variable:", loopVariable);
+
+    // Get body statements inside the loop
+    const statement = forOfStatement.getStatement();
+    const bodyStatements = statement.isKind(SyntaxKind.Block)
+        ? statement.getStatements()
+        : [statement];
+
+    console.log("Body Statements:");
+    bodyStatements.forEach(stmt => console.log(stmt.getText()));
+
+    // Unroll the loop
+    const unrolledStatements = arrayLiteral.getElements().map(element => {
+        return bodyStatements.map(statement => {
+            let statementText = statement.getText();
+
+            // Replace the loop variable with the indexed array element
+            statementText = statementText.replace(new RegExp(`\\b${loopVariable}\\b`, "g"), element.getText());
+
+            // Resolve any const variables used in the statement
+            vars.forEach((value, variable) => {
+                statementText = statementText.replace(new RegExp(`\\b${variable}\\b`, "g"), value);
+            });
+
+            return statementText;
+        }).join("\n");
+    });
+
+    console.log("Unrolled Statements:");
+    console.log(unrolledStatements.join("\n"));
+
+    // Replace the original loop with unrolled statements
+    forOfStatement.replaceWithText(unrolledStatements.join("\n"));
 }
 
 /**
- * Function to inline function calls, supporting local imports and default parameter values
- * @param sourceFile 
+ * Bundle functions into temporary file with Rollup
  */
-function inlineFunctionCalls(sourceFile: SourceFile) {
-    const functionDeclarations = sourceFile.getFunctions(); // Local functions
-    const importDeclarations = sourceFile.getImportDeclarations(); // Imported functions
-
-    // Step 1: Resolve all local named imports
-    const importedFunctions: { [key: string]: FunctionDeclaration } = {};
-
-    importDeclarations.forEach(importDecl => {
-        let importPath = importDecl.getModuleSpecifier().getText().replace(/['"]/g, ''); // Clean up import path
-
-        // Skip non-local (e.g., `node_modules`) imports
-        // Check if the import is a local file (starts with './' or '../')
-        if (!importPath.startsWith('.')) {
-            return;
-        }
-
-        // Ensure the file extension is added if it's missing
-        if (!importPath.endsWith('.ts')) {
-            importPath += '.ts';
-        }
-
-        // Construct the absolute path using the sourceFile's directory
-        const sourceDir = sourceFile.getDirectoryPath();
-        const resolvedImportPath = path.resolve(sourceDir, importPath); // Resolve the full path
-
-        console.log(`Attempting to resolve: ${resolvedImportPath}`); // Log the resolved path
-
-        // Try to add the file to the project if it's not already present
-        let importedFile: SourceFile | undefined = sourceFile.getProject().getSourceFile(resolvedImportPath);
-        if (!importedFile) {
-            try {
-                // Add the file to the project
-                importedFile = sourceFile.getProject().addSourceFileAtPath(resolvedImportPath);
-            } catch (error) {
-                conlog(`Failed to open file: ${resolvedImportPath}. Error: ${error}`);
-                connection.window.showInformationMessage(`Failed to open file: ${resolvedImportPath}. Error: ${error}`);
-                return;
-            }
-        }
-
-        // Process the named imports
-        const namedImports = importDecl.getNamedImports();
-        namedImports.forEach(namedImport => {
-            const functionName = namedImport.getName();
-
-            // Try to find the function in the imported file
-            const importedFunc = importedFile.getFunction(functionName);
-            if (!importedFunc) {
-                conlog(`Failed to find function declaration for ${functionName} in ${resolvedImportPath}`);
-                connection.window.showInformationMessage(`Failed to find function declaration for ${functionName} in ${resolvedImportPath}`);
-                return;
-            }
-
-            // Store the imported function for later inlining
-            importedFunctions[functionName] = importedFunc;
-        });
+async function bundle(input: string) {
+    input = getRelPath2(cwd(), input);  // Otherwise Rollup can't find includes
+    const tmpInput = path.join(path.dirname(input), TMP_COPIED);
+    fs.copyFileSync(input, tmpInput);
+    const bundle = await rollup({
+        input: tmpInput,
+        external: id => /node_modules/.test(id),  // Exclude node_modules
+        plugins: [
+            typescript({
+                declaration: false,
+                tslib: require.resolve('../node_modules/tslib'),    // Otherwise Rollup won't even start
+                target: "esnext",   // So that Rollup doesn't change syntax
+                // include: "**/*.(ts|tbaf)",   // Doesn't work, TS compiler refuses to recognize tbaf, so we have to copy.
+            })
+        ]
     });
 
-    // Step 2: For each call expression, inline only if the function is local or imported
-    sourceFile.getDescendantsOfKind(SyntaxKind.CallExpression).forEach(callExpr => {
-        const callExpression = callExpr as CallExpression;
-        const functionName = callExpression.getExpression().getText();
-
-        // Check if the function is locally defined or imported
-        let functionDecl = functionDeclarations.find(func => func.getName() === functionName);
-        if (!functionDecl) {
-            functionDecl = importedFunctions[functionName]; // Check for imported function
-        }
-
-        // Inline only if the function is defined or imported
-        if (functionDecl) {
-            const args = callExpression.getArguments().map(arg => arg.getText());
-            let inlinedBody = substituteParameters(functionDecl, args);
-            inlinedBody = removeTrailingSemicolon(inlinedBody);
-
-            const parent = callExpression.getParent();
-            if (parent && parent.getKind() === SyntaxKind.ExpressionStatement) {
-                parent.replaceWithText(inlinedBody);
-            } else {
-                callExpression.replaceWithText(inlinedBody);
-            }
-        } else {
-            // Skip global or undefined functions (like "See", "Spell", etc.)
-            console.log(`Skipping function: ${functionName}, not defined or imported.`);
-        }
+    await bundle.write({
+        file: TMP_BUNDLED,
+        format: 'esm',
     });
 
-    // Step 3: Remove all function declarations after inlining
-    functionDeclarations.forEach(func => func.remove());
-
-    // Step 4: Remove import declarations if all imported functions are inlined
-    importDeclarations.forEach(importDecl => {
-        const namedImports = importDecl.getNamedImports();
-        const allFunctionsInlined = namedImports.every(namedImport => !!importedFunctions[namedImport.getName()]);
-
-        if (allFunctionsInlined) {
-            importDecl.remove();
-        }
-    });
+    console.log('Bundling complete!');
 }
+
 
 /**
  * Convert all ELSE statement to IF statements with inverted conditions, like BAF needs
@@ -321,184 +437,122 @@ function flattenIfStatements(sourceFile: SourceFile) {
 }
 
 /**
- * Function to determine the step of the loop (i++, i--, i += 2, etc.)
- * @param incrementorText 
- * @returns 
+ * Unroll a simple for loop.
+ * @param forStatement The for loop to unroll.
+ * @param vars The context of variable declarations.
  */
-function getStepFromIncrementor(incrementorText: string): number | null {
-    if (incrementorText.includes('++')) {
-        return 1;
-    } else if (incrementorText.includes('--')) {
-        return -1;
-    } else {
-        const incrementMatch = /\w+\s*\+=\s*(\d+)/.exec(incrementorText);
-        if (incrementMatch) {
-            return parseInt(incrementMatch[1]);
-        }
-    }
-    return null; // No valid step found
-}
-
-/**
- *  Function to substitute variable values in function calls and for loops conditions (right side only).
- * @param sourceFile 
- */
-function substituteVariables(sourceFile: SourceFile) {
-    // Step 1: Collect all constant variable declarations and store in a map
-    const constValuesMap: Map<string, string> = new Map();
-
-    // Find all `const` declarations and store their values in the map
-    sourceFile.forEachDescendant((node) => {
-        if (node.isKind(SyntaxKind.VariableDeclaration)) {
-            const declaration = node as VariableDeclaration;
-            const declarationList = declaration.getParentIfKind(SyntaxKind.VariableDeclarationList);
-
-            // Check if the variable is declared as 'const'
-            if (declarationList && declarationList.getDeclarationKind() === "const") {
-                const identifier = declaration.getName();
-                const initializer = declaration.getInitializer()?.getText();
-
-                if (initializer) {
-                    constValuesMap.set(identifier, initializer);
-                }
-                declaration.remove();
-            }
-        }
-    });
-
-    // Step 2: Traverse for loops and substitute variables in conditions
-    sourceFile.forEachDescendant((node) => {
-        if (node.isKind(SyntaxKind.ForStatement)) {
-            const forStatement = node as ForStatement;
-
-            // Get the condition of the for loop (e.g. i < iterations)
-            const condition = forStatement.getCondition();
-            if (condition && condition.isKind(SyntaxKind.BinaryExpression)) {
-                const rightSide = condition.getRight();
-
-                // Check if the right side is an identifier and replace if found in the map
-                if (rightSide.isKind(SyntaxKind.Identifier)) {
-                    const rightSideText = rightSide.getText();
-                    if (constValuesMap.has(rightSideText)) {
-                        const value = constValuesMap.get(rightSideText);
-                        // shouldn't be necessary, but for some reason TS complains about undefined.
-                        if (value) {
-                            // Replace the identifier with the constant value
-                            rightSide.replaceWithText(value);
-                        }
-                    }
-                }
-            }
-        }
-    });
-
-    // Step 3: Traverse function calls and substitute variables in arguments
-    sourceFile.forEachDescendant((node) => {
-        if (node.isKind(SyntaxKind.CallExpression)) {
-            const callExpression = node as CallExpression;
-
-            // Get all the arguments in the function call
-            const args = callExpression.getArguments();
-
-            args.forEach((arg) => {
-                if (arg.isKind(SyntaxKind.Identifier)) {
-                    const argText = arg.getText();
-
-                    // Check if the argument is a variable in constValuesMap
-                    if (constValuesMap.has(argText)) {
-                        const value = constValuesMap.get(argText);
-                        // Shouldn't be necessary, but for some reason TS complains about undefined.
-                        if (value) {
-                            // Replace the argument with the constant value
-                            arg.replaceWithText(value);
-
-                        }
-                    }
-                }
-            });
-        }
-    });
-}
-
-/**
- * Unroll all for loops.
- * @param sourceFile 
- */
-function unrollForLoops(sourceFile: SourceFile) {
-    sourceFile.forEachDescendant((node) => {
-        if (node.isKind(SyntaxKind.ForStatement)) {
-            // Call the recursive function to unroll the loop
-            console.log("Unrolling outer loop:", node.getText());
-            unrollForLoop(node as ForStatement);
-        }
-    });
-}
-
-/**
- * Unroll a for loop recursively.
- * @param forStatement 
- */
-function unrollForLoop(forStatement: ForStatement) {
+function unrollForLoop(forStatement: ForStatement, vars: varsContext) {
+    // Get the loop initializer (e.g., `let i = 0`)
     const initializer = forStatement.getInitializer();
+    if (!initializer || !initializer.isKind(SyntaxKind.VariableDeclarationList)) {
+        console.log("Skipping complex initializer.");
+        return;
+    }
+
+    const declarations = initializer.getDeclarations();
+    if (declarations.length !== 1) {
+        console.log("Skipping multi-variable initializer.");
+        return;
+    }
+
+    // Get the variable name and initial value
+    const loopVar = declarations[0].getName();
+    let initialValue = declarations[0].getInitializer()?.getText() || "0";
+
+    // Resolve initial value from context if it's a variable
+    if (vars.has(initialValue)) {
+        initialValue = vars.get(initialValue)!;
+    }
+
+    if (isNaN(Number(initialValue))) {
+        console.log(`Skipping non-numeric initializer: ${initialValue}`);
+        return;
+    }
+
+    let currentValue = Number(initialValue);
+
+    // Get the loop condition (e.g., `i < 10`)
     const condition = forStatement.getCondition();
+    if (!condition) {
+        console.log("Skipping loop with no condition.");
+        return;
+    }
+
+    // Get the incrementor (e.g., `i++`, `i += 2`)
     const incrementor = forStatement.getIncrementor();
-    const statementBody = forStatement.getStatement();
+    if (!incrementor) {
+        console.log("Skipping loop with no incrementor.");
+        return;
+    }
 
-    // Ensure this is a simple for loop with a constant limit and i++ or i--
-    if (initializer?.isKind(SyntaxKind.VariableDeclarationList) &&
-        condition?.isKind(SyntaxKind.BinaryExpression) &&
-        incrementor?.isKind(SyntaxKind.PostfixUnaryExpression)) {
+    const incrementText = incrementor.getText();
+    let incrementValue = 1;
 
-        const variableDeclaration = initializer.getDeclarations()[0];
-        const loopVar = variableDeclaration.getName(); // The loop variable (e.g., i)
-        const startValue = variableDeclaration.getInitializer()?.getText(); // The starting value (e.g., 0)
-        const endCondition = condition.getRight().getText(); // The end condition value (e.g., 3)
-        const incrementOperator = incrementor.getOperatorToken(); // Check if it's ++ or --
+    if (incrementText.includes("++")) {
+        incrementValue = 1;
+    } else if (incrementText.includes("--")) {
+        incrementValue = -1;
+    } else if (incrementText.includes("+=")) {
+        incrementValue = Number(incrementText.split("+=")[1]);
+    } else if (incrementText.includes("-=")) {
+        incrementValue = -Number(incrementText.split("-=")[1]);
+    } else {
+        console.log("Skipping unsupported incrementor.");
+        return;
+    }
 
-        console.log(`Unrolling loop for variable ${loopVar}, from ${startValue} to ${endCondition}`);
+    // Get body statements
+    const statement = forStatement.getStatement();
+    const bodyStatements = statement.isKind(SyntaxKind.Block)
+        ? statement.getStatements()
+        : [statement];
 
-        if (startValue !== undefined && !isNaN(Number(startValue)) && !isNaN(Number(endCondition))) {
-            const start = Number(startValue);
-            const end = Number(endCondition);
+    console.log("Unrolling loop:", forStatement.getText());
+    console.log("Loop Variable:", loopVar);
+    console.log("Initial Value:", currentValue);
+    console.log("Condition:", condition.getText());
+    console.log("Incrementor:", incrementText);
 
-            // Generate unrolled loop body
-            let unrolledBody = '';
+    // Generate unrolled statements
+    const unrolledStatements: string[] = [];
 
-            // Check if the loop body contains another for loop
-            statementBody.forEachDescendant((innerNode) => {
-                if (innerNode.isKind(SyntaxKind.ForStatement)) {
-                    console.log("Found nested loop:", innerNode.getText());
-                    // Recursively unroll the inner loop
-                    unrollForLoop(innerNode as ForStatement);
-                }
+    // Evaluate the loop condition and unroll
+    while (evaluateCondition(condition.getText(), loopVar, currentValue)) {
+        bodyStatements.forEach(statement => {
+            let statementText = statement.getText();
+
+            // Replace the loop variable with its current value
+            statementText = statementText.replace(new RegExp(`\\b${loopVar}\\b`, "g"), currentValue.toString());
+
+            // Resolve any const variables in the statement
+            vars.forEach((value, variable) => {
+                statementText = statementText.replace(new RegExp(`\\b${variable}\\b`, "g"), value);
             });
 
-            const loopStatements = statementBody.getText().replace(/^{|}$/g, '').trim();
-            console.log("Loop body to unroll (before replacement):", loopStatements);
+            unrolledStatements.push(statementText);
+        });
 
-            // Handle i++ case
-            if (incrementOperator === SyntaxKind.PlusPlusToken) {
-                for (let i = start; i < end; i++) {
-                    // Replace the loop variable (e.g., i) with the current value (e.g., 0, 1, 2)
-                    const iterationBody = loopStatements.replace(new RegExp(`\\b${loopVar}\\b`, 'g'), i.toString());
-                    console.log(`Unrolled iteration for ${loopVar} = ${i}:`, iterationBody);
-                    unrolledBody += iterationBody + '\n'; // No extra indentation
-                }
-            }
-            // Handle i-- case
-            else if (incrementOperator === SyntaxKind.MinusMinusToken) {
-                for (let i = start; i > end; i--) {
-                    // Replace the loop variable (e.g., i) with the current value (e.g., 2, 1, 0)
-                    const iterationBody = loopStatements.replace(new RegExp(`\\b${loopVar}\\b`, 'g'), i.toString());
-                    console.log(`Unrolled iteration for ${loopVar} = ${i}:`, iterationBody);
-                    unrolledBody += iterationBody + '\n'; // No extra indentation
-                }
-            }
+        // Increment the loop variable
+        currentValue += incrementValue;
+    }
 
-            console.log("Final unrolled body:", unrolledBody);
-            // Replace the original for loop with the unrolled body
-            forStatement.replaceWithText(unrolledBody.trim());
-        }
+    console.log("Unrolled Statements:");
+    console.log(unrolledStatements.join("\n"));
+
+    // Replace the original loop with unrolled statements
+    forStatement.replaceWithText(unrolledStatements.join("\n"));
+}
+
+/**
+ * Evaluate the loop condition by replacing the loop variable with its current value.
+ */
+function evaluateCondition(condition: string, loopVar: string, currentValue: number): boolean {
+    const replacedCondition = condition.replace(new RegExp(`\\b${loopVar}\\b`, "g"), currentValue.toString());
+    try {
+        return eval(replacedCondition);
+    } catch {
+        console.error("Error evaluating condition:", replacedCondition);
+        return false;
     }
 }
 
@@ -609,22 +663,30 @@ function exportThenBlock(body: string): string {
 }
 
 /**
- * Apply the transformations (inlining, flattening, and unrolling) in order.
+ * Apply the transformations. Progressize inlining and unrolling, then else inversion and if flattening.
  */
 function applyTransformations(sourceFile: SourceFile) {
-    substituteVariables(sourceFile);
+    // Progressive unroll and inline
+    const MAX_INTERATIONS = 100;
+    for (let i = 0; i <= MAX_INTERATIONS; i++) {
+        const previousCode = sourceFile.getFullText();
 
-    // Inline function calls
-    inlineFunctionCalls(sourceFile);
+        // Progressive unroll and inline
+        inlineUnroll(sourceFile);
+
+        const currentCode = sourceFile.getFullText();
+        if (currentCode === previousCode) break;
+
+        if (i == MAX_INTERATIONS) {
+            console.log("ERROR: reached max interactions, aborting!");
+        }
+    }
 
     // Convert else blocks to if statements with inverted conditions
     convertElseToIf(sourceFile);
 
     // Flatten nested if conditions
     flattenIfStatements(sourceFile);
-
-    // Process for loops
-    unrollForLoops(sourceFile);
 
     // Prettify code
     sourceFile.formatText();

@@ -3,8 +3,8 @@ import { TextDocument } from "vscode-languageserver-textdocument";
 import { conlog, isDirectory, tmpDir } from "./common";
 import * as fallout from "./fallout";
 import { connection, getDocumentSettings } from "./server";
-import * as weidu from "./weidu";
 import * as tbaf from "./tbaf";
+import * as weidu from "./weidu";
 
 /** Only these languages can be compiled */
 const falloutLanguages = ["fallout-ssl"];
