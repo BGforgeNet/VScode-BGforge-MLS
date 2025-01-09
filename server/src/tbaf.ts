@@ -815,6 +815,29 @@ function applyTransformations(sourceFile: SourceFile) {
     // Open parentheses if possible
     simplifyConditions(sourceFile);
 
+    // So that BAF exporter does not see function bodies.
+    removeFunctionDeclarations(sourceFile);
+
     // Prettify code
     sourceFile.formatText();
+}
+
+
+/**
+ * Removes all function declarations from the given source file.
+ * @param sourceFile The source file to modify.
+ */
+function removeFunctionDeclarations(sourceFile: SourceFile) {
+    const functionDeclarations = sourceFile.getFunctions();
+
+    functionDeclarations.forEach(func => {
+        try {
+            console.log(`Removing function: ${func.getName() || "anonymous"} at ${func.getStartLineNumber()}`);
+            func.remove();
+        } catch (error) {
+            console.error(`Error removing function: ${func.getName() || "anonymous"}`, error);
+        }
+    });
+
+    console.log(`Removed ${functionDeclarations.length} function(s).`);
 }
