@@ -1,13 +1,17 @@
 import * as fs from "fs";
 import * as path from "path";
 import {
+    BinaryExpression,
     Block,
     CallExpression,
     ForOfStatement,
     ForStatement,
     FunctionDeclaration,
     IfStatement,
+    Node,
+    ParenthesizedExpression,
     Project,
+    ReturnStatement,
     SourceFile,
     SyntaxKind,
     VariableDeclaration,
@@ -94,6 +98,7 @@ function inlineUnroll(sourceFile: SourceFile) {
     const functionDeclarations = sourceFile.getFunctions();
     const variablesContext: varsContext = new Map(); // Track const declarations
 
+    // Collect variables
     sourceFile.forEachDescendant(node => {
         switch (node.getKind()) {
             // Collect const variables
@@ -113,7 +118,6 @@ function inlineUnroll(sourceFile: SourceFile) {
             case SyntaxKind.ForOfStatement:
                 unrollForOfLoop(node as ForOfStatement, variablesContext);
                 break;
-
             // Unroll for loops
             case SyntaxKind.ForStatement:
                 unrollForLoop(node as ForStatement, variablesContext);
@@ -122,13 +126,14 @@ function inlineUnroll(sourceFile: SourceFile) {
             // Handle function calls
             case SyntaxKind.CallExpression:
                 const callExpr = node as CallExpression;
-                const functionName = callExpr.getExpression().getText();
 
-                // Check if it's a local function
+                // Apply variable substitution first
+                substituteVariables(callExpr, variablesContext);
+
+                // Check if it's a local function and inline it
+                const functionName = callExpr.getExpression().getText();
                 if (functionDeclarations.some(func => func.getName() === functionName)) {
                     inlineFunction(callExpr, functionDeclarations, variablesContext);
-                } else {
-                    substituteVariables(callExpr, variablesContext);
                 }
                 break;
 
@@ -145,18 +150,17 @@ function inlineUnroll(sourceFile: SourceFile) {
  */
 function substituteVariables(callExpression: CallExpression, vars: varsContext) {
     const args = callExpression.getArguments();
-
     args.forEach(arg => {
         const argText = arg.getText();
 
+        // Check if the argument is a variable that we know
         if (vars.has(argText)) {
-            const replacementValue = vars.get(argText)!;
-            console.log(`Substituting ${argText} with ${replacementValue}`);
-            arg.replaceWithText(replacementValue);
+            const substitution = vars.get(argText)!;
+            console.log(`Substituting variable: ${argText} -> ${substitution}`);
+            arg.replaceWithText(substitution);
         }
     });
 }
-
 
 /**
  * Inline a local function call expression.
@@ -166,6 +170,7 @@ function substituteVariables(callExpression: CallExpression, vars: varsContext) 
  */
 function inlineFunction(callExpression: CallExpression, functionDeclarations: FunctionDeclaration[], vars: varsContext) {
     const functionName = callExpression.getExpression().getText();
+    console.log(`Processing function: ${functionName}`);
 
     // Find the corresponding local function declaration
     const functionDecl = functionDeclarations.find(func => func.getName() === functionName);
@@ -174,11 +179,14 @@ function inlineFunction(callExpression: CallExpression, functionDeclarations: Fu
         return;
     }
 
-    // Get the function body and parameters
+    // Get the function body
     const functionBody = functionDecl.getBody();
     if (!functionBody) return;
 
-    const statements = functionBody.asKindOrThrow(SyntaxKind.Block).getStatements();
+    const block = functionBody.asKindOrThrow(SyntaxKind.Block) as Block;
+    const statements = block.getStatements();
+
+    console.log(`Function body statements: ${statements.map(stmt => stmt.getText()).join("\n")}`);
 
     // Map parameters to arguments
     const parameters = functionDecl.getParameters();
@@ -189,15 +197,16 @@ function inlineFunction(callExpression: CallExpression, functionDeclarations: Fu
         const paramName = param.getName();
         let argText = args[index]?.getText() || param.getInitializer()?.getText() || "undefined";
 
-        // Resolve variable value from context if it's a const variable
+        // Substitute variable values from context if available
         if (vars.has(argText)) {
             argText = vars.get(argText)!;
         }
 
+        console.log(`Mapping parameter: ${paramName} to argument: ${argText}`);
         paramArgMap.set(paramName, argText);
     });
 
-    // Replace parameters in the function body
+    // Replace parameters and variables in the function body
     let inlinedCode = statements.map(stmt => stmt.getText()).join("\n");
     paramArgMap.forEach((arg, param) => {
         const regex = new RegExp(`\\b${param}\\b`, "g");
@@ -210,19 +219,67 @@ function inlineFunction(callExpression: CallExpression, functionDeclarations: Fu
         inlinedCode = inlinedCode.replace(regex, value);
     });
 
-    // Replace the parent statement if possible
+    console.log(`Inlined code: ${inlinedCode}`);
+
+    // Handle boolean functions in complex binary expressions
     const parent = callExpression.getParent();
-    if (parent && parent.isKind(SyntaxKind.ExpressionStatement)) {
+    const returnStmt = statements.find(stmt => stmt.isKind(SyntaxKind.ReturnStatement)) as ReturnStatement | undefined;
+
+    if (returnStmt && isConditionContext(parent)) {
+        let returnText = returnStmt.getExpression()?.getText() || "undefined";
+        console.log(`Return statement found: ${returnText}`);
+
+        // Only add parentheses if necessary
+        const needsParentheses = returnText.includes("&&") || returnText.includes("||");
+        if (needsParentheses && !(returnText.startsWith("(") && returnText.endsWith(")"))) {
+            returnText = `(${returnText})`;
+        }
+
+        console.log(`Final return text: ${returnText}`);
+
+        if (parent?.isKind(SyntaxKind.BinaryExpression)) {
+            parent.replaceWithText(parent.getText().replace(callExpression.getText(), returnText));
+            console.log(`Successfully replaced ${functionName}() in a complex binary expression.`);
+        } else if (parent?.isKind(SyntaxKind.PrefixUnaryExpression)) {
+            parent.replaceWithText(`!${returnText}`);
+            console.log(`Successfully replaced ${functionName}() in a condition with a logical NOT.`);
+        } else if (parent?.isKind(SyntaxKind.IfStatement)) {
+            const condition = parent.getExpression();
+            condition.replaceWithText(`${returnText}`);
+            console.log(`Successfully replaced ${functionName}() inside an if condition.`);
+        }
+
+        return;
+    }
+
+    // Handle void functions outside conditions
+    if (!returnStmt && parent?.isKind(SyntaxKind.ExpressionStatement)) {
         try {
+            console.log(`Replacing expression: ${parent.getText()} with ${inlinedCode}`);
             parent.replaceWithText(inlinedCode);
             console.log(`Successfully replaced ${functionName}() with inlined code.`);
         } catch (error) {
             console.error(`Error replacing ${functionName}():`, error);
         }
     } else {
-        console.error(`Unable to replace ${functionName}() because it's not part of an expression statement.`);
+        console.error(`Unable to replace ${functionName}() because it's not part of a supported expression.`);
     }
 }
+
+
+
+/**
+ * Checks if the parent node is part of a condition (if statement, binary expression, etc.).
+ */
+function isConditionContext(parent: Node | undefined): boolean {
+    return !!(
+        parent &&
+        (parent.isKind(SyntaxKind.IfStatement) ||
+            parent.isKind(SyntaxKind.BinaryExpression) ||
+            parent.isKind(SyntaxKind.PrefixUnaryExpression))
+    );
+}
+
 
 
 /**
@@ -435,6 +492,7 @@ function flattenIfStatements(sourceFile: SourceFile) {
         }
     });
 }
+
 
 /**
  * Unroll a simple for loop.
@@ -663,6 +721,72 @@ function exportThenBlock(body: string): string {
 }
 
 /**
+ * Simplifies conditions in the given source file by removing unnecessary parentheses.
+ * @param sourceFile The source file to process.
+ */
+function simplifyConditions(sourceFile: SourceFile) {
+    sourceFile.forEachDescendant(node => {
+        if (node.isKind(SyntaxKind.ParenthesizedExpression)) {
+            const parenthesizedExpression = node as ParenthesizedExpression;
+            const innerExpression = parenthesizedExpression.getExpression();
+
+            if (canRemoveParentheses(parenthesizedExpression)) {
+                try {
+                    console.log(`Simplifying: ${parenthesizedExpression.getText()} -> ${innerExpression.getText()}`);
+
+                    // Ensure replacement respects the parent node's context
+                    const parent = parenthesizedExpression.getParent();
+                    if (parent && parent.isKind(SyntaxKind.BinaryExpression)) {
+                        const binaryExpr = parent as BinaryExpression;
+
+                        // Safely replace the entire binary expression if necessary
+                        binaryExpr.replaceWithText(
+                            binaryExpr.getText().replace(parenthesizedExpression.getText(), innerExpression.getText())
+                        );
+                    } else {
+                        // For other cases, replace the parentheses directly
+                        parenthesizedExpression.replaceWithText(innerExpression.getText());
+                    }
+                } catch (error) {
+                    console.error(
+                        `Error simplifying: ${parenthesizedExpression.getText()} -> ${innerExpression.getText()}`,
+                        error
+                    );
+                }
+            }
+        }
+    });
+}
+
+
+
+/**
+ * Determines if parentheses around an expression can be safely removed.
+ * @param node The parenthesized expression node.
+ * @returns True if parentheses can be removed, false otherwise.
+ */
+function canRemoveParentheses(node: ParenthesizedExpression): boolean {
+    const parent = node.getParent();
+    if (!parent) return false;
+
+    const innerExpression = node.getExpression();
+
+    // Remove parentheses safely only if the parent allows it
+    if (
+        parent.isKind(SyntaxKind.BinaryExpression) ||
+        parent.isKind(SyntaxKind.IfStatement) ||
+        parent.isKind(SyntaxKind.ExpressionStatement)
+    ) {
+        return innerExpression.isKind(SyntaxKind.BinaryExpression) || innerExpression.isKind(SyntaxKind.CallExpression);
+    }
+
+    return false;
+}
+
+
+
+
+/**
  * Apply the transformations. Progressize inlining and unrolling, then else inversion and if flattening.
  */
 function applyTransformations(sourceFile: SourceFile) {
@@ -687,6 +811,9 @@ function applyTransformations(sourceFile: SourceFile) {
 
     // Flatten nested if conditions
     flattenIfStatements(sourceFile);
+
+    // Open parentheses if possible
+    simplifyConditions(sourceFile);
 
     // Prettify code
     sourceFile.formatText();
