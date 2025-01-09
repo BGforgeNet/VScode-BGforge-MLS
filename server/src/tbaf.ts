@@ -603,13 +603,19 @@ function unrollForLoop(forStatement: ForStatement, vars: varsContext) {
 
 /**
  * Evaluate the loop condition by replacing the loop variable with its current value.
+ * @param condition The loop condition as a string.
+ * @param loopVar The loop variable.
+ * @param currentValue The current value of the loop variable.
+ * @returns Whether the condition evaluates to true.
  */
 function evaluateCondition(condition: string, loopVar: string, currentValue: number): boolean {
-    const replacedCondition = condition.replace(new RegExp(`\\b${loopVar}\\b`, "g"), currentValue.toString());
+    const sanitizedCondition = condition.replace(new RegExp(`\\b${loopVar}\\b`, "g"), currentValue.toString());
     try {
-        return eval(replacedCondition);
-    } catch {
-        console.error("Error evaluating condition:", replacedCondition);
+        // Create a new function to evaluate the condition
+        const fn = new Function(`return (${sanitizedCondition});`);
+        return fn();
+    } catch (error) {
+        console.error("Error evaluating condition:", sanitizedCondition, error);
         return false;
     }
 }
