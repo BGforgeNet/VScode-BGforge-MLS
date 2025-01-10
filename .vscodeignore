@@ -11,8 +11,8 @@
 !server/out/completion.*.json
 !server/out/hover.*.json
 !server/out/signature.*.json
-# Can't figure out how to bundle tslib
-!server/node_modules/tslib/
+# Rollup native bindings
+!server/node_modules/@rollup/rollup*/**
 
 !preview/package.json
 !preview/out/index.html

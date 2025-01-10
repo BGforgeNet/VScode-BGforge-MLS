@@ -403,7 +403,7 @@
     "scripts": {
         "vscode:prepublish": "pnpm esbuild-base-client --minify && pnpm esbuild-base-server --minify && pnpm esbuild-base-preview --minify",
         "esbuild-base-client": "esbuild ./client/src/extension.ts --bundle --outfile=client/out/extension.js --external:vscode --format=cjs --platform=node",
-        "esbuild-base-server": "esbuild ./server/src/server.ts --bundle --outfile=server/out/server.js --external:vscode --external:tslib --format=cjs --platform=node",
+        "esbuild-base-server": "esbuild ./server/src/server.ts --bundle --outfile=server/out/server.js --external:vscode --format=cjs --platform=node",
         "esbuild-base-preview": "esbuild ./preview/src/index.ts --bundle --outfile=preview/out/index.js",
         "esbuild-client": "pnpm esbuild-base-client --sourcemap",
         "esbuild-server": "pnpm esbuild-base-server --sourcemap",
@@ -414,7 +414,7 @@
         "esbuild-watch-server": "pnpm esbuild-base-server --sourcemap --watch",
         "test-compile": "tsc -p ./",
         "compile": "pnpm esbuild-client && pnpm esbuild-server",
-        "postinstall": "cd client && pnpm install && cd ../server && pnpm install && cd ../preview && pnpm install && cd ..",
+        "postinstall": "cd client && pnpm install && cd ../server && npm install -f && cd ../preview && pnpm install && cd ..",
         "test": "sh ./scripts/e2e.sh",
         "eslint": "eslint client/src/extension.ts && eslint client/src/test/*.ts && eslint server/src/*.ts && eslint preview/src/*.ts",
         "package": "pnpm vsce package --no-dependencies"

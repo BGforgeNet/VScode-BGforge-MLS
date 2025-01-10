@@ -357,7 +357,7 @@ async function bundle(input: string) {
         plugins: [
             typescript({
                 declaration: false,
-                tslib: require.resolve('../node_modules/tslib'),    // Otherwise Rollup won't even start
+                tslib: 'tslib',    // Otherwise Rollup won't even start
                 target: "esnext",   // So that Rollup doesn't change syntax
                 // include: "**/*.(ts|tbaf)",   // Doesn't work, TS compiler refuses to recognize tbaf, so we have to copy.
             })
