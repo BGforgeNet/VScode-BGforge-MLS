@@ -666,8 +666,8 @@ function exportBAF(sourceFile: SourceFile, filePath: string): void {
  * Apply final BAF hacks: GLOBAL, LOCALS, obj() replacement.
  */
 function applyBAFhacks(text: string): string {
-    let result = text.replace(/, LOCALS/g, ', "LOCALS"');
-    result = result.replace(/, GLOBAL,/g, ', "GLOBAL"');
+    let result = text.replace(/,\s*LOCALS/g, ', "LOCALS"');
+    result = result.replace(/,\s*GLOBAL/g, ', "GLOBAL"');
     // obj specifier replacement: obj("[ANYONE]") => [ANYONE]
     result = result.replace(/obj\("\[(.*?)\]"\)/g, '[$1]');
     result = result.trim() + "\n";
@@ -689,9 +689,15 @@ function exportIfCondition(condition: string): string {
     andConditions.forEach((andCond) => {
         andCond = andCond.trim();
 
+        // Handle negation (remove wrapping parentheses if negated condition has parentheses)
+        // Shouldn't have complex conditions here... I think.
+        if (andCond.startsWith('!') && andCond[1] === '(' && andCond.endsWith(')')) {
+            andCond = `!${andCond.slice(2, -1).trim()}`;
+        }
+
         // Step 2: Remove wrapping parentheses if the condition starts and ends with parentheses
-        if (andCond.startsWith('(') && andCond.endsWith(')')) {
-            andCond = andCond.slice(1, -1).trim(); // Remove outer parentheses
+        else if (andCond.startsWith('(') && andCond.endsWith(')')) {
+            andCond = andCond.slice(1, -1).trim();
         }
 
         // Process OR block if the condition contains ||
@@ -709,6 +715,7 @@ function exportIfCondition(condition: string): string {
 
     return result;
 }
+
 
 /**
  * Convert "then" block to BAF format.
