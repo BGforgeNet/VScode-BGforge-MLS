@@ -37,7 +37,7 @@ const TMP_BUNDLED = path.join(tmpDir, "tbaf-bundled.ts");
  * Located in the same directory as the file being compiled.
  * Cannot be ".tmp.ts", TS/Rollup refuse that too.
  */
-const TMP_COPIED = "tbaf.tmp.ts";
+const TMP_COPIED = "_tmp.tbaf.ts";
 
 /**
  * Final TS code ends up here
@@ -49,7 +49,7 @@ const TMP_FINAL = path.join(tmpDir, "tbaf-final.ts");
  * @param uri 
  * @returns 
  */
-export async function compile(uri: string) {
+export async function compile(uri: string, text: string) {
     const filePath = uriToPath(uri);
     let ext = path.parse(filePath).ext;
     ext = ext.toLowerCase();
@@ -63,7 +63,7 @@ export async function compile(uri: string) {
     // Read all files anew to avoid ts-morph caching.
     const project = new Project();
 
-    await bundle(filePath);
+    await bundle(filePath, text);
 
     const sourceFile = project.addSourceFileAtPath(TMP_BUNDLED);
 
@@ -102,7 +102,7 @@ function inlineUnroll(sourceFile: SourceFile) {
     sourceFile.forEachDescendant(node => {
         switch (node.getKind()) {
             // Collect const variables
-            case SyntaxKind.VariableDeclaration:
+            case SyntaxKind.VariableDeclaration: {
                 const variableDeclaration = node as VariableDeclaration;
                 const parentDeclarationList = variableDeclaration.getParent() as VariableDeclarationList;
 
@@ -113,6 +113,7 @@ function inlineUnroll(sourceFile: SourceFile) {
                     console.log(`Collected const variable: ${name} = ${initializer}`);
                 }
                 break;
+            }
 
             // Unroll for...of loops
             case SyntaxKind.ForOfStatement:
@@ -124,7 +125,7 @@ function inlineUnroll(sourceFile: SourceFile) {
                 break;
 
             // Handle function calls
-            case SyntaxKind.CallExpression:
+            case SyntaxKind.CallExpression: {
                 const callExpr = node as CallExpression;
 
                 // Apply variable substitution first
@@ -136,6 +137,7 @@ function inlineUnroll(sourceFile: SourceFile) {
                     inlineFunction(callExpr, functionDeclarations, variablesContext);
                 }
                 break;
+            }
 
             default:
                 break;
@@ -155,7 +157,10 @@ function substituteVariables(callExpression: CallExpression, vars: varsContext) 
 
         // Check if the argument is a variable that we know
         if (vars.has(argText)) {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             const substitution = vars.get(argText)!;
+            // We explicitly check var.has. Eslint is wrong.
+
             console.log(`Substituting variable: ${argText} -> ${substitution}`);
             arg.replaceWithText(substitution);
         }
@@ -199,7 +204,9 @@ function inlineFunction(callExpression: CallExpression, functionDeclarations: Fu
 
         // Substitute variable values from context if available
         if (vars.has(argText)) {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             argText = vars.get(argText)!;
+            // We explicitly check var.has. Eslint is wrong.
         }
 
         console.log(`Mapping parameter: ${paramName} to argument: ${argText}`);
@@ -293,7 +300,9 @@ function unrollForOfLoop(forOfStatement: ForOfStatement, vars: varsContext) {
 
     // Resolve the array expression if it's a const variable
     if (vars.has(arrayExpression)) {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         arrayExpression = vars.get(arrayExpression)!;
+        // We explicitly check var.has. Eslint is wrong.
     }
 
     console.log("Array Expression:", arrayExpression);
@@ -347,10 +356,10 @@ function unrollForOfLoop(forOfStatement: ForOfStatement, vars: varsContext) {
 /**
  * Bundle functions into temporary file with Rollup
  */
-async function bundle(input: string) {
+async function bundle(input: string, text: string) {
     input = getRelPath2(cwd(), input);  // Otherwise Rollup can't find includes
     const tmpInput = path.join(path.dirname(input), TMP_COPIED);
-    fs.copyFileSync(input, tmpInput);
+    fs.writeFileSync(tmpInput, text);
     const bundle = await rollup({
         input: tmpInput,
         external: id => /node_modules/.test(id),  // Exclude node_modules
@@ -519,7 +528,9 @@ function unrollForLoop(forStatement: ForStatement, vars: varsContext) {
 
     // Resolve initial value from context if it's a variable
     if (vars.has(initialValue)) {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         initialValue = vars.get(initialValue)!;
+        // We explicitly check var.has. Eslint is wrong.
     }
 
     if (isNaN(Number(initialValue))) {
@@ -705,11 +716,6 @@ function exportIfCondition(condition: string): string {
  */
 function exportThenBlock(body: string): string {
     let result = "";
-
-    // Ensure no nested if or unsupported blocks
-    if (body.includes('if')) {
-        throw new Error("Nested if statements are not allowed.");
-    }
 
     // Remove curly braces and split statements
     const cleanBody = body.replace(/[{}]/g, '').trim();

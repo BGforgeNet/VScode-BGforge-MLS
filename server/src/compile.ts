@@ -70,7 +70,7 @@ export async function compile(uri: string, langId: string, interactive = false, 
     }
 
     if (langId == "typescript") {
-        tbaf.compile(uri);
+        tbaf.compile(uri, text);
         return;
     }
 
