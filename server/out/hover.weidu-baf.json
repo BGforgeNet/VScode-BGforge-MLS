@@ -218,7 +218,7 @@
     "BashDoor": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-baf-tooltip\nBashDoor(0:Object)\n```\nThis action is miscoded in the default action.ids file (the number 0 should be the capital letter O). When corrected, this action causes the active creature to attempt to bash the specified door."
+            "value": "```weidu-baf-tooltip\nBashDoor(O:Object)\n```\nThis action is miscoded in the default action.ids file (the number 0 should be the capital letter O). When corrected, this action causes the active creature to attempt to bash the specified door."
         }
     },
     "BattleSong": {
@@ -1070,7 +1070,7 @@
     "LeaveAreaLUA": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-baf-tooltip\nLeaveAreaLUA(S:Area, S:Parchment, P:Point, I:Face*Dir)\n```\nThis action changes the current area. Parchment is the MOS image to use in the area transition loading screen. Only EE games support IDS symbols for `Face`.\n\n```\nIF\n  Global(\"MissionPackSave\",\"GLOBAL\",0)\nTHEN\n  RESPONSE #100\n    TextScreen(\"toscst\")\n    ActionOverride(Player1,LeaveAreaLUA(\"AR1000\",\"\",[3048.831],4))\n    ActionOverride(Player2,LeaveAreaLUA(\"AR1000\",\"\",[3055.917],4))\n    ActionOverride(Player3,LeaveAreaLUA(\"AR1000\",\"\",[2990.913],4))\n    ActionOverride(Player4,LeaveAreaLUA(\"AR1000\",\"\",[2992.812],4))\n    ActionOverride(Player5,LeaveAreaLUA(\"AR1000\",\"\",[3079.737],4))\n    ActionOverride(Player6,LeaveAreaLUA(\"AR1000\",\"\",[3005.742],4))\nEND\n```"
+            "value": "```weidu-baf-tooltip\nLeaveAreaLUA(S:Area, S:Parchment, P:Point, I:Face)\n```\nThis action changes the current area. Parchment is the MOS image to use in the area transition loading screen. Only EE games support IDS symbols for `Face`.\n\n```\nIF\n  Global(\"MissionPackSave\",\"GLOBAL\",0)\nTHEN\n  RESPONSE #100\n    TextScreen(\"toscst\")\n    ActionOverride(Player1,LeaveAreaLUA(\"AR1000\",\"\",[3048.831],4))\n    ActionOverride(Player2,LeaveAreaLUA(\"AR1000\",\"\",[3055.917],4))\n    ActionOverride(Player3,LeaveAreaLUA(\"AR1000\",\"\",[2990.913],4))\n    ActionOverride(Player4,LeaveAreaLUA(\"AR1000\",\"\",[2992.812],4))\n    ActionOverride(Player5,LeaveAreaLUA(\"AR1000\",\"\",[3079.737],4))\n    ActionOverride(Player6,LeaveAreaLUA(\"AR1000\",\"\",[3005.742],4))\nEND\n```"
         }
     },
     "LeaveAreaLUAEntry": {
@@ -1082,13 +1082,13 @@
     "LeaveAreaLUAPanic": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-baf-tooltip\nLeaveAreaLUAPanic(S:Area, S:Parchment, P:Point, I:Face*Dir)\n```\nThis multiplayer-only action changes the current area. Parchment is the MOS image to use in the area transition loading screen. Only EE games support IDS symbols for `Face`."
+            "value": "```weidu-baf-tooltip\nLeaveAreaLUAPanic(S:Area, S:Parchment, P:Point, I:Face)\n```\nThis multiplayer-only action changes the current area. Parchment is the MOS image to use in the area transition loading screen. Only EE games support IDS symbols for `Face`."
         }
     },
     "LeaveAreaLUAPanicEntry": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-baf-tooltip\nLeaveAreaLUAPanicEntry(S:Area, S:Entry, P:Point, I:Face*Dir)\n```\nThis multiplayer-only action changes the current area. The creature moves to the destination point (from [ENTRIES.2DA](https://gibberlings3.github.io/iesdp/files/2da/2da_tob/entries.htm)) before travelling (the point parameter is unused). Only EE games support IDS symbols for `Face`."
+            "value": "```weidu-baf-tooltip\nLeaveAreaLUAPanicEntry(S:Area, S:Entry, P:Point, I:Face)\n```\nThis multiplayer-only action changes the current area. The creature moves to the destination point (from [ENTRIES.2DA](https://gibberlings3.github.io/iesdp/files/2da/2da_tob/entries.htm)) before travelling (the point parameter is unused). Only EE games support IDS symbols for `Face`."
         }
     },
     "LeaveAreaName": {
@@ -1478,7 +1478,7 @@
     "ReallyForceSpellRES": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-baf-tooltip\nReallyForceSpellRES(S:RES, O:Target)\n```\nThis action causes the active creature to cast the specified spell at the target object. The spell need not currently be memorised by the caster, and will not be interrupted while being cast. The spell is cast instantly (i.e. with a casting time of 0). The caster must meet the level requirements of the spell. This action does not work in the script round where the active creature has died.\n\n\nScripts can handle `RES` filenames with `+`, Dialogs and the console cannot. Same with the `~`, `` ` ``, `'`, `@`, `$`, `^`, and `&` characters, maybe some more.\n- This action will default to a spell matching the first 7 characters in Dialogs/Console *IF* the 8th character isn't valid.\n"
+            "value": "```weidu-baf-tooltip\nReallyForceSpellRES(SPLREF:spell, O:Target)\n```\nThis action causes the active creature to cast the specified spell at the target object. The spell need not currently be memorised by the caster, and will not be interrupted while being cast. The spell is cast instantly (i.e. with a casting time of 0). The caster must meet the level requirements of the spell. This action does not work in the script round where the active creature has died.\n\n\nScripts can handle `RES` filenames with `+`, Dialogs and the console cannot. Same with the `~`, `` ` ``, `'`, `@`, `$`, `^`, and `&` characters, maybe some more.\n- This action will default to a spell matching the first 7 characters in Dialogs/Console *IF* the 8th character isn't valid.\n"
         }
     },
     "Recoil": {
@@ -2336,7 +2336,7 @@
     "Weather": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-baf-tooltip\nWeather(I:Weather*Weather)\n```\nThis action changes the weather. The action only works in outdoors areas that have weather enabled in the ARE file. Values for the weather parameter are from [weather.ids](https://gibberlings3.github.io/iesdp/files/ids/bg2/weather.htm). Note that the fog weather type does not work.\n\n```\nIF\n  Global(\"KRSTORM\",\"GLOBAL\",0)\nTHEN\n  RESPONSE #100\n    Weather(RAIN)\n    SetGlobal(\"KRSTORM\",\"GLOBAL\",1)\nEND\n```"
+            "value": "```weidu-baf-tooltip\nWeather(I:Weather*Weather)\n```\nThis action changes the weather. The action only works in outdoors areas that have weather enabled in the ARE file. Values for the weather parameter are from [weather.ids](https://gibberlings3.github.io/iesdp/files/ids/bg2/weather.htm). Note that the fog weather type does not work.\n\n```\nIF\n  Global(\"KRSTORM\",\"GLOBAL\",0)\nTHEN\n  RESPONSE #100\n    Weather(RAIN)\n    SetGlobal(\"KRSTORM\",\"GLOBAL\",1)\nEND\n```\n\n\nIn the EE's, the action has no effect if `Weather` has been disabled in the game options.\nIn addition, Fog option needs `Enable Fog` to be enabled in the game options.\n"
         }
     },
     "XEquipItem": {
@@ -2349,6 +2349,2184 @@
         "contents": {
             "kind": "markdown",
             "value": "```weidu-baf-tooltip\nZoomLock(I:Lock*Boolean)\n```\nThis action can be used to set zoom to 100%. When set to TRUE zoom factor is locked at 100% and can not be changed by user input. Setting it to FALSE restores the original zoom factor. The zoom lock state is not saved."
+        }
+    },
+    "FIRE_RING": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x0000\n```\nanimate.ids"
+        }
+    },
+    "CHUNKS": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x0100\n```\nanimate.ids"
+        }
+    },
+    "EXPLODING_ARM": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x0200\n```\nanimate.ids"
+        }
+    },
+    "EXPLODING_HEAD": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x0210\n```\nanimate.ids"
+        }
+    },
+    "EXPLODING_FOOT": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x0220\n```\nanimate.ids"
+        }
+    },
+    "EXPLODING_TORSO": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x0230\n```\nanimate.ids"
+        }
+    },
+    "EXPLODING_LEG": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x0240\n```\nanimate.ids"
+        }
+    },
+    "SMOKE_PUFF_LARGE": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x0300\n```\nanimate.ids"
+        }
+    },
+    "SMOKE_PUFF_SMALL": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x0301\n```\nanimate.ids"
+        }
+    },
+    "TRAP_SKULL": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x0400\n```\nanimate.ids"
+        }
+    },
+    "TRAP_GLYPH": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x0410\n```\nanimate.ids"
+        }
+    },
+    "CLOUD_TRAVEL": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x0500\n```\nanimate.ids"
+        }
+    },
+    "CLOUD_STATIC": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x0510\n```\nanimate.ids"
+        }
+    },
+    "STORM_TRAVEL": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x0600\n```\nanimate.ids"
+        }
+    },
+    "STORM_STATIC": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x0610\n```\nanimate.ids"
+        }
+    },
+    "GREASE_TRAVEL": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x0700\n```\nanimate.ids"
+        }
+    },
+    "GREASE_STATIC": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x0710\n```\nanimate.ids"
+        }
+    },
+    "WEB_TRAVEL": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x0800\n```\nanimate.ids"
+        }
+    },
+    "WEB_STATIC": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x0810\n```\nanimate.ids"
+        }
+    },
+    "WYVERN_BIG": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x1000\n```\nanimate.ids"
+        }
+    },
+    "TANARRI": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x1100\n```\nanimate.ids"
+        }
+    },
+    "DRAGON_RED": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x1200\n```\nanimate.ids"
+        }
+    },
+    "DRAGON_BLACK": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x1201\n```\nanimate.ids"
+        }
+    },
+    "DRAGON_SILVER": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x1202\n```\nanimate.ids"
+        }
+    },
+    "DRAGON_GREEN": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x1203\n```\nanimate.ids"
+        }
+    },
+    "DRAGON_AQUA": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x1204\n```\nanimate.ids"
+        }
+    },
+    "DRAGON_BLUE": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x1205\n```\nanimate.ids"
+        }
+    },
+    "DRAGON_BROWN": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x1206\n```\nanimate.ids"
+        }
+    },
+    "DRAGON_MULTICOLOR": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x1207\n```\nanimate.ids"
+        }
+    },
+    "DRAGON_PURPLE": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x1208\n```\nanimate.ids"
+        }
+    },
+    "DEMIGORGON": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x1300\n```\nanimate.ids"
+        }
+    },
+    "SIRINE": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x2000\n```\nanimate.ids"
+        }
+    },
+    "VOLO": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x2100\n```\nanimate.ids"
+        }
+    },
+    "OGRE_MAGE": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x2200\n```\nanimate.ids"
+        }
+    },
+    "DEATH_KNIGHT": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x2300\n```\nanimate.ids"
+        }
+    },
+    "ANKHEG": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x3000\n```\nanimate.ids"
+        }
+    },
+    "STATIC_NOBLE_MAN_CHAIR": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x4000\n```\nanimate.ids"
+        }
+    },
+    "STATIC_NOBLE_MAN_MATTE": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x4002\n```\nanimate.ids"
+        }
+    },
+    "STATIC_NOBLE_WOMAN_CHAIR": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x4010\n```\nanimate.ids"
+        }
+    },
+    "STATIC_NOBLE_WOMAN_MATTE": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x4012\n```\nanimate.ids"
+        }
+    },
+    "STATIC_PEASANT_MAN_CHAIR": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x4100\n```\nanimate.ids"
+        }
+    },
+    "STATIC_PEASANT_MAN_STOOL": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x4101\n```\nanimate.ids"
+        }
+    },
+    "STATIC_PEASANT_MAN_MATTE": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x4102\n```\nanimate.ids"
+        }
+    },
+    "STATIC_PEASANT_WOMAN_CHAIR": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x4110\n```\nanimate.ids"
+        }
+    },
+    "STATIC_PEASANT_WOMAN_MATTE": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x4112\n```\nanimate.ids"
+        }
+    },
+    "STATIC_HUMANCLERIC_MAN_CHAIR": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x4200\n```\nanimate.ids"
+        }
+    },
+    "STATIC_SPIDER_WOMAN": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x4300\n```\nanimate.ids"
+        }
+    },
+    "SLEEPING_MAN_HUMAN": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x4400\n```\nanimate.ids"
+        }
+    },
+    "SLEEPING_WOMAN_HUMAN": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x4410\n```\nanimate.ids"
+        }
+    },
+    "SLEEPING_FAT_MAN_HUMAN": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x4500\n```\nanimate.ids"
+        }
+    },
+    "SLEEPING_DWARF": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x4600\n```\nanimate.ids"
+        }
+    },
+    "SLEEPING_MAN_ELF": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x4700\n```\nanimate.ids"
+        }
+    },
+    "SLEEPING_WOMAN_ELF": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x4710\n```\nanimate.ids"
+        }
+    },
+    "SLEEPING_MAN_HALFLING": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x4800\n```\nanimate.ids"
+        }
+    },
+    "CLERIC_MALE_HUMAN_LOW": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x5000\n```\nanimate.ids"
+        }
+    },
+    "CLERIC_MALE_ELF_LOW": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x5001\n```\nanimate.ids"
+        }
+    },
+    "CLERIC_MALE_DWARF_LOW": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x5002\n```\nanimate.ids"
+        }
+    },
+    "CLERIC_MALE_HALFLING_LOW": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x5003\n```\nanimate.ids"
+        }
+    },
+    "CLERIC_FEMALE_HUMAN_LOW": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x5010\n```\nanimate.ids"
+        }
+    },
+    "CLERIC_FEMALE_ELF_LOW": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x5011\n```\nanimate.ids"
+        }
+    },
+    "CLERIC_FEMALE_DWARF_LOW": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x5012\n```\nanimate.ids"
+        }
+    },
+    "CLERIC_FEMALE_HALFLING_LOW": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x5013\n```\nanimate.ids"
+        }
+    },
+    "FIGHTER_MALE_HUMAN_LOW": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x5100\n```\nanimate.ids"
+        }
+    },
+    "FIGHTER_MALE_ELF_LOW": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x5101\n```\nanimate.ids"
+        }
+    },
+    "FIGHTER_MALE_DWARF_LOW": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x5102\n```\nanimate.ids"
+        }
+    },
+    "FIGHTER_MALE_HALFLING_LOW": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x5103\n```\nanimate.ids"
+        }
+    },
+    "FIGHTER_FEMALE_HUMAN_LOW": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x5110\n```\nanimate.ids"
+        }
+    },
+    "FIGHTER_FEMALE_ELF_LOW": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x5111\n```\nanimate.ids"
+        }
+    },
+    "FIGHTER_FEMALE_DWARF_LOW": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x5112\n```\nanimate.ids"
+        }
+    },
+    "FIGHTER_FEMALE_HALFLING_LOW": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x5113\n```\nanimate.ids"
+        }
+    },
+    "MAGE_MALE_HUMAN_LOW": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x5200\n```\nanimate.ids"
+        }
+    },
+    "MAGE_MALE_ELF_LOW": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x5201\n```\nanimate.ids"
+        }
+    },
+    "MAGE_MALE_DWARF_LOW": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x5202\n```\nanimate.ids"
+        }
+    },
+    "MAGE_FEMALE_HUMAN_LOW": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x5210\n```\nanimate.ids"
+        }
+    },
+    "MAGE_FEMALE_ELF_LOW": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x5211\n```\nanimate.ids"
+        }
+    },
+    "MAGE_FEMALE_DWARF_LOW": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x5212\n```\nanimate.ids"
+        }
+    },
+    "THIEF_MALE_HUMAN_LOW": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x5300\n```\nanimate.ids"
+        }
+    },
+    "THIEF_MALE_ELF_LOW": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x5301\n```\nanimate.ids"
+        }
+    },
+    "THIEF_MALE_DWARF_LOW": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x5302\n```\nanimate.ids"
+        }
+    },
+    "THIEF_MALE_HALFLING_LOW": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x5303\n```\nanimate.ids"
+        }
+    },
+    "THIEF_FEMALE_HUMAN_LOW": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x5310\n```\nanimate.ids"
+        }
+    },
+    "THIEF_FEMALE_ELF_LOW": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x5311\n```\nanimate.ids"
+        }
+    },
+    "THIEF_FEMALE_DWARF_LOW": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x5312\n```\nanimate.ids"
+        }
+    },
+    "THIEF_FEMALE_HALFLING_LOW": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x5313\n```\nanimate.ids"
+        }
+    },
+    "CLERIC_MALE_HUMAN": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x6000\n```\nanimate.ids"
+        }
+    },
+    "CLERIC_MALE_ELF": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x6001\n```\nanimate.ids"
+        }
+    },
+    "CLERIC_MALE_DWARF": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x6002\n```\nanimate.ids"
+        }
+    },
+    "CLERIC_MALE_HALFLING": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x6003\n```\nanimate.ids"
+        }
+    },
+    "CLERIC_MALE_GNOME": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x6004\n```\nanimate.ids"
+        }
+    },
+    "CLERIC_MALE_HALFORC": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x6005\n```\nanimate.ids"
+        }
+    },
+    "CLERIC_FEMALE_HUMAN": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x6010\n```\nanimate.ids"
+        }
+    },
+    "CLERIC_FEMALE_ELF": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x6011\n```\nanimate.ids"
+        }
+    },
+    "CLERIC_FEMALE_DWARF": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x6012\n```\nanimate.ids"
+        }
+    },
+    "CLERIC_FEMALE_HALFLING": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x6013\n```\nanimate.ids"
+        }
+    },
+    "CLERIC_FEMALE_GNOME": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x6014\n```\nanimate.ids"
+        }
+    },
+    "CLERIC_FEMALE_HALFORC": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x6015\n```\nanimate.ids"
+        }
+    },
+    "FIGHTER_MALE_HUMAN": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x6100\n```\nanimate.ids"
+        }
+    },
+    "FIGHTER_MALE_ELF": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x6101\n```\nanimate.ids"
+        }
+    },
+    "FIGHTER_MALE_DWARF": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x6102\n```\nanimate.ids"
+        }
+    },
+    "FIGHTER_MALE_HALFLING": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x6103\n```\nanimate.ids"
+        }
+    },
+    "FIGHTER_MALE_GNOME": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x6104\n```\nanimate.ids"
+        }
+    },
+    "FIGHTER_MALE_HALFORC": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x6105\n```\nanimate.ids"
+        }
+    },
+    "FIGHTER_FEMALE_HUMAN": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x6110\n```\nanimate.ids"
+        }
+    },
+    "FIGHTER_FEMALE_ELF": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x6111\n```\nanimate.ids"
+        }
+    },
+    "FIGHTER_FEMALE_DWARF": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x6112\n```\nanimate.ids"
+        }
+    },
+    "FIGHTER_FEMALE_HALFLING": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x6113\n```\nanimate.ids"
+        }
+    },
+    "FIGHTER_FEMALE_GNOME": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x6114\n```\nanimate.ids"
+        }
+    },
+    "FIGHTER_FEMALE_HALFORC": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x6115\n```\nanimate.ids"
+        }
+    },
+    "MAGE_MALE_HUMAN": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x6200\n```\nanimate.ids"
+        }
+    },
+    "MAGE_MALE_ELF": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x6201\n```\nanimate.ids"
+        }
+    },
+    "MAGE_MALE_DWARF": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x6202\n```\nanimate.ids"
+        }
+    },
+    "MAGE_MALE_GNOME": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x6204\n```\nanimate.ids"
+        }
+    },
+    "MAGE_MALE_HALFORC": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x6205\n```\nanimate.ids"
+        }
+    },
+    "MAGE_FEMALE_HUMAN": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x6210\n```\nanimate.ids"
+        }
+    },
+    "MAGE_FEMALE_ELF": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x6211\n```\nanimate.ids"
+        }
+    },
+    "MAGE_FEMALE_DWARF": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x6212\n```\nanimate.ids"
+        }
+    },
+    "MAGE_FEMALE_GNOME": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x6214\n```\nanimate.ids"
+        }
+    },
+    "MAGE_FEMALE_HALFORC": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x6215\n```\nanimate.ids"
+        }
+    },
+    "THIEF_MALE_HUMAN": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x6300\n```\nanimate.ids"
+        }
+    },
+    "THIEF_MALE_ELF": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x6301\n```\nanimate.ids"
+        }
+    },
+    "THIEF_MALE_DWARF": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x6302\n```\nanimate.ids"
+        }
+    },
+    "THIEF_MALE_HALFLING": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x6303\n```\nanimate.ids"
+        }
+    },
+    "THIEF_MALE_GNOME": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x6304\n```\nanimate.ids"
+        }
+    },
+    "THIEF_MALE_HALFORC": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x6305\n```\nanimate.ids"
+        }
+    },
+    "THIEF_FEMALE_HUMAN": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x6310\n```\nanimate.ids"
+        }
+    },
+    "THIEF_FEMALE_ELF": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x6311\n```\nanimate.ids"
+        }
+    },
+    "THIEF_FEMALE_DWARF": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x6312\n```\nanimate.ids"
+        }
+    },
+    "THIEF_FEMALE_HALFLING": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x6313\n```\nanimate.ids"
+        }
+    },
+    "THIEF_FEMALE_GNOME": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x6314\n```\nanimate.ids"
+        }
+    },
+    "THIEF_FEMALE_HALFORC": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x6315\n```\nanimate.ids"
+        }
+    },
+    "MONK_MALE_HUMAN": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x6500\n```\nanimate.ids"
+        }
+    },
+    "MONK_FEMALE_HUMAN": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x6510\n```\nanimate.ids"
+        }
+    },
+    "DRIZZT": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x6400\n```\nanimate.ids"
+        }
+    },
+    "ELMINSTER": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x6401\n```\nanimate.ids"
+        }
+    },
+    "MONK": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x6402\n```\nanimate.ids"
+        }
+    },
+    "SKELETON": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x6403\n```\nanimate.ids"
+        }
+    },
+    "SAREVOK": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x6404\n```\nanimate.ids"
+        }
+    },
+    "DOOM_GUARD": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x6405\n```\nanimate.ids"
+        }
+    },
+    "DOOM_GUARD_LARGER": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x6406\n```\nanimate.ids"
+        }
+    },
+    "HALF_OGRE": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7000\n```\nanimate.ids"
+        }
+    },
+    "OGRILLON": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7001\n```\nanimate.ids"
+        }
+    },
+    "BASILISK": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7100\n```\nanimate.ids"
+        }
+    },
+    "BASILISK_GREATER": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7101\n```\nanimate.ids"
+        }
+    },
+    "BEAR_BLACK": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7200\n```\nanimate.ids"
+        }
+    },
+    "BEAR_BROWN": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7201\n```\nanimate.ids"
+        }
+    },
+    "BEAR_CAVE": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7202\n```\nanimate.ids"
+        }
+    },
+    "BEAR_POLAR": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7203\n```\nanimate.ids"
+        }
+    },
+    "ELEMENTAL_EARTH": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7300\n```\nanimate.ids"
+        }
+    },
+    "ELEMENTAL_EARTH_SMALL": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7301\n```\nanimate.ids"
+        }
+    },
+    "SHAMBLING_MOUND": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7302\n```\nanimate.ids"
+        }
+    },
+    "ELEMENTAL_FIRE": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7310\n```\nanimate.ids"
+        }
+    },
+    "ELEMENTAL_FIRE_SMALL": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7311\n```\nanimate.ids"
+        }
+    },
+    "ELEMENTAL_FIRE_PURPLE": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7312\n```\nanimate.ids"
+        }
+    },
+    "ELEMENTAL_FIRE_SMALL_PURPLE": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7313\n```\nanimate.ids"
+        }
+    },
+    "BURNING_MAN": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7314\n```\nanimate.ids"
+        }
+    },
+    "ELEMENTAL_AIR": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7320\n```\nanimate.ids"
+        }
+    },
+    "ELEMENTAL_AIR_SMALL": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7321\n```\nanimate.ids"
+        }
+    },
+    "DOG_WILD": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7400\n```\nanimate.ids"
+        }
+    },
+    "DOG_WAR": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7401\n```\nanimate.ids"
+        }
+    },
+    "DOG_MOON": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7402\n```\nanimate.ids"
+        }
+    },
+    "DOPPLEGANGER": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7500\n```\nanimate.ids"
+        }
+    },
+    "DOPPLEGANGER_GREATER": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7501\n```\nanimate.ids"
+        }
+    },
+    "ETTERCAP": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7600\n```\nanimate.ids"
+        }
+    },
+    "GHOUL": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7700\n```\nanimate.ids"
+        }
+    },
+    "REVEANT": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7701\n```\nanimate.ids"
+        }
+    },
+    "GHAST": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7702\n```\nanimate.ids"
+        }
+    },
+    "SHADOW": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7703\n```\nanimate.ids"
+        }
+    },
+    "GIBBERLING": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7800\n```\nanimate.ids"
+        }
+    },
+    "SLIME_GREEN": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7900\n```\nanimate.ids"
+        }
+    },
+    "SLIME_OLIVE": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7901\n```\nanimate.ids"
+        }
+    },
+    "SLIME_MUSTARD": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7902\n```\nanimate.ids"
+        }
+    },
+    "SLIME_OCHRE": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7903\n```\nanimate.ids"
+        }
+    },
+    "GRAY_OOZE": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7904\n```\nanimate.ids"
+        }
+    },
+    "SPIDER_GIANT": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7a00\n```\nanimate.ids"
+        }
+    },
+    "SPIDER_HUGE": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7a01\n```\nanimate.ids"
+        }
+    },
+    "SPIDER_PHASE": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7a02\n```\nanimate.ids"
+        }
+    },
+    "SPIDER_SWORD": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7a03\n```\nanimate.ids"
+        }
+    },
+    "SPIDER_WRAITH": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7a04\n```\nanimate.ids"
+        }
+    },
+    "WOLF": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7b00\n```\nanimate.ids"
+        }
+    },
+    "WOLF_WORG": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7b01\n```\nanimate.ids"
+        }
+    },
+    "WOLF_DIRE": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7b02\n```\nanimate.ids"
+        }
+    },
+    "WOLF_WINTER": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7b03\n```\nanimate.ids"
+        }
+    },
+    "WOLF_VAMPIRE": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7b04\n```\nanimate.ids"
+        }
+    },
+    "WOLF_DREAD": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7b05\n```\nanimate.ids"
+        }
+    },
+    "WOLF_SHADOW": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7b06\n```\nanimate.ids"
+        }
+    },
+    "KOBOLD_XVART": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7c00\n```\nanimate.ids"
+        }
+    },
+    "KOBOLD_TASLOI": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7c01\n```\nanimate.ids"
+        }
+    },
+    "ZOMBIE": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7d00\n```\nanimate.ids"
+        }
+    },
+    "WEREWOLF": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7e00\n```\nanimate.ids"
+        }
+    },
+    "WEREWOLF_GREATER": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7e01\n```\nanimate.ids"
+        }
+    },
+    "TROLL": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7f00\n```\nanimate.ids"
+        }
+    },
+    "MINDFLAYER": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7f01\n```\nanimate.ids"
+        }
+    },
+    "BEHOLDER": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7f02\n```\nanimate.ids"
+        }
+    },
+    "IMP": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7f03\n```\nanimate.ids"
+        }
+    },
+    "GOLEM_IRON": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7f04\n```\nanimate.ids"
+        }
+    },
+    "DJINNI": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7f05\n```\nanimate.ids"
+        }
+    },
+    "DJINNI_LEGS": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7f06\n```\nanimate.ids"
+        }
+    },
+    "GOLEM_CLAY": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7f07\n```\nanimate.ids"
+        }
+    },
+    "OTYUGH": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7f08\n```\nanimate.ids"
+        }
+    },
+    "SAHAUGIN": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7f09\n```\nanimate.ids"
+        }
+    },
+    "GREATCAT_PANTHER": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7f0a\n```\nanimate.ids"
+        }
+    },
+    "GREATCAT_LEOPARD": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7f0b\n```\nanimate.ids"
+        }
+    },
+    "KUO-TOA": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7f0c\n```\nanimate.ids"
+        }
+    },
+    "LICH": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7f0d\n```\nanimate.ids"
+        }
+    },
+    "DEMILICH": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7f0e\n```\nanimate.ids"
+        }
+    },
+    "TROLL_SMALL": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7f0f\n```\nanimate.ids"
+        }
+    },
+    "RAKSHASA": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7f10\n```\nanimate.ids"
+        }
+    },
+    "UMBER_HULK": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7f11\n```\nanimate.ids"
+        }
+    },
+    "VAMPIRE": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7f12\n```\nanimate.ids"
+        }
+    },
+    "SNAKE": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7f13\n```\nanimate.ids"
+        }
+    },
+    "GITHYANKI": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7f14\n```\nanimate.ids"
+        }
+    },
+    "BEHOLDER_SMALL": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7f15\n```\nanimate.ids"
+        }
+    },
+    "MOOSE": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7f16\n```\nanimate.ids"
+        }
+    },
+    "RABBIT": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7f17\n```\nanimate.ids"
+        }
+    },
+    "DEER": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7f18\n```\nanimate.ids"
+        }
+    },
+    "DANCING_SWORD": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7f19\n```\nanimate.ids"
+        }
+    },
+    "GROUNDHOG": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7f20\n```\nanimate.ids"
+        }
+    },
+    "PHEASANT": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7f21\n```\nanimate.ids"
+        }
+    },
+    "VAMPIRE_FEMALE": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7f22\n```\nanimate.ids"
+        }
+    },
+    "SAHAUGIN_LARGE": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7f23\n```\nanimate.ids"
+        }
+    },
+    "PIRATE": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7f24\n```\nanimate.ids"
+        }
+    },
+    "DROW": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7f27\n```\nanimate.ids"
+        }
+    },
+    "KUO-TOA_LARGE": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7f28\n```\nanimate.ids"
+        }
+    },
+    "DROW_FEMALE": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7f29\n```\nanimate.ids"
+        }
+    },
+    "SAILOR_MAN": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7f2a\n```\nanimate.ids"
+        }
+    },
+    "MDK2_MAX": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7f2b\n```\nanimate.ids"
+        }
+    },
+    "AMISH_SOLDIER": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7f2c\n```\nanimate.ids"
+        }
+    },
+    "WYVERN_FAMILIAR": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7f2d\n```\nanimate.ids"
+        }
+    },
+    "RAVER": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7f2e\n```\nanimate.ids"
+        }
+    },
+    "SPIDER_SMALL": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7f2f\n```\nanimate.ids"
+        }
+    },
+    "BODHI": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7f30\n```\nanimate.ids"
+        }
+    },
+    "ELLESIME": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7f31\n```\nanimate.ids"
+        }
+    },
+    "SLAYER": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7f32\n```\nanimate.ids"
+        }
+    },
+    "MDK2_KURT": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7f33\n```\nanimate.ids"
+        }
+    },
+    "MDK2_DOCTOR": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7f34\n```\nanimate.ids"
+        }
+    },
+    "MIST_CREATURE": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7f35\n```\nanimate.ids"
+        }
+    },
+    "SHADOW_THIEF": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7f36\n```\nanimate.ids"
+        }
+    },
+    "JON_IRENICUS": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7f37\n```\nanimate.ids"
+        }
+    },
+    "WIZARD_EYE": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7f38\n```\nanimate.ids"
+        }
+    },
+    "BLOB_MIST_CREATURE": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7f39\n```\nanimate.ids"
+        }
+    },
+    "HULA_WIZARD": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7f3a\n```\nanimate.ids"
+        }
+    },
+    "SOLAR": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7f3b\n```\nanimate.ids"
+        }
+    },
+    "ANTISOLAR": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7f3c\n```\nanimate.ids"
+        }
+    },
+    "MELISSAN": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7f3d\n```\nanimate.ids"
+        }
+    },
+    "FIRE_GIANT": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x7f3e\n```\nanimate.ids"
+        }
+    },
+    "GNOLL": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x8000\n```\nanimate.ids"
+        }
+    },
+    "HOBGOBLIN": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x8100\n```\nanimate.ids"
+        }
+    },
+    "KOBOLD": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x8200\n```\nanimate.ids"
+        }
+    },
+    "OGRE": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0x9000\n```\nanimate.ids"
+        }
+    },
+    "WYVERN": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xa000\n```\nanimate.ids"
+        }
+    },
+    "CARRION_CRAWLER": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xa100\n```\nanimate.ids"
+        }
+    },
+    "COW": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xb000\n```\nanimate.ids"
+        }
+    },
+    "HORSE": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xb100\n```\nanimate.ids"
+        }
+    },
+    "STATIC_BEGGAR_MAN": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xb200\n```\nanimate.ids"
+        }
+    },
+    "STATIC_HARLOT_WOMAN": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xb210\n```\nanimate.ids"
+        }
+    },
+    "STATIC_BOY": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xb300\n```\nanimate.ids"
+        }
+    },
+    "STATIC_GIRL": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xb310\n```\nanimate.ids"
+        }
+    },
+    "STATIC_FAT_MAN": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xb400\n```\nanimate.ids"
+        }
+    },
+    "STATIC_FAT_WOMAN": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xb410\n```\nanimate.ids"
+        }
+    },
+    "STATIC_PEASANT_MAN": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xb500\n```\nanimate.ids"
+        }
+    },
+    "STATIC_PEASANT_WOMAN": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xb510\n```\nanimate.ids"
+        }
+    },
+    "STATIC_NOBLE_MAN": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xb600\n```\nanimate.ids"
+        }
+    },
+    "STATIC_NOBLE_WOMAN": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xb610\n```\nanimate.ids"
+        }
+    },
+    "STATIC_SLAVE": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xb700\n```\nanimate.ids"
+        }
+    },
+    "BAT_INSIDE": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xc000\n```\nanimate.ids"
+        }
+    },
+    "CAT": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xc100\n```\nanimate.ids"
+        }
+    },
+    "CHICKEN": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xc200\n```\nanimate.ids"
+        }
+    },
+    "RAT": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xc300\n```\nanimate.ids"
+        }
+    },
+    "SQUIRREL": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xc400\n```\nanimate.ids"
+        }
+    },
+    "BAT_OUTSIDE": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xc500\n```\nanimate.ids"
+        }
+    },
+    "BEGGAR_MAN": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xc600\n```\nanimate.ids"
+        }
+    },
+    "HARLOT_WOMAN": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xc610\n```\nanimate.ids"
+        }
+    },
+    "BOY": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xc700\n```\nanimate.ids"
+        }
+    },
+    "GIRL": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xc710\n```\nanimate.ids"
+        }
+    },
+    "FAT_MAN": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xc800\n```\nanimate.ids"
+        }
+    },
+    "FAT_WOMAN": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xc810\n```\nanimate.ids"
+        }
+    },
+    "PEASANT_MAN": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xc900\n```\nanimate.ids"
+        }
+    },
+    "PEASANT_WOMAN": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xc910\n```\nanimate.ids"
+        }
+    },
+    "NOBLE_MAN": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xca00\n```\nanimate.ids"
+        }
+    },
+    "NOBLE_WOMAN": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xca10\n```\nanimate.ids"
+        }
+    },
+    "SLAVE": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xcb00\n```\nanimate.ids"
+        }
+    },
+    "EAGLE": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xd000\n```\nanimate.ids"
+        }
+    },
+    "SEAGULL": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xd100\n```\nanimate.ids"
+        }
+    },
+    "VULTURE": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xd200\n```\nanimate.ids"
+        }
+    },
+    "BIRD": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xd300\n```\nanimate.ids"
+        }
+    },
+    "BIRD_INSIDE": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xd400\n```\nanimate.ids"
+        }
+    },
+    "IC_ETTIN": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xe010\n```\nanimate.ids"
+        }
+    },
+    "DONOT_USE": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xe020\n```\nanimate.ids"
+        }
+    },
+    "IC_LICHBLACK": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xe050\n```\nanimate.ids"
+        }
+    },
+    "IC_MINOTAUR": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xe070\n```\nanimate.ids"
+        }
+    },
+    "IC_MUMMY": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xe080\n```\nanimate.ids"
+        }
+    },
+    "IC_MERILITH": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xe090\n```\nanimate.ids"
+        }
+    },
+    "IC_TROLL1": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xe0b0\n```\nanimate.ids"
+        }
+    },
+    "IC_CORNUGONSKI": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xe0e0\n```\nanimate.ids"
+        }
+    },
+    "IC_ICE_GOLEM": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xe0f0\n```\nanimate.ids"
+        }
+    },
+    "IC_GLAB": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xe0f1\n```\nanimate.ids"
+        }
+    },
+    "IC_WAILING_VIRGIN": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xe0f2\n```\nanimate.ids"
+        }
+    },
+    "IC_GOBLIN_AXE": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xe400\n```\nanimate.ids"
+        }
+    },
+    "IC_GOBLIN_BOW": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xe410\n```\nanimate.ids"
+        }
+    },
+    "IC_GOBLINELITE_AXE": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xe420\n```\nanimate.ids"
+        }
+    },
+    "IC_GOBLINELITE_BOW": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xe430\n```\nanimate.ids"
+        }
+    },
+    "IC_LIZARDCASTER1": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xe500\n```\nanimate.ids"
+        }
+    },
+    "IC_MYCONID": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xe600\n```\nanimate.ids"
+        }
+    },
+    "IC_MYCONID2": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xe610\n```\nanimate.ids"
+        }
+    },
+    "IC_OROG1": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xe700\n```\nanimate.ids"
+        }
+    },
+    "IC_OROG2": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xe710\n```\nanimate.ids"
+        }
+    },
+    "IC_OROG3": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xe720\n```\nanimate.ids"
+        }
+    },
+    "IC_ORC_MELEE1": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xe800\n```\nanimate.ids"
+        }
+    },
+    "IC_ORC_RANGE2": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xe810\n```\nanimate.ids"
+        }
+    },
+    "IC_ORC_MELEE3": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xe820\n```\nanimate.ids"
+        }
+    },
+    "IC_ORC_RANGE4": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xe830\n```\nanimate.ids"
+        }
+    },
+    "IC_ORC_SHAMAN": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xe840\n```\nanimate.ids"
+        }
+    },
+    "IC_SALAMANDER": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xe900\n```\nanimate.ids"
+        }
+    },
+    "IC_SALAMANDER2": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xe910\n```\nanimate.ids"
+        }
+    },
+    "IC_SHROOM": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xea00\n```\nanimate.ids"
+        }
+    },
+    "IC_SKELETON0": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xeb00\n```\nanimate.ids"
+        }
+    },
+    "IC_SKELETONA": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xeb10\n```\nanimate.ids"
+        }
+    },
+    "IC_SKELETONB": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xeb20\n```\nanimate.ids"
+        }
+    },
+    "IC_YUANTI": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xed00\n```\nanimate.ids"
+        }
+    },
+    "IC_YUANTI2": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xed10\n```\nanimate.ids"
+        }
+    },
+    "IC_YUANTI3": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0xed20\n```\nanimate.ids"
+        }
+    },
+    "SLOT_AMULET": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n0\n```\nslots.ids"
+        }
+    },
+    "SLOT_ARMOR": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n1\n```\nslots.ids"
+        }
+    },
+    "SLOT_BELT": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n2\n```\nslots.ids"
+        }
+    },
+    "SLOT_BOOTS": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n3\n```\nslots.ids"
+        }
+    },
+    "SLOT_CLOAK": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n4\n```\nslots.ids"
+        }
+    },
+    "SLOT_GAUNTLETS": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n5\n```\nslots.ids"
+        }
+    },
+    "SLOT_HELMET": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n6\n```\nslots.ids"
+        }
+    },
+    "SLOT_RING_LEFT": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n7\n```\nslots.ids"
+        }
+    },
+    "SLOT_RING_RIGHT": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n8\n```\nslots.ids"
+        }
+    },
+    "SLOT_SHIELD": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n9\n```\nslots.ids"
+        }
+    },
+    "SLOT_FIST": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n10\n```\nslots.ids"
+        }
+    },
+    "SLOT_AMMO": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n11\n```\nslots.ids"
+        }
+    },
+    "SLOT_MISC": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n15\n```\nslots.ids"
+        }
+    },
+    "SLOT_WEAPON": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n35\n```\nslots.ids"
+        }
+    },
+    "SLOT_AMMO0": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n11\n```\nslots.ids"
+        }
+    },
+    "SLOT_AMMO1": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n12\n```\nslots.ids"
+        }
+    },
+    "SLOT_AMMO2": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n13\n```\nslots.ids"
+        }
+    },
+    "SLOT_AMMO3": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n14\n```\nslots.ids"
+        }
+    },
+    "SLOT_MISC0": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n15\n```\nslots.ids"
+        }
+    },
+    "SLOT_MISC1": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n16\n```\nslots.ids"
+        }
+    },
+    "SLOT_MISC2": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n17\n```\nslots.ids"
+        }
+    },
+    "SLOT_MISC3": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n18\n```\nslots.ids"
+        }
+    },
+    "SLOT_MISC4": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n19\n```\nslots.ids"
+        }
+    },
+    "SLOT_MISC5": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n20\n```\nslots.ids"
+        }
+    },
+    "SLOT_MISC6": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n21\n```\nslots.ids"
+        }
+    },
+    "SLOT_MISC7": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n22\n```\nslots.ids"
+        }
+    },
+    "SLOT_MISC8": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n23\n```\nslots.ids"
+        }
+    },
+    "SLOT_MISC9": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n24\n```\nslots.ids"
+        }
+    },
+    "SLOT_MISC10": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n25\n```\nslots.ids"
+        }
+    },
+    "SLOT_MISC11": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n26\n```\nslots.ids"
+        }
+    },
+    "SLOT_MISC12": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n27\n```\nslots.ids"
+        }
+    },
+    "SLOT_MISC13": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n28\n```\nslots.ids"
+        }
+    },
+    "SLOT_MISC14": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n29\n```\nslots.ids"
+        }
+    },
+    "SLOT_MISC15": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n30\n```\nslots.ids"
+        }
+    },
+    "SLOT_MISC16": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n31\n```\nslots.ids"
+        }
+    },
+    "SLOT_MISC17": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n32\n```\nslots.ids"
+        }
+    },
+    "SLOT_MISC18": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n33\n```\nslots.ids"
+        }
+    },
+    "SLOT_MISC19": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n34\n```\nslots.ids"
+        }
+    },
+    "SLOT_WEAPON0": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n35\n```\nslots.ids"
+        }
+    },
+    "SLOT_WEAPON1": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n36\n```\nslots.ids"
+        }
+    },
+    "SLOT_WEAPON2": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n37\n```\nslots.ids"
+        }
+    },
+    "SLOT_WEAPON3": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\n38\n```\nslots.ids"
         }
     }
 }
