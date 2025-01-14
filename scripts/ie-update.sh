@@ -17,7 +17,7 @@ data_baf="$data_dir/weidu-baf-iesdp.yml"
 
 external="external/ie"
 mkdir -p "$external"
-iesdp_repo="https://github.com/Gibberlings3/iesdp.git"
+iesdp_repo="https://github.com/BGforgeNet/iesdp.git"
 iesdp_dir="$external/iesdp"
 ielib_dir="$external/ielib"
 
