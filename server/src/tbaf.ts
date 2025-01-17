@@ -167,113 +167,79 @@ function substituteVariables(callExpression: CallExpression, vars: varsContext) 
     });
 }
 
-/**
- * Inline a local function call expression.
- * @param callExpression The call expression to inline.
- * @param functionDeclarations The list of local function declarations in the file.
- * @param vars The context of variable declarations.
- */
+
 function inlineFunction(callExpression: CallExpression, functionDeclarations: FunctionDeclaration[], vars: varsContext) {
     const functionName = callExpression.getExpression().getText();
     console.log(`Processing function: ${functionName}`);
 
-    // Find the corresponding local function declaration
+    // Find the corresponding function declaration
     const functionDecl = functionDeclarations.find(func => func.getName() === functionName);
-    if (!functionDecl) {
-        console.log(`Skipping function: ${functionName}, not a local function.`);
-        return;
-    }
+    if (!functionDecl) return;
 
-    // Get the function body
-    const functionBody = functionDecl.getBody();
-    if (!functionBody) return;
-
-    const block = functionBody.asKindOrThrow(SyntaxKind.Block) as Block;
-    const statements = block.getStatements();
-
-    console.log(`Function body statements: ${statements.map(stmt => stmt.getText()).join("\n")}`);
-
-    // Map parameters to arguments
     const parameters = functionDecl.getParameters();
     const args = callExpression.getArguments();
-    const paramArgMap = new Map<string, string>();
 
+    // Map parameters to arguments
+    const paramArgMap = new Map<string, string>();
     parameters.forEach((param, index) => {
         const paramName = param.getName();
         let argText = args[index]?.getText() || param.getInitializer()?.getText() || "undefined";
-
-        // Substitute variable values from context if available
-        if (vars.has(argText)) {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            argText = vars.get(argText)!;
-            // We explicitly check var.has. Eslint is wrong.
-        }
-
-        console.log(`Mapping parameter: ${paramName} to argument: ${argText}`);
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        if (vars.has(argText)) argText = vars.get(argText)!;    // We explicitly check var.has. Eslint is wrong.
         paramArgMap.set(paramName, argText);
     });
 
-    // Replace parameters and variables in the function body
-    let inlinedCode = statements.map(stmt => stmt.getText()).join("\n");
-    paramArgMap.forEach((arg, param) => {
-        const regex = new RegExp(`\\b${param}\\b`, "g");
-        inlinedCode = inlinedCode.replace(regex, arg);
-    });
-
-    // Resolve any const variables in the inlined code
-    vars.forEach((value, variable) => {
-        const regex = new RegExp(`\\b${variable}\\b`, "g");
-        inlinedCode = inlinedCode.replace(regex, value);
-    });
-
-    console.log(`Inlined code: ${inlinedCode}`);
-
-    // Handle boolean functions in complex binary expressions
+    // Get the parent expression
     const parent = callExpression.getParent();
+
+    // Handle boolean return statements
+    const functionBody = functionDecl.getBody()?.asKindOrThrow(SyntaxKind.Block);
+    if (!functionBody) return;
+    const statements = functionBody.getStatements();
     const returnStmt = statements.find(stmt => stmt.isKind(SyntaxKind.ReturnStatement)) as ReturnStatement | undefined;
-
     if (returnStmt && isConditionContext(parent)) {
+        if (!parent) return;    // Skip if not parent
         let returnText = returnStmt.getExpression()?.getText() || "undefined";
-        console.log(`Return statement found: ${returnText}`);
+        returnText = substituteParams(returnText, paramArgMap, vars);
 
-        // Only add parentheses if necessary
-        const needsParentheses = returnText.includes("&&") || returnText.includes("||");
-        if (needsParentheses && !(returnText.startsWith("(") && returnText.endsWith(")"))) {
-            returnText = `(${returnText})`;
-        }
-
-        console.log(`Final return text: ${returnText}`);
-
-        if (parent?.isKind(SyntaxKind.BinaryExpression)) {
-            parent.replaceWithText(parent.getText().replace(callExpression.getText(), returnText));
-            console.log(`Successfully replaced ${functionName}() in a complex binary expression.`);
-        } else if (parent?.isKind(SyntaxKind.PrefixUnaryExpression)) {
-            parent.replaceWithText(`!${returnText}`);
-            console.log(`Successfully replaced ${functionName}() in a condition with a logical NOT.`);
-        } else if (parent?.isKind(SyntaxKind.IfStatement)) {
-            const condition = parent.getExpression();
-            condition.replaceWithText(`${returnText}`);
-            console.log(`Successfully replaced ${functionName}() inside an if condition.`);
-        }
-
+        console.log(`return text is ${returnText}`);
+        if (needsParentheses(returnText)) returnText = `(${returnText})`;
+        parent.replaceWithText(parent.getText().replace(callExpression.getText(), returnText));
+        console.log(`Replaced ${functionName}() inside a condition.`);
         return;
     }
 
-    // Handle void functions outside conditions
+    // Handle void functions
     if (!returnStmt && parent?.isKind(SyntaxKind.ExpressionStatement)) {
-        try {
-            console.log(`Replacing expression: ${parent.getText()} with ${inlinedCode}`);
-            parent.replaceWithText(inlinedCode);
-            console.log(`Successfully replaced ${functionName}() with inlined code.`);
-        } catch (error) {
-            console.error(`Error replacing ${functionName}():`, error);
-        }
-    } else {
-        console.error(`Unable to replace ${functionName}() because it's not part of a supported expression.`);
+        let inlinedCode = statements.map(stmt => stmt.getText()).join("\n");
+        inlinedCode = substituteParams(inlinedCode, paramArgMap, vars);
+
+        parent.replaceWithText(inlinedCode);
+        console.log(`Replaced ${functionName}() with inlined code.`);
     }
 }
 
+/**
+ * Utility to substitute parameters and variables in the code.
+ */
+function substituteParams(code: string, paramArgMap: Map<string, string>, vars: varsContext): string {
+    paramArgMap.forEach((arg, param) => {
+        const regex = new RegExp(`\\b${param}\\b`, "g");
+        code = code.replace(regex, arg);
+    });
+    vars.forEach((value, variable) => {
+        const regex = new RegExp(`\\b${variable}\\b`, "g");
+        code = code.replace(regex, value);
+    });
+    return code;
+}
 
+/**
+ * Utility to determine if a return text needs parentheses.
+ */
+function needsParentheses(text: string): boolean {
+    return (text.includes("&&") || text.includes("||") && !(text.startsWith('(') && text.endsWith(')')));
+}
 
 /**
  * Checks if the parent node is part of a condition (if statement, binary expression, etc.).
@@ -286,8 +252,6 @@ function isConditionContext(parent: Node | undefined): boolean {
             parent.isKind(SyntaxKind.PrefixUnaryExpression))
     );
 }
-
-
 
 /**
  * Unroll a single for...of loop.
@@ -668,8 +632,10 @@ function exportBAF(sourceFile: SourceFile, filePath: string): void {
 function applyBAFhacks(text: string): string {
     let result = text.replace(/,\s*LOCALS/g, ', "LOCALS"');
     result = result.replace(/,\s*GLOBAL/g, ', "GLOBAL"');
-    // obj specifier replacement: obj("[ANYONE]") => [ANYONE]
-    result = result.replace(/obj\("\[(.*?)\]"\)/g, '[$1]');
+    // obj specifier replacement: $obj("[ANYONE]") => [ANYONE]
+    result = result.replace(/\$obj\("\[(.*?)\]"\)/g, '[$1]');
+    // $tra specifier replacement: $tra(number) => @number
+    result = result.replace(/\$tra\((\d+)\)/g, '@$1');
     result = result.trim() + "\n";
     return result;
 }
