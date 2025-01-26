@@ -11,6 +11,8 @@
 !server/out/completion.*.json
 !server/out/hover.*.json
 !server/out/signature.*.json
+# Rollup native bindings
+!server/node_modules/@rollup/rollup*/**
 
 !preview/package.json
 !preview/out/index.html

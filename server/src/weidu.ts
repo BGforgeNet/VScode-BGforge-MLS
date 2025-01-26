@@ -42,7 +42,7 @@ interface Define {
     dtype: "function" | "macro";
     jsdoc?: jsdoc.JSdoc;
 }
-interface Defines extends Array<Define> {}
+interface Defines extends Array<Define> { }
 
 /** `text` looks like this
  *
@@ -119,11 +119,14 @@ function sendDiagnostics(
 }
 
 export function compile(uri: string, settings: WeiDUsettings, interactive = false, text: string) {
-    /** preprocessed file */
-    const tmpFile = path.join(tmpDir, "tmp.txt");
+    /**
+     * Preprocessed file.
+     * Weidu used to have issues with non-baf extensions, ref https://github.com/WeiDUorg/weidu/issues/237
+     */
+    const tmpFile = path.join(tmpDir, "tmp.baf");
     const tmpUri = pathToUri(tmpFile);
     /** not preprocessed (template) */
-    const tmpFileGcc = path.join(tmpDir, "tmp-gcc.txt");
+    const tmpFileGcc = path.join(tmpDir, "tmp-gcc.baf");
     const tmpUriGcc = pathToUri(tmpFileGcc);
     const gamePath = settings.gamePath;
     const weiduPath = settings.path;

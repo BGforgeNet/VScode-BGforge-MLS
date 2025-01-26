@@ -68,6 +68,8 @@ export async function activate(context: ExtensionContext) {
             { scheme: "file", language: "weidu-slb" },
 
             { scheme: "file", language: "weidu-tra" },
+
+            { scheme: "file", pattern: "**/*.tbaf" },
         ],
         synchronize: {
             // Notify the server about file changes to '.clientrc files contained in the workspace

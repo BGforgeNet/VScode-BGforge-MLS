@@ -29,6 +29,12 @@
     "contributes": {
         "languages": [
             {
+                "id": "typescript",
+                "extensions": [
+                    ".tbaf"
+                ]
+            },
+            {
                 "id": "weidu-ssl",
                 "aliases": [
                     "WeiDU Stratagems script"
@@ -408,7 +414,7 @@
         "esbuild-watch-server": "pnpm esbuild-base-server --sourcemap --watch",
         "test-compile": "tsc -p ./",
         "compile": "pnpm esbuild-client && pnpm esbuild-server",
-        "postinstall": "cd client && pnpm install && cd ../server && pnpm install && cd ../preview && pnpm install && cd ..",
+        "postinstall": "cd client && pnpm install && cd ../server && npm install -f && cd ../preview && pnpm install && cd ..",
         "test": "sh ./scripts/e2e.sh",
         "eslint": "eslint client/src/extension.ts && eslint client/src/test/*.ts && eslint server/src/*.ts && eslint preview/src/*.ts",
         "package": "pnpm vsce package --no-dependencies"

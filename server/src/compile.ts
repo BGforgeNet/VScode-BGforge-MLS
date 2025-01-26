@@ -3,6 +3,7 @@ import { TextDocument } from "vscode-languageserver-textdocument";
 import { conlog, isDirectory, tmpDir } from "./common";
 import * as fallout from "./fallout";
 import { connection, getDocumentSettings } from "./server";
+import * as tbaf from "./tbaf";
 import * as weidu from "./weidu";
 
 /** Only these languages can be compiled */
@@ -68,8 +69,13 @@ export async function compile(uri: string, langId: string, interactive = false, 
         return;
     }
 
-    conlog("Compile called on a wrong language.");
+    if (langId == "typescript") {
+        tbaf.compile(uri, text);
+        return;
+    }
+
+    conlog(`Don't know how to compile ${langId} - ${uri}`);
     if (interactive) {
-        connection.window.showInformationMessage(`Can't compile ${uri}.`);
+        connection.window.showInformationMessage(`Don't know how to compile ${langId} - ${uri}`);
     }
 }

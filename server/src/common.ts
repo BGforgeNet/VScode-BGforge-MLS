@@ -50,14 +50,14 @@ export interface ParseItem {
     columnEnd: number;
     message: string;
 }
-export interface ParseItemList extends Array<ParseItem> {}
+export interface ParseItemList extends Array<ParseItem> { }
 
 export interface ParseResult {
     errors: ParseItemList;
     warnings: ParseItemList;
 }
 
-export interface Diagnostics extends Map<string, Diagnostic> {}
+export interface Diagnostics extends Map<string, Diagnostic> { }
 
 /**
  * Compilers may output results for different files.
@@ -146,8 +146,33 @@ export function findFiles(dirName: string, extension: string) {
     return entries;
 }
 
+/**
+ * TODO: deprecate and get rid of this in favour of `getRelPath2`
+ * Get the relative path from `root` to `other_dir`
+ * @param root
+ * @param other_dir
+ * @returns relative path. For some reason, may go up to root with ../'s
+ */
 export function getRelPath(root: string, other_dir: string) {
     return path.relative(root, other_dir);
+}
+
+/**
+ * Get the relative path from `root` to `targetPath`, resolving symlinks if necessary.
+ * @param root - The starting path.
+ * @param targetPath - The target file or directory path.
+ * @returns The relative path from `root` to `targetPath`.
+ */
+export function getRelPath2(root: string, targetPath: string): string {
+    // Resolve any symlinks in both paths
+    const resolvedRoot = fs.realpathSync(root);
+    const resolvedTarget = fs.realpathSync(targetPath);
+
+    // Calculate the relative path
+    const relativePath = path.relative(resolvedRoot, resolvedTarget);
+
+    // Normalize path separators for cross-platform compatibility
+    return path.normalize(relativePath);
 }
 
 export function uriToPath(uri_string: string) {
