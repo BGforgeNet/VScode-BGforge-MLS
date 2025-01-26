@@ -79,6 +79,7 @@ export async function compile(uri: string, text: string) {
     const baseName = path.parse(filePath).name;
     const bafName = path.join(dirName, `${baseName}.baf`)
     exportBAF(finalTS, bafName);
+    connection.window.showInformationMessage(`Transpiled to ${bafName}.`);
 }
 
 
