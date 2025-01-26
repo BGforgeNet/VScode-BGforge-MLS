@@ -2391,10 +2391,6 @@
           "name": "support.function.fallout-ssl.sfall"
         },
         {
-          "match": "\\b(?i)(add_trait)\\b",
-          "name": "support.function.fallout-ssl.sfall"
-        },
-        {
           "match": "\\b(?i)(create_message_window)\\b",
           "name": "support.function.fallout-ssl.sfall"
         },
@@ -2563,6 +2559,10 @@
           "name": "support.function.fallout-ssl.sfall"
         },
         {
+          "match": "\\b(?i)(signal_close_game)\\b",
+          "name": "support.function.fallout-ssl.sfall"
+        },
+        {
           "match": "\\b(?i)(sneak_success)\\b",
           "name": "support.function.fallout-ssl.sfall"
         },
@@ -2588,6 +2588,10 @@
         },
         {
           "match": "\\b(?i)(set_outline)\\b",
+          "name": "support.function.fallout-ssl.sfall"
+        },
+        {
+          "match": "\\b(?i)(add_trait)\\b",
           "name": "support.function.fallout-ssl.sfall"
         },
         {
@@ -2812,6 +2816,10 @@
         },
         {
           "match": "\\b(?i)(set_rest_mode)\\b",
+          "name": "support.function.fallout-ssl.sfall"
+        },
+        {
+          "match": "\\b(?i)(set_worldmap_heal_time)\\b",
           "name": "support.function.fallout-ssl.sfall"
         },
         {
@@ -3147,6 +3155,10 @@
           "name": "support.function.fallout-ssl.sfall"
         },
         {
+          "match": "\\b(?i)(art_frame_data)\\b",
+          "name": "support.function.fallout-ssl.sfall"
+        },
+        {
           "match": "\\b(?i)(create_win)\\b",
           "name": "support.function.fallout-ssl.sfall"
         },
@@ -3171,15 +3183,15 @@
           "name": "support.function.fallout-ssl.sfall"
         },
         {
+          "match": "\\b(?i)(interface_overlay)\\b",
+          "name": "support.function.fallout-ssl.sfall"
+        },
+        {
           "match": "\\b(?i)(interface_print)\\b",
           "name": "support.function.fallout-ssl.sfall"
         },
         {
           "match": "\\b(?i)(message_box)\\b",
-          "name": "support.function.fallout-ssl.sfall"
-        },
-        {
-          "match": "\\b(?i)(nterface_overlay)\\b",
           "name": "support.function.fallout-ssl.sfall"
         },
         {
@@ -3376,6 +3388,10 @@
         },
         {
           "match": "\\b(HOOK_BESTWEAPON)\\b",
+          "name": "constant.language.fallout-ssl"
+        },
+        {
+          "match": "\\b(HOOK_BUILDSFXWEAPON)\\b",
           "name": "constant.language.fallout-ssl"
         },
         {
@@ -4655,6 +4671,10 @@
           "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
+          "match": "\\b(array_concat)\\b",
+          "name": "entity.name.function.fallout-ssl.header-defines"
+        },
+        {
           "match": "\\b(array_exists)\\b",
           "name": "entity.name.function.fallout-ssl.header-defines"
         },
@@ -4664,6 +4684,10 @@
         },
         {
           "match": "\\b(art_change_fid_num)\\b",
+          "name": "entity.name.function.fallout-ssl.header-defines"
+        },
+        {
+          "match": "\\b(art_frame_data)\\b",
           "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
@@ -5023,6 +5047,10 @@
           "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
+          "match": "\\b(get_interface_id)\\b",
+          "name": "entity.name.function.fallout-ssl.header-defines"
+        },
+        {
           "match": "\\b(get_interface_rect)\\b",
           "name": "entity.name.function.fallout-ssl.header-defines"
         },
@@ -5307,7 +5335,19 @@
           "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
-          "match": "\\b(message_box)\\b",
+          "match": "\\b(message_box1)\\b",
+          "name": "entity.name.function.fallout-ssl.header-defines"
+        },
+        {
+          "match": "\\b(message_box2)\\b",
+          "name": "entity.name.function.fallout-ssl.header-defines"
+        },
+        {
+          "match": "\\b(message_box3)\\b",
+          "name": "entity.name.function.fallout-ssl.header-defines"
+        },
+        {
+          "match": "\\b(message_box4)\\b",
           "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {
@@ -5828,6 +5868,10 @@
         },
         {
           "match": "\\b(set_window_flag)\\b",
+          "name": "entity.name.function.fallout-ssl.header-defines"
+        },
+        {
+          "match": "\\b(set_worldmap_heal_time)\\b",
           "name": "entity.name.function.fallout-ssl.header-defines"
         },
         {

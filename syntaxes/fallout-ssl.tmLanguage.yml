@@ -669,7 +669,6 @@ repository:
       - match: \b(?i)(set_unique_id)\b
       - match: \b(?i)(active_hand)\b
       - match: \b(?i)(add_g_timer_event)\b
-      - match: \b(?i)(add_trait)\b
       - match: \b(?i)(create_message_window)\b
       - match: \b(?i)(create_spatial)\b
       - match: \b(?i)(game_loaded)\b
@@ -712,6 +711,7 @@ repository:
       - match: \b(?i)(set_viewport_x)\b
       - match: \b(?i)(set_viewport_y)\b
       - match: \b(?i)(set_xp_mod)\b
+      - match: \b(?i)(signal_close_game)\b
       - match: \b(?i)(sneak_success)\b
       - match: \b(?i)(stop_game)\b
       - match: \b(?i)(toggle_active_hand)\b
@@ -719,6 +719,7 @@ repository:
       - match: \b(?i)(get_outline)\b
       - match: \b(?i)(outlined_object)\b
       - match: \b(?i)(set_outline)\b
+      - match: \b(?i)(add_trait)\b
       - match: \b(?i)(apply_heaveho_fix)\b
       - match: \b(?i)(clear_selectable_perks)\b
       - match: \b(?i)(get_perk_available)\b
@@ -775,6 +776,7 @@ repository:
       - match: \b(?i)(set_drugs_data)\b
       - match: \b(?i)(set_rest_heal_time)\b
       - match: \b(?i)(set_rest_mode)\b
+      - match: \b(?i)(set_worldmap_heal_time)\b
       - match: \b(?i)(sfall_func0("hide_window"))\b
       - match: \b(?i)(sfall_func0("show_window"))\b
       - match: \b(?i)(sfall_func1("hide_window", string winName))\b
@@ -858,15 +860,16 @@ repository:
       - match: \b(?i)(get_weapon_ammo_pid)\b
       - match: \b(?i)(set_weapon_ammo_count)\b
       - match: \b(?i)(set_weapon_ammo_pid)\b
+      - match: \b(?i)(art_frame_data)\b
       - match: \b(?i)(create_win)\b
       - match: \b(?i)(draw_image)\b
       - match: \b(?i)(draw_image_scaled)\b
       - match: \b(?i)(get_window_attribute)\b
       - match: \b(?i)(get_window_under_mouse)\b
       - match: \b(?i)(interface_art_draw)\b
+      - match: \b(?i)(interface_overlay)\b
       - match: \b(?i)(interface_print)\b
       - match: \b(?i)(message_box)\b
-      - match: \b(?i)(nterface_overlay)\b
       - match: \b(?i)(set_window_flag)\b
       - match: \b(?i)(win_fill_color)\b
       - match: \b(?i)(get_world_map_x_pos)\b
@@ -927,6 +930,7 @@ repository:
       - match: \b(HOOK_AMMOCOST)\b
       - match: \b(HOOK_BARTERPRICE)\b
       - match: \b(HOOK_BESTWEAPON)\b
+      - match: \b(HOOK_BUILDSFXWEAPON)\b
       - match: \b(HOOK_CALCAPCOST)\b
       - match: \b(HOOK_CANUSEWEAPON)\b
       - match: \b(HOOK_CARTRAVEL)\b
@@ -1255,9 +1259,11 @@ repository:
       - match: \b(add_trait)\b
       - match: \b(amt_cost_barter)\b
       - match: \b(amt_time_has_passed)\b
+      - match: \b(array_concat)\b
       - match: \b(array_exists)\b
       - match: \b(array_is_map)\b
       - match: \b(art_change_fid_num)\b
+      - match: \b(art_frame_data)\b
       - match: \b(attack)\b
       - match: \b(car_give_gas)\b
       - match: \b(change_status_off)\b
@@ -1347,6 +1353,7 @@ repository:
       - match: \b(get_ini_section)\b
       - match: \b(get_ini_sections)\b
       - match: \b(get_interface_height)\b
+      - match: \b(get_interface_id)\b
       - match: \b(get_interface_rect)\b
       - match: \b(get_interface_width)\b
       - match: \b(get_interface_x)\b
@@ -1418,7 +1425,10 @@ repository:
       - match: \b(math_in_range)\b
       - match: \b(math_max)\b
       - match: \b(math_min)\b
-      - match: \b(message_box)\b
+      - match: \b(message_box1)\b
+      - match: \b(message_box2)\b
+      - match: \b(message_box3)\b
+      - match: \b(message_box4)\b
       - match: \b(metarule_exist)\b
       - match: \b(mstr)\b
       - match: \b(mstr_ai)\b
@@ -1549,6 +1559,7 @@ repository:
       - match: \b(set_weapon_unusable)\b
       - match: \b(set_weapon_usable)\b
       - match: \b(set_window_flag)\b
+      - match: \b(set_worldmap_heal_time)\b
       - match: \b(show_window)\b
       - match: \b(shuffle_array)\b
       - match: \b(skill_success)\b
