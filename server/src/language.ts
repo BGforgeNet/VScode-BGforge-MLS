@@ -1,4 +1,4 @@
-import { Hover } from "vscode-languageserver/node";
+import { Hover, Location } from "vscode-languageserver/node";
 import { conlog, getRelPath, isDirectory, isSubpath, uriToPath } from "./common";
 import * as completion from "./completion";
 import * as definition from "./definition";
@@ -6,6 +6,7 @@ import * as fallout from "./fallout";
 import * as hover from "./hover";
 import * as signature from "./signature";
 import * as weidu from "./weidu";
+import * as d from "./d";
 
 export interface Features {
     completion: boolean;
@@ -326,7 +327,6 @@ export class Language implements Language {
         if (!this.features.udf) {
             return;
         }
-
         switch (this.id) {
             case "fallout-ssl":
                 fileData = fallout.loadFileData(uri, text, filePath);
@@ -334,6 +334,9 @@ export class Language implements Language {
             case "weidu-tp2":
             case "weidu-tp2-tpl":
                 fileData = weidu.loadFileData(uri, text, filePath);
+                break;
+            case "weidu-d":
+                fileData = d.loadFileData(uri, text);
                 break;
             default:
                 conlog(`Language ${this.id} doesn't support reload.`);
