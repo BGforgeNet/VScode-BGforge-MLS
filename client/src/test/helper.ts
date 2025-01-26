@@ -3,8 +3,8 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
  * ------------------------------------------------------------------------------------------ */
 
-import * as vscode from "vscode";
 import * as path from "path";
+import * as vscode from "vscode";
 
 export let doc: vscode.TextDocument;
 export let editor: vscode.TextEditor;
@@ -16,7 +16,6 @@ export let platformEol: string;
  */
 export async function activate(docUri: vscode.Uri) {
     // The extensionId is `publisher.name` from package.json
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const ext = vscode.extensions.getExtension("bgforge.bgforge-mls")!;
     await ext.activate();
     try {

@@ -7,6 +7,8 @@ import { HeaderData as LanguageHeaderData } from "./language";
 export async function processHeaders(
     headerFiles: string[],
     headersDirectory: string,
+    // Func def is used
+    // eslint-disable-next-line no-unused-vars
     func: (uri: string, text: string, filePath: string) => LanguageHeaderData,
     external = false
 ) {

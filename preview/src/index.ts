@@ -57,13 +57,13 @@ const options = {
     /* incremental layout options */
 
     // Node repulsion (non overlapping) multiplier
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    // eslint-disable-next-line no-unused-vars
     nodeRepulsion: (node) => 4500,
     // Ideal edge (non nested) length
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    // eslint-disable-next-line no-unused-vars
     idealEdgeLength: (edge) => 50,
     // Divisor to compute edge forces
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    // eslint-disable-next-line no-unused-vars
     edgeElasticity: (edge) => 0.45,
     // Nesting factor (multiplier) to compute ideal edge length for nested edges
     nestingFactor: 0.1,

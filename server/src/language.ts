@@ -259,7 +259,7 @@ export class Language implements Language {
 
     private reloadFileHover(oldHover: hover.HoverMapEx, fileHover: hover.HoverMapEx, uri: string) {
         let newHover = new Map(
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            // eslint-disable-next-line no-unused-vars
             Array.from(oldHover).filter(([key, value]) => {
                 if (value.uri != uri) {
                     return true;
@@ -268,7 +268,7 @@ export class Language implements Language {
             })
         );
         fileHover = new Map(
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            // eslint-disable-next-line no-unused-vars
             Array.from(fileHover).filter(([key, value]) => {
                 return !this.data.hover.static.has(key);
             })
@@ -283,7 +283,7 @@ export class Language implements Language {
         uri: string
     ) {
         let newDefinition = new Map(
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            // eslint-disable-next-line no-unused-vars
             Array.from(oldDefinition).filter(([key, value]) => {
                 if (value.uri != uri) {
                     return true;
@@ -301,7 +301,7 @@ export class Language implements Language {
         uri: string
     ) {
         let newSignature = new Map(
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            // eslint-disable-next-line no-unused-vars
             Array.from(oldSignature).filter(([key, value]) => {
                 if (value.uri != uri) {
                     return true;
@@ -310,7 +310,7 @@ export class Language implements Language {
             })
         );
         fileSignature = new Map(
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            // eslint-disable-next-line no-unused-vars
             Array.from(fileSignature).filter(([key, value]) => {
                 return !this.data.hover.static.has(key);
             })

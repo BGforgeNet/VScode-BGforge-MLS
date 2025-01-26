@@ -416,7 +416,7 @@
         "compile": "pnpm esbuild-client && pnpm esbuild-server",
         "postinstall": "cd client && pnpm install && cd ../server && npm install -f && cd ../preview && pnpm install && cd ..",
         "test": "sh ./scripts/e2e.sh",
-        "eslint": "eslint client/src/extension.ts && eslint client/src/test/*.ts && eslint server/src/*.ts && eslint preview/src/*.ts",
+        "eslint": "eslint client/src/*.ts --max-warnings 0 && eslint client/src/test/*.ts --max-warnings 0 && eslint server/src/*.ts --max-warnings 0 && eslint preview/src/*.ts  --max-warnings 0",
         "package": "pnpm vsce package --no-dependencies"
     },
     "devDependencies": {

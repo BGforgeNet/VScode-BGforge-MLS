@@ -1,5 +1,6 @@
 import * as cp from "child_process";
 import * as fs from "fs";
+import * as os from "os";
 import * as path from "path";
 import { CompletionItemKind, ParameterInformation } from "vscode-languageserver";
 import { MarkupKind } from "vscode-languageserver/node";
@@ -23,7 +24,6 @@ import { Edge, Node } from "./preview";
 import { connection, documents } from "./server";
 import { SSLsettings } from "./settings";
 import * as signature from "./signature";
-import * as os from "os";
 
 interface FalloutHeaderData {
     macros: Macros;
@@ -36,7 +36,7 @@ interface Procedure {
     detail: string;
     jsdoc?: jsdoc.JSdoc;
 }
-interface Procedures extends Array<Procedure> {}
+interface Procedures extends Array<Procedure> { }
 interface Macro {
     label: string;
     detail: string;
@@ -45,7 +45,7 @@ interface Macro {
     firstline: string;
     jsdoc?: jsdoc.JSdoc;
 }
-interface Macros extends Array<Macro> {}
+interface Macros extends Array<Macro> { }
 
 const tooltipLangId = "fallout-ssl-tooltip";
 const sslExt = ".ssl";
@@ -668,7 +668,8 @@ export function getPreviewData(text: string) {
             nodes.push(nodeItem);
         }
         if (body) {
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            // Don't need body2
+            // eslint-disable-next-line no-unused-vars
             for (const [name2, body2] of procs) {
                 const pattern = `\\b(${name2})\\b`;
                 const nameRegex = new RegExp(pattern, "g");

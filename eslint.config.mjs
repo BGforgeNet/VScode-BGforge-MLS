@@ -4,6 +4,12 @@ import globals from "globals";
 
 export default [
     {
+        files: [
+            "client/src/*.ts",
+            "client/src/test/*.ts",
+            "server/src/**/*.ts",
+            "preview/src/**/*.ts",
+        ],
         ignores: [
             "node_modules/**/*",
             "client/node_modules/**/*",
@@ -35,7 +41,6 @@ export default [
                 },
             ],
             "@typescript-eslint/no-explicit-any": "warn", // Warn when 'any' is used
-            "@typescript-eslint/explicit-function-return-type": "error", // Enforce return types for functions
             "no-unused-vars": "error", // Disallow unused variables
         },
     },

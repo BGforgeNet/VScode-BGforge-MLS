@@ -158,10 +158,7 @@ function substituteVariables(callExpression: CallExpression, vars: varsContext) 
 
         // Check if the argument is a variable that we know
         if (vars.has(argText)) {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             const substitution = vars.get(argText)!;
-            // We explicitly check var.has. Eslint is wrong.
-
             console.log(`Substituting variable: ${argText} -> ${substitution}`);
             arg.replaceWithText(substitution);
         }
@@ -185,8 +182,8 @@ function inlineFunction(callExpression: CallExpression, functionDeclarations: Fu
     parameters.forEach((param, index) => {
         const paramName = param.getName();
         let argText = args[index]?.getText() || param.getInitializer()?.getText() || "undefined";
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        if (vars.has(argText)) argText = vars.get(argText)!;    // We explicitly check var.has. Eslint is wrong.
+
+        if (vars.has(argText)) argText = vars.get(argText)!;
         paramArgMap.set(paramName, argText);
     });
 
@@ -265,9 +262,7 @@ function unrollForOfLoop(forOfStatement: ForOfStatement, vars: varsContext) {
 
     // Resolve the array expression if it's a const variable
     if (vars.has(arrayExpression)) {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         arrayExpression = vars.get(arrayExpression)!;
-        // We explicitly check var.has. Eslint is wrong.
     }
 
     console.log("Array Expression:", arrayExpression);
@@ -493,7 +488,7 @@ function unrollForLoop(forStatement: ForStatement, vars: varsContext) {
 
     // Resolve initial value from context if it's a variable
     if (vars.has(initialValue)) {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
         initialValue = vars.get(initialValue)!;
         // We explicitly check var.has. Eslint is wrong.
     }
