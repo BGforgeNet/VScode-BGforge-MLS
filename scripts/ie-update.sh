@@ -6,10 +6,10 @@ set -xeu -o pipefail
 
 ielib_repo="https://github.com/BGforgeNet/BGforge-MLS-IElib.git"
 ielib_dir="ielib"
-data_dir="server/data"
 
 highlight_baf="syntaxes/weidu-baf.tmLanguage.yml"
 highlight_weidu="syntaxes/weidu-tp2.tmLanguage.yml"
+
 data_dir="server/data"
 data_weidu_iesdp="$data_dir/weidu-tp2-iesdp.yml"
 data_weidu_ielib="$data_dir/weidu-tp2-ielib.yml"
@@ -17,7 +17,7 @@ data_baf="$data_dir/weidu-baf-iesdp.yml"
 
 external="external/ie"
 mkdir -p "$external"
-iesdp_repo="https://github.com/Gibberlings3/iesdp.git"
+iesdp_repo="https://github.com/BGforgeNet/iesdp.git"
 iesdp_dir="$external/iesdp"
 ielib_dir="$external/ielib"
 

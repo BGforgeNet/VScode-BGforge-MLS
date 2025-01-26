@@ -2120,7 +2120,16 @@
         "source": "builtin",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nvoid reg_anim_animate_and_hide(ObjectPtr, int animID, int delay)\n```\nExactly like `reg_anim_animate` but the object will automatically disappear after the last animation frame (but not destroyed)."
+            "value": "```fallout-ssl-tooltip\nvoid reg_anim_animate_and_hide(ObjectPtr, int animID, int delay)\n```\nWorks exactly like `reg_anim_animate` but the object will automatically disappear after the last animation frame (but not destroyed).\n- `delay`: delay from the previous animation. A value of -1 will execute the specified animation immediately after the previous one in the sequence ends.\n"
+        }
+    },
+    {
+        "label": "reg_anim_animate_and_move",
+        "kind": 3,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid reg_anim_animate_and_move(ObjectPtr, int tile, int animID, int delay)\n```\nPlays the specified animation while simultaneously moving the object to the given tile.\n- `delay`: delay from the previous animation. A value of -1 will execute the specified animation immediately after the previous one in the sequence ends.\n"
         }
     },
     {

@@ -305,7 +305,7 @@ actions:
       doc: |-
         This action extends the time taken for the banter timer to expire. The banter timers are hardcoded and every time one expires an NPC's b****.dlg is called.
     - name: BashDoor
-      detail: BashDoor(0:Object)
+      detail: BashDoor(O:Object)
       doc: |-
         This action is miscoded in the default action.ids file (the number 0 should be the capital letter O). When corrected, this action causes the active creature to attempt to bash the specified door.
     - name: BattleSong
@@ -1323,7 +1323,7 @@ actions:
           - This action will default to a spell matching the first 7 characters in Dialogs/Console *IF* the 8<sup>th</sup> character isn't valid.
         - If `CastingLevel = 0`, then the action will use Caster Level.
     - name: ForceSpellPointRES
-      detail: ForceSpellPointRES(S:RES, P:Target)
+      detail: ForceSpellPointRES(S:RES, P:Target, I:CastingLevel)
       doc: |
         This action causes the active creature to cast the specified spell at the specified point ([x.y]). The spell need not currently be memorised by the caster, and will not be interrupted while being cast. The caster must meet the level requirements of the spell. For the RES version of the action, the spell name can not consist of only numbers, should be written in upper case and should be no more than 7 characters long.
 
@@ -1745,7 +1745,7 @@ actions:
       doc: |-
         This action instructs the active creature to leave the current area.
     - name: LeaveAreaLUA
-      detail: LeaveAreaLUA(S:Area, S:Parchment, P:Point, I:Face*Dir)
+      detail: LeaveAreaLUA(S:Area, S:Parchment, P:Point, I:Face)
       doc: |-
         This action changes the current area. Parchment is the MOS image to use in the area transition loading screen. Only EE games support IDS symbols for `Face`.
 
@@ -1768,11 +1768,11 @@ actions:
       doc: |-
         This action changes the current area. The active creature will move to the specified entry point (from [ENTRIES.2DA](https://gibberlings3.github.io/iesdp/files/2da/2da_tob/entries.htm)) before travelling. The action appears to only work from a creature script.
     - name: LeaveAreaLUAPanic
-      detail: LeaveAreaLUAPanic(S:Area, S:Parchment, P:Point, I:Face*Dir)
+      detail: LeaveAreaLUAPanic(S:Area, S:Parchment, P:Point, I:Face)
       doc: |-
         This multiplayer-only action changes the current area. Parchment is the MOS image to use in the area transition loading screen. Only EE games support IDS symbols for `Face`.
     - name: LeaveAreaLUAPanicEntry
-      detail: LeaveAreaLUAPanicEntry(S:Area, S:Entry, P:Point, I:Face*Dir)
+      detail: LeaveAreaLUAPanicEntry(S:Area, S:Entry, P:Point, I:Face)
       doc: |-
         This multiplayer-only action changes the current area. The creature moves to the destination point (from [ENTRIES.2DA](https://gibberlings3.github.io/iesdp/files/2da/2da_tob/entries.htm)) before travelling (the point parameter is unused). Only EE games support IDS symbols for `Face`.
     - name: LeaveAreaName
@@ -2349,7 +2349,7 @@ actions:
         Scripts can handle `RES` filenames with `+`, Dialogs and the console cannot. Same with the `~`, `` ` ``, `'`, `@`, `$`, `^`, and `&` characters, maybe some more.
         - This action will default to a spell matching the first 7 characters in Dialogs/Console *IF* the 8<sup>th</sup> character isn't valid.
     - name: ReallyForceSpellRES
-      detail: ReallyForceSpellRES(S:RES, O:Target)
+      detail: ReallyForceSpellRES(SPLREF:spell, O:Target)
       doc: |
         This action causes the active creature to cast the specified spell at the target object. The spell need not currently be memorised by the caster, and will not be interrupted while being cast. The spell is cast instantly (i.e. with a casting time of 0). The caster must meet the level requirements of the spell. This action does not work in the script round where the active creature has died.
 
@@ -3799,7 +3799,7 @@ actions:
         This action functions the same as Wait.
     - name: Weather
       detail: Weather(I:Weather*Weather)
-      doc: |-
+      doc: |
         This action changes the weather. The action only works in outdoors areas that have weather enabled in the ARE file. Values for the weather parameter are from [weather.ids](https://gibberlings3.github.io/iesdp/files/ids/bg2/weather.htm). Note that the fog weather type does not work.
 
         ```
@@ -3811,6 +3811,10 @@ actions:
             SetGlobal("KRSTORM","GLOBAL",1)
         END
         ```
+
+
+        In the EE's, the action has no effect if `Weather` has been disabled in the game options.
+        In addition, Fog option needs `Enable Fog` to be enabled in the game options.
     - name: XEquipItem
       detail: XEquipItem(S:Item, O:Object, I:Slot*Slots, I:EquipUnEquip*Xequip)
       doc: |-

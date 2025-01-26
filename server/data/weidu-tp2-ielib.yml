@@ -4022,6 +4022,963 @@ ielib-int:
     - name: AC_MOD_TYPE_slashing
       detail: int AC_MOD_TYPE_slashing = 8
       doc: IElib define
+    - name: ANIMATE_amish_soldier
+      detail: int ANIMATE_amish_soldier = 0x7f2c
+      doc: IElib define
+    - name: ANIMATE_ankheg
+      detail: int ANIMATE_ankheg = 0x3000
+      doc: IElib define
+    - name: ANIMATE_antisolar
+      detail: int ANIMATE_antisolar = 0x7f3c
+      doc: IElib define
+    - name: ANIMATE_basilisk
+      detail: int ANIMATE_basilisk = 0x7100
+      doc: IElib define
+    - name: ANIMATE_basilisk_greater
+      detail: int ANIMATE_basilisk_greater = 0x7101
+      doc: IElib define
+    - name: ANIMATE_bat_inside
+      detail: int ANIMATE_bat_inside = 0xc000
+      doc: IElib define
+    - name: ANIMATE_bat_outside
+      detail: int ANIMATE_bat_outside = 0xc500
+      doc: IElib define
+    - name: ANIMATE_bear_black
+      detail: int ANIMATE_bear_black = 0x7200
+      doc: IElib define
+    - name: ANIMATE_bear_brown
+      detail: int ANIMATE_bear_brown = 0x7201
+      doc: IElib define
+    - name: ANIMATE_bear_cave
+      detail: int ANIMATE_bear_cave = 0x7202
+      doc: IElib define
+    - name: ANIMATE_bear_polar
+      detail: int ANIMATE_bear_polar = 0x7203
+      doc: IElib define
+    - name: ANIMATE_beggar_man
+      detail: int ANIMATE_beggar_man = 0xc600
+      doc: IElib define
+    - name: ANIMATE_beholder
+      detail: int ANIMATE_beholder = 0x7f02
+      doc: IElib define
+    - name: ANIMATE_beholder_small
+      detail: int ANIMATE_beholder_small = 0x7f15
+      doc: IElib define
+    - name: ANIMATE_bird
+      detail: int ANIMATE_bird = 0xd300
+      doc: IElib define
+    - name: ANIMATE_bird_inside
+      detail: int ANIMATE_bird_inside = 0xd400
+      doc: IElib define
+    - name: ANIMATE_blob_mist_creature
+      detail: int ANIMATE_blob_mist_creature = 0x7f39
+      doc: IElib define
+    - name: ANIMATE_bodhi
+      detail: int ANIMATE_bodhi = 0x7f30
+      doc: IElib define
+    - name: ANIMATE_boy
+      detail: int ANIMATE_boy = 0xc700
+      doc: IElib define
+    - name: ANIMATE_burning_man
+      detail: int ANIMATE_burning_man = 0x7314
+      doc: IElib define
+    - name: ANIMATE_carrion_crawler
+      detail: int ANIMATE_carrion_crawler = 0xa100
+      doc: IElib define
+    - name: ANIMATE_cat
+      detail: int ANIMATE_cat = 0xc100
+      doc: IElib define
+    - name: ANIMATE_chicken
+      detail: int ANIMATE_chicken = 0xc200
+      doc: IElib define
+    - name: ANIMATE_chunks
+      detail: int ANIMATE_chunks = 0x0100
+      doc: IElib define
+    - name: ANIMATE_cleric_female_dwarf
+      detail: int ANIMATE_cleric_female_dwarf = 0x6012
+      doc: IElib define
+    - name: ANIMATE_cleric_female_dwarf_low
+      detail: int ANIMATE_cleric_female_dwarf_low = 0x5012
+      doc: IElib define
+    - name: ANIMATE_cleric_female_elf
+      detail: int ANIMATE_cleric_female_elf = 0x6011
+      doc: IElib define
+    - name: ANIMATE_cleric_female_elf_low
+      detail: int ANIMATE_cleric_female_elf_low = 0x5011
+      doc: IElib define
+    - name: ANIMATE_cleric_female_gnome
+      detail: int ANIMATE_cleric_female_gnome = 0x6014
+      doc: IElib define
+    - name: ANIMATE_cleric_female_halfling
+      detail: int ANIMATE_cleric_female_halfling = 0x6013
+      doc: IElib define
+    - name: ANIMATE_cleric_female_halfling_low
+      detail: int ANIMATE_cleric_female_halfling_low = 0x5013
+      doc: IElib define
+    - name: ANIMATE_cleric_female_halforc
+      detail: int ANIMATE_cleric_female_halforc = 0x6015
+      doc: IElib define
+    - name: ANIMATE_cleric_female_human
+      detail: int ANIMATE_cleric_female_human = 0x6010
+      doc: IElib define
+    - name: ANIMATE_cleric_female_human_low
+      detail: int ANIMATE_cleric_female_human_low = 0x5010
+      doc: IElib define
+    - name: ANIMATE_cleric_male_dwarf
+      detail: int ANIMATE_cleric_male_dwarf = 0x6002
+      doc: IElib define
+    - name: ANIMATE_cleric_male_dwarf_low
+      detail: int ANIMATE_cleric_male_dwarf_low = 0x5002
+      doc: IElib define
+    - name: ANIMATE_cleric_male_elf
+      detail: int ANIMATE_cleric_male_elf = 0x6001
+      doc: IElib define
+    - name: ANIMATE_cleric_male_elf_low
+      detail: int ANIMATE_cleric_male_elf_low = 0x5001
+      doc: IElib define
+    - name: ANIMATE_cleric_male_gnome
+      detail: int ANIMATE_cleric_male_gnome = 0x6004
+      doc: IElib define
+    - name: ANIMATE_cleric_male_halfling
+      detail: int ANIMATE_cleric_male_halfling = 0x6003
+      doc: IElib define
+    - name: ANIMATE_cleric_male_halfling_low
+      detail: int ANIMATE_cleric_male_halfling_low = 0x5003
+      doc: IElib define
+    - name: ANIMATE_cleric_male_halforc
+      detail: int ANIMATE_cleric_male_halforc = 0x6005
+      doc: IElib define
+    - name: ANIMATE_cleric_male_human
+      detail: int ANIMATE_cleric_male_human = 0x6000
+      doc: IElib define
+    - name: ANIMATE_cleric_male_human_low
+      detail: int ANIMATE_cleric_male_human_low = 0x5000
+      doc: IElib define
+    - name: ANIMATE_cloud_static
+      detail: int ANIMATE_cloud_static = 0x0510
+      doc: IElib define
+    - name: ANIMATE_cloud_travel
+      detail: int ANIMATE_cloud_travel = 0x0500
+      doc: IElib define
+    - name: ANIMATE_cow
+      detail: int ANIMATE_cow = 0xb000
+      doc: IElib define
+    - name: ANIMATE_dancing_sword
+      detail: int ANIMATE_dancing_sword = 0x7f19
+      doc: IElib define
+    - name: ANIMATE_death_knight
+      detail: int ANIMATE_death_knight = 0x2300
+      doc: IElib define
+    - name: ANIMATE_deer
+      detail: int ANIMATE_deer = 0x7f18
+      doc: IElib define
+    - name: ANIMATE_demigorgon
+      detail: int ANIMATE_demigorgon = 0x1300
+      doc: IElib define
+    - name: ANIMATE_demilich
+      detail: int ANIMATE_demilich = 0x7f0e
+      doc: IElib define
+    - name: ANIMATE_djinni
+      detail: int ANIMATE_djinni = 0x7f05
+      doc: IElib define
+    - name: ANIMATE_djinni_legs
+      detail: int ANIMATE_djinni_legs = 0x7f06
+      doc: IElib define
+    - name: ANIMATE_dog_moon
+      detail: int ANIMATE_dog_moon = 0x7402
+      doc: IElib define
+    - name: ANIMATE_dog_war
+      detail: int ANIMATE_dog_war = 0x7401
+      doc: IElib define
+    - name: ANIMATE_dog_wild
+      detail: int ANIMATE_dog_wild = 0x7400
+      doc: IElib define
+    - name: ANIMATE_donot_use
+      detail: int ANIMATE_donot_use = 0xe020
+      doc: IElib define
+    - name: ANIMATE_doom_guard
+      detail: int ANIMATE_doom_guard = 0x6405
+      doc: IElib define
+    - name: ANIMATE_doom_guard_larger
+      detail: int ANIMATE_doom_guard_larger = 0x6406
+      doc: IElib define
+    - name: ANIMATE_doppleganger
+      detail: int ANIMATE_doppleganger = 0x7500
+      doc: IElib define
+    - name: ANIMATE_doppleganger_greater
+      detail: int ANIMATE_doppleganger_greater = 0x7501
+      doc: IElib define
+    - name: ANIMATE_dragon_aqua
+      detail: int ANIMATE_dragon_aqua = 0x1204
+      doc: IElib define
+    - name: ANIMATE_dragon_black
+      detail: int ANIMATE_dragon_black = 0x1201
+      doc: IElib define
+    - name: ANIMATE_dragon_blue
+      detail: int ANIMATE_dragon_blue = 0x1205
+      doc: IElib define
+    - name: ANIMATE_dragon_brown
+      detail: int ANIMATE_dragon_brown = 0x1206
+      doc: IElib define
+    - name: ANIMATE_dragon_green
+      detail: int ANIMATE_dragon_green = 0x1203
+      doc: IElib define
+    - name: ANIMATE_dragon_multicolor
+      detail: int ANIMATE_dragon_multicolor = 0x1207
+      doc: IElib define
+    - name: ANIMATE_dragon_purple
+      detail: int ANIMATE_dragon_purple = 0x1208
+      doc: IElib define
+    - name: ANIMATE_dragon_red
+      detail: int ANIMATE_dragon_red = 0x1200
+      doc: IElib define
+    - name: ANIMATE_dragon_silver
+      detail: int ANIMATE_dragon_silver = 0x1202
+      doc: IElib define
+    - name: ANIMATE_drizzt
+      detail: int ANIMATE_drizzt = 0x6400
+      doc: IElib define
+    - name: ANIMATE_drow
+      detail: int ANIMATE_drow = 0x7f27
+      doc: IElib define
+    - name: ANIMATE_drow_female
+      detail: int ANIMATE_drow_female = 0x7f29
+      doc: IElib define
+    - name: ANIMATE_eagle
+      detail: int ANIMATE_eagle = 0xd000
+      doc: IElib define
+    - name: ANIMATE_elemental_air
+      detail: int ANIMATE_elemental_air = 0x7320
+      doc: IElib define
+    - name: ANIMATE_elemental_air_small
+      detail: int ANIMATE_elemental_air_small = 0x7321
+      doc: IElib define
+    - name: ANIMATE_elemental_earth
+      detail: int ANIMATE_elemental_earth = 0x7300
+      doc: IElib define
+    - name: ANIMATE_elemental_earth_small
+      detail: int ANIMATE_elemental_earth_small = 0x7301
+      doc: IElib define
+    - name: ANIMATE_elemental_fire
+      detail: int ANIMATE_elemental_fire = 0x7310
+      doc: IElib define
+    - name: ANIMATE_elemental_fire_purple
+      detail: int ANIMATE_elemental_fire_purple = 0x7312
+      doc: IElib define
+    - name: ANIMATE_elemental_fire_small
+      detail: int ANIMATE_elemental_fire_small = 0x7311
+      doc: IElib define
+    - name: ANIMATE_elemental_fire_small_purple
+      detail: int ANIMATE_elemental_fire_small_purple = 0x7313
+      doc: IElib define
+    - name: ANIMATE_ellesime
+      detail: int ANIMATE_ellesime = 0x7f31
+      doc: IElib define
+    - name: ANIMATE_elminster
+      detail: int ANIMATE_elminster = 0x6401
+      doc: IElib define
+    - name: ANIMATE_ettercap
+      detail: int ANIMATE_ettercap = 0x7600
+      doc: IElib define
+    - name: ANIMATE_exploding_arm
+      detail: int ANIMATE_exploding_arm = 0x0200
+      doc: IElib define
+    - name: ANIMATE_exploding_foot
+      detail: int ANIMATE_exploding_foot = 0x0220
+      doc: IElib define
+    - name: ANIMATE_exploding_head
+      detail: int ANIMATE_exploding_head = 0x0210
+      doc: IElib define
+    - name: ANIMATE_exploding_leg
+      detail: int ANIMATE_exploding_leg = 0x0240
+      doc: IElib define
+    - name: ANIMATE_exploding_torso
+      detail: int ANIMATE_exploding_torso = 0x0230
+      doc: IElib define
+    - name: ANIMATE_fat_man
+      detail: int ANIMATE_fat_man = 0xc800
+      doc: IElib define
+    - name: ANIMATE_fat_woman
+      detail: int ANIMATE_fat_woman = 0xc810
+      doc: IElib define
+    - name: ANIMATE_fighter_female_dwarf
+      detail: int ANIMATE_fighter_female_dwarf = 0x6112
+      doc: IElib define
+    - name: ANIMATE_fighter_female_dwarf_low
+      detail: int ANIMATE_fighter_female_dwarf_low = 0x5112
+      doc: IElib define
+    - name: ANIMATE_fighter_female_elf
+      detail: int ANIMATE_fighter_female_elf = 0x6111
+      doc: IElib define
+    - name: ANIMATE_fighter_female_elf_low
+      detail: int ANIMATE_fighter_female_elf_low = 0x5111
+      doc: IElib define
+    - name: ANIMATE_fighter_female_gnome
+      detail: int ANIMATE_fighter_female_gnome = 0x6114
+      doc: IElib define
+    - name: ANIMATE_fighter_female_halfling
+      detail: int ANIMATE_fighter_female_halfling = 0x6113
+      doc: IElib define
+    - name: ANIMATE_fighter_female_halfling_low
+      detail: int ANIMATE_fighter_female_halfling_low = 0x5113
+      doc: IElib define
+    - name: ANIMATE_fighter_female_halforc
+      detail: int ANIMATE_fighter_female_halforc = 0x6115
+      doc: IElib define
+    - name: ANIMATE_fighter_female_human
+      detail: int ANIMATE_fighter_female_human = 0x6110
+      doc: IElib define
+    - name: ANIMATE_fighter_female_human_low
+      detail: int ANIMATE_fighter_female_human_low = 0x5110
+      doc: IElib define
+    - name: ANIMATE_fighter_male_dwarf
+      detail: int ANIMATE_fighter_male_dwarf = 0x6102
+      doc: IElib define
+    - name: ANIMATE_fighter_male_dwarf_low
+      detail: int ANIMATE_fighter_male_dwarf_low = 0x5102
+      doc: IElib define
+    - name: ANIMATE_fighter_male_elf
+      detail: int ANIMATE_fighter_male_elf = 0x6101
+      doc: IElib define
+    - name: ANIMATE_fighter_male_elf_low
+      detail: int ANIMATE_fighter_male_elf_low = 0x5101
+      doc: IElib define
+    - name: ANIMATE_fighter_male_gnome
+      detail: int ANIMATE_fighter_male_gnome = 0x6104
+      doc: IElib define
+    - name: ANIMATE_fighter_male_halfling
+      detail: int ANIMATE_fighter_male_halfling = 0x6103
+      doc: IElib define
+    - name: ANIMATE_fighter_male_halfling_low
+      detail: int ANIMATE_fighter_male_halfling_low = 0x5103
+      doc: IElib define
+    - name: ANIMATE_fighter_male_halforc
+      detail: int ANIMATE_fighter_male_halforc = 0x6105
+      doc: IElib define
+    - name: ANIMATE_fighter_male_human
+      detail: int ANIMATE_fighter_male_human = 0x6100
+      doc: IElib define
+    - name: ANIMATE_fighter_male_human_low
+      detail: int ANIMATE_fighter_male_human_low = 0x5100
+      doc: IElib define
+    - name: ANIMATE_fire_giant
+      detail: int ANIMATE_fire_giant = 0x7f3e
+      doc: IElib define
+    - name: ANIMATE_fire_ring
+      detail: int ANIMATE_fire_ring = 0x0000
+      doc: IElib define
+    - name: ANIMATE_ghast
+      detail: int ANIMATE_ghast = 0x7702
+      doc: IElib define
+    - name: ANIMATE_ghoul
+      detail: int ANIMATE_ghoul = 0x7700
+      doc: IElib define
+    - name: ANIMATE_gibberling
+      detail: int ANIMATE_gibberling = 0x7800
+      doc: IElib define
+    - name: ANIMATE_girl
+      detail: int ANIMATE_girl = 0xc710
+      doc: IElib define
+    - name: ANIMATE_githyanki
+      detail: int ANIMATE_githyanki = 0x7f14
+      doc: IElib define
+    - name: ANIMATE_gnoll
+      detail: int ANIMATE_gnoll = 0x8000
+      doc: IElib define
+    - name: ANIMATE_golem_clay
+      detail: int ANIMATE_golem_clay = 0x7f07
+      doc: IElib define
+    - name: ANIMATE_golem_iron
+      detail: int ANIMATE_golem_iron = 0x7f04
+      doc: IElib define
+    - name: ANIMATE_gray_ooze
+      detail: int ANIMATE_gray_ooze = 0x7904
+      doc: IElib define
+    - name: ANIMATE_grease_static
+      detail: int ANIMATE_grease_static = 0x0710
+      doc: IElib define
+    - name: ANIMATE_grease_travel
+      detail: int ANIMATE_grease_travel = 0x0700
+      doc: IElib define
+    - name: ANIMATE_greatcat_leopard
+      detail: int ANIMATE_greatcat_leopard = 0x7f0b
+      doc: IElib define
+    - name: ANIMATE_greatcat_panther
+      detail: int ANIMATE_greatcat_panther = 0x7f0a
+      doc: IElib define
+    - name: ANIMATE_groundhog
+      detail: int ANIMATE_groundhog = 0x7f20
+      doc: IElib define
+    - name: ANIMATE_half_ogre
+      detail: int ANIMATE_half_ogre = 0x7000
+      doc: IElib define
+    - name: ANIMATE_harlot_woman
+      detail: int ANIMATE_harlot_woman = 0xc610
+      doc: IElib define
+    - name: ANIMATE_hobgoblin
+      detail: int ANIMATE_hobgoblin = 0x8100
+      doc: IElib define
+    - name: ANIMATE_horse
+      detail: int ANIMATE_horse = 0xb100
+      doc: IElib define
+    - name: ANIMATE_hula_wizard
+      detail: int ANIMATE_hula_wizard = 0x7f3a
+      doc: IElib define
+    - name: ANIMATE_ic_cornugonski
+      detail: int ANIMATE_ic_cornugonski = 0xe0e0
+      doc: IElib define
+    - name: ANIMATE_ic_ettin
+      detail: int ANIMATE_ic_ettin = 0xe010
+      doc: IElib define
+    - name: ANIMATE_ic_glab
+      detail: int ANIMATE_ic_glab = 0xe0f1
+      doc: IElib define
+    - name: ANIMATE_ic_goblin_axe
+      detail: int ANIMATE_ic_goblin_axe = 0xe400
+      doc: IElib define
+    - name: ANIMATE_ic_goblin_bow
+      detail: int ANIMATE_ic_goblin_bow = 0xe410
+      doc: IElib define
+    - name: ANIMATE_ic_goblinelite_axe
+      detail: int ANIMATE_ic_goblinelite_axe = 0xe420
+      doc: IElib define
+    - name: ANIMATE_ic_goblinelite_bow
+      detail: int ANIMATE_ic_goblinelite_bow = 0xe430
+      doc: IElib define
+    - name: ANIMATE_ic_ice_golem
+      detail: int ANIMATE_ic_ice_golem = 0xe0f0
+      doc: IElib define
+    - name: ANIMATE_ic_lichblack
+      detail: int ANIMATE_ic_lichblack = 0xe050
+      doc: IElib define
+    - name: ANIMATE_ic_lizardcaster1
+      detail: int ANIMATE_ic_lizardcaster1 = 0xe500
+      doc: IElib define
+    - name: ANIMATE_ic_merilith
+      detail: int ANIMATE_ic_merilith = 0xe090
+      doc: IElib define
+    - name: ANIMATE_ic_minotaur
+      detail: int ANIMATE_ic_minotaur = 0xe070
+      doc: IElib define
+    - name: ANIMATE_ic_mummy
+      detail: int ANIMATE_ic_mummy = 0xe080
+      doc: IElib define
+    - name: ANIMATE_ic_myconid
+      detail: int ANIMATE_ic_myconid = 0xe600
+      doc: IElib define
+    - name: ANIMATE_ic_myconid2
+      detail: int ANIMATE_ic_myconid2 = 0xe610
+      doc: IElib define
+    - name: ANIMATE_ic_orc_melee1
+      detail: int ANIMATE_ic_orc_melee1 = 0xe800
+      doc: IElib define
+    - name: ANIMATE_ic_orc_melee3
+      detail: int ANIMATE_ic_orc_melee3 = 0xe820
+      doc: IElib define
+    - name: ANIMATE_ic_orc_range2
+      detail: int ANIMATE_ic_orc_range2 = 0xe810
+      doc: IElib define
+    - name: ANIMATE_ic_orc_range4
+      detail: int ANIMATE_ic_orc_range4 = 0xe830
+      doc: IElib define
+    - name: ANIMATE_ic_orc_shaman
+      detail: int ANIMATE_ic_orc_shaman = 0xe840
+      doc: IElib define
+    - name: ANIMATE_ic_orog1
+      detail: int ANIMATE_ic_orog1 = 0xe700
+      doc: IElib define
+    - name: ANIMATE_ic_orog2
+      detail: int ANIMATE_ic_orog2 = 0xe710
+      doc: IElib define
+    - name: ANIMATE_ic_orog3
+      detail: int ANIMATE_ic_orog3 = 0xe720
+      doc: IElib define
+    - name: ANIMATE_ic_salamander
+      detail: int ANIMATE_ic_salamander = 0xe900
+      doc: IElib define
+    - name: ANIMATE_ic_salamander2
+      detail: int ANIMATE_ic_salamander2 = 0xe910
+      doc: IElib define
+    - name: ANIMATE_ic_shroom
+      detail: int ANIMATE_ic_shroom = 0xea00
+      doc: IElib define
+    - name: ANIMATE_ic_skeleton0
+      detail: int ANIMATE_ic_skeleton0 = 0xeb00
+      doc: IElib define
+    - name: ANIMATE_ic_skeletona
+      detail: int ANIMATE_ic_skeletona = 0xeb10
+      doc: IElib define
+    - name: ANIMATE_ic_skeletonb
+      detail: int ANIMATE_ic_skeletonb = 0xeb20
+      doc: IElib define
+    - name: ANIMATE_ic_troll1
+      detail: int ANIMATE_ic_troll1 = 0xe0b0
+      doc: IElib define
+    - name: ANIMATE_ic_wailing_virgin
+      detail: int ANIMATE_ic_wailing_virgin = 0xe0f2
+      doc: IElib define
+    - name: ANIMATE_ic_yuanti
+      detail: int ANIMATE_ic_yuanti = 0xed00
+      doc: IElib define
+    - name: ANIMATE_ic_yuanti2
+      detail: int ANIMATE_ic_yuanti2 = 0xed10
+      doc: IElib define
+    - name: ANIMATE_ic_yuanti3
+      detail: int ANIMATE_ic_yuanti3 = 0xed20
+      doc: IElib define
+    - name: ANIMATE_imp
+      detail: int ANIMATE_imp = 0x7f03
+      doc: IElib define
+    - name: ANIMATE_jon_irenicus
+      detail: int ANIMATE_jon_irenicus = 0x7f37
+      doc: IElib define
+    - name: ANIMATE_kobold
+      detail: int ANIMATE_kobold = 0x8200
+      doc: IElib define
+    - name: ANIMATE_kobold_tasloi
+      detail: int ANIMATE_kobold_tasloi = 0x7c01
+      doc: IElib define
+    - name: ANIMATE_kobold_xvart
+      detail: int ANIMATE_kobold_xvart = 0x7c00
+      doc: IElib define
+    - name: ANIMATE_lich
+      detail: int ANIMATE_lich = 0x7f0d
+      doc: IElib define
+    - name: ANIMATE_mage_female_dwarf
+      detail: int ANIMATE_mage_female_dwarf = 0x6212
+      doc: IElib define
+    - name: ANIMATE_mage_female_dwarf_low
+      detail: int ANIMATE_mage_female_dwarf_low = 0x5212
+      doc: IElib define
+    - name: ANIMATE_mage_female_elf
+      detail: int ANIMATE_mage_female_elf = 0x6211
+      doc: IElib define
+    - name: ANIMATE_mage_female_elf_low
+      detail: int ANIMATE_mage_female_elf_low = 0x5211
+      doc: IElib define
+    - name: ANIMATE_mage_female_gnome
+      detail: int ANIMATE_mage_female_gnome = 0x6214
+      doc: IElib define
+    - name: ANIMATE_mage_female_halforc
+      detail: int ANIMATE_mage_female_halforc = 0x6215
+      doc: IElib define
+    - name: ANIMATE_mage_female_human
+      detail: int ANIMATE_mage_female_human = 0x6210
+      doc: IElib define
+    - name: ANIMATE_mage_female_human_low
+      detail: int ANIMATE_mage_female_human_low = 0x5210
+      doc: IElib define
+    - name: ANIMATE_mage_male_dwarf
+      detail: int ANIMATE_mage_male_dwarf = 0x6202
+      doc: IElib define
+    - name: ANIMATE_mage_male_dwarf_low
+      detail: int ANIMATE_mage_male_dwarf_low = 0x5202
+      doc: IElib define
+    - name: ANIMATE_mage_male_elf
+      detail: int ANIMATE_mage_male_elf = 0x6201
+      doc: IElib define
+    - name: ANIMATE_mage_male_elf_low
+      detail: int ANIMATE_mage_male_elf_low = 0x5201
+      doc: IElib define
+    - name: ANIMATE_mage_male_gnome
+      detail: int ANIMATE_mage_male_gnome = 0x6204
+      doc: IElib define
+    - name: ANIMATE_mage_male_halforc
+      detail: int ANIMATE_mage_male_halforc = 0x6205
+      doc: IElib define
+    - name: ANIMATE_mage_male_human
+      detail: int ANIMATE_mage_male_human = 0x6200
+      doc: IElib define
+    - name: ANIMATE_mage_male_human_low
+      detail: int ANIMATE_mage_male_human_low = 0x5200
+      doc: IElib define
+    - name: ANIMATE_mdk2_doctor
+      detail: int ANIMATE_mdk2_doctor = 0x7f34
+      doc: IElib define
+    - name: ANIMATE_mdk2_kurt
+      detail: int ANIMATE_mdk2_kurt = 0x7f33
+      doc: IElib define
+    - name: ANIMATE_mdk2_max
+      detail: int ANIMATE_mdk2_max = 0x7f2b
+      doc: IElib define
+    - name: ANIMATE_melissan
+      detail: int ANIMATE_melissan = 0x7f3d
+      doc: IElib define
+    - name: ANIMATE_mindflayer
+      detail: int ANIMATE_mindflayer = 0x7f01
+      doc: IElib define
+    - name: ANIMATE_mist_creature
+      detail: int ANIMATE_mist_creature = 0x7f35
+      doc: IElib define
+    - name: ANIMATE_monk
+      detail: int ANIMATE_monk = 0x6402
+      doc: IElib define
+    - name: ANIMATE_monk_female_human
+      detail: int ANIMATE_monk_female_human = 0x6510
+      doc: IElib define
+    - name: ANIMATE_monk_male_human
+      detail: int ANIMATE_monk_male_human = 0x6500
+      doc: IElib define
+    - name: ANIMATE_moose
+      detail: int ANIMATE_moose = 0x7f16
+      doc: IElib define
+    - name: ANIMATE_noble_man
+      detail: int ANIMATE_noble_man = 0xca00
+      doc: IElib define
+    - name: ANIMATE_noble_woman
+      detail: int ANIMATE_noble_woman = 0xca10
+      doc: IElib define
+    - name: ANIMATE_ogre
+      detail: int ANIMATE_ogre = 0x9000
+      doc: IElib define
+    - name: ANIMATE_ogre_mage
+      detail: int ANIMATE_ogre_mage = 0x2200
+      doc: IElib define
+    - name: ANIMATE_ogrillon
+      detail: int ANIMATE_ogrillon = 0x7001
+      doc: IElib define
+    - name: ANIMATE_otyugh
+      detail: int ANIMATE_otyugh = 0x7f08
+      doc: IElib define
+    - name: ANIMATE_peasant_man
+      detail: int ANIMATE_peasant_man = 0xc900
+      doc: IElib define
+    - name: ANIMATE_peasant_woman
+      detail: int ANIMATE_peasant_woman = 0xc910
+      doc: IElib define
+    - name: ANIMATE_pheasant
+      detail: int ANIMATE_pheasant = 0x7f21
+      doc: IElib define
+    - name: ANIMATE_pirate
+      detail: int ANIMATE_pirate = 0x7f24
+      doc: IElib define
+    - name: ANIMATE_rabbit
+      detail: int ANIMATE_rabbit = 0x7f17
+      doc: IElib define
+    - name: ANIMATE_rakshasa
+      detail: int ANIMATE_rakshasa = 0x7f10
+      doc: IElib define
+    - name: ANIMATE_rat
+      detail: int ANIMATE_rat = 0xc300
+      doc: IElib define
+    - name: ANIMATE_raver
+      detail: int ANIMATE_raver = 0x7f2e
+      doc: IElib define
+    - name: ANIMATE_reveant
+      detail: int ANIMATE_reveant = 0x7701
+      doc: IElib define
+    - name: ANIMATE_sahaugin
+      detail: int ANIMATE_sahaugin = 0x7f09
+      doc: IElib define
+    - name: ANIMATE_sahaugin_large
+      detail: int ANIMATE_sahaugin_large = 0x7f23
+      doc: IElib define
+    - name: ANIMATE_sailor_man
+      detail: int ANIMATE_sailor_man = 0x7f2a
+      doc: IElib define
+    - name: ANIMATE_sarevok
+      detail: int ANIMATE_sarevok = 0x6404
+      doc: IElib define
+    - name: ANIMATE_seagull
+      detail: int ANIMATE_seagull = 0xd100
+      doc: IElib define
+    - name: ANIMATE_shadow
+      detail: int ANIMATE_shadow = 0x7703
+      doc: IElib define
+    - name: ANIMATE_shadow_thief
+      detail: int ANIMATE_shadow_thief = 0x7f36
+      doc: IElib define
+    - name: ANIMATE_shambling_mound
+      detail: int ANIMATE_shambling_mound = 0x7302
+      doc: IElib define
+    - name: ANIMATE_sirine
+      detail: int ANIMATE_sirine = 0x2000
+      doc: IElib define
+    - name: ANIMATE_skeleton
+      detail: int ANIMATE_skeleton = 0x6403
+      doc: IElib define
+    - name: ANIMATE_slave
+      detail: int ANIMATE_slave = 0xcb00
+      doc: IElib define
+    - name: ANIMATE_slayer
+      detail: int ANIMATE_slayer = 0x7f32
+      doc: IElib define
+    - name: ANIMATE_sleeping_dwarf
+      detail: int ANIMATE_sleeping_dwarf = 0x4600
+      doc: IElib define
+    - name: ANIMATE_sleeping_fat_man_human
+      detail: int ANIMATE_sleeping_fat_man_human = 0x4500
+      doc: IElib define
+    - name: ANIMATE_sleeping_man_elf
+      detail: int ANIMATE_sleeping_man_elf = 0x4700
+      doc: IElib define
+    - name: ANIMATE_sleeping_man_halfling
+      detail: int ANIMATE_sleeping_man_halfling = 0x4800
+      doc: IElib define
+    - name: ANIMATE_sleeping_man_human
+      detail: int ANIMATE_sleeping_man_human = 0x4400
+      doc: IElib define
+    - name: ANIMATE_sleeping_woman_elf
+      detail: int ANIMATE_sleeping_woman_elf = 0x4710
+      doc: IElib define
+    - name: ANIMATE_sleeping_woman_human
+      detail: int ANIMATE_sleeping_woman_human = 0x4410
+      doc: IElib define
+    - name: ANIMATE_slime_green
+      detail: int ANIMATE_slime_green = 0x7900
+      doc: IElib define
+    - name: ANIMATE_slime_mustard
+      detail: int ANIMATE_slime_mustard = 0x7902
+      doc: IElib define
+    - name: ANIMATE_slime_ochre
+      detail: int ANIMATE_slime_ochre = 0x7903
+      doc: IElib define
+    - name: ANIMATE_slime_olive
+      detail: int ANIMATE_slime_olive = 0x7901
+      doc: IElib define
+    - name: ANIMATE_smoke_puff_large
+      detail: int ANIMATE_smoke_puff_large = 0x0300
+      doc: IElib define
+    - name: ANIMATE_smoke_puff_small
+      detail: int ANIMATE_smoke_puff_small = 0x0301
+      doc: IElib define
+    - name: ANIMATE_snake
+      detail: int ANIMATE_snake = 0x7f13
+      doc: IElib define
+    - name: ANIMATE_solar
+      detail: int ANIMATE_solar = 0x7f3b
+      doc: IElib define
+    - name: ANIMATE_spider_giant
+      detail: int ANIMATE_spider_giant = 0x7a00
+      doc: IElib define
+    - name: ANIMATE_spider_huge
+      detail: int ANIMATE_spider_huge = 0x7a01
+      doc: IElib define
+    - name: ANIMATE_spider_phase
+      detail: int ANIMATE_spider_phase = 0x7a02
+      doc: IElib define
+    - name: ANIMATE_spider_small
+      detail: int ANIMATE_spider_small = 0x7f2f
+      doc: IElib define
+    - name: ANIMATE_spider_sword
+      detail: int ANIMATE_spider_sword = 0x7a03
+      doc: IElib define
+    - name: ANIMATE_spider_wraith
+      detail: int ANIMATE_spider_wraith = 0x7a04
+      doc: IElib define
+    - name: ANIMATE_squirrel
+      detail: int ANIMATE_squirrel = 0xc400
+      doc: IElib define
+    - name: ANIMATE_static_beggar_man
+      detail: int ANIMATE_static_beggar_man = 0xb200
+      doc: IElib define
+    - name: ANIMATE_static_boy
+      detail: int ANIMATE_static_boy = 0xb300
+      doc: IElib define
+    - name: ANIMATE_static_fat_man
+      detail: int ANIMATE_static_fat_man = 0xb400
+      doc: IElib define
+    - name: ANIMATE_static_fat_woman
+      detail: int ANIMATE_static_fat_woman = 0xb410
+      doc: IElib define
+    - name: ANIMATE_static_girl
+      detail: int ANIMATE_static_girl = 0xb310
+      doc: IElib define
+    - name: ANIMATE_static_harlot_woman
+      detail: int ANIMATE_static_harlot_woman = 0xb210
+      doc: IElib define
+    - name: ANIMATE_static_humancleric_man_chair
+      detail: int ANIMATE_static_humancleric_man_chair = 0x4200
+      doc: IElib define
+    - name: ANIMATE_static_noble_man
+      detail: int ANIMATE_static_noble_man = 0xb600
+      doc: IElib define
+    - name: ANIMATE_static_noble_man_chair
+      detail: int ANIMATE_static_noble_man_chair = 0x4000
+      doc: IElib define
+    - name: ANIMATE_static_noble_man_matte
+      detail: int ANIMATE_static_noble_man_matte = 0x4002
+      doc: IElib define
+    - name: ANIMATE_static_noble_woman
+      detail: int ANIMATE_static_noble_woman = 0xb610
+      doc: IElib define
+    - name: ANIMATE_static_noble_woman_chair
+      detail: int ANIMATE_static_noble_woman_chair = 0x4010
+      doc: IElib define
+    - name: ANIMATE_static_noble_woman_matte
+      detail: int ANIMATE_static_noble_woman_matte = 0x4012
+      doc: IElib define
+    - name: ANIMATE_static_peasant_man
+      detail: int ANIMATE_static_peasant_man = 0xb500
+      doc: IElib define
+    - name: ANIMATE_static_peasant_man_chair
+      detail: int ANIMATE_static_peasant_man_chair = 0x4100
+      doc: IElib define
+    - name: ANIMATE_static_peasant_man_matte
+      detail: int ANIMATE_static_peasant_man_matte = 0x4102
+      doc: IElib define
+    - name: ANIMATE_static_peasant_man_stool
+      detail: int ANIMATE_static_peasant_man_stool = 0x4101
+      doc: IElib define
+    - name: ANIMATE_static_peasant_woman
+      detail: int ANIMATE_static_peasant_woman = 0xb510
+      doc: IElib define
+    - name: ANIMATE_static_peasant_woman_chair
+      detail: int ANIMATE_static_peasant_woman_chair = 0x4110
+      doc: IElib define
+    - name: ANIMATE_static_peasant_woman_matte
+      detail: int ANIMATE_static_peasant_woman_matte = 0x4112
+      doc: IElib define
+    - name: ANIMATE_static_slave
+      detail: int ANIMATE_static_slave = 0xb700
+      doc: IElib define
+    - name: ANIMATE_static_spider_woman
+      detail: int ANIMATE_static_spider_woman = 0x4300
+      doc: IElib define
+    - name: ANIMATE_storm_static
+      detail: int ANIMATE_storm_static = 0x0610
+      doc: IElib define
+    - name: ANIMATE_storm_travel
+      detail: int ANIMATE_storm_travel = 0x0600
+      doc: IElib define
+    - name: ANIMATE_tanarri
+      detail: int ANIMATE_tanarri = 0x1100
+      doc: IElib define
+    - name: ANIMATE_thief_female_dwarf
+      detail: int ANIMATE_thief_female_dwarf = 0x6312
+      doc: IElib define
+    - name: ANIMATE_thief_female_dwarf_low
+      detail: int ANIMATE_thief_female_dwarf_low = 0x5312
+      doc: IElib define
+    - name: ANIMATE_thief_female_elf
+      detail: int ANIMATE_thief_female_elf = 0x6311
+      doc: IElib define
+    - name: ANIMATE_thief_female_elf_low
+      detail: int ANIMATE_thief_female_elf_low = 0x5311
+      doc: IElib define
+    - name: ANIMATE_thief_female_gnome
+      detail: int ANIMATE_thief_female_gnome = 0x6314
+      doc: IElib define
+    - name: ANIMATE_thief_female_halfling
+      detail: int ANIMATE_thief_female_halfling = 0x6313
+      doc: IElib define
+    - name: ANIMATE_thief_female_halfling_low
+      detail: int ANIMATE_thief_female_halfling_low = 0x5313
+      doc: IElib define
+    - name: ANIMATE_thief_female_halforc
+      detail: int ANIMATE_thief_female_halforc = 0x6315
+      doc: IElib define
+    - name: ANIMATE_thief_female_human
+      detail: int ANIMATE_thief_female_human = 0x6310
+      doc: IElib define
+    - name: ANIMATE_thief_female_human_low
+      detail: int ANIMATE_thief_female_human_low = 0x5310
+      doc: IElib define
+    - name: ANIMATE_thief_male_dwarf
+      detail: int ANIMATE_thief_male_dwarf = 0x6302
+      doc: IElib define
+    - name: ANIMATE_thief_male_dwarf_low
+      detail: int ANIMATE_thief_male_dwarf_low = 0x5302
+      doc: IElib define
+    - name: ANIMATE_thief_male_elf
+      detail: int ANIMATE_thief_male_elf = 0x6301
+      doc: IElib define
+    - name: ANIMATE_thief_male_elf_low
+      detail: int ANIMATE_thief_male_elf_low = 0x5301
+      doc: IElib define
+    - name: ANIMATE_thief_male_gnome
+      detail: int ANIMATE_thief_male_gnome = 0x6304
+      doc: IElib define
+    - name: ANIMATE_thief_male_halfling
+      detail: int ANIMATE_thief_male_halfling = 0x6303
+      doc: IElib define
+    - name: ANIMATE_thief_male_halfling_low
+      detail: int ANIMATE_thief_male_halfling_low = 0x5303
+      doc: IElib define
+    - name: ANIMATE_thief_male_halforc
+      detail: int ANIMATE_thief_male_halforc = 0x6305
+      doc: IElib define
+    - name: ANIMATE_thief_male_human
+      detail: int ANIMATE_thief_male_human = 0x6300
+      doc: IElib define
+    - name: ANIMATE_thief_male_human_low
+      detail: int ANIMATE_thief_male_human_low = 0x5300
+      doc: IElib define
+    - name: ANIMATE_trap_glyph
+      detail: int ANIMATE_trap_glyph = 0x0410
+      doc: IElib define
+    - name: ANIMATE_trap_skull
+      detail: int ANIMATE_trap_skull = 0x0400
+      doc: IElib define
+    - name: ANIMATE_troll
+      detail: int ANIMATE_troll = 0x7f00
+      doc: IElib define
+    - name: ANIMATE_troll_small
+      detail: int ANIMATE_troll_small = 0x7f0f
+      doc: IElib define
+    - name: ANIMATE_umber_hulk
+      detail: int ANIMATE_umber_hulk = 0x7f11
+      doc: IElib define
+    - name: ANIMATE_vampire
+      detail: int ANIMATE_vampire = 0x7f12
+      doc: IElib define
+    - name: ANIMATE_vampire_female
+      detail: int ANIMATE_vampire_female = 0x7f22
+      doc: IElib define
+    - name: ANIMATE_volo
+      detail: int ANIMATE_volo = 0x2100
+      doc: IElib define
+    - name: ANIMATE_vulture
+      detail: int ANIMATE_vulture = 0xd200
+      doc: IElib define
+    - name: ANIMATE_web_static
+      detail: int ANIMATE_web_static = 0x0810
+      doc: IElib define
+    - name: ANIMATE_web_travel
+      detail: int ANIMATE_web_travel = 0x0800
+      doc: IElib define
+    - name: ANIMATE_werewolf
+      detail: int ANIMATE_werewolf = 0x7e00
+      doc: IElib define
+    - name: ANIMATE_werewolf_greater
+      detail: int ANIMATE_werewolf_greater = 0x7e01
+      doc: IElib define
+    - name: ANIMATE_wizard_eye
+      detail: int ANIMATE_wizard_eye = 0x7f38
+      doc: IElib define
+    - name: ANIMATE_wolf
+      detail: int ANIMATE_wolf = 0x7b00
+      doc: IElib define
+    - name: ANIMATE_wolf_dire
+      detail: int ANIMATE_wolf_dire = 0x7b02
+      doc: IElib define
+    - name: ANIMATE_wolf_dread
+      detail: int ANIMATE_wolf_dread = 0x7b05
+      doc: IElib define
+    - name: ANIMATE_wolf_shadow
+      detail: int ANIMATE_wolf_shadow = 0x7b06
+      doc: IElib define
+    - name: ANIMATE_wolf_vampire
+      detail: int ANIMATE_wolf_vampire = 0x7b04
+      doc: IElib define
+    - name: ANIMATE_wolf_winter
+      detail: int ANIMATE_wolf_winter = 0x7b03
+      doc: IElib define
+    - name: ANIMATE_wolf_worg
+      detail: int ANIMATE_wolf_worg = 0x7b01
+      doc: IElib define
+    - name: ANIMATE_wyvern
+      detail: int ANIMATE_wyvern = 0xa000
+      doc: IElib define
+    - name: ANIMATE_wyvern_big
+      detail: int ANIMATE_wyvern_big = 0x1000
+      doc: IElib define
+    - name: ANIMATE_wyvern_familiar
+      detail: int ANIMATE_wyvern_familiar = 0x7f2d
+      doc: IElib define
+    - name: ANIMATE_zombie
+      detail: int ANIMATE_zombie = 0x7d00
+      doc: IElib define
     - name: ARE_CONTAINER_bounding_bottom
       detail: int ARE_CONTAINER_bounding_bottom = 0x38
       doc: IElib define
@@ -7786,6 +8743,132 @@ ielib-int:
       doc: IElib define
     - name: SECTYPE_spell_protections
       detail: int SECTYPE_spell_protections = 1
+      doc: IElib define
+    - name: SLOT_AMMO
+      detail: int SLOT_AMMO = 11
+      doc: IElib define
+    - name: SLOT_AMMO0
+      detail: int SLOT_AMMO0 = 11
+      doc: IElib define
+    - name: SLOT_AMMO1
+      detail: int SLOT_AMMO1 = 12
+      doc: IElib define
+    - name: SLOT_AMMO2
+      detail: int SLOT_AMMO2 = 13
+      doc: IElib define
+    - name: SLOT_AMMO3
+      detail: int SLOT_AMMO3 = 14
+      doc: IElib define
+    - name: SLOT_AMULET
+      detail: int SLOT_AMULET = 0
+      doc: IElib define
+    - name: SLOT_ARMOR
+      detail: int SLOT_ARMOR = 1
+      doc: IElib define
+    - name: SLOT_BELT
+      detail: int SLOT_BELT = 2
+      doc: IElib define
+    - name: SLOT_BOOTS
+      detail: int SLOT_BOOTS = 3
+      doc: IElib define
+    - name: SLOT_CLOAK
+      detail: int SLOT_CLOAK = 4
+      doc: IElib define
+    - name: SLOT_FIST
+      detail: int SLOT_FIST = 10
+      doc: IElib define
+    - name: SLOT_GAUNTLETS
+      detail: int SLOT_GAUNTLETS = 5
+      doc: IElib define
+    - name: SLOT_HELMET
+      detail: int SLOT_HELMET = 6
+      doc: IElib define
+    - name: SLOT_MISC
+      detail: int SLOT_MISC = 15
+      doc: IElib define
+    - name: SLOT_MISC0
+      detail: int SLOT_MISC0 = 15
+      doc: IElib define
+    - name: SLOT_MISC1
+      detail: int SLOT_MISC1 = 16
+      doc: IElib define
+    - name: SLOT_MISC10
+      detail: int SLOT_MISC10 = 25
+      doc: IElib define
+    - name: SLOT_MISC11
+      detail: int SLOT_MISC11 = 26
+      doc: IElib define
+    - name: SLOT_MISC12
+      detail: int SLOT_MISC12 = 27
+      doc: IElib define
+    - name: SLOT_MISC13
+      detail: int SLOT_MISC13 = 28
+      doc: IElib define
+    - name: SLOT_MISC14
+      detail: int SLOT_MISC14 = 29
+      doc: IElib define
+    - name: SLOT_MISC15
+      detail: int SLOT_MISC15 = 30
+      doc: IElib define
+    - name: SLOT_MISC16
+      detail: int SLOT_MISC16 = 31
+      doc: IElib define
+    - name: SLOT_MISC17
+      detail: int SLOT_MISC17 = 32
+      doc: IElib define
+    - name: SLOT_MISC18
+      detail: int SLOT_MISC18 = 33
+      doc: IElib define
+    - name: SLOT_MISC19
+      detail: int SLOT_MISC19 = 34
+      doc: IElib define
+    - name: SLOT_MISC2
+      detail: int SLOT_MISC2 = 17
+      doc: IElib define
+    - name: SLOT_MISC3
+      detail: int SLOT_MISC3 = 18
+      doc: IElib define
+    - name: SLOT_MISC4
+      detail: int SLOT_MISC4 = 19
+      doc: IElib define
+    - name: SLOT_MISC5
+      detail: int SLOT_MISC5 = 20
+      doc: IElib define
+    - name: SLOT_MISC6
+      detail: int SLOT_MISC6 = 21
+      doc: IElib define
+    - name: SLOT_MISC7
+      detail: int SLOT_MISC7 = 22
+      doc: IElib define
+    - name: SLOT_MISC8
+      detail: int SLOT_MISC8 = 23
+      doc: IElib define
+    - name: SLOT_MISC9
+      detail: int SLOT_MISC9 = 24
+      doc: IElib define
+    - name: SLOT_RING_LEFT
+      detail: int SLOT_RING_LEFT = 7
+      doc: IElib define
+    - name: SLOT_RING_RIGHT
+      detail: int SLOT_RING_RIGHT = 8
+      doc: IElib define
+    - name: SLOT_SHIELD
+      detail: int SLOT_SHIELD = 9
+      doc: IElib define
+    - name: SLOT_WEAPON
+      detail: int SLOT_WEAPON = 35
+      doc: IElib define
+    - name: SLOT_WEAPON0
+      detail: int SLOT_WEAPON0 = 35
+      doc: IElib define
+    - name: SLOT_WEAPON1
+      detail: int SLOT_WEAPON1 = 36
+      doc: IElib define
+    - name: SLOT_WEAPON2
+      detail: int SLOT_WEAPON2 = 37
+      doc: IElib define
+    - name: SLOT_WEAPON3
+      detail: int SLOT_WEAPON3 = 38
       doc: IElib define
     - name: SPELL_FORM_projectile
       detail: int SPELL_FORM_projectile = 2
