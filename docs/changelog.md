@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.2.0
+
+- Fallout
+  - Sfall data updated to 4.4.5.1.
+- IE
+  - IESDP data update as of 2025.01.26.
+  - Initial TBAF support.
+  - BAF parse now works with [older weidu](https://github.com/WeiDUorg/weidu/issues/237).
+
 ## 2.1.11
 
 - Fallout
