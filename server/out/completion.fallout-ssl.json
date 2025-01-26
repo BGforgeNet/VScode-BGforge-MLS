@@ -2372,7 +2372,7 @@
         "source": "builtin",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nint play_sfall_sound(string file, int mode)\n```\nUsed to play `mp3/wav/wma` files. The path given is relative to the Fallout folder. Specify mode as 1 to loop the file continuously, 2 to replace the current background game music with playing the specified file in loop mode, or 0 to play the file once. If you don't wish to loop, `play_sfall_sound` returns 0. If you do loop, it returns an id which can be passed back to `stop_sfall_sound` when you want to stop the effect. All sounds effects will be stopped on game reload, looping or not. Does not require `AllowDShowSound` to be set to 1 in `ddraw.ini`.\n\nStarting from sfall 4.2.8/3.8.28, you can pass a value in the `mode` argument for a reduced sound volume. To set the volume, You need to convert the number to hexadecimal and use the argument format `0xZZZZ000Y`, where `ZZZZ` is the volume reduction value in range from 0 to 32767 (the value 32767 is mute), and `Y` is the playback mode.\n"
+            "value": "```fallout-ssl-tooltip\nint play_sfall_sound(string file, int mode)\n```\nUsed to play `mp3/wav/wma` files. The path given is relative to the Fallout folder. Specify mode as 1 to loop the file continuously, 2 to replace the current background game music with playing the specified file in loop mode, or 0 to play the file once. If you don't wish to loop, `play_sfall_sound` returns 0. If you do loop, it returns an ID which can be passed back to `stop_sfall_sound` when you want to stop the effect. All sounds effects will be stopped on game reload, looping or not. Does not require `AllowDShowSound` to be set to 1 in `ddraw.ini`.\n\nStarting from sfall 4.2.8/3.8.28, you can pass a value in the `mode` argument for a reduced sound volume. To set the volume, You need to convert the number to hexadecimal and use the argument format `0xZZZZ000Y`, where `ZZZZ` is the volume reduction value in range from 0 to 32767 (the value 32767 is mute), and `Y` is the playback mode.\n"
         }
     },
     {
@@ -3218,7 +3218,7 @@
         "source": "builtin",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\narray party_member_list(int includeHidden)\n```\nReturns an array of all current party members (0 - only critter-type, alive and visible will be returned, 1 - all object, including Trunk, etc.)\nThe `list_xxx` functions can be used to loop over all items on a map. `list_begin` takes an argument telling sfall what you want to list (defined in **sfall.h**). It returns a list pointer, which you iterate through with `list_next`. Finally, when you've finished with the list use `list_end` on it. Not calling `list_end` will result in a memory leak. Alternatively, use `list_as_array` to get the whole list at once as a temp array variable, which can be looped over using `len_array` and which you don't need to remember to free afterwards."
+            "value": "```fallout-ssl-tooltip\narray party_member_list(int includeHidden)\n```\nReturns an array of all current party members (0 - only critters that are alive and visible will be returned, 1 - all objects, including the car trunk, etc.)\nThe `list_xxx` functions can be used to loop over all items on a map. `list_begin` takes an argument telling sfall what you want to list (defined in **sfall.h**). It returns a list pointer, which you iterate through with `list_next`. Finally, when you've finished with the list use `list_end` on it. Not calling `list_end` will result in a memory leak. Alternatively, use `list_as_array` to get the whole list at once as a temp array variable, which can be looped over using `len_array` and which you don't need to remember to free afterwards."
         }
     },
     {
@@ -3708,15 +3708,6 @@
         }
     },
     {
-        "label": "add_trait",
-        "kind": 3,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nvoid add_trait(int traitID)\n```\nadds the specified trait to the player"
-        }
-    },
-    {
         "label": "create_message_window",
         "kind": 3,
         "source": "builtin",
@@ -4095,6 +4086,15 @@
         }
     },
     {
+        "label": "signal_close_game",
+        "kind": 3,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid signal_close_game\n```\nWorks in a similar way to vanilla function: `metarule(METARULE_SIGNAL_END_GAME, 0)`, but it will then close the game instead of only returning the player to the main menu\n"
+        }
+    },
+    {
         "label": "sneak_success",
         "kind": 3,
         "source": "builtin",
@@ -4155,6 +4155,15 @@
         "documentation": {
             "kind": "markdown",
             "value": "```fallout-ssl-tooltip\nvoid set_outline(ObjectPtr obj, int color)\n```\n- sets the outline color of an object (see `OUTLINE_*` constants in **sfall.h**)\n- can also set a custom color from the game palette by shifting the color index value left by 8 bits: `0xCC00` where `CC` is the palette index (available since sfall 4.2.7/3.8.27)\n- passing 0 will disable the outline\n"
+        }
+    },
+    {
+        "label": "add_trait",
+        "kind": 3,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid add_trait(int traitID)\n```\nadds the specified trait to the player"
         }
     },
     {
@@ -4253,7 +4262,7 @@
         "source": "builtin",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nvoid set_fake_perk(string name, int level, int image, string desc)\n```\nUsed to add additional traits and perks to the character screen. They will be saved correctly when the player saves and reloads games, but by themselves they will have no further effect on the character. For perks, the allowed range for levels is between 0 and 100; setting the level to 0 removes that perk. For traits, the level must be 0 or 1. The image is a numeric id that corresponds to an entry in `skilldex.lst`. The name is limited to 63 characters and the description to 255 characters by sfall, but internal Fallout limits may be lower."
+            "value": "```fallout-ssl-tooltip\nvoid set_fake_perk(string name, int level, int image, string desc)\n```\nUsed to add additional traits and perks to the character screen. They will be saved correctly when the player saves and reloads games, but by themselves they will have no further effect on the character. For perks, the allowed range for levels is between 0 and 100; setting the level to 0 removes that perk. For traits, the level must be 0 or 1. The image is a numeric ID that corresponds to an entry in `skilldex.lst`. The name is limited to 63 characters and the description to 255 characters by sfall, but internal Fallout limits may be lower."
         }
     },
     {
@@ -4262,7 +4271,7 @@
         "source": "builtin",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nvoid set_fake_trait(string name, int active, int image, string desc)\n```\nUsed to add additional traits and perks to the character screen. They will be saved correctly when the player saves and reloads games, but by themselves they will have no further effect on the character. For perks, the allowed range for levels is between 0 and 100; setting the level to 0 removes that perk. For traits, the level must be 0 or 1. The image is a numeric id that corresponds to an entry in `skilldex.lst`. The name is limited to 63 characters and the description to 255 characters by sfall, but internal Fallout limits may be lower."
+            "value": "```fallout-ssl-tooltip\nvoid set_fake_trait(string name, int active, int image, string desc)\n```\nUsed to add additional traits and perks to the character screen. They will be saved correctly when the player saves and reloads games, but by themselves they will have no further effect on the character. For perks, the allowed range for levels is between 0 and 100; setting the level to 0 removes that perk. For traits, the level must be 0 or 1. The image is a numeric ID that corresponds to an entry in `skilldex.lst`. The name is limited to 63 characters and the description to 255 characters by sfall, but internal Fallout limits may be lower."
         }
     },
     {
@@ -4631,7 +4640,7 @@
         "source": "builtin",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nobjects_in_radius\", int tile, int radius, int elevation, int type)\n```\n- returns an array of objects of a type (see `OBJ_TYPE_*` constants in **define_extra.h**) within the specified radius from the given tile\n- passing -1 to the `type` argument or _not specifying it_ will return all objects within the radius\n- the radius is limited to 50 hexes\n"
+            "value": "```fallout-ssl-tooltip\narray objects_in_radius(int tile, int radius, int elevation, int type)\n```\n- returns an array of objects of a type (see `OBJ_TYPE_*` constants in **define_extra.h**) within the specified radius from the given tile\n- passing -1 to the `type` argument or _not specifying it_ will return all objects within the radius\n- the radius is limited to 50 hexes\n"
         }
     },
     {
@@ -4649,7 +4658,7 @@
         "source": "builtin",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nvoid set_rest_heal_time(int time)\n```\nSets the time interval in minutes for healing during resting. The default is 180. Note: The interval will be reset each time the player reloads the game."
+            "value": "```fallout-ssl-tooltip\nvoid set_rest_heal_time(int time)\n```\nSets the time interval in minutes for healing during resting. The default is 180\n- the time interval will be reset each time the player reloads the game\n"
         }
     },
     {
@@ -4659,6 +4668,15 @@
         "documentation": {
             "kind": "markdown",
             "value": "```fallout-ssl-tooltip\nvoid set_rest_mode(int flags)\n```\nSets the bit flags for the rest mode (see `RESTMODE_*` constants in **sfall.h**). Passing 0 will reset the rest mode. It will also be reset each time the player reloads the game."
+        }
+    },
+    {
+        "label": "set_worldmap_heal_time",
+        "kind": 3,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid set_worldmap_heal_time(int time)\n```\nSets the time interval in minutes for healing during world map travel. The default is 180\n- passing 0 will revert to 1 second of real time (vanilla engine behavior)\n- passing -1 will disable healing during travel\n- the time interval will be reset each time the player reloads the game\n"
         }
     },
     {
@@ -5009,7 +5027,7 @@
         "source": "builtin",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nvoid add_iface_tag()\n```\nAdds one custom box to the current boxes, and returns the number of the added tag (-1 if the tags limit is exceeded. The maximum number of boxes is limited to 126 tags.\nshow_iface_tag, hide_iface_tag and is_iface_tag_active relate to the boxes that appear above the interface such as SNEAK and LEVEL. You can use 3 for LEVEL and 4 for ADDICT, or the range from 5 to (4 + the value of BoxBarCount in `ddraw.ini`) for custom boxes. Remember to add your messages to `intrface.msg` and set up the font colours in `ddraw.ini` if you're going to use custom boxes. Starting from sfall 4.1/3.8.12, is_iface_tag_active can also be used to check 0 for SNEAK, 1 for POISONED, and 2 for RADIATED."
+            "value": "```fallout-ssl-tooltip\nvoid add_iface_tag()\n```\nAdds one custom box to the current boxes, and returns the number of the added tag (-1 if the tags limit is exceeded. The maximum number of boxes is limited to 126 tags.\n`show_iface_tag`, `hide_iface_tag` and `is_iface_tag_active` relate to the boxes that appear above the interface such as SNEAK and LEVEL. You can use 0 for **SNEAK** (starting from sfall 4.4.4/3.8.44), 3 for **LEVEL**, 4 for **ADDICT**, and 5 to (4 + the value of BoxBarCount in `ddraw.ini`) for custom boxes. Remember to add your messages to `intrface.msg` and set up the font colours in `ddraw.ini` if you're going to use custom boxes. Starting from sfall 4.1/3.8.12, `is_iface_tag_active` can also be used to check 0 for **SNEAK**, 1 for **POISONED**, and 2 for **RADIATED**.\n"
         }
     },
     {
@@ -5018,7 +5036,7 @@
         "source": "builtin",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nvoid hide_iface_tag(int tag)\n```\nshow_iface_tag, hide_iface_tag and is_iface_tag_active relate to the boxes that appear above the interface such as SNEAK and LEVEL. You can use 3 for LEVEL and 4 for ADDICT, or the range from 5 to (4 + the value of BoxBarCount in `ddraw.ini`) for custom boxes. Remember to add your messages to `intrface.msg` and set up the font colours in `ddraw.ini` if you're going to use custom boxes. Starting from sfall 4.1/3.8.12, is_iface_tag_active can also be used to check 0 for SNEAK, 1 for POISONED, and 2 for RADIATED."
+            "value": "```fallout-ssl-tooltip\nvoid hide_iface_tag(int tag)\n```\n`show_iface_tag`, `hide_iface_tag` and `is_iface_tag_active` relate to the boxes that appear above the interface such as SNEAK and LEVEL. You can use 0 for **SNEAK** (starting from sfall 4.4.4/3.8.44), 3 for **LEVEL**, 4 for **ADDICT**, and 5 to (4 + the value of BoxBarCount in `ddraw.ini`) for custom boxes. Remember to add your messages to `intrface.msg` and set up the font colours in `ddraw.ini` if you're going to use custom boxes. Starting from sfall 4.1/3.8.12, `is_iface_tag_active` can also be used to check 0 for **SNEAK**, 1 for **POISONED**, and 2 for **RADIATED**.\n"
         }
     },
     {
@@ -5027,7 +5045,7 @@
         "source": "builtin",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nint is_iface_tag_active(int tag)\n```\nStarting from sfall 4.1, can also be used to check 0 for SNEAK, 1 for POISONED, and 2 for RADIATED.\nshow_iface_tag, hide_iface_tag and is_iface_tag_active relate to the boxes that appear above the interface such as SNEAK and LEVEL. You can use 3 for LEVEL and 4 for ADDICT, or the range from 5 to (4 + the value of BoxBarCount in `ddraw.ini`) for custom boxes. Remember to add your messages to `intrface.msg` and set up the font colours in `ddraw.ini` if you're going to use custom boxes. Starting from sfall 4.1/3.8.12, is_iface_tag_active can also be used to check 0 for SNEAK, 1 for POISONED, and 2 for RADIATED."
+            "value": "```fallout-ssl-tooltip\nint is_iface_tag_active(int tag)\n```\n`show_iface_tag`, `hide_iface_tag` and `is_iface_tag_active` relate to the boxes that appear above the interface such as SNEAK and LEVEL. You can use 0 for **SNEAK** (starting from sfall 4.4.4/3.8.44), 3 for **LEVEL**, 4 for **ADDICT**, and 5 to (4 + the value of BoxBarCount in `ddraw.ini`) for custom boxes. Remember to add your messages to `intrface.msg` and set up the font colours in `ddraw.ini` if you're going to use custom boxes. Starting from sfall 4.1/3.8.12, `is_iface_tag_active` can also be used to check 0 for **SNEAK**, 1 for **POISONED**, and 2 for **RADIATED**.\n"
         }
     },
     {
@@ -5036,7 +5054,7 @@
         "source": "builtin",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nvoid set_iface_tag_text(int tag, string text, int color)\n```\nSets the text messages and colors for custom notification boxes to the interface without the need to add messages to `intrface.msg` and set up the font colors in `ddraw.ini`. Tag value is the same as used in `show_iface_tag`, `hide_iface_tag`, and `is_iface_tag_active`. The valid range is from 5 to (4 + the value of `BoxBarCount` in `ddraw.ini`) or the number of the last custom box added using the `add_iface_tag` function. The text is limited to 19 characters.\nshow_iface_tag, hide_iface_tag and is_iface_tag_active relate to the boxes that appear above the interface such as SNEAK and LEVEL. You can use 3 for LEVEL and 4 for ADDICT, or the range from 5 to (4 + the value of BoxBarCount in `ddraw.ini`) for custom boxes. Remember to add your messages to `intrface.msg` and set up the font colours in `ddraw.ini` if you're going to use custom boxes. Starting from sfall 4.1/3.8.12, is_iface_tag_active can also be used to check 0 for SNEAK, 1 for POISONED, and 2 for RADIATED."
+            "value": "```fallout-ssl-tooltip\nvoid set_iface_tag_text(int tag, string text, int color)\n```\nSets the text messages and colors for custom notification boxes to the interface without the need to add messages to `intrface.msg` and set up the font colors in `ddraw.ini`. Tag value is the same as used in `show_iface_tag`, `hide_iface_tag`, and `is_iface_tag_active`. The valid range is from 5 to (4 + the value of BoxBarCount in `ddraw.ini`) or the number of the last custom box added using the `add_iface_tag` function. The text is limited to 19 characters.\n`show_iface_tag`, `hide_iface_tag` and `is_iface_tag_active` relate to the boxes that appear above the interface such as SNEAK and LEVEL. You can use 0 for **SNEAK** (starting from sfall 4.4.4/3.8.44), 3 for **LEVEL**, 4 for **ADDICT**, and 5 to (4 + the value of BoxBarCount in `ddraw.ini`) for custom boxes. Remember to add your messages to `intrface.msg` and set up the font colours in `ddraw.ini` if you're going to use custom boxes. Starting from sfall 4.1/3.8.12, `is_iface_tag_active` can also be used to check 0 for **SNEAK**, 1 for **POISONED**, and 2 for **RADIATED**.\n"
         }
     },
     {
@@ -5045,7 +5063,7 @@
         "source": "builtin",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nvoid show_iface_tag(int tag)\n```\nshow_iface_tag, hide_iface_tag and is_iface_tag_active relate to the boxes that appear above the interface such as SNEAK and LEVEL. You can use 3 for LEVEL and 4 for ADDICT, or the range from 5 to (4 + the value of BoxBarCount in `ddraw.ini`) for custom boxes. Remember to add your messages to `intrface.msg` and set up the font colours in `ddraw.ini` if you're going to use custom boxes. Starting from sfall 4.1/3.8.12, is_iface_tag_active can also be used to check 0 for SNEAK, 1 for POISONED, and 2 for RADIATED."
+            "value": "```fallout-ssl-tooltip\nvoid show_iface_tag(int tag)\n```\n`show_iface_tag`, `hide_iface_tag` and `is_iface_tag_active` relate to the boxes that appear above the interface such as SNEAK and LEVEL. You can use 0 for **SNEAK** (starting from sfall 4.4.4/3.8.44), 3 for **LEVEL**, 4 for **ADDICT**, and 5 to (4 + the value of BoxBarCount in `ddraw.ini`) for custom boxes. Remember to add your messages to `intrface.msg` and set up the font colours in `ddraw.ini` if you're going to use custom boxes. Starting from sfall 4.1/3.8.12, `is_iface_tag_active` can also be used to check 0 for **SNEAK**, 1 for **POISONED**, and 2 for **RADIATED**.\n"
         }
     },
     {
@@ -5409,6 +5427,15 @@
         }
     },
     {
+        "label": "art_frame_data",
+        "kind": 3,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\narray art_frame_data(string/int artFile/artId, int frame, int rotation)\n```\n- returns the dimensions of a given PCX or FRM frame as a temp array in the form **[width, height]**\n- `artFile/artId`: path to the PCX/FRM file (e.g. `art\\\\inven\\\\5mmap.frm`), or its FRM ID number (e.g. `0x7000026`, see specification of the FID format)\noptional arguments:\n- `frame`: frame number, the first frame starts from zero\n- `rotation`: rotation to get the frame for, useful when reading FRM files by path\n"
+        }
+    },
+    {
         "label": "create_win",
         "kind": 3,
         "source": "builtin",
@@ -5441,7 +5468,7 @@
         "source": "builtin",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nint sfall_func1(\"get_window_attribute\", int winType)\n```\nAlternative form: `int sfall_func2(\"get_window_attribute\", int winType, int attrType)`\nReturns the attribute of the specified interface window by the `attrType` argument.\n- `winType`: the type number of the interface window (see `WINTYPE_*` constants in **sfall.h**)\n- `attrType`: `0` - checks and returns a value of 1 if the specified interface window is created by the game (same as without the argument)\n              `1` - X position, `2` - Y position (relative to the top-left corner of the game screen)\n              `3` - interface width size, `4` - interface height size\n              `-1` - returns an associative array of keys (left, top, right, bottom) and values that define the position of the window rectangle\n              (use standard syntax to access array values, e.g. `winRect.top`, `winRect.bottom`)\n- returns -1 if the specified attribute cannot be obtained\n"
+            "value": "```fallout-ssl-tooltip\nint sfall_func1(\"get_window_attribute\", int winType)\n```\nAlternative form: `int sfall_func2(\"get_window_attribute\", int winType, int attrType)`\nReturns the attribute of the specified interface window by the `attrType` argument.\n- `winType`: the type number of the interface window (see `WINTYPE_*` constants in **sfall.h**)\n- `attrType`: `0` - checks and returns a value of 1 if the specified interface window is created by the game (same as without the argument)\n              `1` - X position, `2` - Y position (relative to the top-left corner of the game screen)\n              `3` - interface width size, `4` - interface height size\n              `5` - window ID (to compare with the `get_window_under_mouse` function)\n              `-1` - returns an associative array of keys (left, top, right, bottom) and values that define the position of the window rectangle\n              (use standard syntax to access array values, e.g. `winRect.top`, `winRect.bottom`)\n- returns -1 if the specified attribute cannot be obtained\n"
         }
     },
     {
@@ -5450,7 +5477,7 @@
         "source": "builtin",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nint get_window_under_mouse()\n```"
+            "value": "```fallout-ssl-tooltip\nint get_window_under_mouse()\n```\nReturns the internal ID of the top-most window under mouse cursor."
         }
     },
     {
@@ -5460,6 +5487,15 @@
         "documentation": {
             "kind": "markdown",
             "value": "```fallout-ssl-tooltip\nint sfall_func4(\"interface_art_draw\", int winType, string artFile/int artID, int x, int y)\n```\n```c++\nint sfall_func4(\"interface_art_draw\", int winType, string artFile/int artID, int x, int y)\nint sfall_func5(\"interface_art_draw\", int winType, string artFile/int artID, int x, int y, int frame)\nint sfall_func6(\"interface_art_draw\", int winType, string artFile/int artID, int x, int y, int frame, array param)\n```\n- draws the specified PCX or FRM image in the game interface window, returns -1 on any error\n- `winType`: the type number of the interface window (see `WINTYPE_*` constants in **sfall.h**)\n  this also takes the value of the flag (0x1000000) to prevent immediate redrawing of the interface window\n- `artFile/artId`: path to the PCX/FRM file (e.g. `art\\\\inven\\\\5mmap.frm`), or its FRM ID number (e.g. `0x7000026`, see specification of the FID format)\n- `x/y`: offset relative to the top-left corner of the window\n\noptional arguments:\n- `frame`: frame number, the first frame starts from zero\n- `param`: an array which specifies additional parameters, where:\n  index 0 - sprite direction for multi-directional FRM\n  index 1/index 2 - the new width/height to scale the image to. Pass -1 to use the original width/height\n"
+        }
+    },
+    {
+        "label": "interface_overlay",
+        "kind": 3,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nsfall_func2(\"interface_overlay\", int winType, int mode)\n```\nAlternative form: `int sfall_func6(\"interface_overlay\", int winType, 2, int x, int y, int width, int height)`.\n\nCreates an additional drawing surface above the graphic layer of the specified interface window. All subsequent calls of `interface_art_draw` and `interface_print` functions will draw on it.\n- `winType`: the type number of the interface window (see `WINTYPE_*` constants in **sfall.h**)\n- `mode`: 1 - creates a new overlay surface\n          2 - clears the overlay area or the specified rectangle defined by the `x`, `y`, `width`, `height` arguments\n          0 - destroys the created overlay surface (frees up the memory allocated to the surface)\n"
         }
     },
     {
@@ -5478,15 +5514,6 @@
         "documentation": {
             "kind": "markdown",
             "value": "```fallout-ssl-tooltip\nint sfall_func4(\"message_box\", string message, int flags, int color1, int color2)\n```\nCreates a dialog box with text and returns the result of pressing the button: 0 - No (Escape), 1 - Yes/Done (Enter). Returns -1 if for some reason the dialog box cannot be created.\n```\n- message: the text in the dialog box. Use the `\\n` control character to move text to a new line (example: \"Hello\\nWorld!\")\noptional arguments:\n- flags: mode flags (see `MSGBOX_*` constants in define_extra.h). Pass -1 to skip setting the flags (default flags are NORMAL and YESNO)\n- color1/color2: the color index in the game palette. `color1` sets the text color for the first line, and `color2` for all subsequent lines of text (default color is 145)\n```\n"
-        }
-    },
-    {
-        "label": "nterface_overlay",
-        "kind": 3,
-        "source": "builtin",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nsfall_func2(\"interface_overlay\", int winType, int mode)\n```\nAlternative form: `int sfall_func6(\"interface_overlay\", int winType, 2, int x, int y, int width, int height)`.\n\nCreates an additional drawing surface above the graphic layer of the specified interface window. All subsequent calls of `interface_art_draw` and `interface_print` functions will draw on it.\n- `winType`: the type number of the interface window (see `WINTYPE_*` constants in **sfall.h**)\n- `mode`: 1 - creates a new overlay surface\n          2 - clears the overlay area or the specified rectangle defined by the `x`, `y`, `width`, `height` arguments\n          0 - destroys the created overlay surface (frees up the memory allocated to the surface)\n"
         }
     },
     {
@@ -5841,6 +5868,15 @@
         }
     },
     {
+        "label": "HOOK_BUILDSFXWEAPON",
+        "kind": 21,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nHOOK_BUILDSFXWEAPON\n```\nRuns before each weapon sound effect is played or added to the animation queue to determine the name of the sound effect file based on the weapon, target, and action being performed.\n\n```\nint     arg0 - weapon sound effect type:\n        0 - ready/reload\n        1 - attack\n        2 - out of ammo\n        3 - flying (for projectiles from weapons)\n        4 - hit\nItem    arg1 - the weapon being used\nint     arg2 - attack type (see ATKTYPE_* constants)\nObj     arg3 - the target of the attack (can be 0)\n\nString  ret0 - the filename of the new sound effect to use, without extension (relative to the sound\\sfx\\ directory)\n```\n"
+        }
+    },
+    {
         "label": "HOOK_CALCAPCOST",
         "kind": 21,
         "source": "builtin",
@@ -5864,7 +5900,7 @@
         "source": "builtin",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nHOOK_CARTRAVEL\n```\nRuns continuously during worldmap travel on car.\n\n```\nint     arg0 - vanilla car speed (between 3 and 8 \"steps\")\nint     arg1 - vanilla fuel consumption (100 and below)\n\nint     ret0 - car speed override (pass -1 if you just want to override fuel consumption)\nint     ret1 - fuel consumption override\n```\n"
+            "value": "```fallout-ssl-tooltip\nHOOK_CARTRAVEL\n```\nRuns continuously during world map travel by car.\n\n```\nint     arg0 - vanilla car speed (between 3 and 8 \"steps\")\nint     arg1 - vanilla fuel consumption (100 and below)\n\nint     ret0 - car speed override (pass -1 if you just want to override fuel consumption)\nint     ret1 - fuel consumption override\n```\n"
         }
     },
     {
@@ -5927,7 +5963,7 @@
         "source": "builtin",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nHOOK_ENCOUNTER\n```\nRuns whenever a random encounter occurs (except the Horrigan meeting and scripted encounters), or when the player enters a local map from the world map.\nYou can override the map for loading or the encounter.\n\n```\nint     arg0 - event type: 0 - when a random encounter occurs, 1 - when the player enters from the world map\nint     arg1 - the map ID that the encounter will load (see MAPS.h or Maps.txt)\nint     arg2 - 1 when the encounter occurs is a special encounter, 0 otherwise\n\nint     ret0 - overrides the map ID, or pass -1 for event type 0 to cancel the encounter and continue traveling\nint     ret1 - pass 1 to cancel the encounter and load the specified map from the ret0 (only for event type 0)\n```\n"
+            "value": "```fallout-ssl-tooltip\nHOOK_ENCOUNTER\n```\nRuns whenever a random encounter occurs (except the Horrigan meeting and scripted encounters), or when the player enters a local map from the world map.\nYou can override the map for loading or the encounter.\n\n```\nint     arg0 - event type: 0 - when a random encounter occurs, 1 - when the player enters from the world map\nint     arg1 - the map ID that the encounter will load (see MAPS.h or Maps.txt)\nint     arg2 - 1 when the encounter occurs is a special encounter, 0 otherwise\nint     arg3 - encounter table number, or -1 if not an encounter\nint     arg4 - encounter index in the table, or -1 if not an encounter\n\nint     ret0 - overrides the map ID, or pass -1 for event type 0 to cancel the encounter and continue traveling\nint     ret1 - pass 1 to cancel the encounter and load the specified map from the ret0 (only for event type 0)\n```\n"
         }
     },
     {
