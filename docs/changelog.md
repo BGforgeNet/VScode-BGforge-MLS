@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.2.1
+
+Added a no-edit warning to `BAF` files generated from `TBAF`.
+
 ## 2.2.0
 
 - Fallout
