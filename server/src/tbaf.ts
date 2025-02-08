@@ -77,8 +77,9 @@ export async function compile(uri: string, text: string) {
     // Save to BAF file, same directory
     const dirName = path.parse(filePath).dir;
     const baseName = path.parse(filePath).name;
-    const bafName = path.join(dirName, `${baseName}.baf`)
-    exportBAF(finalTS, bafName);
+    const bafName = path.join(dirName, `${baseName}.baf`);
+    const fileName = path.basename(filePath);
+    exportBAF(finalTS, bafName, fileName);
     connection.window.showInformationMessage(`Transpiled to ${bafName}.`);
 }
 
@@ -594,9 +595,12 @@ function evaluateCondition(condition: string, loopVar: string, currentValue: num
 
 /**
  * Export typescript code as BAF
+ * @param sourceFile ts-morph source file
+ * @param bafPath output BAF path
+ * @param sourceName TBAF source name, to put into comment
  */
-function exportBAF(sourceFile: SourceFile, filePath: string): void {
-    let exportContent = "";
+function exportBAF(sourceFile: SourceFile, bafPath: string, sourceName: string): void {
+    let exportContent = `/* DO NOT EDIT MANUALLY. This file is generated from ${sourceName}. Make your changes there and regenerate this file. */\n\n`;
 
     // Traverse all IfStatements in the source file
     sourceFile.forEachDescendant((node) => {
@@ -618,8 +622,8 @@ function exportBAF(sourceFile: SourceFile, filePath: string): void {
 
     exportContent = applyBAFhacks(exportContent);
     // Write the content to the specified file
-    fs.writeFileSync(filePath, exportContent, 'utf-8'); // Remove any extra trailing newlines
-    console.log(`Content saved to ${filePath}`);
+    fs.writeFileSync(bafPath, exportContent, 'utf-8'); // Remove any extra trailing newlines
+    console.log(`Content saved to ${bafPath}`);
 }
 
 /**
