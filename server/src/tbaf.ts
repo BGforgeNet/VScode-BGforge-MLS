@@ -600,7 +600,7 @@ function evaluateCondition(condition: string, loopVar: string, currentValue: num
  * @param sourceName TBAF source name, to put into comment
  */
 function exportBAF(sourceFile: SourceFile, bafPath: string, sourceName: string): void {
-    let exportContent = `/* DO NOT EDIT MANUALLY. This file is generated from ${sourceName}. Make your changes there and regenerate this file. */\n\n`;
+    let exportContent = `/* Do not edit. This file is generated from ${sourceName}. Make your changes there and regenerate this file. */\n\n`;
 
     // Traverse all IfStatements in the source file
     sourceFile.forEachDescendant((node) => {
