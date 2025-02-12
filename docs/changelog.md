@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.2.2
+
+Allow to pass any string to TBAF `$obj`.
+
 ## 2.2.1
 
 Added a no-edit warning to `BAF` files generated from `TBAF`.
