@@ -633,7 +633,8 @@ function applyBAFhacks(text: string): string {
     let result = text.replace(/,\s*LOCALS/g, ', "LOCALS"');
     result = result.replace(/,\s*GLOBAL/g, ', "GLOBAL"');
     // obj specifier replacement: $obj("[ANYONE]") => [ANYONE]
-    result = result.replace(/\$obj\("\[(.*?)\]"\)/g, '[$1]');
+    // Also should work for death vars, so any string is accepted.
+    result = result.replace(/\$obj\("(.*?)"\)/g, '$1');
     // $tra specifier replacement: $tra(number) => @number
     result = result.replace(/\$tra\((\d+)\)/g, '@$1');
     result = result.trim() + "\n";
