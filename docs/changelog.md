@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.2.3
+
+Fix death var string passing to TBAF `$obj`.
+
 ## 2.2.2
 
 Allow to pass any string to TBAF `$obj`.
