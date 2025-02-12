@@ -437,5 +437,10 @@
     "categories": [
         "Programming Languages"
     ],
-    "homepage": "https://forums.bgforge.net/viewforum.php?f=35"
+    "homepage": "https://forums.bgforge.net/viewforum.php?f=35",
+    "pnpm": {
+        "onlyBuiltDependencies": [
+            "esbuild"
+        ]
+    }
 }
