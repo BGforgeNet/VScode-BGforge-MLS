@@ -10,14 +10,14 @@ importers:
     dependencies:
       cytoscape:
         specifier: ^3.23.0
-        version: 3.29.0
+        version: 3.31.0
       cytoscape-fcose:
         specifier: ^2.2.0
-        version: 2.2.0(cytoscape@3.29.0)
+        version: 2.2.0(cytoscape@3.31.0)
     devDependencies:
       '@types/cytoscape':
         specifier: ^3.19.9
-        version: 3.21.0
+        version: 3.21.9
       '@types/cytoscape-fcose':
         specifier: ^2.1.0
         version: 2.2.4
@@ -27,8 +27,8 @@ packages:
   '@types/cytoscape-fcose@2.2.4':
     resolution: {integrity: sha512-QwWtnT8HI9h+DHhG5krGc1ZY0Ex+cn85MvX96ZNAjSxuXiZDnjIZW/ypVkvvubTjIY4rSdkJY1D/Nsn8NDpmAw==}
 
-  '@types/cytoscape@3.21.0':
-    resolution: {integrity: sha512-RN5SPiyVDpUP+LoOlxxlOYAMzkE7iuv3gA1jt3Hx2qTwArpZVPPdO+SI0hUj49OAn4QABR7JK9Gi0hibzGE0Aw==}
+  '@types/cytoscape@3.21.9':
+    resolution: {integrity: sha512-JyrG4tllI6jvuISPjHK9j2Xv/LTbnLekLke5otGStjFluIyA9JjgnvgZrSBsp8cEDpiTjwgZUZwpPv8TSBcoLw==}
 
   cose-base@2.2.0:
     resolution: {integrity: sha512-AzlgcsCbUMymkADOJtQm3wO9S3ltPfYOFD5033keQn9NJzIbtnZj+UdBJe7DYml/8TdbtHJW3j58SOnKhWY/5g==}
@@ -38,8 +38,8 @@ packages:
     peerDependencies:
       cytoscape: ^3.2.0
 
-  cytoscape@3.29.0:
-    resolution: {integrity: sha512-ADqhlrCKhhQF8s/s3hTpvVAIyWwsfgFI/hD2vhAXc2ndncJFVZaq3/uBkDIhf4RrNwPw93vUarW36x6rFbUk0Q==}
+  cytoscape@3.31.0:
+    resolution: {integrity: sha512-zDGn1K/tfZwEnoGOcHc0H4XazqAAXAuDpcYw9mUnUjATjqljyCNGJv8uEvbvxGaGHaVshxMecyl6oc6uKzRfbw==}
     engines: {node: '>=0.10'}
 
   layout-base@2.0.1:
@@ -49,19 +49,19 @@ snapshots:
 
   '@types/cytoscape-fcose@2.2.4':
     dependencies:
-      '@types/cytoscape': 3.21.0
+      '@types/cytoscape': 3.21.9
 
-  '@types/cytoscape@3.21.0': {}
+  '@types/cytoscape@3.21.9': {}
 
   cose-base@2.2.0:
     dependencies:
       layout-base: 2.0.1
 
-  cytoscape-fcose@2.2.0(cytoscape@3.29.0):
+  cytoscape-fcose@2.2.0(cytoscape@3.31.0):
     dependencies:
       cose-base: 2.2.0
-      cytoscape: 3.29.0
+      cytoscape: 3.31.0
 
-  cytoscape@3.29.0: {}
+  cytoscape@3.31.0: {}
 
   layout-base@2.0.1: {}
