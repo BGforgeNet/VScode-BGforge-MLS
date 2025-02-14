@@ -759,9 +759,8 @@ function canRemoveParentheses(node: ParenthesizedExpression): boolean {
     const innerExpression = node.getExpression();
 
     // If the immediate inner expression is a binary expression with `||`, skip removal
-    if (
-        innerExpression.isKind(SyntaxKind.BinaryExpression) &&
-        (innerExpression as BinaryExpression).getOperatorToken().getText() === "||"
+    if (innerExpression.isKind(SyntaxKind.BinaryExpression) &&
+        innerExpression.getOperatorToken().getText() === "||"
     ) {
         return false;
     }
