@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.2.4
+
+Fix expansion of parentheses with OR inside in TBAF.
+
 ## 2.2.3
 
 Fix death var string passing to TBAF `$obj`.
