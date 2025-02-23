@@ -1,9 +1,11 @@
 import * as fs from "fs";
 import * as path from "path";
 import {
+    ArrayLiteralExpression,
     BinaryExpression,
     Block,
     CallExpression,
+    Expression,
     ForOfStatement,
     ForStatement,
     FunctionDeclaration,
@@ -13,6 +15,7 @@ import {
     Project,
     ReturnStatement,
     SourceFile,
+    SpreadElement,
     SyntaxKind,
     VariableDeclaration,
     VariableDeclarationKind,
@@ -92,31 +95,42 @@ type varsContext = Map<string, string>;
  * Inline and unroll loops and other constructs.
  * @param sourceFile The source file to modify.
  */
-/**
- * Inline and unroll loops and other constructs.
- * @param sourceFile The source file to modify.
- */
 function inlineUnroll(sourceFile: SourceFile) {
     const functionDeclarations = sourceFile.getFunctions();
     const variablesContext: varsContext = new Map(); // Track const declarations
 
     // Collect variables
     sourceFile.forEachDescendant(node => {
+
         switch (node.getKind()) {
-            // Collect const variables
+            // Process array literals immediately.
+            case SyntaxKind.ArrayLiteralExpression: {
+                flattenSpreadForNode(node as ArrayLiteralExpression, variablesContext);
+                break;
+            }
+            // Collect const variable declarations.
             case SyntaxKind.VariableDeclaration: {
                 const variableDeclaration = node as VariableDeclaration;
                 const parentDeclarationList = variableDeclaration.getParent() as VariableDeclarationList;
-
                 if (parentDeclarationList.getDeclarationKind() === VariableDeclarationKind.Const) {
                     const name = variableDeclaration.getName();
-                    const initializer = variableDeclaration.getInitializer()?.getText() || "undefined";
-                    variablesContext.set(name, initializer);
-                    console.log(`Collected const variable: ${name} = ${initializer}`);
+                    let init = variableDeclaration.getInitializer();
+                    if (init) {
+                        if (init.getKind() === SyntaxKind.ArrayLiteralExpression) {
+                            // Flatten any spread elements, substituting identifiers from variablesContext.
+                            flattenSpreadForNode(init as ArrayLiteralExpression, variablesContext);
+                        }
+                        const initializerText = getCleanInitializerText(init);
+                        if (initializerText.includes("...")) {
+                            console.log(`Skipping collection for ${name} because initializer still contains spread.`);
+                        } else {
+                            variablesContext.set(name, initializerText);
+                            console.log(`Collected const variable: ${name} = ${initializerText}`);
+                        }
+                    }
                 }
                 break;
             }
-
             // Unroll for...of loops
             case SyntaxKind.ForOfStatement:
                 unrollForOfLoop(node as ForOfStatement, variablesContext);
@@ -128,6 +142,7 @@ function inlineUnroll(sourceFile: SourceFile) {
 
             // Handle function calls
             case SyntaxKind.CallExpression: {
+
                 const callExpr = node as CallExpression;
 
                 // Apply variable substitution first
@@ -141,10 +156,71 @@ function inlineUnroll(sourceFile: SourceFile) {
                 break;
             }
 
+            // Evaluate and replace spread expressions in arrays
+            case SyntaxKind.ArrayLiteralExpression: {
+                evaluateAndReplaceSpreadExpressions(node as ArrayLiteralExpression, variablesContext);
+                break;
+            }
+
             default:
                 break;
         }
     });
+}
+
+// Rebuild an initializer from an array literal (omitting comments)
+function getCleanInitializerText(init: Expression): string {
+    if (init.getKind() === SyntaxKind.ArrayLiteralExpression) {
+        const arr = init as ArrayLiteralExpression;
+        return `[ ${arr.getElements().map(el => el.getText()).join(", ")} ]`;
+    }
+    return init.getText();
+}
+
+
+/**
+ * Evaluates spread expressions in an array literal and replaces the node.
+ * @param arrayLiteral The array literal node to process.
+ * @param variablesContext Context to resolve variables.
+ */
+function evaluateAndReplaceSpreadExpressions(arrayLiteral: ArrayLiteralExpression, variablesContext: varsContext) {
+    const elements = arrayLiteral.getElements();
+
+    let evaluatedArray: string[] = [];
+
+    elements.forEach(element => {
+        if (element.getKind() === SyntaxKind.SpreadElement) {
+            const spreadExpr = (element as SpreadElement).getExpression();
+
+            if (spreadExpr.getKind() === SyntaxKind.ArrayLiteralExpression) {
+                // Flatten inline array spreads
+                const spreadArray = (spreadExpr as ArrayLiteralExpression).getElements().map(e => e.getText());
+                evaluatedArray.push(...spreadArray);
+            } else {
+                // Check if spread is a known variable
+                const spreadVarName = spreadExpr.getText();
+                if (variablesContext.has(spreadVarName)) {
+                    const resolvedValue = variablesContext.get(spreadVarName);
+                    if (resolvedValue?.startsWith("[") && resolvedValue?.endsWith("]")) {
+                        const parsedArray = JSON.parse(resolvedValue.replace(/'/g, '"'));
+                        evaluatedArray.push(...parsedArray);
+                    } else {
+                        evaluatedArray.push(spreadVarName); // Keep as-is if not an array
+                    }
+                } else {
+                    evaluatedArray.push(element.getText()); // Keep unresolved spreads
+                }
+            }
+        } else {
+            evaluatedArray.push(element.getText());
+        }
+    });
+
+    // Replace the original array expression with the evaluated array
+    const newArrayText = `[${evaluatedArray.join(", ")}]`;
+    arrayLiteral.replaceWithText(newArrayText);
+
+    console.log(`Replaced array literal with: ${newArrayText}`);
 }
 
 /**
@@ -152,20 +228,16 @@ function inlineUnroll(sourceFile: SourceFile) {
  * @param callExpression The call expression to substitute variables in.
  * @param vars The context of variable declarations.
  */
-function substituteVariables(callExpression: CallExpression, vars: varsContext) {
-    const args = callExpression.getArguments();
-    args.forEach(arg => {
+function substituteVariables(callExpression: CallExpression, vars: Map<string, string>) {
+    callExpression.getArguments().forEach(arg => {
         const argText = arg.getText();
-
-        // Check if the argument is a variable that we know
         if (vars.has(argText)) {
             const substitution = vars.get(argText)!;
-            console.log(`Substituting variable: ${argText} -> ${substitution}`);
+            console.log(`Substituting variable in argument: ${argText} -> ${substitution}`);
             arg.replaceWithText(substitution);
         }
     });
 }
-
 
 function inlineFunction(callExpression: CallExpression, functionDeclarations: FunctionDeclaration[], vars: varsContext) {
     const functionName = callExpression.getExpression().getText();
@@ -413,6 +485,52 @@ function invertCondition(condition: string): string {
 
     // For simple conditions (without && or ||), just negate it
     return `!(${condition.trim()})`;
+}
+
+/**
+ * Flatten spread elements in an array literal node.
+ * If a spread element is a literal array or an identifier found in vars,
+ * its elements are inlined.
+ */
+function flattenSpreadForNode(arrayLiteral: ArrayLiteralExpression, vars?: Map<string, string>) {
+    // Use flatMap to replace spread elements with their flattened items.
+    const flattened = arrayLiteral.getElements().flatMap((element) => {
+        if (element.getKind() === SyntaxKind.SpreadElement) {
+            const spreadExpr = (element as SpreadElement).getExpression();
+            // Case 1: The spread expression is a literal array.
+            if (spreadExpr.getKind() === SyntaxKind.ArrayLiteralExpression) {
+                const innerArray = spreadExpr as ArrayLiteralExpression;
+                return innerArray.getElements().map((innerEl) => innerEl.getText());
+            }
+            // Case 2: The spread expression is an identifier present in vars.
+            else if (spreadExpr.getKind() === SyntaxKind.Identifier && vars) {
+                const id = spreadExpr.getText();
+                if (vars.has(id)) {
+                    const literal = vars.get(id)!;
+                    // Remove outer brackets and split by comma.
+                    const inner = literal.slice(1, -1).trim();
+                    if (inner) {
+                        return inner.split(",").map((s) => s.trim()).filter((s) => s);
+                    }
+                }
+            }
+            // If no flattening possible, return the original text.
+            return [element.getText()];
+        }
+        return [element.getText()];
+    });
+
+    const newArrayText = `[ ${flattened.join(", ")} ]`;
+    // Only replace if the flattened version is different.
+    if (newArrayText !== arrayLiteral.getText()) {
+        console.log(
+            "Replacing array literal:",
+            arrayLiteral.getText(),
+            "with flattened version:",
+            newArrayText
+        );
+        arrayLiteral.replaceWithText(newArrayText);
+    }
 }
 
 /**
@@ -744,8 +862,6 @@ function simplifyConditions(sourceFile: SourceFile) {
         }
     });
 }
-
-
 
 /**
  * Determines if parentheses around an expression can be safely removed.
