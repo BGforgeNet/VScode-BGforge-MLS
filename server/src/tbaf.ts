@@ -631,6 +631,18 @@ function unrollForLoop(forStatement: ForStatement, vars: varsContext) {
         return;
     }
 
+    // Ensure the loop boundary is numeric
+    if (Node.isBinaryExpression(condition)) {
+        const conditionValue = condition.getRight().getText();
+        if (isNaN(Number(conditionValue))) {
+            console.log(`Skipping loop with non-numeric boundary: ${conditionValue}`);
+            return;
+        }
+    } else {
+        console.log("Skipping loop with unsupported condition type.");
+        return;
+    }
+
     // Get the incrementor (e.g., `i++`, `i += 2`)
     const incrementor = forStatement.getIncrementor();
     if (!incrementor) {
