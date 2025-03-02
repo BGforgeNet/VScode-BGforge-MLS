@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.2.6
+
+Cosmetic: fixed double dot in tmp filenames, introduced in 2.2.5.
+
 ## 2.2.5
 
 - Added spread expression to TBAF.
