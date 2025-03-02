@@ -1,7 +1,7 @@
 {
     "name": "bgforge-mls-server",
     "description": "BGforge multilanguage server",
-    "version": "2.2.4",
+    "version": "2.2.5",
     "author": "BGforge",
     "license": "SEE LICENSE IN LICENSE.txt",
     "engines": {

@@ -1,16 +1,23 @@
 # Changelog
 
+## 2.2.5
+
+- Added spread expression to TBAF.
+- When parsing, intermediate D is saved with `.d` extension now.
+- TBAF no longer tries to substitite negated trigger functions nor open negated parentheses.
+- TBAF now properly unrolls loops with variable boundaries.
+
 ## 2.2.4
 
-Fix expansion of parentheses with OR inside in TBAF.
+Fixed expansion of parentheses with OR inside in TBAF.
 
 ## 2.2.3
 
-Fix death var string passing to TBAF `$obj`.
+Fixed death var string passing to TBAF `$obj`.
 
 ## 2.2.2
 
-Allow to pass any string to TBAF `$obj`.
+Allowed to pass any string to TBAF `$obj`.
 
 ## 2.2.1
 
