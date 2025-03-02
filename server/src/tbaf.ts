@@ -243,6 +243,13 @@ function inlineFunction(callExpression: CallExpression, functionDeclarations: Fu
     const functionName = callExpression.getExpression().getText();
     console.log(`Processing function: ${functionName}`);
 
+    const parent = callExpression.getParent();
+    // Short-circuit if the function call is inverted with '!'
+    if (Node.isPrefixUnaryExpression(parent) && parent.getOperatorToken() === SyntaxKind.ExclamationToken) {
+        console.log(`Skipping inlining for inverted call: !${functionName}()`);
+        return;
+    }
+
     // Find the corresponding function declaration
     const functionDecl = functionDeclarations.find(func => func.getName() === functionName);
     if (!functionDecl) return;
@@ -260,8 +267,6 @@ function inlineFunction(callExpression: CallExpression, functionDeclarations: Fu
         paramArgMap.set(paramName, argText);
     });
 
-    // Get the parent expression
-    const parent = callExpression.getParent();
 
     // Handle boolean return statements
     const functionBody = functionDecl.getBody()?.asKindOrThrow(SyntaxKind.Block);
@@ -829,73 +834,57 @@ function exportThenBlock(body: string): string {
  * Simplifies conditions in the given source file by removing unnecessary parentheses.
  * @param sourceFile The source file to process.
  */
-function simplifyConditions(sourceFile: SourceFile) {
-    sourceFile.forEachDescendant(node => {
-        if (node.isKind(SyntaxKind.ParenthesizedExpression)) {
-            const parenthesizedExpression = node as ParenthesizedExpression;
-            const innerExpression = parenthesizedExpression.getExpression();
-
-            if (canRemoveParentheses(parenthesizedExpression)) {
-                try {
-                    console.log(`Simplifying: ${parenthesizedExpression.getText()} -> ${innerExpression.getText()}`);
-
-                    // Ensure replacement respects the parent node's context
-                    const parent = parenthesizedExpression.getParent();
-                    if (parent && parent.isKind(SyntaxKind.BinaryExpression)) {
-                        const binaryExpr = parent as BinaryExpression;
-
-                        // Safely replace the entire binary expression if necessary
-                        binaryExpr.replaceWithText(
-                            binaryExpr.getText().replace(parenthesizedExpression.getText(), innerExpression.getText())
-                        );
-                    } else {
-                        // For other cases, replace the parentheses directly
-                        parenthesizedExpression.replaceWithText(innerExpression.getText());
-                    }
-                } catch (error) {
-                    console.error(
-                        `Error simplifying: ${parenthesizedExpression.getText()} -> ${innerExpression.getText()}`,
-                        error
-                    );
-                }
-            }
+export function simplifyConditions(sourceFile: SourceFile) {
+    sourceFile.forEachDescendant((node) => {
+        if (Node.isParenthesizedExpression(node)) {
+            tryRemoveParentheses(node);
         }
     });
 }
 
 /**
- * Determines if parentheses around an expression can be safely removed.
- * @param node The parenthesized expression node.
- * @returns True if parentheses can be removed, false otherwise.
+ * Attempts to remove parentheses if they don't affect expression meaning.
+ * @param parenExpr The parenthesized expression to examine.
  */
-function canRemoveParentheses(node: ParenthesizedExpression): boolean {
-    const parent = node.getParent();
-    if (!parent) return false;
+function tryRemoveParentheses(parenExpr: ParenthesizedExpression) {
+    const innerExpr = parenExpr.getExpression();
 
-    const innerExpression = node.getExpression();
+    if (canSafelyRemoveParen(innerExpr, parenExpr)) {
+        parenExpr.replaceWithText(innerExpr.getText());
+    }
+}
 
-    // If the immediate inner expression is a binary expression with `||`, skip removal
-    if (innerExpression.isKind(SyntaxKind.BinaryExpression) &&
-        innerExpression.getOperatorToken().getText() === "||"
-    ) {
+/**
+ * Determines if parentheses around the expression can safely be removed.
+ * Parentheses around expressions containing OR (`||`) must be kept.
+ * Parentheses around expressions containing only AND (`&&`) can be removed.
+ * Parentheses immediately under a prefix unary expression (`!`) must be kept.
+ */
+function canSafelyRemoveParen(expr: Node, parenExpr: ParenthesizedExpression): boolean {
+    const parent = parenExpr.getParent();
+
+    if (parent && Node.isPrefixUnaryExpression(parent)) {
         return false;
     }
 
-    // Allow removal in safe contexts
-    if (
-        parent.isKind(SyntaxKind.BinaryExpression) ||
-        parent.isKind(SyntaxKind.IfStatement) ||
-        parent.isKind(SyntaxKind.ExpressionStatement)
-    ) {
-        return innerExpression.isKind(SyntaxKind.BinaryExpression) || innerExpression.isKind(SyntaxKind.CallExpression);
-    }
-
-    return false;
+    if (!Node.isBinaryExpression(expr)) return true;
+    return !containsOrOperator(expr);
 }
 
+/**
+ * Checks recursively if the binary expression contains any OR (`||`) operators.
+ */
+function containsOrOperator(expr: BinaryExpression): boolean {
+    if (expr.getOperatorToken().getKind() === SyntaxKind.BarBarToken) return true;
 
+    const left = expr.getLeft();
+    const right = expr.getRight();
 
-
+    return (
+        (Node.isBinaryExpression(left) && containsOrOperator(left)) ||
+        (Node.isBinaryExpression(right) && containsOrOperator(right))
+    );
+}
 
 /**
  * Apply the transformations. Progressize inlining and unrolling, then else inversion and if flattening.
@@ -906,8 +895,13 @@ function applyTransformations(sourceFile: SourceFile) {
     for (let i = 0; i <= MAX_INTERATIONS; i++) {
         const previousCode = sourceFile.getFullText();
 
+
+        // Open parentheses if possible
+        simplifyConditions(sourceFile);
+
         // Progressive unroll and inline
         inlineUnroll(sourceFile);
+
 
         const currentCode = sourceFile.getFullText();
         if (currentCode === previousCode) break;
@@ -922,9 +916,6 @@ function applyTransformations(sourceFile: SourceFile) {
 
     // Flatten nested if conditions
     flattenIfStatements(sourceFile);
-
-    // Open parentheses if possible
-    simplifyConditions(sourceFile);
 
     // So that BAF exporter does not see function bodies.
     removeFunctionDeclarations(sourceFile);
