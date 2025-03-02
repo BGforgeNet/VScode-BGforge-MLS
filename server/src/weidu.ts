@@ -119,15 +119,6 @@ function sendDiagnostics(
 }
 
 export function compile(uri: string, settings: WeiDUsettings, interactive = false, text: string) {
-    /**
-     * Preprocessed file.
-     * Weidu used to have issues with non-baf extensions, ref https://github.com/WeiDUorg/weidu/issues/237
-     */
-    const tmpFile = path.join(tmpDir, "tmp.baf");
-    const tmpUri = pathToUri(tmpFile);
-    /** not preprocessed (template) */
-    const tmpFileGcc = path.join(tmpDir, "tmp-gcc.baf");
-    const tmpUriGcc = pathToUri(tmpFileGcc);
     const gamePath = settings.gamePath;
     const weiduPath = settings.path;
     const filePath = uriToPath(uri);
@@ -142,6 +133,16 @@ export function compile(uri: string, settings: WeiDUsettings, interactive = fals
         realName = baseName.substring(0, baseName.length - 4);
         ext = path.parse(realName).ext;
     }
+
+    /**
+     * Preprocessed file.
+     * Weidu used to have issues with non-baf extensions, ref https://github.com/WeiDUorg/weidu/issues/237
+     */
+    const tmpFile = path.join(tmpDir, `tmp.${ext}`);
+    const tmpUri = pathToUri(tmpFile);
+    /** not preprocessed (template) */
+    const tmpFileGcc = path.join(tmpDir, `tmp-gcc.${ext}`);
+    const tmpUriGcc = pathToUri(tmpFileGcc);
 
     let weiduArgs = "--no-exit-pause --noautoupdate --debug-assign --parse-check";
     if (gamePath == "") {
