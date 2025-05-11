@@ -839,6 +839,10 @@ base-functions:
       detail: void set_local_var(uint var_index, int value)
       doc: |-
         Sets the value of a local variable (var_index) to a given (value).
+    - name: set_map_music
+      detail: void set_map_music(int mapID, string sound_path);
+      doc: |-
+        Sets the map background music to the sound file at path.
     - name: set_map_start
       detail: void set_map_start(int x, int y, int elev, int rot)
       doc: |-

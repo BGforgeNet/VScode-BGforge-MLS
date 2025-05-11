@@ -1809,6 +1809,15 @@
         }
     },
     {
+        "label": "set_map_music",
+        "kind": 3,
+        "source": "builtin",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid set_map_music(int mapID, string sound_path);\n```\nSets the map background music to the sound file at path."
+        }
+    },
+    {
         "label": "set_map_start",
         "kind": 3,
         "source": "builtin",

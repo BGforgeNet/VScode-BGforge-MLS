@@ -1151,6 +1151,12 @@
             "value": "```fallout-ssl-tooltip\nvoid set_local_var(uint var_index, int value)\n```\nSets the value of a local variable (var_index) to a given (value)."
         }
     },
+    "set_map_music": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid set_map_music(int mapID, string sound_path);\n```\nSets the map background music to the sound file at path."
+        }
+    },
     "set_map_start": {
         "contents": {
             "kind": "markdown",
