@@ -103,9 +103,9 @@ const languages: LanguageList = [
         id: "weidu-d",
         features: {
             completion: true,
-            definition: false,
+            definition: true,
             hover: true,
-            udf: false,
+            udf: true,
             headers: false,
             externalHeaders: false,
             parse: true,
