@@ -625,7 +625,14 @@ export async function compile(
 
     fs.writeFileSync(tmpPath, text);
 
-    await ssl_builtin_compiler();
+    await ssl_builtin_compiler({
+        interactive,
+        cwd: cwdTo,
+        inputFileName: tmpName,
+        outputFileName: dstPath,
+        options: sslSettings.compileOptions,
+        headersDir: sslSettings.headersDirectory,
+    });
 
     conlog(`${compileCmd} "${tmpName}" -o "${dstPath}"`);
     cp.exec(
