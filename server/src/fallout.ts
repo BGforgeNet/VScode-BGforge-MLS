@@ -625,14 +625,31 @@ export async function compile(
 
     fs.writeFileSync(tmpPath, text);
 
-    await ssl_builtin_compiler({
-        interactive,
-        cwd: cwdTo,
-        inputFileName: tmpName,
-        outputFileName: dstPath,
-        options: sslSettings.compileOptions,
-        headersDir: sslSettings.headersDirectory,
-    });
+    if (sslSettings.useBuiltInCompiler) {
+        const { stdout, stderr, returnCode } = await ssl_builtin_compiler({
+            interactive,
+            cwd: cwdTo,
+            inputFileName: tmpName,
+            outputFileName: dstPath,
+            options: sslSettings.compileOptions,
+            headersDir: sslSettings.headersDirectory,
+        });
+        if (returnCode === 0) {
+            if (interactive) {
+                connection.window.showInformationMessage(`Succesfully compiled ${baseName}.`);
+            }
+        } else {
+            if (interactive) {
+                connection.window.showErrorMessage(stderr || "ERROR");
+            }
+        }
+        sendDiagnostics(uri, stdout, tmpUri);
+        // sometimes it gets deleted due to async runs?
+        if (fs.existsSync(tmpPath)) {
+            fs.unlinkSync(tmpPath);
+        }
+        return;
+    }
 
     conlog(`${compileCmd} "${tmpName}" -o "${dstPath}"`);
     cp.exec(

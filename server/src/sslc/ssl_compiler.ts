@@ -1,4 +1,3 @@
-import { stdin } from "node:process";
 import { conlog } from "../common";
 import { connection } from "../server";
 import Module from "./sslc.mjs";
@@ -76,15 +75,16 @@ export async function ssl_compile(opts: {
 
         return {
             returnCode,
-            stdin,
+            stdout,
             stderr,
         };
     } catch (e: any) {
-        if (opts.interactive) {
-            connection.window.showErrorMessage(`Failed to run sslc: ${e}`);
-        }
         conlog(`${e.name} ${e.message}`);
         conlog(`${e.stack}`);
-        return null;
+        return {
+            returnCode: 1,
+            stdout: "",
+            stderr: `Failed to run sslc: ${e}`,
+        };
     }
 }
