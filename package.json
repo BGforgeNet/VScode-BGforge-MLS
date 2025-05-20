@@ -344,10 +344,16 @@
             "type": "object",
             "title": "BGforge MLS",
             "properties": {
+                "bgforge.falloutSSL.useBuiltInCompiler": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Use built-in WebAssembly compiler instead of external compile.exe"
+                },
                 "bgforge.falloutSSL.compilePath": {
                     "type": "string",
                     "default": "wine ~/bin/compile",
-                    "description": "Path to compile.exe from sfall modders pack. Alternatively, you can add compile.exe to system PATH and leave default here."
+                    "description": "Path to compile.exe from sfall modders pack. Alternatively, you can add compile.exe to system PATH and leave default here.",
+                    "when": "bgforge.falloutSSL.useBuiltInCompiler == false"
                 },
                 "bgforge.falloutSSL.compileOptions": {
                     "type": "string",
