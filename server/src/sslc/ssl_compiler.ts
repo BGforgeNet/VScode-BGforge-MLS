@@ -30,6 +30,10 @@ export async function ssl_compile(opts: {
 
         instance.FS.chdir(opts.cwd);
 
+        // Sanity check that file exists because by default
+        // sslc will emit a warning instead of error
+        instance.FS.stat(opts.inputFileName);
+
         let cmdArgs = opts.options
             .split(" ")
             .map((s) => s.trim())
