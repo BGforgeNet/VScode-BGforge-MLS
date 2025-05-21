@@ -3,6 +3,9 @@ import { connection } from "../server";
 import Module from "./sslc.mjs";
 import WasmBinary from "./sslc.wasm";
 
+// Using only one instance due Emscripten issues with multiple instances
+let instance: any = null;
+
 export async function ssl_compile(opts: {
     cwd: string;
     inputFileName: string;
@@ -14,19 +17,22 @@ export async function ssl_compile(opts: {
     let stdout = "";
     let stderr = "";
     try {
-        const instance = await Module({
-            print: (text: string) => {
-                stdout = stdout + text + "\n";
-            },
-            printErr: (text: string) => {
-                stderr = stderr + text + "\n";
-            },
-            wasmBinary: WasmBinary,
-            locateFile: (path: string) => {
-                return path;
-            },
-            noInitialRun: true,
-        });
+        instance =
+            instance ||
+            (await Module({
+                print: (text: string) => {
+                    stdout = stdout + text + "\n";
+                },
+                printErr: (text: string) => {
+                    stderr = stderr + text + "\n";
+                },
+                wasmBinary: WasmBinary,
+                locateFile: (path: string) => {
+                    return path;
+                },
+                noInitialRun: true,
+                noExitRuntime: true,
+            }));
 
         instance.FS.chdir(opts.cwd);
 
