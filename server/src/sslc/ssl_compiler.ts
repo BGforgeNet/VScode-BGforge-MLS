@@ -3,9 +3,6 @@ import { connection } from "../server";
 import Module from "./sslc.mjs";
 import WasmBinary from "./sslc.wasm";
 
-// Types are missing here
-declare const WebAssembly: any;
-
 export async function ssl_compile(opts: {
     cwd: string;
     inputFileName: string;
@@ -19,10 +16,10 @@ export async function ssl_compile(opts: {
     try {
         const instance = await Module({
             print: (text: string) => {
-                stdout += text;
+                stdout = stdout + text + "\n";
             },
             printErr: (text: string) => {
-                stderr += text;
+                stderr = stderr + text + "\n";
             },
             wasmBinary: WasmBinary,
             locateFile: (path: string) => {
@@ -31,48 +28,54 @@ export async function ssl_compile(opts: {
             noInitialRun: true,
         });
 
-        instance.FS.mkdir("/src");
-        instance.FS.mkdir("/headers");
+        instance.FS.chdir(opts.cwd);
 
-        instance.FS.mount(
-            Module.NODEFS,
-            {
-                root: opts.cwd,
-            },
-            "/src",
-        );
-        instance.FS.chdir("/src");
-
-        conlog(`DEV FILES: ${instance.FS.readdir(".").join(",")}`);
-
-        const switches = opts.options
+        let cmdArgs = opts.options
             .split(" ")
             .map((s) => s.trim())
             .filter((s) => s);
 
         if (opts.headersDir) {
-            if (switches.find((s) => s.startsWith("-I"))) {
+            if (cmdArgs.find((s) => s.startsWith("-I"))) {
                 if (opts.interactive) {
                     connection.window.showWarningMessage(
-                        "Warning: -I switch is used, but headersDir is set. Ignoring headersDir",
+                        "Warning: -I switch is used but it will be ignored",
                     );
                 }
-            } else {
-                switches.push(`-I${opts.headersDir}`);
+                cmdArgs = cmdArgs.filter((s) => !s.startsWith("-I"));
             }
+
+            cmdArgs.push(`-I${opts.headersDir}`);
         }
 
-        const returnCode = instance.callMain([
-            ...switches,
-            opts.inputFileName,
-            "-o",
-            opts.outputFileName,
-        ]);
+        cmdArgs.push(opts.inputFileName, "-o", opts.outputFileName);
 
-        if (stderr) {
-            conlog("stderr: " + stderr);
-        }
+        conlog(
+            "ssl_compile:\n" +
+                JSON.stringify(
+                    {
+                        opts,
+                        cmdArgs,
+                    },
+                    null,
+                    2,
+                ),
+        );
 
+        const returnCode = instance.callMain(cmdArgs);
+
+        conlog(
+            "ssl_compile done\n" +
+                JSON.stringify(
+                    {
+                        returnCode,
+                        stdout,
+                        stderr,
+                    },
+                    null,
+                    2,
+                ),
+        );
         return {
             returnCode,
             stdout,
