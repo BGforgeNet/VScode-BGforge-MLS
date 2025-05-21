@@ -76,6 +76,19 @@ export async function ssl_compile(opts: {
 
         cmdArgs.push(opts.inputFileName, "-o", opts.outputFileName);
 
+        const destMtimeBefore = (() => {
+            try {
+                const stat = instance.FS.stat(opts.outputFileName);
+                return stat.mtime;
+            } catch (e: any) {
+                if (e.code === "ENOENT") {
+                    return undefined;
+                } else {
+                    return "<error>";
+                }
+            }
+        })();
+
         conlog(
             "ssl_compile:\n" +
                 JSON.stringify(
@@ -97,7 +110,27 @@ export async function ssl_compile(opts: {
             conlog("===== stdout =====\n" + stdout);
         }
         conlog(`===== returnCode: ${returnCode} =====`);
-        conlog("===== instance memory is " + instance.memory.buffer.byteLength + " bytes =====");
+        conlog("===== instance memory is " + instance.HEAP8.byteLength + " bytes =====");
+
+        const destMtimeAfter = (() => {
+            try {
+                const stat = instance.FS.stat(opts.outputFileName);
+                return stat.mtime;
+            } catch (e: any) {
+                if (e.code === "ENOENT") {
+                    throw new Error("Destanation file was not created");
+                }
+                throw new Error("Stat error: " + e);
+            }
+        })();
+
+        conlog(
+            `Destination file mtime ${destMtimeBefore.toISOString()} -> ${destMtimeAfter.toISOString()}`,
+        );
+        if (destMtimeBefore === destMtimeAfter) {
+            // Sanity check. In case if something went wrong with sslc
+            throw new Error("Compilation was successfull but the output file was not updated");
+        }
 
         instance.FS.chdir("/");
         instance.FS.unmount("/host");
