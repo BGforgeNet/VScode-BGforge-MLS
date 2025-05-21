@@ -1,10 +1,8 @@
+import path = require("node:path");
 import { conlog } from "../common";
 import { connection } from "../server";
 import Module from "./sslc.mjs";
 import WasmBinary from "./sslc.wasm";
-
-// Using only one instance due Emscripten issues with multiple instances
-let instance: any = null;
 
 export async function ssl_compile(opts: {
     cwd: string;
@@ -17,27 +15,41 @@ export async function ssl_compile(opts: {
     let stdout = "";
     let stderr = "";
     try {
-        instance =
-            instance ||
-            (await Module({
-                print: (text: string) => {
-                    stdout = stdout + text + "\n";
-                },
-                printErr: (text: string) => {
-                    stderr = stderr + text + "\n";
-                },
-                wasmBinary: WasmBinary,
-                locateFile: (path: string) => {
-                    return path;
-                },
-                noInitialRun: true,
-                noExitRuntime: true,
-            }));
+        const instance = await Module({
+            print: (text: string) => {
+                stdout = stdout + text + "\n";
+            },
+            printErr: (text: string) => {
+                stderr = stderr + text + "\n";
+            },
+            wasmBinary: WasmBinary,
+            locateFile: (path: string) => {
+                return path;
+            },
+            noInitialRun: true,
+        });
 
-        instance.FS.chdir(opts.cwd);
+        instance.FS.mkdir("/host");
+
+        const cwd = path.parse(opts.cwd);
+
+        // conlog(`Mounting ${cwd.root} into /host`);
+        instance.FS.mount(
+            // Using NODEFS instead of NODERAWFS because
+            // NODERAWFS caused errors when the same module
+            // runs the second time
+            instance.NODEFS,
+            {
+                root: cwd.root,
+            },
+            "/host",
+        );
+        // conlog(`Chdir into ${path.join(cwd.root, "host", cwd.dir, cwd.name)}`);
+        instance.FS.chdir(path.join(cwd.root, "host", cwd.dir, cwd.name));
 
         // Sanity check that file exists because by default
         // sslc will emit a warning instead of error
+        // conlog("Doing stat on " + opts.inputFileName);
         instance.FS.stat(opts.inputFileName);
 
         let cmdArgs = opts.options
@@ -55,7 +67,11 @@ export async function ssl_compile(opts: {
                 cmdArgs = cmdArgs.filter((s) => !s.startsWith("-I"));
             }
 
-            cmdArgs.push(`-I${opts.headersDir}`);
+            const headersDir = path.parse(opts.headersDir);
+
+            cmdArgs.push(
+                "-I" + path.join(headersDir.root, "/host", headersDir.dir, headersDir.name),
+            );
         }
 
         cmdArgs.push(opts.inputFileName, "-o", opts.outputFileName);
@@ -74,18 +90,18 @@ export async function ssl_compile(opts: {
 
         const returnCode = instance.callMain(cmdArgs);
 
-        conlog(
-            "ssl_compile done\n" +
-                JSON.stringify(
-                    {
-                        returnCode,
-                        stdout,
-                        stderr,
-                    },
-                    null,
-                    2,
-                ),
-        );
+        if (stderr) {
+            conlog("===== stderr =====\n" + stderr);
+        }
+        if (stdout) {
+            conlog("===== stdout =====\n" + stdout);
+        }
+        conlog(`===== returnCode: ${returnCode} =====`);
+        conlog("===== instance memory is " + instance.memory.buffer.byteLength + " bytes =====");
+
+        instance.FS.chdir("/");
+        instance.FS.unmount("/host");
+
         return {
             returnCode,
             stdout,
