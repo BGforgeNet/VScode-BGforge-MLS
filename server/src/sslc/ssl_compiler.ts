@@ -45,7 +45,7 @@ export async function ssl_compile(opts: {
             "/host",
         );
         // conlog(`Chdir into ${path.join(cwd.root, "host", cwd.dir, cwd.name)}`);
-        instance.FS.chdir(path.join(cwd.root, "host", cwd.dir, cwd.name));
+        instance.FS.chdir(path.join("host", cwd.dir, cwd.name));
 
         // Sanity check that file exists because by default
         // sslc will emit a warning instead of error
@@ -70,6 +70,8 @@ export async function ssl_compile(opts: {
             const headersDir = path.parse(opts.headersDir);
 
             cmdArgs.push(
+                // TODO: This might not work on Windows if headers on another drive
+                // In this case we need to mount the drive into another directory
                 "-I" + path.join(headersDir.root, "/host", headersDir.dir, headersDir.name),
             );
         }
