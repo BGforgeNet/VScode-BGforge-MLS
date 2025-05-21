@@ -347,7 +347,7 @@
                 "bgforge.falloutSSL.useBuiltInCompiler": {
                     "type": "boolean",
                     "default": false,
-                    "description": "Use built-in WebAssembly compiler instead of external compile.exe"
+                    "description": "Use built-in compiler instead of external compile.exe"
                 },
                 "bgforge.falloutSSL.compilePath": {
                     "type": "string",
