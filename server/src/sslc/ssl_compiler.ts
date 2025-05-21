@@ -83,11 +83,7 @@ export async function ssl_compile(opts: {
                 const stat = instance.FS.stat(opts.outputFileName);
                 return stat.mtime;
             } catch (e: any) {
-                if (e.code === "ENOENT") {
-                    return undefined;
-                } else {
-                    return "<error>";
-                }
+                return undefined;
             }
         })();
 
@@ -119,19 +115,18 @@ export async function ssl_compile(opts: {
                 const stat = instance.FS.stat(opts.outputFileName);
                 return stat.mtime;
             } catch (e: any) {
-                if (e.code === "ENOENT") {
-                    throw new Error("Destanation file was not created");
-                }
-                throw new Error("Stat error: " + e);
+                return undefined;
             }
         })();
 
         conlog(
-            `Destination file mtime ${destMtimeBefore.toISOString()} -> ${destMtimeAfter.toISOString()}`,
+            `Destination file mtime ${destMtimeBefore?.toISOString()} -> ${destMtimeAfter?.toISOString()}`,
         );
-        if (destMtimeBefore === destMtimeAfter) {
+        if (returnCode === 0 && destMtimeBefore === destMtimeAfter) {
             // Sanity check. In case if something went wrong with sslc
-            throw new Error("Compilation was successfull but the output file was not updated");
+            connection.window.showWarningMessage(
+                "Compilation was successfull but the output file was not updated",
+            );
         }
 
         instance.FS.chdir("/");

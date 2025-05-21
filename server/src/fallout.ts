@@ -640,7 +640,7 @@ export async function compile(
             }
         } else {
             if (interactive) {
-                connection.window.showErrorMessage(stderr || "ERROR");
+                connection.window.showErrorMessage(`Failed to compile ${baseName}!`);
             }
         }
         sendDiagnostics(uri, stdout, tmpUri);
