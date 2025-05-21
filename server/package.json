@@ -10,7 +10,7 @@
     },
     "scripts": {
         "postinstall": "pnpm run sslc-wasm-download && npm run sslc-wasm-patch",
-        "sslc-wasm-download": "curl -L https://github.com/roginvs/sslc/releases/download/2025-05-21-13-46-45/wasm-emscripten-node-rawfs.tar.gz | tar -xz -C ./src/sslc/",
+        "sslc-wasm-download": "curl -L https://github.com/roginvs/sslc/releases/download/2025-05-21-16-38-15/wasm-emscripten-node-nodefs.tar.gz | tar -xz -C ./src/sslc/",
         "sslc-wasm-patch": "sed -i 's/import.meta.url/__filename/g' ./src/sslc/sslc.mjs"
     },
     "repository": {
