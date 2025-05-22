@@ -20,6 +20,7 @@ BGforge MLS is a VScode extension adding support for [Star-Trek Scripting Langua
 - [Hovers](#fallout-highlighting-and-hovers)
 - [Error reporting](#error-reporting)
 - Signature help, diagnostics, docstrings, etc. See the [forum](https://forums.bgforge.net/viewforum.php?f=35).
+- Embedded cross-platform .ssl compiler (check `falloutSSL.useBuiltInCompiler` option) 
 
 ### Installation
 
@@ -48,3 +49,5 @@ BGforge MLS is a VScode extension adding support for [Star-Trek Scripting Langua
 #### Error reporting
 
 ![error reporting example](docs/error_reporting.png)
+
+
