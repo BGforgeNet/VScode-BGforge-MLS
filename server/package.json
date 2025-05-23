@@ -9,8 +9,8 @@
         "node": "*"
     },
     "scripts": {
-        "postinstall": "pnpm run sslc-install",
-        "sslc-install": "node ./src/sslc/install.mjs"
+        "postinstall": "pnpm run sslc-emscipten-nodefs-patch",
+        "sslc-emscipten-nodefs-patch": "sed -i 's/import.meta.url/__filename/g' ./node_modules/sslc-emscripten-nodefs/sslc.mjs"
     },
     "repository": {
         "type": "git",
