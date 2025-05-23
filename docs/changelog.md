@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.3.6
+
+Add built-in .ssl compiler
+
 ## 2.2.6
 
 Cosmetic: fixed double dot in tmp filenames, introduced in 2.2.5.
