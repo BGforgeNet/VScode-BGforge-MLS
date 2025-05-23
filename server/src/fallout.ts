@@ -626,7 +626,7 @@ export async function compile(
     fs.writeFileSync(tmpPath, text);
 
     if (sslSettings.useBuiltInCompiler) {
-        const { stdout, stderr, returnCode } = await ssl_builtin_compiler({
+        const { stdout, returnCode } = await ssl_builtin_compiler({
             interactive,
             cwd: cwdTo,
             inputFileName: tmpName,
