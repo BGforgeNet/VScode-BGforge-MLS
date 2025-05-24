@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.3.6
+## 2.3.0
 
 Add built-in .ssl compiler
 
