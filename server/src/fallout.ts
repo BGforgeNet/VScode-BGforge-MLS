@@ -24,6 +24,7 @@ import { Edge, Node } from "./preview";
 import { connection, documents } from "./server";
 import { SSLsettings } from "./settings";
 import * as signature from "./signature";
+import { ssl_compile as ssl_builtin_compiler } from "./sslc/ssl_compiler";
 
 interface FalloutHeaderData {
     macros: Macros;
@@ -36,7 +37,7 @@ interface Procedure {
     detail: string;
     jsdoc?: jsdoc.JSdoc;
 }
-interface Procedures extends Array<Procedure> { }
+interface Procedures extends Array<Procedure> {}
 interface Macro {
     label: string;
     detail: string;
@@ -45,7 +46,7 @@ interface Macro {
     firstline: string;
     jsdoc?: jsdoc.JSdoc;
 }
-interface Macros extends Array<Macro> { }
+interface Macros extends Array<Macro> {}
 
 const tooltipLangId = "fallout-ssl-tooltip";
 const sslExt = ".ssl";
@@ -594,7 +595,12 @@ function sendDiagnostics(uri: string, outputText: string, tmpUri: string) {
     sendParseResult(parseResult, uri, tmpUri);
 }
 
-export function compile(uri: string, sslSettings: SSLsettings, interactive = false, text: string) {
+export async function compile(
+    uri: string,
+    sslSettings: SSLsettings,
+    interactive = false,
+    text: string,
+) {
     const filepath = uriToPath(uri);
     const cwdTo = path.dirname(filepath);
     // tmp file has to be in the same dir, because includes can be relative or absolute
@@ -618,6 +624,33 @@ export function compile(uri: string, sslSettings: SSLsettings, interactive = fal
     conlog(`compiling ${baseName}...`);
 
     fs.writeFileSync(tmpPath, text);
+
+    if (sslSettings.useBuiltInCompiler) {
+        const { stdout, returnCode } = await ssl_builtin_compiler({
+            interactive,
+            cwd: cwdTo,
+            inputFileName: tmpName,
+            outputFileName: dstPath,
+            options: sslSettings.compileOptions,
+            headersDir: sslSettings.headersDirectory,
+        });
+        if (returnCode === 0) {
+            if (interactive) {
+                connection.window.showInformationMessage(`Succesfully compiled ${baseName}.`);
+            }
+        } else {
+            if (interactive) {
+                connection.window.showErrorMessage(`Failed to compile ${baseName}!`);
+            }
+        }
+        sendDiagnostics(uri, stdout, tmpUri);
+        // sometimes it gets deleted due to async runs?
+        if (fs.existsSync(tmpPath)) {
+            fs.unlinkSync(tmpPath);
+        }
+        return;
+    }
+
     conlog(`${compileCmd} "${tmpName}" -o "${dstPath}"`);
     cp.exec(
         `${compileCmd} "${tmpName}" -o "${dstPath}"`,
