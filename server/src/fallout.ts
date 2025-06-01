@@ -595,6 +595,26 @@ function sendDiagnostics(uri: string, outputText: string, tmpUri: string) {
     sendParseResult(parseResult, uri, tmpUri);
 }
 
+let successfullCompilerPath: string | null = null;
+async function checkExternalCompiler(compilePath: string) {
+    if (compilePath === successfullCompilerPath) {
+        // Check compiler only once
+        return Promise.resolve(true);
+    }
+
+    return new Promise<boolean>((resolve) => {
+        cp.exec(`${compilePath} --version`, (err, stdout: string, stderr: string) => {
+            conlog(`Compiler check '${compilePath} --version' err=${err}`);
+            if (err) {
+                resolve(false);
+            } else {
+                successfullCompilerPath = compilePath;
+                resolve(true);
+            }
+        });
+    });
+}
+
 export async function compile(
     uri: string,
     sslSettings: SSLsettings,
@@ -625,7 +645,20 @@ export async function compile(
 
     fs.writeFileSync(tmpPath, text);
 
-    if (sslSettings.useBuiltInCompiler) {
+    let useBuiltInCompiler = sslSettings.useBuiltInCompiler;
+
+    if (!useBuiltInCompiler && !(await checkExternalCompiler(sslSettings.compilePath))) {
+        const response = await connection.window.showErrorMessage(
+            `Failed to run '${sslSettings.compilePath}'! Use built-in compiler this time?`,
+            { title: "Yes", id: "yes" },
+            { title: "No", id: "no" },
+        );
+        if (response?.id === "yes") {
+            useBuiltInCompiler = true;
+        }
+    }
+
+    if (useBuiltInCompiler) {
         const { stdout, returnCode } = await ssl_builtin_compiler({
             interactive,
             cwd: cwdTo,
