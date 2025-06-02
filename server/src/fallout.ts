@@ -603,7 +603,7 @@ async function checkExternalCompiler(compilePath: string) {
     }
 
     return new Promise<boolean>((resolve) => {
-        cp.exec(`${compilePath} --version`, (err, stdout: string, stderr: string) => {
+        cp.exec(`${compilePath} --version`, (err) => {
             conlog(`Compiler check '${compilePath} --version' err=${err}`);
             if (err) {
                 resolve(false);
