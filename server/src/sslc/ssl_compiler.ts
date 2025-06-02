@@ -29,11 +29,13 @@ export async function ssl_compile(opts: {
             noInitialRun: true,
         });
 
-        instance.FS.mkdir("/host");
+        const hostDirName = "86d5653e-43c9-42e2-86f9-4e31d3ff4124";
+
+        instance.FS.mkdir("/" + hostDirName);
 
         const cwd = path.parse(opts.cwd);
 
-        // conlog(`Mounting ${cwd.root} into /host`);
+        // conlog(`Mounting ${cwd.root} into /${hostDirName}`);
         instance.FS.mount(
             // Using NODEFS instead of NODERAWFS because
             // NODERAWFS caused errors when the same module
@@ -42,10 +44,10 @@ export async function ssl_compile(opts: {
             {
                 root: cwd.root,
             },
-            "/host",
+            "/" + hostDirName,
         );
-        // conlog(`Chdir into ${path.join(cwd.root, "host", cwd.dir, cwd.name)}`);
-        instance.FS.chdir(path.join("host", cwd.dir, cwd.name));
+        // conlog(`Chdir into ${path.join(cwd.root, hostDirName, cwd.dir, cwd.name)}`);
+        instance.FS.chdir(path.join(hostDirName, cwd.dir, cwd.name));
 
         // Sanity check that file exists because by default
         // sslc will emit a warning instead of error
@@ -72,7 +74,7 @@ export async function ssl_compile(opts: {
             cmdArgs.push(
                 // TODO: This might not work on Windows if headers on another drive
                 // In this case we need to mount the drive into another directory
-                "-I" + path.join(headersDir.root, "/host", headersDir.dir, headersDir.name),
+                "-I" + path.join(headersDir.root, hostDirName, headersDir.dir, headersDir.name),
             );
         }
 
@@ -130,7 +132,7 @@ export async function ssl_compile(opts: {
         }
 
         instance.FS.chdir("/");
-        instance.FS.unmount("/host");
+        instance.FS.unmount("/" + hostDirName);
 
         return {
             returnCode,
