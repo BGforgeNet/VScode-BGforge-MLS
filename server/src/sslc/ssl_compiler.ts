@@ -106,6 +106,7 @@ export async function ssl_compile(opts: {
         if (stderr) {
             conlog("===== stderr =====\n" + stderr);
         }
+        stdout = stdout.split("/" + hostDirName).join(""); // That's why hostdir is uuid
         if (stdout) {
             conlog("===== stdout =====\n" + stdout);
         }
