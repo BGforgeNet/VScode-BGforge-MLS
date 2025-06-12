@@ -128,7 +128,7 @@ export async function ssl_compile(opts: {
         if (returnCode === 0 && destMtimeBefore === destMtimeAfter) {
             // Sanity check. In case if something went wrong with sslc
             connection.window.showWarningMessage(
-                "Compilation was successfull but the output file was not updated",
+                "Compilation was successful but the output file was not updated",
             );
         }
 
