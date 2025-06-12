@@ -29,7 +29,7 @@ export async function ssl_compile(opts: {
             noInitialRun: true,
         });
 
-        const hostDirName = "86d5653e-43c9-42e2-86f9-4e31d3ff4124";
+        const hostDirName = crypto.randomUUID();
 
         instance.FS.mkdir("/" + hostDirName);
 
