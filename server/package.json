@@ -8,10 +8,7 @@
         "vscode": "^1.69.2",
         "node": "*"
     },
-    "scripts": {
-        "postinstall": "pnpm run sslc-emscipten-nodefs-patch",
-        "sslc-emscipten-nodefs-patch": "sed -i 's/import.meta.url/__filename/g' ./node_modules/sslc-emscripten-nodefs/sslc.mjs"
-    },
+    "scripts": {},
     "repository": {
         "type": "git",
         "url": "https://github.com/BGforgeNet/VScode-BGforge-MLS/server"
