@@ -352,8 +352,7 @@
                 "bgforge.falloutSSL.compilePath": {
                     "type": "string",
                     "default": "wine ~/bin/compile",
-                    "description": "Path to compile.exe from sfall modders pack. Alternatively, you can add compile.exe to system PATH and leave default here.",
-                    "when": "bgforge.falloutSSL.useBuiltInCompiler == false"
+                    "description": "Path to compile.exe from sfall modders pack. Alternatively, you can add compile.exe to system PATH and leave default here. Ignored if 'Use built-in compiler' is enabled."
                 },
                 "bgforge.falloutSSL.compileOptions": {
                     "type": "string",
