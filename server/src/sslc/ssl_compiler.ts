@@ -1,7 +1,7 @@
 import path = require("node:path");
 import { conlog } from "../common";
 import { connection } from "../server";
-import Module from "sslc-emscripten-nodefs/sslc.mjs";
+import Module from "sslc-emscripten-nodefs/sslc.__filename.mjs";
 import WasmBinary from "sslc-emscripten-nodefs/sslc.wasm";
 
 export async function ssl_compile(opts: {
