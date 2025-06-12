@@ -669,7 +669,7 @@ export async function compile(
         });
         if (returnCode === 0) {
             if (interactive) {
-                connection.window.showInformationMessage(`Succesfully compiled ${baseName}.`);
+                connection.window.showInformationMessage(`Successfully compiled ${baseName}.`);
             }
         } else {
             if (interactive) {
