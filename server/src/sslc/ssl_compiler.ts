@@ -63,18 +63,20 @@ export async function ssl_compile(opts: {
     }>((resolve, reject) => {
         p.on("close", (code) => {
             conlog(
-                `ssl_compile:\n` +
-                    JSON.stringify(
-                        {
-                            opts,
-                            cmdArgs,
-                            returnCode: code,
-                            stdout: stdout.join(""),
-                            stderr: stderr.join(""),
-                        },
-                        null,
-                        2,
-                    ),
+                `Build-in compiler:\n` +
+                    "opts=" +
+                    JSON.stringify(opts) +
+                    "\n" +
+                    "cmdArgs=" +
+                    JSON.stringify(cmdArgs) +
+                    "\n" +
+                    "returnCode=" +
+                    code +
+                    "\n" +
+                    stdout.join("") +
+                    "\n" +
+                    stderr.join("") +
+                    "\n",
             );
             resolve({
                 returnCode: code !== null ? code : 1, // If code is null, assume error
