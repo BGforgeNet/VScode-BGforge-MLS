@@ -2,7 +2,7 @@
 
 ## 2.3.0
 
-Add built-in .ssl compiler
+Add built-in .ssl compiler.
 
 ## 2.2.6
 
