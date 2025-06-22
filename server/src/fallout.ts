@@ -595,9 +595,9 @@ function sendDiagnostics(uri: string, outputText: string, tmpUri: string) {
     sendParseResult(parseResult, uri, tmpUri);
 }
 
-let successfullCompilerPath: string | null = null;
+let successfulCompilerPath: string | null = null;
 async function checkExternalCompiler(compilePath: string) {
-    if (compilePath === successfullCompilerPath) {
+    if (compilePath === successfulCompilerPath) {
         // Check compiler only once
         return Promise.resolve(true);
     }
@@ -608,7 +608,7 @@ async function checkExternalCompiler(compilePath: string) {
             if (err) {
                 resolve(false);
             } else {
-                successfullCompilerPath = compilePath;
+                successfulCompilerPath = compilePath;
                 resolve(true);
             }
         });
@@ -700,7 +700,7 @@ export async function compile(
                 }
             } else {
                 if (interactive) {
-                    connection.window.showInformationMessage(`Succesfully compiled ${baseName}.`);
+                    connection.window.showInformationMessage(`Successfully compiled ${baseName}.`);
                 }
             }
             sendDiagnostics(uri, stdout, tmpUri);
