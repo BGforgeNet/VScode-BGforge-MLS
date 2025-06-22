@@ -2,7 +2,7 @@
     "name": "bgforge-mls",
     "displayName": "BGforge MLS",
     "description": "BGforge multilanguage server",
-    "version": "2.2.6",
+    "version": "2.3.0",
     "author": "BGforge",
     "repository": {
         "type": "git",
@@ -344,10 +344,15 @@
             "type": "object",
             "title": "BGforge MLS",
             "properties": {
+                "bgforge.falloutSSL.useBuiltInCompiler": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Use built-in compiler instead of external compile.exe"
+                },
                 "bgforge.falloutSSL.compilePath": {
                     "type": "string",
                     "default": "wine ~/bin/compile",
-                    "description": "Path to compile.exe from sfall modders pack. Alternatively, you can add compile.exe to system PATH and leave default here."
+                    "description": "Path to compile.exe from sfall modders pack. Alternatively, you can add compile.exe to system PATH and leave default here. Ignored if 'Use built-in compiler' is enabled."
                 },
                 "bgforge.falloutSSL.compileOptions": {
                     "type": "string",

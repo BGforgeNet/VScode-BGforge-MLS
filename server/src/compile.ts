@@ -59,7 +59,7 @@ export async function compile(uri: string, langId: string, interactive = false, 
 
     if (falloutLanguages.includes(langId)) {
         clearDiagnostics(uri);
-        fallout.compile(uri, settings.falloutSSL, interactive, text);
+        await fallout.compile(uri, settings.falloutSSL, interactive, text);
         return;
     }
 
