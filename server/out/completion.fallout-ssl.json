@@ -2381,7 +2381,7 @@
         "source": "builtin",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nint play_sfall_sound(string file, int mode)\n```\nUsed to play `mp3/wav/wma` files. The path given is relative to the Fallout folder. Specify mode as 1 to loop the file continuously, 2 to replace the current background game music with playing the specified file in loop mode, or 0 to play the file once. If you don't wish to loop, `play_sfall_sound` returns 0. If you do loop, it returns an ID which can be passed back to `stop_sfall_sound` when you want to stop the effect. All sounds effects will be stopped on game reload, looping or not. Does not require `AllowDShowSound` to be set to 1 in `ddraw.ini`.\n\nStarting from sfall 4.2.8/3.8.28, you can pass a value in the `mode` argument for a reduced sound volume. To set the volume, You need to convert the number to hexadecimal and use the argument format `0xZZZZ000Y`, where `ZZZZ` is the volume reduction value in range from 0 to 32767 (the value 32767 is mute), and `Y` is the playback mode.\n"
+            "value": "```fallout-ssl-tooltip\nint play_sfall_sound(string file, int mode)\n```\nUsed to play `mp3/wav/wma` files. The path given is relative to the Fallout folder. Specify mode as 1 to loop the file continuously, 2 to replace the current background game music with playing the specified file in loop mode, or 0 to play the file once. If you don't wish to loop, `play_sfall_sound` returns 0. If you do loop, it returns an ID which can be passed back to `stop_sfall_sound` when you want to stop the effect. All sounds effects will be stopped on game reload, looping or not. Does not require `AllowDShowSound` to be set to 1 in `ddraw.ini`.\n\nStarting from sfall 4.2.8/3.8.28, you can pass a value in the `mode` argument for a reduced sound volume. To set the volume, you need to convert the number to hexadecimal and use the argument format `0xZZZZ000Y`, where `ZZZZ` is the volume reduction value in range from 0 to 32767 (the value 32767 is mute), and `Y` is the playback mode.\n"
         }
     },
     {
@@ -2597,7 +2597,7 @@
         "source": "builtin",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nvoid set_spray_settings(int centerMult, int centerDiv, int targetMult, int targetDiv)\n```\nAllows changing the multipliers and divisors for the bullet distribution of burst attacks dynamically. All settings are automatically reset to default values (**ComputeSpray_\\*** settings in ddraw.ini) after each attack action\n- Should be called before the calculation of the bullet distribution (e.g. in `HOOK_TOHIT` or `HOOK_AMMOCOST`)\n- `centerDiv/targetDiv`: the minimum value of divisor is 1\n- `centerMult/targetMult`: multiplier values are capped at divisor values\n- __NOTE:__ refer to the description of **ComputeSpray_\\*** settings in ddraw.ini for details of the bullet distribution of burst attacks\n"
+            "value": "```fallout-ssl-tooltip\nvoid set_spray_settings(int centerMult, int centerDiv, int targetMult, int targetDiv)\n```\nAllows changing the multipliers and divisors for the bullet distribution of burst attacks dynamically. All settings are automatically reset to default values (i.e. **ComputeSpray_\\*** settings in ddraw.ini) after each attack action\n- Should be called before the calculation of the bullet distribution (e.g. in `HOOK_TOHIT` or `HOOK_AMMOCOST`)\n- `centerDiv/targetDiv`: the minimum value of divisor is 1\n- `centerMult/targetMult`: multiplier values are capped at divisor values\n- __NOTE:__ refer to the description of **ComputeSpray_\\*** settings in ddraw.ini for details of the bullet distribution of burst attacks\n"
         }
     },
     {
@@ -2741,7 +2741,7 @@
         "source": "builtin",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nvoid set_global_script_type(int type)\n```\nOnly has an effect on the script it is called from. Every global script needs its own `game_loaded` block to correctly set up the script type."
+            "value": "```fallout-ssl-tooltip\nvoid set_global_script_type(int type)\n```\nOnly has an effect on the script it is called from. Every global script needs its own `game_loaded` block to correctly set up the script type.\n- (DEPRECATED) Using type 1 requires the input wrapper to be enabled. Use `available_global_script_types` to check what is available.\n"
         }
     },
     {
@@ -3875,7 +3875,7 @@
         "source": "builtin",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nvoid inc_npc_level(int party_member_pid)\n```\nTakes a party member PID or an NPC name (deprecated, for compatibility with sfall 4.1.5/3.8.15 or earlier) as an argument. The NPC must be in your party. This function ignores player level requirements and the minimum 3 player level delay between NPC level gains. It also ignores the random element, regardless of sfall's `NPCAutoLevel` setting."
+            "value": "```fallout-ssl-tooltip\nvoid inc_npc_level(int party_member_pid)\n```\nTakes a party member PID or an NPC name (deprecated, for compatibility with sfall 4.1.5/3.8.15 or earlier) as an argument. The NPC must be in your party. This function ignores player level requirements and the minimum 3 player level delay between NPC level gains. It also ignores the random element, regardless of sfall's `NPCAutoLevel` or `PartyMemberNonRandomLevelUp` setting."
         }
     },
     {
@@ -3884,7 +3884,7 @@
         "source": "builtin",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nint input_funcs_available()\n```\nThe input functions are only available if the user has the input hook turned on in `ddraw.ini`. Use `input_funcs_available` to check."
+            "value": "```fallout-ssl-tooltip\nint input_funcs_available()\n```\n(DEPRECATED) The input functions are only available if the user has the input hook turned on in `ddraw.ini`. Use `input_funcs_available` to check."
         }
     },
     {
@@ -3920,7 +3920,7 @@
         "source": "builtin",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nint nb_create_char()\n```\n`nb_*` functions are reserved for the brotherhood tactical training mod, and should be avoided. Not implemented, always returns 0."
+            "value": "```fallout-ssl-tooltip\nint nb_create_char()\n```\n(DEPRECATED) Reserved for the brotherhood tactical training mod, and should be avoided. Not implemented, always returns 0."
         }
     },
     {
