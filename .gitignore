@@ -25,3 +25,5 @@ external
 node_modules
 syntaxes_to_json.sh.err
 tmp
+
+test

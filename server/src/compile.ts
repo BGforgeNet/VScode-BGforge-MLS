@@ -4,6 +4,7 @@ import { conlog, isDirectory, tmpDir } from "./common";
 import * as fallout from "./fallout";
 import { connection, getDocumentSettings } from "./server";
 import * as tbaf from "./tbaf";
+import * as tssl from "./tssl";
 import * as weidu from "./weidu";
 
 /** Only these languages can be compiled */
@@ -70,7 +71,12 @@ export async function compile(uri: string, langId: string, interactive = false, 
     }
 
     if (langId == "typescript") {
-        tbaf.compile(uri, text);
+        if (uri.toLowerCase().endsWith(".tbaf")) {
+            tbaf.compile(uri, text);
+        }
+        if (uri.toLowerCase().endsWith(".tssl")) {
+            tssl.compile(uri, text);
+        }
         return;
     }
 
