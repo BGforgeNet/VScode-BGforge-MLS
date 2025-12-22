@@ -132,7 +132,7 @@ export async function compile(uri: string, text: string) {
 
         // Extract inline functions from original source files (before bundling stripped comments)
         ctx.inlineFunctions = extractInlineFunctionsFromDir(project, parsed.dir);
-        conlog(`Found ${ctx.inlineFunctions.size} inline functions: ${[...ctx.inlineFunctions.keys()].join(', ')}`);
+        conlog(`Found ${ctx.inlineFunctions.size} inline functions`);
 
         // Save to SSL file, same directory
         const sslName = path.join(parsed.dir, `${parsed.name}.ssl`);
@@ -263,7 +263,9 @@ function extractInlineFunctionsFromDir(project: Project, dir: string): Map<strin
         if (!fs.existsSync(d)) return;
         for (const entry of fs.readdirSync(d, { withFileTypes: true })) {
             const fullPath = path.join(d, entry.name);
-            if (entry.isDirectory()) {
+            // Use stat to follow symlinks
+            const stat = fs.statSync(fullPath);
+            if (stat.isDirectory()) {
                 scanDir(fullPath);
             } else if (entry.name.endsWith('.ts') && !entry.name.endsWith('.d.ts')) {
                 tsFiles.push(fullPath);
@@ -1167,8 +1169,12 @@ function convertOperatorsAST(node: Node, ctx?: TsslContext): string {
                         const expr = computed.getExpression();
                         return `${expr.getText()}: ${initializer}`;
                     }
-                    // Regular property name - output unquoted
-                    return `${propAssignment.getName()}: ${initializer}`;
+                    // String literal key - already quoted, use as-is
+                    if (nameNode.getKind() === SyntaxKind.StringLiteral) {
+                        return `${nameNode.getText()}: ${initializer}`;
+                    }
+                    // Identifier key - add quotes
+                    return `"${propAssignment.getName()}": ${initializer}`;
                 }
                 return prop.getText();
             }).join(', ');
