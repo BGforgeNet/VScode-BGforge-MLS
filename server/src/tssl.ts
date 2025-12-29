@@ -6,11 +6,14 @@ import {
     SyntaxKind,
     Node
 } from 'ts-morph';
+import * as esbuild from 'esbuild-wasm';
 import { conlog, uriToPath } from "./common";
 import { connection } from "./server";
-import * as esbuild from 'esbuild-wasm';
 
 export const EXT_TSSL = ".tssl";
+
+const showInfo = (msg: string) => connection.window.showInformationMessage(msg);
+const showError = (msg: string) => connection.window.showErrorMessage(msg);
 
 /** Marker to identify start of user code in esbuild output */
 const TSSL_CODE_MARKER = "/* __TSSL_CODE_START__ */";
@@ -94,7 +97,7 @@ export async function compile(uri: string, text: string) {
         if (parsed.ext.toLowerCase() != EXT_TSSL) {
             const msg = `${uri} is not a .tssl file, cannot process!`;
             conlog(msg);
-            connection.window.showInformationMessage(msg);
+            showInfo(msg);
             return;
         }
 
@@ -122,26 +125,26 @@ export async function compile(uri: string, text: string) {
         extractJsDocs(mainSource, ctx);
         conlog(`Extracted JSDoc for ${ctx.functionJsDocs.size} functions from main file`);
 
-        let bundledCode = await bundle(filePath, text);
+        const bundleResult = await bundle(filePath, text);
 
         // Strip ESM module boilerplate from esbuild output
-        bundledCode = cleanupEsbuildOutput(bundledCode);
+        const bundledCode = cleanupEsbuildOutput(bundleResult.code, project);
 
         // Create source file in memory from cleaned bundled code
         const sourceFile = project.createSourceFile("bundled.ts", bundledCode, { overwrite: true });
 
-        // Extract inline functions from original source files (before bundling stripped comments)
-        ctx.inlineFunctions = extractInlineFunctionsFromDir(project, parsed.dir);
+        // Extract inline functions from files that were actually bundled
+        ctx.inlineFunctions = extractInlineFunctionsFromFiles(project, bundleResult.inputFiles);
         conlog(`Found ${ctx.inlineFunctions.size} inline functions`);
 
         // Save to SSL file, same directory
         const sslName = path.join(parsed.dir, `${parsed.name}.ssl`);
         exportSSL(sourceFile, sslName, parsed.base, mainFileData, ctx);
-        connection.window.showInformationMessage(`Transpiled to ${sslName}.`);
+        showInfo(`Transpiled to ${sslName}.`);
     } catch (error) {
         conlog("Error compiling TSSL: " + error);
         const errorMsg = (error instanceof Error) ? error.message : String(error);
-        connection.window.showErrorMessage(`Failed to compile: ${errorMsg}`);
+        showError(`Failed to compile: ${errorMsg}`);
     }
 }
 
@@ -249,32 +252,16 @@ function extractPreserveFunctions(text: string): string[] {
 }
 
 /**
- * Extract functions marked with @inline JSDoc tag from source files.
- * Scans node_modules for library files with @inline markers.
+ * Extract functions marked with @inline JSDoc tag from bundled source files.
+ * Uses the list of input files from esbuild's metafile.
  * @param project ts-morph Project instance to reuse
- * @param dir Directory to scan for node_modules
+ * @param inputFiles List of input file paths from esbuild metafile
  */
-function extractInlineFunctionsFromDir(project: Project, dir: string): Map<string, InlineFunc> {
+function extractInlineFunctionsFromFiles(project: Project, inputFiles: string[]): Map<string, InlineFunc> {
     const result = new Map<string, InlineFunc>();
 
-    // Find all .ts files in node_modules (excluding .d.ts)
-    const tsFiles: string[] = [];
-    function scanDir(d: string) {
-        if (!fs.existsSync(d)) return;
-        for (const entry of fs.readdirSync(d, { withFileTypes: true })) {
-            const fullPath = path.join(d, entry.name);
-            // Use stat to follow symlinks
-            const stat = fs.statSync(fullPath);
-            if (stat.isDirectory()) {
-                scanDir(fullPath);
-            } else if (entry.name.endsWith('.ts') && !entry.name.endsWith('.d.ts')) {
-                tsFiles.push(fullPath);
-            }
-        }
-    }
-    scanDir(path.join(dir, 'node_modules'));
-
-    for (const filePath of tsFiles) {
+    for (const filePath of inputFiles) {
+        if (!fs.existsSync(filePath)) continue;
         const source = project.addSourceFileAtPath(filePath);
         extractInlineFunctionsFromSource(source, result);
     }
@@ -411,13 +398,18 @@ function extractJsDocs(sourceFile: SourceFile, ctx: TsslContext): void {
     });
 }
 
+interface BundleResult {
+    code: string;
+    inputFiles: string[];
+}
+
 /**
- * Bundle functions with esbuild, returning bundled code in memory.
+ * Bundle functions with esbuild, returning bundled code and input files.
  * @param filePath Original file path (for resolving imports)
  * @param text Source text
- * @returns Bundled code as string
+ * @returns Bundled code and list of input files from metafile
  */
-async function bundle(filePath: string, text: string): Promise<string> {
+async function bundle(filePath: string, text: string): Promise<BundleResult> {
     const preserveFunctions = extractPreserveFunctions(text);
 
     // Prepend marker and append fake usage to preserve functions from tree-shaking
@@ -434,6 +426,7 @@ async function bundle(filePath: string, text: string): Promise<string> {
         },
         bundle: true,
         write: false,  // Return output in memory
+        metafile: true,  // Get list of input files
         format: 'esm',
         treeShaking: true,
         minify: false,
@@ -454,46 +447,78 @@ async function bundle(filePath: string, text: string): Promise<string> {
 
     if (result.outputFiles && result.outputFiles.length > 0) {
         conlog(`Bundling complete!`);
-        return result.outputFiles[0].text;
+        // Extract input files from metafile (only .ts files, not .d.ts)
+        const inputFiles = result.metafile
+            ? Object.keys(result.metafile.inputs).filter(f => f.endsWith('.ts') && !f.endsWith('.d.ts'))
+            : [];
+        return { code: result.outputFiles[0].text, inputFiles };
     }
     throw new Error('esbuild produced no output');
 }
 
 /**
  * Clean up esbuild output by stripping everything before our marker,
- * then handling import aliases and removing import statements.
+ * then handling import aliases using AST and removing import statements.
  */
-function cleanupEsbuildOutput(bundledCode: string): string {
+function cleanupEsbuildOutput(bundledCode: string, project: Project): string {
     // Strip everything before our marker (esbuild runtime helpers, etc.)
     const markerIndex = bundledCode.indexOf(TSSL_CODE_MARKER);
     if (markerIndex !== -1) {
         bundledCode = bundledCode.substring(markerIndex + TSSL_CODE_MARKER.length).trimStart();
     }
 
-    // Handle import aliases - esbuild renames duplicate external imports
-    // e.g., import { dude_obj as dude_obj2 } from "folib/base.d";
+    // Parse the bundled code
+    const sourceFile = project.createSourceFile("esbuild-output.ts", bundledCode, { overwrite: true });
+
+    // Build alias map from import statements
     const aliasMap = new Map<string, string>();
-    const importRegex = /import\s*\{([^}]+)\}\s*from\s*['"][^'"]+['"]\s*;?/g;
-    let match;
-    while ((match = importRegex.exec(bundledCode)) !== null) {
-        const imports = match[1].split(',');
-        for (const imp of imports) {
-            const asMatch = imp.trim().match(/^(\w+)\s+as\s+(\w+)$/);
-            if (asMatch) {
-                aliasMap.set(asMatch[2], asMatch[1]);
+    for (const importDecl of sourceFile.getImportDeclarations()) {
+        for (const named of importDecl.getNamedImports()) {
+            const alias = named.getAliasNode();
+            if (alias) {
+                // import { original as alias } → alias should become original
+                aliasMap.set(alias.getText(), named.getName());
             }
         }
     }
-    for (const [alias, original] of aliasMap) {
-        // Escape regex special characters in alias
-        const escapedAlias = alias.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        bundledCode = bundledCode.replace(new RegExp(`\\b${escapedAlias}\\b`, 'g'), original);
+
+    // Detect esbuild's collision avoidance: if we have alias X→Y, and there's
+    // an identifier X2 (X + digit), it was the original that got renamed.
+    // e.g., import { critter_inven_obj as critter_inven_obj2 } causes bundled
+    // critter_inven_obj2 to become critter_inven_obj22
+    // In this case: rename critter_inven_obj22→critter_inven_obj2, and DON'T
+    // rename critter_inven_obj2→critter_inven_obj (that would cause collision)
+    const allIdentifiers = new Set<string>();
+    sourceFile.getDescendantsOfKind(SyntaxKind.Identifier).forEach(id => {
+        allIdentifiers.add(id.getText());
+    });
+    for (const [alias] of [...aliasMap]) {
+        // Look for alias + digits pattern in identifiers
+        for (const id of allIdentifiers) {
+            if (id.startsWith(alias) && id !== alias && /^\d+$/.test(id.slice(alias.length))) {
+                if (!aliasMap.has(id)) {
+                    // Add mapping for the collision-renamed identifier
+                    aliasMap.set(id, alias);
+                    // Remove the original alias mapping - 'alias' is the real function name
+                    aliasMap.delete(alias);
+                }
+            }
+        }
     }
 
-    // Remove import statements
-    bundledCode = bundledCode.replace(/import\s+[\s\S]*?from\s+['"][^'"]+['"];?\s*/g, '');
+    // Rename identifiers using AST (automatically skips strings)
+    // Sort by length (longest first) to avoid partial replacements
+    const sortedAliases = [...aliasMap.entries()].sort((a, b) => b[0].length - a[0].length);
+    for (const [alias, original] of sortedAliases) {
+        sourceFile.getDescendantsOfKind(SyntaxKind.Identifier)
+            .filter(id => id.getText() === alias)
+            .forEach(id => id.replaceWithText(original));
+    }
 
-    return bundledCode;
+    // Remove import declarations
+    sourceFile.getImportDeclarations().forEach(decl => decl.remove());
+
+    return sourceFile.getFullText();
 }
 
 interface SourceSection {
@@ -1171,6 +1196,10 @@ function convertOperatorsAST(node: Node, ctx?: TsslContext): string {
                     }
                     // String literal key - already quoted, use as-is
                     if (nameNode.getKind() === SyntaxKind.StringLiteral) {
+                        return `${nameNode.getText()}: ${initializer}`;
+                    }
+                    // Numeric literal key - no quotes needed
+                    if (nameNode.getKind() === SyntaxKind.NumericLiteral) {
                         return `${nameNode.getText()}: ${initializer}`;
                     }
                     // Identifier key - add quotes
