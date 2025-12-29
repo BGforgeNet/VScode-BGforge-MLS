@@ -7,8 +7,9 @@ import {
     Node
 } from 'ts-morph';
 import * as esbuild from 'esbuild-wasm';
-import { conlog, uriToPath } from "./common";
-import { connection } from "./server";
+import { conlog, pathToUri, uriToPath } from "./common";
+import * as fallout from "./fallout";
+import { connection, getDocumentSettings } from "./server";
 
 export const EXT_TSSL = ".tssl";
 
@@ -140,7 +141,13 @@ export async function compile(uri: string, text: string) {
         // Save to SSL file, same directory
         const sslName = path.join(parsed.dir, `${parsed.name}.ssl`);
         exportSSL(sourceFile, sslName, parsed.base, mainFileData, ctx);
-        showInfo(`Transpiled to ${sslName}.`);
+        showInfo(`Transpiled to ${parsed.name}.ssl`);
+
+        // Compile the generated SSL file
+        const sslUri = pathToUri(sslName);
+        const sslText = fs.readFileSync(sslName, 'utf-8');
+        const settings = await getDocumentSettings(uri);
+        await fallout.compile(sslUri, settings.falloutSSL, true, sslText);
     } catch (error) {
         conlog("Error compiling TSSL: " + error);
         const errorMsg = (error instanceof Error) ? error.message : String(error);

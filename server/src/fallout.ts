@@ -669,7 +669,7 @@ export async function compile(
         });
         if (returnCode === 0) {
             if (interactive) {
-                connection.window.showInformationMessage(`Successfully compiled ${baseName}.`);
+                connection.window.showInformationMessage(`Compiled ${baseName}.`);
             }
         } else {
             if (interactive) {
@@ -700,7 +700,7 @@ export async function compile(
                 }
             } else {
                 if (interactive) {
-                    connection.window.showInformationMessage(`Successfully compiled ${baseName}.`);
+                    connection.window.showInformationMessage(`Compiled ${baseName}.`);
                 }
             }
             sendDiagnostics(uri, stdout, tmpUri);
