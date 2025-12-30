@@ -24,6 +24,7 @@ import {
     SyntaxKind,
 } from "ts-morph";
 import { BAFAction, BAFBlock, BAFCondition, BAFOrGroup, BAFScript, BAFTopCondition } from "./ir";
+import { dnfToCnf } from "./cnf";
 
 /** Context for variable substitution */
 type VarsContext = Map<string, string>;
@@ -628,25 +629,21 @@ export class TBAFTransformer {
             const opKind = expr.getOperatorToken().getKind();
 
             if (opKind === SyntaxKind.AmpersandAmpersandToken) {
-                // !(a && b) → !a || !b - creates an OR group
+                // !(a && b) → !a || !b
+                // Each inverted operand may be a conjunction (multiple ANDed conditions).
+                // We need to OR these conjunctions, which produces DNF.
+                // Convert DNF to CNF using the distributive law.
                 const leftConds = this.invertExpression(expr.getLeft());
                 const rightConds = this.invertExpression(expr.getRight());
 
-                // Flatten into single OR group
-                const allConditions: BAFCondition[] = [];
-                for (const c of [...leftConds, ...rightConds]) {
-                    if ("conditions" in c) {
-                        // Already an OR group - this means nested AND inside OR, which is invalid CNF
-                        throw new Error(
-                            `Cannot invert condition for BAF: result would not be valid CNF.\n` +
-                            `Expression: ${expr.getText()}`
-                        );
-                    } else {
-                        allConditions.push(c);
-                    }
+                // If both results are single atoms, we can directly create an OR group
+                if (leftConds.length === 1 && rightConds.length === 1 &&
+                    !("conditions" in leftConds[0]) && !("conditions" in rightConds[0])) {
+                    return [{ conditions: [leftConds[0], rightConds[0]] }];
                 }
 
-                return [{ conditions: allConditions }];
+                // Otherwise, use DNF→CNF conversion
+                return dnfToCnf([leftConds, rightConds]);
             }
 
             if (opKind === SyntaxKind.BarBarToken) {
@@ -700,18 +697,36 @@ export class TBAFTransformer {
     }
 
     /**
-     * Negate all conditions in a list, toggling their negated flags.
+     * Negate a CNF expression using De Morgan's law.
+     *
+     * Input: [C1, C2, ...] meaning C1 && C2 && ...
+     * Output: CNF for !(C1 && C2 && ...) = !C1 || !C2 || ...
+     *
+     * Each !Ci:
+     * - If Ci is atom A: !Ci = !A
+     * - If Ci is OR(A,B,...): !Ci = !A && !B && ... (conjunction)
+     *
+     * Result is DNF (OR of conjunctions), converted to CNF.
      */
     private negateConditions(conditions: BAFTopCondition[]): BAFTopCondition[] {
-        return conditions.map(c => {
+        // Build DNF terms: each term is a conjunction (negated Ci)
+        const terms: BAFTopCondition[][] = [];
+
+        for (const c of conditions) {
             if ("conditions" in c) {
-                // OR group - negate all its conditions
-                return {
-                    conditions: c.conditions.map(inner => ({ ...inner, negated: !inner.negated })),
-                };
+                // OR group: !(A || B || ...) = !A && !B && ... (De Morgan)
+                const negatedAtoms: BAFCondition[] = c.conditions.map(
+                    inner => ({ ...inner, negated: !inner.negated })
+                );
+                terms.push(negatedAtoms);
+            } else {
+                // Atom: just negate it
+                terms.push([{ ...c, negated: !c.negated }]);
             }
-            return { ...c, negated: !c.negated };
-        });
+        }
+
+        // Convert DNF (OR of terms) to CNF
+        return dnfToCnf(terms);
     }
 
     /**
