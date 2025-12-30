@@ -4,7 +4,7 @@ import * as path from "path";
 import { conlog, isDirectory, pathToUri, tmpDir } from "./common";
 import * as fallout from "./fallout";
 import { connection, getDocumentSettings } from "./server";
-import * as tbaf from "./tbaf";
+import * as tbaf from "./tbaf/index";
 import * as tssl from "./tssl";
 import * as weidu from "./weidu";
 
