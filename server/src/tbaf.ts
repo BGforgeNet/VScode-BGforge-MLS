@@ -12,6 +12,7 @@ import {
     IfStatement,
     Node,
     ParenthesizedExpression,
+    PrefixUnaryExpression,
     Project,
     ReturnStatement,
     SourceFile,
@@ -75,7 +76,7 @@ export async function compile(uri: string, text: string) {
     // Save the transformed file to the specified output file
     const finalTS = project.createSourceFile(TMP_FINAL, sourceFile.getText(), { overwrite: true });
     finalTS.saveSync();
-    console.log(`\nTransformed code saved to ${TMP_FINAL}`);
+    conlog(`\nTransformed code saved to ${TMP_FINAL}`);
 
     // Save to BAF file, same directory
     const dirName = path.parse(filePath).dir;
@@ -91,81 +92,77 @@ export async function compile(uri: string, text: string) {
  * For tracking variable values in context
  */
 type varsContext = Map<string, string>;
+
 /**
  * Inline and unroll loops and other constructs.
+ * Uses collect-then-transform pattern to avoid AST mutation during traversal.
  * @param sourceFile The source file to modify.
  */
 function inlineUnroll(sourceFile: SourceFile) {
     const functionDeclarations = sourceFile.getFunctions();
-    const variablesContext: varsContext = new Map(); // Track const declarations
+    const variablesContext: varsContext = new Map();
 
-    // Collect variables
-    sourceFile.forEachDescendant(node => {
+    // Step 1: Collect const variable declarations (no mutation, just gathering info)
+    collectConstVariables(sourceFile, variablesContext);
 
-        switch (node.getKind()) {
-            // Process array literals immediately.
-            case SyntaxKind.ArrayLiteralExpression: {
-                flattenSpreadForNode(node as ArrayLiteralExpression, variablesContext);
-                break;
-            }
-            // Collect const variable declarations.
-            case SyntaxKind.VariableDeclaration: {
-                const variableDeclaration = node as VariableDeclaration;
-                const parentDeclarationList = variableDeclaration.getParent() as VariableDeclarationList;
-                if (parentDeclarationList.getDeclarationKind() === VariableDeclarationKind.Const) {
-                    const name = variableDeclaration.getName();
-                    let init = variableDeclaration.getInitializer();
-                    if (init) {
-                        if (init.getKind() === SyntaxKind.ArrayLiteralExpression) {
-                            // Flatten any spread elements, substituting identifiers from variablesContext.
-                            flattenSpreadForNode(init as ArrayLiteralExpression, variablesContext);
-                        }
-                        const initializerText = getCleanInitializerText(init);
-                        if (initializerText.includes("...")) {
-                            console.log(`Skipping collection for ${name} because initializer still contains spread.`);
-                        } else {
-                            variablesContext.set(name, initializerText);
-                            console.log(`Collected const variable: ${name} = ${initializerText}`);
-                        }
-                    }
-                }
-                break;
-            }
-            // Unroll for...of loops
-            case SyntaxKind.ForOfStatement:
-                unrollForOfLoop(node as ForOfStatement, variablesContext);
-                break;
-            // Unroll for loops
-            case SyntaxKind.ForStatement:
-                unrollForLoop(node as ForStatement, variablesContext);
-                break;
+    // Step 2: Flatten spread elements in array literals (collect then transform)
+    const arrayLiterals = sourceFile.getDescendantsOfKind(SyntaxKind.ArrayLiteralExpression);
+    // Process in reverse order to avoid position shifts
+    for (let i = arrayLiterals.length - 1; i >= 0; i--) {
+        flattenSpreadForNode(arrayLiterals[i], variablesContext);
+    }
 
-            // Handle function calls
-            case SyntaxKind.CallExpression: {
+    // Step 3: Unroll for...of loops (collect then transform)
+    const forOfStatements = sourceFile.getDescendantsOfKind(SyntaxKind.ForOfStatement);
+    for (let i = forOfStatements.length - 1; i >= 0; i--) {
+        unrollForOfLoop(forOfStatements[i], variablesContext);
+    }
 
-                const callExpr = node as CallExpression;
+    // Step 4: Unroll for loops (collect then transform)
+    const forStatements = sourceFile.getDescendantsOfKind(SyntaxKind.ForStatement);
+    for (let i = forStatements.length - 1; i >= 0; i--) {
+        unrollForLoop(forStatements[i], variablesContext);
+    }
 
-                // Apply variable substitution first
-                substituteVariables(callExpr, variablesContext);
+    // Step 5: Handle function calls - substitute variables and inline (collect then transform)
+    const callExpressions = sourceFile.getDescendantsOfKind(SyntaxKind.CallExpression);
+    for (let i = callExpressions.length - 1; i >= 0; i--) {
+        const callExpr = callExpressions[i];
+        // Check if node is still valid (might have been removed by previous inlining)
+        if (callExpr.wasForgotten()) continue;
 
-                // Check if it's a local function and inline it
-                const functionName = callExpr.getExpression().getText();
-                if (functionDeclarations.some(func => func.getName() === functionName)) {
-                    inlineFunction(callExpr, functionDeclarations, variablesContext);
-                }
-                break;
-            }
+        substituteVariables(callExpr, variablesContext);
 
-            // Evaluate and replace spread expressions in arrays
-            case SyntaxKind.ArrayLiteralExpression: {
-                evaluateAndReplaceSpreadExpressions(node as ArrayLiteralExpression, variablesContext);
-                break;
-            }
-
-            default:
-                break;
+        const functionName = callExpr.getExpression().getText();
+        if (functionDeclarations.some(func => func.getName() === functionName)) {
+            inlineFunction(callExpr, functionDeclarations, variablesContext);
         }
-    });
+    }
+}
+
+/**
+ * Collect const variable declarations into the context.
+ * This pass only reads, doesn't modify the AST.
+ */
+function collectConstVariables(sourceFile: SourceFile, variablesContext: varsContext) {
+    const varDeclarations = sourceFile.getDescendantsOfKind(SyntaxKind.VariableDeclaration);
+
+    for (const variableDeclaration of varDeclarations) {
+        const parentDeclarationList = variableDeclaration.getParent() as VariableDeclarationList;
+        if (parentDeclarationList.getDeclarationKind() === VariableDeclarationKind.Const) {
+            const name = variableDeclaration.getName();
+            const init = variableDeclaration.getInitializer();
+            if (init) {
+                const initializerText = getCleanInitializerText(init);
+                if (initializerText.includes("...")) {
+                    conlog(`Skipping collection for ${name} because initializer still contains spread.`);
+                } else {
+                    variablesContext.set(name, initializerText);
+                    conlog(`Collected const variable: ${name} = ${initializerText}`);
+                }
+            }
+        }
+    }
 }
 
 // Rebuild an initializer from an array literal (omitting comments)
@@ -175,52 +172,6 @@ function getCleanInitializerText(init: Expression): string {
         return `[ ${arr.getElements().map(el => el.getText()).join(", ")} ]`;
     }
     return init.getText();
-}
-
-
-/**
- * Evaluates spread expressions in an array literal and replaces the node.
- * @param arrayLiteral The array literal node to process.
- * @param variablesContext Context to resolve variables.
- */
-function evaluateAndReplaceSpreadExpressions(arrayLiteral: ArrayLiteralExpression, variablesContext: varsContext) {
-    const elements = arrayLiteral.getElements();
-
-    let evaluatedArray: string[] = [];
-
-    elements.forEach(element => {
-        if (element.getKind() === SyntaxKind.SpreadElement) {
-            const spreadExpr = (element as SpreadElement).getExpression();
-
-            if (spreadExpr.getKind() === SyntaxKind.ArrayLiteralExpression) {
-                // Flatten inline array spreads
-                const spreadArray = (spreadExpr as ArrayLiteralExpression).getElements().map(e => e.getText());
-                evaluatedArray.push(...spreadArray);
-            } else {
-                // Check if spread is a known variable
-                const spreadVarName = spreadExpr.getText();
-                if (variablesContext.has(spreadVarName)) {
-                    const resolvedValue = variablesContext.get(spreadVarName);
-                    if (resolvedValue?.startsWith("[") && resolvedValue?.endsWith("]")) {
-                        const parsedArray = JSON.parse(resolvedValue.replace(/'/g, '"'));
-                        evaluatedArray.push(...parsedArray);
-                    } else {
-                        evaluatedArray.push(spreadVarName); // Keep as-is if not an array
-                    }
-                } else {
-                    evaluatedArray.push(element.getText()); // Keep unresolved spreads
-                }
-            }
-        } else {
-            evaluatedArray.push(element.getText());
-        }
-    });
-
-    // Replace the original array expression with the evaluated array
-    const newArrayText = `[${evaluatedArray.join(", ")}]`;
-    arrayLiteral.replaceWithText(newArrayText);
-
-    console.log(`Replaced array literal with: ${newArrayText}`);
 }
 
 /**
@@ -233,7 +184,7 @@ function substituteVariables(callExpression: CallExpression, vars: Map<string, s
         const argText = arg.getText();
         if (vars.has(argText)) {
             const substitution = vars.get(argText)!;
-            console.log(`Substituting variable in argument: ${argText} -> ${substitution}`);
+            conlog(`Substituting variable in argument: ${argText} -> ${substitution}`);
             arg.replaceWithText(substitution);
         }
     });
@@ -241,12 +192,12 @@ function substituteVariables(callExpression: CallExpression, vars: Map<string, s
 
 function inlineFunction(callExpression: CallExpression, functionDeclarations: FunctionDeclaration[], vars: varsContext) {
     const functionName = callExpression.getExpression().getText();
-    console.log(`Processing function: ${functionName}`);
+    conlog(`Processing function: ${functionName}`);
 
     const parent = callExpression.getParent();
     // Short-circuit if the function call is inverted with '!'
     if (Node.isPrefixUnaryExpression(parent) && parent.getOperatorToken() === SyntaxKind.ExclamationToken) {
-        console.log(`Skipping inlining for inverted call: !${functionName}()`);
+        conlog(`Skipping inlining for inverted call: !${functionName}()`);
         return;
     }
 
@@ -278,10 +229,10 @@ function inlineFunction(callExpression: CallExpression, functionDeclarations: Fu
         let returnText = returnStmt.getExpression()?.getText() || "undefined";
         returnText = substituteParams(returnText, paramArgMap, vars);
 
-        console.log(`return text is ${returnText}`);
+        conlog(`return text is ${returnText}`);
         if (needsParentheses(returnText)) returnText = `(${returnText})`;
         parent.replaceWithText(parent.getText().replace(callExpression.getText(), returnText));
-        console.log(`Replaced ${functionName}() inside a condition.`);
+        conlog(`Replaced ${functionName}() inside a condition.`);
         return;
     }
 
@@ -291,7 +242,7 @@ function inlineFunction(callExpression: CallExpression, functionDeclarations: Fu
         inlinedCode = substituteParams(inlinedCode, paramArgMap, vars);
 
         parent.replaceWithText(inlinedCode);
-        console.log(`Replaced ${functionName}() with inlined code.`);
+        conlog(`Replaced ${functionName}() with inlined code.`);
     }
 }
 
@@ -343,20 +294,20 @@ function unrollForOfLoop(forOfStatement: ForOfStatement, vars: varsContext) {
         arrayExpression = vars.get(arrayExpression)!;
     }
 
-    console.log("Array Expression:", arrayExpression);
+    conlog("Array Expression:", arrayExpression);
 
     // Check if the resolved array expression is a literal array
     const arrayLiteral = forOfStatement.getSourceFile().getDescendantsOfKind(SyntaxKind.ArrayLiteralExpression)
         .find(literal => literal.getText() === arrayExpression);
 
     if (!arrayLiteral) {
-        console.log("Not a literal array, skipping...");
+        conlog("Not a literal array, skipping...");
         return;
     }
 
     // Get loop variable name (e.g., `target` in `for (const target of players)`)
     const loopVariable = forOfStatement.getInitializer().getText().replace(/^const\s+/, '');
-    console.log("Loop Variable:", loopVariable);
+    conlog("Loop Variable:", loopVariable);
 
     // Get body statements inside the loop
     const statement = forOfStatement.getStatement();
@@ -364,8 +315,8 @@ function unrollForOfLoop(forOfStatement: ForOfStatement, vars: varsContext) {
         ? statement.getStatements()
         : [statement];
 
-    console.log("Body Statements:");
-    bodyStatements.forEach(stmt => console.log(stmt.getText()));
+    conlog("Body Statements:");
+    bodyStatements.forEach(stmt => conlog(stmt.getText()));
 
     // Unroll the loop
     const unrolledStatements = arrayLiteral.getElements().map(element => {
@@ -384,8 +335,8 @@ function unrollForOfLoop(forOfStatement: ForOfStatement, vars: varsContext) {
         }).join("\n");
     });
 
-    console.log("Unrolled Statements:");
-    console.log(unrolledStatements.join("\n"));
+    conlog("Unrolled Statements:");
+    conlog(unrolledStatements.join("\n"));
 
     // Replace the original loop with unrolled statements
     forOfStatement.replaceWithText(unrolledStatements.join("\n"));
@@ -416,80 +367,195 @@ async function bundle(input: string, text: string) {
         format: 'esm',
     });
 
-    console.log('Bundling complete!');
+    conlog('Bundling complete!');
 }
 
 
 /**
- * Convert all ELSE statement to IF statements with inverted conditions, like BAF needs
- * @param sourceFile 
+ * Convert all ELSE statement to IF statements with inverted conditions, like BAF needs.
+ * Uses collect-then-transform pattern to avoid AST mutation during traversal.
+ * @param sourceFile
  */
 function convertElseToIf(sourceFile: SourceFile) {
-    console.log("Starting transformation on source file:", sourceFile.getFilePath());
+    conlog("Starting transformation on source file:", sourceFile.getFilePath());
 
-    // Traverse all descendants to find if-else statements
-    sourceFile.forEachDescendant((node) => {
-        if (node.isKind(SyntaxKind.IfStatement)) {
-            const ifStatement = node as IfStatement;
-            const elseStatement = ifStatement.getElseStatement();
+    // Collect all if statements with else blocks
+    const ifStatements = sourceFile.getDescendantsOfKind(SyntaxKind.IfStatement)
+        .filter(ifStmt => ifStmt.getElseStatement() !== undefined);
 
-            console.log("Found if statement:", ifStatement.getText());
-            if (elseStatement) {
-                console.log("Found else statement:", elseStatement.getText());
+    // Process in reverse order to avoid position shifts
+    for (let i = ifStatements.length - 1; i >= 0; i--) {
+        const ifStatement = ifStatements[i];
+        if (ifStatement.wasForgotten()) continue;
 
-                const ifCondition = ifStatement.getExpression().getText();
-                console.log("Original condition:", ifCondition);
+        const elseStatement = ifStatement.getElseStatement();
+        if (!elseStatement) continue;
 
-                // Create the original `if-0` block (unchanged `if` part)
-                const if0Block = `if (${ifCondition}) ${ifStatement.getThenStatement().getText()}`;
-                console.log("if-0 block:", if0Block);
+        conlog("Found if statement:", ifStatement.getText());
+        conlog("Found else statement:", elseStatement.getText());
 
-                // Invert the `else` condition to create `if-1`
-                const invertedCondition = invertCondition(ifCondition);
-                console.log("Inverted condition for else block (if-1):", invertedCondition);
+        const ifCondition = ifStatement.getExpression().getText();
+        conlog("Original condition:", ifCondition);
 
-                const if1Block = `if (${invertedCondition}) ${elseStatement.getText()}`;
-                console.log("if-1 block:", if1Block);
+        // Create the original `if-0` block (unchanged `if` part)
+        const if0Block = `if (${ifCondition}) ${ifStatement.getThenStatement().getText()}`;
+        conlog("if-0 block:", if0Block);
 
-                // Combine `if-0` and `if-1` blocks
-                const newIfBlock = `${if0Block}\n${if1Block}`;
-                console.log("Combined new if block (if-0 + if-1):\n", newIfBlock);
+        // Invert the `else` condition to create `if-1`
+        const invertedCondition = invertCondition(ifCondition);
+        conlog("Inverted condition for else block (if-1):", invertedCondition);
 
-                // Replace the original if-else block with the new combined block
-                ifStatement.replaceWithText(newIfBlock);
-                console.log("Replaced original if-else block with new combined if block.");
-            }
-        }
-    });
+        const if1Block = `if (${invertedCondition}) ${elseStatement.getText()}`;
+        conlog("if-1 block:", if1Block);
 
-    console.log("Transformation completed.");
+        // Combine `if-0` and `if-1` blocks
+        const newIfBlock = `${if0Block}\n${if1Block}`;
+        conlog("Combined new if block (if-0 + if-1):\n", newIfBlock);
+
+        // Replace the original if-else block with the new combined block
+        ifStatement.replaceWithText(newIfBlock);
+        conlog("Replaced original if-else block with new combined if block.");
+    }
+
+    conlog("Transformation completed.");
 }
 
 /**
- * Invert logical condition. Only supports simple conditions, without nesting.
+ * Invert logical condition using AST-based De Morgan's law transformation.
+ * Properly handles nested conditions like (a && b) || c.
+ *
+ * Note: BAF requires CNF (Conjunctive Normal Form): AND of (ORs or atoms).
+ * Inverting some valid CNF conditions produces non-CNF results that BAF can't represent.
+ * For example: (a || b) && c → (!a && !b) || !c (DNF, not CNF)
+ *
  * @param condition Logical condition from an IF statement
  * @returns inverted condition text
  */
 function invertCondition(condition: string): string {
-    console.log("Inverting condition:", condition);
+    conlog("Inverting condition:", condition);
 
-    // Handle cases with '&&' and '||' (De Morgan's law)
-    if (condition.includes('&&')) {
-        return condition
-            .split('&&')
-            .map(part => `!(${part.trim()})`)
-            .join(' || ');
+    // Parse the condition as an expression using ts-morph
+    const project = new Project({ useInMemoryFileSystem: true });
+    const tempFile = project.createSourceFile("temp.ts", `const _x_ = ${condition};`);
+    const varDecl = tempFile.getVariableDeclarations()[0];
+    const expr = varDecl.getInitializerOrThrow();
+
+    const result = invertExpression(expr);
+
+    // Validate result is valid CNF for BAF
+    if (!isValidCNF(result)) {
+        throw new Error(
+            `Cannot invert condition for BAF: "${condition}" → "${result}"\n` +
+            `The inverted condition is not valid CNF (Conjunctive Normal Form).\n` +
+            `BAF requires: AND of (atoms or OR-groups). Got OR containing AND.\n` +
+            `Consider simplifying or restructuring your if/else to avoid this pattern.`
+        );
     }
 
-    if (condition.includes('||')) {
-        return condition
-            .split('||')
-            .map(part => `!(${part.trim()})`)
-            .join(' && ');
+    return result;
+}
+
+/**
+ * Check if a condition string is valid CNF for BAF.
+ * Valid: AND of (atoms or OR-groups), where OR-groups contain only atoms.
+ * Invalid: OR at top level containing AND, nested parens, etc.
+ */
+function isValidCNF(condition: string): boolean {
+    // Parse and check structure
+    try {
+        const project = new Project({ useInMemoryFileSystem: true });
+        const tempFile = project.createSourceFile("temp2.ts", `const _x_ = ${condition};`);
+        const varDecl = tempFile.getVariableDeclarations()[0];
+        const expr = varDecl.getInitializerOrThrow();
+
+        return checkCNF(expr, false);
+    } catch {
+        return false;
+    }
+}
+
+/**
+ * Recursively check if expression is valid CNF.
+ * @param expr The expression to check
+ * @param insideOr Whether we're inside an OR group (AND not allowed inside OR)
+ */
+function checkCNF(expr: Expression, insideOr: boolean): boolean {
+    if (Node.isBinaryExpression(expr)) {
+        const opKind = expr.getOperatorToken().getKind();
+
+        if (opKind === SyntaxKind.AmpersandAmpersandToken) {
+            // AND is not allowed inside OR groups
+            if (insideOr) return false;
+            return checkCNF(expr.getLeft(), false) && checkCNF(expr.getRight(), false);
+        }
+
+        if (opKind === SyntaxKind.BarBarToken) {
+            // OR is allowed, but contents must not have AND
+            return checkCNF(expr.getLeft(), true) && checkCNF(expr.getRight(), true);
+        }
     }
 
-    // For simple conditions (without && or ||), just negate it
-    return `!(${condition.trim()})`;
+    if (Node.isParenthesizedExpression(expr)) {
+        return checkCNF(expr.getExpression(), insideOr);
+    }
+
+    if (Node.isPrefixUnaryExpression(expr)) {
+        // Negation of atom is fine, negation of complex expression is not
+        const operand = (expr as PrefixUnaryExpression).getOperand();
+        return !Node.isBinaryExpression(operand);
+    }
+
+    // Atoms (identifiers, calls, etc.) are always valid
+    return true;
+}
+
+/**
+ * Recursively invert an expression using De Morgan's law.
+ * - a && b → !a || !b
+ * - a || b → !a && !b
+ * - !a → a
+ * - (expr) → (inverted expr) with parens preserved where needed
+ * - other → !(other)
+ */
+function invertExpression(expr: Expression): string {
+    // Handle binary expressions (&&, ||)
+    if (Node.isBinaryExpression(expr)) {
+        const left = expr.getLeft();
+        const right = expr.getRight();
+        const opKind = expr.getOperatorToken().getKind();
+
+        if (opKind === SyntaxKind.AmpersandAmpersandToken) {
+            // a && b → !a || !b
+            return `${invertExpression(left)} || ${invertExpression(right)}`;
+        }
+        if (opKind === SyntaxKind.BarBarToken) {
+            // a || b → !a && !b
+            return `${invertExpression(left)} && ${invertExpression(right)}`;
+        }
+    }
+
+    // Handle prefix unary ! (double negation elimination)
+    if (Node.isPrefixUnaryExpression(expr)) {
+        const prefixExpr = expr as PrefixUnaryExpression;
+        if (prefixExpr.getOperatorToken() === SyntaxKind.ExclamationToken) {
+            // !a → a
+            return prefixExpr.getOperand().getText();
+        }
+    }
+
+    // Handle parenthesized expressions
+    if (Node.isParenthesizedExpression(expr)) {
+        const inner = expr.getExpression();
+        const inverted = invertExpression(inner);
+        // Keep parens if the inner expression is a binary expression (for clarity)
+        if (Node.isBinaryExpression(inner)) {
+            return `(${inverted})`;
+        }
+        return inverted;
+    }
+
+    // Default: wrap with !()
+    return `!(${expr.getText()})`;
 }
 
 /**
@@ -528,7 +594,7 @@ function flattenSpreadForNode(arrayLiteral: ArrayLiteralExpression, vars?: Map<s
     const newArrayText = `[ ${flattened.join(", ")} ]`;
     // Only replace if the flattened version is different.
     if (newArrayText !== arrayLiteral.getText()) {
-        console.log(
+        conlog(
             "Replacing array literal:",
             arrayLiteral.getText(),
             "with flattened version:",
@@ -539,51 +605,55 @@ function flattenSpreadForNode(arrayLiteral: ArrayLiteralExpression, vars?: Map<s
 }
 
 /**
- * Single function to flatten all nested if statements in the source file
- * @param sourceFile 
+ * Single function to flatten all nested if statements in the source file.
+ * Uses collect-then-transform pattern to avoid AST mutation during traversal.
+ * @param sourceFile
  */
 function flattenIfStatements(sourceFile: SourceFile) {
-    // Iterate over all statements in the source file
-    sourceFile.getStatements().forEach(statement => {
-        if (statement.isKind(SyntaxKind.IfStatement)) {
-            const ifStatement = statement as IfStatement;
+    // Collect top-level if statements
+    const ifStatements = sourceFile.getStatements()
+        .filter(stmt => stmt.isKind(SyntaxKind.IfStatement)) as IfStatement[];
 
-            // Flatten the nested if statements recursively
-            const flattenIf = (ifStatement: IfStatement, parentCondition = ""): string => {
-                const thenStatement = ifStatement.getThenStatement();
-                const currentCondition = ifStatement.getExpression().getText();
+    // Process in reverse order to avoid position shifts
+    for (let i = ifStatements.length - 1; i >= 0; i--) {
+        const ifStatement = ifStatements[i];
+        if (ifStatement.wasForgotten()) continue;
 
-                const combinedCondition = parentCondition
-                    ? `${parentCondition} && ${currentCondition}`
-                    : currentCondition;
+        // Flatten the nested if statements recursively
+        const flattenIf = (ifStmt: IfStatement, parentCondition = ""): string => {
+            const thenStatement = ifStmt.getThenStatement();
+            const currentCondition = ifStmt.getExpression().getText();
 
-                const nestedIfs: string[] = [];
+            const combinedCondition = parentCondition
+                ? `${parentCondition} && ${currentCondition}`
+                : currentCondition;
 
-                if (thenStatement.getKind() === SyntaxKind.Block) {
-                    const block = thenStatement as Block;
-                    const blockStatements = block.getStatements();
+            const nestedIfs: string[] = [];
 
-                    blockStatements.forEach(statement => {
-                        if (statement.getKind() === SyntaxKind.IfStatement) {
-                            const nestedIf = statement as IfStatement;
-                            // Recursively flatten nested if statements
-                            nestedIfs.push(flattenIf(nestedIf, combinedCondition));
-                        }
-                    });
+            if (thenStatement.getKind() === SyntaxKind.Block) {
+                const block = thenStatement as Block;
+                const blockStatements = block.getStatements();
+
+                for (const statement of blockStatements) {
+                    if (statement.getKind() === SyntaxKind.IfStatement) {
+                        const nestedIf = statement as IfStatement;
+                        // Recursively flatten nested if statements
+                        nestedIfs.push(flattenIf(nestedIf, combinedCondition));
+                    }
                 }
+            }
 
-                if (nestedIfs.length === 0) {
-                    return `if (${combinedCondition}) ${thenStatement.getText()}`;
-                }
+            if (nestedIfs.length === 0) {
+                return `if (${combinedCondition}) ${thenStatement.getText()}`;
+            }
 
-                return nestedIfs.join("\n");
-            };
+            return nestedIfs.join("\n");
+        };
 
-            // Call the inner flattening function and replace the original statement
-            const flattenedIf = flattenIf(ifStatement);
-            ifStatement.replaceWithText(flattenedIf);
-        }
-    });
+        // Call the inner flattening function and replace the original statement
+        const flattenedIf = flattenIf(ifStatement);
+        ifStatement.replaceWithText(flattenedIf);
+    }
 }
 
 
@@ -596,13 +666,13 @@ function unrollForLoop(forStatement: ForStatement, vars: varsContext) {
     // Get the loop initializer (e.g., `let i = 0`)
     const initializer = forStatement.getInitializer();
     if (!initializer || !initializer.isKind(SyntaxKind.VariableDeclarationList)) {
-        console.log("Skipping complex initializer.");
+        conlog("Skipping complex initializer.");
         return;
     }
 
     const declarations = initializer.getDeclarations();
     if (declarations.length !== 1) {
-        console.log("Skipping multi-variable initializer.");
+        conlog("Skipping multi-variable initializer.");
         return;
     }
 
@@ -618,7 +688,7 @@ function unrollForLoop(forStatement: ForStatement, vars: varsContext) {
     }
 
     if (isNaN(Number(initialValue))) {
-        console.log(`Skipping non-numeric initializer: ${initialValue}`);
+        conlog(`Skipping non-numeric initializer: ${initialValue}`);
         return;
     }
 
@@ -627,7 +697,7 @@ function unrollForLoop(forStatement: ForStatement, vars: varsContext) {
     // Get the loop condition (e.g., `i < 10`)
     const condition = forStatement.getCondition();
     if (!condition) {
-        console.log("Skipping loop with no condition.");
+        conlog("Skipping loop with no condition.");
         return;
     }
 
@@ -635,18 +705,18 @@ function unrollForLoop(forStatement: ForStatement, vars: varsContext) {
     if (Node.isBinaryExpression(condition)) {
         const conditionValue = condition.getRight().getText();
         if (isNaN(Number(conditionValue))) {
-            console.log(`Skipping loop with non-numeric boundary: ${conditionValue}`);
+            conlog(`Skipping loop with non-numeric boundary: ${conditionValue}`);
             return;
         }
     } else {
-        console.log("Skipping loop with unsupported condition type.");
+        conlog("Skipping loop with unsupported condition type.");
         return;
     }
 
     // Get the incrementor (e.g., `i++`, `i += 2`)
     const incrementor = forStatement.getIncrementor();
     if (!incrementor) {
-        console.log("Skipping loop with no incrementor.");
+        conlog("Skipping loop with no incrementor.");
         return;
     }
 
@@ -662,7 +732,7 @@ function unrollForLoop(forStatement: ForStatement, vars: varsContext) {
     } else if (incrementText.includes("-=")) {
         incrementValue = -Number(incrementText.split("-=")[1]);
     } else {
-        console.log("Skipping unsupported incrementor.");
+        conlog("Skipping unsupported incrementor.");
         return;
     }
 
@@ -672,11 +742,11 @@ function unrollForLoop(forStatement: ForStatement, vars: varsContext) {
         ? statement.getStatements()
         : [statement];
 
-    console.log("Unrolling loop:", forStatement.getText());
-    console.log("Loop Variable:", loopVar);
-    console.log("Initial Value:", currentValue);
-    console.log("Condition:", condition.getText());
-    console.log("Incrementor:", incrementText);
+    conlog("Unrolling loop:", forStatement.getText());
+    conlog("Loop Variable:", loopVar);
+    conlog("Initial Value:", currentValue);
+    conlog("Condition:", condition.getText());
+    conlog("Incrementor:", incrementText);
 
     // Generate unrolled statements
     const unrolledStatements: string[] = [];
@@ -701,8 +771,8 @@ function unrollForLoop(forStatement: ForStatement, vars: varsContext) {
         currentValue += incrementValue;
     }
 
-    console.log("Unrolled Statements:");
-    console.log(unrolledStatements.join("\n"));
+    conlog("Unrolled Statements:");
+    conlog(unrolledStatements.join("\n"));
 
     // Replace the original loop with unrolled statements
     forStatement.replaceWithText(unrolledStatements.join("\n"));
@@ -710,6 +780,12 @@ function unrollForLoop(forStatement: ForStatement, vars: varsContext) {
 
 /**
  * Evaluate the loop condition by replacing the loop variable with its current value.
+ *
+ * Note: Uses `new Function()` which is similar to eval. This is acceptable here because:
+ * - TBAF is a development tool that transpiles the user's own code
+ * - Users already have full control over their development environment
+ * - No untrusted input is being processed
+ *
  * @param condition The loop condition as a string.
  * @param loopVar The loop variable.
  * @param currentValue The current value of the loop variable.
@@ -718,11 +794,10 @@ function unrollForLoop(forStatement: ForStatement, vars: varsContext) {
 function evaluateCondition(condition: string, loopVar: string, currentValue: number): boolean {
     const sanitizedCondition = condition.replace(new RegExp(`\\b${loopVar}\\b`, "g"), currentValue.toString());
     try {
-        // Create a new function to evaluate the condition
         const fn = new Function(`return (${sanitizedCondition});`);
         return fn();
     } catch (error) {
-        console.error("Error evaluating condition:", sanitizedCondition, error);
+        conlog("Error evaluating condition:", sanitizedCondition, error);
         return false;
     }
 }
@@ -758,7 +833,7 @@ function exportBAF(sourceFile: SourceFile, bafPath: string, sourceName: string):
     exportContent = applyBAFhacks(exportContent);
     // Write the content to the specified file
     fs.writeFileSync(bafPath, exportContent, 'utf-8'); // Remove any extra trailing newlines
-    console.log(`Content saved to ${bafPath}`);
+    conlog(`Content saved to ${bafPath}`);
 }
 
 /**
@@ -844,14 +919,19 @@ function exportThenBlock(body: string): string {
 
 /**
  * Simplifies conditions in the given source file by removing unnecessary parentheses.
+ * Uses collect-then-transform pattern to avoid AST mutation during traversal.
  * @param sourceFile The source file to process.
  */
 export function simplifyConditions(sourceFile: SourceFile) {
-    sourceFile.forEachDescendant((node) => {
-        if (Node.isParenthesizedExpression(node)) {
-            tryRemoveParentheses(node);
-        }
-    });
+    // Collect all parenthesized expressions
+    const parenExprs = sourceFile.getDescendantsOfKind(SyntaxKind.ParenthesizedExpression);
+
+    // Process in reverse order to avoid position shifts
+    for (let i = parenExprs.length - 1; i >= 0; i--) {
+        const parenExpr = parenExprs[i];
+        if (parenExpr.wasForgotten()) continue;
+        tryRemoveParentheses(parenExpr);
+    }
 }
 
 /**
@@ -919,7 +999,7 @@ function applyTransformations(sourceFile: SourceFile) {
         if (currentCode === previousCode) break;
 
         if (i == MAX_INTERATIONS) {
-            console.log("ERROR: reached max interactions, aborting!");
+            conlog("ERROR: reached max interactions, aborting!");
         }
     }
 
@@ -946,12 +1026,12 @@ function removeFunctionDeclarations(sourceFile: SourceFile) {
 
     functionDeclarations.forEach(func => {
         try {
-            console.log(`Removing function: ${func.getName() || "anonymous"} at ${func.getStartLineNumber()}`);
+            conlog(`Removing function: ${func.getName() || "anonymous"} at ${func.getStartLineNumber()}`);
             func.remove();
         } catch (error) {
-            console.error(`Error removing function: ${func.getName() || "anonymous"}`, error);
+            conlog(`Error removing function: ${func.getName() || "anonymous"}`, error);
         }
     });
 
-    console.log(`Removed ${functionDeclarations.length} function(s).`);
+    conlog(`Removed ${functionDeclarations.length} function(s).`);
 }
