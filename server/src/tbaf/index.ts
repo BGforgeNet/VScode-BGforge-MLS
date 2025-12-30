@@ -8,7 +8,6 @@ import * as fs from "fs";
 import * as path from "path";
 import { Project } from "ts-morph";
 import { conlog, uriToPath } from "../common";
-import { connection } from "../server";
 import { bundle } from "./bundle";
 import { emitBAF } from "./emit";
 import { BAFScript, isOrGroup } from "./ir";
@@ -21,50 +20,42 @@ export const EXT_TBAF = ".tbaf";
  *
  * @param uri VSCode URI of the file
  * @param text Source text content
+ * @returns Path to generated BAF file
  */
-export async function compile(uri: string, text: string): Promise<void> {
+export async function compile(uri: string, text: string): Promise<string> {
     const filePath = uriToPath(uri);
     const ext = path.extname(filePath).toLowerCase();
 
     if (ext !== EXT_TBAF) {
-        const msg = `${uri} is not a .tbaf file, cannot process!`;
-        conlog(msg);
-        connection.window.showErrorMessage(msg);
-        return;
+        throw new Error(`${uri} is not a .tbaf file`);
     }
 
-    try {
-        // 1. Bundle imports
-        const bundled = await bundle(filePath, text);
+    // 1. Bundle imports
+    const bundled = await bundle(filePath, text);
 
-        // 2. Parse bundled code
-        const project = new Project({ useInMemoryFileSystem: true });
-        const sourceFile = project.createSourceFile("bundled.ts", bundled);
+    // 2. Parse bundled code
+    const project = new Project({ useInMemoryFileSystem: true });
+    const sourceFile = project.createSourceFile("bundled.ts", bundled);
 
-        // 3. Transform AST to IR
-        const transformer = new TBAFTransformer();
-        const ir = transformer.transform(sourceFile);
+    // 3. Transform AST to IR
+    const transformer = new TBAFTransformer();
+    const ir = transformer.transform(sourceFile);
 
-        // Use original file path for the header comment
-        ir.sourceFile = filePath;
+    // Use original file path for the header comment
+    ir.sourceFile = filePath;
 
-        // 4. Apply BAF-specific fixups to IR
-        applyBAFFixups(ir);
+    // 4. Apply BAF-specific fixups to IR
+    applyBAFFixups(ir);
 
-        // 5. Emit BAF text
-        const baf = emitBAF(ir);
+    // 5. Emit BAF text
+    const baf = emitBAF(ir);
 
-        // 6. Write output
-        const bafPath = filePath.replace(/\.tbaf$/i, ".baf");
-        fs.writeFileSync(bafPath, baf, "utf-8");
+    // 6. Write output
+    const bafPath = filePath.replace(/\.tbaf$/i, ".baf");
+    fs.writeFileSync(bafPath, baf, "utf-8");
 
-        conlog(`Transpiled to ${bafPath}`);
-        connection.window.showInformationMessage(`Transpiled to ${path.basename(bafPath)}`);
-    } catch (error) {
-        const msg = error instanceof Error ? error.message : String(error);
-        conlog(`TBAF compile error: ${msg}`);
-        connection.window.showErrorMessage(`TBAF error: ${msg}`);
-    }
+    conlog(`Transpiled to ${bafPath}`);
+    return bafPath;
 }
 
 /**

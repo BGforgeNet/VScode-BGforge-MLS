@@ -9,10 +9,10 @@ import {
 import * as esbuild from 'esbuild-wasm';
 import { fileURLToPath } from "url";
 import { ensureEsbuild, cleanupEsbuildOutput } from "./esbuild-utils";
+import { conlog } from "./common";
+import { connection } from "./server";
 
 export const EXT_TSSL = ".tssl";
-
-// TODO: use conlog instead of console.log (requires refactoring conlog to not depend on server.ts)
 const uriToPath = (uri: string) => uri.startsWith('file://') ? fileURLToPath(uri) : uri;
 
 /** Marker to identify start of user code in esbuild output */
@@ -113,7 +113,7 @@ export async function compile(uri: string, text: string): Promise<string> {
     // Extract JSDoc from main source file before bundling (esbuild strips them)
     const mainSource = project.addSourceFileAtPath(filePath);
     extractJsDocs(mainSource, ctx);
-    console.log(`Extracted JSDoc for ${ctx.functionJsDocs.size} functions from main file`);
+    conlog(`Extracted JSDoc for ${ctx.functionJsDocs.size} functions from main file`);
 
     const bundleResult = await bundle(filePath, text);
 
@@ -125,7 +125,7 @@ export async function compile(uri: string, text: string): Promise<string> {
 
     // Extract inline functions from files that were actually bundled
     ctx.inlineFunctions = extractInlineFunctionsFromFiles(project, bundleResult.inputFiles);
-    console.log(`Found ${ctx.inlineFunctions.size} inline functions`);
+    conlog(`Found ${ctx.inlineFunctions.size} inline functions`);
 
     // Save to SSL file, same directory
     const sslPath = path.join(parsed.dir, `${parsed.name}.ssl`);
@@ -432,7 +432,7 @@ async function bundle(filePath: string, text: string): Promise<BundleResult> {
     });
 
     if (result.outputFiles && result.outputFiles.length > 0) {
-        console.log(`Bundling complete!`);
+        conlog(`Bundling complete!`);
         // Extract input files from metafile (only .ts files, not .d.ts)
         const inputFiles = result.metafile
             ? Object.keys(result.metafile.inputs).filter(f => f.endsWith('.ts') && !f.endsWith('.d.ts'))
@@ -459,7 +459,7 @@ interface SourceSection {
  * @param ctx Transpilation context
  */
 function exportSSL(sourceFile: SourceFile, sslPath: string, sourceName: string, mainFileData: MainFileData, ctx: TsslContext): void {
-    console.log(`Starting conversion of: ${sourceName}`);
+    conlog(`Starting conversion of: ${sourceName}`);
 
     const header = `/* Do not edit. This file is generated from ${sourceName}. Make your changes there and regenerate this file. */\n\n`;
     const { sections } = processInput(sourceFile, mainFileData, ctx);
@@ -534,7 +534,7 @@ function exportSSL(sourceFile: SourceFile, sslPath: string, sourceName: string, 
 
     // Write the content to the specified file
     fs.writeFileSync(sslPath, output, 'utf-8');
-    console.log(`Content saved to ${sslPath}`);
+    conlog(`Content saved to ${sslPath}`);
 }
 
 /**
@@ -823,6 +823,7 @@ function handleDoStatement(stmt: Node, indent: string, ctx: TsslContext): string
 function handleTryStatement(stmt: Node, indent: string, ctx: TsslContext): string {
     const tryStmt = stmt.asKindOrThrow(SyntaxKind.TryStatement);
     const tryBlock = tryStmt.getTryBlock();
+    conlog(`TSSL warning: try-catch not supported in SSL, catch block will be ignored`);
     let result = `${indent}/* TSSL: try-catch not supported in SSL, executing try block only */\n`;
     result += processFunctionBody(tryBlock, indent, ctx);
     return result + `\n`;
@@ -900,8 +901,7 @@ function processFunctionBody(bodyNode: Node, indent: string = "", ctx: TsslConte
                 result += `${indent}break;\n`;
                 break;
             default:
-                result += `${indent}/* TSSL: unhandled statement type ${stmt.getKindName()} */\n`;
-                result += `${indent}${stmt.getText().trim()}\n`;
+                throw new Error(`Unhandled statement type: ${stmt.getKindName()}. Code: ${stmt.getText().substring(0, 100)}`);
                 break;
         }
     }

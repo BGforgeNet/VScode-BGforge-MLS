@@ -73,7 +73,20 @@ export async function compile(uri: string, langId: string, interactive = false, 
 
     if (langId == "typescript") {
         if (uri.toLowerCase().endsWith(".tbaf")) {
-            tbaf.compile(uri, text);
+            try {
+                const bafPath = await tbaf.compile(uri, text);
+                const bafName = path.basename(bafPath);
+                connection.window.showInformationMessage(`Transpiled to ${bafName}`);
+                // Chain BAF compilation if weidu and game path are configured
+                if (settings.weidu.path && settings.weidu.gamePath) {
+                    const bafUri = pathToUri(bafPath);
+                    const bafText = fs.readFileSync(bafPath, 'utf-8');
+                    weidu.compile(bafUri, settings.weidu, true, bafText);
+                }
+            } catch (error) {
+                const msg = error instanceof Error ? error.message : String(error);
+                connection.window.showErrorMessage(`TBAF: ${msg}`);
+            }
         }
         if (uri.toLowerCase().endsWith(".tssl")) {
             try {

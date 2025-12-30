@@ -531,7 +531,14 @@ export class TBAFTransformer {
         let current = initValue;
         let iterations = 0;
 
-        while (this.evaluateLoopCondition(condition.getText(), loopVar, current) && iterations < TBAFTransformer.MAX_LOOP_ITERATIONS) {
+        while (this.evaluateLoopCondition(condition.getText(), loopVar, current)) {
+            if (iterations >= TBAFTransformer.MAX_LOOP_ITERATIONS) {
+                throw new Error(
+                    `Loop exceeded maximum ${TBAFTransformer.MAX_LOOP_ITERATIONS} iterations. ` +
+                    `This likely indicates an infinite loop or a design issue. ` +
+                    `BAF scripts should not need many iterations.`
+                );
+            }
             this.vars.set(loopVar, current.toString());
             onIteration();
             current += increment;
@@ -829,8 +836,11 @@ export class TBAFTransformer {
         try {
             const fn = new Function(`return (${substituted});`);
             return fn();
-        } catch {
-            return false;
+        } catch (e) {
+            throw new Error(
+                `Cannot evaluate loop condition "${condition}" with ${loopVar}=${value}. ` +
+                `Substituted: "${substituted}". Error: ${e instanceof Error ? e.message : e}`
+            );
         }
     }
 
