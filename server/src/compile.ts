@@ -1,6 +1,7 @@
 import * as fs from "fs";
 import { TextDocument } from "vscode-languageserver-textdocument";
-import { conlog, isDirectory, tmpDir } from "./common";
+import * as path from "path";
+import { conlog, isDirectory, pathToUri, tmpDir } from "./common";
 import * as fallout from "./fallout";
 import { connection, getDocumentSettings } from "./server";
 import * as tbaf from "./tbaf";
@@ -75,7 +76,18 @@ export async function compile(uri: string, langId: string, interactive = false, 
             tbaf.compile(uri, text);
         }
         if (uri.toLowerCase().endsWith(".tssl")) {
-            tssl.compile(uri, text);
+            try {
+                const sslPath = await tssl.compile(uri, text);
+                const sslName = path.basename(sslPath);
+                connection.window.showInformationMessage(`Transpiled to ${sslName}`);
+                // Chain SSL compilation
+                const sslUri = pathToUri(sslPath);
+                const sslText = fs.readFileSync(sslPath, 'utf-8');
+                await fallout.compile(sslUri, settings.falloutSSL, true, sslText);
+            } catch (error) {
+                const msg = error instanceof Error ? error.message : String(error);
+                connection.window.showErrorMessage(`TSSL: ${msg}`);
+            }
         }
         return;
     }
