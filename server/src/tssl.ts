@@ -8,6 +8,7 @@ import {
 } from 'ts-morph';
 import * as esbuild from 'esbuild-wasm';
 import { fileURLToPath } from "url";
+import { ensureEsbuild, cleanupEsbuildOutput } from "./esbuild-utils";
 
 export const EXT_TSSL = ".tssl";
 
@@ -70,13 +71,6 @@ interface MainFileData {
     includes: string[];
 }
 
-let esbuildInitialized = false;
-async function initEsbuild() {
-    if (esbuildInitialized) return;
-    // In Node.js, esbuild-wasm auto-detects the wasm file location
-    await esbuild.initialize({});
-    esbuildInitialized = true;
-}
 
 /**
  * How many lines to look backwards when searching for esbuild source comments.
@@ -124,7 +118,7 @@ export async function compile(uri: string, text: string): Promise<string> {
     const bundleResult = await bundle(filePath, text);
 
     // Strip ESM module boilerplate from esbuild output
-    const bundledCode = cleanupEsbuildOutput(bundleResult.code, project);
+    const bundledCode = cleanupEsbuildOutput(bundleResult.code, TSSL_CODE_MARKER);
 
     // Create source file in memory from cleaned bundled code
     const sourceFile = project.createSourceFile("bundled.ts", bundledCode, { overwrite: true });
@@ -408,7 +402,7 @@ async function bundle(filePath: string, text: string): Promise<BundleResult> {
     const preserveCode = `\n// Preserve functions\nif ((globalThis as any).__preserve__) { console.log(${preserveFunctions.join(', ')}); }`;
     const sourceWithMarker = TSSL_CODE_MARKER + "\n" + text + preserveCode;
 
-    await initEsbuild();
+    await ensureEsbuild();
     const result = await esbuild.build({
         stdin: {
             contents: sourceWithMarker,
@@ -446,71 +440,6 @@ async function bundle(filePath: string, text: string): Promise<BundleResult> {
         return { code: result.outputFiles[0].text, inputFiles };
     }
     throw new Error('esbuild produced no output');
-}
-
-/**
- * Clean up esbuild output by stripping everything before our marker,
- * then handling import aliases using AST and removing import statements.
- */
-function cleanupEsbuildOutput(bundledCode: string, project: Project): string {
-    // Strip everything before our marker (esbuild runtime helpers, etc.)
-    const markerIndex = bundledCode.indexOf(TSSL_CODE_MARKER);
-    if (markerIndex !== -1) {
-        bundledCode = bundledCode.substring(markerIndex + TSSL_CODE_MARKER.length).trimStart();
-    }
-
-    // Parse the bundled code
-    const sourceFile = project.createSourceFile("esbuild-output.ts", bundledCode, { overwrite: true });
-
-    // Build alias map from import statements
-    const aliasMap = new Map<string, string>();
-    for (const importDecl of sourceFile.getImportDeclarations()) {
-        for (const named of importDecl.getNamedImports()) {
-            const alias = named.getAliasNode();
-            if (alias) {
-                // import { original as alias } → alias should become original
-                aliasMap.set(alias.getText(), named.getName());
-            }
-        }
-    }
-
-    // Detect esbuild's collision avoidance: if we have alias X→Y, and there's
-    // an identifier X2 (X + digit), it was the original that got renamed.
-    // e.g., import { critter_inven_obj as critter_inven_obj2 } causes bundled
-    // critter_inven_obj2 to become critter_inven_obj22
-    // In this case: rename critter_inven_obj22→critter_inven_obj2, and DON'T
-    // rename critter_inven_obj2→critter_inven_obj (that would cause collision)
-    const allIdentifiers = new Set<string>();
-    sourceFile.getDescendantsOfKind(SyntaxKind.Identifier).forEach(id => {
-        allIdentifiers.add(id.getText());
-    });
-    for (const [alias] of [...aliasMap]) {
-        // Look for alias + digits pattern in identifiers
-        for (const id of allIdentifiers) {
-            if (id.startsWith(alias) && id !== alias && /^\d+$/.test(id.slice(alias.length))) {
-                if (!aliasMap.has(id)) {
-                    // Add mapping for the collision-renamed identifier
-                    aliasMap.set(id, alias);
-                    // Remove the original alias mapping - 'alias' is the real function name
-                    aliasMap.delete(alias);
-                }
-            }
-        }
-    }
-
-    // Rename identifiers using AST (automatically skips strings)
-    // Sort by length (longest first) to avoid partial replacements
-    const sortedAliases = [...aliasMap.entries()].sort((a, b) => b[0].length - a[0].length);
-    for (const [alias, original] of sortedAliases) {
-        sourceFile.getDescendantsOfKind(SyntaxKind.Identifier)
-            .filter(id => id.getText() === alias)
-            .forEach(id => id.replaceWithText(original));
-    }
-
-    // Remove import declarations
-    sourceFile.getImportDeclarations().forEach(decl => decl.remove());
-
-    return sourceFile.getFullText();
 }
 
 interface SourceSection {
