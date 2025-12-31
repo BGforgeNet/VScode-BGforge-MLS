@@ -9,8 +9,9 @@ import {
 import * as esbuild from 'esbuild-wasm';
 import { fileURLToPath } from "url";
 import { ensureEsbuild, cleanupEsbuildOutput } from "./esbuild-utils";
-import { conlog } from "./common";
-import { connection } from "./server";
+
+// Use console.log directly for CLI compatibility (conlog depends on LSP connection)
+const conlog = console.log;
 
 export const EXT_TSSL = ".tssl";
 const uriToPath = (uri: string) => uri.startsWith('file://') ? fileURLToPath(uri) : uri;
