@@ -7,7 +7,7 @@
 import * as esbuild from "esbuild-wasm";
 import * as path from "path";
 import * as fs from "fs";
-import { ensureEsbuild, cleanupEsbuildOutput } from "../esbuild-utils";
+import { ensureEsbuild, cleanupEsbuildOutput, noSideEffectsPlugin } from "../esbuild-utils";
 
 /** Marker to identify start of user code in esbuild output */
 const TBAF_CODE_MARKER = "/* __TBAF_CODE_START__ */";
@@ -80,6 +80,7 @@ export async function bundle(filePath: string, sourceText: string): Promise<stri
                     });
                 },
             },
+            noSideEffectsPlugin(),
         ],
     });
 

@@ -8,7 +8,7 @@ import {
 } from 'ts-morph';
 import * as esbuild from 'esbuild-wasm';
 import { fileURLToPath } from "url";
-import { ensureEsbuild, cleanupEsbuildOutput } from "./esbuild-utils";
+import { ensureEsbuild, cleanupEsbuildOutput, noSideEffectsPlugin } from "./esbuild-utils";
 
 // Use console.log directly for CLI compatibility (conlog depends on LSP connection)
 const conlog = console.log;
@@ -60,6 +60,12 @@ const FORBIDDEN_GLOBALS = new Set([
     'Symbol',
     'Reflect',
     'Proxy',
+]);
+
+/** Variable names that conflict with folib exports and cause esbuild renaming issues */
+const RESERVED_VAR_NAMES = new Set([
+    'list',
+    'map',
 ]);
 
 /**
@@ -119,7 +125,7 @@ export async function compile(uri: string, text: string): Promise<string> {
     const bundleResult = await bundle(filePath, text);
 
     // Strip ESM module boilerplate from esbuild output
-    const bundledCode = cleanupEsbuildOutput(bundleResult.code, TSSL_CODE_MARKER);
+    const bundledCode = cleanupEsbuildOutput(bundleResult.code, TSSL_CODE_MARKER, mainFileData.constants);
 
     // Create source file in memory from cleaned bundled code
     const sourceFile = project.createSourceFile("bundled.ts", bundledCode, { overwrite: true });
@@ -420,16 +426,19 @@ async function bundle(filePath: string, text: string): Promise<BundleResult> {
         keepNames: false,
         target: 'es2022',
         platform: 'neutral',
-        // Mark .d.ts imports as external - they're engine builtins
-        plugins: [{
-            name: 'external-declarations',
-            setup(build) {
-                build.onResolve({ filter: /\.d(\.ts)?$/ }, args => ({
-                    path: args.path,
-                    external: true
-                }));
-            }
-        }]
+        plugins: [
+            // Mark .d.ts imports as external - they're engine builtins
+            {
+                name: 'external-declarations',
+                setup(build) {
+                    build.onResolve({ filter: /\.d(\.ts)?$/ }, args => ({
+                        path: args.path,
+                        external: true
+                    }));
+                }
+            },
+            noSideEffectsPlugin(),
+        ]
     });
 
     if (result.outputFiles && result.outputFiles.length > 0) {
@@ -624,6 +633,9 @@ function processInput(source: SourceFile, mainFileData: MainFileData, ctx: TsslC
 
             // Skip inline functions - they are expanded at call sites, not emitted as procedures
             if (name && ctx.inlineFunctions.has(name)) continue;
+
+            // Skip list() and map() - they are converted to array/map literals by the transpiler
+            if (name === 'list' || name === 'map') continue;
 
             const paramsWithDefaults = func.getParameters().map(p => {
                 const paramName = p.getName();
@@ -928,6 +940,18 @@ function processCallExpression(callExpr: Node, ctx: TsslContext): string {
     // Get function name
     const fnName = expression.getText();
 
+    // Special handling for list() and map() - convert to SSL array/map literals
+    if (fnName === 'list') {
+        const processedArgs = args.map((arg: Node) => convertOperatorsAST(arg, ctx));
+        return `[${processedArgs.join(', ')}]`;
+    }
+    if (fnName === 'map') {
+        // map() takes a single object argument, just output it directly
+        if (args.length === 1) {
+            return convertOperatorsAST(args[0], ctx);
+        }
+    }
+
     // Convert arguments with operator conversion
     const processedArgs = args.map((arg: Node) => convertOperatorsAST(arg, ctx));
 
@@ -985,6 +1009,10 @@ function convertVarOrConstToVariable(stmt: Node, ctx: TsslContext): string {
     const replacements: { start: number; end: number; text: string }[] = [];
 
     for (const decl of declList.getDeclarations()) {
+        const varName = decl.getName();
+        if (RESERVED_VAR_NAMES.has(varName)) {
+            throw new Error(`Variable name '${varName}' conflicts with folib export. Use a different name.`);
+        }
         const initializer = decl.getInitializer();
         if (initializer) {
             const converted = convertOperatorsAST(initializer, ctx);
@@ -1173,6 +1201,20 @@ function convertOperatorsAST(node: Node, ctx?: TsslContext): string {
             const call = node.asKindOrThrow(SyntaxKind.CallExpression);
             const callExpr = call.getExpression();
             const fnName = convertOperatorsAST(callExpr, ctx);
+
+            // Special handling for list() and map() - convert to SSL array/map literals
+            if (fnName === 'list') {
+                const args = call.getArguments().map(arg => convertOperatorsAST(arg, ctx));
+                return `[${args.join(', ')}]`;
+            }
+            if (fnName === 'map') {
+                // map() takes a single object argument, just output it directly
+                const mapArgs = call.getArguments();
+                if (mapArgs.length === 1) {
+                    return convertOperatorsAST(mapArgs[0], ctx);
+                }
+            }
+
             const args = call.getArguments().map(arg => convertOperatorsAST(arg, ctx));
 
             // For zero-arg inline macros, don't use parentheses (only if ctx available)
