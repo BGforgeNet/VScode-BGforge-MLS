@@ -251,8 +251,67 @@ function getDialogPreviewHtml(data: DialogData, codiconsUri: string, extensionPa
 }
 
 export function registerDialogTree(context: vscode.ExtensionContext, client: LanguageClient): void {
-    // Preview dialog tree command - full screen like Markdown preview
     let dialogPanel: vscode.WebviewPanel | undefined;
+    let currentDocumentUri: string | undefined;
+    let refreshTimeout: NodeJS.Timeout | undefined;
+
+    // Debounced refresh function
+    async function refreshPreview() {
+        if (!dialogPanel || !currentDocumentUri) return;
+
+        const params: ExecuteCommandParams = {
+            command: "bgforge.parseDialog",
+            arguments: [{ uri: currentDocumentUri }],
+        };
+
+        try {
+            const data = (await client.sendRequest(ExecuteCommandRequest.type, params)) as DialogData | null;
+            if (!data || data.nodes.length === 0) return;
+
+            const codiconsUri = dialogPanel.webview.asWebviewUri(
+                vscode.Uri.joinPath(context.extensionUri, "node_modules", "@vscode/codicons", "dist", "codicon.css")
+            );
+            dialogPanel.webview.html = getDialogPreviewHtml(data, codiconsUri.toString(), context.extensionUri.fsPath);
+        } catch {
+            // Ignore errors during refresh
+        }
+    }
+
+    function scheduleRefresh() {
+        if (refreshTimeout) {
+            clearTimeout(refreshTimeout);
+        }
+        refreshTimeout = setTimeout(refreshPreview, 300);
+    }
+
+    // Watch for script changes while editing
+    context.subscriptions.push(
+        vscode.workspace.onDidChangeTextDocument((e) => {
+            if (dialogPanel && e.document.uri.toString() === currentDocumentUri) {
+                scheduleRefresh();
+            }
+        })
+    );
+
+    // Refresh on script save
+    context.subscriptions.push(
+        vscode.workspace.onDidSaveTextDocument((doc) => {
+            if (dialogPanel && doc.uri.toString() === currentDocumentUri) {
+                refreshPreview();
+            }
+        })
+    );
+
+    // Refresh on .msg save (server already reloaded by this point)
+    context.subscriptions.push(
+        vscode.workspace.onDidSaveTextDocument((doc) => {
+            if (dialogPanel && doc.languageId === "fallout-msg") {
+                refreshPreview();
+            }
+        })
+    );
+
+    // Preview dialog tree command
     context.subscriptions.push(
         vscode.commands.registerCommand("extension.bgforge.dialogPreview", async () => {
             const editor = vscode.window.activeTextEditor;
@@ -261,9 +320,11 @@ export function registerDialogTree(context: vscode.ExtensionContext, client: Lan
                 return;
             }
 
+            currentDocumentUri = editor.document.uri.toString();
+
             const params: ExecuteCommandParams = {
                 command: "bgforge.parseDialog",
-                arguments: [{ uri: editor.document.uri.toString() }],
+                arguments: [{ uri: currentDocumentUri }],
             };
 
             try {
@@ -279,7 +340,6 @@ export function registerDialogTree(context: vscode.ExtensionContext, client: Lan
                 if (dialogPanel) {
                     dialogPanel.reveal(vscode.ViewColumn.Active);
                 } else {
-                    // Full screen in current column, like Markdown preview
                     dialogPanel = vscode.window.createWebviewPanel(
                         "bgforgeDialogPreview",
                         `Dialog: ${fileName}`,
@@ -288,6 +348,10 @@ export function registerDialogTree(context: vscode.ExtensionContext, client: Lan
                     );
                     dialogPanel.onDidDispose(() => {
                         dialogPanel = undefined;
+                        currentDocumentUri = undefined;
+                        if (refreshTimeout) {
+                            clearTimeout(refreshTimeout);
+                        }
                     });
                 }
 
