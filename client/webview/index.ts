@@ -3,16 +3,11 @@ import fcose from "cytoscape-fcose";
 
 cytoscape.use(fcose);
 
-fetch("data.json")
-    .then(function (response) {
-        return response.text();
-    })
-    .then(function (text) {
-        return JSON.parse(text);
-    })
-    .then(function (data) {
-        drawGraph(data);
-    });
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const previewData = (window as any).previewData;
+if (previewData) {
+    drawGraph(previewData);
+}
 
 const options = {
     name: "fcose",

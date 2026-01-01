@@ -1,6 +1,6 @@
 "use strict";
 
-import * as os from "os";
+import * as fs from "fs";
 import * as path from "path";
 import * as vscode from "vscode";
 import { ExtensionContext, workspace } from "vscode";
@@ -20,8 +20,13 @@ const loadingIndicator = new ServerInitializingIndicator(() => {
 const cmd_compile = "extension.bgforge.compile";
 const cmd_preview = "extension.bgforge.preview";
 let previewSrcDir: string;
-const tmpDir = path.join(os.tmpdir(), "bgforge-mls");
-const previewIndexHtml = path.join(tmpDir, "preview", "index.html");
+
+interface PreviewData {
+    nodes: { data: { id: string } }[];
+    edges: { data: { id: string; source: string; target: string } }[];
+}
+
+let currentPanel: vscode.WebviewPanel | undefined;
 
 export async function activate(context: ExtensionContext) {
     // The server is implemented in node
@@ -33,7 +38,7 @@ export async function activate(context: ExtensionContext) {
     context.subscriptions.push(disposable);
     disposable = vscode.commands.registerCommand(cmd_preview, preview);
     context.subscriptions.push(disposable);
-    previewSrcDir = context.asAbsolutePath(path.join("preview", "out"));
+    previewSrcDir = context.asAbsolutePath(path.join("client", "out", "webview"));
 
     // If the extension is launched in debug mode then the debug server options are used
     // Otherwise the run options are used
@@ -90,21 +95,15 @@ export async function activate(context: ExtensionContext) {
     client.onNotification("bgforge-mls/load-finished", () => {
         loadingIndicator.finishedLoadingProject("");
     });
-
-    client.onNotification("bgforge-mls/start-preview", () => {
-        vscode.commands.executeCommand("livePreview.start.preview.atFileString", previewIndexHtml);
-    });
 }
 
-function preview() {
-    if (!vscode.extensions.getExtension("ms-vscode.live-server")) {
-        conlog("Live preview not installed, pass");
-        vscode.window.showInformationMessage(
-            "Install Microsoft Live Preview extenstion (ms-vscode.live-server) to view callgraphs."
-        );
+async function preview() {
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) {
+        vscode.window.showInformationMessage("No active editor");
         return;
     }
-    const document = vscode.window.activeTextEditor.document;
+    const document = editor.document;
     const uri = document.uri;
     const params: ExecuteCommandParams = {
         command: cmd_preview,
@@ -112,12 +111,77 @@ function preview() {
             {
                 uri: uri.toString(),
                 scheme: uri.scheme,
-                previewSrcDir: previewSrcDir,
             },
         ],
     };
 
-    client.sendRequest(ExecuteCommandRequest.type, params);
+    const data = await client.sendRequest(ExecuteCommandRequest.type, params) as PreviewData | undefined;
+    if (!data) {
+        vscode.window.showInformationMessage("No preview data available for this file");
+        return;
+    }
+
+    showPreviewPanel(data, document.fileName);
+}
+
+function showPreviewPanel(data: PreviewData, fileName: string) {
+    const column = vscode.ViewColumn.Beside;
+
+    if (currentPanel) {
+        currentPanel.reveal(column);
+        currentPanel.webview.html = getWebviewContent(currentPanel.webview, data);
+        return;
+    }
+
+    currentPanel = vscode.window.createWebviewPanel(
+        "bgforgePreview",
+        `Callgraph: ${path.basename(fileName)}`,
+        column,
+        {
+            enableScripts: true,
+            localResourceRoots: [vscode.Uri.file(previewSrcDir)],
+        }
+    );
+
+    currentPanel.webview.html = getWebviewContent(currentPanel.webview, data);
+
+    currentPanel.onDidDispose(() => {
+        currentPanel = undefined;
+    });
+}
+
+function getWebviewContent(webview: vscode.Webview, data: PreviewData): string {
+    const scriptPath = path.join(previewSrcDir, "index.js");
+    const scriptContent = fs.readFileSync(scriptPath, "utf-8");
+
+    return `<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        #cy {
+            height: 100vh;
+            width: 100vw;
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="cy"></div>
+    <script>
+        window.previewData = ${JSON.stringify(data)};
+    </script>
+    <script>${scriptContent}</script>
+</body>
+</html>`;
 }
 
 export async function deactivate(): Promise<void> {
@@ -127,7 +191,10 @@ export async function deactivate(): Promise<void> {
     return await client.stop();
 }
 
-async function compile(document = vscode.window.activeTextEditor.document) {
+async function compile(document = vscode.window.activeTextEditor?.document) {
+    if (!document) {
+        return;
+    }
     const uri = document.uri;
     const params: ExecuteCommandParams = {
         command: cmd_compile,

@@ -7,8 +7,8 @@ export default [
         files: [
             "client/src/*.ts",
             "client/src/test/*.ts",
+            "client/webview/*.ts",
             "server/src/**/*.ts",
-            "preview/src/**/*.ts",
         ],
         ignores: [
             "node_modules/**/*",

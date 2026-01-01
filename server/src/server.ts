@@ -14,7 +14,7 @@ import {
 import { conlog, symbolAtPosition } from "./common";
 import { clearDiagnostics, COMMAND_compile, compile } from "./compile";
 import { Galactus } from "./galactus";
-import { preview } from "./preview";
+import { getPreviewData } from "./preview";
 import * as settings from "./settings";
 import { defaultSettings, MLSsettings } from "./settings";
 
@@ -210,10 +210,8 @@ connection.onExecuteCommand(async (params) => {
     }
 
     if (command == COMMAND_preview) {
-        const willPreview = preview(text, langId, args.previewSrcDir);
-        if (willPreview) {
-            connection.sendNotification("bgforge-mls/start-preview");
-        }
+        const data = getPreviewData(text, langId);
+        return data;
     }
 });
 
