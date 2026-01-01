@@ -4,18 +4,20 @@ import globals from "globals";
 
 export default [
     {
+        ignores: [
+            "node_modules/**",
+            "client/node_modules/**",
+            "client/out/**",
+            "server/node_modules/**",
+            "server/out/**",
+            "preview/out/**",
+        ],
+    },
+    {
         files: [
-            "client/src/*.ts",
-            "client/src/test/*.ts",
+            "client/src/**/*.ts",
             "client/webview/*.ts",
             "server/src/**/*.ts",
-        ],
-        ignores: [
-            "node_modules/**/*",
-            "client/node_modules/**/*",
-            "client/out/**/*",
-            "server/node_modules/**/*",
-            "server/out/**/*",
         ],
     },
     {
@@ -41,7 +43,7 @@ export default [
                 },
             ],
             "@typescript-eslint/no-explicit-any": "warn", // Warn when 'any' is used
-            "no-unused-vars": "error", // Disallow unused variables
+            "no-unused-vars": ["error", { argsIgnorePattern: "^_", varsIgnorePattern: "^_" }]
         },
     },
 ];

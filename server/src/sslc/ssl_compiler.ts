@@ -60,7 +60,7 @@ export async function ssl_compile(opts: {
         returnCode: number;
         stdout: string;
         stderr: string;
-    }>((resolve, reject) => {
+    }>((resolve, _reject) => {
         p.on("close", (code) => {
             conlog(
                 `Build-in compiler:\n` +
