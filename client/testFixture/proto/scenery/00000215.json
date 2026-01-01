@@ -1,0 +1,149 @@
+{
+  "format": "pro",
+  "formatName": "Fallout PRO (Prototype)",
+  "root": {
+    "name": "PRO File",
+    "fields": [
+      {
+        "name": "Header",
+        "fields": [
+          {
+            "name": "Object Type",
+            "value": "Scenery",
+            "offset": 0,
+            "size": 1,
+            "type": "enum",
+            "rawValue": 2
+          },
+          {
+            "name": "Object ID",
+            "value": 214,
+            "offset": 1,
+            "size": 3,
+            "type": "uint24"
+          },
+          {
+            "name": "Text ID",
+            "value": 21400,
+            "offset": 4,
+            "size": 4,
+            "type": "uint32"
+          },
+          {
+            "name": "FRM Type",
+            "value": "Scenery",
+            "offset": 8,
+            "size": 1,
+            "type": "enum",
+            "rawValue": 2
+          },
+          {
+            "name": "FRM ID",
+            "value": 101,
+            "offset": 9,
+            "size": 3,
+            "type": "uint24"
+          },
+          {
+            "name": "Light Radius",
+            "value": 0,
+            "offset": 12,
+            "size": 4,
+            "type": "uint32",
+            "description": "0-8 hexes"
+          },
+          {
+            "name": "Light Intensity",
+            "value": 0,
+            "offset": 16,
+            "size": 4,
+            "type": "uint32",
+            "description": "0-65536"
+          },
+          {
+            "name": "Flags",
+            "value": "LightThru",
+            "offset": 20,
+            "size": 4,
+            "type": "flags",
+            "rawValue": 536870912
+          }
+        ],
+        "expanded": true
+      },
+      {
+        "name": "Scenery Properties",
+        "fields": [
+          {
+            "name": "Wall Light Flags",
+            "value": "WestCorner",
+            "offset": 24,
+            "size": 2,
+            "type": "flags",
+            "rawValue": 32768
+          },
+          {
+            "name": "Action Flags",
+            "value": "(none)",
+            "offset": 26,
+            "size": 2,
+            "type": "flags",
+            "rawValue": 0
+          },
+          {
+            "name": "Script Type",
+            "value": -1,
+            "offset": 28,
+            "size": 1,
+            "type": "int8"
+          },
+          {
+            "name": "Script ID",
+            "value": -1,
+            "offset": 29,
+            "size": 3,
+            "type": "int24"
+          },
+          {
+            "name": "Sub Type",
+            "value": "Generic",
+            "offset": 32,
+            "size": 4,
+            "type": "enum",
+            "rawValue": 5
+          },
+          {
+            "name": "Material",
+            "value": "Wood",
+            "offset": 36,
+            "size": 4,
+            "type": "enum",
+            "rawValue": 3
+          },
+          {
+            "name": "Sound ID",
+            "value": 48,
+            "offset": 40,
+            "size": 1,
+            "type": "uint8"
+          }
+        ],
+        "expanded": true
+      },
+      {
+        "name": "Generic Properties",
+        "fields": [
+          {
+            "name": "Unknown",
+            "value": 3435973836,
+            "offset": 41,
+            "size": 4,
+            "type": "uint32"
+          }
+        ],
+        "expanded": true
+      }
+    ],
+    "expanded": true
+  }
+}

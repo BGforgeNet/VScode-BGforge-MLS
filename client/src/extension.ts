@@ -11,6 +11,7 @@ import {
     TransportKind,
 } from "vscode-languageclient/node";
 import { ExecuteCommandParams, ExecuteCommandRequest } from "vscode-languageserver-protocol";
+import { registerBinaryEditor } from "./editors/binaryEditor";
 import { ServerInitializingIndicator } from "./indicator";
 
 let client: LanguageClient;
@@ -39,6 +40,9 @@ export async function activate(context: ExtensionContext) {
     disposable = vscode.commands.registerCommand(cmd_preview, preview);
     context.subscriptions.push(disposable);
     previewSrcDir = context.asAbsolutePath(path.join("client", "out", "webview"));
+
+    // Register binary file editor
+    context.subscriptions.push(registerBinaryEditor(context));
 
     // If the extension is launched in debug mode then the debug server options are used
     // Otherwise the run options are used

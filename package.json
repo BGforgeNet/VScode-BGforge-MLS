@@ -213,6 +213,18 @@
                 "title": "BGforge MLS: callgraph preview"
             }
         ],
+        "customEditors": [
+            {
+                "viewType": "bgforge.binaryViewer",
+                "displayName": "BGforge Binary Viewer",
+                "selector": [
+                    {
+                        "filenamePattern": "*.pro"
+                    }
+                ],
+                "priority": "default"
+            }
+        ],
         "grammars": [
             {
                 "language": "weidu-ssl",
@@ -407,22 +419,26 @@
         ]
     },
     "scripts": {
-        "vscode:prepublish": "pnpm esbuild-base-client --minify && pnpm esbuild-base-server --minify && pnpm esbuild-base-preview --minify",
+        "vscode:prepublish": "pnpm esbuild-base-client --minify && pnpm esbuild-base-server --minify && pnpm esbuild-base-preview --minify && pnpm esbuild-base-bin-editor --minify",
         "esbuild-base-client": "esbuild ./client/src/extension.ts --bundle --outfile=client/out/extension.js --external:vscode --format=cjs --platform=node",
         "esbuild-base-server": "esbuild ./server/src/server.ts --bundle --outfile=server/out/server.js --external:vscode --external:esbuild-wasm --format=cjs --platform=node",
         "esbuild-base-preview": "esbuild ./client/webview/index.ts --bundle --outfile=client/out/webview/index.js",
+        "esbuild-base-bin-editor": "esbuild ./client/src/editors/binaryEditor-webview.ts --bundle --outfile=client/out/editors/binaryEditor-webview.js",
         "esbuild-client": "pnpm esbuild-base-client --sourcemap",
         "esbuild-server": "pnpm esbuild-base-server --sourcemap",
         "esbuild-preview": "pnpm esbuild-base-preview --sourcemap",
+        "esbuild-bin-editor": "pnpm esbuild-base-bin-editor --sourcemap",
         "esbuild-test": "esbuild ./client/src/test/*.ts --outdir=client/out/test --external:vscode --external:'./reporters/parallel-buffered' --external:'./worker.js' --format=cjs --platform=node --sourcemap --bundle",
-        "esbuild-all": "pnpm esbuild-client && pnpm esbuild-server && pnpm esbuild-test && pnpm esbuild-preview",
+        "esbuild-all": "pnpm esbuild-client && pnpm esbuild-server && pnpm esbuild-test && pnpm esbuild-preview && pnpm esbuild-bin-editor",
         "esbuild-watch-client": "pnpm esbuild-base-client --sourcemap --watch",
         "esbuild-watch-server": "pnpm esbuild-base-server --sourcemap --watch",
-        "test-compile": "tsc -p ./",
+        "typecheck": "tsc -b",
         "compile": "pnpm esbuild-client && pnpm esbuild-server",
         "postinstall": "cd client && pnpm install && cd ../server && pnpm install && cd ..",
-        "test": "sh ./scripts/e2e.sh",
-        "eslint": "eslint client/src/*.ts --max-warnings 0 && eslint client/src/test/*.ts --max-warnings 0 && eslint client/webview/*.ts --max-warnings 0 && eslint server/src/*.ts --max-warnings 0",
+        "test-e2e": "sh ./scripts/e2e.sh",
+        "test-bin": "bash ./scripts/test-bin.sh",
+        "lint": "bash ./scripts/lint.sh",
+        "test": "pnpm typecheck && pnpm lint && pnpm test-bin",
         "package": "pnpm vsce package --no-dependencies"
     },
     "devDependencies": {
