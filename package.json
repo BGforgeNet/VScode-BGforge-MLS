@@ -420,7 +420,7 @@
         "esbuild-watch-server": "pnpm esbuild-base-server --sourcemap --watch",
         "test-compile": "tsc -p ./",
         "compile": "pnpm esbuild-client && pnpm esbuild-server",
-        "postinstall": "cd client && pnpm install && cd ../server && npm install -f && cd ../preview && pnpm install && cd ..",
+        "postinstall": "cd client && pnpm install && cd ../server && pnpm install && cd ../preview && pnpm install && cd ..",
         "test": "sh ./scripts/e2e.sh",
         "eslint": "eslint client/src/*.ts --max-warnings 0 && eslint client/src/test/*.ts --max-warnings 0 && eslint server/src/*.ts --max-warnings 0 && eslint preview/src/*.ts  --max-warnings 0",
         "package": "pnpm vsce package --no-dependencies"
