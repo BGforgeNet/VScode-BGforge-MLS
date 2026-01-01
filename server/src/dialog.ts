@@ -1,0 +1,204 @@
+/**
+ * Dialog parser for Fallout SSL scripts using tree-sitter.
+ * Extracts dialog structure (nodes, replies, options) for visualization.
+ */
+
+import { Parser, Language, type Node as SyntaxNode } from "web-tree-sitter";
+import * as path from "path";
+import * as fs from "fs";
+
+export interface DialogReply {
+    msgId: number | string;
+    line: number;
+    conditional?: string;
+}
+
+export interface DialogOption {
+    msgId: number | string;
+    target: string;
+    skill?: number;
+    type: "NOption" | "NLowOption" | "GOption" | "GLowOption" | "BOption" | "BLowOption" | "NMessage" | "GMessage" | "BMessage";
+    line: number;
+}
+
+export interface DialogNode {
+    name: string;
+    line: number;
+    replies: DialogReply[];
+    options: DialogOption[];
+    callTargets: string[]; // Direct "call Node*" transitions
+}
+
+export interface DialogData {
+    nodes: DialogNode[];
+    entryPoints: string[];
+}
+
+let parser: Parser | null = null;
+let language: Language | null = null;
+
+async function getParser(): Promise<Parser> {
+    if (parser && language) return parser;
+
+    // Load WASM binary directly - locateFile doesn't work in CJS bundles
+    const wasmBinary = fs.readFileSync(path.join(__dirname, "web-tree-sitter.wasm"));
+    await Parser.init({ wasmBinary });
+
+    parser = new Parser();
+
+    const sslWasmPath = path.join(__dirname, "tree-sitter-ssl.wasm");
+    language = await Language.load(sslWasmPath);
+    parser.setLanguage(language);
+
+    return parser;
+}
+
+/**
+ * Parse dialog structure from SSL script text using tree-sitter
+ */
+export async function parseDialog(text: string): Promise<DialogData> {
+    const p = await getParser();
+    const tree = p.parse(text);
+    if (!tree) {
+        return { nodes: [], entryPoints: [] };
+    }
+    const root = tree.rootNode;
+
+    const nodes: DialogNode[] = [];
+    const entryPoints: string[] = [];
+
+    // Find all procedures
+    for (const child of root.children) {
+        if (child.type === "procedure") {
+            const nameNode = child.childForFieldName("name");
+            if (!nameNode) continue;
+
+            const procName = nameNode.text;
+
+            // Get entry points from talk_p_proc
+            if (procName === "talk_p_proc") {
+                extractEntryPoints(child, entryPoints);
+                continue;
+            }
+
+            // Parse dialog node
+            const dialogNode = parseProcedure(child, procName);
+            if (dialogNode.replies.length > 0 || dialogNode.options.length > 0 || dialogNode.callTargets.length > 0) {
+                nodes.push(dialogNode);
+            }
+        }
+    }
+
+    return { nodes, entryPoints };
+}
+
+function extractEntryPoints(proc: SyntaxNode, entryPoints: string[]): void {
+    // Find call statements and call expressions
+    walkTree(proc, (node) => {
+        if (node.type === "call_stmt") {
+            const target = node.childForFieldName("target");
+            if (target) {
+                const name = target.type === "call_expr"
+                    ? target.childForFieldName("func")?.text
+                    : target.text;
+                if (name && !entryPoints.includes(name)) {
+                    entryPoints.push(name);
+                }
+            }
+        } else if (node.type === "call_expr") {
+            const func = node.childForFieldName("func");
+            if (func?.text?.startsWith("Node") && !entryPoints.includes(func.text)) {
+                entryPoints.push(func.text);
+            }
+        }
+    });
+}
+
+function parseProcedure(proc: SyntaxNode, name: string): DialogNode {
+    const replies: DialogReply[] = [];
+    const options: DialogOption[] = [];
+    const callTargets: string[] = [];
+
+    walkTree(proc, (node) => {
+        if (node.type === "call_expr") {
+            const funcNode = node.childForFieldName("func");
+            if (!funcNode) return;
+
+            const funcName = funcNode.text;
+            const args = getCallArgs(node);
+            const line = node.startPosition.row + 1;
+
+            // Reply(msgId)
+            if (funcName === "Reply" && args.length >= 1) {
+                replies.push({
+                    msgId: parseArgValue(args[0]),
+                    line,
+                });
+            }
+
+            // NOption, GOption, BOption, etc.
+            const optionTypes = ["NOption", "NLowOption", "GOption", "GLowOption", "BOption", "BLowOption"];
+            if (optionTypes.includes(funcName) && args.length >= 2) {
+                const target = args[1].text;
+                options.push({
+                    type: funcName as DialogOption["type"],
+                    msgId: parseArgValue(args[0]),
+                    target,
+                    skill: args.length >= 3 ? parseInt(args[2].text, 10) : undefined,
+                    line,
+                });
+            }
+
+            // NMessage, GMessage, BMessage (terminal)
+            const msgTypes = ["NMessage", "GMessage", "BMessage"];
+            if (msgTypes.includes(funcName) && args.length >= 1) {
+                options.push({
+                    type: funcName as DialogOption["type"],
+                    msgId: parseArgValue(args[0]),
+                    target: "",
+                    line,
+                });
+            }
+        }
+
+        // Collect "call Node*" statements as direct transitions
+        if (node.type === "call_stmt") {
+            const target = node.childForFieldName("target");
+            if (target) {
+                const targetName = target.type === "call_expr"
+                    ? target.childForFieldName("func")?.text
+                    : target.text;
+                if (targetName?.startsWith("Node") && !callTargets.includes(targetName)) {
+                    callTargets.push(targetName);
+                }
+            }
+        }
+    });
+
+    return {
+        name,
+        line: proc.startPosition.row + 1,
+        replies,
+        options,
+        callTargets,
+    };
+}
+
+function getCallArgs(callExpr: SyntaxNode): SyntaxNode[] {
+    // namedChildren[0] is the func, rest are args
+    return callExpr.namedChildren.slice(1);
+}
+
+function parseArgValue(node: SyntaxNode): number | string {
+    if (node.type === "number") {
+        return parseInt(node.text, 10);
+    }
+    return node.text;
+}
+
+function walkTree(node: SyntaxNode, callback: (_node: SyntaxNode) => void): void {
+    callback(node);
+    for (const child of node.children) {
+        walkTree(child, callback);
+    }
+}

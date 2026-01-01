@@ -152,6 +152,7 @@ export class BinaryEditorProvider implements vscode.CustomReadonlyEditorProvider
 
     private getJs(): string {
         if (!BinaryEditorProvider.cachedJs) {
+            // Built by esbuild-webviews - preserves editors/ subdir
             BinaryEditorProvider.cachedJs = this.loadAsset(path.join("client", "out", "editors", "binaryEditor-webview.js"));
         }
         return BinaryEditorProvider.cachedJs;

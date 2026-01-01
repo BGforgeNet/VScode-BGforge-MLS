@@ -44,6 +44,9 @@ importers:
       vscode-uri:
         specifier: '*'
         version: 3.1.0
+      web-tree-sitter:
+        specifier: ^0.26.3
+        version: 0.26.3
       yaml:
         specifier: ^2.2.2
         version: 2.8.2
@@ -367,6 +370,9 @@ packages:
   vscode-uri@3.1.0:
     resolution: {integrity: sha512-/BpdSx+yCQGnCvecbyXdxHDkuk55/G3xwnC0GqY4gmQ3j+A+g8kzzgB4Nk/SINjqn6+waqw3EgbVF2QKExkRxQ==}
 
+  web-tree-sitter@0.26.3:
+    resolution: {integrity: sha512-JIVgIKFS1w6lejxSntCtsS/QsE/ecTS00en809cMxMPxaor6MvUnQ+ovG8uTTTvQCFosSh4MeDdI5bSGw5SoBw==}
+
   yaml@2.8.2:
     resolution: {integrity: sha512-mplynKqc1C2hTVYxd0PU2xQAc22TI1vShAYGksCCfxbn/dFwnHTNi1bvYsBTkhdUNtGIf5xNOg938rrSSYvS9A==}
     engines: {node: '>= 14.6'}
@@ -657,6 +663,8 @@ snapshots:
       vscode-languageserver-protocol: 3.17.3
 
   vscode-uri@3.1.0: {}
+
+  web-tree-sitter@0.26.3: {}
 
   yaml@2.8.2: {}
 

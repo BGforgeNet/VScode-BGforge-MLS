@@ -13,6 +13,7 @@ import {
 } from "vscode-languageserver/node";
 import { conlog, symbolAtPosition } from "./common";
 import { clearDiagnostics, COMMAND_compile, compile } from "./compile";
+import { parseDialog } from "./dialog";
 import { Galactus } from "./galactus";
 import { getPreviewData } from "./preview";
 import * as settings from "./settings";
@@ -60,6 +61,9 @@ connection.onInitialize((params: InitializeParams) => {
             },
             inlayHintProvider: true,
             definitionProvider: true,
+            executeCommandProvider: {
+                commands: ["bgforge.parseDialog"],
+            },
         },
     };
     if (hasWorkspaceFolderCapability) {
@@ -183,14 +187,38 @@ connection.onHover((textDocumentPosition: TextDocumentPositionParams) => {
 connection.onExecuteCommand(async (params) => {
     const command = params.command;
     const COMMAND_preview = "extension.bgforge.preview";
-    if (command != COMMAND_compile && command != COMMAND_preview) {
-        return;
-    }
+    const COMMAND_parseDialog = "bgforge.parseDialog";
 
     if (!params.arguments) {
         return;
     }
     const args = params.arguments[0];
+
+    // Handle parseDialog command
+    if (command === COMMAND_parseDialog) {
+        const textDoc = documents.get(args.uri);
+        if (!textDoc) {
+            return null;
+        }
+        if (textDoc.languageId !== "fallout-ssl") {
+            return null;
+        }
+        try {
+            const dialogData = await parseDialog(textDoc.getText());
+            const messages = gala.getMessages(args.uri, textDoc.getText());
+            return { ...dialogData, messages };
+        } catch (e) {
+            conlog("parseDialog error: " + e);
+            if (e instanceof Error) {
+                conlog("stack: " + e.stack);
+            }
+            return null;
+        }
+    }
+
+    if (command != COMMAND_compile && command != COMMAND_preview) {
+        return;
+    }
 
     if (args.scheme != "file") {
         conlog("Compile: scheme is not 'file'");

@@ -357,4 +357,25 @@ export class Galactus {
             return getRelPath(this.workspaceRoot, absPath);
         }
     }
+
+    /** Get message texts for a fallout-ssl file */
+    getMessages(uri: string, text: string): Record<string, string> {
+        const messages: Record<string, string> = {};
+        if (!this.translation.initialized) {
+            return messages;
+        }
+        const filePath = uriToPath(uri);
+        const traFileKey = this.translation.traFileKey(filePath, text, "fallout-ssl");
+        if (!traFileKey) {
+            return messages;
+        }
+        const traEntries = this.translation.entries(traFileKey);
+        if (!traEntries) {
+            return messages;
+        }
+        for (const [id, entry] of traEntries) {
+            messages[id] = entry.source;
+        }
+        return messages;
+    }
 }
