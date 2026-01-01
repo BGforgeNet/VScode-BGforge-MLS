@@ -26,6 +26,9 @@ importers:
       '@typescript-eslint/parser':
         specifier: ^8.39.1
         version: 8.51.0(eslint@9.39.2)(typescript@4.9.5)
+      '@vscode/codicons':
+        specifier: ^0.0.44
+        version: 0.0.44
       esbuild:
         specifier: ^0.25.8
         version: 0.25.12
@@ -44,6 +47,9 @@ importers:
       prettier:
         specifier: ^3.6.2
         version: 3.7.4
+      tree-sitter-cli:
+        specifier: ^0.26.3
+        version: 0.26.3
       typescript:
         specifier: ^4.9.5
         version: 4.9.5
@@ -338,6 +344,9 @@ packages:
   '@typescript-eslint/visitor-keys@8.51.0':
     resolution: {integrity: sha512-mM/JRQOzhVN1ykejrvwnBRV3+7yTKK8tVANVN3o1O0t0v7o+jqdVu9crPy5Y9dov15TJk/FTIgoUGHrTOVL3Zg==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+
+  '@vscode/codicons@0.0.44':
+    resolution: {integrity: sha512-F7qPRumUK3EHjNdopfICLGRf3iNPoZQt+McTHAn4AlOWPB3W2kL4H0S7uqEqbyZ6rCxaeDjpAn3MCUnwTu/VJQ==}
 
   acorn-jsx@5.3.2:
     resolution: {integrity: sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ==}
@@ -799,6 +808,11 @@ packages:
     resolution: {integrity: sha512-j2Zq4NyQYG5XMST4cbs02Ak8iJUdxRM0XI5QyxXuZOzKOINmWurp3smXu3y5wDcJrptwpSjgXHzIQxR0omXljQ==}
     engines: {node: '>=12.0.0'}
 
+  tree-sitter-cli@0.26.3:
+    resolution: {integrity: sha512-1VHpmjnTsYJk03HDqzLGn9dmJaLsJ7YeGsnnSudC6XOZu5oasz0GEVOIVCTe6hA01YZJgHd1XGO6XJZe0Sj7tw==}
+    engines: {node: '>=12.0.0'}
+    hasBin: true
+
   ts-api-utils@2.3.0:
     resolution: {integrity: sha512-6eg3Y9SF7SsAvGzRHQvvc1skDAhwI4YQ32ui1scxD1Ccr0G5qIIbUBT3pFTKX8kmWIQClHobtUdNuaBgwdfdWg==}
     engines: {node: '>=18.12'}
@@ -1109,6 +1123,8 @@ snapshots:
     dependencies:
       '@typescript-eslint/types': 8.51.0
       eslint-visitor-keys: 4.2.1
+
+  '@vscode/codicons@0.0.44': {}
 
   acorn-jsx@5.3.2(acorn@8.15.0):
     dependencies:
@@ -1563,6 +1579,8 @@ snapshots:
     dependencies:
       fdir: 6.5.0(picomatch@4.0.3)
       picomatch: 4.0.3
+
+  tree-sitter-cli@0.26.3: {}
 
   ts-api-utils@2.3.0(typescript@4.9.5):
     dependencies:

@@ -2,6 +2,8 @@
 
 !client/package.json
 !client/out/extension.js
+!client/out/dialogTree-webview.js
+!client/out/editors/binaryEditor-webview.js
 
 !LICENSE.txt
 !resources/bgforge.png
@@ -11,13 +13,9 @@
 !server/out/completion.*.json
 !server/out/hover.*.json
 !server/out/signature.*.json
+!server/out/*.wasm
 
 !server/node_modules/sslc-emscripten-noderawfs/**
-
-!preview/package.json
-!preview/out/index.html
-!preview/out/index.css
-!preview/out/index.js
 
 !language-configurations/*.json
 !snippets/*.json

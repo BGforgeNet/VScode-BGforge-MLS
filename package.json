@@ -209,8 +209,9 @@
                 "title": "BGforge MLS: compile"
             },
             {
-                "command": "extension.bgforge.preview",
-                "title": "BGforge MLS: callgraph preview"
+                "command": "extension.bgforge.dialogPreview",
+                "title": "BGforge MLS: Dialog Preview",
+                "icon": "$(open-preview)"
             }
         ],
         "customEditors": [
@@ -408,6 +409,11 @@
             {
                 "command": "extension.bgforge.compile",
                 "key": "ctrl+r"
+            },
+            {
+                "command": "extension.bgforge.dialogPreview",
+                "key": "ctrl+shift+v",
+                "when": "editorLangId == fallout-ssl"
             }
         ],
         "iconThemes": [
@@ -419,17 +425,15 @@
         ]
     },
     "scripts": {
-        "vscode:prepublish": "pnpm esbuild-base-client --minify && pnpm esbuild-base-server --minify && pnpm esbuild-base-preview --minify && pnpm esbuild-base-bin-editor --minify",
+        "vscode:prepublish": "pnpm esbuild-base-client --minify && pnpm esbuild-base-server --minify && pnpm esbuild-base-webviews --minify",
         "esbuild-base-client": "esbuild ./client/src/extension.ts --bundle --outfile=client/out/extension.js --external:vscode --format=cjs --platform=node",
-        "esbuild-base-server": "esbuild ./server/src/server.ts --bundle --outfile=server/out/server.js --external:vscode --external:esbuild-wasm --format=cjs --platform=node",
-        "esbuild-base-preview": "esbuild ./client/webview/index.ts --bundle --outfile=client/out/webview/index.js",
-        "esbuild-base-bin-editor": "esbuild ./client/src/editors/binaryEditor-webview.ts --bundle --outfile=client/out/editors/binaryEditor-webview.js",
+        "esbuild-base-server": "bash ./scripts/build-server.sh",
+        "esbuild-base-webviews": "esbuild ./client/src/editors/binaryEditor-webview.ts ./client/src/dialogTree-webview.ts --outdir=client/out --bundle",
         "esbuild-client": "pnpm esbuild-base-client --sourcemap",
         "esbuild-server": "pnpm esbuild-base-server --sourcemap",
-        "esbuild-preview": "pnpm esbuild-base-preview --sourcemap",
-        "esbuild-bin-editor": "pnpm esbuild-base-bin-editor --sourcemap",
+        "esbuild-webviews": "pnpm esbuild-base-webviews --sourcemap",
         "esbuild-test": "esbuild ./client/src/test/*.ts --outdir=client/out/test --external:vscode --external:'./reporters/parallel-buffered' --external:'./worker.js' --format=cjs --platform=node --sourcemap --bundle",
-        "esbuild-all": "pnpm esbuild-client && pnpm esbuild-server && pnpm esbuild-test && pnpm esbuild-preview && pnpm esbuild-bin-editor",
+        "esbuild-all": "pnpm esbuild-client && pnpm esbuild-server && pnpm esbuild-test && pnpm esbuild-webviews",
         "esbuild-watch-client": "pnpm esbuild-base-client --sourcemap --watch",
         "esbuild-watch-server": "pnpm esbuild-base-server --sourcemap --watch",
         "typecheck": "tsc -b",
@@ -439,7 +443,8 @@
         "test-bin": "bash ./scripts/test-bin.sh",
         "lint": "bash ./scripts/lint.sh",
         "test": "pnpm typecheck && pnpm lint && pnpm test-bin",
-        "package": "pnpm vsce package --no-dependencies"
+        "package": "pnpm vsce package --no-dependencies",
+        "build-grammar": "bash ./scripts/build-grammar.sh"
     },
     "devDependencies": {
         "@eslint/eslintrc": "^3.3.1",
@@ -448,12 +453,14 @@
         "@types/node": "^22.17.1",
         "@typescript-eslint/eslint-plugin": "^8.39.1",
         "@typescript-eslint/parser": "^8.39.1",
+        "@vscode/codicons": "^0.0.44",
         "esbuild": "^0.25.8",
         "eslint": "^9.33.0",
         "eslint-config-prettier": "^10.1.8",
         "globals": "^15.15.0",
         "mocha": "^11.7.1",
         "prettier": "^3.6.2",
+        "tree-sitter-cli": "^0.26.3",
         "typescript": "^4.9.5"
     },
     "categories": [
@@ -462,7 +469,8 @@
     "homepage": "https://forums.bgforge.net/viewforum.php?f=35",
     "pnpm": {
         "onlyBuiltDependencies": [
-            "esbuild"
+            "esbuild",
+            "tree-sitter-cli"
         ]
     }
 }

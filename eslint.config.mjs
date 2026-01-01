@@ -10,13 +10,12 @@ export default [
             "client/out/**",
             "server/node_modules/**",
             "server/out/**",
-            "preview/out/**",
+            "grammars/**",
         ],
     },
     {
         files: [
             "client/src/**/*.ts",
-            "client/webview/*.ts",
             "server/src/**/*.ts",
         ],
     },
