@@ -1,6 +1,6 @@
 import { Location } from "vscode-languageserver";
 
-export interface Data extends Map<string, Location> {}
+export interface Data extends Map<string, Location> { }
 
 /** Intermediate result from parsing */
 export interface Definition {
@@ -10,7 +10,7 @@ export interface Definition {
     end: number;
 }
 /** All intermediate results from a file */
-export interface Definitions extends Array<Definition> {}
+export interface Definitions extends Array<Definition> { }
 
 /** Take regex parse result list and turn it into a proper definition map */
 export function load(uri: string, data: Definitions) {

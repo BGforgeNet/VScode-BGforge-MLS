@@ -14,6 +14,7 @@ import {
 import { conlog, symbolAtPosition } from "./common";
 import { clearDiagnostics, COMMAND_compile, compile } from "./compile";
 import { parseDialog } from "./dialog";
+import { formatDocument, initFormatter } from "./fallout-ssl/format";
 import { Galactus } from "./galactus";
 import { getPreviewData } from "./preview";
 import * as settings from "./settings";
@@ -61,6 +62,7 @@ connection.onInitialize((params: InitializeParams) => {
             },
             inlayHintProvider: true,
             definitionProvider: true,
+            documentFormattingProvider: true,
             executeCommandProvider: {
                 commands: ["bgforge.parseDialog"],
             },
@@ -100,6 +102,8 @@ connection.onInitialized(async () => {
     for (const document of documents.all()) {
         gala.reloadFileData(document.uri, document.languageId, document.getText());
     }
+    // Initialize formatter
+    await initFormatter();
     connection.sendNotification("bgforge-mls/load-finished");
     conlog("onInitialized completed");
 });
@@ -300,3 +304,18 @@ connection.onDefinition((params) => {
     const symbol = symbolAtPosition(text, params.position);
     return gala?.definition(langId, symbol);
 });
+
+connection.onDocumentFormatting((params) => {
+    const uri = params.textDocument.uri;
+    const textDoc = documents.get(uri);
+    if (!textDoc) {
+        return [];
+    }
+    // Only format fallout-ssl files
+    if (textDoc.languageId !== "fallout-ssl") {
+        return [];
+    }
+    const text = textDoc.getText();
+    return formatDocument(text, uri);
+});
+
