@@ -22,6 +22,12 @@
   ],
   "scripts": {
     "build": "tree-sitter generate && tree-sitter build --wasm",
+    "test": "./test.sh",
+    "lint": "eslint grammar.js",
     "playground": "tree-sitter playground"
+  },
+  "devDependencies": {
+    "eslint": "^9.0.0",
+    "globals": "^16.0.0"
   }
 }

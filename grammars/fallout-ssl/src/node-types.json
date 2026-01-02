@@ -32,6 +32,10 @@
           "named": true
         },
         {
+          "type": "member_expr",
+          "named": true
+        },
+        {
           "type": "number",
           "named": true
         },
@@ -52,6 +56,10 @@
           "named": true
         },
         {
+          "type": "ternary_expr",
+          "named": true
+        },
+        {
           "type": "unary_expr",
           "named": true
         }
@@ -68,6 +76,10 @@
         "types": [
           {
             "type": "identifier",
+            "named": true
+          },
+          {
+            "type": "member_expr",
             "named": true
           },
           {
@@ -105,6 +117,10 @@
             "named": true
           },
           {
+            "type": "member_expr",
+            "named": true
+          },
+          {
             "type": "number",
             "named": true
           },
@@ -122,6 +138,10 @@
           },
           {
             "type": "subscript_expr",
+            "named": true
+          },
+          {
+            "type": "ternary_expr",
             "named": true
           },
           {
@@ -165,6 +185,10 @@
             "named": true
           },
           {
+            "type": "member_expr",
+            "named": true
+          },
+          {
             "type": "number",
             "named": true
           },
@@ -182,6 +206,10 @@
           },
           {
             "type": "subscript_expr",
+            "named": true
+          },
+          {
+            "type": "ternary_expr",
             "named": true
           },
           {
@@ -237,6 +265,38 @@
           {
             "type": ">=",
             "named": false
+          },
+          {
+            "type": "^",
+            "named": false
+          },
+          {
+            "type": "and",
+            "named": false
+          },
+          {
+            "type": "andalso",
+            "named": false
+          },
+          {
+            "type": "bwand",
+            "named": false
+          },
+          {
+            "type": "bwor",
+            "named": false
+          },
+          {
+            "type": "bwxor",
+            "named": false
+          },
+          {
+            "type": "or",
+            "named": false
+          },
+          {
+            "type": "orelse",
+            "named": false
           }
         ]
       },
@@ -269,6 +329,10 @@
             "named": true
           },
           {
+            "type": "member_expr",
+            "named": true
+          },
+          {
             "type": "number",
             "named": true
           },
@@ -286,6 +350,10 @@
           },
           {
             "type": "subscript_expr",
+            "named": true
+          },
+          {
+            "type": "ternary_expr",
             "named": true
           },
           {
@@ -309,7 +377,15 @@
           "named": true
         },
         {
+          "type": "break_stmt",
+          "named": true
+        },
+        {
           "type": "call_stmt",
+          "named": true
+        },
+        {
+          "type": "continue_stmt",
           "named": true
         },
         {
@@ -357,6 +433,11 @@
     "fields": {}
   },
   {
+    "type": "break_stmt",
+    "named": true,
+    "fields": {}
+  },
+  {
     "type": "call_expr",
     "named": true,
     "fields": {
@@ -393,6 +474,10 @@
             "named": true
           },
           {
+            "type": "member_expr",
+            "named": true
+          },
+          {
             "type": "number",
             "named": true
           },
@@ -410,6 +495,10 @@
           },
           {
             "type": "subscript_expr",
+            "named": true
+          },
+          {
+            "type": "ternary_expr",
             "named": true
           },
           {
@@ -434,6 +523,68 @@
     "type": "call_stmt",
     "named": true,
     "fields": {
+      "delay": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "array_expr",
+            "named": true
+          },
+          {
+            "type": "binary_expr",
+            "named": true
+          },
+          {
+            "type": "boolean",
+            "named": true
+          },
+          {
+            "type": "call_expr",
+            "named": true
+          },
+          {
+            "type": "identifier",
+            "named": true
+          },
+          {
+            "type": "map_expr",
+            "named": true
+          },
+          {
+            "type": "member_expr",
+            "named": true
+          },
+          {
+            "type": "number",
+            "named": true
+          },
+          {
+            "type": "paren_expr",
+            "named": true
+          },
+          {
+            "type": "proc_ref",
+            "named": true
+          },
+          {
+            "type": "string",
+            "named": true
+          },
+          {
+            "type": "subscript_expr",
+            "named": true
+          },
+          {
+            "type": "ternary_expr",
+            "named": true
+          },
+          {
+            "type": "unary_expr",
+            "named": true
+          }
+        ]
+      },
       "target": {
         "multiple": false,
         "required": true,
@@ -483,6 +634,10 @@
             "named": true
           },
           {
+            "type": "member_expr",
+            "named": true
+          },
+          {
             "type": "number",
             "named": true
           },
@@ -503,6 +658,10 @@
             "named": true
           },
           {
+            "type": "ternary_expr",
+            "named": true
+          },
+          {
             "type": "unary_expr",
             "named": true
           }
@@ -518,7 +677,15 @@
           "named": true
         },
         {
+          "type": "break_stmt",
+          "named": true
+        },
+        {
           "type": "call_stmt",
+          "named": true
+        },
+        {
+          "type": "continue_stmt",
           "named": true
         },
         {
@@ -561,6 +728,11 @@
     }
   },
   {
+    "type": "continue_stmt",
+    "named": true,
+    "fields": {}
+  },
+  {
     "type": "default_clause",
     "named": true,
     "fields": {},
@@ -573,7 +745,15 @@
           "named": true
         },
         {
+          "type": "break_stmt",
+          "named": true
+        },
+        {
           "type": "call_stmt",
+          "named": true
+        },
+        {
+          "type": "continue_stmt",
           "named": true
         },
         {
@@ -628,6 +808,68 @@
             "named": true
           }
         ]
+      },
+      "value": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "array_expr",
+            "named": true
+          },
+          {
+            "type": "binary_expr",
+            "named": true
+          },
+          {
+            "type": "boolean",
+            "named": true
+          },
+          {
+            "type": "call_expr",
+            "named": true
+          },
+          {
+            "type": "identifier",
+            "named": true
+          },
+          {
+            "type": "map_expr",
+            "named": true
+          },
+          {
+            "type": "member_expr",
+            "named": true
+          },
+          {
+            "type": "number",
+            "named": true
+          },
+          {
+            "type": "paren_expr",
+            "named": true
+          },
+          {
+            "type": "proc_ref",
+            "named": true
+          },
+          {
+            "type": "string",
+            "named": true
+          },
+          {
+            "type": "subscript_expr",
+            "named": true
+          },
+          {
+            "type": "ternary_expr",
+            "named": true
+          },
+          {
+            "type": "unary_expr",
+            "named": true
+          }
+        ]
       }
     }
   },
@@ -664,6 +906,10 @@
           "named": true
         },
         {
+          "type": "member_expr",
+          "named": true
+        },
+        {
           "type": "number",
           "named": true
         },
@@ -681,6 +927,10 @@
         },
         {
           "type": "subscript_expr",
+          "named": true
+        },
+        {
+          "type": "ternary_expr",
           "named": true
         },
         {
@@ -707,7 +957,15 @@
             "named": true
           },
           {
+            "type": "break_stmt",
+            "named": true
+          },
+          {
             "type": "call_stmt",
+            "named": true
+          },
+          {
+            "type": "continue_stmt",
             "named": true
           },
           {
@@ -777,6 +1035,10 @@
             "named": true
           },
           {
+            "type": "member_expr",
+            "named": true
+          },
+          {
             "type": "number",
             "named": true
           },
@@ -794,6 +1056,10 @@
           },
           {
             "type": "subscript_expr",
+            "named": true
+          },
+          {
+            "type": "ternary_expr",
             "named": true
           },
           {
@@ -835,6 +1101,10 @@
             "named": true
           },
           {
+            "type": "member_expr",
+            "named": true
+          },
+          {
             "type": "number",
             "named": true
           },
@@ -852,6 +1122,10 @@
           },
           {
             "type": "subscript_expr",
+            "named": true
+          },
+          {
+            "type": "ternary_expr",
             "named": true
           },
           {
@@ -889,6 +1163,10 @@
             "named": true
           },
           {
+            "type": "member_expr",
+            "named": true
+          },
+          {
             "type": "number",
             "named": true
           },
@@ -906,6 +1184,10 @@
           },
           {
             "type": "subscript_expr",
+            "named": true
+          },
+          {
+            "type": "ternary_expr",
             "named": true
           },
           {
@@ -960,6 +1242,10 @@
           "named": true
         },
         {
+          "type": "member_expr",
+          "named": true
+        },
+        {
           "type": "number",
           "named": true
         },
@@ -977,6 +1263,10 @@
         },
         {
           "type": "subscript_expr",
+          "named": true
+        },
+        {
+          "type": "ternary_expr",
           "named": true
         },
         {
@@ -1003,7 +1293,15 @@
             "named": true
           },
           {
+            "type": "break_stmt",
+            "named": true
+          },
+          {
             "type": "call_stmt",
+            "named": true
+          },
+          {
+            "type": "continue_stmt",
             "named": true
           },
           {
@@ -1073,6 +1371,10 @@
             "named": true
           },
           {
+            "type": "member_expr",
+            "named": true
+          },
+          {
             "type": "number",
             "named": true
           },
@@ -1090,6 +1392,10 @@
           },
           {
             "type": "subscript_expr",
+            "named": true
+          },
+          {
+            "type": "ternary_expr",
             "named": true
           },
           {
@@ -1124,6 +1430,68 @@
         "types": [
           {
             "type": "identifier",
+            "named": true
+          }
+        ]
+      },
+      "while_cond": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "array_expr",
+            "named": true
+          },
+          {
+            "type": "binary_expr",
+            "named": true
+          },
+          {
+            "type": "boolean",
+            "named": true
+          },
+          {
+            "type": "call_expr",
+            "named": true
+          },
+          {
+            "type": "identifier",
+            "named": true
+          },
+          {
+            "type": "map_expr",
+            "named": true
+          },
+          {
+            "type": "member_expr",
+            "named": true
+          },
+          {
+            "type": "number",
+            "named": true
+          },
+          {
+            "type": "paren_expr",
+            "named": true
+          },
+          {
+            "type": "proc_ref",
+            "named": true
+          },
+          {
+            "type": "string",
+            "named": true
+          },
+          {
+            "type": "subscript_expr",
+            "named": true
+          },
+          {
+            "type": "ternary_expr",
+            "named": true
+          },
+          {
+            "type": "unary_expr",
             "named": true
           }
         ]
@@ -1163,6 +1531,10 @@
             "named": true
           },
           {
+            "type": "member_expr",
+            "named": true
+          },
+          {
             "type": "number",
             "named": true
           },
@@ -1180,6 +1552,10 @@
           },
           {
             "type": "subscript_expr",
+            "named": true
+          },
+          {
+            "type": "ternary_expr",
             "named": true
           },
           {
@@ -1201,7 +1577,15 @@
             "named": true
           },
           {
+            "type": "break_stmt",
+            "named": true
+          },
+          {
             "type": "call_stmt",
+            "named": true
+          },
+          {
+            "type": "continue_stmt",
             "named": true
           },
           {
@@ -1255,7 +1639,15 @@
             "named": true
           },
           {
+            "type": "break_stmt",
+            "named": true
+          },
+          {
             "type": "call_stmt",
+            "named": true
+          },
+          {
+            "type": "continue_stmt",
             "named": true
           },
           {
@@ -1296,6 +1688,84 @@
           }
         ]
       }
+    }
+  },
+  {
+    "type": "macro_call_stmt",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "array_expr",
+          "named": true
+        },
+        {
+          "type": "binary_expr",
+          "named": true
+        },
+        {
+          "type": "boolean",
+          "named": true
+        },
+        {
+          "type": "call_expr",
+          "named": true
+        },
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "map_expr",
+          "named": true
+        },
+        {
+          "type": "member_expr",
+          "named": true
+        },
+        {
+          "type": "number",
+          "named": true
+        },
+        {
+          "type": "paren_expr",
+          "named": true
+        },
+        {
+          "type": "proc_ref",
+          "named": true
+        },
+        {
+          "type": "string",
+          "named": true
+        },
+        {
+          "type": "subscript_expr",
+          "named": true
+        },
+        {
+          "type": "ternary_expr",
+          "named": true
+        },
+        {
+          "type": "unary_expr",
+          "named": true
+        }
+      ]
     }
   },
   {
@@ -1349,6 +1819,10 @@
             "named": true
           },
           {
+            "type": "member_expr",
+            "named": true
+          },
+          {
             "type": "number",
             "named": true
           },
@@ -1366,6 +1840,10 @@
           },
           {
             "type": "subscript_expr",
+            "named": true
+          },
+          {
+            "type": "ternary_expr",
             "named": true
           },
           {
@@ -1389,6 +1867,40 @@
           "named": true
         }
       ]
+    }
+  },
+  {
+    "type": "member_expr",
+    "named": true,
+    "fields": {
+      "member": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      },
+      "object": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          },
+          {
+            "type": "member_expr",
+            "named": true
+          },
+          {
+            "type": "subscript_expr",
+            "named": true
+          }
+        ]
+      }
     }
   },
   {
@@ -1424,6 +1936,10 @@
             "named": true
           },
           {
+            "type": "member_expr",
+            "named": true
+          },
+          {
             "type": "number",
             "named": true
           },
@@ -1441,6 +1957,10 @@
           },
           {
             "type": "subscript_expr",
+            "named": true
+          },
+          {
+            "type": "ternary_expr",
             "named": true
           },
           {
@@ -1509,6 +2029,10 @@
           "named": true
         },
         {
+          "type": "member_expr",
+          "named": true
+        },
+        {
           "type": "number",
           "named": true
         },
@@ -1526,6 +2050,10 @@
         },
         {
           "type": "subscript_expr",
+          "named": true
+        },
+        {
+          "type": "ternary_expr",
           "named": true
         },
         {
@@ -1563,7 +2091,15 @@
             "named": true
           },
           {
+            "type": "break_stmt",
+            "named": true
+          },
+          {
             "type": "call_stmt",
+            "named": true
+          },
+          {
+            "type": "continue_stmt",
             "named": true
           },
           {
@@ -1685,6 +2221,10 @@
           "named": true
         },
         {
+          "type": "member_expr",
+          "named": true
+        },
+        {
           "type": "number",
           "named": true
         },
@@ -1705,6 +2245,10 @@
           "named": true
         },
         {
+          "type": "ternary_expr",
+          "named": true
+        },
+        {
           "type": "unary_expr",
           "named": true
         }
@@ -1722,6 +2266,10 @@
       "types": [
         {
           "type": "export_decl",
+          "named": true
+        },
+        {
+          "type": "macro_call_stmt",
           "named": true
         },
         {
@@ -1776,6 +2324,10 @@
             "named": true
           },
           {
+            "type": "member_expr",
+            "named": true
+          },
+          {
             "type": "number",
             "named": true
           },
@@ -1796,6 +2348,10 @@
             "named": true
           },
           {
+            "type": "ternary_expr",
+            "named": true
+          },
+          {
             "type": "unary_expr",
             "named": true
           }
@@ -1807,6 +2363,14 @@
         "types": [
           {
             "type": "identifier",
+            "named": true
+          },
+          {
+            "type": "member_expr",
+            "named": true
+          },
+          {
+            "type": "subscript_expr",
             "named": true
           }
         ]
@@ -1846,6 +2410,10 @@
             "named": true
           },
           {
+            "type": "member_expr",
+            "named": true
+          },
+          {
             "type": "number",
             "named": true
           },
@@ -1863,6 +2431,10 @@
           },
           {
             "type": "subscript_expr",
+            "named": true
+          },
+          {
+            "type": "ternary_expr",
             "named": true
           },
           {
@@ -1885,6 +2457,198 @@
           "named": true
         }
       ]
+    }
+  },
+  {
+    "type": "ternary_expr",
+    "named": true,
+    "fields": {
+      "cond": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "array_expr",
+            "named": true
+          },
+          {
+            "type": "binary_expr",
+            "named": true
+          },
+          {
+            "type": "boolean",
+            "named": true
+          },
+          {
+            "type": "call_expr",
+            "named": true
+          },
+          {
+            "type": "identifier",
+            "named": true
+          },
+          {
+            "type": "map_expr",
+            "named": true
+          },
+          {
+            "type": "member_expr",
+            "named": true
+          },
+          {
+            "type": "number",
+            "named": true
+          },
+          {
+            "type": "paren_expr",
+            "named": true
+          },
+          {
+            "type": "proc_ref",
+            "named": true
+          },
+          {
+            "type": "string",
+            "named": true
+          },
+          {
+            "type": "subscript_expr",
+            "named": true
+          },
+          {
+            "type": "ternary_expr",
+            "named": true
+          },
+          {
+            "type": "unary_expr",
+            "named": true
+          }
+        ]
+      },
+      "false_value": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "array_expr",
+            "named": true
+          },
+          {
+            "type": "binary_expr",
+            "named": true
+          },
+          {
+            "type": "boolean",
+            "named": true
+          },
+          {
+            "type": "call_expr",
+            "named": true
+          },
+          {
+            "type": "identifier",
+            "named": true
+          },
+          {
+            "type": "map_expr",
+            "named": true
+          },
+          {
+            "type": "member_expr",
+            "named": true
+          },
+          {
+            "type": "number",
+            "named": true
+          },
+          {
+            "type": "paren_expr",
+            "named": true
+          },
+          {
+            "type": "proc_ref",
+            "named": true
+          },
+          {
+            "type": "string",
+            "named": true
+          },
+          {
+            "type": "subscript_expr",
+            "named": true
+          },
+          {
+            "type": "ternary_expr",
+            "named": true
+          },
+          {
+            "type": "unary_expr",
+            "named": true
+          }
+        ]
+      },
+      "true_value": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "array_expr",
+            "named": true
+          },
+          {
+            "type": "binary_expr",
+            "named": true
+          },
+          {
+            "type": "boolean",
+            "named": true
+          },
+          {
+            "type": "call_expr",
+            "named": true
+          },
+          {
+            "type": "identifier",
+            "named": true
+          },
+          {
+            "type": "map_expr",
+            "named": true
+          },
+          {
+            "type": "member_expr",
+            "named": true
+          },
+          {
+            "type": "number",
+            "named": true
+          },
+          {
+            "type": "paren_expr",
+            "named": true
+          },
+          {
+            "type": "proc_ref",
+            "named": true
+          },
+          {
+            "type": "string",
+            "named": true
+          },
+          {
+            "type": "subscript_expr",
+            "named": true
+          },
+          {
+            "type": "ternary_expr",
+            "named": true
+          },
+          {
+            "type": "unary_expr",
+            "named": true
+          }
+        ]
+      }
     }
   },
   {
@@ -1920,6 +2684,10 @@
             "named": true
           },
           {
+            "type": "member_expr",
+            "named": true
+          },
+          {
             "type": "number",
             "named": true
           },
@@ -1937,6 +2705,10 @@
           },
           {
             "type": "subscript_expr",
+            "named": true
+          },
+          {
+            "type": "ternary_expr",
             "named": true
           },
           {
@@ -1960,6 +2732,14 @@
           {
             "type": "--",
             "named": false
+          },
+          {
+            "type": "bnot",
+            "named": false
+          },
+          {
+            "type": "not",
+            "named": false
           }
         ]
       }
@@ -1975,6 +2755,68 @@
         "types": [
           {
             "type": "identifier",
+            "named": true
+          }
+        ]
+      },
+      "size": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "array_expr",
+            "named": true
+          },
+          {
+            "type": "binary_expr",
+            "named": true
+          },
+          {
+            "type": "boolean",
+            "named": true
+          },
+          {
+            "type": "call_expr",
+            "named": true
+          },
+          {
+            "type": "identifier",
+            "named": true
+          },
+          {
+            "type": "map_expr",
+            "named": true
+          },
+          {
+            "type": "member_expr",
+            "named": true
+          },
+          {
+            "type": "number",
+            "named": true
+          },
+          {
+            "type": "paren_expr",
+            "named": true
+          },
+          {
+            "type": "proc_ref",
+            "named": true
+          },
+          {
+            "type": "string",
+            "named": true
+          },
+          {
+            "type": "subscript_expr",
+            "named": true
+          },
+          {
+            "type": "ternary_expr",
+            "named": true
+          },
+          {
+            "type": "unary_expr",
             "named": true
           }
         ]
@@ -2008,6 +2850,10 @@
             "named": true
           },
           {
+            "type": "member_expr",
+            "named": true
+          },
+          {
             "type": "number",
             "named": true
           },
@@ -2025,6 +2871,10 @@
           },
           {
             "type": "subscript_expr",
+            "named": true
+          },
+          {
+            "type": "ternary_expr",
             "named": true
           },
           {
@@ -2067,7 +2917,15 @@
             "named": true
           },
           {
+            "type": "break_stmt",
+            "named": true
+          },
+          {
             "type": "call_stmt",
+            "named": true
+          },
+          {
+            "type": "continue_stmt",
             "named": true
           },
           {
@@ -2137,6 +2995,10 @@
             "named": true
           },
           {
+            "type": "member_expr",
+            "named": true
+          },
+          {
             "type": "number",
             "named": true
           },
@@ -2154,6 +3016,10 @@
           },
           {
             "type": "subscript_expr",
+            "named": true
+          },
+          {
+            "type": "ternary_expr",
             "named": true
           },
           {
@@ -2217,6 +3083,10 @@
     "named": false
   },
   {
+    "type": ".",
+    "named": false
+  },
+  {
     "type": "/",
     "named": false
   },
@@ -2273,7 +3143,39 @@
     "named": false
   },
   {
+    "type": "^",
+    "named": false
+  },
+  {
+    "type": "and",
+    "named": false
+  },
+  {
+    "type": "andalso",
+    "named": false
+  },
+  {
     "type": "begin",
+    "named": false
+  },
+  {
+    "type": "bnot",
+    "named": false
+  },
+  {
+    "type": "break",
+    "named": false
+  },
+  {
+    "type": "bwand",
+    "named": false
+  },
+  {
+    "type": "bwor",
+    "named": false
+  },
+  {
+    "type": "bwxor",
     "named": false
   },
   {
@@ -2288,6 +3190,10 @@
     "type": "comment",
     "named": true,
     "extra": true
+  },
+  {
+    "type": "continue",
+    "named": false
   },
   {
     "type": "default",
@@ -2343,8 +3249,20 @@
     "extra": true
   },
   {
+    "type": "not",
+    "named": false
+  },
+  {
     "type": "number",
     "named": true
+  },
+  {
+    "type": "or",
+    "named": false
+  },
+  {
+    "type": "orelse",
+    "named": false
   },
   {
     "type": "preprocessor",

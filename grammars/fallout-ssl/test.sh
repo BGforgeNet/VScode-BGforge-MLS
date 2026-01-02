@@ -1,9 +1,22 @@
 #!/bin/bash
-# Test tree-sitter SSL grammar against script files
+# Test tree-sitter SSL grammar - runs all quality checks
+set -e
 
 cd "$(dirname "$0")"
-tree-sitter generate 2>&1
 
+echo "=== Generating grammar ==="
+tree-sitter generate
+
+echo ""
+echo "=== Running ESLint ==="
+pnpm eslint grammar.js
+
+echo ""
+echo "=== Running tree-sitter unit tests ==="
+tree-sitter test
+
+echo ""
+echo "=== Checking grammar parses real SSL files ==="
 DIR="${1:-/home/magi/data/work/sexydev/f2/vscode-mls/test/scripts_src}"
 
 success=0

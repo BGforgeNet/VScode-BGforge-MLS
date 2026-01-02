@@ -10,16 +10,15 @@ export default [
             "client/out/**",
             "server/node_modules/**",
             "server/out/**",
-            "grammars/**",
+            "grammars/**",  // Grammars have their own eslint config
         ],
     },
+    // TypeScript files
     {
         files: [
             "client/src/**/*.ts",
             "server/src/**/*.ts",
         ],
-    },
-    {
         plugins: {
             "@typescript-eslint": typescriptEslint,
         },
@@ -32,7 +31,7 @@ export default [
             sourceType: "module",
         },
         rules: {
-            "@typescript-eslint/no-empty-interface": "off", // Disable warnings for empty interfaces
+            "@typescript-eslint/no-empty-interface": "off",
             "@typescript-eslint/ban-ts-comment": [
                 "error",
                 {
@@ -41,7 +40,7 @@ export default [
                     },
                 },
             ],
-            "@typescript-eslint/no-explicit-any": "warn", // Warn when 'any' is used
+            "@typescript-eslint/no-explicit-any": "warn",
             "no-unused-vars": ["error", { argsIgnorePattern: "^_", varsIgnorePattern: "^_" }]
         },
     },

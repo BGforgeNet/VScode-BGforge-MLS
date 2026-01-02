@@ -10,9 +10,20 @@
 export default grammar({
   name: "ssl",
 
-  extras: ($) => [/\s/, $.comment, $.line_comment],
+  extras: ($) => [
+    /\s/,
+    $.comment,
+    $.line_comment,
+    /\\\r?\n/,  // Line continuation with backslash
+  ],
 
   word: ($) => $.identifier,
+
+  // Conflicts arise from ambiguous parsing situations:
+  // - var_init: `variable a = 1` could be parsed with `=` as assignment or initialization
+  conflicts: ($) => [
+    [$.var_init],
+  ],
 
   rules: {
     source_file: ($) => repeat($._top_level),
@@ -23,7 +34,8 @@ export default grammar({
         $.procedure_forward,
         $.procedure,
         $.variable_decl,
-        $.export_decl
+        $.export_decl,
+        $.macro_call_stmt  // Top-level macro invocation
       ),
 
     // Preprocessor: #define, #include, etc. (handles \ line continuation and multi-line comments)
@@ -67,16 +79,22 @@ export default grammar({
     // Variable: variable name; or variable name := expr; or variable a = 1, b = 2;
     variable_decl: ($) =>
       choice(
-        seq(optional("import"), "variable", commaSep($.var_init), ";"),
+        seq(optional("import"), "variable", commaSep($.var_init), optional(";")),
         seq("variable", "begin", repeat(seq($.var_init, ";")), "end")
       ),
 
     var_init: ($) =>
-      seq(field("name", $.identifier), optional(seq(choice(":=", "="), field("value", $._expression)))),
+      seq(
+        field("name", $.identifier),
+        optional(seq("[", field("size", $._expression), "]")),  // static array: variable a[10]
+        optional(seq(choice(":=", "="), field("value", $._expression)))
+      ),
 
-    // Export: export variable name;
+    // Export: export variable name := value; (with optional init and optional semicolon)
     export_decl: ($) =>
-      seq("export", "variable", field("name", $.identifier), ";"),
+      seq("export", "variable", field("name", $.identifier),
+          optional(seq(choice(":=", "="), field("value", $._expression))),
+          optional(";")),
 
     // Statements
     _statement: ($) =>
@@ -89,9 +107,11 @@ export default grammar({
         $.foreach_stmt,
         $.switch_stmt,
         $.return_stmt,
+        $.break_stmt,
+        $.continue_stmt,
         $.call_stmt,
         $.assignment,
-        $.expression_stmt
+        $.expression_stmt  // Covers function calls, macro calls, bare identifiers
       ),
 
     if_stmt: ($) =>
@@ -125,18 +145,34 @@ export default grammar({
     for_var_decl: ($) =>
       seq("variable", field("name", $.identifier), choice(":=", "="), $._expression),
 
+    // foreach has two forms:
+    // - foreach var in expr body
+    // - foreach (var in expr) body  or  foreach (k: v in expr) body
+    // The parenthesized form can have optional "while condition" before closing paren.
     foreach_stmt: ($) =>
       seq(
         "foreach",
         choice(
-          // foreach var in expr
-          seq(field("var", $.identifier), "in"),
-          // foreach (var in expr) or foreach (k: v in expr)
-          seq("(", optional("variable"), field("key", $.identifier), optional(seq(":", field("value", $.identifier))), "in")
-        ),
-        field("iter", $._expression),
-        optional(")"),
-        field("body", $._stmt_or_block)
+          // foreach var in expr body (no parens)
+          seq(
+            field("var", $.identifier),
+            "in",
+            field("iter", $._expression),
+            field("body", $._stmt_or_block)
+          ),
+          // foreach (var in expr) body or foreach (k: v in expr while cond) body
+          seq(
+            "(",
+            optional("variable"),
+            field("key", $.identifier),
+            optional(seq(":", field("value", $.identifier))),
+            "in",
+            field("iter", $._expression),
+            optional(seq("while", field("while_cond", $._expression))),
+            ")",
+            field("body", $._stmt_or_block)
+          )
+        )
       ),
 
     switch_stmt: ($) =>
@@ -157,15 +193,34 @@ export default grammar({
 
     return_stmt: ($) => seq("return", optional($._expression), ";"),
 
-    // call procedure_name; or call func(args);
+    break_stmt: ($) => seq("break", ";"),
+
+    continue_stmt: ($) => seq("continue", ";"),
+
+    // call procedure_name; or call func(args); or call proc in ticks;
     call_stmt: ($) =>
       seq("call", choice(
         field("target", $.identifier),
         field("target", $.call_expr)
-      ), ";"),
+      ), optional(seq("in", field("delay", $._expression))), ";"),
+
+    // Macro invocation at top-level (outside procedures).
+    // Preprocessor macros can appear anywhere in SSL code:
+    // - At top-level: handled by macro_call_stmt
+    // - Inside procedures: handled by expression_stmt (via identifier or call_expr)
+    // - Inside expressions: handled by identifier or call_expr
+    // This rule is only needed for top-level since expression_stmt isn't in _top_level.
+    macro_call_stmt: ($) =>
+      prec.right(seq(
+        choice(
+          seq(field("name", $.identifier), "(", optional(commaSep($._expression)), ")"),
+          field("name", $.identifier)  // Bare macro without parens
+        ),
+        optional(";")
+      )),
 
     assignment: ($) =>
-      seq(field("left", choice($.identifier, $.subscript_expr)), choice(":=", "=", "+=", "-=", "*=", "/="), field("right", $._expression), ";"),
+      seq(field("left", choice($.identifier, $.subscript_expr, $.member_expr)), choice(":=", "=", "+=", "-=", "*=", "/="), field("right", $._expression), ";"),
 
     expression_stmt: ($) => seq($._expression, optional(";")),
 
@@ -176,10 +231,12 @@ export default grammar({
     // Expressions
     _expression: ($) =>
       choice(
+        $.ternary_expr,
         $.binary_expr,
         $.unary_expr,
         $.call_expr,
         $.subscript_expr,
+        $.member_expr,
         $.paren_expr,
         $.array_expr,
         $.map_expr,
@@ -190,12 +247,26 @@ export default grammar({
         $.string
       ),
 
+    // Ternary expression: value_if_true if condition else value_if_false
+    ternary_expr: ($) =>
+      prec.right(-1, seq(
+        field("true_value", $._expression),
+        "if",
+        field("cond", $._expression),
+        "else",
+        field("false_value", $._expression)
+      )),
+
     // Procedure reference: @procedure_name
     proc_ref: ($) => seq("@", $.identifier),
 
     // Array/map subscript access: arr[index]
     subscript_expr: ($) =>
-      prec(11, seq(field("object", $.identifier), "[", field("index", $._expression), "]")),
+      prec(12, seq(field("object", choice($.identifier, $.subscript_expr, $.member_expr)), "[", field("index", $._expression), "]")),
+
+    // Dot notation member access: obj.field
+    member_expr: ($) =>
+      prec(12, seq(field("object", choice($.identifier, $.subscript_expr, $.member_expr)), ".", field("member", $.identifier))),
 
     // sfall array literal: [1, 2, 3]
     array_expr: ($) =>
@@ -211,11 +282,13 @@ export default grammar({
     binary_expr: ($) =>
       choice(
         ...[
-          [/[Oo][Rr]/, 1],
-          [/[Aa][Nn][Dd]/, 2],
-          [/[Bb][Ww][Oo][Rr]/, 3],
-          [/[Bb][Ww][Xx][Oo][Rr]/, 4],
-          [/[Bb][Ww][Aa][Nn][Dd]/, 5],
+          [alias(/[Oo][Rr]/, "or"), 1],
+          [alias(/[Oo][Rr][Ee][Ll][Ss][Ee]/, "orelse"), 1],  // short-circuit or
+          [alias(/[Aa][Nn][Dd]/, "and"), 2],
+          [alias(/[Aa][Nn][Dd][Aa][Ll][Ss][Oo]/, "andalso"), 2],  // short-circuit and
+          [alias(/[Bb][Ww][Oo][Rr]/, "bwor"), 3],
+          [alias(/[Bb][Ww][Xx][Oo][Rr]/, "bwxor"), 4],
+          [alias(/[Bb][Ww][Aa][Nn][Dd]/, "bwand"), 5],
           ["==", 6],
           ["!=", 6],
           ["<", 7],
@@ -227,6 +300,7 @@ export default grammar({
           ["*", 9],
           ["/", 9],
           ["%", 9],
+          ["^", 10],  // exponentiation
         ].map(([op, p]) =>
           prec.left(p, seq(field("left", $._expression), field("op", op), field("right", $._expression)))
         )
@@ -234,22 +308,22 @@ export default grammar({
 
     unary_expr: ($) =>
       choice(
-        prec(10, seq(field("op", choice(/[Nn][Oo][Tt]/, /[Bb][Nn][Oo][Tt]/, "-")), field("expr", $._expression))),
+        prec(11, seq(field("op", choice(alias(/[Nn][Oo][Tt]/, "not"), alias(/[Bb][Nn][Oo][Tt]/, "bnot"), "-")), field("expr", $._expression))),
         // Pre-increment/decrement
-        prec(10, seq(field("op", choice("++", "--")), field("expr", $.identifier))),
+        prec(11, seq(field("op", choice("++", "--")), field("expr", $.identifier))),
         // Post-increment/decrement
-        prec(10, seq(field("expr", $.identifier), field("op", choice("++", "--"))))
+        prec(11, seq(field("expr", $.identifier), field("op", choice("++", "--"))))
       ),
 
     call_expr: ($) =>
-      prec(11, seq(field("func", $.identifier), "(", field("args", optional(commaSep($._expression))), ")")),
+      prec(12, seq(field("func", $.identifier), "(", field("args", optional(commaSep($._expression))), ")")),
 
     paren_expr: ($) => seq("(", $._expression, ")"),
 
     // Terminals
     identifier: ($) => /[a-zA-Z_][a-zA-Z0-9_]*/,
 
-    number: ($) => token(choice(/\d+\.\d+/, /\d+/, /0x[0-9a-fA-F]+/)),
+    number: ($) => token(choice(/\d+\.\d+/, /\.\d+/, /\d+/, /0x[0-9a-fA-F]+/)),
 
     boolean: ($) => choice("true", "false"),
 
