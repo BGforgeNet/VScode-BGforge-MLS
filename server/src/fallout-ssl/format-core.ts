@@ -100,6 +100,7 @@ function normalizeComment(text: string): string {
     return text;
 }
 
+
 export function formatDocument(node: SyntaxNode, options: FormatOptions = DEFAULT_OPTIONS): string {
     // Set indent based on options
     INDENT = " ".repeat(options.indentSize);
@@ -141,8 +142,11 @@ function formatNode(node: SyntaxNode, depth: number): string {
             return formatForeachStmt(node, depth);
         case "switch_stmt":
             return formatSwitchStmt(node, depth);
-        case "return_stmt":
-            return `return${node.childForFieldName("expression") ? " " + formatExpression(node.childForFieldName("expression")) : ""};`;
+        case "return_stmt": {
+            // Grammar has no field name, expression is the only named child
+            const expr = node.namedChildren[0];
+            return `return${expr ? " " + formatExpression(expr) : ""};`;
+        }
         case "call_stmt":
             return formatCallStmt(node);
         case "assignment":
@@ -178,7 +182,7 @@ function formatChildren(node: SyntaxNode, depth: number): string {
             const immediatelyAfterProcedure = prevChild?.type === "procedure" && !hadBlankLineBefore;
 
             if (parts.length > 0 && !immediatelyAfterProcedure) {
-                if (needsBlankLine || (child.type === "comment" && !hadBlankLineBefore) || hadBlankLineBefore) {
+                if (needsBlankLine || hadBlankLineBefore) {
                     parts.push("");
                     needsBlankLine = false;
                 }
@@ -192,7 +196,7 @@ function formatChildren(node: SyntaxNode, depth: number): string {
         } else if (child.type === "procedure") {
             // Add blank line before procedure if not preceded by doc comment
             if (parts.length > 0) {
-                if (needsBlankLine) {
+                if (needsBlankLine || hadBlankLineBefore) {
                     parts.push("");
                     needsBlankLine = false;
                 } else {
@@ -355,17 +359,52 @@ function formatIfStmt(node: SyntaxNode, depth: number): string {
     const elseBranch = node.childForFieldName("else");
     const thenIsBlock = thenBranch?.type === "block";
 
-    let result = `if ${formatExpression(cond)} then`;
+    // Find "then" keyword to get its row for trailing comment detection
+    const thenKeyword = node.children.find(c => c.type === "then");
+    const thenRow = thenKeyword?.startPosition.row ?? -1;
+
+    // Collect comments between then and else early (needed for trailing comment handling)
+    const elseComments: string[] = [];
+    let thenTrailingComment = "";
+    if (elseBranch) {
+        for (const child of node.children) {
+            if (child.type === "comment" || child.type === "line_comment") {
+                if (child.startPosition.row >= (thenBranch?.endPosition.row ?? 0) &&
+                    child.startPosition.row < elseBranch.startPosition.row) {
+                    elseComments.push(normalizeComment(child.text));
+                }
+            }
+        }
+    }
+    // Find trailing comment on "if ... then" line (same row as then, after then keyword)
+    for (const child of node.children) {
+        if ((child.type === "comment" || child.type === "line_comment") &&
+            child.startPosition.row === thenRow &&
+            thenKeyword && child.startPosition.column > thenKeyword.endPosition.column) {
+            thenTrailingComment = "    " + normalizeComment(child.text);
+            break;
+        }
+    }
+
+    let result = `if ${formatExpression(cond)} then` + thenTrailingComment;
 
     if (thenIsBlock) {
         result += " " + formatBlock(thenBranch, depth);
+        // Comments between end and else: first as trailing, rest on own lines
+        for (let i = 0; i < elseComments.length; i++) {
+            if (i === 0) {
+                result += "    " + elseComments[i];
+            } else {
+                result += "\n" + INDENT.repeat(depth) + elseComments[i];
+            }
+        }
     } else if (thenBranch) {
         result += "\n" + INDENT.repeat(depth + 1) + formatNode(thenBranch, depth + 1);
     }
 
     if (elseBranch) {
-        // Only put else on same line if then branch was a block (ends with "end")
-        const elseSep = thenIsBlock ? " " : "\n" + INDENT.repeat(depth);
+        const elseSep = (thenIsBlock && elseComments.length === 0) ? " " : "\n" + INDENT.repeat(depth);
+
         if (elseBranch.type === "if_stmt") {
             result += elseSep + "else " + formatIfStmt(elseBranch, depth);
         } else if (elseBranch.type === "block") {
@@ -453,7 +492,7 @@ function formatSwitchStmt(node: SyntaxNode, depth: number): string {
         }
     }
 
-    parts.push("end");
+    parts.push(INDENT.repeat(depth) + "end");
     return parts.join("\n");
 }
 
@@ -461,9 +500,12 @@ function formatCaseClause(node: SyntaxNode, depth: number): string {
     const value = node.childForFieldName("value");
     const stmts: string[] = [];
 
+    // Compare by position since childForFieldName may return different object
+    const valuePos = value?.startPosition;
     for (const child of node.children) {
         if (child.type === "case" || child.type === ":") continue;
-        if (child === value) continue;
+        if (valuePos && child.startPosition.row === valuePos.row &&
+            child.startPosition.column === valuePos.column) continue;
 
         const formatted = formatNode(child, depth + 1);
         if (formatted.trim()) {
@@ -524,11 +566,6 @@ function formatAssignment(node: SyntaxNode): string {
     let op = "=";
     for (const child of node.children) {
         if (["=", ":=", "+=", "-=", "*=", "/="].includes(child.text)) {
-            // Normalize := to =
-            if (child.text === ":=") {
-                op = "=";
-                break;
-            }
             op = child.text;
             break;
         }
@@ -549,9 +586,20 @@ function formatBlock(node: SyntaxNode, depth: number): string {
     const stmts: string[] = [];
     const children = node.children;
     let beginComment = "";
+    let endComment = "";
 
     // Check if first non-begin child is a comment on same line as begin
     const blockStartRow = node.startPosition.row;
+    const blockEndRow = node.endPosition.row;
+
+    // Find trailing comment on end
+    for (let i = 0; i < children.length; i++) {
+        const child = children[i];
+        if (isComment(child) && child.startPosition.row === blockEndRow) {
+            endComment = INDENT + normalizeComment(child.text);
+            break;
+        }
+    }
 
     for (let i = 0; i < children.length; i++) {
         const child = children[i];
@@ -564,6 +612,11 @@ function formatBlock(node: SyntaxNode, depth: number): string {
         // Check if this is a comment on same line as begin
         if (isComment(child) && child.startPosition.row === blockStartRow) {
             beginComment = INDENT + normalizeComment(child.text);
+            continue;
+        }
+
+        // Skip comment on same line as end (handled separately)
+        if (isComment(child) && child.startPosition.row === blockEndRow) {
             continue;
         }
 
@@ -587,10 +640,10 @@ function formatBlock(node: SyntaxNode, depth: number): string {
     }
 
     if (stmts.length === 0) {
-        return `begin${beginComment}\nend`;
+        return `begin${beginComment}\nend${endComment}`;
     }
 
-    return `begin${beginComment}\n${stmts.join("\n")}\n${INDENT.repeat(depth)}end`;
+    return `begin${beginComment}\n${stmts.join("\n")}\n${INDENT.repeat(depth)}end${endComment}`;
 }
 
 function formatExpression(node: SyntaxNode | null | undefined): string {
@@ -660,10 +713,11 @@ function formatExpression(node: SyntaxNode | null | undefined): string {
 function formatBinaryExpr(node: SyntaxNode): string {
     const left = node.childForFieldName("left");
     const right = node.childForFieldName("right");
-    // Operator is between left and right positions
+    // Operator is between left and right positions (skip comments)
     let op = "";
     if (left && right) {
         for (const child of node.children) {
+            if (isComment(child)) continue;
             // Operator starts at or after left ends, and ends at or before right starts
             if (child.startIndex >= left.endIndex && child.endIndex <= right.startIndex) {
                 op = child.text;
@@ -703,8 +757,10 @@ function formatTernaryExpr(node: SyntaxNode): string {
 function formatCallExpr(node: SyntaxNode): string {
     const func = node.childForFieldName("func");
     const funcName = func?.text || "";
-    // namedChildren[0] is the func, rest are args
-    const args = node.namedChildren.slice(1).map(formatExpression);
+    // namedChildren[0] is the func, rest are args; skip inline block comments
+    const args = node.namedChildren.slice(1)
+        .filter(c => c.type !== "comment")
+        .map(formatExpression);
 
     return `${funcName}(${args.join(", ")})`;
 }

@@ -1,8 +1,11 @@
 #!/bin/bash
 # Test tree-sitter SSL grammar - runs all quality checks
-set -e
+set -xeu -o pipefail
 
-cd "$(dirname "$0")"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+ROOT_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
+
+cd "$SCRIPT_DIR"
 
 echo "=== Generating grammar ==="
 tree-sitter generate
@@ -16,31 +19,19 @@ echo "=== Running tree-sitter unit tests ==="
 tree-sitter test
 
 echo ""
-echo "=== Checking grammar parses real SSL files ==="
-DIR="${1:-/home/magi/data/work/sexydev/f2/vscode-mls/test/scripts_src}"
-
-success=0
-fail=0
-failed_files=()
-
-for f in $(find -L "$DIR" -name "*.ssl" 2>/dev/null); do
-    output=$(tree-sitter parse "$f" 2>&1)
-    if echo "$output" | grep -qE "ERROR|MISSING"; then
-        fail=$((fail+1))
-        error=$(echo "$output" | grep -oE "(ERROR|MISSING)[^)]*\)" | head -1)
-        failed_files+=("$(basename "$f"): $error")
-    else
-        success=$((success+1))
-    fi
+echo "=== Formatting samples ==="
+for f in test/samples/*.ssl; do
+    pnpm -s --dir "$ROOT_DIR" format-ssl "$SCRIPT_DIR/$f" > "test/samples-expected/$(basename "$f")" 2>&1
 done
 
-echo "Success: $success"
-echo "Failed: $fail"
+echo ""
+echo "=== Checking format idempotency ==="
+pnpm -s --dir "$ROOT_DIR" format-ssl "$SCRIPT_DIR/test/samples-expected" -r --save 2>&1
 
-if [ ${#failed_files[@]} -gt 0 ]; then
-    echo ""
-    echo "Failed files:"
-    for f in "${failed_files[@]}"; do
-        echo "  $f"
-    done
+if git diff --quiet test/samples-expected; then
+    echo "SUCCESS: All samples are idempotent"
+else
+    echo "FAILED: Files changed after re-format"
+    git diff test/samples-expected
+    exit 1
 fi

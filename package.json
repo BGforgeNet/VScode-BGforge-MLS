@@ -430,7 +430,7 @@
         "esbuild-base-server": "bash ./scripts/build-server.sh",
         "esbuild-base-webviews": "esbuild ./client/src/editors/binaryEditor-webview.ts ./client/src/dialogTree-webview.ts --outdir=client/out --bundle",
         "esbuild-client": "pnpm esbuild-base-client --sourcemap",
-        "esbuild-server": "pnpm esbuild-base-server --sourcemap",
+        "esbuild-server": "pnpm esbuild-base-server --sourcemap && pnpm esbuild-format-cli",
         "esbuild-webviews": "pnpm esbuild-base-webviews --sourcemap",
         "esbuild-test": "esbuild ./client/src/test/*.ts --outdir=client/out/test --external:vscode --external:'./reporters/parallel-buffered' --external:'./worker.js' --format=cjs --platform=node --sourcemap --bundle",
         "esbuild-all": "pnpm esbuild-client && pnpm esbuild-server && pnpm esbuild-test && pnpm esbuild-webviews",
@@ -445,7 +445,7 @@
         "test": "pnpm typecheck && pnpm lint && pnpm test-bin",
         "package": "pnpm vsce package --no-dependencies",
         "build-grammar": "bash ./scripts/build-grammar.sh",
-        "esbuild-format-cli": "esbuild ./server/src/format-cli.ts --bundle --outfile=server/out/format-cli.js --format=cjs --platform=node --sourcemap && sed -i \"s/var import_meta = {};/var import_meta = {url: require('url').pathToFileURL(__filename).href};/\" server/out/format-cli.js",
+        "esbuild-format-cli": "esbuild ./server/src/format/cli.ts --bundle --outfile=server/out/format-cli.js --format=cjs --platform=node --sourcemap && sed -i \"s/var import_meta = {};/var import_meta = {url: require('url').pathToFileURL(__filename).href};/\" server/out/format-cli.js",
         "format-ssl": "node --no-warnings server/out/format-cli.js"
     },
     "devDependencies": {
