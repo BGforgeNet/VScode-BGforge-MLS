@@ -127,9 +127,9 @@
                 }
             }
 
-            // Fall back to the node summary if item not found
+            // Fall back to the node summary, or the node itself if inline
             if (!elementToSelect) {
-                elementToSelect = targetEl.querySelector("summary");
+                elementToSelect = targetEl.querySelector("summary") || targetEl;
             }
 
             if (elementToSelect) {
