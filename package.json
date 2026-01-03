@@ -131,16 +131,6 @@
                 "id": "weidu-baf-tooltip"
             },
             {
-                "id": "weidu-baf-tpl",
-                "aliases": [
-                    "Infinity Engine script template"
-                ],
-                "extensions": [
-                    ".baf.tpl"
-                ],
-                "configuration": "./language-configurations/weidu-baf.language-configuration.json"
-            },
-            {
                 "id": "weidu-d",
                 "aliases": [
                     "WeiDU dialog"
@@ -281,11 +271,6 @@
                 "language": "weidu-baf-tooltip",
                 "scopeName": "source.weidu-baf-tooltip",
                 "path": "./syntaxes/weidu-baf-tooltip.tmLanguage.json"
-            },
-            {
-                "language": "weidu-baf-tpl",
-                "scopeName": "source.weidu-baf",
-                "path": "./syntaxes/weidu-baf.tmLanguage.json"
             },
             {
                 "language": "weidu-d",

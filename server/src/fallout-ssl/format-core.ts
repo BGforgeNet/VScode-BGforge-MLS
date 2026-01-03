@@ -7,10 +7,10 @@ import type { Node as SyntaxNode } from "web-tree-sitter";
 
 // Optional logger - set by LSP, CLI uses console
 type Logger = (_msg: string) => void;
-let log: Logger = console.error;
+let _log: Logger = console.error;
 
 export function setLogger(logger: Logger): void {
-    log = logger;
+    _log = logger;
 }
 
 // Formatting options

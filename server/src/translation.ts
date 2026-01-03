@@ -25,7 +25,6 @@ export interface Translation {
 
 const traLanguages = [
     "weidu-baf",
-    "weidu-baf-tpl",
     "weidu-d",
     "weidu-d-tpl",
     "weidu-ssl",

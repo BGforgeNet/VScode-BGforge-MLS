@@ -82,24 +82,6 @@ const languages: LanguageList = [
         },
     },
     {
-        id: "weidu-baf-tpl",
-        dataFrom: "weidu-baf",
-        features: {
-            completion: true,
-            definition: false,
-            hover: true,
-            udf: false,
-            headers: false,
-            externalHeaders: false,
-            parse: true,
-            parseRequiresGame: true,
-            signature: false,
-            staticCompletion: false,
-            staticHover: false,
-            staticSignature: false,
-        },
-    },
-    {
         id: "weidu-d",
         features: {
             completion: true,

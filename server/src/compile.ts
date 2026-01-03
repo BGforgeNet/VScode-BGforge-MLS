@@ -16,12 +16,11 @@ const weiduLanguages = [
     "weidu-d",
     "weidu-d-tpl",
     "weidu-baf",
-    "weidu-baf-tpl",
 ];
 const languages = [...falloutLanguages, ...weiduLanguages];
 
 /** These languages require game path to compile */
-const languagesRequireGame = ["weidu-d", "weidu-d-tpl", "weidu-baf", "weidu-baf-tpl"];
+const languagesRequireGame = ["weidu-d", "weidu-d-tpl", "weidu-baf"];
 
 export const COMMAND_compile = "extension.bgforge.compile";
 

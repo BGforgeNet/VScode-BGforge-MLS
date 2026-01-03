@@ -44,9 +44,6 @@
 		"weidu-baf": {
 			"iconPath": "./icons/weidu-baf.png"
 		},
-		"weidu-baf-tpl": {
-			"iconPath": "./icons/weidu-baf-tpl.png"
-		},
 		"weidu-d-tpl": {
 			"iconPath": "./icons/weidu-d-tpl.png"
 		},
@@ -1907,7 +1904,6 @@
 		"weidu-tp2": "weidu-tp2",
 		"weidu-tp2-tpl": "weidu-tp2-tpl",
 		"weidu-baf": "weidu-baf",
-		"weidu-baf-tpl": "weidu-baf-tpl",
 		"weidu-d-tpl": "weidu-d-tpl",
 		"weidu-tra": "weidu-tra",
 		"bat": "_windows",
