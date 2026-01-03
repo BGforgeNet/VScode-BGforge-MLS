@@ -1,4 +1,12 @@
 body {
+    --dialog-node-name: #c586c0;
+    --dialog-reply: #9cdcfe;
+    --dialog-option-neutral: #4ec9b0;
+    --dialog-option-good: #6a9955;
+    --dialog-option-bad: #f14c4c;
+    --dialog-msg-text: #dcdcaa;
+    --dialog-target-arrow: #888;
+
     font-family: var(--vscode-font-family, sans-serif);
     font-size: 13px;
     padding: 10px;
@@ -55,19 +63,36 @@ details[open] > summary::before {
 }
 
 .node-name {
-    color: #c586c0;
+    color: var(--dialog-node-name);
 }
 
-.reply {
-    color: #9cdcfe;
+.reply, .reply .msg-text, .reply.msg-text {
+    color: var(--dialog-reply);
 }
 
-.option {
-    color: #4ec9b0;
+.option-neutral {
+    color: var(--dialog-option-neutral);
+}
+
+.option-good {
+    color: var(--dialog-option-good);
+}
+
+.option-bad {
+    color: var(--dialog-option-bad);
+}
+
+.option-detail {
+    margin: 2px 0;
 }
 
 .target {
-    color: #4ec9b0;
+    color: #888;
+}
+
+.target-arrow {
+    color: var(--dialog-target-arrow);
+    vertical-align: middle;
 }
 
 .node-ref {
@@ -87,7 +112,7 @@ details[open] > summary::before {
 }
 
 .msg-text {
-    color: #dcdcaa;
+    color: var(--dialog-msg-text);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -97,6 +122,9 @@ details[open] > summary::before {
 .target-link {
     flex-shrink: 0;
     white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
 }
 
 .node-link {

@@ -1,6 +1,27 @@
 // Dialog tree webview script
 // Wrapped in IIFE to avoid global scope conflicts with other webview scripts
 (function () {
+    // Simple debounce helper
+    function debounce<T extends (...args: unknown[]) => void>(fn: T, ms: number): T {
+        let timeout: ReturnType<typeof setTimeout>;
+        return ((...args: unknown[]) => {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => fn(...args), ms);
+        }) as T;
+    }
+
+    // Update tooltips only for overflowing text
+    function updateOverflowTooltips(): void {
+        document.querySelectorAll(".msg-text[data-fulltext]").forEach((el) => {
+            const htmlEl = el as HTMLElement;
+            if (htmlEl.scrollWidth > htmlEl.clientWidth) {
+                htmlEl.title = htmlEl.dataset.fulltext || "";
+            } else {
+                htmlEl.removeAttribute("title");
+            }
+        });
+    }
+
     // Select an element - removes previous selection and highlights new one
     function selectElement(el: Element): void {
         document.querySelectorAll(".selected").forEach((e) => e.classList.remove("selected"));
@@ -54,16 +75,22 @@
             }
         });
 
-        // Find matching replies/options by full text content
+        // Find matching replies/options by text content and attributes
         document.querySelectorAll(".item.reply, .item.option, summary.option").forEach((itemEl) => {
-            const fullText = itemEl.textContent ?? "";
+            const textContent = itemEl.textContent ?? "";
+            // Also search in title attributes (contains type/msgId like "NLowOption(873)")
+            const titles = Array.from(itemEl.querySelectorAll("[title]")).map(el => el.getAttribute("title") || "").join(" ");
+            const fullText = textContent + " " + titles;
             if (fullText.toLowerCase().includes(lowerQuery)) {
                 // Find parent node name
                 const parentNode = itemEl.closest('[id^="node-"]');
                 const parentName = parentNode ? parentNode.id.replace("node-", "") : "";
                 // Store msg-text for navigation matching
                 const msgText = itemEl.querySelector(".msg-text")?.textContent?.trim() ?? "";
-                results.push({ type: "item", text: fullText.trim(), parentName: parentName, parentId: parentNode?.id, msgText });
+                // Build display text including the type from title
+                const typeTitle = itemEl.querySelector(".codicon[title]")?.getAttribute("title") || "";
+                const displayText = typeTitle ? `${typeTitle}: ${textContent.trim()}` : textContent.trim();
+                results.push({ type: "item", text: displayText, parentName: parentName, parentId: parentNode?.id, msgText });
             }
         });
 
@@ -74,11 +101,21 @@
                     return `<div class="result" data-target="${r.id}"><span class="codicon codicon-symbol-method"></span> <span class="node-name">${r.name}</span></div>`;
                 } else {
                     const prefix = r.parentName ? `<span class="desc">${r.parentName}:</span> ` : "";
-                    const isReply = r.text?.startsWith("Reply");
-                    const cls = isReply ? "reply" : "option";
+                    const text = r.text ?? "";
+                    // Determine color class from option type prefix (G=good, B=bad, N=neutral)
+                    let cls = "option";
+                    if (text.startsWith("Reply")) {
+                        cls = "reply";
+                    } else if (text.startsWith("G")) {
+                        cls = "option-good";
+                    } else if (text.startsWith("B")) {
+                        cls = "option-bad";
+                    } else {
+                        cls = "option-neutral";
+                    }
                     // Escape msgText for data attribute (used for navigation matching)
                     const escapedMsgText = (r.msgText ?? "").replace(/"/g, "&quot;");
-                    return `<div class="result" data-target="${r.parentId}" data-text="${escapedMsgText}">${prefix}<span class="${cls}">${r.text}</span></div>`;
+                    return `<div class="result" data-target="${r.parentId}" data-text="${escapedMsgText}">${prefix}<span class="${cls}">${text}</span></div>`;
                 }
             })
             .join("");
@@ -180,13 +217,23 @@
     // Toolbar buttons
     expandAllBtn.addEventListener("click", () => {
         document.querySelectorAll("details").forEach((d) => (d.open = true));
+        updateOverflowTooltips();
     });
 
     collapseAllBtn.addEventListener("click", () => {
         document.querySelectorAll("details").forEach((d) => (d.open = false));
     });
 
-    searchInput.addEventListener("input", () => filterTree(searchInput.value));
+    // Debounced search to avoid lag on large dialogs
+    const debouncedFilter = debounce(() => filterTree(searchInput.value), 150);
+    searchInput.addEventListener("input", debouncedFilter);
+
+    // Update tooltips when details are toggled
+    document.addEventListener("toggle", (e) => {
+        if ((e.target as HTMLElement).tagName === "DETAILS") {
+            updateOverflowTooltips();
+        }
+    }, true);
 
     // Ctrl+F focuses search, Escape clears
     document.addEventListener("keydown", (e) => {
@@ -200,4 +247,8 @@
             searchInput.blur();
         }
     });
+
+    // Update overflow tooltips on load and resize
+    updateOverflowTooltips();
+    window.addEventListener("resize", updateOverflowTooltips);
 })();

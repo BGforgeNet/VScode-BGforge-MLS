@@ -59,6 +59,7 @@ function getHtmlTemplate(extensionPath: string): string {
 }
 
 function getCss(extensionPath: string): string {
+    invalidateCacheIfNeeded(extensionPath);
     if (!cachedCss) {
         cachedCss = loadAsset(extensionPath, path.join("client", "src", "dialogTree.css"));
     }
@@ -66,6 +67,7 @@ function getCss(extensionPath: string): string {
 }
 
 function getJs(extensionPath: string): string {
+    invalidateCacheIfNeeded(extensionPath);
     if (!cachedJs) {
         // Built by esbuild-webviews to client/out/
         cachedJs = loadAsset(extensionPath, path.join("client", "out", "dialogTree-webview.js"));
@@ -83,6 +85,23 @@ function getMsgText(msgId: number | string, messages: Record<string, string>): s
     }
     const text = messages[String(msgId)];
     return text ? escapeHtml(text) : `(${msgId})`;
+}
+
+interface OptionMeta {
+    colorClass: string;
+    tooltip: string;
+    lowEmoji: string;
+    icon: string;
+}
+
+function getOptionMeta(o: DialogOption): OptionMeta {
+    const isMessage = o.type.endsWith("Message");
+    const colorClass = o.type.startsWith("G") ? "option-good" : o.type.startsWith("B") ? "option-bad" : "option-neutral";
+    const tooltip = `${o.type}(${o.msgId})`;
+    const isLow = o.type.includes("Low");
+    const lowEmoji = isLow ? `<span title="${tooltip}">🤪</span>` : "";
+    const icon = isMessage ? "stop-circle" : "arrow-right";
+    return { colorClass, tooltip, lowEmoji, icon };
 }
 
 function buildTreeHtml(data: DialogData): string {
@@ -151,7 +170,7 @@ function buildTreeHtml(data: DialogData): string {
                     ? `<a href="#" class="node-link" data-target="${t}">${t}</a>`
                     : `<span class="target">${t}</span>`;
             }).join(", ");
-            return `<div class="item node-transition" id="node-${node.name}"><span class="codicon codicon-symbol-function"></span> <span class="node-name">${node.name}</span><span class="target-link"> -> ${targets}</span></div>`;
+            return `<div class="item node-transition" id="node-${node.name}"><span class="codicon codicon-symbol-function"></span> <span class="node-name">${node.name}</span><span class="target-link"><span class="codicon codicon-arrow-right target-arrow"></span> ${targets}</span></div>`;
         }
 
         // Find first item to show inline (reply or terminal message)
@@ -163,15 +182,16 @@ function buildTreeHtml(data: DialogData): string {
             // First reply goes inline
             const r = node.replies[0];
             const text = getMsgText(r.msgId, messages);
-            inlineHtml = `<span class="reply">Reply(${r.msgId}):</span> <span class="msg-text" title="${text}">${text}</span>`;
+            inlineHtml = `<span class="codicon codicon-comment reply" title="Reply(${r.msgId})"></span> <span class="reply msg-text" data-fulltext="${text}">${text}</span>`;
             skipFirstReply = true;
         } else {
             // Check for terminal message (option without target)
             const terminalIdx = node.options.findIndex((o) => !o.target);
             if (terminalIdx !== -1) {
                 const o = node.options[terminalIdx];
+                const { colorClass, tooltip, lowEmoji } = getOptionMeta(o);
                 const text = getMsgText(o.msgId, messages);
-                inlineHtml = `<span class="option">${o.type}(${o.msgId}):</span> <span class="msg-text" title="${text}">${text}</span>`;
+                inlineHtml = `<span class="codicon codicon-stop-circle ${colorClass}" title="${tooltip}"></span>${lowEmoji} <span class="msg-text" data-fulltext="${text}">${text}</span>`;
                 skipFirstTerminalOption = terminalIdx;
             }
         }
@@ -181,7 +201,7 @@ function buildTreeHtml(data: DialogData): string {
             .slice(skipFirstReply ? 1 : 0)
             .map((r) => {
                 const text = getMsgText(r.msgId, messages);
-                return `<div class="item reply"><span class="codicon codicon-comment"></span> Reply(${r.msgId}): <span class="msg-text" title="${text}">${text}</span></div>`;
+                return `<div class="item reply"><span class="codicon codicon-comment" title="Reply(${r.msgId})"></span> <span class="msg-text" data-fulltext="${text}">${text}</span></div>`;
             })
             .join("");
 
@@ -191,26 +211,30 @@ function buildTreeHtml(data: DialogData): string {
             if (i === skipFirstTerminalOption) continue;
 
             const o = node.options[i];
-            const arrow = o.type.startsWith("G") ? "arrow-circle-up" : o.type.startsWith("B") ? "arrow-circle-down" : "arrow-right";
+            const { colorClass, tooltip, lowEmoji, icon } = getOptionMeta(o);
             const text = getMsgText(o.msgId, messages);
-            const prefix = `${o.type}(${o.msgId}): `;
 
             if (o.target) {
                 const targetNode = nodeMap.get(o.target);
+                const targetMinDepth = minDepth.get(o.target);
+                const shouldRenderChild = targetNode && !rendered.has(o.target) && targetMinDepth === currentDepth + 1;
                 const targetHtml = targetNode
                     ? `<a href="#" class="node-link" data-target="${o.target}">${o.target}</a>`
                     : `<span class="target">${o.target}</span>`;
-                optionParts.push(`<div class="item option"><span class="codicon codicon-${arrow}"></span> ${prefix}<span class="msg-text" title="${text}">${text}</span><span class="target-link"> -> ${targetHtml}</span></div>`);
 
-                // Render target node as sibling only if it should appear at this depth
-                if (targetNode) {
-                    const targetMinDepth = minDepth.get(o.target);
-                    if (!rendered.has(o.target) && targetMinDepth === currentDepth + 1) {
-                        optionParts.push(renderNode(targetNode, currentDepth + 1));
-                    }
+                if (shouldRenderChild) {
+                    // Render option as expandable with target as child
+                    const childHtml = renderNode(targetNode, currentDepth + 1);
+                    optionParts.push(`<details open class="option-detail">
+                        <summary class="item option ${colorClass}"><span class="codicon codicon-${icon}" title="${tooltip}"></span>${lowEmoji} <span class="msg-text" data-fulltext="${text}">${text}</span><span class="target-link"><span class="codicon codicon-arrow-right target-arrow"></span> ${targetHtml}</span></summary>
+                        <div class="children">${childHtml}</div>
+                    </details>`);
+                } else {
+                    // Just a link, no nested content
+                    optionParts.push(`<div class="item option ${colorClass}"><span class="codicon codicon-${icon}" title="${tooltip}"></span>${lowEmoji} <span class="msg-text" data-fulltext="${text}">${text}</span><span class="target-link"><span class="codicon codicon-arrow-right target-arrow"></span> ${targetHtml}</span></div>`);
                 }
             } else {
-                optionParts.push(`<div class="item option"><span class="codicon codicon-${arrow}"></span> ${prefix}<span class="msg-text" title="${text}">${text}</span></div>`);
+                optionParts.push(`<div class="item option ${colorClass}"><span class="codicon codicon-${icon}" title="${tooltip}"></span>${lowEmoji} <span class="msg-text" data-fulltext="${text}">${text}</span></div>`);
             }
         }
         const options = optionParts.join("");
@@ -293,19 +317,11 @@ export function registerDialogTree(context: vscode.ExtensionContext, client: Lan
         })
     );
 
-    // Refresh on script save
+    // Refresh on script save or .msg save
     context.subscriptions.push(
         vscode.workspace.onDidSaveTextDocument((doc) => {
-            if (dialogPanel && doc.uri.toString() === currentDocumentUri) {
-                refreshPreview();
-            }
-        })
-    );
-
-    // Refresh on .msg save (server already reloaded by this point)
-    context.subscriptions.push(
-        vscode.workspace.onDidSaveTextDocument((doc) => {
-            if (dialogPanel && doc.languageId === "fallout-msg") {
+            if (!dialogPanel) return;
+            if (doc.uri.toString() === currentDocumentUri || doc.languageId === "fallout-msg") {
                 refreshPreview();
             }
         })
