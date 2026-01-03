@@ -799,8 +799,12 @@
           ]
         },
         {
-          "type": "SYMBOL",
-          "name": "_expression"
+          "type": "FIELD",
+          "name": "value",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_expression"
+          }
         }
       ]
     },

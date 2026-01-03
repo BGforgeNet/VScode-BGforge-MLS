@@ -71,9 +71,9 @@ function getFormatOptions(uri: string): FormatOptions {
     try {
         const filePath = fileURLToPath(uri);
         const indentSize = getIndentFromEditorconfig(filePath);
-        return { indentSize: indentSize ?? 4 };
+        return { indentSize: indentSize ?? 4, maxLineLength: 120 };
     } catch {
-        return { indentSize: 4 };
+        return { indentSize: 4, maxLineLength: 120 };
     }
 }
 

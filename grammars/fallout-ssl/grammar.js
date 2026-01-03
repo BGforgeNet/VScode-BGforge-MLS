@@ -143,7 +143,7 @@ export default grammar({
 
     // Variable declaration in for loop init: variable i = 0
     for_var_decl: ($) =>
-      seq("variable", field("name", $.identifier), choice(":=", "="), $._expression),
+      seq("variable", field("name", $.identifier), choice(":=", "="), field("value", $._expression)),
 
     // foreach has two forms:
     // - foreach var in expr body

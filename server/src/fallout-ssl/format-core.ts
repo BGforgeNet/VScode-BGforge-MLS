@@ -188,7 +188,9 @@ function formatNode(node: SyntaxNode, depth: number): string {
         case "return_stmt": {
             // Grammar has no field name, expression is the only named child
             const expr = node.namedChildren[0];
-            return `return${expr ? " " + formatExpression(expr) : ""};`;
+            // Column for expression: depth indent + "return "
+            const column = depth * ctx.indent.length + 7;
+            return `return${expr ? " " + formatExpression(expr, column, 1) : ""};`;
         }
         case "call_stmt":
             return formatCallStmt(node);
@@ -543,14 +545,16 @@ function formatForeachStmt(node: SyntaxNode, depth: number): string {
     const varNode = node.childForFieldName("var");
     const keyNode = node.childForFieldName("key");
     const valueNode = node.childForFieldName("value");
+    const hasVariable = node.children.some(c => c.text === "variable");
     const iter = node.childForFieldName("iter");
     const body = node.childForFieldName("body");
 
     let header: string;
+    const varPrefix = hasVariable ? "variable " : "";
     if (keyNode && valueNode) {
-        header = `foreach (${keyNode.text}: ${valueNode.text} in ${formatExpression(iter)})`;
+        header = `foreach (${varPrefix}${keyNode.text}: ${valueNode.text} in ${formatExpression(iter)})`;
     } else if (keyNode) {
-        header = `foreach (${keyNode.text} in ${formatExpression(iter)})`;
+        header = `foreach (${varPrefix}${keyNode.text} in ${formatExpression(iter)})`;
     } else if (varNode) {
         header = `foreach ${varNode.text} in ${formatExpression(iter)}`;
     } else {
@@ -866,7 +870,10 @@ function formatBinaryExpr(node: SyntaxNode, column: number = 0, extraLength: num
         return formattedOperands.join(`\n${indent}${op} `);
     }
 
-    return `${formatExpression(left)} ${op} ${formatExpression(right)}`;
+    // Non-breaking: pass column to left, calculate right's column based on left + op
+    const formattedLeft = formatExpression(left, column);
+    const rightColumn = column + formattedLeft.length + op.length + 2; // " op "
+    return `${formattedLeft} ${op} ${formatExpression(right, rightColumn)}`;
 }
 
 function formatUnaryExpr(node: SyntaxNode): string {

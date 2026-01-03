@@ -1211,69 +1211,69 @@
             "named": true
           }
         ]
+      },
+      "value": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "array_expr",
+            "named": true
+          },
+          {
+            "type": "binary_expr",
+            "named": true
+          },
+          {
+            "type": "boolean",
+            "named": true
+          },
+          {
+            "type": "call_expr",
+            "named": true
+          },
+          {
+            "type": "identifier",
+            "named": true
+          },
+          {
+            "type": "map_expr",
+            "named": true
+          },
+          {
+            "type": "member_expr",
+            "named": true
+          },
+          {
+            "type": "number",
+            "named": true
+          },
+          {
+            "type": "paren_expr",
+            "named": true
+          },
+          {
+            "type": "proc_ref",
+            "named": true
+          },
+          {
+            "type": "string",
+            "named": true
+          },
+          {
+            "type": "subscript_expr",
+            "named": true
+          },
+          {
+            "type": "ternary_expr",
+            "named": true
+          },
+          {
+            "type": "unary_expr",
+            "named": true
+          }
+        ]
       }
-    },
-    "children": {
-      "multiple": false,
-      "required": true,
-      "types": [
-        {
-          "type": "array_expr",
-          "named": true
-        },
-        {
-          "type": "binary_expr",
-          "named": true
-        },
-        {
-          "type": "boolean",
-          "named": true
-        },
-        {
-          "type": "call_expr",
-          "named": true
-        },
-        {
-          "type": "identifier",
-          "named": true
-        },
-        {
-          "type": "map_expr",
-          "named": true
-        },
-        {
-          "type": "member_expr",
-          "named": true
-        },
-        {
-          "type": "number",
-          "named": true
-        },
-        {
-          "type": "paren_expr",
-          "named": true
-        },
-        {
-          "type": "proc_ref",
-          "named": true
-        },
-        {
-          "type": "string",
-          "named": true
-        },
-        {
-          "type": "subscript_expr",
-          "named": true
-        },
-        {
-          "type": "ternary_expr",
-          "named": true
-        },
-        {
-          "type": "unary_expr",
-          "named": true
-        }
-      ]
     }
   },
   {
