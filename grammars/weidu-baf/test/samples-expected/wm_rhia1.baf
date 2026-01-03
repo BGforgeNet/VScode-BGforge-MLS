@@ -1,0 +1,657 @@
+/* Do not edit. This file is generated from wm_rhia1.tbaf. Make your changes there and regenerate this file. */
+
+IF
+  See(Player1)
+  Global("doomed", "LOCALS", 0)
+THEN
+  RESPONSE #100
+    SetGlobal("doomed", "LOCALS", 1)
+    FaceObject(Player1)
+    SmallWait(8)
+    StartDialog("WM_RHIA", Player1)
+END
+
+IF
+  See(NearestEnemyOf(Myself))
+  Global("SpellTrigger", "LOCALS", 0)
+  LevelLT(LastSeenBy(Myself), 3)
+THEN
+  RESPONSE #100
+    DisplayString(Myself, 39968)
+    ReallyForceSpellRES("WM_LUCK", Myself)
+    SetGlobal("SpellTrigger", "LOCALS", 1)
+    ReallyForceSpell(Myself, WIZARD_ARMOR)
+    ReallyForceSpell(Myself, WIZARD_SHIELD)
+END
+
+IF
+  See(NearestEnemyOf(Myself))
+  Global("SpellTrigger", "LOCALS", 0)
+  LevelLT(LastSeenBy(Myself), 8)
+THEN
+  RESPONSE #100
+    DisplayString(Myself, 39968)
+    ReallyForceSpellRES("WM_LUCK", Myself)
+    SetGlobal("SpellTrigger", "LOCALS", 1)
+    ReallyForceSpellRES("WM_LIGHT", Myself)
+    ReallyForceSpell(Myself, WIZARD_SHIELD)
+END
+
+IF
+  See(NearestEnemyOf(Myself))
+  Global("SpellTrigger", "LOCALS", 0)
+  LevelGT(LastSeenBy(Myself), 7)
+THEN
+  RESPONSE #100
+    DisplayString(Myself, 39968)
+    ReallyForceSpellRES("WM_LUCK", Myself)
+    SetGlobal("SpellTrigger", "LOCALS", 1)
+    ReallyForceSpellRES("WM_LIGHT", Myself)
+    ReallyForceSpellRES("WM_SHLD", Myself)
+END
+
+IF
+  Global("Prep", "LOCALS", 0)
+  See(NearestEnemyOf(Myself))
+  TookDamage()
+  LevelLT(LastSeenBy(Myself), 15)
+THEN
+  RESPONSE #100
+    DisplayString(Myself, 40252)
+    ApplySpell(Myself, WIZARD_PROTECTION_FROM_MAGIC_WEAPONS)
+    SetGlobal("Prep", "LOCALS", 1)
+END
+
+IF
+  Global("Prep", "LOCALS", 0)
+  See(NearestEnemyOf(Myself))
+  TookDamage()
+  !LevelLT(LastSeenBy(Myself), 15)
+THEN
+  RESPONSE #100
+    DisplayString(Myself, 43050)
+    ApplySpell(Myself, WIZARD_IMPROVED_MANTLE)
+    DisplayString(Myself, 3302)
+    ApplySpell(Myself, WIZARD_SPELL_TURNING)
+    DisplayString(Myself, 40240)
+    ApplySpell(Myself, WIZARD_MISLEAD)
+    SetGlobal("Prep", "LOCALS", 1)
+END
+
+IF
+  See([GOODCUTOFF.0.0.0.0.SUMMONED])
+  Global("summon", "LOCALS", 0)
+THEN
+  RESPONSE #100
+    FaceObject(LastSeenBy(Myself))
+    Spell(LastSeenBy(Myself), WIZARD_DEATH_SPELL)
+    SetGlobal("summon", "LOCALS", 1)
+END
+
+IF
+  See(NearestEnemyOf(Myself))
+  LevelGT(LastSeenBy(Myself), 9)
+  !HasBounceEffects(Myself)
+  !HasImmunityEffects(Myself)
+  Global("spell_turning", "LOCALS", 0)
+  !GlobalTimerNotExpired("delay", "LOCALS")
+THEN
+  RESPONSE #100
+    SetGlobalTimer("delay", "LOCALS", 6)
+    IncrementGlobal("spell_turning", "LOCALS", 1)
+    Spell(Myself, WIZARD_SPELL_TURNING)
+END
+
+IF
+  See(NearestEnemyOf(Myself))
+  StateCheck(Myself, STATE_SILENCED)
+  Global("vocalize", "LOCALS", 0)
+  !GlobalTimerNotExpired("delay", "LOCALS")
+THEN
+  RESPONSE #100
+    SetGlobalTimer("delay", "LOCALS", 6)
+    IncrementGlobal("vocalize", "LOCALS", 1)
+    Spell(Myself, WIZARD_VOCALIZE)
+END
+
+IF
+  Allegiance(Myself, ENEMY)
+  Detect([PC])
+  !See(LastSeenBy(Myself))
+  Global("true_sight", "LOCALS", 0)
+  !GlobalTimerNotExpired("delay", "LOCALS")
+THEN
+  RESPONSE #100
+    SetGlobalTimer("delay", "LOCALS", 6)
+    IncrementGlobal("true_sight", "LOCALS", 1)
+    Spell(Myself, WIZARD_TRUE_SIGHT)
+END
+
+IF
+  See(NearestEnemyOf(Myself))
+  LevelGT(LastSeenBy(Myself), 0)
+  Global("slow", "LOCALS", 0)
+  !GlobalTimerNotExpired("delay", "LOCALS")
+THEN
+  RESPONSE #100
+    SetGlobalTimer("delay", "LOCALS", 6)
+    IncrementGlobal("doomed", "LOCALS", 1)
+    IncrementGlobal("slow", "LOCALS", 1)
+    ReallyForceSpell(LastSeenBy(Myself), WIZARD_SLOW)
+END
+
+IF
+  See(NearestEnemyOf(Myself))
+  LevelGT(LastSeenBy(Myself), 6)
+  Global("fireshield", "LOCALS", 0)
+  !GlobalTimerNotExpired("delay", "LOCALS")
+THEN
+  RESPONSE #100
+    SetGlobalTimer("delay", "LOCALS", 6)
+    IncrementGlobal("doomed", "LOCALS", 1)
+    IncrementGlobal("fireshield", "LOCALS", 1)
+    ReallyForceSpell(Myself, WIZARD_FIRE_SHIELD_RED)
+END
+
+IF
+  Global("glyph", "LOCALS", 0)
+  See(TenthNearestEnemyOf(Myself))
+  !Range(LastSeenBy(Myself), 5)
+  !GlobalTimerNotExpired("delay", "LOCALS")
+THEN
+  RESPONSE #100
+    SetGlobalTimer("delay", "LOCALS", 6)
+    IncrementGlobal("doomed", "LOCALS", 1)
+    IncrementGlobal("glyph", "LOCALS", 1)
+    SpellRES("WM_GLPH", LastSeenBy(Myself))
+END
+
+IF
+  Global("word", "LOCALS", 0)
+  !GlobalTimerNotExpired("delay", "LOCALS")
+  See(NearestEnemyOf(Myself))
+  NumCreatureGT([ENEMY], 1)
+THEN
+  RESPONSE #100
+    SetGlobalTimer("delay", "LOCALS", 6)
+    IncrementGlobal("doomed", "LOCALS", 1)
+    IncrementGlobal("word", "LOCALS", 1)
+    SpellRES("WM_WORD", LastSeenBy(Myself))
+END
+
+IF
+  Global("word", "LOCALS", 0)
+  !GlobalTimerNotExpired("delay", "LOCALS")
+  See(NearestEnemyOf(Myself))
+  See([NEUTRAL])
+THEN
+  RESPONSE #100
+    SetGlobalTimer("delay", "LOCALS", 6)
+    IncrementGlobal("doomed", "LOCALS", 1)
+    IncrementGlobal("word", "LOCALS", 1)
+    SpellRES("WM_WORD", LastSeenBy(Myself))
+END
+
+IF
+  Global("strike", "LOCALS", 0)
+  GlobalGT("doomed", "LOCALS", 2)
+  See(TenthNearestEnemyOfType([0.0.0.MAGE_ALL]))
+  !GlobalTimerNotExpired("delay", "LOCALS")
+THEN
+  RESPONSE #100
+    SetGlobalTimer("delay", "LOCALS", 6)
+    IncrementGlobal("doomed", "LOCALS", 1)
+    IncrementGlobal("strike", "LOCALS", 1)
+    SpellRES("WM_STRIK", LastSeenBy(Myself))
+END
+
+IF
+  Global("sphere", "LOCALS", 0)
+  GlobalGT("doomed", "LOCALS", 4)
+  See(TenthNearestEnemyOf(Myself))
+  LevelGT(LastSeenBy(Myself), 15)
+  !Range(LastSeenBy(Myself), 15)
+  !GlobalTimerNotExpired("delay", "LOCALS")
+THEN
+  RESPONSE #100
+    SetGlobalTimer("delay", "LOCALS", 6)
+    IncrementGlobal("doomed", "LOCALS", 1)
+    IncrementGlobal("sphere", "LOCALS", 1)
+    SpellRES("WM_SPHR", LastSeenBy(Myself))
+END
+
+IF
+  Global("wm_start", "GLOBAL", 1)
+  See(NearestEnemyOf(Myself))
+  GlobalGT("doomed", "LOCALS", 5)
+  Level(Player1, 1)
+  !GlobalTimerNotExpired("delay", "LOCALS")
+THEN
+  RESPONSE #100
+    SetGlobal("wm_start", "GLOBAL", 2)
+    SetGlobalTimer("delay", "LOCALS", 6)
+    ForceSpellRES("WM_RHIA1", LastSeenBy(Myself))
+END
+
+IF
+  Global("wm_start", "GLOBAL", 1)
+  See(NearestEnemyOf(Myself))
+  GlobalGT("doomed", "LOCALS", 8)
+  LevelLT(LastSeenBy(Myself), 5)
+  !GlobalTimerNotExpired("delay", "LOCALS")
+THEN
+  RESPONSE #100
+    SetGlobal("wm_start", "GLOBAL", 2)
+    SetGlobalTimer("delay", "LOCALS", 6)
+    ForceSpellRES("WM_RHIA1", LastSeenBy(Myself))
+END
+
+IF
+  Global("wm_start", "GLOBAL", 1)
+  See(NearestEnemyOf(Myself))
+  GlobalGT("doomed", "LOCALS", 12)
+  LevelLT(LastSeenBy(Myself), 10)
+  !GlobalTimerNotExpired("delay", "LOCALS")
+THEN
+  RESPONSE #100
+    SetGlobal("wm_start", "GLOBAL", 2)
+    SetGlobalTimer("delay", "LOCALS", 6)
+    ForceSpellRES("WM_RHIA1", LastSeenBy(Myself))
+END
+
+IF
+  Global("wm_start", "GLOBAL", 1)
+  See(NearestEnemyOf(Myself))
+  GlobalGT("doomed", "LOCALS", 16)
+  LevelLT(LastSeenBy(Myself), 20)
+  !GlobalTimerNotExpired("delay", "LOCALS")
+THEN
+  RESPONSE #100
+    SetGlobal("wm_start", "GLOBAL", 2)
+    SetGlobalTimer("delay", "LOCALS", 6)
+    ForceSpellRES("WM_RHIA1", LastSeenBy(Myself))
+END
+
+IF
+  Global("wm_start", "GLOBAL", 1)
+  See(NearestEnemyOf(Myself))
+  GlobalGT("doomed", "LOCALS", 20)
+  LevelLT(LastSeenBy(Myself), 51)
+  !GlobalTimerNotExpired("delay", "LOCALS")
+THEN
+  RESPONSE #100
+    SetGlobal("wm_start", "GLOBAL", 2)
+    SetGlobalTimer("delay", "LOCALS", 6)
+    ForceSpellRES("WM_RHIA1", LastSeenBy(Myself))
+END
+
+IF
+  See(NearestEnemyOf(Myself))
+  Global("spray", "LOCALS", 0)
+  Range(LastSeenBy(Myself), 5)
+  !GlobalTimerNotExpired("delay", "LOCALS")
+THEN
+  RESPONSE #100
+    SetGlobalTimer("delay", "LOCALS", 6)
+    IncrementGlobal("doomed", "LOCALS", 1)
+    IncrementGlobal("spray", "LOCALS", 1)
+    ReallyForceSpell(LastSeenBy(Myself), WIZARD_COLOR_SPRAY)
+END
+
+IF
+  Global("missile", "LOCALS", 0)
+  See(TenthNearestEnemyOf(Myself))
+  LevelGT(LastSeenBy(Myself), 4)
+  !GlobalTimerNotExpired("delay", "LOCALS")
+THEN
+  RESPONSE #100
+    SetGlobalTimer("delay", "LOCALS", 6)
+    IncrementGlobal("doomed", "LOCALS", 1)
+    IncrementGlobal("missile", "LOCALS", 1)
+    SpellRES("WM_MISS", LastSeenBy(Myself))
+END
+
+IF
+  See(NearestEnemyOf(Myself))
+  LevelGT(LastSeenBy(Myself), 2)
+  Global("missile2", "LOCALS", 0)
+  !GlobalTimerNotExpired("delay", "LOCALS")
+THEN
+  RESPONSE #100
+    SetGlobalTimer("delay", "LOCALS", 6)
+    IncrementGlobal("doomed", "LOCALS", 1)
+    IncrementGlobal("missile2", "LOCALS", 1)
+    ReallyForceSpell(LastSeenBy(Myself), WIZARD_MAGIC_MISSILE)
+END
+
+IF
+  Global("missile", "LOCALS", 1)
+  See(TenthNearestEnemyOf(Myself))
+  LevelGT(LastSeenBy(Myself), 4)
+  !GlobalTimerNotExpired("delay", "LOCALS")
+THEN
+  RESPONSE #100
+    SetGlobalTimer("delay", "LOCALS", 6)
+    IncrementGlobal("doomed", "LOCALS", 1)
+    IncrementGlobal("missile", "LOCALS", 1)
+    SpellRES("WM_MISS", LastSeenBy(Myself))
+END
+
+IF
+  See(NearestEnemyOf(Myself))
+  LevelGT(LastSeenBy(Myself), 0)
+  Global("wiz_shield", "LOCALS", 0)
+  !GlobalTimerNotExpired("delay", "LOCALS")
+THEN
+  RESPONSE #100
+    SetGlobalTimer("delay", "LOCALS", 6)
+    IncrementGlobal("doomed", "LOCALS", 1)
+    IncrementGlobal("wiz_shield", "LOCALS", 1)
+    ReallyForceSpell(Myself, WIZARD_SHIELD)
+END
+
+IF
+  See(NearestEnemyOf(Myself))
+  LevelGT(LastSeenBy(Myself), 0)
+  Global("symbol_fear", "LOCALS", 0)
+  !GlobalTimerNotExpired("delay", "LOCALS")
+THEN
+  RESPONSE #100
+    SetGlobalTimer("delay", "LOCALS", 6)
+    IncrementGlobal("doomed", "LOCALS", 1)
+    IncrementGlobal("symbol_fear", "LOCALS", 1)
+    ReallyForceSpell(LastSeenBy(Myself), WIZARD_NPC_SYMBOL_FEAR)
+END
+
+IF
+  Global("missile", "LOCALS", 2)
+  See(TenthNearestEnemyOf(Myself))
+  LevelGT(LastSeenBy(Myself), 4)
+  !GlobalTimerNotExpired("delay", "LOCALS")
+THEN
+  RESPONSE #100
+    SetGlobalTimer("delay", "LOCALS", 6)
+    IncrementGlobal("doomed", "LOCALS", 1)
+    IncrementGlobal("missile", "LOCALS", 1)
+    SpellRES("WM_MISS", LastSeenBy(Myself))
+END
+
+IF
+  See(TenthNearestEnemyOf(Myself))
+  Global("larloch", "LOCALS", 0)
+  !Range(LastSeenBy(Myself), 10)
+  !GlobalTimerNotExpired("delay", "LOCALS")
+THEN
+  RESPONSE #100
+    SetGlobalTimer("delay", "LOCALS", 6)
+    IncrementGlobal("doomed", "LOCALS", 1)
+    IncrementGlobal("larloch", "LOCALS", 1)
+    ReallyForceSpell(LastSeenBy(Myself), WIZARD_LARLOCH_MINOR_DRAIN)
+END
+
+IF
+  See(TenthNearestEnemyOf(Myself))
+  LevelGT(LastSeenBy(Myself), 5)
+  !Range(LastSeenBy(Myself), 15)
+  Global("fireball", "LOCALS", 0)
+  !GlobalTimerNotExpired("delay", "LOCALS")
+THEN
+  RESPONSE #100
+    SetGlobalTimer("delay", "LOCALS", 6)
+    IncrementGlobal("doomed", "LOCALS", 1)
+    IncrementGlobal("fireball", "LOCALS", 1)
+    ReallyForceSpell(LastSeenBy(Myself), WIZARD_FIREBALL)
+END
+
+IF
+  See(NearestEnemyOf(Myself))
+  LevelGT(LastSeenBy(Myself), 2)
+  Global("symbol_stun", "LOCALS", 0)
+  !GlobalTimerNotExpired("delay", "LOCALS")
+THEN
+  RESPONSE #100
+    SetGlobalTimer("delay", "LOCALS", 6)
+    IncrementGlobal("doomed", "LOCALS", 1)
+    IncrementGlobal("symbol_stun", "LOCALS", 1)
+    ReallyForceSpell(LastSeenBy(Myself), WIZARD_NPC_SYMBOL_STUN)
+END
+
+IF
+  See(NearestEnemyOf(Myself))
+  LevelGT(LastSeenBy(Myself), 6)
+  Global("domination", "LOCALS", 0)
+  !GlobalTimerNotExpired("delay", "LOCALS")
+THEN
+  RESPONSE #100
+    SetGlobalTimer("delay", "LOCALS", 6)
+    IncrementGlobal("doomed", "LOCALS", 1)
+    IncrementGlobal("domination", "LOCALS", 1)
+    ReallyForceSpell(LastSeenBy(Myself), WIZARD_DOMINATION)
+END
+
+IF
+  See(NearestEnemyOf(Myself))
+  LevelGT(LastSeenBy(Myself), 3)
+  Global("flame_arrow", "LOCALS", 0)
+  !GlobalTimerNotExpired("delay", "LOCALS")
+THEN
+  RESPONSE #100
+    SetGlobalTimer("delay", "LOCALS", 6)
+    IncrementGlobal("doomed", "LOCALS", 1)
+    IncrementGlobal("flame_arrow", "LOCALS", 1)
+    ReallyForceSpell(LastSeenBy(Myself), WIZARD_FLAME_ARROW)
+END
+
+IF
+  See(NearestEnemyOf(Myself))
+  LevelGT(LastSeenBy(Myself), 0)
+  Global("poly_other", "LOCALS", 0)
+  !GlobalTimerNotExpired("delay", "LOCALS")
+THEN
+  RESPONSE #100
+    SetGlobalTimer("delay", "LOCALS", 6)
+    IncrementGlobal("doomed", "LOCALS", 1)
+    IncrementGlobal("poly_other", "LOCALS", 1)
+    ReallyForceSpell(LastSeenBy(Myself), WIZARD_POLYMORPH_OTHER)
+END
+
+IF
+  Global("glyph", "LOCALS", 1)
+  See(TenthNearestEnemyOf(Myself))
+  !Range(LastSeenBy(Myself), 5)
+  !GlobalTimerNotExpired("delay", "LOCALS")
+THEN
+  RESPONSE #100
+    SetGlobalTimer("delay", "LOCALS", 6)
+    IncrementGlobal("doomed", "LOCALS", 1)
+    IncrementGlobal("glyph", "LOCALS", 1)
+    SpellRES("WM_GLPH", LastSeenBy(Myself))
+END
+
+IF
+  Global("strike", "LOCALS", 1)
+  GlobalGT("doomed", "LOCALS", 2)
+  See(TenthNearestEnemyOfType([0.0.0.MAGE_ALL]))
+  !GlobalTimerNotExpired("delay", "LOCALS")
+THEN
+  RESPONSE #100
+    SetGlobalTimer("delay", "LOCALS", 6)
+    IncrementGlobal("doomed", "LOCALS", 1)
+    IncrementGlobal("strike", "LOCALS", 1)
+    SpellRES("WM_STRIK", LastSeenBy(Myself))
+END
+
+IF
+  See(NearestEnemyOf(Myself))
+  LevelGT(LastSeenBy(Myself), 15)
+  Global("abi_dalzim", "LOCALS", 0)
+  !GlobalTimerNotExpired("delay", "LOCALS")
+THEN
+  RESPONSE #100
+    SetGlobalTimer("delay", "LOCALS", 6)
+    IncrementGlobal("doomed", "LOCALS", 1)
+    IncrementGlobal("abi_dalzim", "LOCALS", 1)
+    ReallyForceSpell(LastSeenBy(Myself), WIZARD_ABI_DALZIMS_HORRID_WILTING)
+END
+
+IF
+  See(NearestEnemyOf(Myself))
+  LevelGT(LastSeenBy(Myself), 15)
+  Global("efreeti", "LOCALS", 0)
+  !GlobalTimerNotExpired("delay", "LOCALS")
+THEN
+  RESPONSE #100
+    SetGlobalTimer("delay", "LOCALS", 6)
+    IncrementGlobal("doomed", "LOCALS", 1)
+    IncrementGlobal("efreeti", "LOCALS", 1)
+    ReallyForceSpell(Myself, WIZARD_SUMMON_EFREET)
+END
+
+IF
+  See(NearestEnemyOf(Myself))
+  LevelGT(LastSeenBy(Myself), 15)
+  Global("sunfire", "LOCALS", 0)
+  !GlobalTimerNotExpired("delay", "LOCALS")
+THEN
+  RESPONSE #100
+    SetGlobalTimer("delay", "LOCALS", 6)
+    IncrementGlobal("doomed", "LOCALS", 1)
+    IncrementGlobal("sunfire", "LOCALS", 1)
+    ReallyForceSpell(Myself, WIZARD_SUN_FIRE)
+END
+
+IF
+  See(NearestEnemyOf(Myself))
+  LevelGT(LastSeenBy(Myself), 15)
+  Global("prismatic", "LOCALS", 0)
+  !GlobalTimerNotExpired("delay", "LOCALS")
+THEN
+  RESPONSE #100
+    SetGlobalTimer("delay", "LOCALS", 6)
+    IncrementGlobal("doomed", "LOCALS", 1)
+    IncrementGlobal("prismatic", "LOCALS", 1)
+    ReallyForceSpell(Myself, WIZARD_PRISMATIC_SPRAY)
+END
+
+IF
+  See(NearestEnemyOf(Myself))
+  LevelGT(LastSeenBy(Myself), 15)
+  Global("finger", "LOCALS", 0)
+  !GlobalTimerNotExpired("delay", "LOCALS")
+THEN
+  RESPONSE #100
+    SetGlobalTimer("delay", "LOCALS", 6)
+    IncrementGlobal("doomed", "LOCALS", 1)
+    IncrementGlobal("finger", "LOCALS", 1)
+    ReallyForceSpell(LastSeenBy(Myself), WIZARD_FINGER_OF_DEATH)
+END
+
+IF
+  See(NearestEnemyOf(Myself))
+  LevelGT(LastSeenBy(Myself), 15)
+  Global("flesh_to_stone", "LOCALS", 0)
+  !GlobalTimerNotExpired("delay", "LOCALS")
+THEN
+  RESPONSE #100
+    SetGlobalTimer("delay", "LOCALS", 6)
+    IncrementGlobal("doomed", "LOCALS", 1)
+    IncrementGlobal("flesh_to_stone", "LOCALS", 1)
+    ReallyForceSpell(LastSeenBy(Myself), WIZARD_FLESH_TO_STONE)
+END
+
+IF
+  See(NearestEnemyOf(Myself))
+  LevelGT(LastSeenBy(Myself), 15)
+  Global("disintegrate", "LOCALS", 0)
+  !GlobalTimerNotExpired("delay", "LOCALS")
+THEN
+  RESPONSE #100
+    SetGlobalTimer("delay", "LOCALS", 6)
+    IncrementGlobal("doomed", "LOCALS", 1)
+    IncrementGlobal("disintegrate", "LOCALS", 1)
+    ReallyForceSpell(LastSeenBy(Myself), WIZARD_DISINTEGRATE)
+END
+
+IF
+  See(NearestEnemyOf(Myself))
+  GlobalLT("assassin", "LOCALS", 2)
+  LevelGT(LastSeenBy(Myself), 15)
+  Range(LastSeenBy(Myself), 4)
+THEN
+  RESPONSE #100
+    SetGlobalTimer("delay", "LOCALS", 10)
+    IncrementGlobal("assassin", "LOCALS", 1)
+    SpellRES("SPCL916", Myself)
+    Continue()
+END
+
+IF
+  See(TenthNearestEnemyOf(Myself))
+  !Range(LastSeenBy(Myself), 10)
+  !GlobalTimerNotExpired("delay", "LOCALS")
+THEN
+  RESPONSE #100
+    SetGlobalTimer("delay", "LOCALS", 6)
+    IncrementGlobal("doomed", "LOCALS", 1)
+    ReallyForceSpell(LastSeenBy(Myself), WIZARD_LARLOCH_MINOR_DRAIN)
+END
+
+IF
+  See(TenthNearestEnemyOf(Myself))
+  !Range(LastSeenBy(Myself), 10)
+  !GlobalTimerNotExpired("delay", "LOCALS")
+THEN
+  RESPONSE #100
+    SetGlobalTimer("delay", "LOCALS", 6)
+    IncrementGlobal("doomed", "LOCALS", 1)
+    ReallyForceSpell(LastSeenBy(Myself), WIZARD_LARLOCH_MINOR_DRAIN)
+END
+
+IF
+  See(TenthNearestEnemyOf(Myself))
+  !Range(LastSeenBy(Myself), 10)
+  !GlobalTimerNotExpired("delay", "LOCALS")
+THEN
+  RESPONSE #100
+    SetGlobalTimer("delay", "LOCALS", 6)
+    IncrementGlobal("doomed", "LOCALS", 1)
+    ReallyForceSpell(LastSeenBy(Myself), WIZARD_LARLOCH_MINOR_DRAIN)
+END
+
+IF
+  See(TenthNearestEnemyOf(Myself))
+  !Range(LastSeenBy(Myself), 10)
+  !GlobalTimerNotExpired("delay", "LOCALS")
+THEN
+  RESPONSE #100
+    SetGlobalTimer("delay", "LOCALS", 6)
+    IncrementGlobal("doomed", "LOCALS", 1)
+    ReallyForceSpell(LastSeenBy(Myself), WIZARD_LARLOCH_MINOR_DRAIN)
+END
+
+IF
+  See(TenthNearestEnemyOf(Myself))
+  !Range(LastSeenBy(Myself), 10)
+  !GlobalTimerNotExpired("delay", "LOCALS")
+THEN
+  RESPONSE #100
+    SetGlobalTimer("delay", "LOCALS", 6)
+    IncrementGlobal("doomed", "LOCALS", 1)
+    ReallyForceSpell(LastSeenBy(Myself), WIZARD_LARLOCH_MINOR_DRAIN)
+END
+
+IF
+  See(NearestEnemyOf(Myself))
+THEN
+  RESPONSE #100
+    AttackReevaluate(LastSeenBy(Myself), 15)
+    Continue()
+END
+
+IF
+  !See(NearestEnemyOf(Myself))
+THEN
+  RESPONSE #100
+    MoveToObject(Player1)
+    Continue()
+END

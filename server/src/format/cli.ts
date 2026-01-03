@@ -1,21 +1,39 @@
 #!/usr/bin/env node
 /**
- * CLI tool to format Fallout SSL files
- * Usage: node format-cli.js <file.ssl|dir> [--save] [-r]
+ * CLI tool to format Fallout SSL and WeiDU BAF files
+ * Usage: node format-cli.js <file.ssl|file.baf|dir> [--save] [-r]
  */
 
 import * as fs from "fs";
 import * as path from "path";
-import { formatDocument, FormatOptions, FormatError } from "../fallout-ssl/format-core";
-import { initParser, getParser } from "../fallout-ssl/parser";
+import {
+    formatDocument as formatSslDocument,
+    FormatOptions as SslFormatOptions,
+    FormatError,
+} from "../fallout-ssl/format-core";
+import { initParser as initSslParser, getParser as getSslParser } from "../fallout-ssl/parser";
+import {
+    formatDocument as formatBafDocument,
+    FormatOptions as BafFormatOptions,
+} from "../weidu-baf/format-core";
+import { initParser as initBafParser, getParser as getBafParser } from "../weidu-baf/parser";
 import * as editorconfig from "editorconfig";
 
-function findFiles(dir: string, ext: string, files: string[] = []): string[] {
+type FileType = "ssl" | "baf";
+
+function getFileType(filePath: string): FileType | null {
+    const ext = path.extname(filePath).toLowerCase();
+    if (ext === ".ssl") return "ssl";
+    if (ext === ".baf") return "baf";
+    return null;
+}
+
+function findFiles(dir: string, exts: string[], files: string[] = []): string[] {
     for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
         const fullPath = path.join(dir, entry.name);
         if (entry.isDirectory()) {
-            findFiles(fullPath, ext, files);
-        } else if (entry.name.endsWith(ext)) {
+            findFiles(fullPath, exts, files);
+        } else if (exts.some(ext => entry.name.endsWith(ext))) {
             files.push(fullPath);
         }
     }
@@ -30,7 +48,7 @@ function printErrors(filePath: string, errors: FormatError[]): void {
     }
 }
 
-function getFormatOptions(filePath: string): FormatOptions {
+function getSslFormatOptions(filePath: string): SslFormatOptions {
     const config = editorconfig.parseSync(filePath);
     return {
         indentSize: typeof config.indent_size === "number" ? config.indent_size : 4,
@@ -38,18 +56,42 @@ function getFormatOptions(filePath: string): FormatOptions {
     };
 }
 
+function getBafFormatOptions(filePath: string): BafFormatOptions {
+    const config = editorconfig.parseSync(filePath);
+    return {
+        indentSize: typeof config.indent_size === "number" ? config.indent_size : 2,
+    };
+}
+
 type FormatMode = "save" | "stdout" | "check";
 
 function formatFile(filePath: string, mode: FormatMode): FileResult {
-    const text = fs.readFileSync(filePath, "utf-8");
-    const tree = getParser().parse(text);
-    if (!tree) {
-        console.error(`Error: Failed to parse ${filePath}`);
+    const fileType = getFileType(filePath);
+    if (!fileType) {
+        console.error(`Error: Unsupported file type: ${filePath}`);
         return "error";
     }
 
-    const options = getFormatOptions(path.resolve(filePath));
-    const result = formatDocument(tree.rootNode, options);
+    const text = fs.readFileSync(filePath, "utf-8");
+    let result: { text: string; errors: FormatError[] };
+
+    if (fileType === "ssl") {
+        const tree = getSslParser().parse(text);
+        if (!tree) {
+            console.error(`Error: Failed to parse ${filePath}`);
+            return "error";
+        }
+        const options = getSslFormatOptions(path.resolve(filePath));
+        result = formatSslDocument(tree.rootNode, options);
+    } else {
+        const tree = getBafParser().parse(text);
+        if (!tree) {
+            console.error(`Error: Failed to parse ${filePath}`);
+            return "error";
+        }
+        const options = getBafFormatOptions(path.resolve(filePath));
+        result = formatBafDocument(tree.rootNode, options);
+    }
 
     // Print any errors (reserved words used as identifiers, etc.)
     if (result.errors.length > 0) {
@@ -74,9 +116,9 @@ async function main() {
     const args = process.argv.slice(2);
 
     if (args.length === 0 || args.includes("--help") || args.includes("-h")) {
-        console.log("Usage: format-cli <file.ssl|dir> [--save] [-r] [-q]");
+        console.log("Usage: format-cli <file.ssl|file.baf|dir> [--save] [-r] [-q]");
         console.log("  --save    Write formatted output back to file(s)");
-        console.log("  -r        Recursively format all .ssl files in directory");
+        console.log("  -r        Recursively format all .ssl and .baf files in directory");
         console.log("  -q        Quiet mode: suppress summary, only print changed files");
         console.log("  Without --save: single file prints to stdout, directory shows what would change");
         process.exit(0);
@@ -97,16 +139,26 @@ async function main() {
         process.exit(1);
     }
 
-    await initParser();
-
+    // Initialize parsers based on what we need
     const stat = fs.statSync(target);
-    if (stat.isDirectory()) {
+    const isDir = stat.isDirectory();
+    const fileType = isDir ? null : getFileType(target);
+
+    // Initialize parsers as needed
+    if (isDir || fileType === "ssl") {
+        await initSslParser();
+    }
+    if (isDir || fileType === "baf") {
+        await initBafParser();
+    }
+
+    if (isDir) {
         if (!recursive) {
             console.error("Error: Target is a directory. Use -r for recursive formatting.");
             process.exit(1);
         }
-        const files = findFiles(target, ".ssl");
-        if (!quiet) console.log(`Found ${files.length} .ssl files`);
+        const files = findFiles(target, [".ssl", ".baf"]);
+        if (!quiet) console.log(`Found ${files.length} files (.ssl and .baf)`);
         let changed = 0, unchanged = 0, errors = 0;
         const mode: FormatMode = saveToFile ? "save" : "check";
         for (const file of files) {

@@ -1,0 +1,35 @@
+{
+  "name": "tree-sitter-baf",
+  "version": "0.1.0",
+  "description": "WeiDU BAF (Infinity Engine script) grammar for tree-sitter",
+  "type": "module",
+  "license": "",
+  "author": {
+    "name": "BGforge",
+    "email": "dev@bgforge.net",
+    "url": "https://bgforge.net/"
+  },
+  "keywords": [
+    "tree-sitter",
+    "baf",
+    "weidu",
+    "infinity-engine"
+  ],
+  "files": [
+    "grammar.js",
+    "tree-sitter.json",
+    "src/**",
+    "*.wasm"
+  ],
+  "scripts": {
+    "build": "tree-sitter generate && tree-sitter build --wasm",
+    "test": "tree-sitter test",
+    "lint": "eslint grammar.js",
+    "playground": "tree-sitter playground",
+    "format-samples": "for f in test/samples/*.baf; do node ../../server/out/format-cli.js \"$f\" > \"test/samples-expected/$(basename \"$f\")\"; done"
+  },
+  "devDependencies": {
+    "eslint": "^9.0.0",
+    "globals": "^16.0.0"
+  }
+}

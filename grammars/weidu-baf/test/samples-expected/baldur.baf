@@ -1,0 +1,19 @@
+// -------------------------------
+// After Resting: Rhialto appears
+// -------------------------------
+
+IF
+  Global("wm_start", "GLOBAL", 0)
+  Global("wm_bg1book", "GLOBAL", 0)  // Do not appear in BG2 if already appeared in BG1 part
+  Global("wm_bg1bear", "GLOBAL", 0)  // Do not appear in BG2 if already appeared in BG1 part
+  GlobalGT("Chapter", "GLOBAL", 0)
+  PartyRested()
+  AreaType(OUTDOOR)
+  // Class(Player1,MAGE)
+  // Kit(Player1,WILDMAGE)
+THEN
+  RESPONSE #100
+    ActionOverride(Player1, CreateCreature("wm_rhia1", [-1.-1], 0))
+    SetGlobal("wm_start", "GLOBAL", 1)
+    Continue()
+END

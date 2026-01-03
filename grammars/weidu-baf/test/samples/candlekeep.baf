@@ -1,0 +1,10 @@
+// Pansy mode: Rhialto waits outside Candlekeep's walls.
+
+IF
+  Global("wm_start", "GLOBAL", 0)
+  GlobalGT("Chapter", "GLOBAL", 0)
+THEN
+  RESPONSE #100
+    CreateCreature("wm_rhia1", [200.3200], 0)
+    SetGlobal("wm_start", "GLOBAL", 1)
+END

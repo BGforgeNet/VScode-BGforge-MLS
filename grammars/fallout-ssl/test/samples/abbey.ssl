@@ -1,0 +1,58 @@
+/*
+  ***   Script conwerted to Interplay format by Fallout Script Edytor (by Jargo)  ***
+*/
+
+#define SCRIPT_REALNAME "abbey"
+#include "../headers/define.h"
+#include "../headers/updatmap.h"
+#include "../headers/abbey.h"
+
+#define NAME                    SCRIPT_ABBEY
+
+#include "../headers/command.h"
+
+procedure start;
+procedure map_enter_p_proc;
+procedure map_update_p_proc;
+
+/*
+  TODO: this is a temporary workaround for a ghost object in .map file.
+  It should be removed once the map file is fixed.
+  See https://github.com/BGforgeNet/Fallout2_Restoration_Project/pull/260
+*/
+export variable playerTmpBox2;
+/* end todo */
+
+export variable abbey_bill_box_obj;
+
+procedure start begin
+end
+
+procedure map_enter_p_proc begin
+   if (map_first_run) then begin
+      display_msg(mstr(100));
+   end
+
+   //added by killap - prevent car from disappearing if the car runs out of gas while on the town circle
+   if ((car_current_town == AREA_CAR_OUTTA_GAS) and (cur_map_index != MAP_CAR_DESERT) and (car_out_of_fuel)) then begin
+      set_global_var(GVAR_CAR_PLACED_TILE, 0);
+      Create_Car(CAR_ABBEY_HEX, CAR_ABBEY_ELEV)
+      if (tile_contains_pid_obj(CAR_ABBEY_HEX, CAR_ABBEY_ELEV, PID_DRIVABLE_CAR) != 0) then begin
+         Create_Trunk(CAR_ABBEY_HEX, CAR_ABBEY_ELEV)
+      end
+   end else
+      Check_Create_Car(CAR_ABBEY_HEX, CAR_ABBEY_ELEV)
+   //end added
+
+   if (dude_elevation == 0) then
+      Lighting;
+   else
+      Military_Base_Lighting;
+end
+
+procedure map_update_p_proc begin
+   if (dude_elevation == 0) then
+      Lighting;
+   else
+      Military_Base_Lighting;
+end

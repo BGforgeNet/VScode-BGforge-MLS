@@ -1,0 +1,588 @@
+================================================================================
+Variable declaration
+================================================================================
+
+variable foo;
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (variable_decl
+    (var_init
+      name: (identifier))))
+
+================================================================================
+Variable with initialization
+================================================================================
+
+variable foo = 1;
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (variable_decl
+    (var_init
+      name: (identifier)
+      value: (number))))
+
+================================================================================
+Static array declaration
+================================================================================
+
+variable arr[10];
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (variable_decl
+    (var_init
+      name: (identifier)
+      size: (number))))
+
+================================================================================
+Multiple variables
+================================================================================
+
+variable a, b, c;
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (variable_decl
+    (var_init
+      name: (identifier))
+    (var_init
+      name: (identifier))
+    (var_init
+      name: (identifier))))
+
+================================================================================
+Export variable
+================================================================================
+
+export variable foo = 42;
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (export_decl
+    name: (identifier)
+    value: (number)))
+
+================================================================================
+Procedure forward declaration
+================================================================================
+
+procedure foo;
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (procedure_forward
+    name: (identifier)))
+
+================================================================================
+Procedure forward with params
+================================================================================
+
+procedure foo(variable a, variable b);
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (procedure_forward
+    name: (identifier)
+    params: (param_list
+      (param
+        name: (identifier))
+      (param
+        name: (identifier)))))
+
+================================================================================
+Simple procedure
+================================================================================
+
+procedure foo begin
+end
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (procedure
+    name: (identifier)))
+
+================================================================================
+Procedure with body
+================================================================================
+
+procedure foo begin
+    x = 1;
+end
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (procedure
+    name: (identifier)
+    body: (assignment
+      left: (identifier)
+      right: (number))))
+
+================================================================================
+If statement
+================================================================================
+
+procedure foo begin
+    if x then y = 1;
+end
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (procedure
+    name: (identifier)
+    body: (if_stmt
+      cond: (identifier)
+      then: (assignment
+        left: (identifier)
+        right: (number)))))
+
+================================================================================
+If-else statement
+================================================================================
+
+procedure foo begin
+    if x then begin
+        y = 1;
+    end else begin
+        y = 2;
+    end
+end
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (procedure
+    name: (identifier)
+    body: (if_stmt
+      cond: (identifier)
+      then: (block
+        (assignment
+          left: (identifier)
+          right: (number)))
+      else: (block
+        (assignment
+          left: (identifier)
+          right: (number))))))
+
+================================================================================
+While loop
+================================================================================
+
+procedure foo begin
+    while x do y = 1;
+end
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (procedure
+    name: (identifier)
+    body: (while_stmt
+      cond: (identifier)
+      body: (assignment
+        left: (identifier)
+        right: (number)))))
+
+================================================================================
+For loop with variable declaration
+================================================================================
+
+procedure foo begin
+    for (variable i = 0; i < 10; i++) begin
+        x = i;
+    end
+end
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (procedure
+    name: (identifier)
+    body: (for_stmt
+      init: (for_var_decl
+        name: (identifier)
+        value: (number))
+      cond: (binary_expr
+        left: (identifier)
+        right: (number))
+      update: (unary_expr
+        expr: (identifier))
+      body: (block
+        (assignment
+          left: (identifier)
+          right: (identifier))))))
+
+================================================================================
+Foreach loop
+================================================================================
+
+procedure foo begin
+    foreach item in arr begin
+        x = item;
+    end
+end
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (procedure
+    name: (identifier)
+    body: (foreach_stmt
+      var: (identifier)
+      iter: (identifier)
+      body: (block
+        (assignment
+          left: (identifier)
+          right: (identifier))))))
+
+================================================================================
+Switch statement
+================================================================================
+
+procedure foo begin
+    switch x begin
+        case 1:
+            y = 1;
+        default:
+            y = 0;
+    end
+end
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (procedure
+    name: (identifier)
+    body: (switch_stmt
+      value: (identifier)
+      (case_clause
+        value: (number)
+        (assignment
+          left: (identifier)
+          right: (number)))
+      (default_clause
+        (assignment
+          left: (identifier)
+          right: (number))))))
+
+================================================================================
+Return statement
+================================================================================
+
+procedure foo begin
+    return 42;
+end
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (procedure
+    name: (identifier)
+    body: (return_stmt
+      (number))))
+
+================================================================================
+Break and continue
+================================================================================
+
+procedure foo begin
+    break;
+    continue;
+end
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (procedure
+    name: (identifier)
+    body: (break_stmt)
+    body: (continue_stmt)))
+
+================================================================================
+Call statement
+================================================================================
+
+procedure foo begin
+    call bar;
+end
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (procedure
+    name: (identifier)
+    body: (call_stmt
+      target: (identifier))))
+
+================================================================================
+Function call expression
+================================================================================
+
+procedure foo begin
+    bar(1, 2);
+end
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (procedure
+    name: (identifier)
+    body: (expression_stmt
+      (call_expr
+        func: (identifier)
+        args: (number)
+        args: (number)))))
+
+================================================================================
+Binary operators
+================================================================================
+
+procedure foo begin
+    x = 1 + 2 * 3;
+end
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (procedure
+    name: (identifier)
+    body: (assignment
+      left: (identifier)
+      right: (binary_expr
+        left: (number)
+        right: (binary_expr
+          left: (number)
+          right: (number))))))
+
+================================================================================
+Unary minus
+================================================================================
+
+procedure foo begin
+    x = -1;
+end
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (procedure
+    name: (identifier)
+    body: (assignment
+      left: (identifier)
+      right: (unary_expr
+        expr: (number)))))
+
+================================================================================
+Array subscript
+================================================================================
+
+procedure foo begin
+    x = arr[0];
+end
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (procedure
+    name: (identifier)
+    body: (assignment
+      left: (identifier)
+      right: (subscript_expr
+        object: (identifier)
+        index: (number)))))
+
+================================================================================
+Member access
+================================================================================
+
+procedure foo begin
+    x = obj.field;
+end
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (procedure
+    name: (identifier)
+    body: (assignment
+      left: (identifier)
+      right: (member_expr
+        object: (identifier)
+        member: (identifier)))))
+
+================================================================================
+Array literal
+================================================================================
+
+procedure foo begin
+    x = [1, 2, 3];
+end
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (procedure
+    name: (identifier)
+    body: (assignment
+      left: (identifier)
+      right: (array_expr
+        (number)
+        (number)
+        (number)))))
+
+================================================================================
+Map literal
+================================================================================
+
+procedure foo begin
+    x = {"a": 1, "b": 2};
+end
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (procedure
+    name: (identifier)
+    body: (assignment
+      left: (identifier)
+      right: (map_expr
+        (map_entry
+          key: (string)
+          value: (number))
+        (map_entry
+          key: (string)
+          value: (number))))))
+
+================================================================================
+Procedure reference
+================================================================================
+
+procedure foo begin
+    x = @bar;
+end
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (procedure
+    name: (identifier)
+    body: (assignment
+      left: (identifier)
+      right: (proc_ref
+        (identifier)))))
+
+================================================================================
+Ternary expression
+================================================================================
+
+procedure foo begin
+    x = 1 if cond else 2;
+end
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (procedure
+    name: (identifier)
+    body: (assignment
+      left: (identifier)
+      right: (ternary_expr
+        true_value: (number)
+        cond: (identifier)
+        false_value: (number)))))
+
+================================================================================
+Line comment
+================================================================================
+
+// this is a comment
+variable x;
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (line_comment)
+  (variable_decl
+    (var_init
+      name: (identifier))))
+
+================================================================================
+Block comment
+================================================================================
+
+/* block comment */
+variable x;
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (comment)
+  (variable_decl
+    (var_init
+      name: (identifier))))
+
+================================================================================
+String literal
+================================================================================
+
+procedure foo begin
+    x = "hello";
+end
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (procedure
+    name: (identifier)
+    body: (assignment
+      left: (identifier)
+      right: (string))))
+
+================================================================================
+Hex number
+================================================================================
+
+procedure foo begin
+    x = 0xFF;
+end
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (procedure
+    name: (identifier)
+    body: (assignment
+      left: (identifier)
+      right: (number))))
+
+================================================================================
+Boolean literals
+================================================================================
+
+procedure foo begin
+    x = true;
+    y = false;
+end
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (procedure
+    name: (identifier)
+    body: (assignment
+      left: (identifier)
+      right: (boolean))
+    body: (assignment
+      left: (identifier)
+      right: (boolean))))

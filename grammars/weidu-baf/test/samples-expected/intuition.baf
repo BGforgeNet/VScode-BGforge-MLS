@@ -1,0 +1,104 @@
+// intuition main action
+IF
+  Global("%trap_var_base%_detected", "MYAREA", 0)
+  Global("%trap_var_base%_disarmed", "MYAREA", 0)
+  !GlobalTimerNotExpired("%intuition_timer%", "MYAREA")  // don't spam the actions
+  // %is_active%
+  // %traps_baf_combat%
+  Detect([PC])
+  // %traps_baf_range%
+  !StateCheck(LastSeenBy, CD_STATE_NOTVALID)
+  ActionListEmpty()
+THEN
+  RESPONSE #1
+    SetGlobal("%trap_var_base%_intuition", "MYAREA", 1)
+    // SetGlobalTimer("%intuition_timer%", "MYAREA", %intuition_delay%)
+    Continue()
+END
+
+// intuition: character strings
+IF
+  Global("%trap_var_base%_intuition", "MYAREA", 1)
+  ActionListEmpty()
+THEN
+  RESPONSE #1
+    DisplayStringHead(LastSeenBy, @3)
+    Continue()
+  RESPONSE #1
+    DisplayStringHead(LastSeenBy, @4)
+    Continue()
+  RESPONSE #1
+    DisplayStringHead(LastSeenBy, @5)
+    Continue()
+  RESPONSE #1
+    DisplayStringHead(LastSeenBy, @6)
+    Continue()
+  RESPONSE #1
+    DisplayStringHead(LastSeenBy, @7)
+    Continue()
+  RESPONSE #1
+    DisplayStringHead(LastSeenBy, @8)
+    Continue()
+  RESPONSE #1
+    DisplayStringHead(LastSeenBy, @9)
+    Continue()
+END
+
+// intuition: center
+IF
+  Global("%trap_var_base%_intuition", "MYAREA", 1)
+THEN
+  RESPONSE #1
+    // %traps_baf_view%
+    Continue()
+END
+
+// intuition: sound
+IF
+  // %traps_baf_sound_toggle%
+  Global("%trap_var_base%_intuition", "MYAREA", 1)
+THEN
+  RESPONSE #1
+    PlaySound("act_09")
+    Continue()
+END
+
+// intuition: autopause
+IF
+  // %traps_baf_pause_toggle%
+  Global("%trap_var_base%_intuition", "MYAREA", 1)
+  !GlobalTimerNotExpired("%pause_timer%", "GLOBAL")  // don't spam pause, global timer in case there's multiple traps in sight
+THEN
+  RESPONSE #1
+    // SetGlobalTimer("%pause_timer%", "GLOBAL", %pause_delay%)
+    ActionOverride(LastSeenBy, PauseGame())  // interrupts player orders
+    Continue()
+END
+
+// intuition: start searching for traps - after pause because pausing interrupts modal actions too
+IF
+  // %traps_baf_force_find_traps_toggle%
+  Global("%trap_var_base%_intuition", "MYAREA", 1)
+  Global("%trap_var_base%_detected", "MYAREA", 0)
+  // %traps_baf_class%
+  // %traps_baf_range%
+  // %is_active%
+  !StateCheck(LastSeenBy, CD_STATE_NOTVALID)
+  // !CheckStatLT(LastSeenBy, %detection%, TRAPS)
+  !TriggerOverride(LastSeenBy, ModalState(DETECTTRAPS))
+  // we don't want thieves coming out of stealth automatically, there could be enemies present
+  !TriggerOverride(LastSeenBy, ModalState(STEALTH))
+THEN
+  RESPONSE #1
+    ActionOverride(LastSeenBy, FindTraps())
+    Continue()
+END
+
+// end intuition
+IF
+  Global("%trap_var_base%_intuition", "MYAREA", 1)
+THEN
+  RESPONSE #1
+    SetGlobal("%trap_var_base%_intuition", "MYAREA", 0)
+    Continue()
+END

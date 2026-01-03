@@ -14,7 +14,8 @@ import {
 import { conlog, symbolAtPosition } from "./common";
 import { clearDiagnostics, COMMAND_compile, compile } from "./compile";
 import { parseDialog } from "./dialog";
-import { formatDocument, initFormatter } from "./fallout-ssl/format";
+import { formatDocument as formatSslDocument, initFormatter as initSslFormatter } from "./fallout-ssl/format";
+import { formatDocument as formatBafDocument, initFormatter as initBafFormatter } from "./weidu-baf/format";
 import { Galactus } from "./galactus";
 import { getPreviewData } from "./preview";
 import * as settings from "./settings";
@@ -102,8 +103,9 @@ connection.onInitialized(async () => {
     for (const document of documents.all()) {
         gala.reloadFileData(document.uri, document.languageId, document.getText());
     }
-    // Initialize formatter
-    await initFormatter();
+    // Initialize formatters
+    await initSslFormatter();
+    await initBafFormatter();
     connection.sendNotification("bgforge-mls/load-finished");
     conlog("onInitialized completed");
 });
@@ -311,11 +313,13 @@ connection.onDocumentFormatting((params) => {
     if (!textDoc) {
         return [];
     }
-    // Only format fallout-ssl files
-    if (textDoc.languageId !== "fallout-ssl") {
-        return [];
-    }
     const text = textDoc.getText();
-    return formatDocument(text, uri);
+    if (textDoc.languageId === "fallout-ssl") {
+        return formatSslDocument(text, uri);
+    }
+    if (textDoc.languageId === "weidu-baf") {
+        return formatBafDocument(text, uri);
+    }
+    return [];
 });
 
