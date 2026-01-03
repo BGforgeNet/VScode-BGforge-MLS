@@ -1,13 +1,33 @@
 #!/bin/bash
-set -e
+# Test tree-sitter BAF grammar - runs all quality checks
+set -xeu -o pipefail
 
-echo "Testing BAF formatter..."
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+ROOT_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
 
-# Test parsing samples
+cd "$SCRIPT_DIR"
+
+echo "=== Generating grammar ==="
+tree-sitter generate
+
+echo ""
+echo "=== Running ESLint ==="
+pnpm eslint grammar.js
+
+echo ""
+echo "=== Formatting samples ==="
 for f in test/samples/*.baf; do
-    echo "Formatting: $f"
-    node ../../server/out/format-cli.js "$f"
-    echo "---"
+    pnpm -s --dir "$ROOT_DIR" format-ssl "$SCRIPT_DIR/$f" > "test/samples-expected/$(basename "$f")" 2>&1
 done
 
-echo "All BAF samples formatted successfully"
+echo ""
+echo "=== Checking format idempotency ==="
+pnpm -s --dir "$ROOT_DIR" format-ssl "$SCRIPT_DIR/test/samples-expected" -r --save 2>&1
+
+if git diff --quiet test/samples-expected; then
+    echo "SUCCESS: All samples are idempotent"
+else
+    echo "FAILED: Files changed after re-format"
+    git diff test/samples-expected
+    exit 1
+fi
