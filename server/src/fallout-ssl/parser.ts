@@ -1,5 +1,6 @@
 /**
- * Shared parser initialization for Fallout SSL formatter.
+ * Shared tree-sitter parser for Fallout SSL.
+ * Used by formatter and dialog view.
  */
 
 import { Parser, Language } from "web-tree-sitter";

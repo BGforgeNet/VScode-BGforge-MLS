@@ -3,9 +3,8 @@
  * Extracts dialog structure (nodes, replies, options) for visualization.
  */
 
-import { Parser, Language, type Node as SyntaxNode } from "web-tree-sitter";
-import * as path from "path";
-import * as fs from "fs";
+import type { Node as SyntaxNode } from "web-tree-sitter";
+import { initParser, getParser, isInitialized } from "./fallout-ssl/parser";
 
 export interface DialogReply {
     msgId: number | string;
@@ -34,31 +33,14 @@ export interface DialogData {
     entryPoints: string[];
 }
 
-let parser: Parser | null = null;
-let language: Language | null = null;
-
-async function getParser(): Promise<Parser> {
-    if (parser && language) return parser;
-
-    // Load WASM binary directly - locateFile doesn't work in CJS bundles
-    const wasmBinary = fs.readFileSync(path.join(__dirname, "web-tree-sitter.wasm"));
-    await Parser.init({ wasmBinary });
-
-    parser = new Parser();
-
-    const sslWasmPath = path.join(__dirname, "tree-sitter-ssl.wasm");
-    language = await Language.load(sslWasmPath);
-    parser.setLanguage(language);
-
-    return parser;
-}
-
 /**
  * Parse dialog structure from SSL script text using tree-sitter
  */
 export async function parseDialog(text: string): Promise<DialogData> {
-    const p = await getParser();
-    const tree = p.parse(text);
+    if (!isInitialized()) {
+        await initParser();
+    }
+    const tree = getParser().parse(text);
     if (!tree) {
         return { nodes: [], entryPoints: [] };
     }

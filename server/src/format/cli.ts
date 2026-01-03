@@ -7,7 +7,7 @@
 import * as fs from "fs";
 import * as path from "path";
 import { formatDocument, FormatOptions, FormatError } from "../fallout-ssl/format-core";
-import { initParser, getParser } from "./parser";
+import { initParser, getParser } from "../fallout-ssl/parser";
 import * as editorconfig from "editorconfig";
 
 function findFiles(dir: string, ext: string, files: string[] = []): string[] {

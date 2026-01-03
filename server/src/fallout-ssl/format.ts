@@ -8,7 +8,7 @@ import { parse as parseIni } from "ini";
 import { conlog } from "../common";
 import { connection } from "../server";
 import { formatDocument as formatAst, FormatOptions, FormatError, setLogger } from "./format-core";
-import { initParser, getParser, isInitialized } from "../format/parser";
+import { initParser, getParser, isInitialized } from "./parser";
 
 export async function initFormatter(): Promise<void> {
     if (isInitialized()) return;
