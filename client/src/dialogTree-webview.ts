@@ -2,7 +2,7 @@
 // Wrapped in IIFE to avoid global scope conflicts with other webview scripts
 (function () {
     // Simple debounce helper
-    function debounce<T extends (...args: unknown[]) => void>(fn: T, ms: number): T {
+    function debounce<T extends (..._args: unknown[]) => void>(fn: T, ms: number): T {
         let timeout: ReturnType<typeof setTimeout>;
         return ((...args: unknown[]) => {
             clearTimeout(timeout);

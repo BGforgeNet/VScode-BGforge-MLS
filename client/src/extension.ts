@@ -56,7 +56,6 @@ export async function activate(context: ExtensionContext) {
             { scheme: "file", language: "weidu-tp2-tpl" },
 
             { scheme: "file", language: "weidu-baf" },
-            { scheme: "file", language: "weidu-baf-tpl" },
 
             { scheme: "file", language: "weidu-d" },
             { scheme: "file", language: "weidu-d-tpl" },
