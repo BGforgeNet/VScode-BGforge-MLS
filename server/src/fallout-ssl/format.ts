@@ -1,4 +1,4 @@
-import { TextEdit } from "vscode-languageserver/node";
+import { TextEdit, Diagnostic, DiagnosticSeverity } from "vscode-languageserver/node";
 import { fileURLToPath } from "url";
 import * as fs from "fs";
 import * as path from "path";
@@ -7,7 +7,7 @@ import * as path from "path";
 import { parse as parseIni } from "ini";
 import { conlog } from "../common";
 import { connection } from "../server";
-import { formatDocument as formatAst, FormatOptions, setLogger } from "./format-core";
+import { formatDocument as formatAst, FormatOptions, FormatError, setLogger } from "./format-core";
 import { initParser, getParser, isInitialized } from "../format/parser";
 
 export async function initFormatter(): Promise<void> {
@@ -77,6 +77,18 @@ function getFormatOptions(uri: string): FormatOptions {
     }
 }
 
+function formatErrorsToDiagnostics(errors: FormatError[]): Diagnostic[] {
+    return errors.map(err => ({
+        severity: DiagnosticSeverity.Error,
+        range: {
+            start: { line: err.line - 1, character: err.column - 1 },
+            end: { line: err.line - 1, character: err.column - 1 + 10 }, // Approximate word length
+        },
+        message: err.message,
+        source: "ssl-format",
+    }));
+}
+
 export function formatDocument(text: string, uri: string): TextEdit[] {
     if (!isInitialized()) {
         connection.window.showWarningMessage("Formatter not initialized");
@@ -90,12 +102,17 @@ export function formatDocument(text: string, uri: string): TextEdit[] {
     }
 
     const options = getFormatOptions(uri);
-    const formatted = formatAst(tree.rootNode, options);
+    const result = formatAst(tree.rootNode, options);
+
+    // Send format errors as diagnostics (empty array clears previous)
+    const diagnostics = formatErrorsToDiagnostics(result.errors);
+    connection.sendDiagnostics({ uri, diagnostics });
+
     const lines = text.split("\n");
     const lastLine = lines[lines.length - 1];
 
     return [TextEdit.replace({
         start: { line: 0, character: 0 },
         end: { line: lines.length - 1, character: lastLine.length },
-    }, formatted)];
+    }, result.text)];
 }

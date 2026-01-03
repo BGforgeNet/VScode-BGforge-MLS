@@ -321,6 +321,8 @@ export default grammar({
     paren_expr: ($) => seq("(", $._expression, ")"),
 
     // Terminals
+    // NOTE: identifier can match reserved words (begin, end, etc.) when not in keyword position.
+    // This is a tree-sitter limitation. Reserved word detection is handled semantically in the formatter.
     identifier: ($) => /[a-zA-Z_][a-zA-Z0-9_]*/,
 
     number: ($) => token(choice(/\d+\.\d+/, /\.\d+/, /\d+/, /0x[0-9a-fA-F]+/)),

@@ -6,8 +6,9 @@
 
 import * as fs from "fs";
 import * as path from "path";
-import { formatDocument } from "../fallout-ssl/format-core";
+import { formatDocument, FormatOptions, FormatError } from "../fallout-ssl/format-core";
 import { initParser, getParser } from "./parser";
+import * as editorconfig from "editorconfig";
 
 function findFiles(dir: string, ext: string, files: string[] = []): string[] {
     for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
@@ -21,9 +22,25 @@ function findFiles(dir: string, ext: string, files: string[] = []): string[] {
     return files;
 }
 
-type FormatResult = "changed" | "unchanged" | "error";
+type FileResult = "changed" | "unchanged" | "error";
 
-function formatFile(filePath: string, save: boolean): FormatResult {
+function printErrors(filePath: string, errors: FormatError[]): void {
+    for (const err of errors) {
+        console.error(`${filePath}:${err.line}:${err.column}: ${err.message}`);
+    }
+}
+
+function getFormatOptions(filePath: string): FormatOptions {
+    const config = editorconfig.parseSync(filePath);
+    return {
+        indentSize: typeof config.indent_size === "number" ? config.indent_size : 4,
+        maxLineLength: typeof config.max_line_length === "number" ? config.max_line_length : 120,
+    };
+}
+
+type FormatMode = "save" | "stdout" | "check";
+
+function formatFile(filePath: string, mode: FormatMode): FileResult {
     const text = fs.readFileSync(filePath, "utf-8");
     const tree = getParser().parse(text);
     if (!tree) {
@@ -31,35 +48,44 @@ function formatFile(filePath: string, save: boolean): FormatResult {
         return "error";
     }
 
-    const formatted = formatDocument(tree.rootNode);
+    const options = getFormatOptions(path.resolve(filePath));
+    const result = formatDocument(tree.rootNode, options);
 
-    if (save) {
-        if (formatted !== text) {
-            fs.writeFileSync(filePath, formatted);
-            console.log(`Formatted: ${filePath}`);
-            return "changed";
-        }
-        return "unchanged";
-    } else {
-        process.stdout.write(formatted);
-        return formatted !== text ? "changed" : "unchanged";
+    // Print any errors (reserved words used as identifiers, etc.)
+    if (result.errors.length > 0) {
+        printErrors(filePath, result.errors);
     }
+
+    const changed = result.text !== text;
+    if (mode === "save") {
+        if (changed) {
+            fs.writeFileSync(filePath, result.text);
+            console.log(`Formatted: ${filePath}`);
+        }
+    } else if (mode === "stdout") {
+        process.stdout.write(result.text);
+    } else if (mode === "check" && changed) {
+        console.log(`Would format: ${filePath}`);
+    }
+    return changed ? "changed" : "unchanged";
 }
 
 async function main() {
     const args = process.argv.slice(2);
 
     if (args.length === 0 || args.includes("--help") || args.includes("-h")) {
-        console.log("Usage: format-cli <file.ssl|dir> [--save] [-r]");
+        console.log("Usage: format-cli <file.ssl|dir> [--save] [-r] [-q]");
         console.log("  --save    Write formatted output back to file(s)");
         console.log("  -r        Recursively format all .ssl files in directory");
-        console.log("  Without --save, prints to stdout (single file only)");
+        console.log("  -q        Quiet mode: suppress summary, only print changed files");
+        console.log("  Without --save: single file prints to stdout, directory shows what would change");
         process.exit(0);
     }
 
     const target = args.find(a => !a.startsWith("-"));
     const saveToFile = args.includes("--save");
     const recursive = args.includes("-r") || args.includes("--recursive");
+    const quiet = args.includes("-q") || args.includes("--quiet");
 
     if (!target) {
         console.error("Error: No file or directory specified");
@@ -79,25 +105,22 @@ async function main() {
             console.error("Error: Target is a directory. Use -r for recursive formatting.");
             process.exit(1);
         }
-        if (!saveToFile) {
-            console.error("Error: --save is required for recursive formatting.");
-            process.exit(1);
-        }
         const files = findFiles(target, ".ssl");
-        console.log(`Found ${files.length} .ssl files`);
+        if (!quiet) console.log(`Found ${files.length} .ssl files`);
         let changed = 0, unchanged = 0, errors = 0;
+        const mode: FormatMode = saveToFile ? "save" : "check";
         for (const file of files) {
-            const result = formatFile(file, true);
+            const result = formatFile(file, mode);
             if (result === "changed") changed++;
             else if (result === "unchanged") unchanged++;
             else errors++;
         }
-        console.log(`\nSummary: ${changed} changed, ${unchanged} unchanged, ${errors} errors`);
+        if (!quiet) console.log(`\nSummary: ${changed} changed, ${unchanged} unchanged, ${errors} errors`);
         if (errors > 0) {
             process.exit(1);
         }
     } else {
-        formatFile(target, saveToFile);
+        formatFile(target, saveToFile ? "save" : "stdout");
     }
 }
 

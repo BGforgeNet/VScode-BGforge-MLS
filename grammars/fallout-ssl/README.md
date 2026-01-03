@@ -373,3 +373,26 @@ false
 - Logical/bitwise operators (`and`, `or`, `not`, `bwand`, etc.) are case-insensitive
 - Line continuation with `\` is supported in preprocessor directives
 - Features marked (sfall) require the sfall script extender
+
+## Reserved Words
+
+The following words are reserved and cannot be used as identifiers:
+
+```
+begin end procedure variable if then else while do for foreach in
+switch case default return break continue call import export
+and or not bwand bwor bwxor bwnot
+```
+
+### Technical Note
+
+Tree-sitter's regex-based lexer cannot exclude keywords from the identifier pattern
+(negative lookahead is not supported). Keywords take precedence over identifiers only
+when the grammar explicitly expects them.
+
+For example, in `end begin` (missing `else`), the parser doesn't expect a keyword after
+`end`, so `begin` is parsed as an identifier. This is syntactically invalid but not
+caught at parse time.
+
+The formatter detects reserved words used as identifiers and reports them as errors.
+This semantic check ensures code correctness while keeping the grammar simple.

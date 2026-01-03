@@ -16,18 +16,51 @@ export function setLogger(logger: Logger): void {
 // Formatting options
 export interface FormatOptions {
     indentSize: number;
+    maxLineLength: number;
 }
 
 const DEFAULT_OPTIONS: FormatOptions = {
     indentSize: 4,
+    maxLineLength: 120,
 };
 
-// Computed from options
-let INDENT = "    ";
+// Format context passed through all functions
+interface FormatContext {
+    indent: string;
+    maxLineLength: number;
+}
+
+let ctx: FormatContext = {
+    indent: "    ",
+    maxLineLength: 120,
+};
 
 // Regex patterns for keyword matching
 const BEGIN_END_REGEX = /^(begin|end)$/i;
 const BEGIN_END_PROCEDURE_REGEX = /^(begin|end|procedure)$/i;
+
+// Reserved words that cannot be used as identifiers.
+// Tree-sitter grammar allows keywords as identifiers when not in keyword position,
+// so we detect and report them here. See grammar.js and README for details.
+const RESERVED_WORDS = new Set([
+    "begin", "end", "procedure", "variable", "if", "then", "else",
+    "while", "do", "for", "foreach", "in", "switch", "case", "default",
+    "return", "break", "continue", "call", "import", "export",
+    "and", "or", "not", "bwand", "bwor", "bwxor", "bwnot",
+]);
+
+export function isReservedWord(text: string): boolean {
+    return RESERVED_WORDS.has(text.toLowerCase());
+}
+
+// Format errors collected during formatting
+export interface FormatError {
+    message: string;
+    line: number;
+    column: number;
+}
+
+let errors: FormatError[] = [];
 
 // Helper: check if node is a comment
 function isComment(node: SyntaxNode): boolean {
@@ -47,13 +80,13 @@ function normalizePreprocessor(text: string): string {
     const lineCommentMatch = text.match(/^(.+?)(\s*)(\/\/.*)$/);
     if (lineCommentMatch) {
         const [, code, , comment] = lineCommentMatch;
-        return code.trimEnd() + INDENT + normalizeComment(comment);
+        return code.trimEnd() + ctx.indent + normalizeComment(comment);
     }
     // Check for trailing block comment (single line only)
     const blockCommentMatch = text.match(/^(.+?)(\s*)(\/\*[^]*?\*\/)$/);
     if (blockCommentMatch && !blockCommentMatch[3].includes("\n")) {
         const [, code, , comment] = blockCommentMatch;
-        return code.trimEnd() + INDENT + normalizeComment(comment);
+        return code.trimEnd() + ctx.indent + normalizeComment(comment);
     }
     return text;
 }
@@ -101,10 +134,20 @@ function normalizeComment(text: string): string {
 }
 
 
-export function formatDocument(node: SyntaxNode, options: FormatOptions = DEFAULT_OPTIONS): string {
-    // Set indent based on options
-    INDENT = " ".repeat(options.indentSize);
-    return formatNode(node, 0);
+export interface FormatResult {
+    text: string;
+    errors: FormatError[];
+}
+
+export function formatDocument(node: SyntaxNode, options: FormatOptions = DEFAULT_OPTIONS): FormatResult {
+    // Reset state
+    errors = [];
+    ctx = {
+        indent: " ".repeat(options.indentSize),
+        maxLineLength: options.maxLineLength,
+    };
+    const text = formatNode(node, 0);
+    return { text, errors };
 }
 
 function formatNode(node: SyntaxNode, depth: number): string {
@@ -117,7 +160,7 @@ function formatNode(node: SyntaxNode, depth: number): string {
         case "source_file": {
             const content = formatChildren(node, depth);
             // Replace tabs, remove leading blank lines, ensure exactly one trailing newline
-            return content.replace(/\t/g, INDENT).replace(/^\n+/, "").replace(/\n+$/, "") + "\n";
+            return content.replace(/\t/g, ctx.indent).replace(/^\n+/, "").replace(/\n+$/, "") + "\n";
         }
         case "preprocessor":
             return normalizePreprocessor(node.text);
@@ -129,7 +172,7 @@ function formatNode(node: SyntaxNode, depth: number): string {
         case "procedure":
             return formatProcedure(node, depth);
         case "variable_decl":
-            return formatVariableDecl(node);
+            return formatVariableDecl(node, depth);
         case "export_decl":
             return formatExportDecl(node);
         case "if_stmt":
@@ -152,7 +195,7 @@ function formatNode(node: SyntaxNode, depth: number): string {
         case "assignment":
             return formatAssignment(node);
         case "expression_stmt":
-            return formatExpressionStmt(node);
+            return formatExpressionStmt(node, depth);
         case "block":
             return formatBlock(node, depth);
         default:
@@ -209,7 +252,7 @@ function formatChildren(node: SyntaxNode, depth: number): string {
 
             let formatted = formatNode(child, depth);
             if (trailingComment) {
-                formatted += INDENT + normalizeComment(nextChild.text);
+                formatted += ctx.indent + normalizeComment(nextChild.text);
             }
             parts.push(formatted);
             needsBlankLine = true;
@@ -220,7 +263,7 @@ function formatChildren(node: SyntaxNode, depth: number): string {
             }
             let formatted = formatNode(child, depth);
             if (trailingComment) {
-                formatted += INDENT + normalizeComment(nextChild.text);
+                formatted += ctx.indent + normalizeComment(nextChild.text);
             }
             parts.push(formatted);
         }
@@ -255,7 +298,21 @@ function formatProcedure(node: SyntaxNode, depth: number): string {
         const nextChild = children[i + 1];
 
         if (skipTypes.has(child.type)) continue;
-        if (BEGIN_END_PROCEDURE_REGEX.test(child.text)) continue;
+        // Check for reserved words used as identifiers before skipping
+        if (BEGIN_END_PROCEDURE_REGEX.test(child.text)) {
+            // If it's an expression_stmt containing an identifier, it's a reserved word misuse
+            if (child.type === "expression_stmt") {
+                const ident = child.namedChildren[0];
+                if (ident?.type === "identifier" && isReservedWord(ident.text)) {
+                    errors.push({
+                        message: `Reserved word "${ident.text}" cannot be used as identifier`,
+                        line: ident.startPosition.row + 1,
+                        column: ident.startPosition.column + 1,
+                    });
+                }
+            }
+            continue;
+        }
         if (child.type.includes("procedure")) continue;
 
         const trailingComment = hasTrailingComment(child, nextChild);
@@ -265,14 +322,14 @@ function formatProcedure(node: SyntaxNode, depth: number): string {
             if (i > 0 && children[i - 1].endPosition.row === child.startPosition.row) {
                 continue;
             }
-            bodyParts.push(INDENT + normalizeComment(child.text));
+            bodyParts.push(ctx.indent + normalizeComment(child.text));
         } else {
             let formatted = formatNode(child, depth + 1);
             if (trailingComment) {
-                formatted += INDENT + normalizeComment(nextChild.text);
+                formatted += ctx.indent + normalizeComment(nextChild.text);
             }
             if (formatted.trim()) {
-                bodyParts.push(INDENT + formatted);
+                bodyParts.push(ctx.indent + formatted);
             }
         }
     }
@@ -305,31 +362,31 @@ function formatParam(node: SyntaxNode): string {
     return result;
 }
 
-function formatVariableDecl(node: SyntaxNode): string {
+function formatVariableDecl(node: SyntaxNode, depth: number = 0): string {
     const hasBegin = node.children.some(c => c.text.match(/^begin$/i));
     if (hasBegin) {
         const vars: string[] = [];
         for (const child of node.children) {
             if (child.type === "var_init") {
-                vars.push(INDENT + formatVarInit(child) + ";");
+                vars.push(ctx.indent + formatVarInit(child, depth + 1) + ";");
             }
         }
         return `variable begin\n${vars.join("\n")}\nend`;
     }
 
     const hasImport = node.children.some(c => c.text === "import");
+    const prefix = hasImport ? "import variable " : "variable ";
     const varInits: string[] = [];
     for (const child of node.children) {
         if (child.type === "var_init") {
-            varInits.push(formatVarInit(child));
+            varInits.push(formatVarInit(child, depth, prefix.length));
         }
     }
 
-    const prefix = hasImport ? "import variable " : "variable ";
     return `${prefix}${varInits.join(", ")};`;
 }
 
-function formatVarInit(node: SyntaxNode): string {
+function formatVarInit(node: SyntaxNode, depth: number = 0, prefixLen: number = 0): string {
     const name = node.childForFieldName("name")?.text || "";
     const size = node.childForFieldName("size");
     const value = node.childForFieldName("value");
@@ -339,7 +396,9 @@ function formatVarInit(node: SyntaxNode): string {
         result += `[${formatExpression(size)}]`;
     }
     if (value) {
-        result += ` = ${formatExpression(value)}`;
+        // Column = indent + prefix + name + " = "
+        const column = depth * ctx.indent.length + prefixLen + name.length + 3;
+        result += ` = ${formatExpression(value, column)}`;
     }
     return result;
 }
@@ -353,7 +412,7 @@ function formatExportDecl(node: SyntaxNode): string {
     return `export variable ${name};`;
 }
 
-function formatIfStmt(node: SyntaxNode, depth: number): string {
+function formatIfStmt(node: SyntaxNode, depth: number, isElseIf: boolean = false): string {
     const cond = node.childForFieldName("cond");
     const thenBranch = node.childForFieldName("then");
     const elseBranch = node.childForFieldName("else");
@@ -381,36 +440,49 @@ function formatIfStmt(node: SyntaxNode, depth: number): string {
         if ((child.type === "comment" || child.type === "line_comment") &&
             child.startPosition.row === thenRow &&
             thenKeyword && child.startPosition.column > thenKeyword.endPosition.column) {
-            thenTrailingComment = "    " + normalizeComment(child.text);
+            thenTrailingComment = ctx.indent + normalizeComment(child.text);
             break;
         }
     }
 
-    let result = `if ${formatExpression(cond)} then` + thenTrailingComment;
+    // Condition starts after "if " or "else if "
+    const condColumn = depth * ctx.indent.length + (isElseIf ? 8 : 3);
+    // Extra length accounts for " then begin" (11 chars) after condition
+    const extraLength = thenIsBlock ? 11 : 5; // " then begin" or " then"
+    const formattedCond = formatExpression(cond, condColumn, extraLength);
+    const condIsBroken = formattedCond.includes("\n");
+
+    // If condition was broken across lines, put "then" on its own line
+    let result: string;
+    if (condIsBroken) {
+        result = `if ${formattedCond}\n${ctx.indent.repeat(depth)}then` + thenTrailingComment;
+    } else {
+        result = `if ${formattedCond} then` + thenTrailingComment;
+    }
 
     if (thenIsBlock) {
         result += " " + formatBlock(thenBranch, depth);
         // Comments between end and else: first as trailing, rest on own lines
         for (let i = 0; i < elseComments.length; i++) {
             if (i === 0) {
-                result += "    " + elseComments[i];
+                result += ctx.indent + elseComments[i];
             } else {
-                result += "\n" + INDENT.repeat(depth) + elseComments[i];
+                result += "\n" + ctx.indent.repeat(depth) + elseComments[i];
             }
         }
     } else if (thenBranch) {
-        result += "\n" + INDENT.repeat(depth + 1) + formatNode(thenBranch, depth + 1);
+        result += "\n" + ctx.indent.repeat(depth + 1) + formatNode(thenBranch, depth + 1);
     }
 
     if (elseBranch) {
-        const elseSep = (thenIsBlock && elseComments.length === 0) ? " " : "\n" + INDENT.repeat(depth);
+        const elseSep = (thenIsBlock && elseComments.length === 0) ? " " : "\n" + ctx.indent.repeat(depth);
 
         if (elseBranch.type === "if_stmt") {
-            result += elseSep + "else " + formatIfStmt(elseBranch, depth);
+            result += elseSep + "else " + formatIfStmt(elseBranch, depth, true);
         } else if (elseBranch.type === "block") {
             result += elseSep + "else " + formatBlock(elseBranch, depth);
         } else {
-            result += elseSep + "else\n" + INDENT.repeat(depth + 1) + formatNode(elseBranch, depth + 1);
+            result += elseSep + "else\n" + ctx.indent.repeat(depth + 1) + formatNode(elseBranch, depth + 1);
         }
     }
 
@@ -420,13 +492,27 @@ function formatIfStmt(node: SyntaxNode, depth: number): string {
 function formatWhileStmt(node: SyntaxNode, depth: number): string {
     const cond = node.childForFieldName("cond");
     const body = node.childForFieldName("body");
+    const bodyIsBlock = body?.type === "block";
 
-    let result = `while ${formatExpression(cond)} do`;
+    // Condition starts after "while " at column depth*indent + 6
+    const condColumn = depth * ctx.indent.length + 6;
+    // Extra length accounts for " do begin" (9 chars) or " do" (3 chars)
+    const extraLength = bodyIsBlock ? 9 : 3;
+    const formattedCond = formatExpression(cond, condColumn, extraLength);
+    const condIsBroken = formattedCond.includes("\n");
 
-    if (body?.type === "block") {
+    // If condition was broken across lines, put "do" on its own line
+    let result: string;
+    if (condIsBroken) {
+        result = `while ${formattedCond}\n${ctx.indent.repeat(depth)}do`;
+    } else {
+        result = `while ${formattedCond} do`;
+    }
+
+    if (bodyIsBlock) {
         result += " " + formatBlock(body, depth);
     } else if (body) {
-        result += "\n" + INDENT.repeat(depth + 1) + formatNode(body, depth + 1);
+        result += "\n" + ctx.indent.repeat(depth + 1) + formatNode(body, depth + 1);
     }
 
     return result;
@@ -447,7 +533,7 @@ function formatForStmt(node: SyntaxNode, depth: number): string {
     if (body?.type === "block") {
         result += " " + formatBlock(body, depth);
     } else if (body) {
-        result += "\n" + INDENT.repeat(depth + 1) + formatNode(body, depth + 1);
+        result += "\n" + ctx.indent.repeat(depth + 1) + formatNode(body, depth + 1);
     }
 
     return result;
@@ -474,7 +560,7 @@ function formatForeachStmt(node: SyntaxNode, depth: number): string {
     if (body?.type === "block") {
         return header + " " + formatBlock(body, depth);
     } else if (body) {
-        return header + "\n" + INDENT.repeat(depth + 1) + formatNode(body, depth + 1);
+        return header + "\n" + ctx.indent.repeat(depth + 1) + formatNode(body, depth + 1);
     }
 
     return header;
@@ -492,51 +578,38 @@ function formatSwitchStmt(node: SyntaxNode, depth: number): string {
         }
     }
 
-    parts.push(INDENT.repeat(depth) + "end");
+    parts.push(ctx.indent.repeat(depth) + "end");
     return parts.join("\n");
+}
+
+function formatClauseBody(node: SyntaxNode, depth: number, skipTypes: Set<string>, skipNode?: SyntaxNode): string[] {
+    const stmts: string[] = [];
+    const skipPos = skipNode?.startPosition;
+
+    for (const child of node.children) {
+        if (skipTypes.has(child.type)) continue;
+        if (skipPos && child.startPosition.row === skipPos.row &&
+            child.startPosition.column === skipPos.column) continue;
+
+        const formatted = formatNode(child, depth + 1);
+        if (formatted.trim()) {
+            stmts.push(ctx.indent.repeat(depth + 1) + formatted);
+        }
+    }
+    return stmts;
 }
 
 function formatCaseClause(node: SyntaxNode, depth: number): string {
     const value = node.childForFieldName("value");
-    const stmts: string[] = [];
-
-    // Compare by position since childForFieldName may return different object
-    const valuePos = value?.startPosition;
-    for (const child of node.children) {
-        if (child.type === "case" || child.type === ":") continue;
-        if (valuePos && child.startPosition.row === valuePos.row &&
-            child.startPosition.column === valuePos.column) continue;
-
-        const formatted = formatNode(child, depth + 1);
-        if (formatted.trim()) {
-            stmts.push(INDENT.repeat(depth + 1) + formatted);
-        }
-    }
-
-    const header = INDENT.repeat(depth) + `case ${formatExpression(value)}:`;
-    if (stmts.length > 0) {
-        return header + "\n" + stmts.join("\n");
-    }
-    return header;
+    const stmts = formatClauseBody(node, depth, new Set(["case", ":"]), value ?? undefined);
+    const header = ctx.indent.repeat(depth) + `case ${formatExpression(value)}:`;
+    return stmts.length > 0 ? header + "\n" + stmts.join("\n") : header;
 }
 
 function formatDefaultClause(node: SyntaxNode, depth: number): string {
-    const stmts: string[] = [];
-
-    for (const child of node.children) {
-        if (child.type !== "default" && child.type !== ":") {
-            const formatted = formatNode(child, depth + 1);
-            if (formatted.trim()) {
-                stmts.push(INDENT.repeat(depth + 1) + formatted);
-            }
-        }
-    }
-
-    const header = INDENT.repeat(depth) + "default:";
-    if (stmts.length > 0) {
-        return header + "\n" + stmts.join("\n");
-    }
-    return header;
+    const stmts = formatClauseBody(node, depth, new Set(["default", ":"]));
+    const header = ctx.indent.repeat(depth) + "default:";
+    return stmts.length > 0 ? header + "\n" + stmts.join("\n") : header;
 }
 
 function formatCallStmt(node: SyntaxNode): string {
@@ -574,12 +647,13 @@ function formatAssignment(node: SyntaxNode): string {
     return `${formatExpression(left)} ${op} ${formatExpression(right)};`;
 }
 
-function formatExpressionStmt(node: SyntaxNode): string {
+function formatExpressionStmt(node: SyntaxNode, depth: number): string {
     const expr = node.children.find(c => c.type !== ";");
     if (!expr) return "";
 
     const hasSemicolon = node.children.some(c => c.text === ";");
-    return formatExpression(expr) + (hasSemicolon ? ";" : "");
+    const column = depth * ctx.indent.length;
+    return formatExpression(expr, column) + (hasSemicolon ? ";" : "");
 }
 
 function formatBlock(node: SyntaxNode, depth: number): string {
@@ -596,7 +670,7 @@ function formatBlock(node: SyntaxNode, depth: number): string {
     for (let i = 0; i < children.length; i++) {
         const child = children[i];
         if (isComment(child) && child.startPosition.row === blockEndRow) {
-            endComment = INDENT + normalizeComment(child.text);
+            endComment = ctx.indent + normalizeComment(child.text);
             break;
         }
     }
@@ -611,7 +685,7 @@ function formatBlock(node: SyntaxNode, depth: number): string {
 
         // Check if this is a comment on same line as begin
         if (isComment(child) && child.startPosition.row === blockStartRow) {
-            beginComment = INDENT + normalizeComment(child.text);
+            beginComment = ctx.indent + normalizeComment(child.text);
             continue;
         }
 
@@ -627,14 +701,14 @@ function formatBlock(node: SyntaxNode, depth: number): string {
             if (i > 0 && children[i - 1].endPosition.row === child.startPosition.row) {
                 continue;
             }
-            stmts.push(INDENT.repeat(depth + 1) + normalizeComment(child.text));
+            stmts.push(ctx.indent.repeat(depth + 1) + normalizeComment(child.text));
         } else {
             let formatted = formatNode(child, depth + 1);
             if (trailingComment) {
-                formatted += INDENT + normalizeComment(nextChild.text);
+                formatted += ctx.indent + normalizeComment(nextChild.text);
             }
             if (formatted.trim()) {
-                stmts.push(INDENT.repeat(depth + 1) + formatted);
+                stmts.push(ctx.indent.repeat(depth + 1) + formatted);
             }
         }
     }
@@ -643,10 +717,10 @@ function formatBlock(node: SyntaxNode, depth: number): string {
         return `begin${beginComment}\nend${endComment}`;
     }
 
-    return `begin${beginComment}\n${stmts.join("\n")}\n${INDENT.repeat(depth)}end${endComment}`;
+    return `begin${beginComment}\n${stmts.join("\n")}\n${ctx.indent.repeat(depth)}end${endComment}`;
 }
 
-function formatExpression(node: SyntaxNode | null | undefined): string {
+function formatExpression(node: SyntaxNode | null | undefined, column: number = 0, extraLength: number = 0): string {
     if (!node) return "";
 
     // Handle ERROR nodes: preserve original text
@@ -656,13 +730,13 @@ function formatExpression(node: SyntaxNode | null | undefined): string {
 
     switch (node.type) {
         case "binary_expr":
-            return formatBinaryExpr(node);
+            return formatBinaryExpr(node, column, extraLength);
         case "unary_expr":
             return formatUnaryExpr(node);
         case "ternary_expr":
             return formatTernaryExpr(node);
         case "call_expr":
-            return formatCallExpr(node);
+            return formatCallExpr(node, column, extraLength);
         case "subscript_expr":
             return formatSubscriptExpr(node);
         case "member_expr":
@@ -670,24 +744,41 @@ function formatExpression(node: SyntaxNode | null | undefined): string {
         case "paren_expr": {
             const inner = node.children[1];
             if (!inner || inner.type === "comment" || inner.type === "line_comment") {
-                log(`format: unexpected paren_expr structure: ${node.text}`);
+                errors.push({
+                    message: `Unexpected paren_expr structure: ${node.text}`,
+                    line: node.startPosition.row + 1,
+                    column: node.startPosition.column + 1,
+                });
                 return node.text;
             }
-            return `(${formatExpression(inner)})`;
+            return `(${formatExpression(inner, column + 1, extraLength > 0 ? extraLength - 1 : 0)})`;
         }
         case "array_expr":
-            return formatArrayExpr(node);
+            return formatArrayExpr(node, column, extraLength);
         case "map_expr":
-            return formatMapExpr(node);
+            return formatMapExpr(node, column, extraLength);
         case "proc_ref": {
             const ident = node.children[1];
             if (!ident || ident.type !== "identifier") {
-                log(`format: unexpected proc_ref structure: ${node.text}`);
+                errors.push({
+                    message: `Unexpected proc_ref structure: ${node.text}`,
+                    line: node.startPosition.row + 1,
+                    column: node.startPosition.column + 1,
+                });
                 return node.text;
             }
             return `@${ident.text}`;
         }
         case "identifier":
+            // Check for reserved words used as identifiers
+            if (isReservedWord(node.text)) {
+                errors.push({
+                    message: `Reserved word "${node.text}" cannot be used as identifier`,
+                    line: node.startPosition.row + 1,
+                    column: node.startPosition.column + 1,
+                });
+            }
+            return node.text;
         case "number":
         case "boolean":
         case "string":
@@ -695,12 +786,12 @@ function formatExpression(node: SyntaxNode | null | undefined): string {
         case "for_var_decl": {
             const name = node.childForFieldName("name");
             const value = node.childForFieldName("value");
-            if (!name) {
-                log(`format: for_var_decl missing name: ${node.text}`);
-                return node.text;
-            }
-            if (!value) {
-                log(`format: for_var_decl missing value: ${node.text}`);
+            if (!name || !value) {
+                errors.push({
+                    message: `Malformed for_var_decl: ${node.text}`,
+                    line: node.startPosition.row + 1,
+                    column: node.startPosition.column + 1,
+                });
                 return node.text;
             }
             return `variable ${name.text} = ${formatExpression(value)}`;
@@ -710,20 +801,69 @@ function formatExpression(node: SyntaxNode | null | undefined): string {
     }
 }
 
-function formatBinaryExpr(node: SyntaxNode): string {
+// Get operator from binary expression
+function getBinaryOp(node: SyntaxNode): string {
     const left = node.childForFieldName("left");
     const right = node.childForFieldName("right");
-    // Operator is between left and right positions (skip comments)
-    let op = "";
     if (left && right) {
         for (const child of node.children) {
             if (isComment(child)) continue;
-            // Operator starts at or after left ends, and ends at or before right starts
             if (child.startIndex >= left.endIndex && child.endIndex <= right.startIndex) {
-                op = child.text;
-                break;
+                return child.text;
             }
         }
+    }
+    return "";
+}
+
+// Flatten a chain of binary expressions with the same operator (e.g., a or b or c)
+function flattenBinaryChain(node: SyntaxNode, op: string): SyntaxNode[] {
+    const left = node.childForFieldName("left");
+    const right = node.childForFieldName("right");
+    const operands: SyntaxNode[] = [];
+
+    if (left?.type === "binary_expr" && getBinaryOp(left) === op) {
+        operands.push(...flattenBinaryChain(left, op));
+    } else if (left) {
+        operands.push(left);
+    }
+
+    if (right?.type === "binary_expr" && getBinaryOp(right) === op) {
+        operands.push(...flattenBinaryChain(right, op));
+    } else if (right) {
+        operands.push(right);
+    }
+
+    return operands;
+}
+
+function formatBinaryExpr(node: SyntaxNode, column: number = 0, extraLength: number = 0): string {
+    const left = node.childForFieldName("left");
+    const right = node.childForFieldName("right");
+    const op = getBinaryOp(node);
+
+    // For logical/bitwise chains, try compact first then break if too long
+    const breakableOps = ["or", "and", "bwor", "bwand", "bwxor"];
+    if (breakableOps.includes(op)) {
+        const operands = flattenBinaryChain(node, op);
+        // Try compact first - format without column info for length check
+        const compactOperands = operands.map(o => formatExpression(o));
+        const compact = compactOperands.join(` ${op} `);
+
+        // Check if compact version fits (including any suffix like " then begin")
+        if (column + compact.length + extraLength <= ctx.maxLineLength) {
+            return compact;
+        }
+
+        // Break before each operator, indent to align with first operand
+        // Re-format operands with proper column info for nested breaking
+        const opIndent = column + op.length + 1; // "op " prefix for subsequent operands
+        const formattedOperands = operands.map((o, i) => {
+            const opColumn = i === 0 ? column : opIndent;
+            return formatExpression(o, opColumn);
+        });
+        const indent = " ".repeat(column);
+        return formattedOperands.join(`\n${indent}${op} `);
     }
 
     return `${formatExpression(left)} ${op} ${formatExpression(right)}`;
@@ -754,15 +894,23 @@ function formatTernaryExpr(node: SyntaxNode): string {
     return `${formatExpression(trueValue)} if ${formatExpression(cond)} else ${formatExpression(falseValue)}`;
 }
 
-function formatCallExpr(node: SyntaxNode): string {
+function formatCallExpr(node: SyntaxNode, column: number = 0, extraLength: number = 0): string {
     const func = node.childForFieldName("func");
     const funcName = func?.text || "";
     // namedChildren[0] is the func, rest are args; skip inline block comments
-    const args = node.namedChildren.slice(1)
-        .filter(c => c.type !== "comment")
-        .map(formatExpression);
+    const argNodes = node.namedChildren.slice(1).filter(c => c.type !== "comment");
+    const args = argNodes.map(a => formatExpression(a));
 
-    return `${funcName}(${args.join(", ")})`;
+    const compact = `${funcName}(${args.join(", ")})`;
+
+    // Check if compact version fits (including any suffix)
+    if (column + compact.length + extraLength <= ctx.maxLineLength || args.length <= 1) {
+        return compact;
+    }
+
+    // Break after each comma, indent to align after opening paren
+    const indent = " ".repeat(column + funcName.length + 1);
+    return `${funcName}(${args.join(",\n" + indent)})`;
 }
 
 function formatSubscriptExpr(node: SyntaxNode): string {
@@ -777,17 +925,27 @@ function formatMemberExpr(node: SyntaxNode): string {
     return `${formatExpression(obj)}.${member?.text || ""}`;
 }
 
-function formatArrayExpr(node: SyntaxNode): string {
+function formatArrayExpr(node: SyntaxNode, column: number = 0, extraLength: number = 0): string {
     const elements: string[] = [];
     for (const child of node.children) {
         if (child.type !== "[" && child.type !== "]" && child.type !== ",") {
             elements.push(formatExpression(child));
         }
     }
-    return `[${elements.join(", ")}]`;
+
+    const compact = `[${elements.join(", ")}]`;
+
+    // Check if compact version fits (including any suffix)
+    if (column + compact.length + extraLength <= ctx.maxLineLength || elements.length <= 1) {
+        return compact;
+    }
+
+    // Break after each comma, indent to align after opening bracket
+    const indent = " ".repeat(column + 1);
+    return `[${elements.join(",\n" + indent)}]`;
 }
 
-function formatMapExpr(node: SyntaxNode): string {
+function formatMapExpr(node: SyntaxNode, column: number = 0, extraLength: number = 0): string {
     const entries: string[] = [];
     for (const child of node.children) {
         if (child.type === "map_entry") {
@@ -796,5 +954,15 @@ function formatMapExpr(node: SyntaxNode): string {
             entries.push(`${formatExpression(key)}: ${formatExpression(value)}`);
         }
     }
-    return `{${entries.join(", ")}}`;
+
+    const compact = `{${entries.join(", ")}}`;
+
+    // Check if compact version fits (including any suffix)
+    if (column + compact.length + extraLength <= ctx.maxLineLength || entries.length <= 1) {
+        return compact;
+    }
+
+    // Break after each comma, indent to align after opening brace
+    const indent = " ".repeat(column + 1);
+    return `{${entries.join(",\n" + indent)}}`;
 }

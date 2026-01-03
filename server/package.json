@@ -15,6 +15,7 @@
     },
     "dependencies": {
         "@supercharge/promise-pool": "^2.3.2",
+        "editorconfig": "^3.0.1",
         "esbuild-wasm": "^0.24.2",
         "fast-glob": "^3.2.12",
         "ini": "^6.0.0",
