@@ -110,6 +110,7 @@ export class Language implements Language {
             return res;
         }
         conlog(`Unknown language id ${this.id}, can't load headers.`);
+        return undefined;
     }
 
     private async loadExternalHeaders(staticHover: hover.HoverMap = new Map()) {
@@ -137,6 +138,7 @@ export class Language implements Language {
             return res;
         }
         conlog(`Unknown language id ${this.id}, can't load external headers.`);
+        return undefined;
     }
 
     private async loadData() {
@@ -452,16 +454,18 @@ export class Language implements Language {
                 return result;
             }
         }
+        return undefined;
     }
 
     definition(symbol: string) {
         if (!this.features.definition) {
-            return;
+            return undefined;
         }
         const result = this.data.definition.get(symbol);
         if (result) {
             return result;
         }
+        return undefined;
     }
 
     signature(uri: string, request: signature.Request) {
@@ -497,5 +501,6 @@ export class Language implements Language {
                 return signature.getResponse(sig, request.parameter);
             }
         }
+        return undefined;
     }
 }

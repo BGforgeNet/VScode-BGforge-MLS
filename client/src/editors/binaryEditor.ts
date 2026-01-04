@@ -22,7 +22,7 @@ export class BinaryEditorProvider implements vscode.CustomReadonlyEditorProvider
 
     private readonly extensionUri: vscode.Uri;
 
-    constructor(private readonly context: vscode.ExtensionContext) {
+    constructor(context: vscode.ExtensionContext) {
         this.extensionUri = context.extensionUri;
     }
 

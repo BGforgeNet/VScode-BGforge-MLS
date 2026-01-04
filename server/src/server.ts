@@ -254,6 +254,7 @@ connection.onExecuteCommand(async (params) => {
         const data = getPreviewData(text, langId);
         return data;
     }
+    return undefined;
 });
 
 connection.onSignatureHelp((params) => {

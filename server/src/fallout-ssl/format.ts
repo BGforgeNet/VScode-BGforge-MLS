@@ -8,7 +8,7 @@ import { conlog } from "../common";
 import { connection } from "../server";
 import { getIndentFromEditorconfig } from "../shared/editorconfig";
 import { createFullDocumentEdit } from "../shared/format-utils";
-import { formatDocument as formatAst, FormatOptions, FormatError, setLogger } from "./format-core";
+import { formatDocument as formatAst, FormatOptions, FormatError } from "./format-core";
 import { initParser, getParser, isInitialized } from "./parser";
 
 const DEFAULT_INDENT = 4;
@@ -16,7 +16,6 @@ const DEFAULT_MAX_LINE_LENGTH = 120;
 
 export async function initFormatter(): Promise<void> {
     if (isInitialized()) return;
-    setLogger(conlog);
     await initParser();
     conlog("Fallout SSL formatter initialized");
 }

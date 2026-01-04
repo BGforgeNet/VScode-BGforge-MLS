@@ -521,7 +521,7 @@ class ProParser implements BinaryParser {
                 }
                 const itemCommon: ItemCommonData = itemCommonParser.parse(buffer.subarray(HEADER_SIZE));
                 subType = itemCommon.subType;
-                const subTypeSize = ITEM_SUBTYPE_SIZES[subType];
+                const subTypeSize = ITEM_SUBTYPE_SIZES[subType as number];
                 if (subTypeSize === undefined) {
                     return this.fail(`Unknown item subtype: ${subType}`);
                 }
@@ -537,7 +537,7 @@ class ProParser implements BinaryParser {
                 }
                 const sceneryCommon: SceneryCommonData = sceneryCommonParser.parse(buffer.subarray(HEADER_SIZE));
                 subType = sceneryCommon.subType;
-                const subTypeSize = SCENERY_SUBTYPE_SIZES[subType];
+                const subTypeSize = SCENERY_SUBTYPE_SIZES[subType as number];
                 if (subTypeSize === undefined) {
                     return this.fail(`Unknown scenery subtype: ${subType}`);
                 }

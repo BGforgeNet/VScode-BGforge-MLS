@@ -259,6 +259,7 @@ export class Galactus {
         if (language) {
             return language.completion(uri);
         }
+        return undefined;
     }
 
     hover(langId: string, uri: string, symbol: string, text: string) {
@@ -282,6 +283,7 @@ export class Galactus {
         if (language) {
             return language.hover(uri, symbol);
         }
+        return undefined;
     }
 
     definition(langId: string, symbol: string) {
@@ -290,6 +292,7 @@ export class Galactus {
         if (language) {
             return language.definition(symbol);
         }
+        return undefined;
     }
 
     signature(langId: string, text: string, position: Position, uri: string) {
@@ -349,6 +352,7 @@ export class Galactus {
         if (isSubpath(this.workspaceRoot, absPath)) {
             return getRelPath(this.workspaceRoot, absPath);
         }
+        return undefined;
     }
 
     /** Get message texts for a fallout-ssl file */

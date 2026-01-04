@@ -212,7 +212,7 @@ export function compile(uri: string, settings: WeiDUsettings, interactive = fals
         }
     }
     if (preprocessFailed) {
-        return 1;
+        return;
     }
 
     // parse

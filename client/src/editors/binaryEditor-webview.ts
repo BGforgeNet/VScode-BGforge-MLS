@@ -10,14 +10,15 @@
 
     // Get required DOM elements
     const searchInput = document.getElementById("search");
-    const tree = document.querySelector(".tree");
+    const treeEl = document.querySelector(".tree");
     const expandAllBtn = document.getElementById("expand-all");
     const collapseAllBtn = document.getElementById("collapse-all");
 
-    if (!searchInput || !tree || !expandAllBtn || !collapseAllBtn) {
+    if (!searchInput || !treeEl || !expandAllBtn || !collapseAllBtn) {
         console.error("Required DOM elements not found");
         throw new Error("Required DOM elements not found");
     }
+    const tree = treeEl; // Narrowed to non-null
 
     // Expand/collapse all
     expandAllBtn.addEventListener("click", () => {

@@ -127,10 +127,11 @@ export function isSubpath(outerPath: string, innerPath: string) {
     return false;
 }
 
-export function isDirectory(fsPath: string) {
+export function isDirectory(fsPath: string): boolean {
     if (fs.existsSync(fsPath)) {
-        return fs.lstatSync(fsPath).isDirectory;
+        return fs.lstatSync(fsPath).isDirectory();
     }
+    return false;
 }
 
 export function isHeader(filePath: string, langId: string) {

@@ -9,6 +9,12 @@
         "outDir": "out",
         "rootDir": "src",
         "sourceMap": true,
+        "strict": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "noImplicitReturns": true,
+        "noFallthroughCasesInSwitch": true,
+        "noUncheckedIndexedAccess": false,
         "esModuleInterop": true,
         "allowSyntheticDefaultImports": true
     },

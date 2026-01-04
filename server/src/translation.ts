@@ -54,6 +54,7 @@ export function getTraExt(langId: string) {
     if (msgLanguages.includes(langId)) {
         return "msg";
     }
+    return undefined;
 }
 
 export type TraExt = "msg" | "tra";
@@ -176,6 +177,7 @@ export class Translation implements Translation {
                 return relPath;
             }
         }
+        return undefined;
     }
 
     entries(fileKey: string) {
@@ -196,6 +198,7 @@ export class Translation implements Translation {
             const basename = path.parse(filePath).name;
             return `${basename}.${traExt}`;
         }
+        return undefined;
     }
 
     hover(word: string, text: string, relPath: string, langId: string) {
@@ -260,6 +263,7 @@ function getLineKey(word: string, ext: "tra" | "msg") {
         // remove @ from tra key start, leave for msg
         return word.substring(1);
     }
+    return undefined;
 }
 
 export function isTraRef(word: string, langId: string) {
