@@ -118,12 +118,12 @@ procedure Node992;
    Needs to be saved, make it a map variable (MVAR_) */
 
 /* Local variables which do not need to be saved between map changes. */
-variable Only_Once = 0;
+variable Only_Once := 0;
 variable stuff;
 variable k;
-variable from4 = 0;
+variable from4 := 0;
 variable fromWTG;
-variable doTalk = 0;    // added by killap - expansion pack
+variable doTalk := 0;    // added by killap - expansion pack
 import variable Chad_Ptr;
 
 procedure start begin

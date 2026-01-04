@@ -398,9 +398,11 @@ function formatVarInit(node: SyntaxNode, depth: number = 0, prefixLen: number = 
         result += `[${formatExpression(size)}]`;
     }
     if (value) {
-        // Column = indent + prefix + name + " = "
-        const column = depth * ctx.indent.length + prefixLen + name.length + 3;
-        result += ` = ${formatExpression(value, column)}`;
+        // Preserve := vs = from original
+        const op = node.children.find(c => c.text === ":=" || c.text === "=")?.text || "=";
+        // Column = indent + prefix + name + " op "
+        const column = depth * ctx.indent.length + prefixLen + name.length + op.length + 2;
+        result += ` ${op} ${formatExpression(value, column)}`;
     }
     return result;
 }
@@ -409,7 +411,8 @@ function formatExportDecl(node: SyntaxNode): string {
     const name = node.childForFieldName("name")?.text || "";
     const value = node.childForFieldName("value");
     if (value) {
-        return `export variable ${name} = ${formatExpression(value)};`;
+        const op = node.children.find(c => c.text === ":=" || c.text === "=")?.text || "=";
+        return `export variable ${name} ${op} ${formatExpression(value)};`;
     }
     return `export variable ${name};`;
 }

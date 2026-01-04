@@ -20,22 +20,31 @@ tree-sitter test
 
 echo ""
 echo "=== Formatting samples ==="
+rm -rf test/samples-formatted test/samples-formatted-2
+mkdir -p test/samples-formatted
 for f in test/samples/*.ssl; do
-    pnpm -s --dir "$ROOT_DIR" format "$SCRIPT_DIR/$f" > "test/samples-expected/$(basename "$f")" 2>&1
+    pnpm -s --dir "$ROOT_DIR" format "$SCRIPT_DIR/$f" > "test/samples-formatted/$(basename "$f")" 2>&1
 done
 
-# TODO: Enable idempotency check once SSL formatter bug is fixed
-# echo ""
-# echo "=== Checking format idempotency ==="
-# pnpm -s --dir "$ROOT_DIR" format "$SCRIPT_DIR/test/samples-expected" -r --save 2>&1
-#
-# if git diff --quiet test/samples-expected; then
-#     echo "SUCCESS: All samples are idempotent"
-# else
-#     echo "FAILED: Files changed after re-format"
-#     git diff test/samples-expected
-#     exit 1
-# fi
+echo ""
+echo "=== Comparing against expected output ==="
+if diff -ru test/samples-expected test/samples-formatted; then
+    echo "OK: Formatter output matches expected"
+else
+    echo "FAILED: Formatter output differs from expected"
+    exit 1
+fi
 
 echo ""
-echo "SUCCESS: Grammar tests passed"
+echo "=== Checking format idempotency ==="
+mkdir -p test/samples-formatted-2
+for f in test/samples-formatted/*.ssl; do
+    pnpm -s --dir "$ROOT_DIR" format "$SCRIPT_DIR/$f" > "test/samples-formatted-2/$(basename "$f")" 2>&1
+done
+
+if diff -ru test/samples-formatted test/samples-formatted-2; then
+    echo "SUCCESS: All samples are idempotent"
+else
+    echo "FAILED: Files changed after re-format"
+    exit 1
+fi

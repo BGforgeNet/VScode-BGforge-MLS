@@ -431,7 +431,8 @@
         "package": "pnpm vsce package --no-dependencies",
         "build-grammar": "bash ./scripts/build-grammar.sh",
         "esbuild-format-cli": "esbuild ./server/src/format/cli.ts --bundle --outfile=server/out/format-cli.js --external:editorconfig --format=cjs --platform=node --sourcemap && sed -i \"s/var import_meta = {};/var import_meta = {url: require('url').pathToFileURL(__filename).href};/\" server/out/format-cli.js",
-        "format": "node --no-warnings server/out/format-cli.js"
+        "format": "node --no-warnings server/out/format-cli.js",
+        "format-samples": "./scripts/format-samples.sh"
     },
     "devDependencies": {
         "@eslint/eslintrc": "^3.3.1",
