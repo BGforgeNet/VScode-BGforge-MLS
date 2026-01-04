@@ -3,8 +3,6 @@
  * Subset: BEGIN, APPEND, EXTEND_TOP, EXTEND_BOTTOM, states, transitions.
  */
 
-/* eslint-disable no-undef */
-
 export default grammar({
     name: "weidu_d",
 

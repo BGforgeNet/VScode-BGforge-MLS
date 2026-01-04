@@ -12,6 +12,9 @@
     "engines": {
         "vscode": "^1.69.2"
     },
+    "scripts": {
+        "test": "./scripts/test.sh"
+    },
     "dependencies": {
         "binary-parser": "^2.3.0",
         "cytoscape-fcose": "^2.2.0",
@@ -23,7 +26,13 @@
         "@types/glob": "^8.0.0",
         "@types/node": "^20.0.0",
         "@types/vscode": "^1.69.1",
+        "@typescript-eslint/eslint-plugin": "^8.51.0",
+        "@typescript-eslint/parser": "^8.51.0",
         "@vscode/test-electron": "^2.1.2",
-        "glob": "^13.0.0"
+        "eslint": "^9.39.2",
+        "eslint-config-prettier": "^10.1.8",
+        "glob": "^13.0.0",
+        "globals": "^17.0.0",
+        "prettier": "^3.7.4"
     }
 }

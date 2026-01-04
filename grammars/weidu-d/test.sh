@@ -1,7 +1,5 @@
 #!/bin/bash
-
-# Test tree-sitter WeiDU D grammar
-
+# Test tree-sitter WeiDU D grammar - runs all quality checks
 set -xeu -o pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -13,6 +11,10 @@ echo "=== Generating grammar ==="
 tree-sitter generate
 
 echo ""
+echo "=== Running ESLint ==="
+pnpm eslint grammar.js --max-warnings 0
+
+echo ""
 echo "=== Parsing samples ==="
 for f in test/samples/*.d; do
     echo "Parsing: $f"
@@ -20,18 +22,20 @@ for f in test/samples/*.d; do
 done
 
 echo ""
-echo "=== Formatting samples to expected ==="
+echo "=== Formatting samples ==="
 mkdir -p test/samples-expected
 for f in test/samples/*.d; do
-    pnpm -s --dir "$ROOT_DIR" format "$SCRIPT_DIR/$f" > "test/samples-expected/$(basename "$f")"
-    basename "$f"
+    pnpm -s --dir "$ROOT_DIR" format "$SCRIPT_DIR/$f" > "test/samples-expected/$(basename "$f")" 2>&1
 done
 
 echo ""
 echo "=== Checking format idempotency ==="
-#pnpm -s --dir "$ROOT_DIR" format "$SCRIPT_DIR/test/samples-expected" -r --save
-# git diff --quiet test/samples-expected || { echo "FAIL: Samples are not idempotent"; exit 1; }
-echo "SUCCESS: All samples are idempotent"
+pnpm -s --dir "$ROOT_DIR" format "$SCRIPT_DIR/test/samples-expected" -r --save 2>&1
 
-echo ""
-echo "SUCCESS: All D tests passed"
+if git diff --quiet test/samples-expected; then
+    echo "SUCCESS: All samples are idempotent"
+else
+    echo "FAILED: Files changed after re-format"
+    git diff test/samples-expected
+    exit 1
+fi

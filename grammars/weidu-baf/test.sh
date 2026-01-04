@@ -12,7 +12,7 @@ tree-sitter generate
 
 echo ""
 echo "=== Running ESLint ==="
-pnpm eslint grammar.js
+pnpm eslint grammar.js --max-warnings 0
 
 echo ""
 echo "=== Formatting samples ==="
