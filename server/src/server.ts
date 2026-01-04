@@ -16,6 +16,7 @@ import { clearDiagnostics, COMMAND_compile, compile } from "./compile";
 import { parseDialog } from "./dialog";
 import { formatDocument as formatSslDocument, initFormatter as initSslFormatter } from "./fallout-ssl/format";
 import { formatDocument as formatBafDocument, initFormatter as initBafFormatter } from "./weidu-baf/format";
+import { formatDocument as formatDDocument, initFormatter as initDFormatter } from "./weidu-d/format";
 import { Galactus } from "./galactus";
 import { getPreviewData } from "./preview";
 import * as settings from "./settings";
@@ -106,6 +107,7 @@ connection.onInitialized(async () => {
     // Initialize formatters
     await initSslFormatter();
     await initBafFormatter();
+    await initDFormatter();
     connection.sendNotification("bgforge-mls/load-finished");
     conlog("onInitialized completed");
 });
@@ -319,6 +321,9 @@ connection.onDocumentFormatting((params) => {
     }
     if (textDoc.languageId === "weidu-baf") {
         return formatBafDocument(text, uri);
+    }
+    if (textDoc.languageId === "weidu-d") {
+        return formatDDocument(text, uri);
     }
     return [];
 });

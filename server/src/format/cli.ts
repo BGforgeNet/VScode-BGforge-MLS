@@ -23,6 +23,7 @@ import {
 } from "../weidu-d/format-core";
 import { initParser as initDParser, getParser as getDParser } from "../weidu-d/parser";
 import * as editorconfig from "editorconfig";
+import { validateFormatting } from "../shared/format-utils";
 
 const DEFAULT_INDENT = 4;
 
@@ -119,6 +120,13 @@ function formatFile(filePath: string, mode: FormatMode): FileResult {
     // Print any errors (reserved words used as identifiers, etc.)
     if (result.errors.length > 0) {
         printErrors(filePath, result.errors);
+    }
+
+    // Validate formatting didn't change content
+    const validationError = validateFormatting(text, result.text);
+    if (validationError) {
+        console.error(`${filePath}: Formatter bug: ${validationError}`);
+        return "error";
     }
 
     const changed = result.text !== text;

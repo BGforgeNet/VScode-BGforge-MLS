@@ -7,7 +7,7 @@ import { fileURLToPath } from "url";
 import { conlog } from "../common";
 import { connection } from "../server";
 import { getIndentFromEditorconfig } from "../shared/editorconfig";
-import { createFullDocumentEdit } from "../shared/format-utils";
+import { createFullDocumentEdit, validateFormatting } from "../shared/format-utils";
 import { formatDocument as formatAst, FormatOptions } from "./format-core";
 import { initParser, getParser, isInitialized } from "./parser";
 
@@ -43,6 +43,12 @@ export function formatDocument(text: string, uri: string): TextEdit[] {
 
     const options = getFormatOptions(uri);
     const result = formatAst(tree.rootNode, options);
+
+    const validationError = validateFormatting(text, result.text);
+    if (validationError) {
+        connection.window.showErrorMessage(`D formatter bug: ${validationError}`);
+        return [];
+    }
 
     return createFullDocumentEdit(text, result.text);
 }
