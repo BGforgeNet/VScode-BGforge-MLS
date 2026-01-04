@@ -2,9 +2,9 @@
 // Putting anything here will interfere with player commands. So the only thing it does is shout, announcing itself for the spy.
 
 IF
-  OnCreation()
+    OnCreation()
 THEN
-  RESPONSE #100
-    GlobalShout(%g_pnp_pi_shout%)
-    // DisplayStringHead(Myself, ~pi shouted~)
+    RESPONSE #100
+        GlobalShout(%g_pnp_pi_shout%)
+        // DisplayStringHead(Myself, ~pi shouted~)
 END

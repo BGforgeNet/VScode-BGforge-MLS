@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
- * CLI tool to format Fallout SSL and WeiDU BAF files
- * Usage: node format-cli.js <file.ssl|file.baf|dir> [--save] [-r]
+ * CLI tool to format Fallout SSL, WeiDU BAF, and WeiDU D files
+ * Usage: node format-cli.js <file.ssl|file.baf|file.d|dir> [--save] [-r]
  */
 
 import * as fs from "fs";
@@ -17,14 +17,22 @@ import {
     FormatOptions as BafFormatOptions,
 } from "../weidu-baf/format-core";
 import { initParser as initBafParser, getParser as getBafParser } from "../weidu-baf/parser";
+import {
+    formatDocument as formatDDocument,
+    FormatOptions as DFormatOptions,
+} from "../weidu-d/format-core";
+import { initParser as initDParser, getParser as getDParser } from "../weidu-d/parser";
 import * as editorconfig from "editorconfig";
 
-type FileType = "ssl" | "baf";
+const DEFAULT_INDENT = 4;
+
+type FileType = "ssl" | "baf" | "d";
 
 function getFileType(filePath: string): FileType | null {
     const ext = path.extname(filePath).toLowerCase();
     if (ext === ".ssl") return "ssl";
     if (ext === ".baf") return "baf";
+    if (ext === ".d") return "d";
     return null;
 }
 
@@ -51,7 +59,7 @@ function printErrors(filePath: string, errors: FormatError[]): void {
 function getSslFormatOptions(filePath: string): SslFormatOptions {
     const config = editorconfig.parseSync(filePath);
     return {
-        indentSize: typeof config.indent_size === "number" ? config.indent_size : 4,
+        indentSize: typeof config.indent_size === "number" ? config.indent_size : DEFAULT_INDENT,
         maxLineLength: typeof config.max_line_length === "number" ? config.max_line_length : 120,
     };
 }
@@ -59,7 +67,14 @@ function getSslFormatOptions(filePath: string): SslFormatOptions {
 function getBafFormatOptions(filePath: string): BafFormatOptions {
     const config = editorconfig.parseSync(filePath);
     return {
-        indentSize: typeof config.indent_size === "number" ? config.indent_size : 2,
+        indentSize: typeof config.indent_size === "number" ? config.indent_size : DEFAULT_INDENT,
+    };
+}
+
+function getDFormatOptions(filePath: string): DFormatOptions {
+    const config = editorconfig.parseSync(filePath);
+    return {
+        indentSize: typeof config.indent_size === "number" ? config.indent_size : DEFAULT_INDENT,
     };
 }
 
@@ -83,7 +98,7 @@ function formatFile(filePath: string, mode: FormatMode): FileResult {
         }
         const options = getSslFormatOptions(path.resolve(filePath));
         result = formatSslDocument(tree.rootNode, options);
-    } else {
+    } else if (fileType === "baf") {
         const tree = getBafParser().parse(text);
         if (!tree) {
             console.error(`Error: Failed to parse ${filePath}`);
@@ -91,6 +106,14 @@ function formatFile(filePath: string, mode: FormatMode): FileResult {
         }
         const options = getBafFormatOptions(path.resolve(filePath));
         result = formatBafDocument(tree.rootNode, options);
+    } else {
+        const tree = getDParser().parse(text);
+        if (!tree) {
+            console.error(`Error: Failed to parse ${filePath}`);
+            return "error";
+        }
+        const options = getDFormatOptions(path.resolve(filePath));
+        result = formatDDocument(tree.rootNode, options);
     }
 
     // Print any errors (reserved words used as identifiers, etc.)
@@ -116,9 +139,9 @@ async function main() {
     const args = process.argv.slice(2);
 
     if (args.length === 0 || args.includes("--help") || args.includes("-h")) {
-        console.log("Usage: format-cli <file.ssl|file.baf|dir> [--save] [-r] [-q]");
+        console.log("Usage: format-cli <file.ssl|file.baf|file.d|dir> [--save] [-r] [-q]");
         console.log("  --save    Write formatted output back to file(s)");
-        console.log("  -r        Recursively format all .ssl and .baf files in directory");
+        console.log("  -r        Recursively format all .ssl, .baf, and .d files in directory");
         console.log("  -q        Quiet mode: suppress summary, only print changed files");
         console.log("  Without --save: single file prints to stdout, directory shows what would change");
         process.exit(0);
@@ -151,14 +174,17 @@ async function main() {
     if (isDir || fileType === "baf") {
         await initBafParser();
     }
+    if (isDir || fileType === "d") {
+        await initDParser();
+    }
 
     if (isDir) {
         if (!recursive) {
             console.error("Error: Target is a directory. Use -r for recursive formatting.");
             process.exit(1);
         }
-        const files = findFiles(target, [".ssl", ".baf"]);
-        if (!quiet) console.log(`Found ${files.length} files (.ssl and .baf)`);
+        const files = findFiles(target, [".ssl", ".baf", ".d"]);
+        if (!quiet) console.log(`Found ${files.length} files (.ssl, .baf, and .d)`);
         let changed = 0, unchanged = 0, errors = 0;
         const mode: FormatMode = saveToFile ? "save" : "check";
         for (const file of files) {

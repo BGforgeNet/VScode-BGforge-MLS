@@ -2,53 +2,53 @@
 // Force-equip "Chaos Stuff"-Item (After Spell)
 // ----------------------------------------------------
 IF
-  Global("wm_level", "LOCALS", 0)
-  ActionListEmpty()
+    Global("wm_level", "LOCALS", 0)
+    ActionListEmpty()
 THEN
-  RESPONSE #100
-    Face(0)
-    SmallWait(10)
-    ClearAllActions()
-    CutSceneId(Myself)
-    StartCutSceneMode()
-    ScreenShake([10.10], 20)
-    PlayDead(15)
-    ApplySpellRES("WM_CHAO", Myself)
-    ReallyForceSpellRES("wm_shear", Myself)
-    DropInventory()
-    DisplayStringHead(Myself, @20111)
-    PlayDead(350)
-    GiveItemCreate("wm_chaos", Myself, 1, 1, 0)
-    FillSlot(SLOT_RING_LEFT)
-    PlaySound("EFF_M20")
-    ApplySpellRES("SPWM134", Myself)  // Wild Magic: "Bird Magic"
-    SetGlobal("wm_level", "LOCALS", -1)
-    DisplayStringHead(Myself, @20112)
-    Wait(5)
-    EndCutSceneMode()
-    Continue()
+    RESPONSE #100
+        Face(0)
+        SmallWait(10)
+        ClearAllActions()
+        CutSceneId(Myself)
+        StartCutSceneMode()
+        ScreenShake([10.10], 20)
+        PlayDead(15)
+        ApplySpellRES("WM_CHAO", Myself)
+        ReallyForceSpellRES("wm_shear", Myself)
+        DropInventory()
+        DisplayStringHead(Myself, @20111)
+        PlayDead(350)
+        GiveItemCreate("wm_chaos", Myself, 1, 1, 0)
+        FillSlot(SLOT_RING_LEFT)
+        PlaySound("EFF_M20")
+        ApplySpellRES("SPWM134", Myself)  // Wild Magic: "Bird Magic"
+        SetGlobal("wm_level", "LOCALS", -1)
+        DisplayStringHead(Myself, @20112)
+        Wait(5)
+        EndCutSceneMode()
+        Continue()
 END
 
 // ----------------------------------------------------
 // Force-equip "Chaos Stuff"-Item (Spontaneous)
 // ----------------------------------------------------
 IF
-  Global("wm_level", "LOCALS", -10)
+    Global("wm_level", "LOCALS", -10)
 THEN
-  RESPONSE #100
-    ApplySpellRES("WM_CHAO", Myself)
-    ForceSpellRES("wm_shear", Myself)
-    SmallWait(5)
-    ScreenShake([10.10], 20)
-    DropInventory()
-    PlayDead(6)
-    GiveItemCreate("wm_chaos", Myself, 1, 1, 0)
-    FillSlot(SLOT_RING_LEFT)
-    PlaySound("EFF_M20")
-    ApplySpellRES("SPWM134", Myself)  // Wild Magic: "Bird Magic"
-    SetGlobal("wm_level", "LOCALS", -1)
-    SmallWait(10)
-    Continue()
+    RESPONSE #100
+        ApplySpellRES("WM_CHAO", Myself)
+        ForceSpellRES("wm_shear", Myself)
+        SmallWait(5)
+        ScreenShake([10.10], 20)
+        DropInventory()
+        PlayDead(6)
+        GiveItemCreate("wm_chaos", Myself, 1, 1, 0)
+        FillSlot(SLOT_RING_LEFT)
+        PlaySound("EFF_M20")
+        ApplySpellRES("SPWM134", Myself)  // Wild Magic: "Bird Magic"
+        SetGlobal("wm_level", "LOCALS", -1)
+        SmallWait(10)
+        Continue()
 END
 
 // ----------------------------------------------------
@@ -56,33 +56,33 @@ END
 // ----------------------------------------------------
 
 IF
-  Global("wm_level", "LOCALS", -1)
-  Alignment(Myself, MASK_GOOD)
+    Global("wm_level", "LOCALS", -1)
+    Alignment(Myself, MASK_GOOD)
 THEN
-  RESPONSE #100
-    ChangeAlignment(Myself, CHAOTIC_GOOD)
-    SetGlobal("wm_level", "LOCALS", -2)
-    Continue()
+    RESPONSE #100
+        ChangeAlignment(Myself, CHAOTIC_GOOD)
+        SetGlobal("wm_level", "LOCALS", -2)
+        Continue()
 END
 
 IF
-  Global("wm_level", "LOCALS", -1)
-  Alignment(Myself, MASK_GENEUTRAL)
+    Global("wm_level", "LOCALS", -1)
+    Alignment(Myself, MASK_GENEUTRAL)
 THEN
-  RESPONSE #100
-    ChangeAlignment(Myself, CHAOTIC_NEUTRAL)
-    SetGlobal("wm_level", "LOCALS", -2)
-    Continue()
+    RESPONSE #100
+        ChangeAlignment(Myself, CHAOTIC_NEUTRAL)
+        SetGlobal("wm_level", "LOCALS", -2)
+        Continue()
 END
 
 IF
-  Global("wm_level", "LOCALS", -1)
-  Alignment(Myself, MASK_EVIL)
+    Global("wm_level", "LOCALS", -1)
+    Alignment(Myself, MASK_EVIL)
 THEN
-  RESPONSE #100
-    ChangeAlignment(Myself, CHAOTIC_EVIL)
-    SetGlobal("wm_level", "LOCALS", -2)
-    Continue()
+    RESPONSE #100
+        ChangeAlignment(Myself, CHAOTIC_EVIL)
+        SetGlobal("wm_level", "LOCALS", -2)
+        Continue()
 END
 
 // ----------------------------------------------------
@@ -90,47 +90,47 @@ END
 // ----------------------------------------------------
 
 IF
-  Global("wm_level", "LOCALS", -2)
-  Gender(Myself, MALE)
-  Race(Myself, HUMAN)
+    Global("wm_level", "LOCALS", -2)
+    Gender(Myself, MALE)
+    Race(Myself, HUMAN)
 THEN
-  RESPONSE #100
-    Polymorph(CLERIC_MALE_HUMAN)
-    SetGlobal("wm_level", "LOCALS", -3)
+    RESPONSE #100
+        Polymorph(CLERIC_MALE_HUMAN)
+        SetGlobal("wm_level", "LOCALS", -3)
 END
 
 IF
-  Global("wm_level", "LOCALS", -2)
-  Gender(Myself, MALE)
-  OR(2)
-    Race(Myself, ELF)
-    Race(Myself, HALF_ELF)
+    Global("wm_level", "LOCALS", -2)
+    Gender(Myself, MALE)
+    OR(2)
+        Race(Myself, ELF)
+        Race(Myself, HALF_ELF)
 THEN
-  RESPONSE #100
-    Polymorph(CLERIC_MALE_ELF)
-    SetGlobal("wm_level", "LOCALS", -3)
+    RESPONSE #100
+        Polymorph(CLERIC_MALE_ELF)
+        SetGlobal("wm_level", "LOCALS", -3)
 END
 
 IF
-  Global("wm_level", "LOCALS", -2)
-  Gender(Myself, FEMALE)
-  Race(Myself, HUMAN)
+    Global("wm_level", "LOCALS", -2)
+    Gender(Myself, FEMALE)
+    Race(Myself, HUMAN)
 THEN
-  RESPONSE #100
-    Polymorph(THIEF_FEMALE_HUMAN)
-    SetGlobal("wm_level", "LOCALS", -3)
+    RESPONSE #100
+        Polymorph(THIEF_FEMALE_HUMAN)
+        SetGlobal("wm_level", "LOCALS", -3)
 END
 
 IF
-  Global("wm_level", "LOCALS", -2)
-  Gender(Myself, FEMALE)
-  OR(2)
-    Race(Myself, ELF)
-    Race(Myself, HALF_ELF)
+    Global("wm_level", "LOCALS", -2)
+    Gender(Myself, FEMALE)
+    OR(2)
+        Race(Myself, ELF)
+        Race(Myself, HALF_ELF)
 THEN
-  RESPONSE #100
-    Polymorph(THIEF_FEMALE_ELF)
-    SetGlobal("wm_level", "LOCALS", -3)
+    RESPONSE #100
+        Polymorph(THIEF_FEMALE_ELF)
+        SetGlobal("wm_level", "LOCALS", -3)
 END
 
 // ----------------------------------------------------
@@ -138,14 +138,14 @@ END
 // ----------------------------------------------------
 
 IF
-  Global("wm_level", "LOCALS", -3)
+    Global("wm_level", "LOCALS", -3)
 THEN
-  RESPONSE #100
-    SelectWeaponAbility(SLOT_WEAPON0, 0)
-    AddSpecialAbility("wm_weave")  // Weave
-    AddSpecialAbility("wm_shear")  // Weaveshear
-    ChangeAIScript("wm_chaos", OVERRIDE)
-    StartDialog("WM_LEVEL", Myself)  // Select Feat
-    SetDialog("")
-    SetGlobal("wm_level", "LOCALS", 1)
+    RESPONSE #100
+        SelectWeaponAbility(SLOT_WEAPON0, 0)
+        AddSpecialAbility("wm_weave")  // Weave
+        AddSpecialAbility("wm_shear")  // Weaveshear
+        ChangeAIScript("wm_chaos", OVERRIDE)
+        StartDialog("WM_LEVEL", Myself)  // Select Feat
+        SetDialog("")
+        SetGlobal("wm_level", "LOCALS", 1)
 END

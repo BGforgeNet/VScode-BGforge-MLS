@@ -3,22 +3,22 @@
 */
 
 IF
-  Global("wm_spellshaper", "GLOBAL", 0)
-  !Alignment(Player1, MASK_LAWFUL)
-  Class(Player1, MAGE)
-  Kit(Player1, 0)
-  HPPercentLT(Player1, 51)
-  NotStateCheck(Player1, STATE_HELPLESS)
-  NotStateCheck(Player1, STATE_STUNNED)
-  NotStateCheck(Player1, STATE_PANIC)
-  NotStateCheck(Player1, STATE_BERSERK)
-  NotStateCheck(Player1, STATE_SLEEPING)
-  NotStateCheck(Player1, STATE_CHARMED)
-  NotStateCheck(Player1, STATE_CONFUSED)
+    Global("wm_spellshaper", "GLOBAL", 0)
+    !Alignment(Player1, MASK_LAWFUL)
+    Class(Player1, MAGE)
+    Kit(Player1, 0)
+    HPPercentLT(Player1, 51)
+    NotStateCheck(Player1, STATE_HELPLESS)
+    NotStateCheck(Player1, STATE_STUNNED)
+    NotStateCheck(Player1, STATE_PANIC)
+    NotStateCheck(Player1, STATE_BERSERK)
+    NotStateCheck(Player1, STATE_SLEEPING)
+    NotStateCheck(Player1, STATE_CHARMED)
+    NotStateCheck(Player1, STATE_CONFUSED)
 THEN
-  RESPONSE #100
-    ActionOverride(Player1, ForceSpell(LastAttackerOf(Myself), WIZARD_LARLOCH_MINOR_DRAIN))
-    SmallWait(15)
-    SetGlobal("wm_spellshaper", "GLOBAL", 1)
-    ActionOverride(Player1, StartDialog("WM_LEVEL", Myself))
+    RESPONSE #100
+        ActionOverride(Player1, ForceSpell(LastAttackerOf(Myself), WIZARD_LARLOCH_MINOR_DRAIN))
+        SmallWait(15)
+        SetGlobal("wm_spellshaper", "GLOBAL", 1)
+        ActionOverride(Player1, StartDialog("WM_LEVEL", Myself))
 END

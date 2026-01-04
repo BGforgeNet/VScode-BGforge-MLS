@@ -1,10 +1,10 @@
 IF
-  Global("wm_bg1bear", "GLOBAL", 0)
-  PartyHasItem("wm_bear")
+    Global("wm_bg1bear", "GLOBAL", 0)
+    PartyHasItem("wm_bear")
 THEN
-  RESPONSE #100
-    TakePartyItem("wm_bear")
-    DestroyItem("wm_bear")
-    SetGlobal("wm_bg1bear", "GLOBAL", 1)
-    Continue()
+    RESPONSE #100
+        TakePartyItem("wm_bear")
+        DestroyItem("wm_bear")
+        SetGlobal("wm_bg1bear", "GLOBAL", 1)
+        Continue()
 END

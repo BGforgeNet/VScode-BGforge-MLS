@@ -11,7 +11,7 @@ import { createFullDocumentEdit } from "../shared/format-utils";
 import { formatDocument as formatAst, FormatOptions } from "./format-core";
 import { initParser, getParser, isInitialized } from "./parser";
 
-const DEFAULT_INDENT = 2;
+const DEFAULT_INDENT = 4;
 
 export async function initFormatter(): Promise<void> {
     if (isInitialized()) return;

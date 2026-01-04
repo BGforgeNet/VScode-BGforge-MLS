@@ -1,7 +1,7 @@
 IF
-  ActionListEmpty()
-  Delay(5)
+    ActionListEmpty()
+    Delay(5)
 THEN
-  RESPONSE #100
-    DestroySelf()
+    RESPONSE #100
+        DestroySelf()
 END

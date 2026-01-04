@@ -3,19 +3,19 @@
 // The grunt work is APPENDed later in main.tpa
 
 IF
-  Global("interrupt_set", "LOCALS", 0)
+    Global("interrupt_set", "LOCALS", 0)
 THEN
-  RESPONSE #100
-    SetInterrupt(FALSE)  // just in case
-    SetGlobal("interrupt_set", "LOCALS", 1)
+    RESPONSE #100
+        SetInterrupt(FALSE)  // just in case
+        SetGlobal("interrupt_set", "LOCALS", 1)
 END
 IF
-  !Exists(LastHeardBy)
-  // %final_check_list%
+    !Exists(LastHeardBy)
+    // %final_check_list%
 THEN
-  RESPONSE #100
-    ActionOverride(LastSummonerOf, SetInterrupt(TRUE))
-    DestroySelf()
+    RESPONSE #100
+        ActionOverride(LastSummonerOf, SetInterrupt(TRUE))
+        DestroySelf()
 END
 // IF
 // True()

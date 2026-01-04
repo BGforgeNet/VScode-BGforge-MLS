@@ -11,7 +11,7 @@ export interface FormatOptions {
 }
 
 const DEFAULT_OPTIONS: FormatOptions = {
-    indentSize: 2,
+    indentSize: 4,
 };
 
 const INLINE_COMMENT_SPACING = "  ";

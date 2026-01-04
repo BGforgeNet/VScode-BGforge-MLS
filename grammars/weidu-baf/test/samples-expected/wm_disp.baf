@@ -1,33 +1,33 @@
 IF
-  Global("gone", "LOCALS", 1)
+    Global("gone", "LOCALS", 1)
 THEN
-  RESPONSE #100
-    NoAction()
+    RESPONSE #100
+        NoAction()
 END
 
 IF
-  True()
+    True()
 THEN
-  RESPONSE #100
-    SetGlobal("gone", "LOCALS", 1)
-    Continue()
+    RESPONSE #100
+        SetGlobal("gone", "LOCALS", 1)
+        Continue()
 END
 
 IF
-  Inparty(Myself)
+    Inparty(Myself)
 THEN
-  RESPONSE #100
-    LeaveParty()
-    Continue()
+    RESPONSE #100
+        LeaveParty()
+        Continue()
 END
 
 IF
-  !Allegiance(Myself, Enemy)
+    !Allegiance(Myself, Enemy)
 THEN
-  RESPONSE #100
-    Help()
-    Shout(99)  // Non-Enemies, even party members, alert guards...
-    Continue()
+    RESPONSE #100
+        Help()
+        Shout(99)  // Non-Enemies, even party members, alert guards...
+        Continue()
 END
 
 // ---------------------------------------------------------------------------------
@@ -35,169 +35,169 @@ END
 // ---------------------------------------------------------------------------------
 
 IF
-  CheckstatLT(myself, 10, XPVALUE)
+    CheckstatLT(myself, 10, XPVALUE)
 THEN
-  RESPONSE #100
-    AddexperienceParty(10)
-    Destroyself()
+    RESPONSE #100
+        AddexperienceParty(10)
+        Destroyself()
 END
 
 IF
-  CheckstatLT(myself, 20, XPVALUE)
+    CheckstatLT(myself, 20, XPVALUE)
 THEN
-  RESPONSE #100
-    AddexperienceParty(20)
-    Destroyself()
+    RESPONSE #100
+        AddexperienceParty(20)
+        Destroyself()
 END
 
 IF
-  CheckstatLT(myself, 50, XPVALUE)
+    CheckstatLT(myself, 50, XPVALUE)
 THEN
-  RESPONSE #100
-    AddexperienceParty(50)
-    Destroyself()
+    RESPONSE #100
+        AddexperienceParty(50)
+        Destroyself()
 END
 
 IF
-  CheckstatLT(myself, 100, XPVALUE)
+    CheckstatLT(myself, 100, XPVALUE)
 THEN
-  RESPONSE #100
-    AddexperienceParty(100)
-    Destroyself()
+    RESPONSE #100
+        AddexperienceParty(100)
+        Destroyself()
 END
 
 IF
-  CheckstatLT(myself, 200, XPVALUE)
+    CheckstatLT(myself, 200, XPVALUE)
 THEN
-  RESPONSE #100
-    AddexperienceParty(200)
-    Destroyself()
+    RESPONSE #100
+        AddexperienceParty(200)
+        Destroyself()
 END
 
 IF
-  CheckstatLT(myself, 500, XPVALUE)
+    CheckstatLT(myself, 500, XPVALUE)
 THEN
-  RESPONSE #100
-    AddexperienceParty(500)
-    Destroyself()
+    RESPONSE #100
+        AddexperienceParty(500)
+        Destroyself()
 END
 
 IF
-  CheckstatLT(myself, 1000, XPVALUE)
+    CheckstatLT(myself, 1000, XPVALUE)
 THEN
-  RESPONSE #100
-    AddexperienceParty(1000)
-    Destroyself()
+    RESPONSE #100
+        AddexperienceParty(1000)
+        Destroyself()
 END
 
 IF
-  CheckstatLT(myself, 2000, XPVALUE)
+    CheckstatLT(myself, 2000, XPVALUE)
 THEN
-  RESPONSE #100
-    AddexperienceParty(2000)
-    Destroyself()
+    RESPONSE #100
+        AddexperienceParty(2000)
+        Destroyself()
 END
 
 IF
-  CheckstatLT(myself, 4000, XPVALUE)
+    CheckstatLT(myself, 4000, XPVALUE)
 THEN
-  RESPONSE #100
-    AddexperienceParty(4000)
-    Destroyself()
+    RESPONSE #100
+        AddexperienceParty(4000)
+        Destroyself()
 END
 
 IF
-  CheckstatLT(myself, 6000, XPVALUE)
+    CheckstatLT(myself, 6000, XPVALUE)
 THEN
-  RESPONSE #100
-    AddexperienceParty(6000)
-    Destroyself()
+    RESPONSE #100
+        AddexperienceParty(6000)
+        Destroyself()
 END
 
 IF
-  CheckstatLT(myself, 8000, XPVALUE)
+    CheckstatLT(myself, 8000, XPVALUE)
 THEN
-  RESPONSE #100
-    AddexperienceParty(8000)
-    Destroyself()
+    RESPONSE #100
+        AddexperienceParty(8000)
+        Destroyself()
 END
 
 IF
-  CheckstatLT(myself, 10000, XPVALUE)
+    CheckstatLT(myself, 10000, XPVALUE)
 THEN
-  RESPONSE #100
-    AddexperienceParty(10000)
-    Destroyself()
+    RESPONSE #100
+        AddexperienceParty(10000)
+        Destroyself()
 END
 
 IF
-  CheckstatLT(myself, 20000, XPVALUE)
+    CheckstatLT(myself, 20000, XPVALUE)
 THEN
-  RESPONSE #100
-    AddexperienceParty(20000)
-    Destroyself()
+    RESPONSE #100
+        AddexperienceParty(20000)
+        Destroyself()
 END
 
 IF
-  CheckstatLT(myself, 40000, XPVALUE)
+    CheckstatLT(myself, 40000, XPVALUE)
 THEN
-  RESPONSE #100
-    AddexperienceParty(40000)
-    Destroyself()
+    RESPONSE #100
+        AddexperienceParty(40000)
+        Destroyself()
 END
 
 IF
-  CheckstatLT(myself, 60000, XPVALUE)
+    CheckstatLT(myself, 60000, XPVALUE)
 THEN
-  RESPONSE #100
-    AddexperienceParty(60000)
-    Destroyself()
+    RESPONSE #100
+        AddexperienceParty(60000)
+        Destroyself()
 END
 
 IF
-  CheckstatLT(myself, 80000, XPVALUE)
+    CheckstatLT(myself, 80000, XPVALUE)
 THEN
-  RESPONSE #100
-    AddexperienceParty(80000)
-    Destroyself()
+    RESPONSE #100
+        AddexperienceParty(80000)
+        Destroyself()
 END
 
 IF
-  CheckstatLT(myself, 100000, XPVALUE)
+    CheckstatLT(myself, 100000, XPVALUE)
 THEN
-  RESPONSE #100
-    AddexperienceParty(100000)
-    Destroyself()
+    RESPONSE #100
+        AddexperienceParty(100000)
+        Destroyself()
 END
 
 IF
-  CheckstatLT(myself, 200000, XPVALUE)
+    CheckstatLT(myself, 200000, XPVALUE)
 THEN
-  RESPONSE #100
-    AddexperienceParty(200000)
-    Destroyself()
+    RESPONSE #100
+        AddexperienceParty(200000)
+        Destroyself()
 END
 
 IF
-  CheckstatLT(myself, 300000, XPVALUE)
+    CheckstatLT(myself, 300000, XPVALUE)
 THEN
-  RESPONSE #100
-    AddexperienceParty(300000)
-    Destroyself()
+    RESPONSE #100
+        AddexperienceParty(300000)
+        Destroyself()
 END
 
 IF
-  CheckstatLT(myself, 400000, XPVALUE)
+    CheckstatLT(myself, 400000, XPVALUE)
 THEN
-  RESPONSE #100
-    AddexperienceParty(400000)
-    Destroyself()
+    RESPONSE #100
+        AddexperienceParty(400000)
+        Destroyself()
 END
 
 IF
-  True()
+    True()
 THEN
-  RESPONSE #100
-    AddexperienceParty(500000)
-    Destroyself()
+    RESPONSE #100
+        AddexperienceParty(500000)
+        Destroyself()
 END

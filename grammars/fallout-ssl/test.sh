@@ -21,12 +21,12 @@ tree-sitter test
 echo ""
 echo "=== Formatting samples ==="
 for f in test/samples/*.ssl; do
-    pnpm -s --dir "$ROOT_DIR" format-ssl "$SCRIPT_DIR/$f" > "test/samples-expected/$(basename "$f")" 2>&1
+    pnpm -s --dir "$ROOT_DIR" format "$SCRIPT_DIR/$f" > "test/samples-expected/$(basename "$f")" 2>&1
 done
 
 echo ""
 echo "=== Checking format idempotency ==="
-pnpm -s --dir "$ROOT_DIR" format-ssl "$SCRIPT_DIR/test/samples-expected" -r --save 2>&1
+pnpm -s --dir "$ROOT_DIR" format "$SCRIPT_DIR/test/samples-expected" -r --save 2>&1
 
 if git diff --quiet test/samples-expected; then
     echo "SUCCESS: All samples are idempotent"

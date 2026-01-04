@@ -1,21 +1,21 @@
 // Display detected trap type
 IF
-  Global("%trap_var_base%_detected", "MYAREA", 1)  // has been detected with thief's skill
-  Global("%trap_var_base%_disarmed", "MYAREA", 0)  // hasn't been disarmed or set off
-  !GlobalTimerNotExpired("%trap_var_base%_timer", "MYAREA")  // don't spam the dialog box
-  // %is_active%
-  // %traps_baf_combat%
-  Detect([PC])
-  // %traps_baf_range%
-  ActionListEmpty()
+    Global("%trap_var_base%_detected", "MYAREA", 1)  // has been detected with thief's skill
+    Global("%trap_var_base%_disarmed", "MYAREA", 0)  // hasn't been disarmed or set off
+    !GlobalTimerNotExpired("%trap_var_base%_timer", "MYAREA")  // don't spam the dialog box
+    // %is_active%
+    // %traps_baf_combat%
+    Detect([PC])
+    // %traps_baf_range%
+    ActionListEmpty()
 THEN
-  RESPONSE #100
-    SetGlobalTimer("%trap_var_base%_timer", "MYAREA", %notification_delay%)
-    // Using a minion for DisplayString allows to put the notification into the center of the trap.
-    // If calling DisplayString directly from trap script, it's off, and sometimes very much off, misleading the player.
-    CreateCreatureImpassableAllowOverlap("%traps_minion_notification%", [%x%.%y%], 0)
-    DisplayStringNoNameHead("%traps_minion_notification%", ~%trap_warning_string%~)
-    // %ee_trap_type_string_delay% // On EE, DisplayStringNoNameHead disappears nearly instantly
-    ActionOverride("%traps_minion_notification%", DestroySelf())
-    Continue()
+    RESPONSE #100
+        SetGlobalTimer("%trap_var_base%_timer", "MYAREA", %notification_delay%)
+        // Using a minion for DisplayString allows to put the notification into the center of the trap.
+        // If calling DisplayString directly from trap script, it's off, and sometimes very much off, misleading the player.
+        CreateCreatureImpassableAllowOverlap("%traps_minion_notification%", [%x%.%y%], 0)
+        DisplayStringNoNameHead("%traps_minion_notification%", ~%trap_warning_string%~)
+        // %ee_trap_type_string_delay% // On EE, DisplayStringNoNameHead disappears nearly instantly
+        ActionOverride("%traps_minion_notification%", DestroySelf())
+        Continue()
 END
