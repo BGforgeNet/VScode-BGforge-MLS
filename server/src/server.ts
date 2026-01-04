@@ -17,6 +17,8 @@ import { parseDialog } from "./dialog";
 import { formatDocument as formatSslDocument, initFormatter as initSslFormatter } from "./fallout-ssl/format";
 import { formatDocument as formatBafDocument, initFormatter as initBafFormatter } from "./weidu-baf/format";
 import { formatDocument as formatDDocument, initFormatter as initDFormatter } from "./weidu-d/format";
+import { getDocumentSymbols as getDDocumentSymbols } from "./weidu-d/symbol";
+import { getDefinition as getDDefinition } from "./weidu-d/definition";
 import { Galactus } from "./galactus";
 import { getPreviewData } from "./preview";
 import * as settings from "./settings";
@@ -65,6 +67,7 @@ connection.onInitialize((params: InitializeParams) => {
             inlayHintProvider: true,
             definitionProvider: true,
             documentFormattingProvider: true,
+            documentSymbolProvider: true,
             executeCommandProvider: {
                 commands: ["bgforge.parseDialog"],
             },
@@ -305,6 +308,12 @@ connection.onDefinition((params) => {
     }
     const langId = textDoc.languageId;
     const text = textDoc.getText();
+
+    // D files have their own definition provider for state labels
+    if (langId === "weidu-d") {
+        return getDDefinition(text, uri, params.position);
+    }
+
     const symbol = symbolAtPosition(text, params.position);
     return gala?.definition(langId, symbol);
 });
@@ -324,6 +333,17 @@ connection.onDocumentFormatting((params) => {
     }
     if (textDoc.languageId === "weidu-d") {
         return formatDDocument(text, uri);
+    }
+    return [];
+});
+
+connection.onDocumentSymbol((params) => {
+    const textDoc = documents.get(params.textDocument.uri);
+    if (!textDoc) {
+        return [];
+    }
+    if (textDoc.languageId === "weidu-d") {
+        return getDDocumentSymbols(textDoc.getText());
     }
     return [];
 });
