@@ -15,14 +15,14 @@ import { conlog, symbolAtPosition } from "./common";
 import { clearDiagnostics, COMMAND_compile, compile } from "./compile";
 import { parseDialog } from "./dialog";
 import { formatDocument as formatSslDocument, initFormatter as initSslFormatter } from "./fallout-ssl/format";
-import { formatDocument as formatBafDocument, initFormatter as initBafFormatter } from "./weidu-baf/format";
-import { formatDocument as formatDDocument, initFormatter as initDFormatter } from "./weidu-d/format";
-import { getDocumentSymbols as getDDocumentSymbols } from "./weidu-d/symbol";
-import { getDefinition as getDDefinition } from "./weidu-d/definition";
 import { Galactus } from "./galactus";
+import { LANG_FALLOUT_SSL } from "./lang-ids";
 import { getPreviewData } from "./preview";
+import { registry } from "./provider-registry";
 import * as settings from "./settings";
 import { defaultSettings, MLSsettings } from "./settings";
+import { weiduBafProvider } from "./weidu-baf/provider";
+import { weiduDProvider } from "./weidu-d/provider";
 
 // Create a connection for the server. The connection uses Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
@@ -109,8 +109,10 @@ connection.onInitialized(async () => {
     }
     // Initialize formatters
     await initSslFormatter();
-    await initBafFormatter();
-    await initDFormatter();
+    // Register and initialize providers
+    registry.register(weiduBafProvider);
+    registry.register(weiduDProvider);
+    await registry.init();
     connection.sendNotification("bgforge-mls/load-finished");
     conlog("onInitialized completed");
 });
@@ -211,7 +213,7 @@ connection.onExecuteCommand(async (params) => {
         if (!textDoc) {
             return null;
         }
-        if (textDoc.languageId !== "fallout-ssl") {
+        if (textDoc.languageId !== LANG_FALLOUT_SSL) {
             return null;
         }
         try {
@@ -300,39 +302,42 @@ connection.languages.inlayHint.on((params) => {
 });
 
 connection.onDefinition((params) => {
-    const textDocId = params.textDocument;
-    const uri = textDocId.uri;
-    const textDoc = documents.get(uri);
+    const textDoc = documents.get(params.textDocument.uri);
     if (!textDoc) {
         return;
     }
+    const uri = params.textDocument.uri;
     const langId = textDoc.languageId;
     const text = textDoc.getText();
 
-    // D files have their own definition provider for state labels
-    if (langId === "weidu-d") {
-        return getDDefinition(text, uri, params.position);
+    // Try provider first (AST-based definition)
+    const providerResult = registry.definition(langId, text, params.position, uri);
+    if (providerResult) {
+        return providerResult;
     }
 
+    // Fall back to galactus (data-driven definition)
     const symbol = symbolAtPosition(text, params.position);
     return gala?.definition(langId, symbol);
 });
 
 connection.onDocumentFormatting((params) => {
-    const uri = params.textDocument.uri;
-    const textDoc = documents.get(uri);
+    const textDoc = documents.get(params.textDocument.uri);
     if (!textDoc) {
         return [];
     }
+    const uri = params.textDocument.uri;
+    const langId = textDoc.languageId;
     const text = textDoc.getText();
-    if (textDoc.languageId === "fallout-ssl") {
+
+    // Try provider first
+    if (registry.has(langId)) {
+        return registry.format(langId, text, uri);
+    }
+
+    // Fall back to legacy formatters
+    if (langId === LANG_FALLOUT_SSL) {
         return formatSslDocument(text, uri);
-    }
-    if (textDoc.languageId === "weidu-baf") {
-        return formatBafDocument(text, uri);
-    }
-    if (textDoc.languageId === "weidu-d") {
-        return formatDDocument(text, uri);
     }
     return [];
 });
@@ -342,9 +347,6 @@ connection.onDocumentSymbol((params) => {
     if (!textDoc) {
         return [];
     }
-    if (textDoc.languageId === "weidu-d") {
-        return getDDocumentSymbols(textDoc.getText());
-    }
-    return [];
+    return registry.symbols(textDoc.languageId, textDoc.getText());
 });
 

@@ -3,6 +3,15 @@ import * as fs from "fs";
 import * as path from "path";
 import { Hover } from "vscode-languageserver/node";
 import { conlog, findFiles, getRelPath, isDirectory, isSubpath } from "./common";
+import {
+    LANG_FALLOUT_SSL,
+    LANG_WEIDU_BAF,
+    LANG_WEIDU_D,
+    LANG_WEIDU_D_TPL,
+    LANG_WEIDU_SSL,
+    LANG_WEIDU_TP2,
+    LANG_WEIDU_TP2_TPL,
+} from "./lang-ids";
 import { ProjectTraSettings } from "./settings";
 
 interface TraEntry {
@@ -24,14 +33,14 @@ export interface Translation {
 }
 
 const traLanguages = [
-    "weidu-baf",
-    "weidu-d",
-    "weidu-d-tpl",
-    "weidu-ssl",
-    "weidu-tp2",
-    "weidu-tp2-tpl",
+    LANG_WEIDU_BAF,
+    LANG_WEIDU_D,
+    LANG_WEIDU_D_TPL,
+    LANG_WEIDU_SSL,
+    LANG_WEIDU_TP2,
+    LANG_WEIDU_TP2_TPL,
 ];
-const msgLanguages = ["fallout-ssl"];
+const msgLanguages = [LANG_FALLOUT_SSL];
 
 export const translatableLanguages = [...traLanguages, ...msgLanguages];
 

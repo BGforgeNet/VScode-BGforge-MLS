@@ -135,6 +135,7 @@ export function isDirectory(fsPath: string) {
 
 export function isHeader(filePath: string, langId: string) {
     if (path.extname(filePath) == "h" && langId == "fallout-ssl") {
+        // Note: Can't import LANG_FALLOUT_SSL here to avoid circular deps
         return true;
     }
     return false;

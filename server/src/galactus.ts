@@ -3,6 +3,17 @@ import { conlog, getRelPath, isSubpath, uriToPath } from "./common";
 import * as inlay from "./inlay";
 import * as language from "./language";
 import { Language } from "./language";
+import {
+    LANG_FALLOUT_SSL,
+    LANG_FALLOUT_WORLDMAP_TXT,
+    LANG_WEIDU_BAF,
+    LANG_WEIDU_D,
+    LANG_WEIDU_D_TPL,
+    LANG_WEIDU_SLB,
+    LANG_WEIDU_SSL,
+    LANG_WEIDU_TP2,
+    LANG_WEIDU_TP2_TPL,
+} from "./lang-ids";
 import { MLSsettings, ProjectTraSettings } from "./settings";
 import { getRequest as getSignatureRequest } from "./signature";
 import * as translation from "./translation";
@@ -31,7 +42,7 @@ interface LanguageList extends Array<LanguageItem> {}
 /** List of languages having any intellisense features */
 const languages: LanguageList = [
     {
-        id: "fallout-ssl",
+        id: LANG_FALLOUT_SSL,
         features: {
             completion: true,
             definition: true,
@@ -48,7 +59,7 @@ const languages: LanguageList = [
         },
     },
     {
-        id: "fallout-worldmap-txt",
+        id: LANG_FALLOUT_WORLDMAP_TXT,
         features: {
             completion: true,
             definition: false,
@@ -65,7 +76,7 @@ const languages: LanguageList = [
         },
     },
     {
-        id: "weidu-baf",
+        id: LANG_WEIDU_BAF,
         features: {
             completion: true,
             definition: false,
@@ -82,7 +93,7 @@ const languages: LanguageList = [
         },
     },
     {
-        id: "weidu-d",
+        id: LANG_WEIDU_D,
         features: {
             completion: true,
             definition: false,
@@ -99,8 +110,8 @@ const languages: LanguageList = [
         },
     },
     {
-        id: "weidu-d-tpl",
-        dataFrom: "weidu-d",
+        id: LANG_WEIDU_D_TPL,
+        dataFrom: LANG_WEIDU_D,
         features: {
             completion: true,
             definition: false,
@@ -117,8 +128,8 @@ const languages: LanguageList = [
         },
     },
     {
-        id: "weidu-slb",
-        dataFrom: "weidu-baf",
+        id: LANG_WEIDU_SLB,
+        dataFrom: LANG_WEIDU_BAF,
         features: {
             completion: true,
             definition: false,
@@ -135,8 +146,8 @@ const languages: LanguageList = [
         },
     },
     {
-        id: "weidu-ssl",
-        dataFrom: "weidu-baf",
+        id: LANG_WEIDU_SSL,
+        dataFrom: LANG_WEIDU_BAF,
         features: {
             completion: true,
             definition: false,
@@ -153,7 +164,7 @@ const languages: LanguageList = [
         },
     },
     {
-        id: "weidu-tp2",
+        id: LANG_WEIDU_TP2,
         features: {
             completion: true,
             definition: true,
@@ -170,8 +181,8 @@ const languages: LanguageList = [
         },
     },
     {
-        id: "weidu-tp2-tpl",
-        dataFrom: "weidu-tp2",
+        id: LANG_WEIDU_TP2_TPL,
+        dataFrom: LANG_WEIDU_TP2,
         features: {
             completion: true,
             definition: true,
@@ -211,7 +222,7 @@ export class Galactus {
         for (const l of languages) {
             let language: Language;
             // the only language with external headers dir
-            if (l.id == "fallout-ssl") {
+            if (l.id == LANG_FALLOUT_SSL) {
                 language = new Language(
                     l.id,
                     l.features,
@@ -347,7 +358,7 @@ export class Galactus {
             return messages;
         }
         const filePath = uriToPath(uri);
-        const traFileKey = this.translation.traFileKey(filePath, text, "fallout-ssl");
+        const traFileKey = this.translation.traFileKey(filePath, text, LANG_FALLOUT_SSL);
         if (!traFileKey) {
             return messages;
         }

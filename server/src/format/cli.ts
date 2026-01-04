@@ -76,6 +76,7 @@ function getDFormatOptions(filePath: string): DFormatOptions {
     const config = editorconfig.parseSync(filePath);
     return {
         indentSize: typeof config.indent_size === "number" ? config.indent_size : DEFAULT_INDENT,
+        lineLimit: typeof config.max_line_length === "number" ? config.max_line_length : 120,
     };
 }
 

@@ -734,9 +734,7 @@ export function getPreviewData(text: string) {
             nodes.push(nodeItem);
         }
         if (body) {
-            // Don't need body2
-            // eslint-disable-next-line no-unused-vars
-            for (const [name2, body2] of procs) {
+            for (const [name2, _body2] of procs) {
                 const pattern = `\\b(${name2})\\b`;
                 const nameRegex = new RegExp(pattern, "g");
                 const childMatches = body.matchAll(nameRegex);

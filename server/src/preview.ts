@@ -1,6 +1,7 @@
 import { stripLiteralRegex } from "strip-literal";
 import { conlog } from "./common";
 import * as fallout from "./fallout";
+import { LANG_FALLOUT_SSL } from "./lang-ids";
 
 export interface Node {
     data: { id: string };
@@ -16,7 +17,7 @@ export interface Data {
 
 export function getPreviewData(text: string, langId: string): Data | undefined {
     text = stripLiteralRegex(text);
-    if (langId == "fallout-ssl") {
+    if (langId == LANG_FALLOUT_SSL) {
         const data = fallout.getPreviewData(text);
         if (data) {
             conlog(data);

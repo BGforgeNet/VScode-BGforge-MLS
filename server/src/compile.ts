@@ -3,24 +3,26 @@ import { TextDocument } from "vscode-languageserver-textdocument";
 import * as path from "path";
 import { conlog, isDirectory, pathToUri, tmpDir } from "./common";
 import * as fallout from "./fallout";
+import {
+    LANG_FALLOUT_SSL,
+    LANG_WEIDU_BAF,
+    LANG_WEIDU_D,
+    LANG_WEIDU_D_TPL,
+    LANG_WEIDU_TP2,
+    LANG_WEIDU_TP2_TPL,
+} from "./lang-ids";
 import { connection, getDocumentSettings } from "./server";
 import * as tbaf from "./tbaf/index";
 import * as tssl from "./tssl";
 import * as weidu from "./weidu";
 
 /** Only these languages can be compiled */
-const falloutLanguages = ["fallout-ssl"];
-const weiduLanguages = [
-    "weidu-tp2",
-    "weidu-tp2-tpl",
-    "weidu-d",
-    "weidu-d-tpl",
-    "weidu-baf",
-];
+const falloutLanguages = [LANG_FALLOUT_SSL];
+const weiduLanguages = [LANG_WEIDU_TP2, LANG_WEIDU_TP2_TPL, LANG_WEIDU_D, LANG_WEIDU_D_TPL, LANG_WEIDU_BAF];
 const languages = [...falloutLanguages, ...weiduLanguages];
 
 /** These languages require game path to compile */
-const languagesRequireGame = ["weidu-d", "weidu-d-tpl", "weidu-baf"];
+const languagesRequireGame = [LANG_WEIDU_D, LANG_WEIDU_D_TPL, LANG_WEIDU_BAF];
 
 export const COMMAND_compile = "extension.bgforge.compile";
 

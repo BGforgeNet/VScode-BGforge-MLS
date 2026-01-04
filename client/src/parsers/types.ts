@@ -55,5 +55,5 @@ export interface BinaryParser {
     /** File extensions this parser handles (without dot) */
     readonly extensions: string[];
     /** Parse binary data and return structured result */
-    parse(data: Uint8Array): ParseResult; // eslint-disable-line no-unused-vars
+    parse(data: Uint8Array): ParseResult;
 }

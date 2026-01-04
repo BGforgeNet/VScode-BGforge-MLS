@@ -4,6 +4,7 @@ import * as completion from "./completion";
 import * as definition from "./definition";
 import * as fallout from "./fallout";
 import * as hover from "./hover";
+import { LANG_FALLOUT_SSL, LANG_WEIDU_TP2, LANG_WEIDU_TP2_TPL } from "./lang-ids";
 import * as signature from "./signature";
 import * as weidu from "./weidu";
 
@@ -100,11 +101,11 @@ export class Language implements Language {
         if (this.workspaceRoot === undefined) {
             return;
         }
-        if (this.id == "fallout-ssl") {
+        if (this.id == LANG_FALLOUT_SSL) {
             const res = await fallout.loadHeaders(this.workspaceRoot, false, staticHover);
             return res;
         }
-        if (this.id == "weidu-tp2") {
+        if (this.id == LANG_WEIDU_TP2) {
             const res = weidu.loadHeaders(this.workspaceRoot);
             return res;
         }
@@ -131,7 +132,7 @@ export class Language implements Language {
             return;
         }
 
-        if (this.id == "fallout-ssl") {
+        if (this.id == LANG_FALLOUT_SSL) {
             const res = await fallout.loadHeaders(this.externalHeadersDirectory, true, staticHover);
             return res;
         }
@@ -162,7 +163,7 @@ export class Language implements Language {
         if (this.features.headers) {
             let headerData: HeaderData | undefined;
             // hack: skip sfall macro dupes from headers
-            if (this.id == "fallout-ssl") {
+            if (this.id == LANG_FALLOUT_SSL) {
                 headerData = await this.loadHeaders(data.hover.static);
             } else {
                 headerData = await this.loadHeaders();
@@ -179,7 +180,7 @@ export class Language implements Language {
             if (this.features.externalHeaders && this.externalHeadersDirectory != "") {
                 let externalHeaderData: HeaderData | undefined;
                 // hack: skip sfall macro dupes from headers
-                if (this.id == "fallout-ssl") {
+                if (this.id == LANG_FALLOUT_SSL) {
                     externalHeaderData = await this.loadExternalHeaders(data.hover.static);
                 } else {
                     externalHeaderData = await this.loadExternalHeaders();
@@ -223,10 +224,10 @@ export class Language implements Language {
     }
 
     private isHeader(uri: string) {
-        if (this.id == "fallout-ssl" && uri.endsWith(".h")) {
+        if (this.id == LANG_FALLOUT_SSL && uri.endsWith(".h")) {
             return true;
         }
-        if (this.id == "weidu-tp2" && uri.endsWith(".tph")) {
+        if (this.id == LANG_WEIDU_TP2 && uri.endsWith(".tph")) {
             return true;
         }
         return false;
@@ -259,8 +260,7 @@ export class Language implements Language {
 
     private reloadFileHover(oldHover: hover.HoverMapEx, fileHover: hover.HoverMapEx, uri: string) {
         let newHover = new Map(
-            // eslint-disable-next-line no-unused-vars
-            Array.from(oldHover).filter(([key, value]) => {
+            Array.from(oldHover).filter(([_key, value]) => {
                 if (value.uri != uri) {
                     return true;
                 }
@@ -268,8 +268,7 @@ export class Language implements Language {
             })
         );
         fileHover = new Map(
-            // eslint-disable-next-line no-unused-vars
-            Array.from(fileHover).filter(([key, value]) => {
+            Array.from(fileHover).filter(([key, _value]) => {
                 return !this.data.hover.static.has(key);
             })
         );
@@ -283,8 +282,7 @@ export class Language implements Language {
         uri: string
     ) {
         let newDefinition = new Map(
-            // eslint-disable-next-line no-unused-vars
-            Array.from(oldDefinition).filter(([key, value]) => {
+            Array.from(oldDefinition).filter(([_key, value]) => {
                 if (value.uri != uri) {
                     return true;
                 }
@@ -301,8 +299,7 @@ export class Language implements Language {
         uri: string
     ) {
         let newSignature = new Map(
-            // eslint-disable-next-line no-unused-vars
-            Array.from(oldSignature).filter(([key, value]) => {
+            Array.from(oldSignature).filter(([_key, value]) => {
                 if (value.uri != uri) {
                     return true;
                 }
@@ -310,8 +307,7 @@ export class Language implements Language {
             })
         );
         fileSignature = new Map(
-            // eslint-disable-next-line no-unused-vars
-            Array.from(fileSignature).filter(([key, value]) => {
+            Array.from(fileSignature).filter(([key, _value]) => {
                 return !this.data.hover.static.has(key);
             })
         );
@@ -328,11 +324,11 @@ export class Language implements Language {
         }
 
         switch (this.id) {
-            case "fallout-ssl":
+            case LANG_FALLOUT_SSL:
                 fileData = fallout.loadFileData(uri, text, filePath);
                 break;
-            case "weidu-tp2":
-            case "weidu-tp2-tpl":
+            case LANG_WEIDU_TP2:
+            case LANG_WEIDU_TP2_TPL:
                 fileData = weidu.loadFileData(uri, text, filePath);
                 break;
             default:

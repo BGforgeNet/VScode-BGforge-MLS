@@ -2,6 +2,7 @@ import { readFileSync } from "fs";
 import path = require("path");
 import { Position, SignatureInformation } from "vscode-languageserver/node";
 import { conlog } from "./common";
+import { LANG_FALLOUT_SSL } from "./lang-ids";
 
 export interface SigInfoEx extends SignatureInformation {
     uri: string;
@@ -17,7 +18,7 @@ export interface Data {
     static: SigMap;
 }
 
-export const languages = ["fallout-ssl"];
+export const languages = [LANG_FALLOUT_SSL];
 
 export function loadStatic(langId: string): SigMap {
     try {
