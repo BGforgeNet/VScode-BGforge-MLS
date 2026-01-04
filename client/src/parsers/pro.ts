@@ -146,7 +146,7 @@ function fieldsFromDefs(
     errors: string[]
 ): ParsedField[] {
     return defs.flatMap(([displayName, dataKey, offset, type]) => {
-        const value = data[dataKey];
+        const value = data[dataKey] ?? 0;
         if (type === "percent") {
             return field(displayName, percent(value), offset, 4, "int32");
         }

@@ -38,6 +38,7 @@ async function testCompletion(
             return expectedItem.label == item.label ? true : false;
         });
         const actualItem = filteredList[0];
+        assert.ok(actualItem, `Expected item ${expectedItem.label} not found`);
         assert.equal(actualItem.label, expectedItem.label);
         assert.equal(actualItem.kind, expectedItem.kind);
     });

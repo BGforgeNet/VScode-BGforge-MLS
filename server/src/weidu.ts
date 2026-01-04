@@ -59,11 +59,16 @@ function parseWeiduOutput(text: string) {
             if (match.index === errorsRegex.lastIndex) {
                 errorsRegex.lastIndex++;
             }
+            const matchUri = match[1];
+            const matchLine = match[2];
+            const matchColStart = match[3];
+            const matchColEnd = match[4];
+            if (!matchUri || !matchLine || !matchColStart || !matchColEnd) continue;
             errors.push({
-                uri: pathToUri(match[1]),
-                line: parseInt(match[2]),
-                columnStart: parseInt(match[3]) - 1, // weidu uses 1-index, while vscode 0 index?
-                columnEnd: parseInt(match[4]),
+                uri: pathToUri(matchUri),
+                line: parseInt(matchLine),
+                columnStart: parseInt(matchColStart) - 1, // weidu uses 1-index, while vscode 0 index?
+                columnEnd: parseInt(matchColEnd),
                 message: text,
             });
             match = errorsRegex.exec(text);
@@ -87,10 +92,14 @@ function parseGccOutput(text: string) {
             if (match.index === errorsRegex.lastIndex) {
                 errorsRegex.lastIndex++;
             }
+            const matchUri = match[1];
+            const matchLine = match[3];
+            const matchCol = match[4];
+            if (!matchUri || !matchLine || !matchCol) continue;
             errors.push({
-                uri: pathToUri(match[1]),
-                line: parseInt(match[3]),
-                columnStart: parseInt(match[4]) - 1,
+                uri: pathToUri(matchUri),
+                line: parseInt(matchLine),
+                columnStart: parseInt(matchCol) - 1,
                 columnEnd: match[0].length,
                 message: text,
             });
@@ -292,14 +301,17 @@ function findSymbols(text: string) {
     const matches = text.matchAll(defineRegex);
     for (const m of matches) {
         const name = m[6];
+        const defType = m[5];
+        if (!name || !defType) continue;
+
         let context: "action" | "patch";
         let dtype: "function" | "macro";
-        if (m[5].startsWith("DEFINE_ACTION")) {
+        if (defType.startsWith("DEFINE_ACTION")) {
             context = "action";
         } else {
             context = "patch";
         }
-        if (m[5].endsWith("FUNCTION")) {
+        if (defType.endsWith("FUNCTION")) {
             dtype = "function";
         } else {
             dtype = "macro";
@@ -451,17 +463,17 @@ function loadFunctions(uri: string, symbols: Defines, filePath: string) {
     return { completions: completions, hovers: hovers };
 }
 
-function findDefinitions(text: string) {
-    const definitions = [];
+function findDefinitions(text: string): definition.Definition[] {
+    const definitions: definition.Definition[] = [];
     const lines = text.split("\n");
     const defineRegex =
         /^(DEFINE_ACTION_FUNCTION|DEFINE_ACTION_MACRO|DEFINE_PATCH_FUNCTION|DEFINE_PATCH_MACRO)\s+(\w+)/d;
-    for (let i = 0; i < lines.length; i++) {
-        const l = lines[i];
+    lines.forEach((l, i) => {
         const match = defineRegex.exec(l);
         if (match) {
             const name = match[2];
-            const index = (match as RegExpMatchArrayWithIndices).indices[2];
+            const index = (match as RegExpMatchArrayWithIndices).indices?.[2];
+            if (!name || !index) return;
             const item: definition.Definition = {
                 name: name,
                 line: i,
@@ -470,6 +482,6 @@ function findDefinitions(text: string) {
             };
             definitions.push(item);
         }
-    }
+    });
     return definitions;
 }

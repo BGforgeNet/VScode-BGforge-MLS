@@ -9,7 +9,7 @@ import { TextEdit } from "vscode-languageserver/node";
  */
 export function createFullDocumentEdit(originalText: string, newText: string): TextEdit[] {
     const lines = originalText.split("\n");
-    const lastLine = lines[lines.length - 1];
+    const lastLine = lines[lines.length - 1] ?? "";
 
     return [TextEdit.replace({
         start: { line: 0, character: 0 },

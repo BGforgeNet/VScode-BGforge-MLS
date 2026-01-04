@@ -373,6 +373,9 @@ export class TBAFTransformer {
         const project = new Project({ useInMemoryFileSystem: true });
         const tempFile = project.createSourceFile("temp.ts", `const _x_ = ${returnText};`);
         const varDecl = tempFile.getVariableDeclarations()[0];
+        if (!varDecl) {
+            throw new Error("Failed to parse return expression");
+        }
         const expr = varDecl.getInitializerOrThrow();
 
         // Transform the parsed expression using the full condition transformer
@@ -394,6 +397,9 @@ export class TBAFTransformer {
         }
 
         const cond = conditions[0];
+        if (!cond) {
+            throw new Error(`Function "${funcDecl.getName()}" returned no conditions`);
+        }
         if ("conditions" in cond) {
             throw new Error(
                 `Cannot use function "${funcDecl.getName()}" inside OR group: ` +
@@ -512,8 +518,12 @@ export class TBAFTransformer {
             throw new Error("Cannot unroll for loop: multi-variable initializer");
         }
 
-        const loopVar = decls[0].getName();
-        const initValue = this.evaluateNumeric(decls[0].getInitializer());
+        const firstDecl = decls[0];
+        if (!firstDecl) {
+            throw new Error("Cannot unroll for loop: no declarations");
+        }
+        const loopVar = firstDecl.getName();
+        const initValue = this.evaluateNumeric(firstDecl.getInitializer());
         if (initValue === undefined) {
             throw new Error("Cannot unroll for loop: non-numeric initializer");
         }
@@ -637,9 +647,12 @@ export class TBAFTransformer {
                 const rightConds = this.invertExpression(expr.getRight());
 
                 // If both results are single atoms, we can directly create an OR group
+                const leftFirst = leftConds[0];
+                const rightFirst = rightConds[0];
                 if (leftConds.length === 1 && rightConds.length === 1 &&
-                    !("conditions" in leftConds[0]) && !("conditions" in rightConds[0])) {
-                    return [{ conditions: [leftConds[0], rightConds[0]] }];
+                    leftFirst && rightFirst &&
+                    !("conditions" in leftFirst) && !("conditions" in rightFirst)) {
+                    return [{ conditions: [leftFirst, rightFirst] }];
                 }
 
                 // Otherwise, use DNF→CNF conversion
@@ -876,7 +889,7 @@ export class TBAFTransformer {
     private opaqueCondition(text: string, negated: boolean): BAFCondition {
         // Try to parse as a function call
         const match = text.match(/^(\w+)\((.*)\)$/);
-        if (match) {
+        if (match && match[1]) {
             return {
                 negated,
                 name: match[1],

@@ -294,8 +294,9 @@ function findSymbols(text: string) {
     let matches = text.matchAll(defineRegex);
     for (const m of matches) {
         const defineName = m[5];
-        let defineFirstline = m[7];
-        defineFirstline = defineFirstline.trimEnd();
+        const defineFirstlineRaw = m[7];
+        if (!defineName || !defineFirstlineRaw) continue;
+        const defineFirstline = defineFirstlineRaw.trimEnd();
 
         // check if it's multiline
         let multiline = false;
@@ -344,6 +345,7 @@ function findSymbols(text: string) {
     matches = text.matchAll(procRegex);
     for (const m of matches) {
         const procName = m[5];
+        if (!procName) continue;
         let procDetail = procName;
         if (m[6]) {
             procDetail = `procedure ${procName}(${m[6]})`;
@@ -377,28 +379,16 @@ function findSymbols(text: string) {
 }
 
 function findDefinitions(text: string) {
-    const definitions = [];
+    const definitions: definition.Definition[] = [];
     const lines = text.split("\n");
     const procRegex = /^procedure[\s]+(\w+)(?:\(([^)]+)\))?[\s]+begin/d;
     const defineRegex = /^#define[ \t]+(\w+)(?:\(([^)]+)\))?[ \t]+(.+)/d;
-    for (let i = 0; i < lines.length; i++) {
-        const l = lines[i];
+    lines.forEach((l, i) => {
         let match = procRegex.exec(l);
         if (match) {
             const name = match[1];
-            const index = (match as RegExpMatchArrayWithIndices).indices[1];
-            const item: definition.Definition = {
-                name: name,
-                line: i,
-                start: index[0],
-                end: index[1],
-            };
-            definitions.push(item);
-        } else {
-            match = defineRegex.exec(l);
-            if (match) {
-                const name = match[1];
-                const index = (match as RegExpMatchArrayWithIndices).indices[1];
+            const index = (match as RegExpMatchArrayWithIndices).indices?.[1];
+            if (name && index) {
                 const item: definition.Definition = {
                     name: name,
                     line: i,
@@ -407,8 +397,23 @@ function findDefinitions(text: string) {
                 };
                 definitions.push(item);
             }
+        } else {
+            match = defineRegex.exec(l);
+            if (match) {
+                const name = match[1];
+                const index = (match as RegExpMatchArrayWithIndices).indices?.[1];
+                if (name && index) {
+                    const item: definition.Definition = {
+                        name: name,
+                        line: i,
+                        start: index[0],
+                        end: index[1],
+                    };
+                    definitions.push(item);
+                }
+            }
         }
-    }
+    });
     return definitions;
 }
 
@@ -522,15 +527,16 @@ function parseCompileOutput(text: string, uri: string) {
             if (match.index === errorsRegex.lastIndex) {
                 errorsRegex.lastIndex++;
             }
-            let col: string;
-            if (match[4] == "") {
-                col = "1";
-            } else {
-                col = match[4];
-            }
+            const matchFile = match[2];
+            const matchLine = match[3];
+            const matchCol = match[4];
+            const matchMsg = match[5];
+            if (!matchFile || !matchLine || !matchMsg) continue;
+
+            const col = matchCol || "1";
 
             // calculate uri for actual file where the error is found
-            const errorFile = fixWinePath(match[2]);
+            const errorFile = fixWinePath(matchFile);
             let errorFilePath: string;
             if (path.isAbsolute(errorFile)) {
                 errorFilePath = errorFile;
@@ -541,10 +547,10 @@ function parseCompileOutput(text: string, uri: string) {
 
             errors.push({
                 uri: errorFileUri,
-                line: parseInt(match[3]),
+                line: parseInt(matchLine),
                 columnStart: 0,
                 columnEnd: parseInt(col) - 1,
-                message: match[5],
+                message: matchMsg,
             });
             match = errorsRegex.exec(text);
         }
@@ -555,17 +561,18 @@ function parseCompileOutput(text: string, uri: string) {
             if (match.index === warningsRegex.lastIndex) {
                 warningsRegex.lastIndex++;
             }
-            let col: string;
-            if (match[3] == "") {
-                col = "0";
-            } else {
-                col = match[3];
-            }
-            const line = parseInt(match[2]);
+            const matchFile = match[1];
+            const matchLine = match[2];
+            const matchCol = match[3];
+            const matchMsg = match[4];
+            if (!matchFile || !matchLine || !matchMsg) continue;
+
+            const col = matchCol || "0";
+            const line = parseInt(matchLine);
             const column_end = textDocument.offsetAt({ line: line, character: 0 }) - 1;
 
             // calculate uri for actual file where the warning is found
-            const errorFile = fixWinePath(match[1]);
+            const errorFile = fixWinePath(matchFile);
             let errorFilePath: string;
             if (path.isAbsolute(errorFile)) {
                 errorFilePath = errorFile;
@@ -579,7 +586,7 @@ function parseCompileOutput(text: string, uri: string) {
                 line: line,
                 columnStart: parseInt(col),
                 columnEnd: column_end,
-                message: match[4],
+                message: matchMsg,
             });
             match = warningsRegex.exec(text);
         }
@@ -725,7 +732,9 @@ export function getPreviewData(text: string) {
     for (const match of matches) {
         const name = match[1];
         const body = match[2];
-        procs.set(name, body);
+        if (name && body) {
+            procs.set(name, body);
+        }
     }
 
     for (const [name, body] of procs) {

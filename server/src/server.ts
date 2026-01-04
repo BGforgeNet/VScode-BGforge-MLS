@@ -81,7 +81,7 @@ connection.onInitialize((params: InitializeParams) => {
         };
     }
     // yes this is unsafe, just doing something quick and dirty
-    if (params.workspaceFolders) {
+    if (params.workspaceFolders && params.workspaceFolders[0]) {
         // this better exist or we don't know what to do
         workspaceRoot = fileURLToPath(params.workspaceFolders[0].uri);
         conlog(`workspace_root = ${workspaceRoot}`);

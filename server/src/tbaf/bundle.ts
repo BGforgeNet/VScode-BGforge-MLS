@@ -84,8 +84,9 @@ export async function bundle(filePath: string, sourceText: string): Promise<stri
         ],
     });
 
-    if (result.outputFiles && result.outputFiles.length > 0) {
-        return cleanupEsbuildOutput(result.outputFiles[0].text, TBAF_CODE_MARKER);
+    const outputFile = result.outputFiles?.[0];
+    if (outputFile) {
+        return cleanupEsbuildOutput(outputFile.text, TBAF_CODE_MARKER);
     }
 
     throw new Error("esbuild produced no output");

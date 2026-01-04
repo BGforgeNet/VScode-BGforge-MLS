@@ -132,6 +132,10 @@ export class Translation implements Translation {
             }
             const num = match[1];
             const str = match[2];
+            if (!num || !str) {
+                match = regex.exec(text);
+                continue;
+            }
             const hover: Hover = {
                 contents: {
                     kind: "markdown",
@@ -188,9 +192,10 @@ export class Translation implements Translation {
      */
     traFileKey(filePath: string, fullText: string, langId: string) {
         const firstLine = fullText.split(/\r?\n/g)[0];
+        if (!firstLine) return undefined;
         const regex = /^\/\*\* @tra ((\w+)\.(tra|msg)) \*\//g;
         const match = regex.exec(firstLine);
-        if (match) {
+        if (match && match[1]) {
             return match[1];
         }
         if (this.settings.auto_tra) {

@@ -210,11 +210,11 @@ function formatTransitionNode(node: SyntaxNode, indent: string, innerIndent: str
     const lines = text.split("\n");
     const result: string[] = [];
 
-    for (let i = 0; i < lines.length; i++) {
-        const trimmed = lines[i].trim();
-        if (!trimmed) continue;
+    lines.forEach((line, i) => {
+        const trimmed = line.trim();
+        if (!trimmed) return;
         result.push(withNormalizedComment((i === 0 ? indent : innerIndent) + trimmed));
-    }
+    });
 
     return result.join("\n");
 }
@@ -229,7 +229,7 @@ function reindentState(node: SyntaxNode, ctx: FormatContext): string {
     const extraIndent: number[] = new Array(lines.length).fill(0);
     // END is the last non-blank line of a state
     let endKeywordLine = lines.length - 1;
-    while (endKeywordLine > 0 && !lines[endKeywordLine].trim()) {
+    while (endKeywordLine > 0 && !lines[endKeywordLine]?.trim()) {
         endKeywordLine--;
     }
 
@@ -242,10 +242,10 @@ function reindentState(node: SyntaxNode, ctx: FormatContext): string {
         if (isString && endLine > startLine && startLine >= 0) {
             // This string spans lines
             // Base depth is the extraIndent of the line where this string starts
-            const baseDepth = startLine < extraIndent.length ? extraIndent[startLine] : 0;
+            const baseDepth = (startLine < extraIndent.length ? extraIndent[startLine] : 0) ?? 0;
             for (let line = startLine + 1; line <= endLine; line++) {
                 if (line < extraIndent.length) {
-                    extraIndent[line] = Math.max(extraIndent[line], baseDepth + 1);
+                    extraIndent[line] = Math.max(extraIndent[line] ?? 0, baseDepth + 1);
                 }
             }
         }
@@ -259,22 +259,22 @@ function reindentState(node: SyntaxNode, ctx: FormatContext): string {
     const result: string[] = [];
     let prevBlank = false;
 
-    for (let i = 0; i < lines.length; i++) {
-        const trimmed = lines[i].trim();
+    lines.forEach((line, i) => {
+        const trimmed = line.trim();
         if (!trimmed) {
             if (!prevBlank && result.length > 0) {
                 result.push("");
             }
             prevBlank = true;
-            continue;
+            return;
         }
         prevBlank = false;
 
         const isFirst = result.length === 0;
         const isEnd = i === endKeywordLine;
-        const depth = isFirst || isEnd ? 1 : 2 + extraIndent[i];
+        const depth = isFirst || isEnd ? 1 : 2 + (extraIndent[i] ?? 0);
         result.push(withNormalizedComment(ctx.indent.repeat(depth) + trimmed));
-    }
+    });
     return result.join("\n");
 }
 
@@ -372,7 +372,7 @@ function formatAction(node: SyntaxNode, ctx: FormatContext): string {
 
 // Get the header line from an action node (first line of source, normalized)
 function getActionHeader(node: SyntaxNode): string {
-    const firstLine = node.text.split("\n")[0];
+    const firstLine = node.text.split("\n")[0] ?? "";
     return normalizeWhitespace(firstLine);
 }
 

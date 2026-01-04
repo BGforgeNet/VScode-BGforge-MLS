@@ -72,14 +72,20 @@ function normalizePreprocessor(text: string): string {
     // Check for trailing line comment
     const lineCommentMatch = text.match(/^(.+?)(\s*)(\/\/.*)$/);
     if (lineCommentMatch) {
-        const [, code, , comment] = lineCommentMatch;
-        return code.trimEnd() + ctx.indent + normalizeComment(comment);
+        const code = lineCommentMatch[1];
+        const comment = lineCommentMatch[3];
+        if (code && comment) {
+            return code.trimEnd() + ctx.indent + normalizeComment(comment);
+        }
     }
     // Check for trailing block comment (single line only)
     const blockCommentMatch = text.match(/^(.+?)(\s*)(\/\*[^]*?\*\/)$/);
-    if (blockCommentMatch && !blockCommentMatch[3].includes("\n")) {
-        const [, code, , comment] = blockCommentMatch;
-        return code.trimEnd() + ctx.indent + normalizeComment(comment);
+    if (blockCommentMatch) {
+        const code = blockCommentMatch[1];
+        const comment = blockCommentMatch[3];
+        if (code && comment && !comment.includes("\n")) {
+            return code.trimEnd() + ctx.indent + normalizeComment(comment);
+        }
     }
     return text;
 }
@@ -203,10 +209,9 @@ function formatChildren(node: SyntaxNode, depth: number): string {
     const children = node.children;
     let needsBlankLine = false;
 
-    for (let i = 0; i < children.length; i++) {
-        const child = children[i];
-        const prevChild = children[i - 1];
-        const nextChild = children[i + 1];
+    children.forEach((child, i) => {
+        const prevChild = children[i - 1]; // undefined at start
+        const nextChild = children[i + 1]; // undefined at end
 
         const hadBlankLineBefore = prevChild && (child.startPosition.row - prevChild.endPosition.row > 1);
         const trailingComment = hasTrailingComment(child, nextChild);
@@ -214,7 +219,7 @@ function formatChildren(node: SyntaxNode, depth: number): string {
         if (isComment(child)) {
             // Skip if already appended as trailing comment
             if (prevChild && prevChild.endPosition.row === child.startPosition.row) {
-                continue;
+                return;
             }
 
             const immediatelyAfterProcedure = prevChild?.type === "procedure" && !hadBlankLineBefore;
@@ -246,7 +251,7 @@ function formatChildren(node: SyntaxNode, depth: number): string {
             }
 
             let formatted = formatNode(child, depth);
-            if (trailingComment) {
+            if (trailingComment && nextChild) {
                 formatted += ctx.indent + normalizeComment(nextChild.text);
             }
             parts.push(formatted);
@@ -257,12 +262,12 @@ function formatChildren(node: SyntaxNode, depth: number): string {
                 needsBlankLine = false;
             }
             let formatted = formatNode(child, depth);
-            if (trailingComment) {
+            if (trailingComment && nextChild) {
                 formatted += ctx.indent + normalizeComment(nextChild.text);
             }
             parts.push(formatted);
         }
-    }
+    });
 
     return parts.join("\n");
 }
@@ -288,11 +293,11 @@ function formatProcedure(node: SyntaxNode, depth: number): string {
     const skipTypes = new Set(["identifier", "param_list"]);
     const children = node.children;
 
-    for (let i = 0; i < children.length; i++) {
-        const child = children[i];
-        const nextChild = children[i + 1];
+    children.forEach((child, i) => {
+        const nextChild = children[i + 1]; // undefined at end
+        const prevChild = children[i - 1]; // undefined at start
 
-        if (skipTypes.has(child.type)) continue;
+        if (skipTypes.has(child.type)) return;
         // Check for reserved words used as identifiers before skipping
         if (BEGIN_END_PROCEDURE_REGEX.test(child.text)) {
             // If it's an expression_stmt containing an identifier, it's a reserved word misuse
@@ -306,28 +311,28 @@ function formatProcedure(node: SyntaxNode, depth: number): string {
                     });
                 }
             }
-            continue;
+            return;
         }
-        if (child.type.includes("procedure")) continue;
+        if (child.type.includes("procedure")) return;
 
         const trailingComment = hasTrailingComment(child, nextChild);
 
         if (isComment(child)) {
             // Skip if already appended as trailing comment
-            if (i > 0 && children[i - 1].endPosition.row === child.startPosition.row) {
-                continue;
+            if (prevChild && prevChild.endPosition.row === child.startPosition.row) {
+                return;
             }
             bodyParts.push(ctx.indent + normalizeComment(child.text));
         } else {
             let formatted = formatNode(child, depth + 1);
-            if (trailingComment) {
+            if (trailingComment && nextChild) {
                 formatted += ctx.indent + normalizeComment(nextChild.text);
             }
             if (formatted.trim()) {
                 bodyParts.push(ctx.indent + formatted);
             }
         }
-    }
+    });
 
     if (bodyParts.length === 0) {
         return `${header}\nend`;
@@ -461,13 +466,13 @@ function formatIfStmt(node: SyntaxNode, depth: number, isElseIf: boolean = false
     if (thenIsBlock) {
         result += " " + formatBlock(thenBranch, depth);
         // Comments between end and else: first as trailing, rest on own lines
-        for (let i = 0; i < elseComments.length; i++) {
+        elseComments.forEach((comment, i) => {
             if (i === 0) {
-                result += ctx.indent + elseComments[i];
+                result += ctx.indent + comment;
             } else {
-                result += "\n" + ctx.indent.repeat(depth) + elseComments[i];
+                result += "\n" + ctx.indent.repeat(depth) + comment;
             }
-        }
+        });
     } else if (thenBranch) {
         result += "\n" + ctx.indent.repeat(depth + 1) + formatNode(thenBranch, depth + 1);
     }
@@ -667,51 +672,50 @@ function formatBlock(node: SyntaxNode, depth: number): string {
     const blockEndRow = node.endPosition.row;
 
     // Find trailing comment on end
-    for (let i = 0; i < children.length; i++) {
-        const child = children[i];
-        if (isComment(child) && child.startPosition.row === blockEndRow) {
+    for (const child of children) {
+        if (child && isComment(child) && child.startPosition.row === blockEndRow) {
             endComment = ctx.indent + normalizeComment(child.text);
             break;
         }
     }
 
-    for (let i = 0; i < children.length; i++) {
-        const child = children[i];
-        const nextChild = children[i + 1];
+    children.forEach((child, i) => {
+        const nextChild = children[i + 1]; // undefined at end
+        const prevChild = children[i - 1]; // undefined at start
 
         if (child.text.match(BEGIN_END_REGEX)) {
-            continue;
+            return;
         }
 
         // Check if this is a comment on same line as begin
         if (isComment(child) && child.startPosition.row === blockStartRow) {
             beginComment = ctx.indent + normalizeComment(child.text);
-            continue;
+            return;
         }
 
         // Skip comment on same line as end (handled separately)
         if (isComment(child) && child.startPosition.row === blockEndRow) {
-            continue;
+            return;
         }
 
         const trailingComment = hasTrailingComment(child, nextChild);
 
         if (isComment(child)) {
             // Skip if already appended as trailing comment
-            if (i > 0 && children[i - 1].endPosition.row === child.startPosition.row) {
-                continue;
+            if (prevChild && prevChild.endPosition.row === child.startPosition.row) {
+                return;
             }
             stmts.push(ctx.indent.repeat(depth + 1) + normalizeComment(child.text));
         } else {
             let formatted = formatNode(child, depth + 1);
-            if (trailingComment) {
+            if (trailingComment && nextChild) {
                 formatted += ctx.indent + normalizeComment(nextChild.text);
             }
             if (formatted.trim()) {
                 stmts.push(ctx.indent.repeat(depth + 1) + formatted);
             }
         }
-    }
+    });
 
     if (stmts.length === 0) {
         return `begin${beginComment}\nend${endComment}`;

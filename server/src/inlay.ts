@@ -50,20 +50,20 @@ export function getHints(
         regex = /@(\d+)/g;
     }
 
-    for (let i = 0; i < lines.length; i++) {
-        const l = lines[i];
+    lines.forEach((l, i) => {
         const matches = l.matchAll(regex);
         for (const m of matches) {
             if (!m.index) {
                 continue;
             }
             const char_end = m.index + m[0].length;
-            let lineKey: string;
+            let lineKey: string | undefined;
             if (traExt == "msg") {
                 lineKey = m[2];
             } else {
                 lineKey = m[1];
             }
+            if (!lineKey) continue;
             const pos = { line: range.start.line + i, character: char_end };
             const hintValue = getHintString(traEntries, traFileKey, lineKey);
             const hint: InlayHint = {
@@ -76,6 +76,6 @@ export function getHints(
             };
             hints.push(hint);
         }
-    }
+    });
     return hints;
 }

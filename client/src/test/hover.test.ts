@@ -37,13 +37,17 @@ async function testHover(
         docUri,
         position
     )) as vscode.Hover[];
-    const { contents } = actualHover[0];
+    const hover = actualHover[0];
+    assert.ok(hover, "Expected hover result");
+    const { contents } = hover;
     // Hover doesn't expose contents properly for some reason
     // Inspired by https://github.com/microsoft/vscode-extension-samples/issues/434
+    const actualContent = contents[0];
+    const expectedContent = expectedHover.contents[0];
+    assert.ok(actualContent, "Expected hover to have content");
+    assert.ok(expectedContent, "Expected expectedHover to have content");
     assert.equal(
-        typeof contents[0] === "string" ? contents[0] : contents[0].value,
-        typeof expectedHover.contents[0] === "string"
-            ? expectedHover.contents[0]
-            : expectedHover.contents[0].value
+        typeof actualContent === "string" ? actualContent : actualContent.value,
+        typeof expectedContent === "string" ? expectedContent : expectedContent.value
     );
 }

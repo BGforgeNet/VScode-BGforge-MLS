@@ -16,7 +16,7 @@ export function matchesGlob(fileName: string, pattern: string): boolean {
     if (pattern.startsWith("*.")) {
         const extPattern = pattern.slice(2);
         const braceMatch = extPattern.match(/^\{(.+)\}$/);
-        if (braceMatch) {
+        if (braceMatch && braceMatch[1]) {
             const extensions = braceMatch[1].split(",");
             return extensions.some(ext => fileName.endsWith("." + ext.trim()));
         }

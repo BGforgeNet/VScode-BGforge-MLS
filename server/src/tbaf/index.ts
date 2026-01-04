@@ -87,9 +87,9 @@ function applyBAFFixups(script: BAFScript): void {
  * Handles nested $obj() and $tra() calls within arguments.
  */
 function fixupArgs(args: string[]): void {
-    for (let i = 0; i < args.length; i++) {
-        args[i] = fixupArg(args[i]);
-    }
+    args.forEach((arg, i) => {
+        args[i] = fixupArg(arg);
+    });
 }
 
 /**

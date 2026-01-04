@@ -111,32 +111,36 @@ function parseProcedure(proc: SyntaxNode, name: string): DialogNode {
             const line = node.startPosition.row + 1;
 
             // Reply(msgId)
-            if (funcName === "Reply" && args.length >= 1) {
+            const arg0 = args[0];
+            const arg1 = args[1];
+            const arg2 = args[2];
+
+            if (funcName === "Reply" && arg0) {
                 replies.push({
-                    msgId: parseArgValue(args[0]),
+                    msgId: parseArgValue(arg0),
                     line,
                 });
             }
 
             // NOption, GOption, BOption, etc.
             const optionTypes = ["NOption", "NLowOption", "GOption", "GLowOption", "BOption", "BLowOption"];
-            if (optionTypes.includes(funcName) && args.length >= 2) {
-                const target = args[1].text;
+            if (optionTypes.includes(funcName) && arg0 && arg1) {
+                const target = arg1.text;
                 options.push({
                     type: funcName as DialogOption["type"],
-                    msgId: parseArgValue(args[0]),
+                    msgId: parseArgValue(arg0),
                     target,
-                    skill: args.length >= 3 ? parseInt(args[2].text, 10) : undefined,
+                    skill: arg2 ? parseInt(arg2.text, 10) : undefined,
                     line,
                 });
             }
 
             // NMessage, GMessage, BMessage (terminal)
             const msgTypes = ["NMessage", "GMessage", "BMessage"];
-            if (msgTypes.includes(funcName) && args.length >= 1) {
+            if (msgTypes.includes(funcName) && arg0) {
                 options.push({
                     type: funcName as DialogOption["type"],
-                    msgId: parseArgValue(args[0]),
+                    msgId: parseArgValue(arg0),
                     target: "",
                     line,
                 });

@@ -180,7 +180,8 @@ function buildTreeHtml(data: DialogData): string {
 
         if (node.replies.length > 0) {
             // First reply goes inline
-            const r = node.replies[0];
+            // Safe: length check above guarantees index 0 exists
+            const r = node.replies[0]!;
             const text = getMsgText(r.msgId, messages);
             inlineHtml = `<span class="codicon codicon-comment reply" title="Reply(${r.msgId})"></span> <span class="reply msg-text" data-fulltext="${text}">${text}</span>`;
             skipFirstReply = true;
@@ -188,7 +189,8 @@ function buildTreeHtml(data: DialogData): string {
             // Check for terminal message (option without target)
             const terminalIdx = node.options.findIndex((o) => !o.target);
             if (terminalIdx !== -1) {
-                const o = node.options[terminalIdx];
+                // Safe: findIndex returned valid index
+                const o = node.options[terminalIdx]!;
                 const { colorClass, tooltip, lowEmoji } = getOptionMeta(o);
                 const text = getMsgText(o.msgId, messages);
                 inlineHtml = `<span class="codicon codicon-stop-circle ${colorClass}" title="${tooltip}"></span>${lowEmoji} <span class="msg-text" data-fulltext="${text}">${text}</span>`;
@@ -207,10 +209,9 @@ function buildTreeHtml(data: DialogData): string {
 
         // Build options (skip terminal if shown inline)
         const optionParts: string[] = [];
-        for (let i = 0; i < node.options.length; i++) {
-            if (i === skipFirstTerminalOption) continue;
+        node.options.forEach((o, i) => {
+            if (i === skipFirstTerminalOption) return;
 
-            const o = node.options[i];
             const { colorClass, tooltip, lowEmoji, icon } = getOptionMeta(o);
             const text = getMsgText(o.msgId, messages);
 
@@ -236,7 +237,7 @@ function buildTreeHtml(data: DialogData): string {
             } else {
                 optionParts.push(`<div class="item option ${colorClass}"><span class="codicon codicon-${icon}" title="${tooltip}"></span>${lowEmoji} <span class="msg-text" data-fulltext="${text}">${text}</span></div>`);
             }
-        }
+        });
         const options = optionParts.join("");
 
         const children = replies + options;

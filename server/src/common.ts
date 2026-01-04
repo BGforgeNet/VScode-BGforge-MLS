@@ -199,6 +199,9 @@ export type RegExpMatchArrayWithIndices = RegExpMatchArray & { indices: Array<[n
 export function symbolAtPosition(text: string, position: Position) {
     const lines = text.split(/\r?\n/g);
     const str = lines[position.line];
+    if (!str) {
+        return "";
+    }
     const pos = position.character;
 
     // Search for the word's beginning and end.

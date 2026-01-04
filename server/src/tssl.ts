@@ -152,7 +152,8 @@ function extractIncludes(sourceText: string): string[] {
     const regex = /^\/\/\s*#include\s+["']([^"']+)["']\s*$/gm;
     let match;
     while ((match = regex.exec(sourceText)) !== null) {
-        includes.push(match[1]);
+        const inc = match[1];
+        if (inc) includes.push(inc);
     }
     return includes;
 }
@@ -239,7 +240,8 @@ function extractPreserveFunctions(text: string): string[] {
     const hookRegex = /register_hook_proc(?:_spec)?\s*\([^,]+,\s*(\w+)\s*\)/g;
     let match;
     while ((match = hookRegex.exec(text)) !== null) {
-        preserve.push(match[1]);
+        const fn = match[1];
+        if (fn) preserve.push(fn);
     }
     return preserve;
 }
@@ -447,7 +449,9 @@ async function bundle(filePath: string, text: string): Promise<BundleResult> {
         const inputFiles = result.metafile
             ? Object.keys(result.metafile.inputs).filter(f => f.endsWith('.ts') && !f.endsWith('.d.ts'))
             : [];
-        return { code: result.outputFiles[0].text, inputFiles };
+        const outputFile = result.outputFiles[0];
+        if (!outputFile) throw new Error('esbuild produced no output');
+        return { code: outputFile.text, inputFiles };
     }
     throw new Error('esbuild produced no output');
 }
@@ -720,9 +724,8 @@ function handleForStatement(stmt: Node, indent: string, ctx: TsslContext): strin
     if (init) {
         if (init.getKind() === SyntaxKind.VariableDeclarationList) {
             const declList = init.asKindOrThrow(SyntaxKind.VariableDeclarationList);
-            const decls = declList.getDeclarations();
-            if (decls.length > 0) {
-                const decl = decls[0];
+            const decl = declList.getDeclarations()[0];
+            if (decl) {
                 const name = decl.getName();
                 const initializer = decl.getInitializer();
                 initStr = `variable ${name} = ${initializer ? convertOperatorsAST(initializer, ctx) : '0'}`;
@@ -761,17 +764,18 @@ function handleForEachStatement(stmt: Node, indent: string, ctx: TsslContext): s
     let varPart = "";
     if (init.getKind() === SyntaxKind.VariableDeclarationList) {
         const declList = init.asKindOrThrow(SyntaxKind.VariableDeclarationList);
-        const decls = declList.getDeclarations();
-        if (decls.length > 0) {
-            const decl = decls[0];
+        const decl = declList.getDeclarations()[0];
+        if (decl) {
             const nameNode = decl.getNameNode();
             // Check for array destructuring: const [k, v] -> variable k: v
             if (nameNode.getKind() === SyntaxKind.ArrayBindingPattern) {
                 const binding = nameNode.asKindOrThrow(SyntaxKind.ArrayBindingPattern);
                 const elements = binding.getElements();
-                if (elements.length === 2) {
-                    const key = elements[0].asKind(SyntaxKind.BindingElement)?.getName() ?? elements[0].getText();
-                    const val = elements[1].asKind(SyntaxKind.BindingElement)?.getName() ?? elements[1].getText();
+                const el0 = elements[0];
+                const el1 = elements[1];
+                if (elements.length === 2 && el0 && el1) {
+                    const key = el0.asKind(SyntaxKind.BindingElement)?.getName() ?? el0.getText();
+                    const val = el1.asKind(SyntaxKind.BindingElement)?.getName() ?? el1.getText();
                     varPart = `variable ${key}: ${val}`;
                 } else {
                     throw new Error(`foreach destructuring must have exactly 2 elements, got ${elements.length}`);
@@ -862,8 +866,7 @@ function processFunctionBody(bodyNode: Node, indent: string = "", ctx: TsslConte
     }
 
     let result = "";
-    for (let i = 0; i < stmts.length; i++) {
-        const stmt = stmts[i];
+    stmts.forEach((stmt, i) => {
         const prevStmt = i > 0 ? stmts[i - 1] : null;
 
         // Add blank line between statements if they were on different source lines
@@ -915,9 +918,8 @@ function processFunctionBody(bodyNode: Node, indent: string = "", ctx: TsslConte
                 break;
             default:
                 throw new Error(`Unhandled statement type: ${stmt.getKindName()}. Code: ${stmt.getText().substring(0, 100)}`);
-                break;
         }
-    }
+    });
     return result.trimEnd();
 }
 
@@ -947,8 +949,9 @@ function processCallExpression(callExpr: Node, ctx: TsslContext): string {
     }
     if (fnName === 'map') {
         // map() takes a single object argument, just output it directly
-        if (args.length === 1) {
-            return convertOperatorsAST(args[0], ctx);
+        const arg0 = args[0];
+        if (args.length === 1 && arg0) {
+            return convertOperatorsAST(arg0, ctx);
         }
     }
 
@@ -1210,8 +1213,9 @@ function convertOperatorsAST(node: Node, ctx?: TsslContext): string {
             if (fnName === 'map') {
                 // map() takes a single object argument, just output it directly
                 const mapArgs = call.getArguments();
-                if (mapArgs.length === 1) {
-                    return convertOperatorsAST(mapArgs[0], ctx);
+                const mapArg0 = mapArgs[0];
+                if (mapArgs.length === 1 && mapArg0) {
+                    return convertOperatorsAST(mapArg0, ctx);
                 }
             }
 

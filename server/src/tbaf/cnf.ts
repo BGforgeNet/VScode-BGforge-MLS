@@ -31,12 +31,14 @@ const MAX_CNF_CLAUSES = 128;
  */
 export function dnfToCnf(terms: BAFTopCondition[][], maxClauses = MAX_CNF_CLAUSES): BAFTopCondition[] {
     if (terms.length === 0) return [];
-    if (terms.length === 1) return terms[0]; // Single conjunction is already CNF
+    const firstTerm = terms[0];
+    if (terms.length === 1 && firstTerm) return firstTerm; // Single conjunction is already CNF
 
     // Filter out empty terms (they represent "false" in the OR, can be ignored)
     const nonEmptyTerms = terms.filter(t => t.length > 0);
     if (nonEmptyTerms.length === 0) return [];
-    if (nonEmptyTerms.length === 1) return nonEmptyTerms[0];
+    const firstNonEmpty = nonEmptyTerms[0];
+    if (nonEmptyTerms.length === 1 && firstNonEmpty) return firstNonEmpty;
 
     // Calculate result size to check limits before computing
     let resultSize = 1;
@@ -58,13 +60,22 @@ export function dnfToCnf(terms: BAFTopCondition[][], maxClauses = MAX_CNF_CLAUSE
 
     while (true) {
         // Create OR group from current combination
-        const atoms = flattenToAtoms(nonEmptyTerms.map((term, i) => term[indices[i]]));
+        const combination: BAFTopCondition[] = [];
+        nonEmptyTerms.forEach((term, i) => {
+            const idx = indices[i];
+            if (idx !== undefined) {
+                const item = term[idx];
+                if (item) combination.push(item);
+            }
+        });
+        const atoms = flattenToAtoms(combination);
 
         // Deduplicate atoms in the OR group
         const uniqueAtoms = deduplicateAtoms(atoms);
 
-        if (uniqueAtoms.length === 1) {
-            result.push(uniqueAtoms[0]);
+        const firstUnique = uniqueAtoms[0];
+        if (uniqueAtoms.length === 1 && firstUnique) {
+            result.push(firstUnique);
         } else {
             result.push({ conditions: uniqueAtoms });
         }
@@ -72,9 +83,13 @@ export function dnfToCnf(terms: BAFTopCondition[][], maxClauses = MAX_CNF_CLAUSE
         // Increment indices (like counting in mixed-radix)
         let j = nonEmptyTerms.length - 1;
         while (j >= 0) {
-            indices[j]++;
-            if (indices[j] < nonEmptyTerms[j].length) break;
-            indices[j] = 0;
+            const idx = indices[j];
+            const term = nonEmptyTerms[j];
+            if (idx !== undefined) {
+                indices[j] = idx + 1;
+                if (term && indices[j] < term.length) break;
+                indices[j] = 0;
+            }
             j--;
         }
         if (j < 0) break; // All combinations generated
