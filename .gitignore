@@ -27,3 +27,5 @@ syntaxes_to_json.sh.err
 tmp
 
 /test
+
+*.wasm
