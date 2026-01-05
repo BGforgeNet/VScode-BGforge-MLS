@@ -1,32 +1,23 @@
-import { readFileSync } from "fs";
-import path = require("path");
 import { Position, SignatureInformation } from "vscode-languageserver/node";
-import { conlog } from "./common";
+import { MapData } from "./shared/feature-data";
+import { loadStaticMap } from "./shared/static-data";
 
 export interface SigInfoEx extends SignatureInformation {
     uri: string;
 }
 export interface SigMap extends Map<string, SigInfoEx> {}
 
-/** uri => [item list] */
-export interface SelfMap extends Map<string, SigMap> {}
-export interface Data {
-    self: SelfMap;
-    headers: SigMap;
-    extHeaders?: SigMap;
-    static: SigMap;
-}
+/**
+ * Signature data container using the standard self/headers/extHeaders/static pattern.
+ * - self: per-document signatures (uri → Map<symbol, SigInfoEx>)
+ * - headers: workspace header signatures
+ * - extHeaders: external headers signatures
+ * - static: built-in signatures from JSON
+ */
+export type Data = MapData<SigInfoEx, SigInfoEx>;
 
 export function loadStatic(langId: string): SigMap {
-    try {
-        const filePath = path.join(__dirname, `signature.${langId}.json`);
-        const jsonData = JSON.parse(readFileSync(filePath, "utf-8"));
-        const sigData: SigMap = new Map(Object.entries(jsonData));
-        return sigData;
-    } catch (e) {
-        conlog(e);
-    }
-    return new Map();
+    return loadStaticMap<SigInfoEx>("signature", langId);
 }
 
 export function getResponse(signature: SignatureInformation, parameter: number) {

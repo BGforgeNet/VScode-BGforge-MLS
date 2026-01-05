@@ -14,7 +14,7 @@ import {
 import { conlog, symbolAtPosition } from "./common";
 import { clearDiagnostics, COMMAND_compile, compile } from "./compile";
 import { parseDialog } from "./dialog";
-import { formatDocument as formatSslDocument, initFormatter as initSslFormatter } from "./fallout-ssl/format";
+import { falloutSslProvider } from "./fallout-ssl/provider";
 import { Galactus } from "./galactus";
 import { LANG_FALLOUT_SSL } from "./core/languages";
 import { getPreviewData } from "./preview";
@@ -23,6 +23,7 @@ import * as settings from "./settings";
 import { defaultSettings, MLSsettings } from "./settings";
 import { weiduBafProvider } from "./weidu-baf/provider";
 import { weiduDProvider } from "./weidu-d/provider";
+import { weiduTp2Provider } from "./weidu-tp2/provider";
 
 // Create a connection for the server. The connection uses Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
@@ -108,12 +109,12 @@ connection.onInitialized(async () => {
     for (const document of documents.all()) {
         gala.reloadFileData(document.uri, document.languageId, document.getText());
     }
-    // Initialize formatters
-    await initSslFormatter();
     // Register and initialize providers
+    registry.register(falloutSslProvider);
     registry.register(weiduBafProvider);
     registry.register(weiduDProvider);
-    await registry.init();
+    registry.register(weiduTp2Provider);
+    await registry.init({ workspaceRoot, settings: globalSettings });
     void connection.sendNotification("bgforge-mls/load-finished");
     conlog("onInitialized completed");
 });
@@ -334,16 +335,7 @@ connection.onDocumentFormatting((params) => {
     const langId = textDoc.languageId;
     const text = textDoc.getText();
 
-    // Try provider first
-    if (registry.has(langId)) {
-        return registry.format(langId, text, uri);
-    }
-
-    // Fall back to legacy formatters
-    if (langId === LANG_FALLOUT_SSL) {
-        return formatSslDocument(text, uri);
-    }
-    return [];
+    return registry.format(langId, text, uri);
 });
 
 connection.onDocumentSymbol((params) => {

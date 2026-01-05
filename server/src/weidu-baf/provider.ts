@@ -6,7 +6,7 @@
 import { TextEdit } from "vscode-languageserver/node";
 import { conlog } from "../common";
 import { LANG_WEIDU_BAF } from "../core/languages";
-import { LanguageProvider } from "../language-provider";
+import { LanguageProvider, ProviderContext } from "../language-provider";
 import { getIndentFromEditorconfig } from "../shared/editorconfig";
 import { createFullDocumentEdit, validateFormatting } from "../shared/format-utils";
 import { fileURLToPath } from "url";
@@ -28,7 +28,7 @@ function getFormatOptions(uri: string): FormatOptions {
 export const weiduBafProvider: LanguageProvider = {
     id: LANG_WEIDU_BAF,
 
-    async init(): Promise<void> {
+    async init(_context: ProviderContext): Promise<void> {
         await initParser();
         conlog("WeiDU BAF provider initialized");
     },

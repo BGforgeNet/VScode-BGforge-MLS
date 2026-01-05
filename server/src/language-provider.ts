@@ -16,6 +16,18 @@ import {
     SignatureHelp,
     TextEdit,
 } from "vscode-languageserver/node";
+import { MLSsettings } from "./settings";
+
+/**
+ * Context passed to providers during initialization.
+ * Contains everything a provider needs to set up.
+ */
+export interface ProviderContext {
+    /** Absolute path to workspace root */
+    workspaceRoot: string;
+    /** User settings */
+    settings: MLSsettings;
+}
 
 /**
  * Result from parsing a file for user-defined symbols.
@@ -39,10 +51,10 @@ export interface LanguageProvider {
     readonly id: string;
 
     /**
-     * Initialize the provider (load parsers, static data, etc.)
-     * Called once at startup.
+     * Initialize the provider (load parsers, static data, headers, etc.)
+     * Called once at startup with context containing workspace and settings.
      */
-    init(): Promise<void>;
+    init(context: ProviderContext): Promise<void>;
 
     // =========================================================================
     // Document features (AST-based, operate on current text)

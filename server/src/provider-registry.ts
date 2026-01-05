@@ -15,11 +15,12 @@ import {
     InlayHint,
     TextEdit,
 } from "vscode-languageserver/node";
-import { LanguageProvider } from "./language-provider";
+import { LanguageProvider, ProviderContext } from "./language-provider";
 import { conlog } from "./common";
 
 class ProviderRegistry {
     private providers: Map<string, LanguageProvider> = new Map();
+    private context: ProviderContext | undefined;
 
     /**
      * Register a language provider.
@@ -30,18 +31,29 @@ class ProviderRegistry {
     }
 
     /**
-     * Initialize all registered providers.
+     * Initialize all registered providers with the given context.
      */
-    async init(): Promise<void> {
+    async init(context: ProviderContext): Promise<void> {
+        this.context = context;
         const initPromises = [...this.providers.values()].map(async (provider) => {
             try {
-                await provider.init();
+                await provider.init(context);
             } catch (error) {
                 conlog(`Failed to initialize provider ${provider.id}: ${error}`);
             }
         });
         await Promise.all(initPromises);
         conlog(`Initialized ${this.providers.size} providers`);
+    }
+
+    /**
+     * Get the initialization context. Throws if not initialized.
+     */
+    getContext(): ProviderContext {
+        if (!this.context) {
+            throw new Error("ProviderRegistry not initialized");
+        }
+        return this.context;
     }
 
     /**

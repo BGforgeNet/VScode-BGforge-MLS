@@ -1,7 +1,6 @@
-import * as fs from "fs";
-import * as path from "path";
 import { Hover } from "vscode-languageserver/node";
-import { conlog } from "./common";
+import { MapData } from "./shared/feature-data";
+import { loadStaticMap } from "./shared/static-data";
 
 /** source is path, relative to workspace root, or absolute if not in workspace */
 export interface HoverEx extends Hover {
@@ -11,23 +10,15 @@ export interface HoverEx extends Hover {
 export interface HoverMap extends Map<string, Hover> {}
 export interface HoverMapEx extends Map<string, HoverEx> {}
 
-/** uri => [item list] */
-export interface SelfMap extends Map<string, HoverMap> {}
-export interface Data {
-    self: SelfMap;
-    headers: HoverMapEx;
-    extHeaders?: HoverMapEx;
-    static: HoverMap;
-}
+/**
+ * Hover data container using the standard self/headers/extHeaders/static pattern.
+ * - self: per-document hovers (uri → Map<symbol, HoverEx>)
+ * - headers: workspace header hovers
+ * - extHeaders: external headers hovers
+ * - static: built-in hovers from JSON
+ */
+export type Data = MapData<HoverEx, Hover>;
 
-export function loadStatic(langId: string) {
-    try {
-        const filePath = path.join(__dirname, `hover.${langId}.json`);
-        const jsonData = JSON.parse(fs.readFileSync(filePath, "utf-8"));
-        const hover: HoverMap = new Map(Object.entries(jsonData));
-        return hover;
-    } catch (e) {
-        conlog(e);
-    }
-    return new Map();
+export function loadStatic(langId: string): HoverMap {
+    return loadStaticMap<Hover>("hover", langId);
 }

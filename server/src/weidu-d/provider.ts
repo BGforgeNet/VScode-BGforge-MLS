@@ -6,7 +6,7 @@
 import { DocumentSymbol, Location, Position, TextEdit } from "vscode-languageserver/node";
 import { conlog } from "../common";
 import { LANG_WEIDU_D } from "../core/languages";
-import { LanguageProvider } from "../language-provider";
+import { LanguageProvider, ProviderContext } from "../language-provider";
 import { getIndentFromEditorconfig } from "../shared/editorconfig";
 import { createFullDocumentEdit, validateFormatting } from "../shared/format-utils";
 import { fileURLToPath } from "url";
@@ -32,7 +32,7 @@ function getFormatOptions(uri: string): FormatOptions {
 export const weiduDProvider: LanguageProvider = {
     id: LANG_WEIDU_D,
 
-    async init(): Promise<void> {
+    async init(_context: ProviderContext): Promise<void> {
         await initParser();
         conlog("WeiDU D provider initialized");
     },

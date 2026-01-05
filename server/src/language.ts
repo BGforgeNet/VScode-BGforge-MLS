@@ -1,10 +1,17 @@
-import { Hover } from "vscode-languageserver/node";
 import { conlog, getRelPath, isDirectory, isSubpath, uriToPath } from "./common";
 import * as completion from "./completion";
 import * as definition from "./definition";
 import * as fallout from "./fallout";
 import * as hover from "./hover";
 import { LANG_FALLOUT_SSL, LANG_WEIDU_TP2, LANG_WEIDU_TP2_TPL } from "./core/languages";
+import {
+    createEmptyListData,
+    createEmptyMapData,
+    getListItems,
+    lookupMapItem,
+    reloadList,
+    reloadMap,
+} from "./shared/feature-data";
 import * as signature from "./signature";
 import * as weidu from "./weidu";
 
@@ -144,14 +151,10 @@ export class Language implements Language {
     }
 
     private async loadData() {
-        const completionData: completion.Data = { self: new Map(), headers: [], static: [] };
-        const hoverData: hover.Data = { self: new Map(), headers: new Map(), static: new Map() };
+        const completionData: completion.Data = createEmptyListData();
+        const hoverData: hover.Data = createEmptyMapData();
         const definitionData: definition.Data = new Map();
-        const signatureData: signature.Data = {
-            self: new Map(),
-            headers: new Map(),
-            static: new Map(),
-        };
+        const signatureData: signature.Data = createEmptyMapData();
 
         completionData.static = this.loadStaticCompletion();
         hoverData.static = this.loadStaticHover();
@@ -182,6 +185,11 @@ export class Language implements Language {
             }
 
             if (this.features.externalHeaders && this.externalHeadersDirectory != "") {
+                // Initialize extHeaders so reload doesn't need defensive checks
+                data.completion.extHeaders = [];
+                data.hover.extHeaders = new Map();
+                data.signature.extHeaders = new Map();
+
                 let externalHeaderData: HeaderData | undefined;
                 // hack: skip sfall macro dupes from headers
                 if (this.id == LANG_FALLOUT_SSL) {
@@ -256,28 +264,11 @@ export class Language implements Language {
         fileCompletion: completion.CompletionListEx,
         uri: string
     ) {
-        let newCompletion = oldCompletion.filter((item) => item.uri != uri);
-        fileCompletion = fileCompletion.filter((item) => !this.data.hover.static.has(item.label));
-        newCompletion = [...newCompletion, ...fileCompletion];
-        return newCompletion;
+        return reloadList(oldCompletion, fileCompletion, uri, this.data.hover.static, (item) => item.label);
     }
 
     private reloadFileHover(oldHover: hover.HoverMapEx, fileHover: hover.HoverMapEx, uri: string) {
-        let newHover = new Map(
-            Array.from(oldHover).filter(([_key, value]) => {
-                if (value.uri != uri) {
-                    return true;
-                }
-                return false;
-            })
-        );
-        fileHover = new Map(
-            Array.from(fileHover).filter(([key, _value]) => {
-                return !this.data.hover.static.has(key);
-            })
-        );
-        newHover = new Map([...newHover, ...fileHover]);
-        return newHover;
+        return reloadMap(oldHover, fileHover, uri, this.data.hover.static);
     }
 
     private reloadFileDefinition(
@@ -285,16 +276,11 @@ export class Language implements Language {
         fileDefinition: definition.Data,
         uri: string
     ) {
-        let newDefinition = new Map(
-            Array.from(oldDefinition).filter(([_key, value]) => {
-                if (value.uri != uri) {
-                    return true;
-                }
-                return false;
-            })
+        // Definition doesn't de-duplicate against static, just merges by URI
+        const filtered = new Map(
+            Array.from(oldDefinition).filter(([, value]) => value.uri !== uri)
         );
-        newDefinition = new Map([...newDefinition, ...fileDefinition]);
-        return newDefinition;
+        return new Map([...filtered, ...fileDefinition]);
     }
 
     private reloadFileSignature(
@@ -302,21 +288,7 @@ export class Language implements Language {
         fileSignature: signature.SigMap,
         uri: string
     ) {
-        let newSignature = new Map(
-            Array.from(oldSignature).filter(([_key, value]) => {
-                if (value.uri != uri) {
-                    return true;
-                }
-                return false;
-            })
-        );
-        fileSignature = new Map(
-            Array.from(fileSignature).filter(([key, _value]) => {
-                return !this.data.hover.static.has(key);
-            })
-        );
-        newSignature = new Map([...newSignature, ...fileSignature]);
-        return newSignature;
+        return reloadMap(oldSignature, fileSignature, uri, this.data.hover.static);
     }
 
     reloadFileData(uri: string, text: string) {
@@ -362,31 +334,22 @@ export class Language implements Language {
                     this.data.signature.self.set(uri, newSignature);
                 }
             } else if (this.inExternalHeadersDirectory(uri)) {
-                // make tslint happy
-                if (!this.data.completion.extHeaders) {
-                    this.data.completion.extHeaders = [];
-                }
+                // extHeaders is guaranteed to be initialized in loadData() when
+                // externalHeaders feature is enabled (which inExternalHeadersDirectory checks)
                 this.data.completion.extHeaders = this.reloadFileCompletion(
-                    this.data.completion.extHeaders,
+                    this.data.completion.extHeaders!,
                     fileData.completion,
                     uri
                 );
-                // make tslint happy
-                if (!this.data.hover.extHeaders) {
-                    this.data.hover.extHeaders = new Map();
-                }
                 this.data.hover.extHeaders = this.reloadFileHover(
-                    this.data.hover.extHeaders,
+                    this.data.hover.extHeaders!,
                     fileData.hover,
                     uri
                 );
 
                 if (this.features.signature && fileData.signature) {
-                    if (!this.data.signature.extHeaders) {
-                        this.data.signature.extHeaders = new Map();
-                    }
                     const newSignature = this.reloadFileSignature(
-                        this.data.signature.extHeaders,
+                        this.data.signature.extHeaders!,
                         fileData.signature,
                         uri
                     );
@@ -414,47 +377,14 @@ export class Language implements Language {
         if (!this.features.completion) {
             return;
         }
-        let result: completion.CompletionList;
-        result = this.data.completion.self.get(uri) || [];
-        result = [...result, ...this.data.completion.static];
-        result = [...result, ...this.data.completion.headers];
-        if (this.data.completion.extHeaders !== undefined) {
-            result = [...result, ...this.data.completion.extHeaders];
-        }
-        return result;
+        return getListItems(this.data.completion, uri);
     }
 
     hover(uri: string, symbol: string) {
         if (!this.features.hover) {
             return;
         }
-        let result: Hover | hover.HoverEx | undefined;
-
-        const selfMap = this.data.hover.self.get(uri);
-        if (selfMap) {
-            result = selfMap.get(symbol);
-            if (result) {
-                return result;
-            }
-        }
-
-        result = this.data.hover.static.get(symbol);
-        if (result) {
-            return result;
-        }
-
-        result = this.data.hover.headers.get(symbol);
-        if (result) {
-            return result;
-        }
-
-        if (this.data.hover.extHeaders) {
-            result = this.data.hover.extHeaders.get(symbol);
-            if (result) {
-                return result;
-            }
-        }
-        return undefined;
+        return lookupMapItem(this.data.hover, uri, symbol);
     }
 
     definition(symbol: string) {
