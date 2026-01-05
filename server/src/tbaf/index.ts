@@ -8,12 +8,12 @@ import * as fs from "fs";
 import * as path from "path";
 import { Project } from "ts-morph";
 import { conlog, uriToPath } from "../common";
+import { EXT_TBAF } from "../core/languages";
+import { REGEX_TBAF_REPLACE } from "../core/patterns";
 import { bundle } from "./bundle";
 import { emitBAF } from "./emit";
 import { BAFScript, isOrGroup } from "./ir";
 import { TBAFTransformer } from "./transform";
-
-const EXT_TBAF = ".tbaf";
 
 /**
  * Compile a TBAF file to BAF.
@@ -111,7 +111,7 @@ function fixupArg(arg: string): string {
     arg = arg.replace(/\$obj\("(.*?)"\)/g, '"$1"');
 
     // $tra(123) => @123 (globally, handles nested calls)
-    arg = arg.replace(/\$tra\((\d+)\)/g, "@$1");
+    arg = arg.replace(REGEX_TBAF_REPLACE, "@$1");
 
     return arg;
 }

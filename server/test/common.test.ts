@@ -62,4 +62,18 @@ describe("symbolAtPosition", () => {
         const result = symbolAtPosition(text, { line: 0, character: 9 });
         expect(result).toBe("NOption(154");
     });
+
+    it("returns 'tra' when cursor on $tra (not the number)", () => {
+        const text = "const x = $tra(100);";
+        // Position 12 is on 'r' in 'tra'
+        const result = symbolAtPosition(text, { line: 0, character: 12 });
+        expect(result).toBe("tra");
+    });
+
+    it("returns full $tra(123) when cursor on number", () => {
+        const text = "const x = $tra(100);";
+        // Position 15-17 is on the digits
+        const result = symbolAtPosition(text, { line: 0, character: 16 });
+        expect(result).toBe("$tra(100)");
+    });
 });

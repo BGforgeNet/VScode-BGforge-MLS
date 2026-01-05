@@ -178,6 +178,13 @@ export function symbolAtPosition(text: string, position: Position) {
     }
     const pos = position.character;
 
+    // Check if cursor is on the number inside a $tra(123) pattern (TBAF translation reference)
+    // Only match when cursor is on the digits, not on $tra itself
+    const traMatch = findTraArgumentAtPosition(str, pos);
+    if (traMatch) {
+        return traMatch;
+    }
+
     // Search for the word's beginning and end.
     let left = str.slice(0, pos + 1).search(/\w+$/),
         right = str.slice(pos).search(/\W/);
@@ -208,6 +215,26 @@ export function symbolAtPosition(text: string, position: Position) {
     }
 
     return result;
+}
+
+/**
+ * Find if cursor is on the number argument inside a $tra(123) pattern.
+ * Only returns match when cursor is on the digits, not on $tra itself.
+ */
+function findTraArgumentAtPosition(line: string, pos: number): string | null {
+    // Match $tra(digits) and capture the digits with their position
+    const pattern = /\$tra\((\d+)\)/g;
+    for (const match of line.matchAll(pattern)) {
+        if (match.index === undefined || !match[1]) continue;
+        // $tra( is 5 characters, so digits start at match.index + 5
+        const digitsStart = match.index + 5;
+        const digitsEnd = digitsStart + match[1].length;
+        // Only match if cursor is on the digits
+        if (pos >= digitsStart && pos < digitsEnd) {
+            return match[0];
+        }
+    }
+    return null;
 }
 
 function onlyDigits(value: string) {

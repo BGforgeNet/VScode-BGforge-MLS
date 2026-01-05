@@ -13,12 +13,11 @@ import {
 } from 'ts-morph';
 import * as esbuild from 'esbuild-wasm';
 import { fileURLToPath } from "url";
+import { EXT_TSSL } from "../core/languages";
 import { ensureEsbuild, cleanupEsbuildOutput, noSideEffectsPlugin } from "../esbuild-utils";
 
 // Use console.log directly for CLI compatibility (conlog depends on LSP connection)
 const conlog = console.log;
-
-const EXT_TSSL = ".tssl";
 const uriToPath = (uri: string) => uri.startsWith('file://') ? fileURLToPath(uri) : uri;
 
 /** Marker to identify start of user code in esbuild output */

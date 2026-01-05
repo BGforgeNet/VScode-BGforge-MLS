@@ -11,11 +11,24 @@ import { fileURLToPath } from "url";
 import { Hover, InlayHint, Range } from "vscode-languageserver/node";
 import { conlog, findFiles, getRelPath, isDirectory, isSubpath } from "./common";
 import {
+    EXT_TBAF,
+    EXT_TSSL,
     LANG_FALLOUT_SSL,
+    LANG_TYPESCRIPT,
     MSG_LANGUAGES,
+    TRA_LANGUAGES,
     TRANSLATION_FILE_LANGUAGES,
-    TRANSLATION_LANGUAGES,
 } from "./core/languages";
+import {
+    REGEX_MSG_HOVER,
+    REGEX_MSG_INLAY,
+    REGEX_TBAF_HOVER,
+    REGEX_TBAF_INLAY,
+    REGEX_TRA_COMMENT,
+    REGEX_TRA_COMMENT_EXT,
+    REGEX_TRA_HOVER,
+    REGEX_TRA_INLAY,
+} from "./core/patterns";
 import { ProjectTraSettings } from "./settings";
 
 interface TraEntry {
@@ -36,20 +49,33 @@ type TraExt = "msg" | "tra";
 const languages = TRANSLATION_FILE_LANGUAGES;
 
 /** Languages that can have translation references */
-const translatableLanguages = [...TRANSLATION_LANGUAGES, ...MSG_LANGUAGES];
+const translatableLanguages = [...TRA_LANGUAGES, ...MSG_LANGUAGES];
 
 const extensions: Array<TraExt> = ["msg", "tra"];
 
-const regexMsg =
-    /^(Reply|NOption|GOption|BOption|mstr|display_mstr|floater|NLowOption|BLowOption|GLowOption|GMessage|NMessage|BMessage|CompOption)\((\d+)$/;
-const regexTra = /^@[0-9]+$/;
+/**
+ * Check if a symbol is a translation reference for the given language.
+ * For typescript files, also checks file extension to determine format.
+ */
+function isTraRef(word: string, langId: string, filePath?: string): boolean {
+    // For typescript, determine pattern by file extension
+    if (langId === LANG_TYPESCRIPT && filePath) {
+        const ext = path.extname(filePath).toLowerCase();
+        if (ext === EXT_TSSL) {
+            return !!word.match(REGEX_MSG_HOVER);
+        }
+        if (ext === EXT_TBAF) {
+            return !!word.match(REGEX_TBAF_HOVER);
+        }
+        // Regular .ts file - check both patterns, format determined by @tra comment
+        return !!word.match(REGEX_MSG_HOVER) || !!word.match(REGEX_TBAF_HOVER);
+    }
 
-/** Check if a symbol is a translation reference for the given language */
-function isTraRef(word: string, langId: string): boolean {
-    if (TRANSLATION_LANGUAGES.includes(langId) && word.match(regexTra)) {
+    // For other languages, check the language arrays
+    if (TRA_LANGUAGES.includes(langId) && word.match(REGEX_TRA_HOVER)) {
         return true;
     }
-    if (MSG_LANGUAGES.includes(langId) && word.match(regexMsg)) {
+    if (MSG_LANGUAGES.includes(langId) && word.match(REGEX_MSG_HOVER)) {
         return true;
     }
     return false;
@@ -91,11 +117,12 @@ export class Translation {
      */
     getHover(uri: string, langId: string, symbol: string, text: string): Hover | null {
         if (!this.initialized) return null;
+        if (this.data.size === 0) return null;
         if (!translatableLanguages.includes(langId)) return null;
-        if (!isTraRef(symbol, langId)) return null;
 
         const filePath = this.uriToPath(uri);
         if (!isSubpath(this.workspaceRoot, filePath)) return null;
+        if (!isTraRef(symbol, langId, filePath)) return null;
 
         const relPath = getRelPath(this.workspaceRoot, filePath);
         return this.lookupHover(symbol, text, relPath, langId);
@@ -111,6 +138,7 @@ export class Translation {
      */
     getInlayHints(uri: string, langId: string, text: string, range: Range): InlayHint[] {
         if (!this.initialized) return [];
+        if (this.data.size === 0) return [];
 
         const filePath = this.uriToPath(uri);
         const traFileKey = this.resolveTraFileKey(filePath, text, langId);
@@ -119,10 +147,10 @@ export class Translation {
         const traEntries = this.data.get(traFileKey);
         if (!traEntries) return [];
 
-        const traExt = this.getTraExt(langId);
+        const traExt = this.getTraExt(langId, filePath, text);
         if (!traExt) return [];
 
-        return this.generateInlayHints(traFileKey, traEntries, traExt, text, range);
+        return this.generateInlayHints(traFileKey, traEntries, traExt, text, range, filePath);
     }
 
     /**
@@ -174,12 +202,58 @@ export class Translation {
         return uri.startsWith("file://") ? fileURLToPath(uri) : uri;
     }
 
-    private getTraExt(langId: string): TraExt | undefined {
-        if (TRANSLATION_LANGUAGES.includes(langId)) {
-            return "tra";
+    /**
+     * Determine translation file extension based on language and file path.
+     * For typescript files, checks .tssl (msg) vs .tbaf (tra) extension.
+     * For regular .ts files, infers from @tra comment or loaded translation files.
+     */
+    private getTraExt(langId: string, filePath?: string, text?: string): TraExt | undefined {
+        // For typescript, determine by file extension
+        if (langId === LANG_TYPESCRIPT && filePath) {
+            const ext = path.extname(filePath).toLowerCase();
+            if (ext === EXT_TSSL) {
+                return "msg";
+            }
+            if (ext === EXT_TBAF) {
+                return "tra";
+            }
+            // Regular .ts file - infer from @tra comment first
+            if (text) {
+                const traFileExt = this.getTraFileExtFromComment(text);
+                if (traFileExt) {
+                    return traFileExt;
+                }
+            }
+            // No @tra comment - infer from loaded translation files (msg and tra are never mixed)
+            for (const key of this.data.keys()) {
+                if (key.endsWith(".msg")) return "msg";
+                if (key.endsWith(".tra")) return "tra";
+            }
+            return undefined;
         }
+
+        // For other languages, check the language arrays
+        // Check MSG_LANGUAGES first since it's more specific
         if (MSG_LANGUAGES.includes(langId)) {
             return "msg";
+        }
+        if (TRA_LANGUAGES.includes(langId)) {
+            return "tra";
+        }
+        return undefined;
+    }
+
+    /**
+     * Extract translation file extension from @tra comment.
+     * Returns "msg" or "tra" based on the referenced file extension.
+     */
+    private getTraFileExtFromComment(text: string): TraExt | undefined {
+        const firstLine = text.split(/\r?\n/g)[0];
+        if (!firstLine) return undefined;
+
+        const match = REGEX_TRA_COMMENT_EXT.exec(firstLine);
+        if (match && match[1]) {
+            return match[1] as TraExt;
         }
         return undefined;
     }
@@ -291,13 +365,12 @@ export class Translation {
         const firstLine = fullText.split(/\r?\n/g)[0];
         if (!firstLine) return undefined;
 
-        const regex = /^\/\*\* @tra ((\w+)\.(tra|msg)) \*\//g;
-        const match = regex.exec(firstLine);
+        const match = REGEX_TRA_COMMENT.exec(firstLine);
         if (match && match[1]) {
             return match[1];
         }
         if (this.settings.auto_tra) {
-            const traExt = this.getTraExt(langId);
+            const traExt = this.getTraExt(langId, filePath, fullText);
             if (!traExt) return undefined;
             const basename = path.parse(filePath).name;
             return `${basename}.${traExt}`;
@@ -306,7 +379,7 @@ export class Translation {
     }
 
     private lookupHover(word: string, text: string, relPath: string, langId: string): Hover | null {
-        const ext = this.getTraExt(langId);
+        const ext = this.getTraExt(langId, relPath, text);
         if (!ext) return null;
 
         const fileKey = this.resolveTraFileKey(relPath, text, langId);
@@ -343,12 +416,18 @@ export class Translation {
 
     private getLineKey(word: string, ext: TraExt): string | undefined {
         if (ext == "msg") {
-            const match = regexMsg.exec(word);
+            const match = REGEX_MSG_HOVER.exec(word);
             if (match) {
                 return match[2];
             }
         }
         if (ext == "tra") {
+            // Check for TBAF $tra(123) format first
+            const tbafMatch = REGEX_TBAF_HOVER.exec(word);
+            if (tbafMatch) {
+                return tbafMatch[1];
+            }
+            // Standard @123 format
             return word.substring(1);
         }
         return undefined;
@@ -359,33 +438,41 @@ export class Translation {
         traEntries: TraEntries,
         traExt: TraExt,
         text: string,
-        range: Range
+        range: Range,
+        filePath: string
     ): InlayHint[] {
         const hints: InlayHint[] = [];
 
         let lines = text.split("\n");
         lines = lines.slice(range.start.line, range.end.line);
 
+        // Determine regex based on file type
+        // keyIndex: which capture group contains the translation ID
         let regex: RegExp;
+        let keyIndex: number;
         if (traExt == "msg") {
-            regex =
-                /(Reply|NOption|GOption|BOption|mstr|display_mstr|floater|NLowOption|BLowOption|GLowOption|GMessage|NMessage|BMessage|CompOption)\((\d+)/g;
+            regex = new RegExp(REGEX_MSG_INLAY.source, "g");
+            keyIndex = 2;
         } else {
-            regex = /@(\d+)/g;
+            // TypeScript files (.tbaf, .ts) use $tra(123) syntax
+            // Native WeiDU files (baf, d, tp2) use @123 syntax
+            const ext = path.extname(filePath).toLowerCase();
+            const isTypeScript = ext === EXT_TBAF || ext === ".ts";
+            if (isTypeScript) {
+                regex = new RegExp(REGEX_TBAF_INLAY.source, "g");
+            } else {
+                regex = new RegExp(REGEX_TRA_INLAY.source, "g");
+            }
+            keyIndex = 1;
         }
 
         lines.forEach((l, i) => {
             const matches = l.matchAll(regex);
             for (const m of matches) {
-                if (!m.index) continue;
+                if (m.index === undefined) continue;
 
                 const char_end = m.index + m[0].length;
-                let lineKey: string | undefined;
-                if (traExt == "msg") {
-                    lineKey = m[2];
-                } else {
-                    lineKey = m[1];
-                }
+                const lineKey = m[keyIndex];
                 if (!lineKey) continue;
 
                 const pos = { line: range.start.line + i, character: char_end };

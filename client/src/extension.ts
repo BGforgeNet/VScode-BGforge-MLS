@@ -68,6 +68,7 @@ export async function activate(context: ExtensionContext) {
 
             { scheme: "file", pattern: "**/*.tbaf" },
             { scheme: "file", pattern: "**/*.tssl" },
+            { scheme: "file", language: "typescript" },
         ],
         synchronize: {
             // Notify the server about file changes to '.clientrc files contained in the workspace
