@@ -6,13 +6,13 @@
 import type { Node as SyntaxNode } from "web-tree-sitter";
 import { initParser, getParser, isInitialized } from "./fallout-ssl/parser";
 
-export interface DialogReply {
+interface DialogReply {
     msgId: number | string;
     line: number;
     conditional?: string;
 }
 
-export interface DialogOption {
+interface DialogOption {
     msgId: number | string;
     target: string;
     skill?: number;

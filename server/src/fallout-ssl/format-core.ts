@@ -42,7 +42,7 @@ const RESERVED_WORDS = new Set([
     "and", "or", "not", "bwand", "bwor", "bwxor", "bwnot",
 ]);
 
-export function isReservedWord(text: string): boolean {
+function isReservedWord(text: string): boolean {
     return RESERVED_WORDS.has(text.toLowerCase());
 }
 

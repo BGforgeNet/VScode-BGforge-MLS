@@ -11,7 +11,7 @@ import { escapeHtml } from "../utils";
 // Maximum file size for binary viewer (1MB should be plenty for any game data file)
 const MAX_FILE_SIZE = 1024 * 1024;
 
-export class BinaryEditorProvider implements vscode.CustomReadonlyEditorProvider {
+class BinaryEditorProvider implements vscode.CustomReadonlyEditorProvider {
     public static readonly viewType = "bgforge.binaryViewer";
 
     // Cached assets (loaded once per extension lifetime)

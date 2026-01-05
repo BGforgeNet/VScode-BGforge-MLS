@@ -8,7 +8,6 @@ export const LANG_FALLOUT_WORLDMAP_TXT = "fallout-worldmap-txt";
 export const LANG_WEIDU_TP2 = "weidu-tp2";
 export const LANG_WEIDU_TP2_TPL = "weidu-tp2-tpl";
 export const LANG_WEIDU_BAF = "weidu-baf";
-export const LANG_WEIDU_BAF_TPL = "weidu-baf-tpl";
 export const LANG_WEIDU_D = "weidu-d";
 export const LANG_WEIDU_D_TPL = "weidu-d-tpl";
 export const LANG_WEIDU_SLB = "weidu-slb";

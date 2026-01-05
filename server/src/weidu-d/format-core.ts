@@ -20,7 +20,7 @@ export interface FormatResult {
     errors: FormatError[];
 }
 
-export interface FormatError {
+interface FormatError {
     message: string;
     line: number;
     column: number;

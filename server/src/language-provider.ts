@@ -94,14 +94,3 @@ export interface LanguageProvider {
     compile?(uri: string, text: string): Promise<void>;
 }
 
-/**
- * Base class with common functionality for language providers.
- * Languages can extend this or implement LanguageProvider directly.
- */
-export abstract class BaseLanguageProvider implements LanguageProvider {
-    abstract readonly id: string;
-
-    async init(): Promise<void> {
-        // Override in subclass if needed
-    }
-}

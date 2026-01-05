@@ -11,7 +11,7 @@ import { parse as parseIni } from "ini";
 /**
  * Simple glob matching for editorconfig patterns.
  */
-export function matchesGlob(fileName: string, pattern: string): boolean {
+function matchesGlob(fileName: string, pattern: string): boolean {
     if (pattern === "*") return true;
     if (pattern.startsWith("*.")) {
         const extPattern = pattern.slice(2);

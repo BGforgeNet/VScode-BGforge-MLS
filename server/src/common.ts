@@ -7,9 +7,6 @@ import { fileURLToPath } from "url";
 import { Diagnostic, DiagnosticSeverity, Position } from "vscode-languageserver/node";
 import { connection } from "./server";
 
-export function fname(uri: string) {
-    return path.basename(uri);
-}
 
 export const tmpDir = path.join(os.tmpdir(), "bgforge-mls");
 
@@ -43,7 +40,7 @@ export async function conlog(item: any) {
     }
 }
 
-export interface ParseItem {
+interface ParseItem {
     uri: string;
     line: number;
     columnStart: number;
@@ -134,13 +131,6 @@ export function isDirectory(fsPath: string): boolean {
     return false;
 }
 
-export function isHeader(filePath: string, langId: string) {
-    if (path.extname(filePath) == "h" && langId == "fallout-ssl") {
-        // Note: Can't import LANG_FALLOUT_SSL here to avoid circular deps
-        return true;
-    }
-    return false;
-}
 
 /** find files in directory by extension */
 export function findFiles(dirName: string, extension: string) {
@@ -159,23 +149,6 @@ export function getRelPath(root: string, other_dir: string) {
     return path.relative(root, other_dir);
 }
 
-/**
- * Get the relative path from `root` to `targetPath`, resolving symlinks if necessary.
- * @param root - The starting path.
- * @param targetPath - The target file or directory path.
- * @returns The relative path from `root` to `targetPath`.
- */
-export function getRelPath2(root: string, targetPath: string): string {
-    // Resolve any symlinks in both paths
-    const resolvedRoot = fs.realpathSync(root);
-    const resolvedTarget = fs.realpathSync(targetPath);
-
-    // Calculate the relative path
-    const relativePath = path.relative(resolvedRoot, resolvedTarget);
-
-    // Normalize path separators for cross-platform compatibility
-    return path.normalize(relativePath);
-}
 
 export function uriToPath(uri_string: string) {
     return fileURLToPath(uri_string);

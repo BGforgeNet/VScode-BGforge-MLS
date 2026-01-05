@@ -13,7 +13,7 @@ import { ensureEsbuild, cleanupEsbuildOutput, noSideEffectsPlugin } from "./esbu
 // Use console.log directly for CLI compatibility (conlog depends on LSP connection)
 const conlog = console.log;
 
-export const EXT_TSSL = ".tssl";
+const EXT_TSSL = ".tssl";
 const uriToPath = (uri: string) => uri.startsWith('file://') ? fileURLToPath(uri) : uri;
 
 /** Marker to identify start of user code in esbuild output */

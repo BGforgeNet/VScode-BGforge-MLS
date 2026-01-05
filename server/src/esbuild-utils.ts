@@ -173,25 +173,3 @@ export function noSideEffectsPlugin(): esbuild.Plugin {
     };
 }
 
-/**
- * Create an esbuild plugin that marks matching imports as external.
- *
- * @param patterns Array of regex patterns to match import paths
- * @param name Plugin name for debugging
- * @returns esbuild plugin
- */
-export function externalModulesPlugin(patterns: RegExp[], name = "external-modules"): esbuild.Plugin {
-    return {
-        name,
-        setup(build) {
-            build.onResolve({ filter: /.*/ }, (args) => {
-                for (const pattern of patterns) {
-                    if (pattern.test(args.path)) {
-                        return { path: args.path, external: true };
-                    }
-                }
-                return null;
-            });
-        },
-    };
-}

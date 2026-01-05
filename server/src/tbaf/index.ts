@@ -13,7 +13,7 @@ import { emitBAF } from "./emit";
 import { BAFScript, isOrGroup } from "./ir";
 import { TBAFTransformer } from "./transform";
 
-export const EXT_TBAF = ".tbaf";
+const EXT_TBAF = ".tbaf";
 
 /**
  * Compile a TBAF file to BAF.

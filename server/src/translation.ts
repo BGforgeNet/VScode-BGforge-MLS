@@ -45,7 +45,7 @@ const msgLanguages = [LANG_FALLOUT_SSL];
 export const translatableLanguages = [...traLanguages, ...msgLanguages];
 
 export const languages = ["fallout-msg", "weidu-tra"];
-export const extensions: Array<TraExt> = ["msg", "tra"];
+const extensions: Array<TraExt> = ["msg", "tra"];
 
 export function getTraExt(langId: string) {
     if (traLanguages.includes(langId)) {

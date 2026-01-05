@@ -1,5 +1,4 @@
 import * as fs from "fs";
-import { TextDocument } from "vscode-languageserver-textdocument";
 import * as path from "path";
 import { conlog, isDirectory, pathToUri, tmpDir } from "./common";
 import * as fallout from "./fallout";
@@ -19,25 +18,8 @@ import * as weidu from "./weidu";
 /** Only these languages can be compiled */
 const falloutLanguages = [LANG_FALLOUT_SSL];
 const weiduLanguages = [LANG_WEIDU_TP2, LANG_WEIDU_TP2_TPL, LANG_WEIDU_D, LANG_WEIDU_D_TPL, LANG_WEIDU_BAF];
-const languages = [...falloutLanguages, ...weiduLanguages];
-
-/** These languages require game path to compile */
-const languagesRequireGame = [LANG_WEIDU_D, LANG_WEIDU_D_TPL, LANG_WEIDU_BAF];
 
 export const COMMAND_compile = "extension.bgforge.compile";
-
-/** Can we compile this file? */
-export async function canCompile(document: TextDocument) {
-    const langId = document.languageId;
-    if (!languages.includes(langId)) {
-        return false;
-    }
-    const settings = await getDocumentSettings(document.uri);
-    if (languagesRequireGame.includes(langId) && settings.weidu.gamePath == "") {
-        return false;
-    }
-    return true;
-}
 
 export function clearDiagnostics(uri: string) {
     // Clear old diagnostics. For some reason not working in common.send_parse_result.
