@@ -7,30 +7,21 @@
 // Fallout languages
 export const LANG_FALLOUT_SSL = "fallout-ssl" as const;
 export const LANG_FALLOUT_SSL_TOOLTIP = "fallout-ssl-tooltip" as const;
-export const LANG_FALLOUT_MSG = "fallout-msg" as const;
-export const LANG_FALLOUT_SCRIPTS_LST = "fallout-scripts-lst" as const;
 export const LANG_FALLOUT_WORLDMAP_TXT = "fallout-worldmap-txt" as const;
+// Used only in TRANSLATION_FILE_LANGUAGES below
+const LANG_FALLOUT_MSG = "fallout-msg" as const;
 
 // WeiDU languages
 export const LANG_WEIDU_TP2 = "weidu-tp2" as const;
 export const LANG_WEIDU_TP2_TOOLTIP = "weidu-tp2-tooltip" as const;
 export const LANG_WEIDU_TP2_TPL = "weidu-tp2-tpl" as const;
 export const LANG_WEIDU_BAF = "weidu-baf" as const;
-export const LANG_WEIDU_BAF_TOOLTIP = "weidu-baf-tooltip" as const;
 export const LANG_WEIDU_D = "weidu-d" as const;
-export const LANG_WEIDU_D_TOOLTIP = "weidu-d-tooltip" as const;
 export const LANG_WEIDU_D_TPL = "weidu-d-tpl" as const;
 export const LANG_WEIDU_SLB = "weidu-slb" as const;
 export const LANG_WEIDU_SSL = "weidu-ssl" as const;
-export const LANG_WEIDU_TRA = "weidu-tra" as const;
-
-// Infinity Engine
-export const LANG_IE_2DA = "infinity-2da" as const;
-
-// Internal syntax highlighting helpers
-export const LANG_MLS_COMMENT = "bgforge-mls-comment" as const;
-export const LANG_MLS_STRING = "bgforge-mls-string" as const;
-export const LANG_MLS_DOCSTRING = "bgforge-mls-docstring" as const;
+// Used only in TRANSLATION_FILE_LANGUAGES below
+const LANG_WEIDU_TRA = "weidu-tra" as const;
 
 /**
  * Languages that support translation (inlay hints).

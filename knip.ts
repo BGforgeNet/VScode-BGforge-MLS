@@ -1,9 +1,7 @@
 import type { KnipConfig } from "knip";
 
 const config: KnipConfig = {
-  // Focus on dependencies, not internal code organization
   rules: {
-    exports: "off",
     types: "off",
   },
   workspaces: {
