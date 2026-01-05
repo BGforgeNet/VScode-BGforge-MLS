@@ -1,3 +1,8 @@
+/**
+ * Parallel header file processing using promise pool.
+ * Processes multiple header files concurrently to extract definitions and completions.
+ */
+
 import PromisePool from "@supercharge/promise-pool";
 import * as fs from "fs";
 import * as path from "path";

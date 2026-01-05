@@ -1,3 +1,15 @@
+/**
+ * Language data management class.
+ *
+ * This is an internal utility class used by LanguageProvider implementations.
+ * It handles loading and caching of language feature data:
+ * - Static data from JSON files (completion, hover, signature)
+ * - Dynamic data from workspace headers (procedures, macros, definitions)
+ *
+ * Each provider owns its own Language instance and delegates data operations to it.
+ * Server.ts never interacts with Language directly - only through providers.
+ */
+
 import { conlog, getRelPath, isDirectory, isSubpath, uriToPath } from "./common";
 import * as completion from "./completion";
 import * as definition from "./definition";
@@ -62,8 +74,8 @@ export interface Language {
 export class Language implements Language {
     id: string;
     features: Features;
-    // @ts-expect-error: ts2564 because we init the instance with async init() method explicitly.
-    data: Data;
+    /** Initialized in init() - callers must await init() before using this class */
+    data!: Data;
     workspaceRoot: string;
     externalHeadersDirectory: string;
 

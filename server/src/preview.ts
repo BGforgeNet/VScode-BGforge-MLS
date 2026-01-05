@@ -1,3 +1,8 @@
+/**
+ * Preview data extraction for callgraph visualization.
+ * Extracts procedure calls to generate nodes and edges for the webview preview.
+ */
+
 import { stripLiteralRegex } from "strip-literal";
 import { conlog } from "./common";
 import * as fallout from "./fallout";

@@ -1,3 +1,8 @@
+/**
+ * Completion data types and loading utilities.
+ * Defines the CompletionItem data structures and static data loading.
+ */
+
 import { CompletionItem } from "vscode-languageserver/node";
 import { ListData } from "./shared/feature-data";
 import { loadStaticJson } from "./shared/static-data";

@@ -1,3 +1,9 @@
+/**
+ * Fallout SSL language utilities.
+ * Handles compilation (via external compile.exe or built-in WASM compiler),
+ * header parsing for procedures/macros, and callgraph extraction.
+ */
+
 import * as cp from "child_process";
 import * as fs from "fs";
 import * as os from "os";

@@ -1,3 +1,8 @@
+/**
+ * JSDoc comment parser.
+ * Extracts @param, @return, @deprecated tags from documentation comments.
+ */
+
 interface Arg {
     name: string;
     type: string;

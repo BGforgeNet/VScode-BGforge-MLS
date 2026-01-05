@@ -1,3 +1,8 @@
+/**
+ * Common utilities shared across the language server.
+ * Includes logging, file path manipulation, glob helpers, and diagnostic creation.
+ */
+
 import * as fg from "fast-glob";
 import * as fs from "fs";
 import { pathToFileURL } from "node:url";

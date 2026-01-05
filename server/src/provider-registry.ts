@@ -8,11 +8,14 @@
  */
 
 import {
+    CompletionItem,
     DocumentSymbol,
+    Hover,
     Location,
     Position,
     Range,
     InlayHint,
+    SignatureHelp,
     TextEdit,
 } from "vscode-languageserver/node";
 import { LanguageProvider, ProviderContext } from "./language-provider";
@@ -21,6 +24,8 @@ import { conlog } from "./common";
 class ProviderRegistry {
     private providers: Map<string, LanguageProvider> = new Map();
     private context: ProviderContext | undefined;
+    /** Maps alias language IDs to their parent provider ID */
+    private aliases: Map<string, string> = new Map();
 
     /**
      * Register a language provider.
@@ -28,6 +33,22 @@ class ProviderRegistry {
     register(provider: LanguageProvider): void {
         this.providers.set(provider.id, provider);
         conlog(`Registered provider: ${provider.id}`);
+    }
+
+    /**
+     * Register an alias language ID that shares data with an existing provider.
+     * The alias language will use the parent provider for data features.
+     */
+    registerAlias(aliasLangId: string, parentLangId: string): void {
+        this.aliases.set(aliasLangId, parentLangId);
+        conlog(`Registered alias: ${aliasLangId} -> ${parentLangId}`);
+    }
+
+    /**
+     * Resolve a language ID, following aliases if present.
+     */
+    private resolveLangId(langId: string): string {
+        return this.aliases.get(langId) ?? langId;
     }
 
     /**
@@ -57,17 +78,17 @@ class ProviderRegistry {
     }
 
     /**
-     * Get a provider by language ID.
+     * Get a provider by language ID (resolves aliases).
      */
     get(langId: string): LanguageProvider | undefined {
-        return this.providers.get(langId);
+        return this.providers.get(this.resolveLangId(langId));
     }
 
     /**
-     * Check if a provider exists for the language.
+     * Check if a provider exists for the language (resolves aliases).
      */
     has(langId: string): boolean {
-        return this.providers.has(langId);
+        return this.providers.has(this.resolveLangId(langId)) || this.aliases.has(langId);
     }
 
     // =========================================================================
@@ -75,7 +96,7 @@ class ProviderRegistry {
     // =========================================================================
 
     format(langId: string, text: string, uri: string): TextEdit[] {
-        const provider = this.providers.get(langId);
+        const provider = this.get(langId);
         if (provider?.format) {
             return provider.format(text, uri);
         }
@@ -83,7 +104,7 @@ class ProviderRegistry {
     }
 
     symbols(langId: string, text: string): DocumentSymbol[] {
-        const provider = this.providers.get(langId);
+        const provider = this.get(langId);
         if (provider?.symbols) {
             return provider.symbols(text);
         }
@@ -91,7 +112,7 @@ class ProviderRegistry {
     }
 
     definition(langId: string, text: string, position: Position, uri: string): Location | null {
-        const provider = this.providers.get(langId);
+        const provider = this.get(langId);
         if (provider?.definition) {
             return provider.definition(text, position, uri);
         }
@@ -99,11 +120,71 @@ class ProviderRegistry {
     }
 
     inlayHints(langId: string, text: string, uri: string, range: Range): InlayHint[] {
-        const provider = this.providers.get(langId);
+        const provider = this.get(langId);
         if (provider?.inlayHints) {
             return provider.inlayHints(text, uri, range);
         }
         return [];
+    }
+
+    // =========================================================================
+    // Data feature routing - lookup from loaded/parsed data
+    // =========================================================================
+
+    completion(langId: string, uri: string): CompletionItem[] {
+        const provider = this.get(langId);
+        if (provider?.getCompletions) {
+            return provider.getCompletions(uri);
+        }
+        return [];
+    }
+
+    hover(langId: string, uri: string, symbol: string): Hover | null {
+        const provider = this.get(langId);
+        if (provider?.getHover) {
+            return provider.getHover(uri, symbol);
+        }
+        return null;
+    }
+
+    signature(langId: string, uri: string, symbol: string, paramIndex: number): SignatureHelp | null {
+        const provider = this.get(langId);
+        if (provider?.getSignature) {
+            return provider.getSignature(uri, symbol, paramIndex);
+        }
+        return null;
+    }
+
+    symbolDefinition(langId: string, symbol: string): Location | null {
+        const provider = this.get(langId);
+        if (provider?.getSymbolDefinition) {
+            return provider.getSymbolDefinition(symbol);
+        }
+        return null;
+    }
+
+    reloadFileData(langId: string, uri: string, text: string): void {
+        const provider = this.get(langId);
+        if (provider?.reloadFileData) {
+            provider.reloadFileData(uri, text);
+        }
+    }
+
+    // =========================================================================
+    // Compilation
+    // =========================================================================
+
+    /**
+     * Compile a file using the appropriate provider.
+     * @returns true if a provider handled the compilation, false otherwise
+     */
+    async compile(langId: string, uri: string, text: string, interactive: boolean): Promise<boolean> {
+        const provider = this.get(langId);
+        if (provider?.compile) {
+            await provider.compile(uri, text, interactive);
+            return true;
+        }
+        return false;
     }
 }
 

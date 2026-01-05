@@ -1,3 +1,8 @@
+/**
+ * WeiDU language utilities.
+ * Handles compilation via WeiDU executable and header parsing for TP2 macros/functions.
+ */
+
 import * as cp from "child_process";
 import * as fs from "fs";
 import * as path from "path";

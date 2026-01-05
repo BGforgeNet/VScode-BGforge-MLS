@@ -1,3 +1,8 @@
+/**
+ * Hover data types and loading utilities.
+ * Defines the Hover data structures and static data loading.
+ */
+
 import { Hover } from "vscode-languageserver/node";
 import { MapData } from "./shared/feature-data";
 import { loadStaticMap } from "./shared/static-data";

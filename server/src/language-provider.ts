@@ -102,7 +102,12 @@ export interface LanguageProvider {
     // Compilation
     // =========================================================================
 
-    /** Compile/validate the document. Returns diagnostics via the connection. */
-    compile?(uri: string, text: string): Promise<void>;
+    /**
+     * Compile/validate the document. Sends diagnostics via the connection.
+     * @param uri Document URI
+     * @param text Document text
+     * @param interactive True if triggered by user command (shows messages), false for auto-validation
+     */
+    compile?(uri: string, text: string, interactive: boolean): Promise<void>;
 }
 

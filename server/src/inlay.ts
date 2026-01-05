@@ -1,3 +1,8 @@
+/**
+ * Inlay hint generation for translation references.
+ * Shows translated string previews inline for @123 or NOption(123) style references.
+ */
+
 import { InlayHint } from "vscode-languageserver";
 import { Range } from "vscode-languageserver-textdocument";
 import { TraEntries, TraExt } from "./translation";

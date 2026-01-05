@@ -1,3 +1,8 @@
+/**
+ * Definition data types and loading utilities.
+ * Maps symbol names to their source locations for go-to-definition support.
+ */
+
 import { Location } from "vscode-languageserver";
 
 export interface Data extends Map<string, Location> { }

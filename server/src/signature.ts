@@ -1,3 +1,8 @@
+/**
+ * Signature help data types and utilities.
+ * Provides function signature information for parameter hints while typing.
+ */
+
 import { Position, SignatureInformation } from "vscode-languageserver/node";
 import { MapData } from "./shared/feature-data";
 import { loadStaticMap } from "./shared/static-data";

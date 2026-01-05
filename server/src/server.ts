@@ -1,3 +1,9 @@
+/**
+ * LSP server entry point.
+ * Sets up the language server connection and routes all LSP requests
+ * to the appropriate providers via ProviderRegistry.
+ */
+
 import { fileURLToPath } from "node:url";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import {
@@ -11,12 +17,30 @@ import {
     TextDocuments,
     TextDocumentSyncKind,
 } from "vscode-languageserver/node";
-import { conlog, symbolAtPosition } from "./common";
+import { conlog, getRelPath, isSubpath, symbolAtPosition, uriToPath } from "./common";
 import { clearDiagnostics, COMMAND_compile, compile } from "./compile";
+import { getRequest as getSignatureRequest } from "./signature";
 import { parseDialog } from "./dialog";
 import { falloutSslProvider } from "./fallout-ssl/provider";
-import { Galactus } from "./galactus";
-import { LANG_FALLOUT_SSL } from "./core/languages";
+import * as inlay from "./inlay";
+import {
+    getTraExt,
+    isTraRef,
+    languages as translationLanguages,
+    translatableLanguages,
+    Translation,
+} from "./translation";
+import {
+    LANG_FALLOUT_SSL,
+    LANG_WEIDU_BAF,
+    LANG_WEIDU_D,
+    LANG_WEIDU_D_TPL,
+    LANG_WEIDU_SLB,
+    LANG_WEIDU_SSL,
+    LANG_WEIDU_TP2,
+    LANG_WEIDU_TP2_TPL,
+} from "./core/languages";
+import { falloutWorldmapProvider } from "./fallout-worldmap/provider";
 import { getPreviewData } from "./preview";
 import { registry } from "./provider-registry";
 import * as settings from "./settings";
@@ -40,7 +64,71 @@ let workspaceRoot: string;
 let projectSettings: settings.ProjectSettings;
 
 // Initialized in onInitialized, undefined until then
-let gala: Galactus | undefined;
+let translation: Translation | undefined;
+
+// =========================================================================
+// Translation helpers
+// =========================================================================
+
+/** Reload translation data for a file if it's a translation file */
+function reloadTranslation(uri: string, langId: string, text: string): void {
+    if (!translation?.initialized) return;
+    if (!translationLanguages.includes(langId)) return;
+
+    const filePath = uriToPath(uri);
+    if (!isSubpath(workspaceRoot, filePath)) return;
+
+    const wsPath = getRelPath(workspaceRoot, filePath);
+    translation.reloadFileLines(wsPath, text);
+}
+
+/** Get translation hover for a symbol if applicable */
+function getTranslationHover(uri: string, langId: string, symbol: string, text: string) {
+    if (!translation?.initialized) return null;
+    if (!translatableLanguages.includes(langId)) return null;
+    if (!isTraRef(symbol, langId)) return null;
+
+    const filePath = uriToPath(uri);
+    if (!isSubpath(workspaceRoot, filePath)) return null;
+
+    const relPath = getRelPath(workspaceRoot, filePath);
+    return translation.hover(symbol, text, relPath, langId);
+}
+
+/** Get translation-based inlay hints */
+function getTranslationInlay(uri: string, langId: string, text: string, range: import("vscode-languageserver/node").Range) {
+    if (!translation?.initialized) return [];
+
+    const filePath = uriToPath(uri);
+    const traFileKey = translation.traFileKey(filePath, text, langId);
+    if (!traFileKey) return [];
+
+    const traEntries = translation.entries(traFileKey);
+    if (!traEntries) return [];
+
+    const traExt = getTraExt(langId);
+    if (!traExt) return [];
+
+    return inlay.getHints(traFileKey, traEntries, traExt, text, range);
+}
+
+/** Get message texts for a fallout-ssl file (for dialog parsing) */
+function getMessages(uri: string, text: string): Record<string, string> {
+    const messages: Record<string, string> = {};
+    if (!translation?.initialized) return messages;
+
+    const filePath = uriToPath(uri);
+    const traFileKey = translation.traFileKey(filePath, text, LANG_FALLOUT_SSL);
+    if (!traFileKey) return messages;
+
+    const traEntries = translation.entries(traFileKey);
+    if (!traEntries) return messages;
+
+    for (const [id, entry] of traEntries) {
+        messages[id] = entry.source;
+    }
+    return messages;
+}
 
 connection.onInitialize((params: InitializeParams) => {
     conlog("onInitialize started");
@@ -103,17 +191,29 @@ connection.onInitialized(async () => {
     globalSettings = await connection.workspace.getConfiguration({ section: "bgforge" });
     // load data
     projectSettings = settings.project(workspaceRoot);
-    const myGala = new Galactus();
-    await myGala.init(workspaceRoot, globalSettings, projectSettings.translation);
-    gala = myGala;
+
+    // Initialize translation service
+    const tra = new Translation(projectSettings.translation);
+    await tra.init();
+    translation = tra;
+
+    // Reload translation files for open documents
     for (const document of documents.all()) {
-        gala.reloadFileData(document.uri, document.languageId, document.getText());
+        reloadTranslation(document.uri, document.languageId, document.getText());
     }
     // Register and initialize providers
     registry.register(falloutSslProvider);
+    registry.register(falloutWorldmapProvider);
     registry.register(weiduBafProvider);
     registry.register(weiduDProvider);
     registry.register(weiduTp2Provider);
+
+    // Register language aliases (languages that share data with parent providers)
+    registry.registerAlias(LANG_WEIDU_D_TPL, LANG_WEIDU_D);
+    registry.registerAlias(LANG_WEIDU_SLB, LANG_WEIDU_BAF);
+    registry.registerAlias(LANG_WEIDU_SSL, LANG_WEIDU_BAF);
+    registry.registerAlias(LANG_WEIDU_TP2_TPL, LANG_WEIDU_TP2);
+
     await registry.init({ workspaceRoot, settings: globalSettings });
     void connection.sendNotification("bgforge-mls/load-finished");
     conlog("onInitialized completed");
@@ -160,16 +260,23 @@ documents.onDidOpen((event) => {
     const uri = event.document.uri;
     const langId = event.document.languageId;
     const text = event.document.getText();
-    gala?.reloadFileData(uri, langId, text);
+
+    // Reload provider data
+    registry.reloadFileData(langId, uri, text);
+
+    // Reload translation data if it's a translation file
+    reloadTranslation(uri, langId, text);
 });
 
 // This handler provides the initial list of the completion items.
 connection.onCompletion((_textDocumentPosition: TextDocumentPositionParams) => {
     const uri = _textDocumentPosition.textDocument.uri;
-    // @ts-expect-error: ts2532 because we get uri from a hook, which implies it exists
-    const langId = documents.get(uri).languageId;
-    const result = gala?.completion(langId, uri);
-    return result;
+    const textDoc = documents.get(uri);
+    if (!textDoc) {
+        return [];
+    }
+    const langId = textDoc.languageId;
+    return registry.completion(langId, uri);
 });
 
 // This handler resolve additional information for the item selected in
@@ -198,7 +305,15 @@ connection.onHover((textDocumentPosition: TextDocumentPositionParams) => {
     if (!symbol) {
         return;
     }
-    return gala?.hover(langId, uri, symbol, text);
+
+    // Check translation hover first (for @123 or NOption(123) references)
+    const translationHover = getTranslationHover(uri, langId, symbol, text);
+    if (translationHover) {
+        return translationHover;
+    }
+
+    // Then try provider
+    return registry.hover(langId, uri, symbol);
 });
 
 connection.onExecuteCommand(async (params) => {
@@ -214,7 +329,7 @@ connection.onExecuteCommand(async (params) => {
     // Handle parseDialog command
     if (command === COMMAND_parseDialog) {
         const textDoc = documents.get(args.uri);
-        if (!textDoc || gala === undefined) {
+        if (!textDoc) {
             return null;
         }
         if (textDoc.languageId !== LANG_FALLOUT_SSL) {
@@ -222,7 +337,7 @@ connection.onExecuteCommand(async (params) => {
         }
         try {
             const dialogData = await parseDialog(textDoc.getText());
-            const messages = gala.getMessages(args.uri, textDoc.getText());
+            const messages = getMessages(args.uri, textDoc.getText());
             return { ...dialogData, messages };
         } catch (e) {
             conlog("parseDialog error: " + e);
@@ -269,14 +384,26 @@ connection.onSignatureHelp((params) => {
     }
     const text = document.getText();
     const langId = document.languageId;
-    return gala?.signature(langId, text, params.position, uri);
+
+    // Parse signature request from text/position
+    const request = getSignatureRequest(text, params.position);
+    if (!request) {
+        return null;
+    }
+
+    return registry.signature(langId, uri, request.symbol, request.parameter);
 });
 
 documents.onDidSave(async (change) => {
     const uri = change.document.uri;
     const langId = change.document.languageId;
     const text = change.document.getText();
-    gala?.reloadFileData(uri, langId, text);
+
+    // Reload provider data
+    registry.reloadFileData(langId, uri, text);
+
+    // Reload translation data if it's a translation file
+    reloadTranslation(uri, langId, text);
 
     const validateOnSave = (await getDocumentSettings(uri)).validateOnSave;
     if (validateOnSave) {
@@ -303,7 +430,15 @@ connection.languages.inlayHint.on((params) => {
     }
     const text = document.getText();
     const langId = document.languageId;
-    return gala?.inlay(uri, langId, text, params.range);
+
+    // Try provider first (for AST-based inlay hints)
+    const providerResult = registry.inlayHints(langId, text, uri, params.range);
+    if (providerResult.length > 0) {
+        return providerResult;
+    }
+
+    // Fall back to translation-based inlay hints
+    return getTranslationInlay(uri, langId, text, params.range);
 });
 
 connection.onDefinition((params) => {
@@ -315,15 +450,19 @@ connection.onDefinition((params) => {
     const langId = textDoc.languageId;
     const text = textDoc.getText();
 
-    // Try provider first (AST-based definition)
+    // Try provider first (AST-based definition, e.g. state labels in D files)
     const providerResult = registry.definition(langId, text, params.position, uri);
     if (providerResult) {
         return providerResult;
     }
 
-    // Fall back to galactus (data-driven definition)
+    // Try provider symbol definition (data-driven, from headers)
     const symbol = symbolAtPosition(text, params.position);
-    return gala?.definition(langId, symbol);
+    if (symbol) {
+        return registry.symbolDefinition(langId, symbol);
+    }
+
+    return null;
 });
 
 connection.onDocumentFormatting((params) => {

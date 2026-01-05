@@ -1,3 +1,8 @@
+/**
+ * Built-in SSL compiler using sslc WASM module.
+ * Compiles Fallout SSL scripts without requiring external compile.exe.
+ */
+
 import path = require("node:path");
 import { conlog } from "../common";
 import { connection } from "../server";

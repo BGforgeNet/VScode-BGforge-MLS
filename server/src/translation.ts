@@ -1,3 +1,8 @@
+/**
+ * Translation file management for .tra and .msg files.
+ * Loads and caches translations, provides hover and inlay hints for string references.
+ */
+
 import PromisePool from "@supercharge/promise-pool";
 import * as fs from "fs";
 import * as path from "path";

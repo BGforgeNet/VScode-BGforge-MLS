@@ -1,3 +1,8 @@
+/**
+ * Settings and configuration management.
+ * Defines settings interfaces and loads project-specific configuration from YAML.
+ */
+
 import * as fs from "fs";
 import * as path from "path";
 import * as yaml from "yaml";

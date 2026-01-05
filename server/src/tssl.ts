@@ -1,3 +1,8 @@
+/**
+ * TSSL transpiler - TypeScript to Fallout SSL.
+ * Transpiles TypeScript files with .tssl extension to Fallout SSL scripts.
+ */
+
 import * as fs from "fs";
 import * as path from "path";
 import {

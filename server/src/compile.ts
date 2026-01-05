@@ -1,8 +1,15 @@
+/**
+ * Compilation dispatcher.
+ * Routes compile requests to appropriate language handlers (providers or legacy modules).
+ * Handles temp file creation and diagnostic delivery back to the source file.
+ */
+
 import * as fs from "fs";
 import * as path from "path";
 import { conlog, isDirectory, pathToUri, tmpDir } from "./common";
 import * as fallout from "./fallout";
 import { COMPILABLE_FALLOUT, COMPILABLE_WEIDU } from "./core/languages";
+import { registry } from "./provider-registry";
 import { connection, getDocumentSettings } from "./server";
 import * as tbaf from "./tbaf/index";
 import * as tssl from "./tssl";
@@ -30,6 +37,16 @@ export async function compile(uri: string, langId: string, interactive = false, 
         fs.mkdirSync(tmpDir);
     }
 
+    // Try provider first
+    if (registry.has(langId)) {
+        clearDiagnostics(uri);
+        const handled = await registry.compile(langId, uri, text, interactive);
+        if (handled) {
+            return;
+        }
+    }
+
+    // Fall back to language-specific handlers for languages without providers
     if (COMPILABLE_FALLOUT.includes(langId)) {
         clearDiagnostics(uri);
         await fallout.compile(uri, settings.falloutSSL, interactive, text);
