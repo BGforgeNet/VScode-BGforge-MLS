@@ -7,7 +7,7 @@
 import * as fs from "fs";
 import * as path from "path";
 import { conlog, isDirectory, pathToUri, tmpDir } from "./common";
-import * as fallout from "./fallout";
+import * as fallout from "./fallout-ssl/fallout";
 import { COMPILABLE_FALLOUT, COMPILABLE_WEIDU } from "./core/languages";
 import { registry } from "./provider-registry";
 import { connection, getDocumentSettings } from "./server";

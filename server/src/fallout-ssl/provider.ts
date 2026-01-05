@@ -10,7 +10,7 @@
 import { CompletionItem, Hover, Location, SignatureHelp, TextEdit } from "vscode-languageserver/node";
 import { conlog } from "../common";
 import { LANG_FALLOUT_SSL } from "../core/languages";
-import { compile as falloutCompile } from "../fallout";
+import { compile as falloutCompile } from "./fallout";
 import { Language, Features } from "../language";
 import { LanguageProvider, ProviderContext } from "../language-provider";
 import * as signature from "../signature";

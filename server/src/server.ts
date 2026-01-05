@@ -41,7 +41,6 @@ import {
     LANG_WEIDU_TP2_TPL,
 } from "./core/languages";
 import { falloutWorldmapProvider } from "./fallout-worldmap/provider";
-import { getPreviewData } from "./preview";
 import { registry } from "./provider-registry";
 import * as settings from "./settings";
 import { defaultSettings, MLSsettings } from "./settings";
@@ -318,7 +317,6 @@ connection.onHover((textDocumentPosition: TextDocumentPositionParams) => {
 
 connection.onExecuteCommand(async (params) => {
     const command = params.command;
-    const COMMAND_preview = "extension.bgforge.preview";
     const COMMAND_parseDialog = "bgforge.parseDialog";
 
     if (!params.arguments) {
@@ -348,7 +346,7 @@ connection.onExecuteCommand(async (params) => {
         }
     }
 
-    if (command != COMMAND_compile && command != COMMAND_preview) {
+    if (command != COMMAND_compile) {
         return;
     }
 
@@ -365,14 +363,7 @@ connection.onExecuteCommand(async (params) => {
     const langId = textDoc.languageId;
     const text = textDoc.getText();
 
-    if (command == COMMAND_compile) {
-        void compile(args.uri, langId, true, text);
-    }
-
-    if (command == COMMAND_preview) {
-        const data = getPreviewData(text, langId);
-        return data;
-    }
+    void compile(args.uri, langId, true, text);
     return undefined;
 });
 
