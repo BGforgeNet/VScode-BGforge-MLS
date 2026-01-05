@@ -4,7 +4,7 @@ import * as completion from "./completion";
 import * as definition from "./definition";
 import * as fallout from "./fallout";
 import * as hover from "./hover";
-import { LANG_FALLOUT_SSL, LANG_WEIDU_TP2, LANG_WEIDU_TP2_TPL } from "./lang-ids";
+import { LANG_FALLOUT_SSL, LANG_WEIDU_TP2, LANG_WEIDU_TP2_TPL } from "./core/languages";
 import * as signature from "./signature";
 import * as weidu from "./weidu";
 

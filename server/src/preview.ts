@@ -1,7 +1,7 @@
 import { stripLiteralRegex } from "strip-literal";
 import { conlog } from "./common";
 import * as fallout from "./fallout";
-import { LANG_FALLOUT_SSL } from "./lang-ids";
+import { LANG_FALLOUT_SSL } from "./core/languages";
 
 export interface Node {
     data: { id: string };

@@ -5,7 +5,7 @@
 
 import { DocumentSymbol, Location, Position, TextEdit } from "vscode-languageserver/node";
 import { conlog } from "../common";
-import { LANG_WEIDU_D } from "../lang-ids";
+import { LANG_WEIDU_D } from "../core/languages";
 import { LanguageProvider } from "../language-provider";
 import { getIndentFromEditorconfig } from "../shared/editorconfig";
 import { createFullDocumentEdit, validateFormatting } from "../shared/format-utils";

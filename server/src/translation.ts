@@ -4,14 +4,10 @@ import * as path from "path";
 import { Hover } from "vscode-languageserver/node";
 import { conlog, findFiles, getRelPath, isDirectory, isSubpath } from "./common";
 import {
-    LANG_FALLOUT_SSL,
-    LANG_WEIDU_BAF,
-    LANG_WEIDU_D,
-    LANG_WEIDU_D_TPL,
-    LANG_WEIDU_SSL,
-    LANG_WEIDU_TP2,
-    LANG_WEIDU_TP2_TPL,
-} from "./lang-ids";
+    MSG_LANGUAGES,
+    TRANSLATION_FILE_LANGUAGES,
+    TRANSLATION_LANGUAGES,
+} from "./core/languages";
 import { ProjectTraSettings } from "./settings";
 
 interface TraEntry {
@@ -32,26 +28,16 @@ export interface Translation {
     initialized: boolean;
 }
 
-const traLanguages = [
-    LANG_WEIDU_BAF,
-    LANG_WEIDU_D,
-    LANG_WEIDU_D_TPL,
-    LANG_WEIDU_SSL,
-    LANG_WEIDU_TP2,
-    LANG_WEIDU_TP2_TPL,
-];
-const msgLanguages = [LANG_FALLOUT_SSL];
+export const translatableLanguages = [...TRANSLATION_LANGUAGES, ...MSG_LANGUAGES];
 
-export const translatableLanguages = [...traLanguages, ...msgLanguages];
-
-export const languages = ["fallout-msg", "weidu-tra"];
+export const languages = TRANSLATION_FILE_LANGUAGES;
 const extensions: Array<TraExt> = ["msg", "tra"];
 
 export function getTraExt(langId: string) {
-    if (traLanguages.includes(langId)) {
+    if (TRANSLATION_LANGUAGES.includes(langId)) {
         return "tra";
     }
-    if (msgLanguages.includes(langId)) {
+    if (MSG_LANGUAGES.includes(langId)) {
         return "msg";
     }
     return undefined;
@@ -272,10 +258,10 @@ function getLineKey(word: string, ext: "tra" | "msg") {
 }
 
 export function isTraRef(word: string, langId: string) {
-    if (traLanguages.includes(langId) && word.match(regexTra)) {
+    if (TRANSLATION_LANGUAGES.includes(langId) && word.match(regexTra)) {
         return true;
     }
-    if (msgLanguages.includes(langId) && word.match(regexMsg)) {
+    if (MSG_LANGUAGES.includes(langId) && word.match(regexMsg)) {
         return true;
     }
     return false;

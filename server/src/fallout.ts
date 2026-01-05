@@ -23,6 +23,8 @@ import * as pool from "./pool";
 import { Edge, Node } from "./preview";
 import { connection, documents } from "./server";
 import { SSLsettings } from "./settings";
+import { LANG_FALLOUT_SSL_TOOLTIP } from "./core/languages";
+import { jsdocToDetail, jsdocToMarkdown } from "./shared/jsdoc-utils";
 import * as signature from "./signature";
 import { ssl_compile as ssl_builtin_compiler } from "./sslc/ssl_compiler";
 
@@ -48,7 +50,7 @@ interface Macro {
 }
 interface Macros extends Array<Macro> {}
 
-const tooltipLangId = "fallout-ssl-tooltip";
+const tooltipLangId = LANG_FALLOUT_SSL_TOOLTIP;
 const sslExt = ".ssl";
 
 /**
@@ -129,8 +131,7 @@ function loadProcedures(uri: string, headerData: FalloutHeaderData, filePath: st
             "```",
         ].join("\n");
         if (proc.jsdoc) {
-            const jsdmd = jsdocToMD(proc.jsdoc);
-            markdownValue += jsdmd;
+            markdownValue += jsdocToMarkdown(proc.jsdoc, "fallout");
         }
         const markdownContents = { kind: MarkupKind.Markdown, value: markdownValue };
         const completionItem: completion.CompletionItemEx = {
@@ -178,8 +179,7 @@ function loadMacros(uri: string, headerData: FalloutHeaderData, filePath: string
         }
 
         if (macro.jsdoc) {
-            const jsdmd = jsdocToMD(macro.jsdoc);
-            markdownValue += jsdmd;
+            markdownValue += jsdocToMarkdown(macro.jsdoc, "fallout");
         }
 
         let completionKind;
@@ -415,62 +415,6 @@ function findDefinitions(text: string) {
     return definitions;
 }
 
-function jsdocToMD(jsd: jsdoc.JSdoc) {
-    let md = "\n---\n";
-    if (jsd.desc) {
-        md += `\n${jsd.desc}`;
-    }
-    if (jsd.args.length > 0) {
-        md += "\n\n|type|name|default|description|\n|:-|:-|:-|:-|";
-        for (const arg of jsd.args) {
-            md += `\n| \`${arg.type}\` | ${arg.name} |`;
-            if (arg.default) {
-                md += `${arg.default}`;
-            }
-            md += "|";
-            if (arg.description) {
-                md += `${arg.description}`;
-            }
-            md += "|";
-        }
-    }
-    if (jsd.ret) {
-        md += `\n\n**Returns** \`${jsd.ret.type}\``;
-    }
-    if (jsd.deprecated !== undefined) {
-        if (jsd.deprecated === true) {
-            md += "\n\n---\n\nDeprecated.";
-        } else {
-            md += `\n\n---\n\nDeprecated: ${jsd.deprecated}`;
-        }
-    }
-    return md;
-}
-
-function jsdocToDetail(label: string, jsd: jsdoc.JSdoc, tokenType: "proc" | "macro" = "proc") {
-    let retType = "";
-    if (jsd.ret) {
-        retType = jsd.ret.type;
-    } else {
-        if (tokenType == "proc") {
-            retType = "void";
-        }
-    }
-    // add space if not empty
-    if (retType != "") {
-        retType = `${retType} `;
-    }
-
-    // functions with no arguments get empty parentheses
-    // macros don't
-    const args = jsd.args.map(({ type, name }) => `${type} ${name}`);
-    let argsString = args.join(", ");
-    if (argsString != "" || tokenType != "macro") {
-        argsString = `(${argsString})`;
-    }
-    const detail = `${retType}${label}${argsString}`;
-    return detail;
-}
 
 /**
  * Wine gives network-mapped looking path to compile.exe

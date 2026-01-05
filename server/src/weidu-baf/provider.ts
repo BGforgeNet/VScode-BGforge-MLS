@@ -5,7 +5,7 @@
 
 import { TextEdit } from "vscode-languageserver/node";
 import { conlog } from "../common";
-import { LANG_WEIDU_BAF } from "../lang-ids";
+import { LANG_WEIDU_BAF } from "../core/languages";
 import { LanguageProvider } from "../language-provider";
 import { getIndentFromEditorconfig } from "../shared/editorconfig";
 import { createFullDocumentEdit, validateFormatting } from "../shared/format-utils";

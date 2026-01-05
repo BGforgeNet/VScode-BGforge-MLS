@@ -21,6 +21,8 @@ import { HeaderData as LanguageHeaderData } from "./language";
 import * as pool from "./pool";
 import { connection } from "./server";
 import { WeiDUsettings } from "./settings";
+import { LANG_WEIDU_TP2_TOOLTIP } from "./core/languages";
+import { jsdocToMarkdown } from "./shared/jsdoc-utils";
 
 const valid_extensions = new Map([
     [".tp2", "tp2"],
@@ -332,78 +334,6 @@ function findSymbols(text: string) {
     return result;
 }
 
-function jsdocToMD(jsd: jsdoc.JSdoc) {
-    let md = "\n---\n";
-    if (jsd.desc) {
-        md += `\n${jsd.desc}`;
-    }
-    if (jsd.args.length > 0) {
-        // types from IElib https://ielib.bgforge.net/types/
-        const intVars = jsd.args.filter((item) => {
-            switch (item.type) {
-                case "bool":
-                case "int":
-                    return true;
-                default:
-                    return false;
-            }
-        });
-        const strVars = jsd.args.filter((item) => {
-            switch (item.type) {
-                case "ids":
-                case "resref":
-                case "filename":
-                case "string":
-                    return true;
-                default:
-                    return false;
-            }
-        });
-        if (intVars.length > 0) {
-            md += "\n\n|INT_VAR|Name|Default|Description|\n|:-|:-|:-:|:-|";
-            for (const arg of intVars) {
-                md += `\n| \`${arg.type}\` | ${arg.name} |`;
-                if (arg.default) {
-                    md += `${arg.default}`;
-                }
-                md += "|";
-                if (arg.description) {
-                    md += `${arg.description}`;
-                }
-                md += "|";
-            }
-        }
-        if (strVars.length > 0) {
-            if (intVars.length == 0) {
-                md += "\n\n|STR_VAR|Name|Default|Description|\n|:-|:-|:-:|:-|";
-            } else {
-                md += "\n|**STR_VAR**||||";
-            }
-            for (const arg of strVars) {
-                md += `\n| \`${arg.type}\` | ${arg.name} |`;
-                if (arg.default) {
-                    md += `${arg.default}`;
-                }
-                md += "|";
-                if (arg.description) {
-                    md += `${arg.description}`;
-                }
-                md += "|";
-            }
-        }
-    }
-    if (jsd.ret) {
-        md += `\n\n Returns \`${jsd.ret.type}\``;
-    }
-    if (jsd.deprecated !== undefined) {
-        if (jsd.deprecated === true) {
-            md += "\n\n---\n\nDeprecated.";
-        } else {
-            md += `\n\n---\n\nDeprecated: ${jsd.deprecated}`;
-        }
-    }
-    return md;
-}
 
 /**
  * @param uri
@@ -424,7 +354,7 @@ export function loadFileData(uri: string, text: string, filePath: string) {
 }
 
 function loadFunctions(uri: string, symbols: Defines, filePath: string) {
-    const langId = "weidu-tp2-tooltip";
+    const langId = LANG_WEIDU_TP2_TOOLTIP;
     const completions: completion.CompletionListEx = [];
     const hovers: hover.HoverMapEx = new Map();
 
@@ -439,8 +369,7 @@ function loadFunctions(uri: string, symbols: Defines, filePath: string) {
         ].join("\n");
 
         if (symbol.jsdoc) {
-            const jsdmd = jsdocToMD(symbol.jsdoc);
-            markdownValue += jsdmd;
+            markdownValue += jsdocToMarkdown(symbol.jsdoc, "weidu");
         }
 
         const markdownContents = { kind: MarkupKind.Markdown, value: markdownValue };

@@ -13,7 +13,7 @@ import {
     LANG_WEIDU_SSL,
     LANG_WEIDU_TP2,
     LANG_WEIDU_TP2_TPL,
-} from "./lang-ids";
+} from "./core/languages";
 import { MLSsettings, ProjectTraSettings } from "./settings";
 import { getRequest as getSignatureRequest } from "./signature";
 import * as translation from "./translation";

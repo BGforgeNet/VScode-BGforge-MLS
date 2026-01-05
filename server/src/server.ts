@@ -16,7 +16,7 @@ import { clearDiagnostics, COMMAND_compile, compile } from "./compile";
 import { parseDialog } from "./dialog";
 import { formatDocument as formatSslDocument, initFormatter as initSslFormatter } from "./fallout-ssl/format";
 import { Galactus } from "./galactus";
-import { LANG_FALLOUT_SSL } from "./lang-ids";
+import { LANG_FALLOUT_SSL } from "./core/languages";
 import { getPreviewData } from "./preview";
 import { registry } from "./provider-registry";
 import * as settings from "./settings";
