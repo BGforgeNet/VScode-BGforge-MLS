@@ -1,14 +1,17 @@
 /**
- * Translation file management for .tra and .msg files.
- * Loads and caches translations, provides hover and inlay hints for string references.
+ * Translation service for .tra and .msg files.
+ * Self-contained service that loads translations and provides hover/inlay hints.
+ * Can be used by any consumer (providers, TSSL/TBAF handlers, etc.)
  */
 
 import PromisePool from "@supercharge/promise-pool";
 import * as fs from "fs";
 import * as path from "path";
-import { Hover } from "vscode-languageserver/node";
+import { fileURLToPath } from "url";
+import { Hover, InlayHint, Range } from "vscode-languageserver/node";
 import { conlog, findFiles, getRelPath, isDirectory, isSubpath } from "./common";
 import {
+    LANG_FALLOUT_SSL,
     MSG_LANGUAGES,
     TRANSLATION_FILE_LANGUAGES,
     TRANSLATION_LANGUAGES,
@@ -23,58 +26,169 @@ interface TraEntry {
 }
 
 /** Single file: index => entry */
-export interface TraEntries extends Map<string, TraEntry> {}
+interface TraEntries extends Map<string, TraEntry> {}
 /** Relative file: path => entries */
-export interface TraData extends Map<string, TraEntries> {}
-export interface Translation {
-    directory: string;
-    data: TraData;
-    settings: ProjectTraSettings;
-    initialized: boolean;
-}
+interface TraData extends Map<string, TraEntries> {}
 
-export const translatableLanguages = [...TRANSLATION_LANGUAGES, ...MSG_LANGUAGES];
+type TraExt = "msg" | "tra";
 
-export const languages = TRANSLATION_FILE_LANGUAGES;
+/** Languages that contain translation strings (msg/tra files) */
+const languages = TRANSLATION_FILE_LANGUAGES;
+
+/** Languages that can have translation references */
+const translatableLanguages = [...TRANSLATION_LANGUAGES, ...MSG_LANGUAGES];
+
 const extensions: Array<TraExt> = ["msg", "tra"];
 
-export function getTraExt(langId: string) {
-    if (TRANSLATION_LANGUAGES.includes(langId)) {
-        return "tra";
+const regexMsg =
+    /^(Reply|NOption|GOption|BOption|mstr|display_mstr|floater|NLowOption|BLowOption|GLowOption|GMessage|NMessage|BMessage|CompOption)\((\d+)$/;
+const regexTra = /^@[0-9]+$/;
+
+/** Check if a symbol is a translation reference for the given language */
+function isTraRef(word: string, langId: string): boolean {
+    if (TRANSLATION_LANGUAGES.includes(langId) && word.match(regexTra)) {
+        return true;
     }
-    if (MSG_LANGUAGES.includes(langId)) {
-        return "msg";
+    if (MSG_LANGUAGES.includes(langId) && word.match(regexMsg)) {
+        return true;
     }
-    return undefined;
+    return false;
 }
 
-export type TraExt = "msg" | "tra";
-
-export class Translation implements Translation {
-    directory: string;
-    data: TraData;
-    settings: ProjectTraSettings;
+export class Translation {
+    private directory: string;
+    private data: TraData;
+    private settings: ProjectTraSettings;
+    private workspaceRoot: string;
     initialized: boolean;
 
-    constructor(settings: ProjectTraSettings) {
-        conlog("initializing translation");
+    constructor(settings: ProjectTraSettings, workspaceRoot: string) {
+        conlog("Translation: initializing");
         this.settings = settings;
         this.directory = settings.directory;
+        this.workspaceRoot = workspaceRoot;
         this.initialized = false;
         this.data = new Map();
     }
 
-    async init() {
+    async init(): Promise<void> {
         this.data = await this.loadDir(this.settings.directory);
         this.initialized = true;
-        conlog("initialized");
+        conlog("Translation: initialized");
+    }
+
+    // =========================================================================
+    // Public API
+    // =========================================================================
+
+    /**
+     * Get hover for a translation reference.
+     * @param uri - Document URI
+     * @param langId - Language ID
+     * @param symbol - The symbol under cursor (e.g., "@123" or "NOption(123")
+     * @param text - Full document text
+     * @returns Hover or null if not a translation reference
+     */
+    getHover(uri: string, langId: string, symbol: string, text: string): Hover | null {
+        if (!this.initialized) return null;
+        if (!translatableLanguages.includes(langId)) return null;
+        if (!isTraRef(symbol, langId)) return null;
+
+        const filePath = this.uriToPath(uri);
+        if (!isSubpath(this.workspaceRoot, filePath)) return null;
+
+        const relPath = getRelPath(this.workspaceRoot, filePath);
+        return this.lookupHover(symbol, text, relPath, langId);
+    }
+
+    /**
+     * Get inlay hints for translation references in visible range.
+     * @param uri - Document URI
+     * @param langId - Language ID
+     * @param text - Full document text
+     * @param range - Visible range to generate hints for
+     * @returns Array of inlay hints
+     */
+    getInlayHints(uri: string, langId: string, text: string, range: Range): InlayHint[] {
+        if (!this.initialized) return [];
+
+        const filePath = this.uriToPath(uri);
+        const traFileKey = this.resolveTraFileKey(filePath, text, langId);
+        if (!traFileKey) return [];
+
+        const traEntries = this.data.get(traFileKey);
+        if (!traEntries) return [];
+
+        const traExt = this.getTraExt(langId);
+        if (!traExt) return [];
+
+        return this.generateInlayHints(traFileKey, traEntries, traExt, text, range);
+    }
+
+    /**
+     * Reload translation data if the file is a translation file.
+     * Call this on document open/save for translation files.
+     * @param uri - Document URI
+     * @param langId - Language ID
+     * @param text - Full document text
+     */
+    reloadFile(uri: string, langId: string, text: string): void {
+        if (!this.initialized) return;
+        if (!languages.includes(langId)) return;
+
+        const filePath = this.uriToPath(uri);
+        if (!isSubpath(this.workspaceRoot, filePath)) return;
+
+        const wsPath = getRelPath(this.workspaceRoot, filePath);
+        this.reloadFileLines(wsPath, text);
+    }
+
+    /**
+     * Get all message texts for a file (used for dialog parsing).
+     * @param uri - Document URI
+     * @param text - Full document text
+     * @returns Map of message ID to message text
+     */
+    getMessages(uri: string, text: string): Record<string, string> {
+        const messages: Record<string, string> = {};
+        if (!this.initialized) return messages;
+
+        const filePath = this.uriToPath(uri);
+        const traFileKey = this.resolveTraFileKey(filePath, text, LANG_FALLOUT_SSL);
+        if (!traFileKey) return messages;
+
+        const traEntries = this.data.get(traFileKey);
+        if (!traEntries) return messages;
+
+        for (const [id, entry] of traEntries) {
+            messages[id] = entry.source;
+        }
+        return messages;
+    }
+
+    // =========================================================================
+    // Internal methods
+    // =========================================================================
+
+    private uriToPath(uri: string): string {
+        return uri.startsWith("file://") ? fileURLToPath(uri) : uri;
+    }
+
+    private getTraExt(langId: string): TraExt | undefined {
+        if (TRANSLATION_LANGUAGES.includes(langId)) {
+            return "tra";
+        }
+        if (MSG_LANGUAGES.includes(langId)) {
+            return "msg";
+        }
+        return undefined;
     }
 
     /** Loads all tra files in a directory to a map of maps of strings */
-    async loadDir(traDir: string) {
+    private async loadDir(traDir: string): Promise<TraData> {
         const traData: TraData = new Map();
         if (!isDirectory(traDir)) {
-            conlog(`${traDir} is not a directory, aborting tra load`);
+            conlog(`Translation: ${traDir} is not a directory, skipping`);
             return traData;
         }
 
@@ -93,29 +207,28 @@ export class Translation implements Translation {
         return traData;
     }
 
-    // load multiple files in parallel
     private async loadFiles(traDir: string, files: string[], ext: TraExt) {
         const { results, errors } = await PromisePool.withConcurrency(4)
             .for(files)
             .process(async (relPath) => {
                 const result: TraData = new Map();
                 const text = fs.readFileSync(path.join(traDir, relPath), "utf8");
-                const lines = this.linesFromText(text, ext);
+                const lines = this.parseEntries(text, ext);
                 result.set(relPath, lines);
                 return result;
             });
         return { results, errors };
     }
 
-    /** Parses text and returns a map of index > string */
-    linesFromText(text: string, traType: TraExt) {
+    /** Parses text and returns a map of index => entry */
+    private parseEntries(text: string, traType: TraExt): TraEntries {
         let regex: RegExp;
         if (traType == "tra") {
             regex = /@(\d+)\s*=\s*~([^~]*)~/gm;
         } else {
             regex = /{(\d+)}\s*{\w*}\s*{([^}]*)}/gm;
         }
-        const lines: TraEntries = new Map();
+        const entries: TraEntries = new Map();
         let match = regex.exec(text);
         while (match != null) {
             if (match.index === regex.lastIndex) {
@@ -133,152 +246,185 @@ export class Translation implements Translation {
                     value: "```bgforge-mls-string\n" + `${str}` + "\n```",
                 },
             };
-            const inlay = stringToInlay(str);
+            const inlay = this.stringToInlay(str);
             const entry: TraEntry = { source: str, hover: hover, inlay: inlay };
             if (`/* ${str} */` != inlay) {
                 entry.inlayTooltip = str;
             }
-            lines.set(num, entry);
+            entries.set(num, entry);
             match = regex.exec(text);
         }
-        return lines;
+        return entries;
     }
 
-    /** wsPath must be relative to workspace root */
-    reloadFileLines(wsPath: string, text: string) {
+    private reloadFileLines(wsPath: string, text: string): void {
         const traPath = this.getTraPath(wsPath);
         if (!traPath) {
-            conlog(`Error: can't detect tra file path for ${wsPath}, aborting translation reload.`);
+            conlog(`Translation: can't detect tra path for ${wsPath}, skipping reload`);
             return;
         }
         const ext = path.parse(traPath).ext.slice(-3);
         if (ext != "tra" && ext != "msg") {
-            conlog(`Unknown traslation file extension ${ext}.`);
+            conlog(`Translation: unknown extension ${ext}`);
             return;
         }
-        const lines = this.linesFromText(text, ext);
-        this.data.set(traPath, lines);
-        conlog(`Translation: reloaded ${this.directory} / ${traPath}`);
+        const entries = this.parseEntries(text, ext as TraExt);
+        this.data.set(traPath, entries);
+        conlog(`Translation: reloaded ${traPath}`);
     }
 
-    /**
-     * @arg wsPath must be relative to workspace root
-     * @ret path relative to tra dir
-     */
-    getTraPath(wsPath: string) {
+    /** Convert workspace-relative path to tra-directory-relative path */
+    private getTraPath(wsPath: string): string | undefined {
         if (isDirectory(this.directory)) {
             if (isSubpath(this.directory, wsPath)) {
-                const relPath = getRelPath(this.directory, wsPath);
-                return relPath;
+                return getRelPath(this.directory, wsPath);
             }
         }
         return undefined;
     }
 
-    entries(fileKey: string) {
-        return this.data.get(fileKey);
-    }
-
-    /** only basename matters in filePath
+    /**
+     * Resolve the translation file key for a source file.
+     * Checks for @tra comment first, falls back to auto-matching by basename.
      */
-    traFileKey(filePath: string, fullText: string, langId: string) {
+    private resolveTraFileKey(filePath: string, fullText: string, langId: string): string | undefined {
         const firstLine = fullText.split(/\r?\n/g)[0];
         if (!firstLine) return undefined;
+
         const regex = /^\/\*\* @tra ((\w+)\.(tra|msg)) \*\//g;
         const match = regex.exec(firstLine);
         if (match && match[1]) {
             return match[1];
         }
         if (this.settings.auto_tra) {
-            const traExt = getTraExt(langId);
+            const traExt = this.getTraExt(langId);
+            if (!traExt) return undefined;
             const basename = path.parse(filePath).name;
             return `${basename}.${traExt}`;
         }
         return undefined;
     }
 
-    hover(word: string, text: string, relPath: string, langId: string) {
-        let result: Hover;
+    private lookupHover(word: string, text: string, relPath: string, langId: string): Hover | null {
+        const ext = this.getTraExt(langId);
+        if (!ext) return null;
 
-        const ext = getTraExt(langId);
-        if (!ext) {
-            return;
-        }
-
-        const fileKey = this.traFileKey(relPath, text, langId);
-        // if auto_tra is unset, and no tra file set in top comment
-        if (!fileKey) {
-            return;
-        }
+        const fileKey = this.resolveTraFileKey(relPath, text, langId);
+        if (!fileKey) return null;
 
         const traFile = this.data.get(fileKey);
         if (!traFile) {
-            result = {
+            return {
                 contents: {
                     kind: "plaintext",
-                    value: "Error: file " + `${fileKey}` + " not found.",
+                    value: `Error: file ${fileKey} not found.`,
                 },
             };
-            return result;
         }
 
-        const lineKey = getLineKey(word, ext);
+        const lineKey = this.getLineKey(word, ext);
         if (!lineKey) {
-            conlog(`Error: line key ${lineKey} not found for ${word}`);
-            return;
+            conlog(`Translation: line key not found for ${word}`);
+            return null;
         }
 
         const traEntry = traFile.get(lineKey);
         if (!traEntry) {
-            result = {
+            return {
                 contents: {
                     kind: "plaintext",
-                    value: "Error: entry " + `${lineKey}` + " not found in " + `${fileKey}.`,
+                    value: `Error: entry ${lineKey} not found in ${fileKey}.`,
                 },
             };
-            return result;
         }
 
         return traEntry.hover;
     }
-}
 
-const regexMsg =
-    /^(Reply|NOption|GOption|BOption|mstr|display_mstr|floater|NLowOption|BLowOption|GLowOption|GMessage|NMessage|BMessage|CompOption)\((\d+)$/;
-const regexTra = /^@[0-9]+$/;
-
-function getLineKey(word: string, ext: "tra" | "msg") {
-    if (ext == "msg") {
-        // remove "NOption(" from "NOption(123"
-        const match = regexMsg.exec(word);
-        if (match) {
-            return match[2];
+    private getLineKey(word: string, ext: TraExt): string | undefined {
+        if (ext == "msg") {
+            const match = regexMsg.exec(word);
+            if (match) {
+                return match[2];
+            }
         }
+        if (ext == "tra") {
+            return word.substring(1);
+        }
+        return undefined;
     }
-    if (ext == "tra") {
-        // remove @ from tra key start, leave for msg
-        return word.substring(1);
-    }
-    return undefined;
-}
 
-export function isTraRef(word: string, langId: string) {
-    if (TRANSLATION_LANGUAGES.includes(langId) && word.match(regexTra)) {
-        return true;
-    }
-    if (MSG_LANGUAGES.includes(langId) && word.match(regexMsg)) {
-        return true;
-    }
-    return false;
-}
+    private generateInlayHints(
+        traFileKey: string,
+        traEntries: TraEntries,
+        traExt: TraExt,
+        text: string,
+        range: Range
+    ): InlayHint[] {
+        const hints: InlayHint[] = [];
 
-function stringToInlay(text: string) {
-    let line: string;
-    line = text.replace("\r", "");
-    line = line.replace("\n", "\\n");
-    if (line.length > 30) {
-        line = line.slice(0, 27) + "...";
+        let lines = text.split("\n");
+        lines = lines.slice(range.start.line, range.end.line);
+
+        let regex: RegExp;
+        if (traExt == "msg") {
+            regex =
+                /(Reply|NOption|GOption|BOption|mstr|display_mstr|floater|NLowOption|BLowOption|GLowOption|GMessage|NMessage|BMessage|CompOption)\((\d+)/g;
+        } else {
+            regex = /@(\d+)/g;
+        }
+
+        lines.forEach((l, i) => {
+            const matches = l.matchAll(regex);
+            for (const m of matches) {
+                if (!m.index) continue;
+
+                const char_end = m.index + m[0].length;
+                let lineKey: string | undefined;
+                if (traExt == "msg") {
+                    lineKey = m[2];
+                } else {
+                    lineKey = m[1];
+                }
+                if (!lineKey) continue;
+
+                const pos = { line: range.start.line + i, character: char_end };
+                const hintValue = this.getHintValue(traEntries, traFileKey, lineKey);
+                const hint: InlayHint = {
+                    position: pos,
+                    label: hintValue.label,
+                    tooltip: hintValue.tooltip,
+                    kind: 2,
+                    paddingLeft: true,
+                    paddingRight: true,
+                };
+                hints.push(hint);
+            }
+        });
+        return hints;
     }
-    line = `/* ${line} */`;
-    return line;
+
+    private getHintValue(
+        traEntries: TraEntries,
+        traFileKey: string,
+        lineKey: string
+    ): { label: string; tooltip?: string } {
+        const traEntry = traEntries.get(lineKey);
+        if (traEntry === undefined) {
+            return { label: `/* Error: no such string ${traFileKey}:${lineKey} */`, tooltip: "" };
+        }
+        return {
+            label: traEntry.inlay,
+            tooltip: traEntry.inlayTooltip ?? "",
+        };
+    }
+
+    private stringToInlay(text: string): string {
+        let line = text.replace("\r", "");
+        line = line.replace("\n", "\\n");
+        if (line.length > 30) {
+            line = line.slice(0, 27) + "...";
+        }
+        return `/* ${line} */`;
+    }
 }

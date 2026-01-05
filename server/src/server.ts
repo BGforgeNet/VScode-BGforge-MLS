@@ -17,19 +17,12 @@ import {
     TextDocuments,
     TextDocumentSyncKind,
 } from "vscode-languageserver/node";
-import { conlog, getRelPath, isSubpath, symbolAtPosition, uriToPath } from "./common";
+import { conlog, symbolAtPosition } from "./common";
 import { clearDiagnostics, COMMAND_compile, compile } from "./compile";
 import { getRequest as getSignatureRequest } from "./shared/signature";
 import { parseDialog } from "./dialog";
 import { falloutSslProvider } from "./fallout-ssl/provider";
-import * as inlay from "./inlay";
-import {
-    getTraExt,
-    isTraRef,
-    languages as translationLanguages,
-    translatableLanguages,
-    Translation,
-} from "./translation";
+import { Translation } from "./translation";
 import {
     LANG_FALLOUT_SSL,
     LANG_WEIDU_BAF,
@@ -68,70 +61,6 @@ let projectSettings: settings.ProjectSettings;
 
 // Initialized in onInitialized, undefined until then
 let translation: Translation | undefined;
-
-// =========================================================================
-// Translation helpers
-// =========================================================================
-
-/** Reload translation data for a file if it's a translation file */
-function reloadTranslation(uri: string, langId: string, text: string): void {
-    if (!translation?.initialized) return;
-    if (!translationLanguages.includes(langId)) return;
-
-    const filePath = uriToPath(uri);
-    if (!isSubpath(workspaceRoot, filePath)) return;
-
-    const wsPath = getRelPath(workspaceRoot, filePath);
-    translation.reloadFileLines(wsPath, text);
-}
-
-/** Get translation hover for a symbol if applicable */
-function getTranslationHover(uri: string, langId: string, symbol: string, text: string) {
-    if (!translation?.initialized) return null;
-    if (!translatableLanguages.includes(langId)) return null;
-    if (!isTraRef(symbol, langId)) return null;
-
-    const filePath = uriToPath(uri);
-    if (!isSubpath(workspaceRoot, filePath)) return null;
-
-    const relPath = getRelPath(workspaceRoot, filePath);
-    return translation.hover(symbol, text, relPath, langId);
-}
-
-/** Get translation-based inlay hints */
-function getTranslationInlay(uri: string, langId: string, text: string, range: import("vscode-languageserver/node").Range) {
-    if (!translation?.initialized) return [];
-
-    const filePath = uriToPath(uri);
-    const traFileKey = translation.traFileKey(filePath, text, langId);
-    if (!traFileKey) return [];
-
-    const traEntries = translation.entries(traFileKey);
-    if (!traEntries) return [];
-
-    const traExt = getTraExt(langId);
-    if (!traExt) return [];
-
-    return inlay.getHints(traFileKey, traEntries, traExt, text, range);
-}
-
-/** Get message texts for a fallout-ssl file (for dialog parsing) */
-function getMessages(uri: string, text: string): Record<string, string> {
-    const messages: Record<string, string> = {};
-    if (!translation?.initialized) return messages;
-
-    const filePath = uriToPath(uri);
-    const traFileKey = translation.traFileKey(filePath, text, LANG_FALLOUT_SSL);
-    if (!traFileKey) return messages;
-
-    const traEntries = translation.entries(traFileKey);
-    if (!traEntries) return messages;
-
-    for (const [id, entry] of traEntries) {
-        messages[id] = entry.source;
-    }
-    return messages;
-}
 
 connection.onInitialize((params: InitializeParams) => {
     conlog("onInitialize started");
@@ -196,13 +125,12 @@ connection.onInitialized(async () => {
     projectSettings = settings.project(workspaceRoot);
 
     // Initialize translation service
-    const tra = new Translation(projectSettings.translation);
-    await tra.init();
-    translation = tra;
+    translation = new Translation(projectSettings.translation, workspaceRoot);
+    await translation.init();
 
     // Reload translation files for open documents
     for (const document of documents.all()) {
-        reloadTranslation(document.uri, document.languageId, document.getText());
+        translation.reloadFile(document.uri, document.languageId, document.getText());
     }
     // Register and initialize providers
     registry.register(falloutSslProvider);
@@ -268,7 +196,7 @@ documents.onDidOpen((event) => {
     registry.reloadFileData(langId, uri, text);
 
     // Reload translation data if it's a translation file
-    reloadTranslation(uri, langId, text);
+    translation?.reloadFile(uri, langId, text);
 });
 
 // This handler provides the initial list of the completion items.
@@ -310,7 +238,7 @@ connection.onHover((textDocumentPosition: TextDocumentPositionParams) => {
     }
 
     // Check translation hover first (for @123 or NOption(123) references)
-    const translationHover = getTranslationHover(uri, langId, symbol, text);
+    const translationHover = translation?.getHover(uri, langId, symbol, text);
     if (translationHover) {
         return translationHover;
     }
@@ -339,7 +267,7 @@ connection.onExecuteCommand(async (params) => {
         }
         try {
             const dialogData = await parseDialog(textDoc.getText());
-            const messages = getMessages(args.uri, textDoc.getText());
+            const messages = translation?.getMessages(args.uri, textDoc.getText()) ?? {};
             return { ...dialogData, messages };
         } catch (e) {
             conlog("parseDialog error: " + e);
@@ -398,7 +326,7 @@ documents.onDidSave(async (change) => {
     registry.reloadFileData(langId, uri, text);
 
     // Reload translation data if it's a translation file
-    reloadTranslation(uri, langId, text);
+    translation?.reloadFile(uri, langId, text);
 
     const validateOnSave = (await getDocumentSettings(uri)).validateOnSave;
     if (validateOnSave) {
@@ -433,7 +361,7 @@ connection.languages.inlayHint.on((params) => {
     }
 
     // Fall back to translation-based inlay hints
-    return getTranslationInlay(uri, langId, text, params.range);
+    return translation?.getInlayHints(uri, langId, text, params.range) ?? [];
 });
 
 connection.onDefinition((params) => {
