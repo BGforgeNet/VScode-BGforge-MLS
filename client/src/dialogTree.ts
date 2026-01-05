@@ -106,7 +106,7 @@ function getOptionMeta(o: DialogOption): OptionMeta {
 
 function buildTreeHtml(data: DialogData): string {
     const nodeMap = new Map(data.nodes.map((n) => [n.name, n]));
-    const messages = data.messages || {};
+    const messages = data.messages;
 
     // Entry points called from talk_p_proc
     const entryPointNames = data.entryPoints.filter((name) => name.startsWith("Node"));

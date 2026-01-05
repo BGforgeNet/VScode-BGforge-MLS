@@ -98,6 +98,8 @@ export class Language implements Language {
     }
 
     private async loadHeaders(staticHover: hover.HoverMap = new Map()) {
+        // Runtime guard: server.ts declares workspaceRoot as string but only conditionally
+        // assigns it. If no workspace folders exist, it remains undefined at runtime.
         if (this.workspaceRoot === undefined) {
             return;
         }
@@ -415,10 +417,8 @@ export class Language implements Language {
         let result: completion.CompletionList;
         result = this.data.completion.self.get(uri) || [];
         result = [...result, ...this.data.completion.static];
-        if (this.data.completion.headers) {
-            result = [...result, ...this.data.completion.headers];
-        }
-        if (this.data.completion.extHeaders) {
+        result = [...result, ...this.data.completion.headers];
+        if (this.data.completion.extHeaders !== undefined) {
             result = [...result, ...this.data.completion.extHeaders];
         }
         return result;
@@ -473,31 +473,27 @@ export class Language implements Language {
             return;
         }
 
-        if (this.data.signature.static) {
-            const sig = this.data.signature.static.get(request.symbol);
-            if (sig) {
-                return signature.getResponse(sig, request.parameter);
-            }
+        const staticSig = this.data.signature.static.get(request.symbol);
+        if (staticSig !== undefined) {
+            return signature.getResponse(staticSig, request.parameter);
         }
 
         const selfMap = this.data.signature.self.get(uri);
-        if (selfMap) {
+        if (selfMap !== undefined) {
             const sig = selfMap.get(request.symbol);
-            if (sig) {
+            if (sig !== undefined) {
                 return signature.getResponse(sig, request.parameter);
             }
         }
 
-        if (this.data.signature.headers) {
-            const sig = this.data.signature.headers.get(request.symbol);
-            if (sig) {
-                return signature.getResponse(sig, request.parameter);
-            }
+        const headerSig = this.data.signature.headers.get(request.symbol);
+        if (headerSig !== undefined) {
+            return signature.getResponse(headerSig, request.parameter);
         }
 
-        if (this.data.signature.extHeaders) {
+        if (this.data.signature.extHeaders !== undefined) {
             const sig = this.data.signature.extHeaders.get(request.symbol);
-            if (sig) {
+            if (sig !== undefined) {
                 return signature.getResponse(sig, request.parameter);
             }
         }

@@ -19,10 +19,8 @@ export function getPreviewData(text: string, langId: string): Data | undefined {
     text = stripLiteralRegex(text);
     if (langId == LANG_FALLOUT_SSL) {
         const data = fallout.getPreviewData(text);
-        if (data) {
-            conlog(data);
-            return data;
-        }
+        conlog(data);
+        return data;
     }
     return undefined;
 }

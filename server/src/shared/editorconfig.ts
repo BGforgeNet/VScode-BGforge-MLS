@@ -33,7 +33,7 @@ export function getIndentFromEditorconfig(filePath: string): number | null {
     let dir = path.dirname(filePath);
     let result: number | null = null;
 
-    while (true) {
+    for (;;) {
         const configPath = path.join(dir, ".editorconfig");
         if (fs.existsSync(configPath)) {
             try {

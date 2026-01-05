@@ -44,8 +44,8 @@ async function testHover(
     // Inspired by https://github.com/microsoft/vscode-extension-samples/issues/434
     const actualContent = contents[0];
     const expectedContent = expectedHover.contents[0];
-    assert.ok(actualContent, "Expected hover to have content");
-    assert.ok(expectedContent, "Expected expectedHover to have content");
+    assert.ok(actualContent !== undefined, "Expected hover to have content");
+    assert.ok(expectedContent !== undefined, "Expected expectedHover to have content");
     assert.equal(
         typeof actualContent === "string" ? actualContent : actualContent.value,
         typeof expectedContent === "string" ? expectedContent : expectedContent.value

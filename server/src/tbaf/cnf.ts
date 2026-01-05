@@ -58,7 +58,7 @@ export function dnfToCnf(terms: BAFTopCondition[][], maxClauses = MAX_CNF_CLAUSE
     // Generate all combinations using iterative approach
     const indices = new Array(nonEmptyTerms.length).fill(0);
 
-    while (true) {
+    for (;;) {
         // Create OR group from current combination
         const combination: BAFTopCondition[] = [];
         nonEmptyTerms.forEach((term, i) => {

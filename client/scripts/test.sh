@@ -20,8 +20,4 @@ echo "=== Checking formatting ==="
 pnpm exec prettier --check "src/**/*.css" "src/**/*.html"
 
 echo ""
-echo "=== Running binary parser tests ==="
-./scripts/test-bin.sh
-
-echo ""
 echo "SUCCESS: All client tests passed"

@@ -138,7 +138,8 @@ function formatFile(filePath: string, mode: FormatMode): FileResult {
         }
     } else if (mode === "stdout") {
         process.stdout.write(result.text);
-    } else if (mode === "check" && changed) {
+    } else if (changed) {
+        // mode === "check"
         console.log(`Would format: ${filePath}`);
     }
     return changed ? "changed" : "unchanged";

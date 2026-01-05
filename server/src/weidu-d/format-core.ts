@@ -127,7 +127,7 @@ function isNextFeature(node: SyntaxNode): boolean {
 function normalizeTransitionText(text: string): string {
     return text.trim()
         .replace(/\s+/g, " ")
-        .replace(/([~"%])([^~"%]*)\1/g, (match, delim, inner) => {
+        .replace(/([~"%])([^~"%]*)\1/g, (match, delim: string, inner: string) => {
             if (inner.includes("//")) return match;
             return delim + inner.replace(/\s+/g, " ").trim() + delim;
         });

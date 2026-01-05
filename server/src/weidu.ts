@@ -204,7 +204,7 @@ export function compile(uri: string, settings: WeiDUsettings, interactive = fals
         ];
         const result = cp.spawnSync("gcc", gccArgs, { cwd: cwdTo });
         conlog("stdout: " + result.stdout);
-        if (result.stderr) {
+        if (result.stderr.length > 0) {
             conlog("stderr: " + result.stderr);
         }
         if (result.status != 0) {
@@ -395,7 +395,7 @@ function jsdocToMD(jsd: jsdoc.JSdoc) {
     if (jsd.ret) {
         md += `\n\n Returns \`${jsd.ret.type}\``;
     }
-    if (jsd.deprecated) {
+    if (jsd.deprecated !== undefined) {
         if (jsd.deprecated === true) {
             md += "\n\n---\n\nDeprecated.";
         } else {
@@ -452,7 +452,7 @@ function loadFunctions(uri: string, symbols: Defines, filePath: string) {
             labelDetails: { description: filePath },
             uri: uri,
         };
-        if (symbol.jsdoc?.deprecated) {
+        if (symbol.jsdoc?.deprecated !== undefined) {
             const COMPLETION_TAG_deprecated = 1;
             completionItem.tags = [COMPLETION_TAG_deprecated];
         }
@@ -472,7 +472,7 @@ function findDefinitions(text: string): definition.Definition[] {
         const match = defineRegex.exec(l);
         if (match) {
             const name = match[2];
-            const index = (match as RegExpMatchArrayWithIndices).indices?.[2];
+            const index = (match as RegExpMatchArrayWithIndices).indices[2];
             if (!name || !index) return;
             const item: definition.Definition = {
                 name: name,

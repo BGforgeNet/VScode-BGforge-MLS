@@ -84,10 +84,11 @@ export async function bundle(filePath: string, sourceText: string): Promise<stri
         ],
     });
 
-    const outputFile = result.outputFiles?.[0];
-    if (outputFile) {
-        return cleanupEsbuildOutput(outputFile.text, TBAF_CODE_MARKER);
+    // write: false guarantees outputFiles exists, but array might be empty
+    const outputFile = result.outputFiles[0];
+    if (outputFile === undefined) {
+        throw new Error("esbuild produced no output");
     }
 
-    throw new Error("esbuild produced no output");
+    return cleanupEsbuildOutput(outputFile.text, TBAF_CODE_MARKER);
 }

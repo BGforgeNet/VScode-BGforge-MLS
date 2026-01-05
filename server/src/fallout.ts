@@ -92,15 +92,13 @@ export async function loadHeaders(
             }
         }
 
-        if (x.definition) {
-            for (const [key, value] of x.definition) {
-                if (!staticHover.has(key)) {
-                    definitions.set(key, value);
-                }
+        for (const [key, value] of x.definition) {
+            if (!staticHover.has(key)) {
+                definitions.set(key, value);
             }
         }
 
-        if (x.signature) {
+        if (x.signature !== undefined) {
             for (const [key, value] of x.signature) {
                 if (!staticHover.has(key)) {
                     signatures.set(key, value);
@@ -143,7 +141,7 @@ function loadProcedures(uri: string, headerData: FalloutHeaderData, filePath: st
             kind: CompletionItemKind.Function,
             labelDetails: { description: filePath },
         };
-        if (proc.jsdoc?.deprecated) {
+        if (proc.jsdoc?.deprecated !== undefined) {
             const COMPLETION_TAG_deprecated = 1;
             completionItem.tags = [COMPLETION_TAG_deprecated];
         }
@@ -200,7 +198,7 @@ function loadMacros(uri: string, headerData: FalloutHeaderData, filePath: string
             kind: completionKind,
             labelDetails: { description: filePath },
         };
-        if (macro.jsdoc?.deprecated) {
+        if (macro.jsdoc?.deprecated !== undefined) {
             const COMPLETION_TAG_deprecated = 1;
             completionItem.tags = [COMPLETION_TAG_deprecated];
         }
@@ -387,7 +385,7 @@ function findDefinitions(text: string) {
         let match = procRegex.exec(l);
         if (match) {
             const name = match[1];
-            const index = (match as RegExpMatchArrayWithIndices).indices?.[1];
+            const index = (match as RegExpMatchArrayWithIndices).indices[1];
             if (name && index) {
                 const item: definition.Definition = {
                     name: name,
@@ -401,7 +399,7 @@ function findDefinitions(text: string) {
             match = defineRegex.exec(l);
             if (match) {
                 const name = match[1];
-                const index = (match as RegExpMatchArrayWithIndices).indices?.[1];
+                const index = (match as RegExpMatchArrayWithIndices).indices[1];
                 if (name && index) {
                     const item: definition.Definition = {
                         name: name,
@@ -439,7 +437,7 @@ function jsdocToMD(jsd: jsdoc.JSdoc) {
     if (jsd.ret) {
         md += `\n\n**Returns** \`${jsd.ret.type}\``;
     }
-    if (jsd.deprecated) {
+    if (jsd.deprecated !== undefined) {
         if (jsd.deprecated === true) {
             md += "\n\n---\n\nDeprecated.";
         } else {
@@ -722,9 +720,6 @@ export async function compile(
 export function getPreviewData(text: string) {
     const regex = /^procedure\s+(\w+).*?begin([\S\s]*?)\nend/gm;
     const matches = text.matchAll(regex);
-    if (!matches) {
-        return;
-    }
     const nodes: Node[] = [];
     const edges: Edge[] = [];
     const procs = new Map<string, string>();

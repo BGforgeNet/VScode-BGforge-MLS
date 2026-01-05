@@ -14,7 +14,8 @@ import { registerBinaryEditor } from "./editors/binaryEditor";
 import { registerDialogTree } from "./dialogTree";
 import { ServerInitializingIndicator } from "./indicator";
 
-let client: LanguageClient;
+// Initialized in activate(), undefined until then
+let client: LanguageClient | undefined;
 const loadingIndicator = new ServerInitializingIndicator(() => {
     conlog("loading start");
 });
@@ -92,14 +93,14 @@ export async function activate(context: ExtensionContext) {
 }
 
 export async function deactivate(): Promise<void> {
-    if (!client) {
-        return undefined;
+    if (client === undefined) {
+        return;
     }
     return await client.stop();
 }
 
 async function compile(document = vscode.window.activeTextEditor?.document) {
-    if (!document) {
+    if (!document || client === undefined) {
         return;
     }
     const uri = document.uri;
@@ -131,7 +132,9 @@ export function conlog(item: any): void {
             console.log(item);
             break;
         default:
-            if (item.size && item.size > 0 && JSON.stringify(item) == "{}") {
+            // Handle objects including Maps - check if item has Map-like iteration
+            if (item !== null && typeof item === "object" && typeof item.size === "number" && item.size > 0) {
+                // Likely a Map, use spread to get entries
                 console.log(JSON.stringify([...item]));
             } else {
                 console.log(JSON.stringify(item));

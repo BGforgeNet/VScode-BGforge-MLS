@@ -96,7 +96,7 @@ export function cleanupEsbuildOutput(code: string, marker: string, originalConst
     // - False positive scenario: original has `FOO=5` and `FOO2=5` (same value)
     //   This is rare and would require user to define two constants with same value
     //   where one name is the other plus a digit - unlikely in practice
-    if (originalConstants && originalConstants.size > 0) {
+    if (originalConstants !== undefined && originalConstants.size > 0) {
         // Build map of var declarations in bundled code: name → initializer text
         const varDecls = new Map<string, string>();
         for (const stmt of sourceFile.getStatements()) {
@@ -159,8 +159,8 @@ export function noSideEffectsPlugin(): esbuild.Plugin {
         setup(build) {
             build.onResolve({ filter: /.*/ }, async args => {
                 if (args.kind === 'entry-point') return null;
-                // Use pluginData to prevent infinite recursion
-                if (args.pluginData?.fromNoSideEffectsPlugin) return null;
+                // Use pluginData to prevent infinite recursion (pluginData is typed as any by esbuild)
+                if (args.pluginData?.fromNoSideEffectsPlugin === true) return null;
                 const result = await build.resolve(args.path, {
                     resolveDir: args.resolveDir,
                     kind: args.kind,

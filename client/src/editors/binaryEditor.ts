@@ -199,16 +199,15 @@ class BinaryEditorProvider implements vscode.CustomReadonlyEditorProvider {
                 </div>
             `;
         } else {
-            // It's a field
-            const valueClass = this.getValueClass(node.type || "");
-            const offset =
-                node.offset !== undefined ? `0x${node.offset.toString(16).toUpperCase().padStart(4, "0")}` : "";
+            // It's a field (ParsedField always has offset)
+            const valueClass = this.getValueClass(node.type);
+            const offset = `0x${node.offset.toString(16).toUpperCase().padStart(4, "0")}`;
             return `
                 <div class="field">
                     <span class="field-name">${escapeHtml(node.name)}:</span>
                     <span class="field-value ${valueClass}">${escapeHtml(String(node.value))}</span>
-                    ${offset ? `<span class="field-offset">[${offset}]</span>` : ""}
-                    ${node.type ? `<span class="field-type">${escapeHtml(node.type)}</span>` : ""}
+                    <span class="field-offset">[${offset}]</span>
+                    <span class="field-type">${escapeHtml(node.type)}</span>
                 </div>
             `;
         }

@@ -38,7 +38,8 @@ let hasWorkspaceFolderCapability = false;
 let workspaceRoot: string;
 let projectSettings: settings.ProjectSettings;
 
-let gala: Galactus;
+// Initialized in onInitialized, undefined until then
+let gala: Galactus | undefined;
 
 connection.onInitialize((params: InitializeParams) => {
     conlog("onInitialize started");
@@ -126,7 +127,9 @@ connection.onDidChangeConfiguration((change) => {
         // Reset all cached document settings
         documentSettings.clear();
     } else {
-        globalSettings = <MLSsettings>(change.settings.bgforge || defaultSettings);
+        // change.settings is typed as any by vscode-languageserver
+        const bgforge = change.settings?.bgforge as MLSsettings | undefined;
+        globalSettings = bgforge ?? defaultSettings;
     }
 });
 
@@ -210,7 +213,7 @@ connection.onExecuteCommand(async (params) => {
     // Handle parseDialog command
     if (command === COMMAND_parseDialog) {
         const textDoc = documents.get(args.uri);
-        if (!textDoc) {
+        if (!textDoc || gala === undefined) {
             return null;
         }
         if (textDoc.languageId !== LANG_FALLOUT_SSL) {

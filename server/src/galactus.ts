@@ -256,7 +256,7 @@ export class Galactus {
     completion(langId: string, uri: string) {
         langId = this.dataLang(langId);
         const language = this.languages.get(langId);
-        if (language) {
+        if (language !== undefined) {
             return language.completion(uri);
         }
         return undefined;
@@ -280,7 +280,7 @@ export class Galactus {
 
         // no translation, now check real languages
         const language = this.languages.get(langId);
-        if (language) {
+        if (language !== undefined) {
             return language.hover(uri, symbol);
         }
         return undefined;
@@ -289,7 +289,7 @@ export class Galactus {
     definition(langId: string, symbol: string) {
         langId = this.dataLang(langId);
         const language = this.languages.get(langId);
-        if (language) {
+        if (language !== undefined) {
             return language.definition(symbol);
         }
         return undefined;
@@ -298,7 +298,7 @@ export class Galactus {
     signature(langId: string, text: string, position: Position, uri: string) {
         langId = this.dataLang(langId);
         const language = this.languages.get(langId);
-        if (!language) {
+        if (language === undefined) {
             return;
         }
         const request = getSignatureRequest(text, position);
@@ -320,7 +320,7 @@ export class Galactus {
 
         // reload proper language
         const language = this.languages.get(langId);
-        if (language) {
+        if (language !== undefined) {
             language.reloadFileData(uri, text);
         }
     }

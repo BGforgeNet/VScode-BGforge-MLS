@@ -26,13 +26,10 @@ export function conlog(item: any): void {
             connection.console.log(item);
             break;
         default:
-            if (item && item.size && item.size > 0 && JSON.stringify(item) == "{}") {
-                if (JSON.stringify([...item]) == "{}") {
-                    // map
-                    connection.console.log(item);
-                } else {
-                    connection.console.log(JSON.stringify([...item]));
-                }
+            // Handle objects including Maps - check if item has Map-like iteration
+            if (item !== null && typeof item === "object" && typeof item.size === "number" && item.size > 0) {
+                // Likely a Map, use spread to get entries
+                connection.console.log(JSON.stringify([...item]));
             } else {
                 connection.console.log(JSON.stringify(item));
             }
@@ -112,16 +109,14 @@ export function sendParseResult(parseResult: ParseResult, mainUri: string, tmpUr
 /** Check if 1st dir contains the 2nd
  */
 export function isSubpath(outerPath: string, innerPath: string) {
-    // hack: don't crash when workspaceRoot is undefined
+    // Runtime guard: server.ts declares workspaceRoot as string but only conditionally
+    // assigns it. If no workspace folders exist, it remains undefined at runtime.
     if (outerPath === undefined) {
         return false;
     }
     const innerReal = fs.realpathSync(innerPath);
     const outerReal = fs.realpathSync(outerPath);
-    if (innerReal.startsWith(outerReal)) {
-        return true;
-    }
-    return false;
+    return innerReal.startsWith(outerReal);
 }
 
 export function isDirectory(fsPath: string): boolean {

@@ -443,17 +443,19 @@ async function bundle(filePath: string, text: string): Promise<BundleResult> {
         ]
     });
 
-    if (result.outputFiles && result.outputFiles.length > 0) {
-        conlog(`Bundling complete!`);
-        // Extract input files from metafile (only .ts files, not .d.ts)
-        const inputFiles = result.metafile
-            ? Object.keys(result.metafile.inputs).filter(f => f.endsWith('.ts') && !f.endsWith('.d.ts'))
-            : [];
-        const outputFile = result.outputFiles[0];
-        if (!outputFile) throw new Error('esbuild produced no output');
-        return { code: outputFile.text, inputFiles };
+    // write: false guarantees outputFiles is defined
+    if (result.outputFiles.length === 0) {
+        throw new Error('esbuild produced no output');
     }
-    throw new Error('esbuild produced no output');
+    conlog(`Bundling complete!`);
+    // Extract input files from metafile (only .ts files, not .d.ts)
+    // metafile: true guarantees result.metafile is defined
+    const inputFiles = Object.keys(result.metafile.inputs).filter(f => f.endsWith('.ts') && !f.endsWith('.d.ts'));
+    const outputFile = result.outputFiles[0];
+    if (outputFile === undefined) {
+        throw new Error('esbuild produced no output');
+    }
+    return { code: outputFile.text, inputFiles };
 }
 
 interface SourceSection {
@@ -1109,14 +1111,12 @@ function convertOperatorsAST(node: Node, ctx?: TsslContext): string {
             const operand = convertOperatorsAST(postfix.getOperand(), ctx);
             const operator = postfix.getOperatorToken();
 
-            // i++ and i-- work the same in SSL
+            // i++ and i-- work the same in SSL (only two valid postfix operators)
             if (operator === SyntaxKind.PlusPlusToken) {
                 return `${operand}++`;
-            } else if (operator === SyntaxKind.MinusMinusToken) {
-                return `${operand}--`;
             }
-
-            return postfix.getText();
+            // operator === SyntaxKind.MinusMinusToken
+            return `${operand}--`;
         }
 
         case SyntaxKind.ParenthesizedExpression: {

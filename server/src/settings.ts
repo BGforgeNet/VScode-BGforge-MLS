@@ -59,18 +59,23 @@ const defaultProjectSettings: ProjectSettings = {
 /** get project settings from .bgforge.yml */
 export function project(dir: string) {
     const settings = defaultProjectSettings;
+    // Runtime guard: server.ts declares workspaceRoot as string but only conditionally
+    // assigns it. If no workspace folders exist, it remains undefined at runtime.
     if (dir === undefined) {
         return settings;
     }
     try {
         const file = fs.readFileSync(path.join(dir, ".bgforge.yml"), "utf8");
-        const yml_settings = yaml.parse(file).mls;
-        if (yml_settings.translation) {
-            if (yml_settings.translation.directory) {
-                settings.translation.directory = yml_settings.translation.directory;
+        // yaml.parse returns any, so we need explicit type checks
+        const yml = yaml.parse(file) as Record<string, unknown> | null;
+        const yml_settings = yml?.mls as Record<string, unknown> | undefined;
+        const translation = yml_settings?.translation as Record<string, unknown> | undefined;
+        if (translation !== undefined) {
+            if (typeof translation.directory === "string") {
+                settings.translation.directory = translation.directory;
             }
-            if (yml_settings.translation.auto_tra) {
-                settings.translation.auto_tra = yml_settings.translation.auto_tra;
+            if (typeof translation.auto_tra === "boolean") {
+                settings.translation.auto_tra = translation.auto_tra;
             }
         }
     } catch (e) {

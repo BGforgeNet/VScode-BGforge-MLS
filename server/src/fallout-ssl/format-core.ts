@@ -673,7 +673,7 @@ function formatBlock(node: SyntaxNode, depth: number): string {
 
     // Find trailing comment on end
     for (const child of children) {
-        if (child && isComment(child) && child.startPosition.row === blockEndRow) {
+        if (isComment(child) && child.startPosition.row === blockEndRow) {
             endComment = ctx.indent + normalizeComment(child.text);
             break;
         }

@@ -427,6 +427,7 @@
         "test:client": "cd client && pnpm test",
         "test:server": "cd server && pnpm test",
         "test:grammars": "for g in grammars/*/test.sh; do \"$g\"; done",
+        "test:bin": "cd client && ./scripts/test-bin.sh",
         "test:e2e": "./scripts/e2e.sh",
         "package": "pnpm vsce package --no-dependencies",
         "build-grammar": "bash ./scripts/build-grammar.sh",

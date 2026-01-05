@@ -28,16 +28,19 @@
         el.classList.add("selected");
     }
 
-    // Get required DOM elements
-    const searchInput = document.getElementById("search") as HTMLInputElement;
-    const searchResults = document.querySelector(".search-results") as HTMLElement;
-    const tree = document.querySelector(".tree") as HTMLElement;
+    // Get required DOM elements (null check ensures they exist before cast)
+    const searchInputEl = document.getElementById("search");
+    const searchResultsEl = document.querySelector(".search-results");
+    const treeEl = document.querySelector(".tree");
     const expandAllBtn = document.getElementById("expandAll");
     const collapseAllBtn = document.getElementById("collapseAll");
 
-    if (!searchInput || !searchResults || !tree || !expandAllBtn || !collapseAllBtn) {
+    if (searchInputEl === null || searchResultsEl === null || treeEl === null || expandAllBtn === null || collapseAllBtn === null) {
         throw new Error("Required DOM elements not found");
     }
+    const searchInput = searchInputEl as HTMLInputElement;
+    const searchResults = searchResultsEl as HTMLElement;
+    const tree = treeEl as HTMLElement;
 
     interface SearchResult {
         type: "node" | "item";
@@ -165,14 +168,12 @@
             }
 
             // Fall back to the node summary, or the node itself if inline
-            if (!elementToSelect) {
-                elementToSelect = targetEl.querySelector("summary") || targetEl;
+            if (elementToSelect === null) {
+                elementToSelect = targetEl.querySelector("summary") ?? targetEl;
             }
 
-            if (elementToSelect) {
-                elementToSelect.scrollIntoView({ block: "center" });
-                selectElement(elementToSelect);
-            }
+            elementToSelect.scrollIntoView({ block: "center" });
+            selectElement(elementToSelect);
         }
     }
 

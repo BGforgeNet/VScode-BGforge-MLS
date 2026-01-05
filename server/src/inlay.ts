@@ -7,24 +7,15 @@ interface HintValue {
     tooltip?: string;
 }
 
-function getHintString(traEntries: TraEntries, traFileKey: string, lineKey: string) {
-    let value: string;
-    let tooltip = "";
-    if (!traEntries) {
-        value = `/* Error: no such file ${traFileKey} */`;
-    } else {
-        const traEntry = traEntries.get(lineKey);
-        if (!traEntry) {
-            value = `/* Error: no such string ${traFileKey}:${lineKey} */`;
-        } else {
-            value = traEntry.inlay;
-            if (traEntry.inlayTooltip) {
-                tooltip = traEntry.inlayTooltip;
-            }
-        }
+function getHintString(traEntries: TraEntries, traFileKey: string, lineKey: string): HintValue {
+    const traEntry = traEntries.get(lineKey);
+    if (traEntry === undefined) {
+        return { label: `/* Error: no such string ${traFileKey}:${lineKey} */`, tooltip: "" };
     }
-    const result: HintValue = { label: value, tooltip: tooltip };
-    return result;
+    return {
+        label: traEntry.inlay,
+        tooltip: traEntry.inlayTooltip ?? "",
+    };
 }
 
 export function getHints(

@@ -89,7 +89,7 @@ function extractEntryPoints(proc: SyntaxNode, entryPoints: string[]): void {
             }
         } else if (node.type === "call_expr") {
             const func = node.childForFieldName("func");
-            if (func?.text?.startsWith("Node") && !entryPoints.includes(func.text)) {
+            if (func?.text.startsWith("Node") && !entryPoints.includes(func.text)) {
                 entryPoints.push(func.text);
             }
         }
