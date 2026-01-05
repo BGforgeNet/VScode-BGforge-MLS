@@ -24,4 +24,8 @@ for g in grammars/*/test.sh; do
 done
 
 echo ""
+echo "=== Checking for unused code (knip) ==="
+pnpm knip
+
+echo ""
 echo "=== All tests passed ==="

@@ -48,6 +48,6 @@ sed -i "s/var import_meta = {};/var import_meta = {url: require('url').pathToFil
 
 This is applied in:
 - `scripts/build-server.sh` - for the LSP server bundle
-- `package.json` `esbuild-format-cli` script - for the CLI tool
+- `package.json` `build:format-cli` script - for the CLI tool
 
 Any new bundle using `web-tree-sitter` needs this patch.

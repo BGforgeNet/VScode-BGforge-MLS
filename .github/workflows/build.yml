@@ -43,7 +43,7 @@ jobs:
         run: pnpm install
 
       - name: Build tree-sitter grammar
-        run: pnpm build-grammar
+        run: pnpm build:grammar
 
       - name: ESlint
         run: pnpm eslint
@@ -58,7 +58,7 @@ jobs:
         run: pnpm test
 
       - name: Build
-        run: pnpm esbuild-all
+        run: pnpm build
 
       - name: Full test suite (release only)
         if: startsWith(github.ref, 'refs/tags/')

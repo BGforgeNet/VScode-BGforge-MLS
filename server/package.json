@@ -9,7 +9,8 @@
         "node": "*"
     },
     "scripts": {
-        "test": "./scripts/test.sh"
+        "test": "./scripts/test.sh",
+        "test:unit": "vitest run"
     },
     "repository": {
         "type": "git",
@@ -36,6 +37,7 @@
         "@typescript-eslint/eslint-plugin": "^8.51.0",
         "@typescript-eslint/parser": "^8.51.0",
         "eslint": "^9.39.2",
-        "globals": "^17.0.0"
+        "globals": "^17.0.0",
+        "vitest": "^4.0.16"
     }
 }

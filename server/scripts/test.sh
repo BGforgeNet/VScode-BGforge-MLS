@@ -16,4 +16,8 @@ echo "=== Running ESLint ==="
 pnpm exec eslint "src/**/*.ts" --max-warnings 0
 
 echo ""
+echo "=== Running unit tests ==="
+pnpm test:unit
+
+echo ""
 echo "SUCCESS: All server tests passed"
