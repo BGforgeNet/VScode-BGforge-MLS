@@ -4,8 +4,8 @@
  */
 
 import { Hover } from "vscode-languageserver/node";
-import { MapData } from "./shared/feature-data";
-import { loadStaticMap } from "./shared/static-data";
+import { MapData } from "./feature-data";
+import { loadStaticMap } from "./static-data";
 
 /** source is path, relative to workspace root, or absolute if not in workspace */
 export interface HoverEx extends Hover {

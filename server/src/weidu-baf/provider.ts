@@ -8,7 +8,7 @@
 import { CompletionItem, Hover, TextEdit } from "vscode-languageserver/node";
 import { conlog } from "../common";
 import { LANG_WEIDU_BAF } from "../core/languages";
-import { Language, Features } from "../language";
+import { Language, Features } from "../data-loader";
 import { LanguageProvider, ProviderContext } from "../language-provider";
 import { getIndentFromEditorconfig } from "../shared/editorconfig";
 import { createFullDocumentEdit, validateFormatting } from "../shared/format-utils";

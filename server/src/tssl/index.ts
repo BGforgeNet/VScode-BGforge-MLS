@@ -13,7 +13,7 @@ import {
 } from 'ts-morph';
 import * as esbuild from 'esbuild-wasm';
 import { fileURLToPath } from "url";
-import { ensureEsbuild, cleanupEsbuildOutput, noSideEffectsPlugin } from "./esbuild-utils";
+import { ensureEsbuild, cleanupEsbuildOutput, noSideEffectsPlugin } from "../esbuild-utils";
 
 // Use console.log directly for CLI compatibility (conlog depends on LSP connection)
 const conlog = console.log;
@@ -437,8 +437,8 @@ async function bundle(filePath: string, text: string): Promise<BundleResult> {
             // Mark .d.ts imports as external - they're engine builtins
             {
                 name: 'external-declarations',
-                setup(build) {
-                    build.onResolve({ filter: /\.d(\.ts)?$/ }, args => ({
+                setup(build: esbuild.PluginBuild) {
+                    build.onResolve({ filter: /\.d(\.ts)?$/ }, (args: esbuild.OnResolveArgs) => ({
                         path: args.path,
                         external: true
                     }));

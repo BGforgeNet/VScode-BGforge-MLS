@@ -4,8 +4,8 @@
  */
 
 import { CompletionItem } from "vscode-languageserver/node";
-import { ListData } from "./shared/feature-data";
-import { loadStaticJson } from "./shared/static-data";
+import { ListData } from "./feature-data";
+import { loadStaticJson } from "./static-data";
 
 /** source is path, relative to workspace root, or absolute if not in workspace */
 export interface CompletionItemEx extends CompletionItem {

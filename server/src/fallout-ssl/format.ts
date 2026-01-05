@@ -5,7 +5,7 @@
 import { TextEdit, Diagnostic, DiagnosticSeverity } from "vscode-languageserver/node";
 import { fileURLToPath } from "url";
 import { conlog } from "../common";
-import { connection } from "../server";
+import { getConnection } from "../lsp-connection";
 import { getIndentFromEditorconfig } from "../shared/editorconfig";
 import { createFullDocumentEdit } from "../shared/format-utils";
 import { formatDocument as formatAst, FormatOptions, FormatError } from "./format-core";
@@ -44,13 +44,13 @@ function formatErrorsToDiagnostics(errors: FormatError[]): Diagnostic[] {
 
 export function formatDocument(text: string, uri: string): TextEdit[] {
     if (!isInitialized()) {
-        connection.window.showWarningMessage("SSL formatter not initialized");
+        getConnection().window.showWarningMessage("SSL formatter not initialized");
         return [];
     }
 
     const tree = getParser().parse(text);
     if (!tree) {
-        connection.window.showWarningMessage("Failed to parse SSL document for formatting");
+        getConnection().window.showWarningMessage("Failed to parse SSL document for formatting");
         return [];
     }
 
@@ -59,7 +59,7 @@ export function formatDocument(text: string, uri: string): TextEdit[] {
 
     // Send format errors as diagnostics (empty array clears previous, fire-and-forget)
     const diagnostics = formatErrorsToDiagnostics(result.errors);
-    void connection.sendDiagnostics({ uri, diagnostics });
+    void getConnection().sendDiagnostics({ uri, diagnostics });
 
     return createFullDocumentEdit(text, result.text);
 }

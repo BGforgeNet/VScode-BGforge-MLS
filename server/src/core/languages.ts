@@ -44,15 +44,3 @@ export const TRANSLATION_FILE_LANGUAGES: string[] = [LANG_FALLOUT_MSG, LANG_WEID
  * Languages that show msg file references (Fallout).
  */
 export const MSG_LANGUAGES: string[] = [LANG_FALLOUT_SSL];
-
-/**
- * Languages that can be compiled/parsed.
- */
-export const COMPILABLE_FALLOUT: string[] = [LANG_FALLOUT_SSL];
-export const COMPILABLE_WEIDU: string[] = [
-    LANG_WEIDU_TP2,
-    LANG_WEIDU_TP2_TPL,
-    LANG_WEIDU_D,
-    LANG_WEIDU_D_TPL,
-    LANG_WEIDU_BAF,
-];

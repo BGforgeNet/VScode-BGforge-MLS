@@ -11,9 +11,9 @@ import { CompletionItem, Hover, Location, SignatureHelp, TextEdit } from "vscode
 import { conlog } from "../common";
 import { LANG_FALLOUT_SSL } from "../core/languages";
 import { compile as falloutCompile } from "./fallout";
-import { Language, Features } from "../language";
+import { Language, Features } from "../data-loader";
 import { LanguageProvider, ProviderContext } from "../language-provider";
-import * as signature from "../signature";
+import * as signature from "../shared/signature";
 import { formatDocument, initFormatter } from "./format";
 import { isInitialized } from "./parser";
 

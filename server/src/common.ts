@@ -10,33 +10,34 @@ import * as os from "os";
 import * as path from "path";
 import { fileURLToPath } from "url";
 import { Diagnostic, DiagnosticSeverity, Position } from "vscode-languageserver/node";
-import { connection } from "./server";
+import { getConnection } from "./lsp-connection";
 
 
 export const tmpDir = path.join(os.tmpdir(), "bgforge-mls");
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function conlog(item: any): void {
+    const log = getConnection().console.log.bind(getConnection().console);
     switch (typeof item) {
         case "number":
-            connection.console.log(item.toString());
+            log(item.toString());
             break;
         case "boolean":
-            connection.console.log(item.toString());
+            log(item.toString());
             break;
         case "undefined":
-            connection.console.log("undefined");
+            log("undefined");
             break;
         case "string":
-            connection.console.log(item);
+            log(item);
             break;
         default:
             // Handle objects including Maps - check if item has Map-like iteration
             if (item !== null && typeof item === "object" && typeof item.size === "number" && item.size > 0) {
                 // Likely a Map, use spread to get entries
-                connection.console.log(JSON.stringify([...item]));
+                log(JSON.stringify([...item]));
             } else {
-                connection.console.log(JSON.stringify(item));
+                log(JSON.stringify(item));
             }
             break;
     }
@@ -107,7 +108,7 @@ export function sendParseResult(parseResult: ParseResult, mainUri: string, tmpUr
 
     for (const [uri, diag] of diagnostics) {
         // Send the computed diagnostics to VSCode (fire-and-forget notification)
-        void connection.sendDiagnostics({ uri: uri, diagnostics: [diag] });
+        void getConnection().sendDiagnostics({ uri: uri, diagnostics: [diag] });
     }
 }
 

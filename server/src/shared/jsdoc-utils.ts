@@ -3,7 +3,7 @@
  * Extracts common JSDoc-to-markdown conversion logic used by both Fallout SSL and WeiDU modules.
  */
 
-import type { JSdoc } from "../jsdoc";
+import type { JSdoc } from "./jsdoc";
 
 export type JsdocFormat = "fallout" | "weidu";
 

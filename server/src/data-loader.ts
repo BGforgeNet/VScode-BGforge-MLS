@@ -1,8 +1,8 @@
 /**
- * Language data management class.
+ * Language data loader.
  *
- * This is an internal utility class used by LanguageProvider implementations.
- * It handles loading and caching of language feature data:
+ * Utility class used by LanguageProvider implementations.
+ * Handles loading and caching of language feature data:
  * - Static data from JSON files (completion, hover, signature)
  * - Dynamic data from workspace headers (procedures, macros, definitions)
  *
@@ -11,10 +11,10 @@
  */
 
 import { conlog, getRelPath, isDirectory, isSubpath, uriToPath } from "./common";
-import * as completion from "./completion";
-import * as definition from "./definition";
+import * as completion from "./shared/completion";
+import * as definition from "./shared/definition";
 import * as fallout from "./fallout-ssl/fallout";
-import * as hover from "./hover";
+import * as hover from "./shared/hover";
 import { LANG_FALLOUT_SSL, LANG_WEIDU_TP2, LANG_WEIDU_TP2_TPL } from "./core/languages";
 import {
     createEmptyListData,
@@ -24,7 +24,7 @@ import {
     reloadList,
     reloadMap,
 } from "./shared/feature-data";
-import * as signature from "./signature";
+import * as signature from "./shared/signature";
 import * as weidu from "./weidu";
 
 export interface Features {

@@ -6,8 +6,8 @@
 import PromisePool from "@supercharge/promise-pool";
 import * as fs from "fs";
 import * as path from "path";
-import { pathToUri } from "./common";
-import { HeaderData as LanguageHeaderData } from "./language";
+import { pathToUri } from "../common";
+import { HeaderData as LanguageHeaderData } from "../data-loader";
 
 export async function processHeaders(
     headerFiles: string[],

@@ -18,13 +18,13 @@ import {
     tmpDir,
     uriToPath,
 } from "./common";
-import * as completion from "./completion";
-import * as definition from "./definition";
-import * as hover from "./hover";
-import * as jsdoc from "./jsdoc";
-import { HeaderData as LanguageHeaderData } from "./language";
-import * as pool from "./pool";
-import { connection } from "./server";
+import * as completion from "./shared/completion";
+import * as definition from "./shared/definition";
+import * as hover from "./shared/hover";
+import * as jsdoc from "./shared/jsdoc";
+import { HeaderData as LanguageHeaderData } from "./data-loader";
+import * as pool from "./shared/pool";
+import { getConnection } from "./lsp-connection";
 import { WeiDUsettings } from "./settings";
 import { LANG_WEIDU_TP2_TOOLTIP } from "./core/languages";
 import { jsdocToMarkdown } from "./shared/jsdoc-utils";
@@ -175,7 +175,7 @@ export function compile(uri: string, settings: WeiDUsettings, interactive = fals
             "Not a WeiDU file (tp2, tph, tpa, tpp, d, baf, tpl) or template! Focus a WeiDU file to parse."
         );
         if (interactive) {
-            connection.window.showInformationMessage("Focus a WeiDU file or template to parse!");
+            getConnection().window.showInformationMessage("Focus a WeiDU file or template to parse!");
         }
 
         return;
@@ -184,7 +184,7 @@ export function compile(uri: string, settings: WeiDUsettings, interactive = fals
     if ((weiduType == "d" || weiduType == "baf") && gamePath == "") {
         conlog("Path to IE game is not specified in settings, can't parse D or BAF!");
         if (interactive) {
-            connection.window.showWarningMessage(
+            getConnection().window.showWarningMessage(
                 "Path to IE game is not specified in settings, can't parse D or BAF!"
             );
         }
@@ -217,13 +217,13 @@ export function compile(uri: string, settings: WeiDUsettings, interactive = fals
         if (result.status != 0) {
             conlog("error: " + result.status);
             if (interactive) {
-                connection.window.showErrorMessage(`Failed to preprocess ${baseName}!`);
+                getConnection().window.showErrorMessage(`Failed to preprocess ${baseName}!`);
             }
             sendDiagnostics(uri, result.stderr.toString(), tmpUriGcc, "gcc");
             preprocessFailed = true;
         } else {
             if (interactive) {
-                connection.window.showInformationMessage(`Succesfully preprocessed ${baseName}.`);
+                getConnection().window.showInformationMessage(`Succesfully preprocessed ${baseName}.`);
             }
         }
     }
@@ -252,14 +252,14 @@ export function compile(uri: string, settings: WeiDUsettings, interactive = fals
             }
             conlog(parseResult);
             if (interactive) {
-                connection.window.showErrorMessage(`Failed to parse ${realName}!`);
+                getConnection().window.showErrorMessage(`Failed to parse ${realName}!`);
             }
             if (tpl == false) {
                 sendDiagnostics(uri, stdout, tmpUri);
             }
         } else {
             if (interactive) {
-                connection.window.showInformationMessage(`Succesfully parsed ${realName}.`);
+                getConnection().window.showInformationMessage(`Succesfully parsed ${realName}.`);
             }
         }
     });

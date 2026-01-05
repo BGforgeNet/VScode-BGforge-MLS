@@ -19,7 +19,7 @@ import {
 } from "vscode-languageserver/node";
 import { conlog, getRelPath, isSubpath, symbolAtPosition, uriToPath } from "./common";
 import { clearDiagnostics, COMMAND_compile, compile } from "./compile";
-import { getRequest as getSignatureRequest } from "./signature";
+import { getRequest as getSignatureRequest } from "./shared/signature";
 import { parseDialog } from "./dialog";
 import { falloutSslProvider } from "./fallout-ssl/provider";
 import * as inlay from "./inlay";
@@ -47,14 +47,18 @@ import { defaultSettings, MLSsettings } from "./settings";
 import { weiduBafProvider } from "./weidu-baf/provider";
 import { weiduDProvider } from "./weidu-d/provider";
 import { weiduTp2Provider } from "./weidu-tp2/provider";
+import { initLspConnection } from "./lsp-connection";
 
 // Create a connection for the server. The connection uses Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
-export const connection = createConnection(ProposedFeatures.all);
+const connection = createConnection(ProposedFeatures.all);
 
 // Create a simple text document manager. The text document manager
 // supports full document sync only
-export const documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument);
+const documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument);
+
+// Initialize the LSP connection holder for modules that need it
+initLspConnection(connection, documents);
 
 let hasConfigurationCapability = false;
 let hasWorkspaceFolderCapability = false;

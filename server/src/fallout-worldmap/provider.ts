@@ -6,7 +6,7 @@
 import { CompletionItem, Hover } from "vscode-languageserver/node";
 import { conlog } from "../common";
 import { LANG_FALLOUT_WORLDMAP_TXT } from "../core/languages";
-import { Language, Features } from "../language";
+import { Language, Features } from "../data-loader";
 import { LanguageProvider, ProviderContext } from "../language-provider";
 
 const features: Features = {

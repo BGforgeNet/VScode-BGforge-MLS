@@ -20,17 +20,17 @@ import {
     sendParseResult,
     uriToPath,
 } from "../common";
-import * as completion from "../completion";
-import * as definition from "../definition";
-import * as hover from "../hover";
-import * as jsdoc from "../jsdoc";
-import { HeaderData as LanguageHeaderData } from "../language";
-import * as pool from "../pool";
-import { connection, documents } from "../server";
+import * as completion from "../shared/completion";
+import * as definition from "../shared/definition";
+import * as hover from "../shared/hover";
+import * as jsdoc from "../shared/jsdoc";
+import { HeaderData as LanguageHeaderData } from "../data-loader";
+import * as pool from "../shared/pool";
+import { getConnection, getDocuments } from "../lsp-connection";
 import { SSLsettings } from "../settings";
 import { LANG_FALLOUT_SSL_TOOLTIP } from "../core/languages";
 import { jsdocToDetail, jsdocToMarkdown } from "../shared/jsdoc-utils";
-import * as signature from "../signature";
+import * as signature from "../shared/signature";
 import { ssl_compile as ssl_builtin_compiler } from "../sslc/ssl_compiler";
 
 interface FalloutHeaderData {
@@ -452,7 +452,7 @@ function fixWinePath(filePath: string) {
  * Numbers mean line:column, if column is absent, it means first column.
  */
 function parseCompileOutput(text: string, uri: string) {
-    const textDocument = documents.get(uri);
+    const textDocument = getDocuments().get(uri);
     if (!textDocument) {
         return { errors: [], warnings: [] };
     }
@@ -591,7 +591,7 @@ export async function compile(
         // vscode loses open file if clicked on console or elsewhere
         conlog("Not a Fallout SSL file! Please focus a Fallout SSL file to compile.");
         if (interactive) {
-            connection.window.showInformationMessage("Please focus a Fallout SSL file to compile!");
+            getConnection().window.showInformationMessage("Please focus a Fallout SSL file to compile!");
         }
         return;
     }
@@ -602,7 +602,7 @@ export async function compile(
     let useBuiltInCompiler = sslSettings.useBuiltInCompiler;
 
     if (!useBuiltInCompiler && !(await checkExternalCompiler(sslSettings.compilePath))) {
-        const response = await connection.window.showErrorMessage(
+        const response = await getConnection().window.showErrorMessage(
             `Failed to run '${sslSettings.compilePath}'! Use built-in compiler this time?`,
             { title: "Yes", id: "yes" },
             { title: "No", id: "no" },
@@ -623,11 +623,11 @@ export async function compile(
         });
         if (returnCode === 0) {
             if (interactive) {
-                connection.window.showInformationMessage(`Compiled ${baseName}.`);
+                getConnection().window.showInformationMessage(`Compiled ${baseName}.`);
             }
         } else {
             if (interactive) {
-                connection.window.showErrorMessage(`Failed to compile ${baseName}!`);
+                getConnection().window.showErrorMessage(`Failed to compile ${baseName}!`);
             }
         }
         sendDiagnostics(uri, stdout, tmpUri);
@@ -650,11 +650,11 @@ export async function compile(
             if (err) {
                 conlog("error: " + err.message);
                 if (interactive) {
-                    connection.window.showErrorMessage(`Failed to compile ${baseName}!`);
+                    getConnection().window.showErrorMessage(`Failed to compile ${baseName}!`);
                 }
             } else {
                 if (interactive) {
-                    connection.window.showInformationMessage(`Compiled ${baseName}.`);
+                    getConnection().window.showInformationMessage(`Compiled ${baseName}.`);
                 }
             }
             sendDiagnostics(uri, stdout, tmpUri);

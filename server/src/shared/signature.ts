@@ -4,8 +4,8 @@
  */
 
 import { Position, SignatureInformation } from "vscode-languageserver/node";
-import { MapData } from "./shared/feature-data";
-import { loadStaticMap } from "./shared/static-data";
+import { MapData } from "./feature-data";
+import { loadStaticMap } from "./static-data";
 
 export interface SigInfoEx extends SignatureInformation {
     uri: string;

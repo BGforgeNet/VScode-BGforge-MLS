@@ -5,7 +5,7 @@
 
 import path = require("node:path");
 import { conlog } from "../common";
-import { connection } from "../server";
+import { getConnection } from "../lsp-connection";
 import { fork } from "child_process";
 
 export async function ssl_compile(opts: {
@@ -24,7 +24,7 @@ export async function ssl_compile(opts: {
     if (opts.headersDir) {
         if (cmdArgs.find((s) => s.startsWith("-I"))) {
             if (opts.interactive) {
-                connection.window.showWarningMessage(
+                getConnection().window.showWarningMessage(
                     "Warning: -I switch is used but it will be ignored",
                 );
             }
