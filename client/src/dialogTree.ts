@@ -323,7 +323,7 @@ export function registerDialogTree(context: vscode.ExtensionContext, client: Lan
         vscode.workspace.onDidSaveTextDocument((doc) => {
             if (!dialogPanel) return;
             if (doc.uri.toString() === currentDocumentUri || doc.languageId === "fallout-msg") {
-                refreshPreview();
+                void refreshPreview(); // fire-and-forget, errors handled internally
             }
         })
     );

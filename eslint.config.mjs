@@ -29,6 +29,9 @@ export default [
             parser: tsParser,
             ecmaVersion: "latest",
             sourceType: "module",
+            parserOptions: {
+                projectService: true,
+            },
         },
         rules: {
             "@typescript-eslint/no-empty-interface": "off",
@@ -42,7 +45,14 @@ export default [
             ],
             "@typescript-eslint/no-explicit-any": "warn",
             "no-unused-vars": "off",
-            "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_", varsIgnorePattern: "^_" }]
+            "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_", varsIgnorePattern: "^_" }],
+            "@typescript-eslint/no-floating-promises": "error",
+            "@typescript-eslint/no-unnecessary-condition": "error",
+            "@typescript-eslint/strict-boolean-expressions": ["error", {
+                allowNullableBoolean: true,
+                allowNullableString: true,
+                allowNullableNumber: true,
+            }],
         },
     },
 ];

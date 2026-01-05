@@ -116,7 +116,7 @@ async function compile(document = vscode.window.activeTextEditor?.document) {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function conlog(item: any) {
+export function conlog(item: any): void {
     switch (typeof item) {
         case "number":
             console.log(item.toString());

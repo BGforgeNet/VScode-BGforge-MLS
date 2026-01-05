@@ -11,7 +11,7 @@ import { connection } from "./server";
 export const tmpDir = path.join(os.tmpdir(), "bgforge-mls");
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function conlog(item: any) {
+export function conlog(item: any): void {
     switch (typeof item) {
         case "number":
             connection.console.log(item.toString());
@@ -104,8 +104,8 @@ export function sendParseResult(parseResult: ParseResult, mainUri: string, tmpUr
     }
 
     for (const [uri, diag] of diagnostics) {
-        // Send the computed diagnostics to VSCode.
-        connection.sendDiagnostics({ uri: uri, diagnostics: [diag] });
+        // Send the computed diagnostics to VSCode (fire-and-forget notification)
+        void connection.sendDiagnostics({ uri: uri, diagnostics: [diag] });
     }
 }
 

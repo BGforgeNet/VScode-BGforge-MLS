@@ -22,9 +22,8 @@ const weiduLanguages = [LANG_WEIDU_TP2, LANG_WEIDU_TP2_TPL, LANG_WEIDU_D, LANG_W
 export const COMMAND_compile = "extension.bgforge.compile";
 
 export function clearDiagnostics(uri: string) {
-    // Clear old diagnostics. For some reason not working in common.send_parse_result.
-    // Probably due to async?
-    connection.sendDiagnostics({ uri: uri, diagnostics: [] });
+    // Clear old diagnostics (fire-and-forget notification)
+    void connection.sendDiagnostics({ uri: uri, diagnostics: [] });
 }
 
 /**

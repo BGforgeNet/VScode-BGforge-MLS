@@ -241,7 +241,7 @@ export class Galactus {
         }
         this.languages = langs;
         this.translation = new Translation(traSettings);
-        this.translation.init();
+        await this.translation.init();
     }
 
     /** Several languages draw data from other language ids */

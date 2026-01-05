@@ -57,9 +57,9 @@ export function formatDocument(text: string, uri: string): TextEdit[] {
     const options = getFormatOptions(uri);
     const result = formatAst(tree.rootNode, options);
 
-    // Send format errors as diagnostics (empty array clears previous)
+    // Send format errors as diagnostics (empty array clears previous, fire-and-forget)
     const diagnostics = formatErrorsToDiagnostics(result.errors);
-    connection.sendDiagnostics({ uri, diagnostics });
+    void connection.sendDiagnostics({ uri, diagnostics });
 
     return createFullDocumentEdit(text, result.text);
 }

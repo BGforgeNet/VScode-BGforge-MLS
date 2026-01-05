@@ -96,7 +96,7 @@ connection.onInitialized(async () => {
     conlog("onInitialized started");
     if (hasConfigurationCapability) {
         // Register for all configuration changes.
-        connection.client.register(DidChangeConfigurationNotification.type, undefined);
+        await connection.client.register(DidChangeConfigurationNotification.type, undefined);
     }
     globalSettings = await connection.workspace.getConfiguration({ section: "bgforge" });
     // load data
@@ -113,7 +113,7 @@ connection.onInitialized(async () => {
     registry.register(weiduBafProvider);
     registry.register(weiduDProvider);
     await registry.init();
-    connection.sendNotification("bgforge-mls/load-finished");
+    void connection.sendNotification("bgforge-mls/load-finished");
     conlog("onInitialized completed");
 });
 
@@ -247,7 +247,7 @@ connection.onExecuteCommand(async (params) => {
     const text = textDoc.getText();
 
     if (command == COMMAND_compile) {
-        compile(args.uri, langId, true, text);
+        void compile(args.uri, langId, true, text);
     }
 
     if (command == COMMAND_preview) {
@@ -276,7 +276,7 @@ documents.onDidSave(async (change) => {
 
     const validateOnSave = (await getDocumentSettings(uri)).validateOnSave;
     if (validateOnSave) {
-        compile(uri, langId, false, text);
+        void compile(uri, langId, false, text);
     }
 });
 
@@ -287,7 +287,7 @@ documents.onDidChangeContent(async (event) => {
     const validateOnChange = (await getDocumentSettings(uri)).validateOnChange;
     if (validateOnChange) {
         const text = event.document.getText();
-        compile(uri, event.document.languageId, false, text);
+        void compile(uri, event.document.languageId, false, text);
     }
 });
 
