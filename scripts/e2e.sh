@@ -5,4 +5,4 @@ export CODE_TESTS_PATH
 CODE_TESTS_WORKSPACE="$(pwd)/client/testFixture"
 export CODE_TESTS_WORKSPACE
 
-node "$(pwd)/client/out/test/runTest"
+xvfb-run -a node "$(pwd)/client/out/test/runTest"

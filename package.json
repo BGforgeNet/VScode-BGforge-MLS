@@ -424,6 +424,7 @@
         "compile": "pnpm esbuild-client && pnpm esbuild-server",
         "postinstall": "cd client && pnpm install && cd ../server && pnpm install && cd ..",
         "test": "./scripts/test-all.sh",
+        "test:all": "pnpm test && pnpm test:bin",
         "test:client": "cd client && pnpm test",
         "test:server": "cd server && pnpm test",
         "test:grammars": "for g in grammars/*/test.sh; do \"$g\"; done",
