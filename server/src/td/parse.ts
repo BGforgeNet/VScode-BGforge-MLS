@@ -330,37 +330,70 @@ export class TDParser {
 
     /**
      * Transform extendTop/extendBottom to EXTEND.
+     * Signatures:
+     *   extendTop(filename, state, transitions)
+     *   extendBottom(filename, state, options, transitions)
+     *   extendBottom(filename, state, transitions)
      */
     private transformExtend(call: CallExpression, isTop: boolean): TDConstruct[] | null {
         const funcName = isTop ? "extendTop" : "extendBottom";
         const args = call.getArguments();
         if (args.length < 3) {
-            throw new Error(`${funcName}() requires 3 arguments (filename, state, transitions) at ${call.getStartLineNumber()}`);
+            throw new Error(`${funcName}() requires at least 3 arguments at ${call.getStartLineNumber()}`);
         }
 
         const filenameArg = args[0];
         const stateLabelArg = args[1];
-        const transitionsArg = args[2];
 
-        if (!filenameArg || !stateLabelArg || !transitionsArg) {
-            throw new Error(`${funcName}() requires 3 arguments (filename, state, transitions) at ${call.getStartLineNumber()}`);
+        if (!filenameArg || !stateLabelArg) {
+            throw new Error(`${funcName}() requires at least 3 arguments at ${call.getStartLineNumber()}`);
         }
 
         const filename = this.resolveStringExpr(filenameArg as Expression);
         const stateLabel = this.resolveStringExpr(stateLabelArg as Expression);
+
+        // Check if 3rd arg is options object or transitions function
+        let position: number | undefined;
+        let transitionsArg: Expression;
+
+        if (args.length === 4) {
+            // 4 args: filename, state, options, transitions
+            const optionsArg = args[2];
+            transitionsArg = args[3] as Expression;
+
+            // Parse options object { position: N }
+            if (Node.isObjectLiteralExpression(optionsArg)) {
+                const props = optionsArg.getProperties();
+                for (const prop of props) {
+                    if (Node.isPropertyAssignment(prop)) {
+                        const name = prop.getName();
+                        if (name === "position") {
+                            position = Number(prop.getInitializer()?.getText());
+                        }
+                    }
+                }
+            }
+        } else if (args.length === 3) {
+            // 3 args: filename, state, transitions
+            transitionsArg = args[2] as Expression;
+        } else {
+            throw new Error(`${funcName}() takes 3 or 4 arguments at ${call.getStartLineNumber()}`);
+        }
+
+        if (!transitionsArg) {
+            throw new Error(`${funcName}() requires transitions function at ${call.getStartLineNumber()}`);
+        }
 
         // Extract transitions from arrow function body
         const transitions: TDTransition[] = [];
         if (Node.isArrowFunction(transitionsArg)) {
             const body = transitionsArg.getBody();
             if (Node.isBlock(body)) {
-                for (const s of (body as Block).getStatements()) {
-                    const trans = this.transformStatementToTransitions(s, []);
-                    transitions.push(...trans);
-                }
+                // Process all statements together to build transitions
+                this.processExtendStatements((body as Block).getStatements(), transitions);
             }
         } else {
-            throw new Error(`${funcName}() third argument must be an arrow function at ${call.getStartLineNumber()}`);
+            throw new Error(`${funcName}() transitions argument must be an arrow function at ${call.getStartLineNumber()}`);
         }
 
         const extend: TDExtend = {
@@ -368,6 +401,7 @@ export class TDParser {
             filename,
             stateLabel,
             transitions,
+            position,
         };
 
         return [extend];
@@ -444,100 +478,32 @@ export class TDParser {
                 const funcName = expr.getExpression().getText();
                 const args = expr.getArguments();
 
-                switch (funcName) {
-                    case "say":
-                        // say(text) - add to multisay
-                        if (args.length < 1 || !args[0]) {
-                            throw new Error(`say() requires at least 1 argument at ${expr.getStartLineNumber()}`);
-                        }
-                        state.say.push({ text: this.expressionToText(args[0] as Expression) });
-                        break;
+                // Handle say() - specific to states
+                if (funcName === "say") {
+                    this.validateArgs("say", args, 1, expr.getStartLineNumber());
+                    state.say.push({ text: this.expressionToText(args[0] as Expression) });
+                }
+                // Handle weight() - specific to states
+                else if (funcName === "weight") {
+                    this.validateArgs("weight", args, 1, expr.getStartLineNumber());
+                    state.weight = Number(args[0].getText());
+                }
+                // Handle transition calls - use unified helper
+                else {
+                    const context = {
+                        getLastTransition: () => state.transitions[state.transitions.length - 1],
+                        addTransition: (trans: TDTransition) => state.transitions.push(trans),
+                    };
 
-                    case "reply":
-                        // reply(text) - start a new transition without trigger
-                        if (args.length < 1 || !args[0]) {
-                            throw new Error(`reply() requires at least 1 argument at ${expr.getStartLineNumber()}`);
-                        }
-                        {
-                            const trans: TDTransition = {
-                                reply: this.expressionToText(args[0] as Expression),
-                                next: { type: "exit" }, // Default, will be overwritten
-                            };
-                            state.transitions.push(trans);
-                        }
-                        break;
+                    const handled = this.processTransitionCall(funcName, args, expr, context);
 
-                    case "goto":
-                        // goto(stateRef) - set next on last transition or create one
-                        if (args.length < 1 || !args[0]) {
-                            throw new Error(`goto() requires at least 1 argument at ${expr.getStartLineNumber()}`);
+                    // If not a transition call, check if it's a user function
+                    if (!handled) {
+                        const funcInfo = this.funcs.get(funcName);
+                        if (funcInfo) {
+                            this.inlineUserFunction(expr, funcInfo.func, state);
                         }
-                        {
-                            const target = this.resolveStringExpr(args[0] as Expression);
-                            const lastTrans = state.transitions[state.transitions.length - 1];
-                            if (lastTrans) {
-                                lastTrans.next = { type: "goto", target };
-                            } else {
-                                // No prior transition - create one with no reply
-                                state.transitions.push({
-                                    next: { type: "goto", target },
-                                });
-                            }
-                        }
-                        break;
-
-                    case "exit":
-                        // exit() - set next on last transition or create one
-                        {
-                            const lastTrans = state.transitions[state.transitions.length - 1];
-                            if (lastTrans) {
-                                lastTrans.next = { type: "exit" };
-                            } else {
-                                state.transitions.push({
-                                    next: { type: "exit" },
-                                });
-                            }
-                        }
-                        break;
-
-                    case "action":
-                        // action(...actions) - set action on last transition or create one
-                        // Each argument is a function call that gets serialized to D action format
-                        if (args.length === 0) {
-                            throw new Error(`action() requires at least 1 argument at ${expr.getStartLineNumber()}`);
-                        }
-                        {
-                            const actionStr = args.map(a => this.expressionToActionString(a as Expression)).join(" ");
-                            const lastTrans = state.transitions[state.transitions.length - 1];
-                            if (lastTrans) {
-                                lastTrans.action = actionStr;
-                            } else {
-                                // No prior transition - create one with no reply
-                                state.transitions.push({
-                                    action: actionStr,
-                                    next: { type: "exit" }, // Default
-                                });
-                            }
-                        }
-                        break;
-
-                    case "weight":
-                        // weight(n) - set state weight
-                        if (args.length < 1 || !args[0]) {
-                            throw new Error(`weight() requires at least 1 argument at ${expr.getStartLineNumber()}`);
-                        }
-                        state.weight = Number(args[0].getText());
-                        break;
-
-                    default:
-                        // Check if it's a user function - inline it
-                        {
-                            const funcInfo = this.funcs.get(funcName);
-                            if (funcInfo) {
-                                this.inlineUserFunction(expr, funcInfo.func, state);
-                            }
-                        }
-                        break;
+                    }
                 }
             }
         } else if (stmt.isKind(SyntaxKind.IfStatement)) {
@@ -601,50 +567,23 @@ export class TDParser {
                 const funcName = expr.getExpression().getText();
                 const args = expr.getArguments();
 
-                switch (funcName) {
-                    case "reply":
-                        if (args.length < 1 || !args[0]) {
-                            throw new Error(`reply() requires at least 1 argument at ${expr.getStartLineNumber()}`);
-                        }
-                        trans.reply = this.expressionToText(args[0] as Expression);
-                        break;
-
-                    case "goto":
-                        if (args.length < 1 || !args[0]) {
-                            throw new Error(`goto() requires at least 1 argument at ${expr.getStartLineNumber()}`);
-                        }
-                        trans.next = { type: "goto", target: this.resolveStringExpr(args[0] as Expression) };
-                        break;
-
-                    case "exit":
-                        trans.next = { type: "exit" };
-                        break;
-
-                    case "action":
-                        if (args.length === 0) {
-                            throw new Error(`action() requires at least 1 argument at ${expr.getStartLineNumber()}`);
-                        }
-                        trans.action = args.map(a => this.expressionToActionString(a as Expression)).join(" ");
-                        break;
-
-                    case "journal":
-                        if (args.length < 1 || !args[0]) {
-                            throw new Error(`journal() requires at least 1 argument at ${expr.getStartLineNumber()}`);
-                        }
-                        trans.journal = this.expressionToText(args[0] as Expression);
-                        break;
-
-                    case "extern":
-                        if (args.length < 2 || !args[0] || !args[1]) {
-                            throw new Error(`extern() requires 2 arguments (filename, state) at ${expr.getStartLineNumber()}`);
-                        }
-                        trans.next = {
-                            type: "extern",
-                            filename: this.stripQuotes(args[0].getText()),
-                            target: this.stripQuotes(args[1].getText()),
-                        };
-                        break;
+                // Special handling for reply() in single transition context
+                if (funcName === "reply") {
+                    this.validateArgs("reply", args, 1, expr.getStartLineNumber());
+                    trans.reply = this.expressionToText(args[0] as Expression);
+                    return;
                 }
+
+                // Create context wrapper for single transition
+                const context = {
+                    getLastTransition: () => trans,
+                    addTransition: () => {
+                        // In single-transition context, we don't add new transitions
+                        // This shouldn't be called for this context
+                    },
+                };
+
+                this.processTransitionCall(funcName, args, expr, context);
             }
         }
     }
@@ -766,47 +705,54 @@ export class TDParser {
     }
 
     /**
-     * Transform statement to transitions (for extend blocks).
+     * Process statements in extend block to build transitions.
+     * Similar to processStateStatement but builds transitions directly.
      */
-    private transformStatementToTransitions(stmt: Statement, _parentConditions: string[]): TDTransition[] {
-        const transitions: TDTransition[] = [];
+    private processExtendStatements(statements: Statement[], transitions: TDTransition[]) {
+        for (const stmt of statements) {
+            if (stmt.isKind(SyntaxKind.IfStatement)) {
+                // if (trigger) { ... } - transition with trigger
+                const ifStmt = stmt as IfStatement;
+                const trigger = this.expressionToTrigger(ifStmt.getExpression());
+                const thenStmts = this.getBlockStatements(ifStmt.getThenStatement());
 
-        if (stmt.isKind(SyntaxKind.IfStatement)) {
-            const trigger = this.expressionToTrigger((stmt as IfStatement).getExpression());
-            const thenStmts = this.getBlockStatements((stmt as IfStatement).getThenStatement());
+                const trans: TDTransition = {
+                    trigger,
+                    next: { type: "exit" },
+                };
 
-            const trans: TDTransition = {
-                trigger,
-                next: { type: "exit" },
-            };
+                for (const s of thenStmts) {
+                    this.processTransitionStatement(s, trans);
+                }
 
-            for (const s of thenStmts) {
-                this.processTransitionStatement(s, trans);
+                transitions.push(trans);
+            } else if (stmt.isKind(SyntaxKind.ExpressionStatement)) {
+                // Expression statement - could be reply(), goto(), action(), etc.
+                const expr = stmt.getExpression();
+                if (Node.isCallExpression(expr)) {
+                    const funcName = expr.getExpression().getText();
+                    const args = expr.getArguments();
+
+                    // Create context for transitions array
+                    const context = {
+                        getLastTransition: () => transitions[transitions.length - 1],
+                        addTransition: (trans: TDTransition) => transitions.push(trans),
+                    };
+
+                    this.processTransitionCall(funcName, args, expr, context);
+                }
+            } else if (stmt.isKind(SyntaxKind.ForOfStatement)) {
+                // Unroll loop
+                this.unrollForOf(stmt as ForOfStatement, (s) => {
+                    this.processExtendStatements([s], transitions);
+                });
+            } else if (stmt.isKind(SyntaxKind.ForStatement)) {
+                // Unroll loop
+                this.unrollFor(stmt as ForStatement, (s) => {
+                    this.processExtendStatements([s], transitions);
+                });
             }
-
-            transitions.push(trans);
-        } else if (stmt.isKind(SyntaxKind.ExpressionStatement)) {
-            // Direct transition (no trigger)
-            const trans: TDTransition = {
-                next: { type: "exit" },
-            };
-            this.processTransitionStatement(stmt, trans);
-            transitions.push(trans);
-        } else if (stmt.isKind(SyntaxKind.ForOfStatement)) {
-            // Unroll for-of loop and collect transitions
-            this.unrollForOf(stmt as ForOfStatement, (s) => {
-                const trans = this.transformStatementToTransitions(s, _parentConditions);
-                transitions.push(...trans);
-            });
-        } else if (stmt.isKind(SyntaxKind.ForStatement)) {
-            // Unroll for loop and collect transitions
-            this.unrollFor(stmt as ForStatement, (s) => {
-                const trans = this.transformStatementToTransitions(s, _parentConditions);
-                transitions.push(...trans);
-            });
         }
-
-        return transitions;
     }
 
     /**
@@ -1246,5 +1192,142 @@ export class TDParser {
 
         // Fallback to raw text
         return this.substituteVars(expr.getText());
+    }
+
+    // =============================================================================
+    // Refactored Helpers - Validation and Transition Processing
+    // =============================================================================
+
+    /**
+     * Validate function call has required number of arguments.
+     */
+    private validateArgs(funcName: string, args: any[], minArgs: number, lineNumber: number) {
+        if (args.length < minArgs || !args.slice(0, minArgs).every(a => a)) {
+            const argWord = minArgs === 1 ? "argument" : "arguments";
+            throw new Error(`${funcName}() requires at least ${minArgs} ${argWord} at ${lineNumber}`);
+        }
+    }
+
+    /**
+     * Process a transition-modifying call (reply, goto, action, journal, etc.)
+     * Works with state, single transition, or extend context.
+     *
+     * Context interface:
+     *   - getLastTransition(): returns the last transition or undefined
+     *   - addTransition(trans): adds a new transition
+     */
+    private processTransitionCall(
+        funcName: string,
+        args: any[],
+        expr: CallExpression,
+        context: {
+            getLastTransition(): TDTransition | undefined;
+            addTransition(trans: TDTransition): void;
+        }
+    ) {
+        const lineNumber = expr.getStartLineNumber();
+
+        switch (funcName) {
+            case "reply":
+                this.validateArgs("reply", args, 1, lineNumber);
+                context.addTransition({
+                    reply: this.expressionToText(args[0] as Expression),
+                    next: { type: "exit" },
+                });
+                break;
+
+            case "goto": {
+                this.validateArgs("goto", args, 1, lineNumber);
+                const target = this.resolveStringExpr(args[0] as Expression);
+                const lastTrans = context.getLastTransition();
+                if (lastTrans) {
+                    lastTrans.next = { type: "goto", target };
+                } else {
+                    context.addTransition({ next: { type: "goto", target } });
+                }
+                break;
+            }
+
+            case "exit": {
+                const lastTrans = context.getLastTransition();
+                if (lastTrans) {
+                    lastTrans.next = { type: "exit" };
+                } else {
+                    context.addTransition({ next: { type: "exit" } });
+                }
+                break;
+            }
+
+            case "action": {
+                this.validateArgs("action", args, 1, lineNumber);
+                const actionStr = args.map(a => this.expressionToActionString(a as Expression)).join(" ");
+                const lastTrans = context.getLastTransition();
+                if (lastTrans) {
+                    lastTrans.action = actionStr;
+                } else {
+                    context.addTransition({ action: actionStr, next: { type: "exit" } });
+                }
+                break;
+            }
+
+            case "journal":
+                this.setTransitionField(context, "journal", args, lineNumber, funcName);
+                break;
+
+            case "solvedJournal":
+                this.setTransitionField(context, "solvedJournal", args, lineNumber, funcName);
+                break;
+
+            case "unsolvedJournal":
+                this.setTransitionField(context, "unsolvedJournal", args, lineNumber, funcName);
+                break;
+
+            case "flags": {
+                this.validateArgs("flags", args, 1, lineNumber);
+                const lastTrans = context.getLastTransition();
+                if (!lastTrans) {
+                    throw new Error(`flags() must come after a transition at ${lineNumber}`);
+                }
+                lastTrans.flags = Number(args[0].getText());
+                break;
+            }
+
+            case "extern": {
+                this.validateArgs("extern", args, 2, lineNumber);
+                const lastTrans = context.getLastTransition();
+                if (!lastTrans) {
+                    throw new Error(`extern() must come after a transition at ${lineNumber}`);
+                }
+                lastTrans.next = {
+                    type: "extern",
+                    filename: this.stripQuotes(args[0].getText()),
+                    target: this.stripQuotes(args[1].getText()),
+                };
+                break;
+            }
+
+            default:
+                return false; // Not handled
+        }
+
+        return true; // Handled
+    }
+
+    /**
+     * Set a text field (journal/solvedJournal/unsolvedJournal) on last transition.
+     */
+    private setTransitionField(
+        context: { getLastTransition(): TDTransition | undefined },
+        field: "journal" | "solvedJournal" | "unsolvedJournal",
+        args: any[],
+        lineNumber: number,
+        funcName: string
+    ) {
+        this.validateArgs(funcName, args, 1, lineNumber);
+        const lastTrans = context.getLastTransition();
+        if (!lastTrans) {
+            throw new Error(`${funcName}() must come after a transition at ${lineNumber}`);
+        }
+        lastTrans[field] = this.expressionToText(args[0] as Expression);
     }
 }
