@@ -1,0 +1,1 @@
+grammars/weidu-d/test/samples/ascension_balth_finsol.d: Formatter bug: Formatter changed content at position 708: "ENGOTObalth_aloneENDEXTEND_BOTTOMfinsol0" vs "ENGOTObalth_aloneENDIF~Global("Balthazar"

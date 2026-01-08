@@ -1,0 +1,175 @@
+================================================================================
+Simple state
+================================================================================
+
+BEGIN file
+IF ~trigger~ THEN BEGIN label SAY ~text~ END
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (begin_action
+    file: (identifier)
+    (state
+      trigger: (string (tilde_string (tilde_content)))
+      label: (state_label_alnum)
+      say: (say_text (string (tilde_string (tilde_content)))))))
+
+================================================================================
+State with weight
+================================================================================
+
+BEGIN file
+IF WEIGHT #5 ~trigger~ THEN BEGIN label SAY ~text~ END
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (begin_action
+    file: (identifier)
+    (state
+      weight: (number)
+      trigger: (string (tilde_string (tilde_content)))
+      label: (state_label_alnum)
+      say: (say_text (string (tilde_string (tilde_content)))))))
+
+================================================================================
+State with negative weight
+================================================================================
+
+BEGIN file
+IF WEIGHT #-1 ~trigger~ THEN BEGIN label SAY ~text~ END
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (begin_action
+    file: (identifier)
+    (state
+      weight: (number)
+      trigger: (string (tilde_string (tilde_content)))
+      label: (state_label_alnum)
+      say: (say_text (string (tilde_string (tilde_content)))))))
+
+================================================================================
+State with transition
+================================================================================
+
+BEGIN file
+IF ~trigger~ THEN BEGIN label SAY ~text~ IF ~reply~ THEN GOTO next END
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (begin_action
+    file: (identifier)
+    (state
+      trigger: (string (tilde_string (tilde_content)))
+      label: (state_label_alnum)
+      say: (say_text (string (tilde_string (tilde_content))))
+      (transition
+        (transition_full
+          trigger: (string (tilde_string (tilde_content)))
+          (goto_next
+            label: (state_label_alnum)))))))
+
+================================================================================
+APPEND action
+================================================================================
+
+APPEND filename
+IF ~trigger~ THEN BEGIN label SAY ~text~ END
+END
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (append_action
+    file: (identifier)
+    (state
+      trigger: (string (tilde_string (tilde_content)))
+      label: (state_label_alnum)
+      say: (say_text (string (tilde_string (tilde_content)))))))
+
+================================================================================
+BEGIN action
+================================================================================
+
+BEGIN filename
+IF ~trigger~ THEN BEGIN label SAY ~text~ END
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (begin_action
+    file: (identifier)
+    (state
+      trigger: (string (tilde_string (tilde_content)))
+      label: (state_label_alnum)
+      say: (say_text (string (tilde_string (tilde_content)))))))
+
+================================================================================
+EXTEND_TOP action
+================================================================================
+
+EXTEND_TOP filename label
++ ~reply~ + ~text~ GOTO next
+END
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (extend_action
+    file: (identifier)
+    states: (state_label_alnum)
+    (transition
+      (transition_short
+        trigger: (string (tilde_string (tilde_content)))
+        reply: (string (tilde_string (tilde_content)))
+        (goto_next
+          label: (state_label_alnum))))))
+
+================================================================================
+COPY_TRANS in transition
+================================================================================
+
+BEGIN file
+IF ~trigger~ THEN BEGIN label SAY ~text~ COPY_TRANS filename label END
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (begin_action
+    file: (identifier)
+    (state
+      trigger: (string (tilde_string (tilde_content)))
+      label: (state_label_alnum)
+      say: (say_text (string (tilde_string (tilde_content))))
+      (transition
+        (copy_trans
+          file: (identifier)
+          state: (state_label_alnum))))))
+
+================================================================================
+ALTER_TRANS operation
+================================================================================
+
+ALTER_TRANS filename
+BEGIN state1 state2 END
+BEGIN 0 1 END
+BEGIN
+  "trigger" ~new_trigger~
+END
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (alter_trans
+    file: (identifier)
+    (state_label_alnum)
+    (state_label_alnum)
+    (number)
+    (number)
+    (alter_trans_change
+      (double_string (double_content))
+      (string (tilde_string (tilde_content))))))

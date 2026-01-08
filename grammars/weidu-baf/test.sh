@@ -15,6 +15,10 @@ echo "=== Running ESLint ==="
 pnpm eslint grammar.js --max-warnings 0
 
 echo ""
+echo "=== Running corpus tests ==="
+tree-sitter test
+
+echo ""
 echo "=== Formatting samples ==="
 rm -rf test/samples-formatted test/samples-formatted-2
 mkdir -p test/samples-formatted

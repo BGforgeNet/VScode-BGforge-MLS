@@ -17,7 +17,7 @@ for samples_dir in grammars/*/test/samples; do
     mkdir -p "$expected_dir"
 
     for f in "$samples_dir"/*; do
-        pnpm -s format "$f" > "$expected_dir/$(basename "$f")"
+        pnpm -s format "$f" > "$expected_dir/$(basename "$f")" 2>&1
     done
 done
 
