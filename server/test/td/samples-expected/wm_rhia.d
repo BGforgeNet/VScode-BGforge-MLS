@@ -1,0 +1,13 @@
+/* Generated from wm_rhia.td - do not edit */
+
+BEGIN WM_RHIA
+
+IF ~Global("wm_start","GLOBAL",1)~ state100
+    SAY @100 = @101 = @102 = @103
+    IF ~~ THEN DO ~Enemy()~ EXIT
+END
+
+IF ~!Global("wm_start","GLOBAL",1)~ state110
+    SAY @110 = @111
+    IF ~~ THEN DO ~DestroyItem("WM_SBOOK") DestroyItem("WM_BEAR") TakePartyItem("WM_SBOOK") ForceSpell(Myself,DRYAD_TELEPORT)~ EXIT
+END

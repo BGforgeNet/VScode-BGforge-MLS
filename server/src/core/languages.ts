@@ -11,11 +11,12 @@ export const LANG_FALLOUT_WORLDMAP_TXT = "fallout-worldmap-txt" as const;
 // Used only in TRANSLATION_FILE_LANGUAGES below
 const LANG_FALLOUT_MSG = "fallout-msg" as const;
 
-// TypeScript-based languages (TSSL, TBAF)
+// TypeScript-based languages (TSSL, TBAF, TD)
 // These use "typescript" langId but are identified by file extension
 export const LANG_TYPESCRIPT = "typescript" as const;
 export const EXT_TSSL = ".tssl" as const;
 export const EXT_TBAF = ".tbaf" as const;
+export const EXT_TD = ".td" as const;
 
 // WeiDU languages
 export const LANG_WEIDU_TP2 = "weidu-tp2" as const;
