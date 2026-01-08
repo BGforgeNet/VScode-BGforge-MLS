@@ -74,16 +74,16 @@ export default grammar({
         // CHAIN [IF [WEIGHT #weight] trigger THEN] [IF_FILE_EXISTS] entryFile entryLabel chainText chainEpilogue
         chain_action: ($) =>
             seq(
-                caseInsensitive("CHAIN"),
+                "CHAIN",
                 optional(
                     seq(
-                        caseInsensitive("IF"),
-                        optional(seq(caseInsensitive("WEIGHT"), "#", $.number)),
+                        "IF",
+                        optional(seq("WEIGHT", "#", $.number)),
                         field("trigger", $.string),
-                        caseInsensitive("THEN")
+                        optional("THEN")
                     )
                 ),
-                optional(caseInsensitive("IF_FILE_EXISTS")),
+                optional("IF_FILE_EXISTS"),
                 field("file", $._filename),
                 field("label", $._state_label),
                 repeat($.chain_text),
@@ -120,19 +120,21 @@ export default grammar({
         // chainText: [IF trigger THEN] sayText [== ... | BRANCH ...]
         chain_text: ($) =>
             seq(
-                optional(seq(caseInsensitive("IF"), field("trigger", $.string), caseInsensitive("THEN"))),
+                optional(seq("IF", field("trigger", $.string), optional("THEN"))),
                 $.say_text,
+                optional($.do_feature),
                 repeat(choice($.chain_speaker, $.chain_branch))
             ),
 
-        // == [IF_FILE_EXISTS] fileName [IF trigger THEN] sayText
+        // == [IF_FILE_EXISTS] fileName [IF trigger [THEN]] sayText [DO action]
         chain_speaker: ($) =>
             seq(
                 "==",
-                optional(caseInsensitive("IF_FILE_EXISTS")),
+                optional("IF_FILE_EXISTS"),
                 field("file", $._filename),
-                optional(seq(caseInsensitive("IF"), field("trigger", $.string), caseInsensitive("THEN"))),
-                $.say_text
+                optional(seq("IF", field("trigger", $.string), optional("THEN"))),
+                $.say_text,
+                optional($.do_feature)
             ),
 
         // BRANCH trigger BEGIN [== fileName [IF trigger THEN] sayText ...] END
@@ -423,7 +425,7 @@ export default grammar({
 
         reply_feature: ($) => seq(caseInsensitive("REPLY"), field("text", $._text)),
 
-        do_feature: ($) => seq(caseInsensitive("DO"), field("action", $.string)),
+        do_feature: ($) => seq("DO", field("action", $.string)),
 
         journal_feature: ($) =>
             seq(

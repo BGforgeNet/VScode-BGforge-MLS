@@ -260,8 +260,8 @@
       "type": "SEQ",
       "members": [
         {
-          "type": "PATTERN",
-          "value": "[cC][hH][aA][iI][nN]"
+          "type": "STRING",
+          "value": "CHAIN"
         },
         {
           "type": "CHOICE",
@@ -270,8 +270,8 @@
               "type": "SEQ",
               "members": [
                 {
-                  "type": "PATTERN",
-                  "value": "[iI][fF]"
+                  "type": "STRING",
+                  "value": "IF"
                 },
                 {
                   "type": "CHOICE",
@@ -280,8 +280,8 @@
                       "type": "SEQ",
                       "members": [
                         {
-                          "type": "PATTERN",
-                          "value": "[wW][eE][iI][gG][hH][tT]"
+                          "type": "STRING",
+                          "value": "WEIGHT"
                         },
                         {
                           "type": "STRING",
@@ -307,8 +307,16 @@
                   }
                 },
                 {
-                  "type": "PATTERN",
-                  "value": "[tT][hH][eE][nN]"
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "STRING",
+                      "value": "THEN"
+                    },
+                    {
+                      "type": "BLANK"
+                    }
+                  ]
                 }
               ]
             },
@@ -321,8 +329,8 @@
           "type": "CHOICE",
           "members": [
             {
-              "type": "PATTERN",
-              "value": "[iI][fF]_[fF][iI][lL][eE]_[eE][xX][iI][sS][tT][sS]"
+              "type": "STRING",
+              "value": "IF_FILE_EXISTS"
             },
             {
               "type": "BLANK"
@@ -481,8 +489,8 @@
               "type": "SEQ",
               "members": [
                 {
-                  "type": "PATTERN",
-                  "value": "[iI][fF]"
+                  "type": "STRING",
+                  "value": "IF"
                 },
                 {
                   "type": "FIELD",
@@ -493,8 +501,16 @@
                   }
                 },
                 {
-                  "type": "PATTERN",
-                  "value": "[tT][hH][eE][nN]"
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "STRING",
+                      "value": "THEN"
+                    },
+                    {
+                      "type": "BLANK"
+                    }
+                  ]
                 }
               ]
             },
@@ -506,6 +522,18 @@
         {
           "type": "SYMBOL",
           "name": "say_text"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "do_feature"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
         },
         {
           "type": "REPEAT",
@@ -536,8 +564,8 @@
           "type": "CHOICE",
           "members": [
             {
-              "type": "PATTERN",
-              "value": "[iI][fF]_[fF][iI][lL][eE]_[eE][xX][iI][sS][tT][sS]"
+              "type": "STRING",
+              "value": "IF_FILE_EXISTS"
             },
             {
               "type": "BLANK"
@@ -559,8 +587,8 @@
               "type": "SEQ",
               "members": [
                 {
-                  "type": "PATTERN",
-                  "value": "[iI][fF]"
+                  "type": "STRING",
+                  "value": "IF"
                 },
                 {
                   "type": "FIELD",
@@ -571,8 +599,16 @@
                   }
                 },
                 {
-                  "type": "PATTERN",
-                  "value": "[tT][hH][eE][nN]"
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "STRING",
+                      "value": "THEN"
+                    },
+                    {
+                      "type": "BLANK"
+                    }
+                  ]
                 }
               ]
             },
@@ -584,6 +620,18 @@
         {
           "type": "SYMBOL",
           "name": "say_text"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "do_feature"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
         }
       ]
     },
@@ -1859,8 +1907,8 @@
       "type": "SEQ",
       "members": [
         {
-          "type": "PATTERN",
-          "value": "[dD][oO]"
+          "type": "STRING",
+          "value": "DO"
         },
         {
           "type": "FIELD",

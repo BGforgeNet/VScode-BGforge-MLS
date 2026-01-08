@@ -522,9 +522,13 @@
       }
     },
     "children": {
-      "multiple": false,
+      "multiple": true,
       "required": true,
       "types": [
+        {
+          "type": "do_feature",
+          "named": true
+        },
         {
           "type": "say_text",
           "named": true
@@ -557,6 +561,10 @@
         },
         {
           "type": "chain_speaker",
+          "named": true
+        },
+        {
+          "type": "do_feature",
           "named": true
         },
         {
@@ -2094,6 +2102,30 @@
   },
   {
     "type": "==",
+    "named": false
+  },
+  {
+    "type": "CHAIN",
+    "named": false
+  },
+  {
+    "type": "DO",
+    "named": false
+  },
+  {
+    "type": "IF",
+    "named": false
+  },
+  {
+    "type": "IF_FILE_EXISTS",
+    "named": false
+  },
+  {
+    "type": "THEN",
+    "named": false
+  },
+  {
+    "type": "WEIGHT",
     "named": false
   },
   {
