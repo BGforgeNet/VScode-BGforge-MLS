@@ -32,6 +32,16 @@ import {
     TDBegin,
     TDAppend,
     TDExtend,
+    TDInterject,
+    TDAlterTrans,
+    TDAddStateTrigger,
+    TDAddTransTrigger,
+    TDAddTransAction,
+    TDReplaceTrans,
+    TDReplaceText,
+    TDSetWeight,
+    TDReplaceSay,
+    TDReplaceStateTrigger,
 } from "./types";
 
 /** Context for variable substitution during compile-time evaluation */
@@ -45,6 +55,41 @@ interface FuncInfo {
 
 /** Context for user function inlining */
 type FuncsContext = Map<string, FuncInfo>;
+
+/** TD function/keyword constants */
+const TD_KEYWORDS = {
+    SAY: "say",
+    ACTION: "action",
+    GOTO: "goto",
+    EXIT: "exit",
+    REPLY: "reply",
+    JOURNAL: "journal",
+    SOLVED_JOURNAL: "solvedJournal",
+    UNSOLVED_JOURNAL: "unsolvedJournal",
+    FLAGS: "flags",
+    EXTERN: "extern",
+    WEIGHT: "weight",
+    DIALOG: "dialog",
+    APPEND: "append",
+    EXTEND_TOP: "extendTop",
+    EXTEND_BOTTOM: "extendBottom",
+    INTERJECT: "interject",
+    INTERJECT_COPY_TRANS: "interjectCopyTrans",
+    ALTER_TRANS: "alterTrans",
+    ADD_STATE_TRIGGER: "addStateTrigger",
+    ADD_TRANS_TRIGGER: "addTransTrigger",
+    ADD_TRANS_ACTION: "addTransAction",
+    REPLACE_TRANS_TRIGGER: "replaceTransTrigger",
+    REPLACE_TRANS_ACTION: "replaceTransAction",
+    REPLACE_TRIGGER_TEXT: "replaceTriggerText",
+    REPLACE_ACTION_TEXT: "replaceActionText",
+    SET_WEIGHT: "setWeight",
+    REPLACE_SAY: "replaceSay",
+    REPLACE_STATE_TRIGGER: "replaceStateTrigger",
+    TRA: "tra",
+    TLK: "tlk",
+    OR: "OR",
+} as const;
 
 export class TDParser {
     private vars: VarsContext = new Map();
@@ -160,47 +205,45 @@ export class TDParser {
     }
 
     /**
-     * Transform an if-wrapped function declaration.
-     * Pattern: if (trigger()) { function stateName() { ... } }
-     */
-    private transformIfWrappedFunction(ifStmt: IfStatement): TDConstruct[] | null {
-        const thenStmt = ifStmt.getThenStatement();
-        const statements = this.getBlockStatements(thenStmt);
-
-        // Look for function declarations inside
-        const results: TDConstruct[] = [];
-        for (const s of statements) {
-            if (s.isKind(SyntaxKind.FunctionDeclaration)) {
-                const func = s as FunctionDeclaration;
-                const trigger = this.expressionToTrigger(ifStmt.getExpression());
-                const construct = this.transformFunctionToConstruct(func, trigger);
-                if (construct) {
-                    results.push(construct);
-                }
-            }
-        }
-
-        return results.length > 0 ? results : null;
-    }
-
-    /**
      * Transform a top-level call expression.
      */
     private transformTopLevelCall(call: CallExpression): TDConstruct[] | null {
         const funcName = call.getExpression().getText();
 
         switch (funcName) {
-            case "dialog":
+            case TD_KEYWORDS.DIALOG:
                 return this.transformDialog(call);
-            case "append":
+            case TD_KEYWORDS.APPEND:
                 return this.transformAppend(call);
-            case "extendTop":
-            case "extendBottom":
-                return this.transformExtend(call, funcName === "extendTop");
-            case "interject":
+            case TD_KEYWORDS.EXTEND_TOP:
+            case TD_KEYWORDS.EXTEND_BOTTOM:
+                return this.transformExtend(call, funcName === TD_KEYWORDS.EXTEND_TOP);
+            case TD_KEYWORDS.INTERJECT:
                 return this.transformInterject(call, false);
-            case "interjectCopyTrans":
+            case TD_KEYWORDS.INTERJECT_COPY_TRANS:
                 return this.transformInterject(call, true);
+            case TD_KEYWORDS.ALTER_TRANS:
+                return this.transformAlterTrans(call);
+            case TD_KEYWORDS.ADD_STATE_TRIGGER:
+                return this.transformAddStateTrigger(call);
+            case TD_KEYWORDS.ADD_TRANS_TRIGGER:
+                return this.transformAddTransTrigger(call);
+            case TD_KEYWORDS.ADD_TRANS_ACTION:
+                return this.transformAddTransAction(call);
+            case TD_KEYWORDS.REPLACE_TRANS_TRIGGER:
+                return this.transformReplaceTrans(call, "replace_trans_trigger");
+            case TD_KEYWORDS.REPLACE_TRANS_ACTION:
+                return this.transformReplaceTrans(call, "replace_trans_action");
+            case TD_KEYWORDS.REPLACE_TRIGGER_TEXT:
+                return this.transformReplaceText(call, "replace_trigger_text");
+            case TD_KEYWORDS.REPLACE_ACTION_TEXT:
+                return this.transformReplaceText(call, "replace_action_text");
+            case TD_KEYWORDS.SET_WEIGHT:
+                return this.transformSetWeight(call);
+            case TD_KEYWORDS.REPLACE_SAY:
+                return this.transformReplaceSay(call);
+            case TD_KEYWORDS.REPLACE_STATE_TRIGGER:
+                return this.transformReplaceStateTrigger(call);
             default:
                 return null;
         }
@@ -241,7 +284,19 @@ export class TDParser {
                     throw new Error(`Function "${funcName}" not found in dialog() at ${element.getStartLineNumber()}`);
                 }
                 const body = funcInfo.func.getBody()?.asKind(SyntaxKind.Block);
-                if (body && this.isChainFunction(body)) {
+                // Check if this is a CHAIN (has say(speaker, text) pattern)
+                const isChain = body && body.getStatements().some((stmt) => {
+                    if (stmt.isKind(SyntaxKind.ExpressionStatement)) {
+                        const expr = stmt.getExpression();
+                        if (Node.isCallExpression(expr)) {
+                            const fn = expr.getExpression().getText();
+                            return fn === "say" && expr.getArguments().length >= 2;
+                        }
+                    }
+                    return false;
+                });
+
+                if (isChain) {
                     // Emit as CHAIN (standalone construct)
                     const chain = this.transformFunctionToChain(funcInfo.func, funcInfo.trigger);
                     if (chain) {
@@ -412,6 +467,84 @@ export class TDParser {
     }
 
     /**
+     * Process say() call within chain context.
+     * Handles say(speaker, text) vs say(text) multisay pattern.
+     */
+    private processSayInChain(
+        args: Node[],
+        expr: CallExpression,
+        currentEntry: TDChainEntry | null,
+        entries: TDChainEntry[],
+        options?: { trigger?: string }
+    ): TDChainEntry | null {
+        if (args.length >= 2 && args[0] && args[1]) {
+            // say(speaker, text) - new entry with speaker
+            if (currentEntry) {
+                entries.push(currentEntry);
+            }
+            const newEntry: TDChainEntry = {
+                speaker: this.stripQuotes(args[0].getText()),
+                texts: [this.expressionToText(args[1] as Expression)],
+            };
+            if (options?.trigger) {
+                newEntry.trigger = options.trigger;
+            }
+            return newEntry;
+        } else if (args.length >= 1 && args[0]) {
+            // say(text) - multisay continuation
+            if (!currentEntry) {
+                throw new Error(
+                    `say(text) without speaker - must use say(speaker, text) first at ${expr.getStartLineNumber()}`
+                );
+            }
+            currentEntry.texts.push(this.expressionToText(args[0] as Expression));
+            return currentEntry;
+        } else {
+            throw new Error(`say() requires at least 1 argument at ${expr.getStartLineNumber()}`);
+        }
+    }
+
+    /**
+     * Process chain function body statements to extract entries.
+     * Handles say(speaker, text), say(text) multisay, and conditionals.
+     */
+    private processChainStatements(
+        statements: Statement[],
+        entries: TDChainEntry[],
+        currentEntry: TDChainEntry | null,
+        options?: { trigger?: string }
+    ): TDChainEntry | null {
+        for (const stmt of statements) {
+            if (stmt.isKind(SyntaxKind.ExpressionStatement)) {
+                const expr = stmt.getExpression();
+                if (Node.isCallExpression(expr)) {
+                    const funcName = expr.getExpression().getText();
+                    const args = expr.getArguments();
+
+                    if (funcName === TD_KEYWORDS.SAY) {
+                        currentEntry = this.processSayInChain(
+                            args,
+                            expr,
+                            currentEntry,
+                            entries,
+                            options
+                        );
+                    }
+                }
+            } else if (stmt.isKind(SyntaxKind.IfStatement)) {
+                // Push current entry before processing conditional
+                if (currentEntry) {
+                    entries.push(currentEntry);
+                    currentEntry = null;
+                }
+                this.processChainIf(stmt as IfStatement, entries, currentEntry);
+            }
+        }
+
+        return currentEntry;
+    }
+
+    /**
      * Transform interject() or interjectCopyTrans() to INTERJECT.
      * interject(entryFile, entryLabel, globalVar, chainFunc, exitFile, exitLabel)
      * interjectCopyTrans(entryFile, entryLabel, globalVar, chainFunc)
@@ -437,43 +570,7 @@ export class TDParser {
             const body = chainFunc.getBody();
             if (Node.isBlock(body)) {
                 const statements = (body as Block).getStatements();
-                let currentEntry: TDChainEntry | null = null;
-
-                for (const stmt of statements) {
-                    if (stmt.isKind(SyntaxKind.ExpressionStatement)) {
-                        const expr = stmt.getExpression();
-                        if (Node.isCallExpression(expr)) {
-                            const funcName = expr.getExpression().getText();
-                            const args = expr.getArguments();
-
-                            if (funcName === "say") {
-                                if (args.length >= 2 && args[0] && args[1]) {
-                                    // say(speaker, text)
-                                    if (currentEntry) {
-                                        entries.push(currentEntry);
-                                    }
-                                    currentEntry = {
-                                        speaker: this.stripQuotes(args[0].getText()),
-                                        texts: [this.expressionToText(args[1] as Expression)],
-                                    };
-                                } else if (args.length >= 1 && args[0]) {
-                                    // say(text) - multisay
-                                    if (!currentEntry) {
-                                        throw new Error(`say(text) without speaker in ${funcName}() at ${expr.getStartLineNumber()}`);
-                                    }
-                                    currentEntry.texts.push(this.expressionToText(args[0] as Expression));
-                                }
-                            }
-                        }
-                    } else if (stmt.isKind(SyntaxKind.IfStatement)) {
-                        // Push current entry before processing conditional
-                        if (currentEntry) {
-                            entries.push(currentEntry);
-                            currentEntry = null;
-                        }
-                        this.processChainIf(stmt as IfStatement, entries, currentEntry);
-                    }
-                }
+                const currentEntry = this.processChainStatements(statements, entries, null);
 
                 // Push final entry
                 if (currentEntry) {
@@ -516,40 +613,306 @@ export class TDParser {
         return [interject];
     }
 
-    /**
-     * Transform a function declaration to a TD construct.
-     * Only CHAINs can be top-level constructs; states must be inside BEGIN/APPEND.
-     */
-    private transformFunctionToConstruct(func: FunctionDeclaration, entryTrigger?: string): TDConstruct | null {
-        const body = func.getBody()?.asKind(SyntaxKind.Block);
-        if (!body) return null;
+    // =============================================================================
+    // Patch Operations
+    // =============================================================================
 
-        // Check if this is a CHAIN (has say(speaker, text) pattern)
-        if (this.isChainFunction(body)) {
-            return this.transformFunctionToChain(func, entryTrigger);
+    /**
+     * Transform alterTrans(filename, states, transitions, changes)
+     */
+    private transformAlterTrans(call: CallExpression): TDConstruct[] | null {
+        const args = call.getArguments();
+        if (args.length < 4) {
+            throw new Error(`alterTrans() requires 4 arguments at ${call.getStartLineNumber()}`);
         }
 
-        // States can't be top-level constructs - they need to be in BEGIN/APPEND
-        // Standalone if-wrapped functions without dialog() are not supported
-        return null;
+        const filename = this.resolveStringExpr(args[0] as Expression);
+        const states = this.parseStateList(args[1] as Expression);
+        const transitions = this.parseNumberArray(args[2] as Expression);
+        const changesObj = args[3];
+
+        if (!Node.isObjectLiteralExpression(changesObj)) {
+            throw new Error(`alterTrans() fourth argument must be an object at ${call.getStartLineNumber()}`);
+        }
+
+        const changes: TDAlterTrans["changes"] = {};
+
+        for (const prop of changesObj.getProperties()) {
+            if (Node.isPropertyAssignment(prop)) {
+                const propName = prop.getName();
+                const value = prop.getInitializer();
+
+                if (!value) continue;
+
+                if (propName === "trigger") {
+                    if (value.getText() === "false") {
+                        changes.trigger = false;
+                    } else {
+                        changes.trigger = this.expressionToTrigger(value);
+                    }
+                } else if (propName === "action") {
+                    changes.action = this.expressionToAction(value);
+                } else if (propName === "reply") {
+                    changes.reply = this.expressionToText(value);
+                }
+            }
+        }
+
+        const operation: TDAlterTrans = {
+            op: "alter_trans",
+            filename,
+            states,
+            transitions,
+            changes,
+        };
+
+        return [{ type: "patch", operation }];
     }
 
     /**
-     * Check if a function body represents a CHAIN (has speaker arguments in say()).
+     * Transform addStateTrigger(filename, states, trigger, options?)
      */
-    private isChainFunction(body: Block): boolean {
-        for (const stmt of body.getStatements()) {
-            if (stmt.isKind(SyntaxKind.ExpressionStatement)) {
-                const expr = stmt.getExpression();
-                if (Node.isCallExpression(expr)) {
-                    const funcName = expr.getExpression().getText();
-                    if (funcName === "say" && expr.getArguments().length >= 2) {
-                        return true;
+    private transformAddStateTrigger(call: CallExpression): TDConstruct[] | null {
+        const args = call.getArguments();
+        if (args.length < 3) {
+            throw new Error(`addStateTrigger() requires at least 3 arguments at ${call.getStartLineNumber()}`);
+        }
+
+        const filename = this.resolveStringExpr(args[0] as Expression);
+        const states = this.parseStateList(args[1] as Expression);
+        const trigger = this.expressionToTrigger(args[2] as Expression);
+        const unless = args[3] ? this.parseUnless(args[3] as Expression) : undefined;
+
+        const operation: TDAddStateTrigger = {
+            op: "add_state_trigger",
+            filename,
+            states,
+            trigger,
+            unless,
+        };
+
+        return [{ type: "patch", operation }];
+    }
+
+    /**
+     * Transform addTransTrigger(filename, states, trigger, options?)
+     */
+    private transformAddTransTrigger(call: CallExpression): TDConstruct[] | null {
+        const args = call.getArguments();
+        if (args.length < 3) {
+            throw new Error(`addTransTrigger() requires at least 3 arguments at ${call.getStartLineNumber()}`);
+        }
+
+        const filename = this.resolveStringExpr(args[0] as Expression);
+        const states = this.parseStateList(args[1] as Expression);
+        const trigger = this.expressionToTrigger(args[2] as Expression);
+
+        let transitions: number[] | undefined;
+        let unless: string | undefined;
+
+        // args[3] can be options object with trans and/or unless
+        if (args[3]) {
+            const opts = args[3];
+            if (Node.isObjectLiteralExpression(opts)) {
+                for (const prop of opts.getProperties()) {
+                    if (Node.isPropertyAssignment(prop)) {
+                        const propName = prop.getName();
+                        const value = prop.getInitializer();
+                        if (!value) continue;
+
+                        if (propName === "trans") {
+                            transitions = this.parseNumberArray(value);
+                        } else if (propName === "unless") {
+                            unless = this.parseUnless(value);
+                        }
                     }
                 }
             }
         }
-        return false;
+
+        const operation: TDAddTransTrigger = {
+            op: "add_trans_trigger",
+            filename,
+            states,
+            transitions,
+            trigger,
+            unless,
+        };
+
+        return [{ type: "patch", operation }];
+    }
+
+    /**
+     * Transform addTransAction(filename, states, transitions, action, options?)
+     */
+    private transformAddTransAction(call: CallExpression): TDConstruct[] | null {
+        const args = call.getArguments();
+        if (args.length < 4) {
+            throw new Error(`addTransAction() requires at least 4 arguments at ${call.getStartLineNumber()}`);
+        }
+
+        const filename = this.resolveStringExpr(args[0] as Expression);
+        const states = this.parseStateList(args[1] as Expression);
+        const transitions = this.parseNumberArray(args[2] as Expression);
+        const action = this.expressionToAction(args[3] as Expression);
+        const unless = args[4] ? this.parseUnless(args[4] as Expression) : undefined;
+
+        const operation: TDAddTransAction = {
+            op: "add_trans_action",
+            filename,
+            states,
+            transitions,
+            action,
+            unless,
+        };
+
+        return [{ type: "patch", operation }];
+    }
+
+    /**
+     * Transform replaceTransTrigger/replaceTransAction
+     */
+    private transformReplaceTrans(
+        call: CallExpression,
+        op: "replace_trans_trigger" | "replace_trans_action"
+    ): TDConstruct[] | null {
+        const args = call.getArguments();
+        const funcName = op === "replace_trans_trigger" ? "replaceTransTrigger" : "replaceTransAction";
+
+        if (args.length < 5) {
+            throw new Error(`${funcName}() requires at least 5 arguments at ${call.getStartLineNumber()}`);
+        }
+
+        const filename = this.resolveStringExpr(args[0] as Expression);
+        const states = this.parseStateList(args[1] as Expression);
+        const transitions = this.parseNumberArray(args[2] as Expression);
+        const oldText = this.stripQuotes(args[3]!.getText());
+        const newText = this.stripQuotes(args[4]!.getText());
+        const unless = args[5] ? this.parseUnless(args[5] as Expression) : undefined;
+
+        const operation: TDReplaceTrans = {
+            op,
+            filename,
+            states,
+            transitions,
+            oldText,
+            newText,
+            unless,
+        };
+
+        return [{ type: "patch", operation }];
+    }
+
+    /**
+     * Transform replaceTriggerText/replaceActionText
+     */
+    private transformReplaceText(
+        call: CallExpression,
+        op: "replace_trigger_text" | "replace_action_text"
+    ): TDConstruct[] | null {
+        const args = call.getArguments();
+        const funcName = op === "replace_trigger_text" ? "replaceTriggerText" : "replaceActionText";
+
+        if (args.length < 3) {
+            throw new Error(`${funcName}() requires at least 3 arguments at ${call.getStartLineNumber()}`);
+        }
+
+        const filenamesArg = args[0];
+        let filenames: string[];
+
+        // Can be a single string or array of strings
+        if (Node.isStringLiteral(filenamesArg) || filenamesArg?.getKind() === SyntaxKind.StringLiteral) {
+            filenames = [this.resolveStringExpr(filenamesArg as Expression)];
+        } else if (Node.isArrayLiteralExpression(filenamesArg)) {
+            filenames = filenamesArg.getElements().map((e) => this.resolveStringExpr(e as Expression));
+        } else {
+            throw new Error(`${funcName}() first argument must be a string or array of strings at ${call.getStartLineNumber()}`);
+        }
+
+        const oldText = this.stripQuotes(args[1]!.getText());
+        const newText = this.stripQuotes(args[2]!.getText());
+        const unless = args[3] ? this.parseUnless(args[3] as Expression) : undefined;
+
+        const operation: TDReplaceText = {
+            op,
+            filenames,
+            oldText,
+            newText,
+            unless,
+        };
+
+        return [{ type: "patch", operation }];
+    }
+
+    /**
+     * Transform setWeight(filename, state, weight)
+     */
+    private transformSetWeight(call: CallExpression): TDConstruct[] | null {
+        const args = call.getArguments();
+        if (args.length < 3) {
+            throw new Error(`setWeight() requires 3 arguments at ${call.getStartLineNumber()}`);
+        }
+
+        const filename = this.resolveStringExpr(args[0] as Expression);
+        const state = this.resolveStringExpr(args[1] as Expression);
+        const weight = Number(args[2]!.getText());
+
+        const operation: TDSetWeight = {
+            op: "set_weight",
+            filename,
+            state,
+            weight,
+        };
+
+        return [{ type: "patch", operation }];
+    }
+
+    /**
+     * Transform replaceSay(filename, state, text)
+     */
+    private transformReplaceSay(call: CallExpression): TDConstruct[] | null {
+        const args = call.getArguments();
+        if (args.length < 3) {
+            throw new Error(`replaceSay() requires 3 arguments at ${call.getStartLineNumber()}`);
+        }
+
+        const filename = this.resolveStringExpr(args[0] as Expression);
+        const state = this.resolveStringExpr(args[1] as Expression);
+        const text = this.expressionToText(args[2] as Expression);
+
+        const operation: TDReplaceSay = {
+            op: "replace_say",
+            filename,
+            state,
+            text,
+        };
+
+        return [{ type: "patch", operation }];
+    }
+
+    /**
+     * Transform replaceStateTrigger(filename, states, trigger, options?)
+     */
+    private transformReplaceStateTrigger(call: CallExpression): TDConstruct[] | null {
+        const args = call.getArguments();
+        if (args.length < 3) {
+            throw new Error(`replaceStateTrigger() requires at least 3 arguments at ${call.getStartLineNumber()}`);
+        }
+
+        const filename = this.resolveStringExpr(args[0] as Expression);
+        const states = this.parseStateList(args[1] as Expression);
+        const trigger = this.expressionToTrigger(args[2] as Expression);
+        const unless = args[3] ? this.parseUnless(args[3] as Expression) : undefined;
+
+        const operation: TDReplaceStateTrigger = {
+            op: "replace_state_trigger",
+            filename,
+            states,
+            trigger,
+            unless,
+        };
+
+        return [{ type: "patch", operation }];
     }
 
     /**
@@ -595,7 +958,7 @@ export class TDParser {
                 // Handle weight() - specific to states
                 else if (funcName === "weight") {
                     this.validateArgs("weight", args, 1, expr.getStartLineNumber());
-                    state.weight = Number(args[0].getText());
+                    state.weight = Number(args[0]!.getText()); // Guaranteed by validateArgs
                 }
                 // Handle transition calls - use unified helper
                 else {
@@ -720,29 +1083,13 @@ export class TDParser {
                     const funcName = expr.getExpression().getText();
                     const args = expr.getArguments();
 
-                    if (funcName === "say") {
-                        if (args.length >= 2 && args[0] && args[1]) {
-                            // say(speaker, text) - new entry with speaker
-                            const speaker = this.stripQuotes(args[0].getText());
-                            if (!filename) filename = speaker;
-
-                            if (currentEntry) {
-                                entries.push(currentEntry);
-                            }
-                            currentEntry = {
-                                speaker,
-                                texts: [this.expressionToText(args[1] as Expression)],
-                            };
-                        } else if (args.length >= 1 && args[0]) {
-                            // say(text) - continuation of current speaker (multisay)
-                            if (!currentEntry) {
-                                throw new Error(`say(text) without speaker - must use say(speaker, text) first at ${expr.getStartLineNumber()}`);
-                            }
-                            currentEntry.texts.push(this.expressionToText(args[0] as Expression));
-                        } else {
-                            throw new Error(`say() requires at least 1 argument at ${expr.getStartLineNumber()}`);
+                    if (funcName === TD_KEYWORDS.SAY) {
+                        currentEntry = this.processSayInChain(args, expr, currentEntry, entries);
+                        // Extract filename from first speaker
+                        if (!filename && currentEntry?.speaker) {
+                            filename = currentEntry.speaker;
                         }
-                    } else if (funcName === "action") {
+                    } else if (funcName === TD_KEYWORDS.ACTION) {
                         // Action after current entry
                         if (args.length === 0) {
                             throw new Error(`action() requires at least 1 argument at ${expr.getStartLineNumber()}`);
@@ -796,37 +1143,12 @@ export class TDParser {
         const trigger = this.expressionToTrigger(ifStmt.getExpression());
         const thenStmts = this.getBlockStatements(ifStmt.getThenStatement());
 
-        let conditionalEntry: TDChainEntry | null = null;
-
-        for (const s of thenStmts) {
-            if (s.isKind(SyntaxKind.ExpressionStatement)) {
-                const expr = s.getExpression();
-                if (Node.isCallExpression(expr)) {
-                    const funcName = expr.getExpression().getText();
-                    const args = expr.getArguments();
-
-                    if (funcName === "say") {
-                        if (args.length >= 2 && args[0] && args[1]) {
-                            // Conditional say with speaker - create new entry
-                            if (conditionalEntry) {
-                                entries.push(conditionalEntry);
-                            }
-                            conditionalEntry = {
-                                speaker: this.stripQuotes(args[0].getText()),
-                                trigger,
-                                texts: [this.expressionToText(args[1] as Expression)],
-                            };
-                        } else if (args.length >= 1 && args[0]) {
-                            // Multisay continuation within conditional
-                            if (!conditionalEntry) {
-                                throw new Error(`say(text) without speaker in conditional at ${expr.getStartLineNumber()}`);
-                            }
-                            conditionalEntry.texts.push(this.expressionToText(args[0] as Expression));
-                        }
-                    }
-                }
-            }
-        }
+        const conditionalEntry = this.processChainStatements(
+            thenStmts,
+            entries,
+            null,
+            { trigger }
+        );
 
         // Push final conditional entry
         if (conditionalEntry) {
@@ -935,6 +1257,13 @@ export class TDParser {
         }
 
         return this.substituteVars(expr.getText());
+    }
+
+    /**
+     * Convert an expression to an action string.
+     */
+    private expressionToAction(expr: Expression): string {
+        return this.expressionToActionString(expr);
     }
 
     /**
@@ -1331,8 +1660,8 @@ export class TDParser {
     /**
      * Validate function call has required number of arguments.
      */
-    private validateArgs(funcName: string, args: any[], minArgs: number, lineNumber: number) {
-        if (args.length < minArgs || !args.slice(0, minArgs).every(a => a)) {
+    private validateArgs(funcName: string, args: Node[], minArgs: number, lineNumber: number) {
+        if (args.length < minArgs || !args.slice(0, minArgs).every((a) => a)) {
             const argWord = minArgs === 1 ? "argument" : "arguments";
             throw new Error(`${funcName}() requires at least ${minArgs} ${argWord} at ${lineNumber}`);
         }
@@ -1348,7 +1677,7 @@ export class TDParser {
      */
     private processTransitionCall(
         funcName: string,
-        args: any[],
+        args: Node[],
         expr: CallExpression,
         context: {
             getLastTransition(): TDTransition | undefined;
@@ -1418,7 +1747,7 @@ export class TDParser {
                 if (!lastTrans) {
                     throw new Error(`flags() must come after a transition at ${lineNumber}`);
                 }
-                lastTrans.flags = Number(args[0].getText());
+                lastTrans.flags = Number(args[0]!.getText()); // Guaranteed by validateArgs
                 break;
             }
 
@@ -1430,8 +1759,8 @@ export class TDParser {
                 }
                 lastTrans.next = {
                     type: "extern",
-                    filename: this.stripQuotes(args[0].getText()),
-                    target: this.stripQuotes(args[1].getText()),
+                    filename: this.stripQuotes(args[0]!.getText()), // Guaranteed by validateArgs
+                    target: this.stripQuotes(args[1]!.getText()), // Guaranteed by validateArgs
                 };
                 break;
             }
@@ -1449,7 +1778,7 @@ export class TDParser {
     private setTransitionField(
         context: { getLastTransition(): TDTransition | undefined },
         field: "journal" | "solvedJournal" | "unsolvedJournal",
-        args: any[],
+        args: Node[],
         lineNumber: number,
         funcName: string
     ) {
@@ -1459,5 +1788,63 @@ export class TDParser {
             throw new Error(`${funcName}() must come after a transition at ${lineNumber}`);
         }
         lastTrans[field] = this.expressionToText(args[0] as Expression);
+    }
+
+    // =============================================================================
+    // Patch Operation Helpers
+    // =============================================================================
+
+    /**
+     * Parse a state list (array of strings/numbers or single value)
+     */
+    private parseStateList(expr: Expression): (string | number)[] {
+        if (Node.isArrayLiteralExpression(expr)) {
+            return expr.getElements().map((e) => {
+                const text = e.getText();
+                // Check if it's a number or string
+                if (/^\d+$/.test(text)) {
+                    return Number(text);
+                }
+                return this.resolveStringExpr(e as Expression);
+            });
+        }
+
+        // Single value
+        const text = expr.getText();
+        if (/^\d+$/.test(text)) {
+            return [Number(text)];
+        }
+        return [this.resolveStringExpr(expr)];
+    }
+
+    /**
+     * Parse an array of numbers
+     */
+    private parseNumberArray(expr: Expression): number[] {
+        if (!Node.isArrayLiteralExpression(expr)) {
+            throw new Error(`Expected array of numbers at ${expr.getStartLineNumber()}`);
+        }
+
+        return expr.getElements().map((e) => Number(e.getText()));
+    }
+
+    /**
+     * Parse unless option (can be string or regex-like object)
+     */
+    private parseUnless(expr: Expression): string | undefined {
+        // Can be a string or object with { unless: "..." }
+        if (Node.isObjectLiteralExpression(expr)) {
+            for (const prop of expr.getProperties()) {
+                if (Node.isPropertyAssignment(prop) && prop.getName() === "unless") {
+                    const value = prop.getInitializer();
+                    if (value) {
+                        return this.stripQuotes(value.getText());
+                    }
+                }
+            }
+            return undefined;
+        }
+
+        return this.stripQuotes(expr.getText());
     }
 }

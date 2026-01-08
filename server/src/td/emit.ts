@@ -123,8 +123,8 @@ function emitTransition(trans: TDTransition): string {
         result += "++";
     }
 
-    // Reply text
-    result += " " + emitText(trans.reply);
+    // Reply text (guaranteed to exist after hasReply check above)
+    result += " " + emitText(trans.reply!);
 
     // DO action
     if (trans.action) {
@@ -387,6 +387,7 @@ function emitInterject(interject: TDChain | TDInterject): string {
         // Emit texts
         for (let j = 0; j < entry.texts.length; j++) {
             const text = entry.texts[j];
+            if (!text) continue; // Skip undefined entries
             const prefix = j === 0 ? "    " : "  = ";
             lines.push(`${prefix}${emitText(text)}`);
         }
@@ -436,8 +437,12 @@ function emitPatch(patch: { type: "patch"; operation: import("./types").TDPatchO
             return `SET_WEIGHT ${op.filename} ${op.state} #${op.weight}`;
         case "replace_say":
             return `REPLACE_SAY ${op.filename} ${op.state} ${emitText(op.text)}`;
-        case "replace_state_trigger":
-            return `REPLACE_STATE_TRIGGER ${op.filename} ${formatStateList(op.states)} ~${op.trigger}~${formatUnless(op.unless)}`;
+        case "replace_state_trigger": {
+            // Format: REPLACE_STATE_TRIGGER filename state1 ~trigger~ [state2 state3...] [UNLESS ~condition~]
+            const [firstState, ...restStates] = op.states;
+            const rest = restStates.length > 0 ? ` ${formatStateList(restStates)}` : "";
+            return `REPLACE_STATE_TRIGGER ${op.filename} ${firstState} ~${op.trigger}~${rest}${formatUnless(op.unless)}`;
+        }
     }
 }
 
