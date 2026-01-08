@@ -670,6 +670,11 @@
     }
   },
   {
+    "type": "exit_next",
+    "named": true,
+    "fields": {}
+  },
+  {
     "type": "extend_action",
     "named": true,
     "fields": {
@@ -1677,9 +1682,17 @@
         ]
       },
       "weight": {
-        "multiple": false,
+        "multiple": true,
         "required": true,
         "types": [
+          {
+            "type": "#",
+            "named": false
+          },
+          {
+            "type": "-",
+            "named": false
+          },
           {
             "type": "number",
             "named": true
@@ -1851,9 +1864,17 @@
         ]
       },
       "weight": {
-        "multiple": false,
+        "multiple": true,
         "required": false,
         "types": [
+          {
+            "type": "#",
+            "named": false
+          },
+          {
+            "type": "-",
+            "named": false
+          },
           {
             "type": "number",
             "named": true
@@ -2084,6 +2105,10 @@
     "named": false
   },
   {
+    "type": "-",
+    "named": false
+  },
+  {
     "type": "/",
     "named": false
   },
@@ -2101,6 +2126,42 @@
   },
   {
     "type": "==",
+    "named": false
+  },
+  {
+    "type": "ADD_STATE_TRIGGER",
+    "named": false
+  },
+  {
+    "type": "ADD_TRANS_ACTION",
+    "named": false
+  },
+  {
+    "type": "ADD_TRANS_TRIGGER",
+    "named": false
+  },
+  {
+    "type": "ALTER_TRANS",
+    "named": false
+  },
+  {
+    "type": "APPEND",
+    "named": false
+  },
+  {
+    "type": "APPEND_EARLY",
+    "named": false
+  },
+  {
+    "type": "AT",
+    "named": false
+  },
+  {
+    "type": "BEGIN",
+    "named": false
+  },
+  {
+    "type": "BRANCH",
     "named": false
   },
   {
@@ -2128,7 +2189,23 @@
     "named": false
   },
   {
+    "type": "EXTEND_BOTTOM",
+    "named": false
+  },
+  {
+    "type": "EXTEND_TOP",
+    "named": false
+  },
+  {
     "type": "EXTERN",
+    "named": false
+  },
+  {
+    "type": "FLAGS",
+    "named": false
+  },
+  {
+    "type": "GOTO",
     "named": false
   },
   {
@@ -2160,11 +2237,87 @@
     "named": false
   },
   {
+    "type": "JOURNAL",
+    "named": false
+  },
+  {
+    "type": "REPLACE",
+    "named": false
+  },
+  {
+    "type": "REPLACE_ACTION_TEXT",
+    "named": false
+  },
+  {
+    "type": "REPLACE_ACTION_TEXT_PROCESS",
+    "named": false
+  },
+  {
+    "type": "REPLACE_ACTION_TEXT_PROCESS_REGEXP",
+    "named": false
+  },
+  {
+    "type": "REPLACE_ACTION_TEXT_REGEXP",
+    "named": false
+  },
+  {
+    "type": "REPLACE_SAY",
+    "named": false
+  },
+  {
+    "type": "REPLACE_STATE_TRIGGER",
+    "named": false
+  },
+  {
+    "type": "REPLACE_TRANS_ACTION",
+    "named": false
+  },
+  {
+    "type": "REPLACE_TRANS_TRIGGER",
+    "named": false
+  },
+  {
+    "type": "REPLACE_TRIGGER_TEXT",
+    "named": false
+  },
+  {
+    "type": "REPLACE_TRIGGER_TEXT_REGEXP",
+    "named": false
+  },
+  {
+    "type": "REPLY",
+    "named": false
+  },
+  {
+    "type": "R_A_T_P_R",
+    "named": false
+  },
+  {
     "type": "SAFE",
     "named": false
   },
   {
+    "type": "SAY",
+    "named": false
+  },
+  {
+    "type": "SET_WEIGHT",
+    "named": false
+  },
+  {
+    "type": "SOLVED_JOURNAL",
+    "named": false
+  },
+  {
     "type": "THEN",
+    "named": false
+  },
+  {
+    "type": "UNLESS",
+    "named": false
+  },
+  {
+    "type": "UNSOLVED_JOURNAL",
     "named": false
   },
   {
@@ -2173,10 +2326,6 @@
   },
   {
     "type": "double_content",
-    "named": true
-  },
-  {
-    "type": "exit_next",
     "named": true
   },
   {

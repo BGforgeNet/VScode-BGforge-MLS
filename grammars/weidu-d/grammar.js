@@ -44,7 +44,7 @@ export default grammar({
         // BEGIN filename [nonPausing] state list
         begin_action: ($) =>
             seq(
-                caseInsensitive("BEGIN"),
+                "BEGIN",
                 field("file", $._filename),
                 optional(field("non_pausing", $.number)),
                 repeat($.state)
@@ -53,22 +53,22 @@ export default grammar({
         // APPEND [IF_FILE_EXISTS] filename state list END
         append_action: ($) =>
             seq(
-                choice(caseInsensitive("APPEND"), caseInsensitive("APPEND_EARLY")),
-                optional(caseInsensitive("IF_FILE_EXISTS")),
+                choice("APPEND", "APPEND_EARLY"),
+                optional("IF_FILE_EXISTS"),
                 field("file", $._filename),
                 repeat($.state),
-                caseInsensitive("END")
+"END"
             ),
 
         // EXTEND_TOP/EXTEND_BOTTOM filename stateLabel list [#positionNumber] transition list END
         extend_action: ($) =>
             seq(
-                choice(caseInsensitive("EXTEND_TOP"), caseInsensitive("EXTEND_BOTTOM")),
+                choice("EXTEND_TOP", "EXTEND_BOTTOM"),
                 field("file", $._filename),
                 field("states", repeat1($._state_label)),
                 optional(seq("#", $.number)),
                 repeat($.transition),
-                caseInsensitive("END")
+"END"
             ),
 
         // CHAIN [IF [WEIGHT #weight] trigger THEN] [IF_FILE_EXISTS] entryFile entryLabel chainText chainEpilogue
@@ -78,7 +78,7 @@ export default grammar({
                 optional(
                     seq(
                         "IF",
-                        optional(seq("WEIGHT", "#", $.number)),
+                        optional(seq("WEIGHT", $._weight_value)),
                         field("trigger", $.string),
                         optional("THEN")
                     )
@@ -121,7 +121,7 @@ export default grammar({
         // chainText: [IF trigger THEN] sayText [== ... | BRANCH ...]
         chain_text: ($) =>
             seq(
-                optional(seq("IF", field("trigger", $.string), optional("THEN"))),
+                optional($._if_trigger_then),
                 $.say_text,
                 optional($.do_feature),
                 repeat(choice($.chain_speaker, $.chain_branch))
@@ -133,7 +133,7 @@ export default grammar({
                 "==",
                 optional("IF_FILE_EXISTS"),
                 field("file", $._filename),
-                optional(seq("IF", field("trigger", $.string), optional("THEN"))),
+                optional($._if_trigger_then),
                 $.say_text,
                 optional($.do_feature)
             ),
@@ -141,11 +141,11 @@ export default grammar({
         // BRANCH trigger BEGIN [== fileName [IF trigger THEN] sayText ...] END
         chain_branch: ($) =>
             seq(
-                caseInsensitive("BRANCH"),
+                "BRANCH",
                 field("trigger", $.string),
-                caseInsensitive("BEGIN"),
+                "BEGIN",
                 repeat($.chain_speaker),
-                caseInsensitive("END")
+"END"
             ),
 
         // chainEpilogue: END file state | EXTERN file state | COPY_TRANS file state | EXIT | END transitions
@@ -166,16 +166,16 @@ export default grammar({
         // REPLACE filename state list END
         replace_action: ($) =>
             seq(
-                caseInsensitive("REPLACE"),
+                "REPLACE",
                 field("file", $._filename),
                 repeat($.state),
-                caseInsensitive("END")
+"END"
             ),
 
         // REPLACE_ACTION_TEXT filename oldText newText [moreFilenames] [dActionWhen]
         replace_action_text: ($) =>
             seq(
-                caseInsensitive("REPLACE_ACTION_TEXT"),
+                "REPLACE_ACTION_TEXT",
                 field("file", $._filename),
                 field("old_text", $.string),
                 field("new_text", $.string),
@@ -186,7 +186,7 @@ export default grammar({
         // REPLACE_ACTION_TEXT_REGEXP filenameRegexp oldText newText [moreFilenameRegexps] [dActionWhen]
         replace_action_text_regexp: ($) =>
             seq(
-                caseInsensitive("REPLACE_ACTION_TEXT_REGEXP"),
+                "REPLACE_ACTION_TEXT_REGEXP",
                 field("file", $.string),
                 field("old_text", $.string),
                 field("new_text", $.string),
@@ -198,9 +198,9 @@ export default grammar({
         replace_action_text_process: ($) =>
             seq(
                 choice(
-                    caseInsensitive("REPLACE_ACTION_TEXT_PROCESS"),
-                    caseInsensitive("REPLACE_ACTION_TEXT_PROCESS_REGEXP"),
-                    caseInsensitive("R_A_T_P_R")
+                    "REPLACE_ACTION_TEXT_PROCESS",
+                    "REPLACE_ACTION_TEXT_PROCESS_REGEXP",
+                    "R_A_T_P_R"
                 ),
                 field("file", $._filename),
                 field("old_text", $.string),
@@ -212,17 +212,13 @@ export default grammar({
         // ALTER_TRANS filename BEGIN stateNumber list END BEGIN transNumber list END BEGIN changes END
         alter_trans: ($) =>
             seq(
-                caseInsensitive("ALTER_TRANS"),
+                "ALTER_TRANS",
                 field("file", $._filename),
-                caseInsensitive("BEGIN"),
-                repeat($._state_label),
-                caseInsensitive("END"),
-                caseInsensitive("BEGIN"),
-                repeat($.number),
-                caseInsensitive("END"),
-                caseInsensitive("BEGIN"),
+                $._state_label_list,
+                $._trans_number_list,
+                "BEGIN",
                 repeat($.alter_trans_change),
-                caseInsensitive("END")
+"END"
             ),
 
         alter_trans_change: ($) =>
@@ -231,14 +227,10 @@ export default grammar({
         // REPLACE_TRANS_TRIGGER filename BEGIN states END BEGIN trans END oldText newText [dActionWhen]
         replace_trans_trigger: ($) =>
             seq(
-                caseInsensitive("REPLACE_TRANS_TRIGGER"),
+                "REPLACE_TRANS_TRIGGER",
                 field("file", $._filename),
-                caseInsensitive("BEGIN"),
-                repeat($._state_label),
-                caseInsensitive("END"),
-                caseInsensitive("BEGIN"),
-                repeat($.number),
-                caseInsensitive("END"),
+                $._state_label_list,
+                $._trans_number_list,
                 field("old_text", $.string),
                 field("new_text", $.string),
                 repeat($.d_action_when)
@@ -247,14 +239,10 @@ export default grammar({
         // REPLACE_TRANS_ACTION filename BEGIN states END BEGIN trans END oldText newText [dActionWhen]
         replace_trans_action: ($) =>
             seq(
-                caseInsensitive("REPLACE_TRANS_ACTION"),
+                "REPLACE_TRANS_ACTION",
                 field("file", $._filename),
-                caseInsensitive("BEGIN"),
-                repeat($._state_label),
-                caseInsensitive("END"),
-                caseInsensitive("BEGIN"),
-                repeat($.number),
-                caseInsensitive("END"),
+                $._state_label_list,
+                $._trans_number_list,
                 field("old_text", $.string),
                 field("new_text", $.string),
                 repeat($.d_action_when)
@@ -263,7 +251,7 @@ export default grammar({
         // REPLACE_TRIGGER_TEXT filename oldText newText [dActionWhen]
         replace_trigger_text: ($) =>
             seq(
-                caseInsensitive("REPLACE_TRIGGER_TEXT"),
+                "REPLACE_TRIGGER_TEXT",
                 field("file", $._filename),
                 field("old_text", $.string),
                 field("new_text", $.string),
@@ -273,7 +261,7 @@ export default grammar({
         // REPLACE_TRIGGER_TEXT_REGEXP filenameRegexp oldText newText [dActionWhen]
         replace_trigger_text_regexp: ($) =>
             seq(
-                caseInsensitive("REPLACE_TRIGGER_TEXT_REGEXP"),
+                "REPLACE_TRIGGER_TEXT_REGEXP",
                 field("file", $.string),
                 field("old_text", $.string),
                 field("new_text", $.string),
@@ -283,7 +271,7 @@ export default grammar({
         // REPLACE_STATE_TRIGGER filename stateNumber triggerString [moreStateNumbers] [dActionWhen]
         replace_state_trigger: ($) =>
             seq(
-                caseInsensitive("REPLACE_STATE_TRIGGER"),
+                "REPLACE_STATE_TRIGGER",
                 field("file", $._filename),
                 field("state", $._state_label),
                 field("trigger", $.string),
@@ -294,7 +282,7 @@ export default grammar({
         // REPLACE_SAY filename stateLabel sayText
         replace_say: ($) =>
             seq(
-                caseInsensitive("REPLACE_SAY"),
+                "REPLACE_SAY",
                 field("file", $._filename),
                 field("state", $._state_label),
                 field("text", $._text)
@@ -303,17 +291,16 @@ export default grammar({
         // SET_WEIGHT filename stateLabel #stateWeight
         set_weight: ($) =>
             seq(
-                caseInsensitive("SET_WEIGHT"),
+                "SET_WEIGHT",
                 field("file", $._filename),
                 field("state", $._state_label),
-                "#",
-                field("weight", $.number)
+                field("weight", $._weight_value)
             ),
 
         // ADD_STATE_TRIGGER filename stateN [dActionWhen] triggerString
         add_state_trigger: ($) =>
             seq(
-                caseInsensitive("ADD_STATE_TRIGGER"),
+                "ADD_STATE_TRIGGER",
                 field("file", $._filename),
                 field("state", $._state_label),
                 optional($.d_action_when),
@@ -323,26 +310,22 @@ export default grammar({
         // ADD_TRANS_TRIGGER filename stateN triggerString [moreStates] [DO transNumbers] [dActionWhen]
         add_trans_trigger: ($) =>
             seq(
-                caseInsensitive("ADD_TRANS_TRIGGER"),
+                "ADD_TRANS_TRIGGER",
                 field("file", $._filename),
                 field("state", $._state_label),
                 field("trigger", $.string),
                 repeat($._state_label),
-                optional(seq(caseInsensitive("DO"), repeat1($.number))),
+                optional(seq("DO", repeat1($.number))),
                 repeat($.d_action_when)
             ),
 
         // ADD_TRANS_ACTION filename BEGIN states END BEGIN trans END [dActionWhen] actionString
         add_trans_action: ($) =>
             seq(
-                caseInsensitive("ADD_TRANS_ACTION"),
+                "ADD_TRANS_ACTION",
                 field("file", $._filename),
-                caseInsensitive("BEGIN"),
-                repeat($._state_label),
-                caseInsensitive("END"),
-                caseInsensitive("BEGIN"),
-                repeat($.number),
-                caseInsensitive("END"),
+                $._state_label_list,
+                $._trans_number_list,
                 optional($.d_action_when),
                 field("action", $.string)
             ),
@@ -350,23 +333,23 @@ export default grammar({
         // dActionWhen - conditional for D actions
         d_action_when: ($) =>
             choice(
-                seq(caseInsensitive("IF"), field("condition", $.string)),
-                seq(caseInsensitive("UNLESS"), field("condition", $.string))
+                seq("IF", field("condition", $.string)),
+                seq("UNLESS", field("condition", $.string))
             ),
 
         // IF [WEIGHT #n] ~trigger~ [THEN] [BEGIN] label SAY text [= text...] transitions END
         state: ($) =>
             seq(
-                caseInsensitive("IF"),
-                optional(seq(caseInsensitive("WEIGHT"), "#", field("weight", $.number))),
+                "IF",
+                optional(seq("WEIGHT", field("weight", $._weight_value))),
                 field("trigger", $.string),
-                optional(caseInsensitive("THEN")),
-                optional(caseInsensitive("BEGIN")),
+                optional("THEN"),
+                optional("BEGIN"),
                 field("label", $._state_label),
-                caseInsensitive("SAY"),
+                "SAY",
                 field("say", $.say_text),
                 repeat($.transition),
-                caseInsensitive("END")
+"END"
             ),
 
         // SAY text [= text ...]
@@ -387,9 +370,9 @@ export default grammar({
         // IF ~trigger~ [THEN] transFeatures transNext
         transition_full: ($) =>
             seq(
-                caseInsensitive("IF"),
+                "IF",
                 field("trigger", $.string),
-                optional(caseInsensitive("THEN")),
+                optional("THEN"),
                 repeat($._trans_feature),
                 $._trans_next
             ),
@@ -409,8 +392,8 @@ export default grammar({
         // COPY_TRANS [SAFE] filename stateLabel
         copy_trans: ($) =>
             seq(
-                choice(caseInsensitive("COPY_TRANS"), caseInsensitive("COPY_TRANS_LATE")),
-                optional(caseInsensitive("SAFE")),
+                choice("COPY_TRANS", "COPY_TRANS_LATE"),
+                optional("SAFE"),
                 field("file", $._filename),
                 field("state", $._state_label)
             ),
@@ -424,21 +407,21 @@ export default grammar({
                 $.flags_feature
             ),
 
-        reply_feature: ($) => seq(caseInsensitive("REPLY"), field("text", $._text)),
+        reply_feature: ($) => seq("REPLY", field("text", $._text)),
 
         do_feature: ($) => seq("DO", field("action", $.string)),
 
         journal_feature: ($) =>
             seq(
                 choice(
-                    caseInsensitive("JOURNAL"),
-                    caseInsensitive("SOLVED_JOURNAL"),
-                    caseInsensitive("UNSOLVED_JOURNAL")
+                    "JOURNAL",
+                    "SOLVED_JOURNAL",
+"UNSOLVED_JOURNAL"
                 ),
                 field("text", $._text)
             ),
 
-        flags_feature: ($) => seq(caseInsensitive("FLAGS"), $.number),
+        flags_feature: ($) => seq("FLAGS", $.number),
 
         // Transaction next (where to go)
         _trans_next: ($) =>
@@ -449,17 +432,17 @@ export default grammar({
                 $.short_goto
             ),
 
-        goto_next: ($) => seq(caseInsensitive("GOTO"), field("label", $._state_label)),
+        goto_next: ($) => seq("GOTO", field("label", $._state_label)),
 
         extern_next: ($) =>
             seq(
-                caseInsensitive("EXTERN"),
-                optional(caseInsensitive("IF_FILE_EXISTS")),
+                "EXTERN",
+                optional("IF_FILE_EXISTS"),
                 field("file", $._filename),
                 field("label", $._state_label)
             ),
 
-        exit_next: ($) => caseInsensitive("EXIT"),
+        exit_next: ($) => "EXIT",
 
         // + stateLabel (shorthand for GOTO)
         short_goto: ($) => seq("+", field("label", $._state_label)),
@@ -472,6 +455,18 @@ export default grammar({
 
         // Alphanumeric state label (can start with digit, like "4a", "100", "foo")
         state_label_alnum: ($) => /[A-Za-z0-9_]+/,
+
+        // Weight value: #[-]number
+        _weight_value: ($) => seq("#", optional("-"), $.number),
+
+        // BEGIN...END state label list
+        _state_label_list: ($) => seq("BEGIN", repeat($._state_label), "END"),
+
+        // BEGIN...END transaction number list
+        _trans_number_list: ($) => seq("BEGIN", repeat($.number), "END"),
+
+        // IF trigger [THEN] pattern
+        _if_trigger_then: ($) => seq("IF", field("trigger", $.string), optional("THEN")),
 
         // Text types
         _text: ($) =>
@@ -503,7 +498,7 @@ export default grammar({
         // References
         tra_ref: ($) => token(seq("@", /[0-9]+/)),
         tlk_ref: ($) => token(seq("#", /[0-9]+/)),
-        at_var_ref: ($) => seq("(", caseInsensitive("AT"), $.double_string, ")"),
+        at_var_ref: ($) => seq("(", "AT", $.double_string, ")"),
 
         // WeiDU variable reference %name%
         variable_ref: ($) => token(seq("%", /[A-Za-z_][A-Za-z0-9_]*/, "%")),
@@ -517,13 +512,3 @@ export default grammar({
         line_comment: ($) => seq("//", /[^\n]*/),
     },
 });
-
-// Case-insensitive keyword helper
-function caseInsensitive(keyword) {
-    return new RegExp(
-        keyword
-            .split("")
-            .map((c) => (/[a-zA-Z]/.test(c) ? `[${c.toLowerCase()}${c.toUpperCase()}]` : c))
-            .join("")
-    );
-}
