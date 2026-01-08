@@ -19,7 +19,6 @@ import {
     Project,
     ReturnStatement,
     SourceFile,
-    SpreadElement,
     Statement,
     SyntaxKind,
 } from "ts-morph";
@@ -480,6 +479,7 @@ export class TBAFTransformer {
     /**
      * Unroll a for-of loop, calling the callback for each element.
      * Sets the loop variable in vars context during each iteration.
+     * Supports array destructuring: for (const [a, b, c] of array)
      */
     private unrollForOf(forOf: ForOfStatement, onIteration: () => void): void {
         const arrayExpr = forOf.getExpression();
@@ -489,14 +489,49 @@ export class TBAFTransformer {
             throw new Error(`Cannot unroll for-of: array expression "${arrayExpr.getText()}" is not resolvable`);
         }
 
-        const loopVar = forOf.getInitializer().getText().replace(/^const\s+/, "").replace(/^let\s+/, "");
+        const initializer = forOf.getInitializer();
 
-        for (const element of elements) {
-            this.vars.set(loopVar, element);
-            onIteration();
+        // Check for array destructuring pattern: const [a, b, c] of array
+        const bindingPattern = initializer.getDescendantsOfKind(SyntaxKind.ArrayBindingPattern)[0];
+
+        if (bindingPattern) {
+            // Destructuring: extract binding element names
+            const bindingNames = utils.getBindingNames(bindingPattern);
+
+            for (const element of elements) {
+                const values = utils.parseArrayLiteral(element);
+                if (!values) {
+                    throw new Error(`Cannot destructure "${element}" - not a valid array literal`);
+                }
+
+                // Set each destructured variable
+                for (let i = 0; i < bindingNames.length; i++) {
+                    const name = bindingNames[i];
+                    if (name) {
+                        this.vars.set(name, values[i] ?? "undefined");
+                    }
+                }
+
+                onIteration();
+            }
+
+            // Clean up all destructured variables
+            for (const name of bindingNames) {
+                if (name) {
+                    this.vars.delete(name);
+                }
+            }
+        } else {
+            // Simple variable: const item of array
+            const loopVar = initializer.getText().replace(/^const\s+/, "").replace(/^let\s+/, "");
+
+            for (const element of elements) {
+                this.vars.set(loopVar, element);
+                onIteration();
+            }
+
+            this.vars.delete(loopVar);
         }
-
-        this.vars.delete(loopVar);
     }
 
     /**
@@ -727,7 +762,7 @@ export class TBAFTransformer {
     private evaluateExpression(expr: Expression): string | undefined {
         if (expr.isKind(SyntaxKind.ArrayLiteralExpression)) {
             const arr = expr as ArrayLiteralExpression;
-            const elements = this.flattenArrayElements(arr);
+            const elements = utils.flattenArrayElements(arr, this.vars);
             return `[${elements.join(", ")}]`;
         }
 
@@ -746,54 +781,19 @@ export class TBAFTransformer {
     }
 
     /**
-     * Flatten array elements, resolving spreads.
-     */
-    private flattenArrayElements(arr: ArrayLiteralExpression): string[] {
-        const result: string[] = [];
-
-        for (const el of arr.getElements()) {
-            if (el.isKind(SyntaxKind.SpreadElement)) {
-                const spreadExpr = (el as SpreadElement).getExpression();
-                if (spreadExpr.isKind(SyntaxKind.ArrayLiteralExpression)) {
-                    result.push(...this.flattenArrayElements(spreadExpr as ArrayLiteralExpression));
-                } else if (spreadExpr.isKind(SyntaxKind.Identifier)) {
-                    const name = spreadExpr.getText();
-                    if (this.vars.has(name)) {
-                        const value = this.vars.get(name)!;
-                        // Parse array literal
-                        const inner = value.slice(1, -1).trim();
-                        if (inner) {
-                            result.push(...inner.split(",").map(s => s.trim()));
-                        }
-                    }
-                }
-            } else {
-                result.push(utils.substituteVars(el.getText(), this.vars));
-            }
-        }
-
-        return result;
-    }
-
-    /**
      * Resolve array elements from an expression.
      */
     private resolveArrayElements(expr: Expression): string[] | null {
         if (expr.isKind(SyntaxKind.ArrayLiteralExpression)) {
-            return this.flattenArrayElements(expr as ArrayLiteralExpression);
+            return utils.flattenArrayElements(expr as ArrayLiteralExpression, this.vars);
         }
 
         if (expr.isKind(SyntaxKind.Identifier)) {
             const name = expr.getText();
-            if (this.vars.has(name)) {
-                const value = this.vars.get(name)!;
-                if (value.startsWith("[") && value.endsWith("]")) {
-                    const inner = value.slice(1, -1).trim();
-                    if (inner) {
-                        return inner.split(",").map(s => s.trim());
-                    }
-                    return [];
-                }
+            const value = this.vars.get(name);
+            if (value && value.startsWith("[") && value.endsWith("]")) {
+                // Use robust parseArrayLiteral instead of simple split
+                return utils.parseArrayLiteral(value);
             }
         }
 

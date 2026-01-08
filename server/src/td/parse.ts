@@ -6,7 +6,6 @@
  */
 
 import {
-    ArrayBindingPattern,
     ArrayLiteralExpression,
     Block,
     CallExpression,
@@ -1485,10 +1484,10 @@ export class TDParser {
 
         if (bindingPattern) {
             // Destructuring: extract binding element names
-            const bindingNames = this.getBindingNames(bindingPattern);
+            const bindingNames = utils.getBindingNames(bindingPattern);
 
             for (const element of elements) {
-                const values = this.parseArrayLiteral(element);
+                const values = utils.parseArrayLiteral(element);
                 if (!values) {
                     throw new Error(`Cannot destructure "${element}" - not a valid array literal`);
                 }
@@ -1525,76 +1524,6 @@ export class TDParser {
 
             this.vars.delete(loopVar);
         }
-    }
-
-    /**
-     * Extract binding element names from an array binding pattern.
-     * E.g., [a, b, c] -> ["a", "b", "c"]
-     */
-    private getBindingNames(pattern: ArrayBindingPattern): (string | null)[] {
-        return pattern.getElements().map((el) => {
-            if (el.isKind(SyntaxKind.BindingElement)) {
-                return el.getName();
-            }
-            // OmittedExpression (skipped element, e.g., [a, , c])
-            return null;
-        });
-    }
-
-    /**
-     * Parse a string representation of an array literal into individual values.
-     * E.g., '["foo", 123, "bar"]' -> ['"foo"', '123', '"bar"']
-     */
-    private parseArrayLiteral(text: string): string[] | null {
-        const trimmed = text.trim();
-        if (!trimmed.startsWith("[") || !trimmed.endsWith("]")) {
-            return null;
-        }
-
-        const inner = trimmed.slice(1, -1).trim();
-        if (!inner) {
-            return [];
-        }
-
-        // Parse respecting quoted strings and nested brackets
-        const values: string[] = [];
-        let current = "";
-        let depth = 0;
-        let inString = false;
-        let stringChar = "";
-
-        for (let i = 0; i < inner.length; i++) {
-            const char = inner[i]!;
-            const prevChar = inner[i - 1];
-
-            if (inString) {
-                current += char;
-                if (char === stringChar && prevChar !== "\\") {
-                    inString = false;
-                }
-            } else if (char === '"' || char === "'") {
-                inString = true;
-                stringChar = char;
-                current += char;
-            } else if (char === "[") {
-                depth++;
-                current += char;
-            } else if (char === "]") {
-                depth--;
-                current += char;
-            } else if (char === "," && depth === 0) {
-                values.push(current.trim());
-                current = "";
-            } else {
-                current += char;
-            }
-        }
-
-        if (current.trim()) {
-            values.push(current.trim());
-        }
-
-        return values;
     }
 
     /**
@@ -1677,9 +1606,8 @@ export class TDParser {
 
     private resolveArrayElements(expr: Expression): string[] | null {
         if (expr.isKind(SyntaxKind.ArrayLiteralExpression)) {
-            return (expr as ArrayLiteralExpression)
-                .getElements()
-                .map(e => utils.substituteVars(e.getText(), this.vars));
+            // Use flattenArrayElements to support spread expressions
+            return utils.flattenArrayElements(expr as ArrayLiteralExpression, this.vars);
         }
 
         if (expr.isKind(SyntaxKind.Identifier)) {
@@ -1687,7 +1615,7 @@ export class TDParser {
             const value = this.vars.get(name);
             if (value && value.startsWith("[") && value.endsWith("]")) {
                 // Use parseArrayLiteral to handle nested arrays correctly
-                return this.parseArrayLiteral(value);
+                return utils.parseArrayLiteral(value);
             }
         }
 

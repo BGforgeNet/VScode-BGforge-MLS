@@ -5,7 +5,17 @@
  * loop unrolling, and function parameter mapping.
  */
 
-import { Block, CallExpression, Expression, FunctionDeclaration, Statement, SyntaxKind } from "ts-morph";
+import {
+    ArrayBindingPattern,
+    ArrayLiteralExpression,
+    Block,
+    CallExpression,
+    Expression,
+    FunctionDeclaration,
+    SpreadElement,
+    Statement,
+    SyntaxKind,
+} from "ts-morph";
 
 /** Variable substitution context - maps variable names to their compile-time values */
 export type VarsContext = Map<string, string>;
@@ -168,3 +178,137 @@ export function stripQuotes(text: string): string {
 
 /** Maximum loop iterations to prevent infinite loops during compile-time unrolling */
 export const MAX_LOOP_ITERATIONS = 1000;
+
+/**
+ * Parse a string representation of an array literal into individual values.
+ * Handles nested arrays, quoted strings with commas, and escaped quotes.
+ *
+ * @param text String representation of array (e.g., '["foo", 123, "bar"]')
+ * @returns Array of element strings, or null if not a valid array literal
+ *
+ * @example
+ * parseArrayLiteral('["foo", "bar"]')           // => ['"foo"', '"bar"']
+ * parseArrayLiteral('[[1, 2], [3, 4]]')         // => ['[1, 2]', '[3, 4]']
+ * parseArrayLiteral('[\"a, b\", \"c\"]')        // => ['"a, b"', '"c"'] (comma in string)
+ * parseArrayLiteral('[]')                       // => []
+ * parseArrayLiteral('not-an-array')             // => null
+ */
+export function parseArrayLiteral(text: string): string[] | null {
+    const trimmed = text.trim();
+    if (!trimmed.startsWith("[") || !trimmed.endsWith("]")) {
+        return null;
+    }
+
+    const inner = trimmed.slice(1, -1).trim();
+    if (!inner) {
+        return [];
+    }
+
+    // Parse respecting quoted strings and nested brackets
+    const values: string[] = [];
+    let current = "";
+    let depth = 0;
+    let inString = false;
+    let stringChar = "";
+
+    for (let i = 0; i < inner.length; i++) {
+        const char = inner[i]!;
+        const prevChar = inner[i - 1];
+
+        if (inString) {
+            current += char;
+            if (char === stringChar && prevChar !== "\\") {
+                inString = false;
+            }
+        } else if (char === '"' || char === "'") {
+            inString = true;
+            stringChar = char;
+            current += char;
+        } else if (char === "[") {
+            depth++;
+            current += char;
+        } else if (char === "]") {
+            depth--;
+            current += char;
+        } else if (char === "," && depth === 0) {
+            values.push(current.trim());
+            current = "";
+        } else {
+            current += char;
+        }
+    }
+
+    if (current.trim()) {
+        values.push(current.trim());
+    }
+
+    return values;
+}
+
+/**
+ * Flatten array elements, resolving spread expressions recursively.
+ * Supports spreads of array literals and variable references.
+ *
+ * @param arr Array literal expression to flatten
+ * @param vars Variable context for resolving spread variable references
+ * @returns Flattened array of element strings
+ *
+ * @example
+ * // const base = [1, 2];
+ * // const extended = [...base, 3, 4];
+ * // => flattenArrayElements(extended, vars) => ["1", "2", "3", "4"]
+ */
+export function flattenArrayElements(arr: ArrayLiteralExpression, vars: VarsContext): string[] {
+    const result: string[] = [];
+
+    for (const el of arr.getElements()) {
+        if (el.isKind(SyntaxKind.SpreadElement)) {
+            const spreadExpr = (el as SpreadElement).getExpression();
+
+            if (spreadExpr.isKind(SyntaxKind.ArrayLiteralExpression)) {
+                // Spread of array literal: [...[1, 2]]
+                result.push(...flattenArrayElements(spreadExpr as ArrayLiteralExpression, vars));
+            } else if (spreadExpr.isKind(SyntaxKind.Identifier)) {
+                // Spread of variable: [...arr]
+                const name = spreadExpr.getText();
+                const value = vars.get(name);
+                if (value) {
+                    // Use robust parseArrayLiteral instead of simple split
+                    const elements = parseArrayLiteral(value);
+                    if (elements) {
+                        result.push(...elements);
+                    }
+                }
+            }
+        } else {
+            // Regular element
+            result.push(substituteVars(el.getText(), vars));
+        }
+    }
+
+    return result;
+}
+
+/**
+ * Extract binding element names from an array binding pattern.
+ * Handles destructuring patterns like [a, b, c] or [a, , c] (with omitted elements).
+ *
+ * @param pattern Array binding pattern from destructuring syntax
+ * @returns Array of binding names (null for omitted elements)
+ *
+ * @example
+ * // for (const [a, b, c] of array)
+ * getBindingNames(pattern) // => ["a", "b", "c"]
+ *
+ * // for (const [a, , c] of array)  // Skip second element
+ * getBindingNames(pattern) // => ["a", null, "c"]
+ */
+export function getBindingNames(pattern: ArrayBindingPattern): (string | null)[] {
+    return pattern.getElements().map((el) => {
+        if (el.isKind(SyntaxKind.BindingElement)) {
+            return el.getName();
+        }
+        // OmittedExpression (skipped element, e.g., [a, , c])
+        return null;
+    });
+}
