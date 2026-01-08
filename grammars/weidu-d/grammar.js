@@ -90,31 +90,32 @@ export default grammar({
                 $.chain_epilogue
             ),
 
-        // INTERJECT entryFile entryLabel globalVar chainText chainEpilogue
+        // INTERJECT entryFile entryLabel globalVar chain_speaker* chainEpilogue
         interject_action: ($) =>
             seq(
-                caseInsensitive("INTERJECT"),
+                "INTERJECT",
                 field("file", $._filename),
                 field("label", $._state_label),
                 field("global_var", $.identifier),
-                repeat($.chain_text),
+                repeat($.chain_speaker),
                 $.chain_epilogue
             ),
 
-        // INTERJECT_COPY_TRANS[2-4] [SAFE] entryFile entryLabel globalVar chainText
+        // INTERJECT_COPY_TRANS[2-4] [SAFE] entryFile entryLabel globalVar chain_speaker* chainEpilogue
         interject_copy_trans: ($) =>
             seq(
                 choice(
-                    caseInsensitive("INTERJECT_COPY_TRANS"),
-                    caseInsensitive("INTERJECT_COPY_TRANS2"),
-                    caseInsensitive("INTERJECT_COPY_TRANS3"),
-                    caseInsensitive("INTERJECT_COPY_TRANS4")
+                    "INTERJECT_COPY_TRANS",
+                    "INTERJECT_COPY_TRANS2",
+                    "INTERJECT_COPY_TRANS3",
+                    "INTERJECT_COPY_TRANS4"
                 ),
-                optional(caseInsensitive("SAFE")),
+                optional("SAFE"),
                 field("file", $._filename),
                 field("label", $._state_label),
                 field("global_var", $.identifier),
-                repeat($.chain_text)
+                repeat($.chain_speaker),
+                $.chain_epilogue
             ),
 
         // chainText: [IF trigger THEN] sayText [== ... | BRANCH ...]
@@ -150,16 +151,16 @@ export default grammar({
         // chainEpilogue: END file state | EXTERN file state | COPY_TRANS file state | EXIT | END transitions
         chain_epilogue: ($) =>
             choice(
-                seq(caseInsensitive("END"), $._filename, $._state_label),
-                seq(caseInsensitive("EXTERN"), $._filename, $._state_label),
+                seq("END", $._filename, $._state_label),
+                seq("EXTERN", $._filename, $._state_label),
                 seq(
-                    choice(caseInsensitive("COPY_TRANS"), caseInsensitive("COPY_TRANS_LATE")),
-                    optional(caseInsensitive("SAFE")),
+                    choice("COPY_TRANS", "COPY_TRANS_LATE"),
+                    optional("SAFE"),
                     $._filename,
                     $._state_label
                 ),
-                caseInsensitive("EXIT"),
-                seq(caseInsensitive("END"), repeat($.transition))
+                "EXIT",
+                seq("END", repeat($.transition))
             ),
 
         // REPLACE filename state list END

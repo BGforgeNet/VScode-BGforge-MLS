@@ -670,11 +670,6 @@
     }
   },
   {
-    "type": "exit_next",
-    "named": true,
-    "fields": {}
-  },
-  {
     "type": "extend_action",
     "named": true,
     "fields": {
@@ -871,7 +866,7 @@
           "named": true
         },
         {
-          "type": "chain_text",
+          "type": "chain_speaker",
           "named": true
         }
       ]
@@ -930,10 +925,14 @@
     },
     "children": {
       "multiple": true,
-      "required": false,
+      "required": true,
       "types": [
         {
-          "type": "chain_text",
+          "type": "chain_epilogue",
+          "named": true
+        },
+        {
+          "type": "chain_speaker",
           "named": true
         }
       ]
@@ -2109,7 +2108,27 @@
     "named": false
   },
   {
+    "type": "COPY_TRANS",
+    "named": false
+  },
+  {
+    "type": "COPY_TRANS_LATE",
+    "named": false
+  },
+  {
     "type": "DO",
+    "named": false
+  },
+  {
+    "type": "END",
+    "named": false
+  },
+  {
+    "type": "EXIT",
+    "named": false
+  },
+  {
+    "type": "EXTERN",
     "named": false
   },
   {
@@ -2118,6 +2137,30 @@
   },
   {
     "type": "IF_FILE_EXISTS",
+    "named": false
+  },
+  {
+    "type": "INTERJECT",
+    "named": false
+  },
+  {
+    "type": "INTERJECT_COPY_TRANS",
+    "named": false
+  },
+  {
+    "type": "INTERJECT_COPY_TRANS2",
+    "named": false
+  },
+  {
+    "type": "INTERJECT_COPY_TRANS3",
+    "named": false
+  },
+  {
+    "type": "INTERJECT_COPY_TRANS4",
+    "named": false
+  },
+  {
+    "type": "SAFE",
     "named": false
   },
   {
@@ -2130,6 +2173,10 @@
   },
   {
     "type": "double_content",
+    "named": true
+  },
+  {
+    "type": "exit_next",
     "named": true
   },
   {

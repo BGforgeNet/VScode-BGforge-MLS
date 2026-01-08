@@ -197,6 +197,10 @@ export class TDParser {
             case "extendTop":
             case "extendBottom":
                 return this.transformExtend(call, funcName === "extendTop");
+            case "interject":
+                return this.transformInterject(call, false);
+            case "interjectCopyTrans":
+                return this.transformInterject(call, true);
             default:
                 return null;
         }
@@ -405,6 +409,111 @@ export class TDParser {
         };
 
         return [extend];
+    }
+
+    /**
+     * Transform interject() or interjectCopyTrans() to INTERJECT.
+     * interject(entryFile, entryLabel, globalVar, chainFunc, exitFile, exitLabel)
+     * interjectCopyTrans(entryFile, entryLabel, globalVar, chainFunc)
+     */
+    private transformInterject(call: CallExpression, isCopyTrans: boolean): TDConstruct[] | null {
+        const args = call.getArguments();
+        const funcName = isCopyTrans ? "interjectCopyTrans" : "interject";
+        const expectedArgs = isCopyTrans ? 4 : 6;
+
+        if (args.length !== expectedArgs) {
+            throw new Error(`${funcName}() requires ${expectedArgs} arguments at ${call.getStartLineNumber()}`);
+        }
+
+        const entryFile = this.resolveStringExpr(args[0] as Expression);
+        const entryLabel = this.resolveStringExpr(args[1] as Expression);
+        const globalVar = this.resolveStringExpr(args[2] as Expression);
+        const chainFunc = args[3];
+
+        // Parse chain function body to get entries
+        const entries: TDChainEntry[] = [];
+
+        if (Node.isArrowFunction(chainFunc)) {
+            const body = chainFunc.getBody();
+            if (Node.isBlock(body)) {
+                const statements = (body as Block).getStatements();
+                let currentEntry: TDChainEntry | null = null;
+
+                for (const stmt of statements) {
+                    if (stmt.isKind(SyntaxKind.ExpressionStatement)) {
+                        const expr = stmt.getExpression();
+                        if (Node.isCallExpression(expr)) {
+                            const funcName = expr.getExpression().getText();
+                            const args = expr.getArguments();
+
+                            if (funcName === "say") {
+                                if (args.length >= 2 && args[0] && args[1]) {
+                                    // say(speaker, text)
+                                    if (currentEntry) {
+                                        entries.push(currentEntry);
+                                    }
+                                    currentEntry = {
+                                        speaker: this.stripQuotes(args[0].getText()),
+                                        texts: [this.expressionToText(args[1] as Expression)],
+                                    };
+                                } else if (args.length >= 1 && args[0]) {
+                                    // say(text) - multisay
+                                    if (!currentEntry) {
+                                        throw new Error(`say(text) without speaker in ${funcName}() at ${expr.getStartLineNumber()}`);
+                                    }
+                                    currentEntry.texts.push(this.expressionToText(args[0] as Expression));
+                                }
+                            }
+                        }
+                    } else if (stmt.isKind(SyntaxKind.IfStatement)) {
+                        // Push current entry before processing conditional
+                        if (currentEntry) {
+                            entries.push(currentEntry);
+                            currentEntry = null;
+                        }
+                        this.processChainIf(stmt as IfStatement, entries, currentEntry);
+                    }
+                }
+
+                // Push final entry
+                if (currentEntry) {
+                    entries.push(currentEntry);
+                }
+            }
+        }
+
+        if (entries.length === 0) {
+            throw new Error(`${funcName}() chain function must have at least one say() at ${call.getStartLineNumber()}`);
+        }
+
+        // Determine epilogue
+        let epilogue: TDChainEpilogue;
+        if (isCopyTrans) {
+            epilogue = {
+                type: "copy_trans",
+                filename: entryFile,
+                target: entryLabel,
+            };
+        } else {
+            const exitFile = this.resolveStringExpr(args[4] as Expression);
+            const exitLabel = this.resolveStringExpr(args[5] as Expression);
+            epilogue = {
+                type: "end",
+                filename: exitFile,
+                target: exitLabel,
+            };
+        }
+
+        const interject: TDInterject = {
+            type: isCopyTrans ? "interject_copy_trans" : "interject",
+            filename: entryFile,
+            stateLabel: entryLabel,
+            globalVariable: globalVar,
+            entries,
+            epilogue,
+        };
+
+        return [interject];
     }
 
     /**

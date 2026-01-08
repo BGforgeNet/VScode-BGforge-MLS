@@ -358,7 +358,7 @@ function emitInterject(interject: TDChain | TDInterject): string {
     }
 
     const lines: string[] = [];
-    const safe = interject.safe ? "SAFE " : "";
+    const safeFlag = interject.safe ? "SAFE " : "";
 
     let keyword: string;
     switch (interject.type) {
@@ -366,18 +366,34 @@ function emitInterject(interject: TDChain | TDInterject): string {
             keyword = "INTERJECT";
             break;
         case "interject_copy_trans":
-            keyword = `INTERJECT_COPY_TRANS ${safe}`;
+            keyword = "INTERJECT_COPY_TRANS";
             break;
         case "interject_copy_trans2":
-            keyword = `INTERJECT_COPY_TRANS2 ${safe}`;
+            keyword = "INTERJECT_COPY_TRANS2";
             break;
     }
 
-    lines.push(`${keyword}${interject.filename} ${interject.stateLabel} ${interject.globalVariable}`);
+    lines.push(`${keyword} ${safeFlag}${interject.filename} ${interject.stateLabel} ${interject.globalVariable}`);
 
+    // Emit entries - INTERJECT always uses == for speakers (even first)
     for (const entry of interject.entries) {
-        for (const text of entry.texts) {
-            lines.push(emitText(text));
+        // Speaker line (INTERJECT always has == prefix, unlike CHAIN)
+        if (entry.speaker) {
+            const ifCond = entry.trigger ? ` IF ~${entry.trigger}~ THEN` : "";
+            const ifExists = entry.ifFileExists ? "IF_FILE_EXISTS " : "";
+            lines.push(`  == ${ifExists}${entry.speaker}${ifCond}`);
+        }
+
+        // Emit texts
+        for (let j = 0; j < entry.texts.length; j++) {
+            const text = entry.texts[j];
+            const prefix = j === 0 ? "    " : "  = ";
+            lines.push(`${prefix}${emitText(text)}`);
+        }
+
+        // Action after entry
+        if (entry.action) {
+            lines.push(`  DO ~${entry.action}~`);
         }
     }
 

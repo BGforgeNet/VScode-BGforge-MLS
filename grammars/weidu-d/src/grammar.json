@@ -370,8 +370,8 @@
       "type": "SEQ",
       "members": [
         {
-          "type": "PATTERN",
-          "value": "[iI][nN][tT][eE][rR][jJ][eE][cC][tT]"
+          "type": "STRING",
+          "value": "INTERJECT"
         },
         {
           "type": "FIELD",
@@ -401,7 +401,7 @@
           "type": "REPEAT",
           "content": {
             "type": "SYMBOL",
-            "name": "chain_text"
+            "name": "chain_speaker"
           }
         },
         {
@@ -417,20 +417,20 @@
           "type": "CHOICE",
           "members": [
             {
-              "type": "PATTERN",
-              "value": "[iI][nN][tT][eE][rR][jJ][eE][cC][tT]_[cC][oO][pP][yY]_[tT][rR][aA][nN][sS]"
+              "type": "STRING",
+              "value": "INTERJECT_COPY_TRANS"
             },
             {
-              "type": "PATTERN",
-              "value": "[iI][nN][tT][eE][rR][jJ][eE][cC][tT]_[cC][oO][pP][yY]_[tT][rR][aA][nN][sS]2"
+              "type": "STRING",
+              "value": "INTERJECT_COPY_TRANS2"
             },
             {
-              "type": "PATTERN",
-              "value": "[iI][nN][tT][eE][rR][jJ][eE][cC][tT]_[cC][oO][pP][yY]_[tT][rR][aA][nN][sS]3"
+              "type": "STRING",
+              "value": "INTERJECT_COPY_TRANS3"
             },
             {
-              "type": "PATTERN",
-              "value": "[iI][nN][tT][eE][rR][jJ][eE][cC][tT]_[cC][oO][pP][yY]_[tT][rR][aA][nN][sS]4"
+              "type": "STRING",
+              "value": "INTERJECT_COPY_TRANS4"
             }
           ]
         },
@@ -438,8 +438,8 @@
           "type": "CHOICE",
           "members": [
             {
-              "type": "PATTERN",
-              "value": "[sS][aA][fF][eE]"
+              "type": "STRING",
+              "value": "SAFE"
             },
             {
               "type": "BLANK"
@@ -474,8 +474,12 @@
           "type": "REPEAT",
           "content": {
             "type": "SYMBOL",
-            "name": "chain_text"
+            "name": "chain_speaker"
           }
+        },
+        {
+          "type": "SYMBOL",
+          "name": "chain_epilogue"
         }
       ]
     },
@@ -674,8 +678,8 @@
           "type": "SEQ",
           "members": [
             {
-              "type": "PATTERN",
-              "value": "[eE][nN][dD]"
+              "type": "STRING",
+              "value": "END"
             },
             {
               "type": "SYMBOL",
@@ -691,8 +695,8 @@
           "type": "SEQ",
           "members": [
             {
-              "type": "PATTERN",
-              "value": "[eE][xX][tT][eE][rR][nN]"
+              "type": "STRING",
+              "value": "EXTERN"
             },
             {
               "type": "SYMBOL",
@@ -711,12 +715,12 @@
               "type": "CHOICE",
               "members": [
                 {
-                  "type": "PATTERN",
-                  "value": "[cC][oO][pP][yY]_[tT][rR][aA][nN][sS]"
+                  "type": "STRING",
+                  "value": "COPY_TRANS"
                 },
                 {
-                  "type": "PATTERN",
-                  "value": "[cC][oO][pP][yY]_[tT][rR][aA][nN][sS]_[lL][aA][tT][eE]"
+                  "type": "STRING",
+                  "value": "COPY_TRANS_LATE"
                 }
               ]
             },
@@ -724,8 +728,8 @@
               "type": "CHOICE",
               "members": [
                 {
-                  "type": "PATTERN",
-                  "value": "[sS][aA][fF][eE]"
+                  "type": "STRING",
+                  "value": "SAFE"
                 },
                 {
                   "type": "BLANK"
@@ -743,15 +747,15 @@
           ]
         },
         {
-          "type": "PATTERN",
-          "value": "[eE][xX][iI][tT]"
+          "type": "STRING",
+          "value": "EXIT"
         },
         {
           "type": "SEQ",
           "members": [
             {
-              "type": "PATTERN",
-              "value": "[eE][nN][dD]"
+              "type": "STRING",
+              "value": "END"
             },
             {
               "type": "REPEAT",
