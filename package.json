@@ -424,8 +424,8 @@
         ]
     },
     "scripts": {
-        "vscode:prepublish": "pnpm build:base:client --minify && pnpm build:base:server --minify && pnpm build:base:webviews --minify",
-        "build": "pnpm build:client && pnpm build:server && pnpm build:test && pnpm build:webviews",
+        "vscode:prepublish": "pnpm build:grammar && pnpm build:base:client --minify && pnpm build:base:server --minify && pnpm build:base:webviews --minify",
+        "build": "pnpm build:grammar && pnpm build:client && pnpm build:server && pnpm build:test && pnpm build:webviews",
         "build:client": "pnpm build:base:client --sourcemap",
         "build:server": "pnpm build:base:server --sourcemap && pnpm build:format-cli && pnpm build:td-cli",
         "build:webviews": "pnpm build:base:webviews --sourcemap",

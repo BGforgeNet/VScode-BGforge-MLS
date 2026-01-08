@@ -11,4 +11,5 @@ sed -i "s/var import_meta = {};/var import_meta = {url: require('url').pathToFil
 # Copy tree-sitter WASM files
 cp grammars/fallout-ssl/tree-sitter-ssl.wasm server/out/
 cp grammars/weidu-baf/tree-sitter-baf.wasm server/out/
+cp grammars/weidu-d/tree-sitter-weidu_d.wasm server/out/
 cp server/node_modules/web-tree-sitter/web-tree-sitter.wasm server/out/
