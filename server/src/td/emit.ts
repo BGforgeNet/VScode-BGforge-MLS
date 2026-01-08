@@ -29,7 +29,7 @@ export function emitD(script: TDScript): string {
     const filename = path.basename(script.sourceFile);
     const header = `/* Generated from ${filename} - do not edit */\n\n`;
     const body = script.constructs.map(emitConstruct).join("\n\n");
-    return header + body;
+    return header + body + "\n";
 }
 
 /**
@@ -282,15 +282,21 @@ function emitChain(chain: TDChain): string {
     let firstEntry = true;
 
     for (const entry of chain.entries) {
-        if (entry.speaker && entry.speaker !== currentSpeaker) {
+        // Speaker switch needed if different speaker (but not for first entry)
+        if (entry.speaker && entry.speaker !== currentSpeaker && !firstEntry) {
             // Speaker switch
-            const ifCond = entry.trigger ? ` IF ~${entry.trigger}~` : "";
+            const ifCond = entry.trigger ? ` IF ~${entry.trigger}~ THEN` : "";
             const ifExists = entry.ifFileExists ? "IF_FILE_EXISTS " : "";
             lines.push(`== ${ifExists}${entry.speaker}${ifCond}`);
             currentSpeaker = entry.speaker;
         } else if (!firstEntry && entry.trigger) {
             // Same speaker with condition
-            lines.push(`= IF ~${entry.trigger}~`);
+            lines.push(`= IF ~${entry.trigger}~ THEN`);
+        }
+
+        // Update current speaker if this is first entry
+        if (firstEntry && entry.speaker) {
+            currentSpeaker = entry.speaker;
         }
 
         // Emit texts (multisay within entry)

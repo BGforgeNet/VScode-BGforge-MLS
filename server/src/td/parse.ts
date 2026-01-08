@@ -134,9 +134,10 @@ export class TDParser {
             return null;
         }
 
-        // Handle if-wrapped function (state with entry trigger)
+        // Skip if-wrapped functions - they're processed when referenced in dialog()/append()
+        // The if-wrapper just provides the entry trigger, which is captured during collection
         if (stmt.isKind(SyntaxKind.IfStatement)) {
-            return this.transformIfWrappedFunction(stmt as IfStatement);
+            return null;
         }
 
         // Handle expression statement (top-level calls like dialog(), append(), etc.)
@@ -240,8 +241,7 @@ export class TDParser {
                     // Emit as CHAIN (standalone construct)
                     const chain = this.transformFunctionToChain(funcInfo.func, funcInfo.trigger);
                     if (chain) {
-                        // Set the filename from dialog() for the chain
-                        chain.filename = filename;
+                        // Note: CHAIN uses its own first speaker as filename, don't override
                         constructs.push(chain);
                     }
                 } else {
@@ -656,7 +656,11 @@ export class TDParser {
                     }
                 }
             } else if (stmt.isKind(SyntaxKind.IfStatement)) {
-                // Conditional in chain
+                // Conditional in chain - push current entry first to preserve order
+                if (currentEntry) {
+                    entries.push(currentEntry);
+                    currentEntry = null;
+                }
                 this.processChainIf(stmt as IfStatement, entries, currentEntry);
             }
         }
@@ -683,6 +687,8 @@ export class TDParser {
         const trigger = this.expressionToTrigger(ifStmt.getExpression());
         const thenStmts = this.getBlockStatements(ifStmt.getThenStatement());
 
+        let conditionalEntry: TDChainEntry | null = null;
+
         for (const s of thenStmts) {
             if (s.isKind(SyntaxKind.ExpressionStatement)) {
                 const expr = s.getExpression();
@@ -690,17 +696,32 @@ export class TDParser {
                     const funcName = expr.getExpression().getText();
                     const args = expr.getArguments();
 
-                    if (funcName === "say" && args.length >= 2 && args[0] && args[1]) {
-                        // Conditional say with speaker
-                        const entry: TDChainEntry = {
-                            speaker: this.stripQuotes(args[0].getText()),
-                            trigger,
-                            texts: [this.expressionToText(args[1] as Expression)],
-                        };
-                        entries.push(entry);
+                    if (funcName === "say") {
+                        if (args.length >= 2 && args[0] && args[1]) {
+                            // Conditional say with speaker - create new entry
+                            if (conditionalEntry) {
+                                entries.push(conditionalEntry);
+                            }
+                            conditionalEntry = {
+                                speaker: this.stripQuotes(args[0].getText()),
+                                trigger,
+                                texts: [this.expressionToText(args[1] as Expression)],
+                            };
+                        } else if (args.length >= 1 && args[0]) {
+                            // Multisay continuation within conditional
+                            if (!conditionalEntry) {
+                                throw new Error(`say(text) without speaker in conditional at ${expr.getStartLineNumber()}`);
+                            }
+                            conditionalEntry.texts.push(this.expressionToText(args[0] as Expression));
+                        }
                     }
                 }
             }
+        }
+
+        // Push final conditional entry
+        if (conditionalEntry) {
+            entries.push(conditionalEntry);
         }
     }
 
