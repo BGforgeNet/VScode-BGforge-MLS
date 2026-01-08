@@ -25,9 +25,8 @@ import {
 } from "ts-morph";
 import { BAFAction, BAFBlock, BAFCondition, BAFOrGroup, BAFScript, BAFTopCondition } from "./ir";
 import { dnfToCnf } from "./cnf";
-
-/** Context for variable substitution */
-type VarsContext = Map<string, string>;
+import * as utils from "../transpiler-utils";
+import type { VarsContext } from "../transpiler-utils";
 
 /** Context for function inlining */
 type FuncsContext = Map<string, FunctionDeclaration>;
@@ -145,7 +144,7 @@ export class TBAFTransformer {
         const elseStmt = ifStmt.getElseStatement();
 
         // Process then block
-        this.processBlock(this.getBlockStatements(thenStmt), conditions);
+        this.processBlock(utils.getBlockStatements(thenStmt), conditions);
 
         // Handle else block
         if (elseStmt) {
@@ -155,7 +154,7 @@ export class TBAFTransformer {
                 this.transformIfStatement(elseStmt as IfStatement, invertedConditions);
             } else {
                 // else block
-                this.processBlock(this.getBlockStatements(elseStmt), invertedConditions);
+                this.processBlock(utils.getBlockStatements(elseStmt), invertedConditions);
             }
         }
     }
@@ -344,7 +343,7 @@ export class TBAFTransformer {
      */
     private transformCallToCondition(call: CallExpression): BAFCondition {
         const funcName = call.getExpression().getText();
-        const args = call.getArguments().map(a => this.substituteVars(a.getText()));
+        const args = call.getArguments().map(a => utils.substituteVars(a.getText(), this.vars));
         return { negated: false, name: funcName, args };
     }
 
@@ -363,7 +362,7 @@ export class TBAFTransformer {
         if (!returnExpr) return [this.trueCondition()];
 
         // Substitute params in return expression text
-        const paramMap = this.buildParamMap(call, funcDecl);
+        const paramMap = utils.buildParamMap(call, funcDecl, this.vars);
         let returnText = returnExpr.getText();
         paramMap.forEach((value, key) => {
             returnText = returnText.replace(new RegExp(`\\b${key}\\b`, "g"), value);
@@ -415,7 +414,7 @@ export class TBAFTransformer {
      */
     private transformCallToAction(call: CallExpression): BAFAction {
         const funcName = call.getExpression().getText();
-        const args = call.getArguments().map(a => this.substituteVars(a.getText()));
+        const args = call.getArguments().map(a => utils.substituteVars(a.getText(), this.vars));
         return { name: funcName, args };
     }
 
@@ -458,7 +457,7 @@ export class TBAFTransformer {
      * Unroll a for-of loop into actions.
      */
     private unrollForOfAsActions(forOf: ForOfStatement): BAFAction[] {
-        const bodyStatements = this.getBlockStatements(forOf.getStatement());
+        const bodyStatements = utils.getBlockStatements(forOf.getStatement());
         const actions: BAFAction[] = [];
         this.unrollForOf(forOf, () => {
             actions.push(...this.transformActionsFromStatements(bodyStatements));
@@ -470,7 +469,7 @@ export class TBAFTransformer {
      * Unroll a for loop into actions.
      */
     private unrollForAsActions(forStmt: ForStatement): BAFAction[] {
-        const bodyStatements = this.getBlockStatements(forStmt.getStatement());
+        const bodyStatements = utils.getBlockStatements(forStmt.getStatement());
         const actions: BAFAction[] = [];
         this.unrollFor(forStmt, () => {
             actions.push(...this.transformActionsFromStatements(bodyStatements));
@@ -500,9 +499,6 @@ export class TBAFTransformer {
         this.vars.delete(loopVar);
     }
 
-    /** Maximum iterations for loop unrolling to prevent infinite loops */
-    private static readonly MAX_LOOP_ITERATIONS = 1000;
-
     /**
      * Unroll a for loop, calling the callback for each iteration.
      * Sets the loop variable in vars context during each iteration.
@@ -523,7 +519,7 @@ export class TBAFTransformer {
             throw new Error("Cannot unroll for loop: no declarations");
         }
         const loopVar = firstDecl.getName();
-        const initValue = this.evaluateNumeric(firstDecl.getInitializer());
+        const initValue = utils.evaluateNumeric(firstDecl.getInitializer(), this.vars);
         if (initValue === undefined) {
             throw new Error("Cannot unroll for loop: non-numeric initializer");
         }
@@ -538,14 +534,14 @@ export class TBAFTransformer {
             throw new Error("Cannot unroll for loop: no incrementor");
         }
 
-        const increment = this.parseIncrement(incrementor.getText());
+        const increment = utils.parseIncrement(incrementor.getText());
         let current = initValue;
         let iterations = 0;
 
-        while (this.evaluateLoopCondition(condition.getText(), loopVar, current)) {
-            if (iterations >= TBAFTransformer.MAX_LOOP_ITERATIONS) {
+        while (utils.evaluateCondition(condition.getText(), loopVar, current, this.vars)) {
+            if (iterations >= utils.MAX_LOOP_ITERATIONS) {
                 throw new Error(
-                    `Loop exceeded maximum ${TBAFTransformer.MAX_LOOP_ITERATIONS} iterations. ` +
+                    `Loop exceeded maximum ${utils.MAX_LOOP_ITERATIONS} iterations. ` +
                     `This likely indicates an infinite loop or a design issue. ` +
                     `BAF scripts should not need many iterations.`
                 );
@@ -594,7 +590,7 @@ export class TBAFTransformer {
      * Saves and restores the vars context around the callback.
      */
     private withParamContext(call: CallExpression, funcDecl: FunctionDeclaration, fn: () => void): void {
-        const paramMap = this.buildParamMap(call, funcDecl);
+        const paramMap = utils.buildParamMap(call, funcDecl, this.vars);
 
         const savedVars = new Map(this.vars);
         paramMap.forEach((value, key) => this.vars.set(key, value));
@@ -602,23 +598,6 @@ export class TBAFTransformer {
         fn();
 
         this.vars = savedVars;
-    }
-
-    /**
-     * Build a map of parameter names to substituted argument values.
-     */
-    private buildParamMap(call: CallExpression, funcDecl: FunctionDeclaration): Map<string, string> {
-        const params = funcDecl.getParameters();
-        const args = call.getArguments();
-        const paramMap = new Map<string, string>();
-
-        params.forEach((param, i) => {
-            const paramName = param.getName();
-            const argText = args[i]?.getText() || param.getInitializer()?.getText() || "";
-            paramMap.set(paramName, this.substituteVars(argText));
-        });
-
-        return paramMap;
     }
 
     /**
@@ -743,16 +722,6 @@ export class TBAFTransformer {
     }
 
     /**
-     * Get statements from a block or single statement.
-     */
-    private getBlockStatements(stmt: Statement): Statement[] {
-        if (stmt.isKind(SyntaxKind.Block)) {
-            return (stmt as Block).getStatements();
-        }
-        return [stmt];
-    }
-
-    /**
      * Evaluate an expression to a string value if possible.
      */
     private evaluateExpression(expr: Expression): string | undefined {
@@ -799,7 +768,7 @@ export class TBAFTransformer {
                     }
                 }
             } else {
-                result.push(this.substituteVars(el.getText()));
+                result.push(utils.substituteVars(el.getText(), this.vars));
             }
         }
 
@@ -829,58 +798,6 @@ export class TBAFTransformer {
         }
 
         return null;
-    }
-
-    /**
-     * Evaluate a numeric expression.
-     */
-    private evaluateNumeric(expr: Expression | undefined): number | undefined {
-        if (!expr) return undefined;
-
-        const text = this.substituteVars(expr.getText());
-        const num = Number(text);
-        return isNaN(num) ? undefined : num;
-    }
-
-    /**
-     * Parse increment from for loop.
-     */
-    private parseIncrement(text: string): number {
-        if (text.includes("++")) return 1;
-        if (text.includes("--")) return -1;
-        if (text.includes("+=")) return Number(text.split("+=")[1]) || 1;
-        if (text.includes("-=")) return -(Number(text.split("-=")[1]) || 1);
-        return 1;
-    }
-
-    /**
-     * Evaluate loop condition.
-     */
-    private evaluateLoopCondition(condition: string, loopVar: string, value: number): boolean {
-        // Substitute loop variable
-        let substituted = condition.replace(new RegExp(`\\b${loopVar}\\b`, "g"), value.toString());
-        // Substitute other variables (like iterations)
-        substituted = this.substituteVars(substituted);
-        try {
-            const fn = new Function(`return (${substituted});`);
-            return fn();
-        } catch (e) {
-            throw new Error(
-                `Cannot evaluate loop condition "${condition}" with ${loopVar}=${value}. ` +
-                `Substituted: "${substituted}". Error: ${e instanceof Error ? e.message : e}`
-            );
-        }
-    }
-
-    /**
-     * Substitute variables in text.
-     */
-    private substituteVars(text: string): string {
-        let result = text;
-        this.vars.forEach((value, key) => {
-            result = result.replace(new RegExp(`\\b${key}\\b`, "g"), value);
-        });
-        return result;
     }
 
     /**

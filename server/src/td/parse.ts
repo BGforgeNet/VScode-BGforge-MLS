@@ -44,9 +44,8 @@ import {
     TDReplaceStateTrigger,
     TDReplaceStates,
 } from "./types";
-
-/** Context for variable substitution during compile-time evaluation */
-type VarsContext = Map<string, string>;
+import * as utils from "../transpiler-utils";
+import type { VarsContext } from "../transpiler-utils";
 
 /** Function info including optional entry trigger from if-wrapping */
 interface FuncInfo {
@@ -491,7 +490,7 @@ export class TDParser {
                 entries.push(currentEntry);
             }
             const newEntry: TDChainEntry = {
-                speaker: this.stripQuotes(args[0].getText()),
+                speaker: utils.stripQuotes(args[0].getText()),
                 texts: [this.expressionToText(args[1] as Expression)],
             };
             if (options?.trigger) {
@@ -815,8 +814,8 @@ export class TDParser {
         const filename = this.resolveStringExpr(args[0] as Expression);
         const states = this.parseStateList(args[1] as Expression);
         const transitions = this.parseNumberArray(args[2] as Expression);
-        const oldText = this.stripQuotes(args[3]!.getText());
-        const newText = this.stripQuotes(args[4]!.getText());
+        const oldText = utils.stripQuotes(args[3]!.getText());
+        const newText = utils.stripQuotes(args[4]!.getText());
         const unless = args[5] ? this.parseUnless(args[5] as Expression) : undefined;
 
         const operation: TDReplaceTrans = {
@@ -858,8 +857,8 @@ export class TDParser {
             throw new Error(`${funcName}() first argument must be a string or array of strings at ${call.getStartLineNumber()}`);
         }
 
-        const oldText = this.stripQuotes(args[1]!.getText());
-        const newText = this.stripQuotes(args[2]!.getText());
+        const oldText = utils.stripQuotes(args[1]!.getText());
+        const newText = utils.stripQuotes(args[2]!.getText());
         const unless = args[3] ? this.parseUnless(args[3] as Expression) : undefined;
 
         const operation: TDReplaceText = {
@@ -1076,7 +1075,7 @@ export class TDParser {
      */
     private processIfTransition(ifStmt: IfStatement, state: TDState) {
         const trigger = this.expressionToTrigger(ifStmt.getExpression());
-        const thenStmts = this.getBlockStatements(ifStmt.getThenStatement());
+        const thenStmts = utils.getBlockStatements(ifStmt.getThenStatement());
 
         // Create transition with trigger
         const trans: TDTransition = {
@@ -1098,7 +1097,7 @@ export class TDParser {
                 this.processIfTransition(elseStmt, state);
             } else {
                 // else block - no trigger transition
-                const elseStmts = this.getBlockStatements(elseStmt);
+                const elseStmts = utils.getBlockStatements(elseStmt);
                 const elseTrans: TDTransition = {
                     next: { type: "exit" },
                 };
@@ -1222,7 +1221,7 @@ export class TDParser {
      */
     private processChainIf(ifStmt: IfStatement, entries: TDChainEntry[], _currentEntry: TDChainEntry | null) {
         const trigger = this.expressionToTrigger(ifStmt.getExpression());
-        const thenStmts = this.getBlockStatements(ifStmt.getThenStatement());
+        const thenStmts = utils.getBlockStatements(ifStmt.getThenStatement());
 
         const conditionalEntry = this.processChainStatements(
             thenStmts,
@@ -1247,7 +1246,7 @@ export class TDParser {
                 // if (trigger) { ... } - transition with trigger
                 const ifStmt = stmt as IfStatement;
                 const trigger = this.expressionToTrigger(ifStmt.getExpression());
-                const thenStmts = this.getBlockStatements(ifStmt.getThenStatement());
+                const thenStmts = utils.getBlockStatements(ifStmt.getThenStatement());
 
                 const trans: TDTransition = {
                     trigger,
@@ -1295,7 +1294,7 @@ export class TDParser {
         const body = func.getBody()?.asKind(SyntaxKind.Block);
         if (!body) return;
 
-        const paramMap = this.buildParamMap(call, func);
+        const paramMap = utils.buildParamMap(call, func, this.vars);
 
         // Save current vars
         const savedVars = new Map(this.vars);
@@ -1337,7 +1336,7 @@ export class TDParser {
             return `!${inner}`;
         }
 
-        return this.substituteVars(expr.getText());
+        return utils.substituteVars(expr.getText(), this.vars);
     }
 
     /**
@@ -1369,9 +1368,9 @@ export class TDParser {
                     } else if (propName === "female") {
                         female = this.expressionToText(value);
                     } else if (propName === "maleSound") {
-                        maleSound = this.stripQuotes(value.getText());
+                        maleSound = utils.stripQuotes(value.getText());
                     } else if (propName === "femaleSound") {
-                        femaleSound = this.stripQuotes(value.getText());
+                        femaleSound = utils.stripQuotes(value.getText());
                     }
                 }
             }
@@ -1394,7 +1393,7 @@ export class TDParser {
 
             // tra(num) or tra(num, { sound: "..." })
             if (funcName === TD_KEYWORDS.TRA && args.length >= 1 && args[0]) {
-                const argText = this.substituteVars(args[0].getText());
+                const argText = utils.substituteVars(args[0].getText(), this.vars);
                 const text: TDText = {
                     type: "tra",
                     value: Number(argText),
@@ -1406,7 +1405,7 @@ export class TDParser {
                         if (Node.isPropertyAssignment(prop) && prop.getName() === "sound") {
                             const soundValue = prop.getInitializer();
                             if (soundValue) {
-                                text.sound = this.stripQuotes(soundValue.getText());
+                                text.sound = utils.stripQuotes(soundValue.getText());
                             }
                         }
                     }
@@ -1417,7 +1416,7 @@ export class TDParser {
 
             // tlk(num) or tlk(num, { sound: "..." })
             if (funcName === TD_KEYWORDS.TLK && args.length >= 1 && args[0]) {
-                const argText = this.substituteVars(args[0].getText());
+                const argText = utils.substituteVars(args[0].getText(), this.vars);
                 const text: TDText = {
                     type: "tlk",
                     value: Number(argText),
@@ -1429,7 +1428,7 @@ export class TDParser {
                         if (Node.isPropertyAssignment(prop) && prop.getName() === "sound") {
                             const soundValue = prop.getInitializer();
                             if (soundValue) {
-                                text.sound = this.stripQuotes(soundValue.getText());
+                                text.sound = utils.stripQuotes(soundValue.getText());
                             }
                         }
                     }
@@ -1440,7 +1439,7 @@ export class TDParser {
 
             // tlkForced(num, text) - text override is stored in emitter, not IR
             if (funcName === TD_KEYWORDS.TLK_FORCED && args.length >= 2 && args[0] && args[1]) {
-                const numText = this.substituteVars(args[0].getText());
+                const numText = utils.substituteVars(args[0].getText(), this.vars);
                 return {
                     type: "forced",
                     value: numText,
@@ -1451,14 +1450,14 @@ export class TDParser {
         if (Node.isStringLiteral(expr)) {
             return {
                 type: "literal",
-                value: this.stripQuotes(expr.getText()),
+                value: utils.stripQuotes(expr.getText()),
             };
         }
 
         // Fallback to literal
         return {
             type: "literal",
-            value: this.substituteVars(expr.getText()),
+            value: utils.substituteVars(expr.getText(), this.vars),
         };
     }
 
@@ -1479,7 +1478,7 @@ export class TDParser {
         }
 
         const initializer = forOf.getInitializer();
-        const bodyStmts = this.getBlockStatements(forOf.getStatement());
+        const bodyStmts = utils.getBlockStatements(forOf.getStatement());
 
         // Check for array destructuring pattern: const [a, b, c] of array
         const bindingPattern = initializer.getDescendantsOfKind(SyntaxKind.ArrayBindingPattern)[0];
@@ -1598,9 +1597,6 @@ export class TDParser {
         return values;
     }
 
-    /** Maximum iterations to prevent infinite loops */
-    private static readonly MAX_ITERATIONS = 1000;
-
     /**
      * Unroll a for loop.
      */
@@ -1617,7 +1613,7 @@ export class TDParser {
         }
 
         const loopVar = firstDecl.getName();
-        const initValue = this.evaluateNumeric(firstDecl.getInitializer());
+        const initValue = utils.evaluateNumeric(firstDecl.getInitializer(), this.vars);
         if (initValue === undefined) {
             throw new Error("Cannot unroll for loop: non-numeric initializer");
         }
@@ -1632,15 +1628,15 @@ export class TDParser {
             throw new Error("Cannot unroll for loop: no incrementor");
         }
 
-        const increment = this.parseIncrement(incrementor.getText());
-        const bodyStmts = this.getBlockStatements(forStmt.getStatement());
+        const increment = utils.parseIncrement(incrementor.getText());
+        const bodyStmts = utils.getBlockStatements(forStmt.getStatement());
 
         let current = initValue;
         let iterations = 0;
 
-        while (this.evaluateCondition(condition.getText(), loopVar, current)) {
-            if (iterations >= TDParser.MAX_ITERATIONS) {
-                throw new Error(`Loop exceeded ${TDParser.MAX_ITERATIONS} iterations`);
+        while (utils.evaluateCondition(condition.getText(), loopVar, current, this.vars)) {
+            if (iterations >= utils.MAX_LOOP_ITERATIONS) {
+                throw new Error(`Loop exceeded ${utils.MAX_LOOP_ITERATIONS} iterations`);
             }
 
             this.vars.set(loopVar, current.toString());
@@ -1658,13 +1654,6 @@ export class TDParser {
     // =========================================================================
     // Utility Methods
     // =========================================================================
-
-    private getBlockStatements(stmt: Statement): Statement[] {
-        if (stmt.isKind(SyntaxKind.Block)) {
-            return (stmt as Block).getStatements();
-        }
-        return [stmt];
-    }
 
     private evaluateExpression(expr: Expression): string | undefined {
         if (expr.isKind(SyntaxKind.ArrayLiteralExpression)) {
@@ -1686,37 +1675,11 @@ export class TDParser {
         return expr.getText();
     }
 
-    private evaluateNumeric(expr: Expression | undefined): number | undefined {
-        if (!expr) return undefined;
-        const text = this.substituteVars(expr.getText());
-        const num = Number(text);
-        return isNaN(num) ? undefined : num;
-    }
-
-    private parseIncrement(text: string): number {
-        if (text.includes("++")) return 1;
-        if (text.includes("--")) return -1;
-        if (text.includes("+=")) return Number(text.split("+=")[1]) || 1;
-        if (text.includes("-=")) return -(Number(text.split("-=")[1]) || 1);
-        return 1;
-    }
-
-    private evaluateCondition(condition: string, loopVar: string, value: number): boolean {
-        let substituted = condition.replace(new RegExp(`\\b${loopVar}\\b`, "g"), value.toString());
-        substituted = this.substituteVars(substituted);
-        try {
-            const fn = new Function(`return (${substituted});`);
-            return fn();
-        } catch {
-            throw new Error(`Cannot evaluate condition: ${condition}`);
-        }
-    }
-
     private resolveArrayElements(expr: Expression): string[] | null {
         if (expr.isKind(SyntaxKind.ArrayLiteralExpression)) {
             return (expr as ArrayLiteralExpression)
                 .getElements()
-                .map(e => this.substituteVars(e.getText()));
+                .map(e => utils.substituteVars(e.getText(), this.vars));
         }
 
         if (expr.isKind(SyntaxKind.Identifier)) {
@@ -1731,50 +1694,23 @@ export class TDParser {
         return null;
     }
 
-    private substituteVars(text: string): string {
-        let result = text;
-        this.vars.forEach((value, key) => {
-            result = result.replace(new RegExp(`\\b${key}\\b`, "g"), value);
-        });
-        return result;
-    }
-
-    private buildParamMap(call: CallExpression, func: FunctionDeclaration): Map<string, string> {
-        const params = func.getParameters();
-        const args = call.getArguments();
-        const map = new Map<string, string>();
-
-        params.forEach((param, i) => {
-            const name = param.getName();
-            const arg = args[i];
-            const value = arg?.getText() || param.getInitializer()?.getText() || "";
-            map.set(name, this.substituteVars(value));
-        });
-
-        return map;
-    }
-
-    private stripQuotes(text: string): string {
-        return text.replace(/^["'`]|["'`]$/g, "");
-    }
-
     /**
      * Resolve an expression to its string value.
      * Handles string literals and variable references.
      */
     private resolveStringExpr(expr: Expression): string {
         if (Node.isStringLiteral(expr)) {
-            return this.stripQuotes(expr.getText());
+            return utils.stripQuotes(expr.getText());
         }
         if (Node.isIdentifier(expr)) {
             const name = expr.getText();
             const value = this.vars.get(name);
             if (value !== undefined) {
-                return this.stripQuotes(value);
+                return utils.stripQuotes(value);
             }
             return name;
         }
-        return this.stripQuotes(expr.getText());
+        return utils.stripQuotes(expr.getText());
     }
 
     /**
@@ -1806,7 +1742,7 @@ export class TDParser {
         }
 
         // Fallback to raw text
-        return this.substituteVars(expr.getText());
+        return utils.substituteVars(expr.getText(), this.vars);
     }
 
     // =============================================================================
@@ -1915,8 +1851,8 @@ export class TDParser {
                 }
                 lastTrans.next = {
                     type: "extern",
-                    filename: this.stripQuotes(args[0]!.getText()), // Guaranteed by validateArgs
-                    target: this.stripQuotes(args[1]!.getText()), // Guaranteed by validateArgs
+                    filename: utils.stripQuotes(args[0]!.getText()), // Guaranteed by validateArgs
+                    target: utils.stripQuotes(args[1]!.getText()), // Guaranteed by validateArgs
                 };
                 break;
             }
@@ -1994,13 +1930,13 @@ export class TDParser {
                 if (Node.isPropertyAssignment(prop) && prop.getName() === "unless") {
                     const value = prop.getInitializer();
                     if (value) {
-                        return this.stripQuotes(value.getText());
+                        return utils.stripQuotes(value.getText());
                     }
                 }
             }
             return undefined;
         }
 
-        return this.stripQuotes(expr.getText());
+        return utils.stripQuotes(expr.getText());
     }
 }
