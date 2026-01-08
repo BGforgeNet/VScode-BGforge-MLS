@@ -42,6 +42,7 @@ import {
     TDSetWeight,
     TDReplaceSay,
     TDReplaceStateTrigger,
+    TDReplaceStates,
 } from "./types";
 
 /** Context for variable substitution during compile-time evaluation */
@@ -75,7 +76,9 @@ const TD_KEYWORDS = {
     EXTEND_BOTTOM: "extendBottom",
     INTERJECT: "interject",
     INTERJECT_COPY_TRANS: "interjectCopyTrans",
+    INTERJECT_COPY_TRANS2: "interjectCopyTrans2",
     ALTER_TRANS: "alterTrans",
+    REPLACE: "replace",
     ADD_STATE_TRIGGER: "addStateTrigger",
     ADD_TRANS_TRIGGER: "addTransTrigger",
     ADD_TRANS_ACTION: "addTransAction",
@@ -88,6 +91,7 @@ const TD_KEYWORDS = {
     REPLACE_STATE_TRIGGER: "replaceStateTrigger",
     TRA: "tra",
     TLK: "tlk",
+    TLK_FORCED: "tlkForced",
     OR: "OR",
 } as const;
 
@@ -219,9 +223,13 @@ export class TDParser {
             case TD_KEYWORDS.EXTEND_BOTTOM:
                 return this.transformExtend(call, funcName === TD_KEYWORDS.EXTEND_TOP);
             case TD_KEYWORDS.INTERJECT:
-                return this.transformInterject(call, false);
+                return this.transformInterject(call, "interject");
             case TD_KEYWORDS.INTERJECT_COPY_TRANS:
-                return this.transformInterject(call, true);
+                return this.transformInterject(call, "interject_copy_trans");
+            case TD_KEYWORDS.INTERJECT_COPY_TRANS2:
+                return this.transformInterject(call, "interject_copy_trans2");
+            case TD_KEYWORDS.REPLACE:
+                return this.transformReplace(call);
             case TD_KEYWORDS.ALTER_TRANS:
                 return this.transformAlterTrans(call);
             case TD_KEYWORDS.ADD_STATE_TRIGGER:
@@ -545,23 +553,43 @@ export class TDParser {
     }
 
     /**
-     * Transform interject() or interjectCopyTrans() to INTERJECT.
+     * Transform interject() variants to INTERJECT.
      * interject(entryFile, entryLabel, globalVar, chainFunc, exitFile, exitLabel)
-     * interjectCopyTrans(entryFile, entryLabel, globalVar, chainFunc)
+     * interjectCopyTrans(entryFile, entryLabel, globalVar, chainFunc, options?)
+     * interjectCopyTrans2(entryFile, entryLabel, globalVar, chainFunc)
      */
-    private transformInterject(call: CallExpression, isCopyTrans: boolean): TDConstruct[] | null {
+    private transformInterject(
+        call: CallExpression,
+        type: "interject" | "interject_copy_trans" | "interject_copy_trans2"
+    ): TDConstruct[] | null {
         const args = call.getArguments();
-        const funcName = isCopyTrans ? "interjectCopyTrans" : "interject";
-        const expectedArgs = isCopyTrans ? 4 : 6;
+        const funcName = type === "interject" ? "interject" : type === "interject_copy_trans" ? "interjectCopyTrans" : "interjectCopyTrans2";
+        const minArgs = type === "interject" ? 6 : 4;
 
-        if (args.length !== expectedArgs) {
-            throw new Error(`${funcName}() requires ${expectedArgs} arguments at ${call.getStartLineNumber()}`);
+        if (args.length < minArgs) {
+            throw new Error(`${funcName}() requires at least ${minArgs} arguments at ${call.getStartLineNumber()}`);
         }
 
         const entryFile = this.resolveStringExpr(args[0] as Expression);
         const entryLabel = this.resolveStringExpr(args[1] as Expression);
         const globalVar = this.resolveStringExpr(args[2] as Expression);
         const chainFunc = args[3];
+
+        // Check for safe option (interjectCopyTrans only, arg 5)
+        let safe = false;
+        if (type === "interject_copy_trans" && args[4]) {
+            const opts = args[4];
+            if (Node.isObjectLiteralExpression(opts)) {
+                for (const prop of opts.getProperties()) {
+                    if (Node.isPropertyAssignment(prop) && prop.getName() === "safe") {
+                        const value = prop.getInitializer();
+                        if (value?.getText() === "true") {
+                            safe = true;
+                        }
+                    }
+                }
+            }
+        }
 
         // Parse chain function body to get entries
         const entries: TDChainEntry[] = [];
@@ -584,14 +612,8 @@ export class TDParser {
         }
 
         // Determine epilogue
-        let epilogue: TDChainEpilogue;
-        if (isCopyTrans) {
-            epilogue = {
-                type: "copy_trans",
-                filename: entryFile,
-                target: entryLabel,
-            };
-        } else {
+        let epilogue: TDChainEpilogue | undefined;
+        if (type === "interject") {
             const exitFile = this.resolveStringExpr(args[4] as Expression);
             const exitLabel = this.resolveStringExpr(args[5] as Expression);
             epilogue = {
@@ -599,13 +621,20 @@ export class TDParser {
                 filename: exitFile,
                 target: exitLabel,
             };
+        } else if (type === "interject_copy_trans" || type === "interject_copy_trans2") {
+            epilogue = {
+                type: "copy_trans",
+                filename: entryFile,
+                target: entryLabel,
+            };
         }
 
         const interject: TDInterject = {
-            type: isCopyTrans ? "interject_copy_trans" : "interject",
+            type,
             filename: entryFile,
             stateLabel: entryLabel,
             globalVariable: globalVar,
+            safe: safe || undefined,
             entries,
             epilogue,
         };
@@ -910,6 +939,58 @@ export class TDParser {
             states,
             trigger,
             unless,
+        };
+
+        return [{ type: "patch", operation }];
+    }
+
+    /**
+     * Transform replace(filename, { stateNum: function, ... })
+     * Replaces entire states by their numeric index
+     */
+    private transformReplace(call: CallExpression): TDConstruct[] | null {
+        const args = call.getArguments();
+        if (args.length < 2) {
+            throw new Error(`replace() requires 2 arguments at ${call.getStartLineNumber()}`);
+        }
+
+        const filename = this.resolveStringExpr(args[0] as Expression);
+        const statesObj = args[1];
+
+        if (!Node.isObjectLiteralExpression(statesObj)) {
+            throw new Error(`replace() second argument must be an object literal at ${call.getStartLineNumber()}`);
+        }
+
+        const replacements = new Map<number, TDState>();
+
+        for (const prop of statesObj.getProperties()) {
+            if (Node.isPropertyAssignment(prop)) {
+                const stateNum = Number(prop.getName());
+                const funcExpr = prop.getInitializer();
+
+                if (!funcExpr || !Node.isFunctionExpression(funcExpr)) {
+                    throw new Error(`replace() state ${stateNum} must be a function at ${call.getStartLineNumber()}`);
+                }
+
+                // FunctionExpression has similar structure to FunctionDeclaration for our parsing needs
+                // We need to cast to access methods like getName(), getBody() which exist on both
+                const funcDecl = funcExpr as unknown as FunctionDeclaration;
+                const state = this.transformFunctionToState(funcDecl);
+
+                if (!state) {
+                    throw new Error(`replace() failed to parse state ${stateNum} at ${call.getStartLineNumber()}`);
+                }
+
+                // Override label with the numeric state
+                state.label = stateNum.toString();
+                replacements.set(stateNum, state);
+            }
+        }
+
+        const operation: TDReplaceStates = {
+            op: "replace_states",
+            filename,
+            replacements,
         };
 
         return [{ type: "patch", operation }];
@@ -1270,24 +1351,99 @@ export class TDParser {
      * Convert an expression to TDText.
      */
     private expressionToText(expr: Expression): TDText {
+        // Handle object literal for male/female variants
+        if (Node.isObjectLiteralExpression(expr)) {
+            let male: TDText | undefined;
+            let female: TDText | undefined;
+            let maleSound: string | undefined;
+            let femaleSound: string | undefined;
+
+            for (const prop of expr.getProperties()) {
+                if (Node.isPropertyAssignment(prop)) {
+                    const propName = prop.getName();
+                    const value = prop.getInitializer();
+                    if (!value) continue;
+
+                    if (propName === "male") {
+                        male = this.expressionToText(value);
+                    } else if (propName === "female") {
+                        female = this.expressionToText(value);
+                    } else if (propName === "maleSound") {
+                        maleSound = this.stripQuotes(value.getText());
+                    } else if (propName === "femaleSound") {
+                        femaleSound = this.stripQuotes(value.getText());
+                    }
+                }
+            }
+
+            if (male && female) {
+                if (maleSound) male.sound = maleSound;
+                if (femaleSound) female.sound = femaleSound;
+                return {
+                    type: "tra", // Placeholder, actual type from male/female
+                    value: 0,
+                    male,
+                    female,
+                };
+            }
+        }
+
         if (Node.isCallExpression(expr)) {
             const funcName = expr.getExpression().getText();
             const args = expr.getArguments();
 
-            if (funcName === "tra" && args.length >= 1 && args[0]) {
-                // Substitute variables in argument (for loop unrolling)
+            // tra(num) or tra(num, { sound: "..." })
+            if (funcName === TD_KEYWORDS.TRA && args.length >= 1 && args[0]) {
                 const argText = this.substituteVars(args[0].getText());
-                return {
+                const text: TDText = {
                     type: "tra",
                     value: Number(argText),
                 };
+
+                // Check for options (second argument)
+                if (args[1] && Node.isObjectLiteralExpression(args[1])) {
+                    for (const prop of args[1].getProperties()) {
+                        if (Node.isPropertyAssignment(prop) && prop.getName() === "sound") {
+                            const soundValue = prop.getInitializer();
+                            if (soundValue) {
+                                text.sound = this.stripQuotes(soundValue.getText());
+                            }
+                        }
+                    }
+                }
+
+                return text;
             }
 
-            if (funcName === "tlk" && args.length >= 1 && args[0]) {
+            // tlk(num) or tlk(num, { sound: "..." })
+            if (funcName === TD_KEYWORDS.TLK && args.length >= 1 && args[0]) {
                 const argText = this.substituteVars(args[0].getText());
-                return {
+                const text: TDText = {
                     type: "tlk",
                     value: Number(argText),
+                };
+
+                // Check for options
+                if (args[1] && Node.isObjectLiteralExpression(args[1])) {
+                    for (const prop of args[1].getProperties()) {
+                        if (Node.isPropertyAssignment(prop) && prop.getName() === "sound") {
+                            const soundValue = prop.getInitializer();
+                            if (soundValue) {
+                                text.sound = this.stripQuotes(soundValue.getText());
+                            }
+                        }
+                    }
+                }
+
+                return text;
+            }
+
+            // tlkForced(num, text) - text override is stored in emitter, not IR
+            if (funcName === TD_KEYWORDS.TLK_FORCED && args.length >= 2 && args[0] && args[1]) {
+                const numText = this.substituteVars(args[0].getText());
+                return {
+                    type: "forced",
+                    value: numText,
                 };
             }
         }

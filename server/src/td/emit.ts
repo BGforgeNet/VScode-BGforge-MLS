@@ -443,6 +443,8 @@ function emitPatch(patch: { type: "patch"; operation: import("./types").TDPatchO
             const rest = restStates.length > 0 ? ` ${formatStateList(restStates)}` : "";
             return `REPLACE_STATE_TRIGGER ${op.filename} ${firstState} ~${op.trigger}~${rest}${formatUnless(op.unless)}`;
         }
+        case "replace_states":
+            return emitReplaceStates(op);
     }
 }
 
@@ -474,4 +476,19 @@ function formatStateList(states: (string | number)[]): string {
 
 function formatUnless(unless?: string): string {
     return unless ? ` UNLESS ~${unless}~` : "";
+}
+
+function emitReplaceStates(op: import("./types").TDReplaceStates): string {
+    const lines: string[] = [];
+    lines.push(`// REPLACE states in ${op.filename} - manually verify WeiDU syntax`);
+    lines.push(`APPEND ${op.filename}`);
+
+    const states = Array.from(op.replacements.entries())
+        .sort(([a], [b]) => a - b)
+        .map(([_, state]) => emitState(state));
+
+    lines.push(...states.flatMap(s => s.split("\n")));
+    lines.push("END");
+
+    return lines.join("\n");
 }

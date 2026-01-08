@@ -164,7 +164,8 @@ export type TDPatchOperation =
     | TDReplaceText
     | TDSetWeight
     | TDReplaceSay
-    | TDReplaceStateTrigger;
+    | TDReplaceStateTrigger
+    | TDReplaceStates;
 
 export interface TDAlterTrans {
     op: "alter_trans";
@@ -243,4 +244,10 @@ export interface TDReplaceStateTrigger {
     states: (string | number)[];
     trigger: string;
     unless?: string;
+}
+
+export interface TDReplaceStates {
+    op: "replace_states";
+    filename: string;
+    replacements: Map<number, TDState>;
 }
