@@ -12,6 +12,7 @@ import { Hover, InlayHint, Range } from "vscode-languageserver/node";
 import { conlog, findFiles, getRelPath, isDirectory, isSubpath } from "./common";
 import {
     EXT_TBAF,
+    EXT_TD,
     EXT_TSSL,
     LANG_FALLOUT_SSL,
     LANG_TYPESCRIPT,
@@ -24,6 +25,8 @@ import {
     REGEX_MSG_INLAY,
     REGEX_TBAF_HOVER,
     REGEX_TBAF_INLAY,
+    REGEX_TD_HOVER,
+    REGEX_TD_INLAY,
     REGEX_TRA_COMMENT,
     REGEX_TRA_COMMENT_EXT,
     REGEX_TRA_HOVER,
@@ -67,8 +70,11 @@ function isTraRef(word: string, langId: string, filePath?: string): boolean {
         if (ext === EXT_TBAF) {
             return !!word.match(REGEX_TBAF_HOVER);
         }
-        // Regular .ts file - check both patterns, format determined by @tra comment
-        return !!word.match(REGEX_MSG_HOVER) || !!word.match(REGEX_TBAF_HOVER);
+        if (ext === EXT_TD) {
+            return !!word.match(REGEX_TD_HOVER);
+        }
+        // Regular .ts file - check all patterns, format determined by @tra comment
+        return !!word.match(REGEX_MSG_HOVER) || !!word.match(REGEX_TBAF_HOVER) || !!word.match(REGEX_TD_HOVER);
     }
 
     // For other languages, check the language arrays
@@ -214,7 +220,7 @@ export class Translation {
             if (ext === EXT_TSSL) {
                 return "msg";
             }
-            if (ext === EXT_TBAF) {
+            if (ext === EXT_TBAF || ext === EXT_TD) {
                 return "tra";
             }
             // Regular .ts file - infer from @tra comment first
@@ -422,10 +428,15 @@ export class Translation {
             }
         }
         if (ext == "tra") {
-            // Check for TBAF $tra(123) format first
+            // Check for TBAF $tra(123) format
             const tbafMatch = REGEX_TBAF_HOVER.exec(word);
             if (tbafMatch) {
                 return tbafMatch[1];
+            }
+            // Check for TD tra(123) format
+            const tdMatch = REGEX_TD_HOVER.exec(word);
+            if (tdMatch) {
+                return tdMatch[1];
             }
             // Standard @123 format
             return word.substring(1);
@@ -454,12 +465,16 @@ export class Translation {
             regex = new RegExp(REGEX_MSG_INLAY.source, "g");
             keyIndex = 2;
         } else {
-            // TypeScript files (.tbaf, .ts) use $tra(123) syntax
+            // TypeScript files use different patterns based on extension:
+            // - .tbaf uses $tra(123)
+            // - .td uses tra(123)
+            // - .ts uses $tra(123) (default)
             // Native WeiDU files (baf, d, tp2) use @123 syntax
             const ext = path.extname(filePath).toLowerCase();
-            const isTypeScript = ext === EXT_TBAF || ext === ".ts";
-            if (isTypeScript) {
+            if (ext === EXT_TBAF || ext === ".ts") {
                 regex = new RegExp(REGEX_TBAF_INLAY.source, "g");
+            } else if (ext === EXT_TD) {
+                regex = new RegExp(REGEX_TD_INLAY.source, "g");
             } else {
                 regex = new RegExp(REGEX_TRA_INLAY.source, "g");
             }

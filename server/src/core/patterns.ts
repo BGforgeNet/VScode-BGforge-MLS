@@ -60,6 +60,17 @@ export const REGEX_TBAF_INLAY = /\$tra\((\d+)\)/g;
 export const REGEX_TBAF_REPLACE = /\$tra\((\d+)\)/g;
 
 // =============================================================================
+// TD patterns (TypeScript Dialog)
+// Matches: tra(123)
+// =============================================================================
+
+/** Matches TD reference for hover detection: "tra(123)" */
+export const REGEX_TD_HOVER = /^tra\((\d+)\)$/;
+
+/** Matches TD reference in text for inlay hints (global) */
+export const REGEX_TD_INLAY = /tra\((\d+)\)/g;
+
+// =============================================================================
 // @tra comment pattern
 // Matches: /** @tra filename.msg */ or /** @tra filename.tra */
 // =============================================================================

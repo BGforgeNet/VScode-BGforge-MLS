@@ -50,6 +50,7 @@ describe("Translation", () => {
         // Create placeholder source files (needed for isSubpath check)
         fs.writeFileSync(path.join(tempDir, "test.tssl"), "");
         fs.writeFileSync(path.join(tempDir, "test.tbaf"), "");
+        fs.writeFileSync(path.join(tempDir, "test.td"), "");
         fs.writeFileSync(path.join(tempDir, "test.ts"), "");
 
         const settings: ProjectTraSettings = {
@@ -173,6 +174,58 @@ describe("Translation", () => {
             const text = `/** @tra test.tra */\nconst x = @100;`;
             // @123 is WeiDU format, TBAF uses $tra(123)
             const hover = translation.getHover(uri, "typescript", "@100", text);
+
+            expect(hover).toBeNull();
+        });
+    });
+
+    describe("TD support (.tra format with tra() syntax)", () => {
+        it("returns hover for tra(123) reference in .td file", async () => {
+            await translation.init();
+
+            const uri = `file://${tempDir}/test.td`;
+            const text = `/** @tra test.tra */\nconst x = tra(100);`;
+            const hover = translation.getHover(uri, "typescript", "tra(100)", text);
+
+            expect(hover).not.toBeNull();
+            expect(hover?.contents).toMatchObject({
+                kind: "markdown",
+                value: expect.stringContaining("Hello from tra"),
+            });
+        });
+
+        it("returns inlay hints for .td file", async () => {
+            await translation.init();
+
+            const uri = `file://${tempDir}/test.td`;
+            const text = `/** @tra test.tra */\nconst x = tra(100);\nconst y = tra(101);`;
+            const range = { start: { line: 0, character: 0 }, end: { line: 3, character: 0 } };
+            const hints = translation.getInlayHints(uri, "typescript", text, range);
+
+            expect(hints.length).toBe(2);
+            expect(hints[0]?.label).toContain("Hello from tra");
+            expect(hints[1]?.label).toContain("Translation 101");
+        });
+
+        it("does not return hover for mstr() in .td file", async () => {
+            await translation.init();
+
+            const uri = `file://${tempDir}/test.td`;
+            const text = `/** @tra test.tra */\nconst x = mstr(100);`;
+            // mstr() is msg format, should not match in td (which uses tra() format)
+            const hover = translation.getHover(uri, "typescript", "mstr(100", text);
+
+            // Should be null because td uses tra() format, not msg format
+            expect(hover).toBeNull();
+        });
+
+        it("does not return hover for $tra() in .td file", async () => {
+            await translation.init();
+
+            const uri = `file://${tempDir}/test.td`;
+            const text = `/** @tra test.tra */\nconst x = $tra(100);`;
+            // $tra() is TBAF format, TD uses tra()
+            const hover = translation.getHover(uri, "typescript", "$tra(100)", text);
 
             expect(hover).toBeNull();
         });
