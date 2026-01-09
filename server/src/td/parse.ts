@@ -13,6 +13,7 @@ import {
     ForOfStatement,
     ForStatement,
     FunctionDeclaration,
+    FunctionExpression,
     IfStatement,
     Node,
     SourceFile,
@@ -68,7 +69,8 @@ const TD_KEYWORDS = {
     FLAGS: "flags",
     EXTERN: "extern",
     WEIGHT: "weight",
-    DIALOG: "dialog",
+    BEGIN: "begin",
+    CHAIN: "chain",
     APPEND: "append",
     EXTEND_TOP: "extendTop",
     EXTEND_BOTTOM: "extendBottom",
@@ -213,8 +215,10 @@ export class TDParser {
         const funcName = call.getExpression().getText();
 
         switch (funcName) {
-            case TD_KEYWORDS.DIALOG:
-                return this.transformDialog(call);
+            case TD_KEYWORDS.BEGIN:
+                return this.transformBegin(call);
+            case TD_KEYWORDS.CHAIN:
+                return this.transformChainCall(call);
             case TD_KEYWORDS.APPEND:
                 return this.transformAppend(call);
             case TD_KEYWORDS.EXTEND_TOP:
@@ -256,30 +260,75 @@ export class TDParser {
     }
 
     /**
-     * Transform dialog(filename, [states]) to BEGIN and/or CHAINs.
-     * Functions with say(speaker, text) are emitted as CHAINs.
-     * Functions with say(text) are emitted as states in BEGIN.
+     * Transform chain(function) or chain(trigger, function) to CHAIN construct.
+     * Accepts either function reference or inline named function expression.
      */
-    private transformDialog(call: CallExpression): TDConstruct[] | null {
+    private transformChainCall(call: CallExpression): TDConstruct[] | null {
+        const args = call.getArguments();
+        if (args.length < 1 || args.length > 2) {
+            throw new Error(`chain() requires 1 or 2 arguments (function) or (trigger, function) at ${call.getStartLineNumber()}`);
+        }
+
+        let trigger: string | undefined;
+        let funcArg: Node;
+
+        if (args.length === 1) {
+            // chain(function) - no trigger
+            funcArg = args[0]!;
+        } else {
+            // chain(trigger, function) - with trigger
+            const triggerArg = args[0]!;
+            funcArg = args[1]!;
+
+            // Parse trigger expression
+            trigger = this.expressionToTrigger(triggerArg as Expression);
+        }
+
+        // Parse function (either reference or inline expression)
+        if (Node.isIdentifier(funcArg)) {
+            // Function reference: chain(myFunc) or chain(trigger, myFunc)
+            const funcName = funcArg.getText();
+            const funcInfo = this.funcs.get(funcName);
+            if (!funcInfo) {
+                throw new Error(`Function "${funcName}" not found in chain() at ${funcArg.getStartLineNumber()}`);
+            }
+
+            // Use trigger from argument, ignore if-wrapper trigger
+            const chain = this.transformFunctionToChain(funcInfo.func, trigger);
+            return chain ? [chain] : null;
+        } else if (Node.isFunctionExpression(funcArg)) {
+            // Inline function: chain(function name() { ... }) or chain(trigger, function name() { ... })
+            const func = funcArg as FunctionExpression;
+            const chain = this.transformFunctionToChain(func, trigger);
+            return chain ? [chain] : null;
+        }
+
+        throw new Error(`chain() function argument must be a function reference or inline function expression at ${call.getStartLineNumber()}`);
+    }
+
+    /**
+     * Transform begin(filename, [states]) to BEGIN.
+     * All functions are emitted as states.
+     */
+    private transformBegin(call: CallExpression): TDConstruct[] | null {
         const args = call.getArguments();
         if (args.length < 2) {
-            throw new Error(`dialog() requires 2 arguments (filename, states) at ${call.getStartLineNumber()}`);
+            throw new Error(`begin() requires 2 arguments (filename, states) at ${call.getStartLineNumber()}`);
         }
 
         const filenameArg = args[0];
         const statesArg = args[1];
 
         if (!filenameArg || !statesArg) {
-            throw new Error(`dialog() requires 2 arguments (filename, states) at ${call.getStartLineNumber()}`);
+            throw new Error(`begin() requires 2 arguments (filename, states) at ${call.getStartLineNumber()}`);
         }
 
         const filename = this.resolveStringExpr(filenameArg as Expression);
 
         if (!Node.isArrayLiteralExpression(statesArg)) {
-            throw new Error(`dialog() second argument must be an array of state functions at ${call.getStartLineNumber()}`);
+            throw new Error(`begin() second argument must be an array of state functions at ${call.getStartLineNumber()}`);
         }
 
-        const constructs: TDConstruct[] = [];
         const states: TDState[] = [];
 
         for (const element of (statesArg as ArrayLiteralExpression).getElements()) {
@@ -287,49 +336,29 @@ export class TDParser {
                 const funcName = element.getText();
                 const funcInfo = this.funcs.get(funcName);
                 if (!funcInfo) {
-                    throw new Error(`Function "${funcName}" not found in dialog() at ${element.getStartLineNumber()}`);
+                    throw new Error(`Function "${funcName}" not found in begin() at ${element.getStartLineNumber()}`);
                 }
-                const body = funcInfo.func.getBody()?.asKind(SyntaxKind.Block);
-                // Check if this is a CHAIN (has say(speaker, text) pattern)
-                const isChain = body && body.getStatements().some((stmt) => {
-                    if (stmt.isKind(SyntaxKind.ExpressionStatement)) {
-                        const expr = stmt.getExpression();
-                        if (Node.isCallExpression(expr)) {
-                            const fn = expr.getExpression().getText();
-                            return fn === "say" && expr.getArguments().length >= 2;
-                        }
-                    }
-                    return false;
-                });
 
-                if (isChain) {
-                    // Emit as CHAIN (standalone construct)
-                    const chain = this.transformFunctionToChain(funcInfo.func, funcInfo.trigger);
-                    if (chain) {
-                        // Note: CHAIN uses its own first speaker as filename, don't override
-                        constructs.push(chain);
-                    }
-                } else {
-                    // Emit as state in BEGIN (with entry trigger if if-wrapped)
-                    const state = this.transformFunctionToState(funcInfo.func, funcInfo.trigger);
-                    if (state) {
-                        states.push(state);
-                    }
+                // All functions in begin() are emitted as states
+                const state = this.transformFunctionToState(funcInfo.func, funcInfo.trigger);
+                if (state) {
+                    states.push(state);
                 }
             }
         }
 
-        // Add BEGIN if there are any states
-        if (states.length > 0) {
-            const begin: TDBegin = {
-                type: "begin",
-                filename,
-                states,
-            };
-            constructs.unshift(begin);
+        // Create BEGIN construct
+        if (states.length === 0) {
+            return null;
         }
 
-        return constructs.length > 0 ? constructs : null;
+        const begin: TDBegin = {
+            type: "begin",
+            filename,
+            states,
+        };
+
+        return [begin];
     }
 
     /**
@@ -1142,7 +1171,7 @@ export class TDParser {
     /**
      * Transform a function to a CHAIN.
      */
-    private transformFunctionToChain(func: FunctionDeclaration, entryTrigger?: string): TDChain | null {
+    private transformFunctionToChain(func: FunctionDeclaration | FunctionExpression, entryTrigger?: string): TDChain | null {
         const name = func.getName();
         if (!name) return null;
 

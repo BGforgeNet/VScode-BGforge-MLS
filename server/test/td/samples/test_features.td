@@ -47,4 +47,4 @@ extendBottom(dialog, state1, { position: 2 }, () => {
     }
 });
 
-export default dialog(dialog, [state1, state2, state3]);
+export default begin(dialog, [state1, state2, state3]);

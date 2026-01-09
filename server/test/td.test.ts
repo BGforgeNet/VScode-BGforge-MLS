@@ -19,14 +19,14 @@ describe("TD Transpiler", () => {
     }
 
     describe("BEGIN with states", () => {
-        it("transpiles simple dialog with state", () => {
+        it("transpiles simple begin with state", () => {
             const code = `
 function start() {
     say(tra(100));
     exit();
 }
 
-dialog("MYDLG", [start]);
+begin("MYDLG", [start]);
 `;
             const result = transpile(code);
             expect(result).toContain("BEGIN MYDLG");
@@ -44,7 +44,7 @@ function greeting() {
     exit();
 }
 
-dialog("NPC", [greeting]);
+begin("NPC", [greeting]);
 `;
             const result = transpile(code);
             expect(result).toContain("SAY @100 = @101 = @102");
@@ -63,7 +63,7 @@ function buyItem() {
     exit();
 }
 
-dialog("SHOP", [shop, buyItem]);
+begin("SHOP", [shop, buyItem]);
 `;
             const result = transpile(code);
             expect(result).toContain("++ @101 + buyItem");
@@ -80,7 +80,7 @@ if (Global("talked", "GLOBAL", 1)) {
     }
 }
 
-dialog("NPC", [returning]);
+begin("NPC", [returning]);
 `;
             const result = transpile(code);
             expect(result).toContain('IF ~Global("talked","GLOBAL",1)~ returning');
@@ -101,7 +101,7 @@ if (NumTimesTalkedTo(1)) {
     }
 }
 
-dialog("NPC", [start, returning]);
+begin("NPC", [start, returning]);
 `;
             const result = transpile(code);
             expect(result).toContain("IF ~~ start");
@@ -127,7 +127,7 @@ function buyExpensive() {
     exit();
 }
 
-dialog("SHOP", [shop, buyExpensive]);
+begin("SHOP", [shop, buyExpensive]);
 `;
             const result = transpile(code);
             expect(result).toContain("+~PartyGoldGT(500)~+ @101 + buyExpensive");
@@ -138,14 +138,12 @@ dialog("SHOP", [shop, buyExpensive]);
     describe("CHAIN", () => {
         it("transpiles chain with speaker switches", () => {
             const code = `
-function banter() {
+chain(function banter() {
     say("NPC1", tra(100));
     say("NPC2", tra(101));
     say("NPC1", tra(102));
     exit();
-}
-
-dialog("NPC1", [banter]);
+});
 `;
             const result = transpile(code);
             expect(result).toContain("CHAIN");
@@ -164,7 +162,7 @@ function test() {
     exit();
 }
 
-dialog("TEST", [test]);
+begin("TEST", [test]);
 `;
             const result = transpile(code);
             expect(result).toContain("@123");
@@ -177,7 +175,7 @@ function test() {
     exit();
 }
 
-dialog("TEST", [test]);
+begin("TEST", [test]);
 `;
             const result = transpile(code);
             expect(result).toContain("#456");
@@ -190,7 +188,7 @@ function test() {
     exit();
 }
 
-dialog("TEST", [test]);
+begin("TEST", [test]);
 `;
             const result = transpile(code);
             expect(result).toContain("~Hello World~");
@@ -213,7 +211,7 @@ function shop() {
     exit();
 }
 
-dialog("SHOP", [shop]);
+begin("SHOP", [shop]);
 `;
             const result = transpile(code);
             // Should have 3 transitions, one for each item
@@ -232,7 +230,7 @@ function countdown() {
     }
 }
 
-dialog("TEST", [countdown]);
+begin("TEST", [countdown]);
 `;
             const result = transpile(code);
             expect(result).toContain("@1");
@@ -258,7 +256,7 @@ function shop() {
     exit();
 }
 
-dialog("SHOP", [shop]);
+begin("SHOP", [shop]);
 `;
             const result = transpile(code);
             expect(result).toContain("+~PartyGoldGT(500)~+");

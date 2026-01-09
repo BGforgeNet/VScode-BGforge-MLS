@@ -4,12 +4,11 @@ const BJKLSY = "BJKLSY";
 const IMOEN2J = "IMOEN2J";
 
 // Chain with entry trigger, DO action, and complex conditionals
-if (
+chain(
     Global("KelseyImoenPizza", "LOCALS", 0) &&
     InParty("Imoen2") &&
     See("Imoen2") &&
-    !StateCheck("Imoen2", STATE_SLEEPING)
-) {
+    !StateCheck("Imoen2", STATE_SLEEPING),
     function pizzachain() {
         say(BJKLSY, tra(1));
         action(SetGlobal("KelseyImoenPizza", "LOCALS", 1));
@@ -45,6 +44,4 @@ if (
 
         exit();
     }
-}
-
-export default dialog(BJKLSY, [pizzachain]);
+);

@@ -30,4 +30,4 @@ if (!Global("wm_start", "GLOBAL", 1)) {
     }
 }
 
-export default dialog(dialog, [state100, state110]);
+export default begin(dialog, [state100, state110]);

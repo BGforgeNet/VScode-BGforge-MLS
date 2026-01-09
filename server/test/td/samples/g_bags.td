@@ -34,4 +34,4 @@ function state2() {
     exit();
 }
 
-export default dialog(dialog, [state0, state1, state2]);
+export default begin(dialog, [state0, state1, state2]);
