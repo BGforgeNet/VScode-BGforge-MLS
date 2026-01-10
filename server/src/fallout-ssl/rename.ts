@@ -5,7 +5,7 @@
 
 import { Position, TextEdit, WorkspaceEdit } from "vscode-languageserver/node";
 import { getParser, isInitialized } from "./parser";
-import { findIdentifierAtPosition, isLocalDefinition, findAllReferences, makeRange } from "./local-utils";
+import { findIdentifierAtPosition, isLocalDefinition, findAllReferences, makeRange } from "./utils";
 
 /**
  * Rename a locally defined symbol.

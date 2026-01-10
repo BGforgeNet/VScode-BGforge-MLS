@@ -7,7 +7,7 @@ import { Hover, MarkupKind } from "vscode-languageserver/node";
 import { getParser, isInitialized } from "./parser";
 import * as jsdoc from "../shared/jsdoc";
 import { jsdocToMarkdown, jsdocToDetail } from "../shared/jsdoc-utils";
-import { findDefinitionNode, findPrecedingDocComment } from "./local-utils";
+import { findDefinitionNode, findPrecedingDocComment } from "./utils";
 import { LANG_FALLOUT_SSL_TOOLTIP } from "../core/languages";
 
 /**

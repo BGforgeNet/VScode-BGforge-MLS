@@ -10,18 +10,18 @@
 import { CompletionItem, DocumentSymbol, Hover, Location, Position, SignatureHelp, TextEdit, WorkspaceEdit } from "vscode-languageserver/node";
 import { conlog } from "../common";
 import { LANG_FALLOUT_SSL } from "../core/languages";
-import { compile as falloutCompile } from "./fallout";
+import { compile as falloutCompile } from "./compiler";
 import { Language, Features } from "../data-loader";
 import { LanguageProvider, ProviderContext } from "../language-provider";
 import * as signature from "../shared/signature";
 import { formatDocument, initFormatter } from "./format";
 import { isInitialized } from "./parser";
-import { getDocumentSymbols } from "./local-symbols";
-import { getLocalDefinition } from "./local-definition";
-import { getLocalHover } from "./local-hover";
-import { renameSymbol } from "./local-rename";
-import { getLocalCompletions } from "./local-completion";
-import { getLocalSignature } from "./local-signature";
+import { getDocumentSymbols } from "./symbols";
+import { getLocalDefinition } from "./definition";
+import { getLocalHover } from "./hover";
+import { renameSymbol } from "./rename";
+import { getLocalCompletions } from "./completion";
+import { getLocalSignature } from "./signature";
 
 const features: Features = {
     completion: true,

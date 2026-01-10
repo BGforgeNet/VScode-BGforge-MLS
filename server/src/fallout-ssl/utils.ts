@@ -193,80 +193,10 @@ export function findDefinitionNode(root: Node, symbol: string): Node | null {
 
 /**
  * Check if a symbol is defined locally.
- * Handles: procedures, forward declarations, variables, exports, params, for-loop vars, foreach vars.
+ * Reuses findDefinitionNode for consistency.
  */
 export function isLocalDefinition(root: Node, symbol: string): boolean {
-    function checkNode(node: Node): boolean {
-        if (node.type === "procedure") {
-            const nameNode = node.childForFieldName("name");
-            if (nameNode?.text === symbol) {
-                return true;
-            }
-            // Check parameters
-            const params = node.childForFieldName("params");
-            if (params) {
-                for (const child of params.children) {
-                    if (child.type === "param") {
-                        const paramName = child.childForFieldName("name");
-                        if (paramName?.text === symbol) {
-                            return true;
-                        }
-                    }
-                }
-            }
-            // Check local variables and for-loop vars inside procedure
-            for (const child of node.children) {
-                if (checkNode(child)) {
-                    return true;
-                }
-            }
-        } else if (node.type === "procedure_forward") {
-            const nameNode = node.childForFieldName("name");
-            if (nameNode?.text === symbol) {
-                return true;
-            }
-        } else if (node.type === "variable_decl") {
-            for (const child of node.children) {
-                if (child.type === "var_init") {
-                    const nameNode = child.childForFieldName("name");
-                    if (nameNode?.text === symbol) {
-                        return true;
-                    }
-                }
-            }
-        } else if (node.type === "for_var_decl") {
-            const nameNode = node.childForFieldName("name");
-            if (nameNode?.text === symbol) {
-                return true;
-            }
-        } else if (node.type === "foreach_stmt") {
-            const varNode = node.childForFieldName("var");
-            if (varNode?.text === symbol) {
-                return true;
-            }
-            const keyNode = node.childForFieldName("key");
-            if (keyNode?.text === symbol) {
-                return true;
-            }
-            const valueNode = node.childForFieldName("value");
-            if (valueNode?.text === symbol) {
-                return true;
-            }
-        } else if (node.type === "export_decl") {
-            const nameNode = node.childForFieldName("name");
-            if (nameNode?.text === symbol) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    for (const node of root.children) {
-        if (checkNode(node)) {
-            return true;
-        }
-    }
-    return false;
+    return findDefinitionNode(root, symbol) !== null;
 }
 
 /**

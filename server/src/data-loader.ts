@@ -13,7 +13,7 @@
 import { conlog, getRelPath, isDirectory, isSubpath, uriToPath } from "./common";
 import * as completion from "./shared/completion";
 import * as definition from "./shared/definition";
-import * as fallout from "./fallout-ssl/fallout";
+import * as fallout from "./fallout-ssl/header-parser";
 import * as hover from "./shared/hover";
 import { LANG_FALLOUT_SSL, LANG_WEIDU_TP2, LANG_WEIDU_TP2_TPL } from "./core/languages";
 import {

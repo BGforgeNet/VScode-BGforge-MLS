@@ -6,7 +6,7 @@
 import { ParameterInformation, SignatureHelp, SignatureInformation } from "vscode-languageserver/node";
 import { getParser, isInitialized } from "./parser";
 import * as jsdoc from "../shared/jsdoc";
-import { findProcedure, findPrecedingDocComment } from "./local-utils";
+import { findProcedure, findPrecedingDocComment } from "./utils";
 
 /**
  * Get signature help for a local procedure.

@@ -5,7 +5,7 @@
 
 import { CompletionItem, CompletionItemKind } from "vscode-languageserver/node";
 import { getParser, isInitialized } from "./parser";
-import { extractProcedures, findPrecedingDocComment } from "./local-utils";
+import { extractProcedures, findPrecedingDocComment } from "./utils";
 import * as jsdoc from "../shared/jsdoc";
 import { jsdocToDetail } from "../shared/jsdoc-utils";
 

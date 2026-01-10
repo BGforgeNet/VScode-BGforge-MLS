@@ -6,7 +6,7 @@
 import { DocumentSymbol, SymbolKind } from "vscode-languageserver/node";
 import type { Node } from "web-tree-sitter";
 import { getParser, isInitialized } from "./parser";
-import { extractProcedures, makeRange, findPrecedingDocComment } from "./local-utils";
+import { extractProcedures, makeRange, findPrecedingDocComment } from "./utils";
 import * as jsdoc from "../shared/jsdoc";
 import { jsdocToDetail } from "../shared/jsdoc-utils";
 

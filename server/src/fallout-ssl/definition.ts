@@ -7,7 +7,7 @@
 import { Location, Position } from "vscode-languageserver/node";
 import type { Node } from "web-tree-sitter";
 import { getParser, isInitialized } from "./parser";
-import { extractProcedures, makeRange, findIdentifierAtPosition } from "./local-utils";
+import { extractProcedures, makeRange, findIdentifierAtPosition } from "./utils";
 
 interface LocalDef {
     name: string;
