@@ -9,6 +9,7 @@ import {
     ArrayLiteralExpression,
     Block,
     CallExpression,
+    CaseClause,
     Expression,
     ForOfStatement,
     ForStatement,
@@ -20,6 +21,7 @@ import {
     ReturnStatement,
     SourceFile,
     Statement,
+    SwitchStatement,
     SyntaxKind,
 } from "ts-morph";
 import { BAFAction, BAFBlock, BAFCondition, BAFOrGroup, BAFScript, BAFTopCondition } from "./ir";
@@ -100,6 +102,8 @@ export class TBAFTransformer {
             this.transformForOfStatement(stmt as ForOfStatement, parentConditions);
         } else if (stmt.isKind(SyntaxKind.ForStatement)) {
             this.transformForStatement(stmt as ForStatement, parentConditions);
+        } else if (stmt.isKind(SyntaxKind.SwitchStatement)) {
+            this.transformSwitchStatement(stmt as SwitchStatement, parentConditions);
         } else if (stmt.isKind(SyntaxKind.Block)) {
             for (const s of (stmt as Block).getStatements()) {
                 this.transformStatement(s, parentConditions);
@@ -194,6 +198,87 @@ export class TBAFTransformer {
         this.unrollFor(forStmt, () => {
             this.transformStatement(body, parentConditions);
         });
+    }
+
+    /**
+     * Transform a switch statement to multiple IF blocks.
+     * Each case becomes a separate IF block testing the switch expression against that case value.
+     */
+    private transformSwitchStatement(switchStmt: SwitchStatement, parentConditions: BAFTopCondition[]) {
+        const switchExpr = switchStmt.getExpression();
+        const caseBlock = switchStmt.getCaseBlock();
+
+        for (const clause of caseBlock.getClauses()) {
+            if (!clause.isKind(SyntaxKind.CaseClause)) {
+                // Default clauses are not supported in BAF
+                // BAF doesn't have a way to express "none of the above" conditions cleanly
+                throw new Error(
+                    `Default case in switch statement is not supported. ` +
+                    `BAF cannot represent "none of the above" logic. ` +
+                    `Remove the default case or refactor to explicit case values.`
+                );
+            }
+
+            const caseClause = clause as CaseClause;
+            const caseValue = caseClause.getExpression().getText();
+
+            // Build the condition by augmenting the switch expression with the case value
+            const condition = this.buildSwitchCondition(switchExpr, caseValue);
+            const conditions = [...parentConditions, condition];
+
+            // Extract statements until break
+            const statements = this.extractCaseStatements(caseClause);
+            const actions = this.transformActionsFromStatements(statements);
+
+            if (actions.length > 0) {
+                this.blocks.push({ conditions, actions, response: 100 });
+            }
+        }
+    }
+
+    /**
+     * Build a condition for a switch case by augmenting the switch expression with the case value.
+     * For Global() and similar BAF conditions, appends the value as the last argument.
+     */
+    private buildSwitchCondition(switchExpr: Expression, caseValue: string): BAFCondition {
+        const substitutedValue = utils.substituteVars(caseValue, this.vars);
+        const actualExpr = this.resolveVariableToExpression(switchExpr);
+
+        if (Node.isCallExpression(actualExpr)) {
+            const funcName = actualExpr.getExpression().getText();
+            // Get arguments from resolved expression (already contains literal values, not variable names)
+            const args = actualExpr.getArguments().map(a => a.getText());
+
+            // For Global and similar functions, append the case value as the last argument
+            return {
+                negated: false,
+                name: funcName,
+                args: [...args, substitutedValue],
+            };
+        }
+
+        throw new Error(
+            `Switch expression "${switchExpr.getText()}" is not supported. ` +
+            `Only function call expressions (like Global()) are supported in switch statements.`
+        );
+    }
+
+    /**
+     * Extract statements from a case clause until break statement.
+     * Returns all statements except the break.
+     */
+    private extractCaseStatements(caseClause: CaseClause): Statement[] {
+        const statements = caseClause.getStatements();
+        const result: Statement[] = [];
+
+        for (const stmt of statements) {
+            if (stmt.isKind(SyntaxKind.BreakStatement)) {
+                break;
+            }
+            result.push(stmt);
+        }
+
+        return result;
     }
 
     /**
@@ -368,13 +453,10 @@ export class TBAFTransformer {
         });
 
         // Parse the substituted return expression
-        const project = new Project({ useInMemoryFileSystem: true });
-        const tempFile = project.createSourceFile("temp.ts", `const _x_ = ${returnText};`);
-        const varDecl = tempFile.getVariableDeclarations()[0];
-        if (!varDecl) {
+        const expr = this.parseExpressionFromText(returnText);
+        if (!expr) {
             throw new Error("Failed to parse return expression");
         }
-        const expr = varDecl.getInitializerOrThrow();
 
         // Transform the parsed expression using the full condition transformer
         return this.transformConditionExpr(expr);
@@ -754,6 +836,41 @@ export class TBAFTransformer {
 
         // Convert DNF (OR of terms) to CNF
         return dnfToCnf(terms);
+    }
+
+    /**
+     * Parse a TypeScript expression from a string of code.
+     * Creates a temporary in-memory project to parse the expression.
+     *
+     * @param text - The expression text to parse (e.g., "Global('foo', 'LOCALS')")
+     * @returns The parsed Expression node, or undefined if parsing fails
+     */
+    private parseExpressionFromText(text: string): Expression | undefined {
+        const project = new Project({ useInMemoryFileSystem: true });
+        const tempFile = project.createSourceFile("temp.ts", `const _x_ = ${text};`);
+        const varDecl = tempFile.getVariableDeclarations()[0];
+        return varDecl?.getInitializer();
+    }
+
+    /**
+     * Resolve a variable identifier to its underlying expression.
+     * If the expression is a variable name, looks it up in the vars context
+     * and parses its value as an expression.
+     *
+     * @param expr - The expression to resolve (may be an identifier or any other expression)
+     * @returns The resolved expression (either the parsed variable value or the original expression)
+     */
+    private resolveVariableToExpression(expr: Expression): Expression {
+        if (Node.isIdentifier(expr)) {
+            const varValue = this.vars.get(expr.getText());
+            if (varValue) {
+                const parsed = this.parseExpressionFromText(varValue);
+                if (parsed) {
+                    return parsed;
+                }
+            }
+        }
+        return expr;
     }
 
     /**

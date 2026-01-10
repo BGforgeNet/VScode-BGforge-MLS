@@ -200,4 +200,84 @@ if (See(Player1)) {
             expect(result).toContain("RESPONSE #100");
         });
     });
+
+    describe("Switch statements", () => {
+        it("transpiles switch to multiple IF blocks", () => {
+            const code = `
+const state = Global("state", "LOCALS");
+switch (state) {
+    case 0:
+        ActionA();
+        break;
+    case 1:
+        ActionB();
+        break;
+}
+`;
+            const result = transpile(code);
+            expect(result).toContain('Global("state", "LOCALS", 0)');
+            expect(result).toContain("ActionA()");
+            expect(result).toContain('Global("state", "LOCALS", 1)');
+            expect(result).toContain("ActionB()");
+        });
+
+        it("handles multiple actions per case", () => {
+            const code = `
+switch (Global("phase", "MYAREA")) {
+    case 0:
+        DisplayString(Myself, 100);
+        SetGlobal("phase", "MYAREA", 1);
+        break;
+    case 1:
+        DisplayString(Myself, 200);
+        ActionOverride(Player1, StartDialogNoSet(Myself));
+        break;
+}
+`;
+            const result = transpile(code);
+            expect(result).toContain('Global("phase", "MYAREA", 0)');
+            expect(result).toContain("DisplayString(Myself, 100)");
+            expect(result).toContain('SetGlobal("phase", "MYAREA", 1)');
+            expect(result).toContain('Global("phase", "MYAREA", 1)');
+            expect(result).toContain("DisplayString(Myself, 200)");
+            expect(result).toContain("ActionOverride(Player1, StartDialogNoSet(Myself))");
+        });
+
+        it("handles numeric case values", () => {
+            const code = `
+switch (Global("count", "LOCALS")) {
+    case 5:
+        Continue();
+        break;
+    case 10:
+        NoAction();
+        break;
+}
+`;
+            const result = transpile(code);
+            expect(result).toContain('Global("count", "LOCALS", 5)');
+            expect(result).toContain('Global("count", "LOCALS", 10)');
+        });
+
+        it("substitutes const values in case expressions", () => {
+            const code = `
+const STATE_IDLE = 0;
+const STATE_ACTIVE = 1;
+
+switch (Global("state", "LOCALS")) {
+    case STATE_IDLE:
+        Wait(1);
+        break;
+    case STATE_ACTIVE:
+        Attack(NearestEnemyOf(Myself));
+        break;
+}
+`;
+            const result = transpile(code);
+            expect(result).toContain('Global("state", "LOCALS", 0)');
+            expect(result).toContain("Wait(1)");
+            expect(result).toContain('Global("state", "LOCALS", 1)');
+            expect(result).toContain("Attack(NearestEnemyOf(Myself))");
+        });
+    });
 });
