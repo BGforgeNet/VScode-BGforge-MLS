@@ -1425,6 +1425,10 @@
           "include": "#sfall-functions"
         },
         {
+          "match": "\\b(\\w+)\\s*(?=\\()",
+          "name": "entity.name.function.fallout-ssl"
+        },
+        {
           "match": "(?i)[[:blank:]]+(\\w+)[[:blank:]]*(\\(.*\\))(;)",
           "captures": {
             "1": {

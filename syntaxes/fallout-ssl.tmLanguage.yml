@@ -404,6 +404,10 @@ repository:
       - include: '#fallout-base-functions'
       - include: '#sfall-functions'
 
+      # General function call pattern (for expressions, not just statements)
+      - match: \b(\w+)\s*(?=\()
+        name: entity.name.function.fallout-ssl
+
       - match: (?i)[[:blank:]]+(\w+)[[:blank:]]*(\(.*\))(;)
         captures:
           '1':
