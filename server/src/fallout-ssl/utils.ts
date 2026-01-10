@@ -4,6 +4,8 @@
 
 import type { Node } from "web-tree-sitter";
 import { Position } from "vscode-languageserver/node";
+import { MacroData, parseMacroParams } from "./macro-utils";
+import * as jsdoc from "../shared/jsdoc";
 
 /**
  * Create a Position from a tree-sitter point.
@@ -116,7 +118,7 @@ export function findIdentifierAtPosition(root: Node, position: Position): string
 
 /**
  * Find the definition node for a symbol by name.
- * Handles: procedures, forward declarations, variables, exports, params, for-loop vars, foreach vars.
+ * Handles: procedures, forward declarations, macros, variables, exports, params, for-loop vars, foreach vars.
  * Prefers procedure definitions over forward declarations.
  */
 export function findDefinitionNode(root: Node, symbol: string): Node | null {
@@ -125,6 +127,12 @@ export function findDefinitionNode(root: Node, symbol: string): Node | null {
     const proc = procedures.get(symbol);
     if (proc) {
         return proc.node;
+    }
+
+    // Check macros
+    const macroNode = findMacroDefinition(root, symbol);
+    if (macroNode) {
+        return macroNode;
     }
 
     // Check inside procedures for params and local vars
@@ -217,4 +225,97 @@ export function findAllReferences(root: Node, symbol: string): Node[] {
 
     visit(root);
     return refs;
+}
+
+/**
+ * Extract all macros from tree-sitter AST.
+ * Returns MacroData objects with name, params, body, jsdoc, etc.
+ */
+export function extractMacros(root: Node): MacroData[] {
+    const macros: MacroData[] = [];
+
+    function visit(node: Node) {
+        if (node.type === "preprocessor") {
+            // Check if it's a define
+            for (const child of node.children) {
+                if (child.type === "define") {
+                    const nameNode = child.childForFieldName("name");
+                    const paramsNode = child.childForFieldName("params");
+                    const bodyNode = child.childForFieldName("body");
+
+                    if (nameNode) {
+                        const name = nameNode.text;
+                        const bodyText = bodyNode?.text || "";
+
+                        // Extract params - paramsNode should always be captured by grammar now
+                        let params: string[] | undefined;
+                        let hasParams = false;
+                        let actualBody = bodyText.trimStart();
+
+                        if (paramsNode) {
+                            params = parseMacroParams(paramsNode.text);
+                            hasParams = true;
+                        }
+                        // Note: No fallback needed - grammar with token.immediate always captures params correctly
+
+                        // Extract body info
+                        const multiline = actualBody.includes("\n");
+                        const firstline = multiline ? (actualBody.split("\n")[0] || "").trim() : actualBody.trim();
+
+                        // Extract JSDoc (search for preceding comment in parent's siblings)
+                        const docComment = findPrecedingDocComment(root, node);
+                        const parsedJsdoc = docComment ? jsdoc.parse(docComment) : undefined;
+
+                        macros.push({
+                            name,
+                            params,
+                            hasParams,
+                            body: actualBody.trim(),
+                            firstline,
+                            multiline,
+                            jsdoc: parsedJsdoc,
+                        });
+                    }
+                }
+            }
+        }
+
+        for (const child of node.children) {
+            visit(child);
+        }
+    }
+
+    visit(root);
+    return macros;
+}
+
+/**
+ * Find macro definition by name.
+ * Returns the 'define' node or null.
+ */
+function findMacroDefinition(root: Node, symbol: string): Node | null {
+    let result: Node | null = null;
+
+    function visit(node: Node) {
+        if (result) return;
+
+        if (node.type === "preprocessor") {
+            for (const child of node.children) {
+                if (child.type === "define") {
+                    const nameNode = child.childForFieldName("name");
+                    if (nameNode?.text === symbol) {
+                        result = child;
+                        return;
+                    }
+                }
+            }
+        }
+
+        for (const child of node.children) {
+            visit(child);
+        }
+    }
+
+    visit(root);
+    return result;
 }

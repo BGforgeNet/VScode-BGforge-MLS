@@ -1,17 +1,18 @@
 /**
  * Local completion for Fallout SSL files.
- * Extracts procedures, variables, exports from the current file using tree-sitter.
+ * Extracts procedures, macros, variables, exports from the current file using tree-sitter.
  */
 
 import { CompletionItem, CompletionItemKind } from "vscode-languageserver/node";
 import { getParser, isInitialized } from "./parser";
-import { extractProcedures, findPrecedingDocComment } from "./utils";
+import { extractProcedures, extractMacros, findPrecedingDocComment } from "./utils";
 import * as jsdoc from "../shared/jsdoc";
 import { jsdocToDetail } from "../shared/jsdoc-utils";
+import { buildMacroCompletion } from "./macro-utils";
 
 /**
  * Extract completion items from the current file.
- * Includes: procedures, forward declarations, variables, exports.
+ * Includes: procedures, forward declarations, macros, variables, exports.
  * Does NOT include: params, for-loop vars, foreach vars (too local).
  * Deduplicates: if both forward declaration and definition exist, only shows definition.
  */
@@ -26,6 +27,7 @@ export function getLocalCompletions(text: string): CompletionItem[] {
     }
 
     const procedures = extractProcedures(tree.rootNode);
+    const macros = extractMacros(tree.rootNode);
     const procItems: CompletionItem[] = [];
 
     for (const [name, { node }] of procedures) {
@@ -65,6 +67,13 @@ export function getLocalCompletions(text: string): CompletionItem[] {
         });
     }
 
+    // Extract macros using shared builder
+    const macroItems: CompletionItem[] = [];
+    for (const macro of macros) {
+        // Use dummy URI for local completions (filePath is for display only)
+        macroItems.push(buildMacroCompletion(macro, "", ""));
+    }
+
     const variables: CompletionItem[] = [];
 
     for (const node of tree.rootNode.children) {
@@ -91,5 +100,5 @@ export function getLocalCompletions(text: string): CompletionItem[] {
         }
     }
 
-    return [...procItems, ...variables];
+    return [...procItems, ...macroItems, ...variables];
 }

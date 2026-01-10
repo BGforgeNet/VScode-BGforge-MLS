@@ -7,8 +7,9 @@ import { Hover, MarkupKind } from "vscode-languageserver/node";
 import { getParser, isInitialized } from "./parser";
 import * as jsdoc from "../shared/jsdoc";
 import { jsdocToMarkdown, jsdocToDetail } from "../shared/jsdoc-utils";
-import { findDefinitionNode, findPrecedingDocComment } from "./utils";
+import { findDefinitionNode, findPrecedingDocComment, extractMacros } from "./utils";
 import { LANG_FALLOUT_SSL_TOOLTIP } from "../core/languages";
+import { buildMacroHover } from "./macro-utils";
 
 /**
  * Get hover info for a locally defined symbol.
@@ -26,6 +27,17 @@ export function getLocalHover(text: string, symbol: string, _uri: string): Hover
 
     const defNode = findDefinitionNode(tree.rootNode, symbol);
     if (!defNode) {
+        return null;
+    }
+
+    // Handle macros using shared builder
+    if (defNode.type === "define") {
+        const macros = extractMacros(tree.rootNode);
+        const macro = macros.find(m => m.name === symbol);
+        if (macro) {
+            const contents = buildMacroHover(macro, "");
+            return { contents };
+        }
         return null;
     }
 

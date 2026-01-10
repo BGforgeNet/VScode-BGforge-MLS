@@ -3,7 +3,7 @@
  * Handles regex-based parsing of .h files for procedures, macros, and definitions.
  */
 
-import { CompletionItemKind, ParameterInformation } from "vscode-languageserver";
+import { CompletionItemKind } from "vscode-languageserver";
 import { MarkupKind } from "vscode-languageserver/node";
 import {
     conlog,
@@ -19,6 +19,7 @@ import * as pool from "../shared/pool";
 import { LANG_FALLOUT_SSL_TOOLTIP } from "../core/languages";
 import { jsdocToDetail, jsdocToMarkdown } from "../shared/jsdoc-utils";
 import * as signature from "../shared/signature";
+import { MacroData, buildMacroCompletion, buildMacroHover, buildSignatureFromJSDoc, isConstantMacro, parseMacroParams } from "./macro-utils";
 
 interface FalloutHeaderData {
     macros: Macros;
@@ -147,57 +148,32 @@ function loadProcedures(uri: string, headerData: FalloutHeaderData, filePath: st
 function loadMacros(uri: string, headerData: FalloutHeaderData, filePath: string) {
     const completions: completion.CompletionListEx = [];
     const hovers: hover.HoverMapEx = new Map();
+
     for (const macro of headerData.macros) {
-        let markdownValue: string;
-        let detail = `macro ${macro.detail}`;
+        // Convert old Macro interface to MacroData for shared builders
+        const hasParams = !macro.constant && macro.detail.includes("(");
+        const params = hasParams ? parseMacroParams(macro.detail.match(/\(([^)]+)\)/)?.[1] || "") : undefined;
 
-        // for a constant, show just value
-        if (macro.constant) {
-            detail = macro.firstline;
-        }
-
-        markdownValue = [
-            "```" + `${tooltipLangId}`,
-            `${detail}`,
-            "```",
-            "\n```bgforge-mls-comment\n",
-            `${filePath}`,
-            "```",
-        ].join("\n");
-        // for single line ones, show full line too
-        if (!macro.multiline && !macro.constant) {
-            markdownValue += ["\n```" + `${tooltipLangId}`, `${macro.firstline}`, "```"].join("\n");
-        }
-
-        if (macro.jsdoc) {
-            markdownValue += jsdocToMarkdown(macro.jsdoc, "fallout");
-        }
-
-        let completionKind;
-        if (macro.constant) {
-            completionKind = CompletionItemKind.Constant;
-        } else {
-            // there's no good icon for macros, using something distinct from function
-            completionKind = CompletionItemKind.Field;
-        }
-        const markdownContents = { kind: MarkupKind.Markdown, value: markdownValue };
-        const completionItem: completion.CompletionItemEx = {
-            label: macro.label,
-            documentation: markdownContents,
-            source: filePath,
-            uri: uri,
-            kind: completionKind,
-            labelDetails: { description: filePath },
+        const macroData: MacroData = {
+            name: macro.label,
+            params,
+            hasParams,
+            firstline: macro.firstline,
+            multiline: macro.multiline,
+            jsdoc: macro.jsdoc,
         };
-        if (macro.jsdoc?.deprecated !== undefined) {
-            const COMPLETION_TAG_deprecated = 1;
-            completionItem.tags = [COMPLETION_TAG_deprecated];
-        }
-        completions.push(completionItem);
 
-        const hoverItem = { contents: markdownContents, source: filePath, uri: uri };
-        hovers.set(macro.label, hoverItem);
+        // Use shared builders
+        const item = buildMacroCompletion(macroData, uri, filePath);
+        // Add source field (specific to header completions)
+        (item as completion.CompletionItemEx).source = filePath;
+        (item as completion.CompletionItemEx).uri = uri;
+        completions.push(item as completion.CompletionItemEx);
+
+        const hoverContents = buildMacroHover(macroData, filePath);
+        hovers.set(macro.label, { contents: hoverContents, source: filePath, uri });
     }
+
     return { completion: completions, hover: hovers };
 }
 
@@ -228,50 +204,20 @@ export function loadFileData(uri: string, text: string, filePath: string) {
 function getSignatures(symbols: FalloutHeaderData, uri: string) {
     const signatures: signature.SigMap = new Map();
 
+    // Use shared function for both macros and procedures
     for (const macro of symbols.macros) {
         if (macro.jsdoc && macro.jsdoc.args.length > 0) {
-            const key = macro.label;
-            const sig = jsdocToSig(macro.label, macro.jsdoc, uri);
-            signatures.set(key, sig);
+            signatures.set(macro.label, buildSignatureFromJSDoc(macro.label, macro.jsdoc, uri));
         }
     }
-    // dupe code because of different types
+
     for (const procedure of symbols.procedures) {
         if (procedure.jsdoc && procedure.jsdoc.args.length > 0) {
-            const key = procedure.label;
-            const sig = jsdocToSig(procedure.label, procedure.jsdoc, uri);
-            signatures.set(key, sig);
+            signatures.set(procedure.label, buildSignatureFromJSDoc(procedure.label, procedure.jsdoc, uri));
         }
     }
 
     return signatures;
-}
-
-function jsdocToSig(label: string, jsd: jsdoc.JSdoc, uri: string) {
-    const argNames = jsd.args.map((item) => {
-        return item.name;
-    });
-    const sigLabel = label + "(" + argNames.join(", ") + ")";
-    const sig: signature.SigInfoEx = { label: sigLabel, uri: uri };
-    if (jsd.desc) {
-        sig.documentation = {
-            kind: "markdown",
-            value: "\n---\n" + jsd.desc,
-        };
-    }
-    const parameters: ParameterInformation[] = [];
-    for (const arg of jsd.args) {
-        const info: ParameterInformation = { label: arg.name };
-        let doc = ["```" + `${tooltipLangId}`, `${arg.type} ${arg.name}`, "```"].join("\n");
-        if (arg.description) {
-            doc += "\n";
-            doc += arg.description;
-        }
-        info.documentation = { kind: "markdown", value: doc };
-        parameters.push(info);
-    }
-    sig.parameters = parameters;
-    return sig;
 }
 
 function findSymbols(text: string) {
@@ -279,7 +225,6 @@ function findSymbols(text: string) {
     const defineList: Macros = [];
     const defineRegex =
         /((\/\*\*\s*\n([^*]|(\*(?!\/)))*\*\/)\r?\n)?#define[ \t]+(\w+)(?:\(([^)]+)\))?[ \t]+(.+)/gm;
-    const constantRegex = /^[A-Z][A-Z0-9_]+$/;
     let matches = text.matchAll(defineRegex);
     for (const m of matches) {
         const defineName = m[5];
@@ -301,9 +246,9 @@ function findSymbols(text: string) {
             defineDetail = `${defineName}(${defineVars})`;
         }
 
-        // check if it looks like a constant
+        // check if it looks like a constant (use shared function)
         let constant = false;
-        if (!multiline && constantRegex.test(defineName)) {
+        if (!multiline && isConstantMacro(defineName)) {
             constant = true;
         }
 

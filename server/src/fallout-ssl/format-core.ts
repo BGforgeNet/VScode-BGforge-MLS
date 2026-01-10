@@ -161,8 +161,19 @@ function formatNode(node: SyntaxNode, depth: number): string {
             // Replace tabs, remove leading blank lines, ensure exactly one trailing newline
             return content.replace(/\t/g, ctx.indent).replace(/^\n+/, "").replace(/\n+$/, "") + "\n";
         }
-        case "preprocessor":
-            return normalizePreprocessor(node.text);
+        case "preprocessor": {
+            let result = normalizePreprocessor(node.text);
+            // Check if there's a line comment on the same line (next sibling)
+            const nextSibling = node.nextSibling;
+            if (nextSibling && nextSibling.type === "line_comment" &&
+                nextSibling.startPosition.row === node.endPosition.row) {
+                // Add the comment on the same line with proper spacing
+                const commentText = normalizeComment(nextSibling.text);
+                // Ensure proper spacing before comment (4 spaces as indent)
+                result = result.trimEnd() + "    " + commentText;
+            }
+            return result;
+        }
         case "comment":
         case "line_comment":
             return normalizeComment(node.text);
@@ -235,7 +246,14 @@ function formatChildren(node: SyntaxNode, depth: number): string {
                 needsBlankLine = true;
             }
         } else if (child.type === "preprocessor") {
-            parts.push(normalizePreprocessor(child.text));
+            let preprocessorText = normalizePreprocessor(child.text);
+            // Check if next sibling is a line comment on the same line
+            if (nextChild && nextChild.type === "line_comment" &&
+                nextChild.startPosition.row === child.endPosition.row) {
+                // Add the comment on the same line
+                preprocessorText = preprocessorText.trimEnd() + "    " + normalizeComment(nextChild.text);
+            }
+            parts.push(preprocessorText);
         } else if (child.type === "procedure") {
             // Add blank line before procedure if not preceded by doc comment
             if (parts.length > 0) {

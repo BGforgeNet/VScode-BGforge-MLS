@@ -1,6 +1,6 @@
 /**
  * Go to Definition for Fallout SSL files.
- * Finds local definitions (procedures, variables) in the current file.
+ * Finds local definitions (procedures, macros, variables) in the current file.
  * Returns null if not found locally, allowing fallback to header definitions.
  */
 
@@ -33,6 +33,27 @@ function findAllLocalDefinitions(root: Node): LocalDef[] {
             });
         }
     }
+
+    // Extract macros
+    function visitForMacros(node: Node): void {
+        if (node.type === "preprocessor") {
+            for (const child of node.children) {
+                if (child.type === "define") {
+                    const nameNode = child.childForFieldName("name");
+                    if (nameNode) {
+                        defs.push({
+                            name: nameNode.text,
+                            range: makeRange(nameNode),
+                        });
+                    }
+                }
+            }
+        }
+        for (const c of node.children) {
+            visitForMacros(c);
+        }
+    }
+    visitForMacros(root);
 
     function search(node: Node): void {
         if (node.type === "procedure") {
