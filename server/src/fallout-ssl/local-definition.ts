@@ -7,7 +7,7 @@
 import { Location, Position } from "vscode-languageserver/node";
 import type { Node } from "web-tree-sitter";
 import { getParser, isInitialized } from "./parser";
-import { extractProcedures, makeRange } from "./local-utils";
+import { extractProcedures, makeRange, findIdentifierAtPosition } from "./local-utils";
 
 interface LocalDef {
     name: string;
@@ -92,42 +92,6 @@ function findAllLocalDefinitions(root: Node): LocalDef[] {
     }
 
     return defs;
-}
-
-/**
- * Find the identifier at the given position.
- */
-function findIdentifierAtPosition(root: Node, position: Position): string | null {
-    function visit(node: Node): string | null {
-        const startRow = node.startPosition.row;
-        const endRow = node.endPosition.row;
-        const startCol = node.startPosition.column;
-        const endCol = node.endPosition.column;
-
-        // Check if position is within this node
-        const inRange =
-            (position.line > startRow || (position.line === startRow && position.character >= startCol)) &&
-            (position.line < endRow || (position.line === endRow && position.character <= endCol));
-
-        if (!inRange) {
-            return null;
-        }
-
-        // If this is an identifier, return its text
-        if (node.type === "identifier") {
-            return node.text;
-        }
-
-        // Check children
-        for (const child of node.children) {
-            const result = visit(child);
-            if (result) return result;
-        }
-
-        return null;
-    }
-
-    return visit(root);
 }
 
 /**

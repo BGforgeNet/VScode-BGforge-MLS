@@ -48,23 +48,40 @@ export function getLocalSignature(text: string, symbol: string, paramIndex: numb
         parsed = jsdoc.parse(docComment);
     }
 
-    // Build parameter information
+    // Build parameter information with types from JSDoc
     const parameters: ParameterInformation[] = paramNames.map((name, idx) => {
-        let documentation: string | undefined;
         const arg = parsed?.args[idx];
-        if (arg?.description) {
-            documentation = arg.description;
+        let label = name;
+        let documentation: string | undefined;
+
+        if (arg) {
+            // Include type in label if available
+            if (arg.type) {
+                label = `${arg.type} ${name}`;
+            }
+            if (arg.description) {
+                documentation = arg.description;
+            }
         }
+
         return {
-            label: name,
+            label,
             documentation,
         };
     });
 
-    // Build signature label
-    let label = `${symbol}(${paramNames.join(", ")})`;
-    if (parsed?.ret) {
-        label = `${parsed.ret.type} ${label}`;
+    // Build signature label with types
+    let label: string;
+    if (parsed && parsed.args.length > 0) {
+        // Use JSDoc types for params
+        const paramLabels = parsed.args.map(arg => `${arg.type} ${arg.name}`);
+        label = `${symbol}(${paramLabels.join(", ")})`;
+        if (parsed.ret) {
+            label = `${parsed.ret.type} ${label}`;
+        }
+    } else {
+        // Fallback to just names
+        label = `${symbol}(${paramNames.join(", ")})`;
     }
 
     const signature: SignatureInformation = {

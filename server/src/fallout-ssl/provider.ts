@@ -16,10 +16,10 @@ import { LanguageProvider, ProviderContext } from "../language-provider";
 import * as signature from "../shared/signature";
 import { formatDocument, initFormatter } from "./format";
 import { isInitialized } from "./parser";
-import { getDocumentSymbols } from "./symbols";
-import { getLocalDefinition } from "./definition";
-import { getLocalHover } from "./hover";
-import { renameSymbol } from "./rename";
+import { getDocumentSymbols } from "./local-symbols";
+import { getLocalDefinition } from "./local-definition";
+import { getLocalHover } from "./local-hover";
+import { renameSymbol } from "./local-rename";
 import { getLocalCompletions } from "./local-completion";
 import { getLocalSignature } from "./local-signature";
 
@@ -81,11 +81,11 @@ export const falloutSslProvider: LanguageProvider = {
         return getLocalDefinition(text, uri, position);
     },
 
-    hover(text: string, symbol: string): Hover | null {
+    hover(text: string, symbol: string, uri: string): Hover | null {
         if (!isInitialized()) {
             return null;
         }
-        return getLocalHover(text, symbol);
+        return getLocalHover(text, symbol, uri);
     },
 
     localCompletion(text: string): CompletionItem[] {

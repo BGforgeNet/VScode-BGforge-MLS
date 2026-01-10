@@ -79,3 +79,212 @@ export function findProcedure(root: Node, symbol: string): Node | null {
     const proc = procedures.get(symbol);
     return proc?.node ?? null;
 }
+
+/**
+ * Find the identifier at the given position.
+ * Used by go-to-definition and rename.
+ */
+export function findIdentifierAtPosition(root: Node, position: Position): string | null {
+    function visit(node: Node): string | null {
+        const startRow = node.startPosition.row;
+        const endRow = node.endPosition.row;
+        const startCol = node.startPosition.column;
+        const endCol = node.endPosition.column;
+
+        const inRange =
+            (position.line > startRow || (position.line === startRow && position.character >= startCol)) &&
+            (position.line < endRow || (position.line === endRow && position.character <= endCol));
+
+        if (!inRange) {
+            return null;
+        }
+
+        if (node.type === "identifier") {
+            return node.text;
+        }
+
+        for (const child of node.children) {
+            const result = visit(child);
+            if (result) return result;
+        }
+
+        return null;
+    }
+
+    return visit(root);
+}
+
+/**
+ * Find the definition node for a symbol by name.
+ * Handles: procedures, forward declarations, variables, exports, params, for-loop vars, foreach vars.
+ * Prefers procedure definitions over forward declarations.
+ */
+export function findDefinitionNode(root: Node, symbol: string): Node | null {
+    // Check procedures first (with deduplication)
+    const procedures = extractProcedures(root);
+    const proc = procedures.get(symbol);
+    if (proc) {
+        return proc.node;
+    }
+
+    // Check inside procedures for params and local vars
+    function search(node: Node): Node | null {
+        if (node.type === "procedure") {
+            // Check parameters
+            const params = node.childForFieldName("params");
+            if (params) {
+                for (const child of params.children) {
+                    if (child.type === "param") {
+                        const paramName = child.childForFieldName("name");
+                        if (paramName?.text === symbol) {
+                            return child;
+                        }
+                    }
+                }
+            }
+            // Check inside procedure body
+            for (const child of node.children) {
+                const result = search(child);
+                if (result) return result;
+            }
+        } else if (node.type === "variable_decl") {
+            for (const child of node.children) {
+                if (child.type === "var_init") {
+                    const nameNode = child.childForFieldName("name");
+                    if (nameNode?.text === symbol) {
+                        return child;
+                    }
+                }
+            }
+        } else if (node.type === "for_var_decl") {
+            const nameNode = node.childForFieldName("name");
+            if (nameNode?.text === symbol) {
+                return node;
+            }
+        } else if (node.type === "foreach_stmt") {
+            const varNode = node.childForFieldName("var");
+            if (varNode?.text === symbol) {
+                return varNode;
+            }
+            const keyNode = node.childForFieldName("key");
+            if (keyNode?.text === symbol) {
+                return keyNode;
+            }
+            const valueNode = node.childForFieldName("value");
+            if (valueNode?.text === symbol) {
+                return valueNode;
+            }
+        } else if (node.type === "export_decl") {
+            const nameNode = node.childForFieldName("name");
+            if (nameNode?.text === symbol) {
+                return node;
+            }
+        }
+        return null;
+    }
+
+    for (const node of root.children) {
+        const result = search(node);
+        if (result) return result;
+    }
+
+    return null;
+}
+
+/**
+ * Check if a symbol is defined locally.
+ * Handles: procedures, forward declarations, variables, exports, params, for-loop vars, foreach vars.
+ */
+export function isLocalDefinition(root: Node, symbol: string): boolean {
+    function checkNode(node: Node): boolean {
+        if (node.type === "procedure") {
+            const nameNode = node.childForFieldName("name");
+            if (nameNode?.text === symbol) {
+                return true;
+            }
+            // Check parameters
+            const params = node.childForFieldName("params");
+            if (params) {
+                for (const child of params.children) {
+                    if (child.type === "param") {
+                        const paramName = child.childForFieldName("name");
+                        if (paramName?.text === symbol) {
+                            return true;
+                        }
+                    }
+                }
+            }
+            // Check local variables and for-loop vars inside procedure
+            for (const child of node.children) {
+                if (checkNode(child)) {
+                    return true;
+                }
+            }
+        } else if (node.type === "procedure_forward") {
+            const nameNode = node.childForFieldName("name");
+            if (nameNode?.text === symbol) {
+                return true;
+            }
+        } else if (node.type === "variable_decl") {
+            for (const child of node.children) {
+                if (child.type === "var_init") {
+                    const nameNode = child.childForFieldName("name");
+                    if (nameNode?.text === symbol) {
+                        return true;
+                    }
+                }
+            }
+        } else if (node.type === "for_var_decl") {
+            const nameNode = node.childForFieldName("name");
+            if (nameNode?.text === symbol) {
+                return true;
+            }
+        } else if (node.type === "foreach_stmt") {
+            const varNode = node.childForFieldName("var");
+            if (varNode?.text === symbol) {
+                return true;
+            }
+            const keyNode = node.childForFieldName("key");
+            if (keyNode?.text === symbol) {
+                return true;
+            }
+            const valueNode = node.childForFieldName("value");
+            if (valueNode?.text === symbol) {
+                return true;
+            }
+        } else if (node.type === "export_decl") {
+            const nameNode = node.childForFieldName("name");
+            if (nameNode?.text === symbol) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    for (const node of root.children) {
+        if (checkNode(node)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+/**
+ * Find all identifier nodes with the given name.
+ * Used by rename to find all references.
+ */
+export function findAllReferences(root: Node, symbol: string): Node[] {
+    const refs: Node[] = [];
+
+    function visit(node: Node): void {
+        if (node.type === "identifier" && node.text === symbol) {
+            refs.push(node);
+        }
+        for (const child of node.children) {
+            visit(child);
+        }
+    }
+
+    visit(root);
+    return refs;
+}

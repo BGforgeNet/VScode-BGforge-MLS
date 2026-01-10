@@ -44,7 +44,7 @@ interface Procedure {
     detail: string;
     jsdoc?: jsdoc.JSdoc;
 }
-interface Procedures extends Array<Procedure> {}
+interface Procedures extends Array<Procedure> { }
 interface Macro {
     label: string;
     detail: string;
@@ -53,7 +53,7 @@ interface Macro {
     firstline: string;
     jsdoc?: jsdoc.JSdoc;
 }
-interface Macros extends Array<Macro> {}
+interface Macros extends Array<Macro> { }
 
 const tooltipLangId = LANG_FALLOUT_SSL_TOOLTIP;
 const sslExt = ".ssl";
