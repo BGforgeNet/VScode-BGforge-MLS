@@ -1,0 +1,126 @@
+==================
+Constant macros
+==================
+
+#define MAX_VALUE 100
+#define MESSAGE "hello"
+#define HEX_VALUE 0x1234
+
+---
+
+(source_file
+  (preprocessor
+    (define
+      name: (identifier)
+      body: (macro_body)))
+  (preprocessor
+    (define
+      name: (identifier)
+      body: (macro_body)))
+  (preprocessor
+    (define
+      name: (identifier)
+      body: (macro_body))))
+
+==================
+Function-like macros
+==================
+
+#define ndebug(msg) debug_msg(SCRIPT_REALNAME + ": " + msg)
+#define add(x, y) (x + y)
+#define get_sfall_arg_at(index) sfall_func1("get_sfall_arg_at", index)
+
+---
+
+(source_file
+  (preprocessor
+    (define
+      name: (identifier)
+      params: (macro_params)
+      body: (macro_body)))
+  (preprocessor
+    (define
+      name: (identifier)
+      params: (macro_params)
+      body: (macro_body)))
+  (preprocessor
+    (define
+      name: (identifier)
+      params: (macro_params)
+      body: (macro_body))))
+
+==================
+Mixed macros
+==================
+
+#define SCRIPT_REALNAME "gl_g_auto_cursor"
+#define DIK_M 50
+#define ndebug(msg) debug_msg(SCRIPT_REALNAME + ": " + msg)
+#define dude_elevation elevation(dude_obj)
+#define set_cursor_mode(mode) sfall_func1("set_cursor_mode", mode)
+#define fo2tweaks_ini "mods\\fo2tweaks.ini"
+
+---
+
+(source_file
+  (preprocessor
+    (define
+      name: (identifier)
+      body: (macro_body)))
+  (preprocessor
+    (define
+      name: (identifier)
+      body: (macro_body)))
+  (preprocessor
+    (define
+      name: (identifier)
+      params: (macro_params)
+      body: (macro_body)))
+  (preprocessor
+    (define
+      name: (identifier)
+      body: (macro_body)))
+  (preprocessor
+    (define
+      name: (identifier)
+      params: (macro_params)
+      body: (macro_body)))
+  (preprocessor
+    (define
+      name: (identifier)
+      body: (macro_body))))
+
+==================
+Include directives
+==================
+
+#include "sfall.h"
+#include <define.h>
+
+---
+
+(source_file
+  (preprocessor
+    (include
+      path: (string)))
+  (preprocessor
+    (include
+      path: (string))))
+
+==================
+Multiline macro
+==================
+
+#define complex_macro(a, b) \
+    variable temp; \
+    temp := a + b; \
+    return temp;
+
+---
+
+(source_file
+  (preprocessor
+    (define
+      name: (identifier)
+      params: (macro_params)
+      body: (macro_body))))

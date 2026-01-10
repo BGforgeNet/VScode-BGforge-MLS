@@ -38,13 +38,57 @@ export default grammar({
         $.macro_call_stmt  // Top-level macro invocation
       ),
 
-    // Preprocessor: #define, #include, etc. (handles \ line continuation and multi-line comments)
+    // Preprocessor: #define, #include, etc.
     preprocessor: ($) =>
+      choice(
+        $.define,
+        $.include,
+        $.other_preprocessor
+      ),
+
+    // #define NAME value or #define NAME(params) body
+    define: ($) =>
+      seq(
+        "#",
+        "define",
+        field("name", $.identifier),
+        optional(field("params", $.macro_params)),
+        optional(field("body", $.macro_body))
+      ),
+
+    // Macro parameters: (a, b, c) - immediately after identifier, no whitespace
+    macro_params: ($) =>
+      token.immediate(seq("(", /[^)]*/, ")")),
+
+    // Macro body: everything until end of line (with line continuations)
+    // Must not start with ( to avoid conflicting with macro_params
+    macro_body: ($) =>
       token(seq(
+        /[ \t]+/,                // required whitespace (so it doesn't immediately follow identifier)
+        repeat1(choice(
+          /[^\n\\]+/,            // regular chars (not newline or backslash)
+          /\\[^\r\n]/,           // backslash followed by non-newline (e.g., \\, \", \t in strings)
+          /\\\r?\n/,             // line continuation (backslash + newline)
+        ))
+      )),
+
+    // #include "file" or #include <file>
+    include: ($) =>
+      seq(
+        "#",
+        "include",
+        field("path", choice(
+          $.string,
+          alias(token(seq("<", /[^>]+/, ">")), $.string)
+        ))
+      ),
+
+    // Other preprocessor directives: #ifdef, #ifndef, #endif, #if, #else, #elif, #undef
+    other_preprocessor: ($) =>
+      token(prec(-1, seq(  // Lower precedence so define/include match first
         "#",
         /[a-zA-Z_][a-zA-Z0-9_]*/,  // directive name
-        optional(seq("(", /[^)]*/, ")")),  // optional macro params
-        // macro body: handles line continuation, multi-line comments
+        // rest of line (with line continuations)
         repeat(choice(
           /[^\n\\\/]+/,           // regular chars
           /\\./,                  // escaped char
@@ -53,7 +97,7 @@ export default grammar({
           /\/\/[^\n]*/,           // line comment
           /\/[^*\/\n]/,           // single slash
         ))
-      )),
+      ))),
 
     // Forward declaration: procedure name; or procedure name(params);
     procedure_forward: ($) =>

@@ -796,6 +796,42 @@
     }
   },
   {
+    "type": "define",
+    "named": true,
+    "fields": {
+      "body": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "macro_body",
+            "named": true
+          }
+        ]
+      },
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      },
+      "params": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "macro_params",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
     "type": "export_decl",
     "named": true,
     "fields": {
@@ -1691,6 +1727,22 @@
     }
   },
   {
+    "type": "include",
+    "named": true,
+    "fields": {
+      "path": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "string",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
     "type": "macro_call_stmt",
     "named": true,
     "fields": {
@@ -2058,6 +2110,29 @@
         },
         {
           "type": "unary_expr",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "preprocessor",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "define",
+          "named": true
+        },
+        {
+          "type": "include",
+          "named": true
+        },
+        {
+          "type": "other_preprocessor",
           "named": true
         }
       ]
@@ -3035,6 +3110,10 @@
     "named": false
   },
   {
+    "type": "#",
+    "named": false
+  },
+  {
     "type": "%",
     "named": false
   },
@@ -3200,6 +3279,10 @@
     "named": false
   },
   {
+    "type": "define",
+    "named": false
+  },
+  {
     "type": "do",
     "named": false
   },
@@ -3244,9 +3327,21 @@
     "named": false
   },
   {
+    "type": "include",
+    "named": false
+  },
+  {
     "type": "line_comment",
     "named": true,
     "extra": true
+  },
+  {
+    "type": "macro_body",
+    "named": true
+  },
+  {
+    "type": "macro_params",
+    "named": true
   },
   {
     "type": "not",
@@ -3265,7 +3360,7 @@
     "named": false
   },
   {
-    "type": "preprocessor",
+    "type": "other_preprocessor",
     "named": true
   },
   {
