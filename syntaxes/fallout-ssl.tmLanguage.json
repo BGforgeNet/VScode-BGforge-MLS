@@ -10,10 +10,10 @@
       "include": "#comments"
     },
     {
-      "include": "#function-invocation"
+      "include": "#keywords"
     },
     {
-      "include": "#keywords"
+      "include": "#function-invocation"
     },
     {
       "include": "#variable"

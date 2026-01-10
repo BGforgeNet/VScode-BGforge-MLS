@@ -4,8 +4,8 @@ scopeName: source.fallout-ssl
 patterns:
   - include: '#docstring'
   - include: '#comments'
-  - include: '#function-invocation'
   - include: '#keywords'
+  - include: '#function-invocation'
   - include: '#variable'
   - include: '#strings'
   - include: '#function-declaration'
@@ -405,6 +405,7 @@ repository:
       - include: '#sfall-functions'
 
       # General function call pattern (for expressions, not just statements)
+      # Keywords are excluded by pattern priority (matched first in root patterns)
       - match: \b(\w+)\s*(?=\()
         name: entity.name.function.fallout-ssl
 
