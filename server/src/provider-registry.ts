@@ -17,6 +17,7 @@ import {
     InlayHint,
     SignatureHelp,
     TextEdit,
+    WorkspaceEdit,
 } from "vscode-languageserver/node";
 import { LanguageProvider, ProviderContext } from "./language-provider";
 import { conlog } from "./common";
@@ -135,18 +136,51 @@ class ProviderRegistry {
         return [];
     }
 
+    rename(langId: string, text: string, position: Position, newName: string, uri: string): WorkspaceEdit | null {
+        const provider = this.get(langId);
+        if (provider?.rename) {
+            return provider.rename(text, position, newName, uri);
+        }
+        return null;
+    }
+
     // =========================================================================
     // Data feature routing - lookup from loaded/parsed data
     // =========================================================================
 
-    completion(langId: string, uri: string): CompletionItem[] {
+    /**
+     * Get completions, merging local + headers.
+     * Local symbols take precedence (deduplicated by label).
+     */
+    completion(langId: string, text: string, uri: string): CompletionItem[] {
         const provider = this.get(langId);
-        if (provider?.getCompletions) {
-            return provider.getCompletions(uri);
+        if (!provider) {
+            return [];
         }
-        return [];
+
+        // Get local completions (tree-sitter based for current file)
+        const localItems = provider.localCompletion ? provider.localCompletion(text) : [];
+
+        // Get header/static completions
+        const headerItems = provider.getCompletions ? provider.getCompletions(uri) : [];
+
+        // Merge with local taking precedence
+        const localLabels = new Set(localItems.map(item => item.label));
+        const filtered = headerItems.filter(item => !localLabels.has(item.label));
+
+        return [...localItems, ...filtered];
     }
 
+    /** AST-based hover for local symbols. */
+    localHover(langId: string, text: string, symbol: string, uri: string): Hover | null {
+        const provider = this.get(langId);
+        if (provider?.hover) {
+            return provider.hover(text, symbol, uri);
+        }
+        return null;
+    }
+
+    /** Data-driven hover from headers/static data. */
     hover(langId: string, uri: string, symbol: string): Hover | null {
         const provider = this.get(langId);
         if (provider?.getHover) {
@@ -155,11 +189,29 @@ class ProviderRegistry {
         return null;
     }
 
-    signature(langId: string, uri: string, symbol: string, paramIndex: number): SignatureHelp | null {
+    /**
+     * Get signature help, trying local first, then headers.
+     * Local symbols take precedence.
+     */
+    signature(langId: string, text: string, uri: string, symbol: string, paramIndex: number): SignatureHelp | null {
         const provider = this.get(langId);
-        if (provider?.getSignature) {
+        if (!provider) {
+            return null;
+        }
+
+        // Try local first (tree-sitter based for current file)
+        if (provider.localSignature) {
+            const local = provider.localSignature(text, symbol, paramIndex);
+            if (local) {
+                return local;
+            }
+        }
+
+        // Fall back to headers/static
+        if (provider.getSignature) {
             return provider.getSignature(uri, symbol, paramIndex);
         }
+
         return null;
     }
 

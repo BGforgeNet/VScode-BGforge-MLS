@@ -7,7 +7,7 @@
  * providing a unified provider interface.
  */
 
-import { CompletionItem, DocumentSymbol, Hover, Location, SignatureHelp, TextEdit } from "vscode-languageserver/node";
+import { CompletionItem, DocumentSymbol, Hover, Location, Position, SignatureHelp, TextEdit, WorkspaceEdit } from "vscode-languageserver/node";
 import { conlog } from "../common";
 import { LANG_FALLOUT_SSL } from "../core/languages";
 import { compile as falloutCompile } from "./fallout";
@@ -17,6 +17,11 @@ import * as signature from "../shared/signature";
 import { formatDocument, initFormatter } from "./format";
 import { isInitialized } from "./parser";
 import { getDocumentSymbols } from "./symbols";
+import { getLocalDefinition } from "./definition";
+import { getLocalHover } from "./hover";
+import { renameSymbol } from "./rename";
+import { getLocalCompletions } from "./local-completion";
+import { getLocalSignature } from "./local-signature";
 
 const features: Features = {
     completion: true,
@@ -69,6 +74,41 @@ export const falloutSslProvider: LanguageProvider = {
         return getDocumentSymbols(text);
     },
 
+    definition(text: string, position: Position, uri: string): Location | null {
+        if (!isInitialized()) {
+            return null;
+        }
+        return getLocalDefinition(text, uri, position);
+    },
+
+    hover(text: string, symbol: string): Hover | null {
+        if (!isInitialized()) {
+            return null;
+        }
+        return getLocalHover(text, symbol);
+    },
+
+    localCompletion(text: string): CompletionItem[] {
+        if (!isInitialized()) {
+            return [];
+        }
+        return getLocalCompletions(text);
+    },
+
+    localSignature(text: string, symbol: string, paramIndex: number): SignatureHelp | null {
+        if (!isInitialized()) {
+            return null;
+        }
+        return getLocalSignature(text, symbol, paramIndex);
+    },
+
+    rename(text: string, position: Position, newName: string, uri: string): WorkspaceEdit | null {
+        if (!isInitialized()) {
+            return null;
+        }
+        return renameSymbol(text, position, newName, uri);
+    },
+
     getCompletions(uri: string): CompletionItem[] {
         return language?.completion(uri) ?? [];
     },
@@ -88,7 +128,11 @@ export const falloutSslProvider: LanguageProvider = {
     },
 
     reloadFileData(uri: string, text: string): void {
-        language?.reloadFileData(uri, text);
+        // Only reload headers (.h), not .ssl files
+        // .ssl files use tree-sitter based local completion/signature/hover/definition
+        if (uri.endsWith(".h")) {
+            language?.reloadFileData(uri, text);
+        }
     },
 
     async compile(uri: string, text: string, interactive: boolean): Promise<void> {

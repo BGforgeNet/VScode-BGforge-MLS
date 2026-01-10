@@ -6,22 +6,56 @@
 import { DocumentSymbol, SymbolKind } from "vscode-languageserver/node";
 import type { Node } from "web-tree-sitter";
 import { getParser, isInitialized } from "./parser";
+import { extractProcedures, makeRange } from "./local-utils";
 
 function makeSymbol(node: Node, nameNode: Node, kind: SymbolKind): DocumentSymbol {
     return {
         name: nameNode.text,
         kind,
-        range: {
-            start: { line: node.startPosition.row, character: node.startPosition.column },
-            end: { line: node.endPosition.row, character: node.endPosition.column },
-        },
-        selectionRange: {
-            start: { line: nameNode.startPosition.row, character: nameNode.startPosition.column },
-            end: { line: nameNode.endPosition.row, character: nameNode.endPosition.column },
-        },
+        range: makeRange(node),
+        selectionRange: makeRange(nameNode),
     };
 }
 
+/**
+ * Extract symbols from a pre-parsed AST root node.
+ * Prefers procedure definitions over forward declarations.
+ */
+function extractSymbols(root: Node): DocumentSymbol[] {
+    // Extract procedures (already deduped)
+    const procedures = extractProcedures(root);
+    const procSymbols: DocumentSymbol[] = [];
+    for (const { node } of procedures.values()) {
+        const nameNode = node.childForFieldName("name");
+        if (nameNode) {
+            procSymbols.push(makeSymbol(node, nameNode, SymbolKind.Function));
+        }
+    }
+
+    const variables: DocumentSymbol[] = [];
+
+    for (const node of root.children) {
+        if (node.type === "variable_decl") {
+            for (const child of node.children) {
+                if (child.type === "var_init") {
+                    const nameNode = child.childForFieldName("name");
+                    if (nameNode) {
+                        variables.push(makeSymbol(child, nameNode, SymbolKind.Variable));
+                    }
+                }
+            }
+        } else if (node.type === "export_decl") {
+            const nameNode = node.childForFieldName("name");
+            if (nameNode) {
+                variables.push(makeSymbol(node, nameNode, SymbolKind.Variable));
+            }
+        }
+    }
+
+    return [...procSymbols, ...variables];
+}
+
+/** Parse text and extract document symbols. */
 export function getDocumentSymbols(text: string): DocumentSymbol[] {
     if (!isInitialized()) {
         return [];
@@ -32,30 +66,5 @@ export function getDocumentSymbols(text: string): DocumentSymbol[] {
         return [];
     }
 
-    const symbols: DocumentSymbol[] = [];
-
-    for (const node of tree.rootNode.children) {
-        if (node.type === "procedure") {
-            const nameNode = node.childForFieldName("name");
-            if (nameNode) {
-                symbols.push(makeSymbol(node, nameNode, SymbolKind.Function));
-            }
-        } else if (node.type === "variable_decl") {
-            for (const child of node.children) {
-                if (child.type === "var_init") {
-                    const nameNode = child.childForFieldName("name");
-                    if (nameNode) {
-                        symbols.push(makeSymbol(child, nameNode, SymbolKind.Variable));
-                    }
-                }
-            }
-        } else if (node.type === "export_decl") {
-            const nameNode = node.childForFieldName("name");
-            if (nameNode) {
-                symbols.push(makeSymbol(node, nameNode, SymbolKind.Variable));
-            }
-        }
-    }
-
-    return symbols;
+    return extractSymbols(tree.rootNode);
 }

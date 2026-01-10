@@ -88,6 +88,7 @@ connection.onInitialize((params: InitializeParams) => {
             },
             inlayHintProvider: true,
             definitionProvider: true,
+            renameProvider: true,
             documentFormattingProvider: true,
             documentSymbolProvider: true,
             executeCommandProvider: {
@@ -207,7 +208,8 @@ connection.onCompletion((_textDocumentPosition: TextDocumentPositionParams) => {
         return [];
     }
     const langId = textDoc.languageId;
-    return registry.completion(langId, uri);
+    const text = textDoc.getText();
+    return registry.completion(langId, text, uri);
 });
 
 // This handler resolve additional information for the item selected in
@@ -243,7 +245,13 @@ connection.onHover((textDocumentPosition: TextDocumentPositionParams) => {
         return translationHover;
     }
 
-    // Then try provider
+    // Try local hover (AST-based, for symbols defined in current file)
+    const localHover = registry.localHover(langId, text, symbol, uri);
+    if (localHover) {
+        return localHover;
+    }
+
+    // Fall back to data-driven hover (from headers/static data)
     return registry.hover(langId, uri, symbol);
 });
 
@@ -314,7 +322,7 @@ connection.onSignatureHelp((params) => {
         return null;
     }
 
-    return registry.signature(langId, uri, request.symbol, request.parameter);
+    return registry.signature(langId, text, uri, request.symbol, request.parameter);
 });
 
 documents.onDidSave(async (change) => {
@@ -386,6 +394,18 @@ connection.onDefinition((params) => {
     }
 
     return null;
+});
+
+connection.onRenameRequest((params) => {
+    const textDoc = documents.get(params.textDocument.uri);
+    if (!textDoc) {
+        return null;
+    }
+    const uri = params.textDocument.uri;
+    const langId = textDoc.languageId;
+    const text = textDoc.getText();
+
+    return registry.rename(langId, text, params.position, params.newName, uri);
 });
 
 connection.onDocumentFormatting((params) => {

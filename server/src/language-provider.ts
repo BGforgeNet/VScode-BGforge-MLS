@@ -15,6 +15,7 @@ import {
     Range,
     SignatureHelp,
     TextEdit,
+    WorkspaceEdit,
 } from "vscode-languageserver/node";
 import { MLSsettings } from "./settings";
 
@@ -68,6 +69,18 @@ export interface LanguageProvider {
 
     /** Go to definition at position. For in-file definitions (e.g., state labels). */
     definition?(text: string, position: Position, uri: string): Location | null;
+
+    /** Get hover info for a local symbol. Returns null to fall back to data hover. */
+    hover?(text: string, symbol: string, uri: string): Hover | null;
+
+    /** Get completion items for locally defined symbols. */
+    localCompletion?(text: string): CompletionItem[];
+
+    /** Get signature help for a locally defined procedure. Returns null to fall back to headers. */
+    localSignature?(text: string, symbol: string, paramIndex: number): SignatureHelp | null;
+
+    /** Rename a local symbol. Returns null if symbol is not locally defined. */
+    rename?(text: string, position: Position, newName: string, uri: string): WorkspaceEdit | null;
 
     /** Get inlay hints for the given range. */
     inlayHints?(text: string, uri: string, range: Range): InlayHint[];
