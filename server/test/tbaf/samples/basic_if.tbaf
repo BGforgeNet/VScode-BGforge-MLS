@@ -1,0 +1,5 @@
+// Basic IF/THEN/END block - simple condition and action
+
+if (See(Player1)) {
+    Attack(Player1);
+}

@@ -1,0 +1,10 @@
+// Switch with numeric case values
+
+switch (Global("count", "LOCALS")) {
+    case 5:
+        Continue();
+        break;
+    case 10:
+        NoAction();
+        break;
+}

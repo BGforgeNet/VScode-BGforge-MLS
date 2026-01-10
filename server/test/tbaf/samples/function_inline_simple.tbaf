@@ -1,0 +1,10 @@
+// Function inlining - simple case
+
+function attackIfVisible(target: string) {
+    if (See(target)) {
+        Attack(target);
+    }
+}
+
+attackIfVisible("Player1");
+attackIfVisible("Player2");

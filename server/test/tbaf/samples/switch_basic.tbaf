@@ -1,0 +1,11 @@
+// Switch statement transpiles to multiple IF blocks
+
+const state = Global("state", "LOCALS");
+switch (state) {
+    case 0:
+        ActionA();
+        break;
+    case 1:
+        ActionB();
+        break;
+}

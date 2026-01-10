@@ -1,0 +1,9 @@
+// Compile-time loop unrolling over const array
+
+const enemies = ["Player1", "Player2", "Player3"];
+
+for (const enemy of enemies) {
+    if (See(enemy)) {
+        Attack(enemy);
+    }
+}

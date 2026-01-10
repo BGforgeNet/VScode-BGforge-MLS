@@ -1,0 +1,13 @@
+// Switch with const values in case expressions
+
+const STATE_IDLE = 0;
+const STATE_ACTIVE = 1;
+
+switch (Global("state", "LOCALS")) {
+    case STATE_IDLE:
+        Wait(1);
+        break;
+    case STATE_ACTIVE:
+        Attack(NearestEnemyOf(Myself));
+        break;
+}

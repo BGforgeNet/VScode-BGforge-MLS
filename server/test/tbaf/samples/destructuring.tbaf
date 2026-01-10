@@ -1,0 +1,9 @@
+// Array destructuring in for-of loop
+
+const pairs = [["Player1", "SWORD01"], ["Player2", "BOW01"]];
+
+for (const [target, item] of pairs) {
+    if (See(target)) {
+        GiveItemCreate(item, target, 1, 0, 0);
+    }
+}

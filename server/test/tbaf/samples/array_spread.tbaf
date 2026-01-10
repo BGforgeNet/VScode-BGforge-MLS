@@ -1,0 +1,10 @@
+// Array spread expressions
+
+const base = ["Player1", "Player2"];
+const all = [...base, "Player3"];
+
+for (const target of all) {
+    if (See(target)) {
+        Attack(target);
+    }
+}

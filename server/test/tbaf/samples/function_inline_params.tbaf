@@ -1,0 +1,10 @@
+// Function inlining with multiple parameters
+
+function giveItem(target: string, item: string) {
+    if (See(target)) {
+        GiveItemCreate(item, target, 1, 0, 0);
+    }
+}
+
+giveItem("Player1", "SWORD01");
+giveItem("Player2", "BOW01");

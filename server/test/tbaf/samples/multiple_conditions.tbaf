@@ -1,0 +1,6 @@
+// Multiple conditions with AND
+
+if (See(Player1) && !Global("attacked", "LOCALS", 1)) {
+    Attack(Player1);
+    SetGlobal("attacked", "LOCALS", 1);
+}

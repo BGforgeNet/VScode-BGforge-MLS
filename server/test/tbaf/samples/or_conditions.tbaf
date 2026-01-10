@@ -1,0 +1,5 @@
+// OR conditions transpile to OR(n) in BAF
+
+if (See(Player1) || See(Player2)) {
+    Attack(NearestEnemyOf(Myself));
+}

@@ -1,0 +1,12 @@
+// Switch with multiple actions per case
+
+switch (Global("phase", "MYAREA")) {
+    case 0:
+        DisplayString(Myself, 100);
+        SetGlobal("phase", "MYAREA", 1);
+        break;
+    case 1:
+        DisplayString(Myself, 200);
+        ActionOverride(Player1, StartDialogNoSet(Myself));
+        break;
+}

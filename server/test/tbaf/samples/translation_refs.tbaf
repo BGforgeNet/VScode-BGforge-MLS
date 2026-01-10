@@ -1,0 +1,5 @@
+// Translation references - $tra() converts to @number
+
+if (True()) {
+    DisplayStringHead(Myself, $tra(123));
+}

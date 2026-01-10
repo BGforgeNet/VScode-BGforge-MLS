@@ -1,0 +1,7 @@
+// Compile-time loop unrolling with numeric range
+
+for (let i = 1; i <= 3; i++) {
+    if (Global("count", "LOCALS", i)) {
+        Continue();
+    }
+}
