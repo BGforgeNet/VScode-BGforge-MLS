@@ -20,4 +20,13 @@ echo "=== Running unit tests ==="
 pnpm test:unit
 
 echo ""
+echo "=== Testing TD samples ==="
+./test/td/test.sh
+./test/td/typecheck-samples.sh
+
+echo ""
+echo "=== Testing TBAF samples ==="
+./test/tbaf/typecheck-samples.sh
+
+echo ""
 echo "SUCCESS: All server tests passed"

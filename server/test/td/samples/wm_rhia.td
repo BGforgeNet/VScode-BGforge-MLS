@@ -3,6 +3,10 @@
 
 const dialog = "WM_RHIA";
 
+// Declare functions at module scope for TypeScript
+declare function state100(): void;
+declare function state110(): void;
+
 if (Global("wm_start", "GLOBAL", 1)) {
     function state100() {
         say(tra(100));

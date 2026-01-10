@@ -1,10 +1,7 @@
 /* Generated from pizza_chain.td - do not edit */
 
 CHAIN
-IF ~Global("KelseyImoenPizza", "LOCALS", 0) &&
-    InParty("Imoen2") &&
-    See("Imoen2") &&
-    !StateCheck("Imoen2", STATE_SLEEPING)~ THEN BJKLSY pizzachain
+IF ~Global("KelseyImoenPizza","LOCALS",0) InParty("Imoen2") See("Imoen2") !StateCheck("Imoen2",STATE_SLEEPING)~ THEN BJKLSY pizzachain
 @1
 DO ~SetGlobal("KelseyImoenPizza", "LOCALS", 1)~
 == IMOEN2J

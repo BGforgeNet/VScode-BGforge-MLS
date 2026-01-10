@@ -3,6 +3,9 @@
 
 const dialog = "G_BAGS";
 
+// Declare for TypeScript
+declare function state0(): void;
+
 if (NumTimesTalkedTo(0)) {
     function state0() {
         say(tra(20));

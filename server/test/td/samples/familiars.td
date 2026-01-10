@@ -23,7 +23,7 @@ const GVAR_FamPickupTrophy = "g_FamPickupTrophy";
 const GVAR_FamPickupScalps = "g_FamPickupScalps";
 
 // Binary toggle options: [varName, traOn, traOff]
-const binaryToggles = [
+const binaryToggles: [string, number, number][] = [
     [GVAR_FamPickupGold, 402, 403],
     [GVAR_FamPickupAmmo, 408, 409],
     [GVAR_FamPickupPotions, 410, 411],
@@ -33,12 +33,12 @@ const binaryToggles = [
 ];
 
 // Multi-value options: [value, traRef] - uses !Global trigger
-const jumpToPackOptions = [[1, 301], [2, 303], [3, 304], [0, 302]];
-const tacticOptions = [[0, 314], [1, 315], [2, 316]];
-const jewelsOptions = [[1, 404], [2, 405], [3, 406], [0, 407]];
+const jumpToPackOptions: [number, number][] = [[1, 301], [2, 303], [3, 304], [0, 302]];
+const tacticOptions: [number, number][] = [[0, 314], [1, 315], [2, 316]];
+const jewelsOptions: [number, number][] = [[1, 404], [2, 405], [3, 406], [0, 407]];
 
 // Menu entries: [traRef, targetFunc]
-const menuEntries = [
+const menuEntries: [number, string][] = [
     [101, "g_familiar_follow"],
     [102, "g_familiar_combat"],
     [103, "g_familiar_loot"],
@@ -114,7 +114,7 @@ function g_familiar_combat() {
     }
 
     // Hurt notifications
-    if (OR(2, Global(GVAR_FamHurtNotif, "GLOBAL", 1), Global(GVAR_FamBadlyHurtNotif, "GLOBAL", 1))) {
+    if (Global(GVAR_FamHurtNotif, "GLOBAL", 1) || Global(GVAR_FamBadlyHurtNotif, "GLOBAL", 1)) {
         reply(tra(309));
         action(
             SetGlobal(GVAR_FamHurtNotif, "GLOBAL", 0),

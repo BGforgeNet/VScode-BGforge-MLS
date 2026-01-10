@@ -1345,6 +1345,30 @@ export class TDParser {
      * Convert an expression to a trigger string.
      */
     private expressionToTrigger(expr: Expression): string {
+        // Handle binary expressions (||, &&)
+        if (Node.isBinaryExpression(expr)) {
+            const opKind = expr.getOperatorToken().getKind();
+
+            if (opKind === SyntaxKind.AmpersandAmpersandToken) {
+                // AND: space-separated conditions
+                const left = this.expressionToTrigger(expr.getLeft());
+                const right = this.expressionToTrigger(expr.getRight());
+                return `${left} ${right}`;
+            }
+
+            if (opKind === SyntaxKind.BarBarToken) {
+                // OR: collect all OR-ed conditions and emit as OR(n) cond1 cond2 ...
+                const conditions = this.collectOrConditions(expr);
+                const count = conditions.length;
+                return `OR(${count}) ${conditions.join(" ")}`;
+            }
+        }
+
+        // Handle parenthesized expression
+        if (Node.isParenthesizedExpression(expr)) {
+            return this.expressionToTrigger(expr.getExpression());
+        }
+
         // Handle OR(n, cond1, cond2, ...) -> OR(n) cond1 cond2 ...
         if (Node.isCallExpression(expr)) {
             const funcName = expr.getExpression().getText();
@@ -1365,6 +1389,28 @@ export class TDParser {
         }
 
         return utils.substituteVars(expr.getText(), this.vars);
+    }
+
+    /**
+     * Collect all conditions from a || chain into a flat array.
+     */
+    private collectOrConditions(expr: Expression): string[] {
+        const conditions: string[] = [];
+
+        const collect = (e: Expression) => {
+            if (Node.isBinaryExpression(e) && e.getOperatorToken().getKind() === SyntaxKind.BarBarToken) {
+                collect(e.getLeft());
+                collect(e.getRight());
+            } else if (Node.isParenthesizedExpression(e)) {
+                collect(e.getExpression());
+            } else {
+                // Atom - could be a call, negated call, or other expression
+                conditions.push(this.expressionToTrigger(e));
+            }
+        };
+
+        collect(expr);
+        return conditions;
     }
 
     /**
