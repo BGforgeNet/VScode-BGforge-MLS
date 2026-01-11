@@ -11,8 +11,11 @@ declare function True(): boolean;
 declare function False(): boolean;
 declare function See(object: any): boolean;
 // Global with 3 args is a trigger; with 2 args is a marker for switch statements (transpiler handles specially)
-declare function Global(varName: string, scope: string): any;
-declare function Global(varName: string, scope: string, value: number): boolean;
+// Note: Using 'var' to ensure Global is treated as a value, not a type (avoids conflict with @types/node)
+declare var Global: {
+    (varName: string, scope: string): any;
+    (varName: string, scope: string, value: number): boolean;
+};
 declare function InParty(who: any): boolean;
 declare function StateCheck(who: any, state: any): boolean;
 

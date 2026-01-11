@@ -60,7 +60,7 @@ chain(function conditional_chain() {
 chain(function goto_chain() {
     say(DIALOG1, tra(500));
     say(DIALOG2, tra(501));
-    goto(next_state);
+    goTo(next_state);
 });
 
 // Chain with entry trigger

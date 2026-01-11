@@ -10,7 +10,7 @@ declare function tra(ref: number): string;
 declare function say(text: string): void;
 declare function say(dialog: string, text: string): void; // For CHAIN/INTERJECT contexts
 declare function reply(text: string): void;
-declare function goto(target: string | Function): void;
+declare function goTo(target: string | Function): void;
 declare function exit(): void;
 declare function extern(dialog: string, state: string): void;
 declare function action(...actions: any[]): void;
@@ -46,7 +46,10 @@ declare function replaceSay(dialog: string, state: string | number, text: string
 declare function replaceStateTrigger(dialog: string, states: (string | number)[], trigger: any): void;
 
 // WeiDU script functions (as values, not types)
-declare function Global(varName: string, scope: string, value: number): boolean;
+// Note: Using 'var' to ensure Global is treated as a value, not a type (avoids conflict with @types/node)
+declare var Global: {
+    (varName: string, scope: string, value: number): boolean;
+};
 declare function SetGlobal(varName: string, scope: string, value: number): void;
 declare function InParty(name: string): boolean;
 declare function InPartySlot(who: any, slot: number): boolean;

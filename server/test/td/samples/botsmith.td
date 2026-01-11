@@ -9,23 +9,23 @@ const startState = "0";
 
 extendBottom(dlg, startState, () => {
     reply(tra(20));
-    goto(g_item_type);
+    goTo(g_item_type);
 });
 
 function g_item_type() {
     say(tra(21));
 
     reply(tra(3));
-    goto(g_weapon);
+    goTo(g_weapon);
 
     reply(tra(4));
-    goto(g_armor);
+    goTo(g_armor);
 
     reply(tra(5));
-    goto(g_trinket);
+    goTo(g_trinket);
 
     reply(tra(6));
-    goto(startState);
+    goTo(startState);
 }
 
 function g_weapon() {
@@ -33,10 +33,10 @@ function g_weapon() {
     // %cespenar_weapon% transitions would be inserted here by TP2
 
     reply(tra(10));
-    goto(g_item_type);
+    goTo(g_item_type);
 
     reply(tra(6));
-    goto(startState);
+    goTo(startState);
 }
 
 function g_armor() {
@@ -44,10 +44,10 @@ function g_armor() {
     // %cespenar_armor% transitions would be inserted here by TP2
 
     reply(tra(10));
-    goto(g_item_type);
+    goTo(g_item_type);
 
     reply(tra(6));
-    goto(startState);
+    goTo(startState);
 }
 
 function g_trinket() {
@@ -55,10 +55,10 @@ function g_trinket() {
     // %cespenar_trinket% transitions would be inserted here by TP2
 
     reply(tra(10));
-    goto(g_item_type);
+    goTo(g_item_type);
 
     reply(tra(6));
-    goto(startState);
+    goTo(startState);
 }
 
 append(dlg, [g_item_type, g_weapon, g_armor, g_trinket]);

@@ -55,7 +55,7 @@ begin("NPC", [greeting]);
 function shop() {
     say(tra(100));
     reply(tra(101));
-    goto(buyItem);
+    goTo(buyItem);
 }
 
 function buyItem() {
@@ -116,7 +116,7 @@ function shop() {
     say(tra(100));
     if (PartyGoldGT(500)) {
         reply(tra(101));
-        goto(buyExpensive);
+        goTo(buyExpensive);
     }
     reply(tra(102));
     exit();
@@ -286,7 +286,7 @@ append("EXISTING", newState);
             const code = `
 extendTop("DLG", "state1", () => {
     reply(tra(100));
-    goto(newState);
+    goTo(newState);
 });
 `;
             const result = transpile(code);

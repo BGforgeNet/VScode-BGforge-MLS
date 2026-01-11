@@ -54,13 +54,13 @@ function g_familiar_follow() {
     if (Global(GVAR_FamFollowMaster, "GLOBAL", 0)) {
         reply(tra(201));
         action(SetGlobal(GVAR_FamFollowMaster, "GLOBAL", 1));
-        goto(g_familiar_confirm);
+        goTo(g_familiar_confirm);
     }
 
     if (Global(GVAR_FamFollowMaster, "GLOBAL", 1)) {
         reply(tra(202));
         action(SetGlobal(GVAR_FamFollowMaster, "GLOBAL", 0));
-        goto(g_familiar_confirm);
+        goTo(g_familiar_confirm);
     }
 
     if (Global(GVAR_FamSpeed, "GLOBAL", 0)) {
@@ -69,7 +69,7 @@ function g_familiar_follow() {
             SetGlobal(GVAR_FamSpeed, "GLOBAL", 1),
             ApplySpellRES("G_FSPED1", deathVar)
         );
-        goto(g_familiar_confirm);
+        goTo(g_familiar_confirm);
     }
 
     if (Global(GVAR_FamSpeed, "GLOBAL", 1)) {
@@ -78,11 +78,11 @@ function g_familiar_follow() {
             SetGlobal(GVAR_FamSpeed, "GLOBAL", 0),
             ApplySpellRES("G_FSPED0", deathVar)
         );
-        goto(g_familiar_confirm);
+        goTo(g_familiar_confirm);
     }
 
     reply(tra(205));
-    goto(state);
+    goTo(state);
 }
 
 // =============================================================================
@@ -96,7 +96,7 @@ function g_familiar_combat() {
         if (!Global(GVAR_FamJumpToPack, "GLOBAL", val)) {
             reply(tra(traRef));
             action(SetGlobal(GVAR_FamJumpToPack, "GLOBAL", val));
-            goto(g_familiar_confirm);
+            goTo(g_familiar_confirm);
         }
     }
 
@@ -104,13 +104,13 @@ function g_familiar_combat() {
     if (Global(GVAR_FamiliarJumpOut, "GLOBAL", 0)) {
         reply(tra(306));
         action(SetGlobal(GVAR_FamiliarJumpOut, "GLOBAL", 1));
-        goto(g_familiar_confirm);
+        goTo(g_familiar_confirm);
     }
 
     if (Global(GVAR_FamiliarJumpOut, "GLOBAL", 1)) {
         reply(tra(307));
         action(SetGlobal(GVAR_FamiliarJumpOut, "GLOBAL", 0));
-        goto(g_familiar_confirm);
+        goTo(g_familiar_confirm);
     }
 
     // Hurt notifications
@@ -120,7 +120,7 @@ function g_familiar_combat() {
             SetGlobal(GVAR_FamHurtNotif, "GLOBAL", 0),
             SetGlobal(GVAR_FamBadlyHurtNotif, "GLOBAL", 0)
         );
-        goto(g_familiar_confirm);
+        goTo(g_familiar_confirm);
     }
 
     if (Global(GVAR_FamHurtNotif, "GLOBAL", 0)) {
@@ -129,7 +129,7 @@ function g_familiar_combat() {
             SetGlobal(GVAR_FamHurtNotif, "GLOBAL", 1),
             SetGlobal(GVAR_FamBadlyHurtNotif, "GLOBAL", 0)
         );
-        goto(g_familiar_confirm);
+        goTo(g_familiar_confirm);
     }
 
     if (Global(GVAR_FamBadlyHurtNotif, "GLOBAL", 0)) {
@@ -138,20 +138,20 @@ function g_familiar_combat() {
             SetGlobal(GVAR_FamHurtNotif, "GLOBAL", 0),
             SetGlobal(GVAR_FamBadlyHurtNotif, "GLOBAL", 1)
         );
-        goto(g_familiar_confirm);
+        goTo(g_familiar_confirm);
     }
 
     // Hit and run
     if (Global(GVAR_FamHitAndRun, "GLOBAL", 0)) {
         reply(tra(312));
         action(SetGlobal(GVAR_FamHitAndRun, "GLOBAL", 1));
-        goto(g_familiar_confirm);
+        goTo(g_familiar_confirm);
     }
 
     if (Global(GVAR_FamHitAndRun, "GLOBAL", 1)) {
         reply(tra(313));
         action(SetGlobal(GVAR_FamHitAndRun, "GLOBAL", 0));
-        goto(g_familiar_confirm);
+        goTo(g_familiar_confirm);
     }
 
     // Combat tactics
@@ -159,12 +159,12 @@ function g_familiar_combat() {
         if (!Global(GVAR_FamTactic, "GLOBAL", val)) {
             reply(tra(traRef));
             action(SetGlobal(GVAR_FamTactic, "GLOBAL", val));
-            goto(g_familiar_confirm);
+            goTo(g_familiar_confirm);
         }
     }
 
     reply(tra(105));
-    goto(state);
+    goTo(state);
 }
 
 // =============================================================================
@@ -174,7 +174,7 @@ function g_familiar_potions() {
     say(tra(104));
     // Note: %action_drink% transitions generated in main.tpa are not included here
     reply(tra(105));
-    goto(state);
+    goTo(state);
 }
 
 // =============================================================================
@@ -194,7 +194,7 @@ function g_familiar_loot() {
         SetGlobal(GVAR_FamPickupTrophy, "GLOBAL", 0),
         SetGlobal(GVAR_FamPickupScalps, "GLOBAL", 0)
     );
-    goto(g_familiar_confirm);
+    goTo(g_familiar_confirm);
 
     // Enable all pickup
     reply(tra(401));
@@ -207,19 +207,19 @@ function g_familiar_loot() {
         SetGlobal(GVAR_FamPickupTrophy, "GLOBAL", 1),
         SetGlobal(GVAR_FamPickupScalps, "GLOBAL", 1)
     );
-    goto(g_familiar_confirm);
+    goTo(g_familiar_confirm);
 
     // Binary toggles
     for (const [varName, traOn, traOff] of binaryToggles) {
         if (Global(varName, "GLOBAL", 0)) {
             reply(tra(traOn));
             action(SetGlobal(varName, "GLOBAL", 1));
-            goto(g_familiar_confirm);
+            goTo(g_familiar_confirm);
         }
         if (Global(varName, "GLOBAL", 1)) {
             reply(tra(traOff));
             action(SetGlobal(varName, "GLOBAL", 0));
-            goto(g_familiar_confirm);
+            goTo(g_familiar_confirm);
         }
     }
 
@@ -228,12 +228,12 @@ function g_familiar_loot() {
         if (!Global(GVAR_FamPickupJewels, "GLOBAL", val)) {
             reply(tra(traRef));
             action(SetGlobal(GVAR_FamPickupJewels, "GLOBAL", val));
-            goto(g_familiar_confirm);
+            goTo(g_familiar_confirm);
         }
     }
 
     reply(tra(418));
-    goto(state);
+    goTo(state);
 }
 
 // =============================================================================
@@ -241,7 +241,7 @@ function g_familiar_loot() {
 // =============================================================================
 function g_familiar_confirm() {
     say(tra(419));
-    goto(state);
+    goTo(state);
 }
 
 // =============================================================================
@@ -251,7 +251,7 @@ extendTop(dialog, state, () => {
     for (const [traRef, target] of menuEntries) {
         if (InPartySlot(LastTalkedToBy, 0)) {
             reply(tra(traRef));
-            goto(target);
+            goTo(target);
         }
     }
 });

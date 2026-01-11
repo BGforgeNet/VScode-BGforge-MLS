@@ -60,7 +60,7 @@ type FuncsContext = Map<string, FuncInfo>;
 const TD_KEYWORDS = {
     SAY: "say",
     ACTION: "action",
-    GOTO: "goto",
+    GOTO: "goTo",
     EXIT: "exit",
     REPLY: "reply",
     JOURNAL: "journal",
@@ -1208,9 +1208,9 @@ export class TDParser {
                         currentEntry.action = args.map(a => a.getText()).join(" ");
                     } else if (funcName === "exit") {
                         epilogue = { type: "exit" };
-                    } else if (funcName === "goto") {
+                    } else if (funcName === "goTo") {
                         if (args.length < 1 || !args[0]) {
-                            throw new Error(`goto() requires at least 1 argument at ${expr.getStartLineNumber()}`);
+                            throw new Error(`goTo() requires at least 1 argument at ${expr.getStartLineNumber()}`);
                         }
                         epilogue = {
                             type: "end",
@@ -1287,7 +1287,7 @@ export class TDParser {
 
                 transitions.push(trans);
             } else if (stmt.isKind(SyntaxKind.ExpressionStatement)) {
-                // Expression statement - could be reply(), goto(), action(), etc.
+                // Expression statement - could be reply(), goTo(), action(), etc.
                 const expr = stmt.getExpression();
                 if (Node.isCallExpression(expr)) {
                     const funcName = expr.getExpression().getText();
@@ -1763,7 +1763,7 @@ export class TDParser {
     }
 
     /**
-     * Process a transition-modifying call (reply, goto, action, journal, etc.)
+     * Process a transition-modifying call (reply, goTo, action, journal, etc.)
      * Works with state, single transition, or extend context.
      *
      * Context interface:
@@ -1790,8 +1790,8 @@ export class TDParser {
                 });
                 break;
 
-            case "goto": {
-                this.validateArgs("goto", args, 1, lineNumber);
+            case "goTo": {
+                this.validateArgs("goTo", args, 1, lineNumber);
                 const target = this.resolveStringExpr(args[0] as Expression);
                 const lastTrans = context.getLastTransition();
                 if (lastTrans) {

@@ -11,10 +11,10 @@ if (NumTimesTalkedTo(0)) {
         say(tra(20));
 
         reply(tra(21));
-        goto(state1);
+        goTo(state1);
 
         reply(tra(22));
-        goto(state2);
+        goTo(state2);
     }
 }
 

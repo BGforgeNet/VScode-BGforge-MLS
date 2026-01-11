@@ -9,7 +9,7 @@ function state1() {
         reply(tra(101));
         action(SetGlobal("quest", "GLOBAL", 1));
         journal(tra(200));
-        goto(state2);
+        goTo(state2);
     }
 
     reply(tra(102));
@@ -23,7 +23,7 @@ function state2() {
         reply(tra(104));
         action(SetGlobal("quest", "GLOBAL", 2));
         solvedJournal(tra(201));
-        goto(state3);
+        goTo(state3);
     }
 
     reply(tra(105));
@@ -43,7 +43,7 @@ function state3() {
 extendBottom(dialog, state1, { position: 2 }, () => {
     if (PartyHasItem("SWORD01")) {
         reply(tra(300));
-        goto(state2);
+        goTo(state2);
     }
 });
 
