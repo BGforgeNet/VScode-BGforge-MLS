@@ -1,0 +1,159 @@
+================================================================================
+SAY patch
+================================================================================
+
+COPY ~mymod/item.itm~ ~override~
+BEGIN
+  SAY 0x08 ~New Name~
+END
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (copy_action
+    (file_pair
+      from: (string
+        (tilde_string
+          (tilde_content)))
+      to: (string
+        (tilde_string
+          (tilde_content))))
+    (patch_block
+      (say_patch
+        offset: (number)
+        text: (string
+          (tilde_string
+            (tilde_content)))))))
+
+================================================================================
+PATCH_PRINT
+================================================================================
+
+COPY ~mymod/item.itm~ ~override~
+BEGIN
+  PATCH_PRINT ~Processing file~
+END
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (copy_action
+    (file_pair
+      from: (string
+        (tilde_string
+          (tilde_content)))
+      to: (string
+        (tilde_string
+          (tilde_content))))
+    (patch_block
+      (patch_print
+        message: (string
+          (tilde_string
+            (tilde_content)))))))
+
+================================================================================
+TEXT_SPRINT
+================================================================================
+
+COPY ~mymod/item.itm~ ~override~
+BEGIN
+  TEXT_SPRINT myvar ~hello~
+END
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (copy_action
+    (file_pair
+      from: (string
+        (tilde_string
+          (tilde_content)))
+      to: (string
+        (tilde_string
+          (tilde_content))))
+    (patch_block
+      (text_sprint_patch
+        var: (variable_ref
+          (identifier))
+        value: (string
+          (tilde_string
+            (tilde_content)))))))
+
+================================================================================
+REPLACE_TEXTUALLY
+================================================================================
+
+COPY ~mymod/script.baf~ ~override~
+BEGIN
+  REPLACE_TEXTUALLY ~oldtext~ ~newtext~
+END
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (copy_action
+    (file_pair
+      from: (string
+        (tilde_string
+          (tilde_content)))
+      to: (string
+        (tilde_string
+          (tilde_content))))
+    (patch_block
+      (replace_textually_patch
+        regexp: (string
+          (tilde_string
+            (tilde_content)))
+        replacement: (string
+          (tilde_string
+            (tilde_content)))))))
+
+================================================================================
+EVALUATE_BUFFER
+================================================================================
+
+COPY ~mymod/script.baf~ ~override~
+BEGIN
+  EVALUATE_BUFFER
+END
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (copy_action
+    (file_pair
+      from: (string
+        (tilde_string
+          (tilde_content)))
+      to: (string
+        (tilde_string
+          (tilde_content))))
+    (patch_block
+      (evaluate_buffer_patch))))
+
+================================================================================
+TO_UPPER and TO_LOWER
+================================================================================
+
+COPY ~mymod/item.itm~ ~override~
+BEGIN
+  TO_UPPER myvar
+  TO_LOWER othervar
+END
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (copy_action
+    (file_pair
+      from: (string
+        (tilde_string
+          (tilde_content)))
+      to: (string
+        (tilde_string
+          (tilde_content))))
+    (patch_block
+      (to_upper_patch
+        var: (identifier))
+      (to_lower_patch
+        var: (identifier)))))
