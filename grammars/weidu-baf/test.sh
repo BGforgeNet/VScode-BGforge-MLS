@@ -1,14 +1,17 @@
 #!/bin/bash
+
 # Test tree-sitter BAF grammar - runs all quality checks
+
 set -xeu -o pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 ROOT_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
+TS="$ROOT_DIR/node_modules/.bin/tree-sitter"
 
 cd "$SCRIPT_DIR"
 
 echo "=== Generating grammar ==="
-tree-sitter generate
+"$TS" generate
 
 echo ""
 echo "=== Running ESLint ==="
@@ -16,7 +19,7 @@ pnpm eslint grammar.js --max-warnings 0
 
 echo ""
 echo "=== Running corpus tests ==="
-tree-sitter test
+"$TS" test
 
 echo ""
 echo "=== Formatting samples ==="
