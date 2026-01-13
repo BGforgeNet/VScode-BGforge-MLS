@@ -1,14 +1,17 @@
 #!/bin/bash
+
 # Test tree-sitter WeiDU D grammar - runs all quality checks
+
 set -xeu -o pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 ROOT_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
+TS="$ROOT_DIR/node_modules/.bin/tree-sitter"
 
 cd "$SCRIPT_DIR"
 
 echo "=== Generating grammar ==="
-tree-sitter generate
+"$TS" generate
 
 echo ""
 echo "=== Running ESLint ==="
@@ -16,7 +19,7 @@ pnpm eslint grammar.js --max-warnings 0
 
 echo ""
 echo "=== Running corpus tests ==="
-tree-sitter test
+"$TS" test
 
 echo ""
 echo "=== Setting up external samples ==="
@@ -26,7 +29,7 @@ echo ""
 echo "=== Parsing samples ==="
 for f in test/samples/*.d; do
     echo "Parsing: $f"
-    tree-sitter parse "$f" > /dev/null
+    "$TS" parse "$f" > /dev/null
 done
 
 echo ""
