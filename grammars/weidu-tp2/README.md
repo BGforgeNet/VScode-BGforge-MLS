@@ -392,6 +392,14 @@ CREATE type [VERSION ~version~] ~resref~
 
 Create new game resource. Types: ARE, CRE, EFF, ITM, SPL, STO.
 
+#### ADD_PROJECTILE
+
+```tp2
+ADD_PROJECTILE ~file.pro~
+```
+
+Add projectile to PROJECTL.IDS, copy PRO file to override. Variable `%filename%` holds new ProRef.
+
 ### Compilation
 
 #### COMPILE

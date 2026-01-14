@@ -385,6 +385,10 @@
           "named": true
         },
         {
+          "type": "add_projectile_action",
+          "named": true
+        },
+        {
           "type": "add_sectype_action",
           "named": true
         },
@@ -1479,6 +1483,10 @@
           "named": true
         },
         {
+          "type": "add_projectile_action",
+          "named": true
+        },
+        {
           "type": "add_sectype_action",
           "named": true
         },
@@ -2235,6 +2243,10 @@
           "named": true
         },
         {
+          "type": "add_projectile_action",
+          "named": true
+        },
+        {
           "type": "add_sectype_action",
           "named": true
         },
@@ -2669,6 +2681,10 @@
           "named": true
         },
         {
+          "type": "add_projectile_action",
+          "named": true
+        },
+        {
           "type": "add_sectype_action",
           "named": true
         },
@@ -3096,6 +3112,10 @@
         },
         {
           "type": "add_kit_action",
+          "named": true
+        },
+        {
+          "type": "add_projectile_action",
           "named": true
         },
         {
@@ -3701,6 +3721,10 @@
           "named": true
         },
         {
+          "type": "add_projectile_action",
+          "named": true
+        },
+        {
           "type": "add_sectype_action",
           "named": true
         },
@@ -4164,6 +4188,10 @@
         },
         {
           "type": "add_kit_action",
+          "named": true
+        },
+        {
+          "type": "add_projectile_action",
           "named": true
         },
         {
@@ -6620,6 +6648,170 @@
     }
   },
   {
+    "type": "add_projectile_action",
+    "named": true,
+    "fields": {
+      "file": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "array_access",
+            "named": true
+          },
+          {
+            "type": "at_ref",
+            "named": true
+          },
+          {
+            "type": "bare_resref",
+            "named": true
+          },
+          {
+            "type": "binary_expr",
+            "named": true
+          },
+          {
+            "type": "byte_at_expr",
+            "named": true
+          },
+          {
+            "type": "directory_exists_expr",
+            "named": true
+          },
+          {
+            "type": "engine_is_expr",
+            "named": true
+          },
+          {
+            "type": "evaluated_expr",
+            "named": true
+          },
+          {
+            "type": "file_contains_evaluated_expr",
+            "named": true
+          },
+          {
+            "type": "file_contains_expr",
+            "named": true
+          },
+          {
+            "type": "file_exists_expr",
+            "named": true
+          },
+          {
+            "type": "file_exists_in_game_expr",
+            "named": true
+          },
+          {
+            "type": "game_includes_expr",
+            "named": true
+          },
+          {
+            "type": "game_is_expr",
+            "named": true
+          },
+          {
+            "type": "id_of_label_expr",
+            "named": true
+          },
+          {
+            "type": "ids_of_symbol_expr",
+            "named": true
+          },
+          {
+            "type": "index_buffer_expr",
+            "named": true
+          },
+          {
+            "type": "index_expr",
+            "named": true
+          },
+          {
+            "type": "is_an_int_expr",
+            "named": true
+          },
+          {
+            "type": "long_at_expr",
+            "named": true
+          },
+          {
+            "type": "mod_is_installed_expr",
+            "named": true
+          },
+          {
+            "type": "nullary_expr",
+            "named": true
+          },
+          {
+            "type": "number",
+            "named": true
+          },
+          {
+            "type": "paren_expr",
+            "named": true
+          },
+          {
+            "type": "random_expr",
+            "named": true
+          },
+          {
+            "type": "resolve_str_ref_expr",
+            "named": true
+          },
+          {
+            "type": "rindex_buffer_expr",
+            "named": true
+          },
+          {
+            "type": "rindex_expr",
+            "named": true
+          },
+          {
+            "type": "short_at_expr",
+            "named": true
+          },
+          {
+            "type": "state_which_says_expr",
+            "named": true
+          },
+          {
+            "type": "string",
+            "named": true
+          },
+          {
+            "type": "string_length_expr",
+            "named": true
+          },
+          {
+            "type": "ternary_expr",
+            "named": true
+          },
+          {
+            "type": "tra_entry_exists_expr",
+            "named": true
+          },
+          {
+            "type": "tra_ref",
+            "named": true
+          },
+          {
+            "type": "unary_expr",
+            "named": true
+          },
+          {
+            "type": "variable_is_set_expr",
+            "named": true
+          },
+          {
+            "type": "variable_ref",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
     "type": "add_sectype_action",
     "named": true,
     "fields": {
@@ -7663,6 +7855,10 @@
           "named": true
         },
         {
+          "type": "define_array_patch",
+          "named": true
+        },
+        {
           "type": "define_associative_array_patch",
           "named": true
         },
@@ -8363,6 +8559,10 @@
         },
         {
           "type": "add_kit_action",
+          "named": true
+        },
+        {
+          "type": "add_projectile_action",
           "named": true
         },
         {
@@ -13052,6 +13252,10 @@
           "named": true
         },
         {
+          "type": "add_projectile_action",
+          "named": true
+        },
+        {
           "type": "add_sectype_action",
           "named": true
         },
@@ -14026,6 +14230,10 @@
           "named": true
         },
         {
+          "type": "define_array_patch",
+          "named": true
+        },
+        {
           "type": "define_associative_array_patch",
           "named": true
         },
@@ -14554,6 +14762,10 @@
         },
         {
           "type": "decrement_patch",
+          "named": true
+        },
+        {
+          "type": "define_array_patch",
           "named": true
         },
         {
@@ -15128,6 +15340,10 @@
         },
         {
           "type": "decrement_patch",
+          "named": true
+        },
+        {
+          "type": "define_array_patch",
           "named": true
         },
         {
@@ -15841,6 +16057,10 @@
           "named": true
         },
         {
+          "type": "define_array_patch",
+          "named": true
+        },
+        {
           "type": "define_associative_array_patch",
           "named": true
         },
@@ -16404,6 +16624,10 @@
         },
         {
           "type": "decrement_patch",
+          "named": true
+        },
+        {
+          "type": "define_array_patch",
           "named": true
         },
         {
@@ -17781,6 +18005,10 @@
           "named": true
         },
         {
+          "type": "define_array_patch",
+          "named": true
+        },
+        {
           "type": "define_associative_array_patch",
           "named": true
         },
@@ -18173,6 +18401,10 @@
         },
         {
           "type": "decrement_patch",
+          "named": true
+        },
+        {
+          "type": "define_array_patch",
           "named": true
         },
         {
@@ -19860,6 +20092,10 @@
           "named": true
         },
         {
+          "type": "add_projectile_action",
+          "named": true
+        },
+        {
           "type": "add_sectype_action",
           "named": true
         },
@@ -20162,6 +20398,10 @@
           "named": true
         },
         {
+          "type": "add_projectile_action",
+          "named": true
+        },
+        {
           "type": "add_sectype_action",
           "named": true
         },
@@ -20359,6 +20599,328 @@
         },
         {
           "type": "with_tra_action",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "define_array_patch",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "array_access",
+            "named": true
+          },
+          {
+            "type": "at_ref",
+            "named": true
+          },
+          {
+            "type": "bare_resref",
+            "named": true
+          },
+          {
+            "type": "binary_expr",
+            "named": true
+          },
+          {
+            "type": "byte_at_expr",
+            "named": true
+          },
+          {
+            "type": "directory_exists_expr",
+            "named": true
+          },
+          {
+            "type": "engine_is_expr",
+            "named": true
+          },
+          {
+            "type": "evaluated_expr",
+            "named": true
+          },
+          {
+            "type": "file_contains_evaluated_expr",
+            "named": true
+          },
+          {
+            "type": "file_contains_expr",
+            "named": true
+          },
+          {
+            "type": "file_exists_expr",
+            "named": true
+          },
+          {
+            "type": "file_exists_in_game_expr",
+            "named": true
+          },
+          {
+            "type": "game_includes_expr",
+            "named": true
+          },
+          {
+            "type": "game_is_expr",
+            "named": true
+          },
+          {
+            "type": "id_of_label_expr",
+            "named": true
+          },
+          {
+            "type": "ids_of_symbol_expr",
+            "named": true
+          },
+          {
+            "type": "index_buffer_expr",
+            "named": true
+          },
+          {
+            "type": "index_expr",
+            "named": true
+          },
+          {
+            "type": "is_an_int_expr",
+            "named": true
+          },
+          {
+            "type": "long_at_expr",
+            "named": true
+          },
+          {
+            "type": "mod_is_installed_expr",
+            "named": true
+          },
+          {
+            "type": "nullary_expr",
+            "named": true
+          },
+          {
+            "type": "number",
+            "named": true
+          },
+          {
+            "type": "paren_expr",
+            "named": true
+          },
+          {
+            "type": "random_expr",
+            "named": true
+          },
+          {
+            "type": "resolve_str_ref_expr",
+            "named": true
+          },
+          {
+            "type": "rindex_buffer_expr",
+            "named": true
+          },
+          {
+            "type": "rindex_expr",
+            "named": true
+          },
+          {
+            "type": "short_at_expr",
+            "named": true
+          },
+          {
+            "type": "state_which_says_expr",
+            "named": true
+          },
+          {
+            "type": "string",
+            "named": true
+          },
+          {
+            "type": "string_length_expr",
+            "named": true
+          },
+          {
+            "type": "ternary_expr",
+            "named": true
+          },
+          {
+            "type": "tra_entry_exists_expr",
+            "named": true
+          },
+          {
+            "type": "tra_ref",
+            "named": true
+          },
+          {
+            "type": "unary_expr",
+            "named": true
+          },
+          {
+            "type": "variable_is_set_expr",
+            "named": true
+          },
+          {
+            "type": "variable_ref",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "array_access",
+          "named": true
+        },
+        {
+          "type": "at_ref",
+          "named": true
+        },
+        {
+          "type": "bare_resref",
+          "named": true
+        },
+        {
+          "type": "binary_expr",
+          "named": true
+        },
+        {
+          "type": "byte_at_expr",
+          "named": true
+        },
+        {
+          "type": "directory_exists_expr",
+          "named": true
+        },
+        {
+          "type": "engine_is_expr",
+          "named": true
+        },
+        {
+          "type": "evaluated_expr",
+          "named": true
+        },
+        {
+          "type": "file_contains_evaluated_expr",
+          "named": true
+        },
+        {
+          "type": "file_contains_expr",
+          "named": true
+        },
+        {
+          "type": "file_exists_expr",
+          "named": true
+        },
+        {
+          "type": "file_exists_in_game_expr",
+          "named": true
+        },
+        {
+          "type": "game_includes_expr",
+          "named": true
+        },
+        {
+          "type": "game_is_expr",
+          "named": true
+        },
+        {
+          "type": "id_of_label_expr",
+          "named": true
+        },
+        {
+          "type": "ids_of_symbol_expr",
+          "named": true
+        },
+        {
+          "type": "index_buffer_expr",
+          "named": true
+        },
+        {
+          "type": "index_expr",
+          "named": true
+        },
+        {
+          "type": "is_an_int_expr",
+          "named": true
+        },
+        {
+          "type": "long_at_expr",
+          "named": true
+        },
+        {
+          "type": "mod_is_installed_expr",
+          "named": true
+        },
+        {
+          "type": "nullary_expr",
+          "named": true
+        },
+        {
+          "type": "number",
+          "named": true
+        },
+        {
+          "type": "paren_expr",
+          "named": true
+        },
+        {
+          "type": "random_expr",
+          "named": true
+        },
+        {
+          "type": "resolve_str_ref_expr",
+          "named": true
+        },
+        {
+          "type": "rindex_buffer_expr",
+          "named": true
+        },
+        {
+          "type": "rindex_expr",
+          "named": true
+        },
+        {
+          "type": "short_at_expr",
+          "named": true
+        },
+        {
+          "type": "state_which_says_expr",
+          "named": true
+        },
+        {
+          "type": "string",
+          "named": true
+        },
+        {
+          "type": "string_length_expr",
+          "named": true
+        },
+        {
+          "type": "ternary_expr",
+          "named": true
+        },
+        {
+          "type": "tra_entry_exists_expr",
+          "named": true
+        },
+        {
+          "type": "tra_ref",
+          "named": true
+        },
+        {
+          "type": "unary_expr",
+          "named": true
+        },
+        {
+          "type": "variable_is_set_expr",
+          "named": true
+        },
+        {
+          "type": "variable_ref",
           "named": true
         }
       ]
@@ -20639,6 +21201,10 @@
         },
         {
           "type": "decrement_patch",
+          "named": true
+        },
+        {
+          "type": "define_array_patch",
           "named": true
         },
         {
@@ -21061,6 +21627,10 @@
         },
         {
           "type": "decrement_patch",
+          "named": true
+        },
+        {
+          "type": "define_array_patch",
           "named": true
         },
         {
@@ -22950,6 +23520,10 @@
           "named": true
         },
         {
+          "type": "define_array_patch",
+          "named": true
+        },
+        {
           "type": "define_associative_array_patch",
           "named": true
         },
@@ -23655,6 +24229,10 @@
         },
         {
           "type": "decrement_patch",
+          "named": true
+        },
+        {
+          "type": "define_array_patch",
           "named": true
         },
         {
@@ -25683,6 +26261,10 @@
         },
         {
           "type": "decrement_patch",
+          "named": true
+        },
+        {
+          "type": "define_array_patch",
           "named": true
         },
         {
@@ -29371,6 +29953,10 @@
           "named": true
         },
         {
+          "type": "add_projectile_action",
+          "named": true
+        },
+        {
           "type": "add_sectype_action",
           "named": true
         },
@@ -29818,6 +30404,10 @@
         },
         {
           "type": "decrement_patch",
+          "named": true
+        },
+        {
+          "type": "define_array_patch",
           "named": true
         },
         {
@@ -30368,6 +30958,10 @@
         },
         {
           "type": "decrement_patch",
+          "named": true
+        },
+        {
+          "type": "define_array_patch",
           "named": true
         },
         {
@@ -30940,6 +31534,10 @@
         },
         {
           "type": "decrement_patch",
+          "named": true
+        },
+        {
+          "type": "define_array_patch",
           "named": true
         },
         {
@@ -34406,6 +35004,10 @@
           "named": true
         },
         {
+          "type": "define_array_patch",
+          "named": true
+        },
+        {
           "type": "define_associative_array_patch",
           "named": true
         },
@@ -35902,6 +36504,10 @@
           "named": true
         },
         {
+          "type": "add_projectile_action",
+          "named": true
+        },
+        {
           "type": "add_sectype_action",
           "named": true
         },
@@ -36035,6 +36641,10 @@
         },
         {
           "type": "define_action_macro",
+          "named": true
+        },
+        {
+          "type": "define_array_patch",
           "named": true
         },
         {
@@ -36716,6 +37326,10 @@
           "named": true
         },
         {
+          "type": "define_array_patch",
+          "named": true
+        },
+        {
           "type": "define_associative_array_patch",
           "named": true
         },
@@ -37276,6 +37890,10 @@
           "named": true
         },
         {
+          "type": "define_array_patch",
+          "named": true
+        },
+        {
           "type": "define_associative_array_patch",
           "named": true
         },
@@ -37823,6 +38441,10 @@
         },
         {
           "type": "decrement_patch",
+          "named": true
+        },
+        {
+          "type": "define_array_patch",
           "named": true
         },
         {
@@ -38383,6 +39005,10 @@
         },
         {
           "type": "decrement_patch",
+          "named": true
+        },
+        {
+          "type": "define_array_patch",
           "named": true
         },
         {
@@ -39746,6 +40372,10 @@
           "named": true
         },
         {
+          "type": "add_projectile_action",
+          "named": true
+        },
+        {
           "type": "add_sectype_action",
           "named": true
         },
@@ -40364,6 +40994,10 @@
           "named": true
         },
         {
+          "type": "define_array_patch",
+          "named": true
+        },
+        {
           "type": "define_associative_array_patch",
           "named": true
         },
@@ -40831,6 +41465,401 @@
     }
   },
   {
+    "type": "patch_file",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "add_cre_item_patch",
+          "named": true
+        },
+        {
+          "type": "add_known_spell_patch",
+          "named": true
+        },
+        {
+          "type": "add_map_note_patch",
+          "named": true
+        },
+        {
+          "type": "add_memorized_spell_patch",
+          "named": true
+        },
+        {
+          "type": "add_store_item_patch",
+          "named": true
+        },
+        {
+          "type": "append_file_patch",
+          "named": true
+        },
+        {
+          "type": "assignment_patch",
+          "named": true
+        },
+        {
+          "type": "clear_array_patch",
+          "named": true
+        },
+        {
+          "type": "compile_baf_to_bcs",
+          "named": true
+        },
+        {
+          "type": "compile_d_to_dlg",
+          "named": true
+        },
+        {
+          "type": "compress_replace_file_patch",
+          "named": true
+        },
+        {
+          "type": "count_2da_cols_patch",
+          "named": true
+        },
+        {
+          "type": "count_2da_rows_patch",
+          "named": true
+        },
+        {
+          "type": "count_regexp_instances_patch",
+          "named": true
+        },
+        {
+          "type": "decompile_and_patch",
+          "named": true
+        },
+        {
+          "type": "decompile_bcs_to_baf",
+          "named": true
+        },
+        {
+          "type": "decompile_dlg_to_d",
+          "named": true
+        },
+        {
+          "type": "decompress_into_var_patch",
+          "named": true
+        },
+        {
+          "type": "decompress_replace_file_patch",
+          "named": true
+        },
+        {
+          "type": "decrement_patch",
+          "named": true
+        },
+        {
+          "type": "define_array_patch",
+          "named": true
+        },
+        {
+          "type": "define_associative_array_patch",
+          "named": true
+        },
+        {
+          "type": "delete_bytes_patch",
+          "named": true
+        },
+        {
+          "type": "evaluate_buffer_patch",
+          "named": true
+        },
+        {
+          "type": "for_patch",
+          "named": true
+        },
+        {
+          "type": "get_offset_array2_patch",
+          "named": true
+        },
+        {
+          "type": "get_offset_array_patch",
+          "named": true
+        },
+        {
+          "type": "get_strref_patch",
+          "named": true
+        },
+        {
+          "type": "increment_patch",
+          "named": true
+        },
+        {
+          "type": "inner_action",
+          "named": true
+        },
+        {
+          "type": "inner_patch",
+          "named": true
+        },
+        {
+          "type": "inner_patch_file",
+          "named": true
+        },
+        {
+          "type": "inner_patch_save",
+          "named": true
+        },
+        {
+          "type": "insert_2da_row_patch",
+          "named": true
+        },
+        {
+          "type": "insert_bytes_patch",
+          "named": true
+        },
+        {
+          "type": "launch_patch_function",
+          "named": true
+        },
+        {
+          "type": "launch_patch_macro",
+          "named": true
+        },
+        {
+          "type": "lookup_ids_symbol_of_int_patch",
+          "named": true
+        },
+        {
+          "type": "patch_abort",
+          "named": true
+        },
+        {
+          "type": "patch_fail",
+          "named": true
+        },
+        {
+          "type": "patch_for_each",
+          "named": true
+        },
+        {
+          "type": "patch_if",
+          "named": true
+        },
+        {
+          "type": "patch_include",
+          "named": true
+        },
+        {
+          "type": "patch_log",
+          "named": true
+        },
+        {
+          "type": "patch_match",
+          "named": true
+        },
+        {
+          "type": "patch_print",
+          "named": true
+        },
+        {
+          "type": "patch_reraise",
+          "named": true
+        },
+        {
+          "type": "patch_silent",
+          "named": true
+        },
+        {
+          "type": "patch_try",
+          "named": true
+        },
+        {
+          "type": "patch_verbose",
+          "named": true
+        },
+        {
+          "type": "patch_warn",
+          "named": true
+        },
+        {
+          "type": "php_each_patch",
+          "named": true
+        },
+        {
+          "type": "pretty_print_2da_patch",
+          "named": true
+        },
+        {
+          "type": "quote_patch",
+          "named": true
+        },
+        {
+          "type": "read_2da_entries_now_patch",
+          "named": true
+        },
+        {
+          "type": "read_2da_entry_former_patch",
+          "named": true
+        },
+        {
+          "type": "read_2da_entry_patch",
+          "named": true
+        },
+        {
+          "type": "read_ascii_patch",
+          "named": true
+        },
+        {
+          "type": "read_byte_patch",
+          "named": true
+        },
+        {
+          "type": "read_long_patch",
+          "named": true
+        },
+        {
+          "type": "read_short_patch",
+          "named": true
+        },
+        {
+          "type": "read_strref_patch",
+          "named": true
+        },
+        {
+          "type": "remove_2da_row_patch",
+          "named": true
+        },
+        {
+          "type": "remove_cre_effects_patch",
+          "named": true
+        },
+        {
+          "type": "remove_cre_item_patch",
+          "named": true
+        },
+        {
+          "type": "remove_known_spell_patch",
+          "named": true
+        },
+        {
+          "type": "remove_known_spells_patch",
+          "named": true
+        },
+        {
+          "type": "remove_memorized_spells_patch",
+          "named": true
+        },
+        {
+          "type": "remove_store_item_patch",
+          "named": true
+        },
+        {
+          "type": "replace_bcs_block_patch",
+          "named": true
+        },
+        {
+          "type": "replace_cre_item_patch",
+          "named": true
+        },
+        {
+          "type": "replace_evaluate_patch",
+          "named": true
+        },
+        {
+          "type": "replace_patch",
+          "named": true
+        },
+        {
+          "type": "replace_textually_patch",
+          "named": true
+        },
+        {
+          "type": "say_patch",
+          "named": true
+        },
+        {
+          "type": "set_2da_entries_now_patch",
+          "named": true
+        },
+        {
+          "type": "set_2da_entry_later_patch",
+          "named": true
+        },
+        {
+          "type": "set_2da_entry_patch",
+          "named": true
+        },
+        {
+          "type": "set_bg2_proficiency_patch",
+          "named": true
+        },
+        {
+          "type": "set_patch",
+          "named": true
+        },
+        {
+          "type": "snprint_patch",
+          "named": true
+        },
+        {
+          "type": "sort_array_indices_patch",
+          "named": true
+        },
+        {
+          "type": "source_biff_patch",
+          "named": true
+        },
+        {
+          "type": "spaces_patch",
+          "named": true
+        },
+        {
+          "type": "sprint_patch",
+          "named": true
+        },
+        {
+          "type": "sprintf_patch",
+          "named": true
+        },
+        {
+          "type": "text_sprint_patch",
+          "named": true
+        },
+        {
+          "type": "to_lower_patch",
+          "named": true
+        },
+        {
+          "type": "to_upper_patch",
+          "named": true
+        },
+        {
+          "type": "while_patch",
+          "named": true
+        },
+        {
+          "type": "write_ascii_list_patch",
+          "named": true
+        },
+        {
+          "type": "write_ascii_patch",
+          "named": true
+        },
+        {
+          "type": "write_asciil_patch",
+          "named": true
+        },
+        {
+          "type": "write_byte_patch",
+          "named": true
+        },
+        {
+          "type": "write_long_patch",
+          "named": true
+        },
+        {
+          "type": "write_short_patch",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "patch_for_each",
     "named": true,
     "fields": {
@@ -41095,6 +42124,10 @@
         },
         {
           "type": "decrement_patch",
+          "named": true
+        },
+        {
+          "type": "define_array_patch",
           "named": true
         },
         {
@@ -41777,6 +42810,10 @@
         },
         {
           "type": "decrement_patch",
+          "named": true
+        },
+        {
+          "type": "define_array_patch",
           "named": true
         },
         {
@@ -42658,6 +43695,10 @@
           "named": true
         },
         {
+          "type": "define_array_patch",
+          "named": true
+        },
+        {
           "type": "define_associative_array_patch",
           "named": true
         },
@@ -43214,6 +44255,10 @@
         },
         {
           "type": "decrement_patch",
+          "named": true
+        },
+        {
+          "type": "define_array_patch",
           "named": true
         },
         {
@@ -43963,6 +45008,10 @@
         },
         {
           "type": "decrement_patch",
+          "named": true
+        },
+        {
+          "type": "define_array_patch",
           "named": true
         },
         {
@@ -49610,6 +50659,10 @@
           "named": true
         },
         {
+          "type": "define_array_patch",
+          "named": true
+        },
+        {
           "type": "define_associative_array_patch",
           "named": true
         },
@@ -50478,6 +51531,10 @@
         },
         {
           "type": "decrement_patch",
+          "named": true
+        },
+        {
+          "type": "define_array_patch",
           "named": true
         },
         {
@@ -57424,23 +58481,11 @@
           "named": true
         },
         {
-          "type": "add_cre_item_patch",
-          "named": true
-        },
-        {
           "type": "add_kit_action",
           "named": true
         },
         {
-          "type": "add_known_spell_patch",
-          "named": true
-        },
-        {
-          "type": "add_map_note_patch",
-          "named": true
-        },
-        {
-          "type": "add_memorized_spell_patch",
+          "type": "add_projectile_action",
           "named": true
         },
         {
@@ -57449,10 +58494,6 @@
         },
         {
           "type": "add_spell_action",
-          "named": true
-        },
-        {
-          "type": "add_store_item_patch",
           "named": true
         },
         {
@@ -57472,15 +58513,7 @@
           "named": true
         },
         {
-          "type": "append_file_patch",
-          "named": true
-        },
-        {
           "type": "append_outer_action",
-          "named": true
-        },
-        {
-          "type": "assignment_patch",
           "named": true
         },
         {
@@ -57500,10 +58533,6 @@
           "named": true
         },
         {
-          "type": "clear_array_patch",
-          "named": true
-        },
-        {
           "type": "clear_memory_action",
           "named": true
         },
@@ -57512,19 +58541,7 @@
           "named": true
         },
         {
-          "type": "compile_baf_to_bcs",
-          "named": true
-        },
-        {
-          "type": "compile_d_to_dlg",
-          "named": true
-        },
-        {
           "type": "component",
-          "named": true
-        },
-        {
-          "type": "compress_replace_file_patch",
           "named": true
         },
         {
@@ -57552,47 +58569,11 @@
           "named": true
         },
         {
-          "type": "count_2da_cols_patch",
-          "named": true
-        },
-        {
-          "type": "count_2da_rows_patch",
-          "named": true
-        },
-        {
-          "type": "count_regexp_instances_patch",
-          "named": true
-        },
-        {
           "type": "create_action",
           "named": true
         },
         {
-          "type": "decompile_and_patch",
-          "named": true
-        },
-        {
-          "type": "decompile_bcs_to_baf",
-          "named": true
-        },
-        {
-          "type": "decompile_dlg_to_d",
-          "named": true
-        },
-        {
           "type": "decompress_biff_action",
-          "named": true
-        },
-        {
-          "type": "decompress_into_var_patch",
-          "named": true
-        },
-        {
-          "type": "decompress_replace_file_patch",
-          "named": true
-        },
-        {
-          "type": "decrement_patch",
           "named": true
         },
         {
@@ -57601,10 +58582,6 @@
         },
         {
           "type": "define_action_macro",
-          "named": true
-        },
-        {
-          "type": "define_associative_array_patch",
           "named": true
         },
         {
@@ -57620,15 +58597,7 @@
           "named": true
         },
         {
-          "type": "delete_bytes_patch",
-          "named": true
-        },
-        {
           "type": "disable_from_key_action",
-          "named": true
-        },
-        {
-          "type": "evaluate_buffer_patch",
           "named": true
         },
         {
@@ -57644,23 +58613,7 @@
           "named": true
         },
         {
-          "type": "for_patch",
-          "named": true
-        },
-        {
           "type": "forbid_component_action",
-          "named": true
-        },
-        {
-          "type": "get_offset_array2_patch",
-          "named": true
-        },
-        {
-          "type": "get_offset_array_patch",
-          "named": true
-        },
-        {
-          "type": "get_strref_patch",
           "named": true
         },
         {
@@ -57668,35 +58621,7 @@
           "named": true
         },
         {
-          "type": "increment_patch",
-          "named": true
-        },
-        {
           "type": "inlined_file",
-          "named": true
-        },
-        {
-          "type": "inner_action",
-          "named": true
-        },
-        {
-          "type": "inner_patch",
-          "named": true
-        },
-        {
-          "type": "inner_patch_file",
-          "named": true
-        },
-        {
-          "type": "inner_patch_save",
-          "named": true
-        },
-        {
-          "type": "insert_2da_row_patch",
-          "named": true
-        },
-        {
-          "type": "insert_bytes_patch",
           "named": true
         },
         {
@@ -57712,19 +58637,7 @@
           "named": true
         },
         {
-          "type": "launch_patch_function",
-          "named": true
-        },
-        {
-          "type": "launch_patch_macro",
-          "named": true
-        },
-        {
           "type": "load_tra_action",
-          "named": true
-        },
-        {
-          "type": "lookup_ids_symbol_of_int_patch",
           "named": true
         },
         {
@@ -57776,63 +58689,7 @@
           "named": true
         },
         {
-          "type": "patch_abort",
-          "named": true
-        },
-        {
-          "type": "patch_fail",
-          "named": true
-        },
-        {
-          "type": "patch_for_each",
-          "named": true
-        },
-        {
-          "type": "patch_if",
-          "named": true
-        },
-        {
-          "type": "patch_include",
-          "named": true
-        },
-        {
-          "type": "patch_log",
-          "named": true
-        },
-        {
-          "type": "patch_match",
-          "named": true
-        },
-        {
-          "type": "patch_print",
-          "named": true
-        },
-        {
-          "type": "patch_reraise",
-          "named": true
-        },
-        {
-          "type": "patch_silent",
-          "named": true
-        },
-        {
-          "type": "patch_try",
-          "named": true
-        },
-        {
-          "type": "patch_verbose",
-          "named": true
-        },
-        {
-          "type": "patch_warn",
-          "named": true
-        },
-        {
-          "type": "php_each_patch",
-          "named": true
-        },
-        {
-          "type": "pretty_print_2da_patch",
+          "type": "patch_file",
           "named": true
         },
         {
@@ -57840,43 +58697,7 @@
           "named": true
         },
         {
-          "type": "quote_patch",
-          "named": true
-        },
-        {
           "type": "random_seed_action",
-          "named": true
-        },
-        {
-          "type": "read_2da_entries_now_patch",
-          "named": true
-        },
-        {
-          "type": "read_2da_entry_former_patch",
-          "named": true
-        },
-        {
-          "type": "read_2da_entry_patch",
-          "named": true
-        },
-        {
-          "type": "read_ascii_patch",
-          "named": true
-        },
-        {
-          "type": "read_byte_patch",
-          "named": true
-        },
-        {
-          "type": "read_long_patch",
-          "named": true
-        },
-        {
-          "type": "read_short_patch",
-          "named": true
-        },
-        {
-          "type": "read_strref_patch",
           "named": true
         },
         {
@@ -57884,107 +58705,11 @@
           "named": true
         },
         {
-          "type": "remove_2da_row_patch",
-          "named": true
-        },
-        {
-          "type": "remove_cre_effects_patch",
-          "named": true
-        },
-        {
-          "type": "remove_cre_item_patch",
-          "named": true
-        },
-        {
-          "type": "remove_known_spell_patch",
-          "named": true
-        },
-        {
-          "type": "remove_known_spells_patch",
-          "named": true
-        },
-        {
-          "type": "remove_memorized_spells_patch",
-          "named": true
-        },
-        {
-          "type": "remove_store_item_patch",
-          "named": true
-        },
-        {
-          "type": "replace_bcs_block_patch",
-          "named": true
-        },
-        {
-          "type": "replace_cre_item_patch",
-          "named": true
-        },
-        {
-          "type": "replace_evaluate_patch",
-          "named": true
-        },
-        {
-          "type": "replace_patch",
-          "named": true
-        },
-        {
-          "type": "replace_textually_patch",
-          "named": true
-        },
-        {
           "type": "require_predicate_action",
           "named": true
         },
         {
-          "type": "say_patch",
-          "named": true
-        },
-        {
-          "type": "set_2da_entries_now_patch",
-          "named": true
-        },
-        {
-          "type": "set_2da_entry_later_patch",
-          "named": true
-        },
-        {
-          "type": "set_2da_entry_patch",
-          "named": true
-        },
-        {
-          "type": "set_bg2_proficiency_patch",
-          "named": true
-        },
-        {
-          "type": "set_patch",
-          "named": true
-        },
-        {
           "type": "silent_action",
-          "named": true
-        },
-        {
-          "type": "snprint_patch",
-          "named": true
-        },
-        {
-          "type": "sort_array_indices_patch",
-          "named": true
-        },
-        {
-          "type": "source_biff_patch",
-          "named": true
-        },
-        {
-          "type": "spaces_patch",
-          "named": true
-        },
-        {
-          "type": "sprint_patch",
-          "named": true
-        },
-        {
-          "type": "sprintf_patch",
           "named": true
         },
         {
@@ -57993,18 +58718,6 @@
         },
         {
           "type": "support_directive",
-          "named": true
-        },
-        {
-          "type": "text_sprint_patch",
-          "named": true
-        },
-        {
-          "type": "to_lower_patch",
-          "named": true
-        },
-        {
-          "type": "to_upper_patch",
           "named": true
         },
         {
@@ -58024,35 +58737,7 @@
           "named": true
         },
         {
-          "type": "while_patch",
-          "named": true
-        },
-        {
           "type": "with_tra_action",
-          "named": true
-        },
-        {
-          "type": "write_ascii_list_patch",
-          "named": true
-        },
-        {
-          "type": "write_ascii_patch",
-          "named": true
-        },
-        {
-          "type": "write_asciil_patch",
-          "named": true
-        },
-        {
-          "type": "write_byte_patch",
-          "named": true
-        },
-        {
-          "type": "write_long_patch",
-          "named": true
-        },
-        {
-          "type": "write_short_patch",
           "named": true
         }
       ]
@@ -63000,6 +63685,10 @@
           "named": true
         },
         {
+          "type": "define_array_patch",
+          "named": true
+        },
+        {
           "type": "define_associative_array_patch",
           "named": true
         },
@@ -63527,6 +64216,10 @@
         },
         {
           "type": "add_kit_action",
+          "named": true
+        },
+        {
+          "type": "add_projectile_action",
           "named": true
         },
         {
@@ -66060,6 +66753,10 @@
   },
   {
     "type": "ADD_MEMORIZED_SPELL",
+    "named": false
+  },
+  {
+    "type": "ADD_PROJECTILE",
     "named": false
   },
   {

@@ -4,27 +4,39 @@
   "word": "identifier",
   "rules": {
     "source_file": {
-      "type": "REPEAT",
-      "content": {
-        "type": "CHOICE",
-        "members": [
-          {
-            "type": "SYMBOL",
-            "name": "_top_level"
-          },
-          {
-            "type": "SYMBOL",
-            "name": "_action"
-          },
-          {
-            "type": "SYMBOL",
-            "name": "top_level_assignment"
-          },
-          {
-            "type": "SYMBOL",
-            "name": "_patch"
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "_top_level"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "_action"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "top_level_assignment"
+              }
+            ]
           }
-        ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "patch_file"
+        }
+      ]
+    },
+    "patch_file": {
+      "type": "REPEAT1",
+      "content": {
+        "type": "SYMBOL",
+        "name": "_patch"
       }
     },
     "top_level_assignment": {
@@ -2238,6 +2250,10 @@
         {
           "type": "SYMBOL",
           "name": "replace_bcs_block_patch"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "define_array_patch"
         },
         {
           "type": "SYMBOL",
@@ -4909,6 +4925,38 @@
         ]
       }
     },
+    "define_array_patch": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "DEFINE_ARRAY"
+        },
+        {
+          "type": "FIELD",
+          "name": "name",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_value"
+          }
+        },
+        {
+          "type": "STRING",
+          "value": "BEGIN"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_value"
+          }
+        },
+        {
+          "type": "STRING",
+          "value": "END"
+        }
+      ]
+    },
     "define_associative_array_patch": {
       "type": "SEQ",
       "members": [
@@ -5643,6 +5691,10 @@
         {
           "type": "SYMBOL",
           "name": "load_tra_action"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "add_projectile_action"
         },
         {
           "type": "SYMBOL",
@@ -8163,17 +8215,8 @@
       "type": "SEQ",
       "members": [
         {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "STRING",
-              "value": "ACTION_DEFINE_ARRAY"
-            },
-            {
-              "type": "STRING",
-              "value": "DEFINE_ARRAY"
-            }
-          ]
+          "type": "STRING",
+          "value": "ACTION_DEFINE_ARRAY"
         },
         {
           "type": "FIELD",
@@ -8475,6 +8518,23 @@
         {
           "type": "SYMBOL",
           "name": "_value"
+        }
+      ]
+    },
+    "add_projectile_action": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "ADD_PROJECTILE"
+        },
+        {
+          "type": "FIELD",
+          "name": "file",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_value"
+          }
         }
       ]
     },

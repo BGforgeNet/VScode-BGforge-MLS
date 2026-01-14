@@ -244,8 +244,14 @@ export default grammar({
     ],
 
     rules: {
-        // Allow patches at top level for .tpp files (patch includes)
-        source_file: ($) => repeat(choice($._top_level, $._action, $.top_level_assignment, $._patch)),
+        // First token disambiguates: normal file (.tp2) vs patch-only file (.tpp)
+        source_file: ($) => choice(
+            repeat(choice($._top_level, $._action, $.top_level_assignment)),
+            $.patch_file
+        ),
+
+        // Patch-only file (e.g., .tpp includes) - entire file is patches
+        patch_file: ($) => repeat1($._patch),
 
         // Bare assignment at top level (implicit OUTER_SET, common in .tpp files)
         top_level_assignment: ($) =>
@@ -611,6 +617,7 @@ export default grammar({
                 $.launch_patch_macro,
                 $.replace_bcs_block_patch,
                 // Arrays
+                $.define_array_patch,
                 $.define_associative_array_patch,
                 $.clear_array_patch,
                 $.sort_array_indices_patch,
@@ -955,6 +962,8 @@ export default grammar({
             ),
 
         // Arrays
+        define_array_patch: ($) =>
+            seq("DEFINE_ARRAY", field("name", $._value), "BEGIN", repeat($._value), "END"),
         define_associative_array_patch: defineAssocArray("DEFINE_ASSOCIATIVE_ARRAY"),
         clear_array_patch: clearArray("CLEAR_ARRAY"),
 
@@ -1083,6 +1092,7 @@ export default grammar({
                 $.string_set_action,
                 $.load_tra_action,
                 // Game data modification
+                $.add_projectile_action,
                 $.add_sectype_action,
                 $.add_area_type_action,
                 $.add_spell_action,
@@ -1149,6 +1159,7 @@ export default grammar({
 
         file_pair: ($) => seq(field("from", $._value), field("to", $._value)),
 
+        // Patches inside actions - either bare patches or BEGIN/END block
         _patches: ($) => prec.right(choice(repeat1($._patch), $.patch_block)),
 
         patch_block: ($) => prec(-10, seq("BEGIN", repeat($._patch), "END")),
@@ -1329,7 +1340,7 @@ export default grammar({
         // Arrays
         action_define_array: ($) =>
             seq(
-                choice("ACTION_DEFINE_ARRAY", "DEFINE_ARRAY"),
+                "ACTION_DEFINE_ARRAY",
                 field("name", $._value),
                 "BEGIN",
                 repeat(choice($._value, $.assoc_entry)),
@@ -1374,6 +1385,8 @@ export default grammar({
         add_kit_action: ($) => prec.right(seq("ADD_KIT", repeat1(choice($._value, $.kit_say)))),
 
         kit_say: ($) => seq("SAY", $._value),
+
+        add_projectile_action: ($) => seq("ADD_PROJECTILE", field("file", $._value)),
 
         // System/execution
         at_now_action: ($) =>
