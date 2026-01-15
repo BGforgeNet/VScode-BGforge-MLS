@@ -20,6 +20,7 @@ export interface FormatResult {
     errors: FormatError[];
 }
 
+/** Reserved for future use - format errors will be reported here when error recovery is implemented. */
 interface FormatError {
     message: string;
     line: number;
@@ -33,6 +34,104 @@ interface FormatContext {
 }
 
 const INLINE_COMMENT_SPACING = "  ";
+
+// ============================================
+// Node type constants
+// ============================================
+
+/** Top-level directive types. */
+const TOP_LEVEL_DIRECTIVES = [
+    "backup_directive",
+    "author_directive",
+    "support_directive",
+    "version_flag",
+    "readme_directive",
+    "no_if_eval_bug_flag",
+    "auto_eval_strings_flag",
+    "allow_missing_directive",
+    "language_directive",
+    "inlined_file",
+] as const;
+
+/** FOR_EACH style loops with IN keyword. */
+const FOR_EACH_TYPES = [
+    "action_for_each",
+    "action_php_each",
+    "action_bash_for",
+    "patch_for_each",
+    "php_each_patch",
+] as const;
+
+/** Control flow types (IF, MATCH, TRY, WHILE, etc.). */
+const CONTROL_FLOW_TYPES = [
+    "action_if",
+    "action_match",
+    "action_try",
+    "outer_for",
+    "outer_while",
+    "patch_if",
+    "patch_match",
+    "patch_try",
+    "for_patch",
+    "while_patch",
+    "replace_evaluate_patch",
+    "inner_patch",
+    "inner_patch_save",
+    "inner_patch_file",
+    "inner_action",
+    "decompile_and_patch",
+    "with_tra_action",
+    // Array definitions with BEGIN...END body
+    "action_define_array",
+    "action_define_associative_array",
+    "define_associative_array_patch",
+    // OUTER_* with BEGIN...END body
+    "outer_patch_action",
+    "outer_patch_save_action",
+    "outer_inner_patch_action",
+    "outer_inner_patch_save_action",
+    // FOR_EACH types
+    ...FOR_EACH_TYPES,
+] as const;
+
+/** COPY-style action types. */
+const COPY_ACTION_TYPES = [
+    "copy_action",
+    "copy_existing_action",
+    "copy_existing_regexp_action",
+    "copy_large_action",
+    "copy_random_action",
+    "copy_all_gam_files_action",
+    "create_action",
+    "add_spell_action",
+] as const;
+
+/** Function/macro definition types. */
+const FUNCTION_DEF_TYPES = [
+    "define_action_macro",
+    "define_patch_macro",
+    "define_action_function",
+    "define_patch_function",
+] as const;
+
+/** Function/macro call types (LPF, LAF, LPM, LAM). */
+const FUNCTION_CALL_TYPES = [
+    "launch_patch_function",
+    "launch_action_function",
+    "launch_patch_macro",
+    "launch_action_macro",
+] as const;
+
+/** Special patch types not caught by isPatch(). */
+const SPECIAL_PATCH_TYPES = [
+    "compile_baf_to_bcs",
+    "decompile_bcs_to_baf",
+    "compile_d_to_dlg",
+    "decompile_dlg_to_d",
+    "evaluate_buffer",
+    "get_offset_array",
+    "get_offset_array2",
+] as const;
 
 // ============================================
 // Comment utilities
@@ -158,18 +257,7 @@ function normalizeWhitespace(text: string): string {
 
 /** Check if this is a top-level directive. */
 function isTopLevelDirective(type: string): boolean {
-    return [
-        "backup_directive",
-        "author_directive",
-        "support_directive",
-        "version_flag",
-        "readme_directive",
-        "no_if_eval_bug_flag",
-        "auto_eval_strings_flag",
-        "allow_missing_directive",
-        "language_directive",
-        "inlined_file",
-    ].includes(type);
+    return (TOP_LEVEL_DIRECTIVES as readonly string[]).includes(type);
 }
 
 /** Check if this is an action node. */
@@ -194,15 +282,7 @@ function isPatch(type: string): boolean {
 
 /** Check if this is a special patch type not caught by isPatch(). */
 function isSpecialPatch(type: string): boolean {
-    return (
-        type === "compile_baf_to_bcs" ||
-        type === "decompile_bcs_to_baf" ||
-        type === "compile_d_to_dlg" ||
-        type === "decompile_dlg_to_d" ||
-        type === "evaluate_buffer" ||
-        type === "get_offset_array" ||
-        type === "get_offset_array2"
-    );
+    return (SPECIAL_PATCH_TYPES as readonly string[]).includes(type);
 }
 
 /** Check if text is a parameter keyword (INT_VAR, STR_VAR, RET, RET_ARRAY). */
@@ -213,73 +293,43 @@ function isParamKeyword(text: string): boolean {
 
 /** Check if node type is a control flow construct with BEGIN...END body. */
 function isControlFlow(type: string): boolean {
-    return [
-        "action_if",
-        "action_match",
-        "action_try",
-        "outer_for",
-        "outer_while",
-        "action_for_each",
-        "action_php_each",
-        "action_bash_for",
-        "with_tra_action",
-        "patch_if",
-        "patch_match",
-        "patch_try",
-        "for_patch",
-        "while_patch",
-        "php_each_patch",
-        "patch_for_each",
-        "replace_evaluate_patch",
-        "inner_patch",
-        "inner_patch_save",
-        "inner_patch_file",
-        "inner_action",
-        "decompile_and_patch",
-        // Array definitions with BEGIN...END body
-        "action_define_array",
-        "action_define_associative_array",
-        "define_associative_array_patch",
-        // OUTER_* with BEGIN...END body
-        "outer_patch_action",
-        "outer_patch_save_action",
-        "outer_inner_patch_action",
-        "outer_inner_patch_save_action",
-    ].includes(type);
+    return (CONTROL_FLOW_TYPES as readonly string[]).includes(type);
+}
+
+/** Check if node type is a FOR_EACH style loop with IN keyword. */
+function isForEach(type: string): boolean {
+    return (FOR_EACH_TYPES as readonly string[]).includes(type);
 }
 
 /** Check if node is a function/macro definition. */
 function isFunctionDef(type: string): boolean {
-    return [
-        "define_action_macro",
-        "define_patch_macro",
-        "define_action_function",
-        "define_patch_function",
-    ].includes(type);
+    return (FUNCTION_DEF_TYPES as readonly string[]).includes(type);
 }
 
 /** Check if node is a function/macro call (LPF, LAF, LPM, LAM). */
 function isFunctionCall(type: string): boolean {
-    return [
-        "launch_patch_function",
-        "launch_action_function",
-        "launch_patch_macro",
-        "launch_action_macro",
-    ].includes(type);
+    return (FUNCTION_CALL_TYPES as readonly string[]).includes(type);
 }
 
 /** Check if node is a COPY-style action with inline patches. */
 function isCopyAction(type: string): boolean {
-    return [
-        "copy_action",
-        "copy_existing_action",
-        "copy_existing_regexp_action",
-        "copy_large_action",
-        "copy_random_action",
-        "copy_all_gam_files_action",
-        "create_action",
-        "add_spell_action",
-    ].includes(type);
+    return (COPY_ACTION_TYPES as readonly string[]).includes(type);
+}
+
+/** Check if node is valid body content (actions, patches, control flow, etc.). */
+function isBodyContent(type: string): boolean {
+    return (
+        isAction(type) ||
+        isPatch(type) ||
+        isControlFlow(type) ||
+        isFunctionCall(type) ||
+        isSpecialPatch(type)
+    );
+}
+
+/** Check if node text matches a keyword (case-insensitive). */
+function isKeyword(node: SyntaxNode, keyword: string): boolean {
+    return node.text.toUpperCase() === keyword;
 }
 
 // ============================================
@@ -322,7 +372,7 @@ function formatComponent(node: SyntaxNode, ctx: FormatContext): string {
             continue;
         }
 
-        if (child.text.toUpperCase() === "BEGIN") {
+        if (isKeyword(child, "BEGIN")) {
             beginLine = "BEGIN";
             continue;
         }
@@ -393,17 +443,22 @@ function formatComponent(node: SyntaxNode, ctx: FormatContext): string {
  */
 function formatAlwaysBlock(node: SyntaxNode, ctx: FormatContext): string {
     const lines: string[] = ["ALWAYS"];
+    let lastEndRow = -1;
 
     for (const child of node.children) {
-        if (child.text.toUpperCase() === "ALWAYS" || child.text.toUpperCase() === "END") {
+        if (isKeyword(child, "ALWAYS") || isKeyword(child, "END")) {
             continue;
         }
         if (isComment(child)) {
-            lines.push(ctx.indent + normalizeComment(child.text));
+            if (!tryAppendInlineComment(lines, child, lastEndRow)) {
+                lines.push(ctx.indent + normalizeComment(child.text));
+            }
         } else if (child.type === "inlined_file") {
             lines.push(formatInlinedFile(child, ctx, 1));
+            lastEndRow = child.endPosition.row;
         } else if (isAction(child.type) || child.type === "top_level_assignment") {
             lines.push(formatNode(child, ctx, 1));
+            lastEndRow = child.endPosition.row;
         }
     }
 
@@ -477,11 +532,11 @@ function formatCopyAction(node: SyntaxNode, ctx: FormatContext, depth: number): 
             inPatchArea = true;
             patches.push(child);
         } else if (
-            child.text.toUpperCase() === "BUT_ONLY" ||
-            child.text.toUpperCase() === "BUT_ONLY_IF_IT_CHANGES" ||
-            child.text.toUpperCase() === "IF_EXISTS" ||
-            child.text.toUpperCase() === "UNLESS" ||
-            (child.text.toUpperCase() === "IF" && inPatchArea) ||
+            isKeyword(child, "BUT_ONLY") ||
+            isKeyword(child, "BUT_ONLY_IF_IT_CHANGES") ||
+            isKeyword(child, "IF_EXISTS") ||
+            isKeyword(child, "UNLESS") ||
+            (isKeyword(child, "IF") && inPatchArea) ||
             child.type === "_but_only"
         ) {
             // Collect suffix - includes filters (UNLESS, IF) and modifiers (BUT_ONLY, IF_EXISTS)
@@ -563,7 +618,7 @@ function formatCopyAction(node: SyntaxNode, ctx: FormatContext, depth: number): 
             lines.push(patchIndent + "BEGIN");
             let lastBlockPatchEndRow = -1;
             for (const patchChild of patch.children) {
-                if (patchChild.text.toUpperCase() === "BEGIN" || patchChild.text.toUpperCase() === "END") {
+                if (isKeyword(patchChild, "BEGIN") || isKeyword(patchChild, "END")) {
                     continue;
                 }
                 if (isComment(patchChild)) {
@@ -617,13 +672,13 @@ function formatForLoop(node: SyntaxNode, ctx: FormatContext, depth: number, head
     let lastEndRow = -1;
 
     for (const child of node.children) {
-        if (child.text.toUpperCase() === "BEGIN") {
+        if (isKeyword(child, "BEGIN")) {
             lines.push(indent + header + " BEGIN");
             inBody = true;
             continue;
         }
 
-        if (child.text.toUpperCase() === "END") {
+        if (isKeyword(child, "END")) {
             lines.push(indent + "END");
             continue;
         }
@@ -633,12 +688,7 @@ function formatForLoop(node: SyntaxNode, ctx: FormatContext, depth: number, head
                 if (!tryAppendInlineComment(lines, child, lastEndRow)) {
                     lines.push(ctx.indent.repeat(bodyDepth) + normalizeComment(child.text));
                 }
-            } else if (
-                isAction(child.type) ||
-                isPatch(child.type) ||
-                isControlFlow(child.type) ||
-                isFunctionCall(child.type)
-            ) {
+            } else if (isBodyContent(child.type)) {
                 lines.push(formatNode(child, ctx, bodyDepth));
                 lastEndRow = child.endPosition.row;
             }
@@ -677,7 +727,7 @@ function formatForLoopHeader(node: SyntaxNode): string | null {
             parts.push("(" + parenContent.join("; ") + ")");
             continue;
         }
-        if (child.text.toUpperCase() === "BEGIN") {
+        if (isKeyword(child, "BEGIN")) {
             break; // Stop at BEGIN, we only want the header
         }
         if (inParens) {
@@ -696,6 +746,88 @@ function formatForLoopHeader(node: SyntaxNode): string | null {
 }
 
 /**
+ * Format FOR_EACH style loop: PATCH_FOR_EACH var IN items BEGIN body END
+ * Handles oneItemPerLine logic for long item lists.
+ */
+function formatForEach(node: SyntaxNode, ctx: FormatContext, depth: number): string {
+    const indent = ctx.indent.repeat(depth);
+    const bodyIndent = ctx.indent.repeat(depth + 1);
+    const lines: string[] = [];
+
+    // First pass: collect header parts and items after IN
+    const headerParts: string[] = []; // PATCH_FOR_EACH var
+    const itemsAfterIN: string[] = [];
+    let seenIN = false;
+
+    for (const child of node.children) {
+        if (isKeyword(child, "BEGIN")) {
+            break;
+        }
+        if (isKeyword(child, "IN")) {
+            seenIN = true;
+            headerParts.push("IN");
+            continue;
+        }
+        if (isComment(child)) {
+            continue; // Skip comments in first pass
+        }
+        if (seenIN) {
+            itemsAfterIN.push(child.text);
+        } else {
+            headerParts.push(child.text);
+        }
+    }
+
+    // Determine if items should be one per line
+    const allItemsLength = itemsAfterIN.join(" ").length;
+    const headerLength = indent.length + headerParts.join(" ").length + 1 + allItemsLength;
+    const oneItemPerLine = itemsAfterIN.length > 1 && headerLength > ctx.lineLimit;
+
+    // Build output
+    if (oneItemPerLine) {
+        // Header without items, then each item on its own line
+        lines.push(indent + headerParts.join(" "));
+        for (const item of itemsAfterIN) {
+            lines.push(bodyIndent + item);
+        }
+        lines.push(indent + "BEGIN");
+    } else {
+        // Everything on one line with BEGIN
+        const fullHeader = headerParts.join(" ") + " " + itemsAfterIN.join(" ");
+        lines.push(indent + fullHeader + " BEGIN");
+    }
+
+    // Second pass: format body
+    let inBody = false;
+    let lastEndRow = -1;
+
+    for (const child of node.children) {
+        if (isKeyword(child, "BEGIN")) {
+            inBody = true;
+            continue;
+        }
+        if (isKeyword(child, "END")) {
+            lines.push(indent + "END");
+            continue;
+        }
+        if (!inBody) {
+            continue;
+        }
+
+        if (isComment(child)) {
+            if (!tryAppendInlineComment(lines, child, lastEndRow)) {
+                lines.push(bodyIndent + normalizeComment(child.text));
+            }
+        } else if (isBodyContent(child.type)) {
+            lines.push(formatNode(child, ctx, depth + 1));
+            lastEndRow = child.endPosition.row;
+        }
+    }
+
+    return lines.join("\n");
+}
+
+/**
  * Format control flow: ACTION_IF cond BEGIN actions END [ELSE BEGIN actions END]
  */
 function formatControlFlow(node: SyntaxNode, ctx: FormatContext, depth: number): string {
@@ -708,33 +840,24 @@ function formatControlFlow(node: SyntaxNode, ctx: FormatContext, depth: number):
         return formatForLoop(node, ctx, depth, forHeader);
     }
 
+    // Special handling for FOR_EACH style loops
+    if (isForEach(node.type)) {
+        return formatForEach(node, ctx, depth);
+    }
+
     // Build header as list of lines, each line is array of parts
     // Line comments force a new line after them
     let headerLines: string[][] = [[]];
     let inBody = false;
     let afterELSE = false; // Track if we just saw ELSE (for else-if chains)
     const bodyDepth = depth + 1;
-    let seenIN = false; // Track if we've seen IN keyword (for FOR_EACH)
-    let itemsAfterIN = 0; // Count items after IN
     let lastEndRow = -1; // Track last node's end row for inline comments
     let beginRow = -1; // Track BEGIN's row for inline comments after BEGIN
-
-    // First pass: count items after IN to know if we need multiline
-    for (const child of node.children) {
-        if (child.text.toUpperCase() === "IN") {
-            seenIN = true;
-        } else if (seenIN && child.text.toUpperCase() === "BEGIN") {
-            break;
-        } else if (seenIN && !isComment(child) && child.type !== "BEGIN") {
-            itemsAfterIN++;
-        }
-    }
-    seenIN = false;
 
     for (let i = 0; i < node.children.length; i++) {
         const child = node.children[i]!;
 
-        if (child.text.toUpperCase() === "BEGIN") {
+        if (isKeyword(child, "BEGIN")) {
             const wasAfterELSE = afterELSE;
             afterELSE = false; // Reset after ELSE flag
 
@@ -787,13 +910,13 @@ function formatControlFlow(node: SyntaxNode, ctx: FormatContext, depth: number):
             continue;
         }
 
-        if (child.text.toUpperCase() === "END") {
+        if (isKeyword(child, "END")) {
             inBody = false;
             lines.push(indent + "END");
             continue;
         }
 
-        if (child.text.toUpperCase() === "ELSE") {
+        if (isKeyword(child, "ELSE")) {
             // Append ELSE to the previous END line
             if (lines.length > 0 && lines[lines.length - 1]!.trimEnd().endsWith("END")) {
                 lines[lines.length - 1] += " ELSE";
@@ -804,12 +927,12 @@ function formatControlFlow(node: SyntaxNode, ctx: FormatContext, depth: number):
             continue;
         }
 
-        if (child.text.toUpperCase() === "THEN") {
+        if (isKeyword(child, "THEN")) {
             headerLines[headerLines.length - 1]!.push("THEN");
             continue;
         }
 
-        if (child.text.toUpperCase() === "WITH") {
+        if (isKeyword(child, "WITH")) {
             // WITH starts body for PATCH_MATCH/ACTION_MATCH
             // Output header parts first
             for (const lineParts of headerLines) {
@@ -823,7 +946,7 @@ function formatControlFlow(node: SyntaxNode, ctx: FormatContext, depth: number):
             continue;
         }
 
-        if (child.text.toUpperCase() === "DEFAULT") {
+        if (isKeyword(child, "DEFAULT")) {
             lines.push(indent + "DEFAULT");
             continue;
         }
@@ -863,11 +986,7 @@ function formatControlFlow(node: SyntaxNode, ctx: FormatContext, depth: number):
             // Body content (actions, patches, control flow, inlined files, array entries)
             // Note: else-if chains (ELSE ACTION_IF without BEGIN) are handled above at afterELSE check
             if (
-                isAction(child.type) ||
-                isPatch(child.type) ||
-                isControlFlow(child.type) ||
-                isFunctionCall(child.type) ||
-                isSpecialPatch(child.type) ||
+                isBodyContent(child.type) ||
                 child.type === "match_case" ||
                 child.type === "action_match_case" ||
                 child.type === "inlined_file" ||
@@ -885,11 +1004,6 @@ function formatControlFlow(node: SyntaxNode, ctx: FormatContext, depth: number):
         } else {
             // Header content (keyword, condition)
             headerLines[headerLines.length - 1]!.push(child.text);
-
-            // After IN with multiple items, start new line for items
-            if (child.text.toUpperCase() === "IN" && itemsAfterIN > 1) {
-                headerLines.push([]);
-            }
         }
     }
 
@@ -903,141 +1017,209 @@ function formatControlFlow(node: SyntaxNode, ctx: FormatContext, depth: number):
     return lines.join("\n");
 }
 
+/** Collected assignment for aligned output. */
+interface AssignmentItem {
+    type: "assignment";
+    name: string;
+    value: string;
+    endRow: number;
+}
+
+/** Collected comment for aligned output. */
+interface CommentItem {
+    type: "comment";
+    text: string;
+    endRow: number;
+}
+
+/** Discriminated union for collected items. */
+type CollectedItem = AssignmentItem | CommentItem;
+
 /**
- * Format parameter declaration block (INT_VAR, STR_VAR, RET, RET_ARRAY).
- * Keyword on its own line, assignments indented one level below.
+ * Output aligned assignments with optional keyword prefix.
+ * Handles inline comments and alignment on '='.
  */
-function formatParamDecl(node: SyntaxNode, indent: string, ctx: FormatContext): string[] {
+function outputAlignedAssignments(
+    items: CollectedItem[],
+    keyword: string,
+    keywordIndent: string,
+    assignIndent: string
+): string[] {
     const lines: string[] = [];
-    const children = node.children;
-    const assignIndent = indent + ctx.indent;
-    let keyword = "";
-    let keywordOutput = false; // Track whether keyword has been output
-    let currentAssignment: string[] = [];
-    let lastEndRow = -1; // Track row of last output line for inline comments
-    let lastChildEndRow = -1; // Track row of last child in current assignment
 
-    for (let i = 0; i < children.length; i++) {
-        const child = children[i]!;
-
-        if (isParamKeyword(child.text)) {
-            keyword = child.text.toUpperCase();
-            continue;
-        }
-
-        if (isComment(child)) {
-            // Output current assignment first if any (needed to check inline comments)
-            if (currentAssignment.length > 0) {
-                if (!keywordOutput) {
-                    lines.push(indent + keyword);
-                    keywordOutput = true;
-                }
-                lines.push(assignIndent + currentAssignment.join(" "));
-                lastEndRow = lastChildEndRow;
-                currentAssignment = [];
-            }
-            if (tryAppendInlineComment(lines, child, lastEndRow)) {
-                continue;
-            }
-            if (!keywordOutput && keyword) {
-                // Comment before first assignment - output keyword first
-                lines.push(indent + keyword);
-                keywordOutput = true;
-            }
-            lines.push(assignIndent + normalizeComment(child.text));
-            continue;
-        }
-
-        // Check if this is the start of a new assignment (identifier or string as param name)
-        if (child.type === "identifier" || child.type === "string" || child.type === "double_string") {
-            // If we have a pending assignment, output it
-            if (currentAssignment.length > 0) {
-                if (!keywordOutput) {
-                    lines.push(indent + keyword);
-                    keywordOutput = true;
-                }
-                lines.push(assignIndent + currentAssignment.join(" "));
-                lastEndRow = lastChildEndRow;
-                currentAssignment = [];
-            }
-            currentAssignment.push(child.text);
-            lastChildEndRow = child.endPosition.row;
-        } else if (child.text === "=") {
-            currentAssignment.push("=");
-        } else {
-            // Value (number, string, etc.)
-            currentAssignment.push(normalizeWhitespace(child.text));
-            lastChildEndRow = child.endPosition.row;
+    // Find max name length for alignment (only for items with values)
+    let maxNameLen = 0;
+    for (const item of items) {
+        if (item.type === "assignment" && item.value) {
+            maxNameLen = Math.max(maxNameLen, item.name.length);
         }
     }
 
-    // Output last assignment
-    if (currentAssignment.length > 0) {
-        if (!keywordOutput) {
-            lines.push(indent + keyword);
-            keywordOutput = true;
+    let keywordOutput = false;
+    let lastEndRow = -1;
+
+    for (const item of items) {
+        if (item.type === "comment") {
+            // Check for inline comment
+            if (lastEndRow >= 0 && item.endRow === lastEndRow && lines.length > 0) {
+                const lastLine = lines[lines.length - 1]!;
+                if (!lastLine.includes("//")) {
+                    lines[lines.length - 1] = lastLine + INLINE_COMMENT_SPACING + item.text;
+                    continue;
+                }
+            }
+            if (!keywordOutput && keyword) {
+                lines.push(keywordIndent + keyword);
+                keywordOutput = true;
+            }
+            lines.push(assignIndent + item.text);
+        } else {
+            if (!keywordOutput && keyword) {
+                lines.push(keywordIndent + keyword);
+                keywordOutput = true;
+            }
+            if (item.value) {
+                const padding = " ".repeat(maxNameLen - item.name.length);
+                lines.push(assignIndent + item.name + padding + " = " + item.value);
+            } else {
+                // No value (variable_ref or name-only)
+                lines.push(assignIndent + item.name);
+            }
+            lastEndRow = item.endRow;
         }
-        lines.push(assignIndent + currentAssignment.join(" "));
     }
 
     // Output keyword even if no assignments
     if (!keywordOutput && keyword) {
-        lines.push(indent + keyword);
+        lines.push(keywordIndent + keyword);
     }
 
     return lines;
 }
 
 /**
- * Format parameter call block (int_var_call, str_var_call, ret_call, ret_array_call).
- * Keyword on its own line, assignments indented one level below.
+ * Format parameter declaration block (INT_VAR, STR_VAR, RET, RET_ARRAY).
+ * Keyword on its own line, assignments indented one level below, aligned on '='.
  */
-function formatParamCall(node: SyntaxNode, indent: string, ctx: FormatContext): string[] {
-    const lines: string[] = [];
-    const children = node.children;
+function formatParamDecl(node: SyntaxNode, indent: string, ctx: FormatContext): string[] {
     const assignIndent = indent + ctx.indent;
     let keyword = "";
-    let keywordOutput = false; // Track whether keyword has been output
-    let lastEndRow = -1; // Track for inline comments
 
-    for (let i = 0; i < children.length; i++) {
-        const child = children[i]!;
+    // Collect all assignments and comments
+    const items: CollectedItem[] = [];
+    let currentName = "";
+    let currentValue: string[] = [];
+    let lastChildEndRow = -1;
 
+    for (const child of node.children) {
         if (isParamKeyword(child.text)) {
             keyword = child.text.toUpperCase();
             continue;
         }
 
         if (isComment(child)) {
-            if (tryAppendInlineComment(lines, child, lastEndRow)) {
-                continue;
+            // Save pending assignment first
+            if (currentName) {
+                items.push({ type: "assignment", name: currentName, value: currentValue.join(" "), endRow: lastChildEndRow });
+                currentName = "";
+                currentValue = [];
             }
-            // If comment comes before first value and keyword not yet output, output keyword first
-            if (!keywordOutput && keyword) {
-                lines.push(indent + keyword);
-                keywordOutput = true;
+            items.push({ type: "comment", text: normalizeComment(child.text), endRow: child.endPosition.row });
+            continue;
+        }
+
+        // Start of new assignment (identifier or string as param name)
+        if (child.type === "identifier" || child.type === "string" || child.type === "double_string") {
+            if (currentName) {
+                items.push({ type: "assignment", name: currentName, value: currentValue.join(" "), endRow: lastChildEndRow });
+                currentValue = [];
             }
-            lines.push(assignIndent + normalizeComment(child.text));
+            currentName = child.text;
+            lastChildEndRow = child.endPosition.row;
+        } else if (child.text === "=") {
+            // Skip, added during output
+        } else {
+            currentValue.push(normalizeWhitespace(child.text));
+            lastChildEndRow = child.endPosition.row;
+        }
+    }
+
+    // Save last assignment
+    if (currentName) {
+        items.push({ type: "assignment", name: currentName, value: currentValue.join(" "), endRow: lastChildEndRow });
+    }
+
+    return outputAlignedAssignments(items, keyword, indent, assignIndent);
+}
+
+/**
+ * Extract name and value from an assignment expression.
+ * For "name = value" returns { name, value }, otherwise returns null.
+ */
+function parseAssignment(node: SyntaxNode): { name: string; value: string } | null {
+    // binary_expr has children: left, "=", right
+    if (node.type === "binary_expr") {
+        const eqIndex = node.children.findIndex(c => c.text === "=");
+        if (eqIndex > 0) {
+            const nameParts = node.children.slice(0, eqIndex).map(c => c.text);
+            const valueParts = node.children.slice(eqIndex + 1).map(c => c.text);
+            return {
+                name: normalizeWhitespace(nameParts.join(" ")),
+                value: normalizeWhitespace(valueParts.join(" ")),
+            };
+        }
+    }
+    // Fallback: try to split on " = "
+    const text = normalizeWhitespace(node.text);
+    const eqPos = text.indexOf(" = ");
+    if (eqPos > 0) {
+        return {
+            name: text.substring(0, eqPos),
+            value: text.substring(eqPos + 3),
+        };
+    }
+    return null;
+}
+
+/**
+ * Format parameter call block (int_var_call, str_var_call, ret_call, ret_array_call).
+ * Keyword on its own line, assignments indented one level below, aligned on '='.
+ */
+function formatParamCall(node: SyntaxNode, indent: string, ctx: FormatContext): string[] {
+    const children = node.children;
+    const assignIndent = indent + ctx.indent;
+    let keyword = "";
+
+    // First pass: collect all items
+    const items: CollectedItem[] = [];
+
+    for (const child of children) {
+        if (isParamKeyword(child.text)) {
+            keyword = child.text.toUpperCase();
+            continue;
+        }
+
+        if (isComment(child)) {
+            items.push({ type: "comment", text: normalizeComment(child.text), endRow: child.endPosition.row });
             continue;
         }
 
         // binary_expr nodes are assignments, ternary_expr for conditionals, variable_ref are just names
-        if (child.type === "binary_expr" || child.type === "ternary_expr" || child.type === "variable_ref" || child.type === "identifier") {
-            if (!keywordOutput) {
-                lines.push(indent + keyword);
-                keywordOutput = true;
+        if (child.type === "binary_expr" || child.type === "ternary_expr") {
+            const parsed = parseAssignment(child);
+            if (parsed) {
+                items.push({ type: "assignment", name: parsed.name, value: parsed.value, endRow: child.endPosition.row });
+            } else {
+                // Couldn't parse, output as-is (treat as assignment with no alignment)
+                items.push({ type: "assignment", name: normalizeWhitespace(child.text), value: "", endRow: child.endPosition.row });
             }
-            lines.push(assignIndent + normalizeWhitespace(child.text));
-            lastEndRow = child.endPosition.row;
+        } else if (child.type === "variable_ref" || child.type === "identifier") {
+            // Just a name without value
+            items.push({ type: "assignment", name: child.text, value: "", endRow: child.endPosition.row });
         }
     }
 
-    // Output keyword even if no assignments (e.g., INT_VAR STR_VAR where INT_VAR has no values)
-    if (!keywordOutput && keyword) {
-        lines.push(indent + keyword);
-    }
-
-    return lines;
+    return outputAlignedAssignments(items, keyword, indent, assignIndent);
 }
 
 /**
@@ -1046,14 +1228,14 @@ function formatParamCall(node: SyntaxNode, indent: string, ctx: FormatContext): 
 function formatFunctionDef(node: SyntaxNode, ctx: FormatContext, depth: number): string {
     const indent = ctx.indent.repeat(depth);
     const bodyIndent = ctx.indent.repeat(depth + 1);
-    const paramIndent = ctx.indent.repeat(depth + 1);
     const lines: string[] = [];
 
     let defLine = ""; // DEFINE_xxx_FUNCTION name
     let inBody = false;
+    let lastEndRow = -1;
 
     for (const child of node.children) {
-        if (child.text.toUpperCase() === "BEGIN") {
+        if (isKeyword(child, "BEGIN")) {
             // Output def line if we have one
             if (defLine) {
                 lines.push(indent + defLine);
@@ -1064,7 +1246,7 @@ function formatFunctionDef(node: SyntaxNode, ctx: FormatContext, depth: number):
             continue;
         }
 
-        if (child.text.toUpperCase() === "END") {
+        if (isKeyword(child, "END")) {
             inBody = false;
             lines.push(indent + "END");
             continue;
@@ -1072,7 +1254,9 @@ function formatFunctionDef(node: SyntaxNode, ctx: FormatContext, depth: number):
 
         if (isComment(child)) {
             if (inBody) {
-                lines.push(bodyIndent + normalizeComment(child.text));
+                if (!tryAppendInlineComment(lines, child, lastEndRow)) {
+                    lines.push(bodyIndent + normalizeComment(child.text));
+                }
             } else {
                 // Comment in header - output after current def line
                 if (defLine) {
@@ -1085,10 +1269,12 @@ function formatFunctionDef(node: SyntaxNode, ctx: FormatContext, depth: number):
         }
 
         if (inBody) {
-            if (isAction(child.type) || isPatch(child.type) || isControlFlow(child.type)) {
+            if (isBodyContent(child.type)) {
                 lines.push(formatNode(child, ctx, depth + 1));
+                lastEndRow = child.endPosition.row;
             } else if (child.type === "inlined_file") {
                 lines.push(formatInlinedFile(child, ctx, depth + 1));
+                lastEndRow = child.endPosition.row;
             }
         } else {
             // Header: DEFINE keyword, function name, or param declarations
@@ -1104,7 +1290,7 @@ function formatFunctionDef(node: SyntaxNode, ctx: FormatContext, depth: number):
                     defLine = "";
                 }
                 // Format parameter declarations - each assignment on its own line
-                const declLines = formatParamDecl(child, paramIndent, ctx);
+                const declLines = formatParamDecl(child, bodyIndent, ctx);
                 lines.push(...declLines);
             } else if (child.text.toUpperCase().startsWith("DEFINE_")) {
                 // Start of function definition
@@ -1153,9 +1339,10 @@ function formatMatchCase(node: SyntaxNode, ctx: FormatContext, depth: number): s
 
     let headerParts: string[] = [];
     let inBody = false;
+    let lastEndRow = -1;
 
     for (const child of node.children) {
-        if (child.text.toUpperCase() === "BEGIN") {
+        if (isKeyword(child, "BEGIN")) {
             const header = normalizeWhitespace(headerParts.join(" "));
             // If header contains line comment, can't append BEGIN to it
             if (header.includes("//")) {
@@ -1169,7 +1356,7 @@ function formatMatchCase(node: SyntaxNode, ctx: FormatContext, depth: number): s
             continue;
         }
 
-        if (child.text.toUpperCase() === "END") {
+        if (isKeyword(child, "END")) {
             lines.push(indent + "END");
             inBody = false;
             continue;
@@ -1177,7 +1364,9 @@ function formatMatchCase(node: SyntaxNode, ctx: FormatContext, depth: number): s
 
         if (isComment(child)) {
             if (inBody) {
-                lines.push(bodyIndent + normalizeComment(child.text));
+                if (!tryAppendInlineComment(lines, child, lastEndRow)) {
+                    lines.push(bodyIndent + normalizeComment(child.text));
+                }
             } else {
                 headerParts.push(normalizeComment(child.text));
             }
@@ -1185,14 +1374,9 @@ function formatMatchCase(node: SyntaxNode, ctx: FormatContext, depth: number): s
         }
 
         if (inBody) {
-            if (
-                isAction(child.type) ||
-                isPatch(child.type) ||
-                isControlFlow(child.type) ||
-                isFunctionCall(child.type) ||
-                isSpecialPatch(child.type)
-            ) {
+            if (isBodyContent(child.type)) {
                 lines.push(formatNode(child, ctx, depth + 1));
+                lastEndRow = child.endPosition.row;
             }
         } else {
             headerParts.push(child.text);
@@ -1222,7 +1406,7 @@ function formatFunctionCall(node: SyntaxNode, ctx: FormatContext, depth: number)
     let callLine = ""; // LPF/LAF/LPM/LAM name
 
     for (const child of node.children) {
-        if (child.text.toUpperCase() === "END") {
+        if (isKeyword(child, "END")) {
             if (callLine) {
                 lines.push(indent + callLine);
                 callLine = "";
@@ -1256,10 +1440,10 @@ function formatFunctionCall(node: SyntaxNode, ctx: FormatContext, depth: number)
             const paramLines = formatParamCall(child, paramIndent, ctx);
             lines.push(...paramLines);
         } else if (
-            child.text.toUpperCase() === "LPF" ||
-            child.text.toUpperCase() === "LAF" ||
-            child.text.toUpperCase() === "LPM" ||
-            child.text.toUpperCase() === "LAM"
+            isKeyword(child, "LPF") ||
+            isKeyword(child, "LAF") ||
+            isKeyword(child, "LPM") ||
+            isKeyword(child, "LAM")
         ) {
             // Start of call
             callLine = child.text.toUpperCase();
@@ -1387,6 +1571,11 @@ export function formatDocument(root: SyntaxNode, options?: Partial<FormatOptions
 
         // Preserve blank lines between top-level items (only if present in source)
         if (lastEndRow >= 0 && child.startPosition.row > lastEndRow + 1) {
+            result.push("");
+        }
+
+        // Ensure blank line before components (BEGIN blocks) for readability
+        if (child.type === "component" && result.length > 0 && result[result.length - 1] !== "") {
             result.push("");
         }
 
