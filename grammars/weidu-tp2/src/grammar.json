@@ -498,6 +498,10 @@
       "type": "SYMBOL",
       "name": "_expr"
     },
+    "_simple_value": {
+      "type": "SYMBOL",
+      "name": "_simple_expr"
+    },
     "_expr": {
       "type": "CHOICE",
       "members": [
@@ -632,6 +636,214 @@
         {
           "type": "SYMBOL",
           "name": "_primary"
+        }
+      ]
+    },
+    "_simple_expr": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "ternary_expr"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_simple_binary_expr"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "unary_expr"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "paren_expr"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "evaluated_expr"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "byte_at_expr"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "short_at_expr"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "long_at_expr"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "index_expr"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "rindex_expr"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "index_buffer_expr"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "rindex_buffer_expr"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "random_expr"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "ids_of_symbol_expr"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "resolve_str_ref_expr"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "state_which_says_expr"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "tra_entry_exists_expr"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "file_exists_expr"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "file_exists_in_game_expr"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "directory_exists_expr"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "variable_is_set_expr"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "is_an_int_expr"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "game_is_expr"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "game_includes_expr"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "engine_is_expr"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "mod_is_installed_expr"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "id_of_label_expr"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "file_contains_expr"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "file_contains_evaluated_expr"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "string_length_expr"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "nullary_expr"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "array_access"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_primary"
+        }
+      ]
+    },
+    "_simple_binary_expr": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "PREC_LEFT",
+          "value": 2,
+          "content": {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "FIELD",
+                "name": "left",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_simple_expr"
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "op",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_comparison_op"
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "right",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_simple_expr"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "PREC_LEFT",
+          "value": 3,
+          "content": {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "FIELD",
+                "name": "left",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_simple_expr"
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "op",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_arithmetic_op"
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "right",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_simple_expr"
+                }
+              }
+            ]
+          }
         }
       ]
     },
@@ -1734,7 +1946,7 @@
             "name": "games",
             "content": {
               "type": "SYMBOL",
-              "name": "_value"
+              "name": "_simple_value"
             }
           }
         ]
@@ -1755,7 +1967,7 @@
             "name": "engines",
             "content": {
               "type": "SYMBOL",
-              "name": "_value"
+              "name": "_simple_value"
             }
           }
         ]
@@ -1814,7 +2026,7 @@
             "name": "component",
             "content": {
               "type": "SYMBOL",
-              "name": "_value"
+              "name": "_simple_value"
             }
           }
         ]
@@ -9383,6 +9595,10 @@
     }
   ],
   "conflicts": [
+    [
+      "_expr",
+      "_simple_expr"
+    ],
     [
       "component"
     ],

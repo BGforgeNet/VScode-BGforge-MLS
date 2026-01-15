@@ -44,6 +44,12 @@ const checkExpr =
     ($) =>
         prec.right(3, seq(keyword, field(fieldName, $._value)));
 
+/** Check expression using simple value (excludes OR/AND): KEYWORD value (with prec.right(3)) */
+const checkExprSimple =
+    (keyword, fieldName = "value") =>
+    ($) =>
+        prec.right(3, seq(keyword, field(fieldName, $._simple_value)));
+
 /** Sprint-like operation: KEYWORD var value */
 const sprintOp =
     (...keywords) =>
@@ -218,6 +224,7 @@ export default grammar({
     word: ($) => $.identifier,
 
     conflicts: ($) => [
+        [$._expr, $._simple_expr],
         [$.component],
         [$.copy_action],
         [$.copy_existing_action],
@@ -337,6 +344,9 @@ export default grammar({
 
         _value: ($) => $._expr,
 
+        // Simple value excludes OR/AND binary expressions - used where boolean operators shouldn't appear
+        _simple_value: ($) => $._simple_expr,
+
         _expr: ($) =>
             choice(
                 $.ternary_expr,
@@ -376,6 +386,55 @@ export default grammar({
                 $.nullary_expr,
                 $.array_access,
                 $._primary
+            ),
+
+        // Simple expression excludes OR/AND - only comparison and arithmetic binary ops
+        _simple_expr: ($) =>
+            choice(
+                $.ternary_expr,
+                $._simple_binary_expr,
+                $.unary_expr,
+                $.paren_expr,
+                $.evaluated_expr,
+                // Memory access
+                $.byte_at_expr,
+                $.short_at_expr,
+                $.long_at_expr,
+                // Function-like expressions
+                $.index_expr,
+                $.rindex_expr,
+                $.index_buffer_expr,
+                $.rindex_buffer_expr,
+                $.random_expr,
+                $.ids_of_symbol_expr,
+                $.resolve_str_ref_expr,
+                $.state_which_says_expr,
+                $.tra_entry_exists_expr,
+                // Check expressions
+                $.file_exists_expr,
+                $.file_exists_in_game_expr,
+                $.directory_exists_expr,
+                $.variable_is_set_expr,
+                $.is_an_int_expr,
+                $.game_is_expr,
+                $.game_includes_expr,
+                $.engine_is_expr,
+                $.mod_is_installed_expr,
+                $.id_of_label_expr,
+                $.file_contains_expr,
+                $.file_contains_evaluated_expr,
+                $.string_length_expr,
+                // Nullary expressions
+                $.nullary_expr,
+                $.array_access,
+                $._primary
+            ),
+
+        // Binary expression without OR/AND
+        _simple_binary_expr: ($) =>
+            choice(
+                prec.left(2, seq(field("left", $._simple_expr), field("op", $._comparison_op), field("right", $._simple_expr))),
+                prec.left(3, seq(field("left", $._simple_expr), field("op", $._arithmetic_op), field("right", $._simple_expr)))
             ),
 
         _primary: ($) => choice($.string, $.number, $.tra_ref, $.at_ref, $.bare_resref, $.variable_ref),
@@ -492,14 +551,14 @@ export default grammar({
         variable_is_set_expr: checkExpr("VARIABLE_IS_SET", "var"),
         is_an_int_expr: checkExpr("IS_AN_INT", "var"),
         game_is_expr: checkExpr("GAME_IS", "games"),
-        game_includes_expr: checkExpr("GAME_INCLUDES", "games"),
-        engine_is_expr: checkExpr("ENGINE_IS", "engines"),
+        game_includes_expr: checkExprSimple("GAME_INCLUDES", "games"),
+        engine_is_expr: checkExprSimple("ENGINE_IS", "engines"),
         string_length_expr: checkExpr("STRING_LENGTH", "string"),
 
         mod_is_installed_expr: ($) =>
             prec.right(
                 3,
-                seq(choice("MOD_IS_INSTALLED", "COMPONENT_IS_INSTALLED"), field("mod", $._value), field("component", $._value))
+                seq(choice("MOD_IS_INSTALLED", "COMPONENT_IS_INSTALLED"), field("mod", $._value), field("component", $._simple_value))
             ),
 
         id_of_label_expr: ($) => seq("ID_OF_LABEL", field("tp2", $._value), field("label", $._value)),

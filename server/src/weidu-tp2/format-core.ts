@@ -36,6 +36,32 @@ interface FormatContext {
 const INLINE_COMMENT_SPACING = "  ";
 
 // ============================================
+// Keyword constants
+// ============================================
+
+const KW_BEGIN = "BEGIN";
+const KW_END = "END";
+const KW_ELSE = "ELSE";
+const KW_THEN = "THEN";
+const KW_WITH = "WITH";
+const KW_DEFAULT = "DEFAULT";
+const KW_IN = "IN";
+const KW_ALWAYS = "ALWAYS";
+const KW_BUT_ONLY = "BUT_ONLY";
+const KW_BUT_ONLY_IF_IT_CHANGES = "BUT_ONLY_IF_IT_CHANGES";
+const KW_IF_EXISTS = "IF_EXISTS";
+const KW_UNLESS = "UNLESS";
+const KW_IF = "IF";
+const KW_FOR = "FOR";
+const KW_OUTER_FOR = "OUTER_FOR";
+const KW_LPF = "LPF";
+const KW_LAF = "LAF";
+const KW_LPM = "LPM";
+const KW_LAM = "LAM";
+const KW_PATCH_IF = "PATCH_IF";
+const KW_ACTION_IF = "ACTION_IF";
+
+// ============================================
 // Node type constants
 // ============================================
 
@@ -155,12 +181,19 @@ function normalizeBlockComment(text: string): string {
     return "/* " + inner + " */";
 }
 
-/** Normalize line comment: ensure "// comment" format. */
+/** Normalize line comment: ensure space after // but preserve intentional indentation. */
 function normalizeLineComment(text: string): string {
     const trimmed = text.trim();
     if (trimmed.startsWith("//")) {
-        const content = trimmed.slice(2).trimStart();
-        return content ? "// " + content : "//";
+        const afterSlashes = trimmed.slice(2);
+        if (afterSlashes.length === 0) {
+            return "//";
+        }
+        // If no space after //, add one; otherwise preserve original spacing
+        if (afterSlashes[0] !== " " && afterSlashes[0] !== "\t") {
+            return "// " + afterSlashes;
+        }
+        return trimmed;
     }
     return trimmed;
 }
@@ -202,6 +235,16 @@ function tryAppendInlineComment(lines: string[], child: SyntaxNode, lastEndRow: 
     }
     lines[lines.length - 1] = lastLine + INLINE_COMMENT_SPACING + normalizeComment(child.text);
     return true;
+}
+
+/**
+ * Handle a comment node: try to append as inline comment, otherwise add on its own line.
+ * This is the standard pattern for handling comments in body contexts.
+ */
+function handleComment(lines: string[], child: SyntaxNode, indent: string, lastEndRow: number): void {
+    if (!tryAppendInlineComment(lines, child, lastEndRow)) {
+        lines.push(indent + normalizeComment(child.text));
+    }
 }
 
 // ============================================
@@ -265,9 +308,9 @@ function flattenOrAndExpr(node: SyntaxNode): ConditionOperand[] | null {
     const op = node.childForFieldName("op");
     if (!op) return null;
 
-    const opText = op.text.toUpperCase();
     // Only split on OR/AND, not other binary operators
-    if (opText !== "OR" && opText !== "AND" && opText !== "||" && opText !== "&&") {
+    const opText = op.text;
+    if (opText !== "OR" && opText !== "AND") {
         return null;
     }
 
@@ -289,10 +332,8 @@ function flattenOrAndExpr(node: SyntaxNode): ConditionOperand[] | null {
         result.push({ operator: null, text: normalizeWhitespace(left.text) });
     }
 
-    // Add right side with the operator
-    // Normalize || to OR and && to AND for consistency
-    const normalizedOp = opText === "||" ? "OR" : opText === "&&" ? "AND" : opText;
-    result.push({ operator: normalizedOp, text: normalizeWhitespace(right.text) });
+    // Add right side with the operator (preserve original case)
+    result.push({ operator: op.text, text: normalizeWhitespace(right.text) });
 
     return result;
 }
@@ -319,15 +360,33 @@ function formatCondition(
         return [fullLine];
     }
 
+    // Find the actual expression to split - may be wrapped in paren_expr
+    let exprNode = conditionNode;
+    let hasOuterParens = false;
+    if (exprNode.type === "paren_expr" && exprNode.children.length > 0) {
+        // Look for binary_expr inside parentheses
+        for (const child of exprNode.children) {
+            if (child.type === "binary_expr") {
+                exprNode = child;
+                hasOuterParens = true;
+                break;
+            }
+        }
+    }
+
     // Try to flatten OR/AND expressions
-    if (conditionNode.type === "binary_expr") {
-        const operands = flattenOrAndExpr(conditionNode);
+    if (exprNode.type === "binary_expr") {
+        const operands = flattenOrAndExpr(exprNode);
         if (operands && operands.length > 1) {
             const lines: string[] = [];
+            const openParen = hasOuterParens ? "(" : "";
+            const closeParen = hasOuterParens ? ")" : "";
             for (let i = 0; i < operands.length; i++) {
                 const op = operands[i]!;
                 if (i === 0) {
-                    lines.push(indent + prefix + " " + op.text);
+                    lines.push(indent + prefix + " " + openParen + op.text);
+                } else if (i === operands.length - 1) {
+                    lines.push(contIndent + op.operator + " " + op.text + closeParen);
                 } else {
                     lines.push(contIndent + op.operator + " " + op.text);
                 }
@@ -376,13 +435,17 @@ function isSpecialPatch(type: string): boolean {
 
 /** Check if text is a parameter keyword (INT_VAR, STR_VAR, RET, RET_ARRAY). */
 function isParamKeyword(text: string): boolean {
-    const upper = text.toUpperCase();
-    return upper === "INT_VAR" || upper === "STR_VAR" || upper === "RET" || upper === "RET_ARRAY";
+    return text === "INT_VAR" || text === "STR_VAR" || text === "RET" || text === "RET_ARRAY";
 }
 
 /** Check if node type is a control flow construct with BEGIN...END body. */
 function isControlFlow(type: string): boolean {
     return (CONTROL_FLOW_TYPES as readonly string[]).includes(type);
+}
+
+/** Check if node type is an associative array definition. */
+function isAssociativeArrayDef(type: string): boolean {
+    return type === "action_define_associative_array" || type === "define_associative_array_patch";
 }
 
 /** Check if node type is a FOR_EACH style loop with IN keyword. */
@@ -416,9 +479,9 @@ function isBodyContent(type: string): boolean {
     );
 }
 
-/** Check if node text matches a keyword (case-insensitive). */
+/** Check if node text matches a keyword. */
 function isKeyword(node: SyntaxNode, keyword: string): boolean {
-    return node.text.toUpperCase() === keyword;
+    return node.text === keyword;
 }
 
 // ============================================
@@ -461,8 +524,8 @@ function formatComponent(node: SyntaxNode, ctx: FormatContext): string {
             continue;
         }
 
-        if (isKeyword(child, "BEGIN")) {
-            beginLine = "BEGIN";
+        if (isKeyword(child, KW_BEGIN)) {
+            beginLine = KW_BEGIN;
             continue;
         }
 
@@ -531,17 +594,15 @@ function formatComponent(node: SyntaxNode, ctx: FormatContext): string {
  * Format ALWAYS block: ALWAYS actions... END
  */
 function formatAlwaysBlock(node: SyntaxNode, ctx: FormatContext): string {
-    const lines: string[] = ["ALWAYS"];
+    const lines: string[] = [KW_ALWAYS];
     let lastEndRow = -1;
 
     for (const child of node.children) {
-        if (isKeyword(child, "ALWAYS") || isKeyword(child, "END")) {
+        if (isKeyword(child, KW_ALWAYS) || isKeyword(child, KW_END)) {
             continue;
         }
         if (isComment(child)) {
-            if (!tryAppendInlineComment(lines, child, lastEndRow)) {
-                lines.push(ctx.indent + normalizeComment(child.text));
-            }
+            handleComment(lines, child, ctx.indent, lastEndRow);
         } else if (child.type === "inlined_file") {
             lines.push(formatInlinedFile(child, ctx, 1));
             lastEndRow = child.endPosition.row;
@@ -551,7 +612,7 @@ function formatAlwaysBlock(node: SyntaxNode, ctx: FormatContext): string {
         }
     }
 
-    lines.push("END");
+    lines.push(KW_END);
     return lines.join("\n");
 }
 
@@ -621,11 +682,11 @@ function formatCopyAction(node: SyntaxNode, ctx: FormatContext, depth: number): 
             inPatchArea = true;
             patches.push(child);
         } else if (
-            isKeyword(child, "BUT_ONLY") ||
-            isKeyword(child, "BUT_ONLY_IF_IT_CHANGES") ||
-            isKeyword(child, "IF_EXISTS") ||
-            isKeyword(child, "UNLESS") ||
-            (isKeyword(child, "IF") && inPatchArea) ||
+            isKeyword(child, KW_BUT_ONLY) ||
+            isKeyword(child, KW_BUT_ONLY_IF_IT_CHANGES) ||
+            isKeyword(child, KW_IF_EXISTS) ||
+            isKeyword(child, KW_UNLESS) ||
+            (isKeyword(child, KW_IF) && inPatchArea) ||
             child.type === "_but_only"
         ) {
             // Collect suffix - includes filters (UNLESS, IF) and modifiers (BUT_ONLY, IF_EXISTS)
@@ -660,7 +721,7 @@ function formatCopyAction(node: SyntaxNode, ctx: FormatContext, depth: number): 
                 child.type === "double_string" ||
                 child.type === "percent_string";
             if (!keyword) {
-                keyword = child.text.toUpperCase();
+                keyword = child.text;
             } else if (!isFileContent && filePairs.length === 0) {
                 // Flags before first file pattern (e.g., GLOB, +, -) stay with keyword
                 keyword += " " + child.text;
@@ -699,27 +760,23 @@ function formatCopyAction(node: SyntaxNode, ctx: FormatContext, depth: number): 
     let lastPatchEndRow = -1;
     for (const patch of patches) {
         if (isComment(patch)) {
-            if (!tryAppendInlineComment(lines, patch, lastPatchEndRow)) {
-                lines.push(patchIndent + normalizeComment(patch.text));
-            }
+            handleComment(lines, patch, patchIndent, lastPatchEndRow);
         } else if (patch.type === "patch_block") {
             // BEGIN patches... END
-            lines.push(patchIndent + "BEGIN");
+            lines.push(patchIndent + KW_BEGIN);
             let lastBlockPatchEndRow = -1;
             for (const patchChild of patch.children) {
-                if (isKeyword(patchChild, "BEGIN") || isKeyword(patchChild, "END")) {
+                if (isKeyword(patchChild, KW_BEGIN) || isKeyword(patchChild, KW_END)) {
                     continue;
                 }
                 if (isComment(patchChild)) {
-                    if (!tryAppendInlineComment(lines, patchChild, lastBlockPatchEndRow)) {
-                        lines.push(ctx.indent.repeat(depth + 2) + normalizeComment(patchChild.text));
-                    }
+                    handleComment(lines, patchChild, ctx.indent.repeat(depth + 2), lastBlockPatchEndRow);
                 } else if (isPatch(patchChild.type) || isControlFlow(patchChild.type)) {
                     lines.push(formatNode(patchChild, ctx, depth + 2));
                     lastBlockPatchEndRow = patchChild.endPosition.row;
                 }
             }
-            lines.push(patchIndent + "END");
+            lines.push(patchIndent + KW_END);
             lastPatchEndRow = patch.endPosition.row;
         } else {
             lines.push(formatNode(patch, ctx, depth + 1));
@@ -756,27 +813,26 @@ function formatForLoop(node: SyntaxNode, ctx: FormatContext, depth: number, head
     const indent = ctx.indent.repeat(depth);
     const lines: string[] = [];
     const bodyDepth = depth + 1;
+    const bodyIndent = ctx.indent.repeat(bodyDepth);
 
     let inBody = false;
     let lastEndRow = -1;
 
     for (const child of node.children) {
-        if (isKeyword(child, "BEGIN")) {
-            lines.push(indent + header + " BEGIN");
+        if (isKeyword(child, KW_BEGIN)) {
+            lines.push(indent + header + " " + KW_BEGIN);
             inBody = true;
             continue;
         }
 
-        if (isKeyword(child, "END")) {
-            lines.push(indent + "END");
+        if (isKeyword(child, KW_END)) {
+            lines.push(indent + KW_END);
             continue;
         }
 
         if (inBody) {
             if (isComment(child)) {
-                if (!tryAppendInlineComment(lines, child, lastEndRow)) {
-                    lines.push(ctx.indent.repeat(bodyDepth) + normalizeComment(child.text));
-                }
+                handleComment(lines, child, bodyIndent, lastEndRow);
             } else if (isBodyContent(child.type)) {
                 lines.push(formatNode(child, ctx, bodyDepth));
                 lastEndRow = child.endPosition.row;
@@ -801,9 +857,8 @@ function formatForLoopHeader(node: SyntaxNode): string | null {
     let parenContent: string[] = [];
 
     for (const child of node.children) {
-        const upper = child.text.toUpperCase();
-        if (upper === "FOR" || upper === "OUTER_FOR") {
-            parts.push(upper);
+        if (child.text === KW_FOR || child.text === KW_OUTER_FOR) {
+            parts.push(child.text);
             continue;
         }
         if (child.text === "(") {
@@ -816,7 +871,7 @@ function formatForLoopHeader(node: SyntaxNode): string | null {
             parts.push("(" + parenContent.join("; ") + ")");
             continue;
         }
-        if (isKeyword(child, "BEGIN")) {
+        if (isKeyword(child, KW_BEGIN)) {
             break; // Stop at BEGIN, we only want the header
         }
         if (inParens) {
@@ -849,12 +904,12 @@ function formatForEach(node: SyntaxNode, ctx: FormatContext, depth: number): str
     let seenIN = false;
 
     for (const child of node.children) {
-        if (isKeyword(child, "BEGIN")) {
+        if (isKeyword(child, KW_BEGIN)) {
             break;
         }
-        if (isKeyword(child, "IN")) {
+        if (isKeyword(child, KW_IN)) {
             seenIN = true;
-            headerParts.push("IN");
+            headerParts.push(KW_IN);
             continue;
         }
         if (isComment(child)) {
@@ -879,11 +934,11 @@ function formatForEach(node: SyntaxNode, ctx: FormatContext, depth: number): str
         for (const item of itemsAfterIN) {
             lines.push(bodyIndent + item);
         }
-        lines.push(indent + "BEGIN");
+        lines.push(indent + KW_BEGIN);
     } else {
         // Everything on one line with BEGIN
         const fullHeader = headerParts.join(" ") + " " + itemsAfterIN.join(" ");
-        lines.push(indent + fullHeader + " BEGIN");
+        lines.push(indent + fullHeader + " " + KW_BEGIN);
     }
 
     // Second pass: format body
@@ -891,12 +946,12 @@ function formatForEach(node: SyntaxNode, ctx: FormatContext, depth: number): str
     let lastEndRow = -1;
 
     for (const child of node.children) {
-        if (isKeyword(child, "BEGIN")) {
+        if (isKeyword(child, KW_BEGIN)) {
             inBody = true;
             continue;
         }
-        if (isKeyword(child, "END")) {
-            lines.push(indent + "END");
+        if (isKeyword(child, KW_END)) {
+            lines.push(indent + KW_END);
             continue;
         }
         if (!inBody) {
@@ -904,9 +959,7 @@ function formatForEach(node: SyntaxNode, ctx: FormatContext, depth: number): str
         }
 
         if (isComment(child)) {
-            if (!tryAppendInlineComment(lines, child, lastEndRow)) {
-                lines.push(bodyIndent + normalizeComment(child.text));
-            }
+            handleComment(lines, child, bodyIndent, lastEndRow);
         } else if (isBodyContent(child.type)) {
             lines.push(formatNode(child, ctx, depth + 1));
             lastEndRow = child.endPosition.row;
@@ -917,12 +970,231 @@ function formatForEach(node: SyntaxNode, ctx: FormatContext, depth: number): str
 }
 
 /**
+ * Parse associative array entry: key => value
+ * Returns { name, value } for use with outputAlignedAssignments.
+ */
+function parseAssocEntry(node: SyntaxNode): { name: string; value: string } | null {
+    // assoc_entry has: key [, key]* => value
+    // Find the => separator
+    let arrowIdx = -1;
+    for (let i = 0; i < node.children.length; i++) {
+        if (node.children[i]!.text === "=>") {
+            arrowIdx = i;
+            break;
+        }
+    }
+
+    if (arrowIdx < 0 || arrowIdx >= node.children.length - 1) {
+        return null;
+    }
+
+    // Key is everything before =>
+    const keyParts: string[] = [];
+    for (let i = 0; i < arrowIdx; i++) {
+        const child = node.children[i]!;
+        keyParts.push(child.text);
+    }
+
+    // Value is everything after =>
+    const valueParts: string[] = [];
+    for (let i = arrowIdx + 1; i < node.children.length; i++) {
+        valueParts.push(node.children[i]!.text);
+    }
+
+    return {
+        name: keyParts.join(" "),
+        value: valueParts.join(" "),
+    };
+}
+
+/**
+ * Format associative array definition with aligned => operators.
+ */
+function formatAssociativeArray(node: SyntaxNode, ctx: FormatContext, depth: number): string {
+    const indent = ctx.indent.repeat(depth);
+    const bodyIndent = ctx.indent.repeat(depth + 1);
+    const lines: string[] = [];
+
+    // Collect header parts and entries
+    const headerParts: string[] = [];
+    const items: CollectedItem[] = [];
+    let inBody = false;
+
+    for (const child of node.children) {
+        if (isKeyword(child, KW_BEGIN)) {
+            lines.push(indent + headerParts.join(" ") + " " + KW_BEGIN);
+            inBody = true;
+            continue;
+        }
+
+        if (isKeyword(child, KW_END)) {
+            break;
+        }
+
+        if (!inBody) {
+            headerParts.push(child.text);
+            continue;
+        }
+
+        if (isComment(child)) {
+            items.push({ type: "comment", text: normalizeComment(child.text), endRow: child.endPosition.row });
+            continue;
+        }
+
+        if (child.type === "assoc_entry") {
+            const parsed = parseAssocEntry(child);
+            if (parsed) {
+                items.push({ type: "assignment", name: parsed.name, value: parsed.value, endRow: child.endPosition.row });
+            }
+        }
+    }
+
+    // Use shared alignment function with " => " separator
+    const entryLines = outputAlignedAssignments(items, "", indent, bodyIndent, " => ");
+    lines.push(...entryLines);
+    lines.push(indent + KW_END);
+
+    return lines.join("\n");
+}
+
+/** State for control flow formatting. */
+interface ControlFlowState {
+    lines: string[];
+    headerLines: string[][];
+    conditionNode: SyntaxNode | null;
+    headerKeyword: string;
+    inBody: boolean;
+    afterELSE: boolean;
+    lastEndRow: number;
+    beginRow: number;
+}
+
+/** Check if a node type is valid body content for control flow. */
+function isControlFlowBodyContent(type: string): boolean {
+    return (
+        isBodyContent(type) ||
+        type === "match_case" ||
+        type === "action_match_case" ||
+        type === "inlined_file" ||
+        type === "assoc_entry" ||
+        type === "binary_expr" ||
+        type === "variable_ref" ||
+        type === "identifier" ||
+        type === "string" ||
+        type === "number"
+    );
+}
+
+/** Output collected header lines. */
+function outputHeaderLines(headerLines: string[][], lines: string[], indent: string, contIndent: string): void {
+    for (let j = 0; j < headerLines.length; j++) {
+        const lineParts = headerLines[j]!;
+        if (lineParts.length > 0) {
+            const lineIndent = j === 0 ? indent : contIndent;
+            lines.push(lineIndent + normalizeWhitespace(lineParts.join(" ")));
+        }
+    }
+}
+
+/** Handle BEGIN keyword in control flow. */
+function handleControlFlowBegin(
+    child: SyntaxNode,
+    state: ControlFlowState,
+    indent: string,
+    contIndent: string,
+    lineLimit: number
+): void {
+    const wasAfterELSE = state.afterELSE;
+    state.afterELSE = false;
+
+    // If we're after ELSE, just append BEGIN to the ELSE line
+    if (wasAfterELSE && state.lines.length > 0 && state.lines[state.lines.length - 1]!.trimEnd().endsWith(KW_ELSE)) {
+        state.lines[state.lines.length - 1] += " " + KW_BEGIN;
+        state.headerLines = [[]];
+        state.conditionNode = null;
+        state.headerKeyword = "";
+        state.inBody = true;
+        return;
+    }
+
+    // Use grammar-based condition formatting for IF statements
+    if (state.conditionNode && state.headerKeyword) {
+        const condLines = formatCondition(state.conditionNode, state.headerKeyword, indent, contIndent, lineLimit);
+        state.lines.push(...condLines);
+        if (condLines.length > 1) {
+            state.lines.push(indent + KW_BEGIN);
+        } else {
+            state.lines[state.lines.length - 1] += " " + KW_BEGIN;
+        }
+        state.headerLines = [[]];
+        state.conditionNode = null;
+        state.headerKeyword = "";
+        state.inBody = true;
+        state.beginRow = child.startPosition.row;
+        return;
+    }
+
+    // Fallback: output header lines then BEGIN
+    let nonEmptyCount = 0;
+    for (const lineParts of state.headerLines) {
+        if (lineParts.length > 0) nonEmptyCount++;
+    }
+
+    const multiLine = nonEmptyCount > 1;
+    outputHeaderLines(state.headerLines, state.lines, indent, contIndent);
+
+    // Check if last line ends with a line comment - can't append BEGIN to comment
+    const lastLine = state.lines[state.lines.length - 1] ?? "";
+    const endsWithComment = lastLine.includes("//");
+
+    if (multiLine || nonEmptyCount === 0 || endsWithComment) {
+        state.lines.push(indent + KW_BEGIN);
+    } else {
+        const lastIdx = state.lines.length - 1;
+        if (lastIdx >= 0) {
+            state.lines[lastIdx] += " " + KW_BEGIN;
+        } else {
+            state.lines.push(indent + KW_BEGIN);
+        }
+    }
+    state.headerLines = [[]];
+    state.inBody = true;
+    state.beginRow = child.startPosition.row;
+}
+
+/** Handle comment in control flow formatting. */
+function handleControlFlowComment(
+    child: SyntaxNode,
+    state: ControlFlowState,
+    indent: string,
+    bodyIndent: string
+): void {
+    if (state.inBody) {
+        // Check if this is an inline comment (same row as BEGIN or previous item)
+        const rowToCheck = state.beginRow >= 0 ? state.beginRow : state.lastEndRow;
+        if (tryAppendInlineComment(state.lines, child, rowToCheck)) {
+            state.beginRow = -1;
+            return;
+        }
+        state.lines.push(bodyIndent + normalizeComment(child.text));
+        state.beginRow = -1;
+    } else if (state.afterELSE) {
+        // Comment between ELSE and BEGIN - keep at ELSE indent level
+        state.lines.push(indent + normalizeComment(child.text));
+    } else {
+        // Add comment to current header line
+        state.headerLines[state.headerLines.length - 1]!.push(normalizeComment(child.text));
+        // Line comments force a new line after them
+        if (child.type === "line_comment") {
+            state.headerLines.push([]);
+        }
+    }
+}
+
+/**
  * Format control flow: ACTION_IF cond BEGIN actions END [ELSE BEGIN actions END]
  */
 function formatControlFlow(node: SyntaxNode, ctx: FormatContext, depth: number): string {
-    const indent = ctx.indent.repeat(depth);
-    const lines: string[] = [];
-
     // Special handling for FOR loops
     const forHeader = formatForLoopHeader(node);
     if (forHeader !== null) {
@@ -934,209 +1206,106 @@ function formatControlFlow(node: SyntaxNode, ctx: FormatContext, depth: number):
         return formatForEach(node, ctx, depth);
     }
 
-    // Build header as list of lines, each line is array of parts
-    // Line comments force a new line after them
-    let headerLines: string[][] = [[]];
-    let conditionNode: SyntaxNode | null = null; // Track condition node for IF statements
-    let headerKeyword = ""; // Track the keyword (PATCH_IF, ACTION_IF, etc.)
-    let inBody = false;
-    let afterELSE = false; // Track if we just saw ELSE (for else-if chains)
-    const bodyDepth = depth + 1;
-    let lastEndRow = -1; // Track last node's end row for inline comments
-    let beginRow = -1; // Track BEGIN's row for inline comments after BEGIN
+    // Special handling for associative arrays (aligned =>)
+    if (isAssociativeArrayDef(node.type)) {
+        return formatAssociativeArray(node, ctx, depth);
+    }
+
+    const indent = ctx.indent.repeat(depth);
     const contIndent = indent + ctx.indent;
+    const bodyDepth = depth + 1;
+    const bodyIndent = ctx.indent.repeat(bodyDepth);
 
-    for (let i = 0; i < node.children.length; i++) {
-        const child = node.children[i]!;
+    const state: ControlFlowState = {
+        lines: [],
+        headerLines: [[]],
+        conditionNode: null,
+        headerKeyword: "",
+        inBody: false,
+        afterELSE: false,
+        lastEndRow: -1,
+        beginRow: -1,
+    };
 
-        if (isKeyword(child, "BEGIN")) {
-            const wasAfterELSE = afterELSE;
-            afterELSE = false; // Reset after ELSE flag
-
-            // If we're after ELSE, just append BEGIN to the ELSE line
-            if (wasAfterELSE && lines.length > 0 && lines[lines.length - 1]!.trimEnd().endsWith("ELSE")) {
-                lines[lines.length - 1] += " BEGIN";
-                headerLines = [[]];
-                conditionNode = null;
-                headerKeyword = "";
-                inBody = true;
-                continue;
-            }
-
-            // Use grammar-based condition formatting for IF statements
-            if (conditionNode && headerKeyword) {
-                const condLines = formatCondition(conditionNode, headerKeyword, indent, contIndent, ctx.lineLimit);
-                lines.push(...condLines);
-                if (condLines.length > 1) {
-                    lines.push(indent + "BEGIN");
-                } else {
-                    lines[lines.length - 1] += " BEGIN";
-                }
-                headerLines = [[]];
-                conditionNode = null;
-                headerKeyword = "";
-                inBody = true;
-                beginRow = child.startPosition.row;
-                continue;
-            }
-
-            // Fallback: output header lines then BEGIN
-            // Count non-empty lines
-            let nonEmptyCount = 0;
-            for (const lineParts of headerLines) {
-                if (lineParts.length > 0) nonEmptyCount++;
-            }
-
-            // If multiple lines, put BEGIN on its own line
-            const multiLine = nonEmptyCount > 1;
-
-            for (let j = 0; j < headerLines.length; j++) {
-                const lineParts = headerLines[j]!;
-                if (lineParts.length > 0) {
-                    const lineIndent = j === 0 ? indent : contIndent;
-                    lines.push(lineIndent + normalizeWhitespace(lineParts.join(" ")));
-                }
-            }
-
-            // Check if last line ends with a line comment - can't append BEGIN to comment
-            const lastLine = lines[lines.length - 1] ?? "";
-            const endsWithComment = lastLine.includes("//");
-
-            if (multiLine || nonEmptyCount === 0 || endsWithComment) {
-                lines.push(indent + "BEGIN");
-            } else {
-                // Single line header - append BEGIN to it
-                const lastIdx = lines.length - 1;
-                if (lastIdx >= 0) {
-                    lines[lastIdx] += " BEGIN";
-                } else {
-                    lines.push(indent + "BEGIN");
-                }
-            }
-            headerLines = [[]];
-            inBody = true;
-            beginRow = child.startPosition.row;
+    for (const child of node.children) {
+        if (isKeyword(child, KW_BEGIN)) {
+            handleControlFlowBegin(child, state, indent, contIndent, ctx.lineLimit);
             continue;
         }
 
-        if (isKeyword(child, "END")) {
-            inBody = false;
-            lines.push(indent + "END");
+        if (isKeyword(child, KW_END)) {
+            state.inBody = false;
+            state.lines.push(indent + KW_END);
             continue;
         }
 
-        if (isKeyword(child, "ELSE")) {
+        if (isKeyword(child, KW_ELSE)) {
             // Append ELSE to the previous END line
-            if (lines.length > 0 && lines[lines.length - 1]!.trimEnd().endsWith("END")) {
-                lines[lines.length - 1] += " ELSE";
+            if (state.lines.length > 0 && state.lines[state.lines.length - 1]!.trimEnd().endsWith(KW_END)) {
+                state.lines[state.lines.length - 1] += " " + KW_ELSE;
             } else {
-                lines.push(indent + "ELSE");
+                state.lines.push(indent + KW_ELSE);
             }
-            afterELSE = true; // Track that we just saw ELSE
+            state.afterELSE = true;
             continue;
         }
 
-        if (isKeyword(child, "THEN")) {
-            headerLines[headerLines.length - 1]!.push("THEN");
+        if (isKeyword(child, KW_THEN)) {
+            state.headerLines[state.headerLines.length - 1]!.push(KW_THEN);
             continue;
         }
 
-        if (isKeyword(child, "WITH")) {
+        if (isKeyword(child, KW_WITH)) {
             // WITH starts body for PATCH_MATCH/ACTION_MATCH
-            // Output header parts first
-            for (const lineParts of headerLines) {
-                if (lineParts.length > 0) {
-                    lines.push(indent + normalizeWhitespace(lineParts.join(" ")));
-                }
-            }
-            headerLines = [[]];
-            lines.push(indent + "WITH");
-            inBody = true;
+            outputHeaderLines(state.headerLines, state.lines, indent, contIndent);
+            state.headerLines = [[]];
+            state.lines.push(indent + KW_WITH);
+            state.inBody = true;
             continue;
         }
 
-        if (isKeyword(child, "DEFAULT")) {
-            lines.push(indent + "DEFAULT");
+        if (isKeyword(child, KW_DEFAULT)) {
+            state.lines.push(indent + KW_DEFAULT);
             continue;
         }
 
         // Handle else-if chains: ELSE PATCH_IF/ACTION_IF without BEGIN
-        if (afterELSE && (child.type === "action_if" || child.type === "patch_if")) {
-            lines.push(formatNode(child, ctx, depth));
-            afterELSE = false;
+        if (state.afterELSE && (child.type === "action_if" || child.type === "patch_if")) {
+            state.lines.push(formatNode(child, ctx, depth));
+            state.afterELSE = false;
             continue;
         }
 
         if (isComment(child)) {
-            if (inBody) {
-                // Check if this is an inline comment (same row as BEGIN or previous item)
-                const rowToCheck = beginRow >= 0 ? beginRow : lastEndRow;
-                if (tryAppendInlineComment(lines, child, rowToCheck)) {
-                    beginRow = -1;
-                    continue;
-                }
-                lines.push(ctx.indent.repeat(bodyDepth) + normalizeComment(child.text));
-                beginRow = -1; // Reset after first non-inline body item
-            } else if (afterELSE) {
-                // Comment between ELSE and BEGIN - keep at ELSE indent level
-                lines.push(indent + normalizeComment(child.text));
-            } else {
-                // Add comment to current header line
-                headerLines[headerLines.length - 1]!.push(normalizeComment(child.text));
-                // Line comments force a new line after them
-                if (child.type === "line_comment") {
-                    headerLines.push([]);
-                }
-            }
+            handleControlFlowComment(child, state, indent, bodyIndent);
             continue;
         }
 
-        if (inBody) {
-            // Body content (actions, patches, control flow, inlined files, array entries)
-            // Note: else-if chains (ELSE ACTION_IF without BEGIN) are handled above at afterELSE check
-            if (
-                isBodyContent(child.type) ||
-                child.type === "match_case" ||
-                child.type === "action_match_case" ||
-                child.type === "inlined_file" ||
-                child.type === "assoc_entry" ||
-                child.type === "binary_expr" ||
-                child.type === "variable_ref" ||
-                child.type === "identifier" ||
-                child.type === "string" ||
-                child.type === "number"
-            ) {
-                lines.push(formatNode(child, ctx, bodyDepth));
-                lastEndRow = child.endPosition.row;
-                beginRow = -1; // Reset after first body item
+        if (state.inBody) {
+            if (isControlFlowBodyContent(child.type)) {
+                state.lines.push(formatNode(child, ctx, bodyDepth));
+                state.lastEndRow = child.endPosition.row;
+                state.beginRow = -1;
             }
         } else {
             // Header content (keyword, condition)
-            // Detect IF keywords and save condition node for grammar-based formatting
-            const upperText = child.text.toUpperCase();
-            if (upperText === "PATCH_IF" || upperText === "ACTION_IF") {
-                headerKeyword = upperText;
-                // The condition is a named field on the parent node
-                conditionNode = node.childForFieldName("condition") ?? null;
-                // Don't add keyword to headerLines - formatCondition will handle it
+            if (child.text === KW_PATCH_IF || child.text === KW_ACTION_IF) {
+                state.headerKeyword = child.text;
+                state.conditionNode = node.childForFieldName("condition") ?? null;
                 continue;
             }
             // Skip the condition node if we're using grammar-based formatting
-            if (conditionNode && child === conditionNode) {
+            if (state.conditionNode && child === state.conditionNode) {
                 continue;
             }
-            headerLines[headerLines.length - 1]!.push(child.text);
+            state.headerLines[state.headerLines.length - 1]!.push(child.text);
         }
     }
 
-    // If we still have header parts (shouldn't happen normally)
-    for (const lineParts of headerLines) {
-        if (lineParts.length > 0) {
-            lines.push(indent + normalizeWhitespace(lineParts.join(" ")));
-        }
-    }
+    // Output any remaining header parts (shouldn't happen normally)
+    outputHeaderLines(state.headerLines, state.lines, indent, contIndent);
 
-    return lines.join("\n");
+    return state.lines.join("\n");
 }
 
 /** Collected assignment for aligned output. */
@@ -1159,13 +1328,15 @@ type CollectedItem = AssignmentItem | CommentItem;
 
 /**
  * Output aligned assignments with optional keyword prefix.
- * Handles inline comments and alignment on '='.
+ * Handles inline comments and alignment on separator.
+ * @param separator - The separator between name and value (default " = ")
  */
 function outputAlignedAssignments(
     items: CollectedItem[],
     keyword: string,
     keywordIndent: string,
-    assignIndent: string
+    assignIndent: string,
+    separator: string = " = "
 ): string[] {
     const lines: string[] = [];
 
@@ -1202,7 +1373,7 @@ function outputAlignedAssignments(
             }
             if (item.value) {
                 const padding = " ".repeat(maxNameLen - item.name.length);
-                lines.push(assignIndent + item.name + padding + " = " + item.value);
+                lines.push(assignIndent + item.name + padding + separator + item.value);
             } else {
                 // No value (variable_ref or name-only)
                 lines.push(assignIndent + item.name);
@@ -1235,7 +1406,7 @@ function formatParamDecl(node: SyntaxNode, indent: string, ctx: FormatContext): 
 
     for (const child of node.children) {
         if (isParamKeyword(child.text)) {
-            keyword = child.text.toUpperCase();
+            keyword = child.text;
             continue;
         }
 
@@ -1308,7 +1479,7 @@ function formatParamCall(node: SyntaxNode, indent: string, ctx: FormatContext): 
 
     for (const child of children) {
         if (isParamKeyword(child.text)) {
-            keyword = child.text.toUpperCase();
+            keyword = child.text;
             continue;
         }
 
@@ -1348,28 +1519,26 @@ function formatFunctionDef(node: SyntaxNode, ctx: FormatContext, depth: number):
     let lastEndRow = -1;
 
     for (const child of node.children) {
-        if (isKeyword(child, "BEGIN")) {
+        if (isKeyword(child, KW_BEGIN)) {
             // Output def line if we have one
             if (defLine) {
                 lines.push(indent + defLine);
                 defLine = "";
             }
-            lines.push(indent + "BEGIN");
+            lines.push(indent + KW_BEGIN);
             inBody = true;
             continue;
         }
 
-        if (isKeyword(child, "END")) {
+        if (isKeyword(child, KW_END)) {
             inBody = false;
-            lines.push(indent + "END");
+            lines.push(indent + KW_END);
             continue;
         }
 
         if (isComment(child)) {
             if (inBody) {
-                if (!tryAppendInlineComment(lines, child, lastEndRow)) {
-                    lines.push(bodyIndent + normalizeComment(child.text));
-                }
+                handleComment(lines, child, bodyIndent, lastEndRow);
             } else {
                 // Comment in header - output after current def line
                 if (defLine) {
@@ -1405,7 +1574,7 @@ function formatFunctionDef(node: SyntaxNode, ctx: FormatContext, depth: number):
                 // Format parameter declarations - each assignment on its own line
                 const declLines = formatParamDecl(child, bodyIndent, ctx);
                 lines.push(...declLines);
-            } else if (child.text.toUpperCase().startsWith("DEFINE_")) {
+            } else if (child.text.startsWith("DEFINE_")) {
                 // Start of function definition
                 defLine = normalizeWhitespace(child.text);
             } else if (child.type === "identifier" && !defLine.includes(" ")) {
@@ -1435,6 +1604,34 @@ function formatFunctionDef(node: SyntaxNode, ctx: FormatContext, depth: number):
 }
 
 /**
+ * Format REQUIRE_PREDICATE action, splitting long conditions at OR/AND.
+ */
+function formatPredicateAction(node: SyntaxNode, ctx: FormatContext, depth: number): string {
+    const indent = ctx.indent.repeat(depth);
+    const contIndent = indent + ctx.indent;
+
+    const predicate = node.childForFieldName("predicate");
+    const message = node.childForFieldName("message");
+
+    if (!predicate || !message) {
+        // Fallback to simple formatting
+        return withNormalizedComment(indent + normalizeWhitespace(node.text));
+    }
+
+    // Try to format with condition splitting
+    const condLines = formatCondition(predicate, "REQUIRE_PREDICATE", indent, contIndent, ctx.lineLimit);
+
+    if (condLines.length === 1) {
+        // Fits on one line
+        return condLines[0] + " " + normalizeWhitespace(message.text);
+    }
+
+    // Multiple lines - put message on the last line
+    condLines[condLines.length - 1] += " " + normalizeWhitespace(message.text);
+    return condLines.join("\n");
+}
+
+/**
  * Format a simple patch or action as a single line.
  */
 function formatSimpleNode(node: SyntaxNode, ctx: FormatContext, depth: number): string {
@@ -1455,31 +1652,29 @@ function formatMatchCase(node: SyntaxNode, ctx: FormatContext, depth: number): s
     let lastEndRow = -1;
 
     for (const child of node.children) {
-        if (isKeyword(child, "BEGIN")) {
+        if (isKeyword(child, KW_BEGIN)) {
             const header = normalizeWhitespace(headerParts.join(" "));
             // If header contains line comment, can't append BEGIN to it
             if (header.includes("//")) {
                 lines.push(indent + header);
-                lines.push(indent + "BEGIN");
+                lines.push(indent + KW_BEGIN);
             } else {
-                lines.push(indent + header + " BEGIN");
+                lines.push(indent + header + " " + KW_BEGIN);
             }
             headerParts = [];
             inBody = true;
             continue;
         }
 
-        if (isKeyword(child, "END")) {
-            lines.push(indent + "END");
+        if (isKeyword(child, KW_END)) {
+            lines.push(indent + KW_END);
             inBody = false;
             continue;
         }
 
         if (isComment(child)) {
             if (inBody) {
-                if (!tryAppendInlineComment(lines, child, lastEndRow)) {
-                    lines.push(bodyIndent + normalizeComment(child.text));
-                }
+                handleComment(lines, child, bodyIndent, lastEndRow);
             } else {
                 headerParts.push(normalizeComment(child.text));
             }
@@ -1519,12 +1714,12 @@ function formatFunctionCall(node: SyntaxNode, ctx: FormatContext, depth: number)
     let callLine = ""; // LPF/LAF/LPM/LAM name
 
     for (const child of node.children) {
-        if (isKeyword(child, "END")) {
+        if (isKeyword(child, KW_END)) {
             if (callLine) {
                 lines.push(indent + callLine);
                 callLine = "";
             }
-            lines.push(indent + "END");
+            lines.push(indent + KW_END);
             continue;
         }
 
@@ -1553,13 +1748,13 @@ function formatFunctionCall(node: SyntaxNode, ctx: FormatContext, depth: number)
             const paramLines = formatParamCall(child, paramIndent, ctx);
             lines.push(...paramLines);
         } else if (
-            isKeyword(child, "LPF") ||
-            isKeyword(child, "LAF") ||
-            isKeyword(child, "LPM") ||
-            isKeyword(child, "LAM")
+            isKeyword(child, KW_LPF) ||
+            isKeyword(child, KW_LAF) ||
+            isKeyword(child, KW_LPM) ||
+            isKeyword(child, KW_LAM)
         ) {
             // Start of call
-            callLine = child.text.toUpperCase();
+            callLine = child.text;
         } else if (child.type === "identifier") {
             // Function/macro name
             if (callLine) {
@@ -1642,6 +1837,11 @@ function formatNode(node: SyntaxNode, ctx: FormatContext, depth: number): string
         return formatFunctionCall(node, ctx, depth);
     }
 
+    // REQUIRE_PREDICATE - may have long condition that needs splitting
+    if (type === "require_predicate_action") {
+        return formatPredicateAction(node, ctx, depth);
+    }
+
     // Simple nodes (actions, patches, assignments)
     return formatSimpleNode(node, ctx, depth);
 }
@@ -1649,6 +1849,73 @@ function formatNode(node: SyntaxNode, ctx: FormatContext, depth: number): string
 // ============================================
 // Main entry point
 // ============================================
+
+/**
+ * Try to append an inline comment to the last result entry.
+ * Returns true if successful.
+ */
+function tryAppendTopLevelInlineComment(
+    result: string[],
+    child: SyntaxNode,
+    lastEndRow: number
+): boolean {
+    if (!isComment(child) || lastEndRow < 0 || child.startPosition.row !== lastEndRow) {
+        return false;
+    }
+    if (result.length === 0) {
+        return false;
+    }
+
+    // Handle multi-line results by appending to the last non-empty line
+    const lastResult = result[result.length - 1]!;
+    const lastResultLines = lastResult.split("\n");
+    const lastLine = lastResultLines[lastResultLines.length - 1]!;
+
+    if (lastLine.includes("//")) {
+        return false;
+    }
+
+    lastResultLines[lastResultLines.length - 1] = lastLine + INLINE_COMMENT_SPACING + normalizeComment(child.text);
+    result[result.length - 1] = lastResultLines.join("\n");
+    return true;
+}
+
+/**
+ * Check if a comment chain is attached to a following component.
+ * Returns true if the comment(s) should be kept with the next BEGIN block.
+ */
+function isCommentAttachedToComponent(
+    children: SyntaxNode[],
+    idx: number,
+    lastEndRow: number
+): boolean {
+    const child = children[idx]!;
+    if (!isComment(child)) {
+        return false;
+    }
+
+    // Only consider attached if there's already separation before the comment
+    const hasSeparationBefore = lastEndRow < 0 || child.startPosition.row > lastEndRow + 1;
+    if (!hasSeparationBefore) {
+        return false;
+    }
+
+    // Look ahead to find next non-comment sibling
+    let nextIdx = idx + 1;
+    let lastCommentEndRow = child.endPosition.row;
+    while (nextIdx < children.length && isComment(children[nextIdx]!)) {
+        lastCommentEndRow = children[nextIdx]!.endPosition.row;
+        nextIdx++;
+    }
+
+    // Check if next non-comment is a component on adjacent row
+    if (nextIdx < children.length && children[nextIdx]!.type === "component") {
+        const component = children[nextIdx]!;
+        return component.startPosition.row <= lastCommentEndRow + 1;
+    }
+
+    return false;
+}
 
 /**
  * Format a TP2 document.
@@ -1663,35 +1930,40 @@ export function formatDocument(root: SyntaxNode, options?: Partial<FormatOptions
 
     const result: string[] = [];
     let lastEndRow = -1;
+    const children = root.children;
+    let skipBlankBeforeComponent = false;
 
-    for (const child of root.children) {
-        // Check if this is an inline comment (on same line as previous item)
-        if (isComment(child) && lastEndRow >= 0 && child.startPosition.row === lastEndRow) {
-            // Append inline comment to previous line
-            // Handle multi-line results by appending to the last non-empty line
-            if (result.length > 0) {
-                // Find the last line of the result array
-                const lastResult = result[result.length - 1]!;
-                const lastResultLines = lastResult.split("\n");
-                const lastLine = lastResultLines[lastResultLines.length - 1]!;
-                if (!lastLine.includes("//")) {
-                    lastResultLines[lastResultLines.length - 1] = lastLine + INLINE_COMMENT_SPACING + normalizeComment(child.text);
-                    result[result.length - 1] = lastResultLines.join("\n");
-                    continue;
-                }
-            }
+    for (let i = 0; i < children.length; i++) {
+        const child = children[i]!;
+
+        // Try to append inline comment to previous line
+        if (tryAppendTopLevelInlineComment(result, child, lastEndRow)) {
+            continue;
         }
 
-        // Preserve blank lines between top-level items (only if present in source)
+        // Check if comment is attached to following component
+        const attachedToComponent = isCommentAttachedToComponent(children, i, lastEndRow);
+        if (attachedToComponent) {
+            skipBlankBeforeComponent = true;
+        }
+
+        // Preserve blank lines between top-level items
         if (lastEndRow >= 0 && child.startPosition.row > lastEndRow + 1) {
             result.push("");
         }
 
-        // Ensure blank line before components (BEGIN blocks) for readability
-        if (child.type === "component" && result.length > 0 && result[result.length - 1] !== "") {
+        // Ensure blank line before components (or attached comments)
+        const needsBlankBefore = attachedToComponent || (child.type === "component" && !skipBlankBeforeComponent);
+        if (needsBlankBefore && result.length > 0 && result[result.length - 1] !== "") {
             result.push("");
         }
 
+        // Reset flag after processing component
+        if (child.type === "component") {
+            skipBlankBeforeComponent = false;
+        }
+
+        // Format the child
         if (isComment(child)) {
             result.push(normalizeComment(child.text));
         } else {
