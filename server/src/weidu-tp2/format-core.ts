@@ -1279,26 +1279,17 @@ function formatParamDecl(node: SyntaxNode, indent: string, ctx: FormatContext): 
  * For "name = value" returns { name, value }, otherwise returns null.
  */
 function parseAssignment(node: SyntaxNode): { name: string; value: string } | null {
-    // binary_expr has children: left, "=", right
+    // binary_expr has fields: left, op, right
     if (node.type === "binary_expr") {
-        const eqIndex = node.children.findIndex(c => c.text === "=");
-        if (eqIndex > 0) {
-            const nameParts = node.children.slice(0, eqIndex).map(c => c.text);
-            const valueParts = node.children.slice(eqIndex + 1).map(c => c.text);
+        const left = node.childForFieldName("left");
+        const op = node.childForFieldName("op");
+        const right = node.childForFieldName("right");
+        if (left && op && op.text === "=" && right) {
             return {
-                name: normalizeWhitespace(nameParts.join(" ")),
-                value: normalizeWhitespace(valueParts.join(" ")),
+                name: normalizeWhitespace(left.text),
+                value: normalizeWhitespace(right.text),
             };
         }
-    }
-    // Fallback: try to split on " = "
-    const text = normalizeWhitespace(node.text);
-    const eqPos = text.indexOf(" = ");
-    if (eqPos > 0) {
-        return {
-            name: text.substring(0, eqPos),
-            value: text.substring(eqPos + 3),
-        };
     }
     return null;
 }
