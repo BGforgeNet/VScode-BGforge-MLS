@@ -251,6 +251,95 @@ function normalizeWhitespace(text: string): string {
     return result.join("\n");
 }
 
+/** Operand with optional preceding operator (OR/AND). */
+interface ConditionOperand {
+    operator: string | null; // null for first operand, "OR"/"AND" for subsequent
+    text: string;
+}
+
+/**
+ * Flatten a binary_expr tree with OR/AND into a list of operands.
+ * Returns null if the expression doesn't use OR/AND at top level.
+ */
+function flattenOrAndExpr(node: SyntaxNode): ConditionOperand[] | null {
+    const op = node.childForFieldName("op");
+    if (!op) return null;
+
+    const opText = op.text.toUpperCase();
+    // Only split on OR/AND, not other binary operators
+    if (opText !== "OR" && opText !== "AND" && opText !== "||" && opText !== "&&") {
+        return null;
+    }
+
+    const left = node.childForFieldName("left");
+    const right = node.childForFieldName("right");
+    if (!left || !right) return null;
+
+    const result: ConditionOperand[] = [];
+
+    // Recursively flatten left side (for chained OR/AND)
+    if (left.type === "binary_expr") {
+        const leftFlat = flattenOrAndExpr(left);
+        if (leftFlat) {
+            result.push(...leftFlat);
+        } else {
+            result.push({ operator: null, text: normalizeWhitespace(left.text) });
+        }
+    } else {
+        result.push({ operator: null, text: normalizeWhitespace(left.text) });
+    }
+
+    // Add right side with the operator
+    // Normalize || to OR and && to AND for consistency
+    const normalizedOp = opText === "||" ? "OR" : opText === "&&" ? "AND" : opText;
+    result.push({ operator: normalizedOp, text: normalizeWhitespace(right.text) });
+
+    return result;
+}
+
+/**
+ * Format a condition, splitting at OR/AND boundaries if too long.
+ * Returns array of lines.
+ */
+function formatCondition(
+    conditionNode: SyntaxNode | null,
+    prefix: string,
+    indent: string,
+    contIndent: string,
+    lineLimit: number
+): string[] {
+    if (!conditionNode) {
+        return [indent + prefix];
+    }
+
+    const condText = normalizeWhitespace(conditionNode.text);
+    const fullLine = indent + prefix + " " + condText;
+
+    if (fullLine.length <= lineLimit) {
+        return [fullLine];
+    }
+
+    // Try to flatten OR/AND expressions
+    if (conditionNode.type === "binary_expr") {
+        const operands = flattenOrAndExpr(conditionNode);
+        if (operands && operands.length > 1) {
+            const lines: string[] = [];
+            for (let i = 0; i < operands.length; i++) {
+                const op = operands[i]!;
+                if (i === 0) {
+                    lines.push(indent + prefix + " " + op.text);
+                } else {
+                    lines.push(contIndent + op.operator + " " + op.text);
+                }
+            }
+            return lines;
+        }
+    }
+
+    // Can't split - return as single line
+    return [fullLine];
+}
+
 // ============================================
 // Node classification helpers
 // ============================================
@@ -848,11 +937,14 @@ function formatControlFlow(node: SyntaxNode, ctx: FormatContext, depth: number):
     // Build header as list of lines, each line is array of parts
     // Line comments force a new line after them
     let headerLines: string[][] = [[]];
+    let conditionNode: SyntaxNode | null = null; // Track condition node for IF statements
+    let headerKeyword = ""; // Track the keyword (PATCH_IF, ACTION_IF, etc.)
     let inBody = false;
     let afterELSE = false; // Track if we just saw ELSE (for else-if chains)
     const bodyDepth = depth + 1;
     let lastEndRow = -1; // Track last node's end row for inline comments
     let beginRow = -1; // Track BEGIN's row for inline comments after BEGIN
+    const contIndent = indent + ctx.indent;
 
     for (let i = 0; i < node.children.length; i++) {
         const child = node.children[i]!;
@@ -865,26 +957,43 @@ function formatControlFlow(node: SyntaxNode, ctx: FormatContext, depth: number):
             if (wasAfterELSE && lines.length > 0 && lines[lines.length - 1]!.trimEnd().endsWith("ELSE")) {
                 lines[lines.length - 1] += " BEGIN";
                 headerLines = [[]];
+                conditionNode = null;
+                headerKeyword = "";
                 inBody = true;
                 continue;
             }
 
-            // Output header lines then BEGIN
+            // Use grammar-based condition formatting for IF statements
+            if (conditionNode && headerKeyword) {
+                const condLines = formatCondition(conditionNode, headerKeyword, indent, contIndent, ctx.lineLimit);
+                lines.push(...condLines);
+                if (condLines.length > 1) {
+                    lines.push(indent + "BEGIN");
+                } else {
+                    lines[lines.length - 1] += " BEGIN";
+                }
+                headerLines = [[]];
+                conditionNode = null;
+                headerKeyword = "";
+                inBody = true;
+                beginRow = child.startPosition.row;
+                continue;
+            }
+
+            // Fallback: output header lines then BEGIN
             // Count non-empty lines
             let nonEmptyCount = 0;
             for (const lineParts of headerLines) {
                 if (lineParts.length > 0) nonEmptyCount++;
             }
 
-            // If multiple lines (e.g., FOR_EACH with many items), put BEGIN on its own line
-            // and indent continuation lines
+            // If multiple lines, put BEGIN on its own line
             const multiLine = nonEmptyCount > 1;
 
             for (let j = 0; j < headerLines.length; j++) {
                 const lineParts = headerLines[j]!;
                 if (lineParts.length > 0) {
-                    // First line at normal indent, continuation lines indented
-                    const lineIndent = j === 0 ? indent : indent + ctx.indent;
+                    const lineIndent = j === 0 ? indent : contIndent;
                     lines.push(lineIndent + normalizeWhitespace(lineParts.join(" ")));
                 }
             }
@@ -1003,6 +1112,19 @@ function formatControlFlow(node: SyntaxNode, ctx: FormatContext, depth: number):
             }
         } else {
             // Header content (keyword, condition)
+            // Detect IF keywords and save condition node for grammar-based formatting
+            const upperText = child.text.toUpperCase();
+            if (upperText === "PATCH_IF" || upperText === "ACTION_IF") {
+                headerKeyword = upperText;
+                // The condition is a named field on the parent node
+                conditionNode = node.childForFieldName("condition") ?? null;
+                // Don't add keyword to headerLines - formatCondition will handle it
+                continue;
+            }
+            // Skip the condition node if we're using grammar-based formatting
+            if (conditionNode && child === conditionNode) {
+                continue;
+            }
             headerLines[headerLines.length - 1]!.push(child.text);
         }
     }
