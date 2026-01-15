@@ -15,3 +15,8 @@ cd ../weidu-d
 pnpm exec tree-sitter generate
 pnpm exec tree-sitter build --wasm
 cp tree-sitter-weidu_d.wasm ../../server/out/
+
+cd ../weidu-tp2
+pnpm exec tree-sitter generate
+pnpm exec tree-sitter build --wasm
+cp tree-sitter-weidu_tp2.wasm ../../server/out/

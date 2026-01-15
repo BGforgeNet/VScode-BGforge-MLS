@@ -1,17 +1,19 @@
 /**
  * WeiDU TP2 language provider.
  * Implements all TP2 file features in one place.
- *
- * Note: TP2 doesn't have a tree-sitter formatter yet, so format is not implemented.
- * Internally delegates data features to a Language instance for now.
  */
 
-import { CompletionItem, Hover, Location } from "vscode-languageserver/node";
+import { CompletionItem, Hover, Location, TextEdit } from "vscode-languageserver/node";
+import { fileURLToPath } from "url";
 import { conlog } from "../common";
 import { LANG_WEIDU_TP2 } from "../core/languages";
 import { Language, Features } from "../data-loader";
 import { LanguageProvider, ProviderContext } from "../language-provider";
+import { getIndentFromEditorconfig } from "../shared/editorconfig";
+import { createFullDocumentEdit, validateFormatting } from "../shared/format-utils";
 import { compile as weiduCompile } from "../weidu";
+import { formatDocument as formatAst, FormatOptions } from "./format-core";
+import { initParser, getParser, isInitialized } from "./parser";
 
 const features: Features = {
     completion: true,
@@ -38,6 +40,9 @@ export const weiduTp2Provider: LanguageProvider = {
 
     async init(context: ProviderContext): Promise<void> {
         storedContext = context;
+
+        // Initialize tree-sitter parser for formatting
+        await initParser();
 
         // Initialize Language instance for data features
         language = new Language(LANG_WEIDU_TP2, features, context.workspaceRoot);
@@ -69,4 +74,38 @@ export const weiduTp2Provider: LanguageProvider = {
         }
         weiduCompile(uri, storedContext.settings.weidu, interactive, text);
     },
+
+    format(text: string, uri: string): TextEdit[] {
+        if (!isInitialized()) {
+            return [];
+        }
+
+        const tree = getParser().parse(text);
+        if (!tree) {
+            return [];
+        }
+
+        const options = getFormatOptions(uri);
+        const result = formatAst(tree.rootNode, options);
+
+        const validationError = validateFormatting(text, result.text);
+        if (validationError) {
+            conlog(`TP2 formatter validation failed: ${validationError}`);
+            return [];
+        }
+
+        return createFullDocumentEdit(text, result.text);
+    },
 };
+
+const DEFAULT_INDENT = 4;
+
+function getFormatOptions(uri: string): FormatOptions {
+    try {
+        const filePath = fileURLToPath(uri);
+        const indentSize = getIndentFromEditorconfig(filePath);
+        return { indentSize: indentSize ?? DEFAULT_INDENT, lineLimit: 120 };
+    } catch {
+        return { indentSize: DEFAULT_INDENT, lineLimit: 120 };
+    }
+}
