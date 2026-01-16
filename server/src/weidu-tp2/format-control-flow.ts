@@ -187,7 +187,7 @@ function formatCondition(
 
 /** Format FOR loop header: FOR (init; condition; increment) */
 function formatForLoopHeader(node: SyntaxNode): string | null {
-    if (node.type !== "for_patch" && node.type !== "outer_for") {
+    if (node.type !== "patch_for" && node.type !== "outer_for") {
         return null;
     }
 

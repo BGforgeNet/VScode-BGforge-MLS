@@ -7,7 +7,7 @@ COPY ~mymod/sword.itm~ ~override/m#sword.itm~
 --------------------------------------------------------------------------------
 
 (source_file
-  (copy_action
+  (action_copy
     (file_pair
       from: (string
         (tilde_string
@@ -26,7 +26,7 @@ COPY ~mymod/a.itm~ ~override/a.itm~
 --------------------------------------------------------------------------------
 
 (source_file
-  (copy_action
+  (action_copy
     (file_pair
       from: (string
         (tilde_string
@@ -51,7 +51,7 @@ COPY_EXISTING ~spell.spl~ ~override~
 --------------------------------------------------------------------------------
 
 (source_file
-  (copy_existing_action
+  (action_copy_existing
     (file_pair
       from: (string
         (tilde_string
@@ -69,7 +69,7 @@ COPY_EXISTING_REGEXP GLOB ~HARM.*.ITM~ ~override~
 --------------------------------------------------------------------------------
 
 (source_file
-  (copy_existing_regexp_action
+  (action_copy_existing_regexp
     (file_pair
       from: (string
         (tilde_string
@@ -87,7 +87,7 @@ COPY + ~mymod/temp.itm~ ~override~
 --------------------------------------------------------------------------------
 
 (source_file
-  (copy_action
+  (action_copy
     (file_pair
       from: (string
         (tilde_string
@@ -105,7 +105,7 @@ COPY - ~mymod/temp.itm~ ~override~
 --------------------------------------------------------------------------------
 
 (source_file
-  (copy_action
+  (action_copy
     (file_pair
       from: (string
         (tilde_string
@@ -123,7 +123,7 @@ DELETE ~mymod/temp.txt~
 --------------------------------------------------------------------------------
 
 (source_file
-  (delete_action
+  (action_delete
     file: (string
       (tilde_string
         (tilde_content)))))
@@ -137,7 +137,7 @@ COMPILE ~mymod/scripts~
 --------------------------------------------------------------------------------
 
 (source_file
-  (compile_action
+  (action_compile
     source: (string
       (tilde_string
         (tilde_content)))))
@@ -151,7 +151,7 @@ COMPILE ~mymod/dialog.d~ USING ~mymod/lang/%s/dialog.tra~
 --------------------------------------------------------------------------------
 
 (source_file
-  (compile_action
+  (action_compile
     source: (string
       (tilde_string
         (tilde_content)))
@@ -168,7 +168,7 @@ CREATE ITM ~m#sword~
 --------------------------------------------------------------------------------
 
 (source_file
-  (create_action
+  (action_create
     type: (identifier)
     resref: (string
       (tilde_string
@@ -183,7 +183,7 @@ CLEAR_MEMORY
 --------------------------------------------------------------------------------
 
 (source_file
-  (clear_memory_action))
+  (action_clear_memory))
 
 ================================================================================
 ACTION_IF
@@ -198,7 +198,7 @@ END
 (source_file
   (action_if
     condition: (number)
-    (print_action
+    (action_print
       message: (string
         (tilde_string
           (tilde_content))))))
@@ -212,7 +212,7 @@ OUTER_SET myvar = 5
 --------------------------------------------------------------------------------
 
 (source_file
-  (outer_set_action
+  (action_outer_set
     var: (identifier)
     value: (number)))
 
@@ -225,7 +225,7 @@ INCLUDE ~mymod/lib.tpa~
 --------------------------------------------------------------------------------
 
 (source_file
-  (include_action
+  (action_include
     file: (string
       (tilde_string
         (tilde_content)))))
@@ -241,9 +241,9 @@ END
 --------------------------------------------------------------------------------
 
 (source_file
-  (define_action_function
+  (action_define_function
     name: (identifier)
-    (print_action
+    (action_print
       message: (string
         (tilde_string
           (tilde_content))))))
@@ -257,5 +257,5 @@ LAF my_func END
 --------------------------------------------------------------------------------
 
 (source_file
-  (launch_action_function
+  (action_launch_function
     name: (identifier)))

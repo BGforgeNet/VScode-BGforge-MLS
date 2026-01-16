@@ -98,7 +98,7 @@ export const FOR_EACH_TYPES = [
     "action_php_each",
     "action_bash_for",
     "patch_for_each",
-    "php_each_patch",
+    "patch_php_each",
 ] as const;
 
 // ============================================
@@ -117,7 +117,7 @@ export const NODE_PATCH_FILE = "patch_file";
 export const NODE_INLINED_FILE = "inlined_file";
 export const NODE_MATCH_CASE = "match_case";
 export const NODE_ACTION_MATCH_CASE = "action_match_case";
-export const NODE_REQUIRE_PREDICATE_ACTION = "require_predicate_action";
+export const NODE_REQUIRE_PREDICATE_ACTION = "action_require_predicate";
 
 /** Control flow types (IF, MATCH, TRY, WHILE, etc.). */
 export const CONTROL_FLOW_TYPES = [
@@ -129,49 +129,49 @@ export const CONTROL_FLOW_TYPES = [
     "patch_if",
     "patch_match",
     "patch_try",
-    "for_patch",
-    "while_patch",
+    "patch_for",
+    "patch_while",
     // Array definitions with BEGIN...END body
     "action_define_array",
     "action_define_associative_array",
-    "define_associative_array_patch",
+    "patch_define_associative_array",
     // OUTER_* with BEGIN...END body
-    "outer_patch_action",
-    "outer_patch_save_action",
-    "outer_inner_patch_action",
-    "outer_inner_patch_save_action",
+    "action_outer_patch",
+    "action_outer_patch_save",
+    "action_outer_inner_patch",
+    "action_outer_inner_patch_save",
     // Patches with BEGIN...END body
-    "decompile_and_patch",
+    "patch_decompile_and_patch",
     // FOR_EACH types
     ...FOR_EACH_TYPES,
 ] as const;
 
 /** COPY-style action types. */
 export const COPY_ACTION_TYPES = [
-    "copy_action",
-    "copy_existing_action",
-    "copy_existing_regexp_action",
-    "copy_random_action",
-    "copy_large_action",
-    "copy_kit_action",
-    "copy_2da_action",
-    "copy_all_gam_files_action",
+    "action_copy",
+    "action_copy_existing",
+    "action_copy_existing_regexp",
+    "action_copy_random",
+    "action_copy_large",
+    "action_copy_kit",
+    "action_copy_2da",
+    "action_copy_all_gam_files",
 ] as const;
 
 /** Function/macro definition types. */
 export const FUNCTION_DEF_TYPES = [
-    "define_action_function",
-    "define_patch_function",
-    "define_action_macro",
-    "define_patch_macro",
+    "action_define_function",
+    "action_define_patch_function",
+    "action_define_macro",
+    "action_define_patch_macro",
 ] as const;
 
 /** Function/macro call types. */
 export const FUNCTION_CALL_TYPES = [
-    "launch_action_function",
-    "launch_action_macro",
-    "launch_patch_function",
-    "launch_patch_macro",
+    "action_launch_function",
+    "action_launch_macro",
+    "patch_launch_function",
+    "patch_launch_macro",
 ] as const;
 
 // ============================================

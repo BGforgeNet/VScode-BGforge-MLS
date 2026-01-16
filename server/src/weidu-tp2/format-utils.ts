@@ -26,35 +26,20 @@ const FUNCTION_DEF_SET = new Set<string>(FUNCTION_DEF_TYPES);
 const FUNCTION_CALL_SET = new Set<string>(FUNCTION_CALL_TYPES);
 const FOR_EACH_SET = new Set<string>(FOR_EACH_TYPES);
 
-/** Actions that don't follow the standard _action suffix pattern. */
-const SPECIAL_ACTION_TYPES = new Set([
-    "action_assignment",
-    "fail_action",
-    "create_action",
-    "text_sprint_action",
-    "action_define_array",
-    "action_define_associative_array",
-    "action_clear_array",
-    "action_readln",
-    "action_to_upper",
-    "action_to_lower",
-    "action_get_strref",
-]);
-
 /** Parameter keywords for function calls/definitions. */
 const PARAM_KEYWORDS = new Set(["INT_VAR", "STR_VAR", "RET", "RET_ARRAY"]);
 
 /** Associative array definition types. */
-const ASSOC_ARRAY_DEF_TYPES = new Set(["action_define_associative_array", "define_associative_array_patch"]);
+const ASSOC_ARRAY_DEF_TYPES = new Set(["action_define_associative_array", "patch_define_associative_array"]);
 
 /** Primitive value types (for array definitions). */
 const PRIMITIVE_TYPES = new Set(["binary_expr", "variable_ref", "identifier", "string", "number"]);
 
-/** Patch types that don't follow standard patterns. */
-const SPECIAL_PATCH_TYPES = new Set(["write_var", "read_var", "set_var"]);
+/** Special action types that don't use action_ prefix. */
+const SPECIAL_ACTION_TYPES = new Set(["text_sprint_action"]);
 
-/** Prefixes that identify patch types. */
-const PATCH_PREFIXES = ["patch_", "inner_patch", "decompile_", "compile_"] as const;
+/** Special patch types that don't use patch_ prefix. */
+const SPECIAL_PATCH_TYPES = new Set(["write_var", "read_var", "set_var"]);
 
 // ============================================
 // Comment utilities
@@ -180,20 +165,20 @@ export function isTopLevelDirective(type: string): boolean {
 
 /** Check if node type is an action. */
 export function isAction(type: string): boolean {
-    return type.endsWith("_action") || SPECIAL_ACTION_TYPES.has(type);
+    return (
+        type.startsWith("action_") ||
+        type.startsWith("outer_") ||
+        SPECIAL_ACTION_TYPES.has(type)
+    );
 }
 
 /** Check if node type is a patch. */
 export function isPatch(type: string): boolean {
-    if (type.endsWith("_patch") || SPECIAL_PATCH_TYPES.has(type)) {
-        return true;
-    }
-    for (const prefix of PATCH_PREFIXES) {
-        if (type.startsWith(prefix)) {
-            return true;
-        }
-    }
-    return false;
+    return (
+        type.startsWith("patch_") ||
+        type.startsWith("inner_") ||
+        SPECIAL_PATCH_TYPES.has(type)
+    );
 }
 
 /** Check if text is a parameter keyword. */

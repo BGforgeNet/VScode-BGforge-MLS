@@ -10,7 +10,7 @@ END
 --------------------------------------------------------------------------------
 
 (source_file
-  (copy_action
+  (action_copy
     (file_pair
       from: (string
         (tilde_string
@@ -19,7 +19,7 @@ END
         (tilde_string
           (tilde_content))))
     (patch_block
-      (say_patch
+      (patch_say
         offset: (number)
         text: (string
           (tilde_string
@@ -37,7 +37,7 @@ END
 --------------------------------------------------------------------------------
 
 (source_file
-  (copy_action
+  (action_copy
     (file_pair
       from: (string
         (tilde_string
@@ -63,7 +63,7 @@ END
 --------------------------------------------------------------------------------
 
 (source_file
-  (copy_action
+  (action_copy
     (file_pair
       from: (string
         (tilde_string
@@ -72,7 +72,7 @@ END
         (tilde_string
           (tilde_content))))
     (patch_block
-      (text_sprint_patch
+      (patch_text_sprint
         var: (variable_ref
           (identifier))
         value: (string
@@ -91,7 +91,7 @@ END
 --------------------------------------------------------------------------------
 
 (source_file
-  (copy_action
+  (action_copy
     (file_pair
       from: (string
         (tilde_string
@@ -100,7 +100,7 @@ END
         (tilde_string
           (tilde_content))))
     (patch_block
-      (replace_textually_patch
+      (patch_replace_textually
         regexp: (string
           (tilde_string
             (tilde_content)))
@@ -120,7 +120,7 @@ END
 --------------------------------------------------------------------------------
 
 (source_file
-  (copy_action
+  (action_copy
     (file_pair
       from: (string
         (tilde_string
@@ -129,7 +129,7 @@ END
         (tilde_string
           (tilde_content))))
     (patch_block
-      (evaluate_buffer_patch))))
+      (patch_evaluate_buffer))))
 
 ================================================================================
 TO_UPPER and TO_LOWER
@@ -144,7 +144,7 @@ END
 --------------------------------------------------------------------------------
 
 (source_file
-  (copy_action
+  (action_copy
     (file_pair
       from: (string
         (tilde_string
@@ -153,7 +153,7 @@ END
         (tilde_string
           (tilde_content))))
     (patch_block
-      (to_upper_patch
+      (patch_to_upper
         var: (identifier))
-      (to_lower_patch
+      (patch_to_lower
         var: (identifier)))))

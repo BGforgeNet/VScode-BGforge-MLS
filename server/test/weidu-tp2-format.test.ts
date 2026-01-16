@@ -116,14 +116,14 @@ describe("format-utils: withNormalizedComment", () => {
 
 describe("format-utils: type predicates", () => {
     it("isAction detects action types", () => {
-        expect(isAction("copy_action")).toBe(true);
+        expect(isAction("action_copy")).toBe(true);
         expect(isAction("action_assignment")).toBe(true);
-        expect(isAction("fail_action")).toBe(true);
+        expect(isAction("action_fail")).toBe(true);
         expect(isAction("identifier")).toBe(false);
     });
 
     it("isPatch detects patch types", () => {
-        expect(isPatch("write_patch")).toBe(true);
+        expect(isPatch("patch_write_byte")).toBe(true);
         expect(isPatch("read_var")).toBe(true);
         expect(isPatch("set_var")).toBe(true);
         expect(isPatch("action")).toBe(false);
@@ -133,32 +133,32 @@ describe("format-utils: type predicates", () => {
         expect(isControlFlow("action_if")).toBe(true);
         expect(isControlFlow("patch_match")).toBe(true);
         expect(isControlFlow("outer_for")).toBe(true);
-        expect(isControlFlow("copy_action")).toBe(false);
+        expect(isControlFlow("action_copy")).toBe(false);
     });
 
     it("isCopyAction detects copy action types", () => {
-        expect(isCopyAction("copy_action")).toBe(true);
-        expect(isCopyAction("copy_existing_action")).toBe(true);
+        expect(isCopyAction("action_copy")).toBe(true);
+        expect(isCopyAction("action_copy_existing")).toBe(true);
         // inner_action has its own formatter, not a copy action
         expect(isCopyAction("inner_action")).toBe(false);
         expect(isCopyAction("action_if")).toBe(false);
     });
 
     it("isFunctionDef detects function definition types", () => {
-        expect(isFunctionDef("define_action_function")).toBe(true);
-        expect(isFunctionDef("define_patch_macro")).toBe(true);
-        expect(isFunctionDef("launch_action_function")).toBe(false);
+        expect(isFunctionDef("action_define_function")).toBe(true);
+        expect(isFunctionDef("action_define_patch_macro")).toBe(true);
+        expect(isFunctionDef("action_launch_function")).toBe(false);
     });
 
     it("isFunctionCall detects function call types", () => {
-        expect(isFunctionCall("launch_action_function")).toBe(true);
-        expect(isFunctionCall("launch_patch_macro")).toBe(true);
-        expect(isFunctionCall("define_action_function")).toBe(false);
+        expect(isFunctionCall("action_launch_function")).toBe(true);
+        expect(isFunctionCall("patch_launch_macro")).toBe(true);
+        expect(isFunctionCall("action_define_function")).toBe(false);
     });
 
     it("isBodyContent detects valid body content", () => {
-        expect(isBodyContent("copy_action")).toBe(true);
-        expect(isBodyContent("write_patch")).toBe(true);
+        expect(isBodyContent("action_copy")).toBe(true);
+        expect(isBodyContent("patch_write_byte")).toBe(true);
         expect(isBodyContent("action_if")).toBe(true);
         expect(isBodyContent("string")).toBe(false);
     });

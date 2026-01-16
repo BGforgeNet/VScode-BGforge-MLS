@@ -226,27 +226,27 @@ export default grammar({
     conflicts: ($) => [
         [$._expr, $._simple_expr],
         [$.component],
-        [$.copy_action],
-        [$.copy_existing_action],
-        [$.copy_existing_regexp_action],
-        [$.create_action],
+        [$.action_copy],
+        [$.action_copy_existing],
+        [$.action_copy_existing_regexp],
+        [$.action_create],
         [$.variable_ref, $._assignable],
-        [$.variable_ref, $.at_now_action],
+        [$.variable_ref, $.action_at_now],
         [$.variable_ref, $.assoc_entry],
-        [$.remove_store_item_patch],
-        [$.add_store_item_patch],
-        [$.replace_cre_item_patch],
-        [$.remove_cre_item_patch],
-        [$.add_cre_item_patch],
-        [$.copy_all_gam_files_action],
-        [$.copy_random_action],
+        [$.patch_remove_store_item],
+        [$.patch_add_store_item],
+        [$.patch_replace_cre_item],
+        [$.patch_remove_cre_item],
+        [$.patch_add_cre_item],
+        [$.action_copy_all_gam_files],
+        [$.action_copy_random],
         [$.action_match_case],
         [$._action, $._top_level],
         [$._assignable, $._primary],
         [$._assignable, $._expr],
-        [$.define_associative_array_patch, $.action_define_associative_array],
-        [$.evaluate_buffer_patch, $.extend_top_action],
-        [$.evaluate_buffer_patch, $.extend_bottom_action],
+        [$.patch_define_associative_array, $.action_define_associative_array],
+        [$.patch_evaluate_buffer, $.action_extend_top],
+        [$.patch_evaluate_buffer, $.action_extend_bottom],
         [$._action, $.action_if],
     ],
 
@@ -594,92 +594,92 @@ export default grammar({
         _patch: ($) =>
             choice(
                 // Write operations
-                $.write_byte_patch,
-                $.write_short_patch,
-                $.write_long_patch,
-                $.write_ascii_patch,
-                $.write_ascii_list_patch,
-                $.write_asciil_patch,
+                $.patch_write_byte,
+                $.patch_write_short,
+                $.patch_write_long,
+                $.patch_write_ascii,
+                $.patch_write_ascii_list,
+                $.patch_write_asciil,
                 // Read operations
-                $.read_byte_patch,
-                $.read_short_patch,
-                $.read_long_patch,
-                $.read_ascii_patch,
-                $.read_strref_patch,
-                $.get_strref_patch,
-                $.lookup_ids_symbol_of_int_patch,
+                $.patch_read_byte,
+                $.patch_read_short,
+                $.patch_read_long,
+                $.patch_read_ascii,
+                $.patch_read_strref,
+                $.patch_get_strref,
+                $.patch_lookup_ids_symbol_of_int,
                 // String operations
-                $.say_patch,
-                $.sprint_patch,
-                $.text_sprint_patch,
-                $.snprint_patch,
-                $.sprintf_patch,
-                $.to_upper_patch,
-                $.to_lower_patch,
-                $.spaces_patch,
-                $.quote_patch,
-                $.source_biff_patch,
+                $.patch_say,
+                $.patch_sprint,
+                $.patch_text_sprint,
+                $.patch_snprint,
+                $.patch_sprintf,
+                $.patch_to_upper,
+                $.patch_to_lower,
+                $.patch_spaces,
+                $.patch_quote,
+                $.patch_source_biff,
                 // Assignment
-                $.set_patch,
-                $.assignment_patch,
-                $.increment_patch,
-                $.decrement_patch,
+                $.patch_set,
+                $.patch_assignment,
+                $.patch_increment,
+                $.patch_decrement,
                 // Control flow
                 $.patch_if,
                 $.patch_match,
-                $.for_patch,
-                $.while_patch,
-                $.php_each_patch,
+                $.patch_for,
+                $.patch_while,
+                $.patch_php_each,
                 $.patch_for_each,
                 // Text manipulation
-                $.replace_patch,
-                $.replace_textually_patch,
-                $.replace_evaluate_patch,
+                $.patch_replace,
+                $.patch_replace_textually,
+                $.patch_replace_evaluate,
                 // Buffer operations
-                $.evaluate_buffer_patch,
-                $.insert_bytes_patch,
-                $.delete_bytes_patch,
-                $.append_file_patch,
+                $.patch_evaluate_buffer,
+                $.patch_insert_bytes,
+                $.patch_delete_bytes,
+                $.patch_append_file,
                 // 2DA operations
-                $.read_2da_entry_patch,
-                $.read_2da_entries_now_patch,
-                $.read_2da_entry_former_patch,
-                $.set_2da_entry_patch,
-                $.set_2da_entry_later_patch,
-                $.set_2da_entries_now_patch,
-                $.count_2da_cols_patch,
-                $.count_2da_rows_patch,
-                $.count_regexp_instances_patch,
-                $.pretty_print_2da_patch,
-                $.insert_2da_row_patch,
-                $.remove_2da_row_patch,
+                $.patch_read_2da_entry,
+                $.patch_read_2da_entries_now,
+                $.patch_read_2da_entry_former,
+                $.patch_set_2da_entry,
+                $.patch_set_2da_entry_later,
+                $.patch_set_2da_entries_now,
+                $.patch_count_2da_cols,
+                $.patch_count_2da_rows,
+                $.patch_count_regexp_instances,
+                $.patch_pretty_print_2da,
+                $.patch_insert_2da_row,
+                $.patch_remove_2da_row,
                 // Offset array operations
-                $.get_offset_array_patch,
-                $.get_offset_array2_patch,
+                $.patch_get_offset_array,
+                $.patch_get_offset_array2,
                 // Store operations
-                $.remove_store_item_patch,
-                $.add_store_item_patch,
+                $.patch_remove_store_item,
+                $.patch_add_store_item,
                 // CRE item operations
-                $.replace_cre_item_patch,
-                $.remove_cre_item_patch,
-                $.add_cre_item_patch,
-                $.add_memorized_spell_patch,
-                $.remove_memorized_spells_patch,
-                $.add_known_spell_patch,
-                $.remove_known_spell_patch,
-                $.remove_known_spells_patch,
-                $.remove_cre_effects_patch,
-                $.add_map_note_patch,
-                $.set_bg2_proficiency_patch,
+                $.patch_replace_cre_item,
+                $.patch_remove_cre_item,
+                $.patch_add_cre_item,
+                $.patch_add_memorized_spell,
+                $.patch_remove_memorized_spells,
+                $.patch_add_known_spell,
+                $.patch_remove_known_spell,
+                $.patch_remove_known_spells,
+                $.patch_remove_cre_effects,
+                $.patch_add_map_note,
+                $.patch_set_bg2_proficiency,
                 // Functions
-                $.launch_patch_function,
-                $.launch_patch_macro,
-                $.replace_bcs_block_patch,
+                $.patch_launch_function,
+                $.patch_launch_macro,
+                $.patch_replace_bcs_block,
                 // Arrays
-                $.define_array_patch,
-                $.define_associative_array_patch,
-                $.clear_array_patch,
-                $.sort_array_indices_patch,
+                $.patch_define_array,
+                $.patch_define_associative_array,
+                $.patch_clear_array,
+                $.patch_sort_array_indices,
                 // Exception handling
                 $.patch_try,
                 // Inner patches
@@ -697,22 +697,22 @@ export default grammar({
                 $.patch_reraise,
                 $.patch_silent,
                 $.patch_verbose,
-                $.compile_baf_to_bcs,
-                $.decompile_bcs_to_baf,
-                $.compile_d_to_dlg,
-                $.decompile_dlg_to_d,
-                $.decompile_and_patch,
-                $.decompress_replace_file_patch,
-                $.compress_replace_file_patch,
-                $.decompress_into_var_patch
+                $.patch_compile_baf_to_bcs,
+                $.patch_decompile_bcs_to_baf,
+                $.patch_compile_d_to_dlg,
+                $.patch_decompile_dlg_to_d,
+                $.patch_decompile_and_patch,
+                $.patch_decompress_replace_file,
+                $.patch_compress_replace_file,
+                $.patch_decompress_into_var
             ),
 
         // Write patches
-        write_byte_patch: writePatch("WRITE_BYTE"),
-        write_short_patch: writePatch("WRITE_SHORT"),
-        write_long_patch: writePatch("WRITE_LONG"),
+        patch_write_byte: writePatch("WRITE_BYTE"),
+        patch_write_short: writePatch("WRITE_SHORT"),
+        patch_write_long: writePatch("WRITE_LONG"),
 
-        write_ascii_patch: ($) =>
+        patch_write_ascii: ($) =>
             prec.right(
                 seq(
                     choice("WRITE_ASCII", "WRITE_ASCIIE", "WRITE_ASCIIT", "WRITE_ASCII_TERMINATE", "WRITE_EVALUATED_ASCII"),
@@ -722,18 +722,18 @@ export default grammar({
                 )
             ),
 
-        write_ascii_list_patch: ($) =>
+        patch_write_ascii_list: ($) =>
             prec.right(seq("WRITE_ASCII_LIST", field("offset", $._value), repeat1($._value))),
 
-        write_asciil_patch: ($) =>
+        patch_write_asciil: ($) =>
             prec.right(seq("WRITE_ASCIIL", field("offset", $._value), repeat1($._value))),
 
         // Read patches
-        read_byte_patch: readPatch("READ_BYTE", "READ_SBYTE"),
-        read_short_patch: readPatch("READ_SHORT", "READ_SSHORT"),
-        read_long_patch: readPatch("READ_LONG", "READ_SLONG"),
+        patch_read_byte: readPatch("READ_BYTE", "READ_SBYTE"),
+        patch_read_short: readPatch("READ_SHORT", "READ_SSHORT"),
+        patch_read_long: readPatch("READ_LONG", "READ_SLONG"),
 
-        read_ascii_patch: ($) =>
+        patch_read_ascii: ($) =>
             prec.right(
                 seq(
                     "READ_ASCII",
@@ -745,11 +745,11 @@ export default grammar({
                 )
             ),
 
-        read_strref_patch: ($) => seq("READ_STRREF", field("offset", $._value), field("var", $.identifier)),
+        patch_read_strref: ($) => seq("READ_STRREF", field("offset", $._value), field("var", $.identifier)),
 
-        get_strref_patch: getStrref("GET_STRREF", "GET_STRREF_S"),
+        patch_get_strref: getStrref("GET_STRREF", "GET_STRREF_S"),
 
-        lookup_ids_symbol_of_int_patch: ($) =>
+        patch_lookup_ids_symbol_of_int: ($) =>
             seq(
                 "LOOKUP_IDS_SYMBOL_OF_INT",
                 field("target", $.identifier),
@@ -758,16 +758,16 @@ export default grammar({
             ),
 
         // String operations
-        say_patch: ($) =>
+        patch_say: ($) =>
             seq(choice("SAY", "SAY_EVALUATED"), field("offset", $._value), field("text", $._value)),
 
-        sprint_patch: sprintOp("SPRINT"),
-        text_sprint_patch: sprintOp("TEXT_SPRINT"),
+        patch_sprint: sprintOp("SPRINT"),
+        patch_text_sprint: sprintOp("TEXT_SPRINT"),
 
-        snprint_patch: ($) =>
+        patch_snprint: ($) =>
             seq("SNPRINT", field("length", $._value), field("var", $.identifier), field("value", $._value)),
 
-        sprintf_patch: ($) =>
+        patch_sprintf: ($) =>
             prec.right(
                 seq(
                     "SPRINTF",
@@ -777,22 +777,22 @@ export default grammar({
                 )
             ),
 
-        to_upper_patch: caseConvert("TO_UPPER"),
-        to_lower_patch: caseConvert("TO_LOWER"),
+        patch_to_upper: caseConvert("TO_UPPER"),
+        patch_to_lower: caseConvert("TO_LOWER"),
 
-        spaces_patch: ($) => seq("SPACES", field("var", $.identifier), field("template", $._value)),
-        quote_patch: ($) => seq("QUOTE", field("var", $.identifier), field("string", $._value)),
-        source_biff_patch: ($) => seq("SOURCE_BIFF", field("var", $.identifier), field("filename", $._value)),
+        patch_spaces: ($) => seq("SPACES", field("var", $.identifier), field("template", $._value)),
+        patch_quote: ($) => seq("QUOTE", field("var", $.identifier), field("string", $._value)),
+        patch_source_biff: ($) => seq("SOURCE_BIFF", field("var", $.identifier), field("filename", $._value)),
 
         // Assignment
-        set_patch: ($) =>
+        patch_set: ($) =>
             seq("SET", optional("EVAL"), field("var", $._assignable), $._assign_op, field("value", $._value)),
 
-        assignment_patch: ($) =>
+        patch_assignment: ($) =>
             prec(10, seq(field("var", $._assignable), $._assign_op, field("value", $._value))),
 
-        increment_patch: ($) => seq("++", field("var", $._value)),
-        decrement_patch: ($) => seq("--", field("var", $._value)),
+        patch_increment: ($) => seq("++", field("var", $._value)),
+        patch_decrement: ($) => seq("--", field("var", $._value)),
 
         _assign_op: ($) => choice("=", "+=", "-=", "*=", "/=", "|=", "&=", "||=", "&&="),
 
@@ -836,20 +836,20 @@ export default grammar({
                 "END"
             ),
 
-        for_patch: forLoop("FOR", ($) => $._patch),
-        while_patch: whileLoop("WHILE", ($) => $._patch),
-        php_each_patch: phpEachLoop("PHP_EACH", "PATCH_PHP_EACH")(($) => $._patch),
+        patch_for: forLoop("FOR", ($) => $._patch),
+        patch_while: whileLoop("WHILE", ($) => $._patch),
+        patch_php_each: phpEachLoop("PHP_EACH", "PATCH_PHP_EACH")(($) => $._patch),
 
         patch_for_each: ($) =>
             seq("PATCH_FOR_EACH", field("var", $._value), "IN", repeat1($._value), "BEGIN", repeat($._patch), "END"),
 
         // Text manipulation
-        replace_patch: ($) =>
+        patch_replace: ($) =>
             seq("REPLACE", field("regexp", $._value), field("replacement", $._value), optional($.sound_ref)),
 
         sound_ref: ($) => seq("[", field("sound", $.identifier), "]"),
 
-        replace_textually_patch: ($) =>
+        patch_replace_textually: ($) =>
             prec.right(
                 seq(
                     "REPLACE_TEXTUALLY",
@@ -860,7 +860,7 @@ export default grammar({
                 )
             ),
 
-        replace_evaluate_patch: ($) =>
+        patch_replace_evaluate: ($) =>
             seq(
                 "REPLACE_EVALUATE",
                 optional($.search_flags),
@@ -872,18 +872,18 @@ export default grammar({
             ),
 
         // Buffer operations
-        evaluate_buffer_patch: ($) => "EVALUATE_BUFFER",
+        patch_evaluate_buffer: ($) => "EVALUATE_BUFFER",
 
-        insert_bytes_patch: ($) =>
+        patch_insert_bytes: ($) =>
             seq("INSERT_BYTES", field("offset", $._value), field("length", $._value)),
 
-        delete_bytes_patch: ($) =>
+        patch_delete_bytes: ($) =>
             seq("DELETE_BYTES", field("offset", $._value), field("length", $._value)),
 
-        append_file_patch: ($) => seq("APPEND_FILE", field("file", $._value)),
+        patch_append_file: ($) => seq("APPEND_FILE", field("file", $._value)),
 
         // 2DA operations
-        read_2da_entry_patch: ($) =>
+        patch_read_2da_entry: ($) =>
             seq(
                 "READ_2DA_ENTRY",
                 field("row", $._value),
@@ -892,10 +892,10 @@ export default grammar({
                 field("var", $._value)
             ),
 
-        read_2da_entries_now_patch: ($) =>
+        patch_read_2da_entries_now: ($) =>
             seq("READ_2DA_ENTRIES_NOW", field("var", $._value), field("req_cols", $._value)),
 
-        read_2da_entry_former_patch: ($) =>
+        patch_read_2da_entry_former: ($) =>
             seq(
                 "READ_2DA_ENTRY_FORMER",
                 field("array", $._value),
@@ -904,7 +904,7 @@ export default grammar({
                 field("var", $._value)
             ),
 
-        set_2da_entry_patch: ($) =>
+        patch_set_2da_entry: ($) =>
             seq(
                 "SET_2DA_ENTRY",
                 field("row", $._value),
@@ -913,7 +913,7 @@ export default grammar({
                 field("value", $._value)
             ),
 
-        set_2da_entry_later_patch: ($) =>
+        patch_set_2da_entry_later: ($) =>
             seq(
                 "SET_2DA_ENTRY_LATER",
                 field("array", $._value),
@@ -922,16 +922,16 @@ export default grammar({
                 field("value", $._value)
             ),
 
-        set_2da_entries_now_patch: ($) =>
+        patch_set_2da_entries_now: ($) =>
             seq("SET_2DA_ENTRIES_NOW", field("array", $._value), field("req_cols", $._value)),
 
-        count_2da_cols_patch: ($) =>
+        patch_count_2da_cols: ($) =>
             seq("COUNT_2DA_COLS", field("var", choice($.identifier, $.string))),
 
-        count_2da_rows_patch: ($) =>
+        patch_count_2da_rows: ($) =>
             seq("COUNT_2DA_ROWS", field("req_cols", $._value), field("var", choice($.identifier, $.string))),
 
-        count_regexp_instances_patch: ($) =>
+        patch_count_regexp_instances: ($) =>
             seq(
                 "COUNT_REGEXP_INSTANCES",
                 optional("CASE_SENSITIVE"),
@@ -940,32 +940,32 @@ export default grammar({
                 field("var", $._value)
             ),
 
-        pretty_print_2da_patch: ($) => "PRETTY_PRINT_2DA",
+        patch_pretty_print_2da: ($) => "PRETTY_PRINT_2DA",
 
-        insert_2da_row_patch: ($) =>
+        patch_insert_2da_row: ($) =>
             seq("INSERT_2DA_ROW", field("row", $._value), field("req_cols", $._value), field("value", $._value)),
 
-        remove_2da_row_patch: ($) =>
+        patch_remove_2da_row: ($) =>
             seq("REMOVE_2DA_ROW", field("row", $._value), field("req_cols", $._value)),
 
-        get_offset_array_patch: ($) =>
+        patch_get_offset_array: ($) =>
             prec.right(seq("GET_OFFSET_ARRAY", field("var", $.identifier), repeat1($._value))),
 
-        get_offset_array2_patch: ($) =>
+        patch_get_offset_array2: ($) =>
             prec.right(seq("GET_OFFSET_ARRAY2", field("var", $.identifier), repeat1($._value))),
 
         // Store/CRE item operations (using helpers)
-        remove_store_item_patch: ($) =>
+        patch_remove_store_item: ($) =>
             seq("REMOVE_STORE_ITEM", repeat1(field("item", $._value))),
 
-        add_store_item_patch: ($) =>
+        patch_add_store_item: ($) =>
             seq("ADD_STORE_ITEM", optional($._opt_no_backup), repeat1(field("item", $._value))),
 
-        replace_cre_item_patch: itemPatch("REPLACE_CRE_ITEM"),
-        remove_cre_item_patch: itemPatch("REMOVE_CRE_ITEM"),
-        add_cre_item_patch: itemPatch("ADD_CRE_ITEM"),
+        patch_replace_cre_item: itemPatch("REPLACE_CRE_ITEM"),
+        patch_remove_cre_item: itemPatch("REMOVE_CRE_ITEM"),
+        patch_add_cre_item: itemPatch("ADD_CRE_ITEM"),
 
-        add_memorized_spell_patch: ($) =>
+        patch_add_memorized_spell: ($) =>
             prec.right(
                 seq(
                     "ADD_MEMORIZED_SPELL",
@@ -976,17 +976,17 @@ export default grammar({
                 )
             ),
 
-        remove_memorized_spells_patch: ($) => "REMOVE_MEMORIZED_SPELLS",
-        remove_known_spells_patch: ($) => "REMOVE_KNOWN_SPELLS",
-        remove_cre_effects_patch: ($) => "REMOVE_CRE_EFFECTS",
+        patch_remove_memorized_spells: ($) => "REMOVE_MEMORIZED_SPELLS",
+        patch_remove_known_spells: ($) => "REMOVE_KNOWN_SPELLS",
+        patch_remove_cre_effects: ($) => "REMOVE_CRE_EFFECTS",
 
-        add_known_spell_patch: ($) =>
+        patch_add_known_spell: ($) =>
             seq("ADD_KNOWN_SPELL", field("spell", $._value), field("level", $._value), field("type", $._value)),
 
-        remove_known_spell_patch: ($) =>
+        patch_remove_known_spell: ($) =>
             prec.right(seq("REMOVE_KNOWN_SPELL", repeat1(field("spell", $._value)))),
 
-        add_map_note_patch: ($) =>
+        patch_add_map_note: ($) =>
             seq(
                 "ADD_MAP_NOTE",
                 field("x", $._value),
@@ -995,11 +995,11 @@ export default grammar({
                 field("strref", $._value)
             ),
 
-        set_bg2_proficiency_patch: ($) =>
+        patch_set_bg2_proficiency: ($) =>
             seq("SET_BG2_PROFICIENCY", field("proficiency", $._value), field("value", $._value)),
 
         // Functions
-        launch_patch_function: ($) =>
+        patch_launch_function: ($) =>
             seq(
                 choice("LAUNCH_PATCH_FUNCTION", "LPF"),
                 field("name", choice($.identifier, $.string)),
@@ -1007,10 +1007,10 @@ export default grammar({
                 "END"
             ),
 
-        launch_patch_macro: ($) =>
+        patch_launch_macro: ($) =>
             seq(choice("LAUNCH_PATCH_MACRO", "LPM"), field("name", choice($.identifier, $.string))),
 
-        replace_bcs_block_patch: ($) =>
+        patch_replace_bcs_block: ($) =>
             prec.right(
                 seq(
                     choice("REPLACE_BCS_BLOCK", "R_B_B"),
@@ -1021,12 +1021,12 @@ export default grammar({
             ),
 
         // Arrays
-        define_array_patch: ($) =>
+        patch_define_array: ($) =>
             seq("DEFINE_ARRAY", field("name", $._value), "BEGIN", repeat($._value), "END"),
-        define_associative_array_patch: defineAssocArray("DEFINE_ASSOCIATIVE_ARRAY"),
-        clear_array_patch: clearArray("CLEAR_ARRAY"),
+        patch_define_associative_array: defineAssocArray("DEFINE_ASSOCIATIVE_ARRAY"),
+        patch_clear_array: clearArray("CLEAR_ARRAY"),
 
-        sort_array_indices_patch: ($) =>
+        patch_sort_array_indices: ($) =>
             seq("SORT_ARRAY_INDICES", field("array", $._value), choice("NUMERICALLY", "LEXICOGRAPHICALLY")),
 
         assoc_entry: ($) =>
@@ -1043,14 +1043,14 @@ export default grammar({
         patch_reraise: ($) => "PATCH_RERAISE",
         patch_silent: ($) => "PATCH_SILENT",
         patch_verbose: ($) => "PATCH_VERBOSE",
-        compile_baf_to_bcs: ($) => "COMPILE_BAF_TO_BCS",
-        decompile_bcs_to_baf: ($) => "DECOMPILE_BCS_TO_BAF",
-        compile_d_to_dlg: ($) => "COMPILE_D_TO_DLG",
-        decompile_dlg_to_d: ($) => "DECOMPILE_DLG_TO_D",
+        patch_compile_baf_to_bcs: ($) => "COMPILE_BAF_TO_BCS",
+        patch_decompile_bcs_to_baf: ($) => "DECOMPILE_BCS_TO_BAF",
+        patch_compile_d_to_dlg: ($) => "COMPILE_D_TO_DLG",
+        patch_decompile_dlg_to_d: ($) => "DECOMPILE_DLG_TO_D",
 
-        decompile_and_patch: ($) => seq("DECOMPILE_AND_PATCH", "BEGIN", repeat($._patch), "END"),
+        patch_decompile_and_patch: ($) => seq("DECOMPILE_AND_PATCH", "BEGIN", repeat($._patch), "END"),
 
-        decompress_replace_file_patch: ($) =>
+        patch_decompress_replace_file: ($) =>
             seq(
                 "DECOMPRESS_REPLACE_FILE",
                 field("offset", $._value),
@@ -1058,7 +1058,7 @@ export default grammar({
                 field("uncompressed_size", $._value)
             ),
 
-        compress_replace_file_patch: ($) =>
+        patch_compress_replace_file: ($) =>
             seq(
                 "COMPRESS_REPLACE_FILE",
                 field("offset", $._value),
@@ -1066,7 +1066,7 @@ export default grammar({
                 field("level", $._value)
             ),
 
-        decompress_into_var_patch: ($) =>
+        patch_decompress_into_var: ($) =>
             seq(
                 "DECOMPRESS_INTO_VAR",
                 field("offset", $._value),
@@ -1101,22 +1101,22 @@ export default grammar({
         _action: ($) =>
             choice(
                 // File operations
-                $.copy_action,
-                $.copy_existing_action,
-                $.copy_existing_regexp_action,
-                $.copy_large_action,
-                $.copy_random_action,
-                $.copy_all_gam_files_action,
-                $.compile_action,
-                $.create_action,
-                $.extend_top_action,
-                $.extend_bottom_action,
-                $.append_action,
-                $.append_col_action,
-                $.append_outer_action,
-                $.delete_action,
-                $.move_action,
-                $.mkdir_action,
+                $.action_copy,
+                $.action_copy_existing,
+                $.action_copy_existing_regexp,
+                $.action_copy_large,
+                $.action_copy_random,
+                $.action_copy_all_gam_files,
+                $.action_compile,
+                $.action_create,
+                $.action_extend_top,
+                $.action_extend_bottom,
+                $.action_append,
+                $.action_append_col,
+                $.action_append_outer,
+                $.action_delete,
+                $.action_move,
+                $.action_mkdir,
                 // Control flow
                 $.action_if,
                 $.action_match,
@@ -1126,61 +1126,61 @@ export default grammar({
                 $.action_for_each,
                 $.action_php_each,
                 // Variables
-                $.outer_set_action,
-                $.outer_sprint_action,
-                $.outer_text_sprint_action,
-                $.with_tra_action,
-                $.outer_patch_action,
-                $.outer_patch_save_action,
-                $.outer_inner_patch_action,
-                $.outer_inner_patch_save_action,
+                $.action_outer_set,
+                $.action_outer_sprint,
+                $.action_outer_text_sprint,
+                $.action_with_tra,
+                $.action_outer_patch,
+                $.action_outer_patch_save,
+                $.action_outer_inner_patch,
+                $.action_outer_inner_patch_save,
                 // Includes
-                $.include_action,
+                $.action_include,
                 // Functions/macros
-                $.define_action_macro,
-                $.define_patch_macro,
-                $.define_action_function,
-                $.define_patch_function,
-                $.launch_action_macro,
-                $.launch_action_function,
+                $.action_define_macro,
+                $.action_define_patch_macro,
+                $.action_define_function,
+                $.action_define_patch_function,
+                $.action_launch_macro,
+                $.action_launch_function,
                 // Arrays
                 $.action_define_array,
                 $.action_define_associative_array,
                 $.action_clear_array,
                 // String/tra
-                $.string_set_action,
-                $.load_tra_action,
+                $.action_string_set,
+                $.action_load_tra,
                 // Game data modification
-                $.add_projectile_action,
-                $.add_sectype_action,
-                $.add_area_type_action,
-                $.add_spell_action,
-                $.add_kit_action,
+                $.action_add_projectile,
+                $.action_add_sectype,
+                $.action_add_area_type,
+                $.action_add_spell,
+                $.action_add_kit,
                 // System/execution
-                $.at_now_action,
-                $.at_interactive_exit_action,
+                $.action_at_now,
+                $.action_at_interactive_exit,
                 $.action_bash_for,
-                $.decompress_biff_action,
+                $.action_decompress_biff,
                 // Misc
-                $.print_action,
-                $.warn_action,
-                $.fail_action,
-                $.clear_memory_action,
-                $.silent_action,
-                $.verbose_action,
+                $.action_print,
+                $.action_warn,
+                $.action_fail,
+                $.action_clear_memory,
+                $.action_silent,
+                $.action_verbose,
                 $.action_to_upper,
                 $.action_to_lower,
                 $.action_get_strref,
-                $.require_predicate_action,
-                $.forbid_component_action,
-                $.disable_from_key_action,
-                $.random_seed_action,
+                $.action_require_predicate,
+                $.action_forbid_component,
+                $.action_disable_from_key,
+                $.action_random_seed,
                 $.action_readln,
                 $.inlined_file
             ),
 
         // File operations
-        copy_action: ($) =>
+        action_copy: ($) =>
             seq(
                 "COPY",
                 optional($._opt_no_backup),
@@ -1190,7 +1190,7 @@ export default grammar({
                 optional($._but_only)
             ),
 
-        copy_existing_action: ($) =>
+        action_copy_existing: ($) =>
             seq(
                 "COPY_EXISTING",
                 optional($._opt_no_backup),
@@ -1199,7 +1199,7 @@ export default grammar({
                 optional($._but_only)
             ),
 
-        copy_existing_regexp_action: ($) =>
+        action_copy_existing_regexp: ($) =>
             seq(
                 "COPY_EXISTING_REGEXP",
                 optional($._opt_no_backup),
@@ -1209,13 +1209,13 @@ export default grammar({
                 optional($._but_only)
             ),
 
-        copy_large_action: ($) =>
+        action_copy_large: ($) =>
             seq("COPY_LARGE", optional($._opt_no_backup), optional($._opt_glob), $.file_pair),
 
-        copy_random_action: ($) =>
+        action_copy_random: ($) =>
             seq("COPY_RANDOM", repeat1(seq("(", repeat1($._value), ")")), optional($._patches)),
 
-        copy_all_gam_files_action: ($) => seq("COPY_ALL_GAM_FILES", optional($._patches)),
+        action_copy_all_gam_files: ($) => seq("COPY_ALL_GAM_FILES", optional($._patches)),
 
         file_pair: ($) => seq(field("from", $._value), field("to", $._value)),
 
@@ -1240,7 +1240,7 @@ export default grammar({
                 seq("UNLESS", $._value, optional(choice("BUT_ONLY", "BUT_ONLY_IF_IT_CHANGES")))
             ),
 
-        compile_action: ($) =>
+        action_compile: ($) =>
             prec.right(
                 seq(
                     "COMPILE",
@@ -1251,23 +1251,23 @@ export default grammar({
                 )
             ),
 
-        extend_top_action: extendAction("EXTEND_TOP"),
-        extend_bottom_action: extendAction("EXTEND_BOTTOM"),
+        action_extend_top: extendAction("EXTEND_TOP"),
+        action_extend_bottom: extendAction("EXTEND_BOTTOM"),
 
-        append_action: appendAction("APPEND"),
-        append_col_action: appendAction("APPEND_COL"),
+        action_append: appendAction("APPEND"),
+        action_append_col: appendAction("APPEND_COL"),
 
-        append_outer_action: ($) =>
+        action_append_outer: ($) =>
             seq("APPEND_OUTER", field("file", $._value), field("text", $._value), optional("KEEP_CRLF")),
 
-        delete_action: ($) =>
+        action_delete: ($) =>
             prec.right(seq("DELETE", optional($._opt_no_backup), repeat1(field("file", $._value)))),
 
-        move_action: ($) => seq("MOVE", field("from", $._value), field("to", $._value)),
+        action_move: ($) => seq("MOVE", field("from", $._value), field("to", $._value)),
 
-        mkdir_action: ($) => seq("MKDIR", field("dir", $._value)),
+        action_mkdir: ($) => seq("MKDIR", field("dir", $._value)),
 
-        create_action: ($) =>
+        action_create: ($) =>
             seq(
                 "CREATE",
                 field("type", $.identifier),
@@ -1338,7 +1338,7 @@ export default grammar({
         action_php_each: phpEachLoop("ACTION_PHP_EACH")(($) => $._action),
 
         // Variables
-        outer_set_action: ($) =>
+        action_outer_set: ($) =>
             seq(
                 "OUTER_SET",
                 choice(
@@ -1347,25 +1347,25 @@ export default grammar({
                 )
             ),
 
-        outer_sprint_action: sprintOp("OUTER_SPRINT"),
-        outer_text_sprint_action: sprintOp("OUTER_TEXT_SPRINT"),
+        action_outer_sprint: sprintOp("OUTER_SPRINT"),
+        action_outer_text_sprint: sprintOp("OUTER_TEXT_SPRINT"),
 
-        with_tra_action: ($) =>
+        action_with_tra: ($) =>
             seq("WITH_TRA", repeat1(field("file", $._value)), "BEGIN", repeat($._action), "END"),
 
-        outer_patch_action: outerPatchAction("OUTER_PATCH"),
-        outer_patch_save_action: outerPatchSaveAction("OUTER_PATCH_SAVE"),
-        outer_inner_patch_action: outerPatchAction("OUTER_INNER_PATCH"),
-        outer_inner_patch_save_action: outerPatchSaveAction("OUTER_INNER_PATCH_SAVE"),
+        action_outer_patch: outerPatchAction("OUTER_PATCH"),
+        action_outer_patch_save: outerPatchSaveAction("OUTER_PATCH_SAVE"),
+        action_outer_inner_patch: outerPatchAction("OUTER_INNER_PATCH"),
+        action_outer_inner_patch_save: outerPatchSaveAction("OUTER_INNER_PATCH_SAVE"),
 
         // Includes
-        include_action: ($) => seq("INCLUDE", field("file", $._value)),
+        action_include: ($) => seq("INCLUDE", field("file", $._value)),
 
         // Functions/macros definitions (using helpers)
-        define_action_macro: defineMacro("DEFINE_ACTION_MACRO", ($) => $._action),
-        define_patch_macro: defineMacro("DEFINE_PATCH_MACRO", ($) => $._patch),
-        define_action_function: defineFunction("DEFINE_ACTION_FUNCTION", ($) => $._action),
-        define_patch_function: defineFunction("DEFINE_PATCH_FUNCTION", ($) => $._patch),
+        action_define_macro: defineMacro("DEFINE_ACTION_MACRO", ($) => $._action),
+        action_define_patch_macro: defineMacro("DEFINE_PATCH_MACRO", ($) => $._patch),
+        action_define_function: defineFunction("DEFINE_ACTION_FUNCTION", ($) => $._action),
+        action_define_patch_function: defineFunction("DEFINE_PATCH_FUNCTION", ($) => $._patch),
 
         _func_decl_param: ($) => choice($.int_var_decl, $.str_var_decl, $.ret_decl, $.ret_array_decl),
 
@@ -1379,10 +1379,10 @@ export default grammar({
         ret_array_decl: ($) => seq("RET_ARRAY", repeat1($.identifier)),
 
         // Function/macro calls
-        launch_action_macro: ($) =>
+        action_launch_macro: ($) =>
             seq(choice("LAUNCH_ACTION_MACRO", "LAM"), field("name", choice($.identifier, $.string))),
 
-        launch_action_function: ($) =>
+        action_launch_function: ($) =>
             seq(
                 choice("LAUNCH_ACTION_FUNCTION", "LAF"),
                 field("name", choice($.identifier, $.string)),
@@ -1415,7 +1415,7 @@ export default grammar({
         action_clear_array: clearArray("ACTION_CLEAR_ARRAY"),
 
         // String/tra operations
-        string_set_action: ($) =>
+        action_string_set: ($) =>
             prec.right(
                 seq(
                     choice("STRING_SET", "STRING_SET_EVALUATE"),
@@ -1423,14 +1423,14 @@ export default grammar({
                 )
             ),
 
-        load_tra_action: ($) => prec.right(seq("LOAD_TRA", repeat1(field("file", $._value)))),
+        action_load_tra: ($) => prec.right(seq("LOAD_TRA", repeat1(field("file", $._value)))),
 
         // Game data modification
-        add_sectype_action: ($) => seq("ADD_SECTYPE", field("name", $._value), field("label", $._value)),
+        action_add_sectype: ($) => seq("ADD_SECTYPE", field("name", $._value), field("label", $._value)),
 
-        add_area_type_action: ($) => seq("ADD_AREA_TYPE", field("name", $._value)),
+        action_add_area_type: ($) => seq("ADD_AREA_TYPE", field("name", $._value)),
 
-        add_spell_action: ($) =>
+        action_add_spell: ($) =>
             prec.right(
                 seq(
                     "ADD_SPELL",
@@ -1442,17 +1442,17 @@ export default grammar({
                 )
             ),
 
-        add_kit_action: ($) => prec.right(seq("ADD_KIT", repeat1(choice($._value, $.kit_say)))),
+        action_add_kit: ($) => prec.right(seq("ADD_KIT", repeat1(choice($._value, $.kit_say)))),
 
         kit_say: ($) => seq("SAY", $._value),
 
-        add_projectile_action: ($) => seq("ADD_PROJECTILE", field("file", $._value)),
+        action_add_projectile: ($) => seq("ADD_PROJECTILE", field("file", $._value)),
 
         // System/execution
-        at_now_action: ($) =>
+        action_at_now: ($) =>
             seq("AT_NOW", optional(field("var", $.identifier)), field("command", $._value), optional("EXACT")),
 
-        at_interactive_exit_action: ($) => seq("AT_INTERACTIVE_EXIT", field("command", $._value)),
+        action_at_interactive_exit: ($) => seq("AT_INTERACTIVE_EXIT", field("command", $._value)),
 
         action_bash_for: ($) =>
             seq(
@@ -1464,14 +1464,14 @@ export default grammar({
                 "END"
             ),
 
-        decompress_biff_action: ($) => seq("DECOMPRESS_BIFF", field("file", $._value)),
+        action_decompress_biff: ($) => seq("DECOMPRESS_BIFF", field("file", $._value)),
 
         // Print/messaging (using helpers)
-        print_action: printOp("PRINT"),
-        warn_action: printOp("WARN"),
-        fail_action: printOp("FAIL"),
+        action_print: printOp("PRINT"),
+        action_warn: printOp("WARN"),
+        action_fail: printOp("FAIL"),
 
-        clear_memory_action: ($) =>
+        action_clear_memory: ($) =>
             choice(
                 "CLEAR_MEMORY",
                 "CLEAR_ARRAYS",
@@ -1481,12 +1481,12 @@ export default grammar({
                 "CLEAR_IDS_MAP"
             ),
 
-        random_seed_action: ($) => seq("RANDOM_SEED", $._value),
+        action_random_seed: ($) => seq("RANDOM_SEED", $._value),
 
         action_readln: ($) => seq("ACTION_READLN", $._value),
 
-        silent_action: ($) => "SILENT",
-        verbose_action: ($) => "VERBOSE",
+        action_silent: ($) => "SILENT",
+        action_verbose: ($) => "VERBOSE",
 
         // Case conversion (using helpers)
         action_to_upper: caseConvert("ACTION_TO_UPPER"),
@@ -1495,10 +1495,10 @@ export default grammar({
         action_get_strref: ($) =>
             seq("ACTION_GET_STRREF", field("strref", $._value), field("var", $.identifier)),
 
-        require_predicate_action: ($) =>
+        action_require_predicate: ($) =>
             prec(10, seq("REQUIRE_PREDICATE", field("predicate", $._value), field("message", $._value))),
 
-        forbid_component_action: ($) =>
+        action_forbid_component: ($) =>
             prec(
                 10,
                 seq(
@@ -1509,7 +1509,7 @@ export default grammar({
                 )
             ),
 
-        disable_from_key_action: ($) =>
+        action_disable_from_key: ($) =>
             prec.right(seq("DISABLE_FROM_KEY", repeat1(field("resource", $._value)))),
 
         // =========================================
