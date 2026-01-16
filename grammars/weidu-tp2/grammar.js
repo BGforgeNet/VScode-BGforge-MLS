@@ -1158,6 +1158,7 @@ export default grammar({
                 $.add_kit_action,
                 // System/execution
                 $.at_now_action,
+                $.at_interactive_exit_action,
                 $.action_bash_for,
                 $.decompress_biff_action,
                 // Misc
@@ -1450,6 +1451,8 @@ export default grammar({
         // System/execution
         at_now_action: ($) =>
             seq("AT_NOW", optional(field("var", $.identifier)), field("command", $._value), optional("EXACT")),
+
+        at_interactive_exit_action: ($) => seq("AT_INTERACTIVE_EXIT", field("command", $._value)),
 
         action_bash_for: ($) =>
             seq(
