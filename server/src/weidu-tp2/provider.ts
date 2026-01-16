@@ -9,7 +9,7 @@ import { conlog } from "../common";
 import { LANG_WEIDU_TP2 } from "../core/languages";
 import { Language, Features } from "../data-loader";
 import { LanguageProvider, ProviderContext } from "../language-provider";
-import { getIndentFromEditorconfig } from "../shared/editorconfig";
+import { getEditorconfigSettings } from "../shared/editorconfig";
 import { createFullDocumentEdit, validateFormatting } from "../shared/format-utils";
 import { compile as weiduCompile } from "../weidu";
 import { formatDocument as formatAst, FormatOptions } from "./format-core";
@@ -99,13 +99,17 @@ export const weiduTp2Provider: LanguageProvider = {
 };
 
 const DEFAULT_INDENT = 4;
+const DEFAULT_LINE_LIMIT = 120;
 
 function getFormatOptions(uri: string): FormatOptions {
     try {
         const filePath = fileURLToPath(uri);
-        const indentSize = getIndentFromEditorconfig(filePath);
-        return { indentSize: indentSize ?? DEFAULT_INDENT, lineLimit: 120 };
+        const settings = getEditorconfigSettings(filePath);
+        return {
+            indentSize: settings.indentSize ?? DEFAULT_INDENT,
+            lineLimit: settings.maxLineLength ?? DEFAULT_LINE_LIMIT,
+        };
     } catch {
-        return { indentSize: DEFAULT_INDENT, lineLimit: 120 };
+        return { indentSize: DEFAULT_INDENT, lineLimit: DEFAULT_LINE_LIMIT };
     }
 }

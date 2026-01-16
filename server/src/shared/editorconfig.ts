@@ -25,13 +25,20 @@ function matchesGlob(fileName: string, pattern: string): boolean {
     return fileName === pattern;
 }
 
+/** Result from editorconfig parsing. */
+export interface EditorconfigResult {
+    indentSize: number | null;
+    maxLineLength: number | null;
+}
+
 /**
- * Gets indent_size from .editorconfig files, walking up the directory tree.
+ * Gets formatting settings from .editorconfig files, walking up the directory tree.
+ * Supports indent_size and max_line_length properties.
  */
-export function getIndentFromEditorconfig(filePath: string): number | null {
+export function getEditorconfigSettings(filePath: string): EditorconfigResult {
     const fileName = path.basename(filePath);
     let dir = path.dirname(filePath);
-    let result: number | null = null;
+    const result: EditorconfigResult = { indentSize: null, maxLineLength: null };
 
     for (;;) {
         const configPath = path.join(dir, ".editorconfig");
@@ -42,16 +49,28 @@ export function getIndentFromEditorconfig(filePath: string): number | null {
                 // Later matching sections override earlier ones
                 for (const section of Object.keys(config)) {
                     if (matchesGlob(fileName, section)) {
-                        const indent = config[section].indent_size;
+                        const sectionConfig = config[section];
+
+                        // indent_size
+                        const indent = sectionConfig.indent_size;
                         if (typeof indent === "number") {
-                            result = indent;
+                            result.indentSize = indent;
                         } else if (typeof indent === "string") {
                             const parsed = parseInt(indent, 10);
-                            if (!isNaN(parsed)) result = parsed;
+                            if (!isNaN(parsed)) result.indentSize = parsed;
+                        }
+
+                        // max_line_length
+                        const maxLen = sectionConfig.max_line_length;
+                        if (typeof maxLen === "number") {
+                            result.maxLineLength = maxLen;
+                        } else if (typeof maxLen === "string" && maxLen !== "off") {
+                            const parsed = parseInt(maxLen, 10);
+                            if (!isNaN(parsed)) result.maxLineLength = parsed;
                         }
                     }
                 }
-                if (result !== null) return result;
+                if (result.indentSize !== null && result.maxLineLength !== null) return result;
                 if (config.root === true || config.root === "true") break;
             } catch {
                 // Ignore read errors
@@ -62,4 +81,12 @@ export function getIndentFromEditorconfig(filePath: string): number | null {
         dir = parent;
     }
     return result;
+}
+
+/**
+ * Gets indent_size from .editorconfig files, walking up the directory tree.
+ * @deprecated Use getEditorconfigSettings instead for more complete config.
+ */
+export function getIndentFromEditorconfig(filePath: string): number | null {
+    return getEditorconfigSettings(filePath).indentSize;
 }
