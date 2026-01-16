@@ -13,6 +13,7 @@ import {
     KW_BEGIN,
     KW_END,
     KW_ALWAYS,
+    addFormatError,
 } from "./format-types";
 import {
     isComment,
@@ -36,6 +37,8 @@ import {
     formatFunctionCall,
     formatMatchCase,
     formatPredicateAction,
+    formatInnerAction,
+    formatInnerPatch,
 } from "./format-blocks";
 
 // Re-export public types
@@ -67,13 +70,20 @@ function formatComponent(node: SyntaxNode, ctx: FormatContext): string {
             continue;
         }
 
-        // Component name - append to BEGIN line
+        // Component name and flags - append to BEGIN line
         if (
             child.type === "string" ||
             child.type === "identifier" ||
+            child.type === "variable_ref" ||
             child.type === "at_identifier" ||
             child.type === "tra_ref" ||
-            child.type === "component_flags"
+            child.type === "component_flags" ||
+            child.type === "designated_flag" ||
+            child.type === "subcomponent_flag" ||
+            child.type === "group_flag" ||
+            child.type === "label_flag" ||
+            child.type === "require_predicate_flag" ||
+            child.type === "require_component_flag"
         ) {
             beginLine = beginLine ? beginLine + " " + normalizeWhitespace(child.text) : normalizeWhitespace(child.text);
             continue;
@@ -113,7 +123,12 @@ function formatAlwaysBlock(node: SyntaxNode, ctx: FormatContext): string {
         } else if (child.type === "inlined_file") {
             lines.push(formatInlinedFile(child, ctx, 1));
             lastEndRow = child.endPosition.row;
-        } else if (isAction(child.type) || child.type === "top_level_assignment") {
+        } else if (
+            isAction(child.type) ||
+            isControlFlow(child.type) ||
+            isFunctionCall(child.type) ||
+            child.type === "top_level_assignment"
+        ) {
             lines.push(formatNode(child, ctx, 1));
             lastEndRow = child.endPosition.row;
         }
@@ -152,6 +167,18 @@ function formatSimpleNode(node: SyntaxNode, ctx: FormatContext, depth: number): 
     const indent = ctx.indent.repeat(depth);
     const singleLine = indent + normalizeWhitespace(node.text);
 
+    // Report if this node looks like it should have specialized formatting
+    // (contains BEGIN/END keywords but fell through to simple formatting)
+    const hasBeginEnd = node.children.some((c) => c.text === "BEGIN" || c.text === "END");
+    if (hasBeginEnd) {
+        addFormatError(
+            ctx,
+            `Unhandled block node type '${node.type}' - using simple formatting`,
+            node.startPosition.row + 1,
+            node.startPosition.column + 1
+        );
+    }
+
     if (singleLine.length <= ctx.lineLimit) {
         return withNormalizedComment(singleLine);
     }
@@ -177,11 +204,39 @@ function formatSimpleNode(node: SyntaxNode, ctx: FormatContext, depth: number): 
     const prefixEndOffset = firstString.startIndex - node.startIndex;
     const prefix = normalizeWhitespace(node.text.slice(0, prefixEndOffset));
 
-    // Build split output
+    // Build split output, preserving text between strings (e.g., UNLESS, IF keywords)
     const argIndent = ctx.indent.repeat(depth + 1);
     const lines: string[] = [indent + prefix];
-    for (const strNode of stringChildren) {
+    let prevEndOffset = firstString.endIndex - node.startIndex;
+    lines.push(argIndent + firstString.text);
+
+    for (let i = 1; i < stringChildren.length; i++) {
+        const strNode = stringChildren[i];
+        if (!strNode) continue;
+        // Get text between previous string and this string (may contain keywords like UNLESS)
+        const betweenStart = prevEndOffset;
+        const betweenEnd = strNode.startIndex - node.startIndex;
+        const between = normalizeWhitespace(node.text.slice(betweenStart, betweenEnd));
+        if (between) {
+            lines.push(argIndent + between);
+        }
         lines.push(argIndent + strNode.text);
+        prevEndOffset = strNode.endIndex - node.startIndex;
+    }
+
+    // Append any remaining content after the last string (e.g., kit_say nodes in ADD_KIT)
+    const lastString = stringChildren[stringChildren.length - 1];
+    if (lastString) {
+        const remainingStart = lastString.endIndex - node.startIndex;
+        const remaining = normalizeWhitespace(node.text.slice(remainingStart));
+        if (remaining) {
+            // Split remaining content by lines and indent each
+            for (const part of remaining.split(/\s+(?=SAY\b)/i)) {
+                if (part.trim()) {
+                    lines.push(argIndent + part.trim());
+                }
+            }
+        }
     }
 
     return lines.join("\n");
@@ -248,6 +303,16 @@ function formatNode(node: SyntaxNode, ctx: FormatContext, depth: number): string
     // REQUIRE_PREDICATE
     if (type === "require_predicate_action") {
         return formatPredicateAction(node, ctx, depth);
+    }
+
+    // INNER_ACTION
+    if (type === "inner_action") {
+        return formatInnerAction(node, ctx, depth, formatNode);
+    }
+
+    // INNER_PATCH / INNER_PATCH_SAVE / INNER_PATCH_FILE
+    if (type === "inner_patch" || type === "inner_patch_save" || type === "inner_patch_file") {
+        return formatInnerPatch(node, ctx, depth, formatNode);
     }
 
     // Simple nodes
@@ -329,6 +394,7 @@ export function formatDocument(root: SyntaxNode, options?: Partial<FormatOptions
         indent: " ".repeat(opts.indentSize),
         lineLimit: opts.lineLimit,
         indentSize: opts.indentSize,
+        errors: [],
     };
 
     const result: string[] = [];
@@ -377,6 +443,6 @@ export function formatDocument(root: SyntaxNode, options?: Partial<FormatOptions
 
     return {
         text: result.join("\n") + "\n",
-        errors: [],
+        errors: ctx.errors,
     };
 }

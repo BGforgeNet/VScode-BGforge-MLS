@@ -139,7 +139,8 @@ describe("format-utils: type predicates", () => {
     it("isCopyAction detects copy action types", () => {
         expect(isCopyAction("copy_action")).toBe(true);
         expect(isCopyAction("copy_existing_action")).toBe(true);
-        expect(isCopyAction("inner_action")).toBe(true);
+        // inner_action has its own formatter, not a copy action
+        expect(isCopyAction("inner_action")).toBe(false);
         expect(isCopyAction("action_if")).toBe(false);
     });
 
@@ -293,5 +294,77 @@ END`;
         const input = `BEGIN @1  // component comment`;
         const output = format(input);
         expect(output).toContain("BEGIN @1  // component comment");
+    });
+
+    it("preserves inline comments on INT_VAR assignments", () => {
+        const input = `BEGIN @1
+LAF test
+INT_VAR
+projectile = 191  // ice scorcher
+target = 4  // area
+END`;
+        const output = format(input);
+        // Comments should stay inline with their assignments
+        expect(output).toMatch(/projectile\s+=\s+191\s+\/\/ ice scorcher/);
+        expect(output).toMatch(/target\s+=\s+4\s+\/\/ area/);
+    });
+
+    it("preserves inline comments in nested function calls", () => {
+        const input = `BEGIN @1
+COPY_EXISTING ~item.itm~ ~override~
+  PATCH_IF foo = 0 BEGIN
+    LPF ALTER_ITEM
+      INT_VAR
+        value = 100  // important value
+    END
+  END`;
+        const output = format(input);
+        expect(output).toMatch(/value\s+=\s+100\s+\/\/ important value/);
+    });
+});
+
+describe("formatDocument error collection", () => {
+    beforeAll(async () => {
+        await initParser();
+    });
+
+    function formatWithErrors(code: string): { text: string; errors: Array<{ message: string; line: number; column: number }> } {
+        const parser = getParser();
+        const tree = parser.parse(code);
+        return formatDocument(tree.rootNode);
+    }
+
+    it("returns empty errors for valid code", () => {
+        const input = `BACKUP ~backup~
+BEGIN @1
+    COPY ~src~ ~dst~`;
+        const result = formatWithErrors(input);
+        expect(result.errors).toEqual([]);
+    });
+
+    it("collects errors in result object", () => {
+        const input = `BEGIN @1`;
+        const result = formatWithErrors(input);
+        // Valid simple code should have no errors
+        expect(Array.isArray(result.errors)).toBe(true);
+    });
+
+    it("error object has correct structure", () => {
+        const input = `BEGIN @1`;
+        const result = formatWithErrors(input);
+        // Verify errors array exists and has correct type
+        expect(result).toHaveProperty("text");
+        expect(result).toHaveProperty("errors");
+        expect(typeof result.text).toBe("string");
+        expect(Array.isArray(result.errors)).toBe(true);
+    });
+
+    it("formats despite errors", () => {
+        // Even with potential issues, formatter should produce output
+        const input = `BEGIN @1
+COPY ~src~ ~dst~`;
+        const result = formatWithErrors(input);
+        expect(result.text).toContain("BEGIN @1");
+        expect(result.text).toContain("COPY");
     });
 });

@@ -16,6 +16,47 @@ import {
 } from "./format-types";
 
 // ============================================
+// Type lookup sets (O(1) instead of O(n) array includes)
+// ============================================
+
+const TOP_LEVEL_DIRECTIVE_SET = new Set<string>(TOP_LEVEL_DIRECTIVES);
+const CONTROL_FLOW_SET = new Set<string>(CONTROL_FLOW_TYPES);
+const COPY_ACTION_SET = new Set<string>(COPY_ACTION_TYPES);
+const FUNCTION_DEF_SET = new Set<string>(FUNCTION_DEF_TYPES);
+const FUNCTION_CALL_SET = new Set<string>(FUNCTION_CALL_TYPES);
+const FOR_EACH_SET = new Set<string>(FOR_EACH_TYPES);
+
+/** Actions that don't follow the standard _action suffix pattern. */
+const SPECIAL_ACTION_TYPES = new Set([
+    "action_assignment",
+    "fail_action",
+    "create_action",
+    "text_sprint_action",
+    "action_define_array",
+    "action_define_associative_array",
+    "action_clear_array",
+    "action_readln",
+    "action_to_upper",
+    "action_to_lower",
+    "action_get_strref",
+]);
+
+/** Parameter keywords for function calls/definitions. */
+const PARAM_KEYWORDS = new Set(["INT_VAR", "STR_VAR", "RET", "RET_ARRAY"]);
+
+/** Associative array definition types. */
+const ASSOC_ARRAY_DEF_TYPES = new Set(["action_define_associative_array", "define_associative_array_patch"]);
+
+/** Primitive value types (for array definitions). */
+const PRIMITIVE_TYPES = new Set(["binary_expr", "variable_ref", "identifier", "string", "number"]);
+
+/** Patch types that don't follow standard patterns. */
+const SPECIAL_PATCH_TYPES = new Set(["write_var", "read_var", "set_var"]);
+
+/** Prefixes that identify patch types. */
+const PATCH_PREFIXES = ["patch_", "inner_patch", "decompile_", "compile_"] as const;
+
+// ============================================
 // Comment utilities
 // ============================================
 
@@ -134,66 +175,60 @@ export function normalizeWhitespace(text: string): string {
 
 /** Check if node type is a top-level directive. */
 export function isTopLevelDirective(type: string): boolean {
-    return (TOP_LEVEL_DIRECTIVES as readonly string[]).includes(type);
+    return TOP_LEVEL_DIRECTIVE_SET.has(type);
 }
 
 /** Check if node type is an action. */
 export function isAction(type: string): boolean {
-    return (
-        type.endsWith("_action") ||
-        type === "action_assignment" ||
-        type === "fail_action" ||
-        type === "create_action" ||
-        type === "text_sprint_action"
-    );
+    return type.endsWith("_action") || SPECIAL_ACTION_TYPES.has(type);
 }
 
 /** Check if node type is a patch. */
 export function isPatch(type: string): boolean {
-    return (
-        type.endsWith("_patch") ||
-        type === "write_var" ||
-        type === "read_var" ||
-        type === "patch_assignment" ||
-        type === "patch_clear_array" ||
-        type === "set_var" ||
-        type === "decompile_and_patch"
-    );
+    if (type.endsWith("_patch") || SPECIAL_PATCH_TYPES.has(type)) {
+        return true;
+    }
+    for (const prefix of PATCH_PREFIXES) {
+        if (type.startsWith(prefix)) {
+            return true;
+        }
+    }
+    return false;
 }
 
 /** Check if text is a parameter keyword. */
 export function isParamKeyword(text: string): boolean {
-    return text === "INT_VAR" || text === "STR_VAR" || text === "RET" || text === "RET_ARRAY";
+    return PARAM_KEYWORDS.has(text);
 }
 
 /** Check if node type is a control flow construct with BEGIN...END body. */
 export function isControlFlow(type: string): boolean {
-    return (CONTROL_FLOW_TYPES as readonly string[]).includes(type);
+    return CONTROL_FLOW_SET.has(type);
 }
 
 /** Check if node type is an associative array definition. */
 export function isAssociativeArrayDef(type: string): boolean {
-    return type === "action_define_associative_array" || type === "define_associative_array_patch";
+    return ASSOC_ARRAY_DEF_TYPES.has(type);
 }
 
 /** Check if node type is a FOR_EACH style loop with IN keyword. */
 export function isForEach(type: string): boolean {
-    return (FOR_EACH_TYPES as readonly string[]).includes(type);
+    return FOR_EACH_SET.has(type);
 }
 
 /** Check if node type is a function/macro definition. */
 export function isFunctionDef(type: string): boolean {
-    return (FUNCTION_DEF_TYPES as readonly string[]).includes(type);
+    return FUNCTION_DEF_SET.has(type);
 }
 
 /** Check if node type is a function/macro call. */
 export function isFunctionCall(type: string): boolean {
-    return (FUNCTION_CALL_TYPES as readonly string[]).includes(type);
+    return FUNCTION_CALL_SET.has(type);
 }
 
 /** Check if node type is a COPY-style action. */
 export function isCopyAction(type: string): boolean {
-    return (COPY_ACTION_TYPES as readonly string[]).includes(type);
+    return COPY_ACTION_SET.has(type);
 }
 
 /** Check if node type is valid body content (actions, patches, control flow). */
@@ -214,6 +249,9 @@ export function isKeyword(node: SyntaxNode, keyword: string): boolean {
     return node.text === keyword;
 }
 
+/** Match case types. */
+const MATCH_CASE_TYPES = new Set(["match_case", "action_match_case", "assoc_entry"]);
+
 /**
  * Check if a node type is valid body content for control flow constructs.
  *
@@ -227,18 +265,7 @@ export function isKeyword(node: SyntaxNode, keyword: string): boolean {
  * included because array body content can be raw values, not wrapped in actions.
  */
 export function isControlFlowBodyContent(type: string): boolean {
-    return (
-        isBodyContent(type) ||
-        type === "match_case" ||
-        type === "action_match_case" ||
-        type === "assoc_entry" ||
-        // Primitives for array definitions (ACTION_DEFINE_ARRAY, etc.)
-        type === "binary_expr" ||
-        type === "variable_ref" ||
-        type === "identifier" ||
-        type === "string" ||
-        type === "number"
-    );
+    return isBodyContent(type) || MATCH_CASE_TYPES.has(type) || PRIMITIVE_TYPES.has(type);
 }
 
 // ============================================
@@ -272,8 +299,8 @@ export function outputAlignedAssignments(
 
     for (const item of items) {
         if (item.type === "comment") {
-            // Check for inline comment
-            if (lastEndRow >= 0 && item.endRow === lastEndRow && lines.length > 0) {
+            // Check for inline comment - comment starts on same row as previous item ended
+            if (lastEndRow >= 0 && item.startRow === lastEndRow && lines.length > 0) {
                 const lastLine = lines[lines.length - 1];
                 if (lastLine !== undefined && !lastLine.includes("//")) {
                     lines[lines.length - 1] = lastLine + INLINE_COMMENT_SPACING + item.text;

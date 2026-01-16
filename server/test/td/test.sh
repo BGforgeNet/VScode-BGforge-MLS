@@ -11,6 +11,7 @@ ROOT="$(cd ../../../ && pwd)"
 
 CLI="$ROOT/server/out/td-cli.js"
 GRAMMAR_DIR="$ROOT/grammars/weidu-d"
+TREE_SITTER="$ROOT/node_modules/.bin/tree-sitter"
 
 fail=0
 pass=0
@@ -38,9 +39,9 @@ for sample in samples/*.td; do
 
     # Check output parses with weidu-d grammar
     actual_abs="$(pwd)/$actual"
-    if ! (cd "$GRAMMAR_DIR" && tree-sitter parse "$actual_abs" > /dev/null 2>&1); then
+    if ! (cd "$GRAMMAR_DIR" && "$TREE_SITTER" parse "$actual_abs" > /dev/null 2>&1); then
         echo "FAIL: $name (grammar parse error)"
-        (cd "$GRAMMAR_DIR" && tree-sitter parse "$actual_abs" 2>&1 | tail -5)
+        (cd "$GRAMMAR_DIR" && "$TREE_SITTER" parse "$actual_abs" 2>&1 | tail -5)
         fail=$((fail + 1))
         rm -f "$actual"
         continue

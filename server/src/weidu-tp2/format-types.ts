@@ -2,8 +2,6 @@
  * Types, interfaces, and constants for WeiDU TP2 formatting.
  */
 
-import type { Node as SyntaxNode } from "web-tree-sitter";
-
 // ============================================
 // Public types
 // ============================================
@@ -34,6 +32,13 @@ export interface FormatContext {
     indent: string;
     lineLimit: number;
     indentSize: number;
+    /** Collected errors during formatting. */
+    errors: FormatError[];
+}
+
+/** Add a formatting error to the context. */
+export function addFormatError(ctx: FormatContext, message: string, line: number, column: number): void {
+    ctx.errors.push({ message, line, column });
 }
 
 // ============================================
@@ -131,7 +136,6 @@ export const COPY_ACTION_TYPES = [
     "copy_kit_action",
     "copy_2da_action",
     "copy_all_gam_files_action",
-    "inner_action",
 ] as const;
 
 /** Function/macro definition types. */
@@ -166,6 +170,7 @@ export interface AssignmentItem {
 export interface CommentItem {
     type: "comment";
     text: string;
+    startRow: number;
     endRow: number;
 }
 
@@ -173,20 +178,8 @@ export interface CommentItem {
 export type CollectedItem = AssignmentItem | CommentItem;
 
 // ============================================
-// State types
+// Condition formatting types
 // ============================================
-
-/** State for control flow formatting. */
-export interface ControlFlowState {
-    lines: string[];
-    headerLines: string[][];
-    conditionNode: SyntaxNode | null;
-    headerKeyword: string;
-    inBody: boolean;
-    afterELSE: boolean;
-    lastEndRow: number;
-    beginRow: number;
-}
 
 /** Operand with optional preceding operator (OR/AND). */
 export interface ConditionOperand {
