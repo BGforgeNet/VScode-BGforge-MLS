@@ -2,9 +2,10 @@
  * SSL formatting for LSP.
  */
 
-import { TextEdit, Diagnostic, DiagnosticSeverity } from "vscode-languageserver/node";
+import { Diagnostic, DiagnosticSeverity } from "vscode-languageserver/node";
 import { fileURLToPath } from "url";
 import { conlog } from "../common";
+import { FormatResult } from "../language-provider";
 import { getConnection } from "../lsp-connection";
 import { getIndentFromEditorconfig } from "../shared/editorconfig";
 import { createFullDocumentEdit } from "../shared/format-utils";
@@ -42,16 +43,14 @@ function formatErrorsToDiagnostics(errors: FormatError[]): Diagnostic[] {
     }));
 }
 
-export function formatDocument(text: string, uri: string): TextEdit[] {
+export function formatDocument(text: string, uri: string): FormatResult {
     if (!isInitialized()) {
-        getConnection().window.showWarningMessage("SSL formatter not initialized");
-        return [];
+        return { edits: [], warning: "SSL formatter not initialized" };
     }
 
     const tree = getParser().parse(text);
     if (!tree) {
-        getConnection().window.showWarningMessage("Failed to parse SSL document for formatting");
-        return [];
+        return { edits: [], warning: "Failed to parse SSL document for formatting" };
     }
 
     const options = getFormatOptions(uri);
@@ -61,5 +60,5 @@ export function formatDocument(text: string, uri: string): TextEdit[] {
     const diagnostics = formatErrorsToDiagnostics(result.errors);
     void getConnection().sendDiagnostics({ uri, diagnostics });
 
-    return createFullDocumentEdit(text, result.text);
+    return { edits: createFullDocumentEdit(text, result.text) };
 }

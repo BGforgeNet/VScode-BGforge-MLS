@@ -7,12 +7,12 @@
  * providing a unified provider interface.
  */
 
-import { CompletionItem, DocumentSymbol, Hover, Location, Position, SignatureHelp, TextEdit, WorkspaceEdit } from "vscode-languageserver/node";
+import { CompletionItem, DocumentSymbol, Hover, Location, Position, SignatureHelp, WorkspaceEdit } from "vscode-languageserver/node";
 import { conlog } from "../common";
 import { LANG_FALLOUT_SSL } from "../core/languages";
 import { compile as falloutCompile } from "./compiler";
 import { Language, Features } from "../data-loader";
-import { LanguageProvider, ProviderContext } from "../language-provider";
+import { FormatResult, LanguageProvider, ProviderContext } from "../language-provider";
 import * as signature from "../shared/signature";
 import { formatDocument, initFormatter } from "./format";
 import { isInitialized } from "./parser";
@@ -60,9 +60,9 @@ export const falloutSslProvider: LanguageProvider = {
         conlog("Fallout SSL provider initialized");
     },
 
-    format(text: string, uri: string): TextEdit[] {
+    format(text: string, uri: string): FormatResult {
         if (!isInitialized()) {
-            return [];
+            return { edits: [] };
         }
         return formatDocument(text, uri);
     },

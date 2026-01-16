@@ -5,11 +5,11 @@
  * Internally delegates data features (completion, hover) to a Language instance.
  */
 
-import { CompletionItem, Hover, TextEdit } from "vscode-languageserver/node";
+import { CompletionItem, Hover } from "vscode-languageserver/node";
 import { conlog } from "../common";
 import { LANG_WEIDU_BAF } from "../core/languages";
 import { Language, Features } from "../data-loader";
-import { LanguageProvider, ProviderContext } from "../language-provider";
+import { FormatResult, LanguageProvider, ProviderContext } from "../language-provider";
 import { getIndentFromEditorconfig } from "../shared/editorconfig";
 import { createFullDocumentEdit, validateFormatting } from "../shared/format-utils";
 import { fileURLToPath } from "url";
@@ -65,14 +65,14 @@ export const weiduBafProvider: LanguageProvider = {
         conlog("WeiDU BAF provider initialized");
     },
 
-    format(text: string, uri: string): TextEdit[] {
+    format(text: string, uri: string): FormatResult {
         if (!isInitialized()) {
-            return [];
+            return { edits: [] };
         }
 
         const tree = getParser().parse(text);
         if (!tree) {
-            return [];
+            return { edits: [] };
         }
 
         const options = getFormatOptions(uri);
@@ -80,11 +80,14 @@ export const weiduBafProvider: LanguageProvider = {
 
         const validationError = validateFormatting(text, result.text);
         if (validationError) {
-            conlog(`BAF formatter bug: ${validationError}`);
-            return [];
+            conlog(`BAF formatter validation failed: ${validationError}`);
+            return {
+                edits: [],
+                warning: `BAF formatter validation failed: ${validationError}`,
+            };
         }
 
-        return createFullDocumentEdit(text, result.text);
+        return { edits: createFullDocumentEdit(text, result.text) };
     },
 
     getCompletions(uri: string): CompletionItem[] {

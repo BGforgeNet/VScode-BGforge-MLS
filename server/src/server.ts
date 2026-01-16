@@ -12,6 +12,7 @@ import {
     DidChangeConfigurationNotification,
     InitializeParams,
     InitializeResult,
+    MessageType,
     ProposedFeatures,
     TextDocumentPositionParams,
     TextDocuments,
@@ -417,7 +418,14 @@ connection.onDocumentFormatting((params) => {
     const langId = textDoc.languageId;
     const text = textDoc.getText();
 
-    return registry.format(langId, text, uri);
+    const result = registry.format(langId, text, uri);
+    if (result.warning) {
+        void connection.sendNotification("window/showMessage", {
+            type: MessageType.Warning,
+            message: result.warning,
+        });
+    }
+    return result.edits;
 });
 
 connection.onDocumentSymbol((params) => {

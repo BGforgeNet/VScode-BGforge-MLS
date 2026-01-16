@@ -17,7 +17,18 @@ import {
     TextEdit,
     WorkspaceEdit,
 } from "vscode-languageserver/node";
+
 import { MLSsettings } from "./settings";
+
+/**
+ * Result from formatting a document.
+ * Includes edits and optional warning message for validation failures.
+ */
+export interface FormatResult {
+    edits: TextEdit[];
+    /** Warning message to show to user (e.g., validation failure) */
+    warning?: string;
+}
 
 /**
  * Context passed to providers during initialization.
@@ -61,8 +72,8 @@ export interface LanguageProvider {
     // Document features (AST-based, operate on current text)
     // =========================================================================
 
-    /** Format the document. Returns edits to apply, or empty array if no changes. */
-    format?(text: string, uri: string): TextEdit[];
+    /** Format the document. Returns edits and optional warning message. */
+    format?(text: string, uri: string): FormatResult;
 
     /** Get document symbols (for outline view, Ctrl+Shift+O). */
     symbols?(text: string): DocumentSymbol[];

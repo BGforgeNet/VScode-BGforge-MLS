@@ -150,16 +150,6 @@ export const FUNCTION_CALL_TYPES = [
     "launch_patch_macro",
 ] as const;
 
-/** Special patch types with unique formatting. */
-export const SPECIAL_PATCH_TYPES = [
-    "write_patch",
-    "read_patch",
-    "add_store_item_patch",
-    "add_cre_item_patch",
-    "remove_store_item_patch",
-    "replace_cre_item_patch",
-] as const;
-
 // ============================================
 // Collected item types for aligned output
 // ============================================

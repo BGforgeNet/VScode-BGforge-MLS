@@ -3,17 +3,18 @@
  * Implements all TP2 file features in one place.
  */
 
-import { CompletionItem, Hover, Location, TextEdit } from "vscode-languageserver/node";
+import { CompletionItem, DocumentSymbol, Hover, Location } from "vscode-languageserver/node";
 import { fileURLToPath } from "url";
 import { conlog } from "../common";
 import { LANG_WEIDU_TP2 } from "../core/languages";
 import { Language, Features } from "../data-loader";
-import { LanguageProvider, ProviderContext } from "../language-provider";
+import { FormatResult, LanguageProvider, ProviderContext } from "../language-provider";
 import { getEditorconfigSettings } from "../shared/editorconfig";
 import { createFullDocumentEdit, validateFormatting } from "../shared/format-utils";
 import { compile as weiduCompile } from "../weidu";
 import { formatDocument as formatAst, FormatOptions } from "./format-core";
 import { initParser, getParser, isInitialized } from "./parser";
+import { getDocumentSymbols } from "./symbol";
 
 const features: Features = {
     completion: true,
@@ -75,14 +76,14 @@ export const weiduTp2Provider: LanguageProvider = {
         weiduCompile(uri, storedContext.settings.weidu, interactive, text);
     },
 
-    format(text: string, uri: string): TextEdit[] {
+    format(text: string, uri: string): FormatResult {
         if (!isInitialized()) {
-            return [];
+            return { edits: [] };
         }
 
         const tree = getParser().parse(text);
         if (!tree) {
-            return [];
+            return { edits: [] };
         }
 
         const options = getFormatOptions(uri);
@@ -91,10 +92,17 @@ export const weiduTp2Provider: LanguageProvider = {
         const validationError = validateFormatting(text, result.text);
         if (validationError) {
             conlog(`TP2 formatter validation failed: ${validationError}`);
-            return [];
+            return {
+                edits: [],
+                warning: `TP2 formatter validation failed: ${validationError}`,
+            };
         }
 
-        return createFullDocumentEdit(text, result.text);
+        return { edits: createFullDocumentEdit(text, result.text) };
+    },
+
+    symbols(text: string): DocumentSymbol[] {
+        return getDocumentSymbols(text);
     },
 };
 

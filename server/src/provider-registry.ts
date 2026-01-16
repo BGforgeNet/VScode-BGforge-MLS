@@ -16,10 +16,9 @@ import {
     Range,
     InlayHint,
     SignatureHelp,
-    TextEdit,
     WorkspaceEdit,
 } from "vscode-languageserver/node";
-import { LanguageProvider, ProviderContext } from "./language-provider";
+import { FormatResult, LanguageProvider, ProviderContext } from "./language-provider";
 import { conlog } from "./common";
 
 class ProviderRegistry {
@@ -104,12 +103,12 @@ class ProviderRegistry {
     // Feature routing - delegates to appropriate provider
     // =========================================================================
 
-    format(langId: string, text: string, uri: string): TextEdit[] {
+    format(langId: string, text: string, uri: string): FormatResult {
         const provider = this.get(langId);
         if (provider?.format) {
             return provider.format(text, uri);
         }
-        return [];
+        return { edits: [] };
     }
 
     symbols(langId: string, text: string): DocumentSymbol[] {

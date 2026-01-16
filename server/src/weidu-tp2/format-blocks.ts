@@ -102,7 +102,7 @@ function flattenOrAndExpr(node: SyntaxNode): ConditionOperand[] | null {
  * @param lineLimit - Maximum line length before splitting
  * @returns Array of formatted lines
  */
-export function formatCondition(
+function formatCondition(
     conditionNode: SyntaxNode | null,
     prefix: string,
     indent: string,
@@ -173,7 +173,7 @@ export function formatCondition(
  * @param formatChild - Callback to format child nodes
  * @returns Object with formatted lines array and last content row number
  */
-export function formatBlockBody(
+function formatBlockBody(
     node: SyntaxNode,
     ctx: FormatContext,
     depth: number,
@@ -211,7 +211,7 @@ export function formatBlockBody(
 // ============================================
 
 /** Format FOR loop with pre-formatted header. */
-export function formatForLoop(
+function formatForLoop(
     node: SyntaxNode,
     ctx: FormatContext,
     depth: number,
@@ -225,7 +225,7 @@ export function formatForLoop(
 }
 
 /** Format FOR loop header: FOR (init; condition; increment) */
-export function formatForLoopHeader(node: SyntaxNode): string | null {
+function formatForLoopHeader(node: SyntaxNode): string | null {
     if (node.type !== "for_patch" && node.type !== "outer_for") {
         return null;
     }
@@ -265,7 +265,7 @@ export function formatForLoopHeader(node: SyntaxNode): string | null {
 }
 
 /** Format FOR_EACH style loop. */
-export function formatForEach(
+function formatForEach(
     node: SyntaxNode,
     ctx: FormatContext,
     depth: number,
@@ -363,7 +363,7 @@ function parseAssocEntry(node: SyntaxNode): { name: string; value: string } | nu
 }
 
 /** Format associative array with aligned => operators. */
-export function formatAssociativeArray(node: SyntaxNode, ctx: FormatContext, depth: number): string {
+function formatAssociativeArray(node: SyntaxNode, ctx: FormatContext, depth: number): string {
     const indent = ctx.indent.repeat(depth);
     const bodyIndent = ctx.indent.repeat(depth + 1);
     const lines: string[] = [];

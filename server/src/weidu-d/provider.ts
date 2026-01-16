@@ -5,11 +5,11 @@
  * Internally delegates data features (completion, hover) to a Language instance.
  */
 
-import { CompletionItem, DocumentSymbol, Hover, Location, Position, TextEdit } from "vscode-languageserver/node";
+import { CompletionItem, DocumentSymbol, Hover, Location, Position } from "vscode-languageserver/node";
 import { conlog } from "../common";
 import { LANG_WEIDU_D } from "../core/languages";
 import { Language, Features } from "../data-loader";
-import { LanguageProvider, ProviderContext } from "../language-provider";
+import { FormatResult, LanguageProvider, ProviderContext } from "../language-provider";
 import { getIndentFromEditorconfig } from "../shared/editorconfig";
 import { createFullDocumentEdit, validateFormatting } from "../shared/format-utils";
 import { fileURLToPath } from "url";
@@ -69,14 +69,14 @@ export const weiduDProvider: LanguageProvider = {
         conlog("WeiDU D provider initialized");
     },
 
-    format(text: string, uri: string): TextEdit[] {
+    format(text: string, uri: string): FormatResult {
         if (!isInitialized()) {
-            return [];
+            return { edits: [] };
         }
 
         const tree = getParser().parse(text);
         if (!tree) {
-            return [];
+            return { edits: [] };
         }
 
         const options = getFormatOptions(uri);
@@ -84,11 +84,14 @@ export const weiduDProvider: LanguageProvider = {
 
         const validationError = validateFormatting(text, result.text);
         if (validationError) {
-            conlog(`D formatter bug: ${validationError}`);
-            return [];
+            conlog(`D formatter validation failed: ${validationError}`);
+            return {
+                edits: [],
+                warning: `D formatter validation failed: ${validationError}`,
+            };
         }
 
-        return createFullDocumentEdit(text, result.text);
+        return { edits: createFullDocumentEdit(text, result.text) };
     },
 
     symbols(text: string): DocumentSymbol[] {

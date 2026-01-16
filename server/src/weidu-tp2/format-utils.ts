@@ -11,7 +11,6 @@ import {
     COPY_ACTION_TYPES,
     FUNCTION_DEF_TYPES,
     FUNCTION_CALL_TYPES,
-    SPECIAL_PATCH_TYPES,
     FOR_EACH_TYPES,
     type CollectedItem,
 } from "./format-types";
@@ -160,11 +159,6 @@ export function isPatch(type: string): boolean {
         type === "set_var" ||
         type === "decompile_and_patch"
     );
-}
-
-/** Check if node type is a special patch with unique formatting. */
-export function isSpecialPatch(type: string): boolean {
-    return (SPECIAL_PATCH_TYPES as readonly string[]).includes(type);
 }
 
 /** Check if text is a parameter keyword. */
@@ -333,9 +327,4 @@ export function outputHeaderLines(headerLines: string[][], lines: string[], inde
 /** Get last element of array safely. */
 export function lastElement<T>(arr: T[]): T | undefined {
     return arr[arr.length - 1];
-}
-
-/** Get element at index safely. */
-export function elementAt<T>(arr: T[], index: number): T | undefined {
-    return arr[index];
 }
