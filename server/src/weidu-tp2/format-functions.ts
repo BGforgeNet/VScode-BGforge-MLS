@@ -220,7 +220,8 @@ export function formatFunctionDef(
                     lines.push(indent + defLine);
                     defLine = "";
                 }
-                lines.push(...formatParamDecl(child, indent, ctx));
+                // Parameter declarations are indented one level from the function definition
+                lines.push(...formatParamDecl(child, bodyIndent, ctx));
             } else if (child.text.startsWith("DEFINE_")) {
                 defLine = child.text;
             } else if (child.type === "identifier" || child.type === "string") {
