@@ -32,3 +32,22 @@ for f in $(find -L test/samples -type f \( -name "*.tp2" -o -name "*.tpa" -o -na
     fi
 done
 echo "All samples parsed successfully"
+
+echo ""
+echo "=== Formatting samples (validation only) ==="
+format_errors=0
+for f in $(find -L test/samples -type f \( -name "*.tp2" -o -name "*.tpa" -o -name "*.tph" -o -name "*.tpp" \)); do
+    # Run formatter without --save, capture stderr
+    # Path relative to ROOT_DIR since pnpm runs from there
+    result=$(pnpm -s --dir "$ROOT_DIR" format "grammars/weidu-tp2/$f" 2>&1 >/dev/null)
+    if echo "$result" | grep -q "Formatter bug:"; then
+        echo "VALIDATION ERROR: $f"
+        echo "$result" | grep "Formatter bug:"
+        format_errors=$((format_errors + 1))
+    fi
+done
+if [ "$format_errors" -gt 0 ]; then
+    echo "FAILED: $format_errors file(s) had formatter validation errors"
+    exit 1
+fi
+echo "All samples formatted without validation errors"
