@@ -323,6 +323,163 @@ COPY_EXISTING ~item.itm~ ~override~
     });
 });
 
+describe("formatDocument TRY blocks", () => {
+    beforeAll(async () => {
+        await initParser();
+    });
+
+    function format(code: string): string {
+        const parser = getParser();
+        const tree = parser.parse(code);
+        const result = formatDocument(tree.rootNode);
+        return result.text;
+    }
+
+    it("formats PATCH_TRY with body", () => {
+        const input = `BEGIN @1
+COPY_EXISTING ~test.itm~ ~override~
+PATCH_TRY
+READ_ASCII 0 sig (4)
+WITH DEFAULT
+PATCH_WARN ~error~
+END`;
+        const output = format(input);
+        expect(output).toContain("PATCH_TRY");
+        expect(output).toContain("READ_ASCII 0 sig (4)");
+        expect(output).toContain("WITH DEFAULT");
+        expect(output).toContain("PATCH_WARN ~error~");
+    });
+
+    it("formats PATCH_TRY with INNER_PATCH_FILE", () => {
+        const input = `BEGIN @1
+COPY_EXISTING ~test.2da~ ~override~
+PATCH_TRY
+INNER_PATCH_FILE ~item.itm~ BEGIN
+READ_STRREF 0 name
+END
+WITH DEFAULT
+PATCH_WARN ~error~
+END`;
+        const output = format(input);
+        expect(output).toContain("PATCH_TRY");
+        expect(output).toContain("INNER_PATCH_FILE ~item.itm~ BEGIN");
+        expect(output).toContain("READ_STRREF 0 name");
+        expect(output).toContain("WITH DEFAULT");
+    });
+
+    it("formats ACTION_TRY", () => {
+        const input = `BEGIN @1
+ACTION_TRY
+COPY ~src~ ~dst~
+WITH DEFAULT
+WARN ~error~
+END`;
+        const output = format(input);
+        expect(output).toContain("ACTION_TRY");
+        expect(output).toContain("COPY ~src~ ~dst~");
+        expect(output).toContain("WITH DEFAULT");
+        expect(output).toContain("WARN ~error~");
+    });
+
+    it("preserves comments in PATCH_TRY", () => {
+        const input = `BEGIN @1
+COPY_EXISTING ~test.itm~ ~override~
+PATCH_TRY
+// Try to read
+READ_ASCII 0 sig (4)
+WITH DEFAULT
+// Handle error
+PATCH_WARN ~error~
+END`;
+        const output = format(input);
+        expect(output).toContain("// Try to read");
+        expect(output).toContain("// Handle error");
+    });
+
+    it("indents PATCH_TRY body content", () => {
+        const input = `BEGIN @1
+COPY_EXISTING ~test.itm~ ~override~
+PATCH_TRY
+READ_ASCII 0 sig (4)
+WITH DEFAULT
+PATCH_WARN ~error~
+END`;
+        const output = format(input);
+        const lines = output.split("\n");
+        const readLine = lines.find((l) => l.includes("READ_ASCII"));
+        const warnLine = lines.find((l) => l.includes("PATCH_WARN"));
+        // Body content should be indented more than PATCH_TRY
+        expect(readLine).toMatch(/^\s{12}READ_ASCII/);
+        expect(warnLine).toMatch(/^\s{12}PATCH_WARN/);
+    });
+});
+
+describe("formatDocument MATCH statements", () => {
+    beforeAll(async () => {
+        await initParser();
+    });
+
+    function format(code: string): string {
+        const parser = getParser();
+        const tree = parser.parse(code);
+        const result = formatDocument(tree.rootNode);
+        return result.text;
+    }
+
+    it("formats PATCH_MATCH with cases", () => {
+        const input = `BEGIN @1
+COPY_EXISTING ~test.itm~ ~override~
+PATCH_MATCH type
+WITH 1 BEGIN
+SET foo = 1
+END
+WITH 2 BEGIN
+SET foo = 2
+END
+DEFAULT
+SET foo = 0
+END`;
+        const output = format(input);
+        expect(output).toContain("PATCH_MATCH type");
+        expect(output).toContain("WITH");
+        expect(output).toContain("1 BEGIN");
+        expect(output).toContain("SET foo = 1");
+        expect(output).toContain("DEFAULT");
+    });
+
+    it("formats ACTION_MATCH", () => {
+        const input = `BEGIN @1
+ACTION_MATCH %var%
+WITH 1 BEGIN
+PRINT ~one~
+END
+DEFAULT
+PRINT ~default~
+END`;
+        const output = format(input);
+        expect(output).toContain("ACTION_MATCH %var%");
+        expect(output).toContain("WITH");
+        expect(output).toContain("1 BEGIN");
+        expect(output).toContain("PRINT ~one~");
+        expect(output).toContain("DEFAULT");
+    });
+
+    it("preserves comments in MATCH cases", () => {
+        const input = `BEGIN @1
+COPY_EXISTING ~test.itm~ ~override~
+PATCH_MATCH type
+// First case
+WITH 1 BEGIN
+SET foo = 1
+END
+DEFAULT
+SET foo = 0
+END`;
+        const output = format(input);
+        expect(output).toContain("// First case");
+    });
+});
+
 describe("formatDocument error collection", () => {
     beforeAll(async () => {
         await initParser();

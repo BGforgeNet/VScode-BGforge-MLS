@@ -72,6 +72,8 @@ export const KW_LPM = "LPM";
 export const KW_LAM = "LAM";
 export const KW_PATCH_IF = "PATCH_IF";
 export const KW_ACTION_IF = "ACTION_IF";
+export const KW_PATCH_TRY = "PATCH_TRY";
+export const KW_ACTION_TRY = "ACTION_TRY";
 
 // ============================================
 // Node type constants
@@ -98,6 +100,24 @@ export const FOR_EACH_TYPES = [
     "patch_for_each",
     "php_each_patch",
 ] as const;
+
+// ============================================
+// Node type string constants
+// ============================================
+
+export const NODE_PATCH_TRY = "patch_try";
+export const NODE_ACTION_TRY = "action_try";
+export const NODE_INNER_PATCH = "inner_patch";
+export const NODE_INNER_PATCH_SAVE = "inner_patch_save";
+export const NODE_INNER_PATCH_FILE = "inner_patch_file";
+export const NODE_INNER_ACTION = "inner_action";
+export const NODE_COMPONENT = "component";
+export const NODE_ALWAYS_BLOCK = "always_block";
+export const NODE_PATCH_FILE = "patch_file";
+export const NODE_INLINED_FILE = "inlined_file";
+export const NODE_MATCH_CASE = "match_case";
+export const NODE_ACTION_MATCH_CASE = "action_match_case";
+export const NODE_REQUIRE_PREDICATE_ACTION = "require_predicate_action";
 
 /** Control flow types (IF, MATCH, TRY, WHILE, etc.). */
 export const CONTROL_FLOW_TYPES = [

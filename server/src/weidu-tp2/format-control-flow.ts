@@ -19,7 +19,11 @@ import {
     KW_OUTER_FOR,
     KW_PATCH_IF,
     KW_ACTION_IF,
+    KW_PATCH_TRY,
+    KW_ACTION_TRY,
     addFormatError,
+    NODE_PATCH_TRY,
+    NODE_ACTION_TRY,
 } from "./format-types";
 import {
     isComment,
@@ -540,7 +544,7 @@ function formatTryBlock(
 
     for (const child of node.children) {
         // TRY keyword (PATCH_TRY or ACTION_TRY)
-        if (child.text === "PATCH_TRY" || child.text === "ACTION_TRY") {
+        if (child.text === KW_PATCH_TRY || child.text === KW_ACTION_TRY) {
             lines.push(indent + child.text);
             continue;
         }
@@ -615,7 +619,7 @@ export function formatControlFlow(
     }
 
     // Handle TRY blocks (no BEGIN keyword - body starts immediately)
-    if (node.type === "patch_try" || node.type === "action_try") {
+    if (node.type === NODE_PATCH_TRY || node.type === NODE_ACTION_TRY) {
         return formatTryBlock(node, ctx, depth, formatNode);
     }
 

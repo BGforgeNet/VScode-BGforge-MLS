@@ -14,6 +14,17 @@ import {
     KW_END,
     KW_ALWAYS,
     addFormatError,
+    NODE_INLINED_FILE,
+    NODE_COMPONENT,
+    NODE_ALWAYS_BLOCK,
+    NODE_PATCH_FILE,
+    NODE_MATCH_CASE,
+    NODE_ACTION_MATCH_CASE,
+    NODE_REQUIRE_PREDICATE_ACTION,
+    NODE_INNER_ACTION,
+    NODE_INNER_PATCH,
+    NODE_INNER_PATCH_SAVE,
+    NODE_INNER_PATCH_FILE,
 } from "./format-types";
 import {
     isComment,
@@ -251,7 +262,7 @@ function formatNode(node: SyntaxNode, ctx: FormatContext, depth: number): string
     const type = node.type;
 
     // Inlined files - MUST be checked first to preserve content exactly
-    if (type === "inlined_file") {
+    if (type === NODE_INLINED_FILE) {
         return formatInlinedFile(node, ctx, depth);
     }
 
@@ -261,17 +272,17 @@ function formatNode(node: SyntaxNode, ctx: FormatContext, depth: number): string
     }
 
     // Components (BEGIN blocks)
-    if (type === "component") {
+    if (type === NODE_COMPONENT) {
         return formatComponent(node, ctx);
     }
 
     // ALWAYS block
-    if (type === "always_block") {
+    if (type === NODE_ALWAYS_BLOCK) {
         return formatAlwaysBlock(node, ctx);
     }
 
     // Patch file (e.g., .tpp)
-    if (type === "patch_file") {
+    if (type === NODE_PATCH_FILE) {
         return formatPatchFile(node, ctx);
     }
 
@@ -286,7 +297,7 @@ function formatNode(node: SyntaxNode, ctx: FormatContext, depth: number): string
     }
 
     // Match cases
-    if (type === "match_case" || type === "action_match_case") {
+    if (type === NODE_MATCH_CASE || type === NODE_ACTION_MATCH_CASE) {
         return formatMatchCase(node, ctx, depth, formatNode);
     }
 
@@ -301,17 +312,17 @@ function formatNode(node: SyntaxNode, ctx: FormatContext, depth: number): string
     }
 
     // REQUIRE_PREDICATE
-    if (type === "require_predicate_action") {
+    if (type === NODE_REQUIRE_PREDICATE_ACTION) {
         return formatPredicateAction(node, ctx, depth);
     }
 
     // INNER_ACTION
-    if (type === "inner_action") {
+    if (type === NODE_INNER_ACTION) {
         return formatInnerAction(node, ctx, depth, formatNode);
     }
 
     // INNER_PATCH / INNER_PATCH_SAVE / INNER_PATCH_FILE
-    if (type === "inner_patch" || type === "inner_patch_save" || type === "inner_patch_file") {
+    if (type === NODE_INNER_PATCH || type === NODE_INNER_PATCH_SAVE || type === NODE_INNER_PATCH_FILE) {
         return formatInnerPatch(node, ctx, depth, formatNode);
     }
 

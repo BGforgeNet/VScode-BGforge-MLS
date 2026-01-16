@@ -5,13 +5,7 @@
 
 import { DocumentSymbol, SymbolKind } from "vscode-languageserver/node";
 import { getParser, isInitialized } from "./parser";
-
-const FUNCTION_DEF_TYPES = [
-    "define_action_function",
-    "define_patch_function",
-    "define_action_macro",
-    "define_patch_macro",
-];
+import { isFunctionDef } from "./format-utils";
 
 export function getDocumentSymbols(text: string): DocumentSymbol[] {
     if (!isInitialized()) {
@@ -26,7 +20,7 @@ export function getDocumentSymbols(text: string): DocumentSymbol[] {
     const symbols: DocumentSymbol[] = [];
 
     for (const node of tree.rootNode.children) {
-        if (FUNCTION_DEF_TYPES.includes(node.type)) {
+        if (isFunctionDef(node.type)) {
             const nameNode = node.childForFieldName("name");
             if (nameNode) {
                 symbols.push({
