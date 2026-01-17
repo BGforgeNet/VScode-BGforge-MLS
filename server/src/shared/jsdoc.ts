@@ -1,19 +1,28 @@
 /**
  * JSDoc comment parser.
  * Extracts @param, @return, @deprecated tags from documentation comments.
+ *
+ * Supported types: array, bool, ids, int, list, map, resref, string, filename
  */
 
-interface Arg {
+// ============================================
+// Types
+// ============================================
+
+/** Parsed parameter info. */
+export interface Arg {
     name: string;
     type: string;
     default?: string;
     description?: string;
 }
 
-interface Ret {
+/** Parsed return type info. */
+export interface Ret {
     type: string;
 }
 
+/** Complete parsed JSDoc. */
 export interface JSdoc {
     desc?: string;
     args: Arg[];
@@ -21,67 +30,136 @@ export interface JSdoc {
     deprecated?: string | true;
 }
 
-export function parse(text: string) {
-    const args: Arg[] = [];
+// ============================================
+// Regex patterns
+// ============================================
+
+/**
+ * Pattern for @param/@arg tags.
+ * Matches: @param {type} name - description
+ *      or: @param {type} [name=default] - description
+ *
+ * Groups: 1=type, 2=simpleName, 3=bracketName, 4=default, 5=description
+ */
+const PARAM_PATTERN = /@(?:arg|param)\s+\{(\w+)\}\s+(?:(\w+)|\[(\w+)=([^\]]+)\])(?:\s+-\s+|\s+)?(.+)?/;
+
+/** Pattern for @return/@returns/@ret tags. Groups: 1=type */
+const RETURN_PATTERN = /@(?:ret|return|returns)\s+\{(\w+)\}/;
+
+/** Pattern for @deprecated tag. Groups: 1=message (optional) */
+const DEPRECATED_PATTERN = /@deprecated(?:\s+(.*))?/;
+
+/** Pattern for JSDoc line prefix " * " or " *" */
+const LINE_PREFIX_PATTERN = /^\s*\*\s?/;
+
+// ============================================
+// Parsing functions
+// ============================================
+
+/**
+ * Parse a JSDoc comment block.
+ * @param text Raw comment text including / * * and * /
+ */
+export function parse(text: string): JSdoc {
     const lines = text.split("\n");
-    const lines2 = [];
-    let ret: Ret | null = null;
+
+    // Remove first line (/**) and last line (*/)
     lines.shift();
     lines.pop();
-    let deprecated: string | undefined | true;
-    for (const l of lines) {
-        const l2 = l.replace(" * ", "");
-        if (!l2.startsWith("@")) {
-            lines2.push(l2);
+
+    const args: Arg[] = [];
+    const descriptionLines: string[] = [];
+    let ret: Ret | undefined;
+    let deprecated: string | true | undefined;
+
+    for (const rawLine of lines) {
+        const line = rawLine.replace(LINE_PREFIX_PATTERN, "");
+
+        // Skip empty lines in description collection
+        if (!line.startsWith("@")) {
+            descriptionLines.push(line);
+            continue;
         }
-        const argMatch = l2.match(
-            /@(arg|param) {(\w+)} ((\w+)|(\[(\w+)=(.+)\]))((\s+-\s+|\s+)(\w.*))?/
-        );
-        if (argMatch && argMatch[2]) {
-            const arg: Arg = { name: "", type: argMatch[2] };
-            if (argMatch[6]) {
-                arg.name = argMatch[6];
-                arg.default = argMatch[7];
-            } else if (argMatch[4]) {
-                arg.name = argMatch[4];
-            }
-            if (argMatch[10]) {
-                arg.description = argMatch[10];
-            }
-            args.push(arg);
+
+        // Try parsing @param
+        const paramResult = parseParam(line);
+        if (paramResult) {
+            args.push(paramResult);
+            continue;
         }
-        const retMatch = l2.match(/@(ret|return|returns) {(\w+)}/);
-        if (retMatch && retMatch[2]) {
-            ret = { type: retMatch[2] };
+
+        // Try parsing @return
+        const returnResult = parseReturn(line);
+        if (returnResult) {
+            ret = returnResult;
+            continue;
         }
-        const depMatch = l2.match(/@deprecated(.*)/);
-        if (depMatch) {
-            const depArg = depMatch[1];
-            if (depArg !== undefined) {
-                const depString = depArg.trim();
-                if (depString == "") {
-                    deprecated = true;
-                } else {
-                    deprecated = depString;
-                }
-            } else {
-                deprecated = true;
-            }
+
+        // Try parsing @deprecated
+        const deprecatedResult = parseDeprecated(line);
+        if (deprecatedResult !== null) {
+            deprecated = deprecatedResult;
         }
     }
-    const desc = lines2.join("\n").trim();
-    const jsdoc: JSdoc = { args: [] };
-    if (deprecated !== undefined) {
-        jsdoc.deprecated = deprecated;
-    }
-    if (desc != "") {
-        jsdoc.desc = desc;
-    }
-    if (args.length > 0) {
-        jsdoc.args = args;
+
+    // Build result
+    const result: JSdoc = { args };
+    const desc = descriptionLines.join("\n").trim();
+    if (desc) {
+        result.desc = desc;
     }
     if (ret) {
-        jsdoc.ret = ret;
+        result.ret = ret;
     }
-    return jsdoc;
+    if (deprecated !== undefined) {
+        result.deprecated = deprecated;
+    }
+
+    return result;
+}
+
+/** Parse @param or @arg tag. */
+function parseParam(line: string): Arg | null {
+    const match = line.match(PARAM_PATTERN);
+    if (!match) {
+        return null;
+    }
+
+    const [, type, simpleName, bracketName, defaultValue, description] = match;
+    const name = simpleName || bracketName;
+
+    // Type and name are required
+    if (!type || !name) {
+        return null;
+    }
+
+    const arg: Arg = { name, type };
+
+    if (defaultValue) {
+        arg.default = defaultValue;
+    }
+    if (description) {
+        arg.description = description;
+    }
+
+    return arg;
+}
+
+/** Parse @return, @returns, or @ret tag. */
+function parseReturn(line: string): Ret | null {
+    const match = line.match(RETURN_PATTERN);
+    if (!match || !match[1]) {
+        return null;
+    }
+    return { type: match[1] };
+}
+
+/** Parse @deprecated tag. Returns true if no message, string if message, null if no match. */
+function parseDeprecated(line: string): string | true | null {
+    const match = line.match(DEPRECATED_PATTERN);
+    if (!match) {
+        return null;
+    }
+    const message = match[1]?.trim();
+    return message || true;
 }

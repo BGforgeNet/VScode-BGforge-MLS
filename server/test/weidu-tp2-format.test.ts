@@ -5,6 +5,12 @@
 
 import { describe, expect, it, beforeAll, vi } from "vitest";
 import type { Node as SyntaxNode } from "web-tree-sitter";
+import type { MarkupContent } from "vscode-languageserver/node";
+
+/** Extract markdown value from hover contents. */
+function getHoverValue(contents: unknown): string {
+    return (contents as MarkupContent).value;
+}
 
 // Mock the server module to avoid LSP connection issues
 vi.mock("../src/server", () => ({
@@ -523,5 +529,305 @@ COPY ~src~ ~dst~`;
         const result = formatWithErrors(input);
         expect(result.text).toContain("BEGIN @1");
         expect(result.text).toContain("COPY");
+    });
+});
+
+describe("header-parser: parseHeader", () => {
+    // Lazy-load module after parser initialization
+    let parseHeader: typeof import("../src/weidu-tp2/header-parser").parseHeader;
+    let updateFileIndex: typeof import("../src/weidu-tp2/header-parser").updateFileIndex;
+    let lookupFunction: typeof import("../src/weidu-tp2/header-parser").lookupFunction;
+    let clearIndex: typeof import("../src/weidu-tp2/header-parser").clearIndex;
+
+    beforeAll(async () => {
+        await initParser();
+        const mod = await import("../src/weidu-tp2/header-parser");
+        parseHeader = mod.parseHeader;
+        updateFileIndex = mod.updateFileIndex;
+        lookupFunction = mod.lookupFunction;
+        clearIndex = mod.clearIndex;
+    });
+
+    it("extracts function definitions", () => {
+        const code = `DEFINE_ACTION_FUNCTION my_function BEGIN END`;
+        const functions = parseHeader(code, "file:///test.tph");
+        expect(functions).toHaveLength(1);
+        expect(functions[0].name).toBe("my_function");
+        expect(functions[0].context).toBe("action");
+        expect(functions[0].dtype).toBe("function");
+    });
+
+    it("extracts macro definitions", () => {
+        const code = `DEFINE_PATCH_MACRO my_macro BEGIN END`;
+        const functions = parseHeader(code, "file:///test.tph");
+        expect(functions).toHaveLength(1);
+        expect(functions[0].name).toBe("my_macro");
+        expect(functions[0].context).toBe("patch");
+        expect(functions[0].dtype).toBe("macro");
+    });
+
+    it("extracts function parameters", () => {
+        const code = `DEFINE_ACTION_FUNCTION test_func
+INT_VAR
+    foo = 1
+    bar = 2
+STR_VAR
+    name = ~~
+RET
+    result
+BEGIN
+END`;
+        const functions = parseHeader(code, "file:///test.tph");
+        expect(functions).toHaveLength(1);
+        const params = functions[0].params;
+        expect(params).toBeDefined();
+        expect(params?.intVar).toHaveLength(2);
+        expect(params?.strVar).toHaveLength(1);
+        expect(params?.ret).toHaveLength(1);
+    });
+
+    it("extracts JSDoc comments", () => {
+        const code = `/**
+ * This is a test function.
+ * @param {int} foo - A parameter
+ */
+DEFINE_ACTION_FUNCTION documented_func BEGIN END`;
+        const functions = parseHeader(code, "file:///test.tph");
+        expect(functions).toHaveLength(1);
+        expect(functions[0].jsdoc).toBeDefined();
+        expect(functions[0].jsdoc?.desc).toContain("test function");
+    });
+
+    it("handles multiple functions", () => {
+        const code = `
+DEFINE_ACTION_FUNCTION func1 BEGIN END
+DEFINE_PATCH_FUNCTION func2 BEGIN END
+DEFINE_ACTION_MACRO macro1 BEGIN END
+`;
+        const functions = parseHeader(code, "file:///test.tph");
+        expect(functions).toHaveLength(3);
+        expect(functions.map(f => f.name)).toEqual(["func1", "func2", "macro1"]);
+    });
+
+    it("function index lookup works", () => {
+        clearIndex();
+        const code = `DEFINE_ACTION_FUNCTION indexed_func BEGIN END`;
+        updateFileIndex("file:///indexed.tph", code);
+
+        const func = lookupFunction("indexed_func");
+        expect(func).toBeDefined();
+        expect(func?.name).toBe("indexed_func");
+        expect(func?.location.uri).toBe("file:///indexed.tph");
+    });
+});
+
+describe("definition: getDefinition", () => {
+    // Lazy-load modules after parser initialization
+    let getDefinition: typeof import("../src/weidu-tp2/definition").getDefinition;
+    let clearIndex: typeof import("../src/weidu-tp2/header-parser").clearIndex;
+    let updateFileIndex: typeof import("../src/weidu-tp2/header-parser").updateFileIndex;
+
+    beforeAll(async () => {
+        await initParser();
+        const defMod = await import("../src/weidu-tp2/definition");
+        const headerMod = await import("../src/weidu-tp2/header-parser");
+        getDefinition = defMod.getDefinition;
+        clearIndex = headerMod.clearIndex;
+        updateFileIndex = headerMod.updateFileIndex;
+    });
+
+    it("finds same-file function definition", () => {
+        const code = `
+DEFINE_ACTION_FUNCTION my_func BEGIN END
+
+BEGIN @1
+    LAF my_func END
+`;
+        // Position on "my_func" in the LAF call (line 4, roughly character 8)
+        const result = getDefinition(code, "file:///test.tp2", { line: 4, character: 8 });
+        expect(result).toBeDefined();
+        expect(result?.uri).toBe("file:///test.tp2");
+        expect(result?.range.start.line).toBe(1); // Definition is on line 1
+    });
+
+    it("finds cross-file function definition", () => {
+        clearIndex();
+        // Index a header file
+        const headerCode = `DEFINE_ACTION_FUNCTION header_func BEGIN END`;
+        updateFileIndex("file:///header.tph", headerCode);
+
+        // Main file calls the function
+        const mainCode = `
+BEGIN @1
+    LAF header_func END
+`;
+        const result = getDefinition(mainCode, "file:///main.tp2", { line: 2, character: 8 });
+        expect(result).toBeDefined();
+        expect(result?.uri).toBe("file:///header.tph");
+    });
+
+    it("returns null for unknown function", () => {
+        clearIndex();
+        const code = `
+BEGIN @1
+    LAF unknown_func END
+`;
+        const result = getDefinition(code, "file:///test.tp2", { line: 2, character: 8 });
+        expect(result).toBeNull();
+    });
+});
+
+describe("hover formatting: loadFileData", () => {
+    let loadFileData: typeof import("../src/weidu").loadFileData;
+
+    beforeAll(async () => {
+        await initParser();
+        const mod = await import("../src/weidu");
+        loadFileData = mod.loadFileData;
+    });
+
+    it("generates hover with function signature", () => {
+        const code = `DEFINE_ACTION_FUNCTION my_func BEGIN END`;
+        const result = loadFileData("file:///test.tph", code, "lib/test.tph");
+        const hover = result.hover.get("my_func");
+        expect(hover).toBeDefined();
+        expect(getHoverValue(hover?.contents)).toContain("action function my_func");
+    });
+
+    it("generates hover with file path", () => {
+        const code = `DEFINE_ACTION_FUNCTION my_func BEGIN END`;
+        const result = loadFileData("file:///test.tph", code, "lib/test.tph");
+        const hover = result.hover.get("my_func");
+        expect(getHoverValue(hover?.contents)).toContain("lib/test.tph");
+    });
+
+    it("generates hover with JSDoc description", () => {
+        const code = `/**
+ * Does something useful.
+ */
+DEFINE_ACTION_FUNCTION my_func BEGIN END`;
+        const result = loadFileData("file:///test.tph", code, "test.tph");
+        const hover = result.hover.get("my_func");
+        expect(getHoverValue(hover?.contents)).toContain("Does something useful.");
+    });
+
+    it("generates hover with INT_VAR parameters", () => {
+        const code = `DEFINE_ACTION_FUNCTION my_func
+INT_VAR count = 0
+BEGIN END`;
+        const result = loadFileData("file:///test.tph", code, "test.tph");
+        const hover = result.hover.get("my_func");
+        const value = getHoverValue(hover?.contents);
+        expect(value).toContain("INT vars");
+        expect(value).toContain("count");
+        expect(value).toContain("0");
+    });
+
+    it("generates hover with STR_VAR parameters", () => {
+        const code = `DEFINE_ACTION_FUNCTION my_func
+STR_VAR name = ~~
+BEGIN END`;
+        const result = loadFileData("file:///test.tph", code, "test.tph");
+        const hover = result.hover.get("my_func");
+        const value = getHoverValue(hover?.contents);
+        expect(value).toContain("STR vars");
+        expect(value).toContain("name");
+    });
+
+    it("generates hover with RET parameters", () => {
+        const code = `DEFINE_ACTION_FUNCTION my_func
+RET result
+BEGIN END`;
+        const result = loadFileData("file:///test.tph", code, "test.tph");
+        const hover = result.hover.get("my_func");
+        const value = getHoverValue(hover?.contents);
+        expect(value).toContain("RET vars");
+        expect(value).toContain("result");
+    });
+
+    it("generates hover with type links for known types", () => {
+        const code = `/**
+ * @param {int} count
+ */
+DEFINE_ACTION_FUNCTION my_func
+INT_VAR count = 0
+BEGIN END`;
+        const result = loadFileData("file:///test.tph", code, "test.tph");
+        const hover = result.hover.get("my_func");
+        expect(getHoverValue(hover?.contents)).toContain("[int](https://ielib.bgforge.net/types/#int)");
+    });
+
+    it("generates hover with default type int for INT_VAR", () => {
+        const code = `DEFINE_ACTION_FUNCTION my_func
+INT_VAR count = 0
+BEGIN END`;
+        const result = loadFileData("file:///test.tph", code, "test.tph");
+        const hover = result.hover.get("my_func");
+        // Default type is int, which should be linked
+        expect(getHoverValue(hover?.contents)).toContain("[int]");
+    });
+
+    it("generates hover with default type string for STR_VAR", () => {
+        const code = `DEFINE_ACTION_FUNCTION my_func
+STR_VAR name = ~~
+BEGIN END`;
+        const result = loadFileData("file:///test.tph", code, "test.tph");
+        const hover = result.hover.get("my_func");
+        // Default type is string, which should be linked
+        expect(getHoverValue(hover?.contents)).toContain("[string]");
+    });
+
+    it("generates hover with @return type", () => {
+        const code = `/**
+ * @return {int}
+ */
+DEFINE_ACTION_FUNCTION my_func BEGIN END`;
+        const result = loadFileData("file:///test.tph", code, "test.tph");
+        const hover = result.hover.get("my_func");
+        expect(getHoverValue(hover?.contents)).toContain("Returns `int`");
+    });
+
+    it("generates hover with @deprecated notice", () => {
+        const code = `/**
+ * @deprecated Use new_func instead
+ */
+DEFINE_ACTION_FUNCTION old_func BEGIN END`;
+        const result = loadFileData("file:///test.tph", code, "test.tph");
+        const hover = result.hover.get("old_func");
+        const value = getHoverValue(hover?.contents);
+        expect(value).toContain("Deprecated");
+        expect(value).toContain("Use new_func instead");
+    });
+
+    it("truncates long descriptions to 80 chars", () => {
+        const longDesc = "A".repeat(100);
+        const code = `/**
+ * @param {int} count - ${longDesc}
+ */
+DEFINE_ACTION_FUNCTION my_func
+INT_VAR count = 0
+BEGIN END`;
+        const result = loadFileData("file:///test.tph", code, "test.tph");
+        const hover = result.hover.get("my_func");
+        const value = getHoverValue(hover?.contents);
+        // Should be truncated with ...
+        expect(value).toContain("...");
+        // Should not contain the full 100 chars
+        expect(value).not.toContain(longDesc);
+    });
+
+    it("generates completion item", () => {
+        const code = `DEFINE_ACTION_FUNCTION my_func BEGIN END`;
+        const result = loadFileData("file:///test.tph", code, "test.tph");
+        expect(result.completion).toHaveLength(1);
+        expect(result.completion[0].label).toBe("my_func");
+    });
+
+    it("generates definition location", () => {
+        const code = `DEFINE_ACTION_FUNCTION my_func BEGIN END`;
+        const result = loadFileData("file:///test.tph", code, "test.tph");
+        const def = result.definition.get("my_func");
+        expect(def).toBeDefined();
+        expect(def?.uri).toBe("file:///test.tph");
     });
 });

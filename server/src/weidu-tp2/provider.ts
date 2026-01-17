@@ -3,7 +3,7 @@
  * Implements all TP2 file features in one place.
  */
 
-import { CompletionItem, DocumentSymbol, Hover, Location } from "vscode-languageserver/node";
+import { CompletionItem, DocumentSymbol, Hover, Location, Position } from "vscode-languageserver/node";
 import { fileURLToPath } from "url";
 import { conlog } from "../common";
 import { LANG_WEIDU_TP2 } from "../core/languages";
@@ -15,6 +15,8 @@ import { compile as weiduCompile } from "../weidu";
 import { formatDocument as formatAst, FormatOptions } from "./format-core";
 import { initParser, getParser, isInitialized } from "./parser";
 import { getDocumentSymbols } from "./symbol";
+import { getDefinition } from "./definition";
+import { updateFileIndex } from "./header-parser";
 
 const features: Features = {
     completion: true,
@@ -64,8 +66,14 @@ export const weiduTp2Provider: LanguageProvider = {
         return language?.definition(symbol) ?? null;
     },
 
+    definition(text: string, position: Position, uri: string): Location | null {
+        return getDefinition(text, uri, position);
+    },
+
     reloadFileData(uri: string, text: string): void {
         language?.reloadFileData(uri, text);
+        // Update tree-sitter based function index
+        updateFileIndex(uri, text);
     },
 
     async compile(uri: string, text: string, interactive: boolean): Promise<void> {

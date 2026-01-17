@@ -13,7 +13,6 @@ import {
     ParseItemList,
     ParseResult,
     pathToUri,
-    RegExpMatchArrayWithIndices,
     sendParseResult,
     tmpDir,
     uriToPath,
@@ -21,13 +20,12 @@ import {
 import * as completion from "./shared/completion";
 import * as definition from "./shared/definition";
 import * as hover from "./shared/hover";
-import * as jsdoc from "./shared/jsdoc";
 import { HeaderData as LanguageHeaderData } from "./data-loader";
 import * as pool from "./shared/pool";
 import { getConnection } from "./lsp-connection";
 import { WeiDUsettings } from "./settings";
 import { LANG_WEIDU_TP2_TOOLTIP } from "./core/languages";
-import { jsdocToMarkdown } from "./shared/jsdoc-utils";
+import { parseHeader, FunctionInfo, updateFileIndex } from "./weidu-tp2/header-parser";
 
 const valid_extensions = new Map([
     [".tp2", "tp2"],
@@ -38,18 +36,10 @@ const valid_extensions = new Map([
     [".baf", "baf"],
 ]);
 
+/** Header data extracted from a TP2 file. */
 interface WeiduHeaderData {
-    defines: Defines;
-    definitions: definition.Definitions;
+    functions: FunctionInfo[];
 }
-
-interface Define {
-    name: string;
-    context: "action" | "patch";
-    dtype: "function" | "macro";
-    jsdoc?: jsdoc.JSdoc;
-}
-interface Defines extends Array<Define> { }
 
 /** `text` looks like this
  *
@@ -265,11 +255,28 @@ export function compile(uri: string, settings: WeiDUsettings, interactive = fals
     });
 }
 
+/** All TP2 file extensions to index for definitions. */
+const TP2_EXTENSIONS = ["tph", "tpa", "tpp", "tp2"] as const;
+
+/** Known types that link to ielib documentation. */
+const KNOWN_TYPES = new Set(["array", "bool", "ids", "int", "list", "map", "resref", "string", "filename"]);
+
+/** Base URL for type documentation. */
+const IELIB_TYPES_URL = "https://ielib.bgforge.net/types/#";
+
+/** Maximum length for parameter descriptions in hover table. */
+const DESC_MAX_LENGTH = 80;
+
 export async function loadHeaders(headersDirectory: string) {
     let completions: completion.CompletionListEx = [];
     const hovers: hover.HoverMapEx = new Map();
     const definitions: definition.Data = new Map();
-    const headerFiles = findFiles(headersDirectory, "tph");
+
+    // Collect all TP2 files (tph, tpa, tpp, tp2)
+    const headerFiles: string[] = [];
+    for (const ext of TP2_EXTENSIONS) {
+        headerFiles.push(...findFiles(headersDirectory, ext));
+    }
 
     const { results, errors } = await pool.processHeaders(
         headerFiles,
@@ -300,122 +307,209 @@ export async function loadHeaders(headersDirectory: string) {
     return result;
 }
 
-function findSymbols(text: string) {
-    const defineList: Defines = [];
-    const defineRegex =
-        /((\/\*\*\s*\n([^*]|(\*(?!\/)))*\*\/)\r?\n)?(DEFINE_ACTION_FUNCTION|DEFINE_ACTION_MACRO|DEFINE_PATCH_FUNCTION|DEFINE_PATCH_MACRO)\s+(\w+)/gm;
-
-    const matches = text.matchAll(defineRegex);
-    for (const m of matches) {
-        const name = m[6];
-        const defType = m[5];
-        if (!name || !defType) continue;
-
-        let context: "action" | "patch";
-        let dtype: "function" | "macro";
-        if (defType.startsWith("DEFINE_ACTION")) {
-            context = "action";
-        } else {
-            context = "patch";
-        }
-        if (defType.endsWith("FUNCTION")) {
-            dtype = "function";
-        } else {
-            dtype = "macro";
-        }
-
-        const item: Define = { name: name, context: context, dtype: dtype };
-
-        // check for docstring
-        if (m[2]) {
-            const jsd = jsdoc.parse(m[2]);
-            item.jsdoc = jsd;
-        }
-
-        defineList.push(item);
-    }
-    const definitions = findDefinitions(text);
-    const result: WeiduHeaderData = { defines: defineList, definitions: definitions };
-    return result;
+/**
+ * Extract function/macro definitions from TP2 text using tree-sitter.
+ */
+function findSymbols(text: string, uri: string): WeiduHeaderData {
+    const functions = parseHeader(text, uri);
+    return { functions };
 }
 
 
 /**
- * @param uri
- * @param text
- * @param filePath cosmetic only, relative path
- * @returns
+ * Load file data using tree-sitter parsing.
+ * @param uri File URI
+ * @param text File content
+ * @param filePath Cosmetic only, relative path for display
  */
 export function loadFileData(uri: string, text: string, filePath: string) {
-    const symbols = findSymbols(text);
-    const functions = loadFunctions(uri, symbols.defines, filePath);
-    const definitions = definition.load(uri, symbols.definitions);
+    const symbols = findSymbols(text, uri);
+    const { completions, hovers, definitions } = buildLanguageData(uri, symbols.functions, filePath);
+
+    // Also update the function index for go-to-definition
+    updateFileIndex(uri, text);
+
     const result: LanguageHeaderData = {
-        hover: functions.hovers,
-        completion: functions.completions,
+        hover: hovers,
+        completion: completions,
         definition: definitions,
     };
     return result;
 }
 
-function loadFunctions(uri: string, symbols: Defines, filePath: string) {
+/**
+ * Build completion, hover, and definition data from parsed functions.
+ *
+ * Hover markdown example:
+ *
+ *     ┌─────────────────────────────────────────────────────────────────┐
+ *     │ action function my_func                           ← 1. signature│
+ *     ├─────────────────────────────────────────────────────────────────┤
+ *     │ lib/utils.tph                                     ← 2. file path│
+ *     ├─────────────────────────────────────────────────────────────────┤
+ *     │ Does something useful with the given parameters.  ← 3. jsdoc    │
+ *     ├─────────────────────────────────────────────────────────────────┤
+ *     │        INT vars          Description        Default             │
+ *     │ int    count             Number of items    0       ← 4. table  │
+ *     │        STR vars                                                 │
+ *     │ string name              The name to use                        │
+ *     │        RET vars                                                 │
+ *     │        result                                                   │
+ *     │        RET arrays                                               │
+ *     │        my_array                                                 │
+ *     ├─────────────────────────────────────────────────────────────────┤
+ *     │ Returns int                                       ← 5. @return  │
+ *     ├─────────────────────────────────────────────────────────────────┤
+ *     │ ⚠️ Deprecated: Use new_func instead              ← 6. @deprecated│
+ *     └─────────────────────────────────────────────────────────────────┘
+ *
+ * Type column links to ielib.bgforge.net for known types.
+ * Description column clipped to 80 chars.
+ */
+function buildLanguageData(uri: string, functions: FunctionInfo[], filePath: string) {
     const langId = LANG_WEIDU_TP2_TOOLTIP;
     const completions: completion.CompletionListEx = [];
     const hovers: hover.HoverMapEx = new Map();
+    const definitions: definition.Data = new Map();
 
-    for (const symbol of symbols) {
+    for (const func of functions) {
+        // Build JSDoc arg lookup map for type overrides
+        const jsdocArgs = new Map<string, { type: string; description?: string }>();
+        if (func.jsdoc?.args) {
+            for (const arg of func.jsdoc.args) {
+                jsdocArgs.set(arg.name, { type: arg.type, description: arg.description });
+            }
+        }
+
+        // 4. Parameter table (INT vars, STR vars, RET vars, RET arrays)
+        let paramTable = "";
+        if (func.params) {
+            const tableRows: string[] = [];
+            let needsHeader = true;
+
+            /** Format type as link if known, plain text otherwise. */
+            const formatType = (type: string): string => {
+                if (!type) return "";
+                return KNOWN_TYPES.has(type) ? `[${type}](${IELIB_TYPES_URL}${type})` : type;
+            };
+
+            /** Truncate description to max length with ellipsis. */
+            const truncateDesc = (desc: string): string => {
+                if (desc.length <= DESC_MAX_LENGTH) return desc;
+                return desc.slice(0, DESC_MAX_LENGTH - 3) + "...";
+            };
+
+            /** Add section header row. */
+            const addSectionHeader = (sectionName: string) => {
+                if (needsHeader) {
+                    tableRows.push(`| | ${sectionName} | Description | Default |`);
+                    tableRows.push("|:---|:---|:---|:---:|");
+                    needsHeader = false;
+                } else {
+                    tableRows.push(`| | **${sectionName}** | | |`);
+                }
+            };
+
+            /** Add parameter rows for INT_VAR/STR_VAR sections. */
+            const addVarSection = (
+                sectionName: string,
+                params: { name: string; defaultValue?: string }[],
+                defaultType: string
+            ) => {
+                if (params.length === 0) return;
+                addSectionHeader(sectionName);
+
+                for (const p of params) {
+                    const jsdoc = jsdocArgs.get(p.name);
+                    const type = formatType(jsdoc?.type ?? defaultType);
+                    const def = p.defaultValue ?? "";
+                    const desc = truncateDesc(jsdoc?.description ?? "");
+                    tableRows.push(`| ${type} | ${p.name} | ${desc} | ${def} |`);
+                }
+            };
+
+            /** Add parameter rows for RET/RET_ARRAY sections. */
+            const addRetSection = (sectionName: string, params: string[]) => {
+                if (params.length === 0) return;
+                addSectionHeader(sectionName);
+
+                for (const name of params) {
+                    const jsdoc = jsdocArgs.get(name);
+                    const type = formatType(jsdoc?.type ?? "");
+                    const desc = truncateDesc(jsdoc?.description ?? "");
+                    tableRows.push(`| ${type} | ${name} | ${desc} | |`);
+                }
+            };
+
+            addVarSection("INT vars", func.params.intVar, "int");
+            addVarSection("STR vars", func.params.strVar, "string");
+            addRetSection("RET vars", func.params.ret);
+            addRetSection("RET arrays", func.params.retArray);
+
+            if (tableRows.length > 0) {
+                paramTable = "\n\n" + tableRows.join("\n");
+            }
+        }
+
+        // 1. Function signature
+        const signatureLine = `${func.context} ${func.dtype} ${func.name}`;
+
+        // 2. File path
         let markdownValue = [
             "```" + `${langId}`,
-            `${symbol.context} ${symbol.dtype} ${symbol.name}`,
+            signatureLine,
             "```",
-            "\n```bgforge-mls-comment\n",
-            `${filePath}`,
+            "```bgforge-mls-comment",
+            filePath,
             "```",
         ].join("\n");
 
-        if (symbol.jsdoc) {
-            markdownValue += jsdocToMarkdown(symbol.jsdoc, "weidu");
+        // 3. JSDoc description
+        if (func.jsdoc?.desc) {
+            markdownValue += `\n\n${func.jsdoc.desc}`;
+        }
+
+        // 4. Parameter table
+        markdownValue += paramTable;
+
+        // 5. Return type (@return)
+        if (func.jsdoc?.ret) {
+            markdownValue += `\n\nReturns \`${func.jsdoc.ret.type}\``;
+        }
+
+        // 6. Deprecation notice (@deprecated)
+        if (func.jsdoc?.deprecated !== undefined) {
+            if (func.jsdoc.deprecated === true) {
+                markdownValue += "\n\n⚠️ **Deprecated**";
+            } else {
+                markdownValue += `\n\n⚠️ **Deprecated:** ${func.jsdoc.deprecated}`;
+            }
         }
 
         const markdownContents = { kind: MarkupKind.Markdown, value: markdownValue };
+
+        // Build completion item
         const completionItem: completion.CompletionItemEx = {
-            label: symbol.name,
+            label: func.name,
             documentation: markdownContents,
             source: filePath,
             kind: CompletionItemKind.Function,
             labelDetails: { description: filePath },
             uri: uri,
         };
-        if (symbol.jsdoc?.deprecated !== undefined) {
+        if (func.jsdoc?.deprecated !== undefined) {
             const COMPLETION_TAG_deprecated = 1;
             completionItem.tags = [COMPLETION_TAG_deprecated];
         }
         completions.push(completionItem);
-        const hoverItem = { contents: markdownContents, source: filePath, uri: uri };
-        hovers.set(symbol.name, hoverItem);
-    }
-    return { completions: completions, hovers: hovers };
-}
 
-function findDefinitions(text: string): definition.Definition[] {
-    const definitions: definition.Definition[] = [];
-    const lines = text.split("\n");
-    const defineRegex =
-        /^(DEFINE_ACTION_FUNCTION|DEFINE_ACTION_MACRO|DEFINE_PATCH_FUNCTION|DEFINE_PATCH_MACRO)\s+(\w+)/d;
-    lines.forEach((l, i) => {
-        const match = defineRegex.exec(l);
-        if (match) {
-            const name = match[2];
-            const index = (match as RegExpMatchArrayWithIndices).indices[2];
-            if (!name || !index) return;
-            const item: definition.Definition = {
-                name: name,
-                line: i,
-                start: index[0],
-                end: index[1],
-            };
-            definitions.push(item);
-        }
-    });
-    return definitions;
+        // Build hover item
+        const hoverItem = { contents: markdownContents, source: filePath, uri: uri };
+        hovers.set(func.name, hoverItem);
+
+        // Build definition location
+        definitions.set(func.name, func.location);
+    }
+
+    return { completions, hovers, definitions };
 }
