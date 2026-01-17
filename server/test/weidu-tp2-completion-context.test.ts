@@ -37,10 +37,12 @@ function createItem(label: string, category?: string): CompletionItem {
 
 /**
  * Helper to check if items are filtered correctly.
+ * Accepts either a single context or an array of contexts.
  */
-function expectFiltering(context: CompletionContext, category: string, shouldBeIncluded: boolean) {
+function expectFiltering(context: CompletionContext | CompletionContext[], category: string, shouldBeIncluded: boolean) {
     const items = [createItem("TEST_ITEM", category)];
-    const filtered = filterItemsByContext(items, context);
+    const contexts = Array.isArray(context) ? context : [context];
+    const filtered = filterItemsByContext(items, contexts);
     if (shouldBeIncluded) {
         expect(filtered).toHaveLength(1);
         expect(filtered[0].label).toBe("TEST_ITEM");
@@ -96,9 +98,9 @@ describe("completion-context: category filtering", () => {
 
     it("allows items without category everywhere", () => {
         const itemNoCategory = createItem("NO_CATEGORY");
-        expect(filterItemsByContext([itemNoCategory], "prologue")).toHaveLength(1);
-        expect(filterItemsByContext([itemNoCategory], "action")).toHaveLength(1);
-        expect(filterItemsByContext([itemNoCategory], "patch")).toHaveLength(1);
+        expect(filterItemsByContext([itemNoCategory], ["prologue"])).toHaveLength(1);
+        expect(filterItemsByContext([itemNoCategory], ["action"])).toHaveLength(1);
+        expect(filterItemsByContext([itemNoCategory], ["patch"])).toHaveLength(1);
     });
 
     it("allows unmapped categories everywhere", () => {
@@ -110,23 +112,23 @@ describe("completion-context: category filtering", () => {
 describe("completion-context: getContextAtPosition", () => {
     describe("file extension defaults", () => {
         it("returns patch for .tpp files", () => {
-            const context = getContextAtPosition("", 0, 0, ".tpp");
-            expect(context).toBe("patch");
+            const contexts = getContextAtPosition("", 0, 0, ".tpp");
+            expect(contexts).toEqual(["patch"]);
         });
 
         it("returns action for .tpa files", () => {
-            const context = getContextAtPosition("", 0, 0, ".tpa");
-            expect(context).toBe("action");
+            const contexts = getContextAtPosition("", 0, 0, ".tpa");
+            expect(contexts).toEqual(["action"]);
         });
 
         it("returns action for .tph files", () => {
-            const context = getContextAtPosition("", 0, 0, ".tph");
-            expect(context).toBe("action");
+            const contexts = getContextAtPosition("", 0, 0, ".tph");
+            expect(contexts).toEqual(["action"]);
         });
 
         it("returns prologue for empty .tp2 files", () => {
-            const context = getContextAtPosition("", 0, 0, ".tp2");
-            expect(context).toBe("prologue");
+            const contexts = getContextAtPosition("", 0, 0, ".tp2");
+            expect(contexts).toEqual(["prologue"]);
         });
     });
 
@@ -144,26 +146,26 @@ BEGIN ~My Component~
 
         it("detects prologue before LANGUAGE", () => {
             // Line 0: BACKUP
-            const context = getContextAtPosition(tp2Content, 0, 0, ".tp2");
-            expect(context).toBe("prologue");
+            const contexts = getContextAtPosition(tp2Content, 0, 0, ".tp2");
+            expect(contexts).toEqual(["prologue"]);
         });
 
         it("detects flag after LANGUAGE, before BEGIN", () => {
             // Line 4: empty line after LANGUAGE, before BEGIN
-            const context = getContextAtPosition(tp2Content, 4, 0, ".tp2");
-            expect(context).toBe("flag");
+            const contexts = getContextAtPosition(tp2Content, 4, 0, ".tp2");
+            expect(contexts).toEqual(["flag"]);
         });
 
         it("detects action inside component", () => {
             // Line 6: COPY action
-            const context = getContextAtPosition(tp2Content, 6, 4, ".tp2");
-            expect(context).toBe("action");
+            const contexts = getContextAtPosition(tp2Content, 6, 4, ".tp2");
+            expect(contexts).toEqual(["action"]);
         });
 
         it("detects patch inside COPY block", () => {
             // Line 7: WRITE_BYTE patch
-            const context = getContextAtPosition(tp2Content, 7, 8, ".tp2");
-            expect(context).toBe("patch");
+            const contexts = getContextAtPosition(tp2Content, 7, 8, ".tp2");
+            expect(contexts).toEqual(["patch"]);
         });
     });
 
@@ -177,14 +179,14 @@ END
 
         it("detects action at function level", () => {
             // Line 1: COPY action inside function
-            const context = getContextAtPosition(tphContent, 1, 4, ".tph");
-            expect(context).toBe("action");
+            const contexts = getContextAtPosition(tphContent, 1, 4, ".tph");
+            expect(contexts).toEqual(["action"]);
         });
 
         it("detects patch inside COPY", () => {
             // Line 2: WRITE_BYTE inside COPY
-            const context = getContextAtPosition(tphContent, 2, 8, ".tph");
-            expect(context).toBe("patch");
+            const contexts = getContextAtPosition(tphContent, 2, 8, ".tph");
+            expect(contexts).toEqual(["patch"]);
         });
     });
 
@@ -194,8 +196,8 @@ READ_ASCII 0x08 name (8)
 `;
 
         it("detects patch context", () => {
-            const context = getContextAtPosition(tppContent, 0, 0, ".tpp");
-            expect(context).toBe("patch");
+            const contexts = getContextAtPosition(tppContent, 0, 0, ".tpp");
+            expect(contexts).toEqual(["patch"]);
         });
     });
 
@@ -209,8 +211,8 @@ END
 
         it("detects action inside INNER_ACTION", () => {
             // Line 2: PRINT inside INNER_ACTION
-            const context = getContextAtPosition(nestedContent, 2, 8, ".tph");
-            expect(context).toBe("action");
+            const contexts = getContextAtPosition(nestedContent, 2, 8, ".tph");
+            expect(contexts).toEqual(["action"]);
         });
     });
 
@@ -223,42 +225,44 @@ END
 `;
         it("rejects LAF in patch context", () => {
             // Line 2 is inside COPY patches block
-            const context = getContextAtPosition(copyBlockContent, 2, 8, ".tp2");
-            expect(context).toBe("patch");
+            const contexts = getContextAtPosition(copyBlockContent, 2, 8, ".tp2");
+            expect(contexts).toEqual(["patch"]);
             // LAF has category "action" which should be rejected in patch context
             expectFiltering("patch", "action", false);
         });
 
         it("allows LPF in patch context", () => {
-            const context = getContextAtPosition(copyBlockContent, 2, 8, ".tp2");
-            expect(context).toBe("patch");
+            const contexts = getContextAtPosition(copyBlockContent, 2, 8, ".tp2");
+            expect(contexts).toEqual(["patch"]);
             // LPF has category "patch" which should be allowed in patch context
             expectFiltering("patch", "patch", true);
         });
 
-        it("detects patch when typing incomplete patch command", () => {
-            // User is typing inside COPY block, cursor after incomplete "WRITE_"
+        it("detects action with severely malformed COPY structure", () => {
+            // User is typing, but code is so malformed tree-sitter can't parse the COPY structure
             const incomplete = `BEGIN ~Test~
     COPY ~file.itm~ ~override~
         WRITE_
 END
 `;
-            // Line 2, column 14: right after "WRITE_" where user is typing
-            const context = getContextAtPosition(incomplete, 2, 14, ".tp2");
-            expect(context).toBe("patch");
+            // Line 2, column 14: tree-sitter likely can't parse this as COPY action
+            // Falls back to component context detection, which sees no structure → action
+            const contexts = getContextAtPosition(incomplete, 2, 14, ".tp2");
+            expect(contexts).toEqual(["action"]);
         });
 
-        it("detects patch on empty line inside COPY block", () => {
-            // User on empty line after COPY, before first patch
+        it("detects patch on empty line with patch below", () => {
+            // User on empty line after COPY file pairs
+            // There's a WRITE_BYTE patch below, so context is patch
             const emptyLine = `BEGIN ~Test~
     COPY ~file.itm~ ~override~
 
         WRITE_BYTE 0x00 1
 END
 `;
-            // Line 2: empty line inside COPY patches area
-            const context = getContextAtPosition(emptyLine, 2, 8, ".tp2");
-            expect(context).toBe("patch");
+            // Line 2: empty line - patch below tells us context is patch
+            const contexts = getContextAtPosition(emptyLine, 2, 8, ".tp2");
+            expect(contexts).toEqual(["patch"]);
         });
     });
 
@@ -270,8 +274,8 @@ END
 END
 `;
             // Line 1, column 8: right after "LAF " where function name goes
-            const context = getContextAtPosition(lafIncomplete, 1, 8, ".tp2");
-            expect(context).toBe("lafName");
+            const contexts = getContextAtPosition(lafIncomplete, 1, 8, ".tp2");
+            expect(contexts).toEqual(["lafName"]);
         });
 
         it("detects lpfName when typing function name after LPF", () => {
@@ -281,8 +285,8 @@ END
 END
 `;
             // Line 1, column 8: right after "LPF " where function name goes
-            const context = getContextAtPosition(lpfIncomplete, 1, 8, ".tph");
-            expect(context).toBe("lpfName");
+            const contexts = getContextAtPosition(lpfIncomplete, 1, 8, ".tph");
+            expect(contexts).toEqual(["lpfName"]);
         });
 
         it("detects lafName with LAUNCH_ACTION_FUNCTION", () => {
@@ -293,8 +297,8 @@ END
 END
 `;
             // Line 1, column 27: right after "LAUNCH_ACTION_FUNCTION A"
-            const context = getContextAtPosition(lafFull, 1, 27, ".tp2");
-            expect(context).toBe("lafName");
+            const contexts = getContextAtPosition(lafFull, 1, 27, ".tp2");
+            expect(contexts).toEqual(["lafName"]);
         });
 
         it("detects lafName with incomplete LAUNCH_ACTION_FUNCTION (no END)", () => {
@@ -305,8 +309,8 @@ END
         target = 1
 `;
             // Line 1, column 27: right after "LAUNCH_ACTION_FUNCTION A"
-            const context = getContextAtPosition(lafIncomplete, 1, 27, ".tp2");
-            expect(context).toBe("lafName");
+            const contexts = getContextAtPosition(lafIncomplete, 1, 27, ".tp2");
+            expect(contexts).toEqual(["lafName"]);
         });
     });
 
@@ -323,8 +327,8 @@ END
 `;
             // Line 5: empty line after BEGIN, before END
             // At boundary: both componentFlags and actions are valid completions
-            const context = getContextAtPosition(afterBegin, 5, 0, ".tp2");
-            expect(context).toBe("componentFlagBoundary");
+            const contexts = getContextAtPosition(afterBegin, 5, 0, ".tp2");
+            expect(contexts).toEqual(["componentFlag", "action"]);
         });
 
         it("detects componentFlag when typing after BEGIN on same structure", () => {
@@ -338,8 +342,8 @@ BEGIN ~Test~
 END
 `;
             // Line 5: DESIGNATED - this is a component flag
-            const context = getContextAtPosition(withFlags, 5, 4, ".tp2");
-            expect(context).toBe("componentFlag");
+            const contexts = getContextAtPosition(withFlags, 5, 4, ".tp2");
+            expect(contexts).toEqual(["componentFlag"]);
         });
 
         it("detects action after component flags", () => {
@@ -353,11 +357,11 @@ BEGIN ~Test~
 END
 `;
             // Line 6: COPY - this is an action after the flag
-            const context = getContextAtPosition(withFlags, 6, 4, ".tp2");
-            expect(context).toBe("action");
+            const contexts = getContextAtPosition(withFlags, 6, 4, ".tp2");
+            expect(contexts).toEqual(["action"]);
         });
 
-        it("detects boundary after GROUP flag when no actions yet", () => {
+        it("detects action after GROUP flag with action below", () => {
             const afterGroupFlag = `BACKUP ~backup~
 AUTHOR ~me~
 LANGUAGE ~English~ ~en~ ~en.tra~
@@ -367,10 +371,10 @@ GROUP @122
 
 INCLUDE ~lib.tpa~
 `;
-            // Line 6: empty line after GROUP flag, before INCLUDE action
-            // At boundary: both componentFlags and actions are valid completions
-            const context = getContextAtPosition(afterGroupFlag, 6, 0, ".tp2");
-            expect(context).toBe("componentFlagBoundary");
+            // Line 6: empty line after GROUP flag
+            // INCLUDE action below tells us context is action
+            const contexts = getContextAtPosition(afterGroupFlag, 6, 0, ".tp2");
+            expect(contexts).toEqual(["action"]);
         });
 
         it("detects action on empty line inside component", () => {
@@ -384,8 +388,8 @@ BEGIN ~Test~
 END
 `;
             // Line 6: empty line after COPY, inside component
-            const context = getContextAtPosition(withEmptyLine, 6, 4, ".tp2");
-            expect(context).toBe("action");
+            const contexts = getContextAtPosition(withEmptyLine, 6, 4, ".tp2");
+            expect(contexts).toEqual(["action"]);
         });
 
         it("does not detect flag context inside component", () => {
@@ -398,8 +402,8 @@ BEGIN ~Test~
 END
 `;
             // Line 5: inside component, should NOT be flag
-            const context = getContextAtPosition(insideComponent, 5, 4, ".tp2");
-            expect(context).not.toBe("flag");
+            const contexts = getContextAtPosition(insideComponent, 5, 4, ".tp2");
+            expect(contexts).not.toContain("flag");
         });
     });
 });

@@ -27,22 +27,6 @@ export interface CompletionItemWithCategory extends CompletionItem {
 }
 
 /**
- * Type guard to check if a completion item has category metadata.
- * Internal utility - consumers should use filterCompletionsByContext instead.
- */
-function hasCategory(item: CompletionItem): item is CompletionItemWithCategory {
-    return "category" in item && typeof (item as CompletionItemWithCategory).category === "string";
-}
-
-/**
- * Extract category from a completion item safely.
- * Internal utility - consumers should use filterCompletionsByContext instead.
- */
-function getCategory(item: CompletionItem): string | undefined {
-    return hasCategory(item) ? item.category : undefined;
-}
-
-/**
  * Generic category-to-context mapping.
  * Maps category names to the contexts where they should appear.
  *
@@ -85,83 +69,6 @@ export interface ContextFilterConfig<TContext extends string> {
      * Use sparingly - prefer fixing the grammar or YAML categories instead.
      */
     itemOverride?: (itemName: string, category: string | undefined, context: TContext) => boolean | undefined;
-}
-
-/**
- * Check if a category is allowed in the given context.
- * Internal utility - consumers should use filterCompletionsByContext instead.
- *
- * @param category - Category name from completion item
- * @param context - Current cursor context
- * @param config - Filter configuration
- * @returns true if category is allowed in context
- */
-function isCategoryAllowed<TContext extends string>(
-    category: string | undefined,
-    context: TContext,
-    config: ContextFilterConfig<TContext>
-): boolean {
-    // No category: show everywhere
-    if (!category) {
-        return true;
-    }
-
-    // Check if context is the fallback (permissive)
-    if (context === config.fallbackContext) {
-        return true;
-    }
-
-    // Category not in mapping: show everywhere
-    const allowedContexts = config.categoryMap[category];
-    if (!allowedContexts) {
-        return true;
-    }
-
-    return allowedContexts.includes(context);
-}
-
-/**
- * Check if a specific completion item should be shown in a context.
- * Internal utility - consumers should use filterCompletionsByContext instead.
- *
- * @param item - Completion item to check
- * @param context - Current cursor context
- * @param config - Filter configuration
- * @returns true if item should be shown
- */
-function isItemAllowedInContext<TContext extends string>(
-    item: CompletionItem,
-    context: TContext,
-    config: ContextFilterConfig<TContext>
-): boolean {
-    const category = getCategory(item);
-    const label = item.label as string;
-
-    // Check item-specific overrides first
-    if (config.itemOverride) {
-        const override = config.itemOverride(label, category, context);
-        if (override !== undefined) {
-            return override;
-        }
-    }
-
-    return isCategoryAllowed(category, context, config);
-}
-
-/**
- * Filter completion items based on context.
- *
- * @param items - All completion items
- * @param context - Current cursor context
- * @param config - Filter configuration
- * @returns Filtered items allowed in the context
- */
-export function filterCompletionsByContext<TContext extends string>(
-    items: CompletionItem[],
-    context: TContext,
-    config: ContextFilterConfig<TContext>
-): CompletionItem[] {
-    return items.filter((item) => isItemAllowedInContext(item, context, config));
 }
 
 /**
@@ -258,12 +165,3 @@ export function getUtf8ByteOffset(text: string, line: number, character: number)
     return docEndOffset + (character - charCount);
 }
 
-/**
- * Minimum offset difference to trigger fallback heuristics.
- * Used when exact tree-sitter nodes don't exist due to incomplete code.
- *
- * Rationale: 10 bytes is enough to skip past a keyword and whitespace
- * (e.g., "COPY " = 5 bytes, plus margin), but not so large that we
- * incorrectly trigger in minimal test cases.
- */
-export const HEURISTIC_OFFSET_THRESHOLD = 10;

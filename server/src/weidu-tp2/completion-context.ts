@@ -7,11 +7,10 @@ import type { Node as SyntaxNode } from "web-tree-sitter";
 import { CompletionItem } from "vscode-languageserver/node";
 import {
     CategoryContextMap,
+    CompletionItemWithCategory,
     ContextFilterConfig,
-    filterCompletionsByContext,
     getUtf8ByteOffset,
     validateCategoryContextMap,
-    HEURISTIC_OFFSET_THRESHOLD,
 } from "../shared/completion-context";
 import { getParser, isInitialized } from "./parser";
 import { isAction, isPatch } from "./format-utils";
@@ -23,14 +22,17 @@ import { isAction, isPatch } from "./format-utils";
 /**
  * Completion context types matching grammar hierarchy.
  * See grammars/weidu-tp2/README.md for structure documentation.
+ *
+ * Multiple contexts can be active at once (e.g., both componentFlag and action
+ * are valid after BEGIN when no actions exist yet).
  */
 export type CompletionContext =
     | "prologue"        // BACKUP, AUTHOR before any flag/language
     | "flag"            // TP2 flags, LANGUAGE, BEGIN
-    | "componentFlag"   // After BEGIN, before first action
-    | "componentFlagBoundary" // At boundary between componentFlag and action
-    | "action"          // Inside component, .tpa, .tph
-    | "patch"           // Inside COPY patches, .tpp
+    | "componentFlag"   // After BEGIN, component flags allowed
+    | "action"          // Inside component, .tpa, .tph - actions allowed
+    | "patch"           // Inside COPY patches, .tpp - patches allowed
+    | "when"            // After COPY file pairs - when conditions allowed
     | "lafName"         // After LAF keyword (action functions only)
     | "lpfName"         // After LPF keyword (patch functions only)
     | "unknown";        // Fallback - return everything
@@ -42,6 +44,9 @@ export type CompletionContext =
 /**
  * Maps YAML data categories to their allowed completion contexts.
  * Categories not listed here are allowed in all contexts.
+ *
+ * Note: Multiple contexts can be active simultaneously. For example, after BEGIN
+ * with no actions, both "componentFlag" and "action" contexts are active.
  *
  * IMPORTANT: Keep this synchronized with:
  * - data/completion/weidu-tp2.yaml category names
@@ -55,12 +60,12 @@ const CATEGORY_CONTEXTS: CategoryContextMap<CompletionContext> = {
     flag: ["flag"],
     language: ["flag"],
 
-    // Component flags (after BEGIN, before actions)
-    componentFlag: ["componentFlag", "componentFlagBoundary"],
+    // Component flags
+    componentFlag: ["componentFlag"],
 
-    // Action context (also at boundary where both flags and actions are valid)
-    action: ["action", "componentFlagBoundary"],
-    when: ["action"],
+    // Action context
+    action: ["action"],
+    when: ["when"],
     optGlob: ["action"],
     optCase: ["action"],
     optExact: ["action"],
@@ -111,9 +116,9 @@ const VALID_CONTEXTS = new Set<CompletionContext>([
     "prologue",
     "flag",
     "componentFlag",
-    "componentFlagBoundary",
     "action",
     "patch",
+    "when",
     "lafName",
     "lpfName",
     "unknown",
@@ -123,11 +128,48 @@ const VALID_CONTEXTS = new Set<CompletionContext>([
 validateCategoryContextMap(FILTER_CONFIG, VALID_CONTEXTS, "weidu-tp2");
 
 /**
- * Filter completion items based on context.
+ * Filter completion items based on multiple active contexts.
  * Public API for use by provider.
  */
-export function filterItemsByContext(items: CompletionItem[], context: CompletionContext): CompletionItem[] {
-    return filterCompletionsByContext(items, context, FILTER_CONFIG);
+export function filterItemsByContext(items: CompletionItem[], contexts: CompletionContext[]): CompletionItem[] {
+    // If any context allows an item, include it
+    return items.filter(item =>
+        contexts.some(context =>
+            isItemAllowedInContext(item, context, FILTER_CONFIG)
+        )
+    );
+}
+
+/** Helper to check if item is allowed in a single context. */
+function isItemAllowedInContext(item: CompletionItem, context: CompletionContext, config: ContextFilterConfig<CompletionContext>): boolean {
+    const category = (item as CompletionItemWithCategory).category;
+    const label = item.label as string;
+
+    // Check item-specific overrides first
+    if (config.itemOverride) {
+        const override = config.itemOverride(label, category, context);
+        if (override !== undefined) {
+            return override;
+        }
+    }
+
+    // No category: show everywhere
+    if (!category) {
+        return true;
+    }
+
+    // Check if context is the fallback (permissive)
+    if (context === config.fallbackContext) {
+        return true;
+    }
+
+    // Category not in mapping: show everywhere
+    const allowedContexts = config.categoryMap[category];
+    if (!allowedContexts) {
+        return true;
+    }
+
+    return allowedContexts.includes(context);
 }
 
 // ============================================
@@ -138,30 +180,33 @@ export function filterItemsByContext(items: CompletionItem[], context: Completio
  * Determine the completion context at a given position.
  * Uses tree-sitter to parse the text and walk up from cursor position.
  *
+ * Returns an array of contexts because multiple contexts can be active simultaneously
+ * (e.g., after BEGIN with no actions, both componentFlag and action are valid).
+ *
  * @param text Document text
  * @param line 0-based line number
  * @param character 0-based character offset
  * @param fileExtension File extension (e.g., ".tp2", ".tpa", ".tpp")
- * @returns The detected context, or "unknown" if detection fails
+ * @returns Array of detected contexts, or ["unknown"] if detection fails
  */
 export function getContextAtPosition(
     text: string,
     line: number,
     character: number,
     fileExtension: string
-): CompletionContext {
+): CompletionContext[] {
     // Fallback based on file extension
     const extLower = fileExtension.toLowerCase();
     const defaultContext = getDefaultContext(extLower);
 
     if (!isInitialized()) {
-        return defaultContext;
+        return [defaultContext];
     }
 
     const parser = getParser();
     const tree = parser.parse(text);
     if (!tree) {
-        return defaultContext;
+        return [defaultContext];
     }
 
     // Compute cursor byte offset from line/character (UTF-8 safe)
@@ -170,7 +215,7 @@ export function getContextAtPosition(
     // Find node at cursor position
     const node = tree.rootNode.descendantForPosition({ row: line, column: character });
     if (!node) {
-        return defaultContext;
+        return [defaultContext];
     }
 
     // Walk up the tree to find context-defining ancestor
@@ -196,9 +241,11 @@ function getDefaultContext(ext: string): CompletionContext {
 }
 
 /**
- * Detect context by walking up from a node.
+ * Detect context by walking up from cursor node to find parent context,
+ * then walking down through siblings to narrow the context.
+ * Returns an array of contexts - multiple when ambiguous.
  */
-function detectContextFromNode(node: SyntaxNode, ext: string, cursorOffset: number): CompletionContext {
+function detectContextFromNode(node: SyntaxNode, ext: string, cursorOffset: number): CompletionContext[] {
     let current: SyntaxNode | null = node;
 
     while (current) {
@@ -207,61 +254,104 @@ function detectContextFromNode(node: SyntaxNode, ext: string, cursorOffset: numb
         // Check for function call name position (LAF/LPF)
         if (type === "action_launch_function" || type === "launch_action_function") {
             if (isAtFunctionName(cursorOffset, current)) {
-                return "lafName";
+                return ["lafName"];
             }
-            return "action";
+            return ["action"];
         }
         if (type === "patch_launch_function" || type === "launch_patch_function") {
             if (isAtFunctionName(cursorOffset, current)) {
-                return "lpfName";
+                return ["lpfName"];
             }
-            return "patch";
+            return ["patch"];
         }
 
         // INNER_ACTION creates action context inside patch
         if (type === "inner_action") {
-            return "action";
+            return ["action"];
         }
 
         // INNER_PATCH/OUTER_PATCH creates patch context
         if (type === "inner_patch" || type === "inner_patch_save" || type === "inner_patch_file") {
-            return "patch";
+            return ["patch"];
         }
         if (type === "outer_patch" || type === "outer_patch_save") {
-            return "patch";
+            return ["patch"];
         }
 
         // Patch file (.tpp content)
         if (type === "patch_file") {
-            return "patch";
+            return ["patch"];
         }
 
         // Inside patches block (COPY...BEGIN...END)
         if (type === "patches") {
-            return "patch";
+            return ["patch"];
         }
 
-        // COPY actions with patches inside
+        // COPY actions - walk down to see what's below
         if (type.startsWith("action_copy")) {
-            // If we're inside the patches block, it's patch context
-            // Otherwise it's action context
-            if (isInsidePatchesBlock(cursorOffset, current)) {
-                return "patch";
+            // Check if we're inside a patches block node
+            for (const child of current.children) {
+                if (child.type === "patches") {
+                    if (cursorOffset >= child.startIndex && cursorOffset <= child.endIndex) {
+                        return ["patch"];
+                    }
+                }
             }
-            return "action";
+
+            // Walk through children to determine position and what's below
+            let hasPatchesBelow = false;
+            let hasWhenBelow = false;
+            let lastFilePairEnd = -1;
+
+            for (const child of current.children) {
+                if (child.type === "file_pair") {
+                    lastFilePairEnd = Math.max(lastFilePairEnd, child.endIndex);
+                }
+
+                if (child.startIndex > cursorOffset) {
+                    if (child.type === "patches" || isPatch(child.type)) {
+                        hasPatchesBelow = true;
+                    }
+                    if (child.type === "when") {
+                        hasWhenBelow = true;
+                    }
+                }
+            }
+
+            // Before/within file pairs → action context (COPY header)
+            if (lastFilePairEnd > 0 && cursorOffset <= lastFilePairEnd) {
+                return ["action"];
+            }
+
+            // Both patches and when below → both valid
+            if (hasPatchesBelow && hasWhenBelow) {
+                return ["patch", "when"];
+            }
+            // Only patches below → patch context
+            if (hasPatchesBelow) {
+                return ["patch"];
+            }
+            // Only when below → when context
+            if (hasWhenBelow) {
+                return ["when"];
+            }
+
+            // Default: after file pairs, both patches and when are possible
+            return ["patch", "when"];
         }
 
-        // Component body
+        // Component body - walk down to see what's below
         if (type === "component") {
-            return getComponentContext(cursorOffset, current);
+            return getComponentContextFromNode(cursorOffset, current);
         }
 
         // Action or patch node directly
         if (isAction(type)) {
-            return "action";
+            return ["action"];
         }
         if (isPatch(type)) {
-            return "patch";
+            return ["patch"];
         }
 
         // Source file root
@@ -276,18 +366,18 @@ function detectContextFromNode(node: SyntaxNode, ext: string, cursorOffset: numb
                 if (hasComponentStructure(current)) {
                     return detectTp2RootContext(cursorOffset, current);
                 }
-                return "action";
+                return ["action"];
             }
             // For .tpp, default to patch
             if (ext === ".tpp") {
-                return "patch";
+                return ["patch"];
             }
         }
 
         current = current.parent;
     }
 
-    return "unknown";
+    return ["unknown"];
 }
 
 /**
@@ -336,79 +426,6 @@ function isAtFunctionName(cursorOffset: number, funcCall: SyntaxNode): boolean {
     return false;
 }
 
-/**
- * Check if cursor is inside the patches block of a COPY action.
- * Uses positional heuristics for incomplete code where patches node may not exist.
- */
-function isInsidePatchesBlock(cursorOffset: number, copyAction: SyntaxNode): boolean {
-    // Look for explicit patches node first
-    let patchesStart = -1;
-    for (const child of copyAction.children) {
-        if (child.type === "patches") {
-            patchesStart = child.startIndex;
-            // Cursor inside patches node
-            if (cursorOffset >= child.startIndex && cursorOffset <= child.endIndex) {
-                return true;
-            }
-        }
-    }
-
-    // If there's a patches node and cursor is before it but after file pairs,
-    // we're still in patch context (e.g., on empty line between COPY header and patches)
-    if (patchesStart > 0 && cursorOffset < patchesStart) {
-        // Check if we're past the file pairs
-        for (const child of copyAction.children) {
-            if (child.type === "file_pair" && cursorOffset > child.endIndex) {
-                return true;
-            }
-        }
-    }
-
-    // For incomplete code, use positional heuristic:
-    // If cursor is after the last file_pair or string (destination), we're in patch context
-    let lastFilePairEnd = -1;
-    let lastStringEnd = -1;
-    let actionEnd = copyAction.endIndex;
-    let keywordEnd = -1;
-
-    for (const child of copyAction.children) {
-        // Track keyword position
-        if (child.text.startsWith("COPY") || child.text === "INNER_ACTION") {
-            keywordEnd = child.endIndex;
-            continue;
-        }
-
-        if (child.type === "file_pair") {
-            lastFilePairEnd = child.endIndex;
-        }
-
-        // Also check for bare strings (source/destination in incomplete parses)
-        if (child.type === "string" && lastFilePairEnd < 0) {
-            lastStringEnd = Math.max(lastStringEnd, child.endIndex);
-        }
-
-        // BUT_ONLY and similar come after patches, so if cursor is before them, we're in patches
-        if (child.type === "but_only" && cursorOffset < child.startIndex) {
-            actionEnd = child.startIndex;
-        }
-    }
-
-    // Use whichever positional marker we found
-    const patchAreaStart = lastFilePairEnd > 0 ? lastFilePairEnd : lastStringEnd;
-
-    // If cursor is past the file pairs/strings area, it's patch context
-    if (patchAreaStart > 0 && cursorOffset > patchAreaStart && cursorOffset < actionEnd) {
-        return true;
-    }
-
-    // Fallback: if cursor is well inside the action (past keyword), assume patch context
-    // This handles cases where tree-sitter doesn't recognize the structure at all
-    if (keywordEnd > 0 && cursorOffset > keywordEnd + HEURISTIC_OFFSET_THRESHOLD) {
-        return true;
-    }
-
-    return false;
-}
 
 /** Component flag node types. */
 const COMPONENT_FLAG_TYPES = new Set([
@@ -426,33 +443,7 @@ const COMPONENT_FLAG_TYPES = new Set([
     "forced_subcomponent_flag",
 ]);
 
-/**
- * Check if cursor is inside a component flag node.
- */
-function isInsideComponentFlag(cursorOffset: number, component: SyntaxNode): boolean {
-    for (const child of component.children) {
-        if (COMPONENT_FLAG_TYPES.has(child.type)) {
-            if (cursorOffset >= child.startIndex && cursorOffset <= child.endIndex) {
-                return true;
-            }
-        }
-    }
-    return false;
-}
 
-/**
- * Check if cursor is before the first action in a component.
- */
-function isBeforeFirstAction(cursorOffset: number, component: SyntaxNode): boolean {
-    // Find the first action child
-    for (const child of component.children) {
-        if (isAction(child.type)) {
-            return cursorOffset < child.startIndex;
-        }
-    }
-    // No actions found - we're in component flags area
-    return true;
-}
 
 /**
  * Check if source file has component structure (BEGIN, GROUP, LANGUAGE).
@@ -468,6 +459,63 @@ function hasComponentStructure(root: SyntaxNode): boolean {
 }
 
 /**
+ * Get component context by walking through children (both above and below cursor).
+ * Shared logic for both direct component nodes and trailing areas.
+ */
+function getComponentContextFromNode(cursorOffset: number, component: SyntaxNode): CompletionContext[] {
+    // Check if we're inside a component flag node
+    for (const child of component.children) {
+        if (COMPONENT_FLAG_TYPES.has(child.type)) {
+            if (cursorOffset >= child.startIndex && cursorOffset <= child.endIndex) {
+                return ["componentFlag"];
+            }
+        }
+    }
+
+    // Walk both directions: check what's above and below cursor
+    let hasActionsAbove = false;
+    let hasFlagsBelow = false;
+    let hasActionsBelow = false;
+
+    for (const child of component.children) {
+        if (child.endIndex < cursorOffset) {
+            // Above cursor - only track actions (once an action appears, we're past flags)
+            if (isAction(child.type)) {
+                hasActionsAbove = true;
+            }
+        } else if (child.startIndex > cursorOffset) {
+            // Below cursor
+            if (COMPONENT_FLAG_TYPES.has(child.type)) {
+                hasFlagsBelow = true;
+            }
+            if (isAction(child.type)) {
+                hasActionsBelow = true;
+            }
+        }
+    }
+
+    // If there's an action above, we're past the flags section → action context
+    if (hasActionsAbove) {
+        return ["action"];
+    }
+
+    // Both flags and actions below → both valid
+    if (hasFlagsBelow && hasActionsBelow) {
+        return ["componentFlag", "action"];
+    }
+    // Only flags below → componentFlag context
+    if (hasFlagsBelow) {
+        return ["componentFlag"];
+    }
+    // Only actions below → action context
+    if (hasActionsBelow) {
+        return ["action"];
+    }
+    // Nothing above or below → both valid
+    return ["componentFlag", "action"];
+}
+
+/**
  * Detect context within .tp2 source file root.
  * Determines if we're in prologue or flag section.
  *
@@ -476,7 +524,7 @@ function hasComponentStructure(root: SyntaxNode): boolean {
  * of the component node, but should still be treated as inside the component
  * for completion purposes.
  */
-function detectTp2RootContext(cursorOffset: number, root: SyntaxNode): CompletionContext {
+function detectTp2RootContext(cursorOffset: number, root: SyntaxNode): CompletionContext[] {
     // TP2 is strictly ordered: prologue → flags → language → components
     let foundLanguage = false;
     let lastComponent: SyntaxNode | null = null;
@@ -485,7 +533,7 @@ function detectTp2RootContext(cursorOffset: number, root: SyntaxNode): Completio
         if (child.type === "language_directive") {
             foundLanguage = true;
             if (cursorOffset < child.startIndex) {
-                return "prologue";
+                return ["prologue"];
             }
         }
         if (child.type === "component") {
@@ -493,13 +541,13 @@ function detectTp2RootContext(cursorOffset: number, root: SyntaxNode): Completio
             if (cursorOffset < child.startIndex) {
                 // If we have a previous component, cursor is in its trailing area
                 if (lastComponent) {
-                    return getComponentContext(cursorOffset, lastComponent);
+                    return getComponentContextFromNode(cursorOffset, lastComponent);
                 }
-                return foundLanguage ? "flag" : "prologue";
+                return foundLanguage ? ["flag"] : ["prologue"];
             }
             // Check if cursor is INSIDE this component's span
             if (cursorOffset >= child.startIndex && cursorOffset <= child.endIndex) {
-                return getComponentContext(cursorOffset, child);
+                return getComponentContextFromNode(cursorOffset, child);
             }
             // Cursor is after this component - remember it for trailing area check
             lastComponent = child;
@@ -508,29 +556,13 @@ function detectTp2RootContext(cursorOffset: number, root: SyntaxNode): Completio
 
     // Cursor is after all children - if we found a component, we're in its trailing area
     if (lastComponent) {
-        return getComponentContext(cursorOffset, lastComponent);
+        return getComponentContextFromNode(cursorOffset, lastComponent);
     }
 
     // After all components or before any - check what we found
     if (foundLanguage) {
-        return "flag"; // After LANGUAGE, ready for BEGIN
+        return ["flag"]; // After LANGUAGE, ready for BEGIN
     }
-    return "prologue"; // Before LANGUAGE
+    return ["prologue"]; // Before LANGUAGE
 }
 
-/**
- * Get completion context within a component (flag area, boundary, or action area).
- * At the boundary between flags and actions, both are valid completions.
- */
-function getComponentContext(cursorOffset: number, component: SyntaxNode): CompletionContext {
-    if (!isBeforeFirstAction(cursorOffset, component)) {
-        return "action";
-    }
-    // Cursor is before first action (or no actions yet)
-    // Check if we're inside a flag node or at the boundary
-    if (isInsideComponentFlag(cursorOffset, component)) {
-        return "componentFlag";
-    }
-    // At boundary: after BEGIN+name (and possibly flags) but not inside a flag
-    return "componentFlagBoundary";
-}

@@ -67,6 +67,7 @@ At context boundaries, completions show items from both adjacent contexts.
 | `componentFlag` | After BEGIN, before first action     | Component flags            |
 | `action`        | Inside component, .tpa/.tph root     | Actions                    |
 | `patch`         | Inside COPY/COPY_EXISTING, .tpp root | Patches                    |
+| `when`          | After COPY file pairs                | When conditions            |
 | `lafName`       | After `LAF` keyword                  | Action function names      |
 | `lpfName`       | After `LPF` keyword                  | Patch function names       |
 

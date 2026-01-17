@@ -70,8 +70,7 @@ function isSuffixKeyword(child: SyntaxNode): boolean {
     return (
         isKeyword(child, KW_BUT_ONLY) ||
         isKeyword(child, KW_BUT_ONLY_IF_IT_CHANGES) ||
-        isKeyword(child, KW_IF_EXISTS) ||
-        child.type === "but_only"
+        isKeyword(child, KW_IF_EXISTS)
     );
 }
 

@@ -64,11 +64,11 @@ export const weiduTp2Provider: LanguageProvider = {
     filterCompletions(items: CompletionItem[], text: string, position: Position, uri: string): CompletionItem[] {
         const filePath = fileURLToPath(uri);
         const ext = extname(filePath).toLowerCase();
-        const context = getContextAtPosition(text, position.line, position.character, ext);
+        const contexts = getContextAtPosition(text, position.line, position.character, ext);
 
-        conlog(`[tp2] Completion context: ${context} at ${position.line}:${position.character} in ${ext}`);
+        conlog(`[tp2] Completion contexts: [${contexts.join(", ")}] at ${position.line}:${position.character} in ${ext}`);
 
-        return filterItemsByContext(items, context);
+        return filterItemsByContext(items, contexts);
     },
 
     getHover(uri: string, symbol: string): Hover | null {
