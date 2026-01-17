@@ -8,12 +8,12 @@ Formal structure for context-aware tooling. Names match WeiDU readme and map to 
 
 ### File Types
 
-| Extension | Default Context | Description |
-|-----------|-----------------|-------------|
-| `.tp2` | file | Complete mod file (prologue + flags + languages + components) |
-| `.tpa` | action | Action library (included via INCLUDE) |
-| `.tph` | action | Action header (included via INCLUDE) |
-| `.tpp` | patch | Patch library (included via INCLUDE) |
+| Extension | Default Context | Description                                                   |
+| --------- | --------------- | ------------------------------------------------------------- |
+| `.tp2`    | file            | Complete mod file (prologue + flags + languages + components) |
+| `.tpa`    | action          | Action library (included via INCLUDE)                         |
+| `.tph`    | action          | Action header (included via INCLUDE)                          |
+| `.tpp`    | patch           | Patch library (included via INCLUDE)                          |
 
 Note: `.tpa`/`.tph` files containing component structure are treated like `.tp2`.
 
@@ -60,15 +60,15 @@ At context boundaries, completions show items from both adjacent contexts.
 
 ### Completion Contexts
 
-| Context | Location | Shows |
-|---------|----------|-------|
-| `prologue` | Before first flag | BACKUP, AUTHOR |
-| `flag` | After prologue, outside components | TP2 flags, LANGUAGE, BEGIN |
-| `componentFlag` | After BEGIN, before first action | Component flags |
-| `action` | Inside component, .tpa/.tph root | Actions |
-| `patch` | Inside COPY/COPY_EXISTING, .tpp root | Patches |
-| `lafName` | After `LAF` keyword | Action function names |
-| `lpfName` | After `LPF` keyword | Patch function names |
+| Context         | Location                             | Shows                      |
+| --------------- | ------------------------------------ | -------------------------- |
+| `prologue`      | Before first flag                    | BACKUP, AUTHOR             |
+| `flag`          | After prologue, outside components   | TP2 flags, LANGUAGE, BEGIN |
+| `componentFlag` | After BEGIN, before first action     | Component flags            |
+| `action`        | Inside component, .tpa/.tph root     | Actions                    |
+| `patch`         | Inside COPY/COPY_EXISTING, .tpp root | Patches                    |
+| `lafName`       | After `LAF` keyword                  | Action function names      |
+| `lpfName`       | After `LPF` keyword                  | Patch function names       |
 
 ---
 
@@ -84,20 +84,20 @@ SUPPORT ~emailAddress~           // Alias for AUTHOR
 
 ### TP2 Flags
 
-| Flag | Syntax | Description |
-|------|--------|-------------|
-| AUTO_TRA | `AUTO_TRA ~path~` | Auto-load TRA files matching D files |
-| ALLOW_MISSING | `ALLOW_MISSING file...` | Allow missing files (creates empty) |
-| ASK_EVERY_COMPONENT | `ASK_EVERY_COMPONENT` | Ask about each component individually |
-| ALWAYS | `ALWAYS ... END` | Execute before every component |
-| README | `README file...` | Display readme after language selection |
-| UNINSTALL_ORDER | `UNINSTALL_ORDER ops...` | Customize uninstall order |
-| MODDER | `MODDER options...` | Enable debug info |
-| VERSION | `VERSION ~string~` | Append to component names in log |
-| SCRIPT_STYLE | `SCRIPT_STYLE BG\|IWD1\|IWD2\|PST` | BAF/BCS parsing style |
-| NO_IF_EVAL_BUG | `NO_IF_EVAL_BUG` | Fix IF_EVAL bug |
-| QUICK_MENU | `QUICK_MENU ...` | Define component groups |
-| AUTO_EVAL_STRINGS | `AUTO_EVAL_STRINGS` | Auto EVALUATE_BUFFER |
+| Flag                | Syntax                             | Description                             |
+| ------------------- | ---------------------------------- | --------------------------------------- |
+| AUTO_TRA            | `AUTO_TRA ~path~`                  | Auto-load TRA files matching D files    |
+| ALLOW_MISSING       | `ALLOW_MISSING file...`            | Allow missing files (creates empty)     |
+| ASK_EVERY_COMPONENT | `ASK_EVERY_COMPONENT`              | Ask about each component individually   |
+| ALWAYS              | `ALWAYS ... END`                   | Execute before every component          |
+| README              | `README file...`                   | Display readme after language selection |
+| UNINSTALL_ORDER     | `UNINSTALL_ORDER ops...`           | Customize uninstall order               |
+| MODDER              | `MODDER options...`                | Enable debug info                       |
+| VERSION             | `VERSION ~string~`                 | Append to component names in log        |
+| SCRIPT_STYLE        | `SCRIPT_STYLE BG\|IWD1\|IWD2\|PST` | BAF/BCS parsing style                   |
+| NO_IF_EVAL_BUG      | `NO_IF_EVAL_BUG`                   | Fix IF_EVAL bug                         |
+| QUICK_MENU          | `QUICK_MENU ...`                   | Define component groups                 |
+| AUTO_EVAL_STRINGS   | `AUTO_EVAL_STRINGS`                | Auto EVALUATE_BUFFER                    |
 
 ### Language
 
@@ -119,48 +119,48 @@ BEGIN ~componentName~
 
 ### Component Flags
 
-| Flag | Syntax | Description |
-|------|--------|-------------|
-| DEPRECATED | `DEPRECATED ~message~` | Mark as deprecated, auto-uninstall |
-| REQUIRE_COMPONENT | `REQUIRE_COMPONENT ~mod~ ~comp~ ~msg~` | Require another component |
-| FORBID_COMPONENT | `FORBID_COMPONENT ~mod~ ~comp~ ~msg~` | Forbid another component |
-| REQUIRE_PREDICATE | `REQUIRE_PREDICATE value ~msg~` | Require condition |
-| SUBCOMPONENT | `SUBCOMPONENT ~group~ [value]` | Mutually exclusive group |
-| FORCED_SUBCOMPONENT | `FORCED_SUBCOMPONENT ~group~ [value]` | Forced subcomponent |
-| GROUP | `GROUP ~group~ [value]` | Display grouping |
-| INSTALL_BY_DEFAULT | `INSTALL_BY_DEFAULT` | Auto-install without asking |
-| DESIGNATED | `DESIGNATED number` | Set component number |
-| NO_LOG_RECORD | `NO_LOG_RECORD` | Don't log (can't uninstall) |
-| LABEL | `LABEL ~identifier~` | Unique textual identifier |
-| METADATA | `METADATA ~data~` | Associate metadata |
+| Flag                | Syntax                                 | Description                        |
+| ------------------- | -------------------------------------- | ---------------------------------- |
+| DEPRECATED          | `DEPRECATED ~message~`                 | Mark as deprecated, auto-uninstall |
+| REQUIRE_COMPONENT   | `REQUIRE_COMPONENT ~mod~ ~comp~ ~msg~` | Require another component          |
+| FORBID_COMPONENT    | `FORBID_COMPONENT ~mod~ ~comp~ ~msg~`  | Forbid another component           |
+| REQUIRE_PREDICATE   | `REQUIRE_PREDICATE value ~msg~`        | Require condition                  |
+| SUBCOMPONENT        | `SUBCOMPONENT ~group~ [value]`         | Mutually exclusive group           |
+| FORCED_SUBCOMPONENT | `FORCED_SUBCOMPONENT ~group~ [value]`  | Forced subcomponent                |
+| GROUP               | `GROUP ~group~ [value]`                | Display grouping                   |
+| INSTALL_BY_DEFAULT  | `INSTALL_BY_DEFAULT`                   | Auto-install without asking        |
+| DESIGNATED          | `DESIGNATED number`                    | Set component number               |
+| NO_LOG_RECORD       | `NO_LOG_RECORD`                        | Don't log (can't uninstall)        |
+| LABEL               | `LABEL ~identifier~`                   | Unique textual identifier          |
+| METADATA            | `METADATA ~data~`                      | Associate metadata                 |
 
 ### String Types
 
-| Type | Example | Status |
-|------|---------|--------|
-| Double quote | `"text"` | Supported |
-| Tilde | `~text~` | Supported |
-| Five tildes | `~~~~~text~~~~~` | Supported |
-| Percent | `%text%` | Not supported (conflicts with variable refs) |
+| Type         | Example          | Status                                       |
+| ------------ | ---------------- | -------------------------------------------- |
+| Double quote | `"text"`         | Supported                                    |
+| Tilde        | `~text~`         | Supported                                    |
+| Five tildes  | `~~~~~text~~~~~` | Supported                                    |
+| Percent      | `%text%`         | Not supported (conflicts with variable refs) |
 
 ### Variable References
 
 All syntaxes are equivalent in expression context:
 
-| Syntax | Example | Description |
-|--------|---------|-------------|
-| Bare | `myvar` | Direct reference |
-| Percent | `%myvar%` | Explicit variable (needed in strings) |
-| Double-quoted | `"myvar"` | Quoted reference |
-| Double-quoted percent | `"%myvar%"` | Quoted explicit reference |
-| Tilde-quoted percent | `~%myvar%~` | Tilde-quoted explicit reference |
+| Syntax                | Example     | Description                           |
+| --------------------- | ----------- | ------------------------------------- |
+| Bare                  | `myvar`     | Direct reference                      |
+| Percent               | `%myvar%`   | Explicit variable (needed in strings) |
+| Double-quoted         | `"myvar"`   | Quoted reference                      |
+| Double-quoted percent | `"%myvar%"` | Quoted explicit reference             |
+| Tilde-quoted percent  | `~%myvar%~` | Tilde-quoted explicit reference       |
 
 ### Other References
 
-| Type | Example | Description |
-|------|---------|-------------|
-| TRA ref | `@123` | Translation file reference |
-| Array | `$array(index)` | Array element access |
+| Type    | Example         | Description                |
+| ------- | --------------- | -------------------------- |
+| TRA ref | `@123`          | Translation file reference |
+| Array   | `$array(index)` | Array element access       |
 
 ### Comments
 
@@ -173,52 +173,52 @@ All syntaxes are equivalent in expression context:
 
 #### Arithmetic Operators
 
-| Operator | Description |
-|----------|-------------|
-| `+` | Addition |
-| `-` | Subtraction |
-| `*` | Multiplication |
-| `/` | Division (rounds toward zero) |
-| `**` | Exponentiation |
-| `MODULO`, `REM`, `MOD`, `%` | Remainder |
-| `** (n d)` | Fractional exponentiation (n/d power) |
+| Operator                    | Description                           |
+| --------------------------- | ------------------------------------- |
+| `+`                         | Addition                              |
+| `-`                         | Subtraction                           |
+| `*`                         | Multiplication                        |
+| `/`                         | Division (rounds toward zero)         |
+| `**`                        | Exponentiation                        |
+| `MODULO`, `REM`, `MOD`, `%` | Remainder                             |
+| `** (n d)`                  | Fractional exponentiation (n/d power) |
 
 #### Comparison Operators
 
-| Operator | Description |
-|----------|-------------|
-| `=`, `==` | Equal |
-| `!=` | Not equal |
-| `<`, `>`, `<=`, `>=` | Comparison |
+| Operator             | Description |
+| -------------------- | ----------- |
+| `=`, `==`            | Equal       |
+| `!=`                 | Not equal   |
+| `<`, `>`, `<=`, `>=` | Comparison  |
 
 #### Logical Operators
 
-| Operator | Description |
-|----------|-------------|
-| `AND`, `&&` | Conjunction |
+| Operator     | Description |
+| ------------ | ----------- |
+| `AND`, `&&`  | Conjunction |
 | `OR`, `\|\|` | Disjunction |
-| `NOT`, `!` | Negation |
+| `NOT`, `!`   | Negation    |
 
 #### Bitwise Operators
 
-| Operator | Description |
-|----------|-------------|
-| `BAND`, `&` | Bitwise AND |
-| `BOR`, `\|` | Bitwise OR |
-| `BXOR`, `^^` | Bitwise XOR |
-| `BNOT` | Bitwise NOT |
-| `BLSL`, `<<` | Logical shift left |
-| `BLSR`, `>>` | Logical shift right |
-| `BASR` | Arithmetic shift right |
+| Operator     | Description            |
+| ------------ | ---------------------- |
+| `BAND`, `&`  | Bitwise AND            |
+| `BOR`, `\|`  | Bitwise OR             |
+| `BXOR`, `^^` | Bitwise XOR            |
+| `BNOT`       | Bitwise NOT            |
+| `BLSL`, `<<` | Logical shift left     |
+| `BLSR`, `>>` | Logical shift right    |
+| `BASR`       | Arithmetic shift right |
 
 #### Unary Operators
 
-| Operator | Description |
-|----------|-------------|
-| `-` | Negation |
-| `ABS` | Absolute value |
-| `NOT`, `!` | Logical NOT |
-| `BNOT` | Bitwise NOT |
+| Operator   | Description    |
+| ---------- | -------------- |
+| `-`        | Negation       |
+| `ABS`      | Absolute value |
+| `NOT`, `!` | Logical NOT    |
+| `BNOT`     | Bitwise NOT    |
 
 #### Ternary Operator
 
@@ -228,109 +228,109 @@ condition ? then_value : else_value
 
 #### Memory Access
 
-| Expression | Description |
-|------------|-------------|
-| `BYTE_AT offset` | 8-bit value at offset |
-| `SBYTE_AT offset` | 8-bit signed value |
-| `SHORT_AT offset` | 16-bit value |
-| `SSHORT_AT offset` | 16-bit signed value |
-| `LONG_AT offset` | 32-bit value |
-| `SLONG_AT offset` | 32-bit signed value |
+| Expression         | Description           |
+| ------------------ | --------------------- |
+| `BYTE_AT offset`   | 8-bit value at offset |
+| `SBYTE_AT offset`  | 8-bit signed value    |
+| `SHORT_AT offset`  | 16-bit value          |
+| `SSHORT_AT offset` | 16-bit signed value   |
+| `LONG_AT offset`   | 32-bit value          |
+| `SLONG_AT offset`  | 32-bit signed value   |
 
 #### String Comparison
 
-| Operator | Description |
-|----------|-------------|
-| `STRING_COMPARE`, `STR_CMP` | Compare strings (like strcmp) |
-| `STRING_COMPARE_CASE` | Case-insensitive compare |
-| `STRING_EQUAL` | Equal (returns 1/0) |
-| `STRING_EQUAL_CASE`, `STR_EQ` | Case-insensitive equal |
-| `STRING_MATCHES_REGEXP` | Regexp match |
-| `STRING_CONTAINS_REGEXP` | Contains regexp |
+| Operator                      | Description                   |
+| ----------------------------- | ----------------------------- |
+| `STRING_COMPARE`, `STR_CMP`   | Compare strings (like strcmp) |
+| `STRING_COMPARE_CASE`         | Case-insensitive compare      |
+| `STRING_EQUAL`                | Equal (returns 1/0)           |
+| `STRING_EQUAL_CASE`, `STR_EQ` | Case-insensitive equal        |
+| `STRING_MATCHES_REGEXP`       | Regexp match                  |
+| `STRING_CONTAINS_REGEXP`      | Contains regexp               |
 
 #### Game/File Checks
 
-| Expression | Description |
-|------------|-------------|
-| `GAME_IS ~games~` | Check game type (bg2, tob, etc.) |
-| `ENGINE_IS ~engines~` | Check engine type |
-| `GAME_INCLUDES ~game~` | Check game content |
-| `FILE_EXISTS file` | File exists in filesystem |
-| `FILE_EXISTS_IN_GAME file` | File exists as game resource |
-| `DIRECTORY_EXISTS dir` | Directory exists |
-| `FILE_SIZE file size` | File has exact size |
-| `SIZE_OF_FILE file` | Returns file size |
-| `FILE_CONTAINS file regexp` | File contains pattern |
-| `FILE_CONTAINS_EVALUATED (file regexp)` | With variable expansion |
-| `RESOURCE_CONTAINS file regexp` | Game resource contains pattern |
-| `FILE_MD5 file hash` | Check MD5 hash |
-| `FILE_IS_IN_COMPRESSED_BIFF file` | In compressed BIF |
-| `BIFF_IS_COMPRESSED file` | BIF is compressed |
+| Expression                              | Description                      |
+| --------------------------------------- | -------------------------------- |
+| `GAME_IS ~games~`                       | Check game type (bg2, tob, etc.) |
+| `ENGINE_IS ~engines~`                   | Check engine type                |
+| `GAME_INCLUDES ~game~`                  | Check game content               |
+| `FILE_EXISTS file`                      | File exists in filesystem        |
+| `FILE_EXISTS_IN_GAME file`              | File exists as game resource     |
+| `DIRECTORY_EXISTS dir`                  | Directory exists                 |
+| `FILE_SIZE file size`                   | File has exact size              |
+| `SIZE_OF_FILE file`                     | Returns file size                |
+| `FILE_CONTAINS file regexp`             | File contains pattern            |
+| `FILE_CONTAINS_EVALUATED (file regexp)` | With variable expansion          |
+| `RESOURCE_CONTAINS file regexp`         | Game resource contains pattern   |
+| `FILE_MD5 file hash`                    | Check MD5 hash                   |
+| `FILE_IS_IN_COMPRESSED_BIFF file`       | In compressed BIF                |
+| `BIFF_IS_COMPRESSED file`               | BIF is compressed                |
 
 #### Variable Checks
 
-| Expression | Description |
-|------------|-------------|
-| `VARIABLE_IS_SET var` | Variable is defined |
-| `IS_AN_INT var` | Variable is integer |
-| `STRING_LENGTH string` | String length |
-| `EVALUATE_BUFFER var` | Evaluate variables in string |
+| Expression             | Description                  |
+| ---------------------- | ---------------------------- |
+| `VARIABLE_IS_SET var`  | Variable is defined          |
+| `IS_AN_INT var`        | Variable is integer          |
+| `STRING_LENGTH string` | String length                |
+| `EVALUATE_BUFFER var`  | Evaluate variables in string |
 
 #### Script Validation
 
-| Expression | Description |
-|------------|-------------|
-| `VALID_SCRIPT_ACTIONS var` | Actions compile without errors |
+| Expression                  | Description                     |
+| --------------------------- | ------------------------------- |
+| `VALID_SCRIPT_ACTIONS var`  | Actions compile without errors  |
 | `VALID_SCRIPT_TRIGGERS var` | Triggers compile without errors |
 
 #### Function-like Expressions
 
-| Expression | Description |
-|------------|-------------|
-| `IDS_OF_SYMBOL(file symbol)` | Get IDS number |
-| `RANDOM(low high)` | Random integer |
-| `INDEX(flags needle haystack [start])` | Find first match |
-| `RINDEX(flags needle haystack [start])` | Find last match |
-| `INDEX_BUFFER(flags needle [start])` | Find in current buffer |
-| `RINDEX_BUFFER(flags needle [start])` | Find last in buffer |
-| `RESOLVE_STR_REF(text)` | Get TLK index |
-| `STATE_WHICH_SAYS text FROM dlg` | Find dialog state |
-| `TRA_ENTRY_EXISTS(entry files...)` | TRA entry exists |
+| Expression                              | Description            |
+| --------------------------------------- | ---------------------- |
+| `IDS_OF_SYMBOL(file symbol)`            | Get IDS number         |
+| `RANDOM(low high)`                      | Random integer         |
+| `INDEX(flags needle haystack [start])`  | Find first match       |
+| `RINDEX(flags needle haystack [start])` | Find last match        |
+| `INDEX_BUFFER(flags needle [start])`    | Find in current buffer |
+| `RINDEX_BUFFER(flags needle [start])`   | Find last in buffer    |
+| `RESOLVE_STR_REF(text)`                 | Get TLK index          |
+| `STATE_WHICH_SAYS text FROM dlg`        | Find dialog state      |
+| `TRA_ENTRY_EXISTS(entry files...)`      | TRA entry exists       |
 
 #### Nullary Expressions
 
-| Expression | Description |
-|------------|-------------|
-| `BUFFER_LENGTH` | Current patch buffer size |
-| `NEXT_STRREF` | Next TLK index |
-| `IS_SILENT` | Output is silenced |
-| `SOURCE_SIZE` | Source file size |
-| `SOURCE_RES`, `SOURCE_EXT`, `SOURCE_FILE` | Source file info |
-| `SOURCE_DIRECTORY`, `SOURCE_FILESPEC` | Source path info |
-| `DEST_RES`, `DEST_EXT`, `DEST_FILE` | Destination file info |
-| `DEST_DIRECTORY`, `DEST_FILESPEC` | Destination path info |
+| Expression                                | Description               |
+| ----------------------------------------- | ------------------------- |
+| `BUFFER_LENGTH`                           | Current patch buffer size |
+| `NEXT_STRREF`                             | Next TLK index            |
+| `IS_SILENT`                               | Output is silenced        |
+| `SOURCE_SIZE`                             | Source file size          |
+| `SOURCE_RES`, `SOURCE_EXT`, `SOURCE_FILE` | Source file info          |
+| `SOURCE_DIRECTORY`, `SOURCE_FILESPEC`     | Source path info          |
+| `DEST_RES`, `DEST_EXT`, `DEST_FILE`       | Destination file info     |
+| `DEST_DIRECTORY`, `DEST_FILESPEC`         | Destination path info     |
 
 #### IE Resource Offsets
 
-| Constant | Description |
-|----------|-------------|
-| `NAME1` | Unidentified name offset |
-| `NAME2` | Identified name offset |
-| `UNIDENTIFIED_DESC`, `DESC` | Unidentified description |
-| `IDENTIFIED_DESC` | Identified description |
-| `BIO` | NPC biography |
-| Sound slots | `INITIAL_MEETING`, `MORALE`, `HAPPY`, `BATTLE_CRY1`-`5`, etc. |
+| Constant                    | Description                                                   |
+| --------------------------- | ------------------------------------------------------------- |
+| `NAME1`                     | Unidentified name offset                                      |
+| `NAME2`                     | Identified name offset                                        |
+| `UNIDENTIFIED_DESC`, `DESC` | Unidentified description                                      |
+| `IDENTIFIED_DESC`           | Identified description                                        |
+| `BIO`                       | NPC biography                                                 |
+| Sound slots                 | `INITIAL_MEETING`, `MORALE`, `HAPPY`, `BATTLE_CRY1`-`5`, etc. |
 
 ### Variables (auto-set)
 
-| Variable | Description |
-|----------|-------------|
-| `TP2_AUTHOR` | Value from AUTHOR directive |
-| `TP2_FILE_NAME` | Full TP2 filename |
+| Variable        | Description                             |
+| --------------- | --------------------------------------- |
+| `TP2_AUTHOR`    | Value from AUTHOR directive             |
+| `TP2_FILE_NAME` | Full TP2 filename                       |
 | `TP2_BASE_NAME` | TP2 name without "setup-" and extension |
-| `MOD_FOLDER` | Directory containing TP2 |
-| `MOD_VERSION` | Value from VERSION flag |
-| `LANGUAGE` | Selected language directory |
+| `MOD_FOLDER`    | Directory containing TP2                |
+| `MOD_VERSION`   | Value from VERSION flag                 |
+| `LANGUAGE`      | Selected language directory             |
 
 ## Actions
 
@@ -340,7 +340,7 @@ condition ? then_value : else_value
 
 ```tp2
 COPY optNoBackup optGlob ~fromFile~ ~toFile~ [~from2~ ~to2~ ...]
-  BEGIN patch list END
+  patch list
   when*
 ```
 
@@ -360,7 +360,7 @@ Copies files with optional patches. Sets `SOURCE_*` and `DEST_*` variables.
 
 ```tp2
 COPY_EXISTING [--no-backup] ~fromFile~ ~toFile~ ...
-  BEGIN patch list END
+  patch list
 ```
 
 Like COPY but sources from game BIFFs/override.
@@ -369,7 +369,7 @@ Like COPY but sources from game BIFFs/override.
 
 ```tp2
 COPY_EXISTING_REGEXP [--no-backup] [GLOB] ~regexp~ ~toDir~ ...
-  BEGIN patch list END
+  patch list
 ```
 
 COPY_EXISTING with regexp matching. Use `\1`, `\2` for groups in destination.
@@ -386,7 +386,7 @@ Like COPY but for large files (>1GB), no patches allowed.
 
 ```tp2
 COPY_RANDOM (~file1~ ~file2~ ...) [(~fileN~ ...)] ...
-  BEGIN patch list END
+  patch list
 ```
 
 Shuffle files randomly within each group.
@@ -395,7 +395,7 @@ Shuffle files randomly within each group.
 
 ```tp2
 COPY_ALL_GAM_FILES
-  BEGIN patch list END
+  patch list
 ```
 
 Copy and patch Default.gam and all savegames.
@@ -439,7 +439,7 @@ Decompress a compressed BIF file.
 
 ```tp2
 CREATE type [VERSION ~version~] ~resref~
-  BEGIN patch list END
+  patch list
 ```
 
 Create new game resource. Types: ARE, CRE, EFF, ITM, SPL, STO.
@@ -458,7 +458,7 @@ Add projectile to PROJECTL.IDS, copy PRO file to override. Variable `%filename%`
 
 ```tp2
 COMPILE [EVALUATE_BUFFER] ~sourceFile~ ...
-  BEGIN patch list END
+  patch list
   USING ~traFile~ ...
 ```
 
@@ -800,45 +800,45 @@ Patch file without copying.
 
 #### optNoBackup
 
-| Modifier | Description |
-|----------|-------------|
-| (none) | Make backup, undo on uninstall |
-| `+` | No backup, won't undo on uninstall |
-| `-` | Don't copy, store as inlined file only |
+| Modifier | Description                            |
+| -------- | -------------------------------------- |
+| (none)   | Make backup, undo on uninstall         |
+| `+`      | No backup, won't undo on uninstall     |
+| `-`      | Don't copy, store as inlined file only |
 
 #### optGlob
 
-| Modifier | Description |
-|----------|-------------|
-| (none) | Sane defaults (GLOB with COPY_EXISTING_REGEXP, no GLOB with COPY) |
-| `GLOB` | Use filesystem globbing |
-| `NOGLOB` | Disable filesystem globbing |
+| Modifier | Description                                                       |
+| -------- | ----------------------------------------------------------------- |
+| (none)   | Sane defaults (GLOB with COPY_EXISTING_REGEXP, no GLOB with COPY) |
+| `GLOB`   | Use filesystem globbing                                           |
+| `NOGLOB` | Disable filesystem globbing                                       |
 
 #### optcase
 
-| Modifier | Description |
-|----------|-------------|
-| `CASE_SENSITIVE` | Case-sensitive matching |
+| Modifier           | Description               |
+| ------------------ | ------------------------- |
+| `CASE_SENSITIVE`   | Case-sensitive matching   |
 | `CASE_INSENSITIVE` | Case-insensitive matching |
 
 #### optexact
 
-| Modifier | Description |
-|----------|-------------|
-| `EXACT_MATCH` | Match exact string only |
-| `EVALUATE_REGEXP` | Use regexp matching |
+| Modifier          | Description             |
+| ----------------- | ----------------------- |
+| `EXACT_MATCH`     | Match exact string only |
+| `EVALUATE_REGEXP` | Use regexp matching     |
 
 #### ArrayIndicesSortType
 
-| Modifier | Description |
-|----------|-------------|
+| Modifier            | Description               |
+| ------------------- | ------------------------- |
 | `LEXICOGRAPHICALLY` | Sort as strings (default) |
-| `NUMERICALLY` | Sort as numbers |
+| `NUMERICALLY`       | Sort as numbers           |
 
 ### Other Modifiers
 
-| Modifier | Description |
-|----------|-------------|
+| Modifier          | Description            |
+| ----------------- | ---------------------- |
 | `EVALUATE_BUFFER` | Substitute %variables% |
 
 ### When Conditions
