@@ -371,6 +371,12 @@
             "value": "```weidu-tp2-tooltip\nVERSION String\n```\n\"String\" (variables evaluated) will be appended to every component's name in the weidu.log file."
         }
     },
+    "BEGIN": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nBEGIN componentName [ component flags... ] TP2 Action list\n```\nStarts a new component. Each component has a name, optional component flags (DESIGNATED, GROUP, etc.), and a list of actions to perform."
+        }
+    },
     "LANGUAGE": {
         "contents": {
             "kind": "markdown",

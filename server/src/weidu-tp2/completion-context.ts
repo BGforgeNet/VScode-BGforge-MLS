@@ -4,6 +4,15 @@
  */
 
 import type { Node as SyntaxNode } from "web-tree-sitter";
+import { CompletionItem } from "vscode-languageserver/node";
+import {
+    CategoryContextMap,
+    ContextFilterConfig,
+    filterCompletionsByContext,
+    getUtf8ByteOffset,
+    validateCategoryContextMap,
+    HEURISTIC_OFFSET_THRESHOLD,
+} from "../shared/completion-context";
 import { getParser, isInitialized } from "./parser";
 import { isAction, isPatch } from "./format-utils";
 
@@ -33,8 +42,12 @@ export type CompletionContext =
 /**
  * Maps YAML data categories to their allowed completion contexts.
  * Categories not listed here are allowed in all contexts.
+ *
+ * IMPORTANT: Keep this synchronized with:
+ * - data/completion/weidu-tp2.yaml category names
+ * - Grammar node types in grammars/weidu-tp2/
  */
-const CATEGORY_CONTEXTS: Record<string, CompletionContext[]> = {
+const CATEGORY_CONTEXTS: CategoryContextMap<CompletionContext> = {
     // Prologue only
     prologue: ["prologue"],
 
@@ -76,34 +89,45 @@ const CATEGORY_CONTEXTS: Record<string, CompletionContext[]> = {
 };
 
 /**
- * Check if a category is allowed in the given context.
- * Categories not in CATEGORY_CONTEXTS are allowed everywhere.
+ * Filter configuration for TP2 completion context.
+ * Defines how completion items are filtered based on cursor context.
+ *
+ * Note: Component BEGIN (starts a component, in "flag" category) and block BEGIN
+ * (creates code blocks, in "value" category) use the same keyword. The grammar
+ * uses alias("BEGIN", $.component_begin) to distinguish them at the AST level.
+ * Both are included in completion data - the context filtering ensures the right
+ * one appears at the right time.
  */
-export function isCategoryAllowed(category: string | undefined, context: CompletionContext): boolean {
-    if (context === "unknown") {
-        return true; // Fallback: show everything
-    }
-    if (!category) {
-        return true; // No category: show everywhere
-    }
-    const allowed = CATEGORY_CONTEXTS[category];
-    if (!allowed) {
-        return true; // Category not in mapping: show everywhere
-    }
-    return allowed.includes(context);
-}
+const FILTER_CONFIG: ContextFilterConfig<CompletionContext> = {
+    categoryMap: CATEGORY_CONTEXTS,
+    fallbackContext: "unknown",
+};
 
 /**
- * Check if a specific item should be shown in a context.
- * Handles items that appear in multiple contexts without YAML duplication.
- * BEGIN is in tp2-value (for blocks) but also starts components at flag level.
+ * Validate configuration at module load time.
+ * Logs warnings if mappings reference invalid contexts.
  */
-export function isItemAllowedInContext(itemName: string, category: string | undefined, context: CompletionContext): boolean {
-    // BEGIN starts components at top level (flag context)
-    if (itemName === "BEGIN" && context === "flag") {
-        return true;
-    }
-    return isCategoryAllowed(category, context);
+const VALID_CONTEXTS = new Set<CompletionContext>([
+    "prologue",
+    "flag",
+    "componentFlag",
+    "componentFlagBoundary",
+    "action",
+    "patch",
+    "lafName",
+    "lpfName",
+    "unknown",
+]);
+
+// Run validation once at module load
+validateCategoryContextMap(FILTER_CONFIG, VALID_CONTEXTS, "weidu-tp2");
+
+/**
+ * Filter completion items based on context.
+ * Public API for use by provider.
+ */
+export function filterItemsByContext(items: CompletionItem[], context: CompletionContext): CompletionItem[] {
+    return filterCompletionsByContext(items, context, FILTER_CONFIG);
 }
 
 // ============================================
@@ -140,8 +164,8 @@ export function getContextAtPosition(
         return defaultContext;
     }
 
-    // Compute cursor byte offset from line/character
-    const cursorOffset = getByteOffset(text, line, character);
+    // Compute cursor byte offset from line/character (UTF-8 safe)
+    const cursorOffset = getUtf8ByteOffset(text, line, character);
 
     // Find node at cursor position
     const node = tree.rootNode.descendantForPosition({ row: line, column: character });
@@ -153,26 +177,6 @@ export function getContextAtPosition(
     return detectContextFromNode(node, extLower, cursorOffset);
 }
 
-/**
- * Convert line/character to byte offset.
- */
-function getByteOffset(text: string, line: number, character: number): number {
-    let offset = 0;
-    let currentLine = 0;
-
-    for (let i = 0; i < text.length; i++) {
-        if (currentLine === line) {
-            return offset + character;
-        }
-        if (text[i] === "\n") {
-            currentLine++;
-        }
-        offset++;
-    }
-
-    // If we're past the end, return the end offset
-    return offset + character;
-}
 
 /**
  * Get default context based on file extension.
@@ -399,7 +403,7 @@ function isInsidePatchesBlock(cursorOffset: number, copyAction: SyntaxNode): boo
 
     // Fallback: if cursor is well inside the action (past keyword), assume patch context
     // This handles cases where tree-sitter doesn't recognize the structure at all
-    if (keywordEnd > 0 && cursorOffset > keywordEnd + 10) {
+    if (keywordEnd > 0 && cursorOffset > keywordEnd + HEURISTIC_OFFSET_THRESHOLD) {
         return true;
     }
 

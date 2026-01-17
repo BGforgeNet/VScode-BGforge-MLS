@@ -128,6 +128,14 @@ export function handleComment(lines: string[], child: SyntaxNode, indent: string
 
 /** Normalize whitespace: collapse multiple spaces, preserve line comments. */
 export function normalizeWhitespace(text: string): string {
+    // Check if text contains block comments (/* */ or /** */)
+    // Block comments must be preserved as-is with their newline structure
+    const hasBlockComment = text.includes("/*");
+    if (hasBlockComment) {
+        // Don't normalize text containing block comments - return trimmed as-is
+        return text.trim();
+    }
+
     // Handle line comments specially - preserve content after //
     const lines = text.split("\n");
     const normalizedLines: string[] = [];

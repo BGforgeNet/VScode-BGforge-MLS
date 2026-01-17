@@ -1555,7 +1555,12 @@ export default grammar({
             ),
 
         component: ($) =>
-            seq("BEGIN", field("name", $._value), repeat($._componentFlag), repeat($._action)),
+            seq(
+                alias("BEGIN", $.component_begin),
+                field("name", $._value),
+                repeat($._componentFlag),
+                repeat($._action)
+            ),
 
         _componentFlag: ($) =>
             choice(

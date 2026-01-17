@@ -620,6 +620,16 @@
         }
     },
     {
+        "label": "BEGIN",
+        "kind": 14,
+        "source": "builtin",
+        "category": "flag",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nBEGIN componentName [ component flags... ] TP2 Action list\n```\nStarts a new component. Each component has a name, optional component flags (DESIGNATED, GROUP, etc.), and a list of actions to perform."
+        }
+    },
+    {
         "label": "LANGUAGE",
         "kind": 14,
         "source": "builtin",

@@ -91,6 +91,7 @@ BEGIN ~My Component~
 
 (source_file
   (component
+    (component_begin)
     name: (string
       (tilde_string
         (tilde_content)))))
@@ -106,6 +107,7 @@ DESIGNATED 100
 
 (source_file
   (component
+    (component_begin)
     name: (string
       (tilde_string
         (tilde_content)))

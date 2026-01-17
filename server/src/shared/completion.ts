@@ -12,6 +12,12 @@ export interface CompletionItemEx extends CompletionItem {
     uri: string;
     source: string;
 }
+
+/**
+ * Re-export the CompletionItemWithCategory type from completion-context.
+ * This type adds optional category metadata for context-aware filtering.
+ */
+export type { CompletionItemWithCategory } from "./completion-context";
 export interface CompletionList extends Array<CompletionItem> {}
 export interface CompletionListEx extends Array<CompletionItemEx> {}
 

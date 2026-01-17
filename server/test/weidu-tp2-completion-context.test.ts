@@ -13,67 +13,97 @@ vi.mock("../src/server", () => ({
     },
 }));
 
-import { getContextAtPosition, isCategoryAllowed } from "../src/weidu-tp2/completion-context";
+import { getContextAtPosition, filterItemsByContext, CompletionContext } from "../src/weidu-tp2/completion-context";
 import { initParser } from "../src/weidu-tp2/parser";
+import { CompletionItem, CompletionItemKind } from "vscode-languageserver/node";
 
 beforeAll(async () => {
     await initParser();
 });
 
-describe("completion-context: isCategoryAllowed", () => {
+/**
+ * Helper to create a completion item with optional category.
+ */
+function createItem(label: string, category?: string): CompletionItem {
+    const item: CompletionItem & { category?: string } = {
+        label,
+        kind: CompletionItemKind.Keyword,
+    };
+    if (category) {
+        item.category = category;
+    }
+    return item;
+}
+
+/**
+ * Helper to check if items are filtered correctly.
+ */
+function expectFiltering(context: CompletionContext, category: string, shouldBeIncluded: boolean) {
+    const items = [createItem("TEST_ITEM", category)];
+    const filtered = filterItemsByContext(items, context);
+    if (shouldBeIncluded) {
+        expect(filtered).toHaveLength(1);
+        expect(filtered[0].label).toBe("TEST_ITEM");
+    } else {
+        expect(filtered).toHaveLength(0);
+    }
+}
+
+describe("completion-context: category filtering", () => {
     it("allows prologue category in prologue", () => {
-        expect(isCategoryAllowed("prologue", "prologue")).toBe(true);
+        expectFiltering("prologue", "prologue", true);
     });
 
     it("rejects prologue category in action context", () => {
-        expect(isCategoryAllowed("prologue", "action")).toBe(false);
+        expectFiltering("action", "prologue", false);
     });
 
     it("allows action category in action context", () => {
-        expect(isCategoryAllowed("action", "action")).toBe(true);
+        expectFiltering("action", "action", true);
     });
 
     it("rejects action category in patch context", () => {
-        expect(isCategoryAllowed("action", "patch")).toBe(false);
+        expectFiltering("patch", "action", false);
     });
 
     it("allows patch category in patch context", () => {
-        expect(isCategoryAllowed("patch", "patch")).toBe(true);
+        expectFiltering("patch", "patch", true);
     });
 
     it("rejects patch category in action context", () => {
-        expect(isCategoryAllowed("patch", "action")).toBe(false);
+        expectFiltering("action", "patch", false);
     });
 
     it("allows constants in both action and patch", () => {
-        expect(isCategoryAllowed("constants", "action")).toBe(true);
-        expect(isCategoryAllowed("constants", "patch")).toBe(true);
+        expectFiltering("action", "constants", true);
+        expectFiltering("patch", "constants", true);
     });
 
     it("allows actionFunctions in action and lafName", () => {
-        expect(isCategoryAllowed("actionFunctions", "action")).toBe(true);
-        expect(isCategoryAllowed("actionFunctions", "lafName")).toBe(true);
+        expectFiltering("action", "actionFunctions", true);
+        expectFiltering("lafName", "actionFunctions", true);
     });
 
     it("rejects actionFunctions in patch context", () => {
-        expect(isCategoryAllowed("actionFunctions", "patch")).toBe(false);
+        expectFiltering("patch", "actionFunctions", false);
     });
 
     it("allows everything in unknown context (fallback)", () => {
-        expect(isCategoryAllowed("prologue", "unknown")).toBe(true);
-        expect(isCategoryAllowed("action", "unknown")).toBe(true);
-        expect(isCategoryAllowed("patch", "unknown")).toBe(true);
+        expectFiltering("unknown", "prologue", true);
+        expectFiltering("unknown", "action", true);
+        expectFiltering("unknown", "patch", true);
     });
 
     it("allows items without category everywhere", () => {
-        expect(isCategoryAllowed(undefined, "prologue")).toBe(true);
-        expect(isCategoryAllowed(undefined, "action")).toBe(true);
-        expect(isCategoryAllowed(undefined, "patch")).toBe(true);
+        const itemNoCategory = createItem("NO_CATEGORY");
+        expect(filterItemsByContext([itemNoCategory], "prologue")).toHaveLength(1);
+        expect(filterItemsByContext([itemNoCategory], "action")).toHaveLength(1);
+        expect(filterItemsByContext([itemNoCategory], "patch")).toHaveLength(1);
     });
 
     it("allows unmapped categories everywhere", () => {
-        expect(isCategoryAllowed("some-unknown-category", "prologue")).toBe(true);
-        expect(isCategoryAllowed("some-unknown-category", "action")).toBe(true);
+        expectFiltering("prologue", "some-unknown-category", true);
+        expectFiltering("action", "some-unknown-category", true);
     });
 });
 
@@ -196,14 +226,14 @@ END
             const context = getContextAtPosition(copyBlockContent, 2, 8, ".tp2");
             expect(context).toBe("patch");
             // LAF has category "action" which should be rejected in patch context
-            expect(isCategoryAllowed("action", context)).toBe(false);
+            expectFiltering("patch", "action", false);
         });
 
         it("allows LPF in patch context", () => {
             const context = getContextAtPosition(copyBlockContent, 2, 8, ".tp2");
             expect(context).toBe("patch");
             // LPF has category "patch" which should be allowed in patch context
-            expect(isCategoryAllowed("patch", context)).toBe(true);
+            expectFiltering("patch", "patch", true);
         });
 
         it("detects patch when typing incomplete patch command", () => {

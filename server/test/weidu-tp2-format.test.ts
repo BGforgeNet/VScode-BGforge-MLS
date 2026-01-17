@@ -327,6 +327,28 @@ COPY_EXISTING ~item.itm~ ~override~
         const output = format(input);
         expect(output).toMatch(/value\s+=\s+100\s+\/\/ important value/);
     });
+
+    it("preserves multi-line JSDoc comments before function definition", () => {
+        const input = `/**
+ * test123
+ * @arg {int} bonus nvli23yr4gbpy324b li2u.hj1bo81264g108y4vb120834612vo4y1jvt189ftvgt1
+ */
+DEFINE_PATCH_FUNCTION unstack_armor_bonus
+  INT_VAR bonus = 0 stacking_id_base = 0
+BEGIN
+  PATCH_PRINT ~test~
+END`;
+        const output = format(input);
+
+        // Should preserve the multi-line structure
+        expect(output).toContain("/**");
+        expect(output).toContain(" * test123");
+        expect(output).toContain(" * @arg {int} bonus");
+        expect(output).toContain(" */");
+
+        // Should NOT flatten to a single line
+        expect(output).not.toContain("/** * test123 * @arg");
+    });
 });
 
 describe("formatDocument TRY blocks", () => {

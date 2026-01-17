@@ -167,6 +167,10 @@ flag:
       detail: VERSION String
       doc: |-
         "String" (variables evaluated) will be appended to every component's name in the weidu.log file.
+    - name: BEGIN
+      detail: BEGIN componentName [ component flags... ] TP2 Action list
+      doc: |-
+        Starts a new component. Each component has a name, optional component flags (DESIGNATED, GROUP, etc.), and a list of actions to perform.
 language:
   type: 14 #keyword
   items:
