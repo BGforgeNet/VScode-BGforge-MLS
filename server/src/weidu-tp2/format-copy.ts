@@ -59,6 +59,7 @@ function isPatchContent(type: string): boolean {
         isControlFlow(type) ||
         isFunctionCall(type) ||
         type === "patch_block" ||
+        type === "patches" ||
         type === "if_filter" ||
         type === "inner_action"
     );
@@ -70,8 +71,60 @@ function isSuffixKeyword(child: SyntaxNode): boolean {
         isKeyword(child, KW_BUT_ONLY) ||
         isKeyword(child, KW_BUT_ONLY_IF_IT_CHANGES) ||
         isKeyword(child, KW_IF_EXISTS) ||
-        child.type === "_but_only"
+        child.type === "but_only"
     );
+}
+
+/**
+ * Parse a 'when' node and extract its parts as suffix strings.
+ * The 'when' node can contain: IF value, UNLESS value, IF_SIZE_IS value, IF_EXISTS, BUT_ONLY, BUT_ONLY_IF_IT_CHANGES
+ */
+function parseWhenNode(node: SyntaxNode): string[] {
+    const result: string[] = [];
+    const children = node.children;
+
+    for (let i = 0; i < children.length; i++) {
+        const child = children[i];
+        if (!child) continue;
+
+        // Skip comments - they'll be output separately
+        if (isComment(child)) {
+            result.push(normalizeComment(child.text));
+            continue;
+        }
+
+        const text = child.text;
+
+        // Standalone keywords
+        if (text === "IF_EXISTS" || text === "BUT_ONLY" || text === "BUT_ONLY_IF_IT_CHANGES") {
+            result.push(text);
+            continue;
+        }
+
+        // Keywords with values: IF, UNLESS, IF_SIZE_IS
+        // Skip any intervening comments to find the value, but collect them first
+        if (text === "IF" || text === "UNLESS" || text === "IF_SIZE_IS") {
+            let valueIdx = i + 1;
+            const commentsBetween: string[] = [];
+            // Collect comments between keyword and value
+            while (valueIdx < children.length && children[valueIdx] && isComment(children[valueIdx]!)) {
+                commentsBetween.push(normalizeComment(children[valueIdx]!.text));
+                valueIdx++;
+            }
+            const valueChild = children[valueIdx];
+            if (valueChild && isValueType(valueChild.type)) {
+                // Output keyword with value, then any intervening comments
+                result.push(text + " " + valueChild.text);
+                result.push(...commentsBetween);
+                i = valueIdx; // Skip to after the value
+            } else {
+                result.push(text);
+                result.push(...commentsBetween);
+            }
+        }
+    }
+
+    return result;
 }
 
 /** Check if a node is a value type (for UNLESS/IF values). */
@@ -125,6 +178,13 @@ function parseCopyAction(node: SyntaxNode): CopyActionParts {
         if (isPatchContent(child.type) || isComment(child)) {
             inPatchArea = true;
             parts.patches.push(child);
+            continue;
+        }
+
+        // 'when' node - contains UNLESS, IF, BUT_ONLY, IF_EXISTS, IF_SIZE_IS, etc.
+        if (child.type === "when") {
+            inPatchArea = true;
+            parts.suffix.push(...parseWhenNode(child));
             continue;
         }
 
@@ -207,6 +267,14 @@ function formatCopyPatches(
     for (const patch of patches) {
         if (isComment(patch)) {
             handleComment(lines, patch, patchIndent, lastPatchEndRow);
+            continue;
+        }
+
+        // patches wrapper node - iterate through its children
+        if (patch.type === "patches") {
+            const innerLines = formatCopyPatches(patch.children, ctx, depth, formatNode);
+            lines.push(...innerLines);
+            lastPatchEndRow = patch.endPosition.row;
             continue;
         }
 

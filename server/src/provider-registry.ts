@@ -173,8 +173,9 @@ class ProviderRegistry {
     /**
      * Get completions, merging local + headers.
      * Local symbols take precedence (deduplicated by label).
+     * If provider implements filterCompletions, applies context-based filtering.
      */
-    completion(langId: string, text: string, uri: string): CompletionItem[] {
+    completion(langId: string, text: string, uri: string, position?: Position): CompletionItem[] {
         const provider = this.get(langId);
         if (!provider) {
             return [];
@@ -190,7 +191,14 @@ class ProviderRegistry {
         const localLabels = new Set(localItems.map(item => item.label));
         const filtered = headerItems.filter(item => !localLabels.has(item.label));
 
-        return [...localItems, ...filtered];
+        let result = [...localItems, ...filtered];
+
+        // Apply context-based filtering if provider supports it
+        if (provider.filterCompletions && position) {
+            result = provider.filterCompletions(result, text, position, uri);
+        }
+
+        return result;
     }
 
     /** AST-based hover for local symbols. */

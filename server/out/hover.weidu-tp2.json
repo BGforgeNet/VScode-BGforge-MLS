@@ -593,6 +593,12 @@
             "value": "```weidu-tp2-tooltip\nADD_JOURNAL [ EXISTING ] [ MANAGED ] [ TITLE ( text ) ] reference list [ USING traFile list ]\n```\nIf the game is not of an EE-type, this action does nothing. If the game is of an EE-type, this action patches BGEE.SQL or BGEE.LUA (depending on game version) with the provided quests and journal entries, so they will work with the EE-type journal system.\nFor each of the provided references, which are taken to be journal entries, the first line of text, up to a newline character, is taken to be the title of the journal entry. Titles isolated in this way have any trailing whitespace and full stops trimmed. The title is added as a separate string to the TLK, together with the complete journal entry. The game files patched with the strrefs of the title and journal entry. Each unique title is given a unique quest id and journal entries that share titles end up sharing quest ids.\nIf EXISTING is specified, the strref of the title is matched against the existing title strrefs. If a match is found, the journal entry is added under the quest id of the existing quest. Otherwise it is added as a new quest. Note that TITLE should be given a string reference in this case. ADD_JOURNAL cannot guarantee correct results if EXISTING is used without TITLE or if TITLE is given a string or tra reference instead of a string reference.\nIf MANAGED is specified, all provided journal entries are given a unique, non-zero quest-group number. They share the same quest-group number regardless of whether they share the same title. If EXISTING is also specified, the quest-group numbers for all existing journal entries that match the provided titles are assigned a quest-group number, provided they do not already have one. This option does nothing unless the game version supports quest groups.\nIf TITLE is specified, the provided text is used as the title for all provided journal entries. The titles of each individual journal entry remains unchanged, they are just all listed under the same title."
         }
     },
+    "ADD_GAM_NPC": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nADD_GAM_NPC npcCRE npcARE xCoord yCoord\n```\nSee the ADD_GAM_NPC tutorial for more information about this action, which is used when adding NPCs to Baldur's Gate 1. BG2 mods should not use this command."
+        }
+    },
     "ADD_KIT": {
         "contents": {
             "kind": "markdown",
@@ -1209,12 +1215,6 @@
         "contents": {
             "kind": "markdown",
             "value": "```weidu-tp2-tooltip\nADD_CRE_SCRIPT\n```\nAssigns a script to a creature in the first available slot. This is a PATCH function. By default, the function will try all 5 script slots from SCRIPT_OVERRIDE to SCRIPT_DEFAULT.\n The function will fail with an error if the file being patched does not have a signature (first 3 bytes) that case-sensitively equals CRE, if either `offset_start` or `offset_end` are negative, if `offset_end` is less than `offset_start` or if `offset_end` is greater than the size of the file being patched.\n - INT_VAR `offset_start` to the offset from which the search for an empty slot should start. (default SCRIPT_OVERRIDE)\n - INT_VAR `offset_end` to the offset at which the search should end. (default SCRIPT_DEFAULT)\n - STR_VAR `script` to the resource reference of the script to be assigned.\n - RET `success` a return value indicating whether the script was successfully assigned. 1 signifies success and 0 signifies that no empty slot was found. A harmless warning will be printed if the function was unsuccessful."
-        }
-    },
-    "ADD_GAM_NPC": {
-        "contents": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nADD_GAM_NPC npcCRE npcARE xCoord yCoord\n```\nSee the ADD_GAM_NPC tutorial for more information about this action, which is used when adding NPCs to Baldur's Gate 1. BG2 mods should not use this command."
         }
     },
     "ADD_ITEM_EFFECT": {

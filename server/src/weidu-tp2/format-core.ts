@@ -90,11 +90,13 @@ function formatComponent(node: SyntaxNode, ctx: FormatContext): string {
             child.type === "tra_ref" ||
             child.type === "component_flags" ||
             child.type === "designated_flag" ||
+            child.type === "deprecated_flag" ||
             child.type === "subcomponent_flag" ||
             child.type === "group_flag" ||
             child.type === "label_flag" ||
             child.type === "require_predicate_flag" ||
-            child.type === "require_component_flag"
+            child.type === "require_component_flag" ||
+            child.type === "forbid_component_flag"
         ) {
             beginLine = beginLine ? beginLine + " " + normalizeWhitespace(child.text) : normalizeWhitespace(child.text);
             continue;

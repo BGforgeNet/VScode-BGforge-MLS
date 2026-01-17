@@ -18,12 +18,13 @@ END
       to: (string
         (tilde_string
           (tilde_content))))
-    (patch_block
-      (patch_say
-        offset: (number)
-        text: (string
-          (tilde_string
-            (tilde_content)))))))
+    (patches
+      (patch_block
+        (patch_say
+          offset: (number)
+          text: (string
+            (tilde_string
+              (tilde_content))))))))
 
 ================================================================================
 PATCH_PRINT
@@ -45,11 +46,12 @@ END
       to: (string
         (tilde_string
           (tilde_content))))
-    (patch_block
-      (patch_print
-        message: (string
-          (tilde_string
-            (tilde_content)))))))
+    (patches
+      (patch_block
+        (patch_print
+          message: (string
+            (tilde_string
+              (tilde_content))))))))
 
 ================================================================================
 TEXT_SPRINT
@@ -71,13 +73,14 @@ END
       to: (string
         (tilde_string
           (tilde_content))))
-    (patch_block
-      (patch_text_sprint
-        var: (variable_ref
-          (identifier))
-        value: (string
-          (tilde_string
-            (tilde_content)))))))
+    (patches
+      (patch_block
+        (patch_text_sprint
+          var: (variable_ref
+            (identifier))
+          value: (string
+            (tilde_string
+              (tilde_content))))))))
 
 ================================================================================
 REPLACE_TEXTUALLY
@@ -99,14 +102,15 @@ END
       to: (string
         (tilde_string
           (tilde_content))))
-    (patch_block
-      (patch_replace_textually
-        regexp: (string
-          (tilde_string
-            (tilde_content)))
-        replacement: (string
-          (tilde_string
-            (tilde_content)))))))
+    (patches
+      (patch_block
+        (patch_replace_textually
+          regexp: (string
+            (tilde_string
+              (tilde_content)))
+          replacement: (string
+            (tilde_string
+              (tilde_content))))))))
 
 ================================================================================
 EVALUATE_BUFFER
@@ -128,8 +132,9 @@ END
       to: (string
         (tilde_string
           (tilde_content))))
-    (patch_block
-      (patch_evaluate_buffer))))
+    (patches
+      (patch_block
+        (patch_evaluate_buffer)))))
 
 ================================================================================
 TO_UPPER and TO_LOWER
@@ -152,8 +157,9 @@ END
       to: (string
         (tilde_string
           (tilde_content))))
-    (patch_block
-      (patch_to_upper
-        var: (identifier))
-      (patch_to_lower
-        var: (identifier)))))
+    (patches
+      (patch_block
+        (patch_to_upper
+          var: (identifier))
+        (patch_to_lower
+          var: (identifier))))))

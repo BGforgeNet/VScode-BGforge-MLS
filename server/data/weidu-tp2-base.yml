@@ -1,4 +1,4 @@
-weidu-constants:
+constants:
   type: 21 # constant
   items:
     - name: ARE_V10_ACTORS
@@ -77,7 +77,7 @@ weidu-constants:
     - name: WMP_EAST_LINKS
       doc: Predefined set of values for `GET_OFFSET_ARRAY2`.
 
-tp2-vars:
+vars:
   type: 21 # constant
   items:
     - name: SOURCE_FILE
@@ -103,7 +103,7 @@ tp2-vars:
     - name: DEST_EXT
       doc: Set by `COPY_*` family of functions. Like `SOURCE_EXT`, but based on `toFile`.
 
-tp2-file:
+prologue:
   type: 14 # keyword
   items:
     - name: AUTHOR
@@ -113,7 +113,7 @@ tp2-file:
     - name: BACKUP
       doc: |-
         The BACKUP declaration tells WeiDU where to put backed-up versions of files that would be overwritten so that they can be uninstalled later. This directory will be created automatically if it is missing.
-tp2-flag:
+flag:
   type: 14 #keyword
   items:
     - name: ALLOW_MISSING
@@ -167,7 +167,7 @@ tp2-flag:
       detail: VERSION String
       doc: |-
         "String" (variables evaluated) will be appended to every component's name in the weidu.log file.
-tp2-language:
+language:
   type: 14 #keyword
   items:
     - name: LANGUAGE
@@ -175,7 +175,7 @@ tp2-language:
       doc: |-
         The languageName is the name of the language as it is presented to the user. "American English" and "Italiano" are examples. The languageDirectory is the name of the subdirectory in which you have stored the TRA files for that language. Examples include "american" and "spanish". The variable named LANGUAGE is set to languageDirectory if the user selects this language.. Finally, all of the TRA files in the defaultLanguageTRA list are loaded as soon as the user selects a language.
 
-tp2-component-flag:
+componentFlag:
   type: 14 # keyword
   items:
     - name: DEPRECATED
@@ -225,7 +225,7 @@ tp2-component-flag:
       detail: SUBCOMPONENT String [ value ]
       doc: |-
         At most one component of the given subcomponent group can be installed at any time. All subcomponents of the same group are listed together for the user. See the SUBCOMPONENT tutorial.
-tp2-action:
+action:
   type: 3 # function
   items:
     - name: ABORT
@@ -339,6 +339,10 @@ tp2-action:
         If EXISTING is specified, the strref of the title is matched against the existing title strrefs. If a match is found, the journal entry is added under the quest id of the existing quest. Otherwise it is added as a new quest. Note that TITLE should be given a string reference in this case. ADD_JOURNAL cannot guarantee correct results if EXISTING is used without TITLE or if TITLE is given a string or tra reference instead of a string reference.
         If MANAGED is specified, all provided journal entries are given a unique, non-zero quest-group number. They share the same quest-group number regardless of whether they share the same title. If EXISTING is also specified, the quest-group numbers for all existing journal entries that match the provided titles are assigned a quest-group number, provided they do not already have one. This option does nothing unless the game version supports quest groups.
         If TITLE is specified, the provided text is used as the title for all provided journal entries. The titles of each individual journal entry remains unchanged, they are just all listed under the same title.
+    - name: ADD_GAM_NPC
+      detail: ADD_GAM_NPC npcCRE npcARE xCoord yCoord
+      doc: |-
+        See the ADD_GAM_NPC tutorial for more information about this action, which is used when adding NPCs to Baldur's Gate 1. BG2 mods should not use this command.
     - name: ADD_KIT
       detail: ADD_KIT internalKitName String1 String2 String3 String4 String6 String7 String8 String9 String10 String11 String12 String13 SAY text1 SAY text2 SAY text3
       doc: |-
@@ -752,7 +756,7 @@ tp2-action:
       detail: WITH_TRA traName list BEGIN TP2 Action list END
       doc: |-
         Creates a new TRA scope copied from the surrounding scope, loads all traName files (variable substitution is done; the file can be inlined) and evaluates the TP2 Actions. When WITH_TRA exits, the new TRA scope is discarded, that is, all TRA changes made by WITH_TRA or any of its enclosed actions are forgotten.
-tp2-optglob:
+optGlob:
   type: 14 # keyword
   items:
     - name: GLOB
@@ -763,7 +767,7 @@ tp2-optglob:
       doc: |-
         Never use local file system globbing. Or use sane defaults: enable globbing with COPY_EXISTING_REGEXP, disable it with COPY.
 
-tp2-optcase:
+optCase:
   type: 14 # keyword
   items:
     - name: CASE_INSENSITIVE
@@ -773,7 +777,7 @@ tp2-optcase:
     - name: CASE_SENSITIVE
       doc: |-
         Matching is case-sensitive.
-tp2-optexact:
+optExact:
   type: 14 # keyword
   items:
     - name: EVALUATE_REGEXP
@@ -788,7 +792,7 @@ tp2-optexact:
       doc: |-
         In AT_EXIT and sister ACTIONs, If EXACT is specified, / and \ will be preserved as they are.
 
-tp2-ArrayIndicesSortType:
+arraySortType:
   type: 14 # keyword
   items:
     - name: LEXICOGRAPHICALLY
@@ -798,7 +802,7 @@ tp2-ArrayIndicesSortType:
       doc: |-
         The sorting is in ascending numerical order. This requires that the first column of indices can be interpreted as numbers; any strings will raise a warning and the sort order will be undefined.
 
-tp2-patch:
+patch:
   type: 3 # function
   items:
     - name: ADD_AREA_ITEM
@@ -961,10 +965,6 @@ tp2-patch:
          - INT_VAR `offset_end` to the offset at which the search should end. (default SCRIPT_DEFAULT)
          - STR_VAR `script` to the resource reference of the script to be assigned.
          - RET `success` a return value indicating whether the script was successfully assigned. 1 signifies success and 0 signifies that no empty slot was found. A harmless warning will be printed if the function was unsuccessful.
-    - name: ADD_GAM_NPC
-      detail: ADD_GAM_NPC npcCRE npcARE xCoord yCoord
-      doc: |-
-        See the ADD_GAM_NPC tutorial for more information about this action, which is used when adding NPCs to Baldur's Gate 1. BG2 mods should not use this command.
     - name: ADD_ITEM_EFFECT
       doc: |-
         Adds an extended effect to an item. All variables except `probability1`, type and `insert_point` are 0 by default. This is a PATCH macro and function.- SET `opcode` to opcode
@@ -2758,7 +2758,7 @@ tp2-patch:
       detail: variable = value
       doc: |-
         Update variable so that it is equal to value.
-tp2-when:
+when:
   type: 14 # keyword
   items:
     - name: BUT_ONLY
@@ -2783,7 +2783,7 @@ tp2-when:
       detail: UNLESS regexp
       doc: |-
         False if the input file contains regexp.
-tp2-value:
+value:
   type: 14 # keyword
   items:
     - name: "%COMPONENT_NUMBER%"

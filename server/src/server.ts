@@ -229,15 +229,15 @@ documents.onDidOpen((event) => {
 });
 
 // This handler provides the initial list of the completion items.
-connection.onCompletion((_textDocumentPosition: TextDocumentPositionParams) => {
-    const uri = _textDocumentPosition.textDocument.uri;
+connection.onCompletion((params: TextDocumentPositionParams) => {
+    const uri = params.textDocument.uri;
     const textDoc = documents.get(uri);
     if (!textDoc) {
         return [];
     }
     const langId = textDoc.languageId;
     const text = textDoc.getText();
-    return registry.completion(langId, text, uri);
+    return registry.completion(langId, text, uri, params.position);
 });
 
 // This handler resolve additional information for the item selected in

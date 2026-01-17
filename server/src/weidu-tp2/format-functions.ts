@@ -30,7 +30,7 @@ import {
 // Assignment parsing
 // ============================================
 
-/** Parse assignment: name = value (handles assignment, binary_expr, ternary_expr nodes) */
+/** Parse assignment: name = value (handles assignment, binary_expr, ternary_expr, *_call_item nodes) */
 function parseAssignment(node: SyntaxNode): { name: string; value: string } | null {
     // Try standard assignment fields first
     let nameNode = node.childForFieldName("name") ?? node.childForFieldName("var");
@@ -40,6 +40,24 @@ function parseAssignment(node: SyntaxNode): { name: string; value: string } | nu
     if (!nameNode) {
         nameNode = node.childForFieldName("left");
         valueNode = node.childForFieldName("right");
+    }
+
+    // Handle *_call_item nodes: identifier/string [= value]
+    // web-tree-sitter includes anonymous tokens in children, so structure is:
+    // [identifier/string] or [identifier/string, "=", value]
+    if (!nameNode && node.type.endsWith("_call_item")) {
+        const children = node.children;
+        const first = children[0];
+        // First child is identifier or string (the name)
+        if (first && (first.type === "identifier" || first.type === "string")) {
+            nameNode = first;
+            // If there's an "=" token, value is the third child
+            const second = children[1];
+            const third = children[2];
+            if (second && second.text === "=" && third) {
+                valueNode = third;
+            }
+        }
     }
 
     // Handle ternary_expr: "name = condition ? then : else"
@@ -137,6 +155,7 @@ function formatParamCall(node: SyntaxNode, indent: string, ctx: FormatContext): 
             child.type === "int_var_call_item" ||
             child.type === "str_var_call_item" ||
             child.type === "ret_call_item" ||
+            child.type === "ret_array_call_item" ||
             child.type === "binary_expr" ||
             child.type === "ternary_expr"
         ) {

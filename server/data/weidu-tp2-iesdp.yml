@@ -1,4 +1,4 @@
-iesdp-other:
+iesdpOther:
   type: 21
   items:
     - name: EFF2_signature
@@ -284,7 +284,7 @@ iesdp-other:
     - name: STO_version
       detail: char array offset STO_version = 0x4
       doc: Version ('V1.0')
-iesdp-strref:
+iesdpStrref:
   type: 21
   items:
     - name: ITM_identified_desc
@@ -305,7 +305,7 @@ iesdp-strref:
     - name: STO_name
       detail: strref offset STO_name = 0xc
       doc: name
-iesdp-resref:
+iesdpResref:
   type: 21
   items:
     - name: EFF2_parent_resource
@@ -388,7 +388,7 @@ iesdp-resref:
     - name: STO_rumors_temple
       detail: resref offset STO_rumors_temple = 0x54
       doc: Rumours (Temple)
-iesdp-dword:
+iesdpDword:
   type: 21
   items:
     - name: EFF2_caster_level
@@ -856,7 +856,7 @@ iesdp-dword:
     - name: STO_type
       detail: dword offset STO_type = 0x8
       doc: Type (0=Store, 1=Tavern, 2=Inn, 3=Temple, 5=Container)
-iesdp-word:
+iesdpWord:
   type: 21
   items:
     - name: EFF2_probability1
@@ -1161,7 +1161,7 @@ iesdp-word:
     - name: STO_chance_of_steal_failure
       detail: word offset STO_chance_of_steal_failure = 0x20
       doc: '% chance of steal failure'
-iesdp-byte:
+iesdpByte:
   type: 21
   items:
     - name: EFF_power
@@ -1399,7 +1399,7 @@ iesdp-byte:
 
 
         For subspells, <code><a href="#splv1_Header_0x25">Primary Type</a></code> should always match parent spell, both for interaction with opcodes <a href="../../opcodes/bgee.htm#op220">#220</a>/<a href="../../opcodes/bgee.htm#op229">#229</a>, and with the specialists save bonus/penalty (and <a href="../../opcodes/bgee.htm#op346">opcode #346</a>).
-iesdp-char:
+iesdpChar:
   type: 21
   items:
     - name: FX_power

@@ -87,6 +87,13 @@ export interface LanguageProvider {
     /** Get completion items for locally defined symbols. */
     localCompletion?(text: string): CompletionItem[];
 
+    /**
+     * Filter completions based on cursor position context.
+     * Called after all completions are gathered, before returning to client.
+     * Only implement if the language has context-specific completions.
+     */
+    filterCompletions?(items: CompletionItem[], text: string, position: Position, uri: string): CompletionItem[];
+
     /** Get signature help for a locally defined procedure. Returns null to fall back to headers. */
     localSignature?(text: string, symbol: string, paramIndex: number): SignatureHelp | null;
 

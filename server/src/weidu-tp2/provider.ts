@@ -4,6 +4,7 @@
  */
 
 import { CompletionItem, DocumentSymbol, Hover, Location, Position } from "vscode-languageserver/node";
+import { extname } from "path";
 import { fileURLToPath } from "url";
 import { conlog } from "../common";
 import { EXT_WEIDU_TP2, LANG_WEIDU_TP2 } from "../core/languages";
@@ -12,6 +13,7 @@ import { FormatResult, LanguageProvider, ProviderContext } from "../language-pro
 import { getEditorconfigSettings } from "../shared/editorconfig";
 import { createFullDocumentEdit, validateFormatting } from "../shared/format-utils";
 import { compile as weiduCompile } from "../weidu";
+import { getContextAtPosition, isItemAllowedInContext } from "./completion-context";
 import { formatDocument as formatAst, FormatOptions } from "./format-core";
 import { initParser, getParser, isInitialized } from "./parser";
 import { getDocumentSymbols } from "./symbol";
@@ -57,6 +59,22 @@ export const weiduTp2Provider: LanguageProvider = {
 
     getCompletions(uri: string): CompletionItem[] {
         return language?.completion(uri) ?? [];
+    },
+
+    filterCompletions(items: CompletionItem[], text: string, position: Position, uri: string): CompletionItem[] {
+        const filePath = fileURLToPath(uri);
+        const ext = extname(filePath).toLowerCase();
+        const context = getContextAtPosition(text, position.line, position.character, ext);
+
+        conlog(`[tp2] Completion context: ${context} at ${position.line}:${position.character} in ${ext}`);
+
+        // Filter items based on context
+        // Items with category field are filtered; items without are kept (e.g., local completions)
+        return items.filter((item) => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any -- category is added by generate_data.py
+            const category = (item as any).category as string | undefined;
+            return isItemAllowedInContext(item.label as string, category, context);
+        });
     },
 
     getHover(uri: string, symbol: string): Hover | null {

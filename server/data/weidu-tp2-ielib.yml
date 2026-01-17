@@ -1,4 +1,4 @@
-ielib-patch-functions:
+patchFunctions:
   type: 3
   items:
     - name: ALTER_AREA_REGION_MATCH
@@ -138,7 +138,7 @@ ielib-patch-functions:
         | offset | strref offset | [int](https://ielib.bgforge.net/types/#int) | _required_ |
         | old_substring_traref | traref of text to be replaced | [int](https://ielib.bgforge.net/types/#int) | _required_ |
       type: patch
-ielib-action-functions:
+actionFunctions:
   type: 3
   items:
     - name: CREATE_MINION
@@ -251,7 +251,7 @@ ielib-action-functions:
         |:--------|:-----|:--------|
         | present | does the creature posess the item? | [bool](https://ielib.bgforge.net/types/#bool) |
       type: action
-ielib-resref:
+ielibResref:
   type: 21
   items:
     - name: ABAZIGAL_SHOCKWAVE
@@ -4001,7 +4001,7 @@ ielib-resref:
     - name: ZOMBIE_SICKNESS
       detail: resref ZOMBIE_SICKNESS = "SPIN899"
       doc: IElib define
-ielib-int:
+ielibInt:
   type: 21
   items:
     - name: AC_MOD_TYPE_all

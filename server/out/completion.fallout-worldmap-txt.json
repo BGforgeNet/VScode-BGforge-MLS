@@ -2,37 +2,44 @@
     {
         "label": "Forced",
         "kind": 14,
-        "source": "builtin"
+        "source": "builtin",
+        "category": "terrain"
     },
     {
         "label": "Frequent",
         "kind": 14,
-        "source": "builtin"
+        "source": "builtin",
+        "category": "terrain"
     },
     {
         "label": "Common",
         "kind": 14,
-        "source": "builtin"
+        "source": "builtin",
+        "category": "terrain"
     },
     {
         "label": "Uncommon",
         "kind": 14,
-        "source": "builtin"
+        "source": "builtin",
+        "category": "terrain"
     },
     {
         "label": "Rare",
         "kind": 14,
-        "source": "builtin"
+        "source": "builtin",
+        "category": "terrain"
     },
     {
         "label": "None",
         "kind": 14,
-        "source": "builtin"
+        "source": "builtin",
+        "category": "terrain"
     },
     {
         "label": "Ratio",
         "kind": 3,
         "source": "builtin",
+        "category": "type_subinfo",
         "documentation": {
             "kind": "markdown",
             "value": "```fallout-worldmap-txt\nRatio:#%\n```\nDetermines frequency of occurrence, %."
@@ -42,6 +49,7 @@
         "label": "pid",
         "kind": 3,
         "source": "builtin",
+        "category": "type_subinfo",
         "documentation": {
             "kind": "markdown",
             "value": "```fallout-worldmap-txt\npid:<#>\n```\nDetermines what this critter's pid is.\n\n`pid:<string>` looks up the pid # from the string."
@@ -51,6 +59,7 @@
         "label": "Script",
         "kind": 3,
         "source": "builtin",
+        "category": "type_subinfo",
         "documentation": {
             "kind": "markdown",
             "value": "```fallout-worldmap-txt\nScript:<#>\n```\nOverrides the default script with a new one."
@@ -60,6 +69,7 @@
         "label": "Dead",
         "kind": 3,
         "source": "builtin",
+        "category": "type_subinfo",
         "documentation": {
             "kind": "markdown",
             "value": "```fallout-worldmap-txt\nDead\n```\nMeans that the critter starts out in a dead state."
@@ -69,6 +79,7 @@
         "label": "Item",
         "kind": 3,
         "source": "builtin",
+        "category": "type_subinfo",
         "documentation": {
             "kind": "markdown",
             "value": "```fallout-worldmap-txt\nItem\n```\n- `Item:<#>` gives an item of a given pid #.\n- `Item:<string>` dictates an item (from a lookup table) that this critter has.\n- `Item:(#)<string>` the # dictates quantity of the item, possibly a range.\n- `Item:(<string>)` gives a whole list of items."
@@ -78,6 +89,7 @@
         "label": "If",
         "kind": 3,
         "source": "builtin",
+        "category": "type_subinfo",
         "documentation": {
             "kind": "markdown",
             "value": "```fallout-worldmap-txt\nIf:<something>\n```\nConditionals, allows `<`,`>`,`<=`,`>=`,==`,`&` as well as tests on `Player(<stat/attribute/skill/etc.>)`,\n`Enctr(Num_Critters)`, `Time`, `Global(<variable index>)`, `Rand(Chance%)`."
@@ -87,6 +99,7 @@
         "label": "Distance",
         "kind": 3,
         "source": "builtin",
+        "category": "type_subinfo",
         "documentation": {
             "kind": "markdown",
             "value": "```fallout-worldmap-txt\nDistance:#\n```\nForces the distance for a particular critter (if possible)."
@@ -96,6 +109,7 @@
         "label": "TileNum",
         "kind": 3,
         "source": "builtin",
+        "category": "type_subinfo",
         "documentation": {
             "kind": "markdown",
             "value": "```fallout-worldmap-txt\nTileNum:#\n```\nForces this object to appear at a given tile `#`."
@@ -105,6 +119,7 @@
         "label": "Spatial",
         "kind": 3,
         "source": "builtin",
+        "category": "type_subinfo",
         "documentation": {
             "kind": "markdown",
             "value": "```fallout-worldmap-txt\nSpatial<string>\n```\nAttaches a spatial script to the map."
@@ -114,6 +129,7 @@
         "label": "Special",
         "kind": 3,
         "source": "builtin",
+        "category": "type_subinfo",
         "documentation": {
             "kind": "markdown",
             "value": "```fallout-worldmap-txt\nSpecial\n```\nEncounter entry special flag."
@@ -123,6 +139,7 @@
         "label": "Spacing",
         "kind": 3,
         "source": "builtin",
+        "category": "type_subinfo",
         "documentation": {
             "kind": "markdown",
             "value": "```fallout-worldmap-txt\nSpacing:#\n```\nHexes between them (spread/density)."
@@ -132,6 +149,7 @@
         "label": "lookup_name",
         "kind": 14,
         "source": "builtin",
+        "category": "keys",
         "documentation": {
             "kind": "markdown",
             "value": "```fallout-worldmap-txt\nlookup_name\n```\nEncounter table key"
@@ -141,6 +159,7 @@
         "label": "maps",
         "kind": 14,
         "source": "builtin",
+        "category": "keys",
         "documentation": {
             "kind": "markdown",
             "value": "```fallout-worldmap-txt\nmaps\n```\nEncounter table key - list of maps."
@@ -150,6 +169,7 @@
         "label": "team_num",
         "kind": 14,
         "source": "builtin",
+        "category": "keys",
         "documentation": {
             "kind": "markdown",
             "value": "```fallout-worldmap-txt\nteam_num\n```\nEncounter table key - team number."
@@ -159,6 +179,7 @@
         "label": "position",
         "kind": 14,
         "source": "builtin",
+        "category": "keys",
         "documentation": {
             "kind": "markdown",
             "value": "```fallout-worldmap-txt\nposition\n```\nEncounter table key - formation."
@@ -167,12 +188,14 @@
     {
         "label": "Chance",
         "kind": 14,
-        "source": "builtin"
+        "source": "builtin",
+        "category": "other"
     },
     {
         "label": "Wielded",
         "kind": 14,
         "source": "builtin",
+        "category": "other",
         "documentation": {
             "kind": "markdown",
             "value": "```fallout-worldmap-txt\nWielded\n```\nItem is equipped."
@@ -182,6 +205,7 @@
         "label": "Counter",
         "kind": 14,
         "source": "builtin",
+        "category": "other",
         "documentation": {
             "kind": "markdown",
             "value": "```fallout-worldmap-txt\nCounter\n```\nKeeps count of encounter entry and doesn't let it happen if over specified count?"
@@ -190,17 +214,20 @@
     {
         "label": "Rand",
         "kind": 14,
-        "source": "builtin"
+        "source": "builtin",
+        "category": "condition"
     },
     {
         "label": "Player",
         "kind": 14,
-        "source": "builtin"
+        "source": "builtin",
+        "category": "condition"
     },
     {
         "label": "Global",
         "kind": 14,
         "source": "builtin",
+        "category": "condition",
         "documentation": {
             "kind": "markdown",
             "value": "```fallout-worldmap-txt\nGlobal\n```\nGlobal variable."
@@ -209,17 +236,20 @@
     {
         "label": "AMBUSH",
         "kind": 14,
-        "source": "builtin"
+        "source": "builtin",
+        "category": "action"
     },
     {
         "label": "FIGHTING",
         "kind": 14,
-        "source": "builtin"
+        "source": "builtin",
+        "category": "action"
     },
     {
         "label": "surrounding",
         "kind": 14,
         "source": "builtin",
+        "category": "positions",
         "documentation": {
             "kind": "markdown",
             "value": "```fallout-worldmap-txt\nsurrounding\n```\nposition"
@@ -229,6 +259,7 @@
         "label": "straight_line",
         "kind": 14,
         "source": "builtin",
+        "category": "positions",
         "documentation": {
             "kind": "markdown",
             "value": "```fallout-worldmap-txt\nstraight_line\n```\nposition"
@@ -238,6 +269,7 @@
         "label": "double_line",
         "kind": 14,
         "source": "builtin",
+        "category": "positions",
         "documentation": {
             "kind": "markdown",
             "value": "```fallout-worldmap-txt\ndouble_line\n```\nposition"
@@ -247,6 +279,7 @@
         "label": "wedge",
         "kind": 14,
         "source": "builtin",
+        "category": "positions",
         "documentation": {
             "kind": "markdown",
             "value": "```fallout-worldmap-txt\nwedge\n```\nposition"
@@ -256,6 +289,7 @@
         "label": "cone",
         "kind": 14,
         "source": "builtin",
+        "category": "positions",
         "documentation": {
             "kind": "markdown",
             "value": "```fallout-worldmap-txt\ncone\n```\nposition"
@@ -265,6 +299,7 @@
         "label": "huddle",
         "kind": 14,
         "source": "builtin",
+        "category": "positions",
         "documentation": {
             "kind": "markdown",
             "value": "```fallout-worldmap-txt\nhuddle\n```\nposition"

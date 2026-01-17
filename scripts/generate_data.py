@@ -97,7 +97,7 @@ def generate_completion(data):
         for item in items:
             label = item["name"]
 
-            completion_item = {"label": label, "kind": kind, "source": "builtin"}
+            completion_item = {"label": label, "kind": kind, "source": "builtin", "category": items_list}
 
             # CompletionItem "detail" field is a string in VScode and can't have highlighing
             # Instead, we add detail on top of documentation, which is MarkupContent

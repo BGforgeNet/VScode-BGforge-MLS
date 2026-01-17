@@ -88,16 +88,17 @@ const extendAction =
             )
         );
 
-/** APPEND action: KEYWORD file text [IF ...] [UNLESS ...] */
+/** APPEND action: KEYWORD [+/-] file text [when] [KEEP_CRLF] */
 const appendAction =
     (keyword) =>
     ($) =>
         seq(
             keyword,
+            optional($._opt_no_backup),
             field("file", $._value),
             field("text", $._value),
-            optional(seq("IF", field("if_text", $._value))),
-            optional(seq("UNLESS", field("unless_text", $._value)))
+            optional($.when),
+            optional("KEEP_CRLF")
         );
 
 /** Define macro: KEYWORD name BEGIN body END */
@@ -242,6 +243,7 @@ export default grammar({
         [$.action_copy_random],
         [$.action_match_case],
         [$._action, $._top_level],
+        [$._assignable],
         [$._assignable, $._primary],
         [$._assignable, $._expr],
         [$.patch_define_associative_array, $.action_define_associative_array],
@@ -326,7 +328,8 @@ export default grammar({
                 seq("$", "EVAL", field("name", $._value), "(", repeat($._value), ")")
             ),
 
-        _assignable: ($) => choice($.identifier, $.var_name_numeric, $.array_access, $.string),
+        // EVAL allows evaluated variable names (e.g., EVAL $array(...))
+        _assignable: ($) => seq(optional("EVAL"), choice($.identifier, $.var_name_numeric, $.array_access, $.string)),
 
         // =========================================
         // MODIFIERS / FLAGS
@@ -664,6 +667,7 @@ export default grammar({
                 $.patch_remove_cre_item,
                 $.patch_add_cre_item,
                 $.patch_add_memorized_spell,
+                $.patch_remove_memorized_spell,
                 $.patch_remove_memorized_spells,
                 $.patch_add_known_spell,
                 $.patch_remove_known_spell,
@@ -745,7 +749,13 @@ export default grammar({
                 )
             ),
 
-        patch_read_strref: ($) => seq("READ_STRREF", field("offset", $._value), field("var", $.identifier)),
+        patch_read_strref: ($) =>
+            seq(
+                choice("READ_STRREF", "READ_STRREF_F", "READ_STRREF_S", "READ_STRREF_FS"),
+                field("offset", $._value),
+                field("var", $.identifier),
+                optional(seq("ELSE", field("default", $._value)))
+            ),
 
         patch_get_strref: getStrref("GET_STRREF", "GET_STRREF_S"),
 
@@ -976,6 +986,7 @@ export default grammar({
                 )
             ),
 
+        patch_remove_memorized_spell: ($) => prec.right(seq("REMOVE_MEMORIZED_SPELL", repeat1($._value))),
         patch_remove_memorized_spells: ($) => "REMOVE_MEMORIZED_SPELLS",
         patch_remove_known_spells: ($) => "REMOVE_KNOWN_SPELLS",
         patch_remove_cre_effects: ($) => "REMOVE_CRE_EFFECTS",
@@ -1136,6 +1147,7 @@ export default grammar({
                 $.action_outer_inner_patch_save,
                 // Includes
                 $.action_include,
+                $.action_reinclude,
                 // Functions/macros
                 $.action_define_macro,
                 $.action_define_patch_macro,
@@ -1171,8 +1183,6 @@ export default grammar({
                 $.action_to_upper,
                 $.action_to_lower,
                 $.action_get_strref,
-                $.action_require_predicate,
-                $.action_forbid_component,
                 $.action_disable_from_key,
                 $.action_random_seed,
                 $.action_readln,
@@ -1186,8 +1196,8 @@ export default grammar({
                 optional($._opt_no_backup),
                 optional($._opt_glob),
                 repeat1($.file_pair),
-                optional($._patches),
-                optional($._but_only)
+                optional($.patches),
+                optional($.when)
             ),
 
         action_copy_existing: ($) =>
@@ -1195,8 +1205,8 @@ export default grammar({
                 "COPY_EXISTING",
                 optional($._opt_no_backup),
                 repeat1($.file_pair),
-                optional($._patches),
-                optional($._but_only)
+                optional($.patches),
+                optional($.when)
             ),
 
         action_copy_existing_regexp: ($) =>
@@ -1205,40 +1215,37 @@ export default grammar({
                 optional($._opt_no_backup),
                 optional($._opt_glob),
                 repeat1($.file_pair),
-                optional($._patches),
-                optional($._but_only)
+                optional($.patches),
+                optional($.when)
             ),
 
         action_copy_large: ($) =>
             seq("COPY_LARGE", optional($._opt_no_backup), optional($._opt_glob), $.file_pair),
 
         action_copy_random: ($) =>
-            seq("COPY_RANDOM", repeat1(seq("(", repeat1($._value), ")")), optional($._patches)),
+            seq("COPY_RANDOM", repeat1(seq("(", repeat1($._value), ")")), optional($.patches)),
 
-        action_copy_all_gam_files: ($) => seq("COPY_ALL_GAM_FILES", optional($._patches)),
+        action_copy_all_gam_files: ($) => seq("COPY_ALL_GAM_FILES", optional($.patches)),
 
         file_pair: ($) => seq(field("from", $._value), field("to", $._value)),
 
         // Patches inside actions - either bare patches or BEGIN/END block
-        _patches: ($) => prec.right(choice(repeat1($._patch), $.patch_block)),
+        // Named rule (not hidden) so context detection can find it in AST
+        patches: ($) => prec.right(choice(repeat1($._patch), $.patch_block)),
 
         patch_block: ($) => prec(-10, seq("BEGIN", repeat($._patch), "END")),
 
-        _but_only: ($) =>
-            choice(
-                seq(
-                    choice("BUT_ONLY", "BUT_ONLY_IF_IT_CHANGES"),
-                    optional("IF_EXISTS"),
-                    optional(seq("UNLESS", $._value)),
-                    optional(seq("IF", field("if_resource", $._value)))
-                ),
-                seq(
-                    "IF_EXISTS",
-                    optional(seq("UNLESS", $._value)),
-                    optional(choice("BUT_ONLY", "BUT_ONLY_IF_IT_CHANGES"))
-                ),
-                seq("UNLESS", $._value, optional(choice("BUT_ONLY", "BUT_ONLY_IF_IT_CHANGES")))
-            ),
+        // When clause: IF_SIZE_IS, IF regexp, UNLESS regexp, IF_EXISTS, BUT_ONLY, BUT_ONLY_IF_IT_CHANGES
+        // All can appear in any order, multiple IF/UNLESS allowed
+        when: ($) =>
+            prec.right(repeat1(choice(
+                seq("IF", field("if_resource", $._value)),
+                seq("UNLESS", field("unless_resource", $._value)),
+                seq("IF_SIZE_IS", field("size", $._value)),
+                "IF_EXISTS",
+                "BUT_ONLY",
+                "BUT_ONLY_IF_IT_CHANGES"
+            ))),
 
         action_compile: ($) =>
             prec.right(
@@ -1273,7 +1280,7 @@ export default grammar({
                 field("type", $.identifier),
                 optional(seq("VERSION", field("version", $._value))),
                 field("resref", $._value),
-                optional($._patches)
+                optional($.patches)
             ),
 
         // Control flow
@@ -1341,6 +1348,7 @@ export default grammar({
         action_outer_set: ($) =>
             seq(
                 "OUTER_SET",
+                optional("EVALUATE_BUFFER"),
                 choice(
                     seq(field("var", $._assignable), $._assign_op, field("value", $._value)),
                     seq(choice("++", "--"), field("var", $._assignable))
@@ -1360,6 +1368,7 @@ export default grammar({
 
         // Includes
         action_include: ($) => seq("INCLUDE", field("file", $._value)),
+        action_reinclude: ($) => prec.right(seq(choice("REINCLUDE", "ACTION_REINCLUDE"), repeat1(field("file", $._value)))),
 
         // Functions/macros definitions (using helpers)
         action_define_macro: defineMacro("DEFINE_ACTION_MACRO", ($) => $._action),
@@ -1392,10 +1401,15 @@ export default grammar({
 
         _func_call_param: ($) => choice($.int_var_call, $.str_var_call, $.ret_call, $.ret_array_call),
 
-        int_var_call: ($) => seq("INT_VAR", repeat(seq($._value, optional(seq("=", $._value))))),
-        str_var_call: ($) => seq("STR_VAR", repeat1(seq($._value, optional(seq("=", $._value))))),
-        ret_call: ($) => seq("RET", repeat1(seq($._value, optional(seq("=", $._value))))),
-        ret_array_call: ($) => seq("RET_ARRAY", repeat1(seq($._value, optional(seq("=", $._value))))),
+        // In function calls, left-hand side of assignments is always an identifier/string, not an expression
+        int_var_call: ($) => seq("INT_VAR", repeat($.int_var_call_item)),
+        int_var_call_item: ($) => seq(choice($.identifier, $.string), optional(seq("=", $._value))),
+        str_var_call: ($) => seq("STR_VAR", repeat1($.str_var_call_item)),
+        str_var_call_item: ($) => seq(choice($.identifier, $.string), optional(seq("=", $._value))),
+        ret_call: ($) => seq("RET", repeat1($.ret_call_item)),
+        ret_call_item: ($) => seq(choice($.identifier, $.string), optional(seq("=", $._value))),
+        ret_array_call: ($) => seq("RET_ARRAY", repeat1($.ret_array_call_item)),
+        ret_array_call_item: ($) => seq(choice($.identifier, $.string), optional(seq("=", $._value))),
 
         // Arrays
         action_define_array: ($) =>
@@ -1438,7 +1452,7 @@ export default grammar({
                     field("level", $._value),
                     field("type", $._value),
                     field("name", $._value),
-                    optional($._patches)
+                    optional($.patches)
                 )
             ),
 
@@ -1495,20 +1509,6 @@ export default grammar({
         action_get_strref: ($) =>
             seq("ACTION_GET_STRREF", field("strref", $._value), field("var", $.identifier)),
 
-        action_require_predicate: ($) =>
-            prec(10, seq("REQUIRE_PREDICATE", field("predicate", $._value), field("message", $._value))),
-
-        action_forbid_component: ($) =>
-            prec(
-                10,
-                seq(
-                    "FORBID_COMPONENT",
-                    field("file", $._value),
-                    field("component", $._value),
-                    field("message", $._value)
-                )
-            ),
-
         action_disable_from_key: ($) =>
             prec.right(seq("DISABLE_FROM_KEY", repeat1(field("resource", $._value)))),
 
@@ -1526,6 +1526,7 @@ export default grammar({
                 $.no_if_eval_bug_flag,
                 $.auto_eval_strings_flag,
                 $.allow_missing_directive,
+                $.auto_tra_directive,
                 $.language_directive,
                 $.component,
                 $.inlined_file,
@@ -1541,6 +1542,7 @@ export default grammar({
         auto_eval_strings_flag: ($) => "AUTO_EVAL_STRINGS",
         allow_missing_directive: ($) =>
             prec.right(seq("ALLOW_MISSING", repeat1(field("file", $._value)))),
+        auto_tra_directive: ($) => seq("AUTO_TRA", field("path", $._value)),
 
         language_directive: ($) =>
             prec.right(
@@ -1553,19 +1555,22 @@ export default grammar({
             ),
 
         component: ($) =>
-            prec(100, seq("BEGIN", field("name", $._value), repeat($._component_flag), repeat($._action))),
+            seq("BEGIN", field("name", $._value), repeat($._componentFlag), repeat($._action)),
 
-        _component_flag: ($) =>
+        _componentFlag: ($) =>
             choice(
                 $.designated_flag,
+                $.deprecated_flag,
                 $.subcomponent_flag,
                 $.group_flag,
                 $.require_predicate_flag,
                 $.require_component_flag,
+                $.forbid_component_flag,
                 $.label_flag
             ),
 
         designated_flag: ($) => seq("DESIGNATED", field("number", $.number)),
+        deprecated_flag: ($) => seq("DEPRECATED", field("message", $._value)),
         subcomponent_flag: ($) => seq("SUBCOMPONENT", field("name", $._value)),
         group_flag: ($) => seq("GROUP", field("name", $._value)),
         label_flag: ($) => seq("LABEL", field("label", $._value)),
@@ -1574,6 +1579,13 @@ export default grammar({
         require_component_flag: ($) =>
             seq(
                 "REQUIRE_COMPONENT",
+                field("file", $._value),
+                field("component", $._value),
+                field("message", $._value)
+            ),
+        forbid_component_flag: ($) =>
+            seq(
+                "FORBID_COMPONENT",
                 field("file", $._value),
                 field("component", $._value),
                 field("message", $._value)

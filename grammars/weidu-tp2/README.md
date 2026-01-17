@@ -2,35 +2,77 @@
 
 Tree-sitter grammar for WeiDU TP2 files.
 
-## TP2 Syntax Reference
+## Grammar Hierarchy
 
-TP2 files define mod installation scripts for WeiDU modding.
+Formal structure for context-aware tooling. Names match WeiDU readme and map to node types.
 
 ### File Types
 
-| Extension | Context | Description |
-|-----------|---------|-------------|
-| `.tp2` | Full | Complete mod file (prologue + components) |
-| `.tpa` | Actions | Action library (included via INCLUDE) |
-| `.tph` | Actions | Action header (included via INCLUDE) |
-| `.tpp` | Patches | Patch library (included via INCLUDE) |
+| Extension | Default Context | Description |
+|-----------|-----------------|-------------|
+| `.tp2` | file | Complete mod file (prologue + flags + languages + components) |
+| `.tpa` | action | Action library (included via INCLUDE) |
+| `.tph` | action | Action header (included via INCLUDE) |
+| `.tpp` | patch | Patch library (included via INCLUDE) |
 
-### TP2 File Structure
+Note: `.tpa`/`.tph` files containing component structure are treated like `.tp2`.
 
-```tp2
-BACKUP ~mymod/backup~
-AUTHOR ~email@example.com~
+### Structure
 
-// TP2 Flags
-VERSION ~1.0~
+**TP2 is a strictly ordered grammar.** Elements must appear in this order:
 
-// Languages
-LANGUAGE ~English~ ~english~ ~english/setup.tra~
-
-// Components
-BEGIN ~Component Name~
-  // Actions...
 ```
+file :=
+    BACKUP directoryName
+    AUTHOR emailAddress
+    flag*
+    language+
+    component*
+
+flag :=
+    AUTO_TRA | ALLOW_MISSING | ASK_EVERY_COMPONENT | ALWAYS
+  | README | UNINSTALL_ORDER | MODDER | VERSION | SCRIPT_STYLE
+  | NO_IF_EVAL_BUG | QUICK_MENU | AUTO_EVAL_STRINGS
+    (see TP2 Flags below for syntax)
+
+language :=
+    LANGUAGE languageName languageDirectory traFile+
+
+component :=
+    BEGIN componentName componentFlag* action*
+
+componentFlag :=
+    DEPRECATED | REQUIRE_COMPONENT | FORBID_COMPONENT | REQUIRE_PREDICATE
+  | SUBCOMPONENT | FORCED_SUBCOMPONENT | GROUP | INSTALL_BY_DEFAULT
+  | DESIGNATED | NO_LOG_RECORD | LABEL | METADATA
+    (see Component Flags below for syntax)
+
+action :=
+    COPY | COPY_EXISTING | ACTION_IF | LAF | OUTER_SET | ...
+    (see Actions below for full list)
+
+patch :=
+    READ_BYTE | WRITE_BYTE | SET | LPF | PATCH_IF | ...
+    (see Patches below for full list)
+```
+
+At context boundaries, completions show items from both adjacent contexts.
+
+### Completion Contexts
+
+| Context | Location | Shows |
+|---------|----------|-------|
+| `prologue` | Before first flag | BACKUP, AUTHOR |
+| `flag` | After prologue, outside components | TP2 flags, LANGUAGE, BEGIN |
+| `componentFlag` | After BEGIN, before first action | Component flags |
+| `action` | Inside component, .tpa/.tph root | Actions |
+| `patch` | Inside COPY/COPY_EXISTING, .tpp root | Patches |
+| `lafName` | After `LAF` keyword | Action function names |
+| `lpfName` | After `LPF` keyword | Patch function names |
+
+---
+
+## TP2 Syntax Reference
 
 ### Prologue
 
@@ -297,12 +339,22 @@ condition ? then_value : else_value
 #### COPY
 
 ```tp2
-COPY [--no-backup] [GLOB] ~fromFile~ ~toFile~ [~from2~ ~to2~ ...]
+COPY optNoBackup optGlob ~fromFile~ ~toFile~ [~from2~ ~to2~ ...]
   BEGIN patch list END
-  IF ~condition~
+  when*
 ```
 
 Copies files with optional patches. Sets `SOURCE_*` and `DEST_*` variables.
+
+**when** (node type: `when`) - optional conditions after patches. All conditions may appear in any order, multiple IF/UNLESS allowed:
+| Syntax | Description |
+|--------|-------------|
+| `IF_SIZE_IS fileSize` | Only if file has exact size |
+| `IF regexp` | Only if filename matches regexp (can repeat) |
+| `UNLESS regexp` | Only if filename doesn't match regexp (can repeat) |
+| `BUT_ONLY_IF_IT_CHANGES` | Only write if content changed |
+| `BUT_ONLY` | Alias for BUT_ONLY_IF_IT_CHANGES |
+| `IF_EXISTS` | Only if source file exists |
 
 #### COPY_EXISTING
 
@@ -456,6 +508,22 @@ MKDIR ~directory~
 
 Create directory (and parent directories).
 
+#### INCLUDE
+
+```tp2
+INCLUDE ~file.tpa~ [~file2.tpa~ ...]
+```
+
+Include and execute TP2 action files. Node type: `action_include`.
+
+#### REINCLUDE
+
+```tp2
+REINCLUDE ~file.tpa~ [~file2.tpa~ ...]
+```
+
+Like INCLUDE but re-executes even if already included. Node type: `action_reinclude`.
+
 #### AT_NOW
 
 ```tp2
@@ -468,12 +536,12 @@ Execute system command immediately. Optional varname captures output.
 #### OUTER_SET / OUTER_SPRINT / OUTER_TEXT_SPRINT
 
 ```tp2
-OUTER_SET varname = expression
+OUTER_SET [EVALUATE_BUFFER] varname = expression
 OUTER_SPRINT varname ~string~
 OUTER_TEXT_SPRINT varname ~string with %vars%~
 ```
 
-Set variables in action context.
+Set variables in action context. EVALUATE_BUFFER evaluates %vars% in variable name.
 
 #### OUTER_PATCH / OUTER_PATCH_SAVE
 
@@ -792,10 +860,13 @@ READ_SSHORT offset varname       // signed
 READ_LONG offset varname
 READ_SLONG offset varname        // signed
 READ_ASCII offset varname [(length)] [NULL]
-READ_STRREF offset varname
+READ_STRREF offset varname [ELSE default]
+READ_STRREF_F offset varname [ELSE default]   // female
+READ_STRREF_S offset varname [ELSE default]   // sound
+READ_STRREF_FS offset varname [ELSE default]  // female + sound
 ```
 
-Read values from file buffer into variables.
+Read values from file buffer into variables. ELSE provides default when strref is invalid.
 
 ### Binary Write Operations
 
@@ -1007,6 +1078,17 @@ EVALUATE_BUFFER_SPECIAL ~$~
 ```
 
 Like EVALUATE_BUFFER but with custom delimiter (e.g., $var$).
+
+### CRE Resource Patches
+
+#### REMOVE_MEMORIZED_SPELL / REMOVE_MEMORIZED_SPELLS
+
+```tp2
+REMOVE_MEMORIZED_SPELL ~spellRes~
+REMOVE_MEMORIZED_SPELLS ~spell1~ ~spell2~ ...
+```
+
+Remove memorized spells from creature file.
 
 ## Building
 

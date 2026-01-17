@@ -57,6 +57,20 @@ const PARAM_DECL_TYPES = {
 // ============================================
 
 /**
+ * Strip WeiDU string delimiters from a string.
+ * WeiDU uses ~, ", %, and ~ ~...~ ~ for strings.
+ */
+function stripStringDelimiters(text: string): string {
+    // Handle ~text~, "text", %text%
+    if ((text.startsWith("~") && text.endsWith("~")) ||
+        (text.startsWith('"') && text.endsWith('"')) ||
+        (text.startsWith("%") && text.endsWith("%"))) {
+        return text.slice(1, -1);
+    }
+    return text;
+}
+
+/**
  * Parse a TP2 file and extract all function/macro definitions.
  */
 export function parseHeader(text: string, uri: string): FunctionInfo[] {
@@ -107,7 +121,8 @@ function extractFunctionInfo(
         return null;
     }
 
-    const name = nameNode.text;
+    // Strip WeiDU string delimiters (tildes, quotes, percent signs) from function name
+    const name = stripStringDelimiters(nameNode.text);
     const { context, dtype } = parseDefType(node.type);
 
     const location: Location = {

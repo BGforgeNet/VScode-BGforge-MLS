@@ -4,6 +4,8 @@
 
 set -xeu -o pipefail
 
+source .venv/bin/activate
+
 data_dir="server/data"
 dest_dir="server/out"
 
