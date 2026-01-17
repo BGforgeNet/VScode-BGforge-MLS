@@ -385,6 +385,82 @@ export class Language implements Language {
         }
     }
 
+    /**
+     * Clear all cached data for a specific file.
+     * Called when a watched file is deleted from the workspace.
+     */
+    clearFileData(uri: string): void {
+        if (!this.features.udf) {
+            return;
+        }
+
+        if (this.isHeader(uri)) {
+            if (this.inWorkspace(uri)) {
+                this.data.completion.headers = this.data.completion.headers.filter(
+                    (item) => item.uri !== uri
+                );
+                for (const [key, value] of this.data.hover.headers) {
+                    if (value.uri === uri) {
+                        this.data.hover.headers.delete(key);
+                    }
+                }
+                if (this.features.signature) {
+                    for (const [key, value] of this.data.signature.headers) {
+                        if (value.uri === uri) {
+                            this.data.signature.headers.delete(key);
+                        }
+                    }
+                }
+            } else if (this.inExternalHeadersDirectory(uri)) {
+                if (this.data.completion.extHeaders) {
+                    this.data.completion.extHeaders = this.data.completion.extHeaders.filter(
+                        (item) => item.uri !== uri
+                    );
+                }
+                if (this.data.hover.extHeaders) {
+                    for (const [key, value] of this.data.hover.extHeaders) {
+                        if (value.uri === uri) {
+                            this.data.hover.extHeaders.delete(key);
+                        }
+                    }
+                }
+                if (this.features.signature && this.data.signature.extHeaders) {
+                    for (const [key, value] of this.data.signature.extHeaders) {
+                        if (value.uri === uri) {
+                            this.data.signature.extHeaders.delete(key);
+                        }
+                    }
+                }
+            }
+        } else {
+            this.data.completion.self.delete(uri);
+            this.data.hover.self.delete(uri);
+            if (this.features.signature) {
+                this.data.signature.self.delete(uri);
+            }
+        }
+
+        if (this.features.definition) {
+            for (const [key, value] of this.data.definition) {
+                if (value.uri === uri) {
+                    this.data.definition.delete(key);
+                }
+            }
+        }
+    }
+
+    /**
+     * Clear per-document cached data (self maps) when a document is closed.
+     * Unlike clearFileData, this only clears self maps, not headers.
+     */
+    clearSelfData(uri: string): void {
+        this.data.completion.self.delete(uri);
+        this.data.hover.self.delete(uri);
+        if (this.features.signature) {
+            this.data.signature.self.delete(uri);
+        }
+    }
+
     completion(uri: string) {
         if (!this.features.completion) {
             return;

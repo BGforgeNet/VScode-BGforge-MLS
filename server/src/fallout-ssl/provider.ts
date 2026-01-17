@@ -9,7 +9,7 @@
 
 import { CompletionItem, DocumentSymbol, Hover, Location, Position, SignatureHelp, WorkspaceEdit } from "vscode-languageserver/node";
 import { conlog } from "../common";
-import { LANG_FALLOUT_SSL } from "../core/languages";
+import { EXT_FALLOUT_SSL_HEADERS, LANG_FALLOUT_SSL } from "../core/languages";
 import { compile as falloutCompile } from "./compiler";
 import { Language, Features } from "../data-loader";
 import { FormatResult, LanguageProvider, ProviderContext } from "../language-provider";
@@ -45,6 +45,7 @@ let storedContext: ProviderContext | undefined;
 
 export const falloutSslProvider: LanguageProvider = {
     id: LANG_FALLOUT_SSL,
+    watchExtensions: [...EXT_FALLOUT_SSL_HEADERS],
 
     async init(context: ProviderContext): Promise<void> {
         storedContext = context;
@@ -133,6 +134,14 @@ export const falloutSslProvider: LanguageProvider = {
         if (uri.endsWith(".h")) {
             language?.reloadFileData(uri, text);
         }
+    },
+
+    onWatchedFileDeleted(uri: string): void {
+        language?.clearFileData(uri);
+    },
+
+    onDocumentClosed(uri: string): void {
+        language?.clearSelfData(uri);
     },
 
     async compile(uri: string, text: string, interactive: boolean): Promise<void> {

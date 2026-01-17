@@ -262,16 +262,24 @@ const functionIndex = new Map<string, FunctionInfo>();
  */
 export function updateFileIndex(uri: string, text: string): void {
     // Remove old entries from this file
-    for (const [name, info] of functionIndex) {
-        if (info.location.uri === uri) {
-            functionIndex.delete(name);
-        }
-    }
+    clearFileFromIndex(uri);
 
     // Parse and add new entries
     const functions = parseHeader(text, uri);
     for (const func of functions) {
         functionIndex.set(func.name, func);
+    }
+}
+
+/**
+ * Clear all entries from a specific file from the index.
+ * Called when a watched file is deleted.
+ */
+export function clearFileFromIndex(uri: string): void {
+    for (const [name, info] of functionIndex) {
+        if (info.location.uri === uri) {
+            functionIndex.delete(name);
+        }
     }
 }
 
@@ -283,22 +291,8 @@ export function lookupFunction(name: string): FunctionInfo | undefined {
 }
 
 /**
- * Get all indexed functions.
- */
-export function getAllFunctions(): FunctionInfo[] {
-    return Array.from(functionIndex.values());
-}
-
-/**
  * Clear the entire function index.
  */
 export function clearIndex(): void {
     functionIndex.clear();
-}
-
-/**
- * Get the function index size (for debugging).
- */
-export function getIndexSize(): number {
-    return functionIndex.size;
 }

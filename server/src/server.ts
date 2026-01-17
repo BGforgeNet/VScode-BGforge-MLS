@@ -10,6 +10,7 @@ import {
     CompletionItem,
     createConnection,
     DidChangeConfigurationNotification,
+    DidChangeWatchedFilesNotification,
     InitializeParams,
     InitializeResult,
     MessageType,
@@ -56,6 +57,7 @@ initLspConnection(connection, documents);
 
 let hasConfigurationCapability = false;
 let hasWorkspaceFolderCapability = false;
+let hasFileWatchingCapability = false;
 
 let workspaceRoot: string;
 let projectSettings: settings.ProjectSettings;
@@ -73,6 +75,9 @@ connection.onInitialize((params: InitializeParams) => {
     );
     hasWorkspaceFolderCapability = !!(
         capabilities.workspace && !!capabilities.workspace.workspaceFolders
+    );
+    hasFileWatchingCapability = !!(
+        capabilities.workspace?.didChangeWatchedFiles?.dynamicRegistration
     );
 
     const result: InitializeResult = {
@@ -148,6 +153,20 @@ connection.onInitialized(async () => {
     registry.registerAlias(LANG_WEIDU_TP2_TPL, LANG_WEIDU_TP2);
 
     await registry.init({ workspaceRoot, settings: globalSettings });
+
+    // Register file watchers for header files
+    // NOTE: For standalone LSP usage (e.g., Claude Code) where client may not support
+    // file watching, consider adding chokidar-based fallback in the future.
+    if (hasFileWatchingCapability) {
+        const watchPatterns = registry.getWatchPatterns();
+        if (watchPatterns.length > 0) {
+            await connection.client.register(DidChangeWatchedFilesNotification.type, {
+                watchers: watchPatterns,
+            });
+            conlog(`Registered file watchers for ${watchPatterns.length} patterns`);
+        }
+    }
+
     void connection.sendNotification("bgforge-mls/load-finished");
     conlog("onInitialized completed");
 });
@@ -167,9 +186,17 @@ connection.onDidChangeConfiguration((change) => {
     }
 });
 
-// Only keep settings for open documents
+// Handle file system changes for watched files (headers)
+connection.onDidChangeWatchedFiles((params) => {
+    for (const event of params.changes) {
+        registry.handleWatchedFileChange(event.uri, event.type);
+    }
+});
+
+// Clean up on document close
 documents.onDidClose((e) => {
     documentSettings.delete(e.document.uri);
+    registry.handleDocumentClosed(e.document.languageId, e.document.uri);
 });
 
 export function getDocumentSettings(resource: string): Thenable<MLSsettings> {

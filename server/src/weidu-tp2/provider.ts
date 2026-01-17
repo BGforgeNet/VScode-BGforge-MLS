@@ -6,7 +6,7 @@
 import { CompletionItem, DocumentSymbol, Hover, Location, Position } from "vscode-languageserver/node";
 import { fileURLToPath } from "url";
 import { conlog } from "../common";
-import { LANG_WEIDU_TP2 } from "../core/languages";
+import { EXT_WEIDU_TP2, LANG_WEIDU_TP2 } from "../core/languages";
 import { Language, Features } from "../data-loader";
 import { FormatResult, LanguageProvider, ProviderContext } from "../language-provider";
 import { getEditorconfigSettings } from "../shared/editorconfig";
@@ -16,7 +16,7 @@ import { formatDocument as formatAst, FormatOptions } from "./format-core";
 import { initParser, getParser, isInitialized } from "./parser";
 import { getDocumentSymbols } from "./symbol";
 import { getDefinition } from "./definition";
-import { updateFileIndex } from "./header-parser";
+import { updateFileIndex, clearFileFromIndex } from "./header-parser";
 
 const features: Features = {
     completion: true,
@@ -40,6 +40,7 @@ let storedContext: ProviderContext | undefined;
 
 export const weiduTp2Provider: LanguageProvider = {
     id: LANG_WEIDU_TP2,
+    watchExtensions: [...EXT_WEIDU_TP2],
 
     async init(context: ProviderContext): Promise<void> {
         storedContext = context;
@@ -74,6 +75,15 @@ export const weiduTp2Provider: LanguageProvider = {
         language?.reloadFileData(uri, text);
         // Update tree-sitter based function index
         updateFileIndex(uri, text);
+    },
+
+    onWatchedFileDeleted(uri: string): void {
+        language?.clearFileData(uri);
+        clearFileFromIndex(uri);
+    },
+
+    onDocumentClosed(uri: string): void {
+        language?.clearSelfData(uri);
     },
 
     async compile(uri: string, text: string, interactive: boolean): Promise<void> {

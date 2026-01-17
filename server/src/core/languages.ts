@@ -6,6 +6,8 @@
 
 // Fallout languages
 export const LANG_FALLOUT_SSL = "fallout-ssl" as const;
+/** SSL header file extensions for file watching */
+export const EXT_FALLOUT_SSL_HEADERS = [".h"] as const;
 export const LANG_FALLOUT_SSL_TOOLTIP = "fallout-ssl-tooltip" as const;
 export const LANG_FALLOUT_WORLDMAP_TXT = "fallout-worldmap-txt" as const;
 // Used only in TRANSLATION_FILE_LANGUAGES below
@@ -20,6 +22,8 @@ export const EXT_TD = ".td" as const;
 
 // WeiDU languages
 export const LANG_WEIDU_TP2 = "weidu-tp2" as const;
+/** TP2 file extensions for file watching */
+export const EXT_WEIDU_TP2 = [".tph", ".tpa", ".tpp", ".tp2"] as const;
 export const LANG_WEIDU_TP2_TOOLTIP = "weidu-tp2-tooltip" as const;
 export const LANG_WEIDU_TP2_TPL = "weidu-tp2-tpl" as const;
 export const LANG_WEIDU_BAF = "weidu-baf" as const;

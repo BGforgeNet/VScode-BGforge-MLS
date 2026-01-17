@@ -29,19 +29,18 @@ import {
 import { initParser as initTp2Parser, getParser as getTp2Parser } from "../weidu-tp2/parser";
 import * as editorconfig from "editorconfig";
 import { validateFormatting } from "../shared/format-utils";
+import { EXT_WEIDU_TP2 } from "../core/languages";
 
 const DEFAULT_INDENT = 4;
 
 type FileType = "ssl" | "baf" | "d" | "tp2";
-
-const TP2_EXTENSIONS = [".tp2", ".tpa", ".tph", ".tpp"];
 
 function getFileType(filePath: string): FileType | null {
     const ext = path.extname(filePath).toLowerCase();
     if (ext === ".ssl") return "ssl";
     if (ext === ".baf") return "baf";
     if (ext === ".d") return "d";
-    if (TP2_EXTENSIONS.includes(ext)) return "tp2";
+    if ((EXT_WEIDU_TP2 as readonly string[]).includes(ext)) return "tp2";
     return null;
 }
 
@@ -221,7 +220,7 @@ async function main() {
             console.error("Error: Target is a directory. Use -r for recursive formatting.");
             process.exit(1);
         }
-        const files = findFiles(target, [".ssl", ".baf", ".d", ...TP2_EXTENSIONS]);
+        const files = findFiles(target, [".ssl", ".baf", ".d", ...EXT_WEIDU_TP2]);
         if (!quiet) console.log(`Found ${files.length} files (.ssl, .baf, .d, and .tp2)`);
         let changed = 0, unchanged = 0, errors = 0;
         const mode: FormatMode = saveToFile ? "save" : "check";

@@ -133,5 +133,27 @@ export interface LanguageProvider {
      * @param interactive True if triggered by user command (shows messages), false for auto-validation
      */
     compile?(uri: string, text: string, interactive: boolean): Promise<void>;
+
+    // =========================================================================
+    // File watching (for external changes to workspace files)
+    // =========================================================================
+
+    /**
+     * File extensions this provider watches for changes (e.g., [".tph", ".h"]).
+     * Used to detect external file changes and update indices.
+     */
+    watchExtensions?: string[];
+
+    /**
+     * Called when a watched file is deleted from the workspace.
+     * Provider should clean up any cached data for this file.
+     */
+    onWatchedFileDeleted?(uri: string): void;
+
+    /**
+     * Called when a document is closed.
+     * Provider should clean up per-document cached data (self maps).
+     */
+    onDocumentClosed?(uri: string): void;
 }
 
