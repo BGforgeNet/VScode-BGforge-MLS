@@ -9,12 +9,14 @@ COPY ~mymod/sword.itm~ ~override/m#sword.itm~
 (source_file
   (action_copy
     (file_pair
-      from: (string
-        (tilde_string
-          (tilde_content)))
-      to: (string
-        (tilde_string
-          (tilde_content))))))
+      from: (value
+        (string
+          (tilde_string
+            (tilde_content))))
+      to: (value
+        (string
+          (tilde_string
+            (tilde_content)))))))
 
 ================================================================================
 COPY with multiple pairs
@@ -28,19 +30,23 @@ COPY ~mymod/a.itm~ ~override/a.itm~
 (source_file
   (action_copy
     (file_pair
-      from: (string
-        (tilde_string
-          (tilde_content)))
-      to: (string
-        (tilde_string
-          (tilde_content))))
+      from: (value
+        (string
+          (tilde_string
+            (tilde_content))))
+      to: (value
+        (string
+          (tilde_string
+            (tilde_content)))))
     (file_pair
-      from: (string
-        (tilde_string
-          (tilde_content)))
-      to: (string
-        (tilde_string
-          (tilde_content))))))
+      from: (value
+        (string
+          (tilde_string
+            (tilde_content))))
+      to: (value
+        (string
+          (tilde_string
+            (tilde_content)))))))
 
 ================================================================================
 COPY_EXISTING action
@@ -53,12 +59,14 @@ COPY_EXISTING ~spell.spl~ ~override~
 (source_file
   (action_copy_existing
     (file_pair
-      from: (string
-        (tilde_string
-          (tilde_content)))
-      to: (string
-        (tilde_string
-          (tilde_content))))))
+      from: (value
+        (string
+          (tilde_string
+            (tilde_content))))
+      to: (value
+        (string
+          (tilde_string
+            (tilde_content)))))))
 
 ================================================================================
 COPY_EXISTING_REGEXP with GLOB
@@ -71,12 +79,14 @@ COPY_EXISTING_REGEXP GLOB ~HARM.*.ITM~ ~override~
 (source_file
   (action_copy_existing_regexp
     (file_pair
-      from: (string
-        (tilde_string
-          (tilde_content)))
-      to: (string
-        (tilde_string
-          (tilde_content))))))
+      from: (value
+        (string
+          (tilde_string
+            (tilde_content))))
+      to: (value
+        (string
+          (tilde_string
+            (tilde_content)))))))
 
 ================================================================================
 COPY with no backup (+)
@@ -89,12 +99,14 @@ COPY + ~mymod/temp.itm~ ~override~
 (source_file
   (action_copy
     (file_pair
-      from: (string
-        (tilde_string
-          (tilde_content)))
-      to: (string
-        (tilde_string
-          (tilde_content))))))
+      from: (value
+        (string
+          (tilde_string
+            (tilde_content))))
+      to: (value
+        (string
+          (tilde_string
+            (tilde_content)))))))
 
 ================================================================================
 COPY inlined only (-)
@@ -107,12 +119,14 @@ COPY - ~mymod/temp.itm~ ~override~
 (source_file
   (action_copy
     (file_pair
-      from: (string
-        (tilde_string
-          (tilde_content)))
-      to: (string
-        (tilde_string
-          (tilde_content))))))
+      from: (value
+        (string
+          (tilde_string
+            (tilde_content))))
+      to: (value
+        (string
+          (tilde_string
+            (tilde_content)))))))
 
 ================================================================================
 DELETE action
@@ -124,9 +138,10 @@ DELETE ~mymod/temp.txt~
 
 (source_file
   (action_delete
-    file: (string
-      (tilde_string
-        (tilde_content)))))
+    file: (value
+      (string
+        (tilde_string
+          (tilde_content))))))
 
 ================================================================================
 COMPILE action
@@ -138,9 +153,10 @@ COMPILE ~mymod/scripts~
 
 (source_file
   (action_compile
-    source: (string
-      (tilde_string
-        (tilde_content)))))
+    source: (value
+      (string
+        (tilde_string
+          (tilde_content))))))
 
 ================================================================================
 COMPILE with USING
@@ -152,12 +168,14 @@ COMPILE ~mymod/dialog.d~ USING ~mymod/lang/%s/dialog.tra~
 
 (source_file
   (action_compile
-    source: (string
-      (tilde_string
-        (tilde_content)))
-    tra: (string
-      (tilde_string
-        (tilde_content)))))
+    source: (value
+      (string
+        (tilde_string
+          (tilde_content))))
+    tra: (value
+      (string
+        (tilde_string
+          (tilde_content))))))
 
 ================================================================================
 CREATE action
@@ -170,9 +188,10 @@ CREATE ITM ~m#sword~
 (source_file
   (action_create
     type: (identifier)
-    resref: (string
-      (tilde_string
-        (tilde_content)))))
+    resref: (value
+      (string
+        (tilde_string
+          (tilde_content))))))
 
 ================================================================================
 CLEAR_MEMORY action
@@ -197,11 +216,13 @@ END
 
 (source_file
   (action_if
-    condition: (number)
+    condition: (value
+      (number))
     (action_print
-      message: (string
-        (tilde_string
-          (tilde_content))))))
+      message: (value
+        (string
+          (tilde_string
+            (tilde_content)))))))
 
 ================================================================================
 OUTER_SET
@@ -214,7 +235,8 @@ OUTER_SET myvar = 5
 (source_file
   (action_outer_set
     var: (identifier)
-    value: (number)))
+    value: (value
+      (number))))
 
 ================================================================================
 INCLUDE
@@ -226,9 +248,10 @@ INCLUDE ~mymod/lib.tpa~
 
 (source_file
   (action_include
-    file: (string
-      (tilde_string
-        (tilde_content)))))
+    file: (value
+      (string
+        (tilde_string
+          (tilde_content))))))
 
 ================================================================================
 DEFINE_ACTION_FUNCTION
@@ -244,9 +267,10 @@ END
   (action_define_function
     name: (identifier)
     (action_print
-      message: (string
-        (tilde_string
-          (tilde_content))))))
+      message: (value
+        (string
+          (tilde_string
+            (tilde_content)))))))
 
 ================================================================================
 LAF call
@@ -259,3 +283,4 @@ LAF my_func END
 (source_file
   (action_launch_function
     name: (identifier)))
+

@@ -5340,16 +5340,6 @@
         }
     },
     {
-        "label": "INT_VAR",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nINT_VAR\n```\nInteger variable"
-        }
-    },
-    {
         "label": "INVENTORY_FULL",
         "kind": 14,
         "source": "builtin",
@@ -5703,26 +5693,6 @@
         "documentation": {
             "kind": "markdown",
             "value": "```weidu-tp2-tooltip\nRESPONSE_TO_INSULT3\n```\n0x194"
-        }
-    },
-    {
-        "label": "RET",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nRET\n```\nReturn value"
-        }
-    },
-    {
-        "label": "RET_ARRAY",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nRET_ARRAY\n```\nReturn value (arrays)"
         }
     },
     {
@@ -6176,16 +6146,6 @@
         }
     },
     {
-        "label": "STR_VAR",
-        "kind": 14,
-        "source": "builtin",
-        "category": "value",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nSTR_VAR\n```\nString variable"
-        }
-    },
-    {
         "label": "TAB",
         "kind": 14,
         "source": "builtin",
@@ -6313,6 +6273,46 @@
         "documentation": {
             "kind": "markdown",
             "value": "```weidu-tp2-tooltip\nWNL\n```\nWindows new line"
+        }
+    },
+    {
+        "label": "INT_VAR",
+        "kind": 14,
+        "source": "builtin",
+        "category": "funcVarKeyword",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nINT_VAR\n```\nInteger variable"
+        }
+    },
+    {
+        "label": "STR_VAR",
+        "kind": 14,
+        "source": "builtin",
+        "category": "funcVarKeyword",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nSTR_VAR\n```\nString variable"
+        }
+    },
+    {
+        "label": "RET",
+        "kind": 14,
+        "source": "builtin",
+        "category": "funcVarKeyword",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nRET\n```\nReturn value"
+        }
+    },
+    {
+        "label": "RET_ARRAY",
+        "kind": 14,
+        "source": "builtin",
+        "category": "funcVarKeyword",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nRET_ARRAY\n```\nReturn value (arrays)"
         }
     },
     {

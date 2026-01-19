@@ -4,7 +4,6 @@
  */
 
 import { describe, expect, it, beforeAll, vi } from "vitest";
-import type { Node as SyntaxNode } from "web-tree-sitter";
 import type { MarkupContent } from "vscode-languageserver/node";
 
 /** Extract markdown value from hover contents. */
@@ -26,7 +25,6 @@ import {
     normalizeComment,
     normalizeWhitespace,
     withNormalizedComment,
-    isComment,
     isAction,
     isPatch,
     isControlFlow,
@@ -393,6 +391,44 @@ END`;
         expect(output).toContain("INNER_PATCH_FILE ~item.itm~ BEGIN");
         expect(output).toContain("READ_STRREF 0 name");
         expect(output).toContain("WITH DEFAULT");
+    });
+
+    it("formats INNER_PATCH buffer variant", () => {
+        const input = `BEGIN @1
+COPY_EXISTING ~test.itm~ ~override~
+INNER_PATCH ~some_buffer~ BEGIN
+SET value = 100
+END`;
+        const output = format(input);
+        expect(output).toContain("INNER_PATCH ~some_buffer~ BEGIN");
+        expect(output).toContain("SET value = 100");
+        expect(output).toContain("END");
+    });
+
+    it("formats INNER_PATCH_SAVE variant", () => {
+        const input = `BEGIN @1
+COPY_EXISTING ~test.itm~ ~override~
+INNER_PATCH_SAVE result ~input_buffer~ BEGIN
+REPLACE_TEXTUALLY ~old~ ~new~
+END`;
+        const output = format(input);
+        expect(output).toContain("INNER_PATCH_SAVE result ~input_buffer~ BEGIN");
+        expect(output).toContain("REPLACE_TEXTUALLY ~old~ ~new~");
+        expect(output).toContain("END");
+    });
+
+    it("formats nested INNER_PATCH variants", () => {
+        const input = `BEGIN @1
+COPY_EXISTING ~test.itm~ ~override~
+INNER_PATCH_FILE ~outer.itm~ BEGIN
+INNER_PATCH_SAVE modified ~buffer~ BEGIN
+SET x = 1
+END
+END`;
+        const output = format(input);
+        expect(output).toContain("INNER_PATCH_FILE ~outer.itm~ BEGIN");
+        expect(output).toContain("INNER_PATCH_SAVE modified ~buffer~ BEGIN");
+        expect(output).toContain("SET x = 1");
     });
 
     it("formats ACTION_TRY", () => {

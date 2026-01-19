@@ -25,6 +25,7 @@ import {
     normalizeWhitespace,
     handleComment,
 } from "./format-utils";
+import { SyntaxType } from "./tree-sitter.d";
 
 // ============================================
 // Types
@@ -128,7 +129,7 @@ function parseWhenNode(node: SyntaxNode): string[] {
 
 /** Check if a node is a value type (for UNLESS/IF values). */
 function isValueType(type: string): boolean {
-    return type === "string" || type === "variable_ref" || type === "identifier" || type === "number";
+    return type === "value" || type === "string" || type === "variable_ref" || type === "identifier" || type === "number";
 }
 
 /** Check if child is a COPY flag (GLOB, NOGLOB, +, -). */
@@ -158,7 +159,7 @@ function parseCopyAction(node: SyntaxNode): CopyActionParts {
         }
 
         // Keyword detection
-        if (child.type === "identifier" && !parts.keyword) {
+        if (child.type === SyntaxType.Identifier && !parts.keyword) {
             parts.keyword = child.text;
             continue;
         }
@@ -181,7 +182,7 @@ function parseCopyAction(node: SyntaxNode): CopyActionParts {
         }
 
         // 'when' node - contains UNLESS, IF, BUT_ONLY, IF_EXISTS, IF_SIZE_IS, etc.
-        if (child.type === "when") {
+        if (child.type === SyntaxType.When) {
             inPatchArea = true;
             parts.suffix.push(...parseWhenNode(child));
             continue;
@@ -270,14 +271,14 @@ function formatCopyPatches(
         }
 
         // patches wrapper node - iterate through its children
-        if (patch.type === "patches") {
+        if (patch.type === SyntaxType.Patches) {
             const innerLines = formatCopyPatches(patch.children, ctx, depth, formatNode);
             lines.push(...innerLines);
             lastPatchEndRow = patch.endPosition.row;
             continue;
         }
 
-        if (patch.type === "patch_block") {
+        if (patch.type === SyntaxType.PatchBlock) {
             lines.push(patchIndent + KW_BEGIN);
             let lastBlockPatchEndRow = -1;
             for (const patchChild of patch.children) {

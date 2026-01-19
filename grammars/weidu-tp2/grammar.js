@@ -21,46 +21,46 @@ const readPatch =
     ($) =>
         seq(
             kw(...keywords),
-            field("offset", $._value),
+            field("offset", $.value),
             field("var", $._assignable),
-            optional(seq("ELSE", field("else_value", $._value)))
+            optional(seq("ELSE", field("else_value", $.value)))
         );
 
 /** Write patch: KEYWORD offset value */
 const writePatch =
     (...keywords) =>
     ($) =>
-        seq(kw(...keywords), field("offset", $._value), field("value", $._value));
+        seq(kw(...keywords), field("offset", $.value), field("value", $.value));
 
 /** Memory access expression: KEYWORD offset */
 const memoryAt =
     (...keywords) =>
     ($) =>
-        seq(kw(...keywords), field("offset", $._value));
+        seq(kw(...keywords), field("offset", $.value));
 
 /** Check expression: KEYWORD value (with prec.right(3)) */
 const checkExpr =
     (keyword, fieldName = "value") =>
     ($) =>
-        prec.right(3, seq(keyword, field(fieldName, $._value)));
+        prec.right(3, seq(keyword, field(fieldName, $.value)));
 
 /** Check expression using simple value (excludes OR/AND): KEYWORD value (with prec.right(3)) */
 const checkExprSimple =
     (keyword, fieldName = "value") =>
     ($) =>
-        prec.right(3, seq(keyword, field(fieldName, $._simple_value)));
+        prec.right(3, seq(keyword, field(fieldName, $.simple_value)));
 
 /** Sprint-like operation: KEYWORD var value */
 const sprintOp =
     (...keywords) =>
     ($) =>
-        seq(kw(...keywords), field("var", $._value), field("value", $._value));
+        seq(kw(...keywords), field("var", $.value), field("value", $.value));
 
 /** Print-like operation: KEYWORD message */
 const printOp =
     (keyword) =>
     ($) =>
-        seq(keyword, field("message", $._value));
+        seq(keyword, field("message", $.value));
 
 /** Case conversion: KEYWORD var (identifier only) */
 const caseConvert =
@@ -72,7 +72,7 @@ const caseConvert =
 const itemPatch =
     (keyword) =>
     ($) =>
-        seq(keyword, repeat1($._value));
+        seq(keyword, repeat1($.value));
 
 /** EXTEND action: KEYWORD existing new_file [EVAL] patches... */
 const extendAction =
@@ -81,8 +81,8 @@ const extendAction =
         prec.right(
             seq(
                 keyword,
-                field("existing", $._value),
-                field("new_file", $._value),
+                field("existing", $.value),
+                field("new_file", $.value),
                 optional(choice("EVALUATE_BUFFER", "EVAL")),
                 repeat($._patch)
             )
@@ -95,8 +95,8 @@ const appendAction =
         seq(
             keyword,
             optional($._opt_no_backup),
-            field("file", $._value),
-            field("text", $._value),
+            field("file", $.value),
+            field("text", $.value),
             optional($.when),
             optional("KEEP_CRLF")
         );
@@ -129,7 +129,7 @@ const forLoop =
             "(",
             optional($._patch),
             ";",
-            field("condition", $._value),
+            field("condition", $.value),
             ";",
             optional($._patch),
             ")",
@@ -142,7 +142,7 @@ const forLoop =
 const whileLoop =
     (keyword, bodyType) =>
     ($) =>
-        seq(keyword, field("condition", $._value), "BEGIN", repeat(bodyType($)), "END");
+        seq(keyword, field("condition", $.value), "BEGIN", repeat(bodyType($)), "END");
 
 /** PHP_EACH loop: KEYWORD array AS key => value BEGIN body END */
 const phpEachLoop =
@@ -151,7 +151,7 @@ const phpEachLoop =
     ($) =>
         seq(
             kw(...keywords),
-            field("array", $._value),
+            field("array", $.value),
             "AS",
             field("key_var", $.identifier),
             "=>",
@@ -169,9 +169,9 @@ const indexExpr =
             keyword,
             "(",
             optional($.search_flags),
-            field("needle", $._value),
-            ...(hasHaystack ? [field("haystack", $._value)] : []),
-            optional(field("start", $._value)),
+            field("needle", $.value),
+            ...(hasHaystack ? [field("haystack", $.value)] : []),
+            optional(field("start", $.value)),
             ")"
         );
 
@@ -179,19 +179,19 @@ const indexExpr =
 const outerPatchAction =
     (keyword) =>
     ($) =>
-        seq(keyword, field("buffer", $._value), "BEGIN", repeat($._patch), "END");
+        seq(keyword, field("buffer", $.value), "BEGIN", repeat($._patch), "END");
 
 /** OUTER_PATCH_SAVE action: KEYWORD var buffer BEGIN patches END */
 const outerPatchSaveAction =
     (keyword) =>
     ($) =>
-        seq(keyword, field("var", $.identifier), field("buffer", $._value), "BEGIN", repeat($._patch), "END");
+        seq(keyword, field("var", $.identifier), field("buffer", $.value), "BEGIN", repeat($._patch), "END");
 
 /** INNER_PATCH: KEYWORD buffer BEGIN patches END */
 const innerPatchOp =
     (keyword) =>
     ($) =>
-        seq(keyword, field("buffer", $._value), "BEGIN", repeat($._patch), "END");
+        seq(keyword, field("buffer", $.value), "BEGIN", repeat($._patch), "END");
 
 /** TRY block: KEYWORD body WITH [DEFAULT] handler END */
 const tryBlock =
@@ -203,19 +203,19 @@ const tryBlock =
 const defineAssocArray =
     (...keywords) =>
     ($) =>
-        seq(kw(...keywords), field("name", $._value), "BEGIN", repeat($.assoc_entry), "END");
+        seq(kw(...keywords), field("name", $.value), "BEGIN", repeat($.assoc_entry), "END");
 
 /** CLEAR_ARRAY: KEYWORD array */
 const clearArray =
     (keyword) =>
     ($) =>
-        seq(keyword, field("array", $._value));
+        seq(keyword, field("array", $.value));
 
 /** GET_STRREF: KEYWORD strref var */
 const getStrref =
     (...keywords) =>
     ($) =>
-        seq(kw(...keywords), field("strref", $._value), field("var", $.identifier));
+        seq(kw(...keywords), field("strref", $.value), field("var", $.identifier));
 
 export default grammar({
     name: "weidu_tp2",
@@ -255,7 +255,15 @@ export default grammar({
     rules: {
         // First token disambiguates: normal file (.tp2) vs patch-only file (.tpp)
         source_file: ($) => choice(
-            repeat(choice($._top_level, $._action, $.top_level_assignment)),
+            // TP2 file - prologue first (optional for error recovery), then everything else
+            seq(
+                // Prologue (should come first if present - optional for malformed files)
+                optional($.backup_directive),
+                optional(choice($.author_directive, $.support_directive)),
+                // Everything else (flags, languages, components, actions)
+                repeat(choice($._top_level, $._action, $.top_level_assignment))
+            ),
+            // Patch-only file (.tpp)
             $.patch_file
         ),
 
@@ -264,7 +272,7 @@ export default grammar({
 
         // Bare assignment at top level (implicit OUTER_SET, common in .tpp files)
         top_level_assignment: ($) =>
-            prec(-1, seq(field("var", $._assignable), $._assign_op, field("value", $._value))),
+            prec(-1, seq(field("var", $._assignable), $._assign_op, field("value", $.value))),
 
         // =========================================
         // LITERALS
@@ -324,8 +332,8 @@ export default grammar({
 
         array_access: ($) =>
             choice(
-                seq("$", field("name", choice($.identifier, $.string)), "(", repeat($._value), ")"),
-                seq("$", "EVAL", field("name", $._value), "(", repeat($._value), ")")
+                seq("$", field("name", choice($.identifier, $.string)), "(", repeat($.value), ")"),
+                seq("$", "EVAL", field("name", $.value), "(", repeat($.value), ")")
             ),
 
         // EVAL allows evaluated variable names (e.g., EVAL $array(...))
@@ -345,10 +353,11 @@ export default grammar({
         // EXPRESSIONS (VALUES)
         // =========================================
 
-        _value: ($) => $._expr,
+        // Named node for expression context detection in completions
+        value: ($) => $._expr,
 
         // Simple value excludes OR/AND binary expressions - used where boolean operators shouldn't appear
-        _simple_value: ($) => $._simple_expr,
+        simple_value: ($) => $._simple_expr,
 
         _expr: ($) =>
             choice(
@@ -525,27 +534,27 @@ export default grammar({
         rindex_buffer_expr: indexExpr("RINDEX_BUFFER", false),
 
         random_expr: ($) =>
-            seq("RANDOM", "(", field("lower", $._value), field("upper", $._value), ")"),
+            seq("RANDOM", "(", field("lower", $.value), field("upper", $.value), ")"),
 
         ids_of_symbol_expr: ($) =>
-            seq("IDS_OF_SYMBOL", "(", field("file", $._value), field("symbol", $._value), ")"),
+            seq("IDS_OF_SYMBOL", "(", field("file", $.value), field("symbol", $.value), ")"),
 
-        resolve_str_ref_expr: ($) => seq("RESOLVE_STR_REF", "(", field("text", $._value), ")"),
+        resolve_str_ref_expr: ($) => seq("RESOLVE_STR_REF", "(", field("text", $.value), ")"),
 
         state_which_says_expr: ($) =>
             prec.right(
                 3,
                 seq(
                     "STATE_WHICH_SAYS",
-                    field("text", $._value),
-                    optional(seq("IN", field("in_dlg", $._value))),
+                    field("text", $.value),
+                    optional(seq("IN", field("in_dlg", $.value))),
                     "FROM",
-                    field("from_dlg", $._value)
+                    field("from_dlg", $.value)
                 )
             ),
 
         tra_entry_exists_expr: ($) =>
-            seq("TRA_ENTRY_EXISTS", "(", field("entry", $._value), repeat(field("file", $._value)), ")"),
+            seq("TRA_ENTRY_EXISTS", "(", field("entry", $.value), repeat(field("file", $.value)), ")"),
 
         // Check expressions
         file_exists_expr: checkExpr("FILE_EXISTS", "file"),
@@ -561,16 +570,16 @@ export default grammar({
         mod_is_installed_expr: ($) =>
             prec.right(
                 3,
-                seq(choice("MOD_IS_INSTALLED", "COMPONENT_IS_INSTALLED"), field("mod", $._value), field("component", $._simple_value))
+                seq(choice("MOD_IS_INSTALLED", "COMPONENT_IS_INSTALLED"), field("mod", $.value), field("component", $.simple_value))
             ),
 
-        id_of_label_expr: ($) => seq("ID_OF_LABEL", field("tp2", $._value), field("label", $._value)),
+        id_of_label_expr: ($) => seq("ID_OF_LABEL", field("tp2", $.value), field("label", $.value)),
 
         file_contains_expr: ($) =>
-            prec.right(3, seq("FILE_CONTAINS", field("file", $._value), field("regexp", $._value))),
+            prec.right(3, seq("FILE_CONTAINS", field("file", $.value), field("regexp", $.value))),
 
         file_contains_evaluated_expr: ($) =>
-            seq("FILE_CONTAINS_EVALUATED", "(", field("file", $._value), field("regexp", $._value), ")"),
+            seq("FILE_CONTAINS_EVALUATED", "(", field("file", $.value), field("regexp", $.value), ")"),
 
         nullary_expr: ($) =>
             choice(
@@ -720,17 +729,17 @@ export default grammar({
             prec.right(
                 seq(
                     choice("WRITE_ASCII", "WRITE_ASCIIE", "WRITE_ASCIIT", "WRITE_ASCII_TERMINATE", "WRITE_EVALUATED_ASCII"),
-                    field("offset", $._value),
-                    field("string", $._value),
-                    optional(choice(seq("#", field("length", $._value)), seq("(", field("length", $._value), ")")))
+                    field("offset", $.value),
+                    field("string", $.value),
+                    optional(choice(seq("#", field("length", $.value)), seq("(", field("length", $.value), ")")))
                 )
             ),
 
         patch_write_ascii_list: ($) =>
-            prec.right(seq("WRITE_ASCII_LIST", field("offset", $._value), repeat1($._value))),
+            prec.right(seq("WRITE_ASCII_LIST", field("offset", $.value), repeat1($.value))),
 
         patch_write_asciil: ($) =>
-            prec.right(seq("WRITE_ASCIIL", field("offset", $._value), repeat1($._value))),
+            prec.right(seq("WRITE_ASCIIL", field("offset", $.value), repeat1($.value))),
 
         // Read patches
         patch_read_byte: readPatch("READ_BYTE", "READ_SBYTE"),
@@ -741,10 +750,10 @@ export default grammar({
             prec.right(
                 seq(
                     "READ_ASCII",
-                    field("offset", $._value),
-                    field("var", $._value),
-                    optional(seq("ELSE", field("else_value", $._value))),
-                    optional(seq("(", field("length", $._value), ")")),
+                    field("offset", $.value),
+                    field("var", $.value),
+                    optional(seq("ELSE", field("else_value", $.value))),
+                    optional(seq("(", field("length", $.value), ")")),
                     optional("NULL")
                 )
             ),
@@ -752,9 +761,9 @@ export default grammar({
         patch_read_strref: ($) =>
             seq(
                 choice("READ_STRREF", "READ_STRREF_F", "READ_STRREF_S", "READ_STRREF_FS"),
-                field("offset", $._value),
+                field("offset", $.value),
                 field("var", $.identifier),
-                optional(seq("ELSE", field("default", $._value)))
+                optional(seq("ELSE", field("default", $.value)))
             ),
 
         patch_get_strref: getStrref("GET_STRREF", "GET_STRREF_S"),
@@ -763,46 +772,46 @@ export default grammar({
             seq(
                 "LOOKUP_IDS_SYMBOL_OF_INT",
                 field("target", $.identifier),
-                field("ids_file", $._value),
-                field("value", $._value)
+                field("ids_file", $.value),
+                field("value", $.value)
             ),
 
         // String operations
         patch_say: ($) =>
-            seq(choice("SAY", "SAY_EVALUATED"), field("offset", $._value), field("text", $._value)),
+            seq(choice("SAY", "SAY_EVALUATED"), field("offset", $.value), field("text", $.value)),
 
         patch_sprint: sprintOp("SPRINT"),
         patch_text_sprint: sprintOp("TEXT_SPRINT"),
 
         patch_snprint: ($) =>
-            seq("SNPRINT", field("length", $._value), field("var", $.identifier), field("value", $._value)),
+            seq("SNPRINT", field("length", $.value), field("var", $.identifier), field("value", $.value)),
 
         patch_sprintf: ($) =>
             prec.right(
                 seq(
                     "SPRINTF",
-                    field("var", $._value),
-                    field("format", $._value),
-                    optional(seq("(", repeat($._value), ")"))
+                    field("var", $.value),
+                    field("format", $.value),
+                    optional(seq("(", repeat($.value), ")"))
                 )
             ),
 
         patch_to_upper: caseConvert("TO_UPPER"),
         patch_to_lower: caseConvert("TO_LOWER"),
 
-        patch_spaces: ($) => seq("SPACES", field("var", $.identifier), field("template", $._value)),
-        patch_quote: ($) => seq("QUOTE", field("var", $.identifier), field("string", $._value)),
-        patch_source_biff: ($) => seq("SOURCE_BIFF", field("var", $.identifier), field("filename", $._value)),
+        patch_spaces: ($) => seq("SPACES", field("var", $.identifier), field("template", $.value)),
+        patch_quote: ($) => seq("QUOTE", field("var", $.identifier), field("string", $.value)),
+        patch_source_biff: ($) => seq("SOURCE_BIFF", field("var", $.identifier), field("filename", $.value)),
 
         // Assignment
         patch_set: ($) =>
-            seq("SET", optional("EVAL"), field("var", $._assignable), $._assign_op, field("value", $._value)),
+            seq("SET", optional("EVAL"), field("var", $._assignable), $._assign_op, field("value", $.value)),
 
         patch_assignment: ($) =>
-            prec(10, seq(field("var", $._assignable), $._assign_op, field("value", $._value))),
+            prec(10, seq(field("var", $._assignable), $._assign_op, field("value", $.value))),
 
-        patch_increment: ($) => seq("++", field("var", $._value)),
-        patch_decrement: ($) => seq("--", field("var", $._value)),
+        patch_increment: ($) => seq("++", field("var", $.value)),
+        patch_decrement: ($) => seq("--", field("var", $.value)),
 
         _assign_op: ($) => choice("=", "+=", "-=", "*=", "/=", "|=", "&=", "||=", "&&="),
 
@@ -810,7 +819,7 @@ export default grammar({
         patch_if: ($) =>
             seq(
                 "PATCH_IF",
-                field("condition", $._value),
+                field("condition", $.value),
                 optional("THEN"),
                 "BEGIN",
                 repeat($._patch),
@@ -829,7 +838,7 @@ export default grammar({
         patch_match: ($) =>
             seq(
                 "PATCH_MATCH",
-                field("value", $._value),
+                field("value", $.value),
                 "WITH",
                 repeat($.match_case),
                 "DEFAULT",
@@ -839,8 +848,8 @@ export default grammar({
 
         match_case: ($) =>
             seq(
-                repeat1($._value),
-                optional(seq("WHEN", field("guard", $._value))),
+                repeat1($.value),
+                optional(seq("WHEN", field("guard", $.value))),
                 "BEGIN",
                 repeat($._patch),
                 "END"
@@ -851,11 +860,11 @@ export default grammar({
         patch_php_each: phpEachLoop("PHP_EACH", "PATCH_PHP_EACH")(($) => $._patch),
 
         patch_for_each: ($) =>
-            seq("PATCH_FOR_EACH", field("var", $._value), "IN", repeat1($._value), "BEGIN", repeat($._patch), "END"),
+            seq("PATCH_FOR_EACH", field("var", $.value), "IN", repeat1($.value), "BEGIN", repeat($._patch), "END"),
 
         // Text manipulation
         patch_replace: ($) =>
-            seq("REPLACE", field("regexp", $._value), field("replacement", $._value), optional($.sound_ref)),
+            seq("REPLACE", field("regexp", $.value), field("replacement", $.value), optional($.sound_ref)),
 
         sound_ref: ($) => seq("[", field("sound", $.identifier), "]"),
 
@@ -864,9 +873,9 @@ export default grammar({
                 seq(
                     "REPLACE_TEXTUALLY",
                     optional($.search_flags),
-                    field("regexp", $._value),
-                    field("replacement", $._value),
-                    optional(seq("(", field("count", $._value), ")"))
+                    field("regexp", $.value),
+                    field("replacement", $.value),
+                    optional(seq("(", field("count", $.value), ")"))
                 )
             ),
 
@@ -874,102 +883,102 @@ export default grammar({
             seq(
                 "REPLACE_EVALUATE",
                 optional($.search_flags),
-                field("regexp", $._value),
+                field("regexp", $.value),
                 "BEGIN",
                 repeat($._patch),
                 "END",
-                field("replacement", $._value)
+                field("replacement", $.value)
             ),
 
         // Buffer operations
         patch_evaluate_buffer: ($) => "EVALUATE_BUFFER",
 
         patch_insert_bytes: ($) =>
-            seq("INSERT_BYTES", field("offset", $._value), field("length", $._value)),
+            seq("INSERT_BYTES", field("offset", $.value), field("length", $.value)),
 
         patch_delete_bytes: ($) =>
-            seq("DELETE_BYTES", field("offset", $._value), field("length", $._value)),
+            seq("DELETE_BYTES", field("offset", $.value), field("length", $.value)),
 
-        patch_append_file: ($) => seq("APPEND_FILE", field("file", $._value)),
+        patch_append_file: ($) => seq("APPEND_FILE", field("file", $.value)),
 
         // 2DA operations
         patch_read_2da_entry: ($) =>
             seq(
                 "READ_2DA_ENTRY",
-                field("row", $._value),
-                field("col", $._value),
-                field("req_cols", $._value),
-                field("var", $._value)
+                field("row", $.value),
+                field("col", $.value),
+                field("req_cols", $.value),
+                field("var", $.value)
             ),
 
         patch_read_2da_entries_now: ($) =>
-            seq("READ_2DA_ENTRIES_NOW", field("var", $._value), field("req_cols", $._value)),
+            seq("READ_2DA_ENTRIES_NOW", field("var", $.value), field("req_cols", $.value)),
 
         patch_read_2da_entry_former: ($) =>
             seq(
                 "READ_2DA_ENTRY_FORMER",
-                field("array", $._value),
-                field("row", $._value),
-                field("col", $._value),
-                field("var", $._value)
+                field("array", $.value),
+                field("row", $.value),
+                field("col", $.value),
+                field("var", $.value)
             ),
 
         patch_set_2da_entry: ($) =>
             seq(
                 "SET_2DA_ENTRY",
-                field("row", $._value),
-                field("col", $._value),
-                field("req_cols", $._value),
-                field("value", $._value)
+                field("row", $.value),
+                field("col", $.value),
+                field("req_cols", $.value),
+                field("value", $.value)
             ),
 
         patch_set_2da_entry_later: ($) =>
             seq(
                 "SET_2DA_ENTRY_LATER",
-                field("array", $._value),
-                field("row", $._value),
-                field("col", $._value),
-                field("value", $._value)
+                field("array", $.value),
+                field("row", $.value),
+                field("col", $.value),
+                field("value", $.value)
             ),
 
         patch_set_2da_entries_now: ($) =>
-            seq("SET_2DA_ENTRIES_NOW", field("array", $._value), field("req_cols", $._value)),
+            seq("SET_2DA_ENTRIES_NOW", field("array", $.value), field("req_cols", $.value)),
 
         patch_count_2da_cols: ($) =>
             seq("COUNT_2DA_COLS", field("var", choice($.identifier, $.string))),
 
         patch_count_2da_rows: ($) =>
-            seq("COUNT_2DA_ROWS", field("req_cols", $._value), field("var", choice($.identifier, $.string))),
+            seq("COUNT_2DA_ROWS", field("req_cols", $.value), field("var", choice($.identifier, $.string))),
 
         patch_count_regexp_instances: ($) =>
             seq(
                 "COUNT_REGEXP_INSTANCES",
                 optional("CASE_SENSITIVE"),
                 optional("EXACT_MATCH"),
-                field("pattern", $._value),
-                field("var", $._value)
+                field("pattern", $.value),
+                field("var", $.value)
             ),
 
         patch_pretty_print_2da: ($) => "PRETTY_PRINT_2DA",
 
         patch_insert_2da_row: ($) =>
-            seq("INSERT_2DA_ROW", field("row", $._value), field("req_cols", $._value), field("value", $._value)),
+            seq("INSERT_2DA_ROW", field("row", $.value), field("req_cols", $.value), field("value", $.value)),
 
         patch_remove_2da_row: ($) =>
-            seq("REMOVE_2DA_ROW", field("row", $._value), field("req_cols", $._value)),
+            seq("REMOVE_2DA_ROW", field("row", $.value), field("req_cols", $.value)),
 
         patch_get_offset_array: ($) =>
-            prec.right(seq("GET_OFFSET_ARRAY", field("var", $.identifier), repeat1($._value))),
+            prec.right(seq("GET_OFFSET_ARRAY", field("var", $.identifier), repeat1($.value))),
 
         patch_get_offset_array2: ($) =>
-            prec.right(seq("GET_OFFSET_ARRAY2", field("var", $.identifier), repeat1($._value))),
+            prec.right(seq("GET_OFFSET_ARRAY2", field("var", $.identifier), repeat1($.value))),
 
         // Store/CRE item operations (using helpers)
         patch_remove_store_item: ($) =>
-            seq("REMOVE_STORE_ITEM", repeat1(field("item", $._value))),
+            seq("REMOVE_STORE_ITEM", repeat1(field("item", $.value))),
 
         patch_add_store_item: ($) =>
-            seq("ADD_STORE_ITEM", optional($._opt_no_backup), repeat1(field("item", $._value))),
+            seq("ADD_STORE_ITEM", optional($._opt_no_backup), repeat1(field("item", $.value))),
 
         patch_replace_cre_item: itemPatch("REPLACE_CRE_ITEM"),
         patch_remove_cre_item: itemPatch("REMOVE_CRE_ITEM"),
@@ -979,35 +988,35 @@ export default grammar({
             prec.right(
                 seq(
                     "ADD_MEMORIZED_SPELL",
-                    field("spell", $._value),
-                    field("level", $._value),
-                    field("type", $._value),
-                    optional(seq("(", field("count", $._value), ")"))
+                    field("spell", $.value),
+                    field("level", $.value),
+                    field("type", $.value),
+                    optional(seq("(", field("count", $.value), ")"))
                 )
             ),
 
-        patch_remove_memorized_spell: ($) => prec.right(seq("REMOVE_MEMORIZED_SPELL", repeat1($._value))),
+        patch_remove_memorized_spell: ($) => prec.right(seq("REMOVE_MEMORIZED_SPELL", repeat1($.value))),
         patch_remove_memorized_spells: ($) => "REMOVE_MEMORIZED_SPELLS",
         patch_remove_known_spells: ($) => "REMOVE_KNOWN_SPELLS",
         patch_remove_cre_effects: ($) => "REMOVE_CRE_EFFECTS",
 
         patch_add_known_spell: ($) =>
-            seq("ADD_KNOWN_SPELL", field("spell", $._value), field("level", $._value), field("type", $._value)),
+            seq("ADD_KNOWN_SPELL", field("spell", $.value), field("level", $.value), field("type", $.value)),
 
         patch_remove_known_spell: ($) =>
-            prec.right(seq("REMOVE_KNOWN_SPELL", repeat1(field("spell", $._value)))),
+            prec.right(seq("REMOVE_KNOWN_SPELL", repeat1(field("spell", $.value)))),
 
         patch_add_map_note: ($) =>
             seq(
                 "ADD_MAP_NOTE",
-                field("x", $._value),
-                field("y", $._value),
-                field("color", $._value),
-                field("strref", $._value)
+                field("x", $.value),
+                field("y", $.value),
+                field("color", $.value),
+                field("strref", $.value)
             ),
 
         patch_set_bg2_proficiency: ($) =>
-            seq("SET_BG2_PROFICIENCY", field("proficiency", $._value), field("value", $._value)),
+            seq("SET_BG2_PROFICIENCY", field("proficiency", $.value), field("value", $.value)),
 
         // Functions
         patch_launch_function: ($) =>
@@ -1033,15 +1042,15 @@ export default grammar({
 
         // Arrays
         patch_define_array: ($) =>
-            seq("DEFINE_ARRAY", field("name", $._value), "BEGIN", repeat($._value), "END"),
+            seq("DEFINE_ARRAY", field("name", $.value), "BEGIN", repeat($.value), "END"),
         patch_define_associative_array: defineAssocArray("DEFINE_ASSOCIATIVE_ARRAY"),
         patch_clear_array: clearArray("CLEAR_ARRAY"),
 
         patch_sort_array_indices: ($) =>
-            seq("SORT_ARRAY_INDICES", field("array", $._value), choice("NUMERICALLY", "LEXICOGRAPHICALLY")),
+            seq("SORT_ARRAY_INDICES", field("array", $.value), choice("NUMERICALLY", "LEXICOGRAPHICALLY")),
 
         assoc_entry: ($) =>
-            seq(choice($._value, $.var_name_numeric), repeat(seq(",", $._value)), "=>", $._value),
+            seq(choice($.value, $.var_name_numeric), repeat(seq(",", $.value)), "=>", $.value),
 
         // Print/log operations (using helpers)
         patch_print: printOp("PATCH_PRINT"),
@@ -1050,7 +1059,7 @@ export default grammar({
         patch_fail: printOp("PATCH_FAIL"),
         patch_abort: printOp("PATCH_ABORT"),
 
-        patch_include: ($) => prec.right(seq("PATCH_INCLUDE", repeat1(field("file", $._value)))),
+        patch_include: ($) => prec.right(seq("PATCH_INCLUDE", repeat1(field("file", $.value)))),
         patch_reraise: ($) => "PATCH_RERAISE",
         patch_silent: ($) => "PATCH_SILENT",
         patch_verbose: ($) => "PATCH_VERBOSE",
@@ -1064,25 +1073,25 @@ export default grammar({
         patch_decompress_replace_file: ($) =>
             seq(
                 "DECOMPRESS_REPLACE_FILE",
-                field("offset", $._value),
-                field("compressed_size", $._value),
-                field("uncompressed_size", $._value)
+                field("offset", $.value),
+                field("compressed_size", $.value),
+                field("uncompressed_size", $.value)
             ),
 
         patch_compress_replace_file: ($) =>
             seq(
                 "COMPRESS_REPLACE_FILE",
-                field("offset", $._value),
-                field("uncompressed_size", $._value),
-                field("level", $._value)
+                field("offset", $.value),
+                field("uncompressed_size", $.value),
+                field("level", $.value)
             ),
 
         patch_decompress_into_var: ($) =>
             seq(
                 "DECOMPRESS_INTO_VAR",
-                field("offset", $._value),
-                field("compressed_size", $._value),
-                field("uncompressed_size", $._value),
+                field("offset", $.value),
+                field("compressed_size", $.value),
+                field("uncompressed_size", $.value),
                 field("var", $.identifier)
             ),
 
@@ -1094,14 +1103,14 @@ export default grammar({
             seq(
                 "INNER_PATCH_SAVE",
                 field("var", $._assignable),
-                field("buffer", $._value),
+                field("buffer", $.value),
                 "BEGIN",
                 repeat($._patch),
                 "END"
             ),
 
         inner_patch_file: ($) =>
-            seq("INNER_PATCH_FILE", field("file", $._value), "BEGIN", repeat($._patch), "END"),
+            seq("INNER_PATCH_FILE", field("file", $.value), "BEGIN", repeat($._patch), "END"),
 
         inner_action: ($) => seq("INNER_ACTION", "BEGIN", repeat($._action), "END"),
 
@@ -1223,11 +1232,11 @@ export default grammar({
             seq("COPY_LARGE", optional($._opt_no_backup), optional($._opt_glob), $.file_pair),
 
         action_copy_random: ($) =>
-            seq("COPY_RANDOM", repeat1(seq("(", repeat1($._value), ")")), optional($.patches)),
+            seq("COPY_RANDOM", repeat1(seq("(", repeat1($.value), ")")), optional($.patches)),
 
         action_copy_all_gam_files: ($) => seq("COPY_ALL_GAM_FILES", optional($.patches)),
 
-        file_pair: ($) => seq(field("from", $._value), field("to", $._value)),
+        file_pair: ($) => seq(field("from", $.value), field("to", $.value)),
 
         // Patches inside actions - either bare patches or BEGIN/END block
         // Named rule (not hidden) so context detection can find it in AST
@@ -1239,9 +1248,9 @@ export default grammar({
         // All can appear in any order, multiple IF/UNLESS allowed
         when: ($) =>
             prec.right(repeat1(choice(
-                seq("IF", field("if_resource", $._value)),
-                seq("UNLESS", field("unless_resource", $._value)),
-                seq("IF_SIZE_IS", field("size", $._value)),
+                seq("IF", field("if_resource", $.value)),
+                seq("UNLESS", field("unless_resource", $.value)),
+                seq("IF_SIZE_IS", field("size", $.value)),
                 "IF_EXISTS",
                 "BUT_ONLY",
                 "BUT_ONLY_IF_IT_CHANGES"
@@ -1252,9 +1261,9 @@ export default grammar({
                 seq(
                     "COMPILE",
                     optional(choice("EVALUATE_BUFFER", "EVAL")),
-                    repeat1(field("source", $._value)),
+                    repeat1(field("source", $.value)),
                     optional(choice("EVALUATE_BUFFER", "EVAL")),
-                    optional(seq("USING", repeat1(field("tra", $._value))))
+                    optional(seq("USING", repeat1(field("tra", $.value))))
                 )
             ),
 
@@ -1265,21 +1274,21 @@ export default grammar({
         action_append_col: appendAction("APPEND_COL"),
 
         action_append_outer: ($) =>
-            seq("APPEND_OUTER", field("file", $._value), field("text", $._value), optional("KEEP_CRLF")),
+            seq("APPEND_OUTER", field("file", $.value), field("text", $.value), optional("KEEP_CRLF")),
 
         action_delete: ($) =>
-            prec.right(seq("DELETE", optional($._opt_no_backup), repeat1(field("file", $._value)))),
+            prec.right(seq("DELETE", optional($._opt_no_backup), repeat1(field("file", $.value)))),
 
-        action_move: ($) => seq("MOVE", field("from", $._value), field("to", $._value)),
+        action_move: ($) => seq("MOVE", field("from", $.value), field("to", $.value)),
 
-        action_mkdir: ($) => seq("MKDIR", field("dir", $._value)),
+        action_mkdir: ($) => seq("MKDIR", field("dir", $.value)),
 
         action_create: ($) =>
             seq(
                 "CREATE",
                 field("type", $.identifier),
-                optional(seq("VERSION", field("version", $._value))),
-                field("resref", $._value),
+                optional(seq("VERSION", field("version", $.value))),
+                field("resref", $.value),
                 optional($.patches)
             ),
 
@@ -1287,7 +1296,7 @@ export default grammar({
         action_if: ($) =>
             seq(
                 "ACTION_IF",
-                field("condition", $._value),
+                field("condition", $.value),
                 optional("THEN"),
                 "BEGIN",
                 repeat($._action),
@@ -1307,7 +1316,7 @@ export default grammar({
         action_match: ($) =>
             seq(
                 "ACTION_MATCH",
-                field("value", $._value),
+                field("value", $.value),
                 "WITH",
                 repeat($.action_match_case),
                 optional(seq("DEFAULT", repeat($._action))),
@@ -1316,9 +1325,9 @@ export default grammar({
 
         action_match_case: ($) =>
             seq(
-                repeat1($._value),
+                repeat1($.value),
                 optional("WHEN"),
-                optional(field("condition", $._value)),
+                optional(field("condition", $.value)),
                 "BEGIN",
                 repeat($._action),
                 "END"
@@ -1333,9 +1342,9 @@ export default grammar({
             prec.right(
                 seq(
                     "ACTION_FOR_EACH",
-                    field("var", $._value),
+                    field("var", $.value),
                     "IN",
-                    repeat1($._value),
+                    repeat1($.value),
                     optional("BEGIN"),
                     repeat($._action),
                     "END"
@@ -1350,7 +1359,7 @@ export default grammar({
                 "OUTER_SET",
                 optional("EVALUATE_BUFFER"),
                 choice(
-                    seq(field("var", $._assignable), $._assign_op, field("value", $._value)),
+                    seq(field("var", $._assignable), $._assign_op, field("value", $.value)),
                     seq(choice("++", "--"), field("var", $._assignable))
                 )
             ),
@@ -1359,7 +1368,7 @@ export default grammar({
         action_outer_text_sprint: sprintOp("OUTER_TEXT_SPRINT"),
 
         action_with_tra: ($) =>
-            seq("WITH_TRA", repeat1(field("file", $._value)), "BEGIN", repeat($._action), "END"),
+            seq("WITH_TRA", repeat1(field("file", $.value)), "BEGIN", repeat($._action), "END"),
 
         action_outer_patch: outerPatchAction("OUTER_PATCH"),
         action_outer_patch_save: outerPatchSaveAction("OUTER_PATCH_SAVE"),
@@ -1367,8 +1376,8 @@ export default grammar({
         action_outer_inner_patch_save: outerPatchSaveAction("OUTER_INNER_PATCH_SAVE"),
 
         // Includes
-        action_include: ($) => seq("INCLUDE", field("file", $._value)),
-        action_reinclude: ($) => prec.right(seq(choice("REINCLUDE", "ACTION_REINCLUDE"), repeat1(field("file", $._value)))),
+        action_include: ($) => seq("INCLUDE", field("file", $.value)),
+        action_reinclude: ($) => prec.right(seq(choice("REINCLUDE", "ACTION_REINCLUDE"), repeat1(field("file", $.value)))),
 
         // Functions/macros definitions (using helpers)
         action_define_macro: defineMacro("DEFINE_ACTION_MACRO", ($) => $._action),
@@ -1379,10 +1388,10 @@ export default grammar({
         _func_decl_param: ($) => choice($.int_var_decl, $.str_var_decl, $.ret_decl, $.ret_array_decl),
 
         int_var_decl: ($) =>
-            seq("INT_VAR", repeat(seq(choice($.identifier, $.string), optional(seq("=", $._value))))),
+            seq("INT_VAR", repeat(seq(choice($.identifier, $.string), optional(seq("=", $.value))))),
 
         str_var_decl: ($) =>
-            seq("STR_VAR", repeat(seq(choice($.identifier, $.string), optional(seq("=", $._value))))),
+            seq("STR_VAR", repeat(seq(choice($.identifier, $.string), optional(seq("=", $.value))))),
 
         ret_decl: ($) => seq("RET", repeat1($.identifier)),
         ret_array_decl: ($) => seq("RET_ARRAY", repeat1($.identifier)),
@@ -1403,21 +1412,21 @@ export default grammar({
 
         // In function calls, left-hand side of assignments is always an identifier/string, not an expression
         int_var_call: ($) => seq("INT_VAR", repeat($.int_var_call_item)),
-        int_var_call_item: ($) => seq(choice($.identifier, $.string), optional(seq("=", $._value))),
+        int_var_call_item: ($) => seq(choice($.identifier, $.string), optional(seq("=", $.value))),
         str_var_call: ($) => seq("STR_VAR", repeat1($.str_var_call_item)),
-        str_var_call_item: ($) => seq(choice($.identifier, $.string), optional(seq("=", $._value))),
+        str_var_call_item: ($) => seq(choice($.identifier, $.string), optional(seq("=", $.value))),
         ret_call: ($) => seq("RET", repeat1($.ret_call_item)),
-        ret_call_item: ($) => seq(choice($.identifier, $.string), optional(seq("=", $._value))),
+        ret_call_item: ($) => seq(choice($.identifier, $.string), optional(seq("=", $.value))),
         ret_array_call: ($) => seq("RET_ARRAY", repeat1($.ret_array_call_item)),
-        ret_array_call_item: ($) => seq(choice($.identifier, $.string), optional(seq("=", $._value))),
+        ret_array_call_item: ($) => seq(choice($.identifier, $.string), optional(seq("=", $.value))),
 
         // Arrays
         action_define_array: ($) =>
             seq(
                 "ACTION_DEFINE_ARRAY",
-                field("name", $._value),
+                field("name", $.value),
                 "BEGIN",
-                repeat(choice($._value, $.assoc_entry)),
+                repeat(choice($.value, $.assoc_entry)),
                 "END"
             ),
 
@@ -1433,52 +1442,52 @@ export default grammar({
             prec.right(
                 seq(
                     choice("STRING_SET", "STRING_SET_EVALUATE"),
-                    repeat1(seq(field("strref", $._value), field("value", $._value)))
+                    repeat1(seq(field("strref", $.value), field("value", $.value)))
                 )
             ),
 
-        action_load_tra: ($) => prec.right(seq("LOAD_TRA", repeat1(field("file", $._value)))),
+        action_load_tra: ($) => prec.right(seq("LOAD_TRA", repeat1(field("file", $.value)))),
 
         // Game data modification
-        action_add_sectype: ($) => seq("ADD_SECTYPE", field("name", $._value), field("label", $._value)),
+        action_add_sectype: ($) => seq("ADD_SECTYPE", field("name", $.value), field("label", $.value)),
 
-        action_add_area_type: ($) => seq("ADD_AREA_TYPE", field("name", $._value)),
+        action_add_area_type: ($) => seq("ADD_AREA_TYPE", field("name", $.value)),
 
         action_add_spell: ($) =>
             prec.right(
                 seq(
                     "ADD_SPELL",
-                    field("file", $._value),
-                    field("level", $._value),
-                    field("type", $._value),
-                    field("name", $._value),
+                    field("file", $.value),
+                    field("level", $.value),
+                    field("type", $.value),
+                    field("name", $.value),
                     optional($.patches)
                 )
             ),
 
-        action_add_kit: ($) => prec.right(seq("ADD_KIT", repeat1(choice($._value, $.kit_say)))),
+        action_add_kit: ($) => prec.right(seq("ADD_KIT", repeat1(choice($.value, $.kit_say)))),
 
-        kit_say: ($) => seq("SAY", $._value),
+        kit_say: ($) => seq("SAY", $.value),
 
-        action_add_projectile: ($) => seq("ADD_PROJECTILE", field("file", $._value)),
+        action_add_projectile: ($) => seq("ADD_PROJECTILE", field("file", $.value)),
 
         // System/execution
         action_at_now: ($) =>
-            seq("AT_NOW", optional(field("var", $.identifier)), field("command", $._value), optional("EXACT")),
+            seq("AT_NOW", optional(field("var", $.identifier)), field("command", $.value), optional("EXACT")),
 
-        action_at_interactive_exit: ($) => seq("AT_INTERACTIVE_EXIT", field("command", $._value)),
+        action_at_interactive_exit: ($) => seq("AT_INTERACTIVE_EXIT", field("command", $.value)),
 
         action_bash_for: ($) =>
             seq(
                 "ACTION_BASH_FOR",
-                field("directory", $._value),
-                field("pattern", $._value),
+                field("directory", $.value),
+                field("pattern", $.value),
                 "BEGIN",
                 repeat($._action),
                 "END"
             ),
 
-        action_decompress_biff: ($) => seq("DECOMPRESS_BIFF", field("file", $._value)),
+        action_decompress_biff: ($) => seq("DECOMPRESS_BIFF", field("file", $.value)),
 
         // Print/messaging (using helpers)
         action_print: printOp("PRINT"),
@@ -1495,9 +1504,9 @@ export default grammar({
                 "CLEAR_IDS_MAP"
             ),
 
-        action_random_seed: ($) => seq("RANDOM_SEED", $._value),
+        action_random_seed: ($) => seq("RANDOM_SEED", $.value),
 
-        action_readln: ($) => seq("ACTION_READLN", $._value),
+        action_readln: ($) => seq("ACTION_READLN", $.value),
 
         action_silent: ($) => "SILENT",
         action_verbose: ($) => "VERBOSE",
@@ -1507,10 +1516,10 @@ export default grammar({
         action_to_lower: caseConvert("ACTION_TO_LOWER"),
 
         action_get_strref: ($) =>
-            seq("ACTION_GET_STRREF", field("strref", $._value), field("var", $.identifier)),
+            seq("ACTION_GET_STRREF", field("strref", $.value), field("var", $.identifier)),
 
         action_disable_from_key: ($) =>
-            prec.right(seq("DISABLE_FROM_KEY", repeat1(field("resource", $._value)))),
+            prec.right(seq("DISABLE_FROM_KEY", repeat1(field("resource", $.value)))),
 
         // =========================================
         // TOP-LEVEL DIRECTIVES
@@ -1518,9 +1527,7 @@ export default grammar({
 
         _top_level: ($) =>
             choice(
-                $.backup_directive,
-                $.author_directive,
-                $.support_directive,
+                // Prologue directives (BACKUP/AUTHOR/SUPPORT) are in source_file, not here
                 $.version_flag,
                 $.readme_directive,
                 $.no_if_eval_bug_flag,
@@ -1533,31 +1540,31 @@ export default grammar({
                 $.always_block
             ),
 
-        backup_directive: ($) => seq("BACKUP", field("path", $._value)),
-        author_directive: ($) => seq("AUTHOR", field("email", $._value)),
-        support_directive: ($) => seq("SUPPORT", field("url", $._value)),
-        version_flag: ($) => seq("VERSION", field("version", $._value)),
-        readme_directive: ($) => prec.right(seq("README", repeat1(field("path", $._value)))),
+        backup_directive: ($) => seq("BACKUP", field("path", $.value)),
+        author_directive: ($) => seq("AUTHOR", field("email", $.value)),
+        support_directive: ($) => seq("SUPPORT", field("url", $.value)),
+        version_flag: ($) => seq("VERSION", field("version", $.value)),
+        readme_directive: ($) => prec.right(seq("README", repeat1(field("path", $.value)))),
         no_if_eval_bug_flag: ($) => "NO_IF_EVAL_BUG",
         auto_eval_strings_flag: ($) => "AUTO_EVAL_STRINGS",
         allow_missing_directive: ($) =>
-            prec.right(seq("ALLOW_MISSING", repeat1(field("file", $._value)))),
-        auto_tra_directive: ($) => seq("AUTO_TRA", field("path", $._value)),
+            prec.right(seq("ALLOW_MISSING", repeat1(field("file", $.value)))),
+        auto_tra_directive: ($) => seq("AUTO_TRA", field("path", $.value)),
 
         language_directive: ($) =>
             prec.right(
                 seq(
                     "LANGUAGE",
-                    field("name", $._value),
-                    field("directory", $._value),
-                    repeat1(field("tra_file", $._value))
+                    field("name", $.value),
+                    field("directory", $.value),
+                    repeat1(field("tra_file", $.value))
                 )
             ),
 
         component: ($) =>
             seq(
                 alias("BEGIN", $.component_begin),
-                field("name", $._value),
+                field("name", $.value),
                 repeat($._componentFlag),
                 repeat($._action)
             ),
@@ -1575,25 +1582,25 @@ export default grammar({
             ),
 
         designated_flag: ($) => seq("DESIGNATED", field("number", $.number)),
-        deprecated_flag: ($) => seq("DEPRECATED", field("message", $._value)),
-        subcomponent_flag: ($) => seq("SUBCOMPONENT", field("name", $._value)),
-        group_flag: ($) => seq("GROUP", field("name", $._value)),
-        label_flag: ($) => seq("LABEL", field("label", $._value)),
+        deprecated_flag: ($) => seq("DEPRECATED", field("message", $.value)),
+        subcomponent_flag: ($) => seq("SUBCOMPONENT", field("name", $.value)),
+        group_flag: ($) => seq("GROUP", field("name", $.value)),
+        label_flag: ($) => seq("LABEL", field("label", $.value)),
         require_predicate_flag: ($) =>
-            seq("REQUIRE_PREDICATE", field("predicate", $._value), field("message", $._value)),
+            seq("REQUIRE_PREDICATE", field("predicate", $.value), field("message", $.value)),
         require_component_flag: ($) =>
             seq(
                 "REQUIRE_COMPONENT",
-                field("file", $._value),
-                field("component", $._value),
-                field("message", $._value)
+                field("file", $.value),
+                field("component", $.value),
+                field("message", $.value)
             ),
         forbid_component_flag: ($) =>
             seq(
                 "FORBID_COMPONENT",
-                field("file", $._value),
-                field("component", $._value),
-                field("message", $._value)
+                field("file", $.value),
+                field("component", $.value),
+                field("message", $.value)
             ),
 
         always_block: ($) => seq("ALWAYS", repeat($._action), "END"),

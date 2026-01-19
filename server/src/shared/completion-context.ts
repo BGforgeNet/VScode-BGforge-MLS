@@ -71,42 +71,6 @@ export interface ContextFilterConfig<TContext extends string> {
     itemOverride?: (itemName: string, category: string | undefined, context: TContext) => boolean | undefined;
 }
 
-/**
- * Validate category-context mapping at runtime.
- * Checks for common mistakes and logs warnings.
- *
- * @param config - Filter configuration to validate
- * @param validContexts - Set of valid context values
- * @param languageId - Language identifier for logging
- */
-export function validateCategoryContextMap<TContext extends string>(
-    config: ContextFilterConfig<TContext>,
-    validContexts: Set<TContext>,
-    languageId: string
-): void {
-    for (const [category, contexts] of Object.entries(config.categoryMap)) {
-        if (contexts.length === 0) {
-            console.warn(`[${languageId}] Category "${category}" has no allowed contexts - will never appear`);
-        }
-
-        for (const context of contexts) {
-            if (!validContexts.has(context)) {
-                console.warn(
-                    `[${languageId}] Category "${category}" references invalid context "${context}". ` +
-                    `Valid contexts: ${Array.from(validContexts).join(", ")}`
-                );
-            }
-        }
-    }
-
-    if (!validContexts.has(config.fallbackContext)) {
-        console.warn(
-            `[${languageId}] Fallback context "${config.fallbackContext}" is not in valid contexts. ` +
-            `Valid contexts: ${Array.from(validContexts).join(", ")}`
-        );
-    }
-}
-
 // ============================================
 // UTF-8 Safe Position Utilities
 // ============================================

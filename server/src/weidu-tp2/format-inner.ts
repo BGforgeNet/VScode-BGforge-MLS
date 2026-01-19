@@ -16,6 +16,7 @@ import {
     normalizeWhitespace,
     handleComment,
 } from "./format-utils";
+import { SyntaxType } from "./tree-sitter.d";
 
 // ============================================
 // INNER_ACTION formatting
@@ -44,7 +45,7 @@ export function formatInnerAction(
         if (isKeyword(child, KW_BEGIN) || isKeyword(child, KW_END)) {
             continue;
         }
-        if (child.type === "identifier" && child.text.toUpperCase() === "INNER_ACTION") {
+        if (child.type === SyntaxType.Identifier && child.text.toUpperCase() === "INNER_ACTION") {
             continue;
         }
 
@@ -55,7 +56,7 @@ export function formatInnerAction(
             isCopyAction(child.type) ||
             isControlFlow(child.type) ||
             isFunctionCall(child.type) ||
-            child.type === "inlined_file"
+            child.type === SyntaxType.InlinedFile
         ) {
             lines.push(formatNode(child, ctx, depth + 1));
             lastEndRow = child.endPosition.row;
@@ -69,11 +70,6 @@ export function formatInnerAction(
 // ============================================
 // INNER_PATCH formatting
 // ============================================
-
-/** Check if a node is valid INNER_PATCH header content. */
-function isInnerPatchHeaderType(type: string): boolean {
-    return type === "identifier" || type === "string" || type === "variable_ref" || type === "array_access";
-}
 
 /** Check if a node is valid INNER_PATCH body content. */
 function isInnerPatchBodyContent(type: string): boolean {
@@ -95,35 +91,57 @@ export function formatInnerPatch(
     const bodyIndent = ctx.indent.repeat(depth + 1);
     const lines: string[] = [];
 
-    // Build header: INNER_PATCH[_SAVE var] buffer
-    const headerParts: string[] = [];
-    let inBody = false;
-    let lastEndRow = -1;
-
+    // Determine keyword (INNER_PATCH, INNER_PATCH_SAVE, or INNER_PATCH_FILE)
+    let keyword = "INNER_PATCH";
     for (const child of node.children) {
-        if (isKeyword(child, KW_BEGIN)) {
-            inBody = true;
+        if (child.text === "INNER_PATCH" || child.text === "INNER_PATCH_SAVE" || child.text === "INNER_PATCH_FILE") {
+            keyword = child.text;
+            break;
+        }
+    }
+
+    // Build header: INNER_PATCH[_SAVE var] buffer
+    const headerParts: string[] = [keyword];
+
+    // For INNER_PATCH_SAVE, add the var field if present
+    const varNode = node.childForFieldName("var");
+    if (varNode) {
+        headerParts.push(normalizeWhitespace(varNode.text));
+    }
+
+    // Add buffer field if present (for INNER_PATCH/INNER_PATCH_SAVE)
+    const bufferNode = node.childForFieldName("buffer");
+    if (bufferNode) {
+        headerParts.push(normalizeWhitespace(bufferNode.text));
+    }
+
+    // Add file field if present (for INNER_PATCH_FILE)
+    const fileNode = node.childForFieldName("file");
+    if (fileNode) {
+        headerParts.push(normalizeWhitespace(fileNode.text));
+    }
+
+    // Process body content (patches)
+    let lastEndRow = -1;
+    for (const child of node.children) {
+        if (isKeyword(child, KW_BEGIN) || isKeyword(child, KW_END)) {
             continue;
         }
-        if (isKeyword(child, KW_END)) {
+        // Skip keyword identifier
+        if (child.text === keyword) {
+            continue;
+        }
+        // Skip var, buffer, and file nodes (already handled via named fields)
+        if (child === varNode || child === bufferNode || child === fileNode) {
             continue;
         }
 
-        if (!inBody) {
-            // Collect header parts (keyword, var, buffer)
-            if (isInnerPatchHeaderType(child.type)) {
-                headerParts.push(normalizeWhitespace(child.text));
-            } else if (child.text === "INNER_PATCH" || child.text === "INNER_PATCH_SAVE" || child.text === "INNER_PATCH_FILE") {
-                headerParts.unshift(child.text);
-            }
-        } else {
-            // Body content (patches)
-            if (isComment(child)) {
-                handleComment(lines, child, bodyIndent, lastEndRow);
-            } else if (isInnerPatchBodyContent(child.type)) {
-                lines.push(formatNode(child, ctx, depth + 1));
-                lastEndRow = child.endPosition.row;
-            }
+        // Body content (patches and comments)
+        if (isComment(child)) {
+            handleComment(lines, child, bodyIndent, lastEndRow);
+        } else if (isInnerPatchBodyContent(child.type)) {
+            lines.push(formatNode(child, ctx, depth + 1));
+            lastEndRow = child.endPosition.row;
         }
     }
 

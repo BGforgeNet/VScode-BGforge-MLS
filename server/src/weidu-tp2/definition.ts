@@ -12,6 +12,7 @@ import * as fs from "fs";
 import { getParser, isInitialized } from "./parser";
 import { parseHeader, lookupFunction, FunctionInfo } from "./header-parser";
 import { pathToUri, uriToPath } from "../common";
+import { SyntaxType } from "./tree-sitter.d";
 
 /** Node types for function/macro calls. */
 const FUNCTION_CALL_TYPES = new Set([
@@ -218,7 +219,7 @@ function findPathInInclude(node: SyntaxNode): SyntaxNode | null {
     }
     // Fallback to finding any string child
     for (const child of node.children) {
-        if (child.type === "string") {
+        if (child.type === SyntaxType.String) {
             return child;
         }
     }

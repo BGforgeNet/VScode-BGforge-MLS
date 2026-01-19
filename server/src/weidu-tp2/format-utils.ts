@@ -14,6 +14,7 @@ import {
     FOR_EACH_TYPES,
     type CollectedItem,
 } from "./format-types";
+import { SyntaxType } from "./tree-sitter.d";
 
 // ============================================
 // Type lookup sets (O(1) instead of O(n) array includes)
@@ -33,7 +34,7 @@ const PARAM_KEYWORDS = new Set(["INT_VAR", "STR_VAR", "RET", "RET_ARRAY"]);
 const ASSOC_ARRAY_DEF_TYPES = new Set(["action_define_associative_array", "patch_define_associative_array"]);
 
 /** Primitive value types (for array definitions). */
-const PRIMITIVE_TYPES = new Set(["binary_expr", "variable_ref", "identifier", "string", "number"]);
+const PRIMITIVE_TYPES = new Set(["value", "binary_expr", "variable_ref", "identifier", "string", "number"]);
 
 /** Special action types that don't use action_ prefix. */
 const SPECIAL_ACTION_TYPES = new Set(["text_sprint_action"]);
@@ -47,7 +48,7 @@ const SPECIAL_PATCH_TYPES = new Set(["write_var", "read_var", "set_var"]);
 
 /** Check if a node is a comment. */
 export function isComment(node: SyntaxNode): boolean {
-    return node.type === "line_comment" || node.type === "block_comment";
+    return node.type === SyntaxType.LineComment || node.type === SyntaxType.Comment;
 }
 
 /** Normalize block comment: preserve content, just trim outer whitespace. */
@@ -231,9 +232,9 @@ export function isBodyContent(type: string): boolean {
         isPatch(type) ||
         isControlFlow(type) ||
         isFunctionCall(type) ||
-        type === "top_level_assignment" ||
-        type === "patch_assignment" ||
-        type === "inlined_file"
+        type === SyntaxType.TopLevelAssignment ||
+        type === SyntaxType.PatchAssignment ||
+        type === SyntaxType.InlinedFile
     );
 }
 

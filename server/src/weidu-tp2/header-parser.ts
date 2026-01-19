@@ -7,6 +7,7 @@ import type { Node as SyntaxNode } from "web-tree-sitter";
 import { Location } from "vscode-languageserver/node";
 import * as jsdoc from "../shared/jsdoc";
 import { getParser, isInitialized } from "./parser";
+import { SyntaxType } from "./tree-sitter.d";
 
 // ============================================
 // Types
@@ -167,7 +168,7 @@ function findPrecedingDocComment(root: SyntaxNode, nodeIndex: number): string | 
         const prev = root.child(i);
         if (!prev) continue;
 
-        if (prev.type === "comment") {
+        if (prev.type === SyntaxType.Comment) {
             const text = prev.text.trim();
             // Only return if it's a JSDoc comment (starts with /**)
             if (text.startsWith("/**")) {
@@ -178,7 +179,7 @@ function findPrecedingDocComment(root: SyntaxNode, nodeIndex: number): string | 
         }
 
         // If we hit a non-comment node, stop looking
-        if (prev.type !== "line_comment") {
+        if (prev.type !== SyntaxType.LineComment) {
             return null;
         }
     }
@@ -204,7 +205,7 @@ function extractParams(node: SyntaxNode): FunctionParams {
         if (paramType === "ret" || paramType === "retArray") {
             // RET and RET_ARRAY just have identifiers
             for (const paramChild of child.children) {
-                if (paramChild.type === "identifier") {
+                if (paramChild.type === SyntaxType.Identifier) {
                     params[paramType].push(paramChild.text);
                 }
             }
@@ -238,7 +239,7 @@ function extractVarParams(node: SyntaxNode, target: ParamInfo[]): void {
         }
 
         // Value types that can be parameter names or default values
-        const isValue = ["identifier", "string", "number", "variable_ref", "binary_expr"].includes(child.type);
+        const isValue = ["identifier", "string", "number", "variable_ref", "binary_expr", "value"].includes(child.type);
 
         if (!isValue) {
             continue;

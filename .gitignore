@@ -32,6 +32,7 @@ tmp
 
 # Generated tree-sitter parser sources
 grammars/*/src/
+server/src/weidu-tp2/tree-sitter.d.ts
 
 # External D samples from Ascension (auto-copied by setup-external-samples.sh)
 grammars/weidu-d/test/samples/ascension_*.d

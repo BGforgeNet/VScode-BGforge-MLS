@@ -29,9 +29,10 @@ BACKUP ~mymod/backup~
 
 (source_file
   (backup_directive
-    path: (string
-      (tilde_string
-        (tilde_content)))))
+    path: (value
+      (string
+        (tilde_string
+          (tilde_content))))))
 
 ================================================================================
 Author directive
@@ -43,9 +44,10 @@ AUTHOR ~user@example.com~
 
 (source_file
   (author_directive
-    email: (string
-      (tilde_string
-        (tilde_content)))))
+    email: (value
+      (string
+        (tilde_string
+          (tilde_content))))))
 
 ================================================================================
 Version flag
@@ -57,9 +59,10 @@ VERSION ~1.0~
 
 (source_file
   (version_flag
-    version: (string
-      (tilde_string
-        (tilde_content)))))
+    version: (value
+      (string
+        (tilde_string
+          (tilde_content))))))
 
 ================================================================================
 Language directive
@@ -71,15 +74,18 @@ LANGUAGE ~English~ ~english~ ~english/setup.tra~
 
 (source_file
   (language_directive
-    name: (string
-      (tilde_string
-        (tilde_content)))
-    directory: (string
-      (tilde_string
-        (tilde_content)))
-    tra_file: (string
-      (tilde_string
-        (tilde_content)))))
+    name: (value
+      (string
+        (tilde_string
+          (tilde_content))))
+    directory: (value
+      (string
+        (tilde_string
+          (tilde_content))))
+    tra_file: (value
+      (string
+        (tilde_string
+          (tilde_content))))))
 
 ================================================================================
 Simple component
@@ -92,9 +98,10 @@ BEGIN ~My Component~
 (source_file
   (component
     (component_begin)
-    name: (string
-      (tilde_string
-        (tilde_content)))))
+    name: (value
+      (string
+        (tilde_string
+          (tilde_content))))))
 
 ================================================================================
 Component with designated
@@ -108,8 +115,10 @@ DESIGNATED 100
 (source_file
   (component
     (component_begin)
-    name: (string
-      (tilde_string
-        (tilde_content)))
+    name: (value
+      (string
+        (tilde_string
+          (tilde_content))))
     (designated_flag
       number: (number))))
+

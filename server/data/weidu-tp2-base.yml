@@ -3282,9 +3282,6 @@ value:
     - name: INTERACTION5
       doc: |-
         0x150
-    - name: INT_VAR
-      doc: |-
-        Integer variable
     - name: INVENTORY_FULL
       doc: |-
         0x1B4
@@ -3400,13 +3397,6 @@ value:
     - name: RESPONSE_TO_INSULT3
       doc: |-
         0x194
-    - name: RET
-      doc: |-
-        Return value
-    - name: RET_ARRAY
-      doc: |-
-        Return value (arrays)
-
     - name: RINDEX
       detail: RINDEX ( optcase optexact string1 string2 [ value ] )
       doc: |-
@@ -3574,9 +3564,6 @@ value:
       detail: String STR_EQ String
       doc: |-
         As STRING_EQUAL, but the comparison ignores case. That is, "ANOMEN" and "aNoMeN" are considered equal.
-    - name: STR_VAR
-      doc: |-
-        String variable
     - name: TAB
       doc: |-
         tabulation character
@@ -3621,3 +3608,19 @@ value:
     - name: WNL
       doc: |-
         Windows new line
+
+funcVarKeyword:
+  type: 14 # keyword
+  items:
+    - name: INT_VAR
+      doc: |-
+        Integer variable
+    - name: STR_VAR
+      doc: |-
+        String variable
+    - name: RET
+      doc: |-
+        Return value
+    - name: RET_ARRAY
+      doc: |-
+        Return value (arrays)

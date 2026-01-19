@@ -25,6 +25,7 @@ import {
     handleComment,
     outputAlignedAssignments,
 } from "./format-utils";
+import { SyntaxType } from "./tree-sitter.d";
 
 // ============================================
 // Assignment parsing
@@ -49,7 +50,7 @@ function parseAssignment(node: SyntaxNode): { name: string; value: string } | nu
         const children = node.children;
         const first = children[0];
         // First child is identifier or string (the name)
-        if (first && (first.type === "identifier" || first.type === "string")) {
+        if (first && (first.type === SyntaxType.Identifier || first.type === SyntaxType.String)) {
             nameNode = first;
             // If there's an "=" token, value is the third child
             const second = children[1];
@@ -62,7 +63,7 @@ function parseAssignment(node: SyntaxNode): { name: string; value: string } | nu
 
     // Handle ternary_expr: "name = condition ? then : else"
     // Parse textually since the name is embedded in the condition
-    if (!nameNode && node.type === "ternary_expr") {
+    if (!nameNode && node.type === SyntaxType.TernaryExpr) {
         const text = node.text;
         const eqIdx = text.indexOf("=");
         if (eqIdx > 0) {
@@ -102,12 +103,12 @@ function formatParamDecl(node: SyntaxNode, indent: string, ctx: FormatContext): 
 
         if (isComment(child)) {
             items.push({ type: "comment", text: normalizeComment(child.text), startRow: child.startPosition.row, endRow: child.endPosition.row });
-        } else if (child.type === "assignment" || child.type === "patch_assignment") {
+        } else if (child.type === SyntaxType.PatchAssignment) {
             const parsed = parseAssignment(child);
             if (parsed) {
                 items.push({ type: "assignment", name: parsed.name, value: parsed.value, endRow: child.endPosition.row });
             }
-        } else if (child.type === "variable_ref" || child.type === "identifier" || child.type === "string") {
+        } else if (child.type === SyntaxType.VariableRef || child.type === SyntaxType.Identifier || child.type === SyntaxType.String) {
             // Check if next child is "=" token indicating an assignment
             const nextChild = children[i + 1];
             if (nextChild && nextChild.text === "=") {
@@ -152,18 +153,18 @@ function formatParamCall(node: SyntaxNode, indent: string, ctx: FormatContext): 
         } else if (isComment(child)) {
             items.push({ type: "comment", text: normalizeComment(child.text), startRow: child.startPosition.row, endRow: child.endPosition.row });
         } else if (
-            child.type === "int_var_call_item" ||
-            child.type === "str_var_call_item" ||
-            child.type === "ret_call_item" ||
-            child.type === "ret_array_call_item" ||
-            child.type === "binary_expr" ||
-            child.type === "ternary_expr"
+            child.type === SyntaxType.IntVarCallItem ||
+            child.type === SyntaxType.StrVarCallItem ||
+            child.type === SyntaxType.RetCallItem ||
+            child.type === SyntaxType.RetArrayCallItem ||
+            child.type === SyntaxType.BinaryExpr ||
+            child.type === SyntaxType.TernaryExpr
         ) {
             const parsed = parseAssignment(child);
             if (parsed) {
                 items.push({ type: "assignment", name: parsed.name, value: parsed.value, endRow: child.endPosition.row });
             }
-        } else if (child.type === "variable_ref" || child.type === "identifier") {
+        } else if (child.type === SyntaxType.VariableRef || child.type === SyntaxType.Identifier) {
             items.push({ type: "assignment", name: child.text, value: "", endRow: child.endPosition.row });
         }
     }
@@ -234,7 +235,7 @@ export function formatFunctionDef(
                 lastEndRow = child.endPosition.row;
             }
         } else {
-            if (child.type.endsWith("_var_decl") || child.type === "ret_decl" || child.type === "ret_array_decl") {
+            if (child.type.endsWith("_var_decl") || child.type === SyntaxType.RetDecl || child.type === SyntaxType.RetArrayDecl) {
                 if (defLine) {
                     lines.push(indent + defLine);
                     defLine = "";
@@ -243,7 +244,7 @@ export function formatFunctionDef(
                 lines.push(...formatParamDecl(child, bodyIndent, ctx));
             } else if (child.text.startsWith("DEFINE_")) {
                 defLine = child.text;
-            } else if (child.type === "identifier" || child.type === "string") {
+            } else if (child.type === SyntaxType.Identifier || child.type === SyntaxType.String) {
                 defLine = defLine ? defLine + " " + child.text : child.text;
             }
         }
@@ -313,10 +314,10 @@ export function formatFunctionCall(node: SyntaxNode, ctx: FormatContext, depth: 
         }
 
         if (
-            child.type === "int_var_call" ||
-            child.type === "str_var_call" ||
-            child.type === "ret_call" ||
-            child.type === "ret_array_call"
+            child.type === SyntaxType.IntVarCall ||
+            child.type === SyntaxType.StrVarCall ||
+            child.type === SyntaxType.RetCall ||
+            child.type === SyntaxType.RetArrayCall
         ) {
             if (callLine) {
                 lines.push(indent + callLine);
@@ -333,7 +334,7 @@ export function formatFunctionCall(node: SyntaxNode, ctx: FormatContext, depth: 
         ) {
             callLine = child.text;
             callKeyword = child.text;
-        } else if (child.type === "identifier") {
+        } else if (child.type === SyntaxType.Identifier) {
             callLine = callLine ? callLine + " " + child.text : child.text;
         } else {
             const normalized = normalizeWhitespace(child.text);

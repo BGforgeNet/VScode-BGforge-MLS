@@ -20,3 +20,4 @@ cd ../weidu-tp2
 pnpm exec tree-sitter generate
 pnpm exec tree-sitter build --wasm
 cp tree-sitter-weidu_tp2.wasm ../../server/out/
+pnpm run generate:types

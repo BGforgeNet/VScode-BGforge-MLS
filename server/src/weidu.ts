@@ -489,13 +489,16 @@ function buildLanguageData(uri: string, functions: FunctionInfo[], filePath: str
         const markdownContents = { kind: MarkupKind.Markdown, value: markdownValue };
 
         // Build completion item
-        const completionItem: completion.CompletionItemEx = {
+        // Category maps to filtering: action functions only in action context, patch in patch
+        const category = func.context === "action" ? "actionFunctions" : "patchFunctions";
+        const completionItem: completion.CompletionItemEx & { category: string } = {
             label: func.name,
             documentation: markdownContents,
             source: filePath,
             kind: CompletionItemKind.Function,
             labelDetails: { description: filePath },
             uri: uri,
+            category,
         };
         if (func.jsdoc?.deprecated !== undefined) {
             const COMPLETION_TAG_deprecated = 1;

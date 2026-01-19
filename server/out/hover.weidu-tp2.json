@@ -3161,12 +3161,6 @@
             "value": "```weidu-tp2-tooltip\nINTERACTION5\n```\n0x150"
         }
     },
-    "INT_VAR": {
-        "contents": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nINT_VAR\n```\nInteger variable"
-        }
-    },
     "INVENTORY_FULL": {
         "contents": {
             "kind": "markdown",
@@ -3375,18 +3369,6 @@
         "contents": {
             "kind": "markdown",
             "value": "```weidu-tp2-tooltip\nRESPONSE_TO_INSULT3\n```\n0x194"
-        }
-    },
-    "RET": {
-        "contents": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nRET\n```\nReturn value"
-        }
-    },
-    "RET_ARRAY": {
-        "contents": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nRET_ARRAY\n```\nReturn value (arrays)"
         }
     },
     "RINDEX": {
@@ -3659,12 +3641,6 @@
             "value": "```weidu-tp2-tooltip\nString STR_EQ String\n```\nAs STRING_EQUAL, but the comparison ignores case. That is, \"ANOMEN\" and \"aNoMeN\" are considered equal."
         }
     },
-    "STR_VAR": {
-        "contents": {
-            "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nSTR_VAR\n```\nString variable"
-        }
-    },
     "TAB": {
         "contents": {
             "kind": "markdown",
@@ -3741,6 +3717,30 @@
         "contents": {
             "kind": "markdown",
             "value": "```weidu-tp2-tooltip\nWNL\n```\nWindows new line"
+        }
+    },
+    "INT_VAR": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nINT_VAR\n```\nInteger variable"
+        }
+    },
+    "STR_VAR": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nSTR_VAR\n```\nString variable"
+        }
+    },
+    "RET": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nRET\n```\nReturn value"
+        }
+    },
+    "RET_ARRAY": {
+        "contents": {
+            "kind": "markdown",
+            "value": "```weidu-tp2-tooltip\nRET_ARRAY\n```\nReturn value (arrays)"
         }
     },
     "EFF2_signature": {

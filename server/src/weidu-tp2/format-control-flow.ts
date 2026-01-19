@@ -40,6 +40,7 @@ import {
     lastElement,
     isControlFlowBodyContent,
 } from "./format-utils";
+import { SyntaxType } from "./tree-sitter.d";
 
 // ============================================
 // Types
@@ -105,7 +106,7 @@ function flattenOrAndExpr(node: SyntaxNode): ConditionOperand[] | null {
     const result: ConditionOperand[] = [];
 
     // Recursively flatten left side (for chained OR/AND)
-    if (left.type === "binary_expr") {
+    if (left.type === SyntaxType.BinaryExpr) {
         const leftFlat = flattenOrAndExpr(left);
         if (leftFlat) {
             result.push(...leftFlat);
@@ -146,9 +147,9 @@ function formatCondition(
     // Find the actual expression to split - may be wrapped in paren_expr
     let exprNode = conditionNode;
     let hasOuterParens = false;
-    if (exprNode.type === "paren_expr" && exprNode.children.length > 0) {
+    if (exprNode.type === SyntaxType.ParenExpr && exprNode.children.length > 0) {
         for (const child of exprNode.children) {
-            if (child.type === "binary_expr") {
+            if (child.type === SyntaxType.BinaryExpr) {
                 exprNode = child;
                 hasOuterParens = true;
                 break;
@@ -157,7 +158,7 @@ function formatCondition(
     }
 
     // Try to flatten OR/AND expressions
-    if (exprNode.type === "binary_expr") {
+    if (exprNode.type === SyntaxType.BinaryExpr) {
         const operands = flattenOrAndExpr(exprNode);
         if (operands && operands.length > 1) {
             const lines: string[] = [];
@@ -414,7 +415,7 @@ function formatAssociativeArray(node: SyntaxNode, ctx: FormatContext, depth: num
             continue;
         }
 
-        if (child.type === "assoc_entry") {
+        if (child.type === SyntaxType.AssocEntry) {
             const parsed = parseAssocEntry(child);
             if (parsed) {
                 items.push({ type: "assignment", name: parsed.name, value: parsed.value, endRow: child.endPosition.row });
@@ -678,7 +679,7 @@ export function formatControlFlow(
         }
 
         // ELSE IF chaining
-        if (state.afterElse && (child.type === "action_if" || child.type === "patch_if")) {
+        if (state.afterElse && (child.type === SyntaxType.ActionIf || child.type === SyntaxType.PatchIf)) {
             state.lines.push(formatNode(child, ctx, depth));
             state.afterElse = false;
             continue;

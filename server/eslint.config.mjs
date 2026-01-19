@@ -4,7 +4,7 @@ import globals from "globals";
 
 export default [
     {
-        ignores: ["node_modules/**", "out/**"],
+        ignores: ["node_modules/**", "out/**", "src/weidu-tp2/tree-sitter.d.ts"],
     },
     {
         files: ["src/**/*.ts"],

@@ -51,6 +51,7 @@ import {
     formatInnerAction,
     formatInnerPatch,
 } from "./format-blocks";
+import { SyntaxType } from "./tree-sitter.d";
 
 // Re-export public types
 export type { FormatOptions, FormatResult } from "./format-types";
@@ -83,27 +84,26 @@ function formatComponent(node: SyntaxNode, ctx: FormatContext): string {
 
         // Component name and flags - append to BEGIN line
         if (
-            child.type === "string" ||
-            child.type === "identifier" ||
-            child.type === "variable_ref" ||
-            child.type === "at_identifier" ||
-            child.type === "tra_ref" ||
-            child.type === "component_flags" ||
-            child.type === "designated_flag" ||
-            child.type === "deprecated_flag" ||
-            child.type === "subcomponent_flag" ||
-            child.type === "group_flag" ||
-            child.type === "label_flag" ||
-            child.type === "require_predicate_flag" ||
-            child.type === "require_component_flag" ||
-            child.type === "forbid_component_flag"
+            child.type === SyntaxType.Value ||
+            child.type === SyntaxType.String ||
+            child.type === SyntaxType.Identifier ||
+            child.type === SyntaxType.VariableRef ||
+            child.type === SyntaxType.TraRef ||
+            child.type === SyntaxType.DesignatedFlag ||
+            child.type === SyntaxType.DeprecatedFlag ||
+            child.type === SyntaxType.SubcomponentFlag ||
+            child.type === SyntaxType.GroupFlag ||
+            child.type === SyntaxType.LabelFlag ||
+            child.type === SyntaxType.RequirePredicateFlag ||
+            child.type === SyntaxType.RequireComponentFlag ||
+            child.type === SyntaxType.ForbidComponentFlag
         ) {
             beginLine = beginLine ? beginLine + " " + normalizeWhitespace(child.text) : normalizeWhitespace(child.text);
             continue;
         }
 
         // Body content - actions inside component
-        if (isAction(child.type) || isControlFlow(child.type) || isFunctionCall(child.type) || child.type === "top_level_assignment") {
+        if (isAction(child.type) || isControlFlow(child.type) || isFunctionCall(child.type) || child.type === SyntaxType.TopLevelAssignment) {
             // Output BEGIN line first if we have one
             if (beginLine) {
                 lines.push(beginLine);
@@ -133,14 +133,14 @@ function formatAlwaysBlock(node: SyntaxNode, ctx: FormatContext): string {
         }
         if (isComment(child)) {
             handleComment(lines, child, ctx.indent, lastEndRow);
-        } else if (child.type === "inlined_file") {
+        } else if (child.type === SyntaxType.InlinedFile) {
             lines.push(formatInlinedFile(child, ctx, 1));
             lastEndRow = child.endPosition.row;
         } else if (
             isAction(child.type) ||
             isControlFlow(child.type) ||
             isFunctionCall(child.type) ||
-            child.type === "top_level_assignment"
+            child.type === SyntaxType.TopLevelAssignment
         ) {
             lines.push(formatNode(child, ctx, 1));
             lastEndRow = child.endPosition.row;
@@ -199,7 +199,7 @@ function formatSimpleNode(node: SyntaxNode, ctx: FormatContext, depth: number): 
     // Find string children
     const stringChildren: SyntaxNode[] = [];
     for (const child of node.children) {
-        if (child.type === "string") {
+        if (child.type === SyntaxType.String) {
             stringChildren.push(child);
         }
     }
@@ -393,7 +393,7 @@ function isCommentAttachedToComponent(
     }
 
     const nextNonComment = children[nextIdx];
-    if (nextNonComment && nextNonComment.type === "component") {
+    if (nextNonComment && nextNonComment.type === SyntaxType.Component) {
         return nextNonComment.startPosition.row <= lastCommentEndRow + 1;
     }
 
@@ -432,12 +432,12 @@ export function formatDocument(root: SyntaxNode, options?: Partial<FormatOptions
             result.push("");
         }
 
-        const needsBlankBefore = attachedToComponent || (child.type === "component" && !skipBlankBeforeComponent);
+        const needsBlankBefore = attachedToComponent || (child.type === SyntaxType.Component && !skipBlankBeforeComponent);
         if (needsBlankBefore && result.length > 0 && result[result.length - 1] !== "") {
             result.push("");
         }
 
-        if (child.type === "component") {
+        if (child.type === SyntaxType.Component) {
             skipBlankBeforeComponent = false;
         }
 
