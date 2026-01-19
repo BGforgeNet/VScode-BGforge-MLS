@@ -34,8 +34,9 @@ import { isAction, isPatch } from "./format-utils";
  * constants from keyword positions) or remove the keyword contexts to simplify.
  *
  * **Note on lafName/lpfName:**
- * These contexts are kept separate for future use (e.g., context-specific signature help).
- * Currently they have no exclusion rules.
+ * These contexts only allow corresponding function names:
+ * - lafName: only actionFunctions (LAF calls action functions)
+ * - lpfName: only patchFunctions (LPF calls patch functions)
  *
  * **Note on when/componentFlag:**
  * These contexts exist but currently have no exclusion rules. Keep for future use.
@@ -128,22 +129,43 @@ export type CompletionCategory =
  * - Missing category = never excluded
  */
 const CATEGORY_EXCLUSIONS: Partial<Record<CompletionCategory, CompletionContext[]>> = {
-    // Rule 1: No patch items in action context or funcParams
-    patch: ["action", "actionKeyword", "funcParams"],
-    patchFunctions: ["action", "actionKeyword", "funcParams"],
+    // Rule 1: No patch items in action context, funcParams, or lafName
+    patch: ["action", "actionKeyword", "funcParams", "lafName", "lpfName"],
+    patchFunctions: ["action", "actionKeyword", "funcParams", "lafName"],
 
-    // Rule 2: No action items in patch context or funcParams
-    action: ["patch", "patchKeyword", "funcParams"],
-    actionFunctions: ["patch", "patchKeyword", "funcParams"],
+    // Rule 2: No action items in patch context, funcParams, or lpfName
+    action: ["patch", "patchKeyword", "funcParams", "lafName", "lpfName"],
+    actionFunctions: ["patch", "patchKeyword", "funcParams", "lpfName"],
 
     // Rule 3: No structural items in funcParams or inappropriate contexts
-    prologue: ["funcParams"],
-    flag: ["funcParams", "action", "actionKeyword", "patch", "patchKeyword", "componentFlag"],
-    componentFlag: ["funcParams"],
-    language: ["funcParams"],
+    prologue: ["funcParams", "lafName", "lpfName"],
+    flag: ["funcParams", "action", "actionKeyword", "patch", "patchKeyword", "componentFlag", "lafName", "lpfName"],
+    componentFlag: ["funcParams", "lafName", "lpfName"],
+    language: ["funcParams", "lafName", "lpfName"],
 
     // Rule 4: INT_VAR, STR_VAR, RET, RET_ARRAY - only in function def/call parameter sections
     funcVarKeyword: ["action", "actionKeyword", "patch", "patchKeyword", "prologue", "flag", "componentFlag", "when", "lafName", "lpfName"],
+
+    // Rule 5: Value items not allowed in lafName/lpfName (only function names)
+    constants: ["lafName", "lpfName"],
+    vars: ["lafName", "lpfName"],
+    value: ["lafName", "lpfName"],
+    when: ["lafName", "lpfName"],
+    optGlob: ["lafName", "lpfName"],
+    optCase: ["lafName", "lpfName"],
+    optExact: ["lafName", "lpfName"],
+    arraySortType: ["lafName", "lpfName"],
+
+    // Rule 6: IElib/IESDP constants not allowed in lafName/lpfName
+    ielibInt: ["lafName", "lpfName"],
+    ielibResref: ["lafName", "lpfName"],
+    iesdpOther: ["lafName", "lpfName"],
+    iesdpStrref: ["lafName", "lpfName"],
+    iesdpResref: ["lafName", "lpfName"],
+    iesdpDword: ["lafName", "lpfName"],
+    iesdpWord: ["lafName", "lpfName"],
+    iesdpByte: ["lafName", "lpfName"],
+    iesdpChar: ["lafName", "lpfName"],
 };
 
 /**
@@ -350,6 +372,33 @@ const ACTION_CONTROL_FLOW_CONSTRUCTS = new Set([
     "action_bash_for",
 ]);
 
+/** Patch commands that are always patch context regardless of parsing context. */
+const ALWAYS_PATCH_KEYWORDS = new Set([
+    "READ_BYTE",
+    "READ_SHORT",
+    "READ_LONG",
+    "READ_ASCII",
+    "READ_STRREF",
+    "WRITE_BYTE",
+    "WRITE_SHORT",
+    "WRITE_LONG",
+    "WRITE_ASCII",
+    "WRITE_ASCIIE",
+    "WRITE_ASCIIT",
+    "WRITE_EVALUATED_ASCII",
+]);
+
+/**
+ * Get the 0-based line number for a given byte offset in text.
+ * @param text Full document text
+ * @param offset Byte offset
+ * @returns 0-based line number
+ */
+function getLineForOffset(text: string, offset: number): number {
+    const lines = text.substring(0, offset).split('\n');
+    return lines.length - 1;
+}
+
 /**
  * Check if cursor is inside the BEGIN...END body of a control flow construct.
  * Control flow constructs have their own BEGIN...END blocks, and statements inside
@@ -393,32 +442,6 @@ function isInsideControlFlowBody(
     return false;
 }
 
-/**
- * Check if cursor is in a control flow body and return the appropriate context.
- * Returns null if not in a control flow body.
- *
- * @param node Starting node (cursor position)
- * @param cursorOffset Byte offset of cursor
- * @param constructs Set of control flow construct types to check
- * @param keywordContext Context to return for command position
- * @param valueContext Context to return for value position
- * @returns Context array if inside control flow body, null otherwise
- */
-function getControlFlowBodyContext(
-    node: SyntaxNode,
-    cursorOffset: number,
-    constructs: Set<string>,
-    keywordContext: "actionKeyword" | "patchKeyword",
-    valueContext: "action" | "patch"
-): CompletionContext[] | null {
-    if (isInsideControlFlowBody(node, cursorOffset, constructs)) {
-        if (isInValuePosition(cursorOffset, node)) {
-            return [valueContext];
-        }
-        return [keywordContext];
-    }
-    return null;
-}
 
 /**
  * BEGIN/END block boundary positions.
@@ -494,6 +517,30 @@ function detectFunctionDefinitionContext(
             if (statementChecker(child.type) && cursorOffset >= child.startIndex && cursorOffset <= child.endIndex) {
                 statement = child;
                 break;
+            }
+        }
+
+        // Bug fix #3: Check for ERROR nodes containing invalid statements
+        // If no statement found and cursor is in ERROR node, check keyword text
+        if (!statement) {
+            for (const child of node.children) {
+                if (child.type === "ERROR" && cursorOffset >= child.startIndex && cursorOffset <= child.endIndex) {
+                    // Look for identifier child that might be a misplaced command
+                    const identifier = child.children.find(c => c.type === "identifier" && cursorOffset >= c.startIndex && cursorOffset <= c.endIndex);
+                    if (identifier) {
+                        const keywordText = identifier.text?.toUpperCase();
+                        // Check if it's an action command in a patch function or vice versa
+                        if (funcType === "patch" && (keywordText?.startsWith("OUTER_") || keywordText?.startsWith("ACTION_"))) {
+                            // Action command in patch function - return action context
+                            return ["actionKeyword"];
+                        }
+                        if (funcType === "action" && (keywordText?.startsWith("PATCH_") || ALWAYS_PATCH_KEYWORDS.has(keywordText))) {
+                            // Patch command in action function - return patch context
+                            return ["patchKeyword"];
+                        }
+                    }
+                    break;
+                }
             }
         }
 
@@ -699,6 +746,33 @@ function detectFunctionCallContext(node: SyntaxNode, cursorOffset: number): Comp
             return ["lafName"];
         }
         // After function name → funcParams context (for INT_VAR, STR_VAR, RET, etc.)
+        // Bug fix #2: LAF inside patches context is invalid
+        // Check if we're inside a COPY action (which has patch context) by walking up the tree
+        let parent = node.parent;
+        while (parent) {
+            // LAF inside patches block → use patch context
+            if (parent.type === SyntaxType.Patches) {
+                return null;
+            }
+            // LAF inside COPY action → use patch context (even if not in proper patches node due to parse errors)
+            if (parent.type && parent.type.startsWith("action_copy")) {
+                return null;
+            }
+            // Check if we're at component level with a preceding COPY action (lexically inside COPY)
+            if (parent.type === SyntaxType.Component) {
+                // Look for a COPY action sibling before this LAF node
+                for (const sibling of parent.children) {
+                    if (sibling.startIndex < node.startIndex &&
+                        sibling.type && sibling.type.startsWith("action_copy")) {
+                        // Found COPY before LAF → LAF is lexically inside COPY's patch area
+                        // Return patch context directly (don't return null, as that would delegate to COPY
+                        // which doesn't see LAF as its child and returns wrong context)
+                        return ["patch"];
+                    }
+                }
+            }
+            parent = parent.parent;
+        }
         return ["funcParams"];
     }
 
@@ -708,6 +782,7 @@ function detectFunctionCallContext(node: SyntaxNode, cursorOffset: number): Comp
             return ["lpfName"];
         }
         // After function name → funcParams context (for INT_VAR, STR_VAR, RET, etc.)
+        // LPF is valid inside patches blocks, so always return funcParams
         return ["funcParams"];
     }
 
@@ -764,7 +839,10 @@ function detectInnerActionContext(node: SyntaxNode, cursorOffset: number): Compl
         }
         return ["actionKeyword"];
     }
-    return ["action"];
+    // Bug fix #1: Return null instead of ["action"] to let caller continue walking up the tree.
+    // When cursor is not inside BEGIN...END body (e.g., at INNER_ACTION keyword),
+    // we should continue walking to find the containing context (e.g., COPY patches).
+    return null;
 }
 
 /**
@@ -827,19 +905,9 @@ function detectCopyActionContext(node: SyntaxNode, cursorOffset: number): Comple
         return null;
     }
 
-    // Check if COPY itself is inside a control flow construct's body
-    const controlFlowContext = getControlFlowBodyContext(
-        node,
-        cursorOffset,
-        ACTION_CONTROL_FLOW_CONSTRUCTS,
-        "actionKeyword",
-        "action"
-    );
-    if (controlFlowContext) {
-        return controlFlowContext;
-    }
-
-    // Check if we're inside a patches block node
+    // Check if we're inside a patches block node first (most specific)
+    // This must be checked BEFORE control flow detection to ensure COPY body
+    // is always patch context, regardless of what contains the COPY.
     for (const child of node.children) {
         if (child.type === SyntaxType.Patches) {
             if (cursorOffset >= child.startIndex && cursorOffset <= child.endIndex) {
@@ -880,9 +948,65 @@ function detectCopyActionContext(node: SyntaxNode, cursorOffset: number): Comple
     }
 
     // Before/within file pairs → action context (COPY header)
+    // Exception: if cursor is on a different line than the file pair AND after first file pair,
+    // it's likely in patches area (indented patch commands), even if tree-sitter parsed it as file_pair
     if (lastFilePairEnd > 0 && cursorOffset <= lastFilePairEnd) {
-        return ["action"];
+        // Check if cursor is on a different line than COPY start
+        // If so, it's likely patches (indented under COPY), not more file pairs
+        const copyStartLine = node.startPosition.row;
+        const cursorLine = getLineForOffset(node.tree.rootNode.text, cursorOffset);
+
+        if (cursorLine > copyStartLine) {
+            // Cursor is on a different line than COPY - likely patches area
+            // Fall through to patches detection logic below
+        } else {
+            // Cursor is on same line as COPY - definitely in file pairs (header)
+            // Only check control flow if cursor is in COPY header (at/before file pairs)
+            // If COPY is inside action control flow, the header is action context
+            if (isInsideControlFlowBody(node, cursorOffset, ACTION_CONTROL_FLOW_CONSTRUCTS)) {
+                if (isInValuePosition(cursorOffset, node)) {
+                    return ["action"];
+                }
+                return ["actionKeyword"];
+            }
+            return ["action"];
+        }
     }
+
+    // After file pairs - in patches area
+    // COPY body is ALWAYS patch context, regardless of what contains the COPY
+    // (even if COPY is inside ACTION_PHP_EACH or other action control flow)
+    // Do NOT check isInsideControlFlowBody here!
+
+    // Check if cursor is at a patch statement (command vs value position)
+    let patchStatement: SyntaxNode | null = null;
+    let whenStatement: SyntaxNode | null = null;
+    for (const child of node.children) {
+        if (isPatch(child.type) && cursorOffset >= child.startIndex && cursorOffset <= child.endIndex) {
+            patchStatement = child;
+            break;
+        }
+        if (child.type === SyntaxType.When && cursorOffset >= child.startIndex && cursorOffset <= child.endIndex) {
+            whenStatement = child;
+            break;
+        }
+    }
+
+    // If at a patch statement, determine command vs value position
+    if (patchStatement) {
+        if (isInValuePosition(cursorOffset, patchStatement)) {
+            return ["patch"];
+        }
+        return ["patchKeyword"];
+    }
+
+    // If at a when statement, return when context
+    if (whenStatement) {
+        return ["when"];
+    }
+
+    // Not at a specific statement - this is command position for typing new patch/when keywords
+    // Check what's above/below to determine what keywords are allowed
 
     // If there's content both above and below, return what's below (certain context)
     if ((hasPatchesAbove || hasWhenAbove) && (hasPatchesBelow || hasWhenBelow)) {
@@ -919,27 +1043,69 @@ function detectComponentContext(node: SyntaxNode, cursorOffset: number): Complet
 }
 
 /**
- * Check if cursor is at an action/patch statement and determine context.
+ * Handle context detection when cursor is inside a control flow construct's BEGIN...END body.
  * Returns context array if detected, null otherwise.
- *
- * This handles statements that aren't inside function definitions or patches blocks.
- * It walks up to find the containing function/block to determine the correct context.
  */
-function detectStatementContext(node: SyntaxNode, cursorOffset: number): CompletionContext[] | null {
-    const type = node.type;
+function detectContextInControlFlow(
+    node: SyntaxNode,
+    type: string,
+    cursorOffset: number
+): CompletionContext[] | null {
+    // Check if this is an action control flow construct with BEGIN...END body
+    if (ACTION_CONTROL_FLOW_CONSTRUCTS.has(type)) {
+        const { beginEnd, endStart } = findBeginEndBoundaries(node);
+        // If cursor is inside BEGIN...END body
+        // Note: cursor at node.endIndex is considered "in body" for completion (whitespace before END)
+        if (beginEnd > 0 && cursorOffset > beginEnd && (endStart < 0 || cursorOffset <= node.endIndex)) {
+            // Check if there's a COPY action before cursor in this body
+            // If so, cursor is in COPY patches area (even if COPY node doesn't extend there)
+            let lastCopyBeforeCursor: SyntaxNode | null = null;
+            for (const child of node.children) {
+                if (child.type.startsWith("action_copy") && child.endIndex < cursorOffset) {
+                    if (!lastCopyBeforeCursor || child.endIndex > lastCopyBeforeCursor.endIndex) {
+                        lastCopyBeforeCursor = child;
+                    }
+                }
+            }
 
-    if (!isAction(type) && !isPatch(type)) {
+            if (lastCopyBeforeCursor) {
+                // Cursor is after COPY action - conceptually in COPY patches area
+                // Return patchKeyword (command position for typing patch statements)
+                return ["patchKeyword"];
+            }
+
+            // No COPY before cursor - cursor is in action control flow body
+            return ["actionKeyword"];
+        }
+        // Cursor is in the construct header (before BEGIN) - return null to continue
         return null;
     }
 
-    // Remember this node and continue walking
-    const statementNode = node;
-    const isActionNode = isAction(type);
-    const isPatchNode = isPatch(type);
+    // Check if this is a patch control flow construct with BEGIN...END body
+    if (PATCH_CONTROL_FLOW_CONSTRUCTS.has(type)) {
+        const { beginEnd, endStart } = findBeginEndBoundaries(node);
+        // If cursor is inside BEGIN...END body, return patchKeyword
+        if (beginEnd > 0 && cursorOffset > beginEnd && (endStart < 0 || cursorOffset < endStart)) {
+            return ["patchKeyword"];
+        }
+        // Cursor is in the construct header (before BEGIN) - return null to continue
+        return null;
+    }
 
-    // Check if we're inside a patches block or inner_action
-    // (e.g., inside COPY...BEGIN...END). These override function context.
-    let parent = node.parent;
+    return null;
+}
+
+/**
+ * Handle context detection when cursor is inside a patches block or inner_action.
+ * Returns context array if detected, null otherwise.
+ */
+function detectContextInPatchesBlock(
+    statementNode: SyntaxNode,
+    cursorOffset: number,
+    isActionNode: boolean
+): CompletionContext[] | null {
+    // Walk up to check if we're inside a patches block or inner_action
+    let parent = statementNode.parent;
     let foundPatchesBlock = false;
 
     while (parent) {
@@ -969,22 +1135,52 @@ function detectStatementContext(node: SyntaxNode, cursorOffset: number): Complet
         return ["patchKeyword"];
     }
 
-    // Not in patches block - check for function definitions
-    // We need to skip past ERROR nodes since incomplete code may be wrapped in ERROR
-    parent = node.parent;
+    return null;
+}
+
+/**
+ * Handle context detection when cursor is inside a function definition.
+ * Returns context array if detected, null otherwise.
+ */
+function detectContextInFunctionDef(
+    statementNode: SyntaxNode,
+    cursorOffset: number,
+    isActionNode: boolean,
+    isPatchNode: boolean
+): CompletionContext[] | null {
+    // Walk up to find function definitions (skip ERROR nodes)
+    let parent = statementNode.parent;
     while (parent) {
         // Skip ERROR nodes - continue up the tree
         if (parent.type !== "ERROR") {
-            // Check for function definitions
+            // Check for patch function definitions
             if (parent.type === "action_define_patch_function" || parent.type === "action_define_patch_macro") {
                 // Inside DEFINE_PATCH_FUNCTION - body is patch context
+                // Bug fix #3: Check if statement is action vs patch to handle invalid syntax gracefully.
+                // If action statement inside patch function, return action context.
+                if (isActionNode) {
+                    if (isInValuePosition(cursorOffset, statementNode)) {
+                        return ["action"];
+                    }
+                    return ["actionKeyword"];
+                }
                 if (isInValuePosition(cursorOffset, statementNode)) {
                     return ["patch"];
                 }
                 return ["patchKeyword"];
             }
+
+            // Check for action function definitions
             if (parent.type === "action_define_function" || parent.type === "action_define_macro") {
                 // Inside DEFINE_ACTION_FUNCTION - body is action context
+                // Bug fix #3: Check if statement is action vs patch to handle invalid syntax gracefully.
+                // If patch statement inside action function, return patch context.
+                if (isPatchNode) {
+                    if (isInValuePosition(cursorOffset, statementNode)) {
+                        return ["patch"];
+                    }
+                    return ["patchKeyword"];
+                }
                 if (isInValuePosition(cursorOffset, statementNode)) {
                     return ["action"];
                 }
@@ -994,20 +1190,118 @@ function detectStatementContext(node: SyntaxNode, cursorOffset: number): Complet
         parent = parent.parent;
     }
 
-    // Not found via walking up - might be in ERROR node with incomplete code
-    // Check if we're inside a flattened function definition
-    const funcContext = getFunctionContextInError(node, cursorOffset);
+    return null;
+}
+
+/**
+ * Handle context detection when cursor is inside an ERROR node with flattened function definition.
+ * Returns context array if detected, null otherwise.
+ */
+function detectContextInErrorNode(
+    statementNode: SyntaxNode,
+    cursorOffset: number,
+    isActionNode: boolean,
+    isPatchNode: boolean
+): CompletionContext[] | null {
+    // Check if we're inside a flattened function definition in an ERROR node
+    const funcContext = getFunctionContextInError(statementNode, cursorOffset);
+
     if (funcContext === "patch") {
+        // Bug fix #3: Check if statement is action vs patch to handle invalid syntax gracefully.
+        // If action statement inside patch function (even in ERROR node), return action context.
+        if (isActionNode) {
+            if (isInValuePosition(cursorOffset, statementNode)) {
+                return ["action"];
+            }
+            return ["actionKeyword"];
+        }
         if (isInValuePosition(cursorOffset, statementNode)) {
             return ["patch"];
         }
         return ["patchKeyword"];
     }
+
     if (funcContext === "action") {
+        // Bug fix #3: Check if statement is action vs patch to handle invalid syntax gracefully.
+        // If patch statement inside action function (even in ERROR node), return patch context.
+        if (isPatchNode) {
+            if (isInValuePosition(cursorOffset, statementNode)) {
+                return ["patch"];
+            }
+            return ["patchKeyword"];
+        }
         if (isInValuePosition(cursorOffset, statementNode)) {
             return ["action"];
         }
         return ["actionKeyword"];
+    }
+
+    return null;
+}
+
+/**
+ * Check if cursor is at an action/patch statement and determine context.
+ * Returns context array if detected, null otherwise.
+ *
+ * This handles statements that aren't inside function definitions or patches blocks.
+ * It walks up to find the containing function/block to determine the correct context.
+ */
+function detectStatementContext(node: SyntaxNode, cursorOffset: number): CompletionContext[] | null {
+    const type = node.type;
+
+    // Check if this is a control flow construct with BEGIN...END body
+    const controlFlowContext = detectContextInControlFlow(node, type, cursorOffset);
+    if (controlFlowContext) {
+        return controlFlowContext;
+    }
+
+    // Only process action/patch statement nodes
+    if (!isAction(type) && !isPatch(type)) {
+        return null;
+    }
+
+    // Remember this node and determine its true action/patch nature
+    const statementNode = node;
+    let isActionNode = isAction(type);
+    let isPatchNode = isPatch(type);
+
+    // Bug fix #3: Check the actual keyword text to determine true action/patch nature.
+    // Parser creates context-aware nodes (e.g., OUTER_SET becomes patch_assignment inside patch function),
+    // but we want to handle invalid syntax gracefully by detecting the true command type.
+    // Only check for assignment/set statements, not COPY or other complex actions.
+    if (type.includes("assignment") || type.includes("_set")) {
+        const firstChild = statementNode.children.find(c => c.type !== "comment" && c.type !== "line_comment");
+        if (firstChild) {
+            const keywordText = firstChild.text?.toUpperCase();
+            // Commands that are always actions regardless of context
+            if (keywordText?.startsWith("OUTER_") || keywordText?.startsWith("ACTION_")) {
+                isActionNode = true;
+                isPatchNode = false;
+            }
+            // Commands that are always patches regardless of context
+            if (keywordText?.startsWith("PATCH_") || ALWAYS_PATCH_KEYWORDS.has(keywordText)) {
+                isPatchNode = true;
+                isActionNode = false;
+            }
+        }
+    }
+
+    // Check if we're inside a patches block or inner_action (highest priority)
+    const patchesBlockContext = detectContextInPatchesBlock(statementNode, cursorOffset, isActionNode);
+    if (patchesBlockContext) {
+        return patchesBlockContext;
+    }
+
+    // Check if we're inside a function definition
+    const functionDefContext = detectContextInFunctionDef(statementNode, cursorOffset, isActionNode, isPatchNode);
+    if (functionDefContext) {
+        return functionDefContext;
+    }
+
+    // Check if we're inside an ERROR node with flattened function definition
+    const errorNodeContext = detectContextInErrorNode(statementNode, cursorOffset, isActionNode, isPatchNode);
+    if (errorNodeContext) {
+        return errorNodeContext;
     }
 
     // Not inside a function def - use the statement node's context
