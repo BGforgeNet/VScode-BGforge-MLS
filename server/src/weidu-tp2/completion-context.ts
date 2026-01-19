@@ -324,52 +324,52 @@ function getDefaultContext(ext: string): CompletionContext {
 }
 
 /** Prologue-only directive types (BACKUP and AUTHOR/SUPPORT are required first). */
-const PROLOGUE_DIRECTIVE_TYPES = new Set([
-    "backup_directive",
-    "author_directive",
-    "support_directive",  // Alias for AUTHOR
+const PROLOGUE_DIRECTIVE_TYPES = new Set<string>([
+    SyntaxType.BackupDirective,
+    SyntaxType.AuthorDirective,
+    SyntaxType.SupportDirective,  // Alias for AUTHOR
 ]);
 
 /** Flag directive/statement types (can appear after prologue, before components). */
-const FLAG_TYPES = new Set([
-    "version_flag",
-    "no_if_eval_bug_flag",
-    "auto_eval_strings_flag",
-    "readme_directive",
-    "allow_missing_directive",
-    "auto_tra_directive",
-    "always_block",
-    "inlined_file",
+const FLAG_TYPES = new Set<string>([
+    SyntaxType.VersionFlag,
+    SyntaxType.NoIfEvalBugFlag,
+    SyntaxType.AutoEvalStringsFlag,
+    SyntaxType.ReadmeDirective,
+    SyntaxType.AllowMissingDirective,
+    SyntaxType.AutoTraDirective,
+    SyntaxType.AlwaysBlock,
+    SyntaxType.InlinedFile,
     // Add other flag types as needed
 ]);
 
 /** Patch control flow constructs with BEGIN...END bodies (command position inside body). */
-const PATCH_CONTROL_FLOW_CONSTRUCTS = new Set([
-    "patch_if",
-    "patch_match",
-    "patch_for",
-    "patch_while",
-    "patch_php_each",
-    "patch_for_each",
-    "patch_replace_evaluate",
-    "patch_decompile_and_patch",
-    "patch_try",
-    "inner_patch",
-    "inner_patch_save",
-    "inner_patch_file",
+const PATCH_CONTROL_FLOW_CONSTRUCTS = new Set<string>([
+    SyntaxType.PatchIf,
+    SyntaxType.PatchMatch,
+    SyntaxType.PatchFor,
+    SyntaxType.PatchWhile,
+    SyntaxType.PatchPhpEach,
+    SyntaxType.PatchForEach,
+    SyntaxType.PatchReplaceEvaluate,
+    SyntaxType.PatchDecompileAndPatch,
+    SyntaxType.PatchTry,
+    SyntaxType.InnerPatch,
+    SyntaxType.InnerPatchSave,
+    SyntaxType.InnerPatchFile,
 ]);
 
 /** Action control flow constructs with BEGIN...END bodies (command position inside body). */
-const ACTION_CONTROL_FLOW_CONSTRUCTS = new Set([
-    "action_if",
-    "action_match",
-    "action_for_each",
-    "action_php_each",
-    "outer_for",
-    "outer_while",
-    "action_try",
-    "with_tra",
-    "action_bash_for",
+const ACTION_CONTROL_FLOW_CONSTRUCTS = new Set<string>([
+    SyntaxType.ActionIf,
+    SyntaxType.ActionMatch,
+    SyntaxType.ActionForEach,
+    SyntaxType.ActionPhpEach,
+    SyntaxType.OuterFor,
+    SyntaxType.OuterWhile,
+    SyntaxType.ActionTry,
+    SyntaxType.ActionWithTra,
+    SyntaxType.ActionBashFor,
 ]);
 
 /** Patch commands that are always patch context regardless of parsing context. */
@@ -524,9 +524,9 @@ function detectFunctionDefinitionContext(
         // If no statement found and cursor is in ERROR node, check keyword text
         if (!statement) {
             for (const child of node.children) {
-                if (child.type === "ERROR" && cursorOffset >= child.startIndex && cursorOffset <= child.endIndex) {
+                if (child.type === SyntaxType.ERROR && cursorOffset >= child.startIndex && cursorOffset <= child.endIndex) {
                     // Look for identifier child that might be a misplaced command
-                    const identifier = child.children.find(c => c.type === "identifier" && cursorOffset >= c.startIndex && cursorOffset <= c.endIndex);
+                    const identifier = child.children.find(c => c.type === SyntaxType.Identifier && cursorOffset >= c.startIndex && cursorOffset <= c.endIndex);
                     if (identifier) {
                         const keywordText = identifier.text?.toUpperCase();
                         // Check if it's an action command in a patch function or vice versa
@@ -574,7 +574,7 @@ function detectFunctionDefinitionContext(
 function getFunctionContextInError(startNode: SyntaxNode, cursorOffset: number): "patch" | "action" | null {
     // Walk up to find ERROR node
     let errorNode: SyntaxNode | null = startNode;
-    while (errorNode && errorNode.type !== "ERROR") {
+    while (errorNode && errorNode.type !== SyntaxType.ERROR) {
         errorNode = errorNode.parent;
     }
 
@@ -650,7 +650,7 @@ function isInCommandPosition(cursorOffset: number, node: SyntaxNode): boolean {
         // Check if last child looks like it might be a new statement (not a continuation)
         // Heuristic: if it's an identifier/variable_ref/value that starts on a new line
         // relative to the previous child, treat as command position for new statement
-        if (lastChild.type === "identifier" || lastChild.type === "variable_ref" || lastChild.type === "value") {
+        if (lastChild.type === SyntaxType.Identifier || lastChild.type === SyntaxType.VariableRef || lastChild.type === SyntaxType.Value) {
             // Check if there's a previous child
             if (children.length >= 2) {
                 const prevChild = children[children.length - 2];
@@ -741,7 +741,7 @@ function detectFunctionCallContext(node: SyntaxNode, cursorOffset: number): Comp
     const type = node.type;
 
     // Action function call (LAF)
-    if (type === "action_launch_function" || type === "launch_action_function") {
+    if (type === SyntaxType.ActionLaunchFunction || type === "launch_action_function") {
         if (isAtFunctionName(cursorOffset, node)) {
             return ["lafName"];
         }
@@ -777,7 +777,7 @@ function detectFunctionCallContext(node: SyntaxNode, cursorOffset: number): Comp
     }
 
     // Patch function call (LPF)
-    if (type === "patch_launch_function" || type === "launch_patch_function") {
+    if (type === SyntaxType.PatchLaunchFunction || type === "launch_patch_function") {
         if (isAtFunctionName(cursorOffset, node)) {
             return ["lpfName"];
         }
@@ -797,12 +797,12 @@ function detectFunctionDefContext(node: SyntaxNode, cursorOffset: number): Compl
     const type = node.type;
 
     // DEFINE_PATCH_FUNCTION body is patch context
-    if (type === "action_define_patch_function" || type === "action_define_patch_macro") {
+    if (type === SyntaxType.ActionDefinePatchFunction || type === SyntaxType.ActionDefinePatchMacro) {
         return detectFunctionDefinitionContext(node, cursorOffset, "patch", isPatch);
     }
 
     // DEFINE_ACTION_FUNCTION body is action context
-    if (type === "action_define_function" || type === "action_define_macro") {
+    if (type === SyntaxType.ActionDefineFunction || type === SyntaxType.ActionDefineMacro) {
         return detectFunctionDefinitionContext(node, cursorOffset, "action", isAction);
     }
 
@@ -814,7 +814,7 @@ function detectFunctionDefContext(node: SyntaxNode, cursorOffset: number): Compl
  * Returns context array if detected, null otherwise.
  */
 function detectInnerActionContext(node: SyntaxNode, cursorOffset: number): CompletionContext[] | null {
-    if (node.type !== "inner_action") {
+    if (node.type !== SyntaxType.InnerAction) {
         return null;
     }
 
@@ -853,7 +853,7 @@ function detectPatchContext(node: SyntaxNode, cursorOffset: number): CompletionC
     const type = node.type;
 
     // INNER_PATCH with BEGIN...END body
-    if (type === "inner_patch" || type === "inner_patch_save" || type === "inner_patch_file") {
+    if (type === SyntaxType.InnerPatch || type === SyntaxType.InnerPatchSave || type === SyntaxType.InnerPatchFile) {
         const { beginEnd, endStart } = findBeginEndBoundaries(node);
 
         // If cursor is between BEGIN and END, check for command vs value position
@@ -879,12 +879,12 @@ function detectPatchContext(node: SyntaxNode, cursorOffset: number): CompletionC
     }
 
     // OUTER_PATCH (no body parsing needed)
-    if (type === "outer_patch" || type === "outer_patch_save") {
+    if (type === SyntaxType.ActionOuterPatch || type === SyntaxType.ActionOuterPatchSave) {
         return ["patch"];
     }
 
     // Patch file
-    if (type === "patch_file") {
+    if (type === SyntaxType.PatchFile) {
         return ["patch"];
     }
 
@@ -1110,7 +1110,7 @@ function detectContextInPatchesBlock(
 
     while (parent) {
         // INNER_ACTION creates action context even inside patches block
-        if (parent.type === "inner_action") {
+        if (parent.type === SyntaxType.InnerAction) {
             if (isActionNode && isInValuePosition(cursorOffset, statementNode)) {
                 return ["action"];
             }
@@ -1152,9 +1152,9 @@ function detectContextInFunctionDef(
     let parent = statementNode.parent;
     while (parent) {
         // Skip ERROR nodes - continue up the tree
-        if (parent.type !== "ERROR") {
+        if (parent.type !== SyntaxType.ERROR) {
             // Check for patch function definitions
-            if (parent.type === "action_define_patch_function" || parent.type === "action_define_patch_macro") {
+            if (parent.type === SyntaxType.ActionDefinePatchFunction || parent.type === SyntaxType.ActionDefinePatchMacro) {
                 // Inside DEFINE_PATCH_FUNCTION - body is patch context
                 // Bug fix #3: Check if statement is action vs patch to handle invalid syntax gracefully.
                 // If action statement inside patch function, return action context.
@@ -1171,7 +1171,7 @@ function detectContextInFunctionDef(
             }
 
             // Check for action function definitions
-            if (parent.type === "action_define_function" || parent.type === "action_define_macro") {
+            if (parent.type === SyntaxType.ActionDefineFunction || parent.type === SyntaxType.ActionDefineMacro) {
                 // Inside DEFINE_ACTION_FUNCTION - body is action context
                 // Bug fix #3: Check if statement is action vs patch to handle invalid syntax gracefully.
                 // If patch statement inside action function, return patch context.
@@ -1270,7 +1270,7 @@ function detectStatementContext(node: SyntaxNode, cursorOffset: number): Complet
     // but we want to handle invalid syntax gracefully by detecting the true command type.
     // Only check for assignment/set statements, not COPY or other complex actions.
     if (type.includes("assignment") || type.includes("_set")) {
-        const firstChild = statementNode.children.find(c => c.type !== "comment" && c.type !== "line_comment");
+        const firstChild = statementNode.children.find(c => c.type !== SyntaxType.Comment && c.type !== SyntaxType.LineComment);
         if (firstChild) {
             const keywordText = firstChild.text?.toUpperCase();
             // Commands that are always actions regardless of context
@@ -1428,19 +1428,19 @@ function isAtFunctionName(cursorOffset: number, funcCall: SyntaxNode): boolean {
 
 
 /** Component flag node types. */
-const COMPONENT_FLAG_TYPES = new Set([
-    "designated_flag",
-    "deprecated_flag",
-    "subcomponent_flag",
-    "group_flag",
-    "label_flag",
-    "require_predicate_flag",
-    "require_component_flag",
-    "forbid_component_flag",
-    "install_by_default_flag",
-    "no_log_record_flag",
-    "metadata_flag",
-    "forced_subcomponent_flag",
+const COMPONENT_FLAG_TYPES = new Set<string>([
+    SyntaxType.DesignatedFlag,
+    SyntaxType.DeprecatedFlag,
+    SyntaxType.SubcomponentFlag,
+    SyntaxType.GroupFlag,
+    SyntaxType.LabelFlag,
+    SyntaxType.RequirePredicateFlag,
+    SyntaxType.RequireComponentFlag,
+    SyntaxType.ForbidComponentFlag,
+    "install_by_default_flag",  // Not yet in SyntaxType enum
+    "no_log_record_flag",  // Not yet in SyntaxType enum
+    "metadata_flag",  // Not yet in SyntaxType enum
+    "forced_subcomponent_flag",  // Not yet in SyntaxType enum
 ]);
 
 /** Component flag keywords (for checking text when parsed as identifiers in ERROR nodes). */
@@ -1500,7 +1500,7 @@ interface StructuralNodes {
 function isComponentFlag(node: SyntaxNode): boolean {
     return (
         COMPONENT_FLAG_TYPES.has(node.type) ||
-        (node.type === "identifier" && COMPONENT_FLAG_KEYWORDS.has(node.text.toUpperCase()))
+        (node.type === SyntaxType.Identifier && COMPONENT_FLAG_KEYWORDS.has(node.text.toUpperCase()))
     );
 }
 
@@ -1556,7 +1556,7 @@ function findInComponentChildren(component: SyntaxNode, cursorOffset: number, ac
         checkNode(child, cursorOffset, acc);
 
         // Also check inside ERROR nodes that are after cursor
-        if (child.type === "ERROR" && child.startIndex > cursorOffset) {
+        if (child.type === SyntaxType.ERROR && child.startIndex > cursorOffset) {
             checkErrorNodeChildren(child, cursorOffset, acc);
         }
     }
@@ -1575,7 +1575,7 @@ function findInParentSiblings(component: SyntaxNode, cursorOffset: number, acc: 
 
         // ERROR nodes: check children even if ERROR starts before cursor
         // (the ERROR may span the cursor, but contain valid nodes after it)
-        if (sibling.type === "ERROR") {
+        if (sibling.type === SyntaxType.ERROR) {
             checkErrorNodeChildren(sibling, cursorOffset, acc);
             continue;
         }
@@ -1748,10 +1748,10 @@ function detectTp2RootContext(cursorOffset: number, root: SyntaxNode): Completio
 
         // Track what we've seen before cursor (use <= to include nodes ending at cursor)
         if (child.endIndex <= cursorOffset) {
-            if (type === "backup_directive") {
+            if (type === SyntaxType.BackupDirective) {
                 seenBackup = true;
             }
-            if (type === "author_directive" || type === "support_directive") {
+            if (type === SyntaxType.AuthorDirective || type === SyntaxType.SupportDirective) {
                 seenAuthorOrSupport = true;
             }
             if (!PROLOGUE_DIRECTIVE_TYPES.has(type)) {

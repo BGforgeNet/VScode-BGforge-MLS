@@ -515,9 +515,10 @@ END
 END
 `;
             // Line 2, column 14: tree-sitter likely can't parse this as COPY action
-            // Falls back to component context detection, which sees no structure → action
+            // With incomplete code, returns permissive contexts to help user
             const contexts = getContextAtPosition(incomplete, 2, 14, ".tp2");
-            expect(contexts).toEqual(["action"]);
+            // Should include action context (can type new action after incomplete patch)
+            expect(contexts).toContain("action");
         });
 
         it("detects patch on empty line with patch below", () => {
@@ -1238,6 +1239,60 @@ BEGIN ~First~
         });
     });
 
+    describe("COPY body inside ACTION_PHP_EACH", () => {
+        it("BUG REPRODUCTION: detects actionKeyword instead of patchKeyword inside COPY_EXISTING body when COPY is inside ACTION_PHP_EACH", () => {
+            // Bug reproduction: COPY_EXISTING inside ACTION_PHP_EACH
+            // Cursor at start of patch command line in COPY body
+            // Context should be patchKeyword (for patch commands like LPF)
+            // NOT actionKeyword (which would exclude patch category)
+            const content = `BEGIN ~Test~
+    ACTION_PHP_EACH items AS key => value BEGIN
+        COPY_EXISTING ~%item%.itm~ ~override~
+
+        END
+    END
+END
+`;
+            // Line 3, col 12: at start of line in COPY body, where user types patch commands
+            const contexts = getContextAtPosition(content, 3, 12, ".tp2");
+            // BUG: Currently returns ["actionKeyword"] because COPY is inside ACTION_PHP_EACH
+            // EXPECTED: Should return ["patchKeyword"] because COPY body is always patch context
+            expect(contexts).toEqual(["patchKeyword"]);
+        });
+
+        it("allows LPF (patch category) in COPY body inside ACTION_PHP_EACH", () => {
+            // Verify that LPF (category "patch") appears in completion
+            const content = `BEGIN ~Test~
+    ACTION_PHP_EACH items AS key => value BEGIN
+        COPY_EXISTING ~%item%.itm~ ~override~
+            RE
+        END
+    END
+END
+`;
+            const contexts = getContextAtPosition(content, 3, 12, ".tp2");
+            // LPF has category "patch" which should NOT be excluded from patchKeyword context
+            expectFiltering(contexts, "patch", true);
+        });
+
+        it("allows patch category in COPY body inside ACTION_PHP_EACH", () => {
+            // Verify that patch items appear in COPY body even when COPY is in action control flow
+            const content = `BEGIN ~Test~
+    ACTION_PHP_EACH items AS key => value BEGIN
+        COPY_EXISTING ~%item%.itm~ ~override~
+            RE
+        END
+    END
+END
+`;
+            const contexts = getContextAtPosition(content, 3, 12, ".tp2");
+            // Incomplete code in COPY body returns permissive contexts including patch
+            expect(contexts).toContain("patch");
+            // Patch category items should be allowed
+            expectFiltering(contexts, "patch", true);
+        });
+    });
+
     describe("control flow construct bodies", () => {
         it("detects patchKeyword inside patch_php_each body", () => {
             // Bug reproduction: cursor inside control flow body incorrectly detected as "patch" instead of "patchKeyword"
@@ -1354,6 +1409,95 @@ END
             // Line 3, col 12: at start of COPY inside nested control flow
             const contexts = getContextAtPosition(content, 3, 12, ".tp2");
             expect(contexts).toEqual(["actionKeyword"]);
+        });
+
+        it("detects patch context inside COPY body when COPY is inside ACTION_PHP_EACH", () => {
+            // Bug reproduction: COPY inside action control flow should still have patch context in its body
+            const content = `BEGIN ~Test~
+    ACTION_PHP_EACH items AS key => value BEGIN
+        COPY_EXISTING ~%item%.itm~ override
+            LAUNC
+        END
+    END
+END
+`;
+            // Line 3, col 12: typing "LAUNC" inside COPY body (should be patch, not actionKeyword)
+            // Incomplete code returns permissive contexts but must include patch
+            const contexts = getContextAtPosition(content, 3, 12, ".tp2");
+            expect(contexts).toContain("patch");
+            // LPF has category "patch" and should appear in completions
+            expectFiltering(contexts, "patch", true);
+        });
+    });
+
+    describe("Bug #1: INNER_ACTION header returns wrong context", () => {
+        it("BUG REPRODUCTION: returns action instead of null to continue tree walk", () => {
+            // Bug: line 763 returns ["action"] when not in command position
+            // Should return null to let parent walker continue
+            const content = `COPY ~file.itm~ ~override~
+    INNER_ACTION BEGIN
+    END
+END
+`;
+            // Line 1, col 17: inside INNER_ACTION keyword (not in BEGIN...END body)
+            // This is the INNER_ACTION header itself, should continue walking up
+            // to find the containing COPY context
+            const contexts = getContextAtPosition(content, 1, 17, ".tp2");
+            // EXPECTED: Should detect we're in COPY action header (not inside INNER_ACTION body)
+            // Current behavior returns ["action"] from line 763
+            // Correct behavior should continue up tree and detect patch context from COPY
+            expect(contexts).toEqual(["patch"]);
+        });
+    });
+
+    describe("Bug #2: LAF inside patches gets wrong context", () => {
+        it("BUG REPRODUCTION: LAF funcParams inside patches block should return patch context", () => {
+            // Bug: detectFunctionCallContext is checked before detectPatchContext
+            // When LAF (action function) appears inside patches block with params, it should return patch context
+            // LAF is invalid in patches, so we want to gracefully handle it by showing patch completions
+            const content = `BEGIN ~Test~
+    COPY ~file.itm~ ~override~
+        LAF my_func INT_VAR x = 1 END
+`;
+            // Line 2, col 28: at INT_VAR position inside LAF params, which is inside patches
+            const contexts = getContextAtPosition(content, 2, 28, ".tp2");
+            // EXPECTED: Should return patch context (LAF is invalid in patches)
+            // Bug causes it to return funcParams because detectFunctionCallContext runs first
+            // Fixed by checking for patches block ancestor for LAF and returning null
+            expect(contexts).toEqual(["patch"]);
+        });
+    });
+
+    describe("Bug #3: Action inside DEFINE_PATCH_FUNCTION returns patch context", () => {
+        it("BUG REPRODUCTION: OUTER_SET inside DEFINE_PATCH_FUNCTION should return action context", () => {
+            // Bug: lines 1078-1083 return patch context for ALL statements inside patch function
+            // Should check if the statement node is action vs patch before deciding
+            // OUTER_SET is always parsed as action (outer_set node type)
+            const content = `DEFINE_PATCH_FUNCTION my_func BEGIN
+    OUTER_SET var = 1
+END
+`;
+            // Line 1, col 4: at OUTER_SET action inside DEFINE_PATCH_FUNCTION
+            // OUTER_SET is an action (invalid inside patch function)
+            // Bug: returns ["patchKeyword"] because function is DEFINE_PATCH_FUNCTION
+            // Expected: should return ["actionKeyword"] because OUTER_SET is an action node
+            const contexts = getContextAtPosition(content, 1, 4, ".tph");
+            expect(contexts).toEqual(["actionKeyword"]);
+        });
+
+        it("BUG REPRODUCTION: READ_SHORT inside DEFINE_ACTION_FUNCTION should return patch context", () => {
+            // Inverse case: patch inside action function
+            // READ_SHORT is always parsed as patch (read_var node type)
+            const content = `DEFINE_ACTION_FUNCTION my_func BEGIN
+    READ_SHORT 0x00 value
+END
+`;
+            // Line 1, col 4: at READ_SHORT (patch statement) inside action function
+            // READ_SHORT is a patch (invalid inside action function)
+            // Bug: returns ["actionKeyword"] because function is DEFINE_ACTION_FUNCTION
+            // Expected: should return ["patchKeyword"] because READ_SHORT is a patch node
+            const contexts = getContextAtPosition(content, 1, 4, ".tph");
+            expect(contexts).toEqual(["patchKeyword"]);
         });
     });
 
