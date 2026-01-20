@@ -17,6 +17,8 @@ import { SyntaxType } from "./tree-sitter.d";
 import {
     VARIABLE_DECL_TYPES,
     STRING_CONTENT_TYPES,
+    FUNCTION_DEF_TYPES,
+    LOOP_TYPES,
     findContainingFunction,
     findContainingLoop,
     determineVariableScope,
@@ -24,6 +26,7 @@ import {
     findVariableInStringContent,
     matchesSymbol,
 } from "./variable-symbols";
+import { findNodeAtPosition, findAncestorOfType, isSameNode, stripStringDelimiters } from "./tree-utils";
 
 // ============================================
 // Constants
@@ -43,14 +46,6 @@ const AUTOMATIC_VARIABLES: ReadonlySet<string> = new Set([
     "TP2_FILE_NAME",
     "TP2_BASE_NAME",
     "LANGUAGE",
-]);
-
-/** Node types for function/macro definitions. */
-const FUNCTION_DEF_TYPES: ReadonlySet<SyntaxType> = new Set([
-    SyntaxType.ActionDefineFunction,
-    SyntaxType.ActionDefinePatchFunction,
-    SyntaxType.ActionDefineMacro,
-    SyntaxType.ActionDefinePatchMacro,
 ]);
 
 /** Node types for function/macro calls. */
@@ -77,6 +72,20 @@ interface SymbolInfo {
 interface SymbolOccurrence {
     node: SyntaxNode;
     isDefinition: boolean;
+}
+
+/**
+ * Synthetic node created for %var% references found in string content.
+ * These are not part of the grammar but are created programmatically
+ * to represent variable references within strings for rename operations.
+ */
+interface SyntheticPercentVarNode {
+    type: "synthetic_percent_var";
+    text: string;
+    startPosition: { row: number; column: number };
+    endPosition: { row: number; column: number };
+    children: [];
+    parent: SyntaxNode;
 }
 
 // ============================================
@@ -466,61 +475,6 @@ function getSymbolAtPosition(root: SyntaxNode, position: Position): SymbolInfo |
 
     return null;
 }
-
-/**
- * Find the deepest node at the given position.
- */
-function findNodeAtPosition(root: SyntaxNode, position: Position): SyntaxNode | null {
-    function visit(node: SyntaxNode): SyntaxNode | null {
-        const startRow = node.startPosition.row;
-        const endRow = node.endPosition.row;
-        const startCol = node.startPosition.column;
-        const endCol = node.endPosition.column;
-
-        const inRange =
-            (position.line > startRow || (position.line === startRow && position.character >= startCol)) &&
-            (position.line < endRow || (position.line === endRow && position.character <= endCol));
-
-        if (!inRange) {
-            return null;
-        }
-
-        // Try to find a more specific child
-        for (const child of node.children) {
-            const result = visit(child);
-            if (result) {
-                return result;
-            }
-        }
-
-        return node;
-    }
-
-    return visit(root);
-}
-
-/**
- * Find an ancestor node matching one of the given types.
- * Accepts ReadonlySet<SyntaxType> - SyntaxType enum values are strings, matching node.type.
- */
-function findAncestorOfType(node: SyntaxNode, types: ReadonlySet<SyntaxType | string>): SyntaxNode | null {
-    let current: SyntaxNode | null = node;
-    while (current) {
-        if (types.has(current.type as SyntaxType)) {
-            return current;
-        }
-        current = current.parent;
-    }
-    return null;
-}
-
-/** Node types for loops that introduce scoped variables. */
-const LOOP_TYPES: ReadonlySet<SyntaxType> = new Set([
-    SyntaxType.ActionPhpEach,
-    SyntaxType.PatchPhpEach,
-    SyntaxType.ActionForEach,
-    SyntaxType.PatchForEach,
-]);
 
 /**
  * Check if a node's variable reference is shadowed by an inner loop within the target loop scope.
@@ -925,26 +879,6 @@ function findFunctionReferences(
 // Utilities
 // ============================================
 
-
-/**
- * Strip string delimiters from function/macro names.
- */
-function stripStringDelimiters(text: string): string {
-    if (text.length < 2) {
-        return text;
-    }
-    const first = text[0];
-    const last = text[text.length - 1];
-    if (
-        (first === "~" && last === "~") ||
-        (first === '"' && last === '"') ||
-        (first === "%" && last === "%")
-    ) {
-        return text.slice(1, -1);
-    }
-    return text;
-}
-
 /**
  * Create a range from a tree-sitter node.
  */
@@ -953,20 +887,6 @@ function makeRange(node: SyntaxNode) {
         start: { line: node.startPosition.row, character: node.startPosition.column },
         end: { line: node.endPosition.row, character: node.endPosition.column },
     };
-}
-
-/**
- * Check if two nodes represent the same position in the source.
- * Tree-sitter may return different object references for the same node.
- */
-function isSameNode(node1: SyntaxNode, node2: SyntaxNode): boolean {
-    return (
-        node1.startPosition.row === node2.startPosition.row &&
-        node1.startPosition.column === node2.startPosition.column &&
-        node1.endPosition.row === node2.endPosition.row &&
-        node1.endPosition.column === node2.endPosition.column &&
-        node1.text === node2.text
-    );
 }
 
 /**
@@ -1000,9 +920,6 @@ function findAllVariableReferencesInStringContent(
     const text = node.text;
     const references: SyntaxNode[] = [];
 
-    // Note: synthetic_percent_var is a custom type created for string content parsing, not in grammar
-    const SYNTHETIC_PERCENT_VAR = "synthetic_percent_var";
-
     // Find all %varName% patterns (case-insensitive)
     const varPattern = /%([a-zA-Z_][a-zA-Z0-9_]*)%/g;
     let match: RegExpExecArray | null;
@@ -1021,17 +938,19 @@ function findAllVariableReferencesInStringContent(
             const endPos = byteOffsetToPosition(text, matchEnd, node.startPosition);
 
             // Create a synthetic node-like object
-            // We need to include the % delimiters in the range
-            const syntheticNode = {
-                type: SYNTHETIC_PERCENT_VAR,
+            // Type assertion is required because we're creating a custom node structure
+            // that mimics SyntaxNode but isn't actually from the tree-sitter parser.
+            const syntheticNode: SyntheticPercentVarNode = {
+                type: "synthetic_percent_var",
                 text: match[0], // The full %var% including %
                 startPosition: { row: startPos.line, column: startPos.character },
                 endPosition: { row: endPos.line, column: endPos.character },
                 children: [],
                 parent: node,
-            } as unknown as SyntaxNode;
+            };
 
-            references.push(syntheticNode);
+            // Cast to SyntaxNode for compatibility with the rest of the codebase
+            references.push(syntheticNode as unknown as SyntaxNode);
         }
     }
 

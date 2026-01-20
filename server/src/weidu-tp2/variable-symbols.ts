@@ -7,6 +7,7 @@ import { Location, Position } from "vscode-languageserver/node";
 import type { Node as SyntaxNode } from "web-tree-sitter";
 import { getParser, isInitialized } from "./parser";
 import { SyntaxType } from "./tree-sitter.d";
+import { findNodeAtPosition, findAncestorOfType, isSameNode } from "./tree-utils";
 
 // ============================================
 // Constants
@@ -56,7 +57,7 @@ export const STRING_CONTENT_TYPES: ReadonlySet<SyntaxType> = new Set([
 ]);
 
 /** Node types for function/macro definitions. */
-const FUNCTION_DEF_TYPES: ReadonlySet<SyntaxType> = new Set([
+export const FUNCTION_DEF_TYPES: ReadonlySet<SyntaxType> = new Set([
     SyntaxType.ActionDefineFunction,
     SyntaxType.ActionDefinePatchFunction,
     SyntaxType.ActionDefineMacro,
@@ -64,7 +65,7 @@ const FUNCTION_DEF_TYPES: ReadonlySet<SyntaxType> = new Set([
 ]);
 
 /** Node types for loops that introduce scoped variables. */
-const LOOP_TYPES: ReadonlySet<SyntaxType> = new Set([
+export const LOOP_TYPES: ReadonlySet<SyntaxType> = new Set([
     SyntaxType.ActionPhpEach,
     SyntaxType.PatchPhpEach,
     SyntaxType.ActionForEach,
@@ -87,20 +88,6 @@ export function findContainingFunction(node: SyntaxNode): SyntaxNode | null {
  */
 export function findContainingLoop(node: SyntaxNode): SyntaxNode | null {
     return findAncestorOfType(node, LOOP_TYPES);
-}
-
-/**
- * Find an ancestor node matching one of the given types.
- */
-function findAncestorOfType(node: SyntaxNode, types: ReadonlySet<SyntaxType | string>): SyntaxNode | null {
-    let current: SyntaxNode | null = node;
-    while (current) {
-        if (types.has(current.type as SyntaxType)) {
-            return current;
-        }
-        current = current.parent;
-    }
-    return null;
 }
 
 /**
@@ -495,49 +482,4 @@ function findFirstDeclaration(
 
     visit(scopeNode);
     return firstDecl;
-}
-
-/**
- * Find the deepest node at the given position.
- */
-function findNodeAtPosition(root: SyntaxNode, position: Position): SyntaxNode | null {
-    function visit(node: SyntaxNode): SyntaxNode | null {
-        const startRow = node.startPosition.row;
-        const endRow = node.endPosition.row;
-        const startCol = node.startPosition.column;
-        const endCol = node.endPosition.column;
-
-        const inRange =
-            (position.line > startRow || (position.line === startRow && position.character >= startCol)) &&
-            (position.line < endRow || (position.line === endRow && position.character <= endCol));
-
-        if (!inRange) {
-            return null;
-        }
-
-        // Try to find a more specific child
-        for (const child of node.children) {
-            const result = visit(child);
-            if (result) {
-                return result;
-            }
-        }
-
-        return node;
-    }
-
-    return visit(root);
-}
-
-/**
- * Check if two nodes represent the same position in the source.
- */
-function isSameNode(node1: SyntaxNode, node2: SyntaxNode): boolean {
-    return (
-        node1.startPosition.row === node2.startPosition.row &&
-        node1.startPosition.column === node2.startPosition.column &&
-        node1.endPosition.row === node2.endPosition.row &&
-        node1.endPosition.column === node2.endPosition.column &&
-        node1.text === node2.text
-    );
 }

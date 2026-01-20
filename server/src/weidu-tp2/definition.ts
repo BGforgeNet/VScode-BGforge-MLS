@@ -15,18 +15,19 @@ import { parseHeader, lookupFunction, FunctionInfo } from "./header-parser";
 import { pathToUri, uriToPath } from "../common";
 import { SyntaxType } from "./tree-sitter.d";
 import { findVariableDefinition } from "./variable-symbols";
+import { findNodeAtPosition, findAncestorOfType, stripStringDelimiters } from "./tree-utils";
 
 /** Node types for function/macro calls. */
 const FUNCTION_CALL_TYPES = new Set([
-    "action_launch_function",
-    "action_launch_macro",
-    "patch_launch_function",
-    "patch_launch_macro",
+    SyntaxType.ActionLaunchFunction,
+    SyntaxType.ActionLaunchMacro,
+    SyntaxType.PatchLaunchFunction,
+    SyntaxType.PatchLaunchMacro,
 ]);
 
 /** Node types for INCLUDE directives. */
 const INCLUDE_TYPES = new Set([
-    "action_include",
+    SyntaxType.ActionInclude,
 ]);
 
 // ============================================
@@ -70,58 +71,6 @@ export function getDefinition(text: string, uri: string, position: Position): Lo
         return includeResult;
     }
 
-    return null;
-}
-
-// ============================================
-// Node finding
-// ============================================
-
-/**
- * Find the deepest node containing the given position.
- */
-function findNodeAtPosition(root: SyntaxNode, position: Position): SyntaxNode | null {
-    function visit(node: SyntaxNode): SyntaxNode | null {
-        const startRow = node.startPosition.row;
-        const endRow = node.endPosition.row;
-        const startCol = node.startPosition.column;
-        const endCol = node.endPosition.column;
-
-        // Check if position is within this node
-        const inRange =
-            (position.line > startRow || (position.line === startRow && position.character >= startCol)) &&
-            (position.line < endRow || (position.line === endRow && position.character <= endCol));
-
-        if (!inRange) {
-            return null;
-        }
-
-        // Try to find a more specific child node
-        for (const child of node.children) {
-            const result = visit(child);
-            if (result) {
-                return result;
-            }
-        }
-
-        // No more specific child found, return this node
-        return node;
-    }
-
-    return visit(root);
-}
-
-/**
- * Walk up the tree to find an ancestor of the given type.
- */
-function findAncestorOfType(node: SyntaxNode, types: Set<string>): SyntaxNode | null {
-    let current: SyntaxNode | null = node;
-    while (current) {
-        if (types.has(current.type)) {
-            return current;
-        }
-        current = current.parent;
-    }
     return null;
 }
 
@@ -191,7 +140,7 @@ function tryIncludeDefinition(node: SyntaxNode, uri: string): Location | null {
     }
 
     // Get the include path (strip quotes/tildes)
-    const includePath = stripQuotes(pathNode.text);
+    const includePath = stripStringDelimiters(pathNode.text);
     if (!includePath) {
         return null;
     }
@@ -232,22 +181,4 @@ function findPathInInclude(node: SyntaxNode): SyntaxNode | null {
         }
     }
     return null;
-}
-
-/**
- * Strip surrounding quotes or tildes from a string.
- */
-function stripQuotes(text: string): string {
-    if (text.length < 2) {
-        return text;
-    }
-    const first = text[0];
-    const last = text[text.length - 1];
-    if ((first === '"' && last === '"') ||
-        (first === "'" && last === "'") ||
-        (first === "~" && last === "~") ||
-        (first === "%" && last === "%")) {
-        return text.slice(1, -1);
-    }
-    return text;
 }

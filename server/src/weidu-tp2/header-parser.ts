@@ -8,6 +8,7 @@ import { Location } from "vscode-languageserver/node";
 import * as jsdoc from "../shared/jsdoc";
 import { getParser, isInitialized } from "./parser";
 import { SyntaxType } from "./tree-sitter.d";
+import { stripStringDelimiters } from "./tree-utils";
 
 // ============================================
 // Types
@@ -39,10 +40,10 @@ export interface FunctionInfo {
 
 /** Node types for function/macro definitions. */
 const FUNCTION_DEF_TYPES = new Set([
-    "action_define_function",
-    "action_define_patch_function",
-    "action_define_macro",
-    "action_define_patch_macro",
+    SyntaxType.ActionDefineFunction,
+    SyntaxType.ActionDefinePatchFunction,
+    SyntaxType.ActionDefineMacro,
+    SyntaxType.ActionDefinePatchMacro,
 ]);
 
 /** Node types for parameter declarations. */
@@ -56,20 +57,6 @@ const PARAM_DECL_TYPES = {
 // ============================================
 // Parsing functions
 // ============================================
-
-/**
- * Strip WeiDU string delimiters from a string.
- * WeiDU uses ~, ", %, and ~ ~...~ ~ for strings.
- */
-function stripStringDelimiters(text: string): string {
-    // Handle ~text~, "text", %text%
-    if ((text.startsWith("~") && text.endsWith("~")) ||
-        (text.startsWith('"') && text.endsWith('"')) ||
-        (text.startsWith("%") && text.endsWith("%"))) {
-        return text.slice(1, -1);
-    }
-    return text;
-}
 
 /**
  * Parse a TP2 file and extract all function/macro definitions.
@@ -95,7 +82,7 @@ function extractFunctions(root: SyntaxNode, uri: string): FunctionInfo[] {
 
     for (let i = 0; i < root.childCount; i++) {
         const node = root.child(i);
-        if (!node || !FUNCTION_DEF_TYPES.has(node.type)) {
+        if (!node || !FUNCTION_DEF_TYPES.has(node.type as SyntaxType)) {
             continue;
         }
 
