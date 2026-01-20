@@ -35,6 +35,7 @@ export interface Features {
     udf: boolean; // are there any user-defined functions, macros, or anything else
     headers: boolean; // do we parse headers for data?
     externalHeaders?: boolean; // can we add an external header directory?
+    headerExtension?: string; // header file extension (e.g., ".h" for SSL, ".tph" for TP2)
 
     // inlay: boolean;
     parse: boolean;
@@ -127,7 +128,11 @@ export class Language implements Language {
             return res;
         }
         if (this.id == LANG_WEIDU_TP2) {
-            const res = weidu.loadHeaders(this.workspaceRoot);
+            if (!this.features.headerExtension) {
+                conlog(`TP2 provider missing headerExtension, can't load headers.`);
+                return undefined;
+            }
+            const res = weidu.loadHeaders(this.workspaceRoot, this.features.headerExtension);
             return res;
         }
         conlog(`Unknown language id ${this.id}, can't load headers.`);
@@ -248,13 +253,10 @@ export class Language implements Language {
     }
 
     private isHeader(uri: string) {
-        if (this.id == LANG_FALLOUT_SSL && uri.endsWith(".h")) {
-            return true;
+        if (!this.features.headerExtension) {
+            return false;
         }
-        if (this.id == LANG_WEIDU_TP2 && uri.endsWith(".tph")) {
-            return true;
-        }
-        return false;
+        return uri.toLowerCase().endsWith(this.features.headerExtension);
     }
 
     private inExternalHeadersDirectory(uri: string) {

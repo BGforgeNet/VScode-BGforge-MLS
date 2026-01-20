@@ -28,6 +28,7 @@ const features: Features = {
     udf: true,
     headers: true,
     externalHeaders: false,
+    headerExtension: ".tph",
     parse: true,
     parseRequiresGame: false,
     signature: false,

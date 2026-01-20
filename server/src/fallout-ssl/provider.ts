@@ -30,6 +30,7 @@ const features: Features = {
     udf: true,
     headers: true,
     externalHeaders: true,
+    headerExtension: ".h",
     parse: true,
     parseRequiresGame: false,
     signature: true,

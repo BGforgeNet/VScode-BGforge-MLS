@@ -267,7 +267,7 @@ const IELIB_TYPES_URL = "https://ielib.bgforge.net/types/#";
 /** Maximum length for parameter descriptions in hover table. */
 const DESC_MAX_LENGTH = 80;
 
-export async function loadHeaders(headersDirectory: string) {
+export async function loadHeaders(headersDirectory: string, headerExtension: string) {
     let completions: completion.CompletionListEx = [];
     const hovers: hover.HoverMapEx = new Map();
     const definitions: definition.Data = new Map();
@@ -289,8 +289,15 @@ export async function loadHeaders(headersDirectory: string) {
     }
 
     results.map((x) => {
-        completions = completions.concat(x.completion);
+        // Only include completions from header files (determined by headerExtension).
+        // Other TP2 files (.tpa/.tpp/.tp2) define functions for their own use, not for sharing.
+        // Filter by checking the uri property on each completion item.
+        const headerCompletions = x.completion.filter((item) =>
+            item.uri?.toLowerCase().endsWith(headerExtension)
+        );
+        completions = completions.concat(headerCompletions);
 
+        // Hover and definition still work for all file types
         for (const [key, value] of x.hover) {
             hovers.set(key, value);
         }
@@ -329,6 +336,9 @@ export function loadFileData(uri: string, text: string, filePath: string) {
     // Also update the function index for go-to-definition
     updateFileIndex(uri, text);
 
+    // Return all data - routing is handled by data-loader.ts:
+    // - .tph files → completion.headers (shared across workspace)
+    // - .tpa/.tpp/.tp2 files → completion.self (file-local only)
     const result: LanguageHeaderData = {
         hover: hovers,
         completion: completions,
