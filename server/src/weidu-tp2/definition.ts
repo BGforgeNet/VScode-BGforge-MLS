@@ -1,6 +1,7 @@
 /**
  * Go to Definition for WeiDU TP2 files.
  * Handles:
+ * - Variables (OUTER_SET, SET, INT_VAR, loop variables, etc.)
  * - Function/macro call to definition (LAF, LAM, LPF, LPM)
  * - INCLUDE directive to file
  */
@@ -13,6 +14,7 @@ import { getParser, isInitialized } from "./parser";
 import { parseHeader, lookupFunction, FunctionInfo } from "./header-parser";
 import { pathToUri, uriToPath } from "../common";
 import { SyntaxType } from "./tree-sitter.d";
+import { findVariableDefinition } from "./variable-symbols";
 
 /** Node types for function/macro calls. */
 const FUNCTION_CALL_TYPES = new Set([
@@ -48,6 +50,12 @@ export function getDefinition(text: string, uri: string, position: Position): Lo
     const targetNode = findNodeAtPosition(tree.rootNode, position);
     if (!targetNode) {
         return null;
+    }
+
+    // Check if cursor is on a variable
+    const varResult = findVariableDefinition(text, uri, position);
+    if (varResult) {
+        return varResult;
     }
 
     // Check if cursor is on a function/macro call

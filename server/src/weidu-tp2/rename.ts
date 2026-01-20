@@ -14,6 +14,16 @@ import { Position, TextEdit, WorkspaceEdit } from "vscode-languageserver/node";
 import type { Node as SyntaxNode } from "web-tree-sitter";
 import { getParser, isInitialized } from "./parser";
 import { SyntaxType } from "./tree-sitter.d";
+import {
+    VARIABLE_DECL_TYPES,
+    STRING_CONTENT_TYPES,
+    findContainingFunction,
+    findContainingLoop,
+    determineVariableScope,
+    isLoopVariable,
+    findVariableInStringContent,
+    matchesSymbol,
+} from "./variable-symbols";
 
 // ============================================
 // Constants
@@ -33,49 +43,6 @@ const AUTOMATIC_VARIABLES: ReadonlySet<string> = new Set([
     "TP2_FILE_NAME",
     "TP2_BASE_NAME",
     "LANGUAGE",
-]);
-
-/** Node types for variable assignments. */
-const VARIABLE_DECL_TYPES: ReadonlySet<SyntaxType> = new Set([
-    SyntaxType.ActionOuterSet,
-    SyntaxType.ActionOuterTextSprint,
-    SyntaxType.ActionOuterSprint, // OUTER_SPRINT
-    SyntaxType.PatchSet,
-    SyntaxType.PatchTextSprint,
-    SyntaxType.PatchSprint, // SPRINT
-    SyntaxType.PatchSprintf, // SPRINTF
-    SyntaxType.PatchAssignment, // x = 123 (inside patches, without SET keyword)
-    SyntaxType.TopLevelAssignment, // x = 123 (at top level, without OUTER_SET)
-    SyntaxType.IntVarDecl,
-    SyntaxType.StrVarDecl,
-    SyntaxType.RetDecl,
-    SyntaxType.RetArrayDecl,
-    // READ_* patches assign to a variable
-    SyntaxType.PatchReadLong,
-    SyntaxType.PatchReadShort,
-    SyntaxType.PatchReadByte,
-    SyntaxType.PatchReadAscii,
-    SyntaxType.PatchReadStrref,
-    SyntaxType.PatchRead_2daEntry,
-    SyntaxType.PatchRead_2daEntryFormer,
-    SyntaxType.PatchRead_2daEntriesNow,
-    // Array definitions
-    SyntaxType.ActionDefineArray,
-    SyntaxType.ActionDefineAssociativeArray,
-    SyntaxType.PatchDefineArray,
-    SyntaxType.PatchDefineAssociativeArray,
-    // Loop variables
-    SyntaxType.ActionPhpEach,
-    SyntaxType.PatchPhpEach,
-    SyntaxType.ActionForEach,
-    SyntaxType.PatchForEach,
-]);
-
-/** Node types for string content that may contain %var% references. */
-const STRING_CONTENT_TYPES: ReadonlySet<SyntaxType> = new Set([
-    SyntaxType.TildeContent,
-    SyntaxType.DoubleContent,
-    SyntaxType.FiveTildeContent,
 ]);
 
 /** Node types for function/macro definitions. */
@@ -547,13 +514,6 @@ function findAncestorOfType(node: SyntaxNode, types: ReadonlySet<SyntaxType | st
     return null;
 }
 
-/**
- * Find the function definition containing the given node.
- */
-function findContainingFunction(node: SyntaxNode): SyntaxNode | null {
-    return findAncestorOfType(node, FUNCTION_DEF_TYPES);
-}
-
 /** Node types for loops that introduce scoped variables. */
 const LOOP_TYPES: ReadonlySet<SyntaxType> = new Set([
     SyntaxType.ActionPhpEach,
@@ -561,78 +521,6 @@ const LOOP_TYPES: ReadonlySet<SyntaxType> = new Set([
     SyntaxType.ActionForEach,
     SyntaxType.PatchForEach,
 ]);
-
-/**
- * Find the loop containing the given node.
- */
-function findContainingLoop(node: SyntaxNode): SyntaxNode | null {
-    return findAncestorOfType(node, LOOP_TYPES);
-}
-
-/**
- * Determine the scope for a variable reference.
- * Checks if the variable is a loop variable, function-local variable, or file-scoped variable.
- */
-function determineVariableScope(
-    varName: string,
-    node: SyntaxNode
-): { scope: "loop" | "function" | "file"; loopNode?: SyntaxNode; functionNode?: SyntaxNode } {
-    // Check if we're inside a loop and the variable is a loop variable
-    const loopNode = findContainingLoop(node);
-    if (loopNode) {
-        // Check if this variable is declared by the loop
-        const isLoopVar = isLoopVariable(loopNode, varName);
-        if (isLoopVar) {
-            return { scope: "loop", loopNode };
-        }
-    }
-
-    // Check if we're inside a function
-    const functionNode = findContainingFunction(node);
-    if (functionNode) {
-        return { scope: "function", functionNode };
-    }
-
-    return { scope: "file" };
-}
-
-/**
- * Check if a variable name is declared by a loop (as a key_var, value_var, or var).
- */
-function isLoopVariable(loopNode: SyntaxNode, varName: string): boolean {
-    const keyVarNode = loopNode.childForFieldName("key_var");
-    const valueVarNode = loopNode.childForFieldName("value_var");
-    const forEachVarNode = loopNode.childForFieldName("var");
-
-    // Handle variable_ref wrappers
-    let keyVarIdent: SyntaxNode | null = keyVarNode;
-    if (keyVarIdent && keyVarIdent.type === SyntaxType.VariableRef) {
-        keyVarIdent = keyVarIdent.child(0);
-    }
-
-    let valueVarIdent: SyntaxNode | null = valueVarNode;
-    if (valueVarIdent && valueVarIdent.type === SyntaxType.VariableRef) {
-        valueVarIdent = valueVarIdent.child(0);
-    }
-
-    let forEachVarIdent: SyntaxNode | null = forEachVarNode;
-    if (forEachVarIdent && forEachVarIdent.type === SyntaxType.VariableRef) {
-        forEachVarIdent = forEachVarIdent.child(0);
-    }
-
-    // Check if varName matches any loop variable
-    if (keyVarIdent && keyVarIdent.type === SyntaxType.Identifier && matchesSymbol(keyVarIdent.text, varName)) {
-        return true;
-    }
-    if (valueVarIdent && valueVarIdent.type === SyntaxType.Identifier && matchesSymbol(valueVarIdent.text, varName)) {
-        return true;
-    }
-    if (forEachVarIdent && forEachVarIdent.type === SyntaxType.Identifier && matchesSymbol(forEachVarIdent.text, varName)) {
-        return true;
-    }
-
-    return false;
-}
 
 /**
  * Check if a node's variable reference is shadowed by an inner loop within the target loop scope.
@@ -714,8 +602,8 @@ function isVariableRefInDeclarationContext(varRefNode: SyntaxNode): boolean {
  * Check if a symbol can be renamed.
  */
 function isRenameableSymbol(symbolInfo: SymbolInfo): boolean {
-    // Reject automatic variables (case-insensitive)
-    if (AUTOMATIC_VARIABLES.has(symbolInfo.name.toUpperCase())) {
+    // Reject automatic variables
+    if (AUTOMATIC_VARIABLES.has(symbolInfo.name)) {
         return false;
     }
 
@@ -1033,13 +921,6 @@ function findFunctionReferences(
     visit(root);
 }
 
-/**
- * Check if two names match (case-insensitive for WeiDU).
- */
-function matchesSymbol(name1: string, name2: string): boolean {
-    return name1.toUpperCase() === name2.toUpperCase();
-}
-
 // ============================================
 // Utilities
 // ============================================
@@ -1089,76 +970,23 @@ function isSameNode(node1: SyntaxNode, node2: SyntaxNode): boolean {
 }
 
 /**
- * Find a variable reference (%var%) at the given position within string content.
- * Returns the variable name (without %) if found at the position.
+ * Convert a byte offset within text to a Position relative to basePosition.
+ * Handles multiline strings correctly.
  */
-function findVariableInStringContent(node: SyntaxNode, position: Position): string | null {
-    const text = node.text;
-
-    // Convert cursor position to byte offset within the node's text
-    const cursorOffset = positionToByteOffset(text, position, node.startPosition);
-    if (cursorOffset < 0 || cursorOffset > text.length) {
-        return null;
-    }
-
-    // Find all %var% patterns in the text
-    const varPattern = /%([a-zA-Z_][a-zA-Z0-9_]*)%/g;
-    let match: RegExpExecArray | null;
-
-    while ((match = varPattern.exec(text)) !== null) {
-        const matchStart = match.index;
-        const matchEnd = match.index + match[0].length;
-
-        // Check if the cursor is within this %var% pattern
-        if (cursorOffset >= matchStart && cursorOffset <= matchEnd) {
-            return match[1] ?? null; // Return the variable name without %
-        }
-    }
-
-    return null;
-}
-
-/**
- * Convert a Position to a byte offset within text, given the text's base position.
- * Handles multiline strings correctly. Returns -1 if position is before base.
- */
-function positionToByteOffset(text: string, position: Position, basePosition: { row: number; column: number }): number {
-    // If cursor is before the node, return -1
-    if (position.line < basePosition.row) {
-        return -1;
-    }
-    if (position.line === basePosition.row && position.character < basePosition.column) {
-        return -1;
-    }
-
-    let offset = 0;
+function byteOffsetToPosition(text: string, offset: number, basePosition: { row: number; column: number }): Position {
     let currentLine = basePosition.row;
     let currentCol = basePosition.column;
 
-    // Traverse the text to find the offset
-    for (let i = 0; i < text.length; i++) {
-        // Check if we've reached the target position
-        if (currentLine === position.line && currentCol === position.character) {
-            return offset;
-        }
-
-        // Advance to next character
+    for (let i = 0; i < offset; i++) {
         if (text[i] === '\n') {
             currentLine++;
             currentCol = 0;
         } else {
             currentCol++;
         }
-        offset++;
     }
 
-    // Check if position is at the very end
-    if (currentLine === position.line && currentCol === position.character) {
-        return offset;
-    }
-
-    // Position is beyond the text
-    return -1;
+    return { line: currentLine, character: currentCol };
 }
 
 /**
@@ -1208,24 +1036,4 @@ function findAllVariableReferencesInStringContent(
     }
 
     return references;
-}
-
-/**
- * Convert a byte offset within text to a Position relative to basePosition.
- * Handles multiline strings correctly.
- */
-function byteOffsetToPosition(text: string, offset: number, basePosition: { row: number; column: number }): Position {
-    let currentLine = basePosition.row;
-    let currentCol = basePosition.column;
-
-    for (let i = 0; i < offset; i++) {
-        if (text[i] === '\n') {
-            currentLine++;
-            currentCol = 0;
-        } else {
-            currentCol++;
-        }
-    }
-
-    return { line: currentLine, character: currentCol };
 }

@@ -23,7 +23,7 @@ export const EXT_TD = ".td" as const;
 // WeiDU languages
 export const LANG_WEIDU_TP2 = "weidu-tp2" as const;
 /** TP2 header file extension - defines shareable functions/macros */
-export const EXT_WEIDU_TPH = ".tph" as const;
+const EXT_WEIDU_TPH = ".tph" as const;
 /** TP2 file extensions for file watching */
 export const EXT_WEIDU_TP2 = [EXT_WEIDU_TPH, ".tpa", ".tpp", ".tp2"] as const;
 export const LANG_WEIDU_TP2_TOOLTIP = "weidu-tp2-tooltip" as const;

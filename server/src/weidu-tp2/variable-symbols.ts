@@ -1,0 +1,543 @@
+/**
+ * Shared utilities for WeiDU TP2 variable symbol handling.
+ * Used by both rename and go-to-definition features.
+ */
+
+import { Location, Position } from "vscode-languageserver/node";
+import type { Node as SyntaxNode } from "web-tree-sitter";
+import { getParser, isInitialized } from "./parser";
+import { SyntaxType } from "./tree-sitter.d";
+
+// ============================================
+// Constants
+// ============================================
+
+/** Node types for variable assignments. */
+export const VARIABLE_DECL_TYPES: ReadonlySet<SyntaxType> = new Set([
+    SyntaxType.ActionOuterSet,
+    SyntaxType.ActionOuterTextSprint,
+    SyntaxType.ActionOuterSprint,
+    SyntaxType.PatchSet,
+    SyntaxType.PatchTextSprint,
+    SyntaxType.PatchSprint,
+    SyntaxType.PatchSprintf,
+    SyntaxType.PatchAssignment,
+    SyntaxType.TopLevelAssignment,
+    SyntaxType.IntVarDecl,
+    SyntaxType.StrVarDecl,
+    SyntaxType.RetDecl,
+    SyntaxType.RetArrayDecl,
+    // READ_* patches
+    SyntaxType.PatchReadLong,
+    SyntaxType.PatchReadShort,
+    SyntaxType.PatchReadByte,
+    SyntaxType.PatchReadAscii,
+    SyntaxType.PatchReadStrref,
+    SyntaxType.PatchRead_2daEntry,
+    SyntaxType.PatchRead_2daEntryFormer,
+    SyntaxType.PatchRead_2daEntriesNow,
+    // Array definitions
+    SyntaxType.ActionDefineArray,
+    SyntaxType.ActionDefineAssociativeArray,
+    SyntaxType.PatchDefineArray,
+    SyntaxType.PatchDefineAssociativeArray,
+    // Loop variables
+    SyntaxType.ActionPhpEach,
+    SyntaxType.PatchPhpEach,
+    SyntaxType.ActionForEach,
+    SyntaxType.PatchForEach,
+]);
+
+/** Node types for string content that may contain %var% references. */
+export const STRING_CONTENT_TYPES: ReadonlySet<SyntaxType> = new Set([
+    SyntaxType.TildeContent,
+    SyntaxType.DoubleContent,
+    SyntaxType.FiveTildeContent,
+]);
+
+/** Node types for function/macro definitions. */
+const FUNCTION_DEF_TYPES: ReadonlySet<SyntaxType> = new Set([
+    SyntaxType.ActionDefineFunction,
+    SyntaxType.ActionDefinePatchFunction,
+    SyntaxType.ActionDefineMacro,
+    SyntaxType.ActionDefinePatchMacro,
+]);
+
+/** Node types for loops that introduce scoped variables. */
+const LOOP_TYPES: ReadonlySet<SyntaxType> = new Set([
+    SyntaxType.ActionPhpEach,
+    SyntaxType.PatchPhpEach,
+    SyntaxType.ActionForEach,
+    SyntaxType.PatchForEach,
+]);
+
+// ============================================
+// Scope utilities
+// ============================================
+
+/**
+ * Find the function definition containing the given node.
+ */
+export function findContainingFunction(node: SyntaxNode): SyntaxNode | null {
+    return findAncestorOfType(node, FUNCTION_DEF_TYPES);
+}
+
+/**
+ * Find the loop containing the given node.
+ */
+export function findContainingLoop(node: SyntaxNode): SyntaxNode | null {
+    return findAncestorOfType(node, LOOP_TYPES);
+}
+
+/**
+ * Find an ancestor node matching one of the given types.
+ */
+function findAncestorOfType(node: SyntaxNode, types: ReadonlySet<SyntaxType | string>): SyntaxNode | null {
+    let current: SyntaxNode | null = node;
+    while (current) {
+        if (types.has(current.type as SyntaxType)) {
+            return current;
+        }
+        current = current.parent;
+    }
+    return null;
+}
+
+/**
+ * Determine the scope for a variable reference.
+ * Checks if the variable is a loop variable, function-local variable, or file-scoped variable.
+ */
+export function determineVariableScope(
+    varName: string,
+    node: SyntaxNode
+): { scope: "loop" | "function" | "file"; loopNode?: SyntaxNode; functionNode?: SyntaxNode } {
+    // Check if we're inside a loop and the variable is a loop variable
+    const loopNode = findContainingLoop(node);
+    if (loopNode) {
+        // Check if this variable is declared by the loop
+        const isLoopVar = isLoopVariable(loopNode, varName);
+        if (isLoopVar) {
+            return { scope: "loop", loopNode };
+        }
+    }
+
+    // Check if we're inside a function
+    const functionNode = findContainingFunction(node);
+    if (functionNode) {
+        return { scope: "function", functionNode };
+    }
+
+    return { scope: "file" };
+}
+
+/**
+ * Check if a variable name is declared by a loop (as a key_var, value_var, or var).
+ */
+export function isLoopVariable(loopNode: SyntaxNode, varName: string): boolean {
+    const keyVarNode = loopNode.childForFieldName("key_var");
+    const valueVarNode = loopNode.childForFieldName("value_var");
+    const forEachVarNode = loopNode.childForFieldName("var");
+
+    // Handle variable_ref wrappers
+    let keyVarIdent: SyntaxNode | null = keyVarNode;
+    if (keyVarIdent && keyVarIdent.type === SyntaxType.VariableRef) {
+        keyVarIdent = keyVarIdent.child(0);
+    }
+
+    let valueVarIdent: SyntaxNode | null = valueVarNode;
+    if (valueVarIdent && valueVarIdent.type === SyntaxType.VariableRef) {
+        valueVarIdent = valueVarIdent.child(0);
+    }
+
+    let forEachVarIdent: SyntaxNode | null = forEachVarNode;
+    if (forEachVarIdent && forEachVarIdent.type === SyntaxType.VariableRef) {
+        forEachVarIdent = forEachVarIdent.child(0);
+    }
+
+    // Check if varName matches any loop variable
+    if (keyVarIdent && keyVarIdent.type === SyntaxType.Identifier && matchesSymbol(keyVarIdent.text, varName)) {
+        return true;
+    }
+    if (valueVarIdent && valueVarIdent.type === SyntaxType.Identifier && matchesSymbol(valueVarIdent.text, varName)) {
+        return true;
+    }
+    if (forEachVarIdent && forEachVarIdent.type === SyntaxType.Identifier && matchesSymbol(forEachVarIdent.text, varName)) {
+        return true;
+    }
+
+    return false;
+}
+
+/**
+ * Find a variable reference (%var%) at the given position within string content.
+ * Returns the variable name (without %) if found at the position.
+ */
+export function findVariableInStringContent(node: SyntaxNode, position: Position): string | null {
+    const text = node.text;
+
+    // Convert cursor position to byte offset within the node's text
+    const cursorOffset = positionToByteOffset(text, position, node.startPosition);
+    if (cursorOffset < 0 || cursorOffset > text.length) {
+        return null;
+    }
+
+    // Find all %var% patterns in the text
+    const varPattern = /%([a-zA-Z_][a-zA-Z0-9_]*)%/g;
+    let match: RegExpExecArray | null;
+
+    while ((match = varPattern.exec(text)) !== null) {
+        const matchStart = match.index;
+        const matchEnd = match.index + match[0].length;
+
+        // Check if the cursor is within this %var% pattern
+        if (cursorOffset >= matchStart && cursorOffset <= matchEnd) {
+            return match[1] ?? null; // Return the variable name without %
+        }
+    }
+
+    return null;
+}
+
+/**
+ * Convert a Position to a byte offset within text, given the text's base position.
+ * Handles multiline strings correctly. Returns -1 if position is before base.
+ */
+function positionToByteOffset(text: string, position: Position, basePosition: { row: number; column: number }): number {
+    // If cursor is before the node, return -1
+    if (position.line < basePosition.row) {
+        return -1;
+    }
+    if (position.line === basePosition.row && position.character < basePosition.column) {
+        return -1;
+    }
+
+    let offset = 0;
+    let currentLine = basePosition.row;
+    let currentCol = basePosition.column;
+
+    // Traverse the text to find the offset
+    for (let i = 0; i < text.length; i++) {
+        // Check if we've reached the target position
+        if (currentLine === position.line && currentCol === position.character) {
+            return offset;
+        }
+
+        // Advance to next character
+        if (text[i] === '\n') {
+            currentLine++;
+            currentCol = 0;
+        } else {
+            currentCol++;
+        }
+        offset++;
+    }
+
+    // Check if position is at the very end
+    if (currentLine === position.line && currentCol === position.character) {
+        return offset;
+    }
+
+    // Position is beyond the text
+    return -1;
+}
+
+/**
+ * Check if two symbol names match (case-sensitive).
+ */
+export function matchesSymbol(name1: string, name2: string): boolean {
+    return name1 === name2;
+}
+
+// ============================================
+// Variable definition finding
+// ============================================
+
+/**
+ * Find the definition location of a variable at the given position.
+ * Returns null if no variable is found at the position or if the variable has no definition.
+ */
+export function findVariableDefinition(text: string, uri: string, position: Position): Location | null {
+    if (!isInitialized()) {
+        return null;
+    }
+
+    const tree = getParser().parse(text);
+    if (!tree) {
+        return null;
+    }
+
+    // Find the node at cursor position
+    const targetNode = findNodeAtPosition(tree.rootNode, position);
+    if (!targetNode) {
+        return null;
+    }
+
+    // Determine if this is a variable and get its name
+    const varInfo = getVariableAtPosition(targetNode, position);
+    if (!varInfo) {
+        return null;
+    }
+
+    const { varName, scopeInfo } = varInfo;
+
+    // Search for the definition based on scope
+    let searchScope: SyntaxNode = tree.rootNode;
+    if (scopeInfo.scope === "loop" && scopeInfo.loopNode) {
+        searchScope = scopeInfo.loopNode;
+    } else if (scopeInfo.scope === "function" && scopeInfo.functionNode) {
+        searchScope = scopeInfo.functionNode;
+    }
+
+    // Find the first declaration of this variable in the scope
+    const defNode = findFirstDeclaration(searchScope, varName, scopeInfo);
+    if (!defNode) {
+        return null;
+    }
+
+    return {
+        uri,
+        range: {
+            start: { line: defNode.startPosition.row, character: defNode.startPosition.column },
+            end: { line: defNode.endPosition.row, character: defNode.endPosition.column },
+        },
+    };
+}
+
+/**
+ * Get variable name and scope info at the given position.
+ */
+function getVariableAtPosition(
+    node: SyntaxNode,
+    position: Position
+): { varName: string; scopeInfo: { scope: "loop" | "function" | "file"; loopNode?: SyntaxNode; functionNode?: SyntaxNode } } | null {
+    // If we found a % token, check if it's part of a percent_string
+    // This happens when cursor is right on the % delimiter
+    // Note: "%" is a terminal token in the grammar, not a SyntaxType enum value
+    const PERCENT_TOKEN = "%";
+    if (node.type === PERCENT_TOKEN) {
+        const parent = node.parent;
+        if (parent && parent.type === SyntaxType.PercentString) {
+            node = parent;
+        }
+    }
+
+    // Check if it's a percent_string or percent_content node inside %var% syntax
+    if (node.type === SyntaxType.PercentString) {
+        const contentNode = node.child(1); // percent_string = "%" + content + "%"
+        if (contentNode && contentNode.type === SyntaxType.PercentContent) {
+            const varName = contentNode.text;
+            if (!varName) {
+                return null;
+            }
+            const scopeInfo = determineVariableScope(varName, node);
+            return { varName, scopeInfo };
+        }
+    }
+
+    if (node.type === SyntaxType.PercentContent) {
+        const varName = node.text;
+        if (!varName) {
+            return null;
+        }
+        const scopeInfo = determineVariableScope(varName, node);
+        return { varName, scopeInfo };
+    }
+
+    // String content nodes can contain %var% variable references
+    if (STRING_CONTENT_TYPES.has(node.type as SyntaxType)) {
+        const varMatch = findVariableInStringContent(node, position);
+        if (varMatch) {
+            const scopeInfo = determineVariableScope(varMatch, node);
+            return { varName: varMatch, scopeInfo };
+        }
+    }
+
+    // Check if it's a variable_ref node (bare identifier in expression)
+    if (node.type === SyntaxType.VariableRef) {
+        const identNode = node.child(0);
+        const varName = identNode?.text;
+        if (!varName) {
+            return null;
+        }
+        const scopeInfo = determineVariableScope(varName, node);
+        return { varName, scopeInfo };
+    }
+
+    // Check if it's an identifier
+    if (node.type === SyntaxType.Identifier) {
+        // Could be a variable name in declaration or usage
+        const varName = node.text;
+        const scopeInfo = determineVariableScope(varName, node);
+        return { varName, scopeInfo };
+    }
+
+    return null;
+}
+
+/**
+ * Find the first declaration of a variable in the given scope.
+ */
+function findFirstDeclaration(
+    scopeNode: SyntaxNode,
+    varName: string,
+    scopeInfo: { scope: "loop" | "function" | "file"; loopNode?: SyntaxNode; functionNode?: SyntaxNode }
+): SyntaxNode | null {
+    let firstDecl: SyntaxNode | null = null;
+
+    function visit(node: SyntaxNode): void {
+        // Stop searching if we already found a declaration
+        if (firstDecl) {
+            return;
+        }
+
+        // Check if this node is a variable declaration
+        if (VARIABLE_DECL_TYPES.has(node.type as SyntaxType)) {
+            // For loop variables, check if this is the target loop
+            if (LOOP_TYPES.has(node.type as SyntaxType)) {
+                const isTargetLoop = !scopeInfo.loopNode || isSameNode(scopeInfo.loopNode, node);
+                if (isTargetLoop) {
+                    // Check loop variable declarations
+                    const keyVarNode = node.childForFieldName("key_var");
+                    const valueVarNode = node.childForFieldName("value_var");
+                    const forEachVarNode = node.childForFieldName("var");
+
+                    if (keyVarNode) {
+                        let identNode: SyntaxNode | null = keyVarNode;
+                        if (keyVarNode.type === SyntaxType.VariableRef) {
+                            identNode = keyVarNode.child(0);
+                        }
+                        if (identNode && identNode.type === SyntaxType.Identifier && matchesSymbol(identNode.text, varName)) {
+                            firstDecl = identNode;
+                            return;
+                        }
+                    }
+
+                    if (valueVarNode) {
+                        let identNode: SyntaxNode | null = valueVarNode;
+                        if (valueVarNode.type === SyntaxType.VariableRef) {
+                            identNode = valueVarNode.child(0);
+                        }
+                        if (identNode && identNode.type === SyntaxType.Identifier && matchesSymbol(identNode.text, varName)) {
+                            firstDecl = identNode;
+                            return;
+                        }
+                    }
+
+                    if (forEachVarNode) {
+                        let identNode: SyntaxNode | null = forEachVarNode.child(0);
+                        if (identNode && identNode.type === SyntaxType.VariableRef) {
+                            identNode = identNode.child(0);
+                        }
+                        if (identNode && identNode.type === SyntaxType.Identifier && matchesSymbol(identNode.text, varName)) {
+                            firstDecl = identNode;
+                            return;
+                        }
+                    }
+                }
+                // Only skip loop body traversal if searching for loop-scoped variables.
+                // For file/function-scoped variables, we need to find declarations inside loops.
+                if (scopeInfo.scope === "loop") {
+                    return;
+                }
+            }
+
+            // For SET/TEXT_SPRINT statements, field is "var"
+            const varNode = node.childForFieldName("var");
+            if (varNode && matchesSymbol(varNode.text, varName)) {
+                firstDecl = varNode;
+                return;
+            }
+
+            // For READ_* patches, field is "varNodes" (array of var targets)
+            const varNodes = node.childrenForFieldName("var");
+            for (const vn of varNodes) {
+                if (vn.type === SyntaxType.Identifier && matchesSymbol(vn.text, varName)) {
+                    firstDecl = vn;
+                    return;
+                }
+            }
+
+            // For DEFINE_ARRAY etc., field is "name"
+            const nameNode = node.childForFieldName("name");
+            if (nameNode) {
+                let exprNode = nameNode.child(0);
+                if (exprNode && exprNode.type === SyntaxType.VariableRef) {
+                    exprNode = exprNode.child(0);
+                }
+                if (exprNode && exprNode.type === SyntaxType.Identifier && matchesSymbol(exprNode.text, varName)) {
+                    firstDecl = exprNode;
+                    return;
+                }
+            }
+
+            // For parameter declarations (INT_VAR, STR_VAR, RET, RET_ARRAY)
+            if (node.type === SyntaxType.IntVarDecl ||
+                node.type === SyntaxType.StrVarDecl ||
+                node.type === SyntaxType.RetDecl ||
+                node.type === SyntaxType.RetArrayDecl) {
+                for (const child of node.children) {
+                    if (child.type === SyntaxType.Identifier && matchesSymbol(child.text, varName)) {
+                        firstDecl = child;
+                        return;
+                    }
+                }
+            }
+        }
+
+        // Recurse to children
+        for (const child of node.children) {
+            visit(child);
+            if (firstDecl) {
+                return;
+            }
+        }
+    }
+
+    visit(scopeNode);
+    return firstDecl;
+}
+
+/**
+ * Find the deepest node at the given position.
+ */
+function findNodeAtPosition(root: SyntaxNode, position: Position): SyntaxNode | null {
+    function visit(node: SyntaxNode): SyntaxNode | null {
+        const startRow = node.startPosition.row;
+        const endRow = node.endPosition.row;
+        const startCol = node.startPosition.column;
+        const endCol = node.endPosition.column;
+
+        const inRange =
+            (position.line > startRow || (position.line === startRow && position.character >= startCol)) &&
+            (position.line < endRow || (position.line === endRow && position.character <= endCol));
+
+        if (!inRange) {
+            return null;
+        }
+
+        // Try to find a more specific child
+        for (const child of node.children) {
+            const result = visit(child);
+            if (result) {
+                return result;
+            }
+        }
+
+        return node;
+    }
+
+    return visit(root);
+}
+
+/**
+ * Check if two nodes represent the same position in the source.
+ */
+function isSameNode(node1: SyntaxNode, node2: SyntaxNode): boolean {
+    return (
+        node1.startPosition.row === node2.startPosition.row &&
+        node1.startPosition.column === node2.startPosition.column &&
+        node1.endPosition.row === node2.endPosition.row &&
+        node1.endPosition.column === node2.endPosition.column &&
+        node1.text === node2.text
+    );
+}

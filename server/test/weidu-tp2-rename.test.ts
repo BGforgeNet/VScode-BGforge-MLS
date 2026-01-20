@@ -59,10 +59,10 @@ COPY ~%mod_folder%/file.txt~ ~override~
         expect(editedText).not.toContain("mod_folder");
     });
 
-    it("handles case-insensitive matching", () => {
+    it("handles case-sensitive matching", () => {
         const text = `
 OUTER_SET MyVar = 10
-OUTER_SET result = %MYVAR% + %myvar%
+OUTER_SET result = %MyVar% + %myvar%
 `;
         const position: Position = { line: 1, character: 10 }; // On "MyVar"
         const result = renameSymbol(text, position, "NewVar", "file:///test.tp2");
@@ -70,8 +70,9 @@ OUTER_SET result = %MYVAR% + %myvar%
         expect(result).not.toBeNull();
         const edits = result?.changes?.["file:///test.tp2"];
         expect(edits).toBeDefined();
-        // Should find MyVar, MYVAR, myvar
-        expect(edits!.length).toBe(3);
+        // Should only find exact matches: MyVar (declaration) and %MyVar% (reference)
+        // %myvar% is a different variable (different case)
+        expect(edits!.length).toBe(2);
     });
 
     it("renames bare assignment variable (without SET/OUTER_SET)", () => {
