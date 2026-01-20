@@ -65,6 +65,10 @@ let projectSettings: settings.ProjectSettings;
 // Initialized in onInitialized, undefined until then
 let translation: Translation | undefined;
 
+// Debouncing for file data reloads on content changes
+const pendingReloads = new Map<string, NodeJS.Timeout>();
+const RELOAD_DEBOUNCE_MS = 300;
+
 connection.onInitialize((params: InitializeParams) => {
     conlog("onInitialize started");
     const capabilities = params.capabilities;
@@ -94,7 +98,7 @@ connection.onInitialize((params: InitializeParams) => {
             },
             inlayHintProvider: true,
             definitionProvider: true,
-            renameProvider: true,
+            renameProvider: { prepareProvider: true },
             documentFormattingProvider: true,
             documentSymbolProvider: true,
             executeCommandProvider: {
@@ -372,12 +376,30 @@ documents.onDidSave(async (change) => {
 
 documents.onDidChangeContent(async (event) => {
     const uri = event.document.uri;
+    const langId = event.document.languageId;
+    const text = event.document.getText();
+
     clearDiagnostics(uri);
+
+    // Keep provider data (function index, etc.) and translation data up to date as content changes.
+    // This ensures hover/definition work immediately after edits like rename.
+    // Debounced to avoid excessive reloads during rapid typing.
+    const existing = pendingReloads.get(uri);
+    if (existing) {
+        clearTimeout(existing);
+    }
+    pendingReloads.set(
+        uri,
+        setTimeout(() => {
+            pendingReloads.delete(uri);
+            registry.reloadFileData(langId, uri, text);
+            translation?.reloadFile(uri, langId, text);
+        }, RELOAD_DEBOUNCE_MS),
+    );
 
     const validateOnChange = (await getDocumentSettings(uri)).validateOnChange;
     if (validateOnChange) {
-        const text = event.document.getText();
-        void compile(uri, event.document.languageId, false, text);
+        void compile(uri, langId, false, text);
     }
 });
 
@@ -422,6 +444,17 @@ connection.onDefinition((params) => {
     }
 
     return null;
+});
+
+connection.onPrepareRename((params) => {
+    const textDoc = documents.get(params.textDocument.uri);
+    if (!textDoc) {
+        return null;
+    }
+    const langId = textDoc.languageId;
+    const text = textDoc.getText();
+
+    return registry.prepareRename(langId, text, params.position);
 });
 
 connection.onRenameRequest((params) => {

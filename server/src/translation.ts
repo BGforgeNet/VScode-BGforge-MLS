@@ -481,6 +481,9 @@ export class Translation {
             keyIndex = 1;
         }
 
+        // NOTE: This works because we split by newlines first, so each line element is
+        // guaranteed single-line. If future patterns need multiline matching, this would
+        // need byte-offset-to-position conversion like in weidu-tp2/rename.ts.
         lines.forEach((l, i) => {
             const matches = l.matchAll(regex);
             for (const m of matches) {

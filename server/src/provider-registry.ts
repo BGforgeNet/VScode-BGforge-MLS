@@ -158,6 +158,14 @@ class ProviderRegistry {
         return [];
     }
 
+    prepareRename(langId: string, text: string, position: Position): { range: { start: Position; end: Position }; placeholder: string } | null {
+        const provider = this.get(langId);
+        if (provider?.prepareRename) {
+            return provider.prepareRename(text, position);
+        }
+        return null;
+    }
+
     rename(langId: string, text: string, position: Position, newName: string, uri: string): WorkspaceEdit | null {
         const provider = this.get(langId);
         if (provider?.rename) {

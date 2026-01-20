@@ -100,6 +100,9 @@ export interface LanguageProvider {
     /** Rename a local symbol. Returns null if symbol is not locally defined. */
     rename?(text: string, position: Position, newName: string, uri: string): WorkspaceEdit | null;
 
+    /** Prepare for rename. Validates position and returns range/placeholder, or null if rename not allowed. */
+    prepareRename?(text: string, position: Position): { range: { start: Position; end: Position }; placeholder: string } | null;
+
     /** Get inlay hints for the given range. */
     inlayHints?(text: string, uri: string, range: Range): InlayHint[];
 

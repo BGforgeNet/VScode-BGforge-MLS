@@ -3,7 +3,7 @@
  * Implements all TP2 file features in one place.
  */
 
-import { CompletionItem, DocumentSymbol, Hover, Location, Position } from "vscode-languageserver/node";
+import { CompletionItem, DocumentSymbol, Hover, Location, Position, WorkspaceEdit } from "vscode-languageserver/node";
 import { extname } from "path";
 import { fileURLToPath } from "url";
 import { conlog } from "../common";
@@ -19,6 +19,7 @@ import { initParser, getParser, isInitialized } from "./parser";
 import { getDocumentSymbols } from "./symbol";
 import { getDefinition } from "./definition";
 import { updateFileIndex, clearFileFromIndex } from "./header-parser";
+import { renameSymbol, prepareRenameSymbol } from "./rename";
 
 const features: Features = {
     completion: true,
@@ -133,6 +134,14 @@ export const weiduTp2Provider: LanguageProvider = {
 
     symbols(text: string): DocumentSymbol[] {
         return getDocumentSymbols(text);
+    },
+
+    rename(text: string, position: Position, newName: string, uri: string): WorkspaceEdit | null {
+        return renameSymbol(text, position, newName, uri);
+    },
+
+    prepareRename(text: string, position: Position): { range: { start: Position; end: Position }; placeholder: string } | null {
+        return prepareRenameSymbol(text, position);
     },
 };
 
