@@ -889,3 +889,43 @@ BEGIN END`;
         expect(def?.uri).toBe("file:///test.tph");
     });
 });
+
+describe("formatDocument multi-line OR conditions", () => {
+    beforeAll(async () => {
+        await initParser();
+    });
+
+    function format(code: string): string {
+        const parser = getParser();
+        const tree = parser.parse(code);
+        const result = formatDocument(tree.rootNode);
+        return result.text;
+    }
+
+    it("splits multi-line OR conditions that exceed line limit", () => {
+        const input = `PATCH_IF (c == kensai_column) BEGIN
+  PATCH_IF (r0 == $row_index(BASTARDSWORD))
+    OR (r0 == $row_index(LONGSWORD))
+    OR (r0 == $row_index(SHORTSWORD))
+    OR (r0 == $row_index(TWOHANDEDSWORD))
+    OR (r0 == $row_index(KATANA))
+    OR (r0 == $row_index(SCIMITARWAKISASHININJATO))
+  BEGIN
+    pip_limit = 5
+  END
+END`;
+        const output = format(input);
+
+        // Should NOT collapse into single long line
+        expect(output).not.toMatch(/PATCH_IF.*OR.*OR.*OR.*OR.*OR.*BEGIN/);
+
+        // Each OR should be on separate lines when line exceeds limit (120 chars)
+        const lines = output.split("\n");
+        const allLinesFit = lines.every(line => line.length <= 120);
+        expect(allLinesFit).toBe(true);
+
+        // Should have multiple OR lines
+        const orLines = lines.filter(l => l.includes(" OR "));
+        expect(orLines.length).toBeGreaterThan(1);
+    });
+});

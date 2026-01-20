@@ -144,9 +144,21 @@ function formatCondition(
         return [fullLine];
     }
 
-    // Find the actual expression to split - may be wrapped in paren_expr
+    // Find the actual expression to split - may be wrapped in value or paren_expr
     let exprNode = conditionNode;
     let hasOuterParens = false;
+
+    // Unwrap value node to get to the actual expression
+    if (exprNode.type === SyntaxType.Value && exprNode.children.length > 0) {
+        for (const child of exprNode.children) {
+            if (child.type === SyntaxType.BinaryExpr || child.type === SyntaxType.ParenExpr) {
+                exprNode = child;
+                break;
+            }
+        }
+    }
+
+    // Unwrap paren_expr to get to binary_expr
     if (exprNode.type === SyntaxType.ParenExpr && exprNode.children.length > 0) {
         for (const child of exprNode.children) {
             if (child.type === SyntaxType.BinaryExpr) {
