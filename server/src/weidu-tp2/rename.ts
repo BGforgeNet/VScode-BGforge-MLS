@@ -471,6 +471,20 @@ function getSymbolAtPosition(root: SyntaxNode, position: Position): SymbolInfo |
                 };
             }
         }
+
+        // Fallback: identifier used as variable reference in expression (e.g., `c == archer_column`)
+        // This handles identifiers that aren't in declarations, function names, or array accesses
+        if (node.type === SyntaxType.Identifier) {
+            const scopeInfo = determineVariableScope(name, node);
+            return {
+                name,
+                kind: "variable",
+                scope: scopeInfo.scope,
+                functionNode: scopeInfo.functionNode,
+                loopNode: scopeInfo.loopNode,
+                node,
+            };
+        }
     }
 
     return null;

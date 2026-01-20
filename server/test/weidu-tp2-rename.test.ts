@@ -13,7 +13,7 @@ vi.mock("../src/server", () => ({
     },
 }));
 
-import { renameSymbol } from "../src/weidu-tp2/rename";
+import { renameSymbol, prepareRenameSymbol } from "../src/weidu-tp2/rename";
 import { initParser } from "../src/weidu-tp2/parser";
 
 beforeAll(async () => {
@@ -134,6 +134,97 @@ COPY_EXISTING ~file.itm~ ~override~
         const editedText = applyEdits(text, edits!);
         expect(editedText).toContain("DEFINE_ARRAY weapons");
         expect(editedText).toContain("$weapons(0)");
+    });
+
+    it("renames bare assignment with array access on RHS", () => {
+        const text = `
+COPY_EXISTING ~weapprof.2da~ ~override~
+    COUNT_2DA_COLS columns
+    READ_2DA_ENTRIES_NOW weapprof_read columns
+    archer_column = $col_index(FERALAN)
+    FOR (r = 0; r < weapprof_read; ++r) BEGIN
+        FOR (c = 0; c < columns; ++c) BEGIN
+            PATCH_IF (c == archer_column) BEGIN
+                SET pip_limit = 5
+            END
+        END
+    END
+`;
+        const position: Position = { line: 4, character: 6 }; // On "archer_column" in assignment
+        const result = renameSymbol(text, position, "ranger_column", "file:///test.tp2");
+
+        expect(result).not.toBeNull();
+        const edits = result?.changes?.["file:///test.tp2"];
+        expect(edits).toBeDefined();
+
+        const editedText = applyEdits(text, edits!);
+        expect(editedText).toContain("ranger_column = $col_index(FERALAN)");
+        expect(editedText).toContain("c == ranger_column");
+    });
+
+    it("prepareRename allows bare assignment with array access", () => {
+        const text = `
+COPY_EXISTING ~weapprof.2da~ ~override~
+    COUNT_2DA_COLS columns
+    READ_2DA_ENTRIES_NOW weapprof_read columns
+    archer_column = $col_index(FERALAN)
+    FOR (r = 0; r < weapprof_read; ++r) BEGIN
+        FOR (c = 0; c < columns; ++c) BEGIN
+            PATCH_IF (c == archer_column) BEGIN
+                SET pip_limit = 5
+            END
+        END
+    END
+`;
+        // Position on "archer_column" in the assignment
+        const position: Position = { line: 4, character: 6 };
+        const result = prepareRenameSymbol(text, position);
+
+        expect(result).not.toBeNull();
+        expect(result?.placeholder).toBe("archer_column");
+    });
+
+    it("prepareRename allows variable in PATCH_IF comparison", () => {
+        const text = `
+COPY_EXISTING ~weapprof.2da~ ~override~
+    archer_column = $col_index(FERALAN)
+    FOR (c = 0; c < 10; ++c) BEGIN
+        PATCH_IF (c == archer_column) BEGIN
+            SET pip_limit = 5
+        END
+    END
+`;
+        // Position on "archer_column" in PATCH_IF condition (line 4)
+        // "        PATCH_IF (c == archer_column) BEGIN"
+        //                       ^ character 20
+        const position: Position = { line: 4, character: 24 };
+        const result = prepareRenameSymbol(text, position);
+
+        expect(result).not.toBeNull();
+        expect(result?.placeholder).toBe("archer_column");
+    });
+
+    it("renames variable from usage in PATCH_IF comparison", () => {
+        const text = `
+COPY_EXISTING ~weapprof.2da~ ~override~
+    archer_column = $col_index(FERALAN)
+    FOR (c = 0; c < 10; ++c) BEGIN
+        PATCH_IF (c == archer_column) BEGIN
+            SET pip_limit = 5
+        END
+    END
+`;
+        // Position on "archer_column" in PATCH_IF condition
+        const position: Position = { line: 4, character: 24 };
+        const result = renameSymbol(text, position, "ranger_column", "file:///test.tp2");
+
+        expect(result).not.toBeNull();
+        const edits = result?.changes?.["file:///test.tp2"];
+        expect(edits).toBeDefined();
+
+        const editedText = applyEdits(text, edits!);
+        expect(editedText).toContain("ranger_column = $col_index(FERALAN)");
+        expect(editedText).toContain("c == ranger_column");
     });
 
     it("renames variable in nested loops and conditions", () => {
