@@ -6,7 +6,7 @@
 import PromisePool from "@supercharge/promise-pool";
 import * as fs from "fs";
 import * as path from "path";
-import { pathToUri } from "../common";
+import { normalizeUri, pathToUri } from "../common";
 import { HeaderData as LanguageHeaderData } from "../data-loader";
 
 export async function processHeaders(
@@ -20,7 +20,8 @@ export async function processHeaders(
         .process(async (relPath) => {
             const absPath = path.join(headersDirectory, relPath);
             const text = fs.readFileSync(absPath, "utf8");
-            const uri = pathToUri(absPath);
+            // Normalize URI to resolve symlinks for consistent comparison
+            const uri = normalizeUri(pathToUri(absPath));
             let pathString: string;
             if (external) {
                 pathString = absPath;

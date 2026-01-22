@@ -10,7 +10,8 @@
  * Server.ts never interacts with Language directly - only through providers.
  */
 
-import { conlog, getRelPath, isDirectory, isSubpath, uriToPath } from "./common";
+import { conlog, getRelPath, isDirectory, isSubpath, normalizeUri, uriToPath } from "./common";
+import * as fs from "fs";
 import * as completion from "./shared/completion";
 import * as definition from "./shared/definition";
 import * as fallout from "./fallout-ssl/header-parser";
@@ -89,7 +90,17 @@ export class Language implements Language {
         this.id = id;
         this.features = features;
         this.externalHeadersDirectory = externalHeadersDirectory;
-        this.workspaceRoot = workspaceRoot;
+        // Normalize workspace root to resolve symlinks for consistent URI comparison
+        if (workspaceRoot) {
+            try {
+                this.workspaceRoot = fs.realpathSync(workspaceRoot);
+            } catch {
+                // If path doesn't exist or isn't accessible, use as-is
+                this.workspaceRoot = workspaceRoot;
+            }
+        } else {
+            this.workspaceRoot = workspaceRoot;
+        }
     }
 
     public async init() {
@@ -306,8 +317,10 @@ export class Language implements Language {
     }
 
     reloadFileData(uri: string, text: string) {
+        // Normalize URI to resolve symlinks for consistent comparison
+        const normalizedUri = normalizeUri(uri);
         let fileData: HeaderData;
-        const filePath = this.displayPath(uri);
+        const filePath = this.displayPath(normalizedUri);
 
         if (!this.features.udf) {
             return;
@@ -315,66 +328,66 @@ export class Language implements Language {
 
         switch (this.id) {
             case LANG_FALLOUT_SSL:
-                fileData = fallout.loadFileData(uri, text, filePath);
+                fileData = fallout.loadFileData(normalizedUri, text, filePath);
                 break;
             case LANG_WEIDU_TP2:
             case LANG_WEIDU_TP2_TPL:
-                fileData = weidu.loadFileData(uri, text, filePath);
+                fileData = weidu.loadFileData(normalizedUri, text, filePath);
                 break;
             default:
                 conlog(`Language ${this.id} doesn't support reload.`);
                 return;
         }
 
-        if (this.isHeader(uri)) {
-            if (this.inWorkspace(uri)) {
+        if (this.isHeader(normalizedUri)) {
+            if (this.inWorkspace(normalizedUri)) {
                 this.data.completion.headers = this.reloadFileCompletion(
                     this.data.completion.headers,
                     fileData.completion,
-                    uri
+                    normalizedUri
                 );
                 this.data.hover.headers = this.reloadFileHover(
                     this.data.hover.headers,
                     fileData.hover,
-                    uri
+                    normalizedUri
                 );
 
                 if (this.features.signature && fileData.signature) {
                     const newSignature = this.reloadFileSignature(
                         this.data.signature.headers,
                         fileData.signature,
-                        uri
+                        normalizedUri
                     );
-                    this.data.signature.self.set(uri, newSignature);
+                    this.data.signature.self.set(normalizedUri, newSignature);
                 }
-            } else if (this.inExternalHeadersDirectory(uri)) {
+            } else if (this.inExternalHeadersDirectory(normalizedUri)) {
                 // extHeaders is guaranteed to be initialized in loadData() when
                 // externalHeaders feature is enabled (which inExternalHeadersDirectory checks)
                 this.data.completion.extHeaders = this.reloadFileCompletion(
                     this.data.completion.extHeaders!,
                     fileData.completion,
-                    uri
+                    normalizedUri
                 );
                 this.data.hover.extHeaders = this.reloadFileHover(
                     this.data.hover.extHeaders!,
                     fileData.hover,
-                    uri
+                    normalizedUri
                 );
 
                 if (this.features.signature && fileData.signature) {
                     const newSignature = this.reloadFileSignature(
                         this.data.signature.extHeaders!,
                         fileData.signature,
-                        uri
+                        normalizedUri
                     );
-                    this.data.signature.self.set(uri, newSignature);
+                    this.data.signature.self.set(normalizedUri, newSignature);
                 }
             }
         } else {
-            this.data.completion.self.set(uri, fileData.completion);
-            this.data.hover.self.set(uri, fileData.hover);
+            this.data.completion.self.set(normalizedUri, fileData.completion);
+            this.data.hover.self.set(normalizedUri, fileData.hover);
             if (this.features.signature && fileData.signature) {
-                this.data.signature.self.set(uri, fileData.signature);
+                this.data.signature.self.set(normalizedUri, fileData.signature);
             }
         }
 
@@ -382,7 +395,7 @@ export class Language implements Language {
             this.data.definition = this.reloadFileDefinition(
                 this.data.definition,
                 fileData.definition,
-                uri
+                normalizedUri
             );
         }
     }

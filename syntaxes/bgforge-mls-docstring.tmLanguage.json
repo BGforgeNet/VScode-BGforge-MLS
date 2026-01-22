@@ -7,6 +7,9 @@
       "include": "#arg"
     },
     {
+      "include": "#typeTag"
+    },
+    {
       "include": "#deprecated"
     },
     {
@@ -54,6 +57,24 @@
         {
           "match": "(@deprecated)",
           "name": "support.function.bgforge-mls-docstring"
+        }
+      ]
+    },
+    "typeTag": {
+      "patterns": [
+        {
+          "match": "(@type)(\\s+{?(\\w+)}?)?",
+          "captures": {
+            "1": {
+              "name": "support.function.bgforge-mls-docstring"
+            },
+            "2": {
+              "name": "keyword.bgforge-mls-docstring"
+            },
+            "3": {
+              "name": "support.type.bgforge-mls-docstring"
+            }
+          }
         }
       ]
     },

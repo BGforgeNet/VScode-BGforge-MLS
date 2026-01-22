@@ -38,12 +38,29 @@ export interface FunctionInfo {
     params?: FunctionParams;
 }
 
+/** Variable definition info from header files. */
+export interface VariableInfo {
+    name: string;
+    location: Location;
+    jsdoc?: jsdoc.JSdoc;
+    value?: string; // Source text from AST, truncated if long
+    declarationKind: "set" | "sprint" | "text_sprint";
+    inferredType: "int" | "string"; // Derived: "set" → "int", others → "string"
+}
+
 /** Node types for function/macro definitions. */
 const FUNCTION_DEF_TYPES = new Set([
     SyntaxType.ActionDefineFunction,
     SyntaxType.ActionDefinePatchFunction,
     SyntaxType.ActionDefineMacro,
     SyntaxType.ActionDefinePatchMacro,
+]);
+
+/** Node types for top-level variable declarations (only these are considered for header variables). */
+const HEADER_VARIABLE_TYPES = new Set([
+    SyntaxType.ActionOuterSet,
+    SyntaxType.ActionOuterSprint,
+    SyntaxType.ActionOuterTextSprint,
 ]);
 
 /** Node types for parameter declarations. */
@@ -75,6 +92,22 @@ export function parseHeader(text: string, uri: string): FunctionInfo[] {
 }
 
 /**
+ * Parse a TP2 file and extract all top-level variable definitions with JSDoc.
+ */
+export function parseHeaderVariables(text: string, uri: string): VariableInfo[] {
+    if (!isInitialized()) {
+        return [];
+    }
+
+    const tree = getParser().parse(text);
+    if (!tree) {
+        return [];
+    }
+
+    return extractVariables(tree.rootNode, uri);
+}
+
+/**
  * Extract function/macro definitions from AST root.
  */
 function extractFunctions(root: SyntaxNode, uri: string): FunctionInfo[] {
@@ -93,6 +126,27 @@ function extractFunctions(root: SyntaxNode, uri: string): FunctionInfo[] {
     }
 
     return functions;
+}
+
+/**
+ * Extract top-level variable definitions with JSDoc from AST root.
+ */
+function extractVariables(root: SyntaxNode, uri: string): VariableInfo[] {
+    const variables: VariableInfo[] = [];
+
+    for (let i = 0; i < root.childCount; i++) {
+        const node = root.child(i);
+        if (!node || !HEADER_VARIABLE_TYPES.has(node.type as SyntaxType)) {
+            continue;
+        }
+
+        const info = extractVariableInfo(node, uri, root, i);
+        if (info) {
+            variables.push(info);
+        }
+    }
+
+    return variables;
 }
 
 /**
@@ -132,6 +186,77 @@ function extractFunctionInfo(
     // Extract parameters (only for functions, macros don't have params)
     if (dtype === "function") {
         info.params = extractParams(node);
+    }
+
+    return info;
+}
+
+/**
+ * Extract info from a single variable definition node.
+ * Includes all top-level variables; JSDoc is optional.
+ */
+function extractVariableInfo(
+    node: SyntaxNode,
+    uri: string,
+    root: SyntaxNode,
+    nodeIndex: number
+): VariableInfo | null {
+    const varNode = node.childForFieldName("var");
+    if (!varNode) {
+        return null;
+    }
+
+    const name = varNode.text;
+
+    const location: Location = {
+        uri,
+        range: {
+            start: { line: varNode.startPosition.row, character: varNode.startPosition.column },
+            end: { line: varNode.endPosition.row, character: varNode.endPosition.column },
+        },
+    };
+
+    // Determine declaration kind and inferred type from node type
+    let declarationKind: "set" | "sprint" | "text_sprint";
+    let inferredType: "int" | "string";
+
+    switch (node.type as SyntaxType) {
+        case SyntaxType.ActionOuterSet:
+            declarationKind = "set";
+            inferredType = "int";
+            break;
+        case SyntaxType.ActionOuterSprint:
+            declarationKind = "sprint";
+            inferredType = "string";
+            break;
+        case SyntaxType.ActionOuterTextSprint:
+            declarationKind = "text_sprint";
+            inferredType = "string";
+            break;
+        default:
+            // Shouldn't happen given HEADER_VARIABLE_TYPES filter, but provide fallback
+            declarationKind = "set";
+            inferredType = "int";
+    }
+
+    const info: VariableInfo = { name, location, declarationKind, inferredType };
+
+    // Extract value from AST
+    const valueNode = node.childForFieldName("value");
+    if (valueNode) {
+        let valueText = valueNode.text;
+        // Truncate to 50 chars + "..." if longer
+        const MAX_VALUE_LENGTH = 50;
+        if (valueText.length > MAX_VALUE_LENGTH) {
+            valueText = valueText.slice(0, MAX_VALUE_LENGTH) + "...";
+        }
+        info.value = valueText;
+    }
+
+    // Extract JSDoc from preceding comment (optional)
+    const docComment = findPrecedingDocComment(root, nodeIndex);
+    if (docComment) {
+        info.jsdoc = jsdoc.parse(docComment);
     }
 
     return info;
@@ -298,4 +423,44 @@ export function lookupFunction(name: string): FunctionInfo | undefined {
  */
 export function clearIndex(): void {
     functionIndex.clear();
+    variableIndex.clear();
+}
+
+// ============================================
+// Variable index
+// ============================================
+
+/** Workspace-wide variable index (only variables with JSDoc). */
+const variableIndex = new Map<string, VariableInfo>();
+
+/**
+ * Update the variable index for a single file.
+ */
+export function updateVariableIndex(uri: string, text: string): void {
+    // Remove old entries from this file
+    clearVariableFromIndex(uri);
+
+    // Parse and add new entries
+    const variables = parseHeaderVariables(text, uri);
+    for (const varInfo of variables) {
+        variableIndex.set(varInfo.name, varInfo);
+    }
+}
+
+/**
+ * Clear all variable entries from a specific file from the index.
+ */
+export function clearVariableFromIndex(uri: string): void {
+    for (const [name, info] of variableIndex) {
+        if (info.location.uri === uri) {
+            variableIndex.delete(name);
+        }
+    }
+}
+
+/**
+ * Look up a variable by name in the workspace index.
+ */
+export function lookupVariable(name: string): VariableInfo | undefined {
+    return variableIndex.get(name);
 }

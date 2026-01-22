@@ -5,6 +5,7 @@
 
 import { Location, Position } from "vscode-languageserver/node";
 import type { Node as SyntaxNode } from "web-tree-sitter";
+import { lookupVariable } from "./header-parser";
 import { getParser, isInitialized } from "./parser";
 import { SyntaxType } from "./tree-sitter.d";
 import { findNodeAtPosition, findAncestorOfType, isSameNode } from "./tree-utils";
@@ -242,6 +243,12 @@ export function matchesSymbol(name1: string, name2: string): boolean {
 /**
  * Find the definition location of a variable at the given position.
  * Returns null if no variable is found at the position or if the variable has no definition.
+ *
+ * Lookup order for file-scoped variables:
+ * 1. Header definition (from workspace index) - authoritative for OUTER_SET/OUTER_SPRINT/OUTER_TEXT_SPRINT
+ * 2. Local declaration (first declaration in current file)
+ *
+ * Loop/function-scoped variables always use local definitions only.
  */
 export function findVariableDefinition(text: string, uri: string, position: Position): Location | null {
     if (!isInitialized()) {
@@ -266,6 +273,14 @@ export function findVariableDefinition(text: string, uri: string, position: Posi
     }
 
     const { varName, scopeInfo } = varInfo;
+
+    // For file-scope variables, check header index first (header definition is authoritative)
+    if (scopeInfo.scope === "file") {
+        const headerVar = lookupVariable(varName);
+        if (headerVar) {
+            return headerVar.location;
+        }
+    }
 
     // Search for the definition based on scope
     let searchScope: SyntaxNode = tree.rootNode;

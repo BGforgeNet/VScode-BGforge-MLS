@@ -15,6 +15,7 @@ vi.mock("../src/server", () => ({
 
 import { getDefinition } from "../src/weidu-tp2/definition";
 import { initParser } from "../src/weidu-tp2/parser";
+import { updateVariableIndex } from "../src/weidu-tp2/header-parser";
 
 beforeAll(async () => {
     await initParser();
@@ -381,5 +382,77 @@ OUTER_SET result = %myvar% + 1
         const result = getDefinition(text, uri, position);
 
         expect(result).toBeNull();
+    });
+});
+
+describe("TP2 definition: header variables", () => {
+    it("finds header variable definition from local usage", () => {
+        const text = `
+// Local file uses %test_var% which is defined in a header
+OUTER_SET result = %test_var% + 1
+`;
+        const uri = "file:///local.tp2";
+        const headerUri = "file:///header.tph";
+
+        // Setup: simulate header file with OUTER_SET test_var = 100
+        const headerText = `
+OUTER_SET test_var = 100
+`;
+        // Populate the variable index as if header file was indexed
+        updateVariableIndex(headerUri, headerText);
+
+        // Cursor on "test_var" in %test_var%
+        const position: Position = { line: 2, character: 21 };
+        const result = getDefinition(text, uri, position);
+
+        expect(result).not.toBeNull();
+        expect(result?.uri).toBe(headerUri);
+        expect(result?.range.start.line).toBe(1);
+        expect(result?.range.start.character).toBe(10); // "test_var" in OUTER_SET
+    });
+
+    it("prefers header definition over local reassignment", () => {
+        const text = `
+// Local file: my_var is defined in header, reassigned locally
+my_var = 2
+OUTER_SET result = %my_var% + 1
+`;
+        const uri = "file:///local.tp2";
+        const headerUri = "file:///header.tph";
+
+        // Setup: simulate header file with OUTER_SET my_var = 1
+        const headerText = `
+OUTER_SET my_var = 1
+`;
+        updateVariableIndex(headerUri, headerText);
+
+        // Cursor on "my_var" in %my_var%
+        const position: Position = { line: 3, character: 21 };
+        const result = getDefinition(text, uri, position);
+
+        expect(result).not.toBeNull();
+        // Should point to header definition, not local reassignment
+        expect(result?.uri).toBe(headerUri);
+        expect(result?.range.start.line).toBe(1);
+        expect(result?.range.start.character).toBe(10); // "my_var" in OUTER_SET
+    });
+
+    it("finds local definition when no header variable exists", () => {
+        const text = `
+OUTER_SET local_var = 42
+OUTER_SET result = %local_var% + 1
+`;
+        const uri = "file:///test.tp2";
+
+        // No header setup - variable is only defined locally
+
+        // Cursor on "local_var" in %local_var%
+        const position: Position = { line: 2, character: 21 };
+        const result = getDefinition(text, uri, position);
+
+        expect(result).not.toBeNull();
+        expect(result?.uri).toBe(uri);
+        expect(result?.range.start.line).toBe(1);
+        expect(result?.range.start.character).toBe(10);
     });
 });

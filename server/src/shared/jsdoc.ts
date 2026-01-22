@@ -28,6 +28,7 @@ export interface JSdoc {
     args: Arg[];
     ret?: Ret;
     deprecated?: string | true;
+    type?: string; // For @type tag (used for variables)
 }
 
 // ============================================
@@ -48,6 +49,9 @@ const RETURN_PATTERN = /@(?:ret|return|returns)\s+\{(\w+)\}/;
 
 /** Pattern for @deprecated tag. Groups: 1=message (optional) */
 const DEPRECATED_PATTERN = /@deprecated(?:\s+(.*))?/;
+
+/** Pattern for @type tag. Groups: 1=type */
+const TYPE_PATTERN = /@type\s+\{(\w+)\}/;
 
 /** Pattern for JSDoc line prefix " * " or " *" */
 const LINE_PREFIX_PATTERN = /^\s*\*\s?/;
@@ -71,6 +75,7 @@ export function parse(text: string): JSdoc {
     const descriptionLines: string[] = [];
     let ret: Ret | undefined;
     let deprecated: string | true | undefined;
+    let type: string | undefined;
 
     for (const rawLine of lines) {
         const line = rawLine.replace(LINE_PREFIX_PATTERN, "");
@@ -95,6 +100,13 @@ export function parse(text: string): JSdoc {
             continue;
         }
 
+        // Try parsing @type
+        const typeResult = parseType(line);
+        if (typeResult) {
+            type = typeResult;
+            continue;
+        }
+
         // Try parsing @deprecated
         const deprecatedResult = parseDeprecated(line);
         if (deprecatedResult !== null) {
@@ -110,6 +122,9 @@ export function parse(text: string): JSdoc {
     }
     if (ret) {
         result.ret = ret;
+    }
+    if (type) {
+        result.type = type;
     }
     if (deprecated !== undefined) {
         result.deprecated = deprecated;
@@ -152,6 +167,15 @@ function parseReturn(line: string): Ret | null {
         return null;
     }
     return { type: match[1] };
+}
+
+/** Parse @type tag. Returns type string or null if no match. */
+function parseType(line: string): string | null {
+    const match = line.match(TYPE_PATTERN);
+    if (!match || !match[1]) {
+        return null;
+    }
+    return match[1];
 }
 
 /** Parse @deprecated tag. Returns true if no message, string if message, null if no match. */

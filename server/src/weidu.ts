@@ -25,7 +25,7 @@ import * as pool from "./shared/pool";
 import { getConnection } from "./lsp-connection";
 import { WeiDUsettings } from "./settings";
 import { LANG_WEIDU_TP2_TOOLTIP } from "./core/languages";
-import { parseHeader, FunctionInfo, updateFileIndex } from "./weidu-tp2/header-parser";
+import { parseHeader, parseHeaderVariables, FunctionInfo, VariableInfo, updateFileIndex, updateVariableIndex } from "./weidu-tp2/header-parser";
 
 const valid_extensions = new Map([
     [".tp2", "tp2"],
@@ -39,6 +39,7 @@ const valid_extensions = new Map([
 /** Header data extracted from a TP2 file. */
 interface WeiduHeaderData {
     functions: FunctionInfo[];
+    variables: VariableInfo[];
 }
 
 /** `text` looks like this
@@ -315,11 +316,12 @@ export async function loadHeaders(headersDirectory: string, headerExtension: str
 }
 
 /**
- * Extract function/macro definitions from TP2 text using tree-sitter.
+ * Extract function/macro and variable definitions from TP2 text using tree-sitter.
  */
 function findSymbols(text: string, uri: string): WeiduHeaderData {
     const functions = parseHeader(text, uri);
-    return { functions };
+    const variables = parseHeaderVariables(text, uri);
+    return { functions, variables };
 }
 
 
@@ -332,17 +334,24 @@ function findSymbols(text: string, uri: string): WeiduHeaderData {
 export function loadFileData(uri: string, text: string, filePath: string) {
     const symbols = findSymbols(text, uri);
     const { completions, hovers, definitions } = buildLanguageData(uri, symbols.functions, filePath);
+    const variableData = buildVariableData(uri, symbols.variables, filePath);
 
-    // Also update the function index for go-to-definition
+    // Also update the function and variable indices for go-to-definition
     updateFileIndex(uri, text);
+    updateVariableIndex(uri, text);
+
+    // Merge variable data into completions/hovers/definitions
+    const allCompletions = [...completions, ...variableData.completions];
+    const allHovers = new Map([...hovers, ...variableData.hovers]);
+    const allDefinitions = new Map([...definitions, ...variableData.definitions]);
 
     // Return all data - routing is handled by data-loader.ts:
     // - .tph files → completion.headers (shared across workspace)
     // - .tpa/.tpp/.tp2 files → completion.self (file-local only)
     const result: LanguageHeaderData = {
-        hover: hovers,
-        completion: completions,
-        definition: definitions,
+        hover: allHovers,
+        completion: allCompletions,
+        definition: allDefinitions,
     };
     return result;
 }
@@ -522,6 +531,77 @@ function buildLanguageData(uri: string, functions: FunctionInfo[], filePath: str
 
         // Build definition location
         definitions.set(func.name, func.location);
+    }
+
+    return { completions, hovers, definitions };
+}
+
+/**
+ * Build completion, hover, and definition data from parsed variables.
+ * All top-level variables are included; JSDoc is optional.
+ */
+function buildVariableData(uri: string, variables: VariableInfo[], filePath: string) {
+    const langId = LANG_WEIDU_TP2_TOOLTIP;
+    const completions: completion.CompletionListEx = [];
+    const hovers: hover.HoverMapEx = new Map();
+    const definitions: definition.Data = new Map();
+
+    for (const varInfo of variables) {
+        // Determine display type: JSDoc @type overrides inferred type
+        const displayType = varInfo.jsdoc?.type ?? varInfo.inferredType;
+
+        // Build signature line
+        const signature = varInfo.value
+            ? `${displayType} ${varInfo.name} = ${varInfo.value}`
+            : `${displayType} ${varInfo.name}`;
+
+        // Build markdown hover content
+        let markdownValue = [
+            "```" + `${langId}`,
+            signature,
+            "```",
+            "```bgforge-mls-comment",
+            filePath,
+            "```",
+        ].join("\n");
+
+        // Add JSDoc description if available
+        if (varInfo.jsdoc?.desc) {
+            markdownValue += `\n\n${varInfo.jsdoc.desc}`;
+        }
+
+        // Add deprecation notice if present
+        if (varInfo.jsdoc?.deprecated !== undefined) {
+            if (varInfo.jsdoc.deprecated === true) {
+                markdownValue += "\n\n⚠️ **Deprecated**";
+            } else {
+                markdownValue += `\n\n⚠️ **Deprecated:** ${varInfo.jsdoc.deprecated}`;
+            }
+        }
+
+        const markdownContents = { kind: MarkupKind.Markdown, value: markdownValue };
+
+        // Build completion item
+        const completionItem: completion.CompletionItemEx = {
+            label: varInfo.name,
+            documentation: markdownContents,
+            source: filePath,
+            kind: CompletionItemKind.Variable,
+            labelDetails: { description: filePath },
+            uri: uri,
+        };
+        if (varInfo.jsdoc?.deprecated !== undefined) {
+            const COMPLETION_TAG_deprecated = 1;
+            completionItem.tags = [COMPLETION_TAG_deprecated];
+        }
+        completions.push(completionItem);
+
+        // Build hover item
+        const hoverItem = { contents: markdownContents, source: filePath, uri: uri };
+        hovers.set(varInfo.name, hoverItem);
+
+        // Build definition location
+        definitions.set(varInfo.name, varInfo.location);
     }
 
     return { completions, hovers, definitions };
