@@ -77,6 +77,47 @@ describe("jsdoc.parse", () => {
             expect(result.args[1].name).toBe("name");
             expect(result.args[2].name).toBe("enabled");
         });
+
+        it("parses @param with ! suffix as required", () => {
+            const input = `/**
+ * @param {int} count! Required parameter
+ */`;
+            const result = jsdoc.parse(input);
+            expect(result.args).toHaveLength(1);
+            expect(result.args[0]).toEqual({
+                name: "count",
+                type: "int",
+                required: true,
+                description: "Required parameter",
+            });
+        });
+
+        it("parses mixed required and optional params", () => {
+            const input = `/**
+ * @param {int} count! Required count
+ * @param {string} name Optional name
+ * @param {bool} enabled! Required flag
+ */`;
+            const result = jsdoc.parse(input);
+            expect(result.args).toHaveLength(3);
+            expect(result.args[0]).toEqual({
+                name: "count",
+                type: "int",
+                required: true,
+                description: "Required count",
+            });
+            expect(result.args[1]).toEqual({
+                name: "name",
+                type: "string",
+                description: "Optional name",
+            });
+            expect(result.args[2]).toEqual({
+                name: "enabled",
+                type: "bool",
+                required: true,
+                description: "Required flag",
+            });
+        });
     });
 
     describe("@return parsing", () => {

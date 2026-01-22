@@ -12,7 +12,7 @@ import { Language, Features } from "../data-loader";
 import { FormatResult, LanguageProvider, ProviderContext } from "../language-provider";
 import { getEditorconfigSettings } from "../shared/editorconfig";
 import { createFullDocumentEdit, validateFormatting } from "../shared/format-utils";
-import { buildDescriptionMap } from "../shared/jsdoc";
+import { buildParamInfoMap, type ParamDisplayInfo } from "../shared/jsdoc";
 import { compile as weiduCompile } from "../weidu";
 import { getContextAtPosition, getFuncParamsContext } from "./completion-context";
 import { filterItemsByContext } from "./completion-filter";
@@ -296,7 +296,7 @@ function getParamCompletions(context: FuncParamsContext): CompletionItem[] {
 
     const usedSet = new Set(usedParams);
     const completions: CompletionItem[] = [];
-    const paramDescriptions = buildDescriptionMap(funcInfo.jsdoc);
+    const paramInfoMap = buildParamInfoMap(funcInfo.jsdoc);
 
     // Get the appropriate param list based on section
     switch (paramSection) {
@@ -304,7 +304,7 @@ function getParamCompletions(context: FuncParamsContext): CompletionItem[] {
             const params = funcInfo.params.intVar;
             for (const param of params) {
                 if (!usedSet.has(param.name)) {
-                    completions.push(createParamCompletion(param.name, "int", param.defaultValue, paramDescriptions.get(param.name)));
+                    completions.push(createParamCompletion(param.name, "int", param.defaultValue, paramInfoMap.get(param.name)));
                 }
             }
             break;
@@ -313,7 +313,7 @@ function getParamCompletions(context: FuncParamsContext): CompletionItem[] {
             const params = funcInfo.params.strVar;
             for (const param of params) {
                 if (!usedSet.has(param.name)) {
-                    completions.push(createParamCompletion(param.name, "string", param.defaultValue, paramDescriptions.get(param.name)));
+                    completions.push(createParamCompletion(param.name, "string", param.defaultValue, paramInfoMap.get(param.name)));
                 }
             }
             break;
@@ -322,7 +322,7 @@ function getParamCompletions(context: FuncParamsContext): CompletionItem[] {
             const params = funcInfo.params.ret;
             for (const param of params) {
                 if (!usedSet.has(param)) {
-                    completions.push(createParamCompletion(param, "any", undefined, paramDescriptions.get(param)));
+                    completions.push(createParamCompletion(param, "any", undefined, paramInfoMap.get(param)));
                 }
             }
             break;
@@ -331,7 +331,7 @@ function getParamCompletions(context: FuncParamsContext): CompletionItem[] {
             const params = funcInfo.params.retArray;
             for (const param of params) {
                 if (!usedSet.has(param)) {
-                    completions.push(createParamCompletion(param, "array", undefined, paramDescriptions.get(param)));
+                    completions.push(createParamCompletion(param, "array", undefined, paramInfoMap.get(param)));
                 }
             }
             break;
@@ -343,18 +343,19 @@ function getParamCompletions(context: FuncParamsContext): CompletionItem[] {
 
 /**
  * Create a parameter completion item with documentation.
- * Format: "type name = default" with description.
+ * Format: "type name = default" for optional params, "type name" for required.
  */
-function createParamCompletion(name: string, type: string, defaultValue?: string, description?: string): CompletionItem {
-    // Build signature line like "string xxxs = "bzzzz""
-    const signature = defaultValue ? `${type} ${name} = ${defaultValue}` : `${type} ${name}`;
+function createParamCompletion(name: string, type: string, defaultValue?: string, info?: ParamDisplayInfo): CompletionItem {
+    // Build signature line - hide default value for required params
+    const showDefault = defaultValue && !info?.required;
+    const signature = showDefault ? `${type} ${name} = ${defaultValue}` : `${type} ${name}`;
 
     // Build markdown documentation
     const langId = "weidu-tp2-tooltip";
     const docParts = [`\`\`\`${langId}`, signature, "```"];
 
-    if (description) {
-        docParts.push("", description);
+    if (info?.description) {
+        docParts.push("", info.description);
     }
 
     const item: CompletionItem = {
@@ -391,11 +392,13 @@ function getFunctionParamHover(text: string, symbol: string): Hover | null {
         return null;
     }
 
-    const { paramType, defaultValue, description } = result;
+    const { paramType, defaultValue, description, required } = result;
 
-    // Build hover content similar to completion documentation
-    const signature = defaultValue ? `${paramType} ${symbol} = ${defaultValue}` : `${paramType} ${symbol}`;
+    // Build hover content - hide default value for required params
+    const showDefault = defaultValue && !required;
+    const signature = showDefault ? `${paramType} ${symbol} = ${defaultValue}` : `${paramType} ${symbol}`;
 
+    // Build markdown documentation
     const langId = "weidu-tp2-tooltip";
     const docParts = [`\`\`\`${langId}`, signature, "```"];
 
@@ -418,7 +421,7 @@ function getFunctionParamHover(text: string, symbol: string): Hover | null {
 function findParamInFunctionCalls(
     node: import("web-tree-sitter").Node,
     symbol: string
-): { paramType: string; defaultValue?: string; description?: string } | null {
+): { paramType: string; defaultValue?: string; description?: string; required?: boolean } | null {
     const type = node.type;
 
     // Check if this is a function call (LAF or LPF)
@@ -456,38 +459,39 @@ function findParamInFunctionCalls(
 function findParamInFuncInfo(
     funcInfo: FunctionInfo,
     symbol: string
-): { paramType: string; defaultValue?: string; description?: string } | null {
+): { paramType: string; defaultValue?: string; description?: string; required?: boolean } | null {
     if (!funcInfo.params) {
         return null;
     }
 
-    const descriptions = buildDescriptionMap(funcInfo.jsdoc);
+    const paramInfoMap = buildParamInfoMap(funcInfo.jsdoc);
+    const info = paramInfoMap.get(symbol);
 
     // Check INT_VAR
     for (const param of funcInfo.params.intVar) {
         if (param.name === symbol) {
-            return { paramType: "int", defaultValue: param.defaultValue, description: descriptions.get(symbol) };
+            return { paramType: "int", defaultValue: param.defaultValue, description: info?.description, required: info?.required };
         }
     }
 
     // Check STR_VAR
     for (const param of funcInfo.params.strVar) {
         if (param.name === symbol) {
-            return { paramType: "string", defaultValue: param.defaultValue, description: descriptions.get(symbol) };
+            return { paramType: "string", defaultValue: param.defaultValue, description: info?.description, required: info?.required };
         }
     }
 
     // Check RET
     for (const param of funcInfo.params.ret) {
         if (param === symbol) {
-            return { paramType: "any", description: descriptions.get(symbol) };
+            return { paramType: "any", description: info?.description, required: info?.required };
         }
     }
 
     // Check RET_ARRAY
     for (const param of funcInfo.params.retArray) {
         if (param === symbol) {
-            return { paramType: "array", description: descriptions.get(symbol) };
+            return { paramType: "array", description: info?.description, required: info?.required };
         }
     }
 

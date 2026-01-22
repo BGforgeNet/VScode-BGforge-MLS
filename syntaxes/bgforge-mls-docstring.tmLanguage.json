@@ -20,7 +20,7 @@
     "arg": {
       "patterns": [
         {
-          "match": "(@arg|@param|@ret)(\\s+{(\\w+)})?((\\s+\\w+)|(\\s+\\[(\\w+)=(.+)\\]))?",
+          "match": "(@arg|@param|@ret)(\\s+{(\\w+)})?((\\s+(\\w+)(!)?)|(\\s+\\[(\\w+)=(.+)\\]))?",
           "captures": {
             "1": {
               "name": "support.function.bgforge-mls-docstring"
@@ -39,13 +39,16 @@
             "4": {
               "name": "variable.bgforge-mls-docstring"
             },
-            "6": {
-              "name": "keyword.bgforge-mls-docstring"
-            },
             "7": {
-              "name": "variable.bgforge-mls-docstring"
+              "name": "invalid"
             },
             "8": {
+              "name": "keyword.bgforge-mls-docstring"
+            },
+            "9": {
+              "name": "variable.bgforge-mls-docstring"
+            },
+            "10": {
               "name": "variable.bgforge-mls-docstring"
             }
           }

@@ -1388,10 +1388,10 @@ export default grammar({
         _func_decl_param: ($) => choice($.int_var_decl, $.str_var_decl, $.ret_decl, $.ret_array_decl),
 
         int_var_decl: ($) =>
-            seq("INT_VAR", repeat(seq(choice($.identifier, $.string), optional(seq("=", $.value))))),
+            seq("INT_VAR", repeat(seq(choice($.identifier, $.string), "=", $.value))),
 
         str_var_decl: ($) =>
-            seq("STR_VAR", repeat(seq(choice($.identifier, $.string), optional(seq("=", $.value))))),
+            seq("STR_VAR", repeat(seq(choice($.identifier, $.string), "=", $.value))),
 
         ret_decl: ($) => seq("RET", repeat1($.identifier)),
         ret_array_decl: ($) => seq("RET_ARRAY", repeat1($.identifier)),

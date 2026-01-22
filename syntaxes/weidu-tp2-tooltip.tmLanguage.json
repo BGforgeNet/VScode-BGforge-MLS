@@ -90,7 +90,7 @@
     "datatypes": {
       "patterns": [
         {
-          "match": "\\b(multi )?(int|byte|char array|char|word|dword|resref|strref|bool|string|array|map|ids|filename|list)\\b",
+          "match": "\\b(multi )?(int|byte|char array|char|word|dword|resref|strref)\\b",
           "name": "support.type.weidu-tp2-tooltip.datatype"
         },
         {

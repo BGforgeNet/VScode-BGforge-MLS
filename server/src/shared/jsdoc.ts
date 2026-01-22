@@ -15,6 +15,7 @@ export interface Arg {
     type: string;
     default?: string;
     description?: string;
+    required?: boolean; // True if name ends with ! (e.g., @param {int} count!)
 }
 
 /** Parsed return type info. */
@@ -38,11 +39,12 @@ export interface JSdoc {
 /**
  * Pattern for @param/@arg tags.
  * Matches: @param {type} name - description
+ *      or: @param {type} name! - description (required)
  *      or: @param {type} [name=default] - description
  *
- * Groups: 1=type, 2=simpleName, 3=bracketName, 4=default, 5=description
+ * Groups: 1=type, 2=simpleName, 3=requiredMarker(!), 4=bracketName, 5=default, 6=description
  */
-const PARAM_PATTERN = /@(?:arg|param)\s+\{(\w+)\}\s+(?:(\w+)|\[(\w+)=([^\]]+)\])(?:\s+-\s+|\s+)?(.+)?/;
+const PARAM_PATTERN = /@(?:arg|param)\s+\{(\w+)\}\s+(?:(\w+)(!)?|\[(\w+)=([^\]]+)\])(?:\s+-\s+|\s+)?(.+)?/;
 
 /** Pattern for @return/@returns/@ret tags. Groups: 1=type */
 const RETURN_PATTERN = /@(?:ret|return|returns)\s+\{(\w+)\}/;
@@ -140,7 +142,7 @@ function parseParam(line: string): Arg | null {
         return null;
     }
 
-    const [, type, simpleName, bracketName, defaultValue, description] = match;
+    const [, type, simpleName, requiredMarker, bracketName, defaultValue, description] = match;
     const name = simpleName || bracketName;
 
     // Type and name are required
@@ -150,6 +152,9 @@ function parseParam(line: string): Arg | null {
 
     const arg: Arg = { name, type };
 
+    if (requiredMarker === "!") {
+        arg.required = true;
+    }
     if (defaultValue) {
         arg.default = defaultValue;
     }
@@ -192,6 +197,12 @@ function parseDeprecated(line: string): string | true | null {
 // Utility functions
 // ============================================
 
+/** Parameter info from JSDoc for display purposes. */
+export interface ParamDisplayInfo {
+    description?: string;
+    required?: boolean;
+}
+
 /**
  * Build a map of parameter names to their descriptions from JSDoc.
  * Returns empty map if jsdoc or args is undefined/empty.
@@ -204,6 +215,30 @@ export function buildDescriptionMap(jsdoc?: JSdoc): Map<string, string> {
     for (const arg of jsdoc.args) {
         if (arg.description) {
             map.set(arg.name, arg.description);
+        }
+    }
+    return map;
+}
+
+/**
+ * Build a map of parameter names to their display info (description, required) from JSDoc.
+ * Returns empty map if jsdoc or args is undefined/empty.
+ */
+export function buildParamInfoMap(jsdoc?: JSdoc): Map<string, ParamDisplayInfo> {
+    const map = new Map<string, ParamDisplayInfo>();
+    if (!jsdoc?.args) {
+        return map;
+    }
+    for (const arg of jsdoc.args) {
+        const info: ParamDisplayInfo = {};
+        if (arg.description) {
+            info.description = arg.description;
+        }
+        if (arg.required) {
+            info.required = true;
+        }
+        if (info.description || info.required) {
+            map.set(arg.name, info);
         }
     }
     return map;
