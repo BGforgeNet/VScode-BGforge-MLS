@@ -12,10 +12,21 @@ import {
 } from "../shared/completion-context";
 import { getParser, isInitialized } from "./parser";
 import { isAction, isPatch } from "./format-utils";
+import { stripStringDelimiters } from "./tree-utils";
 
 // ============================================
 // Context Types
 // ============================================
+
+/**
+ * Enriched context for function parameter completion.
+ * Contains function name, parameter section, and already-used params.
+ */
+export interface FuncParamsContext {
+    functionName: string;
+    paramSection: "INT_VAR" | "STR_VAR" | "RET" | "RET_ARRAY";
+    usedParams: string[];
+}
 
 /**
  * Completion context types matching grammar hierarchy.
@@ -54,6 +65,25 @@ export type CompletionContext =
     | "lpfName"         // After LPF keyword (patch functions only)
     | "funcParams"      // Inside function def/call parameter section (INT_VAR, STR_VAR, RET valid)
     | "unknown";        // Fallback - return everything
+
+// ============================================
+// Enriched Context Storage
+// ============================================
+
+/**
+ * Module-level storage for enriched function params context.
+ * Set by detectFunctionCallContext when cursor is in funcParams context.
+ * Retrieved by getFuncParamsContext() for parameter completion.
+ */
+let lastFuncParamsContext: FuncParamsContext | null = null;
+
+/**
+ * Get the enriched function params context from the last completion request.
+ * Returns null if context is not funcParams or if function info cannot be determined.
+ */
+export function getFuncParamsContext(): FuncParamsContext | null {
+    return lastFuncParamsContext;
+}
 
 // ============================================
 // Exclusion-Based Filtering
@@ -734,6 +764,155 @@ function detectFlagContext(node: SyntaxNode): CompletionContext[] | null {
 }
 
 /**
+ * Extract enriched context from a function call node (LAF/LPF).
+ * Determines parameter section, used params, and function name.
+ * Stores result in module-level lastFuncParamsContext.
+ */
+function extractFuncParamsContext(node: SyntaxNode, cursorOffset: number): void {
+    // Clear previous context
+    lastFuncParamsContext = null;
+
+    // Get function name from "name" field
+    const nameNode = node.childForFieldName("name");
+    if (!nameNode) {
+        return;
+    }
+
+    // Strip WeiDU string delimiters (tildes, quotes, percent signs)
+    const functionName = stripStringDelimiters(nameNode.text);
+
+    // Find the last section keyword that starts before the cursor
+    // Bug fix: With incomplete code (e.g., "bonus =" without value), tree-sitter error recovery
+    // can extend INT_VAR section node bounds past STR_VAR, merging both into one int_var_call node.
+    // Instead of using node bounds, we recursively search for actual keyword nodes ("INT_VAR",
+    // "STR_VAR", etc.) and track the last one before cursor, which correctly identifies the current section.
+    let lastSectionNode: SyntaxNode | null = null;
+    let lastSectionType: "INT_VAR" | "STR_VAR" | "RET" | "RET_ARRAY" | null = null;
+    let lastKeywordPosition: number = -1; // Position of the keyword for filtering params
+
+    // Helper to recursively find keyword nodes in the tree
+    // With incomplete/erroneous code, tree-sitter may parse keywords as identifiers nested inside
+    // value nodes. We look for keyword text matching "INT_VAR", "STR_VAR", etc. in any node type,
+    // then verify it's at the right level (not nested inside call_item nodes).
+    function findKeywordNodes(searchNode: SyntaxNode, depth: number = 0): void {
+        const text = searchNode.text;
+
+        // Check if this node looks like a keyword (text matches and not nested inside call_item)
+        if (searchNode.startIndex < cursorOffset) {
+            const isKeywordText = text === "INT_VAR" || text === "STR_VAR" || text === "RET" || text === "RET_ARRAY";
+
+            if (isKeywordText) {
+                // This looks like a keyword - determine which section and find the ancestor node
+                let ancestor: SyntaxNode | null;
+                if (text === "INT_VAR") {
+                    lastSectionType = "INT_VAR";
+                    lastKeywordPosition = searchNode.endIndex;
+                    // Find the int_var_call ancestor to extract params from
+                    ancestor = searchNode.parent;
+                    while (ancestor && ancestor.type !== SyntaxType.IntVarCall) {
+                        ancestor = ancestor.parent;
+                    }
+                    if (ancestor) lastSectionNode = ancestor;
+                } else if (text === "STR_VAR") {
+                    lastSectionType = "STR_VAR";
+                    lastKeywordPosition = searchNode.endIndex;
+                    // Find the str_var_call ancestor to extract params from
+                    // Bug fix: With error recovery, STR_VAR might not have a str_var_call ancestor yet.
+                    // Instead, we should create a virtual section or extract params differently.
+                    // For now, we mark it as STR_VAR section even if no ancestor found.
+                    ancestor = searchNode.parent;
+                    while (ancestor && ancestor !== node && ancestor.type !== SyntaxType.StrVarCall) {
+                        ancestor = ancestor.parent;
+                    }
+                    // If no str_var_call found, try to use the int_var_call (which erroneously contains it)
+                    if (!ancestor || ancestor === node) {
+                        ancestor = searchNode.parent;
+                        while (ancestor && ancestor !== node && ancestor.type !== SyntaxType.IntVarCall) {
+                            ancestor = ancestor.parent;
+                        }
+                    }
+                    if (ancestor && ancestor !== node) lastSectionNode = ancestor;
+                } else if (text === "RET") {
+                    lastSectionType = "RET";
+                    lastKeywordPosition = searchNode.endIndex;
+                    ancestor = searchNode.parent;
+                    while (ancestor && ancestor.type !== SyntaxType.RetCall) {
+                        ancestor = ancestor.parent;
+                    }
+                    if (ancestor) lastSectionNode = ancestor;
+                } else if (text === "RET_ARRAY") {
+                    lastSectionType = "RET_ARRAY";
+                    lastKeywordPosition = searchNode.endIndex;
+                    ancestor = searchNode.parent;
+                    while (ancestor && ancestor.type !== SyntaxType.RetArrayCall) {
+                        ancestor = ancestor.parent;
+                    }
+                    if (ancestor) lastSectionNode = ancestor;
+                }
+            }
+        }
+
+        // Recurse to children
+        for (const child of searchNode.children) {
+            findKeywordNodes(child, depth + 1);
+        }
+    }
+
+    findKeywordNodes(node);
+
+    // Extract used params from the last section node we found
+    if (lastSectionType && lastSectionNode) {
+        // Extract params, filtering by keyword position if needed
+        // Bug fix: When STR_VAR is inside int_var_call (error recovery), we need to extract
+        // only params that appear after the STR_VAR keyword position
+        const usedParams = extractUsedParamsAfter(lastSectionNode, lastKeywordPosition);
+        lastFuncParamsContext = {
+            functionName,
+            paramSection: lastSectionType,
+            usedParams,
+        };
+    }
+}
+
+/**
+ * Extract parameter names that appear after a given position in a section node.
+ * Used when keywords are misparsed due to error recovery.
+ */
+function extractUsedParamsAfter(sectionNode: SyntaxNode, afterPosition: number): string[] {
+    const params: string[] = [];
+
+    for (const child of sectionNode.children) {
+        // Only consider children that start after the keyword position
+        if (child.startIndex <= afterPosition) {
+            continue;
+        }
+
+        const type = child.type;
+
+        // INT_VAR/STR_VAR have call_item children
+        if (type === SyntaxType.IntVarCallItem || type === SyntaxType.StrVarCallItem) {
+            const firstChild = child.children[0];
+            if (firstChild && (firstChild.type === SyntaxType.Identifier || firstChild.type === SyntaxType.String)) {
+                params.push(firstChild.text);
+            }
+        }
+        // RET/RET_ARRAY have direct identifier children
+        else if (type === SyntaxType.Identifier) {
+            params.push(child.text);
+        }
+        // Also check for RET_CALL_ITEM and RET_ARRAY_CALL_ITEM
+        else if (type === SyntaxType.RetCallItem || type === SyntaxType.RetArrayCallItem) {
+            const firstChild = child.children[0];
+            if (firstChild && firstChild.type === SyntaxType.Identifier) {
+                params.push(firstChild.text);
+            }
+        }
+    }
+
+    return params;
+}
+
+/**
  * Check if cursor is at function call name position (LAF/LPF).
  * Returns context array if detected, null otherwise.
  */
@@ -773,6 +952,8 @@ function detectFunctionCallContext(node: SyntaxNode, cursorOffset: number): Comp
             }
             parent = parent.parent;
         }
+        // Extract enriched context for parameter completion
+        extractFuncParamsContext(node, cursorOffset);
         return ["funcParams"];
     }
 
@@ -783,6 +964,8 @@ function detectFunctionCallContext(node: SyntaxNode, cursorOffset: number): Comp
         }
         // After function name → funcParams context (for INT_VAR, STR_VAR, RET, etc.)
         // LPF is valid inside patches blocks, so always return funcParams
+        // Extract enriched context for parameter completion
+        extractFuncParamsContext(node, cursorOffset);
         return ["funcParams"];
     }
 

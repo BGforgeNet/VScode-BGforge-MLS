@@ -3,7 +3,7 @@
  * Implements all TP2 file features in one place.
  */
 
-import { CompletionItem, CompletionItemKind, DocumentSymbol, Hover, Location, Position, WorkspaceEdit } from "vscode-languageserver/node";
+import { CompletionItem, CompletionItemKind, DocumentSymbol, Hover, Location, Position, WorkspaceEdit, InsertTextFormat, MarkupKind } from "vscode-languageserver/node";
 import { extname } from "path";
 import { fileURLToPath } from "url";
 import { conlog } from "../common";
@@ -13,12 +13,14 @@ import { FormatResult, LanguageProvider, ProviderContext } from "../language-pro
 import { getEditorconfigSettings } from "../shared/editorconfig";
 import { createFullDocumentEdit, validateFormatting } from "../shared/format-utils";
 import { compile as weiduCompile } from "../weidu";
-import { getContextAtPosition, filterItemsByContext } from "./completion-context";
+import { getContextAtPosition, filterItemsByContext, getFuncParamsContext } from "./completion-context";
 import { formatDocument as formatAst, FormatOptions } from "./format-core";
 import { initParser, getParser, isInitialized } from "./parser";
 import { getDocumentSymbols } from "./symbol";
 import { getDefinition } from "./definition";
-import { updateFileIndex, clearFileFromIndex, updateVariableIndex, clearVariableFromIndex } from "./header-parser";
+import { updateFileIndex, clearFileFromIndex, updateVariableIndex, clearVariableFromIndex, lookupFunction, FunctionInfo } from "./header-parser";
+import { SyntaxType } from "./tree-sitter.d";
+import { stripStringDelimiters } from "./tree-utils";
 import { renameSymbol, prepareRenameSymbol } from "./rename";
 import { VARIABLE_DECL_TYPES } from "./variable-symbols";
 
@@ -74,13 +76,29 @@ export const weiduTp2Provider: LanguageProvider = {
 
         // Add local variable completions
         const localVars = localCompletion(text);
-        const allItems = [...items, ...localVars];
+        let allItems = [...items, ...localVars];
+
+        // Check if we're in funcParams context and can provide parameter completions
+        if (contexts.includes("funcParams")) {
+            const funcContext = getFuncParamsContext();
+            if (funcContext) {
+                const paramCompletions = getParamCompletions(funcContext);
+                if (paramCompletions.length > 0) {
+                    // Add param completions to the list
+                    allItems = [...allItems, ...paramCompletions];
+                }
+            }
+        }
 
         return filterItemsByContext(allItems, contexts);
     },
 
     getHover(uri: string, symbol: string): Hover | null {
         return language?.hover(uri, symbol) ?? null;
+    },
+
+    hover(text: string, symbol: string, _uri: string): Hover | null {
+        return getFunctionParamHover(text, symbol);
     },
 
     getSymbolDefinition(symbol: string): Location | null {
@@ -262,4 +280,235 @@ function localCompletion(text: string): CompletionItem[] {
         label: name,
         kind: CompletionItemKind.Variable,
     }));
+}
+
+/**
+ * Generate parameter completions for a function call.
+ * Looks up the function definition and returns completions for unused parameters.
+ */
+function getParamCompletions(context: import("./completion-context").FuncParamsContext): CompletionItem[] {
+    const { functionName, paramSection, usedParams } = context;
+
+    // Look up function definition
+    const funcInfo = lookupFunction(functionName);
+    if (!funcInfo || !funcInfo.params) {
+        // Function not found or has no params (it's a macro)
+        return [];
+    }
+
+    const usedSet = new Set(usedParams);
+    const completions: CompletionItem[] = [];
+
+    // Build a map of param name -> JSDoc description from function's JSDoc
+    const paramDescriptions = new Map<string, string>();
+    if (funcInfo.jsdoc?.args) {
+        for (const arg of funcInfo.jsdoc.args) {
+            if (arg.description) {
+                paramDescriptions.set(arg.name, arg.description);
+            }
+        }
+    }
+
+    // Get the appropriate param list based on section
+    switch (paramSection) {
+        case "INT_VAR": {
+            const params = funcInfo.params.intVar;
+            for (const param of params) {
+                if (!usedSet.has(param.name)) {
+                    completions.push(createParamCompletion(param.name, "int", param.defaultValue, paramDescriptions.get(param.name)));
+                }
+            }
+            break;
+        }
+        case "STR_VAR": {
+            const params = funcInfo.params.strVar;
+            for (const param of params) {
+                if (!usedSet.has(param.name)) {
+                    completions.push(createParamCompletion(param.name, "string", param.defaultValue, paramDescriptions.get(param.name)));
+                }
+            }
+            break;
+        }
+        case "RET": {
+            const params = funcInfo.params.ret;
+            for (const param of params) {
+                if (!usedSet.has(param)) {
+                    completions.push(createParamCompletion(param, "any", undefined, paramDescriptions.get(param)));
+                }
+            }
+            break;
+        }
+        case "RET_ARRAY": {
+            const params = funcInfo.params.retArray;
+            for (const param of params) {
+                if (!usedSet.has(param)) {
+                    completions.push(createParamCompletion(param, "array", undefined, paramDescriptions.get(param)));
+                }
+            }
+            break;
+        }
+    }
+
+    return completions;
+}
+
+/**
+ * Create a parameter completion item with documentation.
+ * Format: "type name = default" with description.
+ */
+function createParamCompletion(name: string, type: string, defaultValue?: string, description?: string): CompletionItem {
+    // Build signature line like "string xxxs = "bzzzz""
+    const signature = defaultValue ? `${type} ${name} = ${defaultValue}` : `${type} ${name}`;
+
+    // Build markdown documentation
+    const langId = "weidu-tp2-tooltip";
+    const docParts = [`\`\`\`${langId}`, signature, "```"];
+
+    if (description) {
+        docParts.push("", description);
+    }
+
+    const item: CompletionItem = {
+        label: name,
+        kind: CompletionItemKind.Field,
+        insertText: `${name} = `,
+        insertTextFormat: InsertTextFormat.PlainText,
+        documentation: {
+            kind: MarkupKind.Markdown,
+            value: docParts.join("\n"),
+        },
+    };
+
+    return item;
+}
+
+/**
+ * Get hover info for a function parameter in a function call.
+ * Parses text to find function calls and checks if symbol is a parameter name.
+ */
+function getFunctionParamHover(text: string, symbol: string): Hover | null {
+    if (!isInitialized()) {
+        return null;
+    }
+
+    const tree = getParser().parse(text);
+    if (!tree) {
+        return null;
+    }
+
+    // Find function calls and check if symbol is a parameter name
+    const result = findParamInFunctionCalls(tree.rootNode, symbol);
+    if (!result) {
+        return null;
+    }
+
+    const { paramType, defaultValue, description } = result;
+
+    // Build hover content similar to completion documentation
+    const signature = defaultValue ? `${paramType} ${symbol} = ${defaultValue}` : `${paramType} ${symbol}`;
+
+    const langId = "weidu-tp2-tooltip";
+    const docParts = [`\`\`\`${langId}`, signature, "```"];
+
+    if (description) {
+        docParts.push("", description);
+    }
+
+    return {
+        contents: {
+            kind: MarkupKind.Markdown,
+            value: docParts.join("\n"),
+        },
+    };
+}
+
+/**
+ * Find a parameter in function calls within the AST.
+ * Returns param info if found, null otherwise.
+ */
+function findParamInFunctionCalls(
+    node: import("web-tree-sitter").Node,
+    symbol: string
+): { paramType: string; defaultValue?: string; description?: string } | null {
+    const type = node.type;
+
+    // Check if this is a function call (LAF or LPF)
+    if (type === SyntaxType.ActionLaunchFunction || type === SyntaxType.PatchLaunchFunction) {
+        const nameNode = node.childForFieldName("name");
+        if (nameNode) {
+            const funcName = stripStringDelimiters(nameNode.text);
+            const funcInfo = lookupFunction(funcName);
+
+            if (funcInfo?.params) {
+                // Check each parameter section for the symbol
+                const result = findParamInFuncInfo(funcInfo, symbol);
+                if (result) {
+                    return result;
+                }
+            }
+        }
+    }
+
+    // Recurse to children
+    for (const child of node.children) {
+        const result = findParamInFunctionCalls(child, symbol);
+        if (result) {
+            return result;
+        }
+    }
+
+    return null;
+}
+
+/**
+ * Find a parameter by name in function info.
+ * Returns type and default value if found.
+ */
+function findParamInFuncInfo(
+    funcInfo: FunctionInfo,
+    symbol: string
+): { paramType: string; defaultValue?: string; description?: string } | null {
+    if (!funcInfo.params) {
+        return null;
+    }
+
+    // Build description map from JSDoc
+    const descriptions = new Map<string, string>();
+    if (funcInfo.jsdoc?.args) {
+        for (const arg of funcInfo.jsdoc.args) {
+            if (arg.description) {
+                descriptions.set(arg.name, arg.description);
+            }
+        }
+    }
+
+    // Check INT_VAR
+    for (const param of funcInfo.params.intVar) {
+        if (param.name === symbol) {
+            return { paramType: "int", defaultValue: param.defaultValue, description: descriptions.get(symbol) };
+        }
+    }
+
+    // Check STR_VAR
+    for (const param of funcInfo.params.strVar) {
+        if (param.name === symbol) {
+            return { paramType: "string", defaultValue: param.defaultValue, description: descriptions.get(symbol) };
+        }
+    }
+
+    // Check RET
+    for (const param of funcInfo.params.ret) {
+        if (param === symbol) {
+            return { paramType: "any", description: descriptions.get(symbol) };
+        }
+    }
+
+    // Check RET_ARRAY
+    for (const param of funcInfo.params.retArray) {
+        if (param === symbol) {
+            return { paramType: "array", description: descriptions.get(symbol) };
+        }
+    }
+
+    return null;
 }

@@ -412,10 +412,36 @@ function buildLanguageData(uri: string, functions: FunctionInfo[], filePath: str
                 return KNOWN_TYPES.has(type) ? `[${type}](${IELIB_TYPES_URL}${type})` : type;
             };
 
-            /** Truncate description to max length with ellipsis. */
+            /** Truncate description to max length with ellipsis.
+             * Preserves markdown links by not cutting through them.
+             */
             const truncateDesc = (desc: string): string => {
                 if (desc.length <= DESC_MAX_LENGTH) return desc;
-                return desc.slice(0, DESC_MAX_LENGTH - 3) + "...";
+
+                // Find all markdown links and their positions
+                const linkRegex = /\[([^\]]+)\]\([^)]+\)/g;
+                let match;
+                const links: { start: number; end: number }[] = [];
+                while ((match = linkRegex.exec(desc)) !== null) {
+                    links.push({ start: match.index, end: match.index + match[0].length });
+                }
+
+                // Find a safe truncation point that doesn't cut through a link
+                let cutPoint = DESC_MAX_LENGTH - 3;
+                for (const link of links) {
+                    // If cut point is inside a link, move it before the link
+                    if (cutPoint > link.start && cutPoint < link.end) {
+                        cutPoint = link.start;
+                        break;
+                    }
+                }
+
+                if (cutPoint <= 0) {
+                    // Edge case: first link is too long, just show it without truncation
+                    return desc;
+                }
+
+                return desc.slice(0, cutPoint).trimEnd() + "...";
             };
 
             /** Add section header row. */
