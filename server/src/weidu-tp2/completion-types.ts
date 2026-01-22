@@ -29,6 +29,12 @@ export interface FuncParamsContext {
  * These contexts only allow corresponding function names:
  * - lafName: only actionFunctions (LAF calls action functions)
  * - lpfName: only patchFunctions (LPF calls patch functions)
+ *
+ * **Note on funcParamName/funcParamValue:**
+ * These contexts distinguish left and right sides of = in function parameters:
+ * - funcParamName: parameter name position (left of = or no =)
+ * - funcParamValue: parameter value position (right of =)
+ * When uncertain, prefer funcParamName.
  */
 export type CompletionContext =
     | "prologue"        // BACKUP, AUTHOR before any flag/language
@@ -41,57 +47,9 @@ export type CompletionContext =
     | "when"            // After COPY file pairs - when conditions allowed
     | "lafName"         // After LAF keyword (action functions only)
     | "lpfName"         // After LPF keyword (patch functions only)
-    | "funcParams"      // Inside function def/call parameter section (INT_VAR, STR_VAR, RET valid)
+    | "funcParamName"   // Function parameter name (left of = or no =)
+    | "funcParamValue"  // Function parameter value (right of =)
     | "unknown";        // Fallback - return everything
 
-/**
- * Valid completion item categories for WeiDU TP2.
- * Categories determine where completions should appear based on context.
- *
- * **Category types:**
- * - **Structural**: prologue, flag, componentFlag - File/component structure directives
- * - **Commands**: action, patch - Context-specific statements (value positions)
- * - **Keywords**: actionKeywords, patchKeywords - Command-position variants of action/patch
- * - **Functions**: actionFunctions, patchFunctions - User-defined functions
- * - **Values**: constants, vars, value, when, optGlob, optCase, optExact, arraySortType - Value-position items
- * - **IElib**: ielibInt, ielibResref - IElib library constants
- * - **IESDP**: iesdpOther, iesdpStrref, iesdpResref, iesdpDword, iesdpWord, iesdpByte, iesdpChar - Engine constants (patch-only)
- * - **Language**: language - LANGUAGE directive (flag section)
- *
- * @see CATEGORY_EXCLUSIONS in completion-filter.ts for exclusion rules per category
- */
-export type CompletionCategory =
-    // Structural directives
-    | "prologue"
-    | "flag"
-    | "componentFlag"
-    | "language"
-    // Action context (value position)
-    | "action"
-    // Patch context (value position)
-    | "patch"
-    // Value items (not commands)
-    | "constants"
-    | "vars"
-    | "value"
-    | "when"
-    | "optGlob"
-    | "optCase"
-    | "optExact"
-    | "arraySortType"
-    // Function parameter keywords (INT_VAR, STR_VAR, RET, RET_ARRAY)
-    | "funcVarKeyword"
-    // Function libraries
-    | "actionFunctions"
-    | "patchFunctions"
-    // IElib constants
-    | "ielibInt"
-    | "ielibResref"
-    // IESDP constants (patch-only, engine-defined)
-    | "iesdpOther"
-    | "iesdpStrref"
-    | "iesdpResref"
-    | "iesdpDword"
-    | "iesdpWord"
-    | "iesdpByte"
-    | "iesdpChar";
+// Re-export CompletionCategory from shared for convenience
+export type { CompletionCategory } from "../shared/completion-context";

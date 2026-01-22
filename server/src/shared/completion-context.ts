@@ -15,6 +15,57 @@
 import { CompletionItem } from "vscode-languageserver/node";
 
 /**
+ * Valid completion item categories for WeiDU TP2.
+ * Categories determine where completions should appear based on context.
+ *
+ * Category types:
+ * - Structural: prologue, flag, componentFlag - File/component structure directives
+ * - Commands: action, patch - Context-specific statements (value positions)
+ * - Functions: actionFunctions, patchFunctions - User-defined functions
+ * - Values: constants, vars, value, when, optGlob, optCase, optExact, arraySortType
+ * - IElib: ielibInt, ielibResref - IElib library constants
+ * - IESDP: iesdpOther, iesdpStrref, iesdpResref, iesdpDword, iesdpWord, iesdpByte, iesdpChar
+ * - Language: language - LANGUAGE directive (flag section)
+ *
+ * @see CATEGORY_EXCLUSIONS in completion-filter.ts for exclusion rules per category
+ */
+export type CompletionCategory =
+    // Structural directives
+    | "prologue"
+    | "flag"
+    | "componentFlag"
+    | "language"
+    // Action context (value position)
+    | "action"
+    // Patch context (value position)
+    | "patch"
+    // Value items (not commands)
+    | "constants"
+    | "vars"
+    | "value"
+    | "when"
+    | "optGlob"
+    | "optCase"
+    | "optExact"
+    | "arraySortType"
+    // Function parameter keywords (INT_VAR, STR_VAR, RET, RET_ARRAY)
+    | "funcVarKeyword"
+    // Function libraries
+    | "actionFunctions"
+    | "patchFunctions"
+    // IElib constants
+    | "ielibInt"
+    | "ielibResref"
+    // IESDP constants (patch-only, engine-defined)
+    | "iesdpOther"
+    | "iesdpStrref"
+    | "iesdpResref"
+    | "iesdpDword"
+    | "iesdpWord"
+    | "iesdpByte"
+    | "iesdpChar";
+
+/**
  * Extended completion item with optional category metadata.
  * The category field is added by scripts/generate_data.py at build time.
  */
@@ -23,7 +74,7 @@ export interface CompletionItemWithCategory extends CompletionItem {
      * Category from YAML data file (e.g., "action", "patch", "flag").
      * Items without this field are shown in all contexts (e.g., local completions).
      */
-    category?: string;
+    category?: CompletionCategory;
 }
 
 /**

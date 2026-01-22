@@ -56,14 +56,15 @@ END
         // Index the header file
         weiduTp2Provider.reloadFileData?.(headerUri, headerText);
 
-        // Test completion in caller file
+        // Test completion in caller file - cursor on new line after first param
         const text = `INCLUDE ~lib.tph~
 LAF my_action_func
 INT_VAR count = 5
+
 END
 `;
         const uri = "file:///test.tp2";
-        const position: Position = { line: 2, character: 15 }; // Inside INT_VAR section, after "count = 5"
+        const position: Position = { line: 3, character: 0 }; // On blank line inside INT_VAR section
 
         const allItems = weiduTp2Provider.getCompletions?.(uri) ?? [];
         const filteredItems = weiduTp2Provider.filterCompletions?.(allItems, text, position, uri) ?? [];
@@ -128,11 +129,13 @@ END
 
         const text = `
 LAF test_func
-INT_VAR param1 = 10
+INT_VAR
+    param1 = 10
+
 END
 `;
         const uri = "file:///test.tp2";
-        const position: Position = { line: 2, character: 18 }; // Inside INT_VAR section, at end of "param1 = 10"
+        const position: Position = { line: 4, character: 0 }; // On blank line inside INT_VAR section (funcParamName context)
 
         const allItems = weiduTp2Provider.getCompletions?.(uri) ?? [];
         const filteredItems = weiduTp2Provider.filterCompletions?.(allItems, text, position, uri) ?? [];

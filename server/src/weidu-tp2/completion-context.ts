@@ -283,9 +283,16 @@ function detectFunctionDefinitionContext(
     const boundaries = findBeginEndBoundaries(node, true);
     const { beginEnd, endStart, functionNameEnd } = boundaries;
 
-    // If cursor is AFTER function name but BEFORE BEGIN → funcParams context
+    // If cursor is AFTER function name but BEFORE BEGIN → funcParamName/funcParamValue context
     if (functionNameEnd && functionNameEnd > 0 && cursorOffset > functionNameEnd && (beginEnd < 0 || cursorOffset < beginEnd)) {
-        return ["funcParams"];
+        // Check if cursor is in a call_item (parameter declaration) to determine name vs value context
+        const callItem = findCallItemAtCursor(node, cursorOffset);
+        if (callItem) {
+            return [detectParamNameOrValue(callItem, cursorOffset)];
+        }
+
+        // Not in a call_item yet → funcParamName (typing new parameter)
+        return ["funcParamName"];
     }
 
     // If cursor is between BEGIN and END, we're in the function body
@@ -663,6 +670,90 @@ function extractUsedParamsAfter(sectionNode: SyntaxNode, afterPosition: number):
 }
 
 /**
+ * Determine if cursor is in parameter name or value position within a call_item.
+ * Returns "funcParamName" if left of = or no =, "funcParamValue" if right of =.
+ *
+ * Logic:
+ * 1. If no = in call_item → funcParamName (implicit parameter)
+ * 2. If cursor is left of = → funcParamName (typing parameter name)
+ * 3. If cursor is right of = → funcParamValue (typing value)
+ * 4. If uncertain, prefer funcParamName
+ */
+function detectParamNameOrValue(node: SyntaxNode, cursorOffset: number): "funcParamName" | "funcParamValue" {
+    // Look for = token in the node and its children
+    let equalsPosition = -1;
+
+    function findEquals(searchNode: SyntaxNode): void {
+        if (searchNode.text === "=" && searchNode.type === "=") {
+            equalsPosition = searchNode.startIndex;
+            return;
+        }
+        for (const child of searchNode.children) {
+            findEquals(child);
+            if (equalsPosition >= 0) return;
+        }
+    }
+
+    findEquals(node);
+
+    // No = found → funcParamName (implicit parameter)
+    if (equalsPosition < 0) {
+        return "funcParamName";
+    }
+
+    // Cursor is left of or at = → funcParamName
+    if (cursorOffset <= equalsPosition) {
+        return "funcParamName";
+    }
+
+    // Cursor is right of = → funcParamValue
+    return "funcParamValue";
+}
+
+/**
+ * Find the call_item or parameter declaration node that contains the cursor.
+ * Returns the node if found, null otherwise.
+ *
+ * Handles both function calls (call_item nodes) and function definitions (decl nodes).
+ *
+ * Boundary handling: Cursor AT the endIndex (right after the last character) is considered
+ * inside the node ONLY if the next character is NOT whitespace. This allows:
+ * - "= s|" (next char is newline/space) → inside node (still typing value)
+ * - "= 5| " (next char is space, cursor in whitespace) → NOT inside (starting new param)
+ * - "= 5|\n" (next char is newline, cursor at EOL) → NOT inside (starting new param)
+ */
+function findCallItemAtCursor(funcCallNode: SyntaxNode, cursorOffset: number): SyntaxNode | null {
+    // Search through all descendants for call_item or decl nodes
+    function search(node: SyntaxNode): SyntaxNode | null {
+        const type = node.type;
+
+        // Check if this is a call_item or decl type
+        const isParamNode = type === SyntaxType.IntVarCallItem || type === SyntaxType.StrVarCallItem ||
+            type === SyntaxType.RetCallItem || type === SyntaxType.RetArrayCallItem ||
+            type === SyntaxType.IntVarDecl || type === SyntaxType.StrVarDecl ||
+            type === SyntaxType.RetDecl || type === SyntaxType.RetArrayDecl;
+
+        if (isParamNode) {
+            // Check if cursor is within this node (inclusive of endIndex boundary)
+            // At endIndex, cursor is right after the last char - still in value context
+            if (cursorOffset >= node.startIndex && cursorOffset <= node.endIndex) {
+                return node;
+            }
+        }
+
+        // Recurse to children
+        for (const child of node.children) {
+            const result = search(child);
+            if (result) return result;
+        }
+
+        return null;
+    }
+
+    return search(funcCallNode);
+}
+
+/**
  * Check if cursor is at function call name position (LAF/LPF).
  * Returns context array if detected, null otherwise.
  */
@@ -674,7 +765,7 @@ function detectFunctionCallContext(node: SyntaxNode, cursorOffset: number): Comp
         if (isAtFunctionName(cursorOffset, node)) {
             return ["lafName"];
         }
-        // After function name → funcParams context (for INT_VAR, STR_VAR, RET, etc.)
+        // After function name → check for funcParamName vs funcParamValue
         // Bug fix #2: LAF inside patches context is invalid
         // Check if we're inside a COPY action (which has patch context) by walking up the tree
         let parent = node.parent;
@@ -704,7 +795,15 @@ function detectFunctionCallContext(node: SyntaxNode, cursorOffset: number): Comp
         }
         // Extract enriched context for parameter completion
         extractFuncParamsContext(node, cursorOffset);
-        return ["funcParams"];
+
+        // Check if cursor is in a call_item to determine name vs value context
+        const callItem = findCallItemAtCursor(node, cursorOffset);
+        if (callItem) {
+            return [detectParamNameOrValue(callItem, cursorOffset)];
+        }
+
+        // Not in a call_item yet → funcParamName (typing new parameter)
+        return ["funcParamName"];
     }
 
     // Patch function call (LPF)
@@ -712,11 +811,19 @@ function detectFunctionCallContext(node: SyntaxNode, cursorOffset: number): Comp
         if (isAtFunctionName(cursorOffset, node)) {
             return ["lpfName"];
         }
-        // After function name → funcParams context (for INT_VAR, STR_VAR, RET, etc.)
-        // LPF is valid inside patches blocks, so always return funcParams
+        // After function name → check for funcParamName vs funcParamValue
+        // LPF is valid inside patches blocks
         // Extract enriched context for parameter completion
         extractFuncParamsContext(node, cursorOffset);
-        return ["funcParams"];
+
+        // Check if cursor is in a call_item to determine name vs value context
+        const callItem = findCallItemAtCursor(node, cursorOffset);
+        if (callItem) {
+            return [detectParamNameOrValue(callItem, cursorOffset)];
+        }
+
+        // Not in a call_item yet → funcParamName (typing new parameter)
+        return ["funcParamName"];
     }
 
     return null;

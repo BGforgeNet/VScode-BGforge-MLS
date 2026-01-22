@@ -20,43 +20,45 @@ import { CompletionCategory, CompletionContext } from "./completion-types";
  * - Missing category = never excluded
  */
 const CATEGORY_EXCLUSIONS: Partial<Record<CompletionCategory, CompletionContext[]>> = {
-    // Rule 1: No patch items in action context, funcParams, or lafName
-    patch: ["action", "actionKeyword", "funcParams", "lafName", "lpfName"],
-    patchFunctions: ["action", "actionKeyword", "funcParams", "lafName"],
+    // Rule 1: No patch items in action context, funcParamName/Value, or lafName
+    patch: ["action", "actionKeyword", "funcParamName", "funcParamValue", "lafName", "lpfName"],
+    patchFunctions: ["action", "actionKeyword", "funcParamName", "funcParamValue", "lafName"],
 
-    // Rule 2: No action items in patch context, funcParams, or lpfName
-    action: ["patch", "patchKeyword", "funcParams", "lafName", "lpfName"],
-    actionFunctions: ["patch", "patchKeyword", "funcParams", "lpfName"],
+    // Rule 2: No action items in patch context, funcParamName/Value, or lpfName
+    action: ["patch", "patchKeyword", "funcParamName", "funcParamValue", "lafName", "lpfName"],
+    actionFunctions: ["patch", "patchKeyword", "funcParamName", "funcParamValue", "lpfName"],
 
-    // Rule 3: No structural items in funcParams or inappropriate contexts
-    prologue: ["funcParams", "lafName", "lpfName"],
-    flag: ["funcParams", "action", "actionKeyword", "patch", "patchKeyword", "componentFlag", "lafName", "lpfName"],
-    componentFlag: ["funcParams", "lafName", "lpfName"],
-    language: ["funcParams", "lafName", "lpfName"],
+    // Rule 3: No structural items in funcParamName/Value or inappropriate contexts
+    prologue: ["funcParamName", "funcParamValue", "lafName", "lpfName"],
+    flag: ["funcParamName", "funcParamValue", "action", "actionKeyword", "patch", "patchKeyword", "componentFlag", "lafName", "lpfName"],
+    componentFlag: ["funcParamName", "funcParamValue", "lafName", "lpfName"],
+    language: ["funcParamName", "funcParamValue", "lafName", "lpfName"],
 
-    // Rule 4: INT_VAR, STR_VAR, RET, RET_ARRAY - only in function def/call parameter sections
-    funcVarKeyword: ["action", "actionKeyword", "patch", "patchKeyword", "prologue", "flag", "componentFlag", "when", "lafName", "lpfName"],
+    // Rule 4: INT_VAR, STR_VAR, RET, RET_ARRAY - only in funcParamName context (not value)
+    funcVarKeyword: ["action", "actionKeyword", "patch", "patchKeyword", "prologue", "flag", "componentFlag", "when", "lafName", "lpfName", "funcParamValue"],
 
     // Rule 5: Value items not allowed in lafName/lpfName (only function names)
-    constants: ["lafName", "lpfName"],
-    vars: ["lafName", "lpfName"],
-    value: ["lafName", "lpfName"],
-    when: ["lafName", "lpfName"],
-    optGlob: ["lafName", "lpfName"],
-    optCase: ["lafName", "lpfName"],
-    optExact: ["lafName", "lpfName"],
-    arraySortType: ["lafName", "lpfName"],
+    // Rule 7: Value items not allowed in funcParamName (only parameter names)
+    constants: ["lafName", "lpfName", "funcParamName"],
+    vars: ["lafName", "lpfName", "funcParamName"],
+    value: ["lafName", "lpfName", "funcParamName"],
+    when: ["lafName", "lpfName", "funcParamName"],
+    optGlob: ["lafName", "lpfName", "funcParamName"],
+    optCase: ["lafName", "lpfName", "funcParamName"],
+    optExact: ["lafName", "lpfName", "funcParamName"],
+    arraySortType: ["lafName", "lpfName", "funcParamName"],
 
     // Rule 6: IElib/IESDP constants not allowed in lafName/lpfName
-    ielibInt: ["lafName", "lpfName"],
-    ielibResref: ["lafName", "lpfName"],
-    iesdpOther: ["lafName", "lpfName"],
-    iesdpStrref: ["lafName", "lpfName"],
-    iesdpResref: ["lafName", "lpfName"],
-    iesdpDword: ["lafName", "lpfName"],
-    iesdpWord: ["lafName", "lpfName"],
-    iesdpByte: ["lafName", "lpfName"],
-    iesdpChar: ["lafName", "lpfName"],
+    // Rule 8: IElib/IESDP constants not allowed in funcParamName
+    ielibInt: ["lafName", "lpfName", "funcParamName"],
+    ielibResref: ["lafName", "lpfName", "funcParamName"],
+    iesdpOther: ["lafName", "lpfName", "funcParamName"],
+    iesdpStrref: ["lafName", "lpfName", "funcParamName"],
+    iesdpResref: ["lafName", "lpfName", "funcParamName"],
+    iesdpDword: ["lafName", "lpfName", "funcParamName"],
+    iesdpWord: ["lafName", "lpfName", "funcParamName"],
+    iesdpByte: ["lafName", "lpfName", "funcParamName"],
+    iesdpChar: ["lafName", "lpfName", "funcParamName"],
 };
 
 /**
@@ -73,7 +75,8 @@ const VALID_CONTEXTS = new Set<CompletionContext>([
     "when",
     "lafName",
     "lpfName",
-    "funcParams",
+    "funcParamName",
+    "funcParamValue",
     "unknown",
 ]);
 

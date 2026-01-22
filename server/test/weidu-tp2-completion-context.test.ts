@@ -1008,17 +1008,17 @@ COPY ~a~ ~b~
     });
 
     describe("function name position edge cases", () => {
-        it("detects funcParams (not lafName) after function name in LAF", () => {
+        it("detects funcParamName (not lafName) after function name in LAF", () => {
             const content = `BEGIN ~Test~
     LAF my_func INT_VAR foo = 1 END
 `;
             // Line 1, col 16: after "my_func", before INT_VAR (in parameter section)
             const contexts = getContextAtPosition(content, 1, 16, ".tp2");
             expect(contexts).not.toContain("lafName");
-            expect(contexts).toEqual(["funcParams"]);
+            expect(contexts).toEqual(["funcParamName"]);
         });
 
-        it("detects funcParams (not lpfName) after function name in LPF", () => {
+        it("detects funcParamName (not lpfName) after function name in LPF", () => {
             const content = `COPY ~file.itm~ ~override~
     LPF my_func INT_VAR foo = 1 END
 END
@@ -1026,7 +1026,7 @@ END
             // Line 1, col 16: after "my_func", before INT_VAR (in parameter section)
             const contexts = getContextAtPosition(content, 1, 16, ".tph");
             expect(contexts).not.toContain("lpfName");
-            expect(contexts).toEqual(["funcParams"]);
+            expect(contexts).toEqual(["funcParamName"]);
         });
     });
 
@@ -1076,8 +1076,8 @@ AUTHOR ~me~
         });
     });
 
-    describe("funcParams context", () => {
-        it("detects funcParams in DEFINE_ACTION_FUNCTION after name", () => {
+    describe("funcParamName context", () => {
+        it("detects funcParamName in DEFINE_ACTION_FUNCTION after name", () => {
             const content = `DEFINE_ACTION_FUNCTION my_func
     INT_VAR x = 1
 BEGIN
@@ -1085,10 +1085,10 @@ BEGIN
 END`;
             // Line 1, col 4: at INT_VAR position
             const contexts = getContextAtPosition(content, 1, 4, ".tph");
-            expect(contexts).toEqual(["funcParams"]);
+            expect(contexts).toEqual(["funcParamName"]);
         });
 
-        it("detects funcParams in DEFINE_PATCH_FUNCTION after name", () => {
+        it("detects funcParamName in DEFINE_PATCH_FUNCTION after name", () => {
             const content = `DEFINE_PATCH_FUNCTION my_func
     INT_VAR x = 1
 BEGIN
@@ -1096,29 +1096,29 @@ BEGIN
 END`;
             // Line 1, col 4: at INT_VAR position
             const contexts = getContextAtPosition(content, 1, 4, ".tpp");
-            expect(contexts).toEqual(["funcParams"]);
+            expect(contexts).toEqual(["funcParamName"]);
         });
 
-        it("detects funcParams in LAF after function name", () => {
+        it("detects funcParamName in LAF after function name", () => {
             const content = `BEGIN ~Test~
     LAF my_func INT_VAR x = 1 END
 END`;
             // Line 1, col 16: after "my_func ", at INT_VAR position
             const contexts = getContextAtPosition(content, 1, 16, ".tp2");
-            expect(contexts).toEqual(["funcParams"]);
+            expect(contexts).toEqual(["funcParamName"]);
         });
 
-        it("detects funcParams in LPF after function name", () => {
+        it("detects funcParamName in LPF after function name", () => {
             const content = `COPY ~file.itm~ ~override~
     LPF my_func INT_VAR x = 1 END
 END`;
             // Line 1, col 16: after "my_func ", at INT_VAR position
             const contexts = getContextAtPosition(content, 1, 16, ".tp2");
-            expect(contexts).toEqual(["funcParams"]);
+            expect(contexts).toEqual(["funcParamName"]);
         });
 
-        it("allows funcVarKeyword in funcParams context", () => {
-            expectFiltering("funcParams", "funcVarKeyword", true);
+        it("allows funcVarKeyword in funcParamName context", () => {
+            expectFiltering("funcParamName", "funcVarKeyword", true);
         });
 
         it("rejects funcVarKeyword in action context", () => {

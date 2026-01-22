@@ -16,6 +16,7 @@ import { buildDescriptionMap } from "../shared/jsdoc";
 import { compile as weiduCompile } from "../weidu";
 import { getContextAtPosition, getFuncParamsContext } from "./completion-context";
 import { filterItemsByContext } from "./completion-filter";
+import type { CompletionItemWithCategory } from "../shared/completion-context";
 import type { FuncParamsContext } from "./completion-types";
 import { formatDocument as formatAst, FormatOptions } from "./format-core";
 import { initParser, getParser, isInitialized } from "./parser";
@@ -81,8 +82,10 @@ export const weiduTp2Provider: LanguageProvider = {
         const localVars = localCompletion(text);
         let allItems = [...items, ...localVars];
 
-        // Check if we're in funcParams context and can provide parameter completions
-        if (contexts.includes("funcParams")) {
+        // Check if we're in funcParamName context and can provide parameter completions
+        // Note: Parameter completions (like "count = ") are only shown when typing parameter names,
+        // not when typing values after =
+        if (contexts.includes("funcParamName")) {
             const funcContext = getFuncParamsContext();
             if (funcContext) {
                 const paramCompletions = getParamCompletions(funcContext);
@@ -269,10 +272,11 @@ function localCompletion(text: string): CompletionItem[] {
 
     visit(tree.rootNode);
 
-    // Convert to CompletionItem[]
-    return Array.from(variableNames).map((name) => ({
+    // Convert to CompletionItem[] with "vars" category for filtering
+    return Array.from(variableNames).map((name): CompletionItemWithCategory => ({
         label: name,
         kind: CompletionItemKind.Variable,
+        category: "vars",
     }));
 }
 
