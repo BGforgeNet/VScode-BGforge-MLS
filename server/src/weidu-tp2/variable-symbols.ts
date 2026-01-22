@@ -8,7 +8,7 @@ import type { Node as SyntaxNode } from "web-tree-sitter";
 import { lookupVariable } from "./header-parser";
 import { getParser, isInitialized } from "./parser";
 import { SyntaxType } from "./tree-sitter.d";
-import { findNodeAtPosition, findAncestorOfType, isSameNode } from "./tree-utils";
+import { findNodeAtPosition, findAncestorOfType, isSameNode, unwrapVariableRef } from "./tree-utils";
 
 // ============================================
 // Constants
@@ -126,31 +126,13 @@ export function isLoopVariable(loopNode: SyntaxNode, varName: string): boolean {
     const valueVarNode = loopNode.childForFieldName("value_var");
     const forEachVarNode = loopNode.childForFieldName("var");
 
-    // Handle variable_ref wrappers
-    let keyVarIdent: SyntaxNode | null = keyVarNode;
-    if (keyVarIdent && keyVarIdent.type === SyntaxType.VariableRef) {
-        keyVarIdent = keyVarIdent.child(0);
-    }
-
-    let valueVarIdent: SyntaxNode | null = valueVarNode;
-    if (valueVarIdent && valueVarIdent.type === SyntaxType.VariableRef) {
-        valueVarIdent = valueVarIdent.child(0);
-    }
-
-    let forEachVarIdent: SyntaxNode | null = forEachVarNode;
-    if (forEachVarIdent && forEachVarIdent.type === SyntaxType.VariableRef) {
-        forEachVarIdent = forEachVarIdent.child(0);
-    }
-
-    // Check if varName matches any loop variable
-    if (keyVarIdent && keyVarIdent.type === SyntaxType.Identifier && matchesSymbol(keyVarIdent.text, varName)) {
-        return true;
-    }
-    if (valueVarIdent && valueVarIdent.type === SyntaxType.Identifier && matchesSymbol(valueVarIdent.text, varName)) {
-        return true;
-    }
-    if (forEachVarIdent && forEachVarIdent.type === SyntaxType.Identifier && matchesSymbol(forEachVarIdent.text, varName)) {
-        return true;
+    // Check each loop variable field for a match
+    for (const fieldNode of [keyVarNode, valueVarNode, forEachVarNode]) {
+        if (!fieldNode) continue;
+        const identNode = unwrapVariableRef(fieldNode);
+        if (identNode.type === SyntaxType.Identifier && matchesSymbol(identNode.text, varName)) {
+            return true;
+        }
     }
 
     return false;
@@ -403,34 +385,10 @@ function findFirstDeclaration(
                     const valueVarNode = node.childForFieldName("value_var");
                     const forEachVarNode = node.childForFieldName("var");
 
-                    if (keyVarNode) {
-                        let identNode: SyntaxNode | null = keyVarNode;
-                        if (keyVarNode.type === SyntaxType.VariableRef) {
-                            identNode = keyVarNode.child(0);
-                        }
-                        if (identNode && identNode.type === SyntaxType.Identifier && matchesSymbol(identNode.text, varName)) {
-                            firstDecl = identNode;
-                            return;
-                        }
-                    }
-
-                    if (valueVarNode) {
-                        let identNode: SyntaxNode | null = valueVarNode;
-                        if (valueVarNode.type === SyntaxType.VariableRef) {
-                            identNode = valueVarNode.child(0);
-                        }
-                        if (identNode && identNode.type === SyntaxType.Identifier && matchesSymbol(identNode.text, varName)) {
-                            firstDecl = identNode;
-                            return;
-                        }
-                    }
-
-                    if (forEachVarNode) {
-                        let identNode: SyntaxNode | null = forEachVarNode.child(0);
-                        if (identNode && identNode.type === SyntaxType.VariableRef) {
-                            identNode = identNode.child(0);
-                        }
-                        if (identNode && identNode.type === SyntaxType.Identifier && matchesSymbol(identNode.text, varName)) {
+                    for (const fieldNode of [keyVarNode, valueVarNode, forEachVarNode]) {
+                        if (!fieldNode) continue;
+                        const identNode = unwrapVariableRef(fieldNode);
+                        if (identNode.type === SyntaxType.Identifier && matchesSymbol(identNode.text, varName)) {
                             firstDecl = identNode;
                             return;
                         }
@@ -462,13 +420,13 @@ function findFirstDeclaration(
             // For DEFINE_ARRAY etc., field is "name"
             const nameNode = node.childForFieldName("name");
             if (nameNode) {
-                let exprNode = nameNode.child(0);
-                if (exprNode && exprNode.type === SyntaxType.VariableRef) {
-                    exprNode = exprNode.child(0);
-                }
-                if (exprNode && exprNode.type === SyntaxType.Identifier && matchesSymbol(exprNode.text, varName)) {
-                    firstDecl = exprNode;
-                    return;
+                const exprNode = nameNode.child(0);
+                if (exprNode) {
+                    const identNode = unwrapVariableRef(exprNode);
+                    if (identNode.type === SyntaxType.Identifier && matchesSymbol(identNode.text, varName)) {
+                        firstDecl = identNode;
+                        return;
+                    }
                 }
             }
 

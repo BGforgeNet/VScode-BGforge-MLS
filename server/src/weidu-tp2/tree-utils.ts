@@ -73,6 +73,22 @@ export function isSameNode(node1: SyntaxNode, node2: SyntaxNode): boolean {
 }
 
 // ============================================
+// Node unwrapping utilities
+// ============================================
+
+/**
+ * Unwrap a variable_ref node to get the inner identifier.
+ * WeiDU wraps variable references in a variable_ref node; this extracts the identifier.
+ * Returns the original node if it's not a variable_ref or has no children.
+ */
+export function unwrapVariableRef(node: SyntaxNode): SyntaxNode {
+    if (node.type === SyntaxType.VariableRef) {
+        return node.child(0) ?? node;
+    }
+    return node;
+}
+
+// ============================================
 // String utilities
 // ============================================
 

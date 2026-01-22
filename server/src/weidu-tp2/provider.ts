@@ -12,15 +12,18 @@ import { Language, Features } from "../data-loader";
 import { FormatResult, LanguageProvider, ProviderContext } from "../language-provider";
 import { getEditorconfigSettings } from "../shared/editorconfig";
 import { createFullDocumentEdit, validateFormatting } from "../shared/format-utils";
+import { buildDescriptionMap } from "../shared/jsdoc";
 import { compile as weiduCompile } from "../weidu";
-import { getContextAtPosition, filterItemsByContext, getFuncParamsContext } from "./completion-context";
+import { getContextAtPosition, getFuncParamsContext } from "./completion-context";
+import { filterItemsByContext } from "./completion-filter";
+import type { FuncParamsContext } from "./completion-types";
 import { formatDocument as formatAst, FormatOptions } from "./format-core";
 import { initParser, getParser, isInitialized } from "./parser";
 import { getDocumentSymbols } from "./symbol";
 import { getDefinition } from "./definition";
 import { updateFileIndex, clearFileFromIndex, updateVariableIndex, clearVariableFromIndex, lookupFunction, FunctionInfo } from "./header-parser";
 import { SyntaxType } from "./tree-sitter.d";
-import { stripStringDelimiters } from "./tree-utils";
+import { stripStringDelimiters, unwrapVariableRef } from "./tree-utils";
 import { renameSymbol, prepareRenameSymbol } from "./rename";
 import { VARIABLE_DECL_TYPES } from "./variable-symbols";
 
@@ -206,7 +209,7 @@ function localCompletion(text: string): CompletionItem[] {
 
     function visit(node: import("web-tree-sitter").Node): void {
         // Check if this node declares a variable
-        if (VARIABLE_DECL_TYPES.has(node.type as import("./tree-sitter.d").SyntaxType)) {
+        if (VARIABLE_DECL_TYPES.has(node.type as SyntaxType)) {
             // Extract variable name from various declaration types
             const varNode = node.childForFieldName("var");
             if (varNode) {
@@ -216,7 +219,7 @@ function localCompletion(text: string): CompletionItem[] {
             // For READ_* patches that can have multiple vars
             const varNodes = node.childrenForFieldName("var");
             for (const vn of varNodes) {
-                if (vn.type === "identifier") {
+                if (vn.type === SyntaxType.Identifier) {
                     variableNames.add(vn.text);
                 }
             }
@@ -224,44 +227,35 @@ function localCompletion(text: string): CompletionItem[] {
             // For DEFINE_ARRAY etc., field is "name"
             const nameNode = node.childForFieldName("name");
             if (nameNode) {
-                let exprNode = nameNode.child(0);
-                if (exprNode && exprNode.type === "variable_ref") {
-                    exprNode = exprNode.child(0);
-                }
-                if (exprNode && exprNode.type === "identifier") {
-                    variableNames.add(exprNode.text);
+                const exprNode = nameNode.child(0);
+                if (exprNode) {
+                    const identNode = unwrapVariableRef(exprNode);
+                    if (identNode.type === SyntaxType.Identifier) {
+                        variableNames.add(identNode.text);
+                    }
                 }
             }
 
             // For parameter declarations (INT_VAR, STR_VAR, RET, RET_ARRAY)
-            const paramTypes = ["int_var_decl", "str_var_decl", "ret_decl", "ret_array_decl"];
-            if (paramTypes.includes(node.type)) {
+            const paramDeclTypes: ReadonlySet<SyntaxType> = new Set([
+                SyntaxType.IntVarDecl,
+                SyntaxType.StrVarDecl,
+                SyntaxType.RetDecl,
+                SyntaxType.RetArrayDecl,
+            ]);
+            if (paramDeclTypes.has(node.type as SyntaxType)) {
                 for (const child of node.children) {
-                    if (child.type === "identifier") {
+                    if (child.type === SyntaxType.Identifier) {
                         variableNames.add(child.text);
                     }
                 }
             }
 
-            // For loop variables (key_var, value_var, var)
-            const keyVarNode = node.childForFieldName("key_var");
-            if (keyVarNode) {
-                let identNode: import("web-tree-sitter").Node | null = keyVarNode;
-                if (keyVarNode.type === "variable_ref") {
-                    identNode = keyVarNode.child(0);
-                }
-                if (identNode && identNode.type === "identifier") {
-                    variableNames.add(identNode.text);
-                }
-            }
-
-            const valueVarNode = node.childForFieldName("value_var");
-            if (valueVarNode) {
-                let identNode: import("web-tree-sitter").Node | null = valueVarNode;
-                if (valueVarNode.type === "variable_ref") {
-                    identNode = valueVarNode.child(0);
-                }
-                if (identNode && identNode.type === "identifier") {
+            // For loop variables (key_var, value_var)
+            for (const fieldNode of [node.childForFieldName("key_var"), node.childForFieldName("value_var")]) {
+                if (!fieldNode) continue;
+                const identNode = unwrapVariableRef(fieldNode);
+                if (identNode.type === SyntaxType.Identifier) {
                     variableNames.add(identNode.text);
                 }
             }
@@ -286,7 +280,7 @@ function localCompletion(text: string): CompletionItem[] {
  * Generate parameter completions for a function call.
  * Looks up the function definition and returns completions for unused parameters.
  */
-function getParamCompletions(context: import("./completion-context").FuncParamsContext): CompletionItem[] {
+function getParamCompletions(context: FuncParamsContext): CompletionItem[] {
     const { functionName, paramSection, usedParams } = context;
 
     // Look up function definition
@@ -298,16 +292,7 @@ function getParamCompletions(context: import("./completion-context").FuncParamsC
 
     const usedSet = new Set(usedParams);
     const completions: CompletionItem[] = [];
-
-    // Build a map of param name -> JSDoc description from function's JSDoc
-    const paramDescriptions = new Map<string, string>();
-    if (funcInfo.jsdoc?.args) {
-        for (const arg of funcInfo.jsdoc.args) {
-            if (arg.description) {
-                paramDescriptions.set(arg.name, arg.description);
-            }
-        }
-    }
+    const paramDescriptions = buildDescriptionMap(funcInfo.jsdoc);
 
     // Get the appropriate param list based on section
     switch (paramSection) {
@@ -472,15 +457,7 @@ function findParamInFuncInfo(
         return null;
     }
 
-    // Build description map from JSDoc
-    const descriptions = new Map<string, string>();
-    if (funcInfo.jsdoc?.args) {
-        for (const arg of funcInfo.jsdoc.args) {
-            if (arg.description) {
-                descriptions.set(arg.name, arg.description);
-            }
-        }
-    }
+    const descriptions = buildDescriptionMap(funcInfo.jsdoc);
 
     // Check INT_VAR
     for (const param of funcInfo.params.intVar) {

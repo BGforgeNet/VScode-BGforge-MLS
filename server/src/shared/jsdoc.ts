@@ -187,3 +187,24 @@ function parseDeprecated(line: string): string | true | null {
     const message = match[1]?.trim();
     return message || true;
 }
+
+// ============================================
+// Utility functions
+// ============================================
+
+/**
+ * Build a map of parameter names to their descriptions from JSDoc.
+ * Returns empty map if jsdoc or args is undefined/empty.
+ */
+export function buildDescriptionMap(jsdoc?: JSdoc): Map<string, string> {
+    const map = new Map<string, string>();
+    if (!jsdoc?.args) {
+        return map;
+    }
+    for (const arg of jsdoc.args) {
+        if (arg.description) {
+            map.set(arg.name, arg.description);
+        }
+    }
+    return map;
+}
