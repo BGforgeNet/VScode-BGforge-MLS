@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source .venv/bin/activate >/dev/null 2>&1
+
 set -xeu -o pipefail
 
 tools_dir="scripts"
