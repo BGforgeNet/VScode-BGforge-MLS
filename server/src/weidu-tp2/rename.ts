@@ -420,6 +420,14 @@ function getSymbolAtPosition(root: SyntaxNode, position: Position): SymbolInfo |
         // Check if it's a variable in declaration
         const varDecl = findAncestorOfType(node, VARIABLE_DECL_TYPES);
         if (varDecl) {
+            // Reject if this is a parameter name inside a function CALL (not definition)
+            // Function calls use INT_VAR/STR_VAR to specify argument values, but the parameter
+            // names in the call are not renameable - they refer to the function definition's params
+            const callAncestor = findAncestorOfType(node, FUNCTION_CALL_TYPES);
+            if (callAncestor) {
+                return null; // Function call arguments cannot be renamed
+            }
+
             // Check if this is a loop variable declaration
             if (LOOP_TYPES.has(varDecl.type as SyntaxType)) {
                 // Check if node is the loop variable (key_var, value_var for PHP_EACH, or var for FOR_EACH)
@@ -475,6 +483,27 @@ function getSymbolAtPosition(root: SyntaxNode, position: Position): SymbolInfo |
         // Fallback: identifier used as variable reference in expression (e.g., `c == archer_column`)
         // This handles identifiers that aren't in declarations, function names, or array accesses
         if (node.type === SyntaxType.Identifier) {
+            // Reject if this is a parameter name inside a function CALL
+            // Function calls use INT_VAR/STR_VAR to specify which parameters to pass values to,
+            // but these parameter names are not renameable - they refer to the function's definition
+            const callAncestor = findAncestorOfType(node, FUNCTION_CALL_TYPES);
+            if (callAncestor) {
+                // Check if we're inside an int_var_call_item or similar param specification
+                // by checking if a parent up to the call node is one of the call param types
+                let current: SyntaxNode | null = node.parent;
+                while (current && !isSameNode(current, callAncestor)) {
+                    // int_var_call_item, str_var_call_item, ret_call_item, ret_array_call_item
+                    // contain the parameter names in function calls
+                    if (current.type === SyntaxType.IntVarCallItem ||
+                        current.type === SyntaxType.StrVarCallItem ||
+                        current.type === SyntaxType.RetCallItem ||
+                        current.type === SyntaxType.RetArrayCallItem) {
+                        return null; // Function call parameter names cannot be renamed
+                    }
+                    current = current.parent;
+                }
+            }
+
             const scopeInfo = determineVariableScope(name, node);
             return {
                 name,

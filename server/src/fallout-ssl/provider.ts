@@ -83,7 +83,7 @@ export const falloutSslProvider: LanguageProvider = {
         return getLocalDefinition(text, uri, position);
     },
 
-    hover(text: string, symbol: string, uri: string): Hover | null {
+    hover(text: string, symbol: string, uri: string, _position: Position): Hover | null {
         if (!isInitialized()) {
             return null;
         }

@@ -278,7 +278,7 @@ connection.onHover((textDocumentPosition: TextDocumentPositionParams) => {
     }
 
     // Try local hover (AST-based, for symbols defined in current file)
-    const localHover = registry.localHover(langId, text, symbol, uri);
+    const localHover = registry.localHover(langId, text, symbol, uri, textDocumentPosition.position);
     if (localHover) {
         return localHover;
     }

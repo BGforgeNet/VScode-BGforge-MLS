@@ -82,7 +82,7 @@ export interface LanguageProvider {
     definition?(text: string, position: Position, uri: string): Location | null;
 
     /** Get hover info for a local symbol. Returns null to fall back to data hover. */
-    hover?(text: string, symbol: string, uri: string): Hover | null;
+    hover?(text: string, symbol: string, uri: string, position: Position): Hover | null;
 
     /** Get completion items for locally defined symbols. */
     localCompletion?(text: string): CompletionItem[];

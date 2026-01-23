@@ -210,10 +210,10 @@ class ProviderRegistry {
     }
 
     /** AST-based hover for local symbols. */
-    localHover(langId: string, text: string, symbol: string, uri: string): Hover | null {
+    localHover(langId: string, text: string, symbol: string, uri: string, position: Position): Hover | null {
         const provider = this.get(langId);
         if (provider?.hover) {
-            return provider.hover(text, symbol, uri);
+            return provider.hover(text, symbol, uri, position);
         }
         return null;
     }

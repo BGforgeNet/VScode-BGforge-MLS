@@ -53,6 +53,13 @@ export function getDefinition(text: string, uri: string, position: Position): Lo
         return null;
     }
 
+    // Check if cursor is on a function call parameter name
+    // If so, navigate to the function definition instead of treating it as a variable
+    const callParamResult = tryFunctionCallParamDefinition(targetNode, text, uri);
+    if (callParamResult) {
+        return callParamResult;
+    }
+
     // Check if cursor is on a variable
     const varResult = findVariableDefinition(text, uri, position);
     if (varResult) {
@@ -77,6 +84,62 @@ export function getDefinition(text: string, uri: string, position: Position): Lo
 // ============================================
 // Function/macro call handling
 // ============================================
+
+/**
+ * Try to find definition for a function call parameter name.
+ * When cursor is on a parameter name in a function call (e.g., `LAF my_func INT_VAR foo = 1 END`),
+ * navigate to the function definition instead of treating it as a variable.
+ */
+function tryFunctionCallParamDefinition(node: SyntaxNode, text: string, uri: string): Location | null {
+    // Check if we're inside a function call
+    const callNode = findAncestorOfType(node, FUNCTION_CALL_TYPES);
+    if (!callNode) {
+        return null;
+    }
+
+    // Check if we're specifically inside a parameter item node (not the function name or other parts)
+    // by walking up from the node to the call and looking for parameter item types
+    let current: SyntaxNode | null = node;
+    let isParamItem = false;
+
+    while (current && current !== callNode) {
+        if (current.type === SyntaxType.IntVarCallItem ||
+            current.type === SyntaxType.StrVarCallItem ||
+            current.type === SyntaxType.RetCallItem ||
+            current.type === SyntaxType.RetArrayCallItem) {
+            isParamItem = true;
+            break;
+        }
+        current = current.parent;
+    }
+
+    // Only navigate to function if we're inside a parameter item
+    if (!isParamItem) {
+        return null;
+    }
+
+    // Get the function name from the call
+    const nameNode = callNode.childForFieldName("name");
+    if (!nameNode) {
+        return null;
+    }
+
+    const funcName = nameNode.text;
+
+    // Look for the function definition
+    const localDef = findLocalDefinition(text, uri, funcName);
+    if (localDef) {
+        return localDef.location;
+    }
+
+    // Then check the index
+    const indexedDef = lookupFunction(funcName);
+    if (indexedDef) {
+        return indexedDef.location;
+    }
+
+    return null;
+}
 
 /**
  * Try to find definition for a function/macro call.

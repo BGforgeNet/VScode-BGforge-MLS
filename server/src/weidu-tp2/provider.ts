@@ -140,8 +140,8 @@ export const weiduTp2Provider: LanguageProvider = {
         return language?.hover(uri, symbol) ?? null;
     },
 
-    hover(text: string, symbol: string, _uri: string): Hover | null {
-        return getFunctionParamHover(text, symbol);
+    hover(text: string, symbol: string, _uri: string, position: Position): Hover | null {
+        return getFunctionParamHover(text, symbol, position);
     },
 
     getSymbolDefinition(symbol: string): Location | null {
@@ -480,7 +480,7 @@ export function buildFunctionCallSnippet(funcInfo: FunctionInfo, prefix?: string
  * Get hover info for a function parameter in a function call.
  * Parses text to find function calls and checks if symbol is a parameter name.
  */
-function getFunctionParamHover(text: string, symbol: string): Hover | null {
+function getFunctionParamHover(text: string, symbol: string, position: Position): Hover | null {
     if (!isInitialized()) {
         return null;
     }
@@ -491,7 +491,7 @@ function getFunctionParamHover(text: string, symbol: string): Hover | null {
     }
 
     // Find function calls and check if symbol is a parameter name
-    const result = findParamInFunctionCalls(tree.rootNode, symbol);
+    const result = findParamInFunctionCalls(tree.rootNode, symbol, position);
     if (!result) {
         return null;
     }
@@ -521,25 +521,39 @@ function getFunctionParamHover(text: string, symbol: string): Hover | null {
 /**
  * Find a parameter in function calls within the AST.
  * Returns param info if found, null otherwise.
+ * Only returns a match if the position is within the function call node's range.
  */
 function findParamInFunctionCalls(
     node: import("web-tree-sitter").Node,
-    symbol: string
+    symbol: string,
+    position: Position
 ): { paramType: string; defaultValue?: string; description?: string; required?: boolean } | null {
     const type = node.type;
 
     // Check if this is a function call (LAF or LPF)
     if (type === SyntaxType.ActionLaunchFunction || type === SyntaxType.PatchLaunchFunction) {
-        const nameNode = node.childForFieldName("name");
-        if (nameNode) {
-            const funcName = stripStringDelimiters(nameNode.text);
-            const funcInfo = lookupFunction(funcName);
+        // Check if the cursor position is within this function call node's range
+        const startPos = node.startPosition;
+        const endPos = node.endPosition;
 
-            if (funcInfo?.params) {
-                // Check each parameter section for the symbol
-                const result = findParamInFuncInfo(funcInfo, symbol);
-                if (result) {
-                    return result;
+        const isWithinRange =
+            position.line >= startPos.row &&
+            position.line <= endPos.row &&
+            (position.line > startPos.row || position.character >= startPos.column) &&
+            (position.line < endPos.row || position.character <= endPos.column);
+
+        if (isWithinRange) {
+            const nameNode = node.childForFieldName("name");
+            if (nameNode) {
+                const funcName = stripStringDelimiters(nameNode.text);
+                const funcInfo = lookupFunction(funcName);
+
+                if (funcInfo?.params) {
+                    // Check each parameter section for the symbol
+                    const result = findParamInFuncInfo(funcInfo, symbol);
+                    if (result) {
+                        return result;
+                    }
                 }
             }
         }
@@ -547,7 +561,7 @@ function findParamInFunctionCalls(
 
     // Recurse to children
     for (const child of node.children) {
-        const result = findParamInFunctionCalls(child, symbol);
+        const result = findParamInFunctionCalls(child, symbol, position);
         if (result) {
             return result;
         }

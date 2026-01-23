@@ -385,6 +385,45 @@ OUTER_SET result = %myvar% + 1
     });
 });
 
+describe("TP2 definition: function call parameters", () => {
+    it("navigates to function definition when cursor is on function call parameter name", () => {
+        const text = `OUTER_SET foo = 5
+DEFINE_ACTION_FUNCTION my_func INT_VAR foo = 0 BEGIN
+END
+LAF my_func INT_VAR foo = 1 END
+`;
+        const uri = "file:///test.tp2";
+        // Cursor on "foo" in LAF call's INT_VAR section (line 3, character 21)
+        const position: Position = { line: 3, character: 21 };
+        const result = getDefinition(text, uri, position);
+
+        expect(result).not.toBeNull();
+        expect(result?.uri).toBe(uri);
+        // Should navigate to the function definition (line 1)
+        expect(result?.range.start.line).toBe(1);
+        expect(result?.range.start.character).toBe(23); // "my_func" in DEFINE_ACTION_FUNCTION
+    });
+
+    it("navigates to function definition from LPF INT_VAR parameter in call", () => {
+        const text = `DEFINE_PATCH_FUNCTION test_func INT_VAR count = 0 BEGIN
+END
+COPY_EXISTING ~foo.itm~ ~override~
+    LPF test_func INT_VAR count = 5 END
+END
+`;
+        const uri = "file:///test.tp2";
+        // Cursor on "count" in LPF call (line 3, character 26)
+        const position: Position = { line: 3, character: 26 };
+        const result = getDefinition(text, uri, position);
+
+        expect(result).not.toBeNull();
+        expect(result?.uri).toBe(uri);
+        // Should navigate to the function definition
+        expect(result?.range.start.line).toBe(0);
+        expect(result?.range.start.character).toBe(22); // "test_func" in DEFINE_PATCH_FUNCTION
+    });
+});
+
 describe("TP2 definition: header variables", () => {
     it("finds header variable definition from local usage", () => {
         const text = `

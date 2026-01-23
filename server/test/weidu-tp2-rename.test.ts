@@ -856,6 +856,18 @@ PATCH_PRINT ~%external_var%~
 });
 
 describe("TP2 rename: edge cases", () => {
+    it("rejects rename on function call argument name", () => {
+        const content = `OUTER_SET foo = 5
+DEFINE_ACTION_FUNCTION my_func INT_VAR foo = 0 BEGIN
+END
+LAF my_func INT_VAR foo = 1 END
+`;
+        // Line 3, col 21: on "foo" in LAF call's INT_VAR section
+        // Should reject - this is a function argument, not a local variable
+        const result = renameSymbol(content, { line: 3, character: 21 }, "bar", "file:///test.tp2");
+        expect(result).toBeNull();
+    });
+
     it("rejects renaming automatic variables", () => {
         const text = `
 COPY ~source~ ~override~
