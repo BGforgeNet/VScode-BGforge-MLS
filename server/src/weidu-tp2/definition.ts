@@ -113,8 +113,13 @@ function tryFunctionCallParamDefinition(node: SyntaxNode, text: string, uri: str
         current = current.parent;
     }
 
-    // Only navigate to function if we're inside a parameter item
-    if (!isParamItem) {
+    // Only navigate to function if cursor is on the param name (first child of call item),
+    // not on the value part. Grammar: call_item = name [= value]
+    if (!isParamItem || !current) {
+        return null;
+    }
+    const paramNameNode = current.children[0];
+    if (!paramNameNode || node.startIndex < paramNameNode.startIndex || node.endIndex > paramNameNode.endIndex) {
         return null;
     }
 

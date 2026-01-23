@@ -248,6 +248,38 @@ describe("completion-context: category filtering", () => {
 });
 
 describe("completion-context: getContextAtPosition", () => {
+    describe("comments", () => {
+        it("detects regular comment (no completions)", () => {
+            const text = `/* regular comment */`;
+            const contexts = getContextAtPosition(text, 0, 10, ".tp2");
+            expect(contexts).toEqual(["comment"]);
+        });
+
+        it("detects JSDoc comment (tag/type completions)", () => {
+            const text = `/** JSDoc comment */`;
+            const contexts = getContextAtPosition(text, 0, 10, ".tp2");
+            expect(contexts).toEqual(["jsdoc"]);
+        });
+
+        it("detects line comment (no completions)", () => {
+            const text = `// line comment`;
+            const contexts = getContextAtPosition(text, 0, 5, ".tp2");
+            expect(contexts).toEqual(["comment"]);
+        });
+
+        it("detects JSDoc with whitespace before /**", () => {
+            const text = `  /** JSDoc */`;
+            const contexts = getContextAtPosition(text, 0, 10, ".tp2");
+            expect(contexts).toEqual(["jsdoc"]);
+        });
+
+        it("distinguishes JSDoc from similar comments", () => {
+            const text = `/* * not JSDoc */`;
+            const contexts = getContextAtPosition(text, 0, 10, ".tp2");
+            expect(contexts).toEqual(["comment"]);
+        });
+    });
+
     describe("file extension defaults", () => {
         it("returns patch for .tpp files", () => {
             // Empty file = command position

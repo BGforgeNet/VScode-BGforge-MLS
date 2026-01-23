@@ -92,7 +92,7 @@ export interface LanguageProvider {
      * Called after all completions are gathered, before returning to client.
      * Only implement if the language has context-specific completions.
      */
-    filterCompletions?(items: CompletionItem[], text: string, position: Position, uri: string): CompletionItem[];
+    filterCompletions?(items: CompletionItem[], text: string, position: Position, uri: string, triggerCharacter?: string): CompletionItem[];
 
     /** Get signature help for a locally defined procedure. Returns null to fall back to headers. */
     localSignature?(text: string, symbol: string, paramIndex: number): SignatureHelp | null;

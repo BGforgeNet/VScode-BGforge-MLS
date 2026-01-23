@@ -422,6 +422,21 @@ END
         expect(result?.range.start.line).toBe(0);
         expect(result?.range.start.character).toBe(22); // "test_func" in DEFINE_PATCH_FUNCTION
     });
+
+    it("navigates to variable definition when cursor is on call argument value", () => {
+        const text = `OUTER_SET test2 = 5
+LAF my_func INT_VAR bonus = test2 END
+`;
+        const uri = "file:///test.tp2";
+        // Cursor on "test2" in the value position (after =), line 1, character 28
+        const position: Position = { line: 1, character: 28 };
+        const result = getDefinition(text, uri, position);
+
+        expect(result).not.toBeNull();
+        expect(result?.uri).toBe(uri);
+        // Should navigate to the variable definition (line 0, "test2" in OUTER_SET)
+        expect(result?.range.start.line).toBe(0);
+    });
 });
 
 describe("TP2 definition: header variables", () => {

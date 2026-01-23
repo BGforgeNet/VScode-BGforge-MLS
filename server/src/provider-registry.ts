@@ -183,7 +183,7 @@ class ProviderRegistry {
      * Local symbols take precedence (deduplicated by label).
      * If provider implements filterCompletions, applies context-based filtering.
      */
-    completion(langId: string, text: string, uri: string, position?: Position): CompletionItem[] {
+    completion(langId: string, text: string, uri: string, position?: Position, triggerCharacter?: string): CompletionItem[] {
         const provider = this.get(langId);
         if (!provider) {
             return [];
@@ -203,7 +203,7 @@ class ProviderRegistry {
 
         // Apply context-based filtering if provider supports it
         if (provider.filterCompletions && position) {
-            result = provider.filterCompletions(result, text, position, uri);
+            result = provider.filterCompletions(result, text, position, uri, triggerCharacter);
         }
 
         return result;

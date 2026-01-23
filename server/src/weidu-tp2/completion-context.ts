@@ -107,6 +107,18 @@ export function getContextAtPosition(
         return [defaultContext];
     }
 
+    // No code completions inside comments; offer JSDoc tags inside /** */ comments
+    if (node.type === SyntaxType.Comment) {
+        const commentText = node.text.trimStart();
+        if (commentText.startsWith("/**")) {
+            return ["jsdoc"];
+        }
+        return ["comment"];
+    }
+    if (node.type === SyntaxType.LineComment) {
+        return ["comment"];
+    }
+
     // Walk up the tree to find context-defining ancestor
     const contexts = detectContextFromNode(node, extLower, cursorOffset);
 

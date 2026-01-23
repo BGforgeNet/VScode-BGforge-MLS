@@ -192,6 +192,57 @@ describe("jsdoc.parse", () => {
         });
     });
 
+    describe("@type parsing", () => {
+        it("parses @type with braces", () => {
+            const input = `/**
+ * @type {int}
+ */`;
+            const result = jsdoc.parse(input);
+            expect(result.type).toBe("int");
+        });
+
+        it("parses @type without braces", () => {
+            const input = `/**
+ * @type string
+ */`;
+            const result = jsdoc.parse(input);
+            expect(result.type).toBe("string");
+        });
+
+        it("parses @type with description", () => {
+            const input = `/**
+ * Counter variable.
+ * @type int
+ */`;
+            const result = jsdoc.parse(input);
+            expect(result.type).toBe("int");
+            expect(result.desc).toBe("Counter variable.");
+        });
+
+        it("parses single-line JSDoc with @type and description", () => {
+            const result = jsdoc.parse(`/** @type int Berserker column in 2da */`);
+            expect(result.type).toBe("int");
+            expect(result.desc).toBe("Berserker column in 2da");
+        });
+
+        it("parses single-line JSDoc with description only", () => {
+            const result = jsdoc.parse(`/** Some variable description */`);
+            expect(result.type).toBeUndefined();
+            expect(result.desc).toBe("Some variable description");
+        });
+
+        it("parses single-line JSDoc with @type only", () => {
+            const result = jsdoc.parse(`/** @type string */`);
+            expect(result.type).toBe("string");
+            expect(result.desc).toBeUndefined();
+        });
+
+        it("parses single-line JSDoc with @deprecated", () => {
+            const result = jsdoc.parse(`/** @deprecated Use new_var instead */`);
+            expect(result.deprecated).toBe("Use new_var instead");
+        });
+    });
+
     describe("combined parsing", () => {
         it("parses complete JSDoc comment", () => {
             const input = `/**

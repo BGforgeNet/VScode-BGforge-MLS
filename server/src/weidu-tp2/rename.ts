@@ -498,7 +498,13 @@ function getSymbolAtPosition(root: SyntaxNode, position: Position): SymbolInfo |
                         current.type === SyntaxType.StrVarCallItem ||
                         current.type === SyntaxType.RetCallItem ||
                         current.type === SyntaxType.RetArrayCallItem) {
-                        return null; // Function call parameter names cannot be renamed
+                        // Only reject if cursor is on the param name (first child),
+                        // not on the value part. Grammar: call_item = name [= value]
+                        const paramNameNode = current.children[0];
+                        if (paramNameNode && node.startIndex >= paramNameNode.startIndex && node.endIndex <= paramNameNode.endIndex) {
+                            return null; // Function call parameter names cannot be renamed
+                        }
+                        break;
                     }
                     current = current.parent;
                 }

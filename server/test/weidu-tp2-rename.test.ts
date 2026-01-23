@@ -868,6 +868,17 @@ LAF my_func INT_VAR foo = 1 END
         expect(result).toBeNull();
     });
 
+    it("allows rename on function call argument value", () => {
+        const content = `OUTER_SET test2 = 5
+LAF my_func INT_VAR bonus = test2 END
+OUTER_SET x = test2
+`;
+        // Line 1, col 28: on "test2" in LAF call's INT_VAR value position (after =)
+        const result = renameSymbol(content, { line: 1, character: 28 }, "renamed_var", "file:///test.tp2");
+        expect(result).not.toBeNull();
+        expect(result!.changes!["file:///test.tp2"]).toHaveLength(3);
+    });
+
     it("rejects renaming automatic variables", () => {
         const text = `
 COPY ~source~ ~override~

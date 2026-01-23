@@ -52,8 +52,8 @@ const RETURN_PATTERN = /@(?:ret|return|returns)\s+\{(\w+)\}/;
 /** Pattern for @deprecated tag. Groups: 1=message (optional) */
 const DEPRECATED_PATTERN = /@deprecated(?:\s+(.*))?/;
 
-/** Pattern for @type tag. Groups: 1=type */
-const TYPE_PATTERN = /@type\s+\{(\w+)\}/;
+/** Pattern for @type tag. Groups: 1=type with braces, 2=type without braces, 3=trailing description */
+const TYPE_PATTERN = /@type\s+(?:\{(\w+)\}|(\w+))(?:\s+-\s+|\s+)?(.+)?/;
 
 /** Pattern for JSDoc line prefix " * " or " *" */
 const LINE_PREFIX_PATTERN = /^\s*\*\s?/;
@@ -69,9 +69,18 @@ const LINE_PREFIX_PATTERN = /^\s*\*\s?/;
 export function parse(text: string): JSdoc {
     const lines = text.split("\n");
 
-    // Remove first line (/**) and last line (*/)
-    lines.shift();
-    lines.pop();
+    if (lines.length === 1) {
+        // Single-line JSDoc: /** content */
+        const content = text.replace(/^\/\*\*\s*/, "").replace(/\s*\*\/$/, "").trim();
+        lines.length = 0;
+        if (content) {
+            lines.push(content);
+        }
+    } else {
+        // Multi-line: remove first (/**) and last (*/) lines
+        lines.shift();
+        lines.pop();
+    }
 
     const args: Arg[] = [];
     const descriptionLines: string[] = [];
@@ -102,10 +111,13 @@ export function parse(text: string): JSdoc {
             continue;
         }
 
-        // Try parsing @type
+        // Try parsing @type (may include trailing description)
         const typeResult = parseType(line);
         if (typeResult) {
-            type = typeResult;
+            type = typeResult.type;
+            if (typeResult.desc) {
+                descriptionLines.push(typeResult.desc);
+            }
             continue;
         }
 
@@ -174,13 +186,18 @@ function parseReturn(line: string): Ret | null {
     return { type: match[1] };
 }
 
-/** Parse @type tag. Returns type string or null if no match. */
-function parseType(line: string): string | null {
+/** Parse @type tag. Returns type and optional trailing description, or null if no match. */
+function parseType(line: string): { type: string; desc?: string } | null {
     const match = line.match(TYPE_PATTERN);
-    if (!match || !match[1]) {
+    if (!match) {
         return null;
     }
-    return match[1];
+    const type = match[1] || match[2];
+    if (!type) {
+        return null;
+    }
+    const desc = match[3]?.trim();
+    return { type, desc: desc || undefined };
 }
 
 /** Parse @deprecated tag. Returns true if no message, string if message, null if no match. */

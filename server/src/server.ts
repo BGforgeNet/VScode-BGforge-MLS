@@ -8,6 +8,7 @@ import { fileURLToPath } from "node:url";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import {
     CompletionItem,
+    CompletionParams,
     createConnection,
     DidChangeConfigurationNotification,
     DidChangeWatchedFilesNotification,
@@ -91,6 +92,7 @@ connection.onInitialize((params: InitializeParams) => {
             completionProvider: {
                 resolveProvider: true,
                 completionItem: { labelDetailsSupport: true },
+                triggerCharacters: ["@"],
             },
             hoverProvider: true,
             signatureHelpProvider: {
@@ -233,7 +235,7 @@ documents.onDidOpen((event) => {
 });
 
 // This handler provides the initial list of the completion items.
-connection.onCompletion((params: TextDocumentPositionParams) => {
+connection.onCompletion((params: CompletionParams) => {
     const uri = params.textDocument.uri;
     const textDoc = documents.get(uri);
     if (!textDoc) {
@@ -241,7 +243,7 @@ connection.onCompletion((params: TextDocumentPositionParams) => {
     }
     const langId = textDoc.languageId;
     const text = textDoc.getText();
-    return registry.completion(langId, text, uri, params.position);
+    return registry.completion(langId, text, uri, params.position, params.context?.triggerCharacter);
 });
 
 // This handler resolve additional information for the item selected in

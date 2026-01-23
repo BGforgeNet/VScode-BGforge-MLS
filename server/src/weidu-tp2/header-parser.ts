@@ -45,7 +45,7 @@ export interface VariableInfo {
     jsdoc?: jsdoc.JSdoc;
     value?: string; // Source text from AST, truncated if long
     declarationKind: "set" | "sprint" | "text_sprint";
-    inferredType: "int" | "string"; // Derived: "set" → "int", others → "string"
+    inferredType: "int" | "string"; // Derived: "set"/assignment → "int", "sprint"/"text_sprint" → "string"
 }
 
 /** Node types for function/macro definitions. */
@@ -56,14 +56,19 @@ const FUNCTION_DEF_TYPES = new Set([
     SyntaxType.ActionDefinePatchMacro,
 ]);
 
-/** Node types for top-level variable declarations (only these are considered for header variables). */
-const HEADER_VARIABLE_TYPES = new Set([
+/** Node types for variable declarations (file-scope, outside function/macro bodies). */
+const VARIABLE_TYPES = new Set([
     SyntaxType.ActionOuterSet,
     SyntaxType.ActionOuterSprint,
     SyntaxType.ActionOuterTextSprint,
+    SyntaxType.PatchSet,
+    SyntaxType.PatchSprint,
+    SyntaxType.PatchTextSprint,
+    SyntaxType.PatchAssignment,
+    SyntaxType.TopLevelAssignment,
 ]);
 
-/** Node types for parameter declarations. */
+/** Node types for parameter declarations (mapping from node type to parameter category). */
 const PARAM_DECL_TYPES = {
     int_var_decl: "intVar",
     str_var_decl: "strVar",
@@ -119,7 +124,7 @@ function extractFunctions(root: SyntaxNode, uri: string): FunctionInfo[] {
             continue;
         }
 
-        const info = extractFunctionInfo(node, uri, root, i);
+        const info = extractFunctionInfo(node, uri);
         if (info) {
             functions.push(info);
         }
@@ -129,35 +134,38 @@ function extractFunctions(root: SyntaxNode, uri: string): FunctionInfo[] {
 }
 
 /**
- * Extract top-level variable definitions with JSDoc from AST root.
+ * Extract file-scope variable definitions from the AST.
+ * Recurses into control flow but skips function/macro bodies (separate scope in WeiDU).
  */
 function extractVariables(root: SyntaxNode, uri: string): VariableInfo[] {
     const variables: VariableInfo[] = [];
 
-    for (let i = 0; i < root.childCount; i++) {
-        const node = root.child(i);
-        if (!node || !HEADER_VARIABLE_TYPES.has(node.type as SyntaxType)) {
-            continue;
+    function visit(node: SyntaxNode): void {
+        if (VARIABLE_TYPES.has(node.type as SyntaxType)) {
+            const info = extractVariableInfo(node, uri);
+            if (info) {
+                variables.push(info);
+            }
         }
 
-        const info = extractVariableInfo(node, uri, root, i);
-        if (info) {
-            variables.push(info);
+        // Don't recurse into function/macro bodies - they are separate scopes
+        if (FUNCTION_DEF_TYPES.has(node.type as SyntaxType)) {
+            return;
+        }
+
+        for (const child of node.children) {
+            visit(child);
         }
     }
 
+    visit(root);
     return variables;
 }
 
 /**
  * Extract info from a single function/macro definition node.
  */
-function extractFunctionInfo(
-    node: SyntaxNode,
-    uri: string,
-    root: SyntaxNode,
-    nodeIndex: number
-): FunctionInfo | null {
+function extractFunctionInfo(node: SyntaxNode, uri: string): FunctionInfo | null {
     const nameNode = node.childForFieldName("name");
     if (!nameNode) {
         return null;
@@ -178,7 +186,7 @@ function extractFunctionInfo(
     const info: FunctionInfo = { name, context, dtype, location };
 
     // Extract JSDoc from preceding comment
-    const docComment = findPrecedingDocComment(root, nodeIndex);
+    const docComment = findPrecedingDocComment(node);
     if (docComment) {
         info.jsdoc = jsdoc.parse(docComment);
     }
@@ -193,14 +201,9 @@ function extractFunctionInfo(
 
 /**
  * Extract info from a single variable definition node.
- * Includes all top-level variables; JSDoc is optional.
+ * Includes all variables; JSDoc is optional.
  */
-function extractVariableInfo(
-    node: SyntaxNode,
-    uri: string,
-    root: SyntaxNode,
-    nodeIndex: number
-): VariableInfo | null {
+function extractVariableInfo(node: SyntaxNode, uri: string): VariableInfo | null {
     const varNode = node.childForFieldName("var");
     if (!varNode) {
         return null;
@@ -217,24 +220,28 @@ function extractVariableInfo(
     };
 
     // Determine declaration kind and inferred type from node type
-    let declarationKind: "set" | "sprint" | "text_sprint";
-    let inferredType: "int" | "string";
+    let declarationKind: VariableInfo["declarationKind"];
+    let inferredType: VariableInfo["inferredType"];
 
     switch (node.type as SyntaxType) {
         case SyntaxType.ActionOuterSet:
+        case SyntaxType.PatchSet:
+        case SyntaxType.PatchAssignment:
+        case SyntaxType.TopLevelAssignment:
             declarationKind = "set";
             inferredType = "int";
             break;
         case SyntaxType.ActionOuterSprint:
+        case SyntaxType.PatchSprint:
             declarationKind = "sprint";
             inferredType = "string";
             break;
         case SyntaxType.ActionOuterTextSprint:
+        case SyntaxType.PatchTextSprint:
             declarationKind = "text_sprint";
             inferredType = "string";
             break;
         default:
-            // Shouldn't happen given HEADER_VARIABLE_TYPES filter, but provide fallback
             declarationKind = "set";
             inferredType = "int";
     }
@@ -254,7 +261,7 @@ function extractVariableInfo(
     }
 
     // Extract JSDoc from preceding comment (optional)
-    const docComment = findPrecedingDocComment(root, nodeIndex);
+    const docComment = findPrecedingDocComment(node);
     if (docComment) {
         info.jsdoc = jsdoc.parse(docComment);
     }
@@ -272,12 +279,31 @@ function parseDefType(type: string): { context: "action" | "patch"; dtype: "func
 }
 
 /**
- * Find preceding JSDoc comment (block comment starting with /**).
+ * Find preceding JSDoc comment (block comment starting with /**) for a node.
+ * Looks at previous siblings within the same parent.
  */
-function findPrecedingDocComment(root: SyntaxNode, nodeIndex: number): string | null {
-    // Look backwards for a comment node
+function findPrecedingDocComment(node: SyntaxNode): string | null {
+    const parent = node.parent;
+    if (!parent) {
+        return null;
+    }
+
+    // Find this node's index in parent by position (web-tree-sitter creates new objects per .child() call)
+    let nodeIndex = -1;
+    for (let i = 0; i < parent.childCount; i++) {
+        const sibling = parent.child(i);
+        if (sibling && sibling.startIndex === node.startIndex && sibling.endIndex === node.endIndex) {
+            nodeIndex = i;
+            break;
+        }
+    }
+    if (nodeIndex < 0) {
+        return null;
+    }
+
+    // Look backwards for a JSDoc comment
     for (let i = nodeIndex - 1; i >= 0; i--) {
-        const prev = root.child(i);
+        const prev = parent.child(i);
         if (!prev) continue;
 
         if (prev.type === SyntaxType.Comment) {
@@ -440,10 +466,12 @@ export function updateVariableIndex(uri: string, text: string): void {
     // Remove old entries from this file
     clearVariableFromIndex(uri);
 
-    // Parse and add new entries
+    // Parse and add new entries (first occurrence wins for duplicate names)
     const variables = parseHeaderVariables(text, uri);
     for (const varInfo of variables) {
-        variableIndex.set(varInfo.name, varInfo);
+        if (!variableIndex.has(varInfo.name)) {
+            variableIndex.set(varInfo.name, varInfo);
+        }
     }
 }
 

@@ -22,7 +22,7 @@ import { formatDocument as formatAst, FormatOptions } from "./format-core";
 import { initParser, getParser, isInitialized } from "./parser";
 import { getDocumentSymbols } from "./symbol";
 import { getDefinition } from "./definition";
-import { updateFileIndex, clearFileFromIndex, updateVariableIndex, clearVariableFromIndex, lookupFunction, FunctionInfo } from "./header-parser";
+import { updateFileIndex, clearFileFromIndex, updateVariableIndex, clearVariableFromIndex, lookupFunction, lookupVariable, FunctionInfo } from "./header-parser";
 import { SyntaxType } from "./tree-sitter.d";
 import { stripStringDelimiters, unwrapVariableRef } from "./tree-utils";
 import { renameSymbol, prepareRenameSymbol } from "./rename";
@@ -71,16 +71,54 @@ export const weiduTp2Provider: LanguageProvider = {
         return staticCompletions;
     },
 
-    filterCompletions(items: CompletionItem[], text: string, position: Position, uri: string): CompletionItem[] {
+    filterCompletions(items: CompletionItem[], text: string, position: Position, uri: string, triggerCharacter?: string): CompletionItem[] {
         const filePath = fileURLToPath(uri);
         const ext = extname(filePath).toLowerCase();
         const contexts = getContextAtPosition(text, position.line, position.character, ext);
 
         conlog(`[tp2] Completion contexts: [${contexts.join(", ")}] at ${position.line}:${position.character} in ${ext}`);
 
+        // No code completions inside comments; JSDoc tags/types inside /** */
+        if (contexts.includes("comment")) {
+            return [];
+        }
+        if (contexts.includes("jsdoc")) {
+            return getJsdocCompletions(triggerCharacter);
+        }
+
+        // @ trigger character is only for JSDoc - suppress in other contexts
+        if (triggerCharacter === "@") {
+            return [];
+        }
+
         // Add local variable completions
         const localVars = localCompletion(text);
-        let allItems = [...items, ...localVars];
+
+        // Enrich local vars with JSDoc info from header index (but without file path)
+        for (const item of localVars) {
+            if (item.kind === CompletionItemKind.Variable) {
+                const varInfo = lookupVariable(item.label as string);
+                if (varInfo) {
+                    const type = varInfo.jsdoc?.type ?? varInfo.inferredType;
+                    const signature = varInfo.value ? `${type} ${item.label} = ${varInfo.value}` : `${type} ${item.label}`;
+                    const langId = "weidu-tp2-tooltip";
+                    const docParts = [`\`\`\`${langId}`, signature, "```"];
+                    if (varInfo.jsdoc?.desc) {
+                        docParts.push("", varInfo.jsdoc.desc);
+                    }
+                    item.documentation = { kind: MarkupKind.Markdown, value: docParts.join("\n") };
+                }
+            }
+        }
+
+        // Deduplicate: remove header items that match local var names
+        // Header items have labelDetails.description (file path), local vars don't
+        const localVarNames = new Set(localVars.filter(v => v.kind === CompletionItemKind.Variable).map(v => v.label));
+        const dedupedItems = items.filter(item =>
+            !(item.kind === CompletionItemKind.Variable && item.labelDetails?.description && localVarNames.has(item.label as string))
+        );
+
+        let allItems = [...dedupedItems, ...localVars];
 
         // Check if we're in funcParamName context and can provide parameter completions
         // Note: Parameter completions (like "count = ") are only shown when typing parameter names,
@@ -141,7 +179,15 @@ export const weiduTp2Provider: LanguageProvider = {
     },
 
     hover(text: string, symbol: string, _uri: string, position: Position): Hover | null {
-        return getFunctionParamHover(text, symbol, position);
+        // Suppress hover inside comments
+        if (isInsideComment(text, position)) {
+            return null;
+        }
+
+        const paramHover = getFunctionParamHover(text, symbol, position);
+        if (paramHover) return paramHover;
+
+        return getVariableHover(symbol);
     },
 
     getSymbolDefinition(symbol: string): Location | null {
@@ -229,6 +275,32 @@ function getFormatOptions(uri: string): FormatOptions {
     } catch {
         return { indentSize: DEFAULT_INDENT, lineLimit: DEFAULT_LINE_LIMIT };
     }
+}
+
+/** JSDoc completion items. When triggered by @, insertText omits the @ prefix to avoid duplication. */
+function getJsdocCompletions(triggerCharacter?: string): CompletionItem[] {
+    const triggeredByAt = triggerCharacter === "@";
+    const tags: CompletionItem[] = [
+        { label: "@type", insertText: triggeredByAt ? "type" : "@type", filterText: triggeredByAt ? "type" : "@type", kind: CompletionItemKind.Keyword, detail: "Variable type" },
+        { label: "@param", insertText: triggeredByAt ? "param" : "@param", filterText: triggeredByAt ? "param" : "@param", kind: CompletionItemKind.Keyword, detail: "Function parameter" },
+        { label: "@return", insertText: triggeredByAt ? "return" : "@return", filterText: triggeredByAt ? "return" : "@return", kind: CompletionItemKind.Keyword, detail: "Return type" },
+        { label: "@deprecated", insertText: triggeredByAt ? "deprecated" : "@deprecated", filterText: triggeredByAt ? "deprecated" : "@deprecated", kind: CompletionItemKind.Keyword, detail: "Mark as deprecated" },
+    ];
+
+    // Types matching KNOWN_TYPES from weidu.ts (ielib types)
+    const types: CompletionItem[] = [
+        { label: "array", kind: CompletionItemKind.TypeParameter, detail: "Array type" },
+        { label: "bool", kind: CompletionItemKind.TypeParameter, detail: "Boolean type" },
+        { label: "filename", kind: CompletionItemKind.TypeParameter, detail: "File name" },
+        { label: "ids", kind: CompletionItemKind.TypeParameter, detail: "IDS reference" },
+        { label: "int", kind: CompletionItemKind.TypeParameter, detail: "Integer type" },
+        { label: "list", kind: CompletionItemKind.TypeParameter, detail: "List type" },
+        { label: "map", kind: CompletionItemKind.TypeParameter, detail: "Map type" },
+        { label: "resref", kind: CompletionItemKind.TypeParameter, detail: "Resource reference" },
+        { label: "string", kind: CompletionItemKind.TypeParameter, detail: "String type" },
+    ];
+
+    return [...tags, ...types];
 }
 
 /**
@@ -614,4 +686,48 @@ function findParamInFuncInfo(
     }
 
     return null;
+}
+
+/**
+ * Check if the given position is inside a comment node using tree-sitter.
+ */
+function isInsideComment(text: string, position: Position): boolean {
+    if (!isInitialized()) {
+        return false;
+    }
+    const tree = getParser().parse(text);
+    if (!tree) {
+        return false;
+    }
+    const node = tree.rootNode.descendantForPosition({ row: position.line, column: position.character });
+    return node !== null && (node.type === SyntaxType.Comment || node.type === SyntaxType.LineComment);
+}
+
+/**
+ * Get hover info for a variable from the variable index.
+ * Shows type, value, and JSDoc description if available.
+ */
+function getVariableHover(symbol: string): Hover | null {
+    const varInfo = lookupVariable(symbol);
+    if (!varInfo) {
+        return null;
+    }
+
+    // Use JSDoc @type if available, otherwise inferred type
+    const type = varInfo.jsdoc?.type ?? varInfo.inferredType;
+    const signature = varInfo.value ? `${type} ${symbol} = ${varInfo.value}` : `${type} ${symbol}`;
+
+    const langId = "weidu-tp2-tooltip";
+    const docParts = [`\`\`\`${langId}`, signature, "```"];
+
+    if (varInfo.jsdoc?.desc) {
+        docParts.push("", varInfo.jsdoc.desc);
+    }
+
+    return {
+        contents: {
+            kind: MarkupKind.Markdown,
+            value: docParts.join("\n"),
+        },
+    };
 }

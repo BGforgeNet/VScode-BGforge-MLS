@@ -399,3 +399,61 @@ OUTER_TEXT_SPRINT spell ~SPWI101~`;
         }
     });
 });
+
+describe("weidu-tp2: JSDoc comment completions", () => {
+    it("returns JSDoc tags and types inside single-line JSDoc comment", () => {
+        const text = `/** @type  */\nOUTER_SET x = 1\n`;
+        const uri = "file:///test.tp2";
+        // Cursor inside the JSDoc comment (line 0, col 9 - after "@type ")
+        const position: Position = { line: 0, character: 9 };
+
+        const allItems = weiduTp2Provider.getCompletions?.(uri) ?? [];
+        const filteredItems = weiduTp2Provider.filterCompletions?.(allItems, text, position, uri) ?? [];
+
+        // Should have JSDoc tags and types, no code completions
+        const labels = filteredItems.map(item => item.label);
+        expect(labels).toContain("@type");
+        expect(labels).toContain("@param");
+        expect(labels).toContain("int");
+        expect(labels).toContain("string");
+        // Should NOT have code completions
+        expect(labels).not.toContain("x");
+    });
+
+    it("returns JSDoc tags inside multi-line JSDoc comment", () => {
+        const text = `/**\n * \n */\nOUTER_SET x = 1\n`;
+        const uri = "file:///test.tp2";
+        // Cursor on line 1 (the " * " line), col 3
+        const position: Position = { line: 1, character: 3 };
+
+        const allItems = weiduTp2Provider.getCompletions?.(uri) ?? [];
+        const filteredItems = weiduTp2Provider.filterCompletions?.(allItems, text, position, uri) ?? [];
+
+        const labels = filteredItems.map(item => item.label);
+        expect(labels).toContain("@type");
+        expect(labels).toContain("@param");
+        expect(labels).toContain("int");
+    });
+
+    it("returns empty completions inside regular block comment", () => {
+        const text = `/* regular comment */\nOUTER_SET x = 1\n`;
+        const uri = "file:///test.tp2";
+        const position: Position = { line: 0, character: 10 };
+
+        const allItems = weiduTp2Provider.getCompletions?.(uri) ?? [];
+        const filteredItems = weiduTp2Provider.filterCompletions?.(allItems, text, position, uri) ?? [];
+
+        expect(filteredItems).toHaveLength(0);
+    });
+
+    it("returns empty completions inside line comment", () => {
+        const text = `// line comment\nOUTER_SET x = 1\n`;
+        const uri = "file:///test.tp2";
+        const position: Position = { line: 0, character: 5 };
+
+        const allItems = weiduTp2Provider.getCompletions?.(uri) ?? [];
+        const filteredItems = weiduTp2Provider.filterCompletions?.(allItems, text, position, uri) ?? [];
+
+        expect(filteredItems).toHaveLength(0);
+    });
+});

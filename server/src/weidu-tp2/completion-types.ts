@@ -49,7 +49,9 @@ export type CompletionContext =
     | "lpfName"         // After LPF keyword (patch functions only)
     | "funcParamName"   // Function parameter name (left of = or no =)
     | "funcParamValue"  // Function parameter value (right of =)
-    | "unknown";        // Fallback - return everything
+    | "unknown"         // Fallback - return everything
+    | "comment"         // Inside a comment - no code completions
+    | "jsdoc";          // Inside a JSDoc comment - offer tags and types
 
 // Re-export CompletionCategory from shared for convenience
 export type { CompletionCategory } from "../shared/completion-context";
