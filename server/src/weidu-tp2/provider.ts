@@ -174,16 +174,15 @@ export const weiduTp2Provider: LanguageProvider = {
         return filterItemsByContext(allItems, contexts);
     },
 
+    shouldProvideFeatures(text: string, position: Position): boolean {
+        return !isInsideComment(text, position);
+    },
+
     getHover(uri: string, symbol: string): Hover | null {
         return language?.hover(uri, symbol) ?? null;
     },
 
     hover(text: string, symbol: string, _uri: string, position: Position): Hover | null {
-        // Suppress hover inside comments
-        if (isInsideComment(text, position)) {
-            return null;
-        }
-
         const paramHover = getFunctionParamHover(text, symbol, position);
         if (paramHover) return paramHover;
 

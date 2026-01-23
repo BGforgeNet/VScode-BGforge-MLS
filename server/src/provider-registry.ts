@@ -122,6 +122,19 @@ class ProviderRegistry {
         return this.providers.has(this.resolveLangId(langId)) || this.aliases.has(langId);
     }
 
+    /**
+     * Check if LSP features should be provided at this position.
+     * Returns false when the cursor is in a zone where features should be suppressed
+     * (e.g., inside comments). Defaults to true if not implemented by the provider.
+     */
+    shouldProvideFeatures(langId: string, text: string, position: Position): boolean {
+        const provider = this.get(langId);
+        if (provider?.shouldProvideFeatures) {
+            return provider.shouldProvideFeatures(text, position);
+        }
+        return true;
+    }
+
     // =========================================================================
     // Feature routing - delegates to appropriate provider
     // =========================================================================

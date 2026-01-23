@@ -273,6 +273,11 @@ connection.onHover((textDocumentPosition: TextDocumentPositionParams) => {
         return;
     }
 
+    // Suppress all features in comment zones
+    if (!registry.shouldProvideFeatures(langId, text, textDocumentPosition.position)) {
+        return;
+    }
+
     // Check translation hover first (for @123 or NOption(123) references)
     const translationHover = translation?.getHover(uri, langId, symbol, text);
     if (translationHover) {

@@ -257,3 +257,35 @@ END
         }
     });
 });
+
+describe("weidu-tp2: shouldProvideFeatures (comment suppression)", () => {
+    it("returns false inside a block comment", () => {
+        const text = `/* some comment */\nOUTER_SET x = 1\n`;
+        const position: Position = { line: 0, character: 5 };
+        expect(weiduTp2Provider.shouldProvideFeatures?.(text, position)).toBe(false);
+    });
+
+    it("returns false inside a JSDoc comment", () => {
+        const text = `/** @type int Description */\nOUTER_SET x = 1\n`;
+        const position: Position = { line: 0, character: 10 };
+        expect(weiduTp2Provider.shouldProvideFeatures?.(text, position)).toBe(false);
+    });
+
+    it("returns false inside a line comment", () => {
+        const text = `// line comment\nOUTER_SET x = 1\n`;
+        const position: Position = { line: 0, character: 5 };
+        expect(weiduTp2Provider.shouldProvideFeatures?.(text, position)).toBe(false);
+    });
+
+    it("returns true outside comments", () => {
+        const text = `OUTER_SET x = 1\n`;
+        const position: Position = { line: 0, character: 5 };
+        expect(weiduTp2Provider.shouldProvideFeatures?.(text, position)).toBe(true);
+    });
+
+    it("returns true on code after a comment", () => {
+        const text = `/* comment */\nOUTER_SET x = 1\n`;
+        const position: Position = { line: 1, character: 5 };
+        expect(weiduTp2Provider.shouldProvideFeatures?.(text, position)).toBe(true);
+    });
+});

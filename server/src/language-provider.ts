@@ -68,6 +68,14 @@ export interface LanguageProvider {
      */
     init(context: ProviderContext): Promise<void>;
 
+    /**
+     * Returns false if LSP features (hover, definition, rename) should be suppressed at this position.
+     * Use for zones like comments where code intelligence doesn't apply.
+     * Defaults to true (provide features) if not implemented.
+     * Note: completion uses its own context system (filterCompletions) for finer granularity.
+     */
+    shouldProvideFeatures?(text: string, position: Position): boolean;
+
     // =========================================================================
     // Document features (AST-based, operate on current text)
     // =========================================================================
