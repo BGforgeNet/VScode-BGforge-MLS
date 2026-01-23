@@ -393,10 +393,10 @@ function buildLanguageData(uri: string, functions: FunctionInfo[], filePath: str
 
     for (const func of functions) {
         // Build JSDoc arg lookup map for type overrides
-        const jsdocArgs = new Map<string, { type: string; description?: string }>();
+        const jsdocArgs = new Map<string, { type: string; description?: string; required?: boolean }>();
         if (func.jsdoc?.args) {
             for (const arg of func.jsdoc.args) {
-                jsdocArgs.set(arg.name, { type: arg.type, description: arg.description });
+                jsdocArgs.set(arg.name, { type: arg.type, description: arg.description, required: arg.required });
             }
         }
 
@@ -467,7 +467,8 @@ function buildLanguageData(uri: string, functions: FunctionInfo[], filePath: str
                 for (const p of params) {
                     const jsdoc = jsdocArgs.get(p.name);
                     const type = formatType(jsdoc?.type ?? defaultType);
-                    const def = p.defaultValue ?? "";
+                    // Hide default value for required params
+                    const def = jsdoc?.required ? "" : (p.defaultValue ?? "");
                     const desc = truncateDesc(jsdoc?.description ?? "");
                     tableRows.push(`| ${type} | ${p.name} | ${desc} | ${def} |`);
                 }

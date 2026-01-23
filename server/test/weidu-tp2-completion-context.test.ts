@@ -1030,6 +1030,115 @@ END
         });
     });
 
+    describe("text-based fallback for lafName/lpfName", () => {
+        // Test cases for text-based lafName/lpfName fallback
+        // Use getContextAtPosition(text, line, char, ext) directly
+
+        describe("inside patch block (COPY body)", () => {
+            it("detects lpfName after LPF with space", () => {
+                const content = `COPY_EXISTING ~foo.itm~ ~override~
+  LPF `;
+                // Line 1, col 6: right after "LPF " (cursor at end)
+                const contexts = getContextAtPosition(content, 1, 6, ".tp2");
+                expect(contexts).toEqual(["lpfName"]);
+            });
+
+            it("detects lpfName while typing function name after LPF", () => {
+                const content = `COPY_EXISTING ~foo.itm~ ~override~
+  LPF xxx`;
+                // Line 1, col 10: right after "LPF xxx" (cursor at end, still typing name)
+                const contexts = getContextAtPosition(content, 1, 10, ".tp2");
+                expect(contexts).toEqual(["lpfName"]);
+            });
+
+            it("detects lafName after LAF with space", () => {
+                const content = `COPY_EXISTING ~foo.itm~ ~override~
+  LAF `;
+                // Line 1, col 6: right after "LAF " (cursor at end)
+                const contexts = getContextAtPosition(content, 1, 6, ".tp2");
+                expect(contexts).toEqual(["lafName"]);
+            });
+
+            it("detects lafName while typing function name after LAF", () => {
+                const content = `COPY_EXISTING ~foo.itm~ ~override~
+  LAF my_func`;
+                // Line 1, col 13: right after "LAF my_func" (cursor at end, still typing name)
+                const contexts = getContextAtPosition(content, 1, 13, ".tp2");
+                expect(contexts).toEqual(["lafName"]);
+            });
+        });
+
+        describe("inside action context (top-level .tpa file)", () => {
+            it("detects lafName after LAF with space", () => {
+                const content = `LAF `;
+                // Line 0, col 4: right after "LAF " (cursor at end)
+                const contexts = getContextAtPosition(content, 0, 4, ".tpa");
+                expect(contexts).toEqual(["lafName"]);
+            });
+
+            it("detects lafName while typing function name", () => {
+                const content = `LAF my_func`;
+                // Line 0, col 11: right after "LAF my_func" (cursor at end, still typing name)
+                const contexts = getContextAtPosition(content, 0, 11, ".tpa");
+                expect(contexts).toEqual(["lafName"]);
+            });
+        });
+
+        describe("case insensitive", () => {
+            it("detects lafName with lowercase laf", () => {
+                const content = `laf `;
+                // Line 0, col 4: right after "laf " (cursor at end)
+                const contexts = getContextAtPosition(content, 0, 4, ".tpa");
+                expect(contexts).toEqual(["lafName"]);
+            });
+
+            it("detects lpfName with lowercase lpf and partial name", () => {
+                const content = `COPY ~foo~ ~bar~
+  lpf xxx`;
+                // Line 1, col 9: right after "lpf xxx" (cursor at end, still typing name)
+                const contexts = getContextAtPosition(content, 1, 9, ".tp2");
+                expect(contexts).toEqual(["lpfName"]);
+            });
+        });
+
+        describe("long form keywords", () => {
+            it("detects lafName with LAUNCH_ACTION_FUNCTION and partial name", () => {
+                const content = `LAUNCH_ACTION_FUNCTION xxx`;
+                // Line 0, col 26: right after "LAUNCH_ACTION_FUNCTION xxx" (cursor at end)
+                const contexts = getContextAtPosition(content, 0, 26, ".tpa");
+                expect(contexts).toEqual(["lafName"]);
+            });
+
+            it("detects lpfName with LAUNCH_PATCH_FUNCTION and partial name", () => {
+                const content = `COPY ~foo~ ~bar~
+  LAUNCH_PATCH_FUNCTION xxx`;
+                // Line 1, col 27: right after "LAUNCH_PATCH_FUNCTION xxx" (cursor at end)
+                const contexts = getContextAtPosition(content, 1, 27, ".tp2");
+                expect(contexts).toEqual(["lpfName"]);
+            });
+        });
+
+        describe("should NOT match (past function name)", () => {
+            it("does not detect lpfName when cursor is after whitespace following function name", () => {
+                const content = `COPY ~foo~ ~bar~
+  LPF xxx INT_VAR`;
+                // Line 1, col 12: after "LPF xxx " with trailing space (past function name position)
+                // Should detect funcParamName or similar, not lpfName
+                const contexts = getContextAtPosition(content, 1, 12, ".tp2");
+                expect(contexts).not.toEqual(["lpfName"]);
+            });
+
+            it("does not detect lpfName when there's a trailing space after function name", () => {
+                const content = `COPY ~foo~ ~bar~
+  LPF xxx `;
+                // Line 1, col 11: right after "LPF xxx " with trailing space
+                // The regex requires \S*$ (no trailing space), so this should NOT match
+                const contexts = getContextAtPosition(content, 1, 11, ".tp2");
+                expect(contexts).not.toEqual(["lpfName"]);
+            });
+        });
+    });
+
     describe("SUPPORT directive", () => {
         it("recognizes SUPPORT directive in prologue", () => {
             const content = `BACKUP ~backup~

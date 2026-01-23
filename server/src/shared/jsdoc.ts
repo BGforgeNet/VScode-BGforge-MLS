@@ -203,22 +203,6 @@ export interface ParamDisplayInfo {
     required?: boolean;
 }
 
-/**
- * Build a map of parameter names to their descriptions from JSDoc.
- * Returns empty map if jsdoc or args is undefined/empty.
- */
-export function buildDescriptionMap(jsdoc?: JSdoc): Map<string, string> {
-    const map = new Map<string, string>();
-    if (!jsdoc?.args) {
-        return map;
-    }
-    for (const arg of jsdoc.args) {
-        if (arg.description) {
-            map.set(arg.name, arg.description);
-        }
-    }
-    return map;
-}
 
 /**
  * Build a map of parameter names to their display info (description, required) from JSDoc.

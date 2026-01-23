@@ -39,6 +39,32 @@ export function getFuncParamsContext(): FuncParamsContext | null {
 // Context Detection
 // ============================================
 
+/** LAF/LPF keywords that indicate function name position. */
+const FUNC_CALL_KEYWORDS = /^\s*(LAF|LPF|LAUNCH_ACTION_FUNCTION|LAUNCH_PATCH_FUNCTION)\s+\S*$/i;
+
+/**
+ * Text-based fallback for detecting lafName/lpfName context.
+ * Used when tree-sitter can't parse incomplete function calls.
+ * Returns the context or null if not at a function name position.
+ */
+function detectFuncNameFromLineText(text: string, line: number, character: number): CompletionContext | null {
+    // Get the current line text up to cursor
+    const lines = text.split("\n");
+    if (line >= lines.length) return null;
+    const currentLine = lines[line];
+    if (!currentLine) return null;
+    const lineText = currentLine.substring(0, character);
+
+    const match = lineText.match(FUNC_CALL_KEYWORDS);
+    if (!match || !match[1]) return null;
+
+    const keyword = match[1].toUpperCase();
+    if (keyword === "LAF" || keyword === "LAUNCH_ACTION_FUNCTION") {
+        return "lafName";
+    }
+    return "lpfName";
+}
+
 /**
  * Determine the completion context at a given position.
  * Uses tree-sitter to parse the text and walk up from cursor position.
@@ -82,7 +108,29 @@ export function getContextAtPosition(
     }
 
     // Walk up the tree to find context-defining ancestor
-    return detectContextFromNode(node, extLower, cursorOffset);
+    const contexts = detectContextFromNode(node, extLower, cursorOffset);
+
+    // Text-based fallback: detect lafName/lpfName for incomplete function calls
+    // When tree-sitter can't parse incomplete function calls, it may return various generic
+    // contexts depending on file type and position. Check for function call keywords in line text.
+    // Only override when we're reasonably sure tree-sitter missed the function call
+    // (single generic context that allows function calls).
+    const canHaveFunctionCalls = contexts.length === 1 && (
+        contexts[0] === "patch" ||
+        contexts[0] === "action" ||
+        contexts[0] === "patchKeyword" ||
+        contexts[0] === "actionKeyword" ||
+        contexts[0] === "flag"  // Top-level .tp2 with incomplete structure
+    );
+
+    if (canHaveFunctionCalls) {
+        const funcNameContext = detectFuncNameFromLineText(text, line, character);
+        if (funcNameContext) {
+            return [funcNameContext];
+        }
+    }
+
+    return contexts;
 }
 
 
