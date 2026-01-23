@@ -31,7 +31,6 @@ repository:
       - match: (\.\.\.)
       - match: (\[)
       - match: (\])
-      - match: \b(list)\b
 
   variables:
     name: variable.weidu-tp2-tooltip
@@ -40,7 +39,7 @@ repository:
 
   datatypes:
     patterns:
-      - match: \b(multi )?(int|byte|char array|char|word|dword|resref|strref)\b
+      - match: \b(multi )?(int|byte|char array|char|word|dword|resref|strref|string|array|bool|ids|list|map|filename)\b
         name: support.type.weidu-tp2-tooltip.datatype
 
       - match: \b(offset)\b
