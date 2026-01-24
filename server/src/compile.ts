@@ -6,8 +6,7 @@
 import * as fs from "fs";
 import * as path from "path";
 import { conlog, isDirectory, pathToUri, tmpDir } from "./common";
-import { EXT_TBAF, EXT_TD, EXT_TSSL } from "./core/languages";
-import * as fallout from "./fallout-ssl/compiler";
+import { EXT_TBAF, EXT_TD, EXT_TSSL, LANG_FALLOUT_SSL } from "./core/languages";
 import { getConnection } from "./lsp-connection";
 import { registry } from "./provider-registry";
 import { getDocumentSettings } from "./server";
@@ -87,10 +86,11 @@ export async function compile(uri: string, langId: string, interactive = false, 
                 const sslPath = await tssl.compile(uri, text);
                 const sslName = path.basename(sslPath);
                 getConnection().window.showInformationMessage(`Transpiled to ${sslName}`);
-                // Chain SSL compilation
+                // Chain SSL compilation via registry
                 const sslUri = pathToUri(sslPath);
                 const sslText = fs.readFileSync(sslPath, 'utf-8');
-                await fallout.compile(sslUri, settings.falloutSSL, true, sslText);
+                clearDiagnostics(sslUri);
+                await registry.compile(LANG_FALLOUT_SSL, sslUri, sslText, true);
             } catch (error) {
                 const msg = error instanceof Error ? error.message : String(error);
                 getConnection().window.showErrorMessage(`TSSL: ${msg}`);
