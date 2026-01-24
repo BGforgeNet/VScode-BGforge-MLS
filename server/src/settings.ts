@@ -62,10 +62,8 @@ const defaultProjectSettings: ProjectSettings = {
 };
 
 /** get project settings from .bgforge.yml */
-export function project(dir: string) {
+export function project(dir: string | undefined) {
     const settings = defaultProjectSettings;
-    // Runtime guard: server.ts declares workspaceRoot as string but only conditionally
-    // assigns it. If no workspace folders exist, it remains undefined at runtime.
     if (dir === undefined) {
         return settings;
     }

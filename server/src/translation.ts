@@ -91,10 +91,10 @@ export class Translation {
     private directory: string;
     private data: TraData;
     private settings: ProjectTraSettings;
-    private workspaceRoot: string;
+    private workspaceRoot: string | undefined;
     initialized: boolean;
 
-    constructor(settings: ProjectTraSettings, workspaceRoot: string) {
+    constructor(settings: ProjectTraSettings, workspaceRoot: string | undefined) {
         conlog("Translation: initializing");
         this.settings = settings;
         this.directory = settings.directory;
@@ -127,10 +127,11 @@ export class Translation {
         if (!translatableLanguages.includes(langId)) return null;
 
         const filePath = this.uriToPath(uri);
-        if (!isSubpath(this.workspaceRoot, filePath)) return null;
+        const wsRoot = this.workspaceRoot;
+        if (wsRoot === undefined || !isSubpath(wsRoot, filePath)) return null;
         if (!isTraRef(symbol, langId, filePath)) return null;
 
-        const relPath = getRelPath(this.workspaceRoot, filePath);
+        const relPath = getRelPath(wsRoot, filePath);
         return this.lookupHover(symbol, text, relPath, langId);
     }
 
@@ -171,9 +172,10 @@ export class Translation {
         if (!languages.includes(langId)) return;
 
         const filePath = this.uriToPath(uri);
-        if (!isSubpath(this.workspaceRoot, filePath)) return;
+        const wsRoot = this.workspaceRoot;
+        if (wsRoot === undefined || !isSubpath(wsRoot, filePath)) return;
 
-        const wsPath = getRelPath(this.workspaceRoot, filePath);
+        const wsPath = getRelPath(wsRoot, filePath);
         this.reloadFileLines(wsPath, text);
     }
 

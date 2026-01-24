@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Test client - typecheck, lint, and binary parser tests
+# Test client - typecheck and formatting
 set -eu -o pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -10,10 +10,6 @@ cd "$CLIENT_DIR"
 
 echo "=== Typechecking client ==="
 pnpm exec tsc --noEmit
-
-echo ""
-echo "=== Running ESLint ==="
-pnpm exec eslint "src/**/*.ts" --max-warnings 0
 
 echo ""
 echo "=== Checking formatting ==="

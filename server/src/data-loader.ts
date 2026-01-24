@@ -78,13 +78,13 @@ export class Language implements Language {
     features: Features;
     /** Initialized in init() - callers must await init() before using this class */
     data!: Data;
-    workspaceRoot: string;
+    workspaceRoot: string | undefined;
     externalHeadersDirectory: string;
 
     constructor(
         id: string,
         features: Features,
-        workspaceRoot: string,
+        workspaceRoot: string | undefined,
         externalHeadersDirectory = ""
     ) {
         this.id = id;
@@ -129,8 +129,6 @@ export class Language implements Language {
     }
 
     private async loadHeaders(staticHover: hover.HoverMap = new Map()) {
-        // Runtime guard: server.ts declares workspaceRoot as string but only conditionally
-        // assigns it. If no workspace folders exist, it remains undefined at runtime.
         if (this.workspaceRoot === undefined) {
             return;
         }
@@ -257,7 +255,7 @@ export class Language implements Language {
      */
     private displayPath(uri: string) {
         const absPath = uriToPath(uri);
-        if (this.inWorkspace(uri)) {
+        if (this.workspaceRoot !== undefined && this.inWorkspace(uri)) {
             return getRelPath(this.workspaceRoot, absPath);
         }
         return absPath;

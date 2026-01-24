@@ -481,7 +481,7 @@ function getParamCompletions(context: FuncParamsContext): CompletionItem[] {
  */
 function createParamCompletion(name: string, type: string, defaultValue?: string, info?: ParamDisplayInfo): CompletionItem {
     // Build signature line - hide default value for required params
-    const showDefault = defaultValue && !info?.required;
+    const showDefault = defaultValue !== undefined && !info?.required;
     const signature = showDefault ? `${type} ${name} = ${defaultValue}` : `${type} ${name}`;
 
     // Build markdown documentation
@@ -599,7 +599,7 @@ function getFunctionParamHover(text: string, symbol: string, position: Position)
     const { paramType, defaultValue, description, required } = result;
 
     // Build hover content - hide default value for required params
-    const showDefault = defaultValue && !required;
+    const showDefault = defaultValue !== undefined && !required;
     const signature = showDefault ? `${paramType} ${symbol} = ${defaultValue}` : `${paramType} ${symbol}`;
 
     // Build markdown documentation

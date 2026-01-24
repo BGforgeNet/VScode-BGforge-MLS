@@ -63,19 +63,19 @@ export async function loadHeaders(headersDirectory: string, headerExtension: str
         // Other TP2 files (.tpa/.tpp/.tp2) define functions for their own use, not for sharing.
         // Filter by checking the uri property on each completion item.
         const headerCompletions = x.completion.filter((item) =>
-            item.uri?.toLowerCase().endsWith(headerExtension)
+            item.uri.toLowerCase().endsWith(headerExtension)
         );
         completions = completions.concat(headerCompletions);
 
         // Only include hover and definition from header files (determined by headerExtension).
         // Other TP2 files (.tpa/.tpp/.tp2) define functions for their own use, not for sharing.
         for (const [key, value] of x.hover) {
-            if (value.uri?.toLowerCase().endsWith(headerExtension)) {
+            if (value.uri.toLowerCase().endsWith(headerExtension)) {
                 hovers.set(key, value);
             }
         }
         for (const [key, value] of x.definition) {
-            if (value.uri?.toLowerCase().endsWith(headerExtension)) {
+            if (value.uri.toLowerCase().endsWith(headerExtension)) {
                 definitions.set(key, value);
             }
         }

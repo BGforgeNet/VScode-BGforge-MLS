@@ -160,7 +160,6 @@ export class TDParser {
      */
     private getFunctionEntryTrigger(func: FunctionDeclaration): string | undefined {
         const parent = func.getParent();
-        if (!parent) return undefined;
 
         // Check if parent is a Block inside an IfStatement
         if (Node.isBlock(parent)) {
@@ -474,10 +473,6 @@ export class TDParser {
             throw new Error(`${funcName}() takes 3 or 4 arguments at ${call.getStartLineNumber()}`);
         }
 
-        if (!transitionsArg) {
-            throw new Error(`${funcName}() requires transitions function at ${call.getStartLineNumber()}`);
-        }
-
         // Extract transitions from arrow function body
         const transitions: TDTransition[] = [];
         if (Node.isArrowFunction(transitionsArg)) {
@@ -648,7 +643,7 @@ export class TDParser {
                 filename: exitFile,
                 target: exitLabel,
             };
-        } else if (type === "interject_copy_trans" || type === "interject_copy_trans2") {
+        } else {
             epilogue = {
                 type: "copy_trans",
                 filename: entryFile,
@@ -1756,7 +1751,7 @@ export class TDParser {
      * Validate function call has required number of arguments.
      */
     private validateArgs(funcName: string, args: Node[], minArgs: number, lineNumber: number) {
-        if (args.length < minArgs || !args.slice(0, minArgs).every((a) => a)) {
+        if (args.length < minArgs) {
             const argWord = minArgs === 1 ? "argument" : "arguments";
             throw new Error(`${funcName}() requires at least ${minArgs} ${argWord} at ${lineNumber}`);
         }

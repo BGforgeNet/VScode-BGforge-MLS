@@ -60,7 +60,7 @@ let hasConfigurationCapability = false;
 let hasWorkspaceFolderCapability = false;
 let hasFileWatchingCapability = false;
 
-let workspaceRoot: string;
+let workspaceRoot: string | undefined;
 let projectSettings: settings.ProjectSettings;
 
 // Initialized in onInitialized, undefined until then

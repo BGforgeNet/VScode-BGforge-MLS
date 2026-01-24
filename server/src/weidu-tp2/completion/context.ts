@@ -375,13 +375,13 @@ function detectFunctionDefinitionContext(
                     // Look for identifier child that might be a misplaced command
                     const identifier = child.children.find(c => c.type === SyntaxType.Identifier && cursorOffset >= c.startIndex && cursorOffset <= c.endIndex);
                     if (identifier) {
-                        const keywordText = identifier.text?.toUpperCase();
+                        const keywordText = identifier.text.toUpperCase();
                         // Check if it's an action command in a patch function or vice versa
-                        if (funcType === "patch" && (keywordText?.startsWith("OUTER_") || keywordText?.startsWith("ACTION_"))) {
+                        if (funcType === "patch" && (keywordText.startsWith("OUTER_") || keywordText.startsWith("ACTION_"))) {
                             // Action command in patch function - return action context
                             return ["actionKeyword"];
                         }
-                        if (funcType === "action" && (keywordText?.startsWith("PATCH_") || ALWAYS_PATCH_KEYWORDS.has(keywordText))) {
+                        if (funcType === "action" && (keywordText.startsWith("PATCH_") || ALWAYS_PATCH_KEYWORDS.has(keywordText))) {
                             // Patch command in action function - return patch context
                             return ["patchKeyword"];
                         }
@@ -657,7 +657,7 @@ function extractFuncParamsContext(node: SyntaxNode, cursorOffset: number): void 
                         ancestor = ancestor.parent;
                     }
                     if (ancestor) lastSectionNode = ancestor;
-                } else if (text === "RET_ARRAY") {
+                } else {
                     lastSectionType = "RET_ARRAY";
                     lastKeywordPosition = searchNode.endIndex;
                     ancestor = searchNode.parent;
@@ -678,6 +678,7 @@ function extractFuncParamsContext(node: SyntaxNode, cursorOffset: number): void 
     findKeywordNodes(node);
 
     // Extract used params from the last section node we found
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, @typescript-eslint/strict-boolean-expressions -- TS doesn't track mutations through the findKeywordNodes closure
     if (lastSectionType && lastSectionNode) {
         // Extract params, filtering by keyword position if needed
         // Bug fix: When STR_VAR is inside int_var_call (error recovery), we need to extract
@@ -1372,14 +1373,14 @@ function detectStatementContext(node: SyntaxNode, cursorOffset: number): Complet
     if (type.includes("assignment") || type.includes("_set")) {
         const firstChild = statementNode.children.find(c => c.type !== SyntaxType.Comment && c.type !== SyntaxType.LineComment);
         if (firstChild) {
-            const keywordText = firstChild.text?.toUpperCase();
+            const keywordText = firstChild.text.toUpperCase();
             // Commands that are always actions regardless of context
-            if (keywordText?.startsWith("OUTER_") || keywordText?.startsWith("ACTION_")) {
+            if (keywordText.startsWith("OUTER_") || keywordText.startsWith("ACTION_")) {
                 isActionNode = true;
                 isPatchNode = false;
             }
             // Commands that are always patches regardless of context
-            if (keywordText?.startsWith("PATCH_") || ALWAYS_PATCH_KEYWORDS.has(keywordText)) {
+            if (keywordText.startsWith("PATCH_") || ALWAYS_PATCH_KEYWORDS.has(keywordText)) {
                 isPatchNode = true;
                 isActionNode = false;
             }

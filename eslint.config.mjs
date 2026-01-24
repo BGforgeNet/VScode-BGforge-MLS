@@ -10,6 +10,7 @@ export default [
             "client/out/**",
             "server/node_modules/**",
             "server/out/**",
+            "server/src/weidu-tp2/tree-sitter.d.ts",  // Auto-generated from grammar
             "cli/**/node_modules/**",
             "cli/**/out/**",
             "grammars/**",  // Grammars have their own eslint config

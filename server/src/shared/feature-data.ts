@@ -140,23 +140,23 @@ export function lookupMapItem<T, TStatic>(
 ): T | TStatic | undefined {
     // Check self first
     const selfMap = data.self.get(uri);
-    if (selfMap) {
+    if (selfMap !== undefined) {
         const item = selfMap.get(symbol);
-        if (item) return item;
+        if (item !== undefined) return item;
     }
 
     // Check static
     const staticItem = data.static.get(symbol);
-    if (staticItem) return staticItem;
+    if (staticItem !== undefined) return staticItem;
 
     // Check headers
     const headerItem = data.headers.get(symbol);
-    if (headerItem) return headerItem;
+    if (headerItem !== undefined) return headerItem;
 
     // Check external headers
     if (data.extHeaders) {
         const extItem = data.extHeaders.get(symbol);
-        if (extItem) return extItem;
+        if (extItem !== undefined) return extItem;
     }
 
     return undefined;

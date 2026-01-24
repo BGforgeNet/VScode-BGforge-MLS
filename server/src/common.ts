@@ -114,9 +114,7 @@ export function sendParseResult(parseResult: ParseResult, mainUri: string, tmpUr
 
 /** Check if 1st dir contains the 2nd
  */
-export function isSubpath(outerPath: string, innerPath: string) {
-    // Runtime guard: server.ts declares workspaceRoot as string but only conditionally
-    // assigns it. If no workspace folders exist, it remains undefined at runtime.
+export function isSubpath(outerPath: string | undefined, innerPath: string) {
     if (outerPath === undefined) {
         return false;
     }

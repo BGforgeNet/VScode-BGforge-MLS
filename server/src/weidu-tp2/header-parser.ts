@@ -337,8 +337,8 @@ function extractParams(node: SyntaxNode): FunctionParams {
     };
 
     for (const child of node.children) {
+        if (!Object.hasOwn(PARAM_DECL_TYPES, child.type)) continue;
         const paramType = PARAM_DECL_TYPES[child.type as keyof typeof PARAM_DECL_TYPES];
-        if (!paramType) continue;
 
         if (paramType === "ret" || paramType === "retArray") {
             // RET and RET_ARRAY just have identifiers

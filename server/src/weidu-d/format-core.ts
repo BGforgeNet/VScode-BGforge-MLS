@@ -414,10 +414,23 @@ function formatStateAction(node: SyntaxNode, ctx: FormatContext, trailingEnd: bo
     return lines.join("\n");
 }
 
+// Build the header for an EXTEND action from its structural children (keyword, file, states, weight)
+function getExtendHeader(node: SyntaxNode): string {
+    const parts: string[] = [];
+    for (const child of node.children) {
+        // Stop at transitions, comments, copy_trans, or the trailing END
+        if (child.type === "transition" || child.type.startsWith("transition_")
+            || isComment(child) || isCopyOrMacro(child)) break;
+        if (child.text.toUpperCase() === "END") break;
+        parts.push(child.text);
+    }
+    return parts.join(" ");
+}
+
 // Format EXTEND action
 function formatExtendAction(node: SyntaxNode, ctx: FormatContext): string {
     const { indent, indent2, lineLimit } = ctx;
-    const lines: string[] = [getActionHeader(node)];
+    const lines: string[] = [getExtendHeader(node)];
 
     forEachChild(node, lines, (child) => {
         const trans = getTransitionNode(child);

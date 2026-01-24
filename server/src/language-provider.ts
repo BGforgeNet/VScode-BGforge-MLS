@@ -35,8 +35,8 @@ export interface FormatResult {
  * Contains everything a provider needs to set up.
  */
 export interface ProviderContext {
-    /** Absolute path to workspace root */
-    workspaceRoot: string;
+    /** Absolute path to workspace root, undefined if no workspace folders exist */
+    workspaceRoot: string | undefined;
     /** User settings */
     settings: MLSsettings;
 }
