@@ -7,7 +7,7 @@ set -e
 cd "$(dirname "$0")"
 ROOT="$(cd ../../../ && pwd)"
 
-CLI="$ROOT/server/out/td-cli.js"
+CLI="$ROOT/cli/transpile/out/transpile-cli.js"
 
 for sample in samples/*.td; do
     name=$(basename "$sample" .td)

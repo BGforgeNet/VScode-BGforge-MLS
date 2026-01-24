@@ -1,0 +1,10 @@
+{
+    "name": "bgforge-transpile-cli",
+    "version": "1.0.0",
+    "description": "CLI transpiler for TD and TBAF files",
+    "license": "SEE LICENSE IN ../../LICENSE.txt",
+    "private": true,
+    "dependencies": {
+        "esbuild-wasm": "^0.24.2"
+    }
+}

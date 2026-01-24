@@ -10,26 +10,26 @@ import {
     formatDocument as formatSslDocument,
     FormatOptions as SslFormatOptions,
     FormatError,
-} from "../fallout-ssl/format-core";
-import { initParser as initSslParser, getParser as getSslParser } from "../fallout-ssl/parser";
+} from "../../../server/src/fallout-ssl/format-core";
+import { initParser as initSslParser, getParser as getSslParser } from "../../../server/src/fallout-ssl/parser";
 import {
     formatDocument as formatBafDocument,
     FormatOptions as BafFormatOptions,
-} from "../weidu-baf/format-core";
-import { initParser as initBafParser, getParser as getBafParser } from "../weidu-baf/parser";
+} from "../../../server/src/weidu-baf/format-core";
+import { initParser as initBafParser, getParser as getBafParser } from "../../../server/src/weidu-baf/parser";
 import {
     formatDocument as formatDDocument,
     FormatOptions as DFormatOptions,
-} from "../weidu-d/format-core";
-import { initParser as initDParser, getParser as getDParser } from "../weidu-d/parser";
+} from "../../../server/src/weidu-d/format-core";
+import { initParser as initDParser, getParser as getDParser } from "../../../server/src/weidu-d/parser";
 import {
     formatDocument as formatTp2Document,
     FormatOptions as Tp2FormatOptions,
-} from "../weidu-tp2/format/core";
-import { initParser as initTp2Parser, getParser as getTp2Parser } from "../weidu-tp2/parser";
-import * as editorconfig from "editorconfig";
-import { validateFormatting } from "../shared/format-utils";
-import { EXT_WEIDU_TP2 } from "../core/languages";
+} from "../../../server/src/weidu-tp2/format/core";
+import { initParser as initTp2Parser, getParser as getTp2Parser } from "../../../server/src/weidu-tp2/parser";
+import { getEditorconfigSettings } from "../../../server/src/shared/editorconfig";
+import { validateFormatting } from "../../../server/src/shared/format-utils";
+import { EXT_WEIDU_TP2 } from "../../../server/src/core/languages";
 
 const DEFAULT_INDENT = 4;
 
@@ -65,33 +65,33 @@ function printErrors(filePath: string, errors: FormatError[]): void {
 }
 
 function getSslFormatOptions(filePath: string): SslFormatOptions {
-    const config = editorconfig.parseSync(filePath);
+    const config = getEditorconfigSettings(filePath);
     return {
-        indentSize: typeof config.indent_size === "number" ? config.indent_size : DEFAULT_INDENT,
-        maxLineLength: typeof config.max_line_length === "number" ? config.max_line_length : 120,
+        indentSize: config.indentSize ?? DEFAULT_INDENT,
+        maxLineLength: config.maxLineLength ?? 120,
     };
 }
 
 function getBafFormatOptions(filePath: string): BafFormatOptions {
-    const config = editorconfig.parseSync(filePath);
+    const config = getEditorconfigSettings(filePath);
     return {
-        indentSize: typeof config.indent_size === "number" ? config.indent_size : DEFAULT_INDENT,
+        indentSize: config.indentSize ?? DEFAULT_INDENT,
     };
 }
 
 function getDFormatOptions(filePath: string): DFormatOptions {
-    const config = editorconfig.parseSync(filePath);
+    const config = getEditorconfigSettings(filePath);
     return {
-        indentSize: typeof config.indent_size === "number" ? config.indent_size : DEFAULT_INDENT,
-        lineLimit: typeof config.max_line_length === "number" ? config.max_line_length : 120,
+        indentSize: config.indentSize ?? DEFAULT_INDENT,
+        lineLimit: config.maxLineLength ?? 120,
     };
 }
 
 function getTp2FormatOptions(filePath: string): Tp2FormatOptions {
-    const config = editorconfig.parseSync(filePath);
+    const config = getEditorconfigSettings(filePath);
     return {
-        indentSize: typeof config.indent_size === "number" ? config.indent_size : DEFAULT_INDENT,
-        lineLimit: typeof config.max_line_length === "number" ? config.max_line_length : 120,
+        indentSize: config.indentSize ?? DEFAULT_INDENT,
+        lineLimit: config.maxLineLength ?? 120,
     };
 }
 

@@ -2,3 +2,4 @@ packages:
   - client
   - server
   - grammars/*
+  - cli/*

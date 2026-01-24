@@ -16,6 +16,8 @@ server/out/*
 !server/out/hover.*.json
 !server/out/signature.*.json
 
+cli/*/out
+
 preview/node_modules/
 preview/out/*
 !preview/out/index.html

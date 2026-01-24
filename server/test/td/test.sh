@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # TD transpiler integration tests.
-# Compares output of td-cli against expected .d files.
+# Compares output of transpile-cli against expected .d files.
 # Verifies output parses with weidu-d grammar.
 
 set -e
@@ -9,7 +9,7 @@ set -e
 cd "$(dirname "$0")"
 ROOT="$(cd ../../../ && pwd)"
 
-CLI="$ROOT/server/out/td-cli.js"
+CLI="$ROOT/cli/transpile/out/transpile-cli.js"
 GRAMMAR_DIR="$ROOT/grammars/weidu-d"
 TREE_SITTER="$ROOT/node_modules/.bin/tree-sitter"
 

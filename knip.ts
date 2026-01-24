@@ -32,6 +32,8 @@ const config: KnipConfig = {
     "grammars/**",
     // separate Cytoscape preview bundle
     "preview/**",
+    // CLI packages bundled by esbuild, import across workspace boundaries
+    "cli/**",
   ],
   ignoreDependencies: [
     // loaded at runtime via path.join in server/src/sslc/ssl_compiler.ts
