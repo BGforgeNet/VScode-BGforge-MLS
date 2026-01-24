@@ -10,6 +10,8 @@ export default [
             "client/out/**",
             "server/node_modules/**",
             "server/out/**",
+            "cli/**/node_modules/**",
+            "cli/**/out/**",
             "grammars/**",  // Grammars have their own eslint config
         ],
     },
@@ -18,6 +20,7 @@ export default [
         files: [
             "client/src/**/*.ts",
             "server/src/**/*.ts",
+            "cli/**/*.ts",
         ],
         plugins: {
             "@typescript-eslint": typescriptEslint,

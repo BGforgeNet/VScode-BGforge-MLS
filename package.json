@@ -427,7 +427,7 @@
         "vscode:prepublish": "pnpm build:grammar && pnpm build:base:client --minify && pnpm build:base:server --minify && pnpm build:base:webviews --minify",
         "build": "pnpm build:grammar && pnpm build:client && pnpm build:server && pnpm build:test && pnpm build:webviews",
         "build:client": "pnpm build:base:client --sourcemap",
-        "build:server": "pnpm build:base:server --sourcemap && pnpm build:format-cli && pnpm build:transpile-cli",
+        "build:server": "pnpm build:base:server --sourcemap && pnpm lint:cli && pnpm build:format-cli && pnpm build:transpile-cli",
         "build:webviews": "pnpm build:base:webviews --sourcemap",
         "build:test": "esbuild ./client/src/test/*.ts --outdir=client/out/test --external:vscode --external:'./reporters/parallel-buffered' --external:'./worker.js' --format=cjs --platform=node --sourcemap --bundle",
         "build:format-cli": "esbuild ./cli/format/src/cli.ts --bundle --outfile=cli/format/out/format-cli.js --format=cjs --platform=node --sourcemap && sed -i \"s/var import_meta = {};/var import_meta = {url: require('url').pathToFileURL(__filename).href};/\" cli/format/out/format-cli.js && cp grammars/fallout-ssl/tree-sitter-ssl.wasm grammars/weidu-baf/tree-sitter-baf.wasm grammars/weidu-d/tree-sitter-weidu_d.wasm grammars/weidu-tp2/tree-sitter-weidu_tp2.wasm server/node_modules/web-tree-sitter/web-tree-sitter.wasm cli/format/out/",
@@ -449,6 +449,7 @@
         "format": "node --no-warnings cli/format/out/format-cli.js",
         "format-samples": "./scripts/format-samples.sh",
         "transpile": "node --no-warnings cli/transpile/out/transpile-cli.js",
+        "lint:cli": "tsc --project cli/tsconfig.json && eslint cli/**/*.ts --max-warnings 0",
         "knip": "knip"
     },
     "devDependencies": {

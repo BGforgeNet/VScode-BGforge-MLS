@@ -16,6 +16,10 @@ echo "=== Testing Server ==="
 (cd server && pnpm test)
 
 echo ""
+echo "=== Testing CLI ==="
+pnpm lint:cli
+
+echo ""
 echo "=== Testing Grammars ==="
 for g in grammars/*/test.sh; do
     echo ""

@@ -58,6 +58,10 @@ importers:
       esbuild-wasm:
         specifier: ^0.24.2
         version: 0.24.2
+    devDependencies:
+      ts-morph:
+        specifier: ^24.0.0
+        version: 24.0.0
 
   client:
     dependencies:
