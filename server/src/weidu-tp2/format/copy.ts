@@ -14,7 +14,7 @@ import {
     KW_UNLESS,
     KW_IF,
     addFormatError,
-} from "./format-types";
+} from "./types";
 import {
     isComment,
     isKeyword,
@@ -24,8 +24,8 @@ import {
     normalizeComment,
     normalizeWhitespace,
     handleComment,
-} from "./format-utils";
-import { SyntaxType } from "./tree-sitter.d";
+} from "./utils";
+import { SyntaxType } from "../tree-sitter.d";
 
 // ============================================
 // Types

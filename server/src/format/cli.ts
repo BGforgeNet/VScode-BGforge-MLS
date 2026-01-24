@@ -25,7 +25,7 @@ import { initParser as initDParser, getParser as getDParser } from "../weidu-d/p
 import {
     formatDocument as formatTp2Document,
     FormatOptions as Tp2FormatOptions,
-} from "../weidu-tp2/format-core";
+} from "../weidu-tp2/format/core";
 import { initParser as initTp2Parser, getParser as getTp2Parser } from "../weidu-tp2/parser";
 import * as editorconfig from "editorconfig";
 import { validateFormatting } from "../shared/format-utils";

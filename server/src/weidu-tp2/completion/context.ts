@@ -3,18 +3,18 @@
  * Detects cursor context using tree-sitter and filters completions accordingly.
  *
  * Types and filtering logic are in separate files:
- * - completion-types.ts: FuncParamsContext, CompletionContext, CompletionCategory
- * - completion-filter.ts: filterItemsByContext, CATEGORY_EXCLUSIONS
+ * - types.ts: FuncParamsContext, CompletionContext, CompletionCategory
+ * - filter.ts: filterItemsByContext, CATEGORY_EXCLUSIONS
  */
 
 import type { Node as SyntaxNode } from "web-tree-sitter";
-import { SyntaxType } from "./tree-sitter.d";
-import { getUtf8ByteOffset } from "../shared/completion-context";
-import { getParser, isInitialized } from "./parser";
-import { isAction, isPatch } from "./format-utils";
-import { stripStringDelimiters } from "./tree-utils";
+import { SyntaxType } from "../tree-sitter.d";
+import { getUtf8ByteOffset } from "../../shared/completion-context";
+import { getParser, isInitialized } from "../parser";
+import { isAction, isPatch } from "../format/utils";
+import { stripStringDelimiters } from "../tree-utils";
 
-import type { FuncParamsContext, CompletionContext } from "./completion-types";
+import type { FuncParamsContext, CompletionContext } from "./types";
 
 // ============================================
 // Enriched Context Storage

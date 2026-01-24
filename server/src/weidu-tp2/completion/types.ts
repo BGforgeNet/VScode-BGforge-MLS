@@ -1,6 +1,6 @@
 /**
  * Shared types for WeiDU TP2 completion context detection and filtering.
- * Used by completion-context.ts and completion-filter.ts.
+ * Used by context.ts and filter.ts.
  */
 
 /**
@@ -54,4 +54,4 @@ export type CompletionContext =
     | "jsdoc";          // Inside a JSDoc comment - offer tags and types
 
 // Re-export CompletionCategory from shared for convenience
-export type { CompletionCategory } from "../shared/completion-context";
+export type { CompletionCategory } from "../../shared/completion-context";

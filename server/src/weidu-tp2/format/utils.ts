@@ -13,8 +13,8 @@ import {
     FUNCTION_CALL_TYPES,
     FOR_EACH_TYPES,
     type CollectedItem,
-} from "./format-types";
-import { SyntaxType } from "./tree-sitter.d";
+} from "./types";
+import { SyntaxType } from "../tree-sitter.d";
 
 // ============================================
 // Type lookup sets (O(1) instead of O(n) array includes)

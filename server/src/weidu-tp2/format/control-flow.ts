@@ -24,7 +24,7 @@ import {
     addFormatError,
     NODE_PATCH_TRY,
     NODE_ACTION_TRY,
-} from "./format-types";
+} from "./types";
 import {
     isComment,
     isKeyword,
@@ -39,8 +39,8 @@ import {
     outputHeaderLines,
     lastElement,
     isControlFlowBodyContent,
-} from "./format-utils";
-import { SyntaxType } from "./tree-sitter.d";
+} from "./utils";
+import { SyntaxType } from "../tree-sitter.d";
 
 // ============================================
 // Types

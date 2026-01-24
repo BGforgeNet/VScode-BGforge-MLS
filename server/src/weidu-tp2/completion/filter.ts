@@ -4,8 +4,8 @@
  */
 
 import { CompletionItem } from "vscode-languageserver/node";
-import { CompletionItemWithCategory } from "../shared/completion-context";
-import { CompletionCategory, CompletionContext } from "./completion-types";
+import { CompletionItemWithCategory } from "../../shared/completion-context";
+import { CompletionCategory, CompletionContext } from "./types";
 
 /**
  * Exclusion rules: category -> contexts where it should NOT appear.
@@ -82,6 +82,7 @@ const VALID_CONTEXTS = new Set<CompletionContext>([
 
 // Validate exclusion rules at module load
 for (const [category, exclusions] of Object.entries(CATEGORY_EXCLUSIONS)) {
+    if (!exclusions) continue;
     for (const ctx of exclusions) {
         if (!VALID_CONTEXTS.has(ctx)) {
             console.warn(`[weidu-tp2] Invalid context "${ctx}" in exclusion for category "${category}"`);

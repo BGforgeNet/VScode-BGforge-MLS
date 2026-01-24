@@ -14,7 +14,7 @@ import {
     KW_LPM,
     KW_LAM,
     addFormatError,
-} from "./format-types";
+} from "./types";
 import {
     isComment,
     isKeyword,
@@ -24,8 +24,8 @@ import {
     normalizeWhitespace,
     handleComment,
     outputAlignedAssignments,
-} from "./format-utils";
-import { SyntaxType } from "./tree-sitter.d";
+} from "./utils";
+import { SyntaxType } from "../tree-sitter.d";
 
 // ============================================
 // Assignment parsing

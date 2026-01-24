@@ -32,8 +32,8 @@ import {
     isFunctionDef,
     isFunctionCall,
     isBodyContent,
-} from "../src/weidu-tp2/format-utils";
-import { formatDocument } from "../src/weidu-tp2/format-core";
+} from "../src/weidu-tp2/format/utils";
+import { formatDocument } from "../src/weidu-tp2/format/core";
 import { initParser, getParser } from "../src/weidu-tp2/parser";
 
 describe("format-utils: normalizeLineComment", () => {

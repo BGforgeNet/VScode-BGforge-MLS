@@ -4,7 +4,7 @@
  */
 
 import type { Node as SyntaxNode } from "web-tree-sitter";
-import { type FormatContext, KW_BEGIN, KW_END } from "./format-types";
+import { type FormatContext, KW_BEGIN, KW_END } from "./types";
 import {
     isComment,
     isKeyword,
@@ -15,8 +15,8 @@ import {
     isCopyAction,
     normalizeWhitespace,
     handleComment,
-} from "./format-utils";
-import { SyntaxType } from "./tree-sitter.d";
+} from "./utils";
+import { SyntaxType } from "../tree-sitter.d";
 
 // ============================================
 // INNER_ACTION formatting

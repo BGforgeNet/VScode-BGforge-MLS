@@ -3,9 +3,9 @@
  */
 
 import type { Node as SyntaxNode } from "web-tree-sitter";
-import type { FormatContext } from "./format-types";
-import { normalizeWhitespace, withNormalizedComment } from "./format-utils";
-import { formatCondition } from "./format-control-flow";
+import type { FormatContext } from "./types";
+import { normalizeWhitespace, withNormalizedComment } from "./utils";
+import { formatCondition } from "./control-flow";
 
 /**
  * Format REQUIRE_PREDICATE action.

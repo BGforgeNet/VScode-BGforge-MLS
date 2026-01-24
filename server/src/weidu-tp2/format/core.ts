@@ -25,7 +25,7 @@ import {
     NODE_INNER_PATCH,
     NODE_INNER_PATCH_SAVE,
     NODE_INNER_PATCH_FILE,
-} from "./format-types";
+} from "./types";
 import {
     isComment,
     isKeyword,
@@ -40,7 +40,7 @@ import {
     normalizeWhitespace,
     withNormalizedComment,
     handleComment,
-} from "./format-utils";
+} from "./utils";
 import {
     formatControlFlow,
     formatCopyAction,
@@ -50,11 +50,11 @@ import {
     formatPredicateAction,
     formatInnerAction,
     formatInnerPatch,
-} from "./format-blocks";
-import { SyntaxType } from "./tree-sitter.d";
+} from "./blocks";
+import { SyntaxType } from "../tree-sitter.d";
 
 // Re-export public types
-export type { FormatOptions, FormatResult } from "./format-types";
+export type { FormatOptions, FormatResult } from "./types";
 
 // ============================================
 // Simple node formatters

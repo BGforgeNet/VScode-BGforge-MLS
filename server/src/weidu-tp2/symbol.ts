@@ -5,7 +5,7 @@
 
 import { DocumentSymbol, SymbolKind } from "vscode-languageserver/node";
 import { getParser, isInitialized } from "./parser";
-import { isFunctionDef } from "./format-utils";
+import { isFunctionDef } from "./format/utils";
 
 export function getDocumentSymbols(text: string): DocumentSymbol[] {
     if (!isInitialized()) {
