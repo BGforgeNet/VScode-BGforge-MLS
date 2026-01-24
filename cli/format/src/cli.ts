@@ -30,7 +30,7 @@ import { initParser as initTp2Parser, getParser as getTp2Parser } from "../../..
 import { getEditorconfigSettings } from "../../../server/src/shared/editorconfig";
 import { validateFormatting } from "../../../server/src/shared/format-utils";
 import { EXT_WEIDU_TP2 } from "../../../server/src/core/languages";
-import { parseCliArgs, runCli, FileResult, OutputMode } from "../../cli-utils";
+import { parseCliArgs, runCli, safeProcess, reportDiff, FileResult, OutputMode } from "../../cli-utils";
 
 const DEFAULT_INDENT = 4;
 const EXTENSIONS = [".ssl", ".baf", ".d", ...EXT_WEIDU_TP2];
@@ -60,61 +60,64 @@ function getFormatOptions(filePath: string): { indentSize: number; lineLimit: nu
     };
 }
 
-function processFile(filePath: string, mode: OutputMode): FileResult {
-    const fileType = getFileType(filePath);
-    if (!fileType) {
-        console.error(`Error: Unsupported file type: ${filePath}`);
-        return "error";
-    }
-
-    const text = fs.readFileSync(filePath, "utf-8");
-    const opts = getFormatOptions(path.resolve(filePath));
-    let result: { text: string; errors: FormatError[] };
-
-    if (fileType === "ssl") {
-        const tree = getSslParser().parse(text);
-        if (!tree) { console.error(`Error: Failed to parse ${filePath}`); return "error"; }
-        const options: SslFormatOptions = { indentSize: opts.indentSize, maxLineLength: opts.lineLimit };
-        result = formatSslDocument(tree.rootNode, options);
-    } else if (fileType === "baf") {
-        const tree = getBafParser().parse(text);
-        if (!tree) { console.error(`Error: Failed to parse ${filePath}`); return "error"; }
-        const options: BafFormatOptions = { indentSize: opts.indentSize };
-        result = formatBafDocument(tree.rootNode, options);
-    } else if (fileType === "d") {
-        const tree = getDParser().parse(text);
-        if (!tree) { console.error(`Error: Failed to parse ${filePath}`); return "error"; }
-        const options: DFormatOptions = { indentSize: opts.indentSize, lineLimit: opts.lineLimit };
-        result = formatDDocument(tree.rootNode, options);
-    } else {
-        const tree = getTp2Parser().parse(text);
-        if (!tree) { console.error(`Error: Failed to parse ${filePath}`); return "error"; }
-        const options: Tp2FormatOptions = { indentSize: opts.indentSize, lineLimit: opts.lineLimit };
-        result = formatTp2Document(tree.rootNode, options);
-    }
-
-    if (result.errors.length > 0) {
-        printErrors(filePath, result.errors);
-    }
-
-    const validationError = validateFormatting(text, result.text);
-    if (validationError) {
-        console.error(`${filePath}: Formatter bug: ${validationError}`);
-        return "error";
-    }
-
-    const changed = result.text !== text;
-    if (mode === "save") {
-        if (changed) {
-            fs.writeFileSync(filePath, result.text);
-            console.log(`Formatted: ${filePath}`);
+async function processFile(filePath: string, mode: OutputMode): Promise<FileResult> {
+    return safeProcess(filePath, () => {
+        const fileType = getFileType(filePath);
+        if (!fileType) {
+            console.error(`Error: Unsupported file type: ${filePath}`);
+            return "error";
         }
-    } else if (mode === "stdout") {
-        process.stdout.write(result.text);
-    } else if (changed) {
-        console.log(`Would format: ${filePath}`);
-    }
-    return changed ? "changed" : "unchanged";
+
+        const text = fs.readFileSync(filePath, "utf-8");
+        const opts = getFormatOptions(path.resolve(filePath));
+        let result: { text: string; errors: FormatError[] };
+
+        if (fileType === "ssl") {
+            const tree = getSslParser().parse(text);
+            if (!tree) { console.error(`Error: Failed to parse ${filePath}`); return "error"; }
+            const options: SslFormatOptions = { indentSize: opts.indentSize, maxLineLength: opts.lineLimit };
+            result = formatSslDocument(tree.rootNode, options);
+        } else if (fileType === "baf") {
+            const tree = getBafParser().parse(text);
+            if (!tree) { console.error(`Error: Failed to parse ${filePath}`); return "error"; }
+            const options: BafFormatOptions = { indentSize: opts.indentSize };
+            result = formatBafDocument(tree.rootNode, options);
+        } else if (fileType === "d") {
+            const tree = getDParser().parse(text);
+            if (!tree) { console.error(`Error: Failed to parse ${filePath}`); return "error"; }
+            const options: DFormatOptions = { indentSize: opts.indentSize, lineLimit: opts.lineLimit };
+            result = formatDDocument(tree.rootNode, options);
+        } else {
+            const tree = getTp2Parser().parse(text);
+            if (!tree) { console.error(`Error: Failed to parse ${filePath}`); return "error"; }
+            const options: Tp2FormatOptions = { indentSize: opts.indentSize, lineLimit: opts.lineLimit };
+            result = formatTp2Document(tree.rootNode, options);
+        }
+
+        if (result.errors.length > 0) {
+            printErrors(filePath, result.errors);
+        }
+
+        const validationError = validateFormatting(text, result.text);
+        if (validationError) {
+            console.error(`${filePath}: Formatter bug: ${validationError}`);
+            return "error";
+        }
+
+        const changed = result.text !== text;
+        if (mode === "save") {
+            if (changed) {
+                fs.writeFileSync(filePath, result.text);
+                console.log(`Formatted: ${filePath}`);
+            }
+        } else if (mode === "stdout") {
+            process.stdout.write(result.text);
+        } else if (changed) {
+            reportDiff(filePath, text, result.text);
+            return "changed";
+        }
+        return changed ? "changed" : "unchanged";
+    });
 }
 
 const HELP = `Usage: format-cli <file.ssl|file.baf|file.d|file.tp2|dir> [--save] [--check] [-r] [-q]

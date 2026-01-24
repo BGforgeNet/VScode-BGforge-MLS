@@ -1,6 +1,7 @@
 /**
- * Shared CLI utilities for format and transpile CLIs.
- * Provides argument parsing, file discovery, and batch processing.
+ * Shared CLI utilities for format, transpile, and bin CLIs.
+ * Provides argument parsing, file discovery, batch processing, diff reporting,
+ * and safe error-handling wrappers.
  */
 
 import * as fs from "fs";
@@ -58,6 +59,35 @@ export function findFiles(dir: string, extensions: readonly string[]): string[] 
     return files;
 }
 
+/** Prints a compact line-by-line diff between expected and actual content. */
+export function reportDiff(label: string, expected: string, actual: string): void {
+    console.error(`DIFF: ${label}`);
+    const expectedLines = expected.split("\n");
+    const actualLines = actual.split("\n");
+    const maxLines = Math.max(expectedLines.length, actualLines.length);
+    for (let i = 0; i < maxLines; i++) {
+        if (expectedLines[i] !== actualLines[i]) {
+            console.error(`  Line ${i + 1}:`);
+            console.error(`    - ${expectedLines[i] ?? "(missing)"}`);
+            console.error(`    + ${actualLines[i] ?? "(missing)"}`);
+        }
+    }
+}
+
+/** Wraps a processFile function in try/catch for consistent error handling. */
+export async function safeProcess(
+    filePath: string,
+    fn: () => FileResult | Promise<FileResult>,
+): Promise<FileResult> {
+    try {
+        return await fn();
+    } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err);
+        console.error(`${filePath}: ${msg}`);
+        return "error";
+    }
+}
+
 export interface RunOptions {
     args: CliArgs;
     extensions: readonly string[];
@@ -97,10 +127,10 @@ export async function runCli(options: RunOptions): Promise<void> {
         }
 
         if (!args.quiet) console.log(`\nSummary: ${changed} changed, ${unchanged} unchanged, ${errors} errors`);
-        if (errors > 0) process.exit(1);
+        if (errors > 0 || (args.mode === "check" && changed > 0)) process.exit(1);
     } else {
-        const mode = args.mode === "check" ? "check" : args.mode;
-        const result = await processFile(args.target, mode);
+        const result = await processFile(args.target, args.mode);
         if (result === "error") process.exit(1);
+        if (args.mode === "check" && result === "changed") process.exit(1);
     }
 }

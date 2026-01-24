@@ -14,7 +14,7 @@ import { emitD } from "../../../server/src/td/emit";
 import { TDParser } from "../../../server/src/td/parse";
 import { emitBAF } from "../../../server/src/tbaf/emit";
 import { TBAFTransformer } from "../../../server/src/tbaf/transform";
-import { parseCliArgs, runCli, FileResult, OutputMode } from "../../cli-utils";
+import { parseCliArgs, runCli, safeProcess, reportDiff, FileResult, OutputMode } from "../../cli-utils";
 
 type TranspileType = "td" | "tbaf";
 
@@ -41,7 +41,7 @@ async function processFile(filePath: string, mode: OutputMode): Promise<FileResu
         return "error";
     }
 
-    try {
+    return safeProcess(filePath, async () => {
         const text = fs.readFileSync(filePath, "utf-8");
 
         // Only bundle if the file has imports (esbuild transforms break block-scoped functions)
@@ -77,7 +77,7 @@ async function processFile(filePath: string, mode: OutputMode): Promise<FileResu
         } else if (mode === "check") {
             const existing = fs.existsSync(outPath) ? fs.readFileSync(outPath, "utf-8") : null;
             if (existing !== output) {
-                console.log(`Would transpile: ${filePath} -> ${path.basename(outPath)}`);
+                reportDiff(filePath, existing ?? "", output);
                 return "changed";
             }
             return "unchanged";
@@ -85,11 +85,7 @@ async function processFile(filePath: string, mode: OutputMode): Promise<FileResu
             process.stdout.write(output);
             return "changed";
         }
-    } catch (err) {
-        const msg = err instanceof Error ? err.message : String(err);
-        console.error(`Error transpiling ${filePath}: ${msg}`);
-        return "error";
-    }
+    });
 }
 
 const HELP = `Usage: transpile-cli <file.td|file.tbaf|dir> [--save] [--check] [-r] [-q]
