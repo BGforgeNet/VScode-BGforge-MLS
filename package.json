@@ -443,6 +443,7 @@
         "test:client": "cd client && pnpm test",
         "test:server": "cd server && pnpm test",
         "test:grammars": "for g in grammars/*/test.sh; do \"$g\"; done",
+        "test:cli": "vitest run --config cli/vitest.config.ts",
         "test:bin": "./scripts/test-bin.sh",
         "test:e2e": "./scripts/e2e.sh",
         "package": "pnpm vsce package --no-dependencies",
@@ -450,7 +451,7 @@
         "format-samples": "./scripts/format-samples.sh",
         "transpile": "node --no-warnings cli/transpile/out/transpile-cli.js",
         "bin": "node cli/bin/out/bin-cli.js",
-        "lint:cli": "tsc --project cli/tsconfig.json && eslint cli/**/*.ts --max-warnings 0",
+        "lint:cli": "tsc --project cli/tsconfig.json && eslint cli/**/*.ts --ignore-pattern 'cli/test' --ignore-pattern 'cli/vitest.config.ts' --no-warn-ignored --max-warnings 0",
         "knip": "knip"
     },
     "devDependencies": {
@@ -467,7 +468,8 @@
         "mocha": "^11.7.1",
         "prettier": "^3.6.2",
         "tree-sitter-cli": "0.26.3",
-        "typescript": "^4.9.5"
+        "typescript": "^4.9.5",
+        "vitest": "^4.0.18"
     },
     "categories": [
         "Programming Languages"
