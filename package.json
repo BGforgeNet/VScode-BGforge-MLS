@@ -439,7 +439,6 @@
         "build:base:webviews": "esbuild ./client/src/editors/binaryEditor-webview.ts ./client/src/dialogTree-webview.ts --outdir=client/out --bundle",
         "watch:client": "pnpm build:base:client --sourcemap --watch",
         "watch:server": "pnpm build:base:server --sourcemap --watch",
-        "postinstall": "cd client && pnpm install && cd ../server && pnpm install && cd ..",
         "test": "./scripts/test-all.sh",
         "test:all": "pnpm test && pnpm test:bin",
         "test:client": "cd client && pnpm test",
