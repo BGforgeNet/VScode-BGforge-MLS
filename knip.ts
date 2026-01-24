@@ -34,8 +34,6 @@ const config: KnipConfig = {
     "preview/**",
   ],
   ignoreDependencies: [
-    // CLI tool run via 'tree-sitter' command in grammars/*/test.sh
-    "tree-sitter-cli",
     // loaded at runtime via path.join in server/src/sslc/ssl_compiler.ts
     "sslc-emscripten-noderawfs",
     // icon font used via CSS classes in dialogTree.ts (e.g. "codicon codicon-references")

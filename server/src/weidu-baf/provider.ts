@@ -15,7 +15,7 @@ import { createFullDocumentEdit, validateFormatting } from "../shared/format-uti
 import { fileURLToPath } from "url";
 import { formatDocument as formatAst, FormatOptions } from "./format-core";
 import { initParser, getParser, isInitialized } from "./parser";
-import { compile as weiduCompile } from "../weidu";
+import { compile as weiduCompile } from "../weidu-compile";
 
 const DEFAULT_INDENT = 4;
 

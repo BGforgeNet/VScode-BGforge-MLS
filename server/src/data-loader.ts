@@ -26,7 +26,7 @@ import {
     reloadMap,
 } from "./shared/feature-data";
 import * as signature from "./shared/signature";
-import * as weidu from "./weidu";
+import * as weidu from "./weidu-data";
 
 export interface Features {
     completion: boolean;

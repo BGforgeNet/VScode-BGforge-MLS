@@ -13,7 +13,7 @@ import { FormatResult, LanguageProvider, ProviderContext } from "../language-pro
 import { getEditorconfigSettings } from "../shared/editorconfig";
 import { createFullDocumentEdit, validateFormatting } from "../shared/format-utils";
 import { buildParamInfoMap, type ParamDisplayInfo } from "../shared/jsdoc";
-import { compile as weiduCompile } from "../weidu";
+import { compile as weiduCompile } from "../weidu-compile";
 import { getContextAtPosition, getFuncParamsContext } from "./completion/context";
 import { filterItemsByContext } from "./completion/filter";
 import type { CompletionItemWithCategory } from "../shared/completion-context";

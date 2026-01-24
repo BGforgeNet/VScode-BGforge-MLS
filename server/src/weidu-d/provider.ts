@@ -17,7 +17,7 @@ import { getDefinition } from "./definition";
 import { formatDocument as formatAst, FormatOptions } from "./format-core";
 import { initParser, getParser, isInitialized } from "./parser";
 import { getDocumentSymbols } from "./symbol";
-import { compile as weiduCompile } from "../weidu";
+import { compile as weiduCompile } from "../weidu-compile";
 
 const DEFAULT_INDENT = 4;
 

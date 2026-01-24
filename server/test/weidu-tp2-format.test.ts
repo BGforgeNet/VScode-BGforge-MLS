@@ -736,11 +736,11 @@ BEGIN @1
 });
 
 describe("hover formatting: loadFileData", () => {
-    let loadFileData: typeof import("../src/weidu").loadFileData;
+    let loadFileData: typeof import("../src/weidu-data").loadFileData;
 
     beforeAll(async () => {
         await initParser();
-        const mod = await import("../src/weidu");
+        const mod = await import("../src/weidu-data");
         loadFileData = mod.loadFileData;
     });
 

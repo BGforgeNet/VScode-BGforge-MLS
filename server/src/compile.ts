@@ -14,7 +14,7 @@ import { getDocumentSettings } from "./server";
 import * as tbaf from "./tbaf/index";
 import * as td from "./td/index";
 import * as tssl from "./tssl";
-import * as weidu from "./weidu";
+import * as weidu from "./weidu-compile";
 
 export const COMMAND_compile = "extension.bgforge.compile";
 
