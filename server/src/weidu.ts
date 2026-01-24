@@ -298,12 +298,17 @@ export async function loadHeaders(headersDirectory: string, headerExtension: str
         );
         completions = completions.concat(headerCompletions);
 
-        // Hover and definition still work for all file types
+        // Only include hover and definition from header files (determined by headerExtension).
+        // Other TP2 files (.tpa/.tpp/.tp2) define functions for their own use, not for sharing.
         for (const [key, value] of x.hover) {
-            hovers.set(key, value);
+            if (value.uri?.toLowerCase().endsWith(headerExtension)) {
+                hovers.set(key, value);
+            }
         }
         for (const [key, value] of x.definition) {
-            definitions.set(key, value);
+            if (value.uri?.toLowerCase().endsWith(headerExtension)) {
+                definitions.set(key, value);
+            }
         }
     });
 
@@ -336,9 +341,13 @@ export function loadFileData(uri: string, text: string, filePath: string) {
     const { completions, hovers, definitions } = buildLanguageData(uri, symbols.functions, filePath);
     const variableData = buildVariableData(uri, symbols.variables, filePath);
 
-    // Also update the function and variable indices for go-to-definition
-    updateFileIndex(uri, text);
-    updateVariableIndex(uri, text);
+    // Only update the function and variable indices for .tph header files.
+    // Non-header variables/functions are local to their file and shouldn't pollute global lookup.
+    const filePathResolved = uriToPath(uri);
+    if (path.extname(filePathResolved).toLowerCase() === ".tph") {
+        updateFileIndex(uri, text);
+        updateVariableIndex(uri, text);
+    }
 
     // Merge variable data into completions/hovers/definitions
     const allCompletions = [...completions, ...variableData.completions];

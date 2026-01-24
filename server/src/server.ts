@@ -286,12 +286,13 @@ connection.onHover((textDocumentPosition: TextDocumentPositionParams) => {
 
     // Try local hover (AST-based, for symbols defined in current file)
     const localHover = registry.localHover(langId, text, symbol, uri, textDocumentPosition.position);
-    if (localHover) {
-        return localHover;
+    if (localHover !== undefined) {
+        return localHover;  // includes null (provider handled it, nothing to show)
     }
 
     // Fall back to data-driven hover (from headers/static data)
-    return registry.hover(langId, uri, symbol);
+    const dataHover = registry.hover(langId, uri, symbol);
+    return dataHover;
 });
 
 connection.onExecuteCommand(async (params) => {
@@ -437,6 +438,11 @@ connection.onDefinition((params) => {
     const uri = params.textDocument.uri;
     const langId = textDoc.languageId;
     const text = textDoc.getText();
+
+    // Suppress features in comment/param-name zones
+    if (!registry.shouldProvideFeatures(langId, text, params.position)) {
+        return;
+    }
 
     // Try provider first (AST-based definition, e.g. state labels in D files)
     const providerResult = registry.definition(langId, text, params.position, uri);

@@ -60,10 +60,13 @@ export function getDefinition(text: string, uri: string, position: Position): Lo
         return callParamResult;
     }
 
-    // Check if cursor is on a variable
-    const varResult = findVariableDefinition(text, uri, position);
-    if (varResult) {
-        return varResult;
+    // Check if cursor is on a variable, but not if we're on a function call param name
+    // (even if the function isn't indexed - we shouldn't fall through to variable lookup)
+    if (!isOnFunctionCallParamName(tree.rootNode, position)) {
+        const varResult = findVariableDefinition(text, uri, position);
+        if (varResult) {
+            return varResult;
+        }
     }
 
     // Check if cursor is on a function/macro call
@@ -86,15 +89,19 @@ export function getDefinition(text: string, uri: string, position: Position): Lo
 // ============================================
 
 /**
- * Try to find definition for a function call parameter name.
- * When cursor is on a parameter name in a function call (e.g., `LAF my_func INT_VAR foo = 1 END`),
- * navigate to the function definition instead of treating it as a variable.
+ * Check if the node at cursor is a function call parameter name (left of = in a call item).
+ * Returns true if cursor is on a parameter name, false otherwise.
  */
-function tryFunctionCallParamDefinition(node: SyntaxNode, text: string, uri: string): Location | null {
+export function isOnFunctionCallParamName(root: SyntaxNode, position: Position): boolean {
+    const node = findNodeAtPosition(root, position);
+    if (!node) {
+        return false;
+    }
+
     // Check if we're inside a function call
     const callNode = findAncestorOfType(node, FUNCTION_CALL_TYPES);
     if (!callNode) {
-        return null;
+        return false;
     }
 
     // Check if we're specifically inside a parameter item node (not the function name or other parts)
@@ -113,13 +120,45 @@ function tryFunctionCallParamDefinition(node: SyntaxNode, text: string, uri: str
         current = current.parent;
     }
 
-    // Only navigate to function if cursor is on the param name (first child of call item),
+    // Only return true if cursor is on the param name (first child of call item),
     // not on the value part. Grammar: call_item = name [= value]
     if (!isParamItem || !current) {
-        return null;
+        return false;
     }
     const paramNameNode = current.children[0];
     if (!paramNameNode || node.startIndex < paramNameNode.startIndex || node.endIndex > paramNameNode.endIndex) {
+        return false;
+    }
+
+    return true;
+}
+
+/**
+ * Try to find definition for a function call parameter name.
+ * When cursor is on a parameter name in a function call (e.g., `LAF my_func INT_VAR foo = 1 END`),
+ * navigate to the function definition instead of treating it as a variable.
+ */
+function tryFunctionCallParamDefinition(node: SyntaxNode, text: string, uri: string): Location | null {
+    // Reuse the guard to check if we're on a parameter name
+    // Note: node.tree exists but isn't in the type definitions, so we walk up to root
+    let root = node;
+    while (root.parent) {
+        root = root.parent;
+    }
+
+    // Extract position from node's start
+    const position: Position = {
+        line: node.startPosition.row,
+        character: node.startPosition.column,
+    };
+
+    if (!isOnFunctionCallParamName(root, position)) {
+        return null;
+    }
+
+    // Find the call node to get the function name
+    const callNode = findAncestorOfType(node, FUNCTION_CALL_TYPES);
+    if (!callNode) {
         return null;
     }
 

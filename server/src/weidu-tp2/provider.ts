@@ -21,10 +21,10 @@ import type { FuncParamsContext } from "./completion-types";
 import { formatDocument as formatAst, FormatOptions } from "./format-core";
 import { initParser, getParser, isInitialized } from "./parser";
 import { getDocumentSymbols } from "./symbol";
-import { getDefinition } from "./definition";
-import { updateFileIndex, clearFileFromIndex, updateVariableIndex, clearVariableFromIndex, lookupFunction, lookupVariable, FunctionInfo } from "./header-parser";
+import { getDefinition, isOnFunctionCallParamName } from "./definition";
+import { updateFileIndex, clearFileFromIndex, updateVariableIndex, clearVariableFromIndex, lookupFunction, lookupVariable, parseHeader, FunctionInfo } from "./header-parser";
 import { SyntaxType } from "./tree-sitter.d";
-import { stripStringDelimiters, unwrapVariableRef } from "./tree-utils";
+import { findNodeAtPosition, stripStringDelimiters, unwrapVariableRef } from "./tree-utils";
 import { renameSymbol, prepareRenameSymbol } from "./rename";
 import { VARIABLE_DECL_TYPES } from "./variable-symbols";
 
@@ -182,11 +182,33 @@ export const weiduTp2Provider: LanguageProvider = {
         return language?.hover(uri, symbol) ?? null;
     },
 
-    hover(text: string, symbol: string, _uri: string, position: Position): Hover | null {
+    hover(text: string, symbol: string, _uri: string, position: Position): Hover | null | undefined {
+        // Function param hover takes priority
         const paramHover = getFunctionParamHover(text, symbol, position);
-        if (paramHover) return paramHover;
+        if (paramHover) {
+            return paramHover;
+        }
 
-        return getVariableHover(symbol);
+        // Block fallthrough for variable-binding positions (param names, loop variables).
+        // These define local variables and should not show unrelated indexed data.
+        if (isInitialized()) {
+            const tree = getParser().parse(text);
+            if (tree) {
+                const isParamName = isOnFunctionCallParamName(tree.rootNode, position);
+                const isLoopVar = isOnLoopVariableBinding(tree.rootNode, position);
+                if (isParamName || isLoopVar) {
+                    return null;
+                }
+            }
+        }
+
+        // Variable hover for reference positions
+        const varHover = getVariableHover(symbol);
+        if (varHover) {
+            return varHover;
+        }
+
+        return undefined;  // Not handled, fall through to data-driven hover
     },
 
     getSymbolDefinition(symbol: string): Location | null {
@@ -199,9 +221,13 @@ export const weiduTp2Provider: LanguageProvider = {
 
     reloadFileData(uri: string, text: string): void {
         language?.reloadFileData(uri, text);
-        // Update tree-sitter based function and variable indices
-        updateFileIndex(uri, text);
-        updateVariableIndex(uri, text);
+        // Only update global indices for header files (.tph).
+        // Non-header variables/functions are local to their file.
+        const filePath = fileURLToPath(uri);
+        if (extname(filePath).toLowerCase() === ".tph") {
+            updateFileIndex(uri, text);
+            updateVariableIndex(uri, text);
+        }
     },
 
     onWatchedFileDeleted(uri: string): void {
@@ -561,8 +587,11 @@ function getFunctionParamHover(text: string, symbol: string, position: Position)
         return null;
     }
 
+    // Parse local function definitions as fallback for functions not in the global index
+    const localFunctions = parseHeader(text, "");
+
     // Find function calls and check if symbol is a parameter name
-    const result = findParamInFunctionCalls(tree.rootNode, symbol, position);
+    const result = findParamInFunctionCalls(tree.rootNode, symbol, position, localFunctions);
     if (!result) {
         return null;
     }
@@ -597,7 +626,8 @@ function getFunctionParamHover(text: string, symbol: string, position: Position)
 function findParamInFunctionCalls(
     node: import("web-tree-sitter").Node,
     symbol: string,
-    position: Position
+    position: Position,
+    localFunctions: FunctionInfo[]
 ): { paramType: string; defaultValue?: string; description?: string; required?: boolean } | null {
     const type = node.type;
 
@@ -617,7 +647,9 @@ function findParamInFunctionCalls(
             const nameNode = node.childForFieldName("name");
             if (nameNode) {
                 const funcName = stripStringDelimiters(nameNode.text);
-                const funcInfo = lookupFunction(funcName);
+                // Try global index first (.tph headers), then local definitions (same file)
+                const funcInfo = lookupFunction(funcName) ??
+                    localFunctions.find(f => f.name === funcName) ?? null;
 
                 if (funcInfo?.params) {
                     // Check each parameter section for the symbol
@@ -632,7 +664,7 @@ function findParamInFunctionCalls(
 
     // Recurse to children
     for (const child of node.children) {
-        const result = findParamInFunctionCalls(child, symbol, position);
+        const result = findParamInFunctionCalls(child, symbol, position, localFunctions);
         if (result) {
             return result;
         }
@@ -729,4 +761,44 @@ function getVariableHover(symbol: string): Hover | null {
             value: docParts.join("\n"),
         },
     };
+}
+
+/** Loop node types that bind variables (PHP_EACH, FOR_EACH). */
+const LOOP_BINDING_TYPES = new Set([
+    SyntaxType.ActionPhpEach,
+    SyntaxType.PatchPhpEach,
+    SyntaxType.ActionForEach,
+    SyntaxType.PatchForEach,
+]);
+
+/** Field names that represent variable bindings in loop nodes. */
+const LOOP_VARIABLE_FIELDS = new Set(["key_var", "value_var", "var"]);
+
+/**
+ * Check if the cursor is on a loop variable binding (e.g., AS opcode in PHP_EACH).
+ * These are definition sites and should not show unrelated indexed variable data.
+ */
+function isOnLoopVariableBinding(root: import("web-tree-sitter").Node, position: Position): boolean {
+    const node = findNodeAtPosition(root, position);
+    if (!node) {
+        return false;
+    }
+
+    // Walk up from the node looking for a loop parent
+    let current: import("web-tree-sitter").Node | null = node;
+    while (current) {
+        if (LOOP_BINDING_TYPES.has(current.type as SyntaxType)) {
+            // Found a loop node — check if the cursor is on a variable binding field
+            for (const fieldName of LOOP_VARIABLE_FIELDS) {
+                const fieldNode = current.childForFieldName(fieldName);
+                if (fieldNode && node.startIndex >= fieldNode.startIndex && node.endIndex <= fieldNode.endIndex) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        current = current.parent;
+    }
+
+    return false;
 }

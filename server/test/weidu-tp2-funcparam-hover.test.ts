@@ -72,7 +72,7 @@ END
         }
     });
 
-    it("returns null for same-named variable when cursor is outside function call", () => {
+    it("returns undefined for same-named variable when cursor is outside function call", () => {
         // Define a function in header file
         const headerText = `
 DEFINE_ACTION_FUNCTION unstack_armor_bonus
@@ -99,7 +99,8 @@ END
         const hover = weiduTp2Provider.hover?.(text, "stacking_id_base", uri, position);
 
         // Should NOT show function parameter hover (position is outside function call)
-        expect(hover).toBeNull();
+        // Variable not in index, so returns undefined to fall through to data-driven hover
+        expect(hover).toBeUndefined();
     });
 
     it("returns hover for parameter in nested function calls based on position", () => {
@@ -154,7 +155,8 @@ COPY ~file.bcs~ ~override~
         // Position between the two function calls (outside both)
         const positionBetween: Position = { line: 4, character: 0 };
         const hoverBetween = weiduTp2Provider.hover?.(text, "outer_param", uri, positionBetween);
-        expect(hoverBetween).toBeNull();
+        // Symbol not in variable index and not in function call, returns undefined (fall through)
+        expect(hoverBetween).toBeUndefined();
     });
 
     it("returns hover for STR_VAR parameter when inside function call", () => {
@@ -188,7 +190,8 @@ END
         // Outside function call (on global variable)
         const positionOutside: Position = { line: 0, character: 22 };
         const hoverOutside = weiduTp2Provider.hover?.(text, "message", uri, positionOutside);
-        expect(hoverOutside).toBeNull();
+        // Variable not in index, returns undefined (fall through to data-driven hover)
+        expect(hoverOutside).toBeUndefined();
     });
 
     it("shows JSDoc description in parameter hover when available", () => {
@@ -256,9 +259,50 @@ END
             expect(hover.contents.value).toContain("Required parameter");
         }
     });
+
+    it("hover returns null (no fallthrough) for param name when function is not indexed", () => {
+        const text = `LPF unknown_func
+    INT_VAR
+        parameter2 = 1
+END
+`;
+        const uri = "file:///test.tp2";
+        const position: Position = { line: 2, character: 10 };
+
+        // hover() should return null (handled, no data) not undefined (fall through)
+        const result = weiduTp2Provider.hover?.(text, "parameter2", uri, position);
+        expect(result).toBeNull();
+    });
 });
 
-describe("weidu-tp2: shouldProvideFeatures (comment suppression)", () => {
+describe("weidu-tp2: shouldProvideFeatures (comment suppression only)", () => {
+    it("returns true for param name (only comments are suppressed)", () => {
+        const text = `COPY_EXISTING ~sw1h54.itm~ ~override~
+  LPF ADD_SPELL_EFFECT
+    INT_VAR
+      opcode = OPCODE_play_3d_effect
+      parameter2 = 1
+  END
+BUT_ONLY
+`;
+        // "parameter2" at line 4, col 10
+        const position: Position = { line: 4, character: 10 };
+        expect(weiduTp2Provider.shouldProvideFeatures?.(text, position)).toBe(true);
+    });
+
+    it("returns true for variable value inside COPY_EXISTING LPF call", () => {
+        const text = `OUTER_SET my_val = 5
+COPY_EXISTING ~sw1h54.itm~ ~override~
+  LPF ADD_SPELL_EFFECT
+    INT_VAR
+      parameter2 = my_val
+  END
+BUT_ONLY
+`;
+        // "my_val" at line 4, col 18 (the value, not the param name)
+        const position: Position = { line: 4, character: 18 };
+        expect(weiduTp2Provider.shouldProvideFeatures?.(text, position)).toBe(true);
+    });
     it("returns false inside a block comment", () => {
         const text = `/* some comment */\nOUTER_SET x = 1\n`;
         const position: Position = { line: 0, character: 5 };
@@ -287,5 +331,183 @@ describe("weidu-tp2: shouldProvideFeatures (comment suppression)", () => {
         const text = `/* comment */\nOUTER_SET x = 1\n`;
         const position: Position = { line: 1, character: 5 };
         expect(weiduTp2Provider.shouldProvideFeatures?.(text, position)).toBe(true);
+    });
+});
+
+describe("weidu-tp2: server-flow hover for function call params", () => {
+    it("server flow returns function param hover when cursor is on param name of indexed function", () => {
+        const headerText = `
+DEFINE_ACTION_FUNCTION test_func
+    INT_VAR
+        func_param = 99
+BEGIN
+    PRINT ~test~
+END
+`;
+        const headerUri = "file:///lib.tph";
+        weiduTp2Provider.reloadFileData?.(headerUri, headerText);
+
+        const text = `LAF test_func
+    INT_VAR
+        func_param = 1
+END
+`;
+        const uri = "file:///test.tp2";
+        const symbol = "func_param";
+        const position: Position = { line: 2, character: 10 };
+
+        // Simulate server.ts flow:
+        // 1. Gate: shouldProvideFeatures (comments only now)
+        expect(weiduTp2Provider.shouldProvideFeatures?.(text, position)).toBe(true);
+
+        // 2. Try local hover (new semantics: !== undefined means handled)
+        const localHover = weiduTp2Provider.hover?.(text, symbol, uri, position);
+        expect(localHover).not.toBeUndefined(); // provider claims this position
+        expect(localHover).not.toBeNull(); // and has data to show
+        if (localHover?.contents && typeof localHover.contents === "object" && "value" in localHover.contents) {
+            expect(localHover.contents.value).toContain("int func_param = 99");
+        }
+    });
+
+    it("server flow does NOT return variable hover when cursor is on param name of non-indexed function", () => {
+        const varFileText = `
+OUTER_SET my_var = 123
+`;
+        const varUri = "file:///vars.tp2";
+        weiduTp2Provider.reloadFileData?.(varUri, varFileText);
+
+        const text = `LAF unknown_func
+    INT_VAR
+        my_var = 1
+END
+`;
+        const uri = "file:///test.tp2";
+        const symbol = "my_var";
+        const position: Position = { line: 2, character: 10 };
+
+        // 1. Gate passes (not a comment)
+        expect(weiduTp2Provider.shouldProvideFeatures?.(text, position)).toBe(true);
+
+        // 2. hover() returns null (handled, no data — blocks fallthrough)
+        const localHover = weiduTp2Provider.hover?.(text, symbol, uri, position);
+        expect(localHover).toBeNull(); // null = handled, no fallthrough
+
+        // Since localHover !== undefined, server.ts does NOT call getHover()
+        // Variable data never leaks
+    });
+
+    it("server flow returns variable hover when cursor is on variable outside function call", () => {
+        const varFileText = `
+OUTER_SET my_var = 456
+`;
+        const varUri = "file:///vars.tp2";
+        weiduTp2Provider.reloadFileData?.(varUri, varFileText);
+
+        const text = `OUTER_SET local_copy = my_var
+
+LAF some_func
+    INT_VAR
+        param = 1
+END
+`;
+        const uri = "file:///test.tp2";
+        const symbol = "my_var";
+        const position: Position = { line: 0, character: 25 };
+
+        // 1. Gate passes
+        expect(weiduTp2Provider.shouldProvideFeatures?.(text, position)).toBe(true);
+
+        // 2. hover() tries variable hover
+        const localHover = weiduTp2Provider.hover?.(text, symbol, uri, position);
+        if (localHover !== undefined) {
+            // If hover() found the variable, great
+            return;
+        }
+
+        // 3. Falls through to getHover() — acceptable for variables
+        const fallbackHover = weiduTp2Provider.getHover?.(uri, symbol);
+        // Variable data should be available from the data-driven path
+        expect(fallbackHover).toBeDefined();
+    });
+});
+
+describe("weidu-tp2: loop variable binding hover suppression", () => {
+    it("returns null for variable in PHP_EACH AS binding", () => {
+        // Index a variable named 'opcode' from a header
+        const headerText = `OUTER_SET opcode = 999\n`;
+        weiduTp2Provider.reloadFileData?.("file:///lib.tph", headerText);
+
+        const text = `COPY_EXISTING ~sw1h54.itm~ ~override~
+  PHP_EACH save_opcodes AS opcode => int BEGIN
+    PATCH_PRINT ~%opcode%~
+  END
+BUT_ONLY
+`;
+        const uri = "file:///test.tp2";
+        // Position on 'opcode' after AS (not inside 'save_opcodes')
+        const line1 = text.split("\n")[1];
+        const col = line1.indexOf("AS opcode") + 3; // skip "AS "
+        const position: Position = { line: 1, character: col };
+
+        const hover = weiduTp2Provider.hover?.(text, "opcode", uri, position);
+        // Should return null (handled, no fallthrough) — loop binding, not a reference
+        expect(hover).toBeNull();
+    });
+
+    it("returns null for variable in ACTION_PHP_EACH AS binding", () => {
+        const headerText = `OUTER_SET item = 0\n`;
+        weiduTp2Provider.reloadFileData?.("file:///lib.tph", headerText);
+
+        const text = `ACTION_PHP_EACH my_array AS item => power BEGIN
+  PRINT ~%item%~
+END
+`;
+        const uri = "file:///test.tp2";
+        const line0 = text.split("\n")[0];
+        const col = line0.indexOf("AS item") + 3; // skip "AS "
+        const position: Position = { line: 0, character: col };
+
+        const hover = weiduTp2Provider.hover?.(text, "item", uri, position);
+        expect(hover).toBeNull();
+    });
+
+    it("returns null for value variable in PHP_EACH => binding", () => {
+        const headerText = `OUTER_SET power = 0\n`;
+        weiduTp2Provider.reloadFileData?.("file:///lib.tph", headerText);
+
+        const text = `ACTION_PHP_EACH my_array AS item => power BEGIN
+  PRINT ~%power%~
+END
+`;
+        const uri = "file:///test.tp2";
+        // Position on 'power' after '=>'
+        const line0 = text.split("\n")[0];
+        const col = line0.indexOf("=> power") + 3; // skip "=> "
+        const position: Position = { line: 0, character: col };
+
+        const hover = weiduTp2Provider.hover?.(text, "power", uri, position);
+        expect(hover).toBeNull();
+    });
+
+    it("allows hover for variable reference inside loop body", () => {
+        const headerText = `OUTER_SET opcode = 999\n`;
+        weiduTp2Provider.reloadFileData?.("file:///lib.tph", headerText);
+
+        const text = `COPY_EXISTING ~sw1h54.itm~ ~override~
+  PHP_EACH save_opcodes AS item => int BEGIN
+    SET x = opcode
+  END
+BUT_ONLY
+`;
+        const uri = "file:///test.tp2";
+        // Position on 'opcode' in SET x = opcode (line 2)
+        const line2 = text.split("\n")[2];
+        const col = line2.indexOf("opcode");
+        const position: Position = { line: 2, character: col };
+
+        const hover = weiduTp2Provider.hover?.(text, "opcode", uri, position);
+        // Should NOT be null — this is a reference, not a binding
+        // It should either return variable hover or undefined (fall through)
+        expect(hover).not.toBeNull();
     });
 });

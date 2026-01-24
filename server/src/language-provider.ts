@@ -89,8 +89,8 @@ export interface LanguageProvider {
     /** Go to definition at position. For in-file definitions (e.g., state labels). */
     definition?(text: string, position: Position, uri: string): Location | null;
 
-    /** Get hover info for a local symbol. Returns null to fall back to data hover. */
-    hover?(text: string, symbol: string, uri: string, position: Position): Hover | null;
+    /** Get hover info for a local symbol. Returns null to prevent fallthrough, undefined to fall back to data hover. */
+    hover?(text: string, symbol: string, uri: string, position: Position): Hover | null | undefined;
 
     /** Get completion items for locally defined symbols. */
     localCompletion?(text: string): CompletionItem[];

@@ -83,11 +83,15 @@ export const falloutSslProvider: LanguageProvider = {
         return getLocalDefinition(text, uri, position);
     },
 
-    hover(text: string, symbol: string, uri: string, _position: Position): Hover | null {
+    hover(text: string, symbol: string, uri: string, _position: Position): Hover | null | undefined {
         if (!isInitialized()) {
-            return null;
+            return undefined;  // Parser not ready, fall through to data-driven hover
         }
-        return getLocalHover(text, symbol, uri);
+        const localHover = getLocalHover(text, symbol, uri);
+        if (localHover) {
+            return localHover;  // Found local symbol
+        }
+        return undefined;  // Not found locally, fall through to data-driven hover
     },
 
     localCompletion(text: string): CompletionItem[] {

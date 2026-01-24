@@ -222,13 +222,13 @@ class ProviderRegistry {
         return result;
     }
 
-    /** AST-based hover for local symbols. */
-    localHover(langId: string, text: string, symbol: string, uri: string, position: Position): Hover | null {
+    /** AST-based hover for local symbols. Returns undefined if no provider, null/Hover from provider. */
+    localHover(langId: string, text: string, symbol: string, uri: string, position: Position): Hover | null | undefined {
         const provider = this.get(langId);
         if (provider?.hover) {
             return provider.hover(text, symbol, uri, position);
         }
-        return null;
+        return undefined;  // No provider, fall through
     }
 
     /** Data-driven hover from headers/static data. */

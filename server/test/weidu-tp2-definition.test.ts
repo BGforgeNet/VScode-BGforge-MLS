@@ -437,6 +437,29 @@ LAF my_func INT_VAR bonus = test2 END
         // Should navigate to the variable definition (line 0, "test2" in OUTER_SET)
         expect(result?.range.start.line).toBe(0);
     });
+
+    it("returns null for param name when function is not indexed", () => {
+        // Set up a variable with the same name in the variable index
+        const headerText = `
+OUTER_SET parameter2 = 999
+`;
+        const headerUri = "file:///lib.tph";
+        updateVariableIndex(headerUri, headerText);
+
+        // Call an unknown function with a parameter that matches the indexed variable
+        const text = `LPF unknown_func
+    INT_VAR
+        parameter2 = 1
+END
+`;
+        const uri = "file:///test.tp2";
+        // Cursor on "parameter2" in the call (line 2, character 10)
+        const position: Position = { line: 2, character: 10 };
+        const result = getDefinition(text, uri, position);
+
+        // Should return null, NOT the variable definition from the index
+        expect(result).toBeNull();
+    });
 });
 
 describe("TP2 definition: header variables", () => {
