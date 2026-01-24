@@ -6,7 +6,8 @@
     },
     "include": [
         ".",
-        "../server/src"
+        "../server/src",
+        "../client/src/parsers"
     ],
     "exclude": [
         "node_modules",

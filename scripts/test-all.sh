@@ -49,6 +49,10 @@ for g in grammars/*/test.sh; do
 done
 
 echo ""
+echo "=== Testing Binary Parser ==="
+./scripts/test-bin.sh
+
+echo ""
 echo "=== Checking for unused code (knip) ==="
 pnpm knip
 
