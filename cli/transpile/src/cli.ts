@@ -2,7 +2,7 @@
 /**
  * CLI tool to transpile TD and TBAF files to WeiDU D and BAF formats.
  * Auto-detects language by file extension.
- * Usage: node transpile-cli.js <file.td|file.tbaf|dir> [--save] [-r]
+ * Usage: node transpile-cli.js <file.td|file.tbaf|dir> [--save] [--check] [-r] [-q]
  */
 
 import * as fs from "fs";
@@ -14,8 +14,11 @@ import { emitD } from "../../../server/src/td/emit";
 import { TDParser } from "../../../server/src/td/parse";
 import { emitBAF } from "../../../server/src/tbaf/emit";
 import { TBAFTransformer } from "../../../server/src/tbaf/transform";
+import { parseCliArgs, runCli, FileResult, OutputMode } from "../../cli-utils";
 
 type TranspileType = "td" | "tbaf";
+
+const EXTENSIONS = [EXT_TD, EXT_TBAF];
 
 function getTranspileType(filePath: string): TranspileType | null {
     const lower = filePath.toLowerCase();
@@ -31,16 +34,11 @@ function getOutputPath(filePath: string, type: TranspileType): string {
     return filePath.replace(/\.tbaf$/i, ".baf");
 }
 
-async function transpileFile(filePath: string, save: boolean): Promise<boolean> {
+async function processFile(filePath: string, mode: OutputMode): Promise<FileResult> {
     const type = getTranspileType(filePath);
     if (!type) {
         console.error(`Error: Unsupported file type: ${filePath} (expected ${EXT_TD} or ${EXT_TBAF})`);
-        return false;
-    }
-
-    if (!fs.existsSync(filePath)) {
-        console.error(`Error: File not found: ${filePath}`);
-        return false;
+        return "error";
     }
 
     try {
@@ -66,96 +64,57 @@ async function transpileFile(filePath: string, save: boolean): Promise<boolean> 
             output = emitBAF(ir);
         }
 
-        if (save) {
-            const outPath = getOutputPath(filePath, type);
-            fs.writeFileSync(outPath, output, "utf-8");
-            console.log(`Transpiled: ${filePath} -> ${path.basename(outPath)}`);
+        const outPath = getOutputPath(filePath, type);
+
+        if (mode === "save") {
+            const existing = fs.existsSync(outPath) ? fs.readFileSync(outPath, "utf-8") : null;
+            if (existing !== output) {
+                fs.writeFileSync(outPath, output, "utf-8");
+                console.log(`Transpiled: ${filePath} -> ${path.basename(outPath)}`);
+                return "changed";
+            }
+            return "unchanged";
+        } else if (mode === "check") {
+            const existing = fs.existsSync(outPath) ? fs.readFileSync(outPath, "utf-8") : null;
+            if (existing !== output) {
+                console.log(`Would transpile: ${filePath} -> ${path.basename(outPath)}`);
+                return "changed";
+            }
+            return "unchanged";
         } else {
             process.stdout.write(output);
+            return "changed";
         }
-
-        return true;
     } catch (err) {
         const msg = err instanceof Error ? err.message : String(err);
         console.error(`Error transpiling ${filePath}: ${msg}`);
-        return false;
+        return "error";
     }
 }
 
-const SUPPORTED_EXTENSIONS = [EXT_TD, EXT_TBAF];
+const HELP = `Usage: transpile-cli <file.td|file.tbaf|dir> [--save] [--check] [-r] [-q]
+  --save    Write output to file (default: stdout)
+  --check   Check if output files are up to date (exit 1 if not)
+  -r        Recursively transpile all .td and .tbaf files in directory
+  -q        Quiet mode: suppress summary, only print changed files
 
-function findFiles(dir: string): string[] {
-    const files: string[] = [];
-    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-        const fullPath = path.join(dir, entry.name);
-        if (entry.isDirectory()) {
-            files.push(...findFiles(fullPath));
-        } else if (SUPPORTED_EXTENSIONS.some(ext => entry.name.toLowerCase().endsWith(ext))) {
-            files.push(fullPath);
-        }
-    }
-    return files;
-}
+Examples:
+  transpile-cli mydialog.td              # Print D output to stdout
+  transpile-cli mydialog.td --save       # Write mydialog.d
+  transpile-cli myscript.tbaf --save     # Write myscript.baf
+  transpile-cli src/ -r --save           # Transpile all .td and .tbaf files
+  transpile-cli src/ -r --check          # Check all outputs are up to date`;
 
 async function main() {
-    const args = process.argv.slice(2);
+    const args = parseCliArgs(HELP);
+    if (!args) return;
 
-    if (args.length === 0 || args.includes("--help") || args.includes("-h")) {
-        console.log("Usage: transpile-cli <file.td|file.tbaf|dir> [--save] [-r]");
-        console.log("  --save    Write output to file (default: stdout)");
-        console.log("  -r        Recursively transpile all .td and .tbaf files in directory");
-        console.log("");
-        console.log("Examples:");
-        console.log("  transpile-cli mydialog.td              # Print D output to stdout");
-        console.log("  transpile-cli mydialog.td --save       # Write mydialog.d");
-        console.log("  transpile-cli myscript.tbaf --save     # Write myscript.baf");
-        console.log("  transpile-cli src/ -r --save           # Transpile all .td and .tbaf files");
-        process.exit(0);
-    }
-
-    const target = args.find(a => !a.startsWith("-"));
-    const save = args.includes("--save");
-    const recursive = args.includes("-r") || args.includes("--recursive");
-
-    if (!target) {
-        console.error("Error: No file or directory specified");
-        process.exit(1);
-    }
-
-    if (!fs.existsSync(target)) {
-        console.error(`Error: Not found: ${target}`);
-        process.exit(1);
-    }
-
-    const stat = fs.statSync(target);
-
-    if (stat.isDirectory()) {
-        if (!recursive) {
-            console.error("Error: Target is a directory. Use -r for recursive.");
-            process.exit(1);
-        }
-
-        const files = findFiles(target);
-        if (files.length === 0) {
-            console.error(`No ${EXT_TD} or ${EXT_TBAF} files found in ${target}`);
-            process.exit(1);
-        }
-
-        console.error(`Found ${files.length} transpilable files`);
-        let success = 0, failed = 0;
-
-        for (const file of files) {
-            const ok = await transpileFile(file, save);
-            if (ok) success++;
-            else failed++;
-        }
-
-        console.error(`\nSummary: ${success} succeeded, ${failed} failed`);
-        if (failed > 0) process.exit(1);
-    } else {
-        const ok = await transpileFile(target, save);
-        if (!ok) process.exit(1);
-    }
+    await runCli({
+        args,
+        extensions: EXTENSIONS,
+        description: ".td and .tbaf",
+        processFile,
+    });
 }
 
 main().catch(err => {
