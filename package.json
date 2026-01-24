@@ -436,7 +436,7 @@
         "build:grammar": "bash ./scripts/build-grammar.sh",
         "build:base:client": "esbuild ./client/src/extension.ts --bundle --outfile=client/out/extension.js --external:vscode --format=cjs --platform=node",
         "build:base:server": "bash ./scripts/build-server.sh",
-        "build:base:webviews": "esbuild ./client/src/editors/binaryEditor-webview.ts ./client/src/dialogTree-webview.ts --outdir=client/out --bundle",
+        "build:base:webviews": "esbuild ./client/src/editors/binaryEditor-webview.ts ./client/src/dialog-tree/dialogTree-webview.ts --outdir=client/out --bundle",
         "watch:client": "pnpm build:base:client --sourcemap --watch",
         "watch:server": "pnpm build:base:server --sourcemap --watch",
         "test": "./scripts/test-all.sh",

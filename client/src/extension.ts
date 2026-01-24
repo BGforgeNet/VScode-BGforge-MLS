@@ -11,7 +11,7 @@ import {
 } from "vscode-languageclient/node";
 import { ExecuteCommandParams, ExecuteCommandRequest } from "vscode-languageserver-protocol";
 import { registerBinaryEditor } from "./editors/binaryEditor";
-import { registerDialogTree } from "./dialogTree";
+import { registerDialogTree } from "./dialog-tree/dialogTree";
 import { ServerInitializingIndicator } from "./indicator";
 
 // Initialized in activate(), undefined until then

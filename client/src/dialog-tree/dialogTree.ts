@@ -53,7 +53,7 @@ function invalidateCacheIfNeeded(extensionPath: string): void {
 function getHtmlTemplate(extensionPath: string): string {
     invalidateCacheIfNeeded(extensionPath);
     if (!cachedHtml) {
-        cachedHtml = loadAsset(extensionPath, path.join("client", "src", "dialogTree.html"));
+        cachedHtml = loadAsset(extensionPath, path.join("client", "src", "dialog-tree", "dialogTree.html"));
     }
     return cachedHtml;
 }
@@ -61,7 +61,7 @@ function getHtmlTemplate(extensionPath: string): string {
 function getCss(extensionPath: string): string {
     invalidateCacheIfNeeded(extensionPath);
     if (!cachedCss) {
-        cachedCss = loadAsset(extensionPath, path.join("client", "src", "dialogTree.css"));
+        cachedCss = loadAsset(extensionPath, path.join("client", "src", "dialog-tree", "dialogTree.css"));
     }
     return cachedCss;
 }
@@ -70,7 +70,7 @@ function getJs(extensionPath: string): string {
     invalidateCacheIfNeeded(extensionPath);
     if (!cachedJs) {
         // Built by esbuild-webviews to client/out/
-        cachedJs = loadAsset(extensionPath, path.join("client", "out", "dialogTree-webview.js"));
+        cachedJs = loadAsset(extensionPath, path.join("client", "out", "dialog-tree", "dialogTree-webview.js"));
     }
     return cachedJs;
 }

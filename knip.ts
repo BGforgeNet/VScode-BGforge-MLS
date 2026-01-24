@@ -10,7 +10,7 @@ const config: KnipConfig = {
         // standalone CLI for proto parsing, used in client/scripts/test-bin.sh
         "src/bin-cli.ts",
         // bundled by esbuild-base-webviews in package.json
-        "src/dialogTree-webview.ts",
+        "src/dialog-tree/dialogTree-webview.ts",
         // test entry points for @vscode/test-electron
         "src/test/runTest.ts",
         "src/test/index.ts",
