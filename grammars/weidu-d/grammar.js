@@ -359,11 +359,12 @@ export default grammar({
         // Filename can be identifier, string, or variable ref
         _filename: ($) => choice($.identifier, $.string, $.variable_ref),
 
-        // State label can be number, identifier, alphanumeric (like 4a), or variable ref
-        _state_label: ($) => choice($.state_label_alnum, $.identifier, $.variable_ref),
+        // State label can be number, identifier, alphanumeric (like 4a), variable ref, or string (like ~13~)
+        _state_label: ($) => choice($.state_label_alnum, $.identifier, $.variable_ref, $.string),
 
         // Alphanumeric state label (can start with digit, like "4a", "100", "foo")
-        state_label_alnum: ($) => /[A-Za-z0-9_]+/,
+        // WeiDU allows # in state labels (e.g., RR#ZA00) but not at start (conflicts with #weight syntax)
+        state_label_alnum: ($) => /[A-Za-z0-9_][A-Za-z0-9_#]*/,
 
         // Weight value: #[-]number
         _weight_value: ($) => seq("#", optional("-"), $.number),
@@ -394,11 +395,12 @@ export default grammar({
         tlk_ref: ($) => token(seq("#", /[0-9]+/)),
         at_var_ref: ($) => seq("(", "AT", $.double_string, ")"),
 
-        // WeiDU variable reference %name%
-        variable_ref: ($) => token(seq("%", /[A-Za-z_][A-Za-z0-9_]*/, "%")),
+        // WeiDU variable reference %name% (allows # in names for namespacing)
+        variable_ref: ($) => token(seq("%", /[A-Za-z_][A-Za-z0-9_#]*/, "%")),
 
         // Basic tokens
-        identifier: ($) => /[A-Za-z_][A-Za-z0-9_]*/,
+        // WeiDU allows # in identifiers for namespacing (e.g., RR#INT01)
+        identifier: ($) => /[A-Za-z_][A-Za-z0-9_#]*/,
         number: ($) => /[0-9]+/,
 
         // Comments

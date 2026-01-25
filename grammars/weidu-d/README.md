@@ -117,13 +117,24 @@ COPY_TRANS_LATE [SAFE] filename stateLabel
 | Forced ref | `!123 ~text~` | Not supported |
 | Reference | `@123`, `#123` | Supported |
 
+### Identifiers and Labels
+
+Identifiers (filenames, state labels) and variable references support `#` for namespacing:
+
+```d
+BEGIN RR#INT01                    // filename with #
+IF ~~ THEN BEGIN RR#ZA00          // state label with #
+%RR#DimensionDoor%                // variable ref with #
+EXTERN ~RR#VEND~ ~13~             // string as state label
+```
+
 ### References
 
 | Type | Example | Description |
 |------|---------|-------------|
 | TRA ref | `@123` | Translation file reference |
 | TLK ref | `#123` | DIALOG.TLK string reference |
-| Variable | `%varname%` | WeiDU variable |
+| Variable | `%varname%` | WeiDU variable (allows `#` in name) |
 | AT var | `(AT "var")` | Variable TRA reference |
 
 ### Comments
