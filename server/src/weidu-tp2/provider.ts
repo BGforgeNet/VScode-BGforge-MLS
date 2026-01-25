@@ -17,7 +17,7 @@ import { getContextAtPosition, getFuncParamsContext } from "./completion/context
 import { filterItemsByContext } from "./completion/filter";
 import { getParamCompletions } from "./completion/parameter";
 import { formatDocument as formatAst } from "./format/core";
-import { initParser, getParser, isInitialized } from "./parser";
+import { initParser, parseWithCache, isInitialized } from "./parser";
 import { getDocumentSymbols } from "./symbol";
 import { getDefinition, isOnFunctionCallParamName } from "./definition";
 import { updateFileIndex, clearFileFromIndex, updateVariableIndex, clearVariableFromIndex, lookupFunction, lookupVariable } from "./header-parser";
@@ -190,7 +190,7 @@ export const weiduTp2Provider: LanguageProvider = {
         // Block fallthrough for variable-binding positions (param names, loop variables).
         // These define local variables and should not show unrelated indexed data.
         if (isInitialized()) {
-            const tree = getParser().parse(text);
+            const tree = parseWithCache(text);
             if (tree) {
                 const isParamName = isOnFunctionCallParamName(tree.rootNode, position);
                 const isLoopVar = isOnLoopVariableBinding(tree.rootNode, position);
@@ -251,7 +251,7 @@ export const weiduTp2Provider: LanguageProvider = {
             return { edits: [] };
         }
 
-        const tree = getParser().parse(text);
+        const tree = parseWithCache(text);
         if (!tree) {
             return { edits: [] };
         }

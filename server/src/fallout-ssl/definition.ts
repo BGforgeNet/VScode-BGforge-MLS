@@ -6,7 +6,7 @@
 
 import { Location, Position } from "vscode-languageserver/node";
 import type { Node } from "web-tree-sitter";
-import { getParser, isInitialized } from "./parser";
+import { parseWithCache, isInitialized } from "./parser";
 import { extractProcedures, makeRange, findIdentifierAtPosition } from "./utils";
 
 interface LocalDef {
@@ -124,7 +124,7 @@ export function getLocalDefinition(text: string, uri: string, position: Position
         return null;
     }
 
-    const tree = getParser().parse(text);
+    const tree = parseWithCache(text);
     if (!tree) {
         return null;
     }

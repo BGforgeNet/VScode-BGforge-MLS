@@ -5,7 +5,7 @@
 
 import { Location, Position } from "vscode-languageserver/node";
 import type { Node as SyntaxNode } from "web-tree-sitter";
-import { getParser, isInitialized } from "./parser";
+import { parseWithCache, isInitialized } from "./parser";
 
 interface StateDefinition {
     name: string;
@@ -94,7 +94,7 @@ export function getDefinition(text: string, uri: string, position: Position): Lo
         return null;
     }
 
-    const tree = getParser().parse(text);
+    const tree = parseWithCache(text);
     if (!tree) {
         return null;
     }

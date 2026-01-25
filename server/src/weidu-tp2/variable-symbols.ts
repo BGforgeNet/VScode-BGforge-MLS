@@ -6,7 +6,7 @@
 import { Location, Position } from "vscode-languageserver/node";
 import type { Node as SyntaxNode } from "web-tree-sitter";
 import { lookupVariable } from "./header-parser";
-import { getParser, isInitialized } from "./parser";
+import { parseWithCache, isInitialized } from "./parser";
 import { SyntaxType } from "./tree-sitter.d";
 import { findNodeAtPosition, findAncestorOfType, isSameNode, unwrapVariableRef } from "./tree-utils";
 
@@ -237,7 +237,7 @@ export function findVariableDefinition(text: string, uri: string, position: Posi
         return null;
     }
 
-    const tree = getParser().parse(text);
+    const tree = parseWithCache(text);
     if (!tree) {
         return null;
     }

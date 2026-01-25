@@ -8,7 +8,7 @@ import { FormatResult } from "../language-provider";
 import { getIndentFromEditorconfig } from "../shared/editorconfig";
 import { createFullDocumentEdit } from "../shared/format-utils";
 import { formatDocument as formatAst, FormatOptions } from "./format-core";
-import { initParser, getParser, isInitialized } from "./parser";
+import { initParser, parseWithCache, isInitialized } from "./parser";
 
 const DEFAULT_INDENT = 4;
 const DEFAULT_MAX_LINE_LENGTH = 120;
@@ -34,7 +34,7 @@ export function formatDocument(text: string, uri: string): FormatResult {
         return { edits: [], warning: "SSL formatter not initialized" };
     }
 
-    const tree = getParser().parse(text);
+    const tree = parseWithCache(text);
     if (!tree) {
         return { edits: [], warning: "Failed to parse SSL document for formatting" };
     }

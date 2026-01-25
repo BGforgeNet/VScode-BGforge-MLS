@@ -4,7 +4,7 @@
  */
 
 import { CompletionItem, CompletionItemKind } from "vscode-languageserver/node";
-import { getParser, isInitialized } from "./parser";
+import { parseWithCache, isInitialized } from "./parser";
 import { extractProcedures, extractMacros, findPrecedingDocComment } from "./utils";
 import * as jsdoc from "../shared/jsdoc";
 import { jsdocToDetail } from "../shared/jsdoc-utils";
@@ -21,7 +21,7 @@ export function getLocalCompletions(text: string): CompletionItem[] {
         return [];
     }
 
-    const tree = getParser().parse(text);
+    const tree = parseWithCache(text);
     if (!tree) {
         return [];
     }

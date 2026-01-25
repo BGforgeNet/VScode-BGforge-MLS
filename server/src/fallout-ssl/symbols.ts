@@ -5,7 +5,7 @@
 
 import { DocumentSymbol, SymbolKind } from "vscode-languageserver/node";
 import type { Node } from "web-tree-sitter";
-import { getParser, isInitialized } from "./parser";
+import { parseWithCache, isInitialized } from "./parser";
 import { extractProcedures, makeRange, findPrecedingDocComment, extractMacros } from "./utils";
 import * as jsdoc from "../shared/jsdoc";
 import { jsdocToDetail } from "../shared/jsdoc-utils";
@@ -144,7 +144,7 @@ export function getDocumentSymbols(text: string): DocumentSymbol[] {
         return [];
     }
 
-    const tree = getParser().parse(text);
+    const tree = parseWithCache(text);
     if (!tree) {
         return [];
     }

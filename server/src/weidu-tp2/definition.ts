@@ -10,7 +10,7 @@ import { Location, Position } from "vscode-languageserver/node";
 import type { Node as SyntaxNode } from "web-tree-sitter";
 import * as path from "path";
 import * as fs from "fs";
-import { getParser, isInitialized } from "./parser";
+import { parseWithCache, isInitialized } from "./parser";
 import { parseHeader, lookupFunction, FunctionInfo } from "./header-parser";
 import { pathToUri, uriToPath } from "../common";
 import { SyntaxType } from "./tree-sitter.d";
@@ -42,7 +42,7 @@ export function getDefinition(text: string, uri: string, position: Position): Lo
         return null;
     }
 
-    const tree = getParser().parse(text);
+    const tree = parseWithCache(text);
     if (!tree) {
         return null;
     }

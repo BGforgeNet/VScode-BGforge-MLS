@@ -4,7 +4,7 @@
  */
 
 import type { Node as SyntaxNode } from "web-tree-sitter";
-import { initParser, getParser, isInitialized } from "./fallout-ssl/parser";
+import { initParser, parseWithCache, isInitialized } from "./fallout-ssl/parser";
 
 interface DialogReply {
     msgId: number | string;
@@ -40,7 +40,7 @@ export async function parseDialog(text: string): Promise<DialogData> {
     if (!isInitialized()) {
         await initParser();
     }
-    const tree = getParser().parse(text);
+    const tree = parseWithCache(text);
     if (!tree) {
         return { nodes: [], entryPoints: [] };
     }

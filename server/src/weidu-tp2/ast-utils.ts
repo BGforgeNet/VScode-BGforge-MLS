@@ -5,7 +5,7 @@
 
 import { CompletionItem, CompletionItemKind, Position } from "vscode-languageserver/node";
 import type { CompletionItemWithCategory } from "../shared/completion-context";
-import { getParser, isInitialized } from "./parser";
+import { parseWithCache, isInitialized } from "./parser";
 import { SyntaxType } from "./tree-sitter.d";
 import { findNodeAtPosition, unwrapVariableRef } from "./tree-utils";
 import { VARIABLE_DECL_TYPES } from "./variable-symbols";
@@ -19,7 +19,7 @@ export function localCompletion(text: string): CompletionItem[] {
         return [];
     }
 
-    const tree = getParser().parse(text);
+    const tree = parseWithCache(text);
     if (!tree) {
         return [];
     }
@@ -103,7 +103,7 @@ export function isInsideComment(text: string, position: Position): boolean {
     if (!isInitialized()) {
         return false;
     }
-    const tree = getParser().parse(text);
+    const tree = parseWithCache(text);
     if (!tree) {
         return false;
     }

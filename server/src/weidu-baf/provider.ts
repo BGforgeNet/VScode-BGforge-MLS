@@ -14,7 +14,7 @@ import { getIndentFromEditorconfig } from "../shared/editorconfig";
 import { createFullDocumentEdit, validateFormatting, stripCommentsWeidu } from "../shared/format-utils";
 import { fileURLToPath } from "url";
 import { formatDocument as formatAst, FormatOptions } from "./format-core";
-import { initParser, getParser, isInitialized } from "./parser";
+import { initParser, parseWithCache, isInitialized } from "./parser";
 import { compile as weiduCompile } from "../weidu-compile";
 
 const DEFAULT_INDENT = 4;
@@ -70,7 +70,7 @@ export const weiduBafProvider: LanguageProvider = {
             return { edits: [] };
         }
 
-        const tree = getParser().parse(text);
+        const tree = parseWithCache(text);
         if (!tree) {
             return { edits: [] };
         }

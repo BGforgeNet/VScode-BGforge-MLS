@@ -5,7 +5,7 @@
 
 import { Hover, MarkupKind, Position } from "vscode-languageserver/node";
 import { buildParamInfoMap } from "../shared/jsdoc";
-import { getParser, isInitialized } from "./parser";
+import { parseWithCache, isInitialized } from "./parser";
 import { lookupFunction, lookupVariable, parseHeader, FunctionInfo } from "./header-parser";
 import { SyntaxType } from "./tree-sitter.d";
 import { stripStringDelimiters } from "./tree-utils";
@@ -19,7 +19,7 @@ export function getFunctionParamHover(text: string, symbol: string, position: Po
         return null;
     }
 
-    const tree = getParser().parse(text);
+    const tree = parseWithCache(text);
     if (!tree) {
         return null;
     }

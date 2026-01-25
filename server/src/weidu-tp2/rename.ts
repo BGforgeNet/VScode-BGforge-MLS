@@ -12,7 +12,7 @@
 
 import { Position, TextEdit, WorkspaceEdit } from "vscode-languageserver/node";
 import type { Node as SyntaxNode } from "web-tree-sitter";
-import { getParser, isInitialized } from "./parser";
+import { parseWithCache, isInitialized } from "./parser";
 import { SyntaxType } from "./tree-sitter.d";
 import {
     VARIABLE_DECL_TYPES,
@@ -104,7 +104,7 @@ export function prepareRenameSymbol(
         return null;
     }
 
-    const tree = getParser().parse(text);
+    const tree = parseWithCache(text);
     if (!tree) {
         return null;
     }
@@ -152,7 +152,7 @@ export function renameSymbol(
         return null;
     }
 
-    const tree = getParser().parse(text);
+    const tree = parseWithCache(text);
     if (!tree) {
         return null;
     }

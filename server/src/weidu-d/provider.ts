@@ -15,7 +15,7 @@ import { createFullDocumentEdit, validateFormatting, stripCommentsWeidu } from "
 import { fileURLToPath } from "url";
 import { getDefinition } from "./definition";
 import { formatDocument as formatAst, FormatOptions } from "./format-core";
-import { initParser, getParser, isInitialized } from "./parser";
+import { initParser, parseWithCache, isInitialized } from "./parser";
 import { getDocumentSymbols } from "./symbol";
 import { compile as weiduCompile } from "../weidu-compile";
 
@@ -74,7 +74,7 @@ export const weiduDProvider: LanguageProvider = {
             return { edits: [] };
         }
 
-        const tree = getParser().parse(text);
+        const tree = parseWithCache(text);
         if (!tree) {
             return { edits: [] };
         }

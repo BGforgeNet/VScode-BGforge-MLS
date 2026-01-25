@@ -4,7 +4,7 @@
  */
 
 import { Position, TextEdit, WorkspaceEdit } from "vscode-languageserver/node";
-import { getParser, isInitialized } from "./parser";
+import { parseWithCache, isInitialized } from "./parser";
 import { findIdentifierAtPosition, isLocalDefinition, findAllReferences, makeRange } from "./utils";
 
 /**
@@ -16,7 +16,7 @@ export function renameSymbol(text: string, position: Position, newName: string, 
         return null;
     }
 
-    const tree = getParser().parse(text);
+    const tree = parseWithCache(text);
     if (!tree) {
         return null;
     }

@@ -1,9 +1,9 @@
 /**
  * Shared tree-sitter parser factory.
- * Creates parser modules for different grammars.
+ * Creates parser modules for different grammars with optional caching.
  */
 
-import { Parser, Language } from "web-tree-sitter";
+import { Parser, Language, Tree } from "web-tree-sitter";
 import * as path from "path";
 import * as fs from "fs";
 
@@ -11,6 +11,15 @@ export interface ParserModule {
     init(): Promise<void>;
     getParser(): Parser;
     isInitialized(): boolean;
+}
+
+export interface CachedParserModule extends ParserModule {
+    /** Parse text with caching. Returns cached tree if text unchanged. */
+    parseWithCache(text: string): Tree | null;
+    /** Invalidate cache for specific text or all entries if text not provided. */
+    invalidateCache(text?: string): void;
+    /** Get cache stats for debugging/monitoring. */
+    getCacheStats(): { hits: number; misses: number; size: number };
 }
 
 let treeSitterInitialized = false;
@@ -51,6 +60,93 @@ export function createParserModule(wasmFileName: string, name: string): ParserMo
 
         isInitialized(): boolean {
             return initialized;
+        },
+    };
+}
+
+/** Default maximum cache entries */
+const DEFAULT_MAX_CACHE_SIZE = 10;
+
+/**
+ * Simple hash function for cache keys.
+ * Uses a fast string hash (djb2) since we only need cache key uniqueness.
+ */
+function hashText(text: string): string {
+    let hash = 5381;
+    for (let i = 0; i < text.length; i++) {
+        hash = ((hash << 5) + hash) ^ text.charCodeAt(i);
+    }
+    // Convert to unsigned 32-bit integer and return as hex string
+    return (hash >>> 0).toString(16);
+}
+
+/**
+ * Creates a cached parser module that wraps a regular parser module.
+ * Caches parsed trees by text content hash to avoid redundant parsing.
+ *
+ * @param wasmFileName - Name of the grammar WASM file (e.g., "tree-sitter-baf.wasm")
+ * @param name - Human-readable name for error messages
+ * @param maxCacheSize - Maximum number of cached trees (default: 10)
+ */
+export function createCachedParserModule(
+    wasmFileName: string,
+    name: string,
+    maxCacheSize: number = DEFAULT_MAX_CACHE_SIZE
+): CachedParserModule {
+    const base = createParserModule(wasmFileName, name);
+
+    // LRU-style cache: Map maintains insertion order, we delete oldest on overflow
+    const cache = new Map<string, Tree>();
+    let hits = 0;
+    let misses = 0;
+
+    return {
+        ...base,
+
+        parseWithCache(text: string): Tree | null {
+            if (!base.isInitialized()) {
+                return null;
+            }
+
+            const key = hashText(text);
+
+            // Check cache
+            const cached = cache.get(key);
+            if (cached) {
+                hits++;
+                // Move to end (most recently used) by reinserting
+                cache.delete(key);
+                cache.set(key, cached);
+                return cached;
+            }
+
+            // Parse and cache
+            misses++;
+            const tree = base.getParser().parse(text);
+            if (tree) {
+                // Evict oldest entry if at capacity
+                if (cache.size >= maxCacheSize) {
+                    const oldestKey = cache.keys().next().value;
+                    if (oldestKey !== undefined) {
+                        cache.delete(oldestKey);
+                    }
+                }
+                cache.set(key, tree);
+            }
+            return tree;
+        },
+
+        invalidateCache(text?: string): void {
+            if (text === undefined) {
+                cache.clear();
+            } else {
+                const key = hashText(text);
+                cache.delete(key);
+            }
+        },
+
+        getCacheStats(): { hits: number; misses: number; size: number } {
+            return { hits, misses, size: cache.size };
         },
     };
 }

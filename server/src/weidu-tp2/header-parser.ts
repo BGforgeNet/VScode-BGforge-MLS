@@ -6,7 +6,7 @@
 import type { Node as SyntaxNode } from "web-tree-sitter";
 import { Location } from "vscode-languageserver/node";
 import * as jsdoc from "../shared/jsdoc";
-import { getParser, isInitialized } from "./parser";
+import { parseWithCache, isInitialized } from "./parser";
 import { SyntaxType } from "./tree-sitter.d";
 import { stripStringDelimiters } from "./tree-utils";
 
@@ -88,7 +88,7 @@ export function parseHeader(text: string, uri: string): FunctionInfo[] {
         return [];
     }
 
-    const tree = getParser().parse(text);
+    const tree = parseWithCache(text);
     if (!tree) {
         return [];
     }
@@ -104,7 +104,7 @@ export function parseHeaderVariables(text: string, uri: string): VariableInfo[] 
         return [];
     }
 
-    const tree = getParser().parse(text);
+    const tree = parseWithCache(text);
     if (!tree) {
         return [];
     }

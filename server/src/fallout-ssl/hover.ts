@@ -4,7 +4,7 @@
  */
 
 import { Hover, MarkupKind } from "vscode-languageserver/node";
-import { getParser, isInitialized } from "./parser";
+import { parseWithCache, isInitialized } from "./parser";
 import * as jsdoc from "../shared/jsdoc";
 import { jsdocToMarkdown, jsdocToDetail } from "../shared/jsdoc-utils";
 import { findDefinitionNode, findPrecedingDocComment, extractMacros } from "./utils";
@@ -20,7 +20,7 @@ export function getLocalHover(text: string, symbol: string, _uri: string): Hover
         return null;
     }
 
-    const tree = getParser().parse(text);
+    const tree = parseWithCache(text);
     if (!tree) {
         return null;
     }

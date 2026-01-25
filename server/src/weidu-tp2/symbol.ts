@@ -4,7 +4,7 @@
  */
 
 import { DocumentSymbol, SymbolKind } from "vscode-languageserver/node";
-import { getParser, isInitialized } from "./parser";
+import { parseWithCache, isInitialized } from "./parser";
 import { isFunctionDef } from "./format/utils";
 
 export function getDocumentSymbols(text: string): DocumentSymbol[] {
@@ -12,7 +12,7 @@ export function getDocumentSymbols(text: string): DocumentSymbol[] {
         return [];
     }
 
-    const tree = getParser().parse(text);
+    const tree = parseWithCache(text);
     if (!tree) {
         return [];
     }

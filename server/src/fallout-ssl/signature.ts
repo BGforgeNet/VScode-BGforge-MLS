@@ -4,7 +4,7 @@
  */
 
 import { ParameterInformation, SignatureHelp, SignatureInformation } from "vscode-languageserver/node";
-import { getParser, isInitialized } from "./parser";
+import { parseWithCache, isInitialized } from "./parser";
 import * as jsdoc from "../shared/jsdoc";
 import { findProcedure, findPrecedingDocComment, extractMacros } from "./utils";
 import { buildSignatureFromJSDoc } from "./macro-utils";
@@ -18,7 +18,7 @@ export function getLocalSignature(text: string, symbol: string, paramIndex: numb
         return null;
     }
 
-    const tree = getParser().parse(text);
+    const tree = parseWithCache(text);
     if (!tree) {
         return null;
     }
