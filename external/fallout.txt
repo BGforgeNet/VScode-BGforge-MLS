@@ -1,0 +1,5 @@
+# External Fallout repos for testing - one URL per line
+https://github.com/BGforgeNet/FO2tweaks
+https://github.com/BGforgeNet/Fallout2_Restoration_Project
+https://github.com/BGforgeNet/Fallout2_Party_Orders
+https://github.com/sfall-team/sfall

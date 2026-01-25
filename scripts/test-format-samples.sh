@@ -10,9 +10,6 @@ cd "$ROOT_DIR"
 echo "=== Building format CLI ==="
 pnpm build:format-cli
 
-# Setup external samples (needed for weidu-d)
-./scripts/setup-external-samples.sh
-
 FAILED=0
 
 # --- Flat-sample grammars: compare + idempotency ---

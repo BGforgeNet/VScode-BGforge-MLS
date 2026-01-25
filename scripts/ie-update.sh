@@ -15,7 +15,7 @@ data_weidu_iesdp="$data_dir/weidu-tp2-iesdp.yml"
 data_weidu_ielib="$data_dir/weidu-tp2-ielib.yml"
 data_baf="$data_dir/weidu-baf-iesdp.yml"
 
-external="external/ie"
+external="external/infinity-engine"
 mkdir -p "$external"
 iesdp_repo="https://github.com/BGforgeNet/iesdp.git"
 iesdp_dir="$external/iesdp"

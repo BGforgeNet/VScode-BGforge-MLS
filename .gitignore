@@ -24,8 +24,10 @@ preview/out/*
 !preview/out/index.css
 
 external/*
-!external/test.txt
-!external/test-exclude.txt
+!external/fallout.txt
+!external/fallout-exclude.txt
+!external/infinity-engine.txt
+!external/infinity-engine-exclude.txt
 node_modules
 syntaxes_to_json.sh.err
 tmp
@@ -38,5 +40,3 @@ tmp
 grammars/*/src/
 server/src/weidu-tp2/tree-sitter.d.ts
 
-# External D samples from Ascension (auto-copied by setup-external-samples.sh)
-grammars/weidu-d/test/samples/ascension_*.d

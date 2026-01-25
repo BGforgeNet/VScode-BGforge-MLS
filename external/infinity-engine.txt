@@ -1,0 +1,7 @@
+# External Infinity Engine repos for testing - one URL per line
+https://github.com/BGforgeNet/bg2-tweaks-and-tricks
+https://github.com/BGforgeNet/bg2-wildmage
+https://github.com/BGforgeNet/bg2-uniqueartifacts
+https://github.com/InfinityMods/Ascension
+https://github.com/Spellhold-Studios/BGT-WeiDU
+https://github.com/FredrikLindgren/rr

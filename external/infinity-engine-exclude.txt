@@ -1,0 +1,14 @@
+# Files to exclude from external Infinity Engine tests
+# Paths are relative to external/infinity-engine/
+
+# BAF files with syntax errors in original source
+Ascension/ascension/powers/baf/SLAYER_DOCUMENTATION.baf
+BGT-WeiDU/bgt/base/baf/aram00.baf
+BGT-WeiDU/bgt/modify/baf/a6bio.baf
+
+# BAF template files using WeiDU %variable% placeholders as standalone triggers/actions
+bg2-tweaks-and-tricks/tnt/components/easy_traps/baf/detection.baf
+bg2-tweaks-and-tricks/tnt/components/easy_traps/baf/displaystring.baf
+bg2-tweaks-and-tricks/tnt/components/easy_traps/baf/intuition.baf
+bg2-tweaks-and-tricks/tnt/components/starting_bags/ar0602.baf
+bg2-tweaks-and-tricks/tnt/components/uncheese_project_image/g_pispy1.baf

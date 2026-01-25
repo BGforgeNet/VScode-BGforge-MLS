@@ -17,11 +17,5 @@ esac
 
 source "$(dirname "$0")/grammar-test-lib.sh"
 
-# Grammar-specific hooks
-if [[ "$GRAMMAR_NAME" == "weidu-d" ]]; then
-    echo "=== Setting up external samples ==="
-    "$ROOT_DIR/scripts/setup-external-samples.sh"
-fi
-
 grammar_build_format
 grammar_regenerate_expected
