@@ -489,9 +489,8 @@ export class Translation {
         lines.forEach((l, i) => {
             const matches = l.matchAll(regex);
             for (const m of matches) {
-                if (m.index === undefined) continue;
-
-                const char_end = m.index + m[0].length;
+                // matchAll always provides index for each match
+                const char_end = m.index! + m[0].length;
                 const lineKey = m[keyIndex];
                 if (!lineKey) continue;
 

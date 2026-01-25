@@ -4,7 +4,7 @@
  */
 
 import { describe, expect, it } from "vitest";
-import { buildFunctionCallSnippet } from "../src/weidu-tp2/provider";
+import { buildFunctionCallSnippet } from "../src/weidu-tp2/snippets";
 import { parse as parseJSDoc } from "../src/shared/jsdoc";
 import type { FunctionInfo } from "../src/weidu-tp2/header-parser";
 import { Location } from "vscode-languageserver/node";

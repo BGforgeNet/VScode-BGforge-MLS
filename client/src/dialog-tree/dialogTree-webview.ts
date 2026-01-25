@@ -80,7 +80,8 @@
 
         // Find matching replies/options by text content and attributes
         document.querySelectorAll(".item.reply, .item.option, summary.option").forEach((itemEl) => {
-            const textContent = itemEl.textContent ?? "";
+            // Element.textContent is always string at runtime (never null for elements)
+            const textContent = itemEl.textContent!;
             // Also search in title attributes (contains type/msgId like "NLowOption(873)")
             const titles = Array.from(itemEl.querySelectorAll("[title]")).map(el => el.getAttribute("title") || "").join(" ");
             const fullText = textContent + " " + titles;
@@ -89,7 +90,8 @@
                 const parentNode = itemEl.closest('[id^="node-"]');
                 const parentName = parentNode ? parentNode.id.replace("node-", "") : "";
                 // Store msg-text for navigation matching
-                const msgText = itemEl.querySelector(".msg-text")?.textContent?.trim() ?? "";
+                const msgTextEl = itemEl.querySelector(".msg-text");
+                const msgText = msgTextEl ? msgTextEl.textContent!.trim() : "";
                 // Build display text including the type from title
                 const typeTitle = itemEl.querySelector(".codicon[title]")?.getAttribute("title") || "";
                 const displayText = typeTitle ? `${typeTitle}: ${textContent.trim()}` : textContent.trim();
@@ -159,7 +161,8 @@
                 // Search for the specific reply/option by message text content
                 const items = Array.from(targetEl.querySelectorAll(".item.reply, .item.option, summary.option"));
                 for (const item of items) {
-                    const msgText = item.querySelector(".msg-text")?.textContent?.trim();
+                    const msgTextEl = item.querySelector(".msg-text");
+                    const msgText = msgTextEl ? msgTextEl.textContent!.trim() : undefined;
                     if (msgText === itemText) {
                         elementToSelect = item;
                         break;

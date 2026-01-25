@@ -77,7 +77,8 @@
 
         // Check group names
         tree.querySelectorAll(".group-name").forEach((nameEl) => {
-            const name = nameEl.textContent?.toLowerCase() ?? "";
+            // Element.textContent is always string at runtime (never null for elements)
+            const name = nameEl.textContent!.toLowerCase();
             if (name.includes(lowerQuery)) {
                 nameEl.classList.add("highlight");
                 const group = nameEl.closest(".group");
@@ -93,7 +94,8 @@
 
         // Check field names
         tree.querySelectorAll(".field-name").forEach((nameEl) => {
-            const name = nameEl.textContent?.toLowerCase() ?? "";
+            // Element.textContent is always string at runtime (never null for elements)
+            const name = nameEl.textContent!.toLowerCase();
             if (name.includes(lowerQuery)) {
                 nameEl.classList.add("highlight");
                 const field = nameEl.closest(".field");

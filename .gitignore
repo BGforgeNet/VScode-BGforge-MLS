@@ -36,6 +36,9 @@ tmp
 
 *.wasm
 
+# Test coverage reports
+coverage/
+
 # Generated tree-sitter parser sources
 grammars/*/src/
 server/src/weidu-tp2/tree-sitter.d.ts

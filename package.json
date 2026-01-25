@@ -450,6 +450,7 @@
         "test:cli": "vitest run --config cli/vitest.config.ts",
         "test:bin": "./scripts/test-bin.sh",
         "test:e2e": "./scripts/e2e.sh",
+        "test:coverage": "cd server && vitest run --coverage",
         "package": "pnpm vsce package --no-dependencies",
         "format": "node --no-warnings cli/format/out/format-cli.js",
         "format-samples": "./scripts/format-samples.sh",
@@ -468,11 +469,12 @@
         "esbuild": "^0.25.8",
         "eslint": "^9.33.0",
         "globals": "^15.15.0",
+        "@vitest/coverage-v8": "^4.0.18",
         "knip": "^5.79.0",
         "mocha": "^11.7.1",
         "prettier": "^3.6.2",
         "tree-sitter-cli": "0.26.3",
-        "typescript": "^4.9.5",
+        "typescript": "^5.7.3",
         "vitest": "^4.0.18"
     },
     "categories": [

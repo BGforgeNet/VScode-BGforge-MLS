@@ -240,7 +240,7 @@ function findTraArgumentAtPosition(line: string, pos: number): string | null {
     // Match $tra(digits) and capture the digits with their position
     const pattern = /\$tra\((\d+)\)/g;
     for (const match of line.matchAll(pattern)) {
-        if (match.index === undefined || !match[1]) continue;
+        if (!match[1]) continue;
         // $tra( is 5 characters, so digits start at match.index + 5
         const digitsStart = match.index + 5;
         const digitsEnd = digitsStart + match[1].length;
