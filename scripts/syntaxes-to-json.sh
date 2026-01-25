@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# shellcheck disable=SC1091  # venv may not exist at lint time
 source .venv/bin/activate >/dev/null 2>&1
 
 set -xeu -o pipefail

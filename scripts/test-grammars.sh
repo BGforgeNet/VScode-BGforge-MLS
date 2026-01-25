@@ -12,5 +12,5 @@ pnpm build:format-cli
 export SKIP_FORMAT_BUILD=1
 
 for g in fallout-ssl weidu-baf weidu-d weidu-tp2; do
-    "$SCRIPT_DIR/grammar-test.sh" "$g"
+    "$SCRIPT_DIR/test-grammar.sh" "$g"
 done

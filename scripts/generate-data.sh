@@ -4,6 +4,7 @@
 
 set -xeu -o pipefail
 
+# shellcheck disable=SC1091  # venv may not exist at lint time
 source .venv/bin/activate
 
 data_dir="server/data"

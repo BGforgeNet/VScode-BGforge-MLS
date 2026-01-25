@@ -7,7 +7,7 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 TS="$ROOT_DIR/node_modules/.bin/tree-sitter"
 GRAMMAR_DIR="$ROOT_DIR/grammars/$GRAMMAR_NAME"
 
-cd "$GRAMMAR_DIR"
+cd "$GRAMMAR_DIR" || exit 1
 
 find_samples() {
     find "$1" -type f \( "${SAMPLE_EXTS[@]}" \) -print0

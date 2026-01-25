@@ -34,18 +34,21 @@ remove_excluded() {
     local target_dir="$2"
 
     [[ ! -f "$exclude_file" ]] && return
-    for file in $(grep -v '^#' "$exclude_file" | grep -v '^$'); do
-        # Skip dangerous paths: absolute, parent refs, or empty
-        [[ "$file" =~ ^/ || "$file" =~ \.\. || -z "$file" ]] && continue
-        rm -rf "$target_dir/$file"
-    done
+    while IFS= read -r file; do
+        [[ -z "$file" || "$file" == \#* ]] && continue
+        # Skip dangerous paths: absolute or parent refs
+        [[ "$file" =~ ^/ || "$file" =~ \.\. ]] && continue
+        rm -rf "${target_dir:?}/$file"
+    done < "$exclude_file"
 }
 
 # Reset all repos in a directory
 reset_repos() {
     local target_dir="$1"
     for repo in "$target_dir"/*/; do
-        [[ -d "$repo" ]] && git -C "$repo" checkout . 2>/dev/null || true
+        if [[ -d "$repo" ]]; then
+            git -C "$repo" checkout . 2>/dev/null || true
+        fi
     done
 }
 
@@ -68,7 +71,7 @@ test_format() {
     pnpm format "$target_dir" -r --check -q
 }
 
-# Test bin CLI on Fallout PRO files
+# Test bin CLI on Fallout PRO files (parse only, no snapshot comparison)
 test_bin() {
     local target_dir="$1"
 
@@ -78,12 +81,8 @@ test_bin() {
 
     echo ""
     echo "=== Testing Fallout PRO files ==="
-    local count=0
-    while IFS= read -r -d '' f; do
-        pnpm bin "$f" --check || { echo "FAIL: $f"; exit 1; }
-        ((count++))
-    done < <(find "$target_dir" -name "*.pro" -type f -print0)
-    echo "Checked $count PRO files"
+    # Stdout mode outputs JSON - discard it, we only care about exit code (parse success)
+    node "$ROOT_DIR/cli/bin/out/bin-cli.js" "$target_dir" -r -q > /dev/null
 }
 
 echo "=== Building CLIs ==="

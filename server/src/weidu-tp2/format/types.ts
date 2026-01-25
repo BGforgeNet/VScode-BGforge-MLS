@@ -122,9 +122,11 @@ export const CONTROL_FLOW_TYPES = [
     "patch_try",
     "patch_for",
     "patch_while",
+    "patch_with_scope",
     // Array definitions with BEGIN...END body
     "action_define_array",
     "action_define_associative_array",
+    "patch_define_array",
     "patch_define_associative_array",
     // OUTER_* with BEGIN...END body
     "action_outer_patch",
@@ -136,6 +138,7 @@ export const CONTROL_FLOW_TYPES = [
     "patch_replace_evaluate",
     // Actions with BEGIN...END body
     "action_with_tra",
+    "action_with_scope",
     "action_make_biff",
     // FOR_EACH types
     ...FOR_EACH_TYPES,

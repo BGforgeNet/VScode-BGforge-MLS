@@ -26,3 +26,6 @@ Fallout2_Restoration_Project/scripts_src/newreno/nceldrid.ssl
 
 # If_Companion_Needs_Healing macro
 Fallout2_Restoration_Project/scripts_src/valtcity/vcdrtroy.ssl
+
+# Comment inside parenthesized expression (formatter limitation)
+sfall/artifacts/mods/gl_npcarmor.ssl

@@ -345,7 +345,9 @@ function formatParam(node: SyntaxNode): string {
 
     let result = hasVariable ? `variable ${name}` : name;
     if (defaultValue) {
-        result += ` = ${formatExpression(defaultValue)}`;
+        // Preserve := vs = from original
+        const op = node.children.find(c => c.text === ":=" || c.text === "=")?.text || "=";
+        result += ` ${op} ${formatExpression(defaultValue)}`;
     }
     return result;
 }
@@ -810,7 +812,9 @@ function formatExpression(node: SyntaxNode | null | undefined, column: number = 
                     node.startPosition.column + 1,
                 );
             }
-            return `${name.text} = ${formatExpression(value)}`;
+            // Preserve := vs = from original
+            const op = node.children.find(c => c.text === ":=" || c.text === "=")?.text || "=";
+            return `${name.text} ${op} ${formatExpression(value)}`;
         }
         default:
             return node.text;

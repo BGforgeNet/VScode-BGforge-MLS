@@ -444,7 +444,7 @@
         "test:server": "cd server && pnpm test",
         "test:grammars": "./scripts/test-grammars.sh",
         "test:external": "./scripts/test-external.sh",
-        "test:grammar": "./scripts/grammar-test.sh",
+        "test:grammar": "./scripts/test-grammar.sh",
         "regenerate-expected": "./scripts/grammar-regenerate.sh",
         "test:format-samples": "./scripts/test-format-samples.sh",
         "test:cli": "vitest run --config cli/vitest.config.ts",
