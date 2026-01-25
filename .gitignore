@@ -23,7 +23,8 @@ preview/out/*
 !preview/out/index.html
 !preview/out/index.css
 
-external
+external/*
+!external/grammars.txt
 node_modules
 syntaxes_to_json.sh.err
 tmp
