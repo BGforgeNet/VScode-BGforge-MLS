@@ -662,6 +662,7 @@ export default grammar({
                 $.patch_while,
                 $.patch_php_each,
                 $.patch_for_each,
+                $.patch_with_scope,
                 // Text manipulation
                 $.patch_replace,
                 $.patch_replace_textually,
@@ -890,6 +891,8 @@ export default grammar({
 
         patch_for_each: ($) =>
             seq("PATCH_FOR_EACH", field("var", $.value), "IN", repeat1($.value), "BEGIN", repeat($._patch), "END"),
+
+        patch_with_scope: ($) => seq("PATCH_WITH_SCOPE", "BEGIN", repeat($._patch), "END"),
 
         // Text manipulation
         patch_replace: ($) =>
@@ -1181,6 +1184,8 @@ export default grammar({
                 $.action_outer_sprint,
                 $.action_outer_text_sprint,
                 $.action_with_tra,
+                $.action_with_scope,
+                $.action_add_journal,
                 $.action_outer_patch,
                 $.action_outer_patch_save,
                 $.action_outer_inner_patch,
@@ -1432,6 +1437,21 @@ export default grammar({
 
         action_with_tra: ($) =>
             seq("WITH_TRA", repeat1(field("file", $.value)), "BEGIN", repeat($._action), "END"),
+
+        action_with_scope: ($) => seq("WITH_SCOPE", "BEGIN", repeat($._action), "END"),
+
+        // ADD_JOURNAL [EXISTING] [MANAGED] [TITLE (text)] reference list [USING traFile list]
+        action_add_journal: ($) =>
+            prec.right(
+                seq(
+                    "ADD_JOURNAL",
+                    optional("EXISTING"),
+                    optional("MANAGED"),
+                    optional(seq("TITLE", "(", field("title", $.value), ")")),
+                    repeat1($.value),
+                    optional(seq("USING", repeat1(field("tra", $.value))))
+                )
+            ),
 
         action_outer_patch: outerPatchAction("OUTER_PATCH"),
         action_outer_patch_save: outerPatchSaveAction("OUTER_PATCH_SAVE"),
