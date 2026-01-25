@@ -117,17 +117,17 @@ export async function runCli(options: RunOptions): Promise<void> {
         }
 
         if (!args.quiet) console.log(`Found ${files.length} ${description} files`);
-        let changed = 0, unchanged = 0, errors = 0;
+        let changed = 0, unchanged = 0;
 
         for (const file of files) {
             const result = await processFile(file, args.mode);
             if (result === "changed") changed++;
             else if (result === "unchanged") unchanged++;
-            else errors++;
+            else process.exit(1);
         }
 
-        if (!args.quiet) console.log(`\nSummary: ${changed} changed, ${unchanged} unchanged, ${errors} errors`);
-        if (errors > 0 || (args.mode === "check" && changed > 0)) process.exit(1);
+        if (!args.quiet) console.log(`\nSummary: ${changed} changed, ${unchanged} unchanged`);
+        if (args.mode === "check" && changed > 0) process.exit(1);
     } else {
         const result = await processFile(args.target, args.mode);
         if (result === "error") process.exit(1);
