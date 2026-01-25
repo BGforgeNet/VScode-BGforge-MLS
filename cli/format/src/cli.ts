@@ -28,19 +28,19 @@ import {
 import { initParser as initTp2Parser, getParser as getTp2Parser } from "../../../server/src/weidu-tp2/parser";
 import { getEditorconfigSettings } from "../../../server/src/shared/editorconfig";
 import { validateFormatting } from "../../../server/src/shared/format-utils";
-import { EXT_WEIDU_TP2 } from "../../../server/src/core/languages";
+import { EXT_FALLOUT_SSL, EXT_WEIDU_BAF, EXT_WEIDU_D, EXT_WEIDU_TP2 } from "../../../server/src/core/languages";
 import { parseCliArgs, runCli, safeProcess, reportDiff, FileResult, OutputMode } from "../../cli-utils";
 
 const DEFAULT_INDENT = 4;
-const EXTENSIONS = [".ssl", ".baf", ".d", ...EXT_WEIDU_TP2];
+const EXTENSIONS = [EXT_FALLOUT_SSL, EXT_WEIDU_BAF, EXT_WEIDU_D, ...EXT_WEIDU_TP2];
 
 type FileType = "ssl" | "baf" | "d" | "tp2";
 
 function getFileType(filePath: string): FileType | null {
     const ext = path.extname(filePath).toLowerCase();
-    if (ext === ".ssl") return "ssl";
-    if (ext === ".baf") return "baf";
-    if (ext === ".d") return "d";
+    if (ext === EXT_FALLOUT_SSL) return "ssl";
+    if (ext === EXT_WEIDU_BAF) return "baf";
+    if (ext === EXT_WEIDU_D) return "d";
     if ((EXT_WEIDU_TP2 as readonly string[]).includes(ext)) return "tp2";
     return null;
 }

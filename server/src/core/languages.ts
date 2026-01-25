@@ -6,6 +6,7 @@
 
 // Fallout languages
 export const LANG_FALLOUT_SSL = "fallout-ssl" as const;
+export const EXT_FALLOUT_SSL = ".ssl" as const;
 /** SSL header file extensions for file watching */
 export const EXT_FALLOUT_SSL_HEADERS = [".h"] as const;
 export const LANG_FALLOUT_SSL_TOOLTIP = "fallout-ssl-tooltip" as const;
@@ -22,14 +23,14 @@ export const EXT_TD = ".td" as const;
 
 // WeiDU languages
 export const LANG_WEIDU_TP2 = "weidu-tp2" as const;
-/** TP2 header file extension - defines shareable functions/macros */
-const EXT_WEIDU_TPH = ".tph" as const;
-/** TP2 file extensions for file watching */
-export const EXT_WEIDU_TP2 = [EXT_WEIDU_TPH, ".tpa", ".tpp", ".tp2"] as const;
+/** TP2 file extensions (.tph = headers with shareable functions/macros) */
+export const EXT_WEIDU_TP2 = [".tph", ".tpa", ".tpp", ".tp2"] as const;
 export const LANG_WEIDU_TP2_TOOLTIP = "weidu-tp2-tooltip" as const;
 export const LANG_WEIDU_TP2_TPL = "weidu-tp2-tpl" as const;
 export const LANG_WEIDU_BAF = "weidu-baf" as const;
+export const EXT_WEIDU_BAF = ".baf" as const;
 export const LANG_WEIDU_D = "weidu-d" as const;
+export const EXT_WEIDU_D = ".d" as const;
 export const LANG_WEIDU_D_TPL = "weidu-d-tpl" as const;
 export const LANG_WEIDU_SLB = "weidu-slb" as const;
 export const LANG_WEIDU_SSL = "weidu-ssl" as const;
