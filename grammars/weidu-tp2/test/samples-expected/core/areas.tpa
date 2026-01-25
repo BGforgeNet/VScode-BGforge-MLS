@@ -1,0 +1,18 @@
+PRINT ~Processing areas~
+
+// bad reference to progtest.bif
+DISABLE_FROM_KEY xr2400.are xr2600.are
+
+COPY_EXISTING_REGEXP GLOB ~^.+\.are$~ ~override~
+    SPRINT res ~%SOURCE_FILE%~
+    TO_LOWER res
+    PATCH_IF VARIABLE_IS_SET $custom_regex(~%res%~) BEGIN
+        SPRINT regex $custom_regex(~%res%~)
+    END ELSE BEGIN
+        SPRINT regex ~%common_regex%~
+    END
+    LPF DELETE_AREA_ITEM
+        STR_VAR
+            item_to_delete = ~%regex%~
+    END
+BUT_ONLY

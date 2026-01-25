@@ -1,0 +1,14 @@
+/*
+Helm of Charm protection on Ghost knights in Firewine.
+Undroppable, just keeping it for immunities.
+Not sure why BGT and EET rename the cre.
+knight2-5.cre are the same.
+*/ 
+
+OUTER_SPRINT ghost_knignt1 ~knight1~
+ACTION_IF GAME_IS ~bgt~ BEGIN
+    OUTER_SPRINT ghost_knignt1 ~bgknigh1~
+END
+ACTION_IF GAME_IS ~eet~ BEGIN
+    OUTER_SPRINT ghost_knignt1 ~knight1_~
+END

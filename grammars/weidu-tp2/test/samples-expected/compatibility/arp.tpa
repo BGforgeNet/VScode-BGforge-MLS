@@ -1,0 +1,9 @@
+// Almateria's restoration pack
+ACTION_IF MOD_IS_INSTALLED ~setup-arestorationp.tp2~ ~3~ BEGIN  // Restored items
+    PRINT ~Almateria's Restoration pack: Restored Items~
+    OUTER_SET $item_source(~boot08~ ~viekang.cre~) = 1  // Boots of Phasing  |  Viekang SoA
+    OUTER_SET $item_source(~boot08~ ~sarvie01.cre~) = 1  // Boots of Phasing  |  Viekang ToB
+    OUTER_SET $item_source(~boot10~ ~habib.cre~) = 1  // Boots of Lightning speed  |  Habib
+    OUTER_SET $item_source(~boot10~ ~habib2.cre~) = 1  // Boots of Lightning speed  |  Habib
+    OUTER_SPRINT ffbart_boot ~boot07~  // ARP compatibility, Thunderburp's boots for Mazzy
+END

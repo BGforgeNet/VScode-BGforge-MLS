@@ -2,14 +2,12 @@
  * SSL formatting for LSP.
  */
 
-import { Diagnostic, DiagnosticSeverity } from "vscode-languageserver/node";
 import { fileURLToPath } from "url";
 import { conlog } from "../common";
 import { FormatResult } from "../language-provider";
-import { getConnection } from "../lsp-connection";
 import { getIndentFromEditorconfig } from "../shared/editorconfig";
 import { createFullDocumentEdit } from "../shared/format-utils";
-import { formatDocument as formatAst, FormatOptions, FormatError } from "./format-core";
+import { formatDocument as formatAst, FormatOptions } from "./format-core";
 import { initParser, getParser, isInitialized } from "./parser";
 
 const DEFAULT_INDENT = 4;
@@ -31,18 +29,6 @@ function getFormatOptions(uri: string): FormatOptions {
     }
 }
 
-function formatErrorsToDiagnostics(errors: FormatError[]): Diagnostic[] {
-    return errors.map(err => ({
-        severity: DiagnosticSeverity.Error,
-        range: {
-            start: { line: err.line - 1, character: err.column - 1 },
-            end: { line: err.line - 1, character: err.column - 1 + 10 },
-        },
-        message: err.message,
-        source: "ssl-format",
-    }));
-}
-
 export function formatDocument(text: string, uri: string): FormatResult {
     if (!isInitialized()) {
         return { edits: [], warning: "SSL formatter not initialized" };
@@ -54,11 +40,15 @@ export function formatDocument(text: string, uri: string): FormatResult {
     }
 
     const options = getFormatOptions(uri);
-    const result = formatAst(tree.rootNode, options);
 
-    // Send format errors as diagnostics (empty array clears previous, fire-and-forget)
-    const diagnostics = formatErrorsToDiagnostics(result.errors);
-    void getConnection().sendDiagnostics({ uri, diagnostics });
+    let result;
+    try {
+        result = formatAst(tree.rootNode, options);
+    } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err);
+        conlog(`SSL formatter error: ${msg}`);
+        return { edits: [], warning: `SSL formatter error: ${msg}` };
+    }
 
     return { edits: createFullDocumentEdit(text, result.text) };
 }

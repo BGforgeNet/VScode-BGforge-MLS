@@ -1,0 +1,7 @@
+COPY_EXISTING ~clck02.itm~ ~override~
+    SAY DESC @105
+BUT_ONLY
+
+COPY_EXISTING ~ring07.itm~ ~override~
+    SAY DESC @106
+BUT_ONLY

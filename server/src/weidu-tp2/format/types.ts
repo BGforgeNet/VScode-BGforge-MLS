@@ -18,27 +18,17 @@ export const DEFAULT_OPTIONS: FormatOptions = {
 
 export interface FormatResult {
     text: string;
-    errors: FormatError[];
-}
-
-/** Reserved for future use - format errors will be reported here when error recovery is implemented. */
-export interface FormatError {
-    message: string;
-    line: number;
-    column: number;
 }
 
 export interface FormatContext {
     indent: string;
     lineLimit: number;
     indentSize: number;
-    /** Collected errors during formatting. */
-    errors: FormatError[];
 }
 
-/** Add a formatting error to the context. */
-export function addFormatError(ctx: FormatContext, message: string, line: number, column: number): void {
-    ctx.errors.push({ message, line, column });
+/** Abort formatting with a descriptive error including source location. */
+export function throwFormatError(message: string, line: number, column: number): never {
+    throw new Error(`${line}:${column}: ${message}`);
 }
 
 // ============================================
@@ -142,6 +132,9 @@ export const CONTROL_FLOW_TYPES = [
     "action_outer_inner_patch_save",
     // Patches with BEGIN...END body
     "patch_decompile_and_patch",
+    "patch_replace_evaluate",
+    // Actions with BEGIN...END body
+    "action_with_tra",
     // FOR_EACH types
     ...FOR_EACH_TYPES,
 ] as const;

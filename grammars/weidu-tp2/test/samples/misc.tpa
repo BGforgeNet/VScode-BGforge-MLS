@@ -1,0 +1,62 @@
+DEFINE_ACTION_FUNCTION IS_ITEM_GIVEN_OR_CREATED_IN_DIALOG_OR_SCRIPT
+  STR_VAR
+    item = ~~
+    filename = ~~
+  RET present
+BEGIN
+  COPY_EXISTING ~%filename%~ ~override~
+    present = 0
+    DECOMPILE_AND_PATCH BEGIN
+      PATCH_IF
+        INDEX_BUFFER (CASE_INSENSITIVE EXACT_MATCH ~GiveItem("%item%"~) != "-1"
+        OR INDEX_BUFFER (CASE_INSENSITIVE EXACT_MATCH ~GiveItemCreate("%item%"~) != "-1"
+        OR INDEX_BUFFER (CASE_INSENSITIVE EXACT_MATCH ~CreateItem("%item%"~) != "-1"
+        OR INDEX_BUFFER (CASE_INSENSITIVE EXACT_MATCH ~CreateItemGlobal("%item%"~) != "-1"
+        OR INDEX_BUFFER (CASE_INSENSITIVE EXACT_MATCH ~CreateItemNumGlobal("%item%"~) != "-1"
+        OR INDEX_BUFFER (CASE_INSENSITIVE EXACT_MATCH ~TakeItemReplace("%item%"~) != "-1"
+      BEGIN present = 1 END
+    END
+  BUT_ONLY
+END
+
+DEFINE_ACTION_FUNCTION IS_ITEM_IN_RESOURCE
+  STR_VAR
+    item = ~~
+    resource = ~~
+  RET present
+BEGIN
+  OUTER_SET present = 0
+  OUTER_PATCH_SAVE file_res ~%resource%~ BEGIN
+    REPLACE_TEXTUALLY CASE_INSENSITIVE ~\.are$\|\.bcs$\|\.dlg$\|\.cre$\|\.sto$~ ~~
+  END
+  ACTION_IF ("%resource%" STRING_MATCHES_REGEXP ".*\.are$" = 0) BEGIN
+    LAF IS_ITEM_IN_AREA
+      STR_VAR item = ~%item%~ area = ~%file_res%~
+      RET present
+    END
+  END
+  ACTION_IF ("%resource%" STRING_MATCHES_REGEXP ".*\.cre$" = 0) BEGIN
+    LAF IS_ITEM_ON_CREATURE
+      STR_VAR item = ~%item%~ creature = ~%file_res%~
+      RET present
+    END
+  END
+  ACTION_IF ("%resource%" STRING_MATCHES_REGEXP ".*\.sto$" = 0) BEGIN
+    LAF IS_ITEM_IN_STORE
+      STR_VAR item = ~%item%~ store = ~%file_res%~
+      RET present = present
+    END
+  END
+  ACTION_IF ("%resource%" STRING_MATCHES_REGEXP ".*\.bcs$" = 0) BEGIN
+    LAF IS_ITEM_GIVEN_OR_CREATED_IN_SCRIPT
+      STR_VAR item = ~%item%~ script = ~%file_res%~
+      RET present = present
+    END
+  END
+  ACTION_IF ("%resource%" STRING_MATCHES_REGEXP ".*\.dlg$" = 0) BEGIN
+    LAF IS_ITEM_GIVEN_OR_CREATED_IN_DIALOG
+      STR_VAR item = ~%item%~ dialog = ~%file_res%~
+      RET present = present
+    END
+  END
+END

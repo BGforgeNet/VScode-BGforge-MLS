@@ -1,0 +1,14 @@
+SECTYPE_none = 0
+SECTYPE_spell_protections = 1
+SECTYPE_specific_protections = 2
+SECTYPE_illusionary_protections = 3
+SECTYPE_magic_attack = 4
+SECTYPE_divination_attack = 5
+SECTYPE_conjuration = 6
+SECTYPE_combat_protections = 7
+SECTYPE_contingency = 8
+SECTYPE_battleground = 9
+SECTYPE_offensive_damage = 10
+SECTYPE_disabling = 11
+SECTYPE_combination = 12
+SECTYPE_non_combat = 13

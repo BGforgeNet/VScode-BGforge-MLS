@@ -13,7 +13,8 @@ import {
     KW_IF_EXISTS,
     KW_UNLESS,
     KW_IF,
-    addFormatError,
+    INLINE_COMMENT_SPACING,
+    throwFormatError,
 } from "./types";
 import {
     isComment,
@@ -35,6 +36,8 @@ import { SyntaxType } from "../tree-sitter.d";
 interface CopyActionParts {
     keyword: string;
     filePairs: string[];
+    /** Inline comment on the header line (same row as last file pair). */
+    headerComment: string;
     patches: SyntaxNode[];
     suffix: string[];
 }
@@ -145,32 +148,51 @@ function parseCopyAction(node: SyntaxNode): CopyActionParts {
     const parts: CopyActionParts = {
         keyword: "",
         filePairs: [],
+        headerComment: "",
         patches: [],
         suffix: [],
     };
 
     let inPatchArea = false;
+    let lastHeaderRow = -1;
 
     for (const child of node.children) {
         // File pairs
         if (isFilePairType(child.type)) {
             parts.filePairs.push(normalizeWhitespace(child.text));
+            lastHeaderRow = child.endPosition.row;
             continue;
         }
 
         // Keyword detection
         if (child.type === SyntaxType.Identifier && !parts.keyword) {
             parts.keyword = child.text;
+            lastHeaderRow = child.endPosition.row;
             continue;
         }
         if (child.text.startsWith("COPY") || child.text === "INNER_ACTION") {
             parts.keyword = child.text;
+            lastHeaderRow = child.endPosition.row;
             continue;
         }
 
         // COPY flags (GLOB, NOGLOB, +, -) - must come before file pairs
         if (parts.keyword && parts.filePairs.length === 0 && isCopyFlag(child.text)) {
             parts.keyword += " " + child.text;
+            lastHeaderRow = child.endPosition.row;
+            continue;
+        }
+
+        // Inline comment on the header line
+        if (isComment(child) && !inPatchArea && lastHeaderRow >= 0 && child.startPosition.row === lastHeaderRow) {
+            if (parts.filePairs.length > 0) {
+                // Attach to the specific file pair it's on
+                const idx = parts.filePairs.length - 1;
+                parts.filePairs[idx] = parts.filePairs[idx] + INLINE_COMMENT_SPACING + normalizeComment(child.text);
+            } else {
+                // Comment on keyword line
+                parts.headerComment = normalizeComment(child.text);
+            }
             continue;
         }
 
@@ -228,7 +250,7 @@ function parseCopyAction(node: SyntaxNode): CopyActionParts {
 // COPY action formatting
 // ============================================
 
-/** Format the header (keyword + file pairs). */
+/** Format the header (keyword + file pairs), with optional inline comment. */
 function formatCopyHeader(parts: CopyActionParts, indent: string, patchIndent: string, lineLimit: number): string[] {
     const lines: string[] = [];
 
@@ -247,6 +269,11 @@ function formatCopyHeader(parts: CopyActionParts, indent: string, patchIndent: s
         for (const pair of parts.filePairs) {
             lines.push(patchIndent + pair);
         }
+    }
+
+    // Append inline header comment to keyword line (first line)
+    if (parts.headerComment && lines.length > 0) {
+        lines[0] = lines[0] + INLINE_COMMENT_SPACING + parts.headerComment;
     }
 
     return lines;
@@ -282,7 +309,11 @@ function formatCopyPatches(
             lines.push(patchIndent + KW_BEGIN);
             let lastBlockPatchEndRow = -1;
             for (const patchChild of patch.children) {
-                if (isKeyword(patchChild, KW_BEGIN) || isKeyword(patchChild, KW_END)) {
+                if (isKeyword(patchChild, KW_BEGIN)) {
+                    lastBlockPatchEndRow = patchChild.startPosition.row;
+                    continue;
+                }
+                if (isKeyword(patchChild, KW_END)) {
                     continue;
                 }
                 if (isComment(patchChild)) {
@@ -347,12 +378,12 @@ export function formatCopyAction(
 
     // Report if COPY action has no keyword (malformed)
     if (!parts.keyword) {
-        addFormatError(ctx, `COPY action missing keyword`, node.startPosition.row + 1, node.startPosition.column + 1);
+        throwFormatError(`COPY action missing keyword`, node.startPosition.row + 1, node.startPosition.column + 1);
     }
 
     // Report if COPY action has no file pairs (likely malformed)
     if (parts.filePairs.length === 0 && parts.patches.length === 0) {
-        addFormatError(ctx, `COPY action '${parts.keyword}' has no file pairs`, node.startPosition.row + 1, node.startPosition.column + 1);
+        throwFormatError(`COPY action '${parts.keyword}' has no file pairs`, node.startPosition.row + 1, node.startPosition.column + 1);
     }
 
     const headerLines = formatCopyHeader(parts, indent, patchIndent, ctx.lineLimit);

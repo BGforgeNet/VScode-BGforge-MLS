@@ -1,0 +1,5 @@
+ACTION_IF MOD_IS_INSTALLED ~bg1npc.tp2~ (ID_OF_LABEL ~bg1npc.tp2~ ~bg1npc_project-banters_quests_interjections~) BEGIN
+    PRINT ~BG1NPC~
+    // BG1NPC adds Garrick interjection to Hentold, dagger is given from Garrick's dialog
+    OUTER_SET $item_source_compat(~dagg03~ ~garrij.dlg~) = 1
+END

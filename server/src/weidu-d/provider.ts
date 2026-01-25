@@ -80,7 +80,15 @@ export const weiduDProvider: LanguageProvider = {
         }
 
         const options = getFormatOptions(uri);
-        const result = formatAst(tree.rootNode, options);
+
+        let result;
+        try {
+            result = formatAst(tree.rootNode, options);
+        } catch (err) {
+            const msg = err instanceof Error ? err.message : String(err);
+            conlog(`D formatter error: ${msg}`);
+            return { edits: [], warning: `D formatter error: ${msg}` };
+        }
 
         const validationError = validateFormatting(text, result.text);
         if (validationError) {

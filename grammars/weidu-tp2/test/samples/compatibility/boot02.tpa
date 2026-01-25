@@ -1,0 +1,47 @@
+/*
+- Hobgoblin with Boots of Stealth appears in Trade Way North and Ulcaster, removing the one from TWN.
+- BGEE/EET version handled separately, because Beamdog created a separate pair for boots just for that quest.
+- Only when installing Expanded option.
+- Removing actor from area is harder, it has no unique name. Using script solution instead.
+*/
+
+// area script
+<<<<<<<< .../ua-inlined/SouthBeregostRoad.baf
+  IF
+    Global("g_hobgzhur_destroyed", "MYAREA", 0)
+  THEN
+    RESPONSE #1
+        ActionOverride("hobgzhur", DestroySelf())
+        SetGlobal("g_hobgzhur_destroyed", "MYAREA", 1)
+  END
+>>>>>>>>
+
+
+ACTION_IF GAME_INCLUDES ~bg1~ AND expanded == 1 BEGIN
+
+    // Only the one at TWN gets destroyed
+    EXTEND_TOP ~%SouthBeregostRoad_BCS%.bcs~ ~.../ua-inlined/SouthBeregostRoad.baf~
+
+    // original cre had no death var
+    ACTION_IF GAME_IS ~bgt~ BEGIN
+      COPY_EXISTING ~hobgzhur.cre~ ~override~
+          WRITE_ASCIIT CRE_script_name ~hobgzhur~
+      BUT_ONLY
+    END
+
+    // BGEE replaces boot02 with a special version, we're reverting it back
+    ACTION_IF GAME_IS ~bgee eet~ BEGIN
+        // item on cre
+        COPY_EXISTING ~hobgzhur.cre~ ~override~
+            LPF REPLACE_CRE_ITEM_MATCH STR_VAR match_item = ~boot02zh~ new_item = ~boot02~ END
+        BUT_ONLY
+
+        // revert Zhurlong's dialog to BG1 behaviour, Zhurlong will accept any Boots of Stealth
+        COPY_EXISTING ~zhurlo.dlg~ ~override~
+            DECOMPILE_AND_PATCH BEGIN
+                REPLACE_TEXTUALLY CASE_INSENSITIVE EXACT_MATCH ~boot02zh~ ~boot02~
+            END
+        BUT_ONLY
+    END
+
+END

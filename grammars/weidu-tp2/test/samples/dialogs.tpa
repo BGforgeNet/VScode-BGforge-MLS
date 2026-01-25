@@ -1,0 +1,8 @@
+DEFINE_ACTION_FUNCTION IS_ITEM_GIVEN_OR_CREATED_IN_DIALOG
+  STR_VAR
+    item = ~~
+    dialog = ~~
+  RET present
+BEGIN
+  LAF IS_ITEM_GIVEN_OR_CREATED_IN_DIALOG_OR_SCRIPT STR_VAR item = ~%item%~ filename = ~%dialog%.dlg~ RET present END
+END

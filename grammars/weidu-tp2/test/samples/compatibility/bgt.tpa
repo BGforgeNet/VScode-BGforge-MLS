@@ -1,0 +1,9 @@
+// BGT allows extra imports
+// https://github.com/SpellholdStudios/BGT-WeiDU/blob/9c1130db43b346678e102e1be61f32eabaa480a4/bgt/compat/bgt/replace/xar0602.baf#L646
+ACTION_IF GAME_IS ~bgt~ BEGIN
+  PRINT ~BGT~
+  // Claw of Kazgaroth
+  OUTER_SET $item_source_compat(~misc72~ ~ar0602.bcs~) = 1
+  // Protector of the second
+  OUTER_SET $item_source_compat(~leat03~ ~ar0602.bcs~) = 1
+END

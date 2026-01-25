@@ -1,0 +1,61 @@
+/** @tra setup.tra */
+BACKUP ~wildmage/backup~
+AUTHOR ~https: // forums.bgforge.net/viewforum.php?f=29~
+VERSION ~v2.4~
+NO_IF_EVAL_BUG
+AUTO_EVAL_STRINGS
+
+ALWAYS
+    ACTION_IF GAME_IS ~bgee bg2ee eet iwdee pstee~ BEGIN
+        OUTER_SPRINT lang_dir ~%MOD_FOLDER%/tra_ee/%LANGUAGE%~
+    END ELSE BEGIN
+        OUTER_SPRINT lang_dir ~%MOD_FOLDER%/tra/%LANGUAGE%~
+    END
+    LOAD_TRA ~%lang_dir%/text.tra~
+    ACTION_IF GAME_IS ~bgee bg2ee eet iwdee pstee~ BEGIN
+        LOAD_TRA ~%lang_dir%/text_ee.tra~
+    END
+    OUTER_SPRINT BGFORGE_LIB_DIR "%MOD_FOLDER%/lib/bgforge"
+    INCLUDE ~%BGFORGE_LIB_DIR%/main.tpa~
+END
+
+LANGUAGE ~English~ ~english~ ~wildmage/tra/english/setup.tra~
+LANGUAGE ~Deutsch~ ~german~ ~wildmage/tra/german/setup.tra~
+LANGUAGE ~Francais (d'Oghmatiques)~ ~french~ ~wildmage/tra/french/setup.tra~
+LANGUAGE ~Polski (Maciek F)~ ~polish~ ~wildmage/tra/polish/setup.tra~
+LANGUAGE ~Brazilian Portuguese~ ~portuguese~ ~wildmage/tra/portuguese/setup.tra~
+LANGUAGE ~Russian (aerie.ru)~ ~russian~ ~wildmage/tra/russian/setup.tra~
+LANGUAGE ~Swedish~ ~swedish~ ~wildmage/tra/swedish/setup.tra~
+LANGUAGE ~Simplified Chinese~ ~schinese~ ~wildmage/tra/schinese/setup.tra~
+
+BEGIN @60  // Ironman
+SUBCOMPONENT @1  // New Wild Magic Spells
+REQUIRE_PREDICATE ENGINE_IS ~tob bgee bg2ee eet iwdee~ @62  // Only ToB or EE engine supported
+OUTER_SET pansy = 0
+INCLUDE ~%MOD_FOLDER%/wild_spells/main.tpa~
+
+BEGIN @61  // Haughty pansy
+SUBCOMPONENT @1
+REQUIRE_PREDICATE ENGINE_IS ~tob bgee bg2ee eet iwdee~ @62  // Only ToB or EE engine supported
+REQUIRE_PREDICATE GAME_INCLUDES ~bg1~ @65  // Requires BG1 content
+OUTER_SET pansy = 1
+INCLUDE ~%MOD_FOLDER%/wild_spells/main.tpa~
+
+BEGIN @66  // Retain Rhialto's items
+REQUIRE_PREDICATE FILE_EXISTS_IN_GAME "wm_rhia1.cre" @20  // You must have "New Wild Magic Spells" installed!
+INCLUDE ~%MOD_FOLDER%/rhialto_items/main.tpa~
+
+BEGIN @63  // Original avatar
+SUBCOMPONENT @2  // Spellshaper kit
+REQUIRE_PREDICATE FILE_EXISTS_IN_GAME "wm_rhia1.cre" @20  // You must have "New Wild Magic Spells" installed!
+OUTER_SET avatar = 0
+INCLUDE ~%MOD_FOLDER%/shaper_kit/main.tpa~
+
+BEGIN @64  // Changed avatar
+SUBCOMPONENT @2
+REQUIRE_PREDICATE FILE_EXISTS_IN_GAME "wm_rhia1.cre" @20
+OUTER_SET avatar = 1
+INCLUDE ~%MOD_FOLDER%/shaper_kit/main.tpa~
+
+BEGIN @4  // Misc Spell Modifications
+COPY ~%MOD_FOLDER%/misc_spells/copy~ ~override~

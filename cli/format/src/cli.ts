@@ -9,7 +9,6 @@ import * as path from "path";
 import {
     formatDocument as formatSslDocument,
     FormatOptions as SslFormatOptions,
-    FormatError,
 } from "../../../server/src/fallout-ssl/format-core";
 import { initParser as initSslParser, getParser as getSslParser } from "../../../server/src/fallout-ssl/parser";
 import {
@@ -46,12 +45,6 @@ function getFileType(filePath: string): FileType | null {
     return null;
 }
 
-function printErrors(filePath: string, errors: FormatError[]): void {
-    for (const err of errors) {
-        console.error(`${filePath}:${err.line}:${err.column}: ${err.message}`);
-    }
-}
-
 function getFormatOptions(filePath: string): { indentSize: number; lineLimit: number } {
     const config = getEditorconfigSettings(filePath);
     return {
@@ -70,7 +63,7 @@ async function processFile(filePath: string, mode: OutputMode): Promise<FileResu
 
         const text = fs.readFileSync(filePath, "utf-8");
         const opts = getFormatOptions(path.resolve(filePath));
-        let result: { text: string; errors: FormatError[] };
+        let result: { text: string };
 
         if (fileType === "ssl") {
             const tree = getSslParser().parse(text);
@@ -92,10 +85,6 @@ async function processFile(filePath: string, mode: OutputMode): Promise<FileResu
             if (!tree) { console.error(`Error: Failed to parse ${filePath}`); return "error"; }
             const options: Tp2FormatOptions = { indentSize: opts.indentSize, lineLimit: opts.lineLimit };
             result = formatTp2Document(tree.rootNode, options);
-        }
-
-        if (result.errors.length > 0) {
-            printErrors(filePath, result.errors);
         }
 
         const validationError = validateFormatting(text, result.text);

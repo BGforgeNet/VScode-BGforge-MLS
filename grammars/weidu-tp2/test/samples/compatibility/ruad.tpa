@@ -1,0 +1,17 @@
+// Ruad item upgrade - forbid RoP+1 upgrade to +2 when RoP+2 is unique
+<<<<<<<< .../ua-inlined/ruad.d
+REPLACE_TRANS_TRIGGER m#ruad BEGIN 5 END BEGIN END
+  ~PartyHasItem("ring06")~
+  ~False()~
+>>>>>>>>
+ACTION_IF (FILE_EXISTS_IN_GAME ~m#ruad.dlg~) BEGIN
+  PRINT ~Ruad Ro'fhessa~
+  ACTION_IF MOD_IS_INSTALLED ~ua.tp2~ (ID_OF_LABEL ~ua.tp2~ ~g_ua_allow+2~) BEGIN
+    COPY_EXISTING ~ring07.itm~ ~override~ // adjust RoP+2 desc
+      SAY DESC @106
+    BUT_ONLY
+  END ELSE BEGIN
+    OUTER_SET offending_state = STATE_WHICH_SAYS 3007 IN ~ruad/lang/%s/ruad.tra~ FROM ~m#ruad.dlg~  // Just tell me what you have, and I'll tell you if it can be made better.
+    COMPILE EVAL ~.../ua-inlined/ruad.d~ //Make ring +1 branch always false
+  END
+END

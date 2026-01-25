@@ -1,0 +1,16 @@
+// Rogue Rebalancing 3.8+
+ACTION_IF (FILE_EXISTS_IN_GAME ~rr#guara.itm~) BEGIN // "additional equipment" - Short Sword of Backstabbing
+  PRINT ~Rogue Rebalancing: Additional equipment for Thieves and Bards~
+  OUTER_SET $item_source_compat(~sw1h10~ ~aran02.cre~) = 1 // Aran, non-STI version
+  OUTER_SET $item_source_compat(~sw1h10~ ~renal.cre~) = 0  // Renal
+  OUTER_SET $item_source_compat(~sw1h10~ ~renal.dlg~) = 0
+END
+
+ACTION_IF (FILE_EXISTS_IN_GAME ~rr#stf01.bcs~) BEGIN // Shadow Thief improvements
+  PRINT ~Rogue Rebalancing: Shadow Thief improvements~
+  OUTER_SET $item_source_compat(~sw1h10~ ~aran02.cre~) = 1 // Aran, STI version - SSoB
+  OUTER_SET $item_source_compat(~sw1h10~ ~renal.cre~) = 0  // Renal
+  OUTER_SET $item_source_compat(~sw1h10~ ~renal.dlg~) = 0
+  OUTER_SET $item_source_compat(~dagg03~ ~c6arkan.cre~) = 0 // by Ch6, no one will remember about the Heart of the Golem, anyway
+  OUTER_SET $item_source_compat(~dagg03~ ~c6arkan3.cre~) = 0 // by Ch6, no one will remember about the Heart of the Golem, anyway
+END

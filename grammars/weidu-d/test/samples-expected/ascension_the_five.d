@@ -26,7 +26,6 @@ END
 // ///////////////////////////////
 
 APPEND_EARLY finmel01 // APPEND_EARLY just because we APPEND_EARLY some other stuff and it's good to keep the logical order
-    // APPEND_EARLY just because we APPEND_EARLY some other stuff and it's good to keep the logical order
 
     IF ~Global("FinalFight","AR6200",6)Global("TheFiveAreHere","AR6200",1)~ THEN BEGIN mel_five_here
         SAY @616 /* ~I was going to resurrect them anyway, to serve as my conquering avatars.  And I prefer them far better this way...completely servile, obeying every order without question.~ #74355 */
@@ -66,7 +65,6 @@ END
 // end of APPEND
 
 APPEND balth2 // the line Balthazar speaks in the above
-    // the line Balthazar speaks in the above
 
     IF ~~ THEN BEGIN balth_line
         SAY @1008 /* ~You are a fool, Melissan.  You should have kept what divine energy you had for yourself and not spread it amongst such servants.  It will prove your doom.~  */

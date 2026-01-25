@@ -1,0 +1,33 @@
+DEFINE_PATCH_FUNCTION REPLACE_CRE_ITEM_MATCH
+  STR_VAR match_item = ~~ new_item = ~~
+BEGIN
+  GET_OFFSET_ARRAY item_offs CRE_V10_ITEMS
+  PHP_EACH item_offs AS int => ioff BEGIN
+    READ_ASCII ioff name (8) NULL
+    PATCH_IF ~%name%~ STR_EQ ~%match_item%~ BEGIN
+      WRITE_ASCII ioff ~%new_item%~ #8
+    END
+  END
+END
+
+DEFINE_ACTION_FUNCTION IS_ITEM_ON_CREATURE
+  STR_VAR
+    item = ~~
+    creature = ~~
+  RET present
+BEGIN
+  COPY_EXISTING ~%creature%.cre~ ~override~
+    present = 0
+    GET_OFFSET_ARRAY item_offs CRE_V10_ITEMS
+    PHP_EACH item_offs AS int => i_off BEGIN
+      READ_ASCII i_off item_name
+      PATCH_IF ~%item%~ STR_EQ ~%item_name%~ BEGIN
+        present = 1
+      END
+    END
+  BUT_ONLY IF_EXISTS
+  ACTION_IF NOT FILE_EXISTS_IN_GAME ~%creature%.cre~ BEGIN
+    WARN ~IS_ITEM_ON_CREATURE: creature %creature% is not present in game~
+    OUTER_SET present = "-1"
+  END
+END

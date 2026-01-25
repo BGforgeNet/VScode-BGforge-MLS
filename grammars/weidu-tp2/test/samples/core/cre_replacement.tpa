@@ -1,0 +1,7 @@
+COPY - ~%MOD_FOLDER%/items/replacement.2da~ ~%MOD_FOLDER%-inlined/items/replacement.2da~
+  READ_2DA_ENTRIES_NOW repl 2
+  FOR (i=1;i<repl;++i) BEGIN
+    READ_2DA_ENTRY_FORMER repl i 0 old_item
+    READ_2DA_ENTRY_FORMER repl i 1 new_item
+    SPRINT $replacement(~%old_item%~) ~%new_item%~
+  END

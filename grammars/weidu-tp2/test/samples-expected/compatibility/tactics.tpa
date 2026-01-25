@@ -1,0 +1,8 @@
+// Tactics - Cloak of Balduran on lich in the docs
+ACTION_IF (FILE_EXISTS_IN_GAME ~gblich01.cre~) BEGIN
+    PRINT ~Tactics: Gebhard Blucher's Lich in the Docks~
+    OUTER_SET $item_source_compat(~clck05~ ~gblich01.cre~) = 1
+    ACTION_IF (FILE_EXISTS_IN_GAME ~d1potcas.itm~) BEGIN  // Daulmakan - extra items
+        OUTER_SET $item_source_compat(~clck05~ ~ar0602.bcs~) = 0  // disable Daulmakan's Cloak of Balduran in Chateau Irenicus
+    END
+END

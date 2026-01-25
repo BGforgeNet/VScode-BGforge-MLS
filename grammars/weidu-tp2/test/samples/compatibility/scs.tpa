@@ -1,0 +1,17 @@
+// Sword Coast Stratagems
+ACTION_IF GAME_INCLUDES ~bg2~ BEGIN
+  // Robe of Vecna moved to Azamantes, the lich guardian of the Seal of the Imprisoned One.
+  LAF IS_ITEM_ON_CREATURE STR_VAR creature = ~gorlic01~ item = ~wa2robe~ RET present END
+  ACTION_IF present == 1 BEGIN
+    PRINT ~Sword Coast Stratagems: Move or modify some overpowered magic items - Robe of Vecna~
+    OUTER_SET $item_source_compat(~wa2robe~ ~gorlic01.cre~) = 1
+    OUTER_SET $item_source_compat(~wa2robe~ ~wmart2.sto~) = 0
+  END
+  // The Cloak of Mirroring is now worn by Vongoethe, the lich in Amkethran.
+  LAF IS_ITEM_ON_CREATURE STR_VAR creature = ~demilich~ item = ~clck26~ RET present END
+  ACTION_IF present == 1 BEGIN
+    PRINT ~Sword Coast Stratagems: Move or modify some overpowered magic items - Cloak of Mirroring~
+    OUTER_SET $item_source_compat(~clck26~ ~demilich.cre~) = 1
+    OUTER_SET $item_source_compat(~clck26~ ~sahramb3.cre~) = 0
+  END
+END

@@ -13,7 +13,8 @@ import {
     KW_LAF,
     KW_LPM,
     KW_LAM,
-    addFormatError,
+    INLINE_COMMENT_SPACING,
+    throwFormatError,
 } from "./types";
 import {
     isComment,
@@ -194,6 +195,7 @@ export function formatFunctionDef(
     let defLine = "";
     let inBody = false;
     let lastEndRow = -1;
+    let lastDefRow = -1;
     let hasBegin = false;
     let hasEnd = false;
 
@@ -207,6 +209,7 @@ export function formatFunctionDef(
             }
             lines.push(indent + KW_BEGIN);
             inBody = true;
+            lastEndRow = child.startPosition.row;
             continue;
         }
 
@@ -219,6 +222,9 @@ export function formatFunctionDef(
         if (isComment(child)) {
             if (inBody) {
                 handleComment(lines, child, bodyIndent, lastEndRow);
+            } else if (defLine && lastDefRow >= 0 && child.startPosition.row === lastDefRow) {
+                // Inline comment on same line as DEFINE_* header
+                defLine += INLINE_COMMENT_SPACING + normalizeComment(child.text);
             } else {
                 if (defLine) {
                     lines.push(indent + defLine);
@@ -244,8 +250,10 @@ export function formatFunctionDef(
                 lines.push(...formatParamDecl(child, bodyIndent, ctx));
             } else if (child.text.startsWith("DEFINE_")) {
                 defLine = child.text;
+                lastDefRow = child.endPosition.row;
             } else if (child.type === SyntaxType.Identifier || child.type === SyntaxType.String) {
                 defLine = defLine ? defLine + " " + child.text : child.text;
+                lastDefRow = child.endPosition.row;
             }
         }
     }
@@ -256,10 +264,10 @@ export function formatFunctionDef(
 
     // Report structural issues
     if (!hasBegin) {
-        addFormatError(ctx, `Function definition missing BEGIN`, node.startPosition.row + 1, node.startPosition.column + 1);
+        throwFormatError(`Function definition missing BEGIN`, node.startPosition.row + 1, node.startPosition.column + 1);
     }
     if (!hasEnd) {
-        addFormatError(ctx, `Function definition missing END`, node.startPosition.row + 1, node.startPosition.column + 1);
+        throwFormatError(`Function definition missing END`, node.startPosition.row + 1, node.startPosition.column + 1);
     }
 
     return lines.join("\n");
@@ -305,7 +313,7 @@ export function formatFunctionCall(node: SyntaxNode, ctx: FormatContext, depth: 
             if (lastChildEndRow >= 0 && child.startPosition.row === lastChildEndRow && lines.length > 0) {
                 const lastLine = lines[lines.length - 1];
                 if (lastLine !== undefined && !lastLine.includes("//")) {
-                    lines[lines.length - 1] = lastLine + "  " + normalizeComment(child.text);
+                    lines[lines.length - 1] = lastLine + INLINE_COMMENT_SPACING + normalizeComment(child.text);
                     continue;
                 }
             }
@@ -346,9 +354,10 @@ export function formatFunctionCall(node: SyntaxNode, ctx: FormatContext, depth: 
         lines.push(indent + callLine);
     }
 
-    // Report structural issues
-    if (!hasEnd) {
-        addFormatError(ctx, `Function call '${callKeyword}' missing END`, node.startPosition.row + 1, node.startPosition.column + 1);
+    // Report structural issues (launch macros don't have END, only launch functions do)
+    const isMacro = node.type === "action_launch_macro" || node.type === "patch_launch_macro";
+    if (!hasEnd && !isMacro) {
+        throwFormatError(`Function call '${callKeyword}' missing END`, node.startPosition.row + 1, node.startPosition.column + 1);
     }
 
     return lines.join("\n");

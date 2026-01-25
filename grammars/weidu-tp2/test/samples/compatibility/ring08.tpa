@@ -1,0 +1,21 @@
+// ring of wizardry is different in Trilogy, handling it separately
+ACTION_IF GAME_INCLUDES ~bg1~ AND NOT GAME_IS ~bgt eet~ BEGIN
+  OUTER_SET $item_source("ring08" ~sunin.cre~) = 1
+  PRINT ~Ring of Wizardry - BG1/EE~
+END
+
+ACTION_IF GAME_IS ~bgt~ BEGIN
+  OUTER_SET $item_source("bgring08" ~sunin.cre~) = 1
+  PRINT ~Ring of Wizardry - BG1(BGT)~
+END
+
+ACTION_IF GAME_IS ~eet~ BEGIN
+  OUTER_SET $item_source("ring08_" ~sunin.cre~) = 1
+  PRINT ~Ring of Wizardry - BG1(EET)~
+END
+
+ACTION_IF GAME_INCLUDES ~bg2~ BEGIN
+  PRINT ~Ring of Wizardry - BG2~
+  OUTER_SET $item_source("ring08" ~ar0411.bcs~) = 1  // mage stronghold (if all apprentices die)
+  OUTER_SET $item_source("ring08" ~mgappr02.dlg~) = 1  // mage stronghold (if Morul lives)
+END

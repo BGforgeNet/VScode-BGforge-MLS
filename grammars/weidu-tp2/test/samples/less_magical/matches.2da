@@ -1,0 +1,122 @@
+//order_is_important_replacements_should_always_go_lower_than_items_being_replaced
+//otherwise_they_will_get_deleted_or_replaced_again
+
+arow02 none
+arow11 arow02
+arow15 arow11
+arow1a arow02
+
+ax1h02 none
+ax1h03 ax1h02
+ax1h05 none
+ax1h06 ax1h05
+ax1h11 ax1h02
+ax1h17 ax1h11
+
+blun03 none
+blun05 none
+blun07 none
+blun11 blun05
+blun13 blun03
+blun15 blun07
+blun31 none
+blun32 blun13
+blun33 blun21
+blun34 blun15
+
+bolt02 none
+bolt06 bolt02
+bolt09 bolt06
+
+bow02 none
+bow04 none
+bow06 none
+bow16 bow02
+bow17 bow04
+bow18 bow06
+bow24 bow16
+bow25 bow17
+bow26 bow18
+
+brac01 none
+brac02 brac01
+
+bull02 none
+bull03 bull02
+bull05 bull03
+bull06 bull05
+
+chan02 none
+chan05 none
+chan07 chan08
+chan08 chan02
+
+dagg02 none
+dagg15 dagg02
+dagg24 dagg15
+
+halb02 none
+halb07 halb02
+halb12 halb07
+
+hamm02 none
+hamm08 hamm02
+hamm12 hamm08
+
+leat02 none
+leat05 none
+leat07 leat05
+leat11 leat02
+leat12 leat11
+leat15 leat05
+
+plat05 none
+plat10 none
+plat23 plat05
+
+shld02 none
+shld04 none
+shld06 none
+shld17 none
+shld28 shld02
+shld29 shld04
+shld30 shld06
+
+slng02 none
+slng04 slng02
+slng10 slng04
+
+sper02 none
+sper05 sper02
+sper06 sper05
+
+staf02 none
+staf18 staf02
+staf24 staf18
+
+sw1h02 none
+sw1h05 none
+sw1h08 none
+sw1h09 sw1h08
+sw1h14 none
+sw1h22 none
+sw1h44 none
+sw1h47 none
+sw1h49 none
+sw1h55 sw1h44
+sw1h72 sw1h02
+sw1h73 sw1h41
+sw1h74 sw1h09
+sw1h75 sw1h55
+sw1h76 sw1h22
+
+sw2h02 none
+sw2h11 sw2h02
+sw2h20 sw2h11
+
+xbow02 none
+xbow05 none
+xbow07 xbow02
+xbow09 xbow05
+xbow17 xbow07
+xbow18 xbow09

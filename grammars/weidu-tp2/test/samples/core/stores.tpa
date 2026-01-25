@@ -1,0 +1,18 @@
+PRINT ~Processing stores~
+
+COPY_EXISTING_REGEXP GLOB ~^.+\.sto$~ ~override~
+  PATCH_IF NOT ("%SOURCE_RES%" STRING_MATCHES_REGEXP "^BAG" = 0) BEGIN //excluding starting ToB Bags
+  SPRINT res ~%SOURCE_FILE%~ TO_LOWER res
+  PATCH_IF VARIABLE_IS_SET $custom_regex(~%res%~) BEGIN
+    SPRINT regex $custom_regex(~%res%~)
+    END ELSE BEGIN
+      SPRINT regex ~%common_regex%~
+    END
+    LPF DELETE_STORE_ITEM STR_VAR item_to_delete = ~%regex%~ END
+  END
+BUT_ONLY
+
+//remove Ring of Invisibility from THIEF, FIGHTER_THIEF bag28.sto - the only new TOB game duplicates
+COPY_EXISTING ~bag28.sto~ ~override/bag28.sto~
+  LPF DELETE_STORE_ITEM STR_VAR item_to_delete = ~ring05~ END
+BUT_ONLY IF_EXISTS

@@ -259,7 +259,15 @@ export const weiduTp2Provider: LanguageProvider = {
         }
 
         const options = getFormatOptions(uri);
-        const result = formatAst(tree.rootNode, options);
+
+        let result;
+        try {
+            result = formatAst(tree.rootNode, options);
+        } catch (err) {
+            const msg = err instanceof Error ? err.message : String(err);
+            conlog(`TP2 formatter error: ${msg}`);
+            return { edits: [], warning: `TP2 formatter error: ${msg}` };
+        }
 
         const validationError = validateFormatting(text, result.text);
         if (validationError) {

@@ -41,8 +41,11 @@ export function formatInnerAction(
 
     let lastEndRow = -1;
     for (const child of node.children) {
-        // Skip structural keywords and INNER_ACTION identifier
-        if (isKeyword(child, KW_BEGIN) || isKeyword(child, KW_END)) {
+        if (isKeyword(child, KW_BEGIN)) {
+            lastEndRow = child.startPosition.row;
+            continue;
+        }
+        if (isKeyword(child, KW_END)) {
             continue;
         }
         if (child.type === SyntaxType.Identifier && child.text.toUpperCase() === "INNER_ACTION") {
@@ -121,10 +124,18 @@ export function formatInnerPatch(
         headerParts.push(normalizeWhitespace(fileNode.text));
     }
 
+    // Output header + BEGIN
+    const header = headerParts.join(" ") + " " + KW_BEGIN;
+    lines.push(indent + header);
+
     // Process body content (patches)
     let lastEndRow = -1;
     for (const child of node.children) {
-        if (isKeyword(child, KW_BEGIN) || isKeyword(child, KW_END)) {
+        if (isKeyword(child, KW_BEGIN)) {
+            lastEndRow = child.startPosition.row;
+            continue;
+        }
+        if (isKeyword(child, KW_END)) {
             continue;
         }
         // Skip keyword identifier
@@ -144,10 +155,6 @@ export function formatInnerPatch(
             lastEndRow = child.endPosition.row;
         }
     }
-
-    // Output header + BEGIN
-    const header = headerParts.join(" ") + " " + KW_BEGIN;
-    lines.unshift(indent + header);
 
     lines.push(indent + KW_END);
     return lines.join("\n");

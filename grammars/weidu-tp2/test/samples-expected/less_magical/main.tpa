@@ -1,0 +1,43 @@
+COPY - ~%MOD_FOLDER%/less_magical/matches.2da~ ~%MOD_FOLDER%-inlined/matches.2da~
+    READ_2DA_ENTRIES_NOW ilist 2
+    FOR (i=1; i<ilist; ++i) BEGIN
+        READ_2DA_ENTRY_FORMER ilist i 0 item
+        READ_2DA_ENTRY_FORMER ilist i 1 replacement
+        SPRINT $item_list("%item%") ~%replacement%~
+    END
+
+COPY_EXISTING_REGEXP GLOB ~^.+\.sto$~ ~override~
+    PHP_EACH item_list AS item => replacement  BEGIN
+        PATCH_IF ~%replacement%~ STR_EQ ~none~ OR NOT FILE_EXISTS_IN_GAME ~%replacement%.itm~  // if replacement doesn't exist, the original is probably a bogus entry
+        BEGIN
+            LPF DELETE_STORE_ITEM
+                STR_VAR
+                    item_to_delete = ~%item%~
+            END
+        END ELSE BEGIN
+            LPF REPLACE_STORE_ITEM_MATCH
+                STR_VAR
+                    match_item = ~%item%~
+                    new_item   = ~%replacement%~
+            END
+        END
+    END
+BUT_ONLY
+
+COPY_EXISTING_REGEXP GLOB ~^.+\.are$~ ~override~
+    PHP_EACH item_list AS item => replacement  BEGIN
+        PATCH_IF ~%replacement%~ STR_EQ ~none~ OR NOT FILE_EXISTS_IN_GAME ~%replacement%.itm~  // if replacement doesn't exist, the original is probably a bogus entry
+        BEGIN
+            LPF DELETE_AREA_ITEM
+                STR_VAR
+                    item_to_delete = ~^%item%$~
+            END
+        END ELSE BEGIN
+            LPF REPLACE_AREA_ITEM_MATCH
+                STR_VAR
+                    match_item = ~%item%~
+                    new_item   = ~%replacement%~
+            END
+        END
+    END
+BUT_ONLY

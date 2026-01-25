@@ -21,7 +21,7 @@ pnpm exec tsc --project cli/tsconfig.json
 
 echo ""
 echo "=== Running ESLint ==="
-pnpm exec eslint 'server/src/**/*.ts' 'client/src/**/*.ts' 'cli/**/*.ts' --max-warnings 0
+pnpm exec eslint 'server/src/**/*.ts' 'client/src/**/*.ts' 'cli/**/*.ts' --ignore-pattern 'cli/test' --ignore-pattern 'cli/vitest.config.ts' --no-warn-ignored --max-warnings 0
 
 echo ""
 echo "=== Running Server Unit Tests ==="
@@ -42,15 +42,15 @@ echo "=== Checking Formatting ==="
 
 echo ""
 echo "=== Testing Grammars ==="
-for g in grammars/*/test.sh; do
-    echo ""
-    echo "--- $(dirname "$g") ---"
-    "./$g"
-done
+pnpm test:grammars
+
+echo ""
+echo "=== Testing CLI ==="
+pnpm test:cli
 
 echo ""
 echo "=== Testing Binary Parser ==="
-./scripts/test-bin.sh
+pnpm test:bin
 
 echo ""
 echo "=== Checking for unused code (knip) ==="

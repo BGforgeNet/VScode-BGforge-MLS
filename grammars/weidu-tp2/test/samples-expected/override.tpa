@@ -1,0 +1,96 @@
+OUTER_SET override_only = 1
+
+INCLUDE ~%MOD_FOLDER%/gen/wipe.tpa~
+
+// are
+OUTER_TEXT_SPRINT comp_dir ~%MOD_FOLDER%/are~
+ACTION_BASH_FOR ~override~ ~.+\.are$~  BEGIN
+    COPY ~%BASH_FOR_FILESPEC%~ ~override~
+        PATCH_INCLUDE ~%comp_dir%/main.tpp~
+    BUT_ONLY
+END
+
+// cre
+ACTION_CLEAR_ARRAY tutu_convert_itm
+INCLUDE ~%MOD_FOLDER%/lib/tutu_convert_itm.tph~
+OUTER_TEXT_SPRINT comp_dir ~%MOD_FOLDER%/cre~
+ACTION_BASH_FOR ~override~ ~.+\.cre$~  BEGIN
+    COPY ~%BASH_FOR_FILESPEC%~ ~override~
+        SET existence_fix = 0
+        PATCH_INCLUDE ~%comp_dir%/init_fix.tpp~
+        PATCH_INCLUDE ~%comp_dir%/inv_clean.tpp~
+        PATCH_INCLUDE ~%comp_dir%/inv_overhaul.tpp~
+        PATCH_INCLUDE ~%comp_dir%/inv_unbork.tpp~
+        PATCH_INCLUDE ~%comp_dir%/remove_dup_effect.tpp~
+    BUT_ONLY
+END
+OUTER_TEXT_SPRINT comp_dir ~%MOD_FOLDER%/cre/gen_fix~
+ACTION_BASH_FOR ~override~ ~.+\.cre$~  BEGIN
+    COPY ~%BASH_FOR_FILESPEC%~ ~override~
+        PATCH_INCLUDE ~%comp_dir%/add_missing_animation.tpp~
+        PATCH_INCLUDE ~%comp_dir%/remove_missing_scripts.tpp~
+        PATCH_INCLUDE ~%comp_dir%/remove_missing_dialogs.tpp~
+        PATCH_INCLUDE ~%comp_dir%/fix_spells.tpp~
+        PATCH_INCLUDE ~%comp_dir%/null_sounds.tpp~
+        PATCH_INCLUDE ~%comp_dir%/remove_useless_effects.tpp~
+        PATCH_INCLUDE ~%comp_dir%/add_racial_enemy.tpp~
+        PATCH_INCLUDE ~%comp_dir%/set_missing_alignment.tpp~
+        PATCH_INCLUDE ~%comp_dir%/fix_kit.tpp~
+    BUT_ONLY
+END
+
+// itm
+OUTER_TEXT_SPRINT comp_dir ~%MOD_FOLDER%/itm/init_fix~
+ACTION_BASH_FOR ~override~ ~.+\.itm$~  BEGIN
+    COPY ~%BASH_FOR_FILESPEC%~ ~override~
+        PATCH_INCLUDE ~%comp_dir%/bg2fixpack.tpp~
+        PATCH_INCLUDE ~%comp_dir%/trim.tpp~
+        // 1pp check skipped for now
+    BUT_ONLY
+END
+OUTER_TEXT_SPRINT comp_dir ~%MOD_FOLDER%/itm/gen_fix~
+ACTION_BASH_FOR ~override~ ~.+\.itm$~  BEGIN
+    COPY ~%BASH_FOR_FILESPEC%~ ~override~
+        PATCH_INCLUDE ~%comp_dir%/main.tpp~
+    BUT_ONLY
+END
+OUTER_TEXT_SPRINT comp_dir ~%MOD_FOLDER%/itm~
+INCLUDE ~%comp_dir%/fix_enchantment_define.tpa~
+INCLUDE ~%comp_dir%/gen_check_define.tpa~
+INCLUDE ~%comp_dir%/remove_invalid_effects_define.tpa~
+ACTION_BASH_FOR ~override~ ~.+\.itm$~  BEGIN
+    COPY ~%BASH_FOR_FILESPEC%~ ~override~
+        PATCH_INCLUDE ~%comp_dir%/add_missing_immunity.tpp~
+        PATCH_INCLUDE ~%comp_dir%/assign_portrait_icon.tpp~
+        PATCH_INCLUDE ~%comp_dir%/fix_enchantment.tpp~
+        PATCH_INCLUDE ~%comp_dir%/gen_check.tpp~
+        PATCH_INCLUDE ~%comp_dir%/remove_dup_effect.tpp~
+        PATCH_INCLUDE ~%comp_dir%/remove_invalid_effects.tpp~
+    BUT_ONLY
+END
+
+// spl
+OUTER_TEXT_SPRINT comp_dir ~%MOD_FOLDER%/spl~
+ACTION_BASH_FOR ~override~ ~.+\.spl$~  BEGIN
+    COPY ~%BASH_FOR_FILESPEC%~ ~override~
+        PATCH_INCLUDE ~%comp_dir%/structure.tpp~
+    BUT_ONLY
+END
+OUTER_TEXT_SPRINT comp_dir ~%MOD_FOLDER%/spl/gen_fix~
+ACTION_BASH_FOR ~override~ ~.+\.spl$~  BEGIN
+    COPY ~%BASH_FOR_FILESPEC%~ ~override~
+        PATCH_IF NOT ENGINE_IS ~bgee bg2ee eet iwdee pstee~ BEGIN
+            PATCH_INCLUDE ~%comp_dir%/innate_to_level_1.tpp~  // bcs re-compilation skipped
+        END
+        PATCH_INCLUDE ~%comp_dir%/slot_and_ability_target.tpp~
+        PATCH_INCLUDE ~%comp_dir%/fix_effect_target.tpp~
+        PATCH_INCLUDE ~%comp_dir%/is_secondary_spell_instant.tpp~
+    BUT_ONLY
+END
+
+// sto
+ACTION_BASH_FOR ~override~ ~.+\.sto$~  BEGIN
+    COPY ~%BASH_FOR_FILESPEC%~ ~override~
+        PATCH_INCLUDE ~%MOD_FOLDER%/sto/gen_fix.tpp~
+    BUT_ONLY
+END

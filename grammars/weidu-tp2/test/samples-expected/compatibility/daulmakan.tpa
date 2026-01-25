@@ -1,0 +1,29 @@
+ACTION_IF (FILE_EXISTS_IN_GAME ~d1potcas.itm~) BEGIN  // Daulmakan - extra items
+    PRINT ~Daulmakan's Item Pack: Extra Items~
+    OUTER_SET $item_source_compat(~clck05~ ~ar0602.bcs~) = 1  // Cloak of Balduran - Chateau Irenicus
+END
+
+// Daulmakan item pack: More work for Cromwell - Periart of Proof against Poison
+<<<<<<<< .../ua-inlined/wsmith01.d
+REPLACE_TRANS_TRIGGER wsmith01 BEGIN %offending_state% END BEGIN END
+  ~PartyHasItem("amul14")~
+  ~False()~
+>>>>>>>>
+// Daulmakan item pack: More work for Cromwell - forbid Ring +1 > +2,  Cloak of protection +1 > +2
+<<<<<<<< .../ua-inlined/wsmith02.d
+REPLACE_TRANS_TRIGGER wsmith01 BEGIN %offending_state% END BEGIN END
+  ~PartyHasItem("ring06")~
+  ~False()~
+REPLACE_TRANS_TRIGGER wsmith01 BEGIN %offending_state% END BEGIN END
+  ~PartyHasItem("clck01")~
+  ~False()~
+>>>>>>>>
+
+ACTION_IF (FILE_EXISTS_IN_GAME ~d1ilbrat.itm~) BEGIN
+    PRINT ~Daulmakan's Item Pack: More Work for Cromwell~
+    OUTER_SET offending_state = 13  // Hmmmn... I couldn't rightly say.  Let me have a look into yer goods, then.  A minute of rummagin' and I'll know fer sure, aye?
+    COMPILE EVAL ~.../ua-inlined/wsmith01.d~  // make this branch always false
+    ACTION_IF NOT (MOD_IS_INSTALLED ~ua.tp2~ (ID_OF_LABEL ~ua.tp2~ ~g_ua_allow+2~)) BEGIN  // only when +2 are uniques
+        COMPILE EVAL ~.../ua-inlined/wsmith02.d~
+    END
+END

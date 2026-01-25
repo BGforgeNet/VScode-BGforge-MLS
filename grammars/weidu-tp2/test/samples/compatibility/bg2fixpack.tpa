@@ -1,0 +1,9 @@
+ACTION_IF MOD_IS_INSTALLED "setup-bg2fixpack.tp2" "0" BEGIN
+  PRINT ~BG2 Fixpack~
+  //Suryris's Blade - Fixpack deletes all but Ribald's copy. Removing Ribald's and restoring Reviane's (Jaheira's quest)
+  COPY_EXISTING ~jarevia.cre~ ~override~
+    LPF DELETE_CRE_ITEM STR_VAR item_to_delete = ~halb07~ END
+    REPLACE_CRE_ITEM ~halb03~ #0 #0 #0 ~NONE~ ~WEAPON1~ EQUIP TWOHANDED
+  BUT_ONLY
+  // Long Sword +2: 'Varscona' - Fixpack deletes all but Ribald's copy. Leaving at Ribald, because all other copies are in chapter 6
+END

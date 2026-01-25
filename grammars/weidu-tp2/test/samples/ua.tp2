@@ -1,0 +1,69 @@
+/** @tra setup.tra */
+BACKUP ~ua/backup~
+SUPPORT ~https://forums.bgforge.net/viewforum.php?f=30~
+NO_IF_EVAL_BUG
+AUTO_EVAL_STRINGS
+//MODDER
+VERSION ~v7.16~
+
+ALWAYS
+  CLEAR_EVERYTHING
+  OUTER_SPRINT lib_dir ~%MOD_FOLDER%/lib~
+  INCLUDE ~%lib_dir%/init.tpa~
+END
+
+LANGUAGE ~English~                ~english~     ~ua/tra/english/setup.tra~
+LANGUAGE ~Brazilian Portuguese~   ~portuguese~  ~ua/tra/portuguese/setup.tra~
+LANGUAGE ~Russian~                ~russian~     ~ua/tra/russian/setup.tra~
+LANGUAGE ~Swedish~                ~swedish~     ~ua/tra/swedish/setup.tra~
+LANGUAGE ~French~                 ~french~      ~ua/tra/french/setup.tra~
+
+
+BEGIN @1  // +1
+LABEL ~g_ua_allow+1~
+REQUIRE_PREDICATE GAME_INCLUDES ~bg1~ OR GAME_INCLUDES ~bg2~ @30
+REQUIRE_PREDICATE NOT
+  ( MOD_IS_INSTALLED ~ua.tp2~ (ID_OF_LABEL ~ua.tp2~ ~g_ua_core_strict~)
+    OR MOD_IS_INSTALLED ~ua.tp2~ (ID_OF_LABEL ~ua.tp2~ ~g_ua_core_expanded~)
+  ) @32
+WITH_TRA ~%lang_dir%/game.tra~ BEGIN INCLUDE ~%MOD_FOLDER%/non-unique/prot1.tpa~ END
+
+BEGIN @2  // +2
+LABEL ~g_ua_allow+2~
+REQUIRE_PREDICATE GAME_INCLUDES ~bg1~ OR GAME_INCLUDES ~bg2~ @30
+REQUIRE_PREDICATE NOT
+  ( MOD_IS_INSTALLED ~ua.tp2~ (ID_OF_LABEL ~ua.tp2~ ~g_ua_core_strict~)
+    OR MOD_IS_INSTALLED ~ua.tp2~ (ID_OF_LABEL ~ua.tp2~ ~g_ua_core_expanded~)
+  ) @32
+WITH_TRA ~%lang_dir%/game.tra~ BEGIN INCLUDE ~%MOD_FOLDER%/non-unique/prot2.tpa~ END
+
+BEGIN @3  // Speed
+LABEL ~g_ua_allow_speed~
+REQUIRE_PREDICATE GAME_INCLUDES ~bg1~ OR GAME_INCLUDES ~bg2~ @30
+REQUIRE_PREDICATE NOT
+  ( MOD_IS_INSTALLED ~ua.tp2~ (ID_OF_LABEL ~ua.tp2~ ~g_ua_core_strict~)
+    OR MOD_IS_INSTALLED ~ua.tp2~ (ID_OF_LABEL ~ua.tp2~ ~g_ua_core_expanded~)
+  ) @32
+WITH_TRA ~%lang_dir%/game.tra~ BEGIN INCLUDE ~%MOD_FOLDER%/non-unique/boots.tpa~ END
+
+BEGIN @6  // Expanded
+LABEL ~g_ua_core_expanded~
+REQUIRE_PREDICATE GAME_INCLUDES ~bg1~ OR GAME_INCLUDES ~bg2~ @30
+SUBCOMPONENT @4
+OUTER_SET expanded = 1
+WITH_TRA ~%lang_dir%/game.tra~ BEGIN INCLUDE ~%MOD_FOLDER%/core/main.tpa~ END
+
+BEGIN @5  // Strict
+LABEL ~g_ua_core_strict~
+REQUIRE_PREDICATE GAME_INCLUDES ~bg1~ OR GAME_INCLUDES ~bg2~ @30
+SUBCOMPONENT @4
+OUTER_SET expanded = 0
+WITH_TRA ~%lang_dir%/game.tra~ BEGIN INCLUDE ~%MOD_FOLDER%/core/main.tpa~ END
+
+BEGIN @100  /* Remove bonus merchants */
+REQUIRE_PREDICATE GAME_INCLUDES ~bg2~ @200
+INCLUDE ~%MOD_FOLDER%/remove_bonus.tpa~
+
+BEGIN @101  /* Less magical items */
+REQUIRE_PREDICATE GAME_INCLUDES ~bg1~ OR GAME_INCLUDES ~bg2~ @30
+INCLUDE ~%MOD_FOLDER%/less_magical/main.tpa~

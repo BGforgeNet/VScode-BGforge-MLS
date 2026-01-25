@@ -1,0 +1,12 @@
+// Tortured Souls
+ACTION_IF (FILE_EXISTS_IN_GAME ~kaswor01.itm~) BEGIN
+    PRINT ~Tortured Souls~
+    // Kachiko's wakisashi - remove from Joluv
+    COPY_EXISTING ~wmart1.sto~ ~override/wmart1.sto~
+        LPF DELETE_STORE_ITEM
+            STR_VAR
+                item_to_delete = ~wawak~
+        END
+    BUT_ONLY
+    OUTER_SET $item_source_compat(~wawak~ ~wmart1.sto~) = 0
+END

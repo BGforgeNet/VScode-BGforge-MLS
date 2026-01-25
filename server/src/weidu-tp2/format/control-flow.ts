@@ -21,7 +21,8 @@ import {
     KW_ACTION_IF,
     KW_PATCH_TRY,
     KW_ACTION_TRY,
-    addFormatError,
+    INLINE_COMMENT_SPACING,
+    throwFormatError,
     NODE_PATCH_TRY,
     NODE_ACTION_TRY,
 } from "./types";
@@ -60,6 +61,10 @@ interface ControlFlowParseState {
     lastContentRow: number;
     /** Row number of BEGIN (for inline comments on same line) */
     beginRow: number;
+    /** Row number of last header element (keyword/condition) */
+    lastHeaderRow: number;
+    /** Inline comment on same row as header (preserved through conditionNode path) */
+    headerComment: string;
     /** Whether THEN keyword was seen (for IF statements) */
     hasThen: boolean;
     /** Condition node for IF statements (for special formatting) */
@@ -76,6 +81,8 @@ function createControlFlowState(): ControlFlowParseState {
         afterElse: false,
         lastContentRow: -1,
         beginRow: -1,
+        lastHeaderRow: -1,
+        headerComment: "",
         hasThen: false,
         conditionNode: null,
         conditionKeyword: "",
@@ -137,24 +144,39 @@ function formatCondition(
         return [indent + prefix];
     }
 
-    const condText = normalizeWhitespace(conditionNode.text);
+    // Normalize whitespace and strip spaces inside parentheses to match what
+    // the split output produces (AST node texts don't have those spaces)
+    const condText = normalizeWhitespace(conditionNode.text)
+        .replace(/\(\s+/g, "(")
+        .replace(/\s+\)/g, ")");
     const fullLine = indent + prefix + " " + condText;
 
     if (fullLine.length <= lineLimit) {
         return [fullLine];
     }
 
-    // Find the actual expression to split - may be wrapped in value or paren_expr
+    // Find the actual expression to split - may be wrapped in value, unary_expr, or paren_expr
     let exprNode = conditionNode;
     let hasOuterParens = false;
+    let unaryPrefix = "";
 
     // Unwrap value node to get to the actual expression
     if (exprNode.type === SyntaxType.Value && exprNode.children.length > 0) {
         for (const child of exprNode.children) {
-            if (child.type === SyntaxType.BinaryExpr || child.type === SyntaxType.ParenExpr) {
+            if (child.type === SyntaxType.BinaryExpr || child.type === SyntaxType.ParenExpr || child.type === SyntaxType.UnaryExpr) {
                 exprNode = child;
                 break;
             }
+        }
+    }
+
+    // Unwrap unary_expr (e.g. NOT (...)) - preserve the operator as prefix
+    if (exprNode.type === SyntaxType.UnaryExpr) {
+        const opNode = exprNode.childForFieldName("op");
+        const operandNode = exprNode.childForFieldName("operand");
+        if (opNode && operandNode) {
+            unaryPrefix = opNode.text + " ";
+            exprNode = operandNode;
         }
     }
 
@@ -180,7 +202,7 @@ function formatCondition(
                 const op = operands[i];
                 if (!op) continue;
                 if (i === 0) {
-                    lines.push(indent + prefix + " " + openParen + op.text);
+                    lines.push(indent + prefix + " " + unaryPrefix + openParen + op.text);
                 } else if (i === operands.length - 1) {
                     lines.push(contIndent + op.operator + " " + op.text + closeParen);
                 } else {
@@ -255,6 +277,7 @@ function formatForLoop(
     for (const child of node.children) {
         if (isKeyword(child, KW_BEGIN)) {
             inBody = true;
+            lastEndRow = child.startPosition.row;
             continue;
         }
         if (isKeyword(child, KW_END)) {
@@ -333,10 +356,12 @@ function formatForEach(
     const bodyLines: string[] = [];
     let inBody = false;
     let lastEndRow = -1;
+    let beginRow = -1;
 
     for (const child of node.children) {
         if (isKeyword(child, KW_BEGIN)) {
             inBody = true;
+            beginRow = child.startPosition.row;
             continue;
         }
         if (isKeyword(child, KW_END)) {
@@ -345,8 +370,19 @@ function formatForEach(
         if (!inBody) continue;
 
         if (isComment(child)) {
+            // Inline comment on the BEGIN line - append to last header line
+            if (beginRow >= 0 && child.startPosition.row === beginRow) {
+                const lastLine = headerLines[headerLines.length - 1];
+                if (lastLine && !lastLine.includes("//")) {
+                    headerLines[headerLines.length - 1] = lastLine + INLINE_COMMENT_SPACING + normalizeComment(child.text);
+                    beginRow = -1;
+                    continue;
+                }
+            }
+            beginRow = -1;
             handleComment(bodyLines, child, bodyIndent, lastEndRow);
         } else if (isBodyContent(child.type)) {
+            beginRow = -1;
             bodyLines.push(formatNode(child, ctx, depth + 1));
             lastEndRow = child.endPosition.row;
         }
@@ -405,11 +441,13 @@ function formatAssociativeArray(node: SyntaxNode, ctx: FormatContext, depth: num
     const headerParts: string[] = [];
     const items: CollectedItem[] = [];
     let inBody = false;
+    let beginRow = -1;
 
     for (const child of node.children) {
         if (isKeyword(child, KW_BEGIN)) {
             lines.push(indent + headerParts.join(" ") + " " + KW_BEGIN);
             inBody = true;
+            beginRow = child.startPosition.row;
             continue;
         }
 
@@ -423,9 +461,16 @@ function formatAssociativeArray(node: SyntaxNode, ctx: FormatContext, depth: num
         }
 
         if (isComment(child)) {
+            // Inline comment on the BEGIN line - append to header
+            if (tryAppendInlineComment(lines, child, beginRow)) {
+                beginRow = -1;
+                continue;
+            }
+            beginRow = -1;
             items.push({ type: "comment", text: normalizeComment(child.text), startRow: child.startPosition.row, endRow: child.endPosition.row });
             continue;
         }
+        beginRow = -1;
 
         if (child.type === SyntaxType.AssocEntry) {
             const parsed = parseAssocEntry(child);
@@ -464,6 +509,7 @@ function outputBeginAndEnterBody(
             state.conditionKeyword = "";
             state.inBody = true;
             state.afterElse = false;
+            state.beginRow = child.startPosition.row;
             return;
         }
     }
@@ -474,7 +520,15 @@ function outputBeginAndEnterBody(
         const condLines = formatCondition(state.conditionNode, state.conditionKeyword, indent, contIndent, lineLimit);
         state.lines.push(...condLines);
         const thenKeyword = state.hasThen ? KW_THEN + " " : "";
-        if (condLines.length > 1) {
+        // Inline comment on condition line forces BEGIN to next line
+        if (state.headerComment) {
+            const lastIdx = state.lines.length - 1;
+            if (lastIdx >= 0) {
+                state.lines[lastIdx] += INLINE_COMMENT_SPACING + state.headerComment;
+            }
+            state.lines.push(indent + thenKeyword + KW_BEGIN);
+            state.headerComment = "";
+        } else if (condLines.length > 1) {
             state.lines.push(indent + thenKeyword + KW_BEGIN);
         } else {
             const lastIdx = state.lines.length - 1;
@@ -530,6 +584,9 @@ function handleControlFlowComment(
         state.beginRow = -1;
     } else if (state.afterElse) {
         state.lines.push(indent + normalizeComment(child.text));
+    } else if (state.lastHeaderRow >= 0 && child.startPosition.row === state.lastHeaderRow) {
+        // Inline comment on same row as IF keyword or condition
+        state.headerComment = normalizeComment(child.text);
     } else {
         state.headerParts.push(normalizeComment(child.text));
     }
@@ -613,7 +670,7 @@ export function formatControlFlow(
 ): string {
     // Report if control flow node has no children (malformed)
     if (node.children.length === 0) {
-        addFormatError(ctx, `Empty control flow node '${node.type}'`, node.startPosition.row + 1, node.startPosition.column + 1);
+        throwFormatError(`Empty control flow node '${node.type}'`, node.startPosition.row + 1, node.startPosition.column + 1);
     }
     // Handle FOR loops specially
     const forHeader = formatForLoopHeader(node);
@@ -690,9 +747,17 @@ export function formatControlFlow(
             continue;
         }
 
-        // ELSE IF chaining
+        // ELSE IF chaining: join first line of nested IF onto the "END ELSE" line
         if (state.afterElse && (child.type === SyntaxType.ActionIf || child.type === SyntaxType.PatchIf)) {
-            state.lines.push(formatNode(child, ctx, depth));
+            const nestedLines = formatNode(child, ctx, depth).split("\n");
+            const firstLine = nestedLines[0]?.trimStart() ?? "";
+            const lastLine = lastElement(state.lines);
+            if (lastLine && firstLine) {
+                state.lines[state.lines.length - 1] = lastLine + " " + firstLine;
+            }
+            for (let i = 1; i < nestedLines.length; i++) {
+                state.lines.push(nestedLines[i] ?? "");
+            }
             state.afterElse = false;
             continue;
         }
@@ -715,11 +780,14 @@ export function formatControlFlow(
             if (child.text === KW_PATCH_IF || child.text === KW_ACTION_IF) {
                 state.conditionKeyword = child.text;
                 state.conditionNode = node.childForFieldName("condition") ?? null;
+                state.lastHeaderRow = child.endPosition.row;
                 continue;
             }
             if (state.conditionNode && child === state.conditionNode) {
+                state.lastHeaderRow = child.endPosition.row;
                 continue;
             }
+            state.lastHeaderRow = child.endPosition.row;
             state.headerParts.push(child.text);
         }
     }
@@ -759,6 +827,7 @@ export function formatMatchCase(
                 lines.push(indent + header + " " + KW_BEGIN);
             }
             inBody = true;
+            lastEndRow = child.startPosition.row;
             continue;
         }
 

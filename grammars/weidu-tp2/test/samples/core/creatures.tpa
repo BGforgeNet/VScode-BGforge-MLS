@@ -1,0 +1,22 @@
+PRINT ~Processing creatures~
+
+COPY_EXISTING_REGEXP GLOB ~^.+\.cre$~ ~override~
+  SPRINT res ~%SOURCE_FILE%~ TO_LOWER res
+  PATCH_IF VARIABLE_IS_SET $custom_regex(~%res%~) BEGIN
+    SPRINT regex $custom_regex(~%res%~)
+  END ELSE BEGIN
+    SPRINT regex ~%common_regex%~
+  END
+  PATCH_PHP_EACH replacement AS old_item => new_item BEGIN
+    PATCH_IF
+      NOT (VARIABLE_IS_SET $item_source(~%old_item%~ ~%res%~) AND $item_source(~%old_item%~ ~%res%~) == 1)
+    BEGIN
+      PATCH_IF ~%res%~ STR_EQ ~BDANGATH.cre~ BEGIN
+        PATCH_PRINT ~bdanganth: res=%res%, old_item=%old_item%, new_item=%new_item%~
+        PATCH_PRINT ~bdanganth: regex=%regex%~
+      END
+      LPF REPLACE_CRE_ITEM_MATCH STR_VAR match_item = ~%old_item%~ new_item END
+    END
+  END
+  LPF DELETE_CRE_ITEM STR_VAR item_to_delete = ~%regex%~ END
+BUT_ONLY

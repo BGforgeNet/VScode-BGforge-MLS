@@ -13,7 +13,7 @@ import {
     KW_BEGIN,
     KW_END,
     KW_ALWAYS,
-    addFormatError,
+    throwFormatError,
     NODE_INLINED_FILE,
     NODE_COMPONENT,
     NODE_ALWAYS_BLOCK,
@@ -43,6 +43,7 @@ import {
 } from "./utils";
 import {
     formatControlFlow,
+    formatCondition,
     formatCopyAction,
     formatFunctionDef,
     formatFunctionCall,
@@ -70,25 +71,46 @@ function formatComponent(node: SyntaxNode, ctx: FormatContext): string {
     const lines: string[] = [];
     let beginLine = "";
     let lastEndRow = -1;
+    let lastHeaderRow = -1;
 
     for (const child of node.children) {
         if (isComment(child)) {
-            handleComment(lines, child, ctx.indent, lastEndRow);
+            if (beginLine && lastHeaderRow >= 0 && child.startPosition.row === lastHeaderRow) {
+                // Inline comment on the header line - append and flush
+                // (must flush to prevent subsequent flags from being appended after the comment)
+                lines.push(beginLine + INLINE_COMMENT_SPACING + normalizeComment(child.text));
+                beginLine = "";
+            } else {
+                if (beginLine) {
+                    lines.push(beginLine);
+                    beginLine = "";
+                }
+                handleComment(lines, child, "", lastEndRow);
+            }
             continue;
         }
 
         if (isKeyword(child, KW_BEGIN)) {
             beginLine = KW_BEGIN;
+            lastHeaderRow = child.endPosition.row;
             continue;
         }
 
-        // Component name and flags - append to BEGIN line
+        // Component name/value - append to BEGIN line
         if (
             child.type === SyntaxType.Value ||
             child.type === SyntaxType.String ||
             child.type === SyntaxType.Identifier ||
             child.type === SyntaxType.VariableRef ||
-            child.type === SyntaxType.TraRef ||
+            child.type === SyntaxType.TraRef
+        ) {
+            beginLine = beginLine ? beginLine + " " + normalizeWhitespace(child.text) : normalizeWhitespace(child.text);
+            lastHeaderRow = child.endPosition.row;
+            continue;
+        }
+
+        // Component flags - each on its own line
+        if (
             child.type === SyntaxType.DesignatedFlag ||
             child.type === SyntaxType.DeprecatedFlag ||
             child.type === SyntaxType.SubcomponentFlag ||
@@ -98,23 +120,40 @@ function formatComponent(node: SyntaxNode, ctx: FormatContext): string {
             child.type === SyntaxType.RequireComponentFlag ||
             child.type === SyntaxType.ForbidComponentFlag
         ) {
-            beginLine = beginLine ? beginLine + " " + normalizeWhitespace(child.text) : normalizeWhitespace(child.text);
-            continue;
-        }
-
-        // Body content - actions inside component
-        if (isAction(child.type) || isControlFlow(child.type) || isFunctionCall(child.type) || child.type === SyntaxType.TopLevelAssignment) {
-            // Output BEGIN line first if we have one
             if (beginLine) {
                 lines.push(beginLine);
                 beginLine = "";
             }
-            lines.push(formatNode(child, ctx, 1));
+            if (child.type === SyntaxType.RequirePredicateFlag) {
+                // Split long predicate conditions at OR/AND boundaries
+                const predicate = child.childForFieldName("predicate");
+                const message = child.childForFieldName("message");
+                const contIndent = ctx.indent;
+                const condLines = formatCondition(predicate, "REQUIRE_PREDICATE", "", contIndent, ctx.lineLimit);
+                if (message) {
+                    condLines[condLines.length - 1] += " " + normalizeWhitespace(message.text);
+                }
+                beginLine = condLines.join("\n");
+            } else {
+                beginLine = normalizeWhitespace(child.text);
+            }
+            lastHeaderRow = child.endPosition.row;
+            continue;
+        }
+
+        // Body content - actions inside component (no indent, since the grammar
+        // may place these as top-level nodes after reformatting collapses flags
+        // onto the BEGIN line)
+        if (isAction(child.type) || isControlFlow(child.type) || isFunctionCall(child.type) || child.type === SyntaxType.TopLevelAssignment) {
+            if (beginLine) {
+                lines.push(beginLine);
+                beginLine = "";
+            }
+            lines.push(formatNode(child, ctx, 0));
             lastEndRow = child.endPosition.row;
         }
     }
 
-    // Output BEGIN line if not yet output (empty component)
     if (beginLine) {
         lines.push(beginLine);
     }
@@ -124,11 +163,16 @@ function formatComponent(node: SyntaxNode, ctx: FormatContext): string {
 
 /** Format ALWAYS block. */
 function formatAlwaysBlock(node: SyntaxNode, ctx: FormatContext): string {
-    const lines: string[] = [KW_ALWAYS];
+    const lines: string[] = [];
     let lastEndRow = -1;
 
     for (const child of node.children) {
-        if (isKeyword(child, KW_ALWAYS) || isKeyword(child, KW_END)) {
+        if (isKeyword(child, KW_ALWAYS)) {
+            lines.push(KW_ALWAYS);
+            lastEndRow = child.endPosition.row;
+            continue;
+        }
+        if (isKeyword(child, KW_END)) {
             continue;
         }
         if (isComment(child)) {
@@ -180,12 +224,11 @@ function formatSimpleNode(node: SyntaxNode, ctx: FormatContext, depth: number): 
     const indent = ctx.indent.repeat(depth);
     const singleLine = indent + normalizeWhitespace(node.text);
 
-    // Report if this node looks like it should have specialized formatting
+    // Abort if this node looks like it should have specialized formatting
     // (contains BEGIN/END keywords but fell through to simple formatting)
     const hasBeginEnd = node.children.some((c) => c.text === "BEGIN" || c.text === "END");
     if (hasBeginEnd) {
-        addFormatError(
-            ctx,
+        throwFormatError(
             `Unhandled block node type '${node.type}' - using simple formatting`,
             node.startPosition.row + 1,
             node.startPosition.column + 1
@@ -407,7 +450,6 @@ export function formatDocument(root: SyntaxNode, options?: Partial<FormatOptions
         indent: " ".repeat(opts.indentSize),
         lineLimit: opts.lineLimit,
         indentSize: opts.indentSize,
-        errors: [],
     };
 
     const result: string[] = [];
@@ -456,6 +498,5 @@ export function formatDocument(root: SyntaxNode, options?: Partial<FormatOptions
 
     return {
         text: result.join("\n") + "\n",
-        errors: ctx.errors,
     };
 }

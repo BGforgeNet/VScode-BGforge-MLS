@@ -1,0 +1,139 @@
+/*
+$item_source(~%item%~ ~%source%~) => should_be_present: item => source list. 1 means item must be present in source, 0 - must be absent (usually from compatibility)
+$item_source_compat(~%item%~ ~%source%~) => should_be_present: same as $item_source, but filled by custom compatibility code. Used to complement item_source.
+$items(~%item%~) = 1 list of items, strict or expanded
+$csources(~%source%~) = 1: filtered list of canon sources, with verified items present
+$common_regex_no_eol: a regex containing ALL deduped items
+$common_regex: same as common_regex_no_eol, but with with "^\(   \)$" around.
+$custom_regex_no_eol(~%csource%~): each canon source has its own special regex, which is the same as common regex, except items that are supposed to be in this canon source. It is used for D and BAF replacements.
+$custom_regex(~%csource%~): same as custom_regex_no_eol, but with with "^\(   \)$" around the csource.
+$item_present(~%item%~): set to 1 if item is present in each canon source, 0 otherwise
+$is_expanded(~%item%~): set to 1 in item is in expanded section. It is used because we don't want to track that in compatibility section. We want that to be inferred from the fact it's being read from expanded file.
+*/
+
+// GAME_IS doesn't support variables, using macros
+DEFINE_PATCH_MACRO read_item_sources_2da
+BEGIN
+    READ_2DA_ENTRIES_NOW ilist 4
+    FOR (i=1; i<ilist; ++i) BEGIN
+        READ_2DA_ENTRY_FORMER ilist i 1 item
+        READ_2DA_ENTRY_FORMER ilist i 3 source
+        TO_LOWER item
+        SPRINT source_evaled EVAL ~%source%~
+        PATCH_IF FILE_EXISTS_IN_GAME ~%source_evaled%~ BEGIN
+            SPRINT source ~%source_evaled%~
+        END
+        TO_LOWER source
+        PATCH_IF NOT (~%item%~ STRING_MATCHES_REGEXP ~-+~ == 0) BEGIN  // skip md header separator row
+            SET $item_source(~%item%~ ~%source%~) = 1  // global list of items and sources
+            SET $items(~%item%~) = 1  // global list of items
+            PATCH_IF set_expanded == 1 BEGIN
+                SET $is_expanded(~%item%~) = 1
+            END
+        END
+    END
+END
+DEFINE_ACTION_MACRO read_item_sources
+BEGIN
+    OUTER_SET set_expanded = 0  // reset because we launch macro repeatedly
+    COPY - ~%MOD_FOLDER%/items/strict_%game%.md~ ~%MOD_FOLDER%-inlined/strict_%game%.md~
+        LPM read_item_sources_2da
+    BUT_ONLY
+    ACTION_IF expanded == 1 BEGIN
+        OUTER_SET set_expanded = 1
+        COPY - ~%MOD_FOLDER%/items/expanded_%game%.md~ ~%MOD_FOLDER%-inlined/expanded_%game%.md~
+            LPM read_item_sources_2da
+        BUT_ONLY
+    END
+END
+
+ACTION_IF GAME_INCLUDES ~bg1~ BEGIN
+    OUTER_SPRINT game ~bg1~
+    LAM read_item_sources
+END
+ACTION_IF GAME_INCLUDES ~bg2~ BEGIN
+    OUTER_SPRINT game ~bg2~
+    LAM read_item_sources
+END
+
+// filter compat, skip items and sources that aren't present in current selection (strict/expanded)
+ACTION_PHP_EACH item_source_compat AS i_s => should_be_present  BEGIN
+    OUTER_SPRINT item $i_s(0)
+    OUTER_SPRINT source $i_s(1)
+    // strict items
+    ACTION_IF NOT VARIABLE_IS_SET $is_expanded(~%item%~) BEGIN
+        OUTER_SET $item_source(~%item%~ ~%source%~) = $item_source_compat(~%item%~ ~%source%~)
+    END
+    // expanded items
+    ACTION_IF VARIABLE_IS_SET $is_expanded(~%item%~) AND expanded == 1 BEGIN
+        OUTER_SET $item_source(~%item%~ ~%source%~) = $item_source_compat(~%item%~ ~%source%~)
+    END
+END
+
+// custom replacement list, just so creatures still have some weapons and armor
+INCLUDE ~%MOD_FOLDER%/core/cre_replacement.tpa~
+
+// check if item is present in all sources
+ACTION_PHP_EACH item_source AS i_s => should_be_present  BEGIN
+    OUTER_SPRINT item $i_s(0)
+    OUTER_SPRINT source $i_s(1)
+    OUTER_SET skip = 0
+    ACTION_IF should_be_present == 0 BEGIN
+        PRINT ~%item% was moved from %source% by another mod, skipping this source~
+        OUTER_SET skip = 1
+    END
+    ACTION_IF VARIABLE_IS_SET $item_present(~%item%~) AND $item_present(~%item%~) == 0 BEGIN
+        PRINT ~%item% was checked already and is missing from another resource, skipping~
+        OUTER_SET skip = 1
+    END
+    ACTION_IF skip == 0 BEGIN
+        LAF IS_ITEM_IN_RESOURCE
+            STR_VAR
+                item     = ~%item%~
+                resource = ~%source%~
+            RET
+                present
+        END
+        OUTER_SET $item_present(~%item%~) = present
+        ACTION_IF present == 1 BEGIN
+            OUTER_SET $csources(~%source%~) = 1  // list of all canon sources
+        END ELSE BEGIN
+            WARN ~UA WARNING: %item% is missing from %source%, skipping!~
+        END
+    END
+END
+
+// init custom regex for each source
+ACTION_PHP_EACH csources AS csource => int  BEGIN  // this is already filtered: only sources with present items
+    OUTER_SPRINT $custom_regex_no_eol(~%csource%~) ~~
+END
+
+// build a regex of all items, skip those that are not found in ALL canon sources
+OUTER_SPRINT common_regex_no_eol ~~
+ACTION_PHP_EACH item_present AS item => present  BEGIN
+    ACTION_IF present == 1 BEGIN
+        // common regex
+        ACTION_IF ~%common_regex%~ STR_EQ ~~ BEGIN  // empty, initialize
+            OUTER_SPRINT common_regex_no_eol ~%item%~
+        END ELSE BEGIN
+            OUTER_SPRINT common_regex_no_eol ~%common_regex%\|%item%~  // append
+        END
+        // custom regex for each source
+        ACTION_PHP_EACH csources AS csource => int  BEGIN
+            ACTION_IF NOT VARIABLE_IS_SET $item_source(~%item%~ ~%csource%~) OR $item_source(~%item%~ ~%csource%~) != 1  // may be changed in compat section
+            BEGIN
+                OUTER_SPRINT tmp $custom_regex_no_eol(~%csource%~)
+                ACTION_IF ~%tmp%~ STR_EQ ~~ BEGIN
+                    OUTER_SPRINT $custom_regex_no_eol(~%csource%~) ~%item%~
+                END ELSE BEGIN
+                    OUTER_SPRINT $custom_regex_no_eol(~%csource%~) ~%tmp%\|%item%~
+                END
+            END
+        END
+    END
+END
+
+OUTER_SPRINT common_regex ~^\(%common_regex_no_eol%\)$~
+ACTION_PHP_EACH custom_regex_no_eol AS csource => cregex  BEGIN
+    OUTER_SPRINT $custom_regex(~%csource%~) ~^\(%cregex%\)$~
+END

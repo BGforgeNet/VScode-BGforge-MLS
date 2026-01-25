@@ -46,14 +46,10 @@ function isReservedWord(text: string): boolean {
     return RESERVED_WORDS.has(text.toLowerCase());
 }
 
-// Format errors collected during formatting
-export interface FormatError {
-    message: string;
-    line: number;
-    column: number;
+/** Abort formatting with a descriptive error including source location. */
+function throwFormatError(message: string, line: number, column: number): never {
+    throw new Error(`${line}:${column}: ${message}`);
 }
-
-let errors: FormatError[] = [];
 
 // Helper: check if node is a comment
 function isComment(node: SyntaxNode): boolean {
@@ -135,18 +131,15 @@ function normalizeComment(text: string): string {
 
 export interface FormatResult {
     text: string;
-    errors: FormatError[];
 }
 
 export function formatDocument(node: SyntaxNode, options: FormatOptions = DEFAULT_OPTIONS): FormatResult {
-    // Reset state
-    errors = [];
     ctx = {
         indent: " ".repeat(options.indentSize),
         maxLineLength: options.maxLineLength,
     };
     const text = formatNode(node, 0);
-    return { text, errors };
+    return { text };
 }
 
 function formatNode(node: SyntaxNode, depth: number): string {
@@ -322,11 +315,11 @@ function formatProcedure(node: SyntaxNode, depth: number): string {
             if (child.type === "expression_stmt") {
                 const ident = child.namedChildren[0];
                 if (ident?.type === "identifier" && isReservedWord(ident.text)) {
-                    errors.push({
-                        message: `Reserved word "${ident.text}" cannot be used as identifier`,
-                        line: ident.startPosition.row + 1,
-                        column: ident.startPosition.column + 1,
-                    });
+                    throwFormatError(
+                        `Reserved word "${ident.text}" cannot be used as identifier`,
+                        ident.startPosition.row + 1,
+                        ident.startPosition.column + 1,
+                    );
                 }
             }
             return;
@@ -766,12 +759,11 @@ function formatExpression(node: SyntaxNode | null | undefined, column: number = 
         case "paren_expr": {
             const inner = node.children[1];
             if (!inner || inner.type === "comment" || inner.type === "line_comment") {
-                errors.push({
-                    message: `Unexpected paren_expr structure: ${node.text}`,
-                    line: node.startPosition.row + 1,
-                    column: node.startPosition.column + 1,
-                });
-                return node.text;
+                throwFormatError(
+                    `Unexpected paren_expr structure: ${node.text}`,
+                    node.startPosition.row + 1,
+                    node.startPosition.column + 1,
+                );
             }
             return `(${formatExpression(inner, column + 1, extraLength > 0 ? extraLength - 1 : 0)})`;
         }
@@ -782,23 +774,21 @@ function formatExpression(node: SyntaxNode | null | undefined, column: number = 
         case "proc_ref": {
             const ident = node.children[1];
             if (!ident || ident.type !== "identifier") {
-                errors.push({
-                    message: `Unexpected proc_ref structure: ${node.text}`,
-                    line: node.startPosition.row + 1,
-                    column: node.startPosition.column + 1,
-                });
-                return node.text;
+                throwFormatError(
+                    `Unexpected proc_ref structure: ${node.text}`,
+                    node.startPosition.row + 1,
+                    node.startPosition.column + 1,
+                );
             }
             return `@${ident.text}`;
         }
         case "identifier":
-            // Check for reserved words used as identifiers
             if (isReservedWord(node.text)) {
-                errors.push({
-                    message: `Reserved word "${node.text}" cannot be used as identifier`,
-                    line: node.startPosition.row + 1,
-                    column: node.startPosition.column + 1,
-                });
+                throwFormatError(
+                    `Reserved word "${node.text}" cannot be used as identifier`,
+                    node.startPosition.row + 1,
+                    node.startPosition.column + 1,
+                );
             }
             return node.text;
         case "number":
@@ -809,12 +799,11 @@ function formatExpression(node: SyntaxNode | null | undefined, column: number = 
             const name = node.childForFieldName("name");
             const value = node.childForFieldName("value");
             if (!name || !value) {
-                errors.push({
-                    message: `Malformed for_var_decl: ${node.text}`,
-                    line: node.startPosition.row + 1,
-                    column: node.startPosition.column + 1,
-                });
-                return node.text;
+                throwFormatError(
+                    `Malformed for_var_decl: ${node.text}`,
+                    node.startPosition.row + 1,
+                    node.startPosition.column + 1,
+                );
             }
             return `variable ${name.text} = ${formatExpression(value)}`;
         }

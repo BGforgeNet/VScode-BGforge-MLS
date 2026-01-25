@@ -1,0 +1,26 @@
+/** @tra setup.tra */
+OUTER_SPRINT compat ~%MOD_FOLDER%/compatibility~
+PRINT ~Compatibility with mods that move or remove items:~
+
+INCLUDE ~%compat%/arp.tpa~
+INCLUDE ~%compat%/bg1.tpa~
+INCLUDE ~%compat%/bg1npc.tpa~
+INCLUDE ~%compat%/bg2.tpa~  // must go after ARP
+INCLUDE ~%compat%/bg2ee.tpa~
+INCLUDE ~%compat%/bg2fixpack.tpa~
+INCLUDE ~%compat%/bgt.tpa~
+INCLUDE ~%compat%/boot02.tpa~  // Boots of Stealth, handled differently in BG1/BGT vs BGEE/EET
+INCLUDE ~%compat%/cursed_items.tpa~
+INCLUDE ~%compat%/daulmakan.tpa~  // must go before tactics to undupe Cloak of Balduran
+INCLUDE ~%compat%/item_rev.tpa~
+INCLUDE ~%compat%/helm06.tpa~
+INCLUDE ~%compat%/scs.tpa~
+INCLUDE ~%compat%/ring08.tpa~  // this is just custom
+INCLUDE ~%compat%/rr.tpa~
+INCLUDE ~%compat%/ruad.tpa~
+INCLUDE ~%compat%/tactics.tpa~
+INCLUDE ~%compat%/thalantyr.tpa~
+INCLUDE ~%compat%/ts.tpa~
+INCLUDE ~%compat%/ua.tpa~
+
+PRINT ~Compatibility addressed.~

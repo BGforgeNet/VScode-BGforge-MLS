@@ -3,7 +3,6 @@
 // ////////////////////////////////////////////////////////////
 
 APPEND_EARLY irenic2 // EARLY so Sarevok's INTERJECT can respond to it
-    // EARLY so Sarevok's INTERJECT can respond to it
     IF ~Global("FinalFight","AR6200",2)~ THEN BEGIN iren_intro  // from:
         SAY @440 /* ~So, <CHARNAME>...it is now just you and I, once again.  At odds in the bowels of Hell and preparing to do combat.  How very fitting.~  */
         IF ~~ THEN REPLY @441 /* ~This fight is mine, Irenicus.  While you stewed in Hell, my power has multiplied.~  */ GOTO iren_intro_r1

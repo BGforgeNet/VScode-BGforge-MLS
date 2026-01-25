@@ -197,7 +197,7 @@ describe("formatDocument integration", () => {
 COPY ~src~ ~dst~`;
         const output = format(input);
         expect(output).toContain("BEGIN @1");
-        expect(output).toContain("    COPY ~src~ ~dst~");
+        expect(output).toContain("COPY ~src~ ~dst~");
     });
 
     it("normalizes whitespace in directives", () => {
@@ -245,8 +245,8 @@ PRINT ~test~
 END`;
         const output = format(input);
         expect(output).toContain("ACTION_IF foo BEGIN");
-        expect(output).toContain("        PRINT ~test~");
-        expect(output).toContain("    END");
+        expect(output).toContain("    PRINT ~test~");
+        expect(output).toContain("END");
     });
 
     it("formats function definition", () => {
@@ -472,9 +472,9 @@ END`;
         const lines = output.split("\n");
         const readLine = lines.find((l) => l.includes("READ_ASCII"));
         const warnLine = lines.find((l) => l.includes("PATCH_WARN"));
-        // Body content should be indented more than PATCH_TRY
-        expect(readLine).toMatch(/^\s{12}READ_ASCII/);
-        expect(warnLine).toMatch(/^\s{12}PATCH_WARN/);
+        // Component body at depth=0, COPY body at depth=1, PATCH_TRY body at depth=2
+        expect(readLine).toMatch(/^\s{8}READ_ASCII/);
+        expect(warnLine).toMatch(/^\s{8}PATCH_WARN/);
     });
 });
 
@@ -544,49 +544,27 @@ END`;
     });
 });
 
-describe("formatDocument error collection", () => {
+describe("formatDocument throws on structural errors", () => {
     beforeAll(async () => {
         await initParser();
     });
 
-    function formatWithErrors(code: string): { text: string; errors: Array<{ message: string; line: number; column: number }> } {
+    function format(code: string): string {
         const parser = getParser();
         const tree = parser.parse(code);
-        return formatDocument(tree.rootNode);
+        return formatDocument(tree.rootNode).text;
     }
 
-    it("returns empty errors for valid code", () => {
-        const input = `BACKUP ~backup~
-BEGIN @1
-    COPY ~src~ ~dst~`;
-        const result = formatWithErrors(input);
-        expect(result.errors).toEqual([]);
+    it("succeeds for valid code", () => {
+        const input = `BACKUP ~backup~\nBEGIN @1\nCOPY ~src~ ~dst~`;
+        expect(() => format(input)).not.toThrow();
     });
 
-    it("collects errors in result object", () => {
-        const input = `BEGIN @1`;
-        const result = formatWithErrors(input);
-        // Valid simple code should have no errors
-        expect(Array.isArray(result.errors)).toBe(true);
-    });
-
-    it("error object has correct structure", () => {
-        const input = `BEGIN @1`;
-        const result = formatWithErrors(input);
-        // Verify errors array exists and has correct type
-        expect(result).toHaveProperty("text");
-        expect(result).toHaveProperty("errors");
-        expect(typeof result.text).toBe("string");
-        expect(Array.isArray(result.errors)).toBe(true);
-    });
-
-    it("formats despite errors", () => {
-        // Even with potential issues, formatter should produce output
-        const input = `BEGIN @1
-COPY ~src~ ~dst~`;
-        const result = formatWithErrors(input);
-        expect(result.text).toContain("BEGIN @1");
-        expect(result.text).toContain("COPY");
+    it("returns text for valid code", () => {
+        const input = `BEGIN @1\nCOPY ~src~ ~dst~`;
+        const result = format(input);
+        expect(result).toContain("BEGIN @1");
+        expect(result).toContain("COPY");
     });
 });
 
@@ -887,6 +865,114 @@ BEGIN END`;
         const def = result.definition.get("my_func");
         expect(def).toBeDefined();
         expect(def?.uri).toBe("file:///test.tph");
+    });
+});
+
+describe("formatDocument component flags", () => {
+    beforeAll(async () => {
+        await initParser();
+    });
+
+    function format(code: string): string {
+        const parser = getParser();
+        const tree = parser.parse(code);
+        const result = formatDocument(tree.rootNode);
+        return result.text;
+    }
+
+    it("puts each component flag on its own line", () => {
+        const input = `BEGIN @1
+SUBCOMPONENT @2
+REQUIRE_PREDICATE ENGINE_IS ~tob~ @3`;
+        const output = format(input);
+        const lines = output.split("\n");
+        expect(lines[0]).toBe("BEGIN @1");
+        expect(lines[1]).toBe("SUBCOMPONENT @2");
+        expect(lines[2]).toContain("REQUIRE_PREDICATE");
+    });
+
+    it("does not collapse flags onto BEGIN line", () => {
+        const input = `BEGIN @1 SUBCOMPONENT @2 LABEL ~my_label~`;
+        const output = format(input);
+        const lines = output.split("\n");
+        expect(lines[0]).toBe("BEGIN @1");
+        expect(lines[1]).toBe("SUBCOMPONENT @2");
+        expect(lines[2]).toBe("LABEL ~my_label~");
+    });
+
+    it("preserves inline comment on flag line", () => {
+        const input = `BEGIN @1
+SUBCOMPONENT @2  // group name`;
+        const output = format(input);
+        expect(output).toContain("SUBCOMPONENT @2  // group name");
+    });
+
+    it("splits long REQUIRE_PREDICATE at OR boundary", () => {
+        const input = `BEGIN @1
+REQUIRE_PREDICATE ( MOD_IS_INSTALLED ~tnt.tp2~ (ID_OF_LABEL ~tnt.tp2~ ~g_tnt_traps_intuition_no_combat~) OR MOD_IS_INSTALLED ~tnt.tp2~ (ID_OF_LABEL ~tnt.tp2~ ~g_tnt_traps_intuition_combat~) ) @304`;
+        const output = format(input);
+        const lines = output.split("\n");
+        // Should split across lines
+        const predLine = lines.find(l => l.includes("REQUIRE_PREDICATE"));
+        expect(predLine).toBeDefined();
+        expect(predLine!.length).toBeLessThanOrEqual(120);
+        // OR should be on continuation line
+        const orLine = lines.find(l => l.trimStart().startsWith("OR "));
+        expect(orLine).toBeDefined();
+    });
+
+    it("splits long REQUIRE_PREDICATE with NOT prefix", () => {
+        const input = `BEGIN @1
+REQUIRE_PREDICATE NOT ( MOD_IS_INSTALLED ~ua.tp2~ (ID_OF_LABEL ~ua.tp2~ ~g_ua_core_strict~) OR MOD_IS_INSTALLED ~ua.tp2~ (ID_OF_LABEL ~ua.tp2~ ~g_ua_core_expanded~) ) @32`;
+        const output = format(input);
+        // NOT prefix should be preserved
+        expect(output).toContain("REQUIRE_PREDICATE NOT (");
+        // Should split at OR
+        const lines = output.split("\n");
+        const orLine = lines.find(l => l.trimStart().startsWith("OR "));
+        expect(orLine).toBeDefined();
+    });
+
+    it("keeps short REQUIRE_PREDICATE on one line", () => {
+        const input = `BEGIN @1
+REQUIRE_PREDICATE ENGINE_IS ~tob~ @3`;
+        const output = format(input);
+        expect(output).toContain("REQUIRE_PREDICATE ENGINE_IS ~tob~ @3");
+    });
+});
+
+describe("formatDocument COPY inline comments", () => {
+    beforeAll(async () => {
+        await initParser();
+    });
+
+    function format(code: string): string {
+        const parser = getParser();
+        const tree = parser.parse(code);
+        const result = formatDocument(tree.rootNode);
+        return result.text;
+    }
+
+    it("keeps inline comment on its file pair in multi-file COPY", () => {
+        const input = `BEGIN @1
+COPY_EXISTING
+  ~file1.spl~ ~override~  // first file
+  ~file2.spl~ ~override~
+  SET foo = 1`;
+        const output = format(input);
+        expect(output).toContain("~file1.spl~ ~override~  // first file");
+        expect(output).not.toMatch(/~file2.spl~.*\/\/ first file/);
+    });
+
+    it("keeps inline comment on second file pair", () => {
+        const input = `BEGIN @1
+COPY_EXISTING
+  ~file1.spl~ ~override~
+  ~file2.spl~ ~override~  // second file
+  SET foo = 1`;
+        const output = format(input);
+        expect(output).toContain("~file2.spl~ ~override~  // second file");
+        expect(output).not.toMatch(/~file1.spl~.*\/\/ second file/);
     });
 });
 

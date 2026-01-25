@@ -1,0 +1,13 @@
+ACTION_IF GAME_INCLUDES ~bg2~ BEGIN
+  PRINT ~BG2 custom UA adjustments~
+// small bonus 2: Boots of Stealth from Samuel Thunderburp (for Mazzy) replaced with Boots of Lightning Speed or Boots of Elvenkind
+<<<<<<<< .../ua-inlined/ffbart.d
+REPLACE_ACTION_TEXT ~ffbart~
+  ~GiveItemCreate("boot06",Player1,0,0,0)~
+  ~GiveItemCreate("%ffbart_boot%",Player1,0,0,0)~
+>>>>>>>>
+  ACTION_IF NOT (VARIABLE_IS_SET ffbart_boot) BEGIN // Boots of Elvenkind, set in compatibility - Almateria restored items
+    OUTER_SPRINT ffbart_boot ~boot10~ // default to Boots of Lightning speed
+  END
+  COMPILE EVAL ~.../ua-inlined/ffbart.d~
+END

@@ -1,0 +1,30 @@
+// Cursed Items revision
+ACTION_IF (FILE_EXISTS_IN_GAME ~#gglow.eff~) BEGIN
+    PRINT ~Cursed Items revision~
+    ACTION_IF GAME_INCLUDES ~bg1~ BEGIN
+        // belt05 - Girdle of gender change - probably won't be duped anyway
+        // brac11 - Bracers of binding - same
+        // Gauntlets of Fumbling
+        OUTER_SET $item_source_compat(~brac08~ ~bassil.cre~) = 0
+        OUTER_SET $item_source_compat(~brac08~ ~krumm.cre~) = 1
+        // Ring of Clumsiness
+        OUTER_SET $item_source_compat(~ring04~ ~niemai.cre~) = 0
+        OUTER_SET $item_source_compat(~ring04~ ~ar2100.are~) = 0
+        OUTER_SET $item_source_compat(~ring04~ ~%ShipwrecksCoast%.are~) = 1
+        // Ring of Folly
+        OUTER_SET $item_source_compat(~ring23~ ~%CloakwoodNestSpiderNest%.are~) = 0
+        OUTER_SET $item_source_compat(~ring23~ ~melica.dlg~) = 1
+        OUTER_SET $item_source_compat(~ring23~ ~melica.cre~) = 1
+    END
+    ACTION_IF GAME_INCLUDES ~bg2~ BEGIN
+        // should be bg1-only, but CI ALLOW_MISSINGs files instead of properly limiting
+        OUTER_SET $item_source_compat(~ring04~ ~ar2210.are~) = 0  // Ring of Clumsiness
+        OUTER_SET $item_source_compat(~ring23~ ~ar2100.are~) = 0  // Ring of Folly
+        OUTER_SET $item_source_compat(~ring23~ ~ar8800.are~) = 0  // bgt
+        OUTER_SET $item_source_compat(~ring23~ ~fw2100.are~) = 0  // tutu
+        OUTER_SET $item_source_compat(~ring23~ ~bg2100.are~) = 0  // eet
+        ACTION_IF NOT MOD_IS_INSTALLED ~setup-arestorationp.tp2~ ~3~ BEGIN  // ARP gives Boots of Phasing fo Viekang
+            OUTER_SET $item_source_compat(~boot08~ ~thief7.cre~) = 1  // Anishai
+        END
+    END
+END

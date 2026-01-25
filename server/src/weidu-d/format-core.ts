@@ -17,13 +17,6 @@ const DEFAULT_OPTIONS: FormatOptions = {
 
 export interface FormatResult {
     text: string;
-    errors: FormatError[];
-}
-
-interface FormatError {
-    message: string;
-    line: number;
-    column: number;
 }
 
 interface FormatContext {
@@ -397,12 +390,15 @@ function forEachChild(
 
 // Format BEGIN/APPEND action (states with optional trailing END)
 function formatStateAction(node: SyntaxNode, ctx: FormatContext, trailingEnd: boolean): string {
+    const headerRow = node.startPosition.row;
     const lines: string[] = [getActionHeader(node)];
 
     forEachChild(node, lines, (child) => {
         if (child.type === "state") {
             return formatState(child, ctx);
         } else if (isComment(child)) {
+            // Skip comments on the header line - already included via getActionHeader()
+            if (child.startPosition.row === headerRow) return null;
             return ctx.indent + normalizeLineComment(child.text);
         }
         return null;
@@ -482,6 +478,5 @@ export function formatDocument(root: SyntaxNode, options?: Partial<FormatOptions
 
     return {
         text: result.join("\n") + "\n",
-        errors: [],
     };
 }

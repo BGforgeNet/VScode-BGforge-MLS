@@ -76,7 +76,15 @@ export const weiduBafProvider: LanguageProvider = {
         }
 
         const options = getFormatOptions(uri);
-        const result = formatAst(tree.rootNode, options);
+
+        let result;
+        try {
+            result = formatAst(tree.rootNode, options);
+        } catch (err) {
+            const msg = err instanceof Error ? err.message : String(err);
+            conlog(`BAF formatter error: ${msg}`);
+            return { edits: [], warning: `BAF formatter error: ${msg}` };
+        }
 
         const validationError = validateFormatting(text, result.text);
         if (validationError) {

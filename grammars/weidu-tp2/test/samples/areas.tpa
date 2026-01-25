@@ -1,0 +1,135 @@
+DEFINE_PATCH_FUNCTION ALTER_AREA_REGION_MATCH
+  INT_VAR
+    trapped = "-1"
+    trap_detect = "-1"
+    trap_remove = "-1"
+    flag_trap_detectable = "-1"
+  STR_VAR
+    match_script = "-1"
+BEGIN
+  GET_OFFSET_ARRAY regions ARE_V10_REGIONS
+  PHP_EACH regions AS int => r_off BEGIN
+    READ_ASCII (r_off + ARE_REGION_script) script
+    PATCH_IF ~%script%~ STR_EQ ~%match_script%~ BEGIN
+      PATCH_IF trapped != "-1" BEGIN WRITE_LONG (r_off + ARE_REGION_trapped) 1 END
+      PATCH_IF trap_detect != "-1" BEGIN WRITE_LONG (r_off + ARE_REGION_trap_detect) trap_detect END
+      PATCH_IF trap_remove != "-1" BEGIN WRITE_LONG (r_off + ARE_REGION_trap_remove) trap_remove END
+      PATCH_IF flag_trap_detectable == 0 BEGIN
+        WRITE_LONG (r_off + ARE_REGION_flags) THIS BAND BNOT FLAG_ARE_REGION_trap_detectable
+      END
+      PATCH_IF flag_trap_detectable == 1 BEGIN
+        WRITE_LONG (r_off + ARE_REGION_flags) THIS BOR FLAG_ARE_REGION_trap_detectable
+      END
+    END
+  END
+END
+
+DEFINE_PATCH_FUNCTION ALTER_AREA_STRUCTURE_SCRIPT
+  INT_VAR index = 0
+  STR_VAR
+    script = ~~
+    type = ~~
+BEGIN
+  PATCH_MATCH 1 WITH
+    (~%type%~ STR_EQ ~region~)
+      BEGIN
+        GET_OFFSET_ARRAY struct_off_list ARE_V10_REGIONS
+        struct_off = ARE_regions_offset
+        script_off = ARE_REGION_script
+      END
+    (~%type%~ STR_EQ ~container~)
+      BEGIN
+        GET_OFFSET_ARRAY struct_off_list ARE_V10_CONTAINERS
+        struct_off = ARE_containers_offset
+        script_off = ARE_CONTAINER_script
+      END
+    (~%type%~ STR_EQ ~door~)
+      BEGIN
+        GET_OFFSET_ARRAY struct_off_list ARE_V10_DOORS
+        struct_off = ARE_doors_offset
+        script_off = ARE_DOOR_script
+      END
+  DEFAULT
+    PATCH_FAIL ~ALTER_AREA_STRUCTURE_SCRIPT: unknown structure type %type%~
+  END
+  off = $struct_off_list(~%index%~) + script_off
+  WRITE_ASCIIE off ~%script%~ #8
+END
+
+DEFINE_PATCH_FUNCTION GET_AREA_STRUCTURE_CENTER_POINT
+  INT_VAR index = 0
+  STR_VAR type = ~~
+  RET x y
+BEGIN
+  PATCH_MATCH 1 WITH
+    (~%type%~ STR_EQ ~region~)
+      BEGIN
+        GET_OFFSET_ARRAY structures ARE_V10_REGIONS
+        GET_OFFSET_ARRAY2 vertices $structures(~%index%~) ARE_V10_REGION_VERTICES
+      END
+    (~%type%~ STR_EQ ~container~)
+      BEGIN
+        GET_OFFSET_ARRAY structures ARE_V10_CONTAINERS
+        GET_OFFSET_ARRAY2 vertices $structures(~%index%~) ARE_V10_CONTAINER_VERTICES
+      END
+    (~%type%~ STR_EQ ~door~)
+      BEGIN
+        GET_OFFSET_ARRAY structures ARE_V10_DOORS
+        GET_OFFSET_ARRAY2 vertices $structures(~%index%~) ARE_V10_DOOR_CLOSED_OUTLINE_VERTICES
+      END
+  DEFAULT
+    PATCH_FAIL ~GET_AREA_STRUCTURE_CENTER_POINT: unknown structure type %type%~
+  END
+  i = 0
+  x_total = 0
+  y_total = 0
+  PHP_EACH vertices AS int => v_off BEGIN
+    READ_SHORT v_off x
+    READ_SHORT (v_off + 2) y
+    x_total+=x
+    y_total+=y
+    i+=1
+  END
+  x = x_total / i
+  y = y_total / i
+END
+
+DEFINE_PATCH_FUNCTION REPLACE_AREA_ITEM_MATCH
+  STR_VAR match_item = ~~ new_item = ~~
+BEGIN
+  GET_OFFSET_ARRAY cont_offs ARE_V10_CONTAINERS
+  PHP_EACH cont_offs AS int => coff BEGIN
+    GET_OFFSET_ARRAY2 item_offs coff ARE_V10_ITEMS
+    PHP_EACH item_offs AS int => ioff BEGIN
+      READ_ASCII ioff name (8) NULL
+      PATCH_IF ~%name%~ STR_EQ ~%match_item%~ BEGIN
+        WRITE_ASCII ioff ~%new_item%~ #8
+      END
+    END
+  END
+END
+
+DEFINE_ACTION_FUNCTION IS_ITEM_IN_AREA
+  STR_VAR
+    item = ~~
+    area = ~~
+  RET present
+BEGIN
+  COPY_EXISTING ~%area%.are~ ~override~
+    present = 0
+    GET_OFFSET_ARRAY cont_offs ARE_V10_CONTAINERS
+    PHP_EACH cont_offs AS int => c_off BEGIN
+      GET_OFFSET_ARRAY2 item_offs c_off ARE_V10_ITEMS
+      PHP_EACH item_offs AS int => i_off BEGIN
+        READ_ASCII i_off item_name
+        PATCH_IF ~%item%~ STR_EQ ~%item_name%~ BEGIN
+          present = 1
+        END
+      END
+    END
+  BUT_ONLY IF_EXISTS
+  ACTION_IF NOT FILE_EXISTS_IN_GAME ~%area%.are~ BEGIN
+    WARN ~IS_ITEM_IN_AREA: store %area% is not present in game~
+    OUTER_SET present = "-1"
+  END
+END

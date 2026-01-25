@@ -16,16 +16,8 @@ const DEFAULT_OPTIONS: FormatOptions = {
 
 const INLINE_COMMENT_SPACING = "  ";
 
-// Format result
 export interface FormatResult {
     text: string;
-    errors: FormatError[];
-}
-
-interface FormatError {
-    message: string;
-    line: number;
-    column: number;
 }
 
 // Format context - passed through to avoid global state
@@ -261,6 +253,5 @@ export function formatDocument(root: SyntaxNode, options?: Partial<FormatOptions
     }
     return {
         text: result.join("\n") + "\n",
-        errors: [],
     };
 }

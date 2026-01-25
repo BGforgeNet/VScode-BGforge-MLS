@@ -94,7 +94,7 @@ procedure Node014a;
    Needs to be saved, make it a map variable (MVAR_) */
 
 /* Local variables which do not need to be saved between map changes. */
-variable Only_Once = 0;
+variable Only_Once := 0;
 
 procedure start begin
 end
@@ -158,23 +158,21 @@ procedure talk_p_proc begin
         call Node002;
     end else if (dude_iq < 4) then begin
         call Node003;
-    end    // commented out unimplemented disguise code    /* else if ((dude_wearing_power_armor) and (party_size == 1)) then begin
-    start_gdialog(NAME, self_obj, 4, -1, -1);
-    gSay_Start;
-    call Node004;
-    gSay_End;
-    end_dialogue;
-end
-
-*/
+    end    // commented out unimplemented disguise code
+    /* else if ((dude_wearing_power_armor) and (party_size == 1)) then begin
+       start_gdialog(NAME,self_obj,4,-1,-1);
+       gSay_Start;
+           call Node004;
+       gSay_End;
+       end_dialogue;
+   end */
     else begin
-start_gdialog(NAME, self_obj, 4, -1, -1);
-gSay_Start;
-call
-Node006;
-gSay_End;
-end_dialogue;
-end
+        start_gdialog(NAME, self_obj, 4, -1, -1);
+        gSay_Start;
+        call Node006;
+        gSay_End;
+        end_dialogue;
+    end
 end
 
 /* This procedure gets called only on the death of this NPC. Special things like

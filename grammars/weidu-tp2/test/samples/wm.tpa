@@ -1,0 +1,489 @@
+/** @tra text.tra */
+
+OUTER_SPRINT comp_dir ~%MOD_FOLDER%/wild_spells~
+
+// Rhialto appearance
+ACTION_IF pansy = 0 BEGIN       // Ironman
+  OUTER_SET rhia_xp = 19000     // Written later to wm_rhia1.cre
+
+  EXTEND_TOP ~baldur.bcs~ ~%comp_dir%/baf/baldur.baf~   //  Have to use EXTEND_TOP because of PartyRested/SmallWait in baldur.bcs
+  EXTEND_TOP ~baldur25.bcs~ ~%comp_dir%/baf/baldur.baf~
+
+END ELSE BEGIN  // Stationary Rhialto: create outside Candlekeep's wall and give scroll with a hint to Gorion's body
+  OUTER_SET rhia_xp = 2000  // Written later to wm_rhia1.cre
+
+  COPY ~%comp_dir%/itm/wm_scrl.itm~ ~override/wm_scrl.itm~
+    SAY NAME1 @69998
+    SAY NAME2 @69998
+    SAY UNIDENTIFIED_DESC @69999
+    SAY DESC @69999
+
+  ACTION_IF GAME_IS ~bgee~ BEGIN
+    OUTER_SPRINT gorion_cre ~gorion~
+    OUTER_SPRINT out_candlekeep_area ~ar2626~
+  END ELSE ACTION_IF GAME_IS ~eet~ BEGIN
+    OUTER_SPRINT gorion_cre ~gorion~
+    OUTER_SPRINT out_candlekeep_area ~bg2626~
+  END ELSE ACTION_IF GAME_IS ~bgt~ BEGIN
+    OUTER_SPRINT gorion_cre ~gorion~
+    OUTER_SPRINT out_candlekeep_area ~ar6526~
+  END ELSE ACTION_IF GAME_IS ~tutu tutu_totsc~ BEGIN
+    OUTER_SPRINT gorion_cre ~_gorion~
+    OUTER_SPRINT out_candlekeep_area ~_ar2626~
+  END
+
+  EXTEND_BOTTOM ~%out_candlekeep_area%.bcs~ ~%comp_dir%/baf/candlekeep.baf~
+  COPY_EXISTING ~%gorion_cre%.cre~ ~override~
+    ADD_CRE_ITEM ~wm_scrl~ #0 #0 #0 ~IDENTIFIED~ ~INV16~
+  BUT_ONLY
+END // End pansy
+
+// Retain Spellbook and Teddy bear on transfer from BG1 to BG2
+ACTION_IF GAME_IS ~bgt eet~ BEGIN
+    // TODO: this seems too complicated? Why duplicate scripts?
+    EXTEND_TOP ~aram00.bcs~ ~%comp_dir%/baf/aram00.baf~   // Set vars for ar0602.baf. Use _TOP to save precious equipment
+END
+EXTEND_TOP ~ar0602.bcs~ ~%comp_dir%/baf/ar0602.baf~ // Covers both trilogy and imported characters. Use _TOP to save precious equipment
+
+//-----------------------------------------------------------
+// Rhialto the Marvelous...
+//-----------------------------------------------------------
+
+COMPILE ~%comp_dir%/dialog/wm_rhia.d~
+  USING ~%lang_dir%/dialog.tra~
+
+COMPILE EVAL ~%comp_dir%/baf/wm_rhia1.baf~
+
+COPY ~%comp_dir%/cre/wm_rhia1.cre~  ~override/wm_rhia1.cre~     // Rhialto the Marvelous
+  SAY NAME1 @50101
+  SAY NAME2 @50102
+  WRITE_LONG CRE_XP_value rhia_xp   // See pansy switch earlier
+
+  ADD_MEMORIZED_SPELL ~spwi105~ #0 ~wizard~
+  ADD_MEMORIZED_SPELL ~spwi112~ #0 ~wizard~
+  ADD_MEMORIZED_SPELL ~spwi119~ #0 ~wizard~
+
+  ADD_MEMORIZED_SPELL ~spwi211~ #1 ~wizard~
+  ADD_MEMORIZED_SPELL ~spwi211~ #1 ~wizard~
+  ADD_MEMORIZED_SPELL ~spwi219~ #1 ~wizard~
+
+  ADD_MEMORIZED_SPELL ~spwi303~ #2 ~wizard~
+  ADD_MEMORIZED_SPELL ~spwi304~ #2 ~wizard~
+  ADD_MEMORIZED_SPELL ~spwi312~ #2 ~wizard~
+  ADD_MEMORIZED_SPELL ~wm_word~ #2 ~wizard~
+
+  ADD_MEMORIZED_SPELL ~spwi415~ #3 ~wizard~
+  ADD_MEMORIZED_SPELL ~spwi418~ #3 ~wizard~
+  ADD_MEMORIZED_SPELL ~spwi423~ #3 ~wizard~
+  ADD_MEMORIZED_SPELL ~wm_glyph~ #3 ~wizard~
+
+  ADD_MEMORIZED_SPELL ~spwi501~ #4 ~wizard~
+  ADD_MEMORIZED_SPELL ~spwi505~ #4 ~wizard~
+  ADD_MEMORIZED_SPELL ~spwi506~ #4 ~wizard~
+  ADD_MEMORIZED_SPELL ~spwi523~ #4 ~wizard~
+  ADD_MEMORIZED_SPELL ~wm_vortx~ #4 ~wizard~
+
+  ADD_MEMORIZED_SPELL ~spwi604~ #5 ~wizard~
+  ADD_MEMORIZED_SPELL ~spwi609~ #5 ~wizard~
+  ADD_MEMORIZED_SPELL ~spwi616~ #5 ~wizard~
+
+  ADD_MEMORIZED_SPELL ~spwi701~ #6 ~wizard~
+  ADD_MEMORIZED_SPELL ~spwi713~ #6 ~wizard~
+  ADD_MEMORIZED_SPELL ~spwi714~ #6 ~wizard~
+
+  ADD_MEMORIZED_SPELL ~spwi812~ #7 ~wizard~
+  ADD_MEMORIZED_SPELL ~spwi813~ #7 ~wizard~
+  ADD_MEMORIZED_SPELL ~spwi897~ #7 ~wizard~
+  ADD_MEMORIZED_SPELL ~spwi898~ #7 ~wizard~
+  ADD_MEMORIZED_SPELL ~spwi899~ #7 ~wizard~
+
+  ADD_MEMORIZED_SPELL ~spwi909~ #8 ~wizard~
+  ADD_MEMORIZED_SPELL ~spwi913~ #8 ~wizard~
+  ADD_MEMORIZED_SPELL ~wm_sphr~ #8 ~wizard~
+
+  //Assasination doesn't exist in BG:EE
+  PATCH_IF FILE_EXISTS_IN_GAME ~spcl916.spl~ BEGIN
+    ADD_MEMORIZED_SPELL ~spcl916~ #0 ~innate~
+  END ELSE BEGIN
+    REMOVE_KNOWN_SPELL ~spcl916~
+  END
+
+COPY ~%comp_dir%/cre/wm_rhia2.cre~  ~override/wm_rhia2.cre~     // Rhialto the squirrel
+  SAY NAME1 @50101
+  SAY NAME2 @50102
+// BG:EE doesn't ship hunter.bcs
+ACTION_IF NOT FILE_EXISTS_IN_GAME ~hunter.bcs~ BEGIN
+  COPY ~%comp_dir%/bcs/hunter.bcs~ ~override~
+END
+
+COPY ~%comp_dir%/spl/wm_rhia1.spl~  ~override/wm_rhia1.spl~       // Rhialto's special Vortex
+  SAY NAME1 @21101
+  SAY UNIDENTIFIED_DESC @21102
+  SAY 0x9e @50111
+  // Never actually surge, don't fail, otherwise Rhialto might not turn into squirrel.
+  WRITE_LONG SPL_flags (THIS BOR FLAG_SPL_ignore_dead_wild_magic BOR FLAG_SPL_ignore_wild_surge)
+
+
+COPY ~%comp_dir%/spl/wm_glph.spl~    ~override/wm_glph.spl~    // Rhialto's Hostile Glyph of WM
+  SAY NAME1 @20701
+  SAY UNIDENTIFIED_DESC @20702
+COPY ~%comp_dir%/spl/wm_glph.cre~    ~override/wm_glph.cre~
+  SAY NAME1 @20711
+  SAY NAME2 @20711
+
+
+
+//------------------------------------------------------
+//     Projectiles
+//------------------------------------------------------
+ADD_PROJECTILE ~%comp_dir%/spl/wm_cf_60.pro~
+ADD_PROJECTILE ~%comp_dir%/spl/wm_chaob.pro~
+
+//------------------------------------------------------
+//   Copy Stuff to Override Folder
+//------------------------------------------------------
+COPY ~%comp_dir%/copy~  ~override~
+
+//--------------------------------------------------------------------------
+//               SPELLS
+//--------------------------------------------------------------------------
+
+//-----------------------------------------------------------
+// Wild Magic Spells
+
+COPY ~%comp_dir%/spl/wm_sqrl.spl~  ~override/wm_sqrl.spl~ //Rodent form
+  SAY NAME1 @20201
+  SAY UNIDENTIFIED_DESC @20202
+  READ_LONG 0x6a fx_off
+  SAY (fx_off + 0x30 * 13 + 4) @20211
+  SAY (fx_off + 0x30 * 14 + 4) @20212
+
+COPY ~%comp_dir%/spl/wm_sqrl1.spl~  ~override/wm_sqrl1.spl~ //Ratatosk Shape
+  SAY NAME1 @20301
+  SAY UNIDENTIFIED_DESC @20302
+
+
+COPY ~%comp_dir%/spl/wm_rnd.spl~  ~override/wm_rnd.spl~    // Wizard Spell: Random Spell
+  SAY NAME1 @20401
+  SAY UNIDENTIFIED_DESC @20402
+
+COPY ~%comp_dir%/spl/wm_blade.spl~  ~override/wm_blade.spl~    // Wizard Spell: Blade Shower
+  SAY NAME1 @20501
+  SAY UNIDENTIFIED_DESC @20502
+  SAY 0x25e @20511
+  SAY 0x3de @20511
+  SAY 0x58e @20511
+  SAY 0x76e @20511
+  SAY 0x97e @20511
+COPY ~%comp_dir%/spl/wm_bld1.spl~  ~override/wm_bld1.spl~
+  SAY NAME1 @20501
+  SAY 0x536 @10101
+  SAY 0x896 @10101
+  SAY 0xbf6 @10101
+  SAY 0xf56 @10101
+  SAY 0x12b6 @10101
+  SAY 0x1616 @10101
+  SAY 0x1976 @10101
+  SAY 0x1cd6 @10101
+  SAY 0x2036 @10101
+  GET_OFFSET_ARRAY ab_array SPL_V10_HEADERS
+  PHP_EACH ab_array AS int => ab_off BEGIN
+    GET_OFFSET_ARRAY2 fx_array ab_off SPL_V10_HEAD_EFFECTS
+    PHP_EACH fx_array AS int => fx_off BEGIN
+      READ_SHORT fx_off fx_opcode
+      PATCH_IF fx_opcode = OPCODE_hp_damage BEGIN
+        WRITE_BYTE (fx_off + FX_power) 10
+      END
+    END
+  END
+  //ignore spell failure and wild surge, only need second byte
+  WRITE_SHORT SPL_flags (THIS BOR FLAG_SPL_ignore_dead_wild_magic BOR FLAG_SPL_ignore_wild_surge)
+
+COPY ~%comp_dir%/spl/wm_miss.spl~  ~override/wm_miss.spl~    // Wizard Spell: Rhialto's Random Missiles
+  SAY NAME1 @20601
+  SAY UNIDENTIFIED_DESC @20602
+  // random missiles secondary spell must be instant
+  GET_OFFSET_ARRAY ab_array SPL_V10_HEADERS
+  PHP_EACH ab_array AS int => ab_off BEGIN
+    GET_OFFSET_ARRAY2 fx_array ab_off SPL_V10_HEAD_EFFECTS
+    PHP_EACH fx_array AS int => fx_off BEGIN
+      WRITE_LONG (fx_off + FX_parameter2) CASTING_TYPE_instant
+    END
+  END
+
+COPY ~%comp_dir%/spl/wm_glyph.spl~  ~override/wm_glyph.spl~    // Wizard Spell: Glyph of Wild Magic
+  SAY NAME1 @20701
+  SAY UNIDENTIFIED_DESC @20702
+COPY ~%comp_dir%/spl/wm_glyph.cre~  ~override/wm_glyph.cre~
+  SAY NAME1 @20711
+  SAY NAME2 @20711
+COMPILE ~%comp_dir%/baf/wm_glyph.baf~
+
+COPY ~%comp_dir%/spl/wm_light.spl~  ~override/wm_light.spl~    // Wizard Spell: Gymlainac's Lightbend
+  SAY NAME1 @20801
+  SAY UNIDENTIFIED_DESC @20802
+
+COPY ~%comp_dir%/spl/wm_word.spl~  ~override/wm_word.spl~    // Wizard Spell: Vile Word of Discord
+  SAY NAME1 @20901
+  SAY UNIDENTIFIED_DESC @20902
+
+COPY ~%comp_dir%/spl/wm_heal.spl~  ~override/wm_heal.spl~    // Wizard Spell: Cellular Regeneration
+  SAY NAME1 @21001
+  SAY UNIDENTIFIED_DESC @21002
+
+COPY ~%comp_dir%/spl/wm_vortx.spl~  ~override/wm_vortx.spl~    // Wizard Spell: Vortex
+  SAY NAME1 @21101
+  SAY UNIDENTIFIED_DESC @21102
+COPY ~%comp_dir%/spl/wm_vortx.cre~  ~override/wm_vortx.cre~
+  SAY NAME1 @21101
+  SAY NAME2 @21101
+  SAY INITIAL_MEETING @21103
+  SAY DAMAGE @21103
+  SAY DYING  @21104
+  SAY SELECT_COMMON1 @21103
+  SAY SELECT_COMMON2 @21104
+  SAY SELECT_ACTION1 @21103
+ACTION_FOR_EACH sound IN wizeye01 wizeye02 BEGIN
+  ACTION_IF NOT FILE_EXISTS_IN_GAME ~%sound%.wav~ BEGIN
+    COPY ~%comp_dir%/wav/%sound%.wav~ ~override~
+  END
+END
+
+COPY ~%comp_dir%/spl/wm_luck.spl~  ~override/wm_luck.spl~    // Wizard Spell: Paithan's Lucky Streak
+  SAY NAME1 @21201
+  SAY UNIDENTIFIED_DESC @21202
+
+COPY ~%comp_dir%/spl/wm_unlk.spl~  ~override/wm_unlk.spl~    // Wizard Spell: Paithan's Fiasco
+  SAY NAME1 @21301
+  SAY UNIDENTIFIED_DESC @21302
+COPY ~%comp_dir%/spl/wm_unlk1.spl~      ~override/wm_unlk1.spl~
+  SAY 0x4be @21311
+
+COPY ~%comp_dir%/spl/wm_strik.spl~  ~override/wm_strik.spl~    // Wizard Spell: Wild Strike
+  SAY NAME1 @21401
+  SAY UNIDENTIFIED_DESC @21402
+  SAY 0x2be @10101
+  SAY 0x4ce @10101
+  SAY 0x6de @10101
+  SAY 0x8ee @10101
+  SAY 0xafe @10101
+  SAY 0xd0e @10101
+  SAY 0xf1e @10101
+  SAY 0x112e @10101
+  SAY 0x133e @10101
+  SAY 0x154e @10101
+  SAY 0x175e @10101
+
+COPY ~%comp_dir%/spl/wm_disp.spl~  ~override/wm_disp.spl~    // Wizard Spell: Hornung's Random Dispatcher
+  SAY NAME1 @21501
+  SAY UNIDENTIFIED_DESC @21502
+  SAY 0x1be @21511
+  SAY 0x1ee @21512
+  SAY 0x21e @21513
+  SAY 0x24e @21514
+  SAY 0x27e @21515
+  SAY 0x2ae @21516
+  SAY 0x2de @21517
+  SAY 0x30e @21518
+  SAY 0x33e @21519
+  SAY 0x36e @21520
+  SAY 0x39e @21521
+  SAY 0x3ce @21522
+  SAY 0x3fe @21523
+  SAY 0x42e @21524
+  SAY 0x45e @21525
+  SAY 0x48e @21526
+  SAY 0x4be @21527
+  SAY 0x4ee @21528
+  SAY 0x51e @21529
+  SAY 0x54e @21530
+  SAY 0x57e @21531
+  SAY 0x5ae @21532
+  SAY 0x5de @21533
+  SAY 0x60e @21534
+  SAY 0x63e @21535
+  SAY 0x66e @21536
+  SAY 0x69e @21537
+  SAY 0x6ce @21538
+  SAY 0x6fe @21539
+  SAY 0x72e @21540
+  SAY 0x75e @21541
+  SAY 0x78e @21542
+  SAY 0x7be @21543
+  SAY 0x7ee @21544
+  SAY 0x81e @21545
+  SAY 0x84e @21546
+  SAY 0x87e @21547
+  SAY 0x8ae @21548
+  SAY 0x8de @21549
+  SAY 0x90e @21550
+COMPILE ~%comp_dir%/baf/wm_disp.baf~
+
+COPY ~%comp_dir%/spl/wm_cow.spl~  ~override/wm_cow.spl~    // Wizard Spell: Summon Cow
+  SAY NAME1 @21601
+  SAY UNIDENTIFIED_DESC @21602
+
+COPY ~%comp_dir%/spl/wm_recup.spl~  ~override/wm_recup.spl~   // Wizard Spell: Mynoc's Recuperation
+  SAY NAME1 @21701
+  SAY UNIDENTIFIED_DESC @21702
+COPY ~%comp_dir%/spl/wm_recu1.spl~  ~override/wm_recu1.spl~
+  SAY 0x1be @21711
+  SAY 0x1ee @21712
+  SAY 0x21e @21713
+  SAY 0x24e @21714
+
+COPY ~%comp_dir%/spl/wm_eye.spl~  ~override/wm_eye.spl~    // Wizard Spell: Eye of the Beholder
+  SAY NAME1 @21801
+  SAY UNIDENTIFIED_DESC @21802
+  SAY 0x25e @21811
+  SAY 0x3de @21811
+  SAY 0x58e @21811
+  SAY 0x76e @21811
+  SAY 0x97e @21811
+COPY ~%comp_dir%/spl/wm_eye1.spl~  ~override/wm_eye1.spl~
+  SAY NAME1 @21803
+
+COPY ~%comp_dir%/spl/wm_shld.spl~       ~override/wm_shld.spl~     // Wizard Spell: Entropy Shield
+  SAY NAME1 @21901
+  SAY UNIDENTIFIED_DESC @21902
+
+COPY ~%comp_dir%/spl/wm_sphr.spl~       ~override/wm_sphr.spl~     // Wizard Spell: Wild Sphere
+  SAY NAME1 @22001
+  SAY UNIDENTIFIED_DESC @22002
+  SAY 0x42e @10101
+  WRITE_SHORT 0x098 ~%wm_cf_60%~
+
+COPY ~%comp_dir%/spl/wm_reinc.spl~  ~override/wm_reinc.spl~     // Rhialto's Marvelous Reincarnation
+  SAY NAME1 @22101
+  SAY UNIDENTIFIED_DESC @22102
+
+//v1.4
+
+COPY ~%comp_dir%/spl/wm_chaob.spl~  ~override/wm_chaob.spl~     // Wizard Spell: Entropy Burst
+  SAY NAME1 @22201
+  SAY UNIDENTIFIED_DESC @22202
+  WRITE_SHORT 0x098 ~%wm_chaob%~
+
+COPY ~%comp_dir%/spl/wm_horde.spl~  ~override/wm_horde.spl~     // Wizard Spell: Summon Wild Horde
+  SAY NAME1 @22401
+  SAY UNIDENTIFIED_DESC @22402
+
+COPY ~%comp_dir%/spl/wm_liq.spl~  ~override/wm_liq.spl~     // Wizard Spell: Corporeal Instability
+  SAY NAME1 @22501
+  SAY UNIDENTIFIED_DESC @22502
+  // Poison res is not a native cre stat, see iesdp. Adding separately.
+  FOR (h=1; h<=20; h=h+1) BEGIN
+    duration = h * 6 // 1 round/level
+    savebonus = "-5"  //you can't just say -5?
+    PATCH_FOR_EACH strref IN 14017 14662 BEGIN // Poison, Poisoned
+      LPF ADD_SPELL_EFFECT
+        INT_VAR
+          opcode = OPCODE_text_protection_from_display_specific_string
+          duration = duration // I thought vars are inherited properly, but apparently not?
+          parameter1 = strref
+          probability1 = 99
+          header = h
+          power = 4
+          target = TARGET_FX_preset
+          resist_dispel = DISPELLABLE | IGNORE_MAGIC_RESISTANCE
+          savingthrow = FLAG_SAVINGTHROW_spell
+          savebonus = savebonus
+      END
+    END
+    PATCH_FOR_EACH icon IN ICON_poisoned ICON_bleeding BEGIN
+      LPF ADD_SPELL_EFFECT
+        INT_VAR
+          opcode = OPCODE_prevent_special_effect_icon
+          duration = duration
+          parameter2 = EVAL ~%icon%~ //how do you like THIS Elon Musk?
+          probability1 = 99
+          header = h
+          power = 4
+          target = TARGET_FX_preset
+          resist_dispel = DISPELLABLE | IGNORE_MAGIC_RESISTANCE
+          savingthrow = FLAG_SAVINGTHROW_spell
+          savebonus = savebonus
+      END
+    END
+    // actual poison immunity
+    LPF ADD_SPELL_EFFECT
+      INT_VAR
+        opcode = OPCODE_protection_from_opcode
+        parameter2 = OPCODE_poison
+        duration = duration
+        probability1 = 99
+        header = h
+        power = 4
+        target = TARGET_FX_preset
+        resist_dispel = DISPELLABLE | IGNORE_MAGIC_RESISTANCE
+        savingthrow = FLAG_SAVINGTHROW_spell
+        savebonus = savebonus
+    END
+  END
+
+COPY ~%comp_dir%/spl/wm_rnd2.spl~  ~override/wm_rnd2.spl~    // Wizard Spell: Random Spell II
+  SAY NAME1 @22601
+  SAY UNIDENTIFIED_DESC @22602
+
+COPY ~%comp_dir%/spl/wm_rnd3.spl~  ~override/wm_rnd3.spl~    // Wizard Spell: Random Spell III
+  SAY NAME1 @22701
+  SAY UNIDENTIFIED_DESC @22702
+
+COPY ~%comp_dir%/spl/wm_rnd4.spl~  ~override/wm_rnd4.spl~    // Wizard Spell: Random Spell IV
+  SAY NAME1 @22801
+  SAY UNIDENTIFIED_DESC @22802
+
+COPY ~%comp_dir%/spl/wm_wfire.spl~  ~override/wm_wfire.spl~    // Wizard Spell: Wildfire
+  SAY NAME1 @22901
+  SAY UNIDENTIFIED_DESC @22902
+
+COPY ~%comp_dir%/spl/wm_attr.spl~  ~override/wm_attr.spl~    // Wizard Spell: Layna's Irresistible Appeal
+  SAY NAME1 @23001
+  SAY UNIDENTIFIED_DESC @23002
+
+COPY ~%comp_dir%/spl/wm_armor.spl~  ~override/wm_armor.spl~    // Wizard Spell: Meece's Wild Armour
+  SAY NAME1 @23101
+  SAY UNIDENTIFIED_DESC @23102
+
+//--------------------------------------------------------------------------
+//               Items
+//--------------------------------------------------------------------------
+// bear bam is missing a frame in EEs
+COPY ~%comp_dir%/bam/wm_bear.bam~ ~override~
+COPY ~%comp_dir%/itm/wm_bear.itm~  ~override/wm_bear.itm~    // "Teddy Bear of Protection"
+  SAY NAME1 @40401
+  SAY UNIDENTIFIED_DESC @40402
+  SAY NAME2 @40403
+  SAY DESC @40404
+  WRITE_ASCII_TERMINATE 0x3a ~wm_bear~
+// Bear is "of protection", so shouldn't stack
+APPEND itemexcl.2da "wm_bear 1" UNLESS wm_bear
+
+//------------------------------------------------------
+//   Spellbook "Talking Item" with dialogue
+
+COPY ~%comp_dir%/itm/wm_sbook.itm~ ~override/wm_sbook.itm~
+  SAY NAME1 @40501
+  SAY NAME2 @40501
+  SAY UNIDENTIFIED_DESC @40502
+  SAY DESC @40503
+
+COMPILE ~%comp_dir%/dialog/wm_sbook.d~
+  USING ~%lang_dir%/dialog.tra~
+
+COPY_EXISTING ~itemdial.2da~ ~override/itemdial.2da~
+  APPEND_FILE ~%comp_dir%/dialog/itemdial_add.txt~
+  REPLACE ~_READ_~ @40511
+
+COPY_EXISTING_REGEXP GLOB ~^wm_.+\.spl$~ ~override~
+  GET_OFFSET_ARRAY ab_array SPL_V10_HEADERS
+  PHP_EACH ab_array AS int => ab_off BEGIN
+    GET_OFFSET_ARRAY2 fx_array ab_off SPL_V10_HEAD_EFFECTS
+    PHP_EACH fx_array AS int => fx_off BEGIN
+      READ_BYTE (fx_off + FX_probability1) fx_prob1
+      PATCH_IF fx_prob1 == 100 BEGIN
+        WRITE_BYTE (fx_off + FX_probability1) 99
+      END
+    END
+  END
+BUT_ONLY

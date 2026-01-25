@@ -1,0 +1,15 @@
+// compatibility
+INCLUDE ~%MOD_FOLDER%/compatibility/main.tpa~
+PRINT ~Starting main process~
+
+// list items
+INCLUDE ~%MOD_FOLDER%/core/items.tpa~
+
+// remove from areas
+INCLUDE ~%MOD_FOLDER%/core/areas.tpa~
+// remove from dialogs and scripts
+INCLUDE ~%MOD_FOLDER%/core/d_and_baf.tpa~
+// remove from stores
+INCLUDE ~%MOD_FOLDER%/core/stores.tpa~
+// remove from creatures
+INCLUDE ~%MOD_FOLDER%/core/creatures.tpa~

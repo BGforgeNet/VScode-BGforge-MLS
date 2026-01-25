@@ -1,0 +1,24 @@
+/**
+ * @ret {map} col_index Column index
+ */
+DEFINE_PATCH_FUNCTION GET_2DA_INDEX
+    RET_ARRAY
+        col_index
+        row_index
+BEGIN
+    COUNT_2DA_COLS columns
+    READ_2DA_ENTRIES_NOW rows (columns - 1)  // top row/first column is normally empty
+    FOR (c=0; c<(columns - 1); ++c) BEGIN  // weidu counts from the first field, so first named column starts from index 0, too ("shifted to the left" by one)
+        READ_2DA_ENTRY_FORMER rows 0 c name
+        c2 = c + 1  // shift back to right
+        DEFINE_ASSOCIATIVE_ARRAY col_index BEGIN
+            "%name%" => ~%c2%~
+        END
+    END
+    FOR (r=1; r<rows; ++r) BEGIN
+        READ_2DA_ENTRY_FORMER rows r 0 name
+        DEFINE_ASSOCIATIVE_ARRAY row_index BEGIN
+            "%name%" => ~%r%~
+        END
+    END
+END

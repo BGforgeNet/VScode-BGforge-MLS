@@ -1,0 +1,7 @@
+ACTION_IF ENGINE_IS ~bg2ee~ BEGIN
+  PRINT ~BG2EE~
+  COPY_EXISTING ~jarevia.cre~ ~override~
+    LPF DELETE_CRE_ITEM STR_VAR item_to_delete = ~halb07~ END
+    REPLACE_CRE_ITEM ~halb03~ #0 #0 #0 ~NONE~ ~WEAPON1~ EQUIP TWOHANDED
+  BUT_ONLY
+END
