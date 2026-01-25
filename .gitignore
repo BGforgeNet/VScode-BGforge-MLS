@@ -25,6 +25,7 @@ preview/out/*
 
 external/*
 !external/grammars.txt
+!external/grammars-exclude.txt
 node_modules
 syntaxes_to_json.sh.err
 tmp

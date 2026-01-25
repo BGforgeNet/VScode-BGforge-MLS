@@ -1,0 +1,4 @@
+# Files to exclude from external grammar tests (syntax errors in original)
+# Paths are relative to external/grammars/
+Ascension/ascension/powers/baf/SLAYER_DOCUMENTATION.baf
+BGT-WeiDU/bgt/base/baf/aram00.baf

@@ -41,6 +41,14 @@ for repo in "$EXTERNAL_DIR"/*/; do
 done
 
 echo ""
+echo "=== Removing excluded files ==="
+for file in $(grep -v '^#' "$ROOT_DIR/external/grammars-exclude.txt" | grep -v '^$'); do
+    # Skip dangerous paths: absolute, parent refs, or empty
+    [[ "$file" =~ ^/ || "$file" =~ \.\. || -z "$file" ]] && continue
+    rm -rf "$EXTERNAL_DIR/$file"
+done
+
+echo ""
 echo "=== Formatting external files ==="
 pnpm format "$EXTERNAL_DIR" -r --save -q
 

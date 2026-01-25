@@ -27,7 +27,7 @@ import {
 } from "../../../server/src/weidu-tp2/format/core";
 import { initParser as initTp2Parser, getParser as getTp2Parser } from "../../../server/src/weidu-tp2/parser";
 import { getEditorconfigSettings } from "../../../server/src/shared/editorconfig";
-import { validateFormatting } from "../../../server/src/shared/format-utils";
+import { validateFormatting, stripCommentsWeidu, stripCommentsFalloutSsl } from "../../../server/src/shared/format-utils";
 import { EXT_FALLOUT_SSL, EXT_WEIDU_BAF, EXT_WEIDU_D, EXT_WEIDU_TP2 } from "../../../server/src/core/languages";
 import { parseCliArgs, runCli, safeProcess, reportDiff, FileResult, OutputMode } from "../../cli-utils";
 
@@ -87,7 +87,8 @@ async function processFile(filePath: string, mode: OutputMode): Promise<FileResu
             result = formatTp2Document(tree.rootNode, options);
         }
 
-        const validationError = validateFormatting(text, result.text);
+        const stripComments = fileType === "ssl" ? stripCommentsFalloutSsl : stripCommentsWeidu;
+        const validationError = validateFormatting(text, result.text, stripComments);
         if (validationError) {
             console.error(`${filePath}: Formatter bug: ${validationError}`);
             return "error";
