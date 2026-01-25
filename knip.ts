@@ -32,6 +32,8 @@ const config: KnipConfig = {
     "preview/**",
     // CLI packages bundled by esbuild, import across workspace boundaries
     "cli/**",
+    // external repositories cloned for testing
+    "external/**",
   ],
   ignoreDependencies: [
     // loaded at runtime via path.join in server/src/sslc/ssl_compiler.ts

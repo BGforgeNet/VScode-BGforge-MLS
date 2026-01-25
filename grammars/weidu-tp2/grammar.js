@@ -101,11 +101,17 @@ const appendAction =
             optional("KEEP_CRLF")
         );
 
-/** Define macro: KEYWORD name BEGIN body END */
+/** Define macro: KEYWORD name BEGIN body END (body can include LOCAL_SET/LOCAL_SPRINT) */
 const defineMacro =
     (keyword, bodyType) =>
     ($) =>
-        seq(keyword, field("name", choice($.identifier, $.string)), "BEGIN", repeat(bodyType($)), "END");
+        seq(
+            keyword,
+            field("name", choice($.identifier, $.string)),
+            "BEGIN",
+            repeat(choice(bodyType($), $.local_set, $.local_sprint)),
+            "END"
+        );
 
 /** Define function: KEYWORD name params BEGIN body END */
 const defineFunction =
@@ -127,11 +133,11 @@ const forLoop =
         seq(
             keyword,
             "(",
-            optional($._patch),
+            repeat($._patch),
             ";",
             field("condition", $.value),
             ";",
-            optional($._patch),
+            repeat($._patch),
             ")",
             "BEGIN",
             repeat(bodyType($)),
@@ -185,7 +191,7 @@ const outerPatchAction =
 const outerPatchSaveAction =
     (keyword) =>
     ($) =>
-        seq(keyword, field("var", $.identifier), field("buffer", $.value), "BEGIN", repeat($._patch), "END");
+        seq(keyword, field("var", $._assignable), field("buffer", $.value), "BEGIN", repeat($._patch), "END");
 
 /** INNER_PATCH: KEYWORD buffer BEGIN patches END */
 const innerPatchOp =
@@ -233,6 +239,7 @@ export default grammar({
         [$.action_create],
         [$.variable_ref, $._assignable],
         [$.variable_ref, $.action_at_now],
+        [$.variable_ref, $.action_at_interactive_now],
         [$.variable_ref, $.assoc_entry],
         [$.patch_remove_store_item],
         [$.patch_add_store_item],
@@ -384,6 +391,9 @@ export default grammar({
                 $.file_exists_expr,
                 $.file_exists_in_game_expr,
                 $.directory_exists_expr,
+                $.file_is_in_compressed_biff_expr,
+                $.file_size_expr,
+                $.file_md5_expr,
                 $.variable_is_set_expr,
                 $.is_an_int_expr,
                 $.game_is_expr,
@@ -426,6 +436,9 @@ export default grammar({
                 $.file_exists_expr,
                 $.file_exists_in_game_expr,
                 $.directory_exists_expr,
+                $.file_is_in_compressed_biff_expr,
+                $.file_size_expr,
+                $.file_md5_expr,
                 $.variable_is_set_expr,
                 $.is_an_int_expr,
                 $.game_is_expr,
@@ -560,7 +573,13 @@ export default grammar({
         file_exists_expr: checkExpr("FILE_EXISTS", "file"),
         file_exists_in_game_expr: checkExpr("FILE_EXISTS_IN_GAME", "file"),
         directory_exists_expr: checkExpr("DIRECTORY_EXISTS", "dir"),
-        variable_is_set_expr: checkExpr("VARIABLE_IS_SET", "var"),
+        file_is_in_compressed_biff_expr: checkExpr("FILE_IS_IN_COMPRESSED_BIFF", "file"),
+        file_size_expr: ($) =>
+            prec.right(3, seq("FILE_SIZE", field("file", $.value), field("size", $.value))),
+        file_md5_expr: ($) =>
+            prec.right(3, seq("FILE_MD5", field("file", $.value), field("md5", $.value))),
+        variable_is_set_expr: ($) =>
+            prec.right(3, seq("VARIABLE_IS_SET", optional(choice("EVAL", "EVALUATE_BUFFER")), field("var", $.value))),
         is_an_int_expr: checkExpr("IS_AN_INT", "var"),
         game_is_expr: checkExpr("GAME_IS", "games"),
         game_includes_expr: checkExprSimple("GAME_INCLUDES", "games"),
@@ -777,8 +796,18 @@ export default grammar({
             ),
 
         // String operations
+        // SAY offset text [sound] [female_text [female_sound]]
+        // When female_text is provided, first text is for male PC, second for female PC
         patch_say: ($) =>
-            seq(choice("SAY", "SAY_EVALUATED"), field("offset", $.value), field("text", $.value)),
+            prec.right(
+                seq(
+                    choice("SAY", "SAY_EVALUATED"),
+                    field("offset", $.value),
+                    field("text", $.value),
+                    optional($.sound_ref),
+                    optional(seq(field("female_text", $.value), optional($.sound_ref)))
+                )
+            ),
 
         patch_sprint: sprintOp("SPRINT"),
         patch_text_sprint: sprintOp("TEXT_SPRINT"),
@@ -866,7 +895,9 @@ export default grammar({
         patch_replace: ($) =>
             seq("REPLACE", field("regexp", $.value), field("replacement", $.value), optional($.sound_ref)),
 
-        sound_ref: ($) => seq("[", field("sound", $.identifier), "]"),
+        // Sound reference: [sound_name] or [%variable%]
+        // Higher precedence to prefer identifier over variable_ref for bare names
+        sound_ref: ($) => prec(5, seq("[", field("sound", choice($.identifier, $.variable_ref)), "]")),
 
         patch_replace_textually: ($) =>
             prec.right(
@@ -1177,13 +1208,23 @@ export default grammar({
                 $.action_add_area_type,
                 $.action_add_spell,
                 $.action_add_kit,
+                $.action_add_music,
                 // System/execution
                 $.action_at_now,
+                $.action_at_interactive_now,
+                $.action_at_exit,
                 $.action_at_interactive_exit,
+                $.action_at_uninstall,
+                $.action_at_interactive_uninstall,
+                $.action_at_uninstall_exit,
+                $.action_at_interactive_uninstall_exit,
+                $.action_uninstall,
                 $.action_bash_for,
                 $.action_decompress_biff,
+                $.action_make_biff,
                 // Misc
                 $.action_print,
+                $.action_log,
                 $.action_warn,
                 $.action_fail,
                 $.action_clear_memory,
@@ -1279,9 +1320,21 @@ export default grammar({
         action_delete: ($) =>
             prec.right(seq("DELETE", optional($._opt_no_backup), repeat1(field("file", $.value)))),
 
-        action_move: ($) => seq("MOVE", field("from", $.value), field("to", $.value)),
+        action_move: ($) =>
+            prec.right(
+                seq(
+                    "MOVE",
+                    optional($._opt_no_backup),
+                    choice(
+                        // Glob pattern: (directory pattern) destination
+                        seq("(", field("dir", $.value), field("pattern", $.value), ")", field("to", $.value)),
+                        // Standard file pairs
+                        repeat1($.file_pair)
+                    )
+                )
+            ),
 
-        action_mkdir: ($) => seq("MKDIR", field("dir", $.value)),
+        action_mkdir: ($) => prec.right(seq("MKDIR", repeat1(field("dir", $.value)))),
 
         action_create: ($) =>
             seq(
@@ -1366,6 +1419,16 @@ export default grammar({
 
         action_outer_sprint: sprintOp("OUTER_SPRINT"),
         action_outer_text_sprint: sprintOp("OUTER_TEXT_SPRINT"),
+
+        // Local variables (only valid inside macro bodies)
+        local_set: ($) =>
+            seq(
+                "LOCAL_SET",
+                field("var", $._assignable),
+                $._assign_op,
+                field("value", $.value)
+            ),
+        local_sprint: sprintOp("LOCAL_SPRINT"),
 
         action_with_tra: ($) =>
             seq("WITH_TRA", repeat1(field("file", $.value)), "BEGIN", repeat($._action), "END"),
@@ -1471,11 +1534,24 @@ export default grammar({
 
         action_add_projectile: ($) => seq("ADD_PROJECTILE", field("file", $.value)),
 
-        // System/execution
+        action_add_music: ($) => seq("ADD_MUSIC", field("name", $.value), field("file", $.value)),
+
+        // System/execution - AT_* commands
+        // Pattern A: command + optional EXACT
+        action_at_exit: ($) => seq("AT_EXIT", field("command", $.value), optional("EXACT")),
+        action_at_interactive_exit: ($) => seq("AT_INTERACTIVE_EXIT", field("command", $.value), optional("EXACT")),
+        action_at_uninstall: ($) => seq("AT_UNINSTALL", field("command", $.value), optional("EXACT")),
+        action_at_interactive_uninstall: ($) => seq("AT_INTERACTIVE_UNINSTALL", field("command", $.value), optional("EXACT")),
+        action_at_uninstall_exit: ($) => seq("AT_UNINSTALL_EXIT", field("command", $.value), optional("EXACT")),
+        action_at_interactive_uninstall_exit: ($) => seq("AT_INTERACTIVE_UNINSTALL_EXIT", field("command", $.value), optional("EXACT")),
+
+        action_uninstall: ($) => seq("UNINSTALL", field("tp2", $.value), field("component", $.value)),
+
+        // Pattern B: optional variable + command + optional EXACT
         action_at_now: ($) =>
             seq("AT_NOW", optional(field("var", $.identifier)), field("command", $.value), optional("EXACT")),
-
-        action_at_interactive_exit: ($) => seq("AT_INTERACTIVE_EXIT", field("command", $.value)),
+        action_at_interactive_now: ($) =>
+            seq("AT_INTERACTIVE_NOW", optional(field("var", $.identifier)), field("command", $.value), optional("EXACT")),
 
         action_bash_for: ($) =>
             seq(
@@ -1489,8 +1565,20 @@ export default grammar({
 
         action_decompress_biff: ($) => seq("DECOMPRESS_BIFF", field("file", $.value)),
 
+        action_make_biff: ($) =>
+            seq("MAKE_BIFF", field("name", $.value), "BEGIN", repeat1($.directory_file_regexp), "END"),
+
+        // Shared by MAKE_BIFF, ACTION_BASH_FOR, PATCH_BASH_FOR
+        directory_file_regexp: ($) =>
+            seq(
+                field("directory", $.value),
+                optional(choice("EVALUATE_REGEXP", "EXACT_MATCH")),
+                field("pattern", $.value)
+            ),
+
         // Print/messaging (using helpers)
         action_print: printOp("PRINT"),
+        action_log: printOp("LOG"),
         action_warn: printOp("WARN"),
         action_fail: printOp("FAIL"),
 
@@ -1607,12 +1695,13 @@ export default grammar({
 
         inlined_file: ($) =>
             seq(
-                "<<<<<<<<",
                 field("filename", $.inlined_filename),
                 field("body", $.inlined_body),
                 ">>>>>>>>"
             ),
-        inlined_filename: ($) => /[^\n]+/,
-        inlined_body: ($) => /[^>]*(?:>[^>][^>]*)*/,
+        // Start marker + optional space + filename on same line
+        inlined_filename: ($) => /<<<<<<<<[ \t]*[^\n]*/,
+        // Body: any content until >>>>>>>>. Allows up to 7 consecutive > chars
+        inlined_body: ($) => /([^>]|>[^>]|>>[^>]|>>>[^>]|>>>>[^>]|>>>>>[^>]|>>>>>>[^>]|>>>>>>>[^>])*/,
     },
 });

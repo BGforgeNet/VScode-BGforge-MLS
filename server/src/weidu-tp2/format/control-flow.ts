@@ -228,7 +228,9 @@ function formatForLoopHeader(node: SyntaxNode): string | null {
 
     const parts: string[] = [];
     let inParens = false;
-    const parenContent: string[] = [];
+    // Three sections: init patches, condition, step patches
+    const sections: string[][] = [[], [], []];
+    let sectionIdx = 0;
 
     for (const child of node.children) {
         if (child.text === KW_FOR || child.text === KW_OUTER_FOR) {
@@ -241,7 +243,9 @@ function formatForLoopHeader(node: SyntaxNode): string | null {
         }
         if (child.text === ")") {
             inParens = false;
-            parts.push("(" + parenContent.join("; ") + ")");
+            // Join items within each section with space, sections with "; "
+            const formattedSections = sections.map((s) => s.join(" "));
+            parts.push("(" + formattedSections.join("; ") + ")");
             continue;
         }
         if (isKeyword(child, KW_BEGIN)) {
@@ -249,10 +253,11 @@ function formatForLoopHeader(node: SyntaxNode): string | null {
         }
         if (inParens) {
             if (child.text === ";") {
+                sectionIdx++;
                 continue;
             }
-            if (!isComment(child)) {
-                parenContent.push(normalizeWhitespace(child.text));
+            if (!isComment(child) && sectionIdx < 3) {
+                sections[sectionIdx]?.push(normalizeWhitespace(child.text));
             }
         }
     }

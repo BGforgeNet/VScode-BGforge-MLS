@@ -1,4 +1,40 @@
-# Files to exclude from external grammar tests (syntax errors in original)
+# Files to exclude from external grammar tests
 # Paths are relative to external/grammars/
+
+# BAF files with syntax errors in original source
 Ascension/ascension/powers/baf/SLAYER_DOCUMENTATION.baf
 BGT-WeiDU/bgt/base/baf/aram00.baf
+BGT-WeiDU/bgt/modify/baf/a6bio.baf
+
+# BAF template files using WeiDU %variable% placeholders as standalone triggers/actions
+bg2-tweaks-and-tricks/tnt/components/easy_traps/baf/detection.baf
+bg2-tweaks-and-tricks/tnt/components/easy_traps/baf/displaystring.baf
+bg2-tweaks-and-tricks/tnt/components/easy_traps/baf/intuition.baf
+bg2-tweaks-and-tricks/tnt/components/starting_bags/ar0602.baf
+bg2-tweaks-and-tricks/tnt/components/uncheese_project_image/g_pispy1.baf
+
+# SSL files using macros with `else` continuation. These macros expand to
+# `if...then begin...end`, so `else` after them is valid post-expansion.
+# But the parser sees raw source where `else` follows an expression statement.
+
+# check_forced_dialog macro
+Fallout2_Restoration_Project/scripts_src/den/dcjoey.ssl
+Fallout2_Restoration_Project/scripts_src/hubstash/hcguard2.ssl
+Fallout2_Restoration_Project/scripts_src/modoc/mcvegeir.ssl
+Fallout2_Restoration_Project/scripts_src/ncr/scdocjub.ssl
+Fallout2_Restoration_Project/scripts_src/newreno/ncangbis.ssl
+Fallout2_Restoration_Project/scripts_src/newreno/ncbisgrd.ssl
+Fallout2_Restoration_Project/scripts_src/newreno/nccorbro.ssl
+Fallout2_Restoration_Project/scripts_src/newreno/nclabish.ssl
+Fallout2_Restoration_Project/scripts_src/newreno/ncpitbos.ssl
+Fallout2_Restoration_Project/scripts_src/newreno/ncstulit.ssl
+Fallout2_Restoration_Project/scripts_src/sanfran/fcplntmn.ssl
+
+# start_tent_dialog macro
+Fallout2_Restoration_Project/scripts_src/main/ahhakun.ssl
+
+# anim_move_to_point_rate macro
+Fallout2_Restoration_Project/scripts_src/newreno/nceldrid.ssl
+
+# If_Companion_Needs_Healing macro
+Fallout2_Restoration_Project/scripts_src/valtcity/vcdrtroy.ssl

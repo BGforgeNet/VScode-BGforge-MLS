@@ -100,6 +100,7 @@ export const NODE_ACTION_TRY = "action_try";
 export const NODE_INNER_PATCH = "inner_patch";
 export const NODE_INNER_PATCH_SAVE = "inner_patch_save";
 export const NODE_INNER_PATCH_FILE = "inner_patch_file";
+export const NODE_REPLACE_BCS_BLOCK = "patch_replace_bcs_block";
 export const NODE_INNER_ACTION = "inner_action";
 export const NODE_COMPONENT = "component";
 export const NODE_ALWAYS_BLOCK = "always_block";
@@ -135,6 +136,7 @@ export const CONTROL_FLOW_TYPES = [
     "patch_replace_evaluate",
     // Actions with BEGIN...END body
     "action_with_tra",
+    "action_make_biff",
     // FOR_EACH types
     ...FOR_EACH_TYPES,
 ] as const;

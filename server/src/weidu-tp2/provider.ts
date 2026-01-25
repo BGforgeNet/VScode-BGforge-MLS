@@ -11,7 +11,7 @@ import { EXT_WEIDU_TP2, LANG_WEIDU_TP2 } from "../core/languages";
 import { Language, Features } from "../data-loader";
 import { FormatResult, LanguageProvider, ProviderContext } from "../language-provider";
 import { getEditorconfigSettings } from "../shared/editorconfig";
-import { createFullDocumentEdit, validateFormatting } from "../shared/format-utils";
+import { createFullDocumentEdit, validateFormatting, stripCommentsWeidu } from "../shared/format-utils";
 import { buildParamInfoMap, type ParamDisplayInfo } from "../shared/jsdoc";
 import { compile as weiduCompile } from "../weidu-compile";
 import { getContextAtPosition, getFuncParamsContext } from "./completion/context";
@@ -269,7 +269,7 @@ export const weiduTp2Provider: LanguageProvider = {
             return { edits: [], warning: `TP2 formatter error: ${msg}` };
         }
 
-        const validationError = validateFormatting(text, result.text);
+        const validationError = validateFormatting(text, result.text, stripCommentsWeidu);
         if (validationError) {
             conlog(`TP2 formatter validation failed: ${validationError}`);
             return {

@@ -32,20 +32,6 @@ let ctx: FormatContext = {
 const BEGIN_END_REGEX = /^(begin|end)$/i;
 const BEGIN_END_PROCEDURE_REGEX = /^(begin|end|procedure)$/i;
 
-// Reserved words that cannot be used as identifiers.
-// Tree-sitter grammar allows keywords as identifiers when not in keyword position,
-// so we detect and report them here. See grammar.js and README for details.
-const RESERVED_WORDS = new Set([
-    "begin", "end", "procedure", "variable", "if", "then", "else",
-    "while", "do", "for", "foreach", "in", "switch", "case", "default",
-    "return", "break", "continue", "call", "import", "export",
-    "and", "or", "not", "bwand", "bwor", "bwxor", "bwnot",
-]);
-
-function isReservedWord(text: string): boolean {
-    return RESERVED_WORDS.has(text.toLowerCase());
-}
-
 /** Abort formatting with a descriptive error including source location. */
 function throwFormatError(message: string, line: number, column: number): never {
     throw new Error(`${line}:${column}: ${message}`);
@@ -309,19 +295,10 @@ function formatProcedure(node: SyntaxNode, depth: number): string {
         const prevChild = children[i - 1]; // undefined at start
 
         if (skipTypes.has(child.type)) return;
-        // Check for reserved words used as identifiers before skipping
+        // Skip begin/end/procedure keywords - they may appear as identifiers due to macros
+        // (e.g., `else begin` after a macro that expands to if-then-begin-end).
+        // Content validation catches any actual semantic changes.
         if (BEGIN_END_PROCEDURE_REGEX.test(child.text)) {
-            // If it's an expression_stmt containing an identifier, it's a reserved word misuse
-            if (child.type === "expression_stmt") {
-                const ident = child.namedChildren[0];
-                if (ident?.type === "identifier" && isReservedWord(ident.text)) {
-                    throwFormatError(
-                        `Reserved word "${ident.text}" cannot be used as identifier`,
-                        ident.startPosition.row + 1,
-                        ident.startPosition.column + 1,
-                    );
-                }
-            }
             return;
         }
         if (child.type.includes("procedure")) return;
@@ -376,16 +353,28 @@ function formatParam(node: SyntaxNode): string {
 function formatVariableDecl(node: SyntaxNode, depth: number = 0): string {
     const hasBegin = node.children.some(c => c.text.match(/^begin$/i));
     if (hasBegin) {
-        const vars: string[] = [];
+        // Group var_inits by semicolon - comma-separated inits share a line
+        const lines: string[] = [];
+        let currentGroup: string[] = [];
         for (const child of node.children) {
             if (child.type === "var_init") {
-                vars.push(ctx.indent + formatVarInit(child, depth + 1) + ";");
+                currentGroup.push(formatVarInit(child, depth + 1));
+            } else if (child.text === ";") {
+                if (currentGroup.length > 0) {
+                    lines.push(ctx.indent + currentGroup.join(", ") + ";");
+                    currentGroup = [];
+                }
             }
         }
-        return `variable begin\n${vars.join("\n")}\nend`;
+        // Handle any remaining var_inits (shouldn't happen with well-formed input)
+        if (currentGroup.length > 0) {
+            lines.push(ctx.indent + currentGroup.join(", ") + ";");
+        }
+        return `variable begin\n${lines.join("\n")}\nend`;
     }
 
     const hasImport = node.children.some(c => c.text === "import");
+    const hasSemicolon = node.children.some(c => c.text === ";");
     const prefix = hasImport ? "import variable " : "variable ";
     const varInits: string[] = [];
     for (const child of node.children) {
@@ -394,7 +383,7 @@ function formatVariableDecl(node: SyntaxNode, depth: number = 0): string {
         }
     }
 
-    return `${prefix}${varInits.join(", ")};`;
+    return `${prefix}${varInits.join(", ")}${hasSemicolon ? ";" : ""}`;
 }
 
 function formatVarInit(node: SyntaxNode, depth: number = 0, prefixLen: number = 0): string {
@@ -558,16 +547,24 @@ function formatForeachStmt(node: SyntaxNode, depth: number): string {
     const keyNode = node.childForFieldName("key");
     const valueNode = node.childForFieldName("value");
     const hasVariable = node.children.some(c => c.text === "variable");
+    const hasParens = node.children.some(c => c.text === "(");
     const iter = node.childForFieldName("iter");
     const body = node.childForFieldName("body");
 
     let header: string;
     const varPrefix = hasVariable ? "variable " : "";
     if (keyNode && valueNode) {
-        header = `foreach (${varPrefix}${keyNode.text}: ${valueNode.text} in ${formatExpression(iter)})`;
+        // foreach k: v in expr (with or without parens)
+        if (hasParens) {
+            header = `foreach (${varPrefix}${keyNode.text}: ${valueNode.text} in ${formatExpression(iter)})`;
+        } else {
+            header = `foreach ${keyNode.text}: ${valueNode.text} in ${formatExpression(iter)}`;
+        }
     } else if (keyNode) {
+        // foreach (var in expr) - parenthesized single var form
         header = `foreach (${varPrefix}${keyNode.text} in ${formatExpression(iter)})`;
     } else if (varNode) {
+        // foreach var in expr - no parens
         header = `foreach ${varNode.text} in ${formatExpression(iter)}`;
     } else {
         header = `foreach in ${formatExpression(iter)}`;
@@ -783,13 +780,9 @@ function formatExpression(node: SyntaxNode | null | undefined, column: number = 
             return `@${ident.text}`;
         }
         case "identifier":
-            if (isReservedWord(node.text)) {
-                throwFormatError(
-                    `Reserved word "${node.text}" cannot be used as identifier`,
-                    node.startPosition.row + 1,
-                    node.startPosition.column + 1,
-                );
-            }
+            // Note: Reserved word check removed here - macros can cause keywords to appear
+            // as identifiers in the parse tree (e.g., `else` after macro that expands to
+            // if-then-begin-end). Content validation catches any actual semantic changes.
             return node.text;
         case "number":
         case "boolean":
@@ -806,6 +799,18 @@ function formatExpression(node: SyntaxNode | null | undefined, column: number = 
                 );
             }
             return `variable ${name.text} = ${formatExpression(value)}`;
+        }
+        case "for_init_assign": {
+            const name = node.childForFieldName("name");
+            const value = node.childForFieldName("value");
+            if (!name || !value) {
+                throwFormatError(
+                    `Malformed for_init_assign: ${node.text}`,
+                    node.startPosition.row + 1,
+                    node.startPosition.column + 1,
+                );
+            }
+            return `${name.text} = ${formatExpression(value)}`;
         }
         default:
             return node.text;
@@ -942,7 +947,8 @@ function formatMemberExpr(node: SyntaxNode): string {
 function formatArrayExpr(node: SyntaxNode, column: number = 0, extraLength: number = 0): string {
     const elements: string[] = [];
     for (const child of node.children) {
-        if (child.type !== "[" && child.type !== "]" && child.type !== ",") {
+        // Skip brackets, commas, and comments - comments cause spurious commas after last element
+        if (child.type !== "[" && child.type !== "]" && child.type !== "," && !isComment(child)) {
             elements.push(formatExpression(child));
         }
     }

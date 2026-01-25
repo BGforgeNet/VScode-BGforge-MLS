@@ -363,10 +363,19 @@ function formatAction(node: SyntaxNode, ctx: FormatContext): string {
     }
 }
 
-// Get the header line from an action node (first line of source, normalized)
+// Get the header from a BEGIN/APPEND action - everything before states and END
 function getActionHeader(node: SyntaxNode): string {
-    const firstLine = node.text.split("\n")[0] ?? "";
-    return normalizeWhitespace(firstLine);
+    const headerRow = node.startPosition.row;
+    const parts: string[] = [];
+    for (const child of node.children) {
+        // Stop at states or END keyword
+        if (child.type === "state") break;
+        if (child.text.toUpperCase() === "END") break;
+        // Stop at comments that are NOT on the header line
+        if (isComment(child) && child.startPosition.row !== headerRow) break;
+        parts.push(isComment(child) ? normalizeLineComment(child.text) : child.text);
+    }
+    return normalizeWhitespace(parts.join(" "));
 }
 
 // Iterate children with blank line preservation, calling handler for each

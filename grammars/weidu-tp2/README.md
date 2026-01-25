@@ -503,11 +503,11 @@ Copy and patch Default.gam and all savegames.
 #### MOVE
 
 ```tp2
-MOVE [--no-backup] ~fromFile~ ~toFile~ ...
+MOVE [+|-] ~fromFile~ ~toFile~ ...
 MOVE (~directory~ ~regexp~) ~toDir~
 ```
 
-Move files or directories.
+Move files or directories. `+` skips backup, `-` only moves inlined files. Second form uses `directory-file-regexp` pattern.
 
 #### DELETE
 
@@ -551,6 +551,14 @@ ADD_PROJECTILE ~file.pro~
 ```
 
 Add projectile to PROJECTL.IDS, copy PRO file to override. Variable `%filename%` holds new ProRef.
+
+#### ADD_MUSIC
+
+```tp2
+ADD_MUSIC ~internalMusicName~ ~newMUSFile~
+```
+
+Add new music track to SONGLIST.2DA. The internal name is used to reference the music, and the MUS file is copied to the music directory.
 
 ### Compilation
 
@@ -603,10 +611,26 @@ Remove all variables and reload automatic ones.
 #### MKDIR
 
 ```tp2
-MKDIR ~directory~
+MKDIR ~directory~ [~directory2~ ...]
 ```
 
-Create directory (and parent directories).
+Create directories (and parent directories).
+
+#### LOG
+
+```tp2
+LOG ~message~
+```
+
+Print message to installation log.
+
+#### UNINSTALL
+
+```tp2
+UNINSTALL ~modToUninstall~ ~modComponent~
+```
+
+Uninstall a component from another mod.
 
 #### INCLUDE
 
@@ -624,14 +648,59 @@ REINCLUDE ~file.tpa~ [~file2.tpa~ ...]
 
 Like INCLUDE but re-executes even if already included. Node type: `action_reinclude`.
 
-#### AT_NOW
+#### AT_NOW / AT_INTERACTIVE_NOW
 
 ```tp2
-AT_NOW ~command~
-AT_NOW varname ~command~ [EXACT]
+AT_NOW [varname] ~command~ [EXACT]
+AT_INTERACTIVE_NOW [varname] ~command~ [EXACT]
 ```
 
-Execute system command immediately. Optional varname captures output.
+Execute system command immediately. Optional varname captures output. INTERACTIVE variant shows command output to user.
+
+#### AT_EXIT / AT_INTERACTIVE_EXIT
+
+```tp2
+AT_EXIT ~command~ [EXACT]
+AT_INTERACTIVE_EXIT ~command~ [EXACT]
+```
+
+Execute command when installation completes successfully.
+
+#### AT_UNINSTALL / AT_INTERACTIVE_UNINSTALL
+
+```tp2
+AT_UNINSTALL ~command~ [EXACT]
+AT_INTERACTIVE_UNINSTALL ~command~ [EXACT]
+```
+
+Execute command when component is uninstalled.
+
+#### AT_UNINSTALL_EXIT / AT_INTERACTIVE_UNINSTALL_EXIT
+
+```tp2
+AT_UNINSTALL_EXIT ~command~ [EXACT]
+AT_INTERACTIVE_UNINSTALL_EXIT ~command~ [EXACT]
+```
+
+Execute command when uninstallation completes successfully.
+
+#### MAKE_BIFF
+
+```tp2
+MAKE_BIFF ~biffname~ BEGIN directory-file-regexp-list END
+```
+
+Create a BIFF archive containing matched files. Uses `directory-file-regexp` pattern (see below).
+
+#### directory-file-regexp
+
+Pattern used by MAKE_BIFF, ACTION_BASH_FOR, PATCH_BASH_FOR:
+
+```tp2
+~directory~ ~regexp~                    // Match files by regexp
+~directory~ EVALUATE_REGEXP ~regexp~    // Same as above
+~directory~ EXACT_MATCH ~filename~      // Match specific file
+```
 
 #### OUTER_SET / OUTER_SPRINT / OUTER_TEXT_SPRINT
 
@@ -804,15 +873,19 @@ Call defined functions.
 
 ```tp2
 DEFINE_ACTION_MACRO macroName BEGIN
+  LOCAL_SET varName = value
+  LOCAL_SPRINT varName ~string~
   actions...
 END
 
 DEFINE_PATCH_MACRO macroName BEGIN
+  LOCAL_SET varName = value
+  LOCAL_SPRINT varName ~string~
   patches...
 END
 ```
 
-Define macros (legacy, prefer functions).
+Define macros (legacy, prefer functions). LOCAL_SET and LOCAL_SPRINT declare local variables at the beginning of the macro body.
 
 #### LAM / LPM (Launch Macro)
 
@@ -895,6 +968,30 @@ END
 ```
 
 Patch file without copying.
+
+### Inlined Files
+
+```tp2
+<<<<<<<<path/to/file.txt
+file contents here
+can span multiple lines
+>>>>>>>>
+```
+
+Embeds file content directly in TP2. WeiDU is whitespace-agnostic, so these are equivalent:
+
+```tp2
+<<<<<<<< file.txt
+content>>>>>>>>
+```
+
+```tp2
+<<<<<<<<file.txt
+content
+>>>>>>>>
+```
+
+The body may contain `>` characters as long as they don't form exactly `>>>>>>>>` (8 consecutive).
 
 ### Modifiers
 
@@ -1028,17 +1125,14 @@ Variable assignment with operators.
 
 ```tp2
 SAY offset ~text~
+SAY offset ~text~ [soundRef]
+SAY offset ~maleText~ [maleSound] ~femaleText~ [femaleSound]
+SAY_EVALUATED offset ~text with %vars%~
 ```
 
-Write string reference at offset (for names, descriptions).
+Write string reference at offset (for names, descriptions). Optional sound reference in brackets (e.g., `[BARSAV01]` or `[%sound%]`).
 
-#### SAY_EVALUATED
-
-```tp2
-SAY_EVALUATED offset ~string with %vars%~
-```
-
-Like SAY but evaluates variables in string first.
+When two text values are provided, the first is used for male PCs and the second for female PCs. Both can have optional sound references.
 
 ### Messages/Control Flow
 

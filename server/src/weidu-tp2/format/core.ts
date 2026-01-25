@@ -25,6 +25,7 @@ import {
     NODE_INNER_PATCH,
     NODE_INNER_PATCH_SAVE,
     NODE_INNER_PATCH_FILE,
+    NODE_REPLACE_BCS_BLOCK,
 } from "./types";
 import {
     isComment,
@@ -51,6 +52,7 @@ import {
     formatPredicateAction,
     formatInnerAction,
     formatInnerPatch,
+    formatReplaceBcsBlock,
 } from "./blocks";
 import { SyntaxType } from "../tree-sitter.d";
 
@@ -144,7 +146,13 @@ function formatComponent(node: SyntaxNode, ctx: FormatContext): string {
         // Body content - actions inside component (no indent, since the grammar
         // may place these as top-level nodes after reformatting collapses flags
         // onto the BEGIN line)
-        if (isAction(child.type) || isControlFlow(child.type) || isFunctionCall(child.type) || child.type === SyntaxType.TopLevelAssignment) {
+        if (
+            isAction(child.type) ||
+            isControlFlow(child.type) ||
+            isFunctionCall(child.type) ||
+            child.type === SyntaxType.TopLevelAssignment ||
+            child.type === SyntaxType.InlinedFile
+        ) {
             if (beginLine) {
                 lines.push(beginLine);
                 beginLine = "";
@@ -371,6 +379,11 @@ function formatNode(node: SyntaxNode, ctx: FormatContext, depth: number): string
         return formatInnerPatch(node, ctx, depth, formatNode);
     }
 
+    // REPLACE_BCS_BLOCK / R_B_B
+    if (type === NODE_REPLACE_BCS_BLOCK) {
+        return formatReplaceBcsBlock(node, ctx, depth, formatNode);
+    }
+
     // Simple nodes
     return formatSimpleNode(node, ctx, depth);
 }
@@ -443,8 +456,34 @@ function isCommentAttachedToComponent(
     return false;
 }
 
+/**
+ * Find first ERROR or MISSING node in tree.
+ * Returns the node if found, null otherwise.
+ */
+function findParseError(node: SyntaxNode): SyntaxNode | null {
+    if (node.type === "ERROR" || node.isMissing) {
+        return node;
+    }
+    for (const child of node.children) {
+        const error = findParseError(child);
+        if (error) return error;
+    }
+    return null;
+}
+
 /** Format a TP2 document. */
 export function formatDocument(root: SyntaxNode, options?: Partial<FormatOptions>): FormatResult {
+    // Fail early on parse errors - don't attempt to format malformed input
+    const parseError = findParseError(root);
+    if (parseError) {
+        const errorType = parseError.isMissing ? "MISSING" : "ERROR";
+        throwFormatError(
+            `Parse ${errorType}: cannot format file with syntax errors`,
+            parseError.startPosition.row + 1,
+            parseError.startPosition.column + 1
+        );
+    }
+
     const opts = { ...DEFAULT_OPTIONS, ...options };
     const ctx: FormatContext = {
         indent: " ".repeat(opts.indentSize),

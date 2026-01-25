@@ -11,7 +11,7 @@ import { LANG_WEIDU_BAF } from "../core/languages";
 import { Language, Features } from "../data-loader";
 import { FormatResult, LanguageProvider, ProviderContext } from "../language-provider";
 import { getIndentFromEditorconfig } from "../shared/editorconfig";
-import { createFullDocumentEdit, validateFormatting } from "../shared/format-utils";
+import { createFullDocumentEdit, validateFormatting, stripCommentsWeidu } from "../shared/format-utils";
 import { fileURLToPath } from "url";
 import { formatDocument as formatAst, FormatOptions } from "./format-core";
 import { initParser, getParser, isInitialized } from "./parser";
@@ -86,7 +86,7 @@ export const weiduBafProvider: LanguageProvider = {
             return { edits: [], warning: `BAF formatter error: ${msg}` };
         }
 
-        const validationError = validateFormatting(text, result.text);
+        const validationError = validateFormatting(text, result.text, stripCommentsWeidu);
         if (validationError) {
             conlog(`BAF formatter validation failed: ${validationError}`);
             return {

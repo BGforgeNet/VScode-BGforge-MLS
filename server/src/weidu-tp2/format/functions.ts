@@ -236,7 +236,8 @@ export function formatFunctionDef(
         }
 
         if (inBody) {
-            if (isBodyContent(child.type)) {
+            // Handle standard body content and macro-specific LOCAL_SET/LOCAL_SPRINT
+            if (isBodyContent(child.type) || child.type === SyntaxType.LocalSet || child.type === SyntaxType.LocalSprint) {
                 lines.push(formatNode(child, ctx, depth + 1));
                 lastEndRow = child.endPosition.row;
             }

@@ -121,10 +121,11 @@ export default grammar({
       seq(optional("variable"), field("name", $.identifier), optional(seq("=", field("default", $._expression)))),
 
     // Variable: variable name; or variable name := expr; or variable a = 1, b = 2;
+    // Begin blocks support comma-separated var_inits per line: variable begin a = 0, b = 0; end
     variable_decl: ($) =>
       choice(
         seq(optional("import"), "variable", commaSep($.var_init), optional(";")),
-        seq("variable", "begin", repeat(seq($.var_init, ";")), "end")
+        seq("variable", "begin", repeat(seq(commaSep($.var_init), ";")), "end")
       ),
 
     var_init: ($) =>
@@ -176,7 +177,7 @@ export default grammar({
       seq(
         "for",
         "(",
-        field("init", optional(choice($.for_var_decl, $._expression))),
+        field("init", optional(choice($.for_var_decl, $.for_init_assign, $._expression))),
         ";",
         field("cond", optional($._expression)),
         ";",
@@ -189,15 +190,29 @@ export default grammar({
     for_var_decl: ($) =>
       seq("variable", field("name", $.identifier), choice(":=", "="), field("value", $._expression)),
 
-    // foreach has two forms:
+    // Assignment in for loop init without variable keyword: i = 0
+    for_init_assign: ($) =>
+      seq(field("name", $.identifier), choice(":=", "="), field("value", $._expression)),
+
+    // foreach has multiple forms:
     // - foreach var in expr body
+    // - foreach k: v in expr body
     // - foreach (var in expr) body  or  foreach (k: v in expr) body
     // The parenthesized form can have optional "while condition" before closing paren.
     foreach_stmt: ($) =>
       seq(
         "foreach",
         choice(
-          // foreach var in expr body (no parens)
+          // foreach k: v in expr body (no parens, key:value)
+          seq(
+            field("key", $.identifier),
+            ":",
+            field("value", $.identifier),
+            "in",
+            field("iter", $._expression),
+            field("body", $._stmt_or_block)
+          ),
+          // foreach var in expr body (no parens, single var)
           seq(
             field("var", $.identifier),
             "in",
@@ -335,6 +350,7 @@ export default grammar({
           [alias(/[Bb][Ww][Aa][Nn][Dd]/, "bwand"), 5],
           ["==", 6],
           ["!=", 6],
+          [alias(/[Ii][Nn]/, "in"), 6],  // membership test: expr in array
           ["<", 7],
           [">", 7],
           ["<=", 7],

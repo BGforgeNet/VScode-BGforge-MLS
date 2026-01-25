@@ -259,7 +259,12 @@ const MATCH_CASE_TYPES = new Set(["match_case", "action_match_case", "assoc_entr
  * included because array body content can be raw values, not wrapped in actions.
  */
 export function isControlFlowBodyContent(type: string): boolean {
-    return isBodyContent(type) || MATCH_CASE_TYPES.has(type) || PRIMITIVE_TYPES.has(type);
+    return (
+        isBodyContent(type) ||
+        MATCH_CASE_TYPES.has(type) ||
+        PRIMITIVE_TYPES.has(type) ||
+        type === SyntaxType.DirectoryFileRegexp // For MAKE_BIFF, ACTION_BASH_FOR, PATCH_BASH_FOR
+    );
 }
 
 // ============================================

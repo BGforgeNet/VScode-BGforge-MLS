@@ -144,6 +144,116 @@ DELETE ~mymod/temp.txt~
           (tilde_content))))))
 
 ================================================================================
+MKDIR action
+================================================================================
+
+MKDIR ~mymod/data~
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (action_mkdir
+    dir: (value
+      (string
+        (tilde_string
+          (tilde_content))))))
+
+================================================================================
+MKDIR with multiple directories
+================================================================================
+
+MKDIR ~area0015~
+      ~area3100~
+      ~area3200~
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (action_mkdir
+    dir: (value
+      (string
+        (tilde_string
+          (tilde_content))))
+    dir: (value
+      (string
+        (tilde_string
+          (tilde_content))))
+    dir: (value
+      (string
+        (tilde_string
+          (tilde_content))))))
+
+================================================================================
+MOVE action
+================================================================================
+
+MOVE ~mymod/old.txt~ ~mymod/new.txt~
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (action_move
+    (file_pair
+      from: (value
+        (string
+          (tilde_string
+            (tilde_content))))
+      to: (value
+        (string
+          (tilde_string
+            (tilde_content)))))))
+
+================================================================================
+MOVE with no backup (+)
+================================================================================
+
+MOVE + ~mymod/old.txt~ ~mymod/new.txt~
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (action_move
+    (file_pair
+      from: (value
+        (string
+          (tilde_string
+            (tilde_content))))
+      to: (value
+        (string
+          (tilde_string
+            (tilde_content)))))))
+
+================================================================================
+MOVE with multiple file pairs
+================================================================================
+
+MOVE ~old1.txt~ ~new1.txt~
+     ~old2.txt~ ~new2.txt~
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (action_move
+    (file_pair
+      from: (value
+        (string
+          (tilde_string
+            (tilde_content))))
+      to: (value
+        (string
+          (tilde_string
+            (tilde_content)))))
+    (file_pair
+      from: (value
+        (string
+          (tilde_string
+            (tilde_content))))
+      to: (value
+        (string
+          (tilde_string
+            (tilde_content)))))))
+
+================================================================================
 COMPILE action
 ================================================================================
 
@@ -284,3 +394,251 @@ LAF my_func END
   (action_launch_function
     name: (identifier)))
 
+================================================================================
+AT_EXIT
+================================================================================
+
+AT_EXIT ~mymod/cleanup.sh~
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (action_at_exit
+    command: (value
+      (string
+        (tilde_string
+          (tilde_content))))))
+
+================================================================================
+AT_EXIT with EXACT
+================================================================================
+
+AT_EXIT ~ren "%bg1_dir%\baldur.bgt" baldur.ini~ EXACT
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (action_at_exit
+    command: (value
+      (string
+        (tilde_string
+          (tilde_content))))))
+
+================================================================================
+AT_INTERACTIVE_EXIT with EXACT
+================================================================================
+
+AT_INTERACTIVE_EXIT ~echo done~ EXACT
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (action_at_interactive_exit
+    command: (value
+      (string
+        (tilde_string
+          (tilde_content))))))
+
+================================================================================
+AT_UNINSTALL
+================================================================================
+
+AT_UNINSTALL ~mymod/uninstall.bat~
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (action_at_uninstall
+    command: (value
+      (string
+        (tilde_string
+          (tilde_content))))))
+
+================================================================================
+AT_UNINSTALL with EXACT
+================================================================================
+
+AT_UNINSTALL ~del "%bg1_dir%\baldur.ini"~ EXACT
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (action_at_uninstall
+    command: (value
+      (string
+        (tilde_string
+          (tilde_content))))))
+
+================================================================================
+AT_INTERACTIVE_UNINSTALL
+================================================================================
+
+AT_INTERACTIVE_UNINSTALL ~echo removing~
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (action_at_interactive_uninstall
+    command: (value
+      (string
+        (tilde_string
+          (tilde_content))))))
+
+================================================================================
+AT_UNINSTALL_EXIT
+================================================================================
+
+AT_UNINSTALL_EXIT ~cleanup.bat~
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (action_at_uninstall_exit
+    command: (value
+      (string
+        (tilde_string
+          (tilde_content))))))
+
+================================================================================
+AT_INTERACTIVE_UNINSTALL_EXIT
+================================================================================
+
+AT_INTERACTIVE_UNINSTALL_EXIT ~final_cleanup.sh~ EXACT
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (action_at_interactive_uninstall_exit
+    command: (value
+      (string
+        (tilde_string
+          (tilde_content))))))
+
+================================================================================
+AT_NOW with variable
+================================================================================
+
+AT_NOW result ~echo test~
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (action_at_now
+    var: (identifier)
+    command: (value
+      (string
+        (tilde_string
+          (tilde_content))))))
+
+================================================================================
+AT_INTERACTIVE_NOW
+================================================================================
+
+AT_INTERACTIVE_NOW ~echo interactive~
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (action_at_interactive_now
+    command: (value
+      (string
+        (tilde_string
+          (tilde_content))))))
+
+================================================================================
+AT_INTERACTIVE_NOW with variable and EXACT
+================================================================================
+
+AT_INTERACTIVE_NOW output ~echo test~ EXACT
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (action_at_interactive_now
+    var: (identifier)
+    command: (value
+      (string
+        (tilde_string
+          (tilde_content))))))
+
+================================================================================
+MAKE_BIFF simple
+================================================================================
+
+MAKE_BIFF ~area0015~ BEGIN ~area0015~ ~^.*$~ END
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (action_make_biff
+    name: (value
+      (string
+        (tilde_string
+          (tilde_content))))
+    (directory_file_regexp
+      directory: (value
+        (string
+          (tilde_string
+            (tilde_content))))
+      pattern: (value
+        (string
+          (tilde_string
+            (tilde_content)))))))
+
+================================================================================
+MAKE_BIFF with EXACT_MATCH
+================================================================================
+
+MAKE_BIFF ~area3100~ BEGIN ~area3100~ ~^.*$~
+                           ~bgt/tilesets/mos~ EXACT_MATCH ~ar3101.mos~ END
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (action_make_biff
+    name: (value
+      (string
+        (tilde_string
+          (tilde_content))))
+    (directory_file_regexp
+      directory: (value
+        (string
+          (tilde_string
+            (tilde_content))))
+      pattern: (value
+        (string
+          (tilde_string
+            (tilde_content)))))
+    (directory_file_regexp
+      directory: (value
+        (string
+          (tilde_string
+            (tilde_content))))
+      pattern: (value
+        (string
+          (tilde_string
+            (tilde_content)))))))
+
+================================================================================
+MAKE_BIFF with EVALUATE_REGEXP
+================================================================================
+
+MAKE_BIFF ~mybiff~ BEGIN ~mydir~ EVALUATE_REGEXP ~^.*\.itm$~ END
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (action_make_biff
+    name: (value
+      (string
+        (tilde_string
+          (tilde_content))))
+    (directory_file_regexp
+      directory: (value
+        (string
+          (tilde_string
+            (tilde_content))))
+      pattern: (value
+        (string
+          (tilde_string
+            (tilde_content)))))))

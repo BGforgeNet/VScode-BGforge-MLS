@@ -98,6 +98,7 @@ variable matrix[100];
 variable begin
     a;
     b = 1;
+    c = 2, d = 3;  // comma-separated on same line
 end
 
 // Imported
@@ -150,6 +151,11 @@ end
 for (variable i = 0; i < 10; i++) begin
     // statements
 end
+
+// Init without variable keyword (assigns to existing variable)
+for (i = 0; i < 10; i++) begin
+    // statements
+end
 ```
 
 #### Foreach Loop (sfall)
@@ -158,6 +164,11 @@ foreach item in array begin
     // statements
 end
 
+foreach key: value in map begin
+    // statements
+end
+
+// Parenthesized form (allows while condition)
 foreach (key: value in map) begin
     // statements
 end
@@ -251,6 +262,7 @@ Bitwise:
 
 Comparison:
 - `==`, `!=` - equality
+- `in` - membership test (sfall): `expr in array`
 - `<`, `>`, `<=`, `>=` - relational
 
 Arithmetic:
@@ -359,7 +371,7 @@ false
 | 9 | `*`, `/`, `%` |
 | 8 | `+`, `-` |
 | 7 | `<`, `>`, `<=`, `>=` |
-| 6 | `==`, `!=` |
+| 6 | `==`, `!=`, `in` |
 | 5 | `bwand` |
 | 4 | `bwxor` |
 | 3 | `bwor` |

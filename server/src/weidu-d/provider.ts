@@ -11,7 +11,7 @@ import { LANG_WEIDU_D } from "../core/languages";
 import { Language, Features } from "../data-loader";
 import { FormatResult, LanguageProvider, ProviderContext } from "../language-provider";
 import { getIndentFromEditorconfig } from "../shared/editorconfig";
-import { createFullDocumentEdit, validateFormatting } from "../shared/format-utils";
+import { createFullDocumentEdit, validateFormatting, stripCommentsWeidu } from "../shared/format-utils";
 import { fileURLToPath } from "url";
 import { getDefinition } from "./definition";
 import { formatDocument as formatAst, FormatOptions } from "./format-core";
@@ -90,7 +90,7 @@ export const weiduDProvider: LanguageProvider = {
             return { edits: [], warning: `D formatter error: ${msg}` };
         }
 
-        const validationError = validateFormatting(text, result.text);
+        const validationError = validateFormatting(text, result.text, stripCommentsWeidu);
         if (validationError) {
             conlog(`D formatter validation failed: ${validationError}`);
             return {

@@ -159,3 +159,78 @@ export function formatInnerPatch(
     lines.push(indent + KW_END);
     return lines.join("\n");
 }
+
+// ============================================
+// REPLACE_BCS_BLOCK formatting
+// ============================================
+
+/**
+ * Format REPLACE_BCS_BLOCK / R_B_B patches.
+ * Structure: R_B_B [CASE_SENSITIVE|CASE_INSENSITIVE] file+ [ON_MISMATCH <patches> END]
+ */
+export function formatReplaceBcsBlock(
+    node: SyntaxNode,
+    ctx: FormatContext,
+    depth: number,
+    formatNode: (node: SyntaxNode, ctx: FormatContext, depth: number) => string
+): string {
+    const indent = ctx.indent.repeat(depth);
+    const bodyIndent = ctx.indent.repeat(depth + 1);
+    const lines: string[] = [];
+
+    // Collect header parts and detect ON_MISMATCH
+    const headerParts: string[] = [];
+    let inOnMismatch = false;
+    let hasOnMismatch = false;
+    let lastEndRow = -1;
+
+    for (const child of node.children) {
+        const textUpper = child.text.toUpperCase();
+
+        // Keywords
+        if (textUpper === "R_B_B" || textUpper === "REPLACE_BCS_BLOCK") {
+            headerParts.push(child.text);
+            continue;
+        }
+        if (textUpper === "CASE_SENSITIVE" || textUpper === "CASE_INSENSITIVE") {
+            headerParts.push(child.text);
+            continue;
+        }
+        if (textUpper === "ON_MISMATCH") {
+            hasOnMismatch = true;
+            inOnMismatch = true;
+            // Output header first, then ON_MISMATCH
+            lines.push(indent + headerParts.join(" "));
+            lines.push(indent + "ON_MISMATCH");
+            lastEndRow = child.startPosition.row;
+            continue;
+        }
+        if (textUpper === "END") {
+            continue;
+        }
+
+        // File strings (before ON_MISMATCH)
+        if (!inOnMismatch && child.type === SyntaxType.String) {
+            headerParts.push(child.text);
+            continue;
+        }
+
+        // Body content (after ON_MISMATCH)
+        if (inOnMismatch) {
+            if (isComment(child)) {
+                handleComment(lines, child, bodyIndent, lastEndRow);
+            } else if (isPatch(child.type) || isControlFlow(child.type) || isFunctionCall(child.type)) {
+                lines.push(formatNode(child, ctx, depth + 1));
+                lastEndRow = child.endPosition.row;
+            }
+        }
+    }
+
+    // If no ON_MISMATCH, output as single line
+    if (!hasOnMismatch) {
+        return indent + headerParts.join(" ");
+    }
+
+    lines.push(indent + KW_END);
+    return lines.join("\n");
+}
