@@ -1,5 +1,5 @@
-# Files to exclude from external grammar tests
-# Paths are relative to external/grammars/
+# Files to exclude from external tests
+# Paths are relative to external/test/
 
 # BAF files with syntax errors in original source
 Ascension/ascension/powers/baf/SLAYER_DOCUMENTATION.baf

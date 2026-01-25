@@ -6,7 +6,7 @@ set -eu -o pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
-EXTERNAL_DIR="$ROOT_DIR/external/grammars"
+EXTERNAL_DIR="$ROOT_DIR/external/test"
 
 cd "$ROOT_DIR"
 
@@ -25,7 +25,7 @@ while IFS= read -r url || [[ -n "$url" ]]; do
         echo "Cloning: $name"
         git clone --depth 1 "$url" "$EXTERNAL_DIR/$name"
     fi
-done < "$ROOT_DIR/external/grammars.txt"
+done < "$ROOT_DIR/external/test.txt"
 
 # Check if any repos exist
 if ! find "$EXTERNAL_DIR" -mindepth 1 -maxdepth 1 -type d | grep -q .; then
@@ -42,7 +42,7 @@ done
 
 echo ""
 echo "=== Removing excluded files ==="
-for file in $(grep -v '^#' "$ROOT_DIR/external/grammars-exclude.txt" | grep -v '^$'); do
+for file in $(grep -v '^#' "$ROOT_DIR/external/test-exclude.txt" | grep -v '^$'); do
     # Skip dangerous paths: absolute, parent refs, or empty
     [[ "$file" =~ ^/ || "$file" =~ \.\. || -z "$file" ]] && continue
     rm -rf "$EXTERNAL_DIR/$file"
