@@ -6,17 +6,17 @@
 import { describe, expect, it, beforeAll, vi } from "vitest";
 
 // Mock the server module to avoid LSP connection issues
-vi.mock("../src/server", () => ({
+vi.mock("../../src/server", () => ({
     connection: {
         console: { log: vi.fn() },
         sendDiagnostics: vi.fn(),
     },
 }));
 
-import { getContextAtPosition } from "../src/weidu-tp2/completion/context";
-import { filterItemsByContext } from "../src/weidu-tp2/completion/filter";
-import type { CompletionContext } from "../src/weidu-tp2/completion/types";
-import { initParser } from "../src/weidu-tp2/parser";
+import { getContextAtPosition } from "../../src/weidu-tp2/completion/context";
+import { filterItemsByContext } from "../../src/weidu-tp2/completion/filter";
+import type { CompletionContext } from "../../src/weidu-tp2/completion/types";
+import { initParser } from "../../src/weidu-tp2/parser";
 import { CompletionItem, CompletionItemKind } from "vscode-languageserver/node";
 
 beforeAll(async () => {

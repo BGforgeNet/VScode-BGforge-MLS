@@ -12,7 +12,7 @@ function getHoverValue(contents: unknown): string {
 }
 
 // Mock the server module to avoid LSP connection issues
-vi.mock("../src/server", () => ({
+vi.mock("../../src/server", () => ({
     connection: {
         console: { log: vi.fn() },
         sendDiagnostics: vi.fn(),
@@ -32,9 +32,9 @@ import {
     isFunctionDef,
     isFunctionCall,
     isBodyContent,
-} from "../src/weidu-tp2/format/utils";
-import { formatDocument } from "../src/weidu-tp2/format/core";
-import { initParser, getParser } from "../src/weidu-tp2/parser";
+} from "../../src/weidu-tp2/format/utils";
+import { formatDocument } from "../../src/weidu-tp2/format/core";
+import { initParser, getParser } from "../../src/weidu-tp2/parser";
 
 describe("format-utils: normalizeLineComment", () => {
     it("adds space after // if missing", () => {
@@ -570,14 +570,14 @@ describe("formatDocument throws on structural errors", () => {
 
 describe("header-parser: parseHeader", () => {
     // Lazy-load module after parser initialization
-    let parseHeader: typeof import("../src/weidu-tp2/header-parser").parseHeader;
-    let updateFileIndex: typeof import("../src/weidu-tp2/header-parser").updateFileIndex;
-    let lookupFunction: typeof import("../src/weidu-tp2/header-parser").lookupFunction;
-    let clearIndex: typeof import("../src/weidu-tp2/header-parser").clearIndex;
+    let parseHeader: typeof import("../../src/weidu-tp2/header-parser").parseHeader;
+    let updateFileIndex: typeof import("../../src/weidu-tp2/header-parser").updateFileIndex;
+    let lookupFunction: typeof import("../../src/weidu-tp2/header-parser").lookupFunction;
+    let clearIndex: typeof import("../../src/weidu-tp2/header-parser").clearIndex;
 
     beforeAll(async () => {
         await initParser();
-        const mod = await import("../src/weidu-tp2/header-parser");
+        const mod = await import("../../src/weidu-tp2/header-parser");
         parseHeader = mod.parseHeader;
         updateFileIndex = mod.updateFileIndex;
         lookupFunction = mod.lookupFunction;
@@ -659,14 +659,14 @@ DEFINE_ACTION_MACRO macro1 BEGIN END
 
 describe("definition: getDefinition", () => {
     // Lazy-load modules after parser initialization
-    let getDefinition: typeof import("../src/weidu-tp2/definition").getDefinition;
-    let clearIndex: typeof import("../src/weidu-tp2/header-parser").clearIndex;
-    let updateFileIndex: typeof import("../src/weidu-tp2/header-parser").updateFileIndex;
+    let getDefinition: typeof import("../../src/weidu-tp2/definition").getDefinition;
+    let clearIndex: typeof import("../../src/weidu-tp2/header-parser").clearIndex;
+    let updateFileIndex: typeof import("../../src/weidu-tp2/header-parser").updateFileIndex;
 
     beforeAll(async () => {
         await initParser();
-        const defMod = await import("../src/weidu-tp2/definition");
-        const headerMod = await import("../src/weidu-tp2/header-parser");
+        const defMod = await import("../../src/weidu-tp2/definition");
+        const headerMod = await import("../../src/weidu-tp2/header-parser");
         getDefinition = defMod.getDefinition;
         clearIndex = headerMod.clearIndex;
         updateFileIndex = headerMod.updateFileIndex;
@@ -714,11 +714,11 @@ BEGIN @1
 });
 
 describe("hover formatting: loadFileData", () => {
-    let loadFileData: typeof import("../src/weidu-data").loadFileData;
+    let loadFileData: typeof import("../../src/weidu-data").loadFileData;
 
     beforeAll(async () => {
         await initParser();
-        const mod = await import("../src/weidu-data");
+        const mod = await import("../../src/weidu-data");
         loadFileData = mod.loadFileData;
     });
 

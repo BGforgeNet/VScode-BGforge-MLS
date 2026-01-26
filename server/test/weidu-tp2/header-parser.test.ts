@@ -3,8 +3,8 @@
  */
 
 import { describe, expect, it, beforeAll } from "vitest";
-import { parseHeaderVariables } from "../src/weidu-tp2/header-parser";
-import { initParser } from "../src/weidu-tp2/parser";
+import { parseHeaderVariables } from "../../src/weidu-tp2/header-parser";
+import { initParser } from "../../src/weidu-tp2/parser";
 
 beforeAll(async () => {
     await initParser();

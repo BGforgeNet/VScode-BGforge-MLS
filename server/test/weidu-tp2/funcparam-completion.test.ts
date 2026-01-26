@@ -7,7 +7,7 @@ import { describe, expect, it, beforeAll, vi } from "vitest";
 import { Position } from "vscode-languageserver/node";
 
 // Mock the LSP connection module
-vi.mock("../src/lsp-connection", () => ({
+vi.mock("../../src/lsp-connection", () => ({
     getConnection: vi.fn(() => ({
         console: { log: vi.fn() },
         sendDiagnostics: vi.fn(),
@@ -16,17 +16,17 @@ vi.mock("../src/lsp-connection", () => ({
 }));
 
 // Mock isSubpath to always return true
-vi.mock("../src/common", async (importOriginal) => {
-    const mod = await importOriginal<typeof import("../src/common")>();
+vi.mock("../../src/common", async (importOriginal) => {
+    const mod = await importOriginal<typeof import("../../src/common")>();
     return {
         ...mod,
         isSubpath: vi.fn(() => true),
     };
 });
 
-import { weiduTp2Provider } from "../src/weidu-tp2/provider";
-import { initParser } from "../src/weidu-tp2/parser";
-import { defaultSettings } from "../src/settings";
+import { weiduTp2Provider } from "../../src/weidu-tp2/provider";
+import { initParser } from "../../src/weidu-tp2/parser";
+import { defaultSettings } from "../../src/settings";
 import * as path from "path";
 
 beforeAll(async () => {

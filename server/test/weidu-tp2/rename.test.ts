@@ -6,15 +6,15 @@ import { describe, expect, it, beforeAll, vi } from "vitest";
 import { Position, TextEdit } from "vscode-languageserver/node";
 
 // Mock the server module to avoid LSP connection issues
-vi.mock("../src/server", () => ({
+vi.mock("../../src/server", () => ({
     connection: {
         console: { log: vi.fn() },
         sendDiagnostics: vi.fn(),
     },
 }));
 
-import { renameSymbol, prepareRenameSymbol } from "../src/weidu-tp2/rename";
-import { initParser } from "../src/weidu-tp2/parser";
+import { renameSymbol, prepareRenameSymbol } from "../../src/weidu-tp2/rename";
+import { initParser } from "../../src/weidu-tp2/parser";
 
 beforeAll(async () => {
     await initParser();

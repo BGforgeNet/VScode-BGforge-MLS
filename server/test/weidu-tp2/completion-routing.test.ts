@@ -7,7 +7,7 @@
 import { describe, expect, it, beforeAll, vi } from "vitest";
 
 // Mock the server module to avoid LSP connection issues
-vi.mock("../src/server", () => ({
+vi.mock("../../src/server", () => ({
     connection: {
         console: { log: vi.fn() },
         sendDiagnostics: vi.fn(),
@@ -15,18 +15,18 @@ vi.mock("../src/server", () => ({
 }));
 
 // Mock isSubpath to always return true (files don't actually exist on disk for these tests)
-vi.mock("../src/common", async (importOriginal) => {
-    const mod = await importOriginal<typeof import("../src/common")>();
+vi.mock("../../src/common", async (importOriginal) => {
+    const mod = await importOriginal<typeof import("../../src/common")>();
     return {
         ...mod,
         isSubpath: vi.fn(() => true),
     };
 });
 
-import { Language, Features } from "../src/data-loader";
-import { LANG_WEIDU_TP2 } from "../src/core/languages";
-import { pathToUri } from "../src/common";
-import { initParser } from "../src/weidu-tp2/parser";
+import { Language, Features } from "../../src/data-loader";
+import { LANG_WEIDU_TP2 } from "../../src/core/languages";
+import { pathToUri } from "../../src/common";
+import { initParser } from "../../src/weidu-tp2/parser";
 import * as path from "path";
 
 beforeAll(async () => {
