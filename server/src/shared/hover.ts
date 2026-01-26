@@ -5,7 +5,6 @@
 
 import { Hover } from "vscode-languageserver/node";
 import { MapData } from "./feature-data";
-import { loadStaticMap } from "./static-data";
 
 /** source is path, relative to workspace root, or absolute if not in workspace */
 export interface HoverEx extends Hover {
@@ -23,7 +22,3 @@ export interface HoverMapEx extends Map<string, HoverEx> {}
  * - static: built-in hovers from JSON
  */
 export type Data = MapData<HoverEx, Hover>;
-
-export function loadStatic(langId: string): HoverMap {
-    return loadStaticMap<Hover>("hover", langId);
-}

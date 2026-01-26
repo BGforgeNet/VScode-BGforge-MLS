@@ -1,25 +1,25 @@
 /**
  * Fallout SSL header parsing utilities.
  * Handles regex-based parsing of .h files for procedures, macros, and definitions.
+ *
+ * Main API: parseHeaderToSymbols() - Returns IndexedSymbol[] for unified storage.
  */
 
-import { CompletionItemKind } from "vscode-languageserver";
+import { CompletionItemKind, type Location } from "vscode-languageserver";
 import { MarkupKind } from "vscode-languageserver/node";
-import {
-    conlog,
-    findFiles,
-    RegExpMatchArrayWithIndices,
-} from "../common";
-import * as completion from "../shared/completion";
+import { type RegExpMatchArrayWithIndices } from "../common";
+import { computeDisplayPath } from "../core/location-utils";
+import type { CallableSymbol, ConstantSymbol, IndexedSymbol } from "../core/symbol";
+import { ScopeLevel, SourceType, SymbolKind } from "../core/symbol";
 import * as definition from "../shared/definition";
-import * as hover from "../shared/hover";
 import * as jsdoc from "../shared/jsdoc";
-import { HeaderData as LanguageHeaderData } from "../data-loader";
-import * as pool from "../shared/pool";
 import { LANG_FALLOUT_SSL_TOOLTIP } from "../core/languages";
 import { jsdocToDetail, jsdocToMarkdown } from "../shared/jsdoc-utils";
-import * as signature from "../shared/signature";
-import { MacroData, buildMacroCompletion, buildMacroHover, buildSignatureFromJSDoc, isConstantMacro, parseMacroParams } from "./macro-utils";
+import { type MacroData, buildMacroCompletion, buildMacroHover, buildSignatureFromJSDoc, isConstantMacro, parseMacroParams } from "./macro-utils";
+
+// =============================================================================
+// Types
+// =============================================================================
 
 interface FalloutHeaderData {
     macros: Macros;
@@ -44,181 +44,6 @@ interface Macro {
 interface Macros extends Array<Macro> { }
 
 const tooltipLangId = LANG_FALLOUT_SSL_TOOLTIP;
-
-/**
- * @param headersDirectory
- * @param external
- * @param staticHover - Used to skip dupes from headers, such as sfall macros, which are imported statically.
- * @returns
- */
-export async function loadHeaders(
-    headersDirectory: string,
-    external = false,
-    staticHover: hover.HoverMap = new Map(),
-) {
-    const completions: completion.CompletionListEx = [];
-    const hovers: hover.HoverMapEx = new Map();
-    const definitions: definition.Data = new Map();
-    const signatures: signature.SigMap = new Map();
-    const headerFiles = findFiles(headersDirectory, "h");
-
-    const { results, errors } = await pool.processHeaders(
-        headerFiles,
-        headersDirectory,
-        loadFileData,
-        external,
-    );
-
-    if (errors.length > 0) {
-        conlog(errors);
-    }
-
-    results.map((x) => {
-        for (const item of x.completion) {
-            if (!staticHover.has(item.label)) {
-                completions.push(item);
-            }
-        }
-
-        for (const [key, value] of x.hover) {
-            if (!staticHover.has(key)) {
-                hovers.set(key, value);
-            }
-        }
-
-        for (const [key, value] of x.definition) {
-            if (!staticHover.has(key)) {
-                definitions.set(key, value);
-            }
-        }
-
-        if (x.signature !== undefined) {
-            for (const [key, value] of x.signature) {
-                if (!staticHover.has(key)) {
-                    signatures.set(key, value);
-                }
-            }
-        }
-    });
-
-    const result: LanguageHeaderData = {
-        completion: completions,
-        hover: hovers,
-        definition: definitions,
-        signature: signatures,
-    };
-    return result;
-}
-
-function loadProcedures(uri: string, headerData: FalloutHeaderData, filePath: string) {
-    const completions: completion.CompletionListEx = [];
-    const hovers: hover.HoverMapEx = new Map();
-    for (const proc of headerData.procedures) {
-        let markdownValue = [
-            "```" + `${tooltipLangId}`,
-            `${proc.detail}`,
-            "```",
-            "\n```bgforge-mls-comment\n",
-            `${filePath}`,
-            "```",
-        ].join("\n");
-        if (proc.jsdoc) {
-            markdownValue += jsdocToMarkdown(proc.jsdoc, "fallout");
-        }
-        const markdownContents = { kind: MarkupKind.Markdown, value: markdownValue };
-        const completionItem: completion.CompletionItemEx = {
-            label: proc.label,
-            documentation: markdownContents,
-            source: filePath,
-            uri: uri,
-            kind: CompletionItemKind.Function,
-            labelDetails: { description: filePath },
-        };
-        if (proc.jsdoc?.deprecated !== undefined) {
-            const COMPLETION_TAG_deprecated = 1;
-            completionItem.tags = [COMPLETION_TAG_deprecated];
-        }
-        completions.push(completionItem);
-        const hoverItem = { contents: markdownContents, source: filePath, uri: uri };
-        hovers.set(proc.label, hoverItem);
-    }
-    return { completion: completions, hover: hovers };
-}
-
-function loadMacros(uri: string, headerData: FalloutHeaderData, filePath: string) {
-    const completions: completion.CompletionListEx = [];
-    const hovers: hover.HoverMapEx = new Map();
-
-    for (const macro of headerData.macros) {
-        // Convert old Macro interface to MacroData for shared builders
-        const hasParams = !macro.constant && macro.detail.includes("(");
-        const params = hasParams ? parseMacroParams(macro.detail.match(/\(([^)]+)\)/)?.[1] || "") : undefined;
-
-        const macroData: MacroData = {
-            name: macro.label,
-            params,
-            hasParams,
-            firstline: macro.firstline,
-            multiline: macro.multiline,
-            jsdoc: macro.jsdoc,
-        };
-
-        // Use shared builders
-        const item = buildMacroCompletion(macroData, uri, filePath);
-        // Add source field (specific to header completions)
-        (item as completion.CompletionItemEx).source = filePath;
-        (item as completion.CompletionItemEx).uri = uri;
-        completions.push(item as completion.CompletionItemEx);
-
-        const hoverContents = buildMacroHover(macroData, filePath);
-        hovers.set(macro.label, { contents: hoverContents, source: filePath, uri });
-    }
-
-    return { completion: completions, hover: hovers };
-}
-
-/**
- *
- * @param uri
- * @param text
- * @param filePath cosmetic only, relative or absolute path
- * @returns
- */
-export function loadFileData(uri: string, text: string, filePath: string) {
-    const symbols = findSymbols(text);
-    const procs = loadProcedures(uri, symbols, filePath);
-    const macros = loadMacros(uri, symbols, filePath);
-    const completions = [...procs.completion, ...macros.completion];
-    const hovers = new Map([...procs.hover, ...macros.hover]);
-    const definitions = definition.load(uri, symbols.definitions);
-    const signatures = getSignatures(symbols, uri);
-    const result: LanguageHeaderData = {
-        hover: hovers,
-        completion: completions,
-        definition: definitions,
-        signature: signatures,
-    };
-    return result;
-}
-
-function getSignatures(symbols: FalloutHeaderData, uri: string) {
-    const signatures: signature.SigMap = new Map();
-
-    // Use shared function for both macros and procedures
-    for (const macro of symbols.macros) {
-        if (macro.jsdoc && macro.jsdoc.args.length > 0) {
-            signatures.set(macro.label, buildSignatureFromJSDoc(macro.label, macro.jsdoc, uri));
-        }
-    }
-
-    for (const procedure of symbols.procedures) {
-        if (procedure.jsdoc && procedure.jsdoc.args.length > 0) {
-            signatures.set(procedure.label, buildSignatureFromJSDoc(procedure.label, procedure.jsdoc, uri));
-        }
-    }
-
-    return signatures;
-}
 
 function findSymbols(text: string) {
     // defines
@@ -264,7 +89,6 @@ function findSymbols(text: string) {
             const jsd = jsdoc.parse(m[2]);
             item.jsdoc = jsd;
             item.detail = jsdocToDetail(defineName, jsd, "macro");
-            defineList.push(item);
         }
         defineList.push(item);
     }
@@ -349,4 +173,158 @@ function findDefinitions(text: string) {
         }
     });
     return definitions;
+}
+
+// =============================================================================
+// Unified Symbol API
+// =============================================================================
+
+/**
+ * Parse a header file and return symbols for the unified index.
+ * This is the preferred API - returns IndexedSymbol[] ready for Symbols storage.
+ *
+ * @param uri File URI
+ * @param text File content
+ * @param workspaceRoot Workspace root for computing relative displayPath
+ */
+export function parseHeaderToSymbols(
+    uri: string,
+    text: string,
+    workspaceRoot?: string,
+): IndexedSymbol[] {
+    const displayPath = computeDisplayPath(uri, workspaceRoot);
+    const headerData = findSymbols(text);
+    const definitions = findDefinitions(text);
+    const defMap = new Map(definitions.map(d => [d.name, d]));
+
+    const result: IndexedSymbol[] = [];
+
+    // Convert procedures to IndexedSymbol
+    for (const proc of headerData.procedures) {
+        const def = defMap.get(proc.label);
+        const location: Location | null = def ? {
+            uri,
+            range: {
+                start: { line: def.line, character: def.start },
+                end: { line: def.line, character: def.end },
+            },
+        } : null;
+
+        const sig = proc.jsdoc && proc.jsdoc.args.length > 0
+            ? buildSignatureFromJSDoc(proc.label, proc.jsdoc, uri)
+            : undefined;
+
+        const hoverContents = buildProcedureHover(proc, displayPath);
+
+        const symbol: CallableSymbol = {
+            name: proc.label,
+            kind: SymbolKind.Procedure,
+            location,
+            scope: { level: ScopeLevel.Workspace },
+            source: {
+                type: SourceType.Workspace,
+                uri,
+                displayPath,
+            },
+            completion: {
+                label: proc.label,
+                kind: CompletionItemKind.Function,
+                labelDetails: { description: displayPath },
+            },
+            hover: { contents: hoverContents },
+            signature: sig,
+            callable: {},
+        };
+        result.push(symbol);
+    }
+
+    // Convert macros to IndexedSymbol
+    for (const macro of headerData.macros) {
+        const def = defMap.get(macro.label);
+        const location: Location | null = def ? {
+            uri,
+            range: {
+                start: { line: def.line, character: def.start },
+                end: { line: def.line, character: def.end },
+            },
+        } : null;
+
+        const hasParams = !macro.constant && macro.detail.includes("(");
+        const params = hasParams ? parseMacroParams(macro.detail.match(/\(([^)]+)\)/)?.[1] || "") : undefined;
+
+        const macroData: MacroData = {
+            name: macro.label,
+            params,
+            hasParams,
+            firstline: macro.firstline,
+            multiline: macro.multiline,
+            jsdoc: macro.jsdoc,
+        };
+
+        const hoverContents = buildMacroHover(macroData, displayPath);
+        const completionItem = buildMacroCompletion(macroData, uri, displayPath);
+
+        const sig = macro.jsdoc && macro.jsdoc.args.length > 0
+            ? buildSignatureFromJSDoc(macro.label, macro.jsdoc, uri)
+            : undefined;
+
+        if (hasParams) {
+            const symbol: CallableSymbol = {
+                name: macro.label,
+                kind: SymbolKind.Macro,
+                location,
+                scope: { level: ScopeLevel.Workspace },
+                source: {
+                    type: SourceType.Workspace,
+                    uri,
+                    displayPath,
+                },
+                completion: completionItem,
+                hover: { contents: hoverContents },
+                signature: sig,
+                callable: { parameters: params?.map(p => ({ name: p })) },
+            };
+            result.push(symbol);
+        } else {
+            const symbol: ConstantSymbol = {
+                name: macro.label,
+                kind: SymbolKind.Constant,
+                location,
+                scope: { level: ScopeLevel.Workspace },
+                source: {
+                    type: SourceType.Workspace,
+                    uri,
+                    displayPath,
+                },
+                completion: completionItem,
+                hover: { contents: hoverContents },
+                signature: sig,
+                constant: { value: macro.firstline },
+            };
+            result.push(symbol);
+        }
+    }
+
+    return result;
+}
+
+/**
+ * Build hover content for a procedure (used by parseHeaderToSymbols).
+ */
+function buildProcedureHover(
+    proc: Procedure,
+    filePath: string
+): { kind: typeof MarkupKind.Markdown; value: string } {
+    let markdownValue = [
+        "```" + `${tooltipLangId}`,
+        `${proc.detail}`,
+        "```",
+        "\n```bgforge-mls-comment\n",
+        `${filePath}`,
+        "```",
+    ].join("\n");
+    if (proc.jsdoc) {
+        markdownValue += jsdocToMarkdown(proc.jsdoc, "fallout");
+    }
+    return { kind: MarkupKind.Markdown, value: markdownValue };
 }

@@ -2,8 +2,13 @@
  * Unit tests for WeiDU TP2 variable go-to-definition functionality.
  */
 
-import { describe, expect, it, beforeAll, vi } from "vitest";
-import { Position } from "vscode-languageserver/node";
+import { describe, expect, it, beforeAll, beforeEach, afterEach, vi } from "vitest";
+import * as fs from "fs";
+import * as path from "path";
+import * as os from "os";
+import { pathToFileURL } from "url";
+import { CompletionItemKind, Position } from "vscode-languageserver/node";
+import { SymbolKind, ScopeLevel, SourceType } from "../../src/core/symbol";
 
 // Mock the server module to avoid LSP connection issues
 vi.mock("../../src/server", () => ({
@@ -15,7 +20,9 @@ vi.mock("../../src/server", () => ({
 
 import { getDefinition } from "../../src/weidu-tp2/definition";
 import { initParser } from "../../src/weidu-tp2/parser";
-import { updateVariableIndex } from "../../src/weidu-tp2/header-parser";
+import { parseHeaderToSymbols } from "../../src/weidu-tp2/header-parser";
+import * as provider from "../../src/weidu-tp2/provider";
+import { Symbols } from "../../src/core/symbol-index";
 
 beforeAll(async () => {
     await initParser();
@@ -439,12 +446,15 @@ LAF my_func INT_VAR bonus = test2 END
     });
 
     it("returns null for param name when function is not indexed", () => {
-        // Set up a variable with the same name in the variable index
+        // Set up a Symbols with a variable having the same name as the parameter
+        const mockSymbols = new Symbols();
+        const headerUri = "file:///lib.tph";
         const headerText = `
 OUTER_SET parameter2 = 999
 `;
-        const headerUri = "file:///lib.tph";
-        updateVariableIndex(headerUri, headerText);
+        const symbols = parseHeaderToSymbols(headerUri, headerText);
+        mockSymbols.updateFile(headerUri, symbols);
+        vi.spyOn(provider, "getSymbols").mockReturnValue(mockSymbols);
 
         // Call an unknown function with a parameter that matches the indexed variable
         const text = `LPF unknown_func
@@ -459,10 +469,84 @@ END
 
         // Should return null, NOT the variable definition from the index
         expect(result).toBeNull();
+
+        vi.restoreAllMocks();
+    });
+});
+
+describe("TP2 definition: INCLUDE directive", () => {
+    let tempDir: string;
+
+    beforeEach(() => {
+        tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "tp2-include-test-"));
+    });
+
+    afterEach(() => {
+        fs.rmSync(tempDir, { recursive: true, force: true });
+    });
+
+    it("navigates to included file when it exists", () => {
+        // Create target file
+        const libDir = path.join(tempDir, "lib");
+        fs.mkdirSync(libDir, { recursive: true });
+        const targetPath = path.join(libDir, "utils.tph");
+        fs.writeFileSync(targetPath, "// Header file");
+
+        // Main file with INCLUDE
+        const mainPath = path.join(tempDir, "setup.tp2");
+        const mainUri = pathToFileURL(mainPath).toString();
+        const text = `INCLUDE ~lib/utils.tph~`;
+
+        // Cursor on the path string (middle of "lib/utils.tph")
+        const position: Position = { line: 0, character: 12 };
+        const result = getDefinition(text, mainUri, position);
+
+        expect(result).not.toBeNull();
+        expect(result?.uri).toBe(pathToFileURL(targetPath).toString());
+        expect(result?.range.start.line).toBe(0);
+        expect(result?.range.start.character).toBe(0);
+    });
+
+    it("returns null when included file does not exist", () => {
+        const mainPath = path.join(tempDir, "setup.tp2");
+        const mainUri = pathToFileURL(mainPath).toString();
+        const text = `INCLUDE ~nonexistent/file.tph~`;
+
+        const position: Position = { line: 0, character: 15 };
+        const result = getDefinition(text, mainUri, position);
+
+        expect(result).toBeNull();
+    });
+
+    it("returns null when cursor is not on INCLUDE path", () => {
+        const text = `
+OUTER_SET x = 5
+INCLUDE ~lib/file.tph~
+`;
+        const uri = "file:///test.tp2";
+        // Cursor on "x" in OUTER_SET, not on INCLUDE
+        const position: Position = { line: 1, character: 12 };
+        const result = getDefinition(text, uri, position);
+
+        // Should find variable definition, not navigate to a file
+        // Result is null because 'x' is being defined, not used
+        expect(result).toBeNull();
     });
 });
 
 describe("TP2 definition: header variables", () => {
+    let mockSymbols: Symbols;
+
+    beforeEach(() => {
+        // Create a mock Symbols for header variable tests
+        mockSymbols = new Symbols();
+        vi.spyOn(provider, "getSymbols").mockReturnValue(mockSymbols);
+    });
+
+    afterEach(() => {
+        vi.restoreAllMocks();
+    });
+
     it("finds header variable definition from local usage", () => {
         const text = `
 // Local file uses %test_var% which is defined in a header
@@ -475,8 +559,9 @@ OUTER_SET result = %test_var% + 1
         const headerText = `
 OUTER_SET test_var = 100
 `;
-        // Populate the variable index as if header file was indexed
-        updateVariableIndex(headerUri, headerText);
+        // Populate the Symbols as if header file was indexed
+        const symbols = parseHeaderToSymbols(headerUri, headerText);
+        mockSymbols.updateFile(headerUri, symbols);
 
         // Cursor on "test_var" in %test_var%
         const position: Position = { line: 2, character: 21 };
@@ -501,7 +586,8 @@ OUTER_SET result = %my_var% + 1
         const headerText = `
 OUTER_SET my_var = 1
 `;
-        updateVariableIndex(headerUri, headerText);
+        const symbols = parseHeaderToSymbols(headerUri, headerText);
+        mockSymbols.updateFile(headerUri, symbols);
 
         // Cursor on "my_var" in %my_var%
         const position: Position = { line: 3, character: 21 };
@@ -531,5 +617,69 @@ OUTER_SET result = %local_var% + 1
         expect(result?.uri).toBe(uri);
         expect(result?.range.start.line).toBe(1);
         expect(result?.range.start.character).toBe(10);
+    });
+});
+
+describe("TP2 definition: static symbols", () => {
+    let mockSymbols: Symbols;
+
+    beforeEach(() => {
+        mockSymbols = new Symbols();
+        vi.spyOn(provider, "getSymbols").mockReturnValue(mockSymbols);
+    });
+
+    afterEach(() => {
+        vi.restoreAllMocks();
+    });
+
+    it("returns null for static symbols with null location (prevents VSCode directory open)", () => {
+        // Static symbols (built-in functions like ALTER_EFFECT) have no source file.
+        // Their location is null, so definition should return null.
+
+        mockSymbols.loadStatic([{
+            name: "ALTER_EFFECT",
+            kind: SymbolKind.Action,
+            location: null,  // Static symbols have no source file
+            scope: { level: ScopeLevel.Global },
+            source: { type: SourceType.Static, uri: null },
+            completion: { label: "ALTER_EFFECT", kind: CompletionItemKind.Function },
+            hover: { contents: { kind: "markdown", value: "Alters an effect" } },
+            callable: {},
+        }]);
+
+        const text = `COPY_EXISTING ~spell.spl~ ~override~
+    LPF ALTER_EFFECT END
+END`;
+        const uri = "file:///test.tp2";
+        // Cursor on "ALTER_EFFECT" in LPF call
+        const position: Position = { line: 1, character: 10 };
+        const result = getDefinition(text, uri, position);
+
+        // Should return null, NOT a location with empty URI
+        expect(result).toBeNull();
+    });
+
+    it("returns valid location for header functions with real URIs", () => {
+        // Header functions have real URIs and should work normally
+        const headerUri = "file:///lib/functions.tph";
+        const headerText = `
+DEFINE_PATCH_FUNCTION my_patch_func
+BEGIN
+END
+`;
+        const symbols = parseHeaderToSymbols(headerUri, headerText);
+        mockSymbols.updateFile(headerUri, symbols);
+
+        const text = `COPY_EXISTING ~item.itm~ ~override~
+    LPF my_patch_func END
+END`;
+        const uri = "file:///test.tp2";
+        // Cursor on "my_patch_func"
+        const position: Position = { line: 1, character: 10 };
+        const result = getDefinition(text, uri, position);
+
+        // Should return the header location
+        expect(result).not.toBeNull();
+        expect(result?.uri).toBe(headerUri);
     });
 });

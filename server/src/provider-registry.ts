@@ -8,7 +8,7 @@
  */
 
 import { readFileSync } from "node:fs";
-import { extname } from "node:path";
+import { extname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
     CompletionItem,
@@ -24,7 +24,8 @@ import {
     WorkspaceEdit,
 } from "vscode-languageserver/node";
 import { FormatResult, LanguageProvider, ProviderContext } from "./language-provider";
-import { conlog } from "./common";
+import { conlog, findFiles, pathToUri } from "./common";
+import { validLocationOrNull } from "./core/location-utils";
 
 class ProviderRegistry {
     private providers: Map<string, LanguageProvider> = new Map();
@@ -83,6 +84,9 @@ class ProviderRegistry {
 
         // Build extension -> provider map for file watching
         this.buildExtensionMap();
+
+        // Scan workspace for header files and index them
+        await this.scanWorkspaceHeaders(context.workspaceRoot);
     }
 
     /**
@@ -96,6 +100,46 @@ class ProviderRegistry {
             }
         }
         conlog(`Built extension map with ${this.extensionToProvider.size} extensions`);
+    }
+
+    /**
+     * Scan workspace for header files and index them.
+     * Called after providers are initialized to populate indices with workspace headers.
+     *
+     * Uses each provider's watchExtensions to find files and reloadFileData to index them.
+     * This follows SRP: registry handles file discovery, providers handle indexing.
+     */
+    async scanWorkspaceHeaders(workspaceRoot: string | undefined): Promise<void> {
+        if (!workspaceRoot) {
+            return;
+        }
+
+        for (const provider of this.providers.values()) {
+            if (!provider.watchExtensions || !provider.reloadFileData) {
+                continue;
+            }
+
+            for (const ext of provider.watchExtensions) {
+                // Remove leading dot for findFiles (e.g., ".tph" -> "tph")
+                const extWithoutDot = ext.startsWith(".") ? ext.slice(1) : ext;
+                const files = findFiles(workspaceRoot, extWithoutDot);
+
+                for (const relativePath of files) {
+                    const absolutePath = join(workspaceRoot, relativePath);
+                    const uri = pathToUri(absolutePath);
+                    try {
+                        const text = readFileSync(absolutePath, "utf-8");
+                        provider.reloadFileData(uri, text);
+                    } catch (error) {
+                        conlog(`Failed to read header file ${absolutePath}: ${error}`);
+                    }
+                }
+
+                if (files.length > 0) {
+                    conlog(`Scanned ${files.length} ${ext} files for ${provider.id}`);
+                }
+            }
+        }
     }
 
     /**
@@ -231,12 +275,37 @@ class ProviderRegistry {
         return undefined;  // No provider, fall through
     }
 
-    /** Data-driven hover from headers/static data. */
-    hover(langId: string, uri: string, symbol: string): Hover | null {
+    /**
+     * Get hover info using unified symbol resolution.
+     *
+     * Uses provider.resolveSymbol() which handles ALL merge logic:
+     * - Local symbols (fresh buffer) checked first
+     * - Indexed symbols (headers + static) as fallback, excluding current file
+     *
+     * Falls back to legacy provider.getHover() for providers not yet migrated.
+     */
+    hover(langId: string, uri: string, symbol: string, text?: string): Hover | null {
         const provider = this.get(langId);
-        if (provider?.getHover) {
+        if (!provider) {
+            return null;
+        }
+
+        // Use unified resolution if available (Approach C)
+        if (text && provider.resolveSymbol) {
+            const resolved = provider.resolveSymbol(symbol, text, uri);
+            if (resolved?.hover) {
+                return resolved.hover;
+            }
+            // resolveSymbol returned undefined = not found anywhere
+            // Don't fall back to legacy getHover - resolveSymbol is authoritative
+            return null;
+        }
+
+        // Legacy fallback for providers not yet migrated
+        if (provider.getHover) {
             return provider.getHover(uri, symbol);
         }
+
         return null;
     }
 
@@ -269,7 +338,8 @@ class ProviderRegistry {
     symbolDefinition(langId: string, symbol: string): Location | null {
         const provider = this.get(langId);
         if (provider?.getSymbolDefinition) {
-            return provider.getSymbolDefinition(symbol);
+            // Validate location to prevent returning empty URIs to VSCode
+            return validLocationOrNull(provider.getSymbolDefinition(symbol));
         }
         return null;
     }

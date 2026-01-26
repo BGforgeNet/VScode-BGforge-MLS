@@ -23,11 +23,13 @@
   ],
   "scripts": {
     "build": "tree-sitter generate && tree-sitter build --wasm",
+    "generate:types": "pnpm exec dts-tree-sitter . > src/tree-sitter.d.ts && cp src/tree-sitter.d.ts ../../server/src/weidu-d/tree-sitter.d.ts",
     "test": "tree-sitter test",
     "lint": "eslint grammar.js",
     "playground": "tree-sitter playground"
   },
   "devDependencies": {
+    "@asgerf/dts-tree-sitter": "^0.21.0",
     "eslint": "^9.0.0",
     "globals": "^16.0.0"
   }

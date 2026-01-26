@@ -291,7 +291,8 @@ connection.onHover((textDocumentPosition: TextDocumentPositionParams) => {
     }
 
     // Fall back to data-driven hover (from headers/static data)
-    const dataHover = registry.hover(langId, uri, symbol);
+    // Pass text to enable unified symbol resolution (Approach C)
+    const dataHover = registry.hover(langId, uri, symbol, text);
     return dataHover;
 });
 

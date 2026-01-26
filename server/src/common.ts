@@ -158,23 +158,6 @@ export function pathToUri(filePath: string) {
     return uri.toString();
 }
 
-/**
- * Normalize a URI to use real paths (resolve symlinks).
- * This ensures consistent URI comparison when workspace is accessed via symlinks.
- * @param uri The URI to normalize
- * @returns The normalized URI with symlinks resolved
- */
-export function normalizeUri(uri: string): string {
-    try {
-        const fsPath = uriToPath(uri);
-        const realPath = fs.realpathSync(fsPath);
-        return pathToUri(realPath);
-    } catch {
-        // If path doesn't exist or isn't accessible, return original URI
-        return uri;
-    }
-}
-
 // https://stackoverflow.com/questions/72119570/why-doesnt-vs-code-typescript-recognize-the-indices-property-on-the-result-of-r
 // https://github.com/microsoft/TypeScript/issues/44227
 export type RegExpMatchArrayWithIndices = RegExpMatchArray & { indices: Array<[number, number]> };

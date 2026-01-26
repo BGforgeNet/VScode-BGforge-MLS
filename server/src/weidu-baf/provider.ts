@@ -2,40 +2,27 @@
  * WeiDU BAF language provider.
  * Implements all BAF file features in one place.
  *
- * Internally delegates data features (completion, hover) to a Language instance.
+ * Uses unified Symbols storage for completion and hover data.
  */
 
-import { CompletionItem, Hover } from "vscode-languageserver/node";
+import type { CompletionItem, Hover } from "vscode-languageserver/node";
+import type { IndexedSymbol } from "../core/symbol";
 import { conlog } from "../common";
 import { LANG_WEIDU_BAF } from "../core/languages";
-import { Language, Features } from "../data-loader";
-import { FormatResult, LanguageProvider, ProviderContext } from "../language-provider";
+import { Symbols } from "../core/symbol-index";
+import { loadStaticSymbols } from "../core/static-loader";
+import { type FormatResult, type LanguageProvider, type ProviderContext } from "../language-provider";
 import { getIndentFromEditorconfig } from "../shared/editorconfig";
 import { createFullDocumentEdit, validateFormatting, stripCommentsWeidu } from "../shared/format-utils";
 import { fileURLToPath } from "url";
-import { formatDocument as formatAst, FormatOptions } from "./format-core";
+import { formatDocument as formatAst, type FormatOptions } from "./format-core";
 import { initParser, parseWithCache, isInitialized } from "./parser";
 import { compile as weiduCompile } from "../weidu-compile";
 
 const DEFAULT_INDENT = 4;
 
-const features: Features = {
-    completion: true,
-    definition: false,
-    hover: true,
-    udf: false,
-    headers: false,
-    externalHeaders: false,
-    parse: true,
-    parseRequiresGame: true,
-    signature: false,
-    staticCompletion: true,
-    staticHover: true,
-    staticSignature: false,
-};
-
-/** Internal Language instance for data features */
-let language: Language | undefined;
+/** Unified symbol storage for completion and hover */
+let symbols: Symbols | undefined;
 /** Stored context for compile settings access */
 let storedContext: ProviderContext | undefined;
 
@@ -52,17 +39,34 @@ function getFormatOptions(uri: string): FormatOptions {
 export const weiduBafProvider: LanguageProvider = {
     id: LANG_WEIDU_BAF,
 
+    /**
+     * Resolve a single symbol by name.
+     * BAF only has static symbols (no local definitions).
+     */
+    resolveSymbol(name: string, _text: string, _uri: string): IndexedSymbol | undefined {
+        return symbols?.lookup(name);
+    },
+
+    /**
+     * Get all visible symbols for completion.
+     * BAF only has static symbols.
+     */
+    getVisibleSymbols(_text: string, _uri: string): IndexedSymbol[] {
+        return [...(symbols?.query({}) ?? [])];
+    },
+
     async init(context: ProviderContext): Promise<void> {
         storedContext = context;
 
         // Initialize formatter (tree-sitter parser)
         await initParser();
 
-        // Initialize Language instance for data features
-        language = new Language(LANG_WEIDU_BAF, features, context.workspaceRoot);
-        await language.init();
+        // Initialize symbol storage with static data
+        symbols = new Symbols();
+        const staticSymbols = loadStaticSymbols(LANG_WEIDU_BAF);
+        symbols.loadStatic(staticSymbols);
 
-        conlog("WeiDU BAF provider initialized");
+        conlog(`WeiDU BAF provider initialized with ${staticSymbols.length} static symbols`);
     },
 
     format(text: string, uri: string): FormatResult {
@@ -98,16 +102,25 @@ export const weiduBafProvider: LanguageProvider = {
         return { edits: createFullDocumentEdit(text, result.text) };
     },
 
-    getCompletions(uri: string): CompletionItem[] {
-        return language?.completion(uri) ?? [];
+    getCompletions(_uri: string): CompletionItem[] {
+        if (!symbols) {
+            return [];
+        }
+        // Return all static symbols as completion items
+        const allSymbols = symbols.query({});
+        return allSymbols.map((s: IndexedSymbol) => s.completion);
     },
 
-    getHover(uri: string, symbol: string): Hover | null {
-        return language?.hover(uri, symbol) ?? null;
+    getHover(_uri: string, symbolName: string): Hover | null {
+        if (!symbols) {
+            return null;
+        }
+        const symbol = symbols.lookup(symbolName);
+        return symbol?.hover ?? null;
     },
 
-    reloadFileData(uri: string, text: string): void {
-        language?.reloadFileData(uri, text);
+    reloadFileData(_uri: string, _text: string): void {
+        // BAF has no user-defined functions - nothing to reload
     },
 
     async compile(uri: string, text: string, interactive: boolean): Promise<void> {

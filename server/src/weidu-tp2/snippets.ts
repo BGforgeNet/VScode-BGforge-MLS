@@ -3,40 +3,24 @@
  * Builds VS Code snippets with tab stops for required parameters.
  */
 
-import { buildParamInfoMap } from "../shared/jsdoc";
-import type { FunctionInfo } from "./header-parser";
+import type { CallableInfo } from "../core/symbol";
 
 /**
  * Build a snippet for function call with required parameters.
  * Returns null if no required params exist.
  *
- * @param funcInfo - Function information from header
+ * @param callable - CallableInfo from Symbols (has JSDoc data merged into params)
+ * @param name - Function name
  * @param prefix - Optional prefix to add before function name (e.g., "LAF" or "LPF")
  */
-export function buildFunctionCallSnippet(funcInfo: FunctionInfo, prefix?: string): string | null {
-    if (!funcInfo.params) {
+export function buildFunctionCallSnippet(callable: CallableInfo, name: string, prefix?: string): string | null {
+    if (!callable.params) {
         return null;
     }
 
-    const paramInfoMap = buildParamInfoMap(funcInfo.jsdoc);
-    const requiredIntParams: string[] = [];
-    const requiredStrParams: string[] = [];
-
-    // Collect required INT_VAR params
-    for (const param of funcInfo.params.intVar) {
-        const info = paramInfoMap.get(param.name);
-        if (info?.required) {
-            requiredIntParams.push(param.name);
-        }
-    }
-
-    // Collect required STR_VAR params
-    for (const param of funcInfo.params.strVar) {
-        const info = paramInfoMap.get(param.name);
-        if (info?.required) {
-            requiredStrParams.push(param.name);
-        }
-    }
+    // CallableParams already have `required` field from JSDoc
+    const requiredIntParams = callable.params.intVar.filter(p => p.required).map(p => p.name);
+    const requiredStrParams = callable.params.strVar.filter(p => p.required).map(p => p.name);
 
     // If no required params, return null
     if (requiredIntParams.length === 0 && requiredStrParams.length === 0) {
@@ -44,7 +28,7 @@ export function buildFunctionCallSnippet(funcInfo: FunctionInfo, prefix?: string
     }
 
     // Build snippet with tab stops
-    const firstLine = prefix ? `${prefix} ${funcInfo.name}` : funcInfo.name;
+    const firstLine = prefix ? `${prefix} ${name}` : name;
     const lines: string[] = [firstLine];
     let tabStop = 1;
 

@@ -6,6 +6,7 @@
 import { Location, Position } from "vscode-languageserver/node";
 import type { Node as SyntaxNode } from "web-tree-sitter";
 import { parseWithCache, isInitialized } from "./parser";
+import { SyntaxType } from "./tree-sitter.d";
 
 interface StateDefinition {
     name: string;
@@ -19,7 +20,7 @@ function findStateDefinitions(root: SyntaxNode): StateDefinition[] {
     const definitions: StateDefinition[] = [];
 
     function visit(node: SyntaxNode) {
-        if (node.type === "state") {
+        if (node.type === SyntaxType.State) {
             const label = node.childForFieldName("label");
             if (label) {
                 definitions.push({
@@ -60,7 +61,7 @@ function findSymbolAtPosition(root: SyntaxNode, position: Position): string | nu
         }
 
         // Check if this is a state label reference (in transitions)
-        if (node.type === "goto_next" || node.type === "short_goto" || node.type === "extern_next") {
+        if (node.type === SyntaxType.GotoNext || node.type === SyntaxType.ShortGoto || node.type === SyntaxType.ExternNext) {
             const label = node.childForFieldName("label");
             if (label) {
                 const labelStart = label.startPosition;

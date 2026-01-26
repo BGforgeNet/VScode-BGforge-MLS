@@ -9,6 +9,7 @@ Tree-sitter grammar for Fallout 2 Star-Trek Scripting Language (SSL).
   - [Preprocessor](#preprocessor)
   - [Procedures](#procedures)
   - [Variables](#variables)
+    - [Variable Scoping Rules](#variable-scoping-rules)
   - [Statements](#statements)
     - [If Statement](#if-statement)
     - [While Loop](#while-loop)
@@ -110,6 +111,41 @@ Export declaration:
 export variable name;
 export variable name = value;
 ```
+
+#### Variable Scoping Rules
+
+SSL has two scope levels:
+
+1. **Script-scope**: Variables declared at the top level (outside any procedure). Visible throughout the entire file.
+2. **Procedure-scope**: Variables declared inside a procedure (including `variable` declarations, `for` loop variables, `foreach` variables, and parameters). Visible only within that procedure.
+
+**Key rules:**
+
+- **No shadowing**: If a variable is declared at script-scope, it cannot be redeclared inside a procedure. Procedures can use script-scope variables but cannot shadow them.
+- **Same names allowed across procedures**: Different procedures may declare variables with the same name. These are distinct variables, each local to its own procedure.
+
+```ssl
+variable global_count := 0;  // script-scope, visible everywhere
+
+procedure process_items begin
+    variable i;              // procedure-scope, local to process_items
+    for (variable j := 0; j < 10; j++) begin
+        global_count += 1;   // accessing script-scope variable
+    end
+end
+
+procedure process_other begin
+    variable i;              // different i, local to process_other
+    variable j := 5;         // different j, local to process_other
+    // both are independent from process_items' i and j
+end
+```
+
+**Implications for tooling:**
+
+- When resolving a variable reference inside a procedure, first check procedure-local declarations, then script-scope.
+- Rename operations must respect scope boundaries: renaming `i` in `process_items` must not affect `i` in `process_other`.
+- Go-to-definition must find the correct declaration based on the cursor's containing procedure.
 
 ### Statements
 

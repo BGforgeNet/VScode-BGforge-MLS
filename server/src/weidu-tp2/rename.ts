@@ -12,6 +12,7 @@
 
 import { Position, TextEdit, WorkspaceEdit } from "vscode-languageserver/node";
 import type { Node as SyntaxNode } from "web-tree-sitter";
+import { makeRange } from "../core/position-utils";
 import { parseWithCache, isInitialized } from "./parser";
 import { SyntaxType } from "./tree-sitter.d";
 import {
@@ -927,16 +928,6 @@ function findFunctionReferences(
 // ============================================
 // Utilities
 // ============================================
-
-/**
- * Create a range from a tree-sitter node.
- */
-function makeRange(node: SyntaxNode) {
-    return {
-        start: { line: node.startPosition.row, character: node.startPosition.column },
-        end: { line: node.endPosition.row, character: node.endPosition.column },
-    };
-}
 
 /**
  * Convert a byte offset within text to a Position relative to basePosition.

@@ -5,6 +5,8 @@
 
 import type { Node as SyntaxNode } from "web-tree-sitter";
 import { Location } from "vscode-languageserver/node";
+import { computeDisplayPath, extractFilename } from "../core/location-utils";
+import { makeRange } from "../core/position-utils";
 import * as jsdoc from "../shared/jsdoc";
 import { parseWithCache, isInitialized } from "./parser";
 import { SyntaxType } from "./tree-sitter.d";
@@ -175,13 +177,7 @@ function extractFunctionInfo(node: SyntaxNode, uri: string): FunctionInfo | null
     const name = stripStringDelimiters(nameNode.text);
     const { context, dtype } = parseDefType(node.type);
 
-    const location: Location = {
-        uri,
-        range: {
-            start: { line: nameNode.startPosition.row, character: nameNode.startPosition.column },
-            end: { line: nameNode.endPosition.row, character: nameNode.endPosition.column },
-        },
-    };
+    const location: Location = { uri, range: makeRange(nameNode) };
 
     const info: FunctionInfo = { name, context, dtype, location };
 
@@ -210,14 +206,7 @@ function extractVariableInfo(node: SyntaxNode, uri: string): VariableInfo | null
     }
 
     const name = varNode.text;
-
-    const location: Location = {
-        uri,
-        range: {
-            start: { line: varNode.startPosition.row, character: varNode.startPosition.column },
-            end: { line: varNode.endPosition.row, character: varNode.endPosition.column },
-        },
-    };
+    const location: Location = { uri, range: makeRange(varNode) };
 
     // Determine declaration kind and inferred type from node type
     let declarationKind: VariableInfo["declarationKind"];
@@ -405,90 +394,186 @@ function extractVarParams(node: SyntaxNode, target: ParamInfo[]): void {
 }
 
 // ============================================
-// Workspace symbol index
+// Symbol conversion for unified Symbols
 // ============================================
 
-/** Workspace-wide function index. */
-const functionIndex = new Map<string, FunctionInfo>();
+import { type CallableSymbol, type VariableSymbol, type IndexedSymbol, type CallableInfo, type VariableInfoData, SymbolKind, ScopeLevel, SourceType } from "../core/symbol";
+import { CompletionItemKind, type Hover, type CompletionItem, type MarkupContent } from "vscode-languageserver/node";
+import { buildFunctionHover, buildVariableHover } from "./hover";
+
+/** Helper to extract MarkupContent from hover contents */
+function extractMarkupContent(contents: Hover["contents"]): MarkupContent | undefined {
+    if (typeof contents === "object" && "kind" in contents && "value" in contents) {
+        return contents as MarkupContent;
+    }
+    return undefined;
+}
+
 
 /**
- * Update the function index for a single file.
+ * Convert FunctionInfo to CallableSymbol for unified index storage.
+ * This enables all provider methods to find header functions via Symbols.
+ *
+ * @param func Function definition info
+ * @param displayPath Workspace-relative path for display (optional)
  */
-export function updateFileIndex(uri: string, text: string): void {
-    // Remove old entries from this file
-    clearFileFromIndex(uri);
+function functionInfoToSymbol(func: FunctionInfo, displayPath?: string | null): CallableSymbol {
+    const hover = buildFunctionHover(func, displayPath);
+    const doc = extractMarkupContent(hover.contents);
 
-    // Parse and add new entries
+    // For completion labelDetails, show path only if displayPath is not null
+    const completionDescription = displayPath === null
+        ? undefined
+        : (displayPath ?? extractFilename(func.location.uri));
+
+    const completion: CompletionItem = {
+        label: func.name,
+        kind: func.dtype === "macro" ? CompletionItemKind.Snippet : CompletionItemKind.Function,
+        documentation: doc,
+        labelDetails: {
+            description: completionDescription,
+        },
+    };
+
+    // Build JSDoc arg lookup map for type overrides and descriptions
+    const jsdocArgs = new Map<string, { type?: string; description?: string; required?: boolean }>();
+    if (func.jsdoc?.args) {
+        for (const arg of func.jsdoc.args) {
+            jsdocArgs.set(arg.name, {
+                type: arg.type,
+                description: arg.description,
+                required: arg.required,
+            });
+        }
+    }
+
+    // Convert FunctionParams to CallableInfo format with JSDoc data
+    const callable: CallableInfo = {
+        context: func.context,
+        dtype: func.dtype,
+        description: func.jsdoc?.desc,
+        returnType: func.jsdoc?.ret?.type,
+        params: func.params ? {
+            intVar: func.params.intVar.map(p => {
+                const jsdoc = jsdocArgs.get(p.name);
+                return {
+                    name: p.name,
+                    type: jsdoc?.type ?? "int",
+                    defaultValue: p.defaultValue,
+                    description: jsdoc?.description,
+                    required: jsdoc?.required,
+                };
+            }),
+            strVar: func.params.strVar.map(p => {
+                const jsdoc = jsdocArgs.get(p.name);
+                return {
+                    name: p.name,
+                    type: jsdoc?.type ?? "string",
+                    defaultValue: p.defaultValue,
+                    description: jsdoc?.description,
+                    required: jsdoc?.required,
+                };
+            }),
+            ret: func.params.ret,
+            retArray: func.params.retArray,
+        } : undefined,
+    };
+
+    return {
+        name: func.name,
+        kind: func.dtype === "macro" ? SymbolKind.Macro : SymbolKind.Function,
+        location: func.location,
+        scope: { level: ScopeLevel.Workspace },
+        source: {
+            type: SourceType.Workspace,
+            uri: func.location.uri,
+            displayPath: displayPath ?? extractFilename(func.location.uri),
+        },
+        completion,
+        hover,
+        callable,
+    };
+}
+
+/**
+ * Convert VariableInfo to VariableSymbol for unified index storage.
+ *
+ * @param varInfo Variable definition info
+ * @param displayPath Workspace-relative path for display (null to skip)
+ */
+function variableInfoToSymbol(varInfo: VariableInfo, displayPath?: string | null): VariableSymbol {
+    const hover = buildVariableHover(varInfo, displayPath);
+    const doc = extractMarkupContent(hover.contents);
+
+    // For completion labelDetails, show path only if displayPath is not null
+    const completionDescription = displayPath === null
+        ? undefined
+        : (displayPath ?? extractFilename(varInfo.location.uri));
+
+    const completion: CompletionItem = {
+        label: varInfo.name,
+        kind: CompletionItemKind.Variable,
+        documentation: doc,
+        labelDetails: { description: completionDescription },
+    };
+
+    const variable: VariableInfoData = {
+        type: varInfo.jsdoc?.type ?? varInfo.inferredType,
+        value: varInfo.value,
+        declarationKind: varInfo.declarationKind,
+        description: varInfo.jsdoc?.desc,
+    };
+
+    return {
+        name: varInfo.name,
+        kind: SymbolKind.Variable,
+        location: varInfo.location,
+        scope: { level: ScopeLevel.Workspace },
+        source: {
+            type: SourceType.Workspace,
+            uri: varInfo.location.uri,
+            displayPath: completionDescription,
+        },
+        completion,
+        hover,
+        variable,
+    };
+}
+
+/** Options for parseHeaderToSymbols */
+export interface ParseSymbolsOptions {
+    /** Workspace root path for computing relative displayPath */
+    workspaceRoot?: string;
+    /** Skip path in hover (for local symbols where path is redundant) */
+    skipPath?: boolean;
+}
+
+/**
+ * Parse a header file and return symbols for the unified index.
+ * This is the preferred API - returns IndexedSymbol[] ready for Symbols.
+ *
+ * @param uri File URI
+ * @param text File content
+ * @param options Options or workspaceRoot string (for backwards compatibility)
+ */
+export function parseHeaderToSymbols(
+    uri: string,
+    text: string,
+    options?: string | ParseSymbolsOptions,
+): IndexedSymbol[] {
     const functions = parseHeader(text, uri);
-    for (const func of functions) {
-        functionIndex.set(func.name, func);
-    }
-}
-
-/**
- * Clear all entries from a specific file from the index.
- * Called when a watched file is deleted.
- */
-export function clearFileFromIndex(uri: string): void {
-    for (const [name, info] of functionIndex) {
-        if (info.location.uri === uri) {
-            functionIndex.delete(name);
-        }
-    }
-}
-
-/**
- * Look up a function by name in the workspace index.
- */
-export function lookupFunction(name: string): FunctionInfo | undefined {
-    return functionIndex.get(name);
-}
-
-/**
- * Clear the entire function index.
- */
-export function clearIndex(): void {
-    functionIndex.clear();
-    variableIndex.clear();
-}
-
-// ============================================
-// Variable index
-// ============================================
-
-/** Workspace-wide variable index (only variables with JSDoc). */
-const variableIndex = new Map<string, VariableInfo>();
-
-/**
- * Update the variable index for a single file.
- */
-export function updateVariableIndex(uri: string, text: string): void {
-    // Remove old entries from this file
-    clearVariableFromIndex(uri);
-
-    // Parse and add new entries (first occurrence wins for duplicate names)
     const variables = parseHeaderVariables(text, uri);
-    for (const varInfo of variables) {
-        if (!variableIndex.has(varInfo.name)) {
-            variableIndex.set(varInfo.name, varInfo);
-        }
-    }
-}
 
-/**
- * Clear all variable entries from a specific file from the index.
- */
-export function clearVariableFromIndex(uri: string): void {
-    for (const [name, info] of variableIndex) {
-        if (info.location.uri === uri) {
-            variableIndex.delete(name);
-        }
-    }
-}
+    // Handle backwards compatibility: options can be workspaceRoot string
+    const opts: ParseSymbolsOptions = typeof options === "string"
+        ? { workspaceRoot: options }
+        : (options ?? {});
 
-/**
- * Look up a variable by name in the workspace index.
- */
-export function lookupVariable(name: string): VariableInfo | undefined {
-    return variableIndex.get(name);
+    // Compute display path: null if skipPath, otherwise compute from workspace root
+    const displayPath = opts.skipPath ? null : computeDisplayPath(uri, opts.workspaceRoot);
+
+    return [
+        ...functions.map(func => functionInfoToSymbol(func, displayPath)),
+        ...variables.map(varInfo => variableInfoToSymbol(varInfo, displayPath)),
+    ];
 }

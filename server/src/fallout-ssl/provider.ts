@@ -2,17 +2,19 @@
  * Fallout SSL language provider.
  * Implements all Fallout SSL file features in one place.
  *
- * Internally delegates data features (completion, hover, signature, definition)
- * to a Language instance for now. This allows incremental migration while
- * providing a unified provider interface.
+ * Uses unified Symbols storage for static completion and hover data.
+ * Header-based symbols (procedures, macros from .h files) are handled by header-parser.
  */
 
-import { CompletionItem, DocumentSymbol, Hover, Location, Position, SignatureHelp, WorkspaceEdit } from "vscode-languageserver/node";
+import { type CompletionItem, type DocumentSymbol, type Hover, type Location, type Position, type SignatureHelp, type WorkspaceEdit } from "vscode-languageserver/node";
+import type { IndexedSymbol } from "../core/symbol";
 import { conlog } from "../common";
 import { EXT_FALLOUT_SSL_HEADERS, LANG_FALLOUT_SSL } from "../core/languages";
+import { isHeaderFile } from "../core/location-utils";
+import { Symbols } from "../core/symbol-index";
+import { loadStaticSymbols } from "../core/static-loader";
 import { compile as falloutCompile } from "./compiler";
-import { Language, Features } from "../data-loader";
-import { FormatResult, LanguageProvider, ProviderContext } from "../language-provider";
+import { type FormatResult, type LanguageProvider, type ProviderContext } from "../language-provider";
 import * as signature from "../shared/signature";
 import { formatDocument, initFormatter } from "./format";
 import { isInitialized } from "./parser";
@@ -22,25 +24,13 @@ import { getLocalHover } from "./hover";
 import { renameSymbol } from "./rename";
 import { getLocalCompletions } from "./completion";
 import { getLocalSignature } from "./signature";
+import { parseHeaderToSymbols } from "./header-parser";
+import { getLocalSymbols, lookupLocalSymbol, clearLocalSymbolsCache } from "./local-symbols";
 
-const features: Features = {
-    completion: true,
-    definition: true,
-    hover: true,
-    udf: true,
-    headers: true,
-    externalHeaders: true,
-    headerExtension: ".h",
-    parse: true,
-    parseRequiresGame: false,
-    signature: true,
-    staticCompletion: true,
-    staticHover: true,
-    staticSignature: true,
-};
-
-/** Internal Language instance for data features */
-let language: Language | undefined;
+/** Unified symbol storage for static completion and hover */
+let symbols: Symbols | undefined;
+/** Static signature map (loaded separately from completion) */
+let staticSignatures: signature.SigMap | undefined;
 /** Stored context for compile settings access */
 let storedContext: ProviderContext | undefined;
 
@@ -48,18 +38,72 @@ export const falloutSslProvider: LanguageProvider = {
     id: LANG_FALLOUT_SSL,
     watchExtensions: [...EXT_FALLOUT_SSL_HEADERS],
 
+    /**
+     * Resolve a single symbol by name.
+     * This is the UNIFIED entry point - handles local + indexed merge internally.
+     *
+     * Resolution order:
+     * 1. Local symbols (fresh buffer) - always checked first
+     * 2. Indexed symbols (headers + static), EXCLUDING current file
+     */
+    resolveSymbol(name: string, text: string, uri: string): IndexedSymbol | undefined {
+        // 1. Check local symbols first (fresh buffer takes priority)
+        const local = lookupLocalSymbol(name, text, uri);
+        if (local) {
+            return local;
+        }
+
+        // 2. Fall back to indexed symbols (static + headers)
+        if (symbols) {
+            const indexed = symbols.lookup(name);
+            // Return if NOT from the current file (static symbols have null uri)
+            if (indexed && indexed.source.uri !== uri) {
+                return indexed;
+            }
+            // Also return static symbols (uri is null)
+            if (indexed && indexed.source.uri === null) {
+                return indexed;
+            }
+        }
+
+        return undefined;
+    },
+
+    /**
+     * Get all visible symbols for completion.
+     * Merges local + indexed, with local taking precedence.
+     */
+    getVisibleSymbols(text: string, uri: string): IndexedSymbol[] {
+        // Get local symbols (fresh buffer)
+        const localSymbols = getLocalSymbols(text, uri);
+        const localNames = new Set(localSymbols.map(s => s.name));
+
+        // Get indexed symbols, excluding current file and duplicates
+        const indexedSymbols = symbols
+            ? symbols.query({ excludeUri: uri })
+            : [];
+
+        // Filter out indexed symbols that have local overrides
+        const filteredIndexed = indexedSymbols.filter((s: IndexedSymbol) => !localNames.has(s.name));
+
+        return [...localSymbols, ...filteredIndexed];
+    },
+
     async init(context: ProviderContext): Promise<void> {
         storedContext = context;
 
         // Initialize formatter (tree-sitter parser)
         await initFormatter();
 
-        // Initialize Language instance for data features
-        const extHeadersDir = context.settings.falloutSSL.headersDirectory;
-        language = new Language(LANG_FALLOUT_SSL, features, context.workspaceRoot, extHeadersDir);
-        await language.init();
+        // Initialize symbol storage with static data
+        symbols = new Symbols();
+        const staticSymbols = loadStaticSymbols(LANG_FALLOUT_SSL);
+        symbols.loadStatic(staticSymbols);
 
-        conlog("Fallout SSL provider initialized");
+        // Load static signatures separately (not included in completion JSON)
+        staticSignatures = signature.loadStatic(LANG_FALLOUT_SSL);
+
+        conlog(`Fallout SSL provider initialized with ${staticSymbols.length} static symbols`);
     },
 
     format(text: string, uri: string): FormatResult {
@@ -115,38 +159,55 @@ export const falloutSslProvider: LanguageProvider = {
         return renameSymbol(text, position, newName, uri);
     },
 
-    getCompletions(uri: string): CompletionItem[] {
-        return language?.completion(uri) ?? [];
+    getCompletions(_uri: string): CompletionItem[] {
+        // All symbols (static + headers) are in unified storage
+        return symbols ? symbols.query({}).map((s: IndexedSymbol) => s.completion) : [];
     },
 
-    getHover(uri: string, symbol: string): Hover | null {
-        return language?.hover(uri, symbol) ?? null;
+    getHover(_uri: string, symbolName: string): Hover | null {
+        // All symbols (static + headers) are in unified storage
+        const symbol = symbols?.lookup(symbolName);
+        return symbol?.hover ?? null;
     },
 
-    getSignature(uri: string, symbol: string, paramIndex: number): SignatureHelp | null {
-        if (!language) return null;
-        const request: signature.Request = { symbol, parameter: paramIndex };
-        return language.signature(uri, request) ?? null;
+    getSignature(_uri: string, symbolName: string, paramIndex: number): SignatureHelp | null {
+        // Check static signatures first (not in unified storage)
+        if (staticSignatures) {
+            const sig = staticSignatures.get(symbolName);
+            if (sig) {
+                return signature.getResponse(sig, paramIndex);
+            }
+        }
+        // Check unified storage (headers have signature in symbol)
+        const symbol = symbols?.lookup(symbolName);
+        if (symbol?.signature) {
+            return signature.getResponse(symbol.signature, paramIndex);
+        }
+        return null;
     },
 
-    getSymbolDefinition(symbol: string): Location | null {
-        return language?.definition(symbol) ?? null;
+    getSymbolDefinition(symbolName: string): Location | null {
+        // All symbols (static + headers) are in unified storage
+        const symbol = symbols?.lookup(symbolName);
+        return symbol?.location ?? null;
     },
 
     reloadFileData(uri: string, text: string): void {
         // Only reload headers (.h), not .ssl files
         // .ssl files use tree-sitter based local completion/signature/hover/definition
-        if (uri.endsWith(".h")) {
-            language?.reloadFileData(uri, text);
+        if (isHeaderFile(uri) && symbols) {
+            const parsedSymbols = parseHeaderToSymbols(uri, text, storedContext?.workspaceRoot);
+            symbols.updateFile(uri, parsedSymbols);
         }
     },
 
     onWatchedFileDeleted(uri: string): void {
-        language?.clearFileData(uri);
+        symbols?.clearFile(uri);
     },
 
     onDocumentClosed(uri: string): void {
-        language?.clearSelfData(uri);
+        // Clear local symbols cache for this document
+        clearLocalSymbolsCache(uri);
     },
 
     async compile(uri: string, text: string, interactive: boolean): Promise<void> {

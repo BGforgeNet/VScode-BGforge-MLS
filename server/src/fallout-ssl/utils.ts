@@ -4,25 +4,12 @@
 
 import type { Node } from "web-tree-sitter";
 import { Position } from "vscode-languageserver/node";
+import { makeRange } from "../core/position-utils";
 import { MacroData, parseMacroParams } from "./macro-utils";
 import * as jsdoc from "../shared/jsdoc";
 
-/**
- * Create a Position from a tree-sitter point.
- */
-function makePosition(row: number, col: number): Position {
-    return { line: row, character: col };
-}
-
-/**
- * Create a range from a tree-sitter node.
- */
-export function makeRange(node: Node) {
-    return {
-        start: makePosition(node.startPosition.row, node.startPosition.column),
-        end: makePosition(node.endPosition.row, node.endPosition.column),
-    };
-}
+// Re-export for existing consumers
+export { makeRange };
 
 /**
  * Find doc comment immediately preceding a node.
@@ -274,6 +261,7 @@ export function extractMacros(root: Node): MacroData[] {
                             firstline,
                             multiline,
                             jsdoc: parsedJsdoc,
+                            node: child, // Include AST node for location extraction
                         });
                     }
                 }

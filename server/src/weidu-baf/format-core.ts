@@ -4,6 +4,7 @@
  */
 
 import type { Node as SyntaxNode } from "web-tree-sitter";
+import { SyntaxType } from "./tree-sitter.d";
 
 // Formatting options
 export interface FormatOptions {
@@ -28,7 +29,7 @@ interface FormatContext {
 
 // Helper: check if node is a comment
 function isComment(node: SyntaxNode): boolean {
-    return node.type === "comment" || node.type === "line_comment";
+    return node.type === SyntaxType.Comment || node.type === SyntaxType.LineComment;
 }
 
 // Normalize comment spacing (preserves multi-line block comments)
@@ -87,7 +88,7 @@ function handleBlockLevelComments(
 
 // Format a single argument
 function formatArgument(node: SyntaxNode): string {
-    if (node.type === "call_expr") {
+    if (node.type === SyntaxType.CallExpr) {
         return formatCallExpr(node);
     }
     return node.text;
@@ -134,14 +135,14 @@ function formatIfClause(node: SyntaxNode, result: string[], ctx: FormatContext):
     let lastNodeRow = -1;
 
     for (const child of node.children) {
-        if (child.type === "or_marker") {
+        if (child.type === SyntaxType.OrMarker) {
             // Start OR group
             result.push(ctx.indent + formatOrMarker(child));
             const count = child.childForFieldName("count");
             orCount = parseInt(count?.text ?? "0", 10);
             inOrGroup = true;
             lastNodeRow = child.endPosition.row;
-        } else if (child.type === "condition") {
+        } else if (child.type === SyntaxType.Condition) {
             if (inOrGroup && orCount > 0) {
                 // Indent OR conditions one extra level
                 result.push(ctx.indent2 + formatCondition(child));
@@ -167,7 +168,7 @@ function formatThenClause(node: SyntaxNode, result: string[], ctx: FormatContext
 
     let lastNodeRow = -1;
     for (const child of node.children) {
-        if (child.type === "response") {
+        if (child.type === SyntaxType.Response) {
             formatResponse(child, result, ctx);
             lastNodeRow = child.endPosition.row;
         } else if (isComment(child)) {
@@ -185,7 +186,7 @@ function formatResponse(node: SyntaxNode, result: string[], ctx: FormatContext):
     let lastNodeRow = weight?.endPosition.row ?? -1;
 
     for (const child of node.children) {
-        if (child.type === "action") {
+        if (child.type === SyntaxType.Action) {
             result.push(ctx.indent2 + formatAction(child));
             lastNodeRow = child.endPosition.row;
         } else if (isComment(child)) {
@@ -233,12 +234,12 @@ export function formatDocument(root: SyntaxNode, options?: Partial<FormatOptions
     let lastEndRow = -1;
 
     for (const child of root.children) {
-        if (child.type === "block" || isComment(child)) {
+        if (child.type === SyntaxType.Block || isComment(child)) {
             // Preserve blank lines: if there was a gap, add one blank line
             if (lastEndRow >= 0 && child.startPosition.row > lastEndRow + 1) {
                 result.push("");
             }
-            if (child.type === "block") {
+            if (child.type === SyntaxType.Block) {
                 formatBlock(child, result, ctx);
             } else {
                 result.push(normalizeComment(child.text));

@@ -11,11 +11,12 @@ import type { Node as SyntaxNode } from "web-tree-sitter";
 import * as path from "path";
 import * as fs from "fs";
 import { parseWithCache, isInitialized } from "./parser";
-import { parseHeader, lookupFunction, FunctionInfo } from "./header-parser";
+import { parseHeader, FunctionInfo } from "./header-parser";
 import { pathToUri, uriToPath } from "../common";
 import { SyntaxType } from "./tree-sitter.d";
 import { findVariableDefinition } from "./variable-symbols";
 import { findNodeAtPosition, findAncestorOfType, stripStringDelimiters } from "./tree-utils";
+import { getSymbols } from "./provider";
 
 /** Node types for function/macro calls. */
 const FUNCTION_CALL_TYPES = new Set([
@@ -176,10 +177,11 @@ function tryFunctionCallParamDefinition(node: SyntaxNode, text: string, uri: str
         return localDef.location;
     }
 
-    // Then check the index
-    const indexedDef = lookupFunction(funcName);
-    if (indexedDef) {
-        return indexedDef.location;
+    // Then check the unified symbol storage
+    const symbols = getSymbols();
+    const location = symbols?.lookupDefinition(funcName);
+    if (location) {
+        return location;
     }
 
     return null;
@@ -209,10 +211,11 @@ function tryFunctionCallDefinition(node: SyntaxNode, text: string, uri: string):
         return localDef.location;
     }
 
-    // Then, look in the workspace index
-    const indexedDef = lookupFunction(funcName);
-    if (indexedDef) {
-        return indexedDef.location;
+    // Then, look in the unified symbol storage
+    const symbols = getSymbols();
+    const location = symbols?.lookupDefinition(funcName);
+    if (location) {
+        return location;
     }
 
     return null;

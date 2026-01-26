@@ -10,11 +10,12 @@ import { conlog } from "../common";
 
 /**
  * Load a static JSON data file for a given language.
+ * Internal helper for loadStaticMap - not exported as it's only used internally.
  * @param type Data type: "completion", "hover", or "signature"
  * @param langId Language ID
  * @returns Parsed JSON data, or undefined on error
  */
-export function loadStaticJson<T>(type: "completion" | "hover" | "signature", langId: string): T | undefined {
+function loadStaticJson<T>(type: "completion" | "hover" | "signature", langId: string): T | undefined {
     try {
         // __dirname in bundled code points to server/out/
         const filePath = path.join(__dirname, `${type}.${langId}.json`);

@@ -18,6 +18,7 @@ import {
     WorkspaceEdit,
 } from "vscode-languageserver/node";
 
+import type { IndexedSymbol } from "./core/symbol";
 import { MLSsettings } from "./settings";
 
 /**
@@ -117,6 +118,41 @@ export interface LanguageProvider {
     // =========================================================================
     // Data features (static + parsed from headers/files)
     // =========================================================================
+
+    /**
+     * Resolve a single symbol by name.
+     *
+     * This is the UNIFIED entry point for symbol lookup. All features
+     * (hover, definition, signature) should use this method.
+     *
+     * The provider handles ALL merge logic internally:
+     * 1. Check local symbols (fresh buffer) first
+     * 2. Fall back to indexed symbols (headers + static), excluding current file
+     *
+     * This design prevents asymmetric implementations - the filtering logic
+     * lives in ONE place, not scattered across registry methods.
+     *
+     * @param name Symbol name to find
+     * @param text Current document text
+     * @param uri Current document URI
+     * @returns IndexedSymbol if found, undefined otherwise
+     */
+    resolveSymbol?(name: string, text: string, uri: string): IndexedSymbol | undefined;
+
+    /**
+     * Get all visible symbols for completion.
+     *
+     * Returns symbols from:
+     * 1. Current document (fresh buffer)
+     * 2. Indexed files (headers + static), excluding current file to avoid duplicates
+     *
+     * The provider handles merge and deduplication internally.
+     *
+     * @param text Current document text
+     * @param uri Current document URI
+     * @returns All visible IndexedSymbol[]
+     */
+    getVisibleSymbols?(text: string, uri: string): IndexedSymbol[];
 
     /** Get completions for the document. Combines static + headers + file-specific. */
     getCompletions?(uri: string): CompletionItem[];

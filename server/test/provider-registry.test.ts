@@ -22,9 +22,11 @@ import {
 } from "vscode-languageserver/node";
 import type { LanguageProvider, ProviderContext, FormatResult } from "../src/language-provider";
 
-// Mock the common module to suppress logs during tests
+// Mock the common module to suppress logs and control file finding during tests
 vi.mock("../src/common", () => ({
     conlog: vi.fn(),
+    findFiles: vi.fn().mockReturnValue([]),
+    pathToUri: vi.fn((p: string) => `file://${p}`),
 }));
 
 // Mock fs.readFileSync for file watching tests
@@ -524,6 +526,33 @@ describe("ProviderRegistry", () => {
 
             expect(result).toBe(mockLocation);
         });
+
+        it("should return null for location with empty URI", async () => {
+            // This prevents VSCode from trying to open workspace root as a directory
+            const registry = await createRegistry();
+            const invalidLocation: Location = {
+                uri: "",  // Empty URI - invalid for navigation
+                range: { start: { line: 0, character: 0 }, end: { line: 0, character: 0 } },
+            };
+            registry.register(createMockProvider("test", {
+                getSymbolDefinition: vi.fn().mockReturnValue(invalidLocation),
+            }));
+
+            const result = registry.symbolDefinition("test", "symbol");
+
+            expect(result).toBeNull();  // Should filter out invalid location
+        });
+
+        it("should return null when provider returns null", async () => {
+            const registry = await createRegistry();
+            registry.register(createMockProvider("test", {
+                getSymbolDefinition: vi.fn().mockReturnValue(null),
+            }));
+
+            const result = registry.symbolDefinition("test", "symbol");
+
+            expect(result).toBeNull();
+        });
     });
 
     describe("reloadFileData()", () => {
@@ -611,6 +640,95 @@ describe("ProviderRegistry", () => {
             registry.handleDocumentClosed("test", "file:///test.txt");
 
             expect(mockClosed).toHaveBeenCalledWith("file:///test.txt");
+        });
+    });
+
+    describe("scanWorkspaceHeaders()", () => {
+        it("should call reloadFileData for each matching file in workspace", async () => {
+            const registry = await createRegistry();
+            const mockReload = vi.fn();
+            registry.register(createMockProvider("test", {
+                watchExtensions: [".tph"],
+                reloadFileData: mockReload,
+            }));
+
+            // Mock findFiles to return test files
+            const { findFiles } = await import("../src/common");
+            vi.mocked(findFiles).mockReturnValue(["lib/utils.tph", "lib/other.tph"]);
+
+            await registry.scanWorkspaceHeaders("/test/workspace");
+
+            expect(findFiles).toHaveBeenCalledWith("/test/workspace", "tph");
+            expect(mockReload).toHaveBeenCalledTimes(2);
+        });
+
+        it("should do nothing if no workspace root provided", async () => {
+            const registry = await createRegistry();
+            const mockReload = vi.fn();
+            registry.register(createMockProvider("test", {
+                watchExtensions: [".tph"],
+                reloadFileData: mockReload,
+            }));
+
+            await registry.scanWorkspaceHeaders(undefined);
+
+            expect(mockReload).not.toHaveBeenCalled();
+        });
+
+        it("should skip providers without watchExtensions", async () => {
+            const registry = await createRegistry();
+            const mockReload = vi.fn();
+            registry.register(createMockProvider("test", {
+                reloadFileData: mockReload,
+                // No watchExtensions
+            }));
+
+            const { findFiles } = await import("../src/common");
+            vi.mocked(findFiles).mockClear();  // Clear any previous calls
+            vi.mocked(findFiles).mockReturnValue([]);
+
+            await registry.scanWorkspaceHeaders("/test/workspace");
+
+            expect(findFiles).not.toHaveBeenCalled();
+            expect(mockReload).not.toHaveBeenCalled();
+        });
+
+        it("should skip providers without reloadFileData", async () => {
+            const registry = await createRegistry();
+            registry.register(createMockProvider("test", {
+                watchExtensions: [".tph"],
+                // No reloadFileData
+            }));
+
+            const { findFiles } = await import("../src/common");
+            vi.mocked(findFiles).mockReturnValue(["file.tph"]);
+
+            // Should not throw
+            await registry.scanWorkspaceHeaders("/test/workspace");
+        });
+
+        it("should handle multiple providers with different extensions", async () => {
+            const registry = await createRegistry();
+            const mockReload1 = vi.fn();
+            const mockReload2 = vi.fn();
+            registry.register(createMockProvider("weidu-tp2", {
+                watchExtensions: [".tph"],
+                reloadFileData: mockReload1,
+            }));
+            registry.register(createMockProvider("fallout-ssl", {
+                watchExtensions: [".h"],
+                reloadFileData: mockReload2,
+            }));
+
+            const { findFiles } = await import("../src/common");
+            vi.mocked(findFiles)
+                .mockReturnValueOnce(["lib/a.tph"])  // First call for .tph
+                .mockReturnValueOnce(["lib/b.h"]);   // Second call for .h
+
+            await registry.scanWorkspaceHeaders("/test/workspace");
+
+            expect(mockReload1).toHaveBeenCalledTimes(1);
+            expect(mockReload2).toHaveBeenCalledTimes(1);
         });
     });
 });

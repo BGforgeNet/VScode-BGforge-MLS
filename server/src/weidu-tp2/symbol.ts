@@ -4,6 +4,7 @@
  */
 
 import { DocumentSymbol, SymbolKind } from "vscode-languageserver/node";
+import { makeRange } from "../core/position-utils";
 import { parseWithCache, isInitialized } from "./parser";
 import { isFunctionDef } from "./format/utils";
 
@@ -26,14 +27,8 @@ export function getDocumentSymbols(text: string): DocumentSymbol[] {
                 symbols.push({
                     name: nameNode.text,
                     kind: SymbolKind.Function,
-                    range: {
-                        start: { line: node.startPosition.row, character: node.startPosition.column },
-                        end: { line: node.endPosition.row, character: node.endPosition.column },
-                    },
-                    selectionRange: {
-                        start: { line: nameNode.startPosition.row, character: nameNode.startPosition.column },
-                        end: { line: nameNode.endPosition.row, character: nameNode.endPosition.column },
-                    },
+                    range: makeRange(node),
+                    selectionRange: makeRange(nameNode),
                 });
             }
         }

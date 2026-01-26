@@ -44,6 +44,8 @@ export interface MacroData {
     firstline?: string;      // First line of body (for display)
     multiline?: boolean;     // Has line continuations
     jsdoc?: jsdoc.JSdoc;
+    /** AST node for the define directive (for location extraction). Only present when extracted from tree-sitter. */
+    node?: import("web-tree-sitter").Node;
 }
 
 /**
@@ -105,15 +107,22 @@ export function buildMacroCompletion(
         detail = `macro ${macro.name}`;
     }
 
-    // Build markdown hover content
+    // Build markdown hover content: signature block, optionally file path block
     let markdownValue = [
         "```" + `${tooltipLangId}`,
         `${detail}`,
         "```",
-        "\n```bgforge-mls-comment\n",
-        `${filePath}`,
-        "```",
     ].join("\n");
+
+    // Only add file path block if path is provided (skip for local symbols)
+    if (filePath) {
+        markdownValue += [
+            "",
+            "```bgforge-mls-comment",
+            `${filePath}`,
+            "```",
+        ].join("\n");
+    }
 
     // For non-constant macros (with or without params), show body on second line if not already in detail
     if (!isConstant && !macro.multiline && macro.firstline && !macro.jsdoc) {
@@ -135,8 +144,11 @@ export function buildMacroCompletion(
         kind,
         detail,
         documentation: markdownContents,
-        labelDetails: { description: filePath },
     };
+
+    if (filePath) {
+        item.labelDetails = { description: filePath };
+    }
 
     if (macro.jsdoc?.deprecated !== undefined) {
         const COMPLETION_TAG_deprecated = 1;
@@ -159,6 +171,7 @@ export function buildMacroHover(
     if (macro.jsdoc) {
         detail = jsdocToDetail(macro.name, macro.jsdoc, "macro");
     } else if (isConstant && macro.firstline) {
+        // For constant macros, show just the value
         detail = macro.firstline;
     } else if (macro.hasParams) {
         detail = `macro ${macro.name}(${macro.params!.join(", ")})`;
@@ -166,14 +179,22 @@ export function buildMacroHover(
         detail = `macro ${macro.name}`;
     }
 
+    // Build markdown: signature block, optionally file path block
     let markdownValue = [
         "```" + `${tooltipLangId}`,
         `${detail}`,
         "```",
-        "\n```bgforge-mls-comment\n",
-        `${filePath}`,
-        "```",
     ].join("\n");
+
+    // Only add file path block if path is provided (skip for local symbols)
+    if (filePath) {
+        markdownValue += [
+            "",
+            "```bgforge-mls-comment",
+            `${filePath}`,
+            "```",
+        ].join("\n");
+    }
 
     // For non-constant macros, show body on second line if not already in detail
     if (!isConstant && !macro.multiline && macro.firstline && !macro.jsdoc) {

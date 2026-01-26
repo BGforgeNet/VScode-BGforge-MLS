@@ -1,26 +1,18 @@
 /**
  * WeiDU TP2 data building: extract function/variable symbols from headers,
- * build completion/hover/definition items for the Language data layer.
- * Used by data-loader.ts for TP2 provider initialization.
+ * build completion/hover/definition items for testing/validation.
+ *
+ * Note: Production code uses Symbols (via parseHeaderToSymbols in header-parser.ts).
+ * This module is kept for format.test.ts which validates hover formatting.
  */
 
-import * as path from "path";
 import { CompletionItemKind, MarkupKind } from "vscode-languageserver/node";
-import {
-    conlog,
-    findFiles,
-    uriToPath,
-} from "./common";
 import * as completion from "./shared/completion";
 import * as definition from "./shared/definition";
 import * as hover from "./shared/hover";
 import { HeaderData as LanguageHeaderData } from "./data-loader";
-import * as pool from "./shared/pool";
 import { LANG_WEIDU_TP2_TOOLTIP } from "./core/languages";
-import { parseHeader, parseHeaderVariables, FunctionInfo, VariableInfo, updateFileIndex, updateVariableIndex } from "./weidu-tp2/header-parser";
-
-/** All TP2 file extensions to index for definitions. */
-const TP2_EXTENSIONS = ["tph", "tpa", "tpp", "tp2"] as const;
+import { parseHeader, parseHeaderVariables, FunctionInfo, VariableInfo } from "./weidu-tp2/header-parser";
 
 /** Known types that link to ielib documentation. */
 const KNOWN_TYPES = new Set(["array", "bool", "ids", "int", "list", "map", "resref", "string", "filename"]);
@@ -35,58 +27,6 @@ const DESC_MAX_LENGTH = 80;
 interface WeiduHeaderData {
     functions: FunctionInfo[];
     variables: VariableInfo[];
-}
-
-export async function loadHeaders(headersDirectory: string, headerExtension: string) {
-    let completions: completion.CompletionListEx = [];
-    const hovers: hover.HoverMapEx = new Map();
-    const definitions: definition.Data = new Map();
-
-    // Collect all TP2 files (tph, tpa, tpp, tp2)
-    const headerFiles: string[] = [];
-    for (const ext of TP2_EXTENSIONS) {
-        headerFiles.push(...findFiles(headersDirectory, ext));
-    }
-
-    const { results, errors } = await pool.processHeaders(
-        headerFiles,
-        headersDirectory,
-        loadFileData
-    );
-
-    if (errors.length > 0) {
-        conlog(errors);
-    }
-
-    results.map((x) => {
-        // Only include completions from header files (determined by headerExtension).
-        // Other TP2 files (.tpa/.tpp/.tp2) define functions for their own use, not for sharing.
-        // Filter by checking the uri property on each completion item.
-        const headerCompletions = x.completion.filter((item) =>
-            item.uri.toLowerCase().endsWith(headerExtension)
-        );
-        completions = completions.concat(headerCompletions);
-
-        // Only include hover and definition from header files (determined by headerExtension).
-        // Other TP2 files (.tpa/.tpp/.tp2) define functions for their own use, not for sharing.
-        for (const [key, value] of x.hover) {
-            if (value.uri.toLowerCase().endsWith(headerExtension)) {
-                hovers.set(key, value);
-            }
-        }
-        for (const [key, value] of x.definition) {
-            if (value.uri.toLowerCase().endsWith(headerExtension)) {
-                definitions.set(key, value);
-            }
-        }
-    });
-
-    const result: LanguageHeaderData = {
-        completion: completions,
-        hover: hovers,
-        definition: definitions,
-    };
-    return result;
 }
 
 /**
@@ -109,14 +49,6 @@ export function loadFileData(uri: string, text: string, filePath: string) {
     const symbols = findSymbols(text, uri);
     const { completions, hovers, definitions } = buildLanguageData(uri, symbols.functions, filePath);
     const variableData = buildVariableData(uri, symbols.variables, filePath);
-
-    // Only update the function and variable indices for .tph header files.
-    // Non-header variables/functions are local to their file and shouldn't pollute global lookup.
-    const filePathResolved = uriToPath(uri);
-    if (path.extname(filePathResolved).toLowerCase() === ".tph") {
-        updateFileIndex(uri, text);
-        updateVariableIndex(uri, text);
-    }
 
     // Merge variable data into completions/hovers/definitions
     const allCompletions = [...completions, ...variableData.completions];

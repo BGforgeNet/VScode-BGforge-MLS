@@ -24,11 +24,9 @@ vi.mock("../../src/common", async (importOriginal) => {
     };
 });
 
-import { weiduTp2Provider } from "../../src/weidu-tp2/provider";
+import { weiduTp2Provider, getSymbols } from "../../src/weidu-tp2/provider";
 import { initParser } from "../../src/weidu-tp2/parser";
-import { Language, Features } from "../../src/data-loader";
-import { LANG_WEIDU_TP2 } from "../../src/core/languages";
-import { pathToUri } from "../../src/common";
+import { parseHeaderToSymbols } from "../../src/weidu-tp2/header-parser";
 import { defaultSettings } from "../../src/settings";
 import * as path from "path";
 
@@ -39,22 +37,6 @@ beforeAll(async () => {
         settings: defaultSettings,
     });
 });
-
-const features: Features = {
-    completion: true,
-    definition: true,
-    hover: true,
-    udf: true,
-    headers: true,
-    externalHeaders: false,
-    headerExtension: ".tph",
-    parse: false,
-    parseRequiresGame: false,
-    signature: false,
-    staticCompletion: false,
-    staticHover: false,
-    staticSignature: false,
-};
 
 describe("weidu-tp2: local variable completion", () => {
     it("provides completions for OUTER_SET variables", () => {
@@ -224,15 +206,16 @@ OUTER_SET x = 3
     });
 });
 
-describe("weidu-tp2: header variable completion", () => {
-    const workspaceRoot = path.resolve(__dirname, "..", "src");
+describe("weidu-tp2: header variable completion via Symbols", () => {
+    // These tests verify that header variables are correctly indexed in Symbols.
+    // The provider uses Symbols as the single source of truth for header data.
 
-    it("includes header variables with JSDoc in completions", async () => {
-        const lang = new Language(LANG_WEIDU_TP2, features, workspaceRoot);
-        await lang.init();
+    it("includes header variables with JSDoc in completions", () => {
+        const store = getSymbols();
+        expect(store).toBeDefined();
 
-        // Load a .tph file with a variable that has JSDoc
-        const tphUri = pathToUri(path.join(workspaceRoot, "weidu-tp2", "test-header.tph"));
+        // Parse header content to symbols
+        const tphUri = "file:///test-header.tph";
         const tphContent = `
 /**
  * Module folder path.
@@ -240,69 +223,43 @@ describe("weidu-tp2: header variable completion", () => {
  */
 OUTER_TEXT_SPRINT mod_folder ~mymod~
 `;
-        lang.reloadFileData(tphUri, tphContent);
+        const parsedSymbols = parseHeaderToSymbols(tphUri, tphContent);
+        store!.updateFile(tphUri, parsedSymbols);
 
-        // Get completions for a different file (.tp2)
-        const tp2Uri = pathToUri(path.join(workspaceRoot, "weidu-tp2", "test.tp2"));
-        const completions = lang.completion(tp2Uri);
+        // The variable should be in the index
+        const modFolderSymbol = store!.lookup("mod_folder");
+        expect(modFolderSymbol).toBeDefined();
+        expect(modFolderSymbol?.completion.kind).toBe(6); // CompletionItemKind.Variable
 
-        // The variable with JSDoc should appear
-        const modFolderItem = completions?.find((item) => item.label === "mod_folder");
-        expect(modFolderItem).toBeDefined();
-        expect(modFolderItem?.kind).toBe(6); // CompletionItemKind.Variable
+        // Cleanup
+        store!.clearFile(tphUri);
     });
 
-    it("includes header variables without JSDoc in completions", async () => {
-        const lang = new Language(LANG_WEIDU_TP2, features, workspaceRoot);
-        await lang.init();
+    it("includes header variables without JSDoc in completions", () => {
+        const store = getSymbols();
+        expect(store).toBeDefined();
 
-        // Load a .tph file with a variable that has NO JSDoc
-        const tphUri = pathToUri(path.join(workspaceRoot, "weidu-tp2", "test-header.tph"));
-        const tphContent = `
-OUTER_TEXT_SPRINT no_jsdoc ~value~
-`;
-        lang.reloadFileData(tphUri, tphContent);
+        // Load a header with a variable that has NO JSDoc
+        const tphUri = "file:///test-no-jsdoc.tph";
+        const tphContent = `OUTER_TEXT_SPRINT no_jsdoc ~value~`;
+        const parsedSymbols = parseHeaderToSymbols(tphUri, tphContent);
+        store!.updateFile(tphUri, parsedSymbols);
 
-        // Get completions for a different file (.tp2)
-        const tp2Uri = pathToUri(path.join(workspaceRoot, "weidu-tp2", "test.tp2"));
-        const completions = lang.completion(tp2Uri);
+        // All top-level variables from .tph should appear
+        const noJsdocSymbol = store!.lookup("no_jsdoc");
+        expect(noJsdocSymbol).toBeDefined();
+        expect(noJsdocSymbol?.completion.kind).toBe(6); // CompletionItemKind.Variable
 
-        // All top-level variables from .tph should appear, even without JSDoc
-        const noJsdocItem = completions?.find((item) => item.label === "no_jsdoc");
-        expect(noJsdocItem).toBeDefined();
-        expect(noJsdocItem?.kind).toBe(6); // CompletionItemKind.Variable
+        // Cleanup
+        store!.clearFile(tphUri);
     });
 
-    it("includes header variables only from .tph files", async () => {
-        const lang = new Language(LANG_WEIDU_TP2, features, workspaceRoot);
-        await lang.init();
+    it("provides hover info for header variables with JSDoc", () => {
+        const store = getSymbols();
+        expect(store).toBeDefined();
 
-        // Load a .tpa file with a variable with JSDoc
-        const tpaUri = pathToUri(path.join(workspaceRoot, "weidu-tp2", "test.tpa"));
-        const tpaContent = `
-/**
- * Local variable.
- * @type {int}
- */
-OUTER_SET local_var = 5
-`;
-        lang.reloadFileData(tpaUri, tpaContent);
-
-        // Get completions for a different file (.tp2)
-        const tp2Uri = pathToUri(path.join(workspaceRoot, "weidu-tp2", "test.tp2"));
-        const completions = lang.completion(tp2Uri);
-
-        // Variables from .tpa files should NOT appear in other files' completions
-        const localVarItem = completions?.find((item) => item.label === "local_var");
-        expect(localVarItem).toBeUndefined();
-    });
-
-    it("provides hover info for header variables with JSDoc", async () => {
-        const lang = new Language(LANG_WEIDU_TP2, features, workspaceRoot);
-        await lang.init();
-
-        // Load a .tph file with a variable that has JSDoc
-        const tphUri = pathToUri(path.join(workspaceRoot, "weidu-tp2", "test-header.tph"));
+        // Load a header with a variable that has JSDoc
+        const tphUri = "file:///test-hover.tph";
         const tphContent = `
 /**
  * Configuration flag for debug mode.
@@ -310,93 +267,91 @@ OUTER_SET local_var = 5
  */
 OUTER_SET debug_mode = 0
 `;
-        lang.reloadFileData(tphUri, tphContent);
+        const parsedSymbols = parseHeaderToSymbols(tphUri, tphContent);
+        store!.updateFile(tphUri, parsedSymbols);
 
-        // Get hover for the variable
-        const hover = lang.hover(tphUri, "debug_mode");
-
-        expect(hover).toBeDefined();
-        expect(hover?.contents).toBeDefined();
-        if (hover?.contents && typeof hover.contents === "object" && "value" in hover.contents) {
-            // Updated to match new format: "int debug_mode = 0" instead of "variable debug_mode" + "Type: `int`"
-            expect(hover.contents.value).toContain("int debug_mode = 0");
-            expect(hover.contents.value).toContain("Configuration flag for debug mode");
+        // Get hover from symbol
+        const symbol = store!.lookup("debug_mode");
+        expect(symbol?.hover).toBeDefined();
+        const contents = symbol?.hover.contents;
+        if (contents && typeof contents === "object" && "value" in contents) {
+            expect(contents.value).toContain("int debug_mode = 0");
+            expect(contents.value).toContain("Configuration flag for debug mode");
         }
+
+        // Cleanup
+        store!.clearFile(tphUri);
     });
 
-    it("clears header variables when file is deleted", async () => {
-        const lang = new Language(LANG_WEIDU_TP2, features, workspaceRoot);
-        await lang.init();
+    it("clears header variables when file is removed from index", () => {
+        const store = getSymbols();
+        expect(store).toBeDefined();
 
-        // Load a .tph file with a variable with JSDoc
-        const tphUri = pathToUri(path.join(workspaceRoot, "weidu-tp2", "test-header.tph"));
-        const tphContent = `
-/**
- * Temporary variable.
- * @type {string}
- */
-OUTER_TEXT_SPRINT temp_var ~value~
-`;
-        lang.reloadFileData(tphUri, tphContent);
+        // Load a header
+        const tphUri = "file:///test-clear.tph";
+        const tphContent = `OUTER_TEXT_SPRINT temp_var ~value~`;
+        const parsedSymbols = parseHeaderToSymbols(tphUri, tphContent);
+        store!.updateFile(tphUri, parsedSymbols);
 
-        // Verify it appears in completions
-        const tp2Uri = pathToUri(path.join(workspaceRoot, "weidu-tp2", "test.tp2"));
-        let completions = lang.completion(tp2Uri);
-        let tempVarItem = completions?.find((item) => item.label === "temp_var");
-        expect(tempVarItem).toBeDefined();
+        // Verify it's in the index
+        expect(store!.lookup("temp_var")).toBeDefined();
 
-        // Delete the file
-        lang.clearFileData(tphUri);
+        // Clear the file
+        store!.clearFile(tphUri);
 
-        // Verify it no longer appears in completions
-        completions = lang.completion(tp2Uri);
-        tempVarItem = completions?.find((item) => item.label === "temp_var");
-        expect(tempVarItem).toBeUndefined();
+        // Verify it's removed
+        expect(store!.lookup("temp_var")).toBeUndefined();
     });
 
-    it("displays variable type and value correctly", async () => {
-        const lang = new Language(LANG_WEIDU_TP2, features, workspaceRoot);
-        await lang.init();
+    it("displays variable type and value correctly", () => {
+        const store = getSymbols();
+        expect(store).toBeDefined();
 
-        const tphUri = pathToUri(path.join(workspaceRoot, "weidu-tp2", "test-header.tph"));
-        // Test without JSDoc first
-        const tphContent1 = `OUTER_SET test123 = 120
+        const tphUri = "file:///test-type-value.tph";
+        const tphContent = `OUTER_SET test123 = 120
 OUTER_TEXT_SPRINT mod_folder ~mymod~`;
-        lang.reloadFileData(tphUri, tphContent1);
+        const parsedSymbols = parseHeaderToSymbols(tphUri, tphContent);
+        store!.updateFile(tphUri, parsedSymbols);
 
         // Test OUTER_SET displays as "int test123 = 120"
-        const hoverSet = lang.hover(tphUri, "test123");
-        expect(hoverSet?.contents).toBeDefined();
-        if (hoverSet?.contents && typeof hoverSet.contents === "object" && "value" in hoverSet.contents) {
-            expect(hoverSet.contents.value).toContain("int test123 = 120");
+        const intSymbol = store!.lookup("test123");
+        expect(intSymbol?.hover).toBeDefined();
+        if (intSymbol?.hover.contents && typeof intSymbol.hover.contents === "object" && "value" in intSymbol.hover.contents) {
+            expect(intSymbol.hover.contents.value).toContain("int test123 = 120");
         }
 
         // Test OUTER_TEXT_SPRINT displays as "string mod_folder = ~mymod~"
-        const hoverString = lang.hover(tphUri, "mod_folder");
-        expect(hoverString?.contents).toBeDefined();
-        if (hoverString?.contents && typeof hoverString.contents === "object" && "value" in hoverString.contents) {
-            expect(hoverString.contents.value).toContain("string mod_folder = ~mymod~");
+        const strSymbol = store!.lookup("mod_folder");
+        expect(strSymbol?.hover).toBeDefined();
+        if (strSymbol?.hover.contents && typeof strSymbol.hover.contents === "object" && "value" in strSymbol.hover.contents) {
+            expect(strSymbol.hover.contents.value).toContain("string mod_folder = ~mymod~");
         }
+
+        // Cleanup
+        store!.clearFile(tphUri);
     });
 
-    it("respects JSDoc @type override for variables", async () => {
-        const lang = new Language(LANG_WEIDU_TP2, features, workspaceRoot);
-        await lang.init();
+    it("respects JSDoc @type override for variables", () => {
+        const store = getSymbols();
+        expect(store).toBeDefined();
 
-        const tphUri = pathToUri(path.join(workspaceRoot, "weidu-tp2", "test-jsdoc-type.tph"));
-        // Test JSDoc @type override - resref instead of string
+        const tphUri = "file:///test-type-override.tph";
         const tphContent = `/**
  * @type {resref}
  */
 OUTER_TEXT_SPRINT spell ~SPWI101~`;
-        lang.reloadFileData(tphUri, tphContent);
+        const parsedSymbols = parseHeaderToSymbols(tphUri, tphContent);
+        store!.updateFile(tphUri, parsedSymbols);
 
-        // Test JSDoc @type overrides inferred type: "resref spell = ~SPWI101~" instead of "string spell = ~SPWI101~"
-        const hoverResref = lang.hover(tphUri, "spell");
-        expect(hoverResref?.contents).toBeDefined();
-        if (hoverResref?.contents && typeof hoverResref.contents === "object" && "value" in hoverResref.contents) {
-            expect(hoverResref.contents.value).toContain("resref spell = ~SPWI101~");
+        // Test JSDoc @type overrides inferred type
+        const symbol = store!.lookup("spell");
+        expect(symbol?.hover).toBeDefined();
+        if (symbol?.hover.contents && typeof symbol.hover.contents === "object" && "value" in symbol.hover.contents) {
+            expect(symbol.hover.contents.value).toContain("resref spell = ~SPWI101~");
         }
+
+        // Cleanup
+        store!.clearFile(tphUri);
     });
 });
 

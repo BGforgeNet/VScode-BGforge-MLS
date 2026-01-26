@@ -188,3 +188,377 @@ END`;
         });
     });
 });
+
+// =============================================================================
+// Symbol conversion tests - verifies IndexedSymbol output
+// These tests ensure hover content includes all JSDoc features
+// =============================================================================
+
+import { parseHeaderToSymbols } from "../../src/weidu-tp2/header-parser";
+import { SymbolKind, isCallableSymbol, isVariableSymbol } from "../../src/core/symbol";
+import type { MarkupContent } from "vscode-languageserver/node";
+
+describe("parseHeaderToSymbols", () => {
+    // Use realistic paths for all tests
+    const workspaceRoot = "/home/user/mymod";
+    const uri = "file:///home/user/mymod/lib/functions.tph";
+    const displayPath = "lib/functions.tph";
+
+    describe("function hover content", () => {
+        it("generates complete hover for simple function", () => {
+            const input = `DEFINE_ACTION_FUNCTION my_func BEGIN END`;
+            const symbols = parseHeaderToSymbols(uri, input, workspaceRoot);
+            const sym = symbols[0];
+
+            expect(isCallableSymbol(sym)).toBe(true);
+            expect(sym.source.displayPath).toBe(displayPath);
+            const hoverContent = sym.hover.contents as MarkupContent;
+            expect(hoverContent.value).toBe(
+`\`\`\`weidu-tp2-tooltip
+action function my_func
+\`\`\`
+\`\`\`bgforge-mls-comment
+lib/functions.tph
+\`\`\``
+            );
+        });
+
+        it("generates complete hover with JSDoc description", () => {
+            const input = `
+/**
+ * Applies bonus to armor.
+ */
+DEFINE_PATCH_FUNCTION apply_armor_bonus BEGIN END`;
+            const symbols = parseHeaderToSymbols(uri, input, workspaceRoot);
+            const hoverContent = symbols[0].hover.contents as MarkupContent;
+
+            expect(hoverContent.value).toBe(
+`\`\`\`weidu-tp2-tooltip
+patch function apply_armor_bonus
+\`\`\`
+\`\`\`bgforge-mls-comment
+lib/functions.tph
+\`\`\`
+
+Applies bonus to armor.`
+            );
+        });
+
+        it("generates complete hover with @arg parameter table", () => {
+            const input = `
+/**
+ * Test function.
+ * @arg {int} bonus! the bonus amount
+ * @arg {string} name item name to use
+ */
+DEFINE_ACTION_FUNCTION test_func
+    INT_VAR bonus = 0
+    STR_VAR name = ""
+BEGIN
+END`;
+            const symbols = parseHeaderToSymbols(uri, input, workspaceRoot);
+            const hoverContent = symbols[0].hover.contents as MarkupContent;
+
+            expect(hoverContent.value).toBe(
+`\`\`\`weidu-tp2-tooltip
+action function test_func
+\`\`\`
+\`\`\`bgforge-mls-comment
+lib/functions.tph
+\`\`\`
+
+Test function.
+
+| | INT vars | Description | Default |
+|:---|:---|:---|:---:|
+| [int](https://ielib.bgforge.net/types/#int) | bonus | the bonus amount |  |
+| | **STR vars** | | |
+| [string](https://ielib.bgforge.net/types/#string) | name | item name to use | "" |`
+            );
+        });
+
+        it("generates complete hover with @return type", () => {
+            const input = `
+/**
+ * Returns a value.
+ * @return {int}
+ */
+DEFINE_ACTION_FUNCTION get_value BEGIN END`;
+            const symbols = parseHeaderToSymbols(uri, input, workspaceRoot);
+            const hoverContent = symbols[0].hover.contents as MarkupContent;
+
+            expect(hoverContent.value).toBe(
+`\`\`\`weidu-tp2-tooltip
+action function get_value
+\`\`\`
+\`\`\`bgforge-mls-comment
+lib/functions.tph
+\`\`\`
+
+Returns a value.
+
+Returns \`int\``
+            );
+        });
+
+        it("generates complete hover with @deprecated notice", () => {
+            const input = `
+/**
+ * Old function.
+ * @deprecated Use new_func instead
+ */
+DEFINE_ACTION_FUNCTION old_func BEGIN END`;
+            const symbols = parseHeaderToSymbols(uri, input, workspaceRoot);
+            const hoverContent = symbols[0].hover.contents as MarkupContent;
+
+            expect(hoverContent.value).toBe(
+`\`\`\`weidu-tp2-tooltip
+action function old_func
+\`\`\`
+\`\`\`bgforge-mls-comment
+lib/functions.tph
+\`\`\`
+
+Old function.
+
+**Deprecated:** Use new_func instead`
+            );
+        });
+
+        it("links known types to ielib documentation in parameter table", () => {
+            const input = `
+/**
+ * Uses an item.
+ * @arg {resref} item the item resref
+ */
+DEFINE_ACTION_FUNCTION use_item
+    STR_VAR item = ""
+BEGIN
+END`;
+            const symbols = parseHeaderToSymbols(uri, input, workspaceRoot);
+            const hoverContent = symbols[0].hover.contents as MarkupContent;
+
+            expect(hoverContent.value).toBe(
+`\`\`\`weidu-tp2-tooltip
+action function use_item
+\`\`\`
+\`\`\`bgforge-mls-comment
+lib/functions.tph
+\`\`\`
+
+Uses an item.
+
+| | STR vars | Description | Default |
+|:---|:---|:---|:---:|
+| [resref](https://ielib.bgforge.net/types/#resref) | item | the item resref | "" |`
+            );
+        });
+    });
+
+    describe("displayPath computation", () => {
+        it("shows workspace-relative path when inside workspace", () => {
+            const input = `DEFINE_ACTION_FUNCTION my_func BEGIN END`;
+            const symbols = parseHeaderToSymbols(uri, input, workspaceRoot);
+            const sym = symbols[0];
+            const hoverContent = sym.hover.contents as MarkupContent;
+
+            expect(sym.source.displayPath).toBe("lib/functions.tph");
+            expect(hoverContent.value).toContain("lib/functions.tph");
+        });
+
+        it("shows filename only when no workspace root provided", () => {
+            const input = `DEFINE_ACTION_FUNCTION my_func BEGIN END`;
+            const symbols = parseHeaderToSymbols(uri, input); // no workspaceRoot
+            const sym = symbols[0];
+            const hoverContent = sym.hover.contents as MarkupContent;
+
+            expect(sym.source.displayPath).toBe("functions.tph");
+            expect(hoverContent.value).toBe(
+`\`\`\`weidu-tp2-tooltip
+action function my_func
+\`\`\`
+\`\`\`bgforge-mls-comment
+functions.tph
+\`\`\``
+            );
+        });
+
+        it("shows filename when file is outside workspace", () => {
+            const input = `DEFINE_ACTION_FUNCTION my_func BEGIN END`;
+            const outsideUri = "file:///other/project/utils.tph";
+            const symbols = parseHeaderToSymbols(outsideUri, input, workspaceRoot);
+            const sym = symbols[0];
+            const hoverContent = sym.hover.contents as MarkupContent;
+
+            expect(sym.source.displayPath).toBe("utils.tph");
+            expect(hoverContent.value).toBe(
+`\`\`\`weidu-tp2-tooltip
+action function my_func
+\`\`\`
+\`\`\`bgforge-mls-comment
+utils.tph
+\`\`\``
+            );
+        });
+    });
+
+    describe("variable hover content", () => {
+        it("generates complete hover for simple variable", () => {
+            const input = `OUTER_SET my_var = 42`;
+            const symbols = parseHeaderToSymbols(uri, input, workspaceRoot);
+            const sym = symbols[0];
+
+            expect(isVariableSymbol(sym)).toBe(true);
+            expect(sym.source.displayPath).toBe(displayPath);
+            const hoverContent = sym.hover.contents as MarkupContent;
+            expect(hoverContent.value).toBe(
+`\`\`\`weidu-tp2-tooltip
+int my_var = 42
+\`\`\`
+\`\`\`bgforge-mls-comment
+lib/functions.tph
+\`\`\``
+            );
+        });
+
+        it("generates complete hover with JSDoc description and @type", () => {
+            const input = `
+/**
+ * Maximum item count.
+ * @type int
+ */
+OUTER_SET max_items = 100`;
+            const symbols = parseHeaderToSymbols(uri, input, workspaceRoot);
+            const hoverContent = symbols[0].hover.contents as MarkupContent;
+
+            expect(hoverContent.value).toBe(
+`\`\`\`weidu-tp2-tooltip
+int max_items = 100
+\`\`\`
+\`\`\`bgforge-mls-comment
+lib/functions.tph
+\`\`\`
+
+Maximum item count.`
+            );
+        });
+
+        it("generates complete hover with @deprecated notice", () => {
+            const input = `
+/**
+ * Old constant.
+ * @deprecated Use NEW_VALUE instead
+ */
+OUTER_SET OLD_VALUE = 5`;
+            const symbols = parseHeaderToSymbols(uri, input, workspaceRoot);
+            const hoverContent = symbols[0].hover.contents as MarkupContent;
+
+            expect(hoverContent.value).toBe(
+`\`\`\`weidu-tp2-tooltip
+int OLD_VALUE = 5
+\`\`\`
+\`\`\`bgforge-mls-comment
+lib/functions.tph
+\`\`\`
+
+Old constant.
+
+**Deprecated:** Use NEW_VALUE instead`
+            );
+        });
+
+        it("generates complete hover for string variable", () => {
+            const input = `OUTER_SPRINT my_str ~hello~`;
+            const symbols = parseHeaderToSymbols(uri, input, workspaceRoot);
+            const hoverContent = symbols[0].hover.contents as MarkupContent;
+
+            expect(hoverContent.value).toBe(
+`\`\`\`weidu-tp2-tooltip
+string my_str = ~hello~
+\`\`\`
+\`\`\`bgforge-mls-comment
+lib/functions.tph
+\`\`\``
+            );
+        });
+    });
+
+    describe("mixed content", () => {
+        it("converts both functions and variables from same file", () => {
+            const input = `
+OUTER_SET global_count = 0
+
+DEFINE_ACTION_FUNCTION increment_count BEGIN
+END`;
+            const symbols = parseHeaderToSymbols(uri, input, workspaceRoot);
+
+            expect(symbols).toHaveLength(2);
+            expect(symbols.some(s => s.name === "global_count")).toBe(true);
+            expect(symbols.some(s => s.name === "increment_count")).toBe(true);
+        });
+    });
+
+    describe("callable symbol params include JSDoc data", () => {
+        it("includes @arg descriptions in callable.params", () => {
+            const input = `
+/**
+ * Test function.
+ * @arg {int} bonus! the bonus amount
+ * @arg {string} name item name to use
+ */
+DEFINE_ACTION_FUNCTION test_func
+    INT_VAR bonus = 0
+    STR_VAR name = ""
+BEGIN
+END`;
+            const symbols = parseHeaderToSymbols(uri, input, workspaceRoot);
+            const sym = symbols[0];
+
+            expect(isCallableSymbol(sym)).toBe(true);
+            if (!isCallableSymbol(sym)) return;
+
+            // Verify params have JSDoc descriptions
+            expect(sym.callable.params?.intVar[0].name).toBe("bonus");
+            expect(sym.callable.params?.intVar[0].description).toBe("the bonus amount");
+            expect(sym.callable.params?.intVar[0].required).toBe(true);
+
+            expect(sym.callable.params?.strVar[0].name).toBe("name");
+            expect(sym.callable.params?.strVar[0].description).toBe("item name to use");
+            expect(sym.callable.params?.strVar[0].required).toBeFalsy();
+        });
+
+        it("includes @arg type override in callable.params", () => {
+            const input = `
+/**
+ * @arg {resref} item the item resref
+ */
+DEFINE_ACTION_FUNCTION use_item
+    STR_VAR item = ""
+BEGIN
+END`;
+            const symbols = parseHeaderToSymbols(uri, input, workspaceRoot);
+            const sym = symbols[0];
+
+            expect(isCallableSymbol(sym)).toBe(true);
+            if (!isCallableSymbol(sym)) return;
+
+            // Type from @arg should override default "string"
+            expect(sym.callable.params?.strVar[0].type).toBe("resref");
+        });
+
+        it("includes returnType from @return", () => {
+            const input = `
+/**
+ * @return {int}
+ */
+DEFINE_ACTION_FUNCTION get_value BEGIN END`;
+            const symbols = parseHeaderToSymbols(uri, input, workspaceRoot);
+            const sym = symbols[0];
+
+            expect(isCallableSymbol(sym)).toBe(true);
+            if (!isCallableSymbol(sym)) return;
+
+            expect(sym.callable.returnType).toBe("int");
+        });
+    });
+});

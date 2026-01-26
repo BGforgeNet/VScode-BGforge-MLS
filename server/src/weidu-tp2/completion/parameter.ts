@@ -4,8 +4,8 @@
  */
 
 import { CompletionItem, CompletionItemKind, InsertTextFormat, MarkupKind } from "vscode-languageserver/node";
-import { buildParamInfoMap, type ParamDisplayInfo } from "../../shared/jsdoc";
-import { lookupFunction } from "../header-parser";
+import { isCallableSymbol, type CallableParam } from "../../core/symbol";
+import { getSymbols } from "../provider";
 import type { FuncParamsContext } from "./types";
 
 /**
@@ -15,51 +15,50 @@ import type { FuncParamsContext } from "./types";
 export function getParamCompletions(context: FuncParamsContext): CompletionItem[] {
     const { functionName, paramSection, usedParams } = context;
 
-    // Look up function definition
-    const funcInfo = lookupFunction(functionName);
-    if (!funcInfo || !funcInfo.params) {
+    // Look up function definition from unified symbol storage
+    const symbols = getSymbols();
+    const symbol = symbols?.lookup(functionName);
+    if (!symbol || !isCallableSymbol(symbol) || !symbol.callable.params) {
         // Function not found or has no params (it's a macro)
         return [];
     }
 
+    const params = symbol.callable.params;
     const usedSet = new Set(usedParams);
     const completions: CompletionItem[] = [];
-    const paramInfoMap = buildParamInfoMap(funcInfo.jsdoc);
 
     // Get the appropriate param list based on section
+    // CallableParam already has JSDoc data merged (type, description, required)
     switch (paramSection) {
         case "INT_VAR": {
-            const params = funcInfo.params.intVar;
-            for (const param of params) {
+            for (const param of params.intVar) {
                 if (!usedSet.has(param.name)) {
-                    completions.push(createParamCompletion(param.name, "int", param.defaultValue, paramInfoMap.get(param.name)));
+                    completions.push(createParamCompletion(param));
                 }
             }
             break;
         }
         case "STR_VAR": {
-            const params = funcInfo.params.strVar;
-            for (const param of params) {
+            for (const param of params.strVar) {
                 if (!usedSet.has(param.name)) {
-                    completions.push(createParamCompletion(param.name, "string", param.defaultValue, paramInfoMap.get(param.name)));
+                    completions.push(createParamCompletion(param));
                 }
             }
             break;
         }
         case "RET": {
-            const params = funcInfo.params.ret;
-            for (const param of params) {
-                if (!usedSet.has(param)) {
-                    completions.push(createParamCompletion(param, "any", undefined, paramInfoMap.get(param)));
+            for (const name of params.ret) {
+                if (!usedSet.has(name)) {
+                    // RET params are just names - no type/default info available
+                    completions.push(createParamCompletion({ name, type: "any" }));
                 }
             }
             break;
         }
         case "RET_ARRAY": {
-            const params = funcInfo.params.retArray;
-            for (const param of params) {
-                if (!usedSet.has(param)) {
-                    completions.push(createParamCompletion(param, "array", undefined, paramInfoMap.get(param)));
+            for (const name of params.retArray) {
+                if (!usedSet.has(name)) {
+                    completions.push(createParamCompletion({ name, type: "array" }));
                 }
             }
             break;
@@ -72,18 +71,21 @@ export function getParamCompletions(context: FuncParamsContext): CompletionItem[
 /**
  * Create a parameter completion item with documentation.
  * Format: "type name = default" for optional params, "type name" for required.
+ * Uses CallableParam which already has JSDoc data merged (type, description, required).
  */
-function createParamCompletion(name: string, type: string, defaultValue?: string, info?: ParamDisplayInfo): CompletionItem {
+function createParamCompletion(param: CallableParam): CompletionItem {
+    const { name, type, defaultValue, description, required } = param;
+
     // Build signature line - hide default value for required params
-    const showDefault = defaultValue !== undefined && !info?.required;
-    const signature = showDefault ? `${type} ${name} = ${defaultValue}` : `${type} ${name}`;
+    const showDefault = defaultValue !== undefined && !required;
+    const signature = showDefault ? `${type ?? ""} ${name} = ${defaultValue}` : `${type ?? ""} ${name}`;
 
     // Build markdown documentation
     const langId = "weidu-tp2-tooltip";
     const docParts = [`\`\`\`${langId}`, signature, "```"];
 
-    if (info?.description) {
-        docParts.push("", info.description);
+    if (description) {
+        docParts.push("", description);
     }
 
     const item: CompletionItem = {

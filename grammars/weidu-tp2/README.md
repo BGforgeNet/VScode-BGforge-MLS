@@ -432,6 +432,51 @@ condition ? then_value : else_value
 | `MOD_VERSION`   | Value from VERSION flag                 |
 | `LANGUAGE`      | Selected language directory             |
 
+### Variable Scoping Rules
+
+TP2 has three scope levels:
+
+1. **File-scope (global)**: Variables declared outside functions (via `OUTER_SET`, `OUTER_SPRINT`, `OUTER_TEXT_SPRINT`). Visible throughout the file and any INCLUDEd files.
+2. **Function-scope**: Variables declared inside `DEFINE_ACTION_FUNCTION` or `DEFINE_PATCH_FUNCTION`. Local to that function invocation.
+3. **Loop-scope**: Variables declared by loop constructs (`PHP_EACH`, `ACTION_PHP_EACH`, `PATCH_PHP_EACH`, `ACTION_FOR_EACH`, `PATCH_FOR_EACH`). Local to that loop iteration.
+
+**Key rules:**
+
+- **No shadowing within same scope**: A variable name refers to the same variable throughout its scope.
+- **Function parameters create local scope**: `INT_VAR`, `STR_VAR` parameters and `RET`, `RET_ARRAY` return variables are local to the function.
+- **Loop variables shadow outer scope**: Loop iteration variables (key/value in `PHP_EACH`, var in `FOR_EACH`) are local to the loop body and shadow any outer variable with the same name.
+- **Same names allowed across functions**: Different functions may use the same variable names; these are independent.
+
+```tp2
+OUTER_SET global_count = 0           // file-scope
+
+DEFINE_ACTION_FUNCTION process_items
+  INT_VAR start = 0                  // function parameter, local
+  RET count                          // return variable, local
+BEGIN
+  SET count = 0                      // local to this function
+  ACTION_PHP_EACH items AS key => value BEGIN
+    // key and value are loop-scope, shadow any outer variables
+    SET count += 1
+  END
+END
+
+DEFINE_ACTION_FUNCTION other_func BEGIN
+  SET count = 99                     // different count, local to other_func
+  ACTION_FOR_EACH key IN a b c BEGIN
+    // different key, local to this loop
+  END
+END
+```
+
+**Implications for tooling:**
+
+- When resolving a variable reference, check in order: loop-scope (if inside loop), function-scope (if inside function), then file-scope.
+- Rename operations must respect scope boundaries: renaming `key` in one `PHP_EACH` must not affect `key` in another loop or function.
+- Go-to-definition must find the correct declaration based on the cursor's scope context.
+
+**Note:** `WITH_SCOPE` and `PATCH_WITH_SCOPE` create temporary scope blocks where variables are copied from the surrounding scope and changes are discarded on exit. These are rarely used and not currently tracked by tooling.
+
 ## Actions
 
 ### File Operations

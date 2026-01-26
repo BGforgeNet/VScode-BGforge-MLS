@@ -5,30 +5,16 @@
 
 import { describe, expect, it } from "vitest";
 import { buildFunctionCallSnippet } from "../../src/weidu-tp2/snippets";
-import { parse as parseJSDoc } from "../../src/shared/jsdoc";
-import type { FunctionInfo } from "../../src/weidu-tp2/header-parser";
-import { Location } from "vscode-languageserver/node";
+import type { CallableInfo, CallableParam } from "../../src/core/symbol";
 
-// Helper to create a minimal FunctionInfo for testing
-function createFunctionInfo(
-    name: string,
-    intVarParams: Array<{ name: string; defaultValue?: string }>,
-    strVarParams: Array<{ name: string; defaultValue?: string }>,
-    jsdocText?: string
-): FunctionInfo {
-    const location: Location = {
-        uri: "file:///test.tph",
-        range: {
-            start: { line: 0, character: 0 },
-            end: { line: 0, character: 0 },
-        },
-    };
-
-    const funcInfo: FunctionInfo = {
-        name,
+// Helper to create a minimal CallableInfo for testing
+function createCallableInfo(
+    intVarParams: CallableParam[],
+    strVarParams: CallableParam[]
+): CallableInfo {
+    return {
         context: "action",
         dtype: "function",
-        location,
         params: {
             intVar: intVarParams,
             strVar: strVarParams,
@@ -36,152 +22,100 @@ function createFunctionInfo(
             retArray: [],
         },
     };
-
-    if (jsdocText) {
-        funcInfo.jsdoc = parseJSDoc(jsdocText);
-    }
-
-    return funcInfo;
 }
 
 describe("weidu-tp2: function call snippet generation", () => {
     it("returns null when no required params exist", () => {
-        const funcInfo = createFunctionInfo(
-            "my_func",
-            [{ name: "x", defaultValue: "0" }],
-            [{ name: "y", defaultValue: '""' }]
+        const callable = createCallableInfo(
+            [{ name: "x", type: "int", defaultValue: "0" }],
+            [{ name: "y", type: "string", defaultValue: '""' }]
         );
 
-        const snippet = buildFunctionCallSnippet(funcInfo);
+        const snippet = buildFunctionCallSnippet(callable, "my_func");
         expect(snippet).toBeNull();
     });
 
     it("returns null for functions without params (macros)", () => {
-        const funcInfo: FunctionInfo = {
-            name: "my_macro",
+        const callable: CallableInfo = {
             context: "action",
             dtype: "macro",
-            location: {
-                uri: "file:///test.tph",
-                range: {
-                    start: { line: 0, character: 0 },
-                    end: { line: 0, character: 0 },
-                },
-            },
         };
 
-        const snippet = buildFunctionCallSnippet(funcInfo);
+        const snippet = buildFunctionCallSnippet(callable, "my_macro");
         expect(snippet).toBeNull();
     });
 
     it("generates snippet for only required INT_VAR params", () => {
-        const jsdoc = `/**
- * Test function
- * @param {int} x! - required x param
- * @param {int} y - optional y param
- */`;
-        const funcInfo = createFunctionInfo(
-            "my_func",
+        const callable = createCallableInfo(
             [
-                { name: "x", defaultValue: "0" },
-                { name: "y", defaultValue: "1" },
+                { name: "x", type: "int", defaultValue: "0", required: true },
+                { name: "y", type: "int", defaultValue: "1" },
             ],
-            [],
-            jsdoc
+            []
         );
 
-        const snippet = buildFunctionCallSnippet(funcInfo);
+        const snippet = buildFunctionCallSnippet(callable, "my_func");
         expect(snippet).toBe(
             "my_func\n    INT_VAR\n        x = $1\nEND$0"
         );
     });
 
     it("generates snippet for only required STR_VAR params", () => {
-        const jsdoc = `/**
- * Test function
- * @param {string} name! - required name
- */`;
-        const funcInfo = createFunctionInfo(
-            "my_func",
+        const callable = createCallableInfo(
             [],
-            [{ name: "name", defaultValue: '""' }],
-            jsdoc
+            [{ name: "name", type: "string", defaultValue: '""', required: true }]
         );
 
-        const snippet = buildFunctionCallSnippet(funcInfo);
+        const snippet = buildFunctionCallSnippet(callable, "my_func");
         expect(snippet).toBe(
             'my_func\n    STR_VAR\n        name = $1\nEND$0'
         );
     });
 
     it("generates snippet for both required INT_VAR and STR_VAR params", () => {
-        const jsdoc = `/**
- * Test function
- * @param {int} x! - required x
- * @param {int} y! - required y
- * @param {string} z! - required z
- */`;
-        const funcInfo = createFunctionInfo(
-            "my_func",
+        const callable = createCallableInfo(
             [
-                { name: "x", defaultValue: "0" },
-                { name: "y", defaultValue: "0" },
+                { name: "x", type: "int", defaultValue: "0", required: true },
+                { name: "y", type: "int", defaultValue: "0", required: true },
             ],
-            [{ name: "z", defaultValue: '""' }],
-            jsdoc
+            [{ name: "z", type: "string", defaultValue: '""', required: true }]
         );
 
-        const snippet = buildFunctionCallSnippet(funcInfo);
+        const snippet = buildFunctionCallSnippet(callable, "my_func");
         expect(snippet).toBe(
             'my_func\n    INT_VAR\n        x = $1\n        y = $2\n    STR_VAR\n        z = $3\nEND$0'
         );
     });
 
     it("excludes optional params from snippet", () => {
-        const jsdoc = `/**
- * Test function
- * @param {int} required_param! - required
- * @param {int} optional_param - optional
- * @param {string} another_required! - required
- * @param {string} another_optional - optional
- */`;
-        const funcInfo = createFunctionInfo(
-            "my_func",
+        const callable = createCallableInfo(
             [
-                { name: "required_param", defaultValue: "0" },
-                { name: "optional_param", defaultValue: "0" },
+                { name: "required_param", type: "int", defaultValue: "0", required: true },
+                { name: "optional_param", type: "int", defaultValue: "0" },
             ],
             [
-                { name: "another_required", defaultValue: '""' },
-                { name: "another_optional", defaultValue: '""' },
-            ],
-            jsdoc
+                { name: "another_required", type: "string", defaultValue: '""', required: true },
+                { name: "another_optional", type: "string", defaultValue: '""' },
+            ]
         );
 
-        const snippet = buildFunctionCallSnippet(funcInfo);
+        const snippet = buildFunctionCallSnippet(callable, "my_func");
         expect(snippet).toBe(
             'my_func\n    INT_VAR\n        required_param = $1\n    STR_VAR\n        another_required = $2\nEND$0'
         );
     });
 
     it("generates correct tab stops in sequence", () => {
-        const jsdoc = `/**
- * @param {int} a!
- * @param {int} b!
- * @param {int} c!
- */`;
-        const funcInfo = createFunctionInfo(
-            "test",
+        const callable = createCallableInfo(
             [
-                { name: "a", defaultValue: "0" },
-                { name: "b", defaultValue: "0" },
-                { name: "c", defaultValue: "0" },
+                { name: "a", type: "int", defaultValue: "0", required: true },
+                { name: "b", type: "int", defaultValue: "0", required: true },
+                { name: "c", type: "int", defaultValue: "0", required: true },
             ],
-            [],
-            jsdoc
+            []
         );
 
-        const snippet = buildFunctionCallSnippet(funcInfo);
+        const snippet = buildFunctionCallSnippet(callable, "test");
         expect(snippet).toContain("$1");
         expect(snippet).toContain("$2");
         expect(snippet).toContain("$3");
@@ -189,69 +123,48 @@ describe("weidu-tp2: function call snippet generation", () => {
     });
 
     it("generates snippet with LAF prefix when provided", () => {
-        const jsdoc = `/**
- * @param {int} x! - required param
- */`;
-        const funcInfo = createFunctionInfo(
-            "my_func",
-            [{ name: "x", defaultValue: "0" }],
-            [],
-            jsdoc
+        const callable = createCallableInfo(
+            [{ name: "x", type: "int", defaultValue: "0", required: true }],
+            []
         );
 
-        const snippet = buildFunctionCallSnippet(funcInfo, "LAF");
+        const snippet = buildFunctionCallSnippet(callable, "my_func", "LAF");
         expect(snippet).toBe(
             "LAF my_func\n    INT_VAR\n        x = $1\nEND$0"
         );
     });
 
     it("generates snippet with LPF prefix when provided", () => {
-        const jsdoc = `/**
- * @param {string} name! - required name
- */`;
-        const funcInfo = createFunctionInfo(
-            "my_func",
+        const callable = createCallableInfo(
             [],
-            [{ name: "name", defaultValue: '""' }],
-            jsdoc
+            [{ name: "name", type: "string", defaultValue: '""', required: true }]
         );
 
-        const snippet = buildFunctionCallSnippet(funcInfo, "LPF");
+        const snippet = buildFunctionCallSnippet(callable, "my_func", "LPF");
         expect(snippet).toBe(
             'LPF my_func\n    STR_VAR\n        name = $1\nEND$0'
         );
     });
 
     it("generates snippet with prefix for both INT_VAR and STR_VAR params", () => {
-        const jsdoc = `/**
- * @param {int} x! - required x
- * @param {string} name! - required name
- */`;
-        const funcInfo = createFunctionInfo(
-            "complex_func",
-            [{ name: "x", defaultValue: "0" }],
-            [{ name: "name", defaultValue: '""' }],
-            jsdoc
+        const callable = createCallableInfo(
+            [{ name: "x", type: "int", defaultValue: "0", required: true }],
+            [{ name: "name", type: "string", defaultValue: '""', required: true }]
         );
 
-        const snippet = buildFunctionCallSnippet(funcInfo, "LAF");
+        const snippet = buildFunctionCallSnippet(callable, "complex_func", "LAF");
         expect(snippet).toBe(
             'LAF complex_func\n    INT_VAR\n        x = $1\n    STR_VAR\n        name = $2\nEND$0'
         );
     });
 
     it("generates snippet without prefix when not provided", () => {
-        const jsdoc = `/**
- * @param {int} x! - required param
- */`;
-        const funcInfo = createFunctionInfo(
-            "my_func",
-            [{ name: "x", defaultValue: "0" }],
-            [],
-            jsdoc
+        const callable = createCallableInfo(
+            [{ name: "x", type: "int", defaultValue: "0", required: true }],
+            []
         );
 
-        const snippet = buildFunctionCallSnippet(funcInfo);
+        const snippet = buildFunctionCallSnippet(callable, "my_func");
         expect(snippet).toBe(
             "my_func\n    INT_VAR\n        x = $1\nEND$0"
         );

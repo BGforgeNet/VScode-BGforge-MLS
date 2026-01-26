@@ -3,7 +3,7 @@
  * Tests utility functions and formatting integration.
  */
 
-import { describe, expect, it, beforeAll, vi } from "vitest";
+import { describe, expect, it, beforeAll, beforeEach, afterEach, vi } from "vitest";
 import type { MarkupContent } from "vscode-languageserver/node";
 
 /** Extract markdown value from hover contents. */
@@ -571,17 +571,11 @@ describe("formatDocument throws on structural errors", () => {
 describe("header-parser: parseHeader", () => {
     // Lazy-load module after parser initialization
     let parseHeader: typeof import("../../src/weidu-tp2/header-parser").parseHeader;
-    let updateFileIndex: typeof import("../../src/weidu-tp2/header-parser").updateFileIndex;
-    let lookupFunction: typeof import("../../src/weidu-tp2/header-parser").lookupFunction;
-    let clearIndex: typeof import("../../src/weidu-tp2/header-parser").clearIndex;
 
     beforeAll(async () => {
         await initParser();
         const mod = await import("../../src/weidu-tp2/header-parser");
         parseHeader = mod.parseHeader;
-        updateFileIndex = mod.updateFileIndex;
-        lookupFunction = mod.lookupFunction;
-        clearIndex = mod.clearIndex;
     });
 
     it("extracts function definitions", () => {
@@ -644,32 +638,34 @@ DEFINE_ACTION_MACRO macro1 BEGIN END
         expect(functions).toHaveLength(3);
         expect(functions.map(f => f.name)).toEqual(["func1", "func2", "macro1"]);
     });
-
-    it("function index lookup works", () => {
-        clearIndex();
-        const code = `DEFINE_ACTION_FUNCTION indexed_func BEGIN END`;
-        updateFileIndex("file:///indexed.tph", code);
-
-        const func = lookupFunction("indexed_func");
-        expect(func).toBeDefined();
-        expect(func?.name).toBe("indexed_func");
-        expect(func?.location.uri).toBe("file:///indexed.tph");
-    });
 });
 
 describe("definition: getDefinition", () => {
     // Lazy-load modules after parser initialization
     let getDefinition: typeof import("../../src/weidu-tp2/definition").getDefinition;
-    let clearIndex: typeof import("../../src/weidu-tp2/header-parser").clearIndex;
-    let updateFileIndex: typeof import("../../src/weidu-tp2/header-parser").updateFileIndex;
+    let parseHeaderToSymbols: typeof import("../../src/weidu-tp2/header-parser").parseHeaderToSymbols;
+    let SymbolsClass: typeof import("../../src/core/symbol-index").Symbols;
+    let provider: typeof import("../../src/weidu-tp2/provider");
+    let mockStore: InstanceType<typeof SymbolsClass>;
 
     beforeAll(async () => {
         await initParser();
         const defMod = await import("../../src/weidu-tp2/definition");
         const headerMod = await import("../../src/weidu-tp2/header-parser");
+        const symbolMod = await import("../../src/core/symbol-index");
+        provider = await import("../../src/weidu-tp2/provider");
         getDefinition = defMod.getDefinition;
-        clearIndex = headerMod.clearIndex;
-        updateFileIndex = headerMod.updateFileIndex;
+        parseHeaderToSymbols = headerMod.parseHeaderToSymbols;
+        SymbolsClass = symbolMod.Symbols;
+    });
+
+    beforeEach(() => {
+        mockStore = new SymbolsClass();
+        vi.spyOn(provider, "getSymbols").mockReturnValue(mockStore);
+    });
+
+    afterEach(() => {
+        vi.restoreAllMocks();
     });
 
     it("finds same-file function definition", () => {
@@ -687,10 +683,10 @@ BEGIN @1
     });
 
     it("finds cross-file function definition", () => {
-        clearIndex();
-        // Index a header file
+        // Index a header file in Symbols
         const headerCode = `DEFINE_ACTION_FUNCTION header_func BEGIN END`;
-        updateFileIndex("file:///header.tph", headerCode);
+        const parsedSymbols = parseHeaderToSymbols("file:///header.tph", headerCode);
+        mockStore.updateFile("file:///header.tph", parsedSymbols);
 
         // Main file calls the function
         const mainCode = `
@@ -703,7 +699,6 @@ BEGIN @1
     });
 
     it("returns null for unknown function", () => {
-        clearIndex();
         const code = `
 BEGIN @1
     LAF unknown_func END

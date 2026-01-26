@@ -1,15 +1,20 @@
 /**
  * WeiDU TP2 language provider.
  * Implements all TP2 file features in one place.
+ *
+ * Uses unified Symbols storage for static completion and hover data.
+ * User-defined functions and variables from .tph headers are handled by header-parser.
  */
 
-import { CompletionItem, CompletionItemKind, DocumentSymbol, Hover, Location, Position, WorkspaceEdit, InsertTextFormat, MarkupKind } from "vscode-languageserver/node";
+import { type CompletionItem, CompletionItemKind, type DocumentSymbol, type Hover, type Location, type Position, type WorkspaceEdit, InsertTextFormat } from "vscode-languageserver/node";
 import { extname } from "path";
 import { fileURLToPath } from "url";
 import { conlog } from "../common";
 import { EXT_WEIDU_TP2, LANG_WEIDU_TP2 } from "../core/languages";
-import { Language, Features } from "../data-loader";
-import { FormatResult, LanguageProvider, ProviderContext } from "../language-provider";
+import { isHeaderFile } from "../core/location-utils";
+import { Symbols } from "../core/symbol-index";
+import { loadStaticSymbols } from "../core/static-loader";
+import { type FormatResult, type LanguageProvider, type ProviderContext } from "../language-provider";
 import { getFormatOptions } from "../shared/format-options";
 import { createFullDocumentEdit, validateFormatting, stripCommentsWeidu } from "../shared/format-utils";
 import { compile as weiduCompile } from "../weidu-compile";
@@ -20,32 +25,26 @@ import { formatDocument as formatAst } from "./format/core";
 import { initParser, parseWithCache, isInitialized } from "./parser";
 import { getDocumentSymbols } from "./symbol";
 import { getDefinition, isOnFunctionCallParamName } from "./definition";
-import { updateFileIndex, clearFileFromIndex, updateVariableIndex, clearVariableFromIndex, lookupFunction, lookupVariable } from "./header-parser";
+import { parseHeaderToSymbols } from "./header-parser";
+import { isCallableSymbol, type IndexedSymbol } from "../core/symbol";
 import { renameSymbol, prepareRenameSymbol } from "./rename";
 import { buildFunctionCallSnippet } from "./snippets";
-import { getFunctionParamHover, getVariableHover } from "./hover";
+import { getFunctionParamHover } from "./hover";
 import { localCompletion, isInsideComment, isOnLoopVariableBinding } from "./ast-utils";
+import { getLocalSymbols as extractLocalSymbols, lookupLocalSymbol, clearLocalSymbolsCache } from "./local-symbols";
 
-const features: Features = {
-    completion: true,
-    definition: true,
-    hover: true,
-    udf: true,
-    headers: true,
-    externalHeaders: false,
-    headerExtension: ".tph",
-    parse: true,
-    parseRequiresGame: false,
-    signature: false,
-    staticCompletion: true,
-    staticHover: true,
-    staticSignature: false,
-};
-
-/** Internal Language instance for data features */
-let language: Language | undefined;
+/** Unified symbol storage for static completion and hover */
+let symbols: Symbols | undefined;
 /** Stored context for compile settings access */
 let storedContext: ProviderContext | undefined;
+
+/**
+ * Get the unified symbol storage for the TP2 provider.
+ * Used by other modules (definition, completion, hover) to access symbols.
+ */
+export function getSymbols(): Symbols | undefined {
+    return symbols;
+}
 
 export const weiduTp2Provider: LanguageProvider = {
     id: LANG_WEIDU_TP2,
@@ -57,16 +56,75 @@ export const weiduTp2Provider: LanguageProvider = {
         // Initialize tree-sitter parser for formatting
         await initParser();
 
-        // Initialize Language instance for data features
-        language = new Language(LANG_WEIDU_TP2, features, context.workspaceRoot);
-        await language.init();
+        // Initialize symbol storage with static data
+        symbols = new Symbols();
+        const staticSymbols = loadStaticSymbols(LANG_WEIDU_TP2);
+        symbols.loadStatic(staticSymbols);
 
-        conlog("WeiDU TP2 provider initialized");
+        conlog(`WeiDU TP2 provider initialized with ${staticSymbols.length} static symbols`);
+    },
+
+    /**
+     * Resolve a single symbol by name.
+     * This is the UNIFIED entry point - handles local + indexed merge internally.
+     *
+     * Resolution order:
+     * 1. Local symbols (fresh buffer) - always checked first
+     * 2. Indexed symbols (headers + static), EXCLUDING current file
+     *
+     * This prevents stale index data from overriding fresh buffer content.
+     */
+    resolveSymbol(name: string, text: string, uri: string): IndexedSymbol | undefined {
+        // 1. Check local symbols first (fresh buffer takes priority)
+        const local = lookupLocalSymbol(name, text, uri);
+        if (local) {
+            return local;
+        }
+
+        // 2. Fall back to indexed symbols, excluding current file
+        // This prevents returning stale data if the file is indexed but modified
+        if (symbols) {
+            const indexed = symbols.lookup(name);
+            // Only return if it's NOT from the current file
+            if (indexed && indexed.source.uri !== uri) {
+                return indexed;
+            }
+            // Also return static symbols (uri is null)
+            if (indexed && indexed.source.uri === null) {
+                return indexed;
+            }
+        }
+
+        return undefined;
+    },
+
+    /**
+     * Get all visible symbols for completion.
+     * Merges local + indexed, with local taking precedence.
+     */
+    getVisibleSymbols(text: string, uri: string): IndexedSymbol[] {
+        // Get local symbols (fresh buffer)
+        const localSymbols = extractLocalSymbols(text, uri);
+        const localNames = new Set(localSymbols.map(s => s.name));
+
+        // Get indexed symbols, excluding current file and duplicates
+        const indexedSymbols = symbols
+            ? symbols.query({ excludeUri: uri })
+            : [];
+
+        // Filter out indexed symbols that have local overrides
+        const filteredIndexed = indexedSymbols.filter((s: IndexedSymbol) => !localNames.has(s.name));
+
+        return [...localSymbols, ...filteredIndexed];
     },
 
     getCompletions(uri: string): CompletionItem[] {
-        const staticCompletions = language?.completion(uri) ?? [];
-        return staticCompletions;
+        if (!symbols) {
+            return [];
+        }
+        // Return symbols, excluding current file (local completion handles that)
+        const allSymbols = symbols.query({ excludeUri: uri });
+        return allSymbols.map((s: IndexedSymbol) => s.completion);
     },
 
     filterCompletions(items: CompletionItem[], text: string, position: Position, uri: string, triggerCharacter?: string): CompletionItem[] {
@@ -89,34 +147,11 @@ export const weiduTp2Provider: LanguageProvider = {
             return [];
         }
 
-        // Add local variable completions
+        // Add local variable completions (current file symbols)
+        // No deduplication needed - getCompletions() excludes current file via excludeUri
         const localVars = localCompletion(text);
 
-        // Enrich local vars with JSDoc info from header index (but without file path)
-        for (const item of localVars) {
-            if (item.kind === CompletionItemKind.Variable) {
-                const varInfo = lookupVariable(item.label as string);
-                if (varInfo) {
-                    const type = varInfo.jsdoc?.type ?? varInfo.inferredType;
-                    const signature = varInfo.value ? `${type} ${item.label} = ${varInfo.value}` : `${type} ${item.label}`;
-                    const langId = "weidu-tp2-tooltip";
-                    const docParts = [`\`\`\`${langId}`, signature, "```"];
-                    if (varInfo.jsdoc?.desc) {
-                        docParts.push("", varInfo.jsdoc.desc);
-                    }
-                    item.documentation = { kind: MarkupKind.Markdown, value: docParts.join("\n") };
-                }
-            }
-        }
-
-        // Deduplicate: remove header items that match local var names
-        // Header items have labelDetails.description (file path), local vars don't
-        const localVarNames = new Set(localVars.filter(v => v.kind === CompletionItemKind.Variable).map(v => v.label));
-        const dedupedItems = items.filter(item =>
-            !(item.kind === CompletionItemKind.Variable && item.labelDetails?.description && localVarNames.has(item.label as string))
-        );
-
-        let allItems = [...dedupedItems, ...localVars];
+        let allItems = [...items, ...localVars];
 
         // Check if we're in funcParamName context and can provide parameter completions
         // Note: Parameter completions (like "count = ") are only shown when typing parameter names,
@@ -141,8 +176,10 @@ export const weiduTp2Provider: LanguageProvider = {
 
         if (inLafLpfContext || inPatchContext || inActionContext) {
             allItems = allItems.map((item) => {
-                const funcInfo = lookupFunction(item.label);
-                if (funcInfo) {
+                // CompletionItem.label is always a string (LSP spec)
+                const funcName = item.label as string;
+                const symbol = symbols?.lookup(funcName);
+                if (symbol && isCallableSymbol(symbol)) {
                     // Determine prefix based on context
                     let prefix: string | undefined;
                     if (inPatchContext && !inLafLpfContext) {
@@ -152,7 +189,7 @@ export const weiduTp2Provider: LanguageProvider = {
                     }
                     // inLafLpfContext means no prefix (user already typed it)
 
-                    const snippet = buildFunctionCallSnippet(funcInfo, prefix);
+                    const snippet = buildFunctionCallSnippet(symbol.callable, funcName, prefix);
                     if (snippet) {
                         return {
                             ...item,
@@ -176,8 +213,15 @@ export const weiduTp2Provider: LanguageProvider = {
         return !isInsideComment(text, position);
     },
 
-    getHover(uri: string, symbol: string): Hover | null {
-        return language?.hover(uri, symbol) ?? null;
+    getHover(_uri: string, symbolName: string): Hover | null {
+        // All symbols (static + header) are in the unified symbol storage
+        if (symbols) {
+            const symbol = symbols.lookup(symbolName);
+            if (symbol?.hover) {
+                return symbol.hover;
+            }
+        }
+        return null;
     },
 
     hover(text: string, symbol: string, _uri: string, position: Position): Hover | null | undefined {
@@ -200,17 +244,21 @@ export const weiduTp2Provider: LanguageProvider = {
             }
         }
 
-        // Variable hover for reference positions
-        const varHover = getVariableHover(symbol);
-        if (varHover) {
-            return varHover;
+        // Variable hover from unified symbol storage (pre-computed)
+        if (symbols) {
+            const sym = symbols.lookup(symbol);
+            if (sym?.hover) {
+                return sym.hover;
+            }
         }
 
         return undefined;  // Not handled, fall through to data-driven hover
     },
 
-    getSymbolDefinition(symbol: string): Location | null {
-        return language?.definition(symbol) ?? null;
+    getSymbolDefinition(symbolName: string): Location | null {
+        // Static symbols have null locations (they're built-in).
+        // Definition for user-defined symbols is handled by definition() via tree-sitter.
+        return symbols?.lookupDefinition(symbolName) ?? null;
     },
 
     definition(text: string, position: Position, uri: string): Location | null {
@@ -218,24 +266,28 @@ export const weiduTp2Provider: LanguageProvider = {
     },
 
     reloadFileData(uri: string, text: string): void {
-        language?.reloadFileData(uri, text);
         // Only update global indices for header files (.tph).
         // Non-header variables/functions are local to their file.
-        const filePath = fileURLToPath(uri);
-        if (extname(filePath).toLowerCase() === ".tph") {
-            updateFileIndex(uri, text);
-            updateVariableIndex(uri, text);
+        if (isHeaderFile(uri)) {
+            // Update unified symbol storage - ensures ALL provider methods see header symbols
+            // This is the single source of truth for all LSP features
+            if (symbols) {
+                const parsedSymbols = parseHeaderToSymbols(uri, text, storedContext?.workspaceRoot);
+                symbols.updateFile(uri, parsedSymbols);
+            }
         }
     },
 
     onWatchedFileDeleted(uri: string): void {
-        language?.clearFileData(uri);
-        clearFileFromIndex(uri);
-        clearVariableFromIndex(uri);
+        // Clear from unified index
+        if (symbols) {
+            symbols.clearFile(uri);
+        }
     },
 
     onDocumentClosed(uri: string): void {
-        language?.clearSelfData(uri);
+        // Clear local symbols cache for this document
+        clearLocalSymbolsCache(uri);
     },
 
     async compile(uri: string, text: string, interactive: boolean): Promise<void> {
@@ -318,13 +370,3 @@ function getJsdocCompletions(triggerCharacter?: string): CompletionItem[] {
 
     return [...tags, ...types];
 }
-
-
-
-
-
-
-
-
-
-

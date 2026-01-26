@@ -5,10 +5,11 @@
 
 import { Location, Position } from "vscode-languageserver/node";
 import type { Node as SyntaxNode } from "web-tree-sitter";
-import { lookupVariable } from "./header-parser";
+import { makeRange } from "../core/position-utils";
 import { parseWithCache, isInitialized } from "./parser";
 import { SyntaxType } from "./tree-sitter.d";
 import { findNodeAtPosition, findAncestorOfType, isSameNode, unwrapVariableRef } from "./tree-utils";
+import { getSymbols } from "./provider";
 
 // ============================================
 // Constants
@@ -256,11 +257,12 @@ export function findVariableDefinition(text: string, uri: string, position: Posi
 
     const { varName, scopeInfo } = varInfo;
 
-    // For file-scope variables, check header index first (header definition is authoritative)
+    // For file-scope variables, check unified symbol storage first (header definition is authoritative)
     if (scopeInfo.scope === "file") {
-        const headerVar = lookupVariable(varName);
-        if (headerVar) {
-            return headerVar.location;
+        const symbols = getSymbols();
+        const location = symbols?.lookupDefinition(varName);
+        if (location) {
+            return location;
         }
     }
 
@@ -280,10 +282,7 @@ export function findVariableDefinition(text: string, uri: string, position: Posi
 
     return {
         uri,
-        range: {
-            start: { line: defNode.startPosition.row, character: defNode.startPosition.column },
-            end: { line: defNode.endPosition.row, character: defNode.endPosition.column },
-        },
+        range: makeRange(defNode),
     };
 }
 
@@ -307,7 +306,9 @@ function getVariableAtPosition(
 
     // Check if it's a percent_string or percent_content node inside %var% syntax
     if (node.type === SyntaxType.PercentString) {
-        const contentNode = node.child(1); // percent_string = "%" + content + "%"
+        // Grammar: percent_string = "%" content "%", child(1) is the content
+        // Note: grammar doesn't expose named fields, so index-based access is required
+        const contentNode = node.child(1);
         if (contentNode && contentNode.type === SyntaxType.PercentContent) {
             const varName = contentNode.text;
             if (!varName) {
@@ -338,6 +339,8 @@ function getVariableAtPosition(
 
     // Check if it's a variable_ref node (bare identifier in expression)
     if (node.type === SyntaxType.VariableRef) {
+        // Grammar: variable_ref = identifier, child(0) is the identifier
+        // Note: grammar doesn't expose named fields, so index-based access is required
         const identNode = node.child(0);
         const varName = identNode?.text;
         if (!varName) {
