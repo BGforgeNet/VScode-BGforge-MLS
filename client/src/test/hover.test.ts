@@ -11,8 +11,6 @@ suite("Should get hover", () => {
     const docUri = getDocUri("hover.ssl");
 
     test("Hover for Fallout SSL", async () => {
-        // const mds = [{value: "q"}];
-        // const mds = new vscode.MarkdownString("qqq");
         const mds = new vscode.MarkdownString(
             "```fallout-ssl-tooltip\n" +
                 "int get_proto_data(int pid, int offset)\n```\n" +
