@@ -6,26 +6,24 @@
 import type { Node as SyntaxNode } from "web-tree-sitter";
 
 
-// Formatting options
-export interface FormatOptions {
-    indentSize: number;
-    maxLineLength: number;
-}
+// Re-export shared FormatOptions for backwards compatibility
+import type { FormatOptions } from "../shared/format-options";
+export type { FormatOptions };
 
 const DEFAULT_OPTIONS: FormatOptions = {
     indentSize: 4,
-    maxLineLength: 120,
+    lineLimit: 120,
 };
 
 // Format context passed through all functions
 interface FormatContext {
     indent: string;
-    maxLineLength: number;
+    lineLimit: number;
 }
 
 let ctx: FormatContext = {
     indent: "    ",
-    maxLineLength: 120,
+    lineLimit: 120,
 };
 
 // Regex patterns for keyword matching
@@ -122,7 +120,7 @@ export interface FormatResult {
 export function formatDocument(node: SyntaxNode, options: FormatOptions = DEFAULT_OPTIONS): FormatResult {
     ctx = {
         indent: " ".repeat(options.indentSize),
-        maxLineLength: options.maxLineLength,
+        lineLimit: options.lineLimit,
     };
     const text = formatNode(node, 0);
     return { text };
@@ -871,7 +869,7 @@ function formatBinaryExpr(node: SyntaxNode, column: number = 0, extraLength: num
         const compact = compactOperands.join(` ${op} `);
 
         // Check if compact version fits (including any suffix like " then begin")
-        if (column + compact.length + extraLength <= ctx.maxLineLength) {
+        if (column + compact.length + extraLength <= ctx.lineLimit) {
             return compact;
         }
 
@@ -927,7 +925,7 @@ function formatCallExpr(node: SyntaxNode, column: number = 0, extraLength: numbe
     const compact = `${funcName}(${args.join(", ")})`;
 
     // Check if compact version fits (including any suffix)
-    if (column + compact.length + extraLength <= ctx.maxLineLength || args.length <= 1) {
+    if (column + compact.length + extraLength <= ctx.lineLimit || args.length <= 1) {
         return compact;
     }
 
@@ -960,7 +958,7 @@ function formatArrayExpr(node: SyntaxNode, column: number = 0, extraLength: numb
     const compact = `[${elements.join(", ")}]`;
 
     // Check if compact version fits (including any suffix)
-    if (column + compact.length + extraLength <= ctx.maxLineLength || elements.length <= 1) {
+    if (column + compact.length + extraLength <= ctx.lineLimit || elements.length <= 1) {
         return compact;
     }
 
@@ -982,7 +980,7 @@ function formatMapExpr(node: SyntaxNode, column: number = 0, extraLength: number
     const compact = `{${entries.join(", ")}}`;
 
     // Check if compact version fits (including any suffix)
-    if (column + compact.length + extraLength <= ctx.maxLineLength || entries.length <= 1) {
+    if (column + compact.length + extraLength <= ctx.lineLimit || entries.length <= 1) {
         return compact;
     }
 

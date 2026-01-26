@@ -16,12 +16,12 @@ import { loadStaticSymbols } from "../core/static-loader";
 import { compile as falloutCompile } from "./compiler";
 import { type FormatResult, type LanguageProvider, type ProviderContext } from "../language-provider";
 import * as signature from "../shared/signature";
-import { formatDocument, initFormatter } from "./format";
+import { formatDocument, initParser } from "./format";
 import { isInitialized } from "./parser";
-import { getDocumentSymbols } from "./symbols";
+import { getDocumentSymbols } from "./symbol";
 import { getLocalDefinition } from "./definition";
 import { getLocalHover } from "./hover";
-import { renameSymbol } from "./rename";
+import { renameSymbol, prepareRenameSymbol } from "./rename";
 import { getLocalCompletions } from "./completion";
 import { getLocalSignature } from "./signature";
 import { parseHeaderToSymbols } from "./header-parser";
@@ -93,7 +93,7 @@ export const falloutSslProvider: LanguageProvider = {
         storedContext = context;
 
         // Initialize formatter (tree-sitter parser)
-        await initFormatter();
+        await initParser();
 
         // Initialize symbol storage with static data
         symbols = new Symbols();
@@ -150,6 +150,13 @@ export const falloutSslProvider: LanguageProvider = {
             return null;
         }
         return getLocalSignature(text, symbol, paramIndex);
+    },
+
+    prepareRename(text: string, position: Position): { range: { start: Position; end: Position }; placeholder: string } | null {
+        if (!isInitialized()) {
+            return null;
+        }
+        return prepareRenameSymbol(text, position);
     },
 
     rename(text: string, position: Position, newName: string, uri: string): WorkspaceEdit | null {

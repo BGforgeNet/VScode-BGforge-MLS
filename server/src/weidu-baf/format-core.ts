@@ -6,7 +6,9 @@
 import type { Node as SyntaxNode } from "web-tree-sitter";
 import { SyntaxType } from "./tree-sitter.d";
 
-// Formatting options
+// Formatting options.
+// Note: BAF doesn't need lineLimit - its format is inherently line-based
+// (one trigger/action per line) with no long expressions to wrap.
 export interface FormatOptions {
     indentSize: number;
 }

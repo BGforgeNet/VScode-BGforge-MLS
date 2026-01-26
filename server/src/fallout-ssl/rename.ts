@@ -5,7 +5,43 @@
 
 import { Position, TextEdit, WorkspaceEdit } from "vscode-languageserver/node";
 import { parseWithCache, isInitialized } from "./parser";
-import { findIdentifierAtPosition, isLocalDefinition, findAllReferences, makeRange } from "./utils";
+import { findIdentifierAtPosition, findIdentifierNodeAtPosition, isLocalDefinition, findAllReferences, makeRange } from "./utils";
+
+/**
+ * Prepare for rename by validating the position and returning the range and placeholder.
+ * Returns null if rename is not allowed at this position.
+ */
+export function prepareRenameSymbol(
+    text: string,
+    position: Position
+): { range: { start: Position; end: Position }; placeholder: string } | null {
+    if (!isInitialized()) {
+        return null;
+    }
+
+    const tree = parseWithCache(text);
+    if (!tree) {
+        return null;
+    }
+
+    const symbolNode = findIdentifierNodeAtPosition(tree.rootNode, position);
+    if (!symbolNode) {
+        return null;
+    }
+
+    // Only allow rename for locally defined symbols
+    if (!isLocalDefinition(tree.rootNode, symbolNode.text)) {
+        return null;
+    }
+
+    return {
+        range: {
+            start: { line: symbolNode.startPosition.row, character: symbolNode.startPosition.column },
+            end: { line: symbolNode.endPosition.row, character: symbolNode.endPosition.column },
+        },
+        placeholder: symbolNode.text,
+    };
+}
 
 /**
  * Rename a locally defined symbol.

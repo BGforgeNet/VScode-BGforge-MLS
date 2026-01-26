@@ -119,10 +119,6 @@ export const weiduBafProvider: LanguageProvider = {
         return symbol?.hover ?? null;
     },
 
-    reloadFileData(_uri: string, _text: string): void {
-        // BAF has no user-defined functions - nothing to reload
-    },
-
     async compile(uri: string, text: string, interactive: boolean): Promise<void> {
         if (!storedContext) {
             conlog("WeiDU BAF provider not initialized, cannot compile");

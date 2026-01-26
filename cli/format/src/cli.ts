@@ -68,7 +68,7 @@ async function processFile(filePath: string, mode: OutputMode): Promise<FileResu
         if (fileType === "ssl") {
             const tree = getSslParser().parse(text);
             if (!tree) { console.error(`Error: Failed to parse ${filePath}`); return "error"; }
-            const options: SslFormatOptions = { indentSize: opts.indentSize, maxLineLength: opts.lineLimit };
+            const options: SslFormatOptions = { indentSize: opts.indentSize, lineLimit: opts.lineLimit };
             result = formatSslDocument(tree.rootNode, options);
         } else if (fileType === "baf") {
             const tree = getBafParser().parse(text);

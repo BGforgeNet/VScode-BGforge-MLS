@@ -13,7 +13,7 @@ vi.mock("../../src/server", () => ({
     },
 }));
 
-import { renameSymbol } from "../../src/fallout-ssl/rename";
+import { renameSymbol, prepareRenameSymbol } from "../../src/fallout-ssl/rename";
 import { initParser } from "../../src/fallout-ssl/parser";
 
 beforeAll(async () => {
@@ -163,6 +163,79 @@ end
                 edit.range.start.line === 2 && edit.range.start.character === 10
             );
             expect(hasEditOnFoobar).toBe(false);
+        });
+    });
+
+    describe("prepareRenameSymbol()", () => {
+        it("returns range and placeholder for locally defined procedure", () => {
+            const text = `
+procedure helper begin end
+procedure main begin
+    call helper;
+end
+`;
+            // Cursor on "helper" at definition
+            const position: Position = { line: 1, character: 12 };
+            const result = prepareRenameSymbol(text, position);
+
+            expect(result).not.toBeNull();
+            expect(result?.placeholder).toBe("helper");
+            expect(result?.range.start.line).toBe(1);
+            expect(result?.range.start.character).toBe(10);
+            expect(result?.range.end.line).toBe(1);
+            expect(result?.range.end.character).toBe(16);
+        });
+
+        it("returns range and placeholder when cursor is on reference", () => {
+            const text = `
+procedure helper begin end
+procedure main begin
+    call helper;
+end
+`;
+            // Cursor on "helper" at call site
+            const position: Position = { line: 3, character: 10 };
+            const result = prepareRenameSymbol(text, position);
+
+            expect(result).not.toBeNull();
+            expect(result?.placeholder).toBe("helper");
+        });
+
+        it("returns null for symbol not defined locally", () => {
+            const text = `
+procedure foo begin
+    call external_proc;
+end
+`;
+            // Cursor on "external_proc" which is not defined in this file
+            const position: Position = { line: 2, character: 10 };
+            const result = prepareRenameSymbol(text, position);
+
+            expect(result).toBeNull();
+        });
+
+        it("returns null when cursor is not on identifier", () => {
+            const text = "procedure foo begin end";
+            // Cursor on whitespace
+            const position: Position = { line: 0, character: 9 };
+            const result = prepareRenameSymbol(text, position);
+
+            expect(result).toBeNull();
+        });
+
+        it("returns range for variable in procedure", () => {
+            const text = `
+procedure foo begin
+    variable counter;
+    counter := 0;
+end
+`;
+            // Cursor on "counter" at declaration
+            const position: Position = { line: 2, character: 14 };
+            const result = prepareRenameSymbol(text, position);
+
+            expect(result).not.toBeNull();
+            expect(result?.placeholder).toBe("counter");
         });
     });
 });

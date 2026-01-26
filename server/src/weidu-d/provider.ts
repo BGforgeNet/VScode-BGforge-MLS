@@ -12,33 +12,18 @@ import { LANG_WEIDU_D } from "../core/languages";
 import { Symbols } from "../core/symbol-index";
 import { loadStaticSymbols } from "../core/static-loader";
 import { type FormatResult, type LanguageProvider, type ProviderContext } from "../language-provider";
-import { getIndentFromEditorconfig } from "../shared/editorconfig";
 import { createFullDocumentEdit, validateFormatting, stripCommentsWeidu } from "../shared/format-utils";
-import { fileURLToPath } from "url";
+import { getFormatOptions } from "../shared/format-options";
 import { getDefinition } from "./definition";
-import { formatDocument as formatAst, type FormatOptions } from "./format-core";
+import { formatDocument as formatAst } from "./format-core";
 import { initParser, parseWithCache, isInitialized } from "./parser";
 import { getDocumentSymbols } from "./symbol";
 import { compile as weiduCompile } from "../weidu-compile";
-
-const DEFAULT_INDENT = 4;
-
-const DEFAULT_LINE_LIMIT = 120;
 
 /** Unified symbol storage for completion and hover */
 let symbols: Symbols | undefined;
 /** Stored context for compile settings access */
 let storedContext: ProviderContext | undefined;
-
-function getFormatOptions(uri: string): FormatOptions {
-    try {
-        const filePath = fileURLToPath(uri);
-        const indentSize = getIndentFromEditorconfig(filePath);
-        return { indentSize: indentSize ?? DEFAULT_INDENT, lineLimit: DEFAULT_LINE_LIMIT };
-    } catch {
-        return { indentSize: DEFAULT_INDENT, lineLimit: DEFAULT_LINE_LIMIT };
-    }
-}
 
 export const weiduDProvider: LanguageProvider = {
     id: LANG_WEIDU_D,
@@ -129,10 +114,6 @@ export const weiduDProvider: LanguageProvider = {
         }
         const symbol = symbols.lookup(symbolName);
         return symbol?.hover ?? null;
-    },
-
-    reloadFileData(_uri: string, _text: string): void {
-        // D has no user-defined functions - nothing to reload
     },
 
     async compile(uri: string, text: string, interactive: boolean): Promise<void> {

@@ -74,7 +74,16 @@ export function findProcedure(root: Node, symbol: string): Node | null {
  * Used by go-to-definition and rename.
  */
 export function findIdentifierAtPosition(root: Node, position: Position): string | null {
-    function visit(node: Node): string | null {
+    const node = findIdentifierNodeAtPosition(root, position);
+    return node?.text ?? null;
+}
+
+/**
+ * Find the identifier node at the given position.
+ * Returns the full Node object for access to position information.
+ */
+export function findIdentifierNodeAtPosition(root: Node, position: Position): Node | null {
+    function visit(node: Node): Node | null {
         const startRow = node.startPosition.row;
         const endRow = node.endPosition.row;
         const startCol = node.startPosition.column;
@@ -89,7 +98,7 @@ export function findIdentifierAtPosition(root: Node, position: Position): string
         }
 
         if (node.type === "identifier") {
-            return node.text;
+            return node;
         }
 
         for (const child of node.children) {

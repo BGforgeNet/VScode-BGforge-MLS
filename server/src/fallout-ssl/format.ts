@@ -2,31 +2,17 @@
  * SSL formatting for LSP.
  */
 
-import { fileURLToPath } from "url";
 import { conlog } from "../common";
 import { FormatResult } from "../language-provider";
-import { getIndentFromEditorconfig } from "../shared/editorconfig";
+import { getFormatOptions } from "../shared/format-options";
 import { createFullDocumentEdit } from "../shared/format-utils";
-import { formatDocument as formatAst, FormatOptions } from "./format-core";
-import { initParser, parseWithCache, isInitialized } from "./parser";
+import { formatDocument as formatAst } from "./format-core";
+import { initParser as initTreeSitter, parseWithCache, isInitialized } from "./parser";
 
-const DEFAULT_INDENT = 4;
-const DEFAULT_MAX_LINE_LENGTH = 120;
-
-export async function initFormatter(): Promise<void> {
+export async function initParser(): Promise<void> {
     if (isInitialized()) return;
-    await initParser();
+    await initTreeSitter();
     conlog("Fallout SSL formatter initialized");
-}
-
-function getFormatOptions(uri: string): FormatOptions {
-    try {
-        const filePath = fileURLToPath(uri);
-        const indentSize = getIndentFromEditorconfig(filePath);
-        return { indentSize: indentSize ?? DEFAULT_INDENT, maxLineLength: DEFAULT_MAX_LINE_LENGTH };
-    } catch {
-        return { indentSize: DEFAULT_INDENT, maxLineLength: DEFAULT_MAX_LINE_LENGTH };
-    }
 }
 
 export function formatDocument(text: string, uri: string): FormatResult {
