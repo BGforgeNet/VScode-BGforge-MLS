@@ -96,25 +96,26 @@ export function buildMacroCompletion(
 ): CompletionItem {
     const isConstant = !macro.hasParams && isConstantMacro(macro.name);
 
+    // Detail shown inline: value for constants, signature for function-like
     let detail: string;
-    if (macro.jsdoc) {
-        detail = jsdocToDetail(macro.name, macro.jsdoc, "macro");
-    } else if (isConstant && macro.firstline) {
+    if (isConstant && macro.firstline) {
         detail = macro.firstline;
+    } else if (macro.jsdoc) {
+        detail = jsdocToDetail(macro.name, macro.jsdoc, "macro");
     } else if (macro.hasParams) {
         detail = `macro ${macro.name}(${macro.params!.join(", ")})`;
     } else {
         detail = `macro ${macro.name}`;
     }
 
-    // Build markdown hover content: signature block, optionally file path block
+    // Build markdown hover content: value/signature block
     let markdownValue = [
         "```" + `${tooltipLangId}`,
         `${detail}`,
         "```",
     ].join("\n");
 
-    // Only add file path block if path is provided (skip for local symbols)
+    // File path block (if external)
     if (filePath) {
         markdownValue += [
             "",
@@ -124,11 +125,12 @@ export function buildMacroCompletion(
         ].join("\n");
     }
 
-    // For non-constant macros (with or without params), show body on second line if not already in detail
+    // For non-constant macros without JSDoc, show body
     if (!isConstant && !macro.multiline && macro.firstline && !macro.jsdoc) {
         markdownValue += ["\n```" + `${tooltipLangId}`, `${macro.firstline}`, "```"].join("\n");
     }
 
+    // JSDoc description at the end
     if (macro.jsdoc) {
         markdownValue += jsdocToMarkdown(macro.jsdoc, "fallout");
     }
@@ -160,6 +162,9 @@ export function buildMacroCompletion(
 
 /**
  * Build hover content for a macro.
+ * Format:
+ * - Constants: value, then path (if external), then JSDoc
+ * - Function-like: signature, then path (if external), then JSDoc
  */
 export function buildMacroHover(
     macro: MacroData,
@@ -167,26 +172,26 @@ export function buildMacroHover(
 ): { kind: typeof MarkupKind.Markdown; value: string } {
     const isConstant = !macro.hasParams && isConstantMacro(macro.name);
 
+    // First line: value for constants, signature for function-like macros
     let detail: string;
-    if (macro.jsdoc) {
-        detail = jsdocToDetail(macro.name, macro.jsdoc, "macro");
-    } else if (isConstant && macro.firstline) {
-        // For constant macros, show just the value
+    if (isConstant && macro.firstline) {
         detail = macro.firstline;
+    } else if (macro.jsdoc) {
+        detail = jsdocToDetail(macro.name, macro.jsdoc, "macro");
     } else if (macro.hasParams) {
         detail = `macro ${macro.name}(${macro.params!.join(", ")})`;
     } else {
         detail = `macro ${macro.name}`;
     }
 
-    // Build markdown: signature block, optionally file path block
+    // Build markdown: value/signature block
     let markdownValue = [
         "```" + `${tooltipLangId}`,
         `${detail}`,
         "```",
     ].join("\n");
 
-    // Only add file path block if path is provided (skip for local symbols)
+    // File path block (if external)
     if (filePath) {
         markdownValue += [
             "",
@@ -196,11 +201,12 @@ export function buildMacroHover(
         ].join("\n");
     }
 
-    // For non-constant macros, show body on second line if not already in detail
+    // For non-constant macros without JSDoc, show body
     if (!isConstant && !macro.multiline && macro.firstline && !macro.jsdoc) {
         markdownValue += ["\n```" + `${tooltipLangId}`, `${macro.firstline}`, "```"].join("\n");
     }
 
+    // JSDoc description at the end
     if (macro.jsdoc) {
         markdownValue += jsdocToMarkdown(macro.jsdoc, "fallout");
     }

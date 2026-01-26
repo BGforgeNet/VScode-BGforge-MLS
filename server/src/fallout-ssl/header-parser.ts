@@ -48,8 +48,11 @@ const tooltipLangId = LANG_FALLOUT_SSL_TOOLTIP;
 function findSymbols(text: string) {
     // defines
     const defineList: Macros = [];
+    // JSDoc pattern: matches both single-line /** text */ and multi-line /** \n text \n */
+    // Single-line: \/\*\*[^*]*\*+\/  (/** followed by non-* chars, then one or more *, then /)
+    // Multi-line: \/\*\*\s*\n([^*]|(\*(?!\/)))*\*\/  (/** + newline + content + */)
     const defineRegex =
-        /((\/\*\*\s*\n([^*]|(\*(?!\/)))*\*\/)\r?\n)?#define[ \t]+(\w+)(?:\(([^)]+)\))?[ \t]+(.+)/gm;
+        /((\/\*\*[^*]*\*+\/|\/\*\*\s*\n([^*]|(\*(?!\/)))*\*\/)\r?\n)?#define[ \t]+(\w+)(?:\(([^)]+)\))?[ \t]+(.+)/gm;
     let matches = text.matchAll(defineRegex);
     for (const m of matches) {
         const defineName = m[5];
