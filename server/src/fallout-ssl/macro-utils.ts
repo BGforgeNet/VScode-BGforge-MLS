@@ -6,9 +6,10 @@
 import { CompletionItem, CompletionItemKind, ParameterInformation } from "vscode-languageserver/node";
 import { MarkupKind } from "vscode-languageserver/node";
 import * as jsdoc from "../shared/jsdoc";
-import { jsdocToDetail, jsdocToMarkdown } from "../shared/jsdoc-utils";
+import { jsdocToDetail } from "../shared/jsdoc-utils";
 import * as signature from "../shared/signature";
 import { LANG_FALLOUT_SSL_TOOLTIP } from "../core/languages";
+import { buildTooltipBase } from "./utils";
 
 const tooltipLangId = LANG_FALLOUT_SSL_TOOLTIP;
 
@@ -60,6 +61,50 @@ export interface MacroData {
 }
 
 /**
+ * Build the signature/detail line for a macro.
+ * Returns: value for numeric constants, signature for others.
+ */
+export function buildMacroSignature(macro: MacroData): string {
+    const isNumeric = !macro.hasParams && macro.firstline !== undefined && isNumericValue(macro.firstline);
+
+    if (isNumeric) {
+        return macro.firstline!;
+    } else if (macro.jsdoc) {
+        return jsdocToDetail(macro.name, macro.jsdoc, "macro");
+    } else if (macro.hasParams) {
+        return `macro ${macro.name}(${macro.params!.join(", ")})`;
+    } else {
+        return `macro ${macro.name}`;
+    }
+}
+
+/**
+ * Build tooltip content for a macro.
+ * Uses shared buildTooltipBase, then appends body for function-like macros without JSDoc.
+ * Used by: hover (contents.value), completion (documentation.value).
+ */
+export function buildMacroTooltip(macro: MacroData, filePath: string): string {
+    const sig = buildMacroSignature(macro);
+
+    // If has JSDoc, use base tooltip (signature + path + jsdoc)
+    if (macro.jsdoc) {
+        return buildTooltipBase(sig, macro.jsdoc, filePath || undefined);
+    }
+
+    // No JSDoc - use base tooltip without jsdoc, then maybe append body
+    let markdown = buildTooltipBase(sig, null, filePath || undefined);
+
+    // For non-constant, non-numeric, non-multiline macros, show body as fallback
+    const isConstant = !macro.hasParams && isConstantMacro(macro.name);
+    const isNumeric = !macro.hasParams && macro.firstline !== undefined && isNumericValue(macro.firstline);
+    if (!isConstant && !isNumeric && !macro.multiline && macro.firstline) {
+        markdown += `\n\`\`\`${tooltipLangId}\n${macro.firstline}\n\`\`\``;
+    }
+
+    return markdown;
+}
+
+/**
  * Build signature help from JSDoc (works for procedures and macros).
  * Extracted from header-parser.ts jsdocToSig().
  */
@@ -106,58 +151,16 @@ export function buildMacroCompletion(
     filePath: string
 ): CompletionItem {
     const isConstant = !macro.hasParams && isConstantMacro(macro.name);
-    // Show just the value for numeric constants (e.g., 123, (123), 0x1F)
-    const isNumeric = !macro.hasParams && macro.firstline !== undefined && isNumericValue(macro.firstline);
-
-    // Build signature line for markdown: value for numeric, signature for others
-    let signatureLine: string;
-    if (isNumeric) {
-        signatureLine = macro.firstline!;
-    } else if (macro.jsdoc) {
-        signatureLine = jsdocToDetail(macro.name, macro.jsdoc, "macro");
-    } else if (macro.hasParams) {
-        signatureLine = `macro ${macro.name}(${macro.params!.join(", ")})`;
-    } else {
-        signatureLine = `macro ${macro.name}`;
-    }
-
-    // Build markdown hover content: value/signature block
-    let markdownValue = [
-        "```" + `${tooltipLangId}`,
-        `${signatureLine}`,
-        "```",
-    ].join("\n");
-
-    // File path block (if external)
-    if (filePath) {
-        markdownValue += [
-            "",
-            "```bgforge-mls-comment",
-            `${filePath}`,
-            "```",
-        ].join("\n");
-    }
-
-    // For non-constant, non-numeric macros without JSDoc, show body
-    if (!isConstant && !isNumeric && !macro.multiline && macro.firstline && !macro.jsdoc) {
-        markdownValue += ["\n```" + `${tooltipLangId}`, `${macro.firstline}`, "```"].join("\n");
-    }
-
-    // JSDoc description at the end
-    if (macro.jsdoc) {
-        markdownValue += jsdocToMarkdown(macro.jsdoc, "fallout");
-    }
+    const markdownValue = buildMacroTooltip(macro, filePath);
 
     const kind = isConstant
         ? CompletionItemKind.Constant
         : CompletionItemKind.Field;  // No good icon for function-like macros
 
-    const markdownContents = { kind: MarkupKind.Markdown, value: markdownValue };
-
     const item: CompletionItem = {
         label: macro.name,
         kind,
-        documentation: markdownContents,
+        documentation: { kind: MarkupKind.Markdown, value: markdownValue },
     };
 
     if (filePath) {
@@ -170,60 +173,4 @@ export function buildMacroCompletion(
     }
 
     return item;
-}
-
-/**
- * Build hover content for a macro.
- * Format:
- * - Constants: value, then path (if external), then JSDoc
- * - Function-like: signature, then path (if external), then JSDoc
- */
-export function buildMacroHover(
-    macro: MacroData,
-    filePath: string
-): { kind: typeof MarkupKind.Markdown; value: string } {
-    const isConstant = !macro.hasParams && isConstantMacro(macro.name);
-    // Show just the value for numeric constants (e.g., 123, (123), 0x1F)
-    const isNumeric = !macro.hasParams && macro.firstline !== undefined && isNumericValue(macro.firstline);
-
-    // First line: value for numeric, signature for others
-    let detail: string;
-    if (isNumeric) {
-        detail = macro.firstline!;
-    } else if (macro.jsdoc) {
-        detail = jsdocToDetail(macro.name, macro.jsdoc, "macro");
-    } else if (macro.hasParams) {
-        detail = `macro ${macro.name}(${macro.params!.join(", ")})`;
-    } else {
-        detail = `macro ${macro.name}`;
-    }
-
-    // Build markdown: value/signature block
-    let markdownValue = [
-        "```" + `${tooltipLangId}`,
-        `${detail}`,
-        "```",
-    ].join("\n");
-
-    // File path block (if external)
-    if (filePath) {
-        markdownValue += [
-            "",
-            "```bgforge-mls-comment",
-            `${filePath}`,
-            "```",
-        ].join("\n");
-    }
-
-    // For non-constant, non-numeric macros without JSDoc, show body
-    if (!isConstant && !isNumeric && !macro.multiline && macro.firstline && !macro.jsdoc) {
-        markdownValue += ["\n```" + `${tooltipLangId}`, `${macro.firstline}`, "```"].join("\n");
-    }
-
-    // JSDoc description at the end
-    if (macro.jsdoc) {
-        markdownValue += jsdocToMarkdown(macro.jsdoc, "fallout");
-    }
-
-    return { kind: MarkupKind.Markdown, value: markdownValue };
 }

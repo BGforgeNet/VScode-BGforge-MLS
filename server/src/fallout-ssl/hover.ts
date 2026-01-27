@@ -6,10 +6,9 @@
 import { Hover, MarkupKind } from "vscode-languageserver/node";
 import { parseWithCache, isInitialized } from "./parser";
 import * as jsdoc from "../shared/jsdoc";
-import { jsdocToMarkdown, jsdocToDetail } from "../shared/jsdoc-utils";
-import { findDefinitionNode, findPrecedingDocComment, extractMacros } from "./utils";
+import { findDefinitionNode, findPrecedingDocComment, extractMacros, extractParams, buildProcedureSignature, buildTooltipBase } from "./utils";
+import { buildMacroTooltip } from "./macro-utils";
 import { LANG_FALLOUT_SSL_TOOLTIP } from "../core/languages";
-import { buildMacroHover } from "./macro-utils";
 
 /**
  * Get hover info for a locally defined symbol.
@@ -35,7 +34,10 @@ export function getLocalHover(text: string, symbol: string, _uri: string): Hover
         const macros = extractMacros(tree.rootNode);
         const macro = macros.find(m => m.name === symbol);
         if (macro) {
-            const contents = buildMacroHover(macro, "");
+            const contents = {
+                kind: MarkupKind.Markdown,
+                value: buildMacroTooltip(macro, ""),
+            };
             return { contents };
         }
         return null;
@@ -45,38 +47,22 @@ export function getLocalHover(text: string, symbol: string, _uri: string): Hover
     const docComment = findPrecedingDocComment(tree.rootNode, defNode);
     const parsed = docComment ? jsdoc.parse(docComment) : null;
 
-    // Build signature - always show it, even without JSDoc
-    let detail = symbol;
+    // Build hover content using shared function
     if (defNode.type === "procedure" || defNode.type === "procedure_forward") {
-        const params = defNode.childForFieldName("params");
-        const hasParams = params && params.namedChildren.length > 0;
+        const params = extractParams(defNode);
+        const signature = buildProcedureSignature(symbol, params, parsed);
+        const content = buildTooltipBase(signature, parsed);
 
-        if (parsed && parsed.args.length > 0) {
-            // Use JSDoc info to build signature (includes types)
-            detail = jsdocToDetail(symbol, parsed, "proc");
-        } else if (hasParams) {
-            // No JSDoc but has params - extract param names from node
-            const paramNames: string[] = [];
-            for (const child of params.children) {
-                if (child.type === "param") {
-                    const nameNode = child.childForFieldName("name");
-                    if (nameNode) {
-                        paramNames.push(nameNode.text);
-                    }
-                }
-            }
-            detail = `procedure ${symbol}(${paramNames.join(", ")})`;
-        } else {
-            // No params
-            detail = `procedure ${symbol}()`;
-        }
+        return {
+            contents: {
+                kind: MarkupKind.Markdown,
+                value: content,
+            },
+        };
     }
 
-    // Build hover content: signature in code block + JSDoc markdown if available
-    let content = `\`\`\`${LANG_FALLOUT_SSL_TOOLTIP}\n${detail}\n\`\`\``;
-    if (parsed) {
-        content += jsdocToMarkdown(parsed, "fallout");
-    }
+    // Fallback for other definition types (variables, exports, etc.)
+    let content = `\`\`\`${LANG_FALLOUT_SSL_TOOLTIP}\n${symbol}\n\`\`\``;
 
     return {
         contents: {

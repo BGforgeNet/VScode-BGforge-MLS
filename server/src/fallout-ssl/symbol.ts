@@ -6,7 +6,7 @@
 import { DocumentSymbol, SymbolKind } from "vscode-languageserver/node";
 import type { Node } from "web-tree-sitter";
 import { parseWithCache, isInitialized } from "./parser";
-import { extractProcedures, makeRange, findPrecedingDocComment, extractMacros } from "./utils";
+import { extractProcedures, makeRange, findPrecedingDocComment, extractMacros, extractParams, buildProcedureSignature } from "./utils";
 import * as jsdoc from "../shared/jsdoc";
 import { jsdocToDetail } from "../shared/jsdoc-utils";
 import { isConstantMacro } from "./macro-utils";
@@ -33,34 +33,13 @@ function extractSymbols(root: Node): DocumentSymbol[] {
         const nameNode = node.childForFieldName("name");
         if (!nameNode) continue;
 
-        // Build detail with signature - same logic as completion/hover
-        const params = node.childForFieldName("params");
-        const hasParams = params && params.namedChildren.length > 0;
-
         // Look for JSDoc
         const docComment = findPrecedingDocComment(root, node);
         const parsed = docComment ? jsdoc.parse(docComment) : null;
+        const params = extractParams(node);
 
-        let detail: string | undefined;
-        if (parsed && parsed.args.length > 0) {
-            // Use JSDoc to build signature with types
-            detail = jsdocToDetail(name, parsed, "proc");
-        } else if (hasParams) {
-            // No JSDoc but has params - extract param names
-            const paramNames: string[] = [];
-            for (const child of params.children) {
-                if (child.type === "param") {
-                    const pNameNode = child.childForFieldName("name");
-                    if (pNameNode) {
-                        paramNames.push(pNameNode.text);
-                    }
-                }
-            }
-            detail = `procedure ${name}(${paramNames.join(", ")})`;
-        } else {
-            // No params
-            detail = `procedure ${name}()`;
-        }
+        // Build signature using shared function
+        const detail = buildProcedureSignature(name, params, parsed);
 
         procSymbols.push(makeSymbol(node, nameNode, SymbolKind.Function, detail));
     }

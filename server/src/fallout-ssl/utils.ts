@@ -7,9 +7,91 @@ import { Position } from "vscode-languageserver/node";
 import { makeRange } from "../core/position-utils";
 import { MacroData, parseMacroParams } from "./macro-utils";
 import * as jsdoc from "../shared/jsdoc";
+import { jsdocToMarkdown } from "../shared/jsdoc-utils";
+import { LANG_FALLOUT_SSL_TOOLTIP } from "../core/languages";
 
 // Re-export for existing consumers
 export { makeRange };
+
+/** Parameter data extracted from AST. */
+export interface ParamInfo {
+    name: string;
+    defaultValue?: string;
+}
+
+/**
+ * Extract parameters with default values from a procedure/forward node.
+ * Parses "variable x = 0" to { name: "x", defaultValue: "0" }.
+ */
+export function extractParams(procNode: Node): ParamInfo[] {
+    const params = procNode.childForFieldName("params");
+    if (!params) return [];
+
+    const result: ParamInfo[] = [];
+    for (const child of params.children) {
+        if (child.type === "param") {
+            const nameNode = child.childForFieldName("name");
+            const defaultNode = child.childForFieldName("default");
+            if (nameNode) {
+                result.push({
+                    name: nameNode.text,
+                    defaultValue: defaultNode?.text,
+                });
+            }
+        }
+    }
+    return result;
+}
+
+/**
+ * Build procedure signature string from AST params and optional JSDoc.
+ * Uses JSDoc types if available, AST defaults only.
+ */
+export function buildProcedureSignature(
+    name: string,
+    params: ParamInfo[],
+    parsed: jsdoc.JSdoc | null
+): string {
+    if (parsed && parsed.args.length > 0) {
+        // Use JSDoc types with AST defaults
+        const paramStrs = parsed.args.map((arg, idx) => {
+            const def = params[idx]?.defaultValue;
+            const base = `${arg.type} ${arg.name}`;
+            return def ? `${base} = ${def}` : base;
+        });
+        const ret = parsed.ret ? `${parsed.ret.type} ` : "void ";
+        return `${ret}${name}(${paramStrs.join(", ")})`;
+    } else if (params.length > 0) {
+        // No JSDoc but has params - extract param names with defaults from AST
+        const paramStrs = params.map(p =>
+            p.defaultValue ? `${p.name} = ${p.defaultValue}` : p.name
+        );
+        return `procedure ${name}(${paramStrs.join(", ")})`;
+    } else {
+        // No params
+        return `procedure ${name}()`;
+    }
+}
+
+/**
+ * Build base tooltip content: signature block + optional file path + optional JSDoc.
+ * Shared by procedures and macros.
+ * Used by: hover (contents.value), completion (documentation.value), header symbols.
+ */
+export function buildTooltipBase(
+    signature: string,
+    jsdoc: jsdoc.JSdoc | null,
+    filePath?: string
+): string {
+    let markdown = `\`\`\`${LANG_FALLOUT_SSL_TOOLTIP}\n${signature}\n\`\`\``;
+    if (filePath) {
+        markdown += `\n\`\`\`bgforge-mls-comment\n${filePath}\n\`\`\``;
+    }
+    if (jsdoc) {
+        markdown += jsdocToMarkdown(jsdoc, "fallout");
+    }
+    return markdown;
+}
 
 /**
  * Find doc comment immediately preceding a node.

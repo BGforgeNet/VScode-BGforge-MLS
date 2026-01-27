@@ -160,10 +160,8 @@ export function jsdocToDetail(
 
     // Functions with no arguments get empty parentheses
     // Macros don't
-    // Include default values in signature: "int x = 0"
-    const args = jsd.args.map(({ type, name, default: def }) =>
-        def ? `${type} ${name} = ${def}` : `${type} ${name}`
-    );
+    // Note: Default values come from AST, not JSDoc
+    const args = jsd.args.map(({ type, name }) => `${type} ${name}`);
     let argsString = args.join(", ");
     if (argsString !== "" || tokenType !== "macro") {
         argsString = `(${argsString})`;

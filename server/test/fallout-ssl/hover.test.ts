@@ -143,6 +143,24 @@ end
             }
         });
 
+        it("shows default parameter values in signature", () => {
+            const text = `
+procedure test_defaults(variable x = 0, variable y, variable z = 5) begin
+end
+`;
+            const uri = "file:///test.ssl";
+            const result = getLocalHover(text, "test_defaults", uri);
+
+            expect(result).not.toBeNull();
+            const contents = result?.contents;
+            if (isMarkupContent(contents)) {
+                expect(contents.value).toContain("x = 0");
+                expect(contents.value).toContain("z = 5");
+                // y has no default, should appear without =
+                expect(contents.value).toMatch(/\by\b(?!\s*=)/);
+            }
+        });
+
         it("includes JSDoc types in signature when supported", () => {
             // Note: JSDoc extraction depends on comment being recognized by grammar
             const text = `

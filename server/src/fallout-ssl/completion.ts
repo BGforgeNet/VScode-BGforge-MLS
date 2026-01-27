@@ -3,11 +3,10 @@
  * Extracts procedures, macros, variables, exports from the current file using tree-sitter.
  */
 
-import { CompletionItem, CompletionItemKind } from "vscode-languageserver/node";
+import { CompletionItem, CompletionItemKind, MarkupKind } from "vscode-languageserver/node";
 import { parseWithCache, isInitialized } from "./parser";
-import { extractProcedures, extractMacros, findPrecedingDocComment } from "./utils";
+import { extractProcedures, extractMacros, findPrecedingDocComment, extractParams, buildProcedureSignature, buildTooltipBase } from "./utils";
 import * as jsdoc from "../shared/jsdoc";
-import { jsdocToDetail } from "../shared/jsdoc-utils";
 import { buildMacroCompletion } from "./macro-utils";
 
 /**
@@ -31,39 +30,22 @@ export function getLocalCompletions(text: string): CompletionItem[] {
     const procItems: CompletionItem[] = [];
 
     for (const [name, { node }] of procedures) {
-        // Build detail with signature - same logic as fallout.ts header parsing
-        const params = node.childForFieldName("params");
-        const hasParams = params && params.namedChildren.length > 0;
-
         // Look for JSDoc
         const docComment = findPrecedingDocComment(tree.rootNode, node);
         const parsed = docComment ? jsdoc.parse(docComment) : null;
+        const params = extractParams(node);
 
-        let detail = name;
-        if (parsed && parsed.args.length > 0) {
-            // Use JSDoc to build signature with types
-            detail = jsdocToDetail(name, parsed, "proc");
-        } else if (hasParams) {
-            // No JSDoc but has params - extract param names
-            const paramNames: string[] = [];
-            for (const child of params.children) {
-                if (child.type === "param") {
-                    const nameNode = child.childForFieldName("name");
-                    if (nameNode) {
-                        paramNames.push(nameNode.text);
-                    }
-                }
-            }
-            detail = `procedure ${name}(${paramNames.join(", ")})`;
-        } else {
-            // No params
-            detail = `procedure ${name}()`;
-        }
+        // Build markdown documentation using shared function
+        const signature = buildProcedureSignature(name, params, parsed);
+        const markdownValue = buildTooltipBase(signature, parsed);
 
         procItems.push({
             label: name,
-            detail,
             kind: CompletionItemKind.Function,
+            documentation: {
+                kind: MarkupKind.Markdown,
+                value: markdownValue,
+            },
         });
     }
 

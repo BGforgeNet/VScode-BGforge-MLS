@@ -6,7 +6,7 @@
 import { ParameterInformation, SignatureHelp, SignatureInformation } from "vscode-languageserver/node";
 import { parseWithCache, isInitialized } from "./parser";
 import * as jsdoc from "../shared/jsdoc";
-import { findProcedure, findPrecedingDocComment, extractMacros } from "./utils";
+import { findProcedure, findPrecedingDocComment, extractMacros, extractParams } from "./utils";
 import { buildSignatureFromJSDoc } from "./macro-utils";
 
 /**
@@ -26,19 +26,8 @@ export function getLocalSignature(text: string, symbol: string, paramIndex: numb
     // Try procedure first
     const procNode = findProcedure(tree.rootNode, symbol);
     if (procNode) {
-        // Extract parameters
-        const params = procNode.childForFieldName("params");
-        const paramNames: string[] = [];
-        if (params) {
-            for (const child of params.children) {
-                if (child.type === "param") {
-                    const nameNode = child.childForFieldName("name");
-                    if (nameNode) {
-                        paramNames.push(nameNode.text);
-                    }
-                }
-            }
-        }
+        // Extract parameters with defaults from AST
+        const params = extractParams(procNode);
 
         // Look for JSDoc
         const docComment = findPrecedingDocComment(tree.rootNode, procNode);
@@ -47,20 +36,24 @@ export function getLocalSignature(text: string, symbol: string, paramIndex: numb
             parsed = jsdoc.parse(docComment);
         }
 
-        // Build parameter information with types from JSDoc
-        const parameters: ParameterInformation[] = paramNames.map((name, idx) => {
+        // Build parameter information with types from JSDoc and defaults from AST only
+        const parameters: ParameterInformation[] = params.map((p, idx) => {
             const arg = parsed?.args[idx];
-            let label = name;
+            let label = p.name;
             let documentation: string | undefined;
 
             if (arg) {
-                // Include type in label if available
+                // Include type in label if available from JSDoc
                 if (arg.type) {
-                    label = `${arg.type} ${name}`;
+                    label = `${arg.type} ${p.name}`;
                 }
                 if (arg.description) {
                     documentation = arg.description;
                 }
+            }
+            // Include default from AST only
+            if (p.defaultValue) {
+                label = `${label} = ${p.defaultValue}`;
             }
 
             return {
@@ -69,18 +62,25 @@ export function getLocalSignature(text: string, symbol: string, paramIndex: numb
             };
         });
 
-        // Build signature label with types
+        // Build signature label with types from JSDoc and defaults from AST
         let label: string;
         if (parsed && parsed.args.length > 0) {
-            // Use JSDoc types for params
-            const paramLabels = parsed.args.map(arg => `${arg.type} ${arg.name}`);
+            // Use JSDoc types for params, with defaults from AST only
+            const paramLabels = parsed.args.map((arg, idx) => {
+                const def = params[idx]?.defaultValue;
+                const base = `${arg.type} ${arg.name}`;
+                return def ? `${base} = ${def}` : base;
+            });
             label = `${symbol}(${paramLabels.join(", ")})`;
             if (parsed.ret) {
                 label = `${parsed.ret.type} ${label}`;
             }
         } else {
-            // Fallback to just names
-            label = `${symbol}(${paramNames.join(", ")})`;
+            // Fallback to names with defaults from AST
+            const paramLabels = params.map(p =>
+                p.defaultValue ? `${p.name} = ${p.defaultValue}` : p.name
+            );
+            label = `${symbol}(${paramLabels.join(", ")})`;
         }
 
         const signature: SignatureInformation = {

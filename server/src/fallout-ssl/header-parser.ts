@@ -13,9 +13,9 @@ import type { CallableSymbol, ConstantSymbol, IndexedSymbol } from "../core/symb
 import { ScopeLevel, SourceType, SymbolKind } from "../core/symbol";
 import * as definition from "../shared/definition";
 import * as jsdoc from "../shared/jsdoc";
-import { LANG_FALLOUT_SSL_TOOLTIP } from "../core/languages";
-import { jsdocToDetail, jsdocToMarkdown } from "../shared/jsdoc-utils";
-import { type MacroData, buildMacroCompletion, buildMacroHover, buildSignatureFromJSDoc, isConstantMacro, parseMacroParams } from "./macro-utils";
+import { jsdocToDetail } from "../shared/jsdoc-utils";
+import { type MacroData, buildMacroCompletion, buildMacroTooltip, buildSignatureFromJSDoc, isConstantMacro, parseMacroParams } from "./macro-utils";
+import { buildTooltipBase } from "./utils";
 
 // =============================================================================
 // Types
@@ -42,8 +42,6 @@ interface Macro {
     jsdoc?: jsdoc.JSdoc;
 }
 interface Macros extends Array<Macro> { }
-
-const tooltipLangId = LANG_FALLOUT_SSL_TOOLTIP;
 
 function findSymbols(text: string) {
     // defines
@@ -217,7 +215,10 @@ export function parseHeaderToSymbols(
             ? buildSignatureFromJSDoc(proc.label, proc.jsdoc, uri)
             : undefined;
 
-        const hoverContents = buildProcedureHover(proc, displayPath);
+        const hoverContents = {
+            kind: MarkupKind.Markdown,
+            value: buildTooltipBase(proc.detail, proc.jsdoc ?? null, displayPath),
+        };
 
         const symbol: CallableSymbol = {
             name: proc.label,
@@ -233,6 +234,7 @@ export function parseHeaderToSymbols(
                 label: proc.label,
                 kind: CompletionItemKind.Function,
                 labelDetails: { description: displayPath },
+                documentation: hoverContents,
             },
             hover: { contents: hoverContents },
             signature: sig,
@@ -264,7 +266,10 @@ export function parseHeaderToSymbols(
             jsdoc: macro.jsdoc,
         };
 
-        const hoverContents = buildMacroHover(macroData, displayPath);
+        const hoverContents = {
+            kind: MarkupKind.Markdown,
+            value: buildMacroTooltip(macroData, displayPath),
+        };
         const completionItem = buildMacroCompletion(macroData, uri, displayPath);
 
         const sig = macro.jsdoc && macro.jsdoc.args.length > 0
@@ -311,23 +316,3 @@ export function parseHeaderToSymbols(
     return result;
 }
 
-/**
- * Build hover content for a procedure (used by parseHeaderToSymbols).
- */
-function buildProcedureHover(
-    proc: Procedure,
-    filePath: string
-): { kind: typeof MarkupKind.Markdown; value: string } {
-    let markdownValue = [
-        "```" + `${tooltipLangId}`,
-        `${proc.detail}`,
-        "```",
-        "\n```bgforge-mls-comment\n",
-        `${filePath}`,
-        "```",
-    ].join("\n");
-    if (proc.jsdoc) {
-        markdownValue += jsdocToMarkdown(proc.jsdoc, "fallout");
-    }
-    return { kind: MarkupKind.Markdown, value: markdownValue };
-}

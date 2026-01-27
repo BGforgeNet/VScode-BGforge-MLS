@@ -8,13 +8,14 @@
  * Cached by text hash for performance - same text returns same result.
  */
 
+import { MarkupKind } from "vscode-languageserver/node";
 import type { IndexedSymbol, CallableSymbol, ConstantSymbol } from "../core/symbol";
 import { SourceType, ScopeLevel, SymbolKind } from "../core/symbol";
 import { buildSymbol, type RawSymbolData, type ParameterData } from "../core/symbol-builder";
 import { TextCache } from "../shared/text-cache";
 import { parseWithCache, isInitialized } from "./parser";
-import { extractProcedures, extractMacros, findPrecedingDocComment, makeRange } from "./utils";
-import { buildMacroHover, buildMacroCompletion } from "./macro-utils";
+import { extractProcedures, extractMacros, findPrecedingDocComment, makeRange, extractParams } from "./utils";
+import { buildMacroTooltip, buildMacroCompletion } from "./macro-utils";
 import * as jsdoc from "../shared/jsdoc";
 
 /** Cached local symbols data: symbols array + name lookup map */
@@ -50,26 +51,18 @@ function parseLocalSymbols(text: string, uri: string): LocalSymbolsData | null {
         const docComment = findPrecedingDocComment(root, node);
         const parsed = docComment ? jsdoc.parse(docComment) : null;
 
-        // Extract parameter info
-        const params = node.childForFieldName("params");
-        const parameters: ParameterData[] = [];
-
-        if (params) {
-            for (const child of params.children) {
-                if (child.type === "param") {
-                    const nameNode = child.childForFieldName("name");
-                    if (nameNode) {
-                        // Find JSDoc for this param
-                        const jsdocArg = parsed?.args.find(a => a.name === nameNode.text);
-                        parameters.push({
-                            name: nameNode.text,
-                            type: jsdocArg?.type,
-                            description: jsdocArg?.description,
-                        });
-                    }
-                }
-            }
-        }
+        // Extract parameter info with defaults from AST only (not JSDoc)
+        const astParams = extractParams(node);
+        const parameters: ParameterData[] = astParams.map(p => {
+            // Find JSDoc for this param (for type and description only)
+            const jsdocArg = parsed?.args.find(a => a.name === p.name);
+            return {
+                name: p.name,
+                type: jsdocArg?.type,
+                description: jsdocArg?.description,
+                defaultValue: p.defaultValue,
+            };
+        });
 
         const rawData: RawSymbolData = {
             name,
@@ -88,7 +81,10 @@ function parseLocalSymbols(text: string, uri: string): LocalSymbolsData | null {
     // Extract macros
     const macros = extractMacros(root);
     for (const macro of macros) {
-        const macroHover = buildMacroHover(macro, "");
+        const macroHover = {
+            kind: MarkupKind.Markdown,
+            value: buildMacroTooltip(macro, ""),
+        };
         const completion = buildMacroCompletion(macro, "", "");
         const location = macro.node ? { uri, range: makeRange(macro.node) } : null;
 

@@ -23,6 +23,7 @@ import {
     isLocalDefinition,
     findAllReferences,
     extractMacros,
+    extractParams,
 } from "../../src/fallout-ssl/utils";
 import { initParser, parseWithCache } from "../../src/fallout-ssl/parser";
 
@@ -355,6 +356,110 @@ procedure foo begin end
 
             const docComment = findPrecedingDocComment(tree!.rootNode, proc!);
             expect(docComment).toBeNull();
+        });
+    });
+
+    describe("extractParams()", () => {
+        it("extracts parameters without defaults", () => {
+            const text = "procedure foo(variable x, variable y) begin end";
+            const tree = parseWithCache(text);
+            expect(tree).not.toBeNull();
+
+            const proc = findProcedure(tree!.rootNode, "foo");
+            expect(proc).not.toBeNull();
+
+            const params = extractParams(proc!);
+            expect(params).toEqual([
+                { name: "x", defaultValue: undefined },
+                { name: "y", defaultValue: undefined },
+            ]);
+        });
+
+        it("extracts parameters with default values", () => {
+            const text = "procedure foo(variable x := 0, variable y = 1) begin end";
+            const tree = parseWithCache(text);
+            expect(tree).not.toBeNull();
+
+            const proc = findProcedure(tree!.rootNode, "foo");
+            expect(proc).not.toBeNull();
+
+            const params = extractParams(proc!);
+            expect(params).toEqual([
+                { name: "x", defaultValue: "0" },
+                { name: "y", defaultValue: "1" },
+            ]);
+        });
+
+        it("extracts mixed parameters (some with defaults, some without)", () => {
+            const text = "procedure foo(variable x, variable y = 5, variable z) begin end";
+            const tree = parseWithCache(text);
+            expect(tree).not.toBeNull();
+
+            const proc = findProcedure(tree!.rootNode, "foo");
+            expect(proc).not.toBeNull();
+
+            const params = extractParams(proc!);
+            expect(params).toEqual([
+                { name: "x", defaultValue: undefined },
+                { name: "y", defaultValue: "5" },
+                { name: "z", defaultValue: undefined },
+            ]);
+        });
+
+        it("extracts parameters without variable keyword", () => {
+            const text = "procedure foo(x, y = 10) begin end";
+            const tree = parseWithCache(text);
+            expect(tree).not.toBeNull();
+
+            const proc = findProcedure(tree!.rootNode, "foo");
+            expect(proc).not.toBeNull();
+
+            const params = extractParams(proc!);
+            expect(params).toEqual([
+                { name: "x", defaultValue: undefined },
+                { name: "y", defaultValue: "10" },
+            ]);
+        });
+
+        it("returns empty array for procedure without parameters", () => {
+            const text = "procedure foo begin end";
+            const tree = parseWithCache(text);
+            expect(tree).not.toBeNull();
+
+            const proc = findProcedure(tree!.rootNode, "foo");
+            expect(proc).not.toBeNull();
+
+            const params = extractParams(proc!);
+            expect(params).toEqual([]);
+        });
+
+        it("extracts parameters from forward declaration", () => {
+            const text = "procedure foo(variable x = 42);";
+            const tree = parseWithCache(text);
+            expect(tree).not.toBeNull();
+
+            const proc = findProcedure(tree!.rootNode, "foo");
+            expect(proc).not.toBeNull();
+
+            const params = extractParams(proc!);
+            expect(params).toEqual([
+                { name: "x", defaultValue: "42" },
+            ]);
+        });
+
+        it("handles expression default values", () => {
+            const text = "procedure foo(variable x = (1 + 2)) begin end";
+            const tree = parseWithCache(text);
+            expect(tree).not.toBeNull();
+
+            const proc = findProcedure(tree!.rootNode, "foo");
+            expect(proc).not.toBeNull();
+
+            const params = extractParams(proc!);
+            expect(params.length).toBe(1);
+            expect(params[0].name).toBe("x");
+            // Default value should capture the expression
+            expect(params[0].defaultValue).toContain("1");
         });
     });
 });
