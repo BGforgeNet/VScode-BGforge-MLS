@@ -21,6 +21,17 @@ export function isConstantMacro(name: string): boolean {
 }
 
 /**
+ * Check if a value is a simple numeric constant.
+ * Matches: 123, (123), -123, (-123), 0x1F, (0x1F)
+ * Strips inline comments before checking.
+ */
+function isNumericValue(value: string): boolean {
+    // Strip inline comment (// or /* */)
+    const stripped = value.replace(/\/\/.*$/, "").replace(/\/\*.*\*\//, "").trim();
+    return /^\(?-?(?:0x[0-9a-fA-F]+|\d+)\)?$/.test(stripped);
+}
+
+/**
  * Parse macro parameters from string.
  * Input: "msg" or "critter, slot" or "(msg)" or "(critter, slot)"
  * Output: ["msg"] or ["critter", "slot"]
@@ -95,23 +106,25 @@ export function buildMacroCompletion(
     filePath: string
 ): CompletionItem {
     const isConstant = !macro.hasParams && isConstantMacro(macro.name);
+    // Show just the value for numeric constants (e.g., 123, (123), 0x1F)
+    const isNumeric = !macro.hasParams && macro.firstline !== undefined && isNumericValue(macro.firstline);
 
-    // Detail shown inline: value for constants, signature for function-like
-    let detail: string;
-    if (isConstant && macro.firstline) {
-        detail = macro.firstline;
+    // Build signature line for markdown: value for numeric, signature for others
+    let signatureLine: string;
+    if (isNumeric) {
+        signatureLine = macro.firstline!;
     } else if (macro.jsdoc) {
-        detail = jsdocToDetail(macro.name, macro.jsdoc, "macro");
+        signatureLine = jsdocToDetail(macro.name, macro.jsdoc, "macro");
     } else if (macro.hasParams) {
-        detail = `macro ${macro.name}(${macro.params!.join(", ")})`;
+        signatureLine = `macro ${macro.name}(${macro.params!.join(", ")})`;
     } else {
-        detail = `macro ${macro.name}`;
+        signatureLine = `macro ${macro.name}`;
     }
 
     // Build markdown hover content: value/signature block
     let markdownValue = [
         "```" + `${tooltipLangId}`,
-        `${detail}`,
+        `${signatureLine}`,
         "```",
     ].join("\n");
 
@@ -125,8 +138,8 @@ export function buildMacroCompletion(
         ].join("\n");
     }
 
-    // For non-constant macros without JSDoc, show body
-    if (!isConstant && !macro.multiline && macro.firstline && !macro.jsdoc) {
+    // For non-constant, non-numeric macros without JSDoc, show body
+    if (!isConstant && !isNumeric && !macro.multiline && macro.firstline && !macro.jsdoc) {
         markdownValue += ["\n```" + `${tooltipLangId}`, `${macro.firstline}`, "```"].join("\n");
     }
 
@@ -144,7 +157,6 @@ export function buildMacroCompletion(
     const item: CompletionItem = {
         label: macro.name,
         kind,
-        detail,
         documentation: markdownContents,
     };
 
@@ -171,11 +183,13 @@ export function buildMacroHover(
     filePath: string
 ): { kind: typeof MarkupKind.Markdown; value: string } {
     const isConstant = !macro.hasParams && isConstantMacro(macro.name);
+    // Show just the value for numeric constants (e.g., 123, (123), 0x1F)
+    const isNumeric = !macro.hasParams && macro.firstline !== undefined && isNumericValue(macro.firstline);
 
-    // First line: value for constants, signature for function-like macros
+    // First line: value for numeric, signature for others
     let detail: string;
-    if (isConstant && macro.firstline) {
-        detail = macro.firstline;
+    if (isNumeric) {
+        detail = macro.firstline!;
     } else if (macro.jsdoc) {
         detail = jsdocToDetail(macro.name, macro.jsdoc, "macro");
     } else if (macro.hasParams) {
@@ -201,8 +215,8 @@ export function buildMacroHover(
         ].join("\n");
     }
 
-    // For non-constant macros without JSDoc, show body
-    if (!isConstant && !macro.multiline && macro.firstline && !macro.jsdoc) {
+    // For non-constant, non-numeric macros without JSDoc, show body
+    if (!isConstant && !isNumeric && !macro.multiline && macro.firstline && !macro.jsdoc) {
         markdownValue += ["\n```" + `${tooltipLangId}`, `${macro.firstline}`, "```"].join("\n");
     }
 

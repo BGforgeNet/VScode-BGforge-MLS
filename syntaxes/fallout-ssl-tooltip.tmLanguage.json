@@ -36,9 +36,12 @@
           "captures": {
             "1": {
               "name": "storage.type.fallout-ssl-tooltip"
+            },
+            "2": {
+              "name": "entity.name.function"
             }
           },
-          "match": "\\b(macro)\\b",
+          "match": "\\b(macro)\\b[[:blank:]]+\\b(\\w+)\\b",
           "name": "meta.fallout-ssl-tooltip"
         },
         {

@@ -20,6 +20,8 @@ repository:
       - captures:
           "1":
             name: storage.type.fallout-ssl-tooltip
-        match: \b(macro)\b
+          "2":
+            name: entity.name.function
+        match: \b(macro)\b[[:blank:]]+\b(\w+)\b
       - include: source.fallout-ssl
         match: .
