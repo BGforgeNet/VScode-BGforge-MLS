@@ -35,7 +35,7 @@
         {
           "captures": {
             "1": {
-              "name": "comment.line.fallout-ssl-tooltip"
+              "name": "storage.type.fallout-ssl-tooltip"
             }
           },
           "match": "\\b(macro)\\b",
