@@ -69,7 +69,7 @@ export function buildProcedureSignature(
         return `procedure ${name}(${paramStrs.join(", ")})`;
     } else {
         // No params
-        return `procedure ${name}()`;
+        return `procedure ${name}`;
     }
 }
 

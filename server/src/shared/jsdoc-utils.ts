@@ -158,14 +158,10 @@ export function jsdocToDetail(
         retType = `${retType} `;
     }
 
-    // Functions with no arguments get empty parentheses
-    // Macros don't
+    // Only add parentheses if there are arguments
     // Note: Default values come from AST, not JSDoc
     const args = jsd.args.map(({ type, name }) => `${type} ${name}`);
-    let argsString = args.join(", ");
-    if (argsString !== "" || tokenType !== "macro") {
-        argsString = `(${argsString})`;
-    }
+    const argsString = args.length > 0 ? `(${args.join(", ")})` : "";
 
     return `${retType}${label}${argsString}`;
 }

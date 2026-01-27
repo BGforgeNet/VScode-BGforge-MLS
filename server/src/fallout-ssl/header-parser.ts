@@ -109,7 +109,7 @@ function findSymbols(text: string) {
         if (m[6]) {
             procDetail = `procedure ${procName}(${m[6]})`;
         } else {
-            procDetail = `procedure ${procName}()`;
+            procDetail = `procedure ${procName}`;
         }
 
         // if jsdoc found

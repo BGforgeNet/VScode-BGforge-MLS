@@ -139,7 +139,7 @@ end
             expect(result).not.toBeNull();
             const contents = result?.contents;
             if (isMarkupContent(contents)) {
-                expect(contents.value).toContain("procedure simple()");
+                expect(contents.value).toContain("procedure simple");
             }
         });
 
