@@ -42,7 +42,9 @@ describe("jsdoc.parse", () => {
             });
         });
 
-        it("parses @param with optional default value", () => {
+        it("parses @param with [name=default] syntax but ignores default", () => {
+            // The [name=default] syntax is parsed for compatibility but default is ignored
+            // (defaults come from AST, not JSDoc)
             const input = `/**
  * @param {int} [count=0] Number of items
  */`;
@@ -51,7 +53,6 @@ describe("jsdoc.parse", () => {
             expect(result.args[0]).toEqual({
                 name: "count",
                 type: "int",
-                default: "0",
                 description: "Number of items",
             });
         });
@@ -121,7 +122,7 @@ describe("jsdoc.parse", () => {
     });
 
     describe("@return parsing", () => {
-        it("parses @return with type", () => {
+        it("parses unnamed @return with type", () => {
             const input = `/**
  * @return {int}
  */`;
@@ -143,6 +144,78 @@ describe("jsdoc.parse", () => {
  */`;
             const result = jsdoc.parse(input);
             expect(result.ret).toEqual({ type: "bool" });
+        });
+
+        it("parses named @return with type and description", () => {
+            const input = `/**
+ * @return x {int} - x coordinate
+ */`;
+            const result = jsdoc.parse(input);
+            expect(result.rets).toHaveLength(1);
+            expect(result.rets![0]).toEqual({
+                name: "x",
+                type: "int",
+                description: "x coordinate",
+            });
+        });
+
+        it("parses named @return without dash separator", () => {
+            const input = `/**
+ * @return count {int} number of items
+ */`;
+            const result = jsdoc.parse(input);
+            expect(result.rets).toHaveLength(1);
+            expect(result.rets![0]).toEqual({
+                name: "count",
+                type: "int",
+                description: "number of items",
+            });
+        });
+
+        it("parses named @return without description", () => {
+            const input = `/**
+ * @return result {string}
+ */`;
+            const result = jsdoc.parse(input);
+            expect(result.rets).toHaveLength(1);
+            expect(result.rets![0]).toEqual({
+                name: "result",
+                type: "string",
+            });
+        });
+
+        it("parses multiple named @return tags", () => {
+            const input = `/**
+ * @return x {int} - x coordinate
+ * @return y {int} - y coordinate
+ */`;
+            const result = jsdoc.parse(input);
+            expect(result.rets).toHaveLength(2);
+            expect(result.rets![0]).toEqual({
+                name: "x",
+                type: "int",
+                description: "x coordinate",
+            });
+            expect(result.rets![1]).toEqual({
+                name: "y",
+                type: "int",
+                description: "y coordinate",
+            });
+        });
+
+        it("does not confuse unnamed @return {type} with named @return name {type}", () => {
+            const input = `/**
+ * @return {int}
+ * @return x {int} - named return
+ */`;
+            const result = jsdoc.parse(input);
+            expect(result.ret).toEqual({ type: "int" });
+            expect(result.rets).toHaveLength(1);
+            expect(result.rets![0]).toEqual({
+                name: "x",
+                type: "int",
+                description: "named return",
+            });
         });
     });
 

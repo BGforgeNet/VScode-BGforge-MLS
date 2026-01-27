@@ -29,7 +29,11 @@ export function jsdocToMarkdown(jsd: JSdoc, format: JsdocFormat = "fallout"): st
         }
     }
 
-    if (jsd.ret) {
+    // Named returns (rets[]) - for WeiDU RET/RET_ARRAY variables
+    if (jsd.rets && jsd.rets.length > 0 && format === "weidu") {
+        md += formatWeiduRets(jsd.rets);
+    } else if (jsd.ret) {
+        // Unnamed return (fallback for backwards compat)
         if (format === "weidu") {
             md += `\n\n Returns \`${jsd.ret.type}\``;
         } else {
@@ -82,38 +86,44 @@ function formatWeiduArgs(args: JSdoc["args"]): string {
         }
     });
 
+    // Note: Defaults come from AST, not JSDoc, so no Default column here
     if (intVars.length > 0) {
-        md += "\n\n|INT_VAR|Name|Default|Description|\n|:-|:-|:-:|:-|";
+        md += "\n\n|INT_VAR|Name|Description|\n|:-|:-|:-|";
         for (const arg of intVars) {
-            md += `\n| \`${arg.type}\` | ${arg.name} |`;
-            if (arg.default) {
-                md += `${arg.default}`;
-            }
-            md += "|";
-            if (arg.description) {
-                md += `${arg.description}`;
-            }
-            md += "|";
+            md += `\n| \`${arg.type}\` | ${arg.name} | ${arg.description ?? ""} |`;
         }
     }
 
     if (strVars.length > 0) {
         if (intVars.length === 0) {
-            md += "\n\n|STR_VAR|Name|Default|Description|\n|:-|:-|:-:|:-|";
+            md += "\n\n|STR_VAR|Name|Description|\n|:-|:-|:-|";
         } else {
-            md += "\n|**STR_VAR**||||";
+            md += "\n|**STR_VAR**|||";
         }
         for (const arg of strVars) {
-            md += `\n| \`${arg.type}\` | ${arg.name} |`;
-            if (arg.default) {
-                md += `${arg.default}`;
-            }
-            md += "|";
-            if (arg.description) {
-                md += `${arg.description}`;
-            }
-            md += "|";
+            md += `\n| \`${arg.type}\` | ${arg.name} | ${arg.description ?? ""} |`;
         }
+    }
+
+    return md;
+}
+
+/**
+ * WeiDU format: table for named RET/RET_ARRAY variables.
+ * The actual RET vs RET_ARRAY distinction comes from the AST, not from JSDoc.
+ */
+function formatWeiduRets(rets: JSdoc["rets"]): string {
+    if (!rets || rets.length === 0) {
+        return "";
+    }
+
+    let md = "\n\n|RET|Type|Description|\n|:-|:-|:-|";
+    for (const ret of rets) {
+        md += `\n| ${ret.name} | \`${ret.type}\` |`;
+        if (ret.description) {
+            md += ` ${ret.description}`;
+        }
+        md += "|";
     }
 
     return md;

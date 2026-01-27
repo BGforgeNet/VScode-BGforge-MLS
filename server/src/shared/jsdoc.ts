@@ -1,8 +1,23 @@
 /**
  * JSDoc comment parser.
- * Extracts @param, @return, @deprecated tags from documentation comments.
+ * Extracts @param, @return, @deprecated, @type tags from documentation comments.
  *
  * Supported types: array, bool, ids, int, list, map, resref, string, filename
+ *
+ * Supported tags:
+ *   @param {type} name - description        Basic parameter
+ *   @param {type} name! - description       Required parameter (hides default in hover)
+ *   @param {type} [name=default] - desc     Parsed but default is ignored (see note)
+ *   @return {type}                          Unnamed return (Fallout SSL procedures)
+ *   @return name {type} - description       Named return (WeiDU RET/RET_ARRAY vars)
+ *   @deprecated                             Mark as deprecated
+ *   @deprecated message                     Deprecated with reason
+ *   @type {type}                            Variable type annotation
+ *
+ * Note on defaults:
+ *   The [name=default] syntax is parsed for compatibility but the default value is ignored.
+ *   Both WeiDU and Fallout SSL get defaults from the AST, so JSDoc defaults are redundant.
+ *   Use @param {type} name - description instead.
  */
 
 // ============================================
@@ -13,21 +28,23 @@
 export interface Arg {
     name: string;
     type: string;
-    default?: string;
     description?: string;
     required?: boolean; // True if name ends with ! (e.g., @param {int} count!)
 }
 
 /** Parsed return type info. */
 export interface Ret {
+    name?: string;        // For named returns (@return x {int})
     type: string;
+    description?: string;
 }
 
 /** Complete parsed JSDoc. */
 export interface JSdoc {
     desc?: string;
     args: Arg[];
-    ret?: Ret;
+    ret?: Ret;      // Unnamed @return {type} (backwards compat)
+    rets?: Ret[];   // Named returns: @return name {type} desc
     deprecated?: string | true;
     type?: string; // For @type tag (used for variables)
 }
@@ -46,8 +63,16 @@ export interface JSdoc {
  */
 const PARAM_PATTERN = /@(?:arg|param)\s+\{(\w+)\}\s+(?:(\w+)(!)?|\[(\w+)=([^\]]+)\])(?:\s+-\s+|\s+)?(.+)?/;
 
-/** Pattern for @return/@returns/@ret tags. Groups: 1=type */
+/** Pattern for unnamed @return/@returns/@ret tags. Groups: 1=type */
 const RETURN_PATTERN = /@(?:ret|return|returns)\s+\{(\w+)\}/;
+
+/**
+ * Pattern for named @return/@returns/@ret tags.
+ * Matches: @return name {type} - description
+ *      or: @return name {type} description
+ * Groups: 1=name, 2=type, 3=description (optional)
+ */
+const NAMED_RETURN_PATTERN = /@(?:ret|return|returns)\s+(\w+)\s+\{(\w+)\}(?:\s+-\s+|\s+)?(.+)?/;
 
 /** Pattern for @deprecated tag. Groups: 1=message (optional) */
 const DEPRECATED_PATTERN = /@deprecated(?:\s+(.*))?/;
@@ -83,6 +108,7 @@ export function parse(text: string): JSdoc {
     }
 
     const args: Arg[] = [];
+    const rets: Ret[] = [];
     const descriptionLines: string[] = [];
     let ret: Ret | undefined;
     let deprecated: string | true | undefined;
@@ -104,7 +130,14 @@ export function parse(text: string): JSdoc {
             continue;
         }
 
-        // Try parsing @return
+        // Try parsing named @return (e.g., @return name {type} desc)
+        const namedReturnResult = parseNamedReturn(line);
+        if (namedReturnResult) {
+            rets.push(namedReturnResult);
+            continue;
+        }
+
+        // Try parsing unnamed @return (e.g., @return {type})
         const returnResult = parseReturn(line);
         if (returnResult) {
             ret = returnResult;
@@ -137,6 +170,9 @@ export function parse(text: string): JSdoc {
     if (ret) {
         result.ret = ret;
     }
+    if (rets.length > 0) {
+        result.rets = rets;
+    }
     if (type) {
         result.type = type;
     }
@@ -154,7 +190,8 @@ function parseParam(line: string): Arg | null {
         return null;
     }
 
-    const [, type, simpleName, requiredMarker, bracketName, defaultValue, description] = match;
+    // Note: defaultValue (group 5) is parsed but ignored - defaults come from AST
+    const [, type, simpleName, requiredMarker, bracketName, , description] = match;
     const name = simpleName || bracketName;
 
     // Type and name are required
@@ -167,9 +204,6 @@ function parseParam(line: string): Arg | null {
     if (requiredMarker === "!") {
         arg.required = true;
     }
-    if (defaultValue) {
-        arg.default = defaultValue;
-    }
     if (description) {
         arg.description = description;
     }
@@ -177,13 +211,35 @@ function parseParam(line: string): Arg | null {
     return arg;
 }
 
-/** Parse @return, @returns, or @ret tag. */
+/** Parse unnamed @return, @returns, or @ret tag. */
 function parseReturn(line: string): Ret | null {
     const match = line.match(RETURN_PATTERN);
     if (!match || !match[1]) {
         return null;
     }
     return { type: match[1] };
+}
+
+/**
+ * Parse named @return, @returns, or @ret tag.
+ * Format: @return name {type} - description
+ */
+function parseNamedReturn(line: string): Ret | null {
+    const match = line.match(NAMED_RETURN_PATTERN);
+    if (!match || !match[1] || !match[2]) {
+        return null;
+    }
+
+    const ret: Ret = {
+        name: match[1],
+        type: match[2],
+    };
+
+    if (match[3]) {
+        ret.description = match[3].trim();
+    }
+
+    return ret;
 }
 
 /** Parse @type tag. Returns type and optional trailing description, or null if no match. */

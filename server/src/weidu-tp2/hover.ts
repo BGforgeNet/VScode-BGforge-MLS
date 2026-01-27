@@ -6,7 +6,7 @@
 
 import { Hover, MarkupKind, Position } from "vscode-languageserver/node";
 import { isCallableSymbol, type CallableInfo } from "../core/symbol";
-import { buildParamInfoMap } from "../shared/jsdoc";
+import { buildParamInfoMap, type Ret } from "../shared/jsdoc";
 import { parseWithCache, isInitialized } from "./parser";
 import { parseHeader, FunctionInfo, VariableInfo } from "./header-parser";
 import { getSymbols } from "./provider";
@@ -131,6 +131,22 @@ function findParamInFunctionCalls(
 }
 
 /**
+ * Build a lookup map from JSDoc rets[] for RET/RET_ARRAY variable info.
+ */
+function buildRetsMap(rets?: Ret[]): Map<string, Ret> {
+    const map = new Map<string, Ret>();
+    if (!rets) {
+        return map;
+    }
+    for (const ret of rets) {
+        if (ret.name) {
+            map.set(ret.name, ret);
+        }
+    }
+    return map;
+}
+
+/**
  * Find a parameter by name in function info.
  * Returns type and default value if found.
  */
@@ -143,6 +159,7 @@ function findParamInFuncInfo(
     }
 
     const paramInfoMap = buildParamInfoMap(funcInfo.jsdoc);
+    const retsMap = buildRetsMap(funcInfo.jsdoc?.rets);
     const info = paramInfoMap.get(symbol);
 
     // Check INT_VAR
@@ -159,16 +176,24 @@ function findParamInFuncInfo(
         }
     }
 
-    // Check RET
+    // Check RET - prefer @return info from rets[], fall back to @param info
     for (const param of funcInfo.params.ret) {
         if (param === symbol) {
+            const retInfo = retsMap.get(symbol);
+            if (retInfo) {
+                return { paramType: retInfo.type, description: retInfo.description };
+            }
             return { paramType: "any", description: info?.description, required: info?.required };
         }
     }
 
-    // Check RET_ARRAY
+    // Check RET_ARRAY - prefer @return-array info from rets[], fall back to @param info
     for (const param of funcInfo.params.retArray) {
         if (param === symbol) {
+            const retInfo = retsMap.get(symbol);
+            if (retInfo) {
+                return { paramType: retInfo.type, description: retInfo.description };
+            }
             return { paramType: "array", description: info?.description, required: info?.required };
         }
     }
@@ -399,15 +424,20 @@ function buildParamTable(
         }
     };
 
+    // Build rets lookup map for @return/@return-array tags
+    const retsMap = buildRetsMap(funcInfo.jsdoc?.rets);
+
     /** Add parameter rows for RET/RET_ARRAY sections. */
     const addRetSection = (sectionName: string, params: string[]) => {
         if (params.length === 0) return;
         addSectionHeader(sectionName);
 
         for (const name of params) {
-            const jsdoc = jsdocArgs.get(name);
-            const type = formatType(jsdoc?.type ?? "");
-            const desc = truncateDesc(jsdoc?.description ?? "");
+            // Prefer @return info from rets[], fall back to @param info
+            const retInfo = retsMap.get(name);
+            const paramInfo = jsdocArgs.get(name);
+            const type = formatType(retInfo?.type ?? paramInfo?.type ?? "");
+            const desc = truncateDesc(retInfo?.description ?? paramInfo?.description ?? "");
             tableRows.push(`| ${type} | ${name} | ${desc} | |`);
         }
     };
