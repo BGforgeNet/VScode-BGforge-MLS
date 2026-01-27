@@ -352,10 +352,13 @@ function buildSignatureLabel(raw: RawSymbolData): string {
         return raw.name;
     }
 
-    // Build parameter list
+    // Build parameter list with default values: "int x = 0"
     const params = raw.parameters ?? [];
     const paramStr = params
-        .map(p => (p.type ? `${p.type} ${p.name}` : p.name))
+        .map(p => {
+            const base = p.type ? `${p.type} ${p.name}` : p.name;
+            return p.defaultValue ? `${base} = ${p.defaultValue}` : base;
+        })
         .join(", ");
 
     let label = `${raw.name}(${paramStr})`;

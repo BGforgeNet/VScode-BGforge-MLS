@@ -42,20 +42,13 @@ export function jsdocToMarkdown(jsd: JSdoc, format: JsdocFormat = "fallout"): st
 }
 
 /**
- * Fallout format: single table with all args.
+ * Fallout format: simple table with name and description.
+ * Type and default values are shown in the signature.
  */
 function formatFalloutArgs(args: JSdoc["args"]): string {
-    let md = "\n\n|type|name|default|description|\n|:-|:-|:-|:-|";
+    let md = "\n\n|name|description|\n|:-|:-|";
     for (const arg of args) {
-        md += `\n| \`${arg.type}\` | ${arg.name} |`;
-        if (arg.default) {
-            md += `${arg.default}`;
-        }
-        md += "|";
-        if (arg.description) {
-            md += `${arg.description}`;
-        }
-        md += "|";
+        md += `\n|${arg.name}|${arg.description ?? ""}|`;
     }
     return md;
 }
@@ -167,7 +160,10 @@ export function jsdocToDetail(
 
     // Functions with no arguments get empty parentheses
     // Macros don't
-    const args = jsd.args.map(({ type, name }) => `${type} ${name}`);
+    // Include default values in signature: "int x = 0"
+    const args = jsd.args.map(({ type, name, default: def }) =>
+        def ? `${type} ${name} = ${def}` : `${type} ${name}`
+    );
     let argsString = args.join(", ");
     if (argsString !== "" || tokenType !== "macro") {
         argsString = `(${argsString})`;
