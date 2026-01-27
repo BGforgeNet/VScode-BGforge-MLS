@@ -4,6 +4,7 @@
  */
 
 import type { JSdoc } from "./jsdoc";
+import { formatSignature, type SignatureParam } from "./signature-format";
 
 export type JsdocFormat = "fallout" | "weidu";
 
@@ -138,30 +139,26 @@ function formatDeprecated(deprecated: JSdoc["deprecated"]): string {
  *
  * @param label Symbol name
  * @param jsd Parsed JSDoc
- * @param tokenType "proc" adds void return and empty parens, "macro" omits both
+ * @param tokenType "proc" adds void return, "macro" has no prefix
  */
 export function jsdocToDetail(
     label: string,
     jsd: JSdoc,
     tokenType: "proc" | "macro" = "proc",
 ): string {
-    let retType = "";
+    // Determine prefix: return type for procs, empty for macros
+    let prefix = "";
     if (jsd.ret) {
-        retType = jsd.ret.type;
-    } else {
-        if (tokenType === "proc") {
-            retType = "void";
-        }
-    }
-    // Add space if not empty
-    if (retType !== "") {
-        retType = `${retType} `;
+        prefix = `${jsd.ret.type} `;
+    } else if (tokenType === "proc") {
+        prefix = "void ";
     }
 
-    // Only add parentheses if there are arguments
-    // Note: Default values come from AST, not JSDoc
-    const args = jsd.args.map(({ type, name }) => `${type} ${name}`);
-    const argsString = args.length > 0 ? `(${args.join(", ")})` : "";
+    // Build params from JSDoc (no default values - those come from AST)
+    const params: SignatureParam[] = jsd.args.map(({ type, name }) => ({
+        name,
+        type,
+    }));
 
-    return `${retType}${label}${argsString}`;
+    return formatSignature({ name: label, prefix, params });
 }

@@ -43,6 +43,10 @@ export function extractParams(procNode: Node): ParamInfo[] {
     return result;
 }
 
+// Import and re-export signature types from shared module
+import { type SignatureParam, type SignatureData, formatSignature } from "../shared/signature-format";
+export { type SignatureParam, type SignatureData, formatSignature };
+
 /**
  * Build procedure signature string from AST params and optional JSDoc.
  * Uses JSDoc types if available, AST defaults only.
@@ -54,22 +58,23 @@ export function buildProcedureSignature(
 ): string {
     if (parsed && parsed.args.length > 0) {
         // Use JSDoc types with AST defaults
-        const paramStrs = parsed.args.map((arg, idx) => {
-            const def = params[idx]?.defaultValue;
-            const base = `${arg.type} ${arg.name}`;
-            return def ? `${base} = ${def}` : base;
-        });
-        const ret = parsed.ret ? `${parsed.ret.type} ` : "void ";
-        return `${ret}${name}(${paramStrs.join(", ")})`;
+        const sigParams: SignatureParam[] = parsed.args.map((arg, idx) => ({
+            name: arg.name,
+            type: arg.type,
+            defaultValue: params[idx]?.defaultValue,
+        }));
+        const prefix = parsed.ret ? `${parsed.ret.type} ` : "void ";
+        return formatSignature({ name, prefix, params: sigParams });
     } else if (params.length > 0) {
         // No JSDoc but has params - extract param names with defaults from AST
-        const paramStrs = params.map(p =>
-            p.defaultValue ? `${p.name} = ${p.defaultValue}` : p.name
-        );
-        return `procedure ${name}(${paramStrs.join(", ")})`;
+        const sigParams: SignatureParam[] = params.map(p => ({
+            name: p.name,
+            defaultValue: p.defaultValue,
+        }));
+        return formatSignature({ name, prefix: "procedure ", params: sigParams });
     } else {
         // No params
-        return `procedure ${name}`;
+        return formatSignature({ name, prefix: "procedure ", params: [] });
     }
 }
 

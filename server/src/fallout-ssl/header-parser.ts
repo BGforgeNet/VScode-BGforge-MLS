@@ -14,6 +14,7 @@ import { ScopeLevel, SourceType, SymbolKind } from "../core/symbol";
 import * as definition from "../shared/definition";
 import * as jsdoc from "../shared/jsdoc";
 import { jsdocToDetail } from "../shared/jsdoc-utils";
+import { formatSignature } from "../shared/signature-format";
 import { type MacroData, buildMacroCompletion, buildMacroTooltip, buildSignatureFromJSDoc, isConstantMacro, parseMacroParams } from "./macro-utils";
 import { buildTooltipBase } from "./utils";
 
@@ -105,12 +106,9 @@ function findSymbols(text: string) {
     for (const m of matches) {
         const procName = m[5];
         if (!procName) continue;
-        let procDetail = procName;
-        if (m[6]) {
-            procDetail = `procedure ${procName}(${m[6]})`;
-        } else {
-            procDetail = `procedure ${procName}`;
-        }
+        // Parse raw params string "x, y" into SignatureParam[]
+        const rawParams = m[6] ? m[6].split(",").map(p => ({ name: p.trim() })) : [];
+        let procDetail = formatSignature({ name: procName, prefix: "procedure ", params: rawParams });
 
         // if jsdoc found
         if (m[2]) {

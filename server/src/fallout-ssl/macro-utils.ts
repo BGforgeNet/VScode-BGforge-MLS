@@ -7,6 +7,7 @@ import { CompletionItem, CompletionItemKind, ParameterInformation } from "vscode
 import { MarkupKind } from "vscode-languageserver/node";
 import * as jsdoc from "../shared/jsdoc";
 import { jsdocToDetail } from "../shared/jsdoc-utils";
+import { formatSignature } from "../shared/signature-format";
 import * as signature from "../shared/signature";
 import { LANG_FALLOUT_SSL_TOOLTIP } from "../core/languages";
 import { buildTooltipBase } from "./utils";
@@ -68,13 +69,17 @@ export function buildMacroSignature(macro: MacroData): string {
     const isNumeric = !macro.hasParams && macro.firstline !== undefined && isNumericValue(macro.firstline);
 
     if (isNumeric) {
+        // Numeric constants just show the value
         return macro.firstline!;
     } else if (macro.jsdoc) {
+        // Use JSDoc for typed signature
         return jsdocToDetail(macro.name, macro.jsdoc, "macro");
-    } else if (macro.hasParams) {
-        return `macro ${macro.name}(${macro.params!.join(", ")})`;
     } else {
-        return `macro ${macro.name}`;
+        // No JSDoc - build signature from params
+        const params = macro.hasParams && macro.params
+            ? macro.params.map(name => ({ name }))
+            : [];
+        return formatSignature({ name: macro.name, prefix: "macro ", params });
     }
 }
 
