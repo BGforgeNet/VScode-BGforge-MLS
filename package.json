@@ -458,16 +458,12 @@
         "bin": "node cli/bin/out/bin-cli.js",
         "lint:cli": "tsc --project cli/tsconfig.json && eslint cli/**/*.ts --ignore-pattern 'cli/test' --ignore-pattern 'cli/vitest.config.ts' --no-warn-ignored --max-warnings 0",
         "ie-update": "./scripts/ie-update.sh",
-        "test:ie-update": "vitest run --config scripts/ie-update/vitest.config.ts",
-        "lint:ie-update": "tsc --project scripts/ie-update/tsconfig.json",
         "fallout-update": "./scripts/fallout-update.sh",
-        "test:fallout-update": "vitest run --config scripts/fallout-update/vitest.config.ts",
-        "lint:fallout-update": "tsc --project scripts/fallout-update/tsconfig.json",
         "generate-data": "./scripts/generate-data.sh",
         "syntaxes-to-json": "./scripts/syntaxes-to-json.sh",
         "update-data": "pnpm ie-update && pnpm fallout-update && pnpm generate-data && pnpm syntaxes-to-json",
-        "test:utils": "vitest run --config scripts/utils/vitest.config.ts",
-        "lint:utils": "tsc --project scripts/utils/tsconfig.json",
+        "test:scripts": "vitest run --config scripts/vitest.config.ts",
+        "lint:scripts": "tsc --project scripts/tsconfig.json && eslint scripts/*/src/**/*.ts scripts/*/test/**/*.ts --no-warn-ignored --max-warnings 0",
         "knip": "knip"
     },
     "devDependencies": {

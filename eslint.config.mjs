@@ -24,6 +24,8 @@ export default [
             "client/src/**/*.ts",
             "server/src/**/*.ts",
             "cli/**/*.ts",
+            "scripts/*/src/**/*.ts",
+            "scripts/*/test/**/*.ts",
         ],
         plugins: {
             "@typescript-eslint": typescriptEslint,

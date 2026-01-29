@@ -66,7 +66,7 @@ function buildCompletionItem(
 
     const item: FalloutCompletionItem = {
         name: func.name,
-        ...(func.detail !== undefined ? { detail: func.detail } : {}),
+        ...(func.detail !== "" ? { detail: func.detail } : {}),
         ...(doc !== "" ? { doc: litscal(doc) } : {}),
         ...(func.args !== undefined ? { args: func.args, type: func.type } : {}),
     };

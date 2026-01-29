@@ -1,6 +1,6 @@
 /**
- * TypeScript configuration for fallout-update scripts.
- * Standalone config for one-shot data update scripts (not part of the main build).
+ * TypeScript configuration for all data update scripts.
+ * Standalone config (not part of the main build).
  */
 {
     "compilerOptions": {
@@ -17,10 +17,16 @@
         "noUncheckedIndexedAccess": true,
         "skipLibCheck": true,
         "outDir": "out",
-        "rootDir": "src",
         "sourceMap": true,
         "noEmit": true
     },
-    "include": ["src"],
-    "exclude": ["node_modules", "out", "test"]
+    "include": [
+        "ie-update/src",
+        "ie-update/test",
+        "fallout-update/src",
+        "fallout-update/test",
+        "utils/src",
+        "utils/test"
+    ],
+    "exclude": ["node_modules", "out"]
 }

@@ -143,7 +143,7 @@ export function offsetIsUnused(offset: OffsetItem): boolean {
     if (offset.unused !== undefined || offset.unknown !== undefined) {
         return true;
     }
-    if (offset.desc !== undefined && offset.desc.toLowerCase() === "unknown") {
+    if (offset.desc.toLowerCase() === "unknown") {
         return true;
     }
     return false;
