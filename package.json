@@ -463,6 +463,9 @@
         "fallout-update": "./scripts/fallout-update.sh",
         "test:fallout-update": "vitest run --config scripts/fallout-update/vitest.config.ts",
         "lint:fallout-update": "tsc --project scripts/fallout-update/tsconfig.json",
+        "generate-data": "./scripts/generate-data.sh",
+        "syntaxes-to-json": "./scripts/syntaxes-to-json.sh",
+        "update-data": "pnpm ie-update && pnpm fallout-update && pnpm generate-data && pnpm syntaxes-to-json",
         "test:utils": "vitest run --config scripts/utils/vitest.config.ts",
         "lint:utils": "tsc --project scripts/utils/tsconfig.json",
         "knip": "knip"
