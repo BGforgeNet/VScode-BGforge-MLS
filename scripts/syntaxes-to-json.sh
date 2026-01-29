@@ -1,12 +1,8 @@
 #!/bin/bash
 
-# shellcheck disable=SC1091  # venv may not exist at lint time
-source .venv/bin/activate >/dev/null 2>&1
-
 set -xeu -o pipefail
 
-tools_dir="scripts"
-yaml2json="$tools_dir/yaml2json.py"
+yaml2json="pnpm exec tsx scripts/utils/src/yaml2json.ts"
 syntaxes_dir="syntaxes"
 error_file="$(basename "$0").err"
 

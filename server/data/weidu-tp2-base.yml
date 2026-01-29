@@ -767,7 +767,7 @@ optGlob:
       doc: |-
         Use local filesystem globbing. Globbing is generally architecture specific!
     - name: NOGLOB
-      detail:
+      detail: NOGLOB
       doc: |-
         Never use local file system globbing. Or use sane defaults: enable globbing with COPY_EXISTING_REGEXP, disable it with COPY.
 

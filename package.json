@@ -463,6 +463,8 @@
         "fallout-update": "./scripts/fallout-update.sh",
         "test:fallout-update": "vitest run --config scripts/fallout-update/vitest.config.ts",
         "lint:fallout-update": "tsc --project scripts/fallout-update/tsconfig.json",
+        "test:utils": "vitest run --config scripts/utils/vitest.config.ts",
+        "lint:utils": "tsc --project scripts/utils/tsconfig.json",
         "knip": "knip"
     },
     "devDependencies": {

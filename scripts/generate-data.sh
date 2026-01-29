@@ -4,38 +4,36 @@
 
 set -xeu -o pipefail
 
-# shellcheck disable=SC1091  # venv may not exist at lint time
-source .venv/bin/activate
-
 data_dir="server/data"
 dest_dir="server/out"
+generate_data="pnpm exec tsx scripts/utils/src/generate-data.ts"
 
-./scripts/generate_data.py \
-    -i $data_dir/fallout-ssl-base.yml $data_dir/fallout-ssl-sfall.yml \
+$generate_data \
+    -i $data_dir/fallout-ssl-base.yml -i $data_dir/fallout-ssl-sfall.yml \
     --completion $dest_dir/completion.fallout-ssl.json \
     --hover $dest_dir/hover.fallout-ssl.json \
     --signature $dest_dir/signature.fallout-ssl.json \
     --tooltip-lang fallout-ssl-tooltip
 
-./scripts/generate_data.py \
+$generate_data \
     -i $data_dir/fallout-worldmap-txt.yml \
     --completion $dest_dir/completion.fallout-worldmap-txt.json \
     --hover $dest_dir/hover.fallout-worldmap-txt.json \
     --tooltip-lang fallout-worldmap-txt
 
-./scripts/generate_data.py \
-    -i $data_dir/weidu-tp2-base.yml $data_dir/weidu-tp2-iesdp.yml $data_dir/weidu-tp2-ielib.yml \
+$generate_data \
+    -i $data_dir/weidu-tp2-base.yml -i $data_dir/weidu-tp2-iesdp.yml -i $data_dir/weidu-tp2-ielib.yml \
     --completion $dest_dir/completion.weidu-tp2.json \
     --hover $dest_dir/hover.weidu-tp2.json \
     --tooltip-lang weidu-tp2-tooltip
 
-./scripts/generate_data.py \
-    -i $data_dir/weidu-baf-base.yml $data_dir/weidu-baf-iesdp.yml $data_dir/weidu-baf-ids.yml \
+$generate_data \
+    -i $data_dir/weidu-baf-base.yml -i $data_dir/weidu-baf-iesdp.yml -i $data_dir/weidu-baf-ids.yml \
     --completion $dest_dir/completion.weidu-baf.json \
     --hover $dest_dir/hover.weidu-baf.json \
     --tooltip-lang weidu-baf-tooltip
 
-./scripts/generate_data.py \
+$generate_data \
     -i $data_dir/weidu-d-base.yml \
     --completion $dest_dir/completion.weidu-d.json \
     --hover $dest_dir/hover.weidu-d.json \

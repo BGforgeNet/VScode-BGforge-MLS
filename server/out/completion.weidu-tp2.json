@@ -1906,7 +1906,7 @@
         "category": "optGlob",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nNone\n```\nNever use local file system globbing. Or use sane defaults: enable globbing with COPY_EXISTING_REGEXP, disable it with COPY."
+            "value": "```weidu-tp2-tooltip\nNOGLOB\n```\nNever use local file system globbing. Or use sane defaults: enable globbing with COPY_EXISTING_REGEXP, disable it with COPY."
         }
     },
     {
