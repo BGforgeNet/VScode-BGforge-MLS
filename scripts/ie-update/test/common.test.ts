@@ -1,5 +1,6 @@
 /**
- * Tests for common YAML I/O and utility functions.
+ * Tests for IE-specific common YAML I/O and utility functions.
+ * Shared helper tests (cmpStr, litscal, findFiles) are in utils/test/yaml-helpers.test.ts.
  */
 
 import fs from "node:fs";
@@ -10,8 +11,6 @@ import {
     dumpCompletion,
     dumpDefinition,
     dumpHighlight,
-    findFiles,
-    litscal,
     stripLiquid,
 } from "../src/ie/common.js";
 import YAML from "yaml";
@@ -19,67 +18,6 @@ import type { IEData } from "../src/ie/types.js";
 
 const TMP_BASE = "tmp";
 beforeAll(() => fs.mkdirSync(TMP_BASE, { recursive: true }));
-
-describe("litscal", () => {
-    it("dedents text with common indentation", () => {
-        const input = "  line1\n  line2\n  line3";
-        expect(litscal(input)).toBe("line1\nline2\nline3");
-    });
-
-    it("preserves relative indentation", () => {
-        const input = "  line1\n    line2\n  line3";
-        expect(litscal(input)).toBe("line1\n  line2\nline3");
-    });
-
-    it("handles text without common indentation", () => {
-        const input = "line1\nline2";
-        expect(litscal(input)).toBe("line1\nline2");
-    });
-
-    it("handles empty lines in indentation calculation", () => {
-        const input = "  line1\n\n  line2";
-        expect(litscal(input)).toBe("line1\n\nline2");
-    });
-});
-
-describe("findFiles", () => {
-    let tmpDir: string;
-
-    beforeEach(() => {
-        tmpDir = fs.mkdtempSync(path.join("tmp", ".ie-test-"));
-        fs.mkdirSync(path.join(tmpDir, "sub"), { recursive: true });
-        fs.mkdirSync(path.join(tmpDir, "skip"), { recursive: true });
-        fs.writeFileSync(path.join(tmpDir, "a.yml"), "", "utf8");
-        fs.writeFileSync(path.join(tmpDir, "sub", "b.yml"), "", "utf8");
-        fs.writeFileSync(path.join(tmpDir, "skip", "c.yml"), "", "utf8");
-        fs.writeFileSync(path.join(tmpDir, "d.txt"), "", "utf8");
-        fs.writeFileSync(path.join(tmpDir, "iesdp.tph"), "", "utf8");
-    });
-
-    afterEach(() => {
-        fs.rmSync(tmpDir, { recursive: true });
-    });
-
-    it("finds files by extension", () => {
-        const result = findFiles(tmpDir, "yml");
-        expect(result).toHaveLength(3);
-    });
-
-    it("skips specified directories", () => {
-        const result = findFiles(tmpDir, "yml", ["skip"]);
-        expect(result).toHaveLength(2);
-    });
-
-    it("skips specified files", () => {
-        const result = findFiles(tmpDir, "yml", [], ["b.yml"]);
-        expect(result).toHaveLength(2);
-    });
-
-    it("skips iesdp.tph by default", () => {
-        const result = findFiles(tmpDir, "tph");
-        expect(result).toHaveLength(0);
-    });
-});
 
 describe("stripLiquid", () => {
     it("removes capture note tags", () => {

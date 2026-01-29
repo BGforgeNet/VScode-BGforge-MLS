@@ -2,10 +2,13 @@
  * Dumps completion and highlight YAML files for Fallout SSL.
  * Both operations are round-trip: they read the existing file, update specific
  * stanzas, and write back — preserving all other content and comments.
+ *
+ * Shared helpers (makeBlockScalar, YAML_DUMP_OPTIONS) are in utils/yaml-helpers.
  */
 
 import fs from "node:fs";
-import YAML, { Document, Scalar, YAMLMap, YAMLSeq, isMap, isScalar } from "yaml";
+import YAML, { Document, YAMLMap, YAMLSeq, isMap } from "yaml";
+import { makeBlockScalar, YAML_DUMP_OPTIONS } from "../../../utils/src/yaml-helpers.js";
 import type { DefineKind, FalloutCompletionItem, HighlightPattern } from "./types.js";
 import {
     COMPLETION_TYPE_CONSTANT,
@@ -14,26 +17,6 @@ import {
     SFALL_FUNCTIONS_STANZA,
     SFALL_HOOKS_STANZA,
 } from "./types.js";
-
-/** YAML dump options matching the Python ruamel.yaml configuration */
-const YAML_DUMP_OPTIONS = {
-    lineWidth: 4096,
-    indent: 2,
-    indentSeq: true,
-};
-
-/**
- * Creates a YAML Scalar node with literal block style (|-).
- * Matches Python ruamel.yaml's LiteralScalarString.
- */
-function makeBlockScalar(doc: Document, value: string): Scalar {
-    const node = doc.createNode(value);
-    if (!isScalar(node)) {
-        throw new Error(`Expected Scalar node for string value, got ${typeof node}`);
-    }
-    node.type = Scalar.BLOCK_LITERAL;
-    return node;
-}
 
 /**
  * Creates a YAML sequence of completion items for the sfall-functions stanza.
@@ -54,9 +37,7 @@ function createCompletionSeq(
 
         if (item.doc !== undefined) {
             const cleanDoc = item.doc.replace(/ +$/gm, "");
-            const docValue = cleanDoc.includes("\n")
-                ? makeBlockScalar(doc, cleanDoc)
-                : makeBlockScalar(doc, cleanDoc);
+            const docValue = makeBlockScalar(doc, cleanDoc);
             map.add(doc.createPair("doc", docValue));
         }
 

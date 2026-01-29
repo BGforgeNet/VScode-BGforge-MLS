@@ -1,37 +1,16 @@
 /**
  * Tests for sfall-data module: loading functions.yml and hooks.yml,
  * building completion items and highlight patterns.
+ * Shared litscal tests are in utils/test/yaml-helpers.test.ts.
  */
 
 import fs from "node:fs";
 import path from "node:path";
 import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
-import { litscal, loadSfallFunctions, loadSfallHooks } from "../src/fallout/sfall-data.js";
+import { loadSfallFunctions, loadSfallHooks } from "../src/fallout/sfall-data.js";
 
 const TMP_BASE = "tmp";
 beforeAll(() => fs.mkdirSync(TMP_BASE, { recursive: true }));
-
-describe("litscal", () => {
-    it("dedents text with common indentation", () => {
-        const input = "  line1\n  line2\n  line3";
-        expect(litscal(input)).toBe("line1\nline2\nline3");
-    });
-
-    it("preserves relative indentation", () => {
-        const input = "  line1\n    line2\n  line3";
-        expect(litscal(input)).toBe("line1\n  line2\nline3");
-    });
-
-    it("handles text without common indentation", () => {
-        const input = "line1\nline2";
-        expect(litscal(input)).toBe("line1\nline2");
-    });
-
-    it("handles empty lines in indentation calculation", () => {
-        const input = "  line1\n\n  line2";
-        expect(litscal(input)).toBe("line1\n\nline2");
-    });
-});
 
 describe("loadSfallFunctions", () => {
     let tmpDir: string;

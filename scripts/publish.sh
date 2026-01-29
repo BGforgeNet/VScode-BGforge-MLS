@@ -2,7 +2,7 @@
 
 set -xeu -o pipefail
 
-npm install -g @vscode/vsce
+pnpm install -g @vscode/vsce
 vsce publish
 vsce package
 
@@ -11,5 +11,5 @@ githubrelease release BGforgeNet/VScode-BGforge-MLS create "v$version" --publish
 rm -f ./*.vsix
 
 #for next release
-npm update
-npm -g update
+pnpm update
+pnpm -g update

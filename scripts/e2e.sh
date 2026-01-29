@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -eu -o pipefail
+
 CODE_TESTS_PATH="$(pwd)/client/out/test"
 export CODE_TESTS_PATH
 CODE_TESTS_WORKSPACE="$(pwd)/client/testFixture"

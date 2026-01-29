@@ -1,33 +1,16 @@
 /**
  * Tests for header-defines module: parsing .h files for defines,
- * file discovery, and string comparison.
+ * file discovery, and define collection.
+ * Shared cmpStr and findFiles tests are in utils/test/yaml-helpers.test.ts.
  */
 
 import fs from "node:fs";
 import path from "node:path";
 import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
-import { cmpStr, collectDefines, definesFromFile, findFile, findFiles } from "../src/fallout/header-defines.js";
+import { collectDefines, definesFromFile, findFile } from "../src/fallout/header-defines.js";
 
 const TMP_BASE = "tmp";
 beforeAll(() => fs.mkdirSync(TMP_BASE, { recursive: true }));
-
-describe("cmpStr", () => {
-    it("returns negative for a < b", () => {
-        expect(cmpStr("abc", "abd")).toBeLessThan(0);
-    });
-
-    it("returns positive for a > b", () => {
-        expect(cmpStr("abd", "abc")).toBeGreaterThan(0);
-    });
-
-    it("returns zero for equal strings", () => {
-        expect(cmpStr("abc", "abc")).toBe(0);
-    });
-
-    it("sorts underscore after uppercase Z (byte order)", () => {
-        expect(cmpStr("_", "Z")).toBeGreaterThan(0);
-    });
-});
 
 describe("definesFromFile", () => {
     let tmpDir: string;
@@ -125,38 +108,6 @@ describe("definesFromFile", () => {
         expect(defines.get("do_stuff")).toBe("procedure");
         expect(defines.get("my_macro")).toBe("define_with_vars");
         expect(defines.get("alias_name")).toBe("alias");
-    });
-});
-
-describe("findFiles", () => {
-    let tmpDir: string;
-
-    beforeEach(() => {
-        tmpDir = fs.mkdtempSync(path.join(TMP_BASE, ".fallout-test-"));
-        fs.mkdirSync(path.join(tmpDir, "sub"), { recursive: true });
-        fs.writeFileSync(path.join(tmpDir, "a.h"), "", "utf8");
-        fs.writeFileSync(path.join(tmpDir, "sub", "b.h"), "", "utf8");
-        fs.writeFileSync(path.join(tmpDir, "c.txt"), "", "utf8");
-    });
-
-    afterEach(() => {
-        fs.rmSync(tmpDir, { recursive: true });
-    });
-
-    it("finds files by extension", () => {
-        const result = findFiles(tmpDir, "h");
-        expect(result).toHaveLength(2);
-    });
-
-    it("does not match other extensions", () => {
-        const result = findFiles(tmpDir, "txt");
-        expect(result).toHaveLength(1);
-    });
-
-    it("returns results in sorted order", () => {
-        const result = findFiles(tmpDir, "h");
-        const basenames = result.map((f) => path.basename(f));
-        expect(basenames).toEqual(["a.h", "b.h"]);
     });
 });
 

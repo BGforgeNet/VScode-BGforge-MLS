@@ -26,7 +26,7 @@ pushd .
 if [ ! -d "$iesdp_dir" ]; then
     git clone "$iesdp_repo" "$iesdp_dir"
 fi
-cd $iesdp_dir
+cd "$iesdp_dir"
 git checkout ielib
 git pull
 popd

@@ -10,17 +10,17 @@ sfall_dir="sfall"
 sfall_file="server/data/fallout-ssl-sfall.yml"
 highlight_file="syntaxes/fallout-ssl.tmLanguage.yml"
 
-if [ ! -d $external ]; then
-    mkdir $external
+if [ ! -d "$external" ]; then
+    mkdir "$external"
 fi
 
 # sfall
 pushd .
-cd $external
-if [ ! -d $sfall_dir ]; then
-    git clone $sfall_repo $sfall_dir
+cd "$external"
+if [ ! -d "$sfall_dir" ]; then
+    git clone "$sfall_repo" "$sfall_dir"
 fi
-cd $sfall_dir
+cd "$sfall_dir"
 git checkout master
 git pull
 git fetch --tags
@@ -29,5 +29,4 @@ git checkout "$last_v"
 popd
 
 pnpm exec tsx scripts/fallout-update/src/fallout-update.ts -s "$external" --sfall-file "$sfall_file" --highlight-file "$highlight_file"
-pwd
 ./scripts/syntaxes-to-json.sh

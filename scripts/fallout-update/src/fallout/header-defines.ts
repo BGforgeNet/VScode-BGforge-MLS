@@ -2,11 +2,16 @@
  * Parses .h header files to extract #define constants, variables, procedures,
  * defines-with-args, and aliases. Each define is classified by its DefineKind
  * for use in syntax highlighting.
+ *
+ * Shared helpers (cmpStr, findFiles) are in utils/yaml-helpers.
  */
 
 import fs from "node:fs";
 import path from "node:path";
+import { cmpStr, findFiles } from "../../../utils/src/yaml-helpers.js";
 import type { DefineKind } from "./types.js";
+
+export { cmpStr, findFiles };
 
 /** Matches: #define NAME (value) or #define NAME value — numeric constants */
 const REGEX_CONSTANT = /^#define\s+(\w+)\s+\(?([0-9]+)\)?/;
@@ -79,44 +84,6 @@ export function definesFromFile(filePath: string): ReadonlyMap<string, DefineKin
     }
 
     return defines;
-}
-
-/**
- * Byte-level string comparison matching Python's default sort order.
- * Unlike localeCompare, this sorts by character code (e.g. '_' after 'Z').
- */
-export function cmpStr(a: string, b: string): number {
-    if (a < b) return -1;
-    if (a > b) return 1;
-    return 0;
-}
-
-/**
- * Recursively walks a directory, returning files matching the given extension.
- * Sorts entries alphabetically for deterministic cross-platform ordering.
- */
-export function findFiles(dirPath: string, ext: string): readonly string[] {
-    const results: string[] = [];
-    const extLower = `.${ext.toLowerCase()}`;
-
-    function walk(dir: string): void {
-        const entries = fs.readdirSync(dir, { withFileTypes: true });
-        entries.sort((a, b) => cmpStr(a.name, b.name));
-        for (const entry of entries) {
-            const fullPath = path.join(dir, entry.name);
-            if (entry.isDirectory()) {
-                walk(fullPath);
-            } else if (entry.isFile()) {
-                const fileExt = path.extname(entry.name).toLowerCase();
-                if (fileExt === extLower) {
-                    results.push(fullPath);
-                }
-            }
-        }
-    }
-
-    walk(dirPath);
-    return results;
 }
 
 /**

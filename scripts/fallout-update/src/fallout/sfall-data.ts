@@ -1,11 +1,14 @@
 /**
  * Loads sfall functions.yml and hooks.yml, producing completion items
  * and highlight patterns for the Fallout SSL language support.
+ *
+ * Shared helpers (litscal, cmpStr) are in utils/yaml-helpers.
  */
 
 import fs from "node:fs";
 import YAML from "yaml";
-import { cmpStr, findFile } from "./header-defines.js";
+import { cmpStr, litscal } from "../../../utils/src/yaml-helpers.js";
+import { findFile } from "./header-defines.js";
 import type {
     FalloutCompletionItem,
     HighlightPattern,
@@ -13,31 +16,10 @@ import type {
 } from "./types.js";
 import { validateArray, validateSfallCategory, validateSfallHook } from "./validate.js";
 
+export { litscal };
+
 const FUNCTIONS_YAML = "functions.yml";
 const HOOKS_YAML = "hooks.yml";
-
-/**
- * Dedents text by removing common leading whitespace.
- * Equivalent to Python's textwrap.dedent(string).
- */
-export function litscal(text: string): string {
-    const lines = text.split("\n");
-    const nonEmptyLines = lines.filter((l) => l.trim().length > 0);
-    if (nonEmptyLines.length === 0) {
-        return text;
-    }
-
-    const minIndent = nonEmptyLines.reduce((min, line) => {
-        const match = line.match(/^(\s*)/);
-        const indent = match?.[1]?.length ?? 0;
-        return Math.min(min, indent);
-    }, Infinity);
-
-    if (minIndent > 0 && minIndent < Infinity) {
-        return lines.map((line) => line.slice(minIndent)).join("\n");
-    }
-    return text;
-}
 
 /** Result of loading sfall functions */
 export interface SfallFunctionsResult {

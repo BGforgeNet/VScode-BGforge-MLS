@@ -73,6 +73,32 @@ interface SignatureResult {
 const COMPLETION_TAG_DEPRECATED = 1;
 
 /**
+ * Validates that parsed YAML data conforms to the DataFile structure.
+ * Checks that each stanza has a numeric type and an items array.
+ */
+function validateDataFile(data: unknown, source: string): DataFile {
+    if (typeof data !== "object" || data === null) {
+        throw new Error(`Expected object in ${source}, got ${data === null ? "null" : typeof data}`);
+    }
+    const record = data as Record<string, unknown>;
+    const result: Record<string, DataStanza> = {};
+    for (const [key, value] of Object.entries(record)) {
+        if (typeof value !== "object" || value === null) {
+            throw new Error(`Expected object for stanza '${key}' in ${source}`);
+        }
+        const stanza = value as Record<string, unknown>;
+        if (typeof stanza["type"] !== "number") {
+            throw new Error(`Expected numeric 'type' in stanza '${key}' of ${source}`);
+        }
+        if (!Array.isArray(stanza["items"])) {
+            throw new Error(`Expected 'items' array in stanza '${key}' of ${source}`);
+        }
+        result[key] = stanza as unknown as DataStanza;
+    }
+    return result;
+}
+
+/**
  * Loads and merges multiple YAML data files.
  * Later files override earlier ones (last-writer-wins per stanza key).
  */
@@ -80,7 +106,7 @@ export function loadData(yamlPaths: readonly string[]): DataFile {
     let result: DataFile = {};
     for (const ypath of yamlPaths) {
         const content = fs.readFileSync(ypath, "utf8");
-        const ydata = YAML.parse(content) as DataFile;
+        const ydata = validateDataFile(YAML.parse(content) as unknown, ypath);
         result = { ...result, ...ydata };
     }
     return result;
@@ -134,29 +160,32 @@ export function generateCompletion(data: DataFile, tooltipLangId: string): reado
         const kind = stanza.type;
         for (const item of stanza.items) {
             const label = item.name;
-            const completionItem: Record<string, unknown> = {
-                label,
-                kind,
-                source: "builtin",
-                category: stanzaName,
-            };
 
             const detail = getDetail(item);
             const doc = getDoc(item);
+
+            let documentation: MarkupContent | undefined;
             if (detail !== label || doc !== "") {
                 let mdValue = `\`\`\`${tooltipLangId}\n${detail}\n\`\`\``;
                 if (doc !== "") {
                     mdValue = `${mdValue}\n${doc}`;
                 }
-                completionItem["documentation"] = markdown(mdValue);
+                documentation = markdown(mdValue);
             }
 
             const deprecated = item.deprecated ?? false;
-            if (deprecated) {
-                completionItem["tags"] = [COMPLETION_TAG_DEPRECATED];
-            }
+            const tags = deprecated ? [COMPLETION_TAG_DEPRECATED] as const : undefined;
 
-            result.push(completionItem as unknown as CompletionResult);
+            const completionItem: CompletionResult = {
+                label,
+                kind,
+                source: "builtin",
+                category: stanzaName,
+                ...(documentation !== undefined ? { documentation } : {}),
+                ...(tags !== undefined ? { tags } : {}),
+            };
+
+            result.push(completionItem);
         }
     }
     return result;

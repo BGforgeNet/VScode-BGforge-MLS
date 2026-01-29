@@ -27,9 +27,6 @@ export {
 } from "./actions.js";
 
 export {
-    cmpStr,
-    litscal,
-    findFiles,
     createItemsSeq,
     dumpCompletion,
     dumpHighlight,
@@ -37,6 +34,8 @@ export {
     stripLiquid,
     checkCompletion,
 } from "./common.js";
+
+export { cmpStr, litscal, findFiles } from "../../../utils/src/yaml-helpers.js";
 
 export type {
     CompletionItem,
