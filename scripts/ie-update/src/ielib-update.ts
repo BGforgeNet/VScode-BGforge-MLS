@@ -181,10 +181,9 @@ function main(): void {
 
     for (const df of defineFiles) {
         const newIntDefines = definesFromFile(df, REGEX_NUMERIC);
-        // TODO: Python uses last-writer-wins with os.walk inode order, where
-        // scrolls_iwdee.tph happens to be processed before scrolls.tph, so BG2
-        // values win. With deterministic alphabetical sort, scrolls.tph comes first,
-        // so we use first-writer-wins (spread new entries first) to match Python output.
+        // First-writer-wins: existing entries take priority over new ones.
+        // With alphabetical file order, base files (e.g. scrolls.tph) are processed
+        // before override files (e.g. scrolls_iwdee.tph), so BG2 values are kept.
         intDefines = new Map([...newIntDefines, ...intDefines]);
         const newResrefDefines = definesFromFile(df, REGEX_TEXT);
         resrefDefines = new Map([...newResrefDefines, ...resrefDefines]);

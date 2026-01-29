@@ -900,7 +900,7 @@ actions:
       detail: DisplayStringHeadNoLog(O:Object, I:StrRef)
       doc: |-
         This action displays the string specified by the StrRef parameter over the head of the given object on the game-screen, but not in the message log.
-         It is possible to colorize the string. In order to do so, follow the instructions concerning the colorization of the name of your character during [Character Creation](https://gibberlings3.github.io/iesdp/scripting/actions/{{  "/appendices/charactercreation.htm" | relative_url }}|https://gibberlings3.github.io/iesdp/scripting/actions/{{  "/appendices/charactercreation.htm" | relative_url }}).
+         It is possible to colorize the string. In order to do so, follow the instructions concerning the colorization of the name of your character during [Character Creation](https://gibberlings3.github.io/iesdp/scripting/actions/{{  "/appendices/charactercreation.htm" | relative_url }}).
     - name: DisplayStringHeadOwner
       detail: DisplayStringHeadOwner(S:Item, I:STRREF)
       doc: |-
@@ -921,12 +921,12 @@ actions:
       detail: DisplayStringPoint(P:Location, I:Strref)
       doc: |-
         Displays a floating message over a point in the script runner's current area.
-         It is possible to colorize the string. In order to do so, follow the instructions concerning the colorization of the name of your character during [Character Creation](https://gibberlings3.github.io/iesdp/scripting/actions/{{ "/appendices/charactercreation.htm" | relative_url }}|https://gibberlings3.github.io/iesdp/scripting/actions/{{ "/appendices/charactercreation.htm" | relative_url }}).
+         It is possible to colorize the string. In order to do so, follow the instructions concerning the colorization of the name of your character during [Character Creation](https://gibberlings3.github.io/iesdp/scripting/actions/{{ "/appendices/charactercreation.htm" | relative_url }}).
     - name: DisplayStringPointLog
       detail: DisplayStringPointLog(P:Location, I:Strref)
       doc: |-
         Same as [DisplayStringPoint(P:Location\*,I:Strref\*)](https://gibberlings3.github.io/iesdp/scripting/actions/bgeeactions.htm#361) this action displays a floating message over a point in the script runner's current area, but also displays it in the message log.
-         It is possible to colorize the string. In order to do so, follow the instructions concerning the colorization of the name of your character during [Character Creation](https://gibberlings3.github.io/iesdp/scripting/actions/{{ "/appendices/charactercreation.htm" | relative_url }}|https://gibberlings3.github.io/iesdp/scripting/actions/{{ "/appendices/charactercreation.htm" | relative_url }}).
+         It is possible to colorize the string. In order to do so, follow the instructions concerning the colorization of the name of your character during [Character Creation](https://gibberlings3.github.io/iesdp/scripting/actions/{{ "/appendices/charactercreation.htm" | relative_url }}).
     - name: DisplayStringWait
       detail: DisplayStringWait(O:Object, I:StrRef)
       doc: |-
@@ -1332,7 +1332,7 @@ actions:
           - This action will default to a spell matching the first 7 characters in Dialogs/Console *IF* the 8<sup>th</sup> character isn't valid.
         - If `CastingLevel = 0`, then the action will use Caster Level.
     - name: ForceSpellPointRES
-      detail: ForceSpellPointRES(S:RES, P:Target)
+      detail: ForceSpellPointRES(S:RES, P:Target, I:CastingLevel)
       doc: |
         This action causes the active creature to cast the specified spell at the specified point ([x.y]). The spell need not currently be memorised by the caster, and will not be interrupted while being cast. The caster must meet the level requirements of the spell. For the RES version of the action, the spell name can not consist of only numbers, should be written in upper case and should be no more than 7 characters long.
 
@@ -1370,7 +1370,7 @@ actions:
         Scripts can handle `RES` filenames with `+`, Dialogs and the console cannot. Same with the `~`, `` ` ``, `'`, `@`, `$`, `^`, and `&` characters, maybe some more.
         - This action will default to a spell matching the first 7 characters in Dialogs/Console *IF* the 8th character isn't valid.
     - name: ForceSpellRES
-      detail: ForceSpellRES(S:RES, O:Target)
+      detail: ForceSpellRES(S:RES, O:Target, I:CastingLevel)
       doc: |
         This action causes the active creature to cast the specified spell at the target object. The spell need not currently be memorised by the caster, and will not be interrupted while being cast. The caster must meet the level requirements of the spell. For the RES version of the action, the spell name can not consist of only numbers, should be written in upper case and should be no more than 7 characters long. The example script is from suelfw9.bcs.
 
@@ -2277,7 +2277,7 @@ actions:
 
         * This action will never stop, (unless interrupted in specific situations), and thus never leave the action list.
         * Executes [Wait()](https://gibberlings3.github.io/iesdp/scripting/actions/bg2actions.htm#63) for a random amount of time, (1–40 seconds), if the creature goes off-screen.
-        * Has a 50/50 chance to [MoveToPoint()](https://gibberlings3.github.io/iesdp/scripting/actions/bg2actions.htm#23), or do a pass of [RandomTurn()](https://gibberlings3.github.io/iesdp/scripting/actions/bg2actions.htmhttps://gibberlings3.github.io/iesdp/scripting/actions/bg2actions.htm#130), (including [RandomTurn()](https://gibberlings3.github.io/iesdp/scripting/actions/bg2actions.htmhttps://gibberlings3.github.io/iesdp/scripting/actions/bg2actions.htm#130)'s wait time).
+        * Has a 50/50 chance to [MoveToPoint()](https://gibberlings3.github.io/iesdp/scripting/actions/bg2actions.htm#23), or do a pass of [RandomTurn()](https://gibberlings3.github.io/iesdp/scripting/actions/bg2actions.htm#130), (including [RandomTurn()](https://gibberlings3.github.io/iesdp/scripting/actions/bg2actions.htm#130)'s wait time).
 
     - name: RandomWalkContinuous
       detail: RandomWalkContinuous()

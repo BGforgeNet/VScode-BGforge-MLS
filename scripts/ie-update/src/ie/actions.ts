@@ -83,13 +83,9 @@ export function actionDescAbsoluteUrls(
     for (const match of urls) {
         const dst = match[2]!.trim();
         const dstAbs = resolveUrl(currentUrl, dst);
-        // TODO: Python uses re.sub(dst, dst_abs, desc) which interprets dst as a
-        // regex pattern and replaces ALL occurrences. This causes two bugs:
-        // 1. Liquid pipe `|` in dst is treated as regex alternation, doubling URLs
-        // 2. Replacing all occurrences mangles already-resolved URLs with duplicate fragments
-        // We replicate both bugs here for output parity with Python.
-        // Fix: use result.replace(dst, dstAbs) for single literal replacement.
-        result = result.replace(new RegExp(dst, "g"), dstAbs);
+        // Replace the full link reference `](url)` to avoid matching `dst` inside
+        // already-resolved URLs (e.g. a bare `#130` matching within `bg2actions.htm#130`).
+        result = result.replace(`](${dst})`, `](${dstAbs})`);
     }
 
     return result;

@@ -243,12 +243,12 @@ function main(): void {
             actions.push(action);
         }
     }
-    // TODO: Python's os.walk returns files in inode order, which non-deterministically
-    // affects which variant of same-name actions wins in appendUnique (first occurrence kept).
-    // E.g. ForceSpellRES has 113-2.yml (2 params) and 113-3.yml (3 params); Python picks
-    // whichever inode order gives it. No generic sort can replicate this. Using stable sort
-    // by action number preserves alphabetical file order from findFiles.
-    actions = actions.sort((a, b) => a.n - b.n);
+    // Sort by action number; break ties by param count descending so the most
+    // complete signature wins in appendUnique (which keeps the first occurrence).
+    actions = actions.sort((a, b) => {
+        if (a.n !== b.n) return a.n - b.n;
+        return (b.params?.length ?? 0) - (a.params?.length ?? 0);
+    });
 
     // Highlight
     const actionsHighlight = [...new Set(actions.map((x) => x.name))];
