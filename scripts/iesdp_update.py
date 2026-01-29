@@ -333,40 +333,40 @@ pod.append_generic(item_types_isense)
 pod.sanitise()
 
 iesdp_data = {
-    "chars": {
-        "stanza": "iesdp-char",
-        "items": pod.chars,
-        "scope": "constant.language.iesdp.char",
-    },
-    "bytes": {
-        "stanza": "iesdp-byte",
-        "items": pod.lbytes,
-        "scope": "constant.language.iesdp.byte",
-    },
-    "words": {
-        "stanza": "iesdp-word",
-        "items": pod.words,
-        "scope": "constant.language.iesdp.word",
-    },
-    "dwords": {
-        "stanza": "iesdp-dword",
-        "items": pod.dwords,
-        "scope": "constant.language.iesdp.dword",
-    },
-    "resrefs": {
-        "stanza": "iesdp-resref",
-        "items": pod.resrefs,
-        "scope": "constant.language.iesdp.resref",
+    "other": {
+        "stanza": "iesdpOther",
+        "items": pod.other,
+        "scope": "constant.language.iesdp.other",
     },
     "strrefs": {
-        "stanza": "iesdp-strref",
+        "stanza": "iesdpStrref",
         "items": pod.strrefs,
         "scope": "constant.language.iesdp.strref",
     },
-    "other": {
-        "stanza": "iesdp-other",
-        "items": pod.other,
-        "scope": "constant.language.iesdp.other",
+    "resrefs": {
+        "stanza": "iesdpResref",
+        "items": pod.resrefs,
+        "scope": "constant.language.iesdp.resref",
+    },
+    "dwords": {
+        "stanza": "iesdpDword",
+        "items": pod.dwords,
+        "scope": "constant.language.iesdp.dword",
+    },
+    "words": {
+        "stanza": "iesdpWord",
+        "items": pod.words,
+        "scope": "constant.language.iesdp.word",
+    },
+    "bytes": {
+        "stanza": "iesdpByte",
+        "items": pod.lbytes,
+        "scope": "constant.language.iesdp.byte",
+    },
+    "chars": {
+        "stanza": "iesdpChar",
+        "items": pod.chars,
+        "scope": "constant.language.iesdp.char",
     },
 }
 

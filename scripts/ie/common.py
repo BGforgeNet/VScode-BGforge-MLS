@@ -7,6 +7,7 @@ import textwrap
 import ruamel.yaml
 
 # https://stackoverflow.com/questions/57382525/can-i-control-the-formatting-of-multiline-strings
+from ruamel.yaml.comments import CommentedMap
 from ruamel.yaml.scalarstring import LiteralScalarString
 
 yaml = ruamel.yaml.YAML(typ="rt")
@@ -60,8 +61,8 @@ def sort_longer_first(key1, key2):
 
 def dump_completion(fpath, iedata):
     # dump to completion
-    with open(fpath, encoding="utf8") as yaf:
-        data = yaml.load(yaf)
+    # Build fresh data to avoid leftover stanzas from previous naming conventions
+    data = CommentedMap()
     for k in iedata:
         ied = iedata[k]
         stanza = ied["stanza"]
@@ -69,9 +70,7 @@ def dump_completion(fpath, iedata):
             ctype = ied["completion_type"]
         except:  # noqa: E722 # pylint: disable=bare-except
             ctype = COMPLETION_TYPE_CONSTANT
-        if stanza not in data:
-            data.insert(1, stanza, {"type": ctype})
-        data[stanza]["type"] = ctype
+        data[stanza] = {"type": ctype}
 
         items = sorted(ied["items"], key=lambda k: k["name"])
         data[stanza]["items"] = items
@@ -88,6 +87,9 @@ def check_completion(data):
     dupes = {x for x in items if items.count(x) > 1 and x not in allow_dupes}
     if len(dupes) > 0:
         print(f"Error: duplicated completion items found: {dupes}")
+        for dupe in sorted(dupes):
+            locations = [k for k in data if any(i["name"] == dupe for i in data[k]["items"])]
+            print(f"  {dupe}: {locations}")
         sys.exit(1)
 
 

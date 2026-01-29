@@ -37,24 +37,24 @@ IELIB_URL = "https://ielib.bgforge.net"
 TYPES_URL = IELIB_URL + "/types"
 
 ielib_data = {
-    "ints": {
-        "stanza": "ielib-int",
-        "scope": "constant.language.ielib.int",
-    },
-    "resrefs": {
-        "stanza": "ielib-resref",
-        "scope": "constant.language.ielib.resref",
-        "string": True,
+    "patch_functions": {
+        "stanza": "patchFunctions",
+        "scope": "entity.name.function.weidu-tp2.patch-function-name",
+        "completion_type": COMPLETION_TYPE_FUNCTION,
     },
     "action_functions": {
-        "stanza": "ielib-action-functions",
+        "stanza": "actionFunctions",
         "scope": "support.function.weidu-tp2.action-function-name",
         "completion_type": COMPLETION_TYPE_FUNCTION,
     },
-    "patch_functions": {
-        "stanza": "ielib-patch-functions",
-        "scope": "entity.name.function.weidu-tp2.patch-function-name",
-        "completion_type": COMPLETION_TYPE_FUNCTION,
+    "resrefs": {
+        "stanza": "ielibResref",
+        "scope": "constant.language.ielib.resref",
+        "string": True,
+    },
+    "ints": {
+        "stanza": "ielibInt",
+        "scope": "constant.language.ielib.int",
     },
 }
 
@@ -63,8 +63,8 @@ highlight_weidu = args.highlight_weidu
 src_dir = args.src_dir
 
 # CONSTANTS
-REGEX_NUMERIC = r"^(\w+)\s*=\s*(\w+)"  # can be hex or bin numbers
-REGEX_TEXT = r"^TEXT_SPRINT\s+~?(\w+)~?\s+~(\w+)~"
+REGEX_NUMERIC = r"^(?:OUTER_SET\s+)?(\w+)\s*=\s*(\w+)"  # can be hex or bin numbers
+REGEX_TEXT = r"^(?:OUTER_SPRINT|TEXT_SPRINT)\s+~?(\w+)~?\s+~(\w+)~"
 
 
 def defines_from_file(path, regex):
@@ -80,9 +80,9 @@ def defines_from_file(path, regex):
 # get various defines from header files
 define_files = find_files(
     src_dir,
-    "tpp",
+    "tph",
     skip_dirs=["functions"],
-    skip_files=["iesdp.tpp", "spell_ids_bgee.tpp", "spell_ids_iwdee.tpp", "item_types.tpp"],
+    skip_files=["iesdp.tph", "spell_ids_bgee.tph", "spell_ids_iwdee.tph", "item_types.tph"],
 )  # for now only bg2/ee spells
 int_defines = {}
 resref_defines = {}
@@ -176,7 +176,7 @@ def get_default(param, func):
     return ""
 
 
-DATA_DIR = os.path.join(src_dir, "docs", "data")
+DATA_DIR = os.path.join(src_dir, "docs", "_data")
 FUNCTION_DIR = os.path.join(DATA_DIR, "functions")
 function_files = find_files(FUNCTION_DIR, "yml")
 TYPES_FILES = os.path.join(DATA_DIR, "types.yml")
