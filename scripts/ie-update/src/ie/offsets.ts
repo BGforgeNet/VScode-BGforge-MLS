@@ -45,6 +45,7 @@ export function getOffsetPrefix(fileVersion: string, dataFileName: string): stri
         body: "",
         extended_header: "head",
     };
+    // Safe: fbase checked via `in` operator above
     const suffix = fbase in fbaseMap ? fbaseMap[fbase]! : fbase;
 
     let prefix = `${base}${version}_`;

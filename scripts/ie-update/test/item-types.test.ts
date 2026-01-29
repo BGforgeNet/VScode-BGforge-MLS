@@ -24,9 +24,9 @@ describe("getItemTypes", () => {
 
     it("loads and processes item types from YAML", () => {
         const yamlContent = [
-            "- type: Sword\n  code: 1",
-            "- type: Unknown\n  code: 0",
-            "- type: Shield\n  code: 2\n  id: SHIELD_TYPE",
+            "- type: Sword\n  code: '0x01'",
+            "- type: Unknown\n  code: '0x00'",
+            "- type: Shield\n  code: '0x02'\n  id: SHIELD_TYPE",
         ].join("\n");
         fs.writeFileSync(path.join(tmpDir, "item_types.yml"), yamlContent, "utf8");
 
@@ -34,9 +34,9 @@ describe("getItemTypes", () => {
         // 'unknown' items are skipped
         expect(result).toHaveLength(2);
         expect(result[0]!.id).toBe("ITEM_TYPE_sword");
-        expect(result[0]!.value).toBe(1);
+        expect(result[0]!.value).toBe("0x01");
         expect(result[1]!.id).toBe("ITEM_TYPE_SHIELD_TYPE");
-        expect(result[1]!.value).toBe(2);
+        expect(result[1]!.value).toBe("0x02");
     });
 });
 
@@ -53,27 +53,27 @@ describe("saveItemTypesIelib", () => {
 
     it("writes TPP file with correct format", () => {
         const itypes: ItemType[] = [
-            { id: "ITEM_TYPE_sword", desc: "Sword", value: 1 },
-            { id: "ITEM_TYPE_shield", desc: "Shield", value: 2 },
+            { id: "ITEM_TYPE_sword", desc: "Sword", value: "0x01" },
+            { id: "ITEM_TYPE_shield", desc: "Shield", value: "0x02" },
         ];
         saveItemTypesIelib(tmpDir, itypes);
 
         const content = fs.readFileSync(path.join(tmpDir, "item_types.tpp"), "utf8");
-        expect(content).toContain("ITEM_TYPE_sword = 1");
-        expect(content).toContain("ITEM_TYPE_shield = 2");
+        expect(content).toContain("ITEM_TYPE_sword = 0x01");
+        expect(content).toContain("ITEM_TYPE_shield = 0x02");
     });
 });
 
 describe("getItemTypesIsense", () => {
     it("formats item types for completion", () => {
         const itypes: ItemType[] = [
-            { id: "ITEM_TYPE_sword", desc: "Sword", value: 1 },
+            { id: "ITEM_TYPE_sword", desc: "Sword", value: "0x01" },
         ];
         const result = getItemTypesIsense(itypes);
         expect(result).toHaveLength(1);
         expect(result[0]).toEqual({
             name: "ITEM_TYPE_sword",
-            detail: "int ITEM_TYPE_sword = 1",
+            detail: "int ITEM_TYPE_sword = 0x01",
             doc: "Sword",
         });
     });

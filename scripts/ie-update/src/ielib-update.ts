@@ -17,6 +17,9 @@ import {
     dumpHighlight,
     findFiles,
     litscal,
+    validateArray,
+    validateFuncData,
+    validateTypeEntry,
 } from "./ie/index.js";
 import type {
     CompletionItem,
@@ -45,6 +48,7 @@ function definesFromFile(filePath: string, regex: RegExp): ReadonlyMap<string, s
     for (const line of content.split("\n")) {
         const match = line.match(regex);
         if (match !== null) {
+            // Safe: regex groups 1 and 2 always exist when the match succeeds
             defines.set(match[1]!, match[2]!);
         }
     }
@@ -68,9 +72,10 @@ function getPtype(tname: string, types: readonly TypeEntry[]): string {
  */
 function getDefault(param: FuncParam, func: FuncData): string {
     if (param.default !== undefined) {
-        return param.default;
+        return String(param.default);
     }
     if (func.defaults !== undefined && func.defaults[param.type] !== undefined) {
+        // Safe: undefined check on the line above
         return func.defaults[param.type]!;
     }
     return "";
@@ -176,18 +181,24 @@ function main(): void {
         "item_types.tph",
     ]);
 
-    let intDefines = new Map<string, string>();
-    let resrefDefines = new Map<string, string>();
-
-    for (const df of defineFiles) {
-        const newIntDefines = definesFromFile(df, REGEX_NUMERIC);
-        // First-writer-wins: existing entries take priority over new ones.
-        // With alphabetical file order, base files (e.g. scrolls.tph) are processed
-        // before override files (e.g. scrolls_iwdee.tph), so BG2 values are kept.
-        intDefines = new Map([...newIntDefines, ...intDefines]);
-        const newResrefDefines = definesFromFile(df, REGEX_TEXT);
-        resrefDefines = new Map([...newResrefDefines, ...resrefDefines]);
-    }
+    // First-writer-wins: existing entries take priority over new ones.
+    // With alphabetical file order, base files (e.g. scrolls.tph) are processed
+    // before override files (e.g. scrolls_iwdee.tph), so BG2 values are kept.
+    // Accumulate via reduce to avoid let reassignment.
+    const { intDefines, resrefDefines } = defineFiles.reduce(
+        (acc, df) => {
+            const newInt = definesFromFile(df, REGEX_NUMERIC);
+            const newResref = definesFromFile(df, REGEX_TEXT);
+            return {
+                intDefines: new Map([...newInt, ...acc.intDefines]),
+                resrefDefines: new Map([...newResref, ...acc.resrefDefines]),
+            };
+        },
+        {
+            intDefines: new Map<string, string>(),
+            resrefDefines: new Map<string, string>(),
+        },
+    );
 
     const intItems: CompletionItem[] = [...intDefines.entries()].map(
         ([name, detail]) => ({
@@ -210,13 +221,21 @@ function main(): void {
     const functionDir = path.join(dataDir, "functions");
     const functionFiles = findFiles(functionDir, "yml");
     const typesFile = path.join(dataDir, "types.yml");
-    const types: readonly TypeEntry[] = YAML.parse(fs.readFileSync(typesFile, "utf8"));
+    const types: readonly TypeEntry[] = validateArray(
+        YAML.parse(fs.readFileSync(typesFile, "utf8")),
+        validateTypeEntry,
+        typesFile,
+    );
 
     const actionFunctions: CompletionItem[] = [];
     const patchFunctions: CompletionItem[] = [];
 
     for (const f of functionFiles) {
-        const data: FuncData[] = YAML.parse(fs.readFileSync(f, "utf8"));
+        const data: readonly FuncData[] = validateArray(
+            YAML.parse(fs.readFileSync(f, "utf8")),
+            validateFuncData,
+            f,
+        );
         const sorted = [...data].sort((a, b) => cmpStr(a.name, b.name));
         for (const func of sorted) {
             const item = funcToItem(func, types);

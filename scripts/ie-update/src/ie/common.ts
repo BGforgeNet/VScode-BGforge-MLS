@@ -98,6 +98,7 @@ export function findFiles(
 function sortLongerFirst(a: string, b: string): number {
     const minLen = Math.min(a.length, b.length);
     for (let i = 0; i < minLen; i++) {
+        // Safe: i < minLen guarantees both a[i] and b[i] exist
         if (a[i]! < b[i]!) return -1;
         if (a[i]! > b[i]!) return 1;
     }
@@ -112,9 +113,12 @@ function sortLongerFirst(a: string, b: string): number {
  * Matches Python ruamel.yaml's LiteralScalarString — always emits as a block scalar.
  */
 function makeBlockScalar(doc: Document, value: string): Scalar {
-    const scalar = doc.createNode(value) as Scalar;
-    scalar.type = Scalar.BLOCK_LITERAL;
-    return scalar;
+    const node = doc.createNode(value);
+    if (!isScalar(node)) {
+        throw new Error(`Expected Scalar node for string value, got ${typeof node}`);
+    }
+    node.type = Scalar.BLOCK_LITERAL;
+    return node;
 }
 
 /**
@@ -169,7 +173,10 @@ export function dumpCompletion(fpath: string, iedata: IEData): void {
         if (!isMap(doc.contents)) {
             doc.contents = new YAMLMap();
         }
-        (doc.contents as YAMLMap).add(doc.createPair(stanza, stanzaMap));
+        if (!isMap(doc.contents)) {
+            throw new Error("Failed to initialize document contents as YAMLMap");
+        }
+        doc.contents.add(doc.createPair(stanza, stanzaMap));
     }
 
     checkCompletion(doc);
@@ -206,10 +213,13 @@ export function checkCompletion(doc: Document): void {
         }
     }
 
-    const dupes = items.filter(
-        (x, _i, arr) => arr.filter((y) => y === x).length > 1 && !allowDupes.includes(x)
-    );
-    const uniqueDupes = [...new Set(dupes)];
+    const counts = new Map<string, number>();
+    for (const name of items) {
+        counts.set(name, (counts.get(name) ?? 0) + 1);
+    }
+    const uniqueDupes = [...counts.entries()]
+        .filter(([name, count]) => count > 1 && !allowDupes.includes(name))
+        .map(([name]) => name);
 
     if (uniqueDupes.length > 0) {
         throw new Error(`Duplicated completion items found: ${JSON.stringify(uniqueDupes)}`);
@@ -243,8 +253,7 @@ export function dumpHighlight(fpath: string, iedata: IEData): void {
             stanzaNode.set("name", ied.scope);
         }
 
-        // String items get %' around them
-        const isStringCategory = "string" in ied;
+        const isStringCategory = ied.string === true;
 
         const itemNames = ied.items.map((x) => x.name);
         const sortedNames = [...itemNames].sort(sortLongerFirst);

@@ -81,6 +81,7 @@ export function actionDescAbsoluteUrls(
     const urls = [...result.matchAll(/\[([^\]]*)\]\(([^)]*)\)/g)];
 
     for (const match of urls) {
+        // Safe: regex group 2 always exists when matchAll succeeds
         const dst = match[2]!.trim();
         const dstAbs = resolveUrl(currentUrl, dst);
         // Replace the full link reference `](url)` to avoid matching `dst` inside
@@ -172,5 +173,6 @@ function titleCase(s: string): string {
     if (s.length === 0) {
         return s;
     }
+    // Safe: length > 0 checked above
     return s[0]!.toUpperCase() + s.slice(1).toLowerCase();
 }

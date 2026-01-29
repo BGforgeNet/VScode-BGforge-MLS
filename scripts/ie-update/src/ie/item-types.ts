@@ -9,6 +9,7 @@ import path from "node:path";
 import YAML from "yaml";
 import { stringToId } from "./offsets.js";
 import type { CompletionItem, ItemType, ItemTypeRaw } from "./types.js";
+import { validateArray, validateItemTypeRaw } from "./validate.js";
 
 const ITEM_TYPE_PREFIX = "ITEM_TYPE_";
 
@@ -19,12 +20,19 @@ const ITEM_TYPE_PREFIX = "ITEM_TYPE_";
 export function getItemTypes(iesdpFileFormatsDir: string): readonly ItemType[] {
     const sourceFile = path.join(iesdpFileFormatsDir, "item_types.yml");
     const content = fs.readFileSync(sourceFile, "utf8");
-    const items: readonly ItemTypeRaw[] = YAML.parse(content);
+    const items: readonly ItemTypeRaw[] = validateArray(
+        YAML.parse(content),
+        validateItemTypeRaw,
+        sourceFile,
+    );
 
     return items.reduce<readonly ItemType[]>((acc, item) => {
         const iid = getItemTypeId(item);
         if (iid === "ITEM_TYPE_unknown") {
             return acc;
+        }
+        if (Number.isNaN(Number(item.code))) {
+            throw new Error(`Invalid item type code '${item.code}' for '${item.type}' in ${sourceFile}`);
         }
         return [...acc, { id: iid, desc: item.type, value: item.code }];
     }, []);

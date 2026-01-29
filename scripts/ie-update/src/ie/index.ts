@@ -57,3 +57,13 @@ export type {
 } from "./types.js";
 
 export { COMPLETION_TYPE_CONSTANT, COMPLETION_TYPE_FUNCTION } from "./types.js";
+
+export {
+    validateActionItem,
+    validateArray,
+    validateFuncData,
+    validateIESDPGame,
+    validateItemTypeRaw,
+    validateOffsetItem,
+    validateTypeEntry,
+} from "./validate.js";

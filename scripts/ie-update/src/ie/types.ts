@@ -36,8 +36,10 @@ export interface OffsetItem {
     readonly length?: number;
     readonly mult?: number;
     readonly id?: string;
-    readonly unused?: boolean;
-    readonly unknown?: boolean;
+    /** Truthy marker — YAML data uses 1, not true */
+    readonly unused?: number | boolean;
+    /** Truthy marker — YAML data uses 1, not true */
+    readonly unknown?: number | boolean;
 }
 
 /** An action parameter from IESDP action data */
@@ -68,10 +70,10 @@ export interface IESDPGame {
     readonly actions: string;
 }
 
-/** An item type entry from IESDP item_types.yml */
+/** An item type entry from IESDP item_types.yml (code is a hex string like "0x00") */
 export interface ItemTypeRaw {
     readonly type: string;
-    readonly code: number;
+    readonly code: string;
     readonly id?: string;
 }
 
@@ -79,7 +81,8 @@ export interface ItemTypeRaw {
 export interface ItemType {
     readonly id: string;
     readonly desc: string;
-    readonly value: number;
+    /** Hex string from source YAML (e.g. "0x01"), kept as-is for output compatibility */
+    readonly value: string;
 }
 
 /** An opcode entry parsed from IESDP opcode HTML frontmatter */
@@ -106,7 +109,8 @@ export interface FuncParam {
     readonly desc: string;
     readonly type: string;
     readonly required?: number;
-    readonly default?: string;
+    /** Default value — may be string or number in YAML data */
+    readonly default?: string | number;
 }
 
 /** IElib function return value */
