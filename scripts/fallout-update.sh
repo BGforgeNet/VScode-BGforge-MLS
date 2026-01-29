@@ -28,6 +28,6 @@ last_v="v$(git tag | grep "^v" | sed 's|^v||' | sort -V | tail -1)"
 git checkout "$last_v"
 popd
 
-./scripts/fallout_update.py -s "$external" --sfall-file "$sfall_file" --highlight-file "$highlight_file"
+pnpm exec tsx scripts/fallout-update/src/fallout-update.ts -s "$external" --sfall-file "$sfall_file" --highlight-file "$highlight_file"
 pwd
 ./scripts/syntaxes-to-json.sh

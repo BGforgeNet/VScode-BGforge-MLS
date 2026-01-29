@@ -460,6 +460,9 @@
         "ie-update": "./scripts/ie-update.sh",
         "test:ie-update": "vitest run --config scripts/ie-update/vitest.config.ts",
         "lint:ie-update": "tsc --project scripts/ie-update/tsconfig.json",
+        "fallout-update": "./scripts/fallout-update.sh",
+        "test:fallout-update": "vitest run --config scripts/fallout-update/vitest.config.ts",
+        "lint:fallout-update": "tsc --project scripts/fallout-update/tsconfig.json",
         "knip": "knip"
     },
     "devDependencies": {
