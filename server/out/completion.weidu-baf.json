@@ -584,7 +584,7 @@
         "category": "actions",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-baf-tooltip\nChangeStat(O:Object, I:Stat*Stats, I:Value, I:Modifier*Statmod)\n```\nChanges the base stat of the referenced creature. Not all stats are modifiable, even if they are in [stats.ids](https://gibberlings3.github.io/iesdp/files/ids/bgee/stats.htm). Some are recalculated by the engine (like Lore)."
+            "value": "```weidu-baf-tooltip\nChangeStat(O:Object, I:Stat*Stats, I:Value, I:Modifier*Statmod)\n```\nChanges the base stat of the referenced creature. Not all stats are modifiable, even if they are in [stats.ids](https://gibberlings3.github.io/iesdp/files/ids/bgee/stats.htm). Some are recalculated by the engine (like Lore). Some, like BG2 proficiencies, are stored as continuous effects and can only be modified by changing those effects (Stat: Proficiency Modifier). Values for Modifier are from [statmod.ids](https://gibberlings3.github.io/iesdp/files/ids/bgee/statmod.htm)."
         }
     },
     {
@@ -655,6 +655,16 @@
         "documentation": {
             "kind": "markdown",
             "value": "```weidu-baf-tooltip\nContinue()\n```\nThis action instructs the script parser to continue looking for actions in the active creatures action list. This is mainly included in scripts for efficiency. Continue should also be appended to any script blocks added to the top of existing scripts, to ensure correct functioning of any blocks which include the OnCreation trigger. Continue may prevent actions being completed until the script parser has finished its execution cycle. Continue() must be the last command in an action list to function correctly. Use of continue in a script block will cause the parser to treater subsequent empty response blocks as though they contained a Continue() command - this parsing can be stopped by including a NoAction() in the empty response block.\n\n```\nIF\n  See(NearestEnemyOf())\n  !InParty(NearestEnemyOf())\nTHEN\n  RESPONSE #100\n    AttackOneRound(NearestEnemyOf())\n    Continue()\nEND\n```"
+        }
+    },
+    {
+        "label": "ContinueGame",
+        "kind": 3,
+        "source": "builtin",
+        "category": "actions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\nContinueGame(I:State*Boolean)\n```\nIf \"State\" is `FALSE` then this action clears the \"Last Save\" definition in `baldur.lua` for the current campaign that would otherwise enable the player to automatically load the latest save from the start menu of the game. Specifying `TRUE` does nothing."
         }
     },
     {
@@ -1004,7 +1014,7 @@
         "category": "actions",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-baf-tooltip\nDestroySelf()\n```\nThis action removes the active creature from the game. No death variable is set. Global creatures like \njoinable NPCs, familiars and recipients of `MakeGlobal` are still accessible by script name and are not\nfully removed. The example script is from the Irenicus cutscene at the beginning of the game.\n\n```\nIF\n  True()\nTHEN\n  RESPONSE #100\n    CutSceneId(\"CSCowl7\")\n    ForceSpell(\"CSIren\",0)\n    Wait(1)\n    DestroySelf()\nEND\n```"
+            "value": "```weidu-baf-tooltip\nDestroySelf()\n```\nThis action removes the active creature from the game. No death variable is set. Global creatures like\njoinable NPCs, familiars and recipients of `MakeGlobal` are still accessible by script name and are not\nfully removed. The example script is from the Irenicus cutscene at the beginning of the game.\n\n```\nIF\n  True()\nTHEN\n  RESPONSE #100\n    CutSceneId(\"CSCowl7\")\n    ForceSpell(\"CSIren\",0)\n    Wait(1)\n    DestroySelf()\nEND\n```"
         }
     },
     {
@@ -1094,7 +1104,7 @@
         "category": "actions",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-baf-tooltip\nDisplayStringHeadNoLog(O:Object, I:StrRef)\n```\nThis action displays the string specified by the StrRef parameter over the head of the given object on the game-screen, but not in the message log.\n It is possible to colorize the string. In order to do so, follow the instructions concerning the colorization of the name of your character during [Character Creation](https://gibberlings3.github.io/iesdp/scripting/actions/{{  \"/appendices/charactercreation.htm\" | relative_url }}|https://gibberlings3.github.io/iesdp/scripting/actions/{{  \"/appendices/charactercreation.htm\" | relative_url }}). "
+            "value": "```weidu-baf-tooltip\nDisplayStringHeadNoLog(O:Object, I:StrRef)\n```\nThis action displays the string specified by the StrRef parameter over the head of the given object on the game-screen, but not in the message log.\n It is possible to colorize the string. In order to do so, follow the instructions concerning the colorization of the name of your character during [Character Creation](https://gibberlings3.github.io/iesdp/scripting/actions/{{  \"/appendices/charactercreation.htm\" | relative_url }})."
         }
     },
     {
@@ -1144,7 +1154,17 @@
         "category": "actions",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-baf-tooltip\nDisplayStringPoint(P:Location, I:Strref)\n```\nDisplays a floating message over a point in the script runner's current area.\n It is possible to colorize the string. In order to do so, follow the instructions concerning the colorization of the name of your character during [Character Creation](https://gibberlings3.github.io/iesdp/scripting/actions/{{ \"/appendices/charactercreation.htm\" | relative_url }}|https://gibberlings3.github.io/iesdp/scripting/actions/{{ \"/appendices/charactercreation.htm\" | relative_url }}). "
+            "value": "```weidu-baf-tooltip\nDisplayStringPoint(P:Location, I:Strref)\n```\nDisplays a floating message over a point in the script runner's current area.\n It is possible to colorize the string. In order to do so, follow the instructions concerning the colorization of the name of your character during [Character Creation](https://gibberlings3.github.io/iesdp/scripting/actions/{{ \"/appendices/charactercreation.htm\" | relative_url }})."
+        }
+    },
+    {
+        "label": "DisplayStringPointLog",
+        "kind": 3,
+        "source": "builtin",
+        "category": "actions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\nDisplayStringPointLog(P:Location, I:Strref)\n```\nSame as [DisplayStringPoint(P:Location\\*,I:Strref\\*)](https://gibberlings3.github.io/iesdp/scripting/actions/bgeeactions.htm#361) this action displays a floating message over a point in the script runner's current area, but also displays it in the message log.\n It is possible to colorize the string. In order to do so, follow the instructions concerning the colorization of the name of your character during [Character Creation](https://gibberlings3.github.io/iesdp/scripting/actions/{{ \"/appendices/charactercreation.htm\" | relative_url }})."
         }
     },
     {
@@ -1524,7 +1544,7 @@
         "category": "actions",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-baf-tooltip\nForceSpellRES(S:RES, O:Target)\n```\nThis action causes the active creature to cast the specified spell at the target object. The spell need not currently be memorised by the caster, and will not be interrupted while being cast. The caster must meet the level requirements of the spell. For the RES version of the action, the spell name can not consist of only numbers, should be written in upper case and should be no more than 7 characters long. The example script is from suelfw9.bcs.\n\n```\nIF\n  Global(\"Scene2\",\"AR2800\",2)\n  See([ENEMY])\n  Global(\"Fight\",\"LOCALS\",2)\nTHEN\n  RESPONSE #100\n    IncrementGlobal(\"Fight\",\"LOCALS\",1)\n    ForceSpell([ENEMY],WIZARD_POWER_WORD_SLEEP)\nEND\n```\n\n\n- Scripts can handle `RES` filenames with `+`, Dialogs and the console cannot. Same with the `~`, `` ` ``, `'`, `@`, `$`, `^`, and `&` characters, maybe some more.\n  - This action will default to a spell matching the first 7 characters in Dialogs/Console *IF* the 8<sup>th</sup> character isn't valid.\n- If `CastingLevel = 0`, then the action will use Caster Level.\n"
+            "value": "```weidu-baf-tooltip\nForceSpellRES(S:RES, O:Target, I:CastingLevel)\n```\nThis action causes the active creature to cast the specified spell at the target object. The spell need not currently be memorised by the caster, and will not be interrupted while being cast. The caster must meet the level requirements of the spell. For the RES version of the action, the spell name can not consist of only numbers, should be written in upper case and should be no more than 7 characters long. The example script is from suelfw9.bcs.\n\n```\nIF\n  Global(\"Scene2\",\"AR2800\",2)\n  See([ENEMY])\n  Global(\"Fight\",\"LOCALS\",2)\nTHEN\n  RESPONSE #100\n    IncrementGlobal(\"Fight\",\"LOCALS\",1)\n    ForceSpell([ENEMY],WIZARD_POWER_WORD_SLEEP)\nEND\n```\n\n\n- Scripts can handle `RES` filenames with `+`, Dialogs and the console cannot. Same with the `~`, `` ` ``, `'`, `@`, `$`, `^`, and `&` characters, maybe some more.\n  - This action will default to a spell matching the first 7 characters in Dialogs/Console *IF* the 8<sup>th</sup> character isn't valid.\n- If `CastingLevel = 0`, then the action will use Caster Level.\n"
         }
     },
     {
@@ -1654,7 +1674,7 @@
         "category": "actions",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-baf-tooltip\nGlobalShout(I:ID*Shoutids)\n```\nThis action acts like Shout() without the range limit."
+            "value": "```weidu-baf-tooltip\nGlobalShout(I:ID)\n```\nThis action acts like <a href=\"#106\"><code>Shout()</code></a> without the range limit."
         }
     },
     {
@@ -1684,7 +1704,7 @@
         "category": "actions",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-baf-tooltip\nHelp()\n```\nThis action acts similar to shout, but does not accept values. The range of the Help action is slightly larger than the default visual radius of NPCs.\n\n```\nIF\n  HitBy([ANYONE],CRUSHING)\nTHEN\n  RESPONSE #50\n    Help()\n    Attack(NearestEnemyOf(Myself))\n  RESPONSE #50\n    RunAwayFrom(NearestEnemyOf(Myself),75)\nEND\n\nIF\n  Help([0.0.GIBBERLING])\nTHEN\n  RESPONSE #100\n    Attack(NearestEnemyOf(LastHelp(Myself)))\nEND\n\nIF\n  See(NearestEnemyOf(Myself))\nTHEN\n  RESPONSE #100\n    Help()\n    AttackReevaluate(NearestEnemyOf(Myself),30)\nEND\n```"
+            "value": "```weidu-baf-tooltip\nHelp()\n```\nThis action acts similar to shout, but does not accept values. The range of the Help action is larger than the default visual radius of NPCs (see description of `Shout`).\n\n```\nIF\n  HitBy([ANYONE],CRUSHING)\nTHEN\n  RESPONSE #50\n    Help()\n    Attack(NearestEnemyOf(Myself))\n  RESPONSE #50\n    RunAwayFrom(NearestEnemyOf(Myself),75)\nEND\n\nIF\n  Help([0.0.GIBBERLING])\nTHEN\n  RESPONSE #100\n    Attack(NearestEnemyOf(LastHelp(Myself)))\nEND\n\nIF\n  See(NearestEnemyOf(Myself))\nTHEN\n  RESPONSE #100\n    Help()\n    AttackReevaluate(NearestEnemyOf(Myself),30)\nEND\n```"
         }
     },
     {
@@ -1775,6 +1795,16 @@
         "documentation": {
             "kind": "markdown",
             "value": "```weidu-baf-tooltip\nJoinParty()\n```\nThis action adds the active creature to the party. If the party is currently full the 'select party members' dialog is shown. JoinParty clears the ActionQueue of the active creature.\n\n```\nIF\n  See([PC])\n  Global(\"KRJOINPARTY\",\"GLOBAL\",0)\nTHEN\n  RESPONSE #100\n    JoinParty()\nEND\n```"
+        }
+    },
+    {
+        "label": "JoinPartyOverride",
+        "kind": 3,
+        "source": "builtin",
+        "category": "actions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-baf-tooltip\nJoinPartyOverride()\n```\nThis action behaves like [JoinParty()](https://gibberlings3.github.io/iesdp/scripting/actions/bgeeactions.htm#19), except that it uses [MakeGlobalOverride()](https://gibberlings3.github.io/iesdp/scripting/actions/bgeeactions.htm#383) to promote a creature to global status."
         }
     },
     {
@@ -2414,7 +2444,7 @@
         "category": "actions",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-baf-tooltip\nRandomWalk()\n```\nThis action causes the active creature to walk randomly, staying within the current area. The example script is blbear.bcs; it instructs bears to walk rather than fight if the nearest enemy is a druid.\n\n```\nIF\n  Delay(5)\n  See(NearestEnemyOf(Myself))\n  Class(NearestEnemyOf(Myself),DRUID)\n  NumCreatureGT([ENEMY],1)\nTHEN\n  RESPONSE #100\n    RandomWalk()\nEND\n```\n\n* This action will never stop, (unless interrupted in specific situations), and thus never leave the action list.\n* Executes [Wait()](https://gibberlings3.github.io/iesdp/scripting/actions/bg2actions.htm#63) for a random amount of time, (1\u201340 seconds), if the creature goes off-screen.\n* Has a 50/50 chance to [MoveToPoint()](https://gibberlings3.github.io/iesdp/scripting/actions/bg2actions.htm#23), or do a pass of [RandomTurn()](https://gibberlings3.github.io/iesdp/scripting/actions/bg2actions.htmhttps://gibberlings3.github.io/iesdp/scripting/actions/bg2actions.htm#130), (including [RandomTurn()](https://gibberlings3.github.io/iesdp/scripting/actions/bg2actions.htmhttps://gibberlings3.github.io/iesdp/scripting/actions/bg2actions.htm#130)'s wait time).\n\n"
+            "value": "```weidu-baf-tooltip\nRandomWalk()\n```\nThis action causes the active creature to walk randomly, staying within the current area. The example script is blbear.bcs; it instructs bears to walk rather than fight if the nearest enemy is a druid.\n\n```\nIF\n  Delay(5)\n  See(NearestEnemyOf(Myself))\n  Class(NearestEnemyOf(Myself),DRUID)\n  NumCreatureGT([ENEMY],1)\nTHEN\n  RESPONSE #100\n    RandomWalk()\nEND\n```\n\n* This action will never stop, (unless interrupted in specific situations), and thus never leave the action list.\n* Executes [Wait()](https://gibberlings3.github.io/iesdp/scripting/actions/bg2actions.htm#63) for a random amount of time, (1\u201340 seconds), if the creature goes off-screen.\n* Has a 50/50 chance to [MoveToPoint()](https://gibberlings3.github.io/iesdp/scripting/actions/bg2actions.htm#23), or do a pass of [RandomTurn()](https://gibberlings3.github.io/iesdp/scripting/actions/bg2actions.htm#130), (including [RandomTurn()](https://gibberlings3.github.io/iesdp/scripting/actions/bg2actions.htm#130)'s wait time).\n\n"
         }
     },
     {
@@ -2694,7 +2724,7 @@
         "category": "actions",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-baf-tooltip\nResetPlayerAI()\n```\nThis action restores the player ai script for the active creature, as defined in [PARTYAI.2DA](https://gibberlings3.github.io/iesdp/files/2da/2da_bgee/partyai.htm).\n Even though this action is primarily intended for (potential) party members, it does work for any creature in the game. "
+            "value": "```weidu-baf-tooltip\nResetPlayerAI()\n```\nThis action restores the player ai script for the active creature, as defined in [PARTYAI.2DA](https://gibberlings3.github.io/iesdp/files/2da/2da_bgee/partyai.htm).\n Even though this action is primarily intended for (potential) party members, it does work for any creature in the game."
         }
     },
     {
@@ -3224,7 +3254,7 @@
         "category": "actions",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-baf-tooltip\nShout(I:ID*Shoutids)\n```\nThis action is used to shout the specified number. The action is used in conjunction with the Heard trigger. A silenced creature cannot shout. Shout can be Heard() throughout the current area.\n\n```\nIF\n  StateCheck(Myself,STATE_POISONED)\nTHEN\n  RESPONSE #100\n    Shout(4010)\nEND\n```\n\n```\nIF\n  Heard([GOODCUTOFF],4010)\n  HaveSpell(CLERIC_SLOW_POISON)\nTHEN\n  RESPONSE #100\n    Spell(LastHeardBy(),CLERIC_SLOW_POISON)\nEND\n```"
+            "value": "```weidu-baf-tooltip\nShout(I:ID*Shoutids)\n```\n\nThis action is used to shout the specified number. The action is used in conjunction with the\n{% assign text = \"<code>Heard()</code>\" -%} {%- assign anchor = \"0x002F\" -%} {%- include trigger_link.html %}\ntrigger. Shouts can be heard within a radius of 1.5x the script runner's current visual range, which by default evaluates to 42 feet (672 pixels).\n\n```\nIF\n  StateCheck(Myself,STATE_POISONED)\nTHEN\n  RESPONSE #100\n    Shout(4010)\nEND\n```\n\n```\nIF\n  Heard([GOODCUTOFF],4010)\n  HaveSpell(CLERIC_SLOW_POISON)\nTHEN\n  RESPONSE #100\n    Spell(LastHeardBy(),CLERIC_SLOW_POISON)\nEND\n```"
         }
     },
     {

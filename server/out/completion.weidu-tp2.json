@@ -6332,7 +6332,7 @@
         "category": "iesdpOther",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nchar array offset EFF2_signature2 = 0x8\n```\nExternal EFFs - the field is the same as the signature field from the header  \n<a href=\"../ie_formats/cre_v1.htm#CREV1_0_Header_0x33_1\">Embedded EFF</a>s - this field is zeroed out\n"
+            "value": "```weidu-tp2-tooltip\nchar array offset EFF2_signature2 = 0x8\n```\nExternal EFFs - the field is the same as the signature field from the header\n<a href=\"../ie_formats/cre_v1.htm#CREV1_0_Header_0x33_1\">Embedded EFF</a>s - this field is zeroed out\n"
         }
     },
     {
@@ -6362,7 +6362,7 @@
         "category": "iesdpOther",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nchar array offset EFF2_version2 = 0xc\n```\nExternal EFFs - the field is the same as the version field from the header  \n<a href=\"../ie_formats/cre_v1.htm#CREV1_0_Header_0x33_1\">Embedded EFF</a>s - this field is zeroed out\n"
+            "value": "```weidu-tp2-tooltip\nchar array offset EFF2_version2 = 0xc\n```\nExternal EFFs - the field is the same as the version field from the header\n<a href=\"../ie_formats/cre_v1.htm#CREV1_0_Header_0x33_1\">Embedded EFF</a>s - this field is zeroed out\n"
         }
     },
     {
@@ -7342,7 +7342,7 @@
         "category": "iesdpResref",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nresref offset ITM_replacement = 0x10\n```\nBG1, BG2, BGEE:  \n<b><a name=\"itmv1_Header_0x10\">Replacement item</a></b> (ITM)\n\nPSTEE:  \nDrop sound - played when the item is dropped in the inventory (WAV)\n"
+            "value": "```weidu-tp2-tooltip\nresref offset ITM_replacement = 0x10\n```\nBG1, BG2, BGEE:\n<b><a name=\"itmv1_Header_0x10\">Replacement item</a></b> (ITM)\n\nPSTEE:\nDrop sound - played when the item is dropped in the inventory (WAV)\n"
         }
     },
     {
@@ -7592,7 +7592,7 @@
         "category": "iesdpDword",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\ndword offset EFF2_resistance = 0x5c\n```\n<b><a name=\"effv2_Body_0x5C\">Dispel/Resistance</a></b>\n\nThe default behaviour is that effects cannot be dispelled and ignore resistance.\n- bit 0 \u27f6 <b><a name=\"effv2_Body_0x5C_BIT0\">Dispel</a></b>\n  - Can be dispelled, affected by Magic Resistance.\n- bit 1 \u27f6 <b><a name=\"effv2_Body_0x5C_BIT1\">Bypass resistance</a></b>\n  - Ignores Magic Resistance.\n- bit 2 \u27f6 <b><a name=\"effv2_Body_0x5C_BIT2\">Bypasses deflection/reflection/trap opcodes</a></b> (only in EE games patched to v2.0+).\n- bit 3 \u27f6 <b><a name=\"effv2_Body_0x5C_BIT3\">Self-targeted</a></b> (only in EE games patched to v2.6+)\n  - Targeting yourself with an ability (Extended Header) will internally set this bit on all effects applied by that ability.\n    - For the caster, it will allow a Magic Resistance check for any effect that has both <code><a href=\"#effv2_Body_0x5C_BIT0\">Dispel</a></code> set and offers some saving throw.\n      - The saving throw doesn't have to succeed, it just has to be offered.\n    - For anyone else hit by the ability, it will allow a Magic Resistance check for any effect that also has <code><a href=\"#effv2_Body_0x5C_BIT0\">Dispel</a></code> set.\n  - Either way, this bit is still overridden by <code><a href=\"#effv2_Body_0x5C_BIT1\">Bypass Resistance</a></code>.\n  - This feature should eliminate the bug/exploit of bypassing other's Magic Resistance by targeting yourself with an <code><a href=\"../ie_formats/pro_v1.htm#0x8_3\">area-effect</a></code> ability.\n- bit 31 \u27f6 <b><a name=\"effv2_Body_0x5C_BIT31\">Effect applied by item</a></b>\n  - Effect was applied by an [ITM](../ie_formats/itm_v1.htm) (only present in EE games patched to v2.0+).\n  - It is set by the engine if the effect's source [ITM](../ie_formats/itm_v1.htm) is identified.\n    - This bit is only used by [opcode #324](../../opcodes/bgee.htm#op324) which checks it to determine whether it should set <code><a href=\"../../files/2da/2da_bgee/enginest.htm#128\">STRREF_FEEDBACK_IMMUNE_RESOURCE</a></code> to the ITM's general or identified name.\n\nThis can also be presented in the more traditional way:\n- 0 \u27f6 Nonmagical\n- 1 \u27f6 Can be dispelled/Affected by resistance\n- 2 \u27f6 Cannot be dispelled/Ignores resistance\n- 3 \u27f6 Can be dispelled/Ignores resistance\n\n\nIf called via <a href=\"../../opcodes/bgee.htm#op183\">opcode #183</a>, this field is ignored.\n\n"
+            "value": "```weidu-tp2-tooltip\ndword offset EFF2_resistance = 0x5c\n```\n<b><a name=\"effv2_Body_0x5C\">Dispel/Resistance</a></b>\n\nThe default behaviour is that effects cannot be dispelled and ignore resistance.\n- bit 0 \u27f6 <b><a name=\"effv2_Body_0x5C_BIT0\">Dispel</a></b>\n  - Can be dispelled, affected by Magic Resistance.\n- bit 1 \u27f6 <b><a name=\"effv2_Body_0x5C_BIT1\">Bypass resistance</a></b>\n  - Ignores Magic Resistance.\n- bit 2 \u27f6\n  <b name=\"effv2_Body_0x5C_BIT2\">Bypasses\n    <a href=\"{{ '/opcodes/bgee.htm#op199' | prepend: relurl }}\">opcode #199</a>,\n    <a href=\"{{ '/opcodes/bgee.htm#op200' | prepend: relurl }}\">opcode #200</a>,\n    <a href=\"{{ '/opcodes/bgee.htm#op201' | prepend: relurl }}\">opcode #201</a>,\n    and <a href=\"{{ '/opcodes/bgee.htm#op259' | prepend: relurl }}\">opcode #259</a>\n  </b> (only in EE games patched to v2.0+)\n  <div style=\"margin-top: 0.5em\">Set automatically by the engine in the following circumstances:</div>\n  <ul style=\"margin-bottom: 0.5em\">\n    <li style=\"margin-top: 0.5em\">\n      An effect has one of the following <a href=\"{{ '/file_formats/ie_formats/eff_v2.htm#effv2_Body_0x14' | prepend: relurl }}\"><code>Target type</code></a> values:\n      <ul>\n        <li><code>Party (3)</code></li>\n        <li><code>Everyone (4)</code></li>\n        <li><code>Everyone except party (5)</code></li>\n        <li><code>Caster group (6)</code></li>\n        <li><code>Target group (7)</code></li>\n        <li><code>Everyone except self (8)</code></li>\n      </ul>\n    </li>\n    <li style=\"margin-top: 0.5em\">\n      An effect is delivered via:\n      <ul>\n        <li style=\"margin-top: 0.5em\">\n          The hardcoded <a href=\"{{ '/file_formats/ie_formats/spl_v1.htm#splv1_Extended_Header_0x26' | prepend: relurl }}\">projectiles</a>\n          <code>25/26/189</code>\n        </li>\n        <li style=\"margin-top: 0.5em\">\n          <b>or</b> a <a href=\"{{ '/file_formats/ie_formats/pro_v1.htm' | prepend: relurl }}\"><code>PRO</code></a> file's\n          <a href=\"{{ '/file_formats/ie_formats/pro_v1.htm#0x214' | prepend: relurl }}\"><code>Secondary Projectile</code></a>\n        </li>\n      </ul>\n      <div style=\"margin-top: 0.5em\">\n        <b>and</b> uses a non-<code>Original caster (9)</code> <a href=\"{{ '/file_formats/ie_formats/eff_v2.htm#effv2_Body_0x14' | prepend: relurl }}\"><code>Target type</code></a>.\n      </div>\n    </li>\n  </ul>\n- bit 3 \u27f6 <b><a name=\"effv2_Body_0x5C_BIT3\">Self-targeted</a></b> (only in EE games patched to v2.6+)\n  - Targeting yourself with an ability (Extended Header) will internally set this bit on all effects applied by that ability.\n    - For the caster, it will allow a Magic Resistance check for any effect that has both <code><a href=\"#effv2_Body_0x5C_BIT0\">Dispel</a></code> set and offers some saving throw.\n      - The saving throw doesn't have to succeed, it just has to be offered.\n    - For anyone else hit by the ability, it will allow a Magic Resistance check for any effect that also has <code><a href=\"#effv2_Body_0x5C_BIT0\">Dispel</a></code> set.\n  - Either way, this bit is still overridden by <code><a href=\"#effv2_Body_0x5C_BIT1\">Bypass Resistance</a></code>.\n  - This feature should eliminate the bug/exploit of bypassing other's Magic Resistance by targeting yourself with an <code><a href=\"../ie_formats/pro_v1.htm#0x8_3\">area-effect</a></code> ability.\n- bit 31 \u27f6 <b><a name=\"effv2_Body_0x5C_BIT31\">Effect applied by item</a></b>\n  - Effect was applied by an [ITM](../ie_formats/itm_v1.htm) (only present in EE games patched to v2.0+).\n  - It is set by the engine if the effect's source [ITM](../ie_formats/itm_v1.htm) is identified.\n    - This bit is only used by [opcode #324](../../opcodes/bgee.htm#op324) which checks it to determine whether it should set <code><a href=\"../../files/2da/2da_bgee/enginest.htm#128\">STRREF_FEEDBACK_IMMUNE_RESOURCE</a></code> to the ITM's general or identified name.\n\nThis can also be presented in the more traditional way:\n- 0 \u27f6 Nonmagical\n- 1 \u27f6 Can be dispelled/Affected by resistance\n- 2 \u27f6 Cannot be dispelled/Ignores resistance\n- 3 \u27f6 Can be dispelled/Ignores resistance\n\n\nIf called via <a href=\"../../opcodes/bgee.htm#op183\">opcode #183</a>, this field is ignored.\n\n"
         }
     },
     {
@@ -7612,7 +7612,7 @@
         "category": "iesdpDword",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\ndword offset EFF2_save_type = 0x40\n```\n<b><a name=\"effv2_Body_0x40\">Saving throw type</a></b>\n\n- bit 0 \u27f6 <b><a name=\"effv2_Body_0x40_BIT0\">Spells</a></b>\n- bit 1 \u27f6 <b><a name=\"effv2_Body_0x40_BIT1\">Breath</a></b>\n- bit 2 \u27f6 <b><a name=\"effv2_Body_0x40_BIT2\">Paralyze / Poison / Death</a></b>\n- bit 3 \u27f6 <b><a name=\"effv2_Body_0x40_BIT3\">Wands</a></b>\n- bit 4 \u27f6 <b><a name=\"effv2_Body_0x40_BIT4\">Petrify / Polymorph</a></b>\n- bit 10 \u27f6 <b><a name=\"effv2_Body_0x40_BIT10\">Ignore primary target</a></b> (EE only)\n- bit 11 \u27f6 <b><a name=\"effv2_Body_0x40_BIT11\">Ignore secondary target</a></b> (EE only)\n- bit 24 \u27f6 <b><a name=\"effv2_Body_0x40_BIT24\">Bypass mirror image</a></b> (EE/TobEx only)\n- bit 25 \u27f6\n  - <b><a name=\"effv2_Body_0x40_BIT25_EE\">Ignore difficulty</a></b> (EE only)\n  - <b><a name=\"effv2_Body_0x40_BIT25_ToBEx\">Limit effect stacking</a></b> (ToBEx only)\n- bit 26 \u27f6 TobEx internal (don't use)\n\n\nSee <a href=\"../ie_formats/eff_v1.htm#effv1_Header_0x24\">here</a> for further details.\n\n\n\nIf called via <a href=\"../../opcodes/bgee.htm#op183\">opcode #183</a>, this field is ignored.\n"
+            "value": "```weidu-tp2-tooltip\ndword offset EFF2_save_type = 0x40\n```\n<b><a name=\"effv2_Body_0x40\">Saving throw type</a></b>\n\n- bit 0 \u27f6 <b><a name=\"effv2_Body_0x40_BIT0\">Spells</a></b>\n- bit 1 \u27f6 <b><a name=\"effv2_Body_0x40_BIT1\">Breath</a></b>\n- bit 2 \u27f6 <b><a name=\"effv2_Body_0x40_BIT2\">Paralyze / Poison / Death</a></b>\n- bit 3 \u27f6 <b><a name=\"effv2_Body_0x40_BIT3\">Wands</a></b>\n- bit 4 \u27f6 <b><a name=\"effv2_Body_0x40_BIT4\">Petrify / Polymorph</a></b>\n- bit 5 \u27f6 <b id=\"effv2_Body_0x40_BIT5_EE\">Spells</b> (EE only)\n  - see <b><a href=\"{{ '/opcodes/bgee.htm#op322' | prepend: relurl }}\">opcode #322</a></b>\n- bit 6 \u27f6 <b id=\"effv2_Body_0x40_BIT6_EE\">Breath</b> (EE only)\n  - see <b><a href=\"{{ '/opcodes/bgee.htm#op322' | prepend: relurl }}\">opcode #322</a></b>\n- bit 7 \u27f6 <b id=\"effv2_Body_0x40_BIT7_EE\">Paralyze / Poison / Death</b> (EE only)\n  - see <b><a href=\"{{ '/opcodes/bgee.htm#op322' | prepend: relurl }}\">opcode #322</a></b>\n- bit 8 \u27f6 <b id=\"effv2_Body_0x40_BIT8_EE\">Wands</b> (EE only)\n  - see <b><a href=\"{{ '/opcodes/bgee.htm#op322' | prepend: relurl }}\">opcode #322</a></b>\n- bit 9 \u27f6 <b id=\"effv2_Body_0x40_BIT9_EE\">Petrify / Polymorph</b> (EE only)\n  - see <b><a href=\"{{ '/opcodes/bgee.htm#op322' | prepend: relurl }}\">opcode #322</a></b>\n- bit 10 \u27f6 <b><a name=\"effv2_Body_0x40_BIT10\">Ignore primary target</a></b> (EE only)\n- bit 11 \u27f6 <b><a name=\"effv2_Body_0x40_BIT11\">Ignore secondary target</a></b> (EE only)\n- bit 24 \u27f6 <b><a name=\"effv2_Body_0x40_BIT24\">Bypass mirror image</a></b> (EE/TobEx only)\n- bit 25 \u27f6\n  - <b><a name=\"effv2_Body_0x40_BIT25_EE\">Ignore difficulty</a></b> (EE only)\n  - <b><a name=\"effv2_Body_0x40_BIT25_ToBEx\">Limit effect stacking</a></b> (ToBEx only)\n- bit 26 \u27f6 TobEx internal (don't use)\n\n\nSee <a href=\"../ie_formats/eff_v1.htm#effv1_Header_0x24\">here</a> for further details.\n\n\n\nIf called via <a href=\"../../opcodes/bgee.htm#op183\">opcode #183</a>, this field is ignored.\n"
         }
     },
     {
@@ -7752,7 +7752,7 @@
         "category": "iesdpDword",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\ndword offset EFF_save_type = 0x24\n```\n<b><a name=\"effv1_Header_0x24\">Saving throw type</a></b>\n\n- bit 0 \u27f6 <b><a name=\"effv1_Header_0x24_BIT0\">Spells</a></b>\n- bit 1 \u27f6 <b><a name=\"effv1_Header_0x24_BIT1\">Breath</a></b>\n- bit 2 \u27f6 <b><a name=\"effv1_Header_0x24_BIT2\">Paralyze / Poison / Death</a></b>\n- bit 3 \u27f6 <b><a name=\"effv1_Header_0x24_BIT3\">Wands</a></b>\n- bit 4 \u27f6 <b><a name=\"effv1_Header_0x24_BIT4\">Petrify / Polymorph</a></b>\n- bit 10 \u27f6 <b><a name=\"effv1_Header_0x24_BIT10\">Ignore primary target</a></b> (EE only)\n  - <a href=\"../ie_formats/pro_v1.htm#ExtFlags_BIT14\">Line AoE projectile</a> doesn't affect end target.\n- bit 11 \u27f6 <b><a name=\"effv1_Header_0x24_BIT11\">Ignore secondary target</a></b> (EE only)\n  - <a href=\"../ie_formats/pro_v1.htm#ExtFlags_BIT14\">Line AoE projectile</a> doesn't affect bystanders.\n- bit 24 \u27f6 <b><a name=\"effv1_Header_0x24_BIT24\">Bypass mirror image</a></b> (EE/TobEx only)\n  - This bit is only relevant for <a href=\"../../opcodes/bgee.htm#op12\">opcode #12</a> and <a href=\"../../opcodes/bgee.htm#op25\">opcode #25</a>.\n  - All other opcodes bypass Mirror Image by default, setting/unsetting this bit is harmless.\n- bit 25 \u27f6\n  - <b><a name=\"effv1_Header_0x24_BIT25_EE\">Ignore difficulty</a></b> (EE only)\n    - This bit is specific to <a href=\"../../opcodes/bgee.htm#op12\">opcode #12</a> only.\n    - It refers to the damage multiplier to Party Members based on Game Difficulty.\n  - <b><a name=\"effv1_Header_0x24_BIT25_ToBEx\">Limit effect stacking</a></b> (ToBEx only)\n- bit 26 \u27f6 TobEx internal (don't use)\n  - Suspends effect application.\n\n\nIf more than 1 Saving Throw Type is specified (`BIT0 \u2013 BIT4`), the target rolls against their best save.\n"
+            "value": "```weidu-tp2-tooltip\ndword offset EFF_save_type = 0x24\n```\n<b><a name=\"effv1_Header_0x24\">Saving throw type</a></b>\n\n- bit 0 \u27f6 <b><a name=\"effv1_Header_0x24_BIT0\">Spells</a></b>\n- bit 1 \u27f6 <b><a name=\"effv1_Header_0x24_BIT1\">Breath</a></b>\n- bit 2 \u27f6 <b><a name=\"effv1_Header_0x24_BIT2\">Paralyze / Poison / Death</a></b>\n- bit 3 \u27f6 <b><a name=\"effv1_Header_0x24_BIT3\">Wands</a></b>\n- bit 4 \u27f6 <b><a name=\"effv1_Header_0x24_BIT4\">Petrify / Polymorph</a></b>\n- bit 5 \u27f6 <b id=\"effv1_Header_0x24_BIT5_EE\">Spells</b> (EE only)\n  - see <b><a href=\"{{ '/opcodes/bgee.htm#op322' | prepend: relurl }}\">opcode #322</a></b>\n- bit 6 \u27f6 <b id=\"effv1_Header_0x24_BIT6_EE\">Breath</b> (EE only)\n  - see <b><a href=\"{{ '/opcodes/bgee.htm#op322' | prepend: relurl }}\">opcode #322</a></b>\n- bit 7 \u27f6 <b id=\"effv1_Header_0x24_BIT7_EE\">Paralyze / Poison / Death</b> (EE only)\n  - see <b><a href=\"{{ '/opcodes/bgee.htm#op322' | prepend: relurl }}\">opcode #322</a></b>\n- bit 8 \u27f6 <b id=\"effv1_Header_0x24_BIT8_EE\">Wands</b> (EE only)\n  - see <b><a href=\"{{ '/opcodes/bgee.htm#op322' | prepend: relurl }}\">opcode #322</a></b>\n- bit 9 \u27f6 <b id=\"effv1_Header_0x24_BIT9_EE\">Petrify / Polymorph</b> (EE only)\n  - see <b><a href=\"{{ '/opcodes/bgee.htm#op322' | prepend: relurl }}\">opcode #322</a></b>\n- bit 10 \u27f6 <b><a name=\"effv1_Header_0x24_BIT10\">Ignore primary target</a></b> (EE only)\n  - <a href=\"../ie_formats/pro_v1.htm#ExtFlags_BIT14\">Line AoE projectile</a> doesn't affect end target.\n- bit 11 \u27f6 <b><a name=\"effv1_Header_0x24_BIT11\">Ignore secondary target</a></b> (EE only)\n  - <a href=\"../ie_formats/pro_v1.htm#ExtFlags_BIT14\">Line AoE projectile</a> doesn't affect bystanders.\n- bit 24 \u27f6 <b><a name=\"effv1_Header_0x24_BIT24\">Bypass mirror image</a></b> (EE/TobEx only)\n  - This bit is only relevant for <a href=\"../../opcodes/bgee.htm#op12\">opcode #12</a> and <a href=\"../../opcodes/bgee.htm#op25\">opcode #25</a>.\n  - All other opcodes bypass Mirror Image by default, setting/unsetting this bit is harmless.\n- bit 25 \u27f6\n  - <b><a name=\"effv1_Header_0x24_BIT25_EE\">Ignore difficulty</a></b> (EE only)\n    - This bit is specific to <a href=\"../../opcodes/bgee.htm#op12\">opcode #12</a> only.\n    - It refers to the damage multiplier to Party Members based on Game Difficulty.\n  - <b><a name=\"effv1_Header_0x24_BIT25_ToBEx\">Limit effect stacking</a></b> (ToBEx only)\n- bit 26 \u27f6 TobEx internal (don't use)\n  - Suspends effect application.\n\n\nIf more than 1 Saving Throw Type is specified (`BIT0 \u2013 BIT4`), the target rolls against their best save.\n"
         }
     },
     {
@@ -8262,7 +8262,7 @@
         "category": "iesdpWord",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nword offset EFF2_timing = 0x24\n```\n<a name=\"effv2_Body_0x24\">**Timing mode**</a>\n\n- 0 \u27f6 [Instant/Limited](../ie_formats/eff_v1.htm#effv1_Header_0xC_0)\n- 1 \u27f6 [Instant/Permanent](../ie_formats/eff_v1.htm#effv1_Header_0xC_1)\n- 2 \u27f6 [Instant/While equipped](../ie_formats/eff_v1.htm#effv1_Header_0xC_2)\n- 3 \u27f6 [Delay/Limited](../ie_formats/eff_v1.htm#effv1_Header_0xC_3)\n- 4 \u27f6 [Delay/Permanent](../ie_formats/eff_v1.htm#effv1_Header_0xC_4)\n- 5 \u27f6 [Delay/While equipped](../ie_formats/eff_v1.htm#effv1_Header_0xC_5)\n- 6 \u27f6 [Limited after duration](../ie_formats/eff_v1.htm#effv1_Header_0xC_6)\n- 7 \u27f6 [Permanent after duration](../ie_formats/eff_v1.htm#effv1_Header_0xC_7)\n- 8 \u27f6 [Equipped after duration](../ie_formats/eff_v1.htm#effv1_Header_0xC_8)\n- 9 \u27f6 [Instant/Permanent](../ie_formats/eff_v1.htm#effv1_Header_0xC_9) (after Death)\n- 10 \u27f6 [Instant/Limited](../ie_formats/eff_v1.htm#effv1_Header_0xC_10)\n- 4096 \u27f6 <a name=\"effv2_Body_0x24_4096\">**Absolute duration**</a>\n  - Effect is applied instantly.\n  - This timing mode treats the [Duration](#effv2_Body_0x28) field as the effect's expiration time (in ticks). Expires at [Gametime](../ie_formats/gam_v2.0.htm#GAMEV2_0_Header_GameTime)`(ticks) >= `[Duration](#effv2_Body_0x28)`(ticks)`.  \n  If the [Duration](#effv2_Body_0x28) field is `108000`, the effect will expire when the game timer reaches 24 hours, or instantly if the game timer has already passed that point. `108000 = 300(1 hour) * 24 * 15 (ticks \u2794 seconds)`.\n\n\nIf called via [opcode #177](../../opcodes/bgee.htm#op177)/[opcode #183](../../opcodes/bgee.htm#op183)/[opcode #283](../../opcodes/bgee.htm#op283), this field is ignored.\n"
+            "value": "```weidu-tp2-tooltip\nword offset EFF2_timing = 0x24\n```\n<a name=\"effv2_Body_0x24\">**Timing mode**</a>\n\n- 0 \u27f6 [Instant/Limited](../ie_formats/eff_v1.htm#effv1_Header_0xC_0)\n- 1 \u27f6 [Instant/Permanent](../ie_formats/eff_v1.htm#effv1_Header_0xC_1)\n- 2 \u27f6 [Instant/While equipped](../ie_formats/eff_v1.htm#effv1_Header_0xC_2)\n- 3 \u27f6 [Delay/Limited](../ie_formats/eff_v1.htm#effv1_Header_0xC_3)\n- 4 \u27f6 [Delay/Permanent](../ie_formats/eff_v1.htm#effv1_Header_0xC_4)\n- 5 \u27f6 [Delay/While equipped](../ie_formats/eff_v1.htm#effv1_Header_0xC_5)\n- 6 \u27f6 [Limited after duration](../ie_formats/eff_v1.htm#effv1_Header_0xC_6)\n- 7 \u27f6 [Permanent after duration](../ie_formats/eff_v1.htm#effv1_Header_0xC_7)\n- 8 \u27f6 [Equipped after duration](../ie_formats/eff_v1.htm#effv1_Header_0xC_8)\n- 9 \u27f6 [Instant/Permanent](../ie_formats/eff_v1.htm#effv1_Header_0xC_9) (after Death)\n- 10 \u27f6 [Instant/Limited](../ie_formats/eff_v1.htm#effv1_Header_0xC_10)\n- 4096 \u27f6 <a name=\"effv2_Body_0x24_4096\">**Absolute duration**</a>\n  - Effect is applied instantly.\n  - This timing mode treats the [Duration](#effv2_Body_0x28) field as the effect's expiration time (in ticks). Expires at [Gametime](../ie_formats/gam_v2.0.htm#GAMEV2_0_Header_GameTime)`(ticks) >= `[Duration](#effv2_Body_0x28)`(ticks)`.\n  If the [Duration](#effv2_Body_0x28) field is `108000`, the effect will expire when the game timer reaches 24 hours, or instantly if the game timer has already passed that point. `108000 = 300(1 hour) * 24 * 15 (ticks \u2794 seconds)`.\n\n\nIf called via [opcode #177](../../opcodes/bgee.htm#op177)/[opcode #183](../../opcodes/bgee.htm#op183)/[opcode #283](../../opcodes/bgee.htm#op283), this field is ignored.\n"
         }
     },
     {
@@ -8902,7 +8902,7 @@
         "category": "iesdpByte",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nbyte offset ITM_min_strength_bonus = 0x28\n```\nMin Strength Bonus (unused in BG1)  \nNote: A strength of 19 or above is considered to have a Strength Bonus of 0, and would therefore not be able to equip any weapon with a Strength Bonus restriction.\n"
+            "value": "```weidu-tp2-tooltip\nbyte offset ITM_min_strength_bonus = 0x28\n```\nMin Strength Bonus (unused in BG1)\nNote: A strength of 19 or above is considered to have a Strength Bonus of 0, and would therefore not be able to equip any weapon with a Strength Bonus restriction.\n"
         }
     },
     {
@@ -9152,7 +9152,7 @@
         "category": "patchFunctions",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\npatch function GET_ARMOR_BASE_AC\n```\nReturns current armor's base AC. If base AC is not found, defaults to 100.\n\n\n\n| RET vars | Description | Type |\n|:--------|:-----|:--------|\n| base_ac | base AC | [int](https://ielib.bgforge.net/types/#int) |\n"
+            "value": "```weidu-tp2-tooltip\npatch function GET_ARMOR_BASE_AC\n```\nReturns current armor's base AC. If base AC is not found, defaults to 100.\n\n\n| RET vars | Description | Type |\n|:--------|:-----|:--------|\n| base_ac | base AC | [int](https://ielib.bgforge.net/types/#int) |\n"
         }
     },
     {
@@ -9172,7 +9172,7 @@
         "category": "patchFunctions",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\npatch function INFER_ARMOR_TYPE\n```\nReturns current armor type.\n\n| **INT_VAR** | **Description** | **Type** | **Default** |\n|:-|:-|:-|:-|\n| warn | Warn if the item is not an armor | [bool](https://ielib.bgforge.net/types/#bool) | True |\n\n| RET vars | Description | Type |\n|:--------|:-----|:--------|\n| type | leather, studded_leather, chain, splint, plate, full_plate or unknown. | [string](https://ielib.bgforge.net/types/#string) |\n"
+            "value": "```weidu-tp2-tooltip\npatch function INFER_ARMOR_TYPE\n```\nReturns current armor type.\n\n| **INT_VAR** | **Description** | **Type** | **Default** |\n|:-|:-|:-|:-|\n| warn | Warn if the item is not an armor | [bool](https://ielib.bgforge.net/types/#bool) | 1 |\n\n| RET vars | Description | Type |\n|:--------|:-----|:--------|\n| type | leather, studded_leather, chain, splint, plate, full_plate or unknown. | [string](https://ielib.bgforge.net/types/#string) |\n"
         }
     },
     {
@@ -9242,7 +9242,7 @@
         "category": "actionFunctions",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\naction function IS_ITEM_GIVEN_OR_CREATED_IN_DIALOG_OR_SCRIPT\n```\nReturns 1 if item is given or created in the dialog or script, 0 otherwise.\n\n| **STR_VAR** | **Description** | **Type** | **Default** |\n|:-|:-|:-|:-|\n| dialog or script | filename of the dialog or script | [filename](https://ielib.bgforge.net/types/#filename) | _required_ |\n| item | item resource | [resref](https://ielib.bgforge.net/types/#resref) | _required_ |\n\n| RET vars | Description | Type |\n|:--------|:-----|:--------|\n| present | is item given or created in the dialog or script | [bool](https://ielib.bgforge.net/types/#bool) |\n"
+            "value": "```weidu-tp2-tooltip\naction function IS_ITEM_GIVEN_OR_CREATED_IN_DIALOG_OR_SCRIPT\n```\nReturns 1 if item is given or created in the dialog or script, 0 otherwise.\n\n| **STR_VAR** | **Description** | **Type** | **Default** |\n|:-|:-|:-|:-|\n| filename | filename of the dialog or script | [filename](https://ielib.bgforge.net/types/#filename) | _required_ |\n| item | item resource | [resref](https://ielib.bgforge.net/types/#resref) | _required_ |\n\n| RET vars | Description | Type |\n|:--------|:-----|:--------|\n| present | is item given or created in the dialog or script | [bool](https://ielib.bgforge.net/types/#bool) |\n"
         }
     },
     {
@@ -9272,7 +9272,7 @@
         "category": "actionFunctions",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\naction function IS_ITEM_IN_RESOURCE\n```\nReturns 1 if item is present in area, store, on creature, or given/created in the dialog or script. 0 otherwise.\n\n| **STR_VAR** | **Description** | **Type** | **Default** |\n|:-|:-|:-|:-|\n| item | item resource | [resref](https://ielib.bgforge.net/types/#resref) | _required_ |\n| resource file | filename | [filename](https://ielib.bgforge.net/types/#filename) | _required_ |\n\n| RET vars | Description | Type |\n|:--------|:-----|:--------|\n| present | is item present? | [bool](https://ielib.bgforge.net/types/#bool) |\n"
+            "value": "```weidu-tp2-tooltip\naction function IS_ITEM_IN_RESOURCE\n```\nReturns 1 if item is present in area, store, on creature, or given/created in the dialog or script. 0 otherwise.\n\n| **STR_VAR** | **Description** | **Type** | **Default** |\n|:-|:-|:-|:-|\n| item | item resource | [resref](https://ielib.bgforge.net/types/#resref) | _required_ |\n| resource | filename | [filename](https://ielib.bgforge.net/types/#filename) | _required_ |\n\n| RET vars | Description | Type |\n|:--------|:-----|:--------|\n| present | is item present? | [bool](https://ielib.bgforge.net/types/#bool) |\n"
         }
     },
     {
@@ -9292,7 +9292,7 @@
         "category": "actionFunctions",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\naction function IS_ITEM_ON_CREATURE\n```\nReturns 1 if the creature has the item, 0 otherwise.\n\n| **STR_VAR** | **Description** | **Type** | **Default** |\n|:-|:-|:-|:-|\n| creature | creature resource | [resref](https://ielib.bgforge.net/types/#resref) | _required_ |\n| item | item resource | [resref](https://ielib.bgforge.net/types/#resref) | _required_ |\n\n| RET vars | Description | Type |\n|:--------|:-----|:--------|\n| present | does the creature posess the item? | [bool](https://ielib.bgforge.net/types/#bool) |\n"
+            "value": "```weidu-tp2-tooltip\naction function IS_ITEM_ON_CREATURE\n```\nReturns 1 if the creature has the item, 0 otherwise.\n\n| **STR_VAR** | **Description** | **Type** | **Default** |\n|:-|:-|:-|:-|\n| creature | creature resource | [resref](https://ielib.bgforge.net/types/#resref) | _required_ |\n| item | item resource | [resref](https://ielib.bgforge.net/types/#resref) | _required_ |\n\n| RET vars | Description | Type |\n|:--------|:-----|:--------|\n| present | does the creature possess the item? | [bool](https://ielib.bgforge.net/types/#bool) |\n"
         }
     },
     {
@@ -15412,7 +15412,7 @@
         "category": "ielibResref",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_ABI_DALZIMS_HORRID_WILTING = \"SPWI805X\"\n```\nIElib define"
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_ABI_DALZIMS_HORRID_WILTING = \"SCRL9G\"\n```\nIElib define"
         }
     },
     {
@@ -15602,7 +15602,7 @@
         "category": "ielibResref",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_CHAIN_LIGHTNING = \"SCCLITE\"\n```\nIElib define"
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_CHAIN_LIGHTNING = \"SCRL7S\"\n```\nIElib define"
         }
     },
     {
@@ -15612,7 +15612,7 @@
         "category": "ielibResref",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_CHAOS = \"SCCHAO\"\n```\nIElib define"
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_CHAOS = \"SCRL5P\"\n```\nIElib define"
         }
     },
     {
@@ -15702,7 +15702,7 @@
         "category": "ielibResref",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_CONJURE_AIR_ELEMENTAL = \"SCCAE\"\n```\nIElib define"
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_CONJURE_AIR_ELEMENTAL = \"SCRL7Y\"\n```\nIElib define"
         }
     },
     {
@@ -15712,7 +15712,7 @@
         "category": "ielibResref",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_CONJURE_EARTH_ELEMENTAL = \"SCCEE\"\n```\nIElib define"
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_CONJURE_EARTH_ELEMENTAL = \"SCRL7Z\"\n```\nIElib define"
         }
     },
     {
@@ -15722,7 +15722,7 @@
         "category": "ielibResref",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_CONJURE_FIRE_ELEMENTAL = \"SCCFE\"\n```\nIElib define"
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_CONJURE_FIRE_ELEMENTAL = \"SCRL7X\"\n```\nIElib define"
         }
     },
     {
@@ -15832,7 +15832,7 @@
         "category": "ielibResref",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_DEATH_FOG = \"SCDFOG\"\n```\nIElib define"
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_DEATH_FOG = \"SCRL7R\"\n```\nIElib define"
         }
     },
     {
@@ -15842,7 +15842,7 @@
         "category": "ielibResref",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_DEATH_SPELL = \"SCDSPEL\"\n```\nIElib define"
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_DEATH_SPELL = \"SCRL7I\"\n```\nIElib define"
         }
     },
     {
@@ -15932,7 +15932,7 @@
         "category": "ielibResref",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_DISINTEGRATE = \"SCDISI\"\n```\nIElib define"
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_DISINTEGRATE = \"SCRL7T\"\n```\nIElib define"
         }
     },
     {
@@ -15952,7 +15952,7 @@
         "category": "ielibResref",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_DOMINATION = \"SCDOMI\"\n```\nIElib define"
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_DOMINATION = \"SCRL5N\"\n```\nIElib define"
         }
     },
     {
@@ -15992,7 +15992,7 @@
         "category": "ielibResref",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_EMOTION_HOPELESSNESS = \"SCHOPE\"\n```\nIElib define"
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_EMOTION_HOPELESSNESS = \"SCRL5H\"\n```\nIElib define"
         }
     },
     {
@@ -16042,7 +16042,7 @@
         "category": "ielibResref",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_FAR_SIGHT = \"SCRLAQ\"\n```\nIElib define"
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_FAR_SIGHT = \"SCRLAJ\"\n```\nIElib define"
         }
     },
     {
@@ -16052,7 +16052,7 @@
         "category": "ielibResref",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_FEEBLEMIND = \"SCFEEB\"\n```\nIElib define"
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_FEEBLEMIND = \"SCRL5Q\"\n```\nIElib define"
         }
     },
     {
@@ -16072,7 +16072,7 @@
         "category": "ielibResref",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_FINGER_OF_DEATH = \"SCFING\"\n```\nIElib define"
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_FINGER_OF_DEATH = \"SCRL8O\"\n```\nIElib define"
         }
     },
     {
@@ -16122,7 +16122,7 @@
         "category": "ielibResref",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_FLESH_TO_STONE = \"SCFTS\"\n```\nIElib define"
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_FLESH_TO_STONE = \"SCRL7H\"\n```\nIElib define"
         }
     },
     {
@@ -16192,7 +16192,7 @@
         "category": "ielibResref",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_GLOBE_OF_INVULNERABILITY = \"SCGLOB\"\n```\nIElib define"
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_GLOBE_OF_INVULNERABILITY = \"SCRL7F\"\n```\nIElib define"
         }
     },
     {
@@ -16212,7 +16212,7 @@
         "category": "ielibResref",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_GREATER_MALISON = \"SCMALI\"\n```\nIElib define"
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_GREATER_MALISON = \"SCRL5I\"\n```\nIElib define"
         }
     },
     {
@@ -16242,7 +16242,7 @@
         "category": "ielibResref",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_HOLD_MONSTER = \"SCHMON\"\n```\nIElib define"
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_HOLD_MONSTER = \"SCRL5O\"\n```\nIElib define"
         }
     },
     {
@@ -16292,7 +16292,7 @@
         "category": "ielibResref",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_ICE_STORM = \"SCSTOR\"\n```\nIElib define"
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_ICE_STORM = \"SCRL1X\"\n```\nIElib define"
         }
     },
     {
@@ -16352,7 +16352,7 @@
         "category": "ielibResref",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_INCENDIARY_CLOUD = \"SCINCIN\"\n```\nIElib define"
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_INCENDIARY_CLOUD = \"SCRL9E\"\n```\nIElib define"
         }
     },
     {
@@ -16392,7 +16392,7 @@
         "category": "ielibResref",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_INVISIBLE_STALKER = \"SCISTAL\"\n```\nIElib define"
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_INVISIBLE_STALKER = \"SCRL7E\"\n```\nIElib define"
         }
     },
     {
@@ -16482,7 +16482,7 @@
         "category": "ielibResref",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_LOWER_RESISTANCE = \"SPWI518X\"\n```\nIElib define"
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_LOWER_RESISTANCE = \"SCRL6V\"\n```\nIElib define"
         }
     },
     {
@@ -16532,7 +16532,7 @@
         "category": "ielibResref",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_MASS_INVISIBILITY = \"SCMINVI\"\n```\nIElib define"
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_MASS_INVISIBILITY = \"SCRL8W\"\n```\nIElib define"
         }
     },
     {
@@ -16732,7 +16732,7 @@
         "category": "ielibResref",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_MORDENKAINENS_SWORD = \"SCMORD\"\n```\nIElib define"
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_MORDENKAINENS_SWORD = \"SCRL8R\"\n```\nIElib define"
         }
     },
     {
@@ -16772,7 +16772,7 @@
         "category": "ielibResref",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_OTILUKES_RESILIENT_SPHERE = \"SCOTIL\"\n```\nIElib define"
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_OTILUKES_RESILIENT_SPHERE = \"SCRL5J\"\n```\nIElib define"
         }
     },
     {
@@ -16832,7 +16832,7 @@
         "category": "ielibResref",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_POWER_WORD_BLIND = \"SPWI808X\"\n```\nIElib define"
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_POWER_WORD_BLIND = \"SCRL9J\"\n```\nIElib define"
         }
     },
     {
@@ -16842,7 +16842,7 @@
         "category": "ielibResref",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_POWER_WORD_KILL = \"SCKILL\"\n```\nIElib define"
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_POWER_WORD_KILL = \"SCRL9U\"\n```\nIElib define"
         }
     },
     {
@@ -16852,7 +16852,7 @@
         "category": "ielibResref",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_POWER_WORD_SILENCE = \"SCPWS\"\n```\nIElib define"
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_POWER_WORD_SILENCE = \"SCRL7P\"\n```\nIElib define"
         }
     },
     {
@@ -16872,7 +16872,7 @@
         "category": "ielibResref",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_POWER_WORD_STUN = \"SCSTUN\"\n```\nIElib define"
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_POWER_WORD_STUN = \"SCRL8Q\"\n```\nIElib define"
         }
     },
     {
@@ -16882,7 +16882,7 @@
         "category": "ielibResref",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_PRISMATIC_SPRAY = \"SCPRISM\"\n```\nIElib define"
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_PRISMATIC_SPRAY = \"SCRL8P\"\n```\nIElib define"
         }
     },
     {
@@ -16942,7 +16942,7 @@
         "category": "ielibResref",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_PROTECTION_FROM_EVIL = \"SCRL78\"\n```\nIElib define"
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_PROTECTION_FROM_EVIL = \"SCRL3H\"\n```\nIElib define"
         }
     },
     {
@@ -17022,7 +17022,7 @@
         "category": "ielibResref",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_RAY_OF_ENFEEBLEMENT = \"SCRLAI\"\n```\nIElib define"
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_RAY_OF_ENFEEBLEMENT = \"SCRL6F\"\n```\nIElib define"
         }
     },
     {
@@ -17042,7 +17042,7 @@
         "category": "ielibResref",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_REMOVE_CURSE = \"SCREM\"\n```\nIElib define"
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_REMOVE_CURSE = \"SCRL5G\"\n```\nIElib define"
         }
     },
     {
@@ -17352,7 +17352,7 @@
         "category": "ielibResref",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_SPIRIT_ARMOR = \"SCSPIR\"\n```\nIElib define"
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_SPIRIT_ARMOR = \"SCRL5K\"\n```\nIElib define"
         }
     },
     {
@@ -17382,7 +17382,7 @@
         "category": "ielibResref",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_STONE_SKIN = \"SCSTON\"\n```\nIElib define"
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_STONE_SKIN = \"SCRL1V\"\n```\nIElib define"
         }
     },
     {
@@ -17392,7 +17392,7 @@
         "category": "ielibResref",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_STONE_TO_FLESH = \"SCSTF\"\n```\nIElib define"
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_STONE_TO_FLESH = \"SCRL8C\"\n```\nIElib define"
         }
     },
     {
@@ -17482,7 +17482,7 @@
         "category": "ielibResref",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_SUN_FIRE = \"SPWI519X\"\n```\nIElib define"
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_SUN_FIRE = \"SCRLAL\"\n```\nIElib define"
         }
     },
     {
@@ -17492,7 +17492,7 @@
         "category": "ielibResref",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_SYMBOL_DEATH = \"SCRLAO\"\n```\nIElib define"
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_SYMBOL_DEATH = \"SCRLAM\"\n```\nIElib define"
         }
     },
     {
@@ -17512,7 +17512,7 @@
         "category": "ielibResref",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_SYMBOL_STUN = \"SCRLAP\"\n```\nIElib define"
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_SYMBOL_STUN = \"SCRLAN\"\n```\nIElib define"
         }
     },
     {
@@ -17532,7 +17532,7 @@
         "category": "ielibResref",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_TENSERS_TRANSFORMATION = \"SCTENS\"\n```\nIElib define"
+            "value": "```weidu-tp2-tooltip\nresref SCROLL_WIZARD_TENSERS_TRANSFORMATION = \"SCRL7G\"\n```\nIElib define"
         }
     },
     {
