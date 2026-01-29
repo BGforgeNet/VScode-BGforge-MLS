@@ -213,24 +213,6 @@ export function generateSignatures(data: DataFile, langId: string): Record<strin
     return result;
 }
 
-/**
- * Escapes non-ASCII characters as \uXXXX sequences, matching Python's
- * json.dumps ensure_ascii=True default for output equivalence.
- */
-export function escapeNonAscii(text: string): string {
-    return text.replace(/[^\x00-\x7F]/g, (ch) => {
-        const code = ch.codePointAt(0)!;
-        if (code > 0xffff) {
-            // Surrogate pair for characters outside BMP
-            const offset = code - 0x10000;
-            const high = 0xd800 + (offset >> 10);
-            const low = 0xdc00 + (offset & 0x3ff);
-            return `\\u${high.toString(16).padStart(4, "0")}\\u${low.toString(16).padStart(4, "0")}`;
-        }
-        return `\\u${code.toString(16).padStart(4, "0")}`;
-    });
-}
-
 // -- CLI entry point (tested via subprocess in generate-data-cli.test.ts) --
 
 /* v8 ignore start -- CLI wrapper tested via execSync integration tests */
@@ -261,12 +243,12 @@ function main(): void {
     const completionData = generateCompletion(inputData, tooltipLangId);
     const hoverData = generateHover(inputData, tooltipLangId);
 
-    fs.writeFileSync(hoverFile, escapeNonAscii(JSON.stringify(hoverData, null, 4)), "utf8");
-    fs.writeFileSync(completionFile, escapeNonAscii(JSON.stringify(completionData, null, 4)), "utf8");
+    fs.writeFileSync(hoverFile, JSON.stringify(hoverData, null, 4), "utf8");
+    fs.writeFileSync(completionFile, JSON.stringify(completionData, null, 4), "utf8");
 
     if (signatureFile !== undefined) {
         const signatureData = generateSignatures(inputData, tooltipLangId);
-        fs.writeFileSync(signatureFile, escapeNonAscii(JSON.stringify(signatureData, null, 4)), "utf8");
+        fs.writeFileSync(signatureFile, JSON.stringify(signatureData, null, 4), "utf8");
     }
 }
 
