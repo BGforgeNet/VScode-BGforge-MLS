@@ -63,7 +63,8 @@ repository:
         end: \*/
         name: comment.block.weidu-tp2
 
-  ielib-functions: # style known functions explicitly
+  ielib-functions:
+    # style known functions explicitly
     patterns:
       - include: '#ielib-action-functions'
       - include: '#ielib-patch-functions'

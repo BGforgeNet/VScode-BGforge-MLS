@@ -7,19 +7,18 @@ iesdpOther:
     - name: EFF2_signature2
       detail: char array offset EFF2_signature2 = 0x8
       doc: |
-        External EFFs - the field is the same as the signature field from the header  
+        External EFFs - the field is the same as the signature field from the header
         <a href="../ie_formats/cre_v1.htm#CREV1_0_Header_0x33_1">Embedded EFF</a>s - this field is zeroed out
     - name: EFF2_variable_name
       detail: bytes offset EFF2_variable_name = 0xa8
-      doc: |-
-        <b><a name="effv2_Body_0xA8">Variable name</a></b>
+      doc: <b><a name="effv2_Body_0xA8">Variable name</a></b>
     - name: EFF2_version
       detail: char array offset EFF2_version = 0x4
       doc: Version ('V2.0')
     - name: EFF2_version2
       detail: char array offset EFF2_version2 = 0xc
       doc: |
-        External EFFs - the field is the same as the version field from the header  
+        External EFFs - the field is the same as the version field from the header
         <a href="../ie_formats/cre_v1.htm#CREV1_0_Header_0x33_1">Embedded EFF</a>s - this field is zeroed out
     - name: ITEM_TYPE_amulet
       detail: int ITEM_TYPE_amulet = 0x01
@@ -262,13 +261,13 @@ iesdpOther:
         - Along with <code><a href="#itmv1_Extended_Header_0x32">Is arrow?</a></code>/<code><a href="#itmv1_Extended_Header_0x34">Is bolt?</a></code>/<code><a href="#itmv1_Extended_Header_0x36">Is bullet?</a></code>, it is only used for attack animations. If all are zero, no animation will be used for attacking. Activated <code><a href="#itmv1_Extended_Header_0x2_3">Item</a></code> abilities can leave them all `0`, as they are not used.
     - name: ITM_animation
       detail: char array offset ITM_animation = 0x22
-      doc: '[Item animation](#Header_Animation)'
+      doc: "[Item animation](#Header_Animation)"
     - name: ITM_signature
       detail: char array offset ITM_signature = 0x0
       doc: Signature ('ITM ')
     - name: ITM_usability_flags
       detail: multi byte offset ITM_usability_flags = 0x1e
-      doc: '[Usability bitmask](#Header_Usability)'
+      doc: "[Usability bitmask](#Header_Usability)"
     - name: ITM_version
       detail: char array offset ITM_version = 0x4
       doc: Version ('V1  ')
@@ -327,20 +326,16 @@ iesdpResref:
           - So for instance, when applying +10％ <a href="../../opcodes/bgee.htm#op87">Crushing Resistance</a> to a CRE file whose <code><a href="../ie_formats/cre_v1.htm#CREV1_0_Header_0x244">Kit</a></code> is `BARBARIAN`, set this field to `"SPCL153"`.
     - name: EFF2_resource
       detail: resref offset EFF2_resource = 0x30
-      doc: |-
-        <b><a name="effv2_Body_Resource">Resource</a></b>
+      doc: <b><a name="effv2_Body_Resource">Resource</a></b>
     - name: EFF2_resource2
       detail: resref offset EFF2_resource2 = 0x70
-      doc: |-
-        <b><a name="effv2_Body_0x70">Resource 2</a></b> (<a href="../ie_formats/vvc_v1.htm">VVC</a> in many effects)
+      doc: <b><a name="effv2_Body_0x70">Resource 2</a></b> (<a href="../ie_formats/vvc_v1.htm">VVC</a> in many effects)
     - name: EFF2_resource3
       detail: resref offset EFF2_resource3 = 0x78
-      doc: |-
-        <b><a name="effv2_Body_0x78">Resource 3</a></b>
+      doc: <b><a name="effv2_Body_0x78">Resource 3</a></b>
     - name: EFF_resref_key
       detail: resref offset EFF_resref_key = 0x14
-      doc: |-
-        <b><a name="effv1_Header_Resource">Resref key</a></b>
+      doc: <b><a name="effv1_Header_Resource">Resref key</a></b>
     - name: FX_resource
       detail: resref offset FX_resource = 0x14
       doc: Resource
@@ -359,10 +354,10 @@ iesdpResref:
     - name: ITM_replacement
       detail: resref offset ITM_replacement = 0x10
       doc: |
-        BG1, BG2, BGEE:  
+        BG1, BG2, BGEE:
         <b><a name="itmv1_Header_0x10">Replacement item</a></b> (ITM)
 
-        PSTEE:  
+        PSTEE:
         Drop sound - played when the item is dropped in the inventory (WAV)
     - name: SPL_HEAD_memorised_icon
       detail: resref offset SPL_HEAD_memorised_icon = 0x4
@@ -393,8 +388,7 @@ iesdpDword:
   items:
     - name: EFF2_caster_level
       detail: dword offset EFF2_caster_level = 0xc8
-      doc: |-
-        <b><a name="effv2_Body_0xC8">Caster level</a></b>
+      doc: <b><a name="effv2_Body_0xC8">Caster level</a></b>
     - name: EFF2_caster_x_coord
       detail: dword offset EFF2_caster_x_coord = 0x80
       doc: Caster X coordinate
@@ -427,12 +421,10 @@ iesdpDword:
       doc: Parameter 2
     - name: EFF2_parameter3
       detail: dword offset EFF2_parameter3 = 0x60
-      doc: |-
-        <b><a name="effv2_Body_0x60">Parameter 3</a></b>
+      doc: <b><a name="effv2_Body_0x60">Parameter 3</a></b>
     - name: EFF2_parameter4
       detail: dword offset EFF2_parameter4 = 0x64
-      doc: |-
-        <b><a name="effv2_Body_0x64">Parameter 4</a></b>
+      doc: <b><a name="effv2_Body_0x64">Parameter 4</a></b>
     - name: EFF2_parameter5
       detail: dword offset EFF2_parameter5 = 0x68
       doc: Parameter 5
@@ -460,8 +452,7 @@ iesdpDword:
       doc: Power
     - name: EFF2_projectile
       detail: dword offset EFF2_projectile = 0xa0
-      doc: |-
-        <b><a name="effv2_Body_0xA0">Projectile</a></b>
+      doc: <b><a name="effv2_Body_0xA0">Projectile</a></b>
     - name: EFF2_resistance
       detail: dword offset EFF2_resistance = 0x5c
       doc: |+
@@ -760,7 +751,7 @@ iesdpDword:
         Stacking IDs are unique to the opcode being applied. To maintain uniqueness of stacking IDs between different mods, one recommendation is to use the higher word of Special as the modder's Infinity Engine Community Prefix, then use the lower word as an identifying ID. For example, 0x41360001 ('A6' 0x0001).
     - name: ITM_HEAD_flags
       detail: dword offset ITM_HEAD_flags = 0x26
-      doc: '[Flags](#ExtHeader_Flags)'
+      doc: "[Flags](#ExtHeader_Flags)"
     - name: ITM_enchantment
       detail: dword offset ITM_enchantment = 0x60
       doc: <b><a name="itmv1_Header_0x60">Enchantment</a></b>
@@ -772,7 +763,7 @@ iesdpDword:
       doc: Offset to feature blocks
     - name: ITM_flags
       detail: dword offset ITM_flags = 0x18
-      doc: '[Flags](#Header_Flags)'
+      doc: "[Flags](#Header_Flags)"
     - name: ITM_price
       detail: dword offset ITM_price = 0x34
       doc: Price
@@ -784,7 +775,7 @@ iesdpDword:
       doc: Spell Description
     - name: SPL_exclusion_flags
       detail: dword offset SPL_exclusion_flags = 0x1e
-      doc: '[Exclusion Flags](#Exclusion_Flags)'
+      doc: "[Exclusion Flags](#Exclusion_Flags)"
     - name: SPL_extended_headers_offset
       detail: dword offset SPL_extended_headers_offset = 0x64
       doc: Extended Header offset
@@ -793,7 +784,7 @@ iesdpDword:
       doc: Feature Block Table offset
     - name: SPL_flags
       detail: dword offset SPL_flags = 0x18
-      doc: '[Flags](#Header_Flags)'
+      doc: "[Flags](#Header_Flags)"
     - name: SPL_level
       detail: dword offset SPL_level = 0x34
       doc: |-
@@ -951,7 +942,7 @@ iesdpWord:
         - 10 ⟶ [Instant/Limited](../ie_formats/eff_v1.htm#effv1_Header_0xC_10)
         - 4096 ⟶ <a name="effv2_Body_0x24_4096">**Absolute duration**</a>
           - Effect is applied instantly.
-          - This timing mode treats the [Duration](#effv2_Body_0x28) field as the effect's expiration time (in ticks). Expires at [Gametime](../ie_formats/gam_v2.0.htm#GAMEV2_0_Header_GameTime)`(ticks) >= `[Duration](#effv2_Body_0x28)`(ticks)`.  
+          - This timing mode treats the [Duration](#effv2_Body_0x28) field as the effect's expiration time (in ticks). Expires at [Gametime](../ie_formats/gam_v2.0.htm#GAMEV2_0_Header_GameTime)`(ticks) >= `[Duration](#effv2_Body_0x28)`(ticks)`.
           If the [Duration](#effv2_Body_0x28) field is `108000`, the effect will expire when the game timer reaches 24 hours, or instantly if the game timer has already passed that point. `108000 = 300(1 hour) * 24 * 15 (ticks ➔ seconds)`.
 
 
@@ -1056,8 +1047,7 @@ iesdpWord:
       doc: <b><a name="itmv1_Extended_Header_0x22">Max Charges</a></b>
     - name: ITM_HEAD_projectile_animation
       detail: word offset ITM_HEAD_projectile_animation = 0x2a
-      doc: |-
-        <b><a name="itmv1_Extended_Header_0x2A">Projectile Animation</a></b> (projectl.ids/missile.ids)
+      doc: <b><a name="itmv1_Extended_Header_0x2A">Projectile Animation</a></b> (projectl.ids/missile.ids)
     - name: ITM_HEAD_range
       detail: word offset ITM_HEAD_range = 0xe
       doc: <b><a name="itmv1_Extended_Header_0xE">Range</a></b>
@@ -1103,7 +1093,7 @@ iesdpWord:
       doc: <b><a name="itmv1_Header_0x38">Stack amount</a></b>
     - name: ITM_type
       detail: word offset ITM_type = 0x1c
-      doc: '[Item type](#Header_ItemType)'
+      doc: "[Item type](#Header_ItemType)"
     - name: SPL_HEAD_casting_time
       detail: word offset SPL_HEAD_casting_time = 0x12
       doc: |
@@ -1148,8 +1138,7 @@ iesdpWord:
         Subspells don't require an <code><a href="#splv1_Extended_Header_0x2">Ability Location</a></code>.
     - name: SPL_HEAD_projectile
       detail: word offset SPL_HEAD_projectile = 0x26
-      doc: |-
-        <b><a name="splv1_Extended_Header_0x26">Projectile</a></b> (BG2: [projectl.ids](../../ids/bg2/projectl.htm). **Note:** in BG2, this value is off-by-one from projectl.ids value. I.e. binary value of `2` corresponds to `0x1 - ARROW`)
+      doc: '<b><a name="splv1_Extended_Header_0x26">Projectile</a></b> (BG2: [projectl.ids](../../ids/bg2/projectl.htm). **Note:** in BG2, this value is off-by-one from projectl.ids value. I.e. binary value of `2` corresponds to `0x1 - ARROW`)'
     - name: SPL_HEAD_range
       detail: word offset SPL_HEAD_range = 0xe
       doc: |
@@ -1168,7 +1157,7 @@ iesdpWord:
       doc: Casting Feature Block offset (these feature blocks may not use target type 2)
     - name: SPL_casting_graphics
       detail: word offset SPL_casting_graphics = 0x22
-      doc: '[Casting Graphics](#Header_Casting_Graphics)'
+      doc: "[Casting Graphics](#Header_Casting_Graphics)"
     - name: SPL_extended_headers_count
       detail: word offset SPL_extended_headers_count = 0x68
       doc: Extended Header count
@@ -1216,7 +1205,7 @@ iesdpWord:
       doc: Capacity (0=unlimited)
     - name: STO_chance_of_steal_failure
       detail: word offset STO_chance_of_steal_failure = 0x20
-      doc: '% chance of steal failure'
+      doc: "% chance of steal failure"
 iesdpByte:
   type: 21
   items:
@@ -1418,16 +1407,16 @@ iesdpByte:
         - See [opcode #190]({{ "/opcodes/bgee.htm#op190" | prepend: relurl }}).
     - name: ITM_kit_usability1
       detail: byte offset ITM_kit_usability1 = 0x29
-      doc: '[Kit Usability 1](#Header_KitUsability)'
+      doc: "[Kit Usability 1](#Header_KitUsability)"
     - name: ITM_kit_usability2
       detail: byte offset ITM_kit_usability2 = 0x2b
-      doc: '[Kit Usability 2](#Header_KitUsability)'
+      doc: "[Kit Usability 2](#Header_KitUsability)"
     - name: ITM_kit_usability3
       detail: byte offset ITM_kit_usability3 = 0x2d
-      doc: '[Kit Usability 3](#Header_KitUsability)'
+      doc: "[Kit Usability 3](#Header_KitUsability)"
     - name: ITM_kit_usability4
       detail: byte offset ITM_kit_usability4 = 0x2f
-      doc: '[Kit Usability 4](#Header_KitUsability)'
+      doc: "[Kit Usability 4](#Header_KitUsability)"
     - name: ITM_min_constitution
       detail: byte offset ITM_min_constitution = 0x30
       doc: Min Constitution (unused in BG1)
@@ -1440,14 +1429,14 @@ iesdpByte:
     - name: ITM_min_strength_bonus
       detail: byte offset ITM_min_strength_bonus = 0x28
       doc: |
-        Min Strength Bonus (unused in BG1)  
+        Min Strength Bonus (unused in BG1)
         Note: A strength of 19 or above is considered to have a Strength Bonus of 0, and would therefore not be able to equip any weapon with a Strength Bonus restriction.
     - name: ITM_min_wisdom
       detail: byte offset ITM_min_wisdom = 0x2e
       doc: Min Wisdom (unused in BG1)
     - name: ITM_weapon_proficiency
       detail: byte offset ITM_weapon_proficiency = 0x31
-      doc: '[Weapon Proficiency](#Header_Proficiency)'
+      doc: "[Weapon Proficiency](#Header_Proficiency)"
     - name: SPL_school
       detail: byte offset SPL_school = 0x25
       doc: |

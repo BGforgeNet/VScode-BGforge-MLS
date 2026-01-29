@@ -815,7 +815,7 @@ actions:
     - name: DestroySelf
       detail: DestroySelf()
       doc: |-
-        This action removes the active creature from the game. No death variable is set. Global creatures like 
+        This action removes the active creature from the game. No death variable is set. Global creatures like
         joinable NPCs, familiars and recipients of `MakeGlobal` are still accessible by script name and are not
         fully removed. The example script is from the Irenicus cutscene at the beginning of the game.
 
@@ -900,7 +900,7 @@ actions:
       detail: DisplayStringHeadNoLog(O:Object, I:StrRef)
       doc: |-
         This action displays the string specified by the StrRef parameter over the head of the given object on the game-screen, but not in the message log.
-         It is possible to colorize the string. In order to do so, follow the instructions concerning the colorization of the name of your character during [Character Creation](https://gibberlings3.github.io/iesdp/scripting/actions/{{  "/appendices/charactercreation.htm" | relative_url }}|https://gibberlings3.github.io/iesdp/scripting/actions/{{  "/appendices/charactercreation.htm" | relative_url }}). 
+         It is possible to colorize the string. In order to do so, follow the instructions concerning the colorization of the name of your character during [Character Creation](https://gibberlings3.github.io/iesdp/scripting/actions/{{  "/appendices/charactercreation.htm" | relative_url }}|https://gibberlings3.github.io/iesdp/scripting/actions/{{  "/appendices/charactercreation.htm" | relative_url }}).
     - name: DisplayStringHeadOwner
       detail: DisplayStringHeadOwner(S:Item, I:STRREF)
       doc: |-
@@ -921,12 +921,12 @@ actions:
       detail: DisplayStringPoint(P:Location, I:Strref)
       doc: |-
         Displays a floating message over a point in the script runner's current area.
-         It is possible to colorize the string. In order to do so, follow the instructions concerning the colorization of the name of your character during [Character Creation](https://gibberlings3.github.io/iesdp/scripting/actions/{{ "/appendices/charactercreation.htm" | relative_url }}|https://gibberlings3.github.io/iesdp/scripting/actions/{{ "/appendices/charactercreation.htm" | relative_url }}). 
+         It is possible to colorize the string. In order to do so, follow the instructions concerning the colorization of the name of your character during [Character Creation](https://gibberlings3.github.io/iesdp/scripting/actions/{{ "/appendices/charactercreation.htm" | relative_url }}|https://gibberlings3.github.io/iesdp/scripting/actions/{{ "/appendices/charactercreation.htm" | relative_url }}).
     - name: DisplayStringPointLog
       detail: DisplayStringPointLog(P:Location, I:Strref)
       doc: |-
         Same as [DisplayStringPoint(P:Location\*,I:Strref\*)](https://gibberlings3.github.io/iesdp/scripting/actions/bgeeactions.htm#361) this action displays a floating message over a point in the script runner's current area, but also displays it in the message log.
-         It is possible to colorize the string. In order to do so, follow the instructions concerning the colorization of the name of your character during [Character Creation](https://gibberlings3.github.io/iesdp/scripting/actions/{{ "/appendices/charactercreation.htm" | relative_url }}|https://gibberlings3.github.io/iesdp/scripting/actions/{{ "/appendices/charactercreation.htm" | relative_url }}). 
+         It is possible to colorize the string. In order to do so, follow the instructions concerning the colorization of the name of your character during [Character Creation](https://gibberlings3.github.io/iesdp/scripting/actions/{{ "/appendices/charactercreation.htm" | relative_url }}|https://gibberlings3.github.io/iesdp/scripting/actions/{{ "/appendices/charactercreation.htm" | relative_url }}).
     - name: DisplayStringWait
       detail: DisplayStringWait(O:Object, I:StrRef)
       doc: |-
@@ -1332,7 +1332,7 @@ actions:
           - This action will default to a spell matching the first 7 characters in Dialogs/Console *IF* the 8<sup>th</sup> character isn't valid.
         - If `CastingLevel = 0`, then the action will use Caster Level.
     - name: ForceSpellPointRES
-      detail: ForceSpellPointRES(S:RES, P:Target, I:CastingLevel)
+      detail: ForceSpellPointRES(S:RES, P:Target)
       doc: |
         This action causes the active creature to cast the specified spell at the specified point ([x.y]). The spell need not currently be memorised by the caster, and will not be interrupted while being cast. The caster must meet the level requirements of the spell. For the RES version of the action, the spell name can not consist of only numbers, should be written in upper case and should be no more than 7 characters long.
 
@@ -2512,7 +2512,7 @@ actions:
       detail: ResetPlayerAI()
       doc: |-
         This action restores the player ai script for the active creature, as defined in [PARTYAI.2DA](https://gibberlings3.github.io/iesdp/files/2da/2da_bgee/partyai.htm).
-         Even though this action is primarily intended for (potential) party members, it does work for any creature in the game. 
+         Even though this action is primarily intended for (potential) party members, it does work for any creature in the game.
     - name: Rest
       detail: Rest()
       doc: |-
@@ -3017,8 +3017,8 @@ actions:
         ```
     - name: Shout
       detail: Shout(I:ID*Shoutids)
-      doc: |2-
-
+      doc: |-
+        
         This action is used to shout the specified number. The action is used in conjunction with the
         {% assign text = "<code>Heard()</code>" -%} {%- assign anchor = "0x002F" -%} {%- include trigger_link.html %}
         trigger. Shouts can be heard within a radius of 1.5x the script runner's current visual range, which by default evaluates to 42 feet (672 pixels).

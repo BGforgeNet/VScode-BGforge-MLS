@@ -30,12 +30,6 @@ cd $iesdp_dir
 git checkout ielib
 git pull
 popd
-./scripts/iesdp_update.py -s "$iesdp_dir" \
-    --highlight-baf "$highlight_baf" \
-    --data-baf "$data_baf" \
-    --highlight-weidu "$highlight_weidu" \
-    --iesdp-file "$data_weidu_iesdp" \
-    --ielib-dir "$ielib_dir"
 
 # IElib
 pushd .
@@ -45,7 +39,15 @@ fi
 cd "$ielib_dir"
 git pull
 popd
-./scripts/ielib_update.py -s "$ielib_dir" --data-file "$data_weidu_ielib" --highlight-weidu "$highlight_weidu"
+
+pnpm exec tsx scripts/ie-update/src/iesdp-update.ts -s "$iesdp_dir" \
+    --highlight-baf "$highlight_baf" \
+    --data-baf "$data_baf" \
+    --highlight-weidu "$highlight_weidu" \
+    --iesdp-file "$data_weidu_iesdp" \
+    --ielib-dir "$ielib_dir"
+
+pnpm exec tsx scripts/ie-update/src/ielib-update.ts -s "$ielib_dir" --data-file "$data_weidu_ielib" --highlight-weidu "$highlight_weidu"
 
 # convert yaml to json
 ./scripts/syntaxes-to-json.sh

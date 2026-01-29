@@ -457,6 +457,9 @@
         "transpile": "node --no-warnings cli/transpile/out/transpile-cli.js",
         "bin": "node cli/bin/out/bin-cli.js",
         "lint:cli": "tsc --project cli/tsconfig.json && eslint cli/**/*.ts --ignore-pattern 'cli/test' --ignore-pattern 'cli/vitest.config.ts' --no-warn-ignored --max-warnings 0",
+        "ie-update": "./scripts/ie-update.sh",
+        "test:ie-update": "vitest run --config scripts/ie-update/vitest.config.ts",
+        "lint:ie-update": "tsc --project scripts/ie-update/tsconfig.json",
         "knip": "knip"
     },
     "devDependencies": {
@@ -464,18 +467,20 @@
         "@types/node": "^22.17.1",
         "@typescript-eslint/eslint-plugin": "^8.39.1",
         "@typescript-eslint/parser": "^8.39.1",
+        "@vitest/coverage-v8": "^4.0.18",
         "@vscode/codicons": "^0.0.44",
         "@vscode/vsce": "^3.3.2",
         "esbuild": "^0.25.8",
         "eslint": "^9.33.0",
         "globals": "^15.15.0",
-        "@vitest/coverage-v8": "^4.0.18",
         "knip": "^5.79.0",
         "mocha": "^11.7.1",
         "prettier": "^3.6.2",
         "tree-sitter-cli": "0.26.3",
+        "tsx": "^4.21.0",
         "typescript": "^5.7.3",
-        "vitest": "^4.0.18"
+        "vitest": "^4.0.18",
+        "yaml": "^2.8.2"
     },
     "categories": [
         "Programming Languages"
