@@ -23,7 +23,8 @@ fi
 cd $sfall_dir
 git checkout master
 git pull
-last_v="v$(git tag | grep "^v" | sed 's|^v||' | sort -n | tail -1)"
+git fetch --tags
+last_v="v$(git tag | grep "^v" | sed 's|^v||' | sort -V | tail -1)"
 git checkout "$last_v"
 popd
 
