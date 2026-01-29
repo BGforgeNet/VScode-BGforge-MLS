@@ -472,7 +472,43 @@ iesdpDword:
           - Can be dispelled, affected by Magic Resistance.
         - bit 1 ⟶ <b><a name="effv2_Body_0x5C_BIT1">Bypass resistance</a></b>
           - Ignores Magic Resistance.
-        - bit 2 ⟶ <b><a name="effv2_Body_0x5C_BIT2">Bypasses deflection/reflection/trap opcodes</a></b> (only in EE games patched to v2.0+).
+        - bit 2 ⟶
+          <b name="effv2_Body_0x5C_BIT2">Bypasses
+            <a href="{{ '/opcodes/bgee.htm#op199' | prepend: relurl }}">opcode #199</a>,
+            <a href="{{ '/opcodes/bgee.htm#op200' | prepend: relurl }}">opcode #200</a>,
+            <a href="{{ '/opcodes/bgee.htm#op201' | prepend: relurl }}">opcode #201</a>,
+            and <a href="{{ '/opcodes/bgee.htm#op259' | prepend: relurl }}">opcode #259</a>
+          </b> (only in EE games patched to v2.0+)
+          <div style="margin-top: 0.5em">Set automatically by the engine in the following circumstances:</div>
+          <ul style="margin-bottom: 0.5em">
+            <li style="margin-top: 0.5em">
+              An effect has one of the following <a href="{{ '/file_formats/ie_formats/eff_v2.htm#effv2_Body_0x14' | prepend: relurl }}"><code>Target type</code></a> values:
+              <ul>
+                <li><code>Party (3)</code></li>
+                <li><code>Everyone (4)</code></li>
+                <li><code>Everyone except party (5)</code></li>
+                <li><code>Caster group (6)</code></li>
+                <li><code>Target group (7)</code></li>
+                <li><code>Everyone except self (8)</code></li>
+              </ul>
+            </li>
+            <li style="margin-top: 0.5em">
+              An effect is delivered via:
+              <ul>
+                <li style="margin-top: 0.5em">
+                  The hardcoded <a href="{{ '/file_formats/ie_formats/spl_v1.htm#splv1_Extended_Header_0x26' | prepend: relurl }}">projectiles</a>
+                  <code>25/26/189</code>
+                </li>
+                <li style="margin-top: 0.5em">
+                  <b>or</b> a <a href="{{ '/file_formats/ie_formats/pro_v1.htm' | prepend: relurl }}"><code>PRO</code></a> file's
+                  <a href="{{ '/file_formats/ie_formats/pro_v1.htm#0x214' | prepend: relurl }}"><code>Secondary Projectile</code></a>
+                </li>
+              </ul>
+              <div style="margin-top: 0.5em">
+                <b>and</b> uses a non-<code>Original caster (9)</code> <a href="{{ '/file_formats/ie_formats/eff_v2.htm#effv2_Body_0x14' | prepend: relurl }}"><code>Target type</code></a>.
+              </div>
+            </li>
+          </ul>
         - bit 3 ⟶ <b><a name="effv2_Body_0x5C_BIT3">Self-targeted</a></b> (only in EE games patched to v2.6+)
           - Targeting yourself with an ability (Extended Header) will internally set this bit on all effects applied by that ability.
             - For the caster, it will allow a Magic Resistance check for any effect that has both <code><a href="#effv2_Body_0x5C_BIT0">Dispel</a></code> set and offers some saving throw.
@@ -511,6 +547,16 @@ iesdpDword:
         - bit 2 ⟶ <b><a name="effv2_Body_0x40_BIT2">Paralyze / Poison / Death</a></b>
         - bit 3 ⟶ <b><a name="effv2_Body_0x40_BIT3">Wands</a></b>
         - bit 4 ⟶ <b><a name="effv2_Body_0x40_BIT4">Petrify / Polymorph</a></b>
+        - bit 5 ⟶ <b id="effv2_Body_0x40_BIT5_EE">Spells</b> (EE only)
+          - see <b><a href="{{ '/opcodes/bgee.htm#op322' | prepend: relurl }}">opcode #322</a></b>
+        - bit 6 ⟶ <b id="effv2_Body_0x40_BIT6_EE">Breath</b> (EE only)
+          - see <b><a href="{{ '/opcodes/bgee.htm#op322' | prepend: relurl }}">opcode #322</a></b>
+        - bit 7 ⟶ <b id="effv2_Body_0x40_BIT7_EE">Paralyze / Poison / Death</b> (EE only)
+          - see <b><a href="{{ '/opcodes/bgee.htm#op322' | prepend: relurl }}">opcode #322</a></b>
+        - bit 8 ⟶ <b id="effv2_Body_0x40_BIT8_EE">Wands</b> (EE only)
+          - see <b><a href="{{ '/opcodes/bgee.htm#op322' | prepend: relurl }}">opcode #322</a></b>
+        - bit 9 ⟶ <b id="effv2_Body_0x40_BIT9_EE">Petrify / Polymorph</b> (EE only)
+          - see <b><a href="{{ '/opcodes/bgee.htm#op322' | prepend: relurl }}">opcode #322</a></b>
         - bit 10 ⟶ <b><a name="effv2_Body_0x40_BIT10">Ignore primary target</a></b> (EE only)
         - bit 11 ⟶ <b><a name="effv2_Body_0x40_BIT11">Ignore secondary target</a></b> (EE only)
         - bit 24 ⟶ <b><a name="effv2_Body_0x40_BIT24">Bypass mirror image</a></b> (EE/TobEx only)
@@ -631,6 +677,16 @@ iesdpDword:
         - bit 2 ⟶ <b><a name="effv1_Header_0x24_BIT2">Paralyze / Poison / Death</a></b>
         - bit 3 ⟶ <b><a name="effv1_Header_0x24_BIT3">Wands</a></b>
         - bit 4 ⟶ <b><a name="effv1_Header_0x24_BIT4">Petrify / Polymorph</a></b>
+        - bit 5 ⟶ <b id="effv1_Header_0x24_BIT5_EE">Spells</b> (EE only)
+          - see <b><a href="{{ '/opcodes/bgee.htm#op322' | prepend: relurl }}">opcode #322</a></b>
+        - bit 6 ⟶ <b id="effv1_Header_0x24_BIT6_EE">Breath</b> (EE only)
+          - see <b><a href="{{ '/opcodes/bgee.htm#op322' | prepend: relurl }}">opcode #322</a></b>
+        - bit 7 ⟶ <b id="effv1_Header_0x24_BIT7_EE">Paralyze / Poison / Death</b> (EE only)
+          - see <b><a href="{{ '/opcodes/bgee.htm#op322' | prepend: relurl }}">opcode #322</a></b>
+        - bit 8 ⟶ <b id="effv1_Header_0x24_BIT8_EE">Wands</b> (EE only)
+          - see <b><a href="{{ '/opcodes/bgee.htm#op322' | prepend: relurl }}">opcode #322</a></b>
+        - bit 9 ⟶ <b id="effv1_Header_0x24_BIT9_EE">Petrify / Polymorph</b> (EE only)
+          - see <b><a href="{{ '/opcodes/bgee.htm#op322' | prepend: relurl }}">opcode #322</a></b>
         - bit 10 ⟶ <b><a name="effv1_Header_0x24_BIT10">Ignore primary target</a></b> (EE only)
           - <a href="../ie_formats/pro_v1.htm#ExtFlags_BIT14">Line AoE projectile</a> doesn't affect end target.
         - bit 11 ⟶ <b><a name="effv1_Header_0x24_BIT11">Ignore secondary target</a></b> (EE only)

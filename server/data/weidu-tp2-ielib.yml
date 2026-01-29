@@ -69,7 +69,6 @@ patchFunctions:
         Returns current armor's base AC. If base AC is not found, defaults to 100.
 
 
-
         | RET vars | Description | Type |
         |:--------|:-----|:--------|
         | base_ac | base AC | [int](https://ielib.bgforge.net/types/#int) |
@@ -91,7 +90,7 @@ patchFunctions:
 
         | **INT_VAR** | **Description** | **Type** | **Default** |
         |:-|:-|:-|:-|
-        | warn | Warn if the item is not an armor | [bool](https://ielib.bgforge.net/types/#bool) | True |
+        | warn | Warn if the item is not an armor | [bool](https://ielib.bgforge.net/types/#bool) | 1 |
 
         | RET vars | Description | Type |
         |:--------|:-----|:--------|
@@ -174,7 +173,7 @@ actionFunctions:
 
         | **STR_VAR** | **Description** | **Type** | **Default** |
         |:-|:-|:-|:-|
-        | dialog or script | filename of the dialog or script | [filename](https://ielib.bgforge.net/types/#filename) | _required_ |
+        | filename | filename of the dialog or script | [filename](https://ielib.bgforge.net/types/#filename) | _required_ |
         | item | item resource | [resref](https://ielib.bgforge.net/types/#resref) | _required_ |
 
         | RET vars | Description | Type |
@@ -217,7 +216,7 @@ actionFunctions:
         | **STR_VAR** | **Description** | **Type** | **Default** |
         |:-|:-|:-|:-|
         | item | item resource | [resref](https://ielib.bgforge.net/types/#resref) | _required_ |
-        | resource file | filename | [filename](https://ielib.bgforge.net/types/#filename) | _required_ |
+        | resource | filename | [filename](https://ielib.bgforge.net/types/#filename) | _required_ |
 
         | RET vars | Description | Type |
         |:--------|:-----|:--------|
@@ -249,7 +248,7 @@ actionFunctions:
 
         | RET vars | Description | Type |
         |:--------|:-----|:--------|
-        | present | does the creature posess the item? | [bool](https://ielib.bgforge.net/types/#bool) |
+        | present | does the creature possess the item? | [bool](https://ielib.bgforge.net/types/#bool) |
       type: action
 ielibResref:
   type: 21
@@ -2088,7 +2087,7 @@ ielibResref:
       detail: resref SCROLL_CLERIC_RAISE_DEAD = "SCRL63"
       doc: IElib define
     - name: SCROLL_WIZARD_ABI_DALZIMS_HORRID_WILTING
-      detail: resref SCROLL_WIZARD_ABI_DALZIMS_HORRID_WILTING = "SPWI805X"
+      detail: resref SCROLL_WIZARD_ABI_DALZIMS_HORRID_WILTING = "SCRL9G"
       doc: IElib define
     - name: SCROLL_WIZARD_ABSOLUTE_IMMUNITY
       detail: resref SCROLL_WIZARD_ABSOLUTE_IMMUNITY = "SCRL9P"
@@ -2145,10 +2144,10 @@ ielibResref:
       detail: resref SCROLL_WIZARD_CHAIN_CONTINGENCY = "SCRL9Q"
       doc: IElib define
     - name: SCROLL_WIZARD_CHAIN_LIGHTNING
-      detail: resref SCROLL_WIZARD_CHAIN_LIGHTNING = "SCCLITE"
+      detail: resref SCROLL_WIZARD_CHAIN_LIGHTNING = "SCRL7S"
       doc: IElib define
     - name: SCROLL_WIZARD_CHAOS
-      detail: resref SCROLL_WIZARD_CHAOS = "SCCHAO"
+      detail: resref SCROLL_WIZARD_CHAOS = "SCRL5P"
       doc: IElib define
     - name: SCROLL_WIZARD_CHARM_PERSON
       detail: resref SCROLL_WIZARD_CHARM_PERSON = "SCRL69"
@@ -2175,13 +2174,13 @@ ielibResref:
       detail: resref SCROLL_WIZARD_CONFUSION = "SCRL1U"
       doc: IElib define
     - name: SCROLL_WIZARD_CONJURE_AIR_ELEMENTAL
-      detail: resref SCROLL_WIZARD_CONJURE_AIR_ELEMENTAL = "SCCAE"
+      detail: resref SCROLL_WIZARD_CONJURE_AIR_ELEMENTAL = "SCRL7Y"
       doc: IElib define
     - name: SCROLL_WIZARD_CONJURE_EARTH_ELEMENTAL
-      detail: resref SCROLL_WIZARD_CONJURE_EARTH_ELEMENTAL = "SCCEE"
+      detail: resref SCROLL_WIZARD_CONJURE_EARTH_ELEMENTAL = "SCRL7Z"
       doc: IElib define
     - name: SCROLL_WIZARD_CONJURE_FIRE_ELEMENTAL
-      detail: resref SCROLL_WIZARD_CONJURE_FIRE_ELEMENTAL = "SCCFE"
+      detail: resref SCROLL_WIZARD_CONJURE_FIRE_ELEMENTAL = "SCRL7X"
       doc: IElib define
     - name: SCROLL_WIZARD_CONJURE_LESSER_AIR_ELEMENTAL
       detail: resref SCROLL_WIZARD_CONJURE_LESSER_AIR_ELEMENTAL = "SCRL7B"
@@ -2214,10 +2213,10 @@ ielibResref:
       detail: resref SCROLL_WIZARD_DEAFNESS = "SCRLA2"
       doc: IElib define
     - name: SCROLL_WIZARD_DEATH_FOG
-      detail: resref SCROLL_WIZARD_DEATH_FOG = "SCDFOG"
+      detail: resref SCROLL_WIZARD_DEATH_FOG = "SCRL7R"
       doc: IElib define
     - name: SCROLL_WIZARD_DEATH_SPELL
-      detail: resref SCROLL_WIZARD_DEATH_SPELL = "SCDSPEL"
+      detail: resref SCROLL_WIZARD_DEATH_SPELL = "SCRL7I"
       doc: IElib define
     - name: SCROLL_WIZARD_DECASTAVE
       detail: resref SCROLL_WIZARD_DECASTAVE = "SCDECA"
@@ -2244,13 +2243,13 @@ ielibResref:
       detail: resref SCROLL_WIZARD_DIRE_CHARM = "SCRL1S"
       doc: IElib define
     - name: SCROLL_WIZARD_DISINTEGRATE
-      detail: resref SCROLL_WIZARD_DISINTEGRATE = "SCDISI"
+      detail: resref SCROLL_WIZARD_DISINTEGRATE = "SCRL7T"
       doc: IElib define
     - name: SCROLL_WIZARD_DISPEL_MAGIC
       detail: resref SCROLL_WIZARD_DISPEL_MAGIC = "SCRLA7"
       doc: IElib define
     - name: SCROLL_WIZARD_DOMINATION
-      detail: resref SCROLL_WIZARD_DOMINATION = "SCDOMI"
+      detail: resref SCROLL_WIZARD_DOMINATION = "SCRL5N"
       doc: IElib define
     - name: SCROLL_WIZARD_EMOTION_COURAGE
       detail: resref SCROLL_WIZARD_EMOTION_COURAGE = "SCCOUR"
@@ -2262,7 +2261,7 @@ ielibResref:
       detail: resref SCROLL_WIZARD_EMOTION_HOPE = "SCEMOT"
       doc: IElib define
     - name: SCROLL_WIZARD_EMOTION_HOPELESSNESS
-      detail: resref SCROLL_WIZARD_EMOTION_HOPELESSNESS = "SCHOPE"
+      detail: resref SCROLL_WIZARD_EMOTION_HOPELESSNESS = "SCRL5H"
       doc: IElib define
     - name: SCROLL_WIZARD_ENCHANTED_WEAPON
       detail: resref SCROLL_WIZARD_ENCHANTED_WEAPON = "SCRL6M"
@@ -2277,16 +2276,16 @@ ielibResref:
       detail: resref SCROLL_WIZARD_EYE = "SCRLA1"
       doc: IElib define
     - name: SCROLL_WIZARD_FAR_SIGHT
-      detail: resref SCROLL_WIZARD_FAR_SIGHT = "SCRLAQ"
+      detail: resref SCROLL_WIZARD_FAR_SIGHT = "SCRLAJ"
       doc: IElib define
     - name: SCROLL_WIZARD_FEEBLEMIND
-      detail: resref SCROLL_WIZARD_FEEBLEMIND = "SCFEEB"
+      detail: resref SCROLL_WIZARD_FEEBLEMIND = "SCRL5Q"
       doc: IElib define
     - name: SCROLL_WIZARD_FIND_FAMILAR
       detail: resref SCROLL_WIZARD_FIND_FAMILAR = "SCRL6D"
       doc: IElib define
     - name: SCROLL_WIZARD_FINGER_OF_DEATH
-      detail: resref SCROLL_WIZARD_FINGER_OF_DEATH = "SCFING"
+      detail: resref SCROLL_WIZARD_FINGER_OF_DEATH = "SCRL8O"
       doc: IElib define
     - name: SCROLL_WIZARD_FIREBALL
       detail: resref SCROLL_WIZARD_FIREBALL = "SCRL1G"
@@ -2301,7 +2300,7 @@ ielibResref:
       detail: resref SCROLL_WIZARD_FLAME_ARROW = "SCRL1F"
       doc: IElib define
     - name: SCROLL_WIZARD_FLESH_TO_STONE
-      detail: resref SCROLL_WIZARD_FLESH_TO_STONE = "SCFTS"
+      detail: resref SCROLL_WIZARD_FLESH_TO_STONE = "SCRL7H"
       doc: IElib define
     - name: SCROLL_WIZARD_FREEDOM
       detail: resref SCROLL_WIZARD_FREEDOM = "SCRL9Z"
@@ -2322,13 +2321,13 @@ ielibResref:
       detail: resref SCROLL_WIZARD_GLITTERDUST = "SCRLA3"
       doc: IElib define
     - name: SCROLL_WIZARD_GLOBE_OF_INVULNERABILITY
-      detail: resref SCROLL_WIZARD_GLOBE_OF_INVULNERABILITY = "SCGLOB"
+      detail: resref SCROLL_WIZARD_GLOBE_OF_INVULNERABILITY = "SCRL7F"
       doc: IElib define
     - name: SCROLL_WIZARD_GREASE
       detail: resref SCROLL_WIZARD_GREASE = "SCRL66"
       doc: IElib define
     - name: SCROLL_WIZARD_GREATER_MALISON
-      detail: resref SCROLL_WIZARD_GREATER_MALISON = "SCMALI"
+      detail: resref SCROLL_WIZARD_GREATER_MALISON = "SCRL5I"
       doc: IElib define
     - name: SCROLL_WIZARD_GREAT_SHOUT
       detail: resref SCROLL_WIZARD_GREAT_SHOUT = "SPWI806X"
@@ -2337,7 +2336,7 @@ ielibResref:
       detail: resref SCROLL_WIZARD_HASTE = "SCRL1H"
       doc: IElib define
     - name: SCROLL_WIZARD_HOLD_MONSTER
-      detail: resref SCROLL_WIZARD_HOLD_MONSTER = "SCHMON"
+      detail: resref SCROLL_WIZARD_HOLD_MONSTER = "SCRL5O"
       doc: IElib define
     - name: SCROLL_WIZARD_HOLD_PERSON
       detail: resref SCROLL_WIZARD_HOLD_PERSON = "SCRL1I"
@@ -2352,7 +2351,7 @@ ielibResref:
       detail: resref SCROLL_WIZARD_ICELANCE = "SCICE"
       doc: IElib define
     - name: SCROLL_WIZARD_ICE_STORM
-      detail: resref SCROLL_WIZARD_ICE_STORM = "SCSTOR"
+      detail: resref SCROLL_WIZARD_ICE_STORM = "SCRL1X"
       doc: IElib define
     - name: SCROLL_WIZARD_IDENTIFY
       detail: resref SCROLL_WIZARD_IDENTIFY = "SCRL75"
@@ -2370,7 +2369,7 @@ ielibResref:
       detail: resref SCROLL_WIZARD_IMPROVED_MANTLE = "SCRL9C"
       doc: IElib define
     - name: SCROLL_WIZARD_INCENDIARY_CLOUD
-      detail: resref SCROLL_WIZARD_INCENDIARY_CLOUD = "SCINCIN"
+      detail: resref SCROLL_WIZARD_INCENDIARY_CLOUD = "SCRL9E"
       doc: IElib define
     - name: SCROLL_WIZARD_INFRAVISION
       detail: resref SCROLL_WIZARD_INFRAVISION = "SCRL76"
@@ -2382,7 +2381,7 @@ ielibResref:
       detail: resref SCROLL_WIZARD_INVISIBILITY_10_FOOT = "SCRL1J"
       doc: IElib define
     - name: SCROLL_WIZARD_INVISIBLE_STALKER
-      detail: resref SCROLL_WIZARD_INVISIBLE_STALKER = "SCISTAL"
+      detail: resref SCROLL_WIZARD_INVISIBLE_STALKER = "SCRL7E"
       doc: IElib define
     - name: SCROLL_WIZARD_IRON_BODY
       detail: resref SCROLL_WIZARD_IRON_BODY = "SPWI807X"
@@ -2409,7 +2408,7 @@ ielibResref:
       detail: resref SCROLL_WIZARD_LIMITED_WISH = "SCRLA4"
       doc: IElib define
     - name: SCROLL_WIZARD_LOWER_RESISTANCE
-      detail: resref SCROLL_WIZARD_LOWER_RESISTANCE = "SPWI518X"
+      detail: resref SCROLL_WIZARD_LOWER_RESISTANCE = "SCRL6V"
       doc: IElib define
     - name: SCROLL_WIZARD_LUCK
       detail: resref SCROLL_WIZARD_LUCK = "SCRL93"
@@ -2424,7 +2423,7 @@ ielibResref:
       detail: resref SCROLL_WIZARD_MANTLE = "SCRL8J"
       doc: IElib define
     - name: SCROLL_WIZARD_MASS_INVISIBILITY
-      detail: resref SCROLL_WIZARD_MASS_INVISIBILITY = "SCMINVI"
+      detail: resref SCROLL_WIZARD_MASS_INVISIBILITY = "SCRL8W"
       doc: IElib define
     - name: SCROLL_WIZARD_MAZE
       detail: resref SCROLL_WIZARD_MAZE = "SCRL9H"
@@ -2484,7 +2483,7 @@ ielibResref:
       detail: resref SCROLL_WIZARD_MORDENKAINENS_FORCE_MISSILES = "SPWI422X"
       doc: IElib define
     - name: SCROLL_WIZARD_MORDENKAINENS_SWORD
-      detail: resref SCROLL_WIZARD_MORDENKAINENS_SWORD = "SCMORD"
+      detail: resref SCROLL_WIZARD_MORDENKAINENS_SWORD = "SCRL8R"
       doc: IElib define
     - name: SCROLL_WIZARD_NON_DETECTION
       detail: resref SCROLL_WIZARD_NON_DETECTION = "SCRL1M"
@@ -2496,7 +2495,7 @@ ielibResref:
       detail: resref SCROLL_WIZARD_OTILUKES_FREEZING_SPHERE = "SCOFS"
       doc: IElib define
     - name: SCROLL_WIZARD_OTILUKES_RESILIENT_SPHERE
-      detail: resref SCROLL_WIZARD_OTILUKES_RESILIENT_SPHERE = "SCOTIL"
+      detail: resref SCROLL_WIZARD_OTILUKES_RESILIENT_SPHERE = "SCRL5J"
       doc: IElib define
     - name: SCROLL_WIZARD_PHANTOM_BLADE
       detail: resref SCROLL_WIZARD_PHANTOM_BLADE = "SCRL6Z"
@@ -2514,22 +2513,22 @@ ielibResref:
       detail: resref SCROLL_WIZARD_POLYMORPH_SELF = "SCRL5M"
       doc: IElib define
     - name: SCROLL_WIZARD_POWER_WORD_BLIND
-      detail: resref SCROLL_WIZARD_POWER_WORD_BLIND = "SPWI808X"
+      detail: resref SCROLL_WIZARD_POWER_WORD_BLIND = "SCRL9J"
       doc: IElib define
     - name: SCROLL_WIZARD_POWER_WORD_KILL
-      detail: resref SCROLL_WIZARD_POWER_WORD_KILL = "SCKILL"
+      detail: resref SCROLL_WIZARD_POWER_WORD_KILL = "SCRL9U"
       doc: IElib define
     - name: SCROLL_WIZARD_POWER_WORD_SILENCE
-      detail: resref SCROLL_WIZARD_POWER_WORD_SILENCE = "SCPWS"
+      detail: resref SCROLL_WIZARD_POWER_WORD_SILENCE = "SCRL7P"
       doc: IElib define
     - name: SCROLL_WIZARD_POWER_WORD_SLEEP
       detail: resref SCROLL_WIZARD_POWER_WORD_SLEEP = "SCRL6E"
       doc: IElib define
     - name: SCROLL_WIZARD_POWER_WORD_STUN
-      detail: resref SCROLL_WIZARD_POWER_WORD_STUN = "SCSTUN"
+      detail: resref SCROLL_WIZARD_POWER_WORD_STUN = "SCRL8Q"
       doc: IElib define
     - name: SCROLL_WIZARD_PRISMATIC_SPRAY
-      detail: resref SCROLL_WIZARD_PRISMATIC_SPRAY = "SCPRISM"
+      detail: resref SCROLL_WIZARD_PRISMATIC_SPRAY = "SCRL8P"
       doc: IElib define
     - name: SCROLL_WIZARD_PROJECT_IMAGE
       detail: resref SCROLL_WIZARD_PROJECT_IMAGE = "SCRL8F"
@@ -2547,7 +2546,7 @@ ielibResref:
       detail: resref SCROLL_WIZARD_PROTECTION_FROM_ENERGY = "SCRL8Y"
       doc: IElib define
     - name: SCROLL_WIZARD_PROTECTION_FROM_EVIL
-      detail: resref SCROLL_WIZARD_PROTECTION_FROM_EVIL = "SCRL78"
+      detail: resref SCROLL_WIZARD_PROTECTION_FROM_EVIL = "SCRL3H"
       doc: IElib define
     - name: SCROLL_WIZARD_PROTECTION_FROM_FIRE
       detail: resref SCROLL_WIZARD_PROTECTION_FROM_FIRE = "SCRL6H"
@@ -2571,13 +2570,13 @@ ielibResref:
       detail: resref SCROLL_WIZARD_PROTECTION_FROM_THE_ELEMENTS = "SCRL8E"
       doc: IElib define
     - name: SCROLL_WIZARD_RAY_OF_ENFEEBLEMENT
-      detail: resref SCROLL_WIZARD_RAY_OF_ENFEEBLEMENT = "SCRLAI"
+      detail: resref SCROLL_WIZARD_RAY_OF_ENFEEBLEMENT = "SCRL6F"
       doc: IElib define
     - name: SCROLL_WIZARD_REFLECTED_IMAGE
       detail: resref SCROLL_WIZARD_REFLECTED_IMAGE = "SCRL5U"
       doc: IElib define
     - name: SCROLL_WIZARD_REMOVE_CURSE
-      detail: resref SCROLL_WIZARD_REMOVE_CURSE = "SCREM"
+      detail: resref SCROLL_WIZARD_REMOVE_CURSE = "SCRL5G"
       doc: IElib define
     - name: SCROLL_WIZARD_REMOVE_MAGIC
       detail: resref SCROLL_WIZARD_REMOVE_MAGIC = "SCRLA7"
@@ -2670,7 +2669,7 @@ ielibResref:
       detail: resref SCROLL_WIZARD_SPIDER_SPAWN = "SCRL6R"
       doc: IElib define
     - name: SCROLL_WIZARD_SPIRIT_ARMOR
-      detail: resref SCROLL_WIZARD_SPIRIT_ARMOR = "SCSPIR"
+      detail: resref SCROLL_WIZARD_SPIRIT_ARMOR = "SCRL5K"
       doc: IElib define
     - name: SCROLL_WIZARD_SPOOK
       detail: resref SCROLL_WIZARD_SPOOK = "SCRLA6"
@@ -2679,10 +2678,10 @@ ielibResref:
       detail: resref SCROLL_WIZARD_STINKING_CLOUD = "SCRL97"
       doc: IElib define
     - name: SCROLL_WIZARD_STONE_SKIN
-      detail: resref SCROLL_WIZARD_STONE_SKIN = "SCSTON"
+      detail: resref SCROLL_WIZARD_STONE_SKIN = "SCRL1V"
       doc: IElib define
     - name: SCROLL_WIZARD_STONE_TO_FLESH
-      detail: resref SCROLL_WIZARD_STONE_TO_FLESH = "SCSTF"
+      detail: resref SCROLL_WIZARD_STONE_TO_FLESH = "SCRL8C"
       doc: IElib define
     - name: SCROLL_WIZARD_STRENGTH
       detail: resref SCROLL_WIZARD_STRENGTH = "SCRL98"
@@ -2709,22 +2708,22 @@ ielibResref:
       detail: resref SCROLL_WIZARD_SUMMON_SHADOW = "SCSSHA"
       doc: IElib define
     - name: SCROLL_WIZARD_SUN_FIRE
-      detail: resref SCROLL_WIZARD_SUN_FIRE = "SPWI519X"
+      detail: resref SCROLL_WIZARD_SUN_FIRE = "SCRLAL"
       doc: IElib define
     - name: SCROLL_WIZARD_SYMBOL_DEATH
-      detail: resref SCROLL_WIZARD_SYMBOL_DEATH = "SCRLAO"
+      detail: resref SCROLL_WIZARD_SYMBOL_DEATH = "SCRLAM"
       doc: IElib define
     - name: SCROLL_WIZARD_SYMBOL_FEAR
       detail: resref SCROLL_WIZARD_SYMBOL_FEAR = "SCRL9F"
       doc: IElib define
     - name: SCROLL_WIZARD_SYMBOL_STUN
-      detail: resref SCROLL_WIZARD_SYMBOL_STUN = "SCRLAP"
+      detail: resref SCROLL_WIZARD_SYMBOL_STUN = "SCRLAN"
       doc: IElib define
     - name: SCROLL_WIZARD_TELEPORT_FIELD
       detail: resref SCROLL_WIZARD_TELEPORT_FIELD = "SCRL6Q"
       doc: IElib define
     - name: SCROLL_WIZARD_TENSERS_TRANSFORMATION
-      detail: resref SCROLL_WIZARD_TENSERS_TRANSFORMATION = "SCTENS"
+      detail: resref SCROLL_WIZARD_TENSERS_TRANSFORMATION = "SCRL7G"
       doc: IElib define
     - name: SCROLL_WIZARD_TIME_STOP
       detail: resref SCROLL_WIZARD_TIME_STOP = "SCRL9R"

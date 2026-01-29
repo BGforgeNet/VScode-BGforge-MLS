@@ -481,7 +481,7 @@ actions:
     - name: ChangeStat
       detail: ChangeStat(O:Object, I:Stat*Stats, I:Value, I:Modifier*Statmod)
       doc: |-
-        Changes the base stat of the referenced creature. Not all stats are modifiable, even if they are in [stats.ids](https://gibberlings3.github.io/iesdp/files/ids/bgee/stats.htm). Some are recalculated by the engine (like Lore).
+        Changes the base stat of the referenced creature. Not all stats are modifiable, even if they are in [stats.ids](https://gibberlings3.github.io/iesdp/files/ids/bgee/stats.htm). Some are recalculated by the engine (like Lore). Some, like BG2 proficiencies, are stored as continuous effects and can only be modified by changing those effects (Stat: Proficiency Modifier). Values for Modifier are from [statmod.ids](https://gibberlings3.github.io/iesdp/files/ids/bgee/statmod.htm).
     - name: ChangeStoreMarkup
       detail: ChangeStoreMarkup(S:Store, I:BuyMarkup, I:SellMarkup)
       doc: |-
@@ -571,6 +571,10 @@ actions:
             Continue()
         END
         ```
+    - name: ContinueGame
+      detail: ContinueGame(I:State*Boolean)
+      doc: |-
+        If "State" is `FALSE` then this action clears the "Last Save" definition in `baldur.lua` for the current campaign that would otherwise enable the player to automatically load the latest save from the start menu of the game. Specifying `TRUE` does nothing.
     - name: CopyGroundPilesTo
       detail: CopyGroundPilesTo(S:ResRef, P:Location)
       doc: |-
@@ -917,6 +921,11 @@ actions:
       detail: DisplayStringPoint(P:Location, I:Strref)
       doc: |-
         Displays a floating message over a point in the script runner's current area.
+         It is possible to colorize the string. In order to do so, follow the instructions concerning the colorization of the name of your character during [Character Creation](https://gibberlings3.github.io/iesdp/scripting/actions/{{ "/appendices/charactercreation.htm" | relative_url }}|https://gibberlings3.github.io/iesdp/scripting/actions/{{ "/appendices/charactercreation.htm" | relative_url }}). 
+    - name: DisplayStringPointLog
+      detail: DisplayStringPointLog(P:Location, I:Strref)
+      doc: |-
+        Same as [DisplayStringPoint(P:Location\*,I:Strref\*)](https://gibberlings3.github.io/iesdp/scripting/actions/bgeeactions.htm#361) this action displays a floating message over a point in the script runner's current area, but also displays it in the message log.
          It is possible to colorize the string. In order to do so, follow the instructions concerning the colorization of the name of your character during [Character Creation](https://gibberlings3.github.io/iesdp/scripting/actions/{{ "/appendices/charactercreation.htm" | relative_url }}|https://gibberlings3.github.io/iesdp/scripting/actions/{{ "/appendices/charactercreation.htm" | relative_url }}). 
     - name: DisplayStringWait
       detail: DisplayStringWait(O:Object, I:StrRef)
@@ -1539,9 +1548,9 @@ actions:
         END
         ```
     - name: GlobalShout
-      detail: GlobalShout(I:ID*Shoutids)
+      detail: GlobalShout(I:ID)
       doc: |-
-        This action acts like Shout() without the range limit.
+        This action acts like <a href="#106"><code>Shout()</code></a> without the range limit.
     - name: GoToStartScreen
       detail: GoToStartScreen()
       doc: |-
@@ -1553,7 +1562,7 @@ actions:
     - name: Help
       detail: Help()
       doc: |-
-        This action acts similar to shout, but does not accept values. The range of the Help action is slightly larger than the default visual radius of NPCs.
+        This action acts similar to shout, but does not accept values. The range of the Help action is larger than the default visual radius of NPCs (see description of `Shout`).
 
         ```
         IF
@@ -1682,6 +1691,10 @@ actions:
             JoinParty()
         END
         ```
+    - name: JoinPartyOverride
+      detail: JoinPartyOverride()
+      doc: |-
+        This action behaves like [JoinParty()](https://gibberlings3.github.io/iesdp/scripting/actions/bgeeactions.htm#19), except that it uses [MakeGlobalOverride()](https://gibberlings3.github.io/iesdp/scripting/actions/bgeeactions.htm#383) to promote a creature to global status.
     - name: JumpToObject
       detail: JumpToObject(O:Target)
       doc: |-
@@ -3004,8 +3017,11 @@ actions:
         ```
     - name: Shout
       detail: Shout(I:ID*Shoutids)
-      doc: |-
-        This action is used to shout the specified number. The action is used in conjunction with the Heard trigger. A silenced creature cannot shout. Shout can be Heard() throughout the current area.
+      doc: |2-
+
+        This action is used to shout the specified number. The action is used in conjunction with the
+        {% assign text = "<code>Heard()</code>" -%} {%- assign anchor = "0x002F" -%} {%- include trigger_link.html %}
+        trigger. Shouts can be heard within a radius of 1.5x the script runner's current visual range, which by default evaluates to 42 feet (672 pixels).
 
         ```
         IF
