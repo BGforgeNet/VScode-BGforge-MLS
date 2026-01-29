@@ -249,20 +249,7 @@ export function dumpHighlight(fpath: string, iedata: IEData): void {
         const itemNames = ied.items.map((x) => x.name);
         const sortedNames = [...itemNames].sort(sortLongerFirst);
 
-        const patterns: Array<{ match: string }> = [];
-
-        if (isStringCategory) {
-            const stringPatterns = sortedNames.map((name) => ({ match: `(%${name}%)` }));
-            patterns.push(...stringPatterns);
-        }
-
         const wordPatterns = sortedNames.map((name) => ({ match: `\\b(${name})\\b` }));
-        if (isStringCategory) {
-            patterns.push(...wordPatterns);
-        } else {
-            patterns.push(...wordPatterns);
-        }
-
         const patternsSeq = doc.createNode(isStringCategory
             ? [...sortedNames.map((n) => ({ match: `(%${n}%)` })), ...wordPatterns]
             : wordPatterns);

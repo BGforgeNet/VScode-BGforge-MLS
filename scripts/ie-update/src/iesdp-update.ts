@@ -9,7 +9,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { parseArgs } from "node:util";
-import YAML from "yaml";
+import YAML, { type YAMLMap } from "yaml";
 import {
     actionDesc,
     actionDetail,
@@ -65,7 +65,7 @@ function parseFrontmatter(filePath: string): Record<string, unknown> {
 
 /**
  * Appends offset items to the appropriate category in ProcessedIESDPData.
- * Returns a new ProcessedIESDPData (immutable).
+ * Uses mutable local arrays for efficiency, returns a new ProcessedIESDPData.
  */
 function appendOffsets(
     pod: ProcessedIESDPData,
@@ -77,14 +77,15 @@ function appendOffsets(
         return pod;
     }
 
+    const chars = [...pod.chars];
+    const lbytes = [...pod.lbytes];
+    const words = [...pod.words];
+    const dwords = [...pod.dwords];
+    const resrefs = [...pod.resrefs];
+    const strrefs = [...pod.strrefs];
+    const other = [...pod.other];
+
     let curOff = firstItem.offset ?? 0;
-    let chars = [...pod.chars];
-    let lbytes = [...pod.lbytes];
-    let words = [...pod.words];
-    let dwords = [...pod.dwords];
-    let resrefs = [...pod.resrefs];
-    let strrefs = [...pod.strrefs];
-    let other = [...pod.other];
 
     for (const item of offsetData) {
         validateOffset(curOff, item);
@@ -109,21 +110,21 @@ function appendOffsets(
         };
 
         if (hasMult) {
-            other = [...other, completionItem];
+            other.push(completionItem);
         } else if (item.type === "char") {
-            chars = [...chars, completionItem];
+            chars.push(completionItem);
         } else if (item.type === "byte") {
-            lbytes = [...lbytes, completionItem];
+            lbytes.push(completionItem);
         } else if (item.type === "word") {
-            words = [...words, completionItem];
+            words.push(completionItem);
         } else if (item.type === "dword") {
-            dwords = [...dwords, completionItem];
+            dwords.push(completionItem);
         } else if (item.type === "resref") {
-            resrefs = [...resrefs, completionItem];
+            resrefs.push(completionItem);
         } else if (item.type === "strref") {
-            strrefs = [...strrefs, completionItem];
+            strrefs.push(completionItem);
         } else {
-            other = [...other, completionItem];
+            other.push(completionItem);
         }
         curOff += size;
     }
@@ -161,36 +162,11 @@ function sanitise(pod: ProcessedIESDPData): void {
     sanitiseList(pod.other);
 }
 
-function main(): void {
-    const { values } = parseArgs({
-        options: {
-            s: { type: "string" },
-            "data-baf": { type: "string" },
-            "highlight-baf": { type: "string" },
-            "iesdp-file": { type: "string" },
-            "highlight-weidu": { type: "string" },
-            "ielib-dir": { type: "string" },
-        },
-    });
-
-    const iesdpDir = values.s;
-    const dataBaf = values["data-baf"];
-    const highlightBaf = values["highlight-baf"];
-    const iesdpFile = values["iesdp-file"];
-    const highlightWeidu = values["highlight-weidu"];
-    const ielibDir = values["ielib-dir"];
-
-    if (!iesdpDir || !dataBaf || !highlightBaf || !iesdpFile || !highlightWeidu || !ielibDir) {
-        console.error(
-            "Usage: iesdp-update -s <iesdp_dir> --data-baf <path> --highlight-baf <path> --iesdp-file <path> --highlight-weidu <path> --ielib-dir <path>"
-        );
-        process.exit(1);
-    }
-
-    const iesdpFileFormatsDir = path.join(iesdpDir, "_data", "file_formats");
-    const ielibStructuresDir = path.join(ielibDir, "structures");
-
-    // OPCODES
+/**
+ * Processes IESDP opcode HTML files into a TPP definition file.
+ * Extracts BG2 opcodes, deduplicates names, and writes OPCODE_* constants.
+ */
+function processOpcodes(iesdpDir: string, ielibDir: string): void {
     const opcodeFile = path.join(ielibDir, "misc", "opcode.tpp");
     const opcodeDir = path.join(iesdpDir, "_opcodes");
     const opcodeFiles = findFiles(opcodeDir, "html");
@@ -206,9 +182,13 @@ function main(): void {
         if (SKIP_OPCODE_NAMES.includes(name)) {
             continue;
         }
-        const existingCount = [...opcodesUnique.keys()].filter((k) => k === name).length;
-        if (existingCount > 0) {
-            name = `${name}_${existingCount + 1}`;
+        if (opcodesUnique.has(name)) {
+            // Append suffix for duplicate opcode names (e.g. "cure_disease_2")
+            let counter = 2;
+            while (opcodesUnique.has(`${name}_${counter}`)) {
+                counter++;
+            }
+            name = `${name}_${counter}`;
         }
         opcodesUnique.set(name, o["n"] as number);
     }
@@ -218,13 +198,16 @@ function main(): void {
         tppText += `OPCODE_${name} = ${value}\n`;
     }
     fs.writeFileSync(opcodeFile, tppText + "\n", "utf8");
-    // END OPCODES
+}
 
-    // ITEM TYPES
-    const itemTypes = getItemTypes(iesdpFileFormatsDir);
-    saveItemTypesIelib(ielibStructuresDir, itemTypes);
-
-    // ACTIONS
+/**
+ * Loads action YAML files, deduplicates, and writes BAF completion/highlight data.
+ */
+function processActions(
+    iesdpDir: string,
+    dataBaf: string,
+    highlightBaf: string,
+): void {
     const actionsDir = path.join(iesdpDir, "_data", "actions");
     const actionFiles = findFiles(actionsDir, "yml");
 
@@ -259,10 +242,11 @@ function main(): void {
     // Dump highlight for BAF
     const bafHighlightContent = fs.readFileSync(highlightBaf, "utf8");
     const bafHighlightDoc = YAML.parseDocument(bafHighlightContent);
-    // Update only the patterns key, preserving existing keys like 'name'
-    const actionsStanzaNode = bafHighlightDoc.getIn(["repository", ACTIONS_STANZA], true);
-    if (actionsStanzaNode && typeof actionsStanzaNode === "object" && "set" in actionsStanzaNode) {
-        (actionsStanzaNode as { set: (key: string, value: unknown) => void }).set(
+    const actionsStanzaNode = bafHighlightDoc.getIn(
+        ["repository", ACTIONS_STANZA], true
+    ) as YAMLMap | undefined;
+    if (actionsStanzaNode !== undefined) {
+        actionsStanzaNode.set(
             "patterns",
             bafHighlightDoc.createNode(actionsHighlightPatterns)
         );
@@ -320,22 +304,26 @@ function main(): void {
     // Dump BAF completion data using createItemsSeq for consistent |- block scalar style
     const bafDataContent = fs.readFileSync(dataBaf, "utf8");
     const bafDataDoc = YAML.parseDocument(bafDataContent);
-    const actionsNode = bafDataDoc.get(ACTIONS_STANZA, true);
-    if (actionsNode && typeof actionsNode === "object" && "set" in actionsNode) {
+    const actionsNode = bafDataDoc.get(ACTIONS_STANZA, true) as YAMLMap | undefined;
+    if (actionsNode !== undefined) {
         const itemsSeq = createItemsSeq(bafDataDoc, sortedActionsCompletion, true);
-        (actionsNode as { set: (key: string, value: unknown) => void }).set(
-            "items",
-            itemsSeq
-        );
+        actionsNode.set("items", itemsSeq);
     }
     fs.writeFileSync(
         dataBaf,
         bafDataDoc.toString({ lineWidth: 4096, indent: 2, indentSeq: true }),
         "utf8"
     );
-    // END ACTIONS
+}
 
-    // DATA - file format offsets
+/**
+ * Processes file format offset YAML files into completion data and IElib TPP definitions.
+ * Returns the accumulated ProcessedIESDPData with all offset categories populated.
+ */
+function processOffsets(
+    iesdpFileFormatsDir: string,
+    ielibStructuresDir: string,
+): ProcessedIESDPData {
     let pod: ProcessedIESDPData = {
         chars: [],
         lbytes: [],
@@ -352,13 +340,11 @@ function main(): void {
         .map((e) => e.name);
 
     for (const ff of formats) {
-        console.log(ff);
         const ffDir = path.join(iesdpFileFormatsDir, ff);
         let definitionItems = new Map<string, string>();
 
         const files = fs.readdirSync(ffDir).filter((f) => f !== "feature_block.yml");
         for (const f of files) {
-            console.log(f);
             const prefix = getOffsetPrefix(ff, f);
             const fpath = path.join(ffDir, f);
             const offsets: OffsetItem[] = YAML.parse(fs.readFileSync(fpath, "utf8"));
@@ -373,7 +359,7 @@ function main(): void {
         dumpDefinition(prefixDir, definitionItems, ielibStructuresDir);
     }
 
-    // Feature block (handled separately)
+    // Feature block (handled separately from format-specific files)
     const featureBlockPath = path.join(iesdpFileFormatsDir, "itm_v1", "feature_block.yml");
     const featureBlockOffsets: OffsetItem[] = YAML.parse(
         fs.readFileSync(featureBlockPath, "utf8")
@@ -384,7 +370,48 @@ function main(): void {
     const fxDefinitionItems = offsetsToDefinition(featureBlockOffsets, PREFIX_FX);
     dumpDefinition(PREFIX_FX, fxDefinitionItems, ielibStructuresDir);
 
-    // Add item types
+    return pod;
+}
+
+function main(): void {
+    const { values } = parseArgs({
+        options: {
+            s: { type: "string" },
+            "data-baf": { type: "string" },
+            "highlight-baf": { type: "string" },
+            "iesdp-file": { type: "string" },
+            "highlight-weidu": { type: "string" },
+            "ielib-dir": { type: "string" },
+        },
+    });
+
+    const iesdpDir = values.s;
+    const dataBaf = values["data-baf"];
+    const highlightBaf = values["highlight-baf"];
+    const iesdpFile = values["iesdp-file"];
+    const highlightWeidu = values["highlight-weidu"];
+    const ielibDir = values["ielib-dir"];
+
+    if (!iesdpDir || !dataBaf || !highlightBaf || !iesdpFile || !highlightWeidu || !ielibDir) {
+        console.error(
+            "Usage: iesdp-update -s <iesdp_dir> --data-baf <path> --highlight-baf <path> --iesdp-file <path> --highlight-weidu <path> --ielib-dir <path>"
+        );
+        process.exit(1);
+    }
+
+    const iesdpFileFormatsDir = path.join(iesdpDir, "_data", "file_formats");
+    const ielibStructuresDir = path.join(ielibDir, "structures");
+
+    processOpcodes(iesdpDir, ielibDir);
+
+    const itemTypes = getItemTypes(iesdpFileFormatsDir);
+    saveItemTypesIelib(ielibStructuresDir, itemTypes);
+
+    processActions(iesdpDir, dataBaf, highlightBaf);
+
+    let pod = processOffsets(iesdpFileFormatsDir, ielibStructuresDir);
+
+    // Add item types to offset data
     const itemTypesIsense = getItemTypesIsense(itemTypes);
     pod = {
         ...pod,

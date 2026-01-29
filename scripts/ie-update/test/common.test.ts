@@ -3,9 +3,8 @@
  */
 
 import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import {
     checkCompletion,
     dumpCompletion,
@@ -17,6 +16,9 @@ import {
 } from "../src/ie/common.js";
 import YAML from "yaml";
 import type { IEData } from "../src/ie/types.js";
+
+const TMP_BASE = "tmp";
+beforeAll(() => fs.mkdirSync(TMP_BASE, { recursive: true }));
 
 describe("litscal", () => {
     it("dedents text with common indentation", () => {
@@ -44,14 +46,14 @@ describe("findFiles", () => {
     let tmpDir: string;
 
     beforeEach(() => {
-        tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "ie-test-"));
+        tmpDir = fs.mkdtempSync(path.join("tmp", ".ie-test-"));
         fs.mkdirSync(path.join(tmpDir, "sub"), { recursive: true });
         fs.mkdirSync(path.join(tmpDir, "skip"), { recursive: true });
         fs.writeFileSync(path.join(tmpDir, "a.yml"), "", "utf8");
         fs.writeFileSync(path.join(tmpDir, "sub", "b.yml"), "", "utf8");
         fs.writeFileSync(path.join(tmpDir, "skip", "c.yml"), "", "utf8");
         fs.writeFileSync(path.join(tmpDir, "d.txt"), "", "utf8");
-        fs.writeFileSync(path.join(tmpDir, "iesdp.tpp"), "", "utf8");
+        fs.writeFileSync(path.join(tmpDir, "iesdp.tph"), "", "utf8");
     });
 
     afterEach(() => {
@@ -73,8 +75,8 @@ describe("findFiles", () => {
         expect(result).toHaveLength(2);
     });
 
-    it("skips iesdp.tpp by default", () => {
-        const result = findFiles(tmpDir, "tpp");
+    it("skips iesdp.tph by default", () => {
+        const result = findFiles(tmpDir, "tph");
         expect(result).toHaveLength(0);
     });
 });
@@ -99,7 +101,7 @@ describe("dumpCompletion", () => {
     let tmpDir: string;
 
     beforeEach(() => {
-        tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "ie-test-"));
+        tmpDir = fs.mkdtempSync(path.join("tmp", ".ie-test-"));
     });
 
     afterEach(() => {
@@ -155,7 +157,7 @@ describe("dumpHighlight", () => {
     let tmpDir: string;
 
     beforeEach(() => {
-        tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "ie-test-"));
+        tmpDir = fs.mkdtempSync(path.join("tmp", ".ie-test-"));
     });
 
     afterEach(() => {
@@ -193,7 +195,7 @@ describe("dumpDefinition", () => {
     let tmpDir: string;
 
     beforeEach(() => {
-        tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "ie-test-"));
+        tmpDir = fs.mkdtempSync(path.join("tmp", ".ie-test-"));
     });
 
     afterEach(() => {

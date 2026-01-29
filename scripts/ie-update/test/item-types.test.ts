@@ -3,17 +3,19 @@
  */
 
 import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { getItemTypes, getItemTypesIsense, saveItemTypesIelib } from "../src/ie/item-types.js";
 import type { ItemType } from "../src/ie/types.js";
+
+const TMP_BASE = "tmp";
+beforeAll(() => fs.mkdirSync(TMP_BASE, { recursive: true }));
 
 describe("getItemTypes", () => {
     let tmpDir: string;
 
     beforeEach(() => {
-        tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "ie-test-"));
+        tmpDir = fs.mkdtempSync(path.join("tmp", ".ie-test-"));
     });
 
     afterEach(() => {
@@ -42,7 +44,7 @@ describe("saveItemTypesIelib", () => {
     let tmpDir: string;
 
     beforeEach(() => {
-        tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "ie-test-"));
+        tmpDir = fs.mkdtempSync(path.join("tmp", ".ie-test-"));
     });
 
     afterEach(() => {
