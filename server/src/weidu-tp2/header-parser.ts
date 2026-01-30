@@ -205,7 +205,7 @@ function extractVariableInfo(node: SyntaxNode, uri: string): VariableInfo | null
         return null;
     }
 
-    const name = varNode.text;
+    const name = stripStringDelimiters(varNode.text);
     const location: Location = { uri, range: makeRange(varNode) };
 
     // Determine declaration kind and inferred type from node type

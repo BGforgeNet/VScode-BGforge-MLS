@@ -747,7 +747,7 @@ function findVariableReferences(
             const isLoop = LOOP_TYPES.has(node.type as SyntaxType);
             if (!isLoop) {
                 const varNode = node.childForFieldName("var");
-                if (varNode && matchesSymbol(varNode.text, symbolInfo.name)) {
+                if (varNode && matchesSymbol(stripStringDelimiters(varNode.text), symbolInfo.name)) {
                     // This is a definition
                     occurrences.push({ node: varNode, isDefinition: true });
                 }

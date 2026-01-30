@@ -32,6 +32,22 @@ describe("parseHeaderVariables", () => {
             expect(result[0].value).toBe("~hello~");
         });
 
+        it("strips tilde delimiters from OUTER_SPRINT variable names", () => {
+            const input = `OUTER_SPRINT ~SCROLL_WIZARD~ ~SCRL9P~`;
+            const result = parseHeaderVariables(input, "test://file.tph");
+            expect(result).toHaveLength(1);
+            expect(result[0].name).toBe("SCROLL_WIZARD");
+            expect(result[0].declarationKind).toBe("sprint");
+        });
+
+        it("strips tilde delimiters from OUTER_TEXT_SPRINT variable names", () => {
+            const input = `OUTER_TEXT_SPRINT ~MY_PATH~ ~override~`;
+            const result = parseHeaderVariables(input, "test://file.tph");
+            expect(result).toHaveLength(1);
+            expect(result[0].name).toBe("MY_PATH");
+            expect(result[0].declarationKind).toBe("text_sprint");
+        });
+
         it("extracts OUTER_TEXT_SPRINT variables", () => {
             const input = `OUTER_TEXT_SPRINT content ~file.txt~`;
             const result = parseHeaderVariables(input, "test://file.tph");

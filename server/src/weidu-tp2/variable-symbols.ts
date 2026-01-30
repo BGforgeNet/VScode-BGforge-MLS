@@ -8,7 +8,7 @@ import type { Node as SyntaxNode } from "web-tree-sitter";
 import { makeRange } from "../core/position-utils";
 import { parseWithCache, isInitialized } from "./parser";
 import { SyntaxType } from "./tree-sitter.d";
-import { findNodeAtPosition, findAncestorOfType, isSameNode, unwrapVariableRef } from "./tree-utils";
+import { findNodeAtPosition, findAncestorOfType, isSameNode, stripStringDelimiters, unwrapVariableRef } from "./tree-utils";
 import { getSymbols } from "./provider";
 
 // ============================================
@@ -406,7 +406,7 @@ function findFirstDeclaration(
 
             // For SET/TEXT_SPRINT statements, field is "var"
             const varNode = node.childForFieldName("var");
-            if (varNode && matchesSymbol(varNode.text, varName)) {
+            if (varNode && matchesSymbol(stripStringDelimiters(varNode.text), varName)) {
                 firstDecl = varNode;
                 return;
             }

@@ -7,7 +7,7 @@ import { CompletionItem, CompletionItemKind, Position } from "vscode-languageser
 import type { CompletionItemWithCategory } from "../shared/completion-context";
 import { parseWithCache, isInitialized } from "./parser";
 import { SyntaxType } from "./tree-sitter.d";
-import { findNodeAtPosition, unwrapVariableRef } from "./tree-utils";
+import { findNodeAtPosition, stripStringDelimiters, unwrapVariableRef } from "./tree-utils";
 import { VARIABLE_DECL_TYPES } from "./variable-symbols";
 
 /**
@@ -32,7 +32,7 @@ export function localCompletion(text: string): CompletionItem[] {
             // Extract variable name from various declaration types
             const varNode = node.childForFieldName("var");
             if (varNode) {
-                variableNames.add(varNode.text);
+                variableNames.add(stripStringDelimiters(varNode.text));
             }
 
             // For READ_* patches that can have multiple vars
