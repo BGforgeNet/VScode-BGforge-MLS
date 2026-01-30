@@ -19023,7 +19023,7 @@
           "name": "keyword.control.weidu-tp2"
         },
         {
-          "include": "#vars-declaration",
+          "include": "#func-params-declaration",
           "name": "meta.function.declaration.weidu-tp2"
         },
         {
@@ -19067,7 +19067,7 @@
           "name": "keyword.control.weidu-tp2"
         },
         {
-          "include": "#vars-declaration",
+          "include": "#func-params-declaration",
           "name": "meta.function.declaration.weidu-tp2"
         },
         {
@@ -19117,6 +19117,24 @@
                   "include": "#function-name-action"
                 }
               ]
+            }
+          }
+        }
+      ]
+    },
+    "func-params-declaration": {
+      "patterns": [
+        {
+          "match": "\\b(\\w+)\\s*(=)\\s*(EVAL\\s+)?",
+          "captures": {
+            "1": {
+              "name": "variable.parameter.weidu-tp2"
+            },
+            "2": {
+              "name": "keyword.control.weidu-tp2"
+            },
+            "3": {
+              "name": "keyword.control.weidu-tp2"
             }
           }
         }

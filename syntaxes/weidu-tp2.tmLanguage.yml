@@ -5052,7 +5052,7 @@ repository:
     patterns:
       - match: \b(STR_VAR|INT_VAR|RET|RET_ARRAY)\b
         name: keyword.control.weidu-tp2
-      - include: '#vars-declaration'
+      - include: '#func-params-declaration'
       - include: '#comments'
       - include: '#numbers'
       - include: '#strings'
@@ -5073,7 +5073,7 @@ repository:
     patterns:
       - match: \b(STR_VAR|INT_VAR|RET|RET_ARRAY)\b
         name: keyword.control.weidu-tp2
-      - include: '#vars-declaration'
+      - include: '#func-params-declaration'
       - include: '#comments'
       - include: '#numbers'
       - include: '#strings'
@@ -5097,6 +5097,20 @@ repository:
           '2':
             patterns:
               - include: '#function-name-action'
+
+  # Parameter declarations inside function signatures (INT_VAR param = 0).
+  # Colors parameter names as variable.parameter, unlike vars-declaration which
+  # only colors uppercase-first names as constants.
+  func-params-declaration:
+    patterns:
+      - match: \b(\w+)\s*(=)\s*(EVAL\s+)?
+        captures:
+          '1':
+            name: variable.parameter.weidu-tp2
+          '2':
+            name: keyword.control.weidu-tp2
+          '3':
+            name: keyword.control.weidu-tp2
 
   vars-declaration:
     name: variable.complex.weidu-tp2
