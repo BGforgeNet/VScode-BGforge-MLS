@@ -21,6 +21,7 @@ patterns:
   - include: '#weidu-tp2-flag'
   - include: '#weidu-tp2-language'
   - include: '#weidu-tp2-component-flag'
+  - include: '#set-sprint-constant-vars'
   - include: '#weidu-tp2-action'
   - include: '#weidu-tp2-optglob'
   - include: '#weidu-tp2-optcase'
@@ -4233,6 +4234,47 @@ repository:
       - match: \b(LABEL)\b
       - match: \b(METADATA)\b
 
+  # Color UPPERCASE/UPPER_case variable names as constants after SET/SPRINT keywords.
+  # More specific than keyword-only patterns, so must be included before weidu-tp2-action/patch.
+  set-sprint-constant-vars:
+    patterns:
+      # Action context (OUTER_* keywords)
+      - match: \b(OUTER_SET)\b\s+(?:(EVALUATE_BUFFER)\s+)?([A-Z][A-Z0-9_]+)\b
+        captures:
+          '1':
+            name: support.function.weidu-tp2.action
+          '2':
+            name: support.function.weidu-tp2.action
+          '3':
+            name: constant.language.weidu-tp2
+      - match: \b(OUTER_TEXT_SPRINT|OUTER_SPRINT|OUTER_SNPRINT)\b\s+([A-Z][A-Z0-9_]+)\b
+        captures:
+          '1':
+            name: support.function.weidu-tp2.action
+          '2':
+            name: constant.language.weidu-tp2
+      # Patch context (SET/SPRINT/LOCAL_* keywords)
+      - match: \b(SET)\b\s+(?:(EVAL(?:UATE_BUFFER)?)\s+)?([A-Z][A-Z0-9_]+)\b
+        captures:
+          '1':
+            name: entity.name.function.weidu-tp2.patch
+          '2':
+            name: entity.name.function.weidu-tp2.patch
+          '3':
+            name: constant.language.weidu-tp2
+      - match: \b(LOCAL_SET)\b\s+([A-Z][A-Z0-9_]+)\b
+        captures:
+          '1':
+            name: entity.name.function.weidu-tp2.patch
+          '2':
+            name: constant.language.weidu-tp2
+      - match: \b(TEXT_SPRINT|SPRINT|SNPRINT|SPRINTF|LOCAL_TEXT_SPRINT|LOCAL_SPRINT)\b\s+([A-Z][A-Z0-9_]+)\b
+        captures:
+          '1':
+            name: entity.name.function.weidu-tp2.patch
+          '2':
+            name: constant.language.weidu-tp2
+
   weidu-tp2-action:
     name: support.function.weidu-tp2.action
     patterns:
@@ -4979,6 +5021,15 @@ repository:
   vars-declaration:
     name: variable.complex.weidu-tp2
     patterns:
+      # UPPERCASE direct assignment: COLOR_INDEX = 123
+      - match: \b([A-Z][A-Z0-9_]+)\s*(=)\s*(EVAL\s+)?
+        captures:
+          '1':
+            name: constant.language.weidu-tp2
+          '2':
+            name: keyword.control.weidu-tp2
+          '3':
+            name: keyword.control.weidu-tp2
       - match: \b([-\w]+)\s*(=)\s*(EVAL\s+)?
         captures:
           '1':
