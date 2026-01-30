@@ -474,7 +474,11 @@ export function buildVariableHover(varInfo: VariableInfo, displayPath?: string |
 
     // Use JSDoc @type if available, otherwise inferred type
     const type = varInfo.jsdoc?.type ?? varInfo.inferredType;
-    const signature = varInfo.value ? `${type} ${varInfo.name} = ${varInfo.value}` : `${type} ${varInfo.name}`;
+    // Show value only for constant-like names where the first word is fully uppercase
+    // (e.g., MAX_LEVEL, MOD_folder, DEBUG_MODE, MAXLEVEL — but NOT Max_Level, my_var)
+    const isConstant = /^[A-Z][A-Z0-9]+(?:_|$)/.test(varInfo.name);
+    const showValue = isConstant && varInfo.value !== undefined;
+    const signature = showValue ? `${type} ${varInfo.name} = ${varInfo.value}` : `${type} ${varInfo.name}`;
 
     // File path block (skip if displayPath === null)
     let markdownValue: string;

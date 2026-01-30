@@ -420,7 +420,7 @@ utils.tph
     });
 
     describe("variable hover content", () => {
-        it("generates complete hover for simple variable", () => {
+        it("generates complete hover for simple variable (no value for lowercase)", () => {
             const input = `OUTER_SET my_var = 42`;
             const symbols = parseHeaderToSymbols(uri, input, workspaceRoot);
             const sym = symbols[0];
@@ -428,9 +428,10 @@ utils.tph
             expect(isVariableSymbol(sym)).toBe(true);
             expect(sym.source.displayPath).toBe(displayPath);
             const hoverContent = sym.hover.contents as MarkupContent;
+            // Lowercase variable: type + name only, no value
             expect(hoverContent.value).toBe(
 `\`\`\`weidu-tp2-tooltip
-int my_var = 42
+int my_var
 \`\`\`
 \`\`\`bgforge-mls-comment
 lib/functions.tph
@@ -438,7 +439,7 @@ lib/functions.tph
             );
         });
 
-        it("generates complete hover with JSDoc description and @type", () => {
+        it("generates complete hover with JSDoc description and @type (no value for lowercase)", () => {
             const input = `
 /**
  * Maximum item count.
@@ -448,9 +449,10 @@ OUTER_SET max_items = 100`;
             const symbols = parseHeaderToSymbols(uri, input, workspaceRoot);
             const hoverContent = symbols[0].hover.contents as MarkupContent;
 
+            // Lowercase variable: type + name only, no value
             expect(hoverContent.value).toBe(
 `\`\`\`weidu-tp2-tooltip
-int max_items = 100
+int max_items
 \`\`\`
 \`\`\`bgforge-mls-comment
 lib/functions.tph
@@ -484,14 +486,15 @@ Old constant.
             );
         });
 
-        it("generates complete hover for string variable", () => {
+        it("generates complete hover for string variable (no value for lowercase)", () => {
             const input = `OUTER_SPRINT my_str ~hello~`;
             const symbols = parseHeaderToSymbols(uri, input, workspaceRoot);
             const hoverContent = symbols[0].hover.contents as MarkupContent;
 
+            // Lowercase variable: type + name only, no value
             expect(hoverContent.value).toBe(
 `\`\`\`weidu-tp2-tooltip
-string my_str = ~hello~
+string my_str
 \`\`\`
 \`\`\`bgforge-mls-comment
 lib/functions.tph

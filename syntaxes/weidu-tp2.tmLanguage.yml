@@ -4239,7 +4239,7 @@ repository:
   set-sprint-constant-vars:
     patterns:
       # Action context (OUTER_* keywords)
-      - match: \b(OUTER_SET)\b\s+(?:(EVALUATE_BUFFER)\s+)?([A-Z][A-Z0-9_]+)\b
+      - match: \b(OUTER_SET)\b\s+(?:(EVALUATE_BUFFER)\s+)?([A-Z][A-Z0-9]+(?:_\w+)*)\b
         captures:
           '1':
             name: support.function.weidu-tp2.action
@@ -4247,14 +4247,14 @@ repository:
             name: support.function.weidu-tp2.action
           '3':
             name: constant.language.weidu-tp2
-      - match: \b(OUTER_TEXT_SPRINT|OUTER_SPRINT|OUTER_SNPRINT)\b\s+([A-Z][A-Z0-9_]+)\b
+      - match: \b(OUTER_TEXT_SPRINT|OUTER_SPRINT|OUTER_SNPRINT)\b\s+([A-Z][A-Z0-9]+(?:_\w+)*)\b
         captures:
           '1':
             name: support.function.weidu-tp2.action
           '2':
             name: constant.language.weidu-tp2
       # Patch context (SET/SPRINT/LOCAL_* keywords)
-      - match: \b(SET)\b\s+(?:(EVAL(?:UATE_BUFFER)?)\s+)?([A-Z][A-Z0-9_]+)\b
+      - match: \b(SET)\b\s+(?:(EVAL(?:UATE_BUFFER)?)\s+)?([A-Z][A-Z0-9]+(?:_\w+)*)\b
         captures:
           '1':
             name: entity.name.function.weidu-tp2.patch
@@ -4262,13 +4262,13 @@ repository:
             name: entity.name.function.weidu-tp2.patch
           '3':
             name: constant.language.weidu-tp2
-      - match: \b(LOCAL_SET)\b\s+([A-Z][A-Z0-9_]+)\b
+      - match: \b(LOCAL_SET)\b\s+([A-Z][A-Z0-9]+(?:_\w+)*)\b
         captures:
           '1':
             name: entity.name.function.weidu-tp2.patch
           '2':
             name: constant.language.weidu-tp2
-      - match: \b(TEXT_SPRINT|SPRINT|SNPRINT|SPRINTF|LOCAL_TEXT_SPRINT|LOCAL_SPRINT)\b\s+([A-Z][A-Z0-9_]+)\b
+      - match: \b(TEXT_SPRINT|SPRINT|SNPRINT|SPRINTF|LOCAL_TEXT_SPRINT|LOCAL_SPRINT)\b\s+([A-Z][A-Z0-9]+(?:_\w+)*)\b
         captures:
           '1':
             name: entity.name.function.weidu-tp2.patch
@@ -5022,7 +5022,7 @@ repository:
     name: variable.complex.weidu-tp2
     patterns:
       # UPPERCASE direct assignment: COLOR_INDEX = 123
-      - match: \b([A-Z][A-Z0-9_]+)\s*(=)\s*(EVAL\s+)?
+      - match: \b([A-Z][A-Z0-9]+(?:_\w+)*)\s*(=)\s*(EVAL\s+)?
         captures:
           '1':
             name: constant.language.weidu-tp2

@@ -275,7 +275,9 @@ OUTER_SET debug_mode = 0
         expect(symbol?.hover).toBeDefined();
         const contents = symbol?.hover.contents;
         if (contents && typeof contents === "object" && "value" in contents) {
-            expect(contents.value).toContain("int debug_mode = 0");
+            expect(contents.value).toContain("int debug_mode");
+            // Non-UPPERCASE: should not show value
+            expect(contents.value).not.toContain("= 0");
             expect(contents.value).toContain("Configuration flag for debug mode");
         }
 
@@ -303,7 +305,7 @@ OUTER_SET debug_mode = 0
         expect(store!.lookup("temp_var")).toBeUndefined();
     });
 
-    it("displays variable type and value correctly", () => {
+    it("does not show value for non-UPPERCASE variables", () => {
         const store = getSymbols();
         expect(store).toBeDefined();
 
@@ -313,18 +315,46 @@ OUTER_TEXT_SPRINT mod_folder ~mymod~`;
         const parsedSymbols = parseHeaderToSymbols(tphUri, tphContent);
         store!.updateFile(tphUri, parsedSymbols);
 
-        // Test OUTER_SET displays as "int test123 = 120"
+        // Non-UPPERCASE: should show type and name only
         const intSymbol = store!.lookup("test123");
         expect(intSymbol?.hover).toBeDefined();
         if (intSymbol?.hover.contents && typeof intSymbol.hover.contents === "object" && "value" in intSymbol.hover.contents) {
-            expect(intSymbol.hover.contents.value).toContain("int test123 = 120");
+            expect(intSymbol.hover.contents.value).toContain("int test123");
+            expect(intSymbol.hover.contents.value).not.toContain("= 120");
         }
 
-        // Test OUTER_TEXT_SPRINT displays as "string mod_folder = ~mymod~"
         const strSymbol = store!.lookup("mod_folder");
         expect(strSymbol?.hover).toBeDefined();
         if (strSymbol?.hover.contents && typeof strSymbol.hover.contents === "object" && "value" in strSymbol.hover.contents) {
-            expect(strSymbol.hover.contents.value).toContain("string mod_folder = ~mymod~");
+            expect(strSymbol.hover.contents.value).toContain("string mod_folder");
+            expect(strSymbol.hover.contents.value).not.toContain("= ~mymod~");
+        }
+
+        // Cleanup
+        store!.clearFile(tphUri);
+    });
+
+    it("shows value for UPPERCASE constant variables", () => {
+        const store = getSymbols();
+        expect(store).toBeDefined();
+
+        const tphUri = "file:///test-const-value.tph";
+        const tphContent = `OUTER_SET MAX_LEVEL = 40
+OUTER_TEXT_SPRINT MOD_FOLDER ~mymod~`;
+        const parsedSymbols = parseHeaderToSymbols(tphUri, tphContent);
+        store!.updateFile(tphUri, parsedSymbols);
+
+        // UPPERCASE: should show type, name, AND value
+        const intSymbol = store!.lookup("MAX_LEVEL");
+        expect(intSymbol?.hover).toBeDefined();
+        if (intSymbol?.hover.contents && typeof intSymbol.hover.contents === "object" && "value" in intSymbol.hover.contents) {
+            expect(intSymbol.hover.contents.value).toContain("int MAX_LEVEL = 40");
+        }
+
+        const strSymbol = store!.lookup("MOD_FOLDER");
+        expect(strSymbol?.hover).toBeDefined();
+        if (strSymbol?.hover.contents && typeof strSymbol.hover.contents === "object" && "value" in strSymbol.hover.contents) {
+            expect(strSymbol.hover.contents.value).toContain("string MOD_FOLDER = ~mymod~");
         }
 
         // Cleanup
@@ -347,7 +377,9 @@ OUTER_TEXT_SPRINT spell ~SPWI101~`;
         const symbol = store!.lookup("spell");
         expect(symbol?.hover).toBeDefined();
         if (symbol?.hover.contents && typeof symbol.hover.contents === "object" && "value" in symbol.hover.contents) {
-            expect(symbol.hover.contents.value).toContain("resref spell = ~SPWI101~");
+            expect(symbol.hover.contents.value).toContain("resref spell");
+            // Non-UPPERCASE: should not show value
+            expect(symbol.hover.contents.value).not.toContain("= ~SPWI101~");
         }
 
         // Cleanup
