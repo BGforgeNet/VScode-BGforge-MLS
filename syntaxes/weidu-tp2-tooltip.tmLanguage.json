@@ -91,16 +91,16 @@
         },
         {
           "match": "\\b(offset)\\b",
-          "name": "comment"
+          "name": "support.type.weidu-tp2-tooltip.datatype"
         },
         {
           "match": "^(action) (function|macro) (\\w+)$",
           "captures": {
             "1": {
-              "name": "comment"
+              "name": "support.type.weidu-tp2-tooltip.datatype"
             },
             "2": {
-              "name": "comment"
+              "name": "support.type.weidu-tp2-tooltip.datatype"
             },
             "3": {
               "name": "support.function.weidu-tp2.action-function-name"
@@ -111,10 +111,10 @@
           "match": "\\b(patch) (function|macro) (\\w+)\\b",
           "captures": {
             "1": {
-              "name": "comment"
+              "name": "support.type.weidu-tp2-tooltip.datatype"
             },
             "2": {
-              "name": "comment"
+              "name": "support.type.weidu-tp2-tooltip.datatype"
             },
             "3": {
               "name": "entity.name.function.weidu-tp2.patch-function-name"
