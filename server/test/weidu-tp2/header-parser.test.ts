@@ -212,6 +212,7 @@ END`;
 
 import { parseHeaderToSymbols } from "../../src/weidu-tp2/header-parser";
 import { SymbolKind, isCallableSymbol, isVariableSymbol } from "../../src/core/symbol";
+import type { CompletionItemWithCategory } from "../../src/shared/completion-context";
 import type { MarkupContent } from "vscode-languageserver/node";
 
 describe("parseHeaderToSymbols", () => {
@@ -511,6 +512,56 @@ END`;
             expect(symbols).toHaveLength(2);
             expect(symbols.some(s => s.name === "global_count")).toBe(true);
             expect(symbols.some(s => s.name === "increment_count")).toBe(true);
+        });
+    });
+
+    describe("completion category assignment", () => {
+        it("assigns actionFunctions category to DEFINE_ACTION_FUNCTION symbols", () => {
+            const input = `DEFINE_ACTION_FUNCTION my_func BEGIN END`;
+            const symbols = parseHeaderToSymbols(uri, input, workspaceRoot);
+            const completion = symbols[0].completion as CompletionItemWithCategory;
+
+            expect(completion.category).toBe("actionFunctions");
+        });
+
+        it("assigns patchFunctions category to DEFINE_PATCH_FUNCTION symbols", () => {
+            const input = `DEFINE_PATCH_FUNCTION my_patch BEGIN END`;
+            const symbols = parseHeaderToSymbols(uri, input, workspaceRoot);
+            const completion = symbols[0].completion as CompletionItemWithCategory;
+
+            expect(completion.category).toBe("patchFunctions");
+        });
+
+        it("assigns actionFunctions category to DEFINE_ACTION_MACRO symbols", () => {
+            const input = `DEFINE_ACTION_MACRO my_macro BEGIN END`;
+            const symbols = parseHeaderToSymbols(uri, input, workspaceRoot);
+            const completion = symbols[0].completion as CompletionItemWithCategory;
+
+            expect(completion.category).toBe("actionFunctions");
+        });
+
+        it("assigns patchFunctions category to DEFINE_PATCH_MACRO symbols", () => {
+            const input = `DEFINE_PATCH_MACRO my_patch_macro BEGIN END`;
+            const symbols = parseHeaderToSymbols(uri, input, workspaceRoot);
+            const completion = symbols[0].completion as CompletionItemWithCategory;
+
+            expect(completion.category).toBe("patchFunctions");
+        });
+
+        it("assigns vars category to OUTER_SET variable symbols", () => {
+            const input = `OUTER_SET my_var = 42`;
+            const symbols = parseHeaderToSymbols(uri, input, workspaceRoot);
+            const completion = symbols[0].completion as CompletionItemWithCategory;
+
+            expect(completion.category).toBe("vars");
+        });
+
+        it("assigns vars category to OUTER_SPRINT variable symbols", () => {
+            const input = `OUTER_SPRINT my_str ~hello~`;
+            const symbols = parseHeaderToSymbols(uri, input, workspaceRoot);
+            const completion = symbols[0].completion as CompletionItemWithCategory;
+
+            expect(completion.category).toBe("vars");
         });
     });
 

@@ -21,6 +21,7 @@ import { compile as weiduCompile } from "../weidu-compile";
 import { getContextAtPosition, getFuncParamsContext } from "./completion/context";
 import { filterItemsByContext } from "./completion/filter";
 import { getParamCompletions } from "./completion/parameter";
+import { CompletionCategory, type Tp2CompletionItem } from "./completion/types";
 import { formatDocument as formatAst } from "./format/core";
 import { initParser, parseWithCache, isInitialized } from "./parser";
 import { getDocumentSymbols } from "./symbol";
@@ -123,8 +124,9 @@ export const weiduTp2Provider: LanguageProvider = {
             return [];
         }
         // Return symbols, excluding current file (local completion handles that)
+        // Static and header symbols always have category set (see static-loader.ts, header-parser.ts)
         const allSymbols = symbols.query({ excludeUri: uri });
-        return allSymbols.map((s: IndexedSymbol) => s.completion);
+        return allSymbols.map((s: IndexedSymbol) => s.completion as Tp2CompletionItem);
     },
 
     filterCompletions(items: CompletionItem[], text: string, position: Position, uri: string, triggerCharacter?: string): CompletionItem[] {
@@ -151,7 +153,9 @@ export const weiduTp2Provider: LanguageProvider = {
         // No deduplication needed - getCompletions() excludes current file via excludeUri
         const localVars = localCompletion(text);
 
-        let allItems = [...items, ...localVars];
+        // items come from getCompletions() which returns Tp2CompletionItem[] (static + header symbols all have category)
+        // localVars come from localCompletion() which returns Tp2CompletionItem[]
+        let allItems: Tp2CompletionItem[] = [...items as Tp2CompletionItem[], ...localVars];
 
         // Check if we're in funcParamName context and can provide parameter completions
         // Note: Parameter completions (like "count = ") are only shown when typing parameter names,
@@ -346,26 +350,26 @@ export const weiduTp2Provider: LanguageProvider = {
 
 
 /** JSDoc completion items. When triggered by @, insertText omits the @ prefix to avoid duplication. */
-function getJsdocCompletions(triggerCharacter?: string): CompletionItem[] {
+function getJsdocCompletions(triggerCharacter?: string): Tp2CompletionItem[] {
     const triggeredByAt = triggerCharacter === "@";
-    const tags: CompletionItem[] = [
-        { label: "@type", insertText: triggeredByAt ? "type" : "@type", filterText: triggeredByAt ? "type" : "@type", kind: CompletionItemKind.Keyword, detail: "Variable type" },
-        { label: "@param", insertText: triggeredByAt ? "param" : "@param", filterText: triggeredByAt ? "param" : "@param", kind: CompletionItemKind.Keyword, detail: "Function parameter" },
-        { label: "@return", insertText: triggeredByAt ? "return" : "@return", filterText: triggeredByAt ? "return" : "@return", kind: CompletionItemKind.Keyword, detail: "Return type" },
-        { label: "@deprecated", insertText: triggeredByAt ? "deprecated" : "@deprecated", filterText: triggeredByAt ? "deprecated" : "@deprecated", kind: CompletionItemKind.Keyword, detail: "Mark as deprecated" },
+    const tags: Tp2CompletionItem[] = [
+        { label: "@type", insertText: triggeredByAt ? "type" : "@type", filterText: triggeredByAt ? "type" : "@type", kind: CompletionItemKind.Keyword, detail: "Variable type", category: CompletionCategory.Jsdoc },
+        { label: "@param", insertText: triggeredByAt ? "param" : "@param", filterText: triggeredByAt ? "param" : "@param", kind: CompletionItemKind.Keyword, detail: "Function parameter", category: CompletionCategory.Jsdoc },
+        { label: "@return", insertText: triggeredByAt ? "return" : "@return", filterText: triggeredByAt ? "return" : "@return", kind: CompletionItemKind.Keyword, detail: "Return type", category: CompletionCategory.Jsdoc },
+        { label: "@deprecated", insertText: triggeredByAt ? "deprecated" : "@deprecated", filterText: triggeredByAt ? "deprecated" : "@deprecated", kind: CompletionItemKind.Keyword, detail: "Mark as deprecated", category: CompletionCategory.Jsdoc },
     ];
 
     // Types matching KNOWN_TYPES from weidu.ts (ielib types)
-    const types: CompletionItem[] = [
-        { label: "array", kind: CompletionItemKind.TypeParameter, detail: "Array type" },
-        { label: "bool", kind: CompletionItemKind.TypeParameter, detail: "Boolean type" },
-        { label: "filename", kind: CompletionItemKind.TypeParameter, detail: "File name" },
-        { label: "ids", kind: CompletionItemKind.TypeParameter, detail: "IDS reference" },
-        { label: "int", kind: CompletionItemKind.TypeParameter, detail: "Integer type" },
-        { label: "list", kind: CompletionItemKind.TypeParameter, detail: "List type" },
-        { label: "map", kind: CompletionItemKind.TypeParameter, detail: "Map type" },
-        { label: "resref", kind: CompletionItemKind.TypeParameter, detail: "Resource reference" },
-        { label: "string", kind: CompletionItemKind.TypeParameter, detail: "String type" },
+    const types: Tp2CompletionItem[] = [
+        { label: "array", kind: CompletionItemKind.TypeParameter, detail: "Array type", category: CompletionCategory.Jsdoc },
+        { label: "bool", kind: CompletionItemKind.TypeParameter, detail: "Boolean type", category: CompletionCategory.Jsdoc },
+        { label: "filename", kind: CompletionItemKind.TypeParameter, detail: "File name", category: CompletionCategory.Jsdoc },
+        { label: "ids", kind: CompletionItemKind.TypeParameter, detail: "IDS reference", category: CompletionCategory.Jsdoc },
+        { label: "int", kind: CompletionItemKind.TypeParameter, detail: "Integer type", category: CompletionCategory.Jsdoc },
+        { label: "list", kind: CompletionItemKind.TypeParameter, detail: "List type", category: CompletionCategory.Jsdoc },
+        { label: "map", kind: CompletionItemKind.TypeParameter, detail: "Map type", category: CompletionCategory.Jsdoc },
+        { label: "resref", kind: CompletionItemKind.TypeParameter, detail: "Resource reference", category: CompletionCategory.Jsdoc },
+        { label: "string", kind: CompletionItemKind.TypeParameter, detail: "String type", category: CompletionCategory.Jsdoc },
     ];
 
     return [...tags, ...types];

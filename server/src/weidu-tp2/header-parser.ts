@@ -398,7 +398,8 @@ function extractVarParams(node: SyntaxNode, target: ParamInfo[]): void {
 // ============================================
 
 import { type CallableSymbol, type VariableSymbol, type IndexedSymbol, type CallableInfo, type VariableInfoData, SymbolKind, ScopeLevel, SourceType } from "../core/symbol";
-import { CompletionItemKind, type Hover, type CompletionItem, type MarkupContent } from "vscode-languageserver/node";
+import { CompletionItemKind, type Hover, type MarkupContent } from "vscode-languageserver/node";
+import { CompletionCategory, type Tp2CompletionItem } from "./completion/types";
 import { buildFunctionHover, buildVariableHover } from "./hover";
 
 /** Helper to extract MarkupContent from hover contents */
@@ -426,13 +427,14 @@ function functionInfoToSymbol(func: FunctionInfo, displayPath?: string | null): 
         ? undefined
         : (displayPath ?? extractFilename(func.location.uri));
 
-    const completion: CompletionItem = {
+    const completion: Tp2CompletionItem = {
         label: func.name,
         kind: func.dtype === "macro" ? CompletionItemKind.Snippet : CompletionItemKind.Function,
         documentation: doc,
         labelDetails: {
             description: completionDescription,
         },
+        category: func.context === "action" ? CompletionCategory.ActionFunctions : CompletionCategory.PatchFunctions,
     };
 
     // Build JSDoc arg lookup map for type overrides and descriptions
@@ -510,11 +512,12 @@ function variableInfoToSymbol(varInfo: VariableInfo, displayPath?: string | null
         ? undefined
         : (displayPath ?? extractFilename(varInfo.location.uri));
 
-    const completion: CompletionItem = {
+    const completion: Tp2CompletionItem = {
         label: varInfo.name,
         kind: CompletionItemKind.Variable,
         documentation: doc,
         labelDetails: { description: completionDescription },
+        category: CompletionCategory.Vars,
     };
 
     const variable: VariableInfoData = {

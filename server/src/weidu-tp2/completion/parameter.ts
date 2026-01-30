@@ -3,16 +3,16 @@
  * Provides completions for function parameters based on function definitions.
  */
 
-import { CompletionItem, CompletionItemKind, InsertTextFormat, MarkupKind } from "vscode-languageserver/node";
+import { CompletionItemKind, InsertTextFormat, MarkupKind } from "vscode-languageserver/node";
 import { isCallableSymbol, type CallableParam } from "../../core/symbol";
 import { getSymbols } from "../provider";
-import type { FuncParamsContext } from "./types";
+import { CompletionCategory, type FuncParamsContext, type Tp2CompletionItem } from "./types";
 
 /**
  * Generate parameter completions for a function call.
  * Looks up the function definition and returns completions for unused parameters.
  */
-export function getParamCompletions(context: FuncParamsContext): CompletionItem[] {
+export function getParamCompletions(context: FuncParamsContext): Tp2CompletionItem[] {
     const { functionName, paramSection, usedParams } = context;
 
     // Look up function definition from unified symbol storage
@@ -25,7 +25,7 @@ export function getParamCompletions(context: FuncParamsContext): CompletionItem[
 
     const params = symbol.callable.params;
     const usedSet = new Set(usedParams);
-    const completions: CompletionItem[] = [];
+    const completions: Tp2CompletionItem[] = [];
 
     // Get the appropriate param list based on section
     // CallableParam already has JSDoc data merged (type, description, required)
@@ -73,7 +73,7 @@ export function getParamCompletions(context: FuncParamsContext): CompletionItem[
  * Format: "type name = default" for optional params, "type name" for required.
  * Uses CallableParam which already has JSDoc data merged (type, description, required).
  */
-function createParamCompletion(param: CallableParam): CompletionItem {
+function createParamCompletion(param: CallableParam): Tp2CompletionItem {
     const { name, type, defaultValue, description, required } = param;
 
     // Build signature line - hide default value for required params
@@ -88,7 +88,7 @@ function createParamCompletion(param: CallableParam): CompletionItem {
         docParts.push("", description);
     }
 
-    const item: CompletionItem = {
+    const item: Tp2CompletionItem = {
         label: name,
         kind: CompletionItemKind.Field,
         insertText: `${name} = `,
@@ -97,6 +97,7 @@ function createParamCompletion(param: CallableParam): CompletionItem {
             kind: MarkupKind.Markdown,
             value: docParts.join("\n"),
         },
+        category: CompletionCategory.FuncVarKeyword,
     };
 
     return item;

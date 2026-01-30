@@ -18,52 +18,46 @@ import { CompletionItem } from "vscode-languageserver/node";
  * Valid completion item categories for WeiDU TP2.
  * Categories determine where completions should appear based on context.
  *
- * Category types:
- * - Structural: prologue, flag, componentFlag - File/component structure directives
- * - Commands: action, patch - Context-specific statements (value positions)
- * - Functions: actionFunctions, patchFunctions - User-defined functions
- * - Values: constants, vars, value, when, optGlob, optCase, optExact, arraySortType
- * - IElib: ielibInt, ielibResref - IElib library constants
- * - IESDP: iesdpOther, iesdpStrref, iesdpResref, iesdpDword, iesdpWord, iesdpByte, iesdpChar
- * - Language: language - LANGUAGE directive (flag section)
+ * String values must match the category strings in generated JSON data files
+ * (produced by scripts/generate_data.py from YAML).
  *
- * @see CATEGORY_EXCLUSIONS in completion-filter.ts for exclusion rules per category
+ * Category groups:
+ * - Structural: Prologue, Flag, ComponentFlag, Language - File/component structure directives
+ * - Commands: Action, Patch - Context-specific statements (value positions)
+ * - Functions: ActionFunctions, PatchFunctions - User-defined functions
+ * - Values: Constants, Vars, Value, When, OptGlob, OptCase, OptExact, ArraySortType
+ * - Parameters: FuncVarKeyword - INT_VAR, STR_VAR, RET, RET_ARRAY keywords
+ * - Documentation: Jsdoc - JSDoc tags and types
+ *
+ * @see CATEGORY_EXCLUSIONS in filter.ts for exclusion rules per category
  */
-export type CompletionCategory =
+export enum CompletionCategory {
     // Structural directives
-    | "prologue"
-    | "flag"
-    | "componentFlag"
-    | "language"
+    Prologue = "prologue",
+    Flag = "flag",
+    ComponentFlag = "componentFlag",
+    Language = "language",
     // Action context (value position)
-    | "action"
+    Action = "action",
     // Patch context (value position)
-    | "patch"
+    Patch = "patch",
     // Value items (not commands)
-    | "constants"
-    | "vars"
-    | "value"
-    | "when"
-    | "optGlob"
-    | "optCase"
-    | "optExact"
-    | "arraySortType"
+    Constants = "constants",
+    Vars = "vars",
+    Value = "value",
+    When = "when",
+    OptGlob = "optGlob",
+    OptCase = "optCase",
+    OptExact = "optExact",
+    ArraySortType = "arraySortType",
     // Function parameter keywords (INT_VAR, STR_VAR, RET, RET_ARRAY)
-    | "funcVarKeyword"
+    FuncVarKeyword = "funcVarKeyword",
     // Function libraries
-    | "actionFunctions"
-    | "patchFunctions"
-    // IElib constants
-    | "ielibInt"
-    | "ielibResref"
-    // IESDP constants (patch-only, engine-defined)
-    | "iesdpOther"
-    | "iesdpStrref"
-    | "iesdpResref"
-    | "iesdpDword"
-    | "iesdpWord"
-    | "iesdpByte"
-    | "iesdpChar";
+    ActionFunctions = "actionFunctions",
+    PatchFunctions = "patchFunctions",
+    // JSDoc tags and types
+    Jsdoc = "jsdoc",
+}
 
 /**
  * Extended completion item with optional category metadata.

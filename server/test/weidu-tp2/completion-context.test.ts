@@ -15,33 +15,31 @@ vi.mock("../../src/server", () => ({
 
 import { getContextAtPosition } from "../../src/weidu-tp2/completion/context";
 import { filterItemsByContext } from "../../src/weidu-tp2/completion/filter";
-import type { CompletionContext } from "../../src/weidu-tp2/completion/types";
+import type { CompletionContext, Tp2CompletionItem } from "../../src/weidu-tp2/completion/types";
 import { initParser } from "../../src/weidu-tp2/parser";
-import { CompletionItem, CompletionItemKind } from "vscode-languageserver/node";
+import { CompletionItemKind } from "vscode-languageserver/node";
+import { CompletionCategory } from "../../src/shared/completion-context";
 
 beforeAll(async () => {
     await initParser();
 });
 
 /**
- * Helper to create a completion item with optional category.
+ * Helper to create a TP2 completion item with required category.
  */
-function createItem(label: string, category?: string): CompletionItem {
-    const item: CompletionItem & { category?: string } = {
+function createItem(label: string, category: CompletionCategory): Tp2CompletionItem {
+    return {
         label,
         kind: CompletionItemKind.Keyword,
+        category,
     };
-    if (category) {
-        item.category = category;
-    }
-    return item;
 }
 
 /**
  * Helper to check if items are filtered correctly.
  * Accepts either a single context or an array of contexts.
  */
-function expectFiltering(context: CompletionContext | CompletionContext[], category: string, shouldBeIncluded: boolean) {
+function expectFiltering(context: CompletionContext | CompletionContext[], category: CompletionCategory, shouldBeIncluded: boolean) {
     const items = [createItem("TEST_ITEM", category)];
     const contexts = Array.isArray(context) ? context : [context];
     const filtered = filterItemsByContext(items, contexts);
@@ -57,14 +55,13 @@ describe("completion-context: category filtering", () => {
     it("validates all completion items have valid categories", () => {
         // This test ensures all items returned by completion have a category field
         // Missing categories would be caught here (they'd show as undefined)
-        const testCategories = [
-            "prologue", "flag", "componentFlag", "language",
-            "action", "patch",
-            "constants", "vars", "value", "when", "optGlob", "optCase", "optExact", "arraySortType",
-            "funcVarKeyword",
-            "actionFunctions", "patchFunctions",
-            "ielibInt", "ielibResref",
-            "iesdpOther", "iesdpStrref", "iesdpResref", "iesdpDword", "iesdpWord", "iesdpByte", "iesdpChar"
+        const testCategories: CompletionCategory[] = [
+            CompletionCategory.Prologue, CompletionCategory.Flag, CompletionCategory.ComponentFlag, CompletionCategory.Language,
+            CompletionCategory.Action, CompletionCategory.Patch,
+            CompletionCategory.Constants, CompletionCategory.Vars, CompletionCategory.Value, CompletionCategory.When, CompletionCategory.OptGlob, CompletionCategory.OptCase, CompletionCategory.OptExact, CompletionCategory.ArraySortType,
+            CompletionCategory.FuncVarKeyword,
+            CompletionCategory.ActionFunctions, CompletionCategory.PatchFunctions,
+            CompletionCategory.Jsdoc,
         ];
 
         // Verify each category can be used in filtering
@@ -79,124 +76,119 @@ describe("completion-context: category filtering", () => {
     // ===== Rule 1: patch/patchFunctions excluded from action context =====
 
     it("allows action category in action context", () => {
-        expectFiltering("action", "action", true);
+        expectFiltering("action", CompletionCategory.Action, true);
     });
 
     it("rejects patch category in action context", () => {
-        expectFiltering("action", "patch", false);
+        expectFiltering("action", CompletionCategory.Patch, false);
     });
 
     it("rejects patch category in actionKeyword context", () => {
-        expectFiltering("actionKeyword", "patch", false);
+        expectFiltering("actionKeyword", CompletionCategory.Patch, false);
     });
 
     it("rejects patchFunctions in action context", () => {
-        expectFiltering("action", "patchFunctions", false);
+        expectFiltering("action", CompletionCategory.PatchFunctions, false);
     });
 
     it("rejects patchFunctions in actionKeyword context", () => {
-        expectFiltering("actionKeyword", "patchFunctions", false);
+        expectFiltering("actionKeyword", CompletionCategory.PatchFunctions, false);
     });
 
     // ===== Rule 2: action/actionFunctions excluded from patch context =====
 
     it("allows patch category in patch context", () => {
-        expectFiltering("patch", "patch", true);
+        expectFiltering("patch", CompletionCategory.Patch, true);
     });
 
     it("rejects action category in patch context", () => {
-        expectFiltering("patch", "action", false);
+        expectFiltering("patch", CompletionCategory.Action, false);
     });
 
     it("rejects action category in patchKeyword context", () => {
-        expectFiltering("patchKeyword", "action", false);
+        expectFiltering("patchKeyword", CompletionCategory.Action, false);
     });
 
     it("rejects actionFunctions in patch context", () => {
-        expectFiltering("patch", "actionFunctions", false);
+        expectFiltering("patch", CompletionCategory.ActionFunctions, false);
     });
 
     it("rejects actionFunctions in patchKeyword context", () => {
-        expectFiltering("patchKeyword", "actionFunctions", false);
+        expectFiltering("patchKeyword", CompletionCategory.ActionFunctions, false);
     });
 
     it("allows actionFunctions in action context", () => {
-        expectFiltering("action", "actionFunctions", true);
+        expectFiltering("action", CompletionCategory.ActionFunctions, true);
     });
 
     it("allows actionFunctions in actionKeyword context", () => {
-        expectFiltering("actionKeyword", "actionFunctions", true);
+        expectFiltering("actionKeyword", CompletionCategory.ActionFunctions, true);
     });
 
     it("allows patchFunctions in patch context", () => {
-        expectFiltering("patch", "patchFunctions", true);
+        expectFiltering("patch", CompletionCategory.PatchFunctions, true);
     });
 
     it("allows patchFunctions in patchKeyword context", () => {
-        expectFiltering("patchKeyword", "patchFunctions", true);
+        expectFiltering("patchKeyword", CompletionCategory.PatchFunctions, true);
     });
 
     // ===== Categories with no exclusions (show everywhere) =====
 
     it("allows constants everywhere (no exclusion rules)", () => {
-        expectFiltering("action", "constants", true);
-        expectFiltering("actionKeyword", "constants", true);
-        expectFiltering("patch", "constants", true);
-        expectFiltering("patchKeyword", "constants", true);
+        expectFiltering("action", CompletionCategory.Constants, true);
+        expectFiltering("actionKeyword", CompletionCategory.Constants, true);
+        expectFiltering("patch", CompletionCategory.Constants, true);
+        expectFiltering("patchKeyword", CompletionCategory.Constants, true);
     });
 
     it("allows prologue category everywhere (no exclusion rules)", () => {
-        expectFiltering("prologue", "prologue", true);
-        expectFiltering("action", "prologue", true);
-        expectFiltering("patch", "prologue", true);
+        expectFiltering("prologue", CompletionCategory.Prologue, true);
+        expectFiltering("action", CompletionCategory.Prologue, true);
+        expectFiltering("patch", CompletionCategory.Prologue, true);
     });
 
     it("allows componentFlag category everywhere (no exclusion rules)", () => {
-        expectFiltering("componentFlag", "componentFlag", true);
-        expectFiltering("action", "componentFlag", true);
-        expectFiltering("patch", "componentFlag", true);
+        expectFiltering("componentFlag", CompletionCategory.ComponentFlag, true);
+        expectFiltering("action", CompletionCategory.ComponentFlag, true);
+        expectFiltering("patch", CompletionCategory.ComponentFlag, true);
     });
 
     it("allows value category everywhere (no exclusion rules)", () => {
-        expectFiltering("action", "value", true);
-        expectFiltering("patch", "value", true);
-        expectFiltering("componentFlag", "value", true);
+        expectFiltering("action", CompletionCategory.Value, true);
+        expectFiltering("patch", CompletionCategory.Value, true);
+        expectFiltering("componentFlag", CompletionCategory.Value, true);
     });
 
     // ===== Fallback behavior =====
 
     it("allows everything in unknown context (fallback)", () => {
-        expectFiltering("unknown", "prologue", true);
-        expectFiltering("unknown", "action", true);
-        expectFiltering("unknown", "patch", true);
+        expectFiltering("unknown", CompletionCategory.Prologue, true);
+        expectFiltering("unknown", CompletionCategory.Action, true);
+        expectFiltering("unknown", CompletionCategory.Patch, true);
     });
 
-    it("allows items without category everywhere", () => {
-        const itemNoCategory = createItem("NO_CATEGORY");
-        expect(filterItemsByContext([itemNoCategory], ["prologue"])).toHaveLength(1);
-        expect(filterItemsByContext([itemNoCategory], ["action"])).toHaveLength(1);
-        expect(filterItemsByContext([itemNoCategory], ["patch"])).toHaveLength(1);
-    });
-
-    it("allows unmapped categories everywhere", () => {
-        expectFiltering("prologue", "some-unknown-category", true);
-        expectFiltering("action", "some-unknown-category", true);
+    it("allows categories without exclusion rules everywhere", () => {
+        // jsdoc has no exclusion rules, so it passes through any context
+        expectFiltering("prologue", CompletionCategory.Jsdoc, true);
+        expectFiltering("action", CompletionCategory.Jsdoc, true);
+        expectFiltering("patch", CompletionCategory.Jsdoc, true);
     });
 
     // ===== Permissive filtering logic tests =====
 
     describe("isItemExcluded logic (permissive filtering)", () => {
-        it("item with no category - should not be excluded", () => {
-            const itemNoCategory = createItem("NO_CATEGORY");
-            expect(filterItemsByContext([itemNoCategory], ["prologue"])).toHaveLength(1);
-            expect(filterItemsByContext([itemNoCategory], ["action"])).toHaveLength(1);
-            expect(filterItemsByContext([itemNoCategory], ["patch"])).toHaveLength(1);
-            expect(filterItemsByContext([itemNoCategory], ["actionKeyword"])).toHaveLength(1);
+        it("item with no exclusion rules - should not be excluded from any context", () => {
+            const item = createItem("NO_EXCLUSIONS", CompletionCategory.Jsdoc);
+            expect(filterItemsByContext([item], ["prologue"])).toHaveLength(1);
+            expect(filterItemsByContext([item], ["action"])).toHaveLength(1);
+            expect(filterItemsByContext([item], ["patch"])).toHaveLength(1);
+            expect(filterItemsByContext([item], ["actionKeyword"])).toHaveLength(1);
         });
 
         it("item excluded by all contexts - should be excluded", () => {
             // patch is excluded from both action and actionKeyword
-            const item = createItem("READ_LONG", "patch");
+            const item = createItem("READ_LONG", CompletionCategory.Patch);
             const filtered = filterItemsByContext([item], ["action", "actionKeyword"]);
             expect(filtered).toHaveLength(0);
         });
@@ -204,23 +196,23 @@ describe("completion-context: category filtering", () => {
         it("item excluded by some but not all contexts - should NOT be excluded (permissive)", () => {
             // patch is excluded from action, but NOT from patch context
             // With contexts ["patch", "action"], should SHOW (permissive - any approval wins)
-            const item = createItem("READ_LONG", "patch");
+            const item = createItem("READ_LONG", CompletionCategory.Patch);
             const filtered = filterItemsByContext([item], ["patch", "action"]);
             expect(filtered).toHaveLength(1);
         });
 
         it("item excluded by none of the contexts - should not be excluded", () => {
             // action is allowed in action context
-            const item = createItem("COPY", "action");
+            const item = createItem("COPY", CompletionCategory.Action);
             const filtered = filterItemsByContext([item], ["action"]);
             expect(filtered).toHaveLength(1);
         });
 
         it("empty contexts array - should not exclude anything", () => {
             const items = [
-                createItem("GROUP", "componentFlag"),
-                createItem("COPY", "action"),
-                createItem("REPLACE_TEXTUALLY", "patch"),
+                createItem("GROUP", CompletionCategory.ComponentFlag),
+                createItem("COPY", CompletionCategory.Action),
+                createItem("REPLACE_TEXTUALLY", CompletionCategory.Patch),
             ];
             const filtered = filterItemsByContext(items, []);
             expect(filtered).toHaveLength(3);
@@ -228,7 +220,7 @@ describe("completion-context: category filtering", () => {
 
         it("single context - straightforward exclusion", () => {
             // patch excluded from action
-            const item = createItem("READ_LONG", "patch");
+            const item = createItem("READ_LONG", CompletionCategory.Patch);
             const filtered = filterItemsByContext([item], ["action"]);
             expect(filtered).toHaveLength(0);
         });
@@ -236,7 +228,7 @@ describe("completion-context: category filtering", () => {
         it("multiple contexts - unanimous exclusion required", () => {
             // patch is excluded from action and actionKeyword, but NOT from patch
             // With contexts ["action", "actionKeyword"], should be excluded (both reject)
-            const item = createItem("REPLACE_TEXTUALLY", "patch");
+            const item = createItem("REPLACE_TEXTUALLY", CompletionCategory.Patch);
             const filteredBothExclude = filterItemsByContext([item], ["action", "actionKeyword"]);
             expect(filteredBothExclude).toHaveLength(0);
 
@@ -424,10 +416,10 @@ BEGIN
             // With minimal rules, patch items and constants both allowed in patchKeyword
             // Only action/actionFunctions are excluded
             const items = [
-                createItem("READ_SHORT", "patch"),
-                createItem("WRITE_BYTE", "patch"),
-                createItem("SOME_CONSTANT", "constants"),
-                createItem("COPY", "action"),  // Should be excluded
+                createItem("READ_SHORT", CompletionCategory.Patch),
+                createItem("WRITE_BYTE", CompletionCategory.Patch),
+                createItem("SOME_CONSTANT", CompletionCategory.Constants),
+                createItem("COPY", CompletionCategory.Action),  // Should be excluded
             ];
             const filtered = filterItemsByContext(items, ["patchKeyword"]);
             expect(filtered).toHaveLength(3);
@@ -530,7 +522,7 @@ END
             const contexts = getContextAtPosition(copyBlockContent, 2, 8, ".tp2");
             expect(contexts).toEqual(["patchKeyword"]);
             // LAF has category "action" which should be rejected in patchKeyword context
-            expectFiltering("patchKeyword", "action", false);
+            expectFiltering("patchKeyword", CompletionCategory.Action, false);
         });
 
         it("allows LPF in patch context", () => {
@@ -538,7 +530,7 @@ END
             const contexts = getContextAtPosition(copyBlockContent, 2, 8, ".tp2");
             expect(contexts).toEqual(["patchKeyword"]);
             // LPF has category "patch" which should be allowed in patchKeyword context
-            expectFiltering("patchKeyword", "patch", true);
+            expectFiltering("patchKeyword", CompletionCategory.Patch, true);
         });
 
         it("detects action with severely malformed COPY structure", () => {
@@ -908,6 +900,20 @@ GROUP @600
         // the parser enters error recovery and may not correctly parse valid keywords below.
         // This is a grammar limitation, not a completion logic bug.
 
+        it("Cursor between patches and BUT_ONLY - should include patch and when", () => {
+            const content = `BEGIN @123
+COPY_EXISTING ~%WIZARD_GREASE%.spl~ ~override~
+  WRITE_LONG SPL_flags THIS BAND BNOT FLAG_SPL_hostile
+CO
+BUT_ONLY
+`;
+            // Line 3: between WRITE_LONG (patch) and BUT_ONLY (when)
+            // Both patch and when should be valid (user may be typing another patch command)
+            const contexts = getContextAtPosition(content, 3, 2, ".tpa");
+            expect(contexts).toContain("patch");
+            expect(contexts).toContain("when");
+        });
+
         it("Incomplete action after patches in COPY - should include action", () => {
             const incomplete = `BEGIN @123
 COPY ~a~ ~b~
@@ -938,10 +944,10 @@ COPY ~a~ ~b~
     describe("unknown context handling", () => {
         it("filterItemsByContext should pass all items when unknown", () => {
             const items = [
-                createItem("COPY", "action"),
-                createItem("REPLACE_TEXTUALLY", "patch"),
-                createItem("GROUP", "componentFlag"),
-                createItem("AUTO_TRA", "flag"),
+                createItem("COPY", CompletionCategory.Action),
+                createItem("REPLACE_TEXTUALLY", CompletionCategory.Patch),
+                createItem("GROUP", CompletionCategory.ComponentFlag),
+                createItem("AUTO_TRA", CompletionCategory.Flag),
             ];
             const filtered = filterItemsByContext(items, ["unknown"]);
             expect(filtered).toHaveLength(4);
@@ -949,8 +955,8 @@ COPY ~a~ ~b~
 
         it("filterItemsByContext should pass all items when unknown is in array", () => {
             const items = [
-                createItem("COPY", "action"),
-                createItem("REPLACE_TEXTUALLY", "patch"),
+                createItem("COPY", CompletionCategory.Action),
+                createItem("REPLACE_TEXTUALLY", CompletionCategory.Patch),
             ];
             // Even with other contexts, "unknown" should bypass filtering
             const filtered = filterItemsByContext(items, ["unknown", "action"]);
@@ -1259,39 +1265,39 @@ END`;
         });
 
         it("allows funcVarKeyword in funcParamName context", () => {
-            expectFiltering("funcParamName", "funcVarKeyword", true);
+            expectFiltering("funcParamName", CompletionCategory.FuncVarKeyword, true);
         });
 
         it("rejects funcVarKeyword in action context", () => {
-            expectFiltering("action", "funcVarKeyword", false);
+            expectFiltering("action", CompletionCategory.FuncVarKeyword, false);
         });
 
         it("rejects funcVarKeyword in patch context", () => {
-            expectFiltering("patch", "funcVarKeyword", false);
+            expectFiltering("patch", CompletionCategory.FuncVarKeyword, false);
         });
 
         it("rejects funcVarKeyword in actionKeyword context", () => {
-            expectFiltering("actionKeyword", "funcVarKeyword", false);
+            expectFiltering("actionKeyword", CompletionCategory.FuncVarKeyword, false);
         });
 
         it("rejects funcVarKeyword in patchKeyword context", () => {
-            expectFiltering("patchKeyword", "funcVarKeyword", false);
+            expectFiltering("patchKeyword", CompletionCategory.FuncVarKeyword, false);
         });
 
         it("rejects funcVarKeyword in prologue context", () => {
-            expectFiltering("prologue", "funcVarKeyword", false);
+            expectFiltering("prologue", CompletionCategory.FuncVarKeyword, false);
         });
 
         it("rejects funcVarKeyword in flag context", () => {
-            expectFiltering("flag", "funcVarKeyword", false);
+            expectFiltering("flag", CompletionCategory.FuncVarKeyword, false);
         });
 
         it("rejects funcVarKeyword in lafName context", () => {
-            expectFiltering("lafName", "funcVarKeyword", false);
+            expectFiltering("lafName", CompletionCategory.FuncVarKeyword, false);
         });
 
         it("rejects funcVarKeyword in lpfName context", () => {
-            expectFiltering("lpfName", "funcVarKeyword", false);
+            expectFiltering("lpfName", CompletionCategory.FuncVarKeyword, false);
         });
     });
 
@@ -1330,8 +1336,8 @@ BEGIN ~First~
             // - actionKeyword excludes constants
             // Permissive logic: if ANY context allows it, show it
             const items = [
-                createItem("COPY", "action"),
-                createItem("SOME_CONSTANT", "constants"),
+                createItem("COPY", CompletionCategory.Action),
+                createItem("SOME_CONSTANT", CompletionCategory.Constants),
             ];
             const filtered = filterItemsByContext(items, ["action", "actionKeyword"]);
             // Both should pass - action context allows constants
@@ -1341,9 +1347,9 @@ BEGIN ~First~
         it("allows constants and action items in actionKeyword context (minimal rules)", () => {
             // With minimal rules, only patch/patchFunctions are excluded from actionKeyword
             const items = [
-                createItem("COPY", "action"),
-                createItem("SOME_CONSTANT", "constants"),
-                createItem("READ_LONG", "patch"),  // Should be excluded
+                createItem("COPY", CompletionCategory.Action),
+                createItem("SOME_CONSTANT", CompletionCategory.Constants),
+                createItem("READ_LONG", CompletionCategory.Patch),  // Should be excluded
             ];
             const filtered = filterItemsByContext(items, ["actionKeyword"]);
             expect(filtered).toHaveLength(2);
@@ -1352,9 +1358,9 @@ BEGIN ~First~
 
         it("excludes patch items from actionKeyword context", () => {
             const items = [
-                createItem("COPY", "action"),
-                createItem("READ_LONG", "patch"),
-                createItem("WRITE_BYTE", "patch"),
+                createItem("COPY", CompletionCategory.Action),
+                createItem("READ_LONG", CompletionCategory.Patch),
+                createItem("WRITE_BYTE", CompletionCategory.Patch),
             ];
             const filtered = filterItemsByContext(items, ["actionKeyword"]);
             expect(filtered).toHaveLength(1);
@@ -1363,8 +1369,8 @@ BEGIN ~First~
 
         it("excludes patchFunctions from actionKeyword context", () => {
             const items = [
-                createItem("COPY", "action"),
-                createItem("MY_PATCH_FUNC", "patchFunctions"),
+                createItem("COPY", CompletionCategory.Action),
+                createItem("MY_PATCH_FUNC", CompletionCategory.PatchFunctions),
             ];
             const filtered = filterItemsByContext(items, ["actionKeyword"]);
             expect(filtered).toHaveLength(1);
@@ -1373,9 +1379,9 @@ BEGIN ~First~
 
         it("allows action items when actionKeyword is in context", () => {
             const items = [
-                createItem("COPY", "action"),
-                createItem("PRINT", "action"),
-                createItem("INCLUDE", "action"),
+                createItem("COPY", CompletionCategory.Action),
+                createItem("PRINT", CompletionCategory.Action),
+                createItem("INCLUDE", CompletionCategory.Action),
             ];
             const filtered = filterItemsByContext(items, ["actionKeyword"]);
             expect(filtered).toHaveLength(3);
@@ -1415,7 +1421,7 @@ END
 `;
             const contexts = getContextAtPosition(content, 3, 12, ".tp2");
             // LPF has category "patch" which should NOT be excluded from patchKeyword context
-            expectFiltering(contexts, "patch", true);
+            expectFiltering(contexts, CompletionCategory.Patch, true);
         });
 
         it("allows patch category in COPY body inside ACTION_PHP_EACH", () => {
@@ -1432,7 +1438,7 @@ END
             // Incomplete code in COPY body returns permissive contexts including patch
             expect(contexts).toContain("patch");
             // Patch category items should be allowed
-            expectFiltering(contexts, "patch", true);
+            expectFiltering(contexts, CompletionCategory.Patch, true);
         });
     });
 
@@ -1569,7 +1575,7 @@ END
             const contexts = getContextAtPosition(content, 3, 12, ".tp2");
             expect(contexts).toContain("patch");
             // LPF has category "patch" and should appear in completions
-            expectFiltering(contexts, "patch", true);
+            expectFiltering(contexts, CompletionCategory.Patch, true);
         });
     });
 
@@ -1651,8 +1657,8 @@ END
             // - patchKeyword excludes constants
             // Permissive logic: if ANY context allows it, show it
             const items = [
-                createItem("REPLACE_TEXTUALLY", "patch"),
-                createItem("SOME_CONSTANT", "constants"),
+                createItem("REPLACE_TEXTUALLY", CompletionCategory.Patch),
+                createItem("SOME_CONSTANT", CompletionCategory.Constants),
             ];
             const filtered = filterItemsByContext(items, ["patch", "patchKeyword"]);
             // Both should pass - patch context allows constants
@@ -1662,9 +1668,9 @@ END
         it("allows constants and patch items in patchKeyword context (minimal rules)", () => {
             // With minimal rules, only action/actionFunctions are excluded from patchKeyword
             const items = [
-                createItem("REPLACE_TEXTUALLY", "patch"),
-                createItem("SOME_CONSTANT", "constants"),
-                createItem("COPY", "action"),  // Should be excluded
+                createItem("REPLACE_TEXTUALLY", CompletionCategory.Patch),
+                createItem("SOME_CONSTANT", CompletionCategory.Constants),
+                createItem("COPY", CompletionCategory.Action),  // Should be excluded
             ];
             const filtered = filterItemsByContext(items, ["patchKeyword"]);
             expect(filtered).toHaveLength(2);
@@ -1673,9 +1679,9 @@ END
 
         it("excludes action items from patchKeyword context", () => {
             const items = [
-                createItem("REPLACE_TEXTUALLY", "patch"),
-                createItem("COPY", "action"),
-                createItem("PRINT", "action"),
+                createItem("REPLACE_TEXTUALLY", CompletionCategory.Patch),
+                createItem("COPY", CompletionCategory.Action),
+                createItem("PRINT", CompletionCategory.Action),
             ];
             const filtered = filterItemsByContext(items, ["patchKeyword"]);
             expect(filtered).toHaveLength(1);
@@ -1684,8 +1690,8 @@ END
 
         it("excludes actionFunctions from patchKeyword context", () => {
             const items = [
-                createItem("REPLACE_TEXTUALLY", "patch"),
-                createItem("MY_ACTION_FUNC", "actionFunctions"),
+                createItem("REPLACE_TEXTUALLY", CompletionCategory.Patch),
+                createItem("MY_ACTION_FUNC", CompletionCategory.ActionFunctions),
             ];
             const filtered = filterItemsByContext(items, ["patchKeyword"]);
             expect(filtered).toHaveLength(1);
@@ -1694,9 +1700,9 @@ END
 
         it("allows patch items when patchKeyword is in context", () => {
             const items = [
-                createItem("REPLACE_TEXTUALLY", "patch"),
-                createItem("WRITE_BYTE", "patch"),
-                createItem("READ_ASCII", "patch"),
+                createItem("REPLACE_TEXTUALLY", CompletionCategory.Patch),
+                createItem("WRITE_BYTE", CompletionCategory.Patch),
+                createItem("READ_ASCII", CompletionCategory.Patch),
             ];
             const filtered = filterItemsByContext(items, ["patchKeyword"]);
             expect(filtered).toHaveLength(3);
@@ -1712,21 +1718,21 @@ END
 
         it("single context - item excluded → should hide", () => {
             // patch is excluded from action context
-            const items = [createItem("READ_LONG", "patch")];
+            const items = [createItem("READ_LONG", CompletionCategory.Patch)];
             const filtered = filterItemsByContext(items, ["action"]);
             expect(filtered).toHaveLength(0);
         });
 
         it("single context - item not excluded → should show", () => {
             // patch is NOT excluded from patch context
-            const items = [createItem("READ_LONG", "patch")];
+            const items = [createItem("READ_LONG", CompletionCategory.Patch)];
             const filtered = filterItemsByContext(items, ["patch"]);
             expect(filtered).toHaveLength(1);
         });
 
         it("multiple contexts - item excluded from ALL → should hide", () => {
             // patch is excluded from both action and actionKeyword
-            const items = [createItem("READ_LONG", "patch")];
+            const items = [createItem("READ_LONG", CompletionCategory.Patch)];
             const filtered = filterItemsByContext(items, ["action", "actionKeyword"]);
             expect(filtered).toHaveLength(0);
         });
@@ -1734,7 +1740,7 @@ END
         it("multiple contexts - item excluded from SOME but not all → should SHOW", () => {
             // patch is excluded from action, but NOT from patch
             // With contexts ["patch", "action"], should SHOW (permissive)
-            const items = [createItem("READ_LONG", "patch")];
+            const items = [createItem("READ_LONG", CompletionCategory.Patch)];
             const filtered = filterItemsByContext(items, ["patch", "action"]);
             expect(filtered).toHaveLength(1); // Should show because patch context allows it
         });
@@ -1742,7 +1748,7 @@ END
         it("multiple contexts - action item with mixed exclusions → should SHOW", () => {
             // action is excluded from patch, but NOT from action or when
             // With contexts ["patch", "when", "action"], should SHOW
-            const items = [createItem("COPY", "action")];
+            const items = [createItem("COPY", CompletionCategory.Action)];
             const filtered = filterItemsByContext(items, ["patch", "when", "action"]);
             expect(filtered).toHaveLength(1); // Should show because when/action allow it
         });
@@ -1750,7 +1756,7 @@ END
         it("multiple contexts - patch item with mixed exclusions → should SHOW", () => {
             // patch is excluded from action, but NOT from patch or when
             // With contexts ["patch", "when", "action"], should SHOW
-            const items = [createItem("REPLACE_TEXTUALLY", "patch")];
+            const items = [createItem("REPLACE_TEXTUALLY", CompletionCategory.Patch)];
             const filtered = filterItemsByContext(items, ["patch", "when", "action"]);
             expect(filtered).toHaveLength(1); // Should show because patch/when allow it
         });
@@ -1758,7 +1764,7 @@ END
         it("multiple contexts - when item with mixed exclusions → should SHOW", () => {
             // when is excluded from patch, but NOT from action or when
             // With contexts ["patch", "when", "action"], should SHOW
-            const items = [createItem("BUT_ONLY", "when")];
+            const items = [createItem("BUT_ONLY", CompletionCategory.When)];
             const filtered = filterItemsByContext(items, ["patch", "when", "action"]);
             expect(filtered).toHaveLength(1); // Should show because when/action allow it
         });
@@ -1766,9 +1772,9 @@ END
         it("multiple contexts with unknown → should show everything", () => {
             // With "unknown" present, ALL items should pass
             const items = [
-                createItem("GROUP", "componentFlag"),
-                createItem("COPY", "action"),
-                createItem("REPLACE_TEXTUALLY", "patch"),
+                createItem("GROUP", CompletionCategory.ComponentFlag),
+                createItem("COPY", CompletionCategory.Action),
+                createItem("REPLACE_TEXTUALLY", CompletionCategory.Patch),
             ];
             const filtered = filterItemsByContext(items, ["unknown", "action", "patch"]);
             expect(filtered).toHaveLength(3);
@@ -1779,10 +1785,10 @@ END
             // Component flags should show (allowed by componentFlag context)
             // Actions should show (allowed by actionKeyword - not excluded)
             const items = [
-                createItem("GROUP", "componentFlag"),
-                createItem("DESIGNATED", "componentFlag"),
-                createItem("COPY", "action"),
-                createItem("INCLUDE", "action"),
+                createItem("GROUP", CompletionCategory.ComponentFlag),
+                createItem("DESIGNATED", CompletionCategory.ComponentFlag),
+                createItem("COPY", CompletionCategory.Action),
+                createItem("INCLUDE", CompletionCategory.Action),
             ];
             const filtered = filterItemsByContext(items, ["componentFlag", "actionKeyword"]);
             expect(filtered).toHaveLength(4); // All should show
@@ -1792,9 +1798,9 @@ END
             // After COPY file pairs, can add patches, when, or end COPY (new action)
             // Each category should be allowed by its respective context
             const items = [
-                createItem("REPLACE_TEXTUALLY", "patch"),
-                createItem("BUT_ONLY", "when"),
-                createItem("COPY", "action"),
+                createItem("REPLACE_TEXTUALLY", CompletionCategory.Patch),
+                createItem("BUT_ONLY", CompletionCategory.When),
+                createItem("COPY", CompletionCategory.Action),
             ];
             const filtered = filterItemsByContext(items, ["patch", "when", "action"]);
             expect(filtered).toHaveLength(3); // All should show

@@ -16,6 +16,7 @@ import {
     CompletionItemKind,
     type MarkupContent,
 } from "vscode-languageserver/node";
+import type { CompletionItemWithCategory, CompletionCategory } from "../shared/completion-context";
 import { conlog } from "../common";
 import {
     type IndexedSymbol,
@@ -141,10 +142,11 @@ function convertToSymbol(item: StaticCompletionItem): IndexedSymbol {
     const hover = extractHover(item);
 
     // Build completion item (re-use existing data, ensure correct kind)
-    const completion: CompletionItem = {
+    const completion: CompletionItemWithCategory = {
         label: name,
         kind: symbolKindToCompletionKind(kind),
         documentation: item.documentation,
+        category: item.category as CompletionCategory | undefined,
     };
 
     // Copy detail if present

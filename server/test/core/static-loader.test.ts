@@ -5,6 +5,7 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
 import { CompletionItemKind, MarkupKind } from "vscode-languageserver/node";
 import { SymbolKind, ScopeLevel, SourceType } from "../../src/core/symbol";
+import { CompletionCategory, type CompletionItemWithCategory } from "../../src/shared/completion-context";
 
 // Mock fs.readFileSync before importing the module
 vi.mock("fs", () => ({
@@ -225,6 +226,36 @@ describe("static-loader", () => {
 
             // Static symbols have no source file, so location is null
             expect(result[0].location).toBeNull();
+        });
+
+        it("should preserve category from JSON on completion item", () => {
+            mockReadFileSync.mockReturnValue(JSON.stringify([
+                {
+                    label: "COPY",
+                    kind: CompletionItemKind.Function,
+                    category: "action",
+                },
+            ]));
+
+            const result = loadStaticSymbols("test-lang");
+            const completion = result[0].completion as CompletionItemWithCategory;
+
+            expect(completion.category).toBe(CompletionCategory.Action);
+        });
+
+        it("should preserve category for patch items", () => {
+            mockReadFileSync.mockReturnValue(JSON.stringify([
+                {
+                    label: "WRITE_BYTE",
+                    kind: CompletionItemKind.Function,
+                    category: "patch",
+                },
+            ]));
+
+            const result = loadStaticSymbols("test-lang");
+            const completion = result[0].completion as CompletionItemWithCategory;
+
+            expect(completion.category).toBe(CompletionCategory.Patch);
         });
 
         it("should set null source.uri for static symbols", () => {

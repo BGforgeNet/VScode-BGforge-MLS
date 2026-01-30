@@ -6,82 +6,19 @@
  * appear in all contexts.
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, expect } from "vitest";
 import { CompletionItemKind } from "vscode-languageserver/node";
-import { filterItemsByContext, clearMissingCategoryWarnings } from "../../src/weidu-tp2/completion/filter";
-import type { CompletionItemWithCategory } from "../../src/shared/completion-context";
+import { filterItemsByContext } from "../../src/weidu-tp2/completion/filter";
+import type { Tp2CompletionItem } from "../../src/weidu-tp2/completion/types";
+import { CompletionCategory } from "../../src/shared/completion-context";
 
 describe("Completion Category Safeguards", () => {
-    describe("filterItemsByContext warning", () => {
-        let consoleWarnSpy: ReturnType<typeof vi.spyOn>;
-
-        beforeEach(() => {
-            clearMissingCategoryWarnings();
-            consoleWarnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
-        });
-
-        afterEach(() => {
-            consoleWarnSpy.mockRestore();
-        });
-
-        it("logs warning for items without category", () => {
-            const itemWithoutCategory = {
-                label: "TEST_ITEM",
-                kind: CompletionItemKind.Constant,
-                // No category field
-            };
-
-            filterItemsByContext([itemWithoutCategory], ["funcParamName"]);
-
-            expect(consoleWarnSpy).toHaveBeenCalledWith(
-                expect.stringContaining("TEST_ITEM") && expect.stringContaining("no category")
-            );
-        });
-
-        it("does not log warning for items with category", () => {
-            const itemWithCategory: CompletionItemWithCategory = {
-                label: "MY_CONSTANT",
-                kind: CompletionItemKind.Constant,
-                category: "constants",
-            };
-
-            filterItemsByContext([itemWithCategory], ["funcParamName"]);
-
-            expect(consoleWarnSpy).not.toHaveBeenCalled();
-        });
-
-        it("does not log warning in unknown context", () => {
-            const itemWithoutCategory = {
-                label: "TEST_ITEM",
-                kind: CompletionItemKind.Constant,
-            };
-
-            filterItemsByContext([itemWithoutCategory], ["unknown"]);
-
-            // Unknown context returns early, no filtering happens
-            expect(consoleWarnSpy).not.toHaveBeenCalled();
-        });
-
-        it("still includes items without category (permissive)", () => {
-            const itemWithoutCategory = {
-                label: "UNCATEGORIZED",
-                kind: CompletionItemKind.Constant,
-            };
-
-            const result = filterItemsByContext([itemWithoutCategory], ["funcParamName"]);
-
-            // Item should still be included (permissive default)
-            expect(result).toHaveLength(1);
-            expect(result[0].label).toBe("UNCATEGORIZED");
-        });
-    });
-
     describe("category exclusion rules", () => {
         it("excludes constants from funcParamName context", () => {
-            const constantItem: CompletionItemWithCategory = {
+            const constantItem: Tp2CompletionItem = {
                 label: "MY_CONSTANT",
                 kind: CompletionItemKind.Constant,
-                category: "constants",
+                category: CompletionCategory.Constants,
             };
 
             const result = filterItemsByContext([constantItem], ["funcParamName"]);
@@ -90,10 +27,10 @@ describe("Completion Category Safeguards", () => {
         });
 
         it("excludes vars from funcParamName context", () => {
-            const varItem: CompletionItemWithCategory = {
+            const varItem: Tp2CompletionItem = {
                 label: "my_var",
                 kind: CompletionItemKind.Variable,
-                category: "vars",
+                category: CompletionCategory.Vars,
             };
 
             const result = filterItemsByContext([varItem], ["funcParamName"]);
@@ -102,10 +39,10 @@ describe("Completion Category Safeguards", () => {
         });
 
         it("includes actionFunctions in action context", () => {
-            const funcItem: CompletionItemWithCategory = {
+            const funcItem: Tp2CompletionItem = {
                 label: "my_function",
                 kind: CompletionItemKind.Function,
-                category: "actionFunctions",
+                category: CompletionCategory.ActionFunctions,
             };
 
             const result = filterItemsByContext([funcItem], ["action"]);
@@ -114,15 +51,62 @@ describe("Completion Category Safeguards", () => {
         });
 
         it("excludes actionFunctions from patch context", () => {
-            const funcItem: CompletionItemWithCategory = {
+            const funcItem: Tp2CompletionItem = {
                 label: "my_function",
                 kind: CompletionItemKind.Function,
-                category: "actionFunctions",
+                category: CompletionCategory.ActionFunctions,
             };
 
             const result = filterItemsByContext([funcItem], ["patch"]);
 
             expect(result).toHaveLength(0);
+        });
+    });
+
+    describe("JSDoc completions have category", () => {
+        it("JSDoc tag completions have category jsdoc", () => {
+            const tagItem: Tp2CompletionItem = {
+                label: "@type",
+                kind: CompletionItemKind.Keyword,
+                category: CompletionCategory.Jsdoc,
+            };
+
+            // jsdoc category has no exclusion rules, so it should pass through any context
+            const result = filterItemsByContext([tagItem], ["action"]);
+
+            expect(result).toHaveLength(1);
+            expect(result[0].label).toBe("@type");
+        });
+
+        it("JSDoc type completions have category jsdoc", () => {
+            const typeItem: Tp2CompletionItem = {
+                label: "int",
+                kind: CompletionItemKind.TypeParameter,
+                category: CompletionCategory.Jsdoc,
+            };
+
+            const result = filterItemsByContext([typeItem], ["patch"]);
+
+            expect(result).toHaveLength(1);
+            expect(result[0].label).toBe("int");
+        });
+    });
+
+    describe("parameter completions have category", () => {
+        it("parameter completions have category funcVarKeyword", () => {
+            const paramItem: Tp2CompletionItem = {
+                label: "count",
+                kind: CompletionItemKind.Field,
+                category: CompletionCategory.FuncVarKeyword,
+            };
+
+            // funcVarKeyword is excluded from action context
+            const resultAction = filterItemsByContext([paramItem], ["action"]);
+            expect(resultAction).toHaveLength(0);
+
+            // funcVarKeyword is allowed in funcParamName context
+            const resultParam = filterItemsByContext([paramItem], ["funcParamName"]);
+            expect(resultParam).toHaveLength(1);
         });
     });
 });

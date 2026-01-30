@@ -3,8 +3,8 @@
  * Provides local variable extraction and position-based analysis.
  */
 
-import { CompletionItem, CompletionItemKind, Position } from "vscode-languageserver/node";
-import type { CompletionItemWithCategory } from "../shared/completion-context";
+import { CompletionItemKind, Position } from "vscode-languageserver/node";
+import { CompletionCategory, type Tp2CompletionItem } from "./completion/types";
 import { parseWithCache, isInitialized } from "./parser";
 import { SyntaxType } from "./tree-sitter.d";
 import { findNodeAtPosition, stripStringDelimiters, unwrapVariableRef } from "./tree-utils";
@@ -14,7 +14,7 @@ import { VARIABLE_DECL_TYPES } from "./variable-symbols";
  * Extract all local variables from the current file for completion.
  * Parses the file with tree-sitter and collects all variable names from VARIABLE_DECL_TYPES nodes.
  */
-export function localCompletion(text: string): CompletionItem[] {
+export function localCompletion(text: string): Tp2CompletionItem[] {
     if (!isInitialized()) {
         return [];
     }
@@ -89,10 +89,10 @@ export function localCompletion(text: string): CompletionItem[] {
     visit(tree.rootNode);
 
     // Convert to CompletionItem[] with "vars" category for filtering
-    return Array.from(variableNames).map((name): CompletionItemWithCategory => ({
+    return Array.from(variableNames).map((name): Tp2CompletionItem => ({
         label: name,
         kind: CompletionItemKind.Variable,
-        category: "vars",
+        category: CompletionCategory.Vars,
     }));
 }
 

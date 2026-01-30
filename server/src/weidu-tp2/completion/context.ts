@@ -1109,10 +1109,13 @@ function detectCopyActionContext(node: SyntaxNode, cursorOffset: number): Comple
     // Not at a specific statement - this is command position for typing new patch/when keywords
     // Check what's above/below to determine what keywords are allowed
 
-    // If there's content both above and below, return what's below (certain context)
+    // If there's content both above and below, determine allowed contexts.
+    // Patches above means user can still add more patches (before when block).
     if ((hasPatchesAbove || hasWhenAbove) && (hasPatchesBelow || hasWhenBelow)) {
         const contexts: CompletionContext[] = [];
-        if (hasPatchesBelow) contexts.push("patch");
+        // Patches are valid here if there are patches above (can always add more)
+        // or if there are patches below (within a patch block)
+        if (hasPatchesAbove || hasPatchesBelow) contexts.push("patch");
         if (hasWhenBelow) contexts.push("when");
         return contexts;
     }

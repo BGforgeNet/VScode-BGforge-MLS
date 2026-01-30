@@ -54,4 +54,10 @@ export type CompletionContext =
     | "jsdoc";          // Inside a JSDoc comment - offer tags and types
 
 // Re-export CompletionCategory from shared for convenience
-export type { CompletionCategory } from "../../shared/completion-context";
+export { CompletionCategory } from "../../shared/completion-context";
+
+import type { CompletionItemWithCategory } from "../../shared/completion-context";
+import { CompletionCategory } from "../../shared/completion-context";
+
+/** TP2 completion item with mandatory category for context filtering. */
+export type Tp2CompletionItem = CompletionItemWithCategory & { category: CompletionCategory };

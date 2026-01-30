@@ -3,9 +3,8 @@
  * Determines which completions should appear based on cursor context.
  */
 
-import { CompletionItem } from "vscode-languageserver/node";
-import { CompletionItemWithCategory } from "../../shared/completion-context";
-import { CompletionCategory, CompletionContext } from "./types";
+import type { CompletionItem } from "vscode-languageserver/node";
+import { CompletionCategory, type CompletionContext, type Tp2CompletionItem } from "./types";
 
 /**
  * Exclusion rules: category -> contexts where it should NOT appear.
@@ -21,44 +20,31 @@ import { CompletionCategory, CompletionContext } from "./types";
  */
 const CATEGORY_EXCLUSIONS: Partial<Record<CompletionCategory, CompletionContext[]>> = {
     // Rule 1: No patch items in action context, funcParamName/Value, or lafName
-    patch: ["action", "actionKeyword", "funcParamName", "funcParamValue", "lafName", "lpfName"],
-    patchFunctions: ["action", "actionKeyword", "funcParamName", "funcParamValue", "lafName"],
+    [CompletionCategory.Patch]: ["action", "actionKeyword", "funcParamName", "funcParamValue", "lafName", "lpfName"],
+    [CompletionCategory.PatchFunctions]: ["action", "actionKeyword", "funcParamName", "funcParamValue", "lafName"],
 
     // Rule 2: No action items in patch context, funcParamName/Value, or lpfName
-    action: ["patch", "patchKeyword", "funcParamName", "funcParamValue", "lafName", "lpfName"],
-    actionFunctions: ["patch", "patchKeyword", "funcParamName", "funcParamValue", "lpfName"],
+    [CompletionCategory.Action]: ["patch", "patchKeyword", "funcParamName", "funcParamValue", "lafName", "lpfName"],
+    [CompletionCategory.ActionFunctions]: ["patch", "patchKeyword", "funcParamName", "funcParamValue", "lpfName"],
 
     // Rule 3: No structural items in funcParamName/Value or inappropriate contexts
-    prologue: ["funcParamName", "funcParamValue", "lafName", "lpfName"],
-    flag: ["funcParamName", "funcParamValue", "action", "actionKeyword", "patch", "patchKeyword", "componentFlag", "lafName", "lpfName"],
-    componentFlag: ["funcParamName", "funcParamValue", "lafName", "lpfName"],
-    language: ["funcParamName", "funcParamValue", "lafName", "lpfName"],
+    [CompletionCategory.Prologue]: ["funcParamName", "funcParamValue", "lafName", "lpfName"],
+    [CompletionCategory.Flag]: ["funcParamName", "funcParamValue", "action", "actionKeyword", "patch", "patchKeyword", "componentFlag", "lafName", "lpfName"],
+    [CompletionCategory.ComponentFlag]: ["funcParamName", "funcParamValue", "lafName", "lpfName"],
+    [CompletionCategory.Language]: ["funcParamName", "funcParamValue", "lafName", "lpfName"],
 
     // Rule 4: INT_VAR, STR_VAR, RET, RET_ARRAY - only in funcParamName context (not value)
-    funcVarKeyword: ["action", "actionKeyword", "patch", "patchKeyword", "prologue", "flag", "componentFlag", "when", "lafName", "lpfName", "funcParamValue"],
+    [CompletionCategory.FuncVarKeyword]: ["action", "actionKeyword", "patch", "patchKeyword", "prologue", "flag", "componentFlag", "when", "lafName", "lpfName", "funcParamValue"],
 
-    // Rule 5: Value items not allowed in lafName/lpfName (only function names)
-    // Rule 7: Value items not allowed in funcParamName (only parameter names)
-    constants: ["lafName", "lpfName", "funcParamName"],
-    vars: ["lafName", "lpfName", "funcParamName"],
-    value: ["lafName", "lpfName", "funcParamName"],
-    when: ["lafName", "lpfName", "funcParamName"],
-    optGlob: ["lafName", "lpfName", "funcParamName"],
-    optCase: ["lafName", "lpfName", "funcParamName"],
-    optExact: ["lafName", "lpfName", "funcParamName"],
-    arraySortType: ["lafName", "lpfName", "funcParamName"],
-
-    // Rule 6: IElib/IESDP constants not allowed in lafName/lpfName
-    // Rule 8: IElib/IESDP constants not allowed in funcParamName
-    ielibInt: ["lafName", "lpfName", "funcParamName"],
-    ielibResref: ["lafName", "lpfName", "funcParamName"],
-    iesdpOther: ["lafName", "lpfName", "funcParamName"],
-    iesdpStrref: ["lafName", "lpfName", "funcParamName"],
-    iesdpResref: ["lafName", "lpfName", "funcParamName"],
-    iesdpDword: ["lafName", "lpfName", "funcParamName"],
-    iesdpWord: ["lafName", "lpfName", "funcParamName"],
-    iesdpByte: ["lafName", "lpfName", "funcParamName"],
-    iesdpChar: ["lafName", "lpfName", "funcParamName"],
+    // Rule 5: Value items not allowed in lafName/lpfName or funcParamName
+    [CompletionCategory.Constants]: ["lafName", "lpfName", "funcParamName"],
+    [CompletionCategory.Vars]: ["lafName", "lpfName", "funcParamName"],
+    [CompletionCategory.Value]: ["lafName", "lpfName", "funcParamName"],
+    [CompletionCategory.When]: ["lafName", "lpfName", "funcParamName"],
+    [CompletionCategory.OptGlob]: ["lafName", "lpfName", "funcParamName"],
+    [CompletionCategory.OptCase]: ["lafName", "lpfName", "funcParamName"],
+    [CompletionCategory.OptExact]: ["lafName", "lpfName", "funcParamName"],
+    [CompletionCategory.ArraySortType]: ["lafName", "lpfName", "funcParamName"],
 };
 
 /**
@@ -96,7 +82,7 @@ for (const [category, exclusions] of Object.entries(CATEGORY_EXCLUSIONS)) {
  * An item is excluded only if ALL active contexts exclude it.
  * This is permissive: when uncertain, we show more rather than less.
  */
-export function filterItemsByContext(items: CompletionItem[], contexts: CompletionContext[]): CompletionItem[] {
+export function filterItemsByContext(items: Tp2CompletionItem[], contexts: CompletionContext[]): CompletionItem[] {
     // Unknown context = show everything
     if (contexts.includes("unknown")) {
         return items;
@@ -116,30 +102,22 @@ export function filterItemsByContext(items: CompletionItem[], contexts: Completi
  *
  * **Logic:**
  * - Empty contexts array → never excluded (nothing to check against)
- * - Item with no category → never excluded (backward compatibility)
  * - Category with no exclusions → never excluded (default allow)
  * - Category excluded by ALL contexts → excluded (unanimous rejection)
  * - Category excluded by SOME contexts → NOT excluded (permissive - any approval wins)
  *
- * @param item Completion item to check
+ * @param item TP2 completion item (category is always present)
  * @param contexts Active completion contexts (may be empty)
  * @returns true if item should be hidden, false otherwise
  */
-function isItemExcluded(item: CompletionItem, contexts: CompletionContext[]): boolean {
+function isItemExcluded(item: Tp2CompletionItem, contexts: CompletionContext[]): boolean {
     // No contexts = nothing to exclude against
     if (contexts.length === 0) {
         return false;
     }
 
-    const category = (item as CompletionItemWithCategory).category as CompletionCategory | undefined;
-
-    // No category = never excluded
-    if (!category) {
-        return false;
-    }
-
     // Get exclusion rules for this category
-    const exclusions = CATEGORY_EXCLUSIONS[category];
+    const exclusions = CATEGORY_EXCLUSIONS[item.category];
     if (!exclusions || exclusions.length === 0) {
         return false;
     }
