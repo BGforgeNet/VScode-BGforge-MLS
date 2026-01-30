@@ -4234,11 +4234,13 @@ repository:
       - match: \b(LABEL)\b
       - match: \b(METADATA)\b
 
-  # Color UPPERCASE/UPPER_case variable names as constants after SET/SPRINT keywords.
-  # More specific than keyword-only patterns, so must be included before weidu-tp2-action/patch.
+  # Color constant-like variable names after SET/SPRINT keywords.
+  # Constant = first word fully uppercase (e.g., MAX_LEVEL, MOD_folder).
+  # Non-constant vars are consumed without coloring, preventing vars-declaration from coloring them.
+  # Must be included before weidu-tp2-action/patch in top-level patterns.
   set-sprint-constant-vars:
     patterns:
-      # Action context (OUTER_* keywords)
+      # Action context: OUTER_SET
       - match: \b(OUTER_SET)\b\s+(?:(EVALUATE_BUFFER)\s+)?([A-Z][A-Z0-9]+(?:_\w+)*)\b
         captures:
           '1':
@@ -4247,13 +4249,24 @@ repository:
             name: support.function.weidu-tp2.action
           '3':
             name: constant.language.weidu-tp2
+      - match: \b(OUTER_SET)\b\s+(?:(EVALUATE_BUFFER)\s+)?\w+
+        captures:
+          '1':
+            name: support.function.weidu-tp2.action
+          '2':
+            name: support.function.weidu-tp2.action
+      # Action context: OUTER_SPRINT variants
       - match: \b(OUTER_TEXT_SPRINT|OUTER_SPRINT|OUTER_SNPRINT)\b\s+([A-Z][A-Z0-9]+(?:_\w+)*)\b
         captures:
           '1':
             name: support.function.weidu-tp2.action
           '2':
             name: constant.language.weidu-tp2
-      # Patch context (SET/SPRINT/LOCAL_* keywords)
+      - match: \b(OUTER_TEXT_SPRINT|OUTER_SPRINT|OUTER_SNPRINT)\b\s+\w+
+        captures:
+          '1':
+            name: support.function.weidu-tp2.action
+      # Patch context: SET
       - match: \b(SET)\b\s+(?:(EVAL(?:UATE_BUFFER)?)\s+)?([A-Z][A-Z0-9]+(?:_\w+)*)\b
         captures:
           '1':
@@ -4262,18 +4275,34 @@ repository:
             name: entity.name.function.weidu-tp2.patch
           '3':
             name: constant.language.weidu-tp2
+      - match: \b(SET)\b\s+(?:(EVAL(?:UATE_BUFFER)?)\s+)?\w+
+        captures:
+          '1':
+            name: entity.name.function.weidu-tp2.patch
+          '2':
+            name: entity.name.function.weidu-tp2.patch
+      # Patch context: LOCAL_SET
       - match: \b(LOCAL_SET)\b\s+([A-Z][A-Z0-9]+(?:_\w+)*)\b
         captures:
           '1':
             name: entity.name.function.weidu-tp2.patch
           '2':
             name: constant.language.weidu-tp2
+      - match: \b(LOCAL_SET)\b\s+\w+
+        captures:
+          '1':
+            name: entity.name.function.weidu-tp2.patch
+      # Patch context: SPRINT variants
       - match: \b(TEXT_SPRINT|SPRINT|SNPRINT|SPRINTF|LOCAL_TEXT_SPRINT|LOCAL_SPRINT)\b\s+([A-Z][A-Z0-9]+(?:_\w+)*)\b
         captures:
           '1':
             name: entity.name.function.weidu-tp2.patch
           '2':
             name: constant.language.weidu-tp2
+      - match: \b(TEXT_SPRINT|SPRINT|SNPRINT|SPRINTF|LOCAL_TEXT_SPRINT|LOCAL_SPRINT)\b\s+\w+
+        captures:
+          '1':
+            name: entity.name.function.weidu-tp2.patch
 
   weidu-tp2-action:
     name: support.function.weidu-tp2.action
@@ -5030,13 +5059,11 @@ repository:
             name: keyword.control.weidu-tp2
           '3':
             name: keyword.control.weidu-tp2
-      - match: \b([-\w]+)\s*(=)\s*(EVAL\s+)?
+      - match: \b[-\w]+\s*(=)\s*(EVAL\s+)?
         captures:
           '1':
-            name: variable.parameter.weidu-tp2
-          '2':
             name: keyword.control.weidu-tp2
-          '3':
+          '2':
             name: keyword.control.weidu-tp2
 
   infinity-constants:

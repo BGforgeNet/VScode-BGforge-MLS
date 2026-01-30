@@ -16686,6 +16686,17 @@
           }
         },
         {
+          "match": "\\b(OUTER_SET)\\b\\s+(?:(EVALUATE_BUFFER)\\s+)?\\w+",
+          "captures": {
+            "1": {
+              "name": "support.function.weidu-tp2.action"
+            },
+            "2": {
+              "name": "support.function.weidu-tp2.action"
+            }
+          }
+        },
+        {
           "match": "\\b(OUTER_TEXT_SPRINT|OUTER_SPRINT|OUTER_SNPRINT)\\b\\s+([A-Z][A-Z0-9]+(?:_\\w+)*)\\b",
           "captures": {
             "1": {
@@ -16693,6 +16704,14 @@
             },
             "2": {
               "name": "constant.language.weidu-tp2"
+            }
+          }
+        },
+        {
+          "match": "\\b(OUTER_TEXT_SPRINT|OUTER_SPRINT|OUTER_SNPRINT)\\b\\s+\\w+",
+          "captures": {
+            "1": {
+              "name": "support.function.weidu-tp2.action"
             }
           }
         },
@@ -16711,6 +16730,17 @@
           }
         },
         {
+          "match": "\\b(SET)\\b\\s+(?:(EVAL(?:UATE_BUFFER)?)\\s+)?\\w+",
+          "captures": {
+            "1": {
+              "name": "entity.name.function.weidu-tp2.patch"
+            },
+            "2": {
+              "name": "entity.name.function.weidu-tp2.patch"
+            }
+          }
+        },
+        {
           "match": "\\b(LOCAL_SET)\\b\\s+([A-Z][A-Z0-9]+(?:_\\w+)*)\\b",
           "captures": {
             "1": {
@@ -16722,6 +16752,14 @@
           }
         },
         {
+          "match": "\\b(LOCAL_SET)\\b\\s+\\w+",
+          "captures": {
+            "1": {
+              "name": "entity.name.function.weidu-tp2.patch"
+            }
+          }
+        },
+        {
           "match": "\\b(TEXT_SPRINT|SPRINT|SNPRINT|SPRINTF|LOCAL_TEXT_SPRINT|LOCAL_SPRINT)\\b\\s+([A-Z][A-Z0-9]+(?:_\\w+)*)\\b",
           "captures": {
             "1": {
@@ -16729,6 +16767,14 @@
             },
             "2": {
               "name": "constant.language.weidu-tp2"
+            }
+          }
+        },
+        {
+          "match": "\\b(TEXT_SPRINT|SPRINT|SNPRINT|SPRINTF|LOCAL_TEXT_SPRINT|LOCAL_SPRINT)\\b\\s+\\w+",
+          "captures": {
+            "1": {
+              "name": "entity.name.function.weidu-tp2.patch"
             }
           }
         }
@@ -19020,15 +19066,12 @@
           "name": "variable.complex.weidu-tp2"
         },
         {
-          "match": "\\b([-\\w]+)\\s*(=)\\s*(EVAL\\s+)?",
+          "match": "\\b[-\\w]+\\s*(=)\\s*(EVAL\\s+)?",
           "captures": {
             "1": {
-              "name": "variable.parameter.weidu-tp2"
-            },
-            "2": {
               "name": "keyword.control.weidu-tp2"
             },
-            "3": {
+            "2": {
               "name": "keyword.control.weidu-tp2"
             }
           },
