@@ -176,9 +176,19 @@ export const FUNCTION_CALL_TYPES = [
 // Collected item types for aligned output
 // ============================================
 
+// ============================================
+// Collected item type enum
+// ============================================
+
+/** Type discriminator for collected items. */
+export enum CollectedItemType {
+    Assignment = "assignment",
+    Comment = "comment",
+}
+
 /** Collected assignment for aligned output. */
 export interface AssignmentItem {
-    type: "assignment";
+    type: CollectedItemType.Assignment;
     name: string;
     value: string;
     endRow: number;
@@ -186,7 +196,7 @@ export interface AssignmentItem {
 
 /** Collected comment for aligned output. */
 export interface CommentItem {
-    type: "comment";
+    type: CollectedItemType.Comment;
     text: string;
     startRow: number;
     endRow: number;

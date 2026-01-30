@@ -12,11 +12,26 @@ interface DialogReply {
     conditional?: string;
 }
 
+/**
+ * Types of dialog options and messages.
+ */
+export enum DialogOptionType {
+    NOption = "NOption",
+    NLowOption = "NLowOption",
+    GOption = "GOption",
+    GLowOption = "GLowOption",
+    BOption = "BOption",
+    BLowOption = "BLowOption",
+    NMessage = "NMessage",
+    GMessage = "GMessage",
+    BMessage = "BMessage",
+}
+
 interface DialogOption {
     msgId: number | string;
     target: string;
     skill?: number;
-    type: "NOption" | "NLowOption" | "GOption" | "GLowOption" | "BOption" | "BLowOption" | "NMessage" | "GMessage" | "BMessage";
+    type: DialogOptionType;
     line: number;
 }
 
@@ -123,11 +138,11 @@ function parseProcedure(proc: SyntaxNode, name: string): DialogNode {
             }
 
             // NOption, GOption, BOption, etc.
-            const optionTypes = ["NOption", "NLowOption", "GOption", "GLowOption", "BOption", "BLowOption"];
-            if (optionTypes.includes(funcName) && arg0 && arg1) {
+            const optionTypes = [DialogOptionType.NOption, DialogOptionType.NLowOption, DialogOptionType.GOption, DialogOptionType.GLowOption, DialogOptionType.BOption, DialogOptionType.BLowOption];
+            if (optionTypes.includes(funcName as DialogOptionType) && arg0 && arg1) {
                 const target = arg1.text;
                 options.push({
-                    type: funcName as DialogOption["type"],
+                    type: funcName as DialogOptionType,
                     msgId: parseArgValue(arg0),
                     target,
                     skill: arg2 ? parseInt(arg2.text, 10) : undefined,
@@ -136,10 +151,10 @@ function parseProcedure(proc: SyntaxNode, name: string): DialogNode {
             }
 
             // NMessage, GMessage, BMessage (terminal)
-            const msgTypes = ["NMessage", "GMessage", "BMessage"];
-            if (msgTypes.includes(funcName) && arg0) {
+            const msgTypes = [DialogOptionType.NMessage, DialogOptionType.GMessage, DialogOptionType.BMessage];
+            if (msgTypes.includes(funcName as DialogOptionType) && arg0) {
                 options.push({
-                    type: funcName as DialogOption["type"],
+                    type: funcName as DialogOptionType,
                     msgId: parseArgValue(arg0),
                     target: "",
                     line,

@@ -4,7 +4,7 @@
  */
 
 import type { CompletionItem } from "vscode-languageserver/node";
-import { CompletionCategory, type CompletionContext, type Tp2CompletionItem } from "./types";
+import { CompletionCategory, CompletionContext, type Tp2CompletionItem } from "./types";
 
 /**
  * Exclusion rules: category -> contexts where it should NOT appear.
@@ -20,50 +20,50 @@ import { CompletionCategory, type CompletionContext, type Tp2CompletionItem } fr
  */
 const CATEGORY_EXCLUSIONS: Partial<Record<CompletionCategory, CompletionContext[]>> = {
     // Rule 1: No patch items in action context, funcParamName/Value, or lafName
-    [CompletionCategory.Patch]: ["action", "actionKeyword", "funcParamName", "funcParamValue", "lafName", "lpfName"],
-    [CompletionCategory.PatchFunctions]: ["action", "actionKeyword", "funcParamName", "funcParamValue", "lafName"],
+    [CompletionCategory.Patch]: [CompletionContext.Action, CompletionContext.ActionKeyword, CompletionContext.FuncParamName, CompletionContext.FuncParamValue, CompletionContext.LafName, CompletionContext.LpfName],
+    [CompletionCategory.PatchFunctions]: [CompletionContext.Action, CompletionContext.ActionKeyword, CompletionContext.FuncParamName, CompletionContext.FuncParamValue, CompletionContext.LafName],
 
     // Rule 2: No action items in patch context, funcParamName/Value, or lpfName
-    [CompletionCategory.Action]: ["patch", "patchKeyword", "funcParamName", "funcParamValue", "lafName", "lpfName"],
-    [CompletionCategory.ActionFunctions]: ["patch", "patchKeyword", "funcParamName", "funcParamValue", "lpfName"],
+    [CompletionCategory.Action]: [CompletionContext.Patch, CompletionContext.PatchKeyword, CompletionContext.FuncParamName, CompletionContext.FuncParamValue, CompletionContext.LafName, CompletionContext.LpfName],
+    [CompletionCategory.ActionFunctions]: [CompletionContext.Patch, CompletionContext.PatchKeyword, CompletionContext.FuncParamName, CompletionContext.FuncParamValue, CompletionContext.LpfName],
 
     // Rule 3: No structural items in funcParamName/Value or inappropriate contexts
-    [CompletionCategory.Prologue]: ["funcParamName", "funcParamValue", "lafName", "lpfName"],
-    [CompletionCategory.Flag]: ["funcParamName", "funcParamValue", "action", "actionKeyword", "patch", "patchKeyword", "componentFlag", "lafName", "lpfName"],
-    [CompletionCategory.ComponentFlag]: ["funcParamName", "funcParamValue", "lafName", "lpfName"],
-    [CompletionCategory.Language]: ["funcParamName", "funcParamValue", "lafName", "lpfName"],
+    [CompletionCategory.Prologue]: [CompletionContext.FuncParamName, CompletionContext.FuncParamValue, CompletionContext.LafName, CompletionContext.LpfName],
+    [CompletionCategory.Flag]: [CompletionContext.FuncParamName, CompletionContext.FuncParamValue, CompletionContext.Action, CompletionContext.ActionKeyword, CompletionContext.Patch, CompletionContext.PatchKeyword, CompletionContext.ComponentFlag, CompletionContext.LafName, CompletionContext.LpfName],
+    [CompletionCategory.ComponentFlag]: [CompletionContext.FuncParamName, CompletionContext.FuncParamValue, CompletionContext.LafName, CompletionContext.LpfName],
+    [CompletionCategory.Language]: [CompletionContext.FuncParamName, CompletionContext.FuncParamValue, CompletionContext.LafName, CompletionContext.LpfName],
 
     // Rule 4: INT_VAR, STR_VAR, RET, RET_ARRAY - only in funcParamName context (not value)
-    [CompletionCategory.FuncVarKeyword]: ["action", "actionKeyword", "patch", "patchKeyword", "prologue", "flag", "componentFlag", "when", "lafName", "lpfName", "funcParamValue"],
+    [CompletionCategory.FuncVarKeyword]: [CompletionContext.Action, CompletionContext.ActionKeyword, CompletionContext.Patch, CompletionContext.PatchKeyword, CompletionContext.Prologue, CompletionContext.Flag, CompletionContext.ComponentFlag, CompletionContext.When, CompletionContext.LafName, CompletionContext.LpfName, CompletionContext.FuncParamValue],
 
     // Rule 5: Value items not allowed in lafName/lpfName or funcParamName
-    [CompletionCategory.Constants]: ["lafName", "lpfName", "funcParamName"],
-    [CompletionCategory.Vars]: ["lafName", "lpfName", "funcParamName"],
-    [CompletionCategory.Value]: ["lafName", "lpfName", "funcParamName"],
-    [CompletionCategory.When]: ["lafName", "lpfName", "funcParamName"],
-    [CompletionCategory.OptGlob]: ["lafName", "lpfName", "funcParamName"],
-    [CompletionCategory.OptCase]: ["lafName", "lpfName", "funcParamName"],
-    [CompletionCategory.OptExact]: ["lafName", "lpfName", "funcParamName"],
-    [CompletionCategory.ArraySortType]: ["lafName", "lpfName", "funcParamName"],
+    [CompletionCategory.Constants]: [CompletionContext.LafName, CompletionContext.LpfName, CompletionContext.FuncParamName],
+    [CompletionCategory.Vars]: [CompletionContext.LafName, CompletionContext.LpfName, CompletionContext.FuncParamName],
+    [CompletionCategory.Value]: [CompletionContext.LafName, CompletionContext.LpfName, CompletionContext.FuncParamName],
+    [CompletionCategory.When]: [CompletionContext.LafName, CompletionContext.LpfName, CompletionContext.FuncParamName],
+    [CompletionCategory.OptGlob]: [CompletionContext.LafName, CompletionContext.LpfName, CompletionContext.FuncParamName],
+    [CompletionCategory.OptCase]: [CompletionContext.LafName, CompletionContext.LpfName, CompletionContext.FuncParamName],
+    [CompletionCategory.OptExact]: [CompletionContext.LafName, CompletionContext.LpfName, CompletionContext.FuncParamName],
+    [CompletionCategory.ArraySortType]: [CompletionContext.LafName, CompletionContext.LpfName, CompletionContext.FuncParamName],
 };
 
 /**
  * Valid contexts for validation.
  */
 const VALID_CONTEXTS = new Set<CompletionContext>([
-    "prologue",
-    "flag",
-    "componentFlag",
-    "action",
-    "actionKeyword",
-    "patch",
-    "patchKeyword",
-    "when",
-    "lafName",
-    "lpfName",
-    "funcParamName",
-    "funcParamValue",
-    "unknown",
+    CompletionContext.Prologue,
+    CompletionContext.Flag,
+    CompletionContext.ComponentFlag,
+    CompletionContext.Action,
+    CompletionContext.ActionKeyword,
+    CompletionContext.Patch,
+    CompletionContext.PatchKeyword,
+    CompletionContext.When,
+    CompletionContext.LafName,
+    CompletionContext.LpfName,
+    CompletionContext.FuncParamName,
+    CompletionContext.FuncParamValue,
+    CompletionContext.Unknown,
 ]);
 
 // Validate exclusion rules at module load
@@ -84,7 +84,7 @@ for (const [category, exclusions] of Object.entries(CATEGORY_EXCLUSIONS)) {
  */
 export function filterItemsByContext(items: Tp2CompletionItem[], contexts: CompletionContext[]): CompletionItem[] {
     // Unknown context = show everything
-    if (contexts.includes("unknown")) {
+    if (contexts.includes(CompletionContext.Unknown)) {
         return items;
     }
 

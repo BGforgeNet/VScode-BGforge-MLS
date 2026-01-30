@@ -21,6 +21,11 @@ import {
     SyntaxKind,
 } from "ts-morph";
 import {
+    TDConstructType,
+    TDTextType,
+    TDTransitionType,
+    TDEpilogueType,
+    TDPatchOp,
     TDScript,
     TDConstruct,
     TDState,
@@ -224,11 +229,11 @@ export class TDParser {
             case TD_KEYWORDS.EXTEND_BOTTOM:
                 return this.transformExtend(call, funcName === TD_KEYWORDS.EXTEND_TOP);
             case TD_KEYWORDS.INTERJECT:
-                return this.transformInterject(call, "interject");
+                return this.transformInterject(call, TDConstructType.Interject);
             case TD_KEYWORDS.INTERJECT_COPY_TRANS:
-                return this.transformInterject(call, "interject_copy_trans");
+                return this.transformInterject(call, TDConstructType.InterjectCopyTrans);
             case TD_KEYWORDS.INTERJECT_COPY_TRANS2:
-                return this.transformInterject(call, "interject_copy_trans2");
+                return this.transformInterject(call, TDConstructType.InterjectCopyTrans2);
             case TD_KEYWORDS.REPLACE:
                 return this.transformReplace(call);
             case TD_KEYWORDS.ALTER_TRANS:
@@ -240,13 +245,13 @@ export class TDParser {
             case TD_KEYWORDS.ADD_TRANS_ACTION:
                 return this.transformAddTransAction(call);
             case TD_KEYWORDS.REPLACE_TRANS_TRIGGER:
-                return this.transformReplaceTrans(call, "replace_trans_trigger");
+                return this.transformReplaceTrans(call, TDPatchOp.ReplaceTransTrigger);
             case TD_KEYWORDS.REPLACE_TRANS_ACTION:
-                return this.transformReplaceTrans(call, "replace_trans_action");
+                return this.transformReplaceTrans(call, TDPatchOp.ReplaceTransAction);
             case TD_KEYWORDS.REPLACE_TRIGGER_TEXT:
-                return this.transformReplaceText(call, "replace_trigger_text");
+                return this.transformReplaceText(call, TDPatchOp.ReplaceTriggerText);
             case TD_KEYWORDS.REPLACE_ACTION_TEXT:
-                return this.transformReplaceText(call, "replace_action_text");
+                return this.transformReplaceText(call, TDPatchOp.ReplaceActionText);
             case TD_KEYWORDS.SET_WEIGHT:
                 return this.transformSetWeight(call);
             case TD_KEYWORDS.REPLACE_SAY:
@@ -352,7 +357,7 @@ export class TDParser {
         }
 
         const begin: TDBegin = {
-            type: "begin",
+            type: TDConstructType.Begin,
             filename,
             states,
         };
@@ -413,7 +418,7 @@ export class TDParser {
         }
 
         const append: TDAppend = {
-            type: "append",
+            type: TDConstructType.Append,
             filename,
             states,
         };
@@ -486,7 +491,7 @@ export class TDParser {
         }
 
         const extend: TDExtend = {
-            type: isTop ? "extend_top" : "extend_bottom",
+            type: isTop ? TDConstructType.ExtendTop : TDConstructType.ExtendBottom,
             filename,
             stateLabel,
             transitions,
@@ -582,11 +587,11 @@ export class TDParser {
      */
     private transformInterject(
         call: CallExpression,
-        type: "interject" | "interject_copy_trans" | "interject_copy_trans2"
+        type: TDConstructType.Interject | TDConstructType.InterjectCopyTrans | TDConstructType.InterjectCopyTrans2
     ): TDConstruct[] | null {
         const args = call.getArguments();
-        const funcName = type === "interject" ? "interject" : type === "interject_copy_trans" ? "interjectCopyTrans" : "interjectCopyTrans2";
-        const minArgs = type === "interject" ? 6 : 4;
+        const funcName = type === TDConstructType.Interject ? "interject" : type === TDConstructType.InterjectCopyTrans ? "interjectCopyTrans" : "interjectCopyTrans2";
+        const minArgs = type === TDConstructType.Interject ? 6 : 4;
 
         if (args.length < minArgs) {
             throw new Error(`${funcName}() requires at least ${minArgs} arguments at ${call.getStartLineNumber()}`);
@@ -599,7 +604,7 @@ export class TDParser {
 
         // Check for safe option (interjectCopyTrans only, arg 5)
         let safe = false;
-        if (type === "interject_copy_trans" && args[4]) {
+        if (type === TDConstructType.InterjectCopyTrans && args[4]) {
             const opts = args[4];
             if (Node.isObjectLiteralExpression(opts)) {
                 for (const prop of opts.getProperties()) {
@@ -635,17 +640,17 @@ export class TDParser {
 
         // Determine epilogue
         let epilogue: TDChainEpilogue | undefined;
-        if (type === "interject") {
+        if (type === TDConstructType.Interject) {
             const exitFile = this.resolveStringExpr(args[4] as Expression);
             const exitLabel = this.resolveStringExpr(args[5] as Expression);
             epilogue = {
-                type: "end",
+                type: TDEpilogueType.End,
                 filename: exitFile,
                 target: exitLabel,
             };
         } else {
             epilogue = {
-                type: "copy_trans",
+                type: TDEpilogueType.CopyTrans,
                 filename: entryFile,
                 target: entryLabel,
             };
@@ -710,14 +715,14 @@ export class TDParser {
         }
 
         const operation: TDAlterTrans = {
-            op: "alter_trans",
+            op: TDPatchOp.AlterTrans,
             filename,
             states,
             transitions,
             changes,
         };
 
-        return [{ type: "patch", operation }];
+        return [{ type: TDConstructType.Patch, operation }];
     }
 
     /**
@@ -735,14 +740,14 @@ export class TDParser {
         const unless = args[3] ? this.parseUnless(args[3] as Expression) : undefined;
 
         const operation: TDAddStateTrigger = {
-            op: "add_state_trigger",
+            op: TDPatchOp.AddStateTrigger,
             filename,
             states,
             trigger,
             unless,
         };
 
-        return [{ type: "patch", operation }];
+        return [{ type: TDConstructType.Patch, operation }];
     }
 
     /**
@@ -782,7 +787,7 @@ export class TDParser {
         }
 
         const operation: TDAddTransTrigger = {
-            op: "add_trans_trigger",
+            op: TDPatchOp.AddTransTrigger,
             filename,
             states,
             transitions,
@@ -790,7 +795,7 @@ export class TDParser {
             unless,
         };
 
-        return [{ type: "patch", operation }];
+        return [{ type: TDConstructType.Patch, operation }];
     }
 
     /**
@@ -809,7 +814,7 @@ export class TDParser {
         const unless = args[4] ? this.parseUnless(args[4] as Expression) : undefined;
 
         const operation: TDAddTransAction = {
-            op: "add_trans_action",
+            op: TDPatchOp.AddTransAction,
             filename,
             states,
             transitions,
@@ -817,7 +822,7 @@ export class TDParser {
             unless,
         };
 
-        return [{ type: "patch", operation }];
+        return [{ type: TDConstructType.Patch, operation }];
     }
 
     /**
@@ -825,10 +830,10 @@ export class TDParser {
      */
     private transformReplaceTrans(
         call: CallExpression,
-        op: "replace_trans_trigger" | "replace_trans_action"
+        op: TDPatchOp.ReplaceTransTrigger | TDPatchOp.ReplaceTransAction
     ): TDConstruct[] | null {
         const args = call.getArguments();
-        const funcName = op === "replace_trans_trigger" ? "replaceTransTrigger" : "replaceTransAction";
+        const funcName = op === TDPatchOp.ReplaceTransTrigger ? "replaceTransTrigger" : "replaceTransAction";
 
         if (args.length < 5) {
             throw new Error(`${funcName}() requires at least 5 arguments at ${call.getStartLineNumber()}`);
@@ -851,7 +856,7 @@ export class TDParser {
             unless,
         };
 
-        return [{ type: "patch", operation }];
+        return [{ type: TDConstructType.Patch, operation }];
     }
 
     /**
@@ -859,10 +864,10 @@ export class TDParser {
      */
     private transformReplaceText(
         call: CallExpression,
-        op: "replace_trigger_text" | "replace_action_text"
+        op: TDPatchOp.ReplaceTriggerText | TDPatchOp.ReplaceActionText
     ): TDConstruct[] | null {
         const args = call.getArguments();
-        const funcName = op === "replace_trigger_text" ? "replaceTriggerText" : "replaceActionText";
+        const funcName = op === TDPatchOp.ReplaceTriggerText ? "replaceTriggerText" : "replaceActionText";
 
         if (args.length < 3) {
             throw new Error(`${funcName}() requires at least 3 arguments at ${call.getStartLineNumber()}`);
@@ -892,7 +897,7 @@ export class TDParser {
             unless,
         };
 
-        return [{ type: "patch", operation }];
+        return [{ type: TDConstructType.Patch, operation }];
     }
 
     /**
@@ -909,13 +914,13 @@ export class TDParser {
         const weight = Number(args[2]!.getText());
 
         const operation: TDSetWeight = {
-            op: "set_weight",
+            op: TDPatchOp.SetWeight,
             filename,
             state,
             weight,
         };
 
-        return [{ type: "patch", operation }];
+        return [{ type: TDConstructType.Patch, operation }];
     }
 
     /**
@@ -932,13 +937,13 @@ export class TDParser {
         const text = this.expressionToText(args[2] as Expression);
 
         const operation: TDReplaceSay = {
-            op: "replace_say",
+            op: TDPatchOp.ReplaceSay,
             filename,
             state,
             text,
         };
 
-        return [{ type: "patch", operation }];
+        return [{ type: TDConstructType.Patch, operation }];
     }
 
     /**
@@ -956,14 +961,14 @@ export class TDParser {
         const unless = args[3] ? this.parseUnless(args[3] as Expression) : undefined;
 
         const operation: TDReplaceStateTrigger = {
-            op: "replace_state_trigger",
+            op: TDPatchOp.ReplaceStateTrigger,
             filename,
             states,
             trigger,
             unless,
         };
 
-        return [{ type: "patch", operation }];
+        return [{ type: TDConstructType.Patch, operation }];
     }
 
     /**
@@ -1010,12 +1015,12 @@ export class TDParser {
         }
 
         const operation: TDReplaceStates = {
-            op: "replace_states",
+            op: TDPatchOp.ReplaceStates,
             filename,
             replacements,
         };
 
-        return [{ type: "patch", operation }];
+        return [{ type: TDConstructType.Patch, operation }];
     }
 
     /**
@@ -1103,7 +1108,7 @@ export class TDParser {
         // Create transition with trigger
         const trans: TDTransition = {
             trigger,
-            next: { type: "exit" }, // Default
+            next: { type: TDTransitionType.Exit }, // Default
         };
         state.transitions.push(trans);
 
@@ -1122,7 +1127,7 @@ export class TDParser {
                 // else block - no trigger transition
                 const elseStmts = utils.getBlockStatements(elseStmt);
                 const elseTrans: TDTransition = {
-                    next: { type: "exit" },
+                    next: { type: TDTransitionType.Exit },
                 };
                 state.transitions.push(elseTrans);
                 for (const s of elseStmts) {
@@ -1177,7 +1182,7 @@ export class TDParser {
         let filename = "";
         const entries: TDChainEntry[] = [];
         let currentEntry: TDChainEntry | null = null;
-        let epilogue: TDChainEpilogue = { type: "exit" };
+        let epilogue: TDChainEpilogue = { type: TDEpilogueType.Exit };
 
         for (const stmt of body.getStatements()) {
             if (stmt.isKind(SyntaxKind.ExpressionStatement)) {
@@ -1202,13 +1207,13 @@ export class TDParser {
                         }
                         currentEntry.action = args.map(a => a.getText()).join(" ");
                     } else if (funcName === "exit") {
-                        epilogue = { type: "exit" };
+                        epilogue = { type: TDEpilogueType.Exit };
                     } else if (funcName === "goTo") {
                         if (args.length < 1 || !args[0]) {
                             throw new Error(`goTo() requires at least 1 argument at ${expr.getStartLineNumber()}`);
                         }
                         epilogue = {
-                            type: "end",
+                            type: TDEpilogueType.End,
                             filename,
                             target: args[0].getText(),
                         };
@@ -1230,7 +1235,7 @@ export class TDParser {
         }
 
         return {
-            type: "chain",
+            type: TDConstructType.Chain,
             filename,
             label: name,
             trigger: entryTrigger,
@@ -1273,7 +1278,7 @@ export class TDParser {
 
                 const trans: TDTransition = {
                     trigger,
-                    next: { type: "exit" },
+                    next: { type: TDTransitionType.Exit },
                 };
 
                 for (const s of thenStmts) {
@@ -1448,7 +1453,7 @@ export class TDParser {
                 if (maleSound) male.sound = maleSound;
                 if (femaleSound) female.sound = femaleSound;
                 return {
-                    type: "tra", // Placeholder, actual type from male/female
+                    type: TDTextType.Tra, // Placeholder, actual type from male/female
                     value: 0,
                     male,
                     female,
@@ -1464,7 +1469,7 @@ export class TDParser {
             if (funcName === TD_KEYWORDS.TRA && args.length >= 1 && args[0]) {
                 const argText = utils.substituteVars(args[0].getText(), this.vars);
                 const text: TDText = {
-                    type: "tra",
+                    type: TDTextType.Tra,
                     value: Number(argText),
                 };
 
@@ -1487,7 +1492,7 @@ export class TDParser {
             if (funcName === TD_KEYWORDS.TLK && args.length >= 1 && args[0]) {
                 const argText = utils.substituteVars(args[0].getText(), this.vars);
                 const text: TDText = {
-                    type: "tlk",
+                    type: TDTextType.Tlk,
                     value: Number(argText),
                 };
 
@@ -1510,7 +1515,7 @@ export class TDParser {
             if (funcName === TD_KEYWORDS.TLK_FORCED && args.length >= 2 && args[0] && args[1]) {
                 const numText = utils.substituteVars(args[0].getText(), this.vars);
                 return {
-                    type: "forced",
+                    type: TDTextType.Forced,
                     value: numText,
                 };
             }
@@ -1518,14 +1523,14 @@ export class TDParser {
 
         if (Node.isStringLiteral(expr)) {
             return {
-                type: "literal",
+                type: TDTextType.Literal,
                 value: utils.stripQuotes(expr.getText()),
             };
         }
 
         // Fallback to literal
         return {
-            type: "literal",
+            type: TDTextType.Literal,
             value: utils.substituteVars(expr.getText(), this.vars),
         };
     }
@@ -1781,7 +1786,7 @@ export class TDParser {
                 this.validateArgs("reply", args, 1, lineNumber);
                 context.addTransition({
                     reply: this.expressionToText(args[0] as Expression),
-                    next: { type: "exit" },
+                    next: { type: TDTransitionType.Exit },
                 });
                 break;
 
@@ -1790,9 +1795,9 @@ export class TDParser {
                 const target = this.resolveStringExpr(args[0] as Expression);
                 const lastTrans = context.getLastTransition();
                 if (lastTrans) {
-                    lastTrans.next = { type: "goto", target };
+                    lastTrans.next = { type: TDTransitionType.Goto, target };
                 } else {
-                    context.addTransition({ next: { type: "goto", target } });
+                    context.addTransition({ next: { type: TDTransitionType.Goto, target } });
                 }
                 break;
             }
@@ -1800,9 +1805,9 @@ export class TDParser {
             case "exit": {
                 const lastTrans = context.getLastTransition();
                 if (lastTrans) {
-                    lastTrans.next = { type: "exit" };
+                    lastTrans.next = { type: TDTransitionType.Exit };
                 } else {
-                    context.addTransition({ next: { type: "exit" } });
+                    context.addTransition({ next: { type: TDTransitionType.Exit } });
                 }
                 break;
             }
@@ -1814,7 +1819,7 @@ export class TDParser {
                 if (lastTrans) {
                     lastTrans.action = actionStr;
                 } else {
-                    context.addTransition({ action: actionStr, next: { type: "exit" } });
+                    context.addTransition({ action: actionStr, next: { type: TDTransitionType.Exit } });
                 }
                 break;
             }
@@ -1848,7 +1853,7 @@ export class TDParser {
                     throw new Error(`extern() must come after a transition at ${lineNumber}`);
                 }
                 lastTrans.next = {
-                    type: "extern",
+                    type: TDTransitionType.Extern,
                     filename: utils.stripQuotes(args[0]!.getText()), // Guaranteed by validateArgs
                     target: utils.stripQuotes(args[1]!.getText()), // Guaranteed by validateArgs
                 };

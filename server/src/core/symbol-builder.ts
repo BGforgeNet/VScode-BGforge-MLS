@@ -32,6 +32,8 @@ import {
     type CallableInfo,
     type VariableInfoData,
     SymbolKind,
+    CallableContext,
+    CallableDefType,
     symbolKindToCompletionKind,
 } from "./symbol";
 
@@ -95,10 +97,10 @@ export interface RawSymbolData {
     readonly displayPath?: string;
 
     /** Context for callables (action/patch) */
-    readonly context?: "action" | "patch";
+    readonly context?: CallableContext;
 
     /** Definition type for callables (function/macro) */
-    readonly dtype?: "function" | "macro";
+    readonly dtype?: CallableDefType;
 }
 
 // =============================================================================

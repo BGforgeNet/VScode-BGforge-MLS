@@ -3,6 +3,8 @@ import type { KnipConfig } from "knip";
 const config: KnipConfig = {
   rules: {
     types: "off",
+    // Knip can't trace enum member access (e.g. DeclarationKind.Set) as usage
+    enumMembers: "off",
   },
   workspaces: {
     client: {
@@ -34,6 +36,8 @@ const config: KnipConfig = {
     "cli/**",
     // external repositories cloned for testing
     "external/**",
+    // standalone update scripts run via pnpm exec tsx, not imported by main code
+    "scripts/**",
   ],
   ignoreDependencies: [
     // loaded at runtime via path.join in server/src/sslc/ssl_compiler.ts
@@ -42,6 +46,8 @@ const config: KnipConfig = {
     "@vscode/codicons",
     // run via pnpm exec in client/scripts/test.sh
     "prettier",
+    // used by scripts/ (pnpm exec tsx scripts/...)
+    "tsx",
   ],
   // esbuild uses glob patterns that knip can't resolve as imports
   ignoreUnresolved: [/\.\/client\/src\/test\/\*\.ts/],

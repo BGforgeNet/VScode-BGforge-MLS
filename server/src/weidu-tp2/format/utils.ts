@@ -13,6 +13,7 @@ import {
     FUNCTION_CALL_TYPES,
     FOR_EACH_TYPES,
     type CollectedItem,
+    CollectedItemType,
 } from "./types";
 import { SyntaxType } from "../tree-sitter.d";
 
@@ -288,7 +289,7 @@ export function outputAlignedAssignments(
     // Find max name length for alignment (only for items with values)
     let maxNameLen = 0;
     for (const item of items) {
-        if (item.type === "assignment" && item.value) {
+        if (item.type === CollectedItemType.Assignment && item.value) {
             maxNameLen = Math.max(maxNameLen, item.name.length);
         }
     }
@@ -297,7 +298,7 @@ export function outputAlignedAssignments(
     let lastEndRow = -1;
 
     for (const item of items) {
-        if (item.type === "comment") {
+        if (item.type === CollectedItemType.Comment) {
             // Check for inline comment - comment starts on same row as previous item ended
             if (lastEndRow >= 0 && item.startRow === lastEndRow && lines.length > 0) {
                 const lastLine = lines[lines.length - 1];

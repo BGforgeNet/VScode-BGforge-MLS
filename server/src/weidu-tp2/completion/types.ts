@@ -4,12 +4,22 @@
  */
 
 /**
+ * Parameter section types for WeiDU function calls.
+ */
+export enum ParamSection {
+    IntVar = "INT_VAR",
+    StrVar = "STR_VAR",
+    Ret = "RET",
+    RetArray = "RET_ARRAY",
+}
+
+/**
  * Enriched context for function parameter completion.
  * Contains function name, parameter section, and already-used params.
  */
 export interface FuncParamsContext {
     functionName: string;
-    paramSection: "INT_VAR" | "STR_VAR" | "RET" | "RET_ARRAY";
+    paramSection: ParamSection;
     usedParams: string[];
 }
 
@@ -36,22 +46,23 @@ export interface FuncParamsContext {
  * - funcParamValue: parameter value position (right of =)
  * When uncertain, prefer funcParamName.
  */
-export type CompletionContext =
-    | "prologue"        // BACKUP, AUTHOR before any flag/language
-    | "flag"            // TP2 flags, LANGUAGE, BEGIN
-    | "componentFlag"   // After BEGIN, component flags allowed
-    | "action"          // Inside action context - value position (after keyword)
-    | "actionKeyword"   // Start of action statement - command position
-    | "patch"           // Inside patch context - value position (after keyword)
-    | "patchKeyword"    // Start of patch statement - command position
-    | "when"            // After COPY file pairs - when conditions allowed
-    | "lafName"         // After LAF keyword (action functions only)
-    | "lpfName"         // After LPF keyword (patch functions only)
-    | "funcParamName"   // Function parameter name (left of = or no =)
-    | "funcParamValue"  // Function parameter value (right of =)
-    | "unknown"         // Fallback - return everything
-    | "comment"         // Inside a comment - no code completions
-    | "jsdoc";          // Inside a JSDoc comment - offer tags and types
+export enum CompletionContext {
+    Prologue = "prologue",
+    Flag = "flag",
+    ComponentFlag = "componentFlag",
+    Action = "action",
+    ActionKeyword = "actionKeyword",
+    Patch = "patch",
+    PatchKeyword = "patchKeyword",
+    When = "when",
+    LafName = "lafName",
+    LpfName = "lpfName",
+    FuncParamName = "funcParamName",
+    FuncParamValue = "funcParamValue",
+    Unknown = "unknown",
+    Comment = "comment",
+    Jsdoc = "jsdoc",
+}
 
 // Re-export CompletionCategory from shared for convenience
 export { CompletionCategory } from "../../shared/completion-context";

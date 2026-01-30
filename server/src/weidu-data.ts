@@ -13,6 +13,7 @@ import * as hover from "./shared/hover";
 import { HeaderData as LanguageHeaderData } from "./data-loader";
 import { LANG_WEIDU_TP2_TOOLTIP } from "./core/languages";
 import { parseHeader, parseHeaderVariables, FunctionInfo, VariableInfo } from "./weidu-tp2/header-parser";
+import { CallableContext } from "./core/symbol";
 
 /** Known types that link to ielib documentation. */
 const KNOWN_TYPES = new Set(["array", "bool", "ids", "int", "list", "map", "resref", "string", "filename"]);
@@ -246,7 +247,7 @@ function buildLanguageData(uri: string, functions: FunctionInfo[], filePath: str
 
         // Build completion item
         // Category maps to filtering: action functions only in action context, patch in patch
-        const category = func.context === "action" ? "actionFunctions" : "patchFunctions";
+        const category = func.context === CallableContext.Action ? "actionFunctions" : "patchFunctions";
         const completionItem: completion.CompletionItemEx & { category: string } = {
             label: func.name,
             documentation: markdownContents,

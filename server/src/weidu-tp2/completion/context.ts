@@ -14,7 +14,7 @@ import { getParser, isInitialized } from "../parser";
 import { isAction, isPatch } from "../format/utils";
 import { stripStringDelimiters } from "../tree-utils";
 
-import type { FuncParamsContext, CompletionContext } from "./types";
+import { ParamSection, CompletionContext, type FuncParamsContext } from "./types";
 
 // ============================================
 // Enriched Context Storage
@@ -60,9 +60,9 @@ function detectFuncNameFromLineText(text: string, line: number, character: numbe
 
     const keyword = match[1].toUpperCase();
     if (keyword === "LAF" || keyword === "LAUNCH_ACTION_FUNCTION") {
-        return "lafName";
+        return CompletionContext.LafName;
     }
-    return "lpfName";
+    return CompletionContext.LpfName;
 }
 
 /**
@@ -76,7 +76,7 @@ function detectFuncNameFromLineText(text: string, line: number, character: numbe
  * @param line 0-based line number
  * @param character 0-based character offset
  * @param fileExtension File extension (e.g., ".tp2", ".tpa", ".tpp")
- * @returns Array of detected contexts, or ["unknown"] if detection fails
+ * @returns Array of detected contexts, or [CompletionContext.Unknown] if detection fails
  */
 export function getContextAtPosition(
     text: string,
@@ -111,12 +111,12 @@ export function getContextAtPosition(
     if (node.type === SyntaxType.Comment) {
         const commentText = node.text.trimStart();
         if (commentText.startsWith("/**")) {
-            return ["jsdoc"];
+            return [CompletionContext.Jsdoc];
         }
-        return ["comment"];
+        return [CompletionContext.Comment];
     }
     if (node.type === SyntaxType.LineComment) {
-        return ["comment"];
+        return [CompletionContext.Comment];
     }
 
     // Walk up the tree to find context-defining ancestor
@@ -128,16 +128,16 @@ export function getContextAtPosition(
     // Only override when we're reasonably sure tree-sitter missed the function call
     // (single generic context that allows function calls).
     const canHaveFunctionCalls = contexts.length === 1 && (
-        contexts[0] === "patch" ||
-        contexts[0] === "action" ||
-        contexts[0] === "patchKeyword" ||
-        contexts[0] === "actionKeyword" ||
-        contexts[0] === "flag"  // Top-level .tp2 with incomplete structure
+        contexts[0] === CompletionContext.Patch ||
+        contexts[0] === CompletionContext.Action ||
+        contexts[0] === CompletionContext.PatchKeyword ||
+        contexts[0] === CompletionContext.ActionKeyword ||
+        contexts[0] === CompletionContext.Flag  // Top-level .tp2 with incomplete structure
     );
 
     if (canHaveFunctionCalls) {
         const funcNameContext = detectFuncNameFromLineText(text, line, character);
-        if (funcNameContext) {
+        if (funcNameContext !== null) {
             return [funcNameContext];
         }
     }
@@ -152,14 +152,14 @@ export function getContextAtPosition(
 function getDefaultContext(ext: string): CompletionContext {
     switch (ext) {
         case ".tpp":
-            return "patch";
+            return CompletionContext.Patch;
         case ".tpa":
         case ".tph":
-            return "action";
+            return CompletionContext.Action;
         case ".tp2":
-            return "prologue";
+            return CompletionContext.Prologue;
         default:
-            return "unknown";
+            return CompletionContext.Unknown;
     }
 }
 
@@ -352,7 +352,7 @@ function detectFunctionDefinitionContext(
         }
 
         // Not in a call_item yet → funcParamName (typing new parameter)
-        return ["funcParamName"];
+        return [CompletionContext.FuncParamName];
     }
 
     // If cursor is between BEGIN and END, we're in the function body
@@ -379,11 +379,11 @@ function detectFunctionDefinitionContext(
                         // Check if it's an action command in a patch function or vice versa
                         if (funcType === "patch" && (keywordText.startsWith("OUTER_") || keywordText.startsWith("ACTION_"))) {
                             // Action command in patch function - return action context
-                            return ["actionKeyword"];
+                            return [CompletionContext.ActionKeyword];
                         }
                         if (funcType === "action" && (keywordText.startsWith("PATCH_") || ALWAYS_PATCH_KEYWORDS.has(keywordText))) {
                             // Patch command in action function - return patch context
-                            return ["patchKeyword"];
+                            return [CompletionContext.PatchKeyword];
                         }
                     }
                     break;
@@ -394,12 +394,12 @@ function detectFunctionDefinitionContext(
         // If at a statement, determine command vs value position
         if (statement) {
             if (isInValuePosition(cursorOffset, statement)) {
-                return [funcType];
+                return [funcType === "patch" ? CompletionContext.Patch : CompletionContext.Action];
             }
-            return [funcType === "patch" ? "patchKeyword" : "actionKeyword"];
+            return [funcType === "patch" ? CompletionContext.PatchKeyword : CompletionContext.ActionKeyword];
         }
         // Not at a specific statement node yet - return keyword context (command position)
-        return [funcType === "patch" ? "patchKeyword" : "actionKeyword"];
+        return [funcType === "patch" ? CompletionContext.PatchKeyword : CompletionContext.ActionKeyword];
     }
 
     // Cursor is in the function header or outside the function body
@@ -564,7 +564,7 @@ function isInValuePosition(cursorOffset: number, node: SyntaxNode): boolean {
  */
 function detectPrologueContext(node: SyntaxNode): CompletionContext[] | null {
     if (PROLOGUE_DIRECTIVE_TYPES.has(node.type)) {
-        return ["prologue"];
+        return [CompletionContext.Prologue];
     }
     return null;
 }
@@ -575,7 +575,7 @@ function detectPrologueContext(node: SyntaxNode): CompletionContext[] | null {
  */
 function detectFlagContext(node: SyntaxNode): CompletionContext[] | null {
     if (FLAG_TYPES.has(node.type)) {
-        return ["flag"];
+        return [CompletionContext.Flag];
     }
     return null;
 }
@@ -604,7 +604,7 @@ function extractFuncParamsContext(node: SyntaxNode, cursorOffset: number): void 
     // Instead of using node bounds, we recursively search for actual keyword nodes ("INT_VAR",
     // "STR_VAR", etc.) and track the last one before cursor, which correctly identifies the current section.
     let lastSectionNode: SyntaxNode | null = null;
-    let lastSectionType: "INT_VAR" | "STR_VAR" | "RET" | "RET_ARRAY" | null = null;
+    let lastSectionType: ParamSection | null = null;
     let lastKeywordPosition: number = -1; // Position of the keyword for filtering params
 
     // Helper to recursively find keyword nodes in the tree
@@ -622,7 +622,7 @@ function extractFuncParamsContext(node: SyntaxNode, cursorOffset: number): void 
                 // This looks like a keyword - determine which section and find the ancestor node
                 let ancestor: SyntaxNode | null;
                 if (text === "INT_VAR") {
-                    lastSectionType = "INT_VAR";
+                    lastSectionType = ParamSection.IntVar;
                     lastKeywordPosition = searchNode.endIndex;
                     // Find the int_var_call ancestor to extract params from
                     ancestor = searchNode.parent;
@@ -631,7 +631,7 @@ function extractFuncParamsContext(node: SyntaxNode, cursorOffset: number): void 
                     }
                     if (ancestor) lastSectionNode = ancestor;
                 } else if (text === "STR_VAR") {
-                    lastSectionType = "STR_VAR";
+                    lastSectionType = ParamSection.StrVar;
                     lastKeywordPosition = searchNode.endIndex;
                     // Find the str_var_call ancestor to extract params from
                     // Bug fix: With error recovery, STR_VAR might not have a str_var_call ancestor yet.
@@ -650,7 +650,7 @@ function extractFuncParamsContext(node: SyntaxNode, cursorOffset: number): void 
                     }
                     if (ancestor && ancestor !== node) lastSectionNode = ancestor;
                 } else if (text === "RET") {
-                    lastSectionType = "RET";
+                    lastSectionType = ParamSection.Ret;
                     lastKeywordPosition = searchNode.endIndex;
                     ancestor = searchNode.parent;
                     while (ancestor && ancestor.type !== SyntaxType.RetCall) {
@@ -658,7 +658,7 @@ function extractFuncParamsContext(node: SyntaxNode, cursorOffset: number): void 
                     }
                     if (ancestor) lastSectionNode = ancestor;
                 } else {
-                    lastSectionType = "RET_ARRAY";
+                    lastSectionType = ParamSection.RetArray;
                     lastKeywordPosition = searchNode.endIndex;
                     ancestor = searchNode.parent;
                     while (ancestor && ancestor.type !== SyntaxType.RetArrayCall) {
@@ -740,7 +740,7 @@ function extractUsedParamsAfter(sectionNode: SyntaxNode, afterPosition: number):
  * 3. If cursor is right of = → funcParamValue (typing value)
  * 4. If uncertain, prefer funcParamName
  */
-function detectParamNameOrValue(node: SyntaxNode, cursorOffset: number): "funcParamName" | "funcParamValue" {
+function detectParamNameOrValue(node: SyntaxNode, cursorOffset: number): CompletionContext {
     // Look for = token in the node and its children
     let equalsPosition = -1;
 
@@ -759,16 +759,16 @@ function detectParamNameOrValue(node: SyntaxNode, cursorOffset: number): "funcPa
 
     // No = found → funcParamName (implicit parameter)
     if (equalsPosition < 0) {
-        return "funcParamName";
+        return CompletionContext.FuncParamName;
     }
 
     // Cursor is left of or at = → funcParamName
     if (cursorOffset <= equalsPosition) {
-        return "funcParamName";
+        return CompletionContext.FuncParamName;
     }
 
     // Cursor is right of = → funcParamValue
-    return "funcParamValue";
+    return CompletionContext.FuncParamValue;
 }
 
 /**
@@ -824,7 +824,7 @@ function detectFunctionCallContext(node: SyntaxNode, cursorOffset: number): Comp
     // Action function call (LAF)
     if (type === SyntaxType.ActionLaunchFunction || type === "launch_action_function") {
         if (isAtFunctionName(cursorOffset, node)) {
-            return ["lafName"];
+            return [CompletionContext.LafName];
         }
         // After function name → check for funcParamName vs funcParamValue
         // Bug fix #2: LAF inside patches context is invalid
@@ -848,7 +848,7 @@ function detectFunctionCallContext(node: SyntaxNode, cursorOffset: number): Comp
                         // Found COPY before LAF → LAF is lexically inside COPY's patch area
                         // Return patch context directly (don't return null, as that would delegate to COPY
                         // which doesn't see LAF as its child and returns wrong context)
-                        return ["patch"];
+                        return [CompletionContext.Patch];
                     }
                 }
             }
@@ -864,13 +864,13 @@ function detectFunctionCallContext(node: SyntaxNode, cursorOffset: number): Comp
         }
 
         // Not in a call_item yet → funcParamName (typing new parameter)
-        return ["funcParamName"];
+        return [CompletionContext.FuncParamName];
     }
 
     // Patch function call (LPF)
     if (type === SyntaxType.PatchLaunchFunction || type === "launch_patch_function") {
         if (isAtFunctionName(cursorOffset, node)) {
-            return ["lpfName"];
+            return [CompletionContext.LpfName];
         }
         // After function name → check for funcParamName vs funcParamValue
         // LPF is valid inside patches blocks
@@ -884,7 +884,7 @@ function detectFunctionCallContext(node: SyntaxNode, cursorOffset: number): Comp
         }
 
         // Not in a call_item yet → funcParamName (typing new parameter)
-        return ["funcParamName"];
+        return [CompletionContext.FuncParamName];
     }
 
     return null;
@@ -934,13 +934,13 @@ function detectInnerActionContext(node: SyntaxNode, cursorOffset: number): Compl
 
         if (actionStatement) {
             if (isInValuePosition(cursorOffset, actionStatement)) {
-                return ["action"];
+                return [CompletionContext.Action];
             }
-            return ["actionKeyword"];
+            return [CompletionContext.ActionKeyword];
         }
-        return ["actionKeyword"];
+        return [CompletionContext.ActionKeyword];
     }
-    // Bug fix #1: Return null instead of ["action"] to let caller continue walking up the tree.
+    // Bug fix #1: Return null instead of [CompletionContext.Action] to let caller continue walking up the tree.
     // When cursor is not inside BEGIN...END body (e.g., at INNER_ACTION keyword),
     // we should continue walking to find the containing context (e.g., COPY patches).
     return null;
@@ -970,28 +970,28 @@ function detectPatchContext(node: SyntaxNode, cursorOffset: number): CompletionC
 
             if (patchStatement) {
                 if (isInValuePosition(cursorOffset, patchStatement)) {
-                    return ["patch"];
+                    return [CompletionContext.Patch];
                 }
-                return ["patchKeyword"];
+                return [CompletionContext.PatchKeyword];
             }
-            return ["patchKeyword"];
+            return [CompletionContext.PatchKeyword];
         }
-        return ["patch"];
+        return [CompletionContext.Patch];
     }
 
     // OUTER_PATCH (no body parsing needed)
     if (type === SyntaxType.ActionOuterPatch || type === SyntaxType.ActionOuterPatchSave) {
-        return ["patch"];
+        return [CompletionContext.Patch];
     }
 
     // Patch file
     if (type === SyntaxType.PatchFile) {
-        return ["patch"];
+        return [CompletionContext.Patch];
     }
 
     // Inside patches block (COPY...BEGIN...END)
     if (type === SyntaxType.Patches) {
-        return ["patch"];
+        return [CompletionContext.Patch];
     }
 
     return null;
@@ -1012,7 +1012,7 @@ function detectCopyActionContext(node: SyntaxNode, cursorOffset: number): Comple
     for (const child of node.children) {
         if (child.type === SyntaxType.Patches) {
             if (cursorOffset >= child.startIndex && cursorOffset <= child.endIndex) {
-                return ["patch"];
+                return [CompletionContext.Patch];
             }
         }
     }
@@ -1066,11 +1066,11 @@ function detectCopyActionContext(node: SyntaxNode, cursorOffset: number): Comple
             // If COPY is inside action control flow, the header is action context
             if (isInsideControlFlowBody(node, cursorOffset, ACTION_CONTROL_FLOW_CONSTRUCTS)) {
                 if (isInValuePosition(cursorOffset, node)) {
-                    return ["action"];
+                    return [CompletionContext.Action];
                 }
-                return ["actionKeyword"];
+                return [CompletionContext.ActionKeyword];
             }
-            return ["action"];
+            return [CompletionContext.Action];
         }
     }
 
@@ -1096,14 +1096,14 @@ function detectCopyActionContext(node: SyntaxNode, cursorOffset: number): Comple
     // If at a patch statement, determine command vs value position
     if (patchStatement) {
         if (isInValuePosition(cursorOffset, patchStatement)) {
-            return ["patch"];
+            return [CompletionContext.Patch];
         }
-        return ["patchKeyword"];
+        return [CompletionContext.PatchKeyword];
     }
 
     // If at a when statement, return when context
     if (whenStatement) {
-        return ["when"];
+        return [CompletionContext.When];
     }
 
     // Not at a specific statement - this is command position for typing new patch/when keywords
@@ -1115,8 +1115,8 @@ function detectCopyActionContext(node: SyntaxNode, cursorOffset: number): Comple
         const contexts: CompletionContext[] = [];
         // Patches are valid here if there are patches above (can always add more)
         // or if there are patches below (within a patch block)
-        if (hasPatchesAbove || hasPatchesBelow) contexts.push("patch");
-        if (hasWhenBelow) contexts.push("when");
+        if (hasPatchesAbove || hasPatchesBelow) contexts.push(CompletionContext.Patch);
+        if (hasWhenBelow) contexts.push(CompletionContext.When);
         return contexts;
     }
 
@@ -1124,15 +1124,15 @@ function detectCopyActionContext(node: SyntaxNode, cursorOffset: number): Comple
     if (hasPatchesAbove || hasWhenAbove) {
         if (hasWhenAbove) {
             // After when: can add more when OR new action (NOT patches)
-            return ["when", "action"];
+            return [CompletionContext.When, CompletionContext.Action];
         } else {
             // After patches: can add more patches, when, OR new action
-            return ["patch", "when", "action"];
+            return [CompletionContext.Patch, CompletionContext.When, CompletionContext.Action];
         }
     }
 
     // After file pairs with nothing below: all three possible
-    return ["patch", "when", "action"];
+    return [CompletionContext.Patch, CompletionContext.When, CompletionContext.Action];
 }
 
 /**
@@ -1175,11 +1175,11 @@ function detectContextInControlFlow(
             if (lastCopyBeforeCursor) {
                 // Cursor is after COPY action - conceptually in COPY patches area
                 // Return patchKeyword (command position for typing patch statements)
-                return ["patchKeyword"];
+                return [CompletionContext.PatchKeyword];
             }
 
             // No COPY before cursor - cursor is in action control flow body
-            return ["actionKeyword"];
+            return [CompletionContext.ActionKeyword];
         }
         // Cursor is in the construct header (before BEGIN) - return null to continue
         return null;
@@ -1190,7 +1190,7 @@ function detectContextInControlFlow(
         const { beginEnd, endStart } = findBeginEndBoundaries(node);
         // If cursor is inside BEGIN...END body, return patchKeyword
         if (beginEnd > 0 && cursorOffset > beginEnd && (endStart < 0 || cursorOffset < endStart)) {
-            return ["patchKeyword"];
+            return [CompletionContext.PatchKeyword];
         }
         // Cursor is in the construct header (before BEGIN) - return null to continue
         return null;
@@ -1216,10 +1216,10 @@ function detectContextInPatchesBlock(
         // INNER_ACTION creates action context even inside patches block
         if (parent.type === SyntaxType.InnerAction) {
             if (isActionNode && isInValuePosition(cursorOffset, statementNode)) {
-                return ["action"];
+                return [CompletionContext.Action];
             }
             if (isActionNode) {
-                return ["actionKeyword"];
+                return [CompletionContext.ActionKeyword];
             }
             // Patch inside INNER_ACTION shouldn't happen, but fall through
         }
@@ -1234,9 +1234,9 @@ function detectContextInPatchesBlock(
     // If we found a patches block and no inner_action, return patch context
     if (foundPatchesBlock) {
         if (isInValuePosition(cursorOffset, statementNode)) {
-            return ["patch"];
+            return [CompletionContext.Patch];
         }
-        return ["patchKeyword"];
+        return [CompletionContext.PatchKeyword];
     }
 
     return null;
@@ -1264,14 +1264,14 @@ function detectContextInFunctionDef(
                 // If action statement inside patch function, return action context.
                 if (isActionNode) {
                     if (isInValuePosition(cursorOffset, statementNode)) {
-                        return ["action"];
+                        return [CompletionContext.Action];
                     }
-                    return ["actionKeyword"];
+                    return [CompletionContext.ActionKeyword];
                 }
                 if (isInValuePosition(cursorOffset, statementNode)) {
-                    return ["patch"];
+                    return [CompletionContext.Patch];
                 }
-                return ["patchKeyword"];
+                return [CompletionContext.PatchKeyword];
             }
 
             // Check for action function definitions
@@ -1281,14 +1281,14 @@ function detectContextInFunctionDef(
                 // If patch statement inside action function, return patch context.
                 if (isPatchNode) {
                     if (isInValuePosition(cursorOffset, statementNode)) {
-                        return ["patch"];
+                        return [CompletionContext.Patch];
                     }
-                    return ["patchKeyword"];
+                    return [CompletionContext.PatchKeyword];
                 }
                 if (isInValuePosition(cursorOffset, statementNode)) {
-                    return ["action"];
+                    return [CompletionContext.Action];
                 }
-                return ["actionKeyword"];
+                return [CompletionContext.ActionKeyword];
             }
         }
         parent = parent.parent;
@@ -1315,14 +1315,14 @@ function detectContextInErrorNode(
         // If action statement inside patch function (even in ERROR node), return action context.
         if (isActionNode) {
             if (isInValuePosition(cursorOffset, statementNode)) {
-                return ["action"];
+                return [CompletionContext.Action];
             }
-            return ["actionKeyword"];
+            return [CompletionContext.ActionKeyword];
         }
         if (isInValuePosition(cursorOffset, statementNode)) {
-            return ["patch"];
+            return [CompletionContext.Patch];
         }
-        return ["patchKeyword"];
+        return [CompletionContext.PatchKeyword];
     }
 
     if (funcContext === "action") {
@@ -1330,14 +1330,14 @@ function detectContextInErrorNode(
         // If patch statement inside action function (even in ERROR node), return patch context.
         if (isPatchNode) {
             if (isInValuePosition(cursorOffset, statementNode)) {
-                return ["patch"];
+                return [CompletionContext.Patch];
             }
-            return ["patchKeyword"];
+            return [CompletionContext.PatchKeyword];
         }
         if (isInValuePosition(cursorOffset, statementNode)) {
-            return ["action"];
+            return [CompletionContext.Action];
         }
-        return ["actionKeyword"];
+        return [CompletionContext.ActionKeyword];
     }
 
     return null;
@@ -1411,15 +1411,15 @@ function detectStatementContext(node: SyntaxNode, cursorOffset: number): Complet
     // Not inside a function def - use the statement node's context
     if (isPatchNode) {
         if (isInValuePosition(cursorOffset, statementNode)) {
-            return ["patch"];
+            return [CompletionContext.Patch];
         }
-        return ["patchKeyword"];
+        return [CompletionContext.PatchKeyword];
     }
     if (isActionNode) {
         if (isInValuePosition(cursorOffset, statementNode)) {
-            return ["action"];
+            return [CompletionContext.Action];
         }
-        return ["actionKeyword"];
+        return [CompletionContext.ActionKeyword];
     }
 
     return null;
@@ -1446,12 +1446,12 @@ function detectSourceFileContext(node: SyntaxNode, cursorOffset: number, ext: st
             return detectTp2RootContext(cursorOffset, node);
         }
         // Top level is command position - return only actionKeyword to exclude constants
-        return ["actionKeyword"];
+        return [CompletionContext.ActionKeyword];
     }
 
     // For .tpp, top level is command position
     if (ext === ".tpp") {
-        return ["patchKeyword"];
+        return [CompletionContext.PatchKeyword];
     }
 
     return null;
@@ -1481,7 +1481,7 @@ function detectContextFromNode(node: SyntaxNode, ext: string, cursorOffset: numb
         current = current.parent;
     }
 
-    return ["unknown"];
+    return [CompletionContext.Unknown];
 }
 
 /**
@@ -1754,22 +1754,22 @@ function getCopyActionContext(copyAction: SyntaxNode, cursorOffset: number): Com
     // Content below within COPY → only those contexts (certain)
     if (hasPatchesBelow || hasWhenBelow) {
         const contexts: CompletionContext[] = [];
-        if (hasPatchesBelow) contexts.push("patch");
-        if (hasWhenBelow) contexts.push("when");
+        if (hasPatchesBelow) contexts.push(CompletionContext.Patch);
+        if (hasWhenBelow) contexts.push(CompletionContext.When);
         return contexts;
     }
 
     // Nothing below → determine by what's already in COPY
     if (hasWhenInCopy) {
         // After when: more when OR new action (NOT patches - when comes after patches)
-        return ["when", "action"];
+        return [CompletionContext.When, CompletionContext.Action];
     }
     if (hasPatchesInCopy) {
         // After patches: more patches, when, OR new action
-        return ["patch", "when", "action"];
+        return [CompletionContext.Patch, CompletionContext.When, CompletionContext.Action];
     }
     // After file pairs only: all three possible
-    return ["patch", "when", "action"];
+    return [CompletionContext.Patch, CompletionContext.When, CompletionContext.Action];
 }
 
 /**
@@ -1782,9 +1782,9 @@ function getActionContext(action: SyntaxNode, cursorOffset: number): CompletionC
     }
     // Regular action → determine if cursor is at command position or value position
     if (isInValuePosition(cursorOffset, action)) {
-        return ["action"];
+        return [CompletionContext.Action];
     }
-    return ["actionKeyword"];
+    return [CompletionContext.ActionKeyword];
 }
 
 /**
@@ -1798,7 +1798,7 @@ function getComponentContextFromNode(cursorOffset: number, component: SyntaxNode
     for (const child of component.children) {
         if (COMPONENT_FLAG_TYPES.has(child.type)) {
             if (cursorOffset >= child.startIndex && cursorOffset <= child.endIndex) {
-                return ["componentFlag"];
+                return [CompletionContext.ComponentFlag];
             }
         }
     }
@@ -1813,11 +1813,11 @@ function getComponentContextFromNode(cursorOffset: number, component: SyntaxNode
 
     // Flags below cursor → in flag section (can only add more flags)
     if (flagAfter) {
-        return ["componentFlag"];
+        return [CompletionContext.ComponentFlag];
     }
 
     // No flags after, no actions before → at boundary, both valid
-    return ["componentFlag", "actionKeyword"];
+    return [CompletionContext.ComponentFlag, CompletionContext.ActionKeyword];
 }
 
 /**
@@ -1870,7 +1870,7 @@ function detectTp2RootContext(cursorOffset: number, root: SyntaxNode): Completio
                 if (lastComponent) {
                     return getComponentContextFromNode(cursorOffset, lastComponent);
                 }
-                return ["flag"];
+                return [CompletionContext.Flag];
             }
             // Check if cursor is INSIDE this component's span
             if (cursorOffset >= child.startIndex && cursorOffset <= child.endIndex) {
@@ -1889,20 +1889,20 @@ function detectTp2RootContext(cursorOffset: number, root: SyntaxNode): Completio
     // Determine context based on what we've seen
     // Once we've seen any non-prologue directive, we're past the prologue section
     if (seenAnyNonPrologue) {
-        return ["flag"];
+        return [CompletionContext.Flag];
     }
 
     // If we've seen both required directives, prologue is complete
     if (seenBackup && seenAuthorOrSupport) {
-        return ["flag"];
+        return [CompletionContext.Flag];
     }
 
     // If we've seen BACKUP only, AUTHOR/SUPPORT is still required
     if (seenBackup) {
-        return ["prologue"];
+        return [CompletionContext.Prologue];
     }
 
     // Beginning of file - BACKUP is required first
-    return ["prologue"];
+    return [CompletionContext.Prologue];
 }
 

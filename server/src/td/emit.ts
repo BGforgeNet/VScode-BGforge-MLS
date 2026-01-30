@@ -6,6 +6,11 @@
 
 import * as path from "path";
 import {
+    TDConstructType,
+    TDTextType,
+    TDTransitionType,
+    TDEpilogueType,
+    TDPatchOp,
     TDScript,
     TDConstruct,
     TDBegin,
@@ -37,20 +42,20 @@ export function emitD(script: TDScript): string {
  */
 function emitConstruct(construct: TDConstruct): string {
     switch (construct.type) {
-        case "begin":
+        case TDConstructType.Begin:
             return emitBegin(construct);
-        case "append":
+        case TDConstructType.Append:
             return emitAppend(construct);
-        case "extend_top":
-        case "extend_bottom":
+        case TDConstructType.ExtendTop:
+        case TDConstructType.ExtendBottom:
             return emitExtend(construct);
-        case "chain":
+        case TDConstructType.Chain:
             return emitChain(construct);
-        case "interject":
-        case "interject_copy_trans":
-        case "interject_copy_trans2":
+        case TDConstructType.Interject:
+        case TDConstructType.InterjectCopyTrans:
+        case TDConstructType.InterjectCopyTrans2:
             return emitInterject(construct);
-        case "patch":
+        case TDConstructType.Patch:
             return emitPatch(construct);
     }
 }
@@ -172,15 +177,15 @@ function emitTransitionLongform(trans: TDTransition, hasTrigger: boolean): strin
 
 function emitTransitionNextShorthand(next: TDTransitionNext): string {
     switch (next.type) {
-        case "goto":
+        case TDTransitionType.Goto:
             return `+ ${next.target}`;
-        case "exit":
+        case TDTransitionType.Exit:
             return "EXIT";
-        case "extern": {
+        case TDTransitionType.Extern: {
             const ifExists = next.ifFileExists ? "IF_FILE_EXISTS " : "";
             return `EXTERN ${ifExists}${next.filename} ${next.target}`;
         }
-        case "copy_trans": {
+        case TDTransitionType.CopyTrans: {
             const safe = next.safe ? "SAFE " : "";
             const keyword = next.late ? "COPY_TRANS_LATE" : "COPY_TRANS";
             return `${keyword} ${safe}${next.filename} ${next.target}`;
@@ -190,15 +195,15 @@ function emitTransitionNextShorthand(next: TDTransitionNext): string {
 
 function emitTransitionNext(next: TDTransitionNext): string {
     switch (next.type) {
-        case "goto":
+        case TDTransitionType.Goto:
             return `GOTO ${next.target}`;
-        case "exit":
+        case TDTransitionType.Exit:
             return "EXIT";
-        case "extern": {
+        case TDTransitionType.Extern: {
             const ifExists = next.ifFileExists ? "IF_FILE_EXISTS " : "";
             return `EXTERN ${ifExists}${next.filename} ${next.target}`;
         }
-        case "copy_trans": {
+        case TDTransitionType.CopyTrans: {
             const safe = next.safe ? "SAFE " : "";
             const keyword = next.late ? "COPY_TRANS_LATE" : "COPY_TRANS";
             return `${keyword} ${safe}${next.filename} ${next.target}`;
@@ -218,16 +223,16 @@ function emitText(text: TDText): string {
 
     let result: string;
     switch (text.type) {
-        case "tra":
+        case TDTextType.Tra:
             result = `@${text.value}`;
             break;
-        case "tlk":
+        case TDTextType.Tlk:
             result = `#${text.value}`;
             break;
-        case "literal":
+        case TDTextType.Literal:
             result = `~${text.value}~`;
             break;
-        case "forced":
+        case TDTextType.Forced:
             result = `!${text.value}`;
             break;
     }
@@ -245,7 +250,7 @@ function emitText(text: TDText): string {
 // =============================================================================
 
 function emitExtend(extend: TDExtend): string {
-    const keyword = extend.type === "extend_top" ? "EXTEND_TOP" : "EXTEND_BOTTOM";
+    const keyword = extend.type === TDConstructType.ExtendTop ? "EXTEND_TOP" : "EXTEND_BOTTOM";
     const position = extend.position !== undefined ? ` #${extend.position}` : "";
 
     const lines: string[] = [];
@@ -331,16 +336,16 @@ function emitChain(chain: TDChain): string {
 
 function emitChainEpilogue(epilogue: TDChainEpilogue): string {
     switch (epilogue.type) {
-        case "exit":
+        case TDEpilogueType.Exit:
             return "EXIT";
-        case "end":
+        case TDEpilogueType.End:
             return `END ${epilogue.filename} ${epilogue.target}`;
-        case "copy_trans": {
+        case TDEpilogueType.CopyTrans: {
             const safe = epilogue.safe ? "SAFE " : "";
             const keyword = epilogue.late ? "COPY_TRANS_LATE" : "COPY_TRANS";
             return `${keyword} ${safe}${epilogue.filename} ${epilogue.target}`;
         }
-        case "transitions":
+        case TDEpilogueType.Transitions:
             return (
                 "END\n" + epilogue.transitions.map(emitTransition).join("\n")
             );
@@ -353,7 +358,7 @@ function emitChainEpilogue(epilogue: TDChainEpilogue): string {
 
 function emitInterject(interject: TDChain | TDInterject): string {
     // Type narrowing
-    if (interject.type === "chain") {
+    if (interject.type === TDConstructType.Chain) {
         return emitChain(interject);
     }
 
@@ -362,13 +367,13 @@ function emitInterject(interject: TDChain | TDInterject): string {
 
     let keyword: string;
     switch (interject.type) {
-        case "interject":
+        case TDConstructType.Interject:
             keyword = "INTERJECT";
             break;
-        case "interject_copy_trans":
+        case TDConstructType.InterjectCopyTrans:
             keyword = "INTERJECT_COPY_TRANS";
             break;
-        case "interject_copy_trans2":
+        case TDConstructType.InterjectCopyTrans2:
             keyword = "INTERJECT_COPY_TRANS2";
             break;
     }
@@ -413,37 +418,37 @@ function emitPatch(patch: { type: "patch"; operation: import("./types").TDPatchO
     const op = patch.operation;
 
     switch (op.op) {
-        case "alter_trans":
+        case TDPatchOp.AlterTrans:
             return emitAlterTrans(op);
-        case "add_state_trigger":
+        case TDPatchOp.AddStateTrigger:
             return `ADD_STATE_TRIGGER ${op.filename} ${formatStateList(op.states)} ~${op.trigger}~${formatUnless(op.unless)}`;
-        case "add_trans_trigger": {
+        case TDPatchOp.AddTransTrigger: {
             const trans = op.transitions ? ` DO ${op.transitions.join(" ")}` : "";
             return `ADD_TRANS_TRIGGER ${op.filename} ${formatStateList(op.states)} ~${op.trigger}~${trans}${formatUnless(op.unless)}`;
         }
-        case "add_trans_action":
+        case TDPatchOp.AddTransAction:
             return `ADD_TRANS_ACTION ${op.filename} BEGIN ${formatStateList(op.states)} END BEGIN ${op.transitions.join(" ")} END ~${op.action}~${formatUnless(op.unless)}`;
-        case "replace_trans_trigger":
-        case "replace_trans_action": {
-            const keyword = op.op === "replace_trans_trigger" ? "REPLACE_TRANS_TRIGGER" : "REPLACE_TRANS_ACTION";
+        case TDPatchOp.ReplaceTransTrigger:
+        case TDPatchOp.ReplaceTransAction: {
+            const keyword = op.op === TDPatchOp.ReplaceTransTrigger ? "REPLACE_TRANS_TRIGGER" : "REPLACE_TRANS_ACTION";
             return `${keyword} ${op.filename} BEGIN ${formatStateList(op.states)} END BEGIN ${op.transitions.join(" ")} END ~${op.oldText}~ ~${op.newText}~${formatUnless(op.unless)}`;
         }
-        case "replace_trigger_text":
-        case "replace_action_text": {
-            const keyword = op.op === "replace_trigger_text" ? "REPLACE_TRIGGER_TEXT" : "REPLACE_ACTION_TEXT";
+        case TDPatchOp.ReplaceTriggerText:
+        case TDPatchOp.ReplaceActionText: {
+            const keyword = op.op === TDPatchOp.ReplaceTriggerText ? "REPLACE_TRIGGER_TEXT" : "REPLACE_ACTION_TEXT";
             return `${keyword} ${op.filenames.join(" ")} ~${op.oldText}~ ~${op.newText}~${formatUnless(op.unless)}`;
         }
-        case "set_weight":
+        case TDPatchOp.SetWeight:
             return `SET_WEIGHT ${op.filename} ${op.state} #${op.weight}`;
-        case "replace_say":
+        case TDPatchOp.ReplaceSay:
             return `REPLACE_SAY ${op.filename} ${op.state} ${emitText(op.text)}`;
-        case "replace_state_trigger": {
+        case TDPatchOp.ReplaceStateTrigger: {
             // Format: REPLACE_STATE_TRIGGER filename state1 ~trigger~ [state2 state3...] [UNLESS ~condition~]
             const [firstState, ...restStates] = op.states;
             const rest = restStates.length > 0 ? ` ${formatStateList(restStates)}` : "";
             return `REPLACE_STATE_TRIGGER ${op.filename} ${firstState} ~${op.trigger}~${rest}${formatUnless(op.unless)}`;
         }
-        case "replace_states":
+        case TDPatchOp.ReplaceStates:
             return emitReplaceStates(op);
     }
 }

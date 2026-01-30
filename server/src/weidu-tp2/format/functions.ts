@@ -7,6 +7,7 @@ import type { Node as SyntaxNode } from "web-tree-sitter";
 import {
     type FormatContext,
     type CollectedItem,
+    CollectedItemType,
     KW_BEGIN,
     KW_END,
     KW_LPF,
@@ -103,11 +104,11 @@ function formatParamDecl(node: SyntaxNode, indent: string, ctx: FormatContext): 
         if (!child) continue;
 
         if (isComment(child)) {
-            items.push({ type: "comment", text: normalizeComment(child.text), startRow: child.startPosition.row, endRow: child.endPosition.row });
+            items.push({ type: CollectedItemType.Comment, text: normalizeComment(child.text), startRow: child.startPosition.row, endRow: child.endPosition.row });
         } else if (child.type === SyntaxType.PatchAssignment) {
             const parsed = parseAssignment(child);
             if (parsed) {
-                items.push({ type: "assignment", name: parsed.name, value: parsed.value, endRow: child.endPosition.row });
+                items.push({ type: CollectedItemType.Assignment, name: parsed.name, value: parsed.value, endRow: child.endPosition.row });
             }
         } else if (child.type === SyntaxType.VariableRef || child.type === SyntaxType.Identifier || child.type === SyntaxType.String) {
             // Check if next child is "=" token indicating an assignment
@@ -117,7 +118,7 @@ function formatParamDecl(node: SyntaxNode, indent: string, ctx: FormatContext): 
                 const valueChild = children[i + 2];
                 if (valueChild && !isComment(valueChild)) {
                     items.push({
-                        type: "assignment",
+                        type: CollectedItemType.Assignment,
                         name: child.text,
                         value: normalizeWhitespace(valueChild.text),
                         endRow: valueChild.endPosition.row,
@@ -125,12 +126,12 @@ function formatParamDecl(node: SyntaxNode, indent: string, ctx: FormatContext): 
                     i += 2; // Skip "=" and value
                 } else {
                     // "=" without value - handle gracefully
-                    items.push({ type: "assignment", name: child.text, value: "", endRow: child.endPosition.row });
+                    items.push({ type: CollectedItemType.Assignment, name: child.text, value: "", endRow: child.endPosition.row });
                     i++; // Skip "="
                 }
             } else {
                 // No "=" - name without value
-                items.push({ type: "assignment", name: child.text, value: "", endRow: child.endPosition.row });
+                items.push({ type: CollectedItemType.Assignment, name: child.text, value: "", endRow: child.endPosition.row });
             }
         }
     }
@@ -152,7 +153,7 @@ function formatParamCall(node: SyntaxNode, indent: string, ctx: FormatContext): 
         if (isParamKeyword(child.text)) {
             keyword = child.text;
         } else if (isComment(child)) {
-            items.push({ type: "comment", text: normalizeComment(child.text), startRow: child.startPosition.row, endRow: child.endPosition.row });
+            items.push({ type: CollectedItemType.Comment, text: normalizeComment(child.text), startRow: child.startPosition.row, endRow: child.endPosition.row });
         } else if (
             child.type === SyntaxType.IntVarCallItem ||
             child.type === SyntaxType.StrVarCallItem ||
@@ -163,10 +164,10 @@ function formatParamCall(node: SyntaxNode, indent: string, ctx: FormatContext): 
         ) {
             const parsed = parseAssignment(child);
             if (parsed) {
-                items.push({ type: "assignment", name: parsed.name, value: parsed.value, endRow: child.endPosition.row });
+                items.push({ type: CollectedItemType.Assignment, name: parsed.name, value: parsed.value, endRow: child.endPosition.row });
             }
         } else if (child.type === SyntaxType.VariableRef || child.type === SyntaxType.Identifier) {
-            items.push({ type: "assignment", name: child.text, value: "", endRow: child.endPosition.row });
+            items.push({ type: CollectedItemType.Assignment, name: child.text, value: "", endRow: child.endPosition.row });
         }
     }
 

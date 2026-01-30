@@ -6,7 +6,7 @@
 import { CompletionItemKind, InsertTextFormat, MarkupKind } from "vscode-languageserver/node";
 import { isCallableSymbol, type CallableParam } from "../../core/symbol";
 import { getSymbols } from "../provider";
-import { CompletionCategory, type FuncParamsContext, type Tp2CompletionItem } from "./types";
+import { CompletionCategory, ParamSection, type FuncParamsContext, type Tp2CompletionItem } from "./types";
 
 /**
  * Generate parameter completions for a function call.
@@ -30,7 +30,7 @@ export function getParamCompletions(context: FuncParamsContext): Tp2CompletionIt
     // Get the appropriate param list based on section
     // CallableParam already has JSDoc data merged (type, description, required)
     switch (paramSection) {
-        case "INT_VAR": {
+        case ParamSection.IntVar: {
             for (const param of params.intVar) {
                 if (!usedSet.has(param.name)) {
                     completions.push(createParamCompletion(param));
@@ -38,7 +38,7 @@ export function getParamCompletions(context: FuncParamsContext): Tp2CompletionIt
             }
             break;
         }
-        case "STR_VAR": {
+        case ParamSection.StrVar: {
             for (const param of params.strVar) {
                 if (!usedSet.has(param.name)) {
                     completions.push(createParamCompletion(param));
@@ -46,7 +46,7 @@ export function getParamCompletions(context: FuncParamsContext): Tp2CompletionIt
             }
             break;
         }
-        case "RET": {
+        case ParamSection.Ret: {
             for (const name of params.ret) {
                 if (!usedSet.has(name)) {
                     // RET params are just names - no type/default info available
@@ -55,7 +55,7 @@ export function getParamCompletions(context: FuncParamsContext): Tp2CompletionIt
             }
             break;
         }
-        case "RET_ARRAY": {
+        case ParamSection.RetArray: {
             for (const name of params.retArray) {
                 if (!usedSet.has(name)) {
                     completions.push(createParamCompletion({ name, type: "array" }));

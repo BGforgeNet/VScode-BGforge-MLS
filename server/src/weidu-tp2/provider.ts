@@ -21,7 +21,7 @@ import { compile as weiduCompile } from "../weidu-compile";
 import { getContextAtPosition, getFuncParamsContext } from "./completion/context";
 import { filterItemsByContext } from "./completion/filter";
 import { getParamCompletions } from "./completion/parameter";
-import { CompletionCategory, type Tp2CompletionItem } from "./completion/types";
+import { CompletionCategory, CompletionContext, type Tp2CompletionItem } from "./completion/types";
 import { formatDocument as formatAst } from "./format/core";
 import { initParser, parseWithCache, isInitialized } from "./parser";
 import { getDocumentSymbols } from "./symbol";
@@ -137,10 +137,10 @@ export const weiduTp2Provider: LanguageProvider = {
         conlog(`[tp2] Completion contexts: [${contexts.join(", ")}] at ${position.line}:${position.character} in ${ext}`);
 
         // No code completions inside comments; JSDoc tags/types inside /** */
-        if (contexts.includes("comment")) {
+        if (contexts.includes(CompletionContext.Comment)) {
             return [];
         }
-        if (contexts.includes("jsdoc")) {
+        if (contexts.includes(CompletionContext.Jsdoc)) {
             return getJsdocCompletions(triggerCharacter);
         }
 
@@ -160,7 +160,7 @@ export const weiduTp2Provider: LanguageProvider = {
         // Check if we're in funcParamName context and can provide parameter completions
         // Note: Parameter completions (like "count = ") are only shown when typing parameter names,
         // not when typing values after =
-        if (contexts.includes("funcParamName")) {
+        if (contexts.includes(CompletionContext.FuncParamName)) {
             const funcContext = getFuncParamsContext();
             if (funcContext) {
                 const paramCompletions = getParamCompletions(funcContext);
@@ -174,9 +174,9 @@ export const weiduTp2Provider: LanguageProvider = {
         // Apply snippets for function calls with required parameters
         // When context is lafName/lpfName, user already typed the prefix - don't add it again
         // When context is patch/action, user hasn't typed the prefix - include LPF/LAF in snippet
-        const inLafLpfContext = contexts.includes("lafName") || contexts.includes("lpfName");
-        const inPatchContext = contexts.includes("patch");
-        const inActionContext = contexts.includes("action");
+        const inLafLpfContext = contexts.includes(CompletionContext.LafName) || contexts.includes(CompletionContext.LpfName);
+        const inPatchContext = contexts.includes(CompletionContext.Patch);
+        const inActionContext = contexts.includes(CompletionContext.Action);
 
         if (inLafLpfContext || inPatchContext || inActionContext) {
             allItems = allItems.map((item) => {

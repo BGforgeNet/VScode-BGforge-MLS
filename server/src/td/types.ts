@@ -7,6 +7,63 @@
  */
 
 // =============================================================================
+// Enums
+// =============================================================================
+
+/** Top-level D construct types. */
+export enum TDConstructType {
+    Begin = "begin",
+    Append = "append",
+    ExtendTop = "extend_top",
+    ExtendBottom = "extend_bottom",
+    Chain = "chain",
+    Interject = "interject",
+    InterjectCopyTrans = "interject_copy_trans",
+    InterjectCopyTrans2 = "interject_copy_trans2",
+    Patch = "patch",
+}
+
+/** Text content types. */
+export enum TDTextType {
+    Tra = "tra",
+    Tlk = "tlk",
+    Literal = "literal",
+    Forced = "forced",
+}
+
+/** Transition destination types. */
+export enum TDTransitionType {
+    Goto = "goto",
+    Exit = "exit",
+    Extern = "extern",
+    CopyTrans = "copy_trans",
+}
+
+/** Chain epilogue types. */
+export enum TDEpilogueType {
+    Exit = "exit",
+    End = "end",
+    CopyTrans = "copy_trans",
+    Transitions = "transitions",
+}
+
+/** Patch operation types. */
+export enum TDPatchOp {
+    AlterTrans = "alter_trans",
+    AddStateTrigger = "add_state_trigger",
+    AddTransTrigger = "add_trans_trigger",
+    AddTransAction = "add_trans_action",
+    ReplaceTransTrigger = "replace_trans_trigger",
+    ReplaceTransAction = "replace_trans_action",
+    ReplaceTriggerText = "replace_trigger_text",
+    ReplaceActionText = "replace_action_text",
+    SetWeight = "set_weight",
+    ReplaceSay = "replace_say",
+    ReplaceStateTrigger = "replace_state_trigger",
+    ReplaceStates = "replace_states",
+}
+
+// =============================================================================
 // Script-level types
 // =============================================================================
 
@@ -27,7 +84,7 @@ export type TDConstruct =
 
 /** BEGIN - new dialog file */
 export interface TDBegin {
-    type: "begin";
+    type: TDConstructType.Begin;
     filename: string;
     nonPausing?: boolean;
     states: TDState[];
@@ -35,7 +92,7 @@ export interface TDBegin {
 
 /** APPEND - add states to existing dialog */
 export interface TDAppend {
-    type: "append";
+    type: TDConstructType.Append;
     filename: string;
     ifFileExists?: boolean;
     states: TDState[];
@@ -43,7 +100,7 @@ export interface TDAppend {
 
 /** EXTEND_TOP / EXTEND_BOTTOM - add transitions to existing state */
 export interface TDExtend {
-    type: "extend_top" | "extend_bottom";
+    type: TDConstructType.ExtendTop | TDConstructType.ExtendBottom;
     filename: string;
     stateLabel: string;
     position?: number;
@@ -52,7 +109,7 @@ export interface TDExtend {
 
 /** CHAIN - multi-speaker conversation */
 export interface TDChain {
-    type: "chain";
+    type: TDConstructType.Chain;
     filename: string;
     label: string;
     trigger?: string;
@@ -65,7 +122,7 @@ export interface TDChain {
 
 /** INTERJECT variants */
 export interface TDInterject {
-    type: "interject" | "interject_copy_trans" | "interject_copy_trans2";
+    type: TDConstructType.Interject | TDConstructType.InterjectCopyTrans | TDConstructType.InterjectCopyTrans2;
     filename: string;
     stateLabel: string;
     globalVariable: string;
@@ -76,7 +133,7 @@ export interface TDInterject {
 
 /** Patching operations */
 export interface TDPatch {
-    type: "patch";
+    type: TDConstructType.Patch;
     operation: TDPatchOperation;
 }
 
@@ -100,7 +157,7 @@ export interface TDSay {
 
 /** Text content - can be tra ref, tlk ref, or literal */
 export interface TDText {
-    type: "tra" | "tlk" | "literal" | "forced";
+    type: TDTextType;
     value: number | string;
     sound?: string;
     // For male/female variants
@@ -126,10 +183,10 @@ export interface TDTransition {
 
 /** Where a transition goes */
 export type TDTransitionNext =
-    | { type: "goto"; target: string }
-    | { type: "exit" }
-    | { type: "extern"; filename: string; target: string; ifFileExists?: boolean }
-    | { type: "copy_trans"; filename: string; target: string; safe?: boolean; late?: boolean };
+    | { type: TDTransitionType.Goto; target: string }
+    | { type: TDTransitionType.Exit }
+    | { type: TDTransitionType.Extern; filename: string; target: string; ifFileExists?: boolean }
+    | { type: TDTransitionType.CopyTrans; filename: string; target: string; safe?: boolean; late?: boolean };
 
 // =============================================================================
 // Chain types
@@ -146,10 +203,10 @@ export interface TDChainEntry {
 
 /** How a CHAIN ends */
 export type TDChainEpilogue =
-    | { type: "exit" }
-    | { type: "end"; filename: string; target: string }
-    | { type: "copy_trans"; filename: string; target: string; safe?: boolean; late?: boolean }
-    | { type: "transitions"; transitions: TDTransition[] };
+    | { type: TDEpilogueType.Exit }
+    | { type: TDEpilogueType.End; filename: string; target: string }
+    | { type: TDEpilogueType.CopyTrans; filename: string; target: string; safe?: boolean; late?: boolean }
+    | { type: TDEpilogueType.Transitions; transitions: TDTransition[] };
 
 // =============================================================================
 // Patch operation types
@@ -168,7 +225,7 @@ export type TDPatchOperation =
     | TDReplaceStates;
 
 export interface TDAlterTrans {
-    op: "alter_trans";
+    op: TDPatchOp.AlterTrans;
     filename: string;
     states: (string | number)[];
     transitions: number[];
@@ -181,7 +238,7 @@ export interface TDAlterTrans {
 }
 
 export interface TDAddStateTrigger {
-    op: "add_state_trigger";
+    op: TDPatchOp.AddStateTrigger;
     filename: string;
     states: (string | number)[];
     trigger: string;
@@ -189,7 +246,7 @@ export interface TDAddStateTrigger {
 }
 
 export interface TDAddTransTrigger {
-    op: "add_trans_trigger";
+    op: TDPatchOp.AddTransTrigger;
     filename: string;
     states: (string | number)[];
     transitions?: number[];
@@ -198,7 +255,7 @@ export interface TDAddTransTrigger {
 }
 
 export interface TDAddTransAction {
-    op: "add_trans_action";
+    op: TDPatchOp.AddTransAction;
     filename: string;
     states: (string | number)[];
     transitions: number[];
@@ -207,7 +264,7 @@ export interface TDAddTransAction {
 }
 
 export interface TDReplaceTrans {
-    op: "replace_trans_trigger" | "replace_trans_action";
+    op: TDPatchOp.ReplaceTransTrigger | TDPatchOp.ReplaceTransAction;
     filename: string;
     states: (string | number)[];
     transitions: number[];
@@ -217,7 +274,7 @@ export interface TDReplaceTrans {
 }
 
 export interface TDReplaceText {
-    op: "replace_trigger_text" | "replace_action_text";
+    op: TDPatchOp.ReplaceTriggerText | TDPatchOp.ReplaceActionText;
     filenames: string[];
     oldText: string;
     newText: string;
@@ -225,21 +282,21 @@ export interface TDReplaceText {
 }
 
 export interface TDSetWeight {
-    op: "set_weight";
+    op: TDPatchOp.SetWeight;
     filename: string;
     state: string;
     weight: number;
 }
 
 export interface TDReplaceSay {
-    op: "replace_say";
+    op: TDPatchOp.ReplaceSay;
     filename: string;
     state: string;
     text: TDText;
 }
 
 export interface TDReplaceStateTrigger {
-    op: "replace_state_trigger";
+    op: TDPatchOp.ReplaceStateTrigger;
     filename: string;
     states: (string | number)[];
     trigger: string;
@@ -247,7 +304,7 @@ export interface TDReplaceStateTrigger {
 }
 
 export interface TDReplaceStates {
-    op: "replace_states";
+    op: TDPatchOp.ReplaceStates;
     filename: string;
     replacements: Map<number, TDState>;
 }

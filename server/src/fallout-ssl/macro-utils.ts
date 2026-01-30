@@ -65,7 +65,7 @@ export interface MacroData {
  * Build the signature/detail line for a macro.
  * Returns: value for numeric constants, signature for others.
  */
-export function buildMacroSignature(macro: MacroData): string {
+function buildMacroSignature(macro: MacroData): string {
     const isNumeric = !macro.hasParams && macro.firstline !== undefined && isNumericValue(macro.firstline);
 
     if (isNumeric) {

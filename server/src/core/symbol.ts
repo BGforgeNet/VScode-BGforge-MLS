@@ -98,6 +98,40 @@ export const enum SourceType {
     Document = "document",       // From current open document
 }
 
+
+// =============================================================================
+// Callable Context and Definition Type
+// =============================================================================
+
+/**
+ * Context in which a callable operates: action or patch (for WeiDU).
+ */
+export enum CallableContext {
+    Action = "action",
+    Patch = "patch",
+}
+
+/**
+ * Definition type: function or macro (for WeiDU).
+ */
+export enum CallableDefType {
+    Function = "function",
+    Macro = "macro",
+}
+
+// =============================================================================
+// Declaration Kind
+// =============================================================================
+
+/**
+ * How a variable was declared.
+ */
+export enum DeclarationKind {
+    Set = "set",
+    Sprint = "sprint",
+    TextSprint = "text_sprint",
+}
+
 /**
  * Source information for a symbol.
  */
@@ -167,10 +201,10 @@ export interface CallableInfo {
     readonly returnType?: string;
 
     /** Context: action or patch (for WeiDU) */
-    readonly context?: "action" | "patch";
+    readonly context?: CallableContext;
 
     /** Definition type: function or macro (for WeiDU) */
-    readonly dtype?: "function" | "macro";
+    readonly dtype?: CallableDefType;
 }
 
 // =============================================================================
@@ -188,7 +222,7 @@ export interface VariableInfoData {
     readonly value?: string;
 
     /** How the variable was declared */
-    readonly declarationKind?: "set" | "sprint" | "text_sprint" | "const" | "let";
+    readonly declarationKind?: DeclarationKind;
 
     /** JSDoc description */
     readonly description?: string;

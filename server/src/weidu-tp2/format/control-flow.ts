@@ -8,6 +8,7 @@ import {
     type FormatContext,
     type ConditionOperand,
     type CollectedItem,
+    CollectedItemType,
     KW_BEGIN,
     KW_END,
     KW_ELSE,
@@ -472,7 +473,7 @@ function formatAssociativeArray(node: SyntaxNode, ctx: FormatContext, depth: num
                 continue;
             }
             beginRow = -1;
-            items.push({ type: "comment", text: normalizeComment(child.text), startRow: child.startPosition.row, endRow: child.endPosition.row });
+            items.push({ type: CollectedItemType.Comment, text: normalizeComment(child.text), startRow: child.startPosition.row, endRow: child.endPosition.row });
             continue;
         }
         beginRow = -1;
@@ -480,7 +481,7 @@ function formatAssociativeArray(node: SyntaxNode, ctx: FormatContext, depth: num
         if (child.type === SyntaxType.AssocEntry) {
             const parsed = parseAssocEntry(child);
             if (parsed) {
-                items.push({ type: "assignment", name: parsed.name, value: parsed.value, endRow: child.endPosition.row });
+                items.push({ type: CollectedItemType.Assignment, name: parsed.name, value: parsed.value, endRow: child.endPosition.row });
             }
         }
     }

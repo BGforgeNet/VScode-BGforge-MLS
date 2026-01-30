@@ -33,8 +33,8 @@ export interface ParamInfo {
 /** Complete function/macro definition info. */
 export interface FunctionInfo {
     name: string;
-    context: "action" | "patch";
-    dtype: "function" | "macro";
+    context: CallableContext;
+    dtype: CallableDefType;
     location: Location;
     jsdoc?: jsdoc.JSdoc;
     params?: FunctionParams;
@@ -46,7 +46,7 @@ export interface VariableInfo {
     location: Location;
     jsdoc?: jsdoc.JSdoc;
     value?: string; // Source text from AST, truncated if long
-    declarationKind: "set" | "sprint" | "text_sprint";
+    declarationKind: DeclarationKind;
     inferredType: "int" | "string"; // Derived: "set"/assignment → "int", "sprint"/"text_sprint" → "string"
 }
 
@@ -188,7 +188,7 @@ function extractFunctionInfo(node: SyntaxNode, uri: string): FunctionInfo | null
     }
 
     // Extract parameters (only for functions, macros don't have params)
-    if (dtype === "function") {
+    if (dtype === CallableDefType.Function) {
         info.params = extractParams(node);
     }
 
@@ -217,21 +217,21 @@ function extractVariableInfo(node: SyntaxNode, uri: string): VariableInfo | null
         case SyntaxType.PatchSet:
         case SyntaxType.PatchAssignment:
         case SyntaxType.TopLevelAssignment:
-            declarationKind = "set";
+            declarationKind = DeclarationKind.Set;
             inferredType = "int";
             break;
         case SyntaxType.ActionOuterSprint:
         case SyntaxType.PatchSprint:
-            declarationKind = "sprint";
+            declarationKind = DeclarationKind.Sprint;
             inferredType = "string";
             break;
         case SyntaxType.ActionOuterTextSprint:
         case SyntaxType.PatchTextSprint:
-            declarationKind = "text_sprint";
+            declarationKind = DeclarationKind.TextSprint;
             inferredType = "string";
             break;
         default:
-            declarationKind = "set";
+            declarationKind = DeclarationKind.Set;
             inferredType = "int";
     }
 
@@ -261,9 +261,9 @@ function extractVariableInfo(node: SyntaxNode, uri: string): VariableInfo | null
 /**
  * Parse definition type string to context and dtype.
  */
-function parseDefType(type: string): { context: "action" | "patch"; dtype: "function" | "macro" } {
-    const context = type.includes("patch") ? "patch" : "action";
-    const dtype = type.includes("macro") ? "macro" : "function";
+function parseDefType(type: string): { context: CallableContext; dtype: CallableDefType } {
+    const context = type.includes("patch") ? CallableContext.Patch : CallableContext.Action;
+    const dtype = type.includes("macro") ? CallableDefType.Macro : CallableDefType.Function;
     return { context, dtype };
 }
 
@@ -397,7 +397,7 @@ function extractVarParams(node: SyntaxNode, target: ParamInfo[]): void {
 // Symbol conversion for unified Symbols
 // ============================================
 
-import { type CallableSymbol, type VariableSymbol, type IndexedSymbol, type CallableInfo, type VariableInfoData, SymbolKind, ScopeLevel, SourceType } from "../core/symbol";
+import { type CallableSymbol, type VariableSymbol, type IndexedSymbol, type CallableInfo, type VariableInfoData, SymbolKind, ScopeLevel, SourceType, CallableContext, CallableDefType, DeclarationKind } from "../core/symbol";
 import { CompletionItemKind, type Hover, type MarkupContent } from "vscode-languageserver/node";
 import { CompletionCategory, type Tp2CompletionItem } from "./completion/types";
 import { buildFunctionHover, buildVariableHover } from "./hover";
@@ -429,12 +429,12 @@ function functionInfoToSymbol(func: FunctionInfo, displayPath?: string | null): 
 
     const completion: Tp2CompletionItem = {
         label: func.name,
-        kind: func.dtype === "macro" ? CompletionItemKind.Snippet : CompletionItemKind.Function,
+        kind: func.dtype === CallableDefType.Macro ? CompletionItemKind.Snippet : CompletionItemKind.Function,
         documentation: doc,
         labelDetails: {
             description: completionDescription,
         },
-        category: func.context === "action" ? CompletionCategory.ActionFunctions : CompletionCategory.PatchFunctions,
+        category: func.context === CallableContext.Action ? CompletionCategory.ActionFunctions : CompletionCategory.PatchFunctions,
     };
 
     // Build JSDoc arg lookup map for type overrides and descriptions
@@ -483,7 +483,7 @@ function functionInfoToSymbol(func: FunctionInfo, displayPath?: string | null): 
 
     return {
         name: func.name,
-        kind: func.dtype === "macro" ? SymbolKind.Macro : SymbolKind.Function,
+        kind: func.dtype === CallableDefType.Macro ? SymbolKind.Macro : SymbolKind.Function,
         location: func.location,
         scope: { level: ScopeLevel.Workspace },
         source: {
