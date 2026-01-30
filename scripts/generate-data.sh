@@ -22,7 +22,7 @@ $generate_data \
     --tooltip-lang fallout-worldmap-txt
 
 $generate_data \
-    -i $data_dir/weidu-tp2-base.yml -i $data_dir/weidu-tp2-iesdp.yml -i $data_dir/weidu-tp2-ielib.yml \
+    -i $data_dir/weidu-tp2-base.yml \
     --completion $dest_dir/completion.weidu-tp2.json \
     --hover $dest_dir/hover.weidu-tp2.json \
     --tooltip-lang weidu-tp2-tooltip

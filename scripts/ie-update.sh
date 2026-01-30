@@ -5,14 +5,11 @@ set -xeu -o pipefail
 # launch from root repo dir
 
 ielib_repo="https://github.com/BGforgeNet/BGforge-MLS-IElib.git"
-ielib_dir="ielib"
 
 highlight_baf="syntaxes/weidu-baf.tmLanguage.yml"
 highlight_weidu="syntaxes/weidu-tp2.tmLanguage.yml"
 
 data_dir="server/data"
-data_weidu_iesdp="$data_dir/weidu-tp2-iesdp.yml"
-data_weidu_ielib="$data_dir/weidu-tp2-ielib.yml"
 data_baf="$data_dir/weidu-baf-iesdp.yml"
 
 external="external/infinity-engine"
@@ -21,7 +18,7 @@ iesdp_repo="https://github.com/BGforgeNet/iesdp.git"
 iesdp_dir="$external/iesdp"
 ielib_dir="$external/ielib"
 
-# IESDP - also updates IElib
+# IESDP (actions only)
 pushd .
 if [ ! -d "$iesdp_dir" ]; then
     git clone "$iesdp_repo" "$iesdp_dir"
@@ -31,7 +28,7 @@ git checkout ielib
 git pull
 popd
 
-# IElib
+# IElib (structure offsets, opcodes, constants, functions)
 pushd .
 if [ ! -d "$ielib_dir" ]; then
     git clone "$ielib_repo" "$ielib_dir"
@@ -42,12 +39,10 @@ popd
 
 pnpm exec tsx scripts/ie-update/src/iesdp-update.ts -s "$iesdp_dir" \
     --highlight-baf "$highlight_baf" \
-    --data-baf "$data_baf" \
-    --highlight-weidu "$highlight_weidu" \
-    --iesdp-file "$data_weidu_iesdp" \
-    --ielib-dir "$ielib_dir"
+    --data-baf "$data_baf"
 
-pnpm exec tsx scripts/ie-update/src/ielib-update.ts -s "$ielib_dir" --data-file "$data_weidu_ielib" --highlight-weidu "$highlight_weidu"
+pnpm exec tsx scripts/ie-update/src/ielib-update.ts -s "$ielib_dir" \
+    --highlight-weidu "$highlight_weidu"
 
 # convert yaml to json
 ./scripts/syntaxes-to-json.sh

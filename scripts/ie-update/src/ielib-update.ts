@@ -1,9 +1,7 @@
 /**
  * IElib data update script.
- * Extracts constants and function definitions from IElib header files
- * and generates IDE completion/highlight YAML files for the VSCode extension.
- *
- * Replaces the Python ielib_update.py script.
+ * Extracts constants, structure offsets, opcodes, and function definitions
+ * from IElib header files and generates IDE completion/highlight YAML files.
  */
 
 import fs from "node:fs";
@@ -13,7 +11,6 @@ import YAML from "yaml";
 import {
     cmpStr,
     COMPLETION_TYPE_FUNCTION,
-    dumpCompletion,
     dumpHighlight,
     findFiles,
     litscal,
@@ -39,6 +36,21 @@ const REGEX_NUMERIC = /^(?:OUTER_SET\s+)?(\w+)\s*=\s*(\w+)/;
 const REGEX_TEXT = /^(?:OUTER_SPRINT|TEXT_SPRINT)\s+~?(\w+)~?\s+~(\w+)~/;
 
 /**
+ * Offset types that map to their own stanza category.
+ * Everything else (char array, byte array, bytes, etc.) goes to "other".
+ */
+const OFFSET_TYPES = ["char", "byte", "word", "dword", "resref", "strref"] as const;
+type OffsetType = (typeof OFFSET_TYPES)[number];
+
+/** A parsed define with JSDoc type and description */
+interface TypedDefine {
+    readonly name: string;
+    readonly value: string;
+    readonly type: OffsetType | "other";
+    readonly doc: string;
+}
+
+/**
  * Extracts defines from a file matching a given regex pattern.
  * Returns a map of name -> value for all matching lines.
  */
@@ -53,6 +65,90 @@ function definesFromFile(filePath: string, regex: RegExp): ReadonlyMap<string, s
         }
     }
     return defines;
+}
+
+/**
+ * Parses a .tph file with JSDoc comments preceding OUTER_SET defines.
+ * Extracts @type tag for categorization and remaining JSDoc body as description.
+ *
+ * Expected format:
+ *   /** @type word
+ *    * Description text
+ *    *\/
+ *   OUTER_SET NAME = 0xNN
+ */
+function typedDefinesFromFile(filePath: string): readonly TypedDefine[] {
+    const content = fs.readFileSync(filePath, "utf8");
+    const results: TypedDefine[] = [];
+
+    // Match JSDoc block followed by OUTER_SET line
+    const pattern = /\/\*\*([\s\S]*?)\*\/\s*\n\s*OUTER_SET\s+(\w+)\s*=\s*(\w+)/g;
+    for (const match of content.matchAll(pattern)) {
+        // Safe: groups 1-3 always exist when the pattern matches
+        const jsdocBody = match[1]!;
+        const name = match[2]!;
+        const value = match[3]!;
+
+        // Extract @type from first content line
+        const typeMatch = jsdocBody.match(/@type\s+(.+)/);
+        const rawType = typeMatch?.[1]?.trim() ?? "";
+
+        // Categorize: known single types go to their category, everything else to "other"
+        const type: OffsetType | "other" =
+            (OFFSET_TYPES as readonly string[]).includes(rawType)
+                ? (rawType as OffsetType)
+                : "other";
+
+        // Extract description: all JSDoc lines after @type, stripped of leading " * "
+        const lines = jsdocBody.split("\n");
+        const docLines: string[] = [];
+        let pastType = typeMatch === null; // if no @type, all lines are description
+        for (const line of lines) {
+            const stripped = line.replace(/^\s*\*\s?/, "").trimEnd();
+            if (!pastType) {
+                if (stripped.startsWith("@type")) {
+                    pastType = true;
+                }
+                continue;
+            }
+            docLines.push(stripped);
+        }
+        const doc = docLines.join("\n").trim();
+
+        results.push({ name, value, type, doc });
+    }
+
+    return results;
+}
+
+/**
+ * Parses opcode .tph files with JSDoc descriptions (no @type tag).
+ * Returns completion items for opcodes.
+ */
+function opcodeDefinesFromFile(filePath: string): readonly CompletionItem[] {
+    const content = fs.readFileSync(filePath, "utf8");
+    const results: CompletionItem[] = [];
+
+    const pattern = /\/\*\*([\s\S]*?)\*\/\s*\n\s*OUTER_SET\s+(\w+)\s*=\s*(\w+)/g;
+    for (const match of content.matchAll(pattern)) {
+        const jsdocBody = match[1]!;
+        const name = match[2]!;
+        const value = match[3]!;
+
+        const lines = jsdocBody.split("\n");
+        const docLines = lines
+            .map((line) => line.replace(/^\s*\*\s?/, "").trimEnd())
+            .filter((line) => line.length > 0);
+        const doc = docLines.join("\n").trim();
+
+        results.push({
+            name,
+            detail: `int ${name} = ${value}`,
+            doc: doc || name,
+        });
+    }
+
+    return results;
 }
 
 /**
@@ -157,28 +253,28 @@ function main(): void {
     const { values } = parseArgs({
         options: {
             s: { type: "string" },
-            "data-file": { type: "string" },
             "highlight-weidu": { type: "string" },
         },
     });
 
     const srcDir = values.s;
-    const dataFile = values["data-file"];
     const highlightWeidu = values["highlight-weidu"];
 
-    if (!srcDir || !dataFile || !highlightWeidu) {
+    if (!srcDir || !highlightWeidu) {
         console.error(
-            "Usage: ielib-update -s <src_dir> --data-file <path> --highlight-weidu <path>"
+            "Usage: ielib-update -s <src_dir> --highlight-weidu <path>"
         );
         process.exit(1);
     }
 
-    // CONSTANTS - extract defines from header files
+    // CONSTANTS - extract plain defines from header files (no JSDoc)
+    // Skip files parsed separately: iesdp.tph (typed offsets), opcode*.tph, spell_ids
     const defineFiles = findFiles(srcDir, "tph", ["functions"], [
         "iesdp.tph",
         "spell_ids_bgee.tph",
         "spell_ids_iwdee.tph",
-        "item_types.tph",
+        "opcode.tph",
+        "opcode_ee.tph",
     ]);
 
     // First-writer-wins: existing entries take priority over new ones.
@@ -216,6 +312,39 @@ function main(): void {
         })
     );
 
+    // STRUCTURE OFFSETS - parse iesdp.tph files with JSDoc @type annotations
+    const iesdpFiles = findFiles(path.join(srcDir, "structures"), "tph")
+        .filter((f) => path.basename(f) === "iesdp.tph");
+    const typedDefines = iesdpFiles.flatMap(typedDefinesFromFile);
+
+    // Categorize by offset type
+    const offsetsByType = new Map<OffsetType | "other", CompletionItem[]>();
+    for (const t of [...OFFSET_TYPES, "other" as const]) {
+        offsetsByType.set(t, []);
+    }
+    for (const def of typedDefines) {
+        const items = offsetsByType.get(def.type)!; // Safe: all keys pre-initialized
+        items.push({
+            name: def.name,
+            detail: `${def.type} offset ${def.name} = ${def.value}`,
+            doc: def.doc || def.name,
+        });
+    }
+    // Sort each category by name
+    for (const items of offsetsByType.values()) {
+        items.sort((a, b) => cmpStr(a.name, b.name));
+    }
+
+    // OPCODES - parse opcode.tph and opcode_ee.tph with JSDoc descriptions
+    const opcodeFiles = [
+        path.join(srcDir, "misc", "opcode.tph"),
+        path.join(srcDir, "misc", "opcode_ee.tph"),
+    ];
+    const opcodeItems = opcodeFiles
+        .filter((f) => fs.existsSync(f))
+        .flatMap(opcodeDefinesFromFile)
+        .sort((a, b) => cmpStr(a.name, b.name));
+
     // FUNCTIONS
     const dataDir = path.join(srcDir, "docs", "_data");
     const functionDir = path.join(dataDir, "functions");
@@ -249,7 +378,6 @@ function main(): void {
     }
 
     // Build final data structure with all items populated
-    // Order matches Python ielib_update.py for minimal diff
     const ielibData: IEData = {
         patch_functions: {
             stanza: "patchFunctions",
@@ -280,9 +408,58 @@ function main(): void {
             scope: "constant.language.ielib.int",
             items: intItems,
         },
+        // Structure offsets from IElib iesdp.tph files (previously from IESDP YAML)
+        iesdp_other: {
+            stanza: "iesdpOther",
+            highlightStanza: "iesdp-other",
+            scope: "constant.language.iesdp.other",
+            items: offsetsByType.get("other")!,
+        },
+        iesdp_strrefs: {
+            stanza: "iesdpStrref",
+            highlightStanza: "iesdp-strref",
+            scope: "constant.language.iesdp.strref",
+            items: offsetsByType.get("strref")!,
+        },
+        iesdp_resrefs: {
+            stanza: "iesdpResref",
+            highlightStanza: "iesdp-resref",
+            scope: "constant.language.iesdp.resref",
+            items: offsetsByType.get("resref")!,
+        },
+        iesdp_dwords: {
+            stanza: "iesdpDword",
+            highlightStanza: "iesdp-dword",
+            scope: "constant.language.iesdp.dword",
+            items: offsetsByType.get("dword")!,
+        },
+        iesdp_words: {
+            stanza: "iesdpWord",
+            highlightStanza: "iesdp-word",
+            scope: "constant.language.iesdp.word",
+            items: offsetsByType.get("word")!,
+        },
+        iesdp_bytes: {
+            stanza: "iesdpByte",
+            highlightStanza: "iesdp-byte",
+            scope: "constant.language.iesdp.byte",
+            items: offsetsByType.get("byte")!,
+        },
+        iesdp_chars: {
+            stanza: "iesdpChar",
+            highlightStanza: "iesdp-char",
+            scope: "constant.language.iesdp.char",
+            items: offsetsByType.get("char")!,
+        },
+        // Opcodes from IElib opcode.tph / opcode_ee.tph
+        opcodes: {
+            stanza: "opcodes",
+            highlightStanza: "ielib-opcodes",
+            scope: "constant.language.ielib.opcode",
+            items: opcodeItems,
+        },
     };
 
-    dumpCompletion(dataFile, ielibData);
     dumpHighlight(highlightWeidu, ielibData);
 }
 
