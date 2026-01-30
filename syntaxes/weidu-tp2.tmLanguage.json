@@ -61,6 +61,9 @@
       "include": "#set-sprint-constant-vars"
     },
     {
+      "include": "#loop-var-highlighting"
+    },
+    {
       "include": "#weidu-tp2-action"
     },
     {
@@ -16666,6 +16669,78 @@
         {
           "match": "\\b(METADATA)\\b",
           "name": "keyword.other.weidu-tp2"
+        }
+      ]
+    },
+    "loop-var-highlighting": {
+      "patterns": [
+        {
+          "match": "\\b(ACTION_PHP_EACH)\\b\\s+\\w+\\s+(AS)\\s+(\\w+)\\s+(=>)\\s+(\\w+)",
+          "captures": {
+            "1": {
+              "name": "support.function.weidu-tp2.action"
+            },
+            "2": {
+              "name": "keyword.control.weidu-tp2.action"
+            },
+            "3": {
+              "name": "variable.parameter.weidu-tp2"
+            },
+            "4": {
+              "name": "keyword.control.weidu-tp2"
+            },
+            "5": {
+              "name": "variable.parameter.weidu-tp2"
+            }
+          }
+        },
+        {
+          "match": "\\b(PATCH_PHP_EACH|PHP_EACH)\\b\\s+\\w+\\s+(AS)\\s+(\\w+)\\s+(=>)\\s+(\\w+)",
+          "captures": {
+            "1": {
+              "name": "entity.name.function.weidu-tp2.patch"
+            },
+            "2": {
+              "name": "keyword.control.weidu-tp2.action"
+            },
+            "3": {
+              "name": "variable.parameter.weidu-tp2"
+            },
+            "4": {
+              "name": "keyword.control.weidu-tp2"
+            },
+            "5": {
+              "name": "variable.parameter.weidu-tp2"
+            }
+          }
+        },
+        {
+          "match": "\\b(ACTION_FOR_EACH)\\b\\s+(\\w+)\\s+(IN)\\b",
+          "captures": {
+            "1": {
+              "name": "support.function.weidu-tp2.action"
+            },
+            "2": {
+              "name": "variable.parameter.weidu-tp2"
+            },
+            "3": {
+              "name": "keyword.control.weidu-tp2.action"
+            }
+          }
+        },
+        {
+          "match": "\\b(PATCH_FOR_EACH)\\b\\s+(\\w+)\\s+(IN)\\b",
+          "captures": {
+            "1": {
+              "name": "entity.name.function.weidu-tp2.patch"
+            },
+            "2": {
+              "name": "variable.parameter.weidu-tp2"
+            },
+            "3": {
+              "name": "keyword.control.weidu-tp2.action"
+            }
+          }
         }
       ]
     },
