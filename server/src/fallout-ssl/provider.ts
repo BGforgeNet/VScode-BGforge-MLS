@@ -15,6 +15,7 @@ import { Symbols } from "../core/symbol-index";
 import { loadStaticSymbols } from "../core/static-loader";
 import { compile as falloutCompile } from "./compiler";
 import { type FormatResult, type LanguageProvider, type ProviderContext } from "../language-provider";
+import { resolveSymbolWithLocal, getVisibleSymbolsWithLocal } from "../shared/provider-helpers";
 import * as signature from "../shared/signature";
 import { formatDocument, initParser } from "./format";
 import { isInitialized } from "./parser";
@@ -38,55 +39,12 @@ export const falloutSslProvider: LanguageProvider = {
     id: LANG_FALLOUT_SSL,
     watchExtensions: [...EXT_FALLOUT_SSL_HEADERS],
 
-    /**
-     * Resolve a single symbol by name.
-     * This is the UNIFIED entry point - handles local + indexed merge internally.
-     *
-     * Resolution order:
-     * 1. Local symbols (fresh buffer) - always checked first
-     * 2. Indexed symbols (headers + static), EXCLUDING current file
-     */
     resolveSymbol(name: string, text: string, uri: string): IndexedSymbol | undefined {
-        // 1. Check local symbols first (fresh buffer takes priority)
-        const local = lookupLocalSymbol(name, text, uri);
-        if (local) {
-            return local;
-        }
-
-        // 2. Fall back to indexed symbols (static + headers)
-        if (symbols) {
-            const indexed = symbols.lookup(name);
-            // Return if NOT from the current file (static symbols have null uri)
-            if (indexed && indexed.source.uri !== uri) {
-                return indexed;
-            }
-            // Also return static symbols (uri is null)
-            if (indexed && indexed.source.uri === null) {
-                return indexed;
-            }
-        }
-
-        return undefined;
+        return resolveSymbolWithLocal(name, text, uri, symbols, lookupLocalSymbol);
     },
 
-    /**
-     * Get all visible symbols for completion.
-     * Merges local + indexed, with local taking precedence.
-     */
     getVisibleSymbols(text: string, uri: string): IndexedSymbol[] {
-        // Get local symbols (fresh buffer)
-        const localSymbols = getLocalSymbols(text, uri);
-        const localNames = new Set(localSymbols.map(s => s.name));
-
-        // Get indexed symbols, excluding current file and duplicates
-        const indexedSymbols = symbols
-            ? symbols.query({ excludeUri: uri })
-            : [];
-
-        // Filter out indexed symbols that have local overrides
-        const filteredIndexed = indexedSymbols.filter((s: IndexedSymbol) => !localNames.has(s.name));
-
-        return [...localSymbols, ...filteredIndexed];
+        return getVisibleSymbolsWithLocal(text, uri, symbols, getLocalSymbols);
     },
 
     async init(context: ProviderContext): Promise<void> {

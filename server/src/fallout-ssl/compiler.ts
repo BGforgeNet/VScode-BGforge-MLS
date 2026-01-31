@@ -9,6 +9,7 @@ import * as os from "os";
 import * as path from "path";
 import {
     conlog,
+    expandHome,
     ParseItemList,
     ParseResult,
     pathToUri,
@@ -157,7 +158,7 @@ async function checkExternalCompiler(compilePath: string) {
     }
 
     return new Promise<boolean>((resolve) => {
-        cp.exec(`${compilePath} --version`, (err) => {
+        cp.execFile(expandHome(compilePath), ["--version"], (err) => {
             conlog(`Compiler check '${compilePath} --version' err=${err}`);
             if (err) {
                 resolve(false);
@@ -183,7 +184,7 @@ export async function compile(
     const tmpUri = pathToUri(tmpPath);
     const baseName = path.parse(filepath).base;
     const base = path.parse(filepath).name;
-    const compileCmd = `${sslSettings.compilePath} ${sslSettings.compileOptions}`;
+    const compileOptions = sslSettings.compileOptions.split(/\s+/).filter(Boolean);
     const dstPath = path.join(sslSettings.outputDirectory, base + ".int");
     const ext = path.parse(filepath).ext;
 
@@ -238,9 +239,11 @@ export async function compile(
         return;
     }
 
-    conlog(`${compileCmd} "${tmpName}" -o "${dstPath}"`);
-    cp.exec(
-        `${compileCmd} "${tmpName}" -o "${dstPath}"`,
+    const allArgs = [...compileOptions, tmpName, "-o", dstPath];
+    conlog(`${sslSettings.compilePath} ${allArgs.join(" ")}`);
+    cp.execFile(
+        expandHome(sslSettings.compilePath),
+        allArgs,
         { cwd: cwdTo },
         (err, stdout: string, stderr: string) => {
             conlog("stdout: " + stdout);

@@ -8,6 +8,7 @@ import * as fs from "fs";
 import * as path from "path";
 import {
     conlog,
+    expandHome,
     ParseItemList,
     ParseResult,
     pathToUri,
@@ -112,7 +113,7 @@ function sendDiagnostics(
 
 export function compile(uri: string, settings: WeiDUsettings, interactive = false, text: string) {
     const gamePath = settings.gamePath;
-    const weiduPath = settings.path;
+    const weiduPath = expandHome(settings.path);
     const filePath = uriToPath(uri);
     const cwdTo = tmpDir;
     const baseName = path.parse(filePath).base;
@@ -136,12 +137,12 @@ export function compile(uri: string, settings: WeiDUsettings, interactive = fals
     const tmpFileGcc = path.join(tmpDir, `tmp-gcc${ext}`);
     const tmpUriGcc = pathToUri(tmpFileGcc);
 
-    let weiduArgs = "--no-exit-pause --noautoupdate --debug-assign --parse-check";
+    const weiduArgs = ["--no-exit-pause", "--noautoupdate", "--debug-assign", "--parse-check"];
     if (gamePath == "") {
         // d and baf need game files
-        weiduArgs = `--nogame ${weiduArgs}`;
+        weiduArgs.unshift("--nogame");
     } else {
-        weiduArgs = `--game ${gamePath} ${weiduArgs}`;
+        weiduArgs.unshift("--game", gamePath);
     }
 
     const weiduType = valid_extensions.get(ext);
@@ -210,8 +211,9 @@ export function compile(uri: string, settings: WeiDUsettings, interactive = fals
     // parse
     conlog(`parsing ${realName}...`);
     fs.writeFileSync(tmpFile, text);
-    const weiduCmd = `${weiduPath} ${weiduArgs} ${weiduType} ${tmpFile} `;
-    cp.exec(weiduCmd, { cwd: cwdTo }, (err, stdout: string, stderr: string) => {
+    const allArgs = [...weiduArgs, weiduType, tmpFile];
+    conlog(`${weiduPath} ${allArgs.join(" ")}`);
+    cp.execFile(weiduPath, allArgs, { cwd: cwdTo }, (err, stdout: string, stderr: string) => {
         conlog("stdout: " + stdout);
         const parseResult = parseWeiduOutput(stdout); // dupe, yes
         conlog(parseResult);

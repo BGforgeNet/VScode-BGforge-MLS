@@ -6,14 +6,14 @@
  */
 
 import type { CompletionItem, DocumentSymbol, Hover, Location, Position } from "vscode-languageserver/node";
-import type { IndexedSymbol } from "../core/symbol";
 import { conlog } from "../common";
 import { LANG_WEIDU_D } from "../core/languages";
 import { Symbols } from "../core/symbol-index";
 import { loadStaticSymbols } from "../core/static-loader";
 import { type FormatResult, type LanguageProvider, type ProviderContext } from "../language-provider";
-import { createFullDocumentEdit, validateFormatting, stripCommentsWeidu } from "../shared/format-utils";
+import { stripCommentsWeidu } from "../shared/format-utils";
 import { getFormatOptions } from "../shared/format-options";
+import { resolveSymbolStatic, getVisibleSymbolsStatic, getStaticCompletions, getStaticHover, formatWithValidation } from "../shared/provider-helpers";
 import { getDefinition } from "./definition";
 import { formatDocument as formatAst } from "./format-core";
 import { initParser, parseWithCache, isInitialized } from "./parser";
@@ -28,20 +28,12 @@ let storedContext: ProviderContext | undefined;
 export const weiduDProvider: LanguageProvider = {
     id: LANG_WEIDU_D,
 
-    /**
-     * Resolve a single symbol by name.
-     * D only has static symbols (no local definitions).
-     */
-    resolveSymbol(name: string, _text: string, _uri: string): IndexedSymbol | undefined {
-        return symbols?.lookup(name);
+    resolveSymbol(name, _text, _uri) {
+        return resolveSymbolStatic(name, symbols);
     },
 
-    /**
-     * Get all visible symbols for completion.
-     * D only has static symbols.
-     */
-    getVisibleSymbols(_text: string, _uri: string): IndexedSymbol[] {
-        return [...(symbols?.query({}) ?? [])];
+    getVisibleSymbols(_text, _uri) {
+        return getVisibleSymbolsStatic(symbols);
     },
 
     async init(context: ProviderContext): Promise<void> {
@@ -59,36 +51,16 @@ export const weiduDProvider: LanguageProvider = {
     },
 
     format(text: string, uri: string): FormatResult {
-        if (!isInitialized()) {
-            return { edits: [] };
-        }
-
-        const tree = parseWithCache(text);
-        if (!tree) {
-            return { edits: [] };
-        }
-
-        const options = getFormatOptions(uri);
-
-        let result;
-        try {
-            result = formatAst(tree.rootNode, options);
-        } catch (err) {
-            const msg = err instanceof Error ? err.message : String(err);
-            conlog(`D formatter error: ${msg}`);
-            return { edits: [], warning: `D formatter error: ${msg}` };
-        }
-
-        const validationError = validateFormatting(text, result.text, stripCommentsWeidu);
-        if (validationError) {
-            conlog(`D formatter validation failed: ${validationError}`);
-            return {
-                edits: [],
-                warning: `D formatter validation failed: ${validationError}`,
-            };
-        }
-
-        return { edits: createFullDocumentEdit(text, result.text) };
+        return formatWithValidation({
+            text,
+            uri,
+            languageName: "D",
+            isInitialized,
+            parse: parseWithCache,
+            formatAst: (rootNode, options) => formatAst(rootNode, options),
+            getFormatOptions,
+            stripComments: stripCommentsWeidu,
+        });
     },
 
     symbols(text: string): DocumentSymbol[] {
@@ -100,20 +72,11 @@ export const weiduDProvider: LanguageProvider = {
     },
 
     getCompletions(_uri: string): CompletionItem[] {
-        if (!symbols) {
-            return [];
-        }
-        // Return all static symbols as completion items
-        const allSymbols = symbols.query({});
-        return allSymbols.map((s: IndexedSymbol) => s.completion);
+        return getStaticCompletions(symbols);
     },
 
     getHover(_uri: string, symbolName: string): Hover | null {
-        if (!symbols) {
-            return null;
-        }
-        const symbol = symbols.lookup(symbolName);
-        return symbol?.hover ?? null;
+        return getStaticHover(symbols, symbolName);
     },
 
     async compile(uri: string, text: string, interactive: boolean): Promise<void> {

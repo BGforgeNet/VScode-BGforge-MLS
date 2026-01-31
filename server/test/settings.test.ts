@@ -199,5 +199,29 @@ mls:
                 "utf8"
             );
         });
+
+        it("should not contaminate defaults between calls", async () => {
+            const customYaml = `
+mls:
+  translation:
+    directory: custom
+    auto_tra: false
+`;
+            mockReadFileSync.mockReturnValue(customYaml);
+            const { project } = await import("../src/settings");
+
+            // First call with custom settings
+            const first = project("/workspace1");
+            expect(first.translation.directory).toBe("custom");
+            expect(first.translation.auto_tra).toBe(false);
+
+            // Second call with no .bgforge.yml should return clean defaults
+            mockReadFileSync.mockImplementation(() => {
+                throw new Error("ENOENT");
+            });
+            const second = project("/workspace2");
+            expect(second.translation.directory).toBe("tra");
+            expect(second.translation.auto_tra).toBe(true);
+        });
     });
 });

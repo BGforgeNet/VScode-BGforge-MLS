@@ -16,6 +16,7 @@ import {
     Statement,
     SyntaxKind,
 } from "ts-morph";
+import { safeEvaluate } from "./safe-eval";
 
 /** Variable substitution context - maps variable names to their compile-time values */
 export type VarsContext = Map<string, string>;
@@ -108,10 +109,8 @@ export function evaluateCondition(
     substituted = substituteVars(substituted, vars);
 
     try {
-        // Use Function constructor to evaluate the condition
-        // This is safe because we're in a compile-time context, not runtime
-        const fn = new Function(`return (${substituted});`);
-        return fn();
+        const result = safeEvaluate(substituted);
+        return Boolean(result);
     } catch (e) {
         throw new Error(
             `Cannot evaluate loop condition "${condition}" with ${loopVar}=${value}. ` +

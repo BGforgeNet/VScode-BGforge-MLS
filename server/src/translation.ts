@@ -294,7 +294,7 @@ export class Translation {
             .for(files)
             .process(async (relPath) => {
                 const result: TraData = new Map();
-                const text = fs.readFileSync(path.join(traDir, relPath), "utf8");
+                const text = await fs.promises.readFile(path.join(traDir, relPath), "utf8");
                 const lines = this.parseEntries(text, ext);
                 result.set(relPath, lines);
                 return result;
@@ -526,8 +526,10 @@ export class Translation {
     }
 
     private stringToInlay(text: string): string {
-        let line = text.replace("\r", "");
-        line = line.replace("\n", "\\n");
+        let line = text.replaceAll("\r", "");
+        line = line.replaceAll("\n", "\\n");
+        // Escape */ to prevent breaking the inlay comment syntax
+        line = line.replaceAll("*/", "*\\/");
         if (line.length > 30) {
             line = line.slice(0, 27) + "...";
         }

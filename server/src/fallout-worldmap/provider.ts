@@ -6,12 +6,12 @@
  */
 
 import type { CompletionItem, Hover } from "vscode-languageserver/node";
-import type { IndexedSymbol } from "../core/symbol";
 import { conlog } from "../common";
 import { LANG_FALLOUT_WORLDMAP_TXT } from "../core/languages";
 import { Symbols } from "../core/symbol-index";
 import { loadStaticSymbols } from "../core/static-loader";
 import type { LanguageProvider, ProviderContext } from "../language-provider";
+import { resolveSymbolStatic, getVisibleSymbolsStatic, getStaticCompletions, getStaticHover } from "../shared/provider-helpers";
 
 /** Unified symbol storage for static completion and hover */
 let symbols: Symbols | undefined;
@@ -19,20 +19,12 @@ let symbols: Symbols | undefined;
 export const falloutWorldmapProvider: LanguageProvider = {
     id: LANG_FALLOUT_WORLDMAP_TXT,
 
-    /**
-     * Resolve a single symbol by name.
-     * Worldmap only has static symbols (no local definitions).
-     */
-    resolveSymbol(name: string, _text: string, _uri: string): IndexedSymbol | undefined {
-        return symbols?.lookup(name);
+    resolveSymbol(name, _text, _uri) {
+        return resolveSymbolStatic(name, symbols);
     },
 
-    /**
-     * Get all visible symbols for completion.
-     * Worldmap only has static symbols.
-     */
-    getVisibleSymbols(_text: string, _uri: string): IndexedSymbol[] {
-        return [...(symbols?.query({}) ?? [])];
+    getVisibleSymbols(_text, _uri) {
+        return getVisibleSymbolsStatic(symbols);
     },
 
     async init(_context: ProviderContext): Promise<void> {
@@ -45,18 +37,10 @@ export const falloutWorldmapProvider: LanguageProvider = {
     },
 
     getCompletions(_uri: string): CompletionItem[] {
-        if (!symbols) {
-            return [];
-        }
-        const allSymbols = symbols.query({});
-        return allSymbols.map((s: IndexedSymbol) => s.completion);
+        return getStaticCompletions(symbols);
     },
 
     getHover(_uri: string, symbolName: string): Hover | null {
-        if (!symbols) {
-            return null;
-        }
-        const symbol = symbols.lookup(symbolName);
-        return symbol?.hover ?? null;
+        return getStaticHover(symbols, symbolName);
     },
 };

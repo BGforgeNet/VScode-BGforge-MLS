@@ -6,14 +6,14 @@
  */
 
 import type { CompletionItem, Hover } from "vscode-languageserver/node";
-import type { IndexedSymbol } from "../core/symbol";
 import { conlog } from "../common";
 import { LANG_WEIDU_BAF } from "../core/languages";
 import { Symbols } from "../core/symbol-index";
 import { loadStaticSymbols } from "../core/static-loader";
 import { type FormatResult, type LanguageProvider, type ProviderContext } from "../language-provider";
 import { getIndentFromEditorconfig } from "../shared/editorconfig";
-import { createFullDocumentEdit, validateFormatting, stripCommentsWeidu } from "../shared/format-utils";
+import { stripCommentsWeidu } from "../shared/format-utils";
+import { resolveSymbolStatic, getVisibleSymbolsStatic, getStaticCompletions, getStaticHover, formatWithValidation } from "../shared/provider-helpers";
 import { fileURLToPath } from "url";
 import { formatDocument as formatAst, type FormatOptions } from "./format-core";
 import { initParser, parseWithCache, isInitialized } from "./parser";
@@ -39,20 +39,12 @@ function getFormatOptions(uri: string): FormatOptions {
 export const weiduBafProvider: LanguageProvider = {
     id: LANG_WEIDU_BAF,
 
-    /**
-     * Resolve a single symbol by name.
-     * BAF only has static symbols (no local definitions).
-     */
-    resolveSymbol(name: string, _text: string, _uri: string): IndexedSymbol | undefined {
-        return symbols?.lookup(name);
+    resolveSymbol(name, _text, _uri) {
+        return resolveSymbolStatic(name, symbols);
     },
 
-    /**
-     * Get all visible symbols for completion.
-     * BAF only has static symbols.
-     */
-    getVisibleSymbols(_text: string, _uri: string): IndexedSymbol[] {
-        return [...(symbols?.query({}) ?? [])];
+    getVisibleSymbols(_text, _uri) {
+        return getVisibleSymbolsStatic(symbols);
     },
 
     async init(context: ProviderContext): Promise<void> {
@@ -70,53 +62,24 @@ export const weiduBafProvider: LanguageProvider = {
     },
 
     format(text: string, uri: string): FormatResult {
-        if (!isInitialized()) {
-            return { edits: [] };
-        }
-
-        const tree = parseWithCache(text);
-        if (!tree) {
-            return { edits: [] };
-        }
-
-        const options = getFormatOptions(uri);
-
-        let result;
-        try {
-            result = formatAst(tree.rootNode, options);
-        } catch (err) {
-            const msg = err instanceof Error ? err.message : String(err);
-            conlog(`BAF formatter error: ${msg}`);
-            return { edits: [], warning: `BAF formatter error: ${msg}` };
-        }
-
-        const validationError = validateFormatting(text, result.text, stripCommentsWeidu);
-        if (validationError) {
-            conlog(`BAF formatter validation failed: ${validationError}`);
-            return {
-                edits: [],
-                warning: `BAF formatter validation failed: ${validationError}`,
-            };
-        }
-
-        return { edits: createFullDocumentEdit(text, result.text) };
+        return formatWithValidation({
+            text,
+            uri,
+            languageName: "BAF",
+            isInitialized,
+            parse: parseWithCache,
+            formatAst: (rootNode, options) => formatAst(rootNode, options),
+            getFormatOptions,
+            stripComments: stripCommentsWeidu,
+        });
     },
 
     getCompletions(_uri: string): CompletionItem[] {
-        if (!symbols) {
-            return [];
-        }
-        // Return all static symbols as completion items
-        const allSymbols = symbols.query({});
-        return allSymbols.map((s: IndexedSymbol) => s.completion);
+        return getStaticCompletions(symbols);
     },
 
     getHover(_uri: string, symbolName: string): Hover | null {
-        if (!symbols) {
-            return null;
-        }
-        const symbol = symbols.lookup(symbolName);
-        return symbol?.hover ?? null;
+        return getStaticHover(symbols, symbolName);
     },
 
     async compile(uri: string, text: string, interactive: boolean): Promise<void> {

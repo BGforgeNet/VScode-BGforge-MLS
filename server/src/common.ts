@@ -15,31 +15,37 @@ import { getConnection } from "./lsp-connection";
 
 export const tmpDir = path.join(os.tmpdir(), "bgforge-mls");
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+/** Expand leading ~ to the user's home directory. execFile doesn't use a shell, so ~ is not expanded. */
+export function expandHome(filePath: string): string {
+    if (filePath.startsWith("~/") || filePath === "~") {
+        return path.join(os.homedir(), filePath.slice(1));
+    }
+    return filePath;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- logging accepts any value
 export function conlog(item: any): void {
     const log = getConnection().console.log.bind(getConnection().console);
-    switch (typeof item) {
-        case "number":
-            log(item.toString());
-            break;
-        case "boolean":
-            log(item.toString());
-            break;
-        case "undefined":
-            log("undefined");
-            break;
-        case "string":
-            log(item);
-            break;
-        default:
-            // Handle objects including Maps - check if item has Map-like iteration
-            if (item !== null && typeof item === "object" && typeof item.size === "number" && item.size > 0) {
-                // Likely a Map, use spread to get entries
-                log(JSON.stringify([...item]));
-            } else {
-                log(JSON.stringify(item));
-            }
-            break;
+    if (item === undefined) {
+        log("undefined");
+        return;
+    }
+    if (typeof item === "string") {
+        log(item);
+        return;
+    }
+    if (typeof item === "number" || typeof item === "boolean") {
+        log(item.toString());
+        return;
+    }
+    if (item instanceof Map) {
+        log(JSON.stringify([...item]));
+        return;
+    }
+    try {
+        log(JSON.stringify(item));
+    } catch {
+        log(String(item));
     }
 }
 
@@ -57,8 +63,6 @@ export interface ParseResult {
     warnings: ParseItemList;
 }
 
-export interface Diagnostics extends Map<string, Diagnostic> { }
-
 /**
  * Compilers may output results for different files.
  * If we use tmp file for processing, then tmp file uri should be replaced with main file uri
@@ -68,59 +72,48 @@ export interface Diagnostics extends Map<string, Diagnostic> { }
  */
 export function sendParseResult(parseResult: ParseResult, mainUri: string, tmpUri: string) {
     const diagSource = "BGforge MLS";
-    const errors = parseResult.errors;
-    const warnings = parseResult.warnings;
+    const diagnostics = new Map<string, Diagnostic[]>();
 
-    const diagnostics: Diagnostics = new Map();
-
-    for (const e of errors) {
+    function addDiagnostic(item: ParseItem, severity: DiagnosticSeverity) {
         const diagnostic: Diagnostic = {
-            severity: DiagnosticSeverity.Error,
+            severity,
             range: {
-                start: { line: e.line - 1, character: e.columnStart },
-                end: { line: e.line - 1, character: e.columnEnd },
+                start: { line: item.line - 1, character: item.columnStart },
+                end: { line: item.line - 1, character: item.columnEnd },
             },
-            message: `${e.message}`,
+            message: `${item.message}`,
             source: diagSource,
         };
-        let uri = e.uri;
-        if (uri == tmpUri) {
-            uri = mainUri;
-        }
-        diagnostics.set(uri, diagnostic);
-    }
-    for (const w of warnings) {
-        const diagnostic: Diagnostic = {
-            severity: DiagnosticSeverity.Warning,
-            range: {
-                start: { line: w.line - 1, character: w.columnStart },
-                end: { line: w.line - 1, character: w.columnEnd },
-            },
-            message: `${w.message}`,
-            source: diagSource,
-        };
-        let uri = w.uri;
-        if (uri == tmpUri) {
-            uri = mainUri;
-        }
-        diagnostics.set(w.uri, diagnostic);
+        const uri = item.uri === tmpUri ? mainUri : item.uri;
+        const existing = diagnostics.get(uri) ?? [];
+        diagnostics.set(uri, [...existing, diagnostic]);
     }
 
-    for (const [uri, diag] of diagnostics) {
-        // Send the computed diagnostics to VSCode (fire-and-forget notification)
-        void getConnection().sendDiagnostics({ uri: uri, diagnostics: [diag] });
+    for (const e of parseResult.errors) {
+        addDiagnostic(e, DiagnosticSeverity.Error);
+    }
+    for (const w of parseResult.warnings) {
+        addDiagnostic(w, DiagnosticSeverity.Warning);
+    }
+
+    for (const [uri, diags] of diagnostics) {
+        void getConnection().sendDiagnostics({ uri, diagnostics: diags });
     }
 }
 
-/** Check if 1st dir contains the 2nd
- */
-export function isSubpath(outerPath: string | undefined, innerPath: string) {
+/** Check if 1st dir contains the 2nd */
+export function isSubpath(outerPath: string | undefined, innerPath: string): boolean {
     if (outerPath === undefined) {
         return false;
     }
-    const innerReal = fs.realpathSync(innerPath);
-    const outerReal = fs.realpathSync(outerPath);
-    return innerReal.startsWith(outerReal);
+    try {
+        const innerReal = fs.realpathSync(innerPath);
+        const outerReal = fs.realpathSync(outerPath);
+        const rel = path.relative(outerReal, innerReal);
+        return !rel.startsWith("..") && !path.isAbsolute(rel);
+    } catch {
+        return false;
+    }
 }
 
 export function isDirectory(fsPath: string): boolean {

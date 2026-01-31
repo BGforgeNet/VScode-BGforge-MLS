@@ -63,7 +63,7 @@ const defaultProjectSettings: ProjectSettings = {
 
 /** get project settings from .bgforge.yml */
 export function project(dir: string | undefined) {
-    const settings = defaultProjectSettings;
+    const settings = structuredClone(defaultProjectSettings);
     if (dir === undefined) {
         return settings;
     }

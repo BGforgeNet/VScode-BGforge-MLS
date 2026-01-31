@@ -16,7 +16,8 @@ import { Symbols } from "../core/symbol-index";
 import { loadStaticSymbols } from "../core/static-loader";
 import { type FormatResult, type LanguageProvider, type ProviderContext } from "../language-provider";
 import { getFormatOptions } from "../shared/format-options";
-import { createFullDocumentEdit, validateFormatting, stripCommentsWeidu } from "../shared/format-utils";
+import { stripCommentsWeidu } from "../shared/format-utils";
+import { resolveSymbolWithLocal, getVisibleSymbolsWithLocal, formatWithValidation } from "../shared/provider-helpers";
 import { compile as weiduCompile } from "../weidu-compile";
 import { getContextAtPosition, getFuncParamsContext } from "./completion/context";
 import { filterItemsByContext } from "./completion/filter";
@@ -160,58 +161,12 @@ export const weiduTp2Provider: LanguageProvider = {
         conlog(`WeiDU TP2 provider initialized with ${staticSymbols.length} static symbols`);
     },
 
-    /**
-     * Resolve a single symbol by name.
-     * This is the UNIFIED entry point - handles local + indexed merge internally.
-     *
-     * Resolution order:
-     * 1. Local symbols (fresh buffer) - always checked first
-     * 2. Indexed symbols (headers + static), EXCLUDING current file
-     *
-     * This prevents stale index data from overriding fresh buffer content.
-     */
     resolveSymbol(name: string, text: string, uri: string): IndexedSymbol | undefined {
-        // 1. Check local symbols first (fresh buffer takes priority)
-        const local = lookupLocalSymbol(name, text, uri);
-        if (local) {
-            return local;
-        }
-
-        // 2. Fall back to indexed symbols, excluding current file
-        // This prevents returning stale data if the file is indexed but modified
-        if (symbols) {
-            const indexed = symbols.lookup(name);
-            // Only return if it's NOT from the current file
-            if (indexed && indexed.source.uri !== uri) {
-                return indexed;
-            }
-            // Also return static symbols (uri is null)
-            if (indexed && indexed.source.uri === null) {
-                return indexed;
-            }
-        }
-
-        return undefined;
+        return resolveSymbolWithLocal(name, text, uri, symbols, lookupLocalSymbol);
     },
 
-    /**
-     * Get all visible symbols for completion.
-     * Merges local + indexed, with local taking precedence.
-     */
     getVisibleSymbols(text: string, uri: string): IndexedSymbol[] {
-        // Get local symbols (fresh buffer)
-        const localSymbols = extractLocalSymbols(text, uri);
-        const localNames = new Set(localSymbols.map(s => s.name));
-
-        // Get indexed symbols, excluding current file and duplicates
-        const indexedSymbols = symbols
-            ? symbols.query({ excludeUri: uri })
-            : [];
-
-        // Filter out indexed symbols that have local overrides
-        const filteredIndexed = indexedSymbols.filter((s: IndexedSymbol) => !localNames.has(s.name));
-
-        return [...localSymbols, ...filteredIndexed];
+        return getVisibleSymbolsWithLocal(text, uri, symbols, extractLocalSymbols);
     },
 
     getCompletions(uri: string): CompletionItem[] {
@@ -353,36 +308,16 @@ export const weiduTp2Provider: LanguageProvider = {
     },
 
     format(text: string, uri: string): FormatResult {
-        if (!isInitialized()) {
-            return { edits: [] };
-        }
-
-        const tree = parseWithCache(text);
-        if (!tree) {
-            return { edits: [] };
-        }
-
-        const options = getFormatOptions(uri);
-
-        let result;
-        try {
-            result = formatAst(tree.rootNode, options);
-        } catch (err) {
-            const msg = err instanceof Error ? err.message : String(err);
-            conlog(`TP2 formatter error: ${msg}`);
-            return { edits: [], warning: `TP2 formatter error: ${msg}` };
-        }
-
-        const validationError = validateFormatting(text, result.text, stripCommentsWeidu);
-        if (validationError) {
-            conlog(`TP2 formatter validation failed: ${validationError}`);
-            return {
-                edits: [],
-                warning: `TP2 formatter validation failed: ${validationError}`,
-            };
-        }
-
-        return { edits: createFullDocumentEdit(text, result.text) };
+        return formatWithValidation({
+            text,
+            uri,
+            languageName: "TP2",
+            isInitialized,
+            parse: parseWithCache,
+            formatAst: (rootNode, options) => formatAst(rootNode, options),
+            getFormatOptions,
+            stripComments: stripCommentsWeidu,
+        });
     },
 
     symbols(text: string): DocumentSymbol[] {

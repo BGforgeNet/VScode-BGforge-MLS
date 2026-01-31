@@ -2,7 +2,7 @@
  * TBAF Transformer
  *
  * Single-pass AST to BAF IR transformer.
- * Replaces the iterative multi-transform approach.
+ * Delegates condition algebra to condition-algebra.ts and loop unrolling to loop-unroll.ts.
  */
 
 import {
@@ -16,25 +16,22 @@ import {
     FunctionDeclaration,
     IfStatement,
     Node,
-    PrefixUnaryExpression,
     Project,
-    ReturnStatement,
     SourceFile,
     Statement,
     SwitchStatement,
     SyntaxKind,
 } from "ts-morph";
-import { BAFAction, BAFBlock, BAFCondition, BAFOrGroup, BAFScript, BAFTopCondition } from "./ir";
-import { dnfToCnf } from "./cnf";
+import { BAFAction, BAFBlock, BAFCondition, BAFScript, BAFTopCondition } from "./ir";
 import * as utils from "../transpiler-utils";
 import type { VarsContext } from "../transpiler-utils";
+import type { FuncsContext, TransformerContext } from "./transformer-context";
+import { buildSwitchCondition, invertConditions, transformConditionExpr } from "./condition-algebra";
+import { unrollFor, unrollForOf, unrollForAsActions, unrollForOfAsActions } from "./loop-unroll";
 
-/** Context for function inlining */
-type FuncsContext = Map<string, FunctionDeclaration>;
-
-export class TBAFTransformer {
-    private vars: VarsContext = new Map();
-    private funcs: FuncsContext = new Map();
+export class TBAFTransformer implements TransformerContext {
+    vars: VarsContext = new Map();
+    funcs: FuncsContext = new Map();
     private blocks: BAFBlock[] = [];
     private sourceFile!: SourceFile;
 
@@ -141,7 +138,7 @@ export class TBAFTransformer {
      */
     private transformIfStatement(ifStmt: IfStatement, parentConditions: BAFTopCondition[]) {
         const condExpr = ifStmt.getExpression();
-        const conditions = [...parentConditions, ...this.transformConditionExpr(condExpr)];
+        const conditions = [...parentConditions, ...transformConditionExpr(this, condExpr)];
 
         const thenStmt = ifStmt.getThenStatement();
         const elseStmt = ifStmt.getElseStatement();
@@ -151,13 +148,13 @@ export class TBAFTransformer {
 
         // Handle else block
         if (elseStmt) {
-            const invertedConditions = this.invertConditions(parentConditions, condExpr);
+            const invertedConds = invertConditions(this, parentConditions, condExpr);
             if (elseStmt.isKind(SyntaxKind.IfStatement)) {
                 // else if - recurse
-                this.transformIfStatement(elseStmt as IfStatement, invertedConditions);
+                this.transformIfStatement(elseStmt as IfStatement, invertedConds);
             } else {
                 // else block
-                this.processBlock(utils.getBlockStatements(elseStmt), invertedConditions);
+                this.processBlock(utils.getBlockStatements(elseStmt), invertedConds);
             }
         }
     }
@@ -185,7 +182,7 @@ export class TBAFTransformer {
      */
     private transformForOfStatement(forOf: ForOfStatement, parentConditions: BAFTopCondition[]) {
         const body = forOf.getStatement();
-        this.unrollForOf(forOf, () => {
+        unrollForOf(this, forOf, () => {
             this.transformStatement(body, parentConditions);
         });
     }
@@ -195,7 +192,7 @@ export class TBAFTransformer {
      */
     private transformForStatement(forStmt: ForStatement, parentConditions: BAFTopCondition[]) {
         const body = forStmt.getStatement();
-        this.unrollFor(forStmt, () => {
+        unrollFor(this, forStmt, () => {
             this.transformStatement(body, parentConditions);
         });
     }
@@ -223,7 +220,7 @@ export class TBAFTransformer {
             const caseValue = caseClause.getExpression().getText();
 
             // Build the condition by augmenting the switch expression with the case value
-            const condition = this.buildSwitchCondition(switchExpr, caseValue);
+            const condition = buildSwitchCondition(this, switchExpr, caseValue);
             const conditions = [...parentConditions, condition];
 
             // Extract statements until break
@@ -234,33 +231,6 @@ export class TBAFTransformer {
                 this.blocks.push({ conditions, actions, response: 100 });
             }
         }
-    }
-
-    /**
-     * Build a condition for a switch case by augmenting the switch expression with the case value.
-     * For Global() and similar BAF conditions, appends the value as the last argument.
-     */
-    private buildSwitchCondition(switchExpr: Expression, caseValue: string): BAFCondition {
-        const substitutedValue = utils.substituteVars(caseValue, this.vars);
-        const actualExpr = this.resolveVariableToExpression(switchExpr);
-
-        if (Node.isCallExpression(actualExpr)) {
-            const funcName = actualExpr.getExpression().getText();
-            // Get arguments from resolved expression (already contains literal values, not variable names)
-            const args = actualExpr.getArguments().map(a => a.getText());
-
-            // For Global and similar functions, append the case value as the last argument
-            return {
-                negated: false,
-                name: funcName,
-                args: [...args, substitutedValue],
-            };
-        }
-
-        throw new Error(
-            `Switch expression "${switchExpr.getText()}" is not supported. ` +
-            `Only function call expressions (like Global()) are supported in switch statements.`
-        );
     }
 
     /**
@@ -282,212 +252,13 @@ export class TBAFTransformer {
     }
 
     /**
-     * Transform a condition expression to BAFTopCondition[].
-     * Handles &&, ||, !, and function calls.
-     */
-    private transformConditionExpr(expr: Expression): BAFTopCondition[] {
-        // Handle binary && - split into multiple top conditions
-        if (Node.isBinaryExpression(expr)) {
-            const opKind = expr.getOperatorToken().getKind();
-
-            if (opKind === SyntaxKind.AmpersandAmpersandToken) {
-                // AND: combine conditions
-                return [
-                    ...this.transformConditionExpr(expr.getLeft()),
-                    ...this.transformConditionExpr(expr.getRight()),
-                ];
-            }
-
-            if (opKind === SyntaxKind.BarBarToken) {
-                // OR: create an OR group
-                const orGroup = this.buildOrGroup(expr);
-                return [orGroup];
-            }
-        }
-
-        // Handle parenthesized expression
-        if (Node.isParenthesizedExpression(expr)) {
-            return this.transformConditionExpr(expr.getExpression());
-        }
-
-        // Handle negation
-        if (Node.isPrefixUnaryExpression(expr)) {
-            const prefixExpr = expr as PrefixUnaryExpression;
-            if (prefixExpr.getOperatorToken() === SyntaxKind.ExclamationToken) {
-                const operand = prefixExpr.getOperand();
-                // Check if it's a negated call
-                if (Node.isCallExpression(operand)) {
-                    const funcName = operand.getExpression().getText();
-                    const funcDecl = this.funcs.get(funcName);
-
-                    if (funcDecl) {
-                        // User function - negate each inlined condition
-                        const conditions = this.inlineFunctionConditions(operand, funcDecl);
-                        return this.negateConditions(conditions);
-                    }
-
-                    const cond = this.transformCallToCondition(operand);
-                    return [{ ...cond, negated: true }];
-                }
-                // Check if it's a negated parenthesized expression with OR
-                if (Node.isParenthesizedExpression(operand)) {
-                    const inner = operand.getExpression();
-                    if (Node.isBinaryExpression(inner) && inner.getOperatorToken().getKind() === SyntaxKind.BarBarToken) {
-                        // !(a || b) → !a && !b - apply De Morgan
-                        throw new Error(
-                            `Cannot represent "!(${inner.getText()})" in BAF.\n` +
-                            `Negation of OR groups is not supported. Refactor to avoid this pattern.`
-                        );
-                    }
-                }
-            }
-        }
-
-        // Handle call expression
-        if (Node.isCallExpression(expr)) {
-            const funcName = expr.getExpression().getText();
-            const funcDecl = this.funcs.get(funcName);
-
-            if (funcDecl) {
-                // User-defined function - inline its return expression as conditions
-                return this.inlineFunctionConditions(expr, funcDecl);
-            }
-
-            // Built-in BAF condition
-            return [this.transformCallToCondition(expr)];
-        }
-
-        // Fallback: treat as opaque condition
-        return [this.opaqueCondition(expr.getText(), false)];
-    }
-
-    /**
-     * Build an OR group from a binary || expression.
-     */
-    private buildOrGroup(expr: Expression): BAFOrGroup {
-        const conditions: BAFCondition[] = [];
-
-        const collect = (e: Expression) => {
-            if (Node.isBinaryExpression(e) && e.getOperatorToken().getKind() === SyntaxKind.BarBarToken) {
-                collect(e.getLeft());
-                collect(e.getRight());
-            } else if (Node.isParenthesizedExpression(e)) {
-                collect(e.getExpression());
-            } else {
-                // Must be an atom (call or negated call)
-                const cond = this.exprToCondition(e);
-                conditions.push(cond);
-            }
-        };
-
-        collect(expr);
-        return { conditions };
-    }
-
-    /**
-     * Convert an expression to a single BAFCondition (used for OR group elements).
-     */
-    private exprToCondition(expr: Expression): BAFCondition {
-        if (Node.isPrefixUnaryExpression(expr)) {
-            const prefixExpr = expr as PrefixUnaryExpression;
-            if (prefixExpr.getOperatorToken() === SyntaxKind.ExclamationToken) {
-                const operand = prefixExpr.getOperand();
-                if (Node.isCallExpression(operand)) {
-                    const funcName = operand.getExpression().getText();
-                    const funcDecl = this.funcs.get(funcName);
-
-                    if (funcDecl) {
-                        const cond = this.inlineFunctionAsSingleCondition(operand, funcDecl);
-                        return { ...cond, negated: !cond.negated };
-                    }
-
-                    const cond = this.transformCallToCondition(operand);
-                    return { ...cond, negated: true };
-                }
-            }
-        }
-
-        if (Node.isCallExpression(expr)) {
-            const funcName = expr.getExpression().getText();
-            const funcDecl = this.funcs.get(funcName);
-
-            if (funcDecl) {
-                return this.inlineFunctionAsSingleCondition(expr, funcDecl);
-            }
-
-            return this.transformCallToCondition(expr);
-        }
-
-        return this.opaqueCondition(expr.getText(), false);
-    }
-
-    /**
      * Transform a call expression to a BAFCondition (for built-in BAF conditions only).
      * For user functions, use inlineFunctionConditions instead.
      */
-    private transformCallToCondition(call: CallExpression): BAFCondition {
+    transformCallToCondition(call: CallExpression): BAFCondition {
         const funcName = call.getExpression().getText();
         const args = call.getArguments().map(a => utils.substituteVars(a.getText(), this.vars));
         return { negated: false, name: funcName, args };
-    }
-
-    /**
-     * Inline a user function call, returning its conditions.
-     * Handles complex return expressions like "A() && B() && C()".
-     */
-    private inlineFunctionConditions(call: CallExpression, funcDecl: FunctionDeclaration): BAFTopCondition[] {
-        const body = funcDecl.getBody()?.asKindOrThrow(SyntaxKind.Block);
-        if (!body) return [this.trueCondition()];
-
-        const returnStmt = body.getStatements().find(s => s.isKind(SyntaxKind.ReturnStatement));
-        if (!returnStmt) return [this.trueCondition()];
-
-        const returnExpr = (returnStmt as ReturnStatement).getExpression();
-        if (!returnExpr) return [this.trueCondition()];
-
-        // Substitute params in return expression text
-        const paramMap = utils.buildParamMap(call, funcDecl, this.vars);
-        let returnText = returnExpr.getText();
-        paramMap.forEach((value, key) => {
-            returnText = returnText.replace(new RegExp(`\\b${key}\\b`, "g"), value);
-        });
-
-        // Parse the substituted return expression
-        const expr = this.parseExpressionFromText(returnText);
-        if (!expr) {
-            throw new Error("Failed to parse return expression");
-        }
-
-        // Transform the parsed expression using the full condition transformer
-        return this.transformConditionExpr(expr);
-    }
-
-    /**
-     * Inline a user function call as a single condition (for OR groups).
-     * Throws if the function returns multiple conditions.
-     */
-    private inlineFunctionAsSingleCondition(call: CallExpression, funcDecl: FunctionDeclaration): BAFCondition {
-        const conditions = this.inlineFunctionConditions(call, funcDecl);
-
-        if (conditions.length !== 1) {
-            throw new Error(
-                `Cannot use function "${funcDecl.getName()}" inside OR group: ` +
-                `it returns ${conditions.length} conditions, but OR elements must be single conditions.`
-            );
-        }
-
-        const cond = conditions[0];
-        if (!cond) {
-            throw new Error(`Function "${funcDecl.getName()}" returned no conditions`);
-        }
-        if ("conditions" in cond) {
-            throw new Error(
-                `Cannot use function "${funcDecl.getName()}" inside OR group: ` +
-                `it returns an OR group, which cannot be nested inside another OR.`
-            );
-        }
-
-        return cond;
     }
 
     /**
@@ -502,7 +273,7 @@ export class TBAFTransformer {
     /**
      * Transform statements to BAFActions.
      */
-    private transformActionsFromStatements(statements: Statement[]): BAFAction[] {
+    transformActionsFromStatements(statements: Statement[]): BAFAction[] {
         const actions: BAFAction[] = [];
 
         for (const stmt of statements) {
@@ -522,154 +293,16 @@ export class TBAFTransformer {
                 }
             } else if (stmt.isKind(SyntaxKind.ForOfStatement)) {
                 // Unroll for-of loop into actions
-                const unrolledActions = this.unrollForOfAsActions(stmt as ForOfStatement);
+                const unrolledActions = unrollForOfAsActions(this, stmt as ForOfStatement);
                 actions.push(...unrolledActions);
             } else if (stmt.isKind(SyntaxKind.ForStatement)) {
                 // Unroll for loop into actions
-                const unrolledActions = this.unrollForAsActions(stmt as ForStatement);
+                const unrolledActions = unrollForAsActions(this, stmt as ForStatement);
                 actions.push(...unrolledActions);
             }
         }
 
         return actions;
-    }
-
-    /**
-     * Unroll a for-of loop into actions.
-     */
-    private unrollForOfAsActions(forOf: ForOfStatement): BAFAction[] {
-        const bodyStatements = utils.getBlockStatements(forOf.getStatement());
-        const actions: BAFAction[] = [];
-        this.unrollForOf(forOf, () => {
-            actions.push(...this.transformActionsFromStatements(bodyStatements));
-        });
-        return actions;
-    }
-
-    /**
-     * Unroll a for loop into actions.
-     */
-    private unrollForAsActions(forStmt: ForStatement): BAFAction[] {
-        const bodyStatements = utils.getBlockStatements(forStmt.getStatement());
-        const actions: BAFAction[] = [];
-        this.unrollFor(forStmt, () => {
-            actions.push(...this.transformActionsFromStatements(bodyStatements));
-        });
-        return actions;
-    }
-
-    /**
-     * Unroll a for-of loop, calling the callback for each element.
-     * Sets the loop variable in vars context during each iteration.
-     * Supports array destructuring: for (const [a, b, c] of array)
-     */
-    private unrollForOf(forOf: ForOfStatement, onIteration: () => void): void {
-        const arrayExpr = forOf.getExpression();
-        const elements = this.resolveArrayElements(arrayExpr);
-
-        if (!elements) {
-            throw new Error(`Cannot unroll for-of: array expression "${arrayExpr.getText()}" is not resolvable`);
-        }
-
-        const initializer = forOf.getInitializer();
-
-        // Check for array destructuring pattern: const [a, b, c] of array
-        const bindingPattern = initializer.getDescendantsOfKind(SyntaxKind.ArrayBindingPattern)[0];
-
-        if (bindingPattern) {
-            // Destructuring: extract binding element names
-            const bindingNames = utils.getBindingNames(bindingPattern);
-
-            for (const element of elements) {
-                const values = utils.parseArrayLiteral(element);
-                if (!values) {
-                    throw new Error(`Cannot destructure "${element}" - not a valid array literal`);
-                }
-
-                // Set each destructured variable
-                for (let i = 0; i < bindingNames.length; i++) {
-                    const name = bindingNames[i];
-                    if (name) {
-                        this.vars.set(name, values[i] ?? "undefined");
-                    }
-                }
-
-                onIteration();
-            }
-
-            // Clean up all destructured variables
-            for (const name of bindingNames) {
-                if (name) {
-                    this.vars.delete(name);
-                }
-            }
-        } else {
-            // Simple variable: const item of array
-            const loopVar = initializer.getText().replace(/^const\s+/, "").replace(/^let\s+/, "");
-
-            for (const element of elements) {
-                this.vars.set(loopVar, element);
-                onIteration();
-            }
-
-            this.vars.delete(loopVar);
-        }
-    }
-
-    /**
-     * Unroll a for loop, calling the callback for each iteration.
-     * Sets the loop variable in vars context during each iteration.
-     */
-    private unrollFor(forStmt: ForStatement, onIteration: () => void): void {
-        const initializer = forStmt.getInitializer();
-        if (!initializer || !initializer.isKind(SyntaxKind.VariableDeclarationList)) {
-            throw new Error("Cannot unroll for loop: complex initializer");
-        }
-
-        const decls = initializer.getDeclarations();
-        if (decls.length !== 1) {
-            throw new Error("Cannot unroll for loop: multi-variable initializer");
-        }
-
-        const firstDecl = decls[0];
-        if (!firstDecl) {
-            throw new Error("Cannot unroll for loop: no declarations");
-        }
-        const loopVar = firstDecl.getName();
-        const initValue = utils.evaluateNumeric(firstDecl.getInitializer(), this.vars);
-        if (initValue === undefined) {
-            throw new Error("Cannot unroll for loop: non-numeric initializer");
-        }
-
-        const condition = forStmt.getCondition();
-        if (!condition) {
-            throw new Error("Cannot unroll for loop: no condition");
-        }
-
-        const incrementor = forStmt.getIncrementor();
-        if (!incrementor) {
-            throw new Error("Cannot unroll for loop: no incrementor");
-        }
-
-        const increment = utils.parseIncrement(incrementor.getText());
-        let current = initValue;
-        let iterations = 0;
-
-        while (utils.evaluateCondition(condition.getText(), loopVar, current, this.vars)) {
-            if (iterations >= utils.MAX_LOOP_ITERATIONS) {
-                throw new Error(
-                    `Loop exceeded maximum ${utils.MAX_LOOP_ITERATIONS} iterations. ` +
-                    `This likely indicates an infinite loop or a design issue. ` +
-                    `BAF scripts should not need many iterations.`
-                );
-            }
-            this.vars.set(loopVar, current.toString());
-            onIteration();
-            current += increment;
-            iterations++;
-        }
-
-        this.vars.delete(loopVar);
     }
 
     /**
@@ -718,134 +351,13 @@ export class TBAFTransformer {
     }
 
     /**
-     * Invert conditions for else block.
-     */
-    private invertConditions(parentConditions: BAFTopCondition[], condExpr: Expression): BAFTopCondition[] {
-        // For else, we need: parentConditions AND NOT(condExpr)
-        const inverted = this.invertExpression(condExpr);
-        return [...parentConditions, ...inverted];
-    }
-
-    /**
-     * Invert an expression using De Morgan's law.
-     * Returns BAFTopCondition[] since inversion of AND produces OR.
-     */
-    private invertExpression(expr: Expression): BAFTopCondition[] {
-        if (Node.isBinaryExpression(expr)) {
-            const opKind = expr.getOperatorToken().getKind();
-
-            if (opKind === SyntaxKind.AmpersandAmpersandToken) {
-                // !(a && b) → !a || !b
-                // Each inverted operand may be a conjunction (multiple ANDed conditions).
-                // We need to OR these conjunctions, which produces DNF.
-                // Convert DNF to CNF using the distributive law.
-                const leftConds = this.invertExpression(expr.getLeft());
-                const rightConds = this.invertExpression(expr.getRight());
-
-                // If both results are single atoms, we can directly create an OR group
-                const leftFirst = leftConds[0];
-                const rightFirst = rightConds[0];
-                if (leftConds.length === 1 && rightConds.length === 1 &&
-                    leftFirst && rightFirst &&
-                    !("conditions" in leftFirst) && !("conditions" in rightFirst)) {
-                    return [{ conditions: [leftFirst, rightFirst] }];
-                }
-
-                // Otherwise, use DNF→CNF conversion
-                return dnfToCnf([leftConds, rightConds]);
-            }
-
-            if (opKind === SyntaxKind.BarBarToken) {
-                // !(a || b) → !a && !b - produces multiple ANDed conditions
-                const leftConds = this.invertExpression(expr.getLeft());
-                const rightConds = this.invertExpression(expr.getRight());
-                return [...leftConds, ...rightConds];
-            }
-        }
-
-        if (Node.isParenthesizedExpression(expr)) {
-            return this.invertExpression(expr.getExpression());
-        }
-
-        if (Node.isPrefixUnaryExpression(expr)) {
-            const prefixExpr = expr as PrefixUnaryExpression;
-            if (prefixExpr.getOperatorToken() === SyntaxKind.ExclamationToken) {
-                // !!a → a (double negation)
-                const operand = prefixExpr.getOperand();
-                if (Node.isCallExpression(operand)) {
-                    const funcName = operand.getExpression().getText();
-                    const funcDecl = this.funcs.get(funcName);
-
-                    if (funcDecl) {
-                        // Un-negate user function conditions
-                        return this.inlineFunctionConditions(operand, funcDecl);
-                    }
-
-                    const cond = this.transformCallToCondition(operand);
-                    return [{ ...cond, negated: false }];
-                }
-                return this.transformConditionExpr(operand);
-            }
-        }
-
-        if (Node.isCallExpression(expr)) {
-            const funcName = expr.getExpression().getText();
-            const funcDecl = this.funcs.get(funcName);
-
-            if (funcDecl) {
-                // Negate each condition from the user function
-                const conditions = this.inlineFunctionConditions(expr, funcDecl);
-                return this.negateConditions(conditions);
-            }
-
-            const cond = this.transformCallToCondition(expr);
-            return [{ ...cond, negated: true }];
-        }
-
-        return [this.opaqueCondition(expr.getText(), true)];
-    }
-
-    /**
-     * Negate a CNF expression using De Morgan's law.
-     *
-     * Input: [C1, C2, ...] meaning C1 && C2 && ...
-     * Output: CNF for !(C1 && C2 && ...) = !C1 || !C2 || ...
-     *
-     * Each !Ci:
-     * - If Ci is atom A: !Ci = !A
-     * - If Ci is OR(A,B,...): !Ci = !A && !B && ... (conjunction)
-     *
-     * Result is DNF (OR of conjunctions), converted to CNF.
-     */
-    private negateConditions(conditions: BAFTopCondition[]): BAFTopCondition[] {
-        // Build DNF terms: each term is a conjunction (negated Ci)
-        const terms: BAFTopCondition[][] = [];
-
-        for (const c of conditions) {
-            if ("conditions" in c) {
-                // OR group: !(A || B || ...) = !A && !B && ... (De Morgan)
-                const negatedAtoms: BAFCondition[] = c.conditions.map(
-                    inner => ({ ...inner, negated: !inner.negated })
-                );
-                terms.push(negatedAtoms);
-            } else {
-                // Atom: just negate it
-                terms.push([{ ...c, negated: !c.negated }]);
-            }
-        }
-
-        // Convert DNF (OR of terms) to CNF
-        return dnfToCnf(terms);
-    }
-
-    /**
      * Parse a TypeScript expression from a string of code.
      * Creates a temporary in-memory project to parse the expression.
      *
      * @param text - The expression text to parse (e.g., "Global('foo', 'LOCALS')")
      * @returns The parsed Expression node, or undefined if parsing fails
      */
-    private parseExpressionFromText(text: string): Expression | undefined {
+    parseExpressionFromText(text: string): Expression | undefined {
         const project = new Project({ useInMemoryFileSystem: true });
         const tempFile = project.createSourceFile("temp.ts", `const _x_ = ${text};`);
         const varDecl = tempFile.getVariableDeclarations()[0];
@@ -860,7 +372,7 @@ export class TBAFTransformer {
      * @param expr - The expression to resolve (may be an identifier or any other expression)
      * @returns The resolved expression (either the parsed variable value or the original expression)
      */
-    private resolveVariableToExpression(expr: Expression): Expression {
+    resolveVariableToExpression(expr: Expression): Expression {
         if (Node.isIdentifier(expr)) {
             const varValue = this.vars.get(expr.getText());
             if (varValue) {
@@ -876,7 +388,7 @@ export class TBAFTransformer {
     /**
      * Evaluate an expression to a string value if possible.
      */
-    private evaluateExpression(expr: Expression): string | undefined {
+    evaluateExpression(expr: Expression): string | undefined {
         if (expr.isKind(SyntaxKind.ArrayLiteralExpression)) {
             const arr = expr as ArrayLiteralExpression;
             const elements = utils.flattenArrayElements(arr, this.vars);
@@ -900,7 +412,7 @@ export class TBAFTransformer {
     /**
      * Resolve array elements from an expression.
      */
-    private resolveArrayElements(expr: Expression): string[] | null {
+    resolveArrayElements(expr: Expression): string[] | null {
         if (expr.isKind(SyntaxKind.ArrayLiteralExpression)) {
             return utils.flattenArrayElements(expr as ArrayLiteralExpression, this.vars);
         }
@@ -920,7 +432,7 @@ export class TBAFTransformer {
     /**
      * Create an opaque condition (for expressions we can't parse).
      */
-    private opaqueCondition(text: string, negated: boolean): BAFCondition {
+    opaqueCondition(text: string, negated: boolean): BAFCondition {
         // Try to parse as a function call
         const match = text.match(/^(\w+)\((.*)\)$/);
         if (match && match[1]) {
@@ -942,7 +454,7 @@ export class TBAFTransformer {
     /**
      * Create a True() condition placeholder.
      */
-    private trueCondition(): BAFCondition {
+    trueCondition(): BAFCondition {
         return {
             negated: false,
             name: "True",
