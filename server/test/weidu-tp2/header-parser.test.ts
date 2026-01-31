@@ -535,20 +535,20 @@ END`;
             expect(completion.category).toBe("patchFunctions");
         });
 
-        it("assigns actionFunctions category to DEFINE_ACTION_MACRO symbols", () => {
+        it("assigns actionMacros category to DEFINE_ACTION_MACRO symbols", () => {
             const input = `DEFINE_ACTION_MACRO my_macro BEGIN END`;
             const symbols = parseHeaderToSymbols(uri, input, workspaceRoot);
             const completion = symbols[0].completion as CompletionItemWithCategory;
 
-            expect(completion.category).toBe("actionFunctions");
+            expect(completion.category).toBe("actionMacros");
         });
 
-        it("assigns patchFunctions category to DEFINE_PATCH_MACRO symbols", () => {
+        it("assigns patchMacros category to DEFINE_PATCH_MACRO symbols", () => {
             const input = `DEFINE_PATCH_MACRO my_patch_macro BEGIN END`;
             const symbols = parseHeaderToSymbols(uri, input, workspaceRoot);
             const completion = symbols[0].completion as CompletionItemWithCategory;
 
-            expect(completion.category).toBe("patchFunctions");
+            expect(completion.category).toBe("patchMacros");
         });
 
         it("assigns vars category to OUTER_SET variable symbols", () => {

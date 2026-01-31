@@ -4,7 +4,7 @@
 
 import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
 import { CompletionItemKind, MarkupKind } from "vscode-languageserver/node";
-import { SymbolKind, ScopeLevel, SourceType } from "../../src/core/symbol";
+import { SymbolKind, ScopeLevel, SourceType, type CallableSymbol } from "../../src/core/symbol";
 import { CompletionCategory, type CompletionItemWithCategory } from "../../src/shared/completion-context";
 
 // Mock fs.readFileSync before importing the module
@@ -298,6 +298,223 @@ describe("static-loader", () => {
             const result = loadStaticSymbols("test-lang");
 
             expect(result[0].kind).toBe(SymbolKind.Macro);
+        });
+    });
+
+    describe("callable context and dtype for TP2 categories", () => {
+        it("should NOT set callable metadata for action commands (LAF, COPY, etc.)", () => {
+            mockReadFileSync.mockReturnValue(JSON.stringify([
+                {
+                    label: "COPY",
+                    kind: CompletionItemKind.Function,
+                    category: "action",
+                    documentation: {
+                        kind: "markdown",
+                        value: "```weidu-tp2-tooltip\nCOPY ~source~ ~dest~\n```\nCopies a file.",
+                    },
+                },
+            ]));
+
+            const result = loadStaticSymbols("test-lang");
+            const sym = result[0] as CallableSymbol;
+
+            expect(sym.kind).toBe(SymbolKind.Function);
+            expect(sym.callable.context).toBeUndefined();
+            expect(sym.callable.dtype).toBeUndefined();
+        });
+
+        it("should NOT set callable metadata for patch commands (WRITE_BYTE, etc.)", () => {
+            mockReadFileSync.mockReturnValue(JSON.stringify([
+                {
+                    label: "WRITE_BYTE",
+                    kind: CompletionItemKind.Function,
+                    category: "patch",
+                    documentation: {
+                        kind: "markdown",
+                        value: "```weidu-tp2-tooltip\nWRITE_BYTE offset value\n```\nWrites a byte.",
+                    },
+                },
+            ]));
+
+            const result = loadStaticSymbols("test-lang");
+            const sym = result[0] as CallableSymbol;
+
+            expect(sym.kind).toBe(SymbolKind.Function);
+            expect(sym.callable.context).toBeUndefined();
+            expect(sym.callable.dtype).toBeUndefined();
+        });
+
+        it("should NOT inject prefix for action commands", () => {
+            mockReadFileSync.mockReturnValue(JSON.stringify([
+                {
+                    label: "COPY",
+                    kind: CompletionItemKind.Function,
+                    category: "action",
+                    documentation: {
+                        kind: "markdown",
+                        value: "```weidu-tp2-tooltip\nCOPY ~source~ ~dest~\n```\nCopies a file.",
+                    },
+                },
+            ]));
+
+            const result = loadStaticSymbols("test-lang");
+            const value = (result[0].hover.contents as { kind: string; value: string }).value;
+
+            // Commands should NOT have "action function" prefix
+            expect(value).toBe("```weidu-tp2-tooltip\nCOPY ~source~ ~dest~\n```\nCopies a file.");
+        });
+
+        it("should inject prefix for typed function categories (patchFunctions)", () => {
+            mockReadFileSync.mockReturnValue(JSON.stringify([
+                {
+                    label: "ADD_SPELL_EFFECT",
+                    kind: CompletionItemKind.Function,
+                    category: "patchFunctions",
+                    documentation: {
+                        kind: "markdown",
+                        value: "```weidu-tp2-tooltip\nADD_SPELL_EFFECT\n```\nAdds an effect.",
+                    },
+                },
+            ]));
+
+            const result = loadStaticSymbols("test-lang");
+            const value = (result[0].hover.contents as { kind: string; value: string }).value;
+
+            expect(value).toBe("```weidu-tp2-tooltip\npatch function ADD_SPELL_EFFECT\n```\nAdds an effect.");
+        });
+
+        it("should inject prefix for typed function categories (actionFunctions)", () => {
+            mockReadFileSync.mockReturnValue(JSON.stringify([
+                {
+                    label: "ADD_WORLDMAP",
+                    kind: CompletionItemKind.Function,
+                    category: "actionFunctions",
+                    documentation: {
+                        kind: "markdown",
+                        value: "```weidu-tp2-tooltip\nADD_WORLDMAP\n```\nAdds a worldmap.",
+                    },
+                },
+            ]));
+
+            const result = loadStaticSymbols("test-lang");
+            const value = (result[0].hover.contents as { kind: string; value: string }).value;
+
+            expect(value).toBe("```weidu-tp2-tooltip\naction function ADD_WORLDMAP\n```\nAdds a worldmap.");
+        });
+
+        it("should have matching hover and completion documentation (single source of truth)", () => {
+            mockReadFileSync.mockReturnValue(JSON.stringify([
+                {
+                    label: "ADD_AREA_ITEM",
+                    kind: CompletionItemKind.Function,
+                    category: "patchFunctions",
+                    documentation: {
+                        kind: "markdown",
+                        value: "```weidu-tp2-tooltip\nADD_AREA_ITEM\n```\nAdds an item to a container.",
+                    },
+                },
+            ]));
+
+            const result = loadStaticSymbols("test-lang");
+            const hoverValue = (result[0].hover.contents as { kind: string; value: string }).value;
+            const completionDoc = result[0].completion.documentation as { kind: string; value: string };
+
+            // Both should contain the injected "patch function" prefix
+            expect(hoverValue).toContain("patch function ADD_AREA_ITEM");
+            expect(completionDoc.value).toContain("patch function ADD_AREA_ITEM");
+
+            // They should be identical
+            expect(completionDoc.value).toBe(hoverValue);
+        });
+
+        it("should NOT set callable context for BAF actions (plural category)", () => {
+            mockReadFileSync.mockReturnValue(JSON.stringify([
+                {
+                    label: "ActionOverride",
+                    kind: CompletionItemKind.Function,
+                    category: "actions",
+                    documentation: {
+                        kind: "markdown",
+                        value: "```weidu-baf-tooltip\nActionOverride(O:Actor, A:Action)\n```\nOverrides.",
+                    },
+                },
+            ]));
+
+            const result = loadStaticSymbols("test-lang");
+            const sym = result[0] as CallableSymbol;
+
+            expect(sym.kind).toBe(SymbolKind.Action);
+            expect(sym.callable.context).toBeUndefined();
+            expect(sym.callable.dtype).toBeUndefined();
+        });
+
+        it("should NOT set callable metadata for non-Function kind items", () => {
+            // Worldmap "action" stanza has type=Keyword, not Function
+            mockReadFileSync.mockReturnValue(JSON.stringify([
+                {
+                    label: "AMBUSH",
+                    kind: CompletionItemKind.Keyword,
+                    category: "action",
+                },
+            ]));
+
+            const result = loadStaticSymbols("test-lang");
+
+            // Should be Constant (from Keyword fallback), not a callable with metadata
+            expect(result[0].kind).toBe(SymbolKind.Constant);
+        });
+
+        it("should not double-inject prefix if already present", () => {
+            mockReadFileSync.mockReturnValue(JSON.stringify([
+                {
+                    label: "ADD_SPELL_EFFECT",
+                    kind: CompletionItemKind.Function,
+                    category: "patchFunctions",
+                    documentation: {
+                        kind: "markdown",
+                        value: "```weidu-tp2-tooltip\npatch function ADD_SPELL_EFFECT\n```\nAdds.",
+                    },
+                },
+            ]));
+
+            const result = loadStaticSymbols("test-lang");
+            const value = (result[0].hover.contents as { kind: string; value: string }).value;
+
+            expect(value).toBe("```weidu-tp2-tooltip\npatch function ADD_SPELL_EFFECT\n```\nAdds.");
+        });
+
+        it("should not inject prefix into non-TP2 tooltip fences", () => {
+            const originalDoc = "```weidu-baf-tooltip\nSomeAction()\n```\nDoes something.";
+            mockReadFileSync.mockReturnValue(JSON.stringify([
+                {
+                    label: "SomeAction",
+                    kind: CompletionItemKind.Function,
+                    category: "actionFunctions",
+                    documentation: { kind: "markdown", value: originalDoc },
+                },
+            ]));
+
+            const result = loadStaticSymbols("test-lang");
+            const value = (result[0].hover.contents as { kind: string; value: string }).value;
+
+            expect(value).toBe(originalDoc);
+        });
+
+        it("should not crash on callable items without documentation", () => {
+            mockReadFileSync.mockReturnValue(JSON.stringify([
+                {
+                    label: "BARE_ACTION",
+                    kind: CompletionItemKind.Function,
+                    category: "action",
+                },
+            ]));
+
+            const result = loadStaticSymbols("test-lang");
+
+            expect(result[0].hover.contents).toEqual({
+                kind: "markdown",
+                value: "BARE_ACTION",
+            });
         });
     });
 });

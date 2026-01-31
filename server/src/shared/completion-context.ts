@@ -55,6 +55,10 @@ export enum CompletionCategory {
     // Function libraries
     ActionFunctions = "actionFunctions",
     PatchFunctions = "patchFunctions",
+    DimorphicFunctions = "dimorphicFunctions",
+    // Macro libraries
+    ActionMacros = "actionMacros",
+    PatchMacros = "patchMacros",
     // JSDoc tags and types
     Jsdoc = "jsdoc",
 }

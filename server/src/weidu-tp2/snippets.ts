@@ -6,52 +6,39 @@
 import type { CallableInfo } from "../core/symbol";
 
 /**
- * Build a snippet for function call with required parameters.
- * Returns null if no required params exist.
+ * Build a snippet for a function/macro call.
+ * Always returns a snippet when prefix is provided (wraps in LPF/LAF ... END).
+ * Without prefix, only returns a snippet when there are required parameters.
  *
  * @param callable - CallableInfo from Symbols (has JSDoc data merged into params)
  * @param name - Function name
  * @param prefix - Optional prefix to add before function name (e.g., "LAF" or "LPF")
  */
 export function buildFunctionCallSnippet(callable: CallableInfo, name: string, prefix?: string): string | null {
-    if (!callable.params) {
+    // When params info is available, check if any params exist.
+    // When params is undefined (static symbols from YAML), assume params may exist.
+    const paramsKnown = callable.params !== undefined;
+    const hasParams = paramsKnown
+        && ((callable.params!.intVar.length > 0) || (callable.params!.strVar.length > 0));
+    const mayHaveParams = !paramsKnown || hasParams;
+
+    // Without prefix (lafName/lpfName context), only generate snippet if may have params
+    if (!prefix && !mayHaveParams) {
         return null;
     }
 
-    // CallableParams already have `required` field from JSDoc
-    const requiredIntParams = callable.params.intVar.filter(p => p.required).map(p => p.name);
-    const requiredStrParams = callable.params.strVar.filter(p => p.required).map(p => p.name);
-
-    // If no required params, return null
-    if (requiredIntParams.length === 0 && requiredStrParams.length === 0) {
-        return null;
+    // Macro launch (LAM/LPM) is a simple statement — no params, no END
+    if (prefix === "LAM" || prefix === "LPM") {
+        return `${prefix} ${name}\n$0`;
     }
 
-    // Build snippet with tab stops
     const firstLine = prefix ? `${prefix} ${name}` : name;
-    const lines: string[] = [firstLine];
-    let tabStop = 1;
 
-    // Add INT_VAR block if there are required int params
-    if (requiredIntParams.length > 0) {
-        lines.push("    INT_VAR");
-        for (const paramName of requiredIntParams) {
-            lines.push(`        ${paramName} = $${tabStop}`);
-            tabStop++;
-        }
+    // No params: single-line "LAF name END", cursor on next line
+    if (!mayHaveParams) {
+        return `${firstLine} END\n$0`;
     }
 
-    // Add STR_VAR block if there are required str params
-    if (requiredStrParams.length > 0) {
-        lines.push("    STR_VAR");
-        for (const paramName of requiredStrParams) {
-            lines.push(`        ${paramName} = $${tabStop}`);
-            tabStop++;
-        }
-    }
-
-    // Add END with final tab stop
-    lines.push("END$0");
-
-    return lines.join("\n");
+    // Has params: cursor between name and END, indented one level for param block
+    return `${firstLine}\n    $0\nEND`;
 }

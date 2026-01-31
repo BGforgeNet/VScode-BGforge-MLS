@@ -1,20 +1,20 @@
 /**
  * Unit tests for WeiDU TP2 function call snippet generation.
- * Tests auto-completion with required parameters for LAF/LPF.
+ * Tests auto-completion snippets for LAF/LPF/LAM/LPM.
  */
 
 import { describe, expect, it } from "vitest";
 import { buildFunctionCallSnippet } from "../../src/weidu-tp2/snippets";
-import type { CallableInfo, CallableParam } from "../../src/core/symbol";
+import { CallableContext, CallableDefType, type CallableInfo, type CallableParam } from "../../src/core/symbol";
 
-// Helper to create a minimal CallableInfo for testing
+// Helper to create a CallableInfo with known params
 function createCallableInfo(
     intVarParams: CallableParam[],
     strVarParams: CallableParam[]
 ): CallableInfo {
     return {
-        context: "action",
-        dtype: "function",
+        context: CallableContext.Action,
+        dtype: CallableDefType.Function,
         params: {
             intVar: intVarParams,
             strVar: strVarParams,
@@ -24,151 +24,143 @@ function createCallableInfo(
     };
 }
 
+// Helper to create a CallableInfo with known-empty params
+function createNoParamsCallable(): CallableInfo {
+    return createCallableInfo([], []);
+}
+
+// Helper to create a CallableInfo with unknown params (static YAML symbols)
+function createUnknownParamsCallable(): CallableInfo {
+    return {
+        context: CallableContext.Action,
+        dtype: CallableDefType.Function,
+    };
+}
+
 describe("weidu-tp2: function call snippet generation", () => {
-    it("returns null when no required params exist", () => {
+    // ---- No prefix (lafName/lpfName context — user already typed LAF/LPF) ----
+
+    it("returns null without prefix when function has known-empty params", () => {
+        const callable = createNoParamsCallable();
+        expect(buildFunctionCallSnippet(callable, "no_param_func")).toBeNull();
+    });
+
+    it("returns null without prefix for macro with known-empty params", () => {
+        const callable: CallableInfo = {
+            context: CallableContext.Action,
+            dtype: CallableDefType.Macro,
+            params: { intVar: [], strVar: [], ret: [], retArray: [] },
+        };
+        expect(buildFunctionCallSnippet(callable, "my_macro")).toBeNull();
+    });
+
+    it("generates snippet without prefix when params exist (even optional)", () => {
+        const callable = createCallableInfo(
+            [{ name: "x", type: "int", defaultValue: "0" }],
+            []
+        );
+        expect(buildFunctionCallSnippet(callable, "my_func")).toBe(
+            "my_func\n    $0\nEND"
+        );
+    });
+
+    it("generates snippet without prefix for static symbol with unknown params", () => {
+        const callable = createUnknownParamsCallable();
+        expect(buildFunctionCallSnippet(callable, "INSTALL_PVRZ")).toBe(
+            "INSTALL_PVRZ\n    $0\nEND"
+        );
+    });
+
+    // ---- LAF/LPF prefix with known params ----
+
+    it("generates single-line snippet with prefix when known-empty params", () => {
+        const callable = createNoParamsCallable();
+        expect(buildFunctionCallSnippet(callable, "my_func", "LAF")).toBe(
+            "LAF my_func END\n$0"
+        );
+    });
+
+    it("generates multi-line snippet with prefix when params exist", () => {
+        const callable = createCallableInfo(
+            [{ name: "x", type: "int", defaultValue: "0", required: true }],
+            []
+        );
+        expect(buildFunctionCallSnippet(callable, "my_func", "LAF")).toBe(
+            "LAF my_func\n    $0\nEND"
+        );
+    });
+
+    it("generates multi-line snippet with prefix when only optional params exist", () => {
         const callable = createCallableInfo(
             [{ name: "x", type: "int", defaultValue: "0" }],
             [{ name: "y", type: "string", defaultValue: '""' }]
         );
-
-        const snippet = buildFunctionCallSnippet(callable, "my_func");
-        expect(snippet).toBeNull();
+        expect(buildFunctionCallSnippet(callable, "my_func", "LPF")).toBe(
+            "LPF my_func\n    $0\nEND"
+        );
     });
 
-    it("returns null for functions without params (macros)", () => {
+    it("generates multi-line snippet with prefix when both INT_VAR and STR_VAR exist", () => {
+        const callable = createCallableInfo(
+            [{ name: "x", type: "int", defaultValue: "0", required: true }],
+            [{ name: "name", type: "string", defaultValue: '""', required: true }]
+        );
+        expect(buildFunctionCallSnippet(callable, "complex_func", "LAF")).toBe(
+            "LAF complex_func\n    $0\nEND"
+        );
+    });
+
+    // ---- LAF/LPF prefix with unknown params (static YAML symbols) ----
+
+    it("generates multi-line snippet with prefix for static symbol with unknown params", () => {
+        const callable = createUnknownParamsCallable();
+        expect(buildFunctionCallSnippet(callable, "INSTALL_PVRZ", "LAF")).toBe(
+            "LAF INSTALL_PVRZ\n    $0\nEND"
+        );
+    });
+
+    it("generates multi-line snippet with LPF prefix for static symbol with unknown params", () => {
+        const callable = createUnknownParamsCallable();
+        expect(buildFunctionCallSnippet(callable, "ADD_AREA_ITEM", "LPF")).toBe(
+            "LPF ADD_AREA_ITEM\n    $0\nEND"
+        );
+    });
+
+    // ---- LAM/LPM prefix (macro launch — no params, no END) ----
+
+    it("generates LAM snippet without END", () => {
         const callable: CallableInfo = {
-            context: "action",
-            dtype: "macro",
+            context: CallableContext.Action,
+            dtype: CallableDefType.Macro,
         };
-
-        const snippet = buildFunctionCallSnippet(callable, "my_macro");
-        expect(snippet).toBeNull();
+        expect(buildFunctionCallSnippet(callable, "my_macro", "LAM")).toBe(
+            "LAM my_macro\n$0"
+        );
     });
 
-    it("generates snippet for only required INT_VAR params", () => {
+    it("generates LPM snippet without END", () => {
+        const callable: CallableInfo = {
+            context: CallableContext.Patch,
+            dtype: CallableDefType.Macro,
+        };
+        expect(buildFunctionCallSnippet(callable, "SET_BG2_PROFICIENCY", "LPM")).toBe(
+            "LPM SET_BG2_PROFICIENCY\n$0"
+        );
+    });
+
+    it("generates LAM snippet ignoring params", () => {
         const callable = createCallableInfo(
-            [
-                { name: "x", type: "int", defaultValue: "0", required: true },
-                { name: "y", type: "int", defaultValue: "1" },
-            ],
+            [{ name: "count", type: "int", defaultValue: "0", required: true }],
             []
         );
-
-        const snippet = buildFunctionCallSnippet(callable, "my_func");
-        expect(snippet).toBe(
-            "my_func\n    INT_VAR\n        x = $1\nEND$0"
+        const macroCallable: CallableInfo = {
+            ...callable,
+            context: CallableContext.Action,
+            dtype: CallableDefType.Macro,
+        };
+        // LAM/LPM don't take inline params — variables are set in calling scope
+        expect(buildFunctionCallSnippet(macroCallable, "my_macro", "LAM")).toBe(
+            "LAM my_macro\n$0"
         );
-    });
-
-    it("generates snippet for only required STR_VAR params", () => {
-        const callable = createCallableInfo(
-            [],
-            [{ name: "name", type: "string", defaultValue: '""', required: true }]
-        );
-
-        const snippet = buildFunctionCallSnippet(callable, "my_func");
-        expect(snippet).toBe(
-            'my_func\n    STR_VAR\n        name = $1\nEND$0'
-        );
-    });
-
-    it("generates snippet for both required INT_VAR and STR_VAR params", () => {
-        const callable = createCallableInfo(
-            [
-                { name: "x", type: "int", defaultValue: "0", required: true },
-                { name: "y", type: "int", defaultValue: "0", required: true },
-            ],
-            [{ name: "z", type: "string", defaultValue: '""', required: true }]
-        );
-
-        const snippet = buildFunctionCallSnippet(callable, "my_func");
-        expect(snippet).toBe(
-            'my_func\n    INT_VAR\n        x = $1\n        y = $2\n    STR_VAR\n        z = $3\nEND$0'
-        );
-    });
-
-    it("excludes optional params from snippet", () => {
-        const callable = createCallableInfo(
-            [
-                { name: "required_param", type: "int", defaultValue: "0", required: true },
-                { name: "optional_param", type: "int", defaultValue: "0" },
-            ],
-            [
-                { name: "another_required", type: "string", defaultValue: '""', required: true },
-                { name: "another_optional", type: "string", defaultValue: '""' },
-            ]
-        );
-
-        const snippet = buildFunctionCallSnippet(callable, "my_func");
-        expect(snippet).toBe(
-            'my_func\n    INT_VAR\n        required_param = $1\n    STR_VAR\n        another_required = $2\nEND$0'
-        );
-    });
-
-    it("generates correct tab stops in sequence", () => {
-        const callable = createCallableInfo(
-            [
-                { name: "a", type: "int", defaultValue: "0", required: true },
-                { name: "b", type: "int", defaultValue: "0", required: true },
-                { name: "c", type: "int", defaultValue: "0", required: true },
-            ],
-            []
-        );
-
-        const snippet = buildFunctionCallSnippet(callable, "test");
-        expect(snippet).toContain("$1");
-        expect(snippet).toContain("$2");
-        expect(snippet).toContain("$3");
-        expect(snippet).toContain("END$0");
-    });
-
-    it("generates snippet with LAF prefix when provided", () => {
-        const callable = createCallableInfo(
-            [{ name: "x", type: "int", defaultValue: "0", required: true }],
-            []
-        );
-
-        const snippet = buildFunctionCallSnippet(callable, "my_func", "LAF");
-        expect(snippet).toBe(
-            "LAF my_func\n    INT_VAR\n        x = $1\nEND$0"
-        );
-    });
-
-    it("generates snippet with LPF prefix when provided", () => {
-        const callable = createCallableInfo(
-            [],
-            [{ name: "name", type: "string", defaultValue: '""', required: true }]
-        );
-
-        const snippet = buildFunctionCallSnippet(callable, "my_func", "LPF");
-        expect(snippet).toBe(
-            'LPF my_func\n    STR_VAR\n        name = $1\nEND$0'
-        );
-    });
-
-    it("generates snippet with prefix for both INT_VAR and STR_VAR params", () => {
-        const callable = createCallableInfo(
-            [{ name: "x", type: "int", defaultValue: "0", required: true }],
-            [{ name: "name", type: "string", defaultValue: '""', required: true }]
-        );
-
-        const snippet = buildFunctionCallSnippet(callable, "complex_func", "LAF");
-        expect(snippet).toBe(
-            'LAF complex_func\n    INT_VAR\n        x = $1\n    STR_VAR\n        name = $2\nEND$0'
-        );
-    });
-
-    it("generates snippet without prefix when not provided", () => {
-        const callable = createCallableInfo(
-            [{ name: "x", type: "int", defaultValue: "0", required: true }],
-            []
-        );
-
-        const snippet = buildFunctionCallSnippet(callable, "my_func");
-        expect(snippet).toBe(
-            "my_func\n    INT_VAR\n        x = $1\nEND$0"
-        );
-        expect(snippet).not.toContain("LAF");
-        expect(snippet).not.toContain("LPF");
     });
 });

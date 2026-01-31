@@ -402,6 +402,23 @@ import { CompletionItemKind, type Hover, type MarkupContent } from "vscode-langu
 import { CompletionCategory, type Tp2CompletionItem } from "./completion/types";
 import { buildFunctionHover, buildVariableHover } from "./hover";
 
+/**
+ * Map callable context + def type to the appropriate CompletionCategory.
+ * Macros get their own categories; functions use ActionFunctions/PatchFunctions.
+ * Note: DimorphicFunctions is only for static YAML data; header-parsed items
+ * always have a single primary context.
+ */
+function getCompletionCategory(context: CallableContext, dtype: CallableDefType): CompletionCategory {
+    if (dtype === CallableDefType.Macro) {
+        return context === CallableContext.Action
+            ? CompletionCategory.ActionMacros
+            : CompletionCategory.PatchMacros;
+    }
+    return context === CallableContext.Action
+        ? CompletionCategory.ActionFunctions
+        : CompletionCategory.PatchFunctions;
+}
+
 /** Helper to extract MarkupContent from hover contents */
 function extractMarkupContent(contents: Hover["contents"]): MarkupContent | undefined {
     if (typeof contents === "object" && "kind" in contents && "value" in contents) {
@@ -434,7 +451,7 @@ function functionInfoToSymbol(func: FunctionInfo, displayPath?: string | null): 
         labelDetails: {
             description: completionDescription,
         },
-        category: func.context === CallableContext.Action ? CompletionCategory.ActionFunctions : CompletionCategory.PatchFunctions,
+        category: getCompletionCategory(func.context, func.dtype),
     };
 
     // Build JSDoc arg lookup map for type overrides and descriptions

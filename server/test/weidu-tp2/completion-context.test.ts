@@ -60,7 +60,8 @@ describe("completion-context: category filtering", () => {
             CompletionCategory.Action, CompletionCategory.Patch,
             CompletionCategory.Constants, CompletionCategory.Vars, CompletionCategory.Value, CompletionCategory.When, CompletionCategory.OptGlob, CompletionCategory.OptCase, CompletionCategory.OptExact, CompletionCategory.ArraySortType,
             CompletionCategory.FuncVarKeyword,
-            CompletionCategory.ActionFunctions, CompletionCategory.PatchFunctions,
+            CompletionCategory.ActionFunctions, CompletionCategory.PatchFunctions, CompletionCategory.DimorphicFunctions,
+            CompletionCategory.ActionMacros, CompletionCategory.PatchMacros,
             CompletionCategory.Jsdoc,
         ];
 
@@ -131,6 +132,114 @@ describe("completion-context: category filtering", () => {
 
     it("allows patchFunctions in patchKeyword context", () => {
         expectFiltering("patchKeyword", CompletionCategory.PatchFunctions, true);
+    });
+
+    // ===== Name context filtering: functions/macros appear in their target context =====
+
+    // Each callable category must appear in its matching name context (LafName, LpfName, etc.)
+    // and be excluded from all other name contexts.
+
+    it("allows patchFunctions in lpfName context", () => {
+        expectFiltering("lpfName", CompletionCategory.PatchFunctions, true);
+    });
+
+    it("rejects patchFunctions in lafName context", () => {
+        expectFiltering("lafName", CompletionCategory.PatchFunctions, false);
+    });
+
+    it("rejects patchFunctions in lamName context", () => {
+        expectFiltering("lamName", CompletionCategory.PatchFunctions, false);
+    });
+
+    it("rejects patchFunctions in lpmName context", () => {
+        expectFiltering("lpmName", CompletionCategory.PatchFunctions, false);
+    });
+
+    it("allows actionFunctions in lafName context", () => {
+        expectFiltering("lafName", CompletionCategory.ActionFunctions, true);
+    });
+
+    it("rejects actionFunctions in lpfName context", () => {
+        expectFiltering("lpfName", CompletionCategory.ActionFunctions, false);
+    });
+
+    it("rejects actionFunctions in lamName context", () => {
+        expectFiltering("lamName", CompletionCategory.ActionFunctions, false);
+    });
+
+    it("rejects actionFunctions in lpmName context", () => {
+        expectFiltering("lpmName", CompletionCategory.ActionFunctions, false);
+    });
+
+    it("allows actionMacros in lamName context", () => {
+        expectFiltering("lamName", CompletionCategory.ActionMacros, true);
+    });
+
+    it("rejects actionMacros in lafName context", () => {
+        expectFiltering("lafName", CompletionCategory.ActionMacros, false);
+    });
+
+    it("rejects actionMacros in lpfName context", () => {
+        expectFiltering("lpfName", CompletionCategory.ActionMacros, false);
+    });
+
+    it("rejects actionMacros in lpmName context", () => {
+        expectFiltering("lpmName", CompletionCategory.ActionMacros, false);
+    });
+
+    it("allows patchMacros in lpmName context", () => {
+        expectFiltering("lpmName", CompletionCategory.PatchMacros, true);
+    });
+
+    it("rejects patchMacros in lafName context", () => {
+        expectFiltering("lafName", CompletionCategory.PatchMacros, false);
+    });
+
+    it("rejects patchMacros in lpfName context", () => {
+        expectFiltering("lpfName", CompletionCategory.PatchMacros, false);
+    });
+
+    it("rejects patchMacros in lamName context", () => {
+        expectFiltering("lamName", CompletionCategory.PatchMacros, false);
+    });
+
+    it("allows dimorphicFunctions in lafName context", () => {
+        expectFiltering("lafName", CompletionCategory.DimorphicFunctions, true);
+    });
+
+    it("allows dimorphicFunctions in lpfName context", () => {
+        expectFiltering("lpfName", CompletionCategory.DimorphicFunctions, true);
+    });
+
+    it("rejects dimorphicFunctions in lamName context", () => {
+        expectFiltering("lamName", CompletionCategory.DimorphicFunctions, false);
+    });
+
+    it("rejects dimorphicFunctions in lpmName context", () => {
+        expectFiltering("lpmName", CompletionCategory.DimorphicFunctions, false);
+    });
+
+    // Non-callable categories must be excluded from ALL name contexts
+
+    it("rejects constants from all name contexts", () => {
+        expectFiltering("lafName", CompletionCategory.Constants, false);
+        expectFiltering("lpfName", CompletionCategory.Constants, false);
+        expectFiltering("lamName", CompletionCategory.Constants, false);
+        expectFiltering("lpmName", CompletionCategory.Constants, false);
+    });
+
+    it("rejects patch commands from all name contexts", () => {
+        expectFiltering("lafName", CompletionCategory.Patch, false);
+        expectFiltering("lpfName", CompletionCategory.Patch, false);
+        expectFiltering("lamName", CompletionCategory.Patch, false);
+        expectFiltering("lpmName", CompletionCategory.Patch, false);
+    });
+
+    it("rejects action commands from all name contexts", () => {
+        expectFiltering("lafName", CompletionCategory.Action, false);
+        expectFiltering("lpfName", CompletionCategory.Action, false);
+        expectFiltering("lamName", CompletionCategory.Action, false);
+        expectFiltering("lpmName", CompletionCategory.Action, false);
     });
 
     // ===== Categories with no exclusions (show everywhere) =====

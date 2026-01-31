@@ -18,33 +18,53 @@ import { CompletionCategory, CompletionContext, type Tp2CompletionItem } from ".
  * - If ANY context allows an item, it appears
  * - Missing category = never excluded
  */
+/** All name contexts (function/macro name positions). */
+const ALL_NAME_CONTEXTS: CompletionContext[] = [
+    CompletionContext.LafName, CompletionContext.LpfName,
+    CompletionContext.LamName, CompletionContext.LpmName,
+];
+
+/** Common exclusions for non-completable contexts: all name and param contexts. */
+const FUNC_PARAM_CONTEXTS: CompletionContext[] = [
+    CompletionContext.FuncParamName, CompletionContext.FuncParamValue,
+];
+
 const CATEGORY_EXCLUSIONS: Partial<Record<CompletionCategory, CompletionContext[]>> = {
-    // Rule 1: No patch items in action context, funcParamName/Value, or lafName
-    [CompletionCategory.Patch]: [CompletionContext.Action, CompletionContext.ActionKeyword, CompletionContext.FuncParamName, CompletionContext.FuncParamValue, CompletionContext.LafName, CompletionContext.LpfName],
-    [CompletionCategory.PatchFunctions]: [CompletionContext.Action, CompletionContext.ActionKeyword, CompletionContext.FuncParamName, CompletionContext.FuncParamValue, CompletionContext.LafName],
+    // Rule 1: Patch commands excluded from action and all name contexts
+    [CompletionCategory.Patch]: [CompletionContext.Action, CompletionContext.ActionKeyword, ...FUNC_PARAM_CONTEXTS, ...ALL_NAME_CONTEXTS],
+    // PatchFunctions: show in LpfName (that's their purpose), exclude from all other name contexts
+    [CompletionCategory.PatchFunctions]: [CompletionContext.Action, CompletionContext.ActionKeyword, ...FUNC_PARAM_CONTEXTS, CompletionContext.LafName, CompletionContext.LamName, CompletionContext.LpmName],
+    // PatchMacros: show in LpmName, exclude from all other name contexts
+    [CompletionCategory.PatchMacros]: [CompletionContext.Action, CompletionContext.ActionKeyword, ...FUNC_PARAM_CONTEXTS, CompletionContext.LafName, CompletionContext.LpfName, CompletionContext.LamName],
 
-    // Rule 2: No action items in patch context, funcParamName/Value, or lpfName
-    [CompletionCategory.Action]: [CompletionContext.Patch, CompletionContext.PatchKeyword, CompletionContext.FuncParamName, CompletionContext.FuncParamValue, CompletionContext.LafName, CompletionContext.LpfName],
-    [CompletionCategory.ActionFunctions]: [CompletionContext.Patch, CompletionContext.PatchKeyword, CompletionContext.FuncParamName, CompletionContext.FuncParamValue, CompletionContext.LpfName],
+    // Rule 2: Action commands excluded from patch and all name contexts
+    [CompletionCategory.Action]: [CompletionContext.Patch, CompletionContext.PatchKeyword, ...FUNC_PARAM_CONTEXTS, ...ALL_NAME_CONTEXTS],
+    // ActionFunctions: show in LafName, exclude from all other name contexts
+    [CompletionCategory.ActionFunctions]: [CompletionContext.Patch, CompletionContext.PatchKeyword, ...FUNC_PARAM_CONTEXTS, CompletionContext.LpfName, CompletionContext.LamName, CompletionContext.LpmName],
+    // ActionMacros: show in LamName, exclude from all other name contexts
+    [CompletionCategory.ActionMacros]: [CompletionContext.Patch, CompletionContext.PatchKeyword, ...FUNC_PARAM_CONTEXTS, CompletionContext.LafName, CompletionContext.LpfName, CompletionContext.LpmName],
 
-    // Rule 3: No structural items in funcParamName/Value or inappropriate contexts
-    [CompletionCategory.Prologue]: [CompletionContext.FuncParamName, CompletionContext.FuncParamValue, CompletionContext.LafName, CompletionContext.LpfName],
-    [CompletionCategory.Flag]: [CompletionContext.FuncParamName, CompletionContext.FuncParamValue, CompletionContext.Action, CompletionContext.ActionKeyword, CompletionContext.Patch, CompletionContext.PatchKeyword, CompletionContext.ComponentFlag, CompletionContext.LafName, CompletionContext.LpfName],
-    [CompletionCategory.ComponentFlag]: [CompletionContext.FuncParamName, CompletionContext.FuncParamValue, CompletionContext.LafName, CompletionContext.LpfName],
-    [CompletionCategory.Language]: [CompletionContext.FuncParamName, CompletionContext.FuncParamValue, CompletionContext.LafName, CompletionContext.LpfName],
+    // Rule 3: Dimorphic functions show in LafName and LpfName, exclude from macro name contexts
+    [CompletionCategory.DimorphicFunctions]: [...FUNC_PARAM_CONTEXTS, CompletionContext.LamName, CompletionContext.LpmName],
 
-    // Rule 4: INT_VAR, STR_VAR, RET, RET_ARRAY - only in funcParamName context (not value)
-    [CompletionCategory.FuncVarKeyword]: [CompletionContext.Action, CompletionContext.ActionKeyword, CompletionContext.Patch, CompletionContext.PatchKeyword, CompletionContext.Prologue, CompletionContext.Flag, CompletionContext.ComponentFlag, CompletionContext.When, CompletionContext.LafName, CompletionContext.LpfName, CompletionContext.FuncParamValue],
+    // Rule 4: No structural items in funcParamName/Value or inappropriate contexts
+    [CompletionCategory.Prologue]: [...FUNC_PARAM_CONTEXTS, ...ALL_NAME_CONTEXTS],
+    [CompletionCategory.Flag]: [...FUNC_PARAM_CONTEXTS, CompletionContext.Action, CompletionContext.ActionKeyword, CompletionContext.Patch, CompletionContext.PatchKeyword, CompletionContext.ComponentFlag, ...ALL_NAME_CONTEXTS],
+    [CompletionCategory.ComponentFlag]: [...FUNC_PARAM_CONTEXTS, ...ALL_NAME_CONTEXTS],
+    [CompletionCategory.Language]: [...FUNC_PARAM_CONTEXTS, ...ALL_NAME_CONTEXTS],
 
-    // Rule 5: Value items not allowed in lafName/lpfName or funcParamName
-    [CompletionCategory.Constants]: [CompletionContext.LafName, CompletionContext.LpfName, CompletionContext.FuncParamName],
-    [CompletionCategory.Vars]: [CompletionContext.LafName, CompletionContext.LpfName, CompletionContext.FuncParamName],
-    [CompletionCategory.Value]: [CompletionContext.LafName, CompletionContext.LpfName, CompletionContext.FuncParamName],
-    [CompletionCategory.When]: [CompletionContext.LafName, CompletionContext.LpfName, CompletionContext.FuncParamName],
-    [CompletionCategory.OptGlob]: [CompletionContext.LafName, CompletionContext.LpfName, CompletionContext.FuncParamName],
-    [CompletionCategory.OptCase]: [CompletionContext.LafName, CompletionContext.LpfName, CompletionContext.FuncParamName],
-    [CompletionCategory.OptExact]: [CompletionContext.LafName, CompletionContext.LpfName, CompletionContext.FuncParamName],
-    [CompletionCategory.ArraySortType]: [CompletionContext.LafName, CompletionContext.LpfName, CompletionContext.FuncParamName],
+    // Rule 5: INT_VAR, STR_VAR, RET, RET_ARRAY - only in funcParamName context (not value)
+    [CompletionCategory.FuncVarKeyword]: [CompletionContext.Action, CompletionContext.ActionKeyword, CompletionContext.Patch, CompletionContext.PatchKeyword, CompletionContext.Prologue, CompletionContext.Flag, CompletionContext.ComponentFlag, CompletionContext.When, ...ALL_NAME_CONTEXTS, CompletionContext.FuncParamValue],
+
+    // Rule 6: Value items not allowed in any name context or funcParamName
+    [CompletionCategory.Constants]: [...ALL_NAME_CONTEXTS, CompletionContext.FuncParamName],
+    [CompletionCategory.Vars]: [...ALL_NAME_CONTEXTS, CompletionContext.FuncParamName],
+    [CompletionCategory.Value]: [...ALL_NAME_CONTEXTS, CompletionContext.FuncParamName],
+    [CompletionCategory.When]: [...ALL_NAME_CONTEXTS, CompletionContext.FuncParamName],
+    [CompletionCategory.OptGlob]: [...ALL_NAME_CONTEXTS, CompletionContext.FuncParamName],
+    [CompletionCategory.OptCase]: [...ALL_NAME_CONTEXTS, CompletionContext.FuncParamName],
+    [CompletionCategory.OptExact]: [...ALL_NAME_CONTEXTS, CompletionContext.FuncParamName],
+    [CompletionCategory.ArraySortType]: [...ALL_NAME_CONTEXTS, CompletionContext.FuncParamName],
 };
 
 /**
@@ -61,6 +81,8 @@ const VALID_CONTEXTS = new Set<CompletionContext>([
     CompletionContext.When,
     CompletionContext.LafName,
     CompletionContext.LpfName,
+    CompletionContext.LamName,
+    CompletionContext.LpmName,
     CompletionContext.FuncParamName,
     CompletionContext.FuncParamValue,
     CompletionContext.Unknown,

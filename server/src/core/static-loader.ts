@@ -28,6 +28,8 @@ import {
     SymbolKind,
     ScopeLevel,
     SourceType,
+    CallableContext,
+    CallableDefType,
     symbolKindToCompletionKind,
 } from "./symbol";
 
@@ -53,12 +55,36 @@ const CATEGORY_TO_KIND: Record<string, SymbolKind> = {
     actions: SymbolKind.Action,
     triggers: SymbolKind.Trigger,
     keywords: SymbolKind.Constant, // Keywords like IF/THEN/END
-    // Add more mappings as needed for other languages
     functions: SymbolKind.Function,
     procedures: SymbolKind.Procedure,
     macros: SymbolKind.Macro,
     variables: SymbolKind.Variable,
     constants: SymbolKind.Constant,
+    // Note: `action` and `patch` categories are NOT mapped here because they
+    // are shared between TP2 (CompletionItemKind.Function) and worldmap
+    // (CompletionItemKind.Keyword). Those use the CompletionItemKind fallback.
+    // TP2 typed function/macro categories
+    actionFunctions: SymbolKind.Function,
+    patchFunctions: SymbolKind.Function,
+    dimorphicFunctions: SymbolKind.Function,
+    actionMacros: SymbolKind.Macro,
+    patchMacros: SymbolKind.Macro,
+};
+
+/**
+ * Callable metadata per TP2 category.
+ * Maps category names to their CallableContext and CallableDefType.
+ * Only applies to items with CompletionItemKind.Function (not keywords/snippets).
+ */
+const CALLABLE_CATEGORY_META: Record<string, { context: CallableContext; dtype: CallableDefType }> = {
+    // Note: `action` and `patch` are intentionally excluded. They contain commands
+    // (LAF, COPY, WRITE_BYTE, etc.) which are not user-defined callables and should
+    // not get "action function" / "patch function" prefix in tooltips.
+    actionFunctions: { context: CallableContext.Action, dtype: CallableDefType.Function },
+    patchFunctions: { context: CallableContext.Patch, dtype: CallableDefType.Function },
+    dimorphicFunctions: { context: CallableContext.Action, dtype: CallableDefType.Function },
+    actionMacros: { context: CallableContext.Action, dtype: CallableDefType.Macro },
+    patchMacros: { context: CallableContext.Patch, dtype: CallableDefType.Macro },
 };
 
 /**
@@ -141,11 +167,12 @@ function convertToSymbol(item: StaticCompletionItem): IndexedSymbol {
     // Extract hover content from completion documentation
     const hover = extractHover(item);
 
-    // Build completion item (re-use existing data, ensure correct kind)
+    // Build completion item — derive documentation from hover (single source of truth).
+    // This ensures any transformations (e.g., callable prefix injection) are consistent.
     const completion: CompletionItemWithCategory = {
         label: name,
         kind: symbolKindToCompletionKind(kind),
-        documentation: item.documentation,
+        documentation: hover.contents,
         category: item.category as CompletionCategory | undefined,
     };
 
@@ -173,13 +200,19 @@ function convertToSymbol(item: StaticCompletionItem): IndexedSymbol {
 
     // Return appropriate discriminated union type based on kind
     if (CALLABLE_KINDS.has(kind)) {
+        // Populate callable metadata from category when available.
+        // Only apply to items with Function CompletionItemKind (not keywords/snippets),
+        // to avoid false positives on worldmap or other non-TP2 stanzas that reuse
+        // category names like "action" with different CompletionItemKind values.
+        const meta = item.category ? CALLABLE_CATEGORY_META[item.category] : undefined;
+        const callable = (meta && item.kind === CompletionItemKind.Function)
+            ? { context: meta.context, dtype: meta.dtype }
+            : {};
+
         return {
             ...base,
             kind: kind as SymbolKind.Function | SymbolKind.Procedure | SymbolKind.Macro | SymbolKind.Action | SymbolKind.Trigger,
-            callable: {
-                // Static symbols don't have detailed parameter info in completion JSON
-                // This could be enhanced by loading signature JSON separately
-            },
+            callable,
         } as CallableSymbol;
     }
 
@@ -238,22 +271,65 @@ function determineSymbolKind(item: StaticCompletionItem): SymbolKind {
 }
 
 /**
- * Extract hover content from completion item documentation.
+ * Inject "{context} {dtype} " prefix into weidu-tp2-tooltip code fences.
+ * For example, transforms:
+ *   ```weidu-tp2-tooltip\nCOPY ~source~ ~dest~\n```
+ * into:
+ *   ```weidu-tp2-tooltip\naction function COPY ~source~ ~dest~\n```
+ *
+ * Only affects weidu-tp2-tooltip fences; other fences (e.g., weidu-baf-tooltip)
+ * are left untouched. Does not inject if the prefix is already present.
  */
-function extractHover(item: StaticCompletionItem): IndexedSymbol["hover"] {
+function injectCallablePrefix(value: string, meta: { context: CallableContext; dtype: CallableDefType }): string {
+    const fenceTag = "```weidu-tp2-tooltip\n";
+    const fenceIdx = value.indexOf(fenceTag);
+    if (fenceIdx === -1) {
+        return value;
+    }
+
+    const prefix = `${meta.context} ${meta.dtype} `;
+    const insertAt = fenceIdx + fenceTag.length;
+
+    // Guard: don't inject if prefix already present
+    if (value.startsWith(prefix, insertAt)) {
+        return value;
+    }
+
+    return value.slice(0, insertAt) + prefix + value.slice(insertAt);
+}
+
+/**
+ * Extract hover content from completion item documentation.
+ * Injects callable prefix for TP2 items with callable metadata.
+ */
+function extractHover(item: StaticCompletionItem): { contents: MarkupContent } {
+    const meta = (item.category && item.kind === CompletionItemKind.Function)
+        ? CALLABLE_CATEGORY_META[item.category]
+        : undefined;
+
     if (item.documentation !== undefined) {
         // Documentation can be string or MarkupContent
         if (typeof item.documentation === "string") {
+            const value = meta ? injectCallablePrefix(item.documentation, meta) : item.documentation;
             return {
                 contents: {
                     kind: "markdown",
-                    value: item.documentation,
+                    value,
                 },
             };
         }
-        // Already MarkupContent
+        // Already MarkupContent - inject prefix if applicable
+        const markup = item.documentation as MarkupContent;
+        if (meta && markup.kind === "markdown") {
+            return {
+                contents: {
+                    kind: "markdown",
+                    value: injectCallablePrefix(markup.value, meta),
+                },
+            };
+        }
         return {
-            contents: item.documentation as MarkupContent,
+            contents: markup,
         };
     }
 

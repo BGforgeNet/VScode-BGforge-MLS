@@ -57,6 +57,8 @@ export enum CompletionContext {
     When = "when",
     LafName = "lafName",
     LpfName = "lpfName",
+    LamName = "lamName",
+    LpmName = "lpmName",
     FuncParamName = "funcParamName",
     FuncParamValue = "funcParamValue",
     Unknown = "unknown",

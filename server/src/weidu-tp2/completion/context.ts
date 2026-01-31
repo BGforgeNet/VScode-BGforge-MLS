@@ -39,13 +39,13 @@ export function getFuncParamsContext(): FuncParamsContext | null {
 // Context Detection
 // ============================================
 
-/** LAF/LPF keywords that indicate function name position. */
-const FUNC_CALL_KEYWORDS = /^\s*(LAF|LPF|LAUNCH_ACTION_FUNCTION|LAUNCH_PATCH_FUNCTION)\s+\S*$/i;
+/** LAF/LPF/LAM/LPM keywords that indicate function/macro name position. */
+const FUNC_CALL_KEYWORDS = /^\s*(LAF|LPF|LAM|LPM|LAUNCH_ACTION_FUNCTION|LAUNCH_PATCH_FUNCTION|LAUNCH_ACTION_MACRO|LAUNCH_PATCH_MACRO)\s+\S*$/i;
 
 /**
- * Text-based fallback for detecting lafName/lpfName context.
- * Used when tree-sitter can't parse incomplete function calls.
- * Returns the context or null if not at a function name position.
+ * Text-based fallback for detecting lafName/lpfName/lamName/lpmName context.
+ * Used when tree-sitter can't parse incomplete function/macro calls.
+ * Returns the context or null if not at a function/macro name position.
  */
 function detectFuncNameFromLineText(text: string, line: number, character: number): CompletionContext | null {
     // Get the current line text up to cursor
@@ -59,10 +59,22 @@ function detectFuncNameFromLineText(text: string, line: number, character: numbe
     if (!match || !match[1]) return null;
 
     const keyword = match[1].toUpperCase();
-    if (keyword === "LAF" || keyword === "LAUNCH_ACTION_FUNCTION") {
-        return CompletionContext.LafName;
+    switch (keyword) {
+        case "LAF":
+        case "LAUNCH_ACTION_FUNCTION":
+            return CompletionContext.LafName;
+        case "LPF":
+        case "LAUNCH_PATCH_FUNCTION":
+            return CompletionContext.LpfName;
+        case "LAM":
+        case "LAUNCH_ACTION_MACRO":
+            return CompletionContext.LamName;
+        case "LPM":
+        case "LAUNCH_PATCH_MACRO":
+            return CompletionContext.LpmName;
+        default:
+            return null;
     }
-    return CompletionContext.LpfName;
 }
 
 /**
@@ -867,6 +879,24 @@ function detectFunctionCallContext(node: SyntaxNode, cursorOffset: number): Comp
         return [CompletionContext.FuncParamName];
     }
 
+    // Action macro call (LAM)
+    if (type === SyntaxType.ActionLaunchMacro || type === "action_launch_macro") {
+        if (isAtMacroName(cursorOffset, node)) {
+            return [CompletionContext.LamName];
+        }
+        // LAM has no parameters beyond the macro name
+        return null;
+    }
+
+    // Patch macro call (LPM)
+    if (type === SyntaxType.PatchLaunchMacro || type === "patch_launch_macro") {
+        if (isAtMacroName(cursorOffset, node)) {
+            return [CompletionContext.LpmName];
+        }
+        // LPM has no parameters beyond the macro name
+        return null;
+    }
+
     // Patch function call (LPF)
     if (type === SyntaxType.PatchLaunchFunction || type === "launch_patch_function") {
         if (isAtFunctionName(cursorOffset, node)) {
@@ -1530,6 +1560,38 @@ function isAtFunctionName(cursorOffset: number, funcCall: SyntaxNode): boolean {
     return false;
 }
 
+
+/**
+ * Check if cursor is at the macro name position in a macro call (LAM/LPM).
+ * Macros have simpler syntax than functions: just keyword + name, no parameters.
+ */
+function isAtMacroName(cursorOffset: number, macroCall: SyntaxNode): boolean {
+    let keywordEnd = -1;
+
+    for (const child of macroCall.children) {
+        const text = child.text.toUpperCase();
+
+        // Track keyword position (LAM, LPM, LAUNCH_ACTION_MACRO, LAUNCH_PATCH_MACRO)
+        if (text === "LAM" || text === "LPM" || text === "LAUNCH_ACTION_MACRO" || text === "LAUNCH_PATCH_MACRO") {
+            keywordEnd = child.endIndex;
+            continue;
+        }
+
+        // If cursor is within an identifier (the macro name), return true
+        if (child.type === SyntaxType.Identifier || child.type === SyntaxType.String) {
+            if (cursorOffset >= child.startIndex && cursorOffset <= child.endIndex) {
+                return true;
+            }
+        }
+    }
+
+    // Positional heuristic: cursor is after keyword (typing macro name)
+    if (keywordEnd > 0 && cursorOffset > keywordEnd) {
+        return true;
+    }
+
+    return false;
+}
 
 /** Component flag node types. */
 const COMPONENT_FLAG_TYPES = new Set<string>([
