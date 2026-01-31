@@ -90,7 +90,27 @@
         "category": "engine-procedures",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nvoid combat_p_proc()\n```\nCalled in combat (every turn?)."
+            "value": "```fallout-ssl-tooltip\nvoid combat_p_proc()\n```\nCalled in combat (every turn?). The specific combat event number is passed via `fixed_param`."
+        }
+    },
+    {
+        "label": "combat_is_starting_p_proc",
+        "kind": 3,
+        "source": "builtin",
+        "category": "engine-procedures",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid combat_is_starting_p_proc()\n```\nCalled every time before the start of combat."
+        }
+    },
+    {
+        "label": "combat_is_over_p_proc",
+        "kind": 3,
+        "source": "builtin",
+        "category": "engine-procedures",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid combat_is_over_p_proc()\n```\nCalled every time before combat ends."
         }
     },
     {
@@ -100,7 +120,7 @@
         "category": "engine-procedures",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nvoid critter_p_proc()\n```\nThis procedure is called every \"heartbeat\", which means it's run ten times each second, except during combat."
+            "value": "```fallout-ssl-tooltip\nvoid critter_p_proc()\n```\nThis procedure is called every \"heartbeat\", which means it's run ten times each second, except during combat.\nNote: if this procedure is not present in the script, errors can occur, and the first encountered procedure may be treated as this handler."
         }
     },
     {
@@ -110,7 +130,7 @@
         "category": "engine-procedures",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nvoid damage_p_proc()\n```\nCalled when the critter takes damage."
+            "value": "```fallout-ssl-tooltip\nvoid damage_p_proc()\n```\nCalled when the critter takes damage. The amount of damage received is passed via `fixed_param`.\nNote: not called if the damage is fully absorbed by armor."
         }
     },
     {
@@ -120,7 +140,7 @@
         "category": "engine-procedures",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nvoid description_p_proc()\n```\nCalled when the player inspects the object (binoculars)."
+            "value": "```fallout-ssl-tooltip\nvoid description_p_proc()\n```\nCalled when the player inspects the object (binoculars). By default, the description from the prototype object is shown.\nNote: must use `script_overrides` to prevent simultaneous execution with the default description."
         }
     },
     {
@@ -134,13 +154,33 @@
         }
     },
     {
+        "label": "drop_p_proc",
+        "kind": 3,
+        "source": "builtin",
+        "category": "engine-procedures",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid drop_p_proc()\n```\nCalled when the self-object is dropped to the ground."
+        }
+    },
+    {
+        "label": "is_dropping_p_proc",
+        "kind": 3,
+        "source": "builtin",
+        "category": "engine-procedures",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid is_dropping_p_proc()\n```\nCalled when trying to drop an object."
+        }
+    },
+    {
         "label": "look_at_p_proc",
         "kind": 3,
         "source": "builtin",
         "category": "engine-procedures",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nvoid look_at_p_proc()\n```\nCalled when the player passes the cursor over any object."
+            "value": "```fallout-ssl-tooltip\nvoid look_at_p_proc()\n```\nCalled when the player passes the cursor over any object. By default, the prototype name of the object is displayed.\nNote: must use `script_overrides` to prevent simultaneous execution with the default name display."
         }
     },
     {
@@ -154,13 +194,23 @@
         }
     },
     {
+        "label": "map_exit_p_proc",
+        "kind": 3,
+        "source": "builtin",
+        "category": "engine-procedures",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid map_exit_p_proc()\n```\nCalled when the player leaves the map."
+        }
+    },
+    {
         "label": "map_update_p_proc",
         "kind": 3,
         "source": "builtin",
         "category": "engine-procedures",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nvoid map_update_p_proc()\n```\nCalled roughly once every 30 seconds. It is also called each time you exit a dialogue, each time you exit the pipboy screen and each time you use an item. In addition to that, it is run once when you enter the map, and, seemingly, twice when you change elevation."
+            "value": "```fallout-ssl-tooltip\nvoid map_update_p_proc()\n```\nCalled every 250 game ticks (1 tick = 1/10 second, so roughly every 25 seconds). It is also called each time you exit a dialogue, each time you exit the pipboy screen and each time you use an item. In addition to that, it is run once when you enter the map, and, seemingly, twice when you change elevation."
         }
     },
     {
@@ -170,7 +220,27 @@
         "category": "engine-procedures",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nvoid pickup_p_proc()\n```\nCalled when the player is caught stealing from this critter."
+            "value": "```fallout-ssl-tooltip\nvoid pickup_p_proc()\n```\nIn object scripts, called when a critter tries to pick up this item.\nFor container objects, called when a critter tries to open them or steal something.\nIn critter scripts, called when someone tries to steal from this critter."
+        }
+    },
+    {
+        "label": "push_p_proc",
+        "kind": 3,
+        "source": "builtin",
+        "category": "engine-procedures",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid push_p_proc()\n```\nCalled when trying to push the object."
+        }
+    },
+    {
+        "label": "spatial_p_proc",
+        "kind": 3,
+        "source": "builtin",
+        "category": "engine-procedures",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid spatial_p_proc()\n```\nCalled when an object passes over the self-object's spatial trigger area."
         }
     },
     {
@@ -180,7 +250,7 @@
         "category": "engine-procedures",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nvoid start()\n```\nThis procedure is only supposed to be called by the engine when the script is first run, then never again, unless specifically called from somewhere else."
+            "value": "```fallout-ssl-tooltip\nvoid start()\n```\nCalled by the engine when the script is first run or the game object is first created, then never again, unless specifically called from somewhere else."
         }
     },
     {
@@ -210,7 +280,7 @@
         "category": "engine-procedures",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nvoid use_obj_on_p_proc()\n```\nCalled when:\n- A critter uses an object on another critter. (Or themselves).\n- A critter uses an object from inventory screen AND this object does not have \"Use\" action flag set and it's not active flare or explosive.\n- Player or AI uses any drug.\n"
+            "value": "```fallout-ssl-tooltip\nvoid use_obj_on_p_proc()\n```\nCalled when:\n- A critter uses an object on another critter. (Or themselves).\n- A critter uses an object from inventory screen AND this object does not have \"Use\" action flag set and it's not active flare or explosive.\n- Player or AI uses any drug.\nThe parameter `obj_being_used_with` receives a pointer to the object that was used.\n"
         }
     },
     {
@@ -220,7 +290,7 @@
         "category": "engine-procedures",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nvoid use_p_proc()\n```\nCalled when:\n- A critter uses an object from inventory which have \"Use\" action flag set or it's an active flare or dynamite.\n- Player uses an object from main interface.\n"
+            "value": "```fallout-ssl-tooltip\nvoid use_p_proc()\n```\nCalled when:\n- A critter uses an object from inventory which have \"Use\" action flag set or it's an active flare or dynamite.\n- Player uses an object from main interface.\nUse `source_obj` to get the object being used. Note: not called for some item types when working with inventory.\n"
         }
     },
     {
@@ -230,7 +300,7 @@
         "category": "engine-procedures",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nvoid use_skill_on_p_proc()\n```\nCalled when a skill is used on the object."
+            "value": "```fallout-ssl-tooltip\nvoid use_skill_on_p_proc()\n```\nCalled when a skill is used on the object. The skill number is passed via `action_being_used` (see DEFINE.H, Skill Equates)."
         }
     },
     {
