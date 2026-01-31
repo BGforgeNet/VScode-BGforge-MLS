@@ -104,11 +104,13 @@ export const enum SourceType {
 // =============================================================================
 
 /**
- * Context in which a callable operates: action or patch (for WeiDU).
+ * Context in which a callable operates: action, patch, or dimorphic (for WeiDU).
+ * Dimorphic functions can be used in both action and patch contexts.
  */
 export enum CallableContext {
     Action = "action",
     Patch = "patch",
+    Dimorphic = "dimorphic",
 }
 
 /**

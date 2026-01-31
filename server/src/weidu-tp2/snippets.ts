@@ -17,10 +17,10 @@ import type { CallableInfo } from "../core/symbol";
 export function buildFunctionCallSnippet(callable: CallableInfo, name: string, prefix?: string): string | null {
     // When params info is available, check if any params exist.
     // When params is undefined (static symbols from YAML), assume params may exist.
-    const paramsKnown = callable.params !== undefined;
-    const hasParams = paramsKnown
-        && ((callable.params!.intVar.length > 0) || (callable.params!.strVar.length > 0));
-    const mayHaveParams = !paramsKnown || hasParams;
+    const params = callable.params;
+    const hasParams = params !== undefined
+        && (params.intVar.length > 0 || params.strVar.length > 0);
+    const mayHaveParams = params === undefined || hasParams;
 
     // Without prefix (lafName/lpfName context), only generate snippet if may have params
     if (!prefix && !mayHaveParams) {

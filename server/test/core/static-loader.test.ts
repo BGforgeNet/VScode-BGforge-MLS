@@ -500,6 +500,25 @@ describe("static-loader", () => {
             expect(value).toBe(originalDoc);
         });
 
+        it("should inject 'dimorphic function' prefix for dimorphicFunctions category", () => {
+            mockReadFileSync.mockReturnValue(JSON.stringify([
+                {
+                    label: "RESOLVE_STR_REF",
+                    kind: CompletionItemKind.Function,
+                    category: "dimorphicFunctions",
+                    documentation: {
+                        kind: "markdown",
+                        value: "```weidu-tp2-tooltip\nRESOLVE_STR_REF\n```\nResolves a string reference.",
+                    },
+                },
+            ]));
+
+            const result = loadStaticSymbols("test-lang");
+            const value = (result[0].hover.contents as { kind: string; value: string }).value;
+
+            expect(value).toBe("```weidu-tp2-tooltip\ndimorphic function RESOLVE_STR_REF\n```\nResolves a string reference.");
+        });
+
         it("should not crash on callable items without documentation", () => {
             mockReadFileSync.mockReturnValue(JSON.stringify([
                 {

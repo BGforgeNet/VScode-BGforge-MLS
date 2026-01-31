@@ -15,6 +15,7 @@ import {
     SymbolKind,
     ScopeLevel,
     SourceType,
+    CallableContext,
     isCallable,
     symbolKindToCompletionKind,
     symbolKindToVscodeKind,
@@ -43,6 +44,17 @@ describe("core/symbol", () => {
         it("should have all expected structure kinds", () => {
             expect(SymbolKind.State).toBe("state");
             expect(SymbolKind.Component).toBe("component");
+        });
+    });
+
+    // =========================================================================
+    // CallableContext enum
+    // =========================================================================
+    describe("CallableContext", () => {
+        it("should have action, patch, and dimorphic values", () => {
+            expect(CallableContext.Action).toBe("action");
+            expect(CallableContext.Patch).toBe("patch");
+            expect(CallableContext.Dimorphic).toBe("dimorphic");
         });
     });
 

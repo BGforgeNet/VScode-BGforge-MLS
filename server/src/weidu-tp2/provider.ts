@@ -47,6 +47,101 @@ export function getSymbols(): Symbols | undefined {
     return symbols;
 }
 
+/**
+ * Add parameter completions (INT_VAR, STR_VAR names) when in funcParamName context.
+ * Returns the original items if not in funcParamName context or no params available.
+ */
+function addParamCompletions(items: Tp2CompletionItem[], contexts: CompletionContext[]): Tp2CompletionItem[] {
+    if (!contexts.includes(CompletionContext.FuncParamName)) {
+        return items;
+    }
+    const funcContext = getFuncParamsContext();
+    if (!funcContext) {
+        return items;
+    }
+    const paramCompletions = getParamCompletions(funcContext);
+    if (paramCompletions.length === 0) {
+        return items;
+    }
+    return [...items, ...paramCompletions];
+}
+
+/**
+ * Apply snippets for function/macro calls based on active contexts.
+ * In name contexts (lafName/lpfName/lamName/lpmName), user already typed
+ * the keyword — snippet has no prefix, only required params + END.
+ * In patch/action contexts, user hasn't typed the keyword — snippet
+ * includes LPF/LAF/LPM/LAM prefix + name + END.
+ */
+function applySnippets(
+    items: Tp2CompletionItem[],
+    contexts: CompletionContext[],
+    text: string,
+    uri: string
+): Tp2CompletionItem[] {
+    const inNameContext = contexts.includes(CompletionContext.LafName)
+        || contexts.includes(CompletionContext.LpfName)
+        || contexts.includes(CompletionContext.LamName)
+        || contexts.includes(CompletionContext.LpmName);
+    const inPatchContext = contexts.includes(CompletionContext.Patch) || contexts.includes(CompletionContext.PatchKeyword);
+    const inActionContext = contexts.includes(CompletionContext.Action) || contexts.includes(CompletionContext.ActionKeyword);
+
+    if (!inNameContext && !inPatchContext && !inActionContext) {
+        return items;
+    }
+
+    return items.map((item) => {
+        // Skip action/patch command keywords (LPF, LAF, COPY, etc.) —
+        // these are not user-defined callables, just commands.
+        const cat = item.category;
+        if (cat === CompletionCategory.Action || cat === CompletionCategory.Patch) {
+            return item;
+        }
+
+        const funcName = item.label as string;
+        // Look up in both indexed and local symbols
+        const symbol = symbols?.lookup(funcName) ?? lookupLocalSymbol(funcName, text, uri);
+        if (!symbol || !isCallableSymbol(symbol)) {
+            return item;
+        }
+
+        // Determine prefix based on context.
+        // In name contexts, user already typed the keyword — no prefix.
+        // In patch/action contexts, choose keyword based on callable dtype.
+        const prefix = inNameContext
+            ? undefined
+            : getSnippetPrefix(symbol.callable.dtype, inPatchContext, inActionContext);
+
+        const snippet = buildFunctionCallSnippet(symbol.callable, funcName, prefix);
+        if (snippet) {
+            return {
+                ...item,
+                insertText: snippet,
+                insertTextFormat: InsertTextFormat.Snippet,
+            };
+        }
+        return item;
+    });
+}
+
+/**
+ * Determine the keyword prefix for a function/macro snippet based on context.
+ */
+function getSnippetPrefix(
+    dtype: string | undefined,
+    inPatchContext: boolean,
+    inActionContext: boolean
+): string | undefined {
+    const isMacro = dtype === "macro";
+    if (inPatchContext) {
+        return isMacro ? "LPM" : "LPF";
+    }
+    if (inActionContext) {
+        return isMacro ? "LAM" : "LAF";
+    }
+    return undefined;
+}
+
 export const weiduTp2Provider: LanguageProvider = {
     id: LANG_WEIDU_TP2,
     watchExtensions: [...EXT_WEIDU_TP2],
@@ -161,76 +256,11 @@ export const weiduTp2Provider: LanguageProvider = {
         // items come from getCompletions() which returns Tp2CompletionItem[] (static + header symbols all have category)
         // localVars come from localCompletion() which returns Tp2CompletionItem[]
         // localFuncSymbols come from extractLocalSymbols() → header-parser (functions/macros in same file)
-        let allItems: Tp2CompletionItem[] = [...items as Tp2CompletionItem[], ...localVars, ...localFuncSymbols];
+        const baseItems: Tp2CompletionItem[] = [...items as Tp2CompletionItem[], ...localVars, ...localFuncSymbols];
+        const withParams = addParamCompletions(baseItems, contexts);
+        const withSnippets = applySnippets(withParams, contexts, text, uri);
 
-        // Check if we're in funcParamName context and can provide parameter completions
-        // Note: Parameter completions (like "count = ") are only shown when typing parameter names,
-        // not when typing values after =
-        if (contexts.includes(CompletionContext.FuncParamName)) {
-            const funcContext = getFuncParamsContext();
-            if (funcContext) {
-                const paramCompletions = getParamCompletions(funcContext);
-                if (paramCompletions.length > 0) {
-                    // Add param completions to the list
-                    allItems = [...allItems, ...paramCompletions];
-                }
-            }
-        }
-
-        // Apply snippets for function/macro calls.
-        // In name contexts (lafName/lpfName/lamName/lpmName), user already typed
-        // the keyword — snippet has no prefix, only required params + END.
-        // In patch/action contexts, user hasn't typed the keyword — snippet
-        // includes LPF/LAF/LPM/LAM prefix + name + END.
-        const inNameContext = contexts.includes(CompletionContext.LafName)
-            || contexts.includes(CompletionContext.LpfName)
-            || contexts.includes(CompletionContext.LamName)
-            || contexts.includes(CompletionContext.LpmName);
-        const inPatchContext = contexts.includes(CompletionContext.Patch) || contexts.includes(CompletionContext.PatchKeyword);
-        const inActionContext = contexts.includes(CompletionContext.Action) || contexts.includes(CompletionContext.ActionKeyword);
-
-        if (inNameContext || inPatchContext || inActionContext) {
-            allItems = allItems.map((item) => {
-                // Skip action/patch command keywords (LPF, LAF, COPY, etc.) —
-                // these are not user-defined callables, just commands.
-                const cat = (item as Tp2CompletionItem).category;
-                if (cat === CompletionCategory.Action || cat === CompletionCategory.Patch) {
-                    return item;
-                }
-
-                const funcName = item.label as string;
-                // Look up in both indexed and local symbols
-                const symbol = symbols?.lookup(funcName) ?? lookupLocalSymbol(funcName, text, uri);
-                if (!symbol || !isCallableSymbol(symbol)) {
-                    return item;
-                }
-
-                // Determine prefix based on context.
-                // In name contexts, user already typed the keyword — no prefix.
-                // In patch/action contexts, choose keyword based on callable dtype.
-                let prefix: string | undefined;
-                if (!inNameContext) {
-                    const isMacro = symbol.callable.dtype === "macro";
-                    if (inPatchContext) {
-                        prefix = isMacro ? "LPM" : "LPF";
-                    } else if (inActionContext) {
-                        prefix = isMacro ? "LAM" : "LAF";
-                    }
-                }
-
-                const snippet = buildFunctionCallSnippet(symbol.callable, funcName, prefix);
-                if (snippet) {
-                    return {
-                        ...item,
-                        insertText: snippet,
-                        insertTextFormat: InsertTextFormat.Snippet,
-                    };
-                }
-                return item;
-            });
-        }
-
-        return filterItemsByContext(allItems, contexts);
+        return filterItemsByContext(withSnippets, contexts);
     },
 
     shouldProvideFeatures(text: string, position: Position): boolean {

@@ -82,7 +82,9 @@ const CALLABLE_CATEGORY_META: Record<string, { context: CallableContext; dtype: 
     // not get "action function" / "patch function" prefix in tooltips.
     actionFunctions: { context: CallableContext.Action, dtype: CallableDefType.Function },
     patchFunctions: { context: CallableContext.Patch, dtype: CallableDefType.Function },
-    dimorphicFunctions: { context: CallableContext.Action, dtype: CallableDefType.Function },
+    // Dimorphic functions work in both action and patch contexts, so they get their
+    // own context to display "dimorphic function" in hover instead of "action function".
+    dimorphicFunctions: { context: CallableContext.Dimorphic, dtype: CallableDefType.Function },
     actionMacros: { context: CallableContext.Action, dtype: CallableDefType.Macro },
     patchMacros: { context: CallableContext.Patch, dtype: CallableDefType.Macro },
 };

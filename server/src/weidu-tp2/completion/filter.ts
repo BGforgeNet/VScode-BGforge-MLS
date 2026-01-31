@@ -88,14 +88,9 @@ const VALID_CONTEXTS = new Set<CompletionContext>([
     CompletionContext.Unknown,
 ]);
 
-// Validate exclusion rules at module load
-for (const [category, exclusions] of Object.entries(CATEGORY_EXCLUSIONS)) {
-    for (const ctx of exclusions) {
-        if (!VALID_CONTEXTS.has(ctx)) {
-            console.warn(`[weidu-tp2] Invalid context "${ctx}" in exclusion for category "${category}"`);
-        }
-    }
-}
+// Validation of exclusion rules is covered by unit tests in completion-filter.test.ts.
+// Exported for test access.
+export { CATEGORY_EXCLUSIONS, VALID_CONTEXTS };
 
 /**
  * Filter completion items based on exclusion rules.
