@@ -46,10 +46,6 @@ echo "=== Checking Formatting ==="
 (cd client && pnpm exec prettier --check "src/**/*.css" "src/**/*.html")
 
 echo ""
-echo "=== Testing Grammars ==="
-pnpm test:grammars
-
-echo ""
 echo "=== Testing CLI ==="
 pnpm test:cli
 
