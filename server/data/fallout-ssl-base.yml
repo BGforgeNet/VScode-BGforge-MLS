@@ -34,43 +34,77 @@ engine-procedures:
     - name: combat_p_proc
       detail: void combat_p_proc()
       doc: |-
-        Called in combat (every turn?).
+        Called in combat (every turn?). The specific combat event number is passed via `fixed_param`.
+    - name: combat_is_starting_p_proc
+      detail: void combat_is_starting_p_proc()
+      doc: |-
+        Called every time before the start of combat.
+    - name: combat_is_over_p_proc
+      detail: void combat_is_over_p_proc()
+      doc: |-
+        Called every time before combat ends.
     - name: critter_p_proc
       detail: void critter_p_proc()
       doc: |-
         This procedure is called every "heartbeat", which means it's run ten times each second, except during combat.
+        Note: if this procedure is not present in the script, errors can occur, and the first encountered procedure may be treated as this handler.
     - name: damage_p_proc
       detail: void damage_p_proc()
       doc: |-
-        Called when the critter takes damage.
+        Called when the critter takes damage. The amount of damage received is passed via `fixed_param`.
+        Note: not called if the damage is fully absorbed by armor.
     - name: description_p_proc
       detail: void description_p_proc()
       doc: |-
-        Called when the player inspects the object (binoculars).
+        Called when the player inspects the object (binoculars). By default, the description from the prototype object is shown.
+        Note: must use `script_overrides` to prevent simultaneous execution with the default description.
     - name: destroy_p_proc
       detail: void destroy_p_proc()
       doc: |-
         Called on death of the critter or destruction of the object (except when using `destroy_object(self_obj)`).
+    - name: drop_p_proc
+      detail: void drop_p_proc()
+      doc: |-
+        Called when the self-object is dropped to the ground.
+    - name: is_dropping_p_proc
+      detail: void is_dropping_p_proc()
+      doc: |-
+        Called when trying to drop an object.
     - name: look_at_p_proc
       detail: void look_at_p_proc()
       doc: |-
-        Called when the player passes the cursor over any object.
+        Called when the player passes the cursor over any object. By default, the prototype name of the object is displayed.
+        Note: must use `script_overrides` to prevent simultaneous execution with the default name display.
     - name: map_enter_p_proc
       detail: void map_enter_p_proc()
       doc: |-
         Called once by the engine each time the map is entered from another map. It is not run when the elevation is changed.
+    - name: map_exit_p_proc
+      detail: void map_exit_p_proc()
+      doc: |-
+        Called when the player leaves the map.
     - name: map_update_p_proc
       detail: void map_update_p_proc()
       doc: |-
-        Called roughly once every 30 seconds. It is also called each time you exit a dialogue, each time you exit the pipboy screen and each time you use an item. In addition to that, it is run once when you enter the map, and, seemingly, twice when you change elevation.
+        Called every 250 game ticks (1 tick = 1/10 second, so roughly every 25 seconds). It is also called each time you exit a dialogue, each time you exit the pipboy screen and each time you use an item. In addition to that, it is run once when you enter the map, and, seemingly, twice when you change elevation.
     - name: pickup_p_proc
       detail: void pickup_p_proc()
       doc: |-
-        Called when the player is caught stealing from this critter.
+        In object scripts, called when a critter tries to pick up this item.
+        For container objects, called when a critter tries to open them or steal something.
+        In critter scripts, called when someone tries to steal from this critter.
+    - name: push_p_proc
+      detail: void push_p_proc()
+      doc: |-
+        Called when trying to push the object.
+    - name: spatial_p_proc
+      detail: void spatial_p_proc()
+      doc: |-
+        Called when an object passes over the self-object's spatial trigger area.
     - name: start
       detail: void start()
       doc: |-
-        This procedure is only supposed to be called by the engine when the script is first run, then never again, unless specifically called from somewhere else.
+        Called by the engine when the script is first run or the game object is first created, then never again, unless specifically called from somewhere else.
     - name: talk_p_proc
       detail: void talk_p_proc()
       doc: |-
@@ -91,16 +125,18 @@ engine-procedures:
         - A critter uses an object on another critter. (Or themselves).
         - A critter uses an object from inventory screen AND this object does not have "Use" action flag set and it's not active flare or explosive.
         - Player or AI uses any drug.
+        The parameter `obj_being_used_with` receives a pointer to the object that was used.
     - name: use_p_proc
       detail: void use_p_proc()
       doc: |
         Called when:
         - A critter uses an object from inventory which have "Use" action flag set or it's an active flare or dynamite.
         - Player uses an object from main interface.
+        Use `source_obj` to get the object being used. Note: not called for some item types when working with inventory.
     - name: use_skill_on_p_proc
       detail: void use_skill_on_p_proc()
       doc: |-
-        Called when a skill is used on the object.
+        Called when a skill is used on the object. The skill number is passed via `action_being_used` (see DEFINE.H, Skill Equates).
 base-functions:
   type: 3
   items:
