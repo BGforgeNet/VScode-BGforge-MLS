@@ -1,13 +1,17 @@
 /**
  * TypeScript Language Service Plugin for TSSL files.
- * Suppresses TS6133 ("declared but never read") diagnostics for Fallout
- * engine procedure names (start, talk_p_proc, etc.) in .tssl files.
+ * - Suppresses TS6133 ("declared but never read") for engine procedure names.
+ * - Injects hover documentation for engine procedures from YAML-generated data.
  *
  * Loaded by tsserver via contributes.typescriptServerPlugins in package.json.
  * Bundled by esbuild into node_modules/bgforge-tssl-plugin/index.js (CJS, self-contained).
+ *
+ * Build dependency: engine-proc-docs.json must be generated before bundling.
+ * This is done by generate-data.sh, which must run before build:ts-plugin.
  */
 
 import type ts from "typescript";
+import { appendEngineProcDoc } from "./engine-proc-hover";
 import { filterEngineProcedureDiagnostics } from "./filter-diagnostics";
 
 const TSSL_EXTENSION = ".tssl";
@@ -36,6 +40,15 @@ function init(_modules: { typescript: typeof ts }): ts.server.PluginModule {
                             return diagnostics;
                         }
                         return filterEngineProcedureDiagnostics(diagnostics);
+                    };
+                }
+                if (prop === "getQuickInfoAtPosition") {
+                    return (fileName: string, position: number) => {
+                        const quickInfo = target.getQuickInfoAtPosition(fileName, position);
+                        if (!isTsslFile(fileName)) {
+                            return quickInfo;
+                        }
+                        return appendEngineProcDoc(quickInfo, quickInfo?.displayParts);
                     };
                 }
                 return Reflect.get(target, prop, receiver);

@@ -1,6 +1,7 @@
 #!/bin/bash
 
-# Regenerate hover and completion JSONs from server/data YAMLs
+# Regenerate hover and completion JSONs from server/data YAMLs.
+# Must run before build:ts-plugin (which bundles engine-proc-docs.json via esbuild).
 
 set -xeu -o pipefail
 
@@ -14,6 +15,12 @@ $generate_data \
     --hover $dest_dir/hover.fallout-ssl.json \
     --signature $dest_dir/signature.fallout-ssl.json \
     --tooltip-lang fallout-ssl-tooltip
+
+# Extract engine procedure docs for the TSSL TypeScript plugin
+pnpm exec tsx scripts/utils/src/extract-engine-proc-docs.ts \
+    --hover $dest_dir/hover.fallout-ssl.json \
+    --yaml $data_dir/fallout-ssl-base.yml \
+    --out $dest_dir/engine-proc-docs.json
 
 $generate_data \
     -i $data_dir/fallout-worldmap-txt.yml \

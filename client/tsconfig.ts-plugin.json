@@ -9,6 +9,7 @@
         "noImplicitReturns": true,
         "noFallthroughCasesInSwitch": true,
         "noUncheckedIndexedAccess": true,
+        "resolveJsonModule": true,
         "esModuleInterop": true,
         "allowSyntheticDefaultImports": true,
         "noEmit": true,
@@ -16,6 +17,7 @@
     },
     "include": [
         "src/ts-plugin.ts",
-        "src/filter-diagnostics.ts"
+        "src/filter-diagnostics.ts",
+        "src/engine-proc-hover.ts"
     ]
 }
