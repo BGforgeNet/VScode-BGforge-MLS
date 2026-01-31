@@ -38,7 +38,11 @@ export default [
             ecmaVersion: "latest",
             sourceType: "module",
             parserOptions: {
-                projectService: true,
+                projectService: {
+                    // ts-plugin.ts is excluded from client/tsconfig.json (cross-workspace import
+                    // incompatible with rootDir), but has its own client/tsconfig.ts-plugin.json
+                    allowDefaultProject: ["client/src/ts-plugin.ts", "client/src/filter-diagnostics.ts"],
+                },
             },
         },
         rules: {

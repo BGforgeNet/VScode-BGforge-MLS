@@ -15,6 +15,8 @@ const config: KnipConfig = {
         "src/test/runTest.ts",
         "src/test/index.ts",
         "src/test/*.test.ts",
+        // vitest unit tests (run via client/vitest.config.ts)
+        "test/*.test.ts",
       ],
       ignore: ["out/**"],
     },

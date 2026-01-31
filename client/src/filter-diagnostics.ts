@@ -1,0 +1,51 @@
+/**
+ * Pure diagnostic filtering for the TSSL TypeScript plugin.
+ * Filters out TS6133 ("declared but never read") for Fallout engine
+ * procedure names in .tssl files.
+ */
+
+import { ENGINE_PROCEDURES } from "../../server/src/tssl/engine-procedures";
+
+/** TS6133: '{0}' is declared but its value is never read. */
+const TS6133_CODE = 6133;
+
+/** Matches the quoted identifier in a TS6133 message: 'name' or "name" */
+const TS6133_IDENTIFIER_RE = /^['"](\w+)['"]\s+is declared but/;
+
+/**
+ * Diagnostic shape compatible with TypeScript's ts.Diagnostic.
+ * Only the fields we inspect are required.
+ */
+export interface DiagnosticLike {
+    readonly code: number;
+    readonly messageText: string | { readonly messageText: string };
+}
+
+/**
+ * Extract the identifier name from a TS6133 diagnostic message.
+ * Handles both plain string and DiagnosticMessageChain shapes.
+ * @returns The identifier name, or undefined if the message doesn't match.
+ */
+export function extractIdentifierFromTS6133(
+    messageText: string | { readonly messageText: string },
+): string | undefined {
+    const text = typeof messageText === "string" ? messageText : messageText.messageText;
+    const match = TS6133_IDENTIFIER_RE.exec(text);
+    return match?.[1];
+}
+
+/**
+ * Filter out TS6133 diagnostics for Fallout engine procedure names.
+ * Returns a new array (immutable -- does not modify the input).
+ */
+export function filterEngineProcedureDiagnostics<T extends DiagnosticLike>(
+    diagnostics: readonly T[],
+): T[] {
+    return diagnostics.filter((d) => {
+        if (d.code !== TS6133_CODE) {
+            return true;
+        }
+        const identifier = extractIdentifierFromTS6133(d.messageText);
+        return identifier === undefined || !ENGINE_PROCEDURES.has(identifier);
+    });
+}

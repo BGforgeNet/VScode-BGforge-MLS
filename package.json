@@ -415,6 +415,11 @@
                 "when": "editorLangId == fallout-ssl"
             }
         ],
+        "typescriptServerPlugins": [
+            {
+                "name": "bgforge-tssl-plugin"
+            }
+        ],
         "iconThemes": [
             {
                 "id": "bgforge",
@@ -424,9 +429,10 @@
         ]
     },
     "scripts": {
-        "vscode:prepublish": "pnpm build:grammar && pnpm build:base:client --minify && pnpm build:base:server --minify && pnpm build:base:webviews --minify",
+        "vscode:prepublish": "pnpm build:grammar && pnpm build:base:client --minify && pnpm build:ts-plugin --minify && pnpm build:base:server --minify && pnpm build:base:webviews --minify",
         "build": "pnpm build:grammar && pnpm build:client && pnpm build:server && pnpm build:test && pnpm build:webviews",
-        "build:client": "pnpm build:base:client --sourcemap && pnpm build:bin-cli",
+        "build:ts-plugin": "mkdir -p node_modules/bgforge-tssl-plugin && echo '{\"name\":\"bgforge-tssl-plugin\",\"main\":\"index.js\"}' > node_modules/bgforge-tssl-plugin/package.json && esbuild ./client/src/ts-plugin.ts --bundle --outfile=node_modules/bgforge-tssl-plugin/index.js --format=cjs --platform=node",
+        "build:client": "pnpm build:base:client --sourcemap && pnpm build:ts-plugin --sourcemap && pnpm build:bin-cli",
         "build:server": "pnpm build:base:server --sourcemap && pnpm lint:cli && pnpm build:format-cli && pnpm build:transpile-cli",
         "build:webviews": "pnpm build:base:webviews --sourcemap",
         "build:test": "esbuild ./client/src/test/*.ts --outdir=client/out/test --external:vscode --external:'./reporters/parallel-buffered' --external:'./worker.js' --format=cjs --platform=node --sourcemap --bundle",

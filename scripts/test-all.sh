@@ -10,6 +10,7 @@ cd "$ROOT_DIR"
 
 echo "=== Typechecking Client ==="
 (cd client && pnpm exec tsc --noEmit)
+(cd client && pnpm exec tsc --noEmit -p tsconfig.ts-plugin.json)
 
 echo ""
 echo "=== Typechecking Server ==="
@@ -26,6 +27,10 @@ pnpm exec eslint 'server/src/**/*.ts' 'client/src/**/*.ts' 'cli/**/*.ts' --ignor
 echo ""
 echo "=== Running Server Unit Tests ==="
 (cd server && pnpm test:unit)
+
+echo ""
+echo "=== Running Client Unit Tests ==="
+vitest run --config client/vitest.config.ts
 
 echo ""
 echo "=== Testing TD Samples ==="
