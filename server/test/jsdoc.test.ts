@@ -146,6 +146,22 @@ describe("jsdoc.parse", () => {
             expect(result.ret).toEqual({ type: "bool" });
         });
 
+        it("parses unnamed @return with type and description", () => {
+            const input = `/**
+ * @ret {float} bzz
+ */`;
+            const result = jsdoc.parse(input);
+            expect(result.ret).toEqual({ type: "float", description: "bzz" });
+        });
+
+        it("parses unnamed @return with type and dash-separated description", () => {
+            const input = `/**
+ * @return {int} - the count
+ */`;
+            const result = jsdoc.parse(input);
+            expect(result.ret).toEqual({ type: "int", description: "the count" });
+        });
+
         it("parses named @return with type and description", () => {
             const input = `/**
  * @return x {int} - x coordinate

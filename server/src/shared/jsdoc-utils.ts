@@ -36,8 +36,8 @@ export function jsdocToMarkdown(jsd: JSdoc, format: JsdocFormat = "fallout"): st
         // Unnamed return (fallback for backwards compat)
         if (format === "weidu") {
             md += `\n\n Returns \`${jsd.ret.type}\``;
-        } else {
-            md += `\n\n**Returns** \`${jsd.ret.type}\``;
+        } else if (jsd.ret.description) {
+            md += `\n\n**Returns** ${jsd.ret.description}`;
         }
     }
 
@@ -47,13 +47,21 @@ export function jsdocToMarkdown(jsd: JSdoc, format: JsdocFormat = "fallout"): st
 }
 
 /**
- * Fallout format: simple table with name and description.
+ * Fallout format: space-padded plain text with name and description.
+ * Names are padded to align descriptions, with a minimum 2-space gap.
  * Type and default values are shown in the signature.
  */
 function formatFalloutArgs(args: JSdoc["args"]): string {
-    let md = "\n\n|name|description|\n|:-|:-|";
-    for (const arg of args) {
-        md += `\n|${arg.name}|${arg.description ?? ""}|`;
+    // Only list args that have descriptions (type/name already shown in signature)
+    const described = args.filter((a) => a.description);
+    if (described.length === 0) {
+        return "";
+    }
+
+    // Headerless table, arg names in inline code, dash before description.
+    let md = "\n\n|||\n|:-|:-|";
+    for (const arg of described) {
+        md += `\n|\`${arg.name}\`|&nbsp;&nbsp;${arg.description}|`;
     }
     return md;
 }

@@ -63,8 +63,8 @@ export interface JSdoc {
  */
 const PARAM_PATTERN = /@(?:arg|param)\s+\{(\w+)\}\s+(?:(\w+)(!)?|\[(\w+)=([^\]]+)\])(?:\s+-\s+|\s+)?(.+)?/;
 
-/** Pattern for unnamed @return/@returns/@ret tags. Groups: 1=type */
-const RETURN_PATTERN = /@(?:ret|return|returns)\s+\{(\w+)\}/;
+/** Pattern for unnamed @return/@returns/@ret tags. Groups: 1=type, 2=description (optional) */
+const RETURN_PATTERN = /@(?:ret|return|returns)\s+\{(\w+)\}(?:\s+-\s+|\s+)?(.+)?/;
 
 /**
  * Pattern for named @return/@returns/@ret tags.
@@ -217,7 +217,11 @@ function parseReturn(line: string): Ret | null {
     if (!match || !match[1]) {
         return null;
     }
-    return { type: match[1] };
+    const ret: Ret = { type: match[1] };
+    if (match[2]) {
+        ret.description = match[2].trim();
+    }
+    return ret;
 }
 
 /**
