@@ -32,13 +32,8 @@ export function jsdocToMarkdown(jsd: JSdoc, format: JsdocFormat = "fallout"): st
     // Named returns (rets[]) - for WeiDU RET/RET_ARRAY variables
     if (jsd.rets && jsd.rets.length > 0 && format === "weidu") {
         md += formatWeiduRets(jsd.rets);
-    } else if (jsd.ret) {
-        // Unnamed return (fallback for backwards compat)
-        if (format === "weidu") {
-            md += `\n\n Returns \`${jsd.ret.type}\``;
-        } else if (jsd.ret.description) {
-            md += `\n\n**Returns** ${jsd.ret.description}`;
-        }
+    } else if (jsd.ret?.description) {
+        md += `\n\n**Returns** ${jsd.ret.description}`;
     }
 
     md += formatDeprecated(jsd.deprecated);
@@ -94,24 +89,18 @@ function formatWeiduArgs(args: JSdoc["args"]): string {
         }
     });
 
-    // Note: Defaults come from AST, not JSDoc, so no Default column here
-    if (intVars.length > 0) {
-        md += "\n\n|INT_VAR|Name|Description|\n|:-|:-|:-|";
-        for (const arg of intVars) {
-            md += `\n| \`${arg.type}\` | ${arg.name} | ${arg.description ?? ""} |`;
-        }
-    }
+    const addSection = (sectionName: string, vars: JSdoc["args"]) => {
+        if (vars.length === 0) return;
 
-    if (strVars.length > 0) {
-        if (intVars.length === 0) {
-            md += "\n\n|STR_VAR|Name|Description|\n|:-|:-|:-|";
-        } else {
-            md += "\n|**STR_VAR**|||";
+        md += `\n\n**${sectionName}**\n\n||||\n|-:|:-|:-|`;
+        for (const arg of vars) {
+            const desc = arg.description ? `&nbsp;&nbsp;${arg.description}` : "";
+            md += `\n|\`${arg.type}\`|${arg.name}|${desc}|`;
         }
-        for (const arg of strVars) {
-            md += `\n| \`${arg.type}\` | ${arg.name} | ${arg.description ?? ""} |`;
-        }
-    }
+    };
+
+    addSection("INT vars", intVars);
+    addSection("STR vars", strVars);
 
     return md;
 }
@@ -125,13 +114,10 @@ function formatWeiduRets(rets: JSdoc["rets"]): string {
         return "";
     }
 
-    let md = "\n\n|RET|Type|Description|\n|:-|:-|:-|";
+    let md = "\n\n**RET vars**\n\n||||\n|-:|:-|:-|";
     for (const ret of rets) {
-        md += `\n| ${ret.name} | \`${ret.type}\` |`;
-        if (ret.description) {
-            md += ` ${ret.description}`;
-        }
-        md += "|";
+        const desc = ret.description ? `&nbsp;&nbsp;${ret.description}` : "";
+        md += `\n|\`${ret.type}\`|${ret.name}|${desc}|`;
     }
 
     return md;

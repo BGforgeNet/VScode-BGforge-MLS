@@ -286,11 +286,12 @@ lib/functions.tph
 
 Test function.
 
-| | INT vars | Description | Default |
-|:---|:---|:---|:---:|
-| [int](https://ielib.bgforge.net/types/#int) | bonus | the bonus amount |  |
-| | **STR vars** | | |
-| [string](https://ielib.bgforge.net/types/#string) | name | item name to use | "" |`
+| | | | |
+|-:|:-|:-:|:-|
+|**INT**|**vars**|||
+|[int](https://ielib.bgforge.net/types/#int)|bonus||&nbsp;&nbsp;the bonus amount|
+|**STR**|**vars**|||
+|[string](https://ielib.bgforge.net/types/#string)|name|= ""|&nbsp;&nbsp;item name to use|`
             );
         });
 
@@ -312,9 +313,7 @@ action function get_value
 lib/functions.tph
 \`\`\`
 
-Returns a value.
-
-Returns \`int\``
+Returns a value.`
             );
         });
 
@@ -365,9 +364,10 @@ lib/functions.tph
 
 Uses an item.
 
-| | STR vars | Description | Default |
-|:---|:---|:---|:---:|
-| [resref](https://ielib.bgforge.net/types/#resref) | item | the item resref | "" |`
+| | | | |
+|-:|:-|:-:|:-|
+|**STR**|**vars**|||
+|[resref](https://ielib.bgforge.net/types/#resref)|item|= ""|&nbsp;&nbsp;the item resref|`
             );
         });
     });

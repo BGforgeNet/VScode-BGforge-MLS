@@ -114,8 +114,7 @@ function buildLanguageData(uri: string, functions: FunctionInfo[], filePath: str
         // 4. Parameter table (INT vars, STR vars, RET vars, RET arrays)
         let paramTable = "";
         if (func.params) {
-            const tableRows: string[] = [];
-            let needsHeader = true;
+            const rows: string[] = [];
 
             /** Format type as link if known, plain text otherwise. */
             const formatType = (type: string): string => {
@@ -155,56 +154,56 @@ function buildLanguageData(uri: string, functions: FunctionInfo[], filePath: str
                 return desc.slice(0, cutPoint).trimEnd() + "...";
             };
 
-            /** Add section header row. */
-            const addSectionHeader = (sectionName: string) => {
-                if (needsHeader) {
-                    tableRows.push(`| | ${sectionName} | Description | Default |`);
-                    tableRows.push("|:---|:---|:---|:---:|");
-                    needsHeader = false;
-                } else {
-                    tableRows.push(`| | **${sectionName}** | | |`);
-                }
-            };
-
-            /** Add parameter rows for INT_VAR/STR_VAR sections. */
+            /** Add section label and parameter rows for INT_VAR/STR_VAR. */
             const addVarSection = (
                 sectionName: string,
                 params: { name: string; defaultValue?: string }[],
                 defaultType: string
             ) => {
                 if (params.length === 0) return;
-                addSectionHeader(sectionName);
+
+                const [word1, word2] = sectionName.split(" ");
+                rows.push(`|**${word1}**|**${word2}**|||`);
 
                 for (const p of params) {
                     const jsdoc = jsdocArgs.get(p.name);
                     const type = formatType(jsdoc?.type ?? defaultType);
                     // Hide default value for required params
                     const def = jsdoc?.required ? "" : (p.defaultValue ?? "");
+                    const defCell = def ? `= ${def}` : "";
                     const desc = truncateDesc(jsdoc?.description ?? "");
-                    tableRows.push(`| ${type} | ${p.name} | ${desc} | ${def} |`);
+                    const descCell = desc ? `&nbsp;&nbsp;${desc}` : "";
+                    rows.push(`|${type}|${p.name}|${defCell}|${descCell}|`);
                 }
             };
 
-            /** Add parameter rows for RET/RET_ARRAY sections. */
+            /** Add section label and parameter rows for RET/RET_ARRAY. */
             const addRetSection = (sectionName: string, params: string[]) => {
                 if (params.length === 0) return;
-                addSectionHeader(sectionName);
+
+                const [word1, word2] = sectionName.split(" ");
+                rows.push(`|**${word1}**|**${word2}**|||`);
 
                 for (const name of params) {
                     const jsdoc = jsdocArgs.get(name);
                     const type = formatType(jsdoc?.type ?? "");
                     const desc = truncateDesc(jsdoc?.description ?? "");
-                    tableRows.push(`| ${type} | ${name} | ${desc} | |`);
+                    const descCell = desc ? `&nbsp;&nbsp;${desc}` : "";
+                    rows.push(`|${type}|${name}||${descCell}|`);
                 }
             };
+
+            // Single table: hidden header + separator, then sections with label rows
+            rows.push("| | | | |");
+            rows.push("|-:|:-|:-:|:-|");
 
             addVarSection("INT vars", func.params.intVar, "int");
             addVarSection("STR vars", func.params.strVar, "string");
             addRetSection("RET vars", func.params.ret);
             addRetSection("RET arrays", func.params.retArray);
 
-            if (tableRows.length > 0) {
-                paramTable = "\n\n" + tableRows.join("\n");
+            if (rows.length > 2) {
+                paramTable = "\n\n" + rows.join("\n");
             }
         }
 
@@ -229,9 +228,9 @@ function buildLanguageData(uri: string, functions: FunctionInfo[], filePath: str
         // 4. Parameter table
         markdownValue += paramTable;
 
-        // 5. Return type (@return)
-        if (func.jsdoc?.ret) {
-            markdownValue += `\n\nReturns \`${func.jsdoc.ret.type}\``;
+        // 5. Return description (@return) - hidden if no description
+        if (func.jsdoc?.ret?.description) {
+            markdownValue += `\n\n**Returns** ${func.jsdoc.ret.description}`;
         }
 
         // 6. Deprecation notice (@deprecated)

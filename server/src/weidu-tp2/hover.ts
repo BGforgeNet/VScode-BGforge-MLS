@@ -319,9 +319,9 @@ export function buildFunctionHover(funcInfo: FunctionInfo, displayPath?: string 
         markdownValue += "\n\n" + paramTable;
     }
 
-    // 5. Return type (@return)
-    if (funcInfo.jsdoc?.ret) {
-        markdownValue += `\n\nReturns \`${funcInfo.jsdoc.ret.type}\``;
+    // 5. Return description (@return) - hidden if no description
+    if (funcInfo.jsdoc?.ret?.description) {
+        markdownValue += `\n\n**Returns** ${funcInfo.jsdoc.ret.description}`;
     }
 
     // 6. Deprecation notice (@deprecated)
@@ -352,8 +352,7 @@ function buildParamTable(
         return "";
     }
 
-    const tableRows: string[] = [];
-    let needsHeader = true;
+    const rows: string[] = [];
 
     /** Format type as link if known, plain text otherwise. */
     const formatType = (type: string): string => {
@@ -394,43 +393,38 @@ function buildParamTable(
         return desc.slice(0, cutPoint).trimEnd() + "...";
     };
 
-    /** Add section header row. */
-    const addSectionHeader = (sectionName: string) => {
-        if (needsHeader) {
-            tableRows.push(`| | ${sectionName} | Description | Default |`);
-            tableRows.push("|:---|:---|:---|:---:|");
-            needsHeader = false;
-        } else {
-            tableRows.push(`| | **${sectionName}** | | |`);
-        }
-    };
-
-    /** Add parameter rows for INT_VAR/STR_VAR sections. */
+    /** Add section label and parameter rows for INT_VAR/STR_VAR. */
     const addVarSection = (
         sectionName: string,
         params: { name: string; defaultValue?: string }[],
         defaultType: string
     ) => {
         if (params.length === 0) return;
-        addSectionHeader(sectionName);
+
+        const [word1, word2] = sectionName.split(" ");
+        rows.push(`|**${word1}**|**${word2}**|||`);
 
         for (const p of params) {
             const jsdoc = jsdocArgs.get(p.name);
             const type = formatType(jsdoc?.type ?? defaultType);
             // Hide default value for required params
             const def = jsdoc?.required ? "" : (p.defaultValue ?? "");
+            const defCell = def ? `= ${def}` : "";
             const desc = truncateDesc(jsdoc?.description ?? "");
-            tableRows.push(`| ${type} | ${p.name} | ${desc} | ${def} |`);
+            const descCell = desc ? `&nbsp;&nbsp;${desc}` : "";
+            rows.push(`|${type}|${p.name}|${defCell}|${descCell}|`);
         }
     };
 
     // Build rets lookup map for @return/@return-array tags
     const retsMap = buildRetsMap(funcInfo.jsdoc?.rets);
 
-    /** Add parameter rows for RET/RET_ARRAY sections. */
+    /** Add section label and parameter rows for RET/RET_ARRAY. */
     const addRetSection = (sectionName: string, params: string[]) => {
         if (params.length === 0) return;
-        addSectionHeader(sectionName);
+
+        const [word1, word2] = sectionName.split(" ");
+        rows.push(`|**${word1}**|**${word2}**|||`);
 
         for (const name of params) {
             // Prefer @return info from rets[], fall back to @param info
@@ -438,16 +432,22 @@ function buildParamTable(
             const paramInfo = jsdocArgs.get(name);
             const type = formatType(retInfo?.type ?? paramInfo?.type ?? "");
             const desc = truncateDesc(retInfo?.description ?? paramInfo?.description ?? "");
-            tableRows.push(`| ${type} | ${name} | ${desc} | |`);
+            const descCell = desc ? `&nbsp;&nbsp;${desc}` : "";
+            rows.push(`|${type}|${name}||${descCell}|`);
         }
     };
+
+    // Single table: hidden header + separator, then sections with label rows
+    rows.push("| | | | |");
+    rows.push("|-:|:-|:-:|:-|");
 
     addVarSection("INT vars", funcInfo.params.intVar, "int");
     addVarSection("STR vars", funcInfo.params.strVar, "string");
     addRetSection("RET vars", funcInfo.params.ret);
     addRetSection("RET arrays", funcInfo.params.retArray);
 
-    return tableRows.join("\n");
+    // If only the header rows exist, no params were added
+    return rows.length > 2 ? rows.join("\n") : "";
 }
 
 /**

@@ -749,7 +749,7 @@ BEGIN END`;
         const result = loadFileData("file:///test.tph", code, "test.tph");
         const hover = result.hover.get("my_func");
         const value = getHoverValue(hover?.contents);
-        expect(value).toContain("INT vars");
+        expect(value).toContain("|**INT**|**vars**|");
         expect(value).toContain("count");
         expect(value).toContain("0");
     });
@@ -761,7 +761,7 @@ BEGIN END`;
         const result = loadFileData("file:///test.tph", code, "test.tph");
         const hover = result.hover.get("my_func");
         const value = getHoverValue(hover?.contents);
-        expect(value).toContain("STR vars");
+        expect(value).toContain("|**STR**|**vars**|");
         expect(value).toContain("name");
     });
 
@@ -772,7 +772,7 @@ BEGIN END`;
         const result = loadFileData("file:///test.tph", code, "test.tph");
         const hover = result.hover.get("my_func");
         const value = getHoverValue(hover?.contents);
-        expect(value).toContain("RET vars");
+        expect(value).toContain("|**RET**|**vars**|");
         expect(value).toContain("result");
     });
 
@@ -808,14 +808,14 @@ BEGIN END`;
         expect(getHoverValue(hover?.contents)).toContain("[string]");
     });
 
-    it("generates hover with @return type", () => {
+    it("hides Returns when @return has no description", () => {
         const code = `/**
  * @return {int}
  */
 DEFINE_ACTION_FUNCTION my_func BEGIN END`;
         const result = loadFileData("file:///test.tph", code, "test.tph");
         const hover = result.hover.get("my_func");
-        expect(getHoverValue(hover?.contents)).toContain("Returns `int`");
+        expect(getHoverValue(hover?.contents)).not.toContain("Returns");
     });
 
     it("generates hover with @deprecated notice", () => {
