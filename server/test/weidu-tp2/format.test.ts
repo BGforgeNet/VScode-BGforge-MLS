@@ -35,6 +35,8 @@ import {
 } from "../../src/weidu-tp2/format/utils";
 import { formatDocument } from "../../src/weidu-tp2/format/core";
 import { initParser, getParser } from "../../src/weidu-tp2/parser";
+import { parseHeaderToSymbols } from "../../src/weidu-tp2/header-parser";
+import type { IndexedSymbol } from "../../src/core/symbol";
 
 describe("format-utils: normalizeLineComment", () => {
     it("adds space after // if missing", () => {
@@ -708,28 +710,32 @@ BEGIN @1
     });
 });
 
-describe("hover formatting: loadFileData", () => {
-    let loadFileData: typeof import("../../src/weidu-data").loadFileData;
-
+describe("hover formatting: parseHeaderToSymbols", () => {
     beforeAll(async () => {
         await initParser();
-        const mod = await import("../../src/weidu-data");
-        loadFileData = mod.loadFileData;
     });
+
+    /** Look up a symbol by name from parseHeaderToSymbols output. */
+    function findSymbol(symbols: IndexedSymbol[], name: string) {
+        return symbols.find(s => s.name === name);
+    }
+
+    // Use "/" as workspace root so that URI "file:///lib/test.tph" resolves to display path "lib/test.tph"
+    const workspaceRoot = "/";
 
     it("generates hover with function signature", () => {
         const code = `DEFINE_ACTION_FUNCTION my_func BEGIN END`;
-        const result = loadFileData("file:///test.tph", code, "lib/test.tph");
-        const hover = result.hover.get("my_func");
-        expect(hover).toBeDefined();
-        expect(getHoverValue(hover?.contents)).toContain("action function my_func");
+        const symbols = parseHeaderToSymbols("file:///test.tph", code, workspaceRoot);
+        const sym = findSymbol(symbols, "my_func");
+        expect(sym).toBeDefined();
+        expect(getHoverValue(sym?.hover.contents)).toContain("action function my_func");
     });
 
     it("generates hover with file path", () => {
         const code = `DEFINE_ACTION_FUNCTION my_func BEGIN END`;
-        const result = loadFileData("file:///test.tph", code, "lib/test.tph");
-        const hover = result.hover.get("my_func");
-        expect(getHoverValue(hover?.contents)).toContain("lib/test.tph");
+        const symbols = parseHeaderToSymbols("file:///lib/test.tph", code, workspaceRoot);
+        const sym = findSymbol(symbols, "my_func");
+        expect(getHoverValue(sym?.hover.contents)).toContain("lib/test.tph");
     });
 
     it("generates hover with JSDoc description", () => {
@@ -737,18 +743,18 @@ describe("hover formatting: loadFileData", () => {
  * Does something useful.
  */
 DEFINE_ACTION_FUNCTION my_func BEGIN END`;
-        const result = loadFileData("file:///test.tph", code, "test.tph");
-        const hover = result.hover.get("my_func");
-        expect(getHoverValue(hover?.contents)).toContain("Does something useful.");
+        const symbols = parseHeaderToSymbols("file:///test.tph", code, workspaceRoot);
+        const sym = findSymbol(symbols, "my_func");
+        expect(getHoverValue(sym?.hover.contents)).toContain("Does something useful.");
     });
 
     it("generates hover with INT_VAR parameters", () => {
         const code = `DEFINE_ACTION_FUNCTION my_func
 INT_VAR count = 0
 BEGIN END`;
-        const result = loadFileData("file:///test.tph", code, "test.tph");
-        const hover = result.hover.get("my_func");
-        const value = getHoverValue(hover?.contents);
+        const symbols = parseHeaderToSymbols("file:///test.tph", code, workspaceRoot);
+        const sym = findSymbol(symbols, "my_func");
+        const value = getHoverValue(sym?.hover.contents);
         expect(value).toContain("|**INT**|**vars**|");
         expect(value).toContain("count");
         expect(value).toContain("0");
@@ -758,9 +764,9 @@ BEGIN END`;
         const code = `DEFINE_ACTION_FUNCTION my_func
 STR_VAR name = ~~
 BEGIN END`;
-        const result = loadFileData("file:///test.tph", code, "test.tph");
-        const hover = result.hover.get("my_func");
-        const value = getHoverValue(hover?.contents);
+        const symbols = parseHeaderToSymbols("file:///test.tph", code, workspaceRoot);
+        const sym = findSymbol(symbols, "my_func");
+        const value = getHoverValue(sym?.hover.contents);
         expect(value).toContain("|**STR**|**vars**|");
         expect(value).toContain("name");
     });
@@ -769,9 +775,9 @@ BEGIN END`;
         const code = `DEFINE_ACTION_FUNCTION my_func
 RET result
 BEGIN END`;
-        const result = loadFileData("file:///test.tph", code, "test.tph");
-        const hover = result.hover.get("my_func");
-        const value = getHoverValue(hover?.contents);
+        const symbols = parseHeaderToSymbols("file:///test.tph", code, workspaceRoot);
+        const sym = findSymbol(symbols, "my_func");
+        const value = getHoverValue(sym?.hover.contents);
         expect(value).toContain("|**RET**|**vars**|");
         expect(value).toContain("result");
     });
@@ -783,29 +789,29 @@ BEGIN END`;
 DEFINE_ACTION_FUNCTION my_func
 INT_VAR count = 0
 BEGIN END`;
-        const result = loadFileData("file:///test.tph", code, "test.tph");
-        const hover = result.hover.get("my_func");
-        expect(getHoverValue(hover?.contents)).toContain("[int](https://ielib.bgforge.net/types/#int)");
+        const symbols = parseHeaderToSymbols("file:///test.tph", code, workspaceRoot);
+        const sym = findSymbol(symbols, "my_func");
+        expect(getHoverValue(sym?.hover.contents)).toContain("[int](https://ielib.bgforge.net/types/#int)");
     });
 
     it("generates hover with default type int for INT_VAR", () => {
         const code = `DEFINE_ACTION_FUNCTION my_func
 INT_VAR count = 0
 BEGIN END`;
-        const result = loadFileData("file:///test.tph", code, "test.tph");
-        const hover = result.hover.get("my_func");
+        const symbols = parseHeaderToSymbols("file:///test.tph", code, workspaceRoot);
+        const sym = findSymbol(symbols, "my_func");
         // Default type is int, which should be linked
-        expect(getHoverValue(hover?.contents)).toContain("[int]");
+        expect(getHoverValue(sym?.hover.contents)).toContain("[int]");
     });
 
     it("generates hover with default type string for STR_VAR", () => {
         const code = `DEFINE_ACTION_FUNCTION my_func
 STR_VAR name = ~~
 BEGIN END`;
-        const result = loadFileData("file:///test.tph", code, "test.tph");
-        const hover = result.hover.get("my_func");
+        const symbols = parseHeaderToSymbols("file:///test.tph", code, workspaceRoot);
+        const sym = findSymbol(symbols, "my_func");
         // Default type is string, which should be linked
-        expect(getHoverValue(hover?.contents)).toContain("[string]");
+        expect(getHoverValue(sym?.hover.contents)).toContain("[string]");
     });
 
     it("hides Returns when @return has no description", () => {
@@ -813,9 +819,9 @@ BEGIN END`;
  * @return {int}
  */
 DEFINE_ACTION_FUNCTION my_func BEGIN END`;
-        const result = loadFileData("file:///test.tph", code, "test.tph");
-        const hover = result.hover.get("my_func");
-        expect(getHoverValue(hover?.contents)).not.toContain("Returns");
+        const symbols = parseHeaderToSymbols("file:///test.tph", code, workspaceRoot);
+        const sym = findSymbol(symbols, "my_func");
+        expect(getHoverValue(sym?.hover.contents)).not.toContain("Returns");
     });
 
     it("generates hover with @deprecated notice", () => {
@@ -823,9 +829,9 @@ DEFINE_ACTION_FUNCTION my_func BEGIN END`;
  * @deprecated Use new_func instead
  */
 DEFINE_ACTION_FUNCTION old_func BEGIN END`;
-        const result = loadFileData("file:///test.tph", code, "test.tph");
-        const hover = result.hover.get("old_func");
-        const value = getHoverValue(hover?.contents);
+        const symbols = parseHeaderToSymbols("file:///test.tph", code, workspaceRoot);
+        const sym = findSymbol(symbols, "old_func");
+        const value = getHoverValue(sym?.hover.contents);
         expect(value).toContain("Deprecated");
         expect(value).toContain("Use new_func instead");
     });
@@ -838,9 +844,9 @@ DEFINE_ACTION_FUNCTION old_func BEGIN END`;
 DEFINE_ACTION_FUNCTION my_func
 INT_VAR count = 0
 BEGIN END`;
-        const result = loadFileData("file:///test.tph", code, "test.tph");
-        const hover = result.hover.get("my_func");
-        const value = getHoverValue(hover?.contents);
+        const symbols = parseHeaderToSymbols("file:///test.tph", code, workspaceRoot);
+        const sym = findSymbol(symbols, "my_func");
+        const value = getHoverValue(sym?.hover.contents);
         // Should be truncated with ...
         expect(value).toContain("...");
         // Should not contain the full 100 chars
@@ -849,17 +855,18 @@ BEGIN END`;
 
     it("generates completion item", () => {
         const code = `DEFINE_ACTION_FUNCTION my_func BEGIN END`;
-        const result = loadFileData("file:///test.tph", code, "test.tph");
-        expect(result.completion).toHaveLength(1);
-        expect(result.completion[0].label).toBe("my_func");
+        const symbols = parseHeaderToSymbols("file:///test.tph", code, workspaceRoot);
+        const sym = findSymbol(symbols, "my_func");
+        expect(sym).toBeDefined();
+        expect(sym?.completion.label).toBe("my_func");
     });
 
     it("generates definition location", () => {
         const code = `DEFINE_ACTION_FUNCTION my_func BEGIN END`;
-        const result = loadFileData("file:///test.tph", code, "test.tph");
-        const def = result.definition.get("my_func");
-        expect(def).toBeDefined();
-        expect(def?.uri).toBe("file:///test.tph");
+        const symbols = parseHeaderToSymbols("file:///test.tph", code, workspaceRoot);
+        const sym = findSymbol(symbols, "my_func");
+        expect(sym?.location).toBeDefined();
+        expect(sym?.location?.uri).toBe("file:///test.tph");
     });
 });
 
