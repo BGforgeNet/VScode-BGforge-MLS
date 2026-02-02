@@ -432,7 +432,7 @@ function buildParamTable(
 
     // Single table: hidden header + separator, then sections with label rows
     rows.push("| | | | |");
-    rows.push("|-:|:-|:-:|:-|");
+    rows.push("|-:|:-|:-|:-|");
 
     addVarSection("INT vars", funcInfo.params.intVar, "int");
     addVarSection("STR vars", funcInfo.params.strVar, "string");

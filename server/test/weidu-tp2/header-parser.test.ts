@@ -287,7 +287,7 @@ lib/functions.tph
 Test function.
 
 | | | | |
-|-:|:-|:-:|:-|
+|-:|:-|:-|:-|
 |**INT**|**vars**|||
 |[int](https://ielib.bgforge.net/types/#int)|bonus||&nbsp;&nbsp;the bonus amount|
 |**STR**|**vars**|||
@@ -365,7 +365,7 @@ lib/functions.tph
 Uses an item.
 
 | | | | |
-|-:|:-|:-:|:-|
+|-:|:-|:-|:-|
 |**STR**|**vars**|||
 |[resref](https://ielib.bgforge.net/types/#resref)|item|= ""|&nbsp;&nbsp;the item resref|`
             );

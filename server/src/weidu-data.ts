@@ -186,7 +186,7 @@ function buildLanguageData(uri: string, functions: FunctionInfo[], filePath: str
 
             // Single table: hidden header + separator, then sections with label rows
             rows.push("| | | | |");
-            rows.push("|-:|:-|:-:|:-|");
+            rows.push("|-:|:-|:-|:-|");
 
             addVarSection("INT vars", func.params.intVar, "int");
             addVarSection("STR vars", func.params.strVar, "string");
