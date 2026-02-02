@@ -13,6 +13,7 @@ import { getSymbols } from "./provider";
 import { SyntaxType } from "./tree-sitter.d";
 import { stripStringDelimiters } from "./tree-utils";
 import { formatTypeLink } from "../shared/weidu-types";
+import { LANG_WEIDU_TP2_TOOLTIP } from "../core/languages";
 
 /** Maximum length for parameter descriptions in hover table. */
 const DESC_MAX_LENGTH = 80;
@@ -47,7 +48,7 @@ export function getFunctionParamHover(text: string, symbol: string, position: Po
     const signature = showDefault ? `${paramType} ${symbol} = ${defaultValue}` : `${paramType} ${symbol}`;
 
     // Build markdown documentation
-    const langId = "weidu-tp2-tooltip";
+    const langId = LANG_WEIDU_TP2_TOOLTIP;
     const docParts = [`\`\`\`${langId}`, signature, "```"];
 
     if (description) {
@@ -268,7 +269,7 @@ function findParamInCallableInfo(
  *   - `null` = skip path block entirely (for local symbols)
  */
 export function buildFunctionHover(funcInfo: FunctionInfo, displayPath?: string | null): Hover {
-    const langId = "weidu-tp2-tooltip";
+    const langId = LANG_WEIDU_TP2_TOOLTIP;
 
     // Build JSDoc arg lookup map for type overrides
     const jsdocArgs = new Map<string, { type: string; description?: string; required?: boolean }>();
@@ -463,7 +464,7 @@ function extractFilename(uri: string): string {
  *   - `null` = skip path block entirely (for local symbols)
  */
 export function buildVariableHover(varInfo: VariableInfo, displayPath?: string | null): Hover {
-    const langId = "weidu-tp2-tooltip";
+    const langId = LANG_WEIDU_TP2_TOOLTIP;
 
     // Use JSDoc @type if available, otherwise inferred type
     const type = varInfo.jsdoc?.type ?? varInfo.inferredType;

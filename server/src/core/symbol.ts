@@ -349,14 +349,6 @@ export function isVariableSymbol(symbol: IndexedSymbol): symbol is VariableSymbo
     return VARIABLE_KINDS.has(symbol.kind);
 }
 
-/**
- * Check if a symbol kind represents a callable (function, procedure, macro, etc.)
- * @deprecated Use isCallableSymbol(symbol) instead for type narrowing
- */
-export function isCallable(kind: SymbolKind): boolean {
-    return CALLABLE_KINDS.has(kind);
-}
-
 // =============================================================================
 // Conversion Helpers
 // =============================================================================

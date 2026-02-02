@@ -7,6 +7,7 @@ import { CompletionItemKind, InsertTextFormat, MarkupKind } from "vscode-languag
 import { isCallableSymbol, type CallableParam } from "../../core/symbol";
 import { getSymbols } from "../provider";
 import { CompletionCategory, ParamSection, type FuncParamsContext, type Tp2CompletionItem } from "./types";
+import { LANG_WEIDU_TP2_TOOLTIP } from "../../core/languages";
 
 /**
  * Generate parameter completions for a function call.
@@ -81,7 +82,7 @@ function createParamCompletion(param: CallableParam): Tp2CompletionItem {
     const signature = showDefault ? `${type ?? ""} ${name} = ${defaultValue}` : `${type ?? ""} ${name}`;
 
     // Build markdown documentation
-    const langId = "weidu-tp2-tooltip";
+    const langId = LANG_WEIDU_TP2_TOOLTIP;
     const docParts = [`\`\`\`${langId}`, signature, "```"];
 
     if (description) {

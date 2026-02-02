@@ -18,6 +18,7 @@ import {
 } from "vscode-languageserver/node";
 import type { CompletionItemWithCategory, CompletionCategory } from "../shared/completion-context";
 import { conlog } from "../common";
+import { LANG_WEIDU_TP2_TOOLTIP } from "./languages";
 import {
     type IndexedSymbol,
     type CallableSymbol,
@@ -283,7 +284,7 @@ function determineSymbolKind(item: StaticCompletionItem): SymbolKind {
  * are left untouched. Does not inject if the prefix is already present.
  */
 function injectCallablePrefix(value: string, meta: { context: CallableContext; dtype: CallableDefType }): string {
-    const fenceTag = "```weidu-tp2-tooltip\n";
+    const fenceTag = `\`\`\`${LANG_WEIDU_TP2_TOOLTIP}\n`;
     const fenceIdx = value.indexOf(fenceTag);
     if (fenceIdx === -1) {
         return value;

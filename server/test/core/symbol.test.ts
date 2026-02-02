@@ -16,7 +16,6 @@ import {
     ScopeLevel,
     SourceType,
     CallableContext,
-    isCallable,
     symbolKindToCompletionKind,
     symbolKindToVscodeKind,
 } from "../../src/core/symbol";
@@ -80,28 +79,6 @@ describe("core/symbol", () => {
             expect(SourceType.Workspace).toBe("workspace");
             expect(SourceType.External).toBe("external");
             expect(SourceType.Document).toBe("document");
-        });
-    });
-
-    // =========================================================================
-    // isCallable helper
-    // =========================================================================
-    describe("isCallable()", () => {
-        it("should return true for function kinds", () => {
-            expect(isCallable(SymbolKind.Function)).toBe(true);
-            expect(isCallable(SymbolKind.Procedure)).toBe(true);
-            expect(isCallable(SymbolKind.Macro)).toBe(true);
-            expect(isCallable(SymbolKind.Action)).toBe(true);
-            expect(isCallable(SymbolKind.Trigger)).toBe(true);
-        });
-
-        it("should return false for non-callable kinds", () => {
-            expect(isCallable(SymbolKind.Variable)).toBe(false);
-            expect(isCallable(SymbolKind.Constant)).toBe(false);
-            expect(isCallable(SymbolKind.Parameter)).toBe(false);
-            expect(isCallable(SymbolKind.LoopVariable)).toBe(false);
-            expect(isCallable(SymbolKind.State)).toBe(false);
-            expect(isCallable(SymbolKind.Component)).toBe(false);
         });
     });
 
