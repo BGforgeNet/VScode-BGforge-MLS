@@ -112,6 +112,8 @@ function buildLanguageData(uri: string, functions: FunctionInfo[], filePath: str
         }
 
         // 4. Parameter table (INT vars, STR vars, RET vars, RET arrays)
+        // TODO: Replace markdown table with a DocumentSemanticTokensProvider
+        // to get syntax coloring while keeping clickable type links.
         let paramTable = "";
         if (func.params) {
             const rows: string[] = [];

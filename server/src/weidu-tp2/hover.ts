@@ -343,6 +343,10 @@ export function buildFunctionHover(funcInfo: FunctionInfo, displayPath?: string 
 
 /**
  * Build parameter table markdown with @arg descriptions and type links.
+ *
+ * TODO: Replace markdown table with a DocumentSemanticTokensProvider to get
+ * syntax coloring (types, variable names, defaults, descriptions) while
+ * keeping markdown features like clickable type links.
  */
 function buildParamTable(
     funcInfo: FunctionInfo,
