@@ -276,6 +276,9 @@ export function isControlFlowBodyContent(type: string): boolean {
  * Output aligned assignments with optional keyword prefix.
  * Handles inline comments and alignment on separator.
  * @param separator - The separator between name and value (default " = ")
+ *
+ * NOTE: Alignment logic is mirrored in appendParamBlock() in ../snippets.ts.
+ * If formatting rules change (indentation, alignment, separator), update both places.
  */
 export function outputAlignedAssignments(
     items: CollectedItem[],

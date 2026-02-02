@@ -1,9 +1,15 @@
 /**
  * Snippet generation for WeiDU TP2 function calls.
  * Builds VS Code snippets with tab stops for required parameters.
+ * Indent size is shared with the formatter via DEFAULT_OPTIONS.
  */
 
-import type { CallableInfo } from "../core/symbol";
+import type { CallableInfo, CallableParam } from "../core/symbol";
+import { DEFAULT_OPTIONS } from "./format/types";
+
+const INDENT_UNIT = " ".repeat(DEFAULT_OPTIONS.indentSize);
+const KEYWORD_INDENT = INDENT_UNIT;
+const ASSIGN_INDENT = INDENT_UNIT.repeat(2);
 
 /**
  * Build a snippet for a function/macro call.
@@ -39,6 +45,45 @@ export function buildFunctionCallSnippet(callable: CallableInfo, name: string, p
         return `${firstLine} END\n$0`;
     }
 
-    // Has params: cursor between name and END, indented one level for param block
-    return `${firstLine}\n    $0\nEND`;
+    // If any required params exist, build explicit param blocks
+    const requiredInt = params?.intVar.filter(p => p.required) ?? [];
+    const requiredStr = params?.strVar.filter(p => p.required) ?? [];
+
+    if (requiredInt.length > 0 || requiredStr.length > 0) {
+        const lines = [firstLine];
+        let tabStop = 1;
+        tabStop = appendParamBlock(lines, "INT_VAR", requiredInt, tabStop);
+        appendParamBlock(lines, "STR_VAR", requiredStr, tabStop);
+        lines.push("END");
+        return lines.join("\n") + "\n$0";
+    }
+
+    // Has params but none required: cursor between name and END for manual entry
+    return `${firstLine}\n${INDENT_UNIT}$0\nEND`;
+}
+
+/**
+ * Append a param keyword block (INT_VAR or STR_VAR) with aligned assignments.
+ * Names are padded to the longest name in the block so `=` signs align vertically.
+ * Returns the next tab stop number.
+ *
+ * NOTE: This mirrors the alignment logic in outputAlignedAssignments() in format/utils.ts.
+ * If formatting rules change (indentation, alignment, separator), update both places.
+ */
+function appendParamBlock(
+    lines: string[],
+    keyword: string,
+    params: readonly CallableParam[],
+    tabStop: number,
+): number {
+    if (params.length === 0) {
+        return tabStop;
+    }
+    const maxNameLen = Math.max(...params.map(p => p.name.length));
+    lines.push(`${KEYWORD_INDENT}${keyword}`);
+    for (const p of params) {
+        const padding = " ".repeat(maxNameLen - p.name.length);
+        lines.push(`${ASSIGN_INDENT}${p.name}${padding} = \${${tabStop++}}`);
+    }
+    return tabStop;
 }

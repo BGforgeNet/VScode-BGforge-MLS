@@ -80,13 +80,13 @@ describe("weidu-tp2: function call snippet generation", () => {
         );
     });
 
-    it("generates multi-line snippet with prefix when params exist", () => {
+    it("auto-inserts INT_VAR block for required int param", () => {
         const callable = createCallableInfo(
-            [{ name: "x", type: "int", defaultValue: "0", required: true }],
+            [{ name: "count", type: "int", required: true }],
             []
         );
         expect(buildFunctionCallSnippet(callable, "my_func", "LAF")).toBe(
-            "LAF my_func\n    $0\nEND"
+            "LAF my_func\n    INT_VAR\n        count = ${1}\nEND\n$0"
         );
     });
 
@@ -100,13 +100,13 @@ describe("weidu-tp2: function call snippet generation", () => {
         );
     });
 
-    it("generates multi-line snippet with prefix when both INT_VAR and STR_VAR exist", () => {
+    it("auto-inserts both INT_VAR and STR_VAR blocks for mixed required params", () => {
         const callable = createCallableInfo(
-            [{ name: "x", type: "int", defaultValue: "0", required: true }],
-            [{ name: "name", type: "string", defaultValue: '""', required: true }]
+            [{ name: "x", type: "int", required: true }],
+            [{ name: "name", type: "string", required: true }]
         );
         expect(buildFunctionCallSnippet(callable, "complex_func", "LAF")).toBe(
-            "LAF complex_func\n    $0\nEND"
+            "LAF complex_func\n    INT_VAR\n        x = ${1}\n    STR_VAR\n        name = ${2}\nEND\n$0"
         );
     });
 
@@ -123,6 +123,82 @@ describe("weidu-tp2: function call snippet generation", () => {
         const callable = createUnknownParamsCallable();
         expect(buildFunctionCallSnippet(callable, "ADD_AREA_ITEM", "LPF")).toBe(
             "LPF ADD_AREA_ITEM\n    $0\nEND"
+        );
+    });
+
+    // ---- Required params: additional cases ----
+
+    it("auto-inserts STR_VAR block only when only STR_VAR params are required", () => {
+        const callable = createCallableInfo(
+            [],
+            [{ name: "resource", type: "string", required: true }]
+        );
+        expect(buildFunctionCallSnippet(callable, "my_func", "LAF")).toBe(
+            "LAF my_func\n    STR_VAR\n        resource = ${1}\nEND\n$0"
+        );
+    });
+
+    it("inserts only required params, skipping optional ones", () => {
+        const callable = createCallableInfo(
+            [
+                { name: "optional_int", type: "int", defaultValue: "0" },
+                { name: "required_int", type: "int", required: true },
+            ],
+            [
+                { name: "required_str", type: "string", required: true },
+                { name: "optional_str", type: "string", defaultValue: '""' },
+            ]
+        );
+        expect(buildFunctionCallSnippet(callable, "mixed_func", "LPF")).toBe(
+            "LPF mixed_func\n    INT_VAR\n        required_int = ${1}\n    STR_VAR\n        required_str = ${2}\nEND\n$0"
+        );
+    });
+
+    it("handles multiple required params in same section", () => {
+        const callable = createCallableInfo(
+            [
+                { name: "x", type: "int", required: true },
+                { name: "y", type: "int", required: true },
+            ],
+            []
+        );
+        // Same-length names: no padding needed
+        expect(buildFunctionCallSnippet(callable, "my_func", "LAF")).toBe(
+            "LAF my_func\n    INT_VAR\n        x = ${1}\n        y = ${2}\nEND\n$0"
+        );
+    });
+
+    it("aligns = signs to longest name within each block", () => {
+        const callable = createCallableInfo(
+            [
+                { name: "x", type: "int", required: true },
+                { name: "longname", type: "int", required: true },
+            ],
+            [
+                { name: "resource", type: "string", required: true },
+                { name: "a", type: "string", required: true },
+            ]
+        );
+        // "x" padded to match "longname" (8 chars), "a" padded to match "resource" (8 chars)
+        expect(buildFunctionCallSnippet(callable, "my_func", "LAF")).toBe(
+            "LAF my_func\n"
+            + "    INT_VAR\n"
+            + "        x        = ${1}\n"
+            + "        longname = ${2}\n"
+            + "    STR_VAR\n"
+            + "        resource = ${3}\n"
+            + "        a        = ${4}\n"
+            + "END\n$0"
+        );
+    });
+
+    it("auto-inserts required params without prefix (lafName context)", () => {
+        const callable = createCallableInfo(
+            [{ name: "count", type: "int", required: true }],
+            [{ name: "name", type: "string", required: true }]
+        );
+        expect(buildFunctionCallSnippet(callable, "my_func")).toBe(
+            "my_func\n    INT_VAR\n        count = ${1}\n    STR_VAR\n        name = ${2}\nEND\n$0"
         );
     });
 

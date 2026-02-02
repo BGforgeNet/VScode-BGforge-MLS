@@ -51,6 +51,17 @@ BEGIN
     WRITE_BYTE 0x00 0
 END
 
+/**
+ * @arg {int} count! required int
+ * @arg {string} name! required string
+ */
+DEFINE_PATCH_FUNCTION func_required_params
+    INT_VAR count = 0
+    STR_VAR name = ~~
+BEGIN
+    WRITE_BYTE 0x00 0
+END
+
 DEFINE_PATCH_MACRO my_patch_macro
 BEGIN
     WRITE_BYTE 0x00 0
@@ -90,6 +101,28 @@ describe("weidu-tp2: snippet integration in lpfName context", () => {
         // No params → no snippet, just plain text insert
         expect(item!.insertTextFormat).toBeUndefined();
         expect(item!.insertText).toBeUndefined();
+    });
+
+    it("auto-inserts required param blocks for function with required params", () => {
+        const text = "COPY_EXISTING ~spell.spl~ ~override~\n  LPF ";
+        const position = { line: 1, character: 6 };
+
+        const completions = weiduTp2Provider.getCompletions!(CURRENT_URI);
+        const filtered = weiduTp2Provider.filterCompletions!(
+            completions, text, position, CURRENT_URI
+        );
+
+        const item = filtered.find(c => c.label === "func_required_params");
+        expect(item).toBeDefined();
+        expect(item!.insertTextFormat).toBe(InsertTextFormat.Snippet);
+        expect(item!.insertText).toBe(
+            "func_required_params\n"
+            + "    INT_VAR\n"
+            + "        count = ${1}\n"
+            + "    STR_VAR\n"
+            + "        name = ${2}\n"
+            + "END\n$0"
+        );
     });
 
     it("filters out macros from lpfName context", () => {
