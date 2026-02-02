@@ -30,7 +30,7 @@ import { getDefinition, isOnFunctionCallParamName } from "./definition";
 import { parseHeaderToSymbols } from "./header-parser";
 import { isCallableSymbol, type IndexedSymbol } from "../core/symbol";
 import { renameSymbol, prepareRenameSymbol } from "./rename";
-import { buildFunctionCallSnippet } from "./snippets";
+import { buildFunctionCallSnippet, getKeywordSnippet } from "./snippets";
 import { getFunctionParamHover } from "./hover";
 import { localCompletion, isInsideComment, isOnLoopVariableBinding } from "./ast-utils";
 import { getLocalSymbols as extractLocalSymbols, lookupLocalSymbol, clearLocalSymbolsCache } from "./local-symbols";
@@ -97,6 +97,10 @@ function applySnippets(
         // these are not user-defined callables, just commands.
         const cat = item.category;
         if (cat === CompletionCategory.Action || cat === CompletionCategory.Patch) {
+            const kwSnippet = getKeywordSnippet(item.label as string);
+            if (kwSnippet) {
+                return { ...item, insertText: kwSnippet, insertTextFormat: InsertTextFormat.Snippet };
+            }
             return item;
         }
 

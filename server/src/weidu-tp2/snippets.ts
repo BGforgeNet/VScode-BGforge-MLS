@@ -1,11 +1,62 @@
 /**
- * Snippet generation for WeiDU TP2 function calls.
- * Builds VS Code snippets with tab stops for required parameters.
+ * Snippet generation for WeiDU TP2 completions.
+ * Builds VS Code snippets with tab stops for function call parameters
+ * and SET/SPRINT variable assignment keywords.
  * Indent size is shared with the formatter via DEFAULT_OPTIONS.
  */
 
 import type { CallableInfo, CallableParam } from "../core/symbol";
 import { DEFAULT_OPTIONS } from "./format/types";
+import { SyntaxType } from "./tree-sitter.d";
+
+/**
+ * Variable assignment node types from the grammar, grouped by snippet pattern.
+ * SET-style: `KEYWORD var = expr` (uses SyntaxType.*Set)
+ * SPRINT-style: `KEYWORD var "value"` (uses SyntaxType.*Sprint/*TextSprint)
+ *
+ * Tied to SyntaxType rather than plain strings so adding/removing a keyword
+ * requires updating the grammar first — the compiler catches stale entries.
+ */
+const SET_SYNTAX_TYPES: ReadonlySet<SyntaxType> = new Set([
+    SyntaxType.PatchSet,
+    SyntaxType.ActionOuterSet,
+]);
+
+const SPRINT_SYNTAX_TYPES: ReadonlySet<SyntaxType> = new Set([
+    SyntaxType.PatchSprint,
+    SyntaxType.PatchTextSprint,
+    SyntaxType.ActionOuterSprint,
+    SyntaxType.ActionOuterTextSprint,
+]);
+
+/** Maps completion label (from YAML data) to grammar node type. */
+const KEYWORD_TO_SYNTAX: ReadonlyMap<string, SyntaxType> = new Map([
+    ["SET", SyntaxType.PatchSet],
+    ["OUTER_SET", SyntaxType.ActionOuterSet],
+    ["SPRINT", SyntaxType.PatchSprint],
+    ["TEXT_SPRINT", SyntaxType.PatchTextSprint],
+    ["OUTER_SPRINT", SyntaxType.ActionOuterSprint],
+    ["OUTER_TEXT_SPRINT", SyntaxType.ActionOuterTextSprint],
+]);
+
+/**
+ * Build a snippet for a SET/SPRINT family keyword, or return undefined
+ * if the keyword is not in the known set.
+ * Pattern is derived from the grammar node type: set-style uses `=`, sprint-style uses quotes.
+ */
+export function getKeywordSnippet(keyword: string): string | undefined {
+    const syntaxType = KEYWORD_TO_SYNTAX.get(keyword);
+    if (syntaxType === undefined) {
+        return undefined;
+    }
+    if (SET_SYNTAX_TYPES.has(syntaxType)) {
+        return `${keyword} \${1} = \${2}\n$0`;
+    }
+    if (SPRINT_SYNTAX_TYPES.has(syntaxType)) {
+        return `${keyword} \${1} "\${2}"\n$0`;
+    }
+    return undefined;
+}
 
 const INDENT_UNIT = " ".repeat(DEFAULT_OPTIONS.indentSize);
 const KEYWORD_INDENT = INDENT_UNIT;

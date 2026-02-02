@@ -4,7 +4,7 @@
  */
 
 import { describe, expect, it } from "vitest";
-import { buildFunctionCallSnippet } from "../../src/weidu-tp2/snippets";
+import { buildFunctionCallSnippet, getKeywordSnippet } from "../../src/weidu-tp2/snippets";
 import { CallableContext, CallableDefType, type CallableInfo, type CallableParam } from "../../src/core/symbol";
 
 // Helper to create a CallableInfo with known params
@@ -222,6 +222,38 @@ describe("weidu-tp2: function call snippet generation", () => {
         expect(buildFunctionCallSnippet(callable, "SET_BG2_PROFICIENCY", "LPM")).toBe(
             "LPM SET_BG2_PROFICIENCY\n$0"
         );
+    });
+
+    // ---- Keyword snippets (SET/SPRINT family) ----
+
+    it("returns snippet for SET keyword", () => {
+        expect(getKeywordSnippet("SET")).toBe("SET ${1} = ${2}\n$0");
+    });
+
+    it("returns snippet for OUTER_SET keyword", () => {
+        expect(getKeywordSnippet("OUTER_SET")).toBe("OUTER_SET ${1} = ${2}\n$0");
+    });
+
+    it("returns snippet for SPRINT keyword", () => {
+        expect(getKeywordSnippet("SPRINT")).toBe("SPRINT ${1} \"${2}\"\n$0");
+    });
+
+    it("returns snippet for OUTER_SPRINT keyword", () => {
+        expect(getKeywordSnippet("OUTER_SPRINT")).toBe("OUTER_SPRINT ${1} \"${2}\"\n$0");
+    });
+
+    it("returns snippet for TEXT_SPRINT keyword", () => {
+        expect(getKeywordSnippet("TEXT_SPRINT")).toBe("TEXT_SPRINT ${1} \"${2}\"\n$0");
+    });
+
+    it("returns snippet for OUTER_TEXT_SPRINT keyword", () => {
+        expect(getKeywordSnippet("OUTER_TEXT_SPRINT")).toBe("OUTER_TEXT_SPRINT ${1} \"${2}\"\n$0");
+    });
+
+    it("returns undefined for non-snippet keywords", () => {
+        expect(getKeywordSnippet("COPY")).toBeUndefined();
+        expect(getKeywordSnippet("LPF")).toBeUndefined();
+        expect(getKeywordSnippet("BEGIN")).toBeUndefined();
     });
 
     it("generates LAM snippet ignoring params", () => {
