@@ -34,6 +34,7 @@ import { buildFunctionCallSnippet } from "./snippets";
 import { getFunctionParamHover } from "./hover";
 import { localCompletion, isInsideComment, isOnLoopVariableBinding } from "./ast-utils";
 import { getLocalSymbols as extractLocalSymbols, lookupLocalSymbol, clearLocalSymbolsCache } from "./local-symbols";
+import { WEIDU_JSDOC_TYPES } from "../shared/weidu-types";
 
 /** Unified symbol storage for static completion and hover */
 let symbols: Symbols | undefined;
@@ -344,18 +345,15 @@ function getJsdocCompletions(triggerCharacter?: string): Tp2CompletionItem[] {
         { label: "@deprecated", insertText: triggeredByAt ? "deprecated" : "@deprecated", filterText: triggeredByAt ? "deprecated" : "@deprecated", kind: CompletionItemKind.Keyword, detail: "Mark as deprecated", category: CompletionCategory.Jsdoc },
     ];
 
-    // Types matching KNOWN_TYPES from weidu.ts (ielib types)
-    const types: Tp2CompletionItem[] = [
-        { label: "array", kind: CompletionItemKind.TypeParameter, detail: "Array type", category: CompletionCategory.Jsdoc },
-        { label: "bool", kind: CompletionItemKind.TypeParameter, detail: "Boolean type", category: CompletionCategory.Jsdoc },
-        { label: "filename", kind: CompletionItemKind.TypeParameter, detail: "File name", category: CompletionCategory.Jsdoc },
-        { label: "ids", kind: CompletionItemKind.TypeParameter, detail: "IDS reference", category: CompletionCategory.Jsdoc },
-        { label: "int", kind: CompletionItemKind.TypeParameter, detail: "Integer type", category: CompletionCategory.Jsdoc },
-        { label: "list", kind: CompletionItemKind.TypeParameter, detail: "List type", category: CompletionCategory.Jsdoc },
-        { label: "map", kind: CompletionItemKind.TypeParameter, detail: "Map type", category: CompletionCategory.Jsdoc },
-        { label: "resref", kind: CompletionItemKind.TypeParameter, detail: "Resource reference", category: CompletionCategory.Jsdoc },
-        { label: "string", kind: CompletionItemKind.TypeParameter, detail: "String type", category: CompletionCategory.Jsdoc },
-    ];
+    // Types from shared WEIDU_JSDOC_TYPES (single source of truth)
+    const types: Tp2CompletionItem[] = [...WEIDU_JSDOC_TYPES].map(
+        ([label, { detail }]) => ({
+            label,
+            detail,
+            kind: CompletionItemKind.TypeParameter,
+            category: CompletionCategory.Jsdoc,
+        })
+    );
 
     return [...tags, ...types];
 }

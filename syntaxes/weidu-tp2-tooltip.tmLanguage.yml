@@ -39,6 +39,8 @@ repository:
 
   datatypes:
     patterns:
+      # SYNC: JSDoc subset in server/src/shared/weidu-types.ts (WEIDU_JSDOC_TYPES)
+      # SYNC: JSDoc subset in syntaxes/bgforge-mls-docstring.tmLanguage.yml
       - match: \b(multi )?(int|byte|char array|char|word|dword|resref|strref|string|array|bool|ids|list|map|filename)\b
         name: support.type.weidu-tp2-tooltip.datatype
 

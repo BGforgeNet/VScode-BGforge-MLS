@@ -48,13 +48,17 @@ repository:
 
   type:
     patterns:
-      # fallout
+      # fallout types
+      # SYNC: also in syntaxes/fallout-ssl-tooltip.tmLanguage.yml
       - match: \b(array|any|bool|int|mixed|float|ObjPtr|ObjectPtr|string)\b
         name: support.type.bgforge-mls-docstring
-      # weidu additional
+      # weidu types
+      # SYNC: also in server/src/shared/weidu-types.ts (WEIDU_JSDOC_TYPES)
+      # SYNC: also in syntaxes/weidu-tp2-tooltip.tmLanguage.yml (datatypes)
       - match: \b(ids|resref|filename)\b
         name: support.type.bgforge-mls-docstring
-      # custom
+      # custom (not language-specific)
+      # SYNC: also in server/src/shared/weidu-types.ts (WEIDU_JSDOC_TYPES)
       - match: \b(list|map)\b
         name: support.type.bgforge-mls-docstring
 

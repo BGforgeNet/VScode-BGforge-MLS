@@ -14,12 +14,7 @@ import { HeaderData as LanguageHeaderData } from "./data-loader";
 import { LANG_WEIDU_TP2_TOOLTIP } from "./core/languages";
 import { parseHeader, parseHeaderVariables, FunctionInfo, VariableInfo } from "./weidu-tp2/header-parser";
 import { CallableContext } from "./core/symbol";
-
-/** Known types that link to ielib documentation. */
-const KNOWN_TYPES = new Set(["array", "bool", "ids", "int", "list", "map", "resref", "string", "filename"]);
-
-/** Base URL for type documentation. */
-const IELIB_TYPES_URL = "https://ielib.bgforge.net/types/#";
+import { formatTypeLink } from "./shared/weidu-types";
 
 /** Maximum length for parameter descriptions in hover table. */
 const DESC_MAX_LENGTH = 80;
@@ -118,12 +113,6 @@ function buildLanguageData(uri: string, functions: FunctionInfo[], filePath: str
         if (func.params) {
             const rows: string[] = [];
 
-            /** Format type as link if known, plain text otherwise. */
-            const formatType = (type: string): string => {
-                if (!type) return "";
-                return KNOWN_TYPES.has(type) ? `[${type}](${IELIB_TYPES_URL}${type})` : type;
-            };
-
             /** Truncate description to max length with ellipsis.
              * Preserves markdown links by not cutting through them.
              */
@@ -169,7 +158,7 @@ function buildLanguageData(uri: string, functions: FunctionInfo[], filePath: str
 
                 for (const p of params) {
                     const jsdoc = jsdocArgs.get(p.name);
-                    const type = formatType(jsdoc?.type ?? defaultType);
+                    const type = formatTypeLink(jsdoc?.type ?? defaultType);
                     // Hide default value for required params
                     const def = jsdoc?.required ? "" : (p.defaultValue ?? "");
                     const defCell = def ? `= ${def}` : "";
@@ -188,7 +177,7 @@ function buildLanguageData(uri: string, functions: FunctionInfo[], filePath: str
 
                 for (const name of params) {
                     const jsdoc = jsdocArgs.get(name);
-                    const type = formatType(jsdoc?.type ?? "");
+                    const type = formatTypeLink(jsdoc?.type ?? "");
                     const desc = truncateDesc(jsdoc?.description ?? "");
                     const descCell = desc ? `&nbsp;&nbsp;${desc}` : "";
                     rows.push(`|${type}|${name}||${descCell}|`);

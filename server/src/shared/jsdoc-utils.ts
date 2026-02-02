@@ -5,6 +5,7 @@
 
 import type { JSdoc } from "./jsdoc";
 import { formatSignature, type SignatureParam } from "./signature-format";
+import { WEIDU_JSDOC_TYPES } from "./weidu-types";
 
 export type JsdocFormat = "fallout" | "weidu";
 
@@ -67,27 +68,8 @@ function formatFalloutArgs(args: JSdoc["args"]): string {
 function formatWeiduArgs(args: JSdoc["args"]): string {
     let md = "";
 
-    const intVars = args.filter((item) => {
-        switch (item.type) {
-            case "bool":
-            case "int":
-                return true;
-            default:
-                return false;
-        }
-    });
-
-    const strVars = args.filter((item) => {
-        switch (item.type) {
-            case "ids":
-            case "resref":
-            case "filename":
-            case "string":
-                return true;
-            default:
-                return false;
-        }
-    });
+    const intVars = args.filter(a => WEIDU_JSDOC_TYPES.get(a.type)?.category === "int");
+    const strVars = args.filter(a => WEIDU_JSDOC_TYPES.get(a.type)?.category === "str");
 
     const addSection = (sectionName: string, vars: JSdoc["args"]) => {
         if (vars.length === 0) return;

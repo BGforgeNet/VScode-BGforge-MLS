@@ -12,12 +12,7 @@ import { parseHeader, FunctionInfo, VariableInfo } from "./header-parser";
 import { getSymbols } from "./provider";
 import { SyntaxType } from "./tree-sitter.d";
 import { stripStringDelimiters } from "./tree-utils";
-
-/** Known types that link to ielib documentation. */
-const KNOWN_TYPES = new Set(["array", "bool", "ids", "int", "list", "map", "resref", "string", "filename"]);
-
-/** Base URL for type documentation. */
-const IELIB_TYPES_URL = "https://ielib.bgforge.net/types/#";
+import { formatTypeLink } from "../shared/weidu-types";
 
 /** Maximum length for parameter descriptions in hover table. */
 const DESC_MAX_LENGTH = 80;
@@ -358,12 +353,6 @@ function buildParamTable(
 
     const rows: string[] = [];
 
-    /** Format type as link if known, plain text otherwise. */
-    const formatType = (type: string): string => {
-        if (!type) return "";
-        return KNOWN_TYPES.has(type) ? `[${type}](${IELIB_TYPES_URL}${type})` : type;
-    };
-
     /**
      * Truncate description to max length with ellipsis.
      * Preserves markdown links by not cutting through them.
@@ -410,7 +399,7 @@ function buildParamTable(
 
         for (const p of params) {
             const jsdoc = jsdocArgs.get(p.name);
-            const type = formatType(jsdoc?.type ?? defaultType);
+            const type = formatTypeLink(jsdoc?.type ?? defaultType);
             // Hide default value for required params
             const def = jsdoc?.required ? "" : (p.defaultValue ?? "");
             const defCell = def ? `= ${def}` : "";
@@ -434,7 +423,7 @@ function buildParamTable(
             // Prefer @return info from rets[], fall back to @param info
             const retInfo = retsMap.get(name);
             const paramInfo = jsdocArgs.get(name);
-            const type = formatType(retInfo?.type ?? paramInfo?.type ?? "");
+            const type = formatTypeLink(retInfo?.type ?? paramInfo?.type ?? "");
             const desc = truncateDesc(retInfo?.description ?? paramInfo?.description ?? "");
             const descCell = desc ? `&nbsp;&nbsp;${desc}` : "";
             rows.push(`|${type}|${name}||${descCell}|`);
