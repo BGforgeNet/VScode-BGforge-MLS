@@ -6,7 +6,7 @@
 |---------|-------------|
 | `pnpm build` | Build client, server, webviews, TS plugin, CLIs |
 | `pnpm build:all` | Build everything including tree-sitter grammars |
-| `pnpm test` | Run all tests (see `test-all.sh` below) |
+| `pnpm test` | Run all tests (see `test.sh` below) |
 | `pnpm test:e2e` | E2E tests (requires `pnpm build` first) |
 | `pnpm test:grammars` | Grammar tests (generate, lint, corpus, parse, format) |
 | `pnpm package` | Create VSIX package |
@@ -19,24 +19,23 @@
 
 - **Grammars** (`pnpm test:grammars`) -- slow. Run separately.
 - **E2E** (`pnpm test:e2e`) -- requires a built extension and a VSCode instance.
-- **External** (`test-external.sh`) -- tests against external repos, not part of the standard suite.
 - **Format samples** are partially covered via TD/TBAF sample tests. Full format sample tests: `pnpm test:format-samples`.
 
 ## Scripts in this directory
 
 | Script | Description |
 |--------|-------------|
-| `test-all.sh` | Main test suite run by `pnpm test`. Typechecks client/server/CLI, runs ESLint, server and client unit tests, TD/TBAF sample tests, formatting checks, CLI tests, binary parser tests, and knip. |
+| `test.sh` | Main test suite run by `pnpm test`. Typechecks client/server/CLI, runs ESLint, server and client unit tests, TD/TBAF sample tests, formatting checks, CLI tests, binary parser tests, and knip. |
 | `test-grammars.sh` | Run all grammar test suites (calls `test-grammar.sh` per grammar). |
 | `test-grammar.sh` | Test a single grammar (generate, lint, corpus, parse, format). |
 | `test-format-samples.sh` | Format comparison and idempotency tests. |
 | `test-bin.sh` | Binary parser tests. |
 | `test-external.sh` | Tests against external repositories (not run by `pnpm test`). |
+| `test-e2e.sh` | E2E test runner. |
 | `build-grammar.sh` | Build all tree-sitter grammars to WASM. |
-| `build-server.sh` | esbuild bundle for the LSP server. |
-| `e2e.sh` | E2E test runner. |
+| `build-base-server.sh` | esbuild bundle for the LSP server. |
 | `generate-data.sh` | Generate YAML data files from game engine sources. |
-| `grammar-regenerate.sh` | Regenerate tree-sitter grammar sources and types. |
+| `regenerate-expected.sh` | Regenerate tree-sitter grammar sources and types. |
 | `grammar-test-lib.sh` | Shared helpers for grammar tests. |
 | `syntaxes-to-json.sh` | Convert TextMate grammars from YAML to JSON. |
 | `format-samples.sh` | Run formatter on sample files. |

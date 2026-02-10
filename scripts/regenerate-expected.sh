@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Regenerate samples-expected/ for a grammar by formatting all sample files.
-# Usage: ./scripts/grammar-regenerate.sh <grammar-name>
+# Usage: ./scripts/regenerate-expected.sh <grammar-name>
 
 set -eu -o pipefail
 

@@ -54,6 +54,22 @@ echo "=== Testing Binary Parser ==="
 pnpm test:bin
 
 echo ""
+echo "=== Testing Scripts ==="
+pnpm test:scripts
+
+echo ""
+echo "=== Linting Scripts ==="
+pnpm lint:scripts
+
+echo ""
+echo "=== Testing External ==="
+pnpm test:external
+
+echo ""
+echo "=== Running Coverage ==="
+pnpm test:coverage
+
+echo ""
 echo "=== Checking for unused code (knip) ==="
 pnpm knip
 

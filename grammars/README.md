@@ -30,7 +30,7 @@ The performance difference is negligible for our use case (parsing single files 
 
 ### Deployment
 
-WASM files are copied automatically by `scripts/build-server.sh` during build:
+WASM files are copied automatically by `scripts/build-base-server.sh` during build:
 - `web-tree-sitter.wasm` - core parser runtime
 - `tree-sitter-ssl.wasm` - SSL grammar
 
@@ -47,7 +47,7 @@ sed -i "s/var import_meta = {};/var import_meta = {url: require('url').pathToFil
 ```
 
 This is applied in:
-- `scripts/build-server.sh` - for the LSP server bundle
+- `scripts/build-base-server.sh` - for the LSP server bundle
 - `package.json` `build:format-cli` script - for the CLI tool
 
 Any new bundle using `web-tree-sitter` needs this patch.
