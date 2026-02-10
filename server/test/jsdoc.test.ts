@@ -93,6 +93,63 @@ describe("jsdoc.parse", () => {
             });
         });
 
+        it("parses @param without braces when type is known", () => {
+            const input = `/**
+ * @param int count Number of items
+ */`;
+            const result = jsdoc.parse(input);
+            expect(result.args).toHaveLength(1);
+            expect(result.args[0]).toEqual({
+                name: "count",
+                type: "int",
+                description: "Number of items",
+            });
+        });
+
+        it("parses @param without braces with required marker", () => {
+            const input = `/**
+ * @param string name!
+ */`;
+            const result = jsdoc.parse(input);
+            expect(result.args).toHaveLength(1);
+            expect(result.args[0]).toEqual({
+                name: "name",
+                type: "string",
+                required: true,
+            });
+        });
+
+        it("parses @param without braces for all known types", () => {
+            const input = `/**
+ * @param array items
+ * @param bool enabled
+ * @param float ratio
+ * @param ids creature_type
+ * @param resref dialog_file
+ * @param filename save_path
+ * @param list values
+ * @param map lookup
+ */`;
+            const result = jsdoc.parse(input);
+            expect(result.args).toHaveLength(8);
+            expect(result.args[0]).toEqual({ name: "items", type: "array" });
+            expect(result.args[1]).toEqual({ name: "enabled", type: "bool" });
+            expect(result.args[2]).toEqual({ name: "ratio", type: "float" });
+            expect(result.args[3]).toEqual({ name: "creature_type", type: "ids" });
+            expect(result.args[4]).toEqual({ name: "dialog_file", type: "resref" });
+            expect(result.args[5]).toEqual({ name: "save_path", type: "filename" });
+            expect(result.args[6]).toEqual({ name: "values", type: "list" });
+            expect(result.args[7]).toEqual({ name: "lookup", type: "map" });
+        });
+
+        it("does not parse @param without braces if type is unknown", () => {
+            const input = `/**
+ * @param unknown_type name
+ */`;
+            const result = jsdoc.parse(input);
+            expect(result.args).toHaveLength(0);
+        });
+
         it("parses mixed required and optional params", () => {
             const input = `/**
  * @param {int} count! Required count
@@ -217,6 +274,46 @@ describe("jsdoc.parse", () => {
                 type: "int",
                 description: "y coordinate",
             });
+        });
+
+        it("parses unnamed @ret without braces when type is known", () => {
+            const input = `/**
+ * @ret int
+ */`;
+            const result = jsdoc.parse(input);
+            expect(result.ret).toEqual({ type: "int" });
+        });
+
+        it("parses unnamed @ret without braces with description", () => {
+            const input = `/**
+ * @ret bool True if critter is wearing armor
+ */`;
+            const result = jsdoc.parse(input);
+            expect(result.ret).toEqual({
+                type: "bool",
+                description: "True if critter is wearing armor",
+            });
+        });
+
+        it("parses named @ret without braces when followed by known type", () => {
+            const input = `/**
+ * @ret count int number of items
+ */`;
+            const result = jsdoc.parse(input);
+            expect(result.rets).toHaveLength(1);
+            expect(result.rets![0]).toEqual({
+                name: "count",
+                type: "int",
+                description: "number of items",
+            });
+        });
+
+        it("does not parse @ret without braces if type is unknown", () => {
+            const input = `/**
+ * @ret unknown_type
+ */`;
+            const result = jsdoc.parse(input);
+            expect(result.ret).toBeUndefined();
         });
 
         it("does not confuse unnamed @return {type} with named @return name {type}", () => {

@@ -8,7 +8,7 @@ repository:
     name: meta.fallout-ssl-tooltip
     patterns:
       # Type + name at line start: "int game_time", "macro restock_fix(obj)", "void display_msg(string msg)"
-      # SYNC: JSDoc subset in syntaxes/bgforge-mls-docstring.tmLanguage.yml (fallout types)
+      # SYNC: server/src/shared/jsdoc-types.ts (canonical list, validated by type-sync.test.ts)
       - captures:
           "1":
             name: storage.type.fallout-ssl-tooltip

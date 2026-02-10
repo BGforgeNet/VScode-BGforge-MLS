@@ -1,10 +1,8 @@
 /**
- * Single source of truth for WeiDU JSDoc type definitions.
- * Maps type names to their display details and INT_VAR/STR_VAR classification.
+ * WeiDU JSDoc type metadata: display details and INT_VAR/STR_VAR classification.
  *
- * SYNC: TextMate grammars reference these types for syntax coloring:
- *   - syntaxes/bgforge-mls-docstring.tmLanguage.yml (weidu + custom types)
- *   - syntaxes/weidu-tp2-tooltip.tmLanguage.yml (datatypes)
+ * Type NAME list is in jsdoc-types.ts (WEIDU_JSDOC_TYPE_NAMES). Keys here must match.
+ * SYNC: jsdoc-types.ts (canonical type name list, validated by type-sync.test.ts)
  */
 
 /** INT_VAR or STR_VAR classification for WeiDU function parameters. */

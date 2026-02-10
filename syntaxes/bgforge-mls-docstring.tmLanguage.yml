@@ -2,14 +2,21 @@ $schema: https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlangua
 name: BGforge MLS docstring
 scopeName: source.bgforge-mls-docstring
 patterns:
-  - include: "#arg"
+  - include: "#param"
+  - include: "#ret"
   - include: "#typeTag"
   - include: "#deprecated"
   - include: "#comment"
 repository:
-  arg:
+  # Known JSDoc type alternation, used in brace-less patterns for disambiguation.
+  # SYNC: server/src/shared/jsdoc-types.ts (canonical list, validated by type-sync.test.ts)
+  # All types: array, any, bool, filename, float, ids, int, list, map, mixed, ObjPtr, ObjectPtr, resref, string
+
+  param:
     patterns:
-      - match: '(@arg|@param|@ret)(\s+{(\w+)})?((\s+(\w+)(!)?)|(\s+\[(\w+)=(.+)\]))?'
+      # @param {type} name - description
+      # @param {type} name! - description (required)
+      - match: '(@arg|@param)(\s+\{(\w+)\})\s+((\w+)(!)?)'
         captures:
           '1':
             name: support.function.bgforge-mls-docstring
@@ -21,14 +28,107 @@ repository:
               - include: '#type'
           '4':
             name: variable.bgforge-mls-docstring
-          '7':
+          '6':
             name: invalid
-          '8':
+      # @param {type} [name=default] - description
+      - match: '(@arg|@param)(\s+\{(\w+)\})\s+(\[(\w+)=([^\]]+)\])'
+        captures:
+          '1':
+            name: support.function.bgforge-mls-docstring
+          '2':
             name: keyword.bgforge-mls-docstring
-          '9':
+          '3':
+            name: comment.bgforge-mls-docstring
+            patterns:
+              - include: '#type'
+          '4':
+            name: keyword.bgforge-mls-docstring
+          '5':
             name: variable.bgforge-mls-docstring
-          '10':
+          '6':
             name: variable.bgforge-mls-docstring
+      # @param {type} (no name, type only with braces)
+      - match: '(@arg|@param)(\s+\{(\w+)\})'
+        captures:
+          '1':
+            name: support.function.bgforge-mls-docstring
+          '2':
+            name: keyword.bgforge-mls-docstring
+          '3':
+            name: comment.bgforge-mls-docstring
+            patterns:
+              - include: '#type'
+      # @param type name (without braces, type must be a known JSDoc type)
+      - match: '(@arg|@param)\s+(array|any|bool|filename|float|ids|int|list|map|mixed|ObjPtr|ObjectPtr|resref|string)\s+(\w+)(!)?'
+        captures:
+          '1':
+            name: support.function.bgforge-mls-docstring
+          '2':
+            name: support.type.bgforge-mls-docstring
+          '3':
+            name: variable.bgforge-mls-docstring
+          '4':
+            name: invalid
+      # @param type (without braces, no name, type must be a known JSDoc type)
+      - match: '(@arg|@param)\s+(array|any|bool|filename|float|ids|int|list|map|mixed|ObjPtr|ObjectPtr|resref|string)\b'
+        captures:
+          '1':
+            name: support.function.bgforge-mls-docstring
+          '2':
+            name: support.type.bgforge-mls-docstring
+      # Bare @arg/@param (fallback, no type or name)
+      - match: '(@arg|@param)\b'
+        captures:
+          '1':
+            name: support.function.bgforge-mls-docstring
+
+  ret:
+    patterns:
+      # @ret name {type} - description (named return, name BEFORE type)
+      - match: '(@ret|@return|@returns)\s+(\w+)\s+(\{(\w+)\})'
+        captures:
+          '1':
+            name: support.function.bgforge-mls-docstring
+          '2':
+            name: variable.bgforge-mls-docstring
+          '3':
+            name: keyword.bgforge-mls-docstring
+          '4':
+            name: comment.bgforge-mls-docstring
+            patterns:
+              - include: '#type'
+      # @ret {type} description (unnamed return)
+      - match: '(@ret|@return|@returns)(\s+\{(\w+)\})'
+        captures:
+          '1':
+            name: support.function.bgforge-mls-docstring
+          '2':
+            name: keyword.bgforge-mls-docstring
+          '3':
+            name: comment.bgforge-mls-docstring
+            patterns:
+              - include: '#type'
+      # @ret name type description (named, without braces, type must be known)
+      - match: '(@ret|@return|@returns)\s+(\w+)\s+(array|any|bool|filename|float|ids|int|list|map|mixed|ObjPtr|ObjectPtr|resref|string)\b'
+        captures:
+          '1':
+            name: support.function.bgforge-mls-docstring
+          '2':
+            name: variable.bgforge-mls-docstring
+          '3':
+            name: support.type.bgforge-mls-docstring
+      # @ret type description (unnamed, without braces, type must be known)
+      - match: '(@ret|@return|@returns)\s+(array|any|bool|filename|float|ids|int|list|map|mixed|ObjPtr|ObjectPtr|resref|string)\b'
+        captures:
+          '1':
+            name: support.function.bgforge-mls-docstring
+          '2':
+            name: support.type.bgforge-mls-docstring
+      # Bare @ret (fallback, no type or name)
+      - match: '(@ret|@return|@returns)\b'
+        captures:
+          '1':
+            name: support.function.bgforge-mls-docstring
 
   deprecated:
     patterns:
@@ -48,18 +148,9 @@ repository:
 
   type:
     patterns:
-      # fallout types
-      # SYNC: also in syntaxes/fallout-ssl-tooltip.tmLanguage.yml
-      - match: \b(array|any|bool|int|mixed|float|ObjPtr|ObjectPtr|string)\b
-        name: support.type.bgforge-mls-docstring
-      # weidu types
-      # SYNC: also in server/src/shared/weidu-types.ts (WEIDU_JSDOC_TYPES)
-      # SYNC: also in syntaxes/weidu-tp2-tooltip.tmLanguage.yml (datatypes)
-      - match: \b(ids|resref|filename)\b
-        name: support.type.bgforge-mls-docstring
-      # custom (not language-specific)
-      # SYNC: also in server/src/shared/weidu-types.ts (WEIDU_JSDOC_TYPES)
-      - match: \b(list|map)\b
+      # All JSDoc types (Fallout + WeiDU + custom)
+      # SYNC: server/src/shared/jsdoc-types.ts (canonical list, validated by type-sync.test.ts)
+      - match: \b(array|any|bool|filename|float|ids|int|list|map|mixed|ObjPtr|ObjectPtr|resref|string)\b
         name: support.type.bgforge-mls-docstring
 
   comment:

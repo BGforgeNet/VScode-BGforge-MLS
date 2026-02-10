@@ -4,7 +4,10 @@
   "scopeName": "source.bgforge-mls-docstring",
   "patterns": [
     {
-      "include": "#arg"
+      "include": "#param"
+    },
+    {
+      "include": "#ret"
     },
     {
       "include": "#typeTag"
@@ -17,10 +20,10 @@
     }
   ],
   "repository": {
-    "arg": {
+    "param": {
       "patterns": [
         {
-          "match": "(@arg|@param|@ret)(\\s+{(\\w+)})?((\\s+(\\w+)(!)?)|(\\s+\\[(\\w+)=(.+)\\]))?",
+          "match": "(@arg|@param)(\\s+\\{(\\w+)\\})\\s+((\\w+)(!)?)",
           "captures": {
             "1": {
               "name": "support.function.bgforge-mls-docstring"
@@ -39,17 +42,169 @@
             "4": {
               "name": "variable.bgforge-mls-docstring"
             },
-            "7": {
+            "6": {
               "name": "invalid"
+            }
+          }
+        },
+        {
+          "match": "(@arg|@param)(\\s+\\{(\\w+)\\})\\s+(\\[(\\w+)=([^\\]]+)\\])",
+          "captures": {
+            "1": {
+              "name": "support.function.bgforge-mls-docstring"
             },
-            "8": {
+            "2": {
               "name": "keyword.bgforge-mls-docstring"
             },
-            "9": {
+            "3": {
+              "name": "comment.bgforge-mls-docstring",
+              "patterns": [
+                {
+                  "include": "#type"
+                }
+              ]
+            },
+            "4": {
+              "name": "keyword.bgforge-mls-docstring"
+            },
+            "5": {
               "name": "variable.bgforge-mls-docstring"
             },
-            "10": {
+            "6": {
               "name": "variable.bgforge-mls-docstring"
+            }
+          }
+        },
+        {
+          "match": "(@arg|@param)(\\s+\\{(\\w+)\\})",
+          "captures": {
+            "1": {
+              "name": "support.function.bgforge-mls-docstring"
+            },
+            "2": {
+              "name": "keyword.bgforge-mls-docstring"
+            },
+            "3": {
+              "name": "comment.bgforge-mls-docstring",
+              "patterns": [
+                {
+                  "include": "#type"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "match": "(@arg|@param)\\s+(array|any|bool|filename|float|ids|int|list|map|mixed|ObjPtr|ObjectPtr|resref|string)\\s+(\\w+)(!)?",
+          "captures": {
+            "1": {
+              "name": "support.function.bgforge-mls-docstring"
+            },
+            "2": {
+              "name": "support.type.bgforge-mls-docstring"
+            },
+            "3": {
+              "name": "variable.bgforge-mls-docstring"
+            },
+            "4": {
+              "name": "invalid"
+            }
+          }
+        },
+        {
+          "match": "(@arg|@param)\\s+(array|any|bool|filename|float|ids|int|list|map|mixed|ObjPtr|ObjectPtr|resref|string)\\b",
+          "captures": {
+            "1": {
+              "name": "support.function.bgforge-mls-docstring"
+            },
+            "2": {
+              "name": "support.type.bgforge-mls-docstring"
+            }
+          }
+        },
+        {
+          "match": "(@arg|@param)\\b",
+          "captures": {
+            "1": {
+              "name": "support.function.bgforge-mls-docstring"
+            }
+          }
+        }
+      ]
+    },
+    "ret": {
+      "patterns": [
+        {
+          "match": "(@ret|@return|@returns)\\s+(\\w+)\\s+(\\{(\\w+)\\})",
+          "captures": {
+            "1": {
+              "name": "support.function.bgforge-mls-docstring"
+            },
+            "2": {
+              "name": "variable.bgforge-mls-docstring"
+            },
+            "3": {
+              "name": "keyword.bgforge-mls-docstring"
+            },
+            "4": {
+              "name": "comment.bgforge-mls-docstring",
+              "patterns": [
+                {
+                  "include": "#type"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "match": "(@ret|@return|@returns)(\\s+\\{(\\w+)\\})",
+          "captures": {
+            "1": {
+              "name": "support.function.bgforge-mls-docstring"
+            },
+            "2": {
+              "name": "keyword.bgforge-mls-docstring"
+            },
+            "3": {
+              "name": "comment.bgforge-mls-docstring",
+              "patterns": [
+                {
+                  "include": "#type"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "match": "(@ret|@return|@returns)\\s+(\\w+)\\s+(array|any|bool|filename|float|ids|int|list|map|mixed|ObjPtr|ObjectPtr|resref|string)\\b",
+          "captures": {
+            "1": {
+              "name": "support.function.bgforge-mls-docstring"
+            },
+            "2": {
+              "name": "variable.bgforge-mls-docstring"
+            },
+            "3": {
+              "name": "support.type.bgforge-mls-docstring"
+            }
+          }
+        },
+        {
+          "match": "(@ret|@return|@returns)\\s+(array|any|bool|filename|float|ids|int|list|map|mixed|ObjPtr|ObjectPtr|resref|string)\\b",
+          "captures": {
+            "1": {
+              "name": "support.function.bgforge-mls-docstring"
+            },
+            "2": {
+              "name": "support.type.bgforge-mls-docstring"
+            }
+          }
+        },
+        {
+          "match": "(@ret|@return|@returns)\\b",
+          "captures": {
+            "1": {
+              "name": "support.function.bgforge-mls-docstring"
             }
           }
         }
@@ -84,15 +239,7 @@
     "type": {
       "patterns": [
         {
-          "match": "\\b(array|any|bool|int|mixed|float|ObjPtr|ObjectPtr|string)\\b",
-          "name": "support.type.bgforge-mls-docstring"
-        },
-        {
-          "match": "\\b(ids|resref|filename)\\b",
-          "name": "support.type.bgforge-mls-docstring"
-        },
-        {
-          "match": "\\b(list|map)\\b",
+          "match": "\\b(array|any|bool|filename|float|ids|int|list|map|mixed|ObjPtr|ObjectPtr|resref|string)\\b",
           "name": "support.type.bgforge-mls-docstring"
         }
       ]

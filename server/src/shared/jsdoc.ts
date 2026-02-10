@@ -53,8 +53,10 @@ export interface JSdoc {
 // Regex patterns
 // ============================================
 
+import { JSDOC_TYPE_PATTERN } from "./jsdoc-types";
+
 /**
- * Pattern for @param/@arg tags.
+ * Pattern for @param/@arg tags with braces.
  * Matches: @param {type} name - description
  *      or: @param {type} name! - description (required)
  *      or: @param {type} [name=default] - description
@@ -63,16 +65,44 @@ export interface JSdoc {
  */
 const PARAM_PATTERN = /@(?:arg|param)\s+\{(\w+)\}\s+(?:(\w+)(!)?|\[(\w+)=([^\]]+)\])(?:\s+-\s+|\s+)?(.+)?/;
 
-/** Pattern for unnamed @return/@returns/@ret tags. Groups: 1=type, 2=description (optional) */
+/**
+ * Pattern for @param/@arg tags without braces (type must be a known JSDoc type).
+ * Matches: @param type name - description
+ *      or: @param type name! - description (required)
+ *
+ * Groups: 1=type, 2=name, 3=requiredMarker(!), 4=description
+ */
+const PARAM_BRACELESS_PATTERN = new RegExp(
+    `@(?:arg|param)\\s+(${JSDOC_TYPE_PATTERN})\\s+(\\w+)(!)?(?:\\s+-\\s+|\\s+)?(.+)?`
+);
+
+/** Pattern for unnamed @return/@returns/@ret tags with braces. Groups: 1=type, 2=description (optional) */
 const RETURN_PATTERN = /@(?:ret|return|returns)\s+\{(\w+)\}(?:\s+-\s+|\s+)?(.+)?/;
 
 /**
- * Pattern for named @return/@returns/@ret tags.
+ * Pattern for unnamed @return/@returns/@ret tags without braces (type must be a known JSDoc type).
+ * Groups: 1=type, 2=description (optional)
+ */
+const RETURN_BRACELESS_PATTERN = new RegExp(
+    `@(?:ret|return|returns)\\s+(${JSDOC_TYPE_PATTERN})\\b(?:\\s+-\\s+|\\s+)?(.+)?`
+);
+
+/**
+ * Pattern for named @return/@returns/@ret tags with braces.
  * Matches: @return name {type} - description
  *      or: @return name {type} description
  * Groups: 1=name, 2=type, 3=description (optional)
  */
 const NAMED_RETURN_PATTERN = /@(?:ret|return|returns)\s+(\w+)\s+\{(\w+)\}(?:\s+-\s+|\s+)?(.+)?/;
+
+/**
+ * Pattern for named @return/@returns/@ret tags without braces (type must be a known JSDoc type).
+ * Matches: @return name type - description
+ * Groups: 1=name, 2=type, 3=description (optional)
+ */
+const NAMED_RETURN_BRACELESS_PATTERN = new RegExp(
+    `@(?:ret|return|returns)\\s+(\\w+)\\s+(${JSDOC_TYPE_PATTERN})\\b(?:\\s+-\\s+|\\s+)?(.+)?`
+);
 
 /** Pattern for @deprecated tag. Groups: 1=message (optional) */
 const DEPRECATED_PATTERN = /@deprecated(?:\s+(.*))?/;
@@ -183,66 +213,100 @@ export function parse(text: string): JSdoc {
     return result;
 }
 
-/** Parse @param or @arg tag. */
+/** Parse @param or @arg tag (with or without braces around type). */
 function parseParam(line: string): Arg | null {
+    // Try braced syntax first: @param {type} name
     const match = line.match(PARAM_PATTERN);
-    if (!match) {
+    if (match) {
+        // Note: defaultValue (group 5) is parsed but ignored - defaults come from AST
+        const [, type, simpleName, requiredMarker, bracketName, , description] = match;
+        const name = simpleName || bracketName;
+
+        // Type and name are required
+        if (!type || !name) {
+            return null;
+        }
+
+        const arg: Arg = { name, type };
+        if (requiredMarker === "!") {
+            arg.required = true;
+        }
+        if (description) {
+            arg.description = description;
+        }
+        return arg;
+    }
+
+    // Try brace-less syntax: @param type name (type must be a known JSDoc type)
+    const bracelessMatch = line.match(PARAM_BRACELESS_PATTERN);
+    if (!bracelessMatch) {
         return null;
     }
 
-    // Note: defaultValue (group 5) is parsed but ignored - defaults come from AST
-    const [, type, simpleName, requiredMarker, bracketName, , description] = match;
-    const name = simpleName || bracketName;
-
-    // Type and name are required
+    const [, type, name, requiredMarker, description] = bracelessMatch;
     if (!type || !name) {
         return null;
     }
 
     const arg: Arg = { name, type };
-
     if (requiredMarker === "!") {
         arg.required = true;
     }
     if (description) {
         arg.description = description;
     }
-
     return arg;
 }
 
-/** Parse unnamed @return, @returns, or @ret tag. */
+/** Parse unnamed @return, @returns, or @ret tag (with or without braces). */
 function parseReturn(line: string): Ret | null {
+    // Try braced syntax first: @ret {type}
     const match = line.match(RETURN_PATTERN);
-    if (!match || !match[1]) {
+    if (match && match[1]) {
+        const ret: Ret = { type: match[1] };
+        if (match[2]) {
+            ret.description = match[2].trim();
+        }
+        return ret;
+    }
+
+    // Try brace-less syntax: @ret type (type must be a known JSDoc type)
+    const bracelessMatch = line.match(RETURN_BRACELESS_PATTERN);
+    if (!bracelessMatch || !bracelessMatch[1]) {
         return null;
     }
-    const ret: Ret = { type: match[1] };
-    if (match[2]) {
-        ret.description = match[2].trim();
+    const ret: Ret = { type: bracelessMatch[1] };
+    if (bracelessMatch[2]) {
+        ret.description = bracelessMatch[2].trim();
     }
     return ret;
 }
 
 /**
- * Parse named @return, @returns, or @ret tag.
+ * Parse named @return, @returns, or @ret tag (with or without braces).
  * Format: @return name {type} - description
+ *     or: @return name type - description (type must be a known JSDoc type)
  */
 function parseNamedReturn(line: string): Ret | null {
+    // Try braced syntax first: @ret name {type}
     const match = line.match(NAMED_RETURN_PATTERN);
-    if (!match || !match[1] || !match[2]) {
+    if (match && match[1] && match[2]) {
+        const ret: Ret = { name: match[1], type: match[2] };
+        if (match[3]) {
+            ret.description = match[3].trim();
+        }
+        return ret;
+    }
+
+    // Try brace-less syntax: @ret name type (type must be a known JSDoc type)
+    const bracelessMatch = line.match(NAMED_RETURN_BRACELESS_PATTERN);
+    if (!bracelessMatch || !bracelessMatch[1] || !bracelessMatch[2]) {
         return null;
     }
-
-    const ret: Ret = {
-        name: match[1],
-        type: match[2],
-    };
-
-    if (match[3]) {
-        ret.description = match[3].trim();
+    const ret: Ret = { name: bracelessMatch[1], type: bracelessMatch[2] };
+    if (bracelessMatch[3]) {
+        ret.description = bracelessMatch[3].trim();
     }
-
     return ret;
 }
 
