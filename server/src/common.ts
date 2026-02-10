@@ -130,13 +130,7 @@ export function findFiles(dirName: string, extension: string) {
     return entries;
 }
 
-/**
- * TODO: deprecate and get rid of this in favour of `getRelPath2`
- * Get the relative path from `root` to `other_dir`
- * @param root
- * @param other_dir
- * @returns relative path. For some reason, may go up to root with ../'s
- */
+/** Get the relative path from `root` to `other_dir`. */
 export function getRelPath(root: string, other_dir: string) {
     return path.relative(root, other_dir);
 }
