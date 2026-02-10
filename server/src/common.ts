@@ -183,6 +183,11 @@ export function pathToUri(filePath: string) {
 // https://github.com/microsoft/TypeScript/issues/44227
 export type RegExpMatchArrayWithIndices = RegExpMatchArray & { indices: Array<[number, number]> };
 
+/** Extract the text from the start of the line up to the cursor position. */
+export function getLinePrefix(text: string, position: Position): string {
+    return text.split("\n")[position.line]?.substring(0, position.character) ?? "";
+}
+
 /**
  * Get word under cursor, for which we want to find a hover
  * This a preliminary non-whitespace symbol, could look like `NOption(154,Node003,004`

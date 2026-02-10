@@ -6,10 +6,10 @@
  * User-defined functions and variables from .tph headers are handled by header-parser.
  */
 
-import { type CompletionItem, CompletionItemKind, type DocumentSymbol, type Hover, type Location, type Position, type WorkspaceEdit, InsertTextFormat } from "vscode-languageserver/node";
+import { type CompletionItem, type DocumentSymbol, type Hover, type Location, type Position, type WorkspaceEdit, InsertTextFormat } from "vscode-languageserver/node";
 import { extname } from "path";
 import { fileURLToPath } from "url";
-import { conlog } from "../common";
+import { conlog, getLinePrefix } from "../common";
 import { EXT_WEIDU_TP2, LANG_WEIDU_TP2 } from "../core/languages";
 import { isHeaderFile } from "../core/location-utils";
 import { Symbols } from "../core/symbol-index";
@@ -35,6 +35,7 @@ import { getFunctionParamHover } from "./hover";
 import { localCompletion, isInsideComment, isOnLoopVariableBinding } from "./ast-utils";
 import { getLocalSymbols as extractLocalSymbols, lookupLocalSymbol, clearLocalSymbolsCache } from "./local-symbols";
 import { WEIDU_JSDOC_TYPES } from "../shared/weidu-types";
+import { getJsdocCompletions as getSharedJsdocCompletions } from "../shared/jsdoc-completions";
 
 /** Unified symbol storage for static completion and hover */
 let symbols: Symbols | undefined;
@@ -196,7 +197,7 @@ export const weiduTp2Provider: LanguageProvider = {
             return [];
         }
         if (contexts.includes(CompletionContext.Jsdoc)) {
-            return getJsdocCompletions(triggerCharacter);
+            return getJsdocCompletions(getLinePrefix(text, position));
         }
 
         // @ trigger character is only for JSDoc - suppress in other contexts
@@ -339,25 +340,8 @@ export const weiduTp2Provider: LanguageProvider = {
 };
 
 
-/** JSDoc completion items. When triggered by @, insertText omits the @ prefix to avoid duplication. */
-function getJsdocCompletions(triggerCharacter?: string): Tp2CompletionItem[] {
-    const triggeredByAt = triggerCharacter === "@";
-    const tags: Tp2CompletionItem[] = [
-        { label: "@type", insertText: triggeredByAt ? "type" : "@type", filterText: triggeredByAt ? "type" : "@type", kind: CompletionItemKind.Keyword, detail: "Variable type", category: CompletionCategory.Jsdoc },
-        { label: "@param", insertText: triggeredByAt ? "param" : "@param", filterText: triggeredByAt ? "param" : "@param", kind: CompletionItemKind.Keyword, detail: "Function parameter", category: CompletionCategory.Jsdoc },
-        { label: "@return", insertText: triggeredByAt ? "return" : "@return", filterText: triggeredByAt ? "return" : "@return", kind: CompletionItemKind.Keyword, detail: "Return type", category: CompletionCategory.Jsdoc },
-        { label: "@deprecated", insertText: triggeredByAt ? "deprecated" : "@deprecated", filterText: triggeredByAt ? "deprecated" : "@deprecated", kind: CompletionItemKind.Keyword, detail: "Mark as deprecated", category: CompletionCategory.Jsdoc },
-    ];
-
-    // Types from shared WEIDU_JSDOC_TYPES (single source of truth)
-    const types: Tp2CompletionItem[] = [...WEIDU_JSDOC_TYPES].map(
-        ([label, { detail }]) => ({
-            label,
-            detail,
-            kind: CompletionItemKind.TypeParameter,
-            category: CompletionCategory.Jsdoc,
-        })
-    );
-
-    return [...tags, ...types];
+/** JSDoc completion items with TP2 category metadata. */
+function getJsdocCompletions(linePrefix: string): Tp2CompletionItem[] {
+    return getSharedJsdocCompletions(WEIDU_JSDOC_TYPES, linePrefix)
+        .map((item) => ({ ...item, category: CompletionCategory.Jsdoc }));
 }

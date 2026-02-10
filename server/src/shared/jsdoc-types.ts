@@ -50,3 +50,27 @@ export const ALL_JSDOC_TYPE_NAMES: readonly string[] = [
 
 /** Regex alternation string for all JSDoc types, for use in patterns. */
 export const JSDOC_TYPE_PATTERN = ALL_JSDOC_TYPE_NAMES.join("|");
+
+// ============================================
+// Canonical JSDoc tag names
+// ============================================
+// SYNC: shared/jsdoc.ts (parser patterns)
+// SYNC: shared/jsdoc-completions.ts (completion items)
+// SYNC: syntaxes/bgforge-mls-docstring.tmLanguage.yml (grammar patterns)
+// Validated by: server/test/shared/type-sync.test.ts
+
+/** Tags for parameter documentation. First entry is the primary form. */
+export const JSDOC_PARAM_TAGS = ["param", "arg"] as const;
+
+/** Tags for return documentation. First entry is the primary form. */
+export const JSDOC_RETURN_TAGS = ["ret", "return", "returns"] as const;
+
+/** Tags without aliases. */
+export const JSDOC_STANDALONE_TAGS = ["type", "deprecated"] as const;
+
+/** All JSDoc tag names (without @ prefix), sorted. */
+export const ALL_JSDOC_TAG_NAMES: readonly string[] = [
+    ...JSDOC_PARAM_TAGS,
+    ...JSDOC_RETURN_TAGS,
+    ...JSDOC_STANDALONE_TAGS,
+].sort();

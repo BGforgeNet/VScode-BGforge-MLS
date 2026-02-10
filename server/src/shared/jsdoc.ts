@@ -52,6 +52,8 @@ export interface JSdoc {
 // ============================================
 // Regex patterns
 // ============================================
+// SYNC: Tag names (arg|param, ret|return|returns) must match jsdoc-types.ts canonical lists.
+// Validated by type-sync.test.ts.
 
 import { JSDOC_TYPE_PATTERN } from "./jsdoc-types";
 

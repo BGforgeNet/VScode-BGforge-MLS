@@ -8,7 +8,7 @@
 
 import { type CompletionItem, type DocumentSymbol, type Hover, type Location, type Position, type SignatureHelp, type WorkspaceEdit } from "vscode-languageserver/node";
 import type { IndexedSymbol } from "../core/symbol";
-import { conlog } from "../common";
+import { conlog, getLinePrefix } from "../common";
 import { EXT_FALLOUT_SSL_HEADERS, LANG_FALLOUT_SSL } from "../core/languages";
 import { isHeaderFile } from "../core/location-utils";
 import { Symbols } from "../core/symbol-index";
@@ -16,6 +16,8 @@ import { loadStaticSymbols } from "../core/static-loader";
 import { compile as falloutCompile } from "./compiler";
 import { type FormatResult, type LanguageProvider, type ProviderContext } from "../language-provider";
 import { resolveSymbolWithLocal, getVisibleSymbolsWithLocal } from "../shared/provider-helpers";
+import { getJsdocCompletions } from "../shared/jsdoc-completions";
+import { FALLOUT_JSDOC_TYPES } from "../shared/fallout-types";
 import * as signature from "../shared/signature";
 import { formatDocument, initParser } from "./format";
 import { isInitialized } from "./parser";
@@ -27,6 +29,7 @@ import { getLocalCompletions } from "./completion";
 import { getLocalSignature } from "./signature";
 import { parseHeaderToSymbols } from "./header-parser";
 import { getLocalSymbols, lookupLocalSymbol, clearLocalSymbolsCache } from "./local-symbols";
+import { getSslCompletionContext, SslCompletionContext } from "./completion-context";
 
 /** Unified symbol storage for static completion and hover */
 let symbols: Symbols | undefined;
@@ -101,6 +104,30 @@ export const falloutSslProvider: LanguageProvider = {
             return [];
         }
         return getLocalCompletions(text);
+    },
+
+    filterCompletions(items: CompletionItem[], text: string, position: Position, _uri: string, triggerCharacter?: string): CompletionItem[] {
+        const context = getSslCompletionContext(text, position);
+
+        // No code completions inside comments; JSDoc tags/types inside /** */
+        if (context === SslCompletionContext.Comment) {
+            return [];
+        }
+        if (context === SslCompletionContext.Jsdoc) {
+            return getJsdocCompletions(FALLOUT_JSDOC_TYPES, getLinePrefix(text, position));
+        }
+
+        // @ trigger character is only for JSDoc - suppress in other contexts
+        if (triggerCharacter === "@") {
+            return [];
+        }
+
+        return items;
+    },
+
+    shouldProvideFeatures(text: string, position: Position): boolean {
+        const context = getSslCompletionContext(text, position);
+        return context === SslCompletionContext.Code;
     },
 
     localSignature(text: string, symbol: string, paramIndex: number): SignatureHelp | null {

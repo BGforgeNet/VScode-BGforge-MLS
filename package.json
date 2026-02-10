@@ -182,6 +182,18 @@
                 "configuration": "./language-configurations/infinity-2da.language-configuration.json"
             }
         ],
+        "configurationDefaults": {
+            "[fallout-ssl]": {
+                "editor.quickSuggestions": {
+                    "comments": "on"
+                }
+            },
+            "[weidu-tp2]": {
+                "editor.quickSuggestions": {
+                    "comments": "on"
+                }
+            }
+        },
         "commands": [
             {
                 "command": "extension.bgforge.compile",
