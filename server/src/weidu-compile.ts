@@ -1,5 +1,5 @@
 /**
- * WeiDU compilation: spawn WeiDU/GCC processes, parse output, send diagnostics.
+ * WeiDU compilation: spawn WeiDU processes, parse output, send diagnostics.
  * Used by BAF, D, and TP2 providers for parse-checking.
  */
 
@@ -64,50 +64,8 @@ function parseWeiduOutput(text: string) {
     return result;
 }
 
-function parseGccOutput(text: string) {
-    const errorsRegex = /((\S+)\.tpl):(\d+):(\d+): error:.*/g;
-    const errors: ParseItemList = [];
-    const warnings: ParseItemList = [];
-
-    try {
-        let match = errorsRegex.exec(text);
-        while (match != null) {
-            // This is necessary to avoid infinite loops with zero-width matches
-            if (match.index === errorsRegex.lastIndex) {
-                errorsRegex.lastIndex++;
-            }
-            const matchUri = match[1];
-            const matchLine = match[3];
-            const matchCol = match[4];
-            if (!matchUri || !matchLine || !matchCol) continue;
-            errors.push({
-                uri: pathToUri(matchUri),
-                line: parseInt(matchLine),
-                columnStart: parseInt(matchCol) - 1,
-                columnEnd: match[0].length,
-                message: text,
-            });
-            match = errorsRegex.exec(text);
-        }
-    } catch (err) {
-        conlog(err);
-    }
-    const result: ParseResult = { errors: errors, warnings: warnings };
-    return result;
-}
-
-function sendDiagnostics(
-    uri: string,
-    output_text: string,
-    tmpUri: string,
-    format: "gcc" | "weidu" = "weidu"
-) {
-    let parseResult: ParseResult;
-    if (format == "gcc") {
-        parseResult = parseGccOutput(output_text);
-    } else {
-        parseResult = parseWeiduOutput(output_text);
-    }
+function sendDiagnostics(uri: string, output_text: string, tmpUri: string) {
+    const parseResult = parseWeiduOutput(output_text);
     sendParseResult(parseResult, uri, tmpUri);
 }
 
@@ -117,15 +75,7 @@ export function compile(uri: string, settings: WeiDUsettings, interactive = fals
     const filePath = uriToPath(uri);
     const cwdTo = tmpDir;
     const baseName = path.parse(filePath).base;
-    let ext = path.parse(filePath).ext;
-    ext = ext.toLowerCase();
-    let tpl = false;
-    let realName = baseName; // filename without .tpl
-    if (ext == ".tpl") {
-        tpl = true;
-        realName = baseName.substring(0, baseName.length - 4);
-        ext = path.parse(realName).ext;
-    }
+    const ext = path.parse(filePath).ext.toLowerCase();
 
     /**
      * Preprocessed file.
@@ -133,9 +83,6 @@ export function compile(uri: string, settings: WeiDUsettings, interactive = fals
      */
     const tmpFile = path.join(tmpDir, `tmp${ext}`);
     const tmpUri = pathToUri(tmpFile);
-    /** not preprocessed (template) */
-    const tmpFileGcc = path.join(tmpDir, `tmp-gcc${ext}`);
-    const tmpUriGcc = pathToUri(tmpFileGcc);
 
     const weiduArgs = ["--no-exit-pause", "--noautoupdate", "--debug-assign", "--parse-check"];
     if (gamePath == "") {
@@ -148,11 +95,9 @@ export function compile(uri: string, settings: WeiDUsettings, interactive = fals
     const weiduType = valid_extensions.get(ext);
     if (!weiduType) {
         // vscode loses open file if clicked on console or elsewhere
-        conlog(
-            "Not a WeiDU file (tp2, tph, tpa, tpp, d, baf, tpl) or template! Focus a WeiDU file to parse."
-        );
+        conlog("Not a WeiDU file (tp2, tph, tpa, tpp, d, baf)! Focus a WeiDU file to parse.");
         if (interactive) {
-            getConnection().window.showInformationMessage("Focus a WeiDU file or template to parse!");
+            getConnection().window.showInformationMessage("Focus a WeiDU file to parse!");
         }
 
         return;
@@ -168,48 +113,8 @@ export function compile(uri: string, settings: WeiDUsettings, interactive = fals
         return;
     }
 
-    // preprocess
-    let preprocessFailed = false;
-    if (tpl == true) {
-        conlog(`preprocessing ${baseName}...`);
-
-        fs.writeFileSync(tmpFileGcc, text);
-        const gccArgs = [
-            "-E",
-            "-x",
-            "c",
-            "-P",
-            "-Wundef",
-            "-Werror",
-            "-Wfatal-errors",
-            "-o",
-            `${tmpFile}`,
-            `${tmpFileGcc}`,
-        ];
-        const result = cp.spawnSync("gcc", gccArgs, { cwd: cwdTo });
-        conlog("stdout: " + result.stdout);
-        if (result.stderr.length > 0) {
-            conlog("stderr: " + result.stderr);
-        }
-        if (result.status != 0) {
-            conlog("error: " + result.status);
-            if (interactive) {
-                getConnection().window.showErrorMessage(`Failed to preprocess ${baseName}!`);
-            }
-            sendDiagnostics(uri, result.stderr.toString(), tmpUriGcc, "gcc");
-            preprocessFailed = true;
-        } else {
-            if (interactive) {
-                getConnection().window.showInformationMessage(`Succesfully preprocessed ${baseName}.`);
-            }
-        }
-    }
-    if (preprocessFailed) {
-        return;
-    }
-
     // parse
-    conlog(`parsing ${realName}...`);
+    conlog(`parsing ${baseName}...`);
     fs.writeFileSync(tmpFile, text);
     const allArgs = [...weiduPrefixArgs, ...weiduArgs, weiduType, tmpFile];
     conlog(`${weiduPath} ${allArgs.join(" ")}`);
@@ -230,14 +135,12 @@ export function compile(uri: string, settings: WeiDUsettings, interactive = fals
             }
             conlog(parseResult);
             if (interactive) {
-                getConnection().window.showErrorMessage(`Failed to parse ${realName}!`);
+                getConnection().window.showErrorMessage(`Failed to parse ${baseName}!`);
             }
-            if (tpl == false) {
-                sendDiagnostics(uri, stdout, tmpUri);
-            }
+            sendDiagnostics(uri, stdout, tmpUri);
         } else {
             if (interactive) {
-                getConnection().window.showInformationMessage(`Succesfully parsed ${realName}.`);
+                getConnection().window.showInformationMessage(`Succesfully parsed ${baseName}.`);
             }
         }
     });

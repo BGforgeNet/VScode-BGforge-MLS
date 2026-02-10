@@ -54,12 +54,10 @@ export async function activate(context: ExtensionContext) {
             { scheme: "file", language: "fallout-worldmap-txt" },
 
             { scheme: "file", language: "weidu-tp2" },
-            { scheme: "file", language: "weidu-tp2-tpl" },
 
             { scheme: "file", language: "weidu-baf" },
 
             { scheme: "file", language: "weidu-d" },
-            { scheme: "file", language: "weidu-d-tpl" },
 
             { scheme: "file", language: "weidu-ssl" },
             { scheme: "file", language: "weidu-slb" },

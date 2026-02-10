@@ -26,12 +26,10 @@ export const LANG_WEIDU_TP2 = "weidu-tp2" as const;
 /** TP2 file extensions (.tph = headers with shareable functions/macros) */
 export const EXT_WEIDU_TP2 = [".tph", ".tpa", ".tpp", ".tp2"] as const;
 export const LANG_WEIDU_TP2_TOOLTIP = "weidu-tp2-tooltip" as const;
-export const LANG_WEIDU_TP2_TPL = "weidu-tp2-tpl" as const;
 export const LANG_WEIDU_BAF = "weidu-baf" as const;
 export const EXT_WEIDU_BAF = ".baf" as const;
 export const LANG_WEIDU_D = "weidu-d" as const;
 export const EXT_WEIDU_D = ".d" as const;
-export const LANG_WEIDU_D_TPL = "weidu-d-tpl" as const;
 export const LANG_WEIDU_SLB = "weidu-slb" as const;
 export const LANG_WEIDU_SSL = "weidu-ssl" as const;
 // Used only in TRANSLATION_FILE_LANGUAGES below
@@ -43,10 +41,8 @@ const LANG_WEIDU_TRA = "weidu-tra" as const;
 export const TRA_LANGUAGES: string[] = [
     LANG_WEIDU_BAF,
     LANG_WEIDU_D,
-    LANG_WEIDU_D_TPL,
     LANG_WEIDU_SSL,
     LANG_WEIDU_TP2,
-    LANG_WEIDU_TP2_TPL,
     LANG_TYPESCRIPT, // TBAF uses .tra references
 ];
 

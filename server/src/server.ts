@@ -29,12 +29,8 @@ import { Translation } from "./translation";
 import {
     LANG_FALLOUT_SSL,
     LANG_WEIDU_BAF,
-    LANG_WEIDU_D,
-    LANG_WEIDU_D_TPL,
     LANG_WEIDU_SLB,
     LANG_WEIDU_SSL,
-    LANG_WEIDU_TP2,
-    LANG_WEIDU_TP2_TPL,
 } from "./core/languages";
 import { falloutWorldmapProvider } from "./fallout-worldmap/provider";
 import { registry } from "./provider-registry";
@@ -153,10 +149,8 @@ connection.onInitialized(async () => {
     registry.register(weiduTp2Provider);
 
     // Register language aliases (languages that share data with parent providers)
-    registry.registerAlias(LANG_WEIDU_D_TPL, LANG_WEIDU_D);
     registry.registerAlias(LANG_WEIDU_SLB, LANG_WEIDU_BAF);
     registry.registerAlias(LANG_WEIDU_SSL, LANG_WEIDU_BAF);
-    registry.registerAlias(LANG_WEIDU_TP2_TPL, LANG_WEIDU_TP2);
 
     await registry.init({ workspaceRoot, settings: globalSettings });
 

@@ -362,8 +362,6 @@ This copies the generated `tree-sitter.d.ts` to `server/src/{lang}/`.
 
 | Alias | Routes to |
 |-------|-----------|
-| weidu-d-tpl | weidu-d |
-| weidu-tp2-tpl | weidu-tp2 |
 | weidu-slb | weidu-baf |
 | weidu-ssl | weidu-baf |
 

@@ -32,11 +32,9 @@
         "onLanguage:infinity-2da",
         "onLanguage:weidu-baf",
         "onLanguage:weidu-d",
-        "onLanguage:weidu-d-tpl",
         "onLanguage:weidu-ssl",
         "onLanguage:weidu-slb",
         "onLanguage:weidu-tp2",
-        "onLanguage:weidu-tp2-tpl",
         "onLanguage:weidu-tra"
     ],
     "main": "./client/out/extension",
@@ -119,19 +117,6 @@
                 "id": "weidu-tp2-tooltip"
             },
             {
-                "id": "weidu-tp2-tpl",
-                "aliases": [
-                    "WeiDU TP2 template"
-                ],
-                "extensions": [
-                    ".tp2.tpl",
-                    ".tpa.tpl",
-                    ".tph.tpl",
-                    ".tpp.tpl"
-                ],
-                "configuration": "./language-configurations/weidu-tp2.language-configuration.json"
-            },
-            {
                 "id": "weidu-baf",
                 "aliases": [
                     "Infinity Engine script"
@@ -156,16 +141,6 @@
             },
             {
                 "id": "weidu-d-tooltip"
-            },
-            {
-                "id": "weidu-d-tpl",
-                "aliases": [
-                    "WeiDU dialog template"
-                ],
-                "extensions": [
-                    ".d.tpl"
-                ],
-                "configuration": "./language-configurations/weidu-d.language-configuration.json"
             },
             {
                 "id": "weidu-slb",
@@ -272,11 +247,6 @@
                 "path": "./syntaxes/weidu-tp2-tooltip.tmLanguage.json"
             },
             {
-                "language": "weidu-tp2-tpl",
-                "scopeName": "source.weidu-tp2",
-                "path": "./syntaxes/weidu-tp2.tmLanguage.json"
-            },
-            {
                 "language": "weidu-baf",
                 "scopeName": "source.weidu-baf",
                 "path": "./syntaxes/weidu-baf.tmLanguage.json"
@@ -295,11 +265,6 @@
                 "language": "weidu-d-tooltip",
                 "scopeName": "source.weidu-d-tooltip",
                 "path": "./syntaxes/weidu-d-tooltip.tmLanguage.json"
-            },
-            {
-                "language": "weidu-d-tpl",
-                "scopeName": "source.weidu-d",
-                "path": "./syntaxes/weidu-d.tmLanguage.json"
             },
             {
                 "language": "weidu-slb",
