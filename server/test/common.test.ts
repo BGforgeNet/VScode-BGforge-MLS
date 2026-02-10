@@ -14,7 +14,7 @@ vi.mock("../src/lsp-connection", () => ({
     }),
 }));
 
-import { symbolAtPosition, sendParseResult, isSubpath, expandHome, type ParseResult } from "../src/common";
+import { symbolAtPosition, sendParseResult, isSubpath, expandHome, parseCommandPath, type ParseResult } from "../src/common";
 
 describe("symbolAtPosition", () => {
     it("returns word under cursor", () => {
@@ -190,5 +190,64 @@ describe("expandHome", () => {
 
     it("returns relative paths unchanged", () => {
         expect(expandHome("bin/sslc")).toBe("bin/sslc");
+    });
+});
+
+describe("parseCommandPath", () => {
+    it("handles a simple command name", () => {
+        const result = parseCommandPath("compile");
+        expect(result.executable).toBe("compile");
+        expect(result.prefixArgs).toEqual([]);
+    });
+
+    it("expands tilde in a plain path", () => {
+        const result = parseCommandPath("~/bin/compile");
+        expect(result.executable).toMatch(/\/bin\/compile$/);
+        expect(result.executable).not.toContain("~");
+        expect(result.prefixArgs).toEqual([]);
+    });
+
+    it("splits known wrapper (wine) and expands tilde in argument", () => {
+        const result = parseCommandPath("wine ~/bin/compile");
+        expect(result.executable).toBe("wine");
+        expect(result.prefixArgs).toHaveLength(1);
+        expect(result.prefixArgs[0]).toMatch(/\/bin\/compile$/);
+        expect(result.prefixArgs[0]).not.toContain("~");
+    });
+
+    it("handles wine64 wrapper", () => {
+        const result = parseCommandPath("wine64 ~/bin/compile.exe");
+        expect(result.executable).toBe("wine64");
+        expect(result.prefixArgs[0]).toMatch(/\/bin\/compile\.exe$/);
+    });
+
+    it("handles mono wrapper", () => {
+        const result = parseCommandPath("mono /opt/tools/weidu.exe");
+        expect(result.executable).toBe("mono");
+        expect(result.prefixArgs).toEqual(["/opt/tools/weidu.exe"]);
+    });
+
+    it("does not split unknown prefixes (preserves paths with spaces)", () => {
+        const result = parseCommandPath("/opt/my tools/compile");
+        expect(result.executable).toBe("/opt/my tools/compile");
+        expect(result.prefixArgs).toEqual([]);
+    });
+
+    it("returns absolute path unchanged when no wrapper", () => {
+        const result = parseCommandPath("/usr/bin/compile");
+        expect(result.executable).toBe("/usr/bin/compile");
+        expect(result.prefixArgs).toEqual([]);
+    });
+
+    it("handles empty string", () => {
+        const result = parseCommandPath("");
+        expect(result.executable).toBe("");
+        expect(result.prefixArgs).toEqual([]);
+    });
+
+    it("handles whitespace-only string", () => {
+        const result = parseCommandPath("   ");
+        expect(result.executable).toBe("   ");
+        expect(result.prefixArgs).toEqual([]);
     });
 });

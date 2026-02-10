@@ -130,6 +130,40 @@ export function findFiles(dirName: string, extension: string) {
     return entries;
 }
 
+/** Known wrapper commands that may prefix executable paths in user settings. */
+const KNOWN_WRAPPERS = new Set(["wine", "wine64", "mono", "dotnet", "flatpak"]);
+
+/**
+ * Split a command-line setting into executable and prefix arguments.
+ * Only splits when the first token is a known wrapper (e.g., "wine ~/bin/compile").
+ * Plain paths (even with spaces) pass through as-is with tilde expansion.
+ * This avoids breaking paths that contain spaces like "/opt/my tools/compile".
+ */
+export function parseCommandPath(commandPath: string): { executable: string; prefixArgs: string[] } {
+    const trimmed = commandPath.trim();
+    if (trimmed === "") {
+        return { executable: commandPath, prefixArgs: [] };
+    }
+
+    const spaceIndex = trimmed.indexOf(" ");
+    if (spaceIndex === -1) {
+        // Single token, no splitting needed
+        return { executable: expandHome(trimmed), prefixArgs: [] };
+    }
+
+    const firstToken = trimmed.slice(0, spaceIndex);
+    if (KNOWN_WRAPPERS.has(firstToken.toLowerCase())) {
+        const rest = trimmed.slice(spaceIndex + 1).trim();
+        return {
+            executable: firstToken,
+            prefixArgs: rest ? [expandHome(rest)] : [],
+        };
+    }
+
+    // Not a known wrapper - treat entire string as the executable path
+    return { executable: expandHome(trimmed), prefixArgs: [] };
+}
+
 /** Get the relative path from `root` to `other_dir`. */
 export function getRelPath(root: string, other_dir: string) {
     return path.relative(root, other_dir);

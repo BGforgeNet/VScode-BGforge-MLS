@@ -8,7 +8,7 @@ import * as fs from "fs";
 import * as path from "path";
 import {
     conlog,
-    expandHome,
+    parseCommandPath,
     ParseItemList,
     ParseResult,
     pathToUri,
@@ -113,7 +113,7 @@ function sendDiagnostics(
 
 export function compile(uri: string, settings: WeiDUsettings, interactive = false, text: string) {
     const gamePath = settings.gamePath;
-    const weiduPath = expandHome(settings.path);
+    const { executable: weiduPath, prefixArgs: weiduPrefixArgs } = parseCommandPath(settings.path);
     const filePath = uriToPath(uri);
     const cwdTo = tmpDir;
     const baseName = path.parse(filePath).base;
@@ -211,7 +211,7 @@ export function compile(uri: string, settings: WeiDUsettings, interactive = fals
     // parse
     conlog(`parsing ${realName}...`);
     fs.writeFileSync(tmpFile, text);
-    const allArgs = [...weiduArgs, weiduType, tmpFile];
+    const allArgs = [...weiduPrefixArgs, ...weiduArgs, weiduType, tmpFile];
     conlog(`${weiduPath} ${allArgs.join(" ")}`);
     cp.execFile(weiduPath, allArgs, { cwd: cwdTo }, (err, stdout: string, stderr: string) => {
         conlog("stdout: " + stdout);
