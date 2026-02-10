@@ -108,19 +108,42 @@ function extractInlineFunctionsFromSource(source: SourceFile, result: Map<string
 
 /**
  * Generate #define macros from inline functions that are actually used.
+ * Expands enum property accesses (e.g. STAT.ch -> STAT_ch) in constant args,
+ * since inline function bodies are extracted before enum expansion runs.
  * @param inlineFuncs Map of function names to InlineFunc metadata
  * @param usedFuncs Set of function names that are actually called in the code
+ * @param enumNames Set of known enum names for property access expansion
  * @returns Array of #define statements
  */
-export function generateInlineMacros(inlineFuncs: Map<string, InlineFunc>, usedFuncs: Set<string>): string[] {
+export function generateInlineMacros(
+    inlineFuncs: Map<string, InlineFunc>,
+    usedFuncs: Set<string>,
+    enumNames: ReadonlySet<string>,
+): string[] {
     const macros: string[] = [];
     for (const [funcName, inline] of inlineFuncs) {
         if (!usedFuncs.has(funcName)) continue;
         const paramList = inline.params.length > 0 ? `(${inline.params.join(', ')})` : '';
-        const argList = inline.args.map(a => a.value).join(', ');
+        const argList = inline.args
+            .map(a => a.type === 'constant' ? expandEnumAccess(a.value, enumNames) : a.value)
+            .join(', ');
         macros.push(`#define ${funcName}${paramList} ${inline.targetFunc}(${argList})`);
     }
     return macros;
+}
+
+/**
+ * Replace EnumName.Member with EnumName_Member in a string expression.
+ * Only replaces when the object name is a known enum.
+ */
+function expandEnumAccess(value: string, enumNames: ReadonlySet<string>): string {
+    if (enumNames.size === 0) {
+        return value;
+    }
+    // Match word.word patterns where the first word is a known enum name
+    return value.replace(/\b(\w+)\.(\w+)\b/g, (match, obj: string, prop: string) =>
+        enumNames.has(obj) ? `${obj}_${prop}` : match
+    );
 }
 
 /**

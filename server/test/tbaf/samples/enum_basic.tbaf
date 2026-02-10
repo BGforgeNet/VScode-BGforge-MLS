@@ -1,0 +1,11 @@
+// Enum values substituted in conditions and actions
+
+enum State { Idle = 0, Active = 1, Sleeping = 2 }
+
+if (Global("state", "LOCALS", State.Active)) {
+    Attack(NearestEnemyOf(Myself));
+}
+
+if (StateCheck(Myself, State.Sleeping)) {
+    SetGlobal("state", "LOCALS", State.Idle);
+}

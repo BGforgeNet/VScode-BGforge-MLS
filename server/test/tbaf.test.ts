@@ -8,6 +8,7 @@ import { Project } from "ts-morph";
 import { TBAFTransformer } from "../src/tbaf/transform";
 import { emitBAF } from "../src/tbaf/emit";
 import { BAFScript } from "../src/tbaf/ir";
+import { transformEnums } from "../src/enum-transform";
 
 describe("TBAF Transpiler", () => {
     const transformer = new TBAFTransformer();
@@ -17,6 +18,12 @@ describe("TBAF Transpiler", () => {
         const sourceFile = project.createSourceFile("test.tbaf", code);
         const ir = transformer.transform(sourceFile);
         return emitBAF(ir);
+    }
+
+    /** Transpile with enum pre-transform (simulates what bundle() does) */
+    function transpileWithEnums(code: string): string {
+        const { code: transformed } = transformEnums(code);
+        return transpile(transformed);
     }
 
     describe("Basic IF/THEN/END blocks", () => {
@@ -278,6 +285,73 @@ switch (Global("state", "LOCALS")) {
             expect(result).toContain("Wait(1)");
             expect(result).toContain('Global("state", "LOCALS", 1)');
             expect(result).toContain("Attack(NearestEnemyOf(Myself))");
+        });
+    });
+
+    describe("Enum support", () => {
+        it("substitutes numeric enum values in conditions and actions", () => {
+            const code = `
+enum DamageType { Fire = 1, Ice = 2, Lightning = 3 }
+
+if (CheckSpellState(Myself, DamageType.Fire)) {
+    ApplySpell(NearestEnemyOf(Myself), DamageType.Ice);
+}
+`;
+            const result = transpileWithEnums(code);
+            expect(result).toContain("CheckSpellState(Myself, 1)");
+            expect(result).toContain("ApplySpell(NearestEnemyOf(Myself), 2)");
+        });
+
+        it("substitutes string enum values in actions", () => {
+            const code = `
+enum Script { Player = "Player1", Enemy = "ENMYSCR" }
+
+if (See(Script.Player)) {
+    SetGlobal("seen", Script.Enemy, 1);
+}
+`;
+            const result = transpileWithEnums(code);
+            expect(result).toContain('See("Player1")');
+            expect(result).toContain('SetGlobal("seen", "ENMYSCR", 1)');
+        });
+
+        it("uses enum values in switch case expressions", () => {
+            const code = `
+enum State { Idle, Active, Dead }
+
+switch (Global("state", "LOCALS")) {
+    case State.Idle:
+        Wait(1);
+        break;
+    case State.Active:
+        Attack(NearestEnemyOf(Myself));
+        break;
+}
+`;
+            const result = transpileWithEnums(code);
+            expect(result).toContain('Global("state", "LOCALS", 0)');
+            expect(result).toContain("Wait(1)");
+            expect(result).toContain('Global("state", "LOCALS", 1)');
+            expect(result).toContain("Attack(NearestEnemyOf(Myself))");
+        });
+
+        it("uses enum values in for-of array literals", () => {
+            const code = `
+enum Target { Player1 = "Player1", Player2 = "Player2" }
+
+const targets = [Target.Player1, Target.Player2];
+
+for (const t of targets) {
+    if (See(t)) {
+        Attack(t);
+    }
+}
+`;
+            const result = transpileWithEnums(code);
+            expect(result).toContain('See("Player1")');
+            expect(result).toContain('Attack("Player1")');
+            expect(result).toContain('See("Player2")');
+            expect(result).toContain('Attack("Player2")');
         });
     });
 });

@@ -3,7 +3,6 @@
  * Converts TypeScript AST to Fallout SSL output, handling all statement types.
  */
 
-import * as fs from "fs";
 import {
     SourceFile,
     Node
@@ -20,14 +19,14 @@ import { convertOperatorsAST, convertVarOrConstToVariable } from './convert-oper
 import { findUsedInlineFunctions, generateInlineMacros } from './inline-functions';
 
 /**
- * Export typescript code as SSL
+ * Export typescript code as SSL string.
  * @param sourceFile ts-morph source file
- * @param sslPath output SSL path
  * @param sourceName tssl source name, to put into comment
  * @param mainFileData Data extracted from main file (constants, letVars, includes)
  * @param ctx Transpilation context
+ * @returns Generated SSL output string
  */
-export function exportSSL(sourceFile: SourceFile, sslPath: string, sourceName: string, mainFileData: MainFileData, ctx: TsslContext): void {
+export function exportSSL(sourceFile: SourceFile, sourceName: string, mainFileData: MainFileData, ctx: TsslContext): string {
     conlog(`Starting conversion of: ${sourceName}`);
 
     const header = `/* Do not edit. This file is generated from ${sourceName}. Make your changes there and regenerate this file. */\n\n`;
@@ -38,14 +37,6 @@ export function exportSSL(sourceFile: SourceFile, sslPath: string, sourceName: s
     if (mainFileData.includes.length > 0) {
         for (const inc of mainFileData.includes) {
             output += `#include "${inc}"\n`;
-        }
-        output += '\n';
-    }
-
-    // Output main file constants (these may have been inlined/removed by bundler)
-    if (mainFileData.constants.size > 0) {
-        for (const [name, value] of mainFileData.constants) {
-            output += `#define ${name} ${value}\n`;
         }
         output += '\n';
     }
@@ -79,8 +70,22 @@ export function exportSSL(sourceFile: SourceFile, sslPath: string, sourceName: s
 
     // Add inline function macros to defines (only for functions actually used)
     const usedInlineFuncs = findUsedInlineFunctions(sourceFile, ctx.inlineFunctions);
-    const inlineMacros = generateInlineMacros(ctx.inlineFunctions, usedInlineFuncs);
+    const inlineMacros = generateInlineMacros(ctx.inlineFunctions, usedInlineFuncs, ctx.enumNames);
     allDefines.push(...inlineMacros);
+
+    // Output main file constants, tree-shaking unused enum members.
+    // Enum-generated constants (EnumName_Member) are only emitted if referenced
+    // in the bundled code or inline macros. Non-enum constants pass through unconditionally.
+    if (mainFileData.constants.size > 0) {
+        const referencedIds = collectReferencedIdentifiers(sourceFile, allDefines);
+        for (const [name, value] of mainFileData.constants) {
+            if (isEnumConstant(name, ctx.enumNames) && !referencedIds.has(name)) {
+                continue;
+            }
+            output += `#define ${name} ${value}\n`;
+        }
+        output += '\n';
+    }
 
     // Output in order: defines, declarations, bundled code, main code
     if (allDefines.length > 0) output += allDefines.join('\n') + '\n\n';
@@ -101,9 +106,7 @@ export function exportSSL(sourceFile: SourceFile, sslPath: string, sourceName: s
     // Replace sfall_typeof with typeof (TS keyword conflict workaround)
     output = output.replace(/\bsfall_typeof\b/g, 'typeof');
 
-    // Write the content to the specified file
-    fs.writeFileSync(sslPath, output, 'utf-8');
-    conlog(`Content saved to ${sslPath}`);
+    return output;
 }
 
 /**
@@ -536,4 +539,43 @@ function processCallExpression(callExpr: Node, ctx: TsslContext): string {
 
     // Otherwise keep as is (either it's an external function or part of an assignment)
     return `${fnName}(${processedArgs.join(', ')})`;
+}
+
+/**
+ * Collect all identifier names referenced in the bundled source file and inline macros.
+ * Used to tree-shake unused enum-generated constants.
+ */
+export function collectReferencedIdentifiers(sourceFile: SourceFile, defines: readonly string[]): ReadonlySet<string> {
+    const ids = new Set<string>();
+
+    // Identifiers from the bundled TypeScript AST
+    for (const id of sourceFile.getDescendantsOfKind(SyntaxKind.Identifier)) {
+        ids.add(id.getText());
+    }
+
+    // Identifiers from inline macro strings (e.g. "#define fn get_stat(dude_obj, STAT_ch)")
+    for (const def of defines) {
+        for (const match of def.matchAll(/\b\w+\b/g)) {
+            ids.add(match[0]);
+        }
+    }
+
+    return ids;
+}
+
+/**
+ * Check if a constant name was generated from an enum declaration.
+ * Enum constants follow the pattern EnumName_Member where EnumName is a known enum.
+ */
+export function isEnumConstant(name: string, enumNames: ReadonlySet<string>): boolean {
+    // Check all underscore positions to handle enum names with underscores
+    // (e.g. DAMAGE_TYPE_Fire should match enum name DAMAGE_TYPE)
+    let idx = 0;
+    while ((idx = name.indexOf('_', idx)) !== -1) {
+        if (enumNames.has(name.substring(0, idx))) {
+            return true;
+        }
+        idx++;
+    }
+    return false;
 }

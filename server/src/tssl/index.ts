@@ -1,9 +1,13 @@
 /**
  * TSSL transpiler - TypeScript to Fallout SSL.
  * Transpiles TypeScript files with .tssl extension to Fallout SSL scripts.
- * Entry point: compile() bundles and converts a .tssl file to .ssl output.
+ * Entry points:
+ *   compile() - LSP: bundles, converts, writes .ssl file to disk
+ *   transpile() - CLI: bundles, converts, returns SSL string without writing
+ * Handles enum transformation before bundling to avoid esbuild's IIFE conversion.
  */
 
+import * as fs from "fs";
 import * as path from "path";
 import {
     Project,
@@ -18,6 +22,7 @@ import { convertOperatorsAST } from './convert-operators';
 import { extractInlineFunctionsFromFiles, extractJsDocs } from './inline-functions';
 import { exportSSL } from './export-ssl';
 import { ENGINE_PROCEDURES } from './engine-procedures';
+import { transformEnums, expandEnumPropertyAccess, enumTransformPlugin } from "../enum-transform";
 
 const uriToPath = (uri: string) => uri.startsWith('file://') ? fileURLToPath(uri) : uri;
 
@@ -25,35 +30,40 @@ const uriToPath = (uri: string) => uri.startsWith('file://') ? fileURLToPath(uri
 const TSSL_CODE_MARKER = "/* __TSSL_CODE_START__ */";
 
 /**
- * Convert TSSL to SSL.
- * @param uri VSCode document URI or file path
+ * Core transpilation pipeline: TSSL source text to SSL output string.
+ * Shared by compile() (LSP, writes to disk) and transpile() (CLI, returns string).
+ * @param filePath Absolute file path to the .tssl file
  * @param text Source text content
- * @returns Path to generated SSL file
+ * @returns Generated SSL output string
  */
-export async function compile(uri: string, text: string): Promise<string> {
-    const filePath = uriToPath(uri);
+async function transpileCore(filePath: string, text: string): Promise<string> {
     const parsed = path.parse(filePath);
-    if (parsed.ext.toLowerCase() != EXT_TSSL) {
-        throw new Error(`${uri} is not a .tssl file`);
+    if (parsed.ext.toLowerCase() !== EXT_TSSL) {
+        throw new Error(`${filePath} is not a .tssl file`);
     }
+
+    // Pre-transform: convert enums to flat consts before any processing
+    const { code: enumTransformedText, enumNames } = transformEnums(text);
 
     // Initialize the TypeScript project (reused across extraction functions)
     const project = new Project();
 
-    // Extract includes, constants, and let vars from the original source
-    const { constants, letVars } = extractTopLevelVars(project, text);
+    // Extract includes, constants, and let vars from the enum-transformed source
+    const { constants, letVars } = extractTopLevelVars(project, enumTransformedText);
     const mainFileData: MainFileData = {
         constants,
         letVars,
+        // Extract includes from original text (enums don't affect includes)
         includes: extractIncludes(text),
     };
 
-    // Create context for this compilation
+    // Create context for this compilation (enumNames populated after bundling)
     const ctx: TsslContext = {
         inlineFunctions: new Map(),
         definedFunctions: new Set(),
         functionJsDocs: new Map(),
         doStatementCounter: 0,
+        enumNames: new Set(),
     };
 
     // Extract JSDoc from main source file before bundling (esbuild strips them)
@@ -61,10 +71,16 @@ export async function compile(uri: string, text: string): Promise<string> {
     extractJsDocs(mainSource, ctx);
     conlog(`Extracted JSDoc for ${ctx.functionJsDocs.size} functions from main file`);
 
-    const bundleResult = await bundle(filePath, text);
+    const bundleResult = await bundle(filePath, enumTransformedText, enumNames);
+
+    // All enum names (main file + imported files) for inline function expansion
+    ctx.enumNames = bundleResult.allEnumNames;
 
     // Strip ESM module boilerplate from esbuild output
-    const bundledCode = cleanupEsbuildOutput(bundleResult.code, TSSL_CODE_MARKER, mainFileData.constants);
+    const cleanedCode = cleanupEsbuildOutput(bundleResult.code, TSSL_CODE_MARKER, mainFileData.constants);
+
+    // Post-expand: expand any remaining cross-file enum compat objects
+    const bundledCode = expandEnumPropertyAccess(cleanedCode, bundleResult.allEnumNames);
 
     // Create source file in memory from cleaned bundled code
     const sourceFile = project.createSourceFile("bundled.ts", bundledCode, { overwrite: true });
@@ -73,11 +89,37 @@ export async function compile(uri: string, text: string): Promise<string> {
     ctx.inlineFunctions = extractInlineFunctionsFromFiles(project, bundleResult.inputFiles);
     conlog(`Found ${ctx.inlineFunctions.size} inline functions`);
 
-    // Save to SSL file, same directory
+    return exportSSL(sourceFile, parsed.base, mainFileData, ctx);
+}
+
+/**
+ * Convert TSSL to SSL, writing the output to disk.
+ * Used by the LSP compile handler.
+ * @param uri VSCode document URI or file path
+ * @param text Source text content
+ * @returns Path to generated SSL file
+ */
+export async function compile(uri: string, text: string): Promise<string> {
+    const filePath = uriToPath(uri);
+    const output = await transpileCore(filePath, text);
+
+    const parsed = path.parse(filePath);
     const sslPath = path.join(parsed.dir, `${parsed.name}.ssl`);
-    exportSSL(sourceFile, sslPath, parsed.base, mainFileData, ctx);
+    fs.writeFileSync(sslPath, output, 'utf-8');
+    conlog(`Content saved to ${sslPath}`);
 
     return sslPath;
+}
+
+/**
+ * Transpile TSSL to SSL, returning the output string without writing to disk.
+ * Used by the CLI where the caller controls file I/O.
+ * @param filePath Absolute file path to the .tssl file
+ * @param text Source text content
+ * @returns Generated SSL output string
+ */
+export async function transpile(filePath: string, text: string): Promise<string> {
+    return transpileCore(filePath, text);
 }
 
 /**
@@ -123,6 +165,11 @@ function extractTopLevelVars(project: Project, sourceText: string): { constants:
                     const name = decl.getName();
                     const initializer = decl.getInitializer();
                     if (initializer) {
+                        // Skip compat objects (enum-generated `as const` objects)
+                        // These have object literal initializers and shouldn't become #define
+                        if (initializer.isKind(SyntaxKind.AsExpression) || initializer.isKind(SyntaxKind.ObjectLiteralExpression)) {
+                            continue;
+                        }
                         // Convert operators to SSL syntax (| -> bwor, etc.)
                         const value = convertOperatorsAST(initializer);
                         constants.set(name, value);
@@ -155,14 +202,25 @@ function extractPreserveFunctions(text: string): string[] {
     return preserve;
 }
 
+/** Extended bundle result that includes accumulated enum names */
+interface TsslBundleResult extends BundleResult {
+    readonly allEnumNames: ReadonlySet<string>;
+}
+
 /**
  * Bundle functions with esbuild, returning bundled code and input files.
+ * Transforms enums in imported files during bundling.
+ *
  * @param filePath Original file path (for resolving imports)
- * @param text Source text
- * @returns Bundled code and list of input files from metafile
+ * @param text Source text (already enum-transformed)
+ * @param enumNames Enum names from the main file
+ * @returns Bundled code, input files, and all accumulated enum names
  */
-async function bundle(filePath: string, text: string): Promise<BundleResult> {
+async function bundle(filePath: string, text: string, enumNames: ReadonlySet<string>): Promise<TsslBundleResult> {
     const preserveFunctions = extractPreserveFunctions(text);
+
+    // Accumulate enum names from imported files during bundling
+    const allEnumNames = new Set(enumNames);
 
     // Prepend marker and append fake usage to preserve functions from tree-shaking
     const preserveCode = `\n// Preserve functions\nif ((globalThis as any).__preserve__) { console.log(${preserveFunctions.join(', ')}); }`;
@@ -196,6 +254,8 @@ async function bundle(filePath: string, text: string): Promise<BundleResult> {
                     }));
                 }
             },
+            // Transform enums in imported .ts/.tssl files
+            enumTransformPlugin(allEnumNames, /\.(ts|tssl)$/),
             noSideEffectsPlugin(),
         ]
     });
@@ -212,5 +272,5 @@ async function bundle(filePath: string, text: string): Promise<BundleResult> {
     if (outputFile === undefined) {
         throw new Error('esbuild produced no output');
     }
-    return { code: outputFile.text, inputFiles };
+    return { code: outputFile.text, inputFiles, allEnumNames };
 }

@@ -29,6 +29,8 @@ export interface TsslContext {
     definedFunctions: Set<string>;
     functionJsDocs: Map<string, string>;
     doStatementCounter: number;
+    /** Known enum names for expanding property accesses in inline function args */
+    enumNames: ReadonlySet<string>;
 }
 
 /**

@@ -2,12 +2,14 @@
  * TBAF Bundler
  *
  * Uses esbuild for in-memory bundling.
+ * Handles enum transformation before bundling to avoid esbuild's IIFE conversion.
  */
 
 import * as esbuild from "esbuild-wasm";
 import * as path from "path";
 import * as fs from "fs";
 import { ensureEsbuild, cleanupEsbuildOutput, noSideEffectsPlugin } from "../esbuild-utils";
+import { transformEnums, expandEnumPropertyAccess, enumTransformPlugin } from "../enum-transform";
 
 /** Marker to identify start of user code in esbuild output */
 const TBAF_CODE_MARKER = "/* __TBAF_CODE_START__ */";
@@ -24,8 +26,15 @@ export async function bundle(filePath: string, sourceText: string): Promise<stri
 
     const resolveDir = path.dirname(filePath);
 
+    // Pre-transform: convert enums to flat consts before esbuild sees them
+    const { code: enumTransformed, enumNames } = transformEnums(sourceText);
+
+    // Accumulate enum names from imported files during bundling.
+    // Mutated via closure in the enum-transform plugin (see enumTransformPlugin docs).
+    const allEnumNames = new Set(enumNames);
+
     // Prepend marker so we can strip esbuild runtime helpers later
-    const sourceWithMarker = TBAF_CODE_MARKER + "\n" + sourceText;
+    const sourceWithMarker = TBAF_CODE_MARKER + "\n" + enumTransformed;
 
     const result = await esbuild.build({
         stdin: {
@@ -57,7 +66,7 @@ export async function bundle(filePath: string, sourceText: string): Promise<stri
                     });
                 },
             },
-            // Plugin to resolve .tbaf files as TypeScript
+            // Plugin to resolve .tbaf files as TypeScript and transform enums in imports
             {
                 name: "tbaf-resolver",
                 setup(build) {
@@ -67,8 +76,16 @@ export async function bundle(filePath: string, sourceText: string): Promise<stri
                     });
 
                     build.onLoad({ filter: /.*/, namespace: "tbaf" }, (args) => {
-                        const contents = fs.readFileSync(args.path, "utf-8");
-                        return { contents, loader: "ts" };
+                        const source = fs.readFileSync(args.path, "utf-8");
+                        // Transform enums in imported .tbaf files
+                        if (source.includes("enum ")) {
+                            const { code, enumNames: importedEnums } = transformEnums(source);
+                            for (const name of importedEnums) {
+                                allEnumNames.add(name);
+                            }
+                            return { contents: code, loader: "ts" };
+                        }
+                        return { contents: source, loader: "ts" };
                     });
 
                     build.onResolve({ filter: /\.ts$/ }, (args) => {
@@ -80,6 +97,8 @@ export async function bundle(filePath: string, sourceText: string): Promise<stri
                     });
                 },
             },
+            // Transform enums in imported .ts files
+            enumTransformPlugin(allEnumNames, /\.ts$/),
             noSideEffectsPlugin(),
         ],
     });
@@ -90,5 +109,8 @@ export async function bundle(filePath: string, sourceText: string): Promise<stri
         throw new Error("esbuild produced no output");
     }
 
-    return cleanupEsbuildOutput(outputFile.text, TBAF_CODE_MARKER);
+    const cleaned = cleanupEsbuildOutput(outputFile.text, TBAF_CODE_MARKER);
+
+    // Post-expand: expand any remaining cross-file enum compat objects
+    return expandEnumPropertyAccess(cleaned, allEnumNames);
 }
