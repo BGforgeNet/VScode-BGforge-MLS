@@ -318,7 +318,8 @@ export class Translation {
             }
             const num = match[1];
             const str = match[2];
-            if (!num || !str) {
+            // Check undefined only -- empty string is a valid translation entry (e.g., @0 = ~~)
+            if (num === undefined || str === undefined) {
                 match = regex.exec(text);
                 continue;
             }

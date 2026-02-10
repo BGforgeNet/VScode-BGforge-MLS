@@ -7,6 +7,7 @@
     },
     "typescript.tsdk": "./node_modules/typescript/lib",
     "typescript.tsc.autoDetect": "off",
+    "npm.packageManager": "pnpm",
     "npm.exclude": ["**/client", "**/server"],
     "python.analysis.extraPaths": ["./scripts"],
     "editor.defaultFormatter": "esbenp.prettier-vscode",

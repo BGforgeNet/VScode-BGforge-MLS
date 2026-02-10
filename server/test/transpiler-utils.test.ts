@@ -6,6 +6,7 @@
 import { describe, expect, it } from "vitest";
 import {
     evaluateCondition,
+    MAX_LOOP_ITERATIONS,
     parseArrayLiteral,
     parseIncrement,
     stripQuotes,
@@ -143,5 +144,65 @@ describe("parseArrayLiteral", () => {
 
     it("handles commas in quoted strings", () => {
         expect(parseArrayLiteral('["a, b", "c"]')).toEqual(['"a, b"', '"c"']);
+    });
+});
+
+describe("evaluateCondition - edge cases", () => {
+    const emptyVars: VarsContext = new Map();
+
+    it("throws when variable is not in vars map and not the loop var", () => {
+        expect(() => evaluateCondition("i < unknown", "i", 5, emptyVars)).toThrow();
+    });
+
+    it("handles condition where loop var equals boundary value", () => {
+        // MAX_LOOP_ITERATIONS - 1 should be true
+        expect(evaluateCondition("i < 1000", "i", 999, emptyVars)).toBe(true);
+        // MAX_LOOP_ITERATIONS should be false
+        expect(evaluateCondition("i < 1000", "i", 1000, emptyVars)).toBe(false);
+        // MAX_LOOP_ITERATIONS + 1 should be false
+        expect(evaluateCondition("i < 1000", "i", 1001, emptyVars)).toBe(false);
+    });
+
+    it("handles non-numeric variable value in vars map", () => {
+        // If a var maps to something non-numeric, safeEvaluate will reject it
+        const vars: VarsContext = new Map([["max", "ten"]]);
+        expect(() => evaluateCondition("i < max", "i", 5, vars)).toThrow();
+    });
+
+    it("includes substituted expression in error message", () => {
+        const vars: VarsContext = new Map([["bad", "abc"]]);
+        try {
+            evaluateCondition("i < bad", "i", 5, vars);
+            expect.fail("should have thrown");
+        } catch (e) {
+            const msg = (e as Error).message;
+            expect(msg).toContain("Substituted:");
+            expect(msg).toContain("5 < abc");
+        }
+    });
+});
+
+describe("MAX_LOOP_ITERATIONS", () => {
+    it("is 1000", () => {
+        expect(MAX_LOOP_ITERATIONS).toBe(1000);
+    });
+});
+
+describe("parseIncrement - edge cases", () => {
+    it("defaults to 1 for unknown syntax", () => {
+        expect(parseIncrement("i")).toBe(1);
+    });
+
+    it("handles += with no number (defaults to 1)", () => {
+        expect(parseIncrement("i +=")).toBe(1);
+    });
+
+    it("handles -= with no number (defaults to -1)", () => {
+        expect(parseIncrement("i -=")).toBe(-1);
+    });
+
+    it("handles += with non-numeric value (defaults to 1)", () => {
+        // Number("abc") is NaN, || 1 => 1
+        expect(parseIncrement("i += abc")).toBe(1);
     });
 });

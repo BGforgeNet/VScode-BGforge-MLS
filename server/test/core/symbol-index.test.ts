@@ -404,6 +404,123 @@ describe("Symbols", () => {
     });
 
     // =========================================================================
+    // Same-name resolution and ordering stability
+    // =========================================================================
+    describe("same-name symbols from different headers", () => {
+        it("lookupAll returns both symbols when two headers define same name", () => {
+            const symA = createSymbol({
+                name: "SHARED",
+                kind: SymbolKind.Constant,
+                source: { type: SourceType.Workspace, uri: "file:///a.h" },
+                scope: { level: ScopeLevel.Workspace },
+            });
+            const symB = createSymbol({
+                name: "SHARED",
+                kind: SymbolKind.Constant,
+                source: { type: SourceType.Workspace, uri: "file:///b.h" },
+                scope: { level: ScopeLevel.Workspace },
+            });
+
+            index.updateFile("file:///a.h", [symA]);
+            index.updateFile("file:///b.h", [symB]);
+
+            const results = index.lookupAll("SHARED");
+            expect(results).toHaveLength(2);
+        });
+
+        it("lookupAll returns deterministic order based on URI for same-scope symbols", () => {
+            const symA = createSymbol({
+                name: "SHARED",
+                kind: SymbolKind.Constant,
+                source: { type: SourceType.Workspace, uri: "file:///a.h" },
+                scope: { level: ScopeLevel.Workspace },
+            });
+            const symB = createSymbol({
+                name: "SHARED",
+                kind: SymbolKind.Constant,
+                source: { type: SourceType.Workspace, uri: "file:///b.h" },
+                scope: { level: ScopeLevel.Workspace },
+            });
+
+            index.updateFile("file:///a.h", [symA]);
+            index.updateFile("file:///b.h", [symB]);
+
+            const results = index.lookupAll("SHARED");
+            // URI ordering: file:///a.h comes before file:///b.h alphabetically
+            expect(results[0]!.source.uri).toBe("file:///a.h");
+            expect(results[1]!.source.uri).toBe("file:///b.h");
+        });
+
+        it("reload does not change resolution order", () => {
+            const symA = createSymbol({
+                name: "SHARED",
+                kind: SymbolKind.Constant,
+                source: { type: SourceType.Workspace, uri: "file:///a.h" },
+                scope: { level: ScopeLevel.Workspace },
+            });
+            const symB = createSymbol({
+                name: "SHARED",
+                kind: SymbolKind.Constant,
+                source: { type: SourceType.Workspace, uri: "file:///b.h" },
+                scope: { level: ScopeLevel.Workspace },
+            });
+
+            index.updateFile("file:///a.h", [symA]);
+            index.updateFile("file:///b.h", [symB]);
+
+            const before = index.lookupAll("SHARED").map(s => s.source.uri);
+
+            // Simulate file reload (re-updating a.h)
+            const symAReloaded = createSymbol({
+                name: "SHARED",
+                kind: SymbolKind.Constant,
+                source: { type: SourceType.Workspace, uri: "file:///a.h" },
+                scope: { level: ScopeLevel.Workspace },
+            });
+            index.updateFile("file:///a.h", [symAReloaded]);
+
+            const after = index.lookupAll("SHARED").map(s => s.source.uri);
+
+            // Order should be the same after reload
+            expect(after).toEqual(before);
+        });
+
+        it("scope precedence: Document > Static > Workspace", () => {
+            // Static symbol
+            index.loadStatic([createSymbol({
+                name: "SHARED",
+                source: { type: SourceType.Static, uri: null },
+                scope: { level: ScopeLevel.Global },
+            })]);
+
+            // Workspace symbol from header
+            index.updateFile("file:///header.h", [createSymbol({
+                name: "SHARED",
+                source: { type: SourceType.Workspace, uri: "file:///header.h" },
+                scope: { level: ScopeLevel.Workspace },
+            })]);
+
+            // Document symbol from current file
+            index.updateFile("file:///current.txt", [createSymbol({
+                name: "SHARED",
+                source: { type: SourceType.Document, uri: "file:///current.txt" },
+                scope: { level: ScopeLevel.File },
+            })]);
+
+            // With context pointing to current file, document symbol should win
+            const result = index.lookup("SHARED", { uri: "file:///current.txt" });
+            expect(result).toBeDefined();
+            expect(result!.source.type).toBe(SourceType.Document);
+
+            // All three should be in lookupAll
+            const all = index.lookupAll("SHARED", { uri: "file:///current.txt" });
+            expect(all).toHaveLength(3);
+            // First should be document (highest precedence with same-file bonus)
+            expect(all[0]!.source.type).toBe(SourceType.Document);
+        });
+    });
+
+    // =========================================================================
     // Scope-aware queries (basic - detailed tests in separate file)
     // =========================================================================
     describe("getVisibleSymbols()", () => {

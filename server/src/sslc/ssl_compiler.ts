@@ -66,6 +66,13 @@ export async function ssl_compile(opts: {
         stdout: string;
         stderr: string;
     }>((resolve, _reject) => {
+        // Handle fork failures (e.g., ENOENT when compiler module is missing).
+        // Without this, the promise would never resolve if fork fails before "close".
+        p.on("error", (err) => {
+            conlog(`Built-in compiler fork error: ${err.message}`);
+            stderr.push(err.message);
+        });
+
         p.on("close", (code) => {
             conlog(
                 `Build-in compiler:\n` +

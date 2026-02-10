@@ -12,7 +12,7 @@
             "autoAttachChildProcesses": true,
             "preLaunchTask": {
                 "type": "npm",
-                "script": "build"
+                "script": "build:dev"
             }
         },
         {

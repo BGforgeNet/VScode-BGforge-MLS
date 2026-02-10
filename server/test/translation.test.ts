@@ -341,4 +341,181 @@ describe("Translation", () => {
             expect(hoverWithComment).not.toBeNull();
         });
     });
+
+    describe("edge cases: empty and special strings", () => {
+        it("loads empty translation string @0 = ~~", async () => {
+            // Create a .tra with an empty string entry
+            const traWithEmpty = `@0 = ~~\n@1 = ~non-empty~`;
+            fs.writeFileSync(path.join(tempDir, "empty.tra"), traWithEmpty);
+
+            const settings: ProjectTraSettings = {
+                directory: tempDir,
+                auto_tra: true,
+            };
+            const t = new Translation(settings, tempDir);
+            await t.init();
+
+            const uri = `file://${tempDir}/empty.tbaf`;
+            fs.writeFileSync(path.join(tempDir, "empty.tbaf"), "");
+            const text = `/** @tra empty.tra */\nconst x = $tra(0);`;
+
+            // Empty string should still resolve (not be skipped)
+            const hover = t.getHover(uri, "typescript", "$tra(0)", text);
+            expect(hover).not.toBeNull();
+        });
+
+        it("loads .msg with empty text field {100}{}{}", async () => {
+            const msgWithEmpty = `{100}{}{}\n{101}{}{Non-empty}`;
+            fs.writeFileSync(path.join(tempDir, "empty.msg"), msgWithEmpty);
+
+            const settings: ProjectTraSettings = {
+                directory: tempDir,
+                auto_tra: true,
+            };
+            const t = new Translation(settings, tempDir);
+            await t.init();
+
+            const uri = `file://${tempDir}/empty.tssl`;
+            fs.writeFileSync(path.join(tempDir, "empty.tssl"), "");
+            const text = `/** @tra empty.msg */\nconst x = mstr(100);`;
+
+            // Empty msg entry should still resolve
+            const hover = t.getHover(uri, "typescript", "mstr(100", text);
+            expect(hover).not.toBeNull();
+        });
+    });
+
+    describe("edge cases: non-existent directory", () => {
+        it("handles non-existent translation directory gracefully", async () => {
+            const settings: ProjectTraSettings = {
+                directory: "/nonexistent/dir/that/does/not/exist",
+                auto_tra: true,
+            };
+            const t = new Translation(settings, tempDir);
+
+            // Should not throw
+            await t.init();
+            expect(t.initialized).toBe(true);
+        });
+
+        it("returns null hover after init with non-existent directory", async () => {
+            const settings: ProjectTraSettings = {
+                directory: "/nonexistent/dir",
+                auto_tra: true,
+            };
+            const t = new Translation(settings, tempDir);
+            await t.init();
+
+            const uri = `file://${tempDir}/test.tssl`;
+            const text = `/** @tra test.msg */\nconst x = mstr(100);`;
+            const hover = t.getHover(uri, "typescript", "mstr(100", text);
+
+            expect(hover).toBeNull();
+        });
+
+        it("returns empty inlay hints after init with non-existent directory", async () => {
+            const settings: ProjectTraSettings = {
+                directory: "/nonexistent/dir",
+                auto_tra: true,
+            };
+            const t = new Translation(settings, tempDir);
+            await t.init();
+
+            const uri = `file://${tempDir}/test.tssl`;
+            const text = `/** @tra test.msg */\nconst x = mstr(100);`;
+            const range = { start: { line: 0, character: 0 }, end: { line: 2, character: 0 } };
+            const hints = t.getInlayHints(uri, "typescript", text, range);
+
+            expect(hints).toEqual([]);
+        });
+    });
+
+    describe("edge cases: uninitialized service", () => {
+        it("returns null hover when not initialized", () => {
+            const uri = `file://${tempDir}/test.tssl`;
+            const text = `/** @tra test.msg */\nconst x = mstr(100);`;
+            const hover = translation.getHover(uri, "typescript", "mstr(100", text);
+
+            expect(hover).toBeNull();
+        });
+
+        it("returns empty inlay hints when not initialized", () => {
+            const uri = `file://${tempDir}/test.tssl`;
+            const text = `/** @tra test.msg */\nconst x = mstr(100);`;
+            const range = { start: { line: 0, character: 0 }, end: { line: 2, character: 0 } };
+            const hints = translation.getInlayHints(uri, "typescript", text, range);
+
+            expect(hints).toEqual([]);
+        });
+
+        it("does nothing on reloadFile when not initialized", () => {
+            const uri = `file://${tempDir}/test.tra`;
+            // Should not throw
+            translation.reloadFile(uri, "weidu-tra", "@100 = ~test~");
+        });
+
+        it("returns empty messages when not initialized", () => {
+            const uri = `file://${tempDir}/test.ssl`;
+            const messages = translation.getMessages(uri, "// @tra test.msg");
+
+            expect(messages).toEqual({});
+        });
+    });
+
+    describe("edge cases: multi-line .tra entries", () => {
+        it("does not match multi-line entries with current regex", async () => {
+            // The regex /@(\d+)\s*=\s*~([^~]*)~/gm uses [^~]* which matches across lines
+            // This is actually a feature, not a bug - WeiDU supports multi-line .tra entries
+            const multiLineTra = `@100 = ~This is a
+multi-line
+translation~`;
+            fs.writeFileSync(path.join(tempDir, "multi.tra"), multiLineTra);
+
+            const settings: ProjectTraSettings = {
+                directory: tempDir,
+                auto_tra: true,
+            };
+            const t = new Translation(settings, tempDir);
+            await t.init();
+
+            const uri = `file://${tempDir}/multi.tbaf`;
+            fs.writeFileSync(path.join(tempDir, "multi.tbaf"), "");
+            const text = `/** @tra multi.tra */\nconst x = $tra(100);`;
+            const hover = t.getHover(uri, "typescript", "$tra(100)", text);
+
+            // [^~]* matches across lines since the regex has /gm flag
+            // and [^~]* doesn't restrict to single line
+            expect(hover).not.toBeNull();
+            if (hover) {
+                const content = (hover.contents as { value: string }).value;
+                expect(content).toContain("multi-line");
+            }
+        });
+    });
+
+    describe("reloadFile", () => {
+        it("does not throw when reloading a .tra file within workspace", async () => {
+            await translation.init();
+
+            const traUri = `file://${tempDir}/test.tra`;
+            const newText = `@100 = ~Updated text~\n@200 = ~New entry~`;
+
+            // Should not throw -- verifies the reload path works
+            expect(() =>
+                translation.reloadFile(traUri, "weidu-tra", newText)
+            ).not.toThrow();
+        });
+
+        it("ignores files with unknown language ID", async () => {
+            await translation.init();
+
+            const traUri = `file://${tempDir}/test.tra`;
+            const newText = `@100 = ~Updated text~`;
+
+            // Non-translation langId should be silently ignored
+            expect(() =>
+                translation.reloadFile(traUri, "typescript", newText)
+            ).not.toThrow();
+        });
+    });
 });

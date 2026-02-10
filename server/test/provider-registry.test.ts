@@ -159,6 +159,56 @@ describe("ProviderRegistry", () => {
 
             expect(successProvider.init).toHaveBeenCalled();
         });
+
+        it("provider that throws during init still exists in registry", async () => {
+            const registry = await createRegistry();
+            const failingProvider = createMockProvider("failing", {
+                init: vi.fn().mockRejectedValue(new Error("Init failed")),
+            });
+
+            registry.register(failingProvider);
+            await registry.init(mockContext);
+
+            // Provider is still registered (not removed)
+            expect(registry.has("failing")).toBe(true);
+            expect(registry.get("failing")).toBe(failingProvider);
+        });
+
+        it("feature requests to failed provider return empty results", async () => {
+            const registry = await createRegistry();
+            // Provider has init that fails, but also has format/symbols
+            // In practice, a failed provider likely hasn't set up its parser,
+            // so features would return empty/null even if called.
+            const failingProvider = createMockProvider("failing", {
+                init: vi.fn().mockRejectedValue(new Error("Parser WASM load failed")),
+                format: vi.fn().mockReturnValue({ edits: [] }),
+                symbols: vi.fn().mockReturnValue([]),
+            });
+
+            registry.register(failingProvider);
+            await registry.init(mockContext);
+
+            // These still route to the provider since it's registered
+            const formatResult = registry.format("failing", "text", "file:///test.txt");
+            const symbolResult = registry.symbols("failing", "text");
+
+            expect(formatResult).toEqual({ edits: [] });
+            expect(symbolResult).toEqual([]);
+        });
+
+        it("compile on failed provider returns false when compile is not implemented", async () => {
+            const registry = await createRegistry();
+            const failingProvider = createMockProvider("failing", {
+                init: vi.fn().mockRejectedValue(new Error("Init failed")),
+                // No compile method
+            });
+
+            registry.register(failingProvider);
+            await registry.init(mockContext);
+
+            const result = await registry.compile("failing", "file:///test.txt", "content", false);
+            expect(result).toBe(false);
+        });
     });
 
     describe("getContext()", () => {

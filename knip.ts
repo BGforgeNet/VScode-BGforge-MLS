@@ -9,8 +9,11 @@ const config: KnipConfig = {
   workspaces: {
     client: {
       entry: [
-        // bundled by esbuild-base-webviews in package.json
+        // esbuild entry points (moved from package.json to scripts/*.sh)
+        "src/extension.ts",
+        "src/editors/binaryEditor-webview.ts",
         "src/dialog-tree/dialogTree-webview.ts",
+        "src/ts-plugin.ts",
         // test entry points for @vscode/test-electron
         "src/test/runTest.ts",
         "src/test/index.ts",
@@ -50,6 +53,8 @@ const config: KnipConfig = {
     "prettier",
     // used by scripts/ (pnpm exec tsx scripts/...)
     "tsx",
+    // invoked in scripts/*.sh build scripts, not visible to knip
+    "esbuild",
   ],
   // esbuild uses glob patterns that knip can't resolve as imports
   ignoreUnresolved: [/\.\/client\/src\/test\/\*\.ts/],

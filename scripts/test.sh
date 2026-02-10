@@ -8,70 +8,68 @@ ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 cd "$ROOT_DIR"
 
-echo "=== Typechecking Client ==="
+_start_time=$(date +%s%3N)
+_prev_time=$_start_time
+
+step() {
+    local now
+    now=$(date +%s%3N)
+    if [ "$_prev_time" != "$_start_time" ]; then
+        echo "  ^ $(( now - _prev_time )) ms"
+    fi
+    _prev_time=$now
+    echo ""
+    echo "=== $1 ==="
+}
+
+step "Typechecking Client"
 (cd client && pnpm exec tsc --noEmit)
 (cd client && pnpm exec tsc --noEmit -p tsconfig.ts-plugin.json)
 
-echo ""
-echo "=== Typechecking Server ==="
+step "Typechecking Server"
 (cd server && pnpm exec tsc --noEmit)
 
-echo ""
-echo "=== Typechecking CLI ==="
+step "Typechecking CLI"
 pnpm exec tsc --project cli/tsconfig.json
 
-echo ""
-echo "=== Running ESLint ==="
+step "Running ESLint"
 pnpm exec eslint 'server/src/**/*.ts' 'client/src/**/*.ts' 'cli/**/*.ts' --ignore-pattern 'cli/test' --ignore-pattern 'cli/vitest.config.ts' --no-warn-ignored --max-warnings 0
 
-echo ""
-echo "=== Running Server Unit Tests ==="
-(cd server && pnpm test:unit)
+step "Running Server Unit Tests + Coverage"
+(cd server && pnpm exec vitest run --coverage)
 
-echo ""
-echo "=== Running Client Unit Tests ==="
+step "Running Client Unit Tests"
 vitest run --config client/vitest.config.ts
 
-echo ""
-echo "=== Testing TD Samples ==="
+step "Testing TD Samples"
 ./server/test/td/test.sh
 ./server/test/td/typecheck-samples.sh
 
-echo ""
-echo "=== Testing TBAF Samples ==="
+step "Testing TBAF Samples"
 ./server/test/tbaf/typecheck-samples.sh
 
-echo ""
-echo "=== Checking Formatting ==="
+step "Checking Formatting"
 (cd client && pnpm exec prettier --check "src/**/*.css" "src/**/*.html")
 
-echo ""
-echo "=== Testing CLI ==="
+step "Testing CLI"
 pnpm test:cli
 
-echo ""
-echo "=== Testing Binary Parser ==="
+step "Testing Binary Parser"
 pnpm test:bin
 
-echo ""
-echo "=== Testing Scripts ==="
+step "Testing Scripts"
 pnpm test:scripts
 
-echo ""
-echo "=== Linting Scripts ==="
+step "Linting Scripts"
 pnpm lint:scripts
 
-echo ""
-echo "=== Testing External ==="
+step "Testing External"
 pnpm test:external
 
-echo ""
-echo "=== Running Coverage ==="
-pnpm test:coverage
-
-echo ""
-echo "=== Checking for unused code (knip) ==="
+step "Checking for unused code (knip)"
 pnpm knip
 
+_end_time=$(date +%s%3N)
+echo "  ^ $(( _end_time - _prev_time )) ms"
 echo ""
-echo "=== All tests passed ==="
+echo "=== All tests passed in $(( _end_time - _start_time )) ms ==="
