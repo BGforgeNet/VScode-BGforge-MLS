@@ -72,6 +72,13 @@ describe("symbolAtPosition", () => {
         expect(result).toBe("tra");
     });
 
+    it("returns msg reference for number inside nested call", () => {
+        const text = "display_msg(mstr(101));";
+        // Position 17-19 is on the digits of 101
+        const result = symbolAtPosition(text, { line: 0, character: 18 });
+        expect(result).toBe("mstr(101");
+    });
+
     it("returns full $tra(123) when cursor on number", () => {
         const text = "const x = $tra(100);";
         // Position 15-17 is on the digits

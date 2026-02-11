@@ -228,8 +228,11 @@ export function symbolAtPosition(text: string, position: Position) {
     }
 
     // and if pure numeric, check if it's a tra reference
+    // Use [^\s(] instead of \S to treat ( as a boundary — prevents matching
+    // through nested calls like display_msg(mstr(101)) where \S+ would grab
+    // the entire "display_msg(mstr(101" and fail to match REGEX_MSG_HOVER.
     if (onlyDigits(result)) {
-        left = str.slice(0, pos + 1).search(/\S+$/);
+        left = str.slice(0, pos + 1).search(/[^\s(]+\(?\d+$/);
         right = str.slice(pos).search(/\W/);
         if (right < 0) {
             result = str.slice(left);
