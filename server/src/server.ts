@@ -454,8 +454,17 @@ connection.onDefinition((params) => {
         return providerResult;
     }
 
-    // Try provider symbol definition (data-driven, from headers)
     const symbol = symbolAtPosition(text, params.position);
+
+    // Try translation definition (mstr/tra/@123 references -> .msg/.tra files)
+    if (symbol) {
+        const traResult = translation?.getDefinition(uri, langId, symbol, text);
+        if (traResult) {
+            return traResult;
+        }
+    }
+
+    // Try provider symbol definition (data-driven, from headers)
     if (symbol) {
         return registry.symbolDefinition(langId, symbol);
     }

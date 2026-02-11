@@ -1,6 +1,6 @@
 /**
  * Unit tests for Translation service.
- * Tests TSSL (.msg) and TBAF (.tra) translation support.
+ * Tests TSSL (.msg) and TBAF (.tra) translation support: hover, inlay hints, and go-to-definition.
  */
 
 import * as fs from "fs";
@@ -490,6 +490,123 @@ translation~`;
                 const content = (hover.contents as { value: string }).value;
                 expect(content).toContain("multi-line");
             }
+        });
+    });
+
+    describe("getDefinition", () => {
+        it("returns location for mstr(100) in TSSL file", async () => {
+            await translation.init();
+
+            const uri = `file://${tempDir}/test.tssl`;
+            const text = `/** @tra test.msg */\nconst x = mstr(100);`;
+            const result = translation.getDefinition(uri, "typescript", "mstr(100", text);
+
+            expect(result).not.toBeNull();
+            expect(result!.uri).toContain("test.msg");
+            expect(result!.range.start.line).toBe(0);
+            expect(result!.range.start.character).toBe(0);
+        });
+
+        it("returns correct line for non-first entry mstr(101)", async () => {
+            await translation.init();
+
+            const uri = `file://${tempDir}/test.tssl`;
+            const text = `/** @tra test.msg */\nconst x = mstr(101);`;
+            const result = translation.getDefinition(uri, "typescript", "mstr(101", text);
+
+            expect(result).not.toBeNull();
+            expect(result!.uri).toContain("test.msg");
+            expect(result!.range.start.line).toBe(1);
+        });
+
+        it("returns location for $tra(100) in TBAF file", async () => {
+            await translation.init();
+
+            const uri = `file://${tempDir}/test.tbaf`;
+            const text = `/** @tra test.tra */\nconst x = $tra(100);`;
+            const result = translation.getDefinition(uri, "typescript", "$tra(100)", text);
+
+            expect(result).not.toBeNull();
+            expect(result!.uri).toContain("test.tra");
+            expect(result!.range.start.line).toBe(0);
+        });
+
+        it("returns location for tra(100) in TD file", async () => {
+            await translation.init();
+
+            const uri = `file://${tempDir}/test.td`;
+            const text = `/** @tra test.tra */\nconst x = tra(100);`;
+            const result = translation.getDefinition(uri, "typescript", "tra(100)", text);
+
+            expect(result).not.toBeNull();
+            expect(result!.uri).toContain("test.tra");
+            expect(result!.range.start.line).toBe(0);
+        });
+
+        it("returns location for @100 in weidu-baf file", async () => {
+            await translation.init();
+
+            fs.writeFileSync(path.join(tempDir, "test.baf"), "");
+            const uri = `file://${tempDir}/test.baf`;
+            const text = `// @tra test.tra\nIF\n  Global("test","GLOBAL",0)\nTHEN\n  RESPONSE #100\n    DisplayStringHead(Myself,@100)\nEND`;
+            const result = translation.getDefinition(uri, "weidu-baf", "@100", text);
+
+            expect(result).not.toBeNull();
+            expect(result!.uri).toContain("test.tra");
+            expect(result!.range.start.line).toBe(0);
+        });
+
+        it("returns null for non-existent entry mstr(999)", async () => {
+            await translation.init();
+
+            const uri = `file://${tempDir}/test.tssl`;
+            const text = `/** @tra test.msg */\nconst x = mstr(999);`;
+            const result = translation.getDefinition(uri, "typescript", "mstr(999", text);
+
+            expect(result).toBeNull();
+        });
+
+        it("returns null when translation file is not loaded", async () => {
+            await translation.init();
+
+            const uri = `file://${tempDir}/test.tssl`;
+            const text = `/** @tra nonexistent.msg */\nconst x = mstr(100);`;
+            const result = translation.getDefinition(uri, "typescript", "mstr(100", text);
+
+            expect(result).toBeNull();
+        });
+
+        it("returns null when not initialized", () => {
+            const uri = `file://${tempDir}/test.tssl`;
+            const text = `/** @tra test.msg */\nconst x = mstr(100);`;
+            const result = translation.getDefinition(uri, "typescript", "mstr(100", text);
+
+            expect(result).toBeNull();
+        });
+
+        it("returns URI with correct absolute file path", async () => {
+            await translation.init();
+
+            const uri = `file://${tempDir}/test.tssl`;
+            const text = `/** @tra test.msg */\nconst x = mstr(100);`;
+            const result = translation.getDefinition(uri, "typescript", "mstr(100", text);
+
+            expect(result).not.toBeNull();
+            // URI should be file:// + absolute path to test.msg in the tempDir
+            expect(result!.uri).toBe(`file://${path.join(tempDir, "test.msg")}`);
+        });
+
+        it("returns location for mstr(100) in fallout-ssl file", async () => {
+            await translation.init();
+
+            fs.writeFileSync(path.join(tempDir, "test.ssl"), "");
+            const uri = `file://${tempDir}/test.ssl`;
+            const text = `// @tra test.msg\nconst x = mstr(100);`;
+            const result = translation.getDefinition(uri, "fallout-ssl", "mstr(100", text);
+
+            expect(result).not.toBeNull();
+            expect(result!.uri).toContain("test.msg");
+            expect(result!.range.start.line).toBe(0);
         });
     });
 

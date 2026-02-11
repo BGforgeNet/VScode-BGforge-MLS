@@ -1,6 +1,7 @@
 /**
  * Translation service for .tra and .msg files.
- * Self-contained service that loads translations and provides hover/inlay hints.
+ * Self-contained service that loads translations and provides hover, inlay hints,
+ * and go-to-definition for translation references.
  * Can be used by any consumer (providers, TSSL/TBAF handlers, etc.)
  */
 
@@ -8,8 +9,8 @@ import PromisePool from "@supercharge/promise-pool";
 import * as fs from "fs";
 import * as path from "path";
 import { fileURLToPath } from "url";
-import { Hover, InlayHint, MarkupContent, MarkupKind, Range } from "vscode-languageserver/node";
-import { conlog, findFiles, getRelPath, isDirectory, isSubpath } from "./common";
+import { Hover, InlayHint, Location, MarkupContent, MarkupKind, Range } from "vscode-languageserver/node";
+import { conlog, findFiles, getRelPath, isDirectory, isSubpath, pathToUri } from "./common";
 import {
     EXT_TBAF,
     EXT_TD,
@@ -39,6 +40,10 @@ interface TraEntry {
     hover: Hover;
     inlay: string;
     inlayTooltip?: string;
+    /** 0-based line number of this entry in the translation file */
+    line: number;
+    /** 0-based character offset within the line */
+    character: number;
 }
 
 /** Single file: index => entry */
@@ -87,6 +92,13 @@ function isTraRef(word: string, langId: string, filePath?: string): boolean {
     return false;
 }
 
+/** Result of resolving a translation reference to its entry */
+type ResolveResult =
+    | { kind: "entry"; entry: TraEntry; fileKey: string }
+    | { kind: "file-missing"; fileKey: string }
+    | { kind: "entry-missing"; fileKey: string; lineKey: string }
+    | null;
+
 export class Translation {
     private directory: string;
     private data: TraData;
@@ -122,17 +134,23 @@ export class Translation {
      * @returns Hover or null if not a translation reference
      */
     getHover(uri: string, langId: string, symbol: string, text: string): Hover | null {
-        if (!this.initialized) return null;
-        if (this.data.size === 0) return null;
-        if (!translatableLanguages.includes(langId)) return null;
-
-        const filePath = this.uriToPath(uri);
-        const wsRoot = this.workspaceRoot;
-        if (wsRoot === undefined || !isSubpath(wsRoot, filePath)) return null;
-        if (!isTraRef(symbol, langId, filePath)) return null;
-
-        const relPath = getRelPath(wsRoot, filePath);
+        const relPath = this.resolveRelPath(uri, langId, symbol);
+        if (!relPath) return null;
         return this.lookupHover(symbol, text, relPath, langId);
+    }
+
+    /**
+     * Get definition location for a translation reference.
+     * @param uri - Document URI
+     * @param langId - Language ID
+     * @param symbol - The symbol under cursor (e.g., "@123" or "mstr(100")
+     * @param text - Full document text
+     * @returns Location or null if not a translation reference
+     */
+    getDefinition(uri: string, langId: string, symbol: string, text: string): Location | null {
+        const relPath = this.resolveRelPath(uri, langId, symbol);
+        if (!relPath) return null;
+        return this.lookupDefinition(symbol, text, relPath, langId);
     }
 
     /**
@@ -209,6 +227,23 @@ export class Translation {
 
     private uriToPath(uri: string): string {
         return uri.startsWith("file://") ? fileURLToPath(uri) : uri;
+    }
+
+    /**
+     * Shared guard + path resolution for getHover/getDefinition.
+     * Returns workspace-relative path, or null if the request should be skipped.
+     */
+    private resolveRelPath(uri: string, langId: string, symbol: string): string | null {
+        if (!this.initialized) return null;
+        if (this.data.size === 0) return null;
+        if (!translatableLanguages.includes(langId)) return null;
+
+        const filePath = this.uriToPath(uri);
+        const wsRoot = this.workspaceRoot;
+        if (wsRoot === undefined || !isSubpath(wsRoot, filePath)) return null;
+        if (!isTraRef(symbol, langId, filePath)) return null;
+
+        return getRelPath(wsRoot, filePath);
     }
 
     /**
@@ -312,6 +347,8 @@ export class Translation {
             regex = /{(\d+)}\s*{\w*}\s*{([^}]*)}/gm;
         }
         const entries: TraEntries = new Map();
+        let currentLine = 0;
+        let lineStartIndex = 0;
         let match = regex.exec(text);
         while (match != null) {
             if (match.index === regex.lastIndex) {
@@ -324,6 +361,17 @@ export class Translation {
                 match = regex.exec(text);
                 continue;
             }
+
+            // Track line/character position by scanning newlines up to match start.
+            // Advances lineStartIndex past \n (handles both \n and \r\n).
+            for (let i = lineStartIndex; i < match.index; i++) {
+                if (text[i] === "\n") {
+                    currentLine++;
+                    lineStartIndex = i + 1;
+                }
+            }
+            const character = match.index - lineStartIndex;
+
             const hover: Hover = {
                 contents: {
                     kind: "markdown",
@@ -331,7 +379,13 @@ export class Translation {
                 },
             };
             const inlay = this.stringToInlay(str);
-            const entry: TraEntry = { source: str, hover: hover, inlay: inlay };
+            const entry: TraEntry = {
+                source: str,
+                hover,
+                inlay,
+                line: currentLine,
+                character,
+            };
             if (`/* ${str} */` != inlay) {
                 entry.inlayTooltip = str;
             }
@@ -388,7 +442,11 @@ export class Translation {
         return undefined;
     }
 
-    private lookupHover(word: string, text: string, relPath: string, langId: string): Hover | null {
+    /**
+     * Resolve a translation reference to its entry, file key, and line key.
+     * Shared by lookupHover and lookupDefinition to avoid duplicating resolution logic.
+     */
+    private resolveEntry(word: string, text: string, relPath: string, langId: string): ResolveResult {
         const ext = this.getTraExt(langId, relPath, text);
         if (!ext) return null;
 
@@ -397,12 +455,7 @@ export class Translation {
 
         const traFile = this.data.get(fileKey);
         if (!traFile) {
-            return {
-                contents: {
-                    kind: "plaintext",
-                    value: `Error: file ${fileKey} not found.`,
-                },
-            };
+            return { kind: "file-missing", fileKey };
         }
 
         const lineKey = this.getLineKey(word, ext);
@@ -413,15 +466,59 @@ export class Translation {
 
         const traEntry = traFile.get(lineKey);
         if (!traEntry) {
+            return { kind: "entry-missing", fileKey, lineKey };
+        }
+
+        return { kind: "entry", entry: traEntry, fileKey };
+    }
+
+    private lookupHover(word: string, text: string, relPath: string, langId: string): Hover | null {
+        const result = this.resolveEntry(word, text, relPath, langId);
+        if (!result) return null;
+
+        if (result.kind === "file-missing") {
             return {
                 contents: {
                     kind: "plaintext",
-                    value: `Error: entry ${lineKey} not found in ${fileKey}.`,
+                    value: `Error: file ${result.fileKey} not found.`,
+                },
+            };
+        }
+        if (result.kind === "entry-missing") {
+            return {
+                contents: {
+                    kind: "plaintext",
+                    value: `Error: entry ${result.lineKey} not found in ${result.fileKey}.`,
                 },
             };
         }
 
-        return traEntry.hover;
+        return result.entry.hover;
+    }
+
+    private lookupDefinition(word: string, text: string, relPath: string, langId: string): Location | null {
+        const result = this.resolveEntry(word, text, relPath, langId);
+        if (!result || result.kind !== "entry") return null;
+
+        const absolutePath = this.resolveAbsolutePath(result.fileKey);
+        if (!absolutePath) return null;
+
+        return {
+            uri: pathToUri(absolutePath),
+            range: {
+                start: { line: result.entry.line, character: result.entry.character },
+                end: { line: result.entry.line, character: result.entry.character },
+            },
+        };
+    }
+
+    /** Resolve a tra-directory-relative file key to an absolute path */
+    private resolveAbsolutePath(fileKey: string): string | undefined {
+        if (path.isAbsolute(this.directory)) {
+            return path.join(this.directory, fileKey);
+        }
+        if (!this.workspaceRoot) return undefined;
+        return path.join(this.workspaceRoot, this.directory, fileKey);
     }
 
     private getLineKey(word: string, ext: TraExt): string | undefined {
