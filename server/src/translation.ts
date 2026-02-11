@@ -8,7 +8,7 @@ import PromisePool from "@supercharge/promise-pool";
 import * as fs from "fs";
 import * as path from "path";
 import { fileURLToPath } from "url";
-import { Hover, InlayHint, Range } from "vscode-languageserver/node";
+import { Hover, InlayHint, MarkupContent, MarkupKind, Range } from "vscode-languageserver/node";
 import { conlog, findFiles, getRelPath, isDirectory, isSubpath } from "./common";
 import {
     EXT_TBAF,
@@ -516,14 +516,17 @@ export class Translation {
         traEntries: TraEntries,
         traFileKey: string,
         lineKey: string
-    ): { label: string; tooltip?: string } {
+    ): { label: string; tooltip?: string | MarkupContent } {
         const traEntry = traEntries.get(lineKey);
         if (traEntry === undefined) {
             return { label: `/* Error: no such string ${traFileKey}:${lineKey} */`, tooltip: "" };
         }
+        const tooltip = traEntry.inlayTooltip
+            ? { kind: MarkupKind.Markdown, value: "```bgforge-mls-string\n" + traEntry.inlayTooltip + "\n```" }
+            : undefined;
         return {
             label: traEntry.inlay,
-            tooltip: traEntry.inlayTooltip ?? "",
+            tooltip,
         };
     }
 
