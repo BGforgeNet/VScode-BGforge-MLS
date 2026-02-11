@@ -1,9 +1,16 @@
-import * as vscode from "vscode";
-import * as fs from "fs";
-import * as path from "path";
-import { LanguageClient, ExecuteCommandRequest, ExecuteCommandParams } from "vscode-languageclient/node";
+/**
+ * SSL dialog tree builder and registration for Fallout SSL dialog preview.
+ * Uses shared panel infrastructure from ./shared.ts.
+ */
 
-// Duplicated from server/src/dialog.ts - can't import due to rootDir constraint
+import * as vscode from "vscode";
+import { LanguageClient } from "vscode-languageclient/node";
+import { escapeHtml, registerDialogPanel } from "./shared";
+
+// ---------------------------------------------------------------------------
+// Data model (duplicated from server/src/dialog.ts -- can't cross-import)
+// ---------------------------------------------------------------------------
+
 interface DialogReply {
     msgId: number | string;
     line: number;
@@ -30,58 +37,13 @@ interface DialogData {
     messages: Record<string, string>;
 }
 
-// Cached assets
-let cachedHtml: string | undefined;
-let cachedCss: string | undefined;
-let cachedJs: string | undefined;
-let cachedExtensionPath: string | undefined;
-
-function loadAsset(extensionPath: string, relativePath: string): string {
-    const fullPath = path.join(extensionPath, relativePath);
-    return fs.readFileSync(fullPath, "utf8");
-}
-
-function invalidateCacheIfNeeded(extensionPath: string): void {
-    if (cachedExtensionPath && cachedExtensionPath !== extensionPath) {
-        cachedHtml = undefined;
-        cachedCss = undefined;
-        cachedJs = undefined;
-    }
-    cachedExtensionPath = extensionPath;
-}
-
-function getHtmlTemplate(extensionPath: string): string {
-    invalidateCacheIfNeeded(extensionPath);
-    if (!cachedHtml) {
-        cachedHtml = loadAsset(extensionPath, path.join("client", "src", "dialog-tree", "dialogTree.html"));
-    }
-    return cachedHtml;
-}
-
-function getCss(extensionPath: string): string {
-    invalidateCacheIfNeeded(extensionPath);
-    if (!cachedCss) {
-        cachedCss = loadAsset(extensionPath, path.join("client", "src", "dialog-tree", "dialogTree.css"));
-    }
-    return cachedCss;
-}
-
-function getJs(extensionPath: string): string {
-    invalidateCacheIfNeeded(extensionPath);
-    if (!cachedJs) {
-        // Built by esbuild-webviews to client/out/
-        cachedJs = loadAsset(extensionPath, path.join("client", "out", "dialog-tree", "dialogTree-webview.js"));
-    }
-    return cachedJs;
-}
-
-function escapeHtml(text: string): string {
-    return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-}
+// ---------------------------------------------------------------------------
+// SSL-specific helpers
+// ---------------------------------------------------------------------------
 
 function getMsgText(msgId: number | string, messages: Record<string, string>): string {
     if (typeof msgId === "string") {
-        return msgId; // expression, return as-is
+        return escapeHtml(msgId);
     }
     const text = messages[String(msgId)];
     return text ? escapeHtml(text) : `(${msgId})`;
@@ -97,12 +59,16 @@ interface OptionMeta {
 function getOptionMeta(o: DialogOption): OptionMeta {
     const isMessage = o.type.endsWith("Message");
     const colorClass = o.type.startsWith("G") ? "option-good" : o.type.startsWith("B") ? "option-bad" : "option-neutral";
-    const tooltip = `${o.type}(${o.msgId})`;
+    const tooltip = escapeHtml(`${o.type}(${o.msgId})`);
     const isLow = o.type.includes("Low");
     const lowEmoji = isLow ? `<span title="${tooltip}">🤪</span>` : "";
     const icon = isMessage ? "stop-circle" : "arrow-right";
     return { colorClass, tooltip, lowEmoji, icon };
 }
+
+// ---------------------------------------------------------------------------
+// Tree builder
+// ---------------------------------------------------------------------------
 
 function buildTreeHtml(data: DialogData): string {
     const nodeMap = new Map(data.nodes.map((n) => [n.name, n]));
@@ -157,7 +123,7 @@ function buildTreeHtml(data: DialogData): string {
 
         // Show link if: already rendered, or this node should appear at a shallower level
         if (rendered.has(node.name) || (nodeMinDepth !== undefined && nodeMinDepth < currentDepth)) {
-            return `<div class="item node-ref"><span class="codicon codicon-references"></span> <a href="#" class="node-link" data-target="${node.name}">${node.name}</a></div>`;
+            return `<div class="item node-ref"><span class="codicon codicon-references"></span> <a href="#" class="node-link" data-target="${escapeHtml(node.name)}">${escapeHtml(node.name)}</a></div>`;
         }
 
         rendered.add(node.name);
@@ -165,12 +131,13 @@ function buildTreeHtml(data: DialogData): string {
         // If node only has call targets (no replies/options), show inline
         if (node.replies.length === 0 && node.options.length === 0 && node.callTargets.length > 0) {
             const targets = node.callTargets.map((t) => {
+                const escaped = escapeHtml(t);
                 const targetNode = nodeMap.get(t);
                 return targetNode
-                    ? `<a href="#" class="node-link" data-target="${t}">${t}</a>`
-                    : `<span class="target">${t}</span>`;
+                    ? `<a href="#" class="node-link" data-target="${escaped}">${escaped}</a>`
+                    : `<span class="target">${escaped}</span>`;
             }).join(", ");
-            return `<div class="item node-transition" id="node-${node.name}"><span class="codicon codicon-symbol-function"></span> <span class="node-name">${node.name}</span><span class="target-link"><span class="codicon codicon-arrow-right target-arrow"></span> ${targets}</span></div>`;
+            return `<div class="item node-transition" id="node-${escapeHtml(node.name)}"><span class="codicon codicon-symbol-function"></span> <span class="node-name">${escapeHtml(node.name)}</span><span class="target-link"><span class="codicon codicon-arrow-right target-arrow"></span> ${targets}</span></div>`;
         }
 
         // Find first item to show inline (reply or terminal message)
@@ -183,7 +150,7 @@ function buildTreeHtml(data: DialogData): string {
             // Safe: length check above guarantees index 0 exists
             const r = node.replies[0]!;
             const text = getMsgText(r.msgId, messages);
-            inlineHtml = `<span class="codicon codicon-comment reply" title="Reply(${r.msgId})"></span> <span class="reply msg-text" data-fulltext="${text}">${text}</span>`;
+            inlineHtml = `<span class="codicon codicon-comment reply" title="${escapeHtml(`Reply(${r.msgId})`)}"></span> <span class="reply msg-text" data-fulltext="${text}">${text}</span>`;
             skipFirstReply = true;
         } else {
             // Check for terminal message (option without target)
@@ -203,7 +170,7 @@ function buildTreeHtml(data: DialogData): string {
             .slice(skipFirstReply ? 1 : 0)
             .map((r) => {
                 const text = getMsgText(r.msgId, messages);
-                return `<div class="item reply"><span class="codicon codicon-comment" title="Reply(${r.msgId})"></span> <span class="msg-text" data-fulltext="${text}">${text}</span></div>`;
+                return `<div class="item reply"><span class="codicon codicon-comment" title="${escapeHtml(`Reply(${r.msgId})`)}"></span> <span class="msg-text" data-fulltext="${text}">${text}</span></div>`;
             })
             .join("");
 
@@ -219,9 +186,10 @@ function buildTreeHtml(data: DialogData): string {
                 const targetNode = nodeMap.get(o.target);
                 const targetMinDepth = minDepth.get(o.target);
                 const shouldRenderChild = targetNode && !rendered.has(o.target) && targetMinDepth === currentDepth + 1;
+                const escapedTarget = escapeHtml(o.target);
                 const targetHtml = targetNode
-                    ? `<a href="#" class="node-link" data-target="${o.target}">${o.target}</a>`
-                    : `<span class="target">${o.target}</span>`;
+                    ? `<a href="#" class="node-link" data-target="${escapedTarget}">${escapedTarget}</a>`
+                    : `<span class="target">${escapedTarget}</span>`;
 
                 if (shouldRenderChild) {
                     // Render option as expandable with target as child
@@ -244,11 +212,11 @@ function buildTreeHtml(data: DialogData): string {
 
         // If no children remain, render as single line
         if (!children) {
-            return `<div class="item node-inline" id="node-${node.name}"><span class="codicon codicon-symbol-function"></span> <span class="node-name">${node.name}</span> ${inlineHtml}</div>`;
+            return `<div class="item node-inline" id="node-${escapeHtml(node.name)}"><span class="codicon codicon-symbol-function"></span> <span class="node-name">${escapeHtml(node.name)}</span> ${inlineHtml}</div>`;
         }
 
-        return `<details open class="node" id="node-${node.name}">
-            <summary><span class="codicon codicon-symbol-function"></span> <span class="node-name">${node.name}</span> ${inlineHtml}</summary>
+        return `<details open class="node" id="node-${escapeHtml(node.name)}">
+            <summary><span class="codicon codicon-symbol-function"></span> <span class="node-name">${escapeHtml(node.name)}</span> ${inlineHtml}</summary>
             <div class="children">${children}</div>
         </details>`;
     };
@@ -263,124 +231,20 @@ function buildTreeHtml(data: DialogData): string {
     </details>`;
 }
 
-function getDialogPreviewHtml(data: DialogData, codiconsUri: string, extensionPath: string): string {
-    const treeContent = buildTreeHtml(data);
-
-    return getHtmlTemplate(extensionPath)
-        .replace("{{codiconsUri}}", codiconsUri)
-        .replace("{{cssUri}}", "") // Inline CSS instead
-        .replace("{{scriptUri}}", "") // Inline JS instead
-        .replace('<link href="" rel="stylesheet" />', `<style>${getCss(extensionPath)}</style>`)
-        .replace('<script src=""></script>', `<script>${getJs(extensionPath)}</script>`)
-        .replace("{{treeContent}}", treeContent);
-}
+// ---------------------------------------------------------------------------
+// Registration
+// ---------------------------------------------------------------------------
 
 export function registerDialogTree(context: vscode.ExtensionContext, client: LanguageClient): void {
-    let dialogPanel: vscode.WebviewPanel | undefined;
-    let currentDocumentUri: string | undefined;
-    let refreshTimeout: NodeJS.Timeout | undefined;
-
-    // Debounced refresh function
-    async function refreshPreview() {
-        if (!dialogPanel || !currentDocumentUri) return;
-
-        const params: ExecuteCommandParams = {
-            command: "bgforge.parseDialog",
-            arguments: [{ uri: currentDocumentUri }],
-        };
-
-        try {
-            const data = (await client.sendRequest(ExecuteCommandRequest.type, params)) as DialogData | null;
-            if (!data || data.nodes.length === 0) return;
-
-            const codiconsUri = dialogPanel.webview.asWebviewUri(
-                vscode.Uri.joinPath(context.extensionUri, "node_modules", "@vscode/codicons", "dist", "codicon.css")
-            );
-            dialogPanel.webview.html = getDialogPreviewHtml(data, codiconsUri.toString(), context.extensionUri.fsPath);
-        } catch {
-            // Ignore errors during refresh
-        }
-    }
-
-    function scheduleRefresh() {
-        if (refreshTimeout) {
-            clearTimeout(refreshTimeout);
-        }
-        refreshTimeout = setTimeout(refreshPreview, 300);
-    }
-
-    // Watch for script changes while editing
-    context.subscriptions.push(
-        vscode.workspace.onDidChangeTextDocument((e) => {
-            if (dialogPanel && e.document.uri.toString() === currentDocumentUri) {
-                scheduleRefresh();
-            }
-        })
-    );
-
-    // Refresh on script save or .msg save
-    context.subscriptions.push(
-        vscode.workspace.onDidSaveTextDocument((doc) => {
-            if (!dialogPanel) return;
-            if (doc.uri.toString() === currentDocumentUri || doc.languageId === "fallout-msg") {
-                void refreshPreview(); // fire-and-forget, errors handled internally
-            }
-        })
-    );
-
-    // Preview dialog tree command
-    context.subscriptions.push(
-        vscode.commands.registerCommand("extension.bgforge.dialogPreview", async () => {
-            const editor = vscode.window.activeTextEditor;
-            if (!editor || editor.document.languageId !== "fallout-ssl") {
-                vscode.window.showWarningMessage("Open a Fallout SSL file to preview dialog");
-                return;
-            }
-
-            currentDocumentUri = editor.document.uri.toString();
-
-            const params: ExecuteCommandParams = {
-                command: "bgforge.parseDialog",
-                arguments: [{ uri: currentDocumentUri }],
-            };
-
-            try {
-                const data = (await client.sendRequest(ExecuteCommandRequest.type, params)) as DialogData | null;
-
-                if (!data || data.nodes.length === 0) {
-                    vscode.window.showWarningMessage("No dialog data found");
-                    return;
-                }
-
-                const fileName = editor.document.fileName.split(/[/\\]/).pop() || "dialog";
-
-                if (dialogPanel) {
-                    dialogPanel.reveal(vscode.ViewColumn.Active);
-                } else {
-                    dialogPanel = vscode.window.createWebviewPanel(
-                        "bgforgeDialogPreview",
-                        `Dialog: ${fileName}`,
-                        vscode.ViewColumn.Active,
-                        { enableScripts: true }
-                    );
-                    dialogPanel.onDidDispose(() => {
-                        dialogPanel = undefined;
-                        currentDocumentUri = undefined;
-                        if (refreshTimeout) {
-                            clearTimeout(refreshTimeout);
-                        }
-                    });
-                }
-
-                const codiconsUri = dialogPanel.webview.asWebviewUri(
-                    vscode.Uri.joinPath(context.extensionUri, "node_modules", "@vscode/codicons", "dist", "codicon.css")
-                );
-
-                dialogPanel.title = `Dialog: ${fileName}`;
-                dialogPanel.webview.html = getDialogPreviewHtml(data, codiconsUri.toString(), context.extensionUri.fsPath);
-            } catch {
-                vscode.window.showErrorMessage("Failed to generate dialog preview");
-            }
-        })
-    );
+    registerDialogPanel(context, client, {
+        languageId: "fallout-ssl",
+        commandName: "extension.bgforge.dialogPreview",
+        warningMessage: "Open a Fallout SSL file to preview dialog",
+        translationLangId: "fallout-msg",
+        buildTreeHtml: (data) => buildTreeHtml(data as DialogData),
+        hasData: (data) => {
+            const d = data as DialogData;
+            return d.nodes.length > 0;
+        },
+    });
 }

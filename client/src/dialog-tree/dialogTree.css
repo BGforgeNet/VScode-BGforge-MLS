@@ -6,6 +6,8 @@ body {
     --dialog-option-bad: #f14c4c;
     --dialog-msg-text: #dcdcaa;
     --dialog-target-arrow: #888;
+    --dialog-trigger: #4ec9b0;
+    --dialog-action: #d16969;
 
     font-family: var(--vscode-font-family, sans-serif);
     font-size: 13px;
@@ -205,4 +207,55 @@ summary:hover,
 
 .search-results .result:hover {
     background: var(--vscode-list-hoverBackground, rgba(255, 255, 255, 0.1));
+}
+
+/* D dialog-specific styles */
+
+.extern-marker {
+    color: #888;
+    font-style: italic;
+}
+
+.exit-marker {
+    color: var(--dialog-option-bad);
+}
+
+.speaker-label {
+    color: #888;
+    font-size: 12px;
+}
+
+.block-header {
+    color: var(--dialog-node-name);
+    font-weight: bold;
+}
+
+.silent-transition {
+    color: var(--dialog-trigger);
+    font-style: italic;
+}
+
+.modify-entry {
+    opacity: 0.8;
+}
+
+.modify-action {
+    color: var(--dialog-node-name);
+    font-weight: bold;
+    font-size: 12px;
+}
+
+.trigger-detail {
+    color: var(--dialog-trigger);
+    font-size: 12px;
+}
+
+.action-detail {
+    color: var(--dialog-action);
+    font-size: 12px;
+}
+
+.trigger-detail .codicon,
+.action-detail .codicon {
+    opacity: 0.6;
 }

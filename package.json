@@ -203,6 +203,11 @@
                 "command": "extension.bgforge.dialogPreview",
                 "title": "BGforge MLS: Dialog Preview",
                 "icon": "$(open-preview)"
+            },
+            {
+                "command": "extension.bgforge.dDialogPreview",
+                "title": "BGforge MLS: D Dialog Preview",
+                "icon": "$(open-preview)"
             }
         ],
         "customEditors": [
@@ -390,6 +395,11 @@
                 "command": "extension.bgforge.dialogPreview",
                 "key": "ctrl+shift+v",
                 "when": "editorLangId == fallout-ssl"
+            },
+            {
+                "command": "extension.bgforge.dDialogPreview",
+                "key": "ctrl+shift+v",
+                "when": "editorLangId == weidu-d"
             }
         ],
         "typescriptServerPlugins": [

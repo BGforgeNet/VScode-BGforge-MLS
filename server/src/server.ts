@@ -24,11 +24,13 @@ import { conlog, symbolAtPosition } from "./common";
 import { clearDiagnostics, COMMAND_compile, compile } from "./compile";
 import { getRequest as getSignatureRequest } from "./shared/signature";
 import { parseDialog } from "./dialog";
+import { parseDDialog } from "./weidu-d/dialog";
 import { falloutSslProvider } from "./fallout-ssl/provider";
 import { Translation } from "./translation";
 import {
     LANG_FALLOUT_SSL,
     LANG_WEIDU_BAF,
+    LANG_WEIDU_D,
     LANG_WEIDU_SLB,
     LANG_WEIDU_SSL,
 } from "./core/languages";
@@ -305,13 +307,20 @@ connection.onExecuteCommand(async (params) => {
         if (!textDoc) {
             return null;
         }
-        if (textDoc.languageId !== LANG_FALLOUT_SSL) {
-            return null;
-        }
         try {
-            const dialogData = await parseDialog(textDoc.getText());
-            const messages = translation?.getMessages(args.uri, textDoc.getText()) ?? {};
-            return { ...dialogData, messages };
+            const langId = textDoc.languageId;
+            const text = textDoc.getText();
+            if (langId === LANG_FALLOUT_SSL) {
+                const dialogData = await parseDialog(text);
+                const messages = translation?.getMessages(args.uri, text, langId) ?? {};
+                return { ...dialogData, messages };
+            }
+            if (langId === LANG_WEIDU_D) {
+                const dialogData = parseDDialog(text);
+                const messages = translation?.getMessages(args.uri, text, langId) ?? {};
+                return { ...dialogData, messages };
+            }
+            return null;
         } catch (e) {
             conlog("parseDialog error: " + e);
             if (e instanceof Error) {

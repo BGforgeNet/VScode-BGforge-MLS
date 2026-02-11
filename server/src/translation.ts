@@ -183,14 +183,15 @@ export class Translation {
      * Get all message texts for a file (used for dialog parsing).
      * @param uri - Document URI
      * @param text - Full document text
+     * @param langId - Language ID (determines .msg vs .tra resolution)
      * @returns Map of message ID to message text
      */
-    getMessages(uri: string, text: string): Record<string, string> {
+    getMessages(uri: string, text: string, langId: string = LANG_FALLOUT_SSL): Record<string, string> {
         const messages: Record<string, string> = {};
         if (!this.initialized) return messages;
 
         const filePath = this.uriToPath(uri);
-        const traFileKey = this.resolveTraFileKey(filePath, text, LANG_FALLOUT_SSL);
+        const traFileKey = this.resolveTraFileKey(filePath, text, langId);
         if (!traFileKey) return messages;
 
         const traEntries = this.data.get(traFileKey);

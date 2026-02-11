@@ -12,6 +12,7 @@ import {
 import { ExecuteCommandParams, ExecuteCommandRequest } from "vscode-languageserver-protocol";
 import { registerBinaryEditor } from "./editors/binaryEditor";
 import { registerDialogTree } from "./dialog-tree/dialogTree";
+import { registerDDialogTree } from "./dialog-tree/dialogTree-d";
 import { ServerInitializingIndicator } from "./indicator";
 
 // Initialized in activate(), undefined until then
@@ -83,8 +84,9 @@ export async function activate(context: ExtensionContext) {
     await client.start();
     conlog("BGforge MLS client started");
 
-    // Register dialog tree view
+    // Register dialog tree views
     registerDialogTree(context, client);
+    registerDDialogTree(context, client);
 
     client.onNotification("bgforge-mls/load-finished", () => {
         loadingIndicator.finishedLoadingProject("");
