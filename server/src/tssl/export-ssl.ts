@@ -395,14 +395,6 @@ function handleDoStatement(stmt: Node, indent: string, ctx: TsslContext): string
     return result + `\n${indent}end\n`;
 }
 
-function handleTryStatement(stmt: Node, indent: string, ctx: TsslContext): string {
-    const tryStmt = stmt.asKindOrThrow(SyntaxKind.TryStatement);
-    const tryBlock = tryStmt.getTryBlock();
-    conlog(`TSSL warning: try-catch not supported in SSL, catch block will be ignored`);
-    let result = `${indent}/* TSSL: try-catch not supported in SSL, executing try block only */\n`;
-    result += processFunctionBody(tryBlock, indent, ctx);
-    return result + `\n`;
-}
 
 // ============================================================================
 // Main function body processor
@@ -466,8 +458,7 @@ function processFunctionBody(bodyNode: Node, indent: string = "", ctx: TsslConte
                 result += handleDoStatement(stmt, indent, ctx);
                 break;
             case SyntaxKind.TryStatement:
-                result += handleTryStatement(stmt, indent, ctx);
-                break;
+                throw new Error("try/catch is not supported in SSL");
             case SyntaxKind.ContinueStatement:
                 result += `${indent}continue;\n`;
                 break;
