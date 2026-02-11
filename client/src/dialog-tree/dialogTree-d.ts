@@ -11,13 +11,13 @@ import { escapeHtml, registerDialogPanel } from "./shared";
 // Data model (duplicated from server/src/weidu-d/dialog.ts -- can't cross-import)
 // ---------------------------------------------------------------------------
 
-type DDialogTarget =
+export type DDialogTarget =
     | { kind: "goto"; label: string }
     | { kind: "extern"; file: string; label: string }
     | { kind: "exit" }
     | { kind: "copy_trans"; file: string; label: string };
 
-interface DDialogTransition {
+export interface DDialogTransition {
     line: number;
     replyText?: string;
     trigger?: string;
@@ -25,7 +25,7 @@ interface DDialogTransition {
     target: DDialogTarget;
 }
 
-interface DDialogState {
+export interface DDialogState {
     label: string;
     line: number;
     sayText: string;
@@ -35,9 +35,9 @@ interface DDialogState {
     blockLabel?: string;
 }
 
-type DDialogBlockKind = "begin" | "append" | "chain" | "extend" | "interject" | "replace" | "modify";
+export type DDialogBlockKind = "begin" | "append" | "chain" | "extend" | "interject" | "replace" | "modify";
 
-interface DDialogBlock {
+export interface DDialogBlock {
     kind: DDialogBlockKind;
     file: string;
     line: number;
@@ -47,7 +47,7 @@ interface DDialogBlock {
     stateRefs?: string[];
 }
 
-interface DDialogData {
+export interface DDialogData {
     blocks: DDialogBlock[];
     states: DDialogState[];
     messages: Record<string, string>;
@@ -58,7 +58,7 @@ interface DDialogData {
 // ---------------------------------------------------------------------------
 
 /** Resolve @123 tra refs, return raw text (not escaped). */
-function getResolvedText(text: string, messages: Record<string, string>): string {
+export function getResolvedText(text: string, messages: Record<string, string>): string {
     const traMatch = /^@(\d+)$/.exec(text);
     if (traMatch && traMatch[1]) {
         const resolved = messages[traMatch[1]];
@@ -69,24 +69,20 @@ function getResolvedText(text: string, messages: Record<string, string>): string
     return text;
 }
 
-function getTranslatedText(text: string, messages: Record<string, string>): string {
-    return escapeHtml(getResolvedText(text, messages));
-}
-
-/** Returns { plain, html } -- plain for attributes, html for display. */
-function getTransitionText(t: DDialogTransition, messages: Record<string, string>): { plain: string; html: string } {
+/** Returns { plain, html } -- plain is raw (must be escaped before insertion into attributes), html is pre-escaped for display. */
+export function getTransitionText(t: DDialogTransition, messages: Record<string, string>): { plain: string; html: string } {
     if (t.replyText) {
-        const text = getTranslatedText(t.replyText, messages);
-        return { plain: text, html: text };
+        const raw = getResolvedText(t.replyText, messages);
+        return { plain: raw, html: escapeHtml(raw) };
     }
+    // Silent transitions: show filter icon with trigger as tooltip instead of inline text
     if (t.trigger) {
-        const plain = `[${t.trigger}]`;
-        return { plain, html: `<span class="silent-transition">[${escapeHtml(t.trigger)}]</span>` };
+        return { plain: `[${t.trigger}]`, html: `<span class="trigger-detail"><span class="codicon codicon-filter" title="${escapeHtml(t.trigger)}"></span></span>` };
     }
     return { plain: "(auto)", html: `<span class="silent-transition">(auto)</span>` };
 }
 
-function renderTargetHtml(target: DDialogTarget): string {
+export function renderTargetHtml(target: DDialogTarget): string {
     switch (target.kind) {
         case "goto":
             return `<span class="target-link"><span class="codicon codicon-arrow-right target-arrow"></span> <a href="#" class="node-link" data-target="${escapeHtml(target.label)}">${escapeHtml(target.label)}</a></span>`;
@@ -105,7 +101,7 @@ const STRUCTURAL_KINDS = new Set<DDialogBlockKind>(["begin", "append", "chain", 
 // Tree builder
 // ---------------------------------------------------------------------------
 
-function buildDTreeHtml(data: DDialogData): string {
+export function buildDTreeHtml(data: DDialogData): string {
     const messages = data.messages;
     const stateMap = new Map(data.states.map((s) => [s.label, s]));
     const rendered = new Set<string>();
@@ -136,25 +132,25 @@ function buildDTreeHtml(data: DDialogData): string {
 
         rendered.add(state.label);
 
-        // Separate plain text (for attribute) and HTML (for display) to prevent attribute injection
-        const sayPlain = state.sayText ? escapeHtml(getResolvedText(state.sayText, messages)) : "";
-        const sayHtml = state.sayText ? getTranslatedText(state.sayText, messages) : "";
+        // Separate raw text (for attribute, escaped at insertion) from HTML (for display)
+        const sayRaw = state.sayText ? getResolvedText(state.sayText, messages) : "";
+        const sayHtml = state.sayText ? escapeHtml(sayRaw) : "";
         // Only show speaker when it differs from the block's file (useful in CHAINs with alternating speakers)
         const speaker = state.speaker;
         const speakerHtml = speaker !== undefined && speaker !== defaultSpeaker
             ? ` <span class="speaker-label">[${escapeHtml(speaker)}]</span>`
             : "";
-        const sayDisplay = sayHtml ? ` <span class="reply msg-text" data-fulltext="${sayPlain}">${sayHtml}</span>` : "";
+        const sayDisplay = sayHtml ? ` <span class="reply msg-text" data-fulltext="${escapeHtml(sayRaw)}">${sayHtml}</span>` : "";
 
         const transitionParts: string[] = [];
         for (const t of state.transitions) {
             const { plain: textPlain, html: textHtml } = getTransitionText(t, messages);
             const targetHtml = renderTargetHtml(t.target);
             const triggerHtml = t.trigger && t.replyText
-                ? `<span class="trigger-detail"><span class="codicon codicon-filter"></span> ${escapeHtml(t.trigger)}</span> `
+                ? `<span class="trigger-detail"><span class="codicon codicon-filter" title="${escapeHtml(t.trigger)}"></span></span> `
                 : "";
             const actionHtml = t.action
-                ? ` <span class="action-detail"><span class="codicon codicon-play"></span> ${escapeHtml(t.action)}</span>`
+                ? ` <span class="action-detail"><span class="codicon codicon-play" title="${escapeHtml(t.action)}"></span></span>`
                 : "";
 
             if (t.target.kind === "goto") {
@@ -297,7 +293,7 @@ function buildDTreeHtml(data: DDialogData): string {
 // Block-to-state matching
 // ---------------------------------------------------------------------------
 
-function getBlockStates(block: DDialogBlock, states: DDialogState[]): DDialogState[] {
+export function getBlockStates(block: DDialogBlock, states: DDialogState[]): DDialogState[] {
     if (block.kind === "chain" || block.kind === "interject") {
         return states.filter((s) => s.blockLabel === block.label);
     }

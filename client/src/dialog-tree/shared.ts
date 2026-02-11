@@ -60,7 +60,12 @@ function getJs(extensionPath: string): string {
 // ---------------------------------------------------------------------------
 
 export function escapeHtml(text: string): string {
-    return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
 }
 
 // ---------------------------------------------------------------------------
@@ -69,9 +74,8 @@ export function escapeHtml(text: string): string {
 
 function getDialogPreviewHtml(treeContent: string, codiconsUri: string, extensionPath: string): string {
     invalidateCacheIfNeeded(extensionPath);
-    // Use function replacers to prevent $-pattern interpretation in replacement strings.
-    // JS String.replace treats $&, $', $` as special even with string search patterns,
-    // which corrupts output when CSS/JS/HTML content contains $ characters.
+    // Function replacers prevent $-pattern interpretation in replacement strings
+    // ($&, $', $` are special even with string search patterns).
     return getHtmlTemplate(extensionPath)
         .replace("{{codiconsUri}}", () => codiconsUri)
         .replace("{{cssUri}}", () => "")
@@ -195,7 +199,7 @@ export function registerDialogPanel(
                         "bgforgeDialogPreview",
                         `Dialog: ${fileName}`,
                         vscode.ViewColumn.Active,
-                        { enableScripts: true }
+                        { enableScripts: true, localResourceRoots: [context.extensionUri] }
                     );
                     dialogPanel.onDidDispose(() => {
                         dialogPanel = undefined;

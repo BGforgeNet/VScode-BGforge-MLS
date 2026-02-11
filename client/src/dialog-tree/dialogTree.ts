@@ -11,19 +11,19 @@ import { escapeHtml, registerDialogPanel } from "./shared";
 // Data model (duplicated from server/src/dialog.ts -- can't cross-import)
 // ---------------------------------------------------------------------------
 
-interface DialogReply {
+export interface DialogReply {
     msgId: number | string;
     line: number;
 }
 
-interface DialogOption {
+export interface DialogOption {
     msgId: number | string;
     target: string;
     type: string;
     line: number;
 }
 
-interface DialogNode {
+export interface DialogNode {
     name: string;
     line: number;
     replies: DialogReply[];
@@ -31,7 +31,7 @@ interface DialogNode {
     callTargets: string[];
 }
 
-interface DialogData {
+export interface DialogData {
     nodes: DialogNode[];
     entryPoints: string[];
     messages: Record<string, string>;
@@ -41,12 +41,18 @@ interface DialogData {
 // SSL-specific helpers
 // ---------------------------------------------------------------------------
 
-function getMsgText(msgId: number | string, messages: Record<string, string>): string {
+/** Resolve msgId to raw text (not escaped). Used for attribute values. */
+export function getMsgTextRaw(msgId: number | string, messages: Record<string, string>): string {
     if (typeof msgId === "string") {
-        return escapeHtml(msgId);
+        return msgId;
     }
     const text = messages[String(msgId)];
-    return text ? escapeHtml(text) : `(${msgId})`;
+    return text ?? `(${msgId})`;
+}
+
+/** Resolve msgId to HTML-escaped text. Used for element content. */
+export function getMsgText(msgId: number | string, messages: Record<string, string>): string {
+    return escapeHtml(getMsgTextRaw(msgId, messages));
 }
 
 interface OptionMeta {
@@ -56,7 +62,7 @@ interface OptionMeta {
     icon: string;
 }
 
-function getOptionMeta(o: DialogOption): OptionMeta {
+export function getOptionMeta(o: DialogOption): OptionMeta {
     const isMessage = o.type.endsWith("Message");
     const colorClass = o.type.startsWith("G") ? "option-good" : o.type.startsWith("B") ? "option-bad" : "option-neutral";
     const tooltip = escapeHtml(`${o.type}(${o.msgId})`);
@@ -70,7 +76,7 @@ function getOptionMeta(o: DialogOption): OptionMeta {
 // Tree builder
 // ---------------------------------------------------------------------------
 
-function buildTreeHtml(data: DialogData): string {
+export function buildTreeHtml(data: DialogData): string {
     const nodeMap = new Map(data.nodes.map((n) => [n.name, n]));
     const messages = data.messages;
 
@@ -149,8 +155,9 @@ function buildTreeHtml(data: DialogData): string {
             // First reply goes inline
             // Safe: length check above guarantees index 0 exists
             const r = node.replies[0]!;
+            const attr = escapeHtml(getMsgTextRaw(r.msgId, messages));
             const text = getMsgText(r.msgId, messages);
-            inlineHtml = `<span class="codicon codicon-comment reply" title="${escapeHtml(`Reply(${r.msgId})`)}"></span> <span class="reply msg-text" data-fulltext="${text}">${text}</span>`;
+            inlineHtml = `<span class="codicon codicon-comment reply" title="${escapeHtml(`Reply(${r.msgId})`)}"></span> <span class="reply msg-text" data-fulltext="${attr}">${text}</span>`;
             skipFirstReply = true;
         } else {
             // Check for terminal message (option without target)
@@ -159,8 +166,9 @@ function buildTreeHtml(data: DialogData): string {
                 // Safe: findIndex returned valid index
                 const o = node.options[terminalIdx]!;
                 const { colorClass, tooltip, lowEmoji } = getOptionMeta(o);
+                const attr = escapeHtml(getMsgTextRaw(o.msgId, messages));
                 const text = getMsgText(o.msgId, messages);
-                inlineHtml = `<span class="codicon codicon-stop-circle ${colorClass}" title="${tooltip}"></span>${lowEmoji} <span class="msg-text" data-fulltext="${text}">${text}</span>`;
+                inlineHtml = `<span class="codicon codicon-stop-circle ${colorClass}" title="${tooltip}"></span>${lowEmoji} <span class="msg-text" data-fulltext="${attr}">${text}</span>`;
                 skipFirstTerminalOption = terminalIdx;
             }
         }
@@ -169,8 +177,9 @@ function buildTreeHtml(data: DialogData): string {
         const replies = node.replies
             .slice(skipFirstReply ? 1 : 0)
             .map((r) => {
+                const attr = escapeHtml(getMsgTextRaw(r.msgId, messages));
                 const text = getMsgText(r.msgId, messages);
-                return `<div class="item reply"><span class="codicon codicon-comment" title="${escapeHtml(`Reply(${r.msgId})`)}"></span> <span class="msg-text" data-fulltext="${text}">${text}</span></div>`;
+                return `<div class="item reply"><span class="codicon codicon-comment" title="${escapeHtml(`Reply(${r.msgId})`)}"></span> <span class="msg-text" data-fulltext="${attr}">${text}</span></div>`;
             })
             .join("");
 
@@ -180,6 +189,7 @@ function buildTreeHtml(data: DialogData): string {
             if (i === skipFirstTerminalOption) return;
 
             const { colorClass, tooltip, lowEmoji, icon } = getOptionMeta(o);
+            const attr = escapeHtml(getMsgTextRaw(o.msgId, messages));
             const text = getMsgText(o.msgId, messages);
 
             if (o.target) {
@@ -195,15 +205,15 @@ function buildTreeHtml(data: DialogData): string {
                     // Render option as expandable with target as child
                     const childHtml = renderNode(targetNode, currentDepth + 1);
                     optionParts.push(`<details open class="option-detail">
-                        <summary class="item option ${colorClass}"><span class="codicon codicon-${icon}" title="${tooltip}"></span>${lowEmoji} <span class="msg-text" data-fulltext="${text}">${text}</span><span class="target-link"><span class="codicon codicon-arrow-right target-arrow"></span> ${targetHtml}</span></summary>
+                        <summary class="item option ${colorClass}"><span class="codicon codicon-${icon}" title="${tooltip}"></span>${lowEmoji} <span class="msg-text" data-fulltext="${attr}">${text}</span><span class="target-link"><span class="codicon codicon-arrow-right target-arrow"></span> ${targetHtml}</span></summary>
                         <div class="children">${childHtml}</div>
                     </details>`);
                 } else {
                     // Just a link, no nested content
-                    optionParts.push(`<div class="item option ${colorClass}"><span class="codicon codicon-${icon}" title="${tooltip}"></span>${lowEmoji} <span class="msg-text" data-fulltext="${text}">${text}</span><span class="target-link"><span class="codicon codicon-arrow-right target-arrow"></span> ${targetHtml}</span></div>`);
+                    optionParts.push(`<div class="item option ${colorClass}"><span class="codicon codicon-${icon}" title="${tooltip}"></span>${lowEmoji} <span class="msg-text" data-fulltext="${attr}">${text}</span><span class="target-link"><span class="codicon codicon-arrow-right target-arrow"></span> ${targetHtml}</span></div>`);
                 }
             } else {
-                optionParts.push(`<div class="item option ${colorClass}"><span class="codicon codicon-${icon}" title="${tooltip}"></span>${lowEmoji} <span class="msg-text" data-fulltext="${text}">${text}</span></div>`);
+                optionParts.push(`<div class="item option ${colorClass}"><span class="codicon codicon-${icon}" title="${tooltip}"></span>${lowEmoji} <span class="msg-text" data-fulltext="${attr}">${text}</span></div>`);
             }
         });
         const options = optionParts.join("");

@@ -1,6 +1,13 @@
 // Dialog tree webview script
 // Wrapped in IIFE to avoid global scope conflicts with other webview scripts
 (function () {
+    // Escape HTML for safe interpolation into innerHTML.
+    // Values read from DOM properties (.id, .textContent) are browser-decoded,
+    // so they must be re-escaped before insertion into innerHTML strings.
+    function escapeHtml(text: string): string {
+        return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+    }
+
     // Simple debounce helper
     function debounce<T extends (..._args: unknown[]) => void>(fn: T, ms: number): T {
         let timeout: ReturnType<typeof setTimeout>;
@@ -8,6 +15,61 @@
             clearTimeout(timeout);
             timeout = setTimeout(() => fn(...args), ms);
         }) as T;
+    }
+
+    // Align .msg-text widths within each sibling group so action icons and targets line up.
+    // Sets flex-basis to the widest sibling's natural width (scrollWidth).
+    // flex-basis (not min-width) allows graceful shrinking when the container is narrow.
+    // Uses three-pass approach (reset → measure → apply) to avoid layout thrashing.
+    function alignSiblingMsgTexts(): void {
+        // Collect groups: each group is the sibling .msg-text elements within one .children container
+        const groups: HTMLElement[][] = [];
+        document.querySelectorAll(".children").forEach((container) => {
+            const msgTexts: HTMLElement[] = [];
+            for (const child of Array.from(container.children)) {
+                let msgText: HTMLElement | null = null;
+                if (child.classList.contains("item")) {
+                    msgText = child.querySelector(".msg-text");
+                } else if (child.tagName === "DETAILS") {
+                    const summary = child.querySelector(":scope > summary");
+                    if (summary) {
+                        msgText = summary.querySelector(".msg-text");
+                    }
+                }
+                if (msgText) {
+                    msgTexts.push(msgText);
+                }
+            }
+            if (msgTexts.length >= 2) {
+                groups.push(msgTexts);
+            }
+        });
+
+        // Pass 1: Reset all flex-basis (batch writes)
+        for (const group of groups) {
+            for (const el of group) {
+                el.style.flexBasis = "";
+            }
+        }
+
+        // Pass 2: Measure max width per group (batch reads -- single reflow)
+        const maxWidths: number[] = [];
+        for (const group of groups) {
+            let maxWidth = 0;
+            for (const el of group) {
+                maxWidth = Math.max(maxWidth, el.scrollWidth);
+            }
+            maxWidths.push(maxWidth);
+        }
+
+        // Pass 3: Apply flex-basis per group (batch writes)
+        for (let i = 0; i < groups.length; i++) {
+            // Safe: groups and maxWidths are built in lockstep
+            const width = maxWidths[i]!;
+            for (const el of groups[i]!) {
+                el.style.flexBasis = width + "px";
+            }
+        }
     }
 
     // Update tooltips only for overflowing text
@@ -99,13 +161,16 @@
             }
         });
 
-        // Render flat results - store item text in data-text for finding the specific item
+        // Render flat results - store item text in data-text for finding the specific item.
+        // All values are re-escaped because DOM properties (.id, .textContent) decode HTML entities.
         searchResults.innerHTML = results
             .map((r) => {
                 if (r.type === "node") {
-                    return `<div class="result" data-target="${r.id}"><span class="codicon codicon-symbol-method"></span> <span class="node-name">${r.name}</span></div>`;
+                    return `<div class="result" data-target="${escapeHtml(r.id ?? "")}">`
+                        + `<span class="codicon codicon-symbol-method"></span> `
+                        + `<span class="node-name">${escapeHtml(r.name ?? "")}</span></div>`;
                 } else {
-                    const prefix = r.parentName ? `<span class="desc">${r.parentName}:</span> ` : "";
+                    const prefix = r.parentName ? `<span class="desc">${escapeHtml(r.parentName)}:</span> ` : "";
                     const text = r.text ?? "";
                     // Determine color class from option type prefix (G=good, B=bad, N=neutral)
                     let cls = "option";
@@ -118,9 +183,8 @@
                     } else {
                         cls = "option-neutral";
                     }
-                    // Escape msgText for data attribute (used for navigation matching)
-                    const escapedMsgText = (r.msgText ?? "").replace(/"/g, "&quot;");
-                    return `<div class="result" data-target="${r.parentId}" data-text="${escapedMsgText}">${prefix}<span class="${cls}">${text}</span></div>`;
+                    return `<div class="result" data-target="${escapeHtml(r.parentId ?? "")}" data-text="${escapeHtml(r.msgText ?? "")}">`
+                        + `${prefix}<span class="${cls}">${escapeHtml(text)}</span></div>`;
                 }
             })
             .join("");
@@ -221,6 +285,7 @@
     // Toolbar buttons
     expandAllBtn.addEventListener("click", () => {
         document.querySelectorAll("details").forEach((d) => (d.open = true));
+        alignSiblingMsgTexts();
         updateOverflowTooltips();
     });
 
@@ -232,9 +297,10 @@
     const debouncedFilter = debounce(() => filterTree(searchInput.value), 150);
     searchInput.addEventListener("input", debouncedFilter);
 
-    // Update tooltips when details are toggled
+    // Update alignment and tooltips when details are toggled
     document.addEventListener("toggle", (e) => {
         if ((e.target as HTMLElement).tagName === "DETAILS") {
+            alignSiblingMsgTexts();
             updateOverflowTooltips();
         }
     }, true);
@@ -252,7 +318,11 @@
         }
     });
 
-    // Update overflow tooltips on load and resize
+    // Align text and update tooltips on load and resize
+    alignSiblingMsgTexts();
     updateOverflowTooltips();
-    window.addEventListener("resize", updateOverflowTooltips);
+    window.addEventListener("resize", () => {
+        alignSiblingMsgTexts();
+        updateOverflowTooltips();
+    });
 })();
