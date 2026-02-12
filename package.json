@@ -25,7 +25,8 @@
         "vscode": "^1.43.0"
     },
     "activationEvents": [
-        "onLanguage:typescript",
+        "workspaceContains:**/*.tssl",
+        "workspaceContains:**/*.tbaf",
         "onLanguage:fallout-ssl",
         "onLanguage:fallout-msg",
         "onLanguage:fallout-worldmap-txt",
