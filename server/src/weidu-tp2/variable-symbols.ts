@@ -9,7 +9,7 @@ import { makeRange } from "../core/position-utils";
 import { parseWithCache, isInitialized } from "./parser";
 import { SyntaxType } from "./tree-sitter.d";
 import { findNodeAtPosition, findAncestorOfType, isSameNode, stripStringDelimiters, unwrapVariableRef } from "./tree-utils";
-import { getSymbols } from "./provider";
+import type { Symbols } from "../core/symbol-index";
 
 // ============================================
 // Constants
@@ -233,7 +233,7 @@ export function matchesSymbol(name1: string, name2: string): boolean {
  *
  * Loop/function-scoped variables always use local definitions only.
  */
-export function findVariableDefinition(text: string, uri: string, position: Position): Location | null {
+export function findVariableDefinition(text: string, uri: string, position: Position, symbols?: Symbols): Location | null {
     if (!isInitialized()) {
         return null;
     }
@@ -259,7 +259,6 @@ export function findVariableDefinition(text: string, uri: string, position: Posi
 
     // For file-scope variables, check unified symbol storage first (header definition is authoritative)
     if (scopeInfo.scope === "file") {
-        const symbols = getSymbols();
         const location = symbols?.lookupDefinition(varName);
         if (location) {
             return location;

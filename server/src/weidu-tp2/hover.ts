@@ -9,7 +9,7 @@ import { isCallableSymbol, type CallableInfo } from "../core/symbol";
 import { buildParamInfoMap, type Ret } from "../shared/jsdoc";
 import { parseWithCache, isInitialized } from "./parser";
 import { parseHeader, FunctionInfo, VariableInfo } from "./header-parser";
-import { getSymbols } from "./provider";
+import type { Symbols } from "../core/symbol-index";
 import { SyntaxType } from "./tree-sitter.d";
 import { stripStringDelimiters } from "./tree-utils";
 import { formatTypeLink } from "../shared/weidu-types";
@@ -22,7 +22,7 @@ const DESC_MAX_LENGTH = 80;
  * Get hover info for a function parameter in a function call.
  * Parses text to find function calls and checks if symbol is a parameter name.
  */
-export function getFunctionParamHover(text: string, symbol: string, position: Position): Hover | null {
+export function getFunctionParamHover(text: string, symbol: string, position: Position, symbols?: Symbols): Hover | null {
     if (!isInitialized()) {
         return null;
     }
@@ -36,7 +36,7 @@ export function getFunctionParamHover(text: string, symbol: string, position: Po
     const localFunctions = parseHeader(text, "");
 
     // Find function calls and check if symbol is a parameter name
-    const result = findParamInFunctionCalls(tree.rootNode, symbol, position, localFunctions);
+    const result = findParamInFunctionCalls(tree.rootNode, symbol, position, localFunctions, symbols);
     if (!result) {
         return null;
     }
@@ -72,7 +72,8 @@ function findParamInFunctionCalls(
     node: import("web-tree-sitter").Node,
     symbol: string,
     position: Position,
-    localFunctions: FunctionInfo[]
+    localFunctions: FunctionInfo[],
+    symbols?: Symbols
 ): { paramType: string; defaultValue?: string; description?: string; required?: boolean } | null {
     const type = node.type;
 
@@ -94,7 +95,6 @@ function findParamInFunctionCalls(
                 const funcName = stripStringDelimiters(nameNode.text);
 
                 // Try unified symbol storage first (.tph headers)
-                const symbols = getSymbols();
                 const indexedSymbol = symbols?.lookup(funcName);
                 if (indexedSymbol && isCallableSymbol(indexedSymbol) && indexedSymbol.callable.params) {
                     const result = findParamInCallableInfo(indexedSymbol.callable, symbol);
@@ -117,7 +117,7 @@ function findParamInFunctionCalls(
 
     // Recurse to children
     for (const child of node.children) {
-        const result = findParamInFunctionCalls(child, symbol, position, localFunctions);
+        const result = findParamInFunctionCalls(child, symbol, position, localFunctions, symbols);
         if (result) {
             return result;
         }

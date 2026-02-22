@@ -27,6 +27,7 @@ vi.mock("../../src/common", async (importOriginal) => {
 import { weiduTp2Provider } from "../../src/weidu-tp2/provider";
 import { initParser } from "../../src/weidu-tp2/parser";
 import { defaultSettings } from "../../src/settings";
+import type { HoverResult } from "../../src/language-provider";
 import * as path from "path";
 
 beforeAll(async () => {
@@ -36,6 +37,16 @@ beforeAll(async () => {
         settings: defaultSettings,
     });
 });
+
+/** Extract hover contents value from a HoverResult for assertions. */
+function hoverValue(result: HoverResult | undefined): string | undefined {
+    if (!result || !result.handled || !result.hover) return undefined;
+    const contents = result.hover.contents;
+    if (typeof contents === "object" && "value" in contents) {
+        return contents.value;
+    }
+    return undefined;
+}
 
 describe("weidu-tp2: function parameter hover (position-scoped)", () => {
     it("returns hover info for parameter when cursor is inside function call", () => {
@@ -62,17 +73,14 @@ END
         // Position on "stacking_id_base" at line 3 (inside the function call)
         const position: Position = { line: 3, character: 10 };
 
-        const hover = weiduTp2Provider.hover?.(text, "stacking_id_base", uri, position);
+        const result = weiduTp2Provider.hover?.(text, "stacking_id_base", uri, position);
 
-        expect(hover).toBeDefined();
-        expect(hover?.contents).toBeDefined();
-        if (hover?.contents && typeof hover.contents === "object" && "value" in hover.contents) {
-            // Should show parameter info
-            expect(hover.contents.value).toContain("int stacking_id_base = 0");
-        }
+        expect(result?.handled).toBe(true);
+        const value = hoverValue(result);
+        expect(value).toContain("int stacking_id_base = 0");
     });
 
-    it("returns undefined for same-named variable when cursor is outside function call", () => {
+    it("returns not-handled for same-named variable when cursor is outside function call", () => {
         // Define a function in header file
         const headerText = `
 DEFINE_ACTION_FUNCTION unstack_armor_bonus
@@ -96,11 +104,11 @@ END
         // Position on "stacking_id_base" at line 0 (outside the function call)
         const position: Position = { line: 0, character: 15 };
 
-        const hover = weiduTp2Provider.hover?.(text, "stacking_id_base", uri, position);
+        const result = weiduTp2Provider.hover?.(text, "stacking_id_base", uri, position);
 
         // Should NOT show function parameter hover (position is outside function call)
-        // Variable not in index, so returns undefined to fall through to data-driven hover
-        expect(hover).toBeUndefined();
+        // Variable not in index, so returns not-handled to fall through to data-driven hover
+        expect(result?.handled).toBe(false);
     });
 
     it("returns hover for parameter in nested function calls based on position", () => {
@@ -138,25 +146,21 @@ COPY ~file.bcs~ ~override~
 
         // Position inside outer_func call
         const positionOuter: Position = { line: 2, character: 10 };
-        const hoverOuter = weiduTp2Provider.hover?.(text, "outer_param", uri, positionOuter);
-        expect(hoverOuter).toBeDefined();
-        if (hoverOuter?.contents && typeof hoverOuter.contents === "object" && "value" in hoverOuter.contents) {
-            expect(hoverOuter.contents.value).toContain("int outer_param = 1");
-        }
+        const resultOuter = weiduTp2Provider.hover?.(text, "outer_param", uri, positionOuter);
+        expect(resultOuter?.handled).toBe(true);
+        expect(hoverValue(resultOuter)).toContain("int outer_param = 1");
 
         // Position inside inner_func call
         const positionInner: Position = { line: 8, character: 15 };
-        const hoverInner = weiduTp2Provider.hover?.(text, "inner_param", uri, positionInner);
-        expect(hoverInner).toBeDefined();
-        if (hoverInner?.contents && typeof hoverInner.contents === "object" && "value" in hoverInner.contents) {
-            expect(hoverInner.contents.value).toContain("int inner_param = 2");
-        }
+        const resultInner = weiduTp2Provider.hover?.(text, "inner_param", uri, positionInner);
+        expect(resultInner?.handled).toBe(true);
+        expect(hoverValue(resultInner)).toContain("int inner_param = 2");
 
         // Position between the two function calls (outside both)
         const positionBetween: Position = { line: 4, character: 0 };
-        const hoverBetween = weiduTp2Provider.hover?.(text, "outer_param", uri, positionBetween);
-        // Symbol not in variable index and not in function call, returns undefined (fall through)
-        expect(hoverBetween).toBeUndefined();
+        const resultBetween = weiduTp2Provider.hover?.(text, "outer_param", uri, positionBetween);
+        // Symbol not in variable index and not in function call, returns not-handled (fall through)
+        expect(resultBetween?.handled).toBe(false);
     });
 
     it("returns hover for STR_VAR parameter when inside function call", () => {
@@ -181,17 +185,15 @@ END
 
         // Inside function call
         const positionInside: Position = { line: 4, character: 10 };
-        const hoverInside = weiduTp2Provider.hover?.(text, "message", uri, positionInside);
-        expect(hoverInside).toBeDefined();
-        if (hoverInside?.contents && typeof hoverInside.contents === "object" && "value" in hoverInside.contents) {
-            expect(hoverInside.contents.value).toContain('string message = "default"');
-        }
+        const resultInside = weiduTp2Provider.hover?.(text, "message", uri, positionInside);
+        expect(resultInside?.handled).toBe(true);
+        expect(hoverValue(resultInside)).toContain('string message = "default"');
 
         // Outside function call (on global variable)
         const positionOutside: Position = { line: 0, character: 22 };
-        const hoverOutside = weiduTp2Provider.hover?.(text, "message", uri, positionOutside);
-        // Variable not in index, returns undefined (fall through to data-driven hover)
-        expect(hoverOutside).toBeUndefined();
+        const resultOutside = weiduTp2Provider.hover?.(text, "message", uri, positionOutside);
+        // Variable not in index, returns not-handled (fall through to data-driven hover)
+        expect(resultOutside?.handled).toBe(false);
     });
 
     it("shows JSDoc description in parameter hover when available", () => {
@@ -217,13 +219,12 @@ END
         const uri = "file:///test.tp2";
         const position: Position = { line: 2, character: 10 };
 
-        const hover = weiduTp2Provider.hover?.(text, "stacking_id_base", uri, position);
+        const result = weiduTp2Provider.hover?.(text, "stacking_id_base", uri, position);
 
-        expect(hover).toBeDefined();
-        if (hover?.contents && typeof hover.contents === "object" && "value" in hover.contents) {
-            expect(hover.contents.value).toContain("int stacking_id_base = 0");
-            expect(hover.contents.value).toContain("Base ID for stacking groups");
-        }
+        expect(result?.handled).toBe(true);
+        const value = hoverValue(result);
+        expect(value).toContain("int stacking_id_base = 0");
+        expect(value).toContain("Base ID for stacking groups");
     });
 
     it("hides default value for required parameters in hover", () => {
@@ -249,18 +250,17 @@ END
         const uri = "file:///test.tp2";
         const position: Position = { line: 2, character: 10 };
 
-        const hover = weiduTp2Provider.hover?.(text, "required_param", uri, position);
+        const result = weiduTp2Provider.hover?.(text, "required_param", uri, position);
 
-        expect(hover).toBeDefined();
-        if (hover?.contents && typeof hover.contents === "object" && "value" in hover.contents) {
-            // Required param should NOT show "= 0" default value
-            expect(hover.contents.value).toContain("int required_param");
-            expect(hover.contents.value).not.toContain("= 0");
-            expect(hover.contents.value).toContain("Required parameter");
-        }
+        expect(result?.handled).toBe(true);
+        const value = hoverValue(result);
+        // Required param should NOT show "= 0" default value
+        expect(value).toContain("int required_param");
+        expect(value).not.toContain("= 0");
+        expect(value).toContain("Required parameter");
     });
 
-    it("hover returns null (no fallthrough) for param name when function is not indexed", () => {
+    it("hover returns empty (no fallthrough) for param name when function is not indexed", () => {
         const text = `LPF unknown_func
     INT_VAR
         parameter2 = 1
@@ -269,9 +269,12 @@ END
         const uri = "file:///test.tp2";
         const position: Position = { line: 2, character: 10 };
 
-        // hover() should return null (handled, no data) not undefined (fall through)
+        // hover() should return handled+null (block fallthrough) not not-handled (fall through)
         const result = weiduTp2Provider.hover?.(text, "parameter2", uri, position);
-        expect(result).toBeNull();
+        expect(result?.handled).toBe(true);
+        if (result?.handled) {
+            expect(result.hover).toBeNull();
+        }
     });
 });
 
@@ -360,12 +363,12 @@ END
         // 1. Gate: shouldProvideFeatures (comments only now)
         expect(weiduTp2Provider.shouldProvideFeatures?.(text, position)).toBe(true);
 
-        // 2. Try local hover (new semantics: !== undefined means handled)
+        // 2. Try local hover (new semantics: handled means provider claims this position)
         const localHover = weiduTp2Provider.hover?.(text, symbol, uri, position);
-        expect(localHover).not.toBeUndefined(); // provider claims this position
-        expect(localHover).not.toBeNull(); // and has data to show
-        if (localHover?.contents && typeof localHover.contents === "object" && "value" in localHover.contents) {
-            expect(localHover.contents.value).toContain("int func_param = 99");
+        expect(localHover?.handled).toBe(true);
+        if (localHover?.handled) {
+            expect(localHover.hover).not.toBeNull();
+            expect(hoverValue(localHover)).toContain("int func_param = 99");
         }
     });
 
@@ -388,11 +391,14 @@ END
         // 1. Gate passes (not a comment)
         expect(weiduTp2Provider.shouldProvideFeatures?.(text, position)).toBe(true);
 
-        // 2. hover() returns null (handled, no data — blocks fallthrough)
+        // 2. hover() returns handled+null (block fallthrough)
         const localHover = weiduTp2Provider.hover?.(text, symbol, uri, position);
-        expect(localHover).toBeNull(); // null = handled, no fallthrough
+        expect(localHover?.handled).toBe(true);
+        if (localHover?.handled) {
+            expect(localHover.hover).toBeNull();
+        }
 
-        // Since localHover !== undefined, server.ts does NOT call getHover()
+        // Since localHover.handled is true, server.ts does NOT call getHover()
         // Variable data never leaks
     });
 
@@ -419,7 +425,7 @@ END
 
         // 2. hover() tries variable hover
         const localHover = weiduTp2Provider.hover?.(text, symbol, uri, position);
-        if (localHover !== undefined) {
+        if (localHover?.handled) {
             // If hover() found the variable, great
             return;
         }
@@ -432,7 +438,7 @@ END
 });
 
 describe("weidu-tp2: loop variable binding hover suppression", () => {
-    it("returns null for variable in PHP_EACH AS binding", () => {
+    it("returns empty for variable in PHP_EACH AS binding", () => {
         // Index a variable named 'opcode' from a header
         const headerText = `OUTER_SET opcode = 999\n`;
         weiduTp2Provider.reloadFileData?.("file:///lib.tph", headerText);
@@ -449,12 +455,15 @@ BUT_ONLY
         const col = line1.indexOf("AS opcode") + 3; // skip "AS "
         const position: Position = { line: 1, character: col };
 
-        const hover = weiduTp2Provider.hover?.(text, "opcode", uri, position);
-        // Should return null (handled, no fallthrough) — loop binding, not a reference
-        expect(hover).toBeNull();
+        const result = weiduTp2Provider.hover?.(text, "opcode", uri, position);
+        // Should return handled+null — loop binding, not a reference
+        expect(result?.handled).toBe(true);
+        if (result?.handled) {
+            expect(result.hover).toBeNull();
+        }
     });
 
-    it("returns null for variable in ACTION_PHP_EACH AS binding", () => {
+    it("returns empty for variable in ACTION_PHP_EACH AS binding", () => {
         const headerText = `OUTER_SET item = 0\n`;
         weiduTp2Provider.reloadFileData?.("file:///lib.tph", headerText);
 
@@ -467,11 +476,14 @@ END
         const col = line0.indexOf("AS item") + 3; // skip "AS "
         const position: Position = { line: 0, character: col };
 
-        const hover = weiduTp2Provider.hover?.(text, "item", uri, position);
-        expect(hover).toBeNull();
+        const result = weiduTp2Provider.hover?.(text, "item", uri, position);
+        expect(result?.handled).toBe(true);
+        if (result?.handled) {
+            expect(result.hover).toBeNull();
+        }
     });
 
-    it("returns null for value variable in PHP_EACH => binding", () => {
+    it("returns empty for value variable in PHP_EACH => binding", () => {
         const headerText = `OUTER_SET power = 0\n`;
         weiduTp2Provider.reloadFileData?.("file:///lib.tph", headerText);
 
@@ -485,8 +497,11 @@ END
         const col = line0.indexOf("=> power") + 3; // skip "=> "
         const position: Position = { line: 0, character: col };
 
-        const hover = weiduTp2Provider.hover?.(text, "power", uri, position);
-        expect(hover).toBeNull();
+        const result = weiduTp2Provider.hover?.(text, "power", uri, position);
+        expect(result?.handled).toBe(true);
+        if (result?.handled) {
+            expect(result.hover).toBeNull();
+        }
     });
 
     it("allows hover for variable reference inside loop body", () => {
@@ -505,9 +520,11 @@ BUT_ONLY
         const col = line2.indexOf("opcode");
         const position: Position = { line: 2, character: col };
 
-        const hover = weiduTp2Provider.hover?.(text, "opcode", uri, position);
-        // Should NOT be null — this is a reference, not a binding
-        // It should either return variable hover or undefined (fall through)
-        expect(hover).not.toBeNull();
+        const result = weiduTp2Provider.hover?.(text, "opcode", uri, position);
+        // Should NOT be handled+null — this is a reference, not a binding
+        // It should either return found hover or not-handled (fall through)
+        if (result?.handled) {
+            expect(result.hover).not.toBeNull();
+        }
     });
 });

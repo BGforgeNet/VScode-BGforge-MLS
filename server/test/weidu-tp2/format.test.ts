@@ -3,7 +3,7 @@
  * Tests utility functions and formatting integration.
  */
 
-import { describe, expect, it, beforeAll, beforeEach, afterEach, vi } from "vitest";
+import { describe, expect, it, beforeAll, vi } from "vitest";
 import type { MarkupContent } from "vscode-languageserver/node";
 
 /** Extract markdown value from hover contents. */
@@ -647,27 +647,15 @@ describe("definition: getDefinition", () => {
     let getDefinition: typeof import("../../src/weidu-tp2/definition").getDefinition;
     let parseHeaderToSymbols: typeof import("../../src/weidu-tp2/header-parser").parseHeaderToSymbols;
     let SymbolsClass: typeof import("../../src/core/symbol-index").Symbols;
-    let provider: typeof import("../../src/weidu-tp2/provider");
-    let mockStore: InstanceType<typeof SymbolsClass>;
 
     beforeAll(async () => {
         await initParser();
         const defMod = await import("../../src/weidu-tp2/definition");
         const headerMod = await import("../../src/weidu-tp2/header-parser");
         const symbolMod = await import("../../src/core/symbol-index");
-        provider = await import("../../src/weidu-tp2/provider");
         getDefinition = defMod.getDefinition;
         parseHeaderToSymbols = headerMod.parseHeaderToSymbols;
         SymbolsClass = symbolMod.Symbols;
-    });
-
-    beforeEach(() => {
-        mockStore = new SymbolsClass();
-        vi.spyOn(provider, "getSymbols").mockReturnValue(mockStore);
-    });
-
-    afterEach(() => {
-        vi.restoreAllMocks();
     });
 
     it("finds same-file function definition", () => {
@@ -678,7 +666,8 @@ BEGIN @1
     LAF my_func END
 `;
         // Position on "my_func" in the LAF call (line 4, roughly character 8)
-        const result = getDefinition(code, "file:///test.tp2", { line: 4, character: 8 });
+        const mockStore = new SymbolsClass();
+        const result = getDefinition(code, "file:///test.tp2", { line: 4, character: 8 }, mockStore);
         expect(result).toBeDefined();
         expect(result?.uri).toBe("file:///test.tp2");
         expect(result?.range.start.line).toBe(1); // Definition is on line 1
@@ -686,6 +675,7 @@ BEGIN @1
 
     it("finds cross-file function definition", () => {
         // Index a header file in Symbols
+        const mockStore = new SymbolsClass();
         const headerCode = `DEFINE_ACTION_FUNCTION header_func BEGIN END`;
         const parsedSymbols = parseHeaderToSymbols("file:///header.tph", headerCode);
         mockStore.updateFile("file:///header.tph", parsedSymbols);
@@ -695,7 +685,7 @@ BEGIN @1
 BEGIN @1
     LAF header_func END
 `;
-        const result = getDefinition(mainCode, "file:///main.tp2", { line: 2, character: 8 });
+        const result = getDefinition(mainCode, "file:///main.tp2", { line: 2, character: 8 }, mockStore);
         expect(result).toBeDefined();
         expect(result?.uri).toBe("file:///header.tph");
     });
@@ -705,7 +695,8 @@ BEGIN @1
 BEGIN @1
     LAF unknown_func END
 `;
-        const result = getDefinition(code, "file:///test.tp2", { line: 2, character: 8 });
+        const mockStore = new SymbolsClass();
+        const result = getDefinition(code, "file:///test.tp2", { line: 2, character: 8 }, mockStore);
         expect(result).toBeNull();
     });
 });

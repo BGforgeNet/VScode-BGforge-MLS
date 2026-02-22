@@ -320,7 +320,7 @@ export type IndexedSymbol = CallableSymbol | VariableSymbol | ConstantSymbol | S
 // =============================================================================
 
 /** Set of callable symbol kinds */
-const CALLABLE_KINDS: ReadonlySet<SymbolKind> = new Set([
+export const CALLABLE_KINDS: ReadonlySet<SymbolKind> = new Set([
     SymbolKind.Function,
     SymbolKind.Procedure,
     SymbolKind.Macro,
@@ -329,7 +329,7 @@ const CALLABLE_KINDS: ReadonlySet<SymbolKind> = new Set([
 ]);
 
 /** Set of variable symbol kinds */
-const VARIABLE_KINDS: ReadonlySet<SymbolKind> = new Set([
+export const VARIABLE_KINDS: ReadonlySet<SymbolKind> = new Set([
     SymbolKind.Variable,
     SymbolKind.Parameter,
     SymbolKind.LoopVariable,

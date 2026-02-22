@@ -183,7 +183,7 @@ describe("weidu-compile", () => {
             callback(null, "Parsing complete", "");
 
             expect(mockShowInfo).toHaveBeenCalledWith(
-                expect.stringContaining("Succesfully parsed")
+                expect.stringContaining("Successfully parsed")
             );
         });
 

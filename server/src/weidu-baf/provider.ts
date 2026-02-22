@@ -8,6 +8,7 @@
 import type { CompletionItem, Hover } from "vscode-languageserver/node";
 import { conlog } from "../common";
 import { LANG_WEIDU_BAF } from "../core/languages";
+import type { IndexedSymbol } from "../core/symbol";
 import { Symbols } from "../core/symbol-index";
 import { loadStaticSymbols } from "../core/static-loader";
 import { type FormatResult, type LanguageProvider, type ProviderContext } from "../language-provider";
@@ -21,11 +22,6 @@ import { compile as weiduCompile } from "../weidu-compile";
 
 const DEFAULT_INDENT = 4;
 
-/** Unified symbol storage for completion and hover */
-let symbols: Symbols | undefined;
-/** Stored context for compile settings access */
-let storedContext: ProviderContext | undefined;
-
 function getFormatOptions(uri: string): FormatOptions {
     try {
         const filePath = fileURLToPath(uri);
@@ -36,30 +32,30 @@ function getFormatOptions(uri: string): FormatOptions {
     }
 }
 
-export const weiduBafProvider: LanguageProvider = {
-    id: LANG_WEIDU_BAF,
-
-    resolveSymbol(name, _text, _uri) {
-        return resolveSymbolStatic(name, symbols);
-    },
-
-    getVisibleSymbols(_text, _uri) {
-        return getVisibleSymbolsStatic(symbols);
-    },
+class WeiduBafProvider implements LanguageProvider {
+    readonly id = LANG_WEIDU_BAF;
+    private symbolStore: Symbols | undefined;
+    private storedContext: ProviderContext | undefined;
 
     async init(context: ProviderContext): Promise<void> {
-        storedContext = context;
+        this.storedContext = context;
 
-        // Initialize formatter (tree-sitter parser)
         await initParser();
 
-        // Initialize symbol storage with static data
-        symbols = new Symbols();
+        this.symbolStore = new Symbols();
         const staticSymbols = loadStaticSymbols(LANG_WEIDU_BAF);
-        symbols.loadStatic(staticSymbols);
+        this.symbolStore.loadStatic(staticSymbols);
 
         conlog(`WeiDU BAF provider initialized with ${staticSymbols.length} static symbols`);
-    },
+    }
+
+    resolveSymbol(name: string, _text: string, _uri: string): IndexedSymbol | undefined {
+        return resolveSymbolStatic(name, this.symbolStore);
+    }
+
+    getVisibleSymbols(_text: string, _uri: string): IndexedSymbol[] {
+        return getVisibleSymbolsStatic(this.symbolStore);
+    }
 
     format(text: string, uri: string): FormatResult {
         return formatWithValidation({
@@ -72,21 +68,23 @@ export const weiduBafProvider: LanguageProvider = {
             getFormatOptions,
             stripComments: stripCommentsWeidu,
         });
-    },
+    }
 
     getCompletions(_uri: string): CompletionItem[] {
-        return getStaticCompletions(symbols);
-    },
+        return getStaticCompletions(this.symbolStore);
+    }
 
     getHover(_uri: string, symbolName: string): Hover | null {
-        return getStaticHover(symbols, symbolName);
-    },
+        return getStaticHover(this.symbolStore, symbolName);
+    }
 
     async compile(uri: string, text: string, interactive: boolean): Promise<void> {
-        if (!storedContext) {
+        if (!this.storedContext) {
             conlog("WeiDU BAF provider not initialized, cannot compile");
             return;
         }
-        weiduCompile(uri, storedContext.settings.weidu, interactive, text);
-    },
-};
+        weiduCompile(uri, this.storedContext.settings.weidu, interactive, text);
+    }
+}
+
+export const weiduBafProvider: LanguageProvider = new WeiduBafProvider();

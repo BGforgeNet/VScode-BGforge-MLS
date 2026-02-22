@@ -16,7 +16,7 @@ import { pathToUri, uriToPath } from "../common";
 import { SyntaxType } from "./tree-sitter.d";
 import { findVariableDefinition } from "./variable-symbols";
 import { findNodeAtPosition, findAncestorOfType, stripStringDelimiters } from "./tree-utils";
-import { getSymbols } from "./provider";
+import type { Symbols } from "../core/symbol-index";
 
 /** Node types for function/macro calls. */
 const FUNCTION_CALL_TYPES = new Set([
@@ -38,7 +38,7 @@ const INCLUDE_TYPES = new Set([
 /**
  * Get definition location for the symbol at the given position.
  */
-export function getDefinition(text: string, uri: string, position: Position): Location | null {
+export function getDefinition(text: string, uri: string, position: Position, symbols?: Symbols): Location | null {
     if (!isInitialized()) {
         return null;
     }
@@ -56,7 +56,7 @@ export function getDefinition(text: string, uri: string, position: Position): Lo
 
     // Check if cursor is on a function call parameter name
     // If so, navigate to the function definition instead of treating it as a variable
-    const callParamResult = tryFunctionCallParamDefinition(targetNode, text, uri);
+    const callParamResult = tryFunctionCallParamDefinition(targetNode, text, uri, symbols);
     if (callParamResult) {
         return callParamResult;
     }
@@ -64,14 +64,14 @@ export function getDefinition(text: string, uri: string, position: Position): Lo
     // Check if cursor is on a variable, but not if we're on a function call param name
     // (even if the function isn't indexed - we shouldn't fall through to variable lookup)
     if (!isOnFunctionCallParamName(tree.rootNode, position)) {
-        const varResult = findVariableDefinition(text, uri, position);
+        const varResult = findVariableDefinition(text, uri, position, symbols);
         if (varResult) {
             return varResult;
         }
     }
 
     // Check if cursor is on a function/macro call
-    const callResult = tryFunctionCallDefinition(targetNode, text, uri);
+    const callResult = tryFunctionCallDefinition(targetNode, text, uri, symbols);
     if (callResult) {
         return callResult;
     }
@@ -139,7 +139,7 @@ export function isOnFunctionCallParamName(root: SyntaxNode, position: Position):
  * When cursor is on a parameter name in a function call (e.g., `LAF my_func INT_VAR foo = 1 END`),
  * navigate to the function definition instead of treating it as a variable.
  */
-function tryFunctionCallParamDefinition(node: SyntaxNode, text: string, uri: string): Location | null {
+function tryFunctionCallParamDefinition(node: SyntaxNode, text: string, uri: string, symbols?: Symbols): Location | null {
     // Reuse the guard to check if we're on a parameter name
     // Note: node.tree exists but isn't in the type definitions, so we walk up to root
     let root = node;
@@ -178,7 +178,6 @@ function tryFunctionCallParamDefinition(node: SyntaxNode, text: string, uri: str
     }
 
     // Then check the unified symbol storage
-    const symbols = getSymbols();
     const location = symbols?.lookupDefinition(funcName);
     if (location) {
         return location;
@@ -190,7 +189,7 @@ function tryFunctionCallParamDefinition(node: SyntaxNode, text: string, uri: str
 /**
  * Try to find definition for a function/macro call.
  */
-function tryFunctionCallDefinition(node: SyntaxNode, text: string, uri: string): Location | null {
+function tryFunctionCallDefinition(node: SyntaxNode, text: string, uri: string, symbols?: Symbols): Location | null {
     // Check if we're in a function call context
     const callNode = findAncestorOfType(node, FUNCTION_CALL_TYPES);
     if (!callNode) {
@@ -212,7 +211,6 @@ function tryFunctionCallDefinition(node: SyntaxNode, text: string, uri: string):
     }
 
     // Then, look in the unified symbol storage
-    const symbols = getSymbols();
     const location = symbols?.lookupDefinition(funcName);
     if (location) {
         return location;

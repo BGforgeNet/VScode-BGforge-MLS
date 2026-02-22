@@ -5,11 +5,11 @@
 
 import * as fs from "fs";
 import * as path from "path";
-import { conlog, isDirectory, pathToUri, tmpDir } from "./common";
+import { conlog, errorMessage, isDirectory, pathToUri, tmpDir } from "./common";
 import { EXT_TBAF, EXT_TD, EXT_TSSL, LANG_FALLOUT_SSL } from "./core/languages";
 import { getConnection } from "./lsp-connection";
 import { registry } from "./provider-registry";
-import { getDocumentSettings } from "./server";
+import { getDocumentSettings } from "./settings-service";
 import * as tbaf from "./tbaf/index";
 import * as td from "./td/index";
 import * as tssl from "./tssl";
@@ -47,7 +47,7 @@ export async function compile(uri: string, langId: string, interactive = false, 
     }
 
     // TypeScript-based transpilers (TBAF, TSSL, TD)
-    if (langId == "typescript") {
+    if (langId === "typescript") {
         if (uri.toLowerCase().endsWith(EXT_TD)) {
             clearDiagnostics(uri);
             try {
@@ -67,7 +67,7 @@ export async function compile(uri: string, langId: string, interactive = false, 
                     weidu.compile(dUri, settings.weidu, true, dText);
                 }
             } catch (error) {
-                const msg = error instanceof Error ? error.message : String(error);
+                const msg = errorMessage(error);
                 getConnection().window.showErrorMessage(`TD: ${msg}`);
             }
             return;
@@ -84,9 +84,10 @@ export async function compile(uri: string, langId: string, interactive = false, 
                     weidu.compile(bafUri, settings.weidu, true, bafText);
                 }
             } catch (error) {
-                const msg = error instanceof Error ? error.message : String(error);
+                const msg = errorMessage(error);
                 getConnection().window.showErrorMessage(`TBAF: ${msg}`);
             }
+            return;
         }
         if (uri.toLowerCase().endsWith(EXT_TSSL)) {
             try {
@@ -99,7 +100,7 @@ export async function compile(uri: string, langId: string, interactive = false, 
                 clearDiagnostics(sslUri);
                 await registry.compile(LANG_FALLOUT_SSL, sslUri, sslText, true);
             } catch (error) {
-                const msg = error instanceof Error ? error.message : String(error);
+                const msg = errorMessage(error);
                 getConnection().window.showErrorMessage(`TSSL: ${msg}`);
             }
         }

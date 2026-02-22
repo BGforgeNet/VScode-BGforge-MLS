@@ -32,7 +32,7 @@ vi.mock("../src/provider-registry", () => ({
     },
 }));
 
-vi.mock("../src/server", () => ({
+vi.mock("../src/settings-service", () => ({
     getDocumentSettings: vi.fn().mockResolvedValue({
         falloutSSL: {
             compilePath: "compile",
@@ -77,11 +77,13 @@ vi.mock("fs", () => ({
 
 vi.mock("../src/common", () => ({
     conlog: vi.fn(),
+    errorMessage: (error: unknown) => error instanceof Error ? error.message : String(error),
     isDirectory: vi.fn().mockReturnValue(true),
     pathToUri: vi.fn((p: string) => `file://${p}`),
     tmpDir: "/tmp/bgforge-mls",
 }));
 
+import { conlog } from "../src/common";
 import { compile, clearDiagnostics } from "../src/compile";
 
 describe("compile dispatcher", () => {
@@ -188,6 +190,19 @@ describe("compile dispatcher", () => {
             expect(mockTbafCompile).toHaveBeenCalledWith(
                 "file:///test.tbaf",
                 "tbaf content"
+            );
+        });
+
+        it("does not fall through to unknown-language after successful TBAF transpile", async () => {
+            mockTbafCompile.mockResolvedValue("/output/test.baf");
+
+            await compile("file:///test.tbaf", "typescript", true, "tbaf content");
+
+            expect(conlog).not.toHaveBeenCalledWith(
+                expect.stringContaining("Don't know how to compile")
+            );
+            expect(mockShowInfo).not.toHaveBeenCalledWith(
+                expect.stringContaining("Don't know how to compile")
             );
         });
 

@@ -38,7 +38,7 @@ function parseWeiduOutput(text: string) {
 
     try {
         let match = errorsRegex.exec(text);
-        while (match != null) {
+        while (match !== null) {
             // This is necessary to avoid infinite loops with zero-width matches
             if (match.index === errorsRegex.lastIndex) {
                 errorsRegex.lastIndex++;
@@ -85,7 +85,7 @@ export function compile(uri: string, settings: WeiDUsettings, interactive = fals
     const tmpUri = pathToUri(tmpFile);
 
     const weiduArgs = ["--no-exit-pause", "--noautoupdate", "--debug-assign", "--parse-check"];
-    if (gamePath == "") {
+    if (gamePath === "") {
         // d and baf need game files
         weiduArgs.unshift("--nogame");
     } else {
@@ -103,7 +103,7 @@ export function compile(uri: string, settings: WeiDUsettings, interactive = fals
         return;
     }
 
-    if ((weiduType == "d" || weiduType == "baf") && gamePath == "") {
+    if ((weiduType === "d" || weiduType === "baf") && gamePath === "") {
         conlog("Path to IE game is not specified in settings, can't parse D or BAF!");
         if (interactive) {
             getConnection().window.showWarningMessage(
@@ -126,7 +126,7 @@ export function compile(uri: string, settings: WeiDUsettings, interactive = fals
             conlog("Parse stderr: " + stderr);
         }
         if (
-            (err && err.code != 0) ||
+            (err && err.code !== 0) ||
             parseResult.errors.length > 0 || // weidu doesn't always return non-zero on parse failure?
             parseResult.warnings.length > 0
         ) {
@@ -140,7 +140,7 @@ export function compile(uri: string, settings: WeiDUsettings, interactive = fals
             sendDiagnostics(uri, stdout, tmpUri);
         } else {
             if (interactive) {
-                getConnection().window.showInformationMessage(`Succesfully parsed ${baseName}.`);
+                getConnection().window.showInformationMessage(`Successfully parsed ${baseName}.`);
             }
         }
     });

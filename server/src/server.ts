@@ -42,6 +42,7 @@ import { weiduBafProvider } from "./weidu-baf/provider";
 import { weiduDProvider } from "./weidu-d/provider";
 import { weiduTp2Provider } from "./weidu-tp2/provider";
 import { initLspConnection } from "./lsp-connection";
+import { initSettingsService } from "./settings-service";
 
 // Create a connection for the server. The connection uses Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
@@ -113,9 +114,7 @@ connection.onInitialize((params: InitializeParams) => {
             },
         };
     }
-    // yes this is unsafe, just doing something quick and dirty
-    if (params.workspaceFolders && params.workspaceFolders[0]) {
-        // this better exist or we don't know what to do
+    if (params.workspaceFolders?.[0]) {
         workspaceRoot = fileURLToPath(params.workspaceFolders[0].uri);
         conlog(`workspace_root = ${workspaceRoot}`);
     }
@@ -216,6 +215,9 @@ export function getDocumentSettings(resource: string): Thenable<MLSsettings> {
     return result;
 }
 
+// Initialize the settings service holder so compile.ts can access settings without importing server.ts
+initSettingsService(getDocumentSettings);
+
 documents.onDidOpen((event) => {
     // TODO: this doesn't work for the first open doc, since the server is not initalized yet
     // need to do proper async here
@@ -282,8 +284,8 @@ connection.onHover((textDocumentPosition: TextDocumentPositionParams) => {
 
     // Try local hover (AST-based, for symbols defined in current file)
     const localHover = registry.localHover(langId, text, symbol, uri, textDocumentPosition.position);
-    if (localHover !== undefined) {
-        return localHover;  // includes null (provider handled it, nothing to show)
+    if (localHover.handled) {
+        return localHover.hover;
     }
 
     // Fall back to data-driven hover (from headers/static data)
@@ -330,11 +332,11 @@ connection.onExecuteCommand(async (params) => {
         }
     }
 
-    if (command != COMMAND_compile) {
+    if (command !== COMMAND_compile) {
         return;
     }
 
-    if (args.scheme != "file") {
+    if (args.scheme !== "file") {
         conlog("Compile: scheme is not 'file'");
         connection.window.showInformationMessage("Focus a valid file to run commands!");
         return;

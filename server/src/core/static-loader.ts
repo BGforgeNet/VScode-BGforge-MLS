@@ -32,6 +32,7 @@ import {
     CallableContext,
     CallableDefType,
     symbolKindToCompletionKind,
+    CALLABLE_KINDS,
 } from "./symbol";
 
 // =============================================================================
@@ -145,16 +146,6 @@ function loadCompletionJson(langId: string): StaticCompletionItem[] | undefined 
     }
 }
 
-/**
- * Set of callable symbol kinds.
- */
-const CALLABLE_KINDS = new Set([
-    SymbolKind.Function,
-    SymbolKind.Procedure,
-    SymbolKind.Macro,
-    SymbolKind.Action,
-    SymbolKind.Trigger,
-]);
 
 /**
  * Convert a static completion item to an IndexedSymbol.

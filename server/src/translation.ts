@@ -61,6 +61,9 @@ const translatableLanguages = [...TRA_LANGUAGES, ...MSG_LANGUAGES];
 
 const extensions: Array<TraExt> = ["msg", "tra"];
 
+/** Max concurrent file reads when loading translation files. */
+const SCAN_CONCURRENCY = 4;
+
 /**
  * Check if a symbol is a translation reference for the given language.
  * For typescript files, also checks file extension to determine format.
@@ -326,7 +329,7 @@ export class Translation {
     }
 
     private async loadFiles(traDir: string, files: string[], ext: TraExt) {
-        const { results, errors } = await PromisePool.withConcurrency(4)
+        const { results, errors } = await PromisePool.withConcurrency(SCAN_CONCURRENCY)
             .for(files)
             .process(async (relPath) => {
                 const result: TraData = new Map();
@@ -341,7 +344,7 @@ export class Translation {
     /** Parses text and returns a map of index => entry */
     private parseEntries(text: string, traType: TraExt): TraEntries {
         let regex: RegExp;
-        if (traType == "tra") {
+        if (traType === "tra") {
             regex = /@(\d+)\s*=\s*~([^~]*)~/gm;
         } else {
             regex = /{(\d+)}\s*{\w*}\s*{([^}]*)}/gm;
@@ -350,7 +353,7 @@ export class Translation {
         let currentLine = 0;
         let lineStartIndex = 0;
         let match = regex.exec(text);
-        while (match != null) {
+        while (match !== null) {
             if (match.index === regex.lastIndex) {
                 regex.lastIndex++;
             }
@@ -386,7 +389,7 @@ export class Translation {
                 line: currentLine,
                 character,
             };
-            if (`/* ${str} */` != inlay) {
+            if (`/* ${str} */` !== inlay) {
                 entry.inlayTooltip = str;
             }
             entries.set(num, entry);
@@ -402,7 +405,7 @@ export class Translation {
             return;
         }
         const ext = path.parse(traPath).ext.slice(-3);
-        if (ext != "tra" && ext != "msg") {
+        if (ext !== "tra" && ext !== "msg") {
             conlog(`Translation: unknown extension ${ext}`);
             return;
         }
@@ -522,13 +525,13 @@ export class Translation {
     }
 
     private getLineKey(word: string, ext: TraExt): string | undefined {
-        if (ext == "msg") {
+        if (ext === "msg") {
             const match = REGEX_MSG_HOVER.exec(word);
             if (match) {
                 return match[2];
             }
         }
-        if (ext == "tra") {
+        if (ext === "tra") {
             // Check for TBAF $tra(123) format
             const tbafMatch = REGEX_TBAF_HOVER.exec(word);
             if (tbafMatch) {
@@ -562,7 +565,7 @@ export class Translation {
         // keyIndex: which capture group contains the translation ID
         let regex: RegExp;
         let keyIndex: number;
-        if (traExt == "msg") {
+        if (traExt === "msg") {
             regex = new RegExp(REGEX_MSG_INLAY.source, "g");
             keyIndex = 2;
         } else {

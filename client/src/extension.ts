@@ -134,9 +134,7 @@ export function conlog(item: any): void {
             console.log(item);
             break;
         default:
-            // Handle objects including Maps - check if item has Map-like iteration
-            if (item !== null && typeof item === "object" && typeof item.size === "number" && item.size > 0) {
-                // Likely a Map, use spread to get entries
+            if (item instanceof Map) {
                 console.log(JSON.stringify([...item]));
             } else {
                 console.log(JSON.stringify(item));

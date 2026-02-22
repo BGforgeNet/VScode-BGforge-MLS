@@ -23,8 +23,8 @@ vi.mock("../../src/lsp-connection", () => ({
 }));
 
 import { initParser } from "../../src/weidu-tp2/parser";
-import { weiduTp2Provider, getSymbols } from "../../src/weidu-tp2/provider";
-import { parseHeaderToSymbols } from "../../src/weidu-tp2/header-parser";
+import { weiduTp2Provider } from "../../src/weidu-tp2/provider";
+import type { Symbols } from "../../src/core/symbol-index";
 import { defaultSettings } from "../../src/settings";
 import { CompletionCategory, type CompletionItemWithCategory } from "../../src/shared/completion-context";
 import { ScopeLevel, SourceType, SymbolKind, type ConstantSymbol } from "../../src/core/symbol";
@@ -101,10 +101,12 @@ BEGIN
     WRITE_BYTE 0x00 0
 END
 `;
-    const store = getSymbols()!;
-    store.updateFile(HEADER_URI, parseHeaderToSymbols(HEADER_URI, headerContent));
+    weiduTp2Provider.reloadFileData!(HEADER_URI, headerContent);
 
-    // Inject keyword symbols that normally come from static data (unavailable in test env)
+    // Inject keyword symbols that normally come from static data (unavailable in test env).
+    // Static JSON lives in server/out/ which isn't on the source path during tests,
+    // so we access the private symbolStore directly to inject test-only keyword data.
+    const store = (weiduTp2Provider as unknown as { symbolStore: Symbols }).symbolStore;
     store.updateFile(STATIC_URI, [
         createKeywordSymbol("SET", CompletionCategory.Patch),
         createKeywordSymbol("SPRINT", CompletionCategory.Patch),

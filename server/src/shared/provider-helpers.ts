@@ -127,8 +127,8 @@ export function getStaticHover(symbols: Symbols | undefined, symbolName: string)
 // Formatting
 // ============================================
 
-/** Options for the formatWithValidation helper. */
-export interface FormatWithValidationOptions {
+/** Options for the formatWithValidation helper. Generic parameters allow type-safe usage without `any`. */
+export interface FormatWithValidationOptions<TRoot = unknown, TOpts = unknown> {
     /** Current document text */
     text: string;
     /** Document URI */
@@ -138,14 +138,11 @@ export interface FormatWithValidationOptions {
     /** Check if the parser is initialized */
     isInitialized: () => boolean;
     /** Parse text into a tree (returns null on failure) */
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- tree type varies by parser
-    parse: (text: string) => { rootNode: any } | null;
+    parse: (text: string) => { rootNode: TRoot } | null;
     /** Format the AST root node with options */
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- node/options types vary by parser
-    formatAst: (rootNode: any, options: any) => { text: string };
+    formatAst: (rootNode: TRoot, options: TOpts) => { text: string };
     /** Get format options for a URI */
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- options type varies by language
-    getFormatOptions: (uri: string) => any;
+    getFormatOptions: (uri: string) => TOpts;
     /** Strip comments for validation (language-specific) */
     stripComments: CommentStripper;
 }
@@ -154,7 +151,7 @@ export interface FormatWithValidationOptions {
  * Shared format method with parse, format, validate, and error handling.
  * Used by BAF, D, and TP2 providers.
  */
-export function formatWithValidation(opts: FormatWithValidationOptions): FormatResult {
+export function formatWithValidation<TRoot, TOpts>(opts: FormatWithValidationOptions<TRoot, TOpts>): FormatResult {
     if (!opts.isInitialized()) {
         return { edits: [] };
     }

@@ -14,7 +14,7 @@ import { EXT_WEIDU_TP2, LANG_WEIDU_TP2 } from "../core/languages";
 import { isHeaderFile } from "../core/location-utils";
 import { Symbols } from "../core/symbol-index";
 import { loadStaticSymbols } from "../core/static-loader";
-import { type FormatResult, type LanguageProvider, type ProviderContext } from "../language-provider";
+import { type FormatResult, HoverResult, type LanguageProvider, type ProviderContext } from "../language-provider";
 import { getFormatOptions } from "../shared/format-options";
 import { stripCommentsWeidu } from "../shared/format-utils";
 import { resolveSymbolWithLocal, getVisibleSymbolsWithLocal, formatWithValidation } from "../shared/provider-helpers";
@@ -37,24 +37,11 @@ import { getLocalSymbols as extractLocalSymbols, lookupLocalSymbol, clearLocalSy
 import { WEIDU_JSDOC_TYPES } from "../shared/weidu-types";
 import { getJsdocCompletions as getSharedJsdocCompletions } from "../shared/jsdoc-completions";
 
-/** Unified symbol storage for static completion and hover */
-let symbols: Symbols | undefined;
-/** Stored context for compile settings access */
-let storedContext: ProviderContext | undefined;
-
-/**
- * Get the unified symbol storage for the TP2 provider.
- * Used by other modules (definition, completion, hover) to access symbols.
- */
-export function getSymbols(): Symbols | undefined {
-    return symbols;
-}
-
 /**
  * Add parameter completions (INT_VAR, STR_VAR names) when in funcParamName context.
  * Returns the original items if not in funcParamName context or no params available.
  */
-function addParamCompletions(items: Tp2CompletionItem[], contexts: CompletionContext[]): Tp2CompletionItem[] {
+function addParamCompletions(items: Tp2CompletionItem[], contexts: CompletionContext[], symbolStore?: Symbols): Tp2CompletionItem[] {
     if (!contexts.includes(CompletionContext.FuncParamName)) {
         return items;
     }
@@ -62,7 +49,7 @@ function addParamCompletions(items: Tp2CompletionItem[], contexts: CompletionCon
     if (!funcContext) {
         return items;
     }
-    const paramCompletions = getParamCompletions(funcContext);
+    const paramCompletions = getParamCompletions(funcContext, symbolStore);
     if (paramCompletions.length === 0) {
         return items;
     }
@@ -72,15 +59,16 @@ function addParamCompletions(items: Tp2CompletionItem[], contexts: CompletionCon
 /**
  * Apply snippets for function/macro calls based on active contexts.
  * In name contexts (lafName/lpfName/lamName/lpmName), user already typed
- * the keyword — snippet has no prefix, only required params + END.
- * In patch/action contexts, user hasn't typed the keyword — snippet
+ * the keyword -- snippet has no prefix, only required params + END.
+ * In patch/action contexts, user hasn't typed the keyword -- snippet
  * includes LPF/LAF/LPM/LAM prefix + name + END.
  */
 function applySnippets(
     items: Tp2CompletionItem[],
     contexts: CompletionContext[],
     text: string,
-    uri: string
+    uri: string,
+    symbolStore: Symbols | undefined
 ): Tp2CompletionItem[] {
     const inNameContext = contexts.includes(CompletionContext.LafName)
         || contexts.includes(CompletionContext.LpfName)
@@ -94,8 +82,7 @@ function applySnippets(
     }
 
     return items.map((item) => {
-        // Skip action/patch command keywords (LPF, LAF, COPY, etc.) —
-        // these are not user-defined callables, just commands.
+        // Skip action/patch command keywords (LPF, LAF, COPY, etc.)
         const cat = item.category;
         if (cat === CompletionCategory.Action || cat === CompletionCategory.Patch) {
             const kwSnippet = getKeywordSnippet(item.label as string);
@@ -106,15 +93,11 @@ function applySnippets(
         }
 
         const funcName = item.label as string;
-        // Look up in both indexed and local symbols
-        const symbol = symbols?.lookup(funcName) ?? lookupLocalSymbol(funcName, text, uri);
+        const symbol = symbolStore?.lookup(funcName) ?? lookupLocalSymbol(funcName, text, uri);
         if (!symbol || !isCallableSymbol(symbol)) {
             return item;
         }
 
-        // Determine prefix based on context.
-        // In name contexts, user already typed the keyword — no prefix.
-        // In patch/action contexts, choose keyword based on callable dtype.
         const prefix = inNameContext
             ? undefined
             : getSnippetPrefix(symbol.callable.dtype, inPatchContext, inActionContext);
@@ -131,9 +114,7 @@ function applySnippets(
     });
 }
 
-/**
- * Determine the keyword prefix for a function/macro snippet based on context.
- */
+/** Determine the keyword prefix for a function/macro snippet based on context. */
 function getSnippetPrefix(
     dtype: string | undefined,
     inPatchContext: boolean,
@@ -149,41 +130,46 @@ function getSnippetPrefix(
     return undefined;
 }
 
-export const weiduTp2Provider: LanguageProvider = {
-    id: LANG_WEIDU_TP2,
-    watchExtensions: [...EXT_WEIDU_TP2],
+/** JSDoc completion items with TP2 category metadata. */
+function getJsdocCompletions(linePrefix: string): Tp2CompletionItem[] {
+    return getSharedJsdocCompletions(WEIDU_JSDOC_TYPES, linePrefix)
+        .map((item) => ({ ...item, category: CompletionCategory.Jsdoc }));
+}
+
+class WeiduTp2Provider implements LanguageProvider {
+    readonly id = LANG_WEIDU_TP2;
+    readonly watchExtensions = [...EXT_WEIDU_TP2];
+
+    private symbolStore: Symbols | undefined;
+    private storedContext: ProviderContext | undefined;
 
     async init(context: ProviderContext): Promise<void> {
-        storedContext = context;
+        this.storedContext = context;
 
-        // Initialize tree-sitter parser for formatting
         await initParser();
 
-        // Initialize symbol storage with static data
-        symbols = new Symbols();
+        this.symbolStore = new Symbols();
         const staticSymbols = loadStaticSymbols(LANG_WEIDU_TP2);
-        symbols.loadStatic(staticSymbols);
+        this.symbolStore.loadStatic(staticSymbols);
 
         conlog(`WeiDU TP2 provider initialized with ${staticSymbols.length} static symbols`);
-    },
+    }
 
     resolveSymbol(name: string, text: string, uri: string): IndexedSymbol | undefined {
-        return resolveSymbolWithLocal(name, text, uri, symbols, lookupLocalSymbol);
-    },
+        return resolveSymbolWithLocal(name, text, uri, this.symbolStore, lookupLocalSymbol);
+    }
 
     getVisibleSymbols(text: string, uri: string): IndexedSymbol[] {
-        return getVisibleSymbolsWithLocal(text, uri, symbols, extractLocalSymbols);
-    },
+        return getVisibleSymbolsWithLocal(text, uri, this.symbolStore, extractLocalSymbols);
+    }
 
     getCompletions(uri: string): CompletionItem[] {
-        if (!symbols) {
+        if (!this.symbolStore) {
             return [];
         }
-        // Return symbols, excluding current file (local completion handles that)
-        // Static and header symbols always have category set (see static-loader.ts, header-parser.ts)
-        const allSymbols = symbols.query({ excludeUri: uri });
+        const allSymbols = this.symbolStore.query({ excludeUri: uri });
         return allSymbols.map((s: IndexedSymbol) => s.completion as Tp2CompletionItem);
-    },
+    }
 
     filterCompletions(items: CompletionItem[], text: string, position: Position, uri: string, triggerCharacter?: string): CompletionItem[] {
         const filePath = fileURLToPath(uri);
@@ -192,7 +178,6 @@ export const weiduTp2Provider: LanguageProvider = {
 
         conlog(`[tp2] Completion contexts: [${contexts.join(", ")}] at ${position.line}:${position.character} in ${ext}`);
 
-        // No code completions inside comments; JSDoc tags/types inside /** */
         if (contexts.includes(CompletionContext.Comment)) {
             return [];
         }
@@ -200,118 +185,97 @@ export const weiduTp2Provider: LanguageProvider = {
             return getJsdocCompletions(getLinePrefix(text, position));
         }
 
-        // @ trigger character is only for JSDoc - suppress in other contexts
         if (triggerCharacter === "@") {
             return [];
         }
 
-        // Add local completions from current file:
-        // - localCompletion() returns variables (all local variable names)
-        // - extractLocalSymbols() returns functions/macros defined in this file
-        // No deduplication needed - getCompletions() excludes current file via excludeUri
         const localVars = localCompletion(text);
         const localFuncSymbols = extractLocalSymbols(text, uri)
             .filter(s => isCallableSymbol(s))
             .map(s => s.completion as Tp2CompletionItem);
 
-        // items come from getCompletions() which returns Tp2CompletionItem[] (static + header symbols all have category)
-        // localVars come from localCompletion() which returns Tp2CompletionItem[]
-        // localFuncSymbols come from extractLocalSymbols() → header-parser (functions/macros in same file)
         const baseItems: Tp2CompletionItem[] = [...items as Tp2CompletionItem[], ...localVars, ...localFuncSymbols];
-        const withParams = addParamCompletions(baseItems, contexts);
-        const withSnippets = applySnippets(withParams, contexts, text, uri);
+        const withParams = addParamCompletions(baseItems, contexts, this.symbolStore);
+        const withSnippets = applySnippets(withParams, contexts, text, uri, this.symbolStore);
 
         return filterItemsByContext(withSnippets, contexts);
-    },
+    }
 
     shouldProvideFeatures(text: string, position: Position): boolean {
         return !isInsideComment(text, position);
-    },
+    }
 
     getHover(_uri: string, symbolName: string): Hover | null {
-        // All symbols (static + header) are in the unified symbol storage
-        if (symbols) {
-            const symbol = symbols.lookup(symbolName);
+        if (this.symbolStore) {
+            const symbol = this.symbolStore.lookup(symbolName);
             if (symbol?.hover) {
                 return symbol.hover;
             }
         }
         return null;
-    },
+    }
 
-    hover(text: string, symbol: string, _uri: string, position: Position): Hover | null | undefined {
-        // Function param hover takes priority
-        const paramHover = getFunctionParamHover(text, symbol, position);
+    hover(text: string, symbol: string, _uri: string, position: Position): HoverResult {
+        const paramHover = getFunctionParamHover(text, symbol, position, this.symbolStore);
         if (paramHover) {
-            return paramHover;
+            return HoverResult.found(paramHover);
         }
 
-        // Block fallthrough for variable-binding positions (param names, loop variables).
-        // These define local variables and should not show unrelated indexed data.
         if (isInitialized()) {
             const tree = parseWithCache(text);
             if (tree) {
                 const isParamName = isOnFunctionCallParamName(tree.rootNode, position);
                 const isLoopVar = isOnLoopVariableBinding(tree.rootNode, position);
                 if (isParamName || isLoopVar) {
-                    return null;
+                    return HoverResult.empty();
                 }
             }
         }
 
-        // Variable hover from unified symbol storage (pre-computed)
-        if (symbols) {
-            const sym = symbols.lookup(symbol);
+        if (this.symbolStore) {
+            const sym = this.symbolStore.lookup(symbol);
             if (sym?.hover) {
-                return sym.hover;
+                return HoverResult.found(sym.hover);
             }
         }
 
-        return undefined;  // Not handled, fall through to data-driven hover
-    },
+        return HoverResult.notHandled();
+    }
 
     getSymbolDefinition(symbolName: string): Location | null {
-        // Static symbols have null locations (they're built-in).
-        // Definition for user-defined symbols is handled by definition() via tree-sitter.
-        return symbols?.lookupDefinition(symbolName) ?? null;
-    },
+        return this.symbolStore?.lookupDefinition(symbolName) ?? null;
+    }
 
     definition(text: string, position: Position, uri: string): Location | null {
-        return getDefinition(text, uri, position);
-    },
+        return getDefinition(text, uri, position, this.symbolStore);
+    }
 
     reloadFileData(uri: string, text: string): void {
-        // Only update global indices for header files (.tph).
-        // Non-header variables/functions are local to their file.
         if (isHeaderFile(uri)) {
-            // Update unified symbol storage - ensures ALL provider methods see header symbols
-            // This is the single source of truth for all LSP features
-            if (symbols) {
-                const parsedSymbols = parseHeaderToSymbols(uri, text, storedContext?.workspaceRoot);
-                symbols.updateFile(uri, parsedSymbols);
+            if (this.symbolStore) {
+                const parsedSymbols = parseHeaderToSymbols(uri, text, this.storedContext?.workspaceRoot);
+                this.symbolStore.updateFile(uri, parsedSymbols);
             }
         }
-    },
+    }
 
     onWatchedFileDeleted(uri: string): void {
-        // Clear from unified index
-        if (symbols) {
-            symbols.clearFile(uri);
+        if (this.symbolStore) {
+            this.symbolStore.clearFile(uri);
         }
-    },
+    }
 
     onDocumentClosed(uri: string): void {
-        // Clear local symbols cache for this document
         clearLocalSymbolsCache(uri);
-    },
+    }
 
     async compile(uri: string, text: string, interactive: boolean): Promise<void> {
-        if (!storedContext) {
+        if (!this.storedContext) {
             conlog("WeiDU TP2 provider not initialized, cannot compile");
             return;
         }
-        weiduCompile(uri, storedContext.settings.weidu, interactive, text);
-    },
+        weiduCompile(uri, this.storedContext.settings.weidu, interactive, text);
+    }
 
     format(text: string, uri: string): FormatResult {
         return formatWithValidation({
@@ -324,24 +288,19 @@ export const weiduTp2Provider: LanguageProvider = {
             getFormatOptions,
             stripComments: stripCommentsWeidu,
         });
-    },
+    }
 
     symbols(text: string): DocumentSymbol[] {
         return getDocumentSymbols(text);
-    },
+    }
 
     rename(text: string, position: Position, newName: string, uri: string): WorkspaceEdit | null {
         return renameSymbol(text, position, newName, uri);
-    },
+    }
 
     prepareRename(text: string, position: Position): { range: { start: Position; end: Position }; placeholder: string } | null {
         return prepareRenameSymbol(text, position);
-    },
-};
-
-
-/** JSDoc completion items with TP2 category metadata. */
-function getJsdocCompletions(linePrefix: string): Tp2CompletionItem[] {
-    return getSharedJsdocCompletions(WEIDU_JSDOC_TYPES, linePrefix)
-        .map((item) => ({ ...item, category: CompletionCategory.Jsdoc }));
+    }
 }
+
+export const weiduTp2Provider: LanguageProvider = new WeiduTp2Provider();

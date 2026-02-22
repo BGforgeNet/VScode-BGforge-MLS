@@ -51,12 +51,12 @@ export function getRequest(text: string, position: Position) {
     const lastChar = left.slice(-1);
 
     // short circuit on closing parenthesis
-    if (lastChar == ")") {
+    if (lastChar === ")") {
         return;
     }
     const splitOnParen = left.split("(");
     const args = splitOnParen.pop();
-    if (!args && args != "") {
+    if (!args && args !== "") {
         return;
     }
 

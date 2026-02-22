@@ -21,7 +21,6 @@ vi.mock("../../src/server", () => ({
 import { getDefinition } from "../../src/weidu-tp2/definition";
 import { initParser } from "../../src/weidu-tp2/parser";
 import { parseHeaderToSymbols } from "../../src/weidu-tp2/header-parser";
-import * as provider from "../../src/weidu-tp2/provider";
 import { Symbols } from "../../src/core/symbol-index";
 
 beforeAll(async () => {
@@ -454,7 +453,6 @@ OUTER_SET parameter2 = 999
 `;
         const symbols = parseHeaderToSymbols(headerUri, headerText);
         mockSymbols.updateFile(headerUri, symbols);
-        vi.spyOn(provider, "getSymbols").mockReturnValue(mockSymbols);
 
         // Call an unknown function with a parameter that matches the indexed variable
         const text = `LPF unknown_func
@@ -465,12 +463,10 @@ END
         const uri = "file:///test.tp2";
         // Cursor on "parameter2" in the call (line 2, character 10)
         const position: Position = { line: 2, character: 10 };
-        const result = getDefinition(text, uri, position);
+        const result = getDefinition(text, uri, position, mockSymbols);
 
         // Should return null, NOT the variable definition from the index
         expect(result).toBeNull();
-
-        vi.restoreAllMocks();
     });
 });
 
@@ -535,18 +531,6 @@ INCLUDE ~lib/file.tph~
 });
 
 describe("TP2 definition: header variables", () => {
-    let mockSymbols: Symbols;
-
-    beforeEach(() => {
-        // Create a mock Symbols for header variable tests
-        mockSymbols = new Symbols();
-        vi.spyOn(provider, "getSymbols").mockReturnValue(mockSymbols);
-    });
-
-    afterEach(() => {
-        vi.restoreAllMocks();
-    });
-
     it("finds header variable definition from local usage", () => {
         const text = `
 // Local file uses %test_var% which is defined in a header
@@ -560,12 +544,13 @@ OUTER_SET result = %test_var% + 1
 OUTER_SET test_var = 100
 `;
         // Populate the Symbols as if header file was indexed
+        const mockSymbols = new Symbols();
         const symbols = parseHeaderToSymbols(headerUri, headerText);
         mockSymbols.updateFile(headerUri, symbols);
 
         // Cursor on "test_var" in %test_var%
         const position: Position = { line: 2, character: 21 };
-        const result = getDefinition(text, uri, position);
+        const result = getDefinition(text, uri, position, mockSymbols);
 
         expect(result).not.toBeNull();
         expect(result?.uri).toBe(headerUri);
@@ -583,6 +568,7 @@ OUTER_SET result = %my_var% + 1
         const headerUri = "file:///header.tph";
 
         // Setup: simulate header file with OUTER_SET my_var = 1
+        const mockSymbols = new Symbols();
         const headerText = `
 OUTER_SET my_var = 1
 `;
@@ -591,7 +577,7 @@ OUTER_SET my_var = 1
 
         // Cursor on "my_var" in %my_var%
         const position: Position = { line: 3, character: 21 };
-        const result = getDefinition(text, uri, position);
+        const result = getDefinition(text, uri, position, mockSymbols);
 
         expect(result).not.toBeNull();
         // Should point to header definition, not local reassignment
@@ -607,11 +593,12 @@ OUTER_SET result = %local_var% + 1
 `;
         const uri = "file:///test.tp2";
 
-        // No header setup - variable is only defined locally
+        // No header setup - pass empty Symbols
+        const mockSymbols = new Symbols();
 
         // Cursor on "local_var" in %local_var%
         const position: Position = { line: 2, character: 21 };
-        const result = getDefinition(text, uri, position);
+        const result = getDefinition(text, uri, position, mockSymbols);
 
         expect(result).not.toBeNull();
         expect(result?.uri).toBe(uri);
@@ -621,21 +608,10 @@ OUTER_SET result = %local_var% + 1
 });
 
 describe("TP2 definition: static symbols", () => {
-    let mockSymbols: Symbols;
-
-    beforeEach(() => {
-        mockSymbols = new Symbols();
-        vi.spyOn(provider, "getSymbols").mockReturnValue(mockSymbols);
-    });
-
-    afterEach(() => {
-        vi.restoreAllMocks();
-    });
-
     it("returns null for static symbols with null location (prevents VSCode directory open)", () => {
         // Static symbols (built-in functions like ALTER_EFFECT) have no source file.
         // Their location is null, so definition should return null.
-
+        const mockSymbols = new Symbols();
         mockSymbols.loadStatic([{
             name: "ALTER_EFFECT",
             kind: SymbolKind.Action,
@@ -653,7 +629,7 @@ END`;
         const uri = "file:///test.tp2";
         // Cursor on "ALTER_EFFECT" in LPF call
         const position: Position = { line: 1, character: 10 };
-        const result = getDefinition(text, uri, position);
+        const result = getDefinition(text, uri, position, mockSymbols);
 
         // Should return null, NOT a location with empty URI
         expect(result).toBeNull();
@@ -661,6 +637,7 @@ END`;
 
     it("returns valid location for header functions with real URIs", () => {
         // Header functions have real URIs and should work normally
+        const mockSymbols = new Symbols();
         const headerUri = "file:///lib/functions.tph";
         const headerText = `
 DEFINE_PATCH_FUNCTION my_patch_func
@@ -676,7 +653,7 @@ END`;
         const uri = "file:///test.tp2";
         // Cursor on "my_patch_func"
         const position: Position = { line: 1, character: 10 };
-        const result = getDefinition(text, uri, position);
+        const result = getDefinition(text, uri, position, mockSymbols);
 
         // Should return the header location
         expect(result).not.toBeNull();

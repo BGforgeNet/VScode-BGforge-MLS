@@ -14,7 +14,7 @@ vi.mock("../src/lsp-connection", () => ({
     }),
 }));
 
-import { symbolAtPosition, sendParseResult, isSubpath, expandHome, parseCommandPath, type ParseResult } from "../src/common";
+import { symbolAtPosition, sendParseResult, isSubpath, expandHome, parseCommandPath, errorMessage, type ParseResult } from "../src/common";
 
 describe("symbolAtPosition", () => {
     it("returns word under cursor", () => {
@@ -197,6 +197,28 @@ describe("expandHome", () => {
 
     it("returns relative paths unchanged", () => {
         expect(expandHome("bin/sslc")).toBe("bin/sslc");
+    });
+});
+
+describe("errorMessage", () => {
+    it("extracts message from Error instances", () => {
+        expect(errorMessage(new Error("something broke"))).toBe("something broke");
+    });
+
+    it("converts string to string", () => {
+        expect(errorMessage("raw string")).toBe("raw string");
+    });
+
+    it("converts number to string", () => {
+        expect(errorMessage(42)).toBe("42");
+    });
+
+    it("converts undefined to string", () => {
+        expect(errorMessage(undefined)).toBe("undefined");
+    });
+
+    it("converts null to string", () => {
+        expect(errorMessage(null)).toBe("null");
     });
 });
 

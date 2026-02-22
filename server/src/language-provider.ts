@@ -22,6 +22,24 @@ import type { IndexedSymbol } from "./core/symbol";
 import { MLSsettings } from "./settings";
 
 /**
+ * Result from a provider's hover method.
+ * Discriminated union that replaces the ambiguous Hover | null | undefined return:
+ * - handled=true, hover=Hover: provider found a result
+ * - handled=true, hover=null: provider handled it but nothing to show (block fallthrough)
+ * - handled=false: provider didn't handle it, fall through to data-driven hover
+ */
+export type HoverResult =
+    | { readonly handled: true; readonly hover: Hover | null }
+    | { readonly handled: false };
+
+/** Factory helpers for creating HoverResult values. */
+export const HoverResult = {
+    found: (hover: Hover): HoverResult => ({ handled: true, hover }),
+    empty: (): HoverResult => ({ handled: true, hover: null }),
+    notHandled: (): HoverResult => ({ handled: false }),
+} as const;
+
+/**
  * Result from formatting a document.
  * Includes edits and optional warning message for validation failures.
  */
@@ -90,8 +108,8 @@ export interface LanguageProvider {
     /** Go to definition at position. For in-file definitions (e.g., state labels). */
     definition?(text: string, position: Position, uri: string): Location | null;
 
-    /** Get hover info for a local symbol. Returns null to prevent fallthrough, undefined to fall back to data hover. */
-    hover?(text: string, symbol: string, uri: string, position: Position): Hover | null | undefined;
+    /** Get hover info for a local symbol. Uses HoverResult to explicitly signal handled/not-handled. */
+    hover?(text: string, symbol: string, uri: string, position: Position): HoverResult;
 
     /** Get completion items for locally defined symbols. */
     localCompletion?(text: string): CompletionItem[];

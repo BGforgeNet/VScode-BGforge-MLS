@@ -267,3 +267,8 @@ function findTraArgumentAtPosition(line: string, pos: number): string | null {
 function onlyDigits(value: string) {
     return /^\d+$/.test(value);
 }
+
+/** Extract a human-readable message from an unknown caught value. */
+export function errorMessage(error: unknown): string {
+    return error instanceof Error ? error.message : String(error);
+}

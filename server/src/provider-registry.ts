@@ -23,7 +23,7 @@ import {
     WatchKind,
     WorkspaceEdit,
 } from "vscode-languageserver/node";
-import { FormatResult, LanguageProvider, ProviderContext } from "./language-provider";
+import { FormatResult, HoverResult, LanguageProvider, ProviderContext } from "./language-provider";
 import { conlog, findFiles, pathToUri } from "./common";
 import { validLocationOrNull } from "./core/location-utils";
 
@@ -266,13 +266,13 @@ class ProviderRegistry {
         return result;
     }
 
-    /** AST-based hover for local symbols. Returns undefined if no provider, null/Hover from provider. */
-    localHover(langId: string, text: string, symbol: string, uri: string, position: Position): Hover | null | undefined {
+    /** AST-based hover for local symbols. Returns HoverResult indicating whether provider handled it. */
+    localHover(langId: string, text: string, symbol: string, uri: string, position: Position): HoverResult {
         const provider = this.get(langId);
         if (provider?.hover) {
             return provider.hover(text, symbol, uri, position);
         }
-        return undefined;  // No provider, fall through
+        return HoverResult.notHandled();
     }
 
     /**

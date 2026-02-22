@@ -28,7 +28,7 @@ const sslExt = ".ssl";
  * Imperfect, but works.
  */
 function fixWinePath(filePath: string) {
-    if (os.platform() == "win32") {
+    if (os.platform() === "win32") {
         return filePath;
     }
     if (!filePath.startsWith("Z:/")) {
@@ -70,7 +70,7 @@ function parseCompileOutput(text: string, uri: string) {
 
     try {
         let match = errorsRegex.exec(text);
-        while (match != null) {
+        while (match !== null) {
             // This is necessary to avoid infinite loops with zero-width matches
             if (match.index === errorsRegex.lastIndex) {
                 errorsRegex.lastIndex++;
@@ -104,7 +104,7 @@ function parseCompileOutput(text: string, uri: string) {
         }
 
         match = warningsRegex.exec(text);
-        while (match != null) {
+        while (match !== null) {
             // This is necessary to avoid infinite loops with zero-width matches
             if (match.index === warningsRegex.lastIndex) {
                 warningsRegex.lastIndex++;
@@ -189,7 +189,7 @@ export async function compile(
     const dstPath = path.join(sslSettings.outputDirectory, base + ".int");
     const ext = path.parse(filepath).ext;
 
-    if (ext.toLowerCase() != sslExt) {
+    if (ext.toLowerCase() !== sslExt) {
         // vscode loses open file if clicked on console or elsewhere
         conlog("Not a Fallout SSL file! Please focus a Fallout SSL file to compile.");
         if (interactive) {

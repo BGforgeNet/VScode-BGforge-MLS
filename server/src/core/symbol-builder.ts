@@ -35,6 +35,8 @@ import {
     CallableContext,
     CallableDefType,
     symbolKindToCompletionKind,
+    CALLABLE_KINDS,
+    VARIABLE_KINDS,
 } from "./symbol";
 
 // =============================================================================
@@ -177,19 +179,6 @@ export function buildSymbol(raw: RawSymbolData): IndexedSymbol {
 // Kind Helpers
 // =============================================================================
 
-const CALLABLE_KINDS = new Set([
-    SymbolKind.Function,
-    SymbolKind.Procedure,
-    SymbolKind.Macro,
-    SymbolKind.Action,
-    SymbolKind.Trigger,
-]);
-
-const VARIABLE_KINDS = new Set([
-    SymbolKind.Variable,
-    SymbolKind.Parameter,
-    SymbolKind.LoopVariable,
-]);
 
 function isCallableKind(kind: SymbolKind): kind is SymbolKind.Function | SymbolKind.Procedure | SymbolKind.Macro | SymbolKind.Action | SymbolKind.Trigger {
     return CALLABLE_KINDS.has(kind);

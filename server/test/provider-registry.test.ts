@@ -473,20 +473,21 @@ describe("ProviderRegistry", () => {
     });
 
     describe("localHover()", () => {
-        it("should return undefined if no provider found", async () => {
+        it("should return not-handled if no provider found", async () => {
             const registry = await createRegistry();
 
-            expect(registry.localHover("nonexistent", "text", "sym", "file:///test.txt", { line: 0, character: 0 })).toBeUndefined();
+            const result = registry.localHover("nonexistent", "text", "sym", "file:///test.txt", { line: 0, character: 0 });
+            expect(result).toEqual({ handled: false });
         });
 
         it("should delegate to provider's hover", async () => {
             const registry = await createRegistry();
             const mockHover: Hover = { contents: { kind: "markdown", value: "**myFunc**" } };
-            registry.register(createMockProvider("test", { hover: vi.fn().mockReturnValue(mockHover) }));
+            registry.register(createMockProvider("test", { hover: vi.fn().mockReturnValue({ handled: true, hover: mockHover }) }));
 
             const result = registry.localHover("test", "text", "myFunc", "file:///test.txt", { line: 0, character: 5 });
 
-            expect(result).toBe(mockHover);
+            expect(result).toEqual({ handled: true, hover: mockHover });
         });
     });
 

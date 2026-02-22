@@ -5,7 +5,7 @@
 
 import { CompletionItemKind, InsertTextFormat, MarkupKind } from "vscode-languageserver/node";
 import { isCallableSymbol, type CallableParam } from "../../core/symbol";
-import { getSymbols } from "../provider";
+import type { Symbols } from "../../core/symbol-index";
 import { CompletionCategory, ParamSection, type FuncParamsContext, type Tp2CompletionItem } from "./types";
 import { LANG_WEIDU_TP2_TOOLTIP } from "../../core/languages";
 
@@ -13,11 +13,10 @@ import { LANG_WEIDU_TP2_TOOLTIP } from "../../core/languages";
  * Generate parameter completions for a function call.
  * Looks up the function definition and returns completions for unused parameters.
  */
-export function getParamCompletions(context: FuncParamsContext): Tp2CompletionItem[] {
+export function getParamCompletions(context: FuncParamsContext, symbols?: Symbols): Tp2CompletionItem[] {
     const { functionName, paramSection, usedParams } = context;
 
     // Look up function definition from unified symbol storage
-    const symbols = getSymbols();
     const symbol = symbols?.lookup(functionName);
     if (!symbol || !isCallableSymbol(symbol) || !symbol.callable.params) {
         // Function not found or has no params (it's a macro)

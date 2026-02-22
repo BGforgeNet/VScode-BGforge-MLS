@@ -24,9 +24,8 @@ vi.mock("../../src/common", async (importOriginal) => {
     };
 });
 
-import { weiduTp2Provider, getSymbols } from "../../src/weidu-tp2/provider";
+import { weiduTp2Provider } from "../../src/weidu-tp2/provider";
 import { initParser } from "../../src/weidu-tp2/parser";
-import { parseHeaderToSymbols } from "../../src/weidu-tp2/header-parser";
 import { defaultSettings } from "../../src/settings";
 import * as path from "path";
 
@@ -211,9 +210,6 @@ describe("weidu-tp2: header variable completion via Symbols", () => {
     // The provider uses Symbols as the single source of truth for header data.
 
     it("includes header variables with JSDoc in completions", () => {
-        const store = getSymbols();
-        expect(store).toBeDefined();
-
         // Parse header content to symbols
         const tphUri = "file:///test-header.tph";
         const tphContent = `
@@ -223,41 +219,33 @@ describe("weidu-tp2: header variable completion via Symbols", () => {
  */
 OUTER_TEXT_SPRINT mod_folder ~mymod~
 `;
-        const parsedSymbols = parseHeaderToSymbols(tphUri, tphContent);
-        store!.updateFile(tphUri, parsedSymbols);
+        weiduTp2Provider.reloadFileData!(tphUri, tphContent);
 
         // The variable should be in the index
-        const modFolderSymbol = store!.lookup("mod_folder");
+        const modFolderSymbol = weiduTp2Provider.resolveSymbol!("mod_folder", "", "");
         expect(modFolderSymbol).toBeDefined();
         expect(modFolderSymbol?.completion.kind).toBe(6); // CompletionItemKind.Variable
 
         // Cleanup
-        store!.clearFile(tphUri);
+        weiduTp2Provider.onWatchedFileDeleted!(tphUri);
     });
 
     it("includes header variables without JSDoc in completions", () => {
-        const store = getSymbols();
-        expect(store).toBeDefined();
-
         // Load a header with a variable that has NO JSDoc
         const tphUri = "file:///test-no-jsdoc.tph";
         const tphContent = `OUTER_TEXT_SPRINT no_jsdoc ~value~`;
-        const parsedSymbols = parseHeaderToSymbols(tphUri, tphContent);
-        store!.updateFile(tphUri, parsedSymbols);
+        weiduTp2Provider.reloadFileData!(tphUri, tphContent);
 
         // All top-level variables from .tph should appear
-        const noJsdocSymbol = store!.lookup("no_jsdoc");
+        const noJsdocSymbol = weiduTp2Provider.resolveSymbol!("no_jsdoc", "", "");
         expect(noJsdocSymbol).toBeDefined();
         expect(noJsdocSymbol?.completion.kind).toBe(6); // CompletionItemKind.Variable
 
         // Cleanup
-        store!.clearFile(tphUri);
+        weiduTp2Provider.onWatchedFileDeleted!(tphUri);
     });
 
     it("provides hover info for header variables with JSDoc", () => {
-        const store = getSymbols();
-        expect(store).toBeDefined();
-
         // Load a header with a variable that has JSDoc
         const tphUri = "file:///test-hover.tph";
         const tphContent = `
@@ -267,11 +255,10 @@ OUTER_TEXT_SPRINT mod_folder ~mymod~
  */
 OUTER_SET debug_mode = 0
 `;
-        const parsedSymbols = parseHeaderToSymbols(tphUri, tphContent);
-        store!.updateFile(tphUri, parsedSymbols);
+        weiduTp2Provider.reloadFileData!(tphUri, tphContent);
 
         // Get hover from symbol
-        const symbol = store!.lookup("debug_mode");
+        const symbol = weiduTp2Provider.resolveSymbol!("debug_mode", "", "");
         expect(symbol?.hover).toBeDefined();
         const contents = symbol?.hover.contents;
         if (contents && typeof contents === "object" && "value" in contents) {
@@ -282,48 +269,40 @@ OUTER_SET debug_mode = 0
         }
 
         // Cleanup
-        store!.clearFile(tphUri);
+        weiduTp2Provider.onWatchedFileDeleted!(tphUri);
     });
 
     it("clears header variables when file is removed from index", () => {
-        const store = getSymbols();
-        expect(store).toBeDefined();
-
         // Load a header
         const tphUri = "file:///test-clear.tph";
         const tphContent = `OUTER_TEXT_SPRINT temp_var ~value~`;
-        const parsedSymbols = parseHeaderToSymbols(tphUri, tphContent);
-        store!.updateFile(tphUri, parsedSymbols);
+        weiduTp2Provider.reloadFileData!(tphUri, tphContent);
 
         // Verify it's in the index
-        expect(store!.lookup("temp_var")).toBeDefined();
+        expect(weiduTp2Provider.resolveSymbol!("temp_var", "", "")).toBeDefined();
 
         // Clear the file
-        store!.clearFile(tphUri);
+        weiduTp2Provider.onWatchedFileDeleted!(tphUri);
 
         // Verify it's removed
-        expect(store!.lookup("temp_var")).toBeUndefined();
+        expect(weiduTp2Provider.resolveSymbol!("temp_var", "", "")).toBeUndefined();
     });
 
     it("does not show value for non-UPPERCASE variables", () => {
-        const store = getSymbols();
-        expect(store).toBeDefined();
-
         const tphUri = "file:///test-type-value.tph";
         const tphContent = `OUTER_SET test123 = 120
 OUTER_TEXT_SPRINT mod_folder ~mymod~`;
-        const parsedSymbols = parseHeaderToSymbols(tphUri, tphContent);
-        store!.updateFile(tphUri, parsedSymbols);
+        weiduTp2Provider.reloadFileData!(tphUri, tphContent);
 
         // Non-UPPERCASE: should show type and name only
-        const intSymbol = store!.lookup("test123");
+        const intSymbol = weiduTp2Provider.resolveSymbol!("test123", "", "");
         expect(intSymbol?.hover).toBeDefined();
         if (intSymbol?.hover.contents && typeof intSymbol.hover.contents === "object" && "value" in intSymbol.hover.contents) {
             expect(intSymbol.hover.contents.value).toContain("int test123");
             expect(intSymbol.hover.contents.value).not.toContain("= 120");
         }
 
-        const strSymbol = store!.lookup("mod_folder");
+        const strSymbol = weiduTp2Provider.resolveSymbol!("mod_folder", "", "");
         expect(strSymbol?.hover).toBeDefined();
         if (strSymbol?.hover.contents && typeof strSymbol.hover.contents === "object" && "value" in strSymbol.hover.contents) {
             expect(strSymbol.hover.contents.value).toContain("string mod_folder");
@@ -331,50 +310,42 @@ OUTER_TEXT_SPRINT mod_folder ~mymod~`;
         }
 
         // Cleanup
-        store!.clearFile(tphUri);
+        weiduTp2Provider.onWatchedFileDeleted!(tphUri);
     });
 
     it("shows value for UPPERCASE constant variables", () => {
-        const store = getSymbols();
-        expect(store).toBeDefined();
-
         const tphUri = "file:///test-const-value.tph";
         const tphContent = `OUTER_SET MAX_LEVEL = 40
 OUTER_TEXT_SPRINT MOD_FOLDER ~mymod~`;
-        const parsedSymbols = parseHeaderToSymbols(tphUri, tphContent);
-        store!.updateFile(tphUri, parsedSymbols);
+        weiduTp2Provider.reloadFileData!(tphUri, tphContent);
 
         // UPPERCASE: should show type, name, AND value
-        const intSymbol = store!.lookup("MAX_LEVEL");
+        const intSymbol = weiduTp2Provider.resolveSymbol!("MAX_LEVEL", "", "");
         expect(intSymbol?.hover).toBeDefined();
         if (intSymbol?.hover.contents && typeof intSymbol.hover.contents === "object" && "value" in intSymbol.hover.contents) {
             expect(intSymbol.hover.contents.value).toContain("int MAX_LEVEL = 40");
         }
 
-        const strSymbol = store!.lookup("MOD_FOLDER");
+        const strSymbol = weiduTp2Provider.resolveSymbol!("MOD_FOLDER", "", "");
         expect(strSymbol?.hover).toBeDefined();
         if (strSymbol?.hover.contents && typeof strSymbol.hover.contents === "object" && "value" in strSymbol.hover.contents) {
             expect(strSymbol.hover.contents.value).toContain("string MOD_FOLDER = ~mymod~");
         }
 
         // Cleanup
-        store!.clearFile(tphUri);
+        weiduTp2Provider.onWatchedFileDeleted!(tphUri);
     });
 
     it("respects JSDoc @type override for variables", () => {
-        const store = getSymbols();
-        expect(store).toBeDefined();
-
         const tphUri = "file:///test-type-override.tph";
         const tphContent = `/**
  * @type {resref}
  */
 OUTER_TEXT_SPRINT spell ~SPWI101~`;
-        const parsedSymbols = parseHeaderToSymbols(tphUri, tphContent);
-        store!.updateFile(tphUri, parsedSymbols);
+        weiduTp2Provider.reloadFileData!(tphUri, tphContent);
 
         // Test JSDoc @type overrides inferred type
-        const symbol = store!.lookup("spell");
+        const symbol = weiduTp2Provider.resolveSymbol!("spell", "", "");
         expect(symbol?.hover).toBeDefined();
         if (symbol?.hover.contents && typeof symbol.hover.contents === "object" && "value" in symbol.hover.contents) {
             expect(symbol.hover.contents.value).toContain("resref spell");
@@ -383,7 +354,7 @@ OUTER_TEXT_SPRINT spell ~SPWI101~`;
         }
 
         // Cleanup
-        store!.clearFile(tphUri);
+        weiduTp2Provider.onWatchedFileDeleted!(tphUri);
     });
 });
 

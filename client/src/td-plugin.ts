@@ -162,7 +162,7 @@ function init(modules: { typescript: typeof ts }): ts.server.PluginModule {
         // getExternalFiles does not reliably add files to inferred projects.
         const originalGetScriptFileNames = host.getScriptFileNames.bind(host);
         host.getScriptFileNames = () => {
-            const files = originalGetScriptFileNames();
+            const files: string[] = originalGetScriptFileNames();
             if (!files.some((f: string) => isTdFile(f))) return files;
             if (files.includes(resolved)) return files;
             return [...files, resolved];
@@ -174,7 +174,8 @@ function init(modules: { typescript: typeof ts }): ts.server.PluginModule {
         const originalGetCompilationSettings = host.getCompilationSettings.bind(host);
         host.getCompilationSettings = () => {
             const settings = originalGetCompilationSettings();
-            if (!originalGetScriptFileNames().some((f: string) => isTdFile(f))) {
+            const allFiles: string[] = originalGetScriptFileNames();
+            if (!allFiles.some((f: string) => isTdFile(f))) {
                 return settings;
             }
             return {
@@ -191,8 +192,9 @@ function init(modules: { typescript: typeof ts }): ts.server.PluginModule {
             get(target, prop, receiver) {
                 if (prop === "getCompletionsAtPosition") {
                     return (fileName: string, position: number, options: ts.GetCompletionsAtPositionOptions) => {
-                        const result = target.getCompletionsAtPosition(fileName, position, options);
-                        if (!result) return result;
+                        const result: ts.WithMetadata<ts.CompletionInfo> | undefined =
+                            target.getCompletionsAtPosition(fileName, position, options);
+                        if (result === undefined) return result;
 
                         if (isTdFile(fileName)) {
                             const filtered = result.entries.filter(
