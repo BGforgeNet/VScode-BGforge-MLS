@@ -1,5 +1,7 @@
 # VSCode MLS Server Architecture
 
+See also: [development.md](../development.md) | [docs/architecture.md](../docs/architecture.md) | [scripts/README.md](../scripts/README.md)
+
 LSP server providing IDE features for niche scripting languages used in classic RPG modding.
 
 ## Overview
@@ -418,22 +420,7 @@ Documented in provider-registry.ts.
 
 ## Testing
 
-```bash
-# All unit tests
-pnpm test:unit
-
-# Single test file
-pnpm exec vitest run test/weidu-tp2/hover.test.ts
-
-# With coverage
-pnpm exec vitest run --coverage
-```
-
-Key test files:
-- `test/core/symbol-index.test.ts` - Symbols operations
-- `test/weidu-tp2/header-parser.test.ts` - Header parsing
-- `test/weidu-tp2/completion-*.test.ts` - Completion features
-- `test/provider-registry.test.ts` - Request routing
+See [scripts/README.md](../scripts/README.md) for all test commands.
 
 ## Adding a New Provider
 
