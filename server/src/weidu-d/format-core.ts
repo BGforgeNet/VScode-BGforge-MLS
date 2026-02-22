@@ -421,15 +421,21 @@ function formatStateAction(node: SyntaxNode, ctx: FormatContext, trailingEnd: bo
 
 // Build the header for an EXTEND action from its structural children (keyword, file, states, weight)
 function getExtendHeader(node: SyntaxNode): string {
-    const parts: string[] = [];
+    let result = "";
     for (const child of node.children) {
         // Stop at transitions, comments, copy_trans, or the trailing END
         if (child.type === "transition" || child.type.startsWith("transition_")
             || isComment(child) || isCopyOrMacro(child)) break;
         if (child.text.toUpperCase() === "END") break;
-        parts.push(child.text);
+        // Don't insert space after "#" — keep "#N" as a single token (position number).
+        // TODO: fix in grammar instead — tokenize "#N" as a single node (like tlk_ref does),
+        // also for _weight_value. Then this workaround can be removed.
+        if (result.length > 0 && !result.endsWith("#")) {
+            result += " ";
+        }
+        result += child.text;
     }
-    return parts.join(" ");
+    return result;
 }
 
 // Format EXTEND action

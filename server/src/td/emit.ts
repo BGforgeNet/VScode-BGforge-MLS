@@ -5,6 +5,7 @@
  */
 
 import * as path from "path";
+import { applyHelperFixups } from "../transpiler-utils";
 import {
     TDConstructType,
     TDTextType,
@@ -32,7 +33,8 @@ const INDENT = "    ";
  */
 export function emitD(script: TDScript): string {
     const filename = path.basename(script.sourceFile);
-    const header = `/* Generated from ${filename} - do not edit */\n\n`;
+    const traLine = script.traTag ? `/** @tra ${script.traTag} */\n` : "";
+    const header = `${traLine}/* Generated from ${filename} - do not edit */\n\n`;
     const body = script.constructs.map(emitConstruct).join("\n\n");
     return header + body + "\n";
 }
@@ -57,6 +59,11 @@ function emitConstruct(construct: TDConstruct): string {
             return emitInterject(construct);
         case TDConstructType.Patch:
             return emitPatch(construct);
+        default: {
+            // Exhaustive check: all TDConstructType values must be handled above
+            const _exhaustive: never = construct;
+            throw new Error(`Unknown construct type: ${(_exhaustive as TDConstruct).type}`);
+        }
     }
 }
 
@@ -72,10 +79,20 @@ function emitBegin(begin: TDBegin): string {
 }
 
 function emitAppend(append: TDAppend): string {
+    const keyword = append.early ? "APPEND_EARLY" : "APPEND";
     const ifExists = append.ifFileExists ? "IF_FILE_EXISTS " : "";
-    const header = `APPEND ${ifExists}${append.filename}\n`;
-    const states = append.states.map(emitState).join("\n\n");
+    const header = `${keyword} ${ifExists}${append.filename}\n`;
+    const states = append.states
+        .map(s => indentBlock(emitState(s)))
+        .join("\n\n");
     return header + states + "\nEND";
+}
+
+/**
+ * Indent every line of a block by one level.
+ */
+function indentBlock(block: string): string {
+    return block.split("\n").map(line => INDENT + line).join("\n");
 }
 
 // =============================================================================
@@ -86,14 +103,17 @@ function emitState(state: TDState): string {
     const lines: string[] = [];
 
     // State header: IF ~trigger~ label or IF ~~ label
-    const trigger = state.trigger ?? "";
+    const trigger = applyHelperFixups(state.trigger ?? "");
     const weight = state.weight !== undefined ? `WEIGHT #${state.weight} ` : "";
     lines.push(`IF ${weight}~${trigger}~ ${state.label}`);
 
-    // SAY - with multisay support
+    // SAY - with multisay support: SAY text = text = text
+    // States with transitions but no say() emit SAY ~~ (required WeiDU syntax).
     if (state.say.length > 0) {
         const sayTexts = state.say.map((s) => emitText(s.text));
         lines.push(`    SAY ${sayTexts.join(" = ")}`);
+    } else if (state.transitions.length > 0) {
+        lines.push(`    SAY ~~`);
     }
 
     // Transitions
@@ -123,7 +143,7 @@ function emitTransition(trans: TDTransition): string {
 
     // Trigger part: +~trigger~+ or ++
     if (hasTrigger) {
-        result += `+~${trans.trigger}~+`;
+        result += `+~${applyHelperFixups(trans.trigger!)}~+`;
     } else {
         result += "++";
     }
@@ -133,7 +153,7 @@ function emitTransition(trans: TDTransition): string {
 
     // DO action
     if (trans.action) {
-        result += ` DO ~${trans.action}~`;
+        result += ` DO ~${applyHelperFixups(trans.action)}~`;
     }
 
     // Journal entries
@@ -161,14 +181,22 @@ function emitTransition(trans: TDTransition): string {
 /**
  * Emit transition in long form: IF ~trigger~ THEN [DO ~action~] GOTO target
  * Used when there's no reply text.
+ *
+ * COPY_TRANS/COPY_TRANS_LATE are emitted directly (not wrapped in IF~THEN)
+ * because the WeiDU D grammar treats them as state-level constructs.
  */
 function emitTransitionLongform(trans: TDTransition, hasTrigger: boolean): string {
+    // COPY_TRANS is a state-level terminal, not an IF~THEN transition
+    if (trans.next.type === TDTransitionType.CopyTrans) {
+        return INDENT + emitTransitionNext(trans.next);
+    }
+
     let result = INDENT + "IF ~";
-    result += hasTrigger ? trans.trigger : "";
-    result += "~ THEN";
+    result += hasTrigger ? applyHelperFixups(trans.trigger!) : "";
+    result += "~";
 
     if (trans.action) {
-        result += ` DO ~${trans.action}~`;
+        result += ` DO ~${applyHelperFixups(trans.action)}~`;
     }
 
     result += " " + emitTransitionNext(trans.next);
@@ -235,6 +263,11 @@ function emitText(text: TDText): string {
         case TDTextType.Forced:
             result = `!${text.value}`;
             break;
+        default: {
+            // Exhaustive check: all TDTextType values must be handled above
+            const _exhaustive: never = text.type;
+            throw new Error(`Unknown text type: ${_exhaustive}`);
+        }
     }
 
     // Add sound if present
@@ -277,7 +310,7 @@ function emitChain(chain: TDChain): string {
     // IF trigger THEN filename label
     if (chain.trigger) {
         const weight = chain.weight !== undefined ? `WEIGHT #${chain.weight} ` : "";
-        lines.push(`IF ${weight}~${chain.trigger}~ THEN ${chain.filename} ${chain.label}`);
+        lines.push(`IF ${weight}~${applyHelperFixups(chain.trigger)}~ THEN ${chain.filename} ${chain.label}`);
     } else {
         lines.push(`${chain.filename} ${chain.label}`);
     }
@@ -290,13 +323,13 @@ function emitChain(chain: TDChain): string {
         // Speaker switch needed if different speaker (but not for first entry)
         if (entry.speaker && entry.speaker !== currentSpeaker && !firstEntry) {
             // Speaker switch
-            const ifCond = entry.trigger ? ` IF ~${entry.trigger}~ THEN` : "";
+            const ifCond = entry.trigger ? ` IF ~${applyHelperFixups(entry.trigger)}~ THEN` : "";
             const ifExists = entry.ifFileExists ? "IF_FILE_EXISTS " : "";
             lines.push(`== ${ifExists}${entry.speaker}${ifCond}`);
             currentSpeaker = entry.speaker;
         } else if (!firstEntry && entry.trigger) {
             // Same speaker with condition
-            lines.push(`= IF ~${entry.trigger}~ THEN`);
+            lines.push(`= IF ~${applyHelperFixups(entry.trigger)}~ THEN`);
         }
 
         // Update current speaker if this is first entry
@@ -322,7 +355,7 @@ function emitChain(chain: TDChain): string {
 
         // Action after entry
         if (entry.action) {
-            lines.push(`DO ~${entry.action}~`);
+            lines.push(`DO ~${applyHelperFixups(entry.action)}~`);
         }
 
         firstEntry = false;
@@ -384,7 +417,7 @@ function emitInterject(interject: TDChain | TDInterject): string {
     for (const entry of interject.entries) {
         // Speaker line (INTERJECT always has == prefix, unlike CHAIN)
         if (entry.speaker) {
-            const ifCond = entry.trigger ? ` IF ~${entry.trigger}~ THEN` : "";
+            const ifCond = entry.trigger ? ` IF ~${applyHelperFixups(entry.trigger)}~ THEN` : "";
             const ifExists = entry.ifFileExists ? "IF_FILE_EXISTS " : "";
             lines.push(`  == ${ifExists}${entry.speaker}${ifCond}`);
         }
@@ -399,7 +432,7 @@ function emitInterject(interject: TDChain | TDInterject): string {
 
         // Action after entry
         if (entry.action) {
-            lines.push(`  DO ~${entry.action}~`);
+            lines.push(`  DO ~${applyHelperFixups(entry.action)}~`);
         }
     }
 
@@ -421,22 +454,22 @@ function emitPatch(patch: { type: "patch"; operation: import("./types").TDPatchO
         case TDPatchOp.AlterTrans:
             return emitAlterTrans(op);
         case TDPatchOp.AddStateTrigger:
-            return `ADD_STATE_TRIGGER ${op.filename} ${formatStateList(op.states)} ~${op.trigger}~${formatUnless(op.unless)}`;
+            return `ADD_STATE_TRIGGER ${op.filename} ${formatStateList(op.states)} ~${applyHelperFixups(op.trigger)}~${formatUnless(op.unless)}`;
         case TDPatchOp.AddTransTrigger: {
             const trans = op.transitions ? ` DO ${op.transitions.join(" ")}` : "";
-            return `ADD_TRANS_TRIGGER ${op.filename} ${formatStateList(op.states)} ~${op.trigger}~${trans}${formatUnless(op.unless)}`;
+            return `ADD_TRANS_TRIGGER ${op.filename} ${formatStateList(op.states)} ~${applyHelperFixups(op.trigger)}~${trans}${formatUnless(op.unless)}`;
         }
         case TDPatchOp.AddTransAction:
-            return `ADD_TRANS_ACTION ${op.filename} BEGIN ${formatStateList(op.states)} END BEGIN ${op.transitions.join(" ")} END ~${op.action}~${formatUnless(op.unless)}`;
+            return `ADD_TRANS_ACTION ${op.filename} BEGIN ${formatStateList(op.states)} END BEGIN ${op.transitions.join(" ")} END ~${applyHelperFixups(op.action)}~${formatUnless(op.unless)}`;
         case TDPatchOp.ReplaceTransTrigger:
         case TDPatchOp.ReplaceTransAction: {
             const keyword = op.op === TDPatchOp.ReplaceTransTrigger ? "REPLACE_TRANS_TRIGGER" : "REPLACE_TRANS_ACTION";
-            return `${keyword} ${op.filename} BEGIN ${formatStateList(op.states)} END BEGIN ${op.transitions.join(" ")} END ~${op.oldText}~ ~${op.newText}~${formatUnless(op.unless)}`;
+            return `${keyword} ${op.filename} BEGIN ${formatStateList(op.states)} END BEGIN ${op.transitions.join(" ")} END ~${applyHelperFixups(op.oldText)}~ ~${applyHelperFixups(op.newText)}~${formatUnless(op.unless)}`;
         }
         case TDPatchOp.ReplaceTriggerText:
         case TDPatchOp.ReplaceActionText: {
             const keyword = op.op === TDPatchOp.ReplaceTriggerText ? "REPLACE_TRIGGER_TEXT" : "REPLACE_ACTION_TEXT";
-            return `${keyword} ${op.filenames.join(" ")} ~${op.oldText}~ ~${op.newText}~${formatUnless(op.unless)}`;
+            return `${keyword} ${op.filenames.join(" ")} ~${applyHelperFixups(op.oldText)}~ ~${applyHelperFixups(op.newText)}~${formatUnless(op.unless)}`;
         }
         case TDPatchOp.SetWeight:
             return `SET_WEIGHT ${op.filename} ${op.state} #${op.weight}`;
@@ -446,7 +479,7 @@ function emitPatch(patch: { type: "patch"; operation: import("./types").TDPatchO
             // Format: REPLACE_STATE_TRIGGER filename state1 ~trigger~ [state2 state3...] [UNLESS ~condition~]
             const [firstState, ...restStates] = op.states;
             const rest = restStates.length > 0 ? ` ${formatStateList(restStates)}` : "";
-            return `REPLACE_STATE_TRIGGER ${op.filename} ${firstState} ~${op.trigger}~${rest}${formatUnless(op.unless)}`;
+            return `REPLACE_STATE_TRIGGER ${op.filename} ${firstState} ~${applyHelperFixups(op.trigger)}~${rest}${formatUnless(op.unless)}`;
         }
         case TDPatchOp.ReplaceStates:
             return emitReplaceStates(op);
@@ -461,11 +494,11 @@ function emitAlterTrans(op: import("./types").TDAlterTrans): string {
     lines.push("BEGIN");
 
     if (op.changes.trigger !== undefined) {
-        const triggerValue = op.changes.trigger === false ? "" : op.changes.trigger;
+        const triggerValue = op.changes.trigger === false ? "" : applyHelperFixups(op.changes.trigger);
         lines.push(`  "TRIGGER" ~${triggerValue}~`);
     }
     if (op.changes.action !== undefined) {
-        lines.push(`  "ACTION" ~${op.changes.action}~`);
+        lines.push(`  "ACTION" ~${applyHelperFixups(op.changes.action)}~`);
     }
     if (op.changes.reply !== undefined) {
         lines.push(`  "REPLY" ${emitText(op.changes.reply)}`);
@@ -490,7 +523,7 @@ function emitReplaceStates(op: import("./types").TDReplaceStates): string {
 
     const states = Array.from(op.replacements.entries())
         .sort(([a], [b]) => a - b)
-        .map(([_, state]) => emitState(state));
+        .map(([_, state]) => indentBlock(emitState(state)));
 
     lines.push(...states.flatMap(s => s.split("\n")));
     lines.push("END");

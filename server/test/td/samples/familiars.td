@@ -2,7 +2,7 @@
 // Complete familiar dialog - follow, combat, loot, potions menus
 
 const dialog = "FAMILIAR";
-const state = "start";
+const stateLabel = "start";
 const deathVar = "familiar_death";
 
 // Global variable names (GVAR_ prefix for GLOBAL scope)
@@ -82,7 +82,7 @@ function g_familiar_follow() {
     }
 
     reply(tra(205));
-    goTo(state);
+    goTo(stateLabel);
 }
 
 // =============================================================================
@@ -164,7 +164,7 @@ function g_familiar_combat() {
     }
 
     reply(tra(105));
-    goTo(state);
+    goTo(stateLabel);
 }
 
 // =============================================================================
@@ -174,7 +174,7 @@ function g_familiar_potions() {
     say(tra(104));
     // Note: %action_drink% transitions generated in main.tpa are not included here
     reply(tra(105));
-    goTo(state);
+    goTo(stateLabel);
 }
 
 // =============================================================================
@@ -233,7 +233,7 @@ function g_familiar_loot() {
     }
 
     reply(tra(418));
-    goTo(state);
+    goTo(stateLabel);
 }
 
 // =============================================================================
@@ -241,13 +241,13 @@ function g_familiar_loot() {
 // =============================================================================
 function g_familiar_confirm() {
     say(tra(419));
-    goTo(state);
+    goTo(stateLabel);
 }
 
 // =============================================================================
 // Extend menu and register states
 // =============================================================================
-extendTop(dialog, state, () => {
+extendTop(dialog, stateLabel, () => {
     for (const [traRef, target] of menuEntries) {
         if (InPartySlot(LastTalkedToBy, 0)) {
             reply(tra(traRef));

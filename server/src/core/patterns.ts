@@ -56,8 +56,6 @@ export const REGEX_TBAF_HOVER = /^\$tra\((\d+)\)$/;
 /** Matches TBAF reference in text for inlay hints (global) */
 export const REGEX_TBAF_INLAY = /\$tra\((\d+)\)/g;
 
-/** Replacement pattern for TBAF transpiler: $tra(123) => @123 */
-export const REGEX_TBAF_REPLACE = /\$tra\((\d+)\)/g;
 
 // =============================================================================
 // TD patterns (TypeScript Dialog)

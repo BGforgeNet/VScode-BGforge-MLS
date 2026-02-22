@@ -175,8 +175,86 @@ export function stripQuotes(text: string): string {
     return text.replace(/^["'`]|["'`]$/g, "");
 }
 
+/**
+ * Extract `@tra filename.ext` from source text.
+ *
+ * The @tra tag tells the Translation service which .tra/.msg file provides
+ * translation strings for inlay hints, hover, and go-to-definition.
+ * It can appear as a single-line JSDoc (`/** @tra file.tra *​/`) or inside
+ * a multi-line JSDoc block. We extract it before esbuild bundling (which
+ * strips comments) and re-emit it in the transpiled output so the
+ * Translation service works on both source and output files.
+ *
+ * @returns The filename (e.g. "smarter_familiars.tra"), or undefined if absent
+ */
+export function extractTraTag(text: string): string | undefined {
+    const match = text.match(/@tra\s+([\w-]+\.(?:tra|msg))/);
+    return match?.[1];
+}
+
 /** Maximum loop iterations to prevent infinite loops during compile-time unrolling */
 export const MAX_LOOP_ITERATIONS = 1000;
+
+/**
+ * WeiDU scope constants that must be quoted in output.
+ *
+ * These are imported from ielib (e.g., `import { GLOBAL } from "ielib"`), where they
+ * are typed as `Scope` and have string values like `"GLOBAL"`. However, ielib cannot be
+ * bundled by esbuild because it also exports transpiler-marker functions (tra, obj, etc.)
+ * that have type declarations but NO runtime implementation. Bare module imports are
+ * therefore externalized during bundling, and these constants arrive in transpiler output
+ * as bare identifiers. We quote them in post-processing.
+ */
+export const SCOPE_CONSTANTS: ReadonlySet<string> = new Set([
+    // Complete set of Infinity Engine variable scopes.
+    // These are the only 3 scopes in the engine (per IESDP/WeiDU documentation).
+    "GLOBAL",
+    "LOCALS",
+    "MYAREA",
+]);
+
+/**
+ * Apply WeiDU helper fixups to a raw string value.
+ *
+ * Resolves helper function calls that may appear in transpiler output:
+ *   - obj("[X]") / $obj("[X]") -> [X]
+ *   - obj("str") / $obj("str") -> "str"
+ *   - tra(N)     / $tra(N)     -> @N
+ *   - tlk(N)     / $tlk(N)     -> N (bare number; # prefix is D text-only)
+ *   - Bare SCOPE_CONSTANTS     -> "CONSTANT"
+ *
+ * Both TBAF and TD transpilers need this same resolution logic.
+ * TBAF uses it as the primary resolution (post-processing on flat string IR).
+ * TD uses it as a safety net in the emitter (primary resolution is AST-level
+ * in expressionToActionString/evaluateExpression, which produces a typed IR).
+ *
+ * TODO: consider unifying the handling so both transpilers use the same
+ * resolution strategy instead of TD doing AST-level + regex safety net.
+ *
+ * Safe to call multiple times (idempotent on already-resolved values).
+ *
+ * Note: operates on individual arg strings extracted from the AST, not on
+ * arbitrary text. WeiDU scripting args are identifiers, numbers, or quoted
+ * strings — they don't contain function-call-like patterns that would cause
+ * false matches.
+ */
+export function applyHelperFixups(text: string): string {
+    if (SCOPE_CONSTANTS.has(text)) {
+        return `"${text}"`;
+    }
+
+    let result = text;
+    // obj("[ANYONE]") or $obj("[ANYONE]") => [ANYONE]
+    result = result.replace(/\$?obj\("\[(.*?)\]"\)/g, "[$1]");
+    // obj("string") or $obj("string") => "string"
+    result = result.replace(/\$?obj\("(.*?)"\)/g, '"$1"');
+    // tra(123) or $tra(123) => @123
+    result = result.replace(/\$?tra\((\d+)\)/g, "@$1");
+    // tlk(123) or $tlk(123) => bare number (# prefix is only for D text contexts)
+    result = result.replace(/\$?tlk\((\d+)\)/g, "$1");
+
+    return result;
+}
 
 /**
  * Parse a string representation of an array literal into individual values.

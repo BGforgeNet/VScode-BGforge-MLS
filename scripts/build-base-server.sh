@@ -15,3 +15,6 @@ cp grammars/weidu-baf/tree-sitter-baf.wasm server/out/
 cp grammars/weidu-d/tree-sitter-weidu_d.wasm server/out/
 cp grammars/weidu-tp2/tree-sitter-weidu_tp2.wasm server/out/
 cp server/node_modules/web-tree-sitter/web-tree-sitter.wasm server/out/
+
+# Copy TD runtime declarations (used by the TD TypeScript plugin)
+cp server/src/td/td-runtime.d.ts server/out/

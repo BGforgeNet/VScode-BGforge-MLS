@@ -31,7 +31,7 @@ END
 // block the 'you don't rule here alone' answer if Balth is on-side and add its variant
 
 ADD_TRANS_TRIGGER finmel01 1 ~Global("BalthazarFights","GLOBAL",0)~ DO 1
-EXTEND_TOP finmel01 1 # 1
+EXTEND_TOP finmel01 1 #1
     IF ~Global("BalthazarFights","GLOBAL",1)~ THEN REPLY @591 GOTO mel1
 END
 

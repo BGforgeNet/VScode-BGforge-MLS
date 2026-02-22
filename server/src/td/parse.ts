@@ -7,7 +7,10 @@
  * Implementation is split across modules:
  * - parse-helpers.ts: utility functions (evaluate, resolve, validate, parse)
  * - expression-eval.ts: expression to trigger/action/text conversion
- * - state-transitions.ts: state/chain/transition processing, loop unrolling
+ * - chain-parsing.ts: method chain transition parsing (reply().action().goTo())
+ * - chain-processing.ts: chain body processing (from/fromWhen/say)
+ * - state-transitions.ts: state/transition/extend processing, loop unrolling
+ * - state-resolution.ts: transitive state collection and orphan detection
  * - patch-operations.ts: patch operation transforms (ALTER_TRANS, etc.)
  */
 
@@ -37,17 +40,23 @@ import {
     type TDAppend,
     type TDExtend,
     type TDInterject,
+    type TDReplaceStates,
 } from "./types";
 import type { VarsContext } from "../transpiler-utils";
-import { evaluateExpression, resolveStringExpr } from "./parse-helpers";
+import { evaluateExpression, resolveStringExpr, parseBooleanOption, parseRequiredNumber } from "./parse-helpers";
 import { expressionToTrigger } from "./expression-eval";
 import {
     transformFunctionToState,
-    transformFunctionToChain,
-    processChainStatements,
     processExtendStatements,
+    processStateStatement,
     type FuncsContext,
 } from "./state-transitions";
+import {
+    transformFunctionToChain,
+    processChainStatements,
+    processChainBody,
+} from "./chain-processing";
+import { resolveTransitiveStates, collectOrphanWarnings } from "./state-resolution";
 import {
     transformAlterTrans,
     transformAddStateTrigger,
@@ -66,6 +75,8 @@ const TD_KEYWORDS = {
     BEGIN: "begin",
     CHAIN: "chain",
     APPEND: "append",
+    APPEND_EARLY: "appendEarly",
+    REPLACE_STATE: "replaceState",
     EXTEND_TOP: "extendTop",
     EXTEND_BOTTOM: "extendBottom",
     INTERJECT: "interject",
@@ -88,6 +99,8 @@ const TD_KEYWORDS = {
 export class TDParser {
     private vars: VarsContext = new Map();
     private funcs: FuncsContext = new Map();
+    /** Functions used as direct callees (helpers), not state functions. */
+    private calledAsFunction = new Set<string>();
     private sourceFile!: SourceFile;
 
     /**
@@ -97,6 +110,7 @@ export class TDParser {
         this.sourceFile = sourceFile;
         this.vars.clear();
         this.funcs.clear();
+        this.calledAsFunction.clear();
 
         // Pass 1: Collect declarations
         this.collectDeclarations();
@@ -111,9 +125,16 @@ export class TDParser {
             }
         }
 
+        // Pass 3: Transitively collect goTo targets not explicitly listed
+        resolveTransitiveStates(constructs, this.funcs, this.vars);
+
+        // Pass 4: Warn about orphan state functions
+        const warnings = collectOrphanWarnings(constructs, this.funcs, this.calledAsFunction);
+
         return {
             sourceFile: sourceFile.getFilePath(),
             constructs,
+            warnings: warnings.length > 0 ? warnings : undefined,
         };
     }
 
@@ -140,6 +161,19 @@ export class TDParser {
                 // Check if function is inside an if statement (entry trigger)
                 const trigger = this.getFunctionEntryTrigger(func);
                 this.funcs.set(name, { func, trigger });
+            }
+        }
+
+        // Identify functions used as direct callees (helper functions, not states).
+        // e.g. helper() → "helper" is callee, so it's a helper function.
+        // goTo(myState) → "goTo" is callee, "myState" is an argument, not added.
+        for (const call of this.sourceFile.getDescendantsOfKind(SyntaxKind.CallExpression)) {
+            const callee = call.getExpression();
+            if (Node.isIdentifier(callee)) {
+                const name = callee.getText();
+                if (this.funcs.has(name)) {
+                    this.calledAsFunction.add(name);
+                }
             }
         }
     }
@@ -209,7 +243,11 @@ export class TDParser {
             case TD_KEYWORDS.CHAIN:
                 return this.transformChainCall(call);
             case TD_KEYWORDS.APPEND:
-                return this.transformAppend(call);
+                return this.transformAppend(call, false);
+            case TD_KEYWORDS.APPEND_EARLY:
+                return this.transformAppend(call, true);
+            case TD_KEYWORDS.REPLACE_STATE:
+                return this.transformReplaceState(call);
             case TD_KEYWORDS.EXTEND_TOP:
             case TD_KEYWORDS.EXTEND_BOTTOM:
                 return this.transformExtend(call, funcName === TD_KEYWORDS.EXTEND_TOP);
@@ -249,94 +287,135 @@ export class TDParser {
     }
 
     /**
-     * Transform chain(function) or chain(trigger, function) to CHAIN construct.
-     * Accepts either function reference or inline named function expression.
+     * Transform chain() to CHAIN construct.
+     * Signatures:
+     *   chain(function name() { ... })                    - old form
+     *   chain(trigger, function name() { ... })           - old form with trigger
+     *   chain(dialog, label, body)                        - new form
+     *   chain(entryTrigger, dialog, label, body, options) - new form with trigger
      */
     private transformChainCall(call: CallExpression): TDConstruct[] | null {
         const args = call.getArguments();
-        if (args.length < 1 || args.length > 2) {
-            throw new Error(`chain() requires 1 or 2 arguments (function) or (trigger, function) at ${call.getStartLineNumber()}`);
+        if (args.length < 1) {
+            throw new Error(`chain() requires at least 1 argument at ${call.getStartLineNumber()}`);
         }
 
+        // Detect new form: chain(dialog, label, body) or chain(trigger, dialog, label, body)
+        // New form has an arrow function as the body argument (3rd or 4th).
+        // Old form has a function expression or identifier as 1st or 2nd argument.
+        const isNewForm = (args.length >= 3 && Node.isArrowFunction(args[2])) ||
+                          (args.length >= 4 && Node.isArrowFunction(args[3]));
+
+        if (isNewForm) {
+            return this.transformChainNewForm(call);
+        }
+
+        // Old form: chain(function) or chain(trigger, function)
         let trigger: string | undefined;
         let funcArg: Node;
 
         if (args.length === 1) {
-            // chain(function) - no trigger
             funcArg = args[0]!;
         } else {
-            // chain(trigger, function) - with trigger
-            const triggerArg = args[0]!;
+            trigger = expressionToTrigger(args[0] as Expression, this.vars);
             funcArg = args[1]!;
-
-            // Parse trigger expression
-            trigger = expressionToTrigger(triggerArg as Expression, this.vars);
         }
 
-        // Parse function (either reference or inline expression)
         if (Node.isIdentifier(funcArg)) {
-            // Function reference: chain(myFunc) or chain(trigger, myFunc)
             const funcName = funcArg.getText();
             const funcInfo = this.funcs.get(funcName);
             if (!funcInfo) {
                 throw new Error(`Function "${funcName}" not found in chain() at ${funcArg.getStartLineNumber()}`);
             }
-
-            // Use trigger from argument, ignore if-wrapper trigger
             const chain = transformFunctionToChain(funcInfo.func, this.vars, trigger);
             return chain ? [chain] : null;
         } else if (Node.isFunctionExpression(funcArg)) {
-            // Inline function: chain(function name() { ... }) or chain(trigger, function name() { ... })
-            const func = funcArg as FunctionExpression;
-            const chain = transformFunctionToChain(func, this.vars, trigger);
+            const chain = transformFunctionToChain(funcArg as FunctionExpression, this.vars, trigger);
             return chain ? [chain] : null;
         }
 
-        throw new Error(`chain() function argument must be a function reference or inline function expression at ${call.getStartLineNumber()}`);
+        throw new Error(`chain() argument must be a function reference or expression at ${call.getStartLineNumber()}`);
     }
 
     /**
-     * Transform begin(filename, [states]) to BEGIN.
-     * All functions are emitted as states.
+     * Transform new-form chain: chain(dialog, label, body) or chain(trigger, dialog, label, body).
+     * The body is an arrow function with from()/fromWhen()/say() calls.
+     */
+    private transformChainNewForm(call: CallExpression): TDConstruct[] | null {
+        const args = call.getArguments();
+        let trigger: string | undefined;
+        let dialog: string;
+        let label: string;
+        let bodyArg: Expression;
+
+        if (Node.isArrowFunction(args[2])) {
+            // chain(dialog, label, body)
+            dialog = resolveStringExpr(args[0] as Expression, this.vars);
+            label = resolveStringExpr(args[1] as Expression, this.vars);
+            bodyArg = args[2] as Expression;
+        } else if (args[3] && Node.isArrowFunction(args[3])) {
+            // chain(trigger, dialog, label, body)
+            trigger = expressionToTrigger(args[0] as Expression, this.vars);
+            dialog = resolveStringExpr(args[1] as Expression, this.vars);
+            label = resolveStringExpr(args[2] as Expression, this.vars);
+            bodyArg = args[3] as Expression;
+        } else {
+            throw new Error(`chain() body must be an arrow function at ${call.getStartLineNumber()}`);
+        }
+
+        // Parse body to extract chain entries
+        const entries: TDChainEntry[] = [];
+        let epilogue: TDChainEpilogue = { type: TDEpilogueType.Exit };
+
+        if (Node.isArrowFunction(bodyArg)) {
+            const body = bodyArg.getBody();
+            if (Node.isBlock(body)) {
+                const result = processChainBody(
+                    (body as Block).getStatements(), dialog, this.vars
+                );
+                entries.push(...result.entries);
+                epilogue = result.epilogue;
+            }
+        }
+
+        return [{
+            type: TDConstructType.Chain,
+            filename: dialog,
+            label,
+            trigger,
+            entries,
+            epilogue,
+        }];
+    }
+
+    /**
+     * Transform begin(filename, [states]) or begin(filename, s1, s2, ...) to BEGIN.
+     * Supports array form, rest-args form, and object form.
      */
     private transformBegin(call: CallExpression): TDConstruct[] | null {
         const args = call.getArguments();
         if (args.length < 2) {
-            throw new Error(`begin() requires 2 arguments (filename, states) at ${call.getStartLineNumber()}`);
+            throw new Error(`begin() requires at least 2 arguments at ${call.getStartLineNumber()}`);
         }
 
         const filenameArg = args[0];
-        const statesArg = args[1];
-
-        if (!filenameArg || !statesArg) {
-            throw new Error(`begin() requires 2 arguments (filename, states) at ${call.getStartLineNumber()}`);
+        if (!filenameArg) {
+            throw new Error(`begin() requires a filename at ${call.getStartLineNumber()}`);
         }
 
         const filename = resolveStringExpr(filenameArg as Expression, this.vars);
-
-        if (!Node.isArrayLiteralExpression(statesArg)) {
-            throw new Error(`begin() second argument must be an array of state functions at ${call.getStartLineNumber()}`);
-        }
-
         const states: TDState[] = [];
 
-        for (const element of (statesArg as ArrayLiteralExpression).getElements()) {
-            if (Node.isIdentifier(element)) {
-                const funcName = element.getText();
-                const funcInfo = this.funcs.get(funcName);
-                if (!funcInfo) {
-                    throw new Error(`Function "${funcName}" not found in begin() at ${element.getStartLineNumber()}`);
-                }
+        // Check for options as last argument (distinguished from object-form states)
+        const lastArg = args[args.length - 1];
+        const hasOptionsArg = lastArg && Node.isObjectLiteralExpression(lastArg) &&
+            !this.isObjectWithMethods(lastArg);
+        const nonPausing = hasOptionsArg ? parseBooleanOption(lastArg, "nonPausing") || undefined : undefined;
+        const stateArgs = hasOptionsArg ? args.slice(1, -1) : args.slice(1);
 
-                // All functions in begin() are emitted as states
-                const state = transformFunctionToState(funcInfo.func, this.vars, this.funcs, funcInfo.trigger);
-                if (state) {
-                    states.push(state);
-                }
-            }
-        }
+        // Process state arguments
+        this.collectStatesFromArgs(stateArgs, states, "begin");
 
-        // Create BEGIN construct
         if (states.length === 0) {
             return null;
         }
@@ -344,6 +423,7 @@ export class TDParser {
         const begin: TDBegin = {
             type: TDConstructType.Begin,
             filename,
+            nonPausing,
             states,
         };
 
@@ -351,64 +431,199 @@ export class TDParser {
     }
 
     /**
-     * Transform append(filename, state | [states]) to APPEND.
+     * Transform append/appendEarly to APPEND construct.
+     * Supports array form, rest-args form, single function, and object form.
      */
-    private transformAppend(call: CallExpression): TDConstruct[] | null {
+    private transformAppend(call: CallExpression, isEarly: boolean): TDConstruct[] | null {
+        const funcName = isEarly ? "appendEarly" : "append";
         const args = call.getArguments();
         if (args.length < 2) {
-            throw new Error(`append() requires 2 arguments (filename, state or [states]) at ${call.getStartLineNumber()}`);
+            throw new Error(`${funcName}() requires at least 2 arguments at ${call.getStartLineNumber()}`);
         }
 
         const filenameArg = args[0];
-        const stateArg = args[1];
-
-        if (!filenameArg || !stateArg) {
-            throw new Error(`append() requires 2 arguments (filename, state or [states]) at ${call.getStartLineNumber()}`);
+        if (!filenameArg) {
+            throw new Error(`${funcName}() requires a filename at ${call.getStartLineNumber()}`);
         }
 
         const filename = resolveStringExpr(filenameArg as Expression, this.vars);
-
-        // State can be a single function reference, array of function references, or inline function
         const states: TDState[] = [];
 
-        if (Node.isArrayLiteralExpression(stateArg)) {
-            // Array of states
-            for (const element of (stateArg as ArrayLiteralExpression).getElements()) {
-                if (Node.isIdentifier(element)) {
-                    const funcName = element.getText();
-                    const funcInfo = this.funcs.get(funcName);
-                    if (!funcInfo) {
-                        throw new Error(`Function "${funcName}" not found in append() at ${element.getStartLineNumber()}`);
+        // Check for options as last argument (distinguished from object-form states)
+        const lastArg = args[args.length - 1];
+        const hasOptionsArg = lastArg && Node.isObjectLiteralExpression(lastArg) &&
+            !this.isObjectWithMethods(lastArg);
+        const ifFileExists = hasOptionsArg ? parseBooleanOption(lastArg, "ifFileExists") || undefined : undefined;
+        const stateArgs = hasOptionsArg ? args.slice(1, -1) : args.slice(1);
+
+        // Process state arguments
+        this.collectStatesFromArgs(stateArgs, states, funcName);
+
+        const append: TDAppend = {
+            type: TDConstructType.Append,
+            filename,
+            ifFileExists,
+            early: isEarly || undefined,
+            states,
+        };
+
+        return [append];
+    }
+
+    /**
+     * Transform replaceState(dialog, stateNum, body) to a patch that replaces a state.
+     */
+    private transformReplaceState(call: CallExpression): TDConstruct[] | null {
+        const args = call.getArguments();
+        if (args.length < 3) {
+            throw new Error(`replaceState() requires 3 arguments (dialog, stateNum, body) at ${call.getStartLineNumber()}`);
+        }
+
+        const filename = resolveStringExpr(args[0] as Expression, this.vars);
+        const stateNum = parseRequiredNumber(args[1]!, "replaceState stateNum", call.getStartLineNumber());
+        const bodyArg = args[2];
+
+        if (!Node.isArrowFunction(bodyArg) && !Node.isFunctionExpression(bodyArg)) {
+            throw new Error(`replaceState() body must be a function at ${call.getStartLineNumber()}`);
+        }
+
+        // Create a temporary FunctionDeclaration-like for parsing
+        const body = bodyArg.getBody();
+        if (!Node.isBlock(body)) {
+            throw new Error(`replaceState() body must be a block at ${call.getStartLineNumber()}`);
+        }
+
+        // Build state from body statements
+        const state: TDState = {
+            label: stateNum.toString(),
+            say: [],
+            transitions: [],
+        };
+
+        for (const s of (body as Block).getStatements()) {
+            processStateStatement(s, state, this.vars, this.funcs);
+        }
+
+        const operation: TDReplaceStates = {
+            op: TDPatchOp.ReplaceStates,
+            filename,
+            replacements: new Map([[stateNum, state]]),
+        };
+
+        return [{ type: TDConstructType.Patch, operation }];
+    }
+
+    /**
+     * Check if an object literal has method members (used to distinguish
+     * object-form states from options objects).
+     */
+    private isObjectWithMethods(node: Node): boolean {
+        if (!Node.isObjectLiteralExpression(node)) return false;
+        return node.getProperties().some(p =>
+            Node.isMethodDeclaration(p) || Node.isFunctionExpression(p)
+        );
+    }
+
+    /**
+     * Collect states from argument list.
+     * Supports: array literal, rest-args (identifiers), object-with-methods form,
+     * and inline state() calls.
+     */
+    private collectStatesFromArgs(
+        stateArgs: Node[],
+        states: TDState[],
+        funcName: string
+    ) {
+        for (const arg of stateArgs) {
+            if (Node.isArrayLiteralExpression(arg)) {
+                // Array of state references: [s1, s2, state("label", () => {...})]
+                for (const element of (arg as ArrayLiteralExpression).getElements()) {
+                    if (Node.isCallExpression(element) && element.getExpression().getText() === "state") {
+                        this.collectInlineState(element, states);
+                    } else {
+                        this.collectSingleStateRef(element, states, funcName);
                     }
-                    const state = transformFunctionToState(funcInfo.func, this.vars, this.funcs, funcInfo.trigger);
-                    if (state) {
+                }
+            } else if (Node.isCallExpression(arg) && arg.getExpression().getText() === "state") {
+                // Inline state: begin("DLG", state("label", () => {...}))
+                this.collectInlineState(arg, states);
+            } else if (Node.isIdentifier(arg)) {
+                // Rest-args form: begin("DLG", s1, s2, s3)
+                this.collectSingleStateRef(arg, states, funcName);
+            } else if (Node.isObjectLiteralExpression(arg)) {
+                // Object form: begin("DLG", { s1() {...}, s2() {...} })
+                for (const prop of arg.getProperties()) {
+                    if (Node.isMethodDeclaration(prop)) {
+                        const name = prop.getName();
+                        const body = prop.getBody();
+                        if (!body || !Node.isBlock(body)) continue;
+
+                        const state: TDState = {
+                            label: name,
+                            say: [],
+                            transitions: [],
+                        };
+
+                        for (const s of (body as Block).getStatements()) {
+                            processStateStatement(s, state, this.vars, this.funcs);
+                        }
+
                         states.push(state);
                     }
                 }
             }
-        } else if (Node.isIdentifier(stateArg)) {
-            // Single state
-            const funcName = stateArg.getText();
-            const funcInfo = this.funcs.get(funcName);
+        }
+    }
+
+    /**
+     * Process an inline state() call expression: state("label", () => { ... })
+     */
+    private collectInlineState(call: CallExpression, states: TDState[]) {
+        const args = call.getArguments();
+        if (args.length < 2) {
+            throw new Error(`state() requires 2 arguments (label, body) at ${call.getStartLineNumber()}`);
+        }
+
+        const label = resolveStringExpr(args[0] as Expression, this.vars);
+        const bodyArg = args[1];
+
+        if (!Node.isArrowFunction(bodyArg) && !Node.isFunctionExpression(bodyArg)) {
+            throw new Error(`state() body must be a function at ${call.getStartLineNumber()}`);
+        }
+
+        const body = bodyArg.getBody();
+        if (!Node.isBlock(body)) {
+            throw new Error(`state() body must be a block at ${call.getStartLineNumber()}`);
+        }
+
+        const state: TDState = {
+            label,
+            say: [],
+            transitions: [],
+        };
+
+        for (const s of (body as Block).getStatements()) {
+            processStateStatement(s, state, this.vars, this.funcs);
+        }
+
+        states.push(state);
+    }
+
+    /**
+     * Resolve a single state reference (identifier) to a TDState and push it.
+     */
+    private collectSingleStateRef(element: Node, states: TDState[], funcName: string) {
+        if (Node.isIdentifier(element)) {
+            const refName = element.getText();
+            const funcInfo = this.funcs.get(refName);
             if (!funcInfo) {
-                throw new Error(`Function "${funcName}" not found in append() at ${stateArg.getStartLineNumber()}`);
+                throw new Error(`Function "${refName}" not found in ${funcName}() at ${element.getStartLineNumber()}`);
             }
             const state = transformFunctionToState(funcInfo.func, this.vars, this.funcs, funcInfo.trigger);
             if (state) {
                 states.push(state);
             }
-        } else if (Node.isArrowFunction(stateArg) || Node.isFunctionExpression(stateArg)) {
-            // Inline function - needs label from somewhere
-            // For now, skip inline functions
         }
-
-        const append: TDAppend = {
-            type: TDConstructType.Append,
-            filename,
-            states,
-        };
-
-        return [append];
     }
 
     /**
@@ -510,20 +725,7 @@ export class TDParser {
         const chainFunc = args[3];
 
         // Check for safe option (interjectCopyTrans only, arg 5)
-        let safe = false;
-        if (type === TDConstructType.InterjectCopyTrans && args[4]) {
-            const opts = args[4];
-            if (Node.isObjectLiteralExpression(opts)) {
-                for (const prop of opts.getProperties()) {
-                    if (Node.isPropertyAssignment(prop) && prop.getName() === "safe") {
-                        const value = prop.getInitializer();
-                        if (value?.getText() === "true") {
-                            safe = true;
-                        }
-                    }
-                }
-            }
-        }
+        const safe = type === TDConstructType.InterjectCopyTrans && parseBooleanOption(args[4], "safe");
 
         // Parse chain function body to get entries
         const entries: TDChainEntry[] = [];

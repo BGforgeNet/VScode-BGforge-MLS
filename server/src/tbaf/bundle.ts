@@ -3,13 +3,30 @@
  *
  * Uses esbuild for in-memory bundling.
  * Handles enum transformation before bundling to avoid esbuild's IIFE conversion.
+ *
+ * Externalization strategy (same as TSSL bundler):
+ * - Only `.d.ts` imports are externalized (engine builtins/declarations).
+ * - Bare imports (e.g., "ielib") are bundled so enum values get resolved at
+ *   transpile time.
+ *
+ * IMPORTANT: External libraries (ielib, folib) must use NAMED re-exports, not
+ * `export * from`. esbuild cannot statically enumerate exports from externalized
+ * `.d.ts` modules behind `export *`, falling back to runtime `__reExport` helpers
+ * that break downstream transpilers. Named re-exports let esbuild resolve each
+ * binding statically. See folib's index.ts for the correct pattern.
  */
 
 import * as esbuild from "esbuild-wasm";
 import * as path from "path";
 import * as fs from "fs";
 import { ensureEsbuild, cleanupEsbuildOutput, noSideEffectsPlugin } from "../esbuild-utils";
-import { transformEnums, expandEnumPropertyAccess, enumTransformPlugin } from "../enum-transform";
+import {
+    transformEnums,
+    expandEnumPropertyAccess,
+    enumTransformPlugin,
+    collectDeclareEnums,
+    resolveDtsPath,
+} from "../enum-transform";
 
 /** Marker to identify start of user code in esbuild output */
 const TBAF_CODE_MARKER = "/* __TBAF_CODE_START__ */";
@@ -24,7 +41,11 @@ const TBAF_CODE_MARKER = "/* __TBAF_CODE_START__ */";
 export async function bundle(filePath: string, sourceText: string): Promise<string> {
     await ensureEsbuild();
 
-    const resolveDir = path.dirname(filePath);
+    // Resolve symlinks so esbuild's absWorkingDir and sourcefile agree on real paths.
+    // Without this, esbuild resolves absWorkingDir through symlinks but keeps sourcefile
+    // as-is, producing deeply nested ../../../ relative paths in error messages.
+    const realPath = fs.realpathSync(filePath);
+    const resolveDir = path.dirname(realPath);
 
     // Pre-transform: convert enums to flat consts before esbuild sees them
     const { code: enumTransformed, enumNames } = transformEnums(sourceText);
@@ -33,6 +54,11 @@ export async function bundle(filePath: string, sourceText: string): Promise<stri
     // Mutated via closure in the enum-transform plugin (see enumTransformPlugin docs).
     const allEnumNames = new Set(enumNames);
 
+    // Accumulate externalized enum names from .d.ts files.
+    // These are `declare enum` that esbuild drops — their property accesses
+    // need prefix stripping (ClassID.ANKHEG → ANKHEG) in post-processing.
+    const externalEnumNames = new Set<string>();
+
     // Prepend marker so we can strip esbuild runtime helpers later
     const sourceWithMarker = TBAF_CODE_MARKER + "\n" + enumTransformed;
 
@@ -40,9 +66,12 @@ export async function bundle(filePath: string, sourceText: string): Promise<stri
         stdin: {
             contents: sourceWithMarker,
             resolveDir,
-            sourcefile: filePath,
+            sourcefile: realPath,
             loader: "ts",
         },
+        // Use the file's directory as working dir so error paths are relative to it,
+        // not to process.cwd() (which in VSCode is the extension install directory).
+        absWorkingDir: resolveDir,
         bundle: true,
         write: false,
         format: "esm",
@@ -50,34 +79,36 @@ export async function bundle(filePath: string, sourceText: string): Promise<stri
         target: "esnext",
         minify: false,
         plugins: [
-            // Mark node_modules as external
+            // Mark .d.ts imports as external — they're engine builtins/declarations.
+            // Bare imports (e.g., "ielib") are NOT externalized so esbuild can
+            // bundle them, allowing enum values to be resolved at transpile time.
+            // Also collects `declare enum` names from externalized files for
+            // prefix stripping in post-processing (ClassID.ANKHEG → ANKHEG).
             {
-                name: "external-node-modules",
+                name: "external-declarations",
                 setup(build) {
-                    build.onResolve({ filter: /.*/ }, (args) => {
-                        if (args.path.includes("node_modules")) {
-                            return { path: args.path, external: true };
-                        }
-                        // Bare imports (not starting with . or /) are likely from node_modules
-                        if (!args.path.startsWith(".") && !args.path.startsWith("/") && !args.path.endsWith(".tbaf") && !args.path.endsWith(".ts")) {
-                            return { path: args.path, external: true };
-                        }
-                        return null;
+                    build.onResolve({ filter: /\.d(\.ts)?$/ }, (args) => {
+                        // Read the .d.ts file to extract declare enum names.
+                        // Resolve the path since import specifiers may omit .ts
+                        // (e.g., './class.ids.d' → 'class.ids.d.ts' on disk).
+                        const resolved = resolveDtsPath(path.resolve(args.resolveDir, args.path));
+                        collectDeclareEnums(resolved, externalEnumNames);
+                        return { path: args.path, external: true };
                     });
                 },
             },
-            // Plugin to resolve .tbaf files as TypeScript and transform enums in imports
+            // Resolve and load .tbaf imports as TypeScript, transforming enums.
+            // No custom namespace — keeps resolution simple so noSideEffectsPlugin's
+            // build.resolve() can use esbuild's default resolver for all imports.
             {
                 name: "tbaf-resolver",
                 setup(build) {
-                    build.onResolve({ filter: /\.tbaf$/ }, (args) => {
-                        const resolved = path.resolve(args.resolveDir, args.path);
-                        return { path: resolved, namespace: "tbaf" };
-                    });
+                    build.onResolve({ filter: /\.tbaf$/ }, (args) => ({
+                        path: path.resolve(args.resolveDir, args.path),
+                    }));
 
-                    build.onLoad({ filter: /.*/, namespace: "tbaf" }, (args) => {
+                    build.onLoad({ filter: /\.tbaf$/ }, (args) => {
                         const source = fs.readFileSync(args.path, "utf-8");
-                        // Transform enums in imported .tbaf files
                         if (source.includes("enum ")) {
                             const { code, enumNames: importedEnums } = transformEnums(source);
                             for (const name of importedEnums) {
@@ -87,18 +118,36 @@ export async function bundle(filePath: string, sourceText: string): Promise<stri
                         }
                         return { contents: source, loader: "ts" };
                     });
-
-                    build.onResolve({ filter: /\.ts$/ }, (args) => {
-                        const resolved = path.resolve(args.resolveDir, args.path);
-                        if (fs.existsSync(resolved)) {
-                            return { path: resolved };
-                        }
-                        return null;
-                    });
                 },
             },
             // Transform enums in imported .ts files
             enumTransformPlugin(allEnumNames, /\.ts$/),
+            // Resolve extensionless relative imports that esbuild can't handle.
+            // esbuild only appends single extensions (.ts, .tsx, etc.) but not
+            // compound extensions like .d.ts. Packages like ielib use extensionless
+            // imports (e.g., "./actions") that resolve to .d.ts declaration files.
+            // This plugin tries .d.ts and externalizes those (they're type-only),
+            // and also tries .ts / index.ts for regular source files.
+            {
+                name: "ts-extension-resolver",
+                setup(build) {
+                    build.onResolve({ filter: /^\./ }, (args) => {
+                        if (path.extname(args.path)) return null;
+                        const base = path.resolve(args.resolveDir, args.path);
+                        // .d.ts — declaration file, externalize it
+                        if (fs.existsSync(base + ".d.ts")) {
+                            collectDeclareEnums(base + ".d.ts", externalEnumNames);
+                            return { path: args.path + ".d.ts", external: true };
+                        }
+                        // .ts — regular source, bundle it
+                        if (fs.existsSync(base + ".ts")) return { path: base + ".ts" };
+                        // index.ts — directory import
+                        const indexTs = path.join(base, "index.ts");
+                        if (fs.existsSync(indexTs)) return { path: indexTs };
+                        return null;
+                    });
+                },
+            },
             noSideEffectsPlugin(),
         ],
     });
@@ -112,5 +161,6 @@ export async function bundle(filePath: string, sourceText: string): Promise<stri
     const cleaned = cleanupEsbuildOutput(outputFile.text, TBAF_CODE_MARKER);
 
     // Post-expand: expand any remaining cross-file enum compat objects
-    return expandEnumPropertyAccess(cleaned, allEnumNames);
+    // and strip prefixes from externalized enum property accesses
+    return expandEnumPropertyAccess(cleaned, allEnumNames, externalEnumNames);
 }

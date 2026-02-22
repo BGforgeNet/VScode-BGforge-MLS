@@ -1,4 +1,4 @@
-/* Generated from wm_rhia.td - do not edit */
+/* Generated from wm_rhia_v2.td - do not edit */
 
 BEGIN WM_RHIA
 

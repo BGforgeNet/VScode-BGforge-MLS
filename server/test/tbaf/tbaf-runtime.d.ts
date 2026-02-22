@@ -3,8 +3,15 @@
  * This file is used for TypeScript validation of TBAF samples only.
  */
 
+// --- IElib sync surface start ---
+// These types must be structurally compatible with BGforge IElib.
+// Both projects define them independently; keep shapes and brand strings identical.
+type StrRef = number & { __brand: "StrRef" }
+// --- IElib sync surface end ---
+
 // Translation references
-declare function $tra(ref: number): number;
+/** @deprecated Use `tra()` from ielib instead. */
+declare function $tra(ref: number): StrRef;
 
 // WeiDU script triggers (conditions)
 declare function True(): boolean;
@@ -34,12 +41,12 @@ declare function ActionA(): void;
 declare function ActionB(): void;
 declare function EscapeArea(): void;
 
-// Objects
-declare const Player1: any;
-declare const Player2: any;
-declare const Myself: any;
-declare const STATE_SLEEPING: any;
+// Objects (using 'var' to avoid conflict with td-engine-stubs.d.ts)
+declare var Player1: any;
+declare var Player2: any;
+declare var Myself: any;
+declare var STATE_SLEEPING: any;
 
-// Functions that return objects
-declare function NearestEnemyOf(who: any): any;
-declare function LastTalkedToBy(who: any): any;
+// Functions that return objects (using 'var' to avoid conflict with td-engine-stubs.d.ts)
+declare var NearestEnemyOf: (who: any) => any;
+declare var LastTalkedToBy: any;

@@ -17,7 +17,7 @@ import {
 } from "./types";
 import * as utils from "../transpiler-utils";
 import type { VarsContext } from "../transpiler-utils";
-import { expressionToActionString } from "./parse-helpers";
+import { expressionToActionString, parseStringOption } from "./parse-helpers";
 
 /** TD function/keyword constants for text types */
 const TEXT_KEYWORDS = {
@@ -150,49 +150,25 @@ function expressionToText(expr: Expression, vars: VarsContext): TDText {
         const funcName = expr.getExpression().getText();
         const args = expr.getArguments();
 
-        // tra(num) or tra(num, { sound: "..." })
-        if (funcName === TEXT_KEYWORDS.TRA && args.length >= 1 && args[0]) {
+        // tra(num) or $tra(num) or tra(num, { sound: "..." })
+        if ((funcName === TEXT_KEYWORDS.TRA || funcName === "$tra") && args.length >= 1 && args[0]) {
             const argText = utils.substituteVars(args[0].getText(), vars);
             const text: TDText = {
                 type: TDTextType.Tra,
                 value: Number(argText),
+                sound: parseStringOption(args[1], "sound"),
             };
-
-            // Check for options (second argument)
-            if (args[1] && Node.isObjectLiteralExpression(args[1])) {
-                for (const prop of args[1].getProperties()) {
-                    if (Node.isPropertyAssignment(prop) && prop.getName() === "sound") {
-                        const soundValue = prop.getInitializer();
-                        if (soundValue) {
-                            text.sound = utils.stripQuotes(soundValue.getText());
-                        }
-                    }
-                }
-            }
-
             return text;
         }
 
-        // tlk(num) or tlk(num, { sound: "..." })
-        if (funcName === TEXT_KEYWORDS.TLK && args.length >= 1 && args[0]) {
+        // tlk(num) or $tlk(num) or tlk(num, { sound: "..." })
+        if ((funcName === TEXT_KEYWORDS.TLK || funcName === "$tlk") && args.length >= 1 && args[0]) {
             const argText = utils.substituteVars(args[0].getText(), vars);
             const text: TDText = {
                 type: TDTextType.Tlk,
                 value: Number(argText),
+                sound: parseStringOption(args[1], "sound"),
             };
-
-            // Check for options
-            if (args[1] && Node.isObjectLiteralExpression(args[1])) {
-                for (const prop of args[1].getProperties()) {
-                    if (Node.isPropertyAssignment(prop) && prop.getName() === "sound") {
-                        const soundValue = prop.getInitializer();
-                        if (soundValue) {
-                            text.sound = utils.stripQuotes(soundValue.getText());
-                        }
-                    }
-                }
-            }
-
             return text;
         }
 

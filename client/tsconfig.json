@@ -25,6 +25,7 @@
         "node_modules",
         ".vscode-test",
         "src/ts-plugin.ts",
+        "src/td-plugin.ts",
         "src/filter-diagnostics.ts",
         "src/engine-proc-hover.ts"
     ]

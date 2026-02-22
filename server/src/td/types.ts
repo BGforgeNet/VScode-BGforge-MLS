@@ -67,10 +67,29 @@ export enum TDPatchOp {
 // Script-level types
 // =============================================================================
 
+/** Shared warning message template for orphan state detection.
+ * Used by both detectOrphansFromOriginal() (index.ts) and TDParser.collectOrphanWarnings() (parse.ts).
+ * Must stay in sync — mergeWarnings() deduplicates by exact message equality. */
+export const ORPHAN_WARNING_TEMPLATE = (name: string) =>
+    `Function "${name}" looks like an orphan state (not collected by any begin/append and not called as a helper)`;
+
+/** A warning emitted during parsing (e.g. orphan state functions). */
+export interface TDWarning {
+    message: string;
+    /** 1-based line number */
+    line: number;
+    /** 0-based column of warning start */
+    columnStart: number;
+    /** 0-based column of warning end */
+    columnEnd: number;
+}
+
 /** A complete TD script, can contain multiple constructs */
 export interface TDScript {
     sourceFile: string;
+    traTag?: string;
     constructs: TDConstruct[];
+    warnings?: TDWarning[];
 }
 
 /** Top-level D construct */
@@ -90,11 +109,13 @@ export interface TDBegin {
     states: TDState[];
 }
 
-/** APPEND - add states to existing dialog */
+/** APPEND / APPEND_EARLY - add states to existing dialog */
 export interface TDAppend {
     type: TDConstructType.Append;
     filename: string;
     ifFileExists?: boolean;
+    /** When true, emit APPEND_EARLY instead of APPEND */
+    early?: boolean;
     states: TDState[];
 }
 

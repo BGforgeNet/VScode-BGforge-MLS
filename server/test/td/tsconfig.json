@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "noEmit": true,
+        "target": "ES2015",
+        "lib": ["ES2015"],
+        "skipLibCheck": true,
+        "allowUnusedLabels": true
+    },
+    "files": [
+        "td-runtime.d.ts",
+        "td-engine-stubs.d.ts"
+    ]
+}

@@ -1,0 +1,11 @@
+{
+    "compilerOptions": {
+        "noEmit": true,
+        "target": "ES2015",
+        "lib": ["ES2015"],
+        "skipLibCheck": true
+    },
+    "files": [
+        "tbaf-runtime.d.ts"
+    ]
+}

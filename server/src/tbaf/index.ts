@@ -9,7 +9,7 @@ import * as path from "path";
 import { Project } from "ts-morph";
 import { conlog, uriToPath } from "../common";
 import { EXT_TBAF } from "../core/languages";
-import { REGEX_TBAF_REPLACE } from "../core/patterns";
+import { applyHelperFixups, extractTraTag } from "../transpiler-utils";
 import { bundle } from "./bundle";
 import { emitBAF } from "./emit";
 import { BAFScript, isOrGroup } from "./ir";
@@ -30,6 +30,9 @@ export async function compile(uri: string, text: string): Promise<string> {
         throw new Error(`${uri} is not a .tbaf file`);
     }
 
+    // Extract @tra tag before bundling (esbuild strips comments)
+    const traTag = extractTraTag(text);
+
     // 1. Bundle imports
     const bundled = await bundle(filePath, text);
 
@@ -39,10 +42,7 @@ export async function compile(uri: string, text: string): Promise<string> {
 
     // 3. Transform AST to IR
     const transformer = new TBAFTransformer();
-    const ir = transformer.transform(sourceFile);
-
-    // Use original file path for the header comment
-    ir.sourceFile = filePath;
+    const ir = { ...transformer.transform(sourceFile), sourceFile: filePath, traTag };
 
     // 4. Apply BAF-specific fixups to IR
     applyBAFFixups(ir);
@@ -68,50 +68,24 @@ function applyBAFFixups(script: BAFScript): void {
         for (const cond of block.conditions) {
             if (isOrGroup(cond)) {
                 for (const c of cond.conditions) {
-                    fixupArgs(c.args);
+                    c.args = fixupArgs(c.args);
                 }
             } else {
-                fixupArgs(cond.args);
+                cond.args = fixupArgs(cond.args);
             }
         }
 
         // Fix actions
         for (const action of block.actions) {
-            fixupArgs(action.args);
+            action.args = fixupArgs(action.args);
         }
     }
 }
 
 /**
- * Apply BAF fixups to argument list.
- * Handles nested $obj() and $tra() calls within arguments.
+ * Apply WeiDU helper fixups to argument list using shared resolution logic.
+ * Returns a new array with fixups applied.
  */
-function fixupArgs(args: string[]): void {
-    args.forEach((arg, i) => {
-        args[i] = fixupArg(arg);
-    });
-}
-
-/**
- * Apply BAF fixups to a single argument string.
- */
-function fixupArg(arg: string): string {
-    // LOCALS and GLOBAL should be quoted
-    if (arg === "LOCALS") {
-        return '"LOCALS"';
-    }
-    if (arg === "GLOBAL") {
-        return '"GLOBAL"';
-    }
-
-    // $obj("[ANYONE]") => [ANYONE] (globally, handles nested calls)
-    arg = arg.replace(/\$obj\("\[(.*?)\]"\)/g, "[$1]");
-
-    // $obj("string") => "string" (globally, handles nested calls)
-    arg = arg.replace(/\$obj\("(.*?)"\)/g, '"$1"');
-
-    // $tra(123) => @123 (globally, handles nested calls)
-    arg = arg.replace(REGEX_TBAF_REPLACE, "@$1");
-
-    return arg;
+function fixupArgs(args: readonly string[]): string[] {
+    return args.map((arg) => applyHelperFixups(arg));
 }

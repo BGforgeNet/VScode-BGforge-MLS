@@ -1,10 +1,13 @@
 /**
  * Unit tests for enum-transform.ts
- * Tests transformEnums and expandEnumPropertyAccess functions.
+ * Tests transformEnums, expandEnumPropertyAccess, and bundler enum resolution.
  */
 
 import { describe, expect, it } from "vitest";
-import { transformEnums, expandEnumPropertyAccess } from "../src/enum-transform";
+import * as fs from "fs";
+import * as path from "path";
+import { transformEnums, expandEnumPropertyAccess, extractDeclareEnumNames } from "../src/enum-transform";
+import { bundle } from "../src/tbaf/bundle";
 
 describe("transformEnums", () => {
     it("transforms numeric enum with auto-increment", () => {
@@ -194,5 +197,313 @@ describe("expandEnumPropertyAccess", () => {
         expect(result).not.toContain("Color_Green");
         expect(result).not.toContain("var Color");
         expect(result).toContain("var x = 42;");
+    });
+});
+
+describe("expandEnumPropertyAccess — externalized enums", () => {
+    it("strips prefix for externalized enum property access", () => {
+        // ClassID is a declare enum in a .d.ts file — externalized by esbuild,
+        // so no compat object exists in the bundled code. ClassID.ANKHEG → ANKHEG.
+        const input = `var x = ClassID.ANKHEG;`;
+        const result = expandEnumPropertyAccess(input, new Set(), new Set(["ClassID"]));
+
+        expect(result).toContain("var x = ANKHEG;");
+        expect(result).not.toContain("ClassID.ANKHEG");
+    });
+
+    it("strips prefix for multiple members of the same externalized enum", () => {
+        const input = `var x = ClassID.ANKHEG;\nvar y = ClassID.BASILISK;`;
+        const result = expandEnumPropertyAccess(input, new Set(), new Set(["ClassID"]));
+
+        expect(result).toContain("var x = ANKHEG;");
+        expect(result).toContain("var y = BASILISK;");
+        expect(result).not.toContain("ClassID.");
+    });
+
+    it("strips prefix for multiple externalized enums", () => {
+        const input = `var x = ClassID.ANKHEG;\nvar y = AnimateID.BASILISK;`;
+        const result = expandEnumPropertyAccess(
+            input, new Set(), new Set(["ClassID", "AnimateID"]),
+        );
+
+        expect(result).toContain("var x = ANKHEG;");
+        expect(result).toContain("var y = BASILISK;");
+    });
+
+    it("handles mixed bundled and externalized enums", () => {
+        // Direction is a bundled enum (has compat object), ClassID is externalized
+        const input = `var Direction = { S: 0, N: 8 };\nvar x = Direction.S;\nvar y = ClassID.ANKHEG;`;
+        const result = expandEnumPropertyAccess(
+            input, new Set(["Direction"]), new Set(["ClassID"]),
+        );
+
+        // Bundled enum: expanded with underscore prefix and value
+        expect(result).toContain("Direction_S");
+        // Externalized enum: prefix stripped
+        expect(result).toContain("var y = ANKHEG;");
+        expect(result).not.toContain("ClassID.ANKHEG");
+    });
+
+    it("does not strip prefix for unknown identifiers", () => {
+        // SomeObj is neither a bundled nor externalized enum
+        const input = `var x = SomeObj.prop;`;
+        const result = expandEnumPropertyAccess(input, new Set(), new Set(["ClassID"]));
+
+        expect(result).toContain("SomeObj.prop");
+    });
+
+    it("strips prefix in expressions and function arguments", () => {
+        const input = `Foo(ClassID.ANKHEG, ClassID.BASILISK)`;
+        const result = expandEnumPropertyAccess(input, new Set(), new Set(["ClassID"]));
+
+        expect(result).toContain("Foo(ANKHEG, BASILISK)");
+        expect(result).not.toContain("ClassID.");
+    });
+
+    it("returns input unchanged when externalEnumNames is empty", () => {
+        const input = `var x = ClassID.ANKHEG;`;
+        const result = expandEnumPropertyAccess(input, new Set(), new Set());
+
+        expect(result).toBe(input);
+    });
+});
+
+describe("bundle (esbuild integration)", () => {
+    // Temp directory for creating ielib-like package structures
+    const tmpDir = path.resolve(__dirname, "tmp-bundle-test");
+
+    function writeTmpFile(relPath: string, content: string): string {
+        const filePath = path.join(tmpDir, relPath);
+        const dir = path.dirname(filePath);
+        if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+        fs.writeFileSync(filePath, content, "utf-8");
+        return filePath;
+    }
+
+    function cleanTmpDir() {
+        if (fs.existsSync(tmpDir)) fs.rmSync(tmpDir, { recursive: true });
+    }
+
+    it("resolves enum values from imported packages with extensionless .d.ts imports", async () => {
+        // Mimics ielib structure: index.ts re-exports from ./actions (→ actions.d.ts)
+        // and ./dir.ids (→ dir.ids.ts with enum), using extensionless imports.
+        try {
+            // Enum file — should be bundled so values are resolved
+            writeTmpFile("pkg/dir.ids.ts", `
+export enum Direction {
+  S = 0, SSW = 1, SW = 2, W = 4, N = 8, E = 12,
+}
+`);
+            // Declaration file — should be externalized (type-only)
+            writeTmpFile("pkg/actions.d.ts", `
+export declare function Attack(target: string): void;
+`);
+            // Package index with extensionless re-exports (the pattern that caused resolution failures)
+            writeTmpFile("pkg/index.ts", `
+export * from './actions';
+export * from './dir.ids';
+`);
+            // TBAF file that imports and uses enum value
+            const tbafPath = writeTmpFile("test.tbaf", `
+import { Direction, Attack } from "./pkg";
+const dir = Direction.S;
+const facing = Direction.N;
+`);
+            const source = fs.readFileSync(tbafPath, "utf-8");
+            const output = await bundle(tbafPath, source);
+
+            // Enum values should be resolved to their numeric constants
+            expect(output).toContain("Direction_S");
+            expect(output).toContain("Direction_N");
+            // Original property access should be gone
+            expect(output).not.toContain("Direction.S");
+            expect(output).not.toContain("Direction.N");
+        } finally {
+            cleanTmpDir();
+        }
+    });
+
+    it("externalizes .d.ts imports without breaking the build", async () => {
+        // Ensures that declaration-only imports don't cause build failures
+        try {
+            writeTmpFile("lib/actions.d.ts", `
+export declare function Foo(): void;
+`);
+            writeTmpFile("lib/index.ts", `
+export * from './actions';
+`);
+            const tbafPath = writeTmpFile("test.tbaf", `
+import { Foo } from "./lib";
+Foo();
+`);
+            const source = fs.readFileSync(tbafPath, "utf-8");
+            // Should not throw — .d.ts externalization + extensionless resolution should handle this
+            const output = await bundle(tbafPath, source);
+            expect(output).toContain("Foo");
+        } finally {
+            cleanTmpDir();
+        }
+    });
+
+    it("resolves enum values from nested re-exports", async () => {
+        // Tests the pattern where root index re-exports from a subdirectory
+        // that itself re-exports enum files
+        try {
+            writeTmpFile("root/sub/color.ids.ts", `
+export enum Color { Red = 0, Green = 1, Blue = 2 }
+`);
+            writeTmpFile("root/sub/index.ts", `
+export * from './color.ids';
+`);
+            writeTmpFile("root/index.ts", `
+export * from './sub';
+`);
+            const tbafPath = writeTmpFile("test.tbaf", `
+import { Color } from "./root";
+const c = Color.Red;
+`);
+            const source = fs.readFileSync(tbafPath, "utf-8");
+            const output = await bundle(tbafPath, source);
+
+            expect(output).toContain("Color_Red");
+            expect(output).not.toContain("Color.Red");
+        } finally {
+            cleanTmpDir();
+        }
+    });
+
+    it("strips prefix for externalized declare enum from .d.ts", async () => {
+        // Mimics ielib pattern: classes.d.ts declares enum ClassID,
+        // index.ts re-exports it with extensionless import, user code
+        // references ClassID.ANKHEG. Since it's in a .d.ts, esbuild
+        // externalizes it. Post-processing should strip prefix:
+        // ClassID.ANKHEG → ANKHEG.
+        try {
+            writeTmpFile("lib/classes.d.ts", `
+export declare enum ClassID {
+    ANKHEG = 101,
+    BASILISK = 102,
+    BEAR = 103,
+}
+`);
+            writeTmpFile("lib/index.ts", `
+export { ClassID } from './classes';
+`);
+            const tbafPath = writeTmpFile("test.tbaf", `
+import { ClassID } from "./lib";
+const x = ClassID.ANKHEG;
+const y = ClassID.BASILISK;
+`);
+            const source = fs.readFileSync(tbafPath, "utf-8");
+            const output = await bundle(tbafPath, source);
+
+            // Externalized enum: prefix stripped, symbolic name preserved
+            expect(output).toContain("ANKHEG");
+            expect(output).toContain("BASILISK");
+            expect(output).not.toContain("ClassID.");
+        } finally {
+            cleanTmpDir();
+        }
+    });
+
+    it("strips prefix when .d.ts is imported via shortened .d path", async () => {
+        // Mimics ielib's actual pattern: class.ids.d.ts is imported as './class.ids.d'
+        // (TypeScript allows omitting .ts). The external-declarations plugin matches
+        // the .d suffix, but the resolved path needs .ts appended to read the file.
+        try {
+            writeTmpFile("lib/class.ids.d.ts", `
+export declare enum CLASS {
+    MAGE = 1,
+    FIGHTER = 2,
+    THIEF = 4,
+    THIEF_ALL = 202,
+}
+`);
+            writeTmpFile("lib/index.ts", `
+export { CLASS } from './class.ids.d';
+`);
+            const tbafPath = writeTmpFile("test.tbaf", `
+import { CLASS } from "./lib";
+const x = CLASS.THIEF_ALL;
+const y = CLASS.MAGE;
+`);
+            const source = fs.readFileSync(tbafPath, "utf-8");
+            const output = await bundle(tbafPath, source);
+
+            // Externalized enum: prefix stripped, symbolic names preserved
+            expect(output).toContain("THIEF_ALL");
+            expect(output).toContain("MAGE");
+            expect(output).not.toContain("CLASS.");
+        } finally {
+            cleanTmpDir();
+        }
+    });
+
+    it("handles mixed bundled and externalized enums in imports", async () => {
+        // Direction is a regular enum (.ts file, bundled → resolved to values).
+        // ClassID is a declare enum (.d.ts file, externalized → prefix stripped).
+        try {
+            writeTmpFile("lib/dir.ids.ts", `
+export enum Direction { S = 0, N = 8 }
+`);
+            writeTmpFile("lib/classes.d.ts", `
+export declare enum ClassID { ANKHEG = 101 }
+`);
+            writeTmpFile("lib/index.ts", `
+export { Direction } from './dir.ids';
+export { ClassID } from './classes';
+`);
+            const tbafPath = writeTmpFile("test.tbaf", `
+import { Direction, ClassID } from "./lib";
+const dir = Direction.S;
+const cls = ClassID.ANKHEG;
+`);
+            const source = fs.readFileSync(tbafPath, "utf-8");
+            const output = await bundle(tbafPath, source);
+
+            // Bundled enum: expanded to flat var with value
+            expect(output).toContain("Direction_S");
+            expect(output).not.toContain("Direction.S");
+            // Externalized enum: prefix stripped
+            expect(output).toContain("ANKHEG");
+            expect(output).not.toContain("ClassID.");
+        } finally {
+            cleanTmpDir();
+        }
+    });
+});
+
+describe("extractDeclareEnumNames", () => {
+    it("extracts declare enum names", () => {
+        const text = `
+export declare enum ClassID { ANKHEG = 101 }
+export declare enum AnimateID { BASILISK = 200 }
+`;
+        expect(extractDeclareEnumNames(text)).toEqual(["ClassID", "AnimateID"]);
+    });
+
+    it("extracts declare const enum names", () => {
+        const text = `declare const enum Flags { A = 1, B = 2 }`;
+        expect(extractDeclareEnumNames(text)).toEqual(["Flags"]);
+    });
+
+    it("returns empty array for regular enums", () => {
+        const text = `export enum Direction { S = 0, N = 8 }`;
+        expect(extractDeclareEnumNames(text)).toEqual([]);
+    });
+
+    it("returns empty array when no enums present", () => {
+        const text = `export declare function Foo(): void;`;
+        expect(extractDeclareEnumNames(text)).toEqual([]);
+    });
+
+    it("handles mixed declare and regular enums", () => {
+        const text = `
+enum Direction { S = 0 }
+declare enum ClassID { ANKHEG = 101 }
+enum Color { Red = 0 }
+declare enum AnimateID { BASILISK = 200 }
+`;
+        expect(extractDeclareEnumNames(text)).toEqual(["ClassID", "AnimateID"]);
     });
 });

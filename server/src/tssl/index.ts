@@ -22,7 +22,14 @@ import { convertOperatorsAST } from './convert-operators';
 import { extractInlineFunctionsFromFiles, extractJsDocs } from './inline-functions';
 import { exportSSL } from './export-ssl';
 import { ENGINE_PROCEDURES } from './engine-procedures';
-import { transformEnums, expandEnumPropertyAccess, enumTransformPlugin } from "../enum-transform";
+import {
+    transformEnums,
+    expandEnumPropertyAccess,
+    enumTransformPlugin,
+    collectDeclareEnums,
+    resolveDtsPath,
+} from "../enum-transform";
+import { extractTraTag } from "../transpiler-utils";
 
 const uriToPath = (uri: string) => uri.startsWith('file://') ? fileURLToPath(uri) : uri;
 
@@ -41,6 +48,9 @@ async function transpileCore(filePath: string, text: string): Promise<string> {
     if (parsed.ext.toLowerCase() !== EXT_TSSL) {
         throw new Error(`${filePath} is not a .tssl file`);
     }
+
+    // Extract @tra tag before bundling (esbuild strips comments)
+    const traTag = extractTraTag(text);
 
     // Pre-transform: convert enums to flat consts before any processing
     const { code: enumTransformedText, enumNames } = transformEnums(text);
@@ -80,7 +90,10 @@ async function transpileCore(filePath: string, text: string): Promise<string> {
     const cleanedCode = cleanupEsbuildOutput(bundleResult.code, TSSL_CODE_MARKER, mainFileData.constants);
 
     // Post-expand: expand any remaining cross-file enum compat objects
-    const bundledCode = expandEnumPropertyAccess(cleanedCode, bundleResult.allEnumNames);
+    // and strip prefixes from externalized enum property accesses
+    const bundledCode = expandEnumPropertyAccess(
+        cleanedCode, bundleResult.allEnumNames, bundleResult.externalEnumNames,
+    );
 
     // Create source file in memory from cleaned bundled code
     const sourceFile = project.createSourceFile("bundled.ts", bundledCode, { overwrite: true });
@@ -89,7 +102,7 @@ async function transpileCore(filePath: string, text: string): Promise<string> {
     ctx.inlineFunctions = extractInlineFunctionsFromFiles(project, bundleResult.inputFiles);
     conlog(`Found ${ctx.inlineFunctions.size} inline functions`);
 
-    return exportSSL(sourceFile, parsed.base, mainFileData, ctx);
+    return exportSSL(sourceFile, parsed.base, mainFileData, ctx, traTag);
 }
 
 /**
@@ -205,6 +218,7 @@ function extractPreserveFunctions(text: string): string[] {
 /** Extended bundle result that includes accumulated enum names */
 interface TsslBundleResult extends BundleResult {
     readonly allEnumNames: ReadonlySet<string>;
+    readonly externalEnumNames: ReadonlySet<string>;
 }
 
 /**
@@ -222,18 +236,29 @@ async function bundle(filePath: string, text: string, enumNames: ReadonlySet<str
     // Accumulate enum names from imported files during bundling
     const allEnumNames = new Set(enumNames);
 
+    // Accumulate externalized enum names from .d.ts files.
+    // These are `declare enum` that esbuild drops — their property accesses
+    // need prefix stripping (ClassID.ANKHEG → ANKHEG) in post-processing.
+    const externalEnumNames = new Set<string>();
+
     // Prepend marker and append fake usage to preserve functions from tree-shaking
     const preserveCode = `\n// Preserve functions\nif ((globalThis as any).__preserve__) { console.log(${preserveFunctions.join(', ')}); }`;
     const sourceWithMarker = TSSL_CODE_MARKER + "\n" + text + preserveCode;
 
     await ensureEsbuild();
+    // Resolve symlinks so esbuild's absWorkingDir and sourcefile agree on real paths.
+    const realPath = fs.realpathSync(filePath);
+    const resolveDir = path.dirname(realPath);
     const result = await esbuild.build({
         stdin: {
             contents: sourceWithMarker,
-            resolveDir: path.dirname(filePath),
+            resolveDir,
             sourcefile: path.basename(filePath).replace('.tssl', '.ts'),
             loader: 'ts',
         },
+        // Use the file's directory as working dir so error paths are relative to it,
+        // not to process.cwd() (which in VSCode is the extension install directory).
+        absWorkingDir: resolveDir,
         bundle: true,
         write: false,  // Return output in memory
         metafile: true,  // Get list of input files
@@ -244,14 +269,17 @@ async function bundle(filePath: string, text: string, enumNames: ReadonlySet<str
         target: 'es2022',
         platform: 'neutral',
         plugins: [
-            // Mark .d.ts imports as external - they're engine builtins
+            // Mark .d.ts imports as external — they're engine builtins.
+            // Also collects `declare enum` names from externalized files for
+            // prefix stripping in post-processing (ClassID.ANKHEG → ANKHEG).
             {
                 name: 'external-declarations',
                 setup(build: esbuild.PluginBuild) {
-                    build.onResolve({ filter: /\.d(\.ts)?$/ }, (args: esbuild.OnResolveArgs) => ({
-                        path: args.path,
-                        external: true
-                    }));
+                    build.onResolve({ filter: /\.d(\.ts)?$/ }, (args: esbuild.OnResolveArgs) => {
+                        const resolved = resolveDtsPath(path.resolve(args.resolveDir, args.path));
+                        collectDeclareEnums(resolved, externalEnumNames);
+                        return { path: args.path, external: true };
+                    });
                 }
             },
             // Transform enums in imported .ts/.tssl files
@@ -265,12 +293,16 @@ async function bundle(filePath: string, text: string, enumNames: ReadonlySet<str
         throw new Error('esbuild produced no output');
     }
     conlog(`Bundling complete!`);
-    // Extract input files from metafile (only .ts files, not .d.ts)
-    // metafile: true guarantees result.metafile is defined
-    const inputFiles = Object.keys(result.metafile.inputs).filter(f => f.endsWith('.ts') && !f.endsWith('.d.ts'));
+    // Extract input files from metafile (only .ts files, not .d.ts).
+    // metafile: true guarantees result.metafile is defined.
+    // Metafile paths are relative to absWorkingDir — resolve to absolute so
+    // extractInlineFunctionsFromFiles can find them regardless of process.cwd().
+    const inputFiles = Object.keys(result.metafile.inputs)
+        .filter(f => f.endsWith('.ts') && !f.endsWith('.d.ts'))
+        .map(f => path.resolve(resolveDir, f));
     const outputFile = result.outputFiles[0];
     if (outputFile === undefined) {
         throw new Error('esbuild produced no output');
     }
-    return { code: outputFile.text, inputFiles, allEnumNames };
+    return { code: outputFile.text, inputFiles, allEnumNames, externalEnumNames };
 }

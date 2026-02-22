@@ -12,8 +12,10 @@ import { EXT_TD, EXT_TBAF, EXT_TSSL } from "../../../server/src/core/languages";
 import { bundle } from "../../../server/src/tbaf/bundle";
 import { emitD } from "../../../server/src/td/emit";
 import { TDParser } from "../../../server/src/td/parse";
+import { detectOrphansFromOriginal, mergeWarnings } from "../../../server/src/td/index";
 import { emitBAF } from "../../../server/src/tbaf/emit";
 import { TBAFTransformer } from "../../../server/src/tbaf/transform";
+import { extractTraTag } from "../../../server/src/transpiler-utils";
 import { transpile as transpileTSSL } from "../../../server/src/tssl";
 import { parseCliArgs, runCli, safeProcess, reportDiff, FileResult, OutputMode } from "../../cli-utils";
 
@@ -49,6 +51,9 @@ async function processFile(filePath: string, mode: OutputMode): Promise<FileResu
     return safeProcess(filePath, async () => {
         const text = fs.readFileSync(filePath, "utf-8");
 
+        // Extract @tra tag before bundling (esbuild strips comments)
+        const traTag = extractTraTag(text);
+
         let output: string;
         if (type === "tssl") {
             // TSSL has its own bundling and transformation pipeline
@@ -64,12 +69,18 @@ async function processFile(filePath: string, mode: OutputMode): Promise<FileResu
 
             if (type === "td") {
                 const parser = new TDParser();
-                const ir = parser.parse(sourceFile);
-                ir.sourceFile = filePath;
+                const ir = { ...parser.parse(sourceFile), sourceFile: filePath, traTag };
+                // Detect orphans from original source when bundled, since esbuild
+                // tree-shakes unreferenced functions making them invisible to the parser.
+                const orphanWarnings = hasImports ? detectOrphansFromOriginal(text, ir) : [];
+                const allWarnings = mergeWarnings(ir.warnings ?? [], orphanWarnings);
+                for (const w of allWarnings) {
+                    console.error(`[TD] ${filePath}:${w.line}: ${w.message}`);
+                }
                 output = emitD(ir);
             } else {
                 const transformer = new TBAFTransformer();
-                const ir = transformer.transform(sourceFile);
+                const ir = { ...transformer.transform(sourceFile), sourceFile: filePath, traTag };
                 output = emitBAF(ir);
             }
         }

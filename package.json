@@ -27,6 +27,7 @@
     "activationEvents": [
         "workspaceContains:**/*.tssl",
         "workspaceContains:**/*.tbaf",
+        "workspaceContains:**/*.td",
         "onLanguage:fallout-ssl",
         "onLanguage:fallout-msg",
         "onLanguage:fallout-worldmap-txt",
@@ -45,7 +46,8 @@
                 "id": "typescript",
                 "extensions": [
                     ".tbaf",
-                    ".tssl"
+                    ".tssl",
+                    ".td"
                 ]
             },
             {
@@ -406,6 +408,9 @@
         "typescriptServerPlugins": [
             {
                 "name": "bgforge-tssl-plugin"
+            },
+            {
+                "name": "bgforge-td-plugin"
             }
         ],
         "iconThemes": [
@@ -422,7 +427,8 @@
         "build:dev": "./scripts/build-dev.sh",
         "build:all": "pnpm build:grammar && pnpm build",
         "build:ts-plugin": "./scripts/build-ts-plugin.sh",
-        "build:client": "pnpm build:base:client --sourcemap && pnpm build:ts-plugin --sourcemap && pnpm build:bin-cli",
+        "build:td-plugin": "./scripts/build-td-plugin.sh",
+        "build:client": "pnpm build:base:client --sourcemap && pnpm build:ts-plugin --sourcemap && pnpm build:td-plugin --sourcemap && pnpm build:bin-cli",
         "build:server": "pnpm build:base:server --sourcemap && pnpm lint:cli && pnpm build:format-cli && pnpm build:transpile-cli",
         "build:webviews": "pnpm build:base:webviews --sourcemap",
         "build:test": "./scripts/build-test.sh",

@@ -37,6 +37,7 @@ export interface BAFBlock {
 /** Complete BAF script */
 export interface BAFScript {
     sourceFile: string; // For header comment
+    traTag?: string;
     blocks: BAFBlock[];
 }
 

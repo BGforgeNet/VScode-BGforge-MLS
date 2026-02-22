@@ -49,10 +49,17 @@ export async function compile(uri: string, langId: string, interactive = false, 
     // TypeScript-based transpilers (TBAF, TSSL, TD)
     if (langId == "typescript") {
         if (uri.toLowerCase().endsWith(EXT_TD)) {
+            clearDiagnostics(uri);
             try {
-                const dPath = await td.compile(uri, text);
+                const { dPath, warnings } = await td.compile(uri, text);
                 const dName = path.basename(dPath);
-                getConnection().window.showInformationMessage(`Transpiled to ${dName}`);
+                if (warnings.length > 0) {
+                    const orphanNames = warnings.map(w => w.message.match(/^Function "(.+)" /)?.[1] ?? "?");
+                    const msg = `Transpiled to ${dName}. Orphan states: ${orphanNames.join(", ")}`;
+                    getConnection().window.showWarningMessage(msg);
+                } else {
+                    getConnection().window.showInformationMessage(`Transpiled to ${dName}`);
+                }
                 // Chain D compilation if weidu and game path are configured
                 if (settings.weidu.path && settings.weidu.gamePath) {
                     const dUri = pathToUri(dPath);

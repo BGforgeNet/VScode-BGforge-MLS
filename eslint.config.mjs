@@ -13,6 +13,7 @@ export default [
             "server/src/weidu-tp2/tree-sitter.d.ts",  // Auto-generated from grammar
             "server/src/weidu-baf/tree-sitter.d.ts",  // Auto-generated from grammar
             "server/src/weidu-d/tree-sitter.d.ts",    // Auto-generated from grammar
+            "server/src/td/td-runtime.d.ts",            // Runtime declarations with intentional `any` types
             "cli/**/node_modules/**",
             "cli/**/out/**",
             "grammars/**",  // Grammars have their own eslint config
@@ -41,7 +42,7 @@ export default [
                 projectService: {
                     // ts-plugin.ts is excluded from client/tsconfig.json (cross-workspace import
                     // incompatible with rootDir), but has its own client/tsconfig.ts-plugin.json
-                    allowDefaultProject: ["client/src/ts-plugin.ts", "client/src/filter-diagnostics.ts", "client/src/engine-proc-hover.ts"],
+                    allowDefaultProject: ["client/src/ts-plugin.ts", "client/src/td-plugin.ts", "client/src/filter-diagnostics.ts", "client/src/engine-proc-hover.ts"],
                 },
             },
         },

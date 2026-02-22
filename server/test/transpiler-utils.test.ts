@@ -5,6 +5,7 @@
 
 import { describe, expect, it } from "vitest";
 import {
+    applyHelperFixups,
     evaluateCondition,
     MAX_LOOP_ITERATIONS,
     parseArrayLiteral,
@@ -204,5 +205,77 @@ describe("parseIncrement - edge cases", () => {
     it("handles += with non-numeric value (defaults to 1)", () => {
         // Number("abc") is NaN, || 1 => 1
         expect(parseIncrement("i += abc")).toBe(1);
+    });
+});
+
+describe("applyHelperFixups", () => {
+    describe("obj()", () => {
+        it("resolves obj() with plain string to quoted string", () => {
+            expect(applyHelperFixups('obj("g_spy1")')).toBe('"g_spy1"');
+        });
+
+        it("resolves $obj() with plain string to quoted string", () => {
+            expect(applyHelperFixups('$obj("Minsc")')).toBe('"Minsc"');
+        });
+
+        it("resolves obj() with object identifier to bare identifier", () => {
+            expect(applyHelperFixups('obj("[PC]")')).toBe("[PC]");
+        });
+
+        it("resolves $obj() with object identifier to bare identifier", () => {
+            expect(applyHelperFixups('$obj("[ANYONE]")')).toBe("[ANYONE]");
+        });
+
+        it("resolves obj() nested inside function call", () => {
+            expect(applyHelperFixups('ActionOverride(obj("g_spy1"),DestroySelf())')).toBe(
+                'ActionOverride("g_spy1",DestroySelf())',
+            );
+        });
+    });
+
+    describe("tra()", () => {
+        it("resolves tra() to @number", () => {
+            expect(applyHelperFixups("tra(123)")).toBe("@123");
+        });
+
+        it("resolves $tra() to @number", () => {
+            expect(applyHelperFixups("$tra(456)")).toBe("@456");
+        });
+    });
+
+    describe("tlk()", () => {
+        it("resolves tlk() to bare number", () => {
+            expect(applyHelperFixups("tlk(789)")).toBe("789");
+        });
+
+        it("resolves $tlk() to bare number", () => {
+            expect(applyHelperFixups("$tlk(100)")).toBe("100");
+        });
+    });
+
+    describe("scope constants", () => {
+        it("quotes GLOBAL", () => {
+            expect(applyHelperFixups("GLOBAL")).toBe('"GLOBAL"');
+        });
+
+        it("quotes LOCALS", () => {
+            expect(applyHelperFixups("LOCALS")).toBe('"LOCALS"');
+        });
+
+        it("quotes MYAREA", () => {
+            expect(applyHelperFixups("MYAREA")).toBe('"MYAREA"');
+        });
+    });
+
+    describe("passthrough", () => {
+        it("returns unrelated strings unchanged", () => {
+            expect(applyHelperFixups('"hello"')).toBe('"hello"');
+        });
+
+        it("is idempotent on already-resolved values", () => {
+            expect(applyHelperFixups('"g_spy1"')).toBe('"g_spy1"');
+            expect(applyHelperFixups("@123")).toBe("@123");
+            expect(applyHelperFixups("[PC]")).toBe("[PC]");
+        });
     });
 });

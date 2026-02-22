@@ -24,12 +24,14 @@ import { findUsedInlineFunctions, generateInlineMacros } from './inline-function
  * @param sourceName tssl source name, to put into comment
  * @param mainFileData Data extracted from main file (constants, letVars, includes)
  * @param ctx Transpilation context
+ * @param traTag Optional @tra filename to preserve in output header
  * @returns Generated SSL output string
  */
-export function exportSSL(sourceFile: SourceFile, sourceName: string, mainFileData: MainFileData, ctx: TsslContext): string {
+export function exportSSL(sourceFile: SourceFile, sourceName: string, mainFileData: MainFileData, ctx: TsslContext, traTag?: string): string {
     conlog(`Starting conversion of: ${sourceName}`);
 
-    const header = `/* Do not edit. This file is generated from ${sourceName}. Make your changes there and regenerate this file. */\n\n`;
+    const traLine = traTag ? `/** @tra ${traTag} */\n` : "";
+    const header = `${traLine}/* Do not edit. This file is generated from ${sourceName}. Make your changes there and regenerate this file. */\n\n`;
     const { sections } = processInput(sourceFile, mainFileData, ctx);
     let output = header;
 

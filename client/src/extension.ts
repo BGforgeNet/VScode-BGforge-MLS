@@ -67,6 +67,7 @@ export async function activate(context: ExtensionContext) {
 
             { scheme: "file", pattern: "**/*.tbaf" },
             { scheme: "file", pattern: "**/*.tssl" },
+            { scheme: "file", pattern: "**/*.td" },
             { scheme: "file", language: "typescript" },
         ],
         synchronize: {

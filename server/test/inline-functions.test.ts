@@ -4,8 +4,10 @@
  */
 
 import { describe, expect, it } from "vitest";
+import * as fs from "fs";
+import * as path from "path";
 import { Project } from "ts-morph";
-import { generateInlineMacros } from "../src/tssl/inline-functions";
+import { generateInlineMacros, extractInlineFunctionsFromFiles } from "../src/tssl/inline-functions";
 import { isEnumConstant, collectReferencedIdentifiers } from "../src/tssl/export-ssl";
 import type { InlineFunc } from "../src/tssl/types";
 
@@ -236,5 +238,80 @@ describe("collectReferencedIdentifiers", () => {
         const ids = collectReferencedIdentifiers(sf, []);
         expect(ids.has("STAT_ch")).toBe(false);
         expect(ids.has("foo")).toBe(false);
+    });
+});
+
+describe("extractInlineFunctionsFromFiles", () => {
+    const tmpDir = path.resolve(__dirname, "tmp-inline-test");
+
+    function writeTmpFile(name: string, content: string): string {
+        if (!fs.existsSync(tmpDir)) fs.mkdirSync(tmpDir, { recursive: true });
+        const filePath = path.join(tmpDir, name);
+        fs.writeFileSync(filePath, content, "utf-8");
+        return filePath;
+    }
+
+    function cleanTmpDir() {
+        if (fs.existsSync(tmpDir)) fs.rmSync(tmpDir, { recursive: true });
+    }
+
+    it("extracts @inline function from file given absolute path", () => {
+        try {
+            const filePath = writeTmpFile("utils.ts", `
+/**
+ * Logs a message to debug.log.
+ * @param msg log message
+ * @inline
+ */
+export function ndebug(msg: string): void {
+    debug_msg(SCRIPT_REALNAME + ": " + msg);
+}
+`);
+            const project = new Project();
+            const result = extractInlineFunctionsFromFiles(project, [filePath]);
+            expect(result.has("ndebug")).toBe(true);
+            const inline = result.get("ndebug")!;
+            expect(inline.targetFunc).toBe("debug_msg");
+            expect(inline.params).toEqual(["msg"]);
+        } finally {
+            cleanTmpDir();
+        }
+    });
+
+    it("skips files that do not exist", () => {
+        const project = new Project();
+        const result = extractInlineFunctionsFromFiles(project, ["/nonexistent/file.ts"]);
+        expect(result.size).toBe(0);
+    });
+
+    it("skips relative paths that cannot be resolved from cwd", () => {
+        try {
+            // Simulate the bug: esbuild metafile returns paths relative to absWorkingDir,
+            // which differs from process.cwd(). The relative path won't resolve.
+            const filePath = writeTmpFile("lib.ts", `
+/** @inline */
+export function foo(): void { bar(); }
+`);
+            const project = new Project();
+            // Use a path relative to tmpDir, not cwd — this simulates the absWorkingDir mismatch
+            const relativePath = path.relative(tmpDir, filePath);
+
+            // From cwd, this relative path doesn't resolve to the actual file
+            // (unless cwd happens to equal tmpDir)
+            const fromCwd = path.resolve(process.cwd(), relativePath);
+            const existsFromCwd = fs.existsSync(fromCwd);
+
+            if (!existsFromCwd) {
+                // This is the bug scenario: relative path doesn't work from cwd
+                const result = extractInlineFunctionsFromFiles(project, [relativePath]);
+                expect(result.size).toBe(0);
+            }
+
+            // But absolute path always works
+            const result = extractInlineFunctionsFromFiles(project, [filePath]);
+            expect(result.has("foo")).toBe(true);
+        } finally {
+            cleanTmpDir();
+        }
     });
 });

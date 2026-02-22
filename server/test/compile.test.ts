@@ -132,7 +132,7 @@ describe("compile dispatcher", () => {
 
     describe("typescript transpiler routing", () => {
         it("routes .td files to TD transpiler", async () => {
-            mockTdCompile.mockResolvedValue("/output/test.d");
+            mockTdCompile.mockResolvedValue({ dPath: "/output/test.d", warnings: [] });
 
             await compile("file:///test.td", "typescript", false, "td content");
 
@@ -143,13 +143,31 @@ describe("compile dispatcher", () => {
         });
 
         it("shows success message after TD transpile", async () => {
-            mockTdCompile.mockResolvedValue("/output/test.d");
+            mockTdCompile.mockResolvedValue({ dPath: "/output/test.d", warnings: [] });
 
             await compile("file:///test.td", "typescript", false, "td content");
 
             expect(mockShowInfo).toHaveBeenCalledWith(
                 expect.stringContaining("Transpiled to")
             );
+        });
+
+        it("shows combined warning message with orphan names on TD warnings", async () => {
+            mockTdCompile.mockResolvedValue({
+                dPath: "/output/test.d",
+                warnings: [
+                    { message: 'Function "orphan1" looks like an orphan state', line: 5, columnStart: 9, columnEnd: 16 },
+                    { message: 'Function "orphan2" looks like an orphan state', line: 8, columnStart: 9, columnEnd: 16 },
+                ],
+            });
+
+            await compile("file:///test.td", "typescript", false, "td content");
+
+            expect(mockShowWarning).toHaveBeenCalledWith(
+                expect.stringContaining("Transpiled to test.d. Orphan states: orphan1, orphan2")
+            );
+            // Should NOT show a separate info message
+            expect(mockShowInfo).not.toHaveBeenCalled();
         });
 
         it("shows error message on TD transpile failure", async () => {

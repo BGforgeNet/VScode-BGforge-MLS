@@ -10,7 +10,8 @@ import { BAFAction, BAFBlock, BAFCondition, BAFScript, BAFTopCondition, isOrGrou
 /** Emit a complete BAF script */
 export function emitBAF(script: BAFScript): string {
     const fileName = path.basename(script.sourceFile);
-    let output = `/* Do not edit. This file is generated from ${fileName}. Make your changes there and regenerate this file. */\n\n`;
+    const traLine = script.traTag ? `/** @tra ${script.traTag} */\n` : "";
+    let output = `${traLine}/* Do not edit. This file is generated from ${fileName}. Make your changes there and regenerate this file. */\n\n`;
 
     for (const block of script.blocks) {
         output += emitBlock(block);
