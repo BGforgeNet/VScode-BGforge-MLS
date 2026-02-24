@@ -6,7 +6,7 @@ TSSL is a TypeScript subset that transpiles to Fallout SSL (Star-Trek Scripting 
 
 ### Variables
 
-**`const`** becomes `#define` (compile-time constant):
+**Top-level `const`** becomes `#define` (compile-time constant):
 
 ```typescript
 const MY_VALUE = 42;         // → #define MY_VALUE 42
@@ -20,6 +20,17 @@ let count = 0;               // → variable count = 0;
 let name: string;            // → variable name;
 ```
 
+**`const` inside a function** also becomes `variable` (same as `let`):
+
+```typescript
+function example() {
+    const x = 5;             // → variable x = 5;
+    let y = 10;              // → variable y = 10;
+}
+```
+
+Only top-level `const` produces `#define`. Inside function bodies, `const` and `let` are equivalent.
+
 **Scoping rules:** All variables are function-scoped, like `var` in JavaScript. There is no block scoping. Variable declarations are hoisted to the top of the function. See [Gotchas](#gotchas-and-pitfalls) for important implications.
 
 ### Functions
@@ -31,7 +42,7 @@ function my_proc() {
     debug_msg("hello");
 }
 // → procedure my_proc begin
-//       call debug_msg("hello");
+//       debug_msg("hello");
 //   end
 ```
 
@@ -55,11 +66,12 @@ function get_hp(who: CritterPtr): number {
 //   end
 ```
 
-User-defined functions called as standalone statements get the `call` keyword automatically:
+**`call` keyword:** User-defined functions (defined in the same file or bundled imports) called as standalone statements get the `call` keyword automatically. External engine functions do not:
 
 ```typescript
-my_proc();                   // → call my_proc;
-let x = get_hp(dude_obj);   // → variable x = get_hp(dude_obj);
+my_proc();                   // → call my_proc();    (user-defined, gets call)
+debug_msg("hello");          // → debug_msg("hello"); (external, no call)
+let x = get_hp(dude_obj);   // → variable x = get_hp(dude_obj);  (assignment, no call)
 ```
 
 ### Control Flow
@@ -255,7 +267,7 @@ obj[key]                     // → obj[key]
 
 ### Imports
 
-**From folib** (typed wrappers for engine headers):
+**From [folib](https://github.com/BGforgeNet/folib)** (typed wrappers for engine headers):
 
 ```typescript
 import { debug_msg, display_msg } from "folib";
@@ -360,7 +372,7 @@ These produce explicit transpiler errors:
 | `let list = 0` or `let map = 0` | "Variable name 'list'/'map' conflicts with folib export" |
 | foreach destructuring != 2 elements | "foreach destructuring must have exactly 2 elements" |
 
-**Forbidden globals** (full list): `Object`, `Array`, `JSON`, `Math`, `Date`, `Promise`, `Map`, `Set`, `WeakMap`, `WeakSet`, `Symbol`, `Reflect`, `Proxy`.
+**Forbidden globals** (full list): `Object`, `Array`, `JSON`, `Math`, `Date`, `Promise`, `Map`, `Set`, `WeakMap`, `WeakSet`, `Symbol`, `Reflect`, `Proxy`. None of these exist in the SSL runtime. The only runtime data structures are sfall lists and sfall maps, created with folib's `list()` and `map()` helpers.
 
 **Reserved variable names**: `list`, `map` (they conflict with folib's `list()` and `map()` helper functions).
 
@@ -419,7 +431,7 @@ For sfall maps, `map[key]` and `scan_array(map, key)` are different operations:
 - `map[key]` -- looks up by KEY, returns VALUE (or 0 if missing)
 - `scan_array(map, key)` -- searches VALUES, returns KEY where found (or -1)
 
-### No undefined
+### No undefined, No Objects
 
 SSL has no `undefined`. Missing map keys return `0`:
 
@@ -427,6 +439,8 @@ SSL has no `undefined`. Missing map keys return `0`:
 if (map[key] == 0) { }       // Correct: missing keys return 0
 if (map[key] == undefined) { } // Wrong: undefined doesn't exist
 ```
+
+The only runtime data structures are sfall lists (flat arrays) and sfall maps (key-value stores), created with folib's `list()` and `map()` helpers. There are no objects, classes, or other data structures at runtime. TypeScript classes and interfaces are type-only -- they exist for compile-time checking but produce nothing in the SSL output.
 
 ### Computed Property Keys
 

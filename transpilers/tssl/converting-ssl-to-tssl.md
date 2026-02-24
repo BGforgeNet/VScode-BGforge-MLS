@@ -30,13 +30,13 @@ Step-by-step guide for converting existing Fallout SSL scripts to TSSL.
 | `bnot x` | `~x` | Auto-converted |
 | `typeof(x)` | `sfall_typeof(x)` | `typeof` is a TS keyword |
 | `game_loaded` | `game_loaded()` | Zero-arg functions need parens |
-| `call my_proc;` | `my_proc();` | `call` added automatically |
+| `call my_proc;` | `my_proc();` | `call` added automatically for user-defined functions |
 
 ## Step-by-Step Conversion
 
 ### 1. Replace #include with import
 
-Map each SSL header to the corresponding folib module:
+Map each SSL header to the corresponding [folib](https://github.com/BGforgeNet/folib) module:
 
 | SSL Header | folib Module |
 |---|---|
@@ -74,6 +74,8 @@ Import only the specific functions you use. Unused imports are tree-shaken.
 const MAX_ITEMS = 50;
 const PID_WEAPON = 12;
 ```
+
+Top-level `const` becomes `#define` in the output. Inside function bodies, `const` becomes `variable` (same as `let`).
 
 Constants that are already provided by folib (like standard PID values) should be imported instead of redefined.
 
@@ -253,7 +255,7 @@ function get_weapon(who: CritterPtr): ItemPtr {
 }
 ```
 
-Common branded types: `ObjectPtr`, `CritterPtr`, `ItemPtr`, `TileNum`. These are compile-time only -- at runtime everything is numbers.
+Common branded types: `ObjectPtr`, `CritterPtr`, `ItemPtr`, `TileNum`. These are compile-time only -- at runtime everything is numbers, strings, or sfall lists/maps (created with folib's `list()` and `map()`). There are no objects, classes, or other data structures at runtime.
 
 ## Common Patterns
 

@@ -6,9 +6,10 @@ Everything below describes what the transpiler supports and how it behaves.
 
 === VARIABLES ===
 
-const NAME = value;          -> #define NAME value  (compile-time constant)
-let name = value;            -> variable name = value;  (runtime, function-scoped)
-let name: type;              -> variable name;  (declaration only)
+Top-level const NAME = value;  -> #define NAME value  (compile-time constant)
+const inside function body     -> variable NAME = value;  (same as let)
+let name = value;              -> variable name = value;  (runtime, function-scoped)
+let name: type;                -> variable name;  (declaration only)
 
 All variables are function-scoped (like var). Declaration+assignment in a let
 is hoisted to function start and runs ONCE. To reset in a loop:
@@ -113,6 +114,10 @@ Promise/Map/Set/WeakMap/WeakSet/Symbol/Reflect/Proxy  -> same error
 let list = ...; let map = ...; -> "conflicts with folib export"
 for (const [a,b,c] of ...)   -> "must have exactly 2 elements"
 
+None of these JS built-ins exist at runtime. The only runtime data structures
+are sfall lists (flat arrays) and sfall maps (key-value stores), created with
+folib's list() and map() helpers. No objects, classes, or other data structures.
+
 === UNSUPPORTED (broken output, no error) ===
 
 Arrow functions () => {}
@@ -133,7 +138,8 @@ Classes (runtime), decorators (runtime)
 2. Zero-arg externals: game_loaded() in TSSL -> game_loaded in SSL output.
    You must write parens in TSSL. Without parens it's a reference, not a call.
 
-3. No undefined: missing map keys return 0. Use == 0, not == undefined.
+3. No undefined, no objects: missing map keys return 0. Use == 0, not == undefined.
+   Only runtime data structures are sfall lists and sfall maps (folib's list()/map()).
 
 4. Computed keys required: { [PID_GUN]: 9 } keeps constant.
    { PID_GUN: 9 } becomes string literal "PID_GUN".
