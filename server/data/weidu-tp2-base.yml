@@ -2912,6 +2912,9 @@ tp2-value:
         0xD8
     - name: BEGIN
     - name: ELSE
+    - name: ALWAYS_ASK
+      doc: |-
+        For use with `QUICK_MENU`.
     - name: WHEN
       doc: |-
         For use with `ACTION_MATCH`, `ACTION_TRY`, `PATCH_MATCH` and `PATCH_TRY`.
