@@ -46,27 +46,15 @@ export const REGEX_TRA_HOVER = /^@[0-9]+$/;
 export const REGEX_TRA_INLAY = /@(\d+)/g;
 
 // =============================================================================
-// TBAF patterns (TypeScript BAF)
-// Matches: $tra(123)
+// Transpiler TRA patterns (TBAF and TD)
+// Both use tra(123) syntax.
 // =============================================================================
 
-/** Matches TBAF reference for hover detection: "$tra(123)" */
-export const REGEX_TBAF_HOVER = /^\$tra\((\d+)\)$/;
+/** Matches tra(123) reference for hover detection */
+export const REGEX_TRANSPILER_TRA_HOVER = /^tra\((\d+)\)$/;
 
-/** Matches TBAF reference in text for inlay hints (global) */
-export const REGEX_TBAF_INLAY = /\$tra\((\d+)\)/g;
-
-
-// =============================================================================
-// TD patterns (TypeScript Dialog)
-// Matches: tra(123)
-// =============================================================================
-
-/** Matches TD reference for hover detection: "tra(123)" */
-export const REGEX_TD_HOVER = /^tra\((\d+)\)$/;
-
-/** Matches TD reference in text for inlay hints (global) */
-export const REGEX_TD_INLAY = /tra\((\d+)\)/g;
+/** Matches tra(123) reference in text for inlay hints (global) */
+export const REGEX_TRANSPILER_TRA_INLAY = /\btra\((\d+)\)/g;
 
 // =============================================================================
 // @tra comment pattern

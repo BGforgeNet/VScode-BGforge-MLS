@@ -127,13 +127,13 @@ describe("Translation", () => {
         });
     });
 
-    describe("TBAF support (.tra format with $tra() syntax)", () => {
-        it("returns hover for $tra(123) reference in .tbaf file", async () => {
+    describe("TBAF support (.tra format with tra() syntax)", () => {
+        it("returns hover for tra(123) reference in .tbaf file", async () => {
             await translation.init();
 
             const uri = `file://${tempDir}/test.tbaf`;
-            const text = `/** @tra test.tra */\nconst x = $tra(100);`;
-            const hover = translation.getHover(uri, "typescript", "$tra(100)", text);
+            const text = `/** @tra test.tra */\nconst x = tra(100);`;
+            const hover = translation.getHover(uri, "typescript", "tra(100)", text);
 
             expect(hover).not.toBeNull();
             expect(hover?.contents).toMatchObject({
@@ -146,7 +146,7 @@ describe("Translation", () => {
             await translation.init();
 
             const uri = `file://${tempDir}/test.tbaf`;
-            const text = `/** @tra test.tra */\nconst x = $tra(100);\nconst y = $tra(101);`;
+            const text = `/** @tra test.tra */\nconst x = tra(100);\nconst y = tra(101);`;
             const range = { start: { line: 0, character: 0 }, end: { line: 3, character: 0 } };
             const hints = translation.getInlayHints(uri, "typescript", text, range);
 
@@ -160,10 +160,10 @@ describe("Translation", () => {
 
             const uri = `file://${tempDir}/test.tbaf`;
             const text = `/** @tra test.tra */\nconst x = mstr(100);`;
-            // mstr() is msg format, should not match in tbaf (which uses $tra() format)
+            // mstr() is msg format, should not match in tbaf (which uses tra() format)
             const hover = translation.getHover(uri, "typescript", "mstr(100", text);
 
-            // Should be null because tbaf uses $tra() format, not msg format
+            // Should be null because tbaf uses tra() format, not msg format
             expect(hover).toBeNull();
         });
 
@@ -172,7 +172,7 @@ describe("Translation", () => {
 
             const uri = `file://${tempDir}/test.tbaf`;
             const text = `/** @tra test.tra */\nconst x = @100;`;
-            // @123 is WeiDU format, TBAF uses $tra(123)
+            // @123 is WeiDU format, TBAF uses tra(123)
             const hover = translation.getHover(uri, "typescript", "@100", text);
 
             expect(hover).toBeNull();
@@ -219,16 +219,6 @@ describe("Translation", () => {
             expect(hover).toBeNull();
         });
 
-        it("does not return hover for $tra() in .td file", async () => {
-            await translation.init();
-
-            const uri = `file://${tempDir}/test.td`;
-            const text = `/** @tra test.tra */\nconst x = $tra(100);`;
-            // $tra() is TBAF format, TD uses tra()
-            const hover = translation.getHover(uri, "typescript", "$tra(100)", text);
-
-            expect(hover).toBeNull();
-        });
     });
 
     describe("regular typescript files (.ts)", () => {
@@ -250,8 +240,8 @@ describe("Translation", () => {
             await translation.init();
 
             const uri = `file://${tempDir}/test.ts`;
-            const text = `/** @tra test.tra */\nconst x = $tra(100);`;
-            const hover = translation.getHover(uri, "typescript", "$tra(100)", text);
+            const text = `/** @tra test.tra */\nconst x = tra(100);`;
+            const hover = translation.getHover(uri, "typescript", "tra(100)", text);
 
             expect(hover).not.toBeNull();
             expect(hover?.contents).toMatchObject({
@@ -276,7 +266,7 @@ describe("Translation", () => {
             await translation.init();
 
             const uri = `file://${tempDir}/test.ts`;
-            const text = `/** @tra test.tra */\nconst x = $tra(100);`;
+            const text = `/** @tra test.tra */\nconst x = tra(100);`;
             const range = { start: { line: 0, character: 0 }, end: { line: 2, character: 0 } };
             const hints = translation.getInlayHints(uri, "typescript", text, range);
 
@@ -357,10 +347,10 @@ describe("Translation", () => {
 
             const uri = `file://${tempDir}/empty.tbaf`;
             fs.writeFileSync(path.join(tempDir, "empty.tbaf"), "");
-            const text = `/** @tra empty.tra */\nconst x = $tra(0);`;
+            const text = `/** @tra empty.tra */\nconst x = tra(0);`;
 
             // Empty string should still resolve (not be skipped)
-            const hover = t.getHover(uri, "typescript", "$tra(0)", text);
+            const hover = t.getHover(uri, "typescript", "tra(0)", text);
             expect(hover).not.toBeNull();
         });
 
@@ -480,8 +470,8 @@ translation~`;
 
             const uri = `file://${tempDir}/multi.tbaf`;
             fs.writeFileSync(path.join(tempDir, "multi.tbaf"), "");
-            const text = `/** @tra multi.tra */\nconst x = $tra(100);`;
-            const hover = t.getHover(uri, "typescript", "$tra(100)", text);
+            const text = `/** @tra multi.tra */\nconst x = tra(100);`;
+            const hover = t.getHover(uri, "typescript", "tra(100)", text);
 
             // [^~]* matches across lines since the regex has /gm flag
             // and [^~]* doesn't restrict to single line
@@ -519,12 +509,12 @@ translation~`;
             expect(result!.range.start.line).toBe(1);
         });
 
-        it("returns location for $tra(100) in TBAF file", async () => {
+        it("returns location for tra(100) in TBAF file", async () => {
             await translation.init();
 
             const uri = `file://${tempDir}/test.tbaf`;
-            const text = `/** @tra test.tra */\nconst x = $tra(100);`;
-            const result = translation.getDefinition(uri, "typescript", "$tra(100)", text);
+            const text = `/** @tra test.tra */\nconst x = tra(100);`;
+            const result = translation.getDefinition(uri, "typescript", "tra(100)", text);
 
             expect(result).not.toBeNull();
             expect(result!.uri).toContain("test.tra");

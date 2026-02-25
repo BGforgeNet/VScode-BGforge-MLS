@@ -65,11 +65,11 @@ describe("symbolAtPosition", () => {
         expect(result).toBe("NOption(154");
     });
 
-    it("returns 'tra' when cursor on $tra (not the number)", () => {
+    it("returns tra(100) when cursor on tra part of $tra(100)", () => {
         const text = "const x = $tra(100);";
-        // Position 12 is on 'r' in 'tra'
+        // Position 12 is on 'r' in 'tra' — \b matches between $ and t
         const result = symbolAtPosition(text, { line: 0, character: 12 });
-        expect(result).toBe("tra");
+        expect(result).toBe("tra(100)");
     });
 
     it("returns msg reference for number inside nested call", () => {
@@ -79,11 +79,52 @@ describe("symbolAtPosition", () => {
         expect(result).toBe("mstr(101");
     });
 
-    it("returns full $tra(123) when cursor on number", () => {
+    it("returns tra(100) when cursor on digits of $tra(100)", () => {
         const text = "const x = $tra(100);";
         // Position 15-17 is on the digits
         const result = symbolAtPosition(text, { line: 0, character: 16 });
-        expect(result).toBe("$tra(100)");
+        expect(result).toBe("tra(100)");
+    });
+
+    it("returns full tra(123) when cursor on number (TD)", () => {
+        const text = "say(tra(405));";
+        // tra(405) starts at index 4, digits at index 8
+        const result = symbolAtPosition(text, { line: 0, character: 9 });
+        expect(result).toBe("tra(405)");
+    });
+
+    it("returns full tra(123) when cursor on 'tra' (TD)", () => {
+        const text = "say(tra(405));";
+        // cursor on 'r' in 'tra', index 5
+        const result = symbolAtPosition(text, { line: 0, character: 5 });
+        expect(result).toBe("tra(405)");
+    });
+
+    it("returns full tra(123) when cursor on opening paren (TD)", () => {
+        const text = "say(tra(405));";
+        // cursor on '(' after tra, index 7
+        const result = symbolAtPosition(text, { line: 0, character: 7 });
+        expect(result).toBe("tra(405)");
+    });
+
+    it("returns full tra(123) when cursor on closing paren (TD)", () => {
+        const text = "say(tra(405));";
+        // cursor on ')' of tra(405), index 11
+        const result = symbolAtPosition(text, { line: 0, character: 11 });
+        expect(result).toBe("tra(405)");
+    });
+
+    it("does not match tra inside other words like extra(100)", () => {
+        const text = "extra(100);";
+        // cursor on digits
+        const result = symbolAtPosition(text, { line: 0, character: 6 });
+        expect(result).toBe("extra(100");
+    });
+
+    it("returns tra(123) at start of line (TD)", () => {
+        const text = "tra(50)";
+        const result = symbolAtPosition(text, { line: 0, character: 0 });
+        expect(result).toBe("tra(50)");
     });
 });
 

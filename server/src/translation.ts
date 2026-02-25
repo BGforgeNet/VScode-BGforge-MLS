@@ -24,10 +24,8 @@ import {
 import {
     REGEX_MSG_HOVER,
     REGEX_MSG_INLAY,
-    REGEX_TBAF_HOVER,
-    REGEX_TBAF_INLAY,
-    REGEX_TD_HOVER,
-    REGEX_TD_INLAY,
+    REGEX_TRANSPILER_TRA_HOVER,
+    REGEX_TRANSPILER_TRA_INLAY,
     REGEX_TRA_COMMENT,
     REGEX_TRA_COMMENT_EXT,
     REGEX_TRA_HOVER,
@@ -75,14 +73,11 @@ function isTraRef(word: string, langId: string, filePath?: string): boolean {
         if (ext === EXT_TSSL) {
             return !!word.match(REGEX_MSG_HOVER);
         }
-        if (ext === EXT_TBAF) {
-            return !!word.match(REGEX_TBAF_HOVER);
-        }
-        if (ext === EXT_TD) {
-            return !!word.match(REGEX_TD_HOVER);
+        if (ext === EXT_TBAF || ext === EXT_TD) {
+            return !!word.match(REGEX_TRANSPILER_TRA_HOVER);
         }
         // Regular .ts file - check all patterns, format determined by @tra comment
-        return !!word.match(REGEX_MSG_HOVER) || !!word.match(REGEX_TBAF_HOVER) || !!word.match(REGEX_TD_HOVER);
+        return !!word.match(REGEX_MSG_HOVER) || !!word.match(REGEX_TRANSPILER_TRA_HOVER);
     }
 
     // For other languages, check the language arrays
@@ -532,15 +527,10 @@ export class Translation {
             }
         }
         if (ext === "tra") {
-            // Check for TBAF $tra(123) format
-            const tbafMatch = REGEX_TBAF_HOVER.exec(word);
-            if (tbafMatch) {
-                return tbafMatch[1];
-            }
-            // Check for TD tra(123) format
-            const tdMatch = REGEX_TD_HOVER.exec(word);
-            if (tdMatch) {
-                return tdMatch[1];
+            // Check for transpiler tra(123) format (TBAF/TD)
+            const traMatch = REGEX_TRANSPILER_TRA_HOVER.exec(word);
+            if (traMatch) {
+                return traMatch[1];
             }
             // Standard @123 format
             return word.substring(1);
@@ -569,16 +559,11 @@ export class Translation {
             regex = new RegExp(REGEX_MSG_INLAY.source, "g");
             keyIndex = 2;
         } else {
-            // TypeScript files use different patterns based on extension:
-            // - .tbaf uses $tra(123)
-            // - .td uses tra(123)
-            // - .ts uses $tra(123) (default)
-            // Native WeiDU files (baf, d, tp2) use @123 syntax
+            // TypeScript transpiler files (.tbaf, .td, .ts) use tra(123) syntax.
+            // Native WeiDU files (baf, d, tp2) use @123 syntax.
             const ext = path.extname(filePath).toLowerCase();
-            if (ext === EXT_TBAF || ext === ".ts") {
-                regex = new RegExp(REGEX_TBAF_INLAY.source, "g");
-            } else if (ext === EXT_TD) {
-                regex = new RegExp(REGEX_TD_INLAY.source, "g");
+            if (ext === EXT_TBAF || ext === EXT_TD || ext === ".ts") {
+                regex = new RegExp(REGEX_TRANSPILER_TRA_INLAY.source, "g");
             } else {
                 regex = new RegExp(REGEX_TRA_INLAY.source, "g");
             }

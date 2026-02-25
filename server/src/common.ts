@@ -202,8 +202,7 @@ export function symbolAtPosition(text: string, position: Position) {
     }
     const pos = position.character;
 
-    // Check if cursor is on the number inside a $tra(123) pattern (TBAF translation reference)
-    // Only match when cursor is on the digits, not on $tra itself
+    // Check if cursor is within a tra(123) pattern (TBAF/TD translation reference)
     const traMatch = findTraArgumentAtPosition(str, pos);
     if (traMatch) {
         return traMatch;
@@ -245,19 +244,17 @@ export function symbolAtPosition(text: string, position: Position) {
 }
 
 /**
- * Find if cursor is on the number argument inside a $tra(123) pattern.
- * Only returns match when cursor is on the digits, not on $tra itself.
+ * Find if cursor is within a transpiler tra(123) translation reference.
+ * Used by both TBAF and TD files (same syntax).
+ * Word boundary prevents matching inside words like "extra(100)".
+ * Matches when cursor is anywhere within the tra(digits) span.
  */
 function findTraArgumentAtPosition(line: string, pos: number): string | null {
-    // Match $tra(digits) and capture the digits with their position
-    const pattern = /\$tra\((\d+)\)/g;
+    const pattern = /\btra\((\d+)\)/g;
     for (const match of line.matchAll(pattern)) {
         if (!match[1]) continue;
-        // $tra( is 5 characters, so digits start at match.index + 5
-        const digitsStart = match.index + 5;
-        const digitsEnd = digitsStart + match[1].length;
-        // Only match if cursor is on the digits
-        if (pos >= digitsStart && pos < digitsEnd) {
+        const matchEnd = match.index + match[0].length;
+        if (pos >= match.index && pos < matchEnd) {
             return match[0];
         }
     }
