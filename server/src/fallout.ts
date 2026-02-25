@@ -1,5 +1,6 @@
 import * as cp from "child_process";
 import * as fs from "fs";
+import * as os from "os";
 import * as path from "path";
 import { CompletionItemKind, ParameterInformation } from "vscode-languageserver";
 import { MarkupKind } from "vscode-languageserver/node";
@@ -23,7 +24,7 @@ import { Edge, Node } from "./preview";
 import { connection, documents } from "./server";
 import { SSLsettings } from "./settings";
 import * as signature from "./signature";
-import * as os from "os";
+import { ssl_compile as ssl_builtin_compiler } from "./sslc/ssl_compiler";
 
 interface FalloutHeaderData {
     macros: Macros;
@@ -59,7 +60,7 @@ const sslExt = ".ssl";
 export async function loadHeaders(
     headersDirectory: string,
     external = false,
-    staticHover: hover.HoverMap = new Map()
+    staticHover: hover.HoverMap = new Map(),
 ) {
     const completions: completion.CompletionListEx = [];
     const hovers: hover.HoverMapEx = new Map();
@@ -71,7 +72,7 @@ export async function loadHeaders(
         headerFiles,
         headersDirectory,
         loadFileData,
-        external
+        external,
     );
 
     if (errors.length > 0) {
@@ -158,7 +159,8 @@ function loadMacros(uri: string, headerData: FalloutHeaderData, filePath: string
     const hovers: hover.HoverMapEx = new Map();
     for (const macro of headerData.macros) {
         let markdownValue: string;
-        let detail = macro.detail;
+        let detail = `macro ${macro.detail}`;
+
         // for a constant, show just value
         if (macro.constant) {
             detail = macro.firstline;
@@ -288,7 +290,7 @@ function findSymbols(text: string) {
     const defineList: Macros = [];
     const defineRegex =
         /((\/\*\*\s*\n([^*]|(\*(?!\/)))*\*\/)\r?\n)?#define[ \t]+(\w+)(?:\(([^)]+)\))?[ \t]+(.+)/gm;
-    const constantRegex = /^[A-Z][A-Z0-9_]+/;
+    const constantRegex = /^[A-Z][A-Z0-9_]+$/;
     let matches = text.matchAll(defineRegex);
     for (const m of matches) {
         const defineName = m[5];
@@ -309,7 +311,7 @@ function findSymbols(text: string) {
             defineDetail = `${defineName}(${defineVars})`;
         }
 
-        // check if it's looks like a constant
+        // check if it looks like a constant
         let constant = false;
         if (!multiline && constantRegex.test(defineName)) {
             constant = true;
@@ -326,7 +328,7 @@ function findSymbols(text: string) {
         if (m[2]) {
             const jsd = jsdoc.parse(m[2]);
             item.jsdoc = jsd;
-            item.detail = jsdocToDetail(defineName, jsd);
+            item.detail = jsdocToDetail(defineName, jsd, "macro");
             defineList.push(item);
         }
         defineList.push(item);
@@ -352,7 +354,11 @@ function findSymbols(text: string) {
         // if jsdoc found
         if (m[2]) {
             const jsd = jsdoc.parse(m[2]);
-            procDetail = jsdocToDetail(procName, jsd);
+            // If JSdoc has no arguments specified, but function has them, keep the default detail form
+            if (!(m[6] && jsd.args.length == 0)) {
+                // else, use detail from JSdoc.
+                procDetail = jsdocToDetail(procName, jsd);
+            }
             const item = { label: procName, detail: procDetail, jsdoc: jsd };
             procList.push(item);
         } else {
@@ -438,17 +444,34 @@ function jsdocToMD(jsd: jsdoc.JSdoc) {
     return md;
 }
 
-function jsdocToDetail(label: string, jsd: jsdoc.JSdoc) {
-    const type = jsd.ret ? jsd.ret.type : "void";
+function jsdocToDetail(label: string, jsd: jsdoc.JSdoc, tokenType: "proc" | "macro" = "proc") {
+    let retType = "";
+    if (jsd.ret) {
+        retType = jsd.ret.type;
+    } else {
+        if (tokenType == "proc") {
+            retType = "void";
+        }
+    }
+    // add space if not empty
+    if (retType != "") {
+        retType = `${retType} `;
+    }
+
+    // functions with no arguments get empty parentheses
+    // macros don't
     const args = jsd.args.map(({ type, name }) => `${type} ${name}`);
-    const argsString = args.join(", ");
-    const detail = `${type} ${label}(${argsString})`;
+    let argsString = args.join(", ");
+    if (argsString != "" || tokenType != "macro") {
+        argsString = `(${argsString})`;
+    }
+    const detail = `${retType}${label}${argsString}`;
     return detail;
 }
 
 /**
  * Wine gives network-mapped looking path to compile.exe
- * @param path looks like this `Z:/Downloads/1/_mls_test.h`, should be this `/home/user/Downloads/1/_mls_test.h`
+ * @param filePath looks like this `Z:/Downloads/1/_mls_test.h`, should be this `/home/user/Downloads/1/_mls_test.h`
  * Imperfect, but works.
  */
 function fixWinePath(filePath: string) {
@@ -572,7 +595,32 @@ function sendDiagnostics(uri: string, outputText: string, tmpUri: string) {
     sendParseResult(parseResult, uri, tmpUri);
 }
 
-export function compile(uri: string, sslSettings: SSLsettings, interactive = false, text: string) {
+let successfulCompilerPath: string | null = null;
+async function checkExternalCompiler(compilePath: string) {
+    if (compilePath === successfulCompilerPath) {
+        // Check compiler only once
+        return Promise.resolve(true);
+    }
+
+    return new Promise<boolean>((resolve) => {
+        cp.exec(`${compilePath} --version`, (err) => {
+            conlog(`Compiler check '${compilePath} --version' err=${err}`);
+            if (err) {
+                resolve(false);
+            } else {
+                successfulCompilerPath = compilePath;
+                resolve(true);
+            }
+        });
+    });
+}
+
+export async function compile(
+    uri: string,
+    sslSettings: SSLsettings,
+    interactive = false,
+    text: string,
+) {
     const filepath = uriToPath(uri);
     const cwdTo = path.dirname(filepath);
     // tmp file has to be in the same dir, because includes can be relative or absolute
@@ -596,6 +644,46 @@ export function compile(uri: string, sslSettings: SSLsettings, interactive = fal
     conlog(`compiling ${baseName}...`);
 
     fs.writeFileSync(tmpPath, text);
+
+    let useBuiltInCompiler = sslSettings.useBuiltInCompiler;
+
+    if (!useBuiltInCompiler && !(await checkExternalCompiler(sslSettings.compilePath))) {
+        const response = await connection.window.showErrorMessage(
+            `Failed to run '${sslSettings.compilePath}'! Use built-in compiler this time?`,
+            { title: "Yes", id: "yes" },
+            { title: "No", id: "no" },
+        );
+        if (response?.id === "yes") {
+            useBuiltInCompiler = true;
+        }
+    }
+
+    if (useBuiltInCompiler) {
+        const { stdout, returnCode } = await ssl_builtin_compiler({
+            interactive,
+            cwd: cwdTo,
+            inputFileName: tmpName,
+            outputFileName: dstPath,
+            options: sslSettings.compileOptions,
+            headersDir: sslSettings.headersDirectory,
+        });
+        if (returnCode === 0) {
+            if (interactive) {
+                connection.window.showInformationMessage(`Compiled ${baseName}.`);
+            }
+        } else {
+            if (interactive) {
+                connection.window.showErrorMessage(`Failed to compile ${baseName}!`);
+            }
+        }
+        sendDiagnostics(uri, stdout, tmpUri);
+        // sometimes it gets deleted due to async runs?
+        if (fs.existsSync(tmpPath)) {
+            fs.unlinkSync(tmpPath);
+        }
+        return;
+    }
+
     conlog(`${compileCmd} "${tmpName}" -o "${dstPath}"`);
     cp.exec(
         `${compileCmd} "${tmpName}" -o "${dstPath}"`,
@@ -612,7 +700,7 @@ export function compile(uri: string, sslSettings: SSLsettings, interactive = fal
                 }
             } else {
                 if (interactive) {
-                    connection.window.showInformationMessage(`Succesfully compiled ${baseName}.`);
+                    connection.window.showInformationMessage(`Compiled ${baseName}.`);
                 }
             }
             sendDiagnostics(uri, stdout, tmpUri);
@@ -620,7 +708,7 @@ export function compile(uri: string, sslSettings: SSLsettings, interactive = fal
             if (fs.existsSync(tmpPath)) {
                 fs.unlinkSync(tmpPath);
             }
-        }
+        },
     );
 }
 
@@ -646,7 +734,8 @@ export function getPreviewData(text: string) {
             nodes.push(nodeItem);
         }
         if (body) {
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            // Don't need body2
+            // eslint-disable-next-line no-unused-vars
             for (const [name2, body2] of procs) {
                 const pattern = `\\b(${name2})\\b`;
                 const nameRegex = new RegExp(pattern, "g");

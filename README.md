@@ -11,7 +11,7 @@
 | [**Install**](#installation)
 | [**Forum**](https://forums.bgforge.net/viewforum.php?f=35)
 
-BGforge MLS is a VScode extension adding support for [Star-Trek Scripting Language](https://falloutmods.fandom.com/wiki/Fallout_1_and_Fallout_2_scripting_-_commands,_reference,_tutorials) (`ssl`) used in Fallout 1 and 2 games, and several file formats (`d`, `baf`, `tp2`, `tra`, `2da`) used by [WeiDU](https://weidu.org/~thebigg/README-WeiDU.html) and [Infinity Engine](https://iesdp.bgforge.net), as well as [Sword Coast Stratagems Scripting Language](https://www.gibberlings3.net/forums/topic/13725-coding-scripts-in-ssl-some-lessons/) (`ssl`/`slb`).
+BGforge MLS is a VScode extension adding support for [Star-Trek Scripting Language](https://falloutmods.fandom.com/wiki/Fallout_1_and_Fallout_2_scripting_-_commands,_reference,_tutorials) (`ssl`) used in Fallout 1 and 2 games, and several file formats (`d`, `baf`, `tp2`, `tra`, `2da`) used by [WeiDU](https://weidu.org/~thebigg/README-WeiDU.html) and [Infinity Engine](https://iesdp.bgforge.net), as well as [Sword Coast Stratagems Scripting Language](https://www.gibberlings3.net/forums/topic/13725-coding-scripts-in-ssl-some-lessons/) (`ssl`/`slb`), and [TBAF](https://forums.bgforge.net/viewtopic.php?t=448).
 
 ### Features
 
@@ -20,6 +20,7 @@ BGforge MLS is a VScode extension adding support for [Star-Trek Scripting Langua
 - [Hovers](#fallout-highlighting-and-hovers)
 - [Error reporting](#error-reporting)
 - Signature help, diagnostics, docstrings, etc. See the [forum](https://forums.bgforge.net/viewforum.php?f=35).
+- Embedded cross-platform .ssl compiler (check `falloutSSL.useBuiltInCompiler` option) 
 
 ### Installation
 
@@ -48,3 +49,5 @@ BGforge MLS is a VScode extension adding support for [Star-Trek Scripting Langua
 #### Error reporting
 
 ![error reporting example](docs/error_reporting.png)
+
+

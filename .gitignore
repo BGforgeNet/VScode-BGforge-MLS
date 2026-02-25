@@ -2,6 +2,7 @@
 *.vsix
 **/__pycache__/**
 
+.mypy_cache/
 .venv/
 .vscode-test/
 
@@ -24,3 +25,5 @@ external
 node_modules
 syntaxes_to_json.sh.err
 tmp
+
+test

@@ -27,7 +27,7 @@ dest_dir="server/out"
     --tooltip-lang weidu-tp2-tooltip
 
 ./scripts/generate_data.py \
-    -i $data_dir/weidu-baf-base.yml $data_dir/weidu-baf-iesdp.yml \
+    -i $data_dir/weidu-baf-base.yml $data_dir/weidu-baf-iesdp.yml $data_dir/weidu-baf-ids.yml \
     --completion $dest_dir/completion.weidu-baf.json \
     --hover $dest_dir/hover.weidu-baf.json \
     --tooltip-lang weidu-baf-tooltip

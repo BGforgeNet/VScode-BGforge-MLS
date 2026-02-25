@@ -60,7 +60,8 @@ def find_files(path, ext):
     flist = []
     for root, dirs, files in os.walk(path, followlinks=True):  # pylint: disable=unused-variable
         for file in files:
-            if file.lower().endswith(ext):
+            file_ext = os.path.splitext(file)[1]
+            if file_ext.lower() == "." + ext.lower():
                 flist.append(os.path.join(root, file))
     return flist
 

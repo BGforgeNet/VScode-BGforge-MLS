@@ -12,6 +12,8 @@
 !server/out/hover.*.json
 !server/out/signature.*.json
 
+!server/node_modules/sslc-emscripten-noderawfs/**
+
 !preview/package.json
 !preview/out/index.html
 !preview/out/index.css

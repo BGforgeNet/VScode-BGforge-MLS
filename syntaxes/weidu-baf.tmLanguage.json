@@ -12648,6 +12648,1468 @@
           "name": "constant.other.weidu-baf"
         }
       ]
+    },
+    "slots-ids": {
+      "name": "constant.other.weidu-baf",
+      "patterns": [
+        {
+          "match": "\\b(SLOT_AMULET)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SLOT_ARMOR)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SLOT_BELT)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SLOT_BOOTS)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SLOT_CLOAK)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SLOT_GAUNTLETS)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SLOT_HELMET)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SLOT_RING_LEFT)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SLOT_RING_RIGHT)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SLOT_SHIELD)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SLOT_FIST)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SLOT_AMMO)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SLOT_MISC)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SLOT_WEAPON)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SLOT_AMMO0)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SLOT_AMMO1)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SLOT_AMMO2)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SLOT_AMMO3)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SLOT_MISC0)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SLOT_MISC1)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SLOT_MISC2)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SLOT_MISC3)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SLOT_MISC4)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SLOT_MISC5)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SLOT_MISC6)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SLOT_MISC7)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SLOT_MISC8)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SLOT_MISC9)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SLOT_MISC10)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SLOT_MISC11)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SLOT_MISC12)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SLOT_MISC13)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SLOT_MISC14)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SLOT_MISC15)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SLOT_MISC16)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SLOT_MISC17)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SLOT_MISC18)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SLOT_MISC19)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SLOT_WEAPON0)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SLOT_WEAPON1)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SLOT_WEAPON2)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SLOT_WEAPON3)\\b",
+          "name": "constant.other.weidu-baf"
+        }
+      ]
+    },
+    "animate-ids": {
+      "name": "constant.other.weidu-baf",
+      "patterns": [
+        {
+          "match": "\\b(FIRE_RING)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(CHUNKS)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(EXPLODING_ARM)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(EXPLODING_HEAD)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(EXPLODING_FOOT)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(EXPLODING_TORSO)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(EXPLODING_LEG)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SMOKE_PUFF_LARGE)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SMOKE_PUFF_SMALL)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(TRAP_SKULL)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(TRAP_GLYPH)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(CLOUD_TRAVEL)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(CLOUD_STATIC)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(STORM_TRAVEL)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(STORM_STATIC)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(GREASE_TRAVEL)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(GREASE_STATIC)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(WEB_TRAVEL)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(WEB_STATIC)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(WYVERN_BIG)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(TANARRI)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(DRAGON_RED)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(DRAGON_BLACK)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(DRAGON_SILVER)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(DRAGON_GREEN)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(DRAGON_AQUA)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(DRAGON_BLUE)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(DRAGON_BROWN)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(DRAGON_MULTICOLOR)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(DRAGON_PURPLE)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(DEMIGORGON)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SIRINE)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(VOLO)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(OGRE_MAGE)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(DEATH_KNIGHT)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(ANKHEG)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(STATIC_NOBLE_MAN_CHAIR)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(STATIC_NOBLE_MAN_MATTE)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(STATIC_NOBLE_WOMAN_CHAIR)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(STATIC_NOBLE_WOMAN_MATTE)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(STATIC_PEASANT_MAN_CHAIR)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(STATIC_PEASANT_MAN_STOOL)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(STATIC_PEASANT_MAN_MATTE)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(STATIC_PEASANT_WOMAN_CHAIR)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(STATIC_PEASANT_WOMAN_MATTE)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(STATIC_HUMANCLERIC_MAN_CHAIR)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(STATIC_SPIDER_WOMAN)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SLEEPING_MAN_HUMAN)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SLEEPING_WOMAN_HUMAN)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SLEEPING_FAT_MAN_HUMAN)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SLEEPING_DWARF)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SLEEPING_MAN_ELF)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SLEEPING_WOMAN_ELF)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SLEEPING_MAN_HALFLING)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(CLERIC_MALE_HUMAN_LOW)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(CLERIC_MALE_ELF_LOW)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(CLERIC_MALE_DWARF_LOW)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(CLERIC_MALE_HALFLING_LOW)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(CLERIC_FEMALE_HUMAN_LOW)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(CLERIC_FEMALE_ELF_LOW)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(CLERIC_FEMALE_DWARF_LOW)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(CLERIC_FEMALE_HALFLING_LOW)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(FIGHTER_MALE_HUMAN_LOW)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(FIGHTER_MALE_ELF_LOW)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(FIGHTER_MALE_DWARF_LOW)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(FIGHTER_MALE_HALFLING_LOW)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(FIGHTER_FEMALE_HUMAN_LOW)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(FIGHTER_FEMALE_ELF_LOW)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(FIGHTER_FEMALE_DWARF_LOW)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(FIGHTER_FEMALE_HALFLING_LOW)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(MAGE_MALE_HUMAN_LOW)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(MAGE_MALE_ELF_LOW)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(MAGE_MALE_DWARF_LOW)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(MAGE_FEMALE_HUMAN_LOW)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(MAGE_FEMALE_ELF_LOW)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(MAGE_FEMALE_DWARF_LOW)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(THIEF_MALE_HUMAN_LOW)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(THIEF_MALE_ELF_LOW)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(THIEF_MALE_DWARF_LOW)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(THIEF_MALE_HALFLING_LOW)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(THIEF_FEMALE_HUMAN_LOW)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(THIEF_FEMALE_ELF_LOW)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(THIEF_FEMALE_DWARF_LOW)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(THIEF_FEMALE_HALFLING_LOW)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(CLERIC_MALE_HUMAN)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(CLERIC_MALE_ELF)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(CLERIC_MALE_DWARF)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(CLERIC_MALE_HALFLING)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(CLERIC_MALE_GNOME)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(CLERIC_MALE_HALFORC)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(CLERIC_FEMALE_HUMAN)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(CLERIC_FEMALE_ELF)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(CLERIC_FEMALE_DWARF)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(CLERIC_FEMALE_HALFLING)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(CLERIC_FEMALE_GNOME)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(CLERIC_FEMALE_HALFORC)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(FIGHTER_MALE_HUMAN)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(FIGHTER_MALE_ELF)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(FIGHTER_MALE_DWARF)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(FIGHTER_MALE_HALFLING)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(FIGHTER_MALE_GNOME)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(FIGHTER_MALE_HALFORC)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(FIGHTER_FEMALE_HUMAN)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(FIGHTER_FEMALE_ELF)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(FIGHTER_FEMALE_DWARF)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(FIGHTER_FEMALE_HALFLING)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(FIGHTER_FEMALE_GNOME)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(FIGHTER_FEMALE_HALFORC)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(MAGE_MALE_HUMAN)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(MAGE_MALE_ELF)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(MAGE_MALE_DWARF)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(MAGE_MALE_GNOME)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(MAGE_MALE_HALFORC)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(MAGE_FEMALE_HUMAN)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(MAGE_FEMALE_ELF)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(MAGE_FEMALE_DWARF)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(MAGE_FEMALE_GNOME)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(MAGE_FEMALE_HALFORC)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(THIEF_MALE_HUMAN)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(THIEF_MALE_ELF)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(THIEF_MALE_DWARF)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(THIEF_MALE_HALFLING)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(THIEF_MALE_GNOME)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(THIEF_MALE_HALFORC)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(THIEF_FEMALE_HUMAN)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(THIEF_FEMALE_ELF)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(THIEF_FEMALE_DWARF)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(THIEF_FEMALE_HALFLING)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(THIEF_FEMALE_GNOME)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(THIEF_FEMALE_HALFORC)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(MONK_MALE_HUMAN)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(MONK_FEMALE_HUMAN)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(DRIZZT)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(ELMINSTER)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(MONK)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SKELETON)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SAREVOK)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(DOOM_GUARD)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(DOOM_GUARD_LARGER)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(HALF_OGRE)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(OGRILLON)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(BASILISK)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(BASILISK_GREATER)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(BEAR_BLACK)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(BEAR_BROWN)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(BEAR_CAVE)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(BEAR_POLAR)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(ELEMENTAL_EARTH)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(ELEMENTAL_EARTH_SMALL)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SHAMBLING_MOUND)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(ELEMENTAL_FIRE)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(ELEMENTAL_FIRE_SMALL)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(ELEMENTAL_FIRE_PURPLE)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(ELEMENTAL_FIRE_SMALL_PURPLE)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(BURNING_MAN)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(ELEMENTAL_AIR)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(ELEMENTAL_AIR_SMALL)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(DOG_WILD)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(DOG_WAR)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(DOG_MOON)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(DOPPLEGANGER)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(DOPPLEGANGER_GREATER)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(ETTERCAP)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(GHOUL)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(REVEANT)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(GHAST)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SHADOW)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(GIBBERLING)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SLIME_GREEN)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SLIME_OLIVE)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SLIME_MUSTARD)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SLIME_OCHRE)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(GRAY_OOZE)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SPIDER_GIANT)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SPIDER_HUGE)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SPIDER_PHASE)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SPIDER_SWORD)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SPIDER_WRAITH)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(WOLF)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(WOLF_WORG)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(WOLF_DIRE)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(WOLF_WINTER)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(WOLF_VAMPIRE)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(WOLF_DREAD)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(WOLF_SHADOW)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(KOBOLD_XVART)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(KOBOLD_TASLOI)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(ZOMBIE)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(WEREWOLF)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(WEREWOLF_GREATER)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(TROLL)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(MINDFLAYER)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(BEHOLDER)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(IMP)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(GOLEM_IRON)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(DJINNI)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(DJINNI_LEGS)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(GOLEM_CLAY)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(OTYUGH)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SAHAUGIN)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(GREATCAT_PANTHER)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(GREATCAT_LEOPARD)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(KUO-TOA)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(LICH)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(DEMILICH)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(TROLL_SMALL)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(RAKSHASA)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(UMBER_HULK)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(VAMPIRE)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SNAKE)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(GITHYANKI)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(BEHOLDER_SMALL)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(MOOSE)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(RABBIT)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(DEER)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(DANCING_SWORD)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(GROUNDHOG)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(PHEASANT)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(VAMPIRE_FEMALE)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SAHAUGIN_LARGE)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(PIRATE)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(DROW)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(KUO-TOA_LARGE)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(DROW_FEMALE)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SAILOR_MAN)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(MDK2_MAX)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(AMISH_SOLDIER)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(WYVERN_FAMILIAR)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(RAVER)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SPIDER_SMALL)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(BODHI)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(ELLESIME)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SLAYER)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(MDK2_KURT)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(MDK2_DOCTOR)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(MIST_CREATURE)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SHADOW_THIEF)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(JON_IRENICUS)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(WIZARD_EYE)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(BLOB_MIST_CREATURE)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(HULA_WIZARD)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SOLAR)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(ANTISOLAR)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(MELISSAN)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(FIRE_GIANT)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(GNOLL)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(HOBGOBLIN)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(KOBOLD)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(OGRE)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(WYVERN)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(CARRION_CRAWLER)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(COW)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(HORSE)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(STATIC_BEGGAR_MAN)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(STATIC_HARLOT_WOMAN)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(STATIC_BOY)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(STATIC_GIRL)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(STATIC_FAT_MAN)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(STATIC_FAT_WOMAN)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(STATIC_PEASANT_MAN)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(STATIC_PEASANT_WOMAN)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(STATIC_NOBLE_MAN)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(STATIC_NOBLE_WOMAN)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(STATIC_SLAVE)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(BAT_INSIDE)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(CAT)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(CHICKEN)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(RAT)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SQUIRREL)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(BAT_OUTSIDE)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(BEGGAR_MAN)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(HARLOT_WOMAN)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(BOY)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(GIRL)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(FAT_MAN)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(FAT_WOMAN)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(PEASANT_MAN)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(PEASANT_WOMAN)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(NOBLE_MAN)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(NOBLE_WOMAN)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SLAVE)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(EAGLE)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(SEAGULL)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(VULTURE)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(BIRD)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(BIRD_INSIDE)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(IC_ETTIN)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(DONOT_USE)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(IC_LICHBLACK)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(IC_MINOTAUR)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(IC_MUMMY)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(IC_MERILITH)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(IC_TROLL1)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(IC_CORNUGONSKI)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(IC_ICE_GOLEM)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(IC_GLAB)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(IC_WAILING_VIRGIN)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(IC_GOBLIN_AXE)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(IC_GOBLIN_BOW)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(IC_GOBLINELITE_AXE)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(IC_GOBLINELITE_BOW)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(IC_LIZARDCASTER1)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(IC_MYCONID)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(IC_MYCONID2)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(IC_OROG1)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(IC_OROG2)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(IC_OROG3)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(IC_ORC_MELEE1)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(IC_ORC_RANGE2)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(IC_ORC_MELEE3)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(IC_ORC_RANGE4)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(IC_ORC_SHAMAN)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(IC_SALAMANDER)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(IC_SALAMANDER2)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(IC_SHROOM)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(IC_SKELETON0)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(IC_SKELETONA)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(IC_SKELETONB)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(IC_YUANTI)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(IC_YUANTI2)\\b",
+          "name": "constant.other.weidu-baf"
+        },
+        {
+          "match": "\\b(IC_YUANTI3)\\b",
+          "name": "constant.other.weidu-baf"
+        }
+      ]
     }
   }
 }

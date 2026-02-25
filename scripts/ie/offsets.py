@@ -24,6 +24,17 @@ def get_offset_prefix(file_version, data_file_name):  # eff_v2 / body.yml
     prefix = prefix.upper()
     return prefix
 
+def get_format_version(file_version):
+    '''
+    Get simplified file format version for usage in IELIB directory tree:
+    EFF_V2 => eff2
+    '''
+    base = re.sub("_v.*", "", file_version)
+    version = re.sub(".*_v", "", file_version)
+    version = version.replace(".", "")
+    if version == "1":
+        version = ""
+    return f"{base}{version}"
 
 def get_offset_id(item, prefix):
     """

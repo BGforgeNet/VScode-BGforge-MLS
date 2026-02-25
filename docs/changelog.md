@@ -1,5 +1,89 @@
 # Changelog
 
+## 2.3.0
+
+Add built-in .ssl compiler.
+
+## 2.2.6
+
+Cosmetic: fixed double dot in tmp filenames, introduced in 2.2.5.
+
+## 2.2.5
+
+- Added spread expression to TBAF.
+- When parsing, intermediate D is saved with `.d` extension now.
+- TBAF no longer tries to substitite negated trigger functions nor open negated parentheses.
+- TBAF now properly unrolls loops with variable boundaries.
+
+## 2.2.4
+
+Fixed expansion of parentheses with OR inside in TBAF.
+
+## 2.2.3
+
+Fixed death var string passing to TBAF `$obj`.
+
+## 2.2.2
+
+Allowed to pass any string to TBAF `$obj`.
+
+## 2.2.1
+
+Added a no-edit warning to `BAF` files generated from `TBAF`.
+
+## 2.2.0
+
+- Fallout
+  - Sfall data updated to 4.4.5.1.
+- IE
+  - IESDP data update as of 2025.01.26.
+  - Initial TBAF support.
+  - BAF parse now works with [older weidu](https://github.com/WeiDUorg/weidu/issues/237).
+
+## 2.1.11
+
+- Fallout
+  - Sfall data updated to 4.4.4.
+  - Added `variable` to completion.
+  - Tooltips now show function arguments, even if they are missing from JSdoc comment.
+- IE
+  - IESDP data update as of 2024.08.15.
+
+## 2.1.10
+
+- Fallout
+  - Updated `is_success`, `is_critical` description ([related](https://github.com/BGforgeNet/Fallout2_Unofficial_Patch/issues/112)).
+  - Sfall data updated to 4.4.1.
+  - `unsigned int` renamed to `uint` in tooltips.
+  - Updated `start_gdialog` description to include usage with sfall.
+  - Macros are marked as such in tooltips.
+  - Fixed some macros erroneously recognized as constants.
+  - Enabled displaying return type for macro as specified in its docstring.
+- IE
+  - IESDP data update as of 2024.04.21.
+
+## 2.1.9
+
+Added `CompOption` to translation and inlay hints, also `GMessage/NMessage/BMessage` to inlay.
+
+## 2.1.8
+
+Fixed some hovers and signatures missing after opening their source files.
+
+## 2.1.7
+
+Fixed compile/parse issue introduced in 2.1.6.
+
+## 2.1.6
+
+- Fallout
+  - Sfall data update as of 4.4.2.
+- IE
+  - Added `WEIDU_EXECUTABLE`, `ADD_PROJECTILE` to intellisense.
+  - Added `STR_CMP`, `WRITE_ASCIIL`, additional value operators to highlighting.
+  - Variables in trarefs are also highlighted now.
+  - IESDP data update as of 2024.02.24.
+
 ## 2.1.5
 
 - Added translation hints to `GMessage/NMessage/BMessage`.

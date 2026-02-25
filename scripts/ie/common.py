@@ -38,7 +38,8 @@ def find_files(path, ext, skip_dirs=None, skip_files=None):
     for root, dirs, files in os.walk(path, followlinks=True):
         dirs[:] = [d for d in dirs if d not in skip_dirs]
         for fname in files:
-            if fname.lower().endswith(ext.lower()) and fname not in skip_files:
+            file_ext = os.path.splitext(fname)[1]
+            if (file_ext.lower() == "." + ext.lower()) and (fname not in skip_files):
                 flist.append(os.path.join(root, fname))
     return flist
 
@@ -124,7 +125,7 @@ def dump_definition(prefix, items, structures_dir):
     """
     Dump dict of items (IESDP constants, usually offsets) to iesdp.tpp in the corresponding IElib dir
 
-    @arg prefix - file format from which items are source, e.g. "EFF_V2"
+    @arg prefix - file format from which items are sourced, e.g. "EFF_V2"
     @arg items - dict {name: value}
     @arg structures_dir - path to ielib/structures
     """

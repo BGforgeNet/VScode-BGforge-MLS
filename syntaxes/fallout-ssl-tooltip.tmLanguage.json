@@ -29,7 +29,16 @@
               "name": "storage.type.fallout-ssl-tooltip"
             }
           },
-          "match": "\\b(?i)(array|any|bool|int|list|map|mixed|float|ObjPtr|ObjectPtr|proc|string|void)\\b",
+          "match": "\\b(?i)(array|any|bool|int|list|map|mixed|float|ObjPtr|ObjectPtr|proc|string|uint|void)\\b",
+          "name": "meta.fallout-ssl-tooltip"
+        },
+        {
+          "captures": {
+            "1": {
+              "name": "comment.line.fallout-ssl-tooltip"
+            }
+          },
+          "match": "\\b(macro)\\b",
           "name": "meta.fallout-ssl-tooltip"
         },
         {

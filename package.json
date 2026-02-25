@@ -2,7 +2,7 @@
     "name": "bgforge-mls",
     "displayName": "BGforge MLS",
     "description": "BGforge multilanguage server",
-    "version": "2.1.5",
+    "version": "2.3.0",
     "author": "BGforge",
     "repository": {
         "type": "git",
@@ -28,6 +28,13 @@
     "main": "./client/out/extension",
     "contributes": {
         "languages": [
+            {
+                "id": "typescript",
+                "extensions": [
+                    ".tbaf",
+                    ".tssl"
+                ]
+            },
             {
                 "id": "weidu-ssl",
                 "aliases": [
@@ -338,10 +345,15 @@
             "type": "object",
             "title": "BGforge MLS",
             "properties": {
+                "bgforge.falloutSSL.useBuiltInCompiler": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Use built-in compiler instead of external compile.exe"
+                },
                 "bgforge.falloutSSL.compilePath": {
                     "type": "string",
                     "default": "wine ~/bin/compile",
-                    "description": "Path to compile.exe from sfall modders pack. Alternatively, you can add compile.exe to system PATH and leave default here."
+                    "description": "Path to compile.exe from sfall modders pack. Alternatively, you can add compile.exe to system PATH and leave default here. Ignored if 'Use built-in compiler' is enabled."
                 },
                 "bgforge.falloutSSL.compileOptions": {
                     "type": "string",
@@ -397,7 +409,7 @@
     "scripts": {
         "vscode:prepublish": "pnpm esbuild-base-client --minify && pnpm esbuild-base-server --minify && pnpm esbuild-base-preview --minify",
         "esbuild-base-client": "esbuild ./client/src/extension.ts --bundle --outfile=client/out/extension.js --external:vscode --format=cjs --platform=node",
-        "esbuild-base-server": "esbuild ./server/src/server.ts --bundle --outfile=server/out/server.js --external:vscode --format=cjs --platform=node",
+        "esbuild-base-server": "esbuild ./server/src/server.ts --bundle --outfile=server/out/server.js --external:vscode --external:esbuild-wasm --format=cjs --platform=node",
         "esbuild-base-preview": "esbuild ./preview/src/index.ts --bundle --outfile=preview/out/index.js",
         "esbuild-client": "pnpm esbuild-base-client --sourcemap",
         "esbuild-server": "pnpm esbuild-base-server --sourcemap",
@@ -410,23 +422,31 @@
         "compile": "pnpm esbuild-client && pnpm esbuild-server",
         "postinstall": "cd client && pnpm install && cd ../server && pnpm install && cd ../preview && pnpm install && cd ..",
         "test": "sh ./scripts/e2e.sh",
-        "eslint": "eslint client/src/extension.ts && eslint client/src/test/*.ts && eslint server/src/*.ts && eslint preview/src/*.ts",
+        "eslint": "eslint client/src/*.ts --max-warnings 0 && eslint client/src/test/*.ts --max-warnings 0 && eslint server/src/*.ts --max-warnings 0 && eslint preview/src/*.ts  --max-warnings 0",
         "package": "pnpm vsce package --no-dependencies"
     },
     "devDependencies": {
-        "@types/mocha": "^10.0.1",
-        "@types/node": "^18.11.17",
-        "@typescript-eslint/eslint-plugin": "^5.47.1",
-        "@typescript-eslint/parser": "^5.47.1",
-        "esbuild": "^0.16.10",
-        "eslint": "^8.32.0",
-        "eslint-config-prettier": "^8.5.0",
-        "mocha": "^10.2.0",
-        "prettier": "^2.8.1",
-        "typescript": "^4.9.4"
+        "@eslint/eslintrc": "^3.3.1",
+        "@eslint/js": "^9.33.0",
+        "@types/mocha": "^10.0.10",
+        "@types/node": "^22.17.1",
+        "@typescript-eslint/eslint-plugin": "^8.39.1",
+        "@typescript-eslint/parser": "^8.39.1",
+        "esbuild": "^0.25.8",
+        "eslint": "^9.33.0",
+        "eslint-config-prettier": "^10.1.8",
+        "globals": "^15.15.0",
+        "mocha": "^11.7.1",
+        "prettier": "^3.6.2",
+        "typescript": "^4.9.5"
     },
     "categories": [
         "Programming Languages"
     ],
-    "homepage": "https://forums.bgforge.net/viewforum.php?f=35"
+    "homepage": "https://forums.bgforge.net/viewforum.php?f=35",
+    "pnpm": {
+        "onlyBuiltDependencies": [
+            "esbuild"
+        ]
+    }
 }

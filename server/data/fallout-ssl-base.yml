@@ -26,6 +26,7 @@ keywords:
     - name: if
     - name: then
     - name: else
+    - name: variable
 
 engine-procedures:
   type: 3 # function
@@ -217,15 +218,15 @@ base-functions:
       doc: |-
         Returns True if the system is currently in combat mode, False otherwise.
     - name: create_object
-      detail: ObjectPtr create_object(int pid, int tile_num, int elev
+      detail: ObjectPtr create_object(int pid, int tile_num, int elev)
       doc: |-
         Creates a new object of prototype (pid), placing it at a given tile number and at a given elevation (0-2). If the prototype indicates a script should be attached, then it will be.
     - name: create_object_sid
-      detail: ObjectPtr create_object_sid(int pid, int tile_num, int elev, int sid
+      detail: ObjectPtr create_object_sid(int pid, int tile_num, int elev, int sid)
       doc: |-
         Creates a new object of prototype (pid), placing it at a given tile # and at a given elevation (0-2). If sid is not -1, then it indicates that the default script should be overriden by this new script #.
     - name: critter_add_trait
-      detail: int critter_add_trait(ObjectPtr who, int trait_type, int trait, int amount
+      detail: int critter_add_trait(ObjectPtr who, int trait_type, int trait, int amount)
       doc: |-
         Adds a particular trait (trait) of a given type (trait_type) to a particular critter (who). Possible traits under the SPECIAL system are limited to Perks, Traits, Object-instance information (such as team #'s, ai-packet #'s, etc.)
     - name: critter_attempt_placement
@@ -391,7 +392,7 @@ base-functions:
         Works properly for positive values, but for negative ones functions like `ceil` (rounds up instead of down).
       deprecated: true
     - name: gSay_End
-      detail: void gSay_End(unsigned int var_index)
+      detail: void gSay_End(uint var_index)
       doc: |-
         Ends a dialog sequence, which will bring up the sequence (actually display it).
     - name: gSay_Message
@@ -520,9 +521,9 @@ base-functions:
       doc: |-
         Attempts to cause a critter to unwield any wielded weapons/items. If animations are currently disabled, it will just instantly change the art.
     - name: is_critical
-      detail: bool is_critical(int val)
+      detail: bool is_critical(int rollResult)
       doc: |-
-        Returns True if a given contest roll result is a critical result, otherwise False.
+        Returns `True` if a given contest roll result is a critical result, otherwise `False`.
     - name: is_loading_game
       detail: bool is_loading_game
       doc: |-
@@ -532,9 +533,9 @@ base-functions:
       doc: |-
         Returns True if a given skill is tagged.
     - name: is_success
-      detail: int is_success(int val)
+      detail: int is_success(int rollResult)
       doc: |-
-        Returns True if a given contest roll result value is a success, otherwise False. Can generate Critical Success or Critical Failure as well.
+        Return `True` if a given contest roll result value is a success (including critical success), otherwise `False`.
     - name: item_caps_adjust
       detail: int item_caps_adjust(ObjectPtr obj, int amount)
       doc: |-
@@ -564,7 +565,7 @@ base-functions:
       doc: |-
         Loads a new map (map_name), removing all scripts currently running and passing on the entrance location (start_location) to the new map's map_init script. Can also use the number representing the map in the map list (for example, between 0 to 64 in Fallout 1)
     - name: local_var
-      detail: int local_var(unsigned int var_index)
+      detail: int local_var(uint var_index)
       doc: |-
         Returns the value of a local variable of given index # (var_index). If the user is not allowed local vars up to this number in the list of critters, this can generate errors.
     - name: map_first_run
@@ -580,7 +581,7 @@ base-functions:
       doc: |-
         Returns True if a given map # (mapNum) is known, False otherwise.
     - name: map_var
-      detail: int map_var(unsigned int var_index)
+      detail: int map_var(uint var_index)
       doc: |-
         Returns the value of a map-global variable of a given index # (var_index).
     - name: message_str
@@ -827,7 +828,7 @@ base-functions:
       doc: |-
         Sets all exit grids on a given elevation (markElev) to point to a destination mapID (may be -1 which means stay on this map), elevation, tileNum, and rotation.
     - name: set_global_var
-      detail: void set_global_var(unsigned int var_index, int value)
+      detail: void set_global_var(uint var_index, int value)
       doc: |-
         Sets the value of a global variable (var_index) to a given (value).
     - name: set_light_level
@@ -835,15 +836,19 @@ base-functions:
       doc: |-
         Sets the ambient light level (1-100). The range is Full Darkness to Full Daylight. NOTE: level is NOT percentange, full darkness is not black screen. set_light_level(0) actually corresponds to 25% brightness, and as level increases, brightness makes 2 huge jumps in the middle (49-51). Thus, certain brightness levels simply cannot be set.
     - name: set_local_var
-      detail: void set_local_var(unsigned int var_index, int value)
+      detail: void set_local_var(uint var_index, int value)
       doc: |-
         Sets the value of a local variable (var_index) to a given (value).
+    - name: set_map_music
+      detail: void set_map_music(int mapID, string sound_path);
+      doc: |-
+        Sets the map background music to the sound file at path.
     - name: set_map_start
       detail: void set_map_start(int x, int y, int elev, int rot)
       doc: |-
         Sets the start location & rotation (0-5) for the next time this map is entered (loaded & run).
     - name: set_map_var
-      detail: void set_map_var(unsigned int var_index, int value)
+      detail: void set_map_var(uint var_index, int value)
       doc: |-
         Sets the value of a map-global variable (var_index) to a given (value).
     - name: set_obj_visibility
@@ -865,18 +870,25 @@ base-functions:
       detail: ObjectPtr source_obj
       doc: |-
         Returns a pointer to the source object (activator) for this action. The source object for a pickup_proc (pickup an object script_action) would be the critter picking the object up, for instance.
-    - name: start_dialogue
-      detail: void start_dialogue(ObjectPtr who, int mood)
-      doc: |-
-        Start the dialogue system focusing on a critter (who) and starting in a given (mood). This call sets up the appropriate dialog windows, head art, etc. If this call is not made before the normal dialog calls (sayReply, sayMessage, sayOption, etc.) then the dialog windows will not come up, and only grey boxes will appear with the text.
-    - name: start_gialog
-      detail: void start_gialog(int msgFileNum, ObjectPtr who, int mood, int headNum, int backgroundIdx)
-      doc: |-
-        Start the dialogue system focusing on a critter (who) and starting in a given (mood). This call sets up the appropriate dialog windows, head art, etc. If this call is not made before the normal dialog calls (sayReply, sayMessage, sayOption, etc.) then the dialog windows will not come up, and only grey boxes will appear with the text.
+
+    # https://github.com/sfall-team/sfall/blob/a89e6723552c39a4522c8572260f1ca1ec3cc924/artifacts/ddraw.ini#L733
+    # https://github.com/alexbatalov/fallout2-ce/blob/31afb4d56817a7473c949aafd9070bd3a26a9d7b/src/interpreter_extra.cc#L1897
     - name: start_gdialog
       detail: void start_gdialog(int msgFileNum, ObjectPtr who, int mood, int headNum, int backgroundIdx)
       doc: |-
-        Start the dialogue system focusing on a critter (who) and starting in a given (mood). This call sets up the appropriate dialog windows, head art, etc. If this call is not made before the normal dialog calls (sayReply, sayMessage, sayOption, etc.) then the dialog windows will not come up, and only grey boxes will appear with the text.
+        Start the dialogue system focusing on a critter `who` and in a given `mood`.
+        This call sets up the appropriate dialog windows, head art, etc.
+        If this call is not made before the normal dialog calls (`sayReply`, `sayMessage`, `sayOption`, etc.) then the dialog windows will not come up, and only grey boxes will appear with the text.
+
+        `mood` argument is unused in vanilla. Instead, the function checks LVAR 0 of the script:
+        - `LVAR > 10` - good reaction (happy head).
+        - `-10 > LVAR >= 10` - neutral.
+        - Else, angry head.
+
+        If sfall is installed, and `StartGDialogFix` is enabled, argument `mood` does work:
+        - If `mood == -1`, use vanilla behaviour (check LVAR 0).
+        - Else, use argument value. Same thresholds apply.
+
     - name: target_obj
       detail: ObjectPtr target_obj
       doc: |-
