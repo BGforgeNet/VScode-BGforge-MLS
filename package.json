@@ -402,7 +402,7 @@
             {
                 "command": "extension.bgforge.dDialogPreview",
                 "key": "ctrl+shift+v",
-                "when": "editorLangId == weidu-d"
+                "when": "editorLangId == weidu-d || resourceExtname == .td"
             }
         ],
         "typescriptServerPlugins": [

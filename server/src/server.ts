@@ -24,11 +24,14 @@ import { conlog, symbolAtPosition } from "./common";
 import { clearDiagnostics, COMMAND_compile, compile } from "./compile";
 import { getRequest as getSignatureRequest } from "./shared/signature";
 import { parseDialog } from "./dialog";
+import { parseTDDialog } from "./td/dialog";
 import { parseDDialog } from "./weidu-d/dialog";
 import { falloutSslProvider } from "./fallout-ssl/provider";
 import { Translation } from "./translation";
 import {
+    EXT_TD,
     LANG_FALLOUT_SSL,
+    LANG_TYPESCRIPT,
     LANG_WEIDU_BAF,
     LANG_WEIDU_D,
     LANG_WEIDU_SLB,
@@ -305,7 +308,8 @@ connection.onExecuteCommand(async (params) => {
 
     // Handle parseDialog command
     if (command === COMMAND_parseDialog) {
-        const textDoc = documents.get(args.uri);
+        const uri: string = args.uri;
+        const textDoc = documents.get(uri);
         if (!textDoc) {
             return null;
         }
@@ -314,12 +318,17 @@ connection.onExecuteCommand(async (params) => {
             const text = textDoc.getText();
             if (langId === LANG_FALLOUT_SSL) {
                 const dialogData = await parseDialog(text);
-                const messages = translation?.getMessages(args.uri, text, langId) ?? {};
+                const messages = translation?.getMessages(uri, text, langId) ?? {};
                 return { ...dialogData, messages };
             }
             if (langId === LANG_WEIDU_D) {
                 const dialogData = parseDDialog(text);
-                const messages = translation?.getMessages(args.uri, text, langId) ?? {};
+                const messages = translation?.getMessages(uri, text, langId) ?? {};
+                return { ...dialogData, messages };
+            }
+            if (langId === LANG_TYPESCRIPT && uri.toLowerCase().endsWith(EXT_TD)) {
+                const dialogData = await parseTDDialog(uri, text);
+                const messages = translation?.getMessages(uri, text, LANG_WEIDU_D) ?? {};
                 return { ...dialogData, messages };
             }
             return null;

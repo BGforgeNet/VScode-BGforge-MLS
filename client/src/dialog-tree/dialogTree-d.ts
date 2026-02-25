@@ -1,6 +1,7 @@
 /**
- * D dialog tree builder and registration for WeiDU D dialog preview.
- * Uses shared panel infrastructure from ./shared.ts.
+ * D dialog tree builder and registration for WeiDU D and TD dialog preview.
+ * Handles both .d files (parsed via tree-sitter) and .td files (transpiled to D
+ * then parsed). Uses shared panel infrastructure from ./shared.ts.
  */
 
 import * as vscode from "vscode";
@@ -312,9 +313,11 @@ export function getBlockStates(block: DDialogBlock, states: DDialogState[]): DDi
 
 export function registerDDialogTree(context: vscode.ExtensionContext, client: LanguageClient): void {
     registerDialogPanel(context, client, {
-        languageId: "weidu-d",
+        matchDocument: (doc) =>
+            doc.languageId === "weidu-d" ||
+            doc.fileName.toLowerCase().endsWith(".td"),
         commandName: "extension.bgforge.dDialogPreview",
-        warningMessage: "Open a WeiDU D file to preview dialog",
+        warningMessage: "Open a D or TD file to preview dialog",
         translationLangId: "weidu-tra",
         buildTreeHtml: (data) => buildDTreeHtml(data as DDialogData),
         hasData: (data) => {

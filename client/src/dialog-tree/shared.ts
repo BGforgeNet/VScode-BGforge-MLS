@@ -1,7 +1,7 @@
 /**
  * Shared infrastructure for dialog tree preview panels.
  * Asset caching, HTML assembly, escapeHtml, and panel lifecycle management
- * shared between SSL and D dialog previews.
+ * shared between SSL, D, and TD dialog previews.
  */
 
 import * as vscode from "vscode";
@@ -90,8 +90,8 @@ function getDialogPreviewHtml(treeContent: string, codiconsUri: string, extensio
 // ---------------------------------------------------------------------------
 
 export interface DialogPanelConfig {
-    /** Language ID that this panel handles (e.g. "fallout-ssl" or "weidu-d") */
-    languageId: string;
+    /** Check whether a document should use this panel. */
+    matchDocument: (doc: vscode.TextDocument) => boolean;
     /** VS Code command ID (e.g. "extension.bgforge.dialogPreview") */
     commandName: string;
     /** Warning message shown when no matching file is open */
@@ -170,7 +170,7 @@ export function registerDialogPanel(
     context.subscriptions.push(
         vscode.commands.registerCommand(config.commandName, async () => {
             const editor = vscode.window.activeTextEditor;
-            if (!editor || editor.document.languageId !== config.languageId) {
+            if (!editor || !config.matchDocument(editor.document)) {
                 vscode.window.showWarningMessage(config.warningMessage);
                 return;
             }
