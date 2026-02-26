@@ -8,6 +8,11 @@
  *   - editors/binaryEditor.css (binary .pro editor -- body, h1, groups, fields)
  */
 
+/* Always reserve scrollbar space so content doesn't shift when scrollbar appears/disappears */
+html {
+    overflow-y: scroll;
+}
+
 .header {
     margin-bottom: 20px;
     padding-bottom: 10px;
