@@ -22,7 +22,9 @@ body {
     background-color: var(--vscode-editor-background);
     padding: 10px 20px;
     margin: 0;
-    overflow-x: hidden;
+    /* clip (not hidden) prevents horizontal scrollbar from .selected negative-margin trick
+       without creating a scroll container that would break position:sticky on the sidebar */
+    overflow-x: clip;
 }
 
 /* Override common h1: dialog body uses UI font, so h1 needs explicit editor font/color/size */
