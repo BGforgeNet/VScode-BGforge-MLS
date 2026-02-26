@@ -170,6 +170,27 @@
             }
         });
 
+        // Find matching inline text on node summaries (first reply/say text shown inline with the node name).
+        // Uses direct child selector (>) to avoid hitting option summaries already covered above.
+        document.querySelectorAll("details.node > summary .msg-text[data-fulltext]").forEach((msgTextEl) => {
+            const htmlEl = msgTextEl as HTMLElement;
+            const fulltext = htmlEl.dataset.fulltext || "";
+            if (!fulltext.toLowerCase().includes(lowerQuery)) return;
+
+            const nodeEl = msgTextEl.closest('[id^="node-"]');
+            const nodeName = nodeEl ? nodeEl.id.replace("node-", "") : "";
+            const summary = msgTextEl.closest("summary");
+            if (!summary) return; // Structurally guaranteed by selector, but guard defensively
+            const typeTitle = summary.querySelector(".codicon[title]")?.getAttribute("title") || "";
+            // For D dialog say text (no typeTitle), check .reply class to preserve reply color in results
+            const isReply = msgTextEl.classList.contains("reply");
+            const displayText = typeTitle
+                ? `${typeTitle}: ${fulltext}`
+                : isReply ? `Reply: ${fulltext}` : fulltext;
+
+            results.push({ type: "item", text: displayText, parentName: nodeName, parentId: nodeEl?.id, msgText: htmlEl.textContent!.trim() });
+        });
+
         // Render flat results - store item text in data-text for finding the specific item.
         // All values are re-escaped because DOM properties (.id, .textContent) decode HTML entities.
         searchResults.innerHTML = results
