@@ -4693,6 +4693,7 @@ repository:
       # as of v251
       - match: \b(GET_RESOURCE_ARRAY)\b
       - match: \b(REGISTER_UNINSTALL)\b
+      - match: \b(OUTER_SPRINTF)\b
 
   weidu-tp2-action-flow:
     name: support.function.weidu-tp2.action
@@ -4856,8 +4857,6 @@ repository:
       - include: '#weidu-tp2-patch-byte'
       - include: '#weidu-tp2-patch-long'
       - include: '#weidu-tp2-patch-string'
-      # as of v251
-      - match: \b(OUTER_SPRINTF)\b
 
   weidu-tp2-patch-byte:
     name: entity.name.function.weidu-tp2.patch-byte
