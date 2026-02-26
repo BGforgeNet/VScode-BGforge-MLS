@@ -258,5 +258,6 @@ export function registerDialogTree(context: vscode.ExtensionContext, client: Lan
             const d = data as DialogData;
             return d.nodes.length > 0;
         },
+        tabIconPath: "themes/icons/fallout-ssl.svg",
     });
 }

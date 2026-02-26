@@ -324,5 +324,6 @@ export function registerDDialogTree(context: vscode.ExtensionContext, client: La
             const d = data as DDialogData;
             return d.blocks.length > 0;
         },
+        tabIconPath: "themes/icons/weidu.svg",
     });
 }

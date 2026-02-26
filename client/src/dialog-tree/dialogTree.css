@@ -10,10 +10,11 @@ body {
     --dialog-action: #d16969;
 
     font-family: var(--vscode-font-family, sans-serif);
-    font-size: 13px;
-    padding: 10px;
+    font-size: var(--vscode-font-size, 13px);
     color: var(--vscode-foreground);
-    background: var(--vscode-editor-background);
+    background-color: var(--vscode-editor-background);
+    padding: 10px 20px;
+    margin: 0;
     overflow-x: hidden;
 }
 
@@ -154,39 +155,103 @@ summary:hover,
     background: var(--vscode-list-hoverBackground, rgba(255, 255, 255, 0.1));
 }
 
-.toolbar {
-    padding: 8px 0;
+.header {
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--vscode-panel-border);
+}
+
+.header .path {
+    color: var(--vscode-descriptionForeground);
+    font-size: 0.9em;
+    margin-bottom: 4px;
     display: flex;
-    gap: 8px;
-    border-bottom: 1px solid var(--vscode-panel-border, #444);
-    margin-bottom: 8px;
     align-items: center;
 }
 
+.breadcrumb-sep {
+    font-size: 10px;
+    opacity: 0.7;
+}
+
+.breadcrumb-icon {
+    width: 16px;
+    height: 16px;
+    vertical-align: middle;
+}
+
+.header h1 {
+    margin: 0 0 5px 0;
+    font-family: var(--vscode-editor-font-family, monospace);
+    /* Use calc to match .pro viewer: 1.4x the editor font size, independent of body font-size */
+    font-size: calc(var(--vscode-editor-font-size, 13px) * 1.4);
+    font-weight: normal;
+    color: var(--vscode-editor-foreground);
+}
+
+.header .format {
+    color: var(--vscode-descriptionForeground);
+    font-size: 0.9em;
+}
+
+.content {
+    display: flex;
+    align-items: flex-start;
+    gap: 40px;
+}
+
+.tree-container {
+    min-width: 0;
+    flex: 1;
+}
+
+.sidebar {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    position: sticky;
+    top: 10px;
+}
+
+.toolbar {
+    display: flex;
+    gap: 8px;
+}
+
 .toolbar button {
-    background: var(--vscode-button-secondaryBackground, #3a3d41);
-    color: var(--vscode-button-secondaryForeground, #fff);
-    border: none;
     padding: 4px 8px;
+    background-color: var(--vscode-button-secondaryBackground);
+    color: var(--vscode-button-secondaryForeground);
+    border: none;
+    border-radius: 2px;
     cursor: pointer;
-    font-size: 12px;
+    font-family: inherit;
+    font-size: 0.9em;
 }
 
 .toolbar button:hover {
-    background: var(--vscode-button-secondaryHoverBackground, #45494e);
+    background-color: var(--vscode-button-secondaryHoverBackground);
 }
 
-#search {
-    background: var(--vscode-input-background, #3c3c3c);
-    color: var(--vscode-input-foreground, #ccc);
-    border: 1px solid var(--vscode-input-border, #3c3c3c);
-    padding: 4px 8px;
-    font-size: 12px;
-    width: 150px;
+.search-box input {
+    width: 250px;
+    padding: 6px 10px;
+    background-color: var(--vscode-input-background);
+    color: var(--vscode-input-foreground);
+    border: 1px solid var(--vscode-input-border, transparent);
+    border-radius: 2px;
+    font-family: inherit;
+    font-size: inherit;
 }
 
-#search:focus {
-    outline: 1px solid var(--vscode-focusBorder, #007fd4);
+.search-box input:focus {
+    outline: 1px solid var(--vscode-focusBorder);
+    border-color: var(--vscode-focusBorder);
+}
+
+.search-box input::placeholder {
+    color: var(--vscode-input-placeholderForeground);
 }
 
 .hidden {

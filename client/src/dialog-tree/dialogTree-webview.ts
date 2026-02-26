@@ -104,6 +104,10 @@
     const searchResults = searchResultsEl as HTMLElement;
     const tree = treeEl as HTMLElement;
 
+    // Set platform-aware search placeholder
+    const isMac = navigator.platform.toUpperCase().indexOf("MAC") >= 0;
+    searchInput.placeholder = isMac ? "Cmd+F to search" : "Ctrl+F to search";
+
     interface SearchResult {
         type: "node" | "item";
         name?: string;

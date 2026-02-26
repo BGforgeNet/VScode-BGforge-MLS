@@ -6,13 +6,31 @@
         <link href="{{cssUri}}" rel="stylesheet" />
     </head>
     <body>
-        <div class="toolbar">
-            <button id="expandAll">Expand All</button>
-            <button id="collapseAll">Collapse All</button>
-            <input type="text" id="search" placeholder="Search..." />
+        <div class="header">
+            <div class="path">{{filePath}}</div>
+            <h1>{{fileName}}</h1>
+            <div class="format">Dialog Preview</div>
         </div>
-        <div class="search-results hidden"></div>
-        <div class="tree">{{treeContent}}</div>
+        <div class="content">
+            <div class="tree-container">
+                <div class="search-results hidden"></div>
+                <div class="tree">{{treeContent}}</div>
+            </div>
+            <div class="sidebar">
+                <div class="toolbar">
+                    <button id="expandAll">Expand all</button>
+                    <button id="collapseAll">Collapse all</button>
+                </div>
+                <div class="search-box">
+                    <input
+                        type="text"
+                        id="search"
+                        placeholder="Ctrl+F to search"
+                        autocomplete="off"
+                    />
+                </div>
+            </div>
+        </div>
         <script src="{{scriptUri}}"></script>
     </body>
 </html>

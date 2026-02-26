@@ -72,7 +72,20 @@ export function escapeHtml(text: string): string {
 // HTML assembly
 // ---------------------------------------------------------------------------
 
-function getDialogPreviewHtml(treeContent: string, codiconsUri: string, extensionPath: string): string {
+/** Convert "a/b/c.ssl" to breadcrumb HTML: "a > b > icon c.ssl" with chevron separators and file icon on the last segment. */
+function buildBreadcrumbHtml(filePath: string, iconUri: string): string {
+    const segments = filePath.split(/[/\\]/).filter(Boolean);
+    if (segments.length === 0) return "";
+    const separator = ' <span class="breadcrumb-sep codicon codicon-chevron-right"></span> ';
+    return segments.map((s, i) => {
+        const icon = i === segments.length - 1
+            ? `<img class="breadcrumb-icon" src="${escapeHtml(iconUri)}" alt="" /> `
+            : "";
+        return `<span class="breadcrumb-segment">${icon}${escapeHtml(s)}</span>`;
+    }).join(separator);
+}
+
+function getDialogPreviewHtml(treeContent: string, codiconsUri: string, extensionPath: string, fileName: string, filePath: string, iconUri: string): string {
     invalidateCacheIfNeeded(extensionPath);
     // Function replacers prevent $-pattern interpretation in replacement strings
     // ($&, $', $` are special even with string search patterns).
@@ -82,6 +95,8 @@ function getDialogPreviewHtml(treeContent: string, codiconsUri: string, extensio
         .replace("{{scriptUri}}", () => "")
         .replace('<link href="" rel="stylesheet" />', () => `<style>${getCss(extensionPath)}</style>`)
         .replace('<script src=""></script>', () => `<script>${getJs(extensionPath)}</script>`)
+        .replace("{{filePath}}", () => buildBreadcrumbHtml(filePath, iconUri))
+        .replace("{{fileName}}", () => escapeHtml(fileName))
         .replace("{{treeContent}}", () => treeContent);
 }
 
@@ -102,6 +117,8 @@ export interface DialogPanelConfig {
     buildTreeHtml: (data: unknown) => string;
     /** Check if data is non-empty (to decide whether to show "no data" warning) */
     hasData: (data: unknown) => boolean;
+    /** Relative path within extension to the tab icon (e.g. "themes/icons/fallout-ssl.svg") */
+    tabIconPath: string;
 }
 
 /**
@@ -116,6 +133,8 @@ export function registerDialogPanel(
 ): void {
     let dialogPanel: vscode.WebviewPanel | undefined;
     let currentDocumentUri: string | undefined;
+    let currentFileName: string | undefined;
+    let currentFilePath: string | undefined;
     let refreshTimeout: NodeJS.Timeout | undefined;
 
     async function refreshPreview() {
@@ -134,7 +153,10 @@ export function registerDialogPanel(
             const codiconsUri = dialogPanel.webview.asWebviewUri(
                 vscode.Uri.joinPath(context.extensionUri, "node_modules", "@vscode/codicons", "dist", "codicon.css")
             );
-            dialogPanel.webview.html = getDialogPreviewHtml(treeContent, codiconsUri.toString(), context.extensionUri.fsPath);
+            const iconUri = dialogPanel.webview.asWebviewUri(
+                vscode.Uri.joinPath(context.extensionUri, config.tabIconPath)
+            );
+            dialogPanel.webview.html = getDialogPreviewHtml(treeContent, codiconsUri.toString(), context.extensionUri.fsPath, currentFileName || "dialog", currentFilePath || "", iconUri.toString());
         } catch {
             // Ignore errors during refresh
         }
@@ -191,6 +213,12 @@ export function registerDialogPanel(
                 }
 
                 const fileName = editor.document.fileName.split(/[/\\]/).pop() || "dialog";
+                const workspaceFolder = vscode.workspace.getWorkspaceFolder(editor.document.uri);
+                const filePath = workspaceFolder
+                    ? path.relative(workspaceFolder.uri.fsPath, editor.document.fileName)
+                    : fileName;
+                currentFileName = fileName;
+                currentFilePath = filePath;
 
                 if (dialogPanel) {
                     dialogPanel.reveal(vscode.ViewColumn.Active);
@@ -201,9 +229,12 @@ export function registerDialogPanel(
                         vscode.ViewColumn.Active,
                         { enableScripts: true, localResourceRoots: [context.extensionUri] }
                     );
+                    dialogPanel.iconPath = vscode.Uri.joinPath(context.extensionUri, config.tabIconPath);
                     dialogPanel.onDidDispose(() => {
                         dialogPanel = undefined;
                         currentDocumentUri = undefined;
+                        currentFileName = undefined;
+                        currentFilePath = undefined;
                         if (refreshTimeout) {
                             clearTimeout(refreshTimeout);
                         }
@@ -214,9 +245,12 @@ export function registerDialogPanel(
                 const codiconsUri = dialogPanel.webview.asWebviewUri(
                     vscode.Uri.joinPath(context.extensionUri, "node_modules", "@vscode/codicons", "dist", "codicon.css")
                 );
+                const iconUri = dialogPanel.webview.asWebviewUri(
+                    vscode.Uri.joinPath(context.extensionUri, config.tabIconPath)
+                );
 
                 dialogPanel.title = `Dialog: ${fileName}`;
-                dialogPanel.webview.html = getDialogPreviewHtml(treeContent, codiconsUri.toString(), context.extensionUri.fsPath);
+                dialogPanel.webview.html = getDialogPreviewHtml(treeContent, codiconsUri.toString(), context.extensionUri.fsPath, fileName, filePath, iconUri.toString());
             } catch {
                 vscode.window.showErrorMessage("Failed to generate dialog preview");
             }
