@@ -110,8 +110,8 @@
     const tree = treeEl as HTMLElement;
 
     // Set platform-aware search placeholder
-    const isMac = navigator.platform.toUpperCase().indexOf("MAC") >= 0;
-    searchInput.placeholder = isMac ? "Cmd+F to search" : "Ctrl+F to search";
+    const isMac = /Macintosh|Mac OS X/.test(navigator.userAgent);
+    searchInput.placeholder = isMac ? "Cmd+F or / to search" : "Ctrl+F or / to search";
 
     interface SearchResult {
         type: "node" | "item";
@@ -314,9 +314,15 @@
         }
     }, true);
 
-    // Ctrl+F focuses search, Escape clears
+    // Ctrl+F or / focuses search, Escape clears
     document.addEventListener("keydown", (e) => {
         if ((e.ctrlKey || e.metaKey) && e.key === "f") {
+            e.preventDefault();
+            searchInput.focus();
+            searchInput.select();
+        }
+        // "/" focuses search (vim-style) when not already typing in an input/textarea
+        if (e.key === "/" && !(document.activeElement instanceof HTMLInputElement || document.activeElement instanceof HTMLTextAreaElement)) {
             e.preventDefault();
             searchInput.focus();
             searchInput.select();

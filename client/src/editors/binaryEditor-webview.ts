@@ -113,16 +113,22 @@
     const input = searchInput as HTMLInputElement;
 
     // Set platform-appropriate placeholder
-    const isMac = navigator.platform.toUpperCase().indexOf("MAC") >= 0;
-    input.placeholder = isMac ? "Cmd+F to search" : "Ctrl+F to search";
+    const isMac = /Macintosh|Mac OS X/.test(navigator.userAgent);
+    input.placeholder = isMac ? "Cmd+F or / to search" : "Ctrl+F or / to search";
 
     input.addEventListener("input", () => {
         filterTree(input.value);
     });
 
-    // Focus search on Ctrl+F / Cmd+F
+    // Focus search on Ctrl+F / Cmd+F / "/"
     document.addEventListener("keydown", (e) => {
         if ((e.ctrlKey || e.metaKey) && e.key === "f") {
+            e.preventDefault();
+            input.focus();
+            input.select();
+        }
+        // "/" focuses search (vim-style) when not already typing in an input/textarea
+        if (e.key === "/" && !(document.activeElement instanceof HTMLInputElement || document.activeElement instanceof HTMLTextAreaElement)) {
             e.preventDefault();
             input.focus();
             input.select();
