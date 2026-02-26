@@ -1,5 +1,10 @@
-// Dialog tree webview script
-// Wrapped in IIFE to avoid global scope conflicts with other webview scripts
+// Dialog tree webview script (SSL, D, TD, TSSL).
+// Wrapped in IIFE to avoid global scope conflicts with other webview scripts.
+// Shares patterns with ../editors/binaryEditor-webview.ts:
+//   - Platform-aware search placeholder (isMac detection)
+//   - Keyboard shortcuts (Ctrl+F / Escape)
+//   - Expand/collapse all button handlers
+// Each has its own escapeHtml copy (separate esbuild bundle, can't share imports).
 (function () {
     // Escape HTML for safe interpolation into innerHTML.
     // Values read from DOM properties (.id, .textContent) are browser-decoded,

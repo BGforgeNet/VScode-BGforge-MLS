@@ -1,3 +1,10 @@
+/**
+ * Dialog tree preview styles (SSL, D, TD, TSSL).
+ * Loaded after webview-common.css which provides shared layout
+ * (header, sidebar, toolbar, search-box, hidden).
+ * See also: ../webview-common.css, ../editors/binaryEditor.css
+ */
+
 body {
     --dialog-node-name: #c586c0;
     --dialog-reply: #9cdcfe;
@@ -16,6 +23,38 @@ body {
     padding: 10px 20px;
     margin: 0;
     overflow-x: hidden;
+}
+
+/* Override common h1: dialog body uses UI font, so h1 needs explicit editor font/color/size */
+.header h1 {
+    font-family: var(--vscode-editor-font-family, monospace);
+    /* Use calc to match .pro viewer: 1.4x the editor font size, independent of body font-size */
+    font-size: calc(var(--vscode-editor-font-size, 13px) * 1.4);
+    color: var(--vscode-editor-foreground);
+}
+
+.header .path {
+    color: var(--vscode-descriptionForeground);
+    font-size: 0.9em;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+}
+
+.breadcrumb-sep {
+    font-size: 10px;
+    opacity: 0.7;
+}
+
+.breadcrumb-icon {
+    width: 16px;
+    height: 16px;
+    vertical-align: middle;
+}
+
+.tree-container {
+    min-width: 0;
+    flex: 1;
 }
 
 details {
@@ -153,109 +192,6 @@ details[open] > summary::before {
 summary:hover,
 .item:hover {
     background: var(--vscode-list-hoverBackground, rgba(255, 255, 255, 0.1));
-}
-
-.header {
-    margin-bottom: 20px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid var(--vscode-panel-border);
-}
-
-.header .path {
-    color: var(--vscode-descriptionForeground);
-    font-size: 0.9em;
-    margin-bottom: 4px;
-    display: flex;
-    align-items: center;
-}
-
-.breadcrumb-sep {
-    font-size: 10px;
-    opacity: 0.7;
-}
-
-.breadcrumb-icon {
-    width: 16px;
-    height: 16px;
-    vertical-align: middle;
-}
-
-.header h1 {
-    margin: 0 0 5px 0;
-    font-family: var(--vscode-editor-font-family, monospace);
-    /* Use calc to match .pro viewer: 1.4x the editor font size, independent of body font-size */
-    font-size: calc(var(--vscode-editor-font-size, 13px) * 1.4);
-    font-weight: normal;
-    color: var(--vscode-editor-foreground);
-}
-
-.header .format {
-    color: var(--vscode-descriptionForeground);
-    font-size: 0.9em;
-}
-
-.content {
-    display: flex;
-    align-items: flex-start;
-    gap: 40px;
-}
-
-.tree-container {
-    min-width: 0;
-    flex: 1;
-}
-
-.sidebar {
-    flex-shrink: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    position: sticky;
-    top: 10px;
-}
-
-.toolbar {
-    display: flex;
-    gap: 8px;
-}
-
-.toolbar button {
-    padding: 4px 8px;
-    background-color: var(--vscode-button-secondaryBackground);
-    color: var(--vscode-button-secondaryForeground);
-    border: none;
-    border-radius: 2px;
-    cursor: pointer;
-    font-family: inherit;
-    font-size: 0.9em;
-}
-
-.toolbar button:hover {
-    background-color: var(--vscode-button-secondaryHoverBackground);
-}
-
-.search-box input {
-    width: 250px;
-    padding: 6px 10px;
-    background-color: var(--vscode-input-background);
-    color: var(--vscode-input-foreground);
-    border: 1px solid var(--vscode-input-border, transparent);
-    border-radius: 2px;
-    font-family: inherit;
-    font-size: inherit;
-}
-
-.search-box input:focus {
-    outline: 1px solid var(--vscode-focusBorder);
-    border-color: var(--vscode-focusBorder);
-}
-
-.search-box input::placeholder {
-    color: var(--vscode-input-placeholderForeground);
-}
-
-.hidden {
-    display: none !important;
 }
 
 .search-results {

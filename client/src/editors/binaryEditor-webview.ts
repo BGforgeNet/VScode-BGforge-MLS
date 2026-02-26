@@ -1,5 +1,9 @@
-// Binary editor webview script
-// Wrapped in IIFE to avoid global scope conflicts with other webview scripts
+// Binary editor webview script (.pro files).
+// Wrapped in IIFE to avoid global scope conflicts with other webview scripts.
+// Shares patterns with ../dialog-tree/dialogTree-webview.ts:
+//   - Platform-aware search placeholder (isMac detection)
+//   - Keyboard shortcuts (Ctrl+F / Escape)
+//   - Expand/collapse all button handlers
 (function () {
     // Toggle group expansion
     document.querySelectorAll(".group-header").forEach((header) => {

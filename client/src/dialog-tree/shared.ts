@@ -1,19 +1,23 @@
 /**
  * Shared infrastructure for dialog tree preview panels.
- * Asset caching, HTML assembly, escapeHtml, and panel lifecycle management
+ * Asset caching, HTML assembly, and panel lifecycle management
  * shared between SSL, D, and TD dialog previews.
+ * escapeHtml is re-exported from ../utils.ts (single source of truth).
+ * CSS is loaded from ../webview-common.css + ./dialogTree.css (shared with binaryEditor).
  */
 
 import * as vscode from "vscode";
 import * as fs from "fs";
 import * as path from "path";
 import { LanguageClient, ExecuteCommandRequest, ExecuteCommandParams } from "vscode-languageclient/node";
+import { escapeHtml } from "../utils";
 
 // ---------------------------------------------------------------------------
 // Asset caching -- reads from disk once, invalidated when extension updates
 // ---------------------------------------------------------------------------
 
 let cachedHtml: string | undefined;
+let cachedCommonCss: string | undefined;
 let cachedCss: string | undefined;
 let cachedJs: string | undefined;
 let cachedExtensionPath: string | undefined;
@@ -27,6 +31,7 @@ function loadAsset(extensionPath: string, relativePath: string): string {
 function invalidateCacheIfNeeded(extensionPath: string): void {
     if (cachedExtensionPath !== extensionPath) {
         cachedHtml = undefined;
+        cachedCommonCss = undefined;
         cachedCss = undefined;
         cachedJs = undefined;
         cachedExtensionPath = extensionPath;
@@ -40,11 +45,18 @@ function getHtmlTemplate(extensionPath: string): string {
     return cachedHtml;
 }
 
+function getCommonCss(extensionPath: string): string {
+    if (!cachedCommonCss) {
+        cachedCommonCss = loadAsset(extensionPath, path.join("client", "src", "webview-common.css"));
+    }
+    return cachedCommonCss;
+}
+
 function getCss(extensionPath: string): string {
     if (!cachedCss) {
         cachedCss = loadAsset(extensionPath, path.join("client", "src", "dialog-tree", "dialogTree.css"));
     }
-    return cachedCss;
+    return getCommonCss(extensionPath) + "\n" + cachedCss;
 }
 
 function getJs(extensionPath: string): string {
@@ -55,18 +67,8 @@ function getJs(extensionPath: string): string {
     return cachedJs;
 }
 
-// ---------------------------------------------------------------------------
-// Utilities
-// ---------------------------------------------------------------------------
-
-export function escapeHtml(text: string): string {
-    return text
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#39;");
-}
+// Re-export so dialog tree builders (dialogTree.ts, dialogTree-d.ts) can import from "./shared"
+export { escapeHtml };
 
 // ---------------------------------------------------------------------------
 // HTML assembly

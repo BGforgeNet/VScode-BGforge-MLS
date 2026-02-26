@@ -1,0 +1,84 @@
+/**
+ * Shared styles for all webview panels (dialog tree preview, binary .pro editor).
+ * Concatenated at load time with panel-specific CSS by each panel's asset loader.
+ * Keep in sync: changes here affect ALL webview panels.
+ *
+ * Panel-specific overrides:
+ *   - dialog-tree/dialogTree.css (dialog tree preview -- body, h1, breadcrumb, tree nodes)
+ *   - editors/binaryEditor.css (binary .pro editor -- body, h1, groups, fields)
+ */
+
+.header {
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--vscode-panel-border);
+}
+
+.header h1 {
+    margin: 0 0 5px 0;
+    font-weight: normal;
+}
+
+.header .format {
+    color: var(--vscode-descriptionForeground);
+    font-size: 0.9em;
+}
+
+.content {
+    display: flex;
+    align-items: flex-start;
+    gap: 40px;
+}
+
+.sidebar {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    position: sticky;
+    top: 10px;
+}
+
+.toolbar {
+    display: flex;
+    gap: 8px;
+}
+
+.toolbar button {
+    padding: 4px 8px;
+    background-color: var(--vscode-button-secondaryBackground);
+    color: var(--vscode-button-secondaryForeground);
+    border: none;
+    border-radius: 2px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.9em;
+}
+
+.toolbar button:hover {
+    background-color: var(--vscode-button-secondaryHoverBackground);
+}
+
+.search-box input {
+    width: 250px;
+    padding: 6px 10px;
+    background-color: var(--vscode-input-background);
+    color: var(--vscode-input-foreground);
+    border: 1px solid var(--vscode-input-border, transparent);
+    border-radius: 2px;
+    font-family: inherit;
+    font-size: inherit;
+}
+
+.search-box input:focus {
+    outline: 1px solid var(--vscode-focusBorder);
+    border-color: var(--vscode-focusBorder);
+}
+
+.search-box input::placeholder {
+    color: var(--vscode-input-placeholderForeground);
+}
+
+.hidden {
+    display: none !important;
+}

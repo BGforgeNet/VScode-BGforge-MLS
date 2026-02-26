@@ -16,6 +16,7 @@ class BinaryEditorProvider implements vscode.CustomReadonlyEditorProvider {
 
     // Cached assets (loaded once per extension lifetime)
     private static cachedHtml: string | undefined;
+    private static cachedCommonCss: string | undefined;
     private static cachedCss: string | undefined;
     private static cachedJs: string | undefined;
     private static cachedExtensionPath: string | undefined;
@@ -129,6 +130,7 @@ class BinaryEditorProvider implements vscode.CustomReadonlyEditorProvider {
         if (BinaryEditorProvider.cachedExtensionPath && BinaryEditorProvider.cachedExtensionPath !== currentPath) {
             // Extension path changed - invalidate cache
             BinaryEditorProvider.cachedHtml = undefined;
+            BinaryEditorProvider.cachedCommonCss = undefined;
             BinaryEditorProvider.cachedCss = undefined;
             BinaryEditorProvider.cachedJs = undefined;
         }
@@ -143,11 +145,18 @@ class BinaryEditorProvider implements vscode.CustomReadonlyEditorProvider {
         return BinaryEditorProvider.cachedHtml;
     }
 
+    private getCommonCss(): string {
+        if (!BinaryEditorProvider.cachedCommonCss) {
+            BinaryEditorProvider.cachedCommonCss = this.loadAsset(path.join("client", "src", "webview-common.css"));
+        }
+        return BinaryEditorProvider.cachedCommonCss;
+    }
+
     private getCss(): string {
         if (!BinaryEditorProvider.cachedCss) {
             BinaryEditorProvider.cachedCss = this.loadAsset(path.join("client", "src", "editors", "binaryEditor.css"));
         }
-        return BinaryEditorProvider.cachedCss;
+        return this.getCommonCss() + "\n" + BinaryEditorProvider.cachedCss;
     }
 
     private getJs(): string {
