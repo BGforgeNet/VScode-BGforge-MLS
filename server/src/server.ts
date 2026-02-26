@@ -25,11 +25,13 @@ import { clearDiagnostics, COMMAND_compile, compile } from "./compile";
 import { getRequest as getSignatureRequest } from "./shared/signature";
 import { parseDialog } from "./dialog";
 import { parseTDDialog } from "./td/dialog";
+import { parseTSSLDialog } from "./tssl/dialog";
 import { parseDDialog } from "./weidu-d/dialog";
 import { falloutSslProvider } from "./fallout-ssl/provider";
 import { Translation } from "./translation";
 import {
     EXT_TD,
+    EXT_TSSL,
     LANG_FALLOUT_SSL,
     LANG_TYPESCRIPT,
     LANG_WEIDU_BAF,
@@ -297,6 +299,30 @@ connection.onHover((textDocumentPosition: TextDocumentPositionParams) => {
     return dataHover;
 });
 
+/** Dialog preview handler registry. Maps language/extension to parser + translation language. */
+const dialogHandlers = [
+    {
+        match: (langId: string, _uri: string) => langId === LANG_FALLOUT_SSL,
+        parse: (_uri: string, text: string) => parseDialog(text),
+        translationLangId: LANG_FALLOUT_SSL,
+    },
+    {
+        match: (langId: string, _uri: string) => langId === LANG_WEIDU_D,
+        parse: (_uri: string, text: string) => Promise.resolve(parseDDialog(text)),
+        translationLangId: LANG_WEIDU_D,
+    },
+    {
+        match: (langId: string, uri: string) => langId === LANG_TYPESCRIPT && uri.endsWith(EXT_TD),
+        parse: (uri: string, text: string) => parseTDDialog(uri, text),
+        translationLangId: LANG_WEIDU_D,
+    },
+    {
+        match: (langId: string, uri: string) => langId === LANG_TYPESCRIPT && uri.endsWith(EXT_TSSL),
+        parse: (uri: string, text: string) => parseTSSLDialog(uri, text),
+        translationLangId: LANG_FALLOUT_SSL,
+    },
+];
+
 connection.onExecuteCommand(async (params) => {
     const command = params.command;
     const COMMAND_parseDialog = "bgforge.parseDialog";
@@ -316,22 +342,16 @@ connection.onExecuteCommand(async (params) => {
         try {
             const langId = textDoc.languageId;
             const text = textDoc.getText();
-            if (langId === LANG_FALLOUT_SSL) {
-                const dialogData = await parseDialog(text);
-                const messages = translation?.getMessages(uri, text, langId) ?? {};
-                return { ...dialogData, messages };
+            const lowerUri = uri.toLowerCase();
+
+            // Each entry: match condition, parse function, translation language
+            const handler = dialogHandlers.find((h) => h.match(langId, lowerUri));
+            if (!handler) {
+                return null;
             }
-            if (langId === LANG_WEIDU_D) {
-                const dialogData = parseDDialog(text);
-                const messages = translation?.getMessages(uri, text, langId) ?? {};
-                return { ...dialogData, messages };
-            }
-            if (langId === LANG_TYPESCRIPT && uri.toLowerCase().endsWith(EXT_TD)) {
-                const dialogData = await parseTDDialog(uri, text);
-                const messages = translation?.getMessages(uri, text, LANG_WEIDU_D) ?? {};
-                return { ...dialogData, messages };
-            }
-            return null;
+            const dialogData = await handler.parse(uri, text);
+            const messages = translation?.getMessages(uri, text, handler.translationLangId) ?? {};
+            return { ...dialogData, messages };
         } catch (e) {
             conlog("parseDialog error: " + e);
             if (e instanceof Error) {

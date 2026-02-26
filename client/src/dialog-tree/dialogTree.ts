@@ -247,9 +247,11 @@ export function buildTreeHtml(data: DialogData): string {
 
 export function registerDialogTree(context: vscode.ExtensionContext, client: LanguageClient): void {
     registerDialogPanel(context, client, {
-        matchDocument: (doc) => doc.languageId === "fallout-ssl",
+        matchDocument: (doc) =>
+            doc.languageId === "fallout-ssl" ||
+            doc.fileName.toLowerCase().endsWith(".tssl"),
         commandName: "extension.bgforge.dialogPreview",
-        warningMessage: "Open a Fallout SSL file to preview dialog",
+        warningMessage: "Open a Fallout SSL or TSSL file to preview dialog",
         translationLangId: "fallout-msg",
         buildTreeHtml: (data) => buildTreeHtml(data as DialogData),
         hasData: (data) => {

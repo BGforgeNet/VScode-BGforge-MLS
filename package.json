@@ -397,7 +397,7 @@
             {
                 "command": "extension.bgforge.dialogPreview",
                 "key": "ctrl+shift+v",
-                "when": "editorLangId == fallout-ssl"
+                "when": "editorLangId == fallout-ssl || resourceExtname == .tssl"
             },
             {
                 "command": "extension.bgforge.dDialogPreview",
