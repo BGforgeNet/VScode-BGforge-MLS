@@ -5,6 +5,7 @@
 
 import type { JSdoc } from "../shared/jsdoc";
 import { formatSignature, type SignatureParam } from "../shared/signature-format";
+import { buildFalloutArgsTable } from "../shared/tooltip-table";
 
 /**
  * Convert JSDoc to markdown documentation (Fallout SSL format).
@@ -17,8 +18,9 @@ export function jsdocToMarkdown(jsd: JSdoc): string {
         md += `\n${jsd.desc}`;
     }
 
-    if (jsd.args.length > 0) {
-        md += formatArgs(jsd.args);
+    const argsTable = buildFalloutArgsTable(jsd.args);
+    if (argsTable) {
+        md += "\n\n" + argsTable;
     }
 
     if (jsd.ret?.description) {
@@ -27,23 +29,6 @@ export function jsdocToMarkdown(jsd: JSdoc): string {
 
     md += formatDeprecated(jsd.deprecated);
 
-    return md;
-}
-
-/**
- * Fallout format: headerless 2-column table with name and description.
- * Type and default values are shown in the signature, not here.
- */
-function formatArgs(args: JSdoc["args"]): string {
-    const described = args.filter((a) => a.description);
-    if (described.length === 0) {
-        return "";
-    }
-
-    let md = "\n\n|||\n|:-|:-|";
-    for (const arg of described) {
-        md += `\n|\`${arg.name}\`|&nbsp;&nbsp;${arg.description}|`;
-    }
     return md;
 }
 

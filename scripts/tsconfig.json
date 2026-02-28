@@ -26,7 +26,9 @@
         "fallout-update/src",
         "fallout-update/test",
         "utils/src",
-        "utils/test"
+        "utils/test",
+        "../server/src/shared/tooltip-table.ts",
+        "../server/src/shared/weidu-types.ts"
     ],
     "exclude": ["node_modules", "out"]
 }

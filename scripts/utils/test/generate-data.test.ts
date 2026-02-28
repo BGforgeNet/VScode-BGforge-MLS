@@ -56,12 +56,13 @@ describe("getDoc", () => {
         expect(getDoc({ name: "x" })).toBe("");
     });
 
-    it("returns arg list for item with args only", () => {
+    it("returns arg table for item with args only", () => {
         const item = {
             name: "f",
             args: [{ name: "a", type: "int", doc: "the value" }],
         };
-        expect(getDoc(item)).toBe("- `a` the value\n");
+        const result = getDoc(item);
+        expect(result).toContain("|`a`|&nbsp;&nbsp;the value|");
     });
 
     it("returns doc for item with doc only", () => {
@@ -69,14 +70,15 @@ describe("getDoc", () => {
         expect(getDoc(item)).toBe("Some docs.");
     });
 
-    it("returns args + separator + doc for item with both", () => {
+    it("returns args table + separator + doc for item with both", () => {
         const item = {
             name: "f",
             doc: "Function docs.",
             args: [{ name: "a", type: "int", doc: "value" }],
         };
         const result = getDoc(item);
-        expect(result).toBe("- `a` value\n\nFunction docs.");
+        expect(result).toContain("|`a`|&nbsp;&nbsp;value|");
+        expect(result).toContain("Function docs.");
     });
 });
 
@@ -181,7 +183,7 @@ describe("generateCompletion", () => {
         };
         const result = generateCompletion(data, "lang");
         expect(result[0]!.documentation!.value).toContain("int f(int a)");
-        expect(result[0]!.documentation!.value).toContain("`a` val");
+        expect(result[0]!.documentation!.value).toContain("|`a`|&nbsp;&nbsp;val|");
     });
 });
 
@@ -279,14 +281,14 @@ describe("getDoc (WeiDU)", () => {
             ],
         };
         const result = getDoc(item);
-        expect(result).toContain("**INT vars**");
+        expect(result).toContain("|**INT**|**vars**|||");
         // Type links must NOT be wrapped in backticks — backticks create code spans
         // that render markdown link syntax as literal text in VSCode completion popups.
         expect(result).toContain("[int](https://ielib.bgforge.net/types/#int)|start|");
         expect(result).not.toContain("`[int]");
         expect(result).toContain("&nbsp;&nbsp;start index");
         expect(result).toContain("[int](https://ielib.bgforge.net/types/#int)|length|");
-        expect(result).not.toContain("**STR vars**");
+        expect(result).not.toContain("|**STR**|**vars**|||");
     });
 
     it("generates STR vars table for str-category args", () => {
@@ -299,11 +301,11 @@ describe("getDoc (WeiDU)", () => {
             ],
         };
         const result = getDoc(item);
-        expect(result).toContain("**STR vars**");
+        expect(result).toContain("|**STR**|**vars**|||");
         expect(result).toContain("[resref](https://ielib.bgforge.net/types/#resref)|file|");
         expect(result).toContain("[string](https://ielib.bgforge.net/types/#string)|text|");
         expect(result).not.toContain("`[resref]");
-        expect(result).not.toContain("**INT vars**");
+        expect(result).not.toContain("|**INT**|**vars**|||");
     });
 
     it("generates both INT and STR sections for mixed args", () => {
@@ -317,8 +319,8 @@ describe("getDoc (WeiDU)", () => {
             ],
         };
         const result = getDoc(item);
-        expect(result).toContain("**INT vars**");
-        expect(result).toContain("**STR vars**");
+        expect(result).toContain("|**INT**|**vars**|||");
+        expect(result).toContain("|**STR**|**vars**|||");
     });
 
     it("generates RET vars table from rets", () => {
@@ -330,7 +332,7 @@ describe("getDoc (WeiDU)", () => {
             ],
         };
         const result = getDoc(item);
-        expect(result).toContain("**RET vars**");
+        expect(result).toContain("|**RET**|**vars**|||");
         expect(result).toContain("[int](https://ielib.bgforge.net/types/#int)|result|");
         expect(result).not.toContain("`[int]");
         expect(result).toContain("&nbsp;&nbsp;the result");
@@ -342,9 +344,9 @@ describe("getDoc (WeiDU)", () => {
             rets: [{ name: "base_ac", type: "int", doc: "base AC" }],
         };
         const result = getDoc(item);
-        expect(result).toContain("**RET vars**");
-        expect(result).not.toContain("**INT vars**");
-        expect(result).not.toContain("**STR vars**");
+        expect(result).toContain("|**RET**|**vars**|||");
+        expect(result).not.toContain("|**INT**|**vars**|||");
+        expect(result).not.toContain("|**STR**|**vars**|||");
     });
 
     it("shows required marker for required args", () => {
@@ -382,7 +384,7 @@ describe("getDoc (WeiDU)", () => {
         expect(result).toContain("My description.");
         // Description comes before tables
         const descIdx = result.indexOf("My description.");
-        const tableIdx = result.indexOf("**INT vars**");
+        const tableIdx = result.indexOf("|**INT**|**vars**|||");
         expect(descIdx).toBeLessThan(tableIdx);
     });
 
@@ -412,9 +414,9 @@ describe("getDoc (WeiDU)", () => {
             ],
         };
         const result = getDoc(item);
-        expect(result).toContain("**INT vars**");
-        expect(result).toContain("**STR vars**");
-        expect(result).toContain("**RET vars**");
+        expect(result).toContain("|**INT**|**vars**|||");
+        expect(result).toContain("|**STR**|**vars**|||");
+        expect(result).toContain("|**RET**|**vars**|||");
         expect(result).toContain("Returns a substring.");
     });
 });
@@ -438,7 +440,7 @@ describe("generateCompletion (WeiDU)", () => {
         const result = generateCompletion(data, "weidu-tp2-tooltip");
         expect(result[0]!.documentation).toBeDefined();
         expect(result[0]!.documentation!.value).toContain("dimorphic function SUBSTRING");
-        expect(result[0]!.documentation!.value).toContain("**INT vars**");
+        expect(result[0]!.documentation!.value).toContain("|**INT**|**vars**|||");
     });
 });
 
@@ -464,8 +466,8 @@ describe("generateHover (WeiDU)", () => {
         expect(result["SUBSTRING"]).toBeDefined();
         const value = result["SUBSTRING"]!.contents.value;
         expect(value).toContain("dimorphic function SUBSTRING");
-        expect(value).toContain("**INT vars**");
-        expect(value).toContain("**RET vars**");
+        expect(value).toContain("|**INT**|**vars**|||");
+        expect(value).toContain("|**RET**|**vars**|||");
     });
 
     it("generates hover for items with only rets", () => {
@@ -480,7 +482,7 @@ describe("generateHover (WeiDU)", () => {
         };
         const result = generateHover(data, "weidu-tp2-tooltip");
         expect(result["GET_AC"]).toBeDefined();
-        expect(result["GET_AC"]!.contents.value).toContain("**RET vars**");
+        expect(result["GET_AC"]!.contents.value).toContain("|**RET**|**vars**|||");
     });
 });
 

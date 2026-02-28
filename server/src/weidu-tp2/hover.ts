@@ -12,7 +12,7 @@ import { parseHeader, FunctionInfo, VariableInfo } from "./header-parser";
 import type { Symbols } from "../core/symbol-index";
 import { SyntaxType } from "./tree-sitter.d";
 import { stripStringDelimiters } from "./tree-utils";
-import { formatTypeLink } from "../shared/weidu-types";
+import { buildWeiduTable, type VarRow, type VarSection } from "../shared/tooltip-table";
 import { LANG_WEIDU_TP2_TOOLTIP } from "../core/languages";
 
 /** Maximum length for parameter descriptions in hover table. */
@@ -340,6 +340,9 @@ export function buildFunctionHover(funcInfo: FunctionInfo, displayPath?: string 
 /**
  * Build parameter table markdown with @arg descriptions and type links.
  *
+ * Maps FunctionInfo params + JSDoc metadata to VarSection[] and delegates
+ * to the shared buildWeiduTable renderer.
+ *
  * TODO: Replace markdown table with a DocumentSemanticTokensProvider to get
  * syntax coloring (types, variable names, defaults, descriptions) while
  * keeping markdown features like clickable type links.
@@ -352,96 +355,90 @@ function buildParamTable(
         return "";
     }
 
-    const rows: string[] = [];
-
-    /**
-     * Truncate description to max length with ellipsis.
-     * Preserves markdown links by not cutting through them.
-     */
-    const truncateDesc = (desc: string): string => {
-        if (desc.length <= DESC_MAX_LENGTH) return desc;
-
-        // Find all markdown links and their positions
-        const linkRegex = /\[([^\]]+)\]\([^)]+\)/g;
-        let match;
-        const links: { start: number; end: number }[] = [];
-        while ((match = linkRegex.exec(desc)) !== null) {
-            links.push({ start: match.index, end: match.index + match[0].length });
-        }
-
-        // Find a safe truncation point that doesn't cut through a link
-        let cutPoint = DESC_MAX_LENGTH - 3;
-        for (const link of links) {
-            // If cut point is inside a link, move it before the link
-            if (cutPoint > link.start && cutPoint < link.end) {
-                cutPoint = link.start;
-                break;
-            }
-        }
-
-        if (cutPoint <= 0) {
-            // Edge case: first link is too long, just show it without truncation
-            return desc;
-        }
-
-        return desc.slice(0, cutPoint).trimEnd() + "...";
-    };
-
-    /** Add section label and parameter rows for INT_VAR/STR_VAR. */
-    const addVarSection = (
-        sectionName: string,
+    /** Map INT_VAR/STR_VAR params to VarRow[], merging JSDoc metadata. */
+    const mapVarRows = (
         params: { name: string; defaultValue?: string }[],
         defaultType: string
-    ) => {
-        if (params.length === 0) return;
-
-        const [word1, word2] = sectionName.split(" ");
-        rows.push(`|**${word1}**|**${word2}**|||`);
-
-        for (const p of params) {
+    ): readonly VarRow[] =>
+        params.map((p) => {
             const jsdoc = jsdocArgs.get(p.name);
-            const type = formatTypeLink(jsdoc?.type ?? defaultType);
-            // Hide default value for required params
-            const def = jsdoc?.required ? "" : (p.defaultValue ?? "");
-            const defCell = def ? `=&nbsp;${def}` : "";
-            const desc = truncateDesc(jsdoc?.description ?? "");
-            const descCell = desc ? `&nbsp;&nbsp;${desc}` : "";
-            rows.push(`|${type}|${p.name}|${defCell}|${descCell}|`);
-        }
-    };
+            // Hide default value for required params (don't show _required_ — user code
+            // can have required params with syntactic defaults that shouldn't be shown)
+            const showDefault = !jsdoc?.required && p.defaultValue !== undefined;
+            return {
+                type: jsdoc?.type ?? defaultType,
+                name: p.name,
+                ...(showDefault ? { default: p.defaultValue } : {}),
+                ...truncateOptionalDesc(jsdoc?.description),
+            };
+        });
 
     // Build rets lookup map for @return/@return-array tags
     const retsMap = buildRetsMap(funcInfo.jsdoc?.rets);
 
-    /** Add section label and parameter rows for RET/RET_ARRAY. */
-    const addRetSection = (sectionName: string, params: string[]) => {
-        if (params.length === 0) return;
-
-        const [word1, word2] = sectionName.split(" ");
-        rows.push(`|**${word1}**|**${word2}**|||`);
-
-        for (const name of params) {
-            // Prefer @return info from rets[], fall back to @param info
+    /** Map RET/RET_ARRAY param names to VarRow[], preferring @return info over @param. */
+    const mapRetRows = (params: string[]): readonly VarRow[] =>
+        params.map((name) => {
             const retInfo = retsMap.get(name);
             const paramInfo = jsdocArgs.get(name);
-            const type = formatTypeLink(retInfo?.type ?? paramInfo?.type ?? "");
-            const desc = truncateDesc(retInfo?.description ?? paramInfo?.description ?? "");
-            const descCell = desc ? `&nbsp;&nbsp;${desc}` : "";
-            rows.push(`|${type}|${name}||${descCell}|`);
+            return {
+                type: retInfo?.type ?? paramInfo?.type ?? "",
+                name,
+                ...truncateOptionalDesc(retInfo?.description ?? paramInfo?.description),
+            };
+        });
+
+    const sections: VarSection[] = [
+        { label: "INT vars", rows: mapVarRows(funcInfo.params.intVar, "int") },
+        { label: "STR vars", rows: mapVarRows(funcInfo.params.strVar, "string") },
+        { label: "RET vars", rows: mapRetRows(funcInfo.params.ret) },
+        { label: "RET arrays", rows: mapRetRows(funcInfo.params.retArray) },
+    ];
+
+    return buildWeiduTable(sections);
+}
+
+/**
+ * Truncate an optional description and return as a partial VarRow.
+ * Returns `{ description }` if non-empty after truncation, empty object otherwise.
+ */
+function truncateOptionalDesc(desc: string | undefined): { description: string } | Record<string, never> {
+    if (!desc) return {};
+    const truncated = truncateDesc(desc);
+    return truncated ? { description: truncated } : {};
+}
+
+/**
+ * Truncate description to max length with ellipsis.
+ * Preserves markdown links by not cutting through them.
+ */
+function truncateDesc(desc: string): string {
+    if (desc.length <= DESC_MAX_LENGTH) return desc;
+
+    // Find all markdown links and their positions
+    const linkRegex = /\[([^\]]+)\]\([^)]+\)/g;
+    let match;
+    const links: { start: number; end: number }[] = [];
+    while ((match = linkRegex.exec(desc)) !== null) {
+        links.push({ start: match.index, end: match.index + match[0].length });
+    }
+
+    // Find a safe truncation point that doesn't cut through a link
+    let cutPoint = DESC_MAX_LENGTH - 3;
+    for (const link of links) {
+        // If cut point is inside a link, move it before the link
+        if (cutPoint > link.start && cutPoint < link.end) {
+            cutPoint = link.start;
+            break;
         }
-    };
+    }
 
-    // Single table: hidden header + separator, then sections with label rows
-    rows.push("| | | | |");
-    rows.push("|-:|:-|:-|:-|");
+    if (cutPoint <= 0) {
+        // Edge case: first link is too long, just show it without truncation
+        return desc;
+    }
 
-    addVarSection("INT vars", funcInfo.params.intVar, "int");
-    addVarSection("STR vars", funcInfo.params.strVar, "string");
-    addRetSection("RET vars", funcInfo.params.ret);
-    addRetSection("RET arrays", funcInfo.params.retArray);
-
-    // If only the header rows exist, no params were added
-    return rows.length > 2 ? rows.join("\n") : "";
+    return desc.slice(0, cutPoint).trimEnd() + "...";
 }
 
 /**

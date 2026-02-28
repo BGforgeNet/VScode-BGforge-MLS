@@ -14,6 +14,8 @@
 import fs from "node:fs";
 import { parseArgs } from "node:util";
 import YAML from "yaml";
+import { WEIDU_JSDOC_TYPES } from "../../../server/src/shared/weidu-types";
+import { buildWeiduTable, buildFalloutArgsTable, type VarSection, type VarRow } from "../../../server/src/shared/tooltip-table";
 
 // -- Types --
 
@@ -33,41 +35,6 @@ interface DataItem {
     readonly rets?: readonly DataArg[];
     readonly type?: string;
     readonly deprecated?: boolean;
-}
-
-// -- WeiDU type metadata --
-// SYNC: server/src/shared/weidu-types.ts (canonical type data, validated by type-sync.test.ts)
-
-/** INT_VAR or STR_VAR classification for WeiDU function parameters. */
-type VarCategory = "int" | "str";
-
-interface WeiduType {
-    readonly detail: string;
-    readonly category: VarCategory;
-}
-
-/** All known WeiDU JSDoc types with their display detail and variable category. */
-const WEIDU_JSDOC_TYPES: ReadonlyMap<string, WeiduType> = new Map([
-    ["array", { detail: "Array type", category: "int" }],
-    ["bool", { detail: "Boolean type", category: "int" }],
-    ["filename", { detail: "File name", category: "str" }],
-    ["ids", { detail: "IDS reference", category: "str" }],
-    ["int", { detail: "Integer type", category: "int" }],
-    ["list", { detail: "List type", category: "int" }],
-    ["map", { detail: "Map type", category: "int" }],
-    ["resref", { detail: "Resource reference", category: "str" }],
-    ["string", { detail: "String type", category: "str" }],
-]);
-
-/** Base URL for type documentation on ielib.bgforge.net. */
-const IELIB_TYPES_URL = "https://ielib.bgforge.net/types/#";
-
-/** Format a type name as a markdown link if it's a known WeiDU type, plain text otherwise. */
-function formatTypeLink(type: string): string {
-    if (!type) return "";
-    return WEIDU_JSDOC_TYPES.has(type)
-        ? `[${type}](${IELIB_TYPES_URL}${type})`
-        : type;
 }
 
 interface DataStanza {
@@ -205,12 +172,15 @@ export function getDoc(item: DataItem): string {
     return getFalloutDoc(item);
 }
 
-/** Fallout-style doc: bullet list of args + prose description. */
+/** Fallout-style doc: 2-column table of args with descriptions + prose description. */
 function getFalloutDoc(item: DataItem): string {
     let doc = "";
     if (item.args !== undefined) {
-        for (const arg of item.args) {
-            doc += `- \`${arg.name}\` ${arg.doc ?? ""}\n`;
+        const table = buildFalloutArgsTable(
+            item.args.map((a) => ({ name: a.name, description: a.doc }))
+        );
+        if (table) {
+            doc += table + "\n";
         }
     }
     if (item.args !== undefined && item.doc !== undefined) {
@@ -222,19 +192,20 @@ function getFalloutDoc(item: DataItem): string {
     return doc;
 }
 
-/**
- * Formats the default/required column value for a WeiDU arg table row.
- * Required args show "_required_", args with defaults show the default value,
- * otherwise empty.
- */
-function formatArgDefault(arg: DataArg): string {
-    if (arg.required) return "_required_";
-    if (arg.default !== undefined) return `=&nbsp;${arg.default}`;
-    return "";
+/** Map DataArg[] to VarRow[] for a given INT/STR category. */
+function mapArgsToRows(args: readonly DataArg[], category: "int" | "str"): readonly VarRow[] {
+    return args
+        .filter((a) => WEIDU_JSDOC_TYPES.get(a.type)?.category === category)
+        .map((a) => ({
+            type: a.type,
+            name: a.name,
+            ...(a.required ? { required: true } : a.default !== undefined ? { default: a.default } : {}),
+            ...(a.doc ? { description: a.doc } : {}),
+        }));
 }
 
 /**
- * WeiDU-style doc: separate tables for INT_VAR, STR_VAR, and RET vars,
+ * WeiDU-style doc: single unified table for INT_VAR, STR_VAR, and RET vars,
  * matching the format produced by hover.ts:buildParamTable for JSDoc-parsed functions.
  */
 function getWeiduDoc(item: DataItem): string {
@@ -244,33 +215,27 @@ function getWeiduDoc(item: DataItem): string {
         doc += `\n---\n\n${item.doc}`;
     }
 
+    const sections: VarSection[] = [];
+
     if (item.args !== undefined && item.args.length > 0) {
-        const intVars = item.args.filter((a) => WEIDU_JSDOC_TYPES.get(a.type)?.category === "int");
-        const strVars = item.args.filter((a) => WEIDU_JSDOC_TYPES.get(a.type)?.category === "str");
-
-        if (intVars.length > 0) {
-            doc += "\n\n**INT vars**\n\n|||||\n|-:|:-|:-|:-|";
-            for (const arg of intVars) {
-                const desc = arg.doc ? `&nbsp;&nbsp;${arg.doc}` : "";
-                doc += `\n|${formatTypeLink(arg.type)}|${arg.name}|${desc}|${formatArgDefault(arg)}|`;
-            }
-        }
-
-        if (strVars.length > 0) {
-            doc += "\n\n**STR vars**\n\n|||||\n|-:|:-|:-|:-|";
-            for (const arg of strVars) {
-                const desc = arg.doc ? `&nbsp;&nbsp;${arg.doc}` : "";
-                doc += `\n|${formatTypeLink(arg.type)}|${arg.name}|${desc}|${formatArgDefault(arg)}|`;
-            }
-        }
+        sections.push({ label: "INT vars", rows: mapArgsToRows(item.args, "int") });
+        sections.push({ label: "STR vars", rows: mapArgsToRows(item.args, "str") });
     }
 
     if (item.rets !== undefined && item.rets.length > 0) {
-        doc += `\n\n**RET vars**\n\n||||\n|-:|:-|:-|`;
-        for (const ret of item.rets) {
-            const desc = ret.doc ? `&nbsp;&nbsp;${ret.doc}` : "";
-            doc += `\n|${formatTypeLink(ret.type)}|${ret.name}|${desc}|`;
-        }
+        sections.push({
+            label: "RET vars",
+            rows: item.rets.map((r) => ({
+                type: r.type,
+                name: r.name,
+                ...(r.doc ? { description: r.doc } : {}),
+            })),
+        });
+    }
+
+    const table = buildWeiduTable(sections);
+    if (table) {
+        doc += "\n\n" + table;
     }
 
     return doc;
