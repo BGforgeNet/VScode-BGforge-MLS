@@ -6,7 +6,7 @@
 import { CompletionItem, CompletionItemKind, ParameterInformation } from "vscode-languageserver/node";
 import { MarkupKind } from "vscode-languageserver/node";
 import * as jsdoc from "../shared/jsdoc";
-import { jsdocToDetail } from "../shared/jsdoc-utils";
+import { jsdocToDetail } from "./jsdoc-format";
 import { formatSignature } from "../shared/signature-format";
 import * as signature from "../shared/signature";
 import { LANG_FALLOUT_SSL_TOOLTIP } from "../core/languages";

@@ -228,6 +228,288 @@ describe("generateHover", () => {
     });
 });
 
+// -- WeiDU-format tests --
+
+describe("getDetail (WeiDU)", () => {
+    it("returns 'type function NAME' for WeiDU item with args", () => {
+        const item = {
+            name: "SUBSTRING",
+            type: "dimorphic",
+            args: [{ name: "start", type: "int" }],
+        };
+        expect(getDetail(item)).toBe("dimorphic function SUBSTRING");
+    });
+
+    it("returns 'patch function NAME' for patch type", () => {
+        const item = {
+            name: "MY_FUNC",
+            type: "patch",
+            args: [{ name: "x", type: "int" }],
+        };
+        expect(getDetail(item)).toBe("patch function MY_FUNC");
+    });
+
+    it("returns just name when includeTypes is false", () => {
+        const item = {
+            name: "SUBSTRING",
+            type: "dimorphic",
+            args: [{ name: "start", type: "int" }],
+        };
+        expect(getDetail(item, false)).toBe("SUBSTRING");
+    });
+
+    it("returns name for WeiDU item with rets only (no item.type)", () => {
+        const item = {
+            name: "GET_INDEX",
+            rets: [{ name: "index", type: "int" }],
+        };
+        expect(getDetail(item)).toBe("GET_INDEX");
+    });
+});
+
+describe("getDoc (WeiDU)", () => {
+    it("generates INT vars table for int-category args", () => {
+        const item = {
+            name: "F",
+            type: "dimorphic",
+            doc: "A function.",
+            args: [
+                { name: "start", type: "int", doc: "start index" },
+                { name: "length", type: "int", doc: "how many chars" },
+            ],
+        };
+        const result = getDoc(item);
+        expect(result).toContain("**INT vars**");
+        // Type links must NOT be wrapped in backticks — backticks create code spans
+        // that render markdown link syntax as literal text in VSCode completion popups.
+        expect(result).toContain("[int](https://ielib.bgforge.net/types/#int)|start|");
+        expect(result).not.toContain("`[int]");
+        expect(result).toContain("&nbsp;&nbsp;start index");
+        expect(result).toContain("[int](https://ielib.bgforge.net/types/#int)|length|");
+        expect(result).not.toContain("**STR vars**");
+    });
+
+    it("generates STR vars table for str-category args", () => {
+        const item = {
+            name: "F",
+            type: "patch",
+            args: [
+                { name: "file", type: "resref", doc: "resource reference" },
+                { name: "text", type: "string", doc: "text value" },
+            ],
+        };
+        const result = getDoc(item);
+        expect(result).toContain("**STR vars**");
+        expect(result).toContain("[resref](https://ielib.bgforge.net/types/#resref)|file|");
+        expect(result).toContain("[string](https://ielib.bgforge.net/types/#string)|text|");
+        expect(result).not.toContain("`[resref]");
+        expect(result).not.toContain("**INT vars**");
+    });
+
+    it("generates both INT and STR sections for mixed args", () => {
+        const item = {
+            name: "SUBSTRING",
+            type: "dimorphic",
+            doc: "Returns a substring.",
+            args: [
+                { name: "start", type: "int", doc: "offset" },
+                { name: "text", type: "string", doc: "source string" },
+            ],
+        };
+        const result = getDoc(item);
+        expect(result).toContain("**INT vars**");
+        expect(result).toContain("**STR vars**");
+    });
+
+    it("generates RET vars table from rets", () => {
+        const item = {
+            name: "F",
+            type: "patch",
+            rets: [
+                { name: "result", type: "int", doc: "the result" },
+            ],
+        };
+        const result = getDoc(item);
+        expect(result).toContain("**RET vars**");
+        expect(result).toContain("[int](https://ielib.bgforge.net/types/#int)|result|");
+        expect(result).not.toContain("`[int]");
+        expect(result).toContain("&nbsp;&nbsp;the result");
+    });
+
+    it("generates doc with rets only (no args)", () => {
+        const item = {
+            name: "GET_AC",
+            rets: [{ name: "base_ac", type: "int", doc: "base AC" }],
+        };
+        const result = getDoc(item);
+        expect(result).toContain("**RET vars**");
+        expect(result).not.toContain("**INT vars**");
+        expect(result).not.toContain("**STR vars**");
+    });
+
+    it("shows required marker for required args", () => {
+        const item = {
+            name: "F",
+            type: "patch",
+            args: [
+                { name: "index", type: "int", doc: "structure index", required: true },
+            ],
+        };
+        const result = getDoc(item);
+        expect(result).toContain("|_required_|");
+    });
+
+    it("shows default value for args with defaults", () => {
+        const item = {
+            name: "F",
+            type: "dimorphic",
+            args: [
+                { name: "count", type: "int", doc: "how many", default: "1" },
+            ],
+        };
+        const result = getDoc(item);
+        expect(result).toContain("|=&nbsp;1|");
+    });
+
+    it("includes doc description before tables", () => {
+        const item = {
+            name: "F",
+            type: "dimorphic",
+            doc: "My description.",
+            args: [{ name: "x", type: "int" }],
+        };
+        const result = getDoc(item);
+        expect(result).toContain("My description.");
+        // Description comes before tables
+        const descIdx = result.indexOf("My description.");
+        const tableIdx = result.indexOf("**INT vars**");
+        expect(descIdx).toBeLessThan(tableIdx);
+    });
+
+    it("handles args with no doc", () => {
+        const item = {
+            name: "F",
+            type: "patch",
+            args: [{ name: "x", type: "int" }],
+        };
+        const result = getDoc(item);
+        // No &nbsp; description, just empty
+        expect(result).toContain("|x||");
+    });
+
+    it("generates full mixed args + rets output", () => {
+        const item = {
+            name: "SUBSTRING",
+            type: "dimorphic",
+            doc: "Returns a substring.",
+            args: [
+                { name: "start", type: "int", doc: "start index" },
+                { name: "length", type: "int", doc: "length to read" },
+                { name: "string", type: "string", doc: "source string" },
+            ],
+            rets: [
+                { name: "substring", type: "string", doc: "the result" },
+            ],
+        };
+        const result = getDoc(item);
+        expect(result).toContain("**INT vars**");
+        expect(result).toContain("**STR vars**");
+        expect(result).toContain("**RET vars**");
+        expect(result).toContain("Returns a substring.");
+    });
+});
+
+describe("generateCompletion (WeiDU)", () => {
+    it("generates documentation for WeiDU items with args", () => {
+        const data = {
+            dimorphicFunctions: {
+                type: 3,
+                items: [{
+                    name: "SUBSTRING",
+                    type: "dimorphic",
+                    doc: "Returns a substring.",
+                    args: [
+                        { name: "start", type: "int", doc: "offset" },
+                        { name: "text", type: "string", doc: "source" },
+                    ],
+                }],
+            },
+        };
+        const result = generateCompletion(data, "weidu-tp2-tooltip");
+        expect(result[0]!.documentation).toBeDefined();
+        expect(result[0]!.documentation!.value).toContain("dimorphic function SUBSTRING");
+        expect(result[0]!.documentation!.value).toContain("**INT vars**");
+    });
+});
+
+describe("generateHover (WeiDU)", () => {
+    it("generates hover with WeiDU tables", () => {
+        const data = {
+            dimorphicFunctions: {
+                type: 3,
+                items: [{
+                    name: "SUBSTRING",
+                    type: "dimorphic",
+                    doc: "Returns a substring.",
+                    args: [
+                        { name: "start", type: "int", doc: "offset" },
+                    ],
+                    rets: [
+                        { name: "result", type: "string", doc: "the substring" },
+                    ],
+                }],
+            },
+        };
+        const result = generateHover(data, "weidu-tp2-tooltip");
+        expect(result["SUBSTRING"]).toBeDefined();
+        const value = result["SUBSTRING"]!.contents.value;
+        expect(value).toContain("dimorphic function SUBSTRING");
+        expect(value).toContain("**INT vars**");
+        expect(value).toContain("**RET vars**");
+    });
+
+    it("generates hover for items with only rets", () => {
+        const data = {
+            patchFunctions: {
+                type: 3,
+                items: [{
+                    name: "GET_AC",
+                    rets: [{ name: "base_ac", type: "int", doc: "base AC" }],
+                }],
+            },
+        };
+        const result = generateHover(data, "weidu-tp2-tooltip");
+        expect(result["GET_AC"]).toBeDefined();
+        expect(result["GET_AC"]!.contents.value).toContain("**RET vars**");
+    });
+});
+
+describe("generateSignatures (WeiDU)", () => {
+    it("includes category prefix in WeiDU parameter docs", () => {
+        const data = {
+            dimorphicFunctions: {
+                type: 3,
+                items: [{
+                    name: "SUBSTRING",
+                    type: "dimorphic",
+                    doc: "Returns a substring.",
+                    args: [
+                        { name: "start", type: "int", doc: "offset" },
+                        { name: "text", type: "string", doc: "source" },
+                    ],
+                }],
+            },
+        };
+        const result = generateSignatures(data, "weidu-tp2-tooltip");
+        expect(result["SUBSTRING"]).toBeDefined();
+        expect(result["SUBSTRING"]!.label).toBe("SUBSTRING");
+        // INT_VAR prefix for int arg
+        expect(result["SUBSTRING"]!.parameters[0]!.documentation.value).toContain("INT_VAR int start");
+        // STR_VAR prefix for string arg
+        expect(result["SUBSTRING"]!.parameters[1]!.documentation.value).toContain("STR_VAR string text");
+    });
+});
+
 describe("generateSignatures", () => {
     it("generates signature for items with args", () => {
         const data = {

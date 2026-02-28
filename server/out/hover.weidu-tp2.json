@@ -3680,7 +3680,7 @@
     "FIND_FREE_PVRZ_INDEX": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nFIND_FREE_PVRZ_INDEX\n```\nAttempt to find a contiguous block of free PVRZ indices in the game installation. This is a PATCH and an ACTION function.\n This function attempts to find the first available free PVRZ index of a contiguous block which guarantees to fit at least `num_to_reserve` indices.\n - INT_VAR `num_to_reserve` to the minimum required size of the contiguous block of free indices. This number should be no smaller than 1 nor no bigger than 999. The default value is 1.\n - INT_VAR `start_index` to the index the search should begin at. The default value is 1000.\n - RET `free_index` returns the first available index matching the specified parameters. Returns -1 on errors."
+            "value": "```weidu-tp2-tooltip\ndimorphic function FIND_FREE_PVRZ_INDEX\n```\n\n---\n\nAttempt to find a contiguous block of free PVRZ indices in the game installation. This is a PATCH and an ACTION function.\nThis function attempts to find the first available free PVRZ index of a contiguous block which guarantees to fit at least `num_to_reserve` indices.\n\n**INT vars**\n\n|||||\n|-:|:-|:-|:-|\n|[int](https://ielib.bgforge.net/types/#int)|num_to_reserve|&nbsp;&nbsp;the minimum required size of the contiguous block of free indices (1-999)|=&nbsp;1|\n|[int](https://ielib.bgforge.net/types/#int)|start_index|&nbsp;&nbsp;the index the search should begin at|=&nbsp;1000|\n\n**RET vars**\n\n||||\n|-:|:-|:-|\n|[int](https://ielib.bgforge.net/types/#int)|free_index|&nbsp;&nbsp;the first available index matching the specified parameters, -1 on errors|"
         }
     },
     "GET_UNIQUE_FILE_NAME": {
@@ -3716,7 +3716,7 @@
     "SUBSTRING": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-tp2-tooltip\nSUBSTRING\n```\nReturns a substring of the provided string. This is an ACTION and PATCH function. All integer variables default to 0.\n The function will fail with an error if either `start` or `length` are negative or if any of `start`, `length` or the sum of the two is greater than the length of `string`.\n - INT_VAR `start` to the string index (0 based) from which the start of the substring should be read.\n - INT_VAR `length` to the length of the substring to be read.\n - STR_VAR `string` to the string the substring should be read from.\n - RET `substring` the substring read from the provided string."
+            "value": "```weidu-tp2-tooltip\ndimorphic function SUBSTRING\n```\n\n---\n\nReturns a substring of the provided string. This is an ACTION and PATCH function. All integer variables default to 0.\nThe function will fail with an error if either `start` or `length` are negative or if any of `start`, `length` or the sum of the two is greater than the length of `string`.\n\n**INT vars**\n\n|||||\n|-:|:-|:-|:-|\n|[int](https://ielib.bgforge.net/types/#int)|start|&nbsp;&nbsp;the string index (0 based) from which the start of the substring should be read||\n|[int](https://ielib.bgforge.net/types/#int)|length|&nbsp;&nbsp;the length of the substring to be read||\n\n**STR vars**\n\n|||||\n|-:|:-|:-|:-|\n|[string](https://ielib.bgforge.net/types/#string)|string|&nbsp;&nbsp;the string the substring should be read from||\n\n**RET vars**\n\n||||\n|-:|:-|:-|\n|[string](https://ielib.bgforge.net/types/#string)|substring|&nbsp;&nbsp;the substring read from the provided string|"
         }
     },
     "READ_SOUNDSET": {

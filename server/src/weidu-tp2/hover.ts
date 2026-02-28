@@ -403,7 +403,7 @@ function buildParamTable(
             const type = formatTypeLink(jsdoc?.type ?? defaultType);
             // Hide default value for required params
             const def = jsdoc?.required ? "" : (p.defaultValue ?? "");
-            const defCell = def ? `= ${def}` : "";
+            const defCell = def ? `=&nbsp;${def}` : "";
             const desc = truncateDesc(jsdoc?.description ?? "");
             const descCell = desc ? `&nbsp;&nbsp;${desc}` : "";
             rows.push(`|${type}|${p.name}|${defCell}|${descCell}|`);

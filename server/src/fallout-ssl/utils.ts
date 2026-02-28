@@ -7,7 +7,7 @@ import { Position } from "vscode-languageserver/node";
 import { makeRange } from "../core/position-utils";
 import { MacroData, parseMacroParams } from "./macro-utils";
 import * as jsdoc from "../shared/jsdoc";
-import { jsdocToMarkdown } from "../shared/jsdoc-utils";
+import { jsdocToMarkdown } from "./jsdoc-format";
 import { LANG_FALLOUT_SSL_TOOLTIP } from "../core/languages";
 
 // Re-export for existing consumers
@@ -91,7 +91,7 @@ export function buildTooltipBase(
         markdown += `\n\`\`\`bgforge-mls-comment\n${filePath}\n\`\`\``;
     }
     if (jsdoc) {
-        markdown += jsdocToMarkdown(jsdoc, "fallout");
+        markdown += jsdocToMarkdown(jsdoc);
     }
     return markdown;
 }

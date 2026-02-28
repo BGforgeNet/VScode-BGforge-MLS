@@ -1,20 +1,20 @@
 /**
- * Unit tests for JSDoc-to-markdown formatting (jsdoc-utils.ts).
- * Covers fallout format: headerless table args and Returns line.
+ * Unit tests for Fallout SSL JSDoc-to-markdown formatting (jsdoc-format.ts).
+ * Covers headerless table args and Returns line.
  */
 
 import { describe, expect, it } from "vitest";
-import { jsdocToMarkdown } from "../../src/shared/jsdoc-utils";
+import { jsdocToMarkdown } from "../../src/fallout-ssl/jsdoc-format";
 import { parse } from "../../src/shared/jsdoc";
 import type { JSdoc } from "../../src/shared/jsdoc";
 
-describe("jsdocToMarkdown fallout format", () => {
+describe("jsdocToMarkdown", () => {
     describe("args formatting", () => {
         it("formats single arg as table row", () => {
             const jsd: JSdoc = {
                 args: [{ name: "who", type: "float", description: "test123" }],
             };
-            const md = jsdocToMarkdown(jsd, "fallout");
+            const md = jsdocToMarkdown(jsd);
             expect(md).toContain("|`who`|&nbsp;&nbsp;test123|");
         });
 
@@ -25,7 +25,7 @@ describe("jsdocToMarkdown fallout format", () => {
                     { name: "alive", type: "int", description: "test2" },
                 ],
             };
-            const md = jsdocToMarkdown(jsd, "fallout");
+            const md = jsdocToMarkdown(jsd);
 
             expect(md).toContain("|`who`|&nbsp;&nbsp;test123|");
             expect(md).toContain("|`alive`|&nbsp;&nbsp;test2|");
@@ -37,7 +37,7 @@ describe("jsdocToMarkdown fallout format", () => {
             const jsd: JSdoc = {
                 args: [{ name: "x", type: "int" }],
             };
-            const md = jsdocToMarkdown(jsd, "fallout");
+            const md = jsdocToMarkdown(jsd);
             expect(md).not.toContain("x");
         });
 
@@ -48,7 +48,7 @@ describe("jsdocToMarkdown fallout format", () => {
                     { name: "alive", type: "int" },
                 ],
             };
-            const md = jsdocToMarkdown(jsd, "fallout");
+            const md = jsdocToMarkdown(jsd);
             expect(md).toContain("who");
             expect(md).not.toContain("alive");
         });
@@ -57,7 +57,7 @@ describe("jsdocToMarkdown fallout format", () => {
             const jsd: JSdoc = {
                 args: [{ name: "count", type: "int", description: "number of items" }],
             };
-            const md = jsdocToMarkdown(jsd, "fallout");
+            const md = jsdocToMarkdown(jsd);
             expect(md).toContain("|`count`|&nbsp;&nbsp;number of items|");
         });
     });
@@ -68,7 +68,7 @@ describe("jsdocToMarkdown fallout format", () => {
                 args: [],
                 ret: { type: "int" },
             };
-            const md = jsdocToMarkdown(jsd, "fallout");
+            const md = jsdocToMarkdown(jsd);
             expect(md).not.toContain("Returns");
         });
 
@@ -77,7 +77,7 @@ describe("jsdocToMarkdown fallout format", () => {
                 args: [],
                 ret: { type: "float", description: "the result" },
             };
-            const md = jsdocToMarkdown(jsd, "fallout");
+            const md = jsdocToMarkdown(jsd);
             expect(md).toContain("**Returns** the result");
             expect(md).not.toContain("`float`");
         });
@@ -87,7 +87,7 @@ describe("jsdocToMarkdown fallout format", () => {
                 args: [],
                 ret: { type: "int", description: "the result value" },
             };
-            const md = jsdocToMarkdown(jsd, "fallout");
+            const md = jsdocToMarkdown(jsd);
             expect(md).toContain("**Returns** the result value");
         });
 
@@ -95,7 +95,7 @@ describe("jsdocToMarkdown fallout format", () => {
             const jsd: JSdoc = {
                 args: [],
             };
-            const md = jsdocToMarkdown(jsd, "fallout");
+            const md = jsdocToMarkdown(jsd);
             expect(md).not.toContain("Returns");
         });
     });
@@ -109,7 +109,7 @@ describe("jsdocToMarkdown fallout format", () => {
  * @ret {float} bzz
  */`;
             const jsd = parse(input);
-            const md = jsdocToMarkdown(jsd, "fallout");
+            const md = jsdocToMarkdown(jsd);
 
             expect(md).toContain("qweqweqwe");
             expect(md).toContain("|`who`|&nbsp;&nbsp;test123|");
@@ -124,7 +124,7 @@ describe("jsdocToMarkdown fallout format", () => {
  * @ret {int}
  */`;
             const jsd = parse(input);
-            const md = jsdocToMarkdown(jsd, "fallout");
+            const md = jsdocToMarkdown(jsd);
 
             expect(md).toContain("|`x`|&nbsp;&nbsp;the value|");
             expect(md).not.toContain("Returns");

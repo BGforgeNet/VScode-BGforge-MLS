@@ -211,7 +211,7 @@ END`;
 // =============================================================================
 
 import { parseHeaderToSymbols } from "../../src/weidu-tp2/header-parser";
-import { SymbolKind, isCallableSymbol, isVariableSymbol } from "../../src/core/symbol";
+import { isCallableSymbol, isVariableSymbol } from "../../src/core/symbol";
 import type { CompletionItemWithCategory } from "../../src/shared/completion-context";
 import type { MarkupContent } from "vscode-languageserver/node";
 
@@ -291,7 +291,7 @@ Test function.
 |**INT**|**vars**|||
 |[int](https://ielib.bgforge.net/types/#int)|bonus||&nbsp;&nbsp;the bonus amount|
 |**STR**|**vars**|||
-|[string](https://ielib.bgforge.net/types/#string)|name|= ""|&nbsp;&nbsp;item name to use|`
+|[string](https://ielib.bgforge.net/types/#string)|name|=&nbsp;""|&nbsp;&nbsp;item name to use|`
             );
         });
 
@@ -367,7 +367,7 @@ Uses an item.
 | | | | |
 |-:|:-|:-|:-|
 |**STR**|**vars**|||
-|[resref](https://ielib.bgforge.net/types/#resref)|item|= ""|&nbsp;&nbsp;the item resref|`
+|[resref](https://ielib.bgforge.net/types/#resref)|item|=&nbsp;""|&nbsp;&nbsp;the item resref|`
             );
         });
     });

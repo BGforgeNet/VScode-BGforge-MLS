@@ -8,7 +8,7 @@ import type { Node } from "web-tree-sitter";
 import { parseWithCache, isInitialized } from "./parser";
 import { extractProcedures, makeRange, findPrecedingDocComment, extractMacros, extractParams, buildProcedureSignature } from "./utils";
 import * as jsdoc from "../shared/jsdoc";
-import { jsdocToDetail } from "../shared/jsdoc-utils";
+import { jsdocToDetail } from "./jsdoc-format";
 import { isConstantMacro } from "./macro-utils";
 
 function makeSymbol(node: Node, nameNode: Node, kind: SymbolKind, detail?: string): DocumentSymbol {

@@ -3569,10 +3569,21 @@ dimorphicFunctions:
     - name: FIND_FREE_PVRZ_INDEX
       doc: |-
         Attempt to find a contiguous block of free PVRZ indices in the game installation. This is a PATCH and an ACTION function.
-         This function attempts to find the first available free PVRZ index of a contiguous block which guarantees to fit at least `num_to_reserve` indices.
-         - INT_VAR `num_to_reserve` to the minimum required size of the contiguous block of free indices. This number should be no smaller than 1 nor no bigger than 999. The default value is 1.
-         - INT_VAR `start_index` to the index the search should begin at. The default value is 1000.
-         - RET `free_index` returns the first available index matching the specified parameters. Returns -1 on errors.
+        This function attempts to find the first available free PVRZ index of a contiguous block which guarantees to fit at least `num_to_reserve` indices.
+      args:
+        - name: num_to_reserve
+          type: int
+          doc: the minimum required size of the contiguous block of free indices (1-999)
+          default: "1"
+        - name: start_index
+          type: int
+          doc: the index the search should begin at
+          default: "1000"
+      rets:
+        - name: free_index
+          type: int
+          doc: the first available index matching the specified parameters, -1 on errors
+      type: dimorphic
     - name: GET_UNIQUE_FILE_NAME
       doc: |-
         Creates a file name that is currently unallocated. This is a PATCH and ACTION function. This function will create a filename using __ as a prefix. __ is reserved by The Bigg and writeable by anybody, as long as you dynamically create the file name (either by using this function or other code of your devising). The algorithm creates file names in base 36, going from __0000.ext to __zzzz.ext; this allows for 36 ^ 4 = 1679616 unique file names.
@@ -3606,11 +3617,22 @@ dimorphicFunctions:
     - name: SUBSTRING
       doc: |-
         Returns a substring of the provided string. This is an ACTION and PATCH function. All integer variables default to 0.
-         The function will fail with an error if either `start` or `length` are negative or if any of `start`, `length` or the sum of the two is greater than the length of `string`.
-         - INT_VAR `start` to the string index (0 based) from which the start of the substring should be read.
-         - INT_VAR `length` to the length of the substring to be read.
-         - STR_VAR `string` to the string the substring should be read from.
-         - RET `substring` the substring read from the provided string.
+        The function will fail with an error if either `start` or `length` are negative or if any of `start`, `length` or the sum of the two is greater than the length of `string`.
+      args:
+        - name: start
+          type: int
+          doc: the string index (0 based) from which the start of the substring should be read
+        - name: length
+          type: int
+          doc: the length of the substring to be read
+        - name: string
+          type: string
+          doc: the string the substring should be read from
+      rets:
+        - name: substring
+          type: string
+          doc: the substring read from the provided string
+      type: dimorphic
 
 actionMacros:
   type: 3 # function

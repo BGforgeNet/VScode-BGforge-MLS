@@ -20,7 +20,9 @@ import YAML from "yaml";
 interface DataArg {
     readonly name: string;
     readonly type: string;
-    readonly doc: string;
+    readonly doc?: string;
+    readonly required?: boolean;
+    readonly default?: string;
 }
 
 interface DataItem {
@@ -28,8 +30,44 @@ interface DataItem {
     readonly detail?: string;
     readonly doc?: string;
     readonly args?: readonly DataArg[];
+    readonly rets?: readonly DataArg[];
     readonly type?: string;
     readonly deprecated?: boolean;
+}
+
+// -- WeiDU type metadata --
+// SYNC: server/src/shared/weidu-types.ts (canonical type data, validated by type-sync.test.ts)
+
+/** INT_VAR or STR_VAR classification for WeiDU function parameters. */
+type VarCategory = "int" | "str";
+
+interface WeiduType {
+    readonly detail: string;
+    readonly category: VarCategory;
+}
+
+/** All known WeiDU JSDoc types with their display detail and variable category. */
+const WEIDU_JSDOC_TYPES: ReadonlyMap<string, WeiduType> = new Map([
+    ["array", { detail: "Array type", category: "int" }],
+    ["bool", { detail: "Boolean type", category: "int" }],
+    ["filename", { detail: "File name", category: "str" }],
+    ["ids", { detail: "IDS reference", category: "str" }],
+    ["int", { detail: "Integer type", category: "int" }],
+    ["list", { detail: "List type", category: "int" }],
+    ["map", { detail: "Map type", category: "int" }],
+    ["resref", { detail: "Resource reference", category: "str" }],
+    ["string", { detail: "String type", category: "str" }],
+]);
+
+/** Base URL for type documentation on ielib.bgforge.net. */
+const IELIB_TYPES_URL = "https://ielib.bgforge.net/types/#";
+
+/** Format a type name as a markdown link if it's a known WeiDU type, plain text otherwise. */
+function formatTypeLink(type: string): string {
+    if (!type) return "";
+    return WEIDU_JSDOC_TYPES.has(type)
+        ? `[${type}](${IELIB_TYPES_URL}${type})`
+        : type;
 }
 
 interface DataStanza {
@@ -69,6 +107,21 @@ interface SignatureResult {
 }
 
 // -- Core logic (exported for testing) --
+
+/** Known WeiDU item.type values that map to "X function NAME" detail strings. */
+const WEIDU_ITEM_TYPES = new Set(["patch", "action", "dimorphic"]);
+
+/**
+ * Returns true if the item uses WeiDU-style structured format.
+ * Detection: item.type is a known WeiDU callable type (patch/action/dimorphic)
+ * or item has rets. Arg types alone are ambiguous ("int" appears in both Fallout and WeiDU).
+ */
+function isWeiduFormat(item: DataItem): boolean {
+    if (item.type !== undefined && WEIDU_ITEM_TYPES.has(item.type)) {
+        return true;
+    }
+    return item.rets !== undefined;
+}
 
 const COMPLETION_TAG_DEPRECATED = 1;
 
@@ -113,29 +166,51 @@ export function loadData(yamlPaths: readonly string[]): DataFile {
 }
 
 /**
- * Returns full function invocation string, e.g. "int get_sfall_arg_at(int a, ObjectPtr b)".
+ * Returns full function invocation string.
+ * Fallout format: "int get_sfall_arg_at(int a, ObjectPtr b)"
+ * WeiDU format: "dimorphic function SUBSTRING" (no args in signature)
  * When includeTypes is false, omits types (used for signature labels).
  */
 export function getDetail(item: DataItem, includeTypes = true): string {
-    if (item.args !== undefined) {
-        if (includeTypes) {
-            const argsStr = item.args.map((a) => `${a.type} ${a.name}`).join(", ");
-            return `${item.type} ${item.name}(${argsStr})`;
+    if (item.args !== undefined || item.rets !== undefined) {
+        // WeiDU format: show "type function NAME" without parenthesized args
+        if (isWeiduFormat(item)) {
+            if (includeTypes && item.type !== undefined && WEIDU_ITEM_TYPES.has(item.type)) {
+                return `${item.type} function ${item.name}`;
+            }
+            return item.name;
         }
-        const argsStr = item.args.map((a) => a.name).join(", ");
-        return `${item.name}(${argsStr})`;
+
+        // Fallout format: show "returnType name(type arg, ...)"
+        if (item.args !== undefined) {
+            if (includeTypes) {
+                const argsStr = item.args.map((a) => `${a.type} ${a.name}`).join(", ");
+                return `${item.type} ${item.name}(${argsStr})`;
+            }
+            const argsStr = item.args.map((a) => a.name).join(", ");
+            return `${item.name}(${argsStr})`;
+        }
     }
     return item.detail ?? item.name;
 }
 
 /**
- * Generates markdown documentation from item args and doc field.
+ * Generates markdown documentation from item args, rets, and doc field.
+ * WeiDU items get INT_VAR/STR_VAR/RET tables; Fallout items get bullet lists.
  */
 export function getDoc(item: DataItem): string {
+    if (isWeiduFormat(item)) {
+        return getWeiduDoc(item);
+    }
+    return getFalloutDoc(item);
+}
+
+/** Fallout-style doc: bullet list of args + prose description. */
+function getFalloutDoc(item: DataItem): string {
     let doc = "";
     if (item.args !== undefined) {
         for (const arg of item.args) {
-            doc += `- \`${arg.name}\` ${arg.doc}\n`;
+            doc += `- \`${arg.name}\` ${arg.doc ?? ""}\n`;
         }
     }
     if (item.args !== undefined && item.doc !== undefined) {
@@ -144,6 +219,60 @@ export function getDoc(item: DataItem): string {
     if (item.doc !== undefined) {
         doc += item.doc;
     }
+    return doc;
+}
+
+/**
+ * Formats the default/required column value for a WeiDU arg table row.
+ * Required args show "_required_", args with defaults show the default value,
+ * otherwise empty.
+ */
+function formatArgDefault(arg: DataArg): string {
+    if (arg.required) return "_required_";
+    if (arg.default !== undefined) return `=&nbsp;${arg.default}`;
+    return "";
+}
+
+/**
+ * WeiDU-style doc: separate tables for INT_VAR, STR_VAR, and RET vars,
+ * matching the format produced by hover.ts:buildParamTable for JSDoc-parsed functions.
+ */
+function getWeiduDoc(item: DataItem): string {
+    let doc = "";
+
+    if (item.doc !== undefined) {
+        doc += `\n---\n\n${item.doc}`;
+    }
+
+    if (item.args !== undefined && item.args.length > 0) {
+        const intVars = item.args.filter((a) => WEIDU_JSDOC_TYPES.get(a.type)?.category === "int");
+        const strVars = item.args.filter((a) => WEIDU_JSDOC_TYPES.get(a.type)?.category === "str");
+
+        if (intVars.length > 0) {
+            doc += "\n\n**INT vars**\n\n|||||\n|-:|:-|:-|:-|";
+            for (const arg of intVars) {
+                const desc = arg.doc ? `&nbsp;&nbsp;${arg.doc}` : "";
+                doc += `\n|${formatTypeLink(arg.type)}|${arg.name}|${desc}|${formatArgDefault(arg)}|`;
+            }
+        }
+
+        if (strVars.length > 0) {
+            doc += "\n\n**STR vars**\n\n|||||\n|-:|:-|:-|:-|";
+            for (const arg of strVars) {
+                const desc = arg.doc ? `&nbsp;&nbsp;${arg.doc}` : "";
+                doc += `\n|${formatTypeLink(arg.type)}|${arg.name}|${desc}|${formatArgDefault(arg)}|`;
+            }
+        }
+    }
+
+    if (item.rets !== undefined && item.rets.length > 0) {
+        doc += `\n\n**RET vars**\n\n||||\n|-:|:-|:-|`;
+        for (const ret of item.rets) {
+            const desc = ret.doc ? `&nbsp;&nbsp;${ret.doc}` : "";
+            doc += `\n|${formatTypeLink(ret.type)}|${ret.name}|${desc}|`;
+        }
+    }
+
     return doc;
 }
 
@@ -199,7 +328,7 @@ export function generateHover(data: DataFile, langId: string): Record<string, Ho
     for (const [, stanza] of Object.entries(data)) {
         for (const item of stanza.items) {
             // Skip items with no data besides the name
-            if (item.detail === undefined && item.doc === undefined && item.args === undefined) {
+            if (item.detail === undefined && item.doc === undefined && item.args === undefined && item.rets === undefined) {
                 continue;
             }
 
@@ -219,6 +348,7 @@ export function generateHover(data: DataFile, langId: string): Record<string, Ho
 
 /**
  * Generates signature help data for items with args.
+ * WeiDU items include INT_VAR/STR_VAR category prefix in parameter docs.
  */
 export function generateSignatures(data: DataFile, langId: string): Record<string, SignatureResult> {
     const result: Record<string, SignatureResult> = {};
@@ -229,17 +359,32 @@ export function generateSignatures(data: DataFile, langId: string): Record<strin
             }
 
             const name = item.name;
+            const weidu = isWeiduFormat(item);
             const label = getDetail(item, false);
-            const parameters: SignatureParam[] = item.args.map((arg) => ({
-                label: arg.name,
-                documentation: markdown(`\`\`\`${langId}\n${arg.type} ${arg.name}\n\`\`\`\n${arg.doc}`),
-            }));
+            const parameters: SignatureParam[] = item.args.map((arg) => {
+                const categoryPrefix = weidu
+                    ? getCategoryPrefix(arg.type)
+                    : "";
+                const docStr = arg.doc ?? "";
+                return {
+                    label: arg.name,
+                    documentation: markdown(`\`\`\`${langId}\n${categoryPrefix}${arg.type} ${arg.name}\n\`\`\`\n${docStr}`),
+                };
+            });
 
-            const functionDoc = markdown(`---\n${item.doc}`);
+            const functionDoc = markdown(`---\n${item.doc ?? ""}`);
             result[name] = { label, documentation: functionDoc, parameters };
         }
     }
     return result;
+}
+
+/** Returns "INT_VAR " or "STR_VAR " prefix based on WeiDU type category. */
+function getCategoryPrefix(type: string): string {
+    const category = WEIDU_JSDOC_TYPES.get(type)?.category;
+    if (category === "int") return "INT_VAR ";
+    if (category === "str") return "STR_VAR ";
+    return "";
 }
 
 // -- CLI entry point (tested via subprocess in generate-data-cli.test.ts) --

@@ -13,7 +13,7 @@ import type { CallableSymbol, ConstantSymbol, IndexedSymbol } from "../core/symb
 import { ScopeLevel, SourceType, SymbolKind } from "../core/symbol";
 import * as definition from "../shared/definition";
 import * as jsdoc from "../shared/jsdoc";
-import { jsdocToDetail } from "../shared/jsdoc-utils";
+import { jsdocToDetail } from "./jsdoc-format";
 import { formatSignature } from "../shared/signature-format";
 import { type MacroData, buildMacroCompletion, buildMacroTooltip, buildSignatureFromJSDoc, isConstantMacro, parseMacroParams } from "./macro-utils";
 import { buildTooltipBase } from "./utils";
