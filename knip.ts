@@ -57,8 +57,6 @@ const config: KnipConfig = {
     // invoked in scripts/*.sh build scripts, not visible to knip
     "esbuild",
   ],
-  // esbuild uses glob patterns that knip can't resolve as imports
-  ignoreUnresolved: [/\.\/client\/src\/test\/\*\.ts/],
 };
 
 export default config;
