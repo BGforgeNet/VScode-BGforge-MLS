@@ -13,6 +13,7 @@ import type { Symbols } from "../core/symbol-index";
 import { SyntaxType } from "./tree-sitter.d";
 import { stripStringDelimiters } from "./tree-utils";
 import { buildWeiduTable, type VarRow, type VarSection } from "../shared/tooltip-table";
+import { buildSignatureBlock, formatDeprecation } from "../shared/tooltip-format";
 import { LANG_WEIDU_TP2_TOOLTIP } from "../core/languages";
 
 /** Maximum length for parameter descriptions in hover table. */
@@ -48,17 +49,15 @@ export function getFunctionParamHover(text: string, symbol: string, position: Po
     const signature = showDefault ? `${paramType} ${symbol} = ${defaultValue}` : `${paramType} ${symbol}`;
 
     // Build markdown documentation
-    const langId = LANG_WEIDU_TP2_TOOLTIP;
-    const docParts = [`\`\`\`${langId}`, signature, "```"];
-
+    let value = buildSignatureBlock(signature, LANG_WEIDU_TP2_TOOLTIP);
     if (description) {
-        docParts.push("", description);
+        value += "\n\n" + description;
     }
 
     return {
         contents: {
             kind: MarkupKind.Markdown,
-            value: docParts.join("\n"),
+            value,
         },
     };
 }
@@ -269,8 +268,6 @@ function findParamInCallableInfo(
  *   - `null` = skip path block entirely (for local symbols)
  */
 export function buildFunctionHover(funcInfo: FunctionInfo, displayPath?: string | null): Hover {
-    const langId = LANG_WEIDU_TP2_TOOLTIP;
-
     // Build JSDoc arg lookup map for type overrides
     const jsdocArgs = new Map<string, { type: string; description?: string; required?: boolean }>();
     if (funcInfo.jsdoc?.args) {
@@ -279,55 +276,29 @@ export function buildFunctionHover(funcInfo: FunctionInfo, displayPath?: string 
         }
     }
 
-    // 1. Function signature
+    // 1. Signature + file path
     const signatureLine = `${funcInfo.context} ${funcInfo.dtype} ${funcInfo.name}`;
+    const filePath = displayPath === null ? undefined : (displayPath ?? extractFilename(funcInfo.location.uri));
+    let markdownValue = buildSignatureBlock(signatureLine, LANG_WEIDU_TP2_TOOLTIP, filePath);
 
-    // 2. File path block (skip if displayPath === null)
-    let markdownValue: string;
-    if (displayPath === null) {
-        // Local symbol - no path block
-        markdownValue = [
-            "```" + `${langId}`,
-            signatureLine,
-            "```",
-        ].join("\n");
-    } else {
-        // Header/indexed symbol - include path
-        const filePath = displayPath ?? extractFilename(funcInfo.location.uri);
-        markdownValue = [
-            "```" + `${langId}`,
-            signatureLine,
-            "```",
-            "```bgforge-mls-comment",
-            filePath,
-            "```",
-        ].join("\n");
-    }
-
-    // 3. JSDoc description
+    // 2. JSDoc description
     if (funcInfo.jsdoc?.desc) {
         markdownValue += `\n\n${funcInfo.jsdoc.desc}`;
     }
 
-    // 4. Parameter table (INT vars, STR vars, RET vars, RET arrays)
+    // 3. Parameter table (INT vars, STR vars, RET vars, RET arrays)
     const paramTable = buildParamTable(funcInfo, jsdocArgs);
     if (paramTable) {
         markdownValue += "\n\n" + paramTable;
     }
 
-    // 5. Return description (@return) - hidden if no description
+    // 4. Return description (@return) - hidden if no description
     if (funcInfo.jsdoc?.ret?.description) {
         markdownValue += `\n\n**Returns** ${funcInfo.jsdoc.ret.description}`;
     }
 
-    // 6. Deprecation notice (@deprecated)
-    if (funcInfo.jsdoc?.deprecated !== undefined) {
-        if (funcInfo.jsdoc.deprecated === true) {
-            markdownValue += "\n\n**Deprecated**";
-        } else {
-            markdownValue += `\n\n**Deprecated:** ${funcInfo.jsdoc.deprecated}`;
-        }
-    }
+    // 5. Deprecation notice (@deprecated)
+    markdownValue += formatDeprecation(funcInfo.jsdoc?.deprecated);
 
     return {
         contents: {
@@ -461,8 +432,6 @@ function extractFilename(uri: string): string {
  *   - `null` = skip path block entirely (for local symbols)
  */
 export function buildVariableHover(varInfo: VariableInfo, displayPath?: string | null): Hover {
-    const langId = LANG_WEIDU_TP2_TOOLTIP;
-
     // Use JSDoc @type if available, otherwise inferred type
     const type = varInfo.jsdoc?.type ?? varInfo.inferredType;
     // Show value only for constant-like names where the first word is fully uppercase
@@ -471,41 +440,17 @@ export function buildVariableHover(varInfo: VariableInfo, displayPath?: string |
     const showValue = isConstant && varInfo.value !== undefined;
     const signature = showValue ? `${type} ${varInfo.name} = ${varInfo.value}` : `${type} ${varInfo.name}`;
 
-    // File path block (skip if displayPath === null)
-    let markdownValue: string;
-    if (displayPath === null) {
-        // Local symbol - no path block
-        markdownValue = [
-            "```" + `${langId}`,
-            signature,
-            "```",
-        ].join("\n");
-    } else {
-        // Header/indexed symbol - include path
-        const filePath = displayPath ?? extractFilename(varInfo.location.uri);
-        markdownValue = [
-            "```" + `${langId}`,
-            signature,
-            "```",
-            "```bgforge-mls-comment",
-            filePath,
-            "```",
-        ].join("\n");
-    }
+    // Signature + file path
+    const filePath = displayPath === null ? undefined : (displayPath ?? extractFilename(varInfo.location.uri));
+    let markdownValue = buildSignatureBlock(signature, LANG_WEIDU_TP2_TOOLTIP, filePath);
 
-    // Add JSDoc description if available
+    // JSDoc description
     if (varInfo.jsdoc?.desc) {
         markdownValue += `\n\n${varInfo.jsdoc.desc}`;
     }
 
-    // Add deprecation notice if present
-    if (varInfo.jsdoc?.deprecated !== undefined) {
-        if (varInfo.jsdoc.deprecated === true) {
-            markdownValue += "\n\n**Deprecated**";
-        } else {
-            markdownValue += `\n\n**Deprecated:** ${varInfo.jsdoc.deprecated}`;
-        }
-    }
+    // Deprecation notice
+    markdownValue += formatDeprecation(varInfo.jsdoc?.deprecated);
 
     return {
         contents: {

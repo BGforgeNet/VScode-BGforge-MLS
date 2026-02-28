@@ -10,9 +10,8 @@ import { jsdocToDetail } from "./jsdoc-format";
 import { formatSignature } from "../shared/signature-format";
 import * as signature from "../shared/signature";
 import { LANG_FALLOUT_SSL_TOOLTIP } from "../core/languages";
+import { buildSignatureBlock } from "../shared/tooltip-format";
 import { buildTooltipBase } from "./utils";
-
-const tooltipLangId = LANG_FALLOUT_SSL_TOOLTIP;
 
 /**
  * Check if macro name looks like a constant (all uppercase).
@@ -103,7 +102,7 @@ export function buildMacroTooltip(macro: MacroData, filePath: string): string {
     const isConstant = !macro.hasParams && isConstantMacro(macro.name);
     const isNumeric = !macro.hasParams && macro.firstline !== undefined && isNumericValue(macro.firstline);
     if (!isConstant && !isNumeric && !macro.multiline && macro.firstline) {
-        markdown += `\n\`\`\`${tooltipLangId}\n${macro.firstline}\n\`\`\``;
+        markdown += "\n" + buildSignatureBlock(macro.firstline, LANG_FALLOUT_SSL_TOOLTIP);
     }
 
     return markdown;
@@ -133,10 +132,9 @@ export function buildSignatureFromJSDoc(
     const parameters: ParameterInformation[] = [];
     for (const arg of jsd.args) {
         const info: ParameterInformation = { label: arg.name };
-        let doc = ["```" + `${tooltipLangId}`, `${arg.type} ${arg.name}`, "```"].join("\n");
+        let doc = buildSignatureBlock(`${arg.type} ${arg.name}`, LANG_FALLOUT_SSL_TOOLTIP);
         if (arg.description) {
-            doc += "\n";
-            doc += arg.description;
+            doc += "\n" + arg.description;
         }
         info.documentation = { kind: "markdown", value: doc };
         parameters.push(info);

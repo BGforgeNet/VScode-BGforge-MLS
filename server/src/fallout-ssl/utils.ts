@@ -8,6 +8,7 @@ import { makeRange } from "../core/position-utils";
 import { MacroData, parseMacroParams } from "./macro-utils";
 import * as jsdoc from "../shared/jsdoc";
 import { jsdocToMarkdown } from "./jsdoc-format";
+import { buildSignatureBlock } from "../shared/tooltip-format";
 import { LANG_FALLOUT_SSL_TOOLTIP } from "../core/languages";
 
 // Re-export for existing consumers
@@ -86,10 +87,7 @@ export function buildTooltipBase(
     jsdoc: jsdoc.JSdoc | null,
     filePath?: string
 ): string {
-    let markdown = `\`\`\`${LANG_FALLOUT_SSL_TOOLTIP}\n${signature}\n\`\`\``;
-    if (filePath) {
-        markdown += `\n\`\`\`bgforge-mls-comment\n${filePath}\n\`\`\``;
-    }
+    let markdown = buildSignatureBlock(signature, LANG_FALLOUT_SSL_TOOLTIP, filePath);
     if (jsdoc) {
         markdown += jsdocToMarkdown(jsdoc);
     }

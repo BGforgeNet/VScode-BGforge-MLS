@@ -6,6 +6,7 @@
 import type { JSdoc } from "../shared/jsdoc";
 import { formatSignature, type SignatureParam } from "../shared/signature-format";
 import { buildFalloutArgsTable } from "../shared/tooltip-table";
+import { formatDeprecation } from "../shared/tooltip-format";
 
 /**
  * Convert JSDoc to markdown documentation (Fallout SSL format).
@@ -27,20 +28,9 @@ export function jsdocToMarkdown(jsd: JSdoc): string {
         md += `\n\n**Returns** ${jsd.ret.description}`;
     }
 
-    md += formatDeprecated(jsd.deprecated);
+    md += formatDeprecation(jsd.deprecated);
 
     return md;
-}
-
-/** Format deprecation notice. */
-function formatDeprecated(deprecated: JSdoc["deprecated"]): string {
-    if (deprecated === undefined) {
-        return "";
-    }
-    if (deprecated === true) {
-        return "\n\n---\n\nDeprecated.";
-    }
-    return `\n\n---\n\nDeprecated: ${deprecated}`;
 }
 
 /**
