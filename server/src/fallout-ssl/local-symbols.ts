@@ -195,9 +195,7 @@ function buildVariableSymbol(
             kind: CompletionItemKind.Variable,
         },
         hover: { contents: hoverContents },
-        signature: undefined,
         variable: {
-            type: "unknown",
             description,
         },
     };

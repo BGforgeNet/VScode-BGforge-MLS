@@ -5,8 +5,9 @@
  */
 
 import { describe, expect, it } from "vitest";
-import { CompletionCategory, CompletionContext } from "../../src/weidu-tp2/completion/types";
-import { CATEGORY_EXCLUSIONS, VALID_CONTEXTS } from "../../src/weidu-tp2/completion/filter";
+import { CompletionItemKind } from "vscode-languageserver/node";
+import { CompletionCategory, CompletionContext, type Tp2CompletionItem } from "../../src/weidu-tp2/completion/types";
+import { CATEGORY_EXCLUSIONS, VALID_CONTEXTS, filterItemsByContext } from "../../src/weidu-tp2/completion/filter";
 
 describe("completion-filter", () => {
     // =========================================================================
@@ -125,6 +126,31 @@ describe("completion-filter", () => {
 
         it("should be excluded from lamName context (action macros only)", () => {
             expect(exclusions).toContain(CompletionContext.LamName);
+        });
+    });
+
+    // =========================================================================
+    // Items without category
+    // =========================================================================
+    describe("items without category", () => {
+        it("should pass through filter in action context", () => {
+            const items: Tp2CompletionItem[] = [
+                { label: "no_category_var", kind: CompletionItemKind.Variable },
+                { label: "with_category", kind: CompletionItemKind.Function, category: CompletionCategory.ActionFunctions },
+            ];
+            const result = filterItemsByContext(items, [CompletionContext.Action]);
+            const labels = result.map(i => i.label);
+            expect(labels).toContain("no_category_var");
+            expect(labels).toContain("with_category");
+        });
+
+        it("should pass through filter in patch context", () => {
+            const items: Tp2CompletionItem[] = [
+                { label: "local_var", kind: CompletionItemKind.Variable },
+            ];
+            const result = filterItemsByContext(items, [CompletionContext.Patch]);
+            expect(result).toHaveLength(1);
+            expect(result[0].label).toBe("local_var");
         });
     });
 });

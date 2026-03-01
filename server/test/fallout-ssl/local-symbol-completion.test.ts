@@ -14,6 +14,7 @@ vi.mock("../../src/common", () => ({
 
 import { lookupLocalSymbol, getLocalSymbols, clearAllLocalSymbolsCache } from "../../src/fallout-ssl/local-symbols";
 import { initParser } from "../../src/fallout-ssl/parser";
+import { isVariableSymbol } from "../../src/core/symbol";
 
 describe("fallout-ssl local symbol completion", () => {
     beforeAll(async () => {
@@ -98,6 +99,35 @@ export variable my_export := 0;
         const funcSymbol = lookupLocalSymbol("MY_FUNC", text, uri);
         expect(funcSymbol).toBeDefined();
         expect(funcSymbol?.completion.label).toBe("MY_FUNC");
+    });
+
+    it("should not set type on variable symbols when type is unknown", () => {
+        const text = `
+variable my_var := 42;
+`;
+        const uri = "file:///test.ssl";
+        clearAllLocalSymbolsCache();
+        const symbol = lookupLocalSymbol("my_var", text, uri);
+
+        expect(symbol).toBeDefined();
+        expect(isVariableSymbol(symbol!)).toBe(true);
+        if (isVariableSymbol(symbol!)) {
+            // Type should be omitted when not known, not set to magic "unknown" string
+            expect(symbol.variable.type).toBeUndefined();
+        }
+    });
+
+    it("should not have explicit signature on variable symbols", () => {
+        const text = `
+variable my_var := 42;
+`;
+        const uri = "file:///test.ssl";
+        clearAllLocalSymbolsCache();
+        const symbol = lookupLocalSymbol("my_var", text, uri);
+
+        expect(symbol).toBeDefined();
+        // signature should not be present (not even as undefined key)
+        expect("signature" in symbol!).toBe(false);
     });
 
     it("should return all local symbols from getLocalSymbols", () => {

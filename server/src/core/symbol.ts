@@ -217,8 +217,8 @@ export interface CallableInfo {
  * Information specific to variable symbols.
  */
 export interface VariableInfoData {
-    /** Inferred or declared type */
-    readonly type: string;
+    /** Inferred or declared type (omitted when unknown) */
+    readonly type?: string;
 
     /** Value if known (may be truncated) */
     readonly value?: string;

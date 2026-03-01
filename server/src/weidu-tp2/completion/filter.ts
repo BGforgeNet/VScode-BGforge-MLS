@@ -133,6 +133,11 @@ function isItemExcluded(item: Tp2CompletionItem, contexts: CompletionContext[]):
         return false;
     }
 
+    // Items without category are never excluded (e.g., local symbols without YAML data)
+    if (item.category === undefined) {
+        return false;
+    }
+
     // Get exclusion rules for this category
     const exclusions = CATEGORY_EXCLUSIONS[item.category];
     if (!exclusions || exclusions.length === 0) {

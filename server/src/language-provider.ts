@@ -61,16 +61,6 @@ export interface ProviderContext {
 }
 
 /**
- * Result from parsing a file for user-defined symbols.
- */
-export interface ParsedFileData {
-    completion?: CompletionItem[];
-    hover?: Map<string, Hover>;
-    signature?: Map<string, SignatureHelp>;
-    definition?: Map<string, Location>;
-}
-
-/**
  * The core interface for language support.
  *
  * Features fall into two categories:
@@ -166,9 +156,6 @@ export interface LanguageProvider {
     // =========================================================================
     // File parsing (for user-defined functions, macros, etc.)
     // =========================================================================
-
-    /** Parse a file to extract user-defined symbols. Called on open/change. */
-    parseFile?(uri: string, text: string): ParsedFileData | null;
 
     /** Reload data for a file (update internal caches). */
     reloadFileData?(uri: string, text: string): void;

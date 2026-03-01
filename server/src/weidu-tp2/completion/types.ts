@@ -70,7 +70,11 @@ export enum CompletionContext {
 export { CompletionCategory } from "../../shared/completion-context";
 
 import type { CompletionItemWithCategory } from "../../shared/completion-context";
-import { CompletionCategory } from "../../shared/completion-context";
 
-/** TP2 completion item with mandatory category for context filtering. */
-export type Tp2CompletionItem = CompletionItemWithCategory & { category: CompletionCategory };
+/**
+ * TP2 completion item with optional category for context filtering.
+ * Items from YAML data and AST extraction have category set.
+ * Items from external sources (local symbols, registry) may not.
+ * The filter treats missing category as "show in all contexts".
+ */
+export type Tp2CompletionItem = CompletionItemWithCategory;

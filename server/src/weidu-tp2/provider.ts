@@ -164,7 +164,7 @@ class WeiduTp2Provider implements LanguageProvider {
             return [];
         }
         const allSymbols = this.symbolStore.query({ excludeUri: uri });
-        return allSymbols.map((s: IndexedSymbol) => s.completion as Tp2CompletionItem);
+        return allSymbols.map((s: IndexedSymbol) => s.completion);
     }
 
     filterCompletions(items: CompletionItem[], text: string, position: Position, uri: string, triggerCharacter?: string): CompletionItem[] {
@@ -195,7 +195,7 @@ class WeiduTp2Provider implements LanguageProvider {
         for (const s of extractLocalSymbols(text, uri)) {
             if (!seen.has(s.name)) {
                 seen.add(s.name);
-                localCompletions.push(s.completion as Tp2CompletionItem);
+                localCompletions.push(s.completion);
             }
         }
 
@@ -207,7 +207,7 @@ class WeiduTp2Provider implements LanguageProvider {
             }
         }
 
-        const baseItems: Tp2CompletionItem[] = [...items as Tp2CompletionItem[], ...localCompletions];
+        const baseItems: Tp2CompletionItem[] = [...items, ...localCompletions];
         const withParams = addParamCompletions(baseItems, contexts, this.symbolStore);
         const withSnippets = applySnippets(withParams, contexts, text, uri, this.symbolStore);
 

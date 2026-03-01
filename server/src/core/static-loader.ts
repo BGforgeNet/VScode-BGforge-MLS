@@ -214,9 +214,7 @@ function convertToSymbol(item: StaticCompletionItem): IndexedSymbol {
         return {
             ...base,
             kind,
-            variable: {
-                type: "unknown",
-            },
+            variable: {},
         } as VariableSymbol;
     }
 
