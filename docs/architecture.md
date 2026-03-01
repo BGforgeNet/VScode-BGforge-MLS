@@ -166,10 +166,13 @@ All bundles use **esbuild** (not tsc). The monorepo uses **pnpm workspaces**.
 ```
 pnpm build
   |
-  +-> build:grammar       tree-sitter generate + WASM build (4 grammars)
-  +-> build:client         esbuild client + TS plugins + webviews
-  +-> build:server         esbuild server + CLIs + copy WASM to server/out/
-  +-> build:data           YAML -> JSON for completion/hover/signature data
+  +-> build:client        esbuild client + TS plugins + bin CLI
+  +-> build:server        esbuild server + CLIs + copy WASM to server/out/
+  +-> build:test          esbuild E2E test bundles
+  +-> build:webviews      esbuild webview bundles
+
+pnpm build:all            (build:grammar + build)
+pnpm build:dev            Minimal build for F5 development (skips CLIs)
 ```
 
 ### Key Build Constraints

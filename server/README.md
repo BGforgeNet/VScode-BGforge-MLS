@@ -108,7 +108,6 @@ server/src/
 |   +-- hover.ts              # Shared hover utilities
 |   +-- signature.ts          # Signature help utilities
 |   +-- jsdoc.ts              # JSDoc parsing
-|   +-- pool.ts               # Worker pool for headers
 |
 +-- translation.ts            # .tra/.msg translation service
 +-- compile.ts                # Compilation dispatch
@@ -401,7 +400,7 @@ Documented in provider-registry.ts.
 
 ```
 +------------------+     +------------------+     +------------------+
-| YAML data files  | --> | generate_data.py | --> | completion.      |
+| YAML data files  | --> | generate-data.ts | --> | completion.      |
 | (game functions) |     |                  |     | {lang}.json      |
 +------------------+     +------------------+     +------------------+
                                                          |

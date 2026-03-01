@@ -4,8 +4,8 @@
 
 ```bash
 pnpm install
-pnpm build            # Build client, server, webviews, TS plugins, CLIs
-pnpm test             # Typecheck + lint + unit tests + sample tests + CLI tests
+pnpm build            # Build client, server, test bundles, webviews (includes TS plugins + CLIs)
+pnpm test             # Typecheck + lint + unit tests + coverage + transpiler samples + CLI tests + knip
 pnpm watch:client     # Dev mode: rebuild on change
 pnpm watch:server
 ```
