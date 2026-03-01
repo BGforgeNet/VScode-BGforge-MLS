@@ -5,7 +5,7 @@
  * Uses unified Symbols storage for completion and hover data.
  */
 
-import type { CompletionItem, Hover } from "vscode-languageserver/node";
+import type { CompletionItem } from "vscode-languageserver/node";
 import { conlog } from "../common";
 import { LANG_WEIDU_BAF } from "../core/languages";
 import type { IndexedSymbol } from "../core/symbol";
@@ -14,7 +14,7 @@ import { loadStaticSymbols } from "../core/static-loader";
 import { type FormatResult, type LanguageProvider, type ProviderContext } from "../language-provider";
 import { getIndentFromEditorconfig } from "../shared/editorconfig";
 import { stripCommentsWeidu } from "../shared/format-utils";
-import { resolveSymbolStatic, getVisibleSymbolsStatic, getStaticCompletions, getStaticHover, formatWithValidation } from "../shared/provider-helpers";
+import { resolveSymbolStatic, getStaticCompletions, formatWithValidation } from "../shared/provider-helpers";
 import { fileURLToPath } from "url";
 import { formatDocument as formatAst, type FormatOptions } from "./format-core";
 import { initParser, parseWithCache, isInitialized } from "./parser";
@@ -53,10 +53,6 @@ class WeiduBafProvider implements LanguageProvider {
         return resolveSymbolStatic(name, this.symbolStore);
     }
 
-    getVisibleSymbols(_text: string, _uri: string): IndexedSymbol[] {
-        return getVisibleSymbolsStatic(this.symbolStore);
-    }
-
     format(text: string, uri: string): FormatResult {
         return formatWithValidation({
             text,
@@ -72,10 +68,6 @@ class WeiduBafProvider implements LanguageProvider {
 
     getCompletions(_uri: string): CompletionItem[] {
         return getStaticCompletions(this.symbolStore);
-    }
-
-    getHover(_uri: string, symbolName: string): Hover | null {
-        return getStaticHover(this.symbolStore, symbolName);
     }
 
     async compile(uri: string, text: string, interactive: boolean): Promise<void> {

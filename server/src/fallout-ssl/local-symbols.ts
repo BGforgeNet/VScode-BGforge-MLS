@@ -2,21 +2,24 @@
  * Local symbol extraction for Fallout SSL files.
  *
  * Converts the current document's AST to IndexedSymbol[] for unified
- * hover/completion/definition handling. This is the bridge between
- * AST-based local analysis and the indexed symbol lookup system.
+ * hover/completion/definition handling. Builds language-specific hover
+ * and completion directly (following the TP2 pattern), avoiding the
+ * generic symbol-builder path.
  *
  * Cached by text hash for performance - same text returns same result.
  */
 
-import { MarkupKind } from "vscode-languageserver/node";
-import type { IndexedSymbol, CallableSymbol, ConstantSymbol } from "../core/symbol";
+import { CompletionItemKind, MarkupKind } from "vscode-languageserver/node";
+import type { IndexedSymbol, CallableSymbol, ConstantSymbol, VariableSymbol } from "../core/symbol";
 import { SourceType, ScopeLevel, SymbolKind } from "../core/symbol";
-import { buildSymbol, type RawSymbolData, type ParameterData } from "../core/symbol-builder";
+import { LANG_FALLOUT_SSL_TOOLTIP } from "../core/languages";
+import { buildSignatureBlock } from "../shared/tooltip-format";
 import { TextCache } from "../shared/text-cache";
 import { parseWithCache, isInitialized } from "./parser";
-import { extractProcedures, extractMacros, findPrecedingDocComment, makeRange, extractParams } from "./utils";
-import { buildMacroTooltip, buildMacroCompletion } from "./macro-utils";
+import { extractProcedures, extractMacros, findPrecedingDocComment, makeRange, extractParams, buildProcedureSignature, buildTooltipBase } from "./utils";
+import { buildMacroTooltip, buildMacroCompletion, buildSignatureFromJSDoc } from "./macro-utils";
 import * as jsdoc from "../shared/jsdoc";
+import type { SigInfoEx } from "../shared/signature";
 
 /** Cached local symbols data: symbols array + name lookup map */
 interface LocalSymbolsData {
@@ -44,41 +47,58 @@ function parseLocalSymbols(text: string, uri: string): LocalSymbolsData | null {
     const symbols: IndexedSymbol[] = [];
     const root = tree.rootNode;
 
-    // Extract procedures
+    // Extract procedures - build language-specific hover/completion directly
     const procedures = extractProcedures(root);
     for (const [name, { node }] of procedures) {
         const range = makeRange(node);
         const docComment = findPrecedingDocComment(root, node);
         const parsed = docComment ? jsdoc.parse(docComment) : null;
 
-        // Extract parameter info with defaults from AST only (not JSDoc)
         const astParams = extractParams(node);
-        const parameters: ParameterData[] = astParams.map(p => {
-            // Find JSDoc for this param (for type and description only)
-            const jsdocArg = parsed?.args.find(a => a.name === p.name);
-            return {
-                name: p.name,
-                type: jsdocArg?.type,
-                description: jsdocArg?.description,
-                defaultValue: p.defaultValue,
-            };
-        });
+        const sig = buildProcedureSignature(name, astParams, parsed);
+        const hoverValue = buildTooltipBase(sig, parsed);
 
-        const rawData: RawSymbolData = {
+        const hoverContents = {
+            kind: MarkupKind.Markdown,
+            value: hoverValue,
+        };
+
+        // Build signature help from JSDoc if available.
+        // SigInfoEx extends SignatureInformation so it can be used directly.
+        const sigHelp: SigInfoEx | undefined = parsed && parsed.args.length > 0
+            ? buildSignatureFromJSDoc(name, parsed, uri)
+            : undefined;
+
+        const symbol: CallableSymbol = {
             name,
             kind: SymbolKind.Procedure,
             location: { uri, range },
             scope: { level: ScopeLevel.File },
             source: { type: SourceType.Document, uri },
-            parameters: parameters.length > 0 ? parameters : undefined,
-            description: parsed?.desc,
-            returnType: parsed?.ret?.type,
+            completion: {
+                label: name,
+                kind: CompletionItemKind.Function,
+                documentation: hoverContents,
+            },
+            hover: { contents: hoverContents },
+            signature: sigHelp,
+            callable: {
+                parameters: astParams.map(p => {
+                    const jsdocArg = parsed?.args.find(a => a.name === p.name);
+                    return {
+                        name: p.name,
+                        type: jsdocArg?.type,
+                        description: jsdocArg?.description,
+                        defaultValue: p.defaultValue,
+                    };
+                }),
+            },
         };
 
-        symbols.push(buildSymbol(rawData));
+        symbols.push(symbol);
     }
 
-    // Extract macros
+    // Extract macros - already built with language-specific formatters
     const macros = extractMacros(root);
     for (const macro of macros) {
         const macroHover = {
@@ -103,7 +123,7 @@ function parseLocalSymbols(text: string, uri: string): LocalSymbolsData | null {
                 ...base,
                 kind: SymbolKind.Macro,
                 callable: {
-                    params: macro.params?.map(p => ({ name: p })),
+                    parameters: macro.params?.map(p => ({ name: p })),
                 },
             } as CallableSymbol);
         } else {
@@ -117,36 +137,21 @@ function parseLocalSymbols(text: string, uri: string): LocalSymbolsData | null {
         }
     }
 
-    // Extract file-level variables and exports
+    // Extract file-level variables and exports - use language-tagged code fence
     for (const node of root.children) {
         if (node.type === "variable_decl") {
             for (const child of node.children) {
                 if (child.type === "var_init") {
                     const nameNode = child.childForFieldName("name");
                     if (nameNode) {
-                        const rawData: RawSymbolData = {
-                            name: nameNode.text,
-                            kind: SymbolKind.Variable,
-                            location: { uri, range: makeRange(child) },
-                            scope: { level: ScopeLevel.File },
-                            source: { type: SourceType.Document, uri },
-                        };
-                        symbols.push(buildSymbol(rawData));
+                        symbols.push(buildVariableSymbol(nameNode.text, uri, makeRange(child)));
                     }
                 }
             }
         } else if (node.type === "export_decl") {
             const nameNode = node.childForFieldName("name");
             if (nameNode) {
-                const rawData: RawSymbolData = {
-                    name: nameNode.text,
-                    kind: SymbolKind.Variable,
-                    location: { uri, range: makeRange(node) },
-                    scope: { level: ScopeLevel.File },
-                    source: { type: SourceType.Document, uri },
-                    description: "export variable",
-                };
-                symbols.push(buildSymbol(rawData));
+                symbols.push(buildVariableSymbol(nameNode.text, uri, makeRange(node), "export variable"));
             }
         }
     }
@@ -160,6 +165,42 @@ function parseLocalSymbols(text: string, uri: string): LocalSymbolsData | null {
     }
 
     return { symbols, byName };
+}
+
+/**
+ * Build a VariableSymbol with language-tagged code fence hover.
+ */
+function buildVariableSymbol(
+    name: string,
+    uri: string,
+    range: { start: { line: number; character: number }; end: { line: number; character: number } },
+    description?: string,
+): VariableSymbol {
+    const hoverValue = buildSignatureBlock(name, LANG_FALLOUT_SSL_TOOLTIP);
+    const hoverContents = {
+        kind: MarkupKind.Markdown,
+        value: description
+            ? hoverValue + "\n\n" + description
+            : hoverValue,
+    };
+
+    return {
+        name,
+        kind: SymbolKind.Variable,
+        location: { uri, range },
+        scope: { level: ScopeLevel.File },
+        source: { type: SourceType.Document, uri },
+        completion: {
+            label: name,
+            kind: CompletionItemKind.Variable,
+        },
+        hover: { contents: hoverContents },
+        signature: undefined,
+        variable: {
+            type: "unknown",
+            description,
+        },
+    };
 }
 
 /**

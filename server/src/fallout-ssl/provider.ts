@@ -4,9 +4,11 @@
  *
  * Uses unified Symbols storage for static completion and hover data.
  * Header-based symbols (procedures, macros from .h files) are handled by header-parser.
+ * Local symbols (current file) are built with language-specific formatters
+ * in local-symbols.ts, following the same pattern as TP2.
  */
 
-import { type CompletionItem, type DocumentSymbol, type Hover, type Location, type Position, type SignatureHelp, type WorkspaceEdit } from "vscode-languageserver/node";
+import { type CompletionItem, type DocumentSymbol, type Location, type Position, type SignatureHelp, type WorkspaceEdit } from "vscode-languageserver/node";
 import type { IndexedSymbol } from "../core/symbol";
 import { conlog, getLinePrefix } from "../common";
 import { EXT_FALLOUT_SSL_HEADERS, LANG_FALLOUT_SSL } from "../core/languages";
@@ -14,8 +16,8 @@ import { isHeaderFile } from "../core/location-utils";
 import { Symbols } from "../core/symbol-index";
 import { loadStaticSymbols } from "../core/static-loader";
 import { compile as falloutCompile } from "./compiler";
-import { type FormatResult, HoverResult, type LanguageProvider, type ProviderContext } from "../language-provider";
-import { resolveSymbolWithLocal, getVisibleSymbolsWithLocal } from "../shared/provider-helpers";
+import { type FormatResult, type LanguageProvider, type ProviderContext } from "../language-provider";
+import { resolveSymbolWithLocal } from "../shared/provider-helpers";
 import { getJsdocCompletions } from "../shared/jsdoc-completions";
 import { FALLOUT_JSDOC_TYPES } from "../shared/fallout-types";
 import * as signature from "../shared/signature";
@@ -23,9 +25,7 @@ import { formatDocument, initParser } from "./format";
 import { isInitialized } from "./parser";
 import { getDocumentSymbols } from "./symbol";
 import { getLocalDefinition } from "./definition";
-import { getLocalHover } from "./hover";
 import { renameSymbol, prepareRenameSymbol } from "./rename";
-import { getLocalCompletions } from "./completion";
 import { getLocalSignature } from "./signature";
 import { parseHeaderToSymbols } from "./header-parser";
 import { getLocalSymbols, lookupLocalSymbol, clearLocalSymbolsCache } from "./local-symbols";
@@ -57,10 +57,6 @@ class FalloutSslProvider implements LanguageProvider {
         return resolveSymbolWithLocal(name, text, uri, this.symbolStore, lookupLocalSymbol);
     }
 
-    getVisibleSymbols(text: string, uri: string): IndexedSymbol[] {
-        return getVisibleSymbolsWithLocal(text, uri, this.symbolStore, getLocalSymbols);
-    }
-
     format(text: string, uri: string): FormatResult {
         if (!isInitialized()) {
             return { edits: [] };
@@ -82,25 +78,7 @@ class FalloutSslProvider implements LanguageProvider {
         return getLocalDefinition(text, uri, position);
     }
 
-    hover(text: string, symbol: string, uri: string, _position: Position): HoverResult {
-        if (!isInitialized()) {
-            return HoverResult.notHandled();
-        }
-        const localHover = getLocalHover(text, symbol, uri);
-        if (localHover) {
-            return HoverResult.found(localHover);
-        }
-        return HoverResult.notHandled();
-    }
-
-    localCompletion(text: string): CompletionItem[] {
-        if (!isInitialized()) {
-            return [];
-        }
-        return getLocalCompletions(text);
-    }
-
-    filterCompletions(items: CompletionItem[], text: string, position: Position, _uri: string, triggerCharacter?: string): CompletionItem[] {
+    filterCompletions(items: CompletionItem[], text: string, position: Position, uri: string, triggerCharacter?: string): CompletionItem[] {
         const context = getSslCompletionContext(text, position);
 
         if (context === SslCompletionContext.Comment) {
@@ -114,7 +92,11 @@ class FalloutSslProvider implements LanguageProvider {
             return [];
         }
 
-        return items;
+        // Merge local symbols into completions (local takes precedence)
+        const localSymbols = getLocalSymbols(text, uri);
+        const localLabels = new Set(localSymbols.map(s => s.name));
+        const filtered = items.filter(item => !localLabels.has(item.label as string));
+        return [...localSymbols.map(s => s.completion), ...filtered];
     }
 
     shouldProvideFeatures(text: string, position: Position): boolean {
@@ -145,11 +127,6 @@ class FalloutSslProvider implements LanguageProvider {
 
     getCompletions(_uri: string): CompletionItem[] {
         return this.symbolStore ? this.symbolStore.query({}).map((s: IndexedSymbol) => s.completion) : [];
-    }
-
-    getHover(_uri: string, symbolName: string): Hover | null {
-        const symbol = this.symbolStore?.lookup(symbolName);
-        return symbol?.hover ?? null;
     }
 
     getSignature(_uri: string, symbolName: string, paramIndex: number): SignatureHelp | null {

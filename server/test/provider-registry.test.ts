@@ -412,43 +412,19 @@ describe("ProviderRegistry", () => {
             expect(registry.completion("nonexistent", "text", "file:///test.txt")).toEqual([]);
         });
 
-        it("should merge local and header completions", async () => {
+        it("should return header completions from getCompletions", async () => {
             const registry = await createRegistry();
-            const localItems: CompletionItem[] = [
-                { label: "localFunc", kind: CompletionItemKind.Function },
-            ];
             const headerItems: CompletionItem[] = [
                 { label: "headerFunc", kind: CompletionItemKind.Function },
             ];
             registry.register(createMockProvider("test", {
-                localCompletion: vi.fn().mockReturnValue(localItems),
-                getCompletions: vi.fn().mockReturnValue(headerItems),
-            }));
-
-            const result = registry.completion("test", "text", "file:///test.txt");
-
-            expect(result).toHaveLength(2);
-            expect(result.map(i => i.label)).toContain("localFunc");
-            expect(result.map(i => i.label)).toContain("headerFunc");
-        });
-
-        it("should deduplicate completions (local takes precedence)", async () => {
-            const registry = await createRegistry();
-            const localItems: CompletionItem[] = [
-                { label: "myFunc", kind: CompletionItemKind.Function, detail: "local" },
-            ];
-            const headerItems: CompletionItem[] = [
-                { label: "myFunc", kind: CompletionItemKind.Function, detail: "header" },
-            ];
-            registry.register(createMockProvider("test", {
-                localCompletion: vi.fn().mockReturnValue(localItems),
                 getCompletions: vi.fn().mockReturnValue(headerItems),
             }));
 
             const result = registry.completion("test", "text", "file:///test.txt");
 
             expect(result).toHaveLength(1);
-            expect(result[0].detail).toBe("local");
+            expect(result[0].label).toBe("headerFunc");
         });
 
         it("should apply filterCompletions if provider implements it", async () => {
@@ -498,12 +474,15 @@ describe("ProviderRegistry", () => {
             expect(registry.hover("nonexistent", "file:///test.txt", "symbol")).toBeNull();
         });
 
-        it("should delegate to provider's getHover", async () => {
+        it("should delegate to provider's resolveSymbol for hover", async () => {
             const registry = await createRegistry();
             const mockHover: Hover = { contents: "hover content" };
-            registry.register(createMockProvider("test", { getHover: vi.fn().mockReturnValue(mockHover) }));
+            const mockSymbol = { hover: mockHover };
+            registry.register(createMockProvider("test", {
+                resolveSymbol: vi.fn().mockReturnValue(mockSymbol),
+            }));
 
-            const result = registry.hover("test", "file:///test.txt", "symbol");
+            const result = registry.hover("test", "file:///test.txt", "symbol", "text");
 
             expect(result).toBe(mockHover);
         });

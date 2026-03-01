@@ -1,10 +1,10 @@
 /**
  * Tests for shared provider helpers.
- * Validates symbol resolution, visibility, formatting, completions, and hover.
+ * Validates symbol resolution, formatting, and completions.
  */
 
 import { describe, expect, it, vi, beforeEach } from "vitest";
-import type { CompletionItem, Hover } from "vscode-languageserver/node";
+import type { CompletionItem } from "vscode-languageserver/node";
 import type { IndexedSymbol } from "../src/core/symbol";
 import type { Symbols } from "../src/core/symbol-index";
 
@@ -20,7 +20,7 @@ function mockSymbol(name: string, uri: string | null = null): IndexedSymbol {
         name,
         source: { uri },
         completion: { label: name } as CompletionItem,
-        hover: { contents: `hover for ${name}` } as unknown as Hover,
+        hover: { contents: `hover for ${name}` },
         location: null,
     } as IndexedSymbol;
 }
@@ -112,70 +112,6 @@ describe("resolveSymbolWithLocal", () => {
     });
 });
 
-describe("getVisibleSymbolsStatic", () => {
-    let getVisibleSymbolsStatic: typeof import("../src/shared/provider-helpers").getVisibleSymbolsStatic;
-
-    beforeEach(async () => {
-        ({ getVisibleSymbolsStatic } = await import("../src/shared/provider-helpers"));
-    });
-
-    it("returns empty array when symbols is undefined", () => {
-        expect(getVisibleSymbolsStatic(undefined)).toEqual([]);
-    });
-
-    it("returns all symbols", () => {
-        const symbols = mockSymbols([
-            { name: "foo", uri: null },
-            { name: "bar", uri: null },
-        ]);
-        const result = getVisibleSymbolsStatic(symbols);
-        expect(result).toHaveLength(2);
-    });
-});
-
-describe("getVisibleSymbolsWithLocal", () => {
-    let getVisibleSymbolsWithLocal: typeof import("../src/shared/provider-helpers").getVisibleSymbolsWithLocal;
-
-    beforeEach(async () => {
-        ({ getVisibleSymbolsWithLocal } = await import("../src/shared/provider-helpers"));
-    });
-
-    it("merges local and indexed symbols", () => {
-        const localSymbol = mockSymbol("localFn", "file:///a.ts");
-        const getLocal = vi.fn().mockReturnValue([localSymbol]);
-        const symbols = mockSymbols([
-            { name: "staticFn", uri: null },
-            { name: "headerFn", uri: "file:///b.ts" },
-        ]);
-
-        const result = getVisibleSymbolsWithLocal("text", "file:///a.ts", symbols, getLocal);
-        expect(result).toHaveLength(3);
-        expect(result.map(s => s.name)).toEqual(["localFn", "staticFn", "headerFn"]);
-    });
-
-    it("local symbols take precedence over indexed", () => {
-        const localSymbol = mockSymbol("foo", "file:///a.ts");
-        const getLocal = vi.fn().mockReturnValue([localSymbol]);
-        const symbols = mockSymbols([{ name: "foo", uri: "file:///b.ts" }]);
-
-        const result = getVisibleSymbolsWithLocal("text", "file:///a.ts", symbols, getLocal);
-        expect(result).toHaveLength(1);
-        expect(result[0]).toBe(localSymbol);
-    });
-
-    it("excludes current file from indexed symbols", () => {
-        const getLocal = vi.fn().mockReturnValue([]);
-        const symbols = mockSymbols([
-            { name: "foo", uri: "file:///a.ts" },
-            { name: "bar", uri: "file:///b.ts" },
-        ]);
-
-        const result = getVisibleSymbolsWithLocal("text", "file:///a.ts", symbols, getLocal);
-        expect(result).toHaveLength(1);
-        expect(result[0]?.name).toBe("bar");
-    });
-});
-
 describe("getStaticCompletions", () => {
     let getStaticCompletions: typeof import("../src/shared/provider-helpers").getStaticCompletions;
 
@@ -195,29 +131,6 @@ describe("getStaticCompletions", () => {
         const result = getStaticCompletions(symbols);
         expect(result).toHaveLength(2);
         expect(result[0]?.label).toBe("foo");
-    });
-});
-
-describe("getStaticHover", () => {
-    let getStaticHover: typeof import("../src/shared/provider-helpers").getStaticHover;
-
-    beforeEach(async () => {
-        ({ getStaticHover } = await import("../src/shared/provider-helpers"));
-    });
-
-    it("returns null when symbols is undefined", () => {
-        expect(getStaticHover(undefined, "foo")).toBeNull();
-    });
-
-    it("returns hover for known symbol", () => {
-        const symbols = mockSymbols([{ name: "foo", uri: null }]);
-        const result = getStaticHover(symbols, "foo");
-        expect(result).not.toBeNull();
-    });
-
-    it("returns null for unknown symbol", () => {
-        const symbols = mockSymbols([{ name: "foo", uri: null }]);
-        expect(getStaticHover(symbols, "bar")).toBeNull();
     });
 });
 

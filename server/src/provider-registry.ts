@@ -236,9 +236,8 @@ class ProviderRegistry {
     // =========================================================================
 
     /**
-     * Get completions, merging local + headers.
-     * Local symbols take precedence (deduplicated by label).
-     * If provider implements filterCompletions, applies context-based filtering.
+     * Get completions from headers/static data, then apply context-based filtering.
+     * Local symbol merging happens inside each provider's filterCompletions().
      */
     completion(langId: string, text: string, uri: string, position?: Position, triggerCharacter?: string): CompletionItem[] {
         const provider = this.get(langId);
@@ -246,17 +245,10 @@ class ProviderRegistry {
             return [];
         }
 
-        // Get local completions (tree-sitter based for current file)
-        const localItems = provider.localCompletion ? provider.localCompletion(text) : [];
-
         // Get header/static completions
         const headerItems = provider.getCompletions ? provider.getCompletions(uri) : [];
 
-        // Merge with local taking precedence
-        const localLabels = new Set(localItems.map(item => item.label));
-        const filtered = headerItems.filter(item => !localLabels.has(item.label));
-
-        let result = [...localItems, ...filtered];
+        let result = [...headerItems];
 
         // Apply context-based filtering if provider supports it
         if (provider.filterCompletions && position) {
@@ -281,8 +273,6 @@ class ProviderRegistry {
      * Uses provider.resolveSymbol() which handles ALL merge logic:
      * - Local symbols (fresh buffer) checked first
      * - Indexed symbols (headers + static) as fallback, excluding current file
-     *
-     * Falls back to legacy provider.getHover() for providers not yet migrated.
      */
     hover(langId: string, uri: string, symbol: string, text?: string): Hover | null {
         const provider = this.get(langId);
@@ -290,20 +280,12 @@ class ProviderRegistry {
             return null;
         }
 
-        // Use unified resolution if available (Approach C)
         if (text && provider.resolveSymbol) {
             const resolved = provider.resolveSymbol(symbol, text, uri);
             if (resolved?.hover) {
                 return resolved.hover;
             }
-            // resolveSymbol returned undefined = not found anywhere
-            // Don't fall back to legacy getHover - resolveSymbol is authoritative
             return null;
-        }
-
-        // Legacy fallback for providers not yet migrated
-        if (provider.getHover) {
-            return provider.getHover(uri, symbol);
         }
 
         return null;

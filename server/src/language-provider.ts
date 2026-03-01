@@ -111,9 +111,6 @@ export interface LanguageProvider {
     /** Get hover info for a local symbol. Uses HoverResult to explicitly signal handled/not-handled. */
     hover?(text: string, symbol: string, uri: string, position: Position): HoverResult;
 
-    /** Get completion items for locally defined symbols. */
-    localCompletion?(text: string): CompletionItem[];
-
     /**
      * Filter completions based on cursor position context.
      * Called after all completions are gathered, before returning to client.
@@ -157,26 +154,8 @@ export interface LanguageProvider {
      */
     resolveSymbol?(name: string, text: string, uri: string): IndexedSymbol | undefined;
 
-    /**
-     * Get all visible symbols for completion.
-     *
-     * Returns symbols from:
-     * 1. Current document (fresh buffer)
-     * 2. Indexed files (headers + static), excluding current file to avoid duplicates
-     *
-     * The provider handles merge and deduplication internally.
-     *
-     * @param text Current document text
-     * @param uri Current document URI
-     * @returns All visible IndexedSymbol[]
-     */
-    getVisibleSymbols?(text: string, uri: string): IndexedSymbol[];
-
     /** Get completions for the document. Combines static + headers + file-specific. */
     getCompletions?(uri: string): CompletionItem[];
-
-    /** Get hover info for a symbol. */
-    getHover?(uri: string, symbol: string): Hover | null;
 
     /** Get signature help for a symbol. */
     getSignature?(uri: string, symbol: string, paramIndex: number): SignatureHelp | null;

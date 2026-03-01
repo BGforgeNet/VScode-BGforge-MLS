@@ -403,37 +403,39 @@ END
     });
 
     it("server flow returns variable hover when cursor is on variable outside function call", () => {
+        // Load variable from a .tph header (must be .tph, not .tp2, to be indexed)
         const varFileText = `
 OUTER_SET my_var = 456
 `;
-        const varUri = "file:///vars.tp2";
+        const varUri = "file:///vars.tph";
         weiduTp2Provider.reloadFileData?.(varUri, varFileText);
 
-        const text = `OUTER_SET local_copy = my_var
+        try {
+            const text = `OUTER_SET local_copy = my_var
 
 LAF some_func
     INT_VAR
         param = 1
 END
 `;
-        const uri = "file:///test.tp2";
-        const symbol = "my_var";
-        const position: Position = { line: 0, character: 25 };
+            const uri = "file:///test.tp2";
+            const symbol = "my_var";
+            const position: Position = { line: 0, character: 25 };
 
-        // 1. Gate passes
-        expect(weiduTp2Provider.shouldProvideFeatures?.(text, position)).toBe(true);
+            // 1. Gate passes
+            expect(weiduTp2Provider.shouldProvideFeatures?.(text, position)).toBe(true);
 
-        // 2. hover() tries variable hover
-        const localHover = weiduTp2Provider.hover?.(text, symbol, uri, position);
-        if (localHover?.handled) {
-            // If hover() found the variable, great
-            return;
+            // 2. hover() tries param hover / position suppression
+            const localHover = weiduTp2Provider.hover?.(text, symbol, uri, position);
+            expect(localHover?.handled).toBe(false);
+
+            // 3. Falls through to resolveSymbol() (the registry path)
+            const resolved = weiduTp2Provider.resolveSymbol?.(symbol, text, uri);
+            // Variable data should be available from the indexed symbol path
+            expect(resolved?.hover).toBeDefined();
+        } finally {
+            weiduTp2Provider.onWatchedFileDeleted?.(varUri);
         }
-
-        // 3. Falls through to getHover() — acceptable for variables
-        const fallbackHover = weiduTp2Provider.getHover?.(uri, symbol);
-        // Variable data should be available from the data-driven path
-        expect(fallbackHover).toBeDefined();
     });
 });
 

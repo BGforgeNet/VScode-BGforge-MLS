@@ -1,11 +1,11 @@
 /**
  * Shared provider helpers to reduce duplication across language providers.
  *
- * Contains common patterns for symbol resolution, visibility, formatting,
- * completions, and hover that are used by multiple providers.
+ * Contains common patterns for symbol resolution, formatting,
+ * and completions that are used by multiple providers.
  */
 
-import type { CompletionItem, Hover } from "vscode-languageserver/node";
+import type { CompletionItem } from "vscode-languageserver/node";
 import type { IndexedSymbol } from "../core/symbol";
 import type { Symbols } from "../core/symbol-index";
 import type { FormatResult } from "../language-provider";
@@ -64,40 +64,6 @@ export function resolveSymbolWithLocal(
 }
 
 // ============================================
-// Visible symbols for completion
-// ============================================
-
-/**
- * Get all visible symbols from static/indexed storage.
- * Used by providers without local symbols (BAF, D, Worldmap).
- */
-export function getVisibleSymbolsStatic(symbols: Symbols | undefined): IndexedSymbol[] {
-    return [...(symbols?.query({}) ?? [])];
-}
-
-/**
- * Get all visible symbols, merging local and indexed with local taking precedence.
- * Used by providers with local symbols (SSL, TP2).
- */
-export function getVisibleSymbolsWithLocal(
-    text: string,
-    uri: string,
-    symbols: Symbols | undefined,
-    getLocal: (text: string, uri: string) => IndexedSymbol[]
-): IndexedSymbol[] {
-    const localSymbols = getLocal(text, uri);
-    const localNames = new Set(localSymbols.map(s => s.name));
-
-    const indexedSymbols = symbols
-        ? symbols.query({ excludeUri: uri })
-        : [];
-
-    const filteredIndexed = indexedSymbols.filter((s: IndexedSymbol) => !localNames.has(s.name));
-
-    return [...localSymbols, ...filteredIndexed];
-}
-
-// ============================================
 // Static data access
 // ============================================
 
@@ -110,17 +76,6 @@ export function getStaticCompletions(symbols: Symbols | undefined): CompletionIt
         return [];
     }
     return symbols.query({}).map((s: IndexedSymbol) => s.completion);
-}
-
-/**
- * Get hover for a symbol from static/indexed storage.
- */
-export function getStaticHover(symbols: Symbols | undefined, symbolName: string): Hover | null {
-    if (!symbols) {
-        return null;
-    }
-    const symbol = symbols.lookup(symbolName);
-    return symbol?.hover ?? null;
 }
 
 // ============================================

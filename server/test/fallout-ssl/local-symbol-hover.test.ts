@@ -1,7 +1,7 @@
 /**
  * Tests for local symbol hover in Fallout SSL files.
  * Verifies that hover works for symbols defined in the current file
- * without showing redundant file paths.
+ * without showing redundant file paths, and uses language-tagged code fences.
  */
 
 import { describe, expect, it, beforeAll, vi } from "vitest";
@@ -101,5 +101,87 @@ variable my_var := 42;
         // Should NOT contain file path
         expect(value).not.toContain("test.ssl");
         expect(value).not.toContain("mymod");
+    });
+
+    it("should use language-tagged code fence for variable hover", () => {
+        const text = `
+variable my_var := 42;
+`;
+        const uri = "file:///test.ssl";
+        clearAllLocalSymbolsCache();
+        const symbol = lookupLocalSymbol("my_var", text, uri);
+
+        expect(symbol).toBeDefined();
+        const value = (symbol?.hover?.contents as { kind: string; value: string }).value;
+        // Should use fallout-ssl-tooltip language tag, not bare ```
+        expect(value).toContain("```fallout-ssl-tooltip");
+        expect(value).toContain("my_var");
+    });
+
+    it("should use language-tagged code fence for procedure hover", () => {
+        const text = `
+procedure my_proc begin
+end
+`;
+        const uri = "file:///test.ssl";
+        clearAllLocalSymbolsCache();
+        const symbol = lookupLocalSymbol("my_proc", text, uri);
+
+        expect(symbol).toBeDefined();
+        const value = (symbol?.hover?.contents as { kind: string; value: string }).value;
+        // Should use fallout-ssl-tooltip language tag
+        expect(value).toContain("```fallout-ssl-tooltip");
+        expect(value).toContain("my_proc");
+    });
+
+    it("should include JSDoc content in procedure hover", () => {
+        const text = `
+/**
+ * Calculates the sum
+ * @param int a First number
+ * @param int b Second number
+ * @return int The sum
+ */
+procedure add(a, b) begin
+    return a + b;
+end
+`;
+        const uri = "file:///test.ssl";
+        clearAllLocalSymbolsCache();
+        const symbol = lookupLocalSymbol("add", text, uri);
+
+        expect(symbol).toBeDefined();
+        const value = (symbol?.hover?.contents as { kind: string; value: string }).value;
+        expect(value).toContain("add");
+        expect(value).toContain("sum");
+    });
+
+    it("should include default parameter values in procedure hover", () => {
+        const text = `
+procedure test_defaults(variable x = 0, variable y, variable z = 5) begin
+end
+`;
+        const uri = "file:///test.ssl";
+        clearAllLocalSymbolsCache();
+        const symbol = lookupLocalSymbol("test_defaults", text, uri);
+
+        expect(symbol).toBeDefined();
+        const value = (symbol?.hover?.contents as { kind: string; value: string }).value;
+        expect(value).toContain("x = 0");
+        expect(value).toContain("z = 5");
+    });
+
+    it("should include export variable description in hover", () => {
+        const text = `
+export variable my_export := 0;
+`;
+        const uri = "file:///test.ssl";
+        clearAllLocalSymbolsCache();
+        const symbol = lookupLocalSymbol("my_export", text, uri);
+
+        expect(symbol).toBeDefined();
+        const value = (symbol?.hover?.contents as { kind: string; value: string }).value;
+        expect(value).toContain("my_export");
+        expect(value).toContain("export variable");
     });
 });

@@ -6,7 +6,7 @@
  * User-defined functions and variables from .tph headers are handled by header-parser.
  */
 
-import { type CompletionItem, type DocumentSymbol, type Hover, type Location, type Position, type WorkspaceEdit, InsertTextFormat } from "vscode-languageserver/node";
+import { type CompletionItem, type DocumentSymbol, type Location, type Position, type WorkspaceEdit, InsertTextFormat } from "vscode-languageserver/node";
 import { extname } from "path";
 import { fileURLToPath } from "url";
 import { conlog, getLinePrefix } from "../common";
@@ -17,7 +17,7 @@ import { loadStaticSymbols } from "../core/static-loader";
 import { type FormatResult, HoverResult, type LanguageProvider, type ProviderContext } from "../language-provider";
 import { getFormatOptions } from "../shared/format-options";
 import { stripCommentsWeidu } from "../shared/format-utils";
-import { resolveSymbolWithLocal, getVisibleSymbolsWithLocal, formatWithValidation } from "../shared/provider-helpers";
+import { resolveSymbolWithLocal, formatWithValidation } from "../shared/provider-helpers";
 import { compile as weiduCompile } from "../weidu-compile";
 import { getContextAtPosition, getFuncParamsContext } from "./completion/context";
 import { filterItemsByContext } from "./completion/filter";
@@ -159,10 +159,6 @@ class WeiduTp2Provider implements LanguageProvider {
         return resolveSymbolWithLocal(name, text, uri, this.symbolStore, lookupLocalSymbol);
     }
 
-    getVisibleSymbols(text: string, uri: string): IndexedSymbol[] {
-        return getVisibleSymbolsWithLocal(text, uri, this.symbolStore, extractLocalSymbols);
-    }
-
     getCompletions(uri: string): CompletionItem[] {
         if (!this.symbolStore) {
             return [];
@@ -189,12 +185,29 @@ class WeiduTp2Provider implements LanguageProvider {
             return [];
         }
 
-        const localVars = localCompletion(text);
-        const localFuncSymbols = extractLocalSymbols(text, uri)
-            .filter(s => isCallableSymbol(s))
-            .map(s => s.completion as Tp2CompletionItem);
+        // Merge local symbols: getLocalSymbols provides file-scope variables + functions
+        // with rich hover data, localCompletion provides deeply-scoped variables
+        // (inside function bodies, loops) that getLocalSymbols skips.
+        // Deduplicate by name — first occurrence wins (preserves rich hover data).
+        const seen = new Set<string>();
+        const localCompletions: Tp2CompletionItem[] = [];
 
-        const baseItems: Tp2CompletionItem[] = [...items as Tp2CompletionItem[], ...localVars, ...localFuncSymbols];
+        for (const s of extractLocalSymbols(text, uri)) {
+            if (!seen.has(s.name)) {
+                seen.add(s.name);
+                localCompletions.push(s.completion as Tp2CompletionItem);
+            }
+        }
+
+        // Deep-scoped variables not already covered by file-scope symbols
+        for (const v of localCompletion(text)) {
+            if (!seen.has(v.label as string)) {
+                seen.add(v.label as string);
+                localCompletions.push(v);
+            }
+        }
+
+        const baseItems: Tp2CompletionItem[] = [...items as Tp2CompletionItem[], ...localCompletions];
         const withParams = addParamCompletions(baseItems, contexts, this.symbolStore);
         const withSnippets = applySnippets(withParams, contexts, text, uri, this.symbolStore);
 
@@ -203,16 +216,6 @@ class WeiduTp2Provider implements LanguageProvider {
 
     shouldProvideFeatures(text: string, position: Position): boolean {
         return !isInsideComment(text, position);
-    }
-
-    getHover(_uri: string, symbolName: string): Hover | null {
-        if (this.symbolStore) {
-            const symbol = this.symbolStore.lookup(symbolName);
-            if (symbol?.hover) {
-                return symbol.hover;
-            }
-        }
-        return null;
     }
 
     hover(text: string, symbol: string, _uri: string, position: Position): HoverResult {
@@ -232,13 +235,8 @@ class WeiduTp2Provider implements LanguageProvider {
             }
         }
 
-        if (this.symbolStore) {
-            const sym = this.symbolStore.lookup(symbol);
-            if (sym?.hover) {
-                return HoverResult.found(sym.hover);
-            }
-        }
-
+        // Regular symbol hover is handled by resolveSymbol() via the registry.
+        // No need to duplicate the lookup here.
         return HoverResult.notHandled();
     }
 

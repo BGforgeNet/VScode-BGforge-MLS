@@ -1,13 +1,12 @@
 /**
  * Tests for unified symbol resolution in WeiDU TP2 provider.
  *
- * Approach C: Provider exposes resolveSymbol() and getVisibleSymbols().
+ * Provider exposes resolveSymbol() for local-first symbol lookup.
  * All merge logic (local + indexed, filtering) happens in the provider.
  * Registry just calls these methods - can't mess up filtering.
  */
 
 import { describe, expect, it, beforeAll, vi } from "vitest";
-import { MarkupKind } from "vscode-languageserver/node";
 
 // Mock LSP connection before importing provider
 vi.mock("../../src/common", () => ({
@@ -130,61 +129,6 @@ DEFINE_ACTION_FUNCTION my_func BEGIN END
             const result = weiduTp2Provider.resolveSymbol?.("nonexistent_symbol", text, uri);
 
             expect(result).toBeUndefined();
-        });
-    });
-
-    describe("getVisibleSymbols()", () => {
-        it("should return local symbols from current buffer", () => {
-            const text = `
-OUTER_SET local_var = 1
-DEFINE_ACTION_FUNCTION local_func BEGIN END
-`;
-            const uri = "file:///test.tp2";
-            const symbols = weiduTp2Provider.getVisibleSymbols?.(text, uri) ?? [];
-
-            const names = symbols.map(s => s.name);
-            expect(names).toContain("local_var");
-            expect(names).toContain("local_func");
-        });
-
-        it("should include static symbols", () => {
-            const text = ``;
-            const uri = "file:///test.tp2";
-            const symbols = weiduTp2Provider.getVisibleSymbols?.(text, uri) ?? [];
-
-            // Should include static symbols like COPY_EXISTING
-            const names = symbols.map(s => s.name);
-            expect(names).toContain("COPY_EXISTING");
-        });
-
-        it("should NOT include current file from index (avoid duplicates)", () => {
-            // If current file is indexed, those symbols should come from
-            // local parsing (fresh), not from index (potentially stale)
-            const text = `OUTER_SET unique_local = 42`;
-            const uri = "file:///test.tp2";
-            const symbols = weiduTp2Provider.getVisibleSymbols?.(text, uri) ?? [];
-
-            // Count how many times unique_local appears
-            const matches = symbols.filter(s => s.name === "unique_local");
-            expect(matches).toHaveLength(1); // Only once, from local, not duplicated from index
-        });
-
-        it("should have all IndexedSymbol fields populated", () => {
-            const text = `OUTER_SET complete_var = 1`;
-            const uri = "file:///test.tp2";
-            const symbols = weiduTp2Provider.getVisibleSymbols?.(text, uri) ?? [];
-
-            const sym = symbols.find(s => s.name === "complete_var");
-            expect(sym).toBeDefined();
-
-            // All required fields
-            expect(sym?.name).toBe("complete_var");
-            expect(sym?.kind).toBeDefined();
-            expect(sym?.location).toBeDefined();
-            expect(sym?.scope).toBeDefined();
-            expect(sym?.source).toBeDefined();
-            expect(sym?.completion).toBeDefined();
-            expect(sym?.hover).toBeDefined();
         });
     });
 
