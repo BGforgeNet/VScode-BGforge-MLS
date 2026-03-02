@@ -113,13 +113,17 @@ tp2-vars:
         The special variable `WEIDU_ARCH` is set to either `x86`, `amd64` or `mac` at WeiDU startup and can be used to determine the architecture of the WeiDU binary.
     - name: "%WEIDU_EXECUTABLE%"
       doc: |-
-        The special variable `WEIDU_EXECUTABLE` contains the full path of the current WeiDU binary.
+        The special variable `WEIDU_EXECUTABLE` is set to the name of the running WeiDU instance.
     - name: "%WEIDU_OS%"
       doc: |-
         The special variable `WEIDU_OS` is set to either `win32`, `osx` or `unix` at WeiDU startup and can be used to determine the operating system for which the WeiDU binary was compiled.
     - name: "%WEIDU_VER%"
       doc: |-
-        The special variable `WEIDU_VER` gets set at WeiDU startup and can be used to determine the version of the WeiDU binary (e.g., `24800`).
+        The special variable `WEIDU_VER` is set at start-up to the 5-digit version number of the currently running WeiDU binary (e.g.: `25100`).
+    - name: "%MOD_FOLDER%"
+      doc: |-
+        The `MOD_FOLDER` variable is set to the directory containing the `TP2` file, if there is one, otherwise it is set to the root directory of `directoryName` (see `BACKUP`).
+        As of `v251`, the contents of `%MOD_FOLDER%` are **case-exact**.
 
 tp2-file:
   type: 14 # keyword
@@ -543,7 +547,7 @@ tp2-action:
       detail: CREATE type [ VERSION version ] resref [ patch list ]
       doc: |-
         Creates a new file of the specified type with the resource reference resref and a correct file extension for the file type. If there are any patches, they are applied to contents of the new file. Any existing file with the same name will be backed up, as normal. The file will be created structurally correct but will contain no non-zero data aside from the structural details. The file version will be native to the current game, or default to "V1.0", but can be overridden with the VERSION option, which takes a string specifying the desired version. CREATE supports the file types ARE, CRE, EFF, ITM, SPL and STO and all their known file versions (aside from EFF V1.0, which is never found as a file).
-        As of `v251`, it sets `SOURCE_*` and `DEST_*` variables.
+        As of `v251`, `CREATE` sets `COPY` variables (`SOURCE_*` and `DEST_*`) as if the file were an implicit file being copied to the `override/` directory.
 
     - name: DECOMPRESS_BIFF
       detail: DECOMPRESS_BIFF file ...
@@ -813,7 +817,6 @@ tp2-optglob:
       doc: |-
         Use local filesystem globbing. Globbing is generally architecture specific!
     - name: NOGLOB
-      detail:
       doc: |-
         Never use local file system globbing. Or use sane defaults: enable globbing with COPY_EXISTING_REGEXP, disable it with COPY.
 
@@ -851,6 +854,16 @@ tp2-ArrayIndicesSortType:
     - name: NUMERICALLY
       doc: |-
         The sorting is in ascending numerical order. This requires that the first column of indices can be interpreted as numbers; any strings will raise a warning and the sort order will be undefined.
+
+tp2-caching:
+  type: 14 # keyword
+  items:
+    - name: CACHE
+      doc: |-
+        The result is cached and repeat calls use the cached result instead of calculating a new result. This can improve performance significantly.
+    - name: CLEAR
+      doc: |-
+        A cached result is cleared and the result is calculated anew.
 
 tp2-patch:
   type: 3 # function
@@ -2819,6 +2832,15 @@ tp2-patch:
       detail: variable = value
       doc: |-
         Update variable so that it is equal to value.
+
+    # as of v251
+    - name: FL#FJ_CRE_REINDEX
+      doc: |-
+        This function is a wrapper around `FJ_CRE_REINDEX` and allows you to use the conventional function interface together with `MODDER fun_args`.
+    - name: FL#FJ_CRE_VALIDITY
+      doc: |-
+        This function is a wrapper around `FJ_CRE_VALIDITY` and allows you to use the conventional function interface together with `MODDER fun_args`.
+
 tp2-when:
   type: 14 # keyword
   items:
@@ -3151,9 +3173,10 @@ tp2-value:
     - name: END
 
     - name: ENGINE_IS
-      detail: ENGINE_IS String
+      detail: ENGINE_IS Caching String
       doc: |-
-        Functions like GAME_IS except bg2=soa will detect SoA-based Tutu games in addition to SoA games, and tob will detect ToB-based Tutu games in addition to ToB and BGT games. As such, a mod that requires Throne of Bhaal's engine enhancements could use REQUIRE_PREDICATE ENGINE_IS ~tob~ .
+        Functions like `GAME_IS` except bg2=soa will detect SoA-based Tutu games in addition to SoA games, and tob will detect ToB-based Tutu games in addition to ToB and BGT games. As such, a mod that requires Throne of Bhaal's engine enhancements could use `REQUIRE_PREDICATE ENGINE_IS ~tob~`.
+        If `caching`, `ENGINE_IS` will return the same result for the same string, and do so much faster.
 
     - name: EVALUATE_BUFFER
       detail: EVALUATE_BUFFER variable
@@ -3223,7 +3246,7 @@ tp2-value:
       doc: |-
         Evaluates to 1 if the size of the file fileName is exactly fileSize. Evaluates to 0 otherwise.
     - name: GAME_INCLUDES
-      detail: GAME_INCLUDES String
+      detail: GAME_INCLUDES Caching String
       doc: |-
         Returns `true` if the IE game variant includes the game content specified by String, otherwise returns `false`.
         String is a single game chosen from
@@ -3242,9 +3265,9 @@ tp2-value:
         In the list, `bg2=soa` means that `bg2` and `soa` are synonyms, and you can use whichever one you like.
         Please note that unlike `GAME_IS` you only specify a single game, rather than a list of games.
         As an example, `GAME_INCLUDES ~tob~` will return true for any game which includes the ToB content, such as ToB itself, BGT or BG2EE.
-        If caching, `GAME_INCLUDES` will return the same result for the same string, and do so much faster.
+        If `caching`, `GAME_INCLUDES` will return the same result for the same string, and do so much faster.
     - name: GAME_IS
-      detail: GAME_IS String
+      detail: GAME_IS Caching String
       doc: |-
         Returns `true` if the IE game variant is one of the entries in String, otherwise returns `false`.
         String is a list of whitespace-separated entries, chosen from (case doesn't matter)
@@ -3274,7 +3297,7 @@ tp2-value:
         so bg2 will detect a SoA-only game, without either ToB or Tutu installed.
         As such, a mod which is usable with any flavor of BG2 and any flavor of Tutu or BG: EE would contain
         `REQUIRE_PREDICATE GAME_IS ~bg2 tob tutu tutu_totsc bgee bg2ee~`.
-        If caching, `GAME_IS` will return the same result for the same string, and do so much faster.
+        If `caching`, `GAME_IS` will return the same result for the same string, and do so much faster.
     - name: HAPPY
       doc: |-
         0xAC
