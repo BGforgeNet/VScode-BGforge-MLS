@@ -26,6 +26,7 @@ patterns:
   - include: '#weidu-tp2-optcase'
   - include: '#weidu-tp2-optexact'
   - include: '#weidu-tp2-arrarindicessorttype'
+  - include: '#weidu-tp2-caching'
   - include: '#weidu-tp2-patch'
   - include: '#weidu-tp2-macro'
   - include: '#weidu-tp2-patch-controls'
@@ -4742,6 +4743,12 @@ repository:
       - match: \b(LEXICOGRAPHICALLY)\b
       - match: \b(NUMERICALLY)\b
 
+  weidu-tp2-caching:
+    name: constant.language.flag.weidu-tp2
+    patterns:
+      - match: \b(CACHE)\b
+      - match: \b(CLEAR)\b
+
   weidu-tp2-patch:
     name: entity.name.function.weidu-tp2.patch
     patterns:
@@ -4950,6 +4957,9 @@ repository:
       - match: \b(HANDLE_AUDIO)\b
       - match: \b(HANDLE_TILESETS)\b
       - match: \b(HANDLE_CHARSETS)\b
+      # as of v251
+      - match: \b(FL#FJ_CRE_VALIDITY)\b
+      - match: \b(FL#FJ_CRE_REINDEX)\b
 
   weidu-tp2-patch-controls:
     name: entity.name.function.weidu-tp2.patch
