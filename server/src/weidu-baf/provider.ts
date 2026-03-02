@@ -49,6 +49,8 @@ class WeiduBafProvider implements LanguageProvider {
         conlog(`WeiDU BAF provider initialized with ${staticSymbols.length} static symbols`);
     }
 
+    // BAF has no user-defined constructs (no functions/macros/variables),
+    // so symbol lookup is static-only (YAML data: actions + triggers).
     resolveSymbol(name: string, _text: string, _uri: string): IndexedSymbol | undefined {
         return resolveSymbolStatic(name, this.symbolStore);
     }

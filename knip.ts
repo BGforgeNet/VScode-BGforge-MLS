@@ -25,9 +25,8 @@ const config: KnipConfig = {
       ignore: ["out/**"],
     },
     server: {
-      entry: [
-        "src/server.ts",
-      ],
+      // Entry resolved from package.json "main" field (src/server.ts).
+      // No explicit entry needed here.
       ignore: ["out/**", "**/*.d.ts"],
     },
   },

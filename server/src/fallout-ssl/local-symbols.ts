@@ -3,10 +3,17 @@
  *
  * Converts the current document's AST to IndexedSymbol[] for unified
  * hover/completion/definition handling. Builds language-specific hover
- * and completion directly (following the TP2 pattern), avoiding the
- * generic symbol-builder path.
+ * and completion directly (following the TP2 pattern).
  *
  * Cached by text hash for performance - same text returns same result.
+ *
+ * Symbol-building pattern: Tree-sitter AST with SSL-specific formatting.
+ * Extracts procedures/macros/variables from the current document's AST
+ * and builds IndexedSymbol using SSL formatters (buildTooltipBase,
+ * buildProcedureSignature, buildMacroTooltip). Shares macro helpers with
+ * header-parser.ts but constructs the base symbol inline. Cannot use TP2's
+ * helpers (different AST node types and tooltip format) or the static loader
+ * (needs runtime AST parsing).
  */
 
 import { CompletionItemKind, MarkupKind } from "vscode-languageserver/node";

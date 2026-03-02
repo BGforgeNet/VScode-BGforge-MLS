@@ -38,6 +38,8 @@ class WeiduDProvider implements LanguageProvider {
         conlog(`WeiDU D provider initialized with ${staticSymbols.length} static symbols`);
     }
 
+    // D files have state labels but no user-defined functions/macros.
+    // Symbol lookup is static-only (YAML data: actions + triggers).
     resolveSymbol(name: string, _text: string, _uri: string): IndexedSymbol | undefined {
         return resolveSymbolStatic(name, this.symbolStore);
     }

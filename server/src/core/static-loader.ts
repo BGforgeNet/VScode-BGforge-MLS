@@ -7,6 +7,13 @@
  *
  * The completion JSON already contains embedded hover documentation, so we only
  * need to load one file to get both completion and hover data.
+ *
+ * Symbol-building pattern: Universal factory for all languages.
+ * Uses a generic `convertToSymbol()` factory that maps JSON completion items
+ * to the IndexedSymbol discriminated union. Language-agnostic — hover/completion
+ * content comes pre-formatted from the YAML→JSON pipeline (generate-data.ts).
+ * This pattern cannot be merged with the language-specific builders because those
+ * need AST/regex parsing and language-specific tooltip formatting.
  */
 
 import { readFileSync } from "fs";

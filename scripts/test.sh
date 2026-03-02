@@ -69,6 +69,9 @@ pnpm test:external
 step "Checking for unused code (knip)"
 pnpm knip
 
+step "Checking for dead production code (knip --production)"
+pnpm knip:prod
+
 _end_time=$(date +%s%3N)
 echo "  ^ $(( _end_time - _prev_time )) ms"
 echo ""

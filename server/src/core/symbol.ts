@@ -13,9 +13,9 @@
  * - Immutable: All fields are readonly
  * - Pre-computed: LSP responses are built once at parse time
  *
- * Note: DocumentSymbol is NOT pre-computed here. It's computed on request from
- * Symbol[] because it has a hierarchical structure (parent/children) that doesn't
- * fit flat storage. See document-symbols.ts for that conversion.
+ * Note: DocumentSymbol is NOT pre-computed here. It's computed on request by each
+ * provider's symbols() method because it requires AST traversal specific to each
+ * language.
  */
 
 import {
@@ -329,7 +329,7 @@ export const CALLABLE_KINDS: ReadonlySet<SymbolKind> = new Set([
 ]);
 
 /** Set of variable symbol kinds */
-export const VARIABLE_KINDS: ReadonlySet<SymbolKind> = new Set([
+const VARIABLE_KINDS: ReadonlySet<SymbolKind> = new Set([
     SymbolKind.Variable,
     SymbolKind.Parameter,
     SymbolKind.LoopVariable,

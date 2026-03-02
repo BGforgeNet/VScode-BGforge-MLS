@@ -4,6 +4,7 @@
     "version": "2.3.0",
     "author": "BGforge",
     "license": "SEE LICENSE IN LICENSE.txt",
+    "main": "src/server.ts",
     "engines": {
         "vscode": "^1.69.2",
         "node": "*"

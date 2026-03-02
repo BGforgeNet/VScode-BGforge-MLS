@@ -1,6 +1,14 @@
 /**
  * Tree-sitter based header parser for WeiDU TP2 files.
  * Extracts function/macro definitions with JSDoc and parameter info.
+ *
+ * Symbol-building pattern: Helper functions isolating conversion logic.
+ * Exposes `functionInfoToSymbol()` and `variableInfoToSymbol()` helpers that
+ * convert parsed AST data into IndexedSymbol with WeiDU-specific formatting
+ * (INT_VAR/STR_VAR tables, TP2 code fences). This is the best pattern among
+ * all providers — helpers are independently testable, reusable by both
+ * header-parser and local-symbols, and cleanly separate parsing from symbol
+ * construction. Future providers should follow this approach.
  */
 
 import type { Node as SyntaxNode } from "web-tree-sitter";

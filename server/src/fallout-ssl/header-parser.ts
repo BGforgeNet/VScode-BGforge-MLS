@@ -3,6 +3,12 @@
  * Handles regex-based parsing of .h files for procedures, macros, and definitions.
  *
  * Main API: parseHeaderToSymbols() - Returns IndexedSymbol[] for unified storage.
+ *
+ * Symbol-building pattern: Regex-based extraction with JSDoc, SSL-specific.
+ * Parses .h header files using regex (no tree-sitter grammar for headers) and
+ * builds IndexedSymbol with SSL-specific tooltip formatting (buildTooltipBase,
+ * buildMacroTooltip). Cannot use TP2's tree-sitter helpers (different grammar)
+ * or the static loader (needs runtime parsing, not pre-generated JSON).
  */
 
 import { CompletionItemKind, type Location } from "vscode-languageserver";

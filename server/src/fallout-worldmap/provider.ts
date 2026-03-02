@@ -26,6 +26,8 @@ class FalloutWorldmapProvider implements LanguageProvider {
         conlog(`Fallout Worldmap provider initialized with ${staticSymbols.length} static symbols`);
     }
 
+    // Worldmap is a simple key-value config format, no user-defined constructs.
+    // Symbol lookup is static-only (YAML data: worldmap field names).
     resolveSymbol(name: string, _text: string, _uri: string): IndexedSymbol | undefined {
         return resolveSymbolStatic(name, this.symbolStore);
     }

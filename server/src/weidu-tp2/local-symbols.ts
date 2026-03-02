@@ -7,6 +7,12 @@
  *
  * Cached by text hash for performance - same text returns same result.
  * Also maintains a name->symbol map for O(1) lookups.
+ *
+ * Symbol-building pattern: Delegates to header-parser helpers.
+ * Reuses `parseHeaderToSymbols()` from header-parser.ts, which internally
+ * uses the `functionInfoToSymbol()`/`variableInfoToSymbol()` helpers.
+ * This file is a thin caching wrapper — all symbol construction logic
+ * lives in header-parser.ts.
  */
 
 import type { IndexedSymbol } from "../core/symbol";

@@ -71,9 +71,7 @@ server/src/
 +-- core/
 |   +-- symbol.ts             # IndexedSymbol type definitions
 |   +-- symbol-index.ts       # Symbols class - unified storage & query
-|   +-- symbol-builder.ts     # Raw data -> IndexedSymbol
 |   +-- static-loader.ts      # Loads built-in symbols from JSON
-|   +-- document-symbols.ts   # DocumentSymbol[] conversion
 |   +-- languages.ts          # Language IDs & file extensions
 |   +-- patterns.ts           # Regex patterns
 |   +-- location-utils.ts     # Position/range helpers
