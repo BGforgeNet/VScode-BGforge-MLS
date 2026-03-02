@@ -10,7 +10,9 @@ import { CallableContext, CallableDefType, type CallableInfo, type CallableParam
 // Helper to create a CallableInfo with known params
 function createCallableInfo(
     intVarParams: CallableParam[],
-    strVarParams: CallableParam[]
+    strVarParams: CallableParam[],
+    retParams: string[] = [],
+    retArrayParams: string[] = [],
 ): CallableInfo {
     return {
         context: CallableContext.Action,
@@ -18,8 +20,8 @@ function createCallableInfo(
         params: {
             intVar: intVarParams,
             strVar: strVarParams,
-            ret: [],
-            retArray: [],
+            ret: retParams,
+            retArray: retArrayParams,
         },
     };
 }
@@ -267,6 +269,94 @@ describe("weidu-tp2: function call snippet generation", () => {
             dtype: CallableDefType.Macro,
         };
         // LAM/LPM don't take inline params — variables are set in calling scope
+        expect(buildFunctionCallSnippet(macroCallable, "my_macro", "LAM")).toBe(
+            "LAM my_macro\n$0"
+        );
+    });
+
+    // ---- RET / RET_ARRAY auto-insertion in snippets ----
+
+    it("auto-inserts RET block for function with ret params", () => {
+        const callable = createCallableInfo([], [], ["result"]);
+        expect(buildFunctionCallSnippet(callable, "my_func", "LAF")).toBe(
+            "LAF my_func\n    RET\n        result\nEND\n$0"
+        );
+    });
+
+    it("auto-inserts RET_ARRAY block for function with retArray params", () => {
+        const callable = createCallableInfo([], [], [], ["items"]);
+        expect(buildFunctionCallSnippet(callable, "my_func", "LAF")).toBe(
+            "LAF my_func\n    RET_ARRAY\n        items\nEND\n$0"
+        );
+    });
+
+    it("auto-inserts both RET and RET_ARRAY blocks", () => {
+        const callable = createCallableInfo([], [], ["result"], ["items"]);
+        expect(buildFunctionCallSnippet(callable, "my_func", "LAF")).toBe(
+            "LAF my_func\n    RET\n        result\n    RET_ARRAY\n        items\nEND\n$0"
+        );
+    });
+
+    it("auto-inserts all param sections: INT_VAR, STR_VAR, RET, RET_ARRAY", () => {
+        const callable = createCallableInfo(
+            [{ name: "count", type: "int", required: true }],
+            [{ name: "name", type: "string", required: true }],
+            ["result"],
+            ["items"]
+        );
+        expect(buildFunctionCallSnippet(callable, "full_func", "LAF")).toBe(
+            "LAF full_func\n"
+            + "    INT_VAR\n"
+            + "        count = ${1}\n"
+            + "    STR_VAR\n"
+            + "        name = ${2}\n"
+            + "    RET\n"
+            + "        result\n"
+            + "    RET_ARRAY\n"
+            + "        items\n"
+            + "END\n$0"
+        );
+    });
+
+    it("auto-inserts multiple RET params", () => {
+        const callable = createCallableInfo([], [], ["a", "b", "longname"]);
+        expect(buildFunctionCallSnippet(callable, "my_func", "LAF")).toBe(
+            "LAF my_func\n    RET\n        a\n        b\n        longname\nEND\n$0"
+        );
+    });
+
+    it("auto-inserts RET with optional INT_VAR/STR_VAR (no required input params)", () => {
+        const callable = createCallableInfo(
+            [{ name: "x", type: "int", defaultValue: "0" }],
+            [],
+            ["result"]
+        );
+        // Has optional input params + RET: should show RET block, cursor in body for optional params
+        expect(buildFunctionCallSnippet(callable, "my_func", "LAF")).toBe(
+            "LAF my_func\n    RET\n        result\nEND\n$0"
+        );
+    });
+
+    it("generates snippet without prefix when only RET params exist", () => {
+        const callable = createCallableInfo([], [], ["result"]);
+        expect(buildFunctionCallSnippet(callable, "my_func")).toBe(
+            "my_func\n    RET\n        result\nEND\n$0"
+        );
+    });
+
+    it("treats function with only RET params as having params (not empty)", () => {
+        const callable = createCallableInfo([], [], ["result"]);
+        // Should NOT be null — there are RET params to show
+        expect(buildFunctionCallSnippet(callable, "my_func")).not.toBeNull();
+    });
+
+    it("generates LAM snippet ignoring RET params", () => {
+        const callable = createCallableInfo([], [], ["result"], ["items"]);
+        const macroCallable: CallableInfo = {
+            ...callable,
+            context: CallableContext.Action,
+            dtype: CallableDefType.Macro,
+        };
         expect(buildFunctionCallSnippet(macroCallable, "my_macro", "LAM")).toBe(
             "LAM my_macro\n$0"
         );

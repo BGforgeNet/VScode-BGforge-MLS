@@ -96,6 +96,14 @@ BEGIN
     WRITE_BYTE 0x00 0
 END
 
+DEFINE_PATCH_FUNCTION func_with_ret
+    STR_VAR resource = ~~
+    RET success
+    RET_ARRAY items
+BEGIN
+    WRITE_BYTE 0x00 0
+END
+
 DEFINE_PATCH_MACRO my_patch_macro
 BEGIN
     WRITE_BYTE 0x00 0
@@ -216,5 +224,19 @@ describe("weidu-tp2: snippet integration in lpfName context", () => {
     it("filters out macros from lpfName context", () => {
         const item = findCompletion(LPF_TEXT, LPF_LINE, LPF_COL, "my_patch_macro");
         expect(item).toBeUndefined();
+    });
+
+    it("auto-inserts RET and RET_ARRAY blocks for function with ret params", () => {
+        const item = findCompletion(LPF_TEXT, LPF_LINE, LPF_COL, "func_with_ret");
+        expect(item).toBeDefined();
+        expect(item!.insertTextFormat).toBe(InsertTextFormat.Snippet);
+        expect(item!.insertText).toBe(
+            "func_with_ret\n"
+            + "    RET\n"
+            + "        success\n"
+            + "    RET_ARRAY\n"
+            + "        items\n"
+            + "END\n$0"
+        );
     });
 });

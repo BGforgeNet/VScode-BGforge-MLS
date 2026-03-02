@@ -76,7 +76,8 @@ export function buildFunctionCallSnippet(callable: CallableInfo, name: string, p
     // When params is undefined (static symbols from YAML), assume params may exist.
     const params = callable.params;
     const hasParams = params !== undefined
-        && (params.intVar.length > 0 || params.strVar.length > 0);
+        && (params.intVar.length > 0 || params.strVar.length > 0
+            || params.ret.length > 0 || params.retArray.length > 0);
     const mayHaveParams = params === undefined || hasParams;
 
     // Without prefix (lafName/lpfName context), only generate snippet if may have params
@@ -96,20 +97,25 @@ export function buildFunctionCallSnippet(callable: CallableInfo, name: string, p
         return `${firstLine} END\n$0`;
     }
 
-    // If any required params exist, build explicit param blocks
+    // If any required input params or any RET params exist, build explicit param blocks
     const requiredInt = params?.intVar.filter(p => p.required) ?? [];
     const requiredStr = params?.strVar.filter(p => p.required) ?? [];
+    const retParams = params?.ret ?? [];
+    const retArrayParams = params?.retArray ?? [];
 
-    if (requiredInt.length > 0 || requiredStr.length > 0) {
+    if (requiredInt.length > 0 || requiredStr.length > 0
+        || retParams.length > 0 || retArrayParams.length > 0) {
         const lines = [firstLine];
         let tabStop = 1;
         tabStop = appendParamBlock(lines, "INT_VAR", requiredInt, tabStop);
-        appendParamBlock(lines, "STR_VAR", requiredStr, tabStop);
+        tabStop = appendParamBlock(lines, "STR_VAR", requiredStr, tabStop);
+        appendRetBlock(lines, "RET", retParams);
+        appendRetBlock(lines, "RET_ARRAY", retArrayParams);
         lines.push("END");
         return lines.join("\n") + "\n$0";
     }
 
-    // Has params but none required: cursor between name and END for manual entry
+    // Has params but none required and no RET: cursor between name and END for manual entry
     return `${firstLine}\n${INDENT_UNIT}$0\nEND`;
 }
 
@@ -137,4 +143,23 @@ function appendParamBlock(
         lines.push(`${ASSIGN_INDENT}${p.name}${padding} = \${${tabStop++}}`);
     }
     return tabStop;
+}
+
+/**
+ * Append a RET or RET_ARRAY block with plain identifiers.
+ * RET supports both `RET var = expr` and the short form `RET var`.
+ * We insert the short form since it covers the common case.
+ */
+function appendRetBlock(
+    lines: string[],
+    keyword: "RET" | "RET_ARRAY",
+    params: readonly string[],
+): void {
+    if (params.length === 0) {
+        return;
+    }
+    lines.push(`${KEYWORD_INDENT}${keyword}`);
+    for (const name of params) {
+        lines.push(`${ASSIGN_INDENT}${name}`);
+    }
 }
