@@ -3365,17 +3365,11 @@ tp2-value:
     - name: LEADER
       doc: |-
         0xBC
-    - name: LNL
-      doc: |-
-        Linux/Unix/OSX new line
     - name: LONG_AT
       detail: LONG_AT offset
       doc: |-
         The 32-bit value from the file at the given offset.
     - name: MISCELLANEOUS
-    - name: MNL
-      doc: |-
-        (pre-OSX) Macintosh new line
     - name: MODULO
       detail: value MODULO value
       doc: |-
@@ -3644,10 +3638,6 @@ tp2-value:
     - name: STR_VAR
       doc: |-
         String variable
-    - name: TAB
-      doc: |-
-        tabulation character
-
     - name: TARGET_IMMUNE
       doc: |-
         0x1B0
@@ -3687,7 +3677,16 @@ tp2-value:
         Returns true if the variable String is set (there's a variable called either String or %String%, regardless of whether it is a string or an integer).
     - name: WNL
       doc: |-
-        Windows new line
+        Windows new line (`\r\n`).
+    - name: MNL
+      doc: |-
+        (Pre-OSX) Macintosh new line (`\r`).
+    - name: LNL
+      doc: |-
+        Linux/Unix/OSX new line (`\n`).
+    - name: TAB
+      doc: |-
+        Tabulation character (`\t`).
 
     # as of v251
     - name: VARIABLE_IS_IN_ARRAY
@@ -3695,7 +3694,7 @@ tp2-value:
       doc: |-
         Returns true if the array variable is set, as per
         `VARIABLE_IS_SET`, and if it is a member of an array, in the way
-        that has it, for example, iterared over by `PHP_EACH`.
+        that has it, for example, iterated over by `PHP_EACH`.
     - name: DEFINED_AS_FUNCTION
       detail: DEFINED_AS_FUNCTION variable
       doc: |-
