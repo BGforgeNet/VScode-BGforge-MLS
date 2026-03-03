@@ -116,6 +116,17 @@ Compile-time only. Spread supported:
   const base = ["a", "b"];
   const all = [...base, "c"];  // ["a", "b", "c"]
 
+=== POINT ARGUMENTS ===
+
+BAF uses [x.y] dot notation for coordinates. In TBAF, use [number, number] tuples:
+
+  CreateCreature("ccguard2", [2791, 831], 6);
+  // -> CreateCreature("ccguard2", [2791.831], 6)
+
+Negative coordinates supported: [-1, -1] -> [-1.-1]
+Works through variable substitution, function inlining, and loop unrolling.
+Only two-element numeric arrays are converted. [1, 2, 3] and [PC] are unchanged.
+
 === ENUMS ===
 
   enum Spell { Shield = "WIZARD_SHIELD", Armor = "WIZARD_ARMOR" }

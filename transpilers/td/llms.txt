@@ -133,6 +133,16 @@ goTo(functionRef)   Function reference -> automatically included in the dialog
 goTo("label")       String label
 goTo(5)             Numeric state index
 
+=== POINT ARGUMENTS ===
+
+BAF uses [x.y] dot notation for coordinates. In TD actions, use [number, number] tuples:
+
+  reply(tra(1)).action(CreateCreature("ccguard2", [2791, 831], 6)).exit();
+  // -> DO ~CreateCreature("ccguard2",[2791.831],6)~ EXIT
+
+Negative coordinates supported: [-1, -1] -> [-1.-1]
+Only two-element numeric arrays are converted. [1, 2, 3] and [PC] are unchanged.
+
 === AUTOMATIC STATE COLLECTION ===
 
 Only list root states in begin()/append(). The transpiler follows goTo(functionRef)

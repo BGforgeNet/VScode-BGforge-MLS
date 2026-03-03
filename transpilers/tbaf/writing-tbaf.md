@@ -293,6 +293,41 @@ for (const target of all) {
 }
 ```
 
+### Point Arguments
+
+BAF uses dot-separated `[x.y]` notation for coordinate points. In TBAF, use standard TypeScript tuples `[number, number]` and the transpiler converts them automatically:
+
+```typescript
+if (True()) {
+    CreateCreature("ccguard2", [2791, 831], 6);
+}
+// -> CreateCreature("ccguard2", [2791.831], 6)
+```
+
+Negative coordinates are supported (e.g. `[-1, -1]` for "current location"):
+
+```typescript
+CreateCreature("g_spy1", [-1, -1], 0);
+// -> CreateCreature("g_spy1", [-1.-1], 0)
+```
+
+Point tuples work through variable substitution, function inlining, and loop unrolling:
+
+```typescript
+const positions: [string, [number, number]][] = [
+    ["ccguard1", [100, 200]],
+    ["ccguard2", [300, 400]],
+];
+
+for (const [resref, pos] of positions) {
+    if (True()) {
+        CreateCreature(resref, pos, 0);
+    }
+}
+```
+
+Only two-element numeric arrays are converted. Three-element arrays like `[1, 2, 3]` and object identifiers like `[PC]` are left unchanged.
+
 ### Enums
 
 Numeric and string enums. Property access is substituted at compile time:

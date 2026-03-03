@@ -225,7 +225,8 @@ Two webview-based features, each with a host-side and browser-side module:
 | Feature | Host Module | Webview Module | Trigger |
 |---------|------------|---------------|---------|
 | Dialog Tree (SSL) | `dialog-tree/dialogTree.ts` | `dialogTree-webview.ts` | Ctrl+Shift+V in SSL |
-| Dialog Tree (D) | `dialog-tree/dialogTree-d.ts` | `dialogTree-webview.ts` | Ctrl+Shift+V in D |
+| Dialog Tree (D/TD) | `dialog-tree/dialogTree-d.ts` | `dialogTree-webview.ts` | Ctrl+Shift+V in D/TD |
+| Dialog Tree (TSSL) | `dialog-tree/dialogTree.ts` | `dialogTree-webview.ts` | Ctrl+Shift+V in TSSL |
 | Binary Editor | `editors/binaryEditor.ts` | `binaryEditor-webview.ts` | Open .pro file |
 
 ## Server Architecture
@@ -268,7 +269,8 @@ Source (.tssl/.tbaf/.td)
 ```
 
 **Shared utilities** (`transpiler-utils.ts`): variable substitution, loop unrolling
-(max 1000 iterations), array spread/destructuring, helper fixups (obj/tra/tlk).
+(max 1000 iterations), array spread/destructuring, helper fixups (obj/tra/tlk),
+point tuple conversion (`[x, y]` -> `[x.y]`).
 
 **Shared bundler** (`tbaf/bundle.ts`): esbuild with externalized `.d.ts` imports,
 used by all three transpilers.
@@ -276,8 +278,8 @@ used by all three transpilers.
 | Transpiler | Input | Output | Key Features |
 |------------|-------|--------|-------------|
 | TSSL | `.tssl` | `.ssl` | const/let, loops, functions, enum pre-transform |
-| TBAF | `.tbaf` | `.baf` | for/for-of, arrays, spread, destructuring, function inlining |
-| TD | `.td` | `.d` | All TBAF features + conditionals, method chains, transitive state collection, orphan warnings |
+| TBAF | `.tbaf` | `.baf` | for/for-of, arrays, spread, destructuring, function inlining, point tuples |
+| TD | `.td` | `.d` | All TBAF features + conditionals, method chains, transitive state collection, orphan warnings, dialog preview |
 
 **TD module structure** (`server/src/td/`):
 
@@ -294,6 +296,7 @@ used by all three transpilers.
 | `patch-operations.ts` | Patch operation transforms (ALTER_TRANS, etc.) |
 | `emit.ts` | IR -> D text serialization |
 | `types.ts` | IR types (TDScript, TDConstruct, TDState, TDSay, etc.) |
+| `dialog.ts` | Dialog tree preview parsing (parseTDDialog) |
 | `td-runtime.d.ts` | TypeScript declarations for TD API |
 
 ## CLI Tools
@@ -409,7 +412,7 @@ See [scripts/README.md](../scripts/README.md) for all test commands.
 
 Four test layers:
 
-- **Server unit tests** (`server/test/`, vitest) -- ~1800 tests covering providers, transpilers, core symbol system, shared utilities
+- **Server unit tests** (`server/test/`, vitest) -- ~1900 tests covering providers, transpilers, core symbol system, shared utilities
 - **Integration tests** -- grammar corpus, TD/TBAF sample transpilation, format comparison, CLI exit codes
 - **E2E tests** (`client/src/test/`, mocha + vscode) -- completion, hover in a real VSCode instance
 - **Grammar tests** (`grammars/*/test/corpus/`) -- tree-sitter corpus tests per grammar

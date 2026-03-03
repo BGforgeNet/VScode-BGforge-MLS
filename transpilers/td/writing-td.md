@@ -688,6 +688,20 @@ Local files can also be imported:
 import { helper } from "./my-lib";
 ```
 
+## Point Arguments
+
+BAF uses dot-separated `[x.y]` notation for coordinate points. In TD actions, use standard TypeScript tuples `[number, number]` and the transpiler converts them automatically:
+
+```typescript
+function myState() {
+    say(tra(1));
+    reply(tra(2)).action(CreateCreature("ccguard2", [2791, 831], 6)).exit();
+}
+// -> DO ~CreateCreature("ccguard2",[2791.831],6)~ EXIT
+```
+
+Negative coordinates are supported (e.g. `[-1, -1]` for "current location"). Only two-element numeric arrays are converted. Three-element arrays and object identifiers like `[PC]` are left unchanged.
+
 ## Gotchas and Pitfalls
 
 1. **Unreferenced state functions are removed and warned about.** If a state function isn't passed to `begin()`/`append()` and isn't reachable via `goTo()`, it is removed. The orphan detection will warn you.
