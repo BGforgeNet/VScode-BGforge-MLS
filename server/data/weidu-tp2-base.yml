@@ -102,6 +102,28 @@ tp2-vars:
       doc: Set by `COPY_*` family of functions. Like `SOURCE_RES`, but based on `toFile`.
     - name: DEST_EXT
       doc: Set by `COPY_*` family of functions. Like `SOURCE_EXT`, but based on `toFile`.
+    - name: "%COMPONENT_NUMBER%"
+      doc: |-
+        The special variable `COMPONENT_NUMBER` is set to the number of the component being installed.
+    - name: "%INTERACTIVE%"
+      doc: |-
+        The special variable `INTERACTIVE` is set to `1` if the install is being done interactively (IE you launched `setup-mymod.exe` and you're installing `mymod`), or is set to `0` if the install is being done non-interactively (IE you launched `setup-mymod.exe` and now WeiDU is reinstalling `othermod` due to the domino uninstall and reinstall).
+    - name: "%WEIDU_ARCH%"
+      doc: |-
+        The special variable `WEIDU_ARCH` is set to either `x86`, `amd64` or `mac` at WeiDU startup and can be used to determine the architecture of the WeiDU binary.
+    - name: "%WEIDU_EXECUTABLE%"
+      doc: |-
+        The special variable `WEIDU_EXECUTABLE` is set to the name of the running WeiDU instance.
+    - name: "%WEIDU_OS%"
+      doc: |-
+        The special variable `WEIDU_OS` is set to either `win32`, `osx` or `unix` at WeiDU startup and can be used to determine the operating system for which the WeiDU binary was compiled.
+    - name: "%WEIDU_VER%"
+      doc: |-
+        The special variable `WEIDU_VER` is set at start-up to the 5-digit version number of the currently running WeiDU binary (e.g.: `25100`).
+    - name: "%MOD_FOLDER%"
+      doc: |-
+        The `MOD_FOLDER` variable is set to the directory containing the `TP2` file, if there is one, otherwise it is set to the root directory of `directoryName` (see `BACKUP`).
+        As of `v251`, the contents of `%MOD_FOLDER%` are **case-exact**.
 
 tp2-file:
   type: 14 # keyword
@@ -132,9 +154,22 @@ tp2-flag:
         EVALUATE_BUFFER is used whenever variables are evaluated. In particular, you can now "forget" about using it in FUNCTIONs and arrays. Note, TP2 defines multiple instances of EVALUATE_BUFFER, like EVALUATE_BUFFER, but these are not affected by AUTO_EVAL_STRINGS.
 
     - name: AUTO_TRA
-      detail: AUTO_TRA path
+      detail: AUTO_TRA path [ subdir ]
       doc: |-
-        The AUTO_TRA flag is used with the COMPILE TP2 Action. It automatically loads TRA files that match your D files. The TRA file loaded by AUTO_TRA takes precedence over all other TRA files.
+        The `AUTO_TRA` flag is used with the `COMPILE` and
+        `EXTEND_TOP (TP2)` `TP2 Action`s. It automatically loads
+        `TRA` files that match your `D` files. The
+        expression `%s`, occurring in path, is replaced with the
+        `languageDirectory` of the `LANGUAGE` the user
+        selected. The `TRA` file loaded by `AUTO_TRA` takes
+        precedence over all other `TRA` files. Variables are
+        evaluated when the action is processed. If a subdirectory is
+        provided, any matching `TRA` file in this directory is loaded
+        after the corresponding `TRA` file in the normal directory on
+        **EE-type** games. Only the name of the subdirectory itself should
+        be given. If `foo` is your mod folder, `bar` is your `TRA` folder
+        and `baz` is your subdirectory, your `AUTO_TRA` might look
+        like `AUTO_TRA ~foo/bar~ ~baz~`.
     - name: MODDER
       detail: MODDER String list
       doc: |-
@@ -293,6 +328,7 @@ tp2-action:
       detail: ACTION_READLN variable
       doc: |-
         Waits for the user to provided an enter-terminated string and store it in variable. Said string will be stored and re-used during non-interactive reinstalls. See the READLN tutorial.
+        As of `v251`, it emits the 'bell' (code 7) control character when asking for input.
 
     - name: ACTION_REINCLUDE
       detail: ACTION_REINCLUDE String list
@@ -511,6 +547,7 @@ tp2-action:
       detail: CREATE type [ VERSION version ] resref [ patch list ]
       doc: |-
         Creates a new file of the specified type with the resource reference resref and a correct file extension for the file type. If there are any patches, they are applied to contents of the new file. Any existing file with the same name will be backed up, as normal. The file will be created structurally correct but will contain no non-zero data aside from the structural details. The file version will be native to the current game, or default to "V1.0", but can be overridden with the VERSION option, which takes a string specifying the desired version. CREATE supports the file types ARE, CRE, EFF, ITM, SPL and STO and all their known file versions (aside from EFF V1.0, which is never found as a file).
+        As of `v251`, `CREATE` sets `COPY` variables (`SOURCE_*` and `DEST_*`) as if the file were an implicit file being copied to the `override/` directory.
 
     - name: DECOMPRESS_BIFF
       detail: DECOMPRESS_BIFF file ...
@@ -549,22 +586,22 @@ tp2-action:
         Removes one or more files from the chitin.key, while leaving the containing bif file itself untouched. Do not use without a real reason.
 
     - name: EXTEND_BOTTOM
-      detail: EXTEND_BOTTOM existingBCS newFile patch list [ USING traName list ]
+      detail: EXTEND_BOTTOM existingBCS newFile patch list [ USING traName list ] when list
       doc: |-
         As EXTEND_TOP, but the newFile file is put at the bottom of the existingBCS file. User variables in the filenames existingFile and newFile are replaced by their values.
 
     - name: EXTEND_BOTTOM_REGEXP
-      detail: EXTEND_BOTTOM_REGEXP existingBCSregexp newFile patch list [ USING traName list ]
+      detail: EXTEND_BOTTOM_REGEXP existingBCSregexp newFile patch list [ USING traName list ] when list
       doc: |-
         See EXTEND_TOP_REGEXP.
 
     - name: EXTEND_TOP
-      detail: EXTEND_TOP existingBCS newFile patch list [ USING traName list ]
+      detail: EXTEND_TOP existingBCS newFile patch list [ USING traName list ] when list
       doc: |-
         Loads existingFile (which may be BAF or BCS), prepends all of newBCS to the top of it, applies all of the patches, and then copies it to the override folder. User variables in the filenames existingFile and newFile are replaced by their values. Use EVALUATE_BUFFER if you want to evaluate variables inside the body of newFile before parsing it.
 
     - name: EXTEND_TOP_REGEXP
-      detail: EXTEND_TOP_REGEXP existingBCSregexp newFile patch list [ USING traName list ]
+      detail: EXTEND_TOP_REGEXP existingBCSregexp newFile patch list [ USING traName list ] when list
       doc: |-
         As EXTEND_TOP, but the newFile file is put at the top of the every BCS file that matches the regexp existingBCSregexp.
     - name: FAIL
@@ -662,9 +699,10 @@ tp2-action:
       doc: |-
         Equal to OUTER_INNER_PATCH_SAVE, if you feel that OUTER_INNER sounds wrong.
     - name: OUTER_SET
-      detail: OUTER_SET variable = value
+      detail: OUTER_SET [ GLOBAL ] variable = value
       doc: |-
         Update variable so that it is equal to value.
+        If `GLOBAL` is provided, the variable is set in a special variable scope that can be accessed from any other variable scope. Normal variables do, however, shadow `GLOBAL` variables if they have the same variable name.
     - name: LOCAL_SET
       detail: LOCAL_SET variable = value
       doc: |-
@@ -676,7 +714,7 @@ tp2-action:
       doc: |-
         If value evaluates to zero or a positive number, N, the first N characters of the evaluated contents of stringWithVars are assigned to variable. If value evaluates to a negative number, N, it's instead the last N characters. Thus: SPRINT author Jason SNPRINT 3 myvar "1:%author%" ... assigns 1:J to myvar.
     - name: OUTER_SPRINT
-      detail: OUTER_SPRINT variable stringWithVars
+      detail: OUTER_SPRINT [ GLOBAL ] variable stringWithVars
       doc: |-
         Like OUTER_TEXT_SPRINT, but stringWithVars can be an @reference, and will break --traify. Use OUTER_TEXT_SPRINT instead.
     - name: LOCAL_SPRINT
@@ -684,9 +722,10 @@ tp2-action:
       doc: |-
         Like LOCAL_TEXT_SPRINT, but stringWithVars can be an @reference, and will break --traify. Use LOCAL_TEXT_SPRINT instead.
     - name: OUTER_TEXT_SPRINT
-      detail: OUTER_TEXT_SPRINT variable stringWithVars
+      detail: OUTER_TEXT_SPRINT [ GLOBAL ] variable stringWithVars
       doc: |-
         Any WeiDU variables (enclosed in %s) inside stringWithVars are replaced by their values and the resulting string (constructed at mod-installation time!) is assigned to the variable variable.
+        If `GLOBAL` is provided, the variable is set in a special variable scope that can be accessed from any other variable scope. Normal variables do, however, shadow `GLOBAL` variables if they have the same variable name.
     - name: LOCAL_TEXT_SPRINT
       detail: LOCAL_TEXT_SPRINT variable stringWithVars
       doc: |-
@@ -752,6 +791,25 @@ tp2-action:
       detail: WITH_TRA traName list BEGIN TP2 Action list END
       doc: |-
         Creates a new TRA scope copied from the surrounding scope, loads all traName files (variable substitution is done; the file can be inlined) and evaluates the TP2 Actions. When WITH_TRA exits, the new TRA scope is discarded, that is, all TRA changes made by WITH_TRA or any of its enclosed actions are forgotten.
+
+    # as of v251
+    - name: REGISTER_UNINSTALL
+      detail: REGISTER_UNINSTALL String
+      doc: |-
+        `String` should be a file name, including directory, if any. `String` is evaluated for variables and the array construct. This action generates uninstall information equivalent to a `COPY` with the file name as the target (toFile).
+    - name: GET_RESOURCE_ARRAY
+      detail: GET_RESOURCE_ARRAY String regexp
+      doc: |-
+        The array `$String(0)`, `$String(1)` etc is set to a sorted list of resource references that match the regexp case-insensitively. Resource references are all biffed files as well as those existing in the `override/` directory.
+        The result does not include any file paths. Both the string and the regexp are evaluated for variables and the array construct.
+    - name: OUTER_SPRINTF
+      detail: OUTER_SPRINTF variable stringWithVars ( variable or value list )
+      doc: |-
+        This is just the `ACTION` counterpart of `SPRINTF`.
+
+
+
+
 tp2-optglob:
   type: 14 # keyword
   items:
@@ -759,7 +817,6 @@ tp2-optglob:
       doc: |-
         Use local filesystem globbing. Globbing is generally architecture specific!
     - name: NOGLOB
-      detail:
       doc: |-
         Never use local file system globbing. Or use sane defaults: enable globbing with COPY_EXISTING_REGEXP, disable it with COPY.
 
@@ -797,6 +854,16 @@ tp2-ArrayIndicesSortType:
     - name: NUMERICALLY
       doc: |-
         The sorting is in ascending numerical order. This requires that the first column of indices can be interpreted as numbers; any strings will raise a warning and the sort order will be undefined.
+
+tp2-caching:
+  type: 14 # keyword
+  items:
+    - name: CACHE
+      doc: |-
+        The result is cached and repeat calls use the cached result instead of calculating a new result. This can improve performance significantly.
+    - name: CLEAR
+      doc: |-
+        A cached result is cleared and the result is calculated anew.
 
 tp2-patch:
   type: 3 # function
@@ -1895,8 +1962,9 @@ tp2-patch:
 
         If the decompression utility cannot be found, the user is warned that the audio files were not installed.
 
-        - INT_VAR `music` if this variable is not 0 and the game is BG:EE, the audio files are given the extension .acm instead of .wav. This variable has no effect if the game is not BG:EE. By default its value is 0.
-        - STR_VAR `audio_path` to the path your .ogg files are stored in. By default this variable is `~%MOD_FOLDER%/audio~`.
+        - INT_VAR `music` if this variable is not `0` and the game is BG:EE, the audio files are given the extension `.acm` instead of `.wav`. This variable has no effect if the game is not BG:EE. By default its value is `0`.
+        - INT_VAR `quiet` if this variable is `1`, the function will suppress output from oggdec and sox. By default this is `0`.
+        - STR_VAR `audio_path` to the path your `.ogg` files are stored in. By default this variable is `~%MOD_FOLDER%/audio~`.
         - STR_VAR `oggdec_path` to the path oggdec is located in. By default this variable is `~%audio_path%~`.
         - STR_VAR `sox_path` to the path SoX is located in. By default this variable is `~%audio_path%~`.
         - STR_VAR `output_path` to the path the audio should be installed into. By default this variable is `override`.
@@ -1913,7 +1981,9 @@ tp2-patch:
 
         Unless `convert_array` is specified, `HANDLE_CHARSETS` will recursively convert all `TRA` files in `tra_path` except those listed in `noconvert_array`. If `convert_array` is specified, only those `TRA` files listed in the array will be converted. `convert_array` may contain references to `TRA` files in subdirectories of `tra_path`.
 
-        - INT_VAR `infer_charsets` to whether `HANDLE_CHARSETS` should try to infer which character set the `TRA` files are encoded in. It uses the contents of the `%language%` variable (''vide infra''). If the contents of the variable can be recognised, `HANDLE_CHARSETS` will use the character set used by the localised version of BG2 for this language. If the contents of the variable cannot be recognised, or if the `TRA` files use a different character set than the expected one, `HANDLE_CHARSETS` will fail. Refer to the compatibility matrix below for additional information. `infer_charsets` overrides `charset_table`. Defaults to 0.
+        - INT_VAR `infer_charsets` to whether `HANDLE_CHARSETS` should try to infer which character set the `TRA` files are encoded in. It uses the contents of the `%language%` variable (''vide infra''). If the contents of the variable can be recognised, `HANDLE_CHARSETS` will use the character set used by the localised version of BG2 for this language. If the contents of the variable cannot be recognised, or if the `TRA` files use a different character set than the expected one, `HANDLE_CHARSETS` will fail. Refer to the compatibility matrix below for additional information. `infer_charsets` overrides `charset_table`. Defaults to `0`.
+        - INT_VAR `from_utf8` to whether the function should assume the source `TRA` files are in UTF-8 or not. The default value is `0`, that is, the function assumes the `TRA` files use language-dependent charater sets and should be converted into UTF-8 when the mod is installed on EE-type games; the function produces no results on the original editions of the games. If set to `1`, the source `TRA` files are assumed to be in UTF-8 and are to be converted into language-dependent character sets when the mod is installed on original editions of the games; the function produces no results when installed on EE-type games.
+        - INT_VAR `verbose` to whether the function should print debug information. Defaults to `0`.
         - STR_VAR `language` to the name of the language directory you wish to convert. The default value of this variable is `\%LANGUAGE\%`, in other words, the directory corresponding to the language the user selected at the start of the installation. You should never need to alter the value of this variable.
         - STR_VAR `default_language` to the name of the directory used by the default language of your mod, if your mod has one. The default language is typically one for which the translation is always complete and up to date and which you use to guard against incomplete translations. `HANDLE_CHARSETS` will convert the `TRA` files of the default language in addition to those of the user-selected language. Should these two languages be the same, the `TRA` files will only be converted once. Additionally, any `TRA` files listed in the `reload_array` (''vide infra'') will be reloaded for the default language before they are reloaded for the user-selected language. The default value of this variable is `~~` (the empty string).
         - STR_VAR `tra_path` to the path where your mod's language directories are located. `%tra_path%/%language%` should be a valid directory containing `TRA` files.
@@ -1921,9 +1991,10 @@ tp2-patch:
         - STR_VAR `iconv_path` to the path where iconv.exe is located. Defaults to `%tra_path%/iconv`.
         - STR_VAR `charset_table` to the name of an associative array where the keys are the names of your language directories and the corresponding values are the character sets used by the respective language. The keys must be entirely in lowercase. `charset_table` is not used if you also specify `infer_charsets`.
         - STR_VAR `noconvert_array` to the name of an array indexed by monotonically increasing integers starting from 0. The values should be the names of `TRA` files that should not be converted into `UTF-8`. All `TRA` files in the language directory and its subdirectories except the ones listed in `noconvert_array` will be converted. The .tra file extension is optional. This variable should not be provided if you also provide `convert_array`.
-        - STR_VAR `convert_array` to the name of an array indexed by monotonically increasing integers starting from 0. The values should be the names of `TRA` files that should be converted into `UTF-8`. Only those `TRA` files in the language directory or its subdirectories which are listed in `convert_array` will be converted. The .tra file extension is optional. If this variable is provided, `noconvert_array` will not be used.
-        - STR_VAR `reload_array` to the name of an array indexed by monotonically increasing integers starting from 0. The values should be the names of `TRA` files which should be reloaded after they have been converted. The .tra file extension is optional. You should use this variable for reloading those `TRA` files loaded by `LANGUAGE` which should also be converted.
-
+        - STR_VAR `convert_array` to the name of an array indexed by monotonically increasing integers starting from `0`. The values should be the names of `TRA` files that should be converted into `UTF-8`. Only those `TRA` files in the language directory or its subdirectories which are listed in `convert_array` will be converted. The `.tra` file extension is optional. If this variable is provided, `noconvert_array` will not be used.
+        - STR_VAR `reload_array` to the name of an array indexed by monotonically increasing integers starting from `0`. The values should be the names of `TRA` files which should be reloaded after they have been converted. The `.tra` file extension is optional. You should use this variable for reloading those `TRA` files loaded by `LANGUAGE` which should also be converted.
+        - STR_VAR `exclude_directories` to the name of an array indexed by monotonically increasing integers starting from `0`. The values should be the names of directories whose contents should not be converted. The directories should be subdirectories within `%tra_path%/%language%` or its subdirectories. Only the directory name itself should be specified, not its path.
+        - STR_VAR `file_regexp` to a regexp expression with the file names that must be converted. Defaults to `~.+\.tra~`.
     - name: HANDLE_TILESETS
       doc: |
         Install TISpack-compressed tilesets in a safe and easy manner. This is an ACTION function.
@@ -2089,6 +2160,7 @@ tp2-patch:
       detail: PATCH_READLN variable
       doc: |-
         Waits for the user to provided an enter-terminated string and store it in variable. Said string will be stored and re-used during non-interactive reinstalls. See the READLN tutorial.
+        As of `v251`, it emits the 'bell' (code 7) control character when asking for input.
     - name: PATCH_REINCLUDE
       detail: PATCH_REINCLUDE String list
       doc: |-
@@ -2323,9 +2395,10 @@ tp2-patch:
           SAY_EVALUATED IDENTIFIED_DESC ~I Am %SOURCE_RES%, I Cost %cost%~
         ```
     - name: SET
-      detail: SET variable = value
+      detail: SET [ GLOBAL ] variable = value
       doc: |-
         Update variable so that it is equal to value.
+        If `GLOBAL` is provided, the variable is set in a special variable scope that can be accessed from any other variable scope. Normal variables do, however, shadow `GLOBAL` variables if they have the same variable name.
 
         **Equivalent**: `variable = value`
     - name: SET_2DA_ENTRIES_NOW
@@ -2366,7 +2439,7 @@ tp2-patch:
       doc: |-
         %variable% will be inited to a string the same length as stringWithVars, but made entirely of spaces. SPACES var ~123~ will create %var% = " ".
     - name: SPRINT
-      detail: SPRINT variable stringWithVars
+      detail: SPRINT [ GLOBAL ] variable stringWithVars
       doc: |-
         Like TEXT_SPRINT, but stringWithVars can be an @reference, and will break --traify. Use TEXT_SPRINT instead.
     - name: SPRINTF
@@ -2386,9 +2459,10 @@ tp2-patch:
         Converts creatures using version 2 effects to version 1. Called by FJ_CRE_VALIDITY or FJ_CRE_REINDEX automatically if relevant.
          This is a PATCH function.
     - name: TEXT_SPRINT
-      detail: TEXT_SPRINT variable stringWithVars
+      detail: TEXT_SPRINT [ GLOBAL ] variable stringWithVars
       doc: |-
         Any WeiDU variables (enclosed in %s) inside stringWithVars are replaced by their values and the resulting string (constructed at mod-installation time!) is assigned to the variable variable.
+        If `GLOBAL` is provided, the variable is set in a special variable scope that can be accessed from any other variable scope. Normal variables do, however, shadow `GLOBAL` variables if they have the same variable name.
     - name: TO_LOWER
       detail: TO_LOWER variable
       doc: |-
@@ -2758,6 +2832,15 @@ tp2-patch:
       detail: variable = value
       doc: |-
         Update variable so that it is equal to value.
+
+    # as of v251
+    - name: FL#FJ_CRE_REINDEX
+      doc: |-
+        This function is a wrapper around `FJ_CRE_REINDEX` and allows you to use the conventional function interface together with `MODDER fun_args`.
+    - name: FL#FJ_CRE_VALIDITY
+      doc: |-
+        This function is a wrapper around `FJ_CRE_VALIDITY` and allows you to use the conventional function interface together with `MODDER fun_args`.
+
 tp2-when:
   type: 14 # keyword
   items:
@@ -2786,24 +2869,6 @@ tp2-when:
 tp2-value:
   type: 14 # keyword
   items:
-    - name: "%COMPONENT_NUMBER%"
-      doc: |-
-        The special variable COMPONENT_NUMBER is set to the number of the component being installed.
-    - name: "%INTERACTIVE%"
-      doc: |-
-        The special variable INTERACTIVE is set to 1 if the install is being done interactively (IE you launched setup-mymod.exe and you're installing mymod), or is set to 0 if the install is being done non-interactively (IE you launched setup-mymod.exe and now weidu is reinstalling othermod due to the domino uninstall and reinstall).
-    - name: "%WEIDU_ARCH%"
-      doc: |-
-        The special variable WEIDU_ARCH is set to either "x86", "amd64" or "mac" at WeiDU startup and can be used to determine the architecture of the WeiDU binary.
-    - name: "%WEIDU_EXECUTABLE%"
-      doc: |-
-        The special variable WEIDU_EXECUTABLE contains the full path of the current WeiDU binary.
-    - name: "%WEIDU_OS%"
-      doc: |-
-        The special variable WEIDU_OS is set to either "win32" or "osx" or "unix" at WeiDU startup and can be used to determine the operating system for which the WeiDU binary was compiled.
-    - name: "%WEIDU_VER%"
-      doc: |-
-        The special variable `WEIDU_VER` gets set at WeiDU startup and can be used to determine the version of the WeiDU binary (e.g., `24800`).
     - name: ABS
       detail: ABS Value
       doc: |-
@@ -2869,6 +2934,9 @@ tp2-value:
         0xD8
     - name: BEGIN
     - name: ELSE
+    - name: ALWAYS_ASK
+      doc: |-
+        For use with `QUICK_MENU`.
     - name: WHEN
       doc: |-
         For use with `ACTION_MATCH`, `ACTION_TRY`, `PATCH_MATCH` and `PATCH_TRY`.
@@ -3105,9 +3173,10 @@ tp2-value:
     - name: END
 
     - name: ENGINE_IS
-      detail: ENGINE_IS String
+      detail: ENGINE_IS Caching String
       doc: |-
-        Functions like GAME_IS except bg2=soa will detect SoA-based Tutu games in addition to SoA games, and tob will detect ToB-based Tutu games in addition to ToB and BGT games. As such, a mod that requires Throne of Bhaal's engine enhancements could use REQUIRE_PREDICATE ENGINE_IS ~tob~ .
+        Functions like `GAME_IS` except bg2=soa will detect SoA-based Tutu games in addition to SoA games, and tob will detect ToB-based Tutu games in addition to ToB and BGT games. As such, a mod that requires Throne of Bhaal's engine enhancements could use `REQUIRE_PREDICATE ENGINE_IS ~tob~`.
+        If caching (disabled by default), `ENGINE_IS` will return the same result for the same string, and do so much faster.
 
     - name: EVALUATE_BUFFER
       detail: EVALUATE_BUFFER variable
@@ -3177,7 +3246,7 @@ tp2-value:
       doc: |-
         Evaluates to 1 if the size of the file fileName is exactly fileSize. Evaluates to 0 otherwise.
     - name: GAME_INCLUDES
-      detail: GAME_INCLUDES String
+      detail: GAME_INCLUDES Caching String
       doc: |-
         Returns `true` if the IE game variant includes the game content specified by String, otherwise returns `false`.
         String is a single game chosen from
@@ -3196,8 +3265,9 @@ tp2-value:
         In the list, `bg2=soa` means that `bg2` and `soa` are synonyms, and you can use whichever one you like.
         Please note that unlike `GAME_IS` you only specify a single game, rather than a list of games.
         As an example, `GAME_INCLUDES ~tob~` will return true for any game which includes the ToB content, such as ToB itself, BGT or BG2EE.
+        If caching (disabled by default), `GAME_INCLUDES` will return the same result for the same string, and do so much faster.
     - name: GAME_IS
-      detail: GAME_IS String
+      detail: GAME_IS Caching String
       doc: |-
         Returns `true` if the IE game variant is one of the entries in String, otherwise returns `false`.
         String is a list of whitespace-separated entries, chosen from (case doesn't matter)
@@ -3227,6 +3297,7 @@ tp2-value:
         so bg2 will detect a SoA-only game, without either ToB or Tutu installed.
         As such, a mod which is usable with any flavor of BG2 and any flavor of Tutu or BG: EE would contain
         `REQUIRE_PREDICATE GAME_IS ~bg2 tob tutu tutu_totsc bgee bg2ee~`.
+        If caching (disabled by default), `GAME_IS` will return the same result for the same string, and do so much faster.
     - name: HAPPY
       doc: |-
         0xAC
@@ -3294,17 +3365,11 @@ tp2-value:
     - name: LEADER
       doc: |-
         0xBC
-    - name: LNL
-      doc: |-
-        Linux/Unix/OSX new line
     - name: LONG_AT
       detail: LONG_AT offset
       doc: |-
         The 32-bit value from the file at the given offset.
     - name: MISCELLANEOUS
-    - name: MNL
-      doc: |-
-        (pre-OSX) Macintosh new line
     - name: MODULO
       detail: value MODULO value
       doc: |-
@@ -3573,10 +3638,6 @@ tp2-value:
     - name: STR_VAR
       doc: |-
         String variable
-    - name: TAB
-      doc: |-
-        tabulation character
-
     - name: TARGET_IMMUNE
       doc: |-
         0x1B0
@@ -3616,4 +3677,36 @@ tp2-value:
         Returns true if the variable String is set (there's a variable called either String or %String%, regardless of whether it is a string or an integer).
     - name: WNL
       doc: |-
-        Windows new line
+        Windows new line (`\r\n`).
+    - name: MNL
+      doc: |-
+        (Pre-OSX) Macintosh new line (`\r`).
+    - name: LNL
+      doc: |-
+        Linux/Unix/OSX new line (`\n`).
+    - name: TAB
+      doc: |-
+        Tabulation character (`\t`).
+
+    # as of v251
+    - name: VARIABLE_IS_IN_ARRAY
+      detail: VARIABLE_IS_IN_ARRAY arrayConstruct
+      doc: |-
+        Returns true if the array variable is set, as per
+        `VARIABLE_IS_SET`, and if it is a member of an array, in the way
+        that has it, for example, iterated over by `PHP_EACH`.
+    - name: DEFINED_AS_FUNCTION
+      detail: DEFINED_AS_FUNCTION variable
+      doc: |-
+        Variable can be a string (variables are evaluated) or an array
+        construct that evaluates to a string. Returns `1` if the string is the
+        name of an action function, `2` if the string is the name of a patch
+        function, `3` if the string is the name of both an action function and a
+        patch function, and `0` if string is not the name of any defined
+        function. Note that `1`, `2` and `3` are all `true` in a boolean context.
+    - name: DEFINED_AS_INLINED
+      detail: DEFINED_AS_INLINED variable
+      doc: |-
+        Variable can be a string (variables are evaluated) or an array
+        construct that evaluates to a string. Returns `1` if the string is the
+        path of a defined inlined file, otherwise `0`.
