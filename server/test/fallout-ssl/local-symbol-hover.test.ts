@@ -184,4 +184,69 @@ export variable my_export := 0;
         expect(value).toContain("my_export");
         expect(value).toContain("export variable");
     });
+
+    it("should include JSDoc @type in variable hover", () => {
+        const text = `
+/** @type int */
+variable my_count := 0;
+`;
+        const uri = "file:///test.ssl";
+        clearAllLocalSymbolsCache();
+        const symbol = lookupLocalSymbol("my_count", text, uri);
+
+        expect(symbol).toBeDefined();
+        const value = (symbol?.hover?.contents as { kind: string; value: string }).value;
+        expect(value).toContain("my_count");
+        expect(value).toContain("int");
+    });
+
+    it("should include JSDoc description in variable hover", () => {
+        const text = `
+/**
+ * Tracks the number of kills.
+ * @type int
+ */
+variable kill_count := 0;
+`;
+        const uri = "file:///test.ssl";
+        clearAllLocalSymbolsCache();
+        const symbol = lookupLocalSymbol("kill_count", text, uri);
+
+        expect(symbol).toBeDefined();
+        const value = (symbol?.hover?.contents as { kind: string; value: string }).value;
+        expect(value).toContain("kill_count");
+        expect(value).toContain("int");
+        expect(value).toContain("Tracks the number of kills.");
+    });
+
+    it("should include JSDoc description without @type in variable hover", () => {
+        const text = `
+/** The player's current score. */
+variable score := 0;
+`;
+        const uri = "file:///test.ssl";
+        clearAllLocalSymbolsCache();
+        const symbol = lookupLocalSymbol("score", text, uri);
+
+        expect(symbol).toBeDefined();
+        const value = (symbol?.hover?.contents as { kind: string; value: string }).value;
+        expect(value).toContain("score");
+        expect(value).toContain("The player's current score.");
+    });
+
+    it("should include JSDoc @type in export variable hover", () => {
+        const text = `
+/** @type int */
+export variable my_export := 0;
+`;
+        const uri = "file:///test.ssl";
+        clearAllLocalSymbolsCache();
+        const symbol = lookupLocalSymbol("my_export", text, uri);
+
+        expect(symbol).toBeDefined();
+        const value = (symbol?.hover?.contents as { kind: string; value: string }).value;
+        expect(value).toContain("my_export");
+        expect(value).toContain("int");
+        expect(value).toContain("export variable");
+    });
 });

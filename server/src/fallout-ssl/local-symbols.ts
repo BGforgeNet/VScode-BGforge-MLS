@@ -147,18 +147,22 @@ function parseLocalSymbols(text: string, uri: string): LocalSymbolsData | null {
     // Extract file-level variables and exports - use language-tagged code fence
     for (const node of root.children) {
         if (node.type === "variable_decl") {
+            const docComment = findPrecedingDocComment(root, node);
+            const parsed = docComment ? jsdoc.parse(docComment) : null;
             for (const child of node.children) {
                 if (child.type === "var_init") {
                     const nameNode = child.childForFieldName("name");
                     if (nameNode) {
-                        symbols.push(buildVariableSymbol(nameNode.text, uri, makeRange(child)));
+                        symbols.push(buildVariableSymbol(nameNode.text, uri, makeRange(child), undefined, parsed));
                     }
                 }
             }
         } else if (node.type === "export_decl") {
+            const docComment = findPrecedingDocComment(root, node);
+            const parsed = docComment ? jsdoc.parse(docComment) : null;
             const nameNode = node.childForFieldName("name");
             if (nameNode) {
-                symbols.push(buildVariableSymbol(nameNode.text, uri, makeRange(node), "export variable"));
+                symbols.push(buildVariableSymbol(nameNode.text, uri, makeRange(node), "export variable", parsed));
             }
         }
     }
@@ -176,19 +180,29 @@ function parseLocalSymbols(text: string, uri: string): LocalSymbolsData | null {
 
 /**
  * Build a VariableSymbol with language-tagged code fence hover.
+ * Optionally includes JSDoc @type and description in hover output.
  */
 function buildVariableSymbol(
     name: string,
     uri: string,
     range: { start: { line: number; character: number }; end: { line: number; character: number } },
     description?: string,
+    parsed?: jsdoc.JSdoc | null,
 ): VariableSymbol {
-    const hoverValue = buildSignatureBlock(name, LANG_FALLOUT_SSL_TOOLTIP);
+    // Build signature line: "name" or "type name" if @type is present
+    const sigText = parsed?.type ? `${parsed.type} ${name}` : name;
+    let hoverValue = buildSignatureBlock(sigText, LANG_FALLOUT_SSL_TOOLTIP);
+
+    if (description) {
+        hoverValue += "\n\n" + description;
+    }
+    if (parsed?.desc) {
+        hoverValue += "\n\n" + parsed.desc;
+    }
+
     const hoverContents = {
         kind: MarkupKind.Markdown,
-        value: description
-            ? hoverValue + "\n\n" + description
-            : hoverValue,
+        value: hoverValue,
     };
 
     return {
@@ -203,7 +217,7 @@ function buildVariableSymbol(
         },
         hover: { contents: hoverContents },
         variable: {
-            description,
+            description: parsed?.desc ?? description,
         },
     };
 }
