@@ -190,9 +190,10 @@ function extractFunctionInfo(node: SyntaxNode, uri: string): FunctionInfo | null
     const info: FunctionInfo = { name, context, dtype, location };
 
     // Extract JSDoc from preceding comment
+    // TP2 has named returns only (RET/RET_ARRAY), so use 'named' returnMode
     const docComment = findPrecedingDocComment(node);
     if (docComment) {
-        info.jsdoc = jsdoc.parse(docComment);
+        info.jsdoc = jsdoc.parse(docComment, { returnMode: "named" });
     }
 
     // Extract parameters (only for functions, macros don't have params)
@@ -258,9 +259,10 @@ function extractVariableInfo(node: SyntaxNode, uri: string): VariableInfo | null
     }
 
     // Extract JSDoc from preceding comment (optional)
+    // TP2 has named returns only (RET/RET_ARRAY), so use 'named' returnMode
     const docComment = findPrecedingDocComment(node);
     if (docComment) {
-        info.jsdoc = jsdoc.parse(docComment);
+        info.jsdoc = jsdoc.parse(docComment, { returnMode: "named" });
     }
 
     return info;
@@ -479,7 +481,6 @@ function functionInfoToSymbol(func: FunctionInfo, displayPath?: string | null): 
         context: func.context,
         dtype: func.dtype,
         description: func.jsdoc?.desc,
-        returnType: func.jsdoc?.ret?.type,
         params: func.params ? {
             intVar: func.params.intVar.map(p => {
                 const jsdoc = jsdocArgs.get(p.name);

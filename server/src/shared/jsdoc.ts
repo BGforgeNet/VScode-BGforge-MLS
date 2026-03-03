@@ -9,10 +9,16 @@
  *   @param {type} name! - description       Required parameter (hides default in hover)
  *   @param {type} [name=default] - desc     Parsed but default is ignored (see note)
  *   @return {type}                          Unnamed return (Fallout SSL procedures)
- *   @return name {type} - description       Named return (WeiDU RET/RET_ARRAY vars)
+ *   @return {type} name - description       Named return (WeiDU RET/RET_ARRAY vars, named mode)
  *   @deprecated                             Mark as deprecated
  *   @deprecated message                     Deprecated with reason
  *   @type {type}                            Variable type annotation
+ *
+ * Return modes:
+ *   'unnamed' (default) — SSL behavior: unnamed @return populates ret field, named goes to rets[].
+ *   'named' — TP2 behavior: only type-before-name syntax is recognized, consistent with @param.
+ *     Braced: @return {type} name desc. Braceless: @return type name desc (known types only).
+ *     All matches go to rets[]. Unnamed ret is never set.
  *
  * Note on defaults:
  *   The [name=default] syntax is parsed for compatibility but the default value is ignored.
@@ -34,7 +40,7 @@ export interface Arg {
 
 /** Parsed return type info. */
 export interface Ret {
-    name?: string;        // For named returns (@return x {int})
+    name?: string;        // For named returns (@return {type} name, named mode only)
     type: string;
     description?: string;
 }
@@ -43,10 +49,20 @@ export interface Ret {
 export interface JSdoc {
     desc?: string;
     args: Arg[];
-    ret?: Ret;      // Unnamed @return {type} (backwards compat)
-    rets?: Ret[];   // Named returns: @return name {type} desc
+    ret?: Ret;      // Unnamed @return {type} (SSL, unnamed mode)
+    rets?: Ret[];   // Named returns: @return {type} name desc (TP2, named mode)
     deprecated?: string | true;
     type?: string; // For @type tag (used for variables)
+}
+
+/** Options for parse(). */
+export interface ParseOptions {
+    /**
+     * How to interpret @return tags.
+     * - 'unnamed' (default): SSL behavior — unnamed @return populates ret, named goes to rets[].
+     * - 'named': TP2 behavior — all @return tags go to rets[] as named returns. ret is never set.
+     */
+    returnMode?: "unnamed" | "named";
 }
 
 // ============================================
@@ -90,20 +106,22 @@ const RETURN_BRACELESS_PATTERN = new RegExp(
 );
 
 /**
- * Pattern for named @return/@returns/@ret tags with braces.
- * Matches: @return name {type} - description
- *      or: @return name {type} description
- * Groups: 1=name, 2=type, 3=description (optional)
+ * Pattern for named @return/@returns/@ret tags with type-before-name (braced).
+ * Used in 'named' returnMode for TP2, consistent with @param {type} name syntax.
+ * Matches: @return {type} name - description
+ *      or: @return {type} name description
+ * Groups: 1=type, 2=name, 3=description (optional)
  */
-const NAMED_RETURN_PATTERN = /@(?:ret|return|returns)\s+(\w+)\s+\{(\w+)\}(?:\s+-\s+|\s+)?(.+)?/;
+const NAMED_RETURN_TYPE_FIRST_PATTERN = /@(?:ret|return|returns)\s+\{(\w+)\}\s+(\w+)(?:\s+-\s+|\s+)?(.+)?/;
 
 /**
- * Pattern for named @return/@returns/@ret tags without braces (type must be a known JSDoc type).
- * Matches: @return name type - description
- * Groups: 1=name, 2=type, 3=description (optional)
+ * Pattern for named @return/@returns/@ret tags with type-before-name (braceless).
+ * Type must be a known JSDoc type to disambiguate from arbitrary text.
+ * Matches: @return type name - description
+ * Groups: 1=type, 2=name, 3=description (optional)
  */
-const NAMED_RETURN_BRACELESS_PATTERN = new RegExp(
-    `@(?:ret|return|returns)\\s+(\\w+)\\s+(${JSDOC_TYPE_PATTERN})\\b(?:\\s+-\\s+|\\s+)?(.+)?`
+const NAMED_RETURN_TYPE_FIRST_BRACELESS_PATTERN = new RegExp(
+    `@(?:ret|return|returns)\\s+(${JSDOC_TYPE_PATTERN})\\s+(\\w+)(?:\\s+-\\s+|\\s+)?(.+)?`
 );
 
 /** Pattern for @deprecated tag. Groups: 1=message (optional) */
@@ -122,8 +140,9 @@ const LINE_PREFIX_PATTERN = /^\s*\*\s?/;
 /**
  * Parse a JSDoc comment block.
  * @param text Raw comment text including / * * and * /
+ * @param options Parse options (returnMode controls how @return tags are interpreted)
  */
-export function parse(text: string): JSdoc {
+export function parse(text: string, options?: ParseOptions): JSdoc {
     const lines = text.split("\n");
 
     if (lines.length === 1) {
@@ -139,6 +158,7 @@ export function parse(text: string): JSdoc {
         lines.pop();
     }
 
+    const returnMode = options?.returnMode ?? "unnamed";
     const args: Arg[] = [];
     const rets: Ret[] = [];
     const descriptionLines: string[] = [];
@@ -162,18 +182,22 @@ export function parse(text: string): JSdoc {
             continue;
         }
 
-        // Try parsing named @return (e.g., @return name {type} desc)
-        const namedReturnResult = parseNamedReturn(line);
-        if (namedReturnResult) {
-            rets.push(namedReturnResult);
-            continue;
-        }
-
-        // Try parsing unnamed @return (e.g., @return {type})
-        const returnResult = parseReturn(line);
-        if (returnResult) {
-            ret = returnResult;
-            continue;
+        // Parse @return tags — behavior depends on returnMode
+        if (returnMode === "named") {
+            // Named mode (TP2): only type-before-name braced (@ret {type} name desc),
+            // consistent with @param syntax. Unnamed @ret and name-before-type are ignored.
+            const namedResult = parseNamedReturnTypeFirst(line);
+            if (namedResult) {
+                rets.push(namedResult);
+                continue;
+            }
+        } else {
+            // Unnamed mode (SSL, default): unnamed returns only, populates ret.
+            const returnResult = parseReturn(line);
+            if (returnResult) {
+                ret = returnResult;
+                continue;
+            }
         }
 
         // Try parsing @type (may include trailing description)
@@ -285,27 +309,27 @@ function parseReturn(line: string): Ret | null {
 }
 
 /**
- * Parse named @return, @returns, or @ret tag (with or without braces).
- * Format: @return name {type} - description
- *     or: @return name type - description (type must be a known JSDoc type)
+ * Parse named @return with type-before-name braced syntax (used in 'named' returnMode).
+ * Format: @return {type} name - description
+ *     or: @return {type} name description
  */
-function parseNamedReturn(line: string): Ret | null {
-    // Try braced syntax first: @ret name {type}
-    const match = line.match(NAMED_RETURN_PATTERN);
+function parseNamedReturnTypeFirst(line: string): Ret | null {
+    // Try braced syntax first: @ret {type} name
+    const match = line.match(NAMED_RETURN_TYPE_FIRST_PATTERN);
     if (match && match[1] && match[2]) {
-        const ret: Ret = { name: match[1], type: match[2] };
+        const ret: Ret = { name: match[2], type: match[1] };
         if (match[3]) {
             ret.description = match[3].trim();
         }
         return ret;
     }
 
-    // Try brace-less syntax: @ret name type (type must be a known JSDoc type)
-    const bracelessMatch = line.match(NAMED_RETURN_BRACELESS_PATTERN);
+    // Try braceless syntax: @ret type name (type must be a known JSDoc type)
+    const bracelessMatch = line.match(NAMED_RETURN_TYPE_FIRST_BRACELESS_PATTERN);
     if (!bracelessMatch || !bracelessMatch[1] || !bracelessMatch[2]) {
         return null;
     }
-    const ret: Ret = { name: bracelessMatch[1], type: bracelessMatch[2] };
+    const ret: Ret = { name: bracelessMatch[2], type: bracelessMatch[1] };
     if (bracelessMatch[3]) {
         ret.description = bracelessMatch[3].trim();
     }

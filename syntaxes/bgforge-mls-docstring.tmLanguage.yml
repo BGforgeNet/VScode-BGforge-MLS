@@ -84,20 +84,20 @@ repository:
 
   ret:
     patterns:
-      # @ret name {type} - description (named return, name BEFORE type)
-      - match: '(@ret|@return|@returns)\s+(\w+)\s+(\{(\w+)\})'
+      # @ret {type} name - description (named return, type before name, braced)
+      - match: '(@ret|@return|@returns)(\s+\{(\w+)\})\s+((\w+))'
         captures:
           '1':
             name: support.function.bgforge-mls-docstring
           '2':
-            name: variable.bgforge-mls-docstring
-          '3':
             name: keyword.bgforge-mls-docstring
-          '4':
+          '3':
             name: comment.bgforge-mls-docstring
             patterns:
               - include: '#type'
-      # @ret {type} description (unnamed return)
+          '5':
+            name: variable.bgforge-mls-docstring
+      # @ret {type} description (unnamed return, no name after type)
       - match: '(@ret|@return|@returns)(\s+\{(\w+)\})'
         captures:
           '1':
@@ -108,15 +108,15 @@ repository:
             name: comment.bgforge-mls-docstring
             patterns:
               - include: '#type'
-      # @ret name type description (named, without braces, type must be known)
-      - match: '(@ret|@return|@returns)\s+(\w+)\s+(array|any|bool|filename|float|ids|int|list|map|mixed|ObjPtr|ObjectPtr|resref|string)\b'
+      # @ret type name description (named return, type before name, braceless, type must be known)
+      - match: '(@ret|@return|@returns)\s+(array|any|bool|filename|float|ids|int|list|map|mixed|ObjPtr|ObjectPtr|resref|string)\s+(\w+)'
         captures:
           '1':
             name: support.function.bgforge-mls-docstring
           '2':
-            name: variable.bgforge-mls-docstring
-          '3':
             name: support.type.bgforge-mls-docstring
+          '3':
+            name: variable.bgforge-mls-docstring
       # @ret type description (unnamed, without braces, type must be known)
       - match: '(@ret|@return|@returns)\s+(array|any|bool|filename|float|ids|int|list|map|mixed|ObjPtr|ObjectPtr|resref|string)\b'
         captures:

@@ -199,9 +199,6 @@ export interface CallableInfo {
     /** JSDoc description */
     readonly description?: string;
 
-    /** Return type if documented */
-    readonly returnType?: string;
-
     /** Context: action or patch (for WeiDU) */
     readonly context?: CallableContext;
 

@@ -258,8 +258,7 @@ function findParamInCallableInfo(
  *   2. File path (workspace-relative via displayPath, skipped if null)
  *   3. JSDoc description
  *   4. Parameter table with @arg data (type links, descriptions, defaults)
- *   5. @return type display
- *   6. @deprecated notice
+ *   5. @deprecated notice
  *
  * @param funcInfo Function definition info
  * @param displayPath Path to show in hover:
@@ -292,12 +291,7 @@ export function buildFunctionHover(funcInfo: FunctionInfo, displayPath?: string 
         markdownValue += "\n\n" + paramTable;
     }
 
-    // 4. Return description (@return) - hidden if no description
-    if (funcInfo.jsdoc?.ret?.description) {
-        markdownValue += `\n\n**Returns** ${funcInfo.jsdoc.ret.description}`;
-    }
-
-    // 5. Deprecation notice (@deprecated)
+    // 4. Deprecation notice (@deprecated)
     markdownValue += formatDeprecation(funcInfo.jsdoc?.deprecated);
 
     return {

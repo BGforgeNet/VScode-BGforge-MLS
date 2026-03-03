@@ -616,19 +616,5 @@ END`;
             expect(sym.callable.params?.strVar[0].type).toBe("resref");
         });
 
-        it("includes returnType from @return", () => {
-            const input = `
-/**
- * @return {int}
- */
-DEFINE_ACTION_FUNCTION get_value BEGIN END`;
-            const symbols = parseHeaderToSymbols(uri, input, workspaceRoot);
-            const sym = symbols[0];
-
-            expect(isCallableSymbol(sym)).toBe(true);
-            if (!isCallableSymbol(sym)) return;
-
-            expect(sym.callable.returnType).toBe("int");
-        });
     });
 });

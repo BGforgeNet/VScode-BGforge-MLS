@@ -64,22 +64,25 @@ describe("JSDoc type sync", () => {
             expect(types).toEqual([...ALL_JSDOC_TYPE_NAMES].sort());
         });
 
-        it("brace-less unnamed ret pattern contains exactly ALL_JSDOC_TYPE_NAMES", () => {
-            const retLine = content
+        it("brace-less ret patterns contain exactly ALL_JSDOC_TYPE_NAMES", () => {
+            // Both braceless ret patterns (unnamed: @ret type\b, named: @ret type name)
+            // must use the same type alternation as ALL_JSDOC_TYPE_NAMES.
+            const retLines = content
                 .split("\n")
-                .find(
+                .filter(
                     (l) =>
                         l.includes("@ret|@return|@returns)\\s+(") &&
-                        !l.includes("{") &&
-                        !l.includes("\\w+)\\s+("),
+                        !l.includes("{"),
                 );
-            expect(retLine).toBeDefined();
-            const match = retLine!.match(
-                /\(@ret\|@return\|@returns\)\\s\+\(([^)]+)\)\\b/,
-            );
-            expect(match).toBeTruthy();
-            const types = match![1].split("|").sort();
-            expect(types).toEqual([...ALL_JSDOC_TYPE_NAMES].sort());
+            expect(retLines.length).toBeGreaterThanOrEqual(1);
+            for (const retLine of retLines) {
+                const match = retLine.match(
+                    /\(@ret\|@return\|@returns\)\\s\+\(([^)]+)\)/,
+                );
+                expect(match).toBeTruthy();
+                const types = match![1].split("|").sort();
+                expect(types).toEqual([...ALL_JSDOC_TYPE_NAMES].sort());
+            }
         });
     });
 

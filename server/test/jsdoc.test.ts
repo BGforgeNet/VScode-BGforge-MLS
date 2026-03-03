@@ -219,63 +219,6 @@ describe("jsdoc.parse", () => {
             expect(result.ret).toEqual({ type: "int", description: "the count" });
         });
 
-        it("parses named @return with type and description", () => {
-            const input = `/**
- * @return x {int} - x coordinate
- */`;
-            const result = jsdoc.parse(input);
-            expect(result.rets).toHaveLength(1);
-            expect(result.rets![0]).toEqual({
-                name: "x",
-                type: "int",
-                description: "x coordinate",
-            });
-        });
-
-        it("parses named @return without dash separator", () => {
-            const input = `/**
- * @return count {int} number of items
- */`;
-            const result = jsdoc.parse(input);
-            expect(result.rets).toHaveLength(1);
-            expect(result.rets![0]).toEqual({
-                name: "count",
-                type: "int",
-                description: "number of items",
-            });
-        });
-
-        it("parses named @return without description", () => {
-            const input = `/**
- * @return result {string}
- */`;
-            const result = jsdoc.parse(input);
-            expect(result.rets).toHaveLength(1);
-            expect(result.rets![0]).toEqual({
-                name: "result",
-                type: "string",
-            });
-        });
-
-        it("parses multiple named @return tags", () => {
-            const input = `/**
- * @return x {int} - x coordinate
- * @return y {int} - y coordinate
- */`;
-            const result = jsdoc.parse(input);
-            expect(result.rets).toHaveLength(2);
-            expect(result.rets![0]).toEqual({
-                name: "x",
-                type: "int",
-                description: "x coordinate",
-            });
-            expect(result.rets![1]).toEqual({
-                name: "y",
-                type: "int",
-                description: "y coordinate",
-            });
-        });
-
         it("parses unnamed @ret without braces when type is known", () => {
             const input = `/**
  * @ret int
@@ -295,19 +238,6 @@ describe("jsdoc.parse", () => {
             });
         });
 
-        it("parses named @ret without braces when followed by known type", () => {
-            const input = `/**
- * @ret count int number of items
- */`;
-            const result = jsdoc.parse(input);
-            expect(result.rets).toHaveLength(1);
-            expect(result.rets![0]).toEqual({
-                name: "count",
-                type: "int",
-                description: "number of items",
-            });
-        });
-
         it("does not parse @ret without braces if type is unknown", () => {
             const input = `/**
  * @ret unknown_type
@@ -316,20 +246,6 @@ describe("jsdoc.parse", () => {
             expect(result.ret).toBeUndefined();
         });
 
-        it("does not confuse unnamed @return {type} with named @return name {type}", () => {
-            const input = `/**
- * @return {int}
- * @return x {int} - named return
- */`;
-            const result = jsdoc.parse(input);
-            expect(result.ret).toEqual({ type: "int" });
-            expect(result.rets).toHaveLength(1);
-            expect(result.rets![0]).toEqual({
-                name: "x",
-                type: "int",
-                description: "named return",
-            });
-        });
     });
 
     describe("@deprecated parsing", () => {
@@ -453,6 +369,179 @@ describe("jsdoc.parse", () => {
  */`;
             const result = jsdoc.parse(input);
             expect(result.args).toEqual([]);
+        });
+    });
+
+    describe("named return mode", () => {
+        it("parses type-before-name braced: @ret {array} spells - desc", () => {
+            const input = `/**
+ * @ret {array} spells - A hand-picked list
+ */`;
+            const result = jsdoc.parse(input, { returnMode: "named" });
+            expect(result.rets).toHaveLength(1);
+            expect(result.rets![0]).toEqual({
+                name: "spells",
+                type: "array",
+                description: "A hand-picked list",
+            });
+            expect(result.ret).toBeUndefined();
+        });
+
+        it("parses type-before-name braced without description: @ret {array} spells", () => {
+            const input = `/**
+ * @ret {array} spells
+ */`;
+            const result = jsdoc.parse(input, { returnMode: "named" });
+            expect(result.rets).toHaveLength(1);
+            expect(result.rets![0]).toEqual({
+                name: "spells",
+                type: "array",
+            });
+            expect(result.ret).toBeUndefined();
+        });
+
+        it("parses type-before-name braced: @ret {int} count - number of items", () => {
+            const input = `/**
+ * @ret {int} count - number of items
+ */`;
+            const result = jsdoc.parse(input, { returnMode: "named" });
+            expect(result.rets).toHaveLength(1);
+            expect(result.rets![0]).toEqual({
+                name: "count",
+                type: "int",
+                description: "number of items",
+            });
+            expect(result.ret).toBeUndefined();
+        });
+
+        it("parses type-before-name braced with ambiguous name: @ret {bool} True if ...", () => {
+            const input = `/**
+ * @ret {bool} True if critter is wearing armor
+ */`;
+            const result = jsdoc.parse(input, { returnMode: "named" });
+            expect(result.rets).toHaveLength(1);
+            expect(result.rets![0]).toEqual({
+                name: "True",
+                type: "bool",
+                description: "if critter is wearing armor",
+            });
+            expect(result.ret).toBeUndefined();
+        });
+
+        it("ignores name-before-type braced: @ret spells {array} desc", () => {
+            const input = `/**
+ * @ret spells {array} A hand-picked list
+ */`;
+            const result = jsdoc.parse(input, { returnMode: "named" });
+            // Name-before-type is not supported in named mode — only @ret {type} name
+            expect(result.rets).toBeUndefined();
+            expect(result.ret).toBeUndefined();
+        });
+
+        it("ignores name-before-type braceless: @ret count int - desc", () => {
+            const input = `/**
+ * @ret count int - number of items
+ */`;
+            const result = jsdoc.parse(input, { returnMode: "named" });
+            // Name-before-type is not supported in named mode
+            expect(result.rets).toBeUndefined();
+            expect(result.ret).toBeUndefined();
+        });
+
+        it("parses braceless type-before-name: @ret array spells A hand-picked list", () => {
+            const input = `/**
+ * @ret array spells A hand-picked list
+ */`;
+            const result = jsdoc.parse(input, { returnMode: "named" });
+            expect(result.rets).toHaveLength(1);
+            expect(result.rets![0]).toEqual({
+                name: "spells",
+                type: "array",
+                description: "A hand-picked list",
+            });
+            expect(result.ret).toBeUndefined();
+        });
+
+        it("ignores braceless @ret with unknown type in named mode", () => {
+            const input = `/**
+ * @ret foo bar baz
+ */`;
+            const result = jsdoc.parse(input, { returnMode: "named" });
+            expect(result.rets).toBeUndefined();
+            expect(result.ret).toBeUndefined();
+        });
+
+        it("never sets ret in named mode (only rets)", () => {
+            const input = `/**
+ * @ret {int}
+ */`;
+            const result = jsdoc.parse(input, { returnMode: "named" });
+            // In named mode, bare @ret {type} with no name is not a valid named return
+            expect(result.ret).toBeUndefined();
+        });
+
+        it("works with @return alias in named mode", () => {
+            const input = `/**
+ * @return {int} count - number of items
+ */`;
+            const result = jsdoc.parse(input, { returnMode: "named" });
+            expect(result.rets).toHaveLength(1);
+            expect(result.rets![0]).toEqual({
+                name: "count",
+                type: "int",
+                description: "number of items",
+            });
+            expect(result.ret).toBeUndefined();
+        });
+
+        it("ignores bare @ret {type} alongside named @ret in named mode", () => {
+            const input = `/**
+ * @ret {int}
+ * @ret {int} count - number of items
+ */`;
+            const result = jsdoc.parse(input, { returnMode: "named" });
+            expect(result.ret).toBeUndefined();
+            expect(result.rets).toHaveLength(1);
+            expect(result.rets![0].name).toBe("count");
+        });
+
+        it("parses multiple named returns in named mode", () => {
+            const input = `/**
+ * @ret {int} x - x coordinate
+ * @ret {int} y - y coordinate
+ */`;
+            const result = jsdoc.parse(input, { returnMode: "named" });
+            expect(result.rets).toHaveLength(2);
+            expect(result.rets![0]).toEqual({
+                name: "x",
+                type: "int",
+                description: "x coordinate",
+            });
+            expect(result.rets![1]).toEqual({
+                name: "y",
+                type: "int",
+                description: "y coordinate",
+            });
+            expect(result.ret).toBeUndefined();
+        });
+    });
+
+    describe("unnamed return mode (default)", () => {
+        it("existing unnamed @return tests are unaffected by returnMode option", () => {
+            const input = `/**
+ * @ret {float} bzz
+ */`;
+            // Default (no options) - same as unnamed
+            const result = jsdoc.parse(input);
+            expect(result.ret).toEqual({ type: "float", description: "bzz" });
+        });
+
+        it("explicit unnamed mode behaves same as default", () => {
+            const input = `/**
+ * @ret {float} bzz
+ */`;
+            const result = jsdoc.parse(input, { returnMode: "unnamed" });
+            expect(result.ret).toEqual({ type: "float", description: "bzz" });
         });
     });
 });
