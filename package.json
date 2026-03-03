@@ -473,21 +473,21 @@
     },
     "devDependencies": {
         "@types/mocha": "^10.0.10",
-        "@types/node": "^22.17.1",
-        "@typescript-eslint/eslint-plugin": "^8.39.1",
-        "@typescript-eslint/parser": "^8.39.1",
+        "@types/node": "^22.19.13",
+        "@typescript-eslint/eslint-plugin": "^8.56.1",
+        "@typescript-eslint/parser": "^8.56.1",
         "@vitest/coverage-v8": "^4.0.18",
         "@vscode/codicons": "^0.0.44",
-        "@vscode/vsce": "^3.3.2",
-        "esbuild": "^0.25.8",
-        "eslint": "^9.33.0",
+        "@vscode/vsce": "^3.7.1",
+        "esbuild": "^0.25.12",
+        "eslint": "^9.39.3",
         "globals": "^15.15.0",
-        "knip": "^5.79.0",
-        "mocha": "^11.7.1",
-        "prettier": "^3.6.2",
+        "knip": "^5.85.0",
+        "mocha": "^11.7.5",
+        "prettier": "^3.8.1",
         "tree-sitter-cli": "0.26.3",
         "tsx": "^4.21.0",
-        "typescript": "^5.7.3",
+        "typescript": "^5.9.3",
         "vitest": "^4.0.18",
         "yaml": "^2.8.2"
     },
@@ -499,6 +499,10 @@
         "onlyBuiltDependencies": [
             "esbuild",
             "tree-sitter-cli"
-        ]
+        ],
+        "overrides": {
+            "mocha>diff": ">=8.0.3",
+            "mocha>serialize-javascript": ">=7.0.3"
+        }
     }
 }
