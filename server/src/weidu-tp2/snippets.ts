@@ -108,7 +108,7 @@ export function buildFunctionCallSnippet(callable: CallableInfo, name: string, p
         const lines = [firstLine];
         let tabStop = 1;
         tabStop = appendParamBlock(lines, "INT_VAR", requiredInt, tabStop);
-        tabStop = appendParamBlock(lines, "STR_VAR", requiredStr, tabStop);
+        appendParamBlock(lines, "STR_VAR", requiredStr, tabStop);
         appendRetBlock(lines, "RET", retParams);
         appendRetBlock(lines, "RET_ARRAY", retArrayParams);
         lines.push("END");
