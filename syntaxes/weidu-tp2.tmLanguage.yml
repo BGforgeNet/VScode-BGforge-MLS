@@ -28,6 +28,7 @@ patterns:
   - include: '#weidu-tp2-optcase'
   - include: '#weidu-tp2-optexact'
   - include: '#weidu-tp2-arrarindicessorttype'
+  - include: '#weidu-tp2-caching'
   - include: '#weidu-tp2-patch'
   - include: '#weidu-tp2-macro'
   - include: '#weidu-tp2-patch-controls'
@@ -4444,6 +4445,10 @@ repository:
       - match: \b(ACTION_INCLUDE)\b
       - match: \b(REINCLUDE)\b
       - match: \b(ACTION_REINCLUDE)\b
+      # as of v251
+      - match: \b(GET_RESOURCE_ARRAY)\b
+      - match: \b(REGISTER_UNINSTALL)\b
+      - match: \b(OUTER_SPRINTF)\b
 
   weidu-tp2-action-flow:
     name: support.function.weidu-tp2.action
@@ -4491,6 +4496,12 @@ repository:
     patterns:
       - match: \b(LEXICOGRAPHICALLY)\b
       - match: \b(NUMERICALLY)\b
+
+  weidu-tp2-caching:
+    name: constant.language.flag.weidu-tp2
+    patterns:
+      - match: \b(CACHE)\b
+      - match: \b(CLEAR)\b
 
   weidu-tp2-patch:
     name: entity.name.function.weidu-tp2.patch
@@ -4700,6 +4711,9 @@ repository:
       - match: \b(HANDLE_AUDIO)\b
       - match: \b(HANDLE_TILESETS)\b
       - match: \b(HANDLE_CHARSETS)\b
+      # as of v251
+      - match: \b(FL#FJ_CRE_VALIDITY)\b
+      - match: \b(FL#FJ_CRE_REINDEX)\b
 
   weidu-tp2-patch-controls:
     name: entity.name.function.weidu-tp2.patch
@@ -4741,7 +4755,7 @@ repository:
     patterns:
       - match: (\=\>|\+|-|\*|\/|=|\*|!|>|<|\?|:)
       - match: (&&?|\|(\|)?|\^\^|`)
-      - match: \b(MODULO|REM|NOT|OR|AND|BAND|BOR|BXOR|BNOT|BLSL|BLSR|BASR|EVAL)\b
+      - match: \b(MODULO|REM|NOT|OR|AND|BAND|BOR|BXOR|BNOT|BLSL|BLSR|BASR|EVAL|GLOBAL)\b
 
   weidu-tp2-values:
     name: support.class.weidu-tp2.value
@@ -4796,17 +4810,15 @@ repository:
       - match: \b(VALID_SCRIPT_ACTIONS)\b
       - match: \b(VALID_SCRIPT_TRIGGERS)\b
       - match: \b(EVALUATE_BUFFER)\b
-      - match: \b(WEIDU_ARCH)\b
-      - match: \b(WEIDU_EXECUTABLE)\b
-      - match: \b(WEIDU_OS)\b
-      - match: \b(WEIDU_VER)\b
-      - match: \b(COMPONENT_NUMBER)\b
-      - match: \b(INTERACTIVE)\b
+      # as of v251
+      - match: \b(VARIABLE_IS_IN_ARRAY)\b
+      - match: \b(DEFINED_AS_FUNCTION)\b
+      - match: \b(DEFINED_AS_INLINED)\b
 
   weidu-keywords:
     name: keyword.control.weidu-tp2
     patterns:
-      - match: \b(BEGIN|END|THEN|IN|ELSE|WHEN|ANY|ERROR_MESSAGE)\b
+      - match: \b(BEGIN|END|THEN|IN|ELSE|WHEN|ANY|ERROR_MESSAGE|ALWAYS_ASK)\b
       - match: \b(AFTER|BEFORE|LAST|FIRST|AT|S?THIS)\b
       - match: \b(INT_VAR|STR_VAR|RET|RET_ARRAY)\b
 
@@ -4857,6 +4869,7 @@ repository:
     patterns:
       - match: (%?TP2_AUTHOR%?)
       - match: (%?TP2_FILE_NAME%?)
+      - match: (%?TP2_BASE_NAME%?)
       - match: (%?MOD_FOLDER%?)
       - match: (%?MOD_VERSION%?)
       - match: (%LANGUAGE%)
@@ -4871,6 +4884,13 @@ repository:
       - match: (%?DEST_RES%?)
       - match: (%?DEST_EXT%?)
       - match: (%?SOURCE_SIZE%?)
+
+      - match: (%?WEIDU_ARCH%?)
+      - match: (%?WEIDU_EXECUTABLE%?)
+      - match: (%?WEIDU_OS%?)
+      - match: (%?WEIDU_VER%?)
+      - match: (%?COMPONENT_NUMBER%?)
+      - match: (%?INTERACTIVE%?)
 
       - match: (%?BASH_FOR_DIRECTORY%?)
       - match: (%?BASH_FOR_FILESPEC%?)
@@ -5103,7 +5123,7 @@ repository:
   # only colors uppercase-first names as constants.
   func-params-declaration:
     patterns:
-      - match: \b(\w+)\s*(=)\s*(EVAL\s+)?
+      - match: \b([-\w]+)\s*(=)\s*((EVAL|GLOBAL)\s+)?
         captures:
           '1':
             name: variable.parameter.weidu-tp2

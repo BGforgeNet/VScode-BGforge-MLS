@@ -79,6 +79,9 @@
       "include": "#weidu-tp2-arrarindicessorttype"
     },
     {
+      "include": "#weidu-tp2-caching"
+    },
+    {
       "include": "#weidu-tp2-patch"
     },
     {
@@ -17201,6 +17204,18 @@
         {
           "match": "\\b(ACTION_REINCLUDE)\\b",
           "name": "support.function.weidu-tp2.action"
+        },
+        {
+          "match": "\\b(GET_RESOURCE_ARRAY)\\b",
+          "name": "support.function.weidu-tp2.action"
+        },
+        {
+          "match": "\\b(REGISTER_UNINSTALL)\\b",
+          "name": "support.function.weidu-tp2.action"
+        },
+        {
+          "match": "\\b(OUTER_SPRINTF)\\b",
+          "name": "support.function.weidu-tp2.action"
         }
       ]
     },
@@ -17325,6 +17340,19 @@
         },
         {
           "match": "\\b(NUMERICALLY)\\b",
+          "name": "constant.language.flag.weidu-tp2"
+        }
+      ]
+    },
+    "weidu-tp2-caching": {
+      "name": "constant.language.flag.weidu-tp2",
+      "patterns": [
+        {
+          "match": "\\b(CACHE)\\b",
+          "name": "constant.language.flag.weidu-tp2"
+        },
+        {
+          "match": "\\b(CLEAR)\\b",
           "name": "constant.language.flag.weidu-tp2"
         }
       ]
@@ -18091,6 +18119,14 @@
         {
           "match": "\\b(HANDLE_CHARSETS)\\b",
           "name": "support.function.weidu-tp2"
+        },
+        {
+          "match": "\\b(FL#FJ_CRE_VALIDITY)\\b",
+          "name": "support.function.weidu-tp2"
+        },
+        {
+          "match": "\\b(FL#FJ_CRE_REINDEX)\\b",
+          "name": "support.function.weidu-tp2"
         }
       ]
     },
@@ -18224,7 +18260,7 @@
           "name": "keyword.control.value.weidu-tp2"
         },
         {
-          "match": "\\b(MODULO|REM|NOT|OR|AND|BAND|BOR|BXOR|BNOT|BLSL|BLSR|BASR|EVAL)\\b",
+          "match": "\\b(MODULO|REM|NOT|OR|AND|BAND|BOR|BXOR|BNOT|BLSL|BLSR|BASR|EVAL|GLOBAL)\\b",
           "name": "keyword.control.value.weidu-tp2"
         }
       ]
@@ -18433,27 +18469,15 @@
           "name": "support.class.weidu-tp2.value"
         },
         {
-          "match": "\\b(WEIDU_ARCH)\\b",
+          "match": "\\b(VARIABLE_IS_IN_ARRAY)\\b",
           "name": "support.class.weidu-tp2.value"
         },
         {
-          "match": "\\b(WEIDU_EXECUTABLE)\\b",
+          "match": "\\b(DEFINED_AS_FUNCTION)\\b",
           "name": "support.class.weidu-tp2.value"
         },
         {
-          "match": "\\b(WEIDU_OS)\\b",
-          "name": "support.class.weidu-tp2.value"
-        },
-        {
-          "match": "\\b(WEIDU_VER)\\b",
-          "name": "support.class.weidu-tp2.value"
-        },
-        {
-          "match": "\\b(COMPONENT_NUMBER)\\b",
-          "name": "support.class.weidu-tp2.value"
-        },
-        {
-          "match": "\\b(INTERACTIVE)\\b",
+          "match": "\\b(DEFINED_AS_INLINED)\\b",
           "name": "support.class.weidu-tp2.value"
         }
       ]
@@ -18462,7 +18486,7 @@
       "name": "keyword.control.weidu-tp2",
       "patterns": [
         {
-          "match": "\\b(BEGIN|END|THEN|IN|ELSE|WHEN|ANY|ERROR_MESSAGE)\\b",
+          "match": "\\b(BEGIN|END|THEN|IN|ELSE|WHEN|ANY|ERROR_MESSAGE|ALWAYS_ASK)\\b",
           "name": "keyword.control.weidu-tp2"
         },
         {
@@ -18563,6 +18587,10 @@
           "name": "constant.language.weidu-tp2"
         },
         {
+          "match": "(%?TP2_BASE_NAME%?)",
+          "name": "constant.language.weidu-tp2"
+        },
+        {
           "match": "(%?MOD_FOLDER%?)",
           "name": "constant.language.weidu-tp2"
         },
@@ -18616,6 +18644,30 @@
         },
         {
           "match": "(%?SOURCE_SIZE%?)",
+          "name": "constant.language.weidu-tp2"
+        },
+        {
+          "match": "(%?WEIDU_ARCH%?)",
+          "name": "constant.language.weidu-tp2"
+        },
+        {
+          "match": "(%?WEIDU_EXECUTABLE%?)",
+          "name": "constant.language.weidu-tp2"
+        },
+        {
+          "match": "(%?WEIDU_OS%?)",
+          "name": "constant.language.weidu-tp2"
+        },
+        {
+          "match": "(%?WEIDU_VER%?)",
+          "name": "constant.language.weidu-tp2"
+        },
+        {
+          "match": "(%?COMPONENT_NUMBER%?)",
+          "name": "constant.language.weidu-tp2"
+        },
+        {
+          "match": "(%?INTERACTIVE%?)",
           "name": "constant.language.weidu-tp2"
         },
         {
@@ -19125,7 +19177,7 @@
     "func-params-declaration": {
       "patterns": [
         {
-          "match": "\\b(\\w+)\\s*(=)\\s*(EVAL\\s+)?",
+          "match": "\\b([-\\w]+)\\s*(=)\\s*((EVAL|GLOBAL)\\s+)?",
           "captures": {
             "1": {
               "name": "variable.parameter.weidu-tp2"

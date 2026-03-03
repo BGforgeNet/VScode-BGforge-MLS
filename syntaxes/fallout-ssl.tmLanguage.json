@@ -891,10 +891,6 @@
           "name": "support.function.fallout-ssl.base"
         },
         {
-          "match": "\\b(?i)(playmoviealpharect)\\b",
-          "name": "support.function.fallout-ssl.base"
-        },
-        {
           "match": "\\b(?i)(playmovierect)\\b",
           "name": "support.function.fallout-ssl.base"
         },
