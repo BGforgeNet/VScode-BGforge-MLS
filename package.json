@@ -467,6 +467,7 @@
         "update-data": "pnpm ie-update && pnpm fallout-update && pnpm generate-data && pnpm syntaxes-to-json",
         "test:scripts": "vitest run --config scripts/vitest.config.ts",
         "lint:scripts": "./scripts/lint-scripts.sh",
+        "lint:shell": "./scripts/lint-shell.sh",
         "knip": "knip",
         "knip:prod": "knip --production --workspace server --include files"
     },

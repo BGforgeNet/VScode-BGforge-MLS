@@ -22,6 +22,9 @@ step() {
     echo "=== $1 ==="
 }
 
+step "Linting Shell Scripts"
+pnpm lint:shell
+
 step "Typechecking Client"
 (cd client && pnpm exec tsc --noEmit)
 (cd client && pnpm exec tsc --noEmit -p tsconfig.ts-plugin.json)

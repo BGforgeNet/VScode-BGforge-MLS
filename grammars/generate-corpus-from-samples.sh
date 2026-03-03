@@ -4,7 +4,6 @@
 
 set -eu -o pipefail
 
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 GRAMMAR_DIR="${1:-.}"
 
 cd "$GRAMMAR_DIR"
@@ -16,7 +15,7 @@ if [ ! -d "test/samples" ]; then
 fi
 
 # Get first sample file to detect extension
-SAMPLE_FILE=$(ls test/samples/* 2>/dev/null | head -1)
+SAMPLE_FILE=$(find test/samples -maxdepth 1 -type f 2>/dev/null | head -1)
 if [ -z "$SAMPLE_FILE" ]; then
     echo "Error: No sample files found in test/samples/"
     exit 1
@@ -27,30 +26,25 @@ echo "Detected file extension: .$EXT"
 
 OUTPUT_FILE="test/corpus/samples.txt"
 mkdir -p test/corpus
-> "$OUTPUT_FILE"  # Clear file
+true > "$OUTPUT_FILE"
 
-for f in test/samples/*.$EXT; do
-    basename=$(basename "$f" .$EXT)
+for f in test/samples/*."$EXT"; do
+    basename=$(basename "$f" ."$EXT")
 
     echo "Adding corpus test: $basename"
 
-    # Add separator and test name
-    echo "================================================================================" >> "$OUTPUT_FILE"
-    echo "$basename" >> "$OUTPUT_FILE"
-    echo "================================================================================" >> "$OUTPUT_FILE"
-    echo "" >> "$OUTPUT_FILE"
-
-    # Add source code
-    cat "$f" >> "$OUTPUT_FILE"
-    echo "" >> "$OUTPUT_FILE"
-
-    # Add separator
-    echo "--------------------------------------------------------------------------------" >> "$OUTPUT_FILE"
-    echo "" >> "$OUTPUT_FILE"
-
-    # Add AST (without position info)
-    tree-sitter parse --no-ranges "$f" >> "$OUTPUT_FILE" 2>&1
-    echo "" >> "$OUTPUT_FILE"
+    {
+        echo "================================================================================"
+        echo "$basename"
+        echo "================================================================================"
+        echo ""
+        cat "$f"
+        echo ""
+        echo "--------------------------------------------------------------------------------"
+        echo ""
+        tree-sitter parse --no-ranges "$f" 2>&1
+        echo ""
+    } >> "$OUTPUT_FILE"
 done
 
 echo "Generated corpus tests in $OUTPUT_FILE"
