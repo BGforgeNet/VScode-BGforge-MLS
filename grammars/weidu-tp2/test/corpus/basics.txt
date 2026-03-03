@@ -122,3 +122,127 @@ DESIGNATED 100
     (designated_flag
       number: (number))))
 
+================================================================================
+GAME_IS without caching flag
+================================================================================
+
+ACTION_IF GAME_IS ~BG2EE~ THEN BEGIN
+END
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (action_if
+    condition: (value
+      (game_is_expr
+        games: (value
+          (string
+            (tilde_string
+              (tilde_content))))))))
+
+================================================================================
+GAME_IS with CACHE
+================================================================================
+
+ACTION_IF GAME_IS CACHE ~BG2EE~ THEN BEGIN
+END
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (action_if
+    condition: (value
+      (game_is_expr
+        games: (value
+          (string
+            (tilde_string
+              (tilde_content))))))))
+
+================================================================================
+GAME_INCLUDES with CLEAR
+================================================================================
+
+ACTION_IF GAME_INCLUDES CLEAR ~SOD~ THEN BEGIN
+END
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (action_if
+    condition: (value
+      (game_includes_expr
+        games: (simple_value
+          (string
+            (tilde_string
+              (tilde_content))))))))
+
+================================================================================
+ENGINE_IS with CACHE
+================================================================================
+
+ACTION_IF ENGINE_IS CACHE ~BG2EE~ THEN BEGIN
+END
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (action_if
+    condition: (value
+      (engine_is_expr
+        engines: (simple_value
+          (string
+            (tilde_string
+              (tilde_content))))))))
+
+================================================================================
+VARIABLE_IS_IN_ARRAY
+================================================================================
+
+ACTION_IF VARIABLE_IS_IN_ARRAY myarray THEN BEGIN
+END
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (action_if
+    condition: (value
+      (variable_is_in_array_expr
+        array: (value
+          (variable_ref
+            (identifier)))))))
+
+================================================================================
+DEFINED_AS_FUNCTION
+================================================================================
+
+ACTION_IF DEFINED_AS_FUNCTION my_func THEN BEGIN
+END
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (action_if
+    condition: (value
+      (defined_as_function_expr
+        var: (value
+          (variable_ref
+            (identifier)))))))
+
+================================================================================
+DEFINED_AS_INLINED
+================================================================================
+
+ACTION_IF DEFINED_AS_INLINED ~myfile.2da~ THEN BEGIN
+END
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (action_if
+    condition: (value
+      (defined_as_inlined_expr
+        var: (value
+          (string
+            (tilde_string
+              (tilde_content))))))))
+

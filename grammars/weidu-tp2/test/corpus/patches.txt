@@ -183,3 +183,156 @@ END
         (patch_to_lower
           var: (identifier))))))
 
+================================================================================
+SET with GLOBAL
+================================================================================
+
+COPY ~mymod/item.itm~ ~override~
+BEGIN
+  SET GLOBAL myvar = 5
+END
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (action_copy
+    (file_pair
+      from: (value
+        (string
+          (tilde_string
+            (tilde_content))))
+      to: (value
+        (string
+          (tilde_string
+            (tilde_content)))))
+    (patches
+      (patch_block
+        (patch_set
+          var: (identifier)
+          value: (value
+            (number)))))))
+
+================================================================================
+SET with EVAL
+================================================================================
+
+COPY ~mymod/item.itm~ ~override~
+BEGIN
+  SET EVAL myvar = 5
+END
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (action_copy
+    (file_pair
+      from: (value
+        (string
+          (tilde_string
+            (tilde_content))))
+      to: (value
+        (string
+          (tilde_string
+            (tilde_content)))))
+    (patches
+      (patch_block
+        (patch_set
+          var: (identifier)
+          value: (value
+            (number)))))))
+
+================================================================================
+SET with EVALUATE_BUFFER
+================================================================================
+
+COPY ~mymod/item.itm~ ~override~
+BEGIN
+  SET EVALUATE_BUFFER myvar = 5
+END
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (action_copy
+    (file_pair
+      from: (value
+        (string
+          (tilde_string
+            (tilde_content))))
+      to: (value
+        (string
+          (tilde_string
+            (tilde_content)))))
+    (patches
+      (patch_block
+        (patch_set
+          var: (identifier)
+          value: (value
+            (number)))))))
+
+================================================================================
+SPRINT with GLOBAL
+================================================================================
+
+COPY ~mymod/item.itm~ ~override~
+BEGIN
+  SPRINT GLOBAL myvar ~hello~
+END
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (action_copy
+    (file_pair
+      from: (value
+        (string
+          (tilde_string
+            (tilde_content))))
+      to: (value
+        (string
+          (tilde_string
+            (tilde_content)))))
+    (patches
+      (patch_block
+        (patch_sprint
+          var: (value
+            (variable_ref
+              (identifier)))
+          value: (value
+            (string
+              (tilde_string
+                (tilde_content)))))))))
+
+================================================================================
+TEXT_SPRINT with GLOBAL
+================================================================================
+
+COPY ~mymod/item.itm~ ~override~
+BEGIN
+  TEXT_SPRINT GLOBAL myvar ~hello~
+END
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (action_copy
+    (file_pair
+      from: (value
+        (string
+          (tilde_string
+            (tilde_content))))
+      to: (value
+        (string
+          (tilde_string
+            (tilde_content)))))
+    (patches
+      (patch_block
+        (patch_text_sprint
+          var: (value
+            (variable_ref
+              (identifier)))
+          value: (value
+            (string
+              (tilde_string
+                (tilde_content)))))))))
+

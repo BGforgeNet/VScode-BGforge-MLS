@@ -352,9 +352,9 @@ condition ? then_value : else_value
 
 | Expression                              | Description                      |
 | --------------------------------------- | -------------------------------- |
-| `GAME_IS ~games~`                       | Check game type (bg2, tob, etc.) |
-| `ENGINE_IS ~engines~`                   | Check engine type                |
-| `GAME_INCLUDES ~game~`                  | Check game content               |
+| `GAME_IS [CACHE\|CLEAR] ~games~`        | Check game type (bg2, tob, etc.) |
+| `ENGINE_IS [CACHE\|CLEAR] ~engines~`    | Check engine type                |
+| `GAME_INCLUDES [CACHE\|CLEAR] ~game~`   | Check game content               |
 | `FILE_EXISTS file`                      | File exists in filesystem        |
 | `FILE_EXISTS_IN_GAME file`              | File exists as game resource     |
 | `DIRECTORY_EXISTS dir`                  | Directory exists                 |
@@ -369,12 +369,15 @@ condition ? then_value : else_value
 
 #### Variable Checks
 
-| Expression             | Description                  |
-| ---------------------- | ---------------------------- |
-| `VARIABLE_IS_SET var`  | Variable is defined          |
-| `IS_AN_INT var`        | Variable is integer          |
-| `STRING_LENGTH string` | String length                |
-| `EVALUATE_BUFFER var`  | Evaluate variables in string |
+| Expression                      | Description                     |
+| ------------------------------- | ------------------------------- |
+| `VARIABLE_IS_SET var`           | Variable is defined             |
+| `IS_AN_INT var`                 | Variable is integer             |
+| `STRING_LENGTH string`          | String length                   |
+| `EVALUATE_BUFFER var`           | Evaluate variables in string    |
+| `VARIABLE_IS_IN_ARRAY array`    | Variable exists in array        |
+| `DEFINED_AS_FUNCTION var`       | Name is defined as a function   |
+| `DEFINED_AS_INLINED var`        | Name is defined as inlined file |
 
 #### Script Validation
 
@@ -747,15 +750,32 @@ Pattern used by MAKE_BIFF, ACTION_BASH_FOR, PATCH_BASH_FOR:
 ~directory~ EXACT_MATCH ~filename~      // Match specific file
 ```
 
-#### OUTER_SET / OUTER_SPRINT / OUTER_TEXT_SPRINT
+#### OUTER_SET / OUTER_SPRINT / OUTER_TEXT_SPRINT / OUTER_SPRINTF
 
 ```tp2
-OUTER_SET [EVALUATE_BUFFER] varname = expression
-OUTER_SPRINT varname ~string~
-OUTER_TEXT_SPRINT varname ~string with %vars%~
+OUTER_SET [EVAL|EVALUATE_BUFFER|GLOBAL] varname = expression
+OUTER_SPRINT [GLOBAL] varname ~string~
+OUTER_TEXT_SPRINT [GLOBAL] varname ~string with %vars%~
+OUTER_SPRINTF varname ~format %s~ (value1 value2 ...)
 ```
 
-Set variables in action context. EVALUATE_BUFFER evaluates %vars% in variable name.
+Set variables in action context. EVAL/EVALUATE_BUFFER evaluates %vars% in variable name. GLOBAL sets the variable in a special scope accessible from any other scope (normal variables shadow GLOBAL ones).
+
+#### GET_RESOURCE_ARRAY
+
+```tp2
+GET_RESOURCE_ARRAY arrayname ~regexp~
+```
+
+Populate an array with game resource names matching the regexp pattern.
+
+#### REGISTER_UNINSTALL
+
+```tp2
+REGISTER_UNINSTALL ~filename~
+```
+
+Register a file to be executed during uninstallation.
 
 #### OUTER_PATCH / OUTER_PATCH_SAVE
 
@@ -1070,6 +1090,13 @@ The body may contain `>` characters as long as they don't form exactly `>>>>>>>>
 | `EXACT_MATCH`     | Match exact string only |
 | `EVALUATE_REGEXP` | Use regexp matching     |
 
+#### caching (GAME_IS, GAME_INCLUDES, ENGINE_IS)
+
+| Modifier | Description                         |
+| -------- | ----------------------------------- |
+| `CACHE`  | Cache the result for future checks  |
+| `CLEAR`  | Clear cached result and re-evaluate |
+
 #### ArrayIndicesSortType
 
 | Modifier            | Description               |
@@ -1153,7 +1180,7 @@ Operations for 2DA table files.
 ### SET Operations
 
 ```tp2
-SET varname = value
+SET [EVAL|EVALUATE_BUFFER|GLOBAL] varname = value
 SET varname += value
 SET varname -= value
 SET varname *= value
@@ -1162,7 +1189,7 @@ SET varname |= value    // bitwise OR
 SET varname &= value    // bitwise AND
 ```
 
-Variable assignment with operators.
+Variable assignment with operators. GLOBAL sets the variable in a special scope accessible from any other scope.
 
 ### String/Text
 
@@ -1226,11 +1253,11 @@ Write message to debug log.
 #### TEXT_SPRINT / SPRINT
 
 ```tp2
-TEXT_SPRINT variable ~string with %vars%~
-SPRINT variable ~string~
+TEXT_SPRINT [GLOBAL] variable ~string with %vars%~
+SPRINT [GLOBAL] variable ~string~
 ```
 
-Assign evaluated string to variable. Prefer TEXT_SPRINT.
+Assign evaluated string to variable. Prefer TEXT_SPRINT. GLOBAL sets the variable in a special scope accessible from any other scope.
 
 #### SNPRINT
 

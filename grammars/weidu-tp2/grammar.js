@@ -44,17 +44,30 @@ const checkExpr =
     ($) =>
         prec.right(3, seq(keyword, field(fieldName, $.value)));
 
-/** Check expression using simple value (excludes OR/AND): KEYWORD value (with prec.right(3)) */
-const checkExprSimple =
-    (keyword, fieldName = "value") =>
-    ($) =>
-        prec.right(3, seq(keyword, field(fieldName, $.simple_value)));
-
 /** Sprint-like operation: KEYWORD var value */
 const sprintOp =
     (...keywords) =>
     ($) =>
         seq(kw(...keywords), field("var", $.value), field("value", $.value));
+
+/** Sprint-like operation with optional GLOBAL: KEYWORD [GLOBAL] var value */
+const sprintOpGlobal =
+    (...keywords) =>
+    ($) =>
+        seq(kw(...keywords), optional("GLOBAL"), field("var", $.value), field("value", $.value));
+
+/** Sprintf-like operation: KEYWORD var format [(args...)] */
+const sprintfOp =
+    (keyword) =>
+    ($) =>
+        prec.right(
+            seq(
+                keyword,
+                field("var", $.value),
+                field("format", $.value),
+                optional(seq("(", repeat($.value), ")"))
+            )
+        );
 
 /** Print-like operation: KEYWORD message */
 const printOp =
@@ -354,6 +367,7 @@ export default grammar({
         _opt_glob: ($) => choice("GLOB", "NOGLOB"),
         _opt_case: ($) => choice("CASE_SENSITIVE", "CASE_INSENSITIVE"),
         _opt_exact: ($) => choice("EXACT_MATCH", "EVALUATE_REGEXP"),
+        _opt_caching: ($) => choice("CACHE", "CLEAR"),
         search_flags: ($) => repeat1(choice($._opt_case, $._opt_exact)),
 
         // =========================================
@@ -404,6 +418,9 @@ export default grammar({
                 $.file_contains_expr,
                 $.file_contains_evaluated_expr,
                 $.string_length_expr,
+                $.variable_is_in_array_expr,
+                $.defined_as_function_expr,
+                $.defined_as_inlined_expr,
                 // Nullary expressions
                 $.nullary_expr,
                 $.array_access,
@@ -449,6 +466,9 @@ export default grammar({
                 $.file_contains_expr,
                 $.file_contains_evaluated_expr,
                 $.string_length_expr,
+                $.variable_is_in_array_expr,
+                $.defined_as_function_expr,
+                $.defined_as_inlined_expr,
                 // Nullary expressions
                 $.nullary_expr,
                 $.array_access,
@@ -581,10 +601,17 @@ export default grammar({
         variable_is_set_expr: ($) =>
             prec.right(3, seq("VARIABLE_IS_SET", optional(choice("EVAL", "EVALUATE_BUFFER")), field("var", $.value))),
         is_an_int_expr: checkExpr("IS_AN_INT", "var"),
-        game_is_expr: checkExpr("GAME_IS", "games"),
-        game_includes_expr: checkExprSimple("GAME_INCLUDES", "games"),
-        engine_is_expr: checkExprSimple("ENGINE_IS", "engines"),
+        game_is_expr: ($) =>
+            prec.right(3, seq("GAME_IS", optional($._opt_caching), field("games", $.value))),
+        game_includes_expr: ($) =>
+            prec.right(3, seq("GAME_INCLUDES", optional($._opt_caching), field("games", $.simple_value))),
+        engine_is_expr: ($) =>
+            prec.right(3, seq("ENGINE_IS", optional($._opt_caching), field("engines", $.simple_value))),
         string_length_expr: checkExpr("STRING_LENGTH", "string"),
+
+        variable_is_in_array_expr: checkExpr("VARIABLE_IS_IN_ARRAY", "array"),
+        defined_as_function_expr: checkExpr("DEFINED_AS_FUNCTION", "var"),
+        defined_as_inlined_expr: checkExpr("DEFINED_AS_INLINED", "var"),
 
         mod_is_installed_expr: ($) =>
             prec.right(
@@ -810,21 +837,13 @@ export default grammar({
                 )
             ),
 
-        patch_sprint: sprintOp("SPRINT"),
-        patch_text_sprint: sprintOp("TEXT_SPRINT"),
+        patch_sprint: sprintOpGlobal("SPRINT"),
+        patch_text_sprint: sprintOpGlobal("TEXT_SPRINT"),
 
         patch_snprint: ($) =>
             seq("SNPRINT", field("length", $.value), field("var", $.identifier), field("value", $.value)),
 
-        patch_sprintf: ($) =>
-            prec.right(
-                seq(
-                    "SPRINTF",
-                    field("var", $.value),
-                    field("format", $.value),
-                    optional(seq("(", repeat($.value), ")"))
-                )
-            ),
+        patch_sprintf: sprintfOp("SPRINTF"),
 
         patch_to_upper: caseConvert("TO_UPPER"),
         patch_to_lower: caseConvert("TO_LOWER"),
@@ -835,7 +854,7 @@ export default grammar({
 
         // Assignment
         patch_set: ($) =>
-            seq("SET", optional("EVAL"), field("var", $._assignable), $._assign_op, field("value", $.value)),
+            seq("SET", optional(choice("EVAL", "EVALUATE_BUFFER", "GLOBAL")), field("var", $._assignable), $._assign_op, field("value", $.value)),
 
         patch_assignment: ($) =>
             prec(10, seq(field("var", $._assignable), $._assign_op, field("value", $.value))),
@@ -1183,6 +1202,7 @@ export default grammar({
                 $.action_outer_set,
                 $.action_outer_sprint,
                 $.action_outer_text_sprint,
+                $.action_outer_sprintf,
                 $.action_with_tra,
                 $.action_with_scope,
                 $.action_add_journal,
@@ -1239,6 +1259,8 @@ export default grammar({
                 $.action_to_lower,
                 $.action_get_strref,
                 $.action_disable_from_key,
+                $.action_get_resource_array,
+                $.action_register_uninstall,
                 $.action_random_seed,
                 $.action_readln,
                 $.inlined_file
@@ -1415,15 +1437,17 @@ export default grammar({
         action_outer_set: ($) =>
             seq(
                 "OUTER_SET",
-                optional("EVALUATE_BUFFER"),
+                optional(choice("EVAL", "EVALUATE_BUFFER", "GLOBAL")),
                 choice(
                     seq(field("var", $._assignable), $._assign_op, field("value", $.value)),
                     seq(choice("++", "--"), field("var", $._assignable))
                 )
             ),
 
-        action_outer_sprint: sprintOp("OUTER_SPRINT"),
-        action_outer_text_sprint: sprintOp("OUTER_TEXT_SPRINT"),
+        action_outer_sprint: sprintOpGlobal("OUTER_SPRINT"),
+        action_outer_text_sprint: sprintOpGlobal("OUTER_TEXT_SPRINT"),
+
+        action_outer_sprintf: sprintfOp("OUTER_SPRINTF"),
 
         // Local variables (only valid inside macro bodies)
         local_set: ($) =>
@@ -1628,6 +1652,12 @@ export default grammar({
 
         action_disable_from_key: ($) =>
             prec.right(seq("DISABLE_FROM_KEY", repeat1(field("resource", $.value)))),
+
+        action_get_resource_array: ($) =>
+            seq("GET_RESOURCE_ARRAY", field("name", $.value), field("regexp", $.value)),
+
+        action_register_uninstall: ($) =>
+            seq("REGISTER_UNINSTALL", field("file", $.value)),
 
         // =========================================
         // TOP-LEVEL DIRECTIVES

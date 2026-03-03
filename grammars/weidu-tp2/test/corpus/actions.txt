@@ -642,3 +642,164 @@ MAKE_BIFF ~mybiff~ BEGIN ~mydir~ EVALUATE_REGEXP ~^.*\.itm$~ END
         (string
           (tilde_string
             (tilde_content)))))))
+
+================================================================================
+OUTER_SET with GLOBAL
+================================================================================
+
+OUTER_SET GLOBAL myvar = 5
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (action_outer_set
+    var: (identifier)
+    value: (value
+      (number))))
+
+================================================================================
+OUTER_SET with EVAL
+================================================================================
+
+OUTER_SET EVAL myvar = 5
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (action_outer_set
+    var: (identifier)
+    value: (value
+      (number))))
+
+================================================================================
+OUTER_SET with EVALUATE_BUFFER
+================================================================================
+
+OUTER_SET EVALUATE_BUFFER myvar = 5
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (action_outer_set
+    var: (identifier)
+    value: (value
+      (number))))
+
+================================================================================
+OUTER_SPRINT with GLOBAL
+================================================================================
+
+OUTER_SPRINT GLOBAL myvar ~hello~
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (action_outer_sprint
+    var: (value
+      (variable_ref
+        (identifier)))
+    value: (value
+      (string
+        (tilde_string
+          (tilde_content))))))
+
+================================================================================
+OUTER_TEXT_SPRINT with GLOBAL
+================================================================================
+
+OUTER_TEXT_SPRINT GLOBAL myvar ~hello~
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (action_outer_text_sprint
+    var: (value
+      (variable_ref
+        (identifier)))
+    value: (value
+      (string
+        (tilde_string
+          (tilde_content))))))
+
+================================================================================
+OUTER_SPRINTF
+================================================================================
+
+OUTER_SPRINTF myvar ~format %d~ (5)
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (action_outer_sprintf
+    var: (value
+      (variable_ref
+        (identifier)))
+    format: (value
+      (string
+        (tilde_string
+          (tilde_content))))
+    (value
+      (number))))
+
+================================================================================
+OUTER_SPRINTF without args
+================================================================================
+
+OUTER_SPRINTF myvar ~just format~
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (action_outer_sprintf
+    var: (value
+      (variable_ref
+        (identifier)))
+    format: (value
+      (string
+        (tilde_string
+          (tilde_content))))))
+
+================================================================================
+OUTER_SET with GLOBAL and increment
+================================================================================
+
+OUTER_SET GLOBAL ++myvar
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (action_outer_set
+    var: (identifier)))
+
+================================================================================
+GET_RESOURCE_ARRAY
+================================================================================
+
+GET_RESOURCE_ARRAY myarray ~^.*\.itm$~
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (action_get_resource_array
+    name: (value
+      (variable_ref
+        (identifier)))
+    regexp: (value
+      (string
+        (tilde_string
+          (tilde_content))))))
+
+================================================================================
+REGISTER_UNINSTALL
+================================================================================
+
+REGISTER_UNINSTALL ~mymod/uninstall.sh~
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (action_register_uninstall
+    file: (value
+      (string
+        (tilde_string
+          (tilde_content))))))
