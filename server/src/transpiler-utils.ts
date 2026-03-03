@@ -253,6 +253,10 @@ export function applyHelperFixups(text: string): string {
     // tlk(123) or $tlk(123) => bare number (# prefix is only for D text contexts)
     result = result.replace(/\$?tlk\((\d+)\)/g, "$1");
 
+    // [2791, 831] => [2791.831] (BAF point notation: dot-separated, not comma)
+    // Supports negative coordinates (e.g. [-1, -1] for "current location")
+    result = result.replace(/\[(-?\d+),\s*(-?\d+)\]/g, "[$1.$2]");
+
     return result;
 }
 

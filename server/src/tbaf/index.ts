@@ -60,9 +60,9 @@ export async function compile(uri: string, text: string): Promise<string> {
 
 /**
  * Apply BAF-specific fixups to the IR.
- * Handles LOCALS/GLOBAL quoting, $obj(), $tra() replacements.
+ * Handles LOCALS/GLOBAL quoting, $obj(), $tra(), point notation replacements.
  */
-function applyBAFFixups(script: BAFScript): void {
+export function applyBAFFixups(script: BAFScript): void {
     for (const block of script.blocks) {
         // Fix conditions
         for (const cond of block.conditions) {

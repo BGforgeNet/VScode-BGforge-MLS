@@ -61,6 +61,30 @@ begin("TEST", [assassin]);
             expect(result).toContain('DO ~AddSpecialAbility("SPCL916")~ EXIT');
         });
 
+        it("converts point tuple in action to BAF point notation", () => {
+            const code = `
+function spawn() {
+    action(CreateCreature("ccguard2", [2791, 831], 6)).exit();
+}
+
+begin("TEST", [spawn]);
+`;
+            const result = transpile(code);
+            expect(result).toContain('DO ~CreateCreature("ccguard2",[2791.831],6)~ EXIT');
+        });
+
+        it("converts negative point coordinates in action", () => {
+            const code = `
+function spawn() {
+    action(CreateCreature("g_spy1", [-1, -1], 0)).exit();
+}
+
+begin("TEST", [spawn]);
+`;
+            const result = transpile(code);
+            expect(result).toContain('DO ~CreateCreature("g_spy1",[-1.-1],0)~ EXIT');
+        });
+
         it("transpiles state with multiple say (multisay)", () => {
             const code = `
 function greeting() {

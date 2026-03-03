@@ -1,0 +1,12 @@
+// Point tuple arguments: [x, y] in TBAF becomes [x.y] in BAF
+
+if (True()) {
+    CreateCreature("ccguard2", [2791, 831], 6);
+    JumpToPoint([100, 200]);
+}
+
+const pos: Point = [300, 400];
+
+if (True()) {
+    CreateCreature("ccguard3", pos, 0);
+}

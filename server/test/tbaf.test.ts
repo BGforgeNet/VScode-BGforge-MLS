@@ -7,7 +7,7 @@ import { describe, expect, it } from "vitest";
 import { Project } from "ts-morph";
 import { TBAFTransformer } from "../src/tbaf/transform";
 import { emitBAF } from "../src/tbaf/emit";
-import { BAFScript } from "../src/tbaf/ir";
+import { applyBAFFixups } from "../src/tbaf/index";
 import { transformEnums } from "../src/enum-transform";
 
 describe("TBAF Transpiler", () => {
@@ -17,6 +17,7 @@ describe("TBAF Transpiler", () => {
         const project = new Project({ useInMemoryFileSystem: true });
         const sourceFile = project.createSourceFile("test.tbaf", code);
         const ir = transformer.transform(sourceFile);
+        applyBAFFixups(ir);
         return emitBAF(ir);
     }
 
@@ -182,6 +183,62 @@ giveItem("Player2", "BOW01");
         });
     });
 
+    describe("Point arguments", () => {
+        it("converts point tuple to BAF point notation", () => {
+            const code = `
+if (True()) {
+    CreateCreature("ccguard2", [2791, 831], 6);
+}
+`;
+            const result = transpile(code);
+            expect(result).toContain("CreateCreature(\"ccguard2\", [2791.831], 6)");
+        });
+
+        it("converts point tuple through variable substitution", () => {
+            const code = `
+const pos: [number, number] = [100, 200];
+
+if (True()) {
+    CreateCreature("ccguard2", pos, 6);
+}
+`;
+            const result = transpile(code);
+            expect(result).toContain("CreateCreature(\"ccguard2\", [100.200], 6)");
+        });
+
+        it("converts point tuple through function inlining", () => {
+            const code = `
+function spawn(resref: string, pos: [number, number]) {
+    if (True()) {
+        CreateCreature(resref, pos, 0);
+    }
+}
+
+spawn("ccguard2", [2791, 831]);
+`;
+            const result = transpile(code);
+            expect(result).toContain("CreateCreature(\"ccguard2\", [2791.831], 0)");
+        });
+
+        it("converts point tuples through for-of loop unrolling", () => {
+            const code = `
+const positions: [string, [number, number]][] = [
+    ["ccguard1", [100, 200]],
+    ["ccguard2", [300, 400]],
+];
+
+for (const [resref, pos] of positions) {
+    if (True()) {
+        CreateCreature(resref, pos, 0);
+    }
+}
+`;
+            const result = transpile(code);
+            expect(result).toContain("CreateCreature(\"ccguard1\", [100.200], 0)");
+            expect(result).toContain("CreateCreature(\"ccguard2\", [300.400], 0)");
+        });
+    });
+
     describe("Translation references", () => {
         it("converts $tra() to @number", () => {
             const code = `
@@ -190,9 +247,7 @@ if (True()) {
 }
 `;
             const result = transpile(code);
-            // Note: BAF fixups are not applied in unit tests, just testing IR
-            // The fixup would convert $tra(123) to @123
-            expect(result).toContain("$tra(123)");
+            expect(result).toContain("@123");
         });
     });
 

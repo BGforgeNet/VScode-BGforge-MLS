@@ -267,6 +267,44 @@ describe("applyHelperFixups", () => {
         });
     });
 
+    describe("point notation", () => {
+        it("converts [x, y] tuple to BAF point [x.y]", () => {
+            expect(applyHelperFixups("[2791, 831]")).toBe("[2791.831]");
+        });
+
+        it("handles no space after comma", () => {
+            expect(applyHelperFixups("[100,200]")).toBe("[100.200]");
+        });
+
+        it("converts point inside nested function call", () => {
+            expect(applyHelperFixups("JumpToPoint([825, 370])")).toBe(
+                "JumpToPoint([825.370])",
+            );
+        });
+
+        it("converts point inside ActionOverride", () => {
+            expect(
+                applyHelperFixups("ActionOverride(Player2,JumpToPoint([825, 370]))"),
+            ).toBe("ActionOverride(Player2,JumpToPoint([825.370]))");
+        });
+
+        it("converts negative coordinates", () => {
+            expect(applyHelperFixups("[-1, -1]")).toBe("[-1.-1]");
+        });
+
+        it("converts mixed positive/negative coordinates", () => {
+            expect(applyHelperFixups("[100, -1]")).toBe("[100.-1]");
+        });
+
+        it("does not convert three-element arrays", () => {
+            expect(applyHelperFixups("[1, 2, 3]")).toBe("[1, 2, 3]");
+        });
+
+        it("does not convert object identifiers like [PC]", () => {
+            expect(applyHelperFixups("[PC]")).toBe("[PC]");
+        });
+    });
+
     describe("passthrough", () => {
         it("returns unrelated strings unchanged", () => {
             expect(applyHelperFixups('"hello"')).toBe('"hello"');

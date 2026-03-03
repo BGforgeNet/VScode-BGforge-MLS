@@ -7,6 +7,7 @@
 // These types must be structurally compatible with BGforge IElib.
 // Both projects define them independently; keep shapes and brand strings identical.
 type StrRef = number & { __brand: "StrRef" }
+type Point = [number, number];
 // --- IElib sync surface end ---
 
 // Translation references
@@ -33,6 +34,8 @@ declare function Continue(): void;
 declare function NoAction(): void;
 declare function Wait(ticks: number): void;
 declare function GiveItemCreate(item: string, target: any, count: number, p1: number, p2: number): void;
+declare function CreateCreature(resref: string, location: Point, facing: number): void;
+declare function JumpToPoint(location: Point): void;
 declare function DisplayString(who: any, strref: number): void;
 declare function DisplayStringHead(who: any, strref: number): void;
 declare function ActionOverride(who: any, action: any): void;
