@@ -19,6 +19,7 @@ pnpm watch:server
 | [scripts/README.md](scripts/README.md)         | Build and test scripts reference                                                              |
 | [grammars/README.md](grammars/README.md)       | Tree-sitter grammars: building, WASM, CJS patching                                            |
 | [server/data/README.md](server/data/README.md) | YAML data format for completion/hover                                                         |
+| [docs/ignore-files.md](docs/ignore-files.md)   | Ignore file reference (.gitignore, .vscodeignore, .prettierignore, eslint)                    |
 
 ## Project Structure
 

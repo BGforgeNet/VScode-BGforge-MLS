@@ -1,27 +1,19 @@
 *.log
 *.vsix
-**/__pycache__/**
-.mypy_cache/
 .reports/
-.venv/
 .vscode-test/
 
 client/node_modules
 client/out
-client/server
 
 server/node_modules
 server/out/*
 !server/out/completion.*.json
 !server/out/hover.*.json
 !server/out/signature.*.json
+!server/out/engine-proc-docs.json
 
 cli/*/out
-
-preview/node_modules/
-preview/out/*
-!preview/out/index.html
-!preview/out/index.css
 
 external/*
 !external/fallout.txt
@@ -29,7 +21,6 @@ external/*
 !external/infinity-engine.txt
 !external/infinity-engine-exclude.txt
 node_modules
-syntaxes_to_json.sh.err
 tmp
 
 /test
@@ -42,4 +33,3 @@ coverage/
 # Generated tree-sitter parser sources
 grammars/*/src/
 server/src/weidu-tp2/tree-sitter.d.ts
-

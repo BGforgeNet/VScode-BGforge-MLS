@@ -1,21 +1,26 @@
 **/*
 
-!client/package.json
-!client/out/extension.js
-!client/out/dialogTree-webview.js
-!client/out/editors/binaryEditor-webview.js
-
 !LICENSE.txt
 !resources/bgforge.png
+
+!client/package.json
+!client/out/extension.js
+!client/out/dialog-tree/dialogTree-webview.js
+!client/out/editors/binaryEditor-webview.js
 
 !server/package.json
 !server/out/server.js
 !server/out/completion.*.json
 !server/out/hover.*.json
 !server/out/signature.*.json
+!server/out/engine-proc-docs.json
+!server/out/td-runtime.d.ts
 !server/out/*.wasm
 
 !server/node_modules/sslc-emscripten-noderawfs/**
+
+!node_modules/bgforge-tssl-plugin/**
+!node_modules/bgforge-td-plugin/**
 
 !language-configurations/*.json
 !snippets/*.json

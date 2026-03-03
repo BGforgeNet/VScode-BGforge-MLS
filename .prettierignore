@@ -2,10 +2,7 @@ syntaxes/*.*
 themes/*.*
 *.log
 *.vsix
-**/__pycache__/**
-.mypy_cache/**
 
-.venv/
 .vscode-test/
 
 client/node_modules
@@ -14,11 +11,8 @@ client/out
 server/node_modules
 server/out/*
 
-preview/out
-
 external
 node_modules
-syntaxes_to_json.sh.err
 tmp
 
 language-configurations/*.json
