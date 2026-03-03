@@ -22,21 +22,16 @@ const config: KnipConfig = {
         // vitest unit tests (run via client/vitest.config.ts)
         "test/*.test.ts",
       ],
-      ignore: ["out/**"],
     },
     server: {
       // Entry resolved from package.json "main" field (src/server.ts).
       // No explicit entry needed here.
-      ignore: ["out/**", "**/*.d.ts"],
+      ignore: ["**/*.d.ts"],
     },
   },
   ignore: [
-    "**/out/**",
-    "**/node_modules/**",
     // tree-sitter grammars, not TypeScript
     "grammars/**",
-    // separate Cytoscape preview bundle
-    "preview/**",
     // CLI packages bundled by esbuild, import across workspace boundaries
     "cli/**",
     // external repositories cloned for testing
