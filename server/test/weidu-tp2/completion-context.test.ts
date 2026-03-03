@@ -58,7 +58,7 @@ describe("completion-context: category filtering", () => {
         const testCategories: CompletionCategory[] = [
             CompletionCategory.Prologue, CompletionCategory.Flag, CompletionCategory.ComponentFlag, CompletionCategory.Language,
             CompletionCategory.Action, CompletionCategory.Patch,
-            CompletionCategory.Constants, CompletionCategory.Vars, CompletionCategory.Value, CompletionCategory.When, CompletionCategory.OptGlob, CompletionCategory.OptCase, CompletionCategory.OptExact, CompletionCategory.ArraySortType,
+            CompletionCategory.Constants, CompletionCategory.Vars, CompletionCategory.Value, CompletionCategory.When, CompletionCategory.OptGlob, CompletionCategory.OptCase, CompletionCategory.OptExact, CompletionCategory.Caching, CompletionCategory.ArraySortType,
             CompletionCategory.FuncVarKeyword,
             CompletionCategory.ActionFunctions, CompletionCategory.PatchFunctions, CompletionCategory.DimorphicFunctions,
             CompletionCategory.ActionMacros, CompletionCategory.PatchMacros,

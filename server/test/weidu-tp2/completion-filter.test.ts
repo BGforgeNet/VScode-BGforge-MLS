@@ -130,6 +130,48 @@ describe("completion-filter", () => {
     });
 
     // =========================================================================
+    // Value modifier categories (OptGlob, OptCase, OptExact, Caching, ArraySortType)
+    // =========================================================================
+    describe("value modifier exclusions", () => {
+        const modifierCategories = [
+            CompletionCategory.OptGlob,
+            CompletionCategory.OptCase,
+            CompletionCategory.OptExact,
+            CompletionCategory.Caching,
+            CompletionCategory.ArraySortType,
+        ];
+
+        for (const category of modifierCategories) {
+            describe(`${category} exclusions`, () => {
+                const exclusions = CATEGORY_EXCLUSIONS[category]!;
+
+                it("should be included in action context", () => {
+                    expect(exclusions).not.toContain(CompletionContext.Action);
+                });
+
+                it("should be included in patch context", () => {
+                    expect(exclusions).not.toContain(CompletionContext.Patch);
+                });
+
+                it("should be excluded from all name contexts", () => {
+                    expect(exclusions).toContain(CompletionContext.LafName);
+                    expect(exclusions).toContain(CompletionContext.LpfName);
+                    expect(exclusions).toContain(CompletionContext.LamName);
+                    expect(exclusions).toContain(CompletionContext.LpmName);
+                });
+
+                it("should be excluded from funcParamName context", () => {
+                    expect(exclusions).toContain(CompletionContext.FuncParamName);
+                });
+
+                it("should be included in funcParamValue context", () => {
+                    expect(exclusions).not.toContain(CompletionContext.FuncParamValue);
+                });
+            });
+        }
+    });
+
+    // =========================================================================
     // Items without category
     // =========================================================================
     describe("items without category", () => {

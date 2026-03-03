@@ -25,7 +25,7 @@ import { CompletionItem } from "vscode-languageserver/node";
  * - Structural: Prologue, Flag, ComponentFlag, Language - File/component structure directives
  * - Commands: Action, Patch - Context-specific statements (value positions)
  * - Functions: ActionFunctions, PatchFunctions - User-defined functions
- * - Values: Constants, Vars, Value, When, OptGlob, OptCase, OptExact, ArraySortType
+ * - Values: Constants, Vars, Value, When, OptGlob, OptCase, OptExact, Caching, ArraySortType
  * - Parameters: FuncVarKeyword - INT_VAR, STR_VAR, RET, RET_ARRAY keywords
  * - Documentation: Jsdoc - JSDoc tags and types
  *
@@ -49,6 +49,7 @@ export enum CompletionCategory {
     OptGlob = "optGlob",
     OptCase = "optCase",
     OptExact = "optExact",
+    Caching = "caching",
     ArraySortType = "arraySortType",
     // Function parameter keywords (INT_VAR, STR_VAR, RET, RET_ARRAY)
     FuncVarKeyword = "funcVarKeyword",

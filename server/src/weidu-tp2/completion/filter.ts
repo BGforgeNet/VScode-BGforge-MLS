@@ -64,6 +64,7 @@ const CATEGORY_EXCLUSIONS: Partial<Record<CompletionCategory, CompletionContext[
     [CompletionCategory.OptGlob]: [...ALL_NAME_CONTEXTS, CompletionContext.FuncParamName],
     [CompletionCategory.OptCase]: [...ALL_NAME_CONTEXTS, CompletionContext.FuncParamName],
     [CompletionCategory.OptExact]: [...ALL_NAME_CONTEXTS, CompletionContext.FuncParamName],
+    [CompletionCategory.Caching]: [...ALL_NAME_CONTEXTS, CompletionContext.FuncParamName],
     [CompletionCategory.ArraySortType]: [...ALL_NAME_CONTEXTS, CompletionContext.FuncParamName],
 };
 
