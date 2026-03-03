@@ -354,10 +354,14 @@
         }
     },
     {
-        "label": "activateregion",
+        "label": "ActivateRegion",
         "kind": 3,
         "source": "builtin",
-        "category": "base-functions"
+        "category": "base-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid ActivateRegion(string name, int flag)\n```\nEnables or disables a named screen region. When flag is non-zero, the region is activated; when zero, it is deactivated."
+        }
     },
     {
         "label": "add_mult_objs_to_inven",
@@ -387,6 +391,16 @@
         "documentation": {
             "kind": "markdown",
             "value": "```fallout-ssl-tooltip\nvoid add_timer_event(ObjectPtr obj, int time, int info)\n```\nAdds a timed event call to the queue, at a given time offset, to call an object's (obj) script. Info is used to let scripts differentiate between timed event calls so that they can be hooked in multiple times. Info is read back by the script using the fixed_param operator. Note that time is in ticks (you can use game_ticks(seconds_num) to get the time in ticks from time in seconds)."
+        }
+    },
+    {
+        "label": "AddKey",
+        "kind": 3,
+        "source": "builtin",
+        "category": "base-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid AddKey(int key, Procedure proc)\n```\nRegisters a keyboard handler procedure for a given key. When the key is pressed, the associated procedure is called."
         }
     },
     {
@@ -793,6 +807,16 @@
         }
     },
     {
+        "label": "DeleteKey",
+        "kind": 3,
+        "source": "builtin",
+        "category": "base-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid DeleteKey(int key)\n```\nRemoves a previously registered keyboard handler for the given key."
+        }
+    },
+    {
         "label": "destroy_mult_objs",
         "kind": 3,
         "source": "builtin",
@@ -1053,6 +1077,16 @@
         "documentation": {
             "kind": "markdown",
             "value": "```fallout-ssl-tooltip\nvoid game_time_advance(int amount)\n```\nAdvances the current game time by (amount) ticks."
+        }
+    },
+    {
+        "label": "game_time_in_seconds",
+        "kind": 3,
+        "source": "builtin",
+        "category": "base-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nint game_time_in_seconds\n```\nReturns the current game time in seconds (game_time / 10)."
         }
     },
     {
@@ -1456,6 +1490,16 @@
         }
     },
     {
+        "label": "mark_area_known",
+        "kind": 3,
+        "source": "builtin",
+        "category": "base-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid mark_area_known(int areaType, int areaIndex, int known)\n```\nMarks a town area or map location on the world map. The areaType parameter selects whether to mark by area (MARK_TYPE_TOWN) or by map index (MARK_TYPE_MAP). The areaIndex identifies the area or map, and known sets the state (MARK_STATE_KNOWN or MARK_STATE_VISITED)."
+        }
+    },
+    {
         "label": "message_str",
         "kind": 3,
         "source": "builtin",
@@ -1463,6 +1507,26 @@
         "documentation": {
             "kind": "markdown",
             "value": "```fallout-ssl-tooltip\nchar* message_str(int list, int msg_num)\n```\nReturns a string from the message module for a given list and a given # (msg_num)."
+        }
+    },
+    {
+        "label": "metarule",
+        "kind": 3,
+        "source": "builtin",
+        "category": "base-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nint metarule(int rule, int param)\n```\nGeneral engine query function supporting ~27 different rules. The rule parameter selects the operation (e.g. METARULE_SIGNAL_END_GAME, METARULE_TEST_FIRSTRUN, METARULE_IS_LOADGAME, METARULE_PARTY_COUNT, etc.), and param provides additional data for that rule. Returns an integer result depending on the rule."
+        }
+    },
+    {
+        "label": "metarule3",
+        "kind": 3,
+        "source": "builtin",
+        "category": "base-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nint metarule3(int rule, int param1, int param2, int param3)\n```\nExtended engine query function supporting ~12 rules that require multiple parameters. Used for operations like clearing timed events (METARULE3_CLR_FIXED_TIMED_EVENTS), querying kill counts (METARULE3_KILL_COUNT), worldmap subtile operations, and critter iteration."
         }
     },
     {
@@ -1483,6 +1547,16 @@
         "documentation": {
             "kind": "markdown",
             "value": "```fallout-ssl-tooltip\nint move_to(ObjectPtr obj, int tile_num, int elev)\n```\nImmediately moves object `obj` to the given tile number and elevation (0-2) on the current map.\nUsing this to change elevations during loading an in-combat save will lead to a crash. If `move_to` called in `map_enter_p_proc`, wrap in `not_is_loading_game` to avoid the crash."
+        }
+    },
+    {
+        "label": "MovieFlags",
+        "kind": 3,
+        "source": "builtin",
+        "category": "base-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid MovieFlags(int flags)\n```\nSets playback flags for the next movie to be played with PlayMovie or PlayMovieRect."
         }
     },
     {
@@ -1766,6 +1840,26 @@
         }
     },
     {
+        "label": "PlayMovie",
+        "kind": 3,
+        "source": "builtin",
+        "category": "base-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid PlayMovie(string filename)\n```\nPlays a movie file full-screen and waits for completion."
+        }
+    },
+    {
+        "label": "PlayMovieRect",
+        "kind": 3,
+        "source": "builtin",
+        "category": "base-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid PlayMovieRect(string filename, int x, int y, int width, int height)\n```\nPlays a movie file within a specified rectangular area on screen."
+        }
+    },
+    {
         "label": "poison",
         "kind": 3,
         "source": "builtin",
@@ -1813,6 +1907,26 @@
         "documentation": {
             "kind": "markdown",
             "value": "```fallout-ssl-tooltip\nint random(int min, int max)\n```\nReturns a random value between (min) and (max), inclusive."
+        }
+    },
+    {
+        "label": "reaction_influence",
+        "kind": 3,
+        "source": "builtin",
+        "category": "base-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nint reaction_influence(int param1, int param2, int param3)\n```\nInfluences NPC reaction level. Returns the result of the internal reaction influence calculation."
+        }
+    },
+    {
+        "label": "reg_anim_begin",
+        "kind": 3,
+        "source": "builtin",
+        "category": "base-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid reg_anim_begin\n```\nStarts an animation registration sequence. All animation registrations (reg_anim_animate, reg_anim_obj_move_to_tile, etc.) must be placed between reg_anim_begin and reg_anim_end calls."
         }
     },
     {
@@ -2026,6 +2140,16 @@
         }
     },
     {
+        "label": "SelectFileList",
+        "kind": 3,
+        "source": "builtin",
+        "category": "base-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid SelectFileList(string pattern, string title)\n```\nOpens a file picker dialog with the given file pattern and title."
+        }
+    },
+    {
         "label": "self_obj",
         "kind": 3,
         "source": "builtin",
@@ -2126,6 +2250,76 @@
         }
     },
     {
+        "label": "sfx_build_ambient_name",
+        "kind": 3,
+        "source": "builtin",
+        "category": "base-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nstring sfx_build_ambient_name(int ambientType, int ambientSubtype)\n```\nConstructs and returns a sound effect filename for ambient sounds based on the type and subtype parameters."
+        }
+    },
+    {
+        "label": "sfx_build_char_name",
+        "kind": 3,
+        "source": "builtin",
+        "category": "base-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nstring sfx_build_char_name(int charType, int animType, int animFrame)\n```\nConstructs and returns a sound effect filename for character animations based on character type, animation type, and frame."
+        }
+    },
+    {
+        "label": "sfx_build_interface_name",
+        "kind": 3,
+        "source": "builtin",
+        "category": "base-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nstring sfx_build_interface_name(int interfaceId, int actionType)\n```\nConstructs and returns a sound effect filename for interface interactions based on interface ID and action type."
+        }
+    },
+    {
+        "label": "sfx_build_item_name",
+        "kind": 3,
+        "source": "builtin",
+        "category": "base-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nstring sfx_build_item_name(int itemType, int actionType, int itemVariant)\n```\nConstructs and returns a sound effect filename for item interactions based on item type, action type, and variant."
+        }
+    },
+    {
+        "label": "sfx_build_open_name",
+        "kind": 3,
+        "source": "builtin",
+        "category": "base-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nstring sfx_build_open_name(int openType, int actionType)\n```\nConstructs and returns a sound effect filename for opening/closing interactions based on type and action."
+        }
+    },
+    {
+        "label": "sfx_build_scenery_name",
+        "kind": 3,
+        "source": "builtin",
+        "category": "base-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nstring sfx_build_scenery_name(int sceneryType, int actionType, int sceneryVariant)\n```\nConstructs and returns a sound effect filename for scenery interactions based on scenery type, action type, and variant."
+        }
+    },
+    {
+        "label": "sfx_build_weapon_name",
+        "kind": 3,
+        "source": "builtin",
+        "category": "base-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nstring sfx_build_weapon_name(int weaponType, int actionType, int range, int hit)\n```\nConstructs and returns a sound effect filename for weapon fire and impact sounds based on weapon type, action type, range, and hit parameters."
+        }
+    },
+    {
         "label": "signal_end_game",
         "kind": 3,
         "source": "builtin",
@@ -2163,6 +2357,16 @@
         "documentation": {
             "kind": "markdown",
             "value": "```fallout-ssl-tooltip\nvoid start_gdialog(int msgFileNum, ObjectPtr who, int mood, int headNum, int backgroundIdx)\n```\nStart the dialogue system focusing on a critter `who` and in a given `mood`.\nThis call sets up the appropriate dialog windows, head art, etc.\nIf this call is not made before the normal dialog calls (`sayReply`, `sayMessage`, `sayOption`, etc.) then the dialog windows will not come up, and only grey boxes will appear with the text.\n\n`mood` argument is unused in vanilla. Instead, the function checks LVAR 0 of the script:\n- `LVAR > 10` - good reaction (happy head).\n- `-10 > LVAR >= 10` - neutral.\n- Else, angry head.\n\nIf sfall is installed, and `StartGDialogFix` is enabled, argument `mood` does work:\n- If `mood == -1`, use vanilla behaviour (check LVAR 0).\n- Else, use argument value. Same thresholds apply."
+        }
+    },
+    {
+        "label": "StopMovie",
+        "kind": 3,
+        "source": "builtin",
+        "category": "base-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid StopMovie\n```\nStops the currently playing movie."
         }
     },
     {
@@ -2226,6 +2430,16 @@
         }
     },
     {
+        "label": "tile_in_tile_rect",
+        "kind": 3,
+        "source": "builtin",
+        "category": "base-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nint tile_in_tile_rect(int tile1, int tile2, int tile3, int tile4, int tile5)\n```\nTests whether a tile falls within a rectangular region defined by the coordinate parameters. Returns 1 if the tile is inside the rectangle, 0 otherwise."
+        }
+    },
+    {
         "label": "tile_is_visible",
         "kind": 3,
         "source": "builtin",
@@ -2253,6 +2467,16 @@
         "documentation": {
             "kind": "markdown",
             "value": "```fallout-ssl-tooltip\nint tile_num_in_direction(int start_tile, int direction, int distance)\n```\nReturns the tile number of a tile offset from a starting tile in a given direction (0-5, the next tile in that direction)."
+        }
+    },
+    {
+        "label": "tokenize",
+        "kind": 3,
+        "source": "builtin",
+        "category": "base-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid tokenize(string str, string delimiter, int prevToken)\n```\nExtracts the next token from a string using the given delimiter character. The prevToken parameter tracks position across successive calls to iterate through all tokens."
         }
     },
     {
@@ -2373,6 +2597,696 @@
         "documentation": {
             "kind": "markdown",
             "value": "```fallout-ssl-tooltip\nint world_map_y_pos\n```\nReturns the current Y position of the party on the World Map."
+        }
+    },
+    {
+        "label": "AddButton",
+        "kind": 3,
+        "source": "builtin",
+        "category": "window-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid AddButton(string name, int x, int y, int width, int height)\n```\nCreates a button with the given name at the specified position and size in the currently selected window."
+        }
+    },
+    {
+        "label": "AddButtonFlag",
+        "kind": 3,
+        "source": "builtin",
+        "category": "window-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid AddButtonFlag(string name, int flag)\n```\nSets a flag attribute on the named button."
+        }
+    },
+    {
+        "label": "AddButtonGFX",
+        "kind": 3,
+        "source": "builtin",
+        "category": "window-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid AddButtonGFX(string name, string hover, string normal, string pressed)\n```\nSets the graphics for button states: hover, normal, and pressed appearances."
+        }
+    },
+    {
+        "label": "AddButtonProc",
+        "kind": 3,
+        "source": "builtin",
+        "category": "window-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid AddButtonProc(string name, Procedure hover, Procedure press, Procedure release, Procedure move)\n```\nAssigns callback procedures to a button for hover, press, release, and mouse-move events."
+        }
+    },
+    {
+        "label": "AddButtonRightProc",
+        "kind": 3,
+        "source": "builtin",
+        "category": "window-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid AddButtonRightProc(string name, Procedure press, Procedure release)\n```\nAssigns right-click callback procedures to a button for press and release events."
+        }
+    },
+    {
+        "label": "AddButtonText",
+        "kind": 3,
+        "source": "builtin",
+        "category": "window-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid AddButtonText(string name, string text)\n```\nSets the text label displayed on the named button."
+        }
+    },
+    {
+        "label": "AddRegion",
+        "kind": 3,
+        "source": "builtin",
+        "category": "window-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid AddRegion(string name, ...)\n```\nCreates a named polygon region in the current window from a variable number of coordinate points."
+        }
+    },
+    {
+        "label": "AddRegionFlag",
+        "kind": 3,
+        "source": "builtin",
+        "category": "window-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid AddRegionFlag(string name, int flag)\n```\nSets a flag attribute on the named region."
+        }
+    },
+    {
+        "label": "AddRegionProc",
+        "kind": 3,
+        "source": "builtin",
+        "category": "window-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid AddRegionProc(string name, Procedure enter, Procedure exit, Procedure hover, Procedure click)\n```\nAssigns callback procedures to a region for mouse enter, exit, hover, and click events."
+        }
+    },
+    {
+        "label": "AddRegionRightProc",
+        "kind": 3,
+        "source": "builtin",
+        "category": "window-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid AddRegionRightProc(string name, Procedure press, Procedure release)\n```\nAssigns right-click callback procedures to a region for press and release events."
+        }
+    },
+    {
+        "label": "CheckRegion",
+        "kind": 3,
+        "source": "builtin",
+        "category": "window-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nint CheckRegion(string name)\n```\nReturns whether a named region exists in the current window."
+        }
+    },
+    {
+        "label": "CreateWin",
+        "kind": 3,
+        "source": "builtin",
+        "category": "window-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid CreateWin(string name, int x, int y, int width, int height)\n```\nCreates a new window with the given name at the specified position and size. Coordinates are scaled to the current screen resolution."
+        }
+    },
+    {
+        "label": "DeleteButton",
+        "kind": 3,
+        "source": "builtin",
+        "category": "window-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid DeleteButton(string name)\n```\nRemoves the named button from the current window."
+        }
+    },
+    {
+        "label": "DeleteRegion",
+        "kind": 3,
+        "source": "builtin",
+        "category": "window-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid DeleteRegion(string name)\n```\nRemoves the named region from the current window."
+        }
+    },
+    {
+        "label": "DeleteWin",
+        "kind": 3,
+        "source": "builtin",
+        "category": "window-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid DeleteWin(string name)\n```\nDeletes the named window and frees its resources."
+        }
+    },
+    {
+        "label": "display",
+        "kind": 3,
+        "source": "builtin",
+        "category": "window-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid display(string filename)\n```\nDisplays an image file in the currently selected window."
+        }
+    },
+    {
+        "label": "DisplayGFX",
+        "kind": 3,
+        "source": "builtin",
+        "category": "window-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid DisplayGFX(string filename, int x, int y, int width, int height)\n```\nDisplays an image file at the specified position and size within the current window."
+        }
+    },
+    {
+        "label": "DisplayRaw",
+        "kind": 3,
+        "source": "builtin",
+        "category": "window-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid DisplayRaw(string filename)\n```\nDisplays an image file in raw format in the currently selected window, without palette conversion."
+        }
+    },
+    {
+        "label": "FadeIn",
+        "kind": 3,
+        "source": "builtin",
+        "category": "window-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid FadeIn(int duration)\n```\nFades the screen in from black over the given duration."
+        }
+    },
+    {
+        "label": "FadeOut",
+        "kind": 3,
+        "source": "builtin",
+        "category": "window-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid FadeOut(int duration)\n```\nFades the screen out to black over the given duration."
+        }
+    },
+    {
+        "label": "FillRect",
+        "kind": 3,
+        "source": "builtin",
+        "category": "window-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid FillRect(int x, int y, int width, int height, int r, int g, int b)\n```\nFills a rectangle at the specified position and size with the given RGB color in the current window."
+        }
+    },
+    {
+        "label": "FillWin",
+        "kind": 3,
+        "source": "builtin",
+        "category": "window-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid FillWin(int r, int g, int b)\n```\nFills the entire current window with the specified RGB color."
+        }
+    },
+    {
+        "label": "FillWin3x3",
+        "kind": 3,
+        "source": "builtin",
+        "category": "window-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid FillWin3x3(string filename)\n```\nFills the current window using a 3x3 tile pattern loaded from the specified image file."
+        }
+    },
+    {
+        "label": "format",
+        "kind": 3,
+        "source": "builtin",
+        "category": "window-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid format(string text, int x, int y, int width, int height, int alignment)\n```\nFormats and displays text within a specified rectangle in the current window, with the given alignment."
+        }
+    },
+    {
+        "label": "GotoXY",
+        "kind": 3,
+        "source": "builtin",
+        "category": "window-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid GotoXY(int x, int y)\n```\nSets the text cursor position within the current window."
+        }
+    },
+    {
+        "label": "HideMouse",
+        "kind": 3,
+        "source": "builtin",
+        "category": "window-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid HideMouse\n```\nHides the mouse cursor."
+        }
+    },
+    {
+        "label": "LoadPaletteTable",
+        "kind": 3,
+        "source": "builtin",
+        "category": "window-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid LoadPaletteTable(string path)\n```\nLoads a color palette table from the specified file path."
+        }
+    },
+    {
+        "label": "MouseShape",
+        "kind": 3,
+        "source": "builtin",
+        "category": "window-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid MouseShape(string filename, int x, int y)\n```\nLoads a custom mouse cursor graphic from the specified file and sets the hotspot offset."
+        }
+    },
+    {
+        "label": "print",
+        "kind": 3,
+        "source": "builtin",
+        "category": "window-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid print(string value)\n```\nPrints a value to the current window at the text cursor position."
+        }
+    },
+    {
+        "label": "PrintRect",
+        "kind": 3,
+        "source": "builtin",
+        "category": "window-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid PrintRect(string value, int param, int alignment)\n```\nPrints a value within a rectangle in the current window with the specified alignment."
+        }
+    },
+    {
+        "label": "RefreshMouse",
+        "kind": 3,
+        "source": "builtin",
+        "category": "window-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid RefreshMouse(Procedure proc)\n```\nUpdates screen regions and executes the given callback procedure."
+        }
+    },
+    {
+        "label": "ResizeWin",
+        "kind": 3,
+        "source": "builtin",
+        "category": "window-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid ResizeWin(string name, int x, int y, int width, int height)\n```\nResizes the named window to the specified position and dimensions. Coordinates are scaled to the current screen resolution."
+        }
+    },
+    {
+        "label": "ScaleWin",
+        "kind": 3,
+        "source": "builtin",
+        "category": "window-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid ScaleWin(string name, int x, int y, int width, int height)\n```\nScales the named window to the specified position and dimensions."
+        }
+    },
+    {
+        "label": "SelectWin",
+        "kind": 3,
+        "source": "builtin",
+        "category": "window-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid SelectWin(string name)\n```\nSelects the named window as the current target for subsequent drawing and widget operations."
+        }
+    },
+    {
+        "label": "SetFont",
+        "kind": 3,
+        "source": "builtin",
+        "category": "window-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid SetFont(int fontId)\n```\nSets the current text font for the active window."
+        }
+    },
+    {
+        "label": "SetHighlightColor",
+        "kind": 3,
+        "source": "builtin",
+        "category": "window-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid SetHighlightColor(int r, int g, int b)\n```\nSets the text highlight (selection) color using RGB values for the active window."
+        }
+    },
+    {
+        "label": "SetTextColor",
+        "kind": 3,
+        "source": "builtin",
+        "category": "window-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid SetTextColor(int r, int g, int b)\n```\nSets the text color using RGB values for the active window."
+        }
+    },
+    {
+        "label": "SetTextFlags",
+        "kind": 3,
+        "source": "builtin",
+        "category": "window-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid SetTextFlags(int flags)\n```\nSets text formatting flags (such as alignment and wrapping) for the active window."
+        }
+    },
+    {
+        "label": "ShowMouse",
+        "kind": 3,
+        "source": "builtin",
+        "category": "window-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid ShowMouse\n```\nShows the mouse cursor."
+        }
+    },
+    {
+        "label": "ShowWin",
+        "kind": 3,
+        "source": "builtin",
+        "category": "window-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid ShowWin\n```\nRedraws and displays the currently selected window."
+        }
+    },
+    {
+        "label": "SayBorder",
+        "kind": 3,
+        "source": "builtin",
+        "category": "say-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid SayBorder(int x, int y)\n```\nSets the border dimensions for the dialog window."
+        }
+    },
+    {
+        "label": "SayEnd",
+        "kind": 3,
+        "source": "builtin",
+        "category": "say-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid SayEnd\n```\nEnds the current dialog sequence and enters a wait state for player input."
+        }
+    },
+    {
+        "label": "SayGetLastPos",
+        "kind": 3,
+        "source": "builtin",
+        "category": "say-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nint SayGetLastPos\n```\nReturns the exit point (last position) of the most recent dialog interaction."
+        }
+    },
+    {
+        "label": "SayGotoReply",
+        "kind": 3,
+        "source": "builtin",
+        "category": "say-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid SayGotoReply(string label)\n```\nJumps to a labeled reply target within the dialog tree."
+        }
+    },
+    {
+        "label": "SayMessage",
+        "kind": 3,
+        "source": "builtin",
+        "category": "say-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid SayMessage(string text1, string text2)\n```\nDisplays a dialog message with two text fields. The message is shown with a timeout."
+        }
+    },
+    {
+        "label": "SayMessageTimeout",
+        "kind": 3,
+        "source": "builtin",
+        "category": "say-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid SayMessageTimeout(int timeout)\n```\nSets the display duration in milliseconds for dialog messages shown with SayMessage."
+        }
+    },
+    {
+        "label": "SayOption",
+        "kind": 3,
+        "source": "builtin",
+        "category": "say-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid SayOption(string text, string proc)\n```\nAdds a selectable dialog option with the given text and callback procedure name."
+        }
+    },
+    {
+        "label": "SayOptionColor",
+        "kind": 3,
+        "source": "builtin",
+        "category": "say-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid SayOptionColor(int r, int g, int b)\n```\nSets the text color for dialog options using RGB values."
+        }
+    },
+    {
+        "label": "SayOptionFlags",
+        "kind": 3,
+        "source": "builtin",
+        "category": "say-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid SayOptionFlags(int flags)\n```\nSets formatting flags for dialog option text."
+        }
+    },
+    {
+        "label": "SayOptionWindow",
+        "kind": 3,
+        "source": "builtin",
+        "category": "say-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid SayOptionWindow(int x, int y, int width, int height, string filename)\n```\nConfigures the display window for dialog options with position, size, and background image."
+        }
+    },
+    {
+        "label": "SayQuit",
+        "kind": 3,
+        "source": "builtin",
+        "category": "say-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid SayQuit\n```\nImmediately quits the dialog system, closing all dialog windows."
+        }
+    },
+    {
+        "label": "SayReply",
+        "kind": 3,
+        "source": "builtin",
+        "category": "say-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid SayReply(string label, string text)\n```\nAdds a reply entry to the dialog with the given label and text content."
+        }
+    },
+    {
+        "label": "SayReplyColor",
+        "kind": 3,
+        "source": "builtin",
+        "category": "say-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid SayReplyColor(int r, int g, int b)\n```\nSets the text color for dialog replies using RGB values."
+        }
+    },
+    {
+        "label": "SayReplyFlags",
+        "kind": 3,
+        "source": "builtin",
+        "category": "say-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid SayReplyFlags(int flags)\n```\nSets formatting flags for dialog reply text."
+        }
+    },
+    {
+        "label": "SayReplyTitle",
+        "kind": 3,
+        "source": "builtin",
+        "category": "say-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid SayReplyTitle(string title)\n```\nSets the title text displayed in the reply section of the dialog."
+        }
+    },
+    {
+        "label": "SayReplyWindow",
+        "kind": 3,
+        "source": "builtin",
+        "category": "say-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid SayReplyWindow(int x, int y, int width, int height, string filename)\n```\nConfigures the display window for dialog replies with position, size, and background image."
+        }
+    },
+    {
+        "label": "SayRestart",
+        "kind": 3,
+        "source": "builtin",
+        "category": "say-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid SayRestart\n```\nRestarts the dialog system from the beginning."
+        }
+    },
+    {
+        "label": "SayScrollDown",
+        "kind": 3,
+        "source": "builtin",
+        "category": "say-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid SayScrollDown(int x, int y, string normal, string hover, string pressed, string disabled)\n```\nConfigures the scroll-down button for the dialog window with position and graphics for each button state."
+        }
+    },
+    {
+        "label": "SayScrollUp",
+        "kind": 3,
+        "source": "builtin",
+        "category": "say-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid SayScrollUp(int x, int y, string normal, string hover, string pressed, string disabled)\n```\nConfigures the scroll-up button for the dialog window with position and graphics for each button state."
+        }
+    },
+    {
+        "label": "SaySetSpacing",
+        "kind": 3,
+        "source": "builtin",
+        "category": "say-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid SaySetSpacing(int spacing)\n```\nSets the vertical line spacing in pixels between dialog entries."
+        }
+    },
+    {
+        "label": "SayStart",
+        "kind": 3,
+        "source": "builtin",
+        "category": "say-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid SayStart\n```\nInitiates a new dialog sequence from the beginning."
+        }
+    },
+    {
+        "label": "SayStartPos",
+        "kind": 3,
+        "source": "builtin",
+        "category": "say-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid SayStartPos(int position)\n```\nInitiates a new dialog sequence starting at the specified position index."
+        }
+    },
+    {
+        "label": "SetOneOptPause",
+        "kind": 3,
+        "source": "builtin",
+        "category": "sound-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid SetOneOptPause(int flag)\n```\nToggles the pause-on-focus-loss behavior for media playback. When flag is non-zero, media pauses when the game loses focus."
+        }
+    },
+    {
+        "label": "SoundDelete",
+        "kind": 3,
+        "source": "builtin",
+        "category": "sound-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid SoundDelete(int handle)\n```\nFrees and releases a sound resource identified by the given handle."
+        }
+    },
+    {
+        "label": "SoundPause",
+        "kind": 3,
+        "source": "builtin",
+        "category": "sound-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid SoundPause(int handle)\n```\nPauses playback of the sound identified by the given handle."
+        }
+    },
+    {
+        "label": "SoundPlay",
+        "kind": 3,
+        "source": "builtin",
+        "category": "sound-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nint SoundPlay(string filename, int flags)\n```\nPlays a sound file with the specified flags and returns a handle that can be used with SoundPause, SoundResume, SoundStop, SoundRewind, and SoundDelete."
+        }
+    },
+    {
+        "label": "SoundResume",
+        "kind": 3,
+        "source": "builtin",
+        "category": "sound-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid SoundResume(int handle)\n```\nResumes playback of a previously paused sound identified by the given handle."
+        }
+    },
+    {
+        "label": "SoundRewind",
+        "kind": 3,
+        "source": "builtin",
+        "category": "sound-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid SoundRewind(int handle)\n```\nRewinds the sound identified by the given handle back to the beginning."
+        }
+    },
+    {
+        "label": "SoundStop",
+        "kind": 3,
+        "source": "builtin",
+        "category": "sound-functions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```fallout-ssl-tooltip\nvoid SoundStop(int handle)\n```\nStops playback of the sound identified by the given handle."
         }
     },
     {

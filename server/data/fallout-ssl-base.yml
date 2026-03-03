@@ -160,7 +160,10 @@ base-functions:
       detail: int action_being_used
       doc: |-
         Returns the current skill being used on a script object.
-    - name: activateregion
+    - name: ActivateRegion
+      detail: void ActivateRegion(string name, int flag)
+      doc: |-
+        Enables or disables a named screen region. When flag is non-zero, the region is activated; when zero, it is deactivated.
     - name: add_mult_objs_to_inven
       detail: void add_mult_objs_to_inven(ObjectPtr who, ObjectPtr item, int count)
       doc: |-
@@ -173,6 +176,10 @@ base-functions:
       detail: void add_timer_event(ObjectPtr obj, int time, int info)
       doc: |-
         Adds a timed event call to the queue, at a given time offset, to call an object's (obj) script. Info is used to let scripts differentiate between timed event calls so that they can be hooked in multiple times. Info is read back by the script using the fixed_param operator. Note that time is in ticks (you can use game_ticks(seconds_num) to get the time in ticks from time in seconds).
+    - name: AddKey
+      detail: void AddKey(int key, Procedure proc)
+      doc: |-
+        Registers a keyboard handler procedure for a given key. When the key is pressed, the associated procedure is called.
     - name: anim
       detail: void anim(ObjectPtr who, int anim, int direction)
       doc: |-
@@ -351,6 +358,10 @@ base-functions:
       detail: void debug_msg(string text)
       doc: |-
         Prints a string to the debug monitor. Should be used exclusively for debug information, instead of display_msg()! The user will never see these messages unless they have debugging enabled and activated. If they have debugging enabled and DEBUGLOG set, the messages will only show up in debug.log file.
+    - name: DeleteKey
+      detail: void DeleteKey(int key)
+      doc: |-
+        Removes a previously registered keyboard handler for the given key.
     - name: destroy_mult_objs
       detail: int destroy_mult_objs(ObjectPtr item, int count)
       doc: |-
@@ -459,6 +470,10 @@ base-functions:
       detail: void game_time_advance(int amount)
       doc: |-
         Advances the current game time by (amount) ticks.
+    - name: game_time_in_seconds
+      detail: int game_time_in_seconds
+      doc: |-
+        Returns the current game time in seconds (game_time / 10).
     - name: game_time_hour
       detail: int game_time_hour
       doc: |-
@@ -620,10 +635,26 @@ base-functions:
       detail: int map_var(uint var_index)
       doc: |-
         Returns the value of a map-global variable of a given index # (var_index).
+    # - name: make_daytime
+    #   detail: void make_daytime
+    #   doc: |-
+    #     No-op stub in the engine. Does nothing when called.
+    - name: mark_area_known
+      detail: void mark_area_known(int areaType, int areaIndex, int known)
+      doc: |-
+        Marks a town area or map location on the world map. The areaType parameter selects whether to mark by area (MARK_TYPE_TOWN) or by map index (MARK_TYPE_MAP). The areaIndex identifies the area or map, and known sets the state (MARK_STATE_KNOWN or MARK_STATE_VISITED).
     - name: message_str
       detail: char* message_str(int list, int msg_num)
       doc: |-
         Returns a string from the message module for a given list and a given # (msg_num).
+    - name: metarule
+      detail: int metarule(int rule, int param)
+      doc: |-
+        General engine query function supporting ~27 different rules. The rule parameter selects the operation (e.g. METARULE_SIGNAL_END_GAME, METARULE_TEST_FIRSTRUN, METARULE_IS_LOADGAME, METARULE_PARTY_COUNT, etc.), and param provides additional data for that rule. Returns an integer result depending on the rule.
+    - name: metarule3
+      detail: int metarule3(int rule, int param1, int param2, int param3)
+      doc: |-
+        Extended engine query function supporting ~12 rules that require multiple parameters. Used for operations like clearing timed events (METARULE3_CLR_FIXED_TIMED_EVENTS), querying kill counts (METARULE3_KILL_COUNT), worldmap subtile operations, and critter iteration.
     - name: move_obj_inven_to_obj
       detail: move_obj_inven_to_obj(ObjectPtr srcObj, ObjectPtr destObj)
       doc: |-
@@ -633,6 +664,10 @@ base-functions:
       doc: |-
         Immediately moves object `obj` to the given tile number and elevation (0-2) on the current map.
         Using this to change elevations during loading an in-combat save will lead to a crash. If `move_to` called in `map_enter_p_proc`, wrap in `not_is_loading_game` to avoid the crash.
+    - name: MovieFlags
+      detail: void MovieFlags(int flags)
+      doc: |-
+        Sets playback flags for the next movie to be played with PlayMovie or PlayMovieRect.
     - name: obj_art_fid
       detail: int obj_art_fid(ObjectPtr obj)
       doc: |-
@@ -745,6 +780,14 @@ base-functions:
       detail: play_sfx (string sfxFileName)
       doc: |-
         Starts a new sound effect to be played on the queue.
+    - name: PlayMovie
+      detail: void PlayMovie(string filename)
+      doc: |-
+        Plays a movie file full-screen and waits for completion.
+    - name: PlayMovieRect
+      detail: void PlayMovieRect(string filename, int x, int y, int width, int height)
+      doc: |-
+        Plays a movie file within a specified rectangular area on screen.
     - name: poison
       detail: void poison(ObjectPtr who, int amount)
       doc: |-
@@ -765,6 +808,14 @@ base-functions:
       detail: int random(int min, int max)
       doc: |-
         Returns a random value between (min) and (max), inclusive.
+    - name: reaction_influence
+      detail: int reaction_influence(int param1, int param2, int param3)
+      doc: |-
+        Influences NPC reaction level. Returns the result of the internal reaction influence calculation.
+    - name: reg_anim_begin
+      detail: void reg_anim_begin
+      doc: |-
+        Starts an animation registration sequence. All animation registrations (reg_anim_animate, reg_anim_obj_move_to_tile, etc.) must be placed between reg_anim_begin and reg_anim_end calls.
     - name: reg_anim_animate
       detail: void reg_anim_animate(ObjectPtr what, int anim, int delay)
       doc: |-
@@ -849,6 +900,10 @@ base-functions:
       detail: void script_overrides
       doc: |-
         Tells the C-engine that the script will override default behavior for the object. What this means is that the C-engine will not attempt to do things that it would normally do, in expectation that the script will handle those things itself. This is an IMPORTANT command! It is commonly used for the general player actions upon objects, such as looking at them (requesting a description), using them (opening doors, for example), or using items ON them (using a picklock or a key on a door lock).
+    - name: SelectFileList
+      detail: void SelectFileList(string pattern, string title)
+      doc: |-
+        Opens a file picker dialog with the given file pattern and title.
     - name: self_obj
       detail: ObjectPtr self_obj
       doc: |-
@@ -894,6 +949,34 @@ base-functions:
         Notes:
           - Visibility arg is _inverted_: `set_obj_visibility(who, true)` makes object invisible.
           - Does not work when loading game.
+    - name: sfx_build_ambient_name
+      detail: string sfx_build_ambient_name(int ambientType, int ambientSubtype)
+      doc: |-
+        Constructs and returns a sound effect filename for ambient sounds based on the type and subtype parameters.
+    - name: sfx_build_char_name
+      detail: string sfx_build_char_name(int charType, int animType, int animFrame)
+      doc: |-
+        Constructs and returns a sound effect filename for character animations based on character type, animation type, and frame.
+    - name: sfx_build_interface_name
+      detail: string sfx_build_interface_name(int interfaceId, int actionType)
+      doc: |-
+        Constructs and returns a sound effect filename for interface interactions based on interface ID and action type.
+    - name: sfx_build_item_name
+      detail: string sfx_build_item_name(int itemType, int actionType, int itemVariant)
+      doc: |-
+        Constructs and returns a sound effect filename for item interactions based on item type, action type, and variant.
+    - name: sfx_build_open_name
+      detail: string sfx_build_open_name(int openType, int actionType)
+      doc: |-
+        Constructs and returns a sound effect filename for opening/closing interactions based on type and action.
+    - name: sfx_build_scenery_name
+      detail: string sfx_build_scenery_name(int sceneryType, int actionType, int sceneryVariant)
+      doc: |-
+        Constructs and returns a sound effect filename for scenery interactions based on scenery type, action type, and variant.
+    - name: sfx_build_weapon_name
+      detail: string sfx_build_weapon_name(int weaponType, int actionType, int range, int hit)
+      doc: |-
+        Constructs and returns a sound effect filename for weapon fire and impact sounds based on weapon type, action type, range, and hit parameters.
     - name: signal_end_game
       detail: void signal_end_game
       doc: |-
@@ -925,6 +1008,10 @@ base-functions:
         - If `mood == -1`, use vanilla behaviour (check LVAR 0).
         - Else, use argument value. Same thresholds apply.
 
+    - name: StopMovie
+      detail: void StopMovie
+      doc: |-
+        Stops the currently playing movie.
     - name: target_obj
       detail: ObjectPtr target_obj
       doc: |-
@@ -949,6 +1036,10 @@ base-functions:
       detail: int tile_distance_objs(ObjectPtr obj1, ObjectPtr obj2)
       doc: |-
         Returns the tile distance between two objects (between their tile #'s).
+    - name: tile_in_tile_rect
+      detail: int tile_in_tile_rect(int tile1, int tile2, int tile3, int tile4, int tile5)
+      doc: |-
+        Tests whether a tile falls within a rectangular region defined by the coordinate parameters. Returns 1 if the tile is inside the rectangle, 0 otherwise.
     - name: tile_is_visible
       detail: bool tile_is_visible(int tile)
       doc: |-
@@ -961,6 +1052,10 @@ base-functions:
       detail: int tile_num_in_direction(int start_tile, int direction, int distance)
       doc: |-
         Returns the tile number of a tile offset from a starting tile in a given direction (0-5, the next tile in that direction).
+    - name: tokenize
+      detail: void tokenize(string str, string delimiter, int prevToken)
+      doc: |-
+        Extracts the next token from a string using the given delimiter character. The prevToken parameter tracks position across successive calls to iterate through all tokens.
     - name: town_known
       detail: bool town_known(int townArea)
       doc: |-
@@ -1009,3 +1104,295 @@ base-functions:
       detail: int world_map_y_pos
       doc: |-
         Returns the current Y position of the party on the World Map.
+
+window-functions:
+  type: 3
+  items:
+    - name: AddButton
+      detail: void AddButton(string name, int x, int y, int width, int height)
+      doc: |-
+        Creates a button with the given name at the specified position and size in the currently selected window.
+    - name: AddButtonFlag
+      detail: void AddButtonFlag(string name, int flag)
+      doc: |-
+        Sets a flag attribute on the named button.
+    - name: AddButtonGFX
+      detail: void AddButtonGFX(string name, string hover, string normal, string pressed)
+      doc: |-
+        Sets the graphics for button states: hover, normal, and pressed appearances.
+    - name: AddButtonProc
+      detail: void AddButtonProc(string name, Procedure hover, Procedure press, Procedure release, Procedure move)
+      doc: |-
+        Assigns callback procedures to a button for hover, press, release, and mouse-move events.
+    - name: AddButtonRightProc
+      detail: void AddButtonRightProc(string name, Procedure press, Procedure release)
+      doc: |-
+        Assigns right-click callback procedures to a button for press and release events.
+    - name: AddButtonText
+      detail: void AddButtonText(string name, string text)
+      doc: |-
+        Sets the text label displayed on the named button.
+    - name: AddRegion
+      detail: void AddRegion(string name, ...)
+      doc: |-
+        Creates a named polygon region in the current window from a variable number of coordinate points.
+    - name: AddRegionFlag
+      detail: void AddRegionFlag(string name, int flag)
+      doc: |-
+        Sets a flag attribute on the named region.
+    - name: AddRegionProc
+      detail: void AddRegionProc(string name, Procedure enter, Procedure exit, Procedure hover, Procedure click)
+      doc: |-
+        Assigns callback procedures to a region for mouse enter, exit, hover, and click events.
+    - name: AddRegionRightProc
+      detail: void AddRegionRightProc(string name, Procedure press, Procedure release)
+      doc: |-
+        Assigns right-click callback procedures to a region for press and release events.
+    - name: CheckRegion
+      detail: int CheckRegion(string name)
+      doc: |-
+        Returns whether a named region exists in the current window.
+    - name: CreateWin
+      detail: void CreateWin(string name, int x, int y, int width, int height)
+      doc: |-
+        Creates a new window with the given name at the specified position and size. Coordinates are scaled to the current screen resolution.
+    - name: DeleteButton
+      detail: void DeleteButton(string name)
+      doc: |-
+        Removes the named button from the current window.
+    - name: DeleteRegion
+      detail: void DeleteRegion(string name)
+      doc: |-
+        Removes the named region from the current window.
+    - name: DeleteWin
+      detail: void DeleteWin(string name)
+      doc: |-
+        Deletes the named window and frees its resources.
+    - name: display
+      detail: void display(string filename)
+      doc: |-
+        Displays an image file in the currently selected window.
+    - name: DisplayGFX
+      detail: void DisplayGFX(string filename, int x, int y, int width, int height)
+      doc: |-
+        Displays an image file at the specified position and size within the current window.
+    - name: DisplayRaw
+      detail: void DisplayRaw(string filename)
+      doc: |-
+        Displays an image file in raw format in the currently selected window, without palette conversion.
+    - name: FadeIn
+      detail: void FadeIn(int duration)
+      doc: |-
+        Fades the screen in from black over the given duration.
+    - name: FadeOut
+      detail: void FadeOut(int duration)
+      doc: |-
+        Fades the screen out to black over the given duration.
+    - name: FillRect
+      detail: void FillRect(int x, int y, int width, int height, int r, int g, int b)
+      doc: |-
+        Fills a rectangle at the specified position and size with the given RGB color in the current window.
+    - name: FillWin
+      detail: void FillWin(int r, int g, int b)
+      doc: |-
+        Fills the entire current window with the specified RGB color.
+    - name: FillWin3x3
+      detail: void FillWin3x3(string filename)
+      doc: |-
+        Fills the current window using a 3x3 tile pattern loaded from the specified image file.
+    - name: format
+      detail: void format(string text, int x, int y, int width, int height, int alignment)
+      doc: |-
+        Formats and displays text within a specified rectangle in the current window, with the given alignment.
+    - name: GotoXY
+      detail: void GotoXY(int x, int y)
+      doc: |-
+        Sets the text cursor position within the current window.
+    - name: HideMouse
+      detail: void HideMouse
+      doc: |-
+        Hides the mouse cursor.
+    - name: LoadPaletteTable
+      detail: void LoadPaletteTable(string path)
+      doc: |-
+        Loads a color palette table from the specified file path.
+    - name: MouseShape
+      detail: void MouseShape(string filename, int x, int y)
+      doc: |-
+        Loads a custom mouse cursor graphic from the specified file and sets the hotspot offset.
+    - name: print
+      detail: void print(string value)
+      doc: |-
+        Prints a value to the current window at the text cursor position.
+    - name: PrintRect
+      detail: void PrintRect(string value, int param, int alignment)
+      doc: |-
+        Prints a value within a rectangle in the current window with the specified alignment.
+    - name: RefreshMouse
+      detail: void RefreshMouse(Procedure proc)
+      doc: |-
+        Updates screen regions and executes the given callback procedure.
+    - name: ResizeWin
+      detail: void ResizeWin(string name, int x, int y, int width, int height)
+      doc: |-
+        Resizes the named window to the specified position and dimensions. Coordinates are scaled to the current screen resolution.
+    - name: ScaleWin
+      detail: void ScaleWin(string name, int x, int y, int width, int height)
+      doc: |-
+        Scales the named window to the specified position and dimensions.
+    - name: SelectWin
+      detail: void SelectWin(string name)
+      doc: |-
+        Selects the named window as the current target for subsequent drawing and widget operations.
+    - name: SetFont
+      detail: void SetFont(int fontId)
+      doc: |-
+        Sets the current text font for the active window.
+    # - name: SetGlobalMouseFunc
+    #   detail: void SetGlobalMouseFunc
+    #   doc: |-
+    #     Registers a global mouse function handler. Not implemented in the engine (no-op).
+    - name: SetHighlightColor
+      detail: void SetHighlightColor(int r, int g, int b)
+      doc: |-
+        Sets the text highlight (selection) color using RGB values for the active window.
+    - name: SetTextColor
+      detail: void SetTextColor(int r, int g, int b)
+      doc: |-
+        Sets the text color using RGB values for the active window.
+    - name: SetTextFlags
+      detail: void SetTextFlags(int flags)
+      doc: |-
+        Sets text formatting flags (such as alignment and wrapping) for the active window.
+    - name: ShowMouse
+      detail: void ShowMouse
+      doc: |-
+        Shows the mouse cursor.
+    - name: ShowWin
+      detail: void ShowWin
+      doc: |-
+        Redraws and displays the currently selected window.
+
+say-functions:
+  type: 3
+  items:
+    - name: SayBorder
+      detail: void SayBorder(int x, int y)
+      doc: |-
+        Sets the border dimensions for the dialog window.
+    - name: SayEnd
+      detail: void SayEnd
+      doc: |-
+        Ends the current dialog sequence and enters a wait state for player input.
+    - name: SayGetLastPos
+      detail: int SayGetLastPos
+      doc: |-
+        Returns the exit point (last position) of the most recent dialog interaction.
+    - name: SayGotoReply
+      detail: void SayGotoReply(string label)
+      doc: |-
+        Jumps to a labeled reply target within the dialog tree.
+    - name: SayMessage
+      detail: void SayMessage(string text1, string text2)
+      doc: |-
+        Displays a dialog message with two text fields. The message is shown with a timeout.
+    - name: SayMessageTimeout
+      detail: void SayMessageTimeout(int timeout)
+      doc: |-
+        Sets the display duration in milliseconds for dialog messages shown with SayMessage.
+    - name: SayOption
+      detail: void SayOption(string text, string proc)
+      doc: |-
+        Adds a selectable dialog option with the given text and callback procedure name.
+    - name: SayOptionColor
+      detail: void SayOptionColor(int r, int g, int b)
+      doc: |-
+        Sets the text color for dialog options using RGB values.
+    - name: SayOptionFlags
+      detail: void SayOptionFlags(int flags)
+      doc: |-
+        Sets formatting flags for dialog option text.
+    - name: SayOptionWindow
+      detail: void SayOptionWindow(int x, int y, int width, int height, string filename)
+      doc: |-
+        Configures the display window for dialog options with position, size, and background image.
+    - name: SayQuit
+      detail: void SayQuit
+      doc: |-
+        Immediately quits the dialog system, closing all dialog windows.
+    - name: SayReply
+      detail: void SayReply(string label, string text)
+      doc: |-
+        Adds a reply entry to the dialog with the given label and text content.
+    - name: SayReplyColor
+      detail: void SayReplyColor(int r, int g, int b)
+      doc: |-
+        Sets the text color for dialog replies using RGB values.
+    - name: SayReplyFlags
+      detail: void SayReplyFlags(int flags)
+      doc: |-
+        Sets formatting flags for dialog reply text.
+    - name: SayReplyTitle
+      detail: void SayReplyTitle(string title)
+      doc: |-
+        Sets the title text displayed in the reply section of the dialog.
+    - name: SayReplyWindow
+      detail: void SayReplyWindow(int x, int y, int width, int height, string filename)
+      doc: |-
+        Configures the display window for dialog replies with position, size, and background image.
+    - name: SayRestart
+      detail: void SayRestart
+      doc: |-
+        Restarts the dialog system from the beginning.
+    - name: SayScrollDown
+      detail: void SayScrollDown(int x, int y, string normal, string hover, string pressed, string disabled)
+      doc: |-
+        Configures the scroll-down button for the dialog window with position and graphics for each button state.
+    - name: SayScrollUp
+      detail: void SayScrollUp(int x, int y, string normal, string hover, string pressed, string disabled)
+      doc: |-
+        Configures the scroll-up button for the dialog window with position and graphics for each button state.
+    - name: SaySetSpacing
+      detail: void SaySetSpacing(int spacing)
+      doc: |-
+        Sets the vertical line spacing in pixels between dialog entries.
+    - name: SayStart
+      detail: void SayStart
+      doc: |-
+        Initiates a new dialog sequence from the beginning.
+    - name: SayStartPos
+      detail: void SayStartPos(int position)
+      doc: |-
+        Initiates a new dialog sequence starting at the specified position index.
+
+sound-functions:
+  type: 3
+  items:
+    - name: SetOneOptPause
+      detail: void SetOneOptPause(int flag)
+      doc: |-
+        Toggles the pause-on-focus-loss behavior for media playback. When flag is non-zero, media pauses when the game loses focus.
+    - name: SoundDelete
+      detail: void SoundDelete(int handle)
+      doc: |-
+        Frees and releases a sound resource identified by the given handle.
+    - name: SoundPause
+      detail: void SoundPause(int handle)
+      doc: |-
+        Pauses playback of the sound identified by the given handle.
+    - name: SoundPlay
+      detail: int SoundPlay(string filename, int flags)
+      doc: |-
+        Plays a sound file with the specified flags and returns a handle that can be used with SoundPause, SoundResume, SoundStop, SoundRewind, and SoundDelete.
+    - name: SoundResume
+      detail: void SoundResume(int handle)
+      doc: |-
+        Resumes playback of a previously paused sound identified by the given handle.
+    - name: SoundRewind
+      detail: void SoundRewind(int handle)
+      doc: |-
+        Rewinds the sound identified by the given handle back to the beginning.
+    - name: SoundStop
+      detail: void SoundStop(int handle)
+      doc: |-
+        Stops playback of the sound identified by the given handle.

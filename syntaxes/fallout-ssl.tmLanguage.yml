@@ -249,7 +249,6 @@ repository:
       - match: \b(?i)(playmovie)\b
       - match: \b(?i)(playmoviealpha)\b
       - match: \b(?i)(playmoviealpharect)\b
-      - match: \b(?i)(playmoviealpharect)\b
       - match: \b(?i)(playmovierect)\b
       - match: \b(?i)(play_sfx)\b
       - match: \b(?i)(poison)\b
