@@ -44,6 +44,11 @@ step "Running Server Unit Tests + Coverage"
 step "Running Client Unit Tests"
 vitest run --config client/vitest.config.ts
 
+step "Building CLIs"
+pnpm build:transpile-cli
+pnpm build:format-cli
+pnpm build:bin-cli
+
 step "Testing TD Samples"
 ./server/test/td/test.sh
 ./server/test/td/typecheck-samples.sh
