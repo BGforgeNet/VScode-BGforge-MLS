@@ -40,6 +40,9 @@ jobs:
       - name: Build
         run: pnpm build
 
+      - name: Validate packaging
+        run: pnpm exec tsx scripts/test-package-deps.ts
+
       - name: E2E tests (release only)
         if: startsWith(github.ref, 'refs/tags/')
         run: pnpm test:e2e

@@ -42,6 +42,9 @@ for i in "${!symlinks[@]}"; do
     fi
 done
 
+# Validate that .vscodeignore patterns match real files before packaging.
+pnpm exec tsx scripts/test-package-deps.ts
+
 # No --no-dependencies: vsce's npm install creates root node_modules/ needed for
 # typescriptServerPlugins (bgforge-tssl-plugin, bgforge-td-plugin).
 pnpm vsce package "$@"
