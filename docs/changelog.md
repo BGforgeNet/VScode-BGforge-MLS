@@ -5,7 +5,7 @@
 Fallout SSL
 
 - Added tree-sitter grammar.
-- New features: rename, file symbols, autoformat, JSdoc for variables.
+- New features: rename, file symbols, autoformat, JSdoc for variables, folding ranges.
 - Intellisense now uses function definitions as the source of truth, and JSdoc only does enrichment.
 - Multiple base low-level functions added.
 - Function callgraph is replaced with Dialog Preview.
@@ -13,7 +13,7 @@ Fallout SSL
 WeiDU TP2
 
 - Added tree-sitter grammar.
-- New features: rename, file symbols, autoformat, JSdoc and definition for variables, extended JSdoc format for functions.
+- New features: rename, file symbols, autoformat, JSdoc and definition for variables, extended JSdoc format for functions, folding ranges.
 - Multiple insert snippets.
 - Completion filtering, in particular in function parameter list context, but others too.
 - Added WeiDU v251 keywords.
@@ -22,12 +22,12 @@ WeiDU TP2
 WeiDU BAF
 
 - Added tree-sitter grammar.
-- New features: autoformat.
+- New features: autoformat, folding ranges.
 
 WeiDU D
 
 - Added tree-sitter grammar.
-- New features: go to definition (label), file symbols, autoformat.
+- New features: go to definition (label), file symbols, autoformat, folding ranges.
 
 Transpilers
 
