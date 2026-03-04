@@ -474,7 +474,6 @@
     "devDependencies": {
         "@types/mocha": "^10.0.10",
         "@types/node": "^22.19.13",
-        "@types/picomatch": "^4.0.2",
         "@typescript-eslint/eslint-plugin": "^8.56.1",
         "@typescript-eslint/parser": "^8.56.1",
         "@vitest/coverage-v8": "^4.0.18",
@@ -485,7 +484,6 @@
         "globals": "^15.15.0",
         "knip": "^5.85.0",
         "mocha": "^11.7.5",
-        "picomatch": "^4.0.3",
         "prettier": "^3.8.1",
         "tree-sitter-cli": "0.26.3",
         "tsx": "^4.21.0",

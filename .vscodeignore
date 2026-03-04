@@ -1,48 +1,86 @@
-**/*
+# Blacklist approach: exclude dev files, keep runtime files.
+# pnpm symlinks in server/node_modules are stripped by package.sh.
+# Root node_modules is excluded below; TS plugins are injected by package.sh.
 
-!LICENSE.txt
-!resources/bgforge.png
+# Dotfiles and dotdirs
+.claude/
+.editorconfig
+.gitattributes
+.github/
+.gitignore
+.prettierignore
+.prettierrc.yaml
+.reports/
+.vscode/
+.vscode-test/
 
-!client/package.json
-!client/out/extension.js
-!client/out/dialog-tree/dialogTree-webview.js
-!client/out/editors/binaryEditor-webview.js
-!client/out/codicons/codicon.css
-!client/out/codicons/codicon.ttf
-!client/src/dialog-tree/dialogTree.html
-!client/src/dialog-tree/dialogTree.css
-!client/src/editors/binaryEditor.html
-!client/src/editors/binaryEditor.css
-!client/src/webview-common.css
+# Dev files
+CLAUDE.md
+development.md
+eslint.config.mjs
+knip.ts
+tsconfig.json
+pnpm-lock.yaml
+pnpm-workspace.yaml
 
-!server/package.json
-!server/out/server.js
-!server/out/completion.*.json
-!server/out/hover.*.json
-!server/out/signature.*.json
-!server/out/engine-proc-docs.json
-!server/out/td-runtime.d.ts
-!server/out/*.wasm
+# Build artifacts and logs
+*.vsix
+*.log
+**/*.map
 
-!server/node_modules/sslc-emscripten-noderawfs/**
-!server/node_modules/esbuild-wasm/package.json
-!server/node_modules/esbuild-wasm/esbuild.wasm
-!server/node_modules/esbuild-wasm/lib/main.js
-!server/node_modules/esbuild-wasm/bin/esbuild
-!server/node_modules/esbuild-wasm/wasm_exec.js
-!server/node_modules/esbuild-wasm/wasm_exec_node.js
+# Dev-only directories
+cli/
+coverage/
+docs/
+external/
+grammars/
+scripts/
+test/
+tmp/
+transpilers/
 
-!node_modules/bgforge-tssl-plugin/package.json
-!node_modules/bgforge-tssl-plugin/index.js
-!node_modules/bgforge-td-plugin/package.json
-!node_modules/bgforge-td-plugin/index.js
+# Source YAML for TextMate grammars (only .json ships)
+syntaxes/*.yml
 
-!language-configurations/*.json
-!snippets/*.json
-!syntaxes/*.json
+# Upstream theme sources (only bgforge-* variants ship)
+themes/vscode-monokai.json
+themes/vs-seti-icon-theme.json
 
-!themes/bgforge-icon-theme.json
-!themes/bgforge-monokai.json
-!themes/seti.woff
-!themes/icons/*.png
-!themes/icons/*.svg
+# READMEs in subdirectories (root README auto-included by vsce)
+**/README.md
+
+# Client dev files (keep HTML/CSS webview assets in client/src/)
+client/src/**/*.ts
+client/test/
+client/testFixture/
+client/out/test/
+client/scripts/
+client/tsconfig*.json
+client/vitest.config.ts
+client/node_modules/
+
+# Server dev files
+server/src/
+server/data/
+server/test/
+server/scripts/
+server/tsconfig*.json
+server/vitest.config.ts
+server/coverage/
+
+# esbuild-wasm: only keep runtime files (wasm, bin, lib/main.js, wasm_exec*)
+server/node_modules/esbuild-wasm/esm/
+server/node_modules/esbuild-wasm/lib/browser*
+server/node_modules/esbuild-wasm/lib/main.d.ts
+server/node_modules/esbuild-wasm/**/*.d.ts
+server/node_modules/esbuild-wasm/LICENSE.md
+server/node_modules/esbuild-wasm/README.md
+
+# pnpm internal dirs in server/node_modules (surviving after symlink strip)
+server/node_modules/.ignored*/
+
+# Root node_modules: exclude entirely (TS plugins injected by package.sh)
+node_modules/
+
+# Temp dir used by package.sh for zip injection
+.pkg-inject/
