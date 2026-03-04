@@ -144,8 +144,9 @@ function findSymbols(text: string) {
 function findDefinitions(text: string) {
     const definitions: definition.Definition[] = [];
     const lines = text.split("\n");
-    const procRegex = /^procedure[\s]+(\w+)(?:\(([^)]+)\))?[\s]+begin/d;
-    const defineRegex = /^#define[ \t]+(\w+)(?:\(([^)]+)\))?[ \t]+(.+)/d;
+    // Allow optional leading whitespace - macros may be indented inside #ifdef/#ifndef guards
+    const procRegex = /^[ \t]*procedure[\s]+(\w+)(?:\(([^)]+)\))?[\s]+begin/d;
+    const defineRegex = /^[ \t]*#define[ \t]+(\w+)(?:\(([^)]+)\))?[ \t]+(.+)/d;
     lines.forEach((l, i) => {
         let match = procRegex.exec(l);
         if (match) {

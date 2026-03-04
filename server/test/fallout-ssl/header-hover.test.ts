@@ -167,6 +167,72 @@ end
         expect(hoverValue).toContain("headers/test.h");
     });
 
+    describe("getSymbolDefinition for header macros", () => {
+        it("returns location for function-like macro from header", () => {
+            const headerText = `#define floater(x) float_msg(self_obj, message_str(NAME,x), FLOAT_COLOR_NORMAL)`;
+            falloutSslProvider.reloadFileData!(testUri, headerText);
+
+            const location = falloutSslProvider.getSymbolDefinition!("floater");
+            expect(location).not.toBeNull();
+            expect(location!.uri).toBe(testUri);
+            expect(location!.range.start.line).toBe(0);
+        });
+
+        it("returns location for constant macro from header", () => {
+            const headerText = `#define MAX_HP 100`;
+            falloutSslProvider.reloadFileData!(testUri, headerText);
+
+            const location = falloutSslProvider.getSymbolDefinition!("MAX_HP");
+            expect(location).not.toBeNull();
+            expect(location!.uri).toBe(testUri);
+        });
+
+        it("returns location for macro defined after blank lines", () => {
+            const headerText = `
+#define floater(x) float_msg(self_obj, message_str(NAME,x), FLOAT_COLOR_NORMAL)
+`;
+            falloutSslProvider.reloadFileData!(testUri, headerText);
+
+            const location = falloutSslProvider.getSymbolDefinition!("floater");
+            expect(location).not.toBeNull();
+            expect(location!.uri).toBe(testUri);
+            expect(location!.range.start.line).toBe(1);
+        });
+
+        it("returns location for indented #define inside #ifndef guard", () => {
+            const headerText = `#ifndef floater
+   #define floater(x)           float_msg(self_obj, message_str(NAME,x), FLOAT_COLOR_NORMAL)
+#endif`;
+            falloutSslProvider.reloadFileData!(testUri, headerText);
+
+            const location = falloutSslProvider.getSymbolDefinition!("floater");
+            expect(location).not.toBeNull();
+            expect(location!.uri).toBe(testUri);
+            expect(location!.range.start.line).toBe(1);
+        });
+
+        it("returns location for indented procedure", () => {
+            const headerText = `#ifdef SOME_FLAG
+   procedure guarded_proc begin end
+#endif`;
+            falloutSslProvider.reloadFileData!(testUri, headerText);
+
+            const location = falloutSslProvider.getSymbolDefinition!("guarded_proc");
+            expect(location).not.toBeNull();
+            expect(location!.uri).toBe(testUri);
+            expect(location!.range.start.line).toBe(1);
+        });
+
+        it("returns location for procedure from header", () => {
+            const headerText = `procedure my_helper begin end`;
+            falloutSslProvider.reloadFileData!(testUri, headerText);
+
+            const location = falloutSslProvider.getSymbolDefinition!("my_helper");
+            expect(location).not.toBeNull();
+            expect(location!.uri).toBe(testUri);
+        });
+    });
+
     it("getCompletions should return duplicates from multiple headers", async () => {
         const mockContext: ProviderContext = {
             workspaceRoot: "/mymod",
