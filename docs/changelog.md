@@ -1,5 +1,50 @@
 # Changelog
 
+## Unreleased
+
+Fallout SSL
+
+- Added tree-sitter grammar.
+- New features: rename, file symbols, autoformat, JSdoc for variables.
+- Intellisense now uses function definitions as the source of truth, and JSdoc only does enrichment.
+- Multiple base low-level functions added.
+- Function callgraph is replaced with Dialog Preview.
+
+WeiDU TP2
+
+- Added tree-sitter grammar.
+- New features: rename, file symbols, autoformat, JSdoc and definition for variables, extended JSdoc format for functions.
+- Multiple insert snippets.
+- Completion filtering, in particular in function parameter list context, but others too.
+- Added WeiDU v251 keywords.
+- Variables now can be typed, and receive different coloring based on name.
+
+WeiDU BAF
+
+- Added tree-sitter grammar.
+- New features: autoformat.
+
+WeiDU D
+
+- Added tree-sitter grammar.
+- New features: go to definition (label), file symbols, autoformat.
+
+Transpilers
+
+- 2 new transpilers added: TSSL and TD.
+- TBAF (and TD) now support enums.
+- TD has a builtin D-like runtime.
+
+General
+
+- Refactored tooltip formatting (unified look across providers).
+- SSL, D, TSSL and TD receive Dialog Preview feature.
+- Added a binary viewer. Currenly supports only Fallout .pro files.
+- In all languages with translations, using go to definition on a tra/msg reference jumps to that reference.
+- Added completion for tags in JSdoc.
+- File icons for .slb, .2da, scripts.lst, worldmap.txt
+- .tpl support dropped.
+
 ## 2.3.0
 
 Add built-in .ssl compiler.
