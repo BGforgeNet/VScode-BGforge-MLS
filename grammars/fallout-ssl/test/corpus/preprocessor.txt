@@ -108,6 +108,87 @@ Include directives
       path: (string))))
 
 ==================
+Ifdef endif
+==================
+
+#ifdef MY_MACRO
+#define RESULT 1
+#endif
+
+---
+
+(source_file
+  (preprocessor (ifdef name: (identifier)))
+  (preprocessor (define name: (identifier) body: (macro_body)))
+  (preprocessor (endif)))
+
+==================
+Ifndef guard
+==================
+
+#ifndef GUARD_H
+#define GUARD_H
+#define VALUE 42
+#endif
+
+---
+
+(source_file
+  (preprocessor (ifndef name: (identifier)))
+  (preprocessor (define name: (identifier)))
+  (preprocessor (define name: (identifier) body: (macro_body)))
+  (preprocessor (endif)))
+
+==================
+Ifdef else endif
+==================
+
+#ifdef DEBUG
+#define LOG(msg) debug_msg(msg)
+#else
+#define LOG(msg)
+#endif
+
+---
+
+(source_file
+  (preprocessor (ifdef name: (identifier)))
+  (preprocessor (define name: (identifier) params: (macro_params) body: (macro_body)))
+  (preprocessor (pp_else))
+  (preprocessor (define name: (identifier) params: (macro_params)))
+  (preprocessor (endif)))
+
+==================
+Undef directive
+==================
+
+#undef MY_MACRO
+
+---
+
+(source_file
+  (preprocessor (undef name: (identifier))))
+
+==================
+Preprocessor inside procedure
+==================
+
+procedure foo begin
+    #ifdef DEBUG
+    debug_msg("test");
+    #endif
+end
+
+---
+
+(source_file
+  (procedure
+    name: (identifier)
+    body: (preprocessor (ifdef name: (identifier)))
+    body: (expression_stmt (call_expr func: (identifier) args: (string)))
+    body: (preprocessor (endif))))
+
+==================
 Multiline macro
 ==================
 

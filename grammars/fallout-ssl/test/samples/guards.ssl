@@ -1,0 +1,25 @@
+#ifndef floater
+   #define floater(x)           float_msg(self_obj, message_str(NAME,x), FLOAT_COLOR_NORMAL)
+#endif
+
+#ifndef   GUARD_H
+#define GUARD_H
+
+#define SCRIPT_REALNAME "test"
+#include "sfall.h"
+
+#ifdef   DEBUG
+   #define ndebug(msg)    debug_msg(SCRIPT_REALNAME + ": " + msg)
+#else
+   #define ndebug(msg)
+#endif
+
+#undef OLD_MACRO
+
+procedure start;
+
+procedure start begin
+   #ifdef DEBUG
+   ndebug("starting");
+   #endif
+end

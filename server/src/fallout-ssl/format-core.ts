@@ -159,19 +159,10 @@ export function formatNode(node: SyntaxNode, depth: number): string {
             // Replace tabs, remove leading blank lines, ensure exactly one trailing newline
             return content.replace(/\t/g, ctx.indent).replace(/^\n+/, "").replace(/\n+$/, "") + "\n";
         }
-        case "preprocessor": {
-            let result = normalizePreprocessor(node.text);
-            // Check if there's a line comment on the same line (next sibling)
-            const nextSibling = node.nextSibling;
-            if (nextSibling && nextSibling.type === "line_comment" &&
-                nextSibling.startPosition.row === node.endPosition.row) {
-                // Add the comment on the same line with proper spacing
-                const commentText = normalizeComment(nextSibling.text);
-                // Ensure proper spacing before comment (4 spaces as indent)
-                result = result.trimEnd() + "    " + commentText;
-            }
-            return result;
-        }
+        case "preprocessor":
+            // Trailing comment handling is done by callers (formatProcedure, formatChildren)
+            // to avoid double-appending when the comment is a separate tree-sitter node
+            return normalizePreprocessor(node.text);
         case "comment":
         case "line_comment":
             return normalizeComment(node.text);
@@ -244,6 +235,11 @@ function formatChildren(node: SyntaxNode, depth: number): string {
                 needsBlankLine = true;
             }
         } else if (child.type === "preprocessor") {
+            // Preserve one blank line between preprocessor groups when original had one
+            if (parts.length > 0 && (needsBlankLine || hadBlankLineBefore)) {
+                parts.push("");
+                needsBlankLine = false;
+            }
             let preprocessorText = normalizePreprocessor(child.text);
             // Check if next sibling is a line comment on the same line
             if (nextChild && nextChild.type === "line_comment" &&
@@ -322,6 +318,7 @@ function formatProcedure(node: SyntaxNode, depth: number): string {
         }
         if (child.type.includes("procedure")) return;
 
+        const hadBlankLineBefore = prevChild && (child.startPosition.row - prevChild.endPosition.row > 1);
         const trailingComment = hasTrailingComment(child, nextChild);
 
         if (isComment(child)) {
@@ -329,8 +326,15 @@ function formatProcedure(node: SyntaxNode, depth: number): string {
             if (prevChild && prevChild.endPosition.row === child.startPosition.row) {
                 return;
             }
+            if (bodyParts.length > 0 && hadBlankLineBefore) {
+                bodyParts.push("");
+            }
             bodyParts.push(ctx.indent + normalizeComment(child.text));
         } else {
+            // Preserve one blank line when the original source had one
+            if (bodyParts.length > 0 && hadBlankLineBefore) {
+                bodyParts.push("");
+            }
             let formatted = formatNode(child, depth + 1);
             if (trailingComment && nextChild) {
                 formatted += ctx.indent + normalizeComment(nextChild.text);

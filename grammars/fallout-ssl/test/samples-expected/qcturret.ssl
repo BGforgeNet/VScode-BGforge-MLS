@@ -27,8 +27,10 @@
 */
 #define SCRIPT_REALNAME "qcturret"
 #include "../headers/define.h"
+
 #define NAME                    SCRIPT_QCTURRET
 #define TOWN_REP_VAR            (GVAR_TOWN_REP_ENCLAVE)
+
 #include "../headers/command.h"
 #include "../headers/modreact.h"
 procedure start;
@@ -63,6 +65,7 @@ end
 
 procedure map_enter_p_proc begin
     variable item;
+
     if (map_first_run) then begin
         item := self_item(PID_HEAVY_DUAL_MINIGUN);
         wield_obj(item);
@@ -109,13 +112,16 @@ end
 
 procedure critter_p_proc begin
     call update_stance;
+
     // Maintenance: sleep for 1-3 minutes. See terminal qiturtrm.ssl.
     if global_var(gvar_security) == TURRET_MAINTENANCE then begin
         set_self_team(TEAM_LONER);
         return;
     end
     // TODO: animate turrets "stand down" when inactive, to give player visual indication of the status.
+
     set_self_ai(AI_GUN_TURRET);
+
     if (cur_map_index == MAP_ENCLAVE_END_FIGHT) then begin
         if (global_var(GVAR_ENCLAVE_TURRET_HELP_PLAYER) == 1) then begin
             set_self_team(TEAM_PLAYER);
@@ -136,6 +142,7 @@ procedure Security_Check begin
     // Maintenance: sleep for 1-3 minutes. See terminal qiturtrm.ssl.
     if global_var(gvar_security) == TURRET_MAINTENANCE then
         return;
+
     ndebug("not in maintenance");
     if ((global_var(gvar_security) == TURRET_NORMAL) and (cur_map_index != MAP_ENCLAVE_END_FIGHT)) then begin
         if (self_can_see_dude) then begin
@@ -175,9 +182,11 @@ end
 // added by killap
 procedure damage_p_proc begin
     ndebug("damaged");
+
     // Maintenance: sleep for 1-3 minutes
     if global_var(gvar_security) == TURRET_MAINTENANCE then
         return;
+
     if (cur_map_index == MAP_ENCLAVE_DETENTION) then
         set_global_var(GVAR_ENCLAVE_TURRET_DETENTION, TURRET_ALERT);
     else if (cur_map_index == MAP_ENCLAVE_BARRACKS) then

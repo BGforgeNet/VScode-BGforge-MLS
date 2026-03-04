@@ -38,19 +38,24 @@ export default grammar({
         $.macro_call_stmt  // Top-level macro invocation
       ),
 
-    // Preprocessor: #define, #include, etc.
+    // Preprocessor: #define, #include, #ifdef, #ifndef, #endif, #undef, #else, etc.
     preprocessor: ($) =>
       choice(
         $.define,
         $.include,
-        $.other_preprocessor
+        $.ifdef,
+        $.ifndef,
+        $.endif,
+        $.undef,
+        $.pp_else,
+        $.other_preprocessor  // catch-all for unknown directives (#elif, #pragma, etc.)
       ),
 
     // #define NAME value or #define NAME(params) body
+    // Combined token(prec(1, ...)) so "#define" wins over other_preprocessor
     define: ($) =>
       seq(
-        "#",
-        "define",
+        alias(token(prec(1, seq("#", "define"))), "#define"),
         field("name", $.identifier),
         optional(field("params", $.macro_params)),
         optional(field("body", $.macro_body))
@@ -60,32 +65,44 @@ export default grammar({
     macro_params: ($) =>
       token.immediate(seq("(", /[^)]*/, ")")),
 
-    // Macro body: everything until end of line (with line continuations)
+    // Macro body: everything until end of line (with line continuations and multi-line comments)
     // Must not start with ( to avoid conflicting with macro_params
     macro_body: ($) =>
       token(seq(
         /[ \t]+/,                // required whitespace (so it doesn't immediately follow identifier)
         repeat1(choice(
-          /[^\n\\]+/,            // regular chars (not newline or backslash)
+          /[^\n\\\/]+/,          // regular chars (not newline, backslash, or slash)
+          /\/\*[^*]*\*+([^/*][^*]*\*+)*\//, // multi-line block comment (may span lines)
+          /\/\/[^\n]*/,          // line comment
+          /\/[^*\/\n]/,          // single slash not starting a comment
           /\\[^\r\n]/,           // backslash followed by non-newline (e.g., \\, \", \t in strings)
           /\\\r?\n/,             // line continuation (backslash + newline)
         ))
       )),
 
     // #include "file" or #include <file>
+    // Combined token(prec(1, ...)) so "#include" wins over other_preprocessor
     include: ($) =>
       seq(
-        "#",
-        "include",
+        alias(token(prec(1, seq("#", "include"))), "#include"),
         field("path", choice(
           $.string,
           alias(token(seq("<", /[^>]+/, ">")), $.string)
         ))
       ),
 
-    // Other preprocessor directives: #ifdef, #ifndef, #endif, #if, #else, #elif, #undef
+    // Named preprocessor directives with structured fields
+    // Each uses token(prec(1, ...)) to beat the catch-all other_preprocessor (prec 0)
+    ifdef:   ($) => seq(alias(token(prec(1, seq("#", "ifdef"))),  "#ifdef"),  field("name", $.identifier)),
+    ifndef:  ($) => seq(alias(token(prec(1, seq("#", "ifndef"))), "#ifndef"), field("name", $.identifier)),
+    endif:   ($) => seq(alias(token(prec(1, seq("#", "endif"))),  "#endif")),
+    undef:   ($) => seq(alias(token(prec(1, seq("#", "undef"))),  "#undef"),  field("name", $.identifier)),
+    pp_else: ($) => seq(alias(token(prec(1, seq("#", "else"))),   "#else")),
+
+    // Catch-all for unknown preprocessor directives (#elif, #pragma, etc.)
+    // Default precedence (0) -- named rules at prec 1 win for known directives
     other_preprocessor: ($) =>
-      token(prec(-1, seq(  // Lower precedence so define/include match first
+      token(seq(
         "#",
         /[a-zA-Z_][a-zA-Z0-9_]*/,  // directive name
         // rest of line (with line continuations)
@@ -97,7 +114,7 @@ export default grammar({
           /\/\/[^\n]*/,           // line comment
           /\/[^*\/\n]/,           // single slash
         ))
-      ))),
+      )),
 
     // Forward declaration: procedure name; or procedure name(params);
     procedure_forward: ($) =>

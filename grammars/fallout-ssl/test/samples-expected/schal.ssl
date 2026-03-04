@@ -28,8 +28,10 @@
 #define SCRIPT_REALNAME "schal"
 #include "../headers/define.h"
 // #include "../headers/ncr3.h"
+
 #define NAME                    SCRIPT_SCHAL
 #define TOWN_REP_VAR         GVAR_TOWN_REP_NCR
+
 #include "../headers/command.h"
 #include "../headers/modreact.h"
 #include "../headers/caravan.h"
@@ -87,6 +89,7 @@ procedure checkNextDay;
 /* Local variables which do not need to be saved between map changes. */
 variable Only_Once := 0;
 variable Node1Rep := 0;
+
 #define TIMER_APPEAR    1
 #define TIMER_DISAPPEAR 2
 #define TIMER_ALL_CLEAR 3
@@ -146,6 +149,7 @@ procedure map_enter_p_proc begin
     else
         set_self_team(TEAM_PLAYER);
     // end edits
+
     set_self_ai(AI_TOUGH_GUARD);
     if (is_loading_game == FALSE) then begin
         call checkLoadConditions;
@@ -228,6 +232,7 @@ procedure talk_p_proc begin
     Karma_Perception := KARMA_PERCEPTION2;
     CheckKarma;
     GetReaction;
+
     if (cur_map_index == MAP_NCR_DOWNTOWN) then begin
         start_gdialog(NAME, self_obj, 4, -1, -1);
         gSay_Start;
@@ -318,10 +323,12 @@ end
 procedure Node003 begin
     variable rnd;
     variable grds;
+
     set_cattle_drive(CATTLE_ON);
     set_cattle_drive(CATTLE_ON1);
     // Don't forget to do raider stuff
     Reply(110);
+
     if (cattle_drive(CATTLE_ON) and not cattle_drive(CATTLE_FINISHED)) then begin    // moved from talk_p_pro to here - killap
         // Don't forget to do raider stuff
         set_caravan_start(CARAVAN_NCR);
@@ -335,6 +342,7 @@ procedure Node003 begin
         set_caravan_end(CARAVAN_REDDING);
         load_map(MAP_BH_RND_DESERT, 7);
     end
+
     ENDOPTION;
 end
 
@@ -350,8 +358,10 @@ end
 
 procedure Node006 begin
     variable amount;
+
     set_global_var(GVAR_NCR_BRAHMN_QST, 2);
     call calc_cattle_drive_status;
+
     if (cattle_drive(CATTLE_SCREWED)) then begin
         amount := 0;
         Reply(113);
@@ -406,6 +416,7 @@ end
 
 procedure checkNextDay begin
     variable val;
+
     val := game_time;
     if (val >= global_var(GVAR_NCR_CATTLE_TIME_MIN) and val <= global_var(GVAR_NCR_CATTLE_TIME_MAX)) then begin
         return 1;

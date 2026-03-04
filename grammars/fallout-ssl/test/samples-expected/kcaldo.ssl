@@ -30,10 +30,13 @@
 #include "../headers/klamath.h"
 #include "../headers/kladwtn.h"
 #include "../headers/den.h"    // added by killap
+
 #define NAME                    SCRIPT_KCALDO
 #define TOWN_REP_VAR            (GVAR_TOWN_REP_KLAMATH)
+
 #include "../headers/command.h"
 #include "../headers/modreact.h"
+
 #define Vault_Known             (1)    // Temp Until get command from Jesse
 #define Visited_City            (1)    // Temp Until get command from Jesse
 
@@ -125,6 +128,7 @@ procedure critter_p_proc begin
    the player should the game be saved and loaded repeatedly. Additionally, if any special
    actions need to be taken by the critter based on previous combat, the critter will remember
    this as well. */
+
     if ((local_var(LVAR_Hostile) == 2) and (self_can_see_dude)) then begin
         set_local_var(LVAR_Hostile, 1);
         attack(dude_obj);
@@ -157,6 +161,7 @@ end
    stored which affects player interactions. */
 procedure talk_p_proc begin
     GetReaction;
+
     // CHANGE -nbk (Aldo doesn't care if your an enemy of the either side in Klamath)
     // -he just wants a drink
     // if ((REP_ENEMY_ARROYO) or (local_var(LVAR_Personal_Enemy) == 1)) then begin
@@ -198,6 +203,7 @@ end
 procedure destroy_p_proc begin
     /* Increment the aligned critter counter */
     inc_good_critter
+
     /* Set global_variable for Enemy status */
 end
 

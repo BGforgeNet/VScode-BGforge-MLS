@@ -28,8 +28,10 @@
 #define SCRIPT_REALNAME "qcmurray"
 #include "../headers/define.h"
 // #include "../headers/<TownName.h>"
+
 #define NAME                    SCRIPT_QCMURRAY
 #define TOWN_REP_VAR            (GVAR_TOWN_REP_ENCLAVE)
+
 #include "../headers/command.h"
 #include "../headers/modreact.h"
 
@@ -115,6 +117,7 @@ procedure critter_p_proc begin
    the player should the game be saved and loaded repeatedly. Additionally, if any special
    actions need to be taken by the critter based on previous combat, the critter will remember
    this as well. */
+
     if ((local_var(LVAR_Hostile) == 2) and (self_can_see_dude)) then begin
         set_local_var(LVAR_Hostile, 1);
         attack(dude_obj);
@@ -148,8 +151,11 @@ procedure talk_p_proc begin
     Evil_Critter := 0;
     Slavery_Tolerant := SLAVE_TOLERANT;
     Karma_Perception := KARMA_PERCEPTION1;
+
     CheckKarma;
+
     GetReaction;
+
     if (local_var(LVAR_Said_7) == 1) then begin
         call Node007;
     end else if (global_var(GVAR_ENCLAVE_COMPUTER) == COMPUTER_DESTROYED) then begin
@@ -181,6 +187,7 @@ end
 procedure destroy_p_proc begin
     /* Increment the aligned critter counter */
     inc_good_critter
+
     /* Set global_variable for Enemy status */
 end
 
@@ -240,12 +247,14 @@ end
 
 procedure Node004 begin
     Reply(118);
+
     BOption(119, Node005, 004);
     GOption(120, Node999, 004);
 end
 
 procedure Node005 begin
     Reply(121);
+
     BOption(122, Node006, 004);
     NOption(123, Node999, 004);
 end
@@ -256,6 +265,7 @@ procedure Node006 begin
         Reply(124);
     end else
         Reply(125);
+
     BOption(126, Node008, 004);
     NOption(127, Node014, 004);
     BOption(128, Node998, 004);
@@ -263,11 +273,13 @@ end
 
 procedure Node007 begin
     floater(random(129, 133));
+
     call Node998;
 end
 
 procedure Node008 begin
     Reply(134);
+
     BOption(135, Node008a, 004);
     GOption(136, Node014, 004);
     GOption(137, Node008b, 004);
@@ -286,6 +298,7 @@ end
 
 procedure Node009 begin
     Reply(138);
+
     BOption(139, Node009a, 004);
     GOption(140, Node008b, 004);
 end
@@ -299,6 +312,7 @@ end
 
 procedure Node010 begin
     Reply(141);
+
     BOption(142, Node010a, 004);
     BOption(143, Node998, 004);    // edit by killap: was NOption
     NOption(144, Node014, 004);
@@ -314,12 +328,14 @@ end
 
 procedure Node011 begin
     Reply(146);
+
     BOption(147, Node013, 004);
     GOption(148, Node008b, 004);
 end
 
 procedure Node012 begin
     Reply(149);
+
     BOption(150, Node998, 004);
     NOption(151, Node014, 004);
     NOption(152, Node008b, 004);
@@ -333,7 +349,9 @@ procedure Node013 begin
     end
     set_global_var(GVAR_ENCLAVE_ALARM, ALARM_REACTOR);
     set_global_var(GVAR_ENCLAVE_COMPUTER, COMPUTER_DESTROYED);    // added by killap
+
     Reply(153);
+
     GOption(154, Node013a, 004);
     BOption(155, Node998, 004);
     NOption(156, Node008b, 004);
@@ -348,6 +366,7 @@ end
 
 procedure Node014 begin
     Reply(157);
+
     NOption(158, Node014a, 004);
 end
 
@@ -358,11 +377,13 @@ end
 
 procedure Node015 begin
     Reply(159);
+
     NOption(160, Node016, 004);
 end
 
 procedure Node016 begin
     Reply(161);
+
     NOption(162, Node006, 004);
     GOption(163, Node008b, 004);
     BOption(164, Node007, 004);

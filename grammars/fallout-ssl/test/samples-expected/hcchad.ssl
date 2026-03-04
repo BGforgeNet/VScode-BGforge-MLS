@@ -31,8 +31,10 @@
 #include "../headers/broken1.h"    // mapvars
 #include "../headers/broken2.h"    // mapvars //added by killap
 #include "../headers/bhrnddst.h"
+
 #define NAME                    SCRIPT_HCCHAD
 #define TOWN_REP_VAR            (GVAR_TOWN_REP_BROKEN_HILLS)
+
 #include "../headers/command.h"
 #include "../headers/modreact.h"
 
@@ -111,6 +113,7 @@ procedure Node992;
 #define LVAR_Hostile                    (5)
 #define LVAR_Personal_Enemy             (6)
 #define LVAR_Safe_Attack                (7)    // added by killap - expansion pack
+
 #define DELETE_CHAD                      (3)    // added by killap - expansion pack
 
 /* Imported variables from the Map scripts. These should only be
@@ -147,7 +150,9 @@ procedure map_enter_p_proc begin
         set_self_team(TEAM_PLAYER);
     else
         set_self_team(TEAM_BROKEN_HILLS);
+
     set_self_ai(AI_TOUGH_CITIZEN);
+
     // edit by killap - expansion pack
     if ((global_var(GVAR_CHAD_DEAD) == 1) or (map_var(MVAR_House_Encounter) == 2)) then begin
         if (self_visible) then
@@ -178,6 +183,7 @@ procedure map_enter_p_proc begin
             end
         end
     end
+
     // added by killap - expansion pack
     if (global_var(GVAR_CHAD_DEAD) == 1) then
         destroy_object(self_obj);
@@ -207,6 +213,7 @@ procedure map_exit_p_proc begin
         then
             set_global_var(GVAR_BH_CARAVAN, CARAVAN_STATUS_NONE);
     end
+
     // added by killap - expansion pack
     if (global_var(GVAR_BH_CHAD) == CHAD_FLED) then
         destroy_object(self_obj);
@@ -214,6 +221,7 @@ end
 
 procedure timed_event_p_proc begin
     variable tile;
+
     if (fixed_param == 1) then begin
         game_ui_disable;
         floater(171);
@@ -250,10 +258,12 @@ procedure critter_p_proc begin
    the player should the game be saved and loaded repeatedly. Additionally, if any special
    actions need to be taken by the critter based on previous combat, the critter will remember
    this as well. */
+
     if (((global_var(GVAR_ENEMY_BROKEN_HILLS) == 1) or (local_var(LVAR_Hostile) == 2)) and (self_can_see_dude)) then begin
         set_local_var(LVAR_Hostile, 1);
         attack(dude_obj);
     end
+
     // added by killap - expansion pack
     if (cur_map_index == MAP_BROKEN_HILLS2) then begin
         if (map_var(MVAR_House_Encounter) == 1) then begin
@@ -305,6 +315,7 @@ procedure talk_p_proc begin
     fromWTG := 1;
     GetReaction;
     ReactToLevel;    // added by killap
+
     // edits by killap - expansion pack
     if (global_var(GVAR_BH_CHAD) == CHAD_ARRESTED) then begin
         floater(400);
@@ -381,9 +392,11 @@ procedure destroy_p_proc begin
 */
     // dont need to decrement henchman if chad is killed...he is not counted in the total
     // set_map_var(MVAR_Hench_Count, map_var(MVAR_Hench_Count) - 1); //we've got one less henchman
+
     set_global_var(GVAR_CHAD_DEAD, 1);
     /* Increment the aligned critter counter */
     inc_good_critter
+
     /* Set global_variable for Enemy status */
 end
 
@@ -501,6 +514,7 @@ procedure Node006 begin
         GOption(137, Node013, 004);
         BOption(138, Node014, 004);
     end
+
     if dude_moron_not_vegetable then
         NOption(135, Node999, 002);
     NOption(136, Node012, 004);
