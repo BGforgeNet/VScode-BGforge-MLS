@@ -1,15 +1,18 @@
 /**
- * Shared utilities for local symbol extraction.
+ * Shared utilities for Fallout SSL symbol extraction.
+ * Used by both local-symbols.ts (document scope) and header-parser.ts (workspace scope).
  */
 
 import type { Node } from "web-tree-sitter";
-import { Position } from "vscode-languageserver/node";
-import { makeRange } from "../core/position-utils";
-import { MacroData, parseMacroParams } from "./macro-utils";
-import * as jsdoc from "../shared/jsdoc";
-import { jsdocToMarkdown } from "./jsdoc-format";
-import { buildSignatureBlock } from "../shared/tooltip-format";
+import { CompletionItemKind, MarkupKind, Position } from "vscode-languageserver/node";
 import { LANG_FALLOUT_SSL_TOOLTIP } from "../core/languages";
+import { makeRange } from "../core/position-utils";
+import type { VariableSymbol } from "../core/symbol";
+import { ScopeLevel, SourceType, SymbolKind } from "../core/symbol";
+import * as jsdoc from "../shared/jsdoc";
+import { buildSignatureBlock } from "../shared/tooltip-format";
+import { jsdocToMarkdown } from "./jsdoc-format";
+import { MacroData, parseMacroParams } from "./macro-utils";
 
 // Re-export for existing consumers
 export { makeRange };
@@ -398,4 +401,59 @@ function findMacroDefinition(root: Node, symbol: string): Node | null {
 
     visit(root);
     return result;
+}
+
+/**
+ * Build a VariableSymbol from a variable or export declaration.
+ *
+ * When `displayPath` is provided, builds a workspace-scoped symbol with the path
+ * shown in hover and completion labelDetails (used by header-parser.ts).
+ * When omitted, builds a file-scoped symbol for in-document use (used by local-symbols.ts).
+ */
+export function buildVariableSymbol(
+    name: string,
+    uri: string,
+    range: { start: { line: number; character: number }; end: { line: number; character: number } },
+    description?: string,
+    parsed?: jsdoc.JSdoc | null,
+    displayPath?: string,
+): VariableSymbol {
+    const sigText = parsed?.type ? `${parsed.type} ${name}` : name;
+    let hoverValue = buildSignatureBlock(sigText, LANG_FALLOUT_SSL_TOOLTIP, displayPath);
+
+    if (description) {
+        hoverValue += "\n\n" + description;
+    }
+    if (parsed?.desc) {
+        hoverValue += "\n\n" + parsed.desc;
+    }
+
+    const hoverContents = {
+        kind: MarkupKind.Markdown,
+        value: hoverValue,
+    };
+
+    const isWorkspace = displayPath !== undefined;
+
+    return {
+        name,
+        kind: SymbolKind.Variable,
+        location: { uri, range },
+        scope: { level: isWorkspace ? ScopeLevel.Workspace : ScopeLevel.File },
+        source: isWorkspace
+            ? { type: SourceType.Workspace, uri, displayPath }
+            : { type: SourceType.Document, uri },
+        completion: {
+            label: name,
+            kind: CompletionItemKind.Variable,
+            ...(isWorkspace && {
+                labelDetails: { description: displayPath },
+                documentation: hoverContents,
+            }),
+        },
+        hover: { contents: hoverContents },
+        variable: {
+            description: parsed?.desc ?? description,
+        },
+    };
 }

@@ -1,14 +1,15 @@
 /**
  * Fallout SSL header parsing utilities.
- * Handles tree-sitter-based parsing of .h files for procedures, macros, and definitions.
+ * Handles tree-sitter-based parsing of .h files for procedures, macros,
+ * variables, and exports.
  *
  * Main API: parseHeaderToSymbols() - Returns IndexedSymbol[] for unified storage.
  *
  * Symbol-building pattern: Tree-sitter AST with SSL-specific formatting.
  * Parses .h header files using the same SSL tree-sitter grammar and builds
  * IndexedSymbol with SSL-specific tooltip formatting (buildTooltipBase,
- * buildMacroTooltip). Follows the same approach as local-symbols.ts but
- * with Workspace scope/source instead of Document scope.
+ * buildMacroTooltip, buildVariableSymbol). Follows the same approach as
+ * local-symbols.ts but with Workspace scope/source instead of Document scope.
  */
 
 import { CompletionItemKind } from "vscode-languageserver";
@@ -18,7 +19,7 @@ import type { CallableSymbol, ConstantSymbol, IndexedSymbol } from "../core/symb
 import { ScopeLevel, SourceType, SymbolKind } from "../core/symbol";
 import * as jsdoc from "../shared/jsdoc";
 import { type MacroData, buildMacroCompletion, buildMacroTooltip, buildSignatureFromJSDoc } from "./macro-utils";
-import { buildTooltipBase, extractMacros, extractParams, extractProcedures, findPrecedingDocComment, makeRange, buildProcedureSignature } from "./utils";
+import { buildTooltipBase, buildVariableSymbol, extractMacros, extractParams, extractProcedures, findPrecedingDocComment, makeRange, buildProcedureSignature } from "./utils";
 import { isInitialized, parseWithCache } from "./parser";
 
 // =============================================================================
@@ -167,6 +168,29 @@ export function parseHeaderToSymbols(
                 constant: { value: macro.firstline ?? "" },
             };
             result.push(symbol);
+        }
+    }
+
+    // Extract top-level variables and exports
+    for (const node of root.children) {
+        if (node.type === "variable_decl") {
+            const docComment = findPrecedingDocComment(root, node);
+            const parsed = docComment ? jsdoc.parse(docComment) : null;
+            for (const child of node.children) {
+                if (child.type === "var_init") {
+                    const nameNode = child.childForFieldName("name");
+                    if (nameNode) {
+                        result.push(buildVariableSymbol(nameNode.text, uri, makeRange(child), undefined, parsed, displayPath));
+                    }
+                }
+            }
+        } else if (node.type === "export_decl") {
+            const docComment = findPrecedingDocComment(root, node);
+            const parsed = docComment ? jsdoc.parse(docComment) : null;
+            const nameNode = node.childForFieldName("name");
+            if (nameNode) {
+                result.push(buildVariableSymbol(nameNode.text, uri, makeRange(node), "export variable", parsed, displayPath));
+            }
         }
     }
 

@@ -231,6 +231,26 @@ end
             expect(location).not.toBeNull();
             expect(location!.uri).toBe(testUri);
         });
+
+        it("returns location for variable from header", () => {
+            const headerText = `variable my_global;`;
+            falloutSslProvider.reloadFileData!(testUri, headerText);
+
+            const location = falloutSslProvider.getSymbolDefinition!("my_global");
+            expect(location).not.toBeNull();
+            expect(location!.uri).toBe(testUri);
+            expect(location!.range.start.line).toBe(0);
+        });
+
+        it("returns location for export variable from header", () => {
+            const headerText = `export variable shared_val;`;
+            falloutSslProvider.reloadFileData!(testUri, headerText);
+
+            const location = falloutSslProvider.getSymbolDefinition!("shared_val");
+            expect(location).not.toBeNull();
+            expect(location!.uri).toBe(testUri);
+            expect(location!.range.start.line).toBe(0);
+        });
     });
 
     it("getCompletions should return duplicates from multiple headers", async () => {

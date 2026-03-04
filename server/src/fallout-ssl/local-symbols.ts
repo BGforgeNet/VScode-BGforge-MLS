@@ -17,13 +17,11 @@
  */
 
 import { CompletionItemKind, MarkupKind } from "vscode-languageserver/node";
-import type { IndexedSymbol, CallableSymbol, ConstantSymbol, VariableSymbol } from "../core/symbol";
+import type { IndexedSymbol, CallableSymbol, ConstantSymbol } from "../core/symbol";
 import { SourceType, ScopeLevel, SymbolKind } from "../core/symbol";
-import { LANG_FALLOUT_SSL_TOOLTIP } from "../core/languages";
-import { buildSignatureBlock } from "../shared/tooltip-format";
 import { TextCache } from "../shared/text-cache";
 import { parseWithCache, isInitialized } from "./parser";
-import { extractProcedures, extractMacros, findPrecedingDocComment, makeRange, extractParams, buildProcedureSignature, buildTooltipBase } from "./utils";
+import { extractProcedures, extractMacros, findPrecedingDocComment, makeRange, extractParams, buildProcedureSignature, buildTooltipBase, buildVariableSymbol } from "./utils";
 import { buildMacroTooltip, buildMacroCompletion, buildSignatureFromJSDoc } from "./macro-utils";
 import * as jsdoc from "../shared/jsdoc";
 import type { SigInfoEx } from "../shared/signature";
@@ -176,50 +174,6 @@ function parseLocalSymbols(text: string, uri: string): LocalSymbolsData | null {
     }
 
     return { symbols, byName };
-}
-
-/**
- * Build a VariableSymbol with language-tagged code fence hover.
- * Optionally includes JSDoc @type and description in hover output.
- */
-function buildVariableSymbol(
-    name: string,
-    uri: string,
-    range: { start: { line: number; character: number }; end: { line: number; character: number } },
-    description?: string,
-    parsed?: jsdoc.JSdoc | null,
-): VariableSymbol {
-    // Build signature line: "name" or "type name" if @type is present
-    const sigText = parsed?.type ? `${parsed.type} ${name}` : name;
-    let hoverValue = buildSignatureBlock(sigText, LANG_FALLOUT_SSL_TOOLTIP);
-
-    if (description) {
-        hoverValue += "\n\n" + description;
-    }
-    if (parsed?.desc) {
-        hoverValue += "\n\n" + parsed.desc;
-    }
-
-    const hoverContents = {
-        kind: MarkupKind.Markdown,
-        value: hoverValue,
-    };
-
-    return {
-        name,
-        kind: SymbolKind.Variable,
-        location: { uri, range },
-        scope: { level: ScopeLevel.File },
-        source: { type: SourceType.Document, uri },
-        completion: {
-            label: name,
-            kind: CompletionItemKind.Variable,
-        },
-        hover: { contents: hoverContents },
-        variable: {
-            description: parsed?.desc ?? description,
-        },
-    };
 }
 
 /**

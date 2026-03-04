@@ -1,6 +1,6 @@
 /**
- * Unit tests for fallout-ssl/header-parser.ts - tree-sitter-based #define and procedure parsing.
- * Tests edge cases in macro detection, multiline handling, and JSDoc parsing.
+ * Unit tests for fallout-ssl/header-parser.ts - tree-sitter-based parsing of
+ * #define macros, procedures, variables, and exports from .h header files.
  */
 
 import { describe, expect, it, beforeAll, vi } from "vitest";
@@ -12,7 +12,7 @@ vi.mock("../../src/common", () => ({
 
 import { parseHeaderToSymbols } from "../../src/fallout-ssl/header-parser";
 import { initParser } from "../../src/fallout-ssl/parser";
-import { SymbolKind, isCallableSymbol } from "../../src/core/symbol";
+import { SymbolKind, ScopeLevel, SourceType, isCallableSymbol, isVariableSymbol } from "../../src/core/symbol";
 import type { MarkupContent } from "vscode-languageserver/node";
 
 const testUri = "file:///mymod/headers/test.h";
@@ -200,6 +200,108 @@ procedure init_items begin end
             expect(symbols[0]!.location).not.toBeNull();
             expect(symbols[0]!.location!.uri).toBe(testUri);
             expect(symbols[0]!.location!.range.start.line).toBe(0);
+        });
+    });
+
+    describe("variable declarations", () => {
+        it("parses top-level variable declaration", () => {
+            const input = `variable my_var;`;
+            const symbols = parseHeaderToSymbols(testUri, input, workspaceRoot);
+
+            expect(symbols).toHaveLength(1);
+            expect(symbols[0]!.name).toBe("my_var");
+            expect(symbols[0]!.kind).toBe(SymbolKind.Variable);
+            expect(isVariableSymbol(symbols[0]!)).toBe(true);
+            expect(symbols[0]!.scope.level).toBe(ScopeLevel.Workspace);
+            expect(symbols[0]!.source.type).toBe(SourceType.Workspace);
+            expect(symbols[0]!.source.displayPath).toBe("headers/test.h");
+        });
+
+        it("includes displayPath in completion labelDetails", () => {
+            const input = `variable counter;`;
+            const symbols = parseHeaderToSymbols(testUri, input, workspaceRoot);
+
+            expect(symbols).toHaveLength(1);
+            expect(symbols[0]!.completion.labelDetails?.description).toBe("headers/test.h");
+        });
+
+        it("includes displayPath in hover", () => {
+            const input = `variable counter;`;
+            const symbols = parseHeaderToSymbols(testUri, input, workspaceRoot);
+
+            const hover = symbols[0]!.hover.contents as MarkupContent;
+            expect(hover.value).toContain("headers/test.h");
+        });
+
+        it("parses variable with JSDoc @type", () => {
+            const input = `/** @type int */
+variable health;`;
+            const symbols = parseHeaderToSymbols(testUri, input, workspaceRoot);
+
+            expect(symbols).toHaveLength(1);
+            expect(symbols[0]!.name).toBe("health");
+            const hover = symbols[0]!.hover.contents as MarkupContent;
+            expect(hover.value).toContain("int");
+            expect(hover.value).toContain("health");
+        });
+
+        it("parses multiple variables in one declaration", () => {
+            const input = `variable x, y, z;`;
+            const symbols = parseHeaderToSymbols(testUri, input, workspaceRoot);
+
+            expect(symbols).toHaveLength(3);
+            expect(symbols.map(s => s.name).sort()).toEqual(["x", "y", "z"]);
+            for (const sym of symbols) {
+                expect(sym.kind).toBe(SymbolKind.Variable);
+            }
+        });
+    });
+
+    describe("export declarations", () => {
+        it("parses export declaration", () => {
+            const input = `export variable my_export;`;
+            const symbols = parseHeaderToSymbols(testUri, input, workspaceRoot);
+
+            expect(symbols).toHaveLength(1);
+            expect(symbols[0]!.name).toBe("my_export");
+            expect(symbols[0]!.kind).toBe(SymbolKind.Variable);
+            expect(symbols[0]!.scope.level).toBe(ScopeLevel.Workspace);
+        });
+
+        it("includes 'export variable' in hover", () => {
+            const input = `export variable shared_state;`;
+            const symbols = parseHeaderToSymbols(testUri, input, workspaceRoot);
+
+            const hover = symbols[0]!.hover.contents as MarkupContent;
+            expect(hover.value).toContain("export variable");
+        });
+
+        it("parses export with JSDoc", () => {
+            const input = `/** Global shared state. */
+export variable shared_state;`;
+            const symbols = parseHeaderToSymbols(testUri, input, workspaceRoot);
+
+            expect(symbols).toHaveLength(1);
+            const hover = symbols[0]!.hover.contents as MarkupContent;
+            expect(hover.value).toContain("Global shared state");
+        });
+    });
+
+    describe("mixed macros, procedures, and variables", () => {
+        it("parses all symbol types from same header", () => {
+            const input = `
+#define MAX_ITEMS 100
+variable item_count;
+export variable shared_flag;
+procedure init_items begin end
+`;
+            const symbols = parseHeaderToSymbols(testUri, input, workspaceRoot);
+
+            expect(symbols).toHaveLength(4);
+            expect(symbols.find(s => s.name === "MAX_ITEMS")?.kind).toBe(SymbolKind.Constant);
+            expect(symbols.find(s => s.name === "item_count")?.kind).toBe(SymbolKind.Variable);
+            expect(symbols.find(s => s.name === "shared_flag")?.kind).toBe(SymbolKind.Variable);
+            expect(symbols.find(s => s.name === "init_items")?.kind).toBe(SymbolKind.Procedure);
         });
     });
 });
