@@ -42,7 +42,7 @@ General
 - Added a binary viewer. Currently supports only Fallout .pro files.
 - In all languages with translations, using go to definition on a tra/msg reference jumps to that reference.
 - Added completion for tags in JSdoc.
-- File icons for .slb, .2da, scripts.lst, worldmap.txt
+- File icons for .slb, .2da, .lst, worldmap.txt, weidu-ssl.
 - .tpl support dropped.
 
 ## 2.3.0

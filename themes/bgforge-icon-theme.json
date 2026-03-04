@@ -50,14 +50,6 @@
 			"fontCharacter": "\\E01E",
 			"fontColor": "#7fae42"
 		},
-		"fallout-scripts-lst": {
-			"fontCharacter": "\\E019",
-			"fontColor": "#6d8086"
-		},
-		"fallout-scripts-lst_light": {
-			"fontCharacter": "\\E019",
-			"fontColor": "#627379"
-		},
 		"fallout-worldmap-txt": {
 			"fontCharacter": "\\E031",
 			"fontColor": "#498ba7"
@@ -1635,6 +1627,7 @@
 		"css.map": "_css",
 		"sss": "_css",
 		"csv": "_csv",
+		"lst": "_csv",
 		"xls": "_xls",
 		"xlsx": "_xls",
 		"cuh": "_cu_1",
@@ -1951,7 +1944,6 @@
 		"weidu-slb": "weidu-baf",
 		"weidu-ssl": "weidu-baf",
 		"infinity-2da": "infinity-2da",
-		"fallout-scripts-lst": "fallout-scripts-lst",
 		"fallout-worldmap-txt": "fallout-worldmap-txt",
 		"bat": "_windows",
 		"clojure": "_clojure",
@@ -2074,6 +2066,7 @@
 			"css.map": "_css_light",
 			"sss": "_css_light",
 			"csv": "_csv_light",
+			"lst": "_csv_light",
 			"xls": "_xls_light",
 			"xlsx": "_xls_light",
 			"cuh": "_cu_1_light",
@@ -2283,7 +2276,6 @@
 			"weidu-slb": "weidu-baf",
 			"weidu-ssl": "weidu-baf",
 			"infinity-2da": "infinity-2da_light",
-			"fallout-scripts-lst": "fallout-scripts-lst_light",
 			"fallout-worldmap-txt": "fallout-worldmap-txt_light",
 			"bat": "_windows_light",
 			"clojure": "_clojure_light",
