@@ -11,9 +11,13 @@ import * as jsdoc from "../shared/jsdoc";
 import { jsdocToDetail } from "./jsdoc-format";
 import { isConstantMacro } from "./macro-utils";
 
-function makeSymbol(node: Node, nameNode: Node, kind: SymbolKind, detail?: string): DocumentSymbol {
+function makeSymbol(node: Node, nameNode: Node, kind: SymbolKind, detail?: string): DocumentSymbol | null {
+    const name = nameNode.text;
+    if (!name) {
+        return null;
+    }
     return {
-        name: nameNode.text,
+        name,
         detail,
         kind,
         range: makeRange(node),
@@ -41,7 +45,8 @@ function extractSymbols(root: Node): DocumentSymbol[] {
         // Build signature using shared function
         const detail = buildProcedureSignature(name, params, parsed);
 
-        procSymbols.push(makeSymbol(node, nameNode, SymbolKind.Function, detail));
+        const sym = makeSymbol(node, nameNode, SymbolKind.Function, detail);
+        if (sym) procSymbols.push(sym);
     }
 
     // Extract macros
@@ -82,7 +87,8 @@ function extractSymbols(root: Node): DocumentSymbol[] {
                         detail = `macro ${name}`;
                     }
 
-                    macroSymbols.push(makeSymbol(child, nameNode, kind, detail));
+                    const sym = makeSymbol(child, nameNode, kind, detail);
+                    if (sym) macroSymbols.push(sym);
                 }
             }
         }
@@ -102,14 +108,16 @@ function extractSymbols(root: Node): DocumentSymbol[] {
                 if (child.type === "var_init") {
                     const nameNode = child.childForFieldName("name");
                     if (nameNode) {
-                        variables.push(makeSymbol(child, nameNode, SymbolKind.Variable));
+                        const sym = makeSymbol(child, nameNode, SymbolKind.Variable);
+                        if (sym) variables.push(sym);
                     }
                 }
             }
         } else if (node.type === "export_decl") {
             const nameNode = node.childForFieldName("name");
             if (nameNode) {
-                variables.push(makeSymbol(node, nameNode, SymbolKind.Variable));
+                const sym = makeSymbol(node, nameNode, SymbolKind.Variable);
+                if (sym) variables.push(sym);
             }
         }
     }

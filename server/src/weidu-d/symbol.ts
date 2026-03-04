@@ -21,7 +21,7 @@ export function getDocumentSymbols(text: string): DocumentSymbol[] {
     function visit(node: import("web-tree-sitter").Node) {
         if (node.type === "state") {
             const label = node.childForFieldName("label");
-            if (label) {
+            if (label && label.text) {
                 const startPos = label.startPosition;
                 const endPos = label.endPosition;
                 symbols.push({

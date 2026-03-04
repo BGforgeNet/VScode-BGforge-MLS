@@ -23,7 +23,7 @@ export function getDocumentSymbols(text: string): DocumentSymbol[] {
     for (const node of tree.rootNode.children) {
         if (isFunctionDef(node.type)) {
             const nameNode = node.childForFieldName("name");
-            if (nameNode) {
+            if (nameNode && nameNode.text) {
                 symbols.push({
                     name: nameNode.text,
                     kind: SymbolKind.Function,
