@@ -5,7 +5,7 @@
  * Uses unified Symbols storage for completion and hover data.
  */
 
-import type { CompletionItem, DocumentSymbol, Location, Position } from "vscode-languageserver/node";
+import type { CompletionItem, DocumentSymbol, FoldingRange, Location, Position } from "vscode-languageserver/node";
 import { conlog } from "../common";
 import { LANG_WEIDU_D } from "../core/languages";
 import type { IndexedSymbol } from "../core/symbol";
@@ -20,6 +20,21 @@ import { formatDocument as formatAst } from "./format-core";
 import { initParser, parseWithCache, isInitialized } from "./parser";
 import { getDocumentSymbols } from "./symbol";
 import { compile as weiduCompile } from "../weidu-compile";
+import { getFoldingRanges } from "../shared/folding-ranges";
+import { SyntaxType } from "./tree-sitter.d";
+
+/** D block-level node types for code folding. */
+const D_FOLDABLE_TYPES = new Set([
+    SyntaxType.BeginAction,
+    SyntaxType.AppendAction,
+    SyntaxType.ChainAction,
+    SyntaxType.ExtendAction,
+    SyntaxType.InterjectAction,
+    SyntaxType.InterjectCopyTrans,
+    SyntaxType.ReplaceAction,
+    SyntaxType.State,
+    SyntaxType.Transition,
+]);
 
 class WeiduDProvider implements LanguageProvider {
     readonly id = LANG_WEIDU_D;
@@ -59,6 +74,17 @@ class WeiduDProvider implements LanguageProvider {
 
     symbols(text: string): DocumentSymbol[] {
         return getDocumentSymbols(text);
+    }
+
+    foldingRanges(text: string): FoldingRange[] {
+        if (!isInitialized()) {
+            return [];
+        }
+        const tree = parseWithCache(text);
+        if (!tree) {
+            return [];
+        }
+        return getFoldingRanges(tree.rootNode, D_FOLDABLE_TYPES);
     }
 
     definition(text: string, position: Position, uri: string): Location | null {

@@ -16,7 +16,7 @@ import {
 import * as esbuild from 'esbuild-wasm';
 import { fileURLToPath } from "url";
 import { EXT_TSSL } from "../core/languages";
-import { ensureEsbuild, cleanupEsbuildOutput, noSideEffectsPlugin } from "../esbuild-utils";
+import { ensureEsbuild, cleanupEsbuildOutput, noSideEffectsPlugin, externalDeclarationsPlugin } from "../esbuild-utils";
 import { conlog, type TsslContext, type MainFileData, type BundleResult } from './types';
 import { convertOperatorsAST } from './convert-operators';
 import { extractInlineFunctionsFromFiles, extractJsDocs } from './inline-functions';
@@ -26,8 +26,6 @@ import {
     transformEnums,
     expandEnumPropertyAccess,
     enumTransformPlugin,
-    collectDeclareEnums,
-    resolveDtsPath,
 } from "../enum-transform";
 import { extractTraTag } from "../transpiler-utils";
 
@@ -269,19 +267,7 @@ async function bundle(filePath: string, text: string, enumNames: ReadonlySet<str
         target: 'es2022',
         platform: 'neutral',
         plugins: [
-            // Mark .d.ts imports as external — they're engine builtins.
-            // Also collects `declare enum` names from externalized files for
-            // prefix stripping in post-processing (ClassID.ANKHEG → ANKHEG).
-            {
-                name: 'external-declarations',
-                setup(build: esbuild.PluginBuild) {
-                    build.onResolve({ filter: /\.d(\.ts)?$/ }, (args: esbuild.OnResolveArgs) => {
-                        const resolved = resolveDtsPath(path.resolve(args.resolveDir, args.path));
-                        collectDeclareEnums(resolved, externalEnumNames);
-                        return { path: args.path, external: true };
-                    });
-                }
-            },
+            externalDeclarationsPlugin(externalEnumNames),
             // Transform enums in imported .ts/.tssl files
             enumTransformPlugin(allEnumNames, /\.(ts|tssl)$/),
             noSideEffectsPlugin(),

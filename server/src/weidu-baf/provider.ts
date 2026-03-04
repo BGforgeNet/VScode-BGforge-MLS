@@ -5,7 +5,7 @@
  * Uses unified Symbols storage for completion and hover data.
  */
 
-import type { CompletionItem } from "vscode-languageserver/node";
+import type { CompletionItem, FoldingRange } from "vscode-languageserver/node";
 import { conlog } from "../common";
 import { LANG_WEIDU_BAF } from "../core/languages";
 import type { IndexedSymbol } from "../core/symbol";
@@ -19,8 +19,16 @@ import { fileURLToPath } from "url";
 import { formatDocument as formatAst, type FormatOptions } from "./format-core";
 import { initParser, parseWithCache, isInitialized } from "./parser";
 import { compile as weiduCompile } from "../weidu-compile";
+import { getFoldingRanges } from "../shared/folding-ranges";
+import { SyntaxType } from "./tree-sitter.d";
 
 const DEFAULT_INDENT = 4;
+
+/** BAF block-level node types for code folding. */
+const BAF_FOLDABLE_TYPES = new Set([
+    SyntaxType.Block,
+    SyntaxType.Response,
+]);
 
 function getFormatOptions(uri: string): FormatOptions {
     try {
@@ -53,6 +61,17 @@ class WeiduBafProvider implements LanguageProvider {
     // so symbol lookup is static-only (YAML data: actions + triggers).
     resolveSymbol(name: string, _text: string, _uri: string): IndexedSymbol | undefined {
         return resolveSymbolStatic(name, this.symbolStore);
+    }
+
+    foldingRanges(text: string): FoldingRange[] {
+        if (!isInitialized()) {
+            return [];
+        }
+        const tree = parseWithCache(text);
+        if (!tree) {
+            return [];
+        }
+        return getFoldingRanges(tree.rootNode, BAF_FOLDABLE_TYPES);
     }
 
     format(text: string, uri: string): FormatResult {

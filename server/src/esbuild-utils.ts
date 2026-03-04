@@ -1,9 +1,12 @@
 /**
  * Shared esbuild utilities for TSSL and TBAF transpilers.
+ * Provides common initialization, output cleanup, and reusable plugins.
  */
 
+import * as path from "path";
 import * as esbuild from "esbuild-wasm";
 import { Project, SyntaxKind } from "ts-morph";
+import { collectDeclareEnums, resolveDtsPath } from "./enum-transform";
 
 let esbuildInitialized = false;
 
@@ -168,6 +171,28 @@ export function noSideEffectsPlugin(): esbuild.Plugin {
                 });
                 if (result.errors.length > 0) return result;
                 return { ...result, sideEffects: false };
+            });
+        },
+    };
+}
+
+/**
+ * Create an esbuild plugin that externalizes .d.ts imports (engine builtins).
+ * Also collects `declare enum` names from externalized files for
+ * prefix stripping in post-processing (ClassID.ANKHEG -> ANKHEG).
+ *
+ * Shared by TSSL and TBAF bundlers (previously duplicated as inline plugins).
+ *
+ * @param externalEnumNames Mutable set to accumulate enum names from .d.ts files
+ */
+export function externalDeclarationsPlugin(externalEnumNames: Set<string>): esbuild.Plugin {
+    return {
+        name: "external-declarations",
+        setup(build) {
+            build.onResolve({ filter: /\.d(\.ts)?$/ }, (args) => {
+                const resolved = resolveDtsPath(path.resolve(args.resolveDir, args.path));
+                collectDeclareEnums(resolved, externalEnumNames);
+                return { path: args.path, external: true };
             });
         },
     };

@@ -8,7 +8,7 @@
  * in local-symbols.ts, following the same pattern as TP2.
  */
 
-import { type CompletionItem, type DocumentSymbol, type Location, type Position, type SignatureHelp, type WorkspaceEdit } from "vscode-languageserver/node";
+import { type CompletionItem, type DocumentSymbol, type FoldingRange, type Location, type Position, type SignatureHelp, type WorkspaceEdit } from "vscode-languageserver/node";
 import type { IndexedSymbol } from "../core/symbol";
 import { conlog, getLinePrefix } from "../common";
 import { EXT_FALLOUT_SSL_HEADERS, LANG_FALLOUT_SSL } from "../core/languages";
@@ -22,7 +22,8 @@ import { getJsdocCompletions } from "../shared/jsdoc-completions";
 import { FALLOUT_JSDOC_TYPES } from "../shared/fallout-types";
 import * as signature from "../shared/signature";
 import { formatDocument, initParser } from "./format";
-import { isInitialized } from "./parser";
+import { isInitialized, parseWithCache } from "./parser";
+import { getFoldingRanges } from "../shared/folding-ranges";
 import { getDocumentSymbols } from "./symbol";
 import { getLocalDefinition } from "./definition";
 import { renameSymbol, prepareRenameSymbol } from "./rename";
@@ -30,6 +31,17 @@ import { getLocalSignature } from "./signature";
 import { parseHeaderToSymbols } from "./header-parser";
 import { getLocalSymbols, lookupLocalSymbol, clearLocalSymbolsCache } from "./local-symbols";
 import { getSslCompletionContext, SslCompletionContext } from "./completion-context";
+
+/** SSL block-level node types for code folding. */
+const SSL_FOLDABLE_TYPES = new Set([
+    "procedure",
+    "if_stmt",
+    "while_stmt",
+    "for_stmt",
+    "foreach_stmt",
+    "switch_stmt",
+    "block",
+]);
 
 class FalloutSslProvider implements LanguageProvider {
     readonly id = LANG_FALLOUT_SSL;
@@ -69,6 +81,17 @@ class FalloutSslProvider implements LanguageProvider {
             return [];
         }
         return getDocumentSymbols(text);
+    }
+
+    foldingRanges(text: string): FoldingRange[] {
+        if (!isInitialized()) {
+            return [];
+        }
+        const tree = parseWithCache(text);
+        if (!tree) {
+            return [];
+        }
+        return getFoldingRanges(tree.rootNode, SSL_FOLDABLE_TYPES);
     }
 
     definition(text: string, position: Position, uri: string): Location | null {

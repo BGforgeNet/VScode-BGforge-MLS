@@ -19,13 +19,12 @@
 import * as esbuild from "esbuild-wasm";
 import * as path from "path";
 import * as fs from "fs";
-import { ensureEsbuild, cleanupEsbuildOutput, noSideEffectsPlugin } from "../esbuild-utils";
+import { ensureEsbuild, cleanupEsbuildOutput, noSideEffectsPlugin, externalDeclarationsPlugin } from "../esbuild-utils";
 import {
     transformEnums,
     expandEnumPropertyAccess,
     enumTransformPlugin,
     collectDeclareEnums,
-    resolveDtsPath,
 } from "../enum-transform";
 
 /** Marker to identify start of user code in esbuild output */
@@ -79,24 +78,7 @@ export async function bundle(filePath: string, sourceText: string): Promise<stri
         target: "esnext",
         minify: false,
         plugins: [
-            // Mark .d.ts imports as external — they're engine builtins/declarations.
-            // Bare imports (e.g., "ielib") are NOT externalized so esbuild can
-            // bundle them, allowing enum values to be resolved at transpile time.
-            // Also collects `declare enum` names from externalized files for
-            // prefix stripping in post-processing (ClassID.ANKHEG → ANKHEG).
-            {
-                name: "external-declarations",
-                setup(build) {
-                    build.onResolve({ filter: /\.d(\.ts)?$/ }, (args) => {
-                        // Read the .d.ts file to extract declare enum names.
-                        // Resolve the path since import specifiers may omit .ts
-                        // (e.g., './class.ids.d' → 'class.ids.d.ts' on disk).
-                        const resolved = resolveDtsPath(path.resolve(args.resolveDir, args.path));
-                        collectDeclareEnums(resolved, externalEnumNames);
-                        return { path: args.path, external: true };
-                    });
-                },
-            },
+            externalDeclarationsPlugin(externalEnumNames),
             // Resolve and load .tbaf imports as TypeScript, transforming enums.
             // No custom namespace — keeps resolution simple so noSideEffectsPlugin's
             // build.resolve() can use esbuild's default resolver for all imports.

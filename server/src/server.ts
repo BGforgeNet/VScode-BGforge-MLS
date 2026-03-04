@@ -70,6 +70,11 @@ let projectSettings: settings.ProjectSettings;
 // Initialized in onInitialized, undefined until then
 let translation: Translation | undefined;
 
+// Resolves when onInitialized completes, so handlers that depend on
+// providers being ready can await it (fixes the onDidOpen race).
+let resolveInitialized: () => void;
+const initialized = new Promise<void>((resolve) => { resolveInitialized = resolve; });
+
 // Debouncing for file data reloads on content changes
 const pendingReloads = new Map<string, NodeJS.Timeout>();
 const RELOAD_DEBOUNCE_MS = 300;
@@ -107,6 +112,7 @@ connection.onInitialize((params: InitializeParams) => {
             renameProvider: { prepareProvider: true },
             documentFormattingProvider: true,
             documentSymbolProvider: true,
+            foldingRangeProvider: true,
             executeCommandProvider: {
                 commands: ["bgforge.parseDialog"],
             },
@@ -173,6 +179,7 @@ connection.onInitialized(async () => {
         }
     }
 
+    resolveInitialized();
     void connection.sendNotification("bgforge-mls/load-finished");
     conlog("onInitialized completed");
 });
@@ -223,9 +230,11 @@ export function getDocumentSettings(resource: string): Thenable<MLSsettings> {
 // Initialize the settings service holder so compile.ts can access settings without importing server.ts
 initSettingsService(getDocumentSettings);
 
-documents.onDidOpen((event) => {
-    // TODO: this doesn't work for the first open doc, since the server is not initalized yet
-    // need to do proper async here
+documents.onDidOpen(async (event) => {
+    // Wait for providers to be ready before processing the first open document.
+    // Without this, the first document opened at startup fires before onInitialized completes.
+    await initialized;
+
     const uri = event.document.uri;
     const langId = event.document.languageId;
     const text = event.document.getText();
@@ -551,5 +560,13 @@ connection.onDocumentSymbol((params) => {
         return [];
     }
     return registry.symbols(textDoc.languageId, textDoc.getText());
+});
+
+connection.onFoldingRanges((params) => {
+    const textDoc = documents.get(params.textDocument.uri);
+    if (!textDoc) {
+        return [];
+    }
+    return registry.foldingRanges(textDoc.languageId, textDoc.getText());
 });
 

@@ -6,7 +6,7 @@
  * User-defined functions and variables from .tph headers are handled by header-parser.
  */
 
-import { type CompletionItem, type DocumentSymbol, type Location, type Position, type WorkspaceEdit, InsertTextFormat } from "vscode-languageserver/node";
+import { type CompletionItem, type DocumentSymbol, type FoldingRange, type Location, type Position, type WorkspaceEdit, InsertTextFormat } from "vscode-languageserver/node";
 import { extname } from "path";
 import { fileURLToPath } from "url";
 import { conlog, getLinePrefix } from "../common";
@@ -36,6 +36,30 @@ import { localCompletion, isInsideComment, isOnLoopVariableBinding } from "./ast
 import { getLocalSymbols as extractLocalSymbols, lookupLocalSymbol, clearLocalSymbolsCache } from "./local-symbols";
 import { WEIDU_JSDOC_TYPES } from "../shared/weidu-types";
 import { getJsdocCompletions as getSharedJsdocCompletions } from "../shared/jsdoc-completions";
+import { getFoldingRanges } from "../shared/folding-ranges";
+import { SyntaxType } from "./tree-sitter.d";
+
+/** TP2 block-level node types for code folding. */
+const TP2_FOLDABLE_TYPES = new Set([
+    SyntaxType.ActionDefineFunction,
+    SyntaxType.ActionDefineMacro,
+    SyntaxType.ActionDefinePatchFunction,
+    SyntaxType.ActionDefinePatchMacro,
+    SyntaxType.ActionIf,
+    SyntaxType.ActionTry,
+    SyntaxType.PatchBlock,
+    SyntaxType.PatchFor,
+    SyntaxType.PatchForEach,
+    SyntaxType.PatchIf,
+    SyntaxType.PatchWhile,
+    SyntaxType.Component,
+    SyntaxType.AlwaysBlock,
+    SyntaxType.ActionCopy,
+    SyntaxType.InnerAction,
+    SyntaxType.InnerPatch,
+    SyntaxType.InnerPatchFile,
+    SyntaxType.InnerPatchSave,
+]);
 
 /**
  * Add parameter completions (INT_VAR, STR_VAR names) when in funcParamName context.
@@ -290,6 +314,17 @@ class WeiduTp2Provider implements LanguageProvider {
 
     symbols(text: string): DocumentSymbol[] {
         return getDocumentSymbols(text);
+    }
+
+    foldingRanges(text: string): FoldingRange[] {
+        if (!isInitialized()) {
+            return [];
+        }
+        const tree = parseWithCache(text);
+        if (!tree) {
+            return [];
+        }
+        return getFoldingRanges(tree.rootNode, TP2_FOLDABLE_TYPES);
     }
 
     rename(text: string, position: Position, newName: string, uri: string): WorkspaceEdit | null {

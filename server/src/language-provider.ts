@@ -8,6 +8,7 @@
 import {
     CompletionItem,
     DocumentSymbol,
+    FoldingRange,
     Hover,
     InlayHint,
     Location,
@@ -94,6 +95,9 @@ export interface LanguageProvider {
 
     /** Get document symbols (for outline view, Ctrl+Shift+O). */
     symbols?(text: string): DocumentSymbol[];
+
+    /** Get folding ranges for code folding (collapse/expand blocks). */
+    foldingRanges?(text: string): FoldingRange[];
 
     /** Go to definition at position. For in-file definitions (e.g., state labels). */
     definition?(text: string, position: Position, uri: string): Location | null;

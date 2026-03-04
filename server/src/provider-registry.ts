@@ -14,6 +14,7 @@ import {
     CompletionItem,
     DocumentSymbol,
     FileChangeType,
+    FoldingRange,
     Hover,
     Location,
     Position,
@@ -195,6 +196,14 @@ class ProviderRegistry {
         const provider = this.get(langId);
         if (provider?.symbols) {
             return provider.symbols(text);
+        }
+        return [];
+    }
+
+    foldingRanges(langId: string, text: string): FoldingRange[] {
+        const provider = this.get(langId);
+        if (provider?.foldingRanges) {
+            return provider.foldingRanges(text);
         }
         return [];
     }
