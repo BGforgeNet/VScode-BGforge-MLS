@@ -50,6 +50,11 @@ const config: KnipConfig = {
     "tsx",
     // invoked in scripts/*.sh build scripts, not visible to knip
     "esbuild",
+    // invoked via pnpm vsce in scripts/package.sh
+    "@vscode/vsce",
+    // used by scripts/test-package-deps.ts (scripts/ are ignored by knip)
+    "picomatch",
+    "@types/picomatch",
   ],
 };
 

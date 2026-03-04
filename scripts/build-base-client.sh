@@ -10,3 +10,9 @@ esbuild ./client/src/extension.ts \
   --format=cjs \
   --platform=node \
   "$@"
+
+# Copy codicons font assets for webview usage
+mkdir -p client/out/codicons
+cp node_modules/@vscode/codicons/dist/codicon.css \
+   node_modules/@vscode/codicons/dist/codicon.ttf \
+   client/out/codicons/

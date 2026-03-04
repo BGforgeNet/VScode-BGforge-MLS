@@ -53,35 +53,75 @@ The `external/` directory has four allowlisted text files (`!external/fallout.tx
 
 Controls what ships in the VSIX extension package. Uses an **allowlist** strategy: `**/*` ignores everything, then `!` patterns include only what's needed.
 
+### Why allowlist, not blocklist
+
+A blocklist approach (exclude `node_modules/`, `src/`, etc.) is fragile: new directories, temp files, caches, or large binaries silently leak into the VSIX. In this project, `external/` alone is ~70 MB and `.venv` would add more. An allowlist guarantees only explicitly approved files ship. The tradeoff is that new runtime files must be added to `.vscodeignore` manually, but `scripts/test-package-deps.ts` catches omissions automatically (see [Packaging validation](#packaging-validation) below).
+
 ### Client runtime
-
-| Pattern | File | Purpose |
-|---------|------|---------|
-| `!client/package.json` | Package metadata | Required by VSCode |
-| `!client/out/extension.js` | Main entry point | Extension activation |
-| `!client/out/dialog-tree/dialogTree-webview.js` | Dialog tree webview | Renders dialog trees in a webview panel |
-| `!client/out/editors/binaryEditor-webview.js` | Binary editor webview | Renders .pro files in a custom editor |
-
-### Server runtime
-
-| Pattern | File | Purpose |
-|---------|------|---------|
-| `!server/package.json` | Package metadata | Required by VSCode |
-| `!server/out/server.js` | LSP server bundle | All server code bundled by esbuild |
-| `!server/out/completion.*.json` | Completion data | Static autocomplete items from YAML |
-| `!server/out/hover.*.json` | Hover data | Documentation shown on hover |
-| `!server/out/signature.*.json` | Signature data | Parameter hints |
-| `!server/out/engine-proc-docs.json` | Engine proc docs | Hover docs for TSSL TS plugin |
-| `!server/out/td-runtime.d.ts` | TD runtime types | Injected into .td projects by td-plugin |
-| `!server/out/*.wasm` | Tree-sitter parsers | Loaded at runtime for AST parsing |
-
-### Runtime dependencies
 
 | Pattern | Purpose |
 |---------|---------|
-| `!server/node_modules/sslc-emscripten-noderawfs/**` | Fallout SSL compiler (WASM). Loaded at runtime, cannot be bundled. |
-| `!node_modules/bgforge-tssl-plugin/**` | TypeScript plugin for .tssl files. Installed to root node_modules by build script, loaded by tsserver. |
-| `!node_modules/bgforge-td-plugin/**` | TypeScript plugin for .td files. Same mechanism as tssl-plugin. |
+| `!client/package.json` | Package metadata, required by VSCode |
+| `!client/out/extension.js` | Main entry point, extension activation |
+| `!client/out/dialog-tree/dialogTree-webview.js` | Dialog tree webview bundle |
+| `!client/out/editors/binaryEditor-webview.js` | Binary editor webview bundle |
+| `!client/out/codicons/codicon.css` | Codicons stylesheet for webviews |
+| `!client/out/codicons/codicon.ttf` | Codicons font file for webviews |
+
+### Client static assets (webviews)
+
+| Pattern | Purpose |
+|---------|---------|
+| `!client/src/dialog-tree/dialogTree.html` | Dialog tree webview HTML template |
+| `!client/src/dialog-tree/dialogTree.css` | Dialog tree webview styles |
+| `!client/src/editors/binaryEditor.html` | Binary editor webview HTML template |
+| `!client/src/editors/binaryEditor.css` | Binary editor webview styles |
+| `!client/src/webview-common.css` | Shared webview styles |
+
+### Server runtime
+
+| Pattern | Purpose |
+|---------|---------|
+| `!server/package.json` | Package metadata, required by VSCode |
+| `!server/out/server.js` | LSP server bundle (all server code bundled by esbuild) |
+| `!server/out/completion.*.json` | Static autocomplete items from YAML |
+| `!server/out/hover.*.json` | Hover documentation from YAML |
+| `!server/out/signature.*.json` | Signature help parameter hints |
+| `!server/out/engine-proc-docs.json` | Engine procedure hover docs for TSSL TS plugin |
+| `!server/out/td-runtime.d.ts` | TD runtime types, injected into .td projects by td-plugin |
+| `!server/out/*.wasm` | Tree-sitter WASM parsers, loaded at runtime |
+
+### Runtime dependencies (node_modules)
+
+**sslc compiler** (all files needed):
+
+| Pattern | Purpose |
+|---------|---------|
+| `!server/node_modules/sslc-emscripten-noderawfs/**` | Fallout SSL compiler (WASM). Loaded at runtime via `fork()`, cannot be bundled. |
+
+**esbuild-wasm** (selective — browser/ESM/typings excluded):
+
+| Pattern | Purpose |
+|---------|---------|
+| `!server/node_modules/esbuild-wasm/package.json` | Module resolution |
+| `!server/node_modules/esbuild-wasm/esbuild.wasm` | WASM binary |
+| `!server/node_modules/esbuild-wasm/lib/main.js` | Node.js CJS entry point |
+| `!server/node_modules/esbuild-wasm/bin/esbuild` | CLI launcher (spawned by lib/main.js) |
+| `!server/node_modules/esbuild-wasm/wasm_exec.js` | Go WASM runtime |
+| `!server/node_modules/esbuild-wasm/wasm_exec_node.js` | Node.js WASM shim |
+
+Excluded: `lib/browser*`, `esm/*`, `*.d.ts`, `README.md`, `LICENSE.md` (browser bundles, TypeScript types, and docs are not needed at runtime).
+
+**TypeScript plugins** (selective — source maps excluded):
+
+| Pattern | Purpose |
+|---------|---------|
+| `!node_modules/bgforge-tssl-plugin/package.json` | Module resolution |
+| `!node_modules/bgforge-tssl-plugin/index.js` | Plugin bundle for .tssl files |
+| `!node_modules/bgforge-td-plugin/package.json` | Module resolution |
+| `!node_modules/bgforge-td-plugin/index.js` | Plugin bundle for .td files |
+
+Note: `server/node_modules/` entries are pnpm symlinks. `scripts/package.sh` replaces them with real copies before packaging (vsce doesn't follow symlinks) and restores them after. Root `node_modules/` entries are created by vsce's own `npm install` during packaging (this is why `--no-dependencies` is not used).
 
 ### Static assets
 
@@ -90,12 +130,22 @@ Controls what ships in the VSIX extension package. Uses an **allowlist** strateg
 | `!language-configurations/*.json` | VSCode language configuration (brackets, comments, etc.) |
 | `!snippets/*.json` | Code snippets |
 | `!syntaxes/*.json` | TextMate grammars for syntax highlighting |
-| `!themes/bgforge-icon-theme.json` | File icon theme |
+| `!themes/bgforge-icon-theme.json` | File icon theme definition |
 | `!themes/bgforge-monokai.json` | Color theme |
 | `!themes/seti.woff` | Icon font |
 | `!themes/icons/*.png`, `!themes/icons/*.svg` | File type icons |
 | `!LICENSE.txt` | License |
 | `!resources/bgforge.png` | Extension icon |
+
+### Packaging validation
+
+`scripts/test-package-deps.ts` runs as part of `pnpm test` and catches missing `.vscodeignore` entries automatically with 5 checks:
+
+1. **esbuild externals** -- every `--external:pkg` in build scripts must have a `node_modules/pkg` entry
+2. **Runtime file paths** -- `path.join`/`Uri.joinPath` calls in source with `"client"`/`"server"` segments must match a whitelist pattern
+3. **Pattern resolution** -- every whitelist pattern must match at least one existing file (catches stale entries)
+4. **`__dirname` node_modules** -- `__dirname`-relative `node_modules/` paths in source (e.g., sslc `fork()`) must have a matching entry
+5. **package.json contributes** -- all file paths in `contributes` (grammars, snippets, themes, language configs, TS plugins, icon, main) must match a whitelist pattern
 
 ## .prettierignore
 

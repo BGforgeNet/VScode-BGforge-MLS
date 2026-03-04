@@ -7,6 +7,13 @@
 !client/out/extension.js
 !client/out/dialog-tree/dialogTree-webview.js
 !client/out/editors/binaryEditor-webview.js
+!client/out/codicons/codicon.css
+!client/out/codicons/codicon.ttf
+!client/src/dialog-tree/dialogTree.html
+!client/src/dialog-tree/dialogTree.css
+!client/src/editors/binaryEditor.html
+!client/src/editors/binaryEditor.css
+!client/src/webview-common.css
 
 !server/package.json
 !server/out/server.js
@@ -18,9 +25,17 @@
 !server/out/*.wasm
 
 !server/node_modules/sslc-emscripten-noderawfs/**
+!server/node_modules/esbuild-wasm/package.json
+!server/node_modules/esbuild-wasm/esbuild.wasm
+!server/node_modules/esbuild-wasm/lib/main.js
+!server/node_modules/esbuild-wasm/bin/esbuild
+!server/node_modules/esbuild-wasm/wasm_exec.js
+!server/node_modules/esbuild-wasm/wasm_exec_node.js
 
-!node_modules/bgforge-tssl-plugin/**
-!node_modules/bgforge-td-plugin/**
+!node_modules/bgforge-tssl-plugin/package.json
+!node_modules/bgforge-tssl-plugin/index.js
+!node_modules/bgforge-td-plugin/package.json
+!node_modules/bgforge-td-plugin/index.js
 
 !language-configurations/*.json
 !snippets/*.json

@@ -153,7 +153,7 @@ export function registerDialogPanel(
 
             const treeContent = config.buildTreeHtml(data);
             const codiconsUri = dialogPanel.webview.asWebviewUri(
-                vscode.Uri.joinPath(context.extensionUri, "node_modules", "@vscode/codicons", "dist", "codicon.css")
+                vscode.Uri.joinPath(context.extensionUri, "client", "out", "codicons", "codicon.css")
             );
             const iconUri = dialogPanel.webview.asWebviewUri(
                 vscode.Uri.joinPath(context.extensionUri, config.tabIconPath)
@@ -245,7 +245,7 @@ export function registerDialogPanel(
 
                 const treeContent = config.buildTreeHtml(data);
                 const codiconsUri = dialogPanel.webview.asWebviewUri(
-                    vscode.Uri.joinPath(context.extensionUri, "node_modules", "@vscode/codicons", "dist", "codicon.css")
+                    vscode.Uri.joinPath(context.extensionUri, "client", "out", "codicons", "codicon.css")
                 );
                 const iconUri = dialogPanel.webview.asWebviewUri(
                     vscode.Uri.joinPath(context.extensionUri, config.tabIconPath)
@@ -253,8 +253,11 @@ export function registerDialogPanel(
 
                 dialogPanel.title = `Dialog: ${fileName}`;
                 dialogPanel.webview.html = getDialogPreviewHtml(treeContent, codiconsUri.toString(), context.extensionUri.fsPath, fileName, filePath, iconUri.toString());
-            } catch {
-                vscode.window.showErrorMessage("Failed to generate dialog preview");
+            } catch (error) {
+                const msg = error instanceof Error ? error.message : String(error);
+                // Log full stack trace to Developer Tools for debugging (showErrorMessage only gets the message)
+                console.error("Dialog preview error:", error);
+                vscode.window.showErrorMessage(`Failed to generate dialog preview: ${msg}`);
             }
         })
     );

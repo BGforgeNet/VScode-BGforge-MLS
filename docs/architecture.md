@@ -177,8 +177,11 @@ pnpm build:dev            Minimal build for F5 development (skips CLIs)
 
 ### Key Build Constraints
 
-1. **WASM patching**: web-tree-sitter uses `import.meta.url` for WASM loading.
-   esbuild transforms this, breaking the path. Build scripts patch with `sed`.
+1. **WASM URL resolution**: web-tree-sitter uses `import.meta.url` for WASM loading.
+   esbuild's CJS output shims `import.meta` as an empty object. Build scripts use
+   `--banner:js` to define a `__imu` variable with the correct file URL, and
+   `--define:import.meta.url=__imu` to replace references. This works reliably with
+   `--minify` (the previous `sed` approach broke when esbuild mangled variable names).
 2. **TS plugins**: Must be standalone CJS bundles in `node_modules/` directories.
    tsserver loads them by package name from `typescriptServerPlugins` in package.json.
 3. **Externalized .d.ts imports**: Transpiler libraries (ielib, folib) use `.d.ts` for
@@ -419,24 +422,30 @@ Four test layers:
 
 ## Extension Packaging
 
-`.vscodeignore` controls what ships in the VSIX:
+`.vscodeignore` uses an **allowlist** strategy (`**/*` then `!` exceptions) to guarantee
+only approved files ship. See [docs/ignore-files.md](ignore-files.md) for the full list
+and rationale.
 
-```
-Included:
-  client/out/extension.js                 Client bundle
-  client/out/*-webview.js                 Webview bundles
-  server/out/server.js                    Server bundle
-  server/out/*.json                       Completion/hover/signature data
-  server/out/*.wasm                       Tree-sitter WASM parsers
-  server/node_modules/sslc-emscripten-*/  Embedded SSL compiler
-  language-configurations/*.json          Language settings
-  snippets/*.json                         Code snippets
-  syntaxes/*.json                         TextMate grammars
-  themes/                                 Color and icon themes
-  resources/bgforge.png                   Extension icon
+**Packaging pipeline** (`scripts/package.sh`):
 
-Everything else excluded (source, tests, scripts, node_modules, grammars/).
-```
+1. Replace pnpm symlinks in `server/node_modules/` with real directory copies (vsce
+   doesn't follow symlinks)
+2. Run `pnpm vsce package` (without `--no-dependencies`, so vsce's npm install creates
+   root `node_modules/` for TS plugins)
+3. Restore original symlinks via EXIT trap
+
+**Runtime dependencies** that must ship in the VSIX:
+
+| Dependency | Location | Why not bundled |
+|------------|----------|-----------------|
+| sslc-emscripten-noderawfs | `server/node_modules/` | Loaded via `fork()`, separate process |
+| esbuild-wasm | `server/node_modules/` | esbuild `--external`, WASM binary |
+| bgforge-tssl-plugin | `node_modules/` | Loaded by tsserver by package name |
+| bgforge-td-plugin | `node_modules/` | Loaded by tsserver by package name |
+
+**Validation**: `scripts/test-package-deps.ts` runs in CI and catches missing
+`.vscodeignore` entries by scanning build scripts, source code, and `package.json`
+contributes. See [docs/ignore-files.md](ignore-files.md#packaging-validation) for details.
 
 ## Key Design Decisions
 

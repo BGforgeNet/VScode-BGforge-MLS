@@ -18,6 +18,9 @@ importers:
       '@types/node':
         specifier: ^22.19.13
         version: 22.19.13
+      '@types/picomatch':
+        specifier: ^4.0.2
+        version: 4.0.2
       '@typescript-eslint/eslint-plugin':
         specifier: ^8.56.1
         version: 8.56.1(@typescript-eslint/parser@8.56.1(eslint@9.39.3(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.3(jiti@2.6.1))(typescript@5.9.3)
@@ -48,6 +51,9 @@ importers:
       mocha:
         specifier: ^11.7.5
         version: 11.7.5
+      picomatch:
+        specifier: ^4.0.3
+        version: 4.0.3
       prettier:
         specifier: ^3.8.1
         version: 3.8.1
@@ -1038,6 +1044,9 @@ packages:
 
   '@types/normalize-package-data@2.4.4':
     resolution: {integrity: sha512-37i+OaWTh9qeK4LSHPsyRC7NahnGotNuZvjLSgcPzblpHB3rrCJxAOgI5gCdKm7coonsaX1Of0ILiTcnZjbfxA==}
+
+  '@types/picomatch@4.0.2':
+    resolution: {integrity: sha512-qHHxQ+P9PysNEGbALT8f8YOSHW0KJu6l2xU8DYY0fu/EmGxXdVnuTLvFUvBgPJMSqXq29SYHveejeAha+4AYgA==}
 
   '@types/sarif@2.1.7':
     resolution: {integrity: sha512-kRz0VEkJqWLf1LLVN4pT1cg1Z9wAuvI6L97V3m2f5B76Tg8d413ddvLBPTEHAZJlnn4XSvu0FkZtViCQGVyrXQ==}
@@ -3569,6 +3578,8 @@ snapshots:
       undici-types: 6.21.0
 
   '@types/normalize-package-data@2.4.4': {}
+
+  '@types/picomatch@4.0.2': {}
 
   '@types/sarif@2.1.7': {}
 

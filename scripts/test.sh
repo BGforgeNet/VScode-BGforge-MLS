@@ -74,6 +74,9 @@ pnpm lint:scripts
 step "Testing External"
 pnpm test:external
 
+step "Checking VSIX packaging deps"
+pnpm exec tsx scripts/test-package-deps.ts
+
 step "Checking for unused code (knip)"
 pnpm knip
 
