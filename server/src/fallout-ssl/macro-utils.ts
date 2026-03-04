@@ -1,6 +1,6 @@
 /**
  * Shared utilities for macro handling.
- * Used by both header-parser.ts (regex-based) and tree-sitter-based features.
+ * Used by header-parser.ts and local-symbols.ts for building macro hover, completion, and signature.
  */
 
 import { CompletionItem, CompletionItemKind, ParameterInformation } from "vscode-languageserver/node";
@@ -146,7 +146,7 @@ export function buildSignatureFromJSDoc(
 
 /**
  * Build completion item for a macro.
- * Used by both header-parser (regex) and tree-sitter approaches.
+ * Used by header-parser.ts and local-symbols.ts.
  */
 export function buildMacroCompletion(
     macro: MacroData,

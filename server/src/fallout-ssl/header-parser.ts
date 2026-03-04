@@ -1,185 +1,25 @@
 /**
  * Fallout SSL header parsing utilities.
- * Handles regex-based parsing of .h files for procedures, macros, and definitions.
+ * Handles tree-sitter-based parsing of .h files for procedures, macros, and definitions.
  *
  * Main API: parseHeaderToSymbols() - Returns IndexedSymbol[] for unified storage.
  *
- * Symbol-building pattern: Regex-based extraction with JSDoc, SSL-specific.
- * Parses .h header files using regex (no tree-sitter grammar for headers) and
- * builds IndexedSymbol with SSL-specific tooltip formatting (buildTooltipBase,
- * buildMacroTooltip). Cannot use TP2's tree-sitter helpers (different grammar)
- * or the static loader (needs runtime parsing, not pre-generated JSON).
+ * Symbol-building pattern: Tree-sitter AST with SSL-specific formatting.
+ * Parses .h header files using the same SSL tree-sitter grammar and builds
+ * IndexedSymbol with SSL-specific tooltip formatting (buildTooltipBase,
+ * buildMacroTooltip). Follows the same approach as local-symbols.ts but
+ * with Workspace scope/source instead of Document scope.
  */
 
-import { CompletionItemKind, type Location } from "vscode-languageserver";
+import { CompletionItemKind } from "vscode-languageserver";
 import { MarkupKind } from "vscode-languageserver/node";
-import { type RegExpMatchArrayWithIndices } from "../common";
 import { computeDisplayPath } from "../core/location-utils";
 import type { CallableSymbol, ConstantSymbol, IndexedSymbol } from "../core/symbol";
 import { ScopeLevel, SourceType, SymbolKind } from "../core/symbol";
-import * as definition from "../shared/definition";
 import * as jsdoc from "../shared/jsdoc";
-import { jsdocToDetail } from "./jsdoc-format";
-import { formatSignature } from "../shared/signature-format";
-import { type MacroData, buildMacroCompletion, buildMacroTooltip, buildSignatureFromJSDoc, isConstantMacro, parseMacroParams } from "./macro-utils";
-import { buildTooltipBase } from "./utils";
-
-// =============================================================================
-// Types
-// =============================================================================
-
-interface FalloutHeaderData {
-    macros: Macros;
-    procedures: Procedures;
-    definitions: definition.Definitions;
-}
-
-interface Procedure {
-    label: string;
-    detail: string;
-    jsdoc?: jsdoc.JSdoc;
-}
-interface Procedures extends Array<Procedure> { }
-interface Macro {
-    label: string;
-    detail: string;
-    constant: boolean;
-    multiline: boolean;
-    firstline: string;
-    jsdoc?: jsdoc.JSdoc;
-}
-interface Macros extends Array<Macro> { }
-
-function findSymbols(text: string) {
-    // defines
-    const defineList: Macros = [];
-    // JSDoc pattern: matches both single-line /** text */ and multi-line /** \n text \n */
-    // Single-line: \/\*\*[^*]*\*+\/  (/** followed by non-* chars, then one or more *, then /)
-    // Multi-line: \/\*\*\s*\n([^*]|(\*(?!\/)))*\*\/  (/** + newline + content + */)
-    const defineRegex =
-        /((\/\*\*[^*]*\*+\/|\/\*\*\s*\n([^*]|(\*(?!\/)))*\*\/)\r?\n)?#define[ \t]+(\w+)(?:\(([^)]+)\))?[ \t]+(.+)/gm;
-    let matches = text.matchAll(defineRegex);
-    for (const m of matches) {
-        const defineName = m[5];
-        const defineFirstlineRaw = m[7];
-        if (!defineName || !defineFirstlineRaw) continue;
-        const defineFirstline = defineFirstlineRaw.trimEnd();
-
-        // check if it's multiline
-        let multiline = false;
-        if (defineFirstline.endsWith("\\")) {
-            multiline = true;
-        }
-
-        // check if it has vars
-        let defineDetail = defineName;
-        if (m[6]) {
-            // function-like macro
-            const defineVars = m[6];
-            defineDetail = `${defineName}(${defineVars})`;
-        }
-
-        // check if it looks like a constant (use shared function)
-        let constant = false;
-        if (!multiline && isConstantMacro(defineName)) {
-            constant = true;
-        }
-
-        const item: Macro = {
-            label: defineName,
-            constant: constant,
-            detail: defineDetail,
-            multiline: multiline,
-            firstline: defineFirstline,
-        };
-        // if jsdoc found
-        if (m[2]) {
-            const jsd = jsdoc.parse(m[2]);
-            item.jsdoc = jsd;
-            item.detail = jsdocToDetail(defineName, jsd, "macro");
-        }
-        defineList.push(item);
-    }
-
-    // procedures
-    const procList: Procedures = [];
-    // multiline jsdoc regex: (\/\*\*\s*\n([^*]|(\*(?!\/)))*\*\/)
-    // from here https://stackoverflow.com/questions/35905181/regex-for-jsdoc-comments
-    // procedure regex: procedure[\s]+(\w+)(?:\(([^)]+)\))?[\s]+begin
-    const procRegex =
-        /((\/\*\*\s*\n([^*]|(\*(?!\/)))*\*\/)\r?\n)?procedure[\s]+(\w+)(?:\(([^)]+)\))?[\s]+begin/gm;
-    matches = text.matchAll(procRegex);
-    for (const m of matches) {
-        const procName = m[5];
-        if (!procName) continue;
-        // Parse raw params string "x, y" into SignatureParam[]
-        const rawParams = m[6] ? m[6].split(",").map(p => ({ name: p.trim() })) : [];
-        let procDetail = formatSignature({ name: procName, prefix: "procedure ", params: rawParams });
-
-        // if jsdoc found
-        if (m[2]) {
-            const jsd = jsdoc.parse(m[2]);
-            // If JSdoc has no arguments specified, but function has them, keep the default detail form
-            if (!(m[6] && jsd.args.length === 0)) {
-                // else, use detail from JSdoc.
-                procDetail = jsdocToDetail(procName, jsd);
-            }
-            const item = { label: procName, detail: procDetail, jsdoc: jsd };
-            procList.push(item);
-        } else {
-            const item = { label: procName, detail: procDetail };
-            procList.push(item);
-        }
-    }
-    const definitions = findDefinitions(text);
-
-    const result: FalloutHeaderData = {
-        macros: defineList,
-        procedures: procList,
-        definitions: definitions,
-    };
-    return result;
-}
-
-function findDefinitions(text: string) {
-    const definitions: definition.Definition[] = [];
-    const lines = text.split("\n");
-    // Allow optional leading whitespace - macros may be indented inside #ifdef/#ifndef guards
-    const procRegex = /^[ \t]*procedure[\s]+(\w+)(?:\(([^)]+)\))?[\s]+begin/d;
-    const defineRegex = /^[ \t]*#define[ \t]+(\w+)(?:\(([^)]+)\))?[ \t]+(.+)/d;
-    lines.forEach((l, i) => {
-        let match = procRegex.exec(l);
-        if (match) {
-            const name = match[1];
-            const index = (match as RegExpMatchArrayWithIndices).indices[1];
-            if (name && index) {
-                const item: definition.Definition = {
-                    name: name,
-                    line: i,
-                    start: index[0],
-                    end: index[1],
-                };
-                definitions.push(item);
-            }
-        } else {
-            match = defineRegex.exec(l);
-            if (match) {
-                const name = match[1];
-                const index = (match as RegExpMatchArrayWithIndices).indices[1];
-                if (name && index) {
-                    const item: definition.Definition = {
-                        name: name,
-                        line: i,
-                        start: index[0],
-                        end: index[1],
-                    };
-                    definitions.push(item);
-                }
-            }
-        }
-    });
-    return definitions;
-}
+import { type MacroData, buildMacroCompletion, buildMacroTooltip, buildSignatureFromJSDoc } from "./macro-utils";
+import { buildTooltipBase, extractMacros, extractParams, extractProcedures, findPrecedingDocComment, makeRange, buildProcedureSignature } from "./utils";
+import { isInitialized, parseWithCache } from "./parser";
 
 // =============================================================================
 // Unified Symbol API
@@ -188,6 +28,9 @@ function findDefinitions(text: string) {
 /**
  * Parse a header file and return symbols for the unified index.
  * This is the preferred API - returns IndexedSymbol[] ready for Symbols storage.
+ *
+ * Uses tree-sitter AST parsing (same grammar as .ssl files) to extract
+ * procedures and macros, including those indented inside #ifdef/#ifndef guards.
  *
  * @param uri File URI
  * @param text File content
@@ -199,36 +42,44 @@ export function parseHeaderToSymbols(
     workspaceRoot?: string,
 ): IndexedSymbol[] {
     const displayPath = computeDisplayPath(uri, workspaceRoot);
-    const headerData = findSymbols(text);
-    const definitions = findDefinitions(text);
-    const defMap = new Map(definitions.map(d => [d.name, d]));
 
+    // If tree-sitter is not initialized, return empty (graceful degradation)
+    if (!isInitialized()) {
+        return [];
+    }
+
+    const tree = parseWithCache(text);
+    if (!tree) {
+        return [];
+    }
+
+    const root = tree.rootNode;
     const result: IndexedSymbol[] = [];
 
-    // Convert procedures to IndexedSymbol
-    for (const proc of headerData.procedures) {
-        const def = defMap.get(proc.label);
-        const location: Location | null = def ? {
-            uri,
-            range: {
-                start: { line: def.line, character: def.start },
-                end: { line: def.line, character: def.end },
-            },
-        } : null;
+    // Extract procedures via tree-sitter AST
+    const procedures = extractProcedures(root);
+    for (const [name, { node }] of procedures) {
+        const range = makeRange(node);
+        const docComment = findPrecedingDocComment(root, node);
+        const parsed = docComment ? jsdoc.parse(docComment) : null;
 
-        const sig = proc.jsdoc && proc.jsdoc.args.length > 0
-            ? buildSignatureFromJSDoc(proc.label, proc.jsdoc, uri)
-            : undefined;
+        const astParams = extractParams(node);
+        const sig = buildProcedureSignature(name, astParams, parsed);
+        const hoverValue = buildTooltipBase(sig, parsed, displayPath);
 
         const hoverContents = {
             kind: MarkupKind.Markdown,
-            value: buildTooltipBase(proc.detail, proc.jsdoc ?? null, displayPath),
+            value: hoverValue,
         };
 
+        const sigHelp = parsed && parsed.args.length > 0
+            ? buildSignatureFromJSDoc(name, parsed, uri)
+            : undefined;
+
         const symbol: CallableSymbol = {
-            name: proc.label,
+            name,
             kind: SymbolKind.Procedure,
-            location,
+            location: { uri, range },
             scope: { level: ScopeLevel.Workspace },
             source: {
                 type: SourceType.Workspace,
@@ -236,36 +87,37 @@ export function parseHeaderToSymbols(
                 displayPath,
             },
             completion: {
-                label: proc.label,
+                label: name,
                 kind: CompletionItemKind.Function,
                 labelDetails: { description: displayPath },
                 documentation: hoverContents,
             },
             hover: { contents: hoverContents },
-            signature: sig,
-            callable: {},
+            signature: sigHelp,
+            callable: {
+                parameters: astParams.map(p => {
+                    const jsdocArg = parsed?.args.find(a => a.name === p.name);
+                    return {
+                        name: p.name,
+                        type: jsdocArg?.type,
+                        description: jsdocArg?.description,
+                        defaultValue: p.defaultValue,
+                    };
+                }),
+            },
         };
         result.push(symbol);
     }
 
-    // Convert macros to IndexedSymbol
-    for (const macro of headerData.macros) {
-        const def = defMap.get(macro.label);
-        const location: Location | null = def ? {
-            uri,
-            range: {
-                start: { line: def.line, character: def.start },
-                end: { line: def.line, character: def.end },
-            },
-        } : null;
-
-        const hasParams = !macro.constant && macro.detail.includes("(");
-        const params = hasParams ? parseMacroParams(macro.detail.match(/\(([^)]+)\)/)?.[1] || "") : undefined;
+    // Extract macros via tree-sitter AST
+    const macros = extractMacros(root);
+    for (const macro of macros) {
+        const location = macro.node ? { uri, range: makeRange(macro.node) } : null;
 
         const macroData: MacroData = {
-            name: macro.label,
-            params,
-            hasParams,
+            name: macro.name,
+            params: macro.params,
+            hasParams: macro.hasParams,
             firstline: macro.firstline,
             multiline: macro.multiline,
             jsdoc: macro.jsdoc,
@@ -278,12 +130,12 @@ export function parseHeaderToSymbols(
         const completionItem = buildMacroCompletion(macroData, uri, displayPath);
 
         const sig = macro.jsdoc && macro.jsdoc.args.length > 0
-            ? buildSignatureFromJSDoc(macro.label, macro.jsdoc, uri)
+            ? buildSignatureFromJSDoc(macro.name, macro.jsdoc, uri)
             : undefined;
 
-        if (hasParams) {
+        if (macro.hasParams) {
             const symbol: CallableSymbol = {
-                name: macro.label,
+                name: macro.name,
                 kind: SymbolKind.Macro,
                 location,
                 scope: { level: ScopeLevel.Workspace },
@@ -295,12 +147,12 @@ export function parseHeaderToSymbols(
                 completion: completionItem,
                 hover: { contents: hoverContents },
                 signature: sig,
-                callable: { parameters: params?.map(p => ({ name: p })) },
+                callable: { parameters: macro.params?.map(p => ({ name: p })) },
             };
             result.push(symbol);
         } else {
             const symbol: ConstantSymbol = {
-                name: macro.label,
+                name: macro.name,
                 kind: SymbolKind.Constant,
                 location,
                 scope: { level: ScopeLevel.Workspace },
@@ -312,7 +164,7 @@ export function parseHeaderToSymbols(
                 completion: completionItem,
                 hover: { contents: hoverContents },
                 signature: sig,
-                constant: { value: macro.firstline },
+                constant: { value: macro.firstline ?? "" },
             };
             result.push(symbol);
         }
@@ -320,4 +172,3 @@ export function parseHeaderToSymbols(
 
     return result;
 }
-

@@ -1,9 +1,9 @@
 /**
- * Unit tests for fallout-ssl/header-parser.ts - regex-based #define and procedure parsing.
+ * Unit tests for fallout-ssl/header-parser.ts - tree-sitter-based #define and procedure parsing.
  * Tests edge cases in macro detection, multiline handling, and JSDoc parsing.
  */
 
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it, beforeAll, vi } from "vitest";
 
 vi.mock("../../src/common", () => ({
     conlog: vi.fn(),
@@ -11,6 +11,7 @@ vi.mock("../../src/common", () => ({
 }));
 
 import { parseHeaderToSymbols } from "../../src/fallout-ssl/header-parser";
+import { initParser } from "../../src/fallout-ssl/parser";
 import { SymbolKind, isCallableSymbol } from "../../src/core/symbol";
 import type { MarkupContent } from "vscode-languageserver/node";
 
@@ -18,10 +19,13 @@ const testUri = "file:///mymod/headers/test.h";
 const workspaceRoot = "/mymod";
 
 describe("parseHeaderToSymbols - edge cases", () => {
+    beforeAll(async () => {
+        await initParser();
+    });
+
     describe("macros with nested parentheses", () => {
         it("parses macro with nested parens in body: #define MACRO(X,Y) call(F(X,Y))", () => {
-            // ALL_UPPER name => isConstantMacro=true => treated as constant
-            // Even though it has params, the constant flag prevents hasParams check
+            // Tree-sitter parses params from the grammar, so MACRO(X,Y) is callable
             const input = `#define MACRO(X,Y) call(F(X,Y))`;
             const symbols = parseHeaderToSymbols(testUri, input, workspaceRoot);
 
@@ -57,10 +61,7 @@ end`;
         });
 
         it("multiline macro without params is still ConstantSymbol", () => {
-            // Even multiline macros without params end up as ConstantSymbol
-            // because hasParams = !constant && detail.includes("(")
-            // For multiline: constant=false (multiline prevents it), but detail has no "("
-            // so hasParams=false => ConstantSymbol
+            // No params in the define signature => hasParams=false => ConstantSymbol
             const input = `#define SETUP_STUFF begin \\
     set_global(1); \\
 end`;
@@ -88,8 +89,7 @@ end`;
 
     describe("empty macro body", () => {
         it("parses #define EMPTY with no body after name", () => {
-            // The regex requires at least one char after the name: [ \t]+(.+)
-            // So #define EMPTY with nothing after it won't match
+            // Tree-sitter grammar requires a body node for defines
             const input = `#define SOMETHING 1\n#define HAS_BODY (0)`;
             const symbols = parseHeaderToSymbols(testUri, input, workspaceRoot);
 
@@ -100,16 +100,16 @@ end`;
     });
 
     describe("macro with no space before parenthesis", () => {
-        it("parses #define FUNC(X) body -- uppercase with params is constant (no hasParams because isConstantMacro)", () => {
-            // When name is ALL_UPPER, isConstantMacro returns true, so params are ignored
-            // and the macro becomes a ConstantSymbol even though it has (X)
+        it("parses #define FUNC(X) body -- uppercase with params is callable macro", () => {
+            // Tree-sitter correctly identifies FUNC(X) as having params,
+            // so it becomes a CallableSymbol regardless of naming convention
             const input = `#define FUNC(X) do_something(X)`;
             const symbols = parseHeaderToSymbols(testUri, input, workspaceRoot);
 
             expect(symbols).toHaveLength(1);
             expect(symbols[0]!.name).toBe("FUNC");
-            // FUNC is ALL_UPPER => isConstantMacro = true => constant, not callable
-            expect(symbols[0]!.kind).toBe(SymbolKind.Constant);
+            expect(symbols[0]!.kind).toBe(SymbolKind.Macro);
+            expect(isCallableSymbol(symbols[0]!)).toBe(true);
         });
 
         it("parses #define func(X) body -- lowercase with params is callable", () => {
@@ -134,9 +134,6 @@ end`;
 
         it("treats lowercase macros without params as constant too", () => {
             // Without params, both uppercase and lowercase macros become ConstantSymbol
-            // The hasParams check is: !macro.constant && macro.detail.includes("(")
-            // For lowercase without params: constant=false, detail has no "(", so hasParams=false
-            // which means the else branch runs and creates ConstantSymbol
             const input = `#define get_value do_stuff`;
             const symbols = parseHeaderToSymbols(testUri, input, workspaceRoot);
 
