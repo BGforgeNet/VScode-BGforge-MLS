@@ -30,7 +30,7 @@ import { renameSymbol, prepareRenameSymbol } from "./rename";
 import { getLocalSignature } from "./signature";
 import { parseHeaderToSymbols } from "./header-parser";
 import { getLocalSymbols, lookupLocalSymbol, clearLocalSymbolsCache } from "./local-symbols";
-import { getSslCompletionContext, SslCompletionContext } from "./completion-context";
+import { getSslCompletionContext, SslCompletionContext, isSslDeclarationSite } from "./completion-context";
 
 /** SSL block-level node types for code folding. */
 const SSL_FOLDABLE_TYPES = new Set([
@@ -112,6 +112,12 @@ class FalloutSslProvider implements LanguageProvider {
         }
 
         if (triggerCharacter === "@") {
+            return [];
+        }
+
+        // At declaration sites (e.g. procedure <name>, variable <name>, #define <name>),
+        // the user is naming a new symbol — completions are not useful.
+        if (isSslDeclarationSite(text, position)) {
             return [];
         }
 

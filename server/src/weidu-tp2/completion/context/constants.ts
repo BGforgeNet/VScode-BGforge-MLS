@@ -105,3 +105,35 @@ export const COMPONENT_FLAG_KEYWORDS = new Set([
 
 /** LAF/LPF/LAM/LPM keywords that indicate function/macro name position. */
 export const FUNC_CALL_KEYWORDS = /^\s*(LAF|LPF|LAM|LPM|LAUNCH_ACTION_FUNCTION|LAUNCH_PATCH_FUNCTION|LAUNCH_ACTION_MACRO|LAUNCH_PATCH_MACRO)\s+\S*$/i;
+
+/**
+ * Declaration keywords where the identifier after the keyword is a new name being declared.
+ * Matches when the line (up to cursor) ends with an unfinished identifier — the declaration name.
+ * Used to suppress completions at declaration sites where the user is naming a new symbol.
+ *
+ * Why regex instead of tree-sitter AST:
+ * At declaration sites the user is mid-typing a new identifier (e.g. `OUTER_SET fo|`).
+ * Tree-sitter cannot produce a valid declaration node for incomplete input — the grammar
+ * requires both a name and a value (`OUTER_SET name = expr`), so partial input lands in
+ * an ERROR node. An earlier attempt modified the grammar to make parts optional, but this
+ * introduced unresolvable ambiguities (e.g. optional `BEGIN...END` on function definitions
+ * conflicted with the `component` rule). This is a known tree-sitter limitation —
+ * error recovery does not produce typed incomplete nodes, only ERROR nodes with no
+ * reliable structure to match against (see https://github.com/tree-sitter/tree-sitter/issues/923).
+ * Line-text regex is the fallback convention used throughout this codebase for similar
+ * incomplete-input scenarios (see FUNC_CALL_KEYWORDS above).
+ * See also: SSL_DECLARATION_SITE_PATTERN in fallout-ssl/completion-context.ts.
+ */
+export const DECLARATION_SITE_PATTERN = new RegExp(
+    "^\\s*(" +
+    // Variable SET/SPRINT declarations with optional EVAL/EVALUATE_BUFFER/GLOBAL modifier
+    "(?:OUTER_)?(?:SET|SPRINT|TEXT_SPRINT)\\s+(?:(?:EVAL(?:UATE_BUFFER)?|GLOBAL)\\s+)?|" +
+    // Function/macro definitions
+    "DEFINE_(?:ACTION|PATCH)_(?:FUNCTION|MACRO)\\s+|" +
+    // Array definitions
+    "(?:ACTION_)?DEFINE_(?:ASSOCIATIVE_)?ARRAY\\s+|" +
+    // Loop variable bindings
+    "(?:PATCH_|ACTION_)?(?:FOR_EACH|PHP_EACH)\\s+" +
+    ")\\S*$",
+    "i"
+);

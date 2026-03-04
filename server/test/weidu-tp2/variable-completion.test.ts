@@ -192,9 +192,11 @@ END
 OUTER_SET x = 1
 OUTER_SET x = 2
 OUTER_SET x = 3
+COPY ~a~ ~b~
 `;
         const uri = "file:///test.tp2";
-        const position: Position = { line: 3, character: 10 };
+        // Position on a non-declaration line where completions should fire
+        const position: Position = { line: 4, character: 5 };
 
         const allItems = weiduTp2Provider.getCompletions?.(uri) ?? [];
         const filteredItems = weiduTp2Provider.filterCompletions?.(allItems, text, position, uri) ?? [];

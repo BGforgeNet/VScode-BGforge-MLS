@@ -19,7 +19,7 @@ import { getFormatOptions } from "../shared/format-options";
 import { stripCommentsWeidu } from "../shared/format-utils";
 import { resolveSymbolWithLocal, formatWithValidation } from "../shared/provider-helpers";
 import { compile as weiduCompile } from "../weidu-compile";
-import { getContextAtPosition, getFuncParamsContext } from "./completion/context";
+import { getContextAtPosition, getFuncParamsContext, isAtDeclarationSite } from "./completion/context";
 import { filterItemsByContext } from "./completion/filter";
 import { getParamCompletions } from "./completion/parameter";
 import { CompletionCategory, CompletionContext, type Tp2CompletionItem } from "./completion/types";
@@ -206,6 +206,12 @@ class WeiduTp2Provider implements LanguageProvider {
         }
 
         if (triggerCharacter === "@") {
+            return [];
+        }
+
+        // At declaration sites (e.g. DEFINE_PATCH_FUNCTION <name>, OUTER_SET <name>),
+        // the user is naming a new symbol — completions are not useful.
+        if (isAtDeclarationSite(text, position)) {
             return [];
         }
 

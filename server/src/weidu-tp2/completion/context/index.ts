@@ -7,15 +7,26 @@
  * function/macro calls that tree-sitter cannot parse.
  */
 
+import type { Position } from "vscode-languageserver/node";
 import { SyntaxType } from "../../tree-sitter.d";
 import { getUtf8ByteOffset } from "../../../shared/completion-context";
+import { getLinePrefix } from "../../../common";
 import { getParser, isInitialized } from "../../parser";
 import { CompletionContext } from "../types";
-import { FUNC_CALL_KEYWORDS } from "./constants";
+import { DECLARATION_SITE_PATTERN, FUNC_CALL_KEYWORDS } from "./constants";
 import { getDefaultContext } from "./position";
 import { detectContextFromNode } from "./detectors";
 
 export { getFuncParamsContext } from "./function-call";
+
+/**
+ * Check if the cursor is at a declaration site where the user is naming a new symbol.
+ * Returns true when the line text up to the cursor matches a declaration keyword
+ * followed by an unfinished identifier (the name being declared).
+ */
+export function isAtDeclarationSite(text: string, position: Position): boolean {
+    return DECLARATION_SITE_PATTERN.test(getLinePrefix(text, position));
+}
 
 /**
  * Text-based fallback for detecting lafName/lpfName/lamName/lpmName context.

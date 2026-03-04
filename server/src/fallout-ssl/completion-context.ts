@@ -4,6 +4,7 @@
  */
 
 import type { Position } from "vscode-languageserver/node";
+import { getLinePrefix } from "../common";
 import { isInitialized, parseWithCache } from "./parser";
 
 /** SSL completion context for filterCompletions. */
@@ -56,4 +57,29 @@ export function getSslCompletionContext(text: string, position: Position): SslCo
     }
 
     return SslCompletionContext.Code;
+}
+
+/**
+ * Pattern matching SSL declaration sites where the user is naming a new symbol.
+ * Matches: procedure <name>, variable <name>, export variable <name>, #define <name>
+ *
+ * Why regex instead of tree-sitter AST:
+ * At declaration sites the user is mid-typing a new identifier (e.g. `procedure fo|`).
+ * Tree-sitter cannot produce a valid declaration node for incomplete input — the grammar
+ * requires a complete construct, so partial input lands in an ERROR node with no reliable
+ * node type to match against. This is a known tree-sitter limitation — error recovery
+ * does not produce typed incomplete nodes, only ERROR nodes
+ * (see https://github.com/tree-sitter/tree-sitter/issues/923).
+ * Line-text regex is the fallback convention used throughout this codebase for similar
+ * incomplete-input scenarios.
+ * See also: DECLARATION_SITE_PATTERN in weidu-tp2/completion/context/constants.ts.
+ */
+const SSL_DECLARATION_SITE_PATTERN = /^\s*(?:export\s+)?(?:variable|procedure)\s+\S*$|^\s*#define\s+\S*$/i;
+
+/**
+ * Check if the cursor is at an SSL declaration site where completions should be suppressed.
+ * The user is typing a new name, not referencing an existing symbol.
+ */
+export function isSslDeclarationSite(text: string, position: Position): boolean {
+    return SSL_DECLARATION_SITE_PATTERN.test(getLinePrefix(text, position));
 }

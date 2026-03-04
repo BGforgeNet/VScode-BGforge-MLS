@@ -46,9 +46,11 @@ describe("weidu-tp2: local completion merge", () => {
  * @type {int}
  */
 OUTER_SET my_documented_var = 42
+COPY ~a~ ~b~
 `;
         const uri = "file:///test.tp2";
-        const position: Position = { line: 5, character: 20 };
+        // Position on a non-declaration line where completions should fire
+        const position: Position = { line: 7, character: 5 };
 
         const allItems = weiduTp2Provider.getCompletions?.(uri) ?? [];
         const filteredItems = weiduTp2Provider.filterCompletions?.(allItems, text, position, uri) ?? [];
@@ -116,9 +118,11 @@ END
         const text = `
 OUTER_SET dedup_test_var = 1
 OUTER_SET another_var = 2
+COPY ~a~ ~b~
 `;
         const uri = "file:///test.tp2";
-        const position: Position = { line: 2, character: 10 };
+        // Position on a non-declaration line where completions should fire
+        const position: Position = { line: 3, character: 5 };
 
         const allItems = weiduTp2Provider.getCompletions?.(uri) ?? [];
         const filteredItems = weiduTp2Provider.filterCompletions?.(allItems, text, position, uri) ?? [];
