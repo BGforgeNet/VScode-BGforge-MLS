@@ -10,20 +10,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Install xvfb (release only)
         if: startsWith(github.ref, 'refs/tags/')
         run: sudo apt-get install -y xvfb
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v3
+        uses: pnpm/action-setup@v4
         with:
           version: 8
           run_install: false
 
       - name: Install Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 22
           cache: pnpm
@@ -51,7 +51,7 @@ jobs:
           echo "VSIX_PATH=$(ls *.vsix)" >> "$GITHUB_ENV"
 
       - name: Upload build
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: "!startsWith(github.ref, 'refs/tags/')"
         with:
           name: bgforge-mls
@@ -61,7 +61,7 @@ jobs:
       # dereferences pnpm symlinks that vsce can't follow.
       - name: Publish to Open VSX Registry
         if: "startsWith(github.ref, 'refs/tags/')"
-        uses: HaaLeo/publish-vscode-extension@v1
+        uses: HaaLeo/publish-vscode-extension@v2
         id: publishToOpenVSX
         with:
           pat: ${{ secrets.OPEN_VSX_TOKEN }}
@@ -69,7 +69,7 @@ jobs:
 
       - name: Publish to Visual Studio Marketplace
         if: "startsWith(github.ref, 'refs/tags/')"
-        uses: HaaLeo/publish-vscode-extension@v1
+        uses: HaaLeo/publish-vscode-extension@v2
         with:
           pat: ${{ secrets.VS_MARKETPLACE_TOKEN }}
           registryUrl: https://marketplace.visualstudio.com
@@ -77,7 +77,7 @@ jobs:
 
       - name: GitHub Release
         if: "startsWith(github.ref, 'refs/tags/')"
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           name: ${{ github.ref_name }}
           fail_on_unmatched_files: true
