@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 3.0.0
 
 Fallout SSL
 
@@ -32,14 +32,14 @@ WeiDU D
 Transpilers
 
 - 2 new transpilers added: TSSL and TD.
-- TBAF (and TD) now support enums.
+- TBAF (and TD) now support enums and point tuples.
 - TD has a builtin D-like runtime.
 
 General
 
 - Refactored tooltip formatting (unified look across providers).
 - SSL, D, TSSL and TD receive Dialog Preview feature.
-- Added a binary viewer. Currenly supports only Fallout .pro files.
+- Added a binary viewer. Currently supports only Fallout .pro files.
 - In all languages with translations, using go to definition on a tra/msg reference jumps to that reference.
 - Added completion for tags in JSdoc.
 - File icons for .slb, .2da, scripts.lst, worldmap.txt
