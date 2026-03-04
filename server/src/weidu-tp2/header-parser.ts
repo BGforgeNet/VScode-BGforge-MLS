@@ -76,6 +76,11 @@ const VARIABLE_TYPES = new Set([
     SyntaxType.PatchTextSprint,
     SyntaxType.PatchAssignment,
     SyntaxType.TopLevelAssignment,
+    SyntaxType.PatchReadByte,
+    SyntaxType.PatchReadShort,
+    SyntaxType.PatchReadLong,
+    SyntaxType.PatchReadAscii,
+    SyntaxType.PatchReadStrref,
 ]);
 
 /** Node types for parameter declarations (mapping from node type to parameter category). */
@@ -239,6 +244,14 @@ function extractVariableInfo(node: SyntaxNode, uri: string): VariableInfo | null
             declarationKind = DeclarationKind.TextSprint;
             inferredType = "string";
             break;
+        case SyntaxType.PatchReadAscii:
+        case SyntaxType.PatchReadStrref:
+            declarationKind = DeclarationKind.Sprint;
+            inferredType = "string";
+            break;
+        case SyntaxType.PatchReadByte:
+        case SyntaxType.PatchReadShort:
+        case SyntaxType.PatchReadLong:
         default:
             declarationKind = DeclarationKind.Set;
             inferredType = "int";

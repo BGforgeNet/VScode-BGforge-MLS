@@ -6,7 +6,7 @@
  * User-defined functions and variables from .tph headers are handled by header-parser.
  */
 
-import { type CompletionItem, type DocumentSymbol, type FoldingRange, type Location, type Position, type WorkspaceEdit, InsertTextFormat } from "vscode-languageserver/node";
+import { type CompletionItem, CompletionItemKind, type DocumentSymbol, type FoldingRange, type Location, type Position, type WorkspaceEdit, InsertTextFormat } from "vscode-languageserver/node";
 import { extname } from "path";
 import { fileURLToPath } from "url";
 import { conlog, getLinePrefix } from "../common";
@@ -154,6 +154,44 @@ function getSnippetPrefix(
     return undefined;
 }
 
+/**
+ * Collect local variable/symbol completions from both file-scope and deep-scope sources.
+ * Deduplicates by name (first occurrence wins, preserving rich hover from file-scope).
+ *
+ * @param variablesOnly When true, only include Variable-kind items from file-scope symbols
+ *   (excludes functions/macros). Deep-scope items are always variables.
+ * @param excludeWord Word to exclude from results (prevents self-referencing completion
+ *   when tree-sitter parses an incomplete declaration).
+ */
+function collectLocalCompletions(
+    text: string,
+    uri: string,
+    options?: { variablesOnly?: boolean; excludeWord?: string }
+): Tp2CompletionItem[] {
+    const { variablesOnly = false, excludeWord } = options ?? {};
+    const seen = new Set<string>();
+    const result: Tp2CompletionItem[] = [];
+
+    for (const s of extractLocalSymbols(text, uri)) {
+        if (seen.has(s.name)) continue;
+        if (excludeWord && s.name === excludeWord) continue;
+        if (variablesOnly && s.completion.kind !== CompletionItemKind.Variable) continue;
+        seen.add(s.name);
+        result.push(s.completion);
+    }
+
+    // Deep-scoped variables (inside function bodies, loops) not covered by file-scope
+    for (const v of localCompletion(text)) {
+        const label = v.label as string;
+        if (seen.has(label)) continue;
+        if (excludeWord && label === excludeWord) continue;
+        seen.add(label);
+        result.push(v);
+    }
+
+    return result;
+}
+
 /** JSDoc completion items with TP2 category metadata. */
 function getJsdocCompletions(linePrefix: string): Tp2CompletionItem[] {
     return getSharedJsdocCompletions(WEIDU_JSDOC_TYPES, linePrefix)
@@ -209,33 +247,24 @@ class WeiduTp2Provider implements LanguageProvider {
             return [];
         }
 
-        // At declaration sites (e.g. DEFINE_PATCH_FUNCTION <name>, OUTER_SET <name>),
-        // the user is naming a new symbol — completions are not useful.
-        if (isAtDeclarationSite(text, position)) {
+        // At declaration sites, the user is naming a new symbol.
+        // "definition" (function/macro/array/loop): suppress all completions.
+        // "assignment" (SET/SPRINT): show only local variable completions
+        // (user may be reassigning an existing variable).
+        // TODO: Filter by DeclarationKind - show only integer vars after SET, string vars after SPRINT.
+        const declSite = isAtDeclarationSite(text, position);
+        if (declSite === "definition") {
             return [];
         }
-
-        // Merge local symbols: getLocalSymbols provides file-scope variables + functions
-        // with rich hover data, localCompletion provides deeply-scoped variables
-        // (inside function bodies, loops) that getLocalSymbols skips.
-        // Deduplicate by name — first occurrence wins (preserves rich hover data).
-        const seen = new Set<string>();
-        const localCompletions: Tp2CompletionItem[] = [];
-
-        for (const s of extractLocalSymbols(text, uri)) {
-            if (!seen.has(s.name)) {
-                seen.add(s.name);
-                localCompletions.push(s.completion);
-            }
+        if (declSite === "assignment") {
+            // Exclude the word currently being typed to prevent self-referencing
+            // completion (e.g. typing `SET fo` would otherwise offer `fo` because
+            // tree-sitter parses the incomplete declaration and extracts the partial name).
+            const currentWord = getLinePrefix(text, position).match(/(\S+)$/)?.[1] ?? "";
+            return collectLocalCompletions(text, uri, { variablesOnly: true, excludeWord: currentWord });
         }
 
-        // Deep-scoped variables not already covered by file-scope symbols
-        for (const v of localCompletion(text)) {
-            if (!seen.has(v.label as string)) {
-                seen.add(v.label as string);
-                localCompletions.push(v);
-            }
-        }
+        const localCompletions = collectLocalCompletions(text, uri);
 
         const baseItems: Tp2CompletionItem[] = [...items, ...localCompletions];
         const withParams = addParamCompletions(baseItems, contexts, this.symbolStore);

@@ -107,9 +107,10 @@ export const COMPONENT_FLAG_KEYWORDS = new Set([
 export const FUNC_CALL_KEYWORDS = /^\s*(LAF|LPF|LAM|LPM|LAUNCH_ACTION_FUNCTION|LAUNCH_PATCH_FUNCTION|LAUNCH_ACTION_MACRO|LAUNCH_PATCH_MACRO)\s+\S*$/i;
 
 /**
- * Declaration keywords where the identifier after the keyword is a new name being declared.
- * Matches when the line (up to cursor) ends with an unfinished identifier — the declaration name.
- * Used to suppress completions at declaration sites where the user is naming a new symbol.
+ * Declaration site patterns: detect when the cursor is on a new symbol name being declared.
+ * Split into two categories to enable different completion behavior:
+ * - "assignment": variable SET/SPRINT - show local variable completions (for reassignment)
+ * - "definition": function/macro/array/loop - suppress all completions (new unique name)
  *
  * Why regex instead of tree-sitter AST:
  * At declaration sites the user is mid-typing a new identifier (e.g. `OUTER_SET fo|`).
@@ -124,10 +125,16 @@ export const FUNC_CALL_KEYWORDS = /^\s*(LAF|LPF|LAM|LPM|LAUNCH_ACTION_FUNCTION|L
  * incomplete-input scenarios (see FUNC_CALL_KEYWORDS above).
  * See also: SSL_DECLARATION_SITE_PATTERN in fallout-ssl/completion-context.ts.
  */
-export const DECLARATION_SITE_PATTERN = new RegExp(
+
+/** Variable assignment keywords (SET/SPRINT) with optional EVAL/EVALUATE_BUFFER/GLOBAL modifier. */
+export const ASSIGNMENT_SITE_PATTERN = new RegExp(
+    "^\\s*(?:OUTER_)?(?:SET|SPRINT|TEXT_SPRINT)\\s+(?:(?:EVAL(?:UATE_BUFFER)?|GLOBAL)\\s+)?\\S*$",
+    "i"
+);
+
+/** Definition keywords (function/macro/array/loop) where a new unique name is being declared. */
+export const DEFINITION_SITE_PATTERN = new RegExp(
     "^\\s*(" +
-    // Variable SET/SPRINT declarations with optional EVAL/EVALUATE_BUFFER/GLOBAL modifier
-    "(?:OUTER_)?(?:SET|SPRINT|TEXT_SPRINT)\\s+(?:(?:EVAL(?:UATE_BUFFER)?|GLOBAL)\\s+)?|" +
     // Function/macro definitions
     "DEFINE_(?:ACTION|PATCH)_(?:FUNCTION|MACRO)\\s+|" +
     // Array definitions

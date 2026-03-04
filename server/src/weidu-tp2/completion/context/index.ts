@@ -13,19 +13,34 @@ import { getUtf8ByteOffset } from "../../../shared/completion-context";
 import { getLinePrefix } from "../../../common";
 import { getParser, isInitialized } from "../../parser";
 import { CompletionContext } from "../types";
-import { DECLARATION_SITE_PATTERN, FUNC_CALL_KEYWORDS } from "./constants";
+import { ASSIGNMENT_SITE_PATTERN, DEFINITION_SITE_PATTERN, FUNC_CALL_KEYWORDS } from "./constants";
 import { getDefaultContext } from "./position";
 import { detectContextFromNode } from "./detectors";
 
 export { getFuncParamsContext } from "./function-call";
 
 /**
- * Check if the cursor is at a declaration site where the user is naming a new symbol.
- * Returns true when the line text up to the cursor matches a declaration keyword
- * followed by an unfinished identifier (the name being declared).
+ * Result of declaration site detection.
+ * - "assignment": cursor is on a variable name after SET/SPRINT - show local variable completions
+ * - "definition": cursor is on a name after DEFINE_* / FOR_EACH / etc - suppress all completions
+ * - false: not a declaration site - normal completions
  */
-export function isAtDeclarationSite(text: string, position: Position): boolean {
-    return DECLARATION_SITE_PATTERN.test(getLinePrefix(text, position));
+export type DeclarationSiteResult = "assignment" | "definition" | false;
+
+/**
+ * Check if the cursor is at a declaration site where the user is naming a new symbol.
+ * Returns "assignment" for variable SET/SPRINT sites, "definition" for function/macro/array/loop
+ * definition sites, or false if not at a declaration site.
+ */
+export function isAtDeclarationSite(text: string, position: Position): DeclarationSiteResult {
+    const prefix = getLinePrefix(text, position);
+    if (ASSIGNMENT_SITE_PATTERN.test(prefix)) {
+        return "assignment";
+    }
+    if (DEFINITION_SITE_PATTERN.test(prefix)) {
+        return "definition";
+    }
+    return false;
 }
 
 /**
