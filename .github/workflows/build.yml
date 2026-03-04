@@ -44,29 +44,28 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         run: pnpm test:e2e
 
-      - name: Package nightly build
-        if: "!startsWith(github.ref, 'refs/tags/')"
+      - name: Package
         run: |
           pnpm i --global @vscode/vsce
           pnpm package
+          echo "VSIX_PATH=$(ls *.vsix)" >> "$GITHUB_ENV"
 
-      - name: Upload nightly build
+      - name: Upload build
         uses: actions/upload-artifact@v4
         if: "!startsWith(github.ref, 'refs/tags/')"
         with:
           name: bgforge-mls
           path: "*.vsix"
 
+      # Use pre-built VSIX for publishing: pnpm package (scripts/package.sh)
+      # dereferences pnpm symlinks that vsce can't follow.
       - name: Publish to Open VSX Registry
         if: "startsWith(github.ref, 'refs/tags/')"
         uses: HaaLeo/publish-vscode-extension@v1
         id: publishToOpenVSX
         with:
           pat: ${{ secrets.OPEN_VSX_TOKEN }}
-          # don't need deps, we bundle
-          # see https://github.com/microsoft/vscode-vsce/issues/421
-          # and https://github.com/HaaLeo/publish-vscode-extension/issues/36
-          dependencies: false
+          extensionFile: ${{ env.VSIX_PATH }}
 
       - name: Publish to Visual Studio Marketplace
         if: "startsWith(github.ref, 'refs/tags/')"
@@ -75,7 +74,6 @@ jobs:
           pat: ${{ secrets.VS_MARKETPLACE_TOKEN }}
           registryUrl: https://marketplace.visualstudio.com
           extensionFile: ${{ steps.publishToOpenVSX.outputs.vsixPath }}
-          dependencies: false
 
       - name: GitHub Release
         if: "startsWith(github.ref, 'refs/tags/')"
