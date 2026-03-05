@@ -1,9 +1,9 @@
 # Architecture
 
-See also: [development.md](../development.md) | [server/README.md](../server/README.md) | [scripts/README.md](../scripts/README.md)
+See also: [development.md](../development.md) | [server/ARCHITECTURE.md](../server/ARCHITECTURE.md) | [scripts/README.md](../scripts/README.md)
 
 High-level architecture of the BGforge MLS extension. For server-specific details
-(provider registry, symbol system, data flow), see [server/README.md](../server/README.md).
+(provider registry, symbol system, data flow), see [server/ARCHITECTURE.md](../server/ARCHITECTURE.md).
 
 ## Table of Contents
 
@@ -90,7 +90,7 @@ vscode-mls/
 |   |   +-- test/                   E2E tests (mocha + vscode test runner)
 |   +-- out/                    esbuild output
 |
-+-- server/                 LSP server (see server/README.md for details)
++-- server/                 LSP server (see server/ARCHITECTURE.md for details)
 |   +-- src/
 |   |   +-- server.ts               LSP entry point, request handlers
 |   |   +-- provider-registry.ts    Routes requests to language providers
@@ -234,7 +234,7 @@ Two webview-based features, each with a host-side and browser-side module:
 
 ## Server Architecture
 
-See [server/README.md](../server/README.md) for comprehensive documentation covering:
+See [server/ARCHITECTURE.md](../server/ARCHITECTURE.md) for comprehensive documentation covering:
 
 - Provider registry pattern and request routing
 - Symbol system (IndexedSymbol, scope hierarchy, pre-computed responses)

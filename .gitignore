@@ -1,4 +1,5 @@
 *.log
+*.tgz
 *.vsix
 .reports/
 .vscode-test/

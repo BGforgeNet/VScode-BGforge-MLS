@@ -49,8 +49,10 @@ import { weiduTp2Provider } from "./weidu-tp2/provider";
 import { initLspConnection } from "./lsp-connection";
 import { initSettingsService } from "./settings-service";
 
-// Create a connection for the server. The connection uses Node's IPC as a transport.
-// Also include all preview / proposed LSP features.
+// Create a connection for the server.
+// createConnection() auto-detects transport from process.argv:
+// --stdio, --node-ipc, --pipe, or --socket=N. Defaults to IPC when
+// launched by VSCode, stdio when launched standalone.
 const connection = createConnection(ProposedFeatures.all);
 
 // Create a simple text document manager. The text document manager

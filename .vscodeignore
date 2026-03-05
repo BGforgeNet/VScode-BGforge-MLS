@@ -25,6 +25,7 @@ pnpm-workspace.yaml
 
 # Build artifacts and logs
 *.vsix
+*.tgz
 *.log
 **/*.map
 

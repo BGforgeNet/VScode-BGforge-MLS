@@ -1,13 +1,20 @@
 {
-    "name": "bgforge-mls-server",
-    "description": "BGforge multilanguage server",
+    "name": "@bgforge/mls-server",
+    "description": "LSP server for Fallout SSL, WeiDU (BAF/D/TP2), and related modding languages",
     "version": "3.0.0",
     "author": "BGforge",
     "license": "SEE LICENSE IN LICENSE.txt",
-    "main": "src/server.ts",
+    "main": "out/server.js",
+    "bin": {
+        "bgforge-mls-server": "out/server.js"
+    },
+    "files": [
+        "out/",
+        "!out/*.map",
+        "LICENSE.txt"
+    ],
     "engines": {
-        "vscode": "^1.69.2",
-        "node": "*"
+        "node": ">=18"
     },
     "scripts": {
         "test": "./scripts/test.sh",
@@ -15,8 +22,20 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/BGforgeNet/VScode-BGforge-MLS/server"
+        "url": "https://github.com/BGforgeNet/VScode-BGforge-MLS"
     },
+    "homepage": "https://github.com/BGforgeNet/VScode-BGforge-MLS",
+    "bugs": {
+        "url": "https://github.com/BGforgeNet/VScode-BGforge-MLS/issues"
+    },
+    "keywords": [
+        "lsp",
+        "language-server",
+        "fallout",
+        "weidu",
+        "infinity-engine",
+        "modding"
+    ],
     "dependencies": {
         "@supercharge/promise-pool": "^2.4.0",
         "esbuild-wasm": "^0.24.2",

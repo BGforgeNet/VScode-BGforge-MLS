@@ -452,6 +452,7 @@
         "test:format-samples": "./scripts/test-format-samples.sh",
         "test:cli": "vitest run --config cli/vitest.config.ts",
         "test:bin": "./scripts/test-bin.sh",
+        "test:server:smoke": "cd server && pnpm exec vitest run test/smoke-stdio.test.ts",
         "test:e2e": "./scripts/test-e2e.sh",
         "test:coverage": "cd server && vitest run --coverage",
         "package": "./scripts/package.sh",
@@ -469,7 +470,8 @@
         "lint:scripts": "./scripts/lint-scripts.sh",
         "lint:shell": "./scripts/lint-shell.sh",
         "knip": "knip",
-        "knip:prod": "knip --production --workspace server --include files"
+        "knip:prod": "knip --production --workspace server --include files",
+        "publish:server": "./scripts/publish-server.sh"
     },
     "devDependencies": {
         "@types/mocha": "^10.0.10",

@@ -7,9 +7,12 @@ set -e
 # web-tree-sitter needs import.meta.url to resolve WASM file paths,
 # but esbuild's CJS output shims import.meta as an empty object.
 # --banner + --define works reliably with --minify (unlike the old sed approach).
+# Shebang is for npm bin entry; harmless when VSCode spawns via node
+# (Node treats #! as a comment in CJS modules).
 esbuild ./server/src/server.ts --bundle --outfile=server/out/server.js \
   --external:vscode --external:esbuild-wasm --format=cjs --platform=node \
-  --banner:js='var __imu=require("url").pathToFileURL(__filename).href;' \
+  --banner:js='#!/usr/bin/env node
+var __imu=require("url").pathToFileURL(__filename).href;' \
   --define:import.meta.url=__imu \
   "$@"
 
