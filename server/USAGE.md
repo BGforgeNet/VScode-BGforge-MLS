@@ -8,6 +8,6 @@ Detailed setup guides for each editor:
 - [Sublime Text](../docs/editors/sublime-text.md) — LSP, TextMate highlighting, settings
 - [JetBrains](../docs/editors/jetbrains.md) — LSP4IJ, TextMate highlighting, settings
 - [Zed](../docs/editors/zed.md) — extension, file types, settings
-- [Kate](../docs/editors/kate.md) — built-in LSP, file types, settings
+- [Kate](../docs/editors/kate.md) — built-in LSP, KSyntaxHighlighting, settings
 - [Notepad++](../docs/editors/notepadpp.md) — NppLspClient, UDL highlighting, settings
 - [TypeScript Plugins](../docs/editors/typescript-plugins.md) — TSSL/TD plugin setup for any editor

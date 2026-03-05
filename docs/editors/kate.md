@@ -10,19 +10,17 @@ npm install -g @bgforge/mls-server
 
 Requires Kate 25.08+ for settings support. Older versions (21.12+) provide basic LSP features but cannot pass settings to the server.
 
-## File Type Detection
+## Syntax Highlighting
 
-Go to `Settings > Configure Kate > Open/Save > Modes & Filetypes` and add entries:
+Download `bgforge-mls-kate-ksh-<version>.zip` from the [latest GitHub release](https://github.com/BGforgeNet/VScode-BGforge-MLS/releases) and extract the `.xml` files to:
 
-| Name | File extensions |
-|------|-----------------|
-| SSL | `*.ssl` |
-| BAF | `*.baf` |
-| WeiDU-D | `*.d` |
-| WeiDU-TP2 | `*.tp2;*.tpa;*.tph;*.tpp` |
-| Fallout-Worldmap | `worldmap.txt` |
+- **Linux**: `~/.local/share/org.kde.syntax-highlighting/syntax/`
+- **Windows**: `%USERPROFILE%\AppData\Local\org.kde.syntax-highlighting\syntax\`
+- **macOS**: `~/Library/Application Support/org.kde.syntax-highlighting/syntax/`
 
-Note: `.h` files default to C/C++ in Kate. Use `Tools > Highlighting > SSL` manually for Fallout header files.
+Restart Kate after installing. The definitions provide keyword, function, and constant highlighting plus code folding.
+
+Note: `.h` files default to C/C++ in Kate. Use `Tools > Highlighting > Fallout SSL` manually for Fallout header files.
 
 ## Language Server
 
@@ -35,13 +33,13 @@ Add a server in `Settings > Configure Kate > LSP Client > User Server Settings`:
   "servers": {
     "ssl": {
       "command": ["bgforge-mls-server", "--stdio"],
-      "highlightingModeRegex": "^(SSL|BAF|WeiDU-D|WeiDU-TP2|Fallout-Worldmap)$"
+      "highlightingModeRegex": "^(Fallout SSL|WeiDU BAF|WeiDU D|WeiDU TP2|Fallout-Worldmap)$"
     }
   }
 }
 ```
 
-The `highlightingModeRegex` must match the mode names from the File Type Detection section above.
+The `highlightingModeRegex` must match the language names from the installed KSyntaxHighlighting definitions. `Fallout-Worldmap` needs a manual mode entry in `Settings > Configure Kate > Open/Save > Modes & Filetypes` since no KSH definition is provided for it (it's a simple key-value format).
 
 ## TypeScript Plugins (TSSL/TD)
 
@@ -56,7 +54,7 @@ Kate sends settings via `workspace/configuration` (requires Kate 25.08+). Add to
   "servers": {
     "ssl": {
       "command": ["bgforge-mls-server", "--stdio"],
-      "highlightingModeRegex": "^(SSL|BAF|WeiDU-D|WeiDU-TP2|Fallout-Worldmap)$",
+      "highlightingModeRegex": "^(Fallout SSL|WeiDU BAF|WeiDU D|WeiDU TP2|Fallout-Worldmap)$",
       "settings": {
         "bgforge": {
           "validateOnSave": true,

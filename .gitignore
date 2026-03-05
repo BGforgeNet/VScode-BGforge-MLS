@@ -2,8 +2,9 @@
 *.tgz
 *.vsix
 *.tmbundle
-*.tmbundle.zip
+*.zip
 bgforge-mls-notepadpp-udl*/
+bgforge-mls-kate-ksh*/
 .reports/
 .vscode-test/
 

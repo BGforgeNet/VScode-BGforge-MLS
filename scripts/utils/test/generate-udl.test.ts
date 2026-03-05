@@ -10,6 +10,7 @@ import { generateUdlXml } from "../src/generate-udl.js";
 
 const SSL_LANG = {
     name: "test-ssl",
+    displayName: "Test SSL",
     ext: "ssl h",
     yamlFiles: ["server/data/fallout-ssl-base.yml"],
     caseIgnored: false,
@@ -19,6 +20,7 @@ const SSL_LANG = {
 
 const BAF_LANG = {
     name: "test-baf",
+    displayName: "Test BAF",
     ext: "baf",
     yamlFiles: ["server/data/weidu-baf-base.yml"],
     caseIgnored: true,

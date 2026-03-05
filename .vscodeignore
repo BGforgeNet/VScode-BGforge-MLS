@@ -29,8 +29,9 @@ pnpm-workspace.yaml
 *.log
 **/*.map
 *.tmbundle
-*.tmbundle.zip
+*.zip
 bgforge-mls-notepadpp-udl*/
+bgforge-mls-kate-ksh*/
 
 # Dev-only directories
 cli/

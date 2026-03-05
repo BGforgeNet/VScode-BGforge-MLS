@@ -56,6 +56,9 @@ jobs:
       - name: Build Notepad++ UDL files
         run: pnpm build:udl
 
+      - name: Build Kate KSyntaxHighlighting files
+        run: pnpm build:ksh
+
       - name: Upload build
         uses: actions/upload-artifact@v7
         if: "!startsWith(github.ref, 'refs/tags/')"
@@ -65,6 +68,7 @@ jobs:
             *.vsix
             bgforge-mls-*.tmbundle.zip
             bgforge-mls-notepadpp-udl-*.zip
+            bgforge-mls-kate-ksh-*.zip
 
       # Use pre-built VSIX for publishing: pnpm package (scripts/package.sh)
       # dereferences pnpm symlinks that vsce can't follow.
@@ -94,3 +98,4 @@ jobs:
             ${{ steps.publishToOpenVSX.outputs.vsixPath }}
             bgforge-mls-*.tmbundle.zip
             bgforge-mls-notepadpp-udl-*.zip
+            bgforge-mls-kate-ksh-*.zip
