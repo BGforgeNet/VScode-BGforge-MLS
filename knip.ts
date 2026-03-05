@@ -13,8 +13,6 @@ const config: KnipConfig = {
         "src/extension.ts",
         "src/editors/binaryEditor-webview.ts",
         "src/dialog-tree/dialogTree-webview.ts",
-        "src/ts-plugin.ts",
-        "src/td-plugin.ts",
         // test entry points for @vscode/test-electron
         "src/test/runTest.ts",
         "src/test/index.ts",
@@ -27,6 +25,12 @@ const config: KnipConfig = {
       // Entry resolved from package.json "main" field (src/server.ts).
       // No explicit entry needed here.
       ignore: ["**/*.d.ts"],
+    },
+    "plugins/tssl-plugin": {
+      entry: ["src/index.ts", "test/*.test.ts"],
+    },
+    "plugins/td-plugin": {
+      entry: ["src/index.ts", "test/*.test.ts"],
     },
   },
   ignore: [

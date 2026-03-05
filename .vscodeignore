@@ -35,6 +35,7 @@ coverage/
 docs/
 external/
 grammars/
+plugins/
 scripts/
 test/
 tmp/

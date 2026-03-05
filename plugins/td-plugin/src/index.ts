@@ -11,8 +11,8 @@
  * runtime is included in the project's program. The getExternalFiles approach
  * does not reliably work for inferred projects (standalone files without tsconfig).
  *
- * Loaded by tsserver via contributes.typescriptServerPlugins in package.json.
- * Bundled by esbuild into node_modules/bgforge-td-plugin/index.js (CJS, self-contained).
+ * Loaded by tsserver via contributes.typescriptServerPlugins in package.json
+ * (VSCode) or via tsconfig.json plugins array (other editors).
  */
 
 import type ts from "typescript";
@@ -123,16 +123,32 @@ function extractDeclaredNames(content: string): ReadonlySet<string> {
 }
 
 function init(modules: { typescript: typeof ts }): ts.server.PluginModule {
+    // Memoized at init() scope (shared across create() calls) because the runtime
+    // path depends on __dirname (the plugin's install location), not on the project.
+    // All projects using this plugin share the same runtime file.
     let runtimePath: string | undefined;
     let runtimeExists = false;
     let tdNames: ReadonlySet<string> | undefined;
 
     function getRuntimePath(): string {
         if (runtimePath === undefined) {
-            // Plugin is at node_modules/bgforge-td-plugin/index.js
-            // Extension root is ../../, runtime is at server/out/td-runtime.d.ts
-            runtimePath = path.resolve(__dirname, "../../server/out/td-runtime.d.ts");
-            runtimeExists = fs.existsSync(runtimePath);
+            // When installed as npm package: node_modules/@bgforge/td-plugin/out/index.js
+            // td-runtime.d.ts is in node_modules/@bgforge/mls-server/out/td-runtime.d.ts
+            // When bundled in VSIX: node_modules/bgforge-td-plugin/index.js
+            // td-runtime.d.ts is at ../../server/out/td-runtime.d.ts
+            // Try both locations.
+            const vsixPath = path.resolve(__dirname, "../../server/out/td-runtime.d.ts");
+            const npmPath = path.resolve(__dirname, "../../@bgforge/mls-server/out/td-runtime.d.ts");
+            if (fs.existsSync(vsixPath)) {
+                runtimePath = vsixPath;
+                runtimeExists = true;
+            } else if (fs.existsSync(npmPath)) {
+                runtimePath = npmPath;
+                runtimeExists = true;
+            } else {
+                runtimePath = vsixPath;
+                runtimeExists = false;
+            }
         }
         return runtimePath;
     }
@@ -174,7 +190,9 @@ function init(modules: { typescript: typeof ts }): ts.server.PluginModule {
         const originalGetCompilationSettings = host.getCompilationSettings.bind(host);
         host.getCompilationSettings = () => {
             const settings = originalGetCompilationSettings();
-            const allFiles: string[] = originalGetScriptFileNames();
+            // Use current host method (not stale pre-override reference) so that
+            // files added by other plugins or tsserver updates are seen.
+            const allFiles: string[] = host.getScriptFileNames();
             if (!allFiles.some((f: string) => isTdFile(f))) {
                 return settings;
             }

@@ -13,11 +13,9 @@
         "esModuleInterop": true,
         "allowSyntheticDefaultImports": true,
         "noEmit": true,
-        "rootDir": ".."
+        "rootDir": "../.."
     },
     "include": [
-        "src/ts-plugin.ts",
-        "src/filter-diagnostics.ts",
-        "src/engine-proc-hover.ts"
+        "src"
     ]
 }

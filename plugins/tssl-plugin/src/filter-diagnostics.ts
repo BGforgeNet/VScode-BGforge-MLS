@@ -4,7 +4,11 @@
  * procedure names in .tssl files.
  */
 
-import { ENGINE_PROCEDURES } from "../../server/src/tssl/engine-procedures";
+// Generated from server/data/fallout-ssl-base.yml by generate-data.sh.
+// Inlined by esbuild at bundle time.
+import engineProcedureNames from "../../../server/out/engine-procedures.json";
+
+const ENGINE_PROCEDURES: ReadonlySet<string> = new Set(engineProcedureNames);
 
 /** TS6133: '{0}' is declared but its value is never read. */
 const TS6133_CODE = 6133;

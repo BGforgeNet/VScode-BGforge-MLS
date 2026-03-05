@@ -106,6 +106,36 @@ Install the [LSP](https://packagecontrol.io/packages/LSP) package, then add to L
 }
 ```
 
+## TypeScript Plugins (TSSL/TD)
+
+The server package includes TypeScript Language Service Plugins for `.tssl` and `.td` transpiler files. These run inside tsserver (not the LSP server) and provide diagnostic filtering, runtime type injection, and completion filtering.
+
+To use them, add the plugin paths to your project's `tsconfig.json`. The plugins are bundled inside the server package at `out/tssl-plugin.js` and `out/td-plugin.js`. Find the install location with:
+
+```bash
+MLS_DIR="$(npm root -g)/@bgforge/mls-server"
+# or if installed locally: MLS_DIR="$(npm root)/@bgforge/mls-server"
+```
+
+Then in `tsconfig.json`:
+
+```json
+{
+  "compilerOptions": {
+    "plugins": [
+      { "name": "${MLS_DIR}/out/tssl-plugin" },
+      { "name": "${MLS_DIR}/out/td-plugin" }
+    ]
+  }
+}
+```
+
+Replace `${MLS_DIR}` with the actual path from the shell command above.
+
+**What they do:**
+- `tssl-plugin`: Suppresses false TS6133 ("declared but never read") warnings for Fallout engine procedure names, adds engine procedure hover docs.
+- `td-plugin`: Injects TD runtime types (`begin`, `say`, `reply`, etc.) so `.td` files get type checking without manual declarations. Filters completions (hides ES2020 lib names in `.td`, hides TD names in non-`.td`).
+
 ## Settings
 
 The server accepts configuration via LSP `workspace/didChangeConfiguration`. Settings are under the `bgforge` namespace:

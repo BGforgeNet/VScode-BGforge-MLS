@@ -16,11 +16,12 @@ $generate_data \
     --signature $dest_dir/signature.fallout-ssl.json \
     --tooltip-lang fallout-ssl-tooltip
 
-# Extract engine procedure docs for the TSSL TypeScript plugin
+# Extract engine procedure names and docs for the TSSL transpiler and TypeScript plugin
 pnpm exec tsx scripts/utils/src/extract-engine-proc-docs.ts \
     --hover $dest_dir/hover.fallout-ssl.json \
     --yaml $data_dir/fallout-ssl-base.yml \
-    --out $dest_dir/engine-proc-docs.json
+    --out $dest_dir/engine-proc-docs.json \
+    --names $dest_dir/engine-procedures.json
 
 $generate_data \
     -i $data_dir/fallout-worldmap-txt.yml \

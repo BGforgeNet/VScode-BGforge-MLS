@@ -79,8 +79,7 @@ vscode-mls/
 +-- client/                 VSCode extension client
 |   +-- src/
 |   |   +-- extension.ts        Entry point (activate/deactivate, LSP client)
-|   |   +-- ts-plugin.ts        TS plugin for .tssl (suppresses TS6133, engine hover)
-|   |   +-- td-plugin.ts        TS plugin for .td (injects runtime, filters completions)
+|   |   +-- (TS plugins moved to plugins/ directory)
 |   |   +-- filter-diagnostics.ts   Diagnostic filtering for TSSL plugin
 |   |   +-- engine-proc-hover.ts    Engine procedure hover docs injection
 |   |   +-- indicator.ts            Server initialization progress indicator
@@ -152,8 +151,8 @@ All bundles use **esbuild** (not tsc). The monorepo uses **pnpm workspaces**.
 |--------|-------|--------|-------|
 | Client | `client/src/extension.ts` | `client/out/extension.js` | CJS, `vscode` external |
 | Server | `server/src/server.ts` | `server/out/server.js` | CJS, patches `import_meta` for WASM |
-| TSSL Plugin | `client/src/ts-plugin.ts` | `node_modules/bgforge-tssl-plugin/index.js` | CJS, standalone |
-| TD Plugin | `client/src/td-plugin.ts` | `node_modules/bgforge-td-plugin/index.js` | CJS, standalone |
+| TSSL Plugin | `plugins/tssl-plugin/src/index.ts` | `node_modules/bgforge-tssl-plugin/index.js` | CJS, standalone |
+| TD Plugin | `plugins/td-plugin/src/index.ts` | `node_modules/bgforge-td-plugin/index.js` | CJS, standalone |
 | Webviews | `client/src/{dialog,binary}-webview.ts` | `client/out/*.js` | Browser context |
 | Format CLI | `cli/format/src/cli.ts` | `cli/format/out/format-cli.js` | CJS + WASM files |
 | Transpile CLI | `cli/transpile/src/cli.ts` | `cli/transpile/out/transpile-cli.js` | CJS |
@@ -210,12 +209,12 @@ activate()
 Plugins intercept tsserver calls for transpiler files. They run inside the tsserver
 process, not the extension host.
 
-**TSSL Plugin** (`ts-plugin.ts`):
+**TSSL Plugin** (`plugins/tssl-plugin/src/index.ts`):
 - Suppresses TS6133 ("declared but never read") for engine procedure names
 - Appends engine procedure hover documentation from build-time generated JSON
 - Proxies `getSemanticDiagnostics`, `getSuggestionDiagnostics`, `getQuickInfoAtPosition`
 
-**TD Plugin** (`td-plugin.ts`):
+**TD Plugin** (`plugins/td-plugin/src/index.ts`):
 - Injects `td-runtime.d.ts` into the project file list (no tsconfig needed)
 - Excludes DOM lib to prevent browser types in completions
 - Filters completions: blocks ES2020 lib names in `.td` files, blocks TD names in non-`.td` files

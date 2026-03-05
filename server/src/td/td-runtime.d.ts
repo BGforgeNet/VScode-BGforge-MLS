@@ -6,7 +6,7 @@
  *
  * JSDoc sourced from weidu-d-base.yml (WeiDU documentation).
  * Copied to server/out/ during build (build-base-server.sh).
- * Injected into tsserver by the TD TypeScript plugin (client/src/td-plugin.ts).
+ * Injected into tsserver by the TD TypeScript plugin (plugins/td-plugin/src/index.ts).
  */
 
 // --- IElib sync surface start ---

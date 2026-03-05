@@ -27,6 +27,13 @@ echo "=== Building server ==="
 pnpm build:base:server --minify
 
 echo ""
+echo "=== Building TS plugins into server/out/ ==="
+esbuild ./plugins/tssl-plugin/src/index.ts \
+  --bundle --outfile=server/out/tssl-plugin.js --format=cjs --platform=node --minify
+esbuild ./plugins/td-plugin/src/index.ts \
+  --bundle --outfile=server/out/td-plugin.js --format=cjs --platform=node --minify
+
+echo ""
 echo "=== Publishing @bgforge/mls-server ==="
 cd server
 pnpm publish --access public "$@"

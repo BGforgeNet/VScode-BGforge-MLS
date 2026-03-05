@@ -1,11 +1,11 @@
 /**
  * Unit tests for TSSL diagnostic filtering.
- * Tests ENGINE_PROCEDURES set contents, TS6133 identifier extraction,
+ * Tests engine procedure names, TS6133 identifier extraction,
  * and filtering of engine procedure diagnostics.
  */
 
 import { describe, expect, it } from "vitest";
-import { ENGINE_PROCEDURES } from "../../server/src/tssl/engine-procedures";
+import engineProcedureNames from "../../../server/out/engine-procedures.json";
 import {
     type DiagnosticLike,
     extractIdentifierFromTS6133,
@@ -17,27 +17,26 @@ function makeDiagnostic(code: number, messageText: string | { readonly messageTe
     return { code, messageText };
 }
 
-describe("ENGINE_PROCEDURES", () => {
+describe("engineProcedureNames", () => {
     it("includes start", () => {
-        expect(ENGINE_PROCEDURES.has("start")).toBe(true);
+        expect(engineProcedureNames).toContain("start");
     });
 
     it("includes talk_p_proc", () => {
-        expect(ENGINE_PROCEDURES.has("talk_p_proc")).toBe(true);
+        expect(engineProcedureNames).toContain("talk_p_proc");
     });
 
     it("includes combat_p_proc", () => {
-        expect(ENGINE_PROCEDURES.has("combat_p_proc")).toBe(true);
+        expect(engineProcedureNames).toContain("combat_p_proc");
     });
 
     it("does not include arbitrary names", () => {
-        expect(ENGINE_PROCEDURES.has("my_custom_func")).toBe(false);
+        expect(engineProcedureNames).not.toContain("my_custom_func");
     });
 
-    it("is a ReadonlySet (immutable)", () => {
-        // ReadonlySet lacks add/delete/clear at the type level;
-        // at runtime it's a Set, so just verify it's a Set instance
-        expect(ENGINE_PROCEDURES).toBeInstanceOf(Set);
+    it("is a non-empty array", () => {
+        expect(Array.isArray(engineProcedureNames)).toBe(true);
+        expect(engineProcedureNames.length).toBeGreaterThan(0);
     });
 });
 
@@ -69,6 +68,15 @@ describe("extractIdentifierFromTS6133", () => {
 
     it("returns undefined for empty chain", () => {
         expect(extractIdentifierFromTS6133({ messageText: "" })).toBeUndefined();
+    });
+
+    it("extracts identifier from nested DiagnosticMessageChain with next array", () => {
+        // TypeScript can produce nested chains where the identifier is in the top messageText
+        const chain = {
+            messageText: "'start' is declared but its value is never read.",
+            next: [{ messageText: "some nested detail" }],
+        };
+        expect(extractIdentifierFromTS6133(chain)).toBe("start");
     });
 });
 

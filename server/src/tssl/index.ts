@@ -21,7 +21,9 @@ import { conlog, type TsslContext, type MainFileData, type BundleResult } from '
 import { convertOperatorsAST } from './convert-operators';
 import { extractInlineFunctionsFromFiles, extractJsDocs } from './inline-functions';
 import { exportSSL } from './export-ssl';
-import { ENGINE_PROCEDURES } from './engine-procedures';
+// Generated from server/data/fallout-ssl-base.yml by generate-data.sh.
+// Inlined by esbuild at bundle time.
+import engineProcedureNames from '../../out/engine-procedures.json';
 import {
     transformEnums,
     expandEnumPropertyAccess,
@@ -202,7 +204,7 @@ function extractTopLevelVars(project: Project, sourceText: string): { constants:
  * Includes engine procedures and any function passed to register_hook_proc.
  */
 function extractPreserveFunctions(text: string): string[] {
-    const preserve = [...ENGINE_PROCEDURES];
+    const preserve = [...engineProcedureNames];
     // Extract functions passed to register_hook_proc or register_hook_proc_spec
     const hookRegex = /register_hook_proc(?:_spec)?\s*\([^,]+,\s*(\w+)\s*\)/g;
     let match;

@@ -25,6 +25,8 @@ export default [
             "client/src/**/*.ts",
             "server/src/**/*.ts",
             "cli/**/*.ts",
+            "plugins/*/src/**/*.ts",
+            "plugins/*/test/**/*.ts",
             "scripts/*/src/**/*.ts",
             "scripts/*/test/**/*.ts",
         ],
@@ -40,9 +42,8 @@ export default [
             sourceType: "module",
             parserOptions: {
                 projectService: {
-                    // ts-plugin.ts is excluded from client/tsconfig.json (cross-workspace import
-                    // incompatible with rootDir), but has its own client/tsconfig.ts-plugin.json
-                    allowDefaultProject: ["client/src/ts-plugin.ts", "client/src/td-plugin.ts", "client/src/filter-diagnostics.ts", "client/src/engine-proc-hover.ts"],
+                    // td-plugin test excluded from its tsconfig (vitest types)
+                    allowDefaultProject: ["plugins/tssl-plugin/test/filter-diagnostics.test.ts", "plugins/td-plugin/test/td-plugin.test.ts"],
                 },
             },
         },

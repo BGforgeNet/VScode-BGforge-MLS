@@ -3,11 +3,11 @@
  * - Suppresses TS6133 ("declared but never read") for engine procedure names.
  * - Injects hover documentation for engine procedures from YAML-generated data.
  *
- * Loaded by tsserver via contributes.typescriptServerPlugins in package.json.
- * Bundled by esbuild into node_modules/bgforge-tssl-plugin/index.js (CJS, self-contained).
+ * Loaded by tsserver via contributes.typescriptServerPlugins in package.json
+ * (VSCode) or via tsconfig.json plugins array (other editors).
  *
  * Build dependency: engine-proc-docs.json must be generated before bundling.
- * This is done by generate-data.sh, which must run before build:ts-plugin.
+ * This is done by generate-data.sh, which must run before build:tssl-plugin.
  */
 
 import type ts from "typescript";

@@ -2,13 +2,7 @@
     "compilerOptions": {
         "module": "commonjs",
         "target": "es2022",
-        "lib": [
-            "es2022",
-            "DOM"
-        ],
-        "outDir": "out",
-        "rootDir": "src",
-        "sourceMap": true,
+        "lib": ["es2022"],
         "strict": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
@@ -16,13 +10,12 @@
         "noFallthroughCasesInSwitch": true,
         "noUncheckedIndexedAccess": true,
         "esModuleInterop": true,
-        "allowSyntheticDefaultImports": true
+        "noEmit": true
     },
     "include": [
         "src"
     ],
     "exclude": [
-        "node_modules",
-        ".vscode-test"
+        "test"
     ]
 }

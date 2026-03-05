@@ -27,7 +27,10 @@ pnpm lint:shell
 
 step "Typechecking Client"
 (cd client && pnpm exec tsc --noEmit)
-(cd client && pnpm exec tsc --noEmit -p tsconfig.ts-plugin.json)
+
+step "Typechecking Plugins"
+(cd plugins/tssl-plugin && pnpm exec tsc --noEmit)
+(cd plugins/td-plugin && pnpm exec tsc --noEmit)
 
 step "Typechecking Server"
 (cd server && pnpm exec tsc --noEmit)
@@ -36,13 +39,17 @@ step "Typechecking CLI"
 pnpm exec tsc --project cli/tsconfig.json
 
 step "Running ESLint"
-pnpm exec eslint 'server/src/**/*.ts' 'client/src/**/*.ts' 'cli/**/*.ts' --ignore-pattern 'cli/test' --ignore-pattern 'cli/vitest.config.ts' --no-warn-ignored --max-warnings 0
+pnpm exec eslint 'server/src/**/*.ts' 'client/src/**/*.ts' 'plugins/*/src/**/*.ts' 'plugins/*/test/**/*.ts' 'cli/**/*.ts' --ignore-pattern 'cli/test' --ignore-pattern 'cli/vitest.config.ts' --no-warn-ignored --max-warnings 0
 
 step "Running Server Unit Tests + Coverage"
 (cd server && pnpm exec vitest run --coverage)
 
 step "Running Client Unit Tests"
 vitest run --config client/vitest.config.ts
+
+step "Running Plugin Unit Tests"
+vitest run --config plugins/tssl-plugin/vitest.config.ts
+vitest run --config plugins/td-plugin/vitest.config.ts
 
 step "Building CLIs"
 pnpm build:transpile-cli

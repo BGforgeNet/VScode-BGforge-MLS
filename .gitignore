@@ -13,8 +13,11 @@ server/out/*
 !server/out/hover.*.json
 !server/out/signature.*.json
 !server/out/engine-proc-docs.json
+!server/out/engine-procedures.json
 
 cli/*/out
+
+plugins/*/out
 
 external/*
 !external/fallout.txt

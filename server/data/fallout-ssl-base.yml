@@ -31,6 +31,14 @@ keywords:
 engine-procedures:
   type: 3 # function
   items:
+    - name: barter_init_p_proc
+      detail: void barter_init_p_proc()
+      doc: |-
+        Called when the barter screen is initialized.
+    - name: barter_p_proc
+      detail: void barter_p_proc()
+      doc: |-
+        Called when the player initiates bartering with the critter.
     - name: combat_p_proc
       detail: void combat_p_proc()
       doc: |-
@@ -43,6 +51,10 @@ engine-procedures:
       detail: void combat_is_over_p_proc()
       doc: |-
         Called every time before combat ends.
+    - name: create_p_proc
+      detail: void create_p_proc()
+      doc: |-
+        Called when the object is first created on the map.
     - name: critter_p_proc
       detail: void critter_p_proc()
       doc: |-
@@ -118,6 +130,14 @@ engine-procedures:
         `fixed_param` is a variable you can set to differentiate between various timed events.
         In `timed_event_p_proc`, you can check the value of `fixed_param` against whatever number you used when calling `add_timer_event`.
         This allows for multiple uses of `timed_event_p_proc` in the same script.
+    - name: use_ad_on_p_proc
+      detail: void use_ad_on_p_proc()
+      doc: |-
+        Called when an advantage is used on the object.
+    - name: use_disad_on_p_proc
+      detail: void use_disad_on_p_proc()
+      doc: |-
+        Called when a disadvantage is used on the object.
     - name: use_obj_on_p_proc
       detail: void use_obj_on_p_proc()
       doc: |

@@ -29,7 +29,7 @@ vi.mock("path", async () => {
 });
 
 // Import after mocks are set up (vitest hoists vi.mock)
-import init from "../src/td-plugin";
+import init from "../src/index";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -163,6 +163,24 @@ describe("TD plugin", () => {
             expect(settings.target).toBe(99);
             expect(settings.lib).toBeUndefined();
         });
+
+        it("uses current host file list, not stale pre-override reference", () => {
+            // Start with no .td files — getCompilationSettings should not override
+            const info = createMockInfo(["/project/utils.ts"], { target: 99 });
+            plugin.create(info);
+
+            const host = info.languageServiceHost as unknown as MockHost;
+            let settings = host.getCompilationSettings();
+            expect(settings.target).toBe(99);
+
+            // Simulate tsserver/another plugin adding a .td file to the overridden list
+            const prevGetFiles = host.getScriptFileNames;
+            host.getScriptFileNames = () => [...prevGetFiles(), "/project/dialog.td"];
+
+            // getCompilationSettings should detect the .td file via current host method
+            settings = host.getCompilationSettings();
+            expect(settings.target).toBe(7); // ScriptTarget.ES2020
+        });
     });
 
     describe("completion filtering in .td files", () => {
@@ -225,10 +243,32 @@ describe("TD plugin", () => {
         });
     });
 
+    describe("file extension matching", () => {
+        it("matches .td files correctly", () => {
+            const info = createMockInfo(["/project/dialog.td"]);
+            plugin.create(info);
+
+            const host = info.languageServiceHost;
+            const files = host.getScriptFileNames();
+            expect(files).toContain(FAKE_RUNTIME_PATH);
+        });
+
+        it("does not match files with .td as directory component", () => {
+            const info = createMockInfo(["/project/.td/file.ts"]);
+            plugin.create(info);
+
+            const host = info.languageServiceHost;
+            const files = host.getScriptFileNames();
+            // Should NOT inject runtime — .td is a directory, not a file extension
+            expect(files).not.toContain(FAKE_RUNTIME_PATH);
+        });
+    });
+
     describe("runtime not found", () => {
         it("returns original language service when runtime file missing", async () => {
             const { existsSync } = await import("fs");
-            vi.mocked(existsSync).mockReturnValueOnce(false);
+            // Both VSIX and npm paths must fail
+            vi.mocked(existsSync).mockReturnValueOnce(false).mockReturnValueOnce(false);
 
             const freshPlugin = init(MOCK_TS_MODULES);
             const info = createMockInfo(["/project/dialog.td"]);

@@ -15,7 +15,8 @@
         "noFallthroughCasesInSwitch": true,
         "noUncheckedIndexedAccess": true,
         "outDir": "out",
-        "rootDir": "src"
+        "resolveJsonModule": true,
+        "esModuleInterop": true
     },
     "include": [
         "src"

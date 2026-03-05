@@ -1,0 +1,11 @@
+{
+    "name": "@bgforge/td-plugin",
+    "description": "TypeScript Language Service Plugin for TD files - injects runtime types, filters completions, excludes DOM lib",
+    "version": "3.0.0",
+    "private": true,
+    "devDependencies": {
+        "@types/node": "^20.19.35",
+        "typescript": "^5.9.3",
+        "vitest": "^4.0.18"
+    }
+}
