@@ -37,12 +37,15 @@ function buildCommentsLine(): string {
  * Delimiter1 = slots 00-02, Delimiter2 = 03-05, ..., Delimiter8 = 21-23.
  */
 function buildDelimitersLine(delimiters: readonly (readonly [string, string])[]): string {
+    // Sort by opening delimiter length (longest first) so Notepad++
+    // matches longer delimiters before shorter ones (e.g. ~~~~~ before ~).
+    const sorted = [...delimiters].sort((a, b) => b[0].length - a[0].length);
     const parts: string[] = [];
     for (let i = 0; i < 8; i++) {
         const slotBase = i * 3;
-        if (i < delimiters.length) {
-            // Bounds-checked above: i < delimiters.length
-            const [open, close] = delimiters[i]!;
+        if (i < sorted.length) {
+            // Bounds-checked above: i < sorted.length
+            const [open, close] = sorted[i]!;
             parts.push(`${String(slotBase).padStart(2, "0")}${escapeXml(open)}`);
             parts.push(`${String(slotBase + 1).padStart(2, "0")}`);
             parts.push(`${String(slotBase + 2).padStart(2, "0")}${escapeXml(close)}`);

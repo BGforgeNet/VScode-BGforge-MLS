@@ -106,17 +106,17 @@ Controls what ships in the VSIX extension package. Uses a **blocklist** strategy
 
 These are included implicitly (not excluded by any pattern):
 
-- `package.json`, `README.md`, `LICENSE.txt` — auto-included by vsce
-- `client/package.json`, `client/out/` — extension entry point, webview bundles, codicons
-- `client/src/**/*.html`, `client/src/**/*.css` — webview HTML/CSS templates
-- `server/package.json`, `server/out/` — LSP server bundle, data JSONs, WASM parsers, td-runtime.d.ts
-- `server/node_modules/sslc-emscripten-noderawfs/` — Fallout SSL compiler (WASM), loaded via `fork()`
-- `server/node_modules/esbuild-wasm/` — esbuild WASM, used by transpilers (runtime files only: `esbuild.wasm`, `bin/esbuild`, `lib/main.js`, `wasm_exec*.js`, `package.json`)
-- `language-configurations/*.json` — language bracket/comment rules
-- `snippets/*.json` — code snippets
-- `syntaxes/*.json` — TextMate grammars
-- `themes/bgforge-*.json`, `themes/seti.woff`, `themes/icons/` — BGforge themes
-- `resources/bgforge.png` — extension icon
+- `package.json`, `README.md`, `LICENSE.txt` - auto-included by vsce
+- `client/package.json`, `client/out/` - extension entry point, webview bundles, codicons
+- `client/src/**/*.html`, `client/src/**/*.css` - webview HTML/CSS templates
+- `server/package.json`, `server/out/` - LSP server bundle, data JSONs, WASM parsers, td-runtime.d.ts
+- `server/node_modules/sslc-emscripten-noderawfs/` - Fallout SSL compiler (WASM), loaded via `fork()`
+- `server/node_modules/esbuild-wasm/` - esbuild WASM, used by transpilers (runtime files only: `esbuild.wasm`, `bin/esbuild`, `lib/main.js`, `wasm_exec*.js`, `package.json`)
+- `language-configurations/*.json` - language bracket/comment rules
+- `snippets/*.json` - code snippets
+- `syntaxes/*.json` - TextMate grammars
+- `themes/bgforge-*.json`, `themes/seti.woff`, `themes/icons/` - BGforge themes
+- `resources/bgforge.png` - extension icon
 
 ### Packaging notes
 

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE language>
+<!--
+  KSyntaxHighlighting definition for Fallout message files (.msg).
+  Hand-written (not generated) because msg uses a unique comment model:
+  anything outside {number}{audio}{text} entries is a comment.
+  Install to: ~/.local/share/org.kde.syntax-highlighting/syntax/
+-->
+<language name="Fallout MSG" version="1" kateversion="5.0" section="Scripts"
+          extensions="*.msg" casesensitive="true"
+          author="BGforge" license="MIT">
+  <highlighting>
+    <contexts>
+      <!-- Default context: everything is a comment until we see { -->
+      <context name="Normal" attribute="Comment" lineEndContext="#stay">
+        <DetectChar attribute="Bracket" context="Number" char="{"/>
+      </context>
+
+      <!-- {number} -->
+      <context name="Number" attribute="Number" lineEndContext="#stay">
+        <DetectChar attribute="Bracket" context="AudioOpen" char="}"/>
+      </context>
+
+      <!-- Expect { to open audio field -->
+      <context name="AudioOpen" attribute="Comment" lineEndContext="#stay">
+        <DetectChar attribute="Bracket" context="Audio" char="{"/>
+      </context>
+
+      <!-- {audio} — may be empty -->
+      <context name="Audio" attribute="Sound" lineEndContext="#stay">
+        <DetectChar attribute="Bracket" context="TextOpen" char="}"/>
+      </context>
+
+      <!-- Expect { to open text field -->
+      <context name="TextOpen" attribute="Comment" lineEndContext="#stay">
+        <DetectChar attribute="Bracket" context="Text" char="{"/>
+      </context>
+
+      <!-- {text} — may be empty, may span multiple lines -->
+      <context name="Text" attribute="String" lineEndContext="#stay">
+        <DetectChar attribute="Bracket" context="Normal" char="}"/>
+      </context>
+    </contexts>
+
+    <itemDatas>
+      <itemData name="Comment" defStyleNum="dsComment"/>
+      <itemData name="Bracket" defStyleNum="dsKeyword"/>
+      <itemData name="Number" defStyleNum="dsDecVal"/>
+      <itemData name="Sound" defStyleNum="dsSpecialString"/>
+      <itemData name="String" defStyleNum="dsString"/>
+    </itemDatas>
+  </highlighting>
+
+  <general>
+    <keywords casesensitive="true"/>
+  </general>
+</language>

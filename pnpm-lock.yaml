@@ -104,6 +104,15 @@ importers:
         specifier: ^13.0.6
         version: 13.0.6
 
+  grammars/fallout-msg:
+    devDependencies:
+      eslint:
+        specifier: ^9.39.3
+        version: 9.39.3(jiti@2.6.1)
+      globals:
+        specifier: ^16.5.0
+        version: 16.5.0
+
   grammars/fallout-ssl:
     devDependencies:
       eslint:
@@ -149,6 +158,15 @@ importers:
         specifier: ^16.5.0
         version: 16.5.0
 
+  grammars/weidu-tra:
+    devDependencies:
+      eslint:
+        specifier: ^9.39.3
+        version: 9.39.3(jiti@2.6.1)
+      globals:
+        specifier: ^16.5.0
+        version: 16.5.0
+
   plugins/td-plugin:
     devDependencies:
       '@types/node':
@@ -169,6 +187,9 @@ importers:
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
+      vitest:
+        specifier: ^4.0.18
+        version: 4.0.18(@types/node@20.19.35)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.2)
 
   server:
     dependencies:

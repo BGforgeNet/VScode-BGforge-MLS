@@ -1,0 +1,13 @@
+// line comment
+// <- comment
+/* block comment */
+// <- comment
+@100 = ~Hello world~ [SOUND01]
+// <- punctuation.delimiter
+//^^ number
+//   ^ punctuation.delimiter
+//     ^ string
+//                   ^ string
+//                     ^ string.special
+@200 = "double quoted"
+//     ^ string

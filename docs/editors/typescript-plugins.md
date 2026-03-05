@@ -29,7 +29,7 @@ Add to your project's `tsconfig.json`:
 }
 ```
 
-Replace `/path/to/@bgforge/mls-server` with the actual path from the shell command above. TypeScript's `plugins` array does not support shell variables — you must paste the resolved path.
+Replace `/path/to/@bgforge/mls-server` with the actual path from the shell command above. TypeScript's `plugins` array does not support shell variables - you must paste the resolved path.
 
 ## What They Do
 

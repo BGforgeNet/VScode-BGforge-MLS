@@ -36,6 +36,15 @@ vim.filetype.add({
     ["worldmap.txt"] = "fallout-worldmap-txt",
   },
 })
+
+-- MSG and TRA are highlight-only (no LSP provider), so no filetype needed
+-- for the language server. Register them if using tree-sitter highlighting:
+vim.filetype.add({
+  extension = {
+    msg = "fallout-msg",
+    tra = "weidu-tra",
+  },
+})
 ```
 
 Note: `.h` files default to C in Neovim. The override above sets them to Fallout SSL globally. For per-project control, use a `.nvimrc` or `exrc` instead.
@@ -108,6 +117,20 @@ vim.api.nvim_create_autocmd("User", {
         queries = "grammars/weidu-tp2/queries",
       },
     }
+    parsers.fallout_msg = {
+      install_info = {
+        url = url,
+        location = "grammars/fallout-msg",
+        queries = "grammars/fallout-msg/queries",
+      },
+    }
+    parsers.weidu_tra = {
+      install_info = {
+        url = url,
+        location = "grammars/weidu-tra",
+        queries = "grammars/weidu-tra/queries",
+      },
+    }
   end,
 })
 ```
@@ -119,12 +142,14 @@ vim.treesitter.language.register("ssl", "fallout-ssl")
 vim.treesitter.language.register("baf", "weidu-baf")
 vim.treesitter.language.register("weidu_d", "weidu-d")
 vim.treesitter.language.register("weidu_tp2", "weidu-tp2")
+vim.treesitter.language.register("fallout_msg", "fallout-msg")
+vim.treesitter.language.register("weidu_tra", "weidu-tra")
 ```
 
 Install the parsers:
 
 ```vim
-:TSInstall ssl baf weidu_d weidu_tp2
+:TSInstall ssl baf weidu_d weidu_tp2 fallout_msg weidu_tra
 ```
 
 ### Manual Query Installation
@@ -135,7 +160,7 @@ If highlights aren't installed automatically, copy them manually:
 REPO="https://raw.githubusercontent.com/BGforgeNet/VScode-BGforge-MLS/master"
 NVIM_QUERIES="${XDG_CONFIG_HOME:-$HOME/.config}/nvim/queries"
 
-for pair in "fallout-ssl:ssl" "weidu-baf:baf" "weidu-d:weidu_d" "weidu-tp2:weidu_tp2"; do
+for pair in "fallout-ssl:ssl" "weidu-baf:baf" "weidu-d:weidu_d" "weidu-tp2:weidu_tp2" "fallout-msg:fallout_msg" "weidu-tra:weidu_tra"; do
   grammar="${pair%%:*}"
   lang="${pair##*:}"
   mkdir -p "$NVIM_QUERIES/$lang"

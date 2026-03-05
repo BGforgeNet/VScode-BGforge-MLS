@@ -36,7 +36,7 @@ schema_version = 1
 
 [language_servers.bgforge-mls]
 name = "BGforge MLS"
-languages = ["Fallout SSL", "WeiDU BAF", "WeiDU D", "WeiDU TP2", "Fallout Worldmap"]
+languages = ["Fallout SSL", "WeiDU BAF", "WeiDU D", "WeiDU TP2", "Fallout Worldmap", "Fallout MSG", "WeiDU TRA"]
 ```
 
 ### `Cargo.toml`
@@ -146,6 +146,31 @@ brackets = [
 ]
 ```
 
+**`languages/fallout-msg/config.toml`** (highlight-only, no LSP provider):
+
+```toml
+name = "Fallout MSG"
+grammar = "fallout_msg"
+path_suffixes = ["msg"]
+brackets = [
+  { start = "{", end = "}", close = true, newline = false },
+]
+```
+
+**`languages/weidu-tra/config.toml`** (highlight-only, no LSP provider):
+
+```toml
+name = "WeiDU TRA"
+grammar = "weidu_tra"
+path_suffixes = ["tra"]
+line_comments = ["//"]
+block_comment = ["/*", "*/"]
+brackets = [
+  { start = "\"", end = "\"", close = true, newline = false, not_in = ["string"] },
+  { start = "~", end = "~", close = true, newline = false, not_in = ["string"] },
+]
+```
+
 **`languages/fallout-worldmap/config.toml`**:
 
 ```toml
@@ -186,6 +211,16 @@ path = "grammars/weidu-d"
 repository = "https://github.com/BGforgeNet/VScode-BGforge-MLS"
 commit = "dbdde670606b1b5d103f848cb22bb62a2e639fd8"
 path = "grammars/weidu-tp2"
+
+[grammars.fallout_msg]
+repository = "https://github.com/BGforgeNet/VScode-BGforge-MLS"
+commit = "dbdde670606b1b5d103f848cb22bb62a2e639fd8"
+path = "grammars/fallout-msg"
+
+[grammars.weidu_tra]
+repository = "https://github.com/BGforgeNet/VScode-BGforge-MLS"
+commit = "dbdde670606b1b5d103f848cb22bb62a2e639fd8"
+path = "grammars/weidu-tra"
 ```
 
 ### Highlight Queries
@@ -196,7 +231,7 @@ Copy the highlight queries into each language directory (`languages/<lang>/highl
 REPO="https://raw.githubusercontent.com/BGforgeNet/VScode-BGforge-MLS/master"
 EXT_DIR="$HOME/zed-extensions/bgforge-mls"
 
-for lang in fallout-ssl weidu-baf weidu-d weidu-tp2; do
+for lang in fallout-ssl weidu-baf weidu-d weidu-tp2 fallout-msg weidu-tra; do
   curl -fsSL "$REPO/grammars/$lang/queries/highlights.scm" \
     -o "$EXT_DIR/languages/$lang/highlights.scm"
 done

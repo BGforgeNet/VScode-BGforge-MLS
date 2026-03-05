@@ -12,6 +12,10 @@ out_zip="${bundle_name}-${version}.zip"
 
 rm -rf "$out_dir" "$out_zip"
 pnpm exec tsx scripts/utils/src/generate-ksh.ts --out-dir "$out_dir"
+
+# Copy hand-written KSH files for languages that don't fit the generator model
+cp scripts/static/*.ksh.xml "$out_dir/"
+
 zip -rq "$out_zip" "$out_dir"
 rm -rf "$out_dir"
 

@@ -43,9 +43,13 @@ function buildStringRules(delimiters: readonly (readonly [string, string])[]): {
     const contextLines: string[] = [];
     const itemDataLines: string[] = [];
 
-    for (let i = 0; i < delimiters.length; i++) {
-        // Bounds-checked: i < delimiters.length
-        const [open, close] = delimiters[i]!;
+    // Sort by opening delimiter length (longest first) so KSH matches
+    // longer delimiters before shorter ones (e.g. ~~~~~ before ~).
+    const sorted = [...delimiters].sort((a, b) => b[0].length - a[0].length);
+
+    for (let i = 0; i < sorted.length; i++) {
+        // Bounds-checked: i < sorted.length
+        const [open, close] = sorted[i]!;
         const idx = i + 1;
         const contextName = `String${idx}`;
         const attrName = `String ${idx}`;

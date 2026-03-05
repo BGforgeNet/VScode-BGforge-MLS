@@ -60,6 +60,19 @@ Define major modes first. The mode names match the server's language IDs (`fallo
 (add-to-list 'auto-mode-alist '("\\.tp2\\'" . weidu-tp2-mode))
 (add-to-list 'auto-mode-alist '("\\.tp[ahp]\\'" . weidu-tp2-mode))
 (add-to-list 'auto-mode-alist '("worldmap\\.txt\\'" . fallout-worldmap-txt-mode))
+
+;; Highlight-only languages (no LSP provider)
+(define-derived-mode fallout-msg-mode prog-mode "Fallout-MSG"
+  "Major mode for Fallout message files.")
+
+(define-derived-mode weidu-tra-mode prog-mode "WeiDU-TRA"
+  "Major mode for WeiDU translation files."
+  (setq-local comment-start "// ")
+  (setq-local comment-start-skip "//+\\s-*")
+  (setq-local comment-end ""))
+
+(add-to-list 'auto-mode-alist '("\\.msg\\'" . fallout-msg-mode))
+(add-to-list 'auto-mode-alist '("\\.tra\\'" . weidu-tra-mode))
 ```
 
 Note: `.h` files default to `c-mode` in Emacs. The override above sets them to `fallout-ssl-mode` globally. For per-project control, use directory-local variables (`.dir-locals.el`) instead.
@@ -73,7 +86,9 @@ Note: `.h` files default to `c-mode` in Emacs. The override above sets them to `
       '((ssl "https://github.com/BGforgeNet/VScode-BGforge-MLS" "master" "grammars/fallout-ssl/src")
         (baf "https://github.com/BGforgeNet/VScode-BGforge-MLS" "master" "grammars/weidu-baf/src")
         (weidu_d "https://github.com/BGforgeNet/VScode-BGforge-MLS" "master" "grammars/weidu-d/src")
-        (weidu_tp2 "https://github.com/BGforgeNet/VScode-BGforge-MLS" "master" "grammars/weidu-tp2/src")))
+        (weidu_tp2 "https://github.com/BGforgeNet/VScode-BGforge-MLS" "master" "grammars/weidu-tp2/src")
+        (fallout_msg "https://github.com/BGforgeNet/VScode-BGforge-MLS" "master" "grammars/fallout-msg/src")
+        (weidu_tra "https://github.com/BGforgeNet/VScode-BGforge-MLS" "master" "grammars/weidu-tra/src")))
 ```
 
 Compile each grammar (one-time):
@@ -83,6 +98,8 @@ M-x treesit-install-language-grammar RET ssl
 M-x treesit-install-language-grammar RET baf
 M-x treesit-install-language-grammar RET weidu_d
 M-x treesit-install-language-grammar RET weidu_tp2
+M-x treesit-install-language-grammar RET fallout_msg
+M-x treesit-install-language-grammar RET weidu_tra
 ```
 
 ### Font-Lock Rules

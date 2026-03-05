@@ -1,0 +1,158 @@
+================
+Simple tilde entry
+================
+
+@100 = ~Hello world~
+
+---
+
+(source_file
+  (entry
+    (number)
+    (tilde_string)))
+
+================
+Double-quoted entry
+================
+
+@200 = "Hello world"
+
+---
+
+(source_file
+  (entry
+    (number)
+    (double_string)))
+
+================
+Entry with sound ref
+================
+
+@300 = ~Hello~ [SOUND01]
+
+---
+
+(source_file
+  (entry
+    (number)
+    (tilde_string)
+    (sound_ref)))
+
+================
+Entry with female text
+================
+
+@400 = ~male text~ ~female text~
+
+---
+
+(source_file
+  (entry
+    (number)
+    (tilde_string)
+    (tilde_string)))
+
+================
+Five-tilde entry
+================
+
+@500 = ~~~~~text with ~ tildes~~~~~
+
+---
+
+(source_file
+  (entry
+    (number)
+    (tilde_string)))
+
+================
+Negative number
+================
+
+@-1 = ~Negative index~
+
+---
+
+(source_file
+  (entry
+    (number)
+    (tilde_string)))
+
+================
+Comment between entries
+================
+
+// this is a comment
+@100 = ~Text~
+
+---
+
+(source_file
+  (comment)
+  (entry
+    (number)
+    (tilde_string)))
+
+================
+Block comment
+================
+
+/* block comment */
+@100 = ~Text~
+
+---
+
+(source_file
+  (block_comment)
+  (entry
+    (number)
+    (tilde_string)))
+
+================
+Multiple entries
+================
+
+@1 = ~First~
+@2 = ~Second~
+@3 = ~Third~
+
+---
+
+(source_file
+  (entry
+    (number)
+    (tilde_string))
+  (entry
+    (number)
+    (tilde_string))
+  (entry
+    (number)
+    (tilde_string)))
+
+================
+Multiline string
+================
+
+@100 = ~Line one
+line two
+line three~
+
+---
+
+(source_file
+  (entry
+    (number)
+    (tilde_string)))
+
+================
+Empty tilde string
+================
+
+@30 = ~~
+
+---
+
+(source_file
+  (entry
+    (number)
+    (tilde_string)))

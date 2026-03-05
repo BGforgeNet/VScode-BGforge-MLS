@@ -68,6 +68,22 @@ name = "fallout-worldmap-txt"
 scope = "source.fallout-worldmap-txt"
 file-types = [{ glob = "worldmap.txt" }]
 language-servers = ["bgforge-mls"]
+
+# Highlight-only languages (no LSP provider)
+[[language]]
+name = "fallout-msg"
+scope = "source.fallout-msg"
+grammar = "fallout_msg"
+file-types = ["msg"]
+
+[[language]]
+name = "weidu-tra"
+scope = "source.weidu-tra"
+grammar = "weidu_tra"
+file-types = ["tra"]
+comment-tokens = ["//"]
+block-comment-tokens = { start = "/*", end = "*/" }
+auto-pairs = { "\"" = "\"", "~" = "~" }
 ```
 
 Note: `.h` files default to C/C++ in Helix. The override above sets them to Fallout SSL globally. Remove `"h"` from the list if you need C headers in the same project.
@@ -94,6 +110,14 @@ source = { git = "https://github.com/BGforgeNet/VScode-BGforge-MLS", rev = "mast
 [[grammar]]
 name = "weidu_tp2"
 source = { git = "https://github.com/BGforgeNet/VScode-BGforge-MLS", rev = "master", subpath = "grammars/weidu-tp2" }
+
+[[grammar]]
+name = "fallout_msg"
+source = { git = "https://github.com/BGforgeNet/VScode-BGforge-MLS", rev = "master", subpath = "grammars/fallout-msg" }
+
+[[grammar]]
+name = "weidu_tra"
+source = { git = "https://github.com/BGforgeNet/VScode-BGforge-MLS", rev = "master", subpath = "grammars/weidu-tra" }
 ```
 
 Fetch and build:
@@ -109,7 +133,7 @@ Copy highlight queries to `~/.config/helix/runtime/queries/<grammar>/`:
 REPO="https://raw.githubusercontent.com/BGforgeNet/VScode-BGforge-MLS/master"
 HELIX_QUERIES="${XDG_CONFIG_HOME:-$HOME/.config}/helix/runtime/queries"
 
-for pair in "fallout-ssl:ssl" "weidu-baf:baf" "weidu-d:weidu_d" "weidu-tp2:weidu_tp2"; do
+for pair in "fallout-ssl:ssl" "weidu-baf:baf" "weidu-d:weidu_d" "weidu-tp2:weidu_tp2" "fallout-msg:fallout_msg" "weidu-tra:weidu_tra"; do
   grammar="${pair%%:*}"
   lang="${pair##*:}"
   mkdir -p "$HELIX_QUERIES/$lang"

@@ -29,7 +29,7 @@ Download `bgforge-mls-notepadpp-udl-<version>.zip` from the [latest GitHub relea
 3. Restart Notepad++
 4. Repeat for each language
 
-The UDL files provide file type detection (by extension) and basic highlighting (keywords, functions, constants, comments, strings, folding).
+The UDL files provide file type detection (by extension) and basic highlighting (keywords, functions, constants, comments, strings, folding). The zip includes definitions for all supported languages, including Fallout MSG (`.msg`) and WeiDU TRA (`.tra`).
 
 Note: `.h` files default to C in Notepad++. The `fallout-ssl` UDL claims `.h` globally. If you also work with C headers, edit the UDL and remove `h` from the `Ext.` field, then set the language manually via `Language > fallout-ssl` for Fallout header files.
 

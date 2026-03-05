@@ -5,6 +5,7 @@
 
 import { execSync } from "node:child_process";
 import fs from "node:fs";
+import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { generateUdlXml } from "../src/generate-udl.js";
 
@@ -135,6 +136,33 @@ describe("generateUdlXml", () => {
         } finally {
             fs.rmSync(xsdPath, { force: true });
             fs.rmSync(xmlPath, { force: true });
+        }
+    });
+
+    it.skipIf(!hasXmllint())("validates static UDL files against official XSD", () => {
+        const staticDir = "scripts/static";
+        const staticFiles = fs.readdirSync(staticDir).filter((f) => f.endsWith(".udl.xml"));
+        expect(staticFiles.length).toBeGreaterThan(0);
+
+        fs.mkdirSync("tmp", { recursive: true });
+        const xsdPath = "tmp/userDefineLangs.xsd";
+
+        try {
+            execSync(`curl -sfL -o "${xsdPath}" "${XSD_URL}"`, { stdio: "pipe" });
+
+            for (const file of staticFiles) {
+                const xmlPath = path.join(staticDir, file);
+                try {
+                    execSync(`xmllint --schema "${xsdPath}" --noout "${xmlPath}"`, {
+                        stdio: "pipe",
+                    });
+                } catch (e) {
+                    const stderr = (e as { stderr?: Buffer }).stderr?.toString() ?? "";
+                    throw new Error(`XSD validation failed for static file ${file}:\n${stderr}`);
+                }
+            }
+        } finally {
+            fs.rmSync(xsdPath, { force: true });
         }
     });
 });

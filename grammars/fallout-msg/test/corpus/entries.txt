@@ -1,0 +1,85 @@
+================
+Simple entry
+================
+
+{100}{}{Hello world.}
+
+---
+
+(source_file
+  (entry
+    (number)
+    (text)))
+
+================
+Entry with audio
+================
+
+{200}{audio_file}{Welcome back.}
+
+---
+
+(source_file
+  (entry
+    (number)
+    (audio)
+    (text)))
+
+================
+Comment between entries
+================
+
+This is a comment
+{100}{}{Text.}
+
+---
+
+(source_file
+  (comment)
+  (entry
+    (number)
+    (text)))
+
+================
+Multiple entries
+================
+
+{100}{}{First message.}
+{101}{}{Second message.}
+
+---
+
+(source_file
+  (entry
+    (number)
+    (text))
+  (entry
+    (number)
+    (text)))
+
+================
+Entry with empty text
+================
+
+{100}{}{}
+
+---
+
+(source_file
+  (entry
+    (number)))
+
+================
+Multiline text
+================
+
+{100}{}{Line one
+line two
+line three}
+
+---
+
+(source_file
+  (entry
+    (number)
+    (text)))

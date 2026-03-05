@@ -46,7 +46,6 @@ Add a server in `Settings > Configure Kate > LSP Client > User Server Settings`:
 ```
 
 The `highlightingModeRegex` must match the language names from the installed KSyntaxHighlighting definitions. `Fallout-Worldmap` needs a manual mode entry in `Settings > Configure Kate > Open/Save > Modes & Filetypes` since no KSH definition is provided for it (it's a simple key-value format).
-
 ## TypeScript Plugins (TSSL/TD)
 
 If you write `.tssl` or `.td` transpiler files, the server package includes TypeScript plugins that run inside tsserver. See [TypeScript Plugins](typescript-plugins.md) for setup.

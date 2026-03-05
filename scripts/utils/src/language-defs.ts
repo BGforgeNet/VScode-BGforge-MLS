@@ -34,6 +34,15 @@ const DATA_DIR = "server/data";
 
 export const LANGUAGES: readonly LanguageDef[] = [
     {
+        name: "weidu-tra",
+        displayName: "WeiDU TRA",
+        ext: "tra",
+        yamlFiles: [],
+        caseIgnored: false,
+        stringDelimiters: [["~", "~"], ["\"", "\""], ["~~~~~", "~~~~~"]],
+        foldingPairs: [],
+    },
+    {
         name: "fallout-ssl",
         displayName: "Fallout SSL",
         ext: "ssl h",
