@@ -2,6 +2,10 @@
 
 The server package includes TypeScript Language Service Plugins for `.tssl` and `.td` transpiler files. These run inside tsserver (not the LSP server) and provide diagnostic filtering, runtime type injection, and completion filtering.
 
+- [Setup](#setup)
+- [What They Do](#what-they-do)
+- [Editor Integration](#editor-integration)
+
 ## Setup
 
 The plugins are bundled inside the server package at `out/tssl-plugin.js` and `out/td-plugin.js`. Find the install location:

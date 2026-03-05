@@ -18,7 +18,8 @@
     "grammar.js",
     "tree-sitter.json",
     "src/**",
-    "*.wasm"
+    "*.wasm",
+    "queries/**"
   ],
   "scripts": {
     "build": "tree-sitter generate && tree-sitter build --wasm",

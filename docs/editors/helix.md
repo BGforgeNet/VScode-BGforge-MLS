@@ -2,6 +2,12 @@
 
 Setup guide for using BGforge MLS with Helix.
 
+- [Prerequisites](#prerequisites)
+- [Language Server and File Types](#language-server-and-file-types)
+- [Tree-Sitter Highlighting](#tree-sitter-highlighting)
+- [TypeScript Plugins (TSSL/TD)](#typescript-plugins-tssltd)
+- [Settings](#settings)
+
 ## Prerequisites
 
 ```bash
@@ -20,25 +26,41 @@ args = ["--stdio"]
 [[language]]
 name = "fallout-ssl"
 scope = "source.fallout-ssl"
+grammar = "ssl"
 file-types = ["ssl", "h"]
+comment-tokens = ["//"]
+block-comment-tokens = { start = "/*", end = "*/" }
+auto-pairs = { "(" = ")", "[" = "]", "{" = "}", "\"" = "\"" }
 language-servers = ["bgforge-mls"]
 
 [[language]]
 name = "weidu-baf"
 scope = "source.weidu-baf"
+grammar = "baf"
 file-types = ["baf"]
+comment-tokens = ["//"]
+block-comment-tokens = { start = "/*", end = "*/" }
+auto-pairs = { "(" = ")", "\"" = "\"", "~" = "~" }
 language-servers = ["bgforge-mls"]
 
 [[language]]
 name = "weidu-d"
 scope = "source.weidu-d"
+grammar = "weidu_d"
 file-types = [{ glob = "*.d" }]
+comment-tokens = ["//"]
+block-comment-tokens = { start = "/*", end = "*/" }
+auto-pairs = { "(" = ")", "\"" = "\"", "~" = "~" }
 language-servers = ["bgforge-mls"]
 
 [[language]]
 name = "weidu-tp2"
 scope = "source.weidu-tp2"
+grammar = "weidu_tp2"
 file-types = ["tp2", "tpa", "tph", "tpp"]
+comment-tokens = ["//"]
+block-comment-tokens = { start = "/*", end = "*/" }
+auto-pairs = { "(" = ")", "[" = "]", "\"" = "\"", "~" = "~" }
 language-servers = ["bgforge-mls"]
 
 [[language]]
@@ -49,6 +71,52 @@ language-servers = ["bgforge-mls"]
 ```
 
 Note: `.h` files default to C/C++ in Helix. The override above sets them to Fallout SSL globally. Remove `"h"` from the list if you need C headers in the same project.
+
+## Tree-Sitter Highlighting
+
+### Grammar Configuration
+
+Add grammar entries to `~/.config/helix/languages.toml` and add `grammar` to each `[[language]]` block above to link them:
+
+```toml
+[[grammar]]
+name = "ssl"
+source = { git = "https://github.com/BGforgeNet/VScode-BGforge-MLS", rev = "master", subpath = "grammars/fallout-ssl" }
+
+[[grammar]]
+name = "baf"
+source = { git = "https://github.com/BGforgeNet/VScode-BGforge-MLS", rev = "master", subpath = "grammars/weidu-baf" }
+
+[[grammar]]
+name = "weidu_d"
+source = { git = "https://github.com/BGforgeNet/VScode-BGforge-MLS", rev = "master", subpath = "grammars/weidu-d" }
+
+[[grammar]]
+name = "weidu_tp2"
+source = { git = "https://github.com/BGforgeNet/VScode-BGforge-MLS", rev = "master", subpath = "grammars/weidu-tp2" }
+```
+
+Fetch and build:
+
+```bash
+hx --grammar fetch
+hx --grammar build
+```
+
+Copy highlight queries to `~/.config/helix/runtime/queries/<grammar>/`:
+
+```bash
+REPO="https://raw.githubusercontent.com/BGforgeNet/VScode-BGforge-MLS/master"
+HELIX_QUERIES="${XDG_CONFIG_HOME:-$HOME/.config}/helix/runtime/queries"
+
+for pair in "fallout-ssl:ssl" "weidu-baf:baf" "weidu-d:weidu_d" "weidu-tp2:weidu_tp2"; do
+  grammar="${pair%%:*}"
+  lang="${pair##*:}"
+  mkdir -p "$HELIX_QUERIES/$lang"
+  curl -fsSL "$REPO/grammars/$grammar/queries/highlights.scm" \
+    -o "$HELIX_QUERIES/$lang/highlights.scm"
+done
+```
 
 ## TypeScript Plugins (TSSL/TD)
 

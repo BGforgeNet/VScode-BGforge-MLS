@@ -2,6 +2,18 @@
 
 Setup guide for using BGforge MLS with Zed.
 
+- [Prerequisites](#prerequisites)
+- [Extension](#extension)
+  - [extension.toml](#extensiontoml)
+  - [Cargo.toml](#cargotoml)
+  - [src/lib.rs](#srclibrs)
+  - [Language Definitions](#language-definitions)
+  - [Tree-Sitter Grammars](#tree-sitter-grammars)
+  - [Highlight Queries](#highlight-queries)
+  - [Install](#install)
+- [TypeScript Plugins (TSSL/TD)](#typescript-plugins-tssltd)
+- [Settings](#settings)
+
 ## Prerequisites
 
 ```bash
@@ -76,28 +88,62 @@ zed::register_extension!(BgforgeMlsExtension);
 
 ```toml
 name = "Fallout SSL"
+grammar = "ssl"
 path_suffixes = ["ssl", "h"]
+line_comments = ["//"]
+block_comment = ["/*", "*/"]
+brackets = [
+  { start = "(", end = ")", close = true, newline = false },
+  { start = "[", end = "]", close = true, newline = false },
+  { start = "{", end = "}", close = true, newline = true },
+  { start = "\"", end = "\"", close = true, newline = false, not_in = ["string"] },
+]
 ```
 
 **`languages/weidu-baf/config.toml`**:
 
 ```toml
 name = "WeiDU BAF"
+grammar = "baf"
 path_suffixes = ["baf"]
+line_comments = ["//"]
+block_comment = ["/*", "*/"]
+brackets = [
+  { start = "(", end = ")", close = true, newline = false },
+  { start = "\"", end = "\"", close = true, newline = false, not_in = ["string"] },
+  { start = "~", end = "~", close = true, newline = false, not_in = ["string"] },
+]
 ```
 
 **`languages/weidu-d/config.toml`**:
 
 ```toml
 name = "WeiDU D"
+grammar = "weidu_d"
 path_suffixes = ["d"]
+line_comments = ["//"]
+block_comment = ["/*", "*/"]
+brackets = [
+  { start = "(", end = ")", close = true, newline = false },
+  { start = "\"", end = "\"", close = true, newline = false, not_in = ["string"] },
+  { start = "~", end = "~", close = true, newline = false, not_in = ["string"] },
+]
 ```
 
 **`languages/weidu-tp2/config.toml`**:
 
 ```toml
 name = "WeiDU TP2"
+grammar = "weidu_tp2"
 path_suffixes = ["tp2", "tpa", "tph", "tpp"]
+line_comments = ["//"]
+block_comment = ["/*", "*/"]
+brackets = [
+  { start = "(", end = ")", close = true, newline = false },
+  { start = "[", end = "]", close = true, newline = false },
+  { start = "\"", end = "\"", close = true, newline = false, not_in = ["string"] },
+  { start = "~", end = "~", close = true, newline = false, not_in = ["string"] },
+]
 ```
 
 **`languages/fallout-worldmap/config.toml`**:
@@ -114,6 +160,46 @@ Fallout Worldmap has no `path_suffixes` to avoid matching all `.txt` files. Use 
     "Fallout Worldmap": ["**/worldmap.txt"]
   }
 }
+```
+
+### Tree-Sitter Grammars
+
+Add grammar entries to `extension.toml`. Update the `commit` SHA to the latest from the [repository](https://github.com/BGforgeNet/VScode-BGforge-MLS):
+
+```toml
+[grammars.ssl]
+repository = "https://github.com/BGforgeNet/VScode-BGforge-MLS"
+commit = "dbdde670606b1b5d103f848cb22bb62a2e639fd8"
+path = "grammars/fallout-ssl"
+
+[grammars.baf]
+repository = "https://github.com/BGforgeNet/VScode-BGforge-MLS"
+commit = "dbdde670606b1b5d103f848cb22bb62a2e639fd8"
+path = "grammars/weidu-baf"
+
+[grammars.weidu_d]
+repository = "https://github.com/BGforgeNet/VScode-BGforge-MLS"
+commit = "dbdde670606b1b5d103f848cb22bb62a2e639fd8"
+path = "grammars/weidu-d"
+
+[grammars.weidu_tp2]
+repository = "https://github.com/BGforgeNet/VScode-BGforge-MLS"
+commit = "dbdde670606b1b5d103f848cb22bb62a2e639fd8"
+path = "grammars/weidu-tp2"
+```
+
+### Highlight Queries
+
+Copy the highlight queries into each language directory (`languages/<lang>/highlights.scm`):
+
+```bash
+REPO="https://raw.githubusercontent.com/BGforgeNet/VScode-BGforge-MLS/master"
+EXT_DIR="$HOME/zed-extensions/bgforge-mls"
+
+for lang in fallout-ssl weidu-baf weidu-d weidu-tp2; do
+  curl -fsSL "$REPO/grammars/$lang/queries/highlights.scm" \
+    -o "$EXT_DIR/languages/$lang/highlights.scm"
+done
 ```
 
 ### Install

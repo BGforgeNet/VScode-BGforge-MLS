@@ -2,6 +2,12 @@
 
 Setup guide for using BGforge MLS with Notepad++.
 
+- [Prerequisites](#prerequisites)
+- [File Types and Syntax Highlighting](#file-types-and-syntax-highlighting)
+- [Language Server](#language-server)
+- [TypeScript Plugins (TSSL/TD)](#typescript-plugins-tssltd)
+- [Settings](#settings)
+
 ## Prerequisites
 
 ```bash

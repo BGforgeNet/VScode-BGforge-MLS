@@ -2,6 +2,16 @@
 
 Setup guide for using BGforge MLS with Neovim 0.11+.
 
+- [Prerequisites](#prerequisites)
+- [File Type Detection](#file-type-detection)
+- [Comment Toggling](#comment-toggling)
+- [Language Server](#language-server)
+- [Tree-Sitter Highlighting](#tree-sitter-highlighting)
+  - [Parser Registration](#parser-registration)
+  - [Manual Query Installation](#manual-query-installation)
+- [TypeScript Plugins (TSSL/TD)](#typescript-plugins-tssltd)
+- [Settings](#settings)
+
 ## Prerequisites
 
 ```bash
@@ -32,6 +42,19 @@ Note: `.h` files default to C in Neovim. The override above sets them to Fallout
 
 Note: `.d` files may conflict with D language. Adjust per-project if needed.
 
+## Comment Toggling
+
+All supported languages use C-style comments (`//` line, `/* */` block). Set `commentstring` so that `gc`/`gcc` work correctly:
+
+```lua
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "fallout-ssl", "weidu-baf", "weidu-d", "weidu-tp2" },
+  callback = function()
+    vim.bo.commentstring = "// %s"
+  end,
+})
+```
+
 ## Language Server
 
 ```lua
@@ -42,6 +65,83 @@ vim.lsp.config["bgforge-mls"] = {
 }
 
 vim.lsp.enable("bgforge-mls")
+```
+
+## Tree-Sitter Highlighting
+
+### Parser Registration
+
+Using [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter), register the parsers via a `TSUpdate` autocmd. The `location` field points to the grammar subdirectory in the monorepo, and `queries` specifies the highlight query files:
+
+```lua
+vim.api.nvim_create_autocmd("User", {
+  pattern = "TSUpdate",
+  callback = function()
+    local parsers = require("nvim-treesitter.parsers")
+    local url = "https://github.com/BGforgeNet/VScode-BGforge-MLS"
+
+    parsers.ssl = {
+      install_info = {
+        url = url,
+        location = "grammars/fallout-ssl",
+        queries = "grammars/fallout-ssl/queries",
+      },
+    }
+    parsers.baf = {
+      install_info = {
+        url = url,
+        location = "grammars/weidu-baf",
+        queries = "grammars/weidu-baf/queries",
+      },
+    }
+    parsers.weidu_d = {
+      install_info = {
+        url = url,
+        location = "grammars/weidu-d",
+        queries = "grammars/weidu-d/queries",
+      },
+    }
+    parsers.weidu_tp2 = {
+      install_info = {
+        url = url,
+        location = "grammars/weidu-tp2",
+        queries = "grammars/weidu-tp2/queries",
+      },
+    }
+  end,
+})
+```
+
+Map tree-sitter grammar names to Neovim filetypes:
+
+```lua
+vim.treesitter.language.register("ssl", "fallout-ssl")
+vim.treesitter.language.register("baf", "weidu-baf")
+vim.treesitter.language.register("weidu_d", "weidu-d")
+vim.treesitter.language.register("weidu_tp2", "weidu-tp2")
+```
+
+Install the parsers:
+
+```vim
+:TSInstall ssl baf weidu_d weidu_tp2
+```
+
+### Manual Query Installation
+
+If highlights aren't installed automatically, copy them manually:
+
+```bash
+REPO="https://raw.githubusercontent.com/BGforgeNet/VScode-BGforge-MLS/master"
+NVIM_QUERIES="${XDG_CONFIG_HOME:-$HOME/.config}/nvim/queries"
+
+for pair in "fallout-ssl:ssl" "weidu-baf:baf" "weidu-d:weidu_d" "weidu-tp2:weidu_tp2"; do
+  grammar="${pair%%:*}"
+  lang="${pair##*:}"
+  mkdir -p "$NVIM_QUERIES/$lang"
+  curl -fsSL "$REPO/grammars/$grammar/queries/highlights.scm" \
+    -o "$NVIM_QUERIES/$lang/highlights.scm"
+done
 ```
 
 ## TypeScript Plugins (TSSL/TD)

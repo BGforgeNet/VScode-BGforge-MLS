@@ -2,6 +2,12 @@
 
 Setup guide for using BGforge MLS with Kate (KDE text editor).
 
+- [Prerequisites](#prerequisites)
+- [Syntax Highlighting](#syntax-highlighting)
+- [Language Server](#language-server)
+- [TypeScript Plugins (TSSL/TD)](#typescript-plugins-tssltd)
+- [Settings](#settings)
+
 ## Prerequisites
 
 ```bash

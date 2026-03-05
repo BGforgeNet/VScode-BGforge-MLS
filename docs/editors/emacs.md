@@ -2,6 +2,19 @@
 
 Setup guide for using BGforge MLS with Emacs 29+.
 
+- [Prerequisites](#prerequisites)
+- [File Type Detection](#file-type-detection)
+- [Tree-Sitter Highlighting (Emacs 29+)](#tree-sitter-highlighting-emacs-29)
+  - [Compile Grammars](#compile-grammars)
+  - [Font-Lock Rules](#font-lock-rules)
+- [Language Server](#language-server)
+  - [eglot (built-in, Emacs 29+)](#eglot-built-in-emacs-29)
+  - [lsp-mode](#lsp-mode)
+- [TypeScript Plugins (TSSL/TD)](#typescript-plugins-tssltd)
+- [Settings](#settings)
+  - [eglot settings](#eglot-settings)
+  - [lsp-mode settings](#lsp-mode-settings)
+
 ## Prerequisites
 
 ```bash
@@ -14,16 +27,28 @@ Define major modes first. The mode names match the server's language IDs (`fallo
 
 ```elisp
 (define-derived-mode fallout-ssl-mode prog-mode "Fallout-SSL"
-  "Major mode for Fallout SSL files.")
+  "Major mode for Fallout SSL files."
+  (setq-local comment-start "// ")
+  (setq-local comment-start-skip "//+\\s-*")
+  (setq-local comment-end ""))
 
 (define-derived-mode weidu-baf-mode prog-mode "WeiDU-BAF"
-  "Major mode for WeiDU BAF files.")
+  "Major mode for WeiDU BAF files."
+  (setq-local comment-start "// ")
+  (setq-local comment-start-skip "//+\\s-*")
+  (setq-local comment-end ""))
 
 (define-derived-mode weidu-d-mode prog-mode "WeiDU-D"
-  "Major mode for WeiDU D dialog files.")
+  "Major mode for WeiDU D dialog files."
+  (setq-local comment-start "// ")
+  (setq-local comment-start-skip "//+\\s-*")
+  (setq-local comment-end ""))
 
 (define-derived-mode weidu-tp2-mode prog-mode "WeiDU-TP2"
-  "Major mode for WeiDU TP2 installer files.")
+  "Major mode for WeiDU TP2 installer files."
+  (setq-local comment-start "// ")
+  (setq-local comment-start-skip "//+\\s-*")
+  (setq-local comment-end ""))
 
 (define-derived-mode fallout-worldmap-txt-mode prog-mode "Fallout-Worldmap"
   "Major mode for Fallout worldmap.txt files.")
@@ -38,6 +63,77 @@ Define major modes first. The mode names match the server's language IDs (`fallo
 ```
 
 Note: `.h` files default to `c-mode` in Emacs. The override above sets them to `fallout-ssl-mode` globally. For per-project control, use directory-local variables (`.dir-locals.el`) instead.
+
+## Tree-Sitter Highlighting (Emacs 29+)
+
+### Compile Grammars
+
+```elisp
+(setq treesit-language-source-alist
+      '((ssl "https://github.com/BGforgeNet/VScode-BGforge-MLS" "master" "grammars/fallout-ssl/src")
+        (baf "https://github.com/BGforgeNet/VScode-BGforge-MLS" "master" "grammars/weidu-baf/src")
+        (weidu_d "https://github.com/BGforgeNet/VScode-BGforge-MLS" "master" "grammars/weidu-d/src")
+        (weidu_tp2 "https://github.com/BGforgeNet/VScode-BGforge-MLS" "master" "grammars/weidu-tp2/src")))
+```
+
+Compile each grammar (one-time):
+
+```
+M-x treesit-install-language-grammar RET ssl
+M-x treesit-install-language-grammar RET baf
+M-x treesit-install-language-grammar RET weidu_d
+M-x treesit-install-language-grammar RET weidu_tp2
+```
+
+### Font-Lock Rules
+
+Emacs tree-sitter does not read `.scm` query files directly -- font-lock rules must be defined in elisp. Use the `highlights.scm` files as a reference for node types. Minimal example for Fallout SSL:
+
+```elisp
+(require 'treesit)
+
+(defvar fallout-ssl-ts--font-lock-rules
+  (treesit-font-lock-rules
+   :language 'ssl
+   :feature 'comment
+   '((comment) @font-lock-comment-face)
+
+   :language 'ssl
+   :feature 'string
+   '((string) @font-lock-string-face)
+
+   :language 'ssl
+   :feature 'keyword
+   '((control_flow) @font-lock-keyword-face)
+
+   :language 'ssl
+   :feature 'number
+   '((number) @font-lock-number-face))
+  "Tree-sitter font-lock rules for Fallout SSL.
+See grammars/fallout-ssl/queries/highlights.scm for all available captures.")
+
+(define-derived-mode fallout-ssl-ts-mode prog-mode "Fallout-SSL"
+  "Major mode for Fallout SSL files with tree-sitter support."
+  (when (treesit-ready-p 'ssl)
+    (treesit-parser-create 'ssl)
+    (setq-local treesit-font-lock-settings fallout-ssl-ts--font-lock-rules)
+    (setq-local treesit-font-lock-feature-list '((comment string) (keyword) (number)))
+    (treesit-major-mode-setup)))
+```
+
+To use tree-sitter modes instead of the basic modes, update `auto-mode-alist`:
+
+```elisp
+(add-to-list 'auto-mode-alist '("\\.ssl\\'" . fallout-ssl-ts-mode))
+;; Similarly for other languages:
+;; (add-to-list 'auto-mode-alist '("\\.baf\\'" . weidu-baf-ts-mode))
+;; (add-to-list 'auto-mode-alist '("\\.d\\'" . weidu-d-ts-mode))
+;; (add-to-list 'auto-mode-alist '("\\.tp2\\'" . weidu-tp2-ts-mode))
+```
+
+Adapt for other languages by changing the language symbol and node names. Translate `@function.builtin` to `font-lock-builtin-face`, `@keyword` to `font-lock-keyword-face`, etc.
+
+The tree-sitter modes and basic modes are independent. If using tree-sitter modes, add the `-ts-mode` variants to the eglot/lsp-mode registration.
 
 ## Language Server
 
@@ -69,7 +165,7 @@ If you write `.tssl` or `.td` transpiler files, the server package includes Type
 
 ## Settings
 
-### eglot
+### eglot settings
 
 ```elisp
 (setq-default eglot-workspace-configuration
@@ -85,7 +181,7 @@ If you write `.tssl` or `.td` transpiler files, the server package includes Type
                          :gamePath ""))))
 ```
 
-### lsp-mode
+### lsp-mode settings
 
 The server reads settings via `workspace/configuration`. Use `lsp-register-custom-settings` to map variables to configuration paths:
 

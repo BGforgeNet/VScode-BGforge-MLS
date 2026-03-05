@@ -2,6 +2,12 @@
 
 Setup guide for using BGforge MLS with JetBrains IDEs (IntelliJ IDEA, WebStorm, CLion, etc.).
 
+- [Prerequisites](#prerequisites)
+- [Language Server](#language-server)
+- [Syntax Highlighting](#syntax-highlighting)
+- [TypeScript Plugins (TSSL/TD)](#typescript-plugins-tssltd)
+- [Settings](#settings)
+
 ## Prerequisites
 
 ```bash
