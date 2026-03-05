@@ -38,18 +38,3 @@ WASM files are copied automatically by `scripts/build-base-server.sh` during bui
 
 Loaded by `server/src/dialog.ts` and `server/src/format-fallout-ssl.ts` at runtime.
 
-### CJS Bundle Patch (import_meta)
-
-**Problem**: `web-tree-sitter` internally uses `import.meta.url` for WASM file resolution, even when you pass `wasmBinary` directly to `Parser.init()`. When esbuild bundles to CJS format, it creates an empty `var import_meta = {};`, causing "undefined filename" errors.
-
-**Solution**: Patch the bundled output to provide `import_meta.url`:
-
-```bash
-sed -i "s/var import_meta = {};/var import_meta = {url: require('url').pathToFileURL(__filename).href};/" output.js
-```
-
-This is applied in:
-- `scripts/build-base-server.sh` - for the LSP server bundle
-- `package.json` `build:format-cli` script - for the CLI tool
-
-Any new bundle using `web-tree-sitter` needs this patch.
