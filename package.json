@@ -349,8 +349,8 @@
                 },
                 "bgforge.falloutSSL.compilePath": {
                     "type": "string",
-                    "default": "wine ~/bin/compile",
-                    "description": "Path to compile.exe from sfall modders pack. Alternatively, you can add compile.exe to system PATH and leave default here. Ignored if 'Use built-in compiler' is enabled."
+                    "default": "compile",
+                    "description": "Path to sslc compiler. Add to system PATH or specify full path. Ignored if 'Use built-in compiler' is enabled."
                 },
                 "bgforge.falloutSSL.compileOptions": {
                     "type": "string",
@@ -425,7 +425,7 @@
         "vscode:prepublish": "./scripts/prepublish.sh",
         "build": "pnpm build:client && pnpm build:server && pnpm build:test && pnpm build:webviews",
         "build:dev": "./scripts/build-dev.sh",
-        "build:all": "pnpm build:grammar && pnpm build",
+        "build:all": "pnpm build:grammar && pnpm build && pnpm build:tmbundle && pnpm build:udl",
         "build:ts-plugin": "./scripts/build-ts-plugin.sh",
         "build:td-plugin": "./scripts/build-td-plugin.sh",
         "build:client": "pnpm build:base:client --sourcemap && pnpm build:ts-plugin --sourcemap && pnpm build:td-plugin --sourcemap && pnpm build:bin-cli",
@@ -436,6 +436,8 @@
         "build:transpile-cli": "./scripts/build-transpile-cli.sh",
         "build:bin-cli": "./scripts/build-bin-cli.sh",
         "build:grammar": "bash ./scripts/build-grammar.sh",
+        "build:tmbundle": "./scripts/build-tmbundle.sh",
+        "build:udl": "./scripts/build-udl.sh",
         "build:base:client": "./scripts/build-base-client.sh",
         "build:base:server": "bash ./scripts/build-base-server.sh",
         "build:base:webviews": "./scripts/build-base-webviews.sh",

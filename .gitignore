@@ -1,6 +1,9 @@
 *.log
 *.tgz
 *.vsix
+*.tmbundle
+*.tmbundle.zip
+bgforge-mls-notepadpp-udl*/
 .reports/
 .vscode-test/
 

@@ -30,7 +30,9 @@ The server communicates over stdio:
 bgforge-mls-server --stdio
 ```
 
-See [USAGE.md](USAGE.md) for editor configuration (Neovim, Helix, Emacs, Sublime Text) and settings reference.
+[Settings Reference](../docs/settings.md) - All server settings with defaults.
+
+See [USAGE.md](USAGE.md) for editor setup guides and settings reference.
 
 ## Links
 

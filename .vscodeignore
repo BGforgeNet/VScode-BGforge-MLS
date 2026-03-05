@@ -28,6 +28,9 @@ pnpm-workspace.yaml
 *.tgz
 *.log
 **/*.map
+*.tmbundle
+*.tmbundle.zip
+bgforge-mls-notepadpp-udl*/
 
 # Dev-only directories
 cli/
