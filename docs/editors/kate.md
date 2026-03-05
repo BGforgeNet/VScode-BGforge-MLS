@@ -24,7 +24,7 @@ Download `bgforge-mls-kate-ksh-<version>.zip` from the [latest GitHub release](h
 - **Windows**: `%USERPROFILE%\AppData\Local\org.kde.syntax-highlighting\syntax\`
 - **macOS**: `~/Library/Application Support/org.kde.syntax-highlighting/syntax/`
 
-Restart Kate after installing. The definitions provide keyword, function, and constant highlighting plus code folding.
+Restart Kate after installing. The definitions provide keyword, function, and constant highlighting plus code folding. The zip includes definitions for all supported languages, including Fallout MSG (`.msg`), WeiDU TRA (`.tra`), Infinity 2DA (`.2da`), Fallout scripts.lst (`scripts.lst`), and Fallout worldmap.txt (`worldmap.txt`).
 
 Note: `.h` files default to C/C++ in Kate. Use `Tools > Highlighting > Fallout SSL` manually for Fallout header files.
 
@@ -45,7 +45,8 @@ Add a server in `Settings > Configure Kate > LSP Client > User Server Settings`:
 }
 ```
 
-The `highlightingModeRegex` must match the language names from the installed KSyntaxHighlighting definitions. `Fallout-Worldmap` needs a manual mode entry in `Settings > Configure Kate > Open/Save > Modes & Filetypes` since no KSH definition is provided for it (it's a simple key-value format).
+The `highlightingModeRegex` must match the language names from the installed KSyntaxHighlighting definitions. The `Fallout Worldmap` KSH definition matches `worldmap.txt` by filename. For `scripts.lst`, use `Tools > Highlighting > Fallout scripts.lst` manually since the extension is generic.
+
 ## TypeScript Plugins (TSSL/TD)
 
 If you write `.tssl` or `.td` transpiler files, the server package includes TypeScript plugins that run inside tsserver. See [TypeScript Plugins](typescript-plugins.md) for setup.

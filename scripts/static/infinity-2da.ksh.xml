@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE language>
+<!--
+  KSyntaxHighlighting definition for Infinity Engine 2DA table files (.2da).
+  Hand-written (not generated) because 2DA is a fixed-format tabular file:
+  header line, default value, column names, then data rows.
+  Install to: ~/.local/share/org.kde.syntax-highlighting/syntax/
+-->
+<language name="Infinity 2DA" version="1" kateversion="5.0" section="Scripts"
+          extensions="*.2da" casesensitive="true"
+          author="BGforge" license="MIT">
+  <highlighting>
+    <contexts>
+      <!-- Line 1: "2DA V1.0" header -->
+      <context name="Normal" attribute="Normal" lineEndContext="DefaultValue">
+        <StringDetect attribute="Keyword" String="2DA" context="#stay"/>
+        <RegExpr attribute="Constant" String="V\d+\.\d+" context="#stay"/>
+      </context>
+
+      <!-- Line 2: default value -->
+      <context name="DefaultValue" attribute="Constant" lineEndContext="ColumnNames"/>
+
+      <!-- Line 3: column names (space-separated) -->
+      <context name="ColumnNames" attribute="Function" lineEndContext="DataRow"/>
+
+      <!-- Data rows: first token is row label, rest is data -->
+      <context name="DataRow" attribute="Normal" lineEndContext="DataRow">
+        <RegExpr attribute="RowLabel" String="^\S+" column="0" context="DataValues"/>
+      </context>
+
+      <context name="DataValues" attribute="String" lineEndContext="DataRow">
+        <RegExpr attribute="Number" String="-?\b\d+\b" context="#stay"/>
+      </context>
+    </contexts>
+
+    <itemDatas>
+      <itemData name="Normal" defStyleNum="dsNormal"/>
+      <itemData name="Keyword" defStyleNum="dsKeyword"/>
+      <itemData name="Constant" defStyleNum="dsBuiltIn"/>
+      <itemData name="Function" defStyleNum="dsFunction"/>
+      <itemData name="RowLabel" defStyleNum="dsVariable"/>
+      <itemData name="String" defStyleNum="dsString"/>
+      <itemData name="Number" defStyleNum="dsDecVal"/>
+    </itemDatas>
+  </highlighting>
+
+  <general>
+    <keywords casesensitive="true"/>
+  </general>
+</language>

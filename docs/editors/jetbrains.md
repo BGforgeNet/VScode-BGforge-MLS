@@ -31,7 +31,7 @@ Download `bgforge-mls.tmbundle.zip` from the [latest GitHub release](https://git
 1. Go to `Settings > Editor > TextMate Bundles`
 2. Click `+` and point to the extracted `bgforge-mls.tmbundle` directory
 
-The tmbundle includes syntax definitions for all supported languages, including Fallout MSG (`.msg`) and WeiDU TRA (`.tra`).
+The tmbundle includes syntax definitions for all supported languages, including Fallout MSG (`.msg`), WeiDU TRA (`.tra`), Infinity 2DA (`.2da`), Fallout scripts.lst, and Fallout worldmap.txt.
 
 Note: `.h` files default to C/C++ in JetBrains IDEs. Override per-project in `Settings > Editor > File Types` by adding `*.h` to the Fallout SSL type (or use file-level overrides).
 

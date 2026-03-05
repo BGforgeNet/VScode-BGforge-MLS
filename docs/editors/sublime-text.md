@@ -36,7 +36,7 @@ contexts:
 
 Repeat for each language (`weidu-baf`/`baf`, `weidu-d`/`d`, `weidu-tp2`/`tp2 tpa tph tpp`, `fallout-worldmap-txt`/no extension).
 
-The tmbundle also includes syntax definitions for Fallout MSG (`.msg`) and WeiDU TRA (`.tra`) files.
+The tmbundle also includes syntax definitions for Fallout MSG (`.msg`), WeiDU TRA (`.tra`), Infinity 2DA (`.2da`), Fallout scripts.lst, and Fallout worldmap.txt files.
 
 For `worldmap.txt`, use `View > Syntax > Fallout Worldmap` manually since syntax files match by extension, not filename.
 

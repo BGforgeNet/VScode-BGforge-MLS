@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE language>
+<!--
+  KSyntaxHighlighting definition for Fallout worldmap.txt files.
+  Hand-written (not generated) because worldmap.txt is an INI-like format
+  with sections, key=value pairs, semicolon comments, and special directives.
+  Install to: ~/.local/share/org.kde.syntax-highlighting/syntax/
+-->
+<language name="Fallout Worldmap" version="1" kateversion="5.0" section="Scripts"
+          extensions="worldmap.txt" casesensitive="false"
+          author="BGforge" license="MIT">
+  <highlighting>
+    <list name="directives">
+      <item>Enc</item>
+      <item>Item</item>
+      <item>Map</item>
+      <item>Chance</item>
+      <item>Ratio</item>
+      <item>pid</item>
+      <item>Script</item>
+      <item>Dead</item>
+      <item>Spacing</item>
+      <item>Distance</item>
+      <item>Counter</item>
+      <item>Special</item>
+    </list>
+
+    <list name="positions">
+      <item>surrounding</item>
+      <item>straight_line</item>
+      <item>double_line</item>
+      <item>wedge</item>
+      <item>cone</item>
+      <item>huddle</item>
+    </list>
+
+    <list name="conditions">
+      <item>Global</item>
+      <item>Player</item>
+      <item>Level</item>
+      <item>Rand</item>
+      <item>If</item>
+    </list>
+
+    <list name="encounter_keys">
+      <item>AMBUSH</item>
+      <item>FIGHTING</item>
+    </list>
+
+    <list name="known_keys">
+      <item>team_num</item>
+      <item>position</item>
+      <item>lookup_name</item>
+      <item>maps</item>
+      <item>art_idx</item>
+      <item>encounter_difficulty</item>
+      <item>walk_mask_name</item>
+      <item>num_horizontal_tiles</item>
+      <item>terrain_types</item>
+      <item>terrain_short_names</item>
+      <item>Forced</item>
+      <item>Frequent</item>
+      <item>Common</item>
+      <item>Uncommon</item>
+      <item>Rare</item>
+      <item>None</item>
+    </list>
+
+    <contexts>
+      <context name="Normal" attribute="Normal" lineEndContext="#stay">
+        <!-- Comments: ; to end of line -->
+        <DetectChar attribute="Comment" context="Comment" char=";"/>
+        <!-- Section headers: [Name] -->
+        <DetectChar attribute="Bracket" context="Section" char="["/>
+        <!-- Known keys get Function style, unknown keys get generic Key style -->
+        <keyword attribute="Function" String="known_keys" column="0" context="AfterKey"/>
+        <RegExpr attribute="Key" String="^\w+" column="0" context="AfterKey"/>
+      </context>
+
+      <context name="Comment" attribute="Comment" lineEndContext="#pop"/>
+
+      <context name="Section" attribute="Section" lineEndContext="#pop">
+        <DetectChar attribute="Bracket" context="#pop" char="]"/>
+      </context>
+
+      <context name="AfterKey" attribute="Normal" lineEndContext="#pop">
+        <DetectChar attribute="Operator" context="Value" char="="/>
+        <DetectChar attribute="Comment" context="Comment" char=";"/>
+      </context>
+
+      <context name="Value" attribute="String" lineEndContext="#pop#pop">
+        <DetectChar attribute="Comment" context="Comment" char=";"/>
+        <keyword attribute="Function" String="directives" context="#stay"/>
+        <keyword attribute="Function" String="conditions" context="#stay"/>
+        <keyword attribute="Constant" String="encounter_keys" context="#stay"/>
+        <keyword attribute="Constant" String="positions" context="#stay"/>
+        <RegExpr attribute="Number" String="-?\b\d+\b" context="#stay"/>
+        <DetectChar attribute="Operator" context="#stay" char=":"/>
+        <DetectChar attribute="Operator" context="#stay" char=","/>
+      </context>
+    </contexts>
+
+    <itemDatas>
+      <itemData name="Normal" defStyleNum="dsNormal"/>
+      <itemData name="Comment" defStyleNum="dsComment"/>
+      <itemData name="Section" defStyleNum="dsString"/>
+      <itemData name="Bracket" defStyleNum="dsKeyword"/>
+      <itemData name="Key" defStyleNum="dsVariable"/>
+      <itemData name="Operator" defStyleNum="dsKeyword"/>
+      <itemData name="String" defStyleNum="dsString"/>
+      <itemData name="Function" defStyleNum="dsFunction"/>
+      <itemData name="Constant" defStyleNum="dsBuiltIn"/>
+      <itemData name="Number" defStyleNum="dsDecVal"/>
+    </itemDatas>
+  </highlighting>
+
+  <general>
+    <comments>
+      <comment name="singleLine" start=";"/>
+    </comments>
+    <keywords casesensitive="false"/>
+  </general>
+</language>
