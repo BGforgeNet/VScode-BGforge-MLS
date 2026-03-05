@@ -13,7 +13,8 @@
         "tpp"
       ],
       "injection-regex": "^weidu-tp2$",
-      "class-name": "TreeSitterWeiDUTP2"
+      "class-name": "TreeSitterWeiDUTP2",
+      "highlights": "queries/highlights.scm"
     }
   ],
   "metadata": {

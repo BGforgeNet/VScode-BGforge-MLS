@@ -1,0 +1,36 @@
+/* block comment */
+// <- comment
+// line comment
+// <- comment
+IF
+// <- keyword
+  Global("var", "LOCALS", 0)
+//^ function
+//       ^ string
+//                        ^ number
+  OR(2)
+//^ keyword
+//   ^ number
+  !GlobalTimerExpired("timer", "LOCALS")
+//^ operator
+// ^ function
+  ObjectIsSpellCaster([PC])
+//                    ^ punctuation.bracket
+//                     ^^ constant
+//                       ^ punctuation.bracket
+THEN
+// <- keyword
+  RESPONSE #100
+//^ keyword
+//         ^ punctuation.special
+//          ^^^ number
+    SetGlobal("var", "LOCALS", 1)
+//  ^ function.builtin
+//            ^ string
+//                             ^ number
+    CreateCreature("creature", [-1.-1], 0)
+//                              ^ number
+//                                ^ punctuation.delimiter
+//                                 ^^ number
+END
+// <- keyword

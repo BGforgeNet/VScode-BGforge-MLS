@@ -10,7 +10,8 @@
         "ssl"
       ],
       "injection-regex": "^ssl$",
-      "class-name": "TreeSitterSsl"
+      "class-name": "TreeSitterSsl",
+      "highlights": "queries/highlights.scm"
     }
   ],
   "metadata": {

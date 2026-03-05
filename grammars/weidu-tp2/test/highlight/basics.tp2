@@ -1,0 +1,96 @@
+/* block comment */
+// <- comment
+// line comment
+// <- comment
+
+BACKUP ~mymod/backup~
+// <- keyword.directive
+//     ^^^^^^^^^^^^^^^ string
+
+AUTHOR ~user~
+// <- keyword.directive
+
+VERSION ~1.0~
+// <- keyword.directive
+
+LANGUAGE ~English~ ~english~ ~english/setup.tra~
+// <- keyword.directive
+
+BEGIN ~My Component~
+// <- function.builtin
+//    ^^^^^^^^^^^^^^^ string
+
+DESIGNATED 100
+// <- keyword.modifier
+//         ^^^ number
+
+COPY ~source.2da~ ~override~
+// <- function.builtin
+//   ^^^^^^^^^^^^ string
+  READ_LONG 0x0 my_var
+//^^^^^^^^^ function
+//          ^^^ number
+  WRITE_BYTE 0x10 255
+//^^^^^^^^^^ function
+//           ^^^^ number
+//                ^^^ number
+BUT_ONLY
+// <- keyword.modifier
+
+OUTER_SET my_var = 42
+// <- function.builtin
+
+OUTER_SPRINT my_str ~hello~
+// <- function.builtin
+
+ACTION_IF FILE_EXISTS ~file.2da~ BEGIN
+// <- keyword.conditional
+//        ^^^^^^^^^^^ function.builtin
+//                    ^^^^^^^^^^ string
+//                               ^^^^^ keyword
+END
+// <- keyword
+
+COPY_EXISTING ~creature.cre~ ~override~
+// <- function.builtin
+  PATCH_IF (LONG_AT 0x10) = 1 BEGIN
+//^^^^^^^^ keyword.conditional
+//         ^^^^^^^ function.builtin
+//                        ^ operator
+//                          ^ number
+//                            ^^^^^ keyword
+  END
+//^^^ keyword
+
+DEFINE_PATCH_FUNCTION my_func
+// <- keyword.function
+//                    ^^^^^^^ function
+  INT_VAR my_param = 0
+//^^^^^^^ type
+  RET result
+//^^^ type
+BEGIN
+// <- keyword
+  SET result = 42
+//^^^ function
+//             ^^ number
+END
+// <- keyword
+
+LAF my_func INT_VAR my_param = 1 RET result END
+// <- keyword
+//  ^^^^^^^ function.call
+//          ^^^^^^^ type
+//                             ^ number
+//                               ^^^ type
+
+DEFINE_ACTION_MACRO my_macro BEGIN
+// <- keyword.function
+//                  ^^^^^^^^ function.macro
+  PRINT ~hello~
+//^^^^^ function.builtin
+END
+
+LAM my_macro
+// <- keyword
+//  ^^^^^^^^ function.macro

@@ -118,17 +118,17 @@ export default grammar({
 
     // Forward declaration: procedure name; or procedure name(params);
     procedure_forward: ($) =>
-      seq(/[Pp]rocedure/, field("name", $.identifier), optional(field("params", $.param_list)), ";"),
+      seq(alias(/[Pp]rocedure/, "procedure"), field("name", $.identifier), optional(field("params", $.param_list)), ";"),
 
     // Procedure definition: procedure name begin ... end
     procedure: ($) =>
       seq(
-        /[Pp]rocedure/,
+        alias(/[Pp]rocedure/, "procedure"),
         field("name", $.identifier),
         optional(field("params", $.param_list)),
-        /[Bb]egin/,
+        alias(/[Bb]egin/, "begin"),
         field("body", repeat($._statement)),
-        /[Ee]nd/
+        alias(/[Ee]nd/, "end")
       ),
 
     param_list: ($) =>
@@ -302,7 +302,7 @@ export default grammar({
 
     _stmt_or_block: ($) => choice($._statement, $.block),
 
-    block: ($) => seq(/[Bb]egin/, repeat($._statement), /[Ee]nd/),
+    block: ($) => seq(alias(/[Bb]egin/, "begin"), repeat($._statement), alias(/[Ee]nd/, "end")),
 
     // Expressions
     _expression: ($) =>

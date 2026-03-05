@@ -10,7 +10,8 @@
         "baf"
       ],
       "injection-regex": "^baf$",
-      "class-name": "TreeSitterBaf"
+      "class-name": "TreeSitterBaf",
+      "highlights": "queries/highlights.scm"
     }
   ],
   "metadata": {

@@ -1,0 +1,9 @@
+IF
+  Global("var", "LOCALS", 0)
+THEN
+  RESPONSE #100
+    DisplayString(Player1, @123)
+//                         ^^^^ string.special
+    SetGlobalTimer("%myvar%", "LOCALS", 10)
+//                 ^ string
+END

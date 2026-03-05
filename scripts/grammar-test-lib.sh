@@ -30,6 +30,34 @@ grammar_corpus() {
     "$TS" test
 }
 
+grammar_highlight() {
+    # Highlight query validation has two parts:
+    #
+    # 1. Assertion tests in test/highlight/ — validated by `tree-sitter test`
+    #    in grammar_corpus(). These verify that specific source positions get
+    #    the expected capture names. This is the primary correctness check.
+    #
+    # 2. `tree-sitter highlight --check` — validates capture names against
+    #    tree-sitter's built-in list. Skipped because:
+    #    a) It requires tree-sitter-* directory naming for CLI auto-discovery,
+    #       but our grammars use domain names (weidu-baf, fallout-ssl, etc.).
+    #       Only the CLI cares about this — editors (Neovim, Helix, Zed, Emacs)
+    #       discover grammars through their own config, not directory names.
+    #    b) Its built-in list is very conservative and doesn't include
+    #       Neovim-convention captures (keyword.conditional, function.builtin,
+    #       function.call, string.special, etc.) that are widely supported by
+    #       all editors. Every capture we use would produce a warning.
+    #
+    # So this step only checks that highlights.scm exists as a smoke test.
+    if [[ ! -f "$GRAMMAR_DIR/queries/highlights.scm" ]]; then
+        echo ""
+        echo "=== Skipping highlight validation (no queries/highlights.scm) ==="
+        return
+    fi
+    echo ""
+    echo "=== Validating highlight captures ==="
+}
+
 grammar_parse() {
     echo ""
     echo "=== Parsing samples ==="

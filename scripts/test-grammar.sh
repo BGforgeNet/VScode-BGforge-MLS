@@ -22,6 +22,7 @@ source "$(dirname "$0")/grammar-test-lib.sh"
 grammar_generate
 grammar_lint
 grammar_corpus
+grammar_highlight
 grammar_parse
 grammar_build_format
 grammar_format

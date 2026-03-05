@@ -1,0 +1,57 @@
+/* block comment */
+// <- comment
+// line comment
+// <- comment
+
+#define MY_CONST 42
+// <- keyword.directive.define
+//      ^^^^^^^^ constant.macro
+
+#include "header.h"
+// <- keyword.import
+//       ^^^^^^^^^^ string
+
+#ifdef SOME_FLAG
+// <- keyword.directive
+#endif
+// <- keyword.directive
+
+procedure my_proc begin
+// <- keyword.function
+//        ^^^^^^^ function
+//                ^^^^^ keyword
+  variable a := 1;
+//^^^^^^^^ keyword.type
+//           ^^ operator
+//              ^ number
+
+  if (a == 1) then begin
+//^^ keyword.conditional
+//      ^^ operator
+//         ^ number
+    display_msg("hello");
+//  ^^^^^^^^^^^ function.call
+//              ^^^^^^^ string
+  end else begin
+//^^^ keyword
+//    ^^^^ keyword.conditional
+//         ^^^^^ keyword
+    return;
+//  ^^^^^^ keyword.return
+  end
+
+  while (a > 0) do begin
+//^^^^^ keyword.repeat
+//           ^ number
+//              ^^ keyword.repeat
+    a := a - 1;
+//    ^^ operator
+//         ^ operator
+  end
+
+  if true then
+//   ^^^^ constant.builtin
+    break;
+//  ^^^^^ keyword.return
+end
+// <- keyword

@@ -10,7 +10,8 @@
         "d"
       ],
       "injection-regex": "^weidu-d$",
-      "class-name": "TreeSitterWeiDUD"
+      "class-name": "TreeSitterWeiDUD",
+      "highlights": "queries/highlights.scm"
     }
   ],
   "metadata": {

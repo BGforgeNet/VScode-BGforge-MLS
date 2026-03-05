@@ -20,27 +20,27 @@ export default grammar({
       seq(
         field("if", $.if_clause),
         field("then", $.then_clause),
-        /[Ee][Nn][Dd]/
+        alias(/[Ee][Nn][Dd]/, "END")
       ),
 
     if_clause: ($) =>
-      seq(/[Ii][Ff]/, repeat($._condition_item)),
+      seq(alias(/[Ii][Ff]/, "IF"), repeat($._condition_item)),
 
     _condition_item: ($) => choice($.or_marker, $.condition),
 
     // OR(N) marker - the count is semantic, grammar just captures it
     or_marker: ($) =>
-      seq(/[Oo][Rr]/, "(", field("count", $.number), ")"),
+      seq(alias(/[Oo][Rr]/, "OR"), "(", field("count", $.number), ")"),
 
     condition: ($) =>
       seq(optional("!"), field("call", $.call_expr)),
 
     then_clause: ($) =>
-      seq(/[Tt][Hh][Ee][Nn]/, repeat1($.response)),
+      seq(alias(/[Tt][Hh][Ee][Nn]/, "THEN"), repeat1($.response)),
 
     response: ($) =>
       seq(
-        /[Rr][Ee][Ss][Pp][Oo][Nn][Ss][Ee]/,
+        alias(/[Rr][Ee][Ss][Pp][Oo][Nn][Ss][Ee]/, "RESPONSE"),
         "#",
         field("weight", $.number),
         repeat1($.action)  // At least one action required
