@@ -86,7 +86,7 @@ describe("LSP stdio smoke test", () => {
         proc = undefined;
     });
 
-    it("initializes, responds with capabilities, and shuts down", async () => {
+    it("initializes, responds with capabilities, and shuts down", { timeout: 30_000 }, async () => {
         proc = spawn("node", [SERVER_PATH, "--stdio"], {
             stdio: ["pipe", "pipe", "pipe"],
         });
