@@ -3,9 +3,9 @@
 Setup guide for using BGforge MLS with Notepad++.
 
 - [Prerequisites](#prerequisites)
-- [File Types and Syntax Highlighting](#file-types-and-syntax-highlighting)
-- [Language Server](#language-server)
-- [TypeScript Plugins (TSSL/TD)](#typescript-plugins-tssltd)
+- [File types and syntax highlighting](#file-types-and-syntax-highlighting)
+- [Language server](#language-server)
+- [TypeScript plugins (TSSL/TD)](#typescript-plugins-tssltd)
 - [Settings](#settings)
 
 ## Prerequisites
@@ -20,7 +20,7 @@ Install the [NppLspClient](https://github.com/Ekopalypse/NppLspClient) plugin:
 2. Extract into `Notepad++\plugins\NppLspClient\`
 3. Restart Notepad++
 
-## File Types and Syntax Highlighting
+## File types and syntax highlighting
 
 Download `bgforge-mls-notepadpp-udl-<version>.zip` from the [latest GitHub release](https://github.com/BGforgeNet/VScode-BGforge-MLS/releases) and import the UDL files:
 
@@ -35,7 +35,7 @@ Note: `.h` files default to C in Notepad++. The `fallout-ssl` UDL claims `.h` gl
 
 For `worldmap.txt` and `scripts.lst`, select the language manually via `Language > fallout-worldmap-txt` or `Language > fallout-scripts-lst` since UDLs match by extension only and these files have generic or no extensions.
 
-## Language Server
+## Language server
 
 Open `Plugins > NppLspClient > Open configuration file` and add server entries. The section name in `[lspservers.<name>]` must match the UDL name (shown in the Notepad++ status bar).
 
@@ -73,7 +73,7 @@ auto_start_server = true
 
 Note: If `bgforge-mls-server` is not on your system PATH, use the full path to the executable, e.g., `executable = 'C:\Users\<you>\AppData\Roaming\npm\bgforge-mls-server.cmd'`.
 
-## TypeScript Plugins (TSSL/TD)
+## TypeScript plugins (TSSL/TD)
 
 If you write `.tssl` or `.td` transpiler files, the server package includes TypeScript plugins that run inside tsserver. See [TypeScript Plugins](typescript-plugins.md) for setup.
 

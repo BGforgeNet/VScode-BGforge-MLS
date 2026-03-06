@@ -3,9 +3,9 @@
 Setup guide for using BGforge MLS with Helix.
 
 - [Prerequisites](#prerequisites)
-- [Language Server and File Types](#language-server-and-file-types)
-- [Tree-Sitter Highlighting](#tree-sitter-highlighting)
-- [TypeScript Plugins (TSSL/TD)](#typescript-plugins-tssltd)
+- [Language server and file types](#language-server-and-file-types)
+- [Tree-sitter highlighting](#tree-sitter-highlighting)
+- [TypeScript plugins (TSSL/TD)](#typescript-plugins-tssltd)
 - [Settings](#settings)
 
 ## Prerequisites
@@ -14,7 +14,7 @@ Setup guide for using BGforge MLS with Helix.
 npm install -g @bgforge/mls-server
 ```
 
-## Language Server and File Types
+## Language server and file types
 
 Add to `~/.config/helix/languages.toml`:
 
@@ -88,9 +88,9 @@ auto-pairs = { "\"" = "\"", "~" = "~" }
 
 Note: `.h` files default to C/C++ in Helix. The override above sets them to Fallout SSL globally. Remove `"h"` from the list if you need C headers in the same project.
 
-## Tree-Sitter Highlighting
+## Tree-sitter highlighting
 
-### Grammar Configuration
+### Grammar configuration
 
 Add grammar entries to `~/.config/helix/languages.toml` and add `grammar` to each `[[language]]` block above to link them:
 
@@ -142,7 +142,7 @@ for pair in "fallout-ssl:ssl" "weidu-baf:baf" "weidu-d:weidu_d" "weidu-tp2:weidu
 done
 ```
 
-## TypeScript Plugins (TSSL/TD)
+## TypeScript plugins (TSSL/TD)
 
 If you write `.tssl` or `.td` transpiler files, the server package includes TypeScript plugins that run inside tsserver. See [TypeScript Plugins](typescript-plugins.md) for setup.
 

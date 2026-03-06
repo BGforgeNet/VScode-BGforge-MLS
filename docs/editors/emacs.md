@@ -3,14 +3,14 @@
 Setup guide for using BGforge MLS with Emacs 29+.
 
 - [Prerequisites](#prerequisites)
-- [File Type Detection](#file-type-detection)
-- [Tree-Sitter Highlighting (Emacs 29+)](#tree-sitter-highlighting-emacs-29)
-  - [Compile Grammars](#compile-grammars)
-  - [Font-Lock Rules](#font-lock-rules)
-- [Language Server](#language-server)
+- [File type detection](#file-type-detection)
+- [Tree-sitter highlighting (Emacs 29+)](#tree-sitter-highlighting-emacs-29)
+  - [Compile grammars](#compile-grammars)
+  - [Font-lock rules](#font-lock-rules)
+- [Language server](#language-server)
   - [eglot (built-in, Emacs 29+)](#eglot-built-in-emacs-29)
   - [lsp-mode](#lsp-mode)
-- [TypeScript Plugins (TSSL/TD)](#typescript-plugins-tssltd)
+- [TypeScript plugins (TSSL/TD)](#typescript-plugins-tssltd)
 - [Settings](#settings)
   - [eglot settings](#eglot-settings)
   - [lsp-mode settings](#lsp-mode-settings)
@@ -21,7 +21,7 @@ Setup guide for using BGforge MLS with Emacs 29+.
 npm install -g @bgforge/mls-server
 ```
 
-## File Type Detection
+## File type detection
 
 Define major modes first. The mode names match the server's language IDs (`fallout-ssl`, `weidu-baf`, etc.) -- eglot derives the language ID by stripping `-mode` from the major mode name.
 
@@ -77,9 +77,9 @@ Define major modes first. The mode names match the server's language IDs (`fallo
 
 Note: `.h` files default to `c-mode` in Emacs. The override above sets them to `fallout-ssl-mode` globally. For per-project control, use directory-local variables (`.dir-locals.el`) instead.
 
-## Tree-Sitter Highlighting (Emacs 29+)
+## Tree-sitter highlighting (Emacs 29+)
 
-### Compile Grammars
+### Compile grammars
 
 ```elisp
 (setq treesit-language-source-alist
@@ -102,7 +102,7 @@ M-x treesit-install-language-grammar RET fallout_msg
 M-x treesit-install-language-grammar RET weidu_tra
 ```
 
-### Font-Lock Rules
+### Font-lock rules
 
 Emacs tree-sitter does not read `.scm` query files directly -- font-lock rules must be defined in elisp. Use the `highlights.scm` files as a reference for node types. Minimal example for Fallout SSL:
 
@@ -152,7 +152,7 @@ Adapt for other languages by changing the language symbol and node names. Transl
 
 The tree-sitter modes and basic modes are independent. If using tree-sitter modes, add the `-ts-mode` variants to the eglot/lsp-mode registration.
 
-## Language Server
+## Language server
 
 ### eglot (built-in, Emacs 29+)
 
@@ -176,7 +176,7 @@ The tree-sitter modes and basic modes are independent. If using tree-sitter mode
   :server-id 'bgforge-mls))
 ```
 
-## TypeScript Plugins (TSSL/TD)
+## TypeScript plugins (TSSL/TD)
 
 If you write `.tssl` or `.td` transpiler files, the server package includes TypeScript plugins that run inside tsserver. See [TypeScript Plugins](typescript-plugins.md) for setup.
 

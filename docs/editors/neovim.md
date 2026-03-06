@@ -3,13 +3,13 @@
 Setup guide for using BGforge MLS with Neovim 0.11+.
 
 - [Prerequisites](#prerequisites)
-- [File Type Detection](#file-type-detection)
-- [Comment Toggling](#comment-toggling)
-- [Language Server](#language-server)
-- [Tree-Sitter Highlighting](#tree-sitter-highlighting)
-  - [Parser Registration](#parser-registration)
-  - [Manual Query Installation](#manual-query-installation)
-- [TypeScript Plugins (TSSL/TD)](#typescript-plugins-tssltd)
+- [File type detection](#file-type-detection)
+- [Comment toggling](#comment-toggling)
+- [Language server](#language-server)
+- [Tree-sitter highlighting](#tree-sitter-highlighting)
+  - [Parser registration](#parser-registration)
+  - [Manual query installation](#manual-query-installation)
+- [TypeScript plugins (TSSL/TD)](#typescript-plugins-tssltd)
 - [Settings](#settings)
 
 ## Prerequisites
@@ -18,7 +18,7 @@ Setup guide for using BGforge MLS with Neovim 0.11+.
 npm install -g @bgforge/mls-server
 ```
 
-## File Type Detection
+## File type detection
 
 ```lua
 vim.filetype.add({
@@ -51,7 +51,7 @@ Note: `.h` files default to C in Neovim. The override above sets them to Fallout
 
 Note: `.d` files may conflict with D language. Adjust per-project if needed.
 
-## Comment Toggling
+## Comment toggling
 
 All supported languages use C-style comments (`//` line, `/* */` block). Set `commentstring` so that `gc`/`gcc` work correctly:
 
@@ -64,7 +64,7 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 ```
 
-## Language Server
+## Language server
 
 ```lua
 vim.lsp.config["bgforge-mls"] = {
@@ -76,9 +76,9 @@ vim.lsp.config["bgforge-mls"] = {
 vim.lsp.enable("bgforge-mls")
 ```
 
-## Tree-Sitter Highlighting
+## Tree-sitter highlighting
 
-### Parser Registration
+### Parser registration
 
 Using [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter), register the parsers via a `TSUpdate` autocmd. The `location` field points to the grammar subdirectory in the monorepo, and `queries` specifies the highlight query files:
 
@@ -152,7 +152,7 @@ Install the parsers:
 :TSInstall ssl baf weidu_d weidu_tp2 fallout_msg weidu_tra
 ```
 
-### Manual Query Installation
+### Manual query installation
 
 If highlights aren't installed automatically, copy them manually:
 
@@ -169,7 +169,7 @@ for pair in "fallout-ssl:ssl" "weidu-baf:baf" "weidu-d:weidu_d" "weidu-tp2:weidu
 done
 ```
 
-## TypeScript Plugins (TSSL/TD)
+## TypeScript plugins (TSSL/TD)
 
 If you write `.tssl` or `.td` transpiler files, the server package includes TypeScript plugins that run inside tsserver. See [TypeScript Plugins](typescript-plugins.md) for setup.
 

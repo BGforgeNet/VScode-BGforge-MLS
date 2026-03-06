@@ -7,11 +7,11 @@ Setup guide for using BGforge MLS with Zed.
   - [extension.toml](#extensiontoml)
   - [Cargo.toml](#cargotoml)
   - [src/lib.rs](#srclibrs)
-  - [Language Definitions](#language-definitions)
-  - [Tree-Sitter Grammars](#tree-sitter-grammars)
-  - [Highlight Queries](#highlight-queries)
+  - [Language definitions](#language-definitions)
+  - [Tree-sitter grammars](#tree-sitter-grammars)
+  - [Highlight queries](#highlight-queries)
   - [Install](#install)
-- [TypeScript Plugins (TSSL/TD)](#typescript-plugins-tssltd)
+- [TypeScript plugins (TSSL/TD)](#typescript-plugins-tssltd)
 - [Settings](#settings)
 
 ## Prerequisites
@@ -82,7 +82,7 @@ impl zed::Extension for BgforgeMlsExtension {
 zed::register_extension!(BgforgeMlsExtension);
 ```
 
-### Language Definitions
+### Language definitions
 
 **`languages/fallout-ssl/config.toml`**:
 
@@ -187,7 +187,7 @@ Fallout Worldmap has no `path_suffixes` to avoid matching all `.txt` files. Use 
 }
 ```
 
-### Tree-Sitter Grammars
+### Tree-sitter grammars
 
 Add grammar entries to `extension.toml`. Update the `commit` SHA to the latest from the [repository](https://github.com/BGforgeNet/VScode-BGforge-MLS):
 
@@ -223,7 +223,7 @@ commit = "dbdde670606b1b5d103f848cb22bb62a2e639fd8"
 path = "grammars/weidu-tra"
 ```
 
-### Highlight Queries
+### Highlight queries
 
 Copy the highlight queries into each language directory (`languages/<lang>/highlights.scm`):
 
@@ -243,7 +243,7 @@ Open Zed, go to `Extensions`, click `Install Dev Extension`, and point to the di
 
 Note: `.h` files default to C in Zed. For per-project control, add `file_types` overrides in `.zed/settings.json`.
 
-## TypeScript Plugins (TSSL/TD)
+## TypeScript plugins (TSSL/TD)
 
 If you write `.tssl` or `.td` transpiler files, the server package includes TypeScript plugins that run inside tsserver. See [TypeScript Plugins](typescript-plugins.md) for setup.
 

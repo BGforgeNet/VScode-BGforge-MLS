@@ -3,9 +3,9 @@
 Setup guide for using BGforge MLS with Kate (KDE text editor).
 
 - [Prerequisites](#prerequisites)
-- [Syntax Highlighting](#syntax-highlighting)
-- [Language Server](#language-server)
-- [TypeScript Plugins (TSSL/TD)](#typescript-plugins-tssltd)
+- [Syntax highlighting](#syntax-highlighting)
+- [Language server](#language-server)
+- [TypeScript plugins (TSSL/TD)](#typescript-plugins-tssltd)
 - [Settings](#settings)
 
 ## Prerequisites
@@ -16,7 +16,7 @@ npm install -g @bgforge/mls-server
 
 Requires Kate 25.08+ for settings support. Older versions (21.12+) provide basic LSP features but cannot pass settings to the server.
 
-## Syntax Highlighting
+## Syntax highlighting
 
 Download `bgforge-mls-kate-ksh-<version>.zip` from the [latest GitHub release](https://github.com/BGforgeNet/VScode-BGforge-MLS/releases) and extract the `.xml` files to:
 
@@ -28,7 +28,7 @@ Restart Kate after installing. The definitions provide keyword, function, and co
 
 Note: `.h` files default to C/C++ in Kate. Use `Tools > Highlighting > Fallout SSL` manually for Fallout header files.
 
-## Language Server
+## Language server
 
 Enable the LSP Client plugin in `Settings > Configure Kate > Plugins > LSP Client`.
 
@@ -47,7 +47,7 @@ Add a server in `Settings > Configure Kate > LSP Client > User Server Settings`:
 
 The `highlightingModeRegex` must match the language names from the installed KSyntaxHighlighting definitions. The `Fallout Worldmap` KSH definition matches `worldmap.txt` by filename. For `scripts.lst`, use `Tools > Highlighting > Fallout scripts.lst` manually since the extension is generic.
 
-## TypeScript Plugins (TSSL/TD)
+## TypeScript plugins (TSSL/TD)
 
 If you write `.tssl` or `.td` transpiler files, the server package includes TypeScript plugins that run inside tsserver. See [TypeScript Plugins](typescript-plugins.md) for setup.
 

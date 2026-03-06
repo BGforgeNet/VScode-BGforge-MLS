@@ -3,8 +3,8 @@
 The server package includes TypeScript Language Service Plugins for `.tssl` and `.td` transpiler files. These run inside tsserver (not the LSP server) and provide diagnostic filtering, runtime type injection, and completion filtering.
 
 - [Setup](#setup)
-- [What They Do](#what-they-do)
-- [Editor Integration](#editor-integration)
+- [What they do](#what-they-do)
+- [Editor integration](#editor-integration)
 
 ## Setup
 
@@ -31,12 +31,12 @@ Add to your project's `tsconfig.json`:
 
 Replace `/path/to/@bgforge/mls-server` with the actual path from the shell command above. TypeScript's `plugins` array does not support shell variables - you must paste the resolved path.
 
-## What They Do
+## What they do
 
 - **tssl-plugin**: Suppresses false TS6133 ("declared but never read") warnings for Fallout engine procedure names. Adds engine procedure hover documentation.
 - **td-plugin**: Injects TD runtime types (`begin`, `say`, `reply`, etc.) so `.td` files get type checking without manual declarations. Filters completions: hides ES2020 lib names in `.td` files, hides TD-specific names in non-`.td` files.
 
-## Editor Integration
+## Editor integration
 
 These plugins are loaded by tsserver, which runs independently of the LSP server. Any editor that uses tsserver for TypeScript support will pick them up from `tsconfig.json`:
 

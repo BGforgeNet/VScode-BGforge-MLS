@@ -3,9 +3,9 @@
 Setup guide for using BGforge MLS with Sublime Text.
 
 - [Prerequisites](#prerequisites)
-- [File Types and Syntax Highlighting](#file-types-and-syntax-highlighting)
-- [Language Server](#language-server)
-- [TypeScript Plugins (TSSL/TD)](#typescript-plugins-tssltd)
+- [File types and syntax highlighting](#file-types-and-syntax-highlighting)
+- [Language server](#language-server)
+- [TypeScript plugins (TSSL/TD)](#typescript-plugins-tssltd)
 - [Settings](#settings)
 
 ## Prerequisites
@@ -16,7 +16,7 @@ npm install -g @bgforge/mls-server
 
 Install the [LSP](https://packagecontrol.io/packages/LSP) package via Package Control.
 
-## File Types and Syntax Highlighting
+## File types and syntax highlighting
 
 Download `bgforge-mls.tmbundle.zip` from the [latest GitHub release](https://github.com/BGforgeNet/VScode-BGforge-MLS/releases), extract it, and copy the `.tmLanguage.json` files from `bgforge-mls.tmbundle/Syntaxes/` into `Packages/User/` (accessible via `Preferences > Browse Packages...`). Restart Sublime Text.
 
@@ -42,7 +42,7 @@ For `worldmap.txt`, use `View > Syntax > Fallout Worldmap` manually since syntax
 
 Note: `.h` files default to C in Sublime. To limit the override, remove `h` from the list and set the syntax manually for Fallout header files.
 
-## Language Server
+## Language server
 
 Open `Preferences > Package Settings > LSP > Settings` and add:
 
@@ -58,7 +58,7 @@ Open `Preferences > Package Settings > LSP > Settings` and add:
 }
 ```
 
-## TypeScript Plugins (TSSL/TD)
+## TypeScript plugins (TSSL/TD)
 
 If you write `.tssl` or `.td` transpiler files, the server package includes TypeScript plugins that run inside tsserver. See [TypeScript Plugins](typescript-plugins.md) for setup.
 

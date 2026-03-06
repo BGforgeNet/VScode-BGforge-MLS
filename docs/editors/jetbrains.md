@@ -3,9 +3,9 @@
 Setup guide for using BGforge MLS with JetBrains IDEs (IntelliJ IDEA, WebStorm, CLion, etc.).
 
 - [Prerequisites](#prerequisites)
-- [Language Server](#language-server)
-- [Syntax Highlighting](#syntax-highlighting)
-- [TypeScript Plugins (TSSL/TD)](#typescript-plugins-tssltd)
+- [Language server](#language-server)
+- [Syntax highlighting](#syntax-highlighting)
+- [TypeScript plugins (TSSL/TD)](#typescript-plugins-tssltd)
 - [Settings](#settings)
 
 ## Prerequisites
@@ -16,7 +16,7 @@ npm install -g @bgforge/mls-server
 
 Install [LSP4IJ](https://plugins.jetbrains.com/plugin/23257-lsp4ij) from the JetBrains Marketplace.
 
-## Language Server
+## Language server
 
 Go to `Settings > Languages & Frameworks > Language Servers` and add a new server:
 
@@ -24,7 +24,7 @@ Go to `Settings > Languages & Frameworks > Language Servers` and add a new serve
 - **Command**: `bgforge-mls-server --stdio`
 - **File patterns**: `*.ssl`, `*.h`, `*.baf`, `*.d`, `*.tp2`, `*.tpa`, `*.tph`, `*.tpp`, `worldmap.txt`
 
-## Syntax Highlighting
+## Syntax highlighting
 
 Download `bgforge-mls.tmbundle.zip` from the [latest GitHub release](https://github.com/BGforgeNet/VScode-BGforge-MLS/releases), extract it, then:
 
@@ -35,7 +35,7 @@ The tmbundle includes syntax definitions for all supported languages, including 
 
 Note: `.h` files default to C/C++ in JetBrains IDEs. Override per-project in `Settings > Editor > File Types` by adding `*.h` to the Fallout SSL type (or use file-level overrides).
 
-## TypeScript Plugins (TSSL/TD)
+## TypeScript plugins (TSSL/TD)
 
 If you write `.tssl` or `.td` transpiler files, the server package includes TypeScript plugins that run inside tsserver. JetBrains IDEs with TypeScript support (WebStorm, IntelliJ Ultimate) use their own TypeScript service, which reads `tsconfig.json` plugins. See [TypeScript Plugins](typescript-plugins.md) for setup.
 
