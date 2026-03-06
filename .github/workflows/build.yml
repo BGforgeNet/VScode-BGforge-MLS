@@ -4,6 +4,10 @@ on:
   pull_request:
   push:
 
+permissions:
+  contents: write
+  id-token: write
+
 jobs:
   build:
     name: build
@@ -27,6 +31,7 @@ jobs:
         with:
           node-version: 22
           cache: pnpm
+          registry-url: https://registry.npmjs.org
 
       - name: Install dependencies
         run: pnpm install
@@ -87,6 +92,12 @@ jobs:
           pat: ${{ secrets.VS_MARKETPLACE_TOKEN }}
           registryUrl: https://marketplace.visualstudio.com
           extensionFile: ${{ steps.publishToOpenVSX.outputs.vsixPath }}
+
+      - name: Publish to npm
+        if: startsWith(github.ref, 'refs/tags/')
+        run: SKIP_BUILD=1 ./scripts/publish-server.sh
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: GitHub Release
         if: "startsWith(github.ref, 'refs/tags/')"
