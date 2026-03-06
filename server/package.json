@@ -41,7 +41,7 @@
         "esbuild-wasm": "^0.24.2",
         "fast-glob": "^3.3.3",
         "ini": "^6.0.0",
-        "sslc-emscripten-noderawfs": "https://github.com/sfall-team/sslc/releases/download/2025-06-18-01-40-04/wasm-emscripten-node-noderawfs.tar.gz",
+        "sslc-emscripten-noderawfs": "https://github.com/sfall-team/sslc/releases/download/2026-02-07-11-20-26/wasm-emscripten-node-noderawfs.tar.gz",
         "ts-morph": "^24.0.0",
         "typescript": "^5.9.3",
         "vscode-languageserver": "8.1.0",
