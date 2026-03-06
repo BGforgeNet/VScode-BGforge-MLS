@@ -1,5 +1,14 @@
 # Changelog
 
+## 3.0.1
+
+- Bumped sslc to 2026-02-07 release.
+- Added tree-sitter highlights.scm for Neovim and other editors.
+- Added tra and msg grammars for other editors.
+- Added setup guides for Neovim, Helix, Emacs, Sublime Text, JetBrains, Zed, Kate, Notepad++.
+- Removed single quote from TP2 autoclosing pairs.
+- Prepared standalone LSP server for npm publishing.
+
 ## 3.0.0
 
 Fallout SSL
