@@ -65,7 +65,9 @@ Controls what ships in the VSIX extension package. Uses a **blocklist** strategy
 | `CLAUDE.md`, `development.md` | Dev documentation |
 | `eslint.config.mjs`, `knip.ts`, `tsconfig.json` | Linting and build config |
 | `pnpm-lock.yaml`, `pnpm-workspace.yaml` | Package manager files |
-| `*.vsix`, `*.log`, `**/*.map` | Built packages, logs, source maps |
+| `*.vsix`, `*.tgz`, `*.log`, `**/*.map` | Built packages, logs, source maps |
+| `*.tmbundle`, `*.zip` | Generated bundles (tmbundle, UDL, KSH archives) |
+| `bgforge-mls-notepadpp-udl*/`, `bgforge-mls-kate-ksh*/` | Generated editor asset directories |
 
 ### Excluded: dev-only directories
 
@@ -73,6 +75,7 @@ Controls what ships in the VSIX extension package. Uses a **blocklist** strategy
 |---------|-----------------|
 | `cli/`, `coverage/`, `docs/` | CLI packages, coverage reports, documentation |
 | `external/`, `grammars/` | Test fixtures (~70 MB), tree-sitter grammar sources |
+| `plugins/` | TypeScript plugin sources (built to node_modules/) |
 | `scripts/`, `test/`, `tmp/` | Build scripts, tests, scratch |
 | `transpilers/` | Transpiler documentation |
 
@@ -101,6 +104,7 @@ Controls what ships in the VSIX extension package. Uses a **blocklist** strategy
 | `server/node_modules/esbuild-wasm/LICENSE.md`, `README.md` | Documentation files |
 | `server/node_modules/.ignored*/` | pnpm internal dirs surviving after symlink strip |
 | `node_modules/` | All root dependencies (TS plugins injected by `package.sh` post-packaging) |
+| `.pkg-inject/` | Temp directory used by `package.sh` for zip injection |
 
 ### Included: runtime files (not excluded, ship by default)
 
@@ -122,13 +126,13 @@ These are included implicitly (not excluded by any pattern):
 
 `scripts/package.sh` handles three pnpm/vsce compatibility issues:
 
-1. **pnpm symlinks**: `server/node_modules/` entries are pnpm symlinks that vsce's zip writer (yazl) crashes on. The script derefs runtime deps and strips all other symlinks, restoring via `pnpm install` after packaging.
+1. **pnpm symlinks**: `server/node_modules/` entries are pnpm symlinks that vsce's zip writer (yazl) crashes on. The script derefs runtime deps (`sslc-emscripten-noderawfs`, `esbuild-wasm`), strips all remaining symlinks and pnpm internal dirs, then restores via `pnpm install` after packaging.
 
 2. **`--no-dependencies`**: vsce's `npm list --production` check fails with pnpm's node_modules layout. The `--no-dependencies` flag skips this check.
 
-3. **TS plugin injection**: vsce with `--no-dependencies` does not include root `node_modules/` contents regardless of `.vscodeignore` patterns. The TS plugins (`bgforge-tssl-plugin`, `bgforge-td-plugin`) are injected into the VSIX via `zip -g` after packaging.
+3. **TS plugin injection**: vsce with `--no-dependencies` does not include root `node_modules/` contents regardless of `.vscodeignore` patterns. The TS plugins (`bgforge-tssl-plugin`, `bgforge-td-plugin`) are injected into the VSIX via `zip -g` after packaging, using a `.pkg-inject/` temp directory.
 
-The script also runs the prepublish build first (with full deps available), then uses `SKIP_PREPUBLISH=1` to skip the rebuild when vsce invokes `vscode:prepublish` after the strip
+The script runs the prepublish build first (with full deps available), then uses `SKIP_PREPUBLISH=1` to skip the rebuild when vsce invokes `vscode:prepublish` after the strip.
 
 ## .prettierignore
 

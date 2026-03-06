@@ -121,11 +121,17 @@ vscode-mls/
 |   +-- cli-utils.ts            Shared CLI utilities
 |   +-- test/                   CLI tests
 |
-+-- grammars/               Tree-sitter grammars (4 languages)
++-- plugins/               TypeScript Language Service Plugins
+|   +-- tssl-plugin/           TSSL plugin (TS6133 suppression, engine proc hover)
+|   +-- td-plugin/             TD plugin (runtime injection, completion filtering)
+|
++-- grammars/               Tree-sitter grammars (6 languages)
 |   +-- fallout-ssl/            grammar.js, corpus tests, WASM output
 |   +-- weidu-baf/
 |   +-- weidu-d/
 |   +-- weidu-tp2/
+|   +-- fallout-msg/            Highlight-only (external editors)
+|   +-- weidu-tra/              Highlight-only (external editors)
 |
 +-- syntaxes/               TextMate grammars (YAML source -> JSON)
 |   +-- {lang}.tmLanguage.yml       Primary syntax highlighting
@@ -170,7 +176,7 @@ pnpm build
   +-> build:test          esbuild E2E test bundles
   +-> build:webviews      esbuild webview bundles
 
-pnpm build:all            (build:grammar + build)
+pnpm build:all            (build:grammar + build + build:tmbundle + build:udl + build:ksh)
 pnpm build:dev            Minimal build for F5 development (skips CLIs)
 ```
 
@@ -343,7 +349,7 @@ Parses Fallout `.pro` binary files and outputs structured JSON.
 
 ### Tree-Sitter Grammars
 
-Four tree-sitter grammars compiled to WASM for in-browser parsing:
+Six tree-sitter grammars compiled to WASM:
 
 | Grammar | Language | Used By |
 |---------|----------|---------|
@@ -351,6 +357,8 @@ Four tree-sitter grammars compiled to WASM for in-browser parsing:
 | `weidu-baf` | WeiDU BAF (.baf) | weidu-baf provider |
 | `weidu-d` | WeiDU D (.d) | weidu-d provider |
 | `weidu-tp2` | WeiDU TP2 (.tp2/.tpa/.tph/.tpp) | weidu-tp2 provider |
+| `fallout-msg` | Fallout MSG (.msg) | Highlighting only (external editors) |
+| `weidu-tra` | WeiDU TRA (.tra) | Highlighting only (external editors) |
 
 Each grammar package contains:
 - `grammar.js` -- PEG-like grammar definition
@@ -366,7 +374,7 @@ AST node comparisons.
 
 TextMate grammars (in `syntaxes/`) provide syntax highlighting. Source is YAML,
 converted to JSON at build time. Includes:
-- 8 primary language grammars
+- 11 primary language grammars
 - 4 tooltip grammars (hover rendering)
 - 3 injection grammars (comments, strings, docstrings)
 
@@ -421,17 +429,16 @@ Four test layers:
 
 ## Extension Packaging
 
-`.vscodeignore` uses an **allowlist** strategy (`**/*` then `!` exceptions) to guarantee
-only approved files ship. See [docs/ignore-files.md](ignore-files.md) for the full list
+`.vscodeignore` uses a **blocklist** strategy (exclude dev files, keep runtime files by default). See [docs/ignore-files.md](ignore-files.md) for the full list
 and rationale.
 
 **Packaging pipeline** (`scripts/package.sh`):
 
-1. Replace pnpm symlinks in `server/node_modules/` with real directory copies (vsce
-   doesn't follow symlinks)
-2. Run `pnpm vsce package` (without `--no-dependencies`, so vsce's npm install creates
-   root `node_modules/` for TS plugins)
-3. Restore original symlinks via EXIT trap
+1. Run prepublish build (with full pnpm deps available)
+2. Deref pnpm symlinks for server runtime deps, strip all other symlinks
+3. Run `pnpm vsce package --no-dependencies` (skips vsce's npm list check)
+4. Inject TS plugins into VSIX via `zip -g` (vsce excludes root `node_modules/` with `--no-dependencies`)
+5. Restore `server/node_modules/` via `pnpm install` (EXIT trap)
 
 **Runtime dependencies** that must ship in the VSIX:
 
@@ -444,7 +451,7 @@ and rationale.
 
 **Validation**: `scripts/test-package-deps.ts` runs in CI and catches missing
 `.vscodeignore` entries by scanning build scripts, source code, and `package.json`
-contributes. See [docs/ignore-files.md](ignore-files.md#packaging-validation) for details.
+contributes. See [docs/ignore-files.md](ignore-files.md#packaging-notes) for details.
 
 ## Key Design Decisions
 
