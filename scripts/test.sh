@@ -51,6 +51,12 @@ step "Running Plugin Unit Tests"
 vitest run --config plugins/tssl-plugin/vitest.config.ts
 vitest run --config plugins/td-plugin/vitest.config.ts
 
+step "Building Server Bundle"
+pnpm build:base:server
+
+step "Running Server Smoke Test"
+(cd server && pnpm exec vitest run --config vitest.smoke.config.ts)
+
 step "Building CLIs"
 pnpm build:transpile-cli
 pnpm build:format-cli

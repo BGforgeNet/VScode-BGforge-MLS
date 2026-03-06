@@ -24,7 +24,8 @@ const config: KnipConfig = {
     server: {
       // Entry resolved from package.json "main" field (src/server.ts).
       // No explicit entry needed here.
-      ignore: ["**/*.d.ts"],
+      // vitest.smoke.config.ts is a separate config run by scripts/test.sh, not imported
+      ignore: ["**/*.d.ts", "vitest.smoke.config.ts"],
     },
     "plugins/tssl-plugin": {
       entry: ["src/index.ts", "test/*.test.ts"],
@@ -44,8 +45,6 @@ const config: KnipConfig = {
     "scripts/**",
   ],
   ignoreDependencies: [
-    // loaded at runtime via path.join in server/src/sslc/ssl_compiler.ts
-    "sslc-emscripten-noderawfs",
     // icon font used via CSS classes in dialogTree.ts (e.g. "codicon codicon-references")
     "@vscode/codicons",
     // run via pnpm exec in client/scripts/test.sh

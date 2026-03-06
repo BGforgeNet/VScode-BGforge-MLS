@@ -23,6 +23,10 @@ See also: [development.md](../development.md) | [docs/architecture.md](../docs/a
 - **E2E** (`pnpm test:e2e`) -- requires a built extension and a VSCode instance.
 - **Format samples** are partially covered via TD/TBAF sample tests. Full format sample tests: `pnpm test:format-samples`.
 
+### Excluded from `server/pnpm test:unit`
+
+- **Smoke test** (`test/smoke-stdio.test.ts`) -- requires a built server bundle (`pnpm build:base:server`). Run as part of `pnpm test` instead, which builds the bundle first.
+
 ## Running individual tests
 
 ```bash
@@ -75,6 +79,7 @@ pnpm test:cli                              # Exit codes and diff output
 | `publish-server.sh`      | Publish `@bgforge/mls-server` to npm.                                                                                                                                                          |
 | `test-package-deps.ts`   | Validates .vscodeignore whitelist against build scripts, source paths, and package.json contributes.                                                                                            |
 | `vitest.config.ts`       | Vitest configuration for script-level tests.                                                                                                                                                    |
+| `vitest.smoke.config.ts` *(server/)* | Vitest configuration for the server smoke test (separate because it requires a built bundle).                                                                                   |
 | `generate-data.sh`       | Generate YAML data files from game engine sources.                                                                                                                                              |
 | `regenerate-expected.sh` | Regenerate tree-sitter grammar sources and types.                                                                                                                                               |
 | `grammar-test-lib.sh`    | Shared helpers for grammar tests.                                                                                                                                                               |
