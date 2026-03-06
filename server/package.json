@@ -22,7 +22,8 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/BGforgeNet/VScode-BGforge-MLS"
+        "url": "https://github.com/BGforgeNet/VScode-BGforge-MLS",
+        "directory": "server"
     },
     "homepage": "https://github.com/BGforgeNet/VScode-BGforge-MLS",
     "bugs": {
