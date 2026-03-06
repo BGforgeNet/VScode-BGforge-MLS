@@ -4,9 +4,16 @@
  */
 
 import path = require("node:path");
+import fs = require("node:fs");
 import { conlog } from "../common";
 import { getConnection } from "../lsp-connection";
 import { fork } from "child_process";
+
+const COMPILER_MODULE = path.join(__dirname, "../node_modules/sslc-emscripten-noderawfs/compiler.mjs");
+
+export function isSslcAvailable(): boolean {
+    return fs.existsSync(COMPILER_MODULE);
+}
 
 export async function ssl_compile(opts: {
     cwd: string;
@@ -16,6 +23,16 @@ export async function ssl_compile(opts: {
     headersDir: string;
     interactive: boolean;
 }) {
+    if (!isSslcAvailable()) {
+        const msg = "Built-in SSL compiler not available. Install the sslc-emscripten-noderawfs package or configure an external compiler path in settings.";
+        conlog(msg);
+        return {
+            returnCode: 1,
+            stdout: "",
+            stderr: msg,
+        };
+    }
+
     let cmdArgs = opts.options
         .split(" ")
         .map((s) => s.trim())
@@ -39,7 +56,7 @@ export async function ssl_compile(opts: {
     cmdArgs.push(opts.inputFileName, "-o", opts.outputFileName);
 
     const p = fork(
-        path.join(__dirname, "../node_modules/sslc-emscripten-noderawfs/compiler.mjs"),
+        COMPILER_MODULE,
         cmdArgs,
         {
             execArgv: [], // Disable Node.js flags like --inspect
@@ -75,7 +92,7 @@ export async function ssl_compile(opts: {
 
         p.on("close", (code) => {
             conlog(
-                `Build-in compiler:\n` +
+                `Built-in compiler:\n` +
                     "opts=" +
                     JSON.stringify(opts) +
                     "\n" +

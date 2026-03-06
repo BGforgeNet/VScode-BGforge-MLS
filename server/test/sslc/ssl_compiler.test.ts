@@ -5,6 +5,7 @@
 
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import { EventEmitter } from "events";
+import fs from "node:fs";
 
 const mockShowWarning = vi.fn();
 
@@ -34,11 +35,15 @@ vi.mock("child_process", () => ({
     fork: (...args: unknown[]) => mockFork(...args),
 }));
 
-import { ssl_compile } from "../../src/sslc/ssl_compiler";
+import { ssl_compile, isSslcAvailable } from "../../src/sslc/ssl_compiler";
 
 describe("ssl_compile", () => {
+    const existsSyncSpy = vi.spyOn(fs, "existsSync");
+
     beforeEach(() => {
         vi.clearAllMocks();
+        // Default: compiler module exists
+        existsSyncSpy.mockReturnValue(true);
     });
 
     const baseOpts = {
@@ -245,6 +250,28 @@ describe("ssl_compile", () => {
             expect(forkOpts.execArgv).toEqual([]);
             expect(forkOpts.env).toEqual({});
             expect(forkOpts.cwd).toBe("/tmp/build");
+        });
+    });
+
+    describe("compiler not available", () => {
+        it("returns error when compiler module is missing", async () => {
+            existsSyncSpy.mockReturnValue(false);
+
+            const result = await ssl_compile(baseOpts);
+
+            expect(result.returnCode).toBe(1);
+            expect(result.stderr).toContain("Built-in SSL compiler not available");
+            expect(mockFork).not.toHaveBeenCalled();
+        });
+
+        it("isSslcAvailable returns false when module is missing", () => {
+            existsSyncSpy.mockReturnValue(false);
+            expect(isSslcAvailable()).toBe(false);
+        });
+
+        it("isSslcAvailable returns true when module exists", () => {
+            existsSyncSpy.mockReturnValue(true);
+            expect(isSslcAvailable()).toBe(true);
         });
     });
 

@@ -1,7 +1,7 @@
 {
     "name": "@bgforge/mls-server",
     "description": "LSP server for Fallout SSL, WeiDU (BAF/D/TP2), and related modding languages",
-    "version": "3.0.0",
+    "version": "3.0.1",
     "author": "BGforge",
     "license": "SEE LICENSE IN LICENSE.txt",
     "main": "out/server.js",
@@ -41,13 +41,15 @@
         "esbuild-wasm": "^0.24.2",
         "fast-glob": "^3.3.3",
         "ini": "^6.0.0",
-        "sslc-emscripten-noderawfs": "https://github.com/sfall-team/sslc/releases/download/2026-02-07-11-20-26/wasm-emscripten-node-noderawfs.tar.gz",
         "ts-morph": "^24.0.0",
         "typescript": "^5.9.3",
         "vscode-languageserver": "8.1.0",
         "vscode-languageserver-textdocument": "^1.0.12",
         "web-tree-sitter": "^0.26.6",
         "yaml": "^2.8.2"
+    },
+    "optionalDependencies": {
+        "sslc-emscripten-noderawfs": "https://github.com/sfall-team/sslc/releases/download/2026-02-07-11-20-26/wasm-emscripten-node-noderawfs.tar.gz"
     },
     "devDependencies": {
         "@types/ini": "^4.1.1",
