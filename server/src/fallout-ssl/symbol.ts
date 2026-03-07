@@ -10,6 +10,7 @@ import { extractProcedures, makeRange, findPrecedingDocComment, extractMacros, e
 import * as jsdoc from "../shared/jsdoc";
 import { jsdocToDetail } from "./jsdoc-format";
 import { isConstantMacro } from "./macro-utils";
+import { SyntaxType } from "./tree-sitter.d";
 
 function makeSymbol(node: Node, nameNode: Node, kind: SymbolKind, detail?: string): DocumentSymbol | null {
     const name = nameNode.text;
@@ -55,9 +56,9 @@ function extractSymbols(root: Node): DocumentSymbol[] {
 
     // Iterate over tree to find define nodes and match with MacroData
     function visitForMacros(node: Node): void {
-        if (node.type === "preprocessor") {
+        if (node.type === SyntaxType.Preprocessor) {
             for (const child of node.children) {
-                if (child.type === "define") {
+                if (child.type === SyntaxType.Define) {
                     const nameNode = child.childForFieldName("name");
                     if (!nameNode) continue;
 
@@ -103,9 +104,9 @@ function extractSymbols(root: Node): DocumentSymbol[] {
     const variables: DocumentSymbol[] = [];
 
     for (const node of root.children) {
-        if (node.type === "variable_decl") {
+        if (node.type === SyntaxType.VariableDecl) {
             for (const child of node.children) {
-                if (child.type === "var_init") {
+                if (child.type === SyntaxType.VarInit) {
                     const nameNode = child.childForFieldName("name");
                     if (nameNode) {
                         const sym = makeSymbol(child, nameNode, SymbolKind.Variable);
@@ -113,7 +114,7 @@ function extractSymbols(root: Node): DocumentSymbol[] {
                     }
                 }
             }
-        } else if (node.type === "export_decl") {
+        } else if (node.type === SyntaxType.ExportDecl) {
             const nameNode = node.childForFieldName("name");
             if (nameNode) {
                 const sym = makeSymbol(node, nameNode, SymbolKind.Variable);

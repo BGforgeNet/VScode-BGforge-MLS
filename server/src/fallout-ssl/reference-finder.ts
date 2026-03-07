@@ -9,6 +9,7 @@
 import type { Node } from "web-tree-sitter";
 import type { SslSymbolScope } from "./symbol-scope";
 import { isLocalToProc } from "./symbol-scope";
+import { SyntaxType } from "./tree-sitter.d";
 
 /**
  * Find all identifier references to a symbol within its correct scope.
@@ -35,13 +36,13 @@ export function findScopedReferences(rootNode: Node, symbolInfo: SslSymbolScope)
         // subtree if the procedure defines a local with the same name
         if (
             symbolInfo.scope === "file" &&
-            node.type === "procedure" &&
+            node.type === SyntaxType.Procedure &&
             isLocalToProc(node, symbolInfo.name)
         ) {
             return;
         }
 
-        if (node.type === "identifier" && node.text === symbolInfo.name) {
+        if (node.type === SyntaxType.Identifier && node.text === symbolInfo.name) {
             refs.push(node);
         }
 

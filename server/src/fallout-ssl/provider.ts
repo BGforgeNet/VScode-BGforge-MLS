@@ -41,16 +41,17 @@ import { getLocalSymbols, lookupLocalSymbol, clearLocalSymbolsCache } from "./lo
 import { getSslCompletionContext, SslCompletionContext, isSslDeclarationSite } from "./completion-context";
 import { extractIncludes } from "./include-scanner";
 import { WorkspaceSymbolIndex } from "../shared/workspace-symbols";
+import { SyntaxType } from "./tree-sitter.d";
 
 /** SSL block-level node types for code folding. */
 const SSL_FOLDABLE_TYPES = new Set([
-    "procedure",
-    "if_stmt",
-    "while_stmt",
-    "for_stmt",
-    "foreach_stmt",
-    "switch_stmt",
-    "block",
+    SyntaxType.Procedure,
+    SyntaxType.IfStmt,
+    SyntaxType.WhileStmt,
+    SyntaxType.ForStmt,
+    SyntaxType.ForeachStmt,
+    SyntaxType.SwitchStmt,
+    SyntaxType.Block,
 ]);
 
 /** File extensions to scan for the include graph, derived from language constants. */

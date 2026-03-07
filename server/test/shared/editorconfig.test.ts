@@ -20,7 +20,7 @@ vi.mock("fs", () => ({
     readFileSync: (...args: unknown[]) => mockReadFileSync(...args),
 }));
 
-import { getEditorconfigSettings, getIndentFromEditorconfig } from "../../src/shared/editorconfig";
+import { getEditorconfigSettings } from "../../src/shared/editorconfig";
 
 describe("shared/editorconfig", () => {
     beforeEach(() => {
@@ -198,28 +198,6 @@ max_line_length = invalid
             const result = getEditorconfigSettings("/path/to/file.txt");
 
             expect(result.maxLineLength).toBeNull();
-        });
-    });
-
-    describe("getIndentFromEditorconfig()", () => {
-        it("should return indent_size from .editorconfig", () => {
-            mockExistsSync.mockReturnValue(true);
-            mockReadFileSync.mockReturnValue(`
-[*]
-indent_size = 4
-`);
-
-            const result = getIndentFromEditorconfig("/path/to/file.txt");
-
-            expect(result).toBe(4);
-        });
-
-        it("should return null when no .editorconfig exists", () => {
-            mockExistsSync.mockReturnValue(false);
-
-            const result = getIndentFromEditorconfig("/path/to/file.txt");
-
-            expect(result).toBeNull();
         });
     });
 });

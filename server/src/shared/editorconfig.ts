@@ -82,11 +82,3 @@ export function getEditorconfigSettings(filePath: string): EditorconfigResult {
     }
     return result;
 }
-
-/**
- * Gets indent_size from .editorconfig files, walking up the directory tree.
- * @deprecated Use getEditorconfigSettings instead for more complete config.
- */
-export function getIndentFromEditorconfig(filePath: string): number | null {
-    return getEditorconfigSettings(filePath).indentSize;
-}

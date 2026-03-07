@@ -13,6 +13,7 @@ import * as jsdoc from "../shared/jsdoc";
 import { buildSignatureBlock } from "../shared/tooltip-format";
 import { jsdocToMarkdown } from "./jsdoc-format";
 import { MacroData, parseMacroParams } from "./macro-utils";
+import { SyntaxType } from "./tree-sitter.d";
 
 // Re-export for existing consumers
 export { makeRange };
@@ -33,7 +34,7 @@ export function extractParams(procNode: Node): ParamInfo[] {
 
     const result: ParamInfo[] = [];
     for (const child of params.children) {
-        if (child.type === "param") {
+        if (child.type === SyntaxType.Param) {
             const nameNode = child.childForFieldName("name");
             const defaultNode = child.childForFieldName("default");
             if (nameNode) {
@@ -105,7 +106,7 @@ export function findPrecedingDocComment(root: Node, defNode: Node): string | nul
     const defLine = defNode.startPosition.row;
 
     for (const node of root.children) {
-        if (node.type === "comment") {
+        if (node.type === SyntaxType.Comment) {
             const text = node.text;
             if (!text.startsWith("/**")) {
                 continue;
@@ -128,13 +129,13 @@ export function extractProcedures(root: Node): Map<string, { node: Node; isForwa
     const procedures = new Map<string, { node: Node; isForward: boolean }>();
 
     for (const node of root.children) {
-        if (node.type === "procedure") {
+        if (node.type === SyntaxType.Procedure) {
             const nameNode = node.childForFieldName("name");
             if (nameNode) {
                 // Definition always wins
                 procedures.set(nameNode.text, { node, isForward: false });
             }
-        } else if (node.type === "procedure_forward") {
+        } else if (node.type === SyntaxType.ProcedureForward) {
             const nameNode = node.childForFieldName("name");
             if (nameNode && !procedures.has(nameNode.text)) {
                 // Only add forward if definition doesn't exist
@@ -183,7 +184,7 @@ export function findIdentifierNodeAtPosition(root: Node, position: Position): No
             return null;
         }
 
-        if (node.type === "identifier") {
+        if (node.type === SyntaxType.Identifier) {
             return node;
         }
 
@@ -219,12 +220,12 @@ export function findDefinitionNode(root: Node, symbol: string): Node | null {
 
     // Check inside procedures for params and local vars
     function search(node: Node): Node | null {
-        if (node.type === "procedure") {
+        if (node.type === SyntaxType.Procedure) {
             // Check parameters
             const params = node.childForFieldName("params");
             if (params) {
                 for (const child of params.children) {
-                    if (child.type === "param") {
+                    if (child.type === SyntaxType.Param) {
                         const paramName = child.childForFieldName("name");
                         if (paramName?.text === symbol) {
                             return child;
@@ -237,21 +238,21 @@ export function findDefinitionNode(root: Node, symbol: string): Node | null {
                 const result = search(child);
                 if (result) return result;
             }
-        } else if (node.type === "variable_decl") {
+        } else if (node.type === SyntaxType.VariableDecl) {
             for (const child of node.children) {
-                if (child.type === "var_init") {
+                if (child.type === SyntaxType.VarInit) {
                     const nameNode = child.childForFieldName("name");
                     if (nameNode?.text === symbol) {
                         return child;
                     }
                 }
             }
-        } else if (node.type === "for_var_decl") {
+        } else if (node.type === SyntaxType.ForVarDecl) {
             const nameNode = node.childForFieldName("name");
             if (nameNode?.text === symbol) {
                 return node;
             }
-        } else if (node.type === "foreach_stmt") {
+        } else if (node.type === SyntaxType.ForeachStmt) {
             const varNode = node.childForFieldName("var");
             if (varNode?.text === symbol) {
                 return varNode;
@@ -264,7 +265,7 @@ export function findDefinitionNode(root: Node, symbol: string): Node | null {
             if (valueNode?.text === symbol) {
                 return valueNode;
             }
-        } else if (node.type === "export_decl") {
+        } else if (node.type === SyntaxType.ExportDecl) {
             const nameNode = node.childForFieldName("name");
             if (nameNode?.text === symbol) {
                 return node;
@@ -297,10 +298,10 @@ export function extractMacros(root: Node): MacroData[] {
     const macros: MacroData[] = [];
 
     function visit(node: Node) {
-        if (node.type === "preprocessor") {
+        if (node.type === SyntaxType.Preprocessor) {
             // Check if it's a define
             for (const child of node.children) {
-                if (child.type === "define") {
+                if (child.type === SyntaxType.Define) {
                     const nameNode = child.childForFieldName("name");
                     const paramsNode = child.childForFieldName("params");
                     const bodyNode = child.childForFieldName("body");
@@ -362,9 +363,9 @@ export function findMacroDefinition(root: Node, symbol: string): Node | null {
     function visit(node: Node) {
         if (result) return;
 
-        if (node.type === "preprocessor") {
+        if (node.type === SyntaxType.Preprocessor) {
             for (const child of node.children) {
-                if (child.type === "define") {
+                if (child.type === SyntaxType.Define) {
                     const nameNode = child.childForFieldName("name");
                     if (nameNode?.text === symbol) {
                         result = child;

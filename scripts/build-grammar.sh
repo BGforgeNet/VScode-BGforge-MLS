@@ -29,5 +29,9 @@ for wasm in server/out/*.wasm; do
     ln -sf "../../out/$(basename "$wasm")" "$target"
 done
 
-cd grammars/weidu-tp2 || exit 1
-pnpm run generate:types
+# Generate SyntaxType enums for all LSP grammars
+for dir in fallout-ssl weidu-baf weidu-d weidu-tp2; do
+    cd "grammars/$dir" || exit 1
+    pnpm run generate:types
+    cd ../.. || exit 1
+done

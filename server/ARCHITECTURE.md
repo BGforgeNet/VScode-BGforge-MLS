@@ -79,6 +79,7 @@ server/src/
 |   +-- location-utils.ts     # Position/range helpers
 |
 +-- fallout-ssl/              # Fallout 1/2 scripting
+|   +-- tree-sitter.d.ts      # Generated SyntaxType enum
 |   +-- provider.ts
 |   +-- parser.ts             # Tree-sitter wrapper
 |   +-- format.ts
@@ -106,6 +107,7 @@ server/src/
 +-- td/                       # TypeScript -> D transpiler
 |
 +-- shared/
+|   +-- hash.ts               # Shared djb2 hash for cache keys
 |   +-- parser-factory.ts     # Cached tree-sitter parsers
 |   +-- workspace-symbols.ts  # WorkspaceSymbolIndex for Ctrl+T search
 |   +-- completion.ts         # Shared completion utilities

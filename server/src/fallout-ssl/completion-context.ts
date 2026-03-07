@@ -6,6 +6,7 @@
 import type { Position } from "vscode-languageserver/node";
 import { getLinePrefix } from "../common";
 import { isInitialized, parseWithCache } from "./parser";
+import { SyntaxType } from "./tree-sitter.d";
 
 /** SSL completion context for filterCompletions. */
 export enum SslCompletionContext {
@@ -43,8 +44,7 @@ export function getSslCompletionContext(text: string, position: Position): SslCo
         return SslCompletionContext.Code;
     }
 
-    // SSL grammar has no generated SyntaxType enum; node type strings used throughout fallout-ssl.
-    if (node.type === "comment") {
+    if (node.type === SyntaxType.Comment) {
         const commentText = node.text.trimStart();
         if (commentText.startsWith("/**")) {
             return SslCompletionContext.Jsdoc;
@@ -52,7 +52,7 @@ export function getSslCompletionContext(text: string, position: Position): SslCo
         return SslCompletionContext.Comment;
     }
 
-    if (node.type === "line_comment") {
+    if (node.type === SyntaxType.LineComment) {
         return SslCompletionContext.Comment;
     }
 

@@ -8,6 +8,7 @@ import { Location, Position } from "vscode-languageserver/node";
 import type { Node } from "web-tree-sitter";
 import { parseWithCache, isInitialized } from "./parser";
 import { extractProcedures, makeRange, findIdentifierAtPosition } from "./utils";
+import { SyntaxType } from "./tree-sitter.d";
 
 interface LocalDef {
     name: string;
@@ -36,9 +37,9 @@ function findAllLocalDefinitions(root: Node): LocalDef[] {
 
     // Extract macros
     function visitForMacros(node: Node): void {
-        if (node.type === "preprocessor") {
+        if (node.type === SyntaxType.Preprocessor) {
             for (const child of node.children) {
-                if (child.type === "define") {
+                if (child.type === SyntaxType.Define) {
                     const nameNode = child.childForFieldName("name");
                     if (nameNode) {
                         defs.push({
@@ -56,12 +57,12 @@ function findAllLocalDefinitions(root: Node): LocalDef[] {
     visitForMacros(root);
 
     function search(node: Node): void {
-        if (node.type === "procedure") {
+        if (node.type === SyntaxType.Procedure) {
             // Check parameters
             const params = node.childForFieldName("params");
             if (params) {
                 for (const child of params.children) {
-                    if (child.type === "param") {
+                    if (child.type === SyntaxType.Param) {
                         const paramName = child.childForFieldName("name");
                         if (paramName) {
                             defs.push({ name: paramName.text, range: makeRange(paramName) });
@@ -69,21 +70,21 @@ function findAllLocalDefinitions(root: Node): LocalDef[] {
                     }
                 }
             }
-        } else if (node.type === "variable_decl") {
+        } else if (node.type === SyntaxType.VariableDecl) {
             for (const child of node.children) {
-                if (child.type === "var_init") {
+                if (child.type === SyntaxType.VarInit) {
                     const nameNode = child.childForFieldName("name");
                     if (nameNode) {
                         defs.push({ name: nameNode.text, range: makeRange(nameNode) });
                     }
                 }
             }
-        } else if (node.type === "for_var_decl") {
+        } else if (node.type === SyntaxType.ForVarDecl) {
             const nameNode = node.childForFieldName("name");
             if (nameNode) {
                 defs.push({ name: nameNode.text, range: makeRange(nameNode) });
             }
-        } else if (node.type === "foreach_stmt") {
+        } else if (node.type === SyntaxType.ForeachStmt) {
             const varNode = node.childForFieldName("var");
             if (varNode) {
                 defs.push({ name: varNode.text, range: makeRange(varNode) });
@@ -96,7 +97,7 @@ function findAllLocalDefinitions(root: Node): LocalDef[] {
             if (valueNode) {
                 defs.push({ name: valueNode.text, range: makeRange(valueNode) });
             }
-        } else if (node.type === "export_decl") {
+        } else if (node.type === SyntaxType.ExportDecl) {
             const nameNode = node.childForFieldName("name");
             if (nameNode) {
                 defs.push({ name: nameNode.text, range: makeRange(nameNode) });

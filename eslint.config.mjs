@@ -10,6 +10,7 @@ export default [
             "client/out/**",
             "server/node_modules/**",
             "server/out/**",
+            "server/src/fallout-ssl/tree-sitter.d.ts", // Auto-generated from grammar
             "server/src/weidu-tp2/tree-sitter.d.ts",  // Auto-generated from grammar
             "server/src/weidu-baf/tree-sitter.d.ts",  // Auto-generated from grammar
             "server/src/weidu-d/tree-sitter.d.ts",    // Auto-generated from grammar

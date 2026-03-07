@@ -5,18 +5,7 @@
  * Used by local-symbols modules to avoid re-parsing unchanged documents.
  */
 
-/**
- * Simple hash function for cache keys.
- * Uses djb2 algorithm - fast and good distribution for strings.
- */
-function hashText(text: string): number {
-    let hash = 5381;
-    for (let i = 0; i < text.length; i++) {
-        hash = ((hash << 5) + hash) + text.charCodeAt(i);
-        hash = hash >>> 0; // Convert to unsigned 32-bit
-    }
-    return hash;
-}
+import { djb2Hash } from "./hash";
 
 /** Cache entry with hash and parsed data */
 interface CacheEntry<T> {
@@ -49,7 +38,7 @@ export class TextCache<T> {
      * @returns Parsed data, or null if parse returns null
      */
     getOrParse(uri: string, text: string, parse: (text: string, uri: string) => T | null): T | null {
-        const hash = hashText(text);
+        const hash = djb2Hash(text);
 
         // Check cache
         const cached = this.cache.get(uri);

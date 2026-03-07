@@ -21,6 +21,7 @@ import {
     formatAssignment,
     formatExpressionStmt,
 } from "./format-expressions";
+import { SyntaxType } from "./tree-sitter.d";
 
 // Re-export shared FormatOptions for backwards compatibility
 import type { FormatOptions } from "../shared/format-options";
@@ -58,7 +59,7 @@ export function throwFormatError(message: string, line: number, column: number):
 
 // Helper: check if node is a comment
 export function isComment(node: SyntaxNode): boolean {
-    return node.type === "comment" || node.type === "line_comment";
+    return node.type === SyntaxType.Comment || node.type === SyntaxType.LineComment;
 }
 
 // Helper: check if next sibling is a trailing comment on same line
@@ -149,55 +150,55 @@ export function formatDocument(node: SyntaxNode, options: FormatOptions = DEFAUL
 
 export function formatNode(node: SyntaxNode, depth: number): string {
     // Handle ERROR nodes: preserve original text
-    if (node.type === "ERROR") {
+    if (node.type === SyntaxType.ERROR) {
         return node.text;
     }
 
     switch (node.type) {
-        case "source_file": {
+        case SyntaxType.SourceFile: {
             const content = formatChildren(node, depth);
             // Replace tabs, remove leading blank lines, ensure exactly one trailing newline
             return content.replace(/\t/g, ctx.indent).replace(/^\n+/, "").replace(/\n+$/, "") + "\n";
         }
-        case "preprocessor":
+        case SyntaxType.Preprocessor:
             // Trailing comment handling is done by callers (formatProcedure, formatChildren)
             // to avoid double-appending when the comment is a separate tree-sitter node
             return normalizePreprocessor(node.text);
-        case "comment":
-        case "line_comment":
+        case SyntaxType.Comment:
+        case SyntaxType.LineComment:
             return normalizeComment(node.text);
-        case "procedure_forward":
+        case SyntaxType.ProcedureForward:
             return formatProcedureForward(node);
-        case "procedure":
+        case SyntaxType.Procedure:
             return formatProcedure(node, depth);
-        case "variable_decl":
+        case SyntaxType.VariableDecl:
             return formatVariableDecl(node, depth);
-        case "export_decl":
+        case SyntaxType.ExportDecl:
             return formatExportDecl(node);
-        case "if_stmt":
+        case SyntaxType.IfStmt:
             return formatIfStmt(node, depth);
-        case "while_stmt":
+        case SyntaxType.WhileStmt:
             return formatWhileStmt(node, depth);
-        case "for_stmt":
+        case SyntaxType.ForStmt:
             return formatForStmt(node, depth);
-        case "foreach_stmt":
+        case SyntaxType.ForeachStmt:
             return formatForeachStmt(node, depth);
-        case "switch_stmt":
+        case SyntaxType.SwitchStmt:
             return formatSwitchStmt(node, depth);
-        case "return_stmt": {
+        case SyntaxType.ReturnStmt: {
             // Grammar has no field name, expression is the only named child
             const expr = node.namedChildren[0];
             // Column for expression: depth indent + "return "
             const column = depth * ctx.indent.length + 7;
             return `return${expr ? " " + formatExpression(expr, column, 1) : ""};`;
         }
-        case "call_stmt":
+        case SyntaxType.CallStmt:
             return formatCallStmt(node);
-        case "assignment":
+        case SyntaxType.Assignment:
             return formatAssignment(node);
-        case "expression_stmt":
+        case SyntaxType.ExpressionStmt:
             return formatExpressionStmt(node, depth);
-        case "block":
+        case SyntaxType.Block:
             return formatBlock(node, depth);
         default:
             return node.text;
@@ -222,7 +223,7 @@ function formatChildren(node: SyntaxNode, depth: number): string {
                 return;
             }
 
-            const immediatelyAfterProcedure = prevChild?.type === "procedure" && !hadBlankLineBefore;
+            const immediatelyAfterProcedure = prevChild?.type === SyntaxType.Procedure && !hadBlankLineBefore;
 
             if (parts.length > 0 && !immediatelyAfterProcedure) {
                 if (needsBlankLine || hadBlankLineBefore) {
@@ -234,7 +235,7 @@ function formatChildren(node: SyntaxNode, depth: number): string {
             if (immediatelyAfterProcedure) {
                 needsBlankLine = true;
             }
-        } else if (child.type === "preprocessor") {
+        } else if (child.type === SyntaxType.Preprocessor) {
             // Preserve one blank line between preprocessor groups when original had one
             if (parts.length > 0 && (needsBlankLine || hadBlankLineBefore)) {
                 parts.push("");
@@ -242,13 +243,13 @@ function formatChildren(node: SyntaxNode, depth: number): string {
             }
             let preprocessorText = normalizePreprocessor(child.text);
             // Check if next sibling is a line comment on the same line
-            if (nextChild && nextChild.type === "line_comment" &&
+            if (nextChild && nextChild.type === SyntaxType.LineComment &&
                 nextChild.startPosition.row === child.endPosition.row) {
                 // Add the comment on the same line
                 preprocessorText = preprocessorText.trimEnd() + "    " + normalizeComment(nextChild.text);
             }
             parts.push(preprocessorText);
-        } else if (child.type === "procedure") {
+        } else if (child.type === SyntaxType.Procedure) {
             // Add blank line before procedure if not preceded by doc comment
             if (parts.length > 0) {
                 if (needsBlankLine || hadBlankLineBefore) {
@@ -302,7 +303,7 @@ function formatProcedure(node: SyntaxNode, depth: number): string {
         : `procedure ${name} begin`;
 
     const bodyParts: string[] = [];
-    const skipTypes = new Set(["identifier", "param_list"]);
+    const skipTypes: Set<string> = new Set([SyntaxType.Identifier, SyntaxType.ParamList]);
     const children = node.children;
 
     children.forEach((child, i) => {
@@ -354,7 +355,7 @@ function formatProcedure(node: SyntaxNode, depth: number): string {
 function formatParamList(node: SyntaxNode): string {
     const params: string[] = [];
     for (const child of node.children) {
-        if (child.type === "param") {
+        if (child.type === SyntaxType.Param) {
             params.push(formatParam(child));
         }
     }
@@ -382,7 +383,7 @@ function formatVariableDecl(node: SyntaxNode, depth: number = 0): string {
         const lines: string[] = [];
         let currentGroup: string[] = [];
         for (const child of node.children) {
-            if (child.type === "var_init") {
+            if (child.type === SyntaxType.VarInit) {
                 currentGroup.push(formatVarInit(child, depth + 1));
             } else if (child.text === ";") {
                 if (currentGroup.length > 0) {
@@ -403,7 +404,7 @@ function formatVariableDecl(node: SyntaxNode, depth: number = 0): string {
     const prefix = hasImport ? "import variable " : "variable ";
     const varInits: string[] = [];
     for (const child of node.children) {
-        if (child.type === "var_init") {
+        if (child.type === SyntaxType.VarInit) {
             varInits.push(formatVarInit(child, depth, prefix.length));
         }
     }

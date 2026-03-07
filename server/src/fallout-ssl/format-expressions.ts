@@ -6,6 +6,7 @@
 import type { Node as SyntaxNode } from "web-tree-sitter";
 
 import { getCtx, isComment, throwFormatError } from "./format-core";
+import { SyntaxType } from "./tree-sitter.d";
 
 
 /** Format an expression node to a string, with optional column tracking for line-breaking. */
@@ -13,7 +14,7 @@ export function formatExpression(node: SyntaxNode | null | undefined, column: nu
     if (!node) return "";
 
     // Handle ERROR nodes: preserve original text
-    if (node.type === "ERROR") {
+    if (node.type === SyntaxType.ERROR) {
         return node.text;
     }
 
@@ -32,7 +33,7 @@ export function formatExpression(node: SyntaxNode | null | undefined, column: nu
             return formatMemberExpr(node);
         case "paren_expr": {
             const inner = node.children[1];
-            if (!inner || inner.type === "comment" || inner.type === "line_comment") {
+            if (!inner || inner.type === SyntaxType.Comment || inner.type === SyntaxType.LineComment) {
                 throwFormatError(
                     `Unexpected paren_expr structure: ${node.text}`,
                     node.startPosition.row + 1,
@@ -47,7 +48,7 @@ export function formatExpression(node: SyntaxNode | null | undefined, column: nu
             return formatMapExpr(node, column, extraLength);
         case "proc_ref": {
             const ident = node.children[1];
-            if (!ident || ident.type !== "identifier") {
+            if (!ident || ident.type !== SyntaxType.Identifier) {
                 throwFormatError(
                     `Unexpected proc_ref structure: ${node.text}`,
                     node.startPosition.row + 1,
@@ -117,13 +118,13 @@ function flattenBinaryChain(node: SyntaxNode, op: string): SyntaxNode[] {
     const right = node.childForFieldName("right");
     const operands: SyntaxNode[] = [];
 
-    if (left?.type === "binary_expr" && getBinaryOp(left) === op) {
+    if (left?.type === SyntaxType.BinaryExpr && getBinaryOp(left) === op) {
         operands.push(...flattenBinaryChain(left, op));
     } else if (left) {
         operands.push(left);
     }
 
-    if (right?.type === "binary_expr" && getBinaryOp(right) === op) {
+    if (right?.type === SyntaxType.BinaryExpr && getBinaryOp(right) === op) {
         operands.push(...flattenBinaryChain(right, op));
     } else if (right) {
         operands.push(right);
@@ -198,7 +199,7 @@ function formatCallExpr(node: SyntaxNode, column: number = 0, extraLength: numbe
     const func = node.childForFieldName("func");
     const funcName = func?.text || "";
     // namedChildren[0] is the func, rest are args; skip inline block comments
-    const argNodes = node.namedChildren.slice(1).filter(c => c.type !== "comment");
+    const argNodes = node.namedChildren.slice(1).filter(c => c.type !== SyntaxType.Comment);
     const args = argNodes.map(a => formatExpression(a));
 
     const compact = `${funcName}(${args.join(", ")})`;
@@ -251,7 +252,7 @@ function formatMapExpr(node: SyntaxNode, column: number = 0, extraLength: number
     const ctx = getCtx();
     const entries: string[] = [];
     for (const child of node.children) {
-        if (child.type === "map_entry") {
+        if (child.type === SyntaxType.MapEntry) {
             const key = child.childForFieldName("key");
             const value = child.childForFieldName("value");
             entries.push(`${formatExpression(key)}: ${formatExpression(value)}`);
@@ -277,7 +278,7 @@ export function formatCallStmt(node: SyntaxNode): string {
     if (!target) return node.text;
 
     let result = "call ";
-    if (target.type === "call_expr") {
+    if (target.type === SyntaxType.CallExpr) {
         result += formatCallExpr(target);
     } else {
         result += target.text;

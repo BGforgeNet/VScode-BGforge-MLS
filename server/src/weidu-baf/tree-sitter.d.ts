@@ -294,6 +294,11 @@ export type UnnamedType =
   | ")"
   | ","
   | "."
+  | "END"
+  | "IF"
+  | "OR"
+  | "RESPONSE"
+  | "THEN"
   | "["
   | "]"
   | "~"
@@ -321,6 +326,11 @@ export type SyntaxNode =
   | UnnamedNode<")">
   | UnnamedNode<",">
   | UnnamedNode<".">
+  | UnnamedNode<"END">
+  | UnnamedNode<"IF">
+  | UnnamedNode<"OR">
+  | UnnamedNode<"RESPONSE">
+  | UnnamedNode<"THEN">
   | UnnamedNode<"[">
   | UnnamedNode<"]">
   | CommentNode

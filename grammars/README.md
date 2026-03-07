@@ -56,10 +56,10 @@ Each grammar has a `queries/highlights.scm` file following Neovim capture name c
 
 ## Type Generation
 
-The LSP server grammars (SSL, BAF, D, TP2) generate `SyntaxType` enums via `@asgerf/dts-tree-sitter`:
+All four LSP server grammars (fallout-ssl, weidu-baf, weidu-d, weidu-tp2) generate `SyntaxType` enums via `@asgerf/dts-tree-sitter`:
 
 ```bash
-cd grammars/weidu-tp2 && pnpm generate:types
+cd grammars/fallout-ssl && pnpm generate:types
 ```
 
-This copies the generated `tree-sitter.d.ts` to `server/src/{lang}/` for type-safe AST node comparisons. Runs automatically as part of `pnpm build:grammar`.
+This copies the generated `tree-sitter.d.ts` to `server/src/{lang}/` for type-safe AST node comparisons. Runs automatically for all four grammars as part of `pnpm build:grammar`.

@@ -6,6 +6,7 @@
 import { Parser, Language, Tree } from "web-tree-sitter";
 import * as path from "path";
 import * as fs from "fs";
+import { djb2HashHex } from "./hash";
 
 export interface ParserModule {
     init(): Promise<void>;
@@ -68,19 +69,6 @@ export function createParserModule(wasmFileName: string, name: string): ParserMo
 const DEFAULT_MAX_CACHE_SIZE = 10;
 
 /**
- * Simple hash function for cache keys.
- * Uses a fast string hash (djb2) since we only need cache key uniqueness.
- */
-function hashText(text: string): string {
-    let hash = 5381;
-    for (let i = 0; i < text.length; i++) {
-        hash = ((hash << 5) + hash) ^ text.charCodeAt(i);
-    }
-    // Convert to unsigned 32-bit integer and return as hex string
-    return (hash >>> 0).toString(16);
-}
-
-/**
  * Creates a cached parser module that wraps a regular parser module.
  * Caches parsed trees by text content hash to avoid redundant parsing.
  *
@@ -108,7 +96,7 @@ export function createCachedParserModule(
                 return null;
             }
 
-            const key = hashText(text);
+            const key = djb2HashHex(text);
 
             // Check cache
             const cached = cache.get(key);
@@ -140,7 +128,7 @@ export function createCachedParserModule(
             if (text === undefined) {
                 cache.clear();
             } else {
-                const key = hashText(text);
+                const key = djb2HashHex(text);
                 cache.delete(key);
             }
         },

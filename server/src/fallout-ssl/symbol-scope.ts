@@ -12,6 +12,7 @@
 import type { Node } from "web-tree-sitter";
 import { Position } from "vscode-languageserver/node";
 import { findIdentifierNodeAtPosition, findMacroDefinition } from "./utils";
+import { SyntaxType } from "./tree-sitter.d";
 
 /** Scope information for a symbol at a given cursor position. */
 export interface SslSymbolScope {
@@ -27,7 +28,7 @@ export interface SslSymbolScope {
 export function findContainingProcedure(node: Node): Node | null {
     let current: Node | null = node.parent;
     while (current) {
-        if (current.type === "procedure") {
+        if (current.type === SyntaxType.Procedure) {
             return current;
         }
         current = current.parent;
@@ -45,7 +46,7 @@ export function isLocalToProc(procedureNode: Node, symbolName: string): boolean 
     const params = procedureNode.childForFieldName("params");
     if (params) {
         for (const child of params.children) {
-            if (child.type === "param") {
+            if (child.type === SyntaxType.Param) {
                 const nameNode = child.childForFieldName("name");
                 if (nameNode?.text === symbolName) {
                     return true;
@@ -66,21 +67,21 @@ export function isLocalToProc(procedureNode: Node, symbolName: string): boolean 
  * so stack overflow is not a practical concern.
  */
 function searchProcBody(node: Node, symbolName: string): boolean {
-    if (node.type === "variable_decl") {
+    if (node.type === SyntaxType.VariableDecl) {
         for (const child of node.children) {
-            if (child.type === "var_init") {
+            if (child.type === SyntaxType.VarInit) {
                 const nameNode = child.childForFieldName("name");
                 if (nameNode?.text === symbolName) {
                     return true;
                 }
             }
         }
-    } else if (node.type === "for_var_decl") {
+    } else if (node.type === SyntaxType.ForVarDecl) {
         const nameNode = node.childForFieldName("name");
         if (nameNode?.text === symbolName) {
             return true;
         }
-    } else if (node.type === "foreach_stmt") {
+    } else if (node.type === SyntaxType.ForeachStmt) {
         for (const field of ["var", "key", "value"] as const) {
             const fieldNode = node.childForFieldName(field);
             if (fieldNode?.text === symbolName) {
@@ -103,13 +104,13 @@ function searchProcBody(node: Node, symbolName: string): boolean {
  */
 export function isFileScopeDef(rootNode: Node, symbolName: string): boolean {
     for (const child of rootNode.children) {
-        if (child.type === "procedure" || child.type === "procedure_forward") {
+        if (child.type === SyntaxType.Procedure || child.type === SyntaxType.ProcedureForward) {
             const nameNode = child.childForFieldName("name");
             if (nameNode?.text === symbolName) {
                 return true;
             }
         }
-        if (child.type === "export_decl") {
+        if (child.type === SyntaxType.ExportDecl) {
             const nameNode = child.childForFieldName("name");
             if (nameNode?.text === symbolName) {
                 return true;

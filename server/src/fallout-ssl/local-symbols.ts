@@ -25,6 +25,7 @@ import { extractProcedures, extractMacros, findPrecedingDocComment, makeRange, e
 import { buildMacroTooltip, buildMacroCompletion, buildSignatureFromJSDoc } from "./macro-utils";
 import * as jsdoc from "../shared/jsdoc";
 import type { SigInfoEx } from "../shared/signature";
+import { SyntaxType } from "./tree-sitter.d";
 
 /** Cached local symbols data: symbols array + name lookup map */
 interface LocalSymbolsData {
@@ -144,18 +145,18 @@ function parseLocalSymbols(text: string, uri: string): LocalSymbolsData | null {
 
     // Extract file-level variables and exports - use language-tagged code fence
     for (const node of root.children) {
-        if (node.type === "variable_decl") {
+        if (node.type === SyntaxType.VariableDecl) {
             const docComment = findPrecedingDocComment(root, node);
             const parsed = docComment ? jsdoc.parse(docComment) : null;
             for (const child of node.children) {
-                if (child.type === "var_init") {
+                if (child.type === SyntaxType.VarInit) {
                     const nameNode = child.childForFieldName("name");
                     if (nameNode) {
                         symbols.push(buildVariableSymbol(nameNode.text, uri, makeRange(child), undefined, parsed));
                     }
                 }
             }
-        } else if (node.type === "export_decl") {
+        } else if (node.type === SyntaxType.ExportDecl) {
             const docComment = findPrecedingDocComment(root, node);
             const parsed = docComment ? jsdoc.parse(docComment) : null;
             const nameNode = node.childForFieldName("name");

@@ -12,33 +12,20 @@ import type { IndexedSymbol } from "../core/symbol";
 import { Symbols } from "../core/symbol-index";
 import { loadStaticSymbols } from "../core/static-loader";
 import { type FormatResult, type LanguageProvider, type ProviderContext } from "../language-provider";
-import { getIndentFromEditorconfig } from "../shared/editorconfig";
 import { stripCommentsWeidu } from "../shared/format-utils";
+import { getFormatOptions } from "../shared/format-options";
 import { resolveSymbolStatic, getStaticCompletions, formatWithValidation } from "../shared/provider-helpers";
-import { fileURLToPath } from "url";
-import { formatDocument as formatAst, type FormatOptions } from "./format-core";
+import { formatDocument as formatAst } from "./format-core";
 import { initParser, parseWithCache, isInitialized } from "./parser";
 import { compile as weiduCompile } from "../weidu-compile";
 import { getFoldingRanges } from "../shared/folding-ranges";
 import { SyntaxType } from "./tree-sitter.d";
-
-const DEFAULT_INDENT = 4;
 
 /** BAF block-level node types for code folding. */
 const BAF_FOLDABLE_TYPES = new Set([
     SyntaxType.Block,
     SyntaxType.Response,
 ]);
-
-function getFormatOptions(uri: string): FormatOptions {
-    try {
-        const filePath = fileURLToPath(uri);
-        const indentSize = getIndentFromEditorconfig(filePath);
-        return { indentSize: indentSize ?? DEFAULT_INDENT };
-    } catch {
-        return { indentSize: DEFAULT_INDENT };
-    }
-}
 
 class WeiduBafProvider implements LanguageProvider {
     readonly id = LANG_WEIDU_BAF;

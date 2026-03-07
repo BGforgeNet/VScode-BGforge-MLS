@@ -7,6 +7,7 @@
 
 import type { Node } from "web-tree-sitter";
 import { stripIncludeDelimiters } from "../core/include-resolver";
+import { SyntaxType } from "./tree-sitter.d";
 
 /**
  * Extract all #include paths from a tree-sitter root node.
@@ -16,7 +17,7 @@ export function extractIncludes(rootNode: Node): readonly string[] {
     const includes: string[] = [];
 
     function visit(node: Node): void {
-        if (node.type === "include") {
+        if (node.type === SyntaxType.Include) {
             const pathNode = node.childForFieldName("path");
             if (pathNode) {
                 const stripped = stripIncludeDelimiters(pathNode.text);

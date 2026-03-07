@@ -21,6 +21,7 @@ import * as jsdoc from "../shared/jsdoc";
 import { type MacroData, buildMacroCompletion, buildMacroTooltip, buildSignatureFromJSDoc } from "./macro-utils";
 import { buildTooltipBase, buildVariableSymbol, extractMacros, extractParams, extractProcedures, findPrecedingDocComment, makeRange, buildProcedureSignature } from "./utils";
 import { isInitialized, parseWithCache } from "./parser";
+import { SyntaxType } from "./tree-sitter.d";
 
 // =============================================================================
 // Unified Symbol API
@@ -173,18 +174,18 @@ export function parseHeaderToSymbols(
 
     // Extract top-level variables and exports
     for (const node of root.children) {
-        if (node.type === "variable_decl") {
+        if (node.type === SyntaxType.VariableDecl) {
             const docComment = findPrecedingDocComment(root, node);
             const parsed = docComment ? jsdoc.parse(docComment) : null;
             for (const child of node.children) {
-                if (child.type === "var_init") {
+                if (child.type === SyntaxType.VarInit) {
                     const nameNode = child.childForFieldName("name");
                     if (nameNode) {
                         result.push(buildVariableSymbol(nameNode.text, uri, makeRange(child), undefined, parsed, displayPath));
                     }
                 }
             }
-        } else if (node.type === "export_decl") {
+        } else if (node.type === SyntaxType.ExportDecl) {
             const docComment = findPrecedingDocComment(root, node);
             const parsed = docComment ? jsdoc.parse(docComment) : null;
             const nameNode = node.childForFieldName("name");

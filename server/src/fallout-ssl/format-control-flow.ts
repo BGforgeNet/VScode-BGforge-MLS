@@ -7,6 +7,7 @@ import type { Node as SyntaxNode } from "web-tree-sitter";
 
 import { getCtx, normalizeComment, formatNode, formatBlock } from "./format-core";
 import { formatExpression } from "./format-expressions";
+import { SyntaxType } from "./tree-sitter.d";
 
 
 export function formatIfStmt(node: SyntaxNode, depth: number, isElseIf: boolean = false): string {
@@ -14,7 +15,7 @@ export function formatIfStmt(node: SyntaxNode, depth: number, isElseIf: boolean 
     const cond = node.childForFieldName("cond");
     const thenBranch = node.childForFieldName("then");
     const elseBranch = node.childForFieldName("else");
-    const thenIsBlock = thenBranch?.type === "block";
+    const thenIsBlock = thenBranch?.type === SyntaxType.Block;
 
     // Find "then" keyword to get its row for trailing comment detection
     const thenKeyword = node.children.find(c => c.type === "then");
@@ -25,7 +26,7 @@ export function formatIfStmt(node: SyntaxNode, depth: number, isElseIf: boolean 
     let thenTrailingComment = "";
     if (elseBranch) {
         for (const child of node.children) {
-            if (child.type === "comment" || child.type === "line_comment") {
+            if (child.type === SyntaxType.Comment || child.type === SyntaxType.LineComment) {
                 if (child.startPosition.row >= (thenBranch?.endPosition.row ?? 0) &&
                     child.startPosition.row < elseBranch.startPosition.row) {
                     elseComments.push(normalizeComment(child.text));
@@ -35,7 +36,7 @@ export function formatIfStmt(node: SyntaxNode, depth: number, isElseIf: boolean 
     }
     // Find trailing comment on "if ... then" line (same row as then, after then keyword)
     for (const child of node.children) {
-        if ((child.type === "comment" || child.type === "line_comment") &&
+        if ((child.type === SyntaxType.Comment || child.type === SyntaxType.LineComment) &&
             child.startPosition.row === thenRow &&
             thenKeyword && child.startPosition.column > thenKeyword.endPosition.column) {
             thenTrailingComment = ctx.indent + normalizeComment(child.text);
@@ -75,9 +76,9 @@ export function formatIfStmt(node: SyntaxNode, depth: number, isElseIf: boolean 
     if (elseBranch) {
         const elseSep = (thenIsBlock && elseComments.length === 0) ? " " : "\n" + ctx.indent.repeat(depth);
 
-        if (elseBranch.type === "if_stmt") {
+        if (elseBranch.type === SyntaxType.IfStmt) {
             result += elseSep + "else " + formatIfStmt(elseBranch, depth, true);
-        } else if (elseBranch.type === "block") {
+        } else if (elseBranch.type === SyntaxType.Block) {
             result += elseSep + "else " + formatBlock(elseBranch, depth);
         } else {
             result += elseSep + "else\n" + ctx.indent.repeat(depth + 1) + formatNode(elseBranch, depth + 1);
@@ -91,7 +92,7 @@ export function formatWhileStmt(node: SyntaxNode, depth: number): string {
     const ctx = getCtx();
     const cond = node.childForFieldName("cond");
     const body = node.childForFieldName("body");
-    const bodyIsBlock = body?.type === "block";
+    const bodyIsBlock = body?.type === SyntaxType.Block;
 
     // Condition starts after "while " at column depth*indent + 6
     const condColumn = depth * ctx.indent.length + 6;
@@ -130,7 +131,7 @@ export function formatForStmt(node: SyntaxNode, depth: number): string {
 
     let result = `for (${initStr}; ${condStr}; ${updateStr})`;
 
-    if (body?.type === "block") {
+    if (body?.type === SyntaxType.Block) {
         result += " " + formatBlock(body, depth);
     } else if (body) {
         result += "\n" + ctx.indent.repeat(depth + 1) + formatNode(body, depth + 1);
@@ -168,7 +169,7 @@ export function formatForeachStmt(node: SyntaxNode, depth: number): string {
         header = `foreach in ${formatExpression(iter)}`;
     }
 
-    if (body?.type === "block") {
+    if (body?.type === SyntaxType.Block) {
         return header + " " + formatBlock(body, depth);
     } else if (body) {
         return header + "\n" + ctx.indent.repeat(depth + 1) + formatNode(body, depth + 1);
@@ -183,9 +184,9 @@ export function formatSwitchStmt(node: SyntaxNode, depth: number): string {
     const parts: string[] = [`switch ${formatExpression(value)} begin`];
 
     for (const child of node.children) {
-        if (child.type === "case_clause") {
+        if (child.type === SyntaxType.CaseClause) {
             parts.push(formatCaseClause(child, depth + 1));
-        } else if (child.type === "default_clause") {
+        } else if (child.type === SyntaxType.DefaultClause) {
             parts.push(formatDefaultClause(child, depth + 1));
         }
     }
