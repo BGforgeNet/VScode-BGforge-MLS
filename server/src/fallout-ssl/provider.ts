@@ -25,12 +25,14 @@ import { Symbols } from "../core/symbol-index";
 import { loadStaticSymbols } from "../core/static-loader";
 import { compile as falloutCompile } from "./compiler";
 import { type FormatResult, type LanguageProvider, type ProviderContext } from "../language-provider";
-import { resolveSymbolWithLocal } from "../shared/provider-helpers";
+import { formatWithValidation, resolveSymbolWithLocal } from "../shared/provider-helpers";
 import { getJsdocCompletions } from "../shared/jsdoc-completions";
 import { FALLOUT_JSDOC_TYPES } from "../shared/fallout-types";
+import { stripCommentsFalloutSsl } from "../shared/format-utils";
+import { getFormatOptions } from "../shared/format-options";
 import * as signature from "../shared/signature";
-import { formatDocument, initParser } from "./format";
-import { isInitialized, parseWithCache } from "./parser";
+import { formatDocument as formatAst } from "./format-core";
+import { initParser, isInitialized, parseWithCache } from "./parser";
 import { getFoldingRanges } from "../shared/folding-ranges";
 import { getDocumentSymbols } from "./symbol";
 import { getLocalDefinition } from "./definition";
@@ -214,10 +216,16 @@ class FalloutSslProvider implements LanguageProvider {
     }
 
     format(text: string, uri: string): FormatResult {
-        if (!isInitialized()) {
-            return { edits: [] };
-        }
-        return formatDocument(text, uri);
+        return formatWithValidation({
+            text,
+            uri,
+            languageName: "SSL",
+            isInitialized,
+            parse: parseWithCache,
+            formatAst: (rootNode, options) => formatAst(rootNode, options),
+            getFormatOptions,
+            stripComments: stripCommentsFalloutSsl,
+        });
     }
 
     symbols(text: string): DocumentSymbol[] {
