@@ -21,6 +21,7 @@ import {
     Range,
     InlayHint,
     SignatureHelp,
+    SymbolInformation,
     WatchKind,
     WorkspaceEdit,
 } from "vscode-languageserver/node";
@@ -198,6 +199,20 @@ class ProviderRegistry {
             return provider.symbols(text);
         }
         return [];
+    }
+
+    /**
+     * Search workspace symbols across all providers.
+     * Aggregates results from every provider that implements workspaceSymbols.
+     */
+    workspaceSymbols(query: string): SymbolInformation[] {
+        const results: SymbolInformation[] = [];
+        for (const provider of this.providers.values()) {
+            if (provider.workspaceSymbols) {
+                results.push(...provider.workspaceSymbols(query));
+            }
+        }
+        return results;
     }
 
     foldingRanges(langId: string, text: string): FoldingRange[] {

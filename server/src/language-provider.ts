@@ -15,6 +15,7 @@ import {
     Position,
     Range,
     SignatureHelp,
+    SymbolInformation,
     TextEdit,
     WorkspaceEdit,
 } from "vscode-languageserver/node";
@@ -125,6 +126,9 @@ export interface LanguageProvider {
 
     /** Get inlay hints for the given range. */
     inlayHints?(text: string, uri: string, range: Range): InlayHint[];
+
+    /** Search workspace symbols by query string (for Ctrl+T). */
+    workspaceSymbols?(query: string): SymbolInformation[];
 
     // =========================================================================
     // Data features (static + parsed from headers/files)

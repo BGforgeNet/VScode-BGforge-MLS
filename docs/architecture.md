@@ -253,13 +253,13 @@ See [server/ARCHITECTURE.md](../server/ARCHITECTURE.md) for comprehensive docume
 
 Each provider implements a subset of the `LanguageProvider` interface:
 
-| Provider | Completion | Hover | Signature | Definition | Format | Symbols | Rename | Compile | Folding |
-|----------|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| fallout-ssl | x | x | x | x | x | x | x | sslc | x |
-| fallout-worldmap | x | x | | | | | | | |
-| weidu-baf | x | x | | | x | | | weidu | x |
-| weidu-d | x | x | | x | x | x | | weidu | x |
-| weidu-tp2 | x | x | | x | x | x | x | weidu | x |
+| Provider | Completion | Hover | Signature | Definition | Format | Symbols | Workspace Symbols | Rename | Compile | Folding |
+|----------|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| fallout-ssl | x | x | x | x | x | x | x | x | sslc | x |
+| fallout-worldmap | x | x | | | | | | | | |
+| weidu-baf | x | x | | | x | | | | weidu | x |
+| weidu-d | x | x | | x | x | x | | | weidu | x |
+| weidu-tp2 | x | x | | x | x | x | x | x | weidu | x |
 
 ### Transpilers
 

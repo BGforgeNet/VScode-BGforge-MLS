@@ -9,6 +9,8 @@ export const LANG_FALLOUT_SSL = "fallout-ssl" as const;
 export const EXT_FALLOUT_SSL = ".ssl" as const;
 /** SSL header file extensions for file watching */
 export const EXT_FALLOUT_SSL_HEADERS = [".h"] as const;
+/** All SSL file extensions (headers + source) for workspace-wide features */
+export const EXT_FALLOUT_SSL_ALL = [...EXT_FALLOUT_SSL_HEADERS, EXT_FALLOUT_SSL] as const;
 export const LANG_FALLOUT_SSL_TOOLTIP = "fallout-ssl-tooltip" as const;
 export const LANG_FALLOUT_WORLDMAP_TXT = "fallout-worldmap-txt" as const;
 // Used only in TRANSLATION_FILE_LANGUAGES below

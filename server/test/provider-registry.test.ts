@@ -18,6 +18,7 @@ import {
     InlayHint,
     InlayHintKind,
     SignatureHelp,
+    SymbolInformation,
     WorkspaceEdit,
 } from "vscode-languageserver/node";
 import type { LanguageProvider, ProviderContext, FormatResult } from "../src/language-provider";
@@ -759,6 +760,67 @@ describe("ProviderRegistry", () => {
 
             expect(mockReload1).toHaveBeenCalledTimes(1);
             expect(mockReload2).toHaveBeenCalledTimes(1);
+        });
+    });
+
+    describe("workspaceSymbols()", () => {
+        it("should return empty array when no providers implement it", async () => {
+            const registry = await createRegistry();
+            registry.register(createMockProvider("test"));
+
+            expect(registry.workspaceSymbols("query")).toEqual([]);
+        });
+
+        it("should aggregate results from multiple providers", async () => {
+            const registry = await createRegistry();
+            const symbolA: SymbolInformation = {
+                name: "proc_a",
+                kind: SymbolKind.Function,
+                location: { uri: "file:///a.ssl", range: { start: { line: 0, character: 0 }, end: { line: 0, character: 6 } } },
+            };
+            const symbolB: SymbolInformation = {
+                name: "func_b",
+                kind: SymbolKind.Function,
+                location: { uri: "file:///b.tph", range: { start: { line: 0, character: 0 }, end: { line: 0, character: 6 } } },
+            };
+            registry.register(createMockProvider("lang-a", {
+                workspaceSymbols: vi.fn().mockReturnValue([symbolA]),
+            }));
+            registry.register(createMockProvider("lang-b", {
+                workspaceSymbols: vi.fn().mockReturnValue([symbolB]),
+            }));
+
+            const results = registry.workspaceSymbols("func");
+            expect(results).toHaveLength(2);
+            expect(results).toContain(symbolA);
+            expect(results).toContain(symbolB);
+        });
+
+        it("should pass query string to each provider", async () => {
+            const registry = await createRegistry();
+            const mockWsSymbols = vi.fn().mockReturnValue([]);
+            registry.register(createMockProvider("test", { workspaceSymbols: mockWsSymbols }));
+
+            registry.workspaceSymbols("my_query");
+
+            expect(mockWsSymbols).toHaveBeenCalledWith("my_query");
+        });
+
+        it("should skip providers that do not implement workspaceSymbols", async () => {
+            const registry = await createRegistry();
+            const symbol: SymbolInformation = {
+                name: "proc",
+                kind: SymbolKind.Function,
+                location: { uri: "file:///a.ssl", range: { start: { line: 0, character: 0 }, end: { line: 0, character: 4 } } },
+            };
+            registry.register(createMockProvider("no-ws-symbols"));
+            registry.register(createMockProvider("has-ws-symbols", {
+                workspaceSymbols: vi.fn().mockReturnValue([symbol]),
+            }));
+
+            const results = registry.workspaceSymbols("");
+            expect(results).toHaveLength(1);
+            expect(results[0]).toBe(symbol);
         });
     });
 });

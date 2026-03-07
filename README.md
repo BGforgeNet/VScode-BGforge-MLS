@@ -30,13 +30,13 @@ It can also be used with non-VScode editors, see setup guides:
 
 #### LSP Providers
 
-| Language         | Extensions          | Completion | Hover | Signature | Definition | Format | Symbols |  Rename   | Inlay Hints | Compile | JSDoc | Folding |
-| ---------------- | ------------------- | :--------: | :---: | :-------: | :--------: | :----: | :-----: | :-------: | :---------: | :-----: | :---: | :-----: |
-| Fallout SSL      | .ssl, .h            |     +      |   +   |     +     |     +      |   +    |    +    |     +     |    .msg     |  sslc   |   +   |    +    |
-| Fallout worldmap | worldmap.txt        |     +      |   +   |           |            |        |         |           |             |         |       |         |
-| WeiDU BAF        | .baf                |     +      |   +   |           |            |   +    |         |           |    .tra     |  weidu  |       |    +    |
-| WeiDU D          | .d                  |     +      |   +   |           |     +      |   +    |    +    |           |    .tra     |  weidu  |       |    +    |
-| WeiDU TP2        | .tp2/.tpa/.tph/.tpp |     +      |   +   |           |     +      |   +    |    +    | same file |    .tra     |  weidu  |   +   |    +    |
+| Language         | Extensions          | Completion | Hover | Signature | Definition | Format | Symbols | Workspace Symbols |  Rename   | Inlay Hints | Compile | JSDoc | Folding |
+| ---------------- | ------------------- | :--------: | :---: | :-------: | :--------: | :----: | :-----: | :---------------: | :-------: | :---------: | :-----: | :---: | :-----: |
+| Fallout SSL      | .ssl, .h            |     +      |   +   |     +     |     +      |   +    |    +    |         +         |     +     |    .msg     |  sslc   |   +   |    +    |
+| Fallout worldmap | worldmap.txt        |     +      |   +   |           |            |        |         |                   |           |             |         |       |         |
+| WeiDU BAF        | .baf                |     +      |   +   |           |            |   +    |         |                   |           |    .tra     |  weidu  |       |    +    |
+| WeiDU D          | .d                  |     +      |   +   |           |     +      |   +    |    +    |                   |           |    .tra     |  weidu  |       |    +    |
+| WeiDU TP2        | .tp2/.tpa/.tph/.tpp |     +      |   +   |           |     +      |   +    |    +    |         +         | same file |    .tra     |  weidu  |   +   |    +    |
 
 Aliases: .slb and .ssl (Infinity Engine) are treated as WeiDU BAF.
 

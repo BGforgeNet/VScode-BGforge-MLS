@@ -115,6 +115,7 @@ connection.onInitialize((params: InitializeParams) => {
             renameProvider: { prepareProvider: true },
             documentFormattingProvider: true,
             documentSymbolProvider: true,
+            workspaceSymbolProvider: true,
             foldingRangeProvider: true,
             executeCommandProvider: {
                 commands: ["bgforge.parseDialog"],
@@ -608,6 +609,10 @@ connection.onDocumentSymbol((params) => {
         return [];
     }
     return registry.symbols(textDoc.languageId, textDoc.getText());
+});
+
+connection.onWorkspaceSymbol((params) => {
+    return registry.workspaceSymbols(params.query);
 });
 
 connection.onFoldingRanges((params) => {

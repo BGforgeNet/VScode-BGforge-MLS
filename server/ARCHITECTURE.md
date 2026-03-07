@@ -107,6 +107,7 @@ server/src/
 |
 +-- shared/
 |   +-- parser-factory.ts     # Cached tree-sitter parsers
+|   +-- workspace-symbols.ts  # WorkspaceSymbolIndex for Ctrl+T search
 |   +-- completion.ts         # Shared completion utilities
 |   +-- hover.ts              # Shared hover utilities
 |   +-- signature.ts          # Signature help utilities
@@ -347,13 +348,13 @@ This copies the generated `tree-sitter.d.ts` to `server/src/{lang}/`.
 
 ## Feature Matrix
 
-| Provider | Completion | Hover | Signature | Definition | Format | Symbols | Rename | Inlay | Folding |
-|----------|:----------:|:-----:|:---------:|:----------:|:------:|:-------:|:------:|:-----:|:-------:|
-| fallout-ssl | Y | Y | Y | Y | Y | Y | Y | .msg | Y |
-| weidu-baf | Y | Y | | | Y | | | .tra | Y |
-| weidu-d | Y | Y | | Y | Y | Y | | .tra | Y |
-| weidu-tp2 | Y | Y | | Y | Y | Y | Y | .tra | Y |
-| worldmap | Y | Y | | | | | | | |
+| Provider | Completion | Hover | Signature | Definition | Format | Symbols | Workspace Symbols | Rename | Inlay | Folding |
+|----------|:----------:|:-----:|:---------:|:----------:|:------:|:-------:|:-----------------:|:------:|:-----:|:-------:|
+| fallout-ssl | Y | Y | Y | Y | Y | Y | Y | Y | .msg | Y |
+| weidu-baf | Y | Y | | | Y | | | | .tra | Y |
+| weidu-d | Y | Y | | Y | Y | Y | | | .tra | Y |
+| weidu-tp2 | Y | Y | | Y | Y | Y | Y | Y | .tra | Y |
+| worldmap | Y | Y | | | | | | | | |
 
 ## Request Routing
 

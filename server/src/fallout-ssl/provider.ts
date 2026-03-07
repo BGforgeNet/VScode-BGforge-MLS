@@ -14,10 +14,10 @@ import { readFileSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { type CompletionItem, type DocumentSymbol, type FoldingRange, type Location, type Position, type SignatureHelp, type WorkspaceEdit } from "vscode-languageserver/node";
+import { type CompletionItem, type DocumentSymbol, type FoldingRange, type Location, type Position, type SignatureHelp, type SymbolInformation, type WorkspaceEdit } from "vscode-languageserver/node";
 import type { IndexedSymbol } from "../core/symbol";
 import { conlog, findFiles, getLinePrefix, pathToUri } from "../common";
-import { EXT_FALLOUT_SSL, EXT_FALLOUT_SSL_HEADERS, LANG_FALLOUT_SSL } from "../core/languages";
+import { EXT_FALLOUT_SSL_ALL, EXT_FALLOUT_SSL_HEADERS, LANG_FALLOUT_SSL } from "../core/languages";
 import { IncludeGraph } from "../core/include-graph";
 import { resolveIncludePath } from "../core/include-resolver";
 import { isHeaderFile } from "../core/location-utils";
@@ -40,6 +40,7 @@ import { parseHeaderToSymbols } from "./header-parser";
 import { getLocalSymbols, lookupLocalSymbol, clearLocalSymbolsCache } from "./local-symbols";
 import { getSslCompletionContext, SslCompletionContext, isSslDeclarationSite } from "./completion-context";
 import { extractIncludes } from "./include-scanner";
+import { WorkspaceSymbolIndex } from "../shared/workspace-symbols";
 
 /** SSL block-level node types for code folding. */
 const SSL_FOLDABLE_TYPES = new Set([
@@ -53,16 +54,21 @@ const SSL_FOLDABLE_TYPES = new Set([
 ]);
 
 /** File extensions to scan for the include graph, derived from language constants. */
-const INCLUDE_GRAPH_EXTENSIONS = [EXT_FALLOUT_SSL, ...EXT_FALLOUT_SSL_HEADERS].map(ext => ext.slice(1));
+const INCLUDE_GRAPH_EXTENSIONS = EXT_FALLOUT_SSL_ALL.map(ext => ext.slice(1));
 
 class FalloutSslProvider implements LanguageProvider {
     readonly id = LANG_FALLOUT_SSL;
+    // Only watch header files for external change events. Non-header .ssl files
+    // get workspace symbol updates via onDidChangeContent (open documents) and
+    // buildIncludeGraph (startup scan). Adding .ssl here would cause double I/O
+    // at startup since buildIncludeGraph already reads all .ssl files.
     readonly watchExtensions = [...EXT_FALLOUT_SSL_HEADERS];
 
     private symbolStore: Symbols | undefined;
     private staticSignatures: signature.SigMap | undefined;
     private storedContext: ProviderContext | undefined;
     private includeGraph: IncludeGraph | undefined;
+    private wsSymbolIndex: WorkspaceSymbolIndex | undefined;
 
     async init(context: ProviderContext): Promise<void> {
         this.storedContext = context;
@@ -72,6 +78,8 @@ class FalloutSslProvider implements LanguageProvider {
         this.symbolStore = new Symbols();
         const staticSymbols = loadStaticSymbols(LANG_FALLOUT_SSL);
         this.symbolStore.loadStatic(staticSymbols);
+
+        this.wsSymbolIndex = new WorkspaceSymbolIndex();
 
         this.staticSignatures = signature.loadStatic(LANG_FALLOUT_SSL);
 
@@ -85,9 +93,18 @@ class FalloutSslProvider implements LanguageProvider {
     }
 
     /**
-     * Scan workspace for all relevant files and populate the include graph.
+     * Scan workspace for all relevant files, populate the include graph and
+     * workspace symbol index.
+     *
      * Uses async I/O to avoid blocking the event loop at startup.
      * Called once at init time.
+     *
+     * This method reads ALL .ssl and .h files. watchExtensions is intentionally
+     * set to .h only (see comment there) so that scanWorkspaceHeaders does NOT
+     * re-read .ssl files. Without this separation, every .ssl file would be read
+     * twice at startup: once here (async) and once in scanWorkspaceHeaders (sync).
+     * Open .ssl documents still get workspace symbol updates at runtime via
+     * onDidChangeContent -> reloadFileData.
      */
     private async buildIncludeGraph(workspaceRoot: string): Promise<void> {
         if (!this.includeGraph) return;
@@ -105,6 +122,12 @@ class FalloutSslProvider implements LanguageProvider {
             filePaths.map(async ({ absolutePath, uri }) => {
                 const text = await readFile(absolutePath, "utf-8");
                 this.updateIncludeGraphForFile(uri, text);
+
+                // Populate workspace symbols from the same text we just read,
+                // avoiding a second I/O pass in scanWorkspaceHeaders.
+                if (this.wsSymbolIndex && isInitialized()) {
+                    this.wsSymbolIndex.updateFile(uri, getDocumentSymbols(text));
+                }
             }),
         );
 
@@ -330,11 +353,21 @@ class FalloutSslProvider implements LanguageProvider {
 
         // Update include graph for any file type
         this.updateIncludeGraphForFile(uri, text);
+
+        // Update workspace symbol index for all files
+        if (this.wsSymbolIndex && isInitialized()) {
+            this.wsSymbolIndex.updateFile(uri, getDocumentSymbols(text));
+        }
     }
 
     onWatchedFileDeleted(uri: string): void {
         this.symbolStore?.clearFile(uri);
         this.includeGraph?.removeFile(uri);
+        this.wsSymbolIndex?.removeFile(uri);
+    }
+
+    workspaceSymbols(query: string): SymbolInformation[] {
+        return this.wsSymbolIndex?.search(query) ?? [];
     }
 
     onDocumentClosed(uri: string): void {

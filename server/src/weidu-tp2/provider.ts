@@ -6,7 +6,7 @@
  * User-defined functions and variables from .tph headers are handled by header-parser.
  */
 
-import { type CompletionItem, CompletionItemKind, type DocumentSymbol, type FoldingRange, type Location, type Position, type WorkspaceEdit, InsertTextFormat } from "vscode-languageserver/node";
+import { type CompletionItem, CompletionItemKind, type DocumentSymbol, type FoldingRange, type Location, type Position, type SymbolInformation, type WorkspaceEdit, InsertTextFormat } from "vscode-languageserver/node";
 import { extname } from "path";
 import { fileURLToPath } from "url";
 import { conlog, getLinePrefix } from "../common";
@@ -37,6 +37,7 @@ import { getLocalSymbols as extractLocalSymbols, lookupLocalSymbol, clearLocalSy
 import { WEIDU_JSDOC_TYPES } from "../shared/weidu-types";
 import { getJsdocCompletions as getSharedJsdocCompletions } from "../shared/jsdoc-completions";
 import { getFoldingRanges } from "../shared/folding-ranges";
+import { WorkspaceSymbolIndex } from "../shared/workspace-symbols";
 import { SyntaxType } from "./tree-sitter.d";
 
 /** TP2 block-level node types for code folding. */
@@ -204,6 +205,7 @@ class WeiduTp2Provider implements LanguageProvider {
 
     private symbolStore: Symbols | undefined;
     private storedContext: ProviderContext | undefined;
+    private wsSymbolIndex: WorkspaceSymbolIndex | undefined;
 
     async init(context: ProviderContext): Promise<void> {
         this.storedContext = context;
@@ -213,6 +215,8 @@ class WeiduTp2Provider implements LanguageProvider {
         this.symbolStore = new Symbols();
         const staticSymbols = loadStaticSymbols(LANG_WEIDU_TP2);
         this.symbolStore.loadStatic(staticSymbols);
+
+        this.wsSymbolIndex = new WorkspaceSymbolIndex();
 
         conlog(`WeiDU TP2 provider initialized with ${staticSymbols.length} static symbols`);
     }
@@ -314,12 +318,22 @@ class WeiduTp2Provider implements LanguageProvider {
                 this.symbolStore.updateFile(uri, parsedSymbols);
             }
         }
+
+        // Update workspace symbol index for all files
+        if (this.wsSymbolIndex && isInitialized()) {
+            this.wsSymbolIndex.updateFile(uri, getDocumentSymbols(text));
+        }
     }
 
     onWatchedFileDeleted(uri: string): void {
         if (this.symbolStore) {
             this.symbolStore.clearFile(uri);
         }
+        this.wsSymbolIndex?.removeFile(uri);
+    }
+
+    workspaceSymbols(query: string): SymbolInformation[] {
+        return this.wsSymbolIndex?.search(query) ?? [];
     }
 
     onDocumentClosed(uri: string): void {
