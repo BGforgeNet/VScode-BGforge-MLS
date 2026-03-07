@@ -11,7 +11,6 @@ import {
     generateHover,
     generateSignatures,
     getDetail,
-    getDoc,
     loadData,
 } from "../src/generate-data.js";
 
@@ -48,37 +47,6 @@ describe("getDetail", () => {
     it("returns name when no args and no detail", () => {
         const item = { name: "my_keyword" };
         expect(getDetail(item)).toBe("my_keyword");
-    });
-});
-
-describe("getDoc", () => {
-    it("returns empty string for item with no args or doc", () => {
-        expect(getDoc({ name: "x" })).toBe("");
-    });
-
-    it("returns arg table for item with args only", () => {
-        const item = {
-            name: "f",
-            args: [{ name: "a", type: "int", doc: "the value" }],
-        };
-        const result = getDoc(item);
-        expect(result).toContain("|`a`|&nbsp;&nbsp;the value|");
-    });
-
-    it("returns doc for item with doc only", () => {
-        const item = { name: "f", doc: "Some docs." };
-        expect(getDoc(item)).toBe("Some docs.");
-    });
-
-    it("returns args table + separator + doc for item with both", () => {
-        const item = {
-            name: "f",
-            doc: "Function docs.",
-            args: [{ name: "a", type: "int", doc: "value" }],
-        };
-        const result = getDoc(item);
-        expect(result).toContain("|`a`|&nbsp;&nbsp;value|");
-        expect(result).toContain("Function docs.");
     });
 });
 
@@ -269,155 +237,84 @@ describe("getDetail (WeiDU)", () => {
     });
 });
 
-describe("getDoc (WeiDU)", () => {
-    it("generates INT vars table for int-category args", () => {
-        const item = {
-            name: "F",
-            type: "dimorphic",
-            doc: "A function.",
-            args: [
-                { name: "start", type: "int", doc: "start index" },
-                { name: "length", type: "int", doc: "how many chars" },
-            ],
-        };
-        const result = getDoc(item);
-        expect(result).toContain("|**INT**|**vars**|||");
-        // Type links must NOT be wrapped in backticks — backticks create code spans
-        // that render markdown link syntax as literal text in VSCode completion popups.
-        expect(result).toContain("[int](https://ielib.bgforge.net/types/#int)|start|");
-        expect(result).not.toContain("`[int]");
-        expect(result).toContain("&nbsp;&nbsp;start index");
-        expect(result).toContain("[int](https://ielib.bgforge.net/types/#int)|length|");
-        expect(result).not.toContain("|**STR**|**vars**|||");
+describe("getDetail (stanza prefix)", () => {
+    it("prepends callable prefix from stanza name", () => {
+        const item = { name: "HANDLE_AUDIO" };
+        expect(getDetail(item, true, "actionFunctions")).toBe("action function HANDLE_AUDIO");
     });
 
-    it("generates STR vars table for str-category args", () => {
-        const item = {
-            name: "F",
-            type: "patch",
-            args: [
-                { name: "file", type: "resref", doc: "resource reference" },
-                { name: "text", type: "string", doc: "text value" },
-            ],
-        };
-        const result = getDoc(item);
-        expect(result).toContain("|**STR**|**vars**|||");
-        expect(result).toContain("[resref](https://ielib.bgforge.net/types/#resref)|file|");
-        expect(result).toContain("[string](https://ielib.bgforge.net/types/#string)|text|");
-        expect(result).not.toContain("`[resref]");
-        expect(result).not.toContain("|**INT**|**vars**|||");
+    it("prepends patch function prefix", () => {
+        const item = { name: "ADD_AREA_ITEM" };
+        expect(getDetail(item, true, "patchFunctions")).toBe("patch function ADD_AREA_ITEM");
     });
 
-    it("generates both INT and STR sections for mixed args", () => {
-        const item = {
-            name: "SUBSTRING",
-            type: "dimorphic",
-            doc: "Returns a substring.",
-            args: [
-                { name: "start", type: "int", doc: "offset" },
-                { name: "text", type: "string", doc: "source string" },
-            ],
-        };
-        const result = getDoc(item);
-        expect(result).toContain("|**INT**|**vars**|||");
-        expect(result).toContain("|**STR**|**vars**|||");
+    it("prepends dimorphic function prefix", () => {
+        const item = { name: "RESOLVE_STR_REF" };
+        expect(getDetail(item, true, "dimorphicFunctions")).toBe("dimorphic function RESOLVE_STR_REF");
     });
 
-    it("generates RET vars table from rets", () => {
-        const item = {
-            name: "F",
-            type: "patch",
-            rets: [
-                { name: "result", type: "int", doc: "the result" },
-            ],
-        };
-        const result = getDoc(item);
-        expect(result).toContain("|**RET**|**vars**|||");
-        expect(result).toContain("[int](https://ielib.bgforge.net/types/#int)|result|");
-        expect(result).not.toContain("`[int]");
-        expect(result).toContain("&nbsp;&nbsp;the result");
+    it("prepends action macro prefix", () => {
+        const item = { name: "READ_SOUNDSET" };
+        expect(getDetail(item, true, "actionMacros")).toBe("action macro READ_SOUNDSET");
     });
 
-    it("generates doc with rets only (no args)", () => {
-        const item = {
-            name: "GET_AC",
-            rets: [{ name: "base_ac", type: "int", doc: "base AC" }],
-        };
-        const result = getDoc(item);
-        expect(result).toContain("|**RET**|**vars**|||");
-        expect(result).not.toContain("|**INT**|**vars**|||");
-        expect(result).not.toContain("|**STR**|**vars**|||");
+    it("prepends patch macro prefix", () => {
+        const item = { name: "tb_factorial" };
+        expect(getDetail(item, true, "patchMacros")).toBe("patch macro tb_factorial");
     });
 
-    it("shows required marker for required args", () => {
-        const item = {
-            name: "F",
-            type: "patch",
-            args: [
-                { name: "index", type: "int", doc: "structure index", required: true },
-            ],
-        };
-        const result = getDoc(item);
-        expect(result).toContain("|_required_|");
+    it("does not double-prefix when detail already has prefix", () => {
+        const item = { name: "ALTER_AREA_REGION_MATCH", detail: "patch function ALTER_AREA_REGION_MATCH" };
+        expect(getDetail(item, true, "patchFunctions")).toBe("patch function ALTER_AREA_REGION_MATCH");
     });
 
-    it("shows default value for args with defaults", () => {
-        const item = {
-            name: "F",
-            type: "dimorphic",
-            args: [
-                { name: "count", type: "int", doc: "how many", default: "1" },
-            ],
-        };
-        const result = getDoc(item);
-        expect(result).toContain("|=&nbsp;1|");
+    it("does not add prefix when includeTypes is false", () => {
+        const item = { name: "HANDLE_AUDIO" };
+        expect(getDetail(item, false, "actionFunctions")).toBe("HANDLE_AUDIO");
     });
 
-    it("includes doc description before tables", () => {
-        const item = {
-            name: "F",
-            type: "dimorphic",
-            doc: "My description.",
-            args: [{ name: "x", type: "int" }],
-        };
-        const result = getDoc(item);
-        expect(result).toContain("My description.");
-        // Description comes before tables
-        const descIdx = result.indexOf("My description.");
-        const tableIdx = result.indexOf("|**INT**|**vars**|||");
-        expect(descIdx).toBeLessThan(tableIdx);
+    it("does not add prefix for non-callable stanzas", () => {
+        const item = { name: "IF" };
+        expect(getDetail(item, true, "keywords")).toBe("IF");
     });
 
-    it("handles args with no doc", () => {
-        const item = {
-            name: "F",
-            type: "patch",
-            args: [{ name: "x", type: "int" }],
+    it("does not add prefix when stanzaName is undefined", () => {
+        const item = { name: "HANDLE_AUDIO" };
+        expect(getDetail(item, true)).toBe("HANDLE_AUDIO");
+    });
+});
+
+describe("deprecation in hover output", () => {
+    it("appends boolean deprecation notice to hover", () => {
+        const data = {
+            funcs: { type: 3, items: [{ name: "old_func", detail: "void old_func()", deprecated: true }] },
         };
-        const result = getDoc(item);
-        // No &nbsp; description, just empty
-        expect(result).toContain("|x||");
+        const result = generateHover(data, "lang");
+        expect(result["old_func"]!.contents.value).toContain("**Deprecated**");
     });
 
-    it("generates full mixed args + rets output", () => {
-        const item = {
-            name: "SUBSTRING",
-            type: "dimorphic",
-            doc: "Returns a substring.",
-            args: [
-                { name: "start", type: "int", doc: "start index" },
-                { name: "length", type: "int", doc: "length to read" },
-                { name: "string", type: "string", doc: "source string" },
-            ],
-            rets: [
-                { name: "substring", type: "string", doc: "the result" },
-            ],
+    it("appends string deprecation notice to hover", () => {
+        const data = {
+            funcs: { type: 3, items: [{ name: "old_func", detail: "void old_func()", deprecated: "Use new_func instead" }] },
         };
-        const result = getDoc(item);
-        expect(result).toContain("|**INT**|**vars**|||");
-        expect(result).toContain("|**STR**|**vars**|||");
-        expect(result).toContain("|**RET**|**vars**|||");
-        expect(result).toContain("Returns a substring.");
+        const result = generateHover(data, "lang");
+        expect(result["old_func"]!.contents.value).toContain("**Deprecated:** Use new_func instead");
+    });
+
+    it("appends deprecation notice to completion documentation", () => {
+        const data = {
+            funcs: { type: 3, items: [{ name: "old_func", detail: "void old_func()", deprecated: true }] },
+        };
+        const result = generateCompletion(data, "lang");
+        expect(result[0]!.documentation!.value).toContain("**Deprecated**");
+    });
+
+    it("does not add deprecation text when not deprecated", () => {
+        const data = {
+            funcs: { type: 3, items: [{ name: "func", detail: "void func()" }] },
+        };
+        const result = generateHover(data, "lang");
+        expect(result["func"]!.contents.value).not.toContain("Deprecated");
     });
 });
 

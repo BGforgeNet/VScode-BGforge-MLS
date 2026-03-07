@@ -4,9 +4,8 @@
  * Also provides hover info for function parameters at call sites.
  */
 
-import { CompletionItemKind, Hover, MarkupKind, Position } from "vscode-languageserver/node";
+import { Hover, MarkupKind, Position } from "vscode-languageserver/node";
 import { isCallableSymbol, type CallableInfo } from "../core/symbol";
-import { CALLABLE_CATEGORY_META } from "../core/static-loader";
 import { buildParamInfoMap, type Ret } from "../shared/jsdoc";
 import { parseWithCache, isInitialized } from "./parser";
 import { parseHeader, FunctionInfo, VariableInfo } from "./header-parser";
@@ -14,7 +13,7 @@ import type { Symbols } from "../core/symbol-index";
 import { SyntaxType } from "./tree-sitter.d";
 import { stripStringDelimiters } from "./tree-utils";
 import { buildWeiduTable, type VarRow, type VarSection } from "../shared/tooltip-table";
-import { buildSignatureBlock, formatDeprecation } from "../shared/tooltip-format";
+import { buildSignatureBlock, buildWeiduHoverContent } from "../shared/tooltip-format";
 import { LANG_WEIDU_TP2_TOOLTIP } from "../core/languages";
 
 /** Maximum length for parameter descriptions in hover table. */
@@ -276,31 +275,20 @@ export function buildFunctionHover(funcInfo: FunctionInfo, displayPath?: string 
         }
     }
 
-    // 1. Signature + file path
     const signatureLine = `${funcInfo.context} ${funcInfo.dtype} ${funcInfo.name}`;
     const filePath = displayPath === null ? undefined : (displayPath ?? extractFilename(funcInfo.location.uri));
-    let markdownValue = buildSignatureBlock(signatureLine, LANG_WEIDU_TP2_TOOLTIP, filePath);
-
-    // 2. JSDoc description
-    if (funcInfo.jsdoc?.desc) {
-        markdownValue += `\n\n${funcInfo.jsdoc.desc}`;
-    }
-
-    // 3. Parameter table (INT vars, STR vars, RET vars, RET arrays)
     const paramTable = buildParamTable(funcInfo, jsdocArgs);
-    if (paramTable) {
-        markdownValue += "\n\n" + paramTable;
-    }
 
-    // 4. Deprecation notice (@deprecated)
-    markdownValue += formatDeprecation(funcInfo.jsdoc?.deprecated);
+    const value = buildWeiduHoverContent({
+        signature: signatureLine,
+        langId: LANG_WEIDU_TP2_TOOLTIP,
+        filePath,
+        description: funcInfo.jsdoc?.desc,
+        paramTable: paramTable || undefined,
+        deprecated: funcInfo.jsdoc?.deprecated,
+    });
 
-    return {
-        contents: {
-            kind: MarkupKind.Markdown,
-            value: markdownValue,
-        },
-    };
+    return { contents: { kind: MarkupKind.Markdown, value } };
 }
 
 /**
@@ -435,55 +423,16 @@ export function buildVariableHover(varInfo: VariableInfo, displayPath?: string |
     const showValue = isConstant && varInfo.value !== undefined;
     const signature = showValue ? `${type} ${varInfo.name} = ${varInfo.value}` : `${type} ${varInfo.name}`;
 
-    // Signature + file path
     const filePath = displayPath === null ? undefined : (displayPath ?? extractFilename(varInfo.location.uri));
-    let markdownValue = buildSignatureBlock(signature, LANG_WEIDU_TP2_TOOLTIP, filePath);
 
-    // JSDoc description
-    if (varInfo.jsdoc?.desc) {
-        markdownValue += `\n\n${varInfo.jsdoc.desc}`;
-    }
+    const value = buildWeiduHoverContent({
+        signature,
+        langId: LANG_WEIDU_TP2_TOOLTIP,
+        filePath,
+        description: varInfo.jsdoc?.desc,
+        deprecated: varInfo.jsdoc?.deprecated,
+    });
 
-    // Deprecation notice
-    markdownValue += formatDeprecation(varInfo.jsdoc?.deprecated);
-
-    return {
-        contents: {
-            kind: MarkupKind.Markdown,
-            value: markdownValue,
-        },
-    };
+    return { contents: { kind: MarkupKind.Markdown, value } };
 }
 
-/**
- * Hover transform for static TP2 symbols.
- * Injects "{context} {dtype} " prefix (e.g., "action function") into
- * weidu-tp2-tooltip code fences for callable categories.
- */
-export function transformTp2StaticHover(
-    value: string,
-    item: { category?: string; kind?: CompletionItemKind },
-): string {
-    const meta = (item.category && item.kind === CompletionItemKind.Function)
-        ? CALLABLE_CATEGORY_META[item.category]
-        : undefined;
-    if (!meta) {
-        return value;
-    }
-
-    const fenceTag = `\`\`\`${LANG_WEIDU_TP2_TOOLTIP}\n`;
-    const fenceIdx = value.indexOf(fenceTag);
-    if (fenceIdx === -1) {
-        return value;
-    }
-
-    const prefix = `${meta.context} ${meta.dtype} `;
-    const insertAt = fenceIdx + fenceTag.length;
-
-    // Guard: don't inject if prefix already present
-    if (value.startsWith(prefix, insertAt)) {
-        return value;
-    }
-
-    return value.slice(0, insertAt) + prefix + value.slice(insertAt);
-}

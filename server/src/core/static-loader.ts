@@ -1,19 +1,16 @@
 /**
  * Static symbol loader - loads built-in symbols from generated JSON files.
  *
- * Converts static completion/hover JSON (generated from YAML by generate_data.py)
- * into Symbol[] for use with Symbols. This enables a single source of truth
+ * Converts static completion JSON (generated from YAML by generate-data.ts)
+ * into IndexedSymbol[] for use with Symbols. This enables a single source of truth
  * for all LSP features from static data.
  *
  * The completion JSON already contains embedded hover documentation, so we only
  * need to load one file to get both completion and hover data.
  *
- * Symbol-building pattern: Universal factory for all languages.
- * Uses a generic `convertToSymbol()` factory that maps JSON completion items
- * to the IndexedSymbol discriminated union. Hover/completion content comes
- * pre-formatted from the YAML→JSON pipeline (generate-data.ts).
- * Language-specific hover transforms (e.g., TP2 callable prefix injection)
- * are passed in via the optional `StaticLoaderOptions.transformHover` callback.
+ * All formatting (callable prefixes, deprecation notices, param tables) is
+ * pre-computed at build time by generate-data.ts using shared building blocks
+ * from tooltip-format.ts and tooltip-table.ts.
  */
 
 import { readFileSync } from "fs";
@@ -80,23 +77,11 @@ const CATEGORY_TO_KIND: Record<string, SymbolKind> = {
 };
 
 /**
- * Optional configuration for loadStaticSymbols.
- */
-export interface StaticLoaderOptions {
-    /**
-     * Transform hover markdown value before storing in the symbol.
-     * Called with the raw markdown and the item's category + kind.
-     * Used by TP2 to inject callable prefix ("action function") into tooltips.
-     */
-    readonly transformHover?: (value: string, item: { category?: string; kind?: CompletionItemKind }) => string;
-}
-
-/**
  * Callable metadata per TP2 category.
  * Maps category names to their CallableContext and CallableDefType.
  * Only applies to items with CompletionItemKind.Function (not keywords/snippets).
  */
-export const CALLABLE_CATEGORY_META: Record<string, { context: CallableContext; dtype: CallableDefType }> = {
+const CALLABLE_CATEGORY_META: Record<string, { context: CallableContext; dtype: CallableDefType }> = {
     // Note: `action` and `patch` are intentionally excluded. They contain commands
     // (LAF, COPY, WRITE_BYTE, etc.) which are not user-defined callables and should
     // not get "action function" / "patch function" prefix in tooltips.
@@ -141,13 +126,13 @@ function completionKindToSymbolKind(kind: CompletionItemKind): SymbolKind {
  * @param langId Language ID (e.g., "weidu-baf", "fallout-ssl")
  * @returns Array of IndexedSymbol objects ready for Symbols.loadStatic()
  */
-export function loadStaticSymbols(langId: string, options?: StaticLoaderOptions): IndexedSymbol[] {
+export function loadStaticSymbols(langId: string): IndexedSymbol[] {
     const items = loadCompletionJson(langId);
     if (!items || items.length === 0) {
         return [];
     }
 
-    return items.map(item => convertToSymbol(item, options));
+    return items.map(convertToSymbol);
 }
 
 /**
@@ -169,15 +154,15 @@ function loadCompletionJson(langId: string): StaticCompletionItem[] | undefined 
  * Convert a static completion item to an IndexedSymbol.
  * Returns the appropriate discriminated union type based on kind.
  */
-function convertToSymbol(item: StaticCompletionItem, options?: StaticLoaderOptions): IndexedSymbol {
+function convertToSymbol(item: StaticCompletionItem): IndexedSymbol {
     const name = item.label;
     const kind = determineSymbolKind(item);
 
     // Static symbols have no source file - location is null
     const location = null;
 
-    // Extract hover content from completion documentation
-    const hover = extractHover(item, options?.transformHover);
+    // Extract hover content from completion documentation (pre-formatted at build time)
+    const hover = extractHover(item);
 
     // Build completion item — derive documentation from hover (single source of truth).
     // This ensures any transformations (e.g., callable prefix injection) are consistent.
@@ -282,36 +267,19 @@ function determineSymbolKind(item: StaticCompletionItem): SymbolKind {
 
 /**
  * Extract hover content from completion item documentation.
- * Applies optional transformHover callback for language-specific hover transforms.
+ * Documentation is pre-formatted at build time (callable prefixes, deprecation, etc.).
  */
-function extractHover(
-    item: StaticCompletionItem,
-    transformHover?: (value: string, item: { category?: string; kind?: CompletionItemKind }) => string,
-): { contents: MarkupContent } {
-    const transform = transformHover
-        ? (value: string) => transformHover(value, { category: item.category, kind: item.kind })
-        : (value: string) => value;
-
+function extractHover(item: StaticCompletionItem): { contents: MarkupContent } {
     if (item.documentation !== undefined) {
-        // Documentation can be string or MarkupContent
         if (typeof item.documentation === "string") {
             return {
                 contents: {
                     kind: "markdown",
-                    value: transform(item.documentation),
+                    value: item.documentation,
                 },
             };
         }
-        // Already MarkupContent
         const markup = item.documentation as MarkupContent;
-        if (markup.kind === "markdown") {
-            return {
-                contents: {
-                    kind: "markdown",
-                    value: transform(markup.value),
-                },
-            };
-        }
         return {
             contents: markup,
         };

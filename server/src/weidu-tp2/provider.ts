@@ -31,7 +31,7 @@ import { parseHeaderToSymbols } from "./header-parser";
 import { isCallableSymbol, type IndexedSymbol } from "../core/symbol";
 import { renameSymbol, prepareRenameSymbol } from "./rename";
 import { buildFunctionCallSnippet, getKeywordSnippet } from "./snippets";
-import { getFunctionParamHover, transformTp2StaticHover } from "./hover";
+import { getFunctionParamHover } from "./hover";
 import { localCompletion, isInsideComment, isOnLoopVariableBinding } from "./ast-utils";
 import { getLocalSymbols as extractLocalSymbols, lookupLocalSymbol, clearLocalSymbolsCache } from "./local-symbols";
 import { WEIDU_JSDOC_TYPES } from "../shared/weidu-types";
@@ -213,9 +213,7 @@ class WeiduTp2Provider implements LanguageProvider {
         await initParser();
 
         this.symbolStore = new Symbols();
-        const staticSymbols = loadStaticSymbols(LANG_WEIDU_TP2, {
-            transformHover: transformTp2StaticHover,
-        });
+        const staticSymbols = loadStaticSymbols(LANG_WEIDU_TP2);
         this.symbolStore.loadStatic(staticSymbols);
 
         this.wsSymbolIndex = new WorkspaceSymbolIndex();

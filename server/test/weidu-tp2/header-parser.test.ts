@@ -257,6 +257,8 @@ patch function apply_armor_bonus
 lib/functions.tph
 \`\`\`
 
+---
+
 Applies bonus to armor.`
             );
         });
@@ -283,6 +285,8 @@ action function test_func
 \`\`\`bgforge-mls-comment
 lib/functions.tph
 \`\`\`
+
+---
 
 Test function.
 
@@ -313,6 +317,8 @@ action function get_value
 lib/functions.tph
 \`\`\`
 
+---
+
 Returns a value.`
             );
         });
@@ -334,6 +340,8 @@ action function old_func
 \`\`\`bgforge-mls-comment
 lib/functions.tph
 \`\`\`
+
+---
 
 Old function.
 
@@ -361,6 +369,8 @@ action function use_item
 \`\`\`bgforge-mls-comment
 lib/functions.tph
 \`\`\`
+
+---
 
 Uses an item.
 
@@ -458,6 +468,8 @@ int max_items
 lib/functions.tph
 \`\`\`
 
+---
+
 Maximum item count.`
             );
         });
@@ -479,6 +491,8 @@ int OLD_VALUE = 5
 \`\`\`bgforge-mls-comment
 lib/functions.tph
 \`\`\`
+
+---
 
 Old constant.
 

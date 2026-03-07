@@ -18,12 +18,7 @@ vi.mock("../../src/common", () => ({
 }));
 
 import { loadStaticSymbols } from "../../src/core/static-loader";
-import { transformTp2StaticHover } from "../../src/weidu-tp2/hover";
 import { readFileSync } from "fs";
-
-/** Shorthand for loading with TP2 hover transform (callable prefix injection). */
-const loadWithTp2Transform = (langId: string) =>
-    loadStaticSymbols(langId, { transformHover: transformTp2StaticHover });
 
 const mockReadFileSync = vi.mocked(readFileSync);
 
@@ -349,7 +344,7 @@ describe("static-loader", () => {
             expect(sym.callable.dtype).toBeUndefined();
         });
 
-        it("should NOT inject prefix for action commands", () => {
+        it("should pass through pre-baked prefix for action commands", () => {
             mockReadFileSync.mockReturnValue(JSON.stringify([
                 {
                     label: "COPY",
@@ -365,11 +360,11 @@ describe("static-loader", () => {
             const result = loadStaticSymbols("test-lang");
             const value = (result[0].hover.contents as { kind: string; value: string }).value;
 
-            // Commands should NOT have "action function" prefix
+            // Commands should NOT have "action function" prefix (not in CALLABLE_CATEGORY_META)
             expect(value).toBe("```weidu-tp2-tooltip\nCOPY ~source~ ~dest~\n```\nCopies a file.");
         });
 
-        it("should inject prefix for typed function categories (patchFunctions)", () => {
+        it("should pass through pre-baked callable prefix (patchFunctions)", () => {
             mockReadFileSync.mockReturnValue(JSON.stringify([
                 {
                     label: "ADD_SPELL_EFFECT",
@@ -377,18 +372,18 @@ describe("static-loader", () => {
                     category: "patchFunctions",
                     documentation: {
                         kind: "markdown",
-                        value: "```weidu-tp2-tooltip\nADD_SPELL_EFFECT\n```\nAdds an effect.",
+                        value: "```weidu-tp2-tooltip\npatch function ADD_SPELL_EFFECT\n```\nAdds an effect.",
                     },
                 },
             ]));
 
-            const result = loadWithTp2Transform("test-lang");
+            const result = loadStaticSymbols("test-lang");
             const value = (result[0].hover.contents as { kind: string; value: string }).value;
 
             expect(value).toBe("```weidu-tp2-tooltip\npatch function ADD_SPELL_EFFECT\n```\nAdds an effect.");
         });
 
-        it("should inject prefix for typed function categories (actionFunctions)", () => {
+        it("should pass through pre-baked callable prefix (actionFunctions)", () => {
             mockReadFileSync.mockReturnValue(JSON.stringify([
                 {
                     label: "ADD_WORLDMAP",
@@ -396,12 +391,12 @@ describe("static-loader", () => {
                     category: "actionFunctions",
                     documentation: {
                         kind: "markdown",
-                        value: "```weidu-tp2-tooltip\nADD_WORLDMAP\n```\nAdds a worldmap.",
+                        value: "```weidu-tp2-tooltip\naction function ADD_WORLDMAP\n```\nAdds a worldmap.",
                     },
                 },
             ]));
 
-            const result = loadWithTp2Transform("test-lang");
+            const result = loadStaticSymbols("test-lang");
             const value = (result[0].hover.contents as { kind: string; value: string }).value;
 
             expect(value).toBe("```weidu-tp2-tooltip\naction function ADD_WORLDMAP\n```\nAdds a worldmap.");
@@ -415,16 +410,16 @@ describe("static-loader", () => {
                     category: "patchFunctions",
                     documentation: {
                         kind: "markdown",
-                        value: "```weidu-tp2-tooltip\nADD_AREA_ITEM\n```\nAdds an item to a container.",
+                        value: "```weidu-tp2-tooltip\npatch function ADD_AREA_ITEM\n```\nAdds an item to a container.",
                     },
                 },
             ]));
 
-            const result = loadWithTp2Transform("test-lang");
+            const result = loadStaticSymbols("test-lang");
             const hoverValue = (result[0].hover.contents as { kind: string; value: string }).value;
             const completionDoc = result[0].completion.documentation as { kind: string; value: string };
 
-            // Both should contain the injected "patch function" prefix
+            // Both should contain the pre-baked "patch function" prefix
             expect(hoverValue).toContain("patch function ADD_AREA_ITEM");
             expect(completionDoc.value).toContain("patch function ADD_AREA_ITEM");
 
@@ -469,43 +464,7 @@ describe("static-loader", () => {
             expect(result[0].kind).toBe(SymbolKind.Constant);
         });
 
-        it("should not double-inject prefix if already present", () => {
-            mockReadFileSync.mockReturnValue(JSON.stringify([
-                {
-                    label: "ADD_SPELL_EFFECT",
-                    kind: CompletionItemKind.Function,
-                    category: "patchFunctions",
-                    documentation: {
-                        kind: "markdown",
-                        value: "```weidu-tp2-tooltip\npatch function ADD_SPELL_EFFECT\n```\nAdds.",
-                    },
-                },
-            ]));
-
-            const result = loadWithTp2Transform("test-lang");
-            const value = (result[0].hover.contents as { kind: string; value: string }).value;
-
-            expect(value).toBe("```weidu-tp2-tooltip\npatch function ADD_SPELL_EFFECT\n```\nAdds.");
-        });
-
-        it("should not inject prefix into non-TP2 tooltip fences", () => {
-            const originalDoc = "```weidu-baf-tooltip\nSomeAction()\n```\nDoes something.";
-            mockReadFileSync.mockReturnValue(JSON.stringify([
-                {
-                    label: "SomeAction",
-                    kind: CompletionItemKind.Function,
-                    category: "actionFunctions",
-                    documentation: { kind: "markdown", value: originalDoc },
-                },
-            ]));
-
-            const result = loadWithTp2Transform("test-lang");
-            const value = (result[0].hover.contents as { kind: string; value: string }).value;
-
-            expect(value).toBe(originalDoc);
-        });
-
-        it("should inject 'dimorphic function' prefix for dimorphicFunctions category", () => {
+        it("should pass through pre-baked dimorphic function prefix", () => {
             mockReadFileSync.mockReturnValue(JSON.stringify([
                 {
                     label: "RESOLVE_STR_REF",
@@ -513,12 +472,12 @@ describe("static-loader", () => {
                     category: "dimorphicFunctions",
                     documentation: {
                         kind: "markdown",
-                        value: "```weidu-tp2-tooltip\nRESOLVE_STR_REF\n```\nResolves a string reference.",
+                        value: "```weidu-tp2-tooltip\ndimorphic function RESOLVE_STR_REF\n```\nResolves a string reference.",
                     },
                 },
             ]));
 
-            const result = loadWithTp2Transform("test-lang");
+            const result = loadStaticSymbols("test-lang");
             const value = (result[0].hover.contents as { kind: string; value: string }).value;
 
             expect(value).toBe("```weidu-tp2-tooltip\ndimorphic function RESOLVE_STR_REF\n```\nResolves a string reference.");

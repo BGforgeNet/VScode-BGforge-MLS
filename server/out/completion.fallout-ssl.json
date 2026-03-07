@@ -740,7 +740,7 @@
         "category": "base-functions",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nObjectPtr critter_inven_obj(ObjectPtr who, int where)\n```\nDeprecated. Use `critter_inven_obj2` instead.\n\n---\nReturns a pointer to an object that is in a given spot (NULL if none).\nThe appropriate values for where are: `INVEN_TYPE_WORN`, `INVEN_TYPE_RIGHT_HAND`, and `INVEN_TYPE_LEFT_HAND`."
+            "value": "```fallout-ssl-tooltip\nObjectPtr critter_inven_obj(ObjectPtr who, int where)\n```\nReturns a pointer to an object that is in a given spot (NULL if none).\nThe appropriate values for where are: `INVEN_TYPE_WORN`, `INVEN_TYPE_RIGHT_HAND`, and `INVEN_TYPE_LEFT_HAND`.\n\n**Deprecated:** Use `critter_inven_obj2` instead"
         },
         "tags": [
             1
@@ -1043,7 +1043,7 @@
         "category": "base-functions",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nint floor(int/float value)\n```\nDeprecated. Use `floor2` instead.\n\n---\nWorks properly for positive values, but for negative ones functions like `ceil` (rounds up instead of down)."
+            "value": "```fallout-ssl-tooltip\nint floor(int/float value)\n```\nWorks properly for positive values, but for negative ones functions like `ceil` (rounds up instead of down).\n\n**Deprecated:** Use `floor2` instead"
         },
         "tags": [
             1

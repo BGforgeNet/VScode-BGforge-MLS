@@ -16,6 +16,7 @@ import { parseArgs } from "node:util";
 import YAML from "yaml";
 import { WEIDU_JSDOC_TYPES } from "../../../server/src/shared/weidu-types";
 import { buildWeiduTable, buildFalloutArgsTable, type VarSection, type VarRow } from "../../../server/src/shared/tooltip-table";
+import { buildSignatureBlock, buildWeiduHoverContent, formatDeprecation } from "../../../server/src/shared/tooltip-format";
 
 // -- Types --
 
@@ -34,7 +35,7 @@ interface DataItem {
     readonly args?: readonly DataArg[];
     readonly rets?: readonly DataArg[];
     readonly type?: string;
-    readonly deprecated?: boolean;
+    readonly deprecated?: boolean | string;
 }
 
 interface DataStanza {
@@ -77,6 +78,20 @@ interface SignatureResult {
 
 /** Known WeiDU item.type values that map to "X function NAME" detail strings. */
 const WEIDU_ITEM_TYPES = new Set(["patch", "action", "dimorphic"]);
+
+/**
+ * Maps callable stanza names to their hover signature prefix.
+ * Used to inject "action function", "patch macro", etc. into hover tooltips
+ * at build time. Only applies when item has no structured args/rets
+ * (items with args already get the prefix via getDetail's WeiDU path).
+ */
+const STANZA_CALLABLE_PREFIX: Record<string, string> = {
+    actionFunctions: "action function ",
+    patchFunctions: "patch function ",
+    dimorphicFunctions: "dimorphic function ",
+    actionMacros: "action macro ",
+    patchMacros: "patch macro ",
+};
 
 /**
  * Returns true if the item uses WeiDU-style structured format.
@@ -137,8 +152,11 @@ export function loadData(yamlPaths: readonly string[]): DataFile {
  * Fallout format: "int get_sfall_arg_at(int a, ObjectPtr b)"
  * WeiDU format: "dimorphic function SUBSTRING" (no args in signature)
  * When includeTypes is false, omits types (used for signature labels).
+ *
+ * @param stanzaName Optional stanza key (e.g., "actionFunctions"). When provided,
+ *   items without structured args/rets get the callable prefix from STANZA_CALLABLE_PREFIX.
  */
-export function getDetail(item: DataItem, includeTypes = true): string {
+export function getDetail(item: DataItem, includeTypes = true, stanzaName?: string): string {
     if (item.args !== undefined || item.rets !== undefined) {
         // WeiDU format: show "type function NAME" without parenthesized args
         if (isWeiduFormat(item)) {
@@ -158,18 +176,18 @@ export function getDetail(item: DataItem, includeTypes = true): string {
             return `${item.name}(${argsStr})`;
         }
     }
-    return item.detail ?? item.name;
-}
 
-/**
- * Generates markdown documentation from item args, rets, and doc field.
- * WeiDU items get INT_VAR/STR_VAR/RET tables; Fallout items get bullet lists.
- */
-export function getDoc(item: DataItem): string {
-    if (isWeiduFormat(item)) {
-        return getWeiduDoc(item);
+    const base = item.detail ?? item.name;
+
+    // For callable stanzas, prepend context+dtype prefix if not already present
+    if (includeTypes && stanzaName) {
+        const prefix = STANZA_CALLABLE_PREFIX[stanzaName];
+        if (prefix && !base.startsWith(prefix)) {
+            return `${prefix}${base}`;
+        }
     }
-    return getFalloutDoc(item);
+
+    return base;
 }
 
 /** Fallout-style doc: 2-column table of args with descriptions + prose description. */
@@ -204,17 +222,8 @@ function mapArgsToRows(args: readonly DataArg[], category: "int" | "str"): reado
         }));
 }
 
-/**
- * WeiDU-style doc: single unified table for INT_VAR, STR_VAR, and RET vars,
- * matching the format produced by hover.ts:buildParamTable for JSDoc-parsed functions.
- */
-function getWeiduDoc(item: DataItem): string {
-    let doc = "";
-
-    if (item.doc !== undefined) {
-        doc += `\n---\n\n${item.doc}`;
-    }
-
+/** Build the WeiDU param table string from a data item's args and rets. */
+function getWeiduParamTable(item: DataItem): string {
     const sections: VarSection[] = [];
 
     if (item.args !== undefined && item.args.length > 0) {
@@ -233,12 +242,7 @@ function getWeiduDoc(item: DataItem): string {
         });
     }
 
-    const table = buildWeiduTable(sections);
-    if (table) {
-        doc += "\n\n" + table;
-    }
-
-    return doc;
+    return buildWeiduTable(sections);
 }
 
 function markdown(value: string): MarkupContent {
@@ -254,17 +258,28 @@ export function generateCompletion(data: DataFile, tooltipLangId: string): reado
         const kind = stanza.type;
         for (const item of stanza.items) {
             const label = item.name;
-
-            const detail = getDetail(item);
-            const doc = getDoc(item);
+            const detail = getDetail(item, true, stanzaName);
 
             let documentation: MarkupContent | undefined;
-            if (detail !== label || doc !== "") {
-                let mdValue = `\`\`\`${tooltipLangId}\n${detail}\n\`\`\``;
-                if (doc !== "") {
-                    mdValue = `${mdValue}\n${doc}`;
+            if (isWeiduFormat(item)) {
+                const paramTable = getWeiduParamTable(item);
+                documentation = markdown(buildWeiduHoverContent({
+                    signature: detail,
+                    langId: tooltipLangId,
+                    description: item.doc,
+                    paramTable: paramTable || undefined,
+                    deprecated: item.deprecated,
+                }));
+            } else {
+                const doc = getFalloutDoc(item);
+                if (detail !== label || doc !== "") {
+                    let mdValue = buildSignatureBlock(detail, tooltipLangId);
+                    if (doc !== "") {
+                        mdValue += `\n${doc}`;
+                    }
+                    mdValue += formatDeprecation(item.deprecated);
+                    documentation = markdown(mdValue);
                 }
-                documentation = markdown(mdValue);
             }
 
             const deprecated = item.deprecated ?? false;
@@ -290,7 +305,7 @@ export function generateCompletion(data: DataFile, tooltipLangId: string): reado
  */
 export function generateHover(data: DataFile, langId: string): Record<string, HoverResult> {
     const result: Record<string, HoverResult> = {};
-    for (const [, stanza] of Object.entries(data)) {
+    for (const [stanzaName, stanza] of Object.entries(data)) {
         for (const item of stanza.items) {
             // Skip items with no data besides the name
             if (item.detail === undefined && item.doc === undefined && item.args === undefined && item.rets === undefined) {
@@ -298,11 +313,25 @@ export function generateHover(data: DataFile, langId: string): Record<string, Ho
             }
 
             const label = item.name;
-            const detail = getDetail(item);
-            let value = `\`\`\`${langId}\n${detail}\n\`\`\``;
-            const doc = getDoc(item);
-            if (doc !== "") {
-                value = `${value}\n${doc}`;
+            const detail = getDetail(item, true, stanzaName);
+
+            let value: string;
+            if (isWeiduFormat(item)) {
+                const paramTable = getWeiduParamTable(item);
+                value = buildWeiduHoverContent({
+                    signature: detail,
+                    langId,
+                    description: item.doc,
+                    paramTable: paramTable || undefined,
+                    deprecated: item.deprecated,
+                });
+            } else {
+                value = buildSignatureBlock(detail, langId);
+                const doc = getFalloutDoc(item);
+                if (doc !== "") {
+                    value += `\n${doc}`;
+                }
+                value += formatDeprecation(item.deprecated);
             }
 
             result[label] = { contents: markdown(value) };
@@ -333,7 +362,7 @@ export function generateSignatures(data: DataFile, langId: string): Record<strin
                 const docStr = arg.doc ?? "";
                 return {
                     label: arg.name,
-                    documentation: markdown(`\`\`\`${langId}\n${categoryPrefix}${arg.type} ${arg.name}\n\`\`\`\n${docStr}`),
+                    documentation: markdown(`${buildSignatureBlock(`${categoryPrefix}${arg.type} ${arg.name}`, langId)}\n${docStr}`),
                 };
             });
 

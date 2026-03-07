@@ -316,12 +316,9 @@ base-functions:
     - name: critter_inven_obj
       detail: ObjectPtr critter_inven_obj(ObjectPtr who, int where)
       doc: |-
-        Deprecated. Use `critter_inven_obj2` instead.
-
-        ---
         Returns a pointer to an object that is in a given spot (NULL if none).
         The appropriate values for where are: `INVEN_TYPE_WORN`, `INVEN_TYPE_RIGHT_HAND`, and `INVEN_TYPE_LEFT_HAND`.
-      deprecated: true
+      deprecated: Use `critter_inven_obj2` instead
     - name: critter_is_fleeing
       detail: int critter_is_fleeing(ObjectPtr who)
       doc: |-
@@ -453,11 +450,8 @@ base-functions:
     - name: floor
       detail: int floor(int/float value)
       doc: |-
-        Deprecated. Use `floor2` instead.
-
-        ---
         Works properly for positive values, but for negative ones functions like `ceil` (rounds up instead of down).
-      deprecated: true
+      deprecated: Use `floor2` instead
     - name: gSay_End
       detail: void gSay_End(uint var_index)
       doc: |-

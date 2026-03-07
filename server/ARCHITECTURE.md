@@ -466,13 +466,13 @@ Documented in provider-registry.ts.
 ```
 +------------------+     +------------------+     +------------------+
 | YAML data files  | --> | generate-data.ts | --> | completion.      |
-| (game functions) |     |                  |     | {lang}.json      |
+| (game functions) |     | (shared building |     | {lang}.json      |
+|                  |     |  blocks)         |     | (pre-formatted)  |
 +------------------+     +------------------+     +------------------+
                                                          |
                                                          v
                                                   +------------------+
                                                   | loadStaticSymbols|
-                                                  | (options?)       |
                                                   +------------------+
                                                          |
                                                          v
@@ -482,7 +482,7 @@ Documented in provider-registry.ts.
                                                   +------------------+
 ```
 
-`loadStaticSymbols()` accepts optional `StaticLoaderOptions` for language-specific transforms (e.g., TP2 injects callable prefixes like "action function" into hover markdown via `transformHover`). The loader itself is language-agnostic.
+All formatting is pre-computed at build time by `generate-data.ts`. WeiDU/TP2 items use `buildWeiduHoverContent()` — the same composition function used by runtime JSDoc hover formatters — ensuring identical output. Fallout items use the lower-level building blocks (`buildSignatureBlock`, `buildFalloutArgsTable`, `formatDeprecation`) directly. The static loader is a pure pass-through — no runtime transforms. See `server/data/README.md` for the YAML schema and formatting pipeline.
 
 ## Testing
 
