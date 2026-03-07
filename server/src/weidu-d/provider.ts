@@ -15,6 +15,7 @@ import { type FormatResult, type LanguageProvider, type ProviderContext } from "
 import { stripCommentsWeidu } from "../shared/format-utils";
 import { getFormatOptions } from "../shared/format-options";
 import { resolveSymbolStatic, getStaticCompletions, formatWithValidation } from "../shared/provider-helpers";
+import { isInsideComment } from "./ast-utils";
 import { getDefinition } from "./definition";
 import { getStateLabelHover } from "./hover";
 import { prepareRenameSymbol, renameSymbol } from "./rename";
@@ -53,6 +54,10 @@ class WeiduDProvider implements LanguageProvider {
         this.symbolStore.loadStatic(staticSymbols);
 
         conlog(`WeiDU D provider initialized with ${staticSymbols.length} static symbols`);
+    }
+
+    shouldProvideFeatures(text: string, position: Position): boolean {
+        return !isInsideComment(text, position);
     }
 
     // D files have state labels but no user-defined functions/macros.

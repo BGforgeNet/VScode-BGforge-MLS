@@ -4,6 +4,7 @@
  */
 
 import { CompletionItemKind, Position } from "vscode-languageserver/node";
+import { createIsInsideComment } from "../shared/comment-check";
 import { CompletionCategory, type Tp2CompletionItem } from "./completion/types";
 import { parseWithCache, isInitialized } from "./parser";
 import { SyntaxType } from "./tree-sitter.d";
@@ -96,20 +97,13 @@ export function localCompletion(text: string): Tp2CompletionItem[] {
     }));
 }
 
+/** Comment node types in the TP2 grammar. */
+const TP2_COMMENT_TYPES: ReadonlySet<string> = new Set([SyntaxType.Comment, SyntaxType.LineComment]);
+
 /**
  * Check if the given position is inside a comment node using tree-sitter.
  */
-export function isInsideComment(text: string, position: Position): boolean {
-    if (!isInitialized()) {
-        return false;
-    }
-    const tree = parseWithCache(text);
-    if (!tree) {
-        return false;
-    }
-    const node = tree.rootNode.descendantForPosition({ row: position.line, column: position.character });
-    return node !== null && (node.type === SyntaxType.Comment || node.type === SyntaxType.LineComment);
-}
+export const isInsideComment = createIsInsideComment(isInitialized, parseWithCache, TP2_COMMENT_TYPES);
 
 /** Loop node types that bind variables (PHP_EACH, FOR_EACH). */
 const LOOP_BINDING_TYPES = new Set([

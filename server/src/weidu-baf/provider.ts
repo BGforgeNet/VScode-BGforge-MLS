@@ -5,13 +5,14 @@
  * Uses unified Symbols storage for completion and hover data.
  */
 
-import type { CompletionItem, FoldingRange } from "vscode-languageserver/node";
+import type { CompletionItem, FoldingRange, Position } from "vscode-languageserver/node";
 import { conlog } from "../common";
 import { LANG_WEIDU_BAF } from "../core/languages";
 import type { IndexedSymbol } from "../core/symbol";
 import { Symbols } from "../core/symbol-index";
 import { loadStaticSymbols } from "../core/static-loader";
 import { type FormatResult, type LanguageProvider, type ProviderContext } from "../language-provider";
+import { createIsInsideComment } from "../shared/comment-check";
 import { stripCommentsWeidu } from "../shared/format-utils";
 import { getFormatOptions } from "../shared/format-options";
 import { resolveSymbolStatic, getStaticCompletions, formatWithValidation } from "../shared/provider-helpers";
@@ -20,6 +21,11 @@ import { initParser, parseWithCache, isInitialized } from "./parser";
 import { compile as weiduCompile } from "../weidu-compile";
 import { getFoldingRanges } from "../shared/folding-ranges";
 import { SyntaxType } from "./tree-sitter.d";
+
+/** Comment node types in the BAF grammar. */
+const BAF_COMMENT_TYPES: ReadonlySet<string> = new Set([SyntaxType.Comment, SyntaxType.LineComment]);
+
+const isInsideComment = createIsInsideComment(isInitialized, parseWithCache, BAF_COMMENT_TYPES);
 
 /** BAF block-level node types for code folding. */
 const BAF_FOLDABLE_TYPES = new Set([
@@ -42,6 +48,10 @@ class WeiduBafProvider implements LanguageProvider {
         this.symbolStore.loadStatic(staticSymbols);
 
         conlog(`WeiDU BAF provider initialized with ${staticSymbols.length} static symbols`);
+    }
+
+    shouldProvideFeatures(text: string, position: Position): boolean {
+        return !isInsideComment(text, position);
     }
 
     // BAF has no user-defined constructs (no functions/macros/variables),
