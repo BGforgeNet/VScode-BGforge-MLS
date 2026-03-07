@@ -331,8 +331,8 @@ class FalloutSslProvider implements LanguageProvider {
         return renameSymbol(text, position, newName, uri);
     }
 
-    getCompletions(_uri: string): CompletionItem[] {
-        return this.symbolStore ? this.symbolStore.query({}).map((s: IndexedSymbol) => s.completion) : [];
+    getCompletions(uri: string): CompletionItem[] {
+        return this.symbolStore ? this.symbolStore.query({ excludeUri: uri }).map((s: IndexedSymbol) => s.completion) : [];
     }
 
     getSignature(_uri: string, symbolName: string, paramIndex: number): SignatureHelp | null {
