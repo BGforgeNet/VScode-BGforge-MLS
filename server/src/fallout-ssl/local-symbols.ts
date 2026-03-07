@@ -2,29 +2,17 @@
  * Local symbol extraction for Fallout SSL files.
  *
  * Converts the current document's AST to IndexedSymbol[] for unified
- * hover/completion/definition handling. Builds language-specific hover
- * and completion directly (following the TP2 pattern).
+ * hover/completion/definition handling. Delegates to shared symbol builders
+ * in utils.ts (buildProcedureSymbol, buildMacroSymbol, buildVariableSymbol).
  *
  * Cached by text hash for performance - same text returns same result.
- *
- * Symbol-building pattern: Tree-sitter AST with SSL-specific formatting.
- * Extracts procedures/macros/variables from the current document's AST
- * and builds IndexedSymbol using SSL formatters (buildTooltipBase,
- * buildProcedureSignature, buildMacroTooltip). Shares macro helpers with
- * header-parser.ts but constructs the base symbol inline. Cannot use TP2's
- * helpers (different AST node types and tooltip format) or the static loader
- * (needs runtime AST parsing).
  */
 
-import { CompletionItemKind, MarkupKind } from "vscode-languageserver/node";
-import type { IndexedSymbol, CallableSymbol, ConstantSymbol } from "../core/symbol";
-import { SourceType, ScopeLevel, SymbolKind } from "../core/symbol";
+import type { IndexedSymbol } from "../core/symbol";
 import { TextCache } from "../shared/text-cache";
 import { parseWithCache, isInitialized } from "./parser";
-import { extractProcedures, extractMacros, findPrecedingDocComment, makeRange, extractParams, buildProcedureSignature, buildTooltipBase, buildVariableSymbol } from "./utils";
-import { buildMacroTooltip, buildMacroCompletion, buildSignatureFromJSDoc } from "./macro-utils";
+import { extractProcedures, extractMacros, findPrecedingDocComment, makeRange, extractParams, buildProcedureSymbol, buildMacroSymbol, buildVariableSymbol } from "./utils";
 import * as jsdoc from "../shared/jsdoc";
-import type { SigInfoEx } from "../shared/signature";
 import { SyntaxType } from "./tree-sitter.d";
 
 /** Cached local symbols data: symbols array + name lookup map */
@@ -53,94 +41,19 @@ function parseLocalSymbols(text: string, uri: string): LocalSymbolsData | null {
     const symbols: IndexedSymbol[] = [];
     const root = tree.rootNode;
 
-    // Extract procedures - build language-specific hover/completion directly
+    // Extract procedures
     const procedures = extractProcedures(root);
     for (const [name, { node }] of procedures) {
-        const range = makeRange(node);
         const docComment = findPrecedingDocComment(root, node);
         const parsed = docComment ? jsdoc.parse(docComment) : null;
-
         const astParams = extractParams(node);
-        const sig = buildProcedureSignature(name, astParams, parsed);
-        const hoverValue = buildTooltipBase(sig, parsed);
-
-        const hoverContents = {
-            kind: MarkupKind.Markdown,
-            value: hoverValue,
-        };
-
-        // Build signature help from JSDoc if available.
-        // SigInfoEx extends SignatureInformation so it can be used directly.
-        const sigHelp: SigInfoEx | undefined = parsed && parsed.args.length > 0
-            ? buildSignatureFromJSDoc(name, parsed, uri)
-            : undefined;
-
-        const symbol: CallableSymbol = {
-            name,
-            kind: SymbolKind.Procedure,
-            location: { uri, range },
-            scope: { level: ScopeLevel.File },
-            source: { type: SourceType.Document, uri },
-            completion: {
-                label: name,
-                kind: CompletionItemKind.Function,
-                documentation: hoverContents,
-            },
-            hover: { contents: hoverContents },
-            signature: sigHelp,
-            callable: {
-                parameters: astParams.map(p => {
-                    const jsdocArg = parsed?.args.find(a => a.name === p.name);
-                    return {
-                        name: p.name,
-                        type: jsdocArg?.type,
-                        description: jsdocArg?.description,
-                        defaultValue: p.defaultValue,
-                    };
-                }),
-            },
-        };
-
-        symbols.push(symbol);
+        symbols.push(buildProcedureSymbol(name, uri, node, astParams, parsed));
     }
 
-    // Extract macros - already built with language-specific formatters
+    // Extract macros
     const macros = extractMacros(root);
     for (const macro of macros) {
-        const macroHover = {
-            kind: MarkupKind.Markdown,
-            value: buildMacroTooltip(macro, ""),
-        };
-        const completion = buildMacroCompletion(macro, "", "");
-        const location = macro.node ? { uri, range: makeRange(macro.node) } : null;
-
-        const base = {
-            name: macro.name,
-            location,
-            scope: { level: ScopeLevel.File },
-            source: { type: SourceType.Document, uri, displayPath: undefined },
-            completion,
-            hover: { contents: macroHover },
-            signature: undefined,
-        };
-
-        if (macro.hasParams) {
-            symbols.push({
-                ...base,
-                kind: SymbolKind.Macro,
-                callable: {
-                    parameters: macro.params?.map(p => ({ name: p })),
-                },
-            } as CallableSymbol);
-        } else {
-            symbols.push({
-                ...base,
-                kind: SymbolKind.Constant,
-                constant: {
-                    value: macro.body ?? "",
-                },
-            } as ConstantSymbol);
-        }
+        symbols.push(buildMacroSymbol(macro, uri));
     }
 
     // Extract file-level variables and exports - use language-tagged code fence

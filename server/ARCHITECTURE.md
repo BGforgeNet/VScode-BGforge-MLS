@@ -443,7 +443,21 @@ Efficient for large workspaces.
 
 Features try sources in order: local (AST) -> data (index) -> translation. Return `undefined` to continue to next source, `null` to stop.
 
-### 5. Sequential Parser Init
+### 5. Intentional Per-Language Implementations
+
+Several features have separate implementations per provider that may look like duplication
+but are intentionally language-specific. Shared infrastructure is in `shared/`:
+
+| Feature | Why per-language |
+|---------|-----------------|
+| Definition finders | Different scoping models (SSL procedures vs TP2 functions vs D state labels) |
+| Document symbol extraction | Different construct types per language |
+| Rename | SSL is workspace-wide with include graph; TP2 is single-file with %var% handling |
+| Reference finders | SSL has procedure scope shadows; TP2 has synthetic string nodes |
+| Folding block type sets | Language-specific node types, passed as parameters to shared `getFoldingRanges()` |
+| Comment stripping | `stripCommentsWeidu()` handles `~string~` delimiters; `stripCommentsFalloutSsl()` does not |
+
+### 6. Sequential Parser Init
 Tree-sitter WASM constraint requires sequential initialization.
 Documented in provider-registry.ts.
 

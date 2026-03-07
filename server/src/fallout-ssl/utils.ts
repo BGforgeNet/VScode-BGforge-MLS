@@ -7,12 +7,13 @@ import type { Node } from "web-tree-sitter";
 import { CompletionItemKind, MarkupKind, Position } from "vscode-languageserver/node";
 import { LANG_FALLOUT_SSL_TOOLTIP } from "../core/languages";
 import { makeRange } from "../core/position-utils";
-import type { VariableSymbol } from "../core/symbol";
+import type { CallableSymbol, ConstantSymbol, IndexedSymbol, VariableSymbol } from "../core/symbol";
 import { ScopeLevel, SourceType, SymbolKind } from "../core/symbol";
 import * as jsdoc from "../shared/jsdoc";
+import type { SigInfoEx } from "../shared/signature";
 import { buildSignatureBlock } from "../shared/tooltip-format";
 import { jsdocToMarkdown } from "./jsdoc-format";
-import { MacroData, parseMacroParams } from "./macro-utils";
+import { type MacroData, parseMacroParams, buildMacroTooltip, buildMacroCompletion, buildSignatureFromJSDoc } from "./macro-utils";
 import { SyntaxType } from "./tree-sitter.d";
 
 // Re-export for existing consumers
@@ -382,6 +383,119 @@ export function findMacroDefinition(root: Node, symbol: string): Node | null {
 
     visit(root);
     return result;
+}
+
+/**
+ * Build a CallableSymbol for a procedure definition.
+ *
+ * When `displayPath` is provided, builds a workspace-scoped symbol with the path
+ * shown in hover and completion labelDetails (used by header-parser.ts).
+ * When omitted, builds a file-scoped symbol for in-document use (used by local-symbols.ts).
+ */
+export function buildProcedureSymbol(
+    name: string,
+    uri: string,
+    node: Node,
+    astParams: ParamInfo[],
+    parsed: jsdoc.JSdoc | null,
+    displayPath?: string,
+): CallableSymbol {
+    const range = makeRange(node);
+    const sig = buildProcedureSignature(name, astParams, parsed);
+    const hoverValue = buildTooltipBase(sig, parsed, displayPath);
+
+    const hoverContents = {
+        kind: MarkupKind.Markdown,
+        value: hoverValue,
+    };
+
+    const sigHelp: SigInfoEx | undefined = parsed && parsed.args.length > 0
+        ? buildSignatureFromJSDoc(name, parsed, uri)
+        : undefined;
+
+    const isWorkspace = displayPath !== undefined;
+
+    return {
+        name,
+        kind: SymbolKind.Procedure,
+        location: { uri, range },
+        scope: { level: isWorkspace ? ScopeLevel.Workspace : ScopeLevel.File },
+        source: isWorkspace
+            ? { type: SourceType.Workspace, uri, displayPath }
+            : { type: SourceType.Document, uri },
+        completion: {
+            label: name,
+            kind: CompletionItemKind.Function,
+            ...(isWorkspace && { labelDetails: { description: displayPath } }),
+            documentation: hoverContents,
+        },
+        hover: { contents: hoverContents },
+        signature: sigHelp,
+        callable: {
+            parameters: astParams.map(p => {
+                const jsdocArg = parsed?.args.find(a => a.name === p.name);
+                return {
+                    name: p.name,
+                    type: jsdocArg?.type,
+                    description: jsdocArg?.description,
+                    defaultValue: p.defaultValue,
+                };
+            }),
+        },
+    };
+}
+
+/**
+ * Build an IndexedSymbol for a macro definition (callable or constant).
+ *
+ * Macros with parameters become CallableSymbol; without become ConstantSymbol.
+ * When `displayPath` is provided, builds a workspace-scoped symbol (header-parser.ts).
+ * When omitted, builds a file-scoped symbol (local-symbols.ts).
+ */
+export function buildMacroSymbol(
+    macro: MacroData,
+    uri: string,
+    displayPath?: string,
+): IndexedSymbol {
+    const location = macro.node ? { uri, range: makeRange(macro.node) } : null;
+
+    const hoverContents = {
+        kind: MarkupKind.Markdown,
+        value: buildMacroTooltip(macro, displayPath ?? ""),
+    };
+    const completionItem = buildMacroCompletion(macro, uri, displayPath ?? "");
+
+    const sig = macro.jsdoc && macro.jsdoc.args.length > 0
+        ? buildSignatureFromJSDoc(macro.name, macro.jsdoc, uri)
+        : undefined;
+
+    const isWorkspace = displayPath !== undefined;
+
+    const base = {
+        name: macro.name,
+        location,
+        scope: { level: isWorkspace ? ScopeLevel.Workspace : ScopeLevel.File },
+        source: isWorkspace
+            ? { type: SourceType.Workspace, uri, displayPath }
+            : { type: SourceType.Document, uri },
+        completion: completionItem,
+        hover: { contents: hoverContents },
+        signature: sig,
+    };
+
+    if (macro.hasParams) {
+        return {
+            ...base,
+            kind: SymbolKind.Macro,
+            callable: { parameters: macro.params?.map(p => ({ name: p })) },
+        } as CallableSymbol;
+    }
+
+    return {
+        ...base,
+        kind: SymbolKind.Constant,
+        constant: { value: macro.firstline ?? "" },
+    } as ConstantSymbol;
 }
 
 /**
