@@ -32,7 +32,7 @@ These JSON files are generated from `server/data/*.yml` by `generate-data.sh` bu
 | Pattern | What it ignores |
 |---------|----------------|
 | `grammars/*/src/` | Tree-sitter generated C parser sources |
-| `server/src/weidu-tp2/tree-sitter.d.ts` | Generated TypeScript types for TP2 grammar nodes |
+| `server/src/*/tree-sitter.d.ts` | Generated TypeScript types for grammar nodes (all 4 grammars) |
 
 ### Third-party and temporary
 
@@ -159,6 +159,7 @@ Controls what eslint skips. Defined inline in the flat config.
 |---------|-------------|
 | `node_modules/**`, `client/node_modules/**`, `server/node_modules/**`, `cli/**/node_modules/**` | Dependencies |
 | `client/out/**`, `server/out/**`, `cli/**/out/**` | Build output |
+| `server/src/fallout-ssl/tree-sitter.d.ts` | Auto-generated from grammar |
 | `server/src/weidu-tp2/tree-sitter.d.ts` | Auto-generated from grammar |
 | `server/src/weidu-baf/tree-sitter.d.ts` | Auto-generated from grammar |
 | `server/src/weidu-d/tree-sitter.d.ts` | Auto-generated from grammar |

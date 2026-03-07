@@ -10,10 +10,10 @@
  *
  * Symbol-building pattern: Universal factory for all languages.
  * Uses a generic `convertToSymbol()` factory that maps JSON completion items
- * to the IndexedSymbol discriminated union. Language-agnostic — hover/completion
- * content comes pre-formatted from the YAML→JSON pipeline (generate-data.ts).
- * This pattern cannot be merged with the language-specific builders because those
- * need AST/regex parsing and language-specific tooltip formatting.
+ * to the IndexedSymbol discriminated union. Hover/completion content comes
+ * pre-formatted from the YAML→JSON pipeline (generate-data.ts).
+ * Language-specific hover transforms (e.g., TP2 callable prefix injection)
+ * are passed in via the optional `StaticLoaderOptions.transformHover` callback.
  */
 
 import { readFileSync } from "fs";
@@ -25,7 +25,6 @@ import {
 } from "vscode-languageserver/node";
 import type { CompletionItemWithCategory, CompletionCategory } from "../shared/completion-context";
 import { conlog } from "../common";
-import { LANG_WEIDU_TP2_TOOLTIP } from "./languages";
 import {
     type IndexedSymbol,
     type CallableSymbol,
@@ -81,11 +80,23 @@ const CATEGORY_TO_KIND: Record<string, SymbolKind> = {
 };
 
 /**
+ * Optional configuration for loadStaticSymbols.
+ */
+export interface StaticLoaderOptions {
+    /**
+     * Transform hover markdown value before storing in the symbol.
+     * Called with the raw markdown and the item's category + kind.
+     * Used by TP2 to inject callable prefix ("action function") into tooltips.
+     */
+    readonly transformHover?: (value: string, item: { category?: string; kind?: CompletionItemKind }) => string;
+}
+
+/**
  * Callable metadata per TP2 category.
  * Maps category names to their CallableContext and CallableDefType.
  * Only applies to items with CompletionItemKind.Function (not keywords/snippets).
  */
-const CALLABLE_CATEGORY_META: Record<string, { context: CallableContext; dtype: CallableDefType }> = {
+export const CALLABLE_CATEGORY_META: Record<string, { context: CallableContext; dtype: CallableDefType }> = {
     // Note: `action` and `patch` are intentionally excluded. They contain commands
     // (LAF, COPY, WRITE_BYTE, etc.) which are not user-defined callables and should
     // not get "action function" / "patch function" prefix in tooltips.
@@ -130,13 +141,13 @@ function completionKindToSymbolKind(kind: CompletionItemKind): SymbolKind {
  * @param langId Language ID (e.g., "weidu-baf", "fallout-ssl")
  * @returns Array of IndexedSymbol objects ready for Symbols.loadStatic()
  */
-export function loadStaticSymbols(langId: string): IndexedSymbol[] {
+export function loadStaticSymbols(langId: string, options?: StaticLoaderOptions): IndexedSymbol[] {
     const items = loadCompletionJson(langId);
     if (!items || items.length === 0) {
         return [];
     }
 
-    return items.map(item => convertToSymbol(item));
+    return items.map(item => convertToSymbol(item, options));
 }
 
 /**
@@ -158,7 +169,7 @@ function loadCompletionJson(langId: string): StaticCompletionItem[] | undefined 
  * Convert a static completion item to an IndexedSymbol.
  * Returns the appropriate discriminated union type based on kind.
  */
-function convertToSymbol(item: StaticCompletionItem): IndexedSymbol {
+function convertToSymbol(item: StaticCompletionItem, options?: StaticLoaderOptions): IndexedSymbol {
     const name = item.label;
     const kind = determineSymbolKind(item);
 
@@ -166,7 +177,7 @@ function convertToSymbol(item: StaticCompletionItem): IndexedSymbol {
     const location = null;
 
     // Extract hover content from completion documentation
-    const hover = extractHover(item);
+    const hover = extractHover(item, options?.transformHover);
 
     // Build completion item — derive documentation from hover (single source of truth).
     // This ensures any transformations (e.g., callable prefix injection) are consistent.
@@ -270,60 +281,34 @@ function determineSymbolKind(item: StaticCompletionItem): SymbolKind {
 }
 
 /**
- * Inject "{context} {dtype} " prefix into weidu-tp2-tooltip code fences.
- * For example, transforms:
- *   ```weidu-tp2-tooltip\nCOPY ~source~ ~dest~\n```
- * into:
- *   ```weidu-tp2-tooltip\naction function COPY ~source~ ~dest~\n```
- *
- * Only affects weidu-tp2-tooltip fences; other fences (e.g., weidu-baf-tooltip)
- * are left untouched. Does not inject if the prefix is already present.
- */
-function injectCallablePrefix(value: string, meta: { context: CallableContext; dtype: CallableDefType }): string {
-    const fenceTag = `\`\`\`${LANG_WEIDU_TP2_TOOLTIP}\n`;
-    const fenceIdx = value.indexOf(fenceTag);
-    if (fenceIdx === -1) {
-        return value;
-    }
-
-    const prefix = `${meta.context} ${meta.dtype} `;
-    const insertAt = fenceIdx + fenceTag.length;
-
-    // Guard: don't inject if prefix already present
-    if (value.startsWith(prefix, insertAt)) {
-        return value;
-    }
-
-    return value.slice(0, insertAt) + prefix + value.slice(insertAt);
-}
-
-/**
  * Extract hover content from completion item documentation.
- * Injects callable prefix for TP2 items with callable metadata.
+ * Applies optional transformHover callback for language-specific hover transforms.
  */
-function extractHover(item: StaticCompletionItem): { contents: MarkupContent } {
-    const meta = (item.category && item.kind === CompletionItemKind.Function)
-        ? CALLABLE_CATEGORY_META[item.category]
-        : undefined;
+function extractHover(
+    item: StaticCompletionItem,
+    transformHover?: (value: string, item: { category?: string; kind?: CompletionItemKind }) => string,
+): { contents: MarkupContent } {
+    const transform = transformHover
+        ? (value: string) => transformHover(value, { category: item.category, kind: item.kind })
+        : (value: string) => value;
 
     if (item.documentation !== undefined) {
         // Documentation can be string or MarkupContent
         if (typeof item.documentation === "string") {
-            const value = meta ? injectCallablePrefix(item.documentation, meta) : item.documentation;
             return {
                 contents: {
                     kind: "markdown",
-                    value,
+                    value: transform(item.documentation),
                 },
             };
         }
-        // Already MarkupContent - inject prefix if applicable
+        // Already MarkupContent
         const markup = item.documentation as MarkupContent;
-        if (meta && markup.kind === "markdown") {
+        if (markup.kind === "markdown") {
             return {
                 contents: {
                     kind: "markdown",
-                    value: injectCallablePrefix(markup.value, meta),
+                    value: transform(markup.value),
                 },
             };
         }

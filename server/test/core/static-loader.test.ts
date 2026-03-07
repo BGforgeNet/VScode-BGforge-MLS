@@ -18,7 +18,12 @@ vi.mock("../../src/common", () => ({
 }));
 
 import { loadStaticSymbols } from "../../src/core/static-loader";
+import { transformTp2StaticHover } from "../../src/weidu-tp2/hover";
 import { readFileSync } from "fs";
+
+/** Shorthand for loading with TP2 hover transform (callable prefix injection). */
+const loadWithTp2Transform = (langId: string) =>
+    loadStaticSymbols(langId, { transformHover: transformTp2StaticHover });
 
 const mockReadFileSync = vi.mocked(readFileSync);
 
@@ -377,7 +382,7 @@ describe("static-loader", () => {
                 },
             ]));
 
-            const result = loadStaticSymbols("test-lang");
+            const result = loadWithTp2Transform("test-lang");
             const value = (result[0].hover.contents as { kind: string; value: string }).value;
 
             expect(value).toBe("```weidu-tp2-tooltip\npatch function ADD_SPELL_EFFECT\n```\nAdds an effect.");
@@ -396,7 +401,7 @@ describe("static-loader", () => {
                 },
             ]));
 
-            const result = loadStaticSymbols("test-lang");
+            const result = loadWithTp2Transform("test-lang");
             const value = (result[0].hover.contents as { kind: string; value: string }).value;
 
             expect(value).toBe("```weidu-tp2-tooltip\naction function ADD_WORLDMAP\n```\nAdds a worldmap.");
@@ -415,7 +420,7 @@ describe("static-loader", () => {
                 },
             ]));
 
-            const result = loadStaticSymbols("test-lang");
+            const result = loadWithTp2Transform("test-lang");
             const hoverValue = (result[0].hover.contents as { kind: string; value: string }).value;
             const completionDoc = result[0].completion.documentation as { kind: string; value: string };
 
@@ -477,7 +482,7 @@ describe("static-loader", () => {
                 },
             ]));
 
-            const result = loadStaticSymbols("test-lang");
+            const result = loadWithTp2Transform("test-lang");
             const value = (result[0].hover.contents as { kind: string; value: string }).value;
 
             expect(value).toBe("```weidu-tp2-tooltip\npatch function ADD_SPELL_EFFECT\n```\nAdds.");
@@ -494,7 +499,7 @@ describe("static-loader", () => {
                 },
             ]));
 
-            const result = loadStaticSymbols("test-lang");
+            const result = loadWithTp2Transform("test-lang");
             const value = (result[0].hover.contents as { kind: string; value: string }).value;
 
             expect(value).toBe(originalDoc);
@@ -513,7 +518,7 @@ describe("static-loader", () => {
                 },
             ]));
 
-            const result = loadStaticSymbols("test-lang");
+            const result = loadWithTp2Transform("test-lang");
             const value = (result[0].hover.contents as { kind: string; value: string }).value;
 
             expect(value).toBe("```weidu-tp2-tooltip\ndimorphic function RESOLVE_STR_REF\n```\nResolves a string reference.");

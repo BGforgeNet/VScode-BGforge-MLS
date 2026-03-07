@@ -457,16 +457,18 @@ Documented in provider-registry.ts.
                                                          |
                                                          v
                                                   +------------------+
-                                                  | staticLoader     |
-                                                  | .loadStatic()    |
+                                                  | loadStaticSymbols|
+                                                  | (options?)       |
                                                   +------------------+
                                                          |
                                                          v
                                                   +------------------+
-                                                  | Symbols      |
+                                                  | Symbols          |
                                                   | .loadStatic()    |
                                                   +------------------+
 ```
+
+`loadStaticSymbols()` accepts optional `StaticLoaderOptions` for language-specific transforms (e.g., TP2 injects callable prefixes like "action function" into hover markdown via `transformHover`). The loader itself is language-agnostic.
 
 ## Testing
 

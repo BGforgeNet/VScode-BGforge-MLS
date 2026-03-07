@@ -4,8 +4,9 @@
  * Also provides hover info for function parameters at call sites.
  */
 
-import { Hover, MarkupKind, Position } from "vscode-languageserver/node";
+import { CompletionItemKind, Hover, MarkupKind, Position } from "vscode-languageserver/node";
 import { isCallableSymbol, type CallableInfo } from "../core/symbol";
+import { CALLABLE_CATEGORY_META } from "../core/static-loader";
 import { buildParamInfoMap, type Ret } from "../shared/jsdoc";
 import { parseWithCache, isInitialized } from "./parser";
 import { parseHeader, FunctionInfo, VariableInfo } from "./header-parser";
@@ -452,4 +453,37 @@ export function buildVariableHover(varInfo: VariableInfo, displayPath?: string |
             value: markdownValue,
         },
     };
+}
+
+/**
+ * Hover transform for static TP2 symbols.
+ * Injects "{context} {dtype} " prefix (e.g., "action function") into
+ * weidu-tp2-tooltip code fences for callable categories.
+ */
+export function transformTp2StaticHover(
+    value: string,
+    item: { category?: string; kind?: CompletionItemKind },
+): string {
+    const meta = (item.category && item.kind === CompletionItemKind.Function)
+        ? CALLABLE_CATEGORY_META[item.category]
+        : undefined;
+    if (!meta) {
+        return value;
+    }
+
+    const fenceTag = `\`\`\`${LANG_WEIDU_TP2_TOOLTIP}\n`;
+    const fenceIdx = value.indexOf(fenceTag);
+    if (fenceIdx === -1) {
+        return value;
+    }
+
+    const prefix = `${meta.context} ${meta.dtype} `;
+    const insertAt = fenceIdx + fenceTag.length;
+
+    // Guard: don't inject if prefix already present
+    if (value.startsWith(prefix, insertAt)) {
+        return value;
+    }
+
+    return value.slice(0, insertAt) + prefix + value.slice(insertAt);
 }
