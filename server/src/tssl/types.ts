@@ -77,11 +77,6 @@ export interface SourceSection {
     procedures: string[];
 }
 
-export interface BundleResult {
-    code: string;
-    inputFiles: string[];
-}
-
 // Use console.log directly for CLI compatibility (conlog depends on LSP connection)
 export const conlog = console.log;
 

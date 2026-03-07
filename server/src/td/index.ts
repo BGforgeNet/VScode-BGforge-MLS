@@ -22,25 +22,24 @@ import { TDParser } from "./parse";
 import { collectExplicitLabels } from "./state-resolution";
 import { ORPHAN_WARNING_TEMPLATE, type TDScript, type TDWarning } from "./types";
 
+export interface TDTranspileResult {
+    output: string;
+    warnings: TDWarning[];
+}
+
 export interface TDCompileResult {
     dPath: string;
     warnings: TDWarning[];
 }
 
 /**
- * Compile a TD file to D.
- *
- * @param uri VSCode URI of the file
+ * Core transpilation pipeline: TD source text to D output string.
+ * Shared by compile() (LSP, writes to disk) and transpile() (CLI, returns string).
+ * @param filePath Absolute file path to the .td file
  * @param text Source text content
- * @returns Output path and any warnings
+ * @returns Generated D output string and any warnings
  */
-export async function compile(uri: string, text: string): Promise<TDCompileResult> {
-    const filePath = uriToPath(uri);
-
-    if (!filePath.toLowerCase().endsWith(EXT_TD)) {
-        throw new Error(`${uri} is not a ${EXT_TD} file`);
-    }
-
+async function transpileCore(filePath: string, text: string): Promise<TDTranspileResult> {
     // Extract @tra tag before bundling (esbuild strips comments)
     const traTag = extractTraTag(text);
 
@@ -63,15 +62,44 @@ export async function compile(uri: string, text: string): Promise<TDCompileResul
     const warnings = mergeWarnings(ir.warnings ?? [], orphanWarnings);
 
     // 5. Emit D text
-    const d = emitD(ir);
+    const output = emitD(ir);
 
-    // 6. Write output
+    return { output, warnings };
+}
+
+/**
+ * Compile a TD file to D, writing the output to disk.
+ * Used by the LSP compile handler.
+ * @param uri VSCode URI of the file
+ * @param text Source text content
+ * @returns Output path and any warnings
+ */
+export async function compile(uri: string, text: string): Promise<TDCompileResult> {
+    const filePath = uriToPath(uri);
+
+    if (!filePath.toLowerCase().endsWith(EXT_TD)) {
+        throw new Error(`${uri} is not a ${EXT_TD} file`);
+    }
+
+    const { output, warnings } = await transpileCore(filePath, text);
+
     const extRegex = new RegExp(EXT_TD.replace(".", "\\.") + "$", "i");
     const dPath = filePath.replace(extRegex, ".d");
-    fs.writeFileSync(dPath, d, "utf-8");
+    fs.writeFileSync(dPath, output, "utf-8");
 
     conlog(`Transpiled to ${dPath}`);
     return { dPath, warnings };
+}
+
+/**
+ * Transpile TD to D, returning the output string without writing to disk.
+ * Used by the CLI where the caller controls file I/O.
+ * @param filePath Absolute file path to the .td file
+ * @param text Source text content
+ * @returns Generated D output string and any warnings
+ */
+export async function transpile(filePath: string, text: string): Promise<TDTranspileResult> {
+    return transpileCore(filePath, text);
 }
 
 /** Function metadata extracted from the original (pre-bundling) source. */

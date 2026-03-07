@@ -16,20 +16,13 @@ import { BAFScript, isOrGroup } from "./ir";
 import { TBAFTransformer } from "./transform";
 
 /**
- * Compile a TBAF file to BAF.
- *
- * @param uri VSCode URI of the file
+ * Core transpilation pipeline: TBAF source text to BAF output string.
+ * Shared by compile() (LSP, writes to disk) and transpile() (CLI, returns string).
+ * @param filePath Absolute file path to the .tbaf file
  * @param text Source text content
- * @returns Path to generated BAF file
+ * @returns Generated BAF output string
  */
-export async function compile(uri: string, text: string): Promise<string> {
-    const filePath = uriToPath(uri);
-    const ext = path.extname(filePath).toLowerCase();
-
-    if (ext !== EXT_TBAF) {
-        throw new Error(`${uri} is not a .tbaf file`);
-    }
-
+async function transpileCore(filePath: string, text: string): Promise<string> {
     // Extract @tra tag before bundling (esbuild strips comments)
     const traTag = extractTraTag(text);
 
@@ -48,14 +41,42 @@ export async function compile(uri: string, text: string): Promise<string> {
     applyBAFFixups(ir);
 
     // 5. Emit BAF text
-    const baf = emitBAF(ir);
+    return emitBAF(ir);
+}
 
-    // 6. Write output
+/**
+ * Compile a TBAF file to BAF, writing the output to disk.
+ * Used by the LSP compile handler.
+ * @param uri VSCode URI of the file
+ * @param text Source text content
+ * @returns Path to generated BAF file
+ */
+export async function compile(uri: string, text: string): Promise<string> {
+    const filePath = uriToPath(uri);
+    const ext = path.extname(filePath).toLowerCase();
+
+    if (ext !== EXT_TBAF) {
+        throw new Error(`${uri} is not a .tbaf file`);
+    }
+
+    const baf = await transpileCore(filePath, text);
+
     const bafPath = filePath.replace(/\.tbaf$/i, ".baf");
     fs.writeFileSync(bafPath, baf, "utf-8");
 
     conlog(`Transpiled to ${bafPath}`);
     return bafPath;
+}
+
+/**
+ * Transpile TBAF to BAF, returning the output string without writing to disk.
+ * Used by the CLI where the caller controls file I/O.
+ * @param filePath Absolute file path to the .tbaf file
+ * @param text Source text content
+ * @returns Generated BAF output string
+ */
+export async function transpile(filePath: string, text: string): Promise<string> {
+    return transpileCore(filePath, text);
 }
 
 /**
