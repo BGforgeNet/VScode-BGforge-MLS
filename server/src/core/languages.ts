@@ -32,6 +32,7 @@ export const LANG_WEIDU_BAF = "weidu-baf" as const;
 export const EXT_WEIDU_BAF = ".baf" as const;
 export const LANG_WEIDU_D = "weidu-d" as const;
 export const EXT_WEIDU_D = ".d" as const;
+export const LANG_WEIDU_D_TOOLTIP = "weidu-d-tooltip" as const;
 export const LANG_WEIDU_SLB = "weidu-slb" as const;
 export const LANG_WEIDU_SSL = "weidu-ssl" as const;
 // Used only in TRANSLATION_FILE_LANGUAGES below

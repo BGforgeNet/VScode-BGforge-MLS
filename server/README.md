@@ -9,7 +9,7 @@ Standalone LSP server for WeiDU languages, Fallout 2 SSL, and transpiled TSSL, T
 | Fallout SSL      | `.ssl`, `.h`                   | Completion, hover, signature, go-to-definition, formatting, symbols, workspace symbols, rename, inlay hints |
 | WeiDU TP2        | `.tp2`, `.tpa`, `.tph`, `.tpp` | Completion, hover, go-to-definition, formatting, symbols, workspace symbols, rename, inlay hints            |
 | WeiDU BAF        | `.baf`                         | Completion, hover, formatting, inlay hints                                               |
-| WeiDU D          | `.d`                           | Completion, hover, go-to-definition, formatting, symbols, inlay hints                    |
+| WeiDU D          | `.d`                           | Completion, hover, go-to-definition, formatting, symbols, rename, JSDoc, inlay hints     |
 | Fallout worldmap | `worldmap.txt`                 | Completion, hover                                                                        |
 
 Aliases: SCS SSL (`.ssl`) and SLB (`.slb`) are treated as WeiDU BAF.

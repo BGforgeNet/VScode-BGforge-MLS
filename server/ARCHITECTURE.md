@@ -98,6 +98,9 @@ server/src/
 |   +-- tree-sitter.d.ts      # Generated SyntaxType enum
 +-- weidu-d/                  # WeiDU dialog files
 |   +-- tree-sitter.d.ts      # Generated SyntaxType enum
+|   +-- state-utils.ts        # Dialog-scoped state label utilities (shared by definition, rename, hover)
+|   +-- rename.ts             # Dialog-scoped state label rename
+|   +-- hover.ts              # JSDoc hover for state labels
 +-- weidu-tp2/                # WeiDU mod installers
 |   +-- tree-sitter.d.ts      # Generated SyntaxType enum
 +-- fallout-worldmap/         # Fallout worldmap.txt
@@ -354,7 +357,7 @@ This copies the generated `tree-sitter.d.ts` to `server/src/{lang}/`.
 |----------|:----------:|:-----:|:---------:|:----------:|:------:|:-------:|:-----------------:|:------:|:-----:|:-------:|
 | fallout-ssl | Y | Y | Y | Y | Y | Y | Y | Y | .msg | Y |
 | weidu-baf | Y | Y | | | Y | | | | .tra | Y |
-| weidu-d | Y | Y | | Y | Y | Y | | | .tra | Y |
+| weidu-d | Y | Y | | Y | Y | Y | | Y | .tra | Y |
 | weidu-tp2 | Y | Y | | Y | Y | Y | Y | Y | .tra | Y |
 | worldmap | Y | Y | | | | | | | | |
 

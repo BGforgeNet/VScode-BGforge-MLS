@@ -12,20 +12,19 @@
       "name": "meta.weidu-d-tooltip",
       "patterns": [
         {
-          "include": "#strings",
-          "name": "meta.weidu-d-tooltip"
+          "include": "#datatypes"
         },
         {
-          "include": "#variables",
-          "name": "meta.weidu-d-tooltip"
+          "include": "#strings"
         },
         {
-          "include": "#keywords",
-          "name": "meta.weidu-d-tooltip"
+          "include": "#variables"
         },
         {
-          "include": "#constants",
-          "name": "meta.weidu-d-tooltip"
+          "include": "#keywords"
+        },
+        {
+          "include": "#constants"
         },
         {
           "include": "source.weidu-d",
@@ -98,6 +97,21 @@
         {
           "match": "\\b(IF_FILE_EXISTS)\\b",
           "name": "keyword.weidu-d-tooltip"
+        }
+      ]
+    },
+    "datatypes": {
+      "patterns": [
+        {
+          "match": "^(state) (\\w+)$",
+          "captures": {
+            "1": {
+              "name": "support.type.weidu-d-tooltip.datatype"
+            },
+            "2": {
+              "name": "entity.name.function.weidu-d.state-label"
+            }
+          }
         }
       ]
     },

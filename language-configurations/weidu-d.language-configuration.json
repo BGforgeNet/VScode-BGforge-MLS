@@ -14,9 +14,10 @@
     ],
     // symbols that are auto closed when typing
     "autoClosingPairs": [
-        ["(", ")"],
-        ["\"", "\""],
-        ["~", "~"]
+        { "open": "(", "close": ")" },
+        { "open": "~", "close": "~", "notIn": ["string", "comment"] },
+        { "open": "\"", "close": "\"", "notIn": ["string"] },
+        { "open": "/**", "close": " */", "notIn": ["string"] }
     ],
     // symbols that that can be used to surround a selection
     "surroundingPairs": [
@@ -24,5 +25,63 @@
         ["\"", "\""],
         ["'", "'"],
         ["~", "~"]
+    ],
+    "onEnterRules": [
+        {
+            // e.g. /** | */
+            "beforeText": {
+                "pattern": "^\\s*/\\*\\*(?!/)([^\\*]|\\*(?!/))*$"
+            },
+            "afterText": {
+                "pattern": "^\\s*\\*/$"
+            },
+            "action": {
+                "indent": "indentOutdent",
+                "appendText": " * "
+            }
+        },
+        {
+            // e.g. /** ...|
+            "beforeText": {
+                "pattern": "^\\s*/\\*\\*(?!/)([^\\*]|\\*(?!/))*$"
+            },
+            "action": {
+                "indent": "none",
+                "appendText": " * "
+            }
+        },
+        {
+            // e.g.  * ...|
+            "beforeText": {
+                "pattern": "^(\\t|[ ])*[ ]\\*([ ]([^\\*]|\\*(?!/))*)?$"
+            },
+            "previousLineText": {
+                "pattern": "(?=^(\\s*(/\\*\\*|\\*)).*)(?=(?!(\\s*\\*/)))"
+            },
+            "action": {
+                "indent": "none",
+                "appendText": "* "
+            }
+        },
+        {
+            // e.g.  */|
+            "beforeText": {
+                "pattern": "^(\\t|[ ])*[ ]\\*/\\s*$"
+            },
+            "action": {
+                "indent": "none",
+                "removeText": 1
+            }
+        },
+        {
+            // e.g.  *-----*/|
+            "beforeText": {
+                "pattern": "^(\\t|[ ])*[ ]\\*[^/]*\\*/\\s*$"
+            },
+            "action": {
+                "indent": "none",
+                "removeText": 1
+            }
+        }
     ]
 }

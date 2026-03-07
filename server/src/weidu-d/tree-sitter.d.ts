@@ -571,6 +571,8 @@ export interface ChainBranchNode extends NamedNodeBase {
 
 export interface ChainEpilogueNode extends NamedNodeBase {
   type: SyntaxType.ChainEpilogue;
+  fileNode?: IdentifierNode | StringNode | VariableRefNode;
+  labelNode?: IdentifierNode | StateLabelAlnumNode | StringNode | VariableRefNode;
 }
 
 export interface ChainSpeakerNode extends NamedNodeBase {

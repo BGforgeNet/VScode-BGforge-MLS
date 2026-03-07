@@ -105,7 +105,7 @@ vscode-mls/
 |   |   +-- fallout-ssl/            Fallout SSL provider (full IDE support)
 |   |   +-- fallout-worldmap/       Worldmap provider (completion + hover)
 |   |   +-- weidu-baf/              WeiDU BAF provider (format + compile)
-|   |   +-- weidu-d/                WeiDU D provider (symbols + definition)
+|   |   +-- weidu-d/                WeiDU D provider (symbols, definition, rename, JSDoc hover)
 |   |   +-- weidu-tp2/              WeiDU TP2 provider (full IDE support)
 |   |   +-- tssl/                   TSSL transpiler (.tssl -> .ssl)
 |   |   +-- tbaf/                   TBAF transpiler (.tbaf -> .baf)
@@ -258,7 +258,7 @@ Each provider implements a subset of the `LanguageProvider` interface:
 | fallout-ssl | x | x | x | x | x | x | x | x | sslc | x |
 | fallout-worldmap | x | x | | | | | | | | |
 | weidu-baf | x | x | | | x | | | | weidu | x |
-| weidu-d | x | x | | x | x | x | | | weidu | x |
+| weidu-d | x | x | | x | x | x | | x | weidu | x |
 | weidu-tp2 | x | x | | x | x | x | x | x | weidu | x |
 
 ### Transpilers

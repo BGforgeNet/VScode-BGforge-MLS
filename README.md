@@ -35,7 +35,7 @@ It can also be used with non-VScode editors, see setup guides:
 | Fallout SSL      | .ssl, .h            |     +      |   +   |     +     |     +      |   +    |    +    |         +         |     +     |    .msg     |  sslc   |   +   |    +    |
 | Fallout worldmap | worldmap.txt        |     +      |   +   |           |            |        |         |                   |           |             |         |       |         |
 | WeiDU BAF        | .baf                |     +      |   +   |           |            |   +    |         |                   |           |    .tra     |  weidu  |       |    +    |
-| WeiDU D          | .d                  |     +      |   +   |           |     +      |   +    |    +    |                   |           |    .tra     |  weidu  |       |    +    |
+| WeiDU D          | .d                  |     +      |   +   |           |     +      |   +    |    +    |                   | same file |    .tra     |  weidu  |   +   |    +    |
 | WeiDU TP2        | .tp2/.tpa/.tph/.tpp |     +      |   +   |           |     +      |   +    |    +    |         +         | same file |    .tra     |  weidu  |   +   |    +    |
 
 Aliases: .slb and .ssl (Infinity Engine) are treated as WeiDU BAF.

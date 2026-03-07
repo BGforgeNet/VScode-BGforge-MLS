@@ -9,6 +9,7 @@ repository:
   full:
     name: meta.weidu-d-tooltip
     patterns:
+      - include: '#datatypes'
       - include: '#strings'
       - include: '#variables'
       - include: '#keywords'
@@ -43,6 +44,15 @@ repository:
       - match: \b(list)\b
       - match: \b(dActionWhen)\b
       - match: \b(IF_FILE_EXISTS)\b
+
+  datatypes:
+    patterns:
+      - match: ^(state) (\w+)$
+        captures:
+          '1':
+            name: support.type.weidu-d-tooltip.datatype
+          '2':
+            name: entity.name.function.weidu-d.state-label
 
   variables:
     name: variable.weidu-d-tooltip

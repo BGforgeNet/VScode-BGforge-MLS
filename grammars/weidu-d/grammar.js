@@ -179,9 +179,9 @@ export default grammar({
         // chainEpilogue: END file state | EXTERN file state | COPY_TRANS file state | EXIT | END transitions
         chain_epilogue: ($) =>
             choice(
-                seq("END", $._filename, $._state_label),
-                seq("EXTERN", $._filename, $._state_label),
-                seq(choice("COPY_TRANS", "COPY_TRANS_LATE"), optional("SAFE"), $._filename, $._state_label),
+                seq("END", field("file", $._filename), field("label", $._state_label)),
+                seq("EXTERN", field("file", $._filename), field("label", $._state_label)),
+                seq(choice("COPY_TRANS", "COPY_TRANS_LATE"), optional("SAFE"), field("file", $._filename), field("label", $._state_label)),
                 "EXIT",
                 seq("END", repeat($.transition))
             ),

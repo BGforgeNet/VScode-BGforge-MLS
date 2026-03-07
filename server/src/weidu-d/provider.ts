@@ -16,6 +16,8 @@ import { stripCommentsWeidu } from "../shared/format-utils";
 import { getFormatOptions } from "../shared/format-options";
 import { resolveSymbolStatic, getStaticCompletions, formatWithValidation } from "../shared/provider-helpers";
 import { getDefinition } from "./definition";
+import { getStateLabelHover } from "./hover";
+import { prepareRenameSymbol, renameSymbol } from "./rename";
 import { formatDocument as formatAst } from "./format-core";
 import { initParser, parseWithCache, isInitialized } from "./parser";
 import { getDocumentSymbols } from "./symbol";
@@ -89,6 +91,18 @@ class WeiduDProvider implements LanguageProvider {
 
     definition(text: string, position: Position, uri: string): Location | null {
         return getDefinition(text, uri, position);
+    }
+
+    prepareRename(text: string, position: Position) {
+        return prepareRenameSymbol(text, position);
+    }
+
+    rename(text: string, position: Position, newName: string, uri: string) {
+        return renameSymbol(text, position, newName, uri);
+    }
+
+    hover(text: string, symbol: string, uri: string, position: Position) {
+        return getStateLabelHover(text, symbol, uri, position);
     }
 
     getCompletions(_uri: string): CompletionItem[] {
