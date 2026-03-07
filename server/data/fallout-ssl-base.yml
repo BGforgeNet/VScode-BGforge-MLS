@@ -124,8 +124,8 @@ engine-procedures:
     - name: timed_event_p_proc
       detail: void timed_event_p_proc()
       doc: |-
-        This procedure is called by the function `add_timer_event(ObjPtr obj, int time, int fixed_param)`.
-        `ObjPtr` points to the object whose script's `timed_event_p_proc` procedure you want to access.
+        This procedure is called by the function `add_timer_event(ObjectPtr obj, int time, int fixed_param)`.
+        `ObjectPtr` points to the object whose script's `timed_event_p_proc` procedure you want to access.
         Time is the number of game ticks (1 game tick = 1/10 seconds) you want to pass before the `timed_event_p_proc` is called.
         `fixed_param` is a variable you can set to differentiate between various timed events.
         In `timed_event_p_proc`, you can check the value of `fixed_param` against whatever number you used when calling `add_timer_event`.

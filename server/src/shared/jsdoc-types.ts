@@ -18,8 +18,9 @@ export const FALLOUT_JSDOC_TYPE_NAMES: readonly string[] = [
     "bool",
     "float",
     "int",
+    "list",
+    "map",
     "mixed",
-    "ObjPtr",
     "ObjectPtr",
     "string",
 ] as const;

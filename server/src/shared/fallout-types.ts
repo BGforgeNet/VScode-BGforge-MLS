@@ -16,8 +16,9 @@ export const FALLOUT_JSDOC_TYPES: ReadonlyMap<string, FalloutType> = new Map([
     ["bool", { detail: "Boolean type" }],
     ["float", { detail: "Floating point type" }],
     ["int", { detail: "Integer type" }],
+    ["list", { detail: "List type" }],
+    ["map", { detail: "Map type" }],
     ["mixed", { detail: "Mixed type (int or float)" }],
-    ["ObjPtr", { detail: "Object pointer" }],
-    ["ObjectPtr", { detail: "Object pointer (alias)" }],
+    ["ObjectPtr", { detail: "Object pointer" }],
     ["string", { detail: "String type" }],
 ]);

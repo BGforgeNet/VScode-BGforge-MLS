@@ -14,12 +14,12 @@ repository:
             name: storage.type.fallout-ssl-tooltip
           "2":
             name: entity.name.function
-        match: ^\b(?i)(array|any|bool|int|list|map|macro|mixed|float|ObjPtr|ObjectPtr|proc|string|void)\b[[:blank:]]+\b(\w+)\b
+        match: ^\b(?i)(array|any|bool|int|list|map|macro|mixed|float|ObjectPtr|proc|string|void)\b[[:blank:]]+\b(\w+)\b
       # Standalone type in parameter lists: the "int" in "void foo(int x)", the "string" in "(string msg)"
       - captures:
           "1":
             name: storage.type.fallout-ssl-tooltip
-        match: \b(?i)(array|any|bool|int|list|map|mixed|float|ObjPtr|ObjectPtr|proc|string|uint|void)\b
+        match: \b(?i)(array|any|bool|int|list|map|mixed|float|ObjectPtr|proc|string|uint|void)\b
       # Fallback: delegate to main grammar for keywords (procedure, variable), identifiers, etc.
       - include: source.fallout-ssl
         match: .
