@@ -72,6 +72,8 @@ server/src/
 |   +-- symbol.ts             # IndexedSymbol type definitions
 |   +-- symbol-index.ts       # Symbols class - unified storage & query
 |   +-- static-loader.ts      # Loads built-in symbols from JSON
+|   +-- include-graph.ts      # Generic include graph (dependency-graph wrapper)
+|   +-- include-resolver.ts   # Resolves #include paths to file URIs
 |   +-- languages.ts          # Language IDs & file extensions
 |   +-- patterns.ts           # Regex patterns
 |   +-- location-utils.ts     # Position/range helpers
@@ -81,11 +83,12 @@ server/src/
 |   +-- parser.ts             # Tree-sitter wrapper
 |   +-- format.ts
 |   +-- header-parser.ts      # .h file parsing
+|   +-- include-scanner.ts    # Extracts #include paths from AST
 |   +-- symbols.ts            # DocumentSymbol extraction
 |   +-- completion.ts
 |   +-- hover.ts
 |   +-- definition.ts
-|   +-- rename.ts
+|   +-- rename.ts             # Single-file + workspace-wide rename
 |   +-- signature.ts
 |
 +-- weidu-baf/                # WeiDU BAF scripts
@@ -371,6 +374,37 @@ Separate from Symbols, handles .tra/.msg translation files:
 - `getHover(@123)` - Returns translation text for string references
 - `getInlayHints()` - Shows translation text inline at call sites
 - `reloadFile()` - Updates cache when translation files change
+
+## Include Graph
+
+The include graph tracks `#include` relationships between files for workspace-wide rename.
+
+```
++------------------+     +------------------+     +------------------+
+| include-scanner  | --> | include-resolver | --> | IncludeGraph     |
+| (AST extraction) |     | (path resolve)   |     | (dependency-graph)|
++------------------+     +------------------+     +------------------+
+```
+
+### Components
+
+| Module | Layer | Purpose |
+|--------|-------|---------|
+| `core/include-graph.ts` | Generic | Wraps `dependency-graph` for transitive dependant queries |
+| `core/include-resolver.ts` | Generic | Resolves raw paths to file URIs (with path traversal protection) |
+| `fallout-ssl/include-scanner.ts` | Language-specific | Extracts `#include` paths from SSL tree-sitter AST |
+
+### Workspace-Wide Rename
+
+When renaming a symbol defined in a header file:
+
+1. Find the definition URI (local AST or symbol store lookup)
+2. Query `includeGraph.getTransitiveDependants(defUri)` for all consuming files
+3. Parse each candidate, find all identifier references matching the symbol
+4. Skip files that locally redefine the symbol (shadowing)
+5. Return `documentChanges` (TextDocumentEdit[]) for atomic cross-file undo
+
+The graph is built at init time (async I/O) and updated incrementally on file save/change.
 
 ## Key Design Decisions
 

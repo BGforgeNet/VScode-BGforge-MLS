@@ -243,6 +243,7 @@ See [server/ARCHITECTURE.md](../server/ARCHITECTURE.md) for comprehensive docume
 
 - Provider registry pattern and request routing
 - Symbol system (IndexedSymbol, scope hierarchy, pre-computed responses)
+- Include graph (workspace-wide rename via transitive dependant tracking)
 - Data flow (initialization, hover fallthrough, file change propagation)
 - Tree-sitter integration (sequential init, SyntaxType enum, parse caching)
 - Translation service (.tra/.msg inlay hints)

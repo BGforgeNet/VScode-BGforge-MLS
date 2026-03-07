@@ -59,6 +59,8 @@ export interface ProviderContext {
     workspaceRoot: string | undefined;
     /** User settings */
     settings: MLSsettings;
+    /** Returns open document buffer text if available, undefined otherwise. */
+    getDocumentText?: (uri: string) => string | undefined;
 }
 
 /**

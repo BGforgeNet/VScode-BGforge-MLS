@@ -18,6 +18,7 @@ import {
     ProposedFeatures,
     TextDocumentPositionParams,
     TextDocuments,
+    TextDocumentEdit,
     TextDocumentSyncKind,
 } from "vscode-languageserver/node";
 import { conlog, symbolAtPosition } from "./common";
@@ -166,7 +167,11 @@ connection.onInitialized(async () => {
     registry.registerAlias(LANG_WEIDU_SLB, LANG_WEIDU_BAF);
     registry.registerAlias(LANG_WEIDU_SSL, LANG_WEIDU_BAF);
 
-    await registry.init({ workspaceRoot, settings: globalSettings });
+    await registry.init({
+        workspaceRoot,
+        settings: globalSettings,
+        getDocumentText: (uri) => documents.get(uri)?.getText(),
+    });
 
     // Register file watchers for header files
     // NOTE: For standalone LSP usage (e.g., Claude Code) where client may not support
@@ -422,6 +427,12 @@ documents.onDidSave(async (change) => {
     // Reload translation data if it's a translation file
     translation?.reloadFile(uri, langId, text);
 
+    // Skip compile for files touched by a recent multi-file rename.
+    // Remove the URI so subsequent saves compile normally.
+    if (renameAffectedUris.delete(uri)) {
+        return;
+    }
+
     const validateOnSave = (await getDocumentSettings(uri)).validateOnSave;
     if (validateOnSave) {
         void compile(uri, langId, false, text);
@@ -450,6 +461,12 @@ documents.onDidChangeContent(async (event) => {
             translation?.reloadFile(uri, langId, text);
         }, RELOAD_DEBOUNCE_MS),
     );
+
+    // Skip compile for files touched by a recent multi-file rename.
+    // Keep the URI in the set — onDidSave will remove it after the final skip.
+    if (renameAffectedUris.has(uri)) {
+        return;
+    }
 
     const validateOnChange = (await getDocumentSettings(uri)).validateOnChange;
     if (validateOnChange) {
@@ -525,6 +542,15 @@ connection.onPrepareRename((params) => {
     return registry.prepareRename(langId, text, params.position);
 });
 
+// URIs touched by the most recent multi-file rename. Compile is suppressed for
+// these files in both onDidChangeContent and onDidSave to avoid breaking VS Code's
+// cross-file undo group (compile writes .tmp.ssl which triggers file watchers that
+// invalidate the undo group). A safety timeout clears the set in case some files
+// never trigger change/save events (e.g. user undoes before save).
+const RENAME_SUPPRESS_MS = 3000;
+const renameAffectedUris = new Set<string>();
+let renameSuppressTimer: NodeJS.Timeout | undefined;
+
 connection.onRenameRequest((params) => {
     const textDoc = documents.get(params.textDocument.uri);
     if (!textDoc) {
@@ -534,7 +560,27 @@ connection.onRenameRequest((params) => {
     const langId = textDoc.languageId;
     const text = textDoc.getText();
 
-    return registry.rename(langId, text, params.position, params.newName, uri);
+    const result = registry.rename(langId, text, params.position, params.newName, uri);
+
+    // Track affected URIs so onDidChangeContent/onDidSave skip compile for them
+    if (result?.documentChanges && result.documentChanges.length > 0) {
+        renameAffectedUris.clear();
+        for (const dc of result.documentChanges) {
+            if (TextDocumentEdit.is(dc)) {
+                renameAffectedUris.add(dc.textDocument.uri);
+            }
+        }
+        // Safety cleanup in case some URIs never trigger change/save
+        if (renameSuppressTimer) clearTimeout(renameSuppressTimer);
+        renameSuppressTimer = setTimeout(() => { renameAffectedUris.clear(); }, RENAME_SUPPRESS_MS);
+    }
+
+    return result;
+});
+
+// Clean up timers on shutdown
+connection.onShutdown(() => {
+    if (renameSuppressTimer) clearTimeout(renameSuppressTimer);
 });
 
 connection.onDocumentFormatting((params) => {
