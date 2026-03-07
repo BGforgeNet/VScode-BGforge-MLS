@@ -32,7 +32,7 @@ It can also be used with non-VScode editors, see setup guides:
 
 | Language         | Extensions          | Completion | Hover | Signature | Definition | Format | Symbols |  Rename   | Inlay Hints | Compile | JSDoc | Folding |
 | ---------------- | ------------------- | :--------: | :---: | :-------: | :--------: | :----: | :-----: | :-------: | :---------: | :-----: | :---: | :-----: |
-| Fallout SSL      | .ssl, .h            |     +      |   +   |     +     |     +      |   +    |    +    | same file |    .msg     |  sslc   |   +   |    +    |
+| Fallout SSL      | .ssl, .h            |     +      |   +   |     +     |     +      |   +    |    +    |     +     |    .msg     |  sslc   |   +   |    +    |
 | Fallout worldmap | worldmap.txt        |     +      |   +   |           |            |        |         |           |             |         |       |         |
 | WeiDU BAF        | .baf                |     +      |   +   |           |            |   +    |         |           |    .tra     |  weidu  |       |    +    |
 | WeiDU D          | .d                  |     +      |   +   |           |     +      |   +    |    +    |           |    .tra     |  weidu  |       |    +    |
