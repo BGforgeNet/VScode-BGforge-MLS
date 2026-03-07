@@ -23,7 +23,7 @@ import { formatDocument as formatAst } from "./format-core";
 import { initParser, parseWithCache, isInitialized } from "./parser";
 import { getDocumentSymbols } from "./symbol";
 import { compile as weiduCompile } from "../weidu-compile";
-import { getFoldingRanges } from "../shared/folding-ranges";
+import { createFoldingRangesProvider } from "../shared/folding-ranges";
 import { SyntaxType } from "./tree-sitter.d";
 
 /** D block-level node types for code folding. */
@@ -38,6 +38,8 @@ const D_FOLDABLE_TYPES = new Set([
     SyntaxType.State,
     SyntaxType.Transition,
 ]);
+
+const dFoldingRanges = createFoldingRangesProvider(isInitialized, parseWithCache, D_FOLDABLE_TYPES);
 
 class WeiduDProvider implements LanguageProvider {
     readonly id = LANG_WEIDU_D;
@@ -84,14 +86,7 @@ class WeiduDProvider implements LanguageProvider {
     }
 
     foldingRanges(text: string): FoldingRange[] {
-        if (!isInitialized()) {
-            return [];
-        }
-        const tree = parseWithCache(text);
-        if (!tree) {
-            return [];
-        }
-        return getFoldingRanges(tree.rootNode, D_FOLDABLE_TYPES);
+        return dFoldingRanges(text);
     }
 
     definition(text: string, position: Position, uri: string): Location | null {

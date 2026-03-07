@@ -19,7 +19,7 @@ import { resolveSymbolStatic, getStaticCompletions, formatWithValidation } from 
 import { formatDocument as formatAst } from "./format-core";
 import { initParser, parseWithCache, isInitialized } from "./parser";
 import { compile as weiduCompile } from "../weidu-compile";
-import { getFoldingRanges } from "../shared/folding-ranges";
+import { createFoldingRangesProvider } from "../shared/folding-ranges";
 import { SyntaxType } from "./tree-sitter.d";
 
 /** Comment node types in the BAF grammar. */
@@ -32,6 +32,8 @@ const BAF_FOLDABLE_TYPES = new Set([
     SyntaxType.Block,
     SyntaxType.Response,
 ]);
+
+const bafFoldingRanges = createFoldingRangesProvider(isInitialized, parseWithCache, BAF_FOLDABLE_TYPES);
 
 class WeiduBafProvider implements LanguageProvider {
     readonly id = LANG_WEIDU_BAF;
@@ -61,14 +63,7 @@ class WeiduBafProvider implements LanguageProvider {
     }
 
     foldingRanges(text: string): FoldingRange[] {
-        if (!isInitialized()) {
-            return [];
-        }
-        const tree = parseWithCache(text);
-        if (!tree) {
-            return [];
-        }
-        return getFoldingRanges(tree.rootNode, BAF_FOLDABLE_TYPES);
+        return bafFoldingRanges(text);
     }
 
     format(text: string, uri: string): FormatResult {

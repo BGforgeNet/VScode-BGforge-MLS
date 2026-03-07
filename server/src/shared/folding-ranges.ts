@@ -12,6 +12,27 @@ import type { Node as SyntaxNode } from "web-tree-sitter";
 const COMMENT_TYPES = new Set(["comment", "line_comment"]);
 
 /**
+ * Create a bound foldingRanges method for a language provider.
+ * Eliminates repeated init/parse/fold boilerplate across providers.
+ */
+export function createFoldingRangesProvider(
+    isInitialized: () => boolean,
+    parseWithCache: (text: string) => { rootNode: SyntaxNode } | null,
+    blockTypes: ReadonlySet<string>,
+): (text: string) => FoldingRange[] {
+    return (text) => {
+        if (!isInitialized()) {
+            return [];
+        }
+        const tree = parseWithCache(text);
+        if (!tree) {
+            return [];
+        }
+        return getFoldingRanges(tree.rootNode, blockTypes);
+    };
+}
+
+/**
  * Extract folding ranges from a tree-sitter AST.
  *
  * Walks the tree recursively, producing a FoldingRange for each multi-line node

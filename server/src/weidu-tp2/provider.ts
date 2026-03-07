@@ -36,7 +36,7 @@ import { localCompletion, isInsideComment, isOnLoopVariableBinding } from "./ast
 import { getLocalSymbols as extractLocalSymbols, lookupLocalSymbol, clearLocalSymbolsCache } from "./local-symbols";
 import { WEIDU_JSDOC_TYPES } from "../shared/weidu-types";
 import { getJsdocCompletions as getSharedJsdocCompletions } from "../shared/jsdoc-completions";
-import { getFoldingRanges } from "../shared/folding-ranges";
+import { createFoldingRangesProvider } from "../shared/folding-ranges";
 import { WorkspaceSymbolIndex } from "../shared/workspace-symbols";
 import { SyntaxType } from "./tree-sitter.d";
 
@@ -61,6 +61,8 @@ const TP2_FOLDABLE_TYPES = new Set([
     SyntaxType.InnerPatchFile,
     SyntaxType.InnerPatchSave,
 ]);
+
+const tp2FoldingRanges = createFoldingRangesProvider(isInitialized, parseWithCache, TP2_FOLDABLE_TYPES);
 
 /**
  * Add parameter completions (INT_VAR, STR_VAR names) when in funcParamName context.
@@ -366,14 +368,7 @@ class WeiduTp2Provider implements LanguageProvider {
     }
 
     foldingRanges(text: string): FoldingRange[] {
-        if (!isInitialized()) {
-            return [];
-        }
-        const tree = parseWithCache(text);
-        if (!tree) {
-            return [];
-        }
-        return getFoldingRanges(tree.rootNode, TP2_FOLDABLE_TYPES);
+        return tp2FoldingRanges(text);
     }
 
     rename(text: string, position: Position, newName: string, uri: string): WorkspaceEdit | null {

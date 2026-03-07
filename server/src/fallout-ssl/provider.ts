@@ -33,7 +33,7 @@ import { getFormatOptions } from "../shared/format-options";
 import * as signature from "../shared/signature";
 import { formatDocument as formatAst } from "./format-core";
 import { initParser, isInitialized, parseWithCache } from "./parser";
-import { getFoldingRanges } from "../shared/folding-ranges";
+import { createFoldingRangesProvider } from "../shared/folding-ranges";
 import { getDocumentSymbols } from "./symbol";
 import { getLocalDefinition } from "./definition";
 import { renameSymbol, prepareRenameSymbol, renameSymbolWorkspace, prepareRenameSymbolWorkspace } from "./rename";
@@ -55,6 +55,8 @@ const SSL_FOLDABLE_TYPES = new Set([
     SyntaxType.SwitchStmt,
     SyntaxType.Block,
 ]);
+
+const sslFoldingRanges = createFoldingRangesProvider(isInitialized, parseWithCache, SSL_FOLDABLE_TYPES);
 
 /** File extensions to scan for the include graph, derived from language constants. */
 const INCLUDE_GRAPH_EXTENSIONS = EXT_FALLOUT_SSL_ALL.map(ext => ext.slice(1));
@@ -236,14 +238,7 @@ class FalloutSslProvider implements LanguageProvider {
     }
 
     foldingRanges(text: string): FoldingRange[] {
-        if (!isInitialized()) {
-            return [];
-        }
-        const tree = parseWithCache(text);
-        if (!tree) {
-            return [];
-        }
-        return getFoldingRanges(tree.rootNode, SSL_FOLDABLE_TYPES);
+        return sslFoldingRanges(text);
     }
 
     definition(text: string, position: Position, uri: string): Location | null {
