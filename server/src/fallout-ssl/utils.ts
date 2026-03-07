@@ -290,26 +290,6 @@ export function isLocalDefinition(root: Node, symbol: string): boolean {
 }
 
 /**
- * Find all identifier nodes with the given name.
- * Used by rename to find all references.
- */
-export function findAllReferences(root: Node, symbol: string): Node[] {
-    const refs: Node[] = [];
-
-    function visit(node: Node): void {
-        if (node.type === "identifier" && node.text === symbol) {
-            refs.push(node);
-        }
-        for (const child of node.children) {
-            visit(child);
-        }
-    }
-
-    visit(root);
-    return refs;
-}
-
-/**
  * Extract all macros from tree-sitter AST.
  * Returns MacroData objects with name, params, body, jsdoc, etc.
  */
@@ -376,7 +356,7 @@ export function extractMacros(root: Node): MacroData[] {
  * Find macro definition by name.
  * Returns the 'define' node or null.
  */
-function findMacroDefinition(root: Node, symbol: string): Node | null {
+export function findMacroDefinition(root: Node, symbol: string): Node | null {
     let result: Node | null = null;
 
     function visit(node: Node) {

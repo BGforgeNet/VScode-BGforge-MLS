@@ -7,7 +7,7 @@ import { createCachedParserModule } from "../shared/parser-factory";
 
 const parserModule = createCachedParserModule("tree-sitter-weidu_tp2.wasm", "WeiDU TP2");
 
-export const initParser = parserModule.init.bind(parserModule);
-export const getParser = parserModule.getParser.bind(parserModule);
-export const isInitialized = parserModule.isInitialized.bind(parserModule);
-export const parseWithCache = parserModule.parseWithCache.bind(parserModule);
+export const initParser = () => parserModule.init();
+export const getParser = () => parserModule.getParser();
+export const isInitialized = () => parserModule.isInitialized();
+export const parseWithCache = (text: string) => parserModule.parseWithCache(text);

@@ -21,7 +21,6 @@ import {
     findIdentifierAtPosition,
     findDefinitionNode,
     isLocalDefinition,
-    findAllReferences,
     extractMacros,
     extractParams,
 } from "../../src/fallout-ssl/utils";
@@ -231,33 +230,6 @@ end
 
             const isLocal = isLocalDefinition(tree!.rootNode, "bar");
             expect(isLocal).toBe(false);
-        });
-    });
-
-    describe("findAllReferences()", () => {
-        it("finds all references to a symbol", () => {
-            const text = `
-procedure foo begin
-    call bar;
-    call bar;
-end
-procedure bar begin end
-`;
-            const tree = parseWithCache(text);
-            expect(tree).not.toBeNull();
-
-            const refs = findAllReferences(tree!.rootNode, "bar");
-            // bar definition + 2 calls
-            expect(refs.length).toBeGreaterThanOrEqual(3);
-        });
-
-        it("returns empty array for symbol with no references", () => {
-            const text = "procedure foo begin end";
-            const tree = parseWithCache(text);
-            expect(tree).not.toBeNull();
-
-            const refs = findAllReferences(tree!.rootNode, "nonexistent");
-            expect(refs).toEqual([]);
         });
     });
 

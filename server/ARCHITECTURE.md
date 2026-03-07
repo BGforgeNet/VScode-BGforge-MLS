@@ -88,7 +88,9 @@ server/src/
 |   +-- completion.ts
 |   +-- hover.ts
 |   +-- definition.ts
-|   +-- rename.ts             # Single-file + workspace-wide rename
+|   +-- rename.ts             # Single-file + workspace-wide rename orchestration
+|   +-- symbol-scope.ts       # Scope determination (file vs procedure) for rename
+|   +-- reference-finder.ts   # Scope-restricted reference finding for rename
 |   +-- signature.ts
 |
 +-- weidu-baf/                # WeiDU BAF scripts
@@ -394,17 +396,31 @@ The include graph tracks `#include` relationships between files for workspace-wi
 | `core/include-resolver.ts` | Generic | Resolves raw paths to file URIs (with path traversal protection) |
 | `fallout-ssl/include-scanner.ts` | Language-specific | Extracts `#include` paths from SSL tree-sitter AST |
 
-### Workspace-Wide Rename
+### Rename (Scope-Aware)
 
-When renaming a symbol defined in a header file:
+Rename uses a three-module pipeline: `symbol-scope.ts` → `reference-finder.ts` → `rename.ts`.
+
+**Scope determination** (`symbol-scope.ts`): Given a cursor position, determines whether
+the symbol is file-scoped (procedure name, macro, export) or procedure-scoped (param,
+variable, for/foreach var). Returns `SslSymbolScope` with the scope type and, for
+procedure-scoped symbols, the containing procedure node.
+
+**Reference finding** (`reference-finder.ts`): Collects all identifier references within
+the correct scope. For procedure-scoped symbols, walks only the procedure subtree. For
+file-scoped symbols, walks the entire tree but skips into procedures that shadow the name
+with a local definition.
+
+**Single-file rename** (`rename.ts`): Uses scope info to rename only within the correct scope.
+
+**Workspace-wide rename** (`rename.ts`): For symbols defined in header files:
 
 1. Find the definition URI (local AST or symbol store lookup)
 2. Query `includeGraph.getTransitiveDependants(defUri)` for all consuming files
-3. Parse each candidate, find all identifier references matching the symbol
-4. Skip files that locally redefine the symbol (shadowing)
+3. For each candidate file, use scope-aware reference finding (skips procedure-local shadows)
+4. Skip files that redefine the symbol at file scope (a different procedure/macro with same name)
 5. Return `documentChanges` (TextDocumentEdit[]) for atomic cross-file undo
 
-The graph is built at init time (async I/O) and updated incrementally on file save/change.
+The include graph is built at init time (async I/O) and updated incrementally on file save/change.
 
 ## Key Design Decisions
 

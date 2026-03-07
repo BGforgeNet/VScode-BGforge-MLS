@@ -14,7 +14,10 @@ import { isWithinBase } from "../core/include-resolver";
 import { SourceType } from "../core/symbol";
 import type { Symbols } from "../core/symbol-index";
 import { parseWithCache, isInitialized } from "./parser";
-import { findIdentifierAtPosition, findIdentifierNodeAtPosition, isLocalDefinition, findAllReferences, makeRange } from "./utils";
+import { findIdentifierAtPosition, findIdentifierNodeAtPosition, isLocalDefinition, makeRange } from "./utils";
+import { getSymbolScope, isFileScopeDef } from "./symbol-scope";
+import type { SslSymbolScope } from "./symbol-scope";
+import { findScopedReferences } from "./reference-finder";
 
 /** SSL identifiers: alphanumeric + underscore, must not be empty. */
 const VALID_IDENTIFIER = /^[a-zA-Z_][a-zA-Z0-9_]*$/;
@@ -22,6 +25,9 @@ const VALID_IDENTIFIER = /^[a-zA-Z_][a-zA-Z0-9_]*$/;
 /**
  * Prepare for rename by validating the position and returning the range and placeholder.
  * Returns null if rename is not allowed at this position.
+ *
+ * Scope-aware: only allows rename if the symbol is defined in an accessible scope
+ * (the current procedure for locals, or file scope for procedures/macros/exports).
  */
 export function prepareRenameSymbol(
     text: string,
@@ -41,8 +47,9 @@ export function prepareRenameSymbol(
         return null;
     }
 
-    // Only allow rename for locally defined symbols
-    if (!isLocalDefinition(tree.rootNode, symbolNode.text)) {
+    // Determine scope -- returns null if the symbol is not defined in any accessible scope
+    const scopeInfo = getSymbolScope(tree.rootNode, position);
+    if (!scopeInfo) {
         return null;
     }
 
@@ -56,8 +63,10 @@ export function prepareRenameSymbol(
 }
 
 /**
- * Rename a locally defined symbol.
- * Returns null if the symbol at position is not locally defined.
+ * Rename a locally defined symbol with scope awareness.
+ * Procedure-scoped symbols are renamed only within their procedure.
+ * File-scoped symbols are renamed across the file, skipping procedure-local shadows.
+ * Returns null if the symbol at position is not defined in an accessible scope.
  */
 export function renameSymbol(text: string, position: Position, newName: string, uri: string): WorkspaceEdit | null {
     if (!isInitialized() || !VALID_IDENTIFIER.test(newName)) {
@@ -69,17 +78,12 @@ export function renameSymbol(text: string, position: Position, newName: string, 
         return null;
     }
 
-    const symbol = findIdentifierAtPosition(tree.rootNode, position);
-    if (!symbol) {
+    const scopeInfo = getSymbolScope(tree.rootNode, position);
+    if (!scopeInfo) {
         return null;
     }
 
-    // Only rename locally defined symbols
-    if (!isLocalDefinition(tree.rootNode, symbol)) {
-        return null;
-    }
-
-    const refs = findAllReferences(tree.rootNode, symbol);
+    const refs = findScopedReferences(tree.rootNode, scopeInfo);
     if (refs.length === 0) {
         return null;
     }
@@ -100,60 +104,6 @@ export function renameSymbol(text: string, position: Position, newName: string, 
 // Workspace-wide rename
 // =============================================================================
 
-/** Check if a macro with the given name is defined anywhere in the AST. */
-function hasMacroDefinition(root: Node, symbolName: string): boolean {
-    const stack: Node[] = [root];
-    while (stack.length > 0) {
-        const node = stack.pop()!; // stack is non-empty, safe to assert
-        if (node.type === "preprocessor") {
-            for (const child of node.children) {
-                if (child.type === "define") {
-                    const nameNode = child.childForFieldName("name");
-                    if (nameNode?.text === symbolName) {
-                        return true;
-                    }
-                }
-            }
-        }
-        for (const child of node.children) {
-            stack.push(child);
-        }
-    }
-    return false;
-}
-
-/**
- * Check if a symbol is defined at file scope (shareable via includes).
- * File-scope: procedures, forward declarations, macros, exports.
- * Function-scope (NOT shareable): variables, params, for/foreach vars.
- */
-function isFileScopeDefinition(rootNode: Node, symbolName: string): boolean {
-    // Check procedures
-    for (const child of rootNode.children) {
-        if (child.type === "procedure" || child.type === "procedure_forward") {
-            const nameNode = child.childForFieldName("name");
-            if (nameNode?.text === symbolName) {
-                return true;
-            }
-        }
-    }
-
-    // Check macros (inside preprocessor > define)
-    if (hasMacroDefinition(rootNode, symbolName)) return true;
-
-    // Check exports
-    for (const child of rootNode.children) {
-        if (child.type === "export_decl") {
-            const nameNode = child.childForFieldName("name");
-            if (nameNode?.text === symbolName) {
-                return true;
-            }
-        }
-    }
-
-    return false;
-}
-
 /**
  * Determine the definition URI for a symbol.
  * Returns the URI where the symbol is defined, or null if it can't be determined
@@ -168,7 +118,7 @@ function findDefinitionUri(
 ): { uri: string; isExternal: boolean } | null {
     // Check if defined locally in current file
     if (isLocalDefinition(currentRootNode, symbolName)) {
-        if (isFileScopeDefinition(currentRootNode, symbolName)) {
+        if (isFileScopeDef(currentRootNode, symbolName)) {
             return { uri: currentUri, isExternal: false };
         }
         // Function-scoped: not shareable, handled by single-file rename
@@ -333,6 +283,7 @@ export function renameSymbolWorkspace(
     // Uses documentChanges format (TextDocumentEdit[]) so VS Code treats the
     // entire rename as a single atomic undo operation across all files.
     const documentChanges: TextDocumentEdit[] = [];
+    const fileScopeInfo: SslSymbolScope = { name: symbolName, scope: "file" };
 
     for (const candidateUri of candidateUris) {
         const candidateText = candidateUri === uri
@@ -348,17 +299,17 @@ export function renameSymbolWorkspace(
             continue;
         }
 
-        const refs = findAllReferences(candidateTree.rootNode, symbolName);
-        if (refs.length === 0) {
+        // For consuming files: skip entirely if the symbol is redefined at file scope
+        // (a different procedure/macro/export with the same name). Procedure-local
+        // shadows are handled by findScopedReferences (it skips those subtrees).
+        if (candidateUri !== definitionUri && isFileScopeDef(candidateTree.rootNode, symbolName)) {
             continue;
         }
 
-        // For the definition file: include all references (definition + usages)
-        // For consuming files: only include references where the symbol is NOT
-        // locally redefined (if a file redefines the same name, skip it)
-        if (candidateUri !== definitionUri && isLocalDefinition(candidateTree.rootNode, symbolName)) {
-            // This file has its own definition of the same name -- skip to avoid
-            // renaming an unrelated symbol that shadows the included one
+        // Use file-scoped reference finding with shadow exclusion:
+        // skips into procedures that have a local definition of the same name
+        const refs = findScopedReferences(candidateTree.rootNode, fileScopeInfo);
+        if (refs.length === 0) {
             continue;
         }
 

@@ -69,7 +69,7 @@ end
             expect(result).not.toBeNull();
             expect(result?.changes?.[uri]).toBeDefined();
             // declaration + 4 usages = 5
-            expect(result?.changes?.[uri].length).toBeGreaterThanOrEqual(4);
+            expect(result?.changes?.[uri].length).toBe(5);
 
             for (const edit of result?.changes?.[uri] ?? []) {
                 expect(edit.newText).toBe("count");
@@ -117,7 +117,7 @@ end
             expect(result).not.toBeNull();
             expect(result?.changes?.[uri]).toBeDefined();
             // param definition + 3 usages = 4
-            expect(result?.changes?.[uri].length).toBeGreaterThanOrEqual(3);
+            expect(result?.changes?.[uri].length).toBe(4);
 
             for (const edit of result?.changes?.[uri] ?? []) {
                 expect(edit.newText).toBe("amount");
@@ -168,6 +168,114 @@ end
                 edit.range.start.line === 2 && edit.range.start.character === 10
             );
             expect(hasEditOnFoobar).toBe(false);
+        });
+    });
+
+    describe("scope isolation", () => {
+        it("renames variable in one procedure without affecting same-named variable in another", () => {
+            const text = `
+procedure foo begin
+    variable i;
+    i := 0;
+    i := i + 1;
+end
+procedure bar begin
+    variable i;
+    i := 10;
+    i := i + 1;
+end
+`;
+            const uri = "file:///test.ssl";
+            // Cursor on "i" in foo (at declaration)
+            const position: Position = { line: 2, character: 14 };
+            const result = renameSymbol(text, position, "idx", uri);
+
+            expect(result).not.toBeNull();
+            expect(result?.changes?.[uri]).toBeDefined();
+            // Should rename only in foo: declaration + 3 usages = 4
+            const edits = result!.changes![uri];
+            expect(edits.length).toBe(4);
+
+            // All edits should be within foo (lines 1-5)
+            for (const edit of edits) {
+                expect(edit.range.start.line).toBeGreaterThanOrEqual(1);
+                expect(edit.range.start.line).toBeLessThanOrEqual(5);
+                expect(edit.newText).toBe("idx");
+            }
+        });
+
+        it("renames parameter without affecting same-named parameter in another procedure", () => {
+            const text = `
+procedure foo(value) begin
+    display_msg(value);
+end
+procedure bar(value) begin
+    display_msg(value);
+end
+`;
+            const uri = "file:///test.ssl";
+            // Cursor on "value" in foo
+            const position: Position = { line: 1, character: 14 };
+            const result = renameSymbol(text, position, "amount", uri);
+
+            expect(result).not.toBeNull();
+            const edits = result!.changes![uri];
+            // foo: param def + 1 usage = 2
+            expect(edits.length).toBe(2);
+
+            // All edits in foo (lines 1-3)
+            for (const edit of edits) {
+                expect(edit.range.start.line).toBeGreaterThanOrEqual(1);
+                expect(edit.range.start.line).toBeLessThanOrEqual(3);
+            }
+        });
+
+        it("renames file-scoped macro without renaming shadowing local variable", () => {
+            const text = `
+#define x 42
+
+procedure foo begin
+    variable x;
+    x := 1;
+end
+procedure bar begin
+    display_msg(x);
+end
+`;
+            const uri = "file:///test.ssl";
+            // Cursor on "x" at macro definition
+            const position: Position = { line: 1, character: 8 };
+            const result = renameSymbol(text, position, "y", uri);
+
+            expect(result).not.toBeNull();
+            const edits = result!.changes![uri];
+            // definition in #define + usage in bar = 2
+            // foo has local x, should NOT be renamed
+            expect(edits.length).toBe(2);
+
+            // No edits should be inside foo (lines 3-6)
+            for (const edit of edits) {
+                const inFoo = edit.range.start.line >= 3 && edit.range.start.line <= 6;
+                expect(inFoo).toBe(false);
+            }
+        });
+
+        it("rejects rename of local variable from a different procedure", () => {
+            const text = `
+procedure foo begin
+    variable x;
+    x := 1;
+end
+procedure bar begin
+    x := 2;
+end
+`;
+            // Cursor on "x" in bar, but x is only defined in foo as a local
+            const position: Position = { line: 6, character: 4 };
+            const result = prepareRenameSymbol(text, position);
+
+            // x is not defined in bar's scope, nor at file scope - should be null
+            expect(result).toBeNull();
         });
     });
 
@@ -582,6 +690,53 @@ end
             expect(getEditsForUri(result, ssl1Uri)).toBeDefined();
             // b.ssl should NOT be renamed (it redefines helper locally)
             expect(getEditsForUri(result, ssl2Uri)).toBeUndefined();
+        });
+
+        it("workspace rename skips procedure-local shadows but renames other refs in same file", () => {
+            const headerUri = "file:///project/headers/defs.h";
+            const sslUri = "file:///project/scripts/main.ssl";
+
+            const headerText = `#define FOO 42`;
+            // main.ssl: one procedure shadows FOO, another uses it
+            const sslText = `
+#include "headers/defs.h"
+
+procedure shadower begin
+    variable FOO;
+    FOO := 1;
+end
+procedure user begin
+    display_msg(FOO);
+end
+`;
+
+            const graph = new IncludeGraph();
+            graph.updateFile(sslUri, [headerUri]);
+
+            const symbolStore = new Symbols();
+
+            // Rename FOO from header
+            const position: Position = { line: 0, character: 8 };
+            const result = renameSymbolWorkspace(
+                headerText, position, "BAR", headerUri,
+                graph, symbolStore,
+                makeGetFileText({ [headerUri]: headerText, [sslUri]: sslText }),
+                "/project",
+            );
+
+            expect(result).not.toBeNull();
+            const headerEdits = getEditsForUri(result, headerUri);
+            const sslEdits = getEditsForUri(result, sslUri);
+
+            expect(headerEdits).toBeDefined();
+            expect(headerEdits!.length).toBe(1);
+
+            // SSL file should have edits for "user" procedure's FOO,
+            // but NOT for "shadower" procedure's local FOO
+            expect(sslEdits).toBeDefined();
+            expect(sslEdits!.length).toBe(1);
+            // The edit should be on the display_msg(FOO) line in "user"
+            expect(sslEdits![0].range.start.line).toBe(8); // line with display_msg(FOO)
         });
 
         it("renames from reference site (not just definition)", () => {
