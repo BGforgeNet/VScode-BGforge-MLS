@@ -103,6 +103,18 @@ describe("ssl_compile", () => {
         });
     });
 
+    describe("fork throws synchronously", () => {
+        it("returns error result instead of crashing", async () => {
+            mockFork.mockImplementation(() => {
+                throw new Error("spawn EINVAL");
+            });
+
+            const result = await ssl_compile(baseOpts);
+            expect(result.returnCode).toBe(1);
+            expect(result.stderr).toBe("spawn EINVAL");
+        });
+    });
+
     describe("fork error event", () => {
         it("rejects when fork emits error event", async () => {
             const proc = createMockProcess();
@@ -248,7 +260,7 @@ describe("ssl_compile", () => {
             const forkOpts = mockFork.mock.calls[0][2] as Record<string, unknown>;
             expect(forkOpts.silent).toBe(true);
             expect(forkOpts.execArgv).toEqual([]);
-            expect(forkOpts.env).toEqual({});
+            expect(forkOpts.env).toBeUndefined();
             expect(forkOpts.cwd).toBe("/tmp/build");
         });
     });

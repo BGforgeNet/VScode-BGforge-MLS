@@ -55,16 +55,24 @@ export async function ssl_compile(opts: {
 
     cmdArgs.push(opts.inputFileName, "-o", opts.outputFileName);
 
-    const p = fork(
-        COMPILER_MODULE,
-        cmdArgs,
-        {
-            execArgv: [], // Disable Node.js flags like --inspect
-            env: {},
-            cwd: opts.cwd,
-            silent: true,
-        },
-    );
+    let p;
+    try {
+        p = fork(
+            COMPILER_MODULE,
+            cmdArgs,
+            {
+                execArgv: [], // Disable Node.js flags like --inspect
+                cwd: opts.cwd,
+                silent: true,
+            },
+        );
+    } catch (err) {
+        // fork() can throw synchronously (e.g. EINVAL on Windows with bad env).
+        // Return an error result instead of crashing the server.
+        const msg = err instanceof Error ? err.message : String(err);
+        conlog(`Built-in compiler fork failed: ${msg}`);
+        return { returnCode: 1, stdout: "", stderr: msg };
+    }
 
     const stdout: string[] = [];
     const stderr: string[] = [];
