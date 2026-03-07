@@ -279,10 +279,16 @@ Source (.tssl/.tbaf/.td)
 
 **Shared utilities** (`transpiler-utils.ts`): variable substitution, loop unrolling
 (max 1000 iterations), array spread/destructuring, helper fixups (obj/tra/tlk),
-point tuple conversion (`[x, y]` -> `[x.y]`).
+point tuple conversion (`[x, y]` -> `[x.y]`), @tra tag extraction.
 
-**Shared bundler** (`tbaf/bundle.ts`): esbuild with externalized `.d.ts` imports,
-used by all three transpilers.
+**Shared bundler** (`tbaf/bundle.ts`): esbuild-wasm with externalized `.d.ts` imports,
+enum transformation plugin, extensionless import resolution. Used by TBAF and TD
+directly; TSSL has a near-duplicate with added preserved-function tracking.
+
+**Architecture differences**: TSSL emits directly from AST (no IR). TBAF uses a
+structured IR (`BAFBlock/Condition/Action`) with condition algebra (boolean to
+CNF conversion for BAF OR groups). TD has the richest IR (20+ construct types)
+with state machines, method chain parsing, and dual-pass orphan detection.
 
 | Transpiler | Input | Output | Key Features |
 |------------|-------|--------|-------------|

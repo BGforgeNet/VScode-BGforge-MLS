@@ -178,26 +178,25 @@ Extension Activated
     |                      Try in order:                             |
     +---------------------------------------------------------------+
     |                                                                |
-    |   1. Local Hover (AST-based)                                   |
+    |   1. Translation Hover                                         |
     |   +------------------+                                         |
-    |   | provider.hover() |  Parse current file, find definition   |
-    |   +------------------+                                         |
-    |           |                                                    |
-    |           | undefined = not found locally                      |
-    |           v                                                    |
-    |   2. Data Hover (pre-computed)                                 |
-    |   +------------------+                                         |
-    |   | Symbols      |  Look up from headers/static           |
-    |   | .lookup(symbol)  |                                         |
-    |   | .hover           |                                         |
-    |   +------------------+                                         |
-    |           |                                                    |
-    |           | null = not found                                   |
-    |           v                                                    |
-    |   3. Translation Hover                                         |
-    |   +------------------+                                         |
-    |   | translation      |  For @123 style references             |
+    |   | translation      |  For @123, NOption(123), tra(N) refs   |
     |   | .getHover()      |                                         |
+    |   +------------------+                                         |
+    |           |                                                    |
+    |           | null = not a translation reference                  |
+    |           v                                                    |
+    |   2. Local Hover (AST-based)                                   |
+    |   +------------------+                                         |
+    |   | provider.hover() |  Returns HoverResult discriminated      |
+    |   +------------------+  union (handled/notHandled)             |
+    |           |                                                    |
+    |           | handled=false = not found locally                   |
+    |           v                                                    |
+    |   3. Data Hover (unified symbol resolution)                    |
+    |   +------------------+                                         |
+    |   | resolveSymbol()  |  Local-first, then headers/static       |
+    |   | .hover           |                                         |
     |   +------------------+                                         |
     |                                                                |
     +---------------------------------------------------------------+
@@ -207,6 +206,41 @@ Extension Activated
                           | Return first     |
                           | non-null result  |
                           +------------------+
+```
+
+### Definition Request
+
+```
+                          onDefinition(position)
+                                    |
+                                    v
+    +---------------------------------------------------------------+
+    |                      Try in order:                             |
+    +---------------------------------------------------------------+
+    |                                                                |
+    |   1. Provider Definition (AST-based)                           |
+    |   +------------------+                                         |
+    |   | provider         |  SSL: procedures/macros/vars/exports   |
+    |   | .definition()    |  TP2: variables/functions/INCLUDEs     |
+    |   +------------------+  D: dialog-scoped state labels          |
+    |           |                                                    |
+    |           | null = not found locally                            |
+    |           v                                                    |
+    |   2. Translation Definition                                    |
+    |   +------------------+                                         |
+    |   | translation      |  @123 -> line in .tra/.msg file        |
+    |   | .getDefinition() |                                         |
+    |   +------------------+                                         |
+    |           |                                                    |
+    |           | null = not a translation ref                        |
+    |           v                                                    |
+    |   3. Data Definition (from headers)                            |
+    |   +------------------+                                         |
+    |   | provider         |  Symbol location from indexed headers   |
+    |   | .getSymbolDefn() |  Returns null for static (no location)  |
+    |   +------------------+                                         |
+    |                                                                |
+    +---------------------------------------------------------------+
 ```
 
 ### File Change
@@ -287,18 +321,25 @@ interface LanguageProvider {
   // Lifecycle
   init(context: ProviderContext): Promise<void>
 
+  // Gate: suppress features in comments
+  shouldProvideFeatures?(text, position): boolean
+
   // AST-based features (parse current document)
   format?(text, uri): FormatResult
   symbols?(text): DocumentSymbol[]
+  foldingRanges?(text): FoldingRange[]
   definition?(text, position, uri): Location | null
-  hover?(text, symbol, uri, position): Hover | null | undefined
-  localCompletion?(text): CompletionItem[]
+  hover?(text, symbol, uri, position): HoverResult       // discriminated union
+  filterCompletions?(items, text, position, uri, trigger?): CompletionItem[]
   localSignature?(text, symbol, paramIndex): SignatureHelp | null
   rename?(text, position, newName, uri): WorkspaceEdit | null
+  prepareRename?(text, position): { range, placeholder } | null
+  inlayHints?(text, uri, range): InlayHint[]
+  workspaceSymbols?(query): SymbolInformation[]
 
-  // Data features (from Symbols)
+  // Data features (unified symbol resolution)
+  resolveSymbol?(name, text, uri): IndexedSymbol | undefined  // single lookup entry point
   getCompletions?(uri): CompletionItem[]
-  getHover?(uri, symbol): Hover | null
   getSignature?(uri, symbol, paramIndex): SignatureHelp | null
   getSymbolDefinition?(symbol): Location | null
 
@@ -306,8 +347,19 @@ interface LanguageProvider {
   watchExtensions?: string[]
   reloadFileData?(uri, text): void
   onWatchedFileDeleted?(uri): void
+  onDocumentClosed?(uri): void
+
+  // Compilation
+  compile?(uri, text, interactive): Promise<void>
 }
 ```
+
+**HoverResult**: Discriminated union replacing the ambiguous `Hover | null | undefined`:
+- `{ handled: true, hover: Hover }` — provider found a result (show it)
+- `{ handled: true, hover: null }` — provider handled it, nothing to show (block fallthrough)
+- `{ handled: false }` — provider didn't handle it, fall through to data-driven hover
+
+Factory helpers: `HoverResult.found(hover)`, `HoverResult.empty()`, `HoverResult.notHandled()`
 
 ## Tree-Sitter Integration
 
@@ -375,13 +427,74 @@ This copies the generated `tree-sitter.d.ts` to `server/src/{lang}/`.
 | weidu-slb | weidu-baf |
 | weidu-ssl | weidu-baf |
 
+## Shared Utilities (`shared/`)
+
+Reusable infrastructure that providers consume via configuration, not inheritance:
+
+| Module | Pattern | Used By |
+|--------|---------|---------|
+| `parser-factory.ts` | Factory: `createCachedParserModule(wasm, name)` | All 4 LSP providers |
+| `folding-ranges.ts` | Factory: `createFoldingRangesProvider(init, parse, blockTypes)` | All 4 LSP providers |
+| `comment-check.ts` | Factory: `createIsInsideComment(init, parse, commentTypes)` | BAF, D, TP2 |
+| `provider-helpers.ts` | Helpers: `resolveSymbolWithLocal()`, `formatWithValidation()`, `getStaticCompletions()` | All providers |
+| `feature-data.ts` | Containers: `ListData<T>`, `MapData<T>` with `reloadList()`, `reloadMap()`, `getListItems()`, `lookupMapItem()` | SSL, TP2 |
+| `workspace-symbols.ts` | Index: `WorkspaceSymbolIndex` for Ctrl+T cross-file search | SSL, TP2 |
+| `jsdoc.ts` | Parser: `parse(text, { returnMode })` — unnamed (SSL) or named (TP2) returns | SSL, TP2, D |
+| `jsdoc-completions.ts` | Completions: JSDoc tag and type completions | All 4 |
+| `signature.ts` | Data: `SigInfoEx`, `loadStatic()`, `getRequest()`, `getResponse()` | SSL (TP2 ready) |
+| `completion-context.ts` | Framework: `CompletionCategory`, `CategoryContextMap`, context-based filtering | TP2 |
+| `format-utils.ts` | Validation: `validateFormatting()`, `createFullDocumentEdit()`, comment strippers | All 4 |
+| `format-options.ts` | Config: `getFormatOptions()` from `.editorconfig` | All 4 |
+| `tooltip-format.ts` | Formatting: `buildSignatureBlock()`, `buildWeiduHoverContent()`, `formatDeprecation()` | All providers |
+| `tooltip-table.ts` | Tables: `buildWeiduTable()` (4-col), `buildFalloutArgsTable()` (2-col) | SSL, BAF, D, TP2 |
+| `hash.ts` | Utility: `djb2HashHex()` for parse cache keys | All parsers |
+
+### Design pattern
+
+Features are shared via **factory functions with language-specific configuration**, not class inheritance. Each provider passes its own block types, comment types, or return modes to shared factories. This keeps providers decoupled while eliminating boilerplate.
+
+Example: folding ranges require only a `Set<SyntaxType>` of foldable node types per language — the walking algorithm is shared.
+
+## Compilation
+
+Compilation dispatch (`compile.ts`) routes to providers or transpiler chains:
+
+```
+onDidSave / onDidChangeContent / manual command
+       |
+       v
+  compile(uri, langId, text)
+       |
+       +-- Provider has compile()? --> provider.compile(uri, text, interactive)
+       |       SSL: sslc WASM (built-in) or compile.exe (external, with Wine path fix)
+       |       BAF/D/TP2: weidu --parse-check (requires game path for BAF/D)
+       |
+       +-- Transpiler file?
+               .td   --> TD transpiler --> .d file --> weidu compile
+               .tbaf --> TBAF transpiler --> .baf file --> weidu compile
+               .tssl --> TSSL transpiler --> .ssl file --> sslc compile
+```
+
+**Temporary files**: External compilers need files on disk. SSL writes `.tmp.ssl` in the same directory (for include resolution). WeiDU writes to a temp directory.
+
+**Diagnostics**: Compiler output parsed via regex into `ParseResult { errors, warnings }`. `sendParseResult()` aggregates by URI and sends LSP diagnostics. Multi-file error reporting supported (SSL includes can fail in header files).
+
+**SSL dual-mode**: Built-in sslc-emscripten (WASM, forked process) or external compile.exe. Falls back to built-in if external unavailable.
+
 ## Translation Service
 
-Separate from Symbols, handles .tra/.msg translation files:
+Centralized service (`translation.ts`) for `.tra`/`.msg` translation files. Provides hover, inlay hints, and go-to-definition for translation references. No provider implements these — it's a single shared implementation.
 
-- `getHover(@123)` - Returns translation text for string references
-- `getInlayHints()` - Shows translation text inline at call sites
-- `reloadFile()` - Updates cache when translation files change
+**Supported patterns** (by file type):
+- `.ssl`, `.tssl`: `mstr(123)`, `NOption(123)`, `Reply(456)`, etc. → `.msg` files
+- `.baf`, `.d`, `.tp2`: `@123` → `.tra` files
+- `.tbaf`, `.td`: `tra(123)` → `.tra` files
+
+**Translation file resolution**: Checks `/** @tra filename */` comment in first line, falls back to auto-matching by basename if `auto_tra` setting is enabled.
+
+**Inlay hints**: Shows truncated string previews (max 30 chars) as inline `/* text */` comments after each reference. Tooltip shows full text if truncated.
+
+**Caching**: All `.tra`/`.msg` files in configured translation directory loaded at startup. Updated incrementally on file save/change.
 
 ## Include Graph
 
