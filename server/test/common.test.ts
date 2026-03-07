@@ -14,7 +14,7 @@ vi.mock("../src/lsp-connection", () => ({
     }),
 }));
 
-import { symbolAtPosition, sendParseResult, isSubpath, expandHome, parseCommandPath, errorMessage, type ParseResult } from "../src/common";
+import { symbolAtPosition, sendParseResult, isSubpath, expandHome, parseCommandPath, needsShell, errorMessage, type ParseResult } from "../src/common";
 
 describe("symbolAtPosition", () => {
     it("returns word under cursor", () => {
@@ -319,5 +319,32 @@ describe("parseCommandPath", () => {
         const result = parseCommandPath("   ");
         expect(result.executable).toBe("   ");
         expect(result.prefixArgs).toEqual([]);
+    });
+});
+
+describe("needsShell", () => {
+    it("returns true for .cmd files", () => {
+        expect(needsShell("C:\\tools\\compile.cmd")).toBe(true);
+    });
+
+    it("returns true for .bat files", () => {
+        expect(needsShell("C:\\tools\\compile.bat")).toBe(true);
+    });
+
+    it("is case-insensitive", () => {
+        expect(needsShell("compile.CMD")).toBe(true);
+        expect(needsShell("compile.Bat")).toBe(true);
+    });
+
+    it("returns false for .exe files", () => {
+        expect(needsShell("compile.exe")).toBe(false);
+    });
+
+    it("returns false for extensionless paths", () => {
+        expect(needsShell("/usr/bin/compile")).toBe(false);
+    });
+
+    it("returns false for empty string", () => {
+        expect(needsShell("")).toBe(false);
     });
 });

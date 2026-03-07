@@ -9,6 +9,7 @@ import * as os from "os";
 import * as path from "path";
 import {
     conlog,
+    needsShell,
     parseCommandPath,
     ParseItemList,
     ParseResult,
@@ -159,7 +160,8 @@ async function checkExternalCompiler(compilePath: string) {
 
     return new Promise<boolean>((resolve) => {
         const { executable, prefixArgs } = parseCommandPath(compilePath);
-        cp.execFile(executable, [...prefixArgs, "--version"], (err) => {
+        const shell = needsShell(executable);
+        cp.execFile(executable, [...prefixArgs, "--version"], { shell }, (err) => {
             conlog(`Compiler check '${compilePath} --version' err=${err}`);
             if (err) {
                 resolve(false);
@@ -242,11 +244,12 @@ export async function compile(
 
     const { executable, prefixArgs } = parseCommandPath(sslSettings.compilePath);
     const allArgs = [...prefixArgs, ...compileOptions, tmpName, "-o", dstPath];
+    const shell = needsShell(executable);
     conlog(`${sslSettings.compilePath} ${allArgs.join(" ")}`);
     cp.execFile(
         executable,
         allArgs,
-        { cwd: cwdTo },
+        { cwd: cwdTo, shell },
         (err, stdout: string, stderr: string) => {
             conlog("stdout: " + stdout);
             if (stderr) {

@@ -8,6 +8,7 @@ import * as fs from "fs";
 import * as path from "path";
 import {
     conlog,
+    needsShell,
     parseCommandPath,
     ParseItemList,
     ParseResult,
@@ -117,8 +118,9 @@ export function compile(uri: string, settings: WeiDUsettings, interactive = fals
     conlog(`parsing ${baseName}...`);
     fs.writeFileSync(tmpFile, text);
     const allArgs = [...weiduPrefixArgs, ...weiduArgs, weiduType, tmpFile];
+    const shell = needsShell(weiduPath);
     conlog(`${weiduPath} ${allArgs.join(" ")}`);
-    cp.execFile(weiduPath, allArgs, { cwd: cwdTo }, (err, stdout: string, stderr: string) => {
+    cp.execFile(weiduPath, allArgs, { cwd: cwdTo, shell }, (err, stdout: string, stderr: string) => {
         conlog("stdout: " + stdout);
         const parseResult = parseWeiduOutput(stdout); // dupe, yes
         conlog(parseResult);

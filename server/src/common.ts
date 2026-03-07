@@ -133,6 +133,12 @@ export function findFiles(dirName: string, extension: string) {
 /** Known wrapper commands that may prefix executable paths in user settings. */
 const KNOWN_WRAPPERS = new Set(["wine", "wine64", "mono", "dotnet", "flatpak"]);
 
+/** Windows .cmd/.bat files require shell: true for cp.execFile to work. */
+export function needsShell(executablePath: string): boolean {
+    const ext = path.extname(executablePath).toLowerCase();
+    return ext === ".cmd" || ext === ".bat";
+}
+
 /**
  * Split a command-line setting into executable and prefix arguments.
  * Only splits when the first token is a known wrapper (e.g., "wine ~/bin/compile").
