@@ -1,6 +1,6 @@
 # Settings
 
-\_([How to change settings in VScode](https://code.visualstudio.com/docs/getstarted/settings).)
+([How to change settings in VScode](https://code.visualstudio.com/docs/getstarted/settings))
 
 All settings are under the `bgforge` namespace.
 
