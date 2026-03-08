@@ -46,4 +46,12 @@ if [ -n "${GITHUB_ACTIONS:-}" ]; then
     provenance="--provenance"
 fi
 
-pnpm publish --access public $provenance "$@"
+# --no-git-checks: GitHub Actions checks out a detached HEAD, which breaks pnpm's publish-branch validation.
+# We check for clean working tree ourselves; branch validation is redundant in CI.
+if [ -n "$(git status --porcelain)" ]; then
+    echo "Error: Git working tree is not clean. Aborting publish."
+    git status --short
+    exit 1
+fi
+
+pnpm publish --access public --no-git-checks $provenance "$@"
