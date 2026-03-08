@@ -8,7 +8,7 @@ import { createIsInsideComment } from "../shared/comment-check";
 import { CompletionCategory, type Tp2CompletionItem } from "./completion/types";
 import { parseWithCache, isInitialized } from "./parser";
 import { SyntaxType } from "./tree-sitter.d";
-import { findNodeAtPosition, isPhantomAssignment, stripStringDelimiters, unwrapVariableRef } from "./tree-utils";
+import { findNodeAtPosition, isPhantomAssignment, looksLikeConstant, stripStringDelimiters, unwrapVariableRef } from "./tree-utils";
 import { VARIABLE_DECL_TYPES } from "./variable-symbols";
 
 /**
@@ -92,7 +92,7 @@ export function localCompletion(text: string): Tp2CompletionItem[] {
     // Convert to CompletionItem[] with "vars" category for filtering
     return Array.from(variableNames).map((name): Tp2CompletionItem => ({
         label: name,
-        kind: CompletionItemKind.Variable,
+        kind: looksLikeConstant(name) ? CompletionItemKind.Constant : CompletionItemKind.Variable,
         category: CompletionCategory.Vars,
     }));
 }

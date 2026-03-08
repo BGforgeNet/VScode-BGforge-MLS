@@ -8,6 +8,7 @@ Fallout SSL
 - Added workspace-level rename (procedures, macros, exports across files).
 - Added `list` and `map` types, renamed `ObjPtr` to `ObjectPtr`.
 - Fixed completions getting duplicated in `.h` header files.
+- Fixed completion icons for function-like macros.
 - Formatting now validates output like other languages.
 
 WeiDU TP2
@@ -15,6 +16,7 @@ WeiDU TP2
 - Added workspace symbols (Ctrl+T search across all workspace files).
 - Added details (parameters) to document outline symbols.
 - Fixed spurious variable completions.
+- Fixed completion icons for constant-like variables.
 
 WeiDU BAF
 

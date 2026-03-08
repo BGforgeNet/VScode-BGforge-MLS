@@ -18,7 +18,7 @@ import { makeRange } from "../core/position-utils";
 import * as jsdoc from "../shared/jsdoc";
 import { parseWithCache, isInitialized } from "./parser";
 import { SyntaxType } from "./tree-sitter.d";
-import { isPhantomAssignment, stripStringDelimiters } from "./tree-utils";
+import { isPhantomAssignment, looksLikeConstant, stripStringDelimiters } from "./tree-utils";
 
 // ============================================
 // Types
@@ -551,9 +551,13 @@ function variableInfoToSymbol(varInfo: VariableInfo, displayPath?: string | null
         ? undefined
         : (displayPath ?? extractFilename(varInfo.location.uri));
 
+    const completionKind = looksLikeConstant(varInfo.name)
+        ? CompletionItemKind.Constant
+        : CompletionItemKind.Variable;
+
     const completion: Tp2CompletionItem = {
         label: varInfo.name,
-        kind: CompletionItemKind.Variable,
+        kind: completionKind,
         documentation: doc,
         labelDetails: { description: completionDescription },
         category: CompletionCategory.Vars,

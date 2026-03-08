@@ -154,6 +154,23 @@ export function isPhantomAssignment(node: SyntaxNode): boolean {
 }
 
 // ============================================
+// Naming heuristics
+// ============================================
+
+/**
+ * Check if a variable name looks like a constant based on WeiDU naming convention.
+ * Returns true if the first word (before `_` or end of string) is all uppercase.
+ * Examples: `OPCODE_overlay_grease` → true, `over_exists` → false, `FOO` → true.
+ *
+ * WeiDU has no `const` keyword, so this is a heuristic. Used to assign
+ * CompletionItemKind.Constant vs Variable for better icon differentiation.
+ */
+export function looksLikeConstant(name: string): boolean {
+    const firstWord = name.split("_", 1)[0];
+    return firstWord !== undefined && firstWord.length > 0 && firstWord === firstWord.toUpperCase() && /[A-Z]/.test(firstWord);
+}
+
+// ============================================
 // String utilities
 // ============================================
 

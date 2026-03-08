@@ -158,7 +158,7 @@ export function buildMacroCompletion(
 
     const kind = isConstant
         ? CompletionItemKind.Constant
-        : CompletionItemKind.Field;  // No good icon for function-like macros
+        : CompletionItemKind.Snippet;
 
     const item: CompletionItem = {
         label: macro.name,
