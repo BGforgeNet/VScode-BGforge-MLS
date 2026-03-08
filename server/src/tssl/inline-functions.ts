@@ -23,7 +23,7 @@ import { convertOperatorsAST } from './convert-operators';
  * @param project ts-morph Project instance to reuse
  * @param inputFiles List of input file paths from esbuild metafile
  */
-export function extractInlineFunctionsFromFiles(project: Project, inputFiles: string[]): Map<string, InlineFunc> {
+export function extractInlineFunctionsFromFiles(project: Project, inputFiles: readonly string[]): Map<string, InlineFunc> {
     const result = new Map<string, InlineFunc>();
 
     for (const filePath of inputFiles) {

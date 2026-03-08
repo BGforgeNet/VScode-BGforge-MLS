@@ -1,22 +1,190 @@
 /**
  * Shared esbuild utilities for TSSL and TBAF transpilers.
- * Provides common initialization, output cleanup, and reusable plugins.
+ * Provides common initialization, output cleanup, reusable plugins,
+ * and a shared bundler function.
  */
 
+import * as fs from "fs";
 import * as path from "path";
 import * as esbuild from "esbuild-wasm";
 import { Project, SyntaxKind } from "ts-morph";
-import { collectDeclareEnums, resolveDtsPath } from "./enum-transform";
+import {
+    collectDeclareEnums,
+    resolveDtsPath,
+    transformEnums,
+    expandEnumPropertyAccess,
+    enumTransformPlugin,
+} from "./enum-transform";
 
 let esbuildInitialized = false;
 
 /**
  * Initialize esbuild (singleton, safe to call multiple times).
  */
-export async function ensureEsbuild(): Promise<void> {
+async function ensureEsbuild(): Promise<void> {
     if (esbuildInitialized) return;
     await esbuild.initialize({});
     esbuildInitialized = true;
+}
+
+/** Configuration for the shared bundler. */
+export interface BundleConfig {
+    /** Absolute path to the source file */
+    readonly filePath: string;
+    /** Source text content */
+    readonly sourceText: string;
+    /**
+     * Pre-computed enum names from the source text.
+     * When provided, skips the internal transformEnums() call on sourceText
+     * (caller already transformed it and needs the result for other purposes).
+     * sourceText should already be enum-transformed in this case.
+     */
+    readonly preTransformed?: { readonly enumNames: ReadonlySet<string> };
+    /** Marker string prepended to source for stripping esbuild runtime helpers */
+    readonly marker: string;
+    /** esbuild target (e.g., "esnext", "es2022") */
+    readonly target: string;
+    /** Extra code appended after the source (e.g., preserve-function stubs) */
+    readonly appendCode?: string;
+    /** Value for esbuild stdin.sourcefile. Defaults to realPath. */
+    readonly sourcefile?: string;
+    /** Whether to request metafile from esbuild (for input file list) */
+    readonly metafile?: boolean;
+    /**
+     * Additional esbuild plugins inserted before the shared enum/tree-shaking plugins.
+     * If these plugins accumulate enum names, pass the same sets via
+     * sharedEnumNames/sharedExternalEnumNames so all plugins share state.
+     */
+    readonly extraPlugins?: esbuild.Plugin[];
+    /** Original constants for restoring esbuild-renamed identifiers in cleanup */
+    readonly originalConstants?: Map<string, string>;
+    /**
+     * Mutable set for extra plugins to add enum names into.
+     * Merged with the main file's enum names before bundling.
+     * Only needed when extraPlugins accumulate enum names (e.g., tbaf-resolver).
+     */
+    readonly sharedEnumNames?: Set<string>;
+    /**
+     * Mutable set for extra plugins to add externalized enum names into.
+     * Only needed when extraPlugins collect external enums (e.g., ts-extension-resolver).
+     */
+    readonly sharedExternalEnumNames?: Set<string>;
+}
+
+/** Result from the shared bundler. */
+export interface BundleResult {
+    /** Cleaned and post-processed bundled code */
+    readonly code: string;
+    /** All enum names accumulated during bundling (main file + imports) */
+    readonly allEnumNames: ReadonlySet<string>;
+    /** Enum names from externalized .d.ts files (for prefix stripping) */
+    readonly externalEnumNames: ReadonlySet<string>;
+    /** Input files from metafile (only when metafile: true was requested) */
+    readonly inputFiles: readonly string[];
+}
+
+/**
+ * Shared esbuild bundler for all transpilers (TSSL, TBAF, TD).
+ *
+ * Handles the common bundling pipeline:
+ * 1. Initialize esbuild
+ * 2. Pre-transform enums to flat consts
+ * 3. Accumulate enum names from imported files via plugins
+ * 4. Run esbuild.build() with shared config + caller's extra plugins
+ * 5. Clean up output (strip marker prefix, fix import aliases)
+ * 6. Expand enum property accesses
+ *
+ * Callers provide language-specific config (marker, target, extra plugins).
+ */
+export async function bundleWithEsbuild(config: BundleConfig): Promise<BundleResult> {
+    await ensureEsbuild();
+
+    const { filePath, sourceText, marker, target, metafile } = config;
+
+    // Pre-transform: convert enums to flat consts before esbuild sees them.
+    // If caller already transformed (and needs the result for other purposes),
+    // skip redundant work via preTransformed.
+    const { code: enumTransformed, enumNames } = config.preTransformed
+        ? { code: sourceText, enumNames: config.preTransformed.enumNames }
+        : transformEnums(sourceText);
+
+    // Accumulate enum names from imported files during bundling.
+    // Mutated via closure in the enum-transform plugin.
+    // If caller provided a shared set (for extra plugins that also accumulate enums),
+    // merge main file enum names into it and use it as the canonical set.
+    const allEnumNames = config.sharedEnumNames ?? new Set<string>();
+    for (const name of enumNames) {
+        allEnumNames.add(name);
+    }
+
+    // Accumulate externalized enum names from .d.ts files.
+    // These are `declare enum` that esbuild drops — their property accesses
+    // need prefix stripping (ClassID.ANKHEG → ANKHEG) in post-processing.
+    const externalEnumNames = config.sharedExternalEnumNames ?? new Set<string>();
+
+    // Prepend marker, append extra code if provided
+    const sourceWithMarker = marker + "\n" + enumTransformed + (config.appendCode ?? "");
+
+    // Resolve symlinks so esbuild's absWorkingDir and sourcefile agree on real paths.
+    // Without this, esbuild resolves absWorkingDir through symlinks but keeps sourcefile
+    // as-is, producing deeply nested ../../../ relative paths in error messages.
+    const realPath = fs.realpathSync(filePath);
+    const resolveDir = path.dirname(realPath);
+
+    const result = await esbuild.build({
+        stdin: {
+            contents: sourceWithMarker,
+            resolveDir,
+            sourcefile: config.sourcefile ?? realPath,
+            loader: "ts",
+        },
+        // Use the file's directory as working dir so error paths are relative to it,
+        // not to process.cwd() (which in VSCode is the extension install directory).
+        absWorkingDir: resolveDir,
+        bundle: true,
+        write: false,
+        metafile: metafile ?? false,
+        format: "esm",
+        treeShaking: true,
+        minify: false,
+        keepNames: false,
+        target,
+        platform: "neutral",
+        plugins: [
+            externalDeclarationsPlugin(externalEnumNames),
+            ...(config.extraPlugins ?? []),
+            // Transform enums in imported .ts files (shared across all transpilers).
+            // Only .ts — transpiler source files (.tbaf, .td, .tssl) are not imported
+            // by other transpiler files. Placed after extraPlugins so language-specific
+            // resolvers run first.
+            enumTransformPlugin(allEnumNames, /\.ts$/),
+            noSideEffectsPlugin(),
+        ],
+    });
+
+    // write: false guarantees outputFiles exists, but array might be empty
+    const outputFile = result.outputFiles[0];
+    if (outputFile === undefined) {
+        throw new Error("esbuild produced no output");
+    }
+
+    // Strip ESM module boilerplate from esbuild output
+    const cleaned = cleanupEsbuildOutput(outputFile.text, marker, config.originalConstants);
+
+    // Post-expand: expand any remaining cross-file enum compat objects
+    // and strip prefixes from externalized enum property accesses
+    const code = expandEnumPropertyAccess(cleaned, allEnumNames, externalEnumNames);
+
+    // Extract input files from metafile if requested.
+    // Only .ts files, not .d.ts.
+    // Metafile paths are relative to absWorkingDir — resolve to absolute.
+    const inputFiles = (metafile && result.metafile)
+        ? Object.keys(result.metafile.inputs)
+            .filter(f => f.endsWith(".ts") && !f.endsWith(".d.ts"))
+            .map(f => path.resolve(resolveDir, f))
+        : [];
+
+    return { code, allEnumNames, externalEnumNames, inputFiles };
 }
 
 /**
@@ -36,7 +204,7 @@ export async function ensureEsbuild(): Promise<void> {
  * @param originalConstants Original constant names and values from source file (for restoring renamed vars)
  * @returns Cleaned code
  */
-export function cleanupEsbuildOutput(code: string, marker: string, originalConstants?: Map<string, string>): string {
+function cleanupEsbuildOutput(code: string, marker: string, originalConstants?: Map<string, string>): string {
     // Strip everything before marker
     const markerIndex = code.indexOf(marker);
     if (markerIndex !== -1) {
@@ -156,7 +324,7 @@ export function cleanupEsbuildOutput(code: string, marker: string, originalConst
  * Enables aggressive tree-shaking for transpilers with no JS runtime.
  * https://github.com/evanw/esbuild/issues/1895
  */
-export function noSideEffectsPlugin(): esbuild.Plugin {
+function noSideEffectsPlugin(): esbuild.Plugin {
     return {
         name: "no-side-effects",
         setup(build) {
@@ -181,11 +349,9 @@ export function noSideEffectsPlugin(): esbuild.Plugin {
  * Also collects `declare enum` names from externalized files for
  * prefix stripping in post-processing (ClassID.ANKHEG -> ANKHEG).
  *
- * Shared by TSSL and TBAF bundlers (previously duplicated as inline plugins).
- *
  * @param externalEnumNames Mutable set to accumulate enum names from .d.ts files
  */
-export function externalDeclarationsPlugin(externalEnumNames: Set<string>): esbuild.Plugin {
+function externalDeclarationsPlugin(externalEnumNames: Set<string>): esbuild.Plugin {
     return {
         name: "external-declarations",
         setup(build) {
@@ -197,4 +363,3 @@ export function externalDeclarationsPlugin(externalEnumNames: Set<string>): esbu
         },
     };
 }
-

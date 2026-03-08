@@ -215,8 +215,9 @@ function transformReplaceTrans(
     const filename = resolveStringExpr(args[0] as Expression, vars);
     const states = parseStateList(args[1] as Expression, vars);
     const transitions = parseNumberArray(args[2] as Expression);
-    const oldText = utils.stripQuotes(args[3]!.getText());
-    const newText = utils.stripQuotes(args[4]!.getText());
+    // Safe: args.length >= 5 validated above
+    const oldText = utils.resolveStringLiteral(args[3] as Expression);
+    const newText = utils.resolveStringLiteral(args[4] as Expression);
     const unless = args[5] ? parseUnless(args[5] as Expression) : undefined;
 
     const operation: TDReplaceTrans = {
@@ -259,8 +260,9 @@ function transformReplaceText(
         throw new Error(`${funcName}() first argument must be a string or array of strings at ${call.getStartLineNumber()}`);
     }
 
-    const oldText = utils.stripQuotes(args[1]!.getText());
-    const newText = utils.stripQuotes(args[2]!.getText());
+    // Safe: args.length >= 3 validated above
+    const oldText = utils.resolveStringLiteral(args[1] as Expression);
+    const newText = utils.resolveStringLiteral(args[2] as Expression);
     const unless = args[3] ? parseUnless(args[3] as Expression) : undefined;
 
     const operation: TDReplaceText = {

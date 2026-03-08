@@ -7,15 +7,9 @@
 
 import * as fs from "fs";
 import * as path from "path";
-import { Project } from "ts-morph";
 import { EXT_TD, EXT_TBAF, EXT_TSSL } from "../../../server/src/core/languages";
-import { bundle } from "../../../server/src/tbaf/bundle";
-import { emitD } from "../../../server/src/td/emit";
-import { TDParser } from "../../../server/src/td/parse";
-import { detectOrphansFromOriginal, mergeWarnings } from "../../../server/src/td/index";
-import { emitBAF } from "../../../server/src/tbaf/emit";
-import { TBAFTransformer } from "../../../server/src/tbaf/transform";
-import { extractTraTag } from "../../../server/src/transpiler-utils";
+import { transpile as transpileTBAF } from "../../../server/src/tbaf/index";
+import { transpile as transpileTD } from "../../../server/src/td/index";
 import { transpile as transpileTSSL } from "../../../server/src/tssl";
 import { parseCliArgs, runCli, safeProcess, reportDiff, FileResult, OutputMode } from "../../cli-utils";
 
@@ -50,39 +44,19 @@ async function processFile(filePath: string, mode: OutputMode): Promise<FileResu
 
     return safeProcess(filePath, async () => {
         const text = fs.readFileSync(filePath, "utf-8");
-
-        // Extract @tra tag before bundling (esbuild strips comments)
-        const traTag = extractTraTag(text);
+        const resolved = path.resolve(filePath);
 
         let output: string;
         if (type === "tssl") {
-            // TSSL has its own bundling and transformation pipeline
-            output = await transpileTSSL(path.resolve(filePath), text);
-        } else {
-            // Only bundle if the file has imports (esbuild transforms break block-scoped functions)
-            const hasImports = /^\s*(import|export\s+\*\s+from)\s+/m.test(text);
-            const code = hasImports ? await bundle(filePath, text) : text;
-
-            // Parse to IR
-            const project = new Project({ useInMemoryFileSystem: true });
-            const sourceFile = project.createSourceFile("bundled.ts", code);
-
-            if (type === "td") {
-                const parser = new TDParser();
-                const ir = { ...parser.parse(sourceFile), sourceFile: filePath, traTag };
-                // Detect orphans from original source when bundled, since esbuild
-                // tree-shakes unreferenced functions making them invisible to the parser.
-                const orphanWarnings = hasImports ? detectOrphansFromOriginal(text, ir) : [];
-                const allWarnings = mergeWarnings(ir.warnings ?? [], orphanWarnings);
-                for (const w of allWarnings) {
-                    console.error(`[TD] ${filePath}:${w.line}: ${w.message}`);
-                }
-                output = emitD(ir);
-            } else {
-                const transformer = new TBAFTransformer();
-                const ir = { ...transformer.transform(sourceFile), sourceFile: filePath, traTag };
-                output = emitBAF(ir);
+            output = await transpileTSSL(resolved, text);
+        } else if (type === "td") {
+            const result = await transpileTD(resolved, text);
+            for (const w of result.warnings) {
+                console.error(`[TD] ${filePath}:${w.line}: ${w.message}`);
             }
+            output = result.output;
+        } else {
+            output = await transpileTBAF(resolved, text);
         }
 
         const outPath = getOutputPath(filePath, type);

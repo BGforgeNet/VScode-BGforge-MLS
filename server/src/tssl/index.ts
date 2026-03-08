@@ -13,22 +13,17 @@ import {
     Project,
     SyntaxKind
 } from 'ts-morph';
-import * as esbuild from 'esbuild-wasm';
 import { fileURLToPath } from "url";
 import { EXT_TSSL } from "../core/languages";
-import { ensureEsbuild, cleanupEsbuildOutput, noSideEffectsPlugin, externalDeclarationsPlugin } from "../esbuild-utils";
-import { conlog, type TsslContext, type MainFileData, type BundleResult } from './types';
+import { bundleWithEsbuild } from "../esbuild-utils";
+import { conlog, type TsslContext, type MainFileData } from './types';
 import { convertOperatorsAST } from './convert-operators';
 import { extractInlineFunctionsFromFiles, extractJsDocs } from './inline-functions';
 import { exportSSL } from './export-ssl';
 // Generated from server/data/fallout-ssl-base.yml by generate-data.sh.
 // Inlined by esbuild at bundle time.
 import engineProcedureNames from '../../out/engine-procedures.json';
-import {
-    transformEnums,
-    expandEnumPropertyAccess,
-    enumTransformPlugin,
-} from "../enum-transform";
+import { transformEnums } from "../enum-transform";
 import { extractTraTag } from "../transpiler-utils";
 
 const uriToPath = (uri: string) => uri.startsWith('file://') ? fileURLToPath(uri) : uri;
@@ -52,7 +47,8 @@ async function transpileCore(filePath: string, text: string): Promise<string> {
     // Extract @tra tag before bundling (esbuild strips comments)
     const traTag = extractTraTag(text);
 
-    // Pre-transform: convert enums to flat consts before any processing
+    // Pre-transform enums for extracting constants/let vars.
+    // Pass enumNames to the shared bundler to skip redundant re-transformation.
     const { code: enumTransformedText, enumNames } = transformEnums(text);
 
     // Initialize the TypeScript project (reused across extraction functions)
@@ -81,22 +77,26 @@ async function transpileCore(filePath: string, text: string): Promise<string> {
     extractJsDocs(mainSource, ctx);
     conlog(`Extracted JSDoc for ${ctx.functionJsDocs.size} functions from main file`);
 
-    const bundleResult = await bundle(filePath, enumTransformedText, enumNames);
+    const preserveFunctions = extractPreserveFunctions(text);
+    const preserveCode = `\n// Preserve functions\nif ((globalThis as any).__preserve__) { console.log(${preserveFunctions.join(', ')}); }`;
+
+    const bundleResult = await bundleWithEsbuild({
+        filePath,
+        sourceText: enumTransformedText,
+        preTransformed: { enumNames },
+        marker: TSSL_CODE_MARKER,
+        target: "es2022",
+        sourcefile: path.basename(filePath).replace('.tssl', '.ts'),
+        metafile: true,
+        appendCode: preserveCode,
+        originalConstants: mainFileData.constants,
+    });
 
     // All enum names (main file + imported files) for inline function expansion
     ctx.enumNames = bundleResult.allEnumNames;
 
-    // Strip ESM module boilerplate from esbuild output
-    const cleanedCode = cleanupEsbuildOutput(bundleResult.code, TSSL_CODE_MARKER, mainFileData.constants);
-
-    // Post-expand: expand any remaining cross-file enum compat objects
-    // and strip prefixes from externalized enum property accesses
-    const bundledCode = expandEnumPropertyAccess(
-        cleanedCode, bundleResult.allEnumNames, bundleResult.externalEnumNames,
-    );
-
     // Create source file in memory from cleaned bundled code
-    const sourceFile = project.createSourceFile("bundled.ts", bundledCode, { overwrite: true });
+    const sourceFile = project.createSourceFile("bundled.ts", bundleResult.code, { overwrite: true });
 
     // Extract inline functions from files that were actually bundled
     ctx.inlineFunctions = extractInlineFunctionsFromFiles(project, bundleResult.inputFiles);
@@ -215,82 +215,3 @@ function extractPreserveFunctions(text: string): string[] {
     return preserve;
 }
 
-/** Extended bundle result that includes accumulated enum names */
-interface TsslBundleResult extends BundleResult {
-    readonly allEnumNames: ReadonlySet<string>;
-    readonly externalEnumNames: ReadonlySet<string>;
-}
-
-/**
- * Bundle functions with esbuild, returning bundled code and input files.
- * Transforms enums in imported files during bundling.
- *
- * @param filePath Original file path (for resolving imports)
- * @param text Source text (already enum-transformed)
- * @param enumNames Enum names from the main file
- * @returns Bundled code, input files, and all accumulated enum names
- */
-async function bundle(filePath: string, text: string, enumNames: ReadonlySet<string>): Promise<TsslBundleResult> {
-    const preserveFunctions = extractPreserveFunctions(text);
-
-    // Accumulate enum names from imported files during bundling
-    const allEnumNames = new Set(enumNames);
-
-    // Accumulate externalized enum names from .d.ts files.
-    // These are `declare enum` that esbuild drops — their property accesses
-    // need prefix stripping (ClassID.ANKHEG → ANKHEG) in post-processing.
-    const externalEnumNames = new Set<string>();
-
-    // Prepend marker and append fake usage to preserve functions from tree-shaking
-    const preserveCode = `\n// Preserve functions\nif ((globalThis as any).__preserve__) { console.log(${preserveFunctions.join(', ')}); }`;
-    const sourceWithMarker = TSSL_CODE_MARKER + "\n" + text + preserveCode;
-
-    await ensureEsbuild();
-    // Resolve symlinks so esbuild's absWorkingDir and sourcefile agree on real paths.
-    const realPath = fs.realpathSync(filePath);
-    const resolveDir = path.dirname(realPath);
-    const result = await esbuild.build({
-        stdin: {
-            contents: sourceWithMarker,
-            resolveDir,
-            sourcefile: path.basename(filePath).replace('.tssl', '.ts'),
-            loader: 'ts',
-        },
-        // Use the file's directory as working dir so error paths are relative to it,
-        // not to process.cwd() (which in VSCode is the extension install directory).
-        absWorkingDir: resolveDir,
-        bundle: true,
-        write: false,  // Return output in memory
-        metafile: true,  // Get list of input files
-        format: 'esm',
-        treeShaking: true,
-        minify: false,
-        keepNames: false,
-        target: 'es2022',
-        platform: 'neutral',
-        plugins: [
-            externalDeclarationsPlugin(externalEnumNames),
-            // Transform enums in imported .ts/.tssl files
-            enumTransformPlugin(allEnumNames, /\.(ts|tssl)$/),
-            noSideEffectsPlugin(),
-        ]
-    });
-
-    // write: false guarantees outputFiles is defined
-    if (result.outputFiles.length === 0) {
-        throw new Error('esbuild produced no output');
-    }
-    conlog(`Bundling complete!`);
-    // Extract input files from metafile (only .ts files, not .d.ts).
-    // metafile: true guarantees result.metafile is defined.
-    // Metafile paths are relative to absWorkingDir — resolve to absolute so
-    // extractInlineFunctionsFromFiles can find them regardless of process.cwd().
-    const inputFiles = Object.keys(result.metafile.inputs)
-        .filter(f => f.endsWith('.ts') && !f.endsWith('.d.ts'))
-        .map(f => path.resolve(resolveDir, f));
-    const outputFile = result.outputFiles[0];
-    if (outputFile === undefined) {
-        throw new Error('esbuild produced no output');
-    }
-    return { code: outputFile.text, inputFiles, allEnumNames, externalEnumNames };
-}

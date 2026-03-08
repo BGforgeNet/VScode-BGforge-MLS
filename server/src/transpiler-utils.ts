@@ -1,5 +1,5 @@
 /**
- * Shared utilities for TypeScript-based transpilers (TBAF and TD)
+ * Shared utilities for TypeScript-based transpilers (TSSL, TBAF, TD)
  *
  * These utilities handle common compile-time operations like variable substitution,
  * loop unrolling, and function parameter mapping.
@@ -173,6 +173,34 @@ export function getBlockStatements(stmt: Statement): Statement[] {
  */
 export function stripQuotes(text: string): string {
     return text.replace(/^["'`]|["'`]$/g, "");
+}
+
+/**
+ * Resolve the string value of an expression node.
+ * Uses ts-morph's getLiteralValue() for string and template literals to properly
+ * evaluate escape sequences (\n, \t, etc.). Falls back to stripQuotes for other nodes.
+ *
+ * Without esbuild processing, template literals keep raw escape sequences in getText().
+ * getLiteralValue() evaluates them to their actual values.
+ */
+export function resolveStringLiteral(expr: Expression): string {
+    if (expr.isKind(SyntaxKind.StringLiteral)) {
+        return expr.getLiteralValue();
+    }
+    if (expr.isKind(SyntaxKind.NoSubstitutionTemplateLiteral)) {
+        return expr.getLiteralValue();
+    }
+    return stripQuotes(expr.getText());
+}
+
+/**
+ * Check whether source text contains import/re-export statements.
+ * Used by TBAF and TD to skip esbuild bundling for files without imports,
+ * because esbuild tree-shakes block-scoped functions and applies number
+ * folding (1000 -> 1e3) that breaks transpiler output.
+ */
+export function hasImports(text: string): boolean {
+    return /^\s*(import|export\s+\*\s+from)\s+/m.test(text);
 }
 
 /**

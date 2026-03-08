@@ -182,10 +182,10 @@ function expressionToText(expr: Expression, vars: VarsContext): TDText {
         }
     }
 
-    if (Node.isStringLiteral(expr)) {
+    if (Node.isStringLiteral(expr) || expr.isKind(SyntaxKind.NoSubstitutionTemplateLiteral)) {
         return {
             type: TDTextType.Literal,
-            value: utils.stripQuotes(expr.getText()),
+            value: utils.resolveStringLiteral(expr),
         };
     }
 

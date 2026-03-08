@@ -84,8 +84,8 @@ function resolveArrayElements(expr: Expression, vars: VarsContext): string[] | n
  * Handles string literals and variable references.
  */
 function resolveStringExpr(expr: Expression, vars: VarsContext): string {
-    if (Node.isStringLiteral(expr)) {
-        return utils.stripQuotes(expr.getText());
+    if (Node.isStringLiteral(expr) || expr.isKind(SyntaxKind.NoSubstitutionTemplateLiteral)) {
+        return utils.resolveStringLiteral(expr);
     }
     if (Node.isIdentifier(expr)) {
         const name = expr.getText();

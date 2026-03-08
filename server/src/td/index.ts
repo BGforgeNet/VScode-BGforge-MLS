@@ -43,7 +43,7 @@ async function transpileCore(filePath: string, text: string): Promise<TDTranspil
     // Extract @tra tag before bundling (esbuild strips comments)
     const traTag = extractTraTag(text);
 
-    // 1. Bundle imports (reuse TBAF bundler)
+    // 1. Bundle imports (skips bundling internally for files without imports)
     const bundled = await bundle(filePath, text);
 
     // 2. Parse bundled code
