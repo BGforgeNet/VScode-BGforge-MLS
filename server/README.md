@@ -32,7 +32,7 @@ bgforge-mls-server --stdio
 
 [Settings Reference](../docs/settings.md) - All server settings with defaults.
 
-See [USAGE.md](USAGE.md) for editor setup guides and settings reference.
+See [Editor Setup](https://github.com/BGforgeNet/VScode-BGforge-MLS/blob/master/docs/editors/README.md) for editor-specific guides.
 
 ## Links
 

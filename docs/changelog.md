@@ -1,5 +1,40 @@
 # Changelog
 
+## 3.1.0
+
+Fallout SSL
+
+- Added workspace symbols (Ctrl+T search across all workspace files).
+- Added workspace-level rename (procedures, macros, exports across files).
+- Added `list` and `map` types, renamed `ObjPtr` to `ObjectPtr`.
+- Fixed completions getting duplicated in `.h` header files.
+- Formatting now validates output like other languages.
+
+WeiDU TP2
+
+- Added workspace symbols (Ctrl+T search across all workspace files).
+- Added details (parameters) to document outline symbols.
+
+WeiDU BAF
+
+- Disabled completions inside comments.
+
+WeiDU D
+
+- Added JSDoc support, hover, and rename.
+
+Transpilers
+
+- Fixed transpile CLI missing BAF fixups.
+- Fixed transpile CLI missing `obj`/`tra`/`tlk` expansion.
+
+General
+
+- Added Geany editor support.
+- Allowed `.cmd`/`.bat` files in compile path setting.
+- Fixed crash when compiling with external sslc on Windows.
+- Updated editor setup documentation.
+
 ## 3.0.1
 
 - Bumped sslc to 2026-02-07 release.
