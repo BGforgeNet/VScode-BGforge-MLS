@@ -315,19 +315,25 @@ function detectContextInControlFlow(
         // Note: cursor at node.endIndex is considered "in body" for completion (whitespace before END)
         if (beginEnd > 0 && cursorOffset > beginEnd && (endStart < 0 || cursorOffset <= node.endIndex)) {
             // Check if there's a COPY action before cursor in this body
-            // If so, cursor is in COPY patches area (even if COPY node doesn't extend there)
+            // AND no other action between that COPY and the cursor.
+            // If both hold, cursor is in COPY patches area (even if COPY node doesn't extend there).
+            // If another action exists after the COPY but before cursor, the COPY is complete
+            // and we're back in action context.
             let lastCopyBeforeCursor: SyntaxNode | null = null;
+            let hasActionAfterCopy = false;
             for (const child of node.children) {
                 if (child.type.startsWith("action_copy") && child.endIndex < cursorOffset) {
                     if (!lastCopyBeforeCursor || child.endIndex > lastCopyBeforeCursor.endIndex) {
                         lastCopyBeforeCursor = child;
+                        hasActionAfterCopy = false;
                     }
+                } else if (lastCopyBeforeCursor && isAction(child.type) && child.endIndex < cursorOffset) {
+                    hasActionAfterCopy = true;
                 }
             }
 
-            if (lastCopyBeforeCursor) {
-                // Cursor is after COPY action - conceptually in COPY patches area
-                // Return patchKeyword (command position for typing patch statements)
+            if (lastCopyBeforeCursor && !hasActionAfterCopy) {
+                // Cursor is after COPY action with no intervening actions - in COPY patches area
                 return [CompletionContext.PatchKeyword];
             }
 

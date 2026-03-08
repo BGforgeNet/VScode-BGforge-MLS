@@ -1628,6 +1628,24 @@ END
             expect(contexts).toEqual(["actionKeyword"]);
         });
 
+        it("detects actionKeyword after complete COPY inside action_if body", () => {
+            // Bug: COPY followed by another action inside ACTION_IF was returning
+            // patchKeyword because the detector assumed any position after a COPY
+            // is in COPY patches area. When another action exists after the COPY,
+            // the COPY is complete and we're back in action context.
+            const content = `BEGIN ~Test~
+    ACTION_IF condition BEGIN
+        COPY ~a.bcs~ ~override/b.bcs~
+        OUTER_SPRINT var ~value~
+
+    END
+END
+`;
+            // Line 4, col 8: empty line after OUTER_SPRINT (which proves COPY is complete)
+            const contexts = getContextAtPosition(content, 4, 8, ".tp2");
+            expect(contexts).toEqual(["actionKeyword"]);
+        });
+
         it("detects patchKeyword inside inner_patch body", () => {
             // INNER_PATCH must be inside a patch context (e.g., COPY block)
             const content = `BEGIN ~Test~
