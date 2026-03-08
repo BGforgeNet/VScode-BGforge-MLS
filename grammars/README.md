@@ -1,6 +1,6 @@
 # Tree-sitter Grammars
 
-See also: [development.md](../development.md) | [docs/architecture.md](../docs/architecture.md) | [scripts/README.md](../scripts/README.md)
+See also: [CONTRIBUTING.md](../CONTRIBUTING.md) | [docs/architecture.md](../docs/architecture.md) | [scripts/README.md](../scripts/README.md)
 
 Six tree-sitter grammars for the supported languages. Four are used by the LSP server for parsing (formatting, symbols, etc.), two are highlight-only for external editors.
 

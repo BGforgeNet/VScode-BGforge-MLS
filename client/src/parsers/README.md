@@ -17,14 +17,13 @@ Extensible system for parsing binary file formats.
 ## CLI
 
 ```bash
-pnpx tsx client/src/bin-cli.ts <file>           # dump to stdout
-pnpx tsx client/src/bin-cli.ts <file> --save    # save to <basename>.json
-pnpx tsx client/src/bin-cli.ts <file> --check   # verify against saved json
+node cli/bin/out/bin-cli.js <file>           # dump to stdout (requires pnpm build first)
+node cli/bin/out/bin-cli.js <file> --save    # save to <basename>.json
+node cli/bin/out/bin-cli.js <file> --check   # verify against saved json
 ```
 
 ## Testing
 
 ```bash
-pnpm test-bin              # check all against saved json (default)
-pnpm test-bin -- --save    # regenerate all json fixtures
+pnpm test:cli              # CLI mode tests (check/save/stdout exit codes, diff output)
 ```

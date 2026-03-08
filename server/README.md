@@ -39,4 +39,4 @@ See [Editor Setup](https://github.com/BGforgeNet/VScode-BGforge-MLS/blob/master/
 - [VSCode extension](https://marketplace.visualstudio.com/items?itemName=BGforge.bgforge-mls) (full-featured client)
 - [Source code](https://github.com/BGforgeNet/VScode-BGforge-MLS)
 - [Issue tracker](https://github.com/BGforgeNet/VScode-BGforge-MLS/issues)
-- [Architecture](ARCHITECTURE.md) (server internals for contributors)
+- [Server Internals](INTERNALS.md) (provider registry, symbol system, data flow)

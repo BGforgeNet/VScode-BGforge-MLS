@@ -1,6 +1,6 @@
-# Server Architecture
+# Server Internals
 
-See also: [development.md](../development.md) | [docs/architecture.md](../docs/architecture.md) | [scripts/README.md](../scripts/README.md)
+See also: [CONTRIBUTING.md](../CONTRIBUTING.md) | [docs/architecture.md](../docs/architecture.md) | [scripts/README.md](../scripts/README.md)
 
 LSP server providing IDE features for niche scripting languages used in classic RPG modding.
 

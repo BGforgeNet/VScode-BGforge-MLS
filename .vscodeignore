@@ -16,7 +16,7 @@
 
 # Dev files
 CLAUDE.md
-development.md
+CONTRIBUTING.md
 eslint.config.mjs
 knip.ts
 tsconfig.json

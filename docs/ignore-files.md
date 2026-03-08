@@ -62,7 +62,7 @@ Controls what ships in the VSIX extension package. Uses a **blocklist** strategy
 | `.github/` | CI workflows |
 | `.gitignore`, `.prettierignore` | Ignore config files |
 | `.reports/`, `.vscode/`, `.vscode-test/` | Dev/test directories |
-| `CLAUDE.md`, `development.md` | Dev documentation |
+| `CLAUDE.md`, `CONTRIBUTING.md` | Dev documentation |
 | `eslint.config.mjs`, `knip.ts`, `tsconfig.json` | Linting and build config |
 | `pnpm-lock.yaml`, `pnpm-workspace.yaml` | Package manager files |
 | `*.vsix`, `*.tgz`, `*.log`, `**/*.map` | Built packages, logs, source maps |

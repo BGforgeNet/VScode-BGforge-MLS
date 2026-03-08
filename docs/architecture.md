@@ -1,9 +1,9 @@
 # Architecture
 
-See also: [development.md](../development.md) | [server/ARCHITECTURE.md](../server/ARCHITECTURE.md) | [scripts/README.md](../scripts/README.md)
+See also: [CONTRIBUTING.md](../CONTRIBUTING.md) | [server/INTERNALS.md](../server/INTERNALS.md) | [scripts/README.md](../scripts/README.md)
 
 High-level architecture of the BGforge MLS extension. For server-specific details
-(provider registry, symbol system, data flow), see [server/ARCHITECTURE.md](../server/ARCHITECTURE.md).
+(provider registry, symbol system, data flow), see [server/INTERNALS.md](../server/INTERNALS.md).
 
 ## Table of Contents
 
@@ -89,7 +89,7 @@ vscode-mls/
 |   |   +-- test/                   E2E tests (mocha + vscode test runner)
 |   +-- out/                    esbuild output
 |
-+-- server/                 LSP server (see server/ARCHITECTURE.md for details)
++-- server/                 LSP server (see server/INTERNALS.md for details)
 |   +-- src/
 |   |   +-- server.ts               LSP entry point, request handlers
 |   |   +-- provider-registry.ts    Routes requests to language providers
@@ -215,17 +215,8 @@ activate()
 Plugins intercept tsserver calls for transpiler files. They run inside the tsserver
 process, not the extension host.
 
-**TSSL Plugin** (`plugins/tssl-plugin/src/`):
-- `index.ts` — orchestration: creates Proxy, wires diagnostic filtering and hover enrichment
-- `filter-diagnostics.ts` — suppresses TS6133 ("declared but never read") for engine procedure names
-- `engine-proc-hover.ts` — appends engine procedure hover documentation from build-time generated JSON
-- Proxies `getSemanticDiagnostics`, `getSuggestionDiagnostics`, `getQuickInfoAtPosition`
-
-**TD Plugin** (`plugins/td-plugin/src/`):
-- `index.ts` — orchestration: creates Proxy, wires host overrides and completion filtering
-- `filter-completions.ts` — blocks ES2020 lib names in `.td` files, blocks TD runtime names in non-`.td` files
-- `inject-runtime.ts` — resolves `td-runtime.d.ts` path, injects it into the project file list, excludes DOM lib
-- Proxies `getCompletionsAtPosition`, overrides `getScriptFileNames`, `getCompilationSettings`
+- **TSSL Plugin** — suppresses TS6133 for engine procedures, adds hover docs. See [plugins/tssl-plugin/README.md](../plugins/tssl-plugin/README.md).
+- **TD Plugin** — injects `td-runtime.d.ts`, filters completions per file type. See [plugins/td-plugin/README.md](../plugins/td-plugin/README.md).
 
 ### Webview Panels
 
@@ -240,7 +231,7 @@ Two webview-based features, each with a host-side and browser-side module:
 
 ## Server Architecture
 
-See [server/ARCHITECTURE.md](../server/ARCHITECTURE.md) for comprehensive documentation covering:
+See [server/INTERNALS.md](../server/INTERNALS.md) for comprehensive documentation covering:
 
 - Provider registry pattern and request routing
 - Symbol system (IndexedSymbol, scope hierarchy, pre-computed responses)
@@ -360,26 +351,9 @@ Parses Fallout `.pro` binary files and outputs structured JSON.
 
 ### Tree-Sitter Grammars
 
-Six tree-sitter grammars compiled to WASM:
-
-| Grammar | Language | Used By |
-|---------|----------|---------|
-| `fallout-ssl` | Fallout SSL (.ssl, .h) | fallout-ssl provider |
-| `weidu-baf` | WeiDU BAF (.baf) | weidu-baf provider |
-| `weidu-d` | WeiDU D (.d) | weidu-d provider |
-| `weidu-tp2` | WeiDU TP2 (.tp2/.tpa/.tph/.tpp) | weidu-tp2 provider |
-| `fallout-msg` | Fallout MSG (.msg) | Highlighting only (external editors) |
-| `weidu-tra` | WeiDU TRA (.tra) | Highlighting only (external editors) |
-
-Each grammar package contains:
-- `grammar.js` -- PEG-like grammar definition
-- `src/` -- generated C parser (by `tree-sitter generate`)
-- `*.wasm` -- compiled WASM (by `tree-sitter build --wasm`)
-- `test/` -- corpus tests, sample files, expected output
-
-Type generation: `@asgerf/dts-tree-sitter` generates `SyntaxType` enum from grammar
-rules. The enum is copied to `server/src/{lang}/tree-sitter.d.ts` for type-safe
-AST node comparisons.
+Six tree-sitter grammars compiled to WASM (4 LSP + 2 highlight-only for external editors).
+See [grammars/README.md](../grammars/README.md) for the full list, build commands,
+WASM rationale, and type generation details.
 
 ### TextMate Grammars
 

@@ -1,6 +1,6 @@
 # Scripts
 
-See also: [development.md](../development.md) | [docs/architecture.md](../docs/architecture.md)
+See also: [CONTRIBUTING.md](../CONTRIBUTING.md) | [docs/architecture.md](../docs/architecture.md)
 
 ## Main commands
 
