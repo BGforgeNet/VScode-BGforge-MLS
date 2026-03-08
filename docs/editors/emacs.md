@@ -75,7 +75,7 @@ Define major modes first. The mode names match the server's language IDs (`fallo
 (add-to-list 'auto-mode-alist '("\\.tra\\'" . weidu-tra-mode))
 ```
 
-Note: `.h` files default to `c-mode` in Emacs. The override above sets them to `fallout-ssl-mode` globally. For per-project control, use directory-local variables (`.dir-locals.el`) instead.
+Note: `.h` files default to C in Emacs. The config above overrides this globally. For per-project control, use directory-local variables (`.dir-locals.el`) instead.
 
 ## Tree-sitter highlighting (Emacs 29+)
 
@@ -163,7 +163,7 @@ The tree-sitter modes and basic modes are independent. If using tree-sitter mode
                "bgforge-mls-server" "--stdio"))
 ```
 
-### lsp-mode
+### [lsp-mode](https://emacs-lsp.github.io/lsp-mode/)
 
 ```elisp
 (require 'lsp-mode)

@@ -4,7 +4,6 @@ Setup guide for using BGforge MLS with Neovim 0.11+.
 
 - [Prerequisites](#prerequisites)
 - [File type detection](#file-type-detection)
-- [Comment toggling](#comment-toggling)
 - [Language server](#language-server)
 - [Tree-sitter highlighting](#tree-sitter-highlighting)
   - [Parser registration](#parser-registration)
@@ -47,13 +46,11 @@ vim.filetype.add({
 })
 ```
 
-Note: `.h` files default to C in Neovim. The override above sets them to Fallout SSL globally. For per-project control, use a `.nvimrc` or `exrc` instead.
+Note: `.h` files default to C in Neovim. The config above overrides this globally. For per-project control, use `.nvimrc` or `exrc` instead.
 
 Note: `.d` files may conflict with D language. Adjust per-project if needed.
 
-## Comment toggling
-
-All supported languages use C-style comments (`//` line, `/* */` block). Set `commentstring` so that `gc`/`gcc` work correctly:
+Set `commentstring` so that `gc`/`gcc` work correctly:
 
 ```lua
 vim.api.nvim_create_autocmd("FileType", {

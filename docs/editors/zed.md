@@ -241,7 +241,7 @@ done
 
 Open Zed, go to `Extensions`, click `Install Dev Extension`, and point to the directory.
 
-Note: `.h` files default to C in Zed. For per-project control, add `file_types` overrides in `.zed/settings.json`.
+Note: `.h` files default to C in Zed. The config above overrides this globally. For per-project control, add `file_types` overrides in `.zed/settings.json`.
 
 ## TypeScript plugins (TSSL/TD)
 

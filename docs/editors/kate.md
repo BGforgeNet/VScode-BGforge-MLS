@@ -24,13 +24,13 @@ Download `bgforge-mls-kate-ksh-<version>.zip` from the [latest GitHub release](h
 - **Windows**: `%USERPROFILE%\AppData\Local\org.kde.syntax-highlighting\syntax\`
 - **macOS**: `~/Library/Application Support/org.kde.syntax-highlighting/syntax/`
 
-Restart Kate after installing. The definitions provide keyword, function, and constant highlighting plus code folding. The zip includes definitions for all supported languages, including Fallout MSG (`.msg`), WeiDU TRA (`.tra`), Infinity 2DA (`.2da`), Fallout scripts.lst (`scripts.lst`), and Fallout worldmap.txt (`worldmap.txt`).
+Restart Kate after installing. The definitions provide keyword, function, and constant highlighting plus code folding. The zip also includes highlight-only definitions (no LSP provider) for Fallout MSG (`.msg`), WeiDU TRA (`.tra`), Infinity 2DA (`.2da`), and Fallout scripts.lst (`scripts.lst`).
 
-Note: `.h` files default to C/C++ in Kate. Use `Tools > Highlighting > Fallout SSL` manually for Fallout header files.
+Note: `.h` files default to C in Kate. Use `Tools > Highlighting > Fallout SSL` manually for Fallout header files.
 
 ## Language server
 
-Enable the LSP Client plugin in `Settings > Configure Kate > Plugins > LSP Client`.
+Enable the built-in LSP Client plugin in `Settings > Configure Kate > Plugins > LSP Client`.
 
 Add a server in `Settings > Configure Kate > LSP Client > User Server Settings`:
 

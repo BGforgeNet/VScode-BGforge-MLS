@@ -86,7 +86,7 @@ block-comment-tokens = { start = "/*", end = "*/" }
 auto-pairs = { "\"" = "\"", "~" = "~" }
 ```
 
-Note: `.h` files default to C/C++ in Helix. The override above sets them to Fallout SSL globally. Remove `"h"` from the list if you need C headers in the same project.
+Note: `.h` files default to C in Helix. The config above overrides this globally. Remove `"h"` from the list if you also work with C headers.
 
 ## Tree-sitter highlighting
 

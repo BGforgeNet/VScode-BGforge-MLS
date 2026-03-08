@@ -36,11 +36,11 @@ contexts:
 
 Repeat for each language (`weidu-baf`/`baf`, `weidu-d`/`d`, `weidu-tp2`/`tp2 tpa tph tpp`, `fallout-worldmap-txt`/no extension).
 
-The tmbundle also includes syntax definitions for Fallout MSG (`.msg`), WeiDU TRA (`.tra`), Infinity 2DA (`.2da`), Fallout scripts.lst, and Fallout worldmap.txt files.
+The tmbundle also includes highlight-only definitions (no LSP provider) for Fallout MSG (`.msg`), WeiDU TRA (`.tra`), Infinity 2DA (`.2da`), and Fallout scripts.lst.
 
 For `worldmap.txt`, use `View > Syntax > Fallout Worldmap` manually since syntax files match by extension, not filename.
 
-Note: `.h` files default to C in Sublime. To limit the override, remove `h` from the list and set the syntax manually for Fallout header files.
+Note: `.h` files default to C in Sublime Text. The config above overrides this globally. Remove `h` from the list if you also work with C headers.
 
 ## Language server
 
