@@ -55,14 +55,8 @@ jobs:
           pnpm package
           echo "VSIX_PATH=$(ls *.vsix)" >> "$GITHUB_ENV"
 
-      - name: Build TextMate bundle
-        run: pnpm build:tmbundle
-
-      - name: Build Notepad++ UDL files
-        run: pnpm build:udl
-
-      - name: Build Kate KSyntaxHighlighting files
-        run: pnpm build:ksh
+      - name: Build editor bundles (TextMate, Kate, Notepad++, Geany)
+        run: pnpm build:editors
 
       - name: Upload build
         uses: actions/upload-artifact@v7

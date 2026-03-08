@@ -140,7 +140,7 @@ describe("generateUdlXml", () => {
     });
 
     it.skipIf(!hasXmllint())("validates static UDL files against official XSD", () => {
-        const staticDir = "scripts/static";
+        const staticDir = "editors/notepadpp";
         const staticFiles = fs.readdirSync(staticDir).filter((f) => f.endsWith(".udl.xml"));
         expect(staticFiles.length).toBeGreaterThan(0);
 

@@ -144,7 +144,7 @@ describe("generateKshXml", () => {
     });
 
     it.skipIf(!hasXmllint())("validates static KSH files against official XSD", () => {
-        const staticDir = "scripts/static";
+        const staticDir = "editors/kate";
         const staticFiles = fs.readdirSync(staticDir).filter((f) => f.endsWith(".ksh.xml"));
         expect(staticFiles.length).toBeGreaterThan(0);
 

@@ -176,7 +176,7 @@ pnpm build
   +-> build:test          esbuild E2E test bundles
   +-> build:webviews      esbuild webview bundles
 
-pnpm build:all            (build:grammar + build + build:tmbundle + build:udl + build:ksh)
+pnpm build:all            (build:grammar + build + build:editors)
 pnpm build:dev            Minimal build for F5 development (skips CLIs)
 ```
 
