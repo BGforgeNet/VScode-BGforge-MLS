@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.1.1
+
+- Fixed npm publish failing in CI.
+
 ## 3.1.0
 
 Fallout SSL

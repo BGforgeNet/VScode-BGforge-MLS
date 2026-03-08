@@ -29,6 +29,7 @@ external/*
 !external/infinity-engine.txt
 !external/infinity-engine-exclude.txt
 node_modules
+.npmrc
 tmp
 
 /test
