@@ -97,6 +97,8 @@ Transpilers allow to use Typescript type system in modding, as well as a number 
 
 Visual dialog tree for SSL, TSSL, D, and TD files. Open with `CTRL+SHIFT+V` or the command palette. Shows states, transitions, and resolved translation strings.
 
+![fallout highlighting and hover example](docs/dialog_preview.png)
+
 #### Error reporting
 
 ![error reporting example](docs/error_reporting.png)
