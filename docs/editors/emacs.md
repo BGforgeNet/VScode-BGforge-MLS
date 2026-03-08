@@ -50,7 +50,7 @@ Define major modes first. The mode names match the server's language IDs (`fallo
   (setq-local comment-start-skip "//+\\s-*")
   (setq-local comment-end ""))
 
-(define-derived-mode fallout-worldmap-txt-mode prog-mode "Fallout-Worldmap"
+(define-derived-mode fallout-worldmap-txt-mode conf-mode "Fallout-Worldmap"
   "Major mode for Fallout worldmap.txt files.")
 
 (add-to-list 'auto-mode-alist '("\\.ssl\\'" . fallout-ssl-mode))

@@ -66,6 +66,7 @@ language-servers = ["bgforge-mls"]
 [[language]]
 name = "fallout-worldmap-txt"
 scope = "source.fallout-worldmap-txt"
+grammar = "ini"
 file-types = [{ glob = "worldmap.txt" }]
 language-servers = ["bgforge-mls"]
 

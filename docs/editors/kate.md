@@ -26,7 +26,7 @@ Download `bgforge-mls-kate-ksh-<version>.zip` from the [latest GitHub release](h
 
 Restart Kate after installing. The definitions provide keyword, function, and constant highlighting plus code folding. The zip also includes highlight-only definitions (no LSP provider) for Fallout MSG (`.msg`), WeiDU TRA (`.tra`), Infinity 2DA (`.2da`), and Fallout scripts.lst (`scripts.lst`).
 
-Note: `.h` files default to C in Kate. Use `Tools > Highlighting > Fallout SSL` manually for Fallout header files.
+Note: `.h` files default to C++ in Kate. Use `Tools > Highlighting > Fallout SSL` manually for Fallout header files.
 
 ## Language server
 

@@ -50,6 +50,17 @@ Note: `.h` files default to C in Neovim. The config above overrides this globall
 
 Note: `.d` files may conflict with D language. Adjust per-project if needed.
 
+Worldmap.txt is an INI-like format. Borrow Neovim's built-in `dosini` syntax for highlighting:
+
+```lua
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "fallout-worldmap-txt",
+  callback = function()
+    vim.bo.syntax = "dosini"
+  end,
+})
+```
+
 Set `commentstring` so that `gc`/`gcc` work correctly:
 
 ```lua

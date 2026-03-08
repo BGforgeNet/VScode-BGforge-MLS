@@ -36,7 +36,7 @@ schema_version = 1
 
 [language_servers.bgforge-mls]
 name = "BGforge MLS"
-languages = ["Fallout SSL", "WeiDU BAF", "WeiDU D", "WeiDU TP2", "Fallout Worldmap", "Fallout MSG", "WeiDU TRA"]
+languages = ["Fallout SSL", "WeiDU BAF", "WeiDU D", "WeiDU TP2", "Fallout Worldmap"]
 ```
 
 ### `Cargo.toml`
