@@ -9,5 +9,6 @@ Detailed setup guides for each editor:
 - [JetBrains](../docs/editors/jetbrains.md) — LSP4IJ, TextMate highlighting, settings
 - [Zed](../docs/editors/zed.md) — extension, file types, settings
 - [Kate](../docs/editors/kate.md) — built-in LSP, KSyntaxHighlighting, settings
+- [Geany](../docs/editors/geany.md) — LSP Client plugin, filetype definitions, settings
 - [Notepad++](../docs/editors/notepadpp.md) — NppLspClient, UDL highlighting, settings
 - [TypeScript Plugins](../docs/editors/typescript-plugins.md) — TSSL/TD plugin setup for any editor

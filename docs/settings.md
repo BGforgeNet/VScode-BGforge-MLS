@@ -38,5 +38,6 @@ Depends on the editor. See the editor-specific pages for examples:
 - [JetBrains](editors/jetbrains.md#settings) - LSP4IJ Configuration tab
 - [Helix](editors/helix.md#settings) - `config` table in `languages.toml`
 - [Zed](editors/zed.md#settings) - `settings` in `lsp` config
+- [Geany](editors/geany.md#settings) - `initialization_options` in LSP Client config
 - [Kate](editors/kate.md#settings) - `settings` in LSP client config (Kate 25.08+)
 - [Notepad++](editors/notepadpp.md#settings) - `settings` in NppLspClient config
