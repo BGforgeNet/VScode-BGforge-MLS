@@ -241,6 +241,7 @@ export function renameSymbolWorkspace(
     symbolStore: Symbols,
     getFileText: (uri: string) => string | null,
     workspaceRoot: string | undefined,
+    debugLog?: (msg: string) => void,
 ): WorkspaceEdit | null {
     if (!isInitialized() || !VALID_IDENTIFIER.test(newName)) {
         return null;
@@ -253,31 +254,42 @@ export function renameSymbolWorkspace(
 
     const symbolName = findIdentifierAtPosition(tree.rootNode, position);
     if (!symbolName) {
+        debugLog?.(`rename: no identifier at position ${position.line}:${position.character}`);
         return null;
     }
+
+    debugLog?.(`rename: symbol="${symbolName}" uri=${uri}`);
 
     // Determine where the symbol is defined
     const defInfo = findDefinitionUri(symbolName, uri, tree.rootNode, symbolStore, workspaceRoot);
     if (!defInfo) {
         // Not a workspace-scope symbol (e.g., function-scoped variable)
+        debugLog?.(`rename: findDefinitionUri returned null (not a workspace-scope symbol)`);
         return null;
     }
 
     if (defInfo.isExternal) {
         // Symbol defined in external headers (read-only): not renameable
+        debugLog?.(`rename: symbol defined in external headers (read-only), uri=${defInfo.uri}`);
         return null;
     }
 
     const definitionUri = defInfo.uri;
+    debugLog?.(`rename: definitionUri=${definitionUri}`);
 
     // Collect all files to rename in:
     // - The definition file itself
     // - All files that transitively include the definition file
     const dependants = includeGraph.getTransitiveDependants(definitionUri);
+    debugLog?.(`rename: include graph dependants (${dependants.length}): ${dependants.length > 0 ? dependants.join(", ") : "(none)"}`);
+    debugLog?.(`rename: include graph has ${includeGraph.getAllFiles().length} total files, hasFile(definitionUri)=${includeGraph.hasFile(definitionUri)}`);
+
     const candidateUris = new Set([definitionUri, ...dependants]);
 
     // Also include the current file (in case it's not in the graph yet)
     candidateUris.add(uri);
+
+    debugLog?.(`rename: ${candidateUris.size} candidate files to scan`);
 
     // Build edits for each candidate file
     // Uses documentChanges format (TextDocumentEdit[]) so VS Code treats the
@@ -291,11 +303,13 @@ export function renameSymbolWorkspace(
             : getFileText(candidateUri);
 
         if (!candidateText) {
+            debugLog?.(`rename: skipping ${candidateUri} (could not read file text)`);
             continue;
         }
 
         const candidateTree = parseWithCache(candidateText);
         if (!candidateTree) {
+            debugLog?.(`rename: skipping ${candidateUri} (parse failed)`);
             continue;
         }
 
@@ -303,6 +317,7 @@ export function renameSymbolWorkspace(
         // (a different procedure/macro/export with the same name). Procedure-local
         // shadows are handled by findScopedReferences (it skips those subtrees).
         if (candidateUri !== definitionUri && isFileScopeDef(candidateTree.rootNode, symbolName)) {
+            debugLog?.(`rename: skipping ${candidateUri} (symbol redefined at file scope)`);
             continue;
         }
 
@@ -310,8 +325,11 @@ export function renameSymbolWorkspace(
         // skips into procedures that have a local definition of the same name
         const refs = findScopedReferences(candidateTree.rootNode, fileScopeInfo);
         if (refs.length === 0) {
+            debugLog?.(`rename: skipping ${candidateUri} (no references found)`);
             continue;
         }
+
+        debugLog?.(`rename: ${candidateUri} -> ${refs.length} reference(s)`);
 
         const edits: TextEdit[] = refs.map((node) => ({
             range: makeRange(node),
@@ -326,8 +344,10 @@ export function renameSymbolWorkspace(
     }
 
     if (documentChanges.length === 0) {
+        debugLog?.(`rename: no edits produced across all candidates`);
         return null;
     }
 
+    debugLog?.(`rename: workspace edit covers ${documentChanges.length} file(s)`);
     return { documentChanges };
 }

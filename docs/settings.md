@@ -10,6 +10,7 @@ All settings are under the `bgforge` namespace.
 | -------------------------- | ------- | ------------------------------------------------------------------------------- |
 | `bgforge.validateOnSave`   | `true`  | Run diagnostics on save                                                         |
 | `bgforge.validateOnChange` | `false` | Run diagnostics on edit (disk-intensive: writes to disk for external compilers) |
+| `bgforge.debug`            | `false` | Enable debug logging in the Output panel (BGforge MLS channel)                  |
 
 ## Fallout SSL
 

@@ -386,6 +386,11 @@
                     "type": "boolean",
                     "default": false,
                     "markdownDescription": "Run and show diagnostics repeatedly as you edit the files.\n\n**Note:** this can be disk intensive, as validation requires files to be saved to disk."
+                },
+                "bgforge.debug": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Enable debug logging in the Output panel (BGforge MLS channel). Useful for troubleshooting rename, include resolution, and other issues."
                 }
             }
         },

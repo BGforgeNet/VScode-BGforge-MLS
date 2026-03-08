@@ -195,15 +195,20 @@ connection.onInitialized(async () => {
 // Cache the settings of all open documents
 const documentSettings: Map<string, Thenable<MLSsettings>> = new Map();
 
-connection.onDidChangeConfiguration((change) => {
+connection.onDidChangeConfiguration(async (change) => {
     conlog("did change configuration");
     if (hasConfigurationCapability) {
         // Reset all cached document settings
         documentSettings.clear();
+        // Fetch fresh global settings and push to providers (e.g., debug flag)
+        const freshSettings = await connection.workspace.getConfiguration({ section: "bgforge" }) as MLSsettings;
+        globalSettings = freshSettings;
+        registry.updateSettings(freshSettings);
     } else {
         // change.settings is typed as any by vscode-languageserver
         const bgforge = change.settings?.bgforge as MLSsettings | undefined;
         globalSettings = bgforge ?? defaultSettings;
+        registry.updateSettings(globalSettings);
     }
 });
 

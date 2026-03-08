@@ -145,6 +145,16 @@ class ProviderRegistry {
     }
 
     /**
+     * Update settings on the shared context so all providers see the change
+     * without requiring a reload. Called from onDidChangeConfiguration.
+     */
+    updateSettings(settings: ProviderContext["settings"]): void {
+        if (this.context) {
+            this.context.settings = settings;
+        }
+    }
+
+    /**
      * Get the initialization context. Throws if not initialized.
      */
     getContext(): ProviderContext {

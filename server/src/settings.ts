@@ -26,6 +26,7 @@ export interface MLSsettings {
     weidu: WeiDUsettings;
     validateOnSave: boolean;
     validateOnChange: boolean;
+    debug: boolean;
 }
 
 // The global settings, used when the `workspace/configuration` request is not supported by the client.
@@ -43,6 +44,7 @@ export const defaultSettings: MLSsettings = {
     weidu: { path: "weidu", gamePath: "" },
     validateOnSave: true,
     validateOnChange: false,
+    debug: false,
 };
 
 export interface ProjectTraSettings {

@@ -309,21 +309,33 @@ class FalloutSslProvider implements LanguageProvider {
             return null;
         }
 
+        const debugLog = this.storedContext?.settings?.debug
+            ? (msg: string) => conlog(`[debug] ${msg}`)
+            : undefined;
+
         // Try workspace-wide rename first (for symbols defined in headers)
         if (this.includeGraph && this.symbolStore) {
+            debugLog?.(`rename: trying workspace rename for "${newName}" at ${uri}`);
             const wsResult = renameSymbolWorkspace(
                 text, position, newName, uri,
                 this.includeGraph, this.symbolStore,
                 (fileUri) => this.readFileText(fileUri),
                 this.storedContext?.workspaceRoot,
+                debugLog,
             );
             if (wsResult) {
+                debugLog?.(`rename: workspace rename succeeded`);
                 return wsResult;
             }
+            debugLog?.(`rename: workspace rename returned null, falling back to single-file`);
+        } else {
+            debugLog?.(`rename: no includeGraph or symbolStore, using single-file rename`);
         }
 
         // Fall back to single-file rename (local variables, params)
-        return renameSymbol(text, position, newName, uri);
+        const result = renameSymbol(text, position, newName, uri);
+        debugLog?.(`rename: single-file rename ${result ? "succeeded" : "returned null"}`);
+        return result;
     }
 
     getCompletions(uri: string): CompletionItem[] {
