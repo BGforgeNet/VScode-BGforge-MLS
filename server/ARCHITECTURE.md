@@ -34,7 +34,7 @@ Symbols from headers and static data are stored in a unified index:
 
 - **Static Symbols** (global) - Built-in functions from YAML/JSON (e.g., COPY_EXISTING)
 - **Workspace Symbols** - From .h/.tph header files, indexed via `reloadFileData()`
-- **Local Symbols** - Current file's variables, computed on-demand via `localCompletion()`
+- **Local Symbols** - Current file's variables, computed on-demand via `localCompletion()` and `extractLocalSymbols()`. Both skip phantom assignment nodes created by tree-sitter error recovery (see `isPhantomAssignment()` in `tree-utils.ts`).
 
 **No duplication by design**: When querying completions, `getCompletions(uri)` passes `excludeUri` to skip the current file's indexed symbols. Local symbols are always computed fresh from the editor buffer. This ensures each symbol has exactly one source.
 
@@ -573,7 +573,30 @@ but are intentionally language-specific. Shared infrastructure is in `shared/`:
 | Folding block type sets | Language-specific node types, passed as parameters to shared `getFoldingRanges()` |
 | Comment stripping | `stripCommentsWeidu()` handles `~string~` delimiters; `stripCommentsFalloutSsl()` does not |
 
-### 6. Sequential Parser Init
+### 6. Tree-Sitter Error Recovery Defense
+
+Tree-sitter error recovery can fabricate structurally valid nodes from broken input.
+When the user is mid-typing a keyword (e.g. `COPY_EXISTN` instead of `COPY_EXISTING`),
+error recovery may produce a `patch_assignment` node with a phantom zero-width `=` operator.
+Without protection, this creates spurious variable completions with wrong types.
+
+Two defense layers prevent this:
+1. **`isPhantomAssignment()`** (`tree-utils.ts`) — rejects assignment nodes where the
+   operator has zero width (inserted by error recovery, not present in source).
+   Applied in both `localCompletion()` and `extractVariables()`.
+2. **`excludeWord`** (`provider.ts`) — excludes the word at cursor from local completions
+   in all paths, not just declaration sites. Prevents self-referencing completion even if
+   layer 1 is bypassed by future error recovery changes.
+
+Design limitation: Layer 1 relies on observed tree-sitter behavior (zero-width phantom
+operators), not a documented guarantee. Layer 2 provides backup. Both must fail for a
+regression to occur. See `isPhantomAssignment()` JSDoc for alternatives considered.
+
+Only TP2 is affected because it has bare assignment syntax (`foo = 5` without a keyword).
+Other providers (SSL, BAF, D) don't have bare assignment grammar rules, so error recovery
+cannot produce phantom assignment nodes for them.
+
+### 7. Sequential Parser Init
 Tree-sitter WASM constraint requires sequential initialization.
 Documented in provider-registry.ts.
 

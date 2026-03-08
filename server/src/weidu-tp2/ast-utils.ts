@@ -8,7 +8,7 @@ import { createIsInsideComment } from "../shared/comment-check";
 import { CompletionCategory, type Tp2CompletionItem } from "./completion/types";
 import { parseWithCache, isInitialized } from "./parser";
 import { SyntaxType } from "./tree-sitter.d";
-import { findNodeAtPosition, stripStringDelimiters, unwrapVariableRef } from "./tree-utils";
+import { findNodeAtPosition, isPhantomAssignment, stripStringDelimiters, unwrapVariableRef } from "./tree-utils";
 import { VARIABLE_DECL_TYPES } from "./variable-symbols";
 
 /**
@@ -29,7 +29,7 @@ export function localCompletion(text: string): Tp2CompletionItem[] {
 
     function visit(node: import("web-tree-sitter").Node): void {
         // Check if this node declares a variable
-        if (VARIABLE_DECL_TYPES.has(node.type as SyntaxType)) {
+        if (VARIABLE_DECL_TYPES.has(node.type as SyntaxType) && !isPhantomAssignment(node)) {
             // Extract variable name from various declaration types
             const varNode = node.childForFieldName("var");
             if (varNode) {

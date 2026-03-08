@@ -18,7 +18,7 @@ import { makeRange } from "../core/position-utils";
 import * as jsdoc from "../shared/jsdoc";
 import { parseWithCache, isInitialized } from "./parser";
 import { SyntaxType } from "./tree-sitter.d";
-import { stripStringDelimiters } from "./tree-utils";
+import { isPhantomAssignment, stripStringDelimiters } from "./tree-utils";
 
 // ============================================
 // Types
@@ -156,7 +156,7 @@ function extractVariables(root: SyntaxNode, uri: string): VariableInfo[] {
     const variables: VariableInfo[] = [];
 
     function visit(node: SyntaxNode): void {
-        if (VARIABLE_TYPES.has(node.type as SyntaxType)) {
+        if (VARIABLE_TYPES.has(node.type as SyntaxType) && !isPhantomAssignment(node)) {
             const info = extractVariableInfo(node, uri);
             if (info) {
                 variables.push(info);

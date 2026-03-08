@@ -262,15 +262,23 @@ class WeiduTp2Provider implements LanguageProvider {
         if (declSite === "definition") {
             return [];
         }
+
+        // Exclude the word currently being typed to prevent self-referencing completion.
+        // Applied in all paths as defense-in-depth: tree-sitter error recovery can create
+        // local variables from partially typed text (e.g. phantom patch_assignment nodes).
+        //
+        // The (\S+)$ regex matches the last non-whitespace run before the cursor.
+        // This may include WeiDU delimiters (e.g. `%my_var%` → "%my_var%"), but that's
+        // safe: completion labels are bare names ("my_var"), so a delimited match like
+        // "%my_var%" won't falsely exclude the bare label. Over-matching is harmless;
+        // under-matching (empty string) disables exclusion, which is also safe.
+        const currentWord = getLinePrefix(text, position).match(/(\S+)$/)?.[1] ?? "";
+
         if (declSite === "assignment") {
-            // Exclude the word currently being typed to prevent self-referencing
-            // completion (e.g. typing `SET fo` would otherwise offer `fo` because
-            // tree-sitter parses the incomplete declaration and extracts the partial name).
-            const currentWord = getLinePrefix(text, position).match(/(\S+)$/)?.[1] ?? "";
             return collectLocalCompletions(text, uri, { variablesOnly: true, excludeWord: currentWord });
         }
 
-        const localCompletions = collectLocalCompletions(text, uri);
+        const localCompletions = collectLocalCompletions(text, uri, { excludeWord: currentWord });
 
         const baseItems: Tp2CompletionItem[] = [...items, ...localCompletions];
         const withParams = addParamCompletions(baseItems, contexts, this.symbolStore);

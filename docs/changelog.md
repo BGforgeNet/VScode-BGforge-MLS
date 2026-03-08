@@ -14,6 +14,7 @@ WeiDU TP2
 
 - Added workspace symbols (Ctrl+T search across all workspace files).
 - Added details (parameters) to document outline symbols.
+- Fixed spurious variable completions.
 
 WeiDU BAF
 

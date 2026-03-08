@@ -89,6 +89,71 @@ export function unwrapVariableRef(node: SyntaxNode): SyntaxNode {
 }
 
 // ============================================
+// Assignment validation
+// ============================================
+
+/** Node types for assignment nodes that can be phantom (tree-sitter error recovery). */
+const ASSIGNMENT_NODE_TYPES: ReadonlySet<string> = new Set([
+    SyntaxType.PatchAssignment,
+    SyntaxType.TopLevelAssignment,
+]);
+
+/**
+ * Assignment operators from the grammar's `_assign_op` rule.
+ * Mirrors `grammars/weidu-tp2/grammar.js` line:
+ *   _assign_op: ($) => choice("=", "+=", "-=", "*=", "/=", "|=", "&=", "||=", "&&=")
+ *
+ * Using a Set rather than hardcoded if-chain so that adding an operator to the grammar
+ * only requires adding it here. If a new operator is missed, the function falls through
+ * to "no operator found" and returns true (phantom) — this is the safe direction
+ * (rejects a real assignment rather than accepting a phantom one).
+ */
+const ASSIGN_OPS: ReadonlySet<string> = new Set([
+    "=", "+=", "-=", "*=", "/=", "|=", "&=", "||=", "&&=",
+]);
+
+/**
+ * Check if an assignment node is a phantom created by tree-sitter error recovery.
+ *
+ * When tree-sitter can't parse a keyword (e.g. partially typed "COPY_EXISTN"),
+ * error recovery may create a patch_assignment/top_level_assignment with a
+ * zero-width "=" operator that doesn't exist in the source text.
+ * These phantom assignments produce spurious variable completions.
+ *
+ * Detection: assignment nodes where the "=" child has zero width (startIndex === endIndex).
+ * Only applies to bare assignment nodes (PatchAssignment, TopLevelAssignment),
+ * not keyword-based declarations (OUTER_SET, SPRINT, etc.) which have explicit keywords.
+ *
+ * Design limitation: This relies on tree-sitter error recovery producing zero-width
+ * operator tokens for phantom assignments. This is observed behavior (tested across
+ * many broken inputs), not a documented tree-sitter guarantee. A tree-sitter version
+ * update could change error recovery heuristics. The self-completion exclusion in
+ * provider.ts (excludeWord in the general completion path) provides a second layer
+ * of defense if this check is ever bypassed.
+ *
+ * Alternative considered: removing PatchAssignment/TopLevelAssignment from
+ * VARIABLE_TYPES entirely (option 3). This would be foolproof but would miss
+ * legitimate bare assignments (`foo = 5`) in .tpp patch-only files. The pragmatic
+ * choice is to keep them and validate structurally.
+ */
+export function isPhantomAssignment(node: SyntaxNode): boolean {
+    if (!ASSIGNMENT_NODE_TYPES.has(node.type)) {
+        return false;
+    }
+
+    for (const child of node.children) {
+        if (ASSIGN_OPS.has(child.type)) {
+            // Zero-width operator = phantom inserted by error recovery,
+            // not present in the source text
+            return child.startIndex === child.endIndex;
+        }
+    }
+
+    // No operator child found at all — also phantom
+    return true;
+}
+
+// ============================================
 // String utilities
 // ============================================
 
