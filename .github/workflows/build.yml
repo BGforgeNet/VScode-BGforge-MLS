@@ -65,9 +65,7 @@ jobs:
           name: bgforge-mls
           path: |
             *.vsix
-            bgforge-mls-*.tmbundle.zip
-            bgforge-mls-notepadpp-udl-*.zip
-            bgforge-mls-kate-ksh-*.zip
+            bgforge-mls-*.zip
 
       # Use pre-built VSIX for publishing: pnpm package (scripts/package.sh)
       # dereferences pnpm symlinks that vsce can't follow.
@@ -105,6 +103,4 @@ jobs:
           fail_on_unmatched_files: true
           files: |
             ${{ steps.publishToOpenVSX.outputs.vsixPath }}
-            bgforge-mls-*.tmbundle.zip
-            bgforge-mls-notepadpp-udl-*.zip
-            bgforge-mls-kate-ksh-*.zip
+            bgforge-mls-*.zip
