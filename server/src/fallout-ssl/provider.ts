@@ -309,7 +309,7 @@ class FalloutSslProvider implements LanguageProvider {
             return null;
         }
 
-        const debugLog = this.storedContext?.settings?.debug
+        const debugLog = this.storedContext?.settings.debug
             ? (msg: string) => conlog(`[debug] ${msg}`)
             : undefined;
 
