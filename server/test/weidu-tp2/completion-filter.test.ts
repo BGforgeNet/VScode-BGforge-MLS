@@ -42,27 +42,19 @@ describe("completion-filter", () => {
     describe("DimorphicFunctions exclusions", () => {
         const exclusions = CATEGORY_EXCLUSIONS[CompletionCategory.DimorphicFunctions]!;
 
-        it("should be included in lafName context (LAF calls dimorphic functions)", () => {
+        it("should be included in lafName context", () => {
             expect(exclusions).not.toContain(CompletionContext.LafName);
         });
 
-        it("should be included in lpfName context (LPF calls dimorphic functions)", () => {
+        it("should be included in lpfName context", () => {
             expect(exclusions).not.toContain(CompletionContext.LpfName);
         });
 
-        it("should be included in action context", () => {
-            expect(exclusions).not.toContain(CompletionContext.Action);
-        });
-
-        it("should be included in patch context", () => {
-            expect(exclusions).not.toContain(CompletionContext.Patch);
-        });
-
-        it("should be excluded from lamName context (macros only)", () => {
+        it("should be excluded from lamName context", () => {
             expect(exclusions).toContain(CompletionContext.LamName);
         });
 
-        it("should be excluded from lpmName context (macros only)", () => {
+        it("should be excluded from lpmName context", () => {
             expect(exclusions).toContain(CompletionContext.LpmName);
         });
     });
@@ -73,27 +65,19 @@ describe("completion-filter", () => {
     describe("ActionMacros exclusions", () => {
         const exclusions = CATEGORY_EXCLUSIONS[CompletionCategory.ActionMacros]!;
 
-        it("should be included in lamName context (LAM calls action macros)", () => {
+        it("should be included in lamName context", () => {
             expect(exclusions).not.toContain(CompletionContext.LamName);
         });
 
-        it("should be included in action context", () => {
-            expect(exclusions).not.toContain(CompletionContext.Action);
-        });
-
-        it("should be excluded from patch context", () => {
-            expect(exclusions).toContain(CompletionContext.Patch);
-        });
-
-        it("should be excluded from lafName context (functions only)", () => {
+        it("should be excluded from lafName context", () => {
             expect(exclusions).toContain(CompletionContext.LafName);
         });
 
-        it("should be excluded from lpfName context (patch functions only)", () => {
+        it("should be excluded from lpfName context", () => {
             expect(exclusions).toContain(CompletionContext.LpfName);
         });
 
-        it("should be excluded from lpmName context (patch macros only)", () => {
+        it("should be excluded from lpmName context", () => {
             expect(exclusions).toContain(CompletionContext.LpmName);
         });
     });
@@ -104,33 +88,25 @@ describe("completion-filter", () => {
     describe("PatchMacros exclusions", () => {
         const exclusions = CATEGORY_EXCLUSIONS[CompletionCategory.PatchMacros]!;
 
-        it("should be included in lpmName context (LPM calls patch macros)", () => {
+        it("should be included in lpmName context", () => {
             expect(exclusions).not.toContain(CompletionContext.LpmName);
         });
 
-        it("should be included in patch context", () => {
-            expect(exclusions).not.toContain(CompletionContext.Patch);
-        });
-
-        it("should be excluded from action context", () => {
-            expect(exclusions).toContain(CompletionContext.Action);
-        });
-
-        it("should be excluded from lafName context (functions only)", () => {
+        it("should be excluded from lafName context", () => {
             expect(exclusions).toContain(CompletionContext.LafName);
         });
 
-        it("should be excluded from lpfName context (patch functions only)", () => {
+        it("should be excluded from lpfName context", () => {
             expect(exclusions).toContain(CompletionContext.LpfName);
         });
 
-        it("should be excluded from lamName context (action macros only)", () => {
+        it("should be excluded from lamName context", () => {
             expect(exclusions).toContain(CompletionContext.LamName);
         });
     });
 
     // =========================================================================
-    // Value modifier categories (OptGlob, OptCase, OptExact, Caching, ArraySortType)
+    // Value modifier categories
     // =========================================================================
     describe("value modifier exclusions", () => {
         const modifierCategories = [
@@ -144,14 +120,6 @@ describe("completion-filter", () => {
         for (const category of modifierCategories) {
             describe(`${category} exclusions`, () => {
                 const exclusions = CATEGORY_EXCLUSIONS[category]!;
-
-                it("should be included in action context", () => {
-                    expect(exclusions).not.toContain(CompletionContext.Action);
-                });
-
-                it("should be included in patch context", () => {
-                    expect(exclusions).not.toContain(CompletionContext.Patch);
-                });
 
                 it("should be excluded from all name contexts", () => {
                     expect(exclusions).toContain(CompletionContext.LafName);
@@ -175,24 +143,78 @@ describe("completion-filter", () => {
     // Items without category
     // =========================================================================
     describe("items without category", () => {
-        it("should pass through filter in action context", () => {
+        it("should pass through filter in any context", () => {
             const items: Tp2CompletionItem[] = [
                 { label: "no_category_var", kind: CompletionItemKind.Variable },
                 { label: "with_category", kind: CompletionItemKind.Function, category: CompletionCategory.ActionFunctions },
             ];
-            const result = filterItemsByContext(items, [CompletionContext.Action]);
+            const result = filterItemsByContext(items, [CompletionContext.LafName]);
             const labels = result.map(i => i.label);
             expect(labels).toContain("no_category_var");
             expect(labels).toContain("with_category");
         });
 
-        it("should pass through filter in patch context", () => {
+        it("should pass through filter with empty contexts", () => {
             const items: Tp2CompletionItem[] = [
                 { label: "local_var", kind: CompletionItemKind.Variable },
             ];
-            const result = filterItemsByContext(items, [CompletionContext.Patch]);
+            const result = filterItemsByContext(items, []);
             expect(result).toHaveLength(1);
             expect(result[0].label).toBe("local_var");
         });
     });
+
+    // =========================================================================
+    // Empty contexts = no filtering (except restricted categories)
+    // =========================================================================
+    describe("empty contexts", () => {
+        it("should show general items when contexts array is empty", () => {
+            const items: Tp2CompletionItem[] = [
+                createItem("ACTION_IF", CompletionCategory.Action),
+                createItem("READ_LONG", CompletionCategory.Patch),
+                createItem("my_func", CompletionCategory.ActionFunctions),
+                createItem("BACKUP", CompletionCategory.Prologue),
+            ];
+            const result = filterItemsByContext(items, []);
+            expect(result).toHaveLength(4);
+        });
+
+        it("should exclude FuncVarKeyword in general context", () => {
+            const items: Tp2CompletionItem[] = [
+                createItem("ACTION_IF", CompletionCategory.Action),
+                createItem("INT_VAR", CompletionCategory.FuncVarKeyword),
+            ];
+            const result = filterItemsByContext(items, []);
+            const labels = result.map(i => i.label);
+            expect(labels).toContain("ACTION_IF");
+            expect(labels).not.toContain("INT_VAR");
+        });
+    });
+
+    // =========================================================================
+    // Permissive multi-context filtering
+    // =========================================================================
+    describe("permissive filtering", () => {
+        it("item excluded by one context but allowed by another is shown", () => {
+            // ActionFunctions excluded from LpfName, but allowed in LafName
+            const items: Tp2CompletionItem[] = [
+                createItem("my_func", CompletionCategory.ActionFunctions),
+            ];
+            const result = filterItemsByContext(items, [CompletionContext.LafName, CompletionContext.LpfName]);
+            expect(result).toHaveLength(1);
+        });
+
+        it("item excluded by all active contexts is hidden", () => {
+            // ActionMacros excluded from both LafName and LpfName
+            const items: Tp2CompletionItem[] = [
+                createItem("my_macro", CompletionCategory.ActionMacros),
+            ];
+            const result = filterItemsByContext(items, [CompletionContext.LafName, CompletionContext.LpfName]);
+            expect(result).toHaveLength(0);
+        });
+    });
 });
+
+function createItem(label: string, category: CompletionCategory): Tp2CompletionItem {
+    return { label, kind: CompletionItemKind.Keyword, category };
+}

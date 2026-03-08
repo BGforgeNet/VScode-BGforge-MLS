@@ -28,7 +28,7 @@ import { initParser, parseWithCache, isInitialized } from "./parser";
 import { getDocumentSymbols } from "./symbol";
 import { getDefinition, isOnFunctionCallParamName } from "./definition";
 import { parseHeaderToSymbols } from "./header-parser";
-import { isCallableSymbol, type IndexedSymbol } from "../core/symbol";
+import { CallableContext, isCallableSymbol, type IndexedSymbol } from "../core/symbol";
 import { renameSymbol, prepareRenameSymbol } from "./rename";
 import { buildFunctionCallSnippet, getKeywordSnippet } from "./snippets";
 import { getFunctionParamHover } from "./hover";
@@ -85,10 +85,13 @@ function addParamCompletions(items: Tp2CompletionItem[], contexts: CompletionCon
 
 /**
  * Apply snippets for function/macro calls based on active contexts.
- * In name contexts (lafName/lpfName/lamName/lpmName), user already typed
- * the keyword -- snippet has no prefix, only required params + END.
- * In patch/action contexts, user hasn't typed the keyword -- snippet
- * includes LPF/LAF/LPM/LAM prefix + name + END.
+ *
+ * Snippets are applied globally (skipped only in param contexts where they
+ * would interfere with INT_VAR/STR_VAR value entry). The snippet prefix
+ * (LAF/LPF/LAM/LPM) is symbol-driven, not position-driven:
+ * - In name contexts: user already typed the keyword, so no prefix is added.
+ * - In general context: prefix is determined from the symbol's callable data
+ *   (action function -> LAF, patch macro -> LPM, dimorphic -> LAF/.tpp LPF).
  */
 function applySnippets(
     items: Tp2CompletionItem[],
@@ -101,15 +104,18 @@ function applySnippets(
         || contexts.includes(CompletionContext.LpfName)
         || contexts.includes(CompletionContext.LamName)
         || contexts.includes(CompletionContext.LpmName);
-    const inPatchContext = contexts.includes(CompletionContext.Patch) || contexts.includes(CompletionContext.PatchKeyword);
-    const inActionContext = contexts.includes(CompletionContext.Action) || contexts.includes(CompletionContext.ActionKeyword);
+    const inParamContext = contexts.includes(CompletionContext.FuncParamName)
+        || contexts.includes(CompletionContext.FuncParamValue);
 
-    if (!inNameContext && !inPatchContext && !inActionContext) {
+    // No snippets in param contexts
+    if (inParamContext) {
         return items;
     }
 
+    const ext = extname(fileURLToPath(uri)).toLowerCase();
+
     return items.map((item) => {
-        // Skip action/patch command keywords (LPF, LAF, COPY, etc.)
+        // Apply keyword snippets for action/patch command keywords
         const cat = item.category;
         if (cat === CompletionCategory.Action || cat === CompletionCategory.Patch) {
             const kwSnippet = getKeywordSnippet(item.label as string);
@@ -127,7 +133,7 @@ function applySnippets(
 
         const prefix = inNameContext
             ? undefined
-            : getSnippetPrefix(symbol.callable.dtype, inPatchContext, inActionContext);
+            : getSnippetPrefixFromSymbol(symbol.callable.dtype, symbol.callable.context, ext);
 
         const snippet = buildFunctionCallSnippet(symbol.callable, funcName, prefix);
         if (snippet) {
@@ -141,18 +147,27 @@ function applySnippets(
     });
 }
 
-/** Determine the keyword prefix for a function/macro snippet based on context. */
-function getSnippetPrefix(
+/**
+ * Determine the keyword prefix for a function/macro snippet from the symbol's own data.
+ * - Action function -> LAF, action macro -> LAM
+ * - Patch function -> LPF, patch macro -> LPM
+ * - Dimorphic function -> LPF in .tpp files, LAF in all others
+ */
+function getSnippetPrefixFromSymbol(
     dtype: string | undefined,
-    inPatchContext: boolean,
-    inActionContext: boolean
+    callableContext: CallableContext | undefined,
+    ext: string
 ): string | undefined {
     const isMacro = dtype === "macro";
-    if (inPatchContext) {
+    if (callableContext === CallableContext.Patch) {
         return isMacro ? "LPM" : "LPF";
     }
-    if (inActionContext) {
+    if (callableContext === CallableContext.Action) {
         return isMacro ? "LAM" : "LAF";
+    }
+    // Dimorphic: use LPF in .tpp files, LAF elsewhere
+    if (callableContext === CallableContext.Dimorphic) {
+        return ext === ".tpp" ? "LPF" : "LAF";
     }
     return undefined;
 }
@@ -238,7 +253,7 @@ class WeiduTp2Provider implements LanguageProvider {
     filterCompletions(items: CompletionItem[], text: string, position: Position, uri: string, triggerCharacter?: string): CompletionItem[] {
         const filePath = fileURLToPath(uri);
         const ext = extname(filePath).toLowerCase();
-        const contexts = getContextAtPosition(text, position.line, position.character, ext);
+        const contexts = getContextAtPosition(text, position.line, position.character);
 
         conlog(`[tp2] Completion contexts: [${contexts.join(", ")}] at ${position.line}:${position.character} in ${ext}`);
 
@@ -249,6 +264,7 @@ class WeiduTp2Provider implements LanguageProvider {
             return getJsdocCompletions(getLinePrefix(text, position));
         }
 
+        // @ is a trigger character for translation references (@123) — suppress general completions
         if (triggerCharacter === "@") {
             return [];
         }

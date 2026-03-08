@@ -9,7 +9,7 @@
 import { describe, it, expect } from "vitest";
 import { CompletionItemKind } from "vscode-languageserver/node";
 import { filterItemsByContext } from "../../src/weidu-tp2/completion/filter";
-import type { Tp2CompletionItem } from "../../src/weidu-tp2/completion/types";
+import { CompletionContext, type Tp2CompletionItem } from "../../src/weidu-tp2/completion/types";
 import { CompletionCategory } from "../../src/shared/completion-context";
 
 describe("Completion Category Safeguards", () => {
@@ -21,7 +21,7 @@ describe("Completion Category Safeguards", () => {
                 category: CompletionCategory.Constants,
             };
 
-            const result = filterItemsByContext([constantItem], ["funcParamName"]);
+            const result = filterItemsByContext([constantItem], [CompletionContext.FuncParamName]);
 
             expect(result).toHaveLength(0);
         });
@@ -33,31 +33,31 @@ describe("Completion Category Safeguards", () => {
                 category: CompletionCategory.Vars,
             };
 
-            const result = filterItemsByContext([varItem], ["funcParamName"]);
+            const result = filterItemsByContext([varItem], [CompletionContext.FuncParamName]);
 
             expect(result).toHaveLength(0);
         });
 
-        it("includes actionFunctions in action context", () => {
+        it("includes actionFunctions in general context (empty contexts)", () => {
             const funcItem: Tp2CompletionItem = {
                 label: "my_function",
                 kind: CompletionItemKind.Function,
                 category: CompletionCategory.ActionFunctions,
             };
 
-            const result = filterItemsByContext([funcItem], ["action"]);
+            const result = filterItemsByContext([funcItem], []);
 
             expect(result).toHaveLength(1);
         });
 
-        it("excludes actionFunctions from patch context", () => {
+        it("excludes actionFunctions from LpfName context", () => {
             const funcItem: Tp2CompletionItem = {
                 label: "my_function",
                 kind: CompletionItemKind.Function,
                 category: CompletionCategory.ActionFunctions,
             };
 
-            const result = filterItemsByContext([funcItem], ["patch"]);
+            const result = filterItemsByContext([funcItem], [CompletionContext.LpfName]);
 
             expect(result).toHaveLength(0);
         });
@@ -72,7 +72,7 @@ describe("Completion Category Safeguards", () => {
             };
 
             // jsdoc category has no exclusion rules, so it should pass through any context
-            const result = filterItemsByContext([tagItem], ["action"]);
+            const result = filterItemsByContext([tagItem], []);
 
             expect(result).toHaveLength(1);
             expect(result[0].label).toBe("@type");
@@ -85,7 +85,7 @@ describe("Completion Category Safeguards", () => {
                 category: CompletionCategory.Jsdoc,
             };
 
-            const result = filterItemsByContext([typeItem], ["patch"]);
+            const result = filterItemsByContext([typeItem], []);
 
             expect(result).toHaveLength(1);
             expect(result[0].label).toBe("int");
@@ -100,12 +100,12 @@ describe("Completion Category Safeguards", () => {
                 category: CompletionCategory.FuncVarKeyword,
             };
 
-            // funcVarKeyword is excluded from action context
-            const resultAction = filterItemsByContext([paramItem], ["action"]);
-            expect(resultAction).toHaveLength(0);
+            // funcVarKeyword is excluded from FuncParamValue context
+            const resultValue = filterItemsByContext([paramItem], [CompletionContext.FuncParamValue]);
+            expect(resultValue).toHaveLength(0);
 
             // funcVarKeyword is allowed in funcParamName context
-            const resultParam = filterItemsByContext([paramItem], ["funcParamName"]);
+            const resultParam = filterItemsByContext([paramItem], [CompletionContext.FuncParamName]);
             expect(resultParam).toHaveLength(1);
         });
     });

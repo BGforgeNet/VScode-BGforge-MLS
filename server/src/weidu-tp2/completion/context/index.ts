@@ -14,7 +14,6 @@ import { getLinePrefix } from "../../../common";
 import { getParser, isInitialized } from "../../parser";
 import { CompletionContext } from "../types";
 import { ASSIGNMENT_SITE_PATTERN, DEFINITION_SITE_PATTERN, FUNC_CALL_KEYWORDS } from "./constants";
-import { getDefaultContext } from "./position";
 import { detectContextFromNode } from "./detectors";
 
 export { getFuncParamsContext } from "./function-call";
@@ -49,7 +48,6 @@ export function isAtDeclarationSite(text: string, position: Position): Declarati
  * Returns the context or null if not at a function/macro name position.
  */
 function detectFuncNameFromLineText(text: string, line: number, character: number): CompletionContext | null {
-    // Get the current line text up to cursor
     const lines = text.split("\n");
     if (line >= lines.length) return null;
     const currentLine = lines[line];
@@ -82,42 +80,34 @@ function detectFuncNameFromLineText(text: string, line: number, character: numbe
  * Determine the completion context at a given position.
  * Uses tree-sitter to parse the text and walk up from cursor position.
  *
- * Returns an array of contexts because multiple contexts can be active simultaneously
- * (e.g., after BEGIN with no actions, both componentFlag and action are valid).
+ * Returns an array of contexts. Empty array means no filtering (show everything).
+ * Only function call/definition name/param positions produce non-empty contexts.
  *
  * @param text Document text
  * @param line 0-based line number
  * @param character 0-based character offset
- * @param fileExtension File extension (e.g., ".tp2", ".tpa", ".tpp")
- * @returns Array of detected contexts, or [CompletionContext.Unknown] if detection fails
+ * @returns Array of detected contexts, or empty array if no filtering needed
  */
 export function getContextAtPosition(
     text: string,
     line: number,
     character: number,
-    fileExtension: string
 ): CompletionContext[] {
-    // Fallback based on file extension
-    const extLower = fileExtension.toLowerCase();
-    const defaultContext = getDefaultContext(extLower);
-
     if (!isInitialized()) {
-        return [defaultContext];
+        return [];
     }
 
     const parser = getParser();
     const tree = parser.parse(text);
     if (!tree) {
-        return [defaultContext];
+        return [];
     }
 
-    // Compute cursor byte offset from line/character (UTF-8 safe)
     const cursorOffset = getUtf8ByteOffset(text, line, character);
 
-    // Find node at cursor position
     const node = tree.rootNode.descendantForPosition({ row: line, column: character });
     if (!node) {
-        return [defaultContext];
+        return [];
     }
 
     // No code completions inside comments; offer JSDoc tags inside /** */ comments
@@ -132,23 +122,12 @@ export function getContextAtPosition(
         return [CompletionContext.Comment];
     }
 
-    // Walk up the tree to find context-defining ancestor
-    const contexts = detectContextFromNode(node, extLower, cursorOffset);
+    // Walk up the tree to find function call/definition context
+    const contexts = detectContextFromNode(node, cursorOffset);
 
-    // Text-based fallback: detect lafName/lpfName for incomplete function calls
-    // When tree-sitter can't parse incomplete function calls, it may return various generic
-    // contexts depending on file type and position. Check for function call keywords in line text.
-    // Only override when we're reasonably sure tree-sitter missed the function call
-    // (single generic context that allows function calls).
-    const canHaveFunctionCalls = contexts.length === 1 && (
-        contexts[0] === CompletionContext.Patch ||
-        contexts[0] === CompletionContext.Action ||
-        contexts[0] === CompletionContext.PatchKeyword ||
-        contexts[0] === CompletionContext.ActionKeyword ||
-        contexts[0] === CompletionContext.Flag  // Top-level .tp2 with incomplete structure
-    );
-
-    if (canHaveFunctionCalls) {
+    // Text-based fallback: detect lafName/lpfName for incomplete function calls.
+    // Only apply when tree-sitter found no context (empty array).
+    if (contexts.length === 0) {
         const funcNameContext = detectFuncNameFromLineText(text, line, character);
         if (funcNameContext !== null) {
             return [funcNameContext];

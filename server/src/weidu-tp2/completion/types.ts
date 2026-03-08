@@ -24,44 +24,34 @@ export interface FuncParamsContext {
 }
 
 /**
- * Completion context types matching grammar hierarchy.
- * See grammars/weidu-tp2/README.md for structure documentation.
+ * Completion context types for filtering.
  *
- * Multiple contexts can be active at once (e.g., both componentFlag and action
- * are valid after BEGIN when no actions exist yet).
+ * Only two filtering concerns remain:
+ * 1. Function name contexts (LAF/LPF/LAM/LPM) - restrict to matching callable type
+ * 2. Function parameter contexts - INT_VAR/STR_VAR keywords only in param blocks
  *
- * **Keyword vs value contexts:**
- * "Keyword" contexts (actionKeyword, patchKeyword) indicate command position
- * (start of statement). "Value" contexts (action, patch) indicate value position
- * (after keyword, typing arguments).
+ * All other positions use empty context array = no filtering (VSCode prefix matching
+ * handles the rest).
  *
- * **Note on lafName/lpfName:**
- * These contexts only allow corresponding function names:
- * - lafName: only actionFunctions (LAF calls action functions)
- * - lpfName: only patchFunctions (LPF calls patch functions)
+ * **Note on lafName/lpfName/lamName/lpmName:**
+ * These contexts only allow corresponding callable names:
+ * - lafName: action functions + dimorphic
+ * - lpfName: patch functions + dimorphic
+ * - lamName: action macros only
+ * - lpmName: patch macros only
  *
  * **Note on funcParamName/funcParamValue:**
  * These contexts distinguish left and right sides of = in function parameters:
  * - funcParamName: parameter name position (left of = or no =)
  * - funcParamValue: parameter value position (right of =)
- * When uncertain, prefer funcParamName.
  */
 export enum CompletionContext {
-    Prologue = "prologue",
-    Flag = "flag",
-    ComponentFlag = "componentFlag",
-    Action = "action",
-    ActionKeyword = "actionKeyword",
-    Patch = "patch",
-    PatchKeyword = "patchKeyword",
-    When = "when",
     LafName = "lafName",
     LpfName = "lpfName",
     LamName = "lamName",
     LpmName = "lpmName",
     FuncParamName = "funcParamName",
     FuncParamValue = "funcParamValue",
-    Unknown = "unknown",
     Comment = "comment",
     Jsdoc = "jsdoc",
 }
