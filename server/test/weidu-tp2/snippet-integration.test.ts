@@ -136,21 +136,21 @@ describe("weidu-tp2: keyword snippet integration in patch context", () => {
         const item = findCompletion(PATCH_TEXT, PATCH_LINE, PATCH_COL, "SET");
         expect(item).toBeDefined();
         expect(item!.insertTextFormat).toBe(InsertTextFormat.Snippet);
-        expect(item!.insertText).toBe("SET ${1} = ${2}\n$0");
+        expect(item!.insertText).toBe("SET ${1} = ${2}$0");
     });
 
     it("inserts SPRINT snippet with tab stops and quotes", () => {
         const item = findCompletion(PATCH_TEXT, PATCH_LINE, PATCH_COL, "SPRINT");
         expect(item).toBeDefined();
         expect(item!.insertTextFormat).toBe(InsertTextFormat.Snippet);
-        expect(item!.insertText).toBe("SPRINT ${1} \"${2}\"\n$0");
+        expect(item!.insertText).toBe("SPRINT ${1} \"${2}\"$0");
     });
 
     it("inserts TEXT_SPRINT snippet with tab stops and quotes", () => {
         const item = findCompletion(PATCH_TEXT, PATCH_LINE, PATCH_COL, "TEXT_SPRINT");
         expect(item).toBeDefined();
         expect(item!.insertTextFormat).toBe(InsertTextFormat.Snippet);
-        expect(item!.insertText).toBe("TEXT_SPRINT ${1} \"${2}\"\n$0");
+        expect(item!.insertText).toBe("TEXT_SPRINT ${1} \"${2}\"$0");
     });
 
     it("does not add snippet for non-SET/SPRINT keywords like WRITE_BYTE", () => {
@@ -169,21 +169,21 @@ describe("weidu-tp2: keyword snippet integration in action context", () => {
         const item = findCompletion(ACTION_TEXT, ACTION_LINE, ACTION_COL, "OUTER_SET");
         expect(item).toBeDefined();
         expect(item!.insertTextFormat).toBe(InsertTextFormat.Snippet);
-        expect(item!.insertText).toBe("OUTER_SET ${1} = ${2}\n$0");
+        expect(item!.insertText).toBe("OUTER_SET ${1} = ${2}$0");
     });
 
     it("inserts OUTER_SPRINT snippet with quotes", () => {
         const item = findCompletion(ACTION_TEXT, ACTION_LINE, ACTION_COL, "OUTER_SPRINT");
         expect(item).toBeDefined();
         expect(item!.insertTextFormat).toBe(InsertTextFormat.Snippet);
-        expect(item!.insertText).toBe("OUTER_SPRINT ${1} \"${2}\"\n$0");
+        expect(item!.insertText).toBe("OUTER_SPRINT ${1} \"${2}\"$0");
     });
 
     it("inserts OUTER_TEXT_SPRINT snippet with quotes", () => {
         const item = findCompletion(ACTION_TEXT, ACTION_LINE, ACTION_COL, "OUTER_TEXT_SPRINT");
         expect(item).toBeDefined();
         expect(item!.insertTextFormat).toBe(InsertTextFormat.Snippet);
-        expect(item!.insertText).toBe("OUTER_TEXT_SPRINT ${1} \"${2}\"\n$0");
+        expect(item!.insertText).toBe("OUTER_TEXT_SPRINT ${1} \"${2}\"$0");
     });
 });
 
@@ -217,7 +217,7 @@ describe("weidu-tp2: snippet integration in lpfName context", () => {
             + "        count = ${1}\n"
             + "    STR_VAR\n"
             + "        name = ${2}\n"
-            + "END\n$0"
+            + "END$0"
         );
     });
 
@@ -236,7 +236,7 @@ describe("weidu-tp2: snippet integration in lpfName context", () => {
             + "        success\n"
             + "    RET_ARRAY\n"
             + "        items\n"
-            + "END\n$0"
+            + "END$0"
         );
     });
 });

@@ -50,10 +50,10 @@ export function getKeywordSnippet(keyword: string): string | undefined {
         return undefined;
     }
     if (SET_SYNTAX_TYPES.has(syntaxType)) {
-        return `${keyword} \${1} = \${2}\n$0`;
+        return `${keyword} \${1} = \${2}$0`;
     }
     if (SPRINT_SYNTAX_TYPES.has(syntaxType)) {
-        return `${keyword} \${1} "\${2}"\n$0`;
+        return `${keyword} \${1} "\${2}"$0`;
     }
     return undefined;
 }
@@ -87,14 +87,14 @@ export function buildFunctionCallSnippet(callable: CallableInfo, name: string, p
 
     // Macro launch (LAM/LPM) is a simple statement — no params, no END
     if (prefix === "LAM" || prefix === "LPM") {
-        return `${prefix} ${name}\n$0`;
+        return `${prefix} ${name}$0`;
     }
 
     const firstLine = prefix ? `${prefix} ${name}` : name;
 
-    // No params: single-line "LAF name END", cursor on next line
+    // No params: single-line "LAF name END", cursor at end
     if (!mayHaveParams) {
-        return `${firstLine} END\n$0`;
+        return `${firstLine} END$0`;
     }
 
     // If any required input params or any RET params exist, build explicit param blocks
@@ -112,7 +112,7 @@ export function buildFunctionCallSnippet(callable: CallableInfo, name: string, p
         appendRetBlock(lines, "RET", retParams);
         appendRetBlock(lines, "RET_ARRAY", retArrayParams);
         lines.push("END");
-        return lines.join("\n") + "\n$0";
+        return lines.join("\n") + "$0";
     }
 
     // Has params but none required and no RET: cursor between name and END for manual entry

@@ -17,6 +17,8 @@ WeiDU TP2
 - Added details (parameters) to document outline symbols.
 - Fixed spurious variable completions.
 - Fixed completion icons for constant-like variables.
+- Fixed snippets inserting an extra blank line after expansion.
+- Relaxed overzealous completion filters.
 
 WeiDU BAF
 
