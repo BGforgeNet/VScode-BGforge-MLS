@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.1.2
+
+- Really fixed npm publish failing in CI.
+
 ## 3.1.1
 
 - Fixed npm publish failing in CI.
