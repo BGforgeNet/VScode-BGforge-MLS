@@ -5,6 +5,15 @@
  *   compile() - LSP: bundles, converts, writes .ssl file to disk
  *   transpile() - CLI: bundles, converts, returns SSL string without writing
  * Handles enum transformation before bundling to avoid esbuild's IIFE conversion.
+ *
+ * Unlike TBAF/TD, TSSL always bundles (no hasImports() optimization) because:
+ * 1. Enums are a first-class TSSL feature, not just a library-import side effect.
+ *    TBAF/TD skip enum transformation for import-free files since enums there are
+ *    only useful with library imports (ielib/iets).
+ * 2. Inline function extraction (extractInlineFunctionsFromFiles) needs bundling
+ *    to track which functions are used across files.
+ * 3. Enum property access expansion requires accumulating enum names from all
+ *    bundled files (main + imports) via bundleResult.allEnumNames.
  */
 
 import * as fs from "fs";
@@ -19,7 +28,7 @@ import { bundleWithEsbuild } from "../esbuild-utils";
 import { conlog, type TsslContext, type MainFileData } from './types';
 import { convertOperatorsAST } from './convert-operators';
 import { extractInlineFunctionsFromFiles, extractJsDocs } from './inline-functions';
-import { exportSSL } from './export-ssl';
+import { exportSSL } from './emit';
 // Generated from server/data/fallout-ssl-base.yml by generate-data.sh.
 // Inlined by esbuild at bundle time.
 import engineProcedureNames from '../../out/engine-procedures.json';

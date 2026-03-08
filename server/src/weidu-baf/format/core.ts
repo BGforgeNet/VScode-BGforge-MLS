@@ -4,7 +4,7 @@
  */
 
 import type { Node as SyntaxNode } from "web-tree-sitter";
-import { SyntaxType } from "./tree-sitter.d";
+import { SyntaxType } from "../tree-sitter.d";
 
 // Formatting options.
 // Note: BAF doesn't need lineLimit - its format is inherently line-based

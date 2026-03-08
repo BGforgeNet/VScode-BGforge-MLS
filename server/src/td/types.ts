@@ -73,7 +73,16 @@ export enum TDPatchOp {
 export const ORPHAN_WARNING_TEMPLATE = (name: string) =>
     `Function "${name}" looks like an orphan state (not collected by any begin/append and not called as a helper)`;
 
-/** A warning emitted during parsing (e.g. orphan state functions). */
+/**
+ * A warning emitted during parsing (e.g. orphan state functions).
+ *
+ * TD is the only transpiler with warnings because dialog files have strong
+ * structural semantics: zero-parameter functions represent dialog states, and
+ * an unused state almost always indicates a bug (missing transition, typo).
+ * TSSL/TBAF lack equivalent high-signal heuristics -- unused functions there
+ * are typically intentional dead code or library helpers, so warnings would
+ * produce more noise than signal.
+ */
 export interface TDWarning {
     message: string;
     /** 1-based line number */

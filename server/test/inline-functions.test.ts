@@ -8,7 +8,7 @@ import * as fs from "fs";
 import * as path from "path";
 import { Project } from "ts-morph";
 import { generateInlineMacros, extractInlineFunctionsFromFiles } from "../src/tssl/inline-functions";
-import { isEnumConstant, collectReferencedIdentifiers } from "../src/tssl/export-ssl";
+import { isEnumConstant, collectReferencedIdentifiers } from "../src/tssl/emit";
 import type { InlineFunc } from "../src/tssl/types";
 
 describe("generateInlineMacros", () => {

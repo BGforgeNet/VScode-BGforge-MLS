@@ -1,10 +1,10 @@
 /**
- * Unit tests for weidu-d/format-core.ts - D file formatter.
+ * Unit tests for weidu-d/format/core.ts - D file formatter.
  */
 
 import { describe, expect, it, beforeAll } from "vitest";
 import { initParser, getParser } from "../../src/weidu-d/parser";
-import { formatDocument } from "../../src/weidu-d/format-core";
+import { formatDocument } from "../../src/weidu-d/format/core";
 
 beforeAll(async () => {
     await initParser();
@@ -16,7 +16,7 @@ function format(input: string): string {
     return formatDocument(tree.rootNode).text;
 }
 
-describe("weidu-d/format-core", () => {
+describe("weidu-d/format/core", () => {
     describe("EXTEND with position number (#N)", () => {
         it("preserves #N without inserting space", () => {
             const input = `EXTEND_TOP %dlg% %START_STATE% #4\n  + ~~ + @1 + g_item_type\nEND\n`;

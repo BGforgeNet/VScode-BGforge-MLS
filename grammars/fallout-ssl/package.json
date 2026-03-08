@@ -24,7 +24,7 @@
   "scripts": {
     "build": "tree-sitter generate && tree-sitter build --wasm",
     "generate:types": "pnpm exec dts-tree-sitter . > src/tree-sitter.d.ts && cp src/tree-sitter.d.ts ../../server/src/fallout-ssl/tree-sitter.d.ts",
-    "test": "./test.sh",
+    "test": "../../scripts/test-grammar.sh fallout-ssl",
     "lint": "eslint grammar.js",
     "playground": "tree-sitter playground"
   },

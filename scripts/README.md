@@ -40,7 +40,7 @@ bash server/test/td/test.sh                # Transpile .td samples, compare to e
 bash server/test/td/typecheck-samples.sh   # Type-check .td samples
 
 # Single grammar
-bash grammars/weidu-tp2/test.sh            # Test one grammar (any grammars/*/test.sh)
+cd grammars/weidu-tp2 && pnpm test         # Test one grammar (any grammars/*/)
 
 # Format samples
 pnpm test:format-samples                   # Format comparison + idempotency

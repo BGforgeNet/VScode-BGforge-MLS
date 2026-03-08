@@ -17,7 +17,7 @@ Six tree-sitter grammars for the supported languages. Four are used by the LSP s
 
 ```bash
 pnpm build:grammar        # Build all grammars to WASM
-bash grammars/weidu-tp2/test.sh   # Test a single grammar
+cd grammars/weidu-tp2 && pnpm test   # Test a single grammar
 pnpm test:grammars        # Test all grammars
 ```
 

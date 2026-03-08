@@ -2,8 +2,8 @@
  * Core formatting logic for Fallout SSL files.
  * Shared between LSP server and CLI.
  *
- * Control flow formatters are in format-control-flow.ts.
- * Expression formatters are in format-expressions.ts.
+ * Control flow formatters are in control-flow.ts.
+ * Expression formatters are in expressions.ts.
  */
 
 import type { Node as SyntaxNode } from "web-tree-sitter";
@@ -14,17 +14,17 @@ import {
     formatForStmt,
     formatForeachStmt,
     formatSwitchStmt,
-} from "./format-control-flow";
+} from "./control-flow";
 import {
     formatExpression,
     formatCallStmt,
     formatAssignment,
     formatExpressionStmt,
-} from "./format-expressions";
-import { SyntaxType } from "./tree-sitter.d";
+} from "./expressions";
+import { SyntaxType } from "../tree-sitter.d";
 
 // Re-export shared FormatOptions for backwards compatibility
-import type { FormatOptions } from "../shared/format-options";
+import type { FormatOptions } from "../../shared/format-options";
 export type { FormatOptions };
 
 const DEFAULT_OPTIONS: FormatOptions = {

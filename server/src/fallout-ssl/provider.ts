@@ -31,7 +31,7 @@ import { FALLOUT_JSDOC_TYPES } from "../shared/fallout-types";
 import { stripCommentsFalloutSsl } from "../shared/format-utils";
 import { getFormatOptions } from "../shared/format-options";
 import * as signature from "../shared/signature";
-import { formatDocument as formatAst } from "./format-core";
+import { formatDocument as formatAst } from "./format/core";
 import { initParser, isInitialized, parseWithCache } from "./parser";
 import { createFoldingRangesProvider } from "../shared/folding-ranges";
 import { getDocumentSymbols } from "./symbol";

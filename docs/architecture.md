@@ -215,15 +215,16 @@ activate()
 Plugins intercept tsserver calls for transpiler files. They run inside the tsserver
 process, not the extension host.
 
-**TSSL Plugin** (`plugins/tssl-plugin/src/index.ts`):
-- Suppresses TS6133 ("declared but never read") for engine procedure names
-- Appends engine procedure hover documentation from build-time generated JSON
+**TSSL Plugin** (`plugins/tssl-plugin/src/`):
+- `index.ts` — orchestration: creates Proxy, wires diagnostic filtering and hover enrichment
+- `filter-diagnostics.ts` — suppresses TS6133 ("declared but never read") for engine procedure names
+- `engine-proc-hover.ts` — appends engine procedure hover documentation from build-time generated JSON
 - Proxies `getSemanticDiagnostics`, `getSuggestionDiagnostics`, `getQuickInfoAtPosition`
 
-**TD Plugin** (`plugins/td-plugin/src/index.ts`):
-- Injects `td-runtime.d.ts` into the project file list (no tsconfig needed)
-- Excludes DOM lib to prevent browser types in completions
-- Filters completions: blocks ES2020 lib names in `.td` files, blocks TD names in non-`.td` files
+**TD Plugin** (`plugins/td-plugin/src/`):
+- `index.ts` — orchestration: creates Proxy, wires host overrides and completion filtering
+- `filter-completions.ts` — blocks ES2020 lib names in `.td` files, blocks TD runtime names in non-`.td` files
+- `inject-runtime.ts` — resolves `td-runtime.d.ts` path, injects it into the project file list, excludes DOM lib
 - Proxies `getCompletionsAtPosition`, overrides `getScriptFileNames`, `getCompilationSettings`
 
 ### Webview Panels
@@ -283,7 +284,10 @@ point tuple conversion (`[x, y]` -> `[x.y]`), @tra tag extraction.
 
 **Shared bundler** (`tbaf/bundle.ts`): esbuild-wasm with externalized `.d.ts` imports,
 enum transformation plugin, extensionless import resolution. Used by TBAF and TD
-directly; TSSL has a near-duplicate with added preserved-function tracking.
+directly; TSSL calls `bundleWithEsbuild()` directly with preserved-function tracking.
+TBAF/TD skip bundling for import-free files (`hasImports()` guard); TSSL always bundles
+because enums are a first-class feature, inline function extraction depends on bundling,
+and enum property expansion needs all bundled enum names.
 
 **Architecture differences**: TSSL emits directly from AST (no IR). TBAF uses a
 structured IR (`BAFBlock/Condition/Action`) with condition algebra (boolean to

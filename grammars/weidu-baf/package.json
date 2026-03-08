@@ -25,10 +25,9 @@
   "scripts": {
     "build": "tree-sitter generate && tree-sitter build --wasm",
     "generate:types": "pnpm exec dts-tree-sitter . > src/tree-sitter.d.ts && cp src/tree-sitter.d.ts ../../server/src/weidu-baf/tree-sitter.d.ts",
-    "test": "tree-sitter test",
+    "test": "../../scripts/test-grammar.sh weidu-baf",
     "lint": "eslint grammar.js",
-    "playground": "tree-sitter playground",
-    "format-samples": "for f in test/samples/*.baf; do node ../../server/out/format-cli.js \"$f\" > \"test/samples-expected/$(basename \"$f\")\"; done"
+    "playground": "tree-sitter playground"
   },
   "devDependencies": {
     "@asgerf/dts-tree-sitter": "^0.21.0",

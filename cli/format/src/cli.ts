@@ -9,17 +9,17 @@ import * as path from "path";
 import {
     formatDocument as formatSslDocument,
     FormatOptions as SslFormatOptions,
-} from "../../../server/src/fallout-ssl/format-core";
+} from "../../../server/src/fallout-ssl/format/core";
 import { initParser as initSslParser, getParser as getSslParser } from "../../../server/src/fallout-ssl/parser";
 import {
     formatDocument as formatBafDocument,
     FormatOptions as BafFormatOptions,
-} from "../../../server/src/weidu-baf/format-core";
+} from "../../../server/src/weidu-baf/format/core";
 import { initParser as initBafParser, getParser as getBafParser } from "../../../server/src/weidu-baf/parser";
 import {
     formatDocument as formatDDocument,
     FormatOptions as DFormatOptions,
-} from "../../../server/src/weidu-d/format-core";
+} from "../../../server/src/weidu-d/format/core";
 import { initParser as initDParser, getParser as getDParser } from "../../../server/src/weidu-d/parser";
 import {
     formatDocument as formatTp2Document,

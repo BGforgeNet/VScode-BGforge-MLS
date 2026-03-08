@@ -1,5 +1,5 @@
 /**
- * SSL export and statement processing for TSSL transpiler.
+ * SSL emission for TSSL transpiler.
  * Converts TypeScript AST to Fallout SSL output, handling all statement types.
  */
 

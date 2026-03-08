@@ -1366,5 +1366,5 @@ tree-sitter build --wasm
 ## Testing
 
 ```bash
-./test.sh
+pnpm test
 ```

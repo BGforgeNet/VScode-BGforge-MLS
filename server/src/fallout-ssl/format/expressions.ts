@@ -1,12 +1,12 @@
 /**
  * Expression formatters for Fallout SSL code.
- * Extracted from format-core.ts -- handles all expression-level formatting.
+ * Extracted from core.ts -- handles all expression-level formatting.
  */
 
 import type { Node as SyntaxNode } from "web-tree-sitter";
 
-import { getCtx, isComment, throwFormatError } from "./format-core";
-import { SyntaxType } from "./tree-sitter.d";
+import { getCtx, isComment, throwFormatError } from "./core";
+import { SyntaxType } from "../tree-sitter.d";
 
 
 /** Format an expression node to a string, with optional column tracking for line-breaking. */

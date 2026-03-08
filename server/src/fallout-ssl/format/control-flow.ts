@@ -1,13 +1,13 @@
 /**
  * Control flow formatters for Fallout SSL code.
- * Extracted from format-core.ts -- handles if, while, for, foreach, switch.
+ * Extracted from core.ts -- handles if, while, for, foreach, switch.
  */
 
 import type { Node as SyntaxNode } from "web-tree-sitter";
 
-import { getCtx, normalizeComment, formatNode, formatBlock } from "./format-core";
-import { formatExpression } from "./format-expressions";
-import { SyntaxType } from "./tree-sitter.d";
+import { getCtx, normalizeComment, formatNode, formatBlock } from "./core";
+import { formatExpression } from "./expressions";
+import { SyntaxType } from "../tree-sitter.d";
 
 
 export function formatIfStmt(node: SyntaxNode, depth: number, isElseIf: boolean = false): string {

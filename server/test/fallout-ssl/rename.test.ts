@@ -508,6 +508,93 @@ end
         });
     });
 
+    describe("provider rename dispatch (workspace-first with single-file fallback)", () => {
+        /**
+         * Simulates the provider's rename() method: try workspace rename first,
+         * fall back to single-file rename.
+         */
+        function providerRename(
+            text: string,
+            position: Position,
+            newName: string,
+            uri: string,
+            includeGraph: IncludeGraph,
+            symbolStore: Symbols,
+            getFileText: (uri: string) => string | null,
+            workspaceRoot: string | undefined,
+        ): WorkspaceEdit | null {
+            const wsResult = renameSymbolWorkspace(
+                text, position, newName, uri,
+                includeGraph, symbolStore,
+                getFileText,
+                workspaceRoot,
+            );
+            if (wsResult) {
+                return wsResult;
+            }
+            return renameSymbol(text, position, newName, uri);
+        }
+
+        function makeGetFileText(files: Record<string, string>): (uri: string) => string | null {
+            return (uri: string) => files[uri] ?? null;
+        }
+
+        function getEditsForUri(result: WorkspaceEdit | null, uri: string): TextEdit[] | undefined {
+            // Check documentChanges format (workspace rename)
+            if (result?.documentChanges) {
+                const docEdit = result.documentChanges.find(
+                    (dc): dc is TextDocumentEdit => TextDocumentEdit.is(dc) && dc.textDocument.uri === uri
+                );
+                return docEdit?.edits as TextEdit[] | undefined;
+            }
+            // Check changes format (single-file rename)
+            if (result?.changes?.[uri]) {
+                return result.changes[uri];
+            }
+            return undefined;
+        }
+
+        it("renames procedure from definition in header file across all consuming files", () => {
+            const headerUri = "file:///project/bug.h";
+            const sslUri = "file:///project/bug.ssl";
+
+            const headerText = `procedure rename_test begin
+end`;
+            const sslText = `#include "bug.h"
+
+procedure start begin
+   call rename_test;
+
+   display_msg("Hello");
+end`;
+
+            const graph = new IncludeGraph();
+            graph.updateFile(sslUri, [headerUri]);
+
+            const symbolStore = new Symbols();
+
+            // Rename from definition site in header file
+            const position: Position = { line: 0, character: 12 };
+            const result = providerRename(
+                headerText, position, "rename_test123", headerUri,
+                graph, symbolStore,
+                makeGetFileText({ [headerUri]: headerText, [sslUri]: sslText }),
+                "/project",
+            );
+
+            expect(result).not.toBeNull();
+
+            // Must rename in BOTH files, not just the header
+            const headerEdits = getEditsForUri(result, headerUri);
+            const sslEdits = getEditsForUri(result, sslUri);
+
+            expect(headerEdits).toBeDefined();
+            expect(sslEdits).toBeDefined();
+            expect(sslEdits!.length).toBe(1);
+            expect(sslEdits![0].newText).toBe("rename_test123");
+        });
+    });
+
     describe("renameSymbolWorkspace()", () => {
         /**
          * Helper: create a getFileText function from a map of uri -> text.

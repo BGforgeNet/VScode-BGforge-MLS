@@ -25,7 +25,7 @@
   "scripts": {
     "build": "tree-sitter generate && tree-sitter build --wasm",
     "generate:types": "pnpm exec dts-tree-sitter . > src/tree-sitter.d.ts && cp src/tree-sitter.d.ts ../../server/src/weidu-tp2/tree-sitter.d.ts",
-    "test": "tree-sitter test",
+    "test": "../../scripts/test-grammar.sh weidu-tp2",
     "lint": "eslint grammar.js",
     "playground": "tree-sitter playground"
   },
