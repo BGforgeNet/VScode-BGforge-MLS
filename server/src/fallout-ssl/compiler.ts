@@ -19,7 +19,6 @@ import {
     needsShell,
     parseCommandPath,
     ParseItemList,
-    ParseResult,
     pathToUri,
     removeTmpFile,
     reportCompileResult,
@@ -62,6 +61,24 @@ function fixWinePath(filePath: string) {
     return realPath;
 }
 
+/** Resolve a file path from compiler output, handling Wine paths and relative includes. */
+function resolveMatchFilePath(matchFile: string, fileDir: string): string {
+    const fixed = fixWinePath(matchFile);
+    return path.isAbsolute(fixed) ? fixed : path.join(fileDir, fixed);
+}
+
+/** Safely iterate regex matches, protecting against zero-width infinite loops. */
+function* execAll(regex: RegExp, text: string): Generator<RegExpExecArray> {
+    let match = regex.exec(text);
+    while (match !== null) {
+        if (match.index === regex.lastIndex) {
+            regex.lastIndex++;
+        }
+        yield match;
+        match = regex.exec(text);
+    }
+}
+
 /**
  * Parse compile.exe output with regex and return found matches.
  * `text` looks like this
@@ -83,87 +100,48 @@ function parseCompileOutput(text: string, uri: string) {
     const errors: ParseItemList = [];
     const warnings: ParseItemList = [];
 
-    // compile.exe may show errors and warnings for included files, not just current one
-    // So we need to get uri's for those
-    // They could be relative to the original file path
+    // compile.exe may show errors and warnings for included files, not just current one.
+    // They could be relative to the original file path.
     const filePath = uriToPath(uri);
     const fileDir = path.dirname(filePath);
 
     try {
-        let match = errorsRegex.exec(text);
-        while (match !== null) {
-            // This is necessary to avoid infinite loops with zero-width matches
-            if (match.index === errorsRegex.lastIndex) {
-                errorsRegex.lastIndex++;
-            }
+        for (const match of execAll(errorsRegex, text)) {
             const matchFile = match[2];
             const matchLine = match[3];
             const matchCol = match[4];
             const matchMsg = match[5];
             if (!matchFile || !matchLine || !matchMsg) continue;
 
-            const col = matchCol || "1";
-
-            // calculate uri for actual file where the error is found
-            const errorFile = fixWinePath(matchFile);
-            let errorFilePath: string;
-            if (path.isAbsolute(errorFile)) {
-                errorFilePath = errorFile;
-            } else {
-                errorFilePath = path.join(fileDir, errorFile);
-            }
-            const errorFileUri = pathToUri(errorFilePath);
-
             errors.push({
-                uri: errorFileUri,
+                uri: pathToUri(resolveMatchFilePath(matchFile, fileDir)),
                 line: parseInt(matchLine),
                 columnStart: 0,
-                columnEnd: parseInt(col) - 1,
+                columnEnd: parseInt(matchCol || "1") - 1,
                 message: matchMsg,
             });
-            match = errorsRegex.exec(text);
         }
 
-        match = warningsRegex.exec(text);
-        while (match !== null) {
-            // This is necessary to avoid infinite loops with zero-width matches
-            if (match.index === warningsRegex.lastIndex) {
-                warningsRegex.lastIndex++;
-            }
+        for (const match of execAll(warningsRegex, text)) {
             const matchFile = match[1];
             const matchLine = match[2];
             const matchCol = match[3];
             const matchMsg = match[4];
             if (!matchFile || !matchLine || !matchMsg) continue;
 
-            const col = matchCol || "0";
             const line = parseInt(matchLine);
-            const column_end = textDocument.offsetAt({ line: line, character: 0 }) - 1;
-
-            // calculate uri for actual file where the warning is found
-            const errorFile = fixWinePath(matchFile);
-            let errorFilePath: string;
-            if (path.isAbsolute(errorFile)) {
-                errorFilePath = errorFile;
-            } else {
-                errorFilePath = path.join(fileDir, errorFile);
-            }
-            const errorFileUri = pathToUri(errorFilePath);
-
             warnings.push({
-                uri: errorFileUri,
-                line: line,
-                columnStart: parseInt(col),
-                columnEnd: column_end,
+                uri: pathToUri(resolveMatchFilePath(matchFile, fileDir)),
+                line,
+                columnStart: parseInt(matchCol || "0"),
+                columnEnd: textDocument.offsetAt({ line, character: 0 }) - 1,
                 message: matchMsg,
             });
-            match = warningsRegex.exec(text);
         }
     } catch (err) {
         conlog(err);
     }
-    const result: ParseResult = { errors: errors, warnings: warnings };
-    return result;
+    return { errors, warnings };
 }
 
 function sendDiagnostics(uri: string, outputText: string, tmpUri: string) {
@@ -172,6 +150,9 @@ function sendDiagnostics(uri: string, outputText: string, tmpUri: string) {
 }
 
 let successfulCompilerPath: string | null = null;
+
+/** Track in-flight compilations per URI so we can cancel stale ones. */
+const activeCompiles = new Map<string, AbortController>();
 
 /**
  * Reset cached compiler path. Exported for testing only — module-level
@@ -208,10 +189,11 @@ function runExternalCompiler(
     compileOptions: readonly string[],
     cwdTo: string,
     dstPath: string,
+    signal?: AbortSignal,
 ) {
     const { executable, prefixArgs } = parseCommandPath(compilePath);
     const allArgs = [...prefixArgs, ...compileOptions, TMP_SSL_NAME, "-o", dstPath];
-    return runProcess(executable, allArgs, cwdTo);
+    return runProcess(executable, allArgs, cwdTo, signal);
 }
 
 export async function compile(
@@ -240,7 +222,10 @@ export async function compile(
     }
     conlog(`compiling ${baseName}...`);
 
-    await fs.promises.writeFile(tmpPath, text);
+    // Cancel any in-flight compilation for this URI before starting a new one
+    activeCompiles.get(uri)?.abort();
+    const controller = new AbortController();
+    activeCompiles.set(uri, controller);
 
     // Errors from the compiler (e.g. WASM crash) propagate to callers.
     // Fire-and-forget call sites (server.ts onDidSave/onDidChangeContent) use
@@ -248,10 +233,9 @@ export async function compile(
     // call sites (e.g. TSSL transpile chain) catch and report them explicitly.
     // The finally block guarantees tmp file cleanup in both cases.
     try {
+        await fs.promises.writeFile(tmpPath, text);
         let useBuiltInCompiler = sslSettings.useBuiltInCompiler;
 
-        // TODO: when user declines the fallback prompt, execution falls through to
-        // runExternalCompiler which will also fail. Should return early instead.
         if (!useBuiltInCompiler && !(await checkExternalCompiler(sslSettings.compilePath))) {
             const response = await showErrorWithActions(
                 `Failed to run '${sslSettings.compilePath}'! Use built-in compiler this time?`,
@@ -260,6 +244,8 @@ export async function compile(
             );
             if (response?.id === "yes") {
                 useBuiltInCompiler = true;
+            } else {
+                return;
             }
         }
 
@@ -271,7 +257,11 @@ export async function compile(
                 outputFileName: dstPath,
                 options: sslSettings.compileOptions,
                 headersDir: sslSettings.headersDirectory,
+                signal: controller.signal,
             });
+            if (controller.signal.aborted) {
+                return;
+            }
             if (returnCode === 0) {
                 if (interactive) {
                     showInfo(`Compiled ${baseName}.`);
@@ -290,17 +280,24 @@ export async function compile(
             compileOptions,
             cwdTo,
             dstPath,
+            controller.signal,
         );
 
-        const parseResult = parseCompileOutput(stdout, uri);
+        // Skip stale results if this compile was cancelled by a newer one
+        if (controller.signal.aborted) {
+            return;
+        }
+
+        let parseResult = parseCompileOutput(stdout, uri);
 
         if (err && parseResult.errors.length === 0) {
-            addFallbackDiagnostic(parseResult, err, pathToUri(filepath), stdout);
+            parseResult = addFallbackDiagnostic(parseResult, err, pathToUri(filepath), stdout);
         }
 
         reportCompileResult(parseResult, interactive, `Compiled ${baseName}.`, `Failed to compile ${baseName}!`);
         sendParseResult(parseResult, uri, tmpUri);
     } finally {
+        activeCompiles.delete(uri);
         await removeTmpFile(tmpPath);
     }
 }

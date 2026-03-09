@@ -473,8 +473,6 @@ documents.onDidChangeContent(async (event) => {
     const langId = event.document.languageId;
     const text = event.document.getText();
 
-    clearDiagnostics(uri);
-
     // Keep provider data (function index, etc.) and translation data up to date as content changes.
     // This ensures hover/definition work immediately after edits like rename.
     // Debounced to avoid excessive reloads during rapid typing.
@@ -497,6 +495,8 @@ documents.onDidChangeContent(async (event) => {
     if (renameAffectedUris.has(normalizeUri(uri))) {
         return;
     }
+
+    clearDiagnostics(uri);
 
     const validateOnChange = (await getDocumentSettings(uri)).validateOnChange;
     if (validateOnChange) {

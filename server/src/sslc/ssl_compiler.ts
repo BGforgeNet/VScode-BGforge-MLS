@@ -22,6 +22,7 @@ export async function ssl_compile(opts: {
     options: string;
     headersDir: string;
     interactive: boolean;
+    signal?: AbortSignal;
 }) {
     if (!isSslcAvailable()) {
         const msg = "Built-in SSL compiler not available. Install the sslc-emscripten-noderawfs package or configure an external compiler path in settings.";
@@ -121,5 +122,16 @@ export async function ssl_compile(opts: {
                 stderr: stderr.join(""),
             });
         });
+
+        // Kill the child process if the signal is aborted (e.g., newer compile supersedes this one).
+        // Must be registered after the "close" listener so that synchronous kills (already-aborted
+        // signals) still resolve the promise.
+        if (opts.signal) {
+            if (opts.signal.aborted) {
+                p.kill();
+            } else {
+                opts.signal.addEventListener("abort", () => { if (!p.killed) p.kill(); }, { once: true });
+            }
+        }
     });
 }

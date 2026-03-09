@@ -295,12 +295,13 @@ export function runProcess(
     executable: string,
     args: readonly string[],
     cwd: string,
+    signal?: AbortSignal,
 ): Promise<{ err: cp.ExecFileException | null; stdout: string }> {
     const shell = needsShell(executable);
     conlog(`${executable} ${args.join(" ")}`);
 
     return new Promise((resolve) => {
-        cp.execFile(executable, [...args], { cwd, shell }, (err, stdout: string, stderr: string) => {
+        cp.execFile(executable, [...args], { cwd, shell, signal }, (err, stdout: string, stderr: string) => {
             conlog("stdout: " + stdout);
             if (stderr) {
                 conlog("stderr: " + stderr);
@@ -313,20 +314,23 @@ export function runProcess(
     });
 }
 
-/** Add a fallback diagnostic when a compiler fails but its output wasn't parseable. */
+/** Create a new ParseResult with a fallback diagnostic appended. Used when a compiler fails but its output wasn't parseable. */
 export function addFallbackDiagnostic(
     parseResult: ParseResult,
     err: cp.ExecFileException,
     uri: string,
     stdout: string,
-) {
-    parseResult.errors.push({
-        uri,
-        line: 1,
-        columnStart: 0,
-        columnEnd: 0,
-        message: stdout || err.message,
-    });
+): ParseResult {
+    return {
+        errors: [...parseResult.errors, {
+            uri,
+            line: 1,
+            columnStart: 0,
+            columnEnd: 0,
+            message: stdout || err.message,
+        }],
+        warnings: parseResult.warnings,
+    };
 }
 
 /** Show interactive success/failure message based on parse results. */
@@ -337,6 +341,8 @@ export function reportCompileResult(
     failMsg: string,
 ) {
     if (!interactive) return;
+    // Intentional: warnings (e.g. from sslc) indicate real issues that should be surfaced
+    // as failures in interactive mode, so users don't miss them.
     if (parseResult.errors.length > 0 || parseResult.warnings.length > 0) {
         showError(failMsg);
     } else {

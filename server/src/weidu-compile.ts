@@ -3,6 +3,7 @@
  * Used by BAF, D, and TP2 providers for parse-checking.
  */
 
+import * as crypto from "crypto";
 import * as fs from "fs";
 import * as path from "path";
 import {
@@ -21,6 +22,9 @@ import {
 } from "./common";
 import { showError, showInfo, showWarning } from "./user-messages";
 import { WeiDUsettings } from "./settings";
+
+/** Track in-flight compilations per URI so we can cancel stale ones. */
+const activeCompiles = new Map<string, AbortController>();
 
 const valid_extensions = new Map([
     [".tp2", "tp2"],
@@ -99,10 +103,12 @@ export async function compile(uri: string, settings: WeiDUsettings, interactive 
     const ext = path.parse(filePath).ext.toLowerCase();
 
     /**
-     * Preprocessed file.
+     * Preprocessed file with unique name per URI to prevent concurrent compilations
+     * of same-extension files from overwriting each other.
      * Weidu used to have issues with non-baf extensions, ref https://github.com/WeiDUorg/weidu/issues/237
      */
-    const tmpFile = path.join(tmpDir, `tmp${ext}`);
+    const uriHash = crypto.createHash("md5").update(uri).digest("hex").slice(0, 8);
+    const tmpFile = path.join(tmpDir, `tmp-${uriHash}${ext}`);
     const tmpUri = pathToUri(tmpFile);
 
     const weiduArgs = ["--no-exit-pause", "--noautoupdate", "--debug-assign", "--parse-check"];
@@ -137,12 +143,22 @@ export async function compile(uri: string, settings: WeiDUsettings, interactive 
     // parse
     conlog(`parsing ${baseName}...`);
 
+    // Cancel any in-flight compilation for this URI before starting a new one
+    activeCompiles.get(uri)?.abort();
+    const controller = new AbortController();
+    activeCompiles.set(uri, controller);
+
     try {
         await fs.promises.writeFile(tmpFile, text);
         const allArgs = [...weiduPrefixArgs, ...weiduArgs, weiduType, tmpFile];
-        const { err, stdout } = await runProcess(weiduPath, allArgs, cwdTo);
+        const { err, stdout } = await runProcess(weiduPath, allArgs, cwdTo, controller.signal);
 
-        const parseResult = parseWeiduOutput(stdout);
+        // Skip stale results if this compile was cancelled by a newer one
+        if (controller.signal.aborted) {
+            return;
+        }
+
+        let parseResult = parseWeiduOutput(stdout);
 
         let showedSpecificError = false;
         if (err && parseResult.errors.length === 0) {
@@ -150,7 +166,7 @@ export async function compile(uri: string, settings: WeiDUsettings, interactive 
                 showError(`WeiDU not found at '${weiduPath}'. Check bgforge.mls.weidu.path setting.`);
                 showedSpecificError = true;
             }
-            addFallbackDiagnostic(parseResult, err, pathToUri(filePath), stdout);
+            parseResult = addFallbackDiagnostic(parseResult, err, pathToUri(filePath), stdout);
         }
 
         // Skip generic message when we already showed a specific one (e.g. ENOENT)
@@ -161,6 +177,7 @@ export async function compile(uri: string, settings: WeiDUsettings, interactive 
         // Always send diagnostics: clears stale errors on success, reports new ones on failure
         sendParseResult(parseResult, uri, tmpUri);
     } finally {
+        activeCompiles.delete(uri);
         await removeTmpFile(tmpFile);
     }
 }

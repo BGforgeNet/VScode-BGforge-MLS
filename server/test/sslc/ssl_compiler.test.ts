@@ -23,9 +23,17 @@ function createMockProcess() {
     const proc = new EventEmitter() as EventEmitter & {
         stdout: EventEmitter;
         stderr: EventEmitter;
+        kill: ReturnType<typeof vi.fn>;
+        killed: boolean;
     };
     proc.stdout = new EventEmitter();
     proc.stderr = new EventEmitter();
+    proc.killed = false;
+    proc.kill = vi.fn(() => {
+        proc.killed = true;
+        // Simulate OS behavior: killed process emits close with null code
+        proc.emit("close", null);
+    });
     return proc;
 }
 
@@ -262,6 +270,48 @@ describe("ssl_compile", () => {
             expect(forkOpts.execArgv).toEqual([]);
             expect(forkOpts.env).toBeUndefined();
             expect(forkOpts.cwd).toBe("/tmp/build");
+        });
+    });
+
+    describe("signal cancellation", () => {
+        it("kills the child process when signal is aborted", async () => {
+            const proc = createMockProcess();
+            mockFork.mockReturnValue(proc);
+            const controller = new AbortController();
+
+            const promise = ssl_compile({ ...baseOpts, signal: controller.signal });
+
+            controller.abort();
+            const result = await promise;
+
+            expect(proc.kill).toHaveBeenCalled();
+            expect(result.returnCode).toBe(1);
+        });
+
+        it("does not kill the process when signal is not aborted", async () => {
+            const proc = createMockProcess();
+            mockFork.mockReturnValue(proc);
+            const controller = new AbortController();
+
+            const promise = ssl_compile({ ...baseOpts, signal: controller.signal });
+            proc.emit("close", 0);
+            const result = await promise;
+
+            expect(proc.kill).not.toHaveBeenCalled();
+            expect(result.returnCode).toBe(0);
+        });
+
+        it("handles already-aborted signal before fork", async () => {
+            const proc = createMockProcess();
+            mockFork.mockReturnValue(proc);
+            const controller = new AbortController();
+            controller.abort();
+
+            const promise = ssl_compile({ ...baseOpts, signal: controller.signal });
+            const result = await promise;
+
+            expect(proc.kill).toHaveBeenCalled();
+            expect(result.returnCode).toBe(1);
         });
     });
 

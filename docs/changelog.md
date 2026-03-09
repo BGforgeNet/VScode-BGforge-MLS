@@ -8,15 +8,19 @@ SSL, TP2 compile/validate:
 - Fixed transpile chains not awaiting external compiler.
 - Improved compilation reliability: debouncing, async I/O, guaranteed temp file cleanup.
 - Fixed diagnostics silently cleared when external compiler fails with unparseable output.
+- In-flight compiler processes are now cancelled when a new compilation starts for the same file.
 
 Fallout SSL
 
 - `.tmp.ssl` is now hidden by default from VS Code explorer.
+- Fixed SSL compiler attempting external compile after user declines built-in fallback prompt.
+- Fixed temp file leak when `writeFile` fails before compilation.
 
 WeiDU
 
 - Added actionable error message when WeiDU binary is not found.
 - Improved error messages: show near text + up to 4 detail lines instead of full stdout.
+- Fixed concurrent compilations of same-extension files overwriting shared temp file.
 
 ## 3.1.3
 

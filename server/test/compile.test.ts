@@ -193,6 +193,22 @@ describe("compile dispatcher", () => {
             );
         });
 
+        it("clears diagnostics before TBAF transpile", async () => {
+            mockTbafCompile.mockResolvedValue("/output/test.baf");
+
+            await compile("file:///test.tbaf", "typescript", false, "tbaf content");
+
+            // clearDiagnostics sends empty diagnostics array
+            expect(mockSendDiagnostics).toHaveBeenCalledWith({
+                uri: "file:///test.tbaf",
+                diagnostics: [],
+            });
+            // And it should happen before the transpile
+            const clearCallOrder = mockSendDiagnostics.mock.invocationCallOrder[0];
+            const tbafCallOrder = mockTbafCompile.mock.invocationCallOrder[0];
+            expect(clearCallOrder).toBeLessThan(tbafCallOrder!);
+        });
+
         it("does not fall through to unknown-language after successful TBAF transpile", async () => {
             mockTbafCompile.mockResolvedValue("/output/test.baf");
 

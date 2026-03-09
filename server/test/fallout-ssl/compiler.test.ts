@@ -199,6 +199,19 @@ describe("fallout-ssl compiler", () => {
             await compile("file:///project/test.ssl", baseSettings, false, "code");
         });
 
+        it("cleans up tmp file when writeFile throws", async () => {
+            mockWriteFile.mockRejectedValue(new Error("ENOSPC"));
+
+            await expect(
+                compile("file:///project/test.ssl", baseSettings, false, "code")
+            ).rejects.toThrow("ENOSPC");
+
+            expect(mockBuiltinCompiler).not.toHaveBeenCalled();
+            expect(mockUnlink).toHaveBeenCalledWith(
+                expect.stringContaining(TMP_SSL_NAME)
+            );
+        });
+
         it("logs and swallows non-ENOENT cleanup errors instead of rethrowing", async () => {
             const eperm = Object.assign(new Error("EPERM"), { code: "EPERM" });
             mockUnlink.mockRejectedValue(eperm);
@@ -381,7 +394,7 @@ describe("fallout-ssl compiler", () => {
             expect(mockBuiltinCompiler).toHaveBeenCalled();
         });
 
-        it("skips compilation when external compiler check fails and user declines", async () => {
+        it("returns early when external compiler check fails and user declines", async () => {
             mockExecFile.mockImplementation((...args: unknown[]) => {
                 const lastArg = args[args.length - 1];
                 if (typeof lastArg === "function") {
@@ -393,6 +406,26 @@ describe("fallout-ssl compiler", () => {
             await compile("file:///project/test.ssl", externalSettings, false, "code");
 
             expect(mockBuiltinCompiler).not.toHaveBeenCalled();
+            // Should not attempt external compile either (only the --version check)
+            expect(mockExecFile).toHaveBeenCalledTimes(1);
+            // Should not send any diagnostics
+            expect(mockSendParseResult).not.toHaveBeenCalled();
+        });
+
+        it("returns early when user dismisses the fallback prompt (undefined response)", async () => {
+            mockExecFile.mockImplementation((...args: unknown[]) => {
+                const lastArg = args[args.length - 1];
+                if (typeof lastArg === "function") {
+                    (lastArg as (err: Error) => void)(new Error("not found"));
+                }
+            });
+            mockShowErrorWithActions.mockResolvedValue(undefined);
+
+            await compile("file:///project/test.ssl", externalSettings, false, "code");
+
+            expect(mockBuiltinCompiler).not.toHaveBeenCalled();
+            expect(mockExecFile).toHaveBeenCalledTimes(1);
+            expect(mockSendParseResult).not.toHaveBeenCalled();
         });
     });
 });

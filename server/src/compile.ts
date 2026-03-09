@@ -74,6 +74,7 @@ export async function compile(uri: string, langId: string, interactive = false, 
             return;
         }
         if (uri.toLowerCase().endsWith(EXT_TBAF)) {
+            clearDiagnostics(uri);
             try {
                 const bafPath = await tbaf.compile(uri, text);
                 const bafName = path.basename(bafPath);

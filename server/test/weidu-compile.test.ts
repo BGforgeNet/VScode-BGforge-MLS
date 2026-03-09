@@ -195,9 +195,40 @@ describe("weidu-compile", () => {
             await compile("file:///test.tp2", baseSettings, false, "my content");
 
             expect(mockWriteFile).toHaveBeenCalledWith(
-                expect.stringContaining("tmp.tp2"),
+                expect.stringMatching(/\.tp2$/),
                 "my content"
             );
+        });
+    });
+
+    describe("compile() - unique tmp filenames", () => {
+        beforeEach(() => {
+            setupExecFile(null, "OK");
+        });
+
+        it("uses different tmp filenames for different URIs", async () => {
+            await compile("file:///project/a.tp2", baseSettings, false, "content a");
+            await compile("file:///project/b.tp2", baseSettings, false, "content b");
+
+            const pathA = mockWriteFile.mock.calls[0][0] as string;
+            const pathB = mockWriteFile.mock.calls[1][0] as string;
+            expect(pathA).not.toBe(pathB);
+        });
+
+        it("preserves the original file extension in tmp filename", async () => {
+            await compile("file:///test.tp2", baseSettings, false, "content");
+
+            const tmpPath = mockWriteFile.mock.calls[0][0] as string;
+            expect(tmpPath).toMatch(/\.tp2$/);
+        });
+
+        it("uses the same tmp filename for the same URI", async () => {
+            await compile("file:///test.tp2", baseSettings, false, "content 1");
+            await compile("file:///test.tp2", baseSettings, false, "content 2");
+
+            const path1 = mockWriteFile.mock.calls[0][0] as string;
+            const path2 = mockWriteFile.mock.calls[1][0] as string;
+            expect(path1).toBe(path2);
         });
     });
 
@@ -235,7 +266,7 @@ describe("weidu-compile", () => {
             await compile("file:///test.tp2", baseSettings, false, "content");
 
             expect(mockUnlink).toHaveBeenCalledWith(
-                expect.stringContaining("tmp.tp2")
+                expect.stringMatching(/\.tp2$/)
             );
         });
 
@@ -245,7 +276,7 @@ describe("weidu-compile", () => {
             await compile("file:///test.tp2", baseSettings, false, "content");
 
             expect(mockUnlink).toHaveBeenCalledWith(
-                expect.stringContaining("tmp.tp2")
+                expect.stringMatching(/\.tp2$/)
             );
         });
 
@@ -267,7 +298,7 @@ describe("weidu-compile", () => {
 
             expect(mockExecFile).not.toHaveBeenCalled();
             expect(mockUnlink).toHaveBeenCalledWith(
-                expect.stringContaining("tmp.tp2")
+                expect.stringMatching(/\.tp2$/)
             );
         });
 

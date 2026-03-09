@@ -5,6 +5,11 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
 
 const mockSendDiagnostics = vi.fn();
+const mockExecFile = vi.fn();
+
+vi.mock("child_process", () => ({
+    execFile: (...args: unknown[]) => mockExecFile(...args),
+}));
 
 // Mock lsp-connection to provide a controllable connection
 vi.mock("../src/lsp-connection", () => ({
@@ -14,7 +19,7 @@ vi.mock("../src/lsp-connection", () => ({
     }),
 }));
 
-import { symbolAtPosition, sendParseResult, isSubpath, expandHome, parseCommandPath, needsShell, errorMessage, type ParseResult } from "../src/common";
+import { symbolAtPosition, sendParseResult, isSubpath, expandHome, parseCommandPath, needsShell, errorMessage, addFallbackDiagnostic, runProcess, type ParseResult } from "../src/common";
 
 describe("symbolAtPosition", () => {
     it("returns word under cursor", () => {
@@ -346,5 +351,121 @@ describe("needsShell", () => {
 
     it("returns false for empty string", () => {
         expect(needsShell("")).toBe(false);
+    });
+});
+
+describe("addFallbackDiagnostic", () => {
+    it("returns a new ParseResult with the fallback error appended", () => {
+        const original: ParseResult = { errors: [], warnings: [] };
+        const err = { message: "Command failed" } as import("child_process").ExecFileException;
+
+        const result = addFallbackDiagnostic(original, err, "file:///test.tp2", "");
+
+        expect(result.errors).toHaveLength(1);
+        expect(result.errors[0].message).toBe("Command failed");
+        expect(result.errors[0].uri).toBe("file:///test.tp2");
+        expect(result.errors[0].line).toBe(1);
+    });
+
+    it("does not mutate the original ParseResult", () => {
+        const original: ParseResult = {
+            errors: [{ uri: "file:///a.tp2", line: 5, columnStart: 0, columnEnd: 10, message: "existing" }],
+            warnings: [],
+        };
+        const err = { message: "new error" } as import("child_process").ExecFileException;
+
+        const result = addFallbackDiagnostic(original, err, "file:///b.tp2", "");
+
+        expect(original.errors).toHaveLength(1);
+        expect(result.errors).toHaveLength(2);
+        expect(result).not.toBe(original);
+    });
+
+    it("uses stdout as message when stdout is non-empty", () => {
+        const err = { message: "exit code 1" } as import("child_process").ExecFileException;
+
+        const result = addFallbackDiagnostic(
+            { errors: [], warnings: [] }, err, "file:///test.tp2", "Some unexpected output"
+        );
+
+        expect(result.errors[0].message).toBe("Some unexpected output");
+    });
+
+    it("uses err.message as message when stdout is empty", () => {
+        const err = { message: "Command failed" } as import("child_process").ExecFileException;
+
+        const result = addFallbackDiagnostic(
+            { errors: [], warnings: [] }, err, "file:///test.tp2", ""
+        );
+
+        expect(result.errors[0].message).toBe("Command failed");
+    });
+
+    it("preserves existing errors and warnings from input", () => {
+        const original: ParseResult = {
+            errors: [{ uri: "file:///a.tp2", line: 1, columnStart: 0, columnEnd: 5, message: "err1" }],
+            warnings: [{ uri: "file:///a.tp2", line: 2, columnStart: 0, columnEnd: 5, message: "warn1" }],
+        };
+        const err = { message: "fallback" } as import("child_process").ExecFileException;
+
+        const result = addFallbackDiagnostic(original, err, "file:///b.tp2", "");
+
+        expect(result.errors).toHaveLength(2);
+        expect(result.errors[0].message).toBe("err1");
+        expect(result.errors[1].message).toBe("fallback");
+        expect(result.warnings).toHaveLength(1);
+        expect(result.warnings[0].message).toBe("warn1");
+    });
+});
+
+describe("runProcess", () => {
+    beforeEach(() => {
+        mockExecFile.mockReset();
+    });
+
+    it("passes signal option to execFile when provided", async () => {
+        const controller = new AbortController();
+        mockExecFile.mockImplementation((...args: unknown[]) => {
+            const lastArg = args[args.length - 1];
+            if (typeof lastArg === "function") {
+                (lastArg as (err: null, stdout: string, stderr: string) => void)(null, "ok", "");
+            }
+        });
+
+        await runProcess("echo", ["hello"], ".", controller.signal);
+
+        const options = mockExecFile.mock.calls[0][2] as { signal?: AbortSignal };
+        expect(options.signal).toBe(controller.signal);
+    });
+
+    it("does not include signal when not provided", async () => {
+        mockExecFile.mockImplementation((...args: unknown[]) => {
+            const lastArg = args[args.length - 1];
+            if (typeof lastArg === "function") {
+                (lastArg as (err: null, stdout: string, stderr: string) => void)(null, "ok", "");
+            }
+        });
+
+        await runProcess("echo", ["hello"], ".");
+
+        const options = mockExecFile.mock.calls[0][2] as { signal?: AbortSignal };
+        expect(options.signal).toBeUndefined();
+    });
+
+    it("resolves with abort error when signal is aborted", async () => {
+        const controller = new AbortController();
+        mockExecFile.mockImplementation((...args: unknown[]) => {
+            const lastArg = args[args.length - 1];
+            if (typeof lastArg === "function") {
+                const abortError = Object.assign(new Error("aborted"), { code: "ABORT_ERR" });
+                (lastArg as (err: Error, stdout: string, stderr: string) => void)(abortError, "", "");
+            }
+        });
+
+        controller.abort();
+        const { err } = await runProcess("echo", ["hello"], ".", controller.signal);
+
+        expect(err).toBeTruthy();
+        expect((err as NodeJS.ErrnoException).code).toBe("ABORT_ERR");
     });
 });
