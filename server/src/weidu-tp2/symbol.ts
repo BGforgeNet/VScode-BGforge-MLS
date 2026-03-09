@@ -131,10 +131,12 @@ function extractVarNameNode(node: Node): Node | null {
 }
 
 /**
- * Extract file-level variable symbols from a top-level node.
+ * Extract file-level variable symbols from a node, recursing into children.
+ * TP2 variables are global — assignments inside conditionals/loops are still file-level.
+ * Skips function/macro definitions (those have their own scope via collectBodyVars).
  * Uses `seen` set to deduplicate — only the first occurrence of each variable is collected.
  */
-function extractFileLevelVar(node: Node, seen: Set<string>): DocumentSymbol[] {
+function extractFileLevelVars(node: Node, seen: Set<string>): DocumentSymbol[] {
     const results: DocumentSymbol[] = [];
 
     if (FILE_LEVEL_VAR_TYPES.has(node.type)) {
@@ -156,6 +158,13 @@ function extractFileLevelVar(node: Node, seen: Set<string>): DocumentSymbol[] {
             seen.add(valueNode.text);
             const sym = makeVarSymbol(node, valueNode);
             if (sym) results.push(sym);
+        }
+    }
+
+    // Recurse into children, skipping function/macro definitions (separate scope).
+    for (const child of node.children) {
+        if (!isFunctionDef(child.type)) {
+            results.push(...extractFileLevelVars(child, seen));
         }
     }
 
@@ -256,7 +265,7 @@ export function getDocumentSymbols(text: string): DocumentSymbol[] {
                 });
             }
         } else {
-            symbols.push(...extractFileLevelVar(node, fileLevelSeen));
+            symbols.push(...extractFileLevelVars(node, fileLevelSeen));
         }
     }
 

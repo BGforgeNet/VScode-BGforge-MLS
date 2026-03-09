@@ -252,6 +252,43 @@ describe("weidu-tp2: getDocumentSymbols", () => {
         expect(names).toContain("nested_var");
     });
 
+    it("returns vars from inside ACTION_IF as file-level symbols", () => {
+        const text = `ACTION_IF 1 BEGIN
+            OUTER_SPRINT lang_dir ~foo~
+        END`;
+        const symbols = getDocumentSymbols(text);
+        expect(symbols.find(s => s.name === "lang_dir")).toBeDefined();
+    });
+
+    it("returns vars from nested conditionals as file-level symbols", () => {
+        const text = `ACTION_IF 1 BEGIN
+            ACTION_IF 1 BEGIN
+                OUTER_SET deep_var = 1
+            END
+        END`;
+        const symbols = getDocumentSymbols(text);
+        expect(symbols.find(s => s.name === "deep_var")).toBeDefined();
+    });
+
+    it("does not collect function body vars as file-level symbols", () => {
+        const text = `DEFINE_ACTION_FUNCTION my_func BEGIN
+            OUTER_SET inner_var = 1
+        END`;
+        const symbols = getDocumentSymbols(text);
+        const fileLevelNames = symbols.filter(s => s.kind !== SymbolKind.Function).map(s => s.name);
+        expect(fileLevelNames).not.toContain("inner_var");
+    });
+
+    it("first occurrence wins across top-level and nested vars", () => {
+        const text = `OUTER_SET x = 1
+ACTION_IF 1 BEGIN
+    OUTER_SET x = 2
+END`;
+        const symbols = getDocumentSymbols(text);
+        const xSymbols = symbols.filter(s => s.name === "x");
+        expect(xSymbols).toHaveLength(1);
+    });
+
     it("deduplicates file-level variables by name (first occurrence wins)", () => {
         const text = `OUTER_SET x = 1
 OUTER_SET x = 2
