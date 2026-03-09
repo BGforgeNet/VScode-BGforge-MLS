@@ -1,8 +1,10 @@
 /**
  * Common utilities shared across the language server.
- * Includes logging, file path manipulation, glob helpers, and diagnostic creation.
+ * Includes logging, file path manipulation, glob helpers, diagnostic creation,
+ * and shared compilation infrastructure (process runner, fallback diagnostics, result reporting).
  */
 
+import * as cp from "child_process";
 import * as fg from "fast-glob";
 import * as fs from "fs";
 import { pathToFileURL } from "node:url";
@@ -11,6 +13,7 @@ import * as path from "path";
 import { fileURLToPath } from "url";
 import { Diagnostic, DiagnosticSeverity, Position } from "vscode-languageserver/node";
 import { getConnection } from "./lsp-connection";
+import { showError, showInfo } from "./user-messages";
 
 
 export const tmpDir = path.join(os.tmpdir(), "bgforge-mls");
@@ -274,4 +277,69 @@ function onlyDigits(value: string) {
 /** Extract a human-readable message from an unknown caught value. */
 export function errorMessage(error: unknown): string {
     return error instanceof Error ? error.message : String(error);
+}
+
+/** Remove a tmp file, logging errors instead of throwing (cleanup must not mask compiler results). */
+export async function removeTmpFile(tmpPath: string) {
+    try {
+        await fs.promises.unlink(tmpPath);
+    } catch (err) {
+        if ((err as NodeJS.ErrnoException).code !== "ENOENT") {
+            conlog(`Failed to clean up ${tmpPath}: ${err}`);
+        }
+    }
+}
+
+/** Run an external process and return a promise that resolves when it finishes. */
+export function runProcess(
+    executable: string,
+    args: readonly string[],
+    cwd: string,
+): Promise<{ err: cp.ExecFileException | null; stdout: string }> {
+    const shell = needsShell(executable);
+    conlog(`${executable} ${args.join(" ")}`);
+
+    return new Promise((resolve) => {
+        cp.execFile(executable, [...args], { cwd, shell }, (err, stdout: string, stderr: string) => {
+            conlog("stdout: " + stdout);
+            if (stderr) {
+                conlog("stderr: " + stderr);
+            }
+            if (err) {
+                conlog("error: " + err.message);
+            }
+            resolve({ err, stdout });
+        });
+    });
+}
+
+/** Add a fallback diagnostic when a compiler fails but its output wasn't parseable. */
+export function addFallbackDiagnostic(
+    parseResult: ParseResult,
+    err: cp.ExecFileException,
+    uri: string,
+    stdout: string,
+) {
+    parseResult.errors.push({
+        uri,
+        line: 1,
+        columnStart: 0,
+        columnEnd: 0,
+        message: stdout || err.message,
+    });
+}
+
+/** Show interactive success/failure message based on parse results. */
+export function reportCompileResult(
+    parseResult: ParseResult,
+    interactive: boolean,
+    successMsg: string,
+    failMsg: string,
+) {
+    if (!interactive) return;
+    if (parseResult.errors.length > 0 || parseResult.warnings.length > 0) {
+        showError(failMsg);
+    } else {
+        showInfo(successMsg);
+    }
 }

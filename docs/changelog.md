@@ -2,12 +2,21 @@
 
 ## 3.1.4
 
+SSL, TP2 compile/validate:
+
+- Fixed possible race conditions.
+- Fixed transpile chains not awaiting external compiler.
+- Improved compilation reliability: debouncing, async I/O, guaranteed temp file cleanup.
+- Fixed diagnostics silently cleared when external compiler fails with unparseable output.
+
 Fallout SSL
 
-- Fixed race condition in SSL compilation when `validateOnChange` is enabled.
-- Fixed TSSL transpile chain not awaiting external compiler.
-- Improved compilation reliability: debouncing, async I/O, guaranteed temp file cleanup.
 - `.tmp.ssl` is now hidden by default from VS Code explorer.
+
+WeiDU
+
+- Added actionable error message when WeiDU binary is not found.
+- Improved error messages: show near text + up to 4 detail lines instead of full stdout.
 
 ## 3.1.3
 

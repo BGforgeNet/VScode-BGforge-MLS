@@ -41,6 +41,8 @@ const config: KnipConfig = {
     "cli/**",
     // external repositories cloned for testing
     "external/**",
+    // Claude Code worktrees and agent data
+    ".claude/**",
     // standalone update scripts run via pnpm exec tsx, not imported by main code
     "scripts/**",
   ],

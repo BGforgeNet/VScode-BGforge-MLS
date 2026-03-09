@@ -14,12 +14,16 @@ import * as fs from "fs";
 import * as os from "os";
 import * as path from "path";
 import {
+    addFallbackDiagnostic,
     conlog,
     needsShell,
     parseCommandPath,
     ParseItemList,
     ParseResult,
     pathToUri,
+    removeTmpFile,
+    reportCompileResult,
+    runProcess,
     sendParseResult,
     uriToPath,
 } from "../common";
@@ -198,46 +202,16 @@ async function checkExternalCompiler(compilePath: string) {
     });
 }
 
-/** Remove the tmp file, logging errors instead of throwing (cleanup must not mask compiler results). */
-async function removeTmpFile(tmpPath: string) {
-    try {
-        await fs.promises.unlink(tmpPath);
-    } catch (err) {
-        if ((err as NodeJS.ErrnoException).code !== "ENOENT") {
-            conlog(`Failed to clean up ${tmpPath}: ${err}`);
-        }
-    }
-}
-
-/** Run the external compiler and return a promise that resolves when it finishes. */
+/** Build args and run the external SSL compiler via shared runProcess. */
 function runExternalCompiler(
     compilePath: string,
     compileOptions: readonly string[],
     cwdTo: string,
     dstPath: string,
-): Promise<{ err: cp.ExecFileException | null; stdout: string }> {
+) {
     const { executable, prefixArgs } = parseCommandPath(compilePath);
     const allArgs = [...prefixArgs, ...compileOptions, TMP_SSL_NAME, "-o", dstPath];
-    const shell = needsShell(executable);
-    conlog(`${compilePath} ${allArgs.join(" ")}`);
-
-    return new Promise((resolve) => {
-        cp.execFile(
-            executable,
-            allArgs,
-            { cwd: cwdTo, shell },
-            (err, stdout: string, stderr: string) => {
-                conlog("stdout: " + stdout);
-                if (stderr) {
-                    conlog("stderr: " + stderr);
-                }
-                if (err) {
-                    conlog("error: " + err.message);
-                }
-                resolve({ err, stdout });
-            },
-        );
-    });
+    return runProcess(executable, allArgs, cwdTo);
 }
 
 export async function compile(
@@ -317,16 +291,15 @@ export async function compile(
             cwdTo,
             dstPath,
         );
-        if (err) {
-            if (interactive) {
-                showError(`Failed to compile ${baseName}!`);
-            }
-        } else {
-            if (interactive) {
-                showInfo(`Compiled ${baseName}.`);
-            }
+
+        const parseResult = parseCompileOutput(stdout, uri);
+
+        if (err && parseResult.errors.length === 0) {
+            addFallbackDiagnostic(parseResult, err, pathToUri(filepath), stdout);
         }
-        sendDiagnostics(uri, stdout, tmpUri);
+
+        reportCompileResult(parseResult, interactive, `Compiled ${baseName}.`, `Failed to compile ${baseName}!`);
+        sendParseResult(parseResult, uri, tmpUri);
     } finally {
         await removeTmpFile(tmpPath);
     }

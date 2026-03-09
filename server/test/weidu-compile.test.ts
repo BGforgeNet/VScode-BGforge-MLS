@@ -1,30 +1,32 @@
 /**
  * Unit tests for weidu-compile.ts - WeiDU output parsing and compile dispatch.
- * Tests regex-based parsing of WeiDU error output and compilation workflow.
+ * Tests async behavior, tmp file cleanup, diagnostics, and compilation workflow.
  */
 
 import { describe, expect, it, vi, beforeEach } from "vitest";
 
 const mockExecFile = vi.fn();
-const mockWriteFileSync = vi.fn();
-
 vi.mock("child_process", () => ({
     execFile: (...args: unknown[]) => mockExecFile(...args),
 }));
 
+const mockWriteFile = vi.fn().mockResolvedValue(undefined);
+const mockUnlink = vi.fn().mockResolvedValue(undefined);
 vi.mock("fs", () => ({
-    writeFileSync: (...args: unknown[]) => mockWriteFileSync(...args),
+    promises: {
+        writeFile: (...args: unknown[]) => mockWriteFile(...args),
+        unlink: (...args: unknown[]) => mockUnlink(...args),
+    },
 }));
 
 const mockShowInfo = vi.fn();
 const mockShowWarning = vi.fn();
 const mockShowError = vi.fn();
-const mockSendDiagnostics = vi.fn();
 
 vi.mock("../src/lsp-connection", () => ({
     getConnection: () => ({
         console: { log: vi.fn() },
-        sendDiagnostics: mockSendDiagnostics,
+        sendDiagnostics: vi.fn(),
         window: {
             showInformationMessage: mockShowInfo,
             showWarningMessage: mockShowWarning,
@@ -33,20 +35,29 @@ vi.mock("../src/lsp-connection", () => ({
     }),
 }));
 
-// Import after mocks are set up.
-// parseWeiduOutput is not exported, so we test it indirectly through compile(),
-// and also access it through module internals.
-// Actually, parseWeiduOutput is a private function. We need to test it via the module.
-// Let's import the module and test through compile's callback behavior.
+const mockSendParseResult = vi.fn();
+vi.mock("../src/common", async (importOriginal) => {
+    const actual = await importOriginal<typeof import("../src/common")>();
+    return {
+        ...actual,
+        sendParseResult: (...args: unknown[]) => mockSendParseResult(...args),
+    };
+});
 
-// Since parseWeiduOutput is not exported, we'll test it through the compile function
-// which calls it internally. We can verify parse results through the diagnostics sent.
+vi.mock("../src/user-messages", () => ({
+    showInfo: (...args: unknown[]) => mockShowInfo(...args),
+    showWarning: (...args: unknown[]) => mockShowWarning(...args),
+    showError: (...args: unknown[]) => mockShowError(...args),
+}));
+
 import { compile } from "../src/weidu-compile";
 import type { WeiDUsettings } from "../src/settings";
 
 describe("weidu-compile", () => {
     beforeEach(() => {
-        vi.clearAllMocks();
+        vi.resetAllMocks();
+        mockWriteFile.mockResolvedValue(undefined);
+        mockUnlink.mockResolvedValue(undefined);
     });
 
     const baseSettings: WeiDUsettings = {
@@ -54,9 +65,19 @@ describe("weidu-compile", () => {
         gamePath: "/games/bg2",
     };
 
+    /** Helper: set up mockExecFile to invoke the callback with given results. */
+    function setupExecFile(err: unknown, stdout: string, stderr = "") {
+        mockExecFile.mockImplementation((...args: unknown[]) => {
+            const lastArg = args[args.length - 1];
+            if (typeof lastArg === "function") {
+                (lastArg as (err: unknown, stdout: string, stderr: string) => void)(err, stdout, stderr);
+            }
+        });
+    }
+
     describe("compile() - extension validation", () => {
-        it("rejects unsupported file extensions", () => {
-            compile("file:///test.txt", baseSettings, true, "content");
+        it("rejects unsupported file extensions", async () => {
+            await compile("file:///test.txt", baseSettings, true, "content");
 
             expect(mockExecFile).not.toHaveBeenCalled();
             expect(mockShowInfo).toHaveBeenCalledWith(
@@ -64,9 +85,9 @@ describe("weidu-compile", () => {
             );
         });
 
-        it("rejects .d without game path", () => {
+        it("rejects .d without game path", async () => {
             const noGameSettings: WeiDUsettings = { path: "/usr/bin/weidu", gamePath: "" };
-            compile("file:///test.d", noGameSettings, true, "content");
+            await compile("file:///test.d", noGameSettings, true, "content");
 
             expect(mockExecFile).not.toHaveBeenCalled();
             expect(mockShowWarning).toHaveBeenCalledWith(
@@ -74,65 +95,72 @@ describe("weidu-compile", () => {
             );
         });
 
-        it("rejects .baf without game path", () => {
+        it("rejects .baf without game path", async () => {
             const noGameSettings: WeiDUsettings = { path: "/usr/bin/weidu", gamePath: "" };
-            compile("file:///test.baf", noGameSettings, true, "content");
+            await compile("file:///test.baf", noGameSettings, true, "content");
 
             expect(mockExecFile).not.toHaveBeenCalled();
             expect(mockShowWarning).toHaveBeenCalled();
         });
 
-        it("allows .tp2 without game path (uses --nogame)", () => {
+        it("allows .tp2 without game path (uses --nogame)", async () => {
             const noGameSettings: WeiDUsettings = { path: "/usr/bin/weidu", gamePath: "" };
-            compile("file:///test.tp2", noGameSettings, false, "content");
+            setupExecFile(null, "OK");
+            await compile("file:///test.tp2", noGameSettings, false, "content");
 
             expect(mockExecFile).toHaveBeenCalled();
             const args = mockExecFile.mock.calls[0][1] as string[];
             expect(args).toContain("--nogame");
         });
 
-        it("dispatches valid .tp2 extension", () => {
-            compile("file:///test.tp2", baseSettings, false, "content");
+        it("dispatches valid .tp2 extension", async () => {
+            setupExecFile(null, "OK");
+            await compile("file:///test.tp2", baseSettings, false, "content");
 
             expect(mockExecFile).toHaveBeenCalled();
             const args = mockExecFile.mock.calls[0][1] as string[];
             expect(args).toContain("tp2");
         });
 
-        it("dispatches valid .d extension with game path", () => {
-            compile("file:///test.d", baseSettings, false, "content");
+        it("dispatches valid .d extension with game path", async () => {
+            setupExecFile(null, "OK");
+            await compile("file:///test.d", baseSettings, false, "content");
 
             expect(mockExecFile).toHaveBeenCalled();
             const args = mockExecFile.mock.calls[0][1] as string[];
             expect(args).toContain("d");
         });
 
-        it("dispatches valid .baf extension with game path", () => {
-            compile("file:///test.baf", baseSettings, false, "content");
+        it("dispatches valid .baf extension with game path", async () => {
+            setupExecFile(null, "OK");
+            await compile("file:///test.baf", baseSettings, false, "content");
 
             expect(mockExecFile).toHaveBeenCalled();
             const args = mockExecFile.mock.calls[0][1] as string[];
             expect(args).toContain("baf");
         });
 
-        it("dispatches .tpa as tpa type", () => {
-            compile("file:///test.tpa", baseSettings, false, "content");
+        it("dispatches .tpa as tpa type", async () => {
+            setupExecFile(null, "OK");
+            await compile("file:///test.tpa", baseSettings, false, "content");
 
             expect(mockExecFile).toHaveBeenCalled();
             const args = mockExecFile.mock.calls[0][1] as string[];
             expect(args).toContain("tpa");
         });
 
-        it("dispatches .tph as tpa type", () => {
-            compile("file:///test.tph", baseSettings, false, "content");
+        it("dispatches .tph as tpa type", async () => {
+            setupExecFile(null, "OK");
+            await compile("file:///test.tph", baseSettings, false, "content");
 
             expect(mockExecFile).toHaveBeenCalled();
             const args = mockExecFile.mock.calls[0][1] as string[];
             expect(args).toContain("tpa");
         });
 
-        it("dispatches .tpp as tpp type", () => {
-            compile("file:///test.tpp", baseSettings, false, "content");
+        it("dispatches .tpp as tpp type", async () => {
+            setupExecFile(null, "OK");
+            await compile("file:///test.tpp", baseSettings, false, "content");
 
             expect(mockExecFile).toHaveBeenCalled();
             const args = mockExecFile.mock.calls[0][1] as string[];
@@ -141,16 +169,20 @@ describe("weidu-compile", () => {
     });
 
     describe("compile() - command construction", () => {
-        it("includes --game flag when gamePath is set", () => {
-            compile("file:///test.tp2", baseSettings, false, "content");
+        beforeEach(() => {
+            setupExecFile(null, "OK");
+        });
+
+        it("includes --game flag when gamePath is set", async () => {
+            await compile("file:///test.tp2", baseSettings, false, "content");
 
             const args = mockExecFile.mock.calls[0][1] as string[];
             expect(args).toContain("--game");
             expect(args).toContain("/games/bg2");
         });
 
-        it("includes standard weidu flags", () => {
-            compile("file:///test.tp2", baseSettings, false, "content");
+        it("includes standard weidu flags", async () => {
+            await compile("file:///test.tp2", baseSettings, false, "content");
 
             const args = mockExecFile.mock.calls[0][1] as string[];
             expect(args).toContain("--no-exit-pause");
@@ -159,166 +191,328 @@ describe("weidu-compile", () => {
             expect(args).toContain("--parse-check");
         });
 
-        it("writes text to temp file before executing", () => {
-            compile("file:///test.tp2", baseSettings, false, "my content");
+        it("writes text to temp file before executing", async () => {
+            await compile("file:///test.tp2", baseSettings, false, "my content");
 
-            expect(mockWriteFileSync).toHaveBeenCalledWith(
+            expect(mockWriteFile).toHaveBeenCalledWith(
                 expect.stringContaining("tmp.tp2"),
                 "my content"
             );
         });
     });
 
-    describe("compile() - output handling via callback", () => {
-        it("shows success message for clean output in interactive mode", () => {
-            compile("file:///test.tp2", baseSettings, true, "content");
+    describe("compile() - async behavior", () => {
+        it("returns a Promise that resolves after execFile callback fires", async () => {
+            let capturedCallback: ((err: null, stdout: string, stderr: string) => void) | undefined;
 
-            // Get the callback from execFile
-            const callback = mockExecFile.mock.calls[0][3] as (
-                err: Error | null,
-                stdout: string,
-                stderr: string
-            ) => void;
+            mockExecFile.mockImplementation((...args: unknown[]) => {
+                const lastArg = args[args.length - 1];
+                if (typeof lastArg === "function") {
+                    capturedCallback = lastArg as (err: null, stdout: string, stderr: string) => void;
+                }
+            });
 
-            callback(null, "Parsing complete", "");
+            let resolved = false;
+            const promise = compile("file:///test.tp2", baseSettings, false, "content")
+                .then(() => { resolved = true; });
+
+            // Let microtasks run
+            await new Promise((r) => setTimeout(r, 0));
+            expect(resolved).toBe(false);
+            expect(capturedCallback).toBeDefined();
+
+            // Fire the callback
+            capturedCallback!(null, "", "");
+            await promise;
+            expect(resolved).toBe(true);
+        });
+    });
+
+    describe("compile() - tmp file cleanup", () => {
+        it("cleans up tmp file after successful compilation", async () => {
+            setupExecFile(null, "Parsing complete");
+
+            await compile("file:///test.tp2", baseSettings, false, "content");
+
+            expect(mockUnlink).toHaveBeenCalledWith(
+                expect.stringContaining("tmp.tp2")
+            );
+        });
+
+        it("cleans up tmp file even when compilation fails", async () => {
+            setupExecFile({ code: 1 }, "[test.tp2]  ERROR at line 1 column 1-10");
+
+            await compile("file:///test.tp2", baseSettings, false, "content");
+
+            expect(mockUnlink).toHaveBeenCalledWith(
+                expect.stringContaining("tmp.tp2")
+            );
+        });
+
+        it("ignores ENOENT when cleaning up (already deleted)", async () => {
+            setupExecFile(null, "OK");
+            const enoent = Object.assign(new Error("ENOENT"), { code: "ENOENT" });
+            mockUnlink.mockRejectedValue(enoent);
+
+            // Should not throw
+            await compile("file:///test.tp2", baseSettings, false, "content");
+        });
+
+        it("cleans up tmp file when writeFile fails (partial write)", async () => {
+            mockWriteFile.mockRejectedValue(new Error("ENOSPC"));
+
+            await expect(
+                compile("file:///test.tp2", baseSettings, false, "content")
+            ).rejects.toThrow("ENOSPC");
+
+            expect(mockExecFile).not.toHaveBeenCalled();
+            expect(mockUnlink).toHaveBeenCalledWith(
+                expect.stringContaining("tmp.tp2")
+            );
+        });
+
+        it("logs and swallows non-ENOENT cleanup errors", async () => {
+            setupExecFile(null, "OK");
+            const eperm = Object.assign(new Error("EPERM"), { code: "EPERM" });
+            mockUnlink.mockRejectedValue(eperm);
+
+            // Should not throw — cleanup errors must not mask compiler results
+            await compile("file:///test.tp2", baseSettings, false, "content");
+
+            // Diagnostics should still have been sent despite cleanup failure
+            expect(mockSendParseResult).toHaveBeenCalled();
+        });
+    });
+
+    describe("compile() - diagnostics", () => {
+        it("sends diagnostics on success (to clear stale errors)", async () => {
+            setupExecFile(null, "Parsing complete. No errors.");
+
+            await compile("file:///test.tp2", baseSettings, false, "content");
+
+            expect(mockSendParseResult).toHaveBeenCalled();
+        });
+
+        it("sends diagnostics on error", async () => {
+            setupExecFile(
+                { code: 1 },
+                "[ua.tp2]  ERROR at line 30 column 1-63"
+            );
+
+            await compile("file:///test.tp2", baseSettings, true, "content");
+
+            expect(mockSendParseResult).toHaveBeenCalled();
+        });
+
+        it("parses standard error format from stdout", async () => {
+            setupExecFile(
+                { code: 1 },
+                "[ua.tp2]  ERROR at line 30 column 1-63"
+            );
+
+            await compile("file:///test.tp2", baseSettings, true, "content");
+
+            expect(mockSendParseResult).toHaveBeenCalled();
+            const parseResult = mockSendParseResult.mock.calls[0][0];
+            expect(parseResult.errors).toHaveLength(1);
+            expect(parseResult.errors[0].line).toBe(30);
+        });
+
+        it("parses PARSE ERROR variant from stdout", async () => {
+            setupExecFile(
+                { code: 1 },
+                "[ua.tp2]  PARSE ERROR at line 15 column 5-20"
+            );
+
+            await compile("file:///test.tp2", baseSettings, true, "content");
+
+            expect(mockSendParseResult).toHaveBeenCalled();
+            const parseResult = mockSendParseResult.mock.calls[0][0];
+            expect(parseResult.errors).toHaveLength(1);
+            expect(parseResult.errors[0].line).toBe(15);
+        });
+
+        it("handles multiple errors at different lines", async () => {
+            const multiError =
+                "[ua.tp2]  ERROR at line 30 column 1-63\n" +
+                "[ua.tp2]  ERROR at line 45 column 10-25\n";
+
+            setupExecFile({ code: 1 }, multiError);
+
+            await compile("file:///test.tp2", baseSettings, true, "content");
+
+            expect(mockSendParseResult).toHaveBeenCalled();
+            const parseResult = mockSendParseResult.mock.calls[0][0];
+            expect(parseResult.errors).toHaveLength(2);
+        });
+
+        it("deduplicates PARSE ERROR and ERROR at the same location", async () => {
+            // WeiDU outputs both "PARSE ERROR" and "ERROR" for the same location
+            const dupeOutput =
+                "[tmp.tpa] PARSE ERROR at line 87 column 1-7\n" +
+                "Near Text: INCLUDE\n" +
+                "\tGLR parse error\n\n" +
+                "[tmp.tpa]  ERROR at line 87 column 1-7\n" +
+                "Near Text: INCLUDE\n";
+
+            setupExecFile({ code: 1 }, dupeOutput);
+
+            await compile("file:///test.tpa", baseSettings, true, "content");
+
+            const parseResult = mockSendParseResult.mock.calls[0][0];
+            expect(parseResult.errors).toHaveLength(1);
+            expect(parseResult.errors[0].line).toBe(87);
+        });
+
+        it("includes detail lines from WeiDU output verbatim", async () => {
+            const output =
+                "[tmp.tp2]  ERROR at line 5 column 1-4\n" +
+                "Near Text: something\n" +
+                "\tinvalid character\n" +
+                " HINT: Don't use MS Word.\n";
+
+            setupExecFile({ code: 1 }, output);
+
+            await compile("file:///test.tp2", baseSettings, true, "content");
+
+            const msg = mockSendParseResult.mock.calls[0][0].errors[0].message;
+            // WeiDU output preserved verbatim
+            expect(msg).toContain("Near Text: something");
+            expect(msg).toContain("HINT: Don't use MS Word.");
+        });
+
+        it("truncates detail lines to 4 + '...'", async () => {
+            const output =
+                "[tmp.tpa]  ERROR at line 87 column 1-7\n" +
+                "Near Text: INCLUDE\n" +
+                "\tGLR parse error\n" +
+                "detail line 3\n" +
+                "detail line 4\n" +
+                "detail line 5\n" +
+                "detail line 6\n";
+
+            setupExecFile({ code: 1 }, output);
+
+            await compile("file:///test.tpa", baseSettings, true, "content");
+
+            const msg = mockSendParseResult.mock.calls[0][0].errors[0].message;
+            expect(msg).toContain("Near Text: INCLUDE");
+            expect(msg).toContain("GLR parse error");
+            expect(msg).toContain("detail line 4");
+            expect(msg).not.toContain("detail line 5");
+            expect(msg).toContain("...");
+        });
+
+        it("parses LEXER ERROR with degenerate column range (1-0)", async () => {
+            const output =
+                "[tmp.tp2] LEXER ERROR at line 66 column 1-0\n" +
+                "Near Text: \ufffd\n" +
+                "\tinvalid character\n\n" +
+                "[tmp.tp2]  ERROR at line 66 column 1-0\n" +
+                "Near Text: \ufffd\n";
+
+            setupExecFile({ code: 1 }, output);
+
+            await compile("file:///test.tp2", baseSettings, true, "content");
+
+            const parseResult = mockSendParseResult.mock.calls[0][0];
+            expect(parseResult.errors).toHaveLength(1);
+            expect(parseResult.errors[0].line).toBe(66);
+            // WeiDU's verbatim output preserved, including replacement characters
+            expect(parseResult.errors[0].message).toContain("Near Text: \ufffd");
+        });
+
+        it("detects errors with zero exit code when parse errors exist in stdout", async () => {
+            setupExecFile(null, "[test.tp2]  ERROR at line 5 column 1-10");
+
+            await compile("file:///test.tp2", baseSettings, true, "content");
+
+            expect(mockSendParseResult).toHaveBeenCalled();
+            expect(mockShowError).toHaveBeenCalled();
+        });
+    });
+
+    describe("compile() - fallback when output is unparseable", () => {
+        it("creates fallback diagnostic with stdout when WeiDU fails but output has no error pattern", async () => {
+            setupExecFile({ code: 1 }, "Some unexpected WeiDU output");
+
+            await compile("file:///test.tp2", baseSettings, false, "content");
+
+            expect(mockSendParseResult).toHaveBeenCalled();
+            const parseResult = mockSendParseResult.mock.calls[0][0];
+            expect(parseResult.errors).toHaveLength(1);
+            expect(parseResult.errors[0].message).toContain("Some unexpected WeiDU output");
+        });
+
+        it("creates fallback diagnostic with err.message when stdout is empty", async () => {
+            setupExecFile({ code: 1, message: "Command failed" }, "");
+
+            await compile("file:///test.tp2", baseSettings, false, "content");
+
+            const parseResult = mockSendParseResult.mock.calls[0][0];
+            expect(parseResult.errors).toHaveLength(1);
+            expect(parseResult.errors[0].message).toContain("Command failed");
+        });
+
+        it("shows actionable message when WeiDU binary not found", async () => {
+            // Node sets .code on ErrnoException (string) separately from ExecFileException .code (number)
+            setupExecFile(Object.assign(new Error("spawn ENOENT"), { code: "ENOENT" }), "");
+
+            await compile("file:///test.tp2", baseSettings, true, "content");
+
+            expect(mockShowError).toHaveBeenCalledWith(
+                expect.stringContaining("WeiDU not found")
+            );
+            expect(mockShowError).toHaveBeenCalledWith(
+                expect.stringContaining("bgforge.mls.weidu.path")
+            );
+            // Only the specific ENOENT message, not the generic "Failed to parse" on top
+            expect(mockShowError).toHaveBeenCalledTimes(1);
+        });
+
+        it("does not create fallback when errors were successfully parsed", async () => {
+            setupExecFile({ code: 1 }, "[test.tp2]  ERROR at line 5 column 1-10");
+
+            await compile("file:///test.tp2", baseSettings, false, "content");
+
+            const parseResult = mockSendParseResult.mock.calls[0][0];
+            // Only the parsed error, no fallback
+            expect(parseResult.errors).toHaveLength(1);
+            expect(parseResult.errors[0].line).toBe(5);
+        });
+    });
+
+    describe("compile() - interactive messages", () => {
+        it("shows success message in interactive mode", async () => {
+            setupExecFile(null, "Parsing complete");
+
+            await compile("file:///test.tp2", baseSettings, true, "content");
 
             expect(mockShowInfo).toHaveBeenCalledWith(
                 expect.stringContaining("Successfully parsed")
             );
         });
 
-        it("shows error message when errors are found in output", () => {
-            compile("file:///test.tp2", baseSettings, true, "content");
-
-            const callback = mockExecFile.mock.calls[0][3] as (
-                err: { code: number } | null,
-                stdout: string,
-                stderr: string
-            ) => void;
-
-            callback(
-                { code: 1 } as { code: number },
-                "[ua.tp2]  ERROR at line 30 column 1-63",
-                ""
+        it("shows error message on failure in interactive mode", async () => {
+            setupExecFile(
+                { code: 1 },
+                "[ua.tp2]  ERROR at line 30 column 1-63"
             );
+
+            await compile("file:///test.tp2", baseSettings, true, "content");
 
             expect(mockShowError).toHaveBeenCalledWith(
                 expect.stringContaining("Failed to parse")
             );
         });
 
-        it("parses standard error format from stdout", () => {
-            compile("file:///test.tp2", baseSettings, true, "content");
+        it("does not show messages when not interactive", async () => {
+            setupExecFile(null, "Parsing complete");
 
-            const callback = mockExecFile.mock.calls[0][3] as (
-                err: { code: number } | null,
-                stdout: string,
-                stderr: string
-            ) => void;
-
-            callback(
-                { code: 1 } as { code: number },
-                "[ua.tp2]  ERROR at line 30 column 1-63",
-                ""
-            );
-
-            expect(mockSendDiagnostics).toHaveBeenCalled();
-        });
-
-        it("parses PARSE ERROR variant from stdout", () => {
-            compile("file:///test.tp2", baseSettings, true, "content");
-
-            const callback = mockExecFile.mock.calls[0][3] as (
-                err: { code: number } | null,
-                stdout: string,
-                stderr: string
-            ) => void;
-
-            callback(
-                { code: 1 } as { code: number },
-                "[ua.tp2]  PARSE ERROR at line 15 column 5-20",
-                ""
-            );
-
-            expect(mockSendDiagnostics).toHaveBeenCalled();
-        });
-
-        it("handles multiple errors in output", () => {
-            compile("file:///test.tp2", baseSettings, true, "content");
-
-            const callback = mockExecFile.mock.calls[0][3] as (
-                err: { code: number } | null,
-                stdout: string,
-                stderr: string
-            ) => void;
-
-            const multiError =
-                "[ua.tp2]  ERROR at line 30 column 1-63\n" +
-                "[ua.tp2]  PARSE ERROR at line 45 column 10-25\n";
-
-            callback({ code: 1 } as { code: number }, multiError, "");
-
-            expect(mockSendDiagnostics).toHaveBeenCalled();
-        });
-
-        it("handles clean output (no errors)", () => {
-            compile("file:///test.tp2", baseSettings, false, "content");
-
-            const callback = mockExecFile.mock.calls[0][3] as (
-                err: null,
-                stdout: string,
-                stderr: string
-            ) => void;
-
-            callback(null, "Parsing complete. No errors.", "");
-
-            // No diagnostics should be sent for clean output
-            expect(mockSendDiagnostics).not.toHaveBeenCalled();
-        });
-
-        it("handles empty stdout", () => {
-            compile("file:///test.tp2", baseSettings, false, "content");
-
-            const callback = mockExecFile.mock.calls[0][3] as (
-                err: null,
-                stdout: string,
-                stderr: string
-            ) => void;
-
-            callback(null, "", "");
-
-            expect(mockSendDiagnostics).not.toHaveBeenCalled();
-        });
-
-        it("does not show interactive messages when interactive is false", () => {
-            compile("file:///test.tp2", baseSettings, false, "content");
-
-            const callback = mockExecFile.mock.calls[0][3] as (
-                err: null,
-                stdout: string,
-                stderr: string
-            ) => void;
-
-            callback(null, "Parsing complete", "");
+            await compile("file:///test.tp2", baseSettings, false, "content");
 
             expect(mockShowInfo).not.toHaveBeenCalled();
             expect(mockShowError).not.toHaveBeenCalled();
-        });
-
-        it("detects errors even with zero exit code when parse errors exist in stdout", () => {
-            compile("file:///test.tp2", baseSettings, true, "content");
-
-            const callback = mockExecFile.mock.calls[0][3] as (
-                err: null,
-                stdout: string,
-                stderr: string
-            ) => void;
-
-            // WeiDU sometimes returns 0 exit code but has errors in stdout
-            callback(null, "[test.tp2]  ERROR at line 5 column 1-10", "");
-
-            expect(mockSendDiagnostics).toHaveBeenCalled();
-            expect(mockShowError).toHaveBeenCalled();
         });
     });
 });

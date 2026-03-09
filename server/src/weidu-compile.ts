@@ -3,16 +3,18 @@
  * Used by BAF, D, and TP2 providers for parse-checking.
  */
 
-import * as cp from "child_process";
 import * as fs from "fs";
 import * as path from "path";
 import {
+    addFallbackDiagnostic,
     conlog,
-    needsShell,
     parseCommandPath,
     ParseItemList,
     ParseResult,
     pathToUri,
+    removeTmpFile,
+    reportCompileResult,
+    runProcess,
     sendParseResult,
     tmpDir,
     uriToPath,
@@ -33,9 +35,10 @@ const valid_extensions = new Map([
  *
  * `[ua.tp2]  ERROR at line 30 column 1-63` */
 function parseWeiduOutput(text: string) {
-    const errorsRegex = /\[(\S+)\]\s+(?:PARSE\s+)?ERROR at line (\d+) column (\d+)-(\d+)/g;
+    const errorsRegex = /\[(\S+)\]\s+(?:(?:PARSE|LEXER)\s+)?ERROR at line (\d+) column (\d+)-(\d+)/g;
     const errors: ParseItemList = [];
     const warnings: ParseItemList = [];
+    const seen = new Set<string>();
 
     try {
         let match = errorsRegex.exec(text);
@@ -48,14 +51,36 @@ function parseWeiduOutput(text: string) {
             const matchLine = match[2];
             const matchColStart = match[3];
             const matchColEnd = match[4];
-            if (!matchUri || !matchLine || !matchColStart || !matchColEnd) continue;
-            errors.push({
-                uri: pathToUri(matchUri),
-                line: parseInt(matchLine),
-                columnStart: parseInt(matchColStart) - 1, // weidu uses 1-index, while vscode 0 index?
-                columnEnd: parseInt(matchColEnd),
-                message: text,
-            });
+            if (!matchUri || !matchLine || !matchColStart || !matchColEnd) {
+                match = errorsRegex.exec(text);
+                continue;
+            }
+
+            // WeiDU may emit both "PARSE ERROR" and "ERROR" for the same location
+            const key = `${matchUri}:${matchLine}:${matchColStart}-${matchColEnd}`;
+            if (!seen.has(key)) {
+                seen.add(key);
+
+                // Extract up to 4 non-empty detail lines after the error header.
+                // WeiDU always stops at the first error, so there's no risk of bleeding
+                // into a second error block — but we still limit to 4 lines for readability.
+                const afterMatch = text.slice(match.index + match[0].length);
+                const detailLines = afterMatch.split(/\r?\n/).slice(1).filter((l) => l.length > 0);
+                const maxDetailLines = 4;
+                const truncatedDetails = detailLines.length > maxDetailLines
+                    ? [...detailLines.slice(0, maxDetailLines), "..."]
+                    : detailLines;
+                const message = truncatedDetails.join("\n");
+
+                errors.push({
+                    uri: pathToUri(matchUri),
+                    line: parseInt(matchLine),
+                    columnStart: parseInt(matchColStart) - 1, // weidu uses 1-index, while vscode 0 index?
+                    columnEnd: parseInt(matchColEnd),
+                    message,
+                });
+            }
+
             match = errorsRegex.exec(text);
         }
     } catch (err) {
@@ -65,12 +90,7 @@ function parseWeiduOutput(text: string) {
     return result;
 }
 
-function sendDiagnostics(uri: string, output_text: string, tmpUri: string) {
-    const parseResult = parseWeiduOutput(output_text);
-    sendParseResult(parseResult, uri, tmpUri);
-}
-
-export function compile(uri: string, settings: WeiDUsettings, interactive = false, text: string) {
+export async function compile(uri: string, settings: WeiDUsettings, interactive = false, text: string) {
     const gamePath = settings.gamePath;
     const { executable: weiduPath, prefixArgs: weiduPrefixArgs } = parseCommandPath(settings.path);
     const filePath = uriToPath(uri);
@@ -116,34 +136,31 @@ export function compile(uri: string, settings: WeiDUsettings, interactive = fals
 
     // parse
     conlog(`parsing ${baseName}...`);
-    fs.writeFileSync(tmpFile, text);
-    const allArgs = [...weiduPrefixArgs, ...weiduArgs, weiduType, tmpFile];
-    const shell = needsShell(weiduPath);
-    conlog(`${weiduPath} ${allArgs.join(" ")}`);
-    cp.execFile(weiduPath, allArgs, { cwd: cwdTo, shell }, (err, stdout: string, stderr: string) => {
-        conlog("stdout: " + stdout);
-        const parseResult = parseWeiduOutput(stdout); // dupe, yes
-        conlog(parseResult);
-        if (stderr) {
-            conlog("Parse stderr: " + stderr);
+
+    try {
+        await fs.promises.writeFile(tmpFile, text);
+        const allArgs = [...weiduPrefixArgs, ...weiduArgs, weiduType, tmpFile];
+        const { err, stdout } = await runProcess(weiduPath, allArgs, cwdTo);
+
+        const parseResult = parseWeiduOutput(stdout);
+
+        let showedSpecificError = false;
+        if (err && parseResult.errors.length === 0) {
+            if ((err as NodeJS.ErrnoException).code === "ENOENT") {
+                showError(`WeiDU not found at '${weiduPath}'. Check bgforge.mls.weidu.path setting.`);
+                showedSpecificError = true;
+            }
+            addFallbackDiagnostic(parseResult, err, pathToUri(filePath), stdout);
         }
-        if (
-            (err && err.code !== 0) ||
-            parseResult.errors.length > 0 || // weidu doesn't always return non-zero on parse failure?
-            parseResult.warnings.length > 0
-        ) {
-            if (err) {
-                conlog("Parse  error: " + err.message);
-            }
-            conlog(parseResult);
-            if (interactive) {
-                showError(`Failed to parse ${baseName}!`);
-            }
-            sendDiagnostics(uri, stdout, tmpUri);
-        } else {
-            if (interactive) {
-                showInfo(`Successfully parsed ${baseName}.`);
-            }
+
+        // Skip generic message when we already showed a specific one (e.g. ENOENT)
+        if (!showedSpecificError) {
+            reportCompileResult(parseResult, interactive, `Successfully parsed ${baseName}.`, `Failed to parse ${baseName}!`);
         }
-    });
+
+        // Always send diagnostics: clears stale errors on success, reports new ones on failure
+        sendParseResult(parseResult, uri, tmpUri);
+    } finally {
+        await removeTmpFile(tmpFile);
+    }
 }

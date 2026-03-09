@@ -371,7 +371,7 @@ class WeiduTp2Provider implements LanguageProvider {
             conlog("WeiDU TP2 provider not initialized, cannot compile");
             return;
         }
-        weiduCompile(uri, this.storedContext.settings.weidu, interactive, text);
+        await weiduCompile(uri, this.storedContext.settings.weidu, interactive, text);
     }
 
     format(text: string, uri: string): FormatResult {

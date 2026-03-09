@@ -88,7 +88,7 @@ class WeiduBafProvider implements LanguageProvider {
             conlog("WeiDU BAF provider not initialized, cannot compile");
             return;
         }
-        weiduCompile(uri, this.storedContext.settings.weidu, interactive, text);
+        await weiduCompile(uri, this.storedContext.settings.weidu, interactive, text);
     }
 }
 

@@ -64,8 +64,8 @@ export async function compile(uri: string, langId: string, interactive = false, 
                 // Chain D compilation if weidu and game path are configured
                 if (settings.weidu.path && settings.weidu.gamePath) {
                     const dUri = pathToUri(dPath);
-                    const dText = fs.readFileSync(dPath, 'utf-8');
-                    weidu.compile(dUri, settings.weidu, true, dText);
+                    const dText = await fs.promises.readFile(dPath, 'utf-8');
+                    await weidu.compile(dUri, settings.weidu, true, dText);
                 }
             } catch (error) {
                 const msg = errorMessage(error);
@@ -81,8 +81,8 @@ export async function compile(uri: string, langId: string, interactive = false, 
                 // Chain BAF compilation if weidu and game path are configured
                 if (settings.weidu.path && settings.weidu.gamePath) {
                     const bafUri = pathToUri(bafPath);
-                    const bafText = fs.readFileSync(bafPath, 'utf-8');
-                    weidu.compile(bafUri, settings.weidu, true, bafText);
+                    const bafText = await fs.promises.readFile(bafPath, 'utf-8');
+                    await weidu.compile(bafUri, settings.weidu, true, bafText);
                 }
             } catch (error) {
                 const msg = errorMessage(error);
@@ -97,7 +97,7 @@ export async function compile(uri: string, langId: string, interactive = false, 
                 showInfo(`Transpiled to ${sslName}`);
                 // Chain SSL compilation via registry
                 const sslUri = pathToUri(sslPath);
-                const sslText = fs.readFileSync(sslPath, 'utf-8');
+                const sslText = await fs.promises.readFile(sslPath, 'utf-8');
                 clearDiagnostics(sslUri);
                 await registry.compile(LANG_FALLOUT_SSL, sslUri, sslText, true);
             } catch (error) {
