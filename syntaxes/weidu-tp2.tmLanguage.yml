@@ -4288,6 +4288,7 @@ repository:
 
   # Color constant-like variable names after SET/SPRINT keywords.
   # Constant = first word fully uppercase (e.g., MAX_LEVEL, MOD_folder).
+  # Same heuristic as tree-utils.ts:looksLikeConstant (used by symbol, hover, completion).
   # Non-constant vars are consumed without coloring, preventing vars-declaration from coloring them.
   # Must be included before weidu-tp2-action/patch in top-level patterns.
   set-sprint-constant-vars:

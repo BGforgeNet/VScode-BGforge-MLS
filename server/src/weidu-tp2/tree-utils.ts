@@ -164,6 +164,12 @@ export function isPhantomAssignment(node: SyntaxNode): boolean {
  *
  * WeiDU has no `const` keyword, so this is a heuristic. Used to assign
  * CompletionItemKind.Constant vs Variable for better icon differentiation.
+ *
+ * Same heuristic is used in:
+ * - symbol.ts:varSymbolKind (outline icons)
+ * - hover.ts:buildVariableHover (show value for constants)
+ * - weidu-tp2.tmLanguage.yml:set-sprint-constant-vars (syntax highlighting)
+ * - weidu-tp2.tmLanguage.yml:vars-declaration (syntax highlighting)
  */
 export function looksLikeConstant(name: string): boolean {
     const firstWord = name.split("_", 1)[0];

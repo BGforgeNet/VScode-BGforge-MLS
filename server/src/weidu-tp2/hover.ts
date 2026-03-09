@@ -11,7 +11,7 @@ import { parseWithCache, isInitialized } from "./parser";
 import { parseHeader, FunctionInfo, VariableInfo } from "./header-parser";
 import type { Symbols } from "../core/symbol-index";
 import { SyntaxType } from "./tree-sitter.d";
-import { stripStringDelimiters } from "./tree-utils";
+import { stripStringDelimiters, looksLikeConstant } from "./tree-utils";
 import { buildWeiduTable, type VarRow, type VarSection } from "../shared/tooltip-table";
 import { buildSignatureBlock, buildWeiduHoverContent } from "../shared/tooltip-format";
 import { LANG_WEIDU_TP2_TOOLTIP } from "../core/languages";
@@ -417,9 +417,8 @@ function extractFilename(uri: string): string {
 export function buildVariableHover(varInfo: VariableInfo, displayPath?: string | null): Hover {
     // Use JSDoc @type if available, otherwise inferred type
     const type = varInfo.jsdoc?.type ?? varInfo.inferredType;
-    // Show value only for constant-like names where the first word is fully uppercase
-    // (e.g., MAX_LEVEL, MOD_folder, DEBUG_MODE, MAXLEVEL — but NOT Max_Level, my_var)
-    const isConstant = /^[A-Z][A-Z0-9]+(?:_|$)/.test(varInfo.name);
+    // Show value only for constant-like names (see tree-utils.ts:looksLikeConstant).
+    const isConstant = looksLikeConstant(varInfo.name);
     const showValue = isConstant && varInfo.value !== undefined;
     const signature = showValue ? `${type} ${varInfo.name} = ${varInfo.value}` : `${type} ${varInfo.name}`;
 

@@ -29,6 +29,20 @@ describe("weidu-tp2: getDocumentSymbols", () => {
         expect(symbols[0].kind).toBe(SymbolKind.Function);
     });
 
+    it("returns macro symbols with Method kind", () => {
+        const text = `DEFINE_ACTION_MACRO my_macro BEGIN END`;
+        const symbols = getDocumentSymbols(text);
+        expect(symbols).toHaveLength(1);
+        expect(symbols[0].name).toBe("my_macro");
+        expect(symbols[0].kind).toBe(SymbolKind.Method);
+    });
+
+    it("returns patch macro symbols with Method kind", () => {
+        const text = `DEFINE_PATCH_MACRO my_macro BEGIN END`;
+        const symbols = getDocumentSymbols(text);
+        expect(symbols[0].kind).toBe(SymbolKind.Method);
+    });
+
     it("returns no detail for top-level symbols", () => {
         const text = `DEFINE_ACTION_FUNCTION my_func INT_VAR x = 0 BEGIN END`;
         const symbols = getDocumentSymbols(text);
@@ -49,12 +63,12 @@ describe("weidu-tp2: getDocumentSymbols", () => {
         expect(symbols.find(s => s.name === "my_str")).toBeDefined();
     });
 
-    it("returns file-level array definitions", () => {
+    it("returns file-level array definitions with Array kind", () => {
         const text = `ACTION_DEFINE_ARRAY my_arr BEGIN ~a~ ~b~ END`;
         const symbols = getDocumentSymbols(text);
         const sym = symbols.find(s => s.name === "my_arr");
         expect(sym).toBeDefined();
-        expect(sym!.kind).toBe(SymbolKind.Variable);
+        expect(sym!.kind).toBe(SymbolKind.Array);
     });
 
     it("returns file-level variables from OUTER_SPRINTF", () => {
@@ -69,10 +83,34 @@ describe("weidu-tp2: getDocumentSymbols", () => {
         expect(symbols.find(s => s.name === "my_str")).toBeDefined();
     });
 
-    it("returns file-level associative array definitions", () => {
+    it("returns file-level associative array definitions with Array kind", () => {
         const text = `ACTION_DEFINE_ASSOCIATIVE_ARRAY my_map BEGIN ~k~ => ~v~ END`;
         const symbols = getDocumentSymbols(text);
         const sym = symbols.find(s => s.name === "my_map");
+        expect(sym).toBeDefined();
+        expect(sym!.kind).toBe(SymbolKind.Array);
+    });
+
+    it("returns Constant kind for UPPER_first_word variables", () => {
+        const text = `OUTER_SET MOD_version = 1`;
+        const symbols = getDocumentSymbols(text);
+        const sym = symbols.find(s => s.name === "MOD_version");
+        expect(sym).toBeDefined();
+        expect(sym!.kind).toBe(SymbolKind.Constant);
+    });
+
+    it("returns Constant kind for all-uppercase variables", () => {
+        const text = `OUTER_SET DEBUG = 1`;
+        const symbols = getDocumentSymbols(text);
+        const sym = symbols.find(s => s.name === "DEBUG");
+        expect(sym).toBeDefined();
+        expect(sym!.kind).toBe(SymbolKind.Constant);
+    });
+
+    it("returns Variable kind for lowercase-first variables", () => {
+        const text = `OUTER_SET my_var = 1`;
+        const symbols = getDocumentSymbols(text);
+        const sym = symbols.find(s => s.name === "my_var");
         expect(sym).toBeDefined();
         expect(sym!.kind).toBe(SymbolKind.Variable);
     });

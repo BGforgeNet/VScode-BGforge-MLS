@@ -10,7 +10,22 @@ import type { Node } from "web-tree-sitter";
 import { makeRange } from "../core/position-utils";
 import { parseWithCache, isInitialized } from "./parser";
 import { isFunctionDef } from "./format/utils";
+import { looksLikeConstant } from "./tree-utils";
 import { SyntaxType } from "./tree-sitter.d";
+
+/** Macro definition types (subset of function defs). */
+const MACRO_DEF_TYPES: ReadonlySet<string> = new Set([
+    SyntaxType.ActionDefineMacro,
+    SyntaxType.ActionDefinePatchMacro,
+]);
+
+/** Array definition types — shown with Array icon in outline. */
+const ARRAY_DEF_TYPES: ReadonlySet<string> = new Set([
+    SyntaxType.ActionDefineArray,
+    SyntaxType.ActionDefineAssociativeArray,
+    SyntaxType.PatchDefineArray,
+    SyntaxType.PatchDefineAssociativeArray,
+]);
 
 /** File-level variable assignment types and how to extract the variable name. */
 const FILE_LEVEL_VAR_TYPES: ReadonlySet<string> = new Set([
@@ -105,6 +120,18 @@ function firstIdentifierFromVarNodes(node: Node): Node | null {
     return null;
 }
 
+/**
+ * Determine SymbolKind for a variable-assigning node.
+ * Arrays → Array, constant-like names → Constant, rest → Variable.
+ * Constant heuristic: first word fully uppercase (see tree-utils.ts:looksLikeConstant,
+ * weidu-tp2.tmLanguage.yml:set-sprint-constant-vars, hover.ts:buildVariableHover).
+ */
+function varSymbolKind(nodeType: string, name: string): SymbolKind {
+    if (ARRAY_DEF_TYPES.has(nodeType)) return SymbolKind.Array;
+    if (looksLikeConstant(name)) return SymbolKind.Constant;
+    return SymbolKind.Variable;
+}
+
 /** Create a DocumentSymbol for a variable, or null if the name is empty. */
 function makeVarSymbol(node: Node, nameNode: Node, detail?: string): DocumentSymbol | null {
     const name = nameNode.text;
@@ -112,7 +139,7 @@ function makeVarSymbol(node: Node, nameNode: Node, detail?: string): DocumentSym
     return {
         name,
         detail,
-        kind: SymbolKind.Variable,
+        kind: varSymbolKind(node.type, name),
         range: makeRange(node),
         selectionRange: makeRange(nameNode),
     };
@@ -256,9 +283,10 @@ export function getDocumentSymbols(text: string): DocumentSymbol[] {
                 const params = collectFuncParams(node, nameNode.text, seen);
                 const bodyVars = collectBodyVars(node, nameNode.text, seen);
                 const children = [...params, ...bodyVars];
+                const kind = MACRO_DEF_TYPES.has(node.type) ? SymbolKind.Method : SymbolKind.Function;
                 symbols.push({
                     name: nameNode.text,
-                    kind: SymbolKind.Function,
+                    kind,
                     range: makeRange(node),
                     selectionRange: makeRange(nameNode),
                     children: children.length > 0 ? children : undefined,

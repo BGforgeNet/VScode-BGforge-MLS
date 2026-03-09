@@ -116,9 +116,10 @@ function extractSymbols(root: Node): DocumentSymbol[] {
                     const macro = macros.find(m => m.name === name);
                     if (!macro) continue;
 
-                    // Determine symbol kind
+                    // Determine symbol kind: parameterized macros → Method,
+                    // constant-like macros → Constant
                     const kind = macro.hasParams
-                        ? SymbolKind.Function
+                        ? SymbolKind.Method
                         : SymbolKind.Constant;
 
                     const sym = makeSymbol(child, nameNode, kind);
