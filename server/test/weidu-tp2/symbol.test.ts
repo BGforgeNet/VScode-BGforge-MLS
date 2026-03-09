@@ -90,6 +90,66 @@ describe("weidu-tp2: getDocumentSymbols", () => {
         expect(symbols.find(s => s.name === "item")).toBeDefined();
     });
 
+    it("returns INT_VAR params as function children", () => {
+        const text = `DEFINE_ACTION_FUNCTION my_func INT_VAR x = 0 y = 1 BEGIN END`;
+        const symbols = getDocumentSymbols(text);
+        const func = symbols.find(s => s.name === "my_func");
+        expect(func).toBeDefined();
+        expect(func!.children).toBeDefined();
+        const names = func!.children!.map(c => c.name);
+        expect(names).toContain("x");
+        expect(names).toContain("y");
+        for (const child of func!.children!) {
+            expect(child.kind).toBe(SymbolKind.Variable);
+            expect(child.detail).toBe("my_func");
+        }
+    });
+
+    it("returns STR_VAR params as function children", () => {
+        const text = `DEFINE_PATCH_FUNCTION my_func STR_VAR name = ~~ BEGIN END`;
+        const symbols = getDocumentSymbols(text);
+        const func = symbols.find(s => s.name === "my_func");
+        expect(func).toBeDefined();
+        expect(func!.children).toBeDefined();
+        const names = func!.children!.map(c => c.name);
+        expect(names).toContain("name");
+    });
+
+    it("returns params before body vars in children order", () => {
+        const text = `DEFINE_PATCH_FUNCTION my_func INT_VAR x = 0 BEGIN
+            SET y = 1
+        END`;
+        const symbols = getDocumentSymbols(text);
+        const func = symbols.find(s => s.name === "my_func");
+        expect(func).toBeDefined();
+        const names = func!.children!.map(c => c.name);
+        expect(names).toEqual(["x", "y"]);
+    });
+
+    it("preserves source order for multi-line params", () => {
+        const text = `DEFINE_ACTION_FUNCTION my_func
+  STR_VAR
+    item = ~~
+    creature = ~~
+  BEGIN END`;
+        const symbols = getDocumentSymbols(text);
+        const func = symbols.find(s => s.name === "my_func");
+        expect(func).toBeDefined();
+        const names = func!.children!.map(c => c.name);
+        expect(names).toEqual(["item", "creature"]);
+    });
+
+    it("deduplicates params vs body vars (param wins)", () => {
+        const text = `DEFINE_PATCH_FUNCTION my_func INT_VAR x = 0 BEGIN
+            SET x = 5
+        END`;
+        const symbols = getDocumentSymbols(text);
+        const func = symbols.find(s => s.name === "my_func");
+        expect(func).toBeDefined();
+        const xChildren = func!.children!.filter(c => c.name === "x");
+        expect(xChildren).toHaveLength(1);
+    });
+
     it("returns function body variables as children", () => {
         const text = `DEFINE_PATCH_FUNCTION my_func BEGIN
             SET my_var = 5

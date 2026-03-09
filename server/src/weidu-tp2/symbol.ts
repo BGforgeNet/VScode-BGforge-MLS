@@ -162,6 +162,33 @@ function extractFileLevelVar(node: Node, seen: Set<string>): DocumentSymbol[] {
     return results;
 }
 
+/** Parameter declaration types to collect as function children. */
+const PARAM_DECL_TYPES: ReadonlySet<string> = new Set([
+    SyntaxType.IntVarDecl,
+    SyntaxType.StrVarDecl,
+]);
+
+/**
+ * Collect INT_VAR and STR_VAR parameter names from a function definition node.
+ * Adds collected names to `seen` so body vars with the same name are deduplicated.
+ */
+function collectFuncParams(funcNode: Node, funcName: string, seen: Set<string>): DocumentSymbol[] {
+    const params: DocumentSymbol[] = [];
+    for (const child of funcNode.children) {
+        if (!PARAM_DECL_TYPES.has(child.type)) continue;
+        for (const paramChild of child.children) {
+            if (paramChild.type === SyntaxType.Identifier && paramChild.text && !seen.has(paramChild.text)) {
+                seen.add(paramChild.text);
+                // Use identifier node for range too — all params share the parent
+                // decl node range, which causes VSCode to sort alphabetically.
+                const sym = makeVarSymbol(paramChild, paramChild, funcName);
+                if (sym) params.push(sym);
+            }
+        }
+    }
+    return params;
+}
+
 /**
  * Collect all variable declarations inside a function/macro body as flat children.
  * Walks recursively — variables inside conditionals/loops still belong to the function.
@@ -216,7 +243,10 @@ export function getDocumentSymbols(text: string): DocumentSymbol[] {
         if (isFunctionDef(node.type)) {
             const nameNode = node.childForFieldName("name");
             if (nameNode && nameNode.text) {
-                const children = collectBodyVars(node, nameNode.text);
+                const seen = new Set<string>();
+                const params = collectFuncParams(node, nameNode.text, seen);
+                const bodyVars = collectBodyVars(node, nameNode.text, seen);
+                const children = [...params, ...bodyVars];
                 symbols.push({
                     name: nameNode.text,
                     kind: SymbolKind.Function,
