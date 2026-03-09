@@ -17,7 +17,8 @@ import {
     sendParseResult,
     uriToPath,
 } from "../common";
-import { getConnection, getDocuments } from "../lsp-connection";
+import { getDocuments } from "../lsp-connection";
+import { showError, showErrorWithActions, showInfo } from "../user-messages";
 import { SSLsettings } from "../settings";
 import { ssl_compile as ssl_builtin_compiler } from "../sslc/ssl_compiler";
 
@@ -195,7 +196,7 @@ export async function compile(
         // vscode loses open file if clicked on console or elsewhere
         conlog("Not a Fallout SSL file! Please focus a Fallout SSL file to compile.");
         if (interactive) {
-            getConnection().window.showInformationMessage("Please focus a Fallout SSL file to compile!");
+            showInfo("Please focus a Fallout SSL file to compile!");
         }
         return;
     }
@@ -206,7 +207,7 @@ export async function compile(
     let useBuiltInCompiler = sslSettings.useBuiltInCompiler;
 
     if (!useBuiltInCompiler && !(await checkExternalCompiler(sslSettings.compilePath))) {
-        const response = await getConnection().window.showErrorMessage(
+        const response = await showErrorWithActions(
             `Failed to run '${sslSettings.compilePath}'! Use built-in compiler this time?`,
             { title: "Yes", id: "yes" },
             { title: "No", id: "no" },
@@ -227,11 +228,11 @@ export async function compile(
         });
         if (returnCode === 0) {
             if (interactive) {
-                getConnection().window.showInformationMessage(`Compiled ${baseName}.`);
+                showInfo(`Compiled ${baseName}.`);
             }
         } else {
             if (interactive) {
-                getConnection().window.showErrorMessage(`Failed to compile ${baseName}!`);
+                showError(`Failed to compile ${baseName}!`);
             }
         }
         sendDiagnostics(uri, stdout, tmpUri);
@@ -258,11 +259,11 @@ export async function compile(
             if (err) {
                 conlog("error: " + err.message);
                 if (interactive) {
-                    getConnection().window.showErrorMessage(`Failed to compile ${baseName}!`);
+                    showError(`Failed to compile ${baseName}!`);
                 }
             } else {
                 if (interactive) {
-                    getConnection().window.showInformationMessage(`Compiled ${baseName}.`);
+                    showInfo(`Compiled ${baseName}.`);
                 }
             }
             sendDiagnostics(uri, stdout, tmpUri);

@@ -70,4 +70,26 @@ export default [
             }],
         },
     },
+    // Ban direct showMessage calls in server code -- use user-messages.ts wrappers instead.
+    // Wrappers auto-decode file:// URIs to human-readable paths.
+    {
+        files: ["server/src/**/*.ts"],
+        ignores: ["server/src/user-messages.ts"],
+        rules: {
+            "no-restricted-syntax": ["error",
+                {
+                    selector: "MemberExpression[property.name='showInformationMessage']",
+                    message: "Use showInfo() from user-messages.ts instead of connection.window.showInformationMessage(). It auto-decodes file:// URIs.",
+                },
+                {
+                    selector: "MemberExpression[property.name='showWarningMessage']",
+                    message: "Use showWarning() from user-messages.ts instead of connection.window.showWarningMessage(). It auto-decodes file:// URIs.",
+                },
+                {
+                    selector: "MemberExpression[property.name='showErrorMessage']",
+                    message: "Use showError() or showErrorWithActions() from user-messages.ts instead of connection.window.showErrorMessage(). It auto-decodes file:// URIs.",
+                },
+            ],
+        },
+    },
 ];

@@ -11,6 +11,7 @@ import type { Node } from "web-tree-sitter";
 import { OptionalVersionedTextDocumentIdentifier, Position, TextDocumentEdit, TextEdit, WorkspaceEdit } from "vscode-languageserver/node";
 import type { IncludeGraph } from "../core/include-graph";
 import { isWithinBase } from "../core/include-resolver";
+import { normalizeUri } from "../core/normalized-uri";
 import { SourceType } from "../core/symbol";
 import type { Symbols } from "../core/symbol-index";
 import { parseWithCache, isInitialized } from "./parser";
@@ -274,7 +275,11 @@ export function renameSymbolWorkspace(
         return null;
     }
 
-    const definitionUri = defInfo.uri;
+    // Normalize URIs to prevent encoding mismatches (e.g., %21 vs ! on Windows).
+    // The registry gateway already normalizes `uri`, so normalizeUri is idempotent here.
+    // defInfo.uri comes from the symbol store and genuinely needs normalization.
+    const normUri = normalizeUri(uri);
+    const definitionUri = normalizeUri(defInfo.uri);
     debugLog?.(`rename: definitionUri=${definitionUri}`);
 
     // Collect all files to rename in:
@@ -287,7 +292,7 @@ export function renameSymbolWorkspace(
     const candidateUris = new Set([definitionUri, ...dependants]);
 
     // Also include the current file (in case it's not in the graph yet)
-    candidateUris.add(uri);
+    candidateUris.add(normUri);
 
     debugLog?.(`rename: ${candidateUris.size} candidate files to scan`);
 
@@ -298,7 +303,7 @@ export function renameSymbolWorkspace(
     const fileScopeInfo: SslSymbolScope = { name: symbolName, scope: "file" };
 
     for (const candidateUri of candidateUris) {
-        const candidateText = candidateUri === uri
+        const candidateText = candidateUri === normUri
             ? text
             : getFileText(candidateUri);
 

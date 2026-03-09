@@ -17,7 +17,7 @@ import {
     tmpDir,
     uriToPath,
 } from "./common";
-import { getConnection } from "./lsp-connection";
+import { showError, showInfo, showWarning } from "./user-messages";
 import { WeiDUsettings } from "./settings";
 
 const valid_extensions = new Map([
@@ -98,7 +98,7 @@ export function compile(uri: string, settings: WeiDUsettings, interactive = fals
         // vscode loses open file if clicked on console or elsewhere
         conlog("Not a WeiDU file (tp2, tph, tpa, tpp, d, baf)! Focus a WeiDU file to parse.");
         if (interactive) {
-            getConnection().window.showInformationMessage("Focus a WeiDU file to parse!");
+            showInfo("Focus a WeiDU file to parse!");
         }
 
         return;
@@ -107,7 +107,7 @@ export function compile(uri: string, settings: WeiDUsettings, interactive = fals
     if ((weiduType === "d" || weiduType === "baf") && gamePath === "") {
         conlog("Path to IE game is not specified in settings, can't parse D or BAF!");
         if (interactive) {
-            getConnection().window.showWarningMessage(
+            showWarning(
                 "Path to IE game is not specified in settings, can't parse D or BAF!"
             );
         }
@@ -137,12 +137,12 @@ export function compile(uri: string, settings: WeiDUsettings, interactive = fals
             }
             conlog(parseResult);
             if (interactive) {
-                getConnection().window.showErrorMessage(`Failed to parse ${baseName}!`);
+                showError(`Failed to parse ${baseName}!`);
             }
             sendDiagnostics(uri, stdout, tmpUri);
         } else {
             if (interactive) {
-                getConnection().window.showInformationMessage(`Successfully parsed ${baseName}.`);
+                showInfo(`Successfully parsed ${baseName}.`);
             }
         }
     });

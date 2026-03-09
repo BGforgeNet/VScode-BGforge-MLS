@@ -22,6 +22,8 @@ import {
     TextDocumentSyncKind,
 } from "vscode-languageserver/node";
 import { conlog, symbolAtPosition } from "./common";
+import { type NormalizedUri, normalizeUri } from "./core/normalized-uri";
+import { decodeFileUris, showInfo } from "./user-messages";
 import { clearDiagnostics, COMMAND_compile, compile } from "./compile";
 import { getRequest as getSignatureRequest } from "./shared/signature";
 import { parseDialog } from "./dialog";
@@ -389,7 +391,7 @@ connection.onExecuteCommand(async (params) => {
 
     if (args.scheme !== "file") {
         conlog("Compile: scheme is not 'file'");
-        connection.window.showInformationMessage("Focus a valid file to run commands!");
+        showInfo("Focus a valid file to run commands!");
         return;
     }
 
@@ -435,7 +437,8 @@ documents.onDidSave(async (change) => {
 
     // Skip compile for files touched by a recent multi-file rename.
     // Remove the URI so subsequent saves compile normally.
-    if (renameAffectedUris.delete(uri)) {
+    // Normalize to match the normalized URIs stored by the rename handler.
+    if (renameAffectedUris.delete(normalizeUri(uri))) {
         return;
     }
 
@@ -470,7 +473,8 @@ documents.onDidChangeContent(async (event) => {
 
     // Skip compile for files touched by a recent multi-file rename.
     // Keep the URI in the set — onDidSave will remove it after the final skip.
-    if (renameAffectedUris.has(uri)) {
+    // Normalize to match the normalized URIs stored by the rename handler.
+    if (renameAffectedUris.has(normalizeUri(uri))) {
         return;
     }
 
@@ -554,7 +558,7 @@ connection.onPrepareRename((params) => {
 // invalidate the undo group). A safety timeout clears the set in case some files
 // never trigger change/save events (e.g. user undoes before save).
 const RENAME_SUPPRESS_MS = 3000;
-const renameAffectedUris = new Set<string>();
+const renameAffectedUris = new Set<NormalizedUri>();
 let renameSuppressTimer: NodeJS.Timeout | undefined;
 
 connection.onRenameRequest((params) => {
@@ -573,7 +577,7 @@ connection.onRenameRequest((params) => {
         renameAffectedUris.clear();
         for (const dc of result.documentChanges) {
             if (TextDocumentEdit.is(dc)) {
-                renameAffectedUris.add(dc.textDocument.uri);
+                renameAffectedUris.add(normalizeUri(dc.textDocument.uri));
             }
         }
         // Safety cleanup in case some URIs never trigger change/save
@@ -600,9 +604,13 @@ connection.onDocumentFormatting((params) => {
 
     const result = registry.format(langId, text, uri);
     if (result.warning) {
+        // Use sendNotification (fire-and-forget) instead of showWarningMessage
+        // (request/response) to avoid blocking the formatting response.
+        // Cannot use showWarning() wrapper here for the same reason (it's request/response).
+        // The ESLint no-restricted-syntax rule only targets .show*Message() member access.
         void connection.sendNotification("window/showMessage", {
             type: MessageType.Warning,
-            message: result.warning,
+            message: decodeFileUris(result.warning),
         });
     }
     return result.edits;

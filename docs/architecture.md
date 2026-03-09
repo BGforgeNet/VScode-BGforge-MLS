@@ -96,11 +96,12 @@ vscode-mls/
 |   |   +-- language-provider.ts    Provider interface
 |   |   +-- compile.ts              Compilation dispatch
 |   |   +-- translation.ts          .tra/.msg inlay hints and hover
+|   |   +-- user-messages.ts        User message wrappers (auto-decode file:// URIs)
 |   |   +-- transpiler-utils.ts     Shared transpiler utilities
 |   |   +-- safe-eval.ts            Safe expression evaluator (no eval())
 |   |   +-- common.ts               Logging, file utilities
 |   |   +-- settings.ts             User settings
-|   |   +-- core/                   Symbol system, language IDs, patterns
+|   |   +-- core/                   Symbol system, language IDs, URI normalization, patterns
 |   |   +-- shared/                 Cross-provider utilities
 |   |   +-- fallout-ssl/            Fallout SSL provider (full IDE support)
 |   |   +-- fallout-worldmap/       Worldmap provider (completion + hover)

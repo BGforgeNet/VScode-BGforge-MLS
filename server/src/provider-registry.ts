@@ -5,6 +5,11 @@
  * 1. Registers providers for each language
  * 2. Initializes them at startup
  * 3. Routes feature requests to the appropriate provider
+ *
+ * URI normalization: All public methods that accept URIs normalize them
+ * before passing to providers. This ensures consistent encoding regardless
+ * of whether the URI came from VSCode (may percent-encode e.g. ! as %21)
+ * or from pathToFileURL (leaves ! unencoded). See core/normalized-uri.ts.
  */
 
 import { readFileSync } from "node:fs";
@@ -28,6 +33,7 @@ import {
 import { FormatResult, HoverResult, LanguageProvider, ProviderContext } from "./language-provider";
 import { conlog, findFiles, pathToUri } from "./common";
 import { validLocationOrNull } from "./core/location-utils";
+import { normalizeUri } from "./core/normalized-uri";
 
 class ProviderRegistry {
     private providers: Map<string, LanguageProvider> = new Map();
@@ -131,7 +137,8 @@ class ProviderRegistry {
                     const uri = pathToUri(absolutePath);
                     try {
                         const text = readFileSync(absolutePath, "utf-8");
-                        provider.reloadFileData(uri, text);
+                        // Use the public gateway method to ensure URI normalization
+                        this.reloadFileData(provider.id, uri, text);
                     } catch (error) {
                         conlog(`Failed to read header file ${absolutePath}: ${error}`);
                     }
@@ -196,9 +203,10 @@ class ProviderRegistry {
     // =========================================================================
 
     format(langId: string, text: string, uri: string): FormatResult {
+        const normUri = normalizeUri(uri);
         const provider = this.get(langId);
         if (provider?.format) {
-            return provider.format(text, uri);
+            return provider.format(text, normUri);
         }
         return { edits: [] };
     }
@@ -234,17 +242,19 @@ class ProviderRegistry {
     }
 
     definition(langId: string, text: string, position: Position, uri: string): Location | null {
+        const normUri = normalizeUri(uri);
         const provider = this.get(langId);
         if (provider?.definition) {
-            return provider.definition(text, position, uri);
+            return provider.definition(text, position, normUri);
         }
         return null;
     }
 
     inlayHints(langId: string, text: string, uri: string, range: Range): InlayHint[] {
+        const normUri = normalizeUri(uri);
         const provider = this.get(langId);
         if (provider?.inlayHints) {
-            return provider.inlayHints(text, uri, range);
+            return provider.inlayHints(text, normUri, range);
         }
         return [];
     }
@@ -258,9 +268,10 @@ class ProviderRegistry {
     }
 
     rename(langId: string, text: string, position: Position, newName: string, uri: string): WorkspaceEdit | null {
+        const normUri = normalizeUri(uri);
         const provider = this.get(langId);
         if (provider?.rename) {
-            return provider.rename(text, position, newName, uri);
+            return provider.rename(text, position, newName, normUri);
         }
         return null;
     }
@@ -274,19 +285,20 @@ class ProviderRegistry {
      * Local symbol merging happens inside each provider's filterCompletions().
      */
     completion(langId: string, text: string, uri: string, position?: Position, triggerCharacter?: string): CompletionItem[] {
+        const normUri = normalizeUri(uri);
         const provider = this.get(langId);
         if (!provider) {
             return [];
         }
 
         // Get header/static completions
-        const headerItems = provider.getCompletions ? provider.getCompletions(uri) : [];
+        const headerItems = provider.getCompletions ? provider.getCompletions(normUri) : [];
 
         let result = [...headerItems];
 
         // Apply context-based filtering if provider supports it
         if (provider.filterCompletions && position) {
-            result = provider.filterCompletions(result, text, position, uri, triggerCharacter);
+            result = provider.filterCompletions(result, text, position, normUri, triggerCharacter);
         }
 
         return result;
@@ -294,9 +306,10 @@ class ProviderRegistry {
 
     /** AST-based hover for local symbols. Returns HoverResult indicating whether provider handled it. */
     localHover(langId: string, text: string, symbol: string, uri: string, position: Position): HoverResult {
+        const normUri = normalizeUri(uri);
         const provider = this.get(langId);
         if (provider?.hover) {
-            return provider.hover(text, symbol, uri, position);
+            return provider.hover(text, symbol, normUri, position);
         }
         return HoverResult.notHandled();
     }
@@ -309,13 +322,14 @@ class ProviderRegistry {
      * - Indexed symbols (headers + static) as fallback, excluding current file
      */
     hover(langId: string, uri: string, symbol: string, text?: string): Hover | null {
+        const normUri = normalizeUri(uri);
         const provider = this.get(langId);
         if (!provider) {
             return null;
         }
 
         if (text && provider.resolveSymbol) {
-            const resolved = provider.resolveSymbol(symbol, text, uri);
+            const resolved = provider.resolveSymbol(symbol, text, normUri);
             if (resolved?.hover) {
                 return resolved.hover;
             }
@@ -330,6 +344,7 @@ class ProviderRegistry {
      * Local symbols take precedence.
      */
     signature(langId: string, text: string, uri: string, symbol: string, paramIndex: number): SignatureHelp | null {
+        const normUri = normalizeUri(uri);
         const provider = this.get(langId);
         if (!provider) {
             return null;
@@ -345,7 +360,7 @@ class ProviderRegistry {
 
         // Fall back to headers/static
         if (provider.getSignature) {
-            return provider.getSignature(uri, symbol, paramIndex);
+            return provider.getSignature(normUri, symbol, paramIndex);
         }
 
         return null;
@@ -361,9 +376,10 @@ class ProviderRegistry {
     }
 
     reloadFileData(langId: string, uri: string, text: string): void {
+        const normUri = normalizeUri(uri);
         const provider = this.get(langId);
         if (provider?.reloadFileData) {
-            provider.reloadFileData(uri, text);
+            provider.reloadFileData(normUri, text);
         }
     }
 
@@ -376,9 +392,10 @@ class ProviderRegistry {
      * @returns true if a provider handled the compilation, false otherwise
      */
     async compile(langId: string, uri: string, text: string, interactive: boolean): Promise<boolean> {
+        const normUri = normalizeUri(uri);
         const provider = this.get(langId);
         if (provider?.compile) {
-            await provider.compile(uri, text, interactive);
+            await provider.compile(normUri, text, interactive);
             return true;
         }
         return false;
@@ -413,7 +430,8 @@ class ProviderRegistry {
      * Routes to the appropriate provider based on file extension.
      */
     handleWatchedFileChange(uri: string, changeType: FileChangeType): void {
-        const filePath = fileURLToPath(uri);
+        const normUri = normalizeUri(uri);
+        const filePath = fileURLToPath(normUri);
         const ext = extname(filePath).toLowerCase();
         const provider = this.extensionToProvider.get(ext);
 
@@ -423,7 +441,7 @@ class ProviderRegistry {
 
         if (changeType === FileChangeType.Deleted) {
             if (provider.onWatchedFileDeleted) {
-                provider.onWatchedFileDeleted(uri);
+                provider.onWatchedFileDeleted(normUri);
                 conlog(`File deleted, cleared from index: ${filePath}`);
             }
         } else {
@@ -431,7 +449,7 @@ class ProviderRegistry {
             try {
                 const text = readFileSync(filePath, "utf-8");
                 if (provider.reloadFileData) {
-                    provider.reloadFileData(uri, text);
+                    provider.reloadFileData(normUri, text);
                     conlog(`File ${changeType === FileChangeType.Created ? "created" : "changed"}, reloaded: ${filePath}`);
                 }
             } catch (error) {
@@ -445,9 +463,10 @@ class ProviderRegistry {
      * Clears per-document cached data (self maps) to avoid memory leaks.
      */
     handleDocumentClosed(langId: string, uri: string): void {
+        const normUri = normalizeUri(uri);
         const provider = this.get(langId);
         if (provider?.onDocumentClosed) {
-            provider.onDocumentClosed(uri);
+            provider.onDocumentClosed(normUri);
         }
     }
 }

@@ -6,7 +6,7 @@
 import path = require("node:path");
 import fs = require("node:fs");
 import { conlog } from "../common";
-import { getConnection } from "../lsp-connection";
+import { showWarning } from "../user-messages";
 import { fork } from "child_process";
 
 const COMPILER_MODULE = path.join(__dirname, "../node_modules/sslc-emscripten-noderawfs/compiler.mjs");
@@ -41,7 +41,7 @@ export async function ssl_compile(opts: {
     if (opts.headersDir) {
         if (cmdArgs.find((s) => s.startsWith("-I"))) {
             if (opts.interactive) {
-                getConnection().window.showWarningMessage(
+                showWarning(
                     "Warning: -I switch is used but it will be ignored",
                 );
             }

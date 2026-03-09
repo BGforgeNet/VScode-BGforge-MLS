@@ -72,8 +72,10 @@ server/src/
 |   +-- symbol.ts             # IndexedSymbol type definitions
 |   +-- symbol-index.ts       # Symbols class - unified storage & query
 |   +-- static-loader.ts      # Loads built-in symbols from JSON
-|   +-- include-graph.ts      # Generic include graph (dependency-graph wrapper)
+|   +-- include-graph.ts      # Generic include graph (TypedDepGraph wrapper)
 |   +-- include-resolver.ts   # Resolves #include paths to file URIs
+|   +-- normalized-uri.ts     # Branded NormalizedUri type, URI encoding canonicalization
+|   +-- typed-dep-graph.ts    # Type-safe wrapper around dependency-graph with branded keys
 |   +-- languages.ts          # Language IDs & file extensions
 |   +-- patterns.ts           # Regex patterns
 |   +-- location-utils.ts     # Position/range helpers
@@ -120,6 +122,7 @@ server/src/
 |
 +-- translation.ts            # .tra/.msg translation service
 +-- compile.ts                # Compilation dispatch
++-- user-messages.ts          # User-facing message wrappers (auto-decode file:// URIs)
 +-- settings.ts               # User settings
 +-- common.ts                 # Logging, file utils
 ```
@@ -503,7 +506,7 @@ The include graph tracks `#include` relationships between files for workspace-wi
 ```
 +------------------+     +------------------+     +------------------+
 | include-scanner  | --> | include-resolver | --> | IncludeGraph     |
-| (AST extraction) |     | (path resolve)   |     | (dependency-graph)|
+| (AST extraction) |     | (path resolve)   |     | (TypedDepGraph)   |
 +------------------+     +------------------+     +------------------+
 ```
 
@@ -511,7 +514,7 @@ The include graph tracks `#include` relationships between files for workspace-wi
 
 | Module | Layer | Purpose |
 |--------|-------|---------|
-| `core/include-graph.ts` | Generic | Wraps `dependency-graph` for transitive dependant queries |
+| `core/include-graph.ts` | Generic | Wraps `TypedDepGraph` for transitive dependant queries |
 | `core/include-resolver.ts` | Generic | Resolves raw paths to file URIs (with path traversal protection) |
 | `fallout-ssl/include-scanner.ts` | Language-specific | Extracts `#include` paths from SSL tree-sitter AST |
 
@@ -599,6 +602,32 @@ cannot produce phantom assignment nodes for them.
 ### 7. Sequential Parser Init
 Tree-sitter WASM constraint requires sequential initialization.
 Documented in provider-registry.ts.
+
+### 8. URI Normalization (Gateway Pattern)
+
+On Windows, VSCode and Node's `pathToFileURL()` produce different percent-encodings for
+the same file (e.g., `%21` vs `!`, `%3A` vs `:`). Using raw URI strings as Map/Set keys
+causes silent mismatches when the same file enters via different paths (LSP at runtime
+vs `pathToUri` at startup).
+
+**Solution**: `NormalizedUri` branded type (`core/normalized-uri.ts`) canonicalizes
+`file://` URIs via a `fileURLToPath` -> `pathToFileURL` round-trip. `ProviderRegistry`
+normalizes all URIs at the gateway before passing to providers, protecting all downstream
+data structures (symbol index, workspace symbols, feature data, text cache) without
+modifying them. The include graph also normalizes internally as defense-in-depth.
+
+The branded type makes it a compile-time error to use raw strings where normalized URIs
+are expected.
+
+### 9. User-Facing Message Wrappers
+
+All user-visible messages (`showInformationMessage`, `showWarningMessage`,
+`showErrorMessage`) go through wrappers in `user-messages.ts` that auto-decode
+`file://` URIs to human-readable paths. An ESLint `no-restricted-syntax` rule
+(in `eslint.config.mjs`) enforces this — direct `connection.window.show*Message()`
+calls in server code produce lint errors.
+
+Debug logs intentionally keep raw URIs to preserve diagnostic ability.
 
 ## Static Data Pipeline
 

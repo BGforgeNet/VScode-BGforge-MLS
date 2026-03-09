@@ -132,4 +132,39 @@ describe("core/include-graph", () => {
             expect(graph.getAllFiles()).toEqual([]);
         });
     });
+
+    describe("URI normalization", () => {
+        it("treats encoded and decoded URIs as the same file", () => {
+            // Simulates: SSL file added with encoded URI (from VSCode),
+            // header resolved with decoded URI (from pathToFileURL)
+            graph.updateFile("file:///project/%21ecco/a.ssl", ["file:///project/!ecco/b.h"]);
+
+            // Both forms should resolve to the same node
+            expect(graph.hasFile("file:///project/%21ecco/a.ssl")).toBe(true);
+            expect(graph.hasFile("file:///project/!ecco/a.ssl")).toBe(true);
+            expect(graph.getTransitiveDependants("file:///project/!ecco/b.h")).toEqual(
+                expect.arrayContaining([expect.stringContaining("a.ssl")])
+            );
+            expect(graph.getTransitiveDependants("file:///project/%21ecco/b.h")).toEqual(
+                expect.arrayContaining([expect.stringContaining("a.ssl")])
+            );
+        });
+
+        it("finds dependants regardless of URI encoding used at query time", () => {
+            // Header added with decoded URI, SSL added with encoded URI
+            graph.updateFile("file:///project/!ecco/a.ssl", ["file:///project/!ecco/b.h"]);
+
+            // Query with encoded URI should still find the dependant
+            const dependants = graph.getTransitiveDependants("file:///project/%21ecco/b.h");
+            expect(dependants).toHaveLength(1);
+        });
+
+        it("does not create duplicate nodes for differently-encoded URIs", () => {
+            graph.updateFile("file:///project/%21ecco/a.ssl", ["file:///project/!ecco/b.h"]);
+            graph.updateFile("file:///project/!ecco/a.ssl", ["file:///project/%21ecco/b.h"]);
+
+            // Should have exactly 2 nodes (a.ssl and b.h), not 4
+            expect(graph.getAllFiles()).toHaveLength(2);
+        });
+    });
 });
