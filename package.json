@@ -195,6 +195,12 @@
                 "editor.quickSuggestions": {
                     "comments": "on"
                 }
+            },
+            "files.watcherExclude": {
+                "**/.tmp.ssl": true
+            },
+            "files.exclude": {
+                "**/.tmp.ssl": true
             }
         },
         "commands": [

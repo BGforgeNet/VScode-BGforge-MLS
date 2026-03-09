@@ -1,6 +1,12 @@
 /**
  * Fallout SSL compilation utilities.
  * Handles compilation via external compile.exe or built-in WASM compiler.
+ *
+ * Writes a temporary file (.tmp.ssl) in the same directory as the source file
+ * so the compiler can resolve relative #include paths. The tmp file name is
+ * exported as TMP_SSL_NAME and must be kept in sync with the files.watcherExclude
+ * entry in package.json's configurationDefaults (see "Cross-reference: tmp file
+ * watcher exclusion" there).
  */
 
 import * as cp from "child_process";
@@ -23,6 +29,15 @@ import { SSLsettings } from "../settings";
 import { ssl_compile as ssl_builtin_compiler } from "../sslc/ssl_compiler";
 
 const sslExt = ".ssl";
+
+/**
+ * Tmp file name used for compilation. Must be in the same directory as the
+ * source file because SSL #include directives can use relative paths.
+ *
+ * Cross-reference: package.json configurationDefaults has a files.watcherExclude
+ * entry for this name to prevent VS Code file watchers from picking it up.
+ */
+export const TMP_SSL_NAME = ".tmp.ssl";
 
 /**
  * Wine gives network-mapped looking path to compile.exe
@@ -153,10 +168,19 @@ function sendDiagnostics(uri: string, outputText: string, tmpUri: string) {
 }
 
 let successfulCompilerPath: string | null = null;
+
+/**
+ * Reset cached compiler path. Exported for testing only — module-level
+ * state (successfulCompilerPath) persists across test cases, so each test
+ * must call this in beforeEach to avoid cross-test contamination.
+ */
+export function _resetCompilerCache() {
+    successfulCompilerPath = null;
+}
+
 async function checkExternalCompiler(compilePath: string) {
     if (compilePath === successfulCompilerPath) {
-        // Check compiler only once
-        return Promise.resolve(true);
+        return true;
     }
 
     return new Promise<boolean>((resolve) => {
@@ -174,6 +198,48 @@ async function checkExternalCompiler(compilePath: string) {
     });
 }
 
+/** Remove the tmp file, logging errors instead of throwing (cleanup must not mask compiler results). */
+async function removeTmpFile(tmpPath: string) {
+    try {
+        await fs.promises.unlink(tmpPath);
+    } catch (err) {
+        if ((err as NodeJS.ErrnoException).code !== "ENOENT") {
+            conlog(`Failed to clean up ${tmpPath}: ${err}`);
+        }
+    }
+}
+
+/** Run the external compiler and return a promise that resolves when it finishes. */
+function runExternalCompiler(
+    compilePath: string,
+    compileOptions: readonly string[],
+    cwdTo: string,
+    dstPath: string,
+): Promise<{ err: cp.ExecFileException | null; stdout: string }> {
+    const { executable, prefixArgs } = parseCommandPath(compilePath);
+    const allArgs = [...prefixArgs, ...compileOptions, TMP_SSL_NAME, "-o", dstPath];
+    const shell = needsShell(executable);
+    conlog(`${compilePath} ${allArgs.join(" ")}`);
+
+    return new Promise((resolve) => {
+        cp.execFile(
+            executable,
+            allArgs,
+            { cwd: cwdTo, shell },
+            (err, stdout: string, stderr: string) => {
+                conlog("stdout: " + stdout);
+                if (stderr) {
+                    conlog("stderr: " + stderr);
+                }
+                if (err) {
+                    conlog("error: " + err.message);
+                }
+                resolve({ err, stdout });
+            },
+        );
+    });
+}
+
 export async function compile(
     uri: string,
     sslSettings: SSLsettings,
@@ -182,17 +248,15 @@ export async function compile(
 ) {
     const filepath = uriToPath(uri);
     const cwdTo = path.dirname(filepath);
-    // tmp file has to be in the same dir, because includes can be relative or absolute
-    const tmpName = ".tmp.ssl";
-    const tmpPath = path.join(cwdTo, tmpName);
+    const tmpPath = path.join(cwdTo, TMP_SSL_NAME);
     const tmpUri = pathToUri(tmpPath);
-    const baseName = path.parse(filepath).base;
-    const base = path.parse(filepath).name;
+    const parsed = path.parse(filepath);
+    const baseName = parsed.base;
+    const base = parsed.name;
     const compileOptions = sslSettings.compileOptions.split(/\s+/).filter(Boolean);
     const dstPath = path.join(sslSettings.outputDirectory, base + ".int");
-    const ext = path.parse(filepath).ext;
 
-    if (ext.toLowerCase() !== sslExt) {
+    if (parsed.ext.toLowerCase() !== sslExt) {
         // vscode loses open file if clicked on console or elsewhere
         conlog("Not a Fallout SSL file! Please focus a Fallout SSL file to compile.");
         if (interactive) {
@@ -202,75 +266,68 @@ export async function compile(
     }
     conlog(`compiling ${baseName}...`);
 
-    fs.writeFileSync(tmpPath, text);
+    await fs.promises.writeFile(tmpPath, text);
 
-    let useBuiltInCompiler = sslSettings.useBuiltInCompiler;
+    // Errors from the compiler (e.g. WASM crash) propagate to callers.
+    // Fire-and-forget call sites (server.ts onDidSave/onDidChangeContent) use
+    // `void compile(...).catch(...)` to log and swallow rejections. Awaited
+    // call sites (e.g. TSSL transpile chain) catch and report them explicitly.
+    // The finally block guarantees tmp file cleanup in both cases.
+    try {
+        let useBuiltInCompiler = sslSettings.useBuiltInCompiler;
 
-    if (!useBuiltInCompiler && !(await checkExternalCompiler(sslSettings.compilePath))) {
-        const response = await showErrorWithActions(
-            `Failed to run '${sslSettings.compilePath}'! Use built-in compiler this time?`,
-            { title: "Yes", id: "yes" },
-            { title: "No", id: "no" },
-        );
-        if (response?.id === "yes") {
-            useBuiltInCompiler = true;
-        }
-    }
-
-    if (useBuiltInCompiler) {
-        const { stdout, returnCode } = await ssl_builtin_compiler({
-            interactive,
-            cwd: cwdTo,
-            inputFileName: tmpName,
-            outputFileName: dstPath,
-            options: sslSettings.compileOptions,
-            headersDir: sslSettings.headersDirectory,
-        });
-        if (returnCode === 0) {
-            if (interactive) {
-                showInfo(`Compiled ${baseName}.`);
-            }
-        } else {
-            if (interactive) {
-                showError(`Failed to compile ${baseName}!`);
+        // TODO: when user declines the fallback prompt, execution falls through to
+        // runExternalCompiler which will also fail. Should return early instead.
+        if (!useBuiltInCompiler && !(await checkExternalCompiler(sslSettings.compilePath))) {
+            const response = await showErrorWithActions(
+                `Failed to run '${sslSettings.compilePath}'! Use built-in compiler this time?`,
+                { title: "Yes", id: "yes" },
+                { title: "No", id: "no" },
+            );
+            if (response?.id === "yes") {
+                useBuiltInCompiler = true;
             }
         }
-        sendDiagnostics(uri, stdout, tmpUri);
-        // sometimes it gets deleted due to async runs?
-        if (fs.existsSync(tmpPath)) {
-            fs.unlinkSync(tmpPath);
-        }
-        return;
-    }
 
-    const { executable, prefixArgs } = parseCommandPath(sslSettings.compilePath);
-    const allArgs = [...prefixArgs, ...compileOptions, tmpName, "-o", dstPath];
-    const shell = needsShell(executable);
-    conlog(`${sslSettings.compilePath} ${allArgs.join(" ")}`);
-    cp.execFile(
-        executable,
-        allArgs,
-        { cwd: cwdTo, shell },
-        (err, stdout: string, stderr: string) => {
-            conlog("stdout: " + stdout);
-            if (stderr) {
-                conlog("stderr: " + stderr);
-            }
-            if (err) {
-                conlog("error: " + err.message);
-                if (interactive) {
-                    showError(`Failed to compile ${baseName}!`);
-                }
-            } else {
+        if (useBuiltInCompiler) {
+            const { stdout, returnCode } = await ssl_builtin_compiler({
+                interactive,
+                cwd: cwdTo,
+                inputFileName: TMP_SSL_NAME,
+                outputFileName: dstPath,
+                options: sslSettings.compileOptions,
+                headersDir: sslSettings.headersDirectory,
+            });
+            if (returnCode === 0) {
                 if (interactive) {
                     showInfo(`Compiled ${baseName}.`);
                 }
+            } else {
+                if (interactive) {
+                    showError(`Failed to compile ${baseName}!`);
+                }
             }
             sendDiagnostics(uri, stdout, tmpUri);
-            // sometimes it gets deleted due to async runs?
-            if (fs.existsSync(tmpPath)) {
-                fs.unlinkSync(tmpPath);
+            return;
+        }
+
+        const { err, stdout } = await runExternalCompiler(
+            sslSettings.compilePath,
+            compileOptions,
+            cwdTo,
+            dstPath,
+        );
+        if (err) {
+            if (interactive) {
+                showError(`Failed to compile ${baseName}!`);
             }
-        },
-    );
+        } else {
+            if (interactive) {
+                showInfo(`Compiled ${baseName}.`);
+            }
+        }
+        sendDiagnostics(uri, stdout, tmpUri);
+    } finally {
+        await removeTmpFile(tmpPath);
+    }
 }

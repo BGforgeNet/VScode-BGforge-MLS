@@ -1,5 +1,14 @@
 # Changelog
 
+## 3.1.4
+
+Fallout SSL
+
+- Fixed race condition in SSL compilation when `validateOnChange` is enabled.
+- Fixed TSSL transpile chain not awaiting external compiler.
+- Improved compilation reliability: debouncing, async I/O, guaranteed temp file cleanup.
+- `.tmp.ssl` is now hidden by default from VS Code explorer.
+
 ## 3.1.3
 
 - Really really fixed npm publish failing in CI.

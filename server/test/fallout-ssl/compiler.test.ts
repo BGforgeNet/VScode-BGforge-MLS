@@ -1,0 +1,398 @@
+/**
+ * Unit tests for fallout-ssl/compiler.ts - SSL compilation with tmp file handling.
+ * Tests async I/O, try/finally cleanup, promisified external compiler, and diagnostics.
+ */
+
+import { describe, expect, it, vi, beforeEach } from "vitest";
+
+const mockExecFile = vi.fn();
+vi.mock("child_process", () => ({
+    execFile: (...args: unknown[]) => mockExecFile(...args),
+}));
+
+const mockWriteFile = vi.fn().mockResolvedValue(undefined);
+const mockUnlink = vi.fn().mockResolvedValue(undefined);
+vi.mock("fs", () => ({
+    promises: {
+        writeFile: (...args: unknown[]) => mockWriteFile(...args),
+        unlink: (...args: unknown[]) => mockUnlink(...args),
+    },
+}));
+
+const mockShowInfo = vi.fn();
+const mockShowError = vi.fn();
+const mockShowErrorWithActions = vi.fn();
+const mockSendDiagnostics = vi.fn();
+
+vi.mock("../../src/lsp-connection", () => ({
+    getConnection: () => ({
+        console: { log: vi.fn() },
+        sendDiagnostics: mockSendDiagnostics,
+        window: {
+            showInformationMessage: mockShowInfo,
+            showErrorMessage: mockShowError,
+        },
+    }),
+    getDocuments: () => ({
+        get: () => ({
+            offsetAt: () => 100,
+        }),
+    }),
+}));
+
+const mockSendParseResult = vi.fn();
+vi.mock("../../src/common", async (importOriginal) => {
+    const actual = await importOriginal<typeof import("../../src/common")>();
+    return {
+        ...actual,
+        sendParseResult: (...args: unknown[]) => mockSendParseResult(...args),
+    };
+});
+
+vi.mock("../../src/user-messages", () => ({
+    showInfo: (...args: unknown[]) => mockShowInfo(...args),
+    showError: (...args: unknown[]) => mockShowError(...args),
+    showErrorWithActions: (...args: unknown[]) => mockShowErrorWithActions(...args),
+}));
+
+const mockBuiltinCompiler = vi.fn();
+vi.mock("../../src/sslc/ssl_compiler", () => ({
+    ssl_compile: (...args: unknown[]) => mockBuiltinCompiler(...args),
+}));
+
+import { compile, TMP_SSL_NAME, _resetCompilerCache } from "../../src/fallout-ssl/compiler";
+import type { SSLsettings } from "../../src/settings";
+
+describe("fallout-ssl compiler", () => {
+    beforeEach(() => {
+        vi.resetAllMocks();
+        _resetCompilerCache();
+        mockWriteFile.mockResolvedValue(undefined);
+        mockUnlink.mockResolvedValue(undefined);
+        mockBuiltinCompiler.mockResolvedValue({ stdout: "", returnCode: 0 });
+    });
+
+    const baseSettings: SSLsettings = {
+        compilePath: "compile",
+        useBuiltInCompiler: true,
+        compileOptions: "",
+        outputDirectory: "/output",
+        headersDirectory: "/headers",
+    };
+
+    describe("TMP_SSL_NAME", () => {
+        it("is exported as .tmp.ssl", () => {
+            expect(TMP_SSL_NAME).toBe(".tmp.ssl");
+        });
+    });
+
+    describe("extension validation", () => {
+        it("rejects non-.ssl files silently in non-interactive mode", async () => {
+            await compile("file:///test.txt", baseSettings, false, "content");
+
+            expect(mockWriteFile).not.toHaveBeenCalled();
+            expect(mockShowInfo).not.toHaveBeenCalled();
+        });
+
+        it("shows message for non-.ssl files in interactive mode", async () => {
+            await compile("file:///test.txt", baseSettings, true, "content");
+
+            expect(mockWriteFile).not.toHaveBeenCalled();
+            expect(mockShowInfo).toHaveBeenCalledWith(
+                expect.stringContaining("Fallout SSL file")
+            );
+        });
+    });
+
+    describe("tmp file lifecycle", () => {
+        it("writes text to .tmp.ssl using async fs.promises.writeFile", async () => {
+            await compile("file:///project/test.ssl", baseSettings, false, "script code");
+
+            expect(mockWriteFile).toHaveBeenCalledWith(
+                expect.stringContaining(TMP_SSL_NAME),
+                "script code"
+            );
+        });
+
+        it("writes tmp file in the same directory as source (for include resolution)", async () => {
+            await compile("file:///project/scripts/test.ssl", baseSettings, false, "code");
+
+            const writtenPath = mockWriteFile.mock.calls[0][0] as string;
+            expect(writtenPath).toMatch(/\/project\/scripts\/\.tmp\.ssl$/);
+        });
+
+        it("cleans up tmp file after successful built-in compilation", async () => {
+            mockBuiltinCompiler.mockResolvedValue({ stdout: "", returnCode: 0 });
+
+            await compile("file:///project/test.ssl", baseSettings, false, "code");
+
+            expect(mockUnlink).toHaveBeenCalledWith(
+                expect.stringContaining(TMP_SSL_NAME)
+            );
+        });
+
+        it("cleans up tmp file even when built-in compiler throws", async () => {
+            mockBuiltinCompiler.mockRejectedValue(new Error("WASM crash"));
+
+            await expect(
+                compile("file:///project/test.ssl", baseSettings, false, "code")
+            ).rejects.toThrow("WASM crash");
+
+            expect(mockUnlink).toHaveBeenCalledWith(
+                expect.stringContaining(TMP_SSL_NAME)
+            );
+        });
+
+        it("cleans up tmp file after external compiler completes", async () => {
+            const externalSettings = { ...baseSettings, useBuiltInCompiler: false };
+            // Mock checkExternalCompiler to succeed
+            mockExecFile.mockImplementation((...args: unknown[]) => {
+                const lastArg = args[args.length - 1];
+                if (typeof lastArg === "function") {
+                    // Check if this is the --version check or the actual compile
+                    const argList = args[1] as string[];
+                    if (argList.some((a: string) => a === "--version")) {
+                        // Version check - succeed
+                        (lastArg as (err: null) => void)(null);
+                    } else {
+                        // Actual compile - succeed
+                        (lastArg as (err: null, stdout: string, stderr: string) => void)(null, "", "");
+                    }
+                }
+            });
+
+            await compile("file:///project/test.ssl", externalSettings, false, "code");
+
+            expect(mockUnlink).toHaveBeenCalledWith(
+                expect.stringContaining(TMP_SSL_NAME)
+            );
+        });
+
+        it("cleans up tmp file even when external compiler fails", async () => {
+            const externalSettings = { ...baseSettings, useBuiltInCompiler: false };
+            mockExecFile.mockImplementation((...args: unknown[]) => {
+                const lastArg = args[args.length - 1];
+                if (typeof lastArg === "function") {
+                    const argList = args[1] as string[];
+                    if (argList.some((a: string) => a === "--version")) {
+                        (lastArg as (err: null) => void)(null);
+                    } else {
+                        (lastArg as (err: Error, stdout: string, stderr: string) => void)(
+                            new Error("compile failed"), "", "stderr output"
+                        );
+                    }
+                }
+            });
+
+            await compile("file:///project/test.ssl", externalSettings, false, "code");
+
+            expect(mockUnlink).toHaveBeenCalledWith(
+                expect.stringContaining(TMP_SSL_NAME)
+            );
+        });
+
+        it("ignores ENOENT when cleaning up tmp file (already deleted)", async () => {
+            const enoent = Object.assign(new Error("ENOENT"), { code: "ENOENT" });
+            mockUnlink.mockRejectedValue(enoent);
+
+            // Should not throw
+            await compile("file:///project/test.ssl", baseSettings, false, "code");
+        });
+
+        it("logs and swallows non-ENOENT cleanup errors instead of rethrowing", async () => {
+            const eperm = Object.assign(new Error("EPERM"), { code: "EPERM" });
+            mockUnlink.mockRejectedValue(eperm);
+
+            // Should not throw — cleanup errors must not mask compiler results
+            await compile("file:///project/test.ssl", baseSettings, false, "code");
+
+            // Diagnostics should still have been sent despite cleanup failure
+            expect(mockSendParseResult).toHaveBeenCalled();
+        });
+    });
+
+    describe("built-in compiler", () => {
+        it("passes correct options to built-in compiler", async () => {
+            const settings = { ...baseSettings, compileOptions: "-O2 -p" };
+
+            await compile("file:///project/test.ssl", settings, true, "code");
+
+            expect(mockBuiltinCompiler).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    interactive: true,
+                    inputFileName: TMP_SSL_NAME,
+                    outputFileName: "/output/test.int",
+                    options: "-O2 -p",
+                    headersDir: "/headers",
+                })
+            );
+        });
+
+        it("shows success message on returnCode 0 in interactive mode", async () => {
+            mockBuiltinCompiler.mockResolvedValue({ stdout: "", returnCode: 0 });
+
+            await compile("file:///project/test.ssl", baseSettings, true, "code");
+
+            expect(mockShowInfo).toHaveBeenCalledWith(
+                expect.stringContaining("Compiled test.ssl")
+            );
+        });
+
+        it("shows error message on non-zero returnCode in interactive mode", async () => {
+            mockBuiltinCompiler.mockResolvedValue({ stdout: "error output", returnCode: 1 });
+
+            await compile("file:///project/test.ssl", baseSettings, true, "code");
+
+            expect(mockShowError).toHaveBeenCalledWith(
+                expect.stringContaining("Failed to compile test.ssl")
+            );
+        });
+
+        it("sends diagnostics after compilation", async () => {
+            mockBuiltinCompiler.mockResolvedValue({ stdout: "compiler output", returnCode: 0 });
+
+            await compile("file:///project/test.ssl", baseSettings, false, "code");
+
+            expect(mockSendParseResult).toHaveBeenCalledWith(
+                expect.objectContaining({ errors: expect.any(Array), warnings: expect.any(Array) }),
+                "file:///project/test.ssl",
+                expect.stringContaining(TMP_SSL_NAME)
+            );
+        });
+    });
+
+    describe("external compiler", () => {
+        const externalSettings: SSLsettings = {
+            ...baseSettings,
+            useBuiltInCompiler: false,
+        };
+
+        beforeEach(() => {
+            // Default: version check succeeds, compile succeeds
+            mockExecFile.mockImplementation((...args: unknown[]) => {
+                const lastArg = args[args.length - 1];
+                if (typeof lastArg === "function") {
+                    const argList = args[1] as string[];
+                    if (argList.some((a: string) => a === "--version")) {
+                        (lastArg as (err: null) => void)(null);
+                    } else {
+                        (lastArg as (err: null, stdout: string, stderr: string) => void)(null, "", "");
+                    }
+                }
+            });
+        });
+
+        it("returns a promise that resolves after external compiler finishes", async () => {
+            // The key test: compile() must not resolve until execFile callback fires.
+            // We control when the callback fires to verify this.
+            let capturedCallback: ((err: null, stdout: string, stderr: string) => void) | undefined;
+
+            mockExecFile.mockImplementation((...args: unknown[]) => {
+                const lastArg = args[args.length - 1];
+                if (typeof lastArg === "function") {
+                    const argList = args[1] as string[];
+                    if (argList.some((a: string) => a === "--version")) {
+                        (lastArg as (err: null) => void)(null);
+                    } else {
+                        capturedCallback = lastArg as (err: null, stdout: string, stderr: string) => void;
+                    }
+                }
+            });
+
+            let resolved = false;
+            const promise = compile("file:///project/test.ssl", externalSettings, false, "code")
+                .then(() => { resolved = true; });
+
+            // Let microtasks run
+            await new Promise((r) => setTimeout(r, 0));
+            expect(resolved).toBe(false);
+            expect(capturedCallback).toBeDefined();
+
+            // Now fire the callback
+            capturedCallback!(null, "", "");
+            await promise;
+            expect(resolved).toBe(true);
+        });
+
+        it("passes compile options as separate args", async () => {
+            const settings = { ...externalSettings, compileOptions: "-O2 -p" };
+
+            await compile("file:///project/test.ssl", settings, false, "code");
+
+            // Find the actual compile call (not the --version check)
+            const compileCalls = mockExecFile.mock.calls.filter(
+                (call: unknown[]) => !(call[1] as string[]).some((a: string) => a === "--version")
+            );
+            expect(compileCalls).toHaveLength(1);
+            const args = compileCalls[0][1] as string[];
+            expect(args).toContain("-O2");
+            expect(args).toContain("-p");
+        });
+
+        it("shows success message in interactive mode", async () => {
+            await compile("file:///project/test.ssl", externalSettings, true, "code");
+
+            expect(mockShowInfo).toHaveBeenCalledWith(
+                expect.stringContaining("Compiled test.ssl")
+            );
+        });
+
+        it("shows error message on failure in interactive mode", async () => {
+            mockExecFile.mockImplementation((...args: unknown[]) => {
+                const lastArg = args[args.length - 1];
+                if (typeof lastArg === "function") {
+                    const argList = args[1] as string[];
+                    if (argList.some((a: string) => a === "--version")) {
+                        (lastArg as (err: null) => void)(null);
+                    } else {
+                        (lastArg as (err: Error, stdout: string, stderr: string) => void)(
+                            new Error("exit code 1"), "error output", ""
+                        );
+                    }
+                }
+            });
+
+            await compile("file:///project/test.ssl", externalSettings, true, "code");
+
+            expect(mockShowError).toHaveBeenCalledWith(
+                expect.stringContaining("Failed to compile test.ssl")
+            );
+        });
+    });
+
+    describe("external compiler check", () => {
+        const externalSettings: SSLsettings = {
+            ...baseSettings,
+            useBuiltInCompiler: false,
+        };
+
+        it("falls back to built-in when external compiler check fails and user accepts", async () => {
+            // Version check fails
+            mockExecFile.mockImplementation((...args: unknown[]) => {
+                const lastArg = args[args.length - 1];
+                if (typeof lastArg === "function") {
+                    (lastArg as (err: Error) => void)(new Error("not found"));
+                }
+            });
+            mockShowErrorWithActions.mockResolvedValue({ id: "yes" });
+
+            await compile("file:///project/test.ssl", externalSettings, false, "code");
+
+            expect(mockBuiltinCompiler).toHaveBeenCalled();
+        });
+
+        it("skips compilation when external compiler check fails and user declines", async () => {
+            mockExecFile.mockImplementation((...args: unknown[]) => {
+                const lastArg = args[args.length - 1];
+                if (typeof lastArg === "function") {
+                    (lastArg as (err: Error) => void)(new Error("not found"));
+                }
+            });
+            mockShowErrorWithActions.mockResolvedValue({ id: "no" });
+
+            await compile("file:///project/test.ssl", externalSettings, false, "code");
+
+            expect(mockBuiltinCompiler).not.toHaveBeenCalled();
+        });
+    });
+});

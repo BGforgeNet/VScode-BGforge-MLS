@@ -478,7 +478,11 @@ onDidSave / onDidChangeContent / manual command
                .tssl --> TSSL transpiler --> .ssl file --> sslc compile
 ```
 
-**Temporary files**: External compilers need files on disk. SSL writes `.tmp.ssl` in the same directory (for include resolution). WeiDU writes to a temp directory.
+**Temporary files**: External compilers need files on disk. SSL writes `.tmp.ssl` (exported as `TMP_SSL_NAME` in `fallout-ssl/compiler.ts`) in the same directory as the source file so that relative `#include` paths resolve correctly. WeiDU writes to a system temp directory (`os.tmpdir()/bgforge-mls`). The `.tmp.ssl` name is excluded from VS Code file watchers via `configurationDefaults` in `package.json` — these two locations must be kept in sync.
+
+**Compile debouncing**: `onDidChangeContent` debounces compilation via `pendingCompiles` (300ms) to prevent rapid-fire compiler spawning when `validateOnChange` is enabled. Without this, concurrent compilations of SSL files corrupt the shared `.tmp.ssl` file. `onDidSave` and manual compile are not debounced. Both `pendingCompiles` and `pendingReloads` timers are cleared in `onShutdown`.
+
+**Cleanup**: SSL compilation uses `try/finally` to ensure `.tmp.ssl` is always deleted, even if the compiler throws. Cleanup errors (e.g., `EPERM`) are logged and swallowed — they must not mask compiler results or cause unhandled rejections. The external compiler path is promisified so callers (e.g., the TSSL transpile chain) correctly await completion. File I/O uses `fs.promises` (async) to avoid blocking the LSP thread. Fire-and-forget compile calls in `server.ts` use `.catch()` to log and swallow rejections.
 
 **Diagnostics**: Compiler output parsed via regex into `ParseResult { errors, warnings }`. `sendParseResult()` aggregates by URI and sends LSP diagnostics. Multi-file error reporting supported (SSL includes can fail in header files).
 

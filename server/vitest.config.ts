@@ -47,6 +47,7 @@ export default defineConfig({
                 "src/sslc/ssl_compiler.ts",
 
                 // Language-specific files that ARE unit-testable (pure logic)
+                "src/fallout-ssl/compiler.ts",
                 "src/fallout-ssl/header-parser.ts",
                 "src/fallout-ssl/macro-utils.ts",
                 "src/fallout-ssl/utils.ts",

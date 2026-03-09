@@ -84,6 +84,19 @@ const initialized = new Promise<void>((resolve) => { resolveInitialized = resolv
 const pendingReloads = new Map<string, NodeJS.Timeout>();
 const RELOAD_DEBOUNCE_MS = 300;
 
+// Debouncing for compile-on-change to avoid rapid-fire compilations.
+// Without this, every keystroke with validateOnChange enabled spawns a new
+// compiler process. This is especially problematic for SSL compilation which
+// writes a shared .tmp.ssl file — concurrent compilations corrupt each other.
+// TODO: use NormalizedUri as key (like pendingReloads) for consistency with URI normalization guidelines.
+const pendingCompiles = new Map<string, NodeJS.Timeout>();
+const COMPILE_DEBOUNCE_MS = 300;
+
+/** Log and swallow compile errors for fire-and-forget call sites. */
+function logCompileError(err: unknown) {
+    conlog(`Compilation error: ${err}`);
+}
+
 connection.onInitialize((params: InitializeParams) => {
     conlog("onInitialize started");
     const capabilities = params.capabilities;
@@ -402,7 +415,7 @@ connection.onExecuteCommand(async (params) => {
     const langId = textDoc.languageId;
     const text = textDoc.getText();
 
-    void compile(args.uri, langId, true, text);
+    void compile(args.uri, langId, true, text).catch(logCompileError);
     return undefined;
 });
 
@@ -444,7 +457,14 @@ documents.onDidSave(async (change) => {
 
     const validateOnSave = (await getDocumentSettings(uri)).validateOnSave;
     if (validateOnSave) {
-        void compile(uri, langId, false, text);
+        // Cancel any pending debounced compile for this URI — save takes priority
+        // and must not race with a stale onDidChangeContent compilation.
+        const pendingCompile = pendingCompiles.get(uri);
+        if (pendingCompile) {
+            clearTimeout(pendingCompile);
+            pendingCompiles.delete(uri);
+        }
+        void compile(uri, langId, false, text).catch(logCompileError);
     }
 });
 
@@ -480,7 +500,17 @@ documents.onDidChangeContent(async (event) => {
 
     const validateOnChange = (await getDocumentSettings(uri)).validateOnChange;
     if (validateOnChange) {
-        void compile(uri, langId, false, text);
+        const existingCompile = pendingCompiles.get(uri);
+        if (existingCompile) {
+            clearTimeout(existingCompile);
+        }
+        pendingCompiles.set(
+            uri,
+            setTimeout(() => {
+                pendingCompiles.delete(uri);
+                void compile(uri, langId, false, text).catch(logCompileError);
+            }, COMPILE_DEBOUNCE_MS),
+        );
     }
 });
 
@@ -591,6 +621,10 @@ connection.onRenameRequest((params) => {
 // Clean up timers on shutdown
 connection.onShutdown(() => {
     if (renameSuppressTimer) clearTimeout(renameSuppressTimer);
+    for (const timer of pendingReloads.values()) clearTimeout(timer);
+    pendingReloads.clear();
+    for (const timer of pendingCompiles.values()) clearTimeout(timer);
+    pendingCompiles.clear();
 });
 
 connection.onDocumentFormatting((params) => {
