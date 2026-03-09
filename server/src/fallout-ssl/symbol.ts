@@ -1,18 +1,19 @@
 /**
  * Document symbol provider for Fallout SSL files.
- * Extracts procedures, macros, and global variables from the current file only.
+ * Extracts procedures (with local variables as children), macros, and global
+ * variables. Procedure children include params, variable declarations, and
+ * for loop declarations — all as flat children (two-level nesting max).
+ * Only actual declarations (using the `variable` keyword) are collected,
+ * not assignments or loop iteration variables.
  */
 
 import { DocumentSymbol, SymbolKind } from "vscode-languageserver/node";
 import type { Node } from "web-tree-sitter";
 import { parseWithCache, isInitialized } from "./parser";
-import { extractProcedures, makeRange, findPrecedingDocComment, extractMacros, extractParams, buildProcedureSignature } from "./utils";
-import * as jsdoc from "../shared/jsdoc";
-import { jsdocToDetail } from "./jsdoc-format";
-import { isConstantMacro } from "./macro-utils";
+import { extractProcedures, makeRange, extractMacros } from "./utils";
 import { SyntaxType } from "./tree-sitter.d";
 
-function makeSymbol(node: Node, nameNode: Node, kind: SymbolKind, detail?: string): DocumentSymbol | null {
+function makeSymbol(node: Node, nameNode: Node, kind: SymbolKind, detail?: string, children?: DocumentSymbol[]): DocumentSymbol | null {
     const name = nameNode.text;
     if (!name) {
         return null;
@@ -23,7 +24,59 @@ function makeSymbol(node: Node, nameNode: Node, kind: SymbolKind, detail?: strin
         kind,
         range: makeRange(node),
         selectionRange: makeRange(nameNode),
+        children,
     };
+}
+
+/**
+ * Collect all variable declarations inside a procedure body as flat DocumentSymbol children.
+ * Walks recursively — variables inside conditionals/loops still belong to the procedure.
+ * No deduplication needed: SSL requires the `variable` keyword for declarations,
+ * and the compiler rejects redeclarations within the same procedure.
+ */
+function collectProcBodyVars(node: Node, procName: string): DocumentSymbol[] {
+    const vars: DocumentSymbol[] = [];
+
+    if (node.type === SyntaxType.VariableDecl) {
+        for (const child of node.children) {
+            if (child.type === SyntaxType.VarInit) {
+                const nameNode = child.childForFieldName("name");
+                if (nameNode) {
+                    const sym = makeSymbol(child, nameNode, SymbolKind.Variable, procName);
+                    if (sym) vars.push(sym);
+                }
+            }
+        }
+    } else if (node.type === SyntaxType.ForVarDecl) {
+        const nameNode = node.childForFieldName("name");
+        if (nameNode) {
+            const sym = makeSymbol(node, nameNode, SymbolKind.Variable, procName);
+            if (sym) vars.push(sym);
+        }
+    }
+
+    for (const child of node.children) {
+        vars.push(...collectProcBodyVars(child, procName));
+    }
+    return vars;
+}
+
+/** Collect procedure parameters as DocumentSymbol children. */
+function collectProcParams(procNode: Node, procName: string): DocumentSymbol[] {
+    const vars: DocumentSymbol[] = [];
+    const params = procNode.childForFieldName("params");
+    if (!params) return vars;
+
+    for (const child of params.children) {
+        if (child.type === SyntaxType.Param) {
+            const nameNode = child.childForFieldName("name");
+            if (nameNode) {
+                const sym = makeSymbol(child, nameNode, SymbolKind.Variable, procName);
+                if (sym) vars.push(sym);
+            }
+        }
+    }
+    return vars;
 }
 
 /**
@@ -31,22 +84,19 @@ function makeSymbol(node: Node, nameNode: Node, kind: SymbolKind, detail?: strin
  * Prefers procedure definitions over forward declarations.
  */
 function extractSymbols(root: Node): DocumentSymbol[] {
-    // Extract procedures (already deduped) with signatures
+    // Extract procedures (already deduped) with children for params and local vars
     const procedures = extractProcedures(root);
     const procSymbols: DocumentSymbol[] = [];
     for (const [name, { node }] of procedures) {
         const nameNode = node.childForFieldName("name");
         if (!nameNode) continue;
 
-        // Look for JSDoc
-        const docComment = findPrecedingDocComment(root, node);
-        const parsed = docComment ? jsdoc.parse(docComment) : null;
-        const params = extractParams(node);
+        const children = [
+            ...collectProcParams(node, name),
+            ...collectProcBodyVars(node, name),
+        ];
 
-        // Build signature using shared function
-        const detail = buildProcedureSignature(name, params, parsed);
-
-        const sym = makeSymbol(node, nameNode, SymbolKind.Function, detail);
+        const sym = makeSymbol(node, nameNode, SymbolKind.Function, undefined, children.length > 0 ? children : undefined);
         if (sym) procSymbols.push(sym);
     }
 
@@ -71,24 +121,7 @@ function extractSymbols(root: Node): DocumentSymbol[] {
                         ? SymbolKind.Function
                         : SymbolKind.Constant;
 
-                    // Build detail - use same format as hover/completion
-                    const isConstant = !macro.hasParams && isConstantMacro(macro.name);
-                    let detail: string | undefined;
-                    if (macro.jsdoc && macro.jsdoc.args.length > 0) {
-                        // Use JSDoc to build signature with types
-                        detail = jsdocToDetail(name, macro.jsdoc, "macro");
-                    } else if (isConstant && macro.firstline) {
-                        // Constant: just the value
-                        detail = macro.firstline;
-                    } else if (macro.hasParams && macro.params) {
-                        // Function-like macro
-                        detail = `macro ${name}(${macro.params.join(", ")})`;
-                    } else {
-                        // Other macro
-                        detail = `macro ${name}`;
-                    }
-
-                    const sym = makeSymbol(child, nameNode, kind, detail);
+                    const sym = makeSymbol(child, nameNode, kind);
                     if (sym) macroSymbols.push(sym);
                 }
             }

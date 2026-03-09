@@ -77,7 +77,7 @@ procedure name begin
     // statements
 end
 
-procedure name(variable arg1, arg2 = default_value) begin
+procedure name(variable arg1, variable arg2 = default_value) begin
     // statements
 end
 ```

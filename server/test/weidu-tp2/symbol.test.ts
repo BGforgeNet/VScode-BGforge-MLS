@@ -1,6 +1,7 @@
 /**
  * Tests for TP2 document symbol provider.
- * Verifies outline symbols include detail text for function parameters.
+ * Verifies outline symbols for functions/macros (with body variable children)
+ * and file-level variables.
  */
 
 import { describe, expect, it, beforeAll, vi } from "vitest";
@@ -28,35 +29,192 @@ describe("weidu-tp2: getDocumentSymbols", () => {
         expect(symbols[0].kind).toBe(SymbolKind.Function);
     });
 
-    it("returns detail with INT_VAR params", () => {
-        const text = `DEFINE_ACTION_FUNCTION my_func INT_VAR x = 0 STR_VAR name = "" BEGIN END`;
-        const symbols = getDocumentSymbols(text);
-        expect(symbols[0].detail).toBe("INT_VAR x STR_VAR name");
-    });
-
-    it("returns detail with RET", () => {
-        const text = `DEFINE_PATCH_FUNCTION my_patch INT_VAR input = 0 RET result BEGIN END`;
-        const symbols = getDocumentSymbols(text);
-        expect(symbols[0].detail).toBe("INT_VAR input RET result");
-    });
-
-    it("returns detail with RET_ARRAY", () => {
-        const text = `DEFINE_ACTION_FUNCTION my_func RET_ARRAY items BEGIN END`;
-        const symbols = getDocumentSymbols(text);
-        expect(symbols[0].detail).toBe("RET_ARRAY items");
-    });
-
-    it("returns no detail for macro definitions", () => {
-        const text = `DEFINE_ACTION_MACRO my_macro BEGIN END`;
-        const symbols = getDocumentSymbols(text);
-        expect(symbols[0].name).toBe("my_macro");
-        expect(symbols[0].detail).toBeUndefined();
-    });
-
-    it("returns no detail for functions without params", () => {
-        const text = `DEFINE_ACTION_FUNCTION my_func BEGIN END`;
+    it("returns no detail for top-level symbols", () => {
+        const text = `DEFINE_ACTION_FUNCTION my_func INT_VAR x = 0 BEGIN END`;
         const symbols = getDocumentSymbols(text);
         expect(symbols[0].detail).toBeUndefined();
+    });
+
+    it("returns file-level variables from OUTER_SET", () => {
+        const text = `OUTER_SET my_var = 42`;
+        const symbols = getDocumentSymbols(text);
+        const varSym = symbols.find(s => s.name === "my_var");
+        expect(varSym).toBeDefined();
+        expect(varSym!.kind).toBe(SymbolKind.Variable);
+    });
+
+    it("returns file-level variables from OUTER_SPRINT", () => {
+        const text = `OUTER_SPRINT my_str ~hello~`;
+        const symbols = getDocumentSymbols(text);
+        expect(symbols.find(s => s.name === "my_str")).toBeDefined();
+    });
+
+    it("returns file-level array definitions", () => {
+        const text = `ACTION_DEFINE_ARRAY my_arr BEGIN ~a~ ~b~ END`;
+        const symbols = getDocumentSymbols(text);
+        const sym = symbols.find(s => s.name === "my_arr");
+        expect(sym).toBeDefined();
+        expect(sym!.kind).toBe(SymbolKind.Variable);
+    });
+
+    it("returns file-level variables from OUTER_SPRINTF", () => {
+        const text = `OUTER_SPRINTF my_str ~%d~ 42`;
+        const symbols = getDocumentSymbols(text);
+        expect(symbols.find(s => s.name === "my_str")).toBeDefined();
+    });
+
+    it("returns file-level variables from OUTER_TEXT_SPRINT", () => {
+        const text = `OUTER_TEXT_SPRINT my_str ~hello~`;
+        const symbols = getDocumentSymbols(text);
+        expect(symbols.find(s => s.name === "my_str")).toBeDefined();
+    });
+
+    it("returns file-level associative array definitions", () => {
+        const text = `ACTION_DEFINE_ASSOCIATIVE_ARRAY my_map BEGIN ~k~ => ~v~ END`;
+        const symbols = getDocumentSymbols(text);
+        const sym = symbols.find(s => s.name === "my_map");
+        expect(sym).toBeDefined();
+        expect(sym!.kind).toBe(SymbolKind.Variable);
+    });
+
+    it("returns file-level loop vars from ACTION_PHP_EACH", () => {
+        const text = `ACTION_PHP_EACH my_arr AS k => v BEGIN END`;
+        const symbols = getDocumentSymbols(text);
+        expect(symbols.find(s => s.name === "k")).toBeDefined();
+        expect(symbols.find(s => s.name === "v")).toBeDefined();
+    });
+
+    it("returns file-level loop var from ACTION_FOR_EACH", () => {
+        const text = `ACTION_FOR_EACH item IN ~a~ ~b~ ~c~ BEGIN END`;
+        const symbols = getDocumentSymbols(text);
+        expect(symbols.find(s => s.name === "item")).toBeDefined();
+    });
+
+    it("returns function body variables as children", () => {
+        const text = `DEFINE_PATCH_FUNCTION my_func BEGIN
+            SET my_var = 5
+            SPRINT my_str ~hello~
+        END`;
+        const symbols = getDocumentSymbols(text);
+        const func = symbols.find(s => s.name === "my_func");
+        expect(func).toBeDefined();
+        expect(func!.children).toBeDefined();
+        const names = func!.children!.map(c => c.name);
+        expect(names).toContain("my_var");
+        expect(names).toContain("my_str");
+        for (const child of func!.children!) {
+            expect(child.kind).toBe(SymbolKind.Variable);
+            expect(child.detail).toBe("my_func");
+        }
+    });
+
+    it("returns READ_BYTE vars as function children", () => {
+        const text = `DEFINE_PATCH_FUNCTION my_func BEGIN
+            READ_BYTE 0x00 my_byte
+        END`;
+        const symbols = getDocumentSymbols(text);
+        const func = symbols.find(s => s.name === "my_func");
+        expect(func).toBeDefined();
+        const names = func!.children!.map(c => c.name);
+        expect(names).toContain("my_byte");
+    });
+
+    it("returns SPRINTF and TEXT_SPRINT vars as function children", () => {
+        const text = `DEFINE_PATCH_FUNCTION my_func BEGIN
+            SPRINTF my_fmt ~%d~ 42
+            TEXT_SPRINT my_txt ~hello~
+        END`;
+        const symbols = getDocumentSymbols(text);
+        const func = symbols.find(s => s.name === "my_func");
+        expect(func).toBeDefined();
+        const names = func!.children!.map(c => c.name);
+        expect(names).toContain("my_fmt");
+        expect(names).toContain("my_txt");
+    });
+
+    it("returns LOCAL_SET vars as macro children", () => {
+        const text = `DEFINE_ACTION_MACRO my_macro BEGIN
+            LOCAL_SET my_local = 1
+        END`;
+        const symbols = getDocumentSymbols(text);
+        const macro = symbols.find(s => s.name === "my_macro");
+        expect(macro).toBeDefined();
+        expect(macro!.children!.map(c => c.name)).toContain("my_local");
+    });
+
+    it("returns READ_LONG and READ_SHORT vars as function children", () => {
+        const text = `DEFINE_PATCH_FUNCTION my_func BEGIN
+            READ_LONG 0x00 my_long
+            READ_SHORT 0x04 my_short
+        END`;
+        const symbols = getDocumentSymbols(text);
+        const func = symbols.find(s => s.name === "my_func");
+        expect(func).toBeDefined();
+        const names = func!.children!.map(c => c.name);
+        expect(names).toContain("my_long");
+        expect(names).toContain("my_short");
+    });
+
+    it("returns PHP_EACH loop vars as function children", () => {
+        const text = `DEFINE_PATCH_FUNCTION my_func BEGIN
+            PHP_EACH my_arr AS k => v BEGIN END
+        END`;
+        const symbols = getDocumentSymbols(text);
+        const func = symbols.find(s => s.name === "my_func");
+        expect(func).toBeDefined();
+        const names = func!.children!.map(c => c.name);
+        expect(names).toContain("k");
+        expect(names).toContain("v");
+    });
+
+    it("returns macro body variables as children", () => {
+        const text = `DEFINE_ACTION_MACRO my_macro BEGIN
+            OUTER_SET my_var = 1
+        END`;
+        const symbols = getDocumentSymbols(text);
+        const macro = symbols.find(s => s.name === "my_macro");
+        expect(macro).toBeDefined();
+        expect(macro!.children).toBeDefined();
+        expect(macro!.children!.map(c => c.name)).toContain("my_var");
+        expect(macro!.children![0].detail).toBe("my_macro");
+    });
+
+    it("collects nested vars from inside conditionals as flat children", () => {
+        const text = `DEFINE_PATCH_FUNCTION my_func BEGIN
+            PATCH_IF 1 BEGIN
+                SET nested_var = 1
+            END
+        END`;
+        const symbols = getDocumentSymbols(text);
+        const func = symbols.find(s => s.name === "my_func");
+        expect(func).toBeDefined();
+        const names = func!.children!.map(c => c.name);
+        expect(names).toContain("nested_var");
+    });
+
+    it("deduplicates file-level variables by name (first occurrence wins)", () => {
+        const text = `OUTER_SET x = 1
+OUTER_SET x = 2
+OUTER_SET x = 3`;
+        const symbols = getDocumentSymbols(text);
+        const xSymbols = symbols.filter(s => s.name === "x");
+        expect(xSymbols).toHaveLength(1);
+    });
+
+    it("deduplicates body variables by name (first occurrence wins)", () => {
+        const text = `DEFINE_PATCH_FUNCTION my_func BEGIN
+            SET x = 1
+            SET x = x + 1
+            SPRINT y ~hello~
+            SPRINT y ~world~
+        END`;
+        const symbols = getDocumentSymbols(text);
+        const func = symbols.find(s => s.name === "my_func");
+        expect(func).toBeDefined();
+        const xChildren = func!.children!.filter(c => c.name === "x");
+        const yChildren = func!.children!.filter(c => c.name === "y");
+        expect(xChildren).toHaveLength(1);
+        expect(yChildren).toHaveLength(1);
     });
 
     it("returns empty array for empty text", () => {

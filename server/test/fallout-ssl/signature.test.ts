@@ -23,7 +23,7 @@ describe("fallout-ssl/signature", () => {
     describe("getLocalSignature()", () => {
         it("returns signature for locally defined procedure", () => {
             const text = `
-procedure add(a, b) begin
+procedure add(variable a, variable b) begin
     return a + b;
 end
 `;
@@ -43,7 +43,7 @@ end
 
         it("includes parameter information", () => {
             const text = `
-procedure process(item, count, flag) begin
+procedure process(variable item, variable count, variable flag) begin
     // do something
 end
 `;
@@ -55,7 +55,7 @@ end
 
         it("sets correct active parameter index", () => {
             const text = `
-procedure func(a, b, c) begin end
+procedure func(variable a, variable b, variable c) begin end
 `;
             const result0 = getLocalSignature(text, "func", 0);
             const result1 = getLocalSignature(text, "func", 1);
@@ -74,7 +74,7 @@ procedure func(a, b, c) begin end
  * @param int x The x value
  * @param int y The y value
  */
-procedure calc(x, y) begin
+procedure calc(variable x, variable y) begin
     return x + y;
 end
 `;

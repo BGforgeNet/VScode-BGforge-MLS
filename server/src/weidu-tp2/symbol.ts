@@ -1,6 +1,8 @@
 /**
  * Document symbol provider for WeiDU TP2 files.
- * Extracts function and macro definitions for outline view.
+ * Extracts function/macro definitions (with body variables as children)
+ * and file-level variables. Two-level nesting max: global symbols and
+ * their direct children.
  */
 
 import { DocumentSymbol, SymbolKind } from "vscode-languageserver/node";
@@ -10,39 +12,191 @@ import { parseWithCache, isInitialized } from "./parser";
 import { isFunctionDef } from "./format/utils";
 import { SyntaxType } from "./tree-sitter.d";
 
-/** Parameter declaration node types that carry a keyword + identifier. */
-const PARAM_DECL_TYPES: ReadonlySet<string> = new Set([
-    SyntaxType.IntVarDecl,
-    SyntaxType.StrVarDecl,
-    SyntaxType.RetDecl,
-    SyntaxType.RetArrayDecl,
+/** File-level variable assignment types and how to extract the variable name. */
+const FILE_LEVEL_VAR_TYPES: ReadonlySet<string> = new Set([
+    SyntaxType.ActionOuterSet,
+    SyntaxType.ActionOuterSprint,
+    SyntaxType.ActionOuterSprintf,
+    SyntaxType.ActionOuterTextSprint,
+    SyntaxType.TopLevelAssignment,
+    SyntaxType.ActionDefineArray,
+    SyntaxType.ActionDefineAssociativeArray,
+    SyntaxType.ActionForEach,
 ]);
 
-/** Keyword node types inside parameter declarations. */
-const PARAM_KEYWORDS: ReadonlySet<string> = new Set([
-    "INT_VAR", "STR_VAR", "RET", "RET_ARRAY",
+/** File-level loop types that introduce two variables (key + value). */
+const FILE_LEVEL_LOOP_TYPES: ReadonlySet<string> = new Set([
+    SyntaxType.ActionPhpEach,
 ]);
 
-/** Build detail string from function parameter declarations (e.g. "INT_VAR x STR_VAR name RET result"). */
-function buildFunctionDetail(node: Node): string | undefined {
-    const parts: string[] = [];
-    for (const child of node.children) {
-        if (!PARAM_DECL_TYPES.has(child.type)) continue;
+/** Types using varNodes (array) to hold the variable name. */
+const VAR_NODES_TYPES: ReadonlySet<string> = new Set([
+    SyntaxType.ActionOuterSet,
+    SyntaxType.TopLevelAssignment,
+    SyntaxType.PatchSet,
+    SyntaxType.PatchAssignment,
+    SyntaxType.LocalSet,
+    SyntaxType.PatchReadByte,
+    SyntaxType.PatchReadShort,
+    SyntaxType.PatchReadLong,
+]);
 
-        let keyword: string | undefined;
-        let name: string | undefined;
-        for (const gc of child.children) {
-            if (PARAM_KEYWORDS.has(gc.type)) {
-                keyword = gc.type;
-            } else if (gc.type === SyntaxType.Identifier) {
-                name = gc.text;
-            }
-        }
-        if (keyword && name) {
-            parts.push(`${keyword} ${name}`);
+/** Types using nameNode to hold the variable name. */
+const NAME_NODE_TYPES: ReadonlySet<string> = new Set([
+    SyntaxType.ActionDefineArray,
+    SyntaxType.ActionDefineAssociativeArray,
+    SyntaxType.PatchDefineArray,
+    SyntaxType.PatchDefineAssociativeArray,
+]);
+
+/**
+ * All variable-assigning node types that can appear in function/macro bodies.
+ * Action bodies use OUTER_SET/OUTER_SPRINT/etc., patch bodies use SET/SPRINT/etc.,
+ * macro bodies additionally allow LOCAL_SET/LOCAL_SPRINT.
+ */
+const BODY_VAR_TYPES: ReadonlySet<string> = new Set([
+    // Patch-level (patch function/macro bodies)
+    SyntaxType.PatchSet,
+    SyntaxType.PatchAssignment,
+    SyntaxType.PatchSprint,
+    SyntaxType.PatchSprintf,
+    SyntaxType.PatchTextSprint,
+    SyntaxType.PatchDefineArray,
+    SyntaxType.PatchDefineAssociativeArray,
+    SyntaxType.PatchForEach,
+    SyntaxType.PatchReadByte,
+    SyntaxType.PatchReadShort,
+    SyntaxType.PatchReadLong,
+    SyntaxType.PatchReadAscii,
+    SyntaxType.PatchReadStrref,
+    SyntaxType.PatchRead_2daEntriesNow,
+    SyntaxType.PatchRead_2daEntry,
+    SyntaxType.PatchRead_2daEntryFormer,
+    // Action-level (action function/macro bodies)
+    SyntaxType.ActionOuterSet,
+    SyntaxType.ActionOuterSprint,
+    SyntaxType.ActionOuterSprintf,
+    SyntaxType.ActionOuterTextSprint,
+    SyntaxType.ActionDefineArray,
+    SyntaxType.ActionDefineAssociativeArray,
+    SyntaxType.ActionForEach,
+    // Macro-only (LOCAL_SET/LOCAL_SPRINT at top of macro bodies)
+    SyntaxType.LocalSet,
+    SyntaxType.LocalSprint,
+]);
+
+/** Loop types that introduce two variables (key + value) in function/macro bodies. */
+const BODY_LOOP_TYPES: ReadonlySet<string> = new Set([
+    SyntaxType.PatchPhpEach,
+    SyntaxType.ActionPhpEach,
+]);
+
+/**
+ * Extract the first Identifier node from a varNodes array field.
+ * Skips dynamic EVAL/ArrayAccess entries that can't produce a meaningful symbol name.
+ */
+function firstIdentifierFromVarNodes(node: Node): Node | null {
+    const varNodes = node.childrenForFieldName("var");
+    for (const v of varNodes) {
+        if (v.type === SyntaxType.Identifier) {
+            return v;
         }
     }
-    return parts.length > 0 ? parts.join(" ") : undefined;
+    return null;
+}
+
+/** Create a DocumentSymbol for a variable, or null if the name is empty. */
+function makeVarSymbol(node: Node, nameNode: Node, detail?: string): DocumentSymbol | null {
+    const name = nameNode.text;
+    if (!name) return null;
+    return {
+        name,
+        detail,
+        kind: SymbolKind.Variable,
+        range: makeRange(node),
+        selectionRange: makeRange(nameNode),
+    };
+}
+
+/** Extract variable name node from a variable-assigning node. */
+function extractVarNameNode(node: Node): Node | null {
+    if (VAR_NODES_TYPES.has(node.type)) {
+        return firstIdentifierFromVarNodes(node);
+    }
+    if (NAME_NODE_TYPES.has(node.type)) {
+        return node.childForFieldName("name");
+    }
+    // All other var types use the "var" field (singular)
+    return node.childForFieldName("var");
+}
+
+/**
+ * Extract file-level variable symbols from a top-level node.
+ * Uses `seen` set to deduplicate — only the first occurrence of each variable is collected.
+ */
+function extractFileLevelVar(node: Node, seen: Set<string>): DocumentSymbol[] {
+    const results: DocumentSymbol[] = [];
+
+    if (FILE_LEVEL_VAR_TYPES.has(node.type)) {
+        const nameNode = extractVarNameNode(node);
+        if (nameNode && nameNode.text && !seen.has(nameNode.text)) {
+            seen.add(nameNode.text);
+            const sym = makeVarSymbol(node, nameNode);
+            if (sym) results.push(sym);
+        }
+    } else if (FILE_LEVEL_LOOP_TYPES.has(node.type)) {
+        const keyNode = node.childForFieldName("key_var");
+        const valueNode = node.childForFieldName("value_var");
+        if (keyNode && keyNode.text && !seen.has(keyNode.text)) {
+            seen.add(keyNode.text);
+            const sym = makeVarSymbol(node, keyNode);
+            if (sym) results.push(sym);
+        }
+        if (valueNode && valueNode.text && !seen.has(valueNode.text)) {
+            seen.add(valueNode.text);
+            const sym = makeVarSymbol(node, valueNode);
+            if (sym) results.push(sym);
+        }
+    }
+
+    return results;
+}
+
+/**
+ * Collect all variable declarations inside a function/macro body as flat children.
+ * Walks recursively — variables inside conditionals/loops still belong to the function.
+ * Uses `seen` set to deduplicate — only the first occurrence of each variable is collected.
+ */
+function collectBodyVars(node: Node, parentName: string, seen: Set<string> = new Set()): DocumentSymbol[] {
+    const vars: DocumentSymbol[] = [];
+
+    if (BODY_VAR_TYPES.has(node.type)) {
+        const nameNode = extractVarNameNode(node);
+        if (nameNode && nameNode.text && !seen.has(nameNode.text)) {
+            seen.add(nameNode.text);
+            const sym = makeVarSymbol(node, nameNode, parentName);
+            if (sym) vars.push(sym);
+        }
+    } else if (BODY_LOOP_TYPES.has(node.type)) {
+        const keyNode = node.childForFieldName("key_var");
+        const valueNode = node.childForFieldName("value_var");
+        if (keyNode && keyNode.text && !seen.has(keyNode.text)) {
+            seen.add(keyNode.text);
+            const sym = makeVarSymbol(node, keyNode, parentName);
+            if (sym) vars.push(sym);
+        }
+        if (valueNode && valueNode.text && !seen.has(valueNode.text)) {
+            seen.add(valueNode.text);
+            const sym = makeVarSymbol(node, valueNode, parentName);
+            if (sym) vars.push(sym);
+        }
+    }
+
+    // Spread is fine here — TP2 ASTs are shallow (typically 3-5 levels deep).
+    for (const child of node.children) {
+        vars.push(...collectBodyVars(child, parentName, seen));
+    }
+    return vars;
 }
 
 export function getDocumentSymbols(text: string): DocumentSymbol[] {
@@ -56,19 +210,23 @@ export function getDocumentSymbols(text: string): DocumentSymbol[] {
     }
 
     const symbols: DocumentSymbol[] = [];
+    const fileLevelSeen = new Set<string>();
 
     for (const node of tree.rootNode.children) {
         if (isFunctionDef(node.type)) {
             const nameNode = node.childForFieldName("name");
             if (nameNode && nameNode.text) {
+                const children = collectBodyVars(node, nameNode.text);
                 symbols.push({
                     name: nameNode.text,
-                    detail: buildFunctionDetail(node),
                     kind: SymbolKind.Function,
                     range: makeRange(node),
                     selectionRange: makeRange(nameNode),
+                    children: children.length > 0 ? children : undefined,
                 });
             }
+        } else {
+            symbols.push(...extractFileLevelVar(node, fileLevelSeen));
         }
     }
 

@@ -87,7 +87,7 @@ server/src/
 |   +-- format.ts
 |   +-- header-parser.ts      # .h file parsing
 |   +-- include-scanner.ts    # Extracts #include paths from AST
-|   +-- symbols.ts            # DocumentSymbol extraction
+|   +-- symbol.ts             # DocumentSymbol extraction (procedures with param/var children)
 |   +-- completion.ts
 |   +-- hover.ts
 |   +-- definition.ts
@@ -578,7 +578,7 @@ but are intentionally language-specific. Shared infrastructure is in `shared/`:
 | Feature | Why per-language |
 |---------|-----------------|
 | Definition finders | Different scoping models (SSL procedures vs TP2 functions vs D state labels) |
-| Document symbol extraction | Different construct types per language |
+| Document symbol extraction | Different construct types and scoping: SSL has explicit `variable` declarations, TP2 uses first-assignment-wins deduplication |
 | Rename | SSL is workspace-wide with include graph; TP2 is single-file with %var% handling |
 | Reference finders | SSL has procedure scope shadows; TP2 has synthetic string nodes |
 | Folding block type sets | Language-specific node types, passed as parameters to shared `getFoldingRanges()` |

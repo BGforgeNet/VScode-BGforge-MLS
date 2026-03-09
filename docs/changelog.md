@@ -2,7 +2,7 @@
 
 ## 3.1.4
 
-SSL, TP2 compile/validate:
+Compile/validate:
 
 - Fixed possible race conditions.
 - Fixed transpile chains not awaiting external compiler.
@@ -15,12 +15,17 @@ Fallout SSL
 - `.tmp.ssl` is now hidden by default from VS Code explorer.
 - Fixed SSL compiler attempting external compile after user declines built-in fallback prompt.
 - Fixed temp file leak when `writeFile` fails before compilation.
+- Document symbols now show procedure parameters and local variables as children in the outline view.
+- Fixed grammar: `variable` keyword is now required for procedure parameters (was incorrectly optional).
 
 WeiDU
 
 - Added actionable error message when WeiDU binary is not found.
 - Improved error messages: show near text + up to 4 detail lines instead of full stdout.
 - Fixed concurrent compilations of same-extension files overwriting shared temp file.
+- Document symbols now show function/macro body variables as children in the outline view.
+- File-level variables (OUTER_SET, OUTER_SPRINT, arrays, loops) now appear as top-level symbols.
+- Variables are deduplicated by name (first occurrence wins).
 
 ## 3.1.3
 

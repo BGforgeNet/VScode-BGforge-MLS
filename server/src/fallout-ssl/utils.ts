@@ -55,7 +55,7 @@ import { type SignatureParam, formatSignature } from "../shared/signature-format
  * Build procedure signature string from AST params and optional JSDoc.
  * Uses JSDoc types if available, AST defaults only.
  */
-export function buildProcedureSignature(
+function buildProcedureSignature(
     name: string,
     params: ParamInfo[],
     parsed: jsdoc.JSdoc | null

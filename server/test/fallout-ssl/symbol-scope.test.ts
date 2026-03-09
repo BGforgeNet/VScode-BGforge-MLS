@@ -72,7 +72,7 @@ procedure foo begin end
     describe("isLocalToProc()", () => {
         it("returns true for procedure parameter", () => {
             const text = `
-procedure foo(value) begin
+procedure foo(variable value) begin
     display_msg(value);
 end
 `;
@@ -164,7 +164,7 @@ end
 
         it("returns procedure scope for parameter", () => {
             const text = `
-procedure foo(value) begin
+procedure foo(variable value) begin
     display_msg(value);
 end
 `;

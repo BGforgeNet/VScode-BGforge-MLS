@@ -59,7 +59,7 @@ end
 
         it("finds parameter definition from usage", () => {
             const text = `
-procedure foo(arg1) begin
+procedure foo(variable arg1) begin
     display_msg(arg1);
 end
 `;

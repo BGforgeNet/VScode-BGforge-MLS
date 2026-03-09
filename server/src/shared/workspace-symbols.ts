@@ -9,10 +9,9 @@
  * anywhere), not a visibility/scoping feature.
  *
  * Only top-level DocumentSymbols are indexed (no recursive children).
- * Both SSL and TP2 getDocumentSymbols() return flat lists of global-scope
- * symbols (procedures, macros, functions, variables). DocumentSymbol.children
- * is for structural nesting (methods inside classes), not local variables —
- * no supported language uses it.
+ * SSL and TP2 getDocumentSymbols() populate DocumentSymbol.children
+ * with local variables for the outline view, but workspace symbol search
+ * only needs global-scope symbols (procedures, macros, functions).
  *
  * Populated at startup:
  * - SSL: in buildIncludeGraph() which already reads all .ssl/.h files

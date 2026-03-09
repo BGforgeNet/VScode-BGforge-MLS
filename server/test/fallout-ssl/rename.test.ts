@@ -102,7 +102,7 @@ end
 
         it("renames procedure parameter", () => {
             const text = `
-procedure process(value) begin
+procedure process(variable value) begin
     display_msg(value);
     if (value > 0) then begin
         display_msg(value);
@@ -111,7 +111,7 @@ end
 `;
             const uri = "file:///test.ssl";
             // Cursor on "value" parameter
-            const position: Position = { line: 1, character: 18 };
+            const position: Position = { line: 1, character: 27 };
             const result = renameSymbol(text, position, "amount", uri);
 
             expect(result).not.toBeNull();
@@ -206,16 +206,16 @@ end
 
         it("renames parameter without affecting same-named parameter in another procedure", () => {
             const text = `
-procedure foo(value) begin
+procedure foo(variable value) begin
     display_msg(value);
 end
-procedure bar(value) begin
+procedure bar(variable value) begin
     display_msg(value);
 end
 `;
             const uri = "file:///test.ssl";
             // Cursor on "value" in foo
-            const position: Position = { line: 1, character: 14 };
+            const position: Position = { line: 1, character: 23 };
             const result = renameSymbol(text, position, "amount", uri);
 
             expect(result).not.toBeNull();

@@ -17,7 +17,7 @@ import { buildTooltipBase } from "./utils";
  * Check if macro name looks like a constant (all uppercase).
  * Examples: MAX_VALUE, LEFT_HAND, HOOK_GAMEMODECHANGE
  */
-export function isConstantMacro(name: string): boolean {
+function isConstantMacro(name: string): boolean {
     return /^[A-Z][A-Z0-9_]+$/.test(name);
 }
 

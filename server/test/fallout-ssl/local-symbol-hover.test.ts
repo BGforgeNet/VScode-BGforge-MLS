@@ -142,7 +142,7 @@ end
  * @param int b Second number
  * @return int The sum
  */
-procedure add(a, b) begin
+procedure add(variable a, variable b) begin
     return a + b;
 end
 `;

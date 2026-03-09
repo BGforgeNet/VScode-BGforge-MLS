@@ -153,7 +153,7 @@ end`;
         });
 
         it("parses procedure with arguments", () => {
-            const input = `procedure my_proc(arg1, arg2) begin end`;
+            const input = `procedure my_proc(variable arg1, variable arg2) begin end`;
             const symbols = parseHeaderToSymbols(testUri, input, workspaceRoot);
 
             expect(symbols).toHaveLength(1);
@@ -166,7 +166,7 @@ end`;
  * Does something.
  * @param x the first argument
  */
-procedure test_proc(x) begin end`;
+procedure test_proc(variable x) begin end`;
             const symbols = parseHeaderToSymbols(testUri, input, workspaceRoot);
 
             expect(symbols).toHaveLength(1);

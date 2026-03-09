@@ -60,13 +60,13 @@ end
 
         it("finds parameter references only within the procedure", () => {
             const text = `
-procedure process(value) begin
+procedure process(variable value) begin
     display_msg(value);
     if (value > 0) then begin
         display_msg(value);
     end
 end
-procedure other(value) begin
+procedure other(variable value) begin
     value := 1;
 end
 `;

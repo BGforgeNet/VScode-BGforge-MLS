@@ -135,7 +135,7 @@ export default grammar({
       seq("(", optional(commaSep($.param)), ")"),
 
     param: ($) =>
-      seq(optional("variable"), field("name", $.identifier), optional(seq(choice("=", ":="), field("default", $._expression)))),
+      seq("variable", field("name", $.identifier), optional(seq(choice("=", ":="), field("default", $._expression)))),
 
     // Variable: variable name; or variable name := expr; or variable a = 1, b = 2;
     // Begin blocks support comma-separated var_inits per line: variable begin a = 0, b = 0; end

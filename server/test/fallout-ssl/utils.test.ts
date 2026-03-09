@@ -378,21 +378,6 @@ procedure foo begin end
             ]);
         });
 
-        it("extracts parameters without variable keyword", () => {
-            const text = "procedure foo(x, y = 10) begin end";
-            const tree = parseWithCache(text);
-            expect(tree).not.toBeNull();
-
-            const proc = findProcedure(tree!.rootNode, "foo");
-            expect(proc).not.toBeNull();
-
-            const params = extractParams(proc!);
-            expect(params).toEqual([
-                { name: "x", defaultValue: undefined },
-                { name: "y", defaultValue: "10" },
-            ]);
-        });
-
         it("returns empty array for procedure without parameters", () => {
             const text = "procedure foo begin end";
             const tree = parseWithCache(text);

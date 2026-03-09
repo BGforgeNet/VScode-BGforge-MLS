@@ -184,5 +184,32 @@ describe("WorkspaceSymbolIndex", () => {
             expect(uris).toContain(URI_A);
             expect(uris).toContain(URI_B);
         });
+
+        it("should not index DocumentSymbol children", () => {
+            const parentWithChildren: DocumentSymbol = {
+                name: "my_proc",
+                kind: SymbolKind.Function,
+                range: { start: { line: 0, character: 0 }, end: { line: 10, character: 1 } },
+                selectionRange: { start: { line: 0, character: 10 }, end: { line: 0, character: 17 } },
+                children: [
+                    {
+                        name: "local_var",
+                        detail: "my_proc",
+                        kind: SymbolKind.Variable,
+                        range: { start: { line: 1, character: 4 }, end: { line: 1, character: 20 } },
+                        selectionRange: { start: { line: 1, character: 13 }, end: { line: 1, character: 22 } },
+                    },
+                ],
+            };
+            const freshIndex = new WorkspaceSymbolIndex();
+            freshIndex.updateFile(URI_A, [parentWithChildren]);
+
+            const allResults = freshIndex.search("");
+            expect(allResults).toHaveLength(1);
+            expect(allResults[0].name).toBe("my_proc");
+
+            const childResults = freshIndex.search("local_var");
+            expect(childResults).toHaveLength(0);
+        });
     });
 });

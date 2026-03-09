@@ -41,7 +41,7 @@ end
  * Does something useful
  * @param int x Input value
  */
-procedure my_proc(x) begin
+procedure my_proc(variable x) begin
 end
 `;
         const uri = "file:///test.ssl";

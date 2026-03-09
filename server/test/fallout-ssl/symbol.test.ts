@@ -82,6 +82,89 @@ procedure bar begin end
         }
     });
 
+    it("returns procedure symbols without detail", () => {
+        const text = `procedure my_proc(variable x, variable y) begin end`;
+        const symbols = getDocumentSymbols(text);
+        const proc = symbols.find(s => s.name === "my_proc");
+        expect(proc).toBeDefined();
+        expect(proc!.detail).toBeUndefined();
+    });
+
+    it("returns procedure params as children with parent detail", () => {
+        const text = `procedure my_proc(variable x, variable y) begin end`;
+        const symbols = getDocumentSymbols(text);
+        const proc = symbols.find(s => s.name === "my_proc");
+        expect(proc).toBeDefined();
+        expect(proc!.children).toBeDefined();
+        const children = proc!.children!;
+        const names = children.map(c => c.name);
+        expect(names).toContain("x");
+        expect(names).toContain("y");
+        for (const child of children) {
+            expect(child.kind).toBe(SymbolKind.Variable);
+            expect(child.detail).toBe("my_proc");
+        }
+    });
+
+    it("returns local variables as procedure children", () => {
+        const text = `procedure my_proc begin
+            variable local_var := 0;
+        end`;
+        const symbols = getDocumentSymbols(text);
+        const proc = symbols.find(s => s.name === "my_proc");
+        expect(proc).toBeDefined();
+        const children = proc!.children!;
+        expect(children.map(c => c.name)).toContain("local_var");
+        expect(children.find(c => c.name === "local_var")!.detail).toBe("my_proc");
+    });
+
+    it("returns for loop declaration vars as procedure children", () => {
+        const text = `procedure my_proc begin
+            for (variable i = 0; i < 10; i++) begin
+            end
+        end`;
+        const symbols = getDocumentSymbols(text);
+        const proc = symbols.find(s => s.name === "my_proc");
+        expect(proc).toBeDefined();
+        const names = proc!.children!.map(c => c.name);
+        expect(names).toContain("i");
+    });
+
+    it("does not produce children for for loops without declarations", () => {
+        const text = `procedure my_proc begin
+            for (i := 0; i < 10; i++) begin
+            end
+        end`;
+        const symbols = getDocumentSymbols(text);
+        const proc = symbols.find(s => s.name === "my_proc");
+        expect(proc).toBeDefined();
+        expect(proc!.children).toBeUndefined();
+    });
+
+    it("does not produce children for foreach loop variables", () => {
+        const text = `procedure my_proc begin
+            foreach (k: v in arr) begin
+            end
+        end`;
+        const symbols = getDocumentSymbols(text);
+        const proc = symbols.find(s => s.name === "my_proc");
+        expect(proc).toBeDefined();
+        expect(proc!.children).toBeUndefined();
+    });
+
+    it("collects nested vars from inside conditionals as flat children", () => {
+        const text = `procedure my_proc begin
+            if (true) then begin
+                variable nested_var := 1;
+            end
+        end`;
+        const symbols = getDocumentSymbols(text);
+        const proc = symbols.find(s => s.name === "my_proc");
+        expect(proc).toBeDefined();
+        const names = proc!.children!.map(c => c.name);
+        expect(names).toContain("nested_var");
+    });
+
     it("returns empty array for empty text", () => {
         expect(getDocumentSymbols("")).toEqual([]);
     });
