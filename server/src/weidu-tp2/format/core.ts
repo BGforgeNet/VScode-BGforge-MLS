@@ -150,7 +150,6 @@ function formatComponent(node: SyntaxNode, ctx: FormatContext): string {
             isAction(child.type) ||
             isControlFlow(child.type) ||
             isFunctionCall(child.type) ||
-            child.type === SyntaxType.TopLevelAssignment ||
             child.type === SyntaxType.InlinedFile
         ) {
             if (beginLine) {
@@ -191,8 +190,7 @@ function formatAlwaysBlock(node: SyntaxNode, ctx: FormatContext): string {
         } else if (
             isAction(child.type) ||
             isControlFlow(child.type) ||
-            isFunctionCall(child.type) ||
-            child.type === SyntaxType.TopLevelAssignment
+            isFunctionCall(child.type)
         ) {
             lines.push(formatNode(child, ctx, 1));
             lastEndRow = child.endPosition.row;

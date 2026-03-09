@@ -352,6 +352,27 @@ OUTER_SET x = 3`;
         expect(yChildren).toHaveLength(1);
     });
 
+    it("does not produce symbols from broken/error code", () => {
+        // Tree-sitter error recovery can wrap garbage text in valid-looking nodes
+        // (e.g. "aaaaaaa zzzzzz" becomes a patch_assignment with a phantom "=").
+        // Only real variables should appear; hasError guard filters error-recovery artifacts.
+        const text = `qqqqqq
+ACTION_IF ENGINE_IS ~tob~ BEGIN
+  OUTER_SPRINT TOBEX_MOD_DIRECTORY ~%MOD_FOLDER%~
+  LOAD_TRA "%TOBEX_MOD_DIRECTORY%/TobEx_redist/TobEx.tra"
+wwwwww
+  INCLUDE "%TOBEX_MOD_DIRECTORY%/TobEx_redist/TobEx.tpa"
+
+  eeeeee
+END
+aaaaaaa zzzzzz
+
+ddddddd`;
+        const symbols = getDocumentSymbols(text);
+        const names = symbols.map(s => s.name);
+        expect(names).toEqual(["TOBEX_MOD_DIRECTORY"]);
+    });
+
     it("returns empty array for empty text", () => {
         expect(getDocumentSymbols("")).toEqual([]);
     });

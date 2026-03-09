@@ -578,7 +578,7 @@ but are intentionally language-specific. Shared infrastructure is in `shared/`:
 | Feature | Why per-language |
 |---------|-----------------|
 | Definition finders | Different scoping models (SSL procedures vs TP2 functions vs D state labels) |
-| Document symbol extraction | Different construct types and scoping: SSL has explicit `variable` declarations, TP2 uses first-assignment-wins deduplication |
+| Document symbol extraction | Different construct types and scoping: SSL has explicit `variable` declarations, TP2 uses first-assignment-wins deduplication. Both show params/vars as children. TP2 uses `hasError` guard to skip error-recovery artifacts; icon assignment uses shared `looksLikeConstant()` heuristic (cross-linked: `symbol.ts`, `hover.ts`, `tree-utils.ts`, `tmLanguage.yml`) |
 | Rename | SSL is workspace-wide with include graph; TP2 is single-file with %var% handling |
 | Reference finders | SSL has procedure scope shadows; TP2 has synthetic string nodes |
 | Folding block type sets | Language-specific node types, passed as parameters to shared `getFoldingRanges()` |
@@ -606,6 +606,12 @@ regression to occur. See `isPhantomAssignment()` JSDoc for alternatives consider
 Only TP2 is affected because it has bare assignment syntax (`foo = 5` without a keyword).
 Other providers (SSL, BAF, D) don't have bare assignment grammar rules, so error recovery
 cannot produce phantom assignment nodes for them.
+
+**Document symbols** (`symbol.ts`) use a separate defense: `node.hasError` guards on all
+variable-extracting code paths (`extractFileLevelVars`, `collectBodyVars`). This skips
+nodes where tree-sitter's error recovery inserted phantom tokens (e.g., a zero-width `=`
+turning garbage text into a valid-looking assignment). The guard still recurses into
+children, so valid variables inside an ACTION_IF with partial errors are still collected.
 
 ### 7. Sequential Parser Init
 Tree-sitter WASM constraint requires sequential initialization.

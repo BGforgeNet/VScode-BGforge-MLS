@@ -366,6 +366,7 @@ END
     });
 
     it("renames RET parameter", () => {
+        // LPF is patch-level, must be inside a patch context (COPY_EXISTING) for valid parse.
         const text = `
 DEFINE_PATCH_FUNCTION GetValue
     RET result
@@ -373,8 +374,9 @@ BEGIN
     SET result = 42
 END
 
-LPF GetValue RET value = result END
-PATCH_PRINT ~%value%~
+COPY_EXISTING ~file.itm~ ~override~
+    LPF GetValue RET value = result END
+    PATCH_PRINT ~%value%~
 `;
         const position: Position = { line: 2, character: 8 }; // On "result" in RET
         const result = renameSymbol(text, position, "output", "file:///test.tp2");

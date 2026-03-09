@@ -16,6 +16,7 @@ Fallout SSL
 - Fixed SSL compiler attempting external compile after user declines built-in fallback prompt.
 - Fixed temp file leak when `writeFile` fails before compilation.
 - Document symbols now show procedure parameters and local variables as children in the outline view.
+- Outline icons: parameterized macros now use Method icon instead of Function.
 - Fixed grammar: `variable` keyword is now required for procedure parameters (was incorrectly optional).
 
 WeiDU
@@ -23,9 +24,9 @@ WeiDU
 - Added actionable error message when WeiDU binary is not found.
 - Improved error messages: show near text + up to 4 detail lines instead of full stdout.
 - Fixed concurrent compilations of same-extension files overwriting shared temp file.
-- Document symbols now show function/macro body variables as children in the outline view.
-- File-level variables (OUTER_SET, OUTER_SPRINT, arrays, loops) now appear as top-level symbols.
-- Variables are deduplicated by name (first occurrence wins).
+- Document symbols now show function/macro body variables and parameters as children in the outline view.
+- Outline icons: macros use Method icon, arrays use Array icon, UPPER_first_word variables use Constant icon.
+- Variables now appear as top-level symbols.
 
 ## 3.1.3
 

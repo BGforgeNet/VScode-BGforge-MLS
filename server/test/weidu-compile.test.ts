@@ -453,6 +453,27 @@ describe("weidu-compile", () => {
             expect(parseResult.errors[0].message).toContain("Near Text: \ufffd");
         });
 
+        it("clamps column 0 to avoid negative LSP character offset", async () => {
+            // WeiDU sometimes emits 0-based columns for tokens at line start (column 0-5).
+            // The -1 adjustment must not produce negative columnStart.
+            const output =
+                "[tmp.tpa] PARSE ERROR at line 1 column 0-5\n" +
+                "Near Text: qqqqqq\n" +
+                "\tGLR parse error\n\n" +
+                "[tmp.tpa]  ERROR at line 1 column 0-5\n" +
+                "Near Text: qqqqqq\n" +
+                "\tParsing.Parse_error\n";
+
+            setupExecFile({ code: 1 }, output);
+
+            await compile("file:///test.tpa", baseSettings, true, "content");
+
+            const parseResult = mockSendParseResult.mock.calls[0][0];
+            expect(parseResult.errors).toHaveLength(1);
+            expect(parseResult.errors[0].columnStart).toBe(0);
+            expect(parseResult.errors[0].columnEnd).toBe(5);
+        });
+
         it("detects errors with zero exit code when parse errors exist in stdout", async () => {
             setupExecFile(null, "[test.tp2]  ERROR at line 5 column 1-10");
 

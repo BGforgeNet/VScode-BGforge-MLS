@@ -233,7 +233,6 @@ export function isBodyContent(type: string): boolean {
         isPatch(type) ||
         isControlFlow(type) ||
         isFunctionCall(type) ||
-        type === SyntaxType.TopLevelAssignment ||
         type === SyntaxType.PatchAssignment ||
         type === SyntaxType.InlinedFile
     );

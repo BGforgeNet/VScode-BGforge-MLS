@@ -95,7 +95,6 @@ export function unwrapVariableRef(node: SyntaxNode): SyntaxNode {
 /** Node types for assignment nodes that can be phantom (tree-sitter error recovery). */
 const ASSIGNMENT_NODE_TYPES: ReadonlySet<string> = new Set([
     SyntaxType.PatchAssignment,
-    SyntaxType.TopLevelAssignment,
 ]);
 
 /**
@@ -116,12 +115,12 @@ const ASSIGN_OPS: ReadonlySet<string> = new Set([
  * Check if an assignment node is a phantom created by tree-sitter error recovery.
  *
  * When tree-sitter can't parse a keyword (e.g. partially typed "COPY_EXISTN"),
- * error recovery may create a patch_assignment/top_level_assignment with a
- * zero-width "=" operator that doesn't exist in the source text.
+ * error recovery may create a patch_assignment with a zero-width "=" operator
+ * that doesn't exist in the source text.
  * These phantom assignments produce spurious variable completions.
  *
  * Detection: assignment nodes where the "=" child has zero width (startIndex === endIndex).
- * Only applies to bare assignment nodes (PatchAssignment, TopLevelAssignment),
+ * Only applies to bare assignment nodes (PatchAssignment),
  * not keyword-based declarations (OUTER_SET, SPRINT, etc.) which have explicit keywords.
  *
  * Design limitation: This relies on tree-sitter error recovery producing zero-width
@@ -131,10 +130,10 @@ const ASSIGN_OPS: ReadonlySet<string> = new Set([
  * provider.ts (excludeWord in the general completion path) provides a second layer
  * of defense if this check is ever bypassed.
  *
- * Alternative considered: removing PatchAssignment/TopLevelAssignment from
- * VARIABLE_TYPES entirely (option 3). This would be foolproof but would miss
- * legitimate bare assignments (`foo = 5`) in .tpp patch-only files. The pragmatic
- * choice is to keep them and validate structurally.
+ * Alternative considered: removing PatchAssignment from VARIABLE_TYPES entirely
+ * (option 3). This would be foolproof but would miss legitimate bare assignments
+ * (`foo = 5`) in .tpp patch-only files. The pragmatic choice is to keep them
+ * and validate structurally.
  */
 export function isPhantomAssignment(node: SyntaxNode): boolean {
     if (!ASSIGNMENT_NODE_TYPES.has(node.type)) {

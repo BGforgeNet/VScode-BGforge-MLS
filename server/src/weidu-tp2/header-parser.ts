@@ -75,7 +75,6 @@ const VARIABLE_TYPES = new Set([
     SyntaxType.PatchSprint,
     SyntaxType.PatchTextSprint,
     SyntaxType.PatchAssignment,
-    SyntaxType.TopLevelAssignment,
     SyntaxType.PatchReadByte,
     SyntaxType.PatchReadShort,
     SyntaxType.PatchReadLong,
@@ -230,7 +229,6 @@ function extractVariableInfo(node: SyntaxNode, uri: string): VariableInfo | null
         case SyntaxType.ActionOuterSet:
         case SyntaxType.PatchSet:
         case SyntaxType.PatchAssignment:
-        case SyntaxType.TopLevelAssignment:
             declarationKind = DeclarationKind.Set;
             inferredType = "int";
             break;

@@ -281,7 +281,7 @@ export default grammar({
                 optional($.backup_directive),
                 optional(choice($.author_directive, $.support_directive)),
                 // Everything else (flags, languages, components, actions)
-                repeat(choice($._top_level, $._action, $.top_level_assignment))
+                repeat(choice($._top_level, $._action))
             ),
             // Patch-only file (.tpp)
             $.patch_file
@@ -289,10 +289,6 @@ export default grammar({
 
         // Patch-only file (e.g., .tpp includes) - entire file is patches
         patch_file: ($) => repeat1($._patch),
-
-        // Bare assignment at top level (implicit OUTER_SET, common in .tpp files)
-        top_level_assignment: ($) =>
-            prec(-1, seq(field("var", $._assignable), $._assign_op, field("value", $.value))),
 
         // =========================================
         // LITERALS

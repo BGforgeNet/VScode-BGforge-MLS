@@ -25,7 +25,6 @@ export const VARIABLE_DECL_TYPES: ReadonlySet<SyntaxType> = new Set([
     SyntaxType.PatchSprint,
     SyntaxType.PatchSprintf,
     SyntaxType.PatchAssignment,
-    SyntaxType.TopLevelAssignment,
     SyntaxType.IntVarDecl,
     SyntaxType.StrVarDecl,
     SyntaxType.RetDecl,

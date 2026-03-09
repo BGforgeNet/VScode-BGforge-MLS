@@ -33,7 +33,6 @@ const FILE_LEVEL_VAR_TYPES: ReadonlySet<string> = new Set([
     SyntaxType.ActionOuterSprint,
     SyntaxType.ActionOuterSprintf,
     SyntaxType.ActionOuterTextSprint,
-    SyntaxType.TopLevelAssignment,
     SyntaxType.ActionDefineArray,
     SyntaxType.ActionDefineAssociativeArray,
     SyntaxType.ActionForEach,
@@ -47,7 +46,6 @@ const FILE_LEVEL_LOOP_TYPES: ReadonlySet<string> = new Set([
 /** Types using varNodes (array) to hold the variable name. */
 const VAR_NODES_TYPES: ReadonlySet<string> = new Set([
     SyntaxType.ActionOuterSet,
-    SyntaxType.TopLevelAssignment,
     SyntaxType.PatchSet,
     SyntaxType.PatchAssignment,
     SyntaxType.LocalSet,
@@ -166,14 +164,17 @@ function extractVarNameNode(node: Node): Node | null {
 function extractFileLevelVars(node: Node, seen: Set<string>): DocumentSymbol[] {
     const results: DocumentSymbol[] = [];
 
-    if (FILE_LEVEL_VAR_TYPES.has(node.type)) {
+    // Skip variable extraction from error-recovery nodes — tree-sitter can wrap garbage
+    // text in valid-looking node types (e.g. patch_assignment) with hasError set.
+    // Still recurse into children: a parent ACTION_IF may have errors but contain valid vars.
+    if (!node.hasError && FILE_LEVEL_VAR_TYPES.has(node.type)) {
         const nameNode = extractVarNameNode(node);
         if (nameNode && nameNode.text && !seen.has(nameNode.text)) {
             seen.add(nameNode.text);
             const sym = makeVarSymbol(node, nameNode);
             if (sym) results.push(sym);
         }
-    } else if (FILE_LEVEL_LOOP_TYPES.has(node.type)) {
+    } else if (!node.hasError && FILE_LEVEL_LOOP_TYPES.has(node.type)) {
         const keyNode = node.childForFieldName("key_var");
         const valueNode = node.childForFieldName("value_var");
         if (keyNode && keyNode.text && !seen.has(keyNode.text)) {
@@ -233,14 +234,14 @@ function collectFuncParams(funcNode: Node, funcName: string, seen: Set<string>):
 function collectBodyVars(node: Node, parentName: string, seen: Set<string> = new Set()): DocumentSymbol[] {
     const vars: DocumentSymbol[] = [];
 
-    if (BODY_VAR_TYPES.has(node.type)) {
+    if (!node.hasError && BODY_VAR_TYPES.has(node.type)) {
         const nameNode = extractVarNameNode(node);
         if (nameNode && nameNode.text && !seen.has(nameNode.text)) {
             seen.add(nameNode.text);
             const sym = makeVarSymbol(node, nameNode, parentName);
             if (sym) vars.push(sym);
         }
-    } else if (BODY_LOOP_TYPES.has(node.type)) {
+    } else if (!node.hasError && BODY_LOOP_TYPES.has(node.type)) {
         const keyNode = node.childForFieldName("key_var");
         const valueNode = node.childForFieldName("value_var");
         if (keyNode && keyNode.text && !seen.has(keyNode.text)) {
