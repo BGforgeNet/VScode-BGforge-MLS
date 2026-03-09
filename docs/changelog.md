@@ -12,7 +12,7 @@ Compile/validate:
 
 Fallout SSL
 
-- `.tmp.ssl` is now hidden by default from VS Code explorer.
+- `.tmp.ssl` is now hidden by default from VScode explorer.
 - Fixed SSL compiler attempting external compile after user declines built-in fallback prompt.
 - Fixed temp file leak when `writeFile` fails before compilation.
 - Document symbols now show procedure parameters and local variables as children in the outline view.
@@ -22,7 +22,7 @@ Fallout SSL
 WeiDU
 
 - Added actionable error message when WeiDU binary is not found.
-- Improved error messages: show near text + up to 4 detail lines instead of full stdout.
+- Simplified diagnostics: a few detail lines instead of full stdout.
 - Fixed concurrent compilations of same-extension files overwriting shared temp file.
 - Document symbols now show function/macro body variables and parameters as children in the outline view.
 - Outline icons: macros use Method icon, arrays use Array icon, UPPER_first_word variables use Constant icon.

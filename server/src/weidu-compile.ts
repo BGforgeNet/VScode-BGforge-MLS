@@ -165,13 +165,20 @@ export async function compile(uri: string, settings: WeiDUsettings, interactive 
 
         let parseResult = parseWeiduOutput(stdout);
 
+        // Replace tmp file path with the original basename in diagnostic messages
+        parseResult = {
+            ...parseResult,
+            errors: parseResult.errors.map((e) => ({ ...e, message: e.message.replaceAll(tmpFile, baseName) })),
+            warnings: parseResult.warnings.map((w) => ({ ...w, message: w.message.replaceAll(tmpFile, baseName) })),
+        };
+
         let showedSpecificError = false;
         if (err && parseResult.errors.length === 0) {
             if ((err as NodeJS.ErrnoException).code === "ENOENT") {
                 showError(`WeiDU not found at '${weiduPath}'. Check bgforge.mls.weidu.path setting.`);
                 showedSpecificError = true;
             }
-            parseResult = addFallbackDiagnostic(parseResult, err, pathToUri(filePath), stdout);
+            parseResult = addFallbackDiagnostic(parseResult, err, pathToUri(filePath), stdout.replaceAll(tmpFile, baseName));
         }
 
         // Skip generic message when we already showed a specific one (e.g. ENOENT)
