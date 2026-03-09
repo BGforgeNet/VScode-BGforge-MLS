@@ -3,7 +3,16 @@
         "out": false // set this to true to hide the "out" folder with the compiled JS files
     },
     "search.exclude": {
-        "out": true // set this to false to include "out" folder in search results
+        "out": true, // set this to false to include "out" folder in search results
+        "external": true,
+        "tmp": true
+    },
+    "files.watcherExclude": {
+        "external/**": true,
+        "tmp/**": true,
+        ".vscode-test/**": true,
+        ".reports/**": true,
+        "coverage/**": true
     },
     "typescript.tsdk": "./node_modules/typescript/lib",
     "typescript.tsc.autoDetect": "off",
