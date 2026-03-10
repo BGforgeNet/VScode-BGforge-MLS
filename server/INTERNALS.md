@@ -452,13 +452,12 @@ Reusable infrastructure that providers consume via configuration, not inheritanc
 | `folding-ranges.ts` | Factory: `createFoldingRangesProvider(init, parse, blockTypes)` | All 4 LSP providers |
 | `comment-check.ts` | Factory: `createIsInsideComment(init, parse, commentTypes)` | BAF, D, TP2 |
 | `provider-helpers.ts` | Helpers: `resolveSymbolWithLocal()`, `formatWithValidation()`, `getStaticCompletions()` | All providers |
-| `feature-data.ts` | Containers: `ListData<T>`, `MapData<T>` with `reloadList()`, `reloadMap()`, `getListItems()`, `lookupMapItem()` | SSL, TP2 |
 | `workspace-symbols.ts` | Index: `WorkspaceSymbolIndex` for Ctrl+T cross-file search | SSL, TP2 |
 | `references-index.ts` | Index: `ReferencesIndex` for cross-file Find References | SSL, TP2, D |
 | `jsdoc.ts` | Parser: `parse(text, { returnMode })` — unnamed (SSL) or named (TP2) returns | SSL, TP2, D |
 | `jsdoc-completions.ts` | Completions: JSDoc tag and type completions | All 4 |
 | `signature.ts` | Data: `SigInfoEx`, `loadStatic()`, `getRequest()`, `getResponse()` | SSL (TP2 ready) |
-| `completion-context.ts` | Framework: `CompletionCategory`, `CategoryContextMap`, context-based filtering | TP2 |
+| `completion-context.ts` | Framework: `CompletionCategory`, `CompletionItemWithCategory`, context-based filtering | TP2 |
 | `format-utils.ts` | Validation: `validateFormatting()`, `createFullDocumentEdit()`, comment strippers | All 4 |
 | `format-options.ts` | Config: `getFormatOptions()` from `.editorconfig` | All 4 |
 | `tooltip-format.ts` | Formatting: `buildSignatureBlock()`, `buildWeiduHoverContent()`, `formatDeprecation()` | All providers |
