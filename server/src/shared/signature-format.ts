@@ -11,7 +11,7 @@ export interface SignatureParam {
 }
 
 /** Structured signature data. */
-export interface SignatureData {
+interface SignatureData {
     name: string;
     /** Prefix before name: "void ", "int ", "procedure ", "macro ", or "" */
     prefix: string;

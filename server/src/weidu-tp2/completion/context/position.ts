@@ -11,7 +11,7 @@ import { KW_BEGIN, KW_END } from "../../format/types";
  * BEGIN/END block boundary positions.
  * Used by function definitions and control flow constructs.
  */
-export interface BlockBoundaries {
+interface BlockBoundaries {
     /** Byte offset where BEGIN keyword ends (after the BEGIN keyword) */
     beginEnd: number;
     /** Byte offset where END keyword starts (before the END keyword) */

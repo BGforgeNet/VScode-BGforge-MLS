@@ -28,7 +28,7 @@ async function ensureEsbuild(): Promise<void> {
 }
 
 /** Configuration for the shared bundler. */
-export interface BundleConfig {
+interface BundleConfig {
     /** Absolute path to the source file */
     readonly filePath: string;
     /** Source text content */
@@ -72,7 +72,7 @@ export interface BundleConfig {
 }
 
 /** Result from the shared bundler. */
-export interface BundleResult {
+interface BundleResult {
     /** Cleaned and post-processed bundled code */
     readonly code: string;
     /** All enum names accumulated during bundling (main file + imports) */

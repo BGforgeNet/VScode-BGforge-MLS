@@ -15,7 +15,7 @@ const DEFAULT_OPTIONS: FormatOptions = {
     lineLimit: 120,
 };
 
-export interface FormatResult {
+interface FormatResult {
     text: string;
 }
 

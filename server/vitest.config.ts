@@ -24,7 +24,6 @@ export default defineConfig({
                 // Shared utilities (individually listed to exclude pipeline-dependent ones)
                 "src/shared/completion-context.ts",
                 "src/shared/editorconfig.ts",
-                "src/shared/feature-data.ts",
                 "src/shared/format-utils.ts",
                 "src/shared/jsdoc.ts",
                 "src/shared/parser-factory.ts",

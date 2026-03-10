@@ -33,7 +33,7 @@ const DEFAULT_OPTIONS: FormatOptions = {
 };
 
 // Format context passed through all functions
-export interface FormatContext {
+interface FormatContext {
     indent: string;
     lineLimit: number;
 }
@@ -135,7 +135,7 @@ export function normalizeComment(text: string): string {
 }
 
 
-export interface FormatResult {
+interface FormatResult {
     text: string;
 }
 

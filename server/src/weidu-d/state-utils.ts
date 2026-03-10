@@ -43,7 +43,7 @@ function findScopeBlock(node: SyntaxNode): { scopeNode: SyntaxNode; dialogFile: 
 }
 
 /** A state definition found in the AST. */
-export interface StateInfo {
+interface StateInfo {
     readonly name: string;
     readonly labelNode: SyntaxNode;
     readonly stateNode: SyntaxNode;
@@ -68,7 +68,7 @@ function findStateDefinitions(scopeNode: SyntaxNode): readonly StateInfo[] {
 }
 
 /** Result of finding a label node at a cursor position. */
-export interface LabelAtPosition {
+interface LabelAtPosition {
     readonly labelNode: SyntaxNode;
     readonly dialogFile: string;
 }

@@ -10,7 +10,7 @@ import * as path from "path";
 import * as fs from "fs";
 
 /** Result of resolving the runtime file path. */
-export interface RuntimeResolution {
+interface RuntimeResolution {
     readonly path: string;
     readonly exists: boolean;
 }

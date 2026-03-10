@@ -37,7 +37,7 @@ export function getFuncParamsContext(): FuncParamsContext | null {
  * Result of searching for section keyword nodes (INT_VAR, STR_VAR, RET, RET_ARRAY)
  * in a function call tree. Returns the last section keyword found before the cursor.
  */
-export interface KeywordSearchResult {
+interface KeywordSearchResult {
     sectionNode: SyntaxNode | null;
     sectionType: ParamSection | null;
     keywordPosition: number;

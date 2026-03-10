@@ -8,13 +8,13 @@ import * as path from "path";
 import * as fs from "fs";
 import { djb2HashHex } from "./hash";
 
-export interface ParserModule {
+interface ParserModule {
     init(): Promise<void>;
     getParser(): Parser;
     isInitialized(): boolean;
 }
 
-export interface CachedParserModule extends ParserModule {
+interface CachedParserModule extends ParserModule {
     /** Parse text with caching. Returns cached tree if text unchanged. */
     parseWithCache(text: string): Tree | null;
     /** Invalidate cache for specific text or all entries if text not provided. */

@@ -4,22 +4,12 @@
  */
 
 import { Position, SignatureInformation } from "vscode-languageserver/node";
-import { MapData } from "./feature-data";
 import { loadStaticMap } from "./static-data";
 
 export interface SigInfoEx extends SignatureInformation {
     uri: string;
 }
 export interface SigMap extends Map<string, SigInfoEx> {}
-
-/**
- * Signature data container using the standard self/headers/extHeaders/static pattern.
- * - self: per-document signatures (uri → Map<symbol, SigInfoEx>)
- * - headers: workspace header signatures
- * - extHeaders: external headers signatures
- * - static: built-in signatures from JSON
- */
-export type Data = MapData<SigInfoEx, SigInfoEx>;
 
 export function loadStatic(langId: string): SigMap {
     return loadStaticMap<SigInfoEx>("signature", langId);
@@ -34,7 +24,7 @@ export function getResponse(signature: SignatureInformation, parameter: number) 
     return result;
 }
 
-export interface Request {
+interface Request {
     symbol: string;
     parameter: number;
 }

@@ -782,6 +782,5 @@ export {
     transformFunctionToState,
     processExtendStatements,
     processStateStatement,
-    type FuncInfo,
     type FuncsContext,
 };

@@ -32,7 +32,7 @@ import {
  * Context for symbol lookup operations.
  * Used for scope resolution when multiple symbols share a name.
  */
-export interface QueryContext {
+interface QueryContext {
     /** URI of the current document */
     uri?: string;
 
@@ -46,7 +46,7 @@ export interface QueryContext {
 /**
  * Options for query operations.
  */
-export interface QueryOptions {
+interface QueryOptions {
     /** Filter by name prefix (case-insensitive) */
     prefix?: string;
 

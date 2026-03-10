@@ -83,7 +83,7 @@ export function getStaticCompletions(symbols: Symbols | undefined): CompletionIt
 // ============================================
 
 /** Options for the formatWithValidation helper. Generic parameters allow type-safe usage without `any`. */
-export interface FormatWithValidationOptions<TRoot = unknown, TOpts = unknown> {
+interface FormatWithValidationOptions<TRoot = unknown, TOpts = unknown> {
     /** Current document text */
     text: string;
     /** Document URI */

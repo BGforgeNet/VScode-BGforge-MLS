@@ -22,12 +22,12 @@ import { TDParser } from "./parse";
 import { collectExplicitLabels } from "./state-resolution";
 import { ORPHAN_WARNING_TEMPLATE, type TDScript, type TDWarning } from "./types";
 
-export interface TDTranspileResult {
+interface TDTranspileResult {
     output: string;
     warnings: TDWarning[];
 }
 
-export interface TDCompileResult {
+interface TDCompileResult {
     dPath: string;
     warnings: TDWarning[];
 }

@@ -22,7 +22,7 @@ import { FUNCTION_CALL_TYPES, isShadowedByInnerLoop, isVariableRefInDeclarationC
 // Types
 // ============================================
 
-export interface SymbolOccurrence {
+interface SymbolOccurrence {
     node: SyntaxNode;
     isDefinition: boolean;
 }

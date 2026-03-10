@@ -11,7 +11,7 @@ import { escapeHtml, registerDialogPanel } from "./shared";
 // Data model (duplicated from server/src/dialog.ts -- can't cross-import)
 // ---------------------------------------------------------------------------
 
-export interface DialogReply {
+interface DialogReply {
     msgId: number | string;
     line: number;
 }

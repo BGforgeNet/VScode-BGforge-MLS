@@ -26,7 +26,7 @@ function matchesGlob(fileName: string, pattern: string): boolean {
 }
 
 /** Result from editorconfig parsing. */
-export interface EditorconfigResult {
+interface EditorconfigResult {
     indentSize: number | null;
     maxLineLength: number | null;
 }

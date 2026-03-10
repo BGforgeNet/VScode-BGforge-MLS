@@ -86,7 +86,7 @@ const ES_LIB_BLOCKLIST: ReadonlySet<string> = new Set([
 ]);
 
 /** Minimal completion entry shape -- only the fields we inspect. */
-export interface CompletionEntryLike {
+interface CompletionEntryLike {
     readonly name: string;
     readonly kind: string;
 }

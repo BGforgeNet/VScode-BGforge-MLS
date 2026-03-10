@@ -19,7 +19,7 @@ const DEFAULT_OPTIONS: FormatOptions = {
 
 const INLINE_COMMENT_SPACING = "  ";
 
-export interface FormatResult {
+interface FormatResult {
     text: string;
 }
 

@@ -20,7 +20,7 @@ import { SyntaxType } from "./tree-sitter.d";
 export { makeRange };
 
 /** Parameter data extracted from AST. */
-export interface ParamInfo {
+interface ParamInfo {
     name: string;
     defaultValue?: string;
 }

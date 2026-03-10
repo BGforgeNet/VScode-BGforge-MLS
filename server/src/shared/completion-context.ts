@@ -7,7 +7,7 @@
  *
  * Key concepts:
  * - CompletionContext: String union of valid contexts for a language
- * - CategoryContextMap: Maps category names to allowed contexts
+ * - CompletionCategory: Category annotation on completion items
  * - Context detection: Language-specific logic to determine cursor context
  * - Filtering: Generic logic to filter items based on category and context
  */
@@ -74,51 +74,6 @@ export interface CompletionItemWithCategory extends CompletionItem {
      * Items without this field are shown in all contexts (e.g., local completions).
      */
     category?: CompletionCategory;
-}
-
-/**
- * Generic category-to-context mapping.
- * Maps category names to the contexts where they should appear.
- *
- * @template TContext - String union of valid context values
- *
- * Example:
- * ```
- * type MyContext = "global" | "local" | "function";
- * const mapping: CategoryContextMap<MyContext> = {
- *   "globalKeyword": ["global"],
- *   "localVar": ["local", "function"],
- * };
- * ```
- */
-export type CategoryContextMap<TContext extends string> = Record<string, TContext[]>;
-
-/**
- * Generic context-aware completion filter configuration.
- *
- * @template TContext - String union of valid context values
- */
-export interface ContextFilterConfig<TContext extends string> {
-    /**
-     * Maps category names to allowed contexts.
-     * Categories not in this map are allowed everywhere.
-     */
-    categoryMap: CategoryContextMap<TContext>;
-
-    /**
-     * Fallback context when detection fails.
-     * Use a permissive context (e.g., "unknown") to show all items.
-     */
-    fallbackContext: TContext;
-
-    /**
-     * Item-specific overrides for special cases.
-     * Called before checking categoryMap.
-     * Return true to allow, false to deny, undefined to use default logic.
-     *
-     * Use sparingly - prefer fixing the grammar or YAML categories instead.
-     */
-    itemOverride?: (itemName: string, category: string | undefined, context: TContext) => boolean | undefined;
 }
 
 // ============================================

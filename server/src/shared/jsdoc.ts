@@ -56,7 +56,7 @@ export interface JSdoc {
 }
 
 /** Options for parse(). */
-export interface ParseOptions {
+interface ParseOptions {
     /**
      * How to interpret @return tags.
      * - 'unnamed' (default): SSL behavior — unnamed @return populates ret, named goes to rets[].
@@ -365,7 +365,7 @@ function parseDeprecated(line: string): string | true | null {
 // ============================================
 
 /** Parameter info from JSDoc for display purposes. */
-export interface ParamDisplayInfo {
+interface ParamDisplayInfo {
     description?: string;
     required?: boolean;
 }

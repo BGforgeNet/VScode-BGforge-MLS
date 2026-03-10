@@ -6,7 +6,7 @@
  */
 
 /** INT_VAR or STR_VAR classification for WeiDU function parameters. */
-export type VarCategory = "int" | "str";
+type VarCategory = "int" | "str";
 
 interface WeiduType {
     readonly detail: string;

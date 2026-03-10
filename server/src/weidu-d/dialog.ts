@@ -39,7 +39,7 @@ import {
 } from "./dialog-modify";
 
 // Re-export types so external consumers don't need to change imports
-export type { DDialogTarget, DDialogTransition, DDialogState, DDialogBlockKind, DDialogBlock, DDialogData } from "./dialog-types";
+export type { DDialogData } from "./dialog-types";
 
 // ---------------------------------------------------------------------------
 // Public API

@@ -13,7 +13,7 @@ import * as esbuild from "esbuild-wasm";
 import { Project, SyntaxKind, type EnumDeclaration, type SourceFile } from "ts-morph";
 
 /** Result of transforming enums in source text */
-export interface EnumTransformResult {
+interface EnumTransformResult {
     /** Transformed source code (unchanged if no enums found) */
     readonly code: string;
     /** Set of enum names found and transformed */

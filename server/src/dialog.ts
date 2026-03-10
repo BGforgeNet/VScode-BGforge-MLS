@@ -15,7 +15,7 @@ interface DialogReply {
 /**
  * Types of dialog options and messages.
  */
-export enum DialogOptionType {
+enum DialogOptionType {
     NOption = "NOption",
     NLowOption = "NLowOption",
     GOption = "GOption",

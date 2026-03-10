@@ -57,7 +57,7 @@ import {
 import { SyntaxType } from "../tree-sitter.d";
 
 // Re-export public types
-export type { FormatOptions, FormatResult } from "./types";
+export type { FormatOptions } from "./types";
 
 // ============================================
 // Simple node formatters

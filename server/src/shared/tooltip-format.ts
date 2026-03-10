@@ -50,7 +50,7 @@ export function formatDeprecation(deprecated: boolean | string | undefined): str
  * Options for composing a WeiDU/TP2 hover tooltip.
  * Used by both build-time (YAML items) and runtime (JSDoc-parsed functions/variables).
  */
-export interface WeiduHoverParts {
+interface WeiduHoverParts {
     /** Signature line (e.g., "action function MY_FUNC" or "int my_var = 42"). */
     readonly signature: string;
     /** Language ID for the code fence (e.g., "weidu-tp2-tooltip"). */

@@ -33,7 +33,7 @@ export interface FunctionParams {
 }
 
 /** Single parameter with optional default value. */
-export interface ParamInfo {
+interface ParamInfo {
     name: string;
     defaultValue?: string;
 }
@@ -585,7 +585,7 @@ function variableInfoToSymbol(varInfo: VariableInfo, displayPath?: string | null
 }
 
 /** Options for parseHeaderToSymbols */
-export interface ParseSymbolsOptions {
+interface ParseSymbolsOptions {
     /** Workspace root path for computing relative displayPath */
     workspaceRoot?: string;
     /** Skip path in hover (for local symbols where path is redundant) */

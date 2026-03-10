@@ -188,10 +188,6 @@ export function pathToUri(filePath: string) {
     return uri.toString();
 }
 
-// https://stackoverflow.com/questions/72119570/why-doesnt-vs-code-typescript-recognize-the-indices-property-on-the-result-of-r
-// https://github.com/microsoft/TypeScript/issues/44227
-export type RegExpMatchArrayWithIndices = RegExpMatchArray & { indices: Array<[number, number]> };
-
 /** Extract the text from the start of the line up to the cursor position. */
 export function getLinePrefix(text: string, position: Position): string {
     return text.split("\n")[position.line]?.substring(0, position.character) ?? "";

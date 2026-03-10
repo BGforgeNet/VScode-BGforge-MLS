@@ -2,7 +2,7 @@ import type { KnipConfig } from "knip";
 
 const config: KnipConfig = {
   rules: {
-    types: "warn",
+    types: "error",
     // Knip can't trace enum member access (e.g. DeclarationKind.Set) as usage
     enumMembers: "off",
   },

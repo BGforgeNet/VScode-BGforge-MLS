@@ -106,7 +106,7 @@ function getDialogPreviewHtml(treeContent: string, codiconsUri: string, extensio
 // Panel lifecycle
 // ---------------------------------------------------------------------------
 
-export interface DialogPanelConfig {
+interface DialogPanelConfig {
     /** Check whether a document should use this panel. */
     matchDocument: (doc: vscode.TextDocument) => boolean;
     /** VS Code command ID (e.g. "extension.bgforge.dialogPreview") */

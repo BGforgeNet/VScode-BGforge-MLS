@@ -242,6 +242,7 @@ export type TDChainEpilogue =
 // Patch operation types
 // =============================================================================
 
+/** @public Used via inline import() in td/emit.ts */
 export type TDPatchOperation =
     | TDAlterTrans
     | TDAddStateTrigger

@@ -359,5 +359,4 @@ export {
     transformFunctionToChain,
     processChainStatements,
     processChainBody,
-    type ChainBodyResult,
 };
