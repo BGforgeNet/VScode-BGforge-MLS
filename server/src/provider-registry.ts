@@ -250,6 +250,15 @@ class ProviderRegistry {
         return null;
     }
 
+    references(langId: string, text: string, position: Position, uri: string, includeDeclaration: boolean): Location[] {
+        const normUri = normalizeUri(uri);
+        const provider = this.get(langId);
+        if (provider?.references) {
+            return provider.references(text, position, normUri, includeDeclaration);
+        }
+        return [];
+    }
+
     inlayHints(langId: string, text: string, uri: string, range: Range): InlayHint[] {
         const normUri = normalizeUri(uri);
         const provider = this.get(langId);

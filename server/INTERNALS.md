@@ -91,6 +91,8 @@ server/src/
 |   +-- completion.ts
 |   +-- hover.ts
 |   +-- definition.ts
+|   +-- references.ts         # Find References (single-file + cross-file via ReferencesIndex)
+|   +-- call-sites.ts         # Call-site extractor for cross-file references index
 |   +-- rename.ts             # Single-file + workspace-wide rename orchestration
 |   +-- symbol-scope.ts       # Scope determination (file vs procedure) for rename
 |   +-- reference-finder.ts   # Scope-restricted reference finding for rename
@@ -101,10 +103,14 @@ server/src/
 +-- weidu-d/                  # WeiDU dialog files
 |   +-- tree-sitter.d.ts      # Generated SyntaxType enum
 |   +-- state-utils.ts        # Dialog-scoped state label utilities (shared by definition, rename, hover)
+|   +-- references.ts         # Find References (single-file + cross-file via ReferencesIndex)
+|   +-- call-sites.ts         # Call-site extractor for cross-file references index
 |   +-- rename.ts             # Dialog-scoped state label rename
 |   +-- hover.ts              # JSDoc hover for state labels
 +-- weidu-tp2/                # WeiDU mod installers
 |   +-- tree-sitter.d.ts      # Generated SyntaxType enum
+|   +-- references.ts         # Find References (single-file + cross-file via ReferencesIndex)
+|   +-- call-sites.ts         # Call-site extractor for cross-file references index
 +-- fallout-worldmap/         # Fallout worldmap.txt
 |
 +-- tssl/                     # TypeScript -> SSL transpiler
@@ -115,6 +121,7 @@ server/src/
 |   +-- hash.ts               # Shared djb2 hash for cache keys
 |   +-- parser-factory.ts     # Cached tree-sitter parsers
 |   +-- workspace-symbols.ts  # WorkspaceSymbolIndex for Ctrl+T search
+|   +-- references-index.ts   # ReferencesIndex for cross-file Find References
 |   +-- completion.ts         # Shared completion utilities
 |   +-- hover.ts              # Shared hover utilities
 |   +-- signature.ts          # Signature help utilities
@@ -266,11 +273,16 @@ Document Changed (debounced 300ms)
 +----------------+  | update)        |
         |           +----------------+
         v
-+----------------+
-| Symbols    |
-| .updateFile()  |
-| (replaces old) |
-+----------------+
++------------------+
+| Symbols          |   Symbol store (headers)
+| .updateFile()    |
++------------------+
+| WsSymbolIndex    |   Workspace symbols (Ctrl+T)
+| .updateFile()    |
++------------------+
+| ReferencesIndex  |   Cross-file references
+| .updateFile()    |
++------------------+
 ```
 
 ## Symbol Type System
@@ -408,13 +420,13 @@ This copies the generated `tree-sitter.d.ts` to `server/src/{lang}/`.
 
 ## Feature Matrix
 
-| Provider | Completion | Hover | Signature | Definition | Format | Symbols | Workspace Symbols | Rename | Inlay | Folding |
-|----------|:----------:|:-----:|:---------:|:----------:|:------:|:-------:|:-----------------:|:------:|:-----:|:-------:|
-| fallout-ssl | Y | Y | Y | Y | Y | Y | Y | Y | .msg | Y |
-| weidu-baf | Y | Y | | | Y | | | | .tra | Y |
-| weidu-d | Y | Y | | Y | Y | Y | | Y | .tra | Y |
-| weidu-tp2 | Y | Y | | Y | Y | Y | Y | Y | .tra | Y |
-| worldmap | Y | Y | | | | | | | | |
+| Provider | Completion | Hover | Signature | Definition | References | Format | Symbols | Workspace Symbols | Rename | Inlay | Folding |
+|----------|:----------:|:-----:|:---------:|:----------:|:----------:|:------:|:-------:|:-----------------:|:------:|:-----:|:-------:|
+| fallout-ssl | Y | Y | Y | Y | Y | Y | Y | Y | Y | .msg | Y |
+| weidu-baf | Y | Y | | | | Y | | | | .tra | Y |
+| weidu-d | Y | Y | | Y | Y | Y | Y | | Y | .tra | Y |
+| weidu-tp2 | Y | Y | | Y | Y | Y | Y | Y | Y | .tra | Y |
+| worldmap | Y | Y | | | | | | | | | |
 
 ## Request Routing
 
@@ -442,6 +454,7 @@ Reusable infrastructure that providers consume via configuration, not inheritanc
 | `provider-helpers.ts` | Helpers: `resolveSymbolWithLocal()`, `formatWithValidation()`, `getStaticCompletions()` | All providers |
 | `feature-data.ts` | Containers: `ListData<T>`, `MapData<T>` with `reloadList()`, `reloadMap()`, `getListItems()`, `lookupMapItem()` | SSL, TP2 |
 | `workspace-symbols.ts` | Index: `WorkspaceSymbolIndex` for Ctrl+T cross-file search | SSL, TP2 |
+| `references-index.ts` | Index: `ReferencesIndex` for cross-file Find References | SSL, TP2, D |
 | `jsdoc.ts` | Parser: `parse(text, { returnMode })` — unnamed (SSL) or named (TP2) returns | SSL, TP2, D |
 | `jsdoc-completions.ts` | Completions: JSDoc tag and type completions | All 4 |
 | `signature.ts` | Data: `SigInfoEx`, `loadStatic()`, `getRequest()`, `getResponse()` | SSL (TP2 ready) |
@@ -540,6 +553,43 @@ the correct scope. For procedure-scoped symbols, walks only the procedure subtre
 file-scoped symbols, walks the entire tree but skips into procedures that shadow the name
 with a local definition.
 
+### Cross-File References
+
+The `ReferencesIndex` (`shared/references-index.ts`) enables workspace-wide Find References
+without scanning all files on each request. It maps `symbolName -> uri -> Location[]`.
+
+```
+Startup / File Change
+       |
+       v
++------------------+     +------------------+
+| call-sites.ts    | --> | ReferencesIndex  |
+| (per-language    |     | .updateFile()    |
+|  AST extractor)  |     +------------------+
++------------------+
+
+Find References Request
+       |
+       v
++------------------+     +------------------+
+| references.ts    | --> | ReferencesIndex  |
+| (single-file     |     | .lookup()        |
+|  analysis)       |     +------------------+
++------------------+
+       |
+       v
+  Merge local + cross-file results
+```
+
+**Per-language call-site extractors** (`call-sites.ts`):
+- **SSL**: Collects all `Identifier` nodes grouped by name. Cross-file lookup uses exact match.
+- **TP2**: Collects `FUNCTION_DEF_TYPES` and `FUNCTION_CALL_TYPES` name fields. Keys are case-sensitive. Variables are not indexed — they are function/loop-scoped.
+- **D**: Collects state label references with `dialogFile:labelName` composite keys. Dialog files are normalized to lowercase.
+
+**Index population**: Populated at startup during the same workspace scan used for other indices. SSL populates in `buildIncludeGraph()` (which already reads all files). TP2 populates in `reloadFileData()` via `scanWorkspaceHeaders()`. D has its own async scan in `init()` (no `watchExtensions` — `.d` files are primary sources, not headers). Updated incrementally for open documents via `onDidChangeContent`.
+
+**Scoping**: Only file-scoped symbols get cross-file results. Procedure-local variables (SSL), function/loop-scoped variables (TP2), and intra-dialog labels (D) remain single-file only. The `references.ts` module in each language checks the symbol scope before querying the index.
+
 **Single-file rename** (`rename.ts`): Uses scope info to rename only within the correct scope.
 
 **Workspace-wide rename** (`rename.ts`): For symbols defined in header files:
@@ -580,7 +630,8 @@ but are intentionally language-specific. Shared infrastructure is in `shared/`:
 | Definition finders | Different scoping models (SSL procedures vs TP2 functions vs D state labels) |
 | Document symbol extraction | Different construct types and scoping: SSL has explicit `variable` declarations, TP2 uses first-assignment-wins deduplication. Both show params/vars as children. TP2 uses `hasError` guard to skip error-recovery artifacts; icon assignment uses shared `looksLikeConstant()` heuristic (cross-linked: `symbol.ts`, `hover.ts`, `tree-utils.ts`, `tmLanguage.yml`) |
 | Rename | SSL is workspace-wide with include graph; TP2 is single-file with %var% handling |
-| Reference finders | SSL has procedure scope shadows; TP2 has synthetic string nodes |
+| Reference finders | SSL has procedure scope shadows; TP2 has synthetic string nodes; D uses dialog-scoped composite keys |
+| Call-site extractors | SSL indexes all identifiers; TP2 indexes only function/macro names (case-sensitive); D uses dialog:label composite keys |
 | Folding block type sets | Language-specific node types, passed as parameters to shared `getFoldingRanges()` |
 | Comment stripping | `stripCommentsWeidu()` handles `~string~` delimiters; `stripCommentsFalloutSsl()` does not |
 

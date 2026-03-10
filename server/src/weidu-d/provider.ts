@@ -5,9 +5,11 @@
  * Uses unified Symbols storage for completion and hover data.
  */
 
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
 import type { CompletionItem, DocumentSymbol, FoldingRange, Location, Position } from "vscode-languageserver/node";
-import { conlog } from "../common";
-import { LANG_WEIDU_D } from "../core/languages";
+import { conlog, findFiles, pathToUri } from "../common";
+import { EXT_WEIDU_D, LANG_WEIDU_D } from "../core/languages";
 import type { IndexedSymbol } from "../core/symbol";
 import { Symbols } from "../core/symbol-index";
 import { loadStaticSymbols } from "../core/static-loader";
@@ -15,9 +17,12 @@ import { type FormatResult, type LanguageProvider, type ProviderContext } from "
 import { stripCommentsWeidu } from "../shared/format-utils";
 import { getFormatOptions } from "../shared/format-options";
 import { resolveSymbolStatic, getStaticCompletions, formatWithValidation } from "../shared/provider-helpers";
+import { ReferencesIndex } from "../shared/references-index";
 import { isInsideComment } from "./ast-utils";
+import { extractCallSites } from "./call-sites";
 import { getDefinition } from "./definition";
 import { getStateLabelHover } from "./hover";
+import { findReferences } from "./references";
 import { prepareRenameSymbol, renameSymbol } from "./rename";
 import { formatDocument as formatAst } from "./format/core";
 import { initParser, parseWithCache, isInitialized } from "./parser";
@@ -43,8 +48,13 @@ const dFoldingRanges = createFoldingRangesProvider(isInitialized, parseWithCache
 
 class WeiduDProvider implements LanguageProvider {
     readonly id = LANG_WEIDU_D;
+    // D files are primary source files, not headers. watchExtensions is not set
+    // because scanWorkspaceHeaders uses readFileSync — we do our own async scan
+    // in init() instead, following the SSL provider pattern.
+
     private symbolStore: Symbols | undefined;
     private storedContext: ProviderContext | undefined;
+    private refsIndex: ReferencesIndex | undefined;
 
     async init(context: ProviderContext): Promise<void> {
         this.storedContext = context;
@@ -55,7 +65,42 @@ class WeiduDProvider implements LanguageProvider {
         const staticSymbols = loadStaticSymbols(LANG_WEIDU_D);
         this.symbolStore.loadStatic(staticSymbols);
 
+        this.refsIndex = new ReferencesIndex();
+
+        // Build references index from all .d files in the workspace (async I/O)
+        if (context.workspaceRoot) {
+            await this.scanWorkspaceFiles(context.workspaceRoot);
+        }
+
         conlog(`WeiDU D provider initialized with ${staticSymbols.length} static symbols`);
+    }
+
+    /**
+     * Scan workspace for all .d files and populate the references index.
+     * Uses async I/O to avoid blocking the event loop at startup.
+     */
+    private async scanWorkspaceFiles(workspaceRoot: string): Promise<void> {
+        const ext = EXT_WEIDU_D.slice(1); // ".d" -> "d"
+        const relativePaths = findFiles(workspaceRoot, ext);
+
+        const results = await Promise.allSettled(
+            relativePaths.map(async (relativePath) => {
+                const absolutePath = join(workspaceRoot, relativePath);
+                const uri = pathToUri(absolutePath);
+                const text = await readFile(absolutePath, "utf-8");
+                this.refsIndex?.updateFile(uri, extractCallSites(text, uri));
+            }),
+        );
+
+        const fulfilled = results.filter(r => r.status === "fulfilled").length;
+        const firstRejected = results.find((r): r is PromiseRejectedResult => r.status === "rejected");
+        const rejectedCount = results.length - fulfilled;
+        if (fulfilled > 0 || rejectedCount > 0) {
+            const warning = firstRejected
+                ? ` (${rejectedCount} failed, first: ${firstRejected.reason})`
+                : "";
+            conlog(`D references index: indexed ${fulfilled} files${warning}`);
+        }
     }
 
     shouldProvideFeatures(text: string, position: Position): boolean {
@@ -93,6 +138,13 @@ class WeiduDProvider implements LanguageProvider {
         return getDefinition(text, uri, position);
     }
 
+    references(text: string, position: Position, uri: string, includeDeclaration: boolean): Location[] {
+        if (!isInitialized()) {
+            return [];
+        }
+        return findReferences(text, position, uri, includeDeclaration, this.refsIndex);
+    }
+
     prepareRename(text: string, position: Position) {
         return prepareRenameSymbol(text, position);
     }
@@ -107,6 +159,14 @@ class WeiduDProvider implements LanguageProvider {
 
     getCompletions(_uri: string): CompletionItem[] {
         return getStaticCompletions(this.symbolStore);
+    }
+
+    // Called by server.ts onDidChangeContent/onDidSave for open documents.
+    // Not called via scanWorkspaceHeaders (no watchExtensions set).
+    reloadFileData(uri: string, text: string): void {
+        if (isInitialized()) {
+            this.refsIndex?.updateFile(uri, extractCallSites(text, uri));
+        }
     }
 
     async compile(uri: string, text: string, interactive: boolean): Promise<void> {

@@ -127,6 +127,7 @@ connection.onInitialize((params: InitializeParams) => {
             },
             inlayHintProvider: true,
             definitionProvider: true,
+            referencesProvider: true,
             renameProvider: { prepareProvider: true },
             documentFormattingProvider: true,
             documentSymbolProvider: true,
@@ -569,6 +570,23 @@ connection.onDefinition((params) => {
     }
 
     return null;
+});
+
+connection.onReferences((params) => {
+    const textDoc = documents.get(params.textDocument.uri);
+    if (!textDoc) {
+        return [];
+    }
+    const uri = params.textDocument.uri;
+    const langId = textDoc.languageId;
+    const text = textDoc.getText();
+
+    // Suppress features in comment/param-name zones
+    if (!registry.shouldProvideFeatures(langId, text, params.position)) {
+        return [];
+    }
+
+    return registry.references(langId, text, params.position, uri, params.context.includeDeclaration);
 });
 
 connection.onPrepareRename((params) => {

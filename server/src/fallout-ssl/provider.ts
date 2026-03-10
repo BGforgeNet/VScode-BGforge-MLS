@@ -36,6 +36,7 @@ import { initParser, isInitialized, parseWithCache } from "./parser";
 import { createFoldingRangesProvider } from "../shared/folding-ranges";
 import { getDocumentSymbols } from "./symbol";
 import { getLocalDefinition } from "./definition";
+import { findReferences } from "./references";
 import { renameSymbol, prepareRenameSymbol, renameSymbolWorkspace, prepareRenameSymbolWorkspace } from "./rename";
 import { getLocalSignature } from "./signature";
 import { parseHeaderToSymbols } from "./header-parser";
@@ -43,6 +44,8 @@ import { getLocalSymbols, lookupLocalSymbol, clearLocalSymbolsCache } from "./lo
 import { getSslCompletionContext, SslCompletionContext, isSslDeclarationSite } from "./completion-context";
 import { extractIncludes } from "./include-scanner";
 import { WorkspaceSymbolIndex } from "../shared/workspace-symbols";
+import { ReferencesIndex } from "../shared/references-index";
+import { extractCallSites } from "./call-sites";
 import { SyntaxType } from "./tree-sitter.d";
 
 /** SSL block-level node types for code folding. */
@@ -74,6 +77,7 @@ class FalloutSslProvider implements LanguageProvider {
     private storedContext: ProviderContext | undefined;
     private includeGraph: IncludeGraph | undefined;
     private wsSymbolIndex: WorkspaceSymbolIndex | undefined;
+    private refsIndex: ReferencesIndex | undefined;
 
     async init(context: ProviderContext): Promise<void> {
         this.storedContext = context;
@@ -85,6 +89,7 @@ class FalloutSslProvider implements LanguageProvider {
         this.symbolStore.loadStatic(staticSymbols);
 
         this.wsSymbolIndex = new WorkspaceSymbolIndex();
+        this.refsIndex = new ReferencesIndex();
 
         this.staticSignatures = signature.loadStatic(LANG_FALLOUT_SSL);
 
@@ -130,8 +135,9 @@ class FalloutSslProvider implements LanguageProvider {
 
                 // Populate workspace symbols from the same text we just read,
                 // avoiding a second I/O pass in scanWorkspaceHeaders.
-                if (this.wsSymbolIndex && isInitialized()) {
-                    this.wsSymbolIndex.updateFile(uri, getDocumentSymbols(text));
+                if (isInitialized()) {
+                    this.wsSymbolIndex?.updateFile(uri, getDocumentSymbols(text));
+                    this.refsIndex?.updateFile(uri, extractCallSites(text, uri));
                 }
             }),
         );
@@ -246,6 +252,13 @@ class FalloutSslProvider implements LanguageProvider {
             return null;
         }
         return getLocalDefinition(text, uri, position);
+    }
+
+    references(text: string, position: Position, uri: string, includeDeclaration: boolean): Location[] {
+        if (!isInitialized()) {
+            return [];
+        }
+        return findReferences(text, position, uri, includeDeclaration, this.refsIndex);
     }
 
     filterCompletions(items: CompletionItem[], text: string, position: Position, uri: string, triggerCharacter?: string): CompletionItem[] {
@@ -370,9 +383,10 @@ class FalloutSslProvider implements LanguageProvider {
         // Update include graph for any file type
         this.updateIncludeGraphForFile(uri, text);
 
-        // Update workspace symbol index for all files
-        if (this.wsSymbolIndex && isInitialized()) {
-            this.wsSymbolIndex.updateFile(uri, getDocumentSymbols(text));
+        // Update workspace symbol index and references index for all files
+        if (isInitialized()) {
+            this.wsSymbolIndex?.updateFile(uri, getDocumentSymbols(text));
+            this.refsIndex?.updateFile(uri, extractCallSites(text, uri));
         }
     }
 
@@ -380,6 +394,7 @@ class FalloutSslProvider implements LanguageProvider {
         this.symbolStore?.clearFile(uri);
         this.includeGraph?.removeFile(uri);
         this.wsSymbolIndex?.removeFile(uri);
+        this.refsIndex?.removeFile(uri);
     }
 
     workspaceSymbols(query: string): SymbolInformation[] {

@@ -29,6 +29,7 @@ import { getDocumentSymbols } from "./symbol";
 import { getDefinition, isOnFunctionCallParamName } from "./definition";
 import { parseHeaderToSymbols } from "./header-parser";
 import { CallableContext, isCallableSymbol, type IndexedSymbol } from "../core/symbol";
+import { findReferences } from "./references";
 import { renameSymbol, prepareRenameSymbol } from "./rename";
 import { buildFunctionCallSnippet, getKeywordSnippet } from "./snippets";
 import { getFunctionParamHover } from "./hover";
@@ -38,6 +39,8 @@ import { WEIDU_JSDOC_TYPES } from "../shared/weidu-types";
 import { getJsdocCompletions as getSharedJsdocCompletions } from "../shared/jsdoc-completions";
 import { createFoldingRangesProvider } from "../shared/folding-ranges";
 import { WorkspaceSymbolIndex } from "../shared/workspace-symbols";
+import { ReferencesIndex } from "../shared/references-index";
+import { extractCallSites } from "./call-sites";
 import { SyntaxType } from "./tree-sitter.d";
 
 /** TP2 block-level node types for code folding. */
@@ -223,6 +226,7 @@ class WeiduTp2Provider implements LanguageProvider {
     private symbolStore: Symbols | undefined;
     private storedContext: ProviderContext | undefined;
     private wsSymbolIndex: WorkspaceSymbolIndex | undefined;
+    private refsIndex: ReferencesIndex | undefined;
 
     async init(context: ProviderContext): Promise<void> {
         this.storedContext = context;
@@ -234,6 +238,7 @@ class WeiduTp2Provider implements LanguageProvider {
         this.symbolStore.loadStatic(staticSymbols);
 
         this.wsSymbolIndex = new WorkspaceSymbolIndex();
+        this.refsIndex = new ReferencesIndex();
 
         conlog(`WeiDU TP2 provider initialized with ${staticSymbols.length} static symbols`);
     }
@@ -345,9 +350,10 @@ class WeiduTp2Provider implements LanguageProvider {
             }
         }
 
-        // Update workspace symbol index for all files
-        if (this.wsSymbolIndex && isInitialized()) {
-            this.wsSymbolIndex.updateFile(uri, getDocumentSymbols(text));
+        // Update workspace symbol index and references index for all files
+        if (isInitialized()) {
+            this.wsSymbolIndex?.updateFile(uri, getDocumentSymbols(text));
+            this.refsIndex?.updateFile(uri, extractCallSites(text, uri));
         }
     }
 
@@ -356,6 +362,7 @@ class WeiduTp2Provider implements LanguageProvider {
             this.symbolStore.clearFile(uri);
         }
         this.wsSymbolIndex?.removeFile(uri);
+        this.refsIndex?.removeFile(uri);
     }
 
     workspaceSymbols(query: string): SymbolInformation[] {
@@ -393,6 +400,13 @@ class WeiduTp2Provider implements LanguageProvider {
 
     foldingRanges(text: string): FoldingRange[] {
         return tp2FoldingRanges(text);
+    }
+
+    references(text: string, position: Position, uri: string, includeDeclaration: boolean): Location[] {
+        if (!isInitialized()) {
+            return [];
+        }
+        return findReferences(text, position, uri, includeDeclaration, this.refsIndex);
     }
 
     rename(text: string, position: Position, newName: string, uri: string): WorkspaceEdit | null {

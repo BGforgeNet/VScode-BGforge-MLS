@@ -1,6 +1,6 @@
 /**
  * Shared state label utilities for WeiDU D files.
- * Used by definition, rename, and hover features.
+ * Used by definition, references, rename, and hover features.
  *
  * Core concept: state labels are scoped to a dialog file.
  * A label "state1" in BEGIN ~DIALOG_A~ is separate from "state1" in BEGIN ~DIALOG_B~.

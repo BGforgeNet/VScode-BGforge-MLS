@@ -118,6 +118,9 @@ export interface LanguageProvider {
     /** Get signature help for a locally defined procedure. Returns null to fall back to headers. */
     localSignature?(text: string, symbol: string, paramIndex: number): SignatureHelp | null;
 
+    /** Find all references to a symbol at position. Returns empty array if none found. */
+    references?(text: string, position: Position, uri: string, includeDeclaration: boolean): Location[];
+
     /** Rename a local symbol. Returns null if symbol is not locally defined. */
     rename?(text: string, position: Position, newName: string, uri: string): WorkspaceEdit | null;
 

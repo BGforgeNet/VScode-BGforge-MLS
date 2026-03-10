@@ -1,5 +1,5 @@
 /**
- * Scope-restricted reference finding for Fallout SSL rename operations.
+ * Scope-restricted reference finding for Fallout SSL rename and references operations.
  *
  * For procedure-scoped symbols: walks only the containing procedure subtree.
  * For file-scoped symbols: walks the entire file but skips into procedures

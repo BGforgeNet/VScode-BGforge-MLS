@@ -1,5 +1,5 @@
 /**
- * Reference finding for WeiDU TP2 rename operations.
+ * Reference finding for WeiDU TP2 rename and references operations.
  * Locates all occurrences (definitions and usages) of a given symbol
  * within the appropriate scope (file, function, or loop).
  */
