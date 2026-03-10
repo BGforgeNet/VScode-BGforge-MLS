@@ -420,13 +420,13 @@ This copies the generated `tree-sitter.d.ts` to `server/src/{lang}/`.
 
 ## Feature Matrix
 
-| Provider | Completion | Hover | Signature | Definition | References | Format | Symbols | Workspace Symbols | Rename | Inlay | Folding |
-|----------|:----------:|:-----:|:---------:|:----------:|:----------:|:------:|:-------:|:-----------------:|:------:|:-----:|:-------:|
-| fallout-ssl | Y | Y | Y | Y | Y | Y | Y | Y | Y | .msg | Y |
-| weidu-baf | Y | Y | | | | Y | | | | .tra | Y |
-| weidu-d | Y | Y | | Y | Y | Y | Y | | Y | .tra | Y |
-| weidu-tp2 | Y | Y | | Y | Y | Y | Y | Y | Y | .tra | Y |
-| worldmap | Y | Y | | | | | | | | | |
+| Provider | Completion | Hover | Signature | Definition | References | Format | Symbols | Workspace Symbols | Rename | Inlay | Folding | Diagnostics | JSDoc |
+|----------|:----------:|:-----:|:---------:|:----------:|:----------:|:------:|:-------:|:-----------------:|:------:|:-----:|:-------:|:-----------:|:-----:|
+| fallout-ssl | Y | Y | Y | Y | Y | Y | Y | Y | Y | .msg | Y | Y | Y |
+| weidu-baf | Y | Y | | | | Y | | | | .tra | Y | Y | |
+| weidu-d | Y | Y | | Y | Y | Y | Y | | Y | .tra | Y | Y | Y |
+| weidu-tp2 | Y | Y | | Y | Y | Y | Y | Y | Y | .tra | Y | Y | Y |
+| worldmap | Y | Y | | | | | | | | | | | |
 
 ## Request Routing
 

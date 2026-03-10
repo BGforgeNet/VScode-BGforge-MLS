@@ -246,13 +246,13 @@ See [server/INTERNALS.md](../server/INTERNALS.md) for comprehensive documentatio
 
 Each provider implements a subset of the `LanguageProvider` interface:
 
-| Provider | Completion | Hover | Signature | Definition | Format | Symbols | Workspace Symbols | Rename | Compile | Folding |
-|----------|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| fallout-ssl | x | x | x | x | x | x | x | x | sslc | x |
-| fallout-worldmap | x | x | | | | | | | | |
-| weidu-baf | x | x | | | x | | | | weidu | x |
-| weidu-d | x | x | | x | x | x | | x | weidu | x |
-| weidu-tp2 | x | x | | x | x | x | x | x | weidu | x |
+| Provider | Completion | Hover | Signature | Definition | References | Format | Symbols | Workspace Symbols | Rename | Inlay | Folding | Diagnostics | JSDoc |
+|----------|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| fallout-ssl | x | x | x | x | x | x | x | x | x | .msg | x | sslc | x |
+| fallout-worldmap | x | x | | | | | | | | | | | |
+| weidu-baf | x | x | | | | x | | | | .tra | x | weidu | |
+| weidu-d | x | x | | x | x | x | x | | x | .tra | x | weidu | x |
+| weidu-tp2 | x | x | | x | x | x | x | x | x | .tra | x | weidu | x |
 
 ### Transpilers
 
