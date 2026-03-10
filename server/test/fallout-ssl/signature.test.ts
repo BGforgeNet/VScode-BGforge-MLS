@@ -152,7 +152,10 @@ procedure important begin end
             const result = getLocalSignature(text, "important", 0);
 
             expect(result).not.toBeNull();
-            expect(result?.signatures[0].documentation).toContain("important");
+            const doc = result?.signatures[0].documentation;
+            expect(doc).toBeDefined();
+            const docText = typeof doc === "string" ? doc : (doc as { value: string }).value;
+            expect(docText).toContain("important");
         });
     });
 });

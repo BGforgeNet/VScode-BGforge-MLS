@@ -6,7 +6,6 @@
 import { CompletionItem, CompletionItemKind, ParameterInformation } from "vscode-languageserver/node";
 import { MarkupKind } from "vscode-languageserver/node";
 import * as jsdoc from "../shared/jsdoc";
-import { jsdocToDetail } from "./jsdoc-format";
 import { formatSignature } from "../shared/signature-format";
 import * as signature from "../shared/signature";
 import { LANG_FALLOUT_SSL_TOOLTIP } from "../core/languages";
@@ -62,6 +61,7 @@ export interface MacroData {
 
 /**
  * Build the signature/detail line for a macro.
+ * Definition params are the source of truth; JSDoc only enriches with types and return info.
  * Returns: value for numeric constants, signature for others.
  */
 function buildMacroSignature(macro: MacroData): string {
@@ -70,16 +70,22 @@ function buildMacroSignature(macro: MacroData): string {
     if (isNumeric) {
         // Numeric constants just show the value
         return macro.firstline!;
-    } else if (macro.jsdoc) {
-        // Use JSDoc for typed signature
-        return jsdocToDetail(macro.name, macro.jsdoc, "macro");
-    } else {
-        // No JSDoc - build signature from params
-        const params = macro.hasParams && macro.params
-            ? macro.params.map(name => ({ name }))
-            : [];
-        return formatSignature({ name: macro.name, prefix: "macro ", params });
     }
+
+    // Build from definition params, enrich with JSDoc types
+    const params = macro.hasParams && macro.params
+        ? macro.params.map((name, idx) => ({
+            name,
+            type: macro.jsdoc?.args[idx]?.type,
+        }))
+        : [];
+
+    let prefix = "macro ";
+    if (macro.jsdoc?.ret) {
+        prefix = `${macro.jsdoc.ret.type} `;
+    }
+
+    return formatSignature({ name: macro.name, prefix, params });
 }
 
 /**
@@ -108,38 +114,52 @@ export function buildMacroTooltip(macro: MacroData, filePath: string): string {
     return markdown;
 }
 
+/** Parameter from the actual definition (AST or macro). */
+export interface DefinitionParam {
+    name: string;
+    defaultValue?: string;
+}
+
 /**
- * Build signature help from JSDoc (works for procedures and macros).
- * Extracted from header-parser.ts jsdocToSig().
+ * Build signature help from definition params, enriched with optional JSDoc.
+ * Definition params are always the source of truth; JSDoc only adds types and descriptions.
  */
-export function buildSignatureFromJSDoc(
-    label: string,
-    jsd: jsdoc.JSdoc,
-    uri: string
+export function buildSignatureHelp(
+    name: string,
+    definitionParams: readonly DefinitionParam[],
+    jsd: jsdoc.JSdoc | null | undefined,
+    uri: string,
 ): signature.SigInfoEx {
-    const argNames = jsd.args.map(item => item.name);
-    const sigLabel = label + "(" + argNames.join(", ") + ")";
+    const parameters: ParameterInformation[] = definitionParams.map((p, idx) => {
+        const arg = jsd?.args[idx];
+        let label = arg?.type ? `${arg.type} ${p.name}` : p.name;
+        if (p.defaultValue) {
+            label += ` = ${p.defaultValue}`;
+        }
+        const info: ParameterInformation = { label };
+        if (arg?.type || arg?.description) {
+            let doc = buildSignatureBlock(`${arg.type ?? ""} ${p.name}`.trim(), LANG_FALLOUT_SSL_TOOLTIP);
+            if (arg.description) {
+                doc += "\n" + arg.description;
+            }
+            info.documentation = { kind: "markdown", value: doc };
+        }
+        return info;
+    });
 
-    const sig: signature.SigInfoEx = { label: sigLabel, uri: uri };
+    let sigLabel = name + "(" + parameters.map(p => p.label).join(", ") + ")";
+    if (jsd?.ret) {
+        sigLabel = `${jsd.ret.type} ${sigLabel}`;
+    }
 
-    if (jsd.desc) {
+    const sig: signature.SigInfoEx = { label: sigLabel, uri, parameters };
+
+    if (jsd?.desc) {
         sig.documentation = {
             kind: "markdown",
             value: "\n---\n" + jsd.desc,
         };
     }
-
-    const parameters: ParameterInformation[] = [];
-    for (const arg of jsd.args) {
-        const info: ParameterInformation = { label: arg.name };
-        let doc = buildSignatureBlock(`${arg.type} ${arg.name}`, LANG_FALLOUT_SSL_TOOLTIP);
-        if (arg.description) {
-            doc += "\n" + arg.description;
-        }
-        info.documentation = { kind: "markdown", value: doc };
-        parameters.push(info);
-    }
-    sig.parameters = parameters;
 
     return sig;
 }
@@ -158,7 +178,9 @@ export function buildMacroCompletion(
 
     const kind = isConstant
         ? CompletionItemKind.Constant
-        : CompletionItemKind.Snippet;
+        : macro.hasParams
+            ? CompletionItemKind.Function
+            : CompletionItemKind.Snippet;
 
     const item: CompletionItem = {
         label: macro.name,

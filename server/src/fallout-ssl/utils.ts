@@ -13,7 +13,7 @@ import * as jsdoc from "../shared/jsdoc";
 import type { SigInfoEx } from "../shared/signature";
 import { buildSignatureBlock } from "../shared/tooltip-format";
 import { jsdocToMarkdown } from "./jsdoc-format";
-import { type MacroData, parseMacroParams, buildMacroTooltip, buildMacroCompletion, buildSignatureFromJSDoc } from "./macro-utils";
+import { type MacroData, parseMacroParams, buildMacroTooltip, buildMacroCompletion, buildSignatureHelp } from "./macro-utils";
 import { SyntaxType } from "./tree-sitter.d";
 
 // Re-export for existing consumers
@@ -52,34 +52,29 @@ export function extractParams(procNode: Node): ParamInfo[] {
 import { type SignatureParam, formatSignature } from "../shared/signature-format";
 
 /**
- * Build procedure signature string from AST params and optional JSDoc.
- * Uses JSDoc types if available, AST defaults only.
+ * Build procedure signature string from AST params, enriched with optional JSDoc.
+ * AST params are the source of truth; JSDoc only adds types and return info.
  */
 function buildProcedureSignature(
     name: string,
     params: ParamInfo[],
     parsed: jsdoc.JSdoc | null
 ): string {
-    if (parsed && parsed.args.length > 0) {
-        // Use JSDoc types with AST defaults
-        const sigParams: SignatureParam[] = parsed.args.map((arg, idx) => ({
-            name: arg.name,
-            type: arg.type,
-            defaultValue: params[idx]?.defaultValue,
-        }));
-        const prefix = parsed.ret ? `${parsed.ret.type} ` : "void ";
-        return formatSignature({ name, prefix, params: sigParams });
-    } else if (params.length > 0) {
-        // No JSDoc but has params - extract param names with defaults from AST
-        const sigParams: SignatureParam[] = params.map(p => ({
-            name: p.name,
-            defaultValue: p.defaultValue,
-        }));
-        return formatSignature({ name, prefix: "procedure ", params: sigParams });
-    } else {
-        // No params
-        return formatSignature({ name, prefix: "procedure ", params: [] });
+    // Always build from AST params, enrich with JSDoc types
+    const sigParams: SignatureParam[] = params.map((p, idx) => ({
+        name: p.name,
+        type: parsed?.args[idx]?.type,
+        defaultValue: p.defaultValue,
+    }));
+
+    let prefix = "procedure ";
+    if (parsed?.ret) {
+        prefix = `${parsed.ret.type} `;
+    } else if (parsed) {
+        prefix = "void ";
     }
+
+    return formatSignature({ name, prefix, params: sigParams });
 }
 
 /**
@@ -409,8 +404,8 @@ export function buildProcedureSymbol(
         value: hoverValue,
     };
 
-    const sigHelp: SigInfoEx | undefined = parsed && parsed.args.length > 0
-        ? buildSignatureFromJSDoc(name, parsed, uri)
+    const sigHelp: SigInfoEx | undefined = astParams.length > 0
+        ? buildSignatureHelp(name, astParams, parsed, uri)
         : undefined;
 
     const isWorkspace = displayPath !== undefined;
@@ -465,8 +460,9 @@ export function buildMacroSymbol(
     };
     const completionItem = buildMacroCompletion(macro, uri, displayPath ?? "");
 
-    const sig = macro.jsdoc && macro.jsdoc.args.length > 0
-        ? buildSignatureFromJSDoc(macro.name, macro.jsdoc, uri)
+    // Variadic macros always get signature help, enriched with JSDoc if available
+    const sig = macro.hasParams && macro.params
+        ? buildSignatureHelp(macro.name, macro.params.map(name => ({ name })), macro.jsdoc ?? null, uri)
         : undefined;
 
     const isWorkspace = displayPath !== undefined;

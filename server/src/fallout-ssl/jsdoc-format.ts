@@ -4,7 +4,6 @@
  */
 
 import type { JSdoc } from "../shared/jsdoc";
-import { formatSignature, type SignatureParam } from "../shared/signature-format";
 import { buildFalloutArgsTable } from "../shared/tooltip-table";
 import { formatDeprecation } from "../shared/tooltip-format";
 
@@ -31,33 +30,4 @@ export function jsdocToMarkdown(jsd: JSdoc): string {
     md += formatDeprecation(jsd.deprecated);
 
     return md;
-}
-
-/**
- * Create detail string from JSDoc (used in completion items).
- * For procedures: "int myFunc(int a, string b)"
- * For macros: "MY_MACRO(a, b)" (no return type, no parens if no args)
- *
- * @param label Symbol name
- * @param jsd Parsed JSDoc
- * @param tokenType "proc" adds void return, "macro" has no prefix
- */
-export function jsdocToDetail(
-    label: string,
-    jsd: JSdoc,
-    tokenType: "proc" | "macro" = "proc",
-): string {
-    let prefix = "";
-    if (jsd.ret) {
-        prefix = `${jsd.ret.type} `;
-    } else if (tokenType === "proc") {
-        prefix = "void ";
-    }
-
-    const params: SignatureParam[] = jsd.args.map(({ type, name }) => ({
-        name,
-        type,
-    }));
-
-    return formatSignature({ name: label, prefix, params });
 }
