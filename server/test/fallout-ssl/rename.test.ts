@@ -124,6 +124,36 @@ end
             }
         });
 
+        it("renames a top-level variable across all procedures", () => {
+            const text = `
+variable
+   dogmeatPtr,
+   dogmeatCheck,
+   dogmeatTalk;
+
+procedure foo begin
+    dogmeatPtr := 1;
+    dogmeatCheck := dogmeatPtr;
+end
+procedure bar begin
+    dogmeatPtr := 2;
+end
+`;
+            const uri = "file:///test.ssl";
+            // Cursor on "dogmeatPtr" at declaration
+            const position: Position = { line: 2, character: 6 };
+            const result = renameSymbol(text, position, "dmPtr", uri);
+
+            expect(result).not.toBeNull();
+            expect(result?.changes?.[uri]).toBeDefined();
+            // declaration + 3 usages (foo: 2, bar: 1) = 4
+            expect(result?.changes?.[uri].length).toBe(4);
+
+            for (const edit of result?.changes?.[uri] ?? []) {
+                expect(edit.newText).toBe("dmPtr");
+            }
+        });
+
         it("handles macro rename when grammar supports preprocessor", () => {
             // Note: Macro rename depends on grammar support for preprocessor nodes
             const text = `

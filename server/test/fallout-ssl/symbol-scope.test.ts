@@ -281,6 +281,63 @@ end
             expect(result).toBeNull();
         });
 
+        it("returns file scope for top-level variable declaration", () => {
+            const text = `
+variable dogmeatPtr;
+
+procedure foo begin
+    dogmeatPtr := 1;
+end
+`;
+            const tree = parseWithCache(text)!;
+            // Cursor on "dogmeatPtr" at declaration
+            const position: Position = { line: 1, character: 12 };
+            const result = getSymbolScope(tree.rootNode, position);
+
+            expect(result).not.toBeNull();
+            expect(result!.scope).toBe("file");
+            expect(result!.name).toBe("dogmeatPtr");
+        });
+
+        it("returns file scope for top-level multi-variable declaration", () => {
+            const text = `
+variable
+   dogmeatPtr,
+   dogmeatCheck,
+   dogmeatTalk;
+
+procedure foo begin
+    dogmeatPtr := 1;
+end
+`;
+            const tree = parseWithCache(text)!;
+            // Cursor on "dogmeatCheck" at declaration
+            const position: Position = { line: 3, character: 6 };
+            const result = getSymbolScope(tree.rootNode, position);
+
+            expect(result).not.toBeNull();
+            expect(result!.scope).toBe("file");
+            expect(result!.name).toBe("dogmeatCheck");
+        });
+
+        it("returns file scope for top-level variable reference inside procedure", () => {
+            const text = `
+variable dogmeatPtr;
+
+procedure foo begin
+    dogmeatPtr := 1;
+end
+`;
+            const tree = parseWithCache(text)!;
+            // Cursor on "dogmeatPtr" usage inside procedure
+            const position: Position = { line: 4, character: 8 };
+            const result = getSymbolScope(tree.rootNode, position);
+
+            expect(result).not.toBeNull();
+            expect(result!.scope).toBe("file");
+            expect(result!.name).toBe("dogmeatPtr");
+        });
+
         it("returns file scope for export_decl", () => {
             const text = `
 export variable global_val := 0;

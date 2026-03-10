@@ -118,6 +118,20 @@ export function isFileScopeDef(rootNode: Node, symbolName: string): boolean {
         }
     }
 
+    // Check top-level variable declarations (outside any procedure)
+    for (const child of rootNode.children) {
+        if (child.type === SyntaxType.VariableDecl) {
+            for (const varInit of child.children) {
+                if (varInit.type === SyntaxType.VarInit) {
+                    const nameNode = varInit.childForFieldName("name");
+                    if (nameNode?.text === symbolName) {
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+
     // Check macros (reuse findMacroDefinition from utils.ts)
     return findMacroDefinition(rootNode, symbolName) !== null;
 }
