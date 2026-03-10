@@ -590,6 +590,8 @@ interface ParseSymbolsOptions {
     workspaceRoot?: string;
     /** Skip path in hover (for local symbols where path is redundant) */
     skipPath?: boolean;
+    /** Override source type (default: Workspace). Use Navigation for non-header files. */
+    sourceType?: SourceType;
 }
 
 /**
@@ -616,8 +618,19 @@ export function parseHeaderToSymbols(
     // Compute display path: null if skipPath, otherwise compute from workspace root
     const displayPath = opts.skipPath ? null : computeDisplayPath(uri, opts.workspaceRoot);
 
-    return [
+    const result = [
         ...functions.map(func => functionInfoToSymbol(func, displayPath)),
         ...variables.map(varInfo => variableInfoToSymbol(varInfo, displayPath)),
     ];
+
+    // Remap source type when called for non-header files (e.g., Navigation for Ctrl+T)
+    const overrideType = opts.sourceType;
+    if (overrideType !== undefined && overrideType !== SourceType.Workspace) {
+        return result.map(s => ({
+            ...s,
+            source: { ...s.source, type: overrideType },
+        }));
+    }
+
+    return result;
 }

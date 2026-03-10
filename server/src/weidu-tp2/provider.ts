@@ -28,7 +28,7 @@ import { initParser, parseWithCache, isInitialized } from "./parser";
 import { getDocumentSymbols } from "./symbol";
 import { getDefinition, isOnFunctionCallParamName } from "./definition";
 import { parseHeaderToSymbols } from "./header-parser";
-import { CallableContext, isCallableSymbol, type IndexedSymbol } from "../core/symbol";
+import { CallableContext, isCallableSymbol, type IndexedSymbol, SourceType } from "../core/symbol";
 import { findReferences } from "./references";
 import { renameSymbol, prepareRenameSymbol } from "./rename";
 import { buildFunctionCallSnippet, getKeywordSnippet } from "./snippets";
@@ -38,7 +38,6 @@ import { getLocalSymbols as extractLocalSymbols, lookupLocalSymbol, clearLocalSy
 import { WEIDU_JSDOC_TYPES } from "../shared/weidu-types";
 import { getJsdocCompletions as getSharedJsdocCompletions } from "../shared/jsdoc-completions";
 import { createFoldingRangesProvider } from "../shared/folding-ranges";
-import { WorkspaceSymbolIndex } from "../shared/workspace-symbols";
 import { ReferencesIndex } from "../shared/references-index";
 import { extractCallSites } from "./call-sites";
 import { SyntaxType } from "./tree-sitter.d";
@@ -225,7 +224,6 @@ class WeiduTp2Provider implements LanguageProvider {
 
     private symbolStore: Symbols | undefined;
     private storedContext: ProviderContext | undefined;
-    private wsSymbolIndex: WorkspaceSymbolIndex | undefined;
     private refsIndex: ReferencesIndex | undefined;
 
     async init(context: ProviderContext): Promise<void> {
@@ -237,7 +235,6 @@ class WeiduTp2Provider implements LanguageProvider {
         const staticSymbols = loadStaticSymbols(LANG_WEIDU_TP2);
         this.symbolStore.loadStatic(staticSymbols);
 
-        this.wsSymbolIndex = new WorkspaceSymbolIndex();
         this.refsIndex = new ReferencesIndex();
 
         conlog(`WeiDU TP2 provider initialized with ${staticSymbols.length} static symbols`);
@@ -343,30 +340,22 @@ class WeiduTp2Provider implements LanguageProvider {
     }
 
     reloadFileData(uri: string, text: string): void {
-        if (isHeaderFile(uri)) {
-            if (this.symbolStore) {
-                const parsedSymbols = parseHeaderToSymbols(uri, text, this.storedContext?.workspaceRoot);
-                this.symbolStore.updateFile(uri, parsedSymbols);
-            }
-        }
-
-        // Update workspace symbol index and references index for all files
-        if (isInitialized()) {
-            this.wsSymbolIndex?.updateFile(uri, getDocumentSymbols(text));
+        // Parse symbols for all files: headers get Workspace scope, others Navigation
+        if (isInitialized() && this.symbolStore) {
+            const st = isHeaderFile(uri) ? SourceType.Workspace : SourceType.Navigation;
+            const symbols = parseHeaderToSymbols(uri, text, { workspaceRoot: this.storedContext?.workspaceRoot, sourceType: st });
+            this.symbolStore.updateFile(uri, symbols);
             this.refsIndex?.updateFile(uri, extractCallSites(text, uri));
         }
     }
 
     onWatchedFileDeleted(uri: string): void {
-        if (this.symbolStore) {
-            this.symbolStore.clearFile(uri);
-        }
-        this.wsSymbolIndex?.removeFile(uri);
+        this.symbolStore?.clearFile(uri);
         this.refsIndex?.removeFile(uri);
     }
 
     workspaceSymbols(query: string): SymbolInformation[] {
-        return this.wsSymbolIndex?.search(query) ?? [];
+        return this.symbolStore?.searchWorkspaceSymbols(query) ?? [];
     }
 
     onDocumentClosed(uri: string): void {

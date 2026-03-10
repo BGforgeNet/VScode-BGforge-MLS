@@ -96,6 +96,7 @@ export const enum SourceType {
     Workspace = "workspace",     // Parsed from workspace headers
     External = "external",       // From external headers directory
     Document = "document",       // From current open document
+    Navigation = "navigation",   // Non-header workspace files (for Ctrl+T search only, excluded from completion)
 }
 
 

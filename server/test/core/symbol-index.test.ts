@@ -145,14 +145,13 @@ describe("Symbols", () => {
             expect(result.map(s => s.name)).toEqual(["first", "second", "third"]);
         });
 
-        it("should return a new array (not internal reference)", () => {
+        it("should return the same array reference (no defensive copy)", () => {
             index.updateFile("file:///test.txt", [createSymbol({ name: "x" })]);
 
             const result1 = index.getFileSymbols("file:///test.txt");
             const result2 = index.getFileSymbols("file:///test.txt");
 
-            expect(result1).not.toBe(result2);
-            expect(result1).toEqual(result2);
+            expect(result1).toBe(result2);
         });
     });
 

@@ -4,9 +4,6 @@
  * Maps symbolName -> uri -> Location[] across all indexed files.
  * Populated at startup during workspace scan, updated incrementally
  * via reloadFileData when files change.
- *
- * Similar to WorkspaceSymbolIndex but tracks call sites rather than
- * symbol definitions.
  */
 
 import { Location } from "vscode-languageserver/node";
@@ -15,9 +12,9 @@ import { Location } from "vscode-languageserver/node";
  * Index of cross-file references for workspace-wide Find References.
  * Stores reference locations per file, keyed by symbol name.
  *
- * URI keys are plain strings, not NormalizedUri branded type. This matches
- * WorkspaceSymbolIndex. All callers go through reloadFileData/buildIncludeGraph,
- * which receive URIs already normalized by the ProviderRegistry gateway.
+ * URI keys are plain strings, not NormalizedUri branded type. All callers go
+ * through reloadFileData/buildIncludeGraph, which receive URIs already
+ * normalized by the ProviderRegistry gateway.
  */
 export class ReferencesIndex {
     /** uri -> (symbolName -> Location[]) */

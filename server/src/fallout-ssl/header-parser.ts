@@ -10,7 +10,7 @@
  */
 
 import { computeDisplayPath } from "../core/location-utils";
-import type { IndexedSymbol } from "../core/symbol";
+import { type IndexedSymbol, SourceType } from "../core/symbol";
 import * as jsdoc from "../shared/jsdoc";
 import { buildProcedureSymbol, buildMacroSymbol, buildVariableSymbol, extractMacros, extractParams, extractProcedures, findPrecedingDocComment, makeRange } from "./utils";
 import { isInitialized, parseWithCache } from "./parser";
@@ -35,6 +35,7 @@ export function parseHeaderToSymbols(
     uri: string,
     text: string,
     workspaceRoot?: string,
+    sourceType?: SourceType,
 ): IndexedSymbol[] {
     const displayPath = computeDisplayPath(uri, workspaceRoot);
 
@@ -87,6 +88,14 @@ export function parseHeaderToSymbols(
                 result.push(buildVariableSymbol(nameNode.text, uri, makeRange(node), "export variable", parsed, displayPath));
             }
         }
+    }
+
+    // Remap source type when called for non-header files (e.g., Navigation for Ctrl+T)
+    if (sourceType !== undefined && sourceType !== SourceType.Workspace) {
+        return result.map(s => ({
+            ...s,
+            source: { ...s.source, type: sourceType },
+        }));
     }
 
     return result;

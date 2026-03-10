@@ -15,7 +15,7 @@ import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { type CompletionItem, type DocumentSymbol, type FoldingRange, type Location, type Position, type SignatureHelp, type SymbolInformation, type WorkspaceEdit } from "vscode-languageserver/node";
-import type { IndexedSymbol } from "../core/symbol";
+import { type IndexedSymbol, SourceType } from "../core/symbol";
 import { conlog, findFiles, getLinePrefix, pathToUri } from "../common";
 import { EXT_FALLOUT_SSL_ALL, EXT_FALLOUT_SSL_HEADERS, LANG_FALLOUT_SSL } from "../core/languages";
 import { IncludeGraph } from "../core/include-graph";
@@ -43,7 +43,6 @@ import { parseHeaderToSymbols } from "./header-parser";
 import { getLocalSymbols, lookupLocalSymbol, clearLocalSymbolsCache } from "./local-symbols";
 import { getSslCompletionContext, SslCompletionContext, isSslDeclarationSite } from "./completion-context";
 import { extractIncludes } from "./include-scanner";
-import { WorkspaceSymbolIndex } from "../shared/workspace-symbols";
 import { ReferencesIndex } from "../shared/references-index";
 import { extractCallSites } from "./call-sites";
 import { SyntaxType } from "./tree-sitter.d";
@@ -76,7 +75,6 @@ class FalloutSslProvider implements LanguageProvider {
     private staticSignatures: signature.SigMap | undefined;
     private storedContext: ProviderContext | undefined;
     private includeGraph: IncludeGraph | undefined;
-    private wsSymbolIndex: WorkspaceSymbolIndex | undefined;
     private refsIndex: ReferencesIndex | undefined;
 
     async init(context: ProviderContext): Promise<void> {
@@ -88,7 +86,6 @@ class FalloutSslProvider implements LanguageProvider {
         const staticSymbols = loadStaticSymbols(LANG_FALLOUT_SSL);
         this.symbolStore.loadStatic(staticSymbols);
 
-        this.wsSymbolIndex = new WorkspaceSymbolIndex();
         this.refsIndex = new ReferencesIndex();
 
         this.staticSignatures = signature.loadStatic(LANG_FALLOUT_SSL);
@@ -133,10 +130,12 @@ class FalloutSslProvider implements LanguageProvider {
                 const text = await readFile(absolutePath, "utf-8");
                 this.updateIncludeGraphForFile(uri, text);
 
-                // Populate workspace symbols from the same text we just read,
+                // Parse symbols and references from the same text we just read,
                 // avoiding a second I/O pass in scanWorkspaceHeaders.
                 if (isInitialized()) {
-                    this.wsSymbolIndex?.updateFile(uri, getDocumentSymbols(text));
+                    const st = isHeaderFile(uri) ? SourceType.Workspace : SourceType.Navigation;
+                    const symbols = parseHeaderToSymbols(uri, text, workspaceRoot, st);
+                    this.symbolStore?.updateFile(uri, symbols);
                     this.refsIndex?.updateFile(uri, extractCallSites(text, uri));
                 }
             }),
@@ -375,17 +374,14 @@ class FalloutSslProvider implements LanguageProvider {
     }
 
     reloadFileData(uri: string, text: string): void {
-        if (isHeaderFile(uri) && this.symbolStore) {
-            const parsedSymbols = parseHeaderToSymbols(uri, text, this.storedContext?.workspaceRoot);
-            this.symbolStore.updateFile(uri, parsedSymbols);
-        }
-
         // Update include graph for any file type
         this.updateIncludeGraphForFile(uri, text);
 
-        // Update workspace symbol index and references index for all files
-        if (isInitialized()) {
-            this.wsSymbolIndex?.updateFile(uri, getDocumentSymbols(text));
+        // Parse symbols for all files: headers get Workspace scope, others Navigation
+        if (isInitialized() && this.symbolStore) {
+            const st = isHeaderFile(uri) ? SourceType.Workspace : SourceType.Navigation;
+            const symbols = parseHeaderToSymbols(uri, text, this.storedContext?.workspaceRoot, st);
+            this.symbolStore.updateFile(uri, symbols);
             this.refsIndex?.updateFile(uri, extractCallSites(text, uri));
         }
     }
@@ -393,12 +389,11 @@ class FalloutSslProvider implements LanguageProvider {
     onWatchedFileDeleted(uri: string): void {
         this.symbolStore?.clearFile(uri);
         this.includeGraph?.removeFile(uri);
-        this.wsSymbolIndex?.removeFile(uri);
         this.refsIndex?.removeFile(uri);
     }
 
     workspaceSymbols(query: string): SymbolInformation[] {
-        return this.wsSymbolIndex?.search(query) ?? [];
+        return this.symbolStore?.searchWorkspaceSymbols(query) ?? [];
     }
 
     onDocumentClosed(uri: string): void {

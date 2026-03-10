@@ -12,7 +12,10 @@
  * - Type-safe lookups: Typed methods return narrowed symbol types
  */
 
-import { type Location } from "vscode-languageserver/node";
+import {
+    type Location,
+    type SymbolInformation,
+} from "vscode-languageserver/node";
 import {
     type IndexedSymbol,
     type CallableSymbol,
@@ -22,6 +25,7 @@ import {
     SymbolKind,
     isCallableSymbol,
     isVariableSymbol,
+    symbolKindToVscodeKind,
 } from "./symbol";
 
 // =============================================================================
@@ -123,11 +127,10 @@ export class Symbols {
     /**
      * Get all symbols for a specific file.
      * Returns empty array if file not found.
+     * Callers must not mutate the returned array (enforced by readonly type).
      */
     getFileSymbols(uri: string): readonly IndexedSymbol[] {
-        const symbols = this.files.get(uri);
-        // Return a copy to prevent external mutation
-        return symbols ? [...symbols] : [];
+        return this.files.get(uri) ?? [];
     }
 
     /**
@@ -207,12 +210,17 @@ export class Symbols {
     query(options: QueryOptions): readonly IndexedSymbol[] {
         let results: IndexedSymbol[] = [];
 
-        // Collect all symbols (respecting excludeUri)
+        // Collect all symbols (respecting excludeUri, excluding navigation-only)
         for (const [fileUri, symbols] of this.files) {
             if (options.excludeUri && fileUri === options.excludeUri) {
                 continue; // Skip excluded file - local completion handles it
             }
-            results.push(...symbols);
+            for (const symbol of symbols) {
+                // Navigation symbols are for workspace search only, not completion
+                if (symbol.source.type !== SourceType.Navigation) {
+                    results.push(symbol);
+                }
+            }
         }
         results.push(...this.staticSymbols);
 
@@ -341,6 +349,48 @@ export class Symbols {
      */
     lookupAllVariables(name: string, context?: QueryContext): VariableSymbol[] {
         return this.lookupAll(name, context).filter(isVariableSymbol);
+    }
+
+    // -------------------------------------------------------------------------
+    // Workspace symbol search (Ctrl+T)
+    // -------------------------------------------------------------------------
+
+    /**
+     * Search all workspace file symbols by case-insensitive substring match.
+     * Includes Navigation, Workspace, Document, and External symbols.
+     * Excludes Static (built-in) symbols — those have no navigable source file.
+     *
+     * Empty query returns all symbols (capped at maxResults).
+     * LSP clients perform their own fuzzy filtering on top of these results.
+     */
+    searchWorkspaceSymbols(query: string, maxResults = 500): SymbolInformation[] {
+        const lowerQuery = query.toLowerCase();
+        const results: SymbolInformation[] = [];
+
+        for (const [, symbols] of this.files) {
+            for (const symbol of symbols) {
+                if (lowerQuery && !symbol.name.toLowerCase().includes(lowerQuery)) {
+                    continue;
+                }
+                if (!symbol.location) continue;
+
+                results.push({
+                    name: symbol.name,
+                    kind: symbolKindToVscodeKind(symbol.kind),
+                    containerName: symbol.source.displayPath,
+                    location: {
+                        uri: symbol.location.uri,
+                        range: symbol.location.range,
+                    },
+                });
+
+                if (results.length >= maxResults) {
+                    return results;
+                }
+            }
+        }
+
+        return results;
     }
 
     // -------------------------------------------------------------------------
