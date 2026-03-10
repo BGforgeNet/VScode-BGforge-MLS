@@ -293,51 +293,136 @@ export function isLocalDefinition(root: Node, symbol: string): boolean {
 export function extractMacros(root: Node): MacroData[] {
     const macros: MacroData[] = [];
 
+    /**
+     * Extract a macro from a Define node.
+     * The body may be a proper macro_body node (parsed successfully) or absent
+     * (when the body contains SSL keywords that cause parse errors).
+     */
+    function extractFromDefine(defineNode: Node, parentNode: Node): void {
+        const nameNode = defineNode.childForFieldName("name");
+        const paramsNode = defineNode.childForFieldName("params");
+        const bodyNode = defineNode.childForFieldName("body");
+
+        if (!nameNode) return;
+
+        const name = nameNode.text;
+        const bodyText = bodyNode?.text || "";
+
+        let params: string[] | undefined;
+        let hasParams = false;
+        let actualBody = bodyText.trimStart();
+
+        if (paramsNode) {
+            params = parseMacroParams(paramsNode.text);
+            hasParams = true;
+        }
+
+        const multiline = actualBody.includes("\n");
+        const firstline = multiline ? (actualBody.split("\n")[0] || "").trim() : actualBody.trim();
+
+        const docComment = findPrecedingDocComment(root, parentNode);
+        const parsedJsdoc = docComment ? jsdoc.parse(docComment) : undefined;
+
+        macros.push({
+            name,
+            params,
+            hasParams,
+            body: actualBody.trim(),
+            firstline,
+            multiline,
+            jsdoc: parsedJsdoc,
+            node: defineNode,
+        });
+    }
+
+    /**
+     * Fallback: extract macro from an ERROR node that contains #define children.
+     * This happens when the macro body confuses the parser, e.g., `call(F(X,Y))`
+     * where `call` is misinterpreted as the SSL keyword followed by `(`.
+     * We recover the macro name and params from the ERROR's children.
+     */
+    function extractFromError(errorNode: Node, parentNode: Node): void {
+        const children = errorNode.children;
+        let hasDefineKeyword = false;
+        let nameNode: Node | null = null;
+        let paramsNode: Node | null = null;
+        let bodyStartIdx = -1;
+
+        for (let i = 0; i < children.length; i++) {
+            const child = children[i]!;
+            if (child.text === "#define" || child.type === "#define") {
+                hasDefineKeyword = true;
+                continue;
+            }
+            if (hasDefineKeyword && !nameNode && child.type === SyntaxType.Identifier) {
+                nameNode = child;
+                continue;
+            }
+            if (hasDefineKeyword && nameNode && !paramsNode && child.type === SyntaxType.MacroParams) {
+                paramsNode = child;
+                continue;
+            }
+            if (hasDefineKeyword && nameNode) {
+                bodyStartIdx = i;
+                break;
+            }
+        }
+
+        if (!hasDefineKeyword || !nameNode) return;
+
+        const name = nameNode.text;
+        let params: string[] | undefined;
+        let hasParams = false;
+
+        if (paramsNode) {
+            params = parseMacroParams(paramsNode.text);
+            hasParams = true;
+        }
+
+        // Reconstruct body text from remaining children using byte offsets.
+        // Column-based offsets break for multiline ERROR nodes because column
+        // resets to 0 on each line. Byte offsets (startIndex/endIndex) are absolute.
+        let bodyText = "";
+        if (bodyStartIdx >= 0) {
+            const firstChild = children[bodyStartIdx]!;
+            const lastChild = children[children.length - 1]!;
+            const errorText = errorNode.text;
+            const errorStartByte = errorNode.startIndex;
+            const bodyOffset = firstChild.startIndex - errorStartByte;
+            const bodyEnd = lastChild.endIndex - errorStartByte;
+            bodyText = errorText.substring(bodyOffset, bodyEnd).trim();
+        }
+
+        const multiline = bodyText.includes("\n");
+        const firstline = multiline ? (bodyText.split("\n")[0] || "").trim() : bodyText.trim();
+
+        const docComment = findPrecedingDocComment(root, parentNode);
+        const parsedJsdoc = docComment ? jsdoc.parse(docComment) : undefined;
+
+        macros.push({
+            name,
+            params,
+            hasParams,
+            body: bodyText,
+            firstline,
+            multiline,
+            jsdoc: parsedJsdoc,
+            node: errorNode,
+        });
+    }
+
     function visit(node: Node) {
         if (node.type === SyntaxType.Preprocessor) {
-            // Check if it's a define
             for (const child of node.children) {
                 if (child.type === SyntaxType.Define) {
-                    const nameNode = child.childForFieldName("name");
-                    const paramsNode = child.childForFieldName("params");
-                    const bodyNode = child.childForFieldName("body");
-
-                    if (nameNode) {
-                        const name = nameNode.text;
-                        const bodyText = bodyNode?.text || "";
-
-                        // Extract params - paramsNode should always be captured by grammar now
-                        let params: string[] | undefined;
-                        let hasParams = false;
-                        let actualBody = bodyText.trimStart();
-
-                        if (paramsNode) {
-                            params = parseMacroParams(paramsNode.text);
-                            hasParams = true;
-                        }
-                        // Note: No fallback needed - grammar with token.immediate always captures params correctly
-
-                        // Extract body info
-                        const multiline = actualBody.includes("\n");
-                        const firstline = multiline ? (actualBody.split("\n")[0] || "").trim() : actualBody.trim();
-
-                        // Extract JSDoc (search for preceding comment in parent's siblings)
-                        const docComment = findPrecedingDocComment(root, node);
-                        const parsedJsdoc = docComment ? jsdoc.parse(docComment) : undefined;
-
-                        macros.push({
-                            name,
-                            params,
-                            hasParams,
-                            body: actualBody.trim(),
-                            firstline,
-                            multiline,
-                            jsdoc: parsedJsdoc,
-                            node: child, // Include AST node for location extraction
-                        });
-                    }
+                    extractFromDefine(child, node);
                 }
             }
+        }
+
+        // Fallback: ERROR nodes at top level may contain collapsed #define directives
+        if (node.type === "ERROR" && node.parent?.type === SyntaxType.SourceFile) {
+            extractFromError(node, node);
         }
 
         for (const child of node.children) {

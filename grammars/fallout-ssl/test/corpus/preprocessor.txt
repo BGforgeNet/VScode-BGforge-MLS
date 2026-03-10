@@ -12,15 +12,21 @@ Constant macros
   (preprocessor
     (define
       name: (identifier)
-      body: (macro_body)))
+      body: (macro_body
+        (expression_stmt
+          (number)))))
   (preprocessor
     (define
       name: (identifier)
-      body: (macro_body)))
+      body: (macro_body
+        (expression_stmt
+          (string)))))
   (preprocessor
     (define
       name: (identifier)
-      body: (macro_body))))
+      body: (macro_body
+        (expression_stmt
+          (number))))))
 
 ==================
 Function-like macros
@@ -36,18 +42,40 @@ Function-like macros
   (preprocessor
     (define
       name: (identifier)
-      params: (macro_params)
-      body: (macro_body)))
+      params: (macro_params
+        (identifier))
+      body: (macro_body
+        (expression_stmt
+          (call_expr
+            func: (identifier)
+            args: (binary_expr
+              left: (binary_expr
+                left: (identifier)
+                right: (string))
+              right: (identifier)))))))
   (preprocessor
     (define
       name: (identifier)
-      params: (macro_params)
-      body: (macro_body)))
+      params: (macro_params
+        (identifier)
+        (identifier))
+      body: (macro_body
+        (expression_stmt
+          (paren_expr
+            (binary_expr
+              left: (identifier)
+              right: (identifier)))))))
   (preprocessor
     (define
       name: (identifier)
-      params: (macro_params)
-      body: (macro_body))))
+      params: (macro_params
+        (identifier))
+      body: (macro_body
+        (expression_stmt
+          (call_expr
+            func: (identifier)
+            args: (string)
+            args: (identifier)))))))
 
 ==================
 Mixed macros
@@ -66,29 +94,54 @@ Mixed macros
   (preprocessor
     (define
       name: (identifier)
-      body: (macro_body)))
+      body: (macro_body
+        (expression_stmt
+          (string)))))
   (preprocessor
     (define
       name: (identifier)
-      body: (macro_body)))
+      body: (macro_body
+        (expression_stmt
+          (number)))))
   (preprocessor
     (define
       name: (identifier)
-      params: (macro_params)
-      body: (macro_body)))
+      params: (macro_params
+        (identifier))
+      body: (macro_body
+        (expression_stmt
+          (call_expr
+            func: (identifier)
+            args: (binary_expr
+              left: (binary_expr
+                left: (identifier)
+                right: (string))
+              right: (identifier)))))))
   (preprocessor
     (define
       name: (identifier)
-      body: (macro_body)))
+      body: (macro_body
+        (expression_stmt
+          (call_expr
+            func: (identifier)
+            args: (identifier))))))
   (preprocessor
     (define
       name: (identifier)
-      params: (macro_params)
-      body: (macro_body)))
+      params: (macro_params
+        (identifier))
+      body: (macro_body
+        (expression_stmt
+          (call_expr
+            func: (identifier)
+            args: (string)
+            args: (identifier))))))
   (preprocessor
     (define
       name: (identifier)
-      body: (macro_body))))
+      body: (macro_body
+        (expression_stmt
+          (string))))))
 
 ==================
 Include directives
@@ -118,9 +171,17 @@ Ifdef endif
 ---
 
 (source_file
-  (preprocessor (ifdef name: (identifier)))
-  (preprocessor (define name: (identifier) body: (macro_body)))
-  (preprocessor (endif)))
+  (preprocessor
+    (ifdef
+      name: (identifier)))
+  (preprocessor
+    (define
+      name: (identifier)
+      body: (macro_body
+        (expression_stmt
+          (number)))))
+  (preprocessor
+    (endif)))
 
 ==================
 Ifndef guard
@@ -134,10 +195,20 @@ Ifndef guard
 ---
 
 (source_file
-  (preprocessor (ifndef name: (identifier)))
-  (preprocessor (define name: (identifier)))
-  (preprocessor (define name: (identifier) body: (macro_body)))
-  (preprocessor (endif)))
+  (preprocessor
+    (ifndef
+      name: (identifier)))
+  (preprocessor
+    (define
+      name: (identifier)))
+  (preprocessor
+    (define
+      name: (identifier)
+      body: (macro_body
+        (expression_stmt
+          (number)))))
+  (preprocessor
+    (endif)))
 
 ==================
 Ifdef else endif
@@ -152,11 +223,28 @@ Ifdef else endif
 ---
 
 (source_file
-  (preprocessor (ifdef name: (identifier)))
-  (preprocessor (define name: (identifier) params: (macro_params) body: (macro_body)))
-  (preprocessor (pp_else))
-  (preprocessor (define name: (identifier) params: (macro_params)))
-  (preprocessor (endif)))
+  (preprocessor
+    (ifdef
+      name: (identifier)))
+  (preprocessor
+    (define
+      name: (identifier)
+      params: (macro_params
+        (identifier))
+      body: (macro_body
+        (expression_stmt
+          (call_expr
+            func: (identifier)
+            args: (identifier))))))
+  (preprocessor
+    (pp_else))
+  (preprocessor
+    (define
+      name: (identifier)
+      params: (macro_params
+        (identifier))))
+  (preprocessor
+    (endif)))
 
 ==================
 Undef directive
@@ -203,5 +291,17 @@ Multiline macro
   (preprocessor
     (define
       name: (identifier)
-      params: (macro_params)
-      body: (macro_body))))
+      params: (macro_params
+        (identifier)
+        (identifier))
+      body: (macro_body
+        (variable_decl
+          (var_init
+            name: (identifier)))
+        (assignment
+          left: (identifier)
+          right: (binary_expr
+            left: (identifier)
+            right: (identifier)))
+        (return_stmt
+          (identifier))))))

@@ -3,19 +3,34 @@
  *
  * For procedure-scoped symbols: walks only the containing procedure subtree.
  * For file-scoped symbols: walks the entire file but skips into procedures
- * that shadow the symbol with a procedure-local definition.
+ * that shadow the symbol with a procedure-local definition, and skips macro
+ * bodies where the symbol name matches a macro parameter.
  */
 
 import type { Node } from "web-tree-sitter";
 import type { SslSymbolScope } from "./symbol-scope";
 import { isLocalToProc } from "./symbol-scope";
+import { parseMacroParams } from "./macro-utils";
 import { SyntaxType } from "./tree-sitter.d";
+
+/**
+ * Check if a Define node has a macro parameter matching the given name.
+ * Macro params are structured nodes with real identifier children;
+ * we parse the text representation to extract parameter names.
+ */
+function isMacroParam(defineNode: Node, symbolName: string): boolean {
+    const paramsNode = defineNode.childForFieldName("params");
+    if (!paramsNode) return false;
+    const params = parseMacroParams(paramsNode.text);
+    return params.includes(symbolName);
+}
 
 /**
  * Find all identifier references to a symbol within its correct scope.
  *
  * - procedure scope: searches only within symbolInfo.procedureNode
- * - file scope: searches entire tree, skipping procedures that shadow the name
+ * - file scope: searches entire tree, skipping procedures that shadow the name,
+ *   and skipping macro bodies where the symbol matches a macro parameter name
  *
  * Uses recursive descent for consistency with utils.ts traversals.
  * SSL ASTs are shallow (no nested procedures), so stack depth is not a concern.
@@ -39,6 +54,24 @@ export function findScopedReferences(rootNode: Node, symbolInfo: SslSymbolScope)
             node.type === SyntaxType.Procedure &&
             isLocalToProc(node, symbolInfo.name)
         ) {
+            return;
+        }
+
+        // Shadow exclusion: when searching file-scope, skip macro body
+        // if the symbol name matches one of the macro's own parameters.
+        // E.g., renaming file-scope `a` should not touch `a` in `#define ADD(a, b) ((a) + (b))`.
+        if (
+            symbolInfo.scope === "file" &&
+            node.type === SyntaxType.MacroBody &&
+            node.parent?.type === SyntaxType.Define &&
+            isMacroParam(node.parent, symbolInfo.name)
+        ) {
+            return;
+        }
+
+        // Skip macro_params entirely for file-scope searches — param names
+        // are definitions, not references to file-scope symbols.
+        if (symbolInfo.scope === "file" && node.type === SyntaxType.MacroParams) {
             return;
         }
 

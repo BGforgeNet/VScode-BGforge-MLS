@@ -234,55 +234,100 @@ end
     });
 
     describe("extractMacros()", () => {
-        it("extracts macros when grammar supports preprocessor nodes", () => {
-            // Note: Macro extraction depends on the grammar having preprocessor/define nodes
-            // This test verifies the function doesn't crash with define-like syntax
+        it("extracts constant macro with name and body", () => {
             const text = "#define MY_CONST 123";
             const tree = parseWithCache(text);
-            expect(tree).not.toBeNull();
-
             const macros = extractMacros(tree!.rootNode);
-            // The grammar may or may not parse this as a preprocessor node
-            expect(Array.isArray(macros)).toBe(true);
+
+            expect(macros).toHaveLength(1);
+            expect(macros[0]!.name).toBe("MY_CONST");
+            expect(macros[0]!.body).toBe("123");
+            expect(macros[0]!.hasParams).toBe(false);
+            expect(macros[0]!.params).toBeUndefined();
+            expect(macros[0]!.multiline).toBe(false);
         });
 
-        it("handles function-like macro syntax", () => {
-            // Note: Function-like macro extraction depends on grammar support
+        it("extracts function-like macro with params", () => {
             const text = "#define ADD(a, b) ((a) + (b))";
             const tree = parseWithCache(text);
-            expect(tree).not.toBeNull();
-
             const macros = extractMacros(tree!.rootNode);
-            // Just verify it doesn't crash
-            expect(Array.isArray(macros)).toBe(true);
-            // If macros are found, check the structure
-            if (macros.length > 0) {
-                expect(macros[0]).toHaveProperty("name");
-                expect(macros[0]).toHaveProperty("hasParams");
-            }
+
+            expect(macros).toHaveLength(1);
+            expect(macros[0]!.name).toBe("ADD");
+            expect(macros[0]!.hasParams).toBe(true);
+            expect(macros[0]!.params).toEqual(["a", "b"]);
+            expect(macros[0]!.body).toContain("a");
         });
 
-        it("handles multiple define statements", () => {
+        it("extracts multiple macros", () => {
             const text = `
 #define FOO 1
 #define BAR 2
 #define BAZ 3
 `;
             const tree = parseWithCache(text);
-            expect(tree).not.toBeNull();
-
             const macros = extractMacros(tree!.rootNode);
-            // Just verify it doesn't crash and returns an array
-            expect(Array.isArray(macros)).toBe(true);
+
+            expect(macros).toHaveLength(3);
+            expect(macros.map((m) => m.name)).toEqual(["FOO", "BAR", "BAZ"]);
         });
 
         it("returns empty array when no macros", () => {
             const text = "procedure foo begin end";
             const tree = parseWithCache(text);
-            expect(tree).not.toBeNull();
-
             const macros = extractMacros(tree!.rootNode);
+
             expect(macros).toEqual([]);
+        });
+
+        it("extracts macro with empty body (define guard)", () => {
+            const text = "#define GUARD_H";
+            const tree = parseWithCache(text);
+            const macros = extractMacros(tree!.rootNode);
+
+            expect(macros).toHaveLength(1);
+            expect(macros[0]!.name).toBe("GUARD_H");
+            expect(macros[0]!.body).toBe("");
+        });
+
+        it("extracts macro with SSL keywords in body", () => {
+            // SSL keywords (call, begin, etc.) are parsed as statements inside macro_body
+            const text = "#define DO_CALL call helper;";
+            const tree = parseWithCache(text);
+            const macros = extractMacros(tree!.rootNode);
+
+            expect(macros).toHaveLength(1);
+            expect(macros[0]!.name).toBe("DO_CALL");
+            expect(macros[0]!.body).toContain("call");
+            expect(macros[0]!.body).toContain("helper");
+        });
+
+        it("recovers macro from ERROR node (call keyword with nested parens)", () => {
+            // `call(F(X,Y))` produces an ERROR because `call` is a keyword
+            // and the parser expects identifier/call_expr, not `(`
+            const text = "#define MACRO(X,Y) call(F(X,Y))";
+            const tree = parseWithCache(text);
+            const macros = extractMacros(tree!.rootNode);
+
+            expect(macros).toHaveLength(1);
+            expect(macros[0]!.name).toBe("MACRO");
+            expect(macros[0]!.hasParams).toBe(true);
+            expect(macros[0]!.params).toEqual(["X", "Y"]);
+            expect(macros[0]!.body).toContain("call");
+        });
+
+        it("extracts multiline macro body correctly", () => {
+            const text = `#define MULTI(x) \\
+    display_msg(x); \\
+    debug_msg(x);`;
+            const tree = parseWithCache(text);
+            const macros = extractMacros(tree!.rootNode);
+
+            expect(macros).toHaveLength(1);
+            expect(macros[0]!.name).toBe("MULTI");
+            expect(macros[0]!.multiline).toBe(true);
+            expect(macros[0]!.hasParams).toBe(true);
+            expect(macros[0]!.params).toEqual(["x"]);
         });
     });
 

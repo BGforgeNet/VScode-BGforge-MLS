@@ -10,11 +10,17 @@
 export default grammar({
   name: "ssl",
 
+  externals: ($) => [
+    $._newline,   // Newline as whitespace (outside #define)
+    $._line_end,  // Newline as macro terminator (inside #define)
+  ],
+
   extras: ($) => [
-    /\s/,
+    /[ \t\f\v]/,  // Horizontal whitespace (newlines handled by external scanner)
+    $._newline,
     $.comment,
     $.line_comment,
-    /\\\r?\n/,  // Line continuation with backslash
+    /\\\r?\n/,    // Line continuation with backslash
   ],
 
   word: ($) => $.identifier,
@@ -53,32 +59,28 @@ export default grammar({
 
     // #define NAME value or #define NAME(params) body
     // Combined token(prec(1, ...)) so "#define" wins over other_preprocessor
+    // Body is parsed as real SSL statements/expressions, terminated by LINE_END (newline).
     define: ($) =>
       seq(
         alias(token(prec(1, seq("#", "define"))), "#define"),
         field("name", $.identifier),
         optional(field("params", $.macro_params)),
-        optional(field("body", $.macro_body))
+        optional(field("body", $.macro_body)),
+        $._line_end
       ),
 
-    // Macro parameters: (a, b, c) - immediately after identifier, no whitespace
+    // Macro parameters: (a, b, c) - immediately after identifier, no whitespace.
+    // Uses token.immediate("(") so the opening paren must immediately follow the name
+    // (no whitespace), distinguishing `#define FOO(x) body` from `#define FOO (x)`.
+    // Unlike the old opaque token, params are parsed as real identifiers.
     macro_params: ($) =>
-      token.immediate(seq("(", /[^)]*/, ")")),
+      seq(token.immediate("("), optional(commaSep($.identifier)), ")"),
 
-    // Macro body: everything until end of line (with line continuations and multi-line comments)
-    // Must not start with ( to avoid conflicting with macro_params
+    // Macro body: parsed as real SSL statements (expressions are covered via expression_stmt).
+    // Terminated by LINE_END from the external scanner (bare newline = end of #define).
+    // Line continuations (\<newline>) are in extras, so multi-line macros work transparently.
     macro_body: ($) =>
-      token(seq(
-        /[ \t]+/,                // required whitespace (so it doesn't immediately follow identifier)
-        repeat1(choice(
-          /[^\n\\\/]+/,          // regular chars (not newline, backslash, or slash)
-          /\/\*[^*]*\*+([^/*][^*]*\*+)*\//, // multi-line block comment (may span lines)
-          /\/\/[^\n]*/,          // line comment
-          /\/[^*\/\n]/,          // single slash not starting a comment
-          /\\[^\r\n]/,           // backslash followed by non-newline (e.g., \\, \", \t in strings)
-          /\\\r?\n/,             // line continuation (backslash + newline)
-        ))
-      )),
+      repeat1($._statement),
 
     // #include "file" or #include <file>
     // Combined token(prec(1, ...)) so "#include" wins over other_preprocessor

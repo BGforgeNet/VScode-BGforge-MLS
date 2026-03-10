@@ -289,7 +289,9 @@ export const enum SyntaxType {
   Ifdef = "ifdef",
   Ifndef = "ifndef",
   Include = "include",
+  MacroBody = "macro_body",
   MacroCallStmt = "macro_call_stmt",
+  MacroParams = "macro_params",
   MapEntry = "map_entry",
   MapExpr = "map_expr",
   MemberExpr = "member_expr",
@@ -314,8 +316,6 @@ export const enum SyntaxType {
   Comment = "comment",
   Identifier = "identifier",
   LineComment = "line_comment",
-  MacroBody = "macro_body",
-  MacroParams = "macro_params",
   Number = "number",
   OtherPreprocessor = "other_preprocessor",
   String = "string",
@@ -420,7 +420,9 @@ export type SyntaxNode =
   | IfdefNode
   | IfndefNode
   | IncludeNode
+  | MacroBodyNode
   | MacroCallStmtNode
+  | MacroParamsNode
   | MapEntryNode
   | MapExprNode
   | MemberExprNode
@@ -503,8 +505,6 @@ export type SyntaxNode =
   | UnnamedNode<"import">
   | UnnamedNode<"in">
   | LineCommentNode
-  | MacroBodyNode
-  | MacroParamsNode
   | UnnamedNode<"not">
   | NumberNode
   | UnnamedNode<"or">
@@ -650,9 +650,17 @@ export interface IncludeNode extends NamedNodeBase {
   pathNode: StringNode;
 }
 
+export interface MacroBodyNode extends NamedNodeBase {
+  type: SyntaxType.MacroBody;
+}
+
 export interface MacroCallStmtNode extends NamedNodeBase {
   type: SyntaxType.MacroCallStmt;
   nameNode: IdentifierNode;
+}
+
+export interface MacroParamsNode extends NamedNodeBase {
+  type: SyntaxType.MacroParams;
 }
 
 export interface MapEntryNode extends NamedNodeBase {
@@ -774,14 +782,6 @@ export interface IdentifierNode extends NamedNodeBase {
 
 export interface LineCommentNode extends NamedNodeBase {
   type: SyntaxType.LineComment;
-}
-
-export interface MacroBodyNode extends NamedNodeBase {
-  type: SyntaxType.MacroBody;
-}
-
-export interface MacroParamsNode extends NamedNodeBase {
-  type: SyntaxType.MacroParams;
 }
 
 export interface NumberNode extends NamedNodeBase {

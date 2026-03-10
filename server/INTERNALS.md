@@ -547,8 +547,9 @@ procedure-scoped symbols, the containing procedure node.
 
 **Reference finding** (`reference-finder.ts`): Collects all identifier references within
 the correct scope. For procedure-scoped symbols, walks only the procedure subtree. For
-file-scoped symbols, walks the entire tree but skips into procedures that shadow the name
-with a local definition.
+file-scoped symbols, walks the entire tree but skips procedures that shadow the name
+with a local definition, skips `macro_params` nodes (which contain real identifier children),
+and skips macro bodies where the symbol name matches a macro parameter (parameter shadowing).
 
 ### Cross-File References
 

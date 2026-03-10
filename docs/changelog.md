@@ -12,12 +12,14 @@ Compile/validate:
 
 Fallout SSL
 
+- Fix rename for symbols used inside macros.
 - `.tmp.ssl` is now hidden by default from VScode explorer.
 - Fixed SSL compiler attempting external compile after user declines built-in fallback prompt.
 - Fixed temp file leak when `writeFile` fails before compilation.
 - Document symbols now show procedure parameters and local variables as children in the outline view.
 - Outline icons: parameterized macros now use Method icon instead of Function.
-- Fixed grammar: `variable` keyword is now required for procedure parameters (was incorrectly optional).
+- Variadic macros tooltips are more function-line now.
+- Fixed top-level var rename.
 
 WeiDU
 

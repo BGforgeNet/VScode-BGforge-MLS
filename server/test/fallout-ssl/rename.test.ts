@@ -478,6 +478,130 @@ end
         });
     });
 
+    describe("macro body rename", () => {
+        it("renames file-scope symbol referenced inside macro body", () => {
+            const text = `
+procedure helper begin end
+#define CALL_HELPER helper(1, 2)
+
+procedure main begin
+    call helper;
+end
+`;
+            const uri = "file:///test.ssl";
+            // Cursor on "helper" at procedure definition
+            const position: Position = { line: 1, character: 12 };
+            const result = renameSymbol(text, position, "new_helper", uri);
+
+            expect(result).not.toBeNull();
+            const edits = result!.changes![uri];
+            // definition + macro body reference + call site = 3
+            expect(edits.length).toBe(3);
+
+            for (const edit of edits) {
+                expect(edit.newText).toBe("new_helper");
+            }
+        });
+
+        it("does not rename macro parameter names when renaming file-scope symbol", () => {
+            const text = `
+variable a;
+
+#define ADD(a, b) ((a) + (b))
+
+procedure foo begin
+    a := 1;
+end
+`;
+            const uri = "file:///test.ssl";
+            // Cursor on "a" at variable declaration
+            const position: Position = { line: 1, character: 9 };
+            const result = renameSymbol(text, position, "x", uri);
+
+            expect(result).not.toBeNull();
+            const edits = result!.changes![uri];
+            // variable declaration + usage in foo = 2
+            // macro body's "a" should NOT be renamed (it shadows the file-scope variable)
+            expect(edits.length).toBe(2);
+
+            // No edits should be inside the macro body (line 3)
+            for (const edit of edits) {
+                expect(edit.range.start.line).not.toBe(3);
+            }
+        });
+
+        it("renames macro name from usage inside another macro body", () => {
+            const text = `
+#define MAX_ITEMS 100
+#define CHECK_ITEMS(n) (n > MAX_ITEMS)
+
+procedure foo begin
+    if (count > MAX_ITEMS) then begin end
+end
+`;
+            const uri = "file:///test.ssl";
+            // Cursor on "MAX_ITEMS" at definition
+            const position: Position = { line: 1, character: 10 };
+            const result = renameSymbol(text, position, "ITEM_LIMIT", uri);
+
+            expect(result).not.toBeNull();
+            const edits = result!.changes![uri];
+            // definition + reference in CHECK_ITEMS body + reference in foo = 3
+            expect(edits.length).toBe(3);
+        });
+
+        it("renames symbol inside multiline macro body", () => {
+            const text = `
+procedure helper begin end
+
+#define DO_STUFF(x) \\
+    helper(); \\
+    display_msg(x);
+
+procedure main begin
+    call helper;
+end
+`;
+            const uri = "file:///test.ssl";
+            // Cursor on "helper" at definition
+            const position: Position = { line: 1, character: 12 };
+            const result = renameSymbol(text, position, "new_helper", uri);
+
+            expect(result).not.toBeNull();
+            const edits = result!.changes![uri];
+            // definition + macro body reference + call in main = 3
+            expect(edits.length).toBe(3);
+        });
+
+        it("allows rename from cursor inside macro body", () => {
+            const text = `
+procedure helper begin end
+#define CALL_IT helper()
+`;
+            const uri = "file:///test.ssl";
+            // Cursor on "helper" inside macro body (line 2)
+            const position: Position = { line: 2, character: 16 };
+            const result = renameSymbol(text, position, "new_helper", uri);
+
+            expect(result).not.toBeNull();
+            const edits = result!.changes![uri];
+            // definition + macro body reference = 2
+            expect(edits.length).toBe(2);
+        });
+
+        it("returns null when cursor is on macro parameter in body", () => {
+            const text = `
+#define ADD(a, b) ((a) + (b))
+`;
+            // Cursor on "a" inside the macro body - this is a macro param, not file-scope
+            const position: Position = { line: 1, character: 20 };
+            const result = prepareRenameSymbol(text, position);
+
+            // Macro params are not file-scope defs and not procedure-scoped, so not renameable
+            expect(result).toBeNull();
+        });
+    });
+
     describe("newName validation", () => {
         it("rejects empty string", () => {
             const text = `procedure helper begin end`;
