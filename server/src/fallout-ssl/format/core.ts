@@ -66,13 +66,22 @@ export function isComment(node: SyntaxNode): boolean {
 function hasTrailingComment(child: SyntaxNode, nextChild: SyntaxNode | undefined): boolean {
     return nextChild !== undefined &&
         isComment(nextChild) &&
-        nextChild.startPosition.row === child.endPosition.row;
+        nextChild.startPosition.row === contentEndRow(child);
+}
+
+// Get the row where a node's actual content ends.
+// #define nodes include the trailing \n in their span, so endPosition.row
+// is 1 past the content line. This adjusts for that to enable correct blank line detection.
+function contentEndRow(node: SyntaxNode): number {
+    return node.text.endsWith("\n") ? node.endPosition.row - 1 : node.endPosition.row;
 }
 
 // Normalize preprocessor directives with trailing comments
 function normalizePreprocessor(text: string): string {
-    // Check for trailing line comment
-    const lineCommentMatch = text.match(/^(.+?)(\s*)(\/\/.*)$/);
+    // Check for trailing line comment.
+    // Use [^\r\n]* instead of .* — tree-sitter node text includes trailing \r\n
+    // (CRLF files) or \n (LF files), and . matches \r, corrupting the comment.
+    const lineCommentMatch = text.match(/^(.+?)(\s*)(\/\/[^\r\n]*)[\r\n]*$/);
     if (lineCommentMatch) {
         const code = lineCommentMatch[1];
         const comment = lineCommentMatch[3];
@@ -81,7 +90,7 @@ function normalizePreprocessor(text: string): string {
         }
     }
     // Check for trailing block comment (single line only)
-    const blockCommentMatch = text.match(/^(.+?)(\s*)(\/\*[^]*?\*\/)$/);
+    const blockCommentMatch = text.match(/^(.+?)(\s*)(\/\*[^]*?\*\/)[\r\n]*$/);
     if (blockCommentMatch) {
         const code = blockCommentMatch[1];
         const comment = blockCommentMatch[3];
@@ -89,7 +98,9 @@ function normalizePreprocessor(text: string): string {
             return code.trimEnd() + ctx.indent + normalizeComment(comment);
         }
     }
-    return text;
+    // Strip trailing line ending — #define nodes include it in their text,
+    // but parts are joined with \n so the caller provides newlines.
+    return text.replace(/\r?\n$/, "");
 }
 
 // Normalize comment spacing:
@@ -139,12 +150,33 @@ interface FormatResult {
     text: string;
 }
 
+/** Find first ERROR or MISSING node in tree. */
+function findParseError(node: SyntaxNode): SyntaxNode | null {
+    if (node.type === "ERROR" || node.isMissing) {
+        return node;
+    }
+    for (const child of node.children) {
+        const error = findParseError(child);
+        if (error) return error;
+    }
+    return null;
+}
+
 export function formatDocument(node: SyntaxNode, options: FormatOptions = DEFAULT_OPTIONS): FormatResult {
+    // Skip formatting files with parse errors — ERROR nodes produce non-idempotent output.
+    // Return original text unchanged so the file passes through untouched.
+    const parseError = findParseError(node);
+    if (parseError) {
+        return { text: node.text };
+    }
+
     ctx = {
         indent: " ".repeat(options.indentSize),
         lineLimit: options.lineLimit,
     };
-    const text = formatNode(node, 0);
+    // Strip \r from output — tree-sitter node.text preserves original line endings,
+    // but the formatter joins parts with \n. Mixed endings cause non-idempotent output.
+    const text = formatNode(node, 0).replace(/\r/g, "");
     return { text };
 }
 
@@ -214,12 +246,12 @@ function formatChildren(node: SyntaxNode, depth: number): string {
         const prevChild = children[i - 1]; // undefined at start
         const nextChild = children[i + 1]; // undefined at end
 
-        const hadBlankLineBefore = prevChild && (child.startPosition.row - prevChild.endPosition.row > 1);
+        const hadBlankLineBefore = prevChild !== undefined && (child.startPosition.row - contentEndRow(prevChild) > 1);
         const trailingComment = hasTrailingComment(child, nextChild);
 
         if (isComment(child)) {
             // Skip if already appended as trailing comment
-            if (prevChild && prevChild.endPosition.row === child.startPosition.row) {
+            if (prevChild && contentEndRow(prevChild) === child.startPosition.row) {
                 return;
             }
 
@@ -243,8 +275,10 @@ function formatChildren(node: SyntaxNode, depth: number): string {
             }
             let preprocessorText = normalizePreprocessor(child.text);
             // Check if next sibling is a line comment on the same line
+            // Use contentEndRow: #define nodes include trailing \n, so endPosition.row
+            // is 1 past the content — would falsely match a comment on the next line.
             if (nextChild && nextChild.type === SyntaxType.LineComment &&
-                nextChild.startPosition.row === child.endPosition.row) {
+                nextChild.startPosition.row === contentEndRow(child)) {
                 // Add the comment on the same line
                 preprocessorText = preprocessorText.trimEnd() + "    " + normalizeComment(nextChild.text);
             }
@@ -319,12 +353,12 @@ function formatProcedure(node: SyntaxNode, depth: number): string {
         }
         if (child.type.includes("procedure")) return;
 
-        const hadBlankLineBefore = prevChild && (child.startPosition.row - prevChild.endPosition.row > 1);
+        const hadBlankLineBefore = prevChild !== undefined && (child.startPosition.row - contentEndRow(prevChild) > 1);
         const trailingComment = hasTrailingComment(child, nextChild);
 
         if (isComment(child)) {
             // Skip if already appended as trailing comment
-            if (prevChild && prevChild.endPosition.row === child.startPosition.row) {
+            if (prevChild && contentEndRow(prevChild) === child.startPosition.row) {
                 return;
             }
             if (bodyParts.length > 0 && hadBlankLineBefore) {
@@ -482,7 +516,7 @@ export function formatBlock(node: SyntaxNode, depth: number): string {
 
         if (isComment(child)) {
             // Skip if already appended as trailing comment
-            if (prevChild && prevChild.endPosition.row === child.startPosition.row) {
+            if (prevChild && contentEndRow(prevChild) === child.startPosition.row) {
                 return;
             }
             stmts.push(ctx.indent.repeat(depth + 1) + normalizeComment(child.text));

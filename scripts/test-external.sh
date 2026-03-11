@@ -42,15 +42,12 @@ remove_excluded() {
     done < "$exclude_file"
 }
 
-# Reset all repos in a directory
 reset_repos() {
-    local target_dir="$1"
-    for repo in "$target_dir"/*/; do
-        if [[ -d "$repo" ]]; then
-            git -C "$repo" checkout . 2>/dev/null || true
-        fi
-    done
+    "$SCRIPT_DIR/reset-external.sh"
 }
+
+# Always reset repos on exit (success or failure)
+trap reset_repos EXIT
 
 # Test formatter on a directory
 test_format() {
@@ -99,8 +96,7 @@ clone_repos "$ROOT_DIR/external/infinity-engine.txt" "$ROOT_DIR/external/infinit
 
 echo ""
 echo "=== Resetting repos (pre-test) ==="
-reset_repos "$ROOT_DIR/external/fallout"
-reset_repos "$ROOT_DIR/external/infinity-engine"
+reset_repos
 
 echo ""
 echo "=== Removing excluded files ==="
@@ -110,11 +106,6 @@ remove_excluded "$ROOT_DIR/external/infinity-engine-exclude.txt" "$ROOT_DIR/exte
 test_format "$ROOT_DIR/external/fallout" "Fallout"
 test_bin "$ROOT_DIR/external/fallout"
 test_format "$ROOT_DIR/external/infinity-engine" "Infinity Engine"
-
-echo ""
-echo "=== Resetting repos (post-test) ==="
-reset_repos "$ROOT_DIR/external/fallout"
-reset_repos "$ROOT_DIR/external/infinity-engine"
 
 echo ""
 echo "SUCCESS: External tests passed"

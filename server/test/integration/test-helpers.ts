@@ -11,14 +11,14 @@ import { pathToFileURL } from "node:url";
 import type { Position } from "vscode-languageserver/node";
 
 /** Root of the project repository. */
-export const ROOT_DIR = resolve(__dirname, "../../..");
+const ROOT_DIR = resolve(__dirname, "../../..");
 
 /** Base paths for external fixture repos. */
 export const FALLOUT_FIXTURES = join(ROOT_DIR, "external/fallout");
 export const IE_FIXTURES = join(ROOT_DIR, "external/infinity-engine");
 
 /** A loaded fixture file with its URI and text content. */
-export interface FixtureFile {
+interface FixtureFile {
     readonly uri: string;
     readonly text: string;
     readonly absPath: string;

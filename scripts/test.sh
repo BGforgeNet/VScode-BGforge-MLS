@@ -22,6 +22,9 @@ step() {
     echo "=== $1 ==="
 }
 
+step "Resetting External Repos"
+"$SCRIPT_DIR/reset-external.sh"
+
 step "Linting Shell Scripts"
 pnpm lint:shell
 

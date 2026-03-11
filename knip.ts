@@ -24,8 +24,9 @@ const config: KnipConfig = {
     server: {
       // Entry resolved from package.json "main" field (src/server.ts).
       // No explicit entry needed here.
-      // vitest.smoke.config.ts is a separate config run by scripts/test.sh, not imported
-      ignore: ["**/*.d.ts", "vitest.smoke.config.ts"],
+      // vitest.smoke.config.ts is a separate config run by scripts/test.sh, not imported.
+      // vitest.integration.config.ts + test/integration/ are integration tests run via pnpm test:integration.
+      ignore: ["**/*.d.ts", "vitest.smoke.config.ts", "vitest.integration.config.ts", "test/integration/**"],
     },
     "plugins/tssl-plugin": {
       entry: ["src/index.ts", "test/*.test.ts"],
@@ -41,8 +42,6 @@ const config: KnipConfig = {
     "cli/**",
     // external repositories cloned for testing
     "external/**",
-    // Claude Code worktrees and agent data
-    ".claude/**",
     // standalone update scripts run via pnpm exec tsx, not imported by main code
     "scripts/**",
   ],

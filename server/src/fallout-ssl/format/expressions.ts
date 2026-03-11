@@ -97,19 +97,11 @@ export function formatExpression(node: SyntaxNode | null | undefined, column: nu
     }
 }
 
-// Get operator from binary expression
+// Get operator from binary expression.
+// Uses the "op" field defined in the grammar, which is reliable even when
+// ERROR nodes appear between operands (e.g., CRLF line endings producing stray nodes).
 function getBinaryOp(node: SyntaxNode): string {
-    const left = node.childForFieldName("left");
-    const right = node.childForFieldName("right");
-    if (left && right) {
-        for (const child of node.children) {
-            if (isComment(child)) continue;
-            if (child.startIndex >= left.endIndex && child.endIndex <= right.startIndex) {
-                return child.text;
-            }
-        }
-    }
-    return "";
+    return node.childForFieldName("op")?.text ?? "";
 }
 
 // Flatten a chain of binary expressions with the same operator (e.g., a or b or c)

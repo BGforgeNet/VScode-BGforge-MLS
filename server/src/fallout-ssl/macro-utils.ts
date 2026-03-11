@@ -115,7 +115,7 @@ export function buildMacroTooltip(macro: MacroData, filePath: string): string {
 }
 
 /** Parameter from the actual definition (AST or macro). */
-export interface DefinitionParam {
+interface DefinitionParam {
     name: string;
     defaultValue?: string;
 }
@@ -138,7 +138,8 @@ export function buildSignatureHelp(
         }
         const info: ParameterInformation = { label };
         if (arg?.type || arg?.description) {
-            let doc = buildSignatureBlock(`${arg.type ?? ""} ${p.name}`.trim(), LANG_FALLOUT_SSL_TOOLTIP);
+            const typePrefix = arg.type ? `${arg.type} ` : "";
+            let doc = buildSignatureBlock(`${typePrefix}${p.name}`, LANG_FALLOUT_SSL_TOOLTIP);
             if (arg.description) {
                 doc += "\n" + arg.description;
             }
