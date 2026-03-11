@@ -12,6 +12,19 @@ import * as fs from "fs";
 import * as esbuild from "esbuild-wasm";
 import { Project, SyntaxKind, type EnumDeclaration, type SourceFile } from "ts-morph";
 
+/**
+ * Shared ts-morph Project for enum transforms. Created lazily on first use.
+ * Safe to reuse because each call creates a fresh source file with { overwrite: true }.
+ * Avoids ~100-160ms Project construction overhead per call.
+ */
+let sharedProject: Project | undefined;
+function getProject(): Project {
+    if (!sharedProject) {
+        sharedProject = new Project({ useInMemoryFileSystem: true });
+    }
+    return sharedProject;
+}
+
 /** Result of transforming enums in source text */
 interface EnumTransformResult {
     /** Transformed source code (unchanged if no enums found) */
@@ -37,8 +50,8 @@ export function transformEnums(sourceText: string): EnumTransformResult {
         return { code: sourceText, enumNames: new Set() };
     }
 
-    const project = new Project({ useInMemoryFileSystem: true });
-    const sourceFile = project.createSourceFile("enum-transform.ts", sourceText);
+    const project = getProject();
+    const sourceFile = project.createSourceFile("enum-transform.ts", sourceText, { overwrite: true });
 
     const enumDecls = sourceFile.getEnums();
 
@@ -210,8 +223,8 @@ export function expandEnumPropertyAccess(
         return code;
     }
 
-    const project = new Project({ useInMemoryFileSystem: true });
-    const sourceFile = project.createSourceFile("expand-enum.ts", code);
+    const project = getProject();
+    const sourceFile = project.createSourceFile("expand-enum.ts", code, { overwrite: true });
 
     // First pass: collect which enum members are actually referenced as EnumName.Member
     const referencedMembers = new Map<string, Set<string>>();
