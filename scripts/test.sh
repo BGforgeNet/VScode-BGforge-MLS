@@ -1,6 +1,8 @@
 #!/bin/bash
 
-# Run all tests across the monorepo
+# Run all tests across the monorepo.
+# Uses parallel execution for independent stages to minimize wall time.
+# Each parallel job logs to tmp/test-logs/ — silent on success, full output on failure.
 set -eu -o pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -11,38 +13,89 @@ cd "$ROOT_DIR"
 # shellcheck source=scripts/timing-lib.sh
 source "$SCRIPT_DIR/timing-lib.sh"
 
+LOG_DIR="$ROOT_DIR/tmp/test-logs"
+rm -rf "$LOG_DIR"
+mkdir -p "$LOG_DIR"
+
+# --- Parallel runner ---
+# Run commands in parallel. Each job's output goes to a log file.
+# On success: prints "  ok <label> (Xms)"
+# On failure: prints full output of the failed job, kills remaining jobs, exits 1.
+# Usage: parallel "label1" "cmd1" "label2" "cmd2" ...
+parallel() {
+    local pids=() labels=() logs=() starts=() i=0
+
+    while [ $# -ge 2 ]; do
+        local label="$1" cmd="$2"
+        shift 2
+        local logfile="$LOG_DIR/${label// /-}.log"
+        local start
+        start=$(date +%s%3N)
+        # Subshell: run command, capture exit code
+        ( eval "$cmd" > "$logfile" 2>&1 ) &
+        pids+=($!)
+        labels+=("$label")
+        logs+=("$logfile")
+        starts+=("$start")
+    done
+
+    # Wait for all, but fail fast on first failure
+    while true; do
+        local all_done=1
+        for i in "${!pids[@]}"; do
+            [ "${pids[$i]}" = "done" ] && continue
+            if ! kill -0 "${pids[$i]}" 2>/dev/null; then
+                # Process finished — check exit code
+                if wait "${pids[$i]}"; then
+                    local elapsed=$(( $(date +%s%3N) - ${starts[$i]} ))
+                    echo "  ok  ${labels[$i]} (${elapsed}ms)"
+                    pids[i]="done"
+                else
+                    local elapsed=$(( $(date +%s%3N) - ${starts[$i]} ))
+                    echo ""
+                    echo "  FAIL  ${labels[$i]} (${elapsed}ms)"
+                    echo ""
+                    cat "${logs[$i]}"
+                    # Kill remaining jobs
+                    for j in "${!pids[@]}"; do
+                        [ "${pids[$j]}" = "done" ] && continue
+                        kill "${pids[$j]}" 2>/dev/null || true
+                    done
+                    exit 1
+                fi
+            else
+                all_done=0
+            fi
+        done
+        [ "$all_done" = "1" ] && break
+        sleep 0.05
+    done
+}
+
 step "Resetting External Repos"
 "$SCRIPT_DIR/reset-external.sh"
 
-step "Linting Shell Scripts"
-pnpm lint:shell
+# --- Phase 1: Static analysis (all independent, run in parallel) ---
+step "Static Analysis"
+parallel \
+    "Shell lint"       "pnpm lint:shell" \
+    "Typecheck client" "(cd client && pnpm exec tsc --noEmit)" \
+    "Typecheck plugins" "(cd plugins/tssl-plugin && pnpm exec tsc --noEmit) && (cd plugins/td-plugin && pnpm exec tsc --noEmit)" \
+    "Typecheck server" "(cd server && pnpm exec tsc --noEmit)" \
+    "Typecheck CLI"    "pnpm exec tsc --project cli/tsconfig.json" \
+    "ESLint"           "pnpm exec eslint 'server/src/**/*.ts' 'client/src/**/*.ts' 'plugins/*/src/**/*.ts' 'plugins/*/test/**/*.ts' 'cli/**/*.ts' --ignore-pattern 'cli/test' --ignore-pattern 'cli/vitest.config.ts' --no-warn-ignored --max-warnings 0" \
+    "Lint scripts"     "pnpm lint:scripts" \
+    "Prettier check"   "(cd client && pnpm exec prettier --check 'src/**/*.css' 'src/**/*.html')"
 
-step "Typechecking Client"
-(cd client && pnpm exec tsc --noEmit)
+# --- Phase 2: Unit tests (server is the bottleneck, run others alongside) ---
+step "Unit Tests"
+parallel \
+    "Server unit tests + coverage" "(cd server && pnpm exec vitest run --coverage)" \
+    "Client unit tests"            "vitest run --config client/vitest.config.ts" \
+    "Plugin unit tests"            "vitest run --config plugins/tssl-plugin/vitest.config.ts && vitest run --config plugins/td-plugin/vitest.config.ts" \
+    "Script tests"                 "pnpm test:scripts"
 
-step "Typechecking Plugins"
-(cd plugins/tssl-plugin && pnpm exec tsc --noEmit)
-(cd plugins/td-plugin && pnpm exec tsc --noEmit)
-
-step "Typechecking Server"
-(cd server && pnpm exec tsc --noEmit)
-
-step "Typechecking CLI"
-pnpm exec tsc --project cli/tsconfig.json
-
-step "Running ESLint"
-pnpm exec eslint 'server/src/**/*.ts' 'client/src/**/*.ts' 'plugins/*/src/**/*.ts' 'plugins/*/test/**/*.ts' 'cli/**/*.ts' --ignore-pattern 'cli/test' --ignore-pattern 'cli/vitest.config.ts' --no-warn-ignored --max-warnings 0
-
-step "Running Server Unit Tests + Coverage"
-(cd server && pnpm exec vitest run --coverage)
-
-step "Running Client Unit Tests"
-vitest run --config client/vitest.config.ts
-
-step "Running Plugin Unit Tests"
-vitest run --config plugins/tssl-plugin/vitest.config.ts
-vitest run --config plugins/td-plugin/vitest.config.ts
-
+# --- Phase 3: Build + smoke ---
 step "Building Server Bundle"
 pnpm build:base:server
 
@@ -54,38 +107,24 @@ pnpm build:transpile-cli
 pnpm build:format-cli
 pnpm build:bin-cli
 
-step "Testing TD Samples"
-./server/test/td/test.sh
-./server/test/td/typecheck-samples.sh
+# --- Phase 4: Tests that need CLI builds ---
+step "Sample + CLI Tests"
+parallel \
+    "TD samples"      "./server/test/td/test.sh && ./server/test/td/typecheck-samples.sh" \
+    "TBAF samples"    "./server/test/tbaf/typecheck-samples.sh" \
+    "CLI tests"       "pnpm test:cli" \
+    "Binary parser"   "pnpm test:bin"
 
-step "Testing TBAF Samples"
-./server/test/tbaf/typecheck-samples.sh
-
-step "Checking Formatting"
-(cd client && pnpm exec prettier --check "src/**/*.css" "src/**/*.html")
-
-step "Testing CLI"
-pnpm test:cli
-
-step "Testing Binary Parser"
-pnpm test:bin
-
-step "Testing Scripts"
-pnpm test:scripts
-
-step "Linting Scripts"
-pnpm lint:scripts
-
-step "Testing External"
+# --- Phase 5: External + analysis ---
+step "External Tests"
 pnpm test:external
 
 step "Running Integration Tests"
 pnpm test:integration
 
-step "Checking for unused code (knip)"
-pnpm knip
-
-step "Checking for dead production code (knip --production)"
-pnpm knip:prod
+step "Dead Code Analysis"
+parallel \
+    "Knip"      "pnpm knip" \
+    "Knip prod" "pnpm knip:prod"
 
 timing_summary "All tests passed"
