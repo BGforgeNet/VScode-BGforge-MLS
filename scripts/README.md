@@ -8,7 +8,7 @@ See also: [CONTRIBUTING.md](../CONTRIBUTING.md) | [docs/architecture.md](../docs
 | -------------------- | ----------------------------------------------------- |
 | `pnpm build`         | Build client, server, webviews, TS plugin, CLIs       |
 | `pnpm build:all`     | Build everything including tree-sitter grammars       |
-| `pnpm test`          | Run all tests (see `test.sh` below)                   |
+| `pnpm test`          | Run all tests including integration (see `test.sh`)   |
 | `pnpm test:e2e`      | E2E tests (requires `pnpm build` first)               |
 | `pnpm test:grammars` | Grammar tests (generate, lint, corpus, parse, format) |
 | `pnpm package`       | Create VSIX package                                   |
@@ -26,6 +26,7 @@ See also: [CONTRIBUTING.md](../CONTRIBUTING.md) | [docs/architecture.md](../docs
 ### Excluded from `server/pnpm test:unit`
 
 - **Smoke test** (`test/smoke-stdio.test.ts`) -- requires a built server bundle (`pnpm build:base:server`). Run as part of `pnpm test` instead, which builds the bundle first.
+- **Integration tests** (`test/integration/`) -- require external repos cloned via `pnpm test:external`. Run standalone with `cd server && pnpm test:integration`, or as part of `pnpm test` (which clones repos first).
 
 ## Running individual tests
 
@@ -34,6 +35,9 @@ See also: [CONTRIBUTING.md](../CONTRIBUTING.md) | [docs/architecture.md](../docs
 cd server && pnpm test:unit                              # All unit tests
 cd server && pnpm exec vitest run test/td.test.ts        # Single file
 cd server && pnpm exec vitest run --coverage             # With coverage
+
+# Server integration tests (real fixtures from external repos)
+cd server && pnpm test:integration                       # All integration tests
 
 # TD/TBAF sample integration
 bash server/test/td/test.sh                # Transpile .td samples, compare to expected .d
@@ -53,12 +57,12 @@ pnpm test:cli                              # Exit codes and diff output
 
 | Script                   | Description                                                                                                                                                                                     |
 | ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `test.sh`                | Main test suite run by `pnpm test`. Typechecks client/server/CLI, runs ESLint, server and client unit tests, TD/TBAF sample tests, formatting checks, CLI tests, binary parser tests, and knip. |
+| `test.sh`                | Main test suite run by `pnpm test`. Typechecks client/server/CLI, runs ESLint, server unit tests, client tests, TD/TBAF sample tests, formatting checks, CLI tests, binary parser tests, integration tests, and knip. |
 | `test-grammars.sh`       | Run all grammar test suites (calls `test-grammar.sh` per grammar).                                                                                                                              |
 | `test-grammar.sh`        | Test a single grammar (generate, lint, corpus, highlight, parse, format, compare, idempotency).                                                                                                 |
 | `test-format-samples.sh` | Format comparison and idempotency tests.                                                                                                                                                        |
 | `test-bin.sh`            | Binary parser tests.                                                                                                                                                                            |
-| `test-external.sh`       | Tests against external repositories (not run by `pnpm test`).                                                                                                                                   |
+| `test-external.sh`       | Clone external repos and run format/idempotency tests against them. Also provides fixtures for integration tests.                                                                               |
 | `test-e2e.sh`            | E2E test runner.                                                                                                                                                                                |
 | `build-grammar.sh`       | Build all tree-sitter grammars to WASM.                                                                                                                                                         |
 | `build-base-server.sh`   | esbuild bundle for the LSP server. Uses `--banner`/`--define` for import.meta.url patching.                                                                                                     |

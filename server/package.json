@@ -18,7 +18,8 @@
     },
     "scripts": {
         "test": "./scripts/test.sh",
-        "test:unit": "vitest run"
+        "test:unit": "vitest run",
+        "test:integration": "vitest run --config vitest.integration.config.ts"
     },
     "repository": {
         "type": "git",

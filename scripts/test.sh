@@ -87,6 +87,9 @@ pnpm lint:scripts
 step "Testing External"
 pnpm test:external
 
+step "Running Integration Tests"
+pnpm test:integration
+
 step "Checking for unused code (knip)"
 pnpm knip
 

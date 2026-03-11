@@ -458,6 +458,7 @@
         "test:client": "cd client && pnpm test",
         "test:server": "cd server && pnpm test",
         "test:grammars": "./scripts/test-grammars.sh",
+        "test:integration": "cd server && pnpm test:integration",
         "test:external": "./scripts/test-external.sh",
         "test:transpile-external": "./scripts/test-transpile-external.sh",
         "test:grammar": "./scripts/test-grammar.sh",

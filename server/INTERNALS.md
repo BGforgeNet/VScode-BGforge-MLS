@@ -698,6 +698,18 @@ All formatting is pre-computed at build time by `generate-data.ts`. WeiDU/TP2 it
 
 See [scripts/README.md](../scripts/README.md) for all test commands.
 
+### Test layers
+
+| Layer | Config | What it covers | Fixtures |
+|-------|--------|----------------|----------|
+| Unit tests | `vitest.config.ts` | Pure logic, utilities, parsers, transpilers | Inline strings |
+| Integration tests | `vitest.integration.config.ts` | AST-derived LSP features (symbols, definition, references, rename, folding, signature, completion context) against real mod code | `external/` repos (cloned by `test-external.sh`) |
+| Smoke test | `vitest.smoke.config.ts` | Server starts and responds over stdio | Built server bundle |
+
+Integration tests live in `test/integration/` and cover SSL, BAF, D, and TP2. They test features computed directly from tree-sitter ASTs. Data-driven features (completion, hover) that require static YAML symbols are not yet covered here — they go through the full provider pipeline.
+
+The shared LSP connection mock is in `test/integration/setup.ts`, loaded via `setupFiles` in the integration config.
+
 ## Adding a New Provider
 
 1. Create `src/{lang}/provider.ts` implementing `LanguageProvider`
