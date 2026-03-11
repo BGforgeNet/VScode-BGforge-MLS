@@ -14,6 +14,9 @@ import { getDefinition } from "../../src/weidu-tp2/definition";
 import { findReferences } from "../../src/weidu-tp2/references";
 import { renameSymbol, prepareRenameSymbol } from "../../src/weidu-tp2/rename";
 import { parseFile } from "../../src/weidu-tp2/header-parser";
+import { getFunctionParamHover } from "../../src/weidu-tp2/hover";
+import { getLocalSymbols } from "../../src/weidu-tp2/local-symbols";
+import { formatDocument } from "../../src/weidu-tp2/format/core";
 import { createFoldingRangesProvider } from "../../src/shared/folding-ranges";
 import { SyntaxType } from "../../src/weidu-tp2/tree-sitter.d";
 import { FileIndex } from "../../src/core/file-index";
@@ -42,32 +45,27 @@ describe("weidu-tp2 integration", () => {
             const f = loadFixture(TNT_BASE, "tnt/lib/functions.tph");
             const symbols = getDocumentSymbols(f.text);
 
-            const names = symbols.map(s => s.name);
-            expect(names).toContain("LIST_WEB_SPELLS");
-            expect(names).toContain("unstack_armor_bonus");
-            expect(names).toContain("CREATE_SHELL_SPELL");
-            expect(names).toContain("CREATE_SHELL_BLINDNESS");
+            expect(symbols).toHaveLength(5);
+            expect(symbols.map(s => s.name)).toEqual([
+                "LIST_WEB_SPELLS", "unstack_armor_bonus",
+                "CREATE_SHELL_SPELL", "CREATE_SHELL_BLINDNESS", "CREATE_SHELL_CONFUSION",
+            ]);
         });
 
         it("extracts function body variables as children", () => {
             const f = loadFixture(TNT_BASE, "tnt/lib/functions.tph");
             const symbols = getDocumentSymbols(f.text);
 
-            // LIST_WEB_SPELLS has "spells" array defined inside its body
             const listWebSpells = symbols.find(s => s.name === "LIST_WEB_SPELLS");
             expect(listWebSpells).toBeDefined();
-            if (listWebSpells?.children) {
-                const childNames = listWebSpells.children.map(c => c.name);
-                expect(childNames).toContain("spells");
-            }
+            expect(listWebSpells!.children?.map(c => c.name)).toEqual(["spells"]);
         });
 
         it("extracts components from a tp2 file", () => {
             const f = loadFixture(RR_BASE, "rr/setup-rr.tp2");
             const symbols = getDocumentSymbols(f.text);
 
-            // setup-rr.tp2 has multiple BEGIN components
-            expect(symbols.length).toBeGreaterThan(3);
+            expect(symbols).toHaveLength(28);
         });
 
         it("extracts function children (parameters and body variables)", () => {
@@ -76,12 +74,9 @@ describe("weidu-tp2 integration", () => {
 
             const unstack = symbols.find(s => s.name === "unstack_armor_bonus");
             expect(unstack).toBeDefined();
-            // Should have children for INT_VAR params and body variables
-            if (unstack?.children) {
-                const childNames = unstack.children.map(c => c.name);
-                expect(childNames).toContain("bonus");
-                expect(childNames).toContain("stacking_id_base");
-            }
+            expect(unstack!.children?.map(c => c.name)).toEqual(
+                ["bonus", "stacking_id_base", "found", "int", "fx_off", "opcode", "type", "ac_mod", "i"]
+            );
         });
     });
 
@@ -93,13 +88,13 @@ describe("weidu-tp2 integration", () => {
         it("navigates to a variable definition within a function", () => {
             const f = loadFixture(TNT_BASE, "tnt/lib/functions.tph");
 
-            // "found" variable used in unstack_armor_bonus — first defined on line 36
             const pos = findIdentifierPosition(f.text, "found", 2);
             expect(pos).not.toBeNull();
 
             const location = getDefinition(f.text, f.uri, pos!);
             expect(location).not.toBeNull();
             expect(location!.uri).toBe(f.uri);
+            expect(location!.range.start.line).toBe(36);
         });
 
         it("navigates to a function definition from LAF call", () => {
@@ -130,7 +125,7 @@ describe("weidu-tp2 integration", () => {
             expect(pos).not.toBeNull();
 
             const refs = findReferences(f.text, pos!, f.uri, true);
-            expect(refs.length).toBeGreaterThanOrEqual(3);
+            expect(refs).toHaveLength(3);
             for (const ref of refs) {
                 expect(ref.uri).toBe(f.uri);
             }
@@ -145,8 +140,8 @@ describe("weidu-tp2 integration", () => {
             const refsInclude = findReferences(f.text, pos!, f.uri, true);
             const refsExclude = findReferences(f.text, pos!, f.uri, false);
 
-            expect(refsExclude.length).toBeLessThan(refsInclude.length);
-            expect(refsExclude.length).toBeGreaterThanOrEqual(1);
+            expect(refsInclude).toHaveLength(3);
+            expect(refsExclude).toHaveLength(1);
         });
 
         it("finds references to a function name", () => {
@@ -157,8 +152,7 @@ describe("weidu-tp2 integration", () => {
             expect(pos).not.toBeNull();
 
             const refs = findReferences(f.text, pos!, f.uri, true);
-            // definition + at least 1 call site
-            expect(refs.length).toBeGreaterThanOrEqual(2);
+            expect(refs).toHaveLength(2);
         });
     });
 
@@ -179,7 +173,7 @@ describe("weidu-tp2 integration", () => {
 
             const edits = result!.changes?.[f.uri];
             expect(edits).toBeDefined();
-            expect(edits!.length).toBeGreaterThanOrEqual(3);
+            expect(edits!).toHaveLength(3);
             for (const edit of edits!) {
                 expect(edit.newText).toBe("has_ac_effect");
             }
@@ -208,7 +202,7 @@ describe("weidu-tp2 integration", () => {
 
             const edits = result!.changes?.[f.uri];
             expect(edits).toBeDefined();
-            expect(edits!.length).toBeGreaterThanOrEqual(2);
+            expect(edits!).toHaveLength(2);
         });
     });
 
@@ -227,7 +221,7 @@ describe("weidu-tp2 integration", () => {
             }
 
             const results = fileIndex.symbols.searchWorkspaceSymbols("unstack");
-            expect(results.length).toBeGreaterThanOrEqual(1);
+            expect(results).toHaveLength(1);
             expect(results[0].name).toBe("unstack_armor_bonus");
         });
 
@@ -243,8 +237,7 @@ describe("weidu-tp2 integration", () => {
             }
 
             const results = fileIndex.symbols.searchWorkspaceSymbols("");
-            // Should have symbols from both files
-            expect(results.length).toBeGreaterThan(3);
+            expect(results).toHaveLength(6);
         });
     });
 
@@ -279,16 +272,14 @@ describe("weidu-tp2 integration", () => {
             const f = loadFixture(TNT_BASE, "tnt/lib/functions.tph");
 
             const ranges = getFoldingRanges(f.text);
-            // Multiple function definitions + nested blocks
-            expect(ranges.length).toBeGreaterThan(5);
+            expect(ranges).toHaveLength(12);
         });
 
         it("produces folding ranges for components in a tp2 file", () => {
             const f = loadFixture(RR_BASE, "rr/setup-rr.tp2");
 
             const ranges = getFoldingRanges(f.text);
-            // setup-rr.tp2 has ALWAYS block + many components
-            expect(ranges.length).toBeGreaterThan(3);
+            expect(ranges).toHaveLength(327);
         });
 
         it("includes comment folding for JSDoc blocks", () => {
@@ -296,8 +287,118 @@ describe("weidu-tp2 integration", () => {
 
             const ranges = getFoldingRanges(f.text);
             const commentRanges = ranges.filter(r => r.kind === FoldingRangeKind.Comment);
-            // functions.tph has JSDoc blocks
-            expect(commentRanges.length).toBeGreaterThanOrEqual(1);
+            expect(commentRanges).toHaveLength(2);
+        });
+    });
+
+    // =========================================================================
+    // Formatting
+    // =========================================================================
+
+    describe("formatting", () => {
+        it("formats a TP2 header file without errors", () => {
+            const f = loadFixture(TNT_BASE, "tnt/lib/functions.tph");
+
+            const tree = parseWithCache(f.text);
+            expect(tree).not.toBeNull();
+
+            const result = formatDocument(tree!.rootNode);
+            expect(result.text).toBeTruthy();
+            expect(result.text).toContain("DEFINE_ACTION_FUNCTION");
+        });
+
+        it("produces idempotent output", () => {
+            const f = loadFixture(TNT_BASE, "tnt/lib/functions.tph");
+
+            const tree1 = parseWithCache(f.text);
+            const result1 = formatDocument(tree1!.rootNode);
+
+            const tree2 = parseWithCache(result1.text);
+            const result2 = formatDocument(tree2!.rootNode);
+
+            expect(result2.text).toBe(result1.text);
+        });
+
+        it("formats a tp2 installer file", () => {
+            const f = loadFixture(RR_BASE, "rr/setup-rr.tp2");
+
+            const tree = parseWithCache(f.text);
+            expect(tree).not.toBeNull();
+
+            const result = formatDocument(tree!.rootNode);
+            expect(result.text).toBeTruthy();
+        });
+    });
+
+    // =========================================================================
+    // Hover (JSDoc on function parameters)
+    // =========================================================================
+
+    describe("hover", () => {
+        it("returns hover for a function parameter in a LAF call", () => {
+            const f = loadFixture(TNT_BASE, "tnt/lib/functions.tph");
+
+            // LAF CREATE_SHELL_BLINDNESS INT_VAR duration savingthrow
+            // "duration" at line 92 (0-indexed: 91) is a param name in a LAF call
+            const pos = findIdentifierPosition(f.text, "duration", 2);
+            expect(pos).not.toBeNull();
+
+            const hover = getFunctionParamHover(f.text, "duration", pos!);
+            expect(hover).not.toBeNull();
+            const value = (hover!.contents as { value: string }).value;
+            expect(value).toContain("int duration = 0");
+        });
+
+        it("returns null for a non-parameter symbol", () => {
+            const f = loadFixture(TNT_BASE, "tnt/lib/functions.tph");
+
+            // "spells" is a variable, not a function parameter
+            const pos = findIdentifierPosition(f.text, "spells", 1);
+            expect(pos).not.toBeNull();
+
+            const hover = getFunctionParamHover(f.text, "spells", pos!);
+            expect(hover).toBeNull();
+        });
+    });
+
+    // =========================================================================
+    // Local Symbols
+    // =========================================================================
+
+    describe("local symbols", () => {
+        it("extracts function definitions as local symbols", () => {
+            const f = loadFixture(TNT_BASE, "tnt/lib/functions.tph");
+
+            const symbols = getLocalSymbols(f.text, f.uri);
+            expect(symbols).toHaveLength(5);
+            expect(symbols.map(s => s.name)).toEqual([
+                "LIST_WEB_SPELLS", "unstack_armor_bonus",
+                "CREATE_SHELL_SPELL", "CREATE_SHELL_BLINDNESS", "CREATE_SHELL_CONFUSION",
+            ]);
+        });
+
+        it("includes hover content in local symbols", () => {
+            const f = loadFixture(TNT_BASE, "tnt/lib/functions.tph");
+
+            const symbols = getLocalSymbols(f.text, f.uri);
+            const unstack = symbols.find(s => s.name === "unstack_armor_bonus");
+            expect(unstack).toBeDefined();
+
+            // Local symbols should have pre-computed hover
+            expect(unstack!.hover).toBeDefined();
+            expect(unstack!.hover.contents).toBeDefined();
+        });
+
+        it("includes completion items in local symbols", () => {
+            const f = loadFixture(TNT_BASE, "tnt/lib/functions.tph");
+
+            const symbols = getLocalSymbols(f.text, f.uri);
+            const listWeb = symbols.find(s => s.name === "LIST_WEB_SPELLS");
+            expect(listWeb).toBeDefined();
+
+            // Local symbols should have pre-computed completion
+            expect(listWeb!.completion).toBeDefined();
+            expect(listWeb!.completion.label).toBe("LIST_WEB_SPELLS");
         });
     });
 });

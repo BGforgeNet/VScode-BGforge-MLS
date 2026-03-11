@@ -18,8 +18,11 @@ import { getSslCompletionContext, SslCompletionContext } from "../../src/fallout
 import { getLocalSymbols } from "../../src/fallout-ssl/local-symbols";
 import { createFoldingRangesProvider } from "../../src/shared/folding-ranges";
 import { isInitialized, parseWithCache } from "../../src/fallout-ssl/parser";
+import { formatDocument } from "../../src/fallout-ssl/format/core";
+import { parseFile } from "../../src/fallout-ssl/header-parser";
+import { FileIndex } from "../../src/core/file-index";
 import { SyntaxType } from "../../src/fallout-ssl/tree-sitter.d";
-import { loadFixture, findIdentifierPosition, FALLOUT_FIXTURES } from "./test-helpers";
+import { loadFixture, loadFixtures, findIdentifierPosition, FALLOUT_FIXTURES } from "./test-helpers";
 
 const RP_BASE = join(FALLOUT_FIXTURES, "Fallout2_Restoration_Project/scripts_src");
 const TWEAKS_BASE = join(FALLOUT_FIXTURES, "FO2tweaks");
@@ -52,13 +55,12 @@ describe("fallout-ssl integration", () => {
             const f = loadFixture(RP_BASE, "den/dclara.ssl");
             const symbols = getDocumentSymbols(f.text);
 
-            // dclara.ssl has many procedures: start, critter_p_proc, talk_p_proc, Node001..Node034, etc.
+            // dclara.ssl has 113 symbols: procedures + forward declarations + macros
             const names = symbols.map(s => s.name);
             expect(names).toContain("start");
             expect(names).toContain("talk_p_proc");
             expect(names).toContain("Node001");
-            // Should have a significant number of procedures
-            expect(symbols.length).toBeGreaterThan(20);
+            expect(symbols).toHaveLength(113);
         });
 
         it("extracts macros from a real .h header file", () => {
@@ -66,10 +68,9 @@ describe("fallout-ssl integration", () => {
             const symbols = getDocumentSymbols(f.text);
 
             const names = symbols.map(s => s.name);
-            // define.h has macros like ndebug, no_proc, start_proc, etc.
             expect(names).toContain("ndebug");
             expect(names).toContain("DEFINE_H");
-            expect(symbols.length).toBeGreaterThan(10);
+            expect(symbols).toHaveLength(618);
         });
 
         it("extracts procedures with local variables as children", () => {
@@ -78,11 +79,9 @@ describe("fallout-ssl integration", () => {
 
             const printScenery = symbols.find(s => s.name === "print_scenery");
             expect(printScenery).toBeDefined();
-            // print_scenery has "variable s, scenery = ..." — should have children
+            // print_scenery has "variable s, scenery = ..." — 2 children
             expect(printScenery!.children).toBeDefined();
-            expect(printScenery!.children!.length).toBeGreaterThanOrEqual(1);
-            const childNames = printScenery!.children!.map(c => c.name);
-            expect(childNames).toContain("s");
+            expect(printScenery!.children!.map(c => c.name)).toEqual(["s", "scenery"]);
         });
     });
 
@@ -115,6 +114,7 @@ describe("fallout-ssl integration", () => {
             const location = getLocalDefinition(f.text, f.uri, pos!);
             expect(location).not.toBeNull();
             expect(location!.uri).toBe(f.uri);
+            expect(location!.range.start.line).toBe(5);
         });
 
         it("navigates to macro definition in a header file", () => {
@@ -127,6 +127,7 @@ describe("fallout-ssl integration", () => {
             const location = getLocalDefinition(f.text, f.uri, pos!);
             expect(location).not.toBeNull();
             expect(location!.uri).toBe(f.uri);
+            expect(location!.range.start.line).toBe(59);
         });
 
         it("returns null for built-in functions (not locally defined)", () => {
@@ -180,12 +181,8 @@ describe("fallout-ssl integration", () => {
             expect(pos).not.toBeNull();
 
             const refs = findReferences(f.text, pos!, f.uri, true);
-            expect(refs.length).toBeGreaterThanOrEqual(2);
-            // All refs should be within print_scenery's range (lines 4-11)
-            for (const ref of refs) {
-                expect(ref.range.start.line).toBeGreaterThanOrEqual(4);
-                expect(ref.range.end.line).toBeLessThanOrEqual(11);
-            }
+            expect(refs).toHaveLength(2);
+            expect(refs.map(r => r.range.start.line)).toEqual([5, 7]);
         });
 
         it("finds macro references across the file", () => {
@@ -196,8 +193,7 @@ describe("fallout-ssl integration", () => {
             expect(pos).not.toBeNull();
 
             const refs = findReferences(f.text, pos!, f.uri, true);
-            // definition + at least 1 usage
-            expect(refs.length).toBeGreaterThanOrEqual(2);
+            expect(refs).toHaveLength(2);
         });
     });
 
@@ -218,8 +214,7 @@ describe("fallout-ssl integration", () => {
 
             const edits = result!.changes?.[f.uri];
             expect(edits).toBeDefined();
-            // Definition + forward decl (if any) + 2 call sites
-            expect(edits!.length).toBeGreaterThanOrEqual(3);
+            expect(edits!).toHaveLength(3);
             for (const edit of edits!) {
                 expect(edit.newText).toBe("print_all_scenery");
             }
@@ -247,7 +242,7 @@ describe("fallout-ssl integration", () => {
 
             const edits = result!.changes?.[f.uri];
             expect(edits).toBeDefined();
-            expect(edits!.length).toBeGreaterThanOrEqual(2);
+            expect(edits!).toHaveLength(2);
         });
     });
 
@@ -315,19 +310,18 @@ describe("fallout-ssl integration", () => {
             const f = loadFixture(TWEAKS_BASE, "source_test/gl_g_scenepid.ssl");
 
             const symbols = getLocalSymbols(f.text, f.uri);
-            const names = symbols.map(s => s.name);
-
-            expect(names).toContain("print_scenery");
-            expect(names).toContain("start");
-            expect(names).toContain("map_enter_p_proc");
+            expect(symbols).toHaveLength(4);
+            expect(symbols.map(s => s.name)).toEqual(
+                ["print_scenery", "start", "map_enter_p_proc", "SCRIPT_REALNAME"]
+            );
         });
 
         it("extracts macros from header files", () => {
             const f = loadFixture(RP_BASE, "headers/define.h");
 
             const symbols = getLocalSymbols(f.text, f.uri);
+            expect(symbols).toHaveLength(618);
             const names = symbols.map(s => s.name);
-
             expect(names).toContain("ndebug");
             expect(names).toContain("METARULE_TEST_FIRSTRUN");
         });
@@ -336,12 +330,11 @@ describe("fallout-ssl integration", () => {
             const f = loadFixture(SFALL_BASE, "headers/sfall.h");
 
             const symbols = getLocalSymbols(f.text, f.uri);
+            expect(symbols).toHaveLength(361);
             const names = symbols.map(s => s.name);
-
             expect(names).toContain("WORLDMAP");
             expect(names).toContain("COMBAT");
             expect(names).toContain("HOOK_TOHIT");
-            expect(symbols.length).toBeGreaterThan(20);
         });
     });
 
@@ -364,25 +357,100 @@ describe("fallout-ssl integration", () => {
             const f = loadFixture(TWEAKS_BASE, "source_test/gl_g_scenepid.ssl");
 
             const ranges = getFoldingRanges(f.text);
-            // Should have folding ranges for 3 procedures + foreach loop
-            expect(ranges.length).toBeGreaterThanOrEqual(3);
+            // 3 procedures + 1 foreach loop = 4 ranges
+            expect(ranges).toHaveLength(4);
         });
 
         it("produces folding ranges for a large file with many procedures", () => {
             const f = loadFixture(RP_BASE, "den/dclara.ssl");
 
             const ranges = getFoldingRanges(f.text);
-            // dclara.ssl has 30+ procedures — should have many folding ranges
-            expect(ranges.length).toBeGreaterThan(20);
+            expect(ranges).toHaveLength(123);
         });
 
         it("includes block comment folding", () => {
             const f = loadFixture(RP_BASE, "den/dclara.ssl");
 
             const ranges = getFoldingRanges(f.text);
-            // The file starts with a multi-line block comment
             const commentRanges = ranges.filter(r => r.kind === FoldingRangeKind.Comment);
-            expect(commentRanges.length).toBeGreaterThanOrEqual(1);
+            expect(commentRanges).toHaveLength(4);
+        });
+    });
+
+    // =========================================================================
+    // Formatting
+    // =========================================================================
+
+    describe("formatting", () => {
+        it("formats a real SSL file without errors", () => {
+            const f = loadFixture(TWEAKS_BASE, "source_test/gl_g_scenepid.ssl");
+
+            const tree = parseWithCache(f.text);
+            expect(tree).not.toBeNull();
+
+            const result = formatDocument(tree!.rootNode);
+            expect(result.text).toBeTruthy();
+            expect(result.text).toContain("procedure");
+        });
+
+        it("produces idempotent output (formatting twice gives same result)", () => {
+            const f = loadFixture(TWEAKS_BASE, "source_test/gl_g_scenepid.ssl");
+
+            const tree1 = parseWithCache(f.text);
+            const result1 = formatDocument(tree1!.rootNode);
+
+            const tree2 = parseWithCache(result1.text);
+            const result2 = formatDocument(tree2!.rootNode);
+
+            expect(result2.text).toBe(result1.text);
+        });
+
+        it("formats a header file", () => {
+            const f = loadFixture(RP_BASE, "headers/define.h");
+
+            const tree = parseWithCache(f.text);
+            expect(tree).not.toBeNull();
+
+            const result = formatDocument(tree!.rootNode);
+            expect(result.text).toBeTruthy();
+        });
+    });
+
+    // =========================================================================
+    // Workspace Symbols (via FileIndex)
+    // =========================================================================
+
+    describe("workspace symbols", () => {
+        it("indexes header symbols for workspace search", () => {
+            const files = loadFixtures(FALLOUT_FIXTURES, [
+                "sfall/artifacts/scripting/headers/sfall.h",
+            ]);
+
+            const fileIndex = new FileIndex();
+            for (const { uri, text } of files.values()) {
+                const result = parseFile(uri, text);
+                fileIndex.updateFile(uri, result);
+            }
+
+            const results = fileIndex.symbols.searchWorkspaceSymbols("WORLDMAP");
+            expect(results).toHaveLength(5);
+            expect(results[0].name).toBe("WORLDMAP");
+        });
+
+        it("indexes symbols across multiple header files", () => {
+            const files = loadFixtures(FALLOUT_FIXTURES, [
+                "sfall/artifacts/scripting/headers/sfall.h",
+                "Fallout2_Restoration_Project/scripts_src/headers/define.h",
+            ]);
+
+            const fileIndex = new FileIndex();
+            for (const { uri, text } of files.values()) {
+                const result = parseFile(uri, text);
+                fileIndex.updateFile(uri, result);
+            }
+
+            const results = fileIndex.symbols.searchWorkspaceSymbols("");
+            expect(results).toHaveLength(500);
         });
     });
 });

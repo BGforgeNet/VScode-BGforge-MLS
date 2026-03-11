@@ -12,6 +12,8 @@ import { getDocumentSymbols } from "../../src/weidu-d/symbol";
 import { getDefinition } from "../../src/weidu-d/definition";
 import { findReferences } from "../../src/weidu-d/references";
 import { renameSymbol, prepareRenameSymbol } from "../../src/weidu-d/rename";
+import { getStateLabelHover } from "../../src/weidu-d/hover";
+import { formatDocument } from "../../src/weidu-d/format/core";
 import { createFoldingRangesProvider } from "../../src/shared/folding-ranges";
 import { SyntaxType } from "../../src/weidu-d/tree-sitter.d";
 import { loadFixture, findIdentifierPosition, IE_FIXTURES } from "./test-helpers";
@@ -33,25 +35,24 @@ describe("weidu-d integration", () => {
             const f = loadFixture(BGT_BASE, "bgt/base/d_bg1/durlyle1.d");
             const symbols = getDocumentSymbols(f.text);
 
-            // durlyle1.d has many dialog states (0, 1, 2, 3, 4, 5, 6, 7, 8, ...)
-            expect(symbols.length).toBeGreaterThan(10);
+            expect(symbols).toHaveLength(66);
 
-            // State labels are numeric in this file
+            // State labels are numeric in this file (0..65)
             const names = symbols.map(s => s.name);
             expect(names).toContain("0");
             expect(names).toContain("1");
-            expect(names).toContain("7");
+            expect(names).toContain("65");
         });
 
         it("extracts named state labels from Ascension balth.d", () => {
             const f = loadFixture(IE_FIXTURES, "Ascension/ascension/balthazar/d/balth.d");
             const symbols = getDocumentSymbols(f.text);
 
-            // balth.d has named states like a31, a32, a33, etc.
+            // balth.d has named states: 24, a31..a100
+            expect(symbols).toHaveLength(66);
             const names = symbols.map(s => s.name);
             expect(names).toContain("a31");
             expect(names).toContain("a32");
-            expect(symbols.length).toBeGreaterThan(5);
         });
     });
 
@@ -73,6 +74,7 @@ describe("weidu-d integration", () => {
             const location = getDefinition(f.text, f.uri, targetPos);
             expect(location).not.toBeNull();
             expect(location!.uri).toBe(f.uri);
+            expect(location!.range.start.line).toBe(11);
         });
 
         it("navigates from GOTO to a named state label", () => {
@@ -85,6 +87,7 @@ describe("weidu-d integration", () => {
             const location = getDefinition(f.text, f.uri, pos!);
             expect(location).not.toBeNull();
             expect(location!.uri).toBe(f.uri);
+            expect(location!.range.start.line).toBe(113);
         });
     });
 
@@ -104,8 +107,7 @@ describe("weidu-d integration", () => {
             const targetPos = { line: pos!.line, character: pos!.character + 6 };
 
             const refs = findReferences(f.text, targetPos, f.uri, true);
-            // definition + at least 2 GOTO references
-            expect(refs.length).toBeGreaterThanOrEqual(3);
+            expect(refs).toHaveLength(10);
             for (const ref of refs) {
                 expect(ref.uri).toBe(f.uri);
             }
@@ -121,7 +123,8 @@ describe("weidu-d integration", () => {
             const refsInclude = findReferences(f.text, targetPos, f.uri, true);
             const refsExclude = findReferences(f.text, targetPos, f.uri, false);
 
-            expect(refsExclude.length).toBe(refsInclude.length - 1);
+            expect(refsInclude).toHaveLength(10);
+            expect(refsExclude).toHaveLength(9);
         });
     });
 
@@ -185,24 +188,79 @@ describe("weidu-d integration", () => {
             const f = loadFixture(BGT_BASE, "bgt/base/d_bg1/durlyle1.d");
 
             const ranges = getFoldingRanges(f.text);
-            // Many states should produce folding ranges
-            expect(ranges.length).toBeGreaterThan(10);
+            expect(ranges).toHaveLength(88);
         });
 
         it("produces folding ranges for APPEND blocks", () => {
             const f = loadFixture(IE_FIXTURES, "Ascension/ascension/balthazar/d/balth.d");
 
             const ranges = getFoldingRanges(f.text);
-            // balth.d has APPEND blocks containing multiple states
-            expect(ranges.length).toBeGreaterThan(5);
+            expect(ranges).toHaveLength(100);
+        });
+    });
+
+    // =========================================================================
+    // Formatting
+    // =========================================================================
+
+    describe("formatting", () => {
+        it("formats a D dialog file without errors", () => {
+            const f = loadFixture(BGT_BASE, "bgt/base/d_bg1/durlyle1.d");
+
+            const tree = parseWithCache(f.text);
+            expect(tree).not.toBeNull();
+
+            const result = formatDocument(tree!.rootNode);
+            expect(result.text).toBeTruthy();
+            expect(result.text).toContain("BEGIN");
         });
 
-        it("produces correct range counts for a file with many states", () => {
+        it("produces idempotent output", () => {
+            const f = loadFixture(BGT_BASE, "bgt/base/d_bg1/durlyle1.d");
+
+            const tree1 = parseWithCache(f.text);
+            const result1 = formatDocument(tree1!.rootNode);
+
+            const tree2 = parseWithCache(result1.text);
+            const result2 = formatDocument(tree2!.rootNode);
+
+            expect(result2.text).toBe(result1.text);
+        });
+
+        it("formats a file with APPEND blocks", () => {
             const f = loadFixture(IE_FIXTURES, "Ascension/ascension/balthazar/d/balth.d");
 
-            const ranges = getFoldingRanges(f.text);
-            // balth.d has REPLACE + APPEND + many states + transitions
-            expect(ranges.length).toBeGreaterThan(10);
+            const tree = parseWithCache(f.text);
+            expect(tree).not.toBeNull();
+
+            const result = formatDocument(tree!.rootNode);
+            expect(result.text).toBeTruthy();
+        });
+    });
+
+    // =========================================================================
+    // Hover (JSDoc on state labels)
+    // =========================================================================
+
+    describe("hover", () => {
+        it("returns notHandled for state labels without JSDoc", () => {
+            const f = loadFixture(BGT_BASE, "bgt/base/d_bg1/durlyle1.d");
+
+            // State "0" in durlyle1.d has no JSDoc comment
+            const pos = findIdentifierPosition(f.text, "BEGIN 0");
+            expect(pos).not.toBeNull();
+            const targetPos = { line: pos!.line, character: pos!.character + 6 };
+
+            const result = getStateLabelHover(f.text, "0", f.uri, targetPos);
+            expect(result.handled).toBe(false);
+        });
+
+        it("returns notHandled for positions outside state labels", () => {
+            const f = loadFixture(BGT_BASE, "bgt/base/d_bg1/durlyle1.d");
+
+            // Position on a SAY keyword, not a state label
+            const result = getStateLabelHover(f.text, "SAY", f.uri, { line: 0, character: 0 });
+            expect(result.handled).toBe(false);
         });
     });
 });
