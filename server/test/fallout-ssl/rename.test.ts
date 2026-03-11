@@ -2,6 +2,8 @@
  * Unit tests for fallout-ssl/rename.ts - single-file and workspace-wide rename.
  */
 
+import { readFileSync } from "node:fs";
+import { join, resolve } from "node:path";
 import { describe, expect, it, beforeAll, vi } from "vitest";
 import { MarkupKind, Position, TextDocumentEdit, TextEdit, WorkspaceEdit } from "vscode-languageserver/node";
 import { SymbolKind, ScopeLevel, SourceType } from "../../src/core/symbol";
@@ -19,8 +21,14 @@ vi.mock("../../src/lsp-connection", () => ({
 import { renameSymbol, prepareRenameSymbol, renameSymbolWorkspace, prepareRenameSymbolWorkspace } from "../../src/fallout-ssl/rename";
 import { initParser } from "../../src/fallout-ssl/parser";
 import { ReferencesIndex } from "../../src/shared/references-index";
-import { extractCallSites } from "../../src/fallout-ssl/call-sites";
+import { parseFile } from "../../src/fallout-ssl/header-parser";
+
+/** Extract refs only. Adapter: old call-sites API was (text, uri); parseFile uses (uri, text). */
+const extractCallSites = (text: string, uri: string) => parseFile(uri, text).refs;
 import { Symbols } from "../../src/core/symbol-index";
+import { FileIndex } from "../../src/core/file-index";
+import { pathToUri } from "../../src/common";
+import { isHeaderFile } from "../../src/core/location-utils";
 
 beforeAll(async () => {
     await initParser();
@@ -1156,6 +1164,196 @@ end
             expect(getEditsForUri(result, globalHUri)).toBeDefined();
             // den.h: uses the symbol without including global.h directly
             expect(getEditsForUri(result, denHUri)).toBeDefined();
+        });
+
+        it("renames symbol defined in .h across .ssl files that directly use it (real fixtures)", () => {
+            // Uses real RP fixture files to test the exact GVAR_DEN_GANGWAR scenario
+            const fixtureBase = resolve(__dirname, "../../../external/fallout/Fallout2_Restoration_Project/scripts_src");
+
+            const globalHUri = "file:///project/headers/global.h";
+            const denHUri = "file:///project/headers/den.h";
+            const ssl1Uri = "file:///project/den/dclara.ssl";
+            const ssl2Uri = "file:///project/den/dctyler.ssl";
+
+            const globalHText: string = readFileSync(join(fixtureBase, "headers/global.h"), "utf-8");
+            const denHText: string = readFileSync(join(fixtureBase, "headers/den.h"), "utf-8");
+            const ssl1Text: string = readFileSync(join(fixtureBase, "den/dclara.ssl"), "utf-8");
+            const ssl2Text: string = readFileSync(join(fixtureBase, "den/dctyler.ssl"), "utf-8");
+
+            const refsIndex = new ReferencesIndex();
+            refsIndex.updateFile(globalHUri, extractCallSites(globalHText, globalHUri));
+            refsIndex.updateFile(denHUri, extractCallSites(denHText, denHUri));
+            refsIndex.updateFile(ssl1Uri, extractCallSites(ssl1Text, ssl1Uri));
+            refsIndex.updateFile(ssl2Uri, extractCallSites(ssl2Text, ssl2Uri));
+
+            const symbolStore = new Symbols();
+
+            // Rename from definition in global.h (line 126 = 0-indexed line for #define GVAR_DEN_GANGWAR)
+            const globalHLines = globalHText.split("\n");
+            const defLine = globalHLines.findIndex(l => l.includes("#define GVAR_DEN_GANGWAR "));
+            expect(defLine, "GVAR_DEN_GANGWAR definition should exist in global.h").toBeGreaterThan(-1);
+            const defCol = globalHLines[defLine].indexOf("GVAR_DEN_GANGWAR");
+            const position: Position = { line: defLine, character: defCol };
+            const result = renameSymbolWorkspace(
+                globalHText, position, "GVAR_DEN_GANGWAR_NEW", globalHUri,
+                refsIndex, symbolStore,
+                makeGetFileText({
+                    [globalHUri]: globalHText,
+                    [denHUri]: denHText,
+                    [ssl1Uri]: ssl1Text,
+                    [ssl2Uri]: ssl2Text,
+                }),
+                "/project",
+            );
+
+            expect(result).not.toBeNull();
+            // global.h: definition
+            expect(getEditsForUri(result, globalHUri)).toBeDefined();
+            // den.h: usage in macro body
+            expect(getEditsForUri(result, denHUri)).toBeDefined();
+            // Both .ssl files: direct usage in global_var(GVAR_DEN_GANGWAR)
+            expect(getEditsForUri(result, ssl1Uri)).toBeDefined();
+            expect(getEditsForUri(result, ssl2Uri)).toBeDefined();
+
+            // Verify .ssl edits use the new name
+            const ssl1Edits = getEditsForUri(result, ssl1Uri)!;
+            expect(ssl1Edits.length).toBeGreaterThanOrEqual(1);
+            for (const edit of ssl1Edits) {
+                expect(edit.newText).toBe("GVAR_DEN_GANGWAR_NEW");
+            }
+        });
+
+        it("integration: FileIndex-based rename across real .h and .ssl fixtures", () => {
+            // Simulates the exact provider scanWorkspaceFiles flow:
+            // read real files, parseFile with SourceType, populate FileIndex, then rename.
+            const fixtureBase = resolve(__dirname, "../../../external/fallout/Fallout2_Restoration_Project/scripts_src");
+            const files: Record<string, { uri: string; text: string }> = {};
+
+            // Simulate scanWorkspaceFiles: index global.h, den.h, and .ssl files
+            // URIs use pathToUri (same as provider) to match runtime encoding
+            for (const relPath of [
+                "headers/global.h",
+                "headers/den.h",
+                "den/dclara.ssl",
+                "den/dctyler.ssl",
+                "den/dcg1grd.ssl",
+            ]) {
+                const absPath = join(fixtureBase, relPath);
+                const uri = pathToUri(absPath) as string;
+                const text = readFileSync(absPath, "utf-8");
+                files[uri] = { uri, text };
+            }
+
+            const fileIndex = new FileIndex();
+
+            // Index all files exactly as scanWorkspaceFiles does:
+            // headers get SourceType.Workspace, .ssl files get SourceType.Navigation
+            for (const { uri, text } of Object.values(files)) {
+                const st = isHeaderFile(uri) ? SourceType.Workspace : SourceType.Navigation;
+                const result = parseFile(uri, text, fixtureBase, st);
+                fileIndex.updateFile(uri, result);
+            }
+
+            // Verify: GVAR_DEN_GANGWAR is in the refs index across all expected file types
+            const allUris = fileIndex.refs.lookupUris("GVAR_DEN_GANGWAR");
+            const sslUris = [...allUris].filter(u => u.endsWith(".ssl"));
+            const hUris = [...allUris].filter(u => u.endsWith(".h"));
+            expect(hUris.length, "GVAR_DEN_GANGWAR should be indexed in .h files").toBeGreaterThanOrEqual(2);
+            expect(sslUris.length, "GVAR_DEN_GANGWAR should be indexed in .ssl files").toBeGreaterThanOrEqual(2);
+
+            // Find the definition line in global.h
+            const globalHUri = Object.keys(files).find(u => u.endsWith("global.h"))!;
+            const globalHText = files[globalHUri].text;
+            const globalHLines = globalHText.split("\n");
+            const defLine = globalHLines.findIndex((l: string) => l.includes("#define GVAR_DEN_GANGWAR "));
+            expect(defLine, "GVAR_DEN_GANGWAR definition should exist in global.h").toBeGreaterThan(-1);
+            const defCol = globalHLines[defLine].indexOf("GVAR_DEN_GANGWAR");
+
+            // Perform workspace rename
+            const result = renameSymbolWorkspace(
+                globalHText,
+                { line: defLine, character: defCol },
+                "GVAR_DEN_GANGWAR_RENAMED",
+                globalHUri,
+                fileIndex.refs,
+                fileIndex.symbols,
+                (uri: string) => files[uri]?.text ?? null,
+                fixtureBase,
+            );
+
+            expect(result).not.toBeNull();
+            const editUris = result!.documentChanges!
+                .filter((dc: unknown): dc is TextDocumentEdit => TextDocumentEdit.is(dc))
+                .map((dc: TextDocumentEdit) => dc.textDocument.uri);
+
+            // Should have edits in global.h + den.h + .ssl files
+            expect(editUris.filter(u => u.endsWith(".h")).length).toBeGreaterThanOrEqual(2);
+            expect(editUris.filter(u => u.endsWith(".ssl")).length, "rename should include .ssl files").toBeGreaterThanOrEqual(2);
+        });
+
+        it("integration: rename FROM an .ssl file (external symbol) across real fixtures", () => {
+            // The user triggers rename on GVAR_DEN_GANGWAR from dclara.ssl,
+            // where it is NOT locally defined (scope = "external").
+            // This tests the workspace rename path from a reference site.
+            const fixtureBase = resolve(__dirname, "../../../external/fallout/Fallout2_Restoration_Project/scripts_src");
+            const files: Record<string, { uri: string; text: string }> = {};
+
+            for (const relPath of [
+                "headers/global.h",
+                "headers/den.h",
+                "den/dclara.ssl",
+                "den/dctyler.ssl",
+                "den/dcg1grd.ssl",
+            ]) {
+                const absPath = join(fixtureBase, relPath);
+                const uri = pathToUri(absPath) as string;
+                const text = readFileSync(absPath, "utf-8");
+                files[uri] = { uri, text };
+            }
+
+            const fileIndex = new FileIndex();
+            for (const { uri, text } of Object.values(files)) {
+                const st = isHeaderFile(uri) ? SourceType.Workspace : SourceType.Navigation;
+                const result = parseFile(uri, text, fixtureBase, st);
+                fileIndex.updateFile(uri, result);
+            }
+
+            // Find GVAR_DEN_GANGWAR as an actual identifier (not inside a string literal)
+            const sslUri = Object.keys(files).find(u => u.endsWith("dclara.ssl"))!;
+            const sslText = files[sslUri].text;
+            const sslLines = sslText.split("\n");
+            // Find the line with global_var(GVAR_DEN_GANGWAR) — the identifier usage
+            const usageLine = sslLines.findIndex((l: string) => {
+                // Must contain the identifier outside of a string context
+                const callMatch = l.match(/global_var\(GVAR_DEN_GANGWAR\)/);
+                return callMatch !== null;
+            });
+            expect(usageLine, "GVAR_DEN_GANGWAR usage should exist in dclara.ssl").toBeGreaterThan(-1);
+            // Position cursor on the LAST occurrence (the real identifier, not the one in the string)
+            const callIdx = sslLines[usageLine].lastIndexOf("global_var(GVAR_DEN_GANGWAR)");
+            // Skip past "global_var(" to land on the identifier
+            const usageCol = callIdx + "global_var(".length;
+
+            // Rename from the .ssl file (external symbol — not locally defined)
+            const result = renameSymbolWorkspace(
+                sslText,
+                { line: usageLine, character: usageCol },
+                "GVAR_DEN_GANGWAR_RENAMED",
+                sslUri,
+                fileIndex.refs,
+                fileIndex.symbols,
+                (uri: string) => files[uri]?.text ?? null,
+                fixtureBase,
+            );
+
+            expect(result, "workspace rename from .ssl reference site should succeed").not.toBeNull();
+            const editUris = result!.documentChanges!
+                .filter((dc: unknown): dc is TextDocumentEdit => TextDocumentEdit.is(dc))
+                .map((dc: TextDocumentEdit) => dc.textDocument.uri);
+
+            // Should include the definition file (global.h), den.h, and .ssl files
+            expect(editUris.filter(u => u.endsWith(".h")).length).toBeGreaterThanOrEqual(2);
+            expect(editUris.filter(u => u.endsWith(".ssl")).length, "rename from .ssl should include other .ssl files").toBeGreaterThanOrEqual(2);
         });
     });
 });

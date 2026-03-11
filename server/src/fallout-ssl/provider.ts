@@ -17,7 +17,7 @@ import { type IndexedSymbol, SourceType } from "../core/symbol";
 import { conlog, findFiles, getLinePrefix, pathToUri } from "../common";
 import { EXT_FALLOUT_SSL_ALL, EXT_FALLOUT_SSL_HEADERS, LANG_FALLOUT_SSL } from "../core/languages";
 import { isHeaderFile } from "../core/location-utils";
-import { Symbols } from "../core/symbol-index";
+import { FileIndex } from "../core/file-index";
 import { loadStaticSymbols } from "../core/static-loader";
 import { compile as falloutCompile } from "./compiler";
 import { type FormatResult, type LanguageProvider, type ProviderContext } from "../language-provider";
@@ -35,11 +35,9 @@ import { getLocalDefinition } from "./definition";
 import { findReferences } from "./references";
 import { renameSymbol, prepareRenameSymbol, renameSymbolWorkspace, prepareRenameSymbolWorkspace } from "./rename";
 import { getLocalSignature } from "./signature";
-import { parseHeaderToSymbols } from "./header-parser";
+import { parseFile } from "./header-parser";
 import { getLocalSymbols, lookupLocalSymbol, clearLocalSymbolsCache } from "./local-symbols";
 import { getSslCompletionContext, SslCompletionContext, isSslDeclarationSite } from "./completion-context";
-import { ReferencesIndex } from "../shared/references-index";
-import { extractCallSites } from "./call-sites";
 import { SyntaxType } from "./tree-sitter.d";
 
 /** SSL block-level node types for code folding. */
@@ -66,21 +64,18 @@ class FalloutSslProvider implements LanguageProvider {
     // at startup since scanWorkspaceFiles already reads all .ssl files.
     readonly watchExtensions = [...EXT_FALLOUT_SSL_HEADERS];
 
-    private symbolStore: Symbols | undefined;
+    private fileIndex: FileIndex | undefined;
     private staticSignatures: signature.SigMap | undefined;
     private storedContext: ProviderContext | undefined;
-    private refsIndex: ReferencesIndex | undefined;
 
     async init(context: ProviderContext): Promise<void> {
         this.storedContext = context;
 
         await initParser();
 
-        this.symbolStore = new Symbols();
+        this.fileIndex = new FileIndex();
         const staticSymbols = loadStaticSymbols(LANG_FALLOUT_SSL);
-        this.symbolStore.loadStatic(staticSymbols);
-
-        this.refsIndex = new ReferencesIndex();
+        this.fileIndex.loadStatic(staticSymbols);
 
         this.staticSignatures = signature.loadStatic(LANG_FALLOUT_SSL);
 
@@ -123,9 +118,8 @@ class FalloutSslProvider implements LanguageProvider {
                 // Parse symbols and references from the text we just read
                 if (isInitialized()) {
                     const st = isHeaderFile(uri) ? SourceType.Workspace : SourceType.Navigation;
-                    const symbols = parseHeaderToSymbols(uri, text, workspaceRoot, st);
-                    this.symbolStore?.updateFile(uri, symbols);
-                    this.refsIndex?.updateFile(uri, extractCallSites(text, uri));
+                    const result = parseFile(uri, text, workspaceRoot, st);
+                    this.fileIndex?.updateFile(uri, result);
                 }
             }),
         );
@@ -171,7 +165,7 @@ class FalloutSslProvider implements LanguageProvider {
     }
 
     resolveSymbol(name: string, text: string, uri: string): IndexedSymbol | undefined {
-        return resolveSymbolWithLocal(name, text, uri, this.symbolStore, lookupLocalSymbol);
+        return resolveSymbolWithLocal(name, text, uri, this.fileIndex?.symbols, lookupLocalSymbol);
     }
 
     format(text: string, uri: string): FormatResult {
@@ -209,7 +203,7 @@ class FalloutSslProvider implements LanguageProvider {
         if (!isInitialized()) {
             return [];
         }
-        return findReferences(text, position, uri, includeDeclaration, this.refsIndex);
+        return findReferences(text, position, uri, includeDeclaration, this.fileIndex?.refs);
     }
 
     filterCompletions(items: CompletionItem[], text: string, position: Position, uri: string, triggerCharacter?: string): CompletionItem[] {
@@ -257,8 +251,8 @@ class FalloutSslProvider implements LanguageProvider {
         }
 
         // Try workspace-aware prepare first (allows renaming header-defined symbols)
-        if (this.symbolStore) {
-            const wsResult = prepareRenameSymbolWorkspace(text, position, this.symbolStore, this.storedContext?.workspaceRoot);
+        if (this.fileIndex) {
+            const wsResult = prepareRenameSymbolWorkspace(text, position, this.fileIndex.symbols, this.storedContext?.workspaceRoot);
             if (wsResult) {
                 return wsResult;
             }
@@ -278,11 +272,11 @@ class FalloutSslProvider implements LanguageProvider {
             : undefined;
 
         // Try workspace-wide rename first (for symbols defined in headers)
-        if (this.refsIndex && this.symbolStore) {
+        if (this.fileIndex) {
             debugLog?.(`rename: trying workspace rename for "${newName}" at ${uri}`);
             const wsResult = renameSymbolWorkspace(
                 text, position, newName, uri,
-                this.refsIndex, this.symbolStore,
+                this.fileIndex.refs, this.fileIndex.symbols,
                 (fileUri) => this.readFileText(fileUri),
                 this.storedContext?.workspaceRoot,
                 debugLog,
@@ -293,7 +287,7 @@ class FalloutSslProvider implements LanguageProvider {
             }
             debugLog?.(`rename: workspace rename returned null, falling back to single-file`);
         } else {
-            debugLog?.(`rename: no refsIndex or symbolStore, using single-file rename`);
+            debugLog?.(`rename: no fileIndex, using single-file rename`);
         }
 
         // Fall back to single-file rename (local variables, params)
@@ -303,7 +297,7 @@ class FalloutSslProvider implements LanguageProvider {
     }
 
     getCompletions(uri: string): CompletionItem[] {
-        return this.symbolStore ? this.symbolStore.query({ excludeUri: uri }).map((s: IndexedSymbol) => s.completion) : [];
+        return this.fileIndex ? this.fileIndex.symbols.query({ excludeUri: uri }).map((s: IndexedSymbol) => s.completion) : [];
     }
 
     getSignature(_uri: string, symbolName: string, paramIndex: number): SignatureHelp | null {
@@ -313,7 +307,7 @@ class FalloutSslProvider implements LanguageProvider {
                 return signature.getResponse(sig, paramIndex);
             }
         }
-        const symbol = this.symbolStore?.lookup(symbolName);
+        const symbol = this.fileIndex?.symbols.lookup(symbolName);
         if (symbol?.signature) {
             return signature.getResponse(symbol.signature, paramIndex);
         }
@@ -321,27 +315,24 @@ class FalloutSslProvider implements LanguageProvider {
     }
 
     getSymbolDefinition(symbolName: string): Location | null {
-        const symbol = this.symbolStore?.lookup(symbolName);
+        const symbol = this.fileIndex?.symbols.lookup(symbolName);
         return symbol?.location ?? null;
     }
 
     reloadFileData(uri: string, text: string): void {
-        // Parse symbols for all files: headers get Workspace scope, others Navigation
-        if (isInitialized() && this.symbolStore) {
+        if (isInitialized() && this.fileIndex) {
             const st = isHeaderFile(uri) ? SourceType.Workspace : SourceType.Navigation;
-            const symbols = parseHeaderToSymbols(uri, text, this.storedContext?.workspaceRoot, st);
-            this.symbolStore.updateFile(uri, symbols);
-            this.refsIndex?.updateFile(uri, extractCallSites(text, uri));
+            const result = parseFile(uri, text, this.storedContext?.workspaceRoot, st);
+            this.fileIndex.updateFile(uri, result);
         }
     }
 
     onWatchedFileDeleted(uri: string): void {
-        this.symbolStore?.clearFile(uri);
-        this.refsIndex?.removeFile(uri);
+        this.fileIndex?.removeFile(uri);
     }
 
     workspaceSymbols(query: string): SymbolInformation[] {
-        return this.symbolStore?.searchWorkspaceSymbols(query) ?? [];
+        return this.fileIndex?.symbols.searchWorkspaceSymbols(query) ?? [];
     }
 
     onDocumentClosed(uri: string): void {

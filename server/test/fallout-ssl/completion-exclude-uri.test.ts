@@ -7,7 +7,7 @@ import { describe, expect, it, beforeAll, vi } from "vitest";
 import type { CompletionItem } from "vscode-languageserver/node";
 import type { IndexedSymbol } from "../../src/core/symbol";
 import { SourceType } from "../../src/core/symbol";
-import { Symbols } from "../../src/core/symbol-index";
+import { FileIndex } from "../../src/core/file-index";
 
 vi.mock("../../src/lsp-connection", () => ({
     getConnection: () => ({
@@ -41,15 +41,15 @@ describe("SSL getCompletions excludeUri", () => {
     });
 
     it("should exclude symbols from the given URI", () => {
-        const store = new Symbols();
+        const fileIndex = new FileIndex();
         const headerA = "file:///headers/a.h";
         const headerB = "file:///headers/b.h";
 
-        store.updateFile(headerA, [createSymbol("func_a", headerA)]);
-        store.updateFile(headerB, [createSymbol("func_b", headerB)]);
+        fileIndex.symbols.updateFile(headerA, [createSymbol("func_a", headerA)]);
+        fileIndex.symbols.updateFile(headerB, [createSymbol("func_b", headerB)]);
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- test-only: inject mock symbolStore
-        (provider as any).symbolStore = store;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- test-only: inject mock fileIndex
+        (provider as any).fileIndex = fileIndex;
 
         const completions = provider.getCompletions(headerA);
         const labels = completions.map(c => c.label);
@@ -59,14 +59,14 @@ describe("SSL getCompletions excludeUri", () => {
     });
 
     it("should include static symbols regardless of URI", () => {
-        const store = new Symbols();
+        const fileIndex = new FileIndex();
         const headerA = "file:///headers/a.h";
 
-        store.loadStatic([createSymbol("builtin_func", null)]);
-        store.updateFile(headerA, [createSymbol("func_a", headerA)]);
+        fileIndex.loadStatic([createSymbol("builtin_func", null)]);
+        fileIndex.symbols.updateFile(headerA, [createSymbol("func_a", headerA)]);
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- test-only: inject mock symbolStore
-        (provider as any).symbolStore = store;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- test-only: inject mock fileIndex
+        (provider as any).fileIndex = fileIndex;
 
         const completions = provider.getCompletions(headerA);
         const labels = completions.map(c => c.label);

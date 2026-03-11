@@ -12,6 +12,7 @@ import { fileURLToPath } from "url";
 import { conlog, getLinePrefix } from "../common";
 import { EXT_WEIDU_TP2, LANG_WEIDU_TP2 } from "../core/languages";
 import { isHeaderFile } from "../core/location-utils";
+import { FileIndex } from "../core/file-index";
 import { Symbols } from "../core/symbol-index";
 import { loadStaticSymbols } from "../core/static-loader";
 import { type FormatResult, HoverResult, type LanguageProvider, type ProviderContext } from "../language-provider";
@@ -27,7 +28,7 @@ import { formatDocument as formatAst } from "./format/core";
 import { initParser, parseWithCache, isInitialized } from "./parser";
 import { getDocumentSymbols } from "./symbol";
 import { getDefinition, isOnFunctionCallParamName } from "./definition";
-import { parseHeaderToSymbols } from "./header-parser";
+import { parseFile } from "./header-parser";
 import { CallableContext, isCallableSymbol, type IndexedSymbol, SourceType } from "../core/symbol";
 import { findReferences } from "./references";
 import { renameSymbol, prepareRenameSymbol } from "./rename";
@@ -38,8 +39,6 @@ import { getLocalSymbols as extractLocalSymbols, lookupLocalSymbol, clearLocalSy
 import { WEIDU_JSDOC_TYPES } from "../shared/weidu-types";
 import { getJsdocCompletions as getSharedJsdocCompletions } from "../shared/jsdoc-completions";
 import { createFoldingRangesProvider } from "../shared/folding-ranges";
-import { ReferencesIndex } from "../shared/references-index";
-import { extractCallSites } from "./call-sites";
 import { SyntaxType } from "./tree-sitter.d";
 
 /** TP2 block-level node types for code folding. */
@@ -222,33 +221,30 @@ class WeiduTp2Provider implements LanguageProvider {
     readonly id = LANG_WEIDU_TP2;
     readonly watchExtensions = [...EXT_WEIDU_TP2];
 
-    private symbolStore: Symbols | undefined;
+    private fileIndex: FileIndex | undefined;
     private storedContext: ProviderContext | undefined;
-    private refsIndex: ReferencesIndex | undefined;
 
     async init(context: ProviderContext): Promise<void> {
         this.storedContext = context;
 
         await initParser();
 
-        this.symbolStore = new Symbols();
+        this.fileIndex = new FileIndex();
         const staticSymbols = loadStaticSymbols(LANG_WEIDU_TP2);
-        this.symbolStore.loadStatic(staticSymbols);
-
-        this.refsIndex = new ReferencesIndex();
+        this.fileIndex.loadStatic(staticSymbols);
 
         conlog(`WeiDU TP2 provider initialized with ${staticSymbols.length} static symbols`);
     }
 
     resolveSymbol(name: string, text: string, uri: string): IndexedSymbol | undefined {
-        return resolveSymbolWithLocal(name, text, uri, this.symbolStore, lookupLocalSymbol);
+        return resolveSymbolWithLocal(name, text, uri, this.fileIndex?.symbols, lookupLocalSymbol);
     }
 
     getCompletions(uri: string): CompletionItem[] {
-        if (!this.symbolStore) {
+        if (!this.fileIndex) {
             return [];
         }
-        const allSymbols = this.symbolStore.query({ excludeUri: uri });
+        const allSymbols = this.fileIndex.symbols.query({ excludeUri: uri });
         return allSymbols.map((s: IndexedSymbol) => s.completion);
     }
 
@@ -299,8 +295,8 @@ class WeiduTp2Provider implements LanguageProvider {
         const localCompletions = collectLocalCompletions(text, uri, { excludeWord: currentWord });
 
         const baseItems: Tp2CompletionItem[] = [...items, ...localCompletions];
-        const withParams = addParamCompletions(baseItems, contexts, this.symbolStore);
-        const withSnippets = applySnippets(withParams, contexts, text, uri, this.symbolStore);
+        const withParams = addParamCompletions(baseItems, contexts, this.fileIndex?.symbols);
+        const withSnippets = applySnippets(withParams, contexts, text, uri, this.fileIndex?.symbols);
 
         return filterItemsByContext(withSnippets, contexts);
     }
@@ -310,7 +306,7 @@ class WeiduTp2Provider implements LanguageProvider {
     }
 
     hover(text: string, symbol: string, _uri: string, position: Position): HoverResult {
-        const paramHover = getFunctionParamHover(text, symbol, position, this.symbolStore);
+        const paramHover = getFunctionParamHover(text, symbol, position, this.fileIndex?.symbols);
         if (paramHover) {
             return HoverResult.found(paramHover);
         }
@@ -332,30 +328,27 @@ class WeiduTp2Provider implements LanguageProvider {
     }
 
     getSymbolDefinition(symbolName: string): Location | null {
-        return this.symbolStore?.lookupDefinition(symbolName) ?? null;
+        return this.fileIndex?.symbols.lookupDefinition(symbolName) ?? null;
     }
 
     definition(text: string, position: Position, uri: string): Location | null {
-        return getDefinition(text, uri, position, this.symbolStore);
+        return getDefinition(text, uri, position, this.fileIndex?.symbols);
     }
 
     reloadFileData(uri: string, text: string): void {
-        // Parse symbols for all files: headers get Workspace scope, others Navigation
-        if (isInitialized() && this.symbolStore) {
+        if (isInitialized() && this.fileIndex) {
             const st = isHeaderFile(uri) ? SourceType.Workspace : SourceType.Navigation;
-            const symbols = parseHeaderToSymbols(uri, text, { workspaceRoot: this.storedContext?.workspaceRoot, sourceType: st });
-            this.symbolStore.updateFile(uri, symbols);
-            this.refsIndex?.updateFile(uri, extractCallSites(text, uri));
+            const result = parseFile(uri, text, { workspaceRoot: this.storedContext?.workspaceRoot, sourceType: st });
+            this.fileIndex.updateFile(uri, result);
         }
     }
 
     onWatchedFileDeleted(uri: string): void {
-        this.symbolStore?.clearFile(uri);
-        this.refsIndex?.removeFile(uri);
+        this.fileIndex?.removeFile(uri);
     }
 
     workspaceSymbols(query: string): SymbolInformation[] {
-        return this.symbolStore?.searchWorkspaceSymbols(query) ?? [];
+        return this.fileIndex?.symbols.searchWorkspaceSymbols(query) ?? [];
     }
 
     onDocumentClosed(uri: string): void {
@@ -395,7 +388,7 @@ class WeiduTp2Provider implements LanguageProvider {
         if (!isInitialized()) {
             return [];
         }
-        return findReferences(text, position, uri, includeDeclaration, this.refsIndex);
+        return findReferences(text, position, uri, includeDeclaration, this.fileIndex?.refs);
     }
 
     rename(text: string, position: Position, newName: string, uri: string): WorkspaceEdit | null {

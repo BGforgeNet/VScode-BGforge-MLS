@@ -11,15 +11,14 @@ import type { CompletionItem, DocumentSymbol, FoldingRange, Location, Position }
 import { conlog, findFiles, pathToUri } from "../common";
 import { EXT_WEIDU_D, LANG_WEIDU_D } from "../core/languages";
 import type { IndexedSymbol } from "../core/symbol";
-import { Symbols } from "../core/symbol-index";
+import { FileIndex } from "../core/file-index";
 import { loadStaticSymbols } from "../core/static-loader";
 import { type FormatResult, type LanguageProvider, type ProviderContext } from "../language-provider";
 import { stripCommentsWeidu } from "../shared/format-utils";
 import { getFormatOptions } from "../shared/format-options";
 import { resolveSymbolStatic, getStaticCompletions, formatWithValidation } from "../shared/provider-helpers";
-import { ReferencesIndex } from "../shared/references-index";
 import { isInsideComment } from "./ast-utils";
-import { extractCallSites } from "./call-sites";
+import { parseFile } from "./file-parser";
 import { getDefinition } from "./definition";
 import { getStateLabelHover } from "./hover";
 import { findReferences } from "./references";
@@ -52,20 +51,17 @@ class WeiduDProvider implements LanguageProvider {
     // because scanWorkspaceHeaders uses readFileSync — we do our own async scan
     // in init() instead, following the SSL provider pattern.
 
-    private symbolStore: Symbols | undefined;
+    private fileIndex: FileIndex | undefined;
     private storedContext: ProviderContext | undefined;
-    private refsIndex: ReferencesIndex | undefined;
 
     async init(context: ProviderContext): Promise<void> {
         this.storedContext = context;
 
         await initParser();
 
-        this.symbolStore = new Symbols();
+        this.fileIndex = new FileIndex();
         const staticSymbols = loadStaticSymbols(LANG_WEIDU_D);
-        this.symbolStore.loadStatic(staticSymbols);
-
-        this.refsIndex = new ReferencesIndex();
+        this.fileIndex.loadStatic(staticSymbols);
 
         // Build references index from all .d files in the workspace (async I/O)
         if (context.workspaceRoot) {
@@ -88,7 +84,10 @@ class WeiduDProvider implements LanguageProvider {
                 const absolutePath = join(workspaceRoot, relativePath);
                 const uri = pathToUri(absolutePath);
                 const text = await readFile(absolutePath, "utf-8");
-                this.refsIndex?.updateFile(uri, extractCallSites(text, uri));
+                if (this.fileIndex) {
+                    const result = parseFile(uri, text);
+                    this.fileIndex.updateFile(uri, result);
+                }
             }),
         );
 
@@ -110,7 +109,7 @@ class WeiduDProvider implements LanguageProvider {
     // D files have state labels but no user-defined functions/macros.
     // Symbol lookup is static-only (YAML data: actions + triggers).
     resolveSymbol(name: string, _text: string, _uri: string): IndexedSymbol | undefined {
-        return resolveSymbolStatic(name, this.symbolStore);
+        return resolveSymbolStatic(name, this.fileIndex?.symbols);
     }
 
     format(text: string, uri: string): FormatResult {
@@ -142,7 +141,7 @@ class WeiduDProvider implements LanguageProvider {
         if (!isInitialized()) {
             return [];
         }
-        return findReferences(text, position, uri, includeDeclaration, this.refsIndex);
+        return findReferences(text, position, uri, includeDeclaration, this.fileIndex?.refs);
     }
 
     prepareRename(text: string, position: Position) {
@@ -158,14 +157,15 @@ class WeiduDProvider implements LanguageProvider {
     }
 
     getCompletions(_uri: string): CompletionItem[] {
-        return getStaticCompletions(this.symbolStore);
+        return getStaticCompletions(this.fileIndex?.symbols);
     }
 
     // Called by server.ts onDidChangeContent/onDidSave for open documents.
     // Not called via scanWorkspaceHeaders (no watchExtensions set).
     reloadFileData(uri: string, text: string): void {
-        if (isInitialized()) {
-            this.refsIndex?.updateFile(uri, extractCallSites(text, uri));
+        if (isInitialized() && this.fileIndex) {
+            const result = parseFile(uri, text);
+            this.fileIndex.updateFile(uri, result);
         }
     }
 

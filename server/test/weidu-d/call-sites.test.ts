@@ -1,5 +1,5 @@
 /**
- * Unit tests for weidu-d/call-sites.ts - D call site extractor.
+ * Unit tests for weidu-d parseFile() - reference extraction.
  * Tests that state label references are collected with composite keys.
  */
 
@@ -13,7 +13,7 @@ vi.mock("../../src/server", () => ({
 }));
 
 import { initParser } from "../../src/weidu-d/parser";
-import { extractCallSites } from "../../src/weidu-d/call-sites";
+import { parseFile } from "../../src/weidu-d/file-parser";
 
 const TEST_URI = "file:///test.d";
 
@@ -21,7 +21,7 @@ beforeAll(async () => {
     await initParser();
 });
 
-describe("weidu-d/call-sites", () => {
+describe("weidu-d/parseFile refs", () => {
     it("collects state definitions and GOTO references", () => {
         const text = `
 BEGIN ~MYMOD~
@@ -30,7 +30,7 @@ IF ~~ THEN BEGIN state1
   IF ~~ THEN GOTO state1
 END
 `;
-        const refs = extractCallSites(text, TEST_URI);
+        const { refs } = parseFile(TEST_URI, text);
         // composite key: "mymod:state1"
         const stateRefs = refs.get("mymod:state1");
         expect(stateRefs).toBeDefined();
@@ -46,7 +46,7 @@ IF ~~ THEN BEGIN state1
   IF ~~ THEN EXTERN ~OTHER~ other_state
 END
 `;
-        const refs = extractCallSites(text, TEST_URI);
+        const { refs } = parseFile(TEST_URI, text);
         const externRef = refs.get("other:other_state");
         expect(externRef).toBeDefined();
         expect(externRef!.length).toBe(1);
@@ -58,7 +58,7 @@ EXTEND_TOP ~MYMOD~ state1
   IF ~~ THEN GOTO state2
 END
 `;
-        const refs = extractCallSites(text, TEST_URI);
+        const { refs } = parseFile(TEST_URI, text);
         const stateRef = refs.get("mymod:state1");
         expect(stateRef).toBeDefined();
         expect(stateRef!.length).toBe(1);
@@ -73,7 +73,7 @@ IF ~~ THEN BEGIN new_state
 END
 END
 `;
-        const refs = extractCallSites(text, TEST_URI);
+        const { refs } = parseFile(TEST_URI, text);
         const stateRefs = refs.get("mymod:new_state");
         expect(stateRefs).toBeDefined();
         // definition + GOTO = 2
@@ -87,7 +87,7 @@ IF ~~ THEN BEGIN state1
   SAY ~Hello~
 END
 `;
-        const refs = extractCallSites(text, TEST_URI);
+        const { refs } = parseFile(TEST_URI, text);
         const stateRefs = refs.get("mymod:state1");
         expect(stateRefs).toBeDefined();
         for (const loc of stateRefs!) {
@@ -95,8 +95,19 @@ END
         }
     });
 
-    it("returns empty map for empty text", () => {
-        const refs = extractCallSites("", TEST_URI);
+    it("returns empty refs for empty text", () => {
+        const { refs } = parseFile(TEST_URI, "");
         expect(refs.size).toBe(0);
+    });
+
+    it("returns empty symbols (D has no user-defined functions)", () => {
+        const text = `
+BEGIN ~MYMOD~
+IF ~~ THEN BEGIN state1
+  SAY ~Hello~
+END
+`;
+        const { symbols } = parseFile(TEST_URI, text);
+        expect(symbols).toHaveLength(0);
     });
 });

@@ -12,7 +12,10 @@ vi.mock("../../src/common", () => ({
     findFiles: vi.fn(() => []),
 }));
 
-import { parseHeaderToSymbols } from "../../src/fallout-ssl/header-parser";
+import { parseFile } from "../../src/fallout-ssl/header-parser";
+
+/** Extract symbols only (convenience wrapper). */
+const parseHeaderToSymbols = (...args: Parameters<typeof parseFile>) => [...parseFile(...args).symbols];
 import { initParser } from "../../src/fallout-ssl/parser";
 import { falloutSslProvider } from "../../src/fallout-ssl/provider";
 import type { ProviderContext } from "../../src/language-provider";

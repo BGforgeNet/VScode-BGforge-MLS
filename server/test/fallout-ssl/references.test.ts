@@ -18,7 +18,10 @@ vi.mock("../../src/lsp-connection", () => ({
 import { initParser } from "../../src/fallout-ssl/parser";
 import { findReferences } from "../../src/fallout-ssl/references";
 import { ReferencesIndex } from "../../src/shared/references-index";
-import { extractCallSites } from "../../src/fallout-ssl/call-sites";
+import { parseFile } from "../../src/fallout-ssl/header-parser";
+
+/** Extract refs only (convenience wrapper for tests migrated from call-sites). */
+const extractCallSites = (text: string, uri: string) => parseFile(uri, text).refs;
 
 const TEST_URI = "file:///test.ssl";
 
@@ -166,6 +169,39 @@ end
             for (const ref of refs) {
                 expect(ref.uri).toBe(uri);
             }
+        });
+
+        it("returns cross-file references from .ssl files that directly use the symbol", () => {
+            // Scenario: GVAR defined in global.h, used in den.h macro body AND directly in .ssl files
+            const globalHUri = "file:///project/headers/global.h";
+            const denHUri = "file:///project/headers/den.h";
+            const sslUri = "file:///project/den/dclara.ssl";
+
+            const globalHText = `#define GVAR_DEN_GANGWAR (454)`;
+            const denHText = `
+#define gangwar(x) (global_var(GVAR_DEN_GANGWAR) == x)
+`;
+            const sslText = `
+#include "../headers/global.h"
+
+procedure start begin
+    ndebug("global_var(GVAR_DEN_GANGWAR) == "+global_var(GVAR_DEN_GANGWAR));
+end
+`;
+
+            const refsIndex = new ReferencesIndex();
+            refsIndex.updateFile(globalHUri, extractCallSites(globalHText, globalHUri));
+            refsIndex.updateFile(denHUri, extractCallSites(denHText, denHUri));
+            refsIndex.updateFile(sslUri, extractCallSites(sslText, sslUri));
+
+            // Find references from den.h (where symbol is "external")
+            const refs = findReferences(denHText, { line: 1, character: 31 }, denHUri, true, refsIndex);
+
+            const uris = new Set(refs.map(r => r.uri));
+            // Should include: den.h (local usage) + global.h (definition) + .ssl file (direct usage)
+            expect(uris).toContain(denHUri);
+            expect(uris).toContain(globalHUri);
+            expect(uris).toContain(sslUri);
         });
 
         it("returns empty when symbol not locally defined and no refsIndex provided", () => {

@@ -210,7 +210,10 @@ END`;
 // These tests ensure hover content includes all JSDoc features
 // =============================================================================
 
-import { parseHeaderToSymbols } from "../../src/weidu-tp2/header-parser";
+import { parseFile } from "../../src/weidu-tp2/header-parser";
+
+/** Extract symbols only (convenience wrapper). */
+const parseHeaderToSymbols = (...args: Parameters<typeof parseFile>) => [...parseFile(...args).symbols];
 import { isCallableSymbol, isVariableSymbol } from "../../src/core/symbol";
 import type { CompletionItemWithCategory } from "../../src/shared/completion-context";
 import type { MarkupContent } from "vscode-languageserver/node";

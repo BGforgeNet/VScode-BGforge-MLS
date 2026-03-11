@@ -113,8 +113,8 @@ END
 
     // Inject keyword symbols that normally come from static data (unavailable in test env).
     // Static JSON lives in server/out/ which isn't on the source path during tests,
-    // so we access the private symbolStore directly to inject test-only keyword data.
-    const store = (weiduTp2Provider as unknown as { symbolStore: Symbols }).symbolStore;
+    // so we access the private fileIndex.symbols directly to inject test-only keyword data.
+    const store = (weiduTp2Provider as unknown as { fileIndex: { symbols: Symbols } }).fileIndex.symbols;
     store.updateFile(STATIC_URI, [
         createKeywordSymbol("SET", CompletionCategory.Patch),
         createKeywordSymbol("SPRINT", CompletionCategory.Patch),

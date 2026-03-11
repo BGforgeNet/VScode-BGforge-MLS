@@ -1,6 +1,7 @@
 /**
- * Tree-sitter based header parser for WeiDU TP2 files.
- * Extracts function/macro definitions with JSDoc and parameter info.
+ * WeiDU TP2 file parser.
+ * Extracts both symbol definitions and cross-file references from a single
+ * tree-sitter AST parse, returning a unified ParseResult.
  *
  * Symbol-building pattern: Helper functions isolating conversion logic.
  * Exposes `functionInfoToSymbol()` and `variableInfoToSymbol()` helpers that
@@ -14,11 +15,13 @@
 import type { Node as SyntaxNode } from "web-tree-sitter";
 import { Location } from "vscode-languageserver/node";
 import { computeDisplayPath, extractFilename } from "../core/location-utils";
+import { type ParseResult, EMPTY_PARSE_RESULT } from "../core/parse-result";
 import { makeRange } from "../core/position-utils";
 import * as jsdoc from "../shared/jsdoc";
 import { parseWithCache, isInitialized } from "./parser";
 import { SyntaxType } from "./tree-sitter.d";
 import { isPhantomAssignment, looksLikeConstant, stripStringDelimiters } from "./tree-utils";
+import { FUNCTION_CALL_TYPES } from "./symbol-discovery";
 
 // ============================================
 // Types
@@ -584,7 +587,7 @@ function variableInfoToSymbol(varInfo: VariableInfo, displayPath?: string | null
     };
 }
 
-/** Options for parseHeaderToSymbols */
+/** Options for parseFile */
 interface ParseSymbolsOptions {
     /** Workspace root path for computing relative displayPath */
     workspaceRoot?: string;
@@ -595,30 +598,41 @@ interface ParseSymbolsOptions {
 }
 
 /**
- * Parse a header file and return symbols for the unified index.
- * This is the preferred API - returns IndexedSymbol[] ready for Symbols.
+ * Parse a file and return both symbols and references from a single AST parse.
+ * This is the preferred API - returns ParseResult for FileIndex storage.
  *
  * @param uri File URI
  * @param text File content
  * @param options Options or workspaceRoot string (for backwards compatibility)
  */
-export function parseHeaderToSymbols(
+export function parseFile(
     uri: string,
     text: string,
     options?: string | ParseSymbolsOptions,
-): IndexedSymbol[] {
-    const functions = parseHeader(text, uri);
-    const variables = parseHeaderVariables(text, uri);
+): ParseResult {
+    if (!isInitialized()) {
+        return EMPTY_PARSE_RESULT;
+    }
+
+    const tree = parseWithCache(text);
+    if (!tree) {
+        return EMPTY_PARSE_RESULT;
+    }
+
+    const root = tree.rootNode;
+
+    // --- Symbols ---
+    const functions = extractFunctions(root, uri);
+    const variables = extractVariables(root, uri);
 
     // Handle backwards compatibility: options can be workspaceRoot string
     const opts: ParseSymbolsOptions = typeof options === "string"
         ? { workspaceRoot: options }
         : (options ?? {});
 
-    // Compute display path: null if skipPath, otherwise compute from workspace root
     const displayPath = opts.skipPath ? null : computeDisplayPath(uri, opts.workspaceRoot);
 
-    const result = [
+    let symbols: IndexedSymbol[] = [
         ...functions.map(func => functionInfoToSymbol(func, displayPath)),
         ...variables.map(varInfo => variableInfoToSymbol(varInfo, displayPath)),
     ];
@@ -626,11 +640,60 @@ export function parseHeaderToSymbols(
     // Remap source type when called for non-header files (e.g., Navigation for Ctrl+T)
     const overrideType = opts.sourceType;
     if (overrideType !== undefined && overrideType !== SourceType.Workspace) {
-        return result.map(s => ({
+        symbols = symbols.map(s => ({
             ...s,
             source: { ...s.source, type: overrideType },
         }));
     }
 
-    return result;
+    // --- References: collect function/macro def and call sites ---
+    const refs = collectFunctionRefs(root, uri);
+
+    return { symbols, refs };
 }
+
+/**
+ * Collect function/macro definition and call sites from the AST.
+ * Variable references are not indexed -- they are scoped to functions/loops
+ * and handled by single-file findReferences.
+ */
+function collectFunctionRefs(root: SyntaxNode, uri: string): ReadonlyMap<string, readonly Location[]> {
+    const refs = new Map<string, Location[]>();
+
+    function addRef(name: string, loc: Location): void {
+        let locs = refs.get(name);
+        if (!locs) {
+            locs = [];
+            refs.set(name, locs);
+        }
+        locs.push(loc);
+    }
+
+    function visit(node: SyntaxNode): void {
+        // Function/macro definitions
+        if (FUNCTION_DEF_TYPES.has(node.type as SyntaxType)) {
+            const nameNode = node.childForFieldName("name");
+            if (nameNode) {
+                const name = stripStringDelimiters(nameNode.text);
+                addRef(name, { uri, range: makeRange(nameNode) });
+            }
+        }
+
+        // Function/macro calls (mutually exclusive with def types)
+        else if (FUNCTION_CALL_TYPES.has(node.type as SyntaxType)) {
+            const nameNode = node.childForFieldName("name");
+            if (nameNode) {
+                const name = stripStringDelimiters(nameNode.text);
+                addRef(name, { uri, range: makeRange(nameNode) });
+            }
+        }
+
+        for (const child of node.children) {
+            visit(child);
+        }
+    }
+
+    visit(root);
+    return refs;
+}
+

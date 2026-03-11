@@ -9,7 +9,7 @@
  * Also maintains a name->symbol map for O(1) lookups.
  *
  * Symbol-building pattern: Delegates to header-parser helpers.
- * Reuses `parseHeaderToSymbols()` from header-parser.ts, which internally
+ * Reuses `parseFile()` from header-parser.ts, which internally
  * uses the `functionInfoToSymbol()`/`variableInfoToSymbol()` helpers.
  * This file is a thin caching wrapper — all symbol construction logic
  * lives in header-parser.ts.
@@ -17,12 +17,12 @@
 
 import type { IndexedSymbol } from "../core/symbol";
 import { TextCache } from "../shared/text-cache";
-import { parseHeaderToSymbols } from "./header-parser";
+import { parseFile } from "./header-parser";
 import { isInitialized } from "./parser";
 
 /** Cached local symbols data: symbols array + name lookup map */
 interface LocalSymbolsData {
-    symbols: IndexedSymbol[];
+    symbols: readonly IndexedSymbol[];
     byName: Map<string, IndexedSymbol>;
 }
 
@@ -38,9 +38,9 @@ function parseLocalSymbols(text: string, uri: string): LocalSymbolsData | null {
         return null;
     }
 
-    // parseHeaderToSymbols works for ANY TP2 content, not just headers
+    // parseFile works for ANY TP2 content, not just headers
     // skipPath: true because local symbols don't need file path in hover (it's redundant)
-    const symbols = parseHeaderToSymbols(uri, text, { skipPath: true });
+    const { symbols } = parseFile(uri, text, { skipPath: true });
 
     // Build name lookup map (first definition wins)
     const byName = new Map<string, IndexedSymbol>();
@@ -60,7 +60,7 @@ function parseLocalSymbols(text: string, uri: string): LocalSymbolsData | null {
  * @param uri Document URI
  * @returns IndexedSymbol[] for the document, empty array if parsing fails
  */
-export function getLocalSymbols(text: string, uri: string): IndexedSymbol[] {
+export function getLocalSymbols(text: string, uri: string): readonly IndexedSymbol[] {
     return cache.getOrParse(uri, text, parseLocalSymbols)?.symbols ?? [];
 }
 

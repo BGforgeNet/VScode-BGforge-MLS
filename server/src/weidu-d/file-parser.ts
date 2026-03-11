@@ -1,18 +1,20 @@
 /**
- * Call-site extractor for WeiDU D files.
+ * WeiDU D file parser.
+ * Extracts cross-file references (state label locations) from a single
+ * tree-sitter AST parse, returning a unified ParseResult.
  *
- * Walks the AST and collects state label references scoped to dialog files,
- * producing a Map<compositeKey, Location[]> for the cross-file references index.
- *
- * The composite key is "dialogFile:labelName" since labels are dialog-scoped.
+ * D files have no user-defined functions/macros, so symbols is always empty.
+ * Only the reference index (dialog-scoped state labels) is populated.
  *
  * NOTE: reference-finder.ts has structurally similar AST traversal (same node types)
  * but filters by a specific (dialogFile, labelName) pair for single-file rename/references.
- * If new node types are added to the grammar, both files must be updated.
+ * If new node types are added to the grammar, both this file and reference-finder.ts
+ * must be updated.
  */
 
 import { Location } from "vscode-languageserver/node";
 import type { Node as SyntaxNode } from "web-tree-sitter";
+import { type ParseResult, EMPTY_PARSE_RESULT } from "../core/parse-result";
 import { makeRange } from "../core/position-utils";
 import { SyntaxType } from "./tree-sitter.d";
 import { normalizeDialogFile } from "./state-utils";
@@ -24,17 +26,17 @@ function labelKey(dialogFile: string, labelName: string): string {
 }
 
 /**
- * Extract state label references from a D file.
- * Returns a map of "dialogFile:labelName" -> Location[] for cross-file indexing.
+ * Parse a D file and return references (state label locations).
+ * Symbols is always empty — D files have no user-defined functions/macros.
  */
-export function extractCallSites(text: string, uri: string): ReadonlyMap<string, readonly Location[]> {
+export function parseFile(uri: string, text: string): ParseResult {
     if (!isInitialized()) {
-        return new Map();
+        return EMPTY_PARSE_RESULT;
     }
 
     const tree = parseWithCache(text);
     if (!tree) {
-        return new Map();
+        return EMPTY_PARSE_RESULT;
     }
 
     const refs = new Map<string, Location[]>();
@@ -73,7 +75,7 @@ export function extractCallSites(text: string, uri: string): ReadonlyMap<string,
     }
 
     visit(tree.rootNode);
-    return refs;
+    return { symbols: [], refs };
 }
 
 /** Collect state label refs inside a begin_action or append_action scope. */
@@ -130,6 +132,7 @@ function collectRefsInScope(
             visit(child);
         }
     }
+    // Processes the scope root and all descendants; nested begin_action is not expected by grammar design
     visit(scopeNode);
 }
 

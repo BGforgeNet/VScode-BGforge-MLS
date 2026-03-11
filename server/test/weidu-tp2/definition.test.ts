@@ -20,7 +20,10 @@ vi.mock("../../src/server", () => ({
 
 import { getDefinition } from "../../src/weidu-tp2/definition";
 import { initParser } from "../../src/weidu-tp2/parser";
-import { parseHeaderToSymbols } from "../../src/weidu-tp2/header-parser";
+import { parseFile } from "../../src/weidu-tp2/header-parser";
+
+/** Extract symbols only (convenience wrapper). */
+const parseHeaderToSymbols = (...args: Parameters<typeof parseFile>) => [...parseFile(...args).symbols];
 import { Symbols } from "../../src/core/symbol-index";
 
 beforeAll(async () => {

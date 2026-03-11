@@ -5,7 +5,7 @@
  *
  * Extracted from rename.ts to support both rename and findReferences features.
  *
- * NOTE: call-sites.ts has structurally similar AST traversal (same node types)
+ * NOTE: file-parser.ts has structurally similar AST traversal (same node types)
  * but collects ALL refs for cross-file indexing rather than filtering by a
  * specific (dialogFile, labelName) pair. If new node types are added to the
  * grammar, both files must be updated.

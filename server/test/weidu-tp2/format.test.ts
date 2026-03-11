@@ -35,7 +35,10 @@ import {
 } from "../../src/weidu-tp2/format/utils";
 import { formatDocument } from "../../src/weidu-tp2/format/core";
 import { initParser, getParser } from "../../src/weidu-tp2/parser";
-import { parseHeaderToSymbols } from "../../src/weidu-tp2/header-parser";
+import { parseFile } from "../../src/weidu-tp2/header-parser";
+
+/** Extract symbols only (convenience wrapper). */
+const parseHeaderToSymbols = (...args: Parameters<typeof parseFile>) => [...parseFile(...args).symbols];
 import type { IndexedSymbol } from "../../src/core/symbol";
 
 describe("format-utils: normalizeLineComment", () => {
@@ -645,7 +648,7 @@ DEFINE_ACTION_MACRO macro1 BEGIN END
 describe("definition: getDefinition", () => {
     // Lazy-load modules after parser initialization
     let getDefinition: typeof import("../../src/weidu-tp2/definition").getDefinition;
-    let parseHeaderToSymbols: typeof import("../../src/weidu-tp2/header-parser").parseHeaderToSymbols;
+    let parseHeaderToSymbols: (...args: Parameters<typeof parseFile>) => IndexedSymbol[];
     let SymbolsClass: typeof import("../../src/core/symbol-index").Symbols;
 
     beforeAll(async () => {
@@ -654,7 +657,7 @@ describe("definition: getDefinition", () => {
         const headerMod = await import("../../src/weidu-tp2/header-parser");
         const symbolMod = await import("../../src/core/symbol-index");
         getDefinition = defMod.getDefinition;
-        parseHeaderToSymbols = headerMod.parseHeaderToSymbols;
+        parseHeaderToSymbols = (...args: Parameters<typeof parseFile>) => [...headerMod.parseFile(...args).symbols];
         SymbolsClass = symbolMod.Symbols;
     });
 
