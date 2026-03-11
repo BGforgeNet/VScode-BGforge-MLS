@@ -3,6 +3,7 @@
 # E2E transpiler test: transpile .td/.tbaf/.tssl from external repos,
 # write output, verify git status is clean (no changes to committed .d/.baf/.ssl).
 # Uses directory mode (-r --save) for batch processing in a single node process.
+# Repos are tested in parallel since they are independent.
 
 set -eu -o pipefail
 
@@ -13,74 +14,64 @@ CLI="$ROOT_DIR/cli/transpile/out/transpile-cli.js"
 # shellcheck source=scripts/timing-lib.sh
 source "$SCRIPT_DIR/timing-lib.sh"
 
+LOG_DIR="$ROOT_DIR/tmp/transpile-external-logs"
+rm -rf "$LOG_DIR"
+mkdir -p "$LOG_DIR"
+
+# shellcheck source=scripts/parallel-lib.sh
+source "$SCRIPT_DIR/parallel-lib.sh"
+
 # Build CLI if missing
 if [[ ! -f "$CLI" ]]; then
     step "Building transpile CLI"
     (cd "$ROOT_DIR" && pnpm build:transpile-cli)
 fi
 
-FAILED=0
-PASS=0
-SKIP=0
-
 # Transpile all files in a repo, then check git status for changes.
-# $1: base directory (e.g., external/infinity-engine)
-# $2+: repo names
-test_repos() {
-    local base_dir="$1"
-    shift
+# Exits non-zero on failure so parallel runner can detect it.
+# $1: repo directory
+test_repo() {
+    local dir="$1"
+    local repo
+    repo=$(basename "$dir")
 
-    for repo in "$@"; do
-        local dir="$base_dir/$repo"
-        if [[ ! -d "$dir" ]]; then
-            echo "SKIP: $repo (not cloned)"
-            SKIP=$((SKIP + 1))
-            continue
-        fi
+    if [[ ! -d "$dir" ]]; then
+        echo "SKIP: $repo (not cloned)"
+        return 0
+    fi
 
-        # Reset to committed state before testing
-        git -C "$dir" checkout .
+    # Reset to committed state before testing
+    git -C "$dir" checkout .
 
-        # Install dependencies if node_modules is missing.
-        # --ignore-workspace prevents pnpm from resolving to the parent monorepo workspace.
-        if [[ -f "$dir/package.json" && ! -d "$dir/node_modules" ]]; then
-            echo "Installing dependencies for $repo..."
-            (cd "$dir" && pnpm install --ignore-workspace)
-        fi
+    # Install dependencies if node_modules is missing.
+    # --ignore-workspace prevents pnpm from resolving to the parent monorepo workspace.
+    if [[ -f "$dir/package.json" && ! -d "$dir/node_modules" ]]; then
+        echo "Installing dependencies for $repo..."
+        (cd "$dir" && pnpm install --ignore-workspace)
+    fi
 
-        step "Transpiling: $repo"
+    # Transpile all files in one process using directory mode
+    if ! node --no-warnings "$CLI" "$dir" -r --save 2>&1; then
+        echo "FAIL: $repo (transpilation errors)"
+        return 1
+    fi
 
-        # Transpile all files in one process using directory mode
-        if ! node --no-warnings "$CLI" "$dir" -r --save 2>&1; then
-            echo "FAIL: $repo (transpilation errors)"
-            FAILED=$((FAILED + 1))
-            continue
-        fi
+    # Check git status — any modified files mean transpiler output changed
+    local changed
+    changed=$(git -C "$dir" diff --name-only)
+    if [[ -n "$changed" ]]; then
+        echo "FAIL: $repo (output differs from committed files)"
+        git -C "$dir" diff --stat
+        return 1
+    fi
 
-        # Check git status — any modified files mean transpiler output changed
-        local changed
-        changed=$(git -C "$dir" diff --name-only)
-        if [[ -n "$changed" ]]; then
-            echo "FAIL: $repo (output differs from committed files)"
-            git -C "$dir" diff --stat
-            FAILED=$((FAILED + 1))
-        else
-            PASS=$((PASS + 1))
-        fi
-    done
+    echo "PASS: $repo"
 }
 
-# Infinity Engine repos (TD, TBAF)
-test_repos "$ROOT_DIR/external/infinity-engine" bg2-tweaks-and-tricks bg2-wildmage
-
-# Fallout repos (TSSL)
-test_repos "$ROOT_DIR/external/fallout" FO2tweaks
-
-echo ""
-echo "Transpiler E2E: $PASS passed, $FAILED failed, $SKIP skipped"
-
-if [[ $FAILED -ne 0 ]]; then
-    exit 1
-fi
+step "Transpile external repos"
+parallel \
+    "bg2-tweaks-and-tricks" "test_repo '$ROOT_DIR/external/infinity-engine/bg2-tweaks-and-tricks'" \
+    "bg2-wildmage"          "test_repo '$ROOT_DIR/external/infinity-engine/bg2-wildmage'" \
+    "FO2tweaks"             "test_repo '$ROOT_DIR/external/fallout/FO2tweaks'"
 
 timing_summary "Transpile external tests passed"

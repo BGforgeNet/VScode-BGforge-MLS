@@ -17,60 +17,8 @@ LOG_DIR="$ROOT_DIR/tmp/test-logs"
 rm -rf "$LOG_DIR"
 mkdir -p "$LOG_DIR"
 
-# --- Parallel runner ---
-# Run commands in parallel. Each job's output goes to a log file.
-# On success: prints "  ok <label> (Xms)"
-# On failure: prints full output of the failed job, kills remaining jobs, exits 1.
-# Usage: parallel "label1" "cmd1" "label2" "cmd2" ...
-parallel() {
-    local pids=() labels=() logs=() starts=() i=0
-
-    while [ $# -ge 2 ]; do
-        local label="$1" cmd="$2"
-        shift 2
-        local logfile="$LOG_DIR/${label// /-}.log"
-        local start
-        start=$(date +%s%3N)
-        # Subshell: run command, capture exit code
-        ( eval "$cmd" > "$logfile" 2>&1 ) &
-        pids+=($!)
-        labels+=("$label")
-        logs+=("$logfile")
-        starts+=("$start")
-    done
-
-    # Wait for all, but fail fast on first failure
-    while true; do
-        local all_done=1
-        for i in "${!pids[@]}"; do
-            [ "${pids[$i]}" = "done" ] && continue
-            if ! kill -0 "${pids[$i]}" 2>/dev/null; then
-                # Process finished — check exit code
-                if wait "${pids[$i]}"; then
-                    local elapsed=$(( $(date +%s%3N) - ${starts[$i]} ))
-                    echo "  ok  ${labels[$i]} (${elapsed}ms)"
-                    pids[i]="done"
-                else
-                    local elapsed=$(( $(date +%s%3N) - ${starts[$i]} ))
-                    echo ""
-                    echo "  FAIL  ${labels[$i]} (${elapsed}ms)"
-                    echo ""
-                    cat "${logs[$i]}"
-                    # Kill remaining jobs
-                    for j in "${!pids[@]}"; do
-                        [ "${pids[$j]}" = "done" ] && continue
-                        kill "${pids[$j]}" 2>/dev/null || true
-                    done
-                    exit 1
-                fi
-            else
-                all_done=0
-            fi
-        done
-        [ "$all_done" = "1" ] && break
-        sleep 0.05
-    done
-}
+# shellcheck source=scripts/parallel-lib.sh
+source "$SCRIPT_DIR/parallel-lib.sh"
 
 step "Resetting External Repos"
 "$SCRIPT_DIR/reset-external.sh"
