@@ -116,6 +116,25 @@ end
         });
     });
 
+    describe("external-scoped references", () => {
+        it("returns empty for external scope (symbol not defined in file)", () => {
+            const text = `
+procedure foo begin
+    display_msg(SOME_EXTERNAL);
+end
+`;
+            const tree = parseWithCache(text)!;
+
+            const symbolInfo: SslSymbolScope = {
+                name: "SOME_EXTERNAL",
+                scope: "external",
+            };
+
+            const refs = findScopedReferences(tree.rootNode, symbolInfo);
+            expect(refs.length).toBe(0);
+        });
+    });
+
     describe("file-scoped references", () => {
         it("finds references across the entire file for procedure name", () => {
             const text = `

@@ -14,10 +14,17 @@ import { Position } from "vscode-languageserver/node";
 import { findIdentifierNodeAtPosition, findMacroDefinition } from "./utils";
 import { SyntaxType } from "./tree-sitter.d";
 
-/** Scope information for a symbol at a given cursor position. */
+/**
+ * Scope information for a symbol at a given cursor position.
+ *
+ * - "file": defined at file scope (procedure name, macro, export, top-level variable)
+ * - "procedure": defined locally in a procedure (parameter, variable, for/foreach var)
+ * - "external": identifier exists at cursor but is not defined in any scope of the current file
+ *   (e.g., a macro from an included header)
+ */
 export interface SslSymbolScope {
     name: string;
-    scope: "file" | "procedure";
+    scope: "file" | "procedure" | "external";
     procedureNode?: Node;
 }
 
@@ -143,7 +150,7 @@ export function isFileScopeDef(rootNode: Node, symbolName: string): boolean {
  * 1. Find identifier at position
  * 2. If inside a procedure and the procedure defines it locally -> procedure scope
  * 3. If defined at file scope (procedure name, macro, export) -> file scope
- * 4. Otherwise -> null (not renameable in current file)
+ * 4. Otherwise -> external (identifier exists but not defined in this file)
  */
 export function getSymbolScope(rootNode: Node, position: Position): SslSymbolScope | null {
     const symbolNode = findIdentifierNodeAtPosition(rootNode, position);
@@ -162,6 +169,6 @@ export function getSymbolScope(rootNode: Node, position: Position): SslSymbolSco
         return { name: symbolName, scope: "file" };
     }
 
-    // Symbol not defined in any accessible scope
-    return null;
+    // Symbol exists at cursor but is not defined in this file (e.g., from an included header)
+    return { name: symbolName, scope: "external" };
 }

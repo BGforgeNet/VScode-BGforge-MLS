@@ -262,7 +262,7 @@ procedure foo begin end
             expect(result).toBeNull();
         });
 
-        it("returns null for symbol defined only in a different procedure", () => {
+        it("returns external scope for symbol defined only in a different procedure", () => {
             const text = `
 procedure foo begin
     variable x;
@@ -274,11 +274,13 @@ end
 `;
             const tree = parseWithCache(text)!;
             // Cursor on "x" in bar, but "x" is only a local in foo, not bar
-            // Since there's no file-scope "x" either, this should return null
+            // Since there's no file-scope "x" either, this is an external reference
             const position: Position = { line: 6, character: 4 };
             const result = getSymbolScope(tree.rootNode, position);
 
-            expect(result).toBeNull();
+            expect(result).not.toBeNull();
+            expect(result!.scope).toBe("external");
+            expect(result!.name).toBe("x");
         });
 
         it("returns file scope for top-level variable declaration", () => {

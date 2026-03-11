@@ -54,9 +54,9 @@ export function prepareRenameSymbol(
         return null;
     }
 
-    // Determine scope -- returns null if the symbol is not defined in any accessible scope
+    // Determine scope -- null means no identifier at cursor, "external" means not locally defined
     const scopeInfo = getSymbolScope(tree.rootNode, position);
-    if (!scopeInfo) {
+    if (!scopeInfo || scopeInfo.scope === "external") {
         return null;
     }
 
@@ -86,7 +86,7 @@ export function renameSymbol(text: string, position: Position, newName: string, 
     }
 
     const scopeInfo = getSymbolScope(tree.rootNode, position);
-    if (!scopeInfo) {
+    if (!scopeInfo || scopeInfo.scope === "external") {
         return null;
     }
 

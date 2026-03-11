@@ -36,6 +36,11 @@ function isMacroParam(defineNode: Node, symbolName: string): boolean {
  * SSL ASTs are shallow (no nested procedures), so stack depth is not a concern.
  */
 export function findScopedReferences(rootNode: Node, symbolInfo: SslSymbolScope): Node[] {
+    // Guard: external scope has no local definition to search for
+    if (symbolInfo.scope === "external") {
+        return [];
+    }
+
     // Guard: procedure scope requires a procedureNode to restrict the search
     if (symbolInfo.scope === "procedure" && !symbolInfo.procedureNode) {
         return [];

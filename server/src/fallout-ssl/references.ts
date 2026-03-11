@@ -13,7 +13,6 @@ import { parseWithCache } from "./parser";
 import { getSymbolScope } from "./symbol-scope";
 import { findScopedReferences } from "./reference-finder";
 import { getLocalDefinition } from "./definition";
-import { findIdentifierAtPosition } from "./utils";
 
 /**
  * Filter out the declaration location from a set of references.
@@ -57,19 +56,19 @@ export function findReferences(
 
     const scopeInfo = getSymbolScope(tree.rootNode, position);
     if (!scopeInfo) {
+        return [];
+    }
+
+    if (scopeInfo.scope === "external") {
         // Symbol not defined in the current file — fall back to cross-file lookup.
         // This handles cases like GVAR_DEN_GANGWAR used in den.h but defined in global.h.
         if (!refsIndex) {
             return [];
         }
-        const symbolName = findIdentifierAtPosition(tree.rootNode, position);
-        if (!symbolName) {
-            return [];
-        }
         // Get cross-file references from the index (includes current file)
-        const crossFileRefs = refsIndex.lookup(symbolName);
+        const crossFileRefs = refsIndex.lookup(scopeInfo.name);
         // Also search the current file for matching identifiers using file-scope traversal
-        const fileScopeInfo = { name: symbolName, scope: "file" as const };
+        const fileScopeInfo = { name: scopeInfo.name, scope: "file" as const };
         const localNodes = findScopedReferences(tree.rootNode, fileScopeInfo);
         const localLocations = localNodes.map(node => ({ uri, range: makeRange(node) }));
         // Merge: local refs + cross-file refs (excluding current file to avoid duplicates)
