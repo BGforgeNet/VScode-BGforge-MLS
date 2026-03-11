@@ -27,7 +27,7 @@ import { EXT_TSSL } from "../core/languages";
 import { bundleWithEsbuild } from "../esbuild-utils";
 import { conlog, type TsslContext, type MainFileData } from './types';
 import { convertOperatorsAST } from './convert-operators';
-import { extractInlineFunctionsFromFiles, extractJsDocs } from './inline-functions';
+import { extractInlineFunctionsFromFiles, extractJsDocs, type InlineFunctionCache } from './inline-functions';
 import { exportSSL } from './emit';
 // Generated from server/data/fallout-ssl-base.yml by generate-data.sh.
 // Inlined by esbuild at bundle time.
@@ -41,13 +41,32 @@ const uriToPath = (uri: string) => uri.startsWith('file://') ? fileURLToPath(uri
 const TSSL_CODE_MARKER = "/* __TSSL_CODE_START__ */";
 
 /**
+ * Shared state for batch transpilation (CLI directory mode).
+ * Reusing a Project avoids re-initializing the TypeScript compiler for each file.
+ * The inline function cache avoids re-parsing shared imports (e.g., folib).
+ */
+export interface TranspileBatchState {
+    readonly project: Project;
+    readonly inlineFunctionCache: InlineFunctionCache;
+}
+
+/** Create a batch state for processing multiple TSSL files efficiently. */
+export function createBatchState(): TranspileBatchState {
+    return {
+        project: new Project(),
+        inlineFunctionCache: new Map(),
+    };
+}
+
+/**
  * Core transpilation pipeline: TSSL source text to SSL output string.
  * Shared by compile() (LSP, writes to disk) and transpile() (CLI, returns string).
  * @param filePath Absolute file path to the .tssl file
  * @param text Source text content
+ * @param batch Optional shared state for batch processing (reuses Project + caches)
  * @returns Generated SSL output string
  */
-async function transpileCore(filePath: string, text: string): Promise<string> {
+async function transpileCore(filePath: string, text: string, batch?: TranspileBatchState): Promise<string> {
     const parsed = path.parse(filePath);
     if (parsed.ext.toLowerCase() !== EXT_TSSL) {
         throw new Error(`${filePath} is not a .tssl file`);
@@ -60,8 +79,8 @@ async function transpileCore(filePath: string, text: string): Promise<string> {
     // Pass enumNames to the shared bundler to skip redundant re-transformation.
     const { code: enumTransformedText, enumNames } = transformEnums(text);
 
-    // Initialize the TypeScript project (reused across extraction functions)
-    const project = new Project();
+    // Reuse project from batch state, or create a fresh one (LSP / single-file mode)
+    const project = batch?.project ?? new Project();
 
     // Extract includes, constants, and let vars from the enum-transformed source
     const { constants, letVars } = extractTopLevelVars(project, enumTransformedText);
@@ -81,8 +100,9 @@ async function transpileCore(filePath: string, text: string): Promise<string> {
         enumNames: new Set(),
     };
 
-    // Extract JSDoc from main source file before bundling (esbuild strips them)
-    const mainSource = project.addSourceFileAtPath(filePath);
+    // Extract JSDoc from main source file before bundling (esbuild strips them).
+    // In batch mode, the file may already be in the project from a previous run.
+    const mainSource = project.getSourceFile(filePath) ?? project.addSourceFileAtPath(filePath);
     extractJsDocs(mainSource, ctx);
     conlog(`Extracted JSDoc for ${ctx.functionJsDocs.size} functions from main file`);
 
@@ -107,8 +127,9 @@ async function transpileCore(filePath: string, text: string): Promise<string> {
     // Create source file in memory from cleaned bundled code
     const sourceFile = project.createSourceFile("bundled.ts", bundleResult.code, { overwrite: true });
 
-    // Extract inline functions from files that were actually bundled
-    ctx.inlineFunctions = extractInlineFunctionsFromFiles(project, bundleResult.inputFiles);
+    // Extract inline functions from files that were actually bundled.
+    // In batch mode, the cache avoids re-parsing shared imports (e.g., folib).
+    ctx.inlineFunctions = extractInlineFunctionsFromFiles(project, bundleResult.inputFiles, batch?.inlineFunctionCache);
     conlog(`Found ${ctx.inlineFunctions.size} inline functions`);
 
     return exportSSL(sourceFile, parsed.base, mainFileData, ctx, traTag);
@@ -138,10 +159,11 @@ export async function compile(uri: string, text: string): Promise<string> {
  * Used by the CLI where the caller controls file I/O.
  * @param filePath Absolute file path to the .tssl file
  * @param text Source text content
+ * @param batch Optional shared state for batch processing (pass createBatchState() result)
  * @returns Generated SSL output string
  */
-export async function transpile(filePath: string, text: string): Promise<string> {
-    return transpileCore(filePath, text);
+export async function transpile(filePath: string, text: string, batch?: TranspileBatchState): Promise<string> {
+    return transpileCore(filePath, text, batch);
 }
 
 /**

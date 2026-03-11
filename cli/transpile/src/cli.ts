@@ -10,7 +10,7 @@ import * as path from "path";
 import { EXT_TD, EXT_TBAF, EXT_TSSL } from "../../../server/src/core/languages";
 import { transpile as transpileTBAF } from "../../../server/src/tbaf/index";
 import { transpile as transpileTD } from "../../../server/src/td/index";
-import { transpile as transpileTSSL } from "../../../server/src/tssl";
+import { transpile as transpileTSSL, createBatchState, type TranspileBatchState } from "../../../server/src/tssl";
 import { parseCliArgs, runCli, safeProcess, reportDiff, FileResult, OutputMode } from "../../cli-utils";
 
 type TranspileType = "td" | "tbaf" | "tssl";
@@ -35,6 +35,11 @@ function getOutputPath(filePath: string, type: TranspileType): string {
     return filePath.replace(/\.tbaf$/i, ".baf");
 }
 
+// Shared batch state for TSSL files — reuses ts-morph Project and caches
+// inline function extraction across files, avoiding redundant parsing of
+// shared libraries like folib.
+let tsslBatchState: TranspileBatchState | undefined;
+
 async function processFile(filePath: string, mode: OutputMode): Promise<FileResult> {
     const type = getTranspileType(filePath);
     if (!type) {
@@ -48,7 +53,8 @@ async function processFile(filePath: string, mode: OutputMode): Promise<FileResu
 
         let output: string;
         if (type === "tssl") {
-            output = await transpileTSSL(resolved, text);
+            if (!tsslBatchState) tsslBatchState = createBatchState();
+            output = await transpileTSSL(resolved, text, tsslBatchState);
         } else if (type === "td") {
             const result = await transpileTD(resolved, text);
             for (const w of result.warnings) {

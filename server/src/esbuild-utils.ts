@@ -7,7 +7,6 @@
 import * as fs from "fs";
 import * as path from "path";
 import * as esbuild from "esbuild-wasm";
-import { Project, SyntaxKind } from "ts-morph";
 import {
     collectDeclareEnums,
     resolveDtsPath,
@@ -197,46 +196,53 @@ export async function bundleWithEsbuild(config: BundleConfig): Promise<BundleRes
  * esbuild renames identifiers when there are name collisions (e.g., See → See2).
  * This function:
  * 1. Strips everything before the marker (runtime helpers like __defProp, __name)
- * 2. Builds alias map from import statements
+ * 2. Builds alias map from import statements (regex)
  * 3. Detects collision patterns (name2 → name22)
  * 4. Uses original constants to restore esbuild-renamed identifiers
- * 5. Renames identifiers back to originals
+ * 5. Renames identifiers back to originals (string-aware, skips string literals)
  * 6. Removes import declarations
+ *
+ * Uses regex + string-aware tokenization instead of a full TypeScript AST parser.
+ * esbuild output is predictable (no regex literals, no exotic syntax), making
+ * this safe. Verified against the ts-morph implementation on all three transpiler
+ * outputs (TSSL, TBAF, TD) — produces identical results.
  *
  * @param code Bundled code from esbuild
  * @param marker Marker string to find start of user code
  * @param originalConstants Original constant names and values from source file (for restoring renamed vars)
  * @returns Cleaned code
  */
-function cleanupEsbuildOutput(code: string, marker: string, originalConstants?: Map<string, string>): string {
-    // Strip everything before marker
+export function cleanupEsbuildOutput(code: string, marker: string, originalConstants?: Map<string, string>): string {
+    // Step 1: Strip everything before marker
     const markerIndex = code.indexOf(marker);
     if (markerIndex !== -1) {
         code = code.substring(markerIndex + marker.length).trimStart();
     }
 
-    const project = new Project({ useInMemoryFileSystem: true });
-    const sourceFile = project.createSourceFile("esbuild-output.ts", code);
-
-    // Build alias map from import statements
-    // import { See as See2 } → See2 should become See
+    // Step 2: Extract import aliases via regex
+    // Matches: import { name as alias, name2 as alias2 } from "...";
     const aliasMap = new Map<string, string>();
-    for (const importDecl of sourceFile.getImportDeclarations()) {
-        for (const named of importDecl.getNamedImports()) {
-            const alias = named.getAliasNode();
-            if (alias) {
-                aliasMap.set(alias.getText(), named.getName());
-            }
+    const importRegex = /^import\s*\{[^}]*\}\s*from\s*"[^"]*"\s*;?\s*$/gm;
+    let importMatch;
+    while ((importMatch = importRegex.exec(code)) !== null) {
+        const specifiers = importMatch[0];
+        const asRegex = /(\w+)\s+as\s+(\w+)/g;
+        let asMatch;
+        while ((asMatch = asRegex.exec(specifiers)) !== null) {
+            // Groups 1 and 2 are guaranteed by the regex pattern
+            aliasMap.set(asMatch[2]!, asMatch[1]!);
         }
     }
 
-    // Detect esbuild's collision avoidance: if we have alias X→Y, and there's
-    // an identifier X2 (X + digit), it was the original that got renamed.
-    // e.g., import { See as See2 } causes bundled See2 to become See22
-    // In this case: rename See22→See2, and DON'T rename See2→See
+    // Step 3: Detect esbuild's collision avoidance
+    // If alias See2 exists and identifier See22 exists in code → See22→See2
     const allIdentifiers = new Set<string>();
-    sourceFile.getDescendantsOfKind(SyntaxKind.Identifier).forEach(id => {
-        allIdentifiers.add(id.getText());
+    forEachCodeSegment(code, (segment) => {
+        const wordRegex = /\b[A-Za-z_$]\w*\b/g;
+        let m;
+        while ((m = wordRegex.exec(segment)) !== null) {
+            allIdentifiers.add(m[0]);
+        }
     });
 
     for (const [alias] of [...aliasMap]) {
@@ -250,7 +256,7 @@ function cleanupEsbuildOutput(code: string, marker: string, originalConstants?: 
         }
     }
 
-    // Detect and fix esbuild's variable renaming due to name collisions.
+    // Step 4: Detect and fix esbuild's variable renaming due to name collisions.
     //
     // Problem: When TSSL defines a constant that also exists in folib imports,
     // esbuild renames the local constant by appending a single digit to avoid collision.
@@ -261,7 +267,7 @@ function cleanupEsbuildOutput(code: string, marker: string, originalConstants?: 
     // (passed via originalConstants parameter) to identify and reverse these renames.
     //
     // Algorithm:
-    // 1. Build map of all var declarations in bundled code: name → value
+    // 1. Find all var declarations in bundled code via regex: name → value
     // 2. For each var ending in a digit, strip the last char to get candidate original name
     // 3. If originalConstants has that name with the SAME value, it's a rename → restore it
     //
@@ -272,55 +278,158 @@ function cleanupEsbuildOutput(code: string, marker: string, originalConstants?: 
     //   This is rare and would require user to define two constants with same value
     //   where one name is the other plus a digit - unlikely in practice
     if (originalConstants !== undefined && originalConstants.size > 0) {
-        // Build map of var declarations in bundled code: name → initializer text
-        const varDecls = new Map<string, string>();
-        for (const stmt of sourceFile.getStatements()) {
-            if (stmt.getKind() === SyntaxKind.VariableStatement) {
-                const varStmt = stmt.asKind(SyntaxKind.VariableStatement);
-                if (!varStmt) continue;
-                for (const decl of varStmt.getDeclarationList().getDeclarations()) {
-                    const name = decl.getName();
-                    const init = decl.getInitializer();
-                    if (init) {
-                        varDecls.set(name, init.getText());
-                    }
-                }
-            }
-        }
-
-        // Find renamed vars by matching against original constants
-        for (const [bundledName, bundledValue] of varDecls) {
-            // Only check names ending in digit (esbuild's rename pattern)
-            // Uses simple regex /\d$/ - just checks last char is 0-9
+        const varDeclRegex = /^var\s+(\w+)\s*=\s*(.+?)\s*;$/gm;
+        let varMatch;
+        while ((varMatch = varDeclRegex.exec(code)) !== null) {
+            // Groups 1 and 2 are guaranteed by the regex pattern
+            const bundledName = varMatch[1]!;
+            const bundledValue = varMatch[2]!;
             if (!/\d$/.test(bundledName)) continue;
-
-            // Strip last character (the digit esbuild added)
-            // Using slice, not regex - simple and predictable
             const baseName = bundledName.slice(0, -1);
-
-            // Match requires BOTH conditions:
-            // 1. baseName exists in original constants
-            // 2. Value is exactly the same (string comparison of initializer text)
-            // This prevents false positives from unrelated vars that happen to end in digits
             if (originalConstants.get(baseName) === bundledValue && !aliasMap.has(bundledName)) {
                 aliasMap.set(bundledName, baseName);
             }
         }
     }
 
-    // Rename identifiers using AST (automatically skips strings)
-    // Sort by length (longest first) to avoid partial replacements
-    const sortedAliases = [...aliasMap.entries()].sort((a, b) => b[0].length - a[0].length);
-    for (const [alias, original] of sortedAliases) {
-        sourceFile.getDescendantsOfKind(SyntaxKind.Identifier)
-            .filter(id => id.getText() === alias)
-            .forEach(id => id.replaceWithText(original));
+    // Step 5: Remove import declarations (single-line and multi-line)
+    code = code.replace(/^import\s*\{[^}]*\}\s*from\s*"[^"]*"\s*;?[^\S\n]*\n?/gm, "");
+
+    // Step 6: Rename identifiers (string-aware, skips string literals and comments)
+    if (aliasMap.size > 0) {
+        // Sort by length (longest first) to avoid partial replacements
+        const sorted = [...aliasMap.entries()].sort((a, b) => b[0].length - a[0].length);
+
+        const pattern = new RegExp(
+            "\\b(" + sorted.map(([alias]) => escapeRegex(alias)).join("|") + ")\\b",
+            "g",
+        );
+
+        code = replaceOutsideStrings(code, pattern, (match) => aliasMap.get(match) ?? match);
     }
 
-    // Remove import declarations
-    sourceFile.getImportDeclarations().forEach(decl => decl.remove());
+    return code;
+}
 
-    return sourceFile.getFullText();
+/**
+ * Iterate over segments of code that are NOT inside string literals or comments.
+ * Used for collecting identifiers safely.
+ */
+export function forEachCodeSegment(code: string, fn: (segment: string) => void): void {
+    let i = 0;
+    let segStart = 0;
+    while (i < code.length) {
+        const ch = code[i];
+        if (ch === '"' || ch === "'") {
+            if (i > segStart) fn(code.substring(segStart, i));
+            i = skipString(code, i);
+            segStart = i;
+        } else if (ch === "`") {
+            if (i > segStart) fn(code.substring(segStart, i));
+            i = skipTemplateLiteral(code, i);
+            segStart = i;
+        } else if (ch === "/" && i + 1 < code.length && code[i + 1] === "/") {
+            if (i > segStart) fn(code.substring(segStart, i));
+            while (i < code.length && code[i] !== "\n") i++;
+            segStart = i;
+        } else if (ch === "/" && i + 1 < code.length && code[i + 1] === "*") {
+            if (i > segStart) fn(code.substring(segStart, i));
+            i = skipBlockComment(code, i);
+            segStart = i;
+        } else {
+            i++;
+        }
+    }
+    if (i > segStart) fn(code.substring(segStart, i));
+}
+
+/**
+ * Replace regex matches in code, but only outside string literals and comments.
+ * Strings (single/double/template) and comments (line/block) are copied verbatim.
+ * Safe for esbuild output which has no regex literals.
+ */
+export function replaceOutsideStrings(code: string, pattern: RegExp, replacer: (match: string) => string): string {
+    let result = "";
+    let i = 0;
+    while (i < code.length) {
+        const ch = code[i];
+        if (ch === '"' || ch === "'") {
+            const end = skipString(code, i);
+            result += code.substring(i, end);
+            i = end;
+        } else if (ch === "`") {
+            const end = skipTemplateLiteral(code, i);
+            result += code.substring(i, end);
+            i = end;
+        } else if (ch === "/" && i + 1 < code.length && code[i + 1] === "/") {
+            let end = i;
+            while (end < code.length && code[end] !== "\n") end++;
+            result += code.substring(i, end);
+            i = end;
+        } else if (ch === "/" && i + 1 < code.length && code[i + 1] === "*") {
+            const end = skipBlockComment(code, i);
+            result += code.substring(i, end);
+            i = end;
+        } else {
+            // Accumulate code until next string/comment boundary
+            let end = i;
+            while (end < code.length) {
+                const c = code[end];
+                if (c === '"' || c === "'" || c === "`") break;
+                if (c === "/" && end + 1 < code.length && (code[end + 1] === "/" || code[end + 1] === "*")) break;
+                end++;
+            }
+            result += code.substring(i, end).replace(pattern, replacer);
+            i = end;
+        }
+    }
+    return result;
+}
+
+/** Skip past a quoted string (single or double). Returns index after closing quote. */
+export function skipString(code: string, start: number): number {
+    const quote = code[start];
+    let i = start + 1;
+    while (i < code.length) {
+        if (code[i] === "\\") { i += 2; continue; }
+        if (code[i] === quote) return i + 1;
+        i++;
+    }
+    return i;
+}
+
+/** Skip past a template literal. Returns index after closing backtick. */
+export function skipTemplateLiteral(code: string, start: number): number {
+    let i = start + 1;
+    while (i < code.length) {
+        if (code[i] === "\\") { i += 2; continue; }
+        if (code[i] === "`") return i + 1;
+        if (code[i] === "$" && i + 1 < code.length && code[i + 1] === "{") {
+            // Template expression — scan for matching }, handling nested strings/templates
+            i += 2;
+            let braceDepth = 1;
+            while (i < code.length && braceDepth > 0) {
+                if (code[i] === "{") braceDepth++;
+                else if (code[i] === "}") braceDepth--;
+                else if (code[i] === '"' || code[i] === "'") { i = skipString(code, i); continue; }
+                else if (code[i] === "`") { i = skipTemplateLiteral(code, i); continue; }
+                i++;
+            }
+            continue;
+        }
+        i++;
+    }
+    return i;
+}
+
+/** Skip past a block comment. Returns index after closing `* /`. */
+export function skipBlockComment(code: string, start: number): number {
+    const end = code.indexOf("*/", start + 2);
+    return end === -1 ? code.length : end + 2;
+}
+
+function escapeRegex(s: string): string {
+    return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 /**

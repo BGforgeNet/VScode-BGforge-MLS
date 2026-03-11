@@ -17,19 +17,38 @@ import {
 } from './types';
 import { convertOperatorsAST } from './convert-operators';
 
+/** Cache for inline functions extracted from imported files, keyed by absolute path. */
+export type InlineFunctionCache = Map<string, Map<string, InlineFunc>>;
+
 /**
  * Extract functions marked with @inline JSDoc tag from bundled source files.
  * Uses the list of input files from esbuild's metafile.
+ * When a cache is provided, avoids re-parsing files already seen (e.g., folib
+ * is imported by every TSSL file but only needs to be parsed once).
  * @param project ts-morph Project instance to reuse
  * @param inputFiles List of input file paths from esbuild metafile
+ * @param cache Optional cache to avoid re-parsing shared imports across files
  */
-export function extractInlineFunctionsFromFiles(project: Project, inputFiles: readonly string[]): Map<string, InlineFunc> {
+export function extractInlineFunctionsFromFiles(
+    project: Project,
+    inputFiles: readonly string[],
+    cache?: InlineFunctionCache,
+): Map<string, InlineFunc> {
     const result = new Map<string, InlineFunc>();
 
     for (const filePath of inputFiles) {
+        const cached = cache?.get(filePath);
+        if (cached) {
+            for (const [k, v] of cached) result.set(k, v);
+            continue;
+        }
         if (!fs.existsSync(filePath)) continue;
-        const source = project.addSourceFileAtPath(filePath);
-        extractInlineFunctionsFromSource(source, result);
+        // Reuse already-parsed source file if present in the project (batch mode)
+        const source = project.getSourceFile(filePath) ?? project.addSourceFileAtPath(filePath);
+        const fileResult = new Map<string, InlineFunc>();
+        extractInlineFunctionsFromSource(source, fileResult);
+        if (cache) cache.set(filePath, fileResult);
+        for (const [k, v] of fileResult) result.set(k, v);
     }
 
     return result;
