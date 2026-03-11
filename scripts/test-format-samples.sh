@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # Test formatter output against expected results for all grammars.
+# Uses batch formatting (single process per grammar) instead of per-file spawning.
 
 set -eu -o pipefail
 
@@ -17,20 +18,25 @@ pnpm build:format-cli
 
 FAILED=0
 
-# --- Flat-sample grammars: compare + idempotency ---
-for grammar_dir in grammars/fallout-ssl grammars/weidu-baf grammars/weidu-d; do
+# --- All grammars: copy, format in-place, compare, check idempotency ---
+for grammar_dir in grammars/fallout-ssl grammars/weidu-baf grammars/weidu-d grammars/weidu-tp2; do
     lang=$(basename "$grammar_dir")
     samples_dir="$grammar_dir/test/samples"
     expected_dir="$grammar_dir/test/samples-expected"
     formatted_dir="$grammar_dir/test/samples-formatted"
-    formatted2_dir="$grammar_dir/test/samples-formatted-2"
 
     step "$lang: Formatting samples"
-    rm -rf "$formatted_dir" "$formatted2_dir"
-    mkdir -p "$formatted_dir"
-    for f in "$samples_dir"/*; do
-        pnpm -s format "$f" > "$formatted_dir/$(basename "$f")" 2>&1
-    done
+    rm -rf "$formatted_dir"
+    cp -r "$samples_dir" "$formatted_dir"
+    # Remove non-matching files (e.g. .2da, .itm companions in tp2 samples)
+    case "$lang" in
+        fallout-ssl) find "$formatted_dir" -type f ! -name "*.ssl" -delete ;;
+        weidu-baf)   find "$formatted_dir" -type f ! -name "*.baf" -delete ;;
+        weidu-d)     find "$formatted_dir" -type f ! -name "*.d" -delete ;;
+        weidu-tp2)   find "$formatted_dir" -type f ! \( -name "*.tp2" -o -name "*.tpa" -o -name "*.tph" -o -name "*.tpp" \) -delete ;;
+    esac
+    find "$formatted_dir" -type d -empty -delete 2>/dev/null || true
+    pnpm -s format "$formatted_dir" -r --save -q
 
     step "$lang: Comparing against expected"
     if ! diff -ru "$expected_dir" "$formatted_dir"; then
@@ -40,42 +46,11 @@ for grammar_dir in grammars/fallout-ssl grammars/weidu-baf grammars/weidu-d; do
     fi
 
     step "$lang: Checking idempotency"
-    mkdir -p "$formatted2_dir"
-    for f in "$formatted_dir"/*; do
-        pnpm -s format "$f" > "$formatted2_dir/$(basename "$f")" 2>&1
-    done
-    if ! diff -ru "$formatted_dir" "$formatted2_dir"; then
+    if ! pnpm -s format "$formatted_dir" -r --check -q; then
         echo "FAILED: $lang format not idempotent"
         FAILED=1
     fi
 done
-
-# --- TP2: compare + idempotency (has subdirectories, needs find) ---
-step "weidu-tp2: Formatting samples"
-tp2_dir="grammars/weidu-tp2"
-rm -rf "$tp2_dir/test/samples-formatted" "$tp2_dir/test/samples-formatted-2"
-while IFS= read -r -d '' f; do
-    rel="${f#test/samples/}"
-    mkdir -p "$tp2_dir/test/samples-formatted/$(dirname "$rel")"
-    pnpm -s format "$tp2_dir/$f" > "$tp2_dir/test/samples-formatted/$rel"
-done < <(cd "$tp2_dir" && find test/samples -type f \( -name "*.tp2" -o -name "*.tpa" -o -name "*.tph" -o -name "*.tpp" \) -print0)
-
-step "weidu-tp2: Comparing against expected"
-if ! diff -ru "$tp2_dir/test/samples-expected" "$tp2_dir/test/samples-formatted"; then
-    echo "FAILED: weidu-tp2 formatter output differs"
-    FAILED=1
-fi
-
-step "weidu-tp2: Checking idempotency"
-while IFS= read -r -d '' f; do
-    rel="${f#test/samples-formatted/}"
-    mkdir -p "$tp2_dir/test/samples-formatted-2/$(dirname "$rel")"
-    pnpm -s format "$tp2_dir/$f" > "$tp2_dir/test/samples-formatted-2/$rel"
-done < <(cd "$tp2_dir" && find test/samples-formatted -type f \( -name "*.tp2" -o -name "*.tpa" -o -name "*.tph" -o -name "*.tpp" \) -print0)
-if ! diff -ru "$tp2_dir/test/samples-formatted" "$tp2_dir/test/samples-formatted-2"; then
-    echo "FAILED: weidu-tp2 format not idempotent"
-    FAILED=1
-fi
 
 if [ $FAILED -ne 0 ]; then
     echo ""

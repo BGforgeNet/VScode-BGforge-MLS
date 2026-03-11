@@ -2,7 +2,7 @@
 
 # E2E transpiler test: transpile .td/.tbaf/.tssl from external repos,
 # write output, verify git status is clean (no changes to committed .d/.baf/.ssl).
-# Runs each file in a separate node process to isolate esbuild-wasm state.
+# Uses directory mode (-r --save) for batch processing in a single node process.
 
 set -eu -o pipefail
 
@@ -50,17 +50,9 @@ test_repos() {
 
         step "Transpiling: $repo"
 
-        # Transpile each file individually, writing output with --save
-        local errors=0
-        while IFS= read -r -d '' file; do
-            if ! node --no-warnings "$CLI" "$file" --save 2>&1; then
-                echo "ERROR: $file"
-                errors=$((errors + 1))
-            fi
-        done < <(find "$dir" -type f \( -name '*.td' -o -name '*.tbaf' -o -name '*.tssl' \) -print0 | sort -z)
-
-        if [[ $errors -ne 0 ]]; then
-            echo "FAIL: $repo ($errors transpilation errors)"
+        # Transpile all files in one process using directory mode
+        if ! node --no-warnings "$CLI" "$dir" -r --save 2>&1; then
+            echo "FAIL: $repo (transpilation errors)"
             FAILED=$((FAILED + 1))
             continue
         fi

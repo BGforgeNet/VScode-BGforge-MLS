@@ -7,6 +7,9 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 TS="$ROOT_DIR/node_modules/.bin/tree-sitter"
 GRAMMAR_DIR="$ROOT_DIR/grammars/$GRAMMAR_NAME"
 
+# shellcheck source=scripts/timing-lib.sh
+source "$ROOT_DIR/scripts/timing-lib.sh"
+
 cd "$GRAMMAR_DIR" || exit 1
 
 find_samples() {
@@ -14,19 +17,17 @@ find_samples() {
 }
 
 grammar_generate() {
-    echo "=== Generating grammar ==="
+    step "$GRAMMAR_NAME: Generating grammar"
     "$TS" generate
 }
 
 grammar_lint() {
-    echo ""
-    echo "=== Running ESLint ==="
+    step "$GRAMMAR_NAME: Running ESLint"
     pnpm eslint grammar.js --max-warnings 0
 }
 
 grammar_corpus() {
-    echo ""
-    echo "=== Running corpus tests ==="
+    step "$GRAMMAR_NAME: Running corpus tests"
     "$TS" test
 }
 
@@ -50,17 +51,14 @@ grammar_highlight() {
     #
     # So this step only checks that highlights.scm exists as a smoke test.
     if [[ ! -f "$GRAMMAR_DIR/queries/highlights.scm" ]]; then
-        echo ""
-        echo "=== Skipping highlight validation (no queries/highlights.scm) ==="
+        step "$GRAMMAR_NAME: Skipping highlight validation (no queries/highlights.scm)"
         return
     fi
-    echo ""
-    echo "=== Validating highlight captures ==="
+    step "$GRAMMAR_NAME: Validating highlight captures"
 }
 
 grammar_parse() {
-    echo ""
-    echo "=== Parsing samples ==="
+    step "$GRAMMAR_NAME: Parsing samples"
     while IFS= read -r -d '' f; do
         full_output=$("$TS" parse "$f" 2>&1) || true
         result=$(echo "$full_output" | tail -1)
@@ -76,26 +74,25 @@ grammar_build_format() {
     if [[ "${SKIP_FORMAT_BUILD:-}" == "1" ]]; then
         return
     fi
-    echo ""
-    echo "=== Building format CLI ==="
+    step "$GRAMMAR_NAME: Building format CLI"
     (cd "$ROOT_DIR" && pnpm build:format-cli)
 }
 
 grammar_format() {
-    echo ""
-    echo "=== Formatting samples ==="
+    step "$GRAMMAR_NAME: Formatting samples"
     rm -rf test/samples-formatted test/samples-formatted-2
-    while IFS= read -r -d '' f; do
-        rel="${f#test/samples/}"
-        mkdir -p "test/samples-formatted/$(dirname "$rel")"
-        pnpm -s --dir "$ROOT_DIR" format "grammars/$GRAMMAR_NAME/$f" > "test/samples-formatted/$rel" \
-            || { echo "FORMAT FAILED: $f"; exit 1; }
-    done < <(find_samples test/samples)
+
+    # Copy samples to samples-formatted, remove non-matching files, then format in-place.
+    cp -r test/samples test/samples-formatted
+    # Remove files that don't match the grammar's extensions (e.g. .2da, .itm companions)
+    find test/samples-formatted -type f ! \( "${SAMPLE_EXTS[@]}" \) -delete
+    # Remove empty directories left after deletion
+    find test/samples-formatted -type d -empty -delete 2>/dev/null || true
+    pnpm -s --dir "$ROOT_DIR" format "grammars/$GRAMMAR_NAME/test/samples-formatted" -r --save -q
 }
 
 grammar_compare() {
-    echo ""
-    echo "=== Comparing against expected output ==="
+    step "$GRAMMAR_NAME: Comparing against expected output"
     if ! diff -ru test/samples-expected test/samples-formatted; then
         echo "FAILED: Formatter output differs from expected"
         exit 1
@@ -103,30 +100,18 @@ grammar_compare() {
 }
 
 grammar_idempotency() {
-    echo ""
-    echo "=== Checking format idempotency ==="
-    while IFS= read -r -d '' f; do
-        rel="${f#test/samples-formatted/}"
-        mkdir -p "test/samples-formatted-2/$(dirname "$rel")"
-        pnpm -s --dir "$ROOT_DIR" format "grammars/$GRAMMAR_NAME/$f" > "test/samples-formatted-2/$rel" \
-            || { echo "FORMAT FAILED: $f"; exit 1; }
-    done < <(find_samples test/samples-formatted)
-    if ! diff -ru test/samples-formatted test/samples-formatted-2; then
-        echo "FAILED: Files changed after re-format"
-        exit 1
-    fi
+    step "$GRAMMAR_NAME: Checking format idempotency"
+    pnpm -s --dir "$ROOT_DIR" format "grammars/$GRAMMAR_NAME/test/samples-formatted" -r --check -q
 }
 
 grammar_regenerate_expected() {
     echo ""
     echo "=== Regenerating expected output ==="
     rm -rf test/samples-expected
-    while IFS= read -r -d '' f; do
-        rel="${f#test/samples/}"
-        mkdir -p "test/samples-expected/$(dirname "$rel")"
-        pnpm -s --dir "$ROOT_DIR" format "grammars/$GRAMMAR_NAME/$f" > "test/samples-expected/$rel" \
-            || { echo "FORMAT FAILED: $f"; exit 1; }
-    done < <(find_samples test/samples)
+    cp -r test/samples test/samples-expected
+    find test/samples-expected -type f ! \( "${SAMPLE_EXTS[@]}" \) -delete
+    find test/samples-expected -type d -empty -delete 2>/dev/null || true
+    pnpm -s --dir "$ROOT_DIR" format "grammars/$GRAMMAR_NAME/test/samples-expected" -r --save -q
     echo "Done: $(find test/samples-expected -type f | wc -l) files regenerated"
 }
 
