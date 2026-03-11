@@ -72,10 +72,7 @@ server/src/
 |   +-- symbol.ts             # IndexedSymbol type definitions
 |   +-- symbol-index.ts       # Symbols class - unified storage & query
 |   +-- static-loader.ts      # Loads built-in symbols from JSON
-|   +-- include-graph.ts      # Generic include graph (TypedDepGraph wrapper)
-|   +-- include-resolver.ts   # Resolves #include paths to file URIs
 |   +-- normalized-uri.ts     # Branded NormalizedUri type, URI encoding canonicalization
-|   +-- typed-dep-graph.ts    # Type-safe wrapper around dependency-graph with branded keys
 |   +-- languages.ts          # Language IDs & file extensions
 |   +-- patterns.ts           # Regex patterns
 |   +-- location-utils.ts     # Position/range helpers
@@ -86,7 +83,6 @@ server/src/
 |   +-- parser.ts             # Tree-sitter wrapper
 |   +-- format.ts
 |   +-- header-parser.ts      # .h file parsing
-|   +-- include-scanner.ts    # Extracts #include paths from AST
 |   +-- symbol.ts             # DocumentSymbol extraction (procedures with param/var children)
 |   +-- completion.ts
 |   +-- hover.ts
@@ -517,25 +513,6 @@ Centralized service (`translation.ts`) for `.tra`/`.msg` translation files. Prov
 
 **Caching**: All `.tra`/`.msg` files in configured translation directory loaded at startup. Updated incrementally on file save/change.
 
-## Include Graph
-
-The include graph tracks `#include` relationships between files for workspace-wide rename.
-
-```
-+------------------+     +------------------+     +------------------+
-| include-scanner  | --> | include-resolver | --> | IncludeGraph     |
-| (AST extraction) |     | (path resolve)   |     | (TypedDepGraph)   |
-+------------------+     +------------------+     +------------------+
-```
-
-### Components
-
-| Module | Layer | Purpose |
-|--------|-------|---------|
-| `core/include-graph.ts` | Generic | Wraps `TypedDepGraph` for transitive dependant queries |
-| `core/include-resolver.ts` | Generic | Resolves raw paths to file URIs (with path traversal protection) |
-| `fallout-ssl/include-scanner.ts` | Language-specific | Extracts `#include` paths from SSL tree-sitter AST |
-
 ### Rename (Scope-Aware)
 
 Rename uses a three-module pipeline: `symbol-scope.ts` → `reference-finder.ts` → `rename.ts`.
@@ -584,21 +561,23 @@ Find References Request
 - **TP2**: Collects `FUNCTION_DEF_TYPES` and `FUNCTION_CALL_TYPES` name fields. Keys are case-sensitive. Variables are not indexed — they are function/loop-scoped.
 - **D**: Collects state label references with `dialogFile:labelName` composite keys. Dialog files are normalized to lowercase.
 
-**Index population**: Populated at startup during the same workspace scan used for other indices. SSL populates in `buildIncludeGraph()` (which already reads all files). TP2 populates in `reloadFileData()` via `scanWorkspaceHeaders()`. D has its own async scan in `init()` (no `watchExtensions` — `.d` files are primary sources, not headers). Updated incrementally for open documents via `onDidChangeContent`.
+**Index population**: Populated at startup during the workspace scan. SSL populates in `scanWorkspaceFiles()` (async I/O). TP2 populates in `reloadFileData()` via `scanWorkspaceHeaders()`. D has its own async scan in `init()` (no `watchExtensions` — `.d` files are primary sources, not headers). Updated incrementally for open documents via `onDidChangeContent`.
 
-**Scoping**: Only file-scoped symbols get cross-file results. Procedure-local variables (SSL), function/loop-scoped variables (TP2), and intra-dialog labels (D) remain single-file only. The `references.ts` module in each language checks the symbol scope before querying the index.
+**Scoping**: Only file-scoped symbols get cross-file results. Procedure-local variables (SSL), function/loop-scoped variables (TP2), and intra-dialog labels (D) remain single-file only. The `references.ts` module in each language checks the symbol scope before querying the index. For SSL, when a symbol is not defined in the current file (e.g., a macro from an included header), `findReferences` falls back to the ReferencesIndex for cross-file references and file-scope AST search for local occurrences.
 
 **Single-file rename** (`rename.ts`): Uses scope info to rename only within the correct scope.
 
 **Workspace-wide rename** (`rename.ts`): For symbols defined in header files:
 
 1. Find the definition URI (local AST or symbol store lookup)
-2. Query `includeGraph.getTransitiveDependants(defUri)` for all consuming files
+2. Query `refsIndex.lookupUris(symbolName)` for all files that reference the name
 3. For each candidate file, use scope-aware reference finding (skips procedure-local shadows)
 4. Skip files that redefine the symbol at file scope (a different procedure/macro with same name)
 5. Return `documentChanges` (TextDocumentEdit[]) for atomic cross-file undo
 
-The include graph is built at init time (async I/O) and updated incrementally on file save/change.
+Uses the same `ReferencesIndex` as Find References rather than a separate include graph.
+This handles cases where headers use symbols they don't directly `#include` — e.g., `den.h`
+uses `GVAR_DEN_GANGWAR` from `global.h`, relying on `.ssl` files to include both.
 
 ## Key Design Decisions
 
@@ -627,7 +606,7 @@ but are intentionally language-specific. Shared infrastructure is in `shared/`:
 |---------|-----------------|
 | Definition finders | Different scoping models (SSL procedures vs TP2 functions vs D state labels) |
 | Document symbol extraction | Different construct types and scoping: SSL has explicit `variable` declarations, TP2 uses first-assignment-wins deduplication. Both show params/vars as children. TP2 uses `hasError` guard to skip error-recovery artifacts; icon assignment uses shared `looksLikeConstant()` heuristic (cross-linked: `symbol.ts`, `hover.ts`, `tree-utils.ts`, `tmLanguage.yml`) |
-| Rename | SSL is workspace-wide with include graph; TP2 is single-file with %var% handling |
+| Rename | SSL is workspace-wide via ReferencesIndex; TP2 is single-file with %var% handling |
 | Reference finders | SSL has procedure scope shadows; TP2 has synthetic string nodes; D uses dialog-scoped composite keys |
 | Call-site extractors | SSL indexes all identifiers; TP2 indexes only function/macro names (case-sensitive); D uses dialog:label composite keys |
 | Folding block type sets | Language-specific node types, passed as parameters to shared `getFoldingRanges()` |
@@ -677,7 +656,7 @@ vs `pathToUri` at startup).
 `file://` URIs via a `fileURLToPath` -> `pathToFileURL` round-trip. `ProviderRegistry`
 normalizes all URIs at the gateway before passing to providers, protecting all downstream
 data structures (symbol index, workspace symbols, feature data, text cache) without
-modifying them. The include graph also normalizes internally as defense-in-depth.
+modifying them.
 
 The branded type makes it a compile-time error to use raw strings where normalized URIs
 are expected.

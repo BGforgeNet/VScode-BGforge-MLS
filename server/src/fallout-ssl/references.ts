@@ -13,13 +13,35 @@ import { parseWithCache } from "./parser";
 import { getSymbolScope } from "./symbol-scope";
 import { findScopedReferences } from "./reference-finder";
 import { getLocalDefinition } from "./definition";
+import { findIdentifierAtPosition } from "./utils";
+
+/**
+ * Filter out the declaration location from a set of references.
+ * Uses getLocalDefinition to find the declaration, then excludes the matching location.
+ */
+function excludeDeclaration(locations: Location[], text: string, uri: string, position: Position): Location[] {
+    const defLocation = getLocalDefinition(text, uri, position);
+    if (!defLocation) {
+        return locations;
+    }
+    // Guard on URI: cross-file refs at the same line/column must not be excluded
+    return locations.filter(loc =>
+        loc.uri !== uri ||
+        loc.range.start.line !== defLocation.range.start.line ||
+        loc.range.start.character !== defLocation.range.start.character
+    );
+}
 
 /**
  * Find all references to the symbol at the given position.
- * Returns empty array if the symbol is not locally defined or not found.
  *
- * When a ReferencesIndex is provided, cross-file references are included
- * for file-scoped symbols (procedures, macros, exports).
+ * For locally defined symbols (procedures, macros, variables), uses scope-aware
+ * AST traversal. When a ReferencesIndex is provided, cross-file references
+ * are included for file-scoped symbols.
+ *
+ * For symbols not defined in the current file (e.g., a macro from an included
+ * header), falls back to the ReferencesIndex for cross-file references and
+ * file-scope AST search for local occurrences.
  */
 export function findReferences(
     text: string,
@@ -35,7 +57,25 @@ export function findReferences(
 
     const scopeInfo = getSymbolScope(tree.rootNode, position);
     if (!scopeInfo) {
-        return [];
+        // Symbol not defined in the current file — fall back to cross-file lookup.
+        // This handles cases like GVAR_DEN_GANGWAR used in den.h but defined in global.h.
+        if (!refsIndex) {
+            return [];
+        }
+        const symbolName = findIdentifierAtPosition(tree.rootNode, position);
+        if (!symbolName) {
+            return [];
+        }
+        // Get cross-file references from the index (includes current file)
+        const crossFileRefs = refsIndex.lookup(symbolName);
+        // Also search the current file for matching identifiers using file-scope traversal
+        const fileScopeInfo = { name: symbolName, scope: "file" as const };
+        const localNodes = findScopedReferences(tree.rootNode, fileScopeInfo);
+        const localLocations = localNodes.map(node => ({ uri, range: makeRange(node) }));
+        // Merge: local refs + cross-file refs (excluding current file to avoid duplicates)
+        const externalRefs = crossFileRefs.filter(loc => loc.uri !== uri);
+        const allLocations = [...localLocations, ...externalRefs];
+        return includeDeclaration ? allLocations : excludeDeclaration(allLocations, text, uri, position);
     }
 
     const refNodes = findScopedReferences(tree.rootNode, scopeInfo);
@@ -56,20 +96,5 @@ export function findReferences(
         allLocations = [...localLocations, ...crossFileRefs];
     }
 
-    if (includeDeclaration) {
-        return allLocations;
-    }
-
-    // Find the definition location to exclude it
-    const defLocation = getLocalDefinition(text, uri, position);
-    if (!defLocation) {
-        return allLocations;
-    }
-
-    // Guard on URI: cross-file refs at the same line/column must not be excluded
-    return allLocations.filter(loc =>
-        loc.uri !== uri ||
-        loc.range.start.line !== defLocation.range.start.line ||
-        loc.range.start.character !== defLocation.range.start.character
-    );
+    return includeDeclaration ? allLocations : excludeDeclaration(allLocations, text, uri, position);
 }

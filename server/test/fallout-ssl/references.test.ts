@@ -17,6 +17,8 @@ vi.mock("../../src/lsp-connection", () => ({
 
 import { initParser } from "../../src/fallout-ssl/parser";
 import { findReferences } from "../../src/fallout-ssl/references";
+import { ReferencesIndex } from "../../src/shared/references-index";
+import { extractCallSites } from "../../src/fallout-ssl/call-sites";
 
 const TEST_URI = "file:///test.ssl";
 
@@ -117,6 +119,64 @@ end
             const refs = findReferences(text, { line: 1, character: 8 }, TEST_URI, true);
             // definition + bar usage = 2 (foo shadows x, so skipped)
             expect(refs).toHaveLength(2);
+        });
+    });
+
+    describe("cross-file references for symbols not locally defined", () => {
+        it("returns cross-file references for a symbol used but not defined in the current file", () => {
+            // den.h uses GVAR_DEN_GANGWAR but does not define it (defined in global.h)
+            const denHUri = "file:///project/headers/den.h";
+            const globalHUri = "file:///project/headers/global.h";
+            const denHText = `
+#define gangwar(x) (global_var(GVAR_DEN_GANGWAR) == x)
+`;
+            const globalHText = `#define GVAR_DEN_GANGWAR (454)`;
+
+            const refsIndex = new ReferencesIndex();
+            refsIndex.updateFile(denHUri, extractCallSites(denHText, denHUri));
+            refsIndex.updateFile(globalHUri, extractCallSites(globalHText, globalHUri));
+
+            // Cursor on GVAR_DEN_GANGWAR in den.h (line 1, character 31)
+            const refs = findReferences(denHText, { line: 1, character: 31 }, denHUri, true, refsIndex);
+
+            // Should find at least: usage in den.h + usage in global.h
+            expect(refs.length).toBeGreaterThanOrEqual(2);
+            const uris = new Set(refs.map(r => r.uri));
+            expect(uris).toContain(denHUri);
+            expect(uris).toContain(globalHUri);
+        });
+
+        it("returns local references in current file even when symbol not locally defined", () => {
+            const uri = "file:///project/script.ssl";
+            const text = `
+procedure main begin
+    if (GVAR_DEN_GANGWAR > 0) then begin
+        display_msg(GVAR_DEN_GANGWAR);
+    end
+end
+`;
+            const refsIndex = new ReferencesIndex();
+            refsIndex.updateFile(uri, extractCallSites(text, uri));
+
+            // Cursor on first GVAR_DEN_GANGWAR (line 2)
+            const refs = findReferences(text, { line: 2, character: 8 }, uri, true, refsIndex);
+
+            // Should find at least the 2 usages in the current file
+            expect(refs.length).toBeGreaterThanOrEqual(2);
+            for (const ref of refs) {
+                expect(ref.uri).toBe(uri);
+            }
+        });
+
+        it("returns empty when symbol not locally defined and no refsIndex provided", () => {
+            const text = `
+procedure main begin
+    display_msg(GVAR_DEN_GANGWAR);
+end
+`;
+            // No refsIndex — should return empty for non-local symbol
+            const refs = findReferences(text, { line: 2, character: 16 }, TEST_URI, true);
+            expect(refs).toHaveLength(0);
         });
     });
 

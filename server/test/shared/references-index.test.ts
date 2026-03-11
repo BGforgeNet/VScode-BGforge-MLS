@@ -66,6 +66,43 @@ describe("ReferencesIndex", () => {
         expect(index.lookup("my_func")).toHaveLength(0);
     });
 
+    describe("lookupUris()", () => {
+        it("returns empty set for unknown symbol", () => {
+            const index = new ReferencesIndex();
+            expect(index.lookupUris("unknown")).toEqual(new Set());
+        });
+
+        it("returns URIs of files that reference the symbol", () => {
+            const index = new ReferencesIndex();
+            index.updateFile("file:///a.ssl", new Map([
+                ["helper", [makeLoc("file:///a.ssl", 1, 0)]],
+            ]));
+            index.updateFile("file:///b.ssl", new Map([
+                ["helper", [makeLoc("file:///b.ssl", 3, 0)]],
+            ]));
+            index.updateFile("file:///c.ssl", new Map([
+                ["other", [makeLoc("file:///c.ssl", 5, 0)]],
+            ]));
+
+            const uris = index.lookupUris("helper");
+            expect(uris).toEqual(new Set(["file:///a.ssl", "file:///b.ssl"]));
+        });
+
+        it("does not include files that were removed", () => {
+            const index = new ReferencesIndex();
+            index.updateFile("file:///a.ssl", new Map([
+                ["helper", [makeLoc("file:///a.ssl", 1, 0)]],
+            ]));
+            index.updateFile("file:///b.ssl", new Map([
+                ["helper", [makeLoc("file:///b.ssl", 3, 0)]],
+            ]));
+            index.removeFile("file:///b.ssl");
+
+            const uris = index.lookupUris("helper");
+            expect(uris).toEqual(new Set(["file:///a.ssl"]));
+        });
+    });
+
     describe("case-sensitive keys", () => {
         it("treats different cases as distinct symbols", () => {
             const index = new ReferencesIndex();

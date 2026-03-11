@@ -18,7 +18,8 @@ vi.mock("../../src/lsp-connection", () => ({
 
 import { renameSymbol, prepareRenameSymbol, renameSymbolWorkspace, prepareRenameSymbolWorkspace } from "../../src/fallout-ssl/rename";
 import { initParser } from "../../src/fallout-ssl/parser";
-import { IncludeGraph } from "../../src/core/include-graph";
+import { ReferencesIndex } from "../../src/shared/references-index";
+import { extractCallSites } from "../../src/fallout-ssl/call-sites";
 import { Symbols } from "../../src/core/symbol-index";
 
 beforeAll(async () => {
@@ -647,13 +648,13 @@ procedure helper begin end
         it("rejects invalid newName in workspace rename", () => {
             const headerUri = "file:///project/headers/utils.h";
             const headerText = `procedure helper begin end`;
-            const graph = new IncludeGraph();
+            const refsIndex = new ReferencesIndex();
             const symbolStore = new Symbols();
 
             const position: Position = { line: 0, character: 12 };
             const result = renameSymbolWorkspace(
                 headerText, position, "invalid name!", headerUri,
-                graph, symbolStore,
+                refsIndex, symbolStore,
                 () => null,
                 "/project",
             );
@@ -672,14 +673,14 @@ procedure helper begin end
             position: Position,
             newName: string,
             uri: string,
-            includeGraph: IncludeGraph,
+            refsIndex: ReferencesIndex,
             symbolStore: Symbols,
             getFileText: (uri: string) => string | null,
             workspaceRoot: string | undefined,
         ): WorkspaceEdit | null {
             const wsResult = renameSymbolWorkspace(
                 text, position, newName, uri,
-                includeGraph, symbolStore,
+                refsIndex, symbolStore,
                 getFileText,
                 workspaceRoot,
             );
@@ -722,8 +723,9 @@ procedure start begin
    display_msg("Hello");
 end`;
 
-            const graph = new IncludeGraph();
-            graph.updateFile(sslUri, [headerUri]);
+            const refsIndex = new ReferencesIndex();
+            refsIndex.updateFile(headerUri, extractCallSites(headerText, headerUri));
+            refsIndex.updateFile(sslUri, extractCallSites(sslText, sslUri));
 
             const symbolStore = new Symbols();
 
@@ -731,7 +733,7 @@ end`;
             const position: Position = { line: 0, character: 12 };
             const result = providerRename(
                 headerText, position, "rename_test123", headerUri,
-                graph, symbolStore,
+                refsIndex, symbolStore,
                 makeGetFileText({ [headerUri]: headerText, [sslUri]: sslText }),
                 "/project",
             );
@@ -779,8 +781,9 @@ procedure main begin
 end
 `;
 
-            const graph = new IncludeGraph();
-            graph.updateFile(sslUri, [headerUri]);
+            const refsIndex = new ReferencesIndex();
+            refsIndex.updateFile(headerUri, extractCallSites(headerText, headerUri));
+            refsIndex.updateFile(sslUri, extractCallSites(sslText, sslUri));
 
             // Empty symbol store (symbol is locally defined in header file)
             const symbolStore = new Symbols();
@@ -789,7 +792,7 @@ end
             const position: Position = { line: 0, character: 12 };
             const result = renameSymbolWorkspace(
                 headerText, position, "new_helper", headerUri,
-                graph, symbolStore,
+                refsIndex, symbolStore,
                 makeGetFileText({ [headerUri]: headerText, [sslUri]: sslText }),
                 "/project",
             );
@@ -835,9 +838,10 @@ procedure bar begin
 end
 `;
 
-            const graph = new IncludeGraph();
-            graph.updateFile(ssl1Uri, [headerUri]);
-            graph.updateFile(ssl2Uri, [headerUri]);
+            const refsIndex = new ReferencesIndex();
+            refsIndex.updateFile(headerUri, extractCallSites(headerText, headerUri));
+            refsIndex.updateFile(ssl1Uri, extractCallSites(ssl1Text, ssl1Uri));
+            refsIndex.updateFile(ssl2Uri, extractCallSites(ssl2Text, ssl2Uri));
 
             const symbolStore = new Symbols();
 
@@ -845,7 +849,7 @@ end
             const position: Position = { line: 0, character: 10 };
             const result = renameSymbolWorkspace(
                 headerText, position, "ITEM_LIMIT", headerUri,
-                graph, symbolStore,
+                refsIndex, symbolStore,
                 makeGetFileText({ [headerUri]: headerText, [ssl1Uri]: ssl1Text, [ssl2Uri]: ssl2Text }),
                 "/project",
             );
@@ -858,6 +862,44 @@ end
             expect(getEditsForUri(result, ssl2Uri)).toBeDefined();
         });
 
+        it("returns null for symbol defined in external headers (path traversal guard)", () => {
+            const externalUri = "file:///external/headers/sfall.h";
+            const sslUri = "file:///project/scripts/main.ssl";
+
+            const sslText = `
+procedure main begin
+    call sfall_func;
+end
+`;
+
+            const refsIndex = new ReferencesIndex();
+            refsIndex.updateFile(sslUri, extractCallSites(sslText, sslUri));
+
+            const symbolStore = new Symbols();
+            symbolStore.updateFile(externalUri, [{
+                name: "sfall_func",
+                kind: SymbolKind.Procedure,
+                callable: {},
+                location: { uri: externalUri, range: { start: { line: 0, character: 10 }, end: { line: 0, character: 20 } } },
+                scope: { level: ScopeLevel.Workspace },
+                source: { type: SourceType.Workspace, uri: externalUri, displayPath: "sfall.h" },
+                completion: { label: "sfall_func" },
+                hover: { contents: { kind: MarkupKind.Markdown, value: "" } },
+            }]);
+
+            // Cursor on "sfall_func" (defined outside workspace root /project)
+            const position: Position = { line: 2, character: 10 };
+            const result = renameSymbolWorkspace(
+                sslText, position, "new_sfall_func", sslUri,
+                refsIndex, symbolStore,
+                () => null,
+                "/project",
+            );
+
+            // Should return null — symbol is defined outside workspace, not renameable
+            expect(result).toBeNull();
+        });
+
         it("returns null for function-scoped variable (not workspace-renameable)", () => {
             const sslUri = "file:///project/scripts/main.ssl";
             const sslText = `
@@ -867,14 +909,14 @@ procedure foo begin
 end
 `;
 
-            const graph = new IncludeGraph();
+            const refsIndex = new ReferencesIndex();
             const symbolStore = new Symbols();
 
             // Cursor on "counter" (function-scoped variable)
             const position: Position = { line: 2, character: 14 };
             const result = renameSymbolWorkspace(
                 sslText, position, "new_counter", sslUri,
-                graph, symbolStore,
+                refsIndex, symbolStore,
                 () => null,
                 "/project",
             );
@@ -910,9 +952,10 @@ procedure main begin
 end
 `;
 
-            const graph = new IncludeGraph();
-            graph.updateFile(ssl1Uri, [headerUri]);
-            graph.updateFile(ssl2Uri, [headerUri]);
+            const refsIndex = new ReferencesIndex();
+            refsIndex.updateFile(headerUri, extractCallSites(headerText, headerUri));
+            refsIndex.updateFile(ssl1Uri, extractCallSites(ssl1Text, ssl1Uri));
+            refsIndex.updateFile(ssl2Uri, extractCallSites(ssl2Text, ssl2Uri));
 
             const symbolStore = new Symbols();
 
@@ -920,7 +963,7 @@ end
             const position: Position = { line: 0, character: 12 };
             const result = renameSymbolWorkspace(
                 headerText, position, "new_helper", headerUri,
-                graph, symbolStore,
+                refsIndex, symbolStore,
                 makeGetFileText({ [headerUri]: headerText, [ssl1Uri]: ssl1Text, [ssl2Uri]: ssl2Text }),
                 "/project",
             );
@@ -951,8 +994,9 @@ procedure user begin
 end
 `;
 
-            const graph = new IncludeGraph();
-            graph.updateFile(sslUri, [headerUri]);
+            const refsIndex = new ReferencesIndex();
+            refsIndex.updateFile(headerUri, extractCallSites(headerText, headerUri));
+            refsIndex.updateFile(sslUri, extractCallSites(sslText, sslUri));
 
             const symbolStore = new Symbols();
 
@@ -960,7 +1004,7 @@ end
             const position: Position = { line: 0, character: 8 };
             const result = renameSymbolWorkspace(
                 headerText, position, "BAR", headerUri,
-                graph, symbolStore,
+                refsIndex, symbolStore,
                 makeGetFileText({ [headerUri]: headerText, [sslUri]: sslText }),
                 "/project",
             );
@@ -993,8 +1037,9 @@ procedure main begin
 end
 `;
 
-            const graph = new IncludeGraph();
-            graph.updateFile(sslUri, [headerUri]);
+            const refsIndex = new ReferencesIndex();
+            refsIndex.updateFile(headerUri, extractCallSites(headerText, headerUri));
+            refsIndex.updateFile(sslUri, extractCallSites(sslText, sslUri));
 
             // Create symbol store with the header symbol so lookup works from reference site
             const symbolStore = new Symbols();
@@ -1013,7 +1058,7 @@ end
             const position: Position = { line: 4, character: 10 };
             const result = renameSymbolWorkspace(
                 sslText, position, "new_helper", sslUri,
-                graph, symbolStore,
+                refsIndex, symbolStore,
                 makeGetFileText({ [headerUri]: headerText, [sslUri]: sslText }),
                 "/project",
             );
@@ -1024,7 +1069,7 @@ end
             expect(getEditsForUri(result, sslUri)).toBeDefined();
         });
 
-        it("handles transitive includes (A includes B, B includes C)", () => {
+        it("renames across files that reference the symbol (regardless of include structure)", () => {
             const headerCUri = "file:///project/headers/c.h";
             const headerBUri = "file:///project/headers/b.h";
             const sslAUri = "file:///project/scripts/a.ssl";
@@ -1045,9 +1090,10 @@ procedure main begin
 end
 `;
 
-            const graph = new IncludeGraph();
-            graph.updateFile(headerBUri, [headerCUri]);
-            graph.updateFile(sslAUri, [headerBUri]);
+            const refsIndex = new ReferencesIndex();
+            refsIndex.updateFile(headerCUri, extractCallSites(headerCText, headerCUri));
+            refsIndex.updateFile(headerBUri, extractCallSites(headerBText, headerBUri));
+            refsIndex.updateFile(sslAUri, extractCallSites(sslAText, sslAUri));
 
             const symbolStore = new Symbols();
 
@@ -1055,7 +1101,7 @@ end
             const position: Position = { line: 0, character: 15 };
             const result = renameSymbolWorkspace(
                 headerCText, position, "renamed_func", headerCUri,
-                graph, symbolStore,
+                refsIndex, symbolStore,
                 makeGetFileText({ [headerCUri]: headerCText, [headerBUri]: headerBText, [sslAUri]: sslAText }),
                 "/project",
             );
@@ -1065,6 +1111,51 @@ end
             expect(getEditsForUri(result, headerCUri)).toBeDefined();
             expect(getEditsForUri(result, headerBUri)).toBeDefined();
             expect(getEditsForUri(result, sslAUri)).toBeDefined();
+        });
+
+        it("renames symbol in header that uses it without directly including the definition", () => {
+            // Real-world case: den.h uses GVAR_DEN_GANGWAR defined in global.h,
+            // but den.h does not #include global.h -- it relies on .ssl files
+            // including both headers. The flat ReferencesIndex catches this because
+            // it indexes all identifiers regardless of include relationships.
+            const globalHUri = "file:///project/headers/global.h";
+            const denHUri = "file:///project/headers/den.h";
+            const sslUri = "file:///project/den/dcg1grd.ssl";
+
+            const globalHText = `#define GVAR_DEN_GANGWAR (454)`;
+            const denHText = `
+#define gangwar(x) (global_var(GVAR_DEN_GANGWAR) == x)
+`;
+            const sslText = `
+#include "../headers/define.h"
+#include "../headers/den.h"
+
+procedure start begin
+    if gangwar(1) then begin end
+end
+`;
+
+            const refsIndex = new ReferencesIndex();
+            refsIndex.updateFile(globalHUri, extractCallSites(globalHText, globalHUri));
+            refsIndex.updateFile(denHUri, extractCallSites(denHText, denHUri));
+            refsIndex.updateFile(sslUri, extractCallSites(sslText, sslUri));
+
+            const symbolStore = new Symbols();
+
+            // Rename GVAR_DEN_GANGWAR from its definition in global.h
+            const position: Position = { line: 0, character: 8 };
+            const result = renameSymbolWorkspace(
+                globalHText, position, "GVAR_DEN_GANGWAR_NEW", globalHUri,
+                refsIndex, symbolStore,
+                makeGetFileText({ [globalHUri]: globalHText, [denHUri]: denHText, [sslUri]: sslText }),
+                "/project",
+            );
+
+            expect(result).not.toBeNull();
+            // global.h: the definition itself
+            expect(getEditsForUri(result, globalHUri)).toBeDefined();
+            // den.h: uses the symbol without including global.h directly
+            expect(getEditsForUri(result, denHUri)).toBeDefined();
         });
     });
 });

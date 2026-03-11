@@ -3,15 +3,15 @@
  *
  * Single-file rename: renames locally defined symbols (procedures, variables, exports).
  * Workspace-wide rename: renames symbols defined in workspace headers across all
- * consuming files, using the include graph to determine scope.
+ * referencing files, using the ReferencesIndex for cross-file lookup.
  */
 
+import { isAbsolute, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 import type { Node } from "web-tree-sitter";
 import { OptionalVersionedTextDocumentIdentifier, Position, TextDocumentEdit, TextEdit, WorkspaceEdit } from "vscode-languageserver/node";
-import type { IncludeGraph } from "../core/include-graph";
-import { isWithinBase } from "../core/include-resolver";
 import { normalizeUri } from "../core/normalized-uri";
+import type { ReferencesIndex } from "../shared/references-index";
 import { SourceType } from "../core/symbol";
 import type { Symbols } from "../core/symbol-index";
 import { parseWithCache, isInitialized } from "./parser";
@@ -22,6 +22,12 @@ import { findScopedReferences } from "./reference-finder";
 
 /** SSL identifiers: alphanumeric + underscore, must not be empty. */
 const VALID_IDENTIFIER = /^[a-zA-Z_][a-zA-Z0-9_]*$/;
+
+/** Check that a resolved path stays within a given base directory. */
+function isWithinBase(resolvedPath: string, base: string): boolean {
+    const rel = relative(base, resolvedPath);
+    return !rel.startsWith("..") && !isAbsolute(rel);
+}
 
 /**
  * Prepare for rename by validating the position and returning the range and placeholder.
@@ -223,13 +229,23 @@ export function prepareRenameSymbolWorkspace(
 }
 
 /**
- * Rename a symbol across workspace files using the include graph.
+ * Rename a symbol across workspace files using the ReferencesIndex.
+ *
+ * Uses a flat name-based index instead of an include graph to find candidate files.
+ * This handles cases where headers use symbols they don't directly #include --
+ * e.g., den.h uses GVAR_DEN_GANGWAR from global.h, relying on .ssl files to
+ * include both. The index catches all files that reference the name.
  *
  * Algorithm:
  * 1. Find symbol at position, determine definition URI
- * 2. Get all files that transitively include the definition file
- * 3. For each candidate file, find all identifier references matching the symbol
+ * 2. Get all files that reference the symbol name from the ReferencesIndex
+ * 3. For each candidate file, re-parse and find scoped references
  * 4. Collect edits into a WorkspaceEdit
+ *
+ * Performance note: the candidate set is broader than the old include-graph approach --
+ * for common names like `i` or `x`, many unrelated files may be re-parsed. Safety checks
+ * (isFileScopeDef, findScopedReferences) filter them out correctly, but latency scales
+ * with workspace size. Acceptable since renames are infrequent and user-initiated.
  *
  * Returns null if the symbol is not workspace-renameable (caller falls back to single-file).
  */
@@ -238,7 +254,7 @@ export function renameSymbolWorkspace(
     position: Position,
     newName: string,
     uri: string,
-    includeGraph: IncludeGraph,
+    refsIndex: ReferencesIndex,
     symbolStore: Symbols,
     getFileText: (uri: string) => string | null,
     workspaceRoot: string | undefined,
@@ -282,21 +298,18 @@ export function renameSymbolWorkspace(
     const definitionUri = normalizeUri(defInfo.uri);
     debugLog?.(`rename: definitionUri=${definitionUri}`);
 
-    // Collect all files to rename in:
-    // - The definition file itself
-    // - All files that transitively include the definition file
-    const dependants = includeGraph.getTransitiveDependants(definitionUri);
-    debugLog?.(`rename: include graph dependants (${dependants.length}): ${dependants.length > 0 ? dependants.join(", ") : "(none)"}`);
-    debugLog?.(`rename: include graph has ${includeGraph.getAllFiles().length} total files, hasFile(definitionUri)=${includeGraph.hasFile(definitionUri)}`);
+    // Collect candidate files from the ReferencesIndex (all files that reference this name)
+    const indexedUris = refsIndex.lookupUris(symbolName);
+    debugLog?.(`rename: ReferencesIndex returned ${indexedUris.size} file(s) for "${symbolName}"`);
 
-    const candidateUris = new Set([definitionUri, ...dependants]);
-
-    // Also include the current file (in case it's not in the graph yet)
+    // Always include the definition file and current file as safety nets
+    const candidateUris = new Set(indexedUris);
+    candidateUris.add(definitionUri);
     candidateUris.add(normUri);
 
     debugLog?.(`rename: ${candidateUris.size} candidate files to scan`);
 
-    // Build edits for each candidate file
+    // Build edits for each candidate file.
     // Uses documentChanges format (TextDocumentEdit[]) so VS Code treats the
     // entire rename as a single atomic undo operation across all files.
     const documentChanges: TextDocumentEdit[] = [];
@@ -327,7 +340,7 @@ export function renameSymbolWorkspace(
         }
 
         // Use file-scoped reference finding with shadow exclusion:
-        // skips into procedures that have a local definition of the same name
+        // skips procedures that have a local definition of the same name
         const refs = findScopedReferences(candidateTree.rootNode, fileScopeInfo);
         if (refs.length === 0) {
             debugLog?.(`rename: skipping ${candidateUri} (no references found)`);

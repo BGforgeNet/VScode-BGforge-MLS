@@ -13,7 +13,7 @@ import { Location } from "vscode-languageserver/node";
  * Stores reference locations per file, keyed by symbol name.
  *
  * URI keys are plain strings, not NormalizedUri branded type. All callers go
- * through reloadFileData/buildIncludeGraph, which receive URIs already
+ * through reloadFileData/scanWorkspaceFiles, which receive URIs already
  * normalized by the ProviderRegistry gateway.
  */
 export class ReferencesIndex {
@@ -34,6 +34,20 @@ export class ReferencesIndex {
      */
     removeFile(uri: string): void {
         this.files.delete(uri);
+    }
+
+    /**
+     * Look up URIs of all files that reference a symbol name.
+     * More efficient than lookup() when only file membership is needed (e.g., rename).
+     */
+    lookupUris(symbolName: string): ReadonlySet<string> {
+        const uris = new Set<string>();
+        for (const [uri, fileRefs] of this.files) {
+            if (fileRefs.has(symbolName)) {
+                uris.add(uri);
+            }
+        }
+        return uris;
     }
 
     /**
