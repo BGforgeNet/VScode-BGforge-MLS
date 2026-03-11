@@ -454,7 +454,7 @@
         "watch:client": "pnpm build:base:client --sourcemap --watch",
         "watch:server": "pnpm build:base:server --sourcemap --watch",
         "test": "./scripts/test.sh",
-        "test:all": "pnpm test && pnpm test:grammars && pnpm test:format-samples && pnpm test:transpile-external && pnpm test:e2e",
+        "test:all": "./scripts/test-all.sh",
         "test:client": "cd client && pnpm test",
         "test:server": "cd server && pnpm test",
         "test:grammars": "./scripts/test-grammars.sh",

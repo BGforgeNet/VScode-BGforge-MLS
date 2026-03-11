@@ -8,19 +8,8 @@ ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 cd "$ROOT_DIR"
 
-_start_time=$(date +%s%3N)
-_prev_time=$_start_time
-
-step() {
-    local now
-    now=$(date +%s%3N)
-    if [ "$_prev_time" != "$_start_time" ]; then
-        echo "  ^ $(( now - _prev_time )) ms"
-    fi
-    _prev_time=$now
-    echo ""
-    echo "=== $1 ==="
-}
+# shellcheck source=scripts/timing-lib.sh
+source "$SCRIPT_DIR/timing-lib.sh"
 
 step "Resetting External Repos"
 "$SCRIPT_DIR/reset-external.sh"
@@ -99,7 +88,4 @@ pnpm knip
 step "Checking for dead production code (knip --production)"
 pnpm knip:prod
 
-_end_time=$(date +%s%3N)
-echo "  ^ $(( _end_time - _prev_time )) ms"
-echo ""
-echo "=== All tests passed in $(( _end_time - _start_time )) ms ==="
+timing_summary "All tests passed"

@@ -10,6 +10,9 @@ ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 cd "$ROOT_DIR"
 
+# shellcheck source=scripts/timing-lib.sh
+source "$SCRIPT_DIR/timing-lib.sh"
+
 # Clone repos from a txt file into a directory
 clone_repos() {
     local txt_file="$1"
@@ -59,12 +62,10 @@ test_format() {
         return
     fi
 
-    echo ""
-    echo "=== Formatting $name files ==="
+    step "Formatting $name files"
     pnpm format "$target_dir" -r --save -q
 
-    echo ""
-    echo "=== Checking $name idempotency ==="
+    step "Checking $name idempotency"
     pnpm format "$target_dir" -r --check -q
 }
 
@@ -76,30 +77,25 @@ test_bin() {
         return
     fi
 
-    echo ""
-    echo "=== Testing Fallout PRO files ==="
+    step "Testing Fallout PRO files"
     # Stdout mode outputs JSON - discard it, we only care about exit code (parse success)
     node "$ROOT_DIR/cli/bin/out/bin-cli.js" "$target_dir" -r -q > /dev/null
 }
 
-echo "=== Building CLIs ==="
+step "Building CLIs"
 pnpm build:format-cli
 pnpm build:bin-cli
 
-echo ""
-echo "=== Setting up Fallout repos ==="
+step "Setting up Fallout repos"
 clone_repos "$ROOT_DIR/external/fallout.txt" "$ROOT_DIR/external/fallout"
 
-echo ""
-echo "=== Setting up Infinity Engine repos ==="
+step "Setting up Infinity Engine repos"
 clone_repos "$ROOT_DIR/external/infinity-engine.txt" "$ROOT_DIR/external/infinity-engine"
 
-echo ""
-echo "=== Resetting repos (pre-test) ==="
+step "Resetting repos (pre-test)"
 reset_repos
 
-echo ""
-echo "=== Removing excluded files ==="
+step "Removing excluded files"
 remove_excluded "$ROOT_DIR/external/fallout-exclude.txt" "$ROOT_DIR/external/fallout"
 remove_excluded "$ROOT_DIR/external/infinity-engine-exclude.txt" "$ROOT_DIR/external/infinity-engine"
 
@@ -107,5 +103,4 @@ test_format "$ROOT_DIR/external/fallout" "Fallout"
 test_bin "$ROOT_DIR/external/fallout"
 test_format "$ROOT_DIR/external/infinity-engine" "Infinity Engine"
 
-echo ""
-echo "SUCCESS: External tests passed"
+timing_summary "External tests passed"

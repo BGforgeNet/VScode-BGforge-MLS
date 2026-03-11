@@ -10,9 +10,12 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 CLI="$ROOT_DIR/cli/transpile/out/transpile-cli.js"
 
+# shellcheck source=scripts/timing-lib.sh
+source "$SCRIPT_DIR/timing-lib.sh"
+
 # Build CLI if missing
 if [[ ! -f "$CLI" ]]; then
-    echo "Building transpile CLI..."
+    step "Building transpile CLI"
     (cd "$ROOT_DIR" && pnpm build:transpile-cli)
 fi
 
@@ -45,7 +48,7 @@ test_repos() {
             (cd "$dir" && pnpm install --ignore-workspace)
         fi
 
-        echo "=== $repo ==="
+        step "Transpiling: $repo"
 
         # Transpile each file individually, writing output with --save
         local errors=0
@@ -87,3 +90,5 @@ echo "Transpiler E2E: $PASS passed, $FAILED failed, $SKIP skipped"
 if [[ $FAILED -ne 0 ]]; then
     exit 1
 fi
+
+timing_summary "Transpile external tests passed"

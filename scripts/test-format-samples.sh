@@ -4,10 +4,15 @@
 
 set -eu -o pipefail
 
-ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+
 cd "$ROOT_DIR"
 
-echo "=== Building format CLI ==="
+# shellcheck source=scripts/timing-lib.sh
+source "$SCRIPT_DIR/timing-lib.sh"
+
+step "Building format CLI"
 pnpm build:format-cli
 
 FAILED=0
@@ -20,21 +25,21 @@ for grammar_dir in grammars/fallout-ssl grammars/weidu-baf grammars/weidu-d; do
     formatted_dir="$grammar_dir/test/samples-formatted"
     formatted2_dir="$grammar_dir/test/samples-formatted-2"
 
-    echo "=== $lang: Formatting samples ==="
+    step "$lang: Formatting samples"
     rm -rf "$formatted_dir" "$formatted2_dir"
     mkdir -p "$formatted_dir"
     for f in "$samples_dir"/*; do
         pnpm -s format "$f" > "$formatted_dir/$(basename "$f")" 2>&1
     done
 
-    echo "=== $lang: Comparing against expected ==="
+    step "$lang: Comparing against expected"
     if ! diff -ru "$expected_dir" "$formatted_dir"; then
         echo "FAILED: $lang formatter output differs"
         FAILED=1
         continue
     fi
 
-    echo "=== $lang: Checking idempotency ==="
+    step "$lang: Checking idempotency"
     mkdir -p "$formatted2_dir"
     for f in "$formatted_dir"/*; do
         pnpm -s format "$f" > "$formatted2_dir/$(basename "$f")" 2>&1
@@ -46,8 +51,7 @@ for grammar_dir in grammars/fallout-ssl grammars/weidu-baf grammars/weidu-d; do
 done
 
 # --- TP2: compare + idempotency (has subdirectories, needs find) ---
-echo ""
-echo "=== weidu-tp2: Formatting samples ==="
+step "weidu-tp2: Formatting samples"
 tp2_dir="grammars/weidu-tp2"
 rm -rf "$tp2_dir/test/samples-formatted" "$tp2_dir/test/samples-formatted-2"
 while IFS= read -r -d '' f; do
@@ -56,13 +60,13 @@ while IFS= read -r -d '' f; do
     pnpm -s format "$tp2_dir/$f" > "$tp2_dir/test/samples-formatted/$rel"
 done < <(cd "$tp2_dir" && find test/samples -type f \( -name "*.tp2" -o -name "*.tpa" -o -name "*.tph" -o -name "*.tpp" \) -print0)
 
-echo "=== weidu-tp2: Comparing against expected ==="
+step "weidu-tp2: Comparing against expected"
 if ! diff -ru "$tp2_dir/test/samples-expected" "$tp2_dir/test/samples-formatted"; then
     echo "FAILED: weidu-tp2 formatter output differs"
     FAILED=1
 fi
 
-echo "=== weidu-tp2: Checking idempotency ==="
+step "weidu-tp2: Checking idempotency"
 while IFS= read -r -d '' f; do
     rel="${f#test/samples-formatted/}"
     mkdir -p "$tp2_dir/test/samples-formatted-2/$(dirname "$rel")"
@@ -78,5 +82,5 @@ if [ $FAILED -ne 0 ]; then
     echo "FAILED: Some format tests failed"
     exit 1
 fi
-echo ""
-echo "SUCCESS: All format tests passed"
+
+timing_summary "All format tests passed"
