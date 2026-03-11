@@ -20,10 +20,14 @@ let esbuildInitialized = false;
 
 /**
  * Initialize esbuild (singleton, safe to call multiple times).
+ * Native esbuild (used by CLI via alias) doesn't need initialize().
+ * esbuild-wasm (used by LSP server) requires it.
  */
 async function ensureEsbuild(): Promise<void> {
     if (esbuildInitialized) return;
-    await esbuild.initialize({});
+    if (typeof esbuild.initialize === "function") {
+        await esbuild.initialize({});
+    }
     esbuildInitialized = true;
 }
 
