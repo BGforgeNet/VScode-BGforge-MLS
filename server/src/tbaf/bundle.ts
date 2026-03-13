@@ -33,10 +33,17 @@ const TBAF_CODE_MARKER = "/* __TBAF_CODE_START__ */";
  * @returns Bundled TypeScript code, or original text if no imports
  */
 export async function bundle(filePath: string, sourceText: string): Promise<string> {
-    // Skip bundling for files without imports.
-    // Trade-off: enum transformation is also skipped, but enums are only
-    // useful with library imports (ielib/iets).
-    if (!hasImports(sourceText)) return sourceText;
+    // Transform local enums even for files without imports.
+    // Note: esbuild bundling is skipped for files without imports to avoid
+    // tree-shaking block-scoped functions and number folding issues.
+    if (!hasImports(sourceText)) {
+        const { code, enumNames } = transformEnums(sourceText);
+        if (enumNames.size > 0) {
+            // Enum transformation was applied - return transformed code
+            return code;
+        }
+        return sourceText;
+    }
 
     // Shared mutable sets for enum accumulation across plugins.
     // The shared bundler's enumTransformPlugin handles .ts files;
