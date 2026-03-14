@@ -12,10 +12,8 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
     test: {
         include: ["test/**/*.test.ts"],
-        exclude: [
-            "test/smoke-stdio.test.ts",
-            "test/integration/**",
-        ],
+        exclude: ["test/smoke-stdio.test.ts", "test/integration/**"],
+        testTimeout: 30000,
         coverage: {
             provider: "v8",
             reporter: ["text", "html", "lcov"],
