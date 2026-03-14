@@ -286,39 +286,39 @@ Document Changed (debounced 300ms)
 
 `IndexedSymbol` is a union type where `.kind` determines available fields:
 
-| Type | Extra Field | Description |
-|------|-------------|-------------|
-| `CallableSymbol` | `.callable` | Functions, procedures, macros |
-| `VariableSymbol` | `.variable` | Variables, parameters |
-| `ConstantSymbol` | `.constant` | Constant values |
-| `StateSymbol` | - | Dialog states (D files) |
-| `ComponentSymbol` | - | TP2 mod components |
+| Type              | Extra Field | Description                   |
+| ----------------- | ----------- | ----------------------------- |
+| `CallableSymbol`  | `.callable` | Functions, procedures, macros |
+| `VariableSymbol`  | `.variable` | Variables, parameters         |
+| `ConstantSymbol`  | `.constant` | Constant values               |
+| `StateSymbol`     | -           | Dialog states (D files)       |
+| `ComponentSymbol` | -           | TP2 mod components            |
 
 ### Symbol Kinds
 
-| Category | Kind | Example |
-|----------|------|---------|
-| Callables | `Function` | DEFINE_ACTION_FUNCTION |
-| | `Procedure` | SSL procedure |
-| | `Macro` | #define, DEFINE_*_MACRO |
-| | `Action` | WeiDU action (BAF/D/TP2) |
-| | `Trigger` | WeiDU trigger (BAF/D) |
-| Data | `Variable` | OUTER_SET, SET |
-| | `Constant` | #define constant |
-| | `Parameter` | INT_VAR, STR_VAR |
-| | `LoopVariable` | PHP_EACH iteration var |
-| Structures | `State` | Dialog state (D files) |
-| | `Component` | TP2 mod component |
+| Category   | Kind           | Example                    |
+| ---------- | -------------- | -------------------------- |
+| Callables  | `Function`     | DEFINE_ACTION_FUNCTION     |
+|            | `Procedure`    | SSL procedure              |
+|            | `Macro`        | #define, DEFINE\_\*\_MACRO |
+|            | `Action`       | WeiDU action (BAF/D/TP2)   |
+|            | `Trigger`      | WeiDU trigger (BAF/D)      |
+| Data       | `Variable`     | OUTER_SET, SET             |
+|            | `Constant`     | #define constant           |
+|            | `Parameter`    | INT_VAR, STR_VAR           |
+|            | `LoopVariable` | PHP_EACH iteration var     |
+| Structures | `State`        | Dialog state (D files)     |
+|            | `Component`    | TP2 mod component          |
 
 ### Scope Hierarchy
 
-| Scope | Visibility |
-|-------|------------|
-| Global | Built-in functions, always visible |
+| Scope     | Visibility                                  |
+| --------- | ------------------------------------------- |
+| Global    | Built-in functions, always visible          |
 | Workspace | From headers (.h, .tph), visible everywhere |
-| File | Current file only (script-scope variables) |
-| Function | Inside procedure/function body only |
-| Loop | Loop iteration variable (e.g., PHP_EACH) |
+| File      | Current file only (script-scope variables)  |
+| Function  | Inside procedure/function body only         |
+| Loop      | Loop iteration variable (e.g., PHP_EACH)    |
 
 Lookup precedence (highest to lowest): Loop > Function > File > Workspace > Global
 
@@ -326,45 +326,46 @@ Lookup precedence (highest to lowest): Loop > Function > File > Workspace > Glob
 
 ```typescript
 interface LanguageProvider {
-  id: string
+  id: string;
 
   // Lifecycle
-  init(context: ProviderContext): Promise<void>
+  init(context: ProviderContext): Promise<void>;
 
   // Gate: suppress features in comments
-  shouldProvideFeatures?(text, position): boolean
+  shouldProvideFeatures?(text, position): boolean;
 
   // AST-based features (parse current document)
-  format?(text, uri): FormatResult
-  symbols?(text): DocumentSymbol[]
-  foldingRanges?(text): FoldingRange[]
-  definition?(text, position, uri): Location | null
-  hover?(text, symbol, uri, position): HoverResult       // discriminated union
-  filterCompletions?(items, text, position, uri, trigger?): CompletionItem[]
-  localSignature?(text, symbol, paramIndex): SignatureHelp | null
-  rename?(text, position, newName, uri): WorkspaceEdit | null
-  prepareRename?(text, position): { range, placeholder } | null
-  inlayHints?(text, uri, range): InlayHint[]
-  workspaceSymbols?(query): SymbolInformation[]
+  format?(text, uri): FormatResult;
+  symbols?(text): DocumentSymbol[];
+  foldingRanges?(text): FoldingRange[];
+  definition?(text, position, uri): Location | null;
+  hover?(text, symbol, uri, position): HoverResult; // discriminated union
+  filterCompletions?(items, text, position, uri, trigger?): CompletionItem[];
+  localSignature?(text, symbol, paramIndex): SignatureHelp | null;
+  rename?(text, position, newName, uri): WorkspaceEdit | null;
+  prepareRename?(text, position): { range; placeholder } | null;
+  inlayHints?(text, uri, range): InlayHint[];
+  workspaceSymbols?(query): SymbolInformation[];
 
   // Data features (unified symbol resolution)
-  resolveSymbol?(name, text, uri): IndexedSymbol | undefined  // single lookup entry point
-  getCompletions?(uri): CompletionItem[]
-  getSignature?(uri, symbol, paramIndex): SignatureHelp | null
-  getSymbolDefinition?(symbol): Location | null
+  resolveSymbol?(name, text, uri): IndexedSymbol | undefined; // single lookup entry point
+  getCompletions?(uri): CompletionItem[];
+  getSignature?(uri, symbol, paramIndex): SignatureHelp | null;
+  getSymbolDefinition?(symbol): Location | null;
 
   // File watching
-  watchExtensions?: string[]
-  reloadFileData?(uri, text): void
-  onWatchedFileDeleted?(uri): void
-  onDocumentClosed?(uri): void
+  watchExtensions?: string[];
+  reloadFileData?(uri, text): void;
+  onWatchedFileDeleted?(uri): void;
+  onDocumentClosed?(uri): void;
 
   // Compilation
-  compile?(uri, text, interactive): Promise<void>
+  compile?(uri, text, interactive): Promise<void>;
 }
 ```
 
 **HoverResult**: Discriminated union replacing the ambiguous `Hover | null | undefined`:
+
 - `{ handled: true, hover: Hover }` — provider found a result (show it)
 - `{ handled: true, hover: null }` — provider handled it, nothing to show (block fallthrough)
 - `{ handled: false }` — provider didn't handle it, fall through to data-driven hover
@@ -403,6 +404,7 @@ if (node.type === "state") { ... }           // Bad - no type checking
 ```
 
 Generate types for a grammar:
+
 ```bash
 cd grammars/{lang} && pnpm generate:types
 ```
@@ -415,13 +417,13 @@ This copies the generated `tree-sitter.d.ts` to `server/src/{lang}/`.
 
 ## Feature Matrix
 
-| Provider | Completion | Hover | Signature | Definition | References | Format | Symbols | Workspace Symbols | Rename | Inlay | Folding | Diagnostics | JSDoc |
-|----------|:----------:|:-----:|:---------:|:----------:|:----------:|:------:|:-------:|:-----------------:|:------:|:-----:|:-------:|:-----------:|:-----:|
-| fallout-ssl | Y | Y | Y | Y | Y | Y | Y | Y | Y | .msg | Y | Y | Y |
-| weidu-baf | Y | Y | | | | Y | | | | .tra | Y | Y | |
-| weidu-d | Y | Y | | Y | Y | Y | Y | | Y | .tra | Y | Y | Y |
-| weidu-tp2 | Y | Y | | Y | Y | Y | Y | Y | Y | .tra | Y | Y | Y |
-| worldmap | Y | Y | | | | | | | | | | | |
+| Provider    | Completion | Hover | Signature | Definition | References | Format | Symbols | Workspace Symbols | Rename | Inlay | Folding | Diagnostics | JSDoc |
+| ----------- | :--------: | :---: | :-------: | :--------: | :--------: | :----: | :-----: | :---------------: | :----: | :---: | :-----: | :---------: | :---: |
+| fallout-ssl |     Y      |   Y   |     Y     |     Y      |     Y      |   Y    |    Y    |         Y         |   Y    | .msg  |    Y    |      Y      |   Y   |
+| weidu-baf   |     Y      |   Y   |           |    n/a     |    n/a     |   Y    |         |        n/a        |  n/a   | .tra  |    Y    |      Y      |  n/a  |
+| weidu-d     |     Y      |   Y   |           |     Y      |     Y      |   Y    |    Y    |                   |   Y    | .tra  |    Y    |      Y      |   Y   |
+| weidu-tp2   |     Y      |   Y   |           |     Y      |     Y      |   Y    |    Y    |         Y         |   Y    | .tra  |    Y    |      Y      |   Y   |
+| worldmap    |     Y      |   Y   |    n/a    |    n/a     |    n/a     |  n/a   |   n/a   |        n/a        |  n/a   |  n/a  |   n/a   |     n/a     |  n/a  |
 
 ## Request Routing
 
@@ -432,8 +434,8 @@ This copies the generated `tree-sitter.d.ts` to `server/src/{lang}/`.
 
 ### Language Aliases
 
-| Alias | Routes to |
-|-------|-----------|
+| Alias     | Routes to |
+| --------- | --------- |
 | weidu-slb | weidu-baf |
 | weidu-ssl | weidu-baf |
 
@@ -441,22 +443,22 @@ This copies the generated `tree-sitter.d.ts` to `server/src/{lang}/`.
 
 Reusable infrastructure that providers consume via configuration, not inheritance:
 
-| Module | Pattern | Used By |
-|--------|---------|---------|
-| `parser-factory.ts` | Factory: `createCachedParserModule(wasm, name)` | All 4 LSP providers |
-| `folding-ranges.ts` | Factory: `createFoldingRangesProvider(init, parse, blockTypes)` | All 4 LSP providers |
-| `comment-check.ts` | Factory: `createIsInsideComment(init, parse, commentTypes)` | BAF, D, TP2 |
-| `provider-helpers.ts` | Helpers: `resolveSymbolWithLocal()`, `formatWithValidation()`, `getStaticCompletions()` | All providers |
-| `references-index.ts` | Index: `ReferencesIndex` for cross-file Find References | SSL, TP2, D |
-| `jsdoc.ts` | Parser: `parse(text, { returnMode })` — unnamed (SSL) or named (TP2) returns | SSL, TP2, D |
-| `jsdoc-completions.ts` | Completions: JSDoc tag and type completions | All 4 |
-| `signature.ts` | Data: `SigInfoEx`, `loadStatic()`, `getRequest()`, `getResponse()` | SSL (TP2 ready) |
-| `completion-context.ts` | Framework: `CompletionCategory`, `CompletionItemWithCategory`, context-based filtering | TP2 |
-| `format-utils.ts` | Validation: `validateFormatting()`, `createFullDocumentEdit()`, comment strippers | All 4 |
-| `format-options.ts` | Config: `getFormatOptions()` from `.editorconfig` | All 4 |
-| `tooltip-format.ts` | Formatting: `buildSignatureBlock()`, `buildWeiduHoverContent()`, `formatDeprecation()` | All providers |
-| `tooltip-table.ts` | Tables: `buildWeiduTable()` (4-col), `buildFalloutArgsTable()` (2-col) | SSL, BAF, D, TP2 |
-| `hash.ts` | Utility: `djb2HashHex()` for parse cache keys | All parsers |
+| Module                  | Pattern                                                                                 | Used By             |
+| ----------------------- | --------------------------------------------------------------------------------------- | ------------------- |
+| `parser-factory.ts`     | Factory: `createCachedParserModule(wasm, name)`                                         | All 4 LSP providers |
+| `folding-ranges.ts`     | Factory: `createFoldingRangesProvider(init, parse, blockTypes)`                         | All 4 LSP providers |
+| `comment-check.ts`      | Factory: `createIsInsideComment(init, parse, commentTypes)`                             | BAF, D, TP2         |
+| `provider-helpers.ts`   | Helpers: `resolveSymbolWithLocal()`, `formatWithValidation()`, `getStaticCompletions()` | All providers       |
+| `references-index.ts`   | Index: `ReferencesIndex` for cross-file Find References                                 | SSL, TP2, D         |
+| `jsdoc.ts`              | Parser: `parse(text, { returnMode })` — unnamed (SSL) or named (TP2) returns            | SSL, TP2, D         |
+| `jsdoc-completions.ts`  | Completions: JSDoc tag and type completions                                             | All 4               |
+| `signature.ts`          | Data: `SigInfoEx`, `loadStatic()`, `getRequest()`, `getResponse()`                      | SSL (TP2 ready)     |
+| `completion-context.ts` | Framework: `CompletionCategory`, `CompletionItemWithCategory`, context-based filtering  | TP2                 |
+| `format-utils.ts`       | Validation: `validateFormatting()`, `createFullDocumentEdit()`, comment strippers       | All 4               |
+| `format-options.ts`     | Config: `getFormatOptions()` from `.editorconfig`                                       | All 4               |
+| `tooltip-format.ts`     | Formatting: `buildSignatureBlock()`, `buildWeiduHoverContent()`, `formatDeprecation()`  | All providers       |
+| `tooltip-table.ts`      | Tables: `buildWeiduTable()` (4-col), `buildFalloutArgsTable()` (2-col)                  | SSL, BAF, D, TP2    |
+| `hash.ts`               | Utility: `djb2HashHex()` for parse cache keys                                           | All parsers         |
 
 ### Design pattern
 
@@ -503,6 +505,7 @@ onDidSave / onDidChangeContent / manual command
 Centralized service (`translation.ts`) for `.tra`/`.msg` translation files. Provides hover, inlay hints, and go-to-definition for translation references. No provider implements these — it's a single shared implementation.
 
 **Supported patterns** (by file type):
+
 - `.ssl`, `.tssl`: `mstr(123)`, `NOption(123)`, `Reply(456)`, etc. → `.msg` files
 - `.baf`, `.d`, `.tp2`: `@123` → `.tra` files
 - `.tbaf`, `.td`: `tra(123)` → `.tra` files
@@ -557,6 +560,7 @@ Find References Request
 ```
 
 **Per-language call-site extractors** (`call-sites.ts`):
+
 - **SSL**: Collects all `Identifier` nodes grouped by name. Cross-file lookup uses exact match.
 - **TP2**: Collects `FUNCTION_DEF_TYPES` and `FUNCTION_CALL_TYPES` name fields. Keys are case-sensitive. Variables are not indexed — they are function/loop-scoped.
 - **D**: Collects state label references with `dialogFile:labelName` composite keys. Dialog files are normalized to lowercase.
@@ -582,14 +586,17 @@ uses `GVAR_DEN_GANGWAR` from `global.h`, relying on `.ssl` files to include both
 ## Key Design Decisions
 
 ### 1. Pre-Computation
+
 All LSP responses computed at parse time, stored in IndexedSymbol.
 Trade-off: More memory, but instant responses.
 
 ### 2. Scope-Aware Lookup
+
 Symbols respects visibility rules automatically.
 Prevents returning symbols from wrong scope.
 
 ### 3. File-Level Granularity
+
 Updates only affect changed file, not entire index.
 Efficient for large workspaces.
 
@@ -602,15 +609,15 @@ Features try sources in order: local (AST) -> data (index) -> translation. Retur
 Several features have separate implementations per provider that may look like duplication
 but are intentionally language-specific. Shared infrastructure is in `shared/`:
 
-| Feature | Why per-language |
-|---------|-----------------|
-| Definition finders | Different scoping models (SSL procedures vs TP2 functions vs D state labels) |
+| Feature                    | Why per-language                                                                                                                                                                                                                                                                                                                                                     |
+| -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Definition finders         | Different scoping models (SSL procedures vs TP2 functions vs D state labels)                                                                                                                                                                                                                                                                                         |
 | Document symbol extraction | Different construct types and scoping: SSL has explicit `variable` declarations, TP2 uses first-assignment-wins deduplication. Both show params/vars as children. TP2 uses `hasError` guard to skip error-recovery artifacts; icon assignment uses shared `looksLikeConstant()` heuristic (cross-linked: `symbol.ts`, `hover.ts`, `tree-utils.ts`, `tmLanguage.yml`) |
-| Rename | SSL is workspace-wide via ReferencesIndex; TP2 is single-file with %var% handling |
-| Reference finders | SSL has procedure scope shadows; TP2 has synthetic string nodes; D uses dialog-scoped composite keys |
-| Call-site extractors | SSL indexes all identifiers; TP2 indexes only function/macro names (case-sensitive); D uses dialog:label composite keys |
-| Folding block type sets | Language-specific node types, passed as parameters to shared `getFoldingRanges()` |
-| Comment stripping | `stripCommentsWeidu()` handles `~string~` delimiters; `stripCommentsFalloutSsl()` does not |
+| Rename                     | SSL is workspace-wide via ReferencesIndex; TP2 is single-file with %var% handling                                                                                                                                                                                                                                                                                    |
+| Reference finders          | SSL has procedure scope shadows; TP2 has synthetic string nodes; D uses dialog-scoped composite keys                                                                                                                                                                                                                                                                 |
+| Call-site extractors       | SSL indexes all identifiers; TP2 indexes only function/macro names (case-sensitive); D uses dialog:label composite keys                                                                                                                                                                                                                                              |
+| Folding block type sets    | Language-specific node types, passed as parameters to shared `getFoldingRanges()`                                                                                                                                                                                                                                                                                    |
+| Comment stripping          | `stripCommentsWeidu()` handles `~string~` delimiters; `stripCommentsFalloutSsl()` does not                                                                                                                                                                                                                                                                           |
 
 ### 6. Tree-Sitter Error Recovery Defense
 
@@ -620,6 +627,7 @@ error recovery may produce a `patch_assignment` node with a phantom zero-width `
 Without protection, this creates spurious variable completions with wrong types.
 
 Two defense layers prevent this:
+
 1. **`isPhantomAssignment()`** (`tree-utils.ts`) — rejects assignment nodes where the
    operator has zero width (inserted by error recovery, not present in source).
    Applied in both `localCompletion()` and `extractVariables()`.
@@ -642,6 +650,7 @@ turning garbage text into a valid-looking assignment). The guard still recurses 
 children, so valid variables inside an ACTION_IF with partial errors are still collected.
 
 ### 7. Sequential Parser Init
+
 Tree-sitter WASM constraint requires sequential initialization.
 Documented in provider-registry.ts.
 
@@ -700,11 +709,11 @@ See [scripts/README.md](../scripts/README.md) for all test commands.
 
 ### Test layers
 
-| Layer | Config | What it covers | Fixtures |
-|-------|--------|----------------|----------|
-| Unit tests | `vitest.config.ts` | Pure logic, utilities, parsers, transpilers | Inline strings |
+| Layer             | Config                         | What it covers                                                                                                                                                                        | Fixtures                                         |
+| ----------------- | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| Unit tests        | `vitest.config.ts`             | Pure logic, utilities, parsers, transpilers                                                                                                                                           | Inline strings                                   |
 | Integration tests | `vitest.integration.config.ts` | AST-derived LSP features (symbols, definition, references, rename, folding, formatting, signature, hover, local symbols, workspace symbols, completion context) against real mod code | `external/` repos (cloned by `test-external.sh`) |
-| Smoke test | `vitest.smoke.config.ts` | Server starts and responds over stdio | Built server bundle |
+| Smoke test        | `vitest.smoke.config.ts`       | Server starts and responds over stdio                                                                                                                                                 | Built server bundle                              |
 
 Integration tests live in `test/integration/` and cover SSL, BAF, D, and TP2. They test all AST-derived LSP features: symbols, definition, references, rename, folding, formatting, signature, hover (JSDoc), local symbols, workspace symbols, and completion context. Static-data-only features (completion/hover from YAML) are covered by unit tests.
 
