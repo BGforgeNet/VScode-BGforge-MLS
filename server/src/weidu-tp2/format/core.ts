@@ -56,9 +56,6 @@ import {
 } from "./blocks";
 import { SyntaxType } from "../tree-sitter.d";
 
-// Re-export public types
-export type { FormatOptions } from "./types";
-
 // ============================================
 // Simple node formatters
 // ============================================
@@ -106,7 +103,9 @@ function formatComponent(node: SyntaxNode, ctx: FormatContext): string {
             child.type === SyntaxType.VariableRef ||
             child.type === SyntaxType.TraRef
         ) {
-            beginLine = beginLine ? beginLine + " " + normalizeWhitespace(child.text) : normalizeWhitespace(child.text);
+            beginLine = beginLine
+                ? beginLine + " " + normalizeWhitespace(child.text)
+                : normalizeWhitespace(child.text);
             lastHeaderRow = child.endPosition.row;
             continue;
         }
@@ -131,7 +130,13 @@ function formatComponent(node: SyntaxNode, ctx: FormatContext): string {
                 const predicate = child.childForFieldName("predicate");
                 const message = child.childForFieldName("message");
                 const contIndent = ctx.indent;
-                const condLines = formatCondition(predicate, "REQUIRE_PREDICATE", "", contIndent, ctx.lineLimit);
+                const condLines = formatCondition(
+                    predicate,
+                    "REQUIRE_PREDICATE",
+                    "",
+                    contIndent,
+                    ctx.lineLimit,
+                );
                 if (message) {
                     condLines[condLines.length - 1] += " " + normalizeWhitespace(message.text);
                 }
@@ -237,7 +242,7 @@ function formatSimpleNode(node: SyntaxNode, ctx: FormatContext, depth: number): 
         throwFormatError(
             `Unhandled block node type '${node.type}' - using simple formatting`,
             node.startPosition.row + 1,
-            node.startPosition.column + 1
+            node.startPosition.column + 1,
         );
     }
 
@@ -373,7 +378,11 @@ function formatNode(node: SyntaxNode, ctx: FormatContext, depth: number): string
     }
 
     // INNER_PATCH / INNER_PATCH_SAVE / INNER_PATCH_FILE
-    if (type === NODE_INNER_PATCH || type === NODE_INNER_PATCH_SAVE || type === NODE_INNER_PATCH_FILE) {
+    if (
+        type === NODE_INNER_PATCH ||
+        type === NODE_INNER_PATCH_SAVE ||
+        type === NODE_INNER_PATCH_FILE
+    ) {
         return formatInnerPatch(node, ctx, depth, formatNode);
     }
 
@@ -394,7 +403,7 @@ function formatNode(node: SyntaxNode, ctx: FormatContext, depth: number): string
 function tryAppendTopLevelInlineComment(
     result: string[],
     child: SyntaxNode,
-    lastEndRow: number
+    lastEndRow: number,
 ): boolean {
     if (!isComment(child) || lastEndRow < 0 || child.startPosition.row !== lastEndRow) {
         return false;
@@ -414,7 +423,8 @@ function tryAppendTopLevelInlineComment(
         return false;
     }
 
-    lastResultLines[lastResultLines.length - 1] = lastLine + INLINE_COMMENT_SPACING + normalizeComment(child.text);
+    lastResultLines[lastResultLines.length - 1] =
+        lastLine + INLINE_COMMENT_SPACING + normalizeComment(child.text);
     result[result.length - 1] = lastResultLines.join("\n");
     return true;
 }
@@ -423,7 +433,7 @@ function tryAppendTopLevelInlineComment(
 function isCommentAttachedToComponent(
     children: SyntaxNode[],
     idx: number,
-    lastEndRow: number
+    lastEndRow: number,
 ): boolean {
     const child = children[idx];
     if (!child || !isComment(child)) {
@@ -478,7 +488,7 @@ export function formatDocument(root: SyntaxNode, options?: Partial<FormatOptions
         throwFormatError(
             `Parse ${errorType}: cannot format file with syntax errors`,
             parseError.startPosition.row + 1,
-            parseError.startPosition.column + 1
+            parseError.startPosition.column + 1,
         );
     }
 
@@ -511,7 +521,9 @@ export function formatDocument(root: SyntaxNode, options?: Partial<FormatOptions
             result.push("");
         }
 
-        const needsBlankBefore = attachedToComponent || (child.type === SyntaxType.Component && !skipBlankBeforeComponent);
+        const needsBlankBefore =
+            attachedToComponent ||
+            (child.type === SyntaxType.Component && !skipBlankBeforeComponent);
         if (needsBlankBefore && result.length > 0 && result[result.length - 1] !== "") {
             result.push("");
         }

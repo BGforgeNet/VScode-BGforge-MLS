@@ -31,6 +31,8 @@ const config: KnipConfig = {
                 "vitest.smoke.config.ts",
                 "vitest.integration.config.ts",
                 "test/integration/**",
+                // Created at runtime by enum-transform.test.ts, may exist during parallel Knip runs
+                "test/tmp-bundle-test/**",
             ],
         },
         "plugins/tssl-plugin": {

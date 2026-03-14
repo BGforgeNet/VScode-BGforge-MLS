@@ -6,30 +6,46 @@
 
 import * as fs from "fs";
 import * as path from "path";
+import { formatDocument as formatSslDocument } from "../../../server/src/fallout-ssl/format/core";
 import {
-    formatDocument as formatSslDocument,
-    FormatOptions as SslFormatOptions,
-} from "../../../server/src/fallout-ssl/format/core";
-import { initParser as initSslParser, getParser as getSslParser } from "../../../server/src/fallout-ssl/parser";
+    initParser as initSslParser,
+    getParser as getSslParser,
+} from "../../../server/src/fallout-ssl/parser";
+import { formatDocument as formatBafDocument } from "../../../server/src/weidu-baf/format/core";
 import {
-    formatDocument as formatBafDocument,
-    FormatOptions as BafFormatOptions,
-} from "../../../server/src/weidu-baf/format/core";
-import { initParser as initBafParser, getParser as getBafParser } from "../../../server/src/weidu-baf/parser";
+    initParser as initBafParser,
+    getParser as getBafParser,
+} from "../../../server/src/weidu-baf/parser";
+import { formatDocument as formatDDocument } from "../../../server/src/weidu-d/format/core";
 import {
-    formatDocument as formatDDocument,
-    FormatOptions as DFormatOptions,
-} from "../../../server/src/weidu-d/format/core";
-import { initParser as initDParser, getParser as getDParser } from "../../../server/src/weidu-d/parser";
+    initParser as initDParser,
+    getParser as getDParser,
+} from "../../../server/src/weidu-d/parser";
+import { formatDocument as formatTp2Document } from "../../../server/src/weidu-tp2/format/core";
 import {
-    formatDocument as formatTp2Document,
-    FormatOptions as Tp2FormatOptions,
-} from "../../../server/src/weidu-tp2/format/core";
-import { initParser as initTp2Parser, getParser as getTp2Parser } from "../../../server/src/weidu-tp2/parser";
+    initParser as initTp2Parser,
+    getParser as getTp2Parser,
+} from "../../../server/src/weidu-tp2/parser";
 import { getEditorconfigSettings } from "../../../server/src/shared/editorconfig";
-import { validateFormatting, stripCommentsWeidu, stripCommentsFalloutSsl } from "../../../server/src/shared/format-utils";
-import { EXT_FALLOUT_SSL, EXT_WEIDU_BAF, EXT_WEIDU_D, EXT_WEIDU_TP2 } from "../../../server/src/core/languages";
-import { parseCliArgs, runCli, safeProcess, reportDiff, FileResult, OutputMode } from "../../cli-utils";
+import {
+    validateFormatting,
+    stripCommentsWeidu,
+    stripCommentsFalloutSsl,
+} from "../../../server/src/shared/format-utils";
+import {
+    EXT_FALLOUT_SSL,
+    EXT_WEIDU_BAF,
+    EXT_WEIDU_D,
+    EXT_WEIDU_TP2,
+} from "../../../server/src/core/languages";
+import {
+    parseCliArgs,
+    runCli,
+    safeProcess,
+    reportDiff,
+    FileResult,
+    OutputMode,
+} from "../../cli-utils";
 
 const DEFAULT_INDENT = 4;
 const EXTENSIONS = [EXT_FALLOUT_SSL, EXT_WEIDU_BAF, EXT_WEIDU_D, ...EXT_WEIDU_TP2];
@@ -53,6 +69,41 @@ function getFormatOptions(filePath: string): { indentSize: number; lineLimit: nu
     };
 }
 
+type FormatResult = { text: string };
+
+function parseAndFormat(
+    text: string,
+    fileType: FileType,
+    opts: { indentSize: number; lineLimit: number },
+): FormatResult {
+    if (fileType === "ssl") {
+        const tree = getSslParser().parse(text);
+        if (!tree) throw new Error("Failed to parse");
+        return formatSslDocument(tree.rootNode, {
+            indentSize: opts.indentSize,
+            lineLimit: opts.lineLimit,
+        });
+    } else if (fileType === "baf") {
+        const tree = getBafParser().parse(text);
+        if (!tree) throw new Error("Failed to parse");
+        return formatBafDocument(tree.rootNode, { indentSize: opts.indentSize });
+    } else if (fileType === "d") {
+        const tree = getDParser().parse(text);
+        if (!tree) throw new Error("Failed to parse");
+        return formatDDocument(tree.rootNode, {
+            indentSize: opts.indentSize,
+            lineLimit: opts.lineLimit,
+        });
+    } else {
+        const tree = getTp2Parser().parse(text);
+        if (!tree) throw new Error("Failed to parse");
+        return formatTp2Document(tree.rootNode, {
+            indentSize: opts.indentSize,
+            lineLimit: opts.lineLimit,
+        });
+    }
+}
+
 async function processFile(filePath: string, mode: OutputMode): Promise<FileResult> {
     return safeProcess(filePath, () => {
         const fileType = getFileType(filePath);
@@ -63,28 +114,13 @@ async function processFile(filePath: string, mode: OutputMode): Promise<FileResu
 
         const text = fs.readFileSync(filePath, "utf-8");
         const opts = getFormatOptions(path.resolve(filePath));
-        let result: { text: string };
 
-        if (fileType === "ssl") {
-            const tree = getSslParser().parse(text);
-            if (!tree) { console.error(`Error: Failed to parse ${filePath}`); return "error"; }
-            const options: SslFormatOptions = { indentSize: opts.indentSize, lineLimit: opts.lineLimit };
-            result = formatSslDocument(tree.rootNode, options);
-        } else if (fileType === "baf") {
-            const tree = getBafParser().parse(text);
-            if (!tree) { console.error(`Error: Failed to parse ${filePath}`); return "error"; }
-            const options: BafFormatOptions = { indentSize: opts.indentSize };
-            result = formatBafDocument(tree.rootNode, options);
-        } else if (fileType === "d") {
-            const tree = getDParser().parse(text);
-            if (!tree) { console.error(`Error: Failed to parse ${filePath}`); return "error"; }
-            const options: DFormatOptions = { indentSize: opts.indentSize, lineLimit: opts.lineLimit };
-            result = formatDDocument(tree.rootNode, options);
-        } else {
-            const tree = getTp2Parser().parse(text);
-            if (!tree) { console.error(`Error: Failed to parse ${filePath}`); return "error"; }
-            const options: Tp2FormatOptions = { indentSize: opts.indentSize, lineLimit: opts.lineLimit };
-            result = formatTp2Document(tree.rootNode, options);
+        let result: FormatResult;
+        try {
+            result = parseAndFormat(text, fileType, opts);
+        } catch {
+            console.error(`Error: Failed to parse ${filePath}`);
+            return "error";
         }
 
         const stripComments = fileType === "ssl" ? stripCommentsFalloutSsl : stripCommentsWeidu;
@@ -100,6 +136,24 @@ async function processFile(filePath: string, mode: OutputMode): Promise<FileResu
                 fs.writeFileSync(filePath, result.text);
                 console.log(`Formatted: ${filePath}`);
             }
+        } else if (mode === "save-and-check") {
+            if (changed) {
+                fs.writeFileSync(filePath, result.text);
+                console.log(`Formatted: ${filePath}`);
+            }
+            // Idempotency check: re-format the result and verify it's stable
+            let reResult: FormatResult;
+            try {
+                reResult = parseAndFormat(result.text, fileType, opts);
+            } catch {
+                console.error(`Error: Failed to re-parse ${filePath}`);
+                return "error";
+            }
+            if (reResult.text !== result.text) {
+                reportDiff(filePath, result.text, reResult.text);
+                console.error(`${filePath}: Formatter not idempotent`);
+                return "error";
+            }
         } else if (mode === "stdout") {
             process.stdout.write(result.text);
         } else if (changed) {
@@ -110,11 +164,12 @@ async function processFile(filePath: string, mode: OutputMode): Promise<FileResu
     });
 }
 
-const HELP = `Usage: format-cli <file.ssl|file.baf|file.d|file.tp2|dir> [--save] [--check] [-r] [-q]
-  --save    Write formatted output back to file(s)
-  --check   Check if files are formatted (exit 1 if not)
-  -r        Recursively format all supported files in directory
-  -q        Quiet mode: suppress summary, only print changed files
+const HELP = `Usage: format-cli <file.ssl|file.baf|file.d|file.tp2|dir> [--save] [--check] [--save-and-check] [-r] [-q]
+  --save            Write formatted output back to file(s)
+  --check           Check if files are formatted (exit 1 if not)
+  --save-and-check  Save formatted output and verify idempotency in one pass
+  -r                Recursively format all supported files in directory
+  -q                Quiet mode: suppress summary, only print changed files
   Without --save or --check: single file prints to stdout, directory shows what would change`;
 
 async function main() {
@@ -139,7 +194,7 @@ async function main() {
     });
 }
 
-main().catch(err => {
+main().catch((err) => {
     console.error("Error:", err.message);
     process.exit(1);
 });

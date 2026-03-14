@@ -13,6 +13,13 @@ cd "$ROOT_DIR"
 # shellcheck source=scripts/timing-lib.sh
 source "$SCRIPT_DIR/timing-lib.sh"
 
+LOG_DIR="$ROOT_DIR/tmp/external-test-logs"
+rm -rf "$LOG_DIR"
+mkdir -p "$LOG_DIR"
+
+# shellcheck source=scripts/parallel-lib.sh
+source "$SCRIPT_DIR/parallel-lib.sh"
+
 # Clone repos from a txt file into a directory
 clone_repos() {
     local txt_file="$1"
@@ -52,7 +59,7 @@ reset_repos() {
 # Always reset repos on exit (success or failure)
 trap reset_repos EXIT
 
-# Test formatter on a directory
+# Test formatter on a directory (format + idempotency check in one pass)
 test_format() {
     local target_dir="$1"
     local name="$2"
@@ -62,11 +69,8 @@ test_format() {
         return
     fi
 
-    step "Formatting $name files"
-    pnpm format "$target_dir" -r --save -q
-
-    step "Checking $name idempotency"
-    pnpm format "$target_dir" -r --check -q
+    step "Formatting $name files (with idempotency check)"
+    node "$ROOT_DIR/cli/format/out/format-cli.js" "$target_dir" -r --save-and-check -q
 }
 
 # Test bin CLI on Fallout PRO files (parse only, no snapshot comparison)
@@ -83,8 +87,12 @@ test_bin() {
 }
 
 step "Building CLIs"
-pnpm build:format-cli
-pnpm build:bin-cli
+if [[ ! -f "$ROOT_DIR/cli/format/out/format-cli.js" ]]; then
+    "$ROOT_DIR/scripts/build-format-cli.sh"
+fi
+if [[ ! -f "$ROOT_DIR/cli/bin/out/bin-cli.js" ]]; then
+    "$ROOT_DIR/scripts/build-bin-cli.sh"
+fi
 
 step "Setting up Fallout repos"
 clone_repos "$ROOT_DIR/external/fallout.txt" "$ROOT_DIR/external/fallout"
@@ -99,8 +107,9 @@ step "Removing excluded files"
 remove_excluded "$ROOT_DIR/external/fallout-exclude.txt" "$ROOT_DIR/external/fallout"
 remove_excluded "$ROOT_DIR/external/infinity-engine-exclude.txt" "$ROOT_DIR/external/infinity-engine"
 
-test_format "$ROOT_DIR/external/fallout" "Fallout"
-test_bin "$ROOT_DIR/external/fallout"
-test_format "$ROOT_DIR/external/infinity-engine" "Infinity Engine"
+step "Format + Idempotency Tests"
+parallel \
+    "Fallout" "test_format '$ROOT_DIR/external/fallout' 'Fallout' && test_bin '$ROOT_DIR/external/fallout'" \
+    "Infinity Engine" "test_format '$ROOT_DIR/external/infinity-engine' 'Infinity Engine'"
 
 timing_summary "External tests passed"

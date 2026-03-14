@@ -27,5 +27,4 @@ grammar_parse
 grammar_build_format
 grammar_format
 grammar_compare
-grammar_idempotency
 grammar_success

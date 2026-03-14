@@ -88,7 +88,8 @@ grammar_format() {
     find test/samples-formatted -type f ! \( "${SAMPLE_EXTS[@]}" \) -delete
     # Remove empty directories left after deletion
     find test/samples-formatted -type d -empty -delete 2>/dev/null || true
-    pnpm -s --dir "$ROOT_DIR" format "grammars/$GRAMMAR_NAME/test/samples-formatted" -r --save -q
+    # --save-and-check saves the formatted output and verifies idempotency in one pass
+    pnpm -s --dir "$ROOT_DIR" format "grammars/$GRAMMAR_NAME/test/samples-formatted" -r --save-and-check -q
 }
 
 grammar_compare() {
@@ -97,11 +98,6 @@ grammar_compare() {
         echo "FAILED: Formatter output differs from expected"
         exit 1
     fi
-}
-
-grammar_idempotency() {
-    step "$GRAMMAR_NAME: Checking format idempotency"
-    pnpm -s --dir "$ROOT_DIR" format "grammars/$GRAMMAR_NAME/test/samples-formatted" -r --check -q
 }
 
 grammar_regenerate_expected() {

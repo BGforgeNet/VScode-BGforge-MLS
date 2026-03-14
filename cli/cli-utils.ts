@@ -8,7 +8,7 @@ import * as fs from "fs";
 import * as path from "path";
 
 export type FileResult = "changed" | "unchanged" | "error";
-export type OutputMode = "save" | "stdout" | "check";
+export type OutputMode = "save" | "stdout" | "check" | "save-and-check";
 
 export interface CliArgs {
     target: string;
@@ -28,6 +28,7 @@ export function parseCliArgs(helpText: string): CliArgs | null {
     const target = args.find(a => !a.startsWith("-"));
     const save = args.includes("--save");
     const check = args.includes("--check");
+    const saveAndCheck = args.includes("--save-and-check");
     const recursive = args.includes("-r") || args.includes("--recursive");
     const quiet = args.includes("-q") || args.includes("--quiet");
 
@@ -41,7 +42,7 @@ export function parseCliArgs(helpText: string): CliArgs | null {
         process.exit(1);
     }
 
-    const mode: OutputMode = save ? "save" : check ? "check" : "stdout";
+    const mode: OutputMode = saveAndCheck ? "save-and-check" : save ? "save" : check ? "check" : "stdout";
 
     return { target, mode, recursive, quiet };
 }

@@ -9,7 +9,7 @@ import { SyntaxType } from "../tree-sitter.d";
 // Formatting options.
 // Note: BAF doesn't need lineLimit - its format is inherently line-based
 // (one trigger/action per line) with no long expressions to wrap.
-export interface FormatOptions {
+interface FormatOptions {
     indentSize: number;
 }
 
@@ -56,7 +56,7 @@ function handleComment(
     result: string[],
     child: SyntaxNode,
     lastNodeRow: number,
-    indent: string
+    indent: string,
 ): void {
     if (lastNodeRow === child.startPosition.row && result.length > 0) {
         result[result.length - 1] += INLINE_COMMENT_SPACING + normalizeComment(child.text);
@@ -71,7 +71,7 @@ function handleBlockLevelComments(
     result: string[],
     startRow: number,
     endRow: number,
-    indent: string
+    indent: string,
 ): void {
     for (const child of node.children) {
         if (!isComment(child)) continue;
@@ -109,7 +109,7 @@ function formatCallExpr(node: SyntaxNode): string {
 
 // Format a condition: [!]CallExpr()
 function formatCondition(node: SyntaxNode): string {
-    const negated = node.children.some(c => c.text === "!");
+    const negated = node.children.some((c) => c.text === "!");
     const call = node.childForFieldName("call");
     const callText = call ? formatCallExpr(call) : "";
     return (negated ? "!" : "") + callText;

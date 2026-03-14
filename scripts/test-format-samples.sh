@@ -36,19 +36,13 @@ for grammar_dir in grammars/fallout-ssl grammars/weidu-baf grammars/weidu-d gram
         weidu-tp2)   find "$formatted_dir" -type f ! \( -name "*.tp2" -o -name "*.tpa" -o -name "*.tph" -o -name "*.tpp" \) -delete ;;
     esac
     find "$formatted_dir" -type d -empty -delete 2>/dev/null || true
-    pnpm -s format "$formatted_dir" -r --save -q
+    pnpm -s format "$formatted_dir" -r --save-and-check -q
 
     step "$lang: Comparing against expected"
     if ! diff -ru "$expected_dir" "$formatted_dir"; then
         echo "FAILED: $lang formatter output differs"
         FAILED=1
         continue
-    fi
-
-    step "$lang: Checking idempotency"
-    if ! pnpm -s format "$formatted_dir" -r --check -q; then
-        echo "FAILED: $lang format not idempotent"
-        FAILED=1
     fi
 done
 

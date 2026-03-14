@@ -39,6 +39,7 @@ parallel() {
                     echo "  FAIL  ${labels[$i]} (${elapsed}ms)"
                     echo ""
                     cat "${logs[$i]}"
+                    echo "  Other logs: $LOG_DIR/"
                     for j in "${!pids[@]}"; do
                         [ "${pids[$j]}" = "done" ] && continue
                         kill "${pids[$j]}" 2>/dev/null || true

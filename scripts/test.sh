@@ -23,8 +23,8 @@ source "$SCRIPT_DIR/parallel-lib.sh"
 step "Resetting External Repos"
 "$SCRIPT_DIR/reset-external.sh"
 
-# --- Phase 1: Static analysis (all independent, run in parallel) ---
-step "Static Analysis"
+# --- Phase 1: Static analysis + unit tests + dead code (all independent, run in parallel) ---
+step "Phase 1: Static Analysis + Unit Tests + Dead Code"
 parallel \
     "Shell lint" "pnpm lint:shell" \
     "Typecheck client" "(cd client && pnpm exec tsc --noEmit)" \
@@ -33,46 +33,32 @@ parallel \
     "Typecheck CLI" "pnpm exec tsc --project cli/tsconfig.json" \
     "ESLint" "pnpm exec eslint 'server/src/**/*.ts' 'client/src/**/*.ts' 'plugins/*/src/**/*.ts' 'plugins/*/test/**/*.ts' 'cli/**/*.ts' --ignore-pattern 'cli/test' --ignore-pattern 'cli/vitest.config.ts' --no-warn-ignored --max-warnings 0" \
     "Lint scripts" "pnpm lint:scripts" \
-    "Prettier check" "(cd client && pnpm exec prettier --check 'src/**/*.css' 'src/**/*.html')"
-
-# --- Phase 2: Unit tests (server is the bottleneck, run others alongside) ---
-step "Unit Tests"
-parallel \
+    "Prettier check" "(cd client && pnpm exec prettier --check 'src/**/*.css' 'src/**/*.html')" \
     "Server unit tests + coverage" "(cd server && pnpm exec vitest run --coverage)" \
     "Client unit tests" "vitest run --config client/vitest.config.ts" \
     "Plugin unit tests" "vitest run --config plugins/tssl-plugin/vitest.config.ts && vitest run --config plugins/td-plugin/vitest.config.ts" \
-    "Script tests" "pnpm test:scripts"
-
-# --- Phase 3: Build + smoke ---
-step "Building Server Bundle"
-pnpm build:base:server
-
-step "Running Server Smoke Test"
-(cd server && pnpm exec vitest run --config vitest.smoke.config.ts)
-
-step "Building CLIs"
-pnpm build:transpile-cli
-pnpm build:format-cli
-pnpm build:bin-cli
-
-# --- Phase 4: Tests that need CLI builds ---
-step "Sample + CLI Tests"
-parallel \
-    "TD samples" "./server/test/td/test.sh" \
-    "TBAF samples" "./server/test/tbaf/test.sh" \
-    "CLI tests" "pnpm test:cli" \
-    "Binary parser" "pnpm test:bin"
-
-# --- Phase 5: External + analysis ---
-step "External Tests"
-pnpm test:external
-
-step "Running Integration Tests"
-pnpm test:integration
-
-step "Dead Code Analysis"
-parallel \
+    "Script tests" "pnpm test:scripts" \
     "Knip" "pnpm knip" \
     "Knip prod" "pnpm knip:prod"
+
+# --- Phase 2: Builds (server and CLIs in parallel, independent of each other) ---
+step "Phase 2: Building Server + CLIs"
+parallel \
+    "Server bundle" "$SCRIPT_DIR/build-base-server.sh" \
+    "Transpile CLI" "$SCRIPT_DIR/build-transpile-cli.sh" \
+    "Format CLI" "$SCRIPT_DIR/build-format-cli.sh" \
+    "Bin CLI" "$SCRIPT_DIR/build-bin-cli.sh"
+
+# --- Phase 3: Tests that need builds (all in parallel) ---
+step "Phase 3: Smoke + Samples + External"
+parallel \
+    "Smoke test" "(cd server && pnpm exec vitest run --config vitest.smoke.config.ts)" \
+    "Sample + CLI tests" "./server/test/td/test.sh && ./server/test/tbaf/test.sh && pnpm test:cli && pnpm test:bin" \
+    "External tests" "$SCRIPT_DIR/test-external.sh"
+
+# Integration tests read files from external/ repos — must run after external tests finish.
+step "Phase 4: Integration Tests"
+parallel \
+    "Integration tests" "(cd server && pnpm exec vitest run --config vitest.integration.config.ts)"
 
 timing_summary "All tests passed"

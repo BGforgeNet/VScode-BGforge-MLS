@@ -22,10 +22,7 @@ import {
     formatExpressionStmt,
 } from "./expressions";
 import { SyntaxType } from "../tree-sitter.d";
-
-// Re-export shared FormatOptions for backwards compatibility
 import type { FormatOptions } from "../../shared/format-options";
-export type { FormatOptions };
 
 const DEFAULT_OPTIONS: FormatOptions = {
     indentSize: 4,
@@ -64,9 +61,11 @@ export function isComment(node: SyntaxNode): boolean {
 
 // Helper: check if next sibling is a trailing comment on same line
 function hasTrailingComment(child: SyntaxNode, nextChild: SyntaxNode | undefined): boolean {
-    return nextChild !== undefined &&
+    return (
+        nextChild !== undefined &&
         isComment(nextChild) &&
-        nextChild.startPosition.row === contentEndRow(child);
+        nextChild.startPosition.row === contentEndRow(child)
+    );
 }
 
 // Get the row where a node's actual content ends.
@@ -145,7 +144,6 @@ export function normalizeComment(text: string): string {
     return text;
 }
 
-
 interface FormatResult {
     text: string;
 }
@@ -162,7 +160,10 @@ function findParseError(node: SyntaxNode): SyntaxNode | null {
     return null;
 }
 
-export function formatDocument(node: SyntaxNode, options: FormatOptions = DEFAULT_OPTIONS): FormatResult {
+export function formatDocument(
+    node: SyntaxNode,
+    options: FormatOptions = DEFAULT_OPTIONS,
+): FormatResult {
     // Skip formatting files with parse errors — ERROR nodes produce non-idempotent output.
     // Return original text unchanged so the file passes through untouched.
     const parseError = findParseError(node);
@@ -190,7 +191,9 @@ export function formatNode(node: SyntaxNode, depth: number): string {
         case SyntaxType.SourceFile: {
             const content = formatChildren(node, depth);
             // Replace tabs, remove leading blank lines, ensure exactly one trailing newline
-            return content.replace(/\t/g, ctx.indent).replace(/^\n+/, "").replace(/\n+$/, "") + "\n";
+            return (
+                content.replace(/\t/g, ctx.indent).replace(/^\n+/, "").replace(/\n+$/, "") + "\n"
+            );
         }
         case SyntaxType.Preprocessor:
             // Trailing comment handling is done by callers (formatProcedure, formatChildren)
@@ -246,7 +249,8 @@ function formatChildren(node: SyntaxNode, depth: number): string {
         const prevChild = children[i - 1]; // undefined at start
         const nextChild = children[i + 1]; // undefined at end
 
-        const hadBlankLineBefore = prevChild !== undefined && (child.startPosition.row - contentEndRow(prevChild) > 1);
+        const hadBlankLineBefore =
+            prevChild !== undefined && child.startPosition.row - contentEndRow(prevChild) > 1;
         const trailingComment = hasTrailingComment(child, nextChild);
 
         if (isComment(child)) {
@@ -255,7 +259,8 @@ function formatChildren(node: SyntaxNode, depth: number): string {
                 return;
             }
 
-            const immediatelyAfterProcedure = prevChild?.type === SyntaxType.Procedure && !hadBlankLineBefore;
+            const immediatelyAfterProcedure =
+                prevChild?.type === SyntaxType.Procedure && !hadBlankLineBefore;
 
             if (parts.length > 0 && !immediatelyAfterProcedure) {
                 if (needsBlankLine || hadBlankLineBefore) {
@@ -277,10 +282,14 @@ function formatChildren(node: SyntaxNode, depth: number): string {
             // Check if next sibling is a line comment on the same line
             // Use contentEndRow: #define nodes include trailing \n, so endPosition.row
             // is 1 past the content — would falsely match a comment on the next line.
-            if (nextChild && nextChild.type === SyntaxType.LineComment &&
-                nextChild.startPosition.row === contentEndRow(child)) {
+            if (
+                nextChild &&
+                nextChild.type === SyntaxType.LineComment &&
+                nextChild.startPosition.row === contentEndRow(child)
+            ) {
                 // Add the comment on the same line
-                preprocessorText = preprocessorText.trimEnd() + "    " + normalizeComment(nextChild.text);
+                preprocessorText =
+                    preprocessorText.trimEnd() + "    " + normalizeComment(nextChild.text);
             }
             parts.push(preprocessorText);
         } else if (child.type === SyntaxType.Procedure) {
@@ -353,7 +362,8 @@ function formatProcedure(node: SyntaxNode, depth: number): string {
         }
         if (child.type.includes("procedure")) return;
 
-        const hadBlankLineBefore = prevChild !== undefined && (child.startPosition.row - contentEndRow(prevChild) > 1);
+        const hadBlankLineBefore =
+            prevChild !== undefined && child.startPosition.row - contentEndRow(prevChild) > 1;
         const trailingComment = hasTrailingComment(child, nextChild);
 
         if (isComment(child)) {
@@ -397,21 +407,21 @@ function formatParamList(node: SyntaxNode): string {
 }
 
 function formatParam(node: SyntaxNode): string {
-    const hasVariable = node.children.some(c => c.text === "variable");
+    const hasVariable = node.children.some((c) => c.text === "variable");
     const name = node.childForFieldName("name")?.text || "";
     const defaultValue = node.childForFieldName("default");
 
     let result = hasVariable ? `variable ${name}` : name;
     if (defaultValue) {
         // Preserve := vs = from original
-        const op = node.children.find(c => c.text === ":=" || c.text === "=")?.text || "=";
+        const op = node.children.find((c) => c.text === ":=" || c.text === "=")?.text || "=";
         result += ` ${op} ${formatExpression(defaultValue)}`;
     }
     return result;
 }
 
 function formatVariableDecl(node: SyntaxNode, depth: number = 0): string {
-    const hasBegin = node.children.some(c => c.text.match(/^begin$/i));
+    const hasBegin = node.children.some((c) => c.text.match(/^begin$/i));
     if (hasBegin) {
         // Group var_inits by semicolon - comma-separated inits share a line
         const lines: string[] = [];
@@ -433,8 +443,8 @@ function formatVariableDecl(node: SyntaxNode, depth: number = 0): string {
         return `variable begin\n${lines.join("\n")}\nend`;
     }
 
-    const hasImport = node.children.some(c => c.text === "import");
-    const hasSemicolon = node.children.some(c => c.text === ";");
+    const hasImport = node.children.some((c) => c.text === "import");
+    const hasSemicolon = node.children.some((c) => c.text === ";");
     const prefix = hasImport ? "import variable " : "variable ";
     const varInits: string[] = [];
     for (const child of node.children) {
@@ -457,7 +467,7 @@ function formatVarInit(node: SyntaxNode, depth: number = 0, prefixLen: number = 
     }
     if (value) {
         // Preserve := vs = from original
-        const op = node.children.find(c => c.text === ":=" || c.text === "=")?.text || "=";
+        const op = node.children.find((c) => c.text === ":=" || c.text === "=")?.text || "=";
         // Column = indent + prefix + name + " op "
         const column = depth * ctx.indent.length + prefixLen + name.length + op.length + 2;
         result += ` ${op} ${formatExpression(value, column)}`;
@@ -469,7 +479,7 @@ function formatExportDecl(node: SyntaxNode): string {
     const name = node.childForFieldName("name")?.text || "";
     const value = node.childForFieldName("value");
     if (value) {
-        const op = node.children.find(c => c.text === ":=" || c.text === "=")?.text || "=";
+        const op = node.children.find((c) => c.text === ":=" || c.text === "=")?.text || "=";
         return `export variable ${name} ${op} ${formatExpression(value)};`;
     }
     return `export variable ${name};`;

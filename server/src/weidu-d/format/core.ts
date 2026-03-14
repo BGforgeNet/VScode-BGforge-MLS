@@ -5,7 +5,7 @@
 
 import type { Node as SyntaxNode } from "web-tree-sitter";
 
-export interface FormatOptions {
+interface FormatOptions {
     indentSize: number;
     lineLimit: number;
 }
@@ -113,12 +113,18 @@ function normalizeDelimitedString(text: string): string {
 
 // Check if node is a next-state feature (goto, exit, extern, short_goto)
 function isNextFeature(node: SyntaxNode): boolean {
-    return node.type === "goto_next" || node.type === "exit_next" || node.type === "extern_next" || node.type === "short_goto";
+    return (
+        node.type === "goto_next" ||
+        node.type === "exit_next" ||
+        node.type === "extern_next" ||
+        node.type === "short_goto"
+    );
 }
 
 // Normalize transition text: collapse whitespace, normalize delimited strings
 function normalizeTransitionText(text: string): string {
-    return text.trim()
+    return text
+        .trim()
         .replace(/\s+/g, " ")
         .replace(/([~"%])([^~"%]*)\1/g, (match, delim: string, inner: string) => {
             if (inner.includes("//")) return match;
@@ -139,7 +145,12 @@ function getChildOffset(parent: SyntaxNode, child: SyntaxNode): number {
 }
 
 // Format a single-line transition using AST for break points
-function formatTransitionLine(node: SyntaxNode, indent: string, innerIndent: string, limit: number): string {
+function formatTransitionLine(
+    node: SyntaxNode,
+    indent: string,
+    innerIndent: string,
+    limit: number,
+): string {
     const normalized = normalizeTransitionText(node.text);
     const line = withNormalizedComment(indent + normalized);
 
@@ -148,7 +159,7 @@ function formatTransitionLine(node: SyntaxNode, indent: string, innerIndent: str
     }
 
     // Find break points using AST
-    const doFeature = node.children.find(c => c.type === "do_feature");
+    const doFeature = node.children.find((c) => c.type === "do_feature");
     const nextFeature = node.children.find(isNextFeature);
 
     // Try breaking on DO
@@ -191,7 +202,12 @@ function formatTransitionLine(node: SyntaxNode, indent: string, innerIndent: str
 }
 
 // Format a transition node, handling multi-line strings with simple indentation
-function formatTransitionNode(node: SyntaxNode, indent: string, innerIndent: string, limit: number): string {
+function formatTransitionNode(
+    node: SyntaxNode,
+    indent: string,
+    innerIndent: string,
+    limit: number,
+): string {
     const text = node.text;
 
     // Single-line transition - use AST-based formatting
@@ -382,7 +398,7 @@ function getActionHeader(node: SyntaxNode): string {
 function forEachChild(
     node: SyntaxNode,
     lines: string[],
-    handler: (_child: SyntaxNode) => string | null
+    handler: (_child: SyntaxNode) => string | null,
 ): void {
     let lastEndRow = node.startPosition.row;
     for (const child of node.children) {
@@ -424,8 +440,13 @@ function getExtendHeader(node: SyntaxNode): string {
     let result = "";
     for (const child of node.children) {
         // Stop at transitions, comments, copy_trans, or the trailing END
-        if (child.type === "transition" || child.type.startsWith("transition_")
-            || isComment(child) || isCopyOrMacro(child)) break;
+        if (
+            child.type === "transition" ||
+            child.type.startsWith("transition_") ||
+            isComment(child) ||
+            isCopyOrMacro(child)
+        )
+            break;
         if (child.text.toUpperCase() === "END") break;
         // Don't insert space after "#" — keep "#N" as a single token (position number).
         // TODO: fix in grammar instead — tokenize "#N" as a single node (like tlk_ref does),
