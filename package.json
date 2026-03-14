@@ -518,7 +518,10 @@
         ],
         "overrides": {
             "mocha>diff": ">=8.0.3",
-            "mocha>serialize-javascript": ">=7.0.3"
+            "mocha>serialize-javascript": ">=7.0.3",
+            "flatted": ">=3.4.0",
+            "undici": ">=7.24.0",
+            "yauzl": ">=3.2.1"
         }
     }
 }
