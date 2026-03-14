@@ -49,8 +49,7 @@ BGforge MLS uses `workspace/configuration`. Paste the JSON into the **Configurat
     "validateOnSave": true,
     "validateOnChange": false,
     "falloutSSL": {
-      "compilePath": "compile",
-      "useBuiltInCompiler": false,
+      "compilePath": "",
       "compileOptions": "-q -p -l -O2 -d -s -n",
       "outputDirectory": "",
       "headersDirectory": ""

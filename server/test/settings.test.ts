@@ -26,8 +26,7 @@ describe("settings", () => {
     describe("defaultSettings", () => {
         it("should have correct falloutSSL defaults", async () => {
             const { defaultSettings } = await import("../src/settings");
-            expect(defaultSettings.falloutSSL.compilePath).toBe("compile");
-            expect(defaultSettings.falloutSSL.useBuiltInCompiler).toBe(false);
+            expect(defaultSettings.falloutSSL.compilePath).toBe("");
             expect(defaultSettings.falloutSSL.compileOptions).toBe("-q -p -l -O2 -d -s -n");
             expect(defaultSettings.falloutSSL.outputDirectory).toBe("");
             expect(defaultSettings.falloutSSL.headersDirectory).toBe("");

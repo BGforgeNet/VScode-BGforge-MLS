@@ -66,8 +66,7 @@ Kate sends settings via `workspace/configuration` (requires Kate 25.08+). Add to
           "validateOnSave": true,
           "validateOnChange": false,
           "falloutSSL": {
-            "compilePath": "compile",
-            "useBuiltInCompiler": false,
+            "compilePath": "",
             "compileOptions": "-q -p -l -O2 -d -s -n",
             "outputDirectory": "",
             "headersDirectory": ""

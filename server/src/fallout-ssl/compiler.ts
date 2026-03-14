@@ -234,7 +234,7 @@ export async function compile(
     // The finally block guarantees tmp file cleanup in both cases.
     try {
         await fs.promises.writeFile(tmpPath, text);
-        let useBuiltInCompiler = sslSettings.useBuiltInCompiler;
+        let useBuiltInCompiler = !sslSettings.compilePath;
 
         if (!useBuiltInCompiler && !(await checkExternalCompiler(sslSettings.compilePath))) {
             const response = await showErrorWithActions(

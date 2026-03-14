@@ -348,15 +348,10 @@
             "type": "object",
             "title": "BGforge MLS",
             "properties": {
-                "bgforge.falloutSSL.useBuiltInCompiler": {
-                    "type": "boolean",
-                    "default": false,
-                    "description": "Use built-in compiler instead of external compile.exe"
-                },
                 "bgforge.falloutSSL.compilePath": {
                     "type": "string",
-                    "default": "compile",
-                    "description": "Path to sslc compiler. Add to system PATH or specify full path. Ignored if 'Use built-in compiler' is enabled."
+                    "default": "",
+                    "description": "Path to sslc compiler. Drop compile.exe/sslc into system PATH and enter filename or specify full path.\nLeave empty to use the built-in compiler."
                 },
                 "bgforge.falloutSSL.compileOptions": {
                     "type": "string",

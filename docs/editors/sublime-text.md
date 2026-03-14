@@ -76,8 +76,7 @@ Open `Preferences > Package Settings > LSP > Settings` and add settings under th
       "settings": {
         "bgforge.validateOnSave": true,
         "bgforge.validateOnChange": false,
-        "bgforge.falloutSSL.compilePath": "compile",
-        "bgforge.falloutSSL.useBuiltInCompiler": false,
+        "bgforge.falloutSSL.compilePath": "",
         "bgforge.falloutSSL.compileOptions": "-q -p -l -O2 -d -s -n",
         "bgforge.falloutSSL.outputDirectory": "",
         "bgforge.falloutSSL.headersDirectory": "",

@@ -161,8 +161,7 @@ validateOnSave = true
 validateOnChange = false
 
 [language-server.bgforge-mls.config.bgforge.falloutSSL]
-compilePath = "compile"
-useBuiltInCompiler = false
+compilePath = ""
 compileOptions = "-q -p -l -O2 -d -s -n"
 outputDirectory = ""
 headersDirectory = ""

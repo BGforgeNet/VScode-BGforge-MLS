@@ -6,21 +6,20 @@ All settings are under the `bgforge` namespace.
 
 ## General
 
-| Setting                    | Default | Description                                                                     |
-| -------------------------- | ------- | ------------------------------------------------------------------------------- |
-| `bgforge.validateOnSave`   | `true`  | Run diagnostics on save                                                         |
+| Setting                    | Default | Description                                                                                                                          |
+| -------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `bgforge.validateOnSave`   | `true`  | Run diagnostics on save                                                                                                              |
 | `bgforge.validateOnChange` | `false` | Run diagnostics on edit (disk-intensive: writes to disk for external compilers). Debounced at 300ms to avoid concurrent compilations |
-| `bgforge.debug`            | `false` | Enable debug logging in the Output panel (BGforge MLS channel)                  |
+| `bgforge.debug`            | `false` | Enable debug logging in the Output panel (BGforge MLS channel)                                                                       |
 
 ## Fallout SSL
 
-| Setting                                 | Default                 | Description                                                     |
-| --------------------------------------- | ----------------------- | --------------------------------------------------------------- |
-| `bgforge.falloutSSL.compilePath`        | `compile`               | Path to sslc compiler (or add to system PATH)                   |
-| `bgforge.falloutSSL.useBuiltInCompiler` | `false`                 | Use built-in WASM compiler instead of external sslc             |
-| `bgforge.falloutSSL.compileOptions`     | `-q -p -l -O2 -d -s -n` | Compiler flags                                                  |
-| `bgforge.falloutSSL.outputDirectory`    | `""`                    | Output directory for compiled scripts (default: next to source) |
-| `bgforge.falloutSSL.headersDirectory`   | `""`                    | Additional headers directory (workspace is always scanned)      |
+| Setting                               | Default                 | Description                                                                                                  |
+| ------------------------------------- | ----------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `bgforge.falloutSSL.compilePath`      | `""`                    | Path to sslc compiler. Drop exe into system PATH and enter filename, or use full path. Empty = use built-in. |
+| `bgforge.falloutSSL.compileOptions`   | `-q -p -l -O2 -d -s -n` | Compiler flags                                                                                               |
+| `bgforge.falloutSSL.outputDirectory`  | `""`                    | Output directory for compiled scripts (default: next to source)                                              |
+| `bgforge.falloutSSL.headersDirectory` | `""`                    | Additional headers directory (workspace is always scanned)                                                   |
 
 ## WeiDU
 

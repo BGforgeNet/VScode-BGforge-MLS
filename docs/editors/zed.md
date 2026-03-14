@@ -260,8 +260,7 @@ Zed passes LSP settings via the `lsp` section in user or project settings (`~/.c
           "validateOnSave": true,
           "validateOnChange": false,
           "falloutSSL": {
-            "compilePath": "compile",
-            "useBuiltInCompiler": false,
+            "compilePath": "",
             "compileOptions": "-q -p -l -O2 -d -s -n",
             "outputDirectory": "",
             "headersDirectory": ""

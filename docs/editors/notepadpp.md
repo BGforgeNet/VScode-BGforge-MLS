@@ -87,7 +87,7 @@ mode = "io"
 executable = 'bgforge-mls-server'
 args = '--stdio'
 auto_start_server = true
-settings = '{"bgforge": {"validateOnSave": true, "validateOnChange": false, "falloutSSL": {"compilePath": "compile", "useBuiltInCompiler": false, "compileOptions": "-q -p -l -O2 -d -s -n", "outputDirectory": "", "headersDirectory": ""}, "weidu": {"path": "weidu", "gamePath": ""}}}'
+settings = '{"bgforge": {"validateOnSave": true, "validateOnChange": false, "falloutSSL": {"compilePath": "", "compileOptions": "-q -p -l -O2 -d -s -n", "outputDirectory": "", "headersDirectory": ""}, "weidu": {"path": "weidu", "gamePath": ""}}}'
 
 [lspservers.weidu-baf]
 mode = "io"

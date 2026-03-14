@@ -35,8 +35,7 @@ vi.mock("../src/provider-registry", () => ({
 vi.mock("../src/settings-service", () => ({
     getDocumentSettings: vi.fn().mockResolvedValue({
         falloutSSL: {
-            compilePath: "compile",
-            useBuiltInCompiler: false,
+            compilePath: "",
             compileOptions: "",
             outputDirectory: "",
             headersDirectory: "",

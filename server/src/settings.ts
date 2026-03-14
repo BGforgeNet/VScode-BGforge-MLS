@@ -10,7 +10,6 @@ import { conlog } from "./common";
 
 export interface SSLsettings {
     compilePath: string;
-    useBuiltInCompiler: boolean;
     compileOptions: string;
     outputDirectory: string;
     headersDirectory: string;
@@ -35,8 +34,7 @@ export interface MLSsettings {
 
 export const defaultSettings: MLSsettings = {
     falloutSSL: {
-        compilePath: "compile",
-        useBuiltInCompiler: false,
+        compilePath: "",
         compileOptions: "-q -p -l -O2 -d -s -n",
         outputDirectory: "",
         headersDirectory: "",

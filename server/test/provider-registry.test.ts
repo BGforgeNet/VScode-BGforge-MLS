@@ -50,8 +50,7 @@ describe("ProviderRegistry", () => {
         workspaceRoot: "/test/workspace",
         settings: {
             falloutSSL: {
-                compilePath: "compile",
-                useBuiltInCompiler: false,
+                compilePath: "",
                 compileOptions: "",
                 outputDirectory: "",
                 headersDirectory: "",

@@ -189,8 +189,7 @@ If you write `.tssl` or `.td` transpiler files, the server package includes Type
               '(:bgforge
                 (:validateOnSave t
                  :validateOnChange :json-false
-                 :falloutSSL (:compilePath "compile"
-                              :useBuiltInCompiler :json-false
+                 :falloutSSL (:compilePath ""
                               :compileOptions "-q -p -l -O2 -d -s -n"
                               :outputDirectory ""
                               :headersDirectory "")
@@ -207,10 +206,8 @@ The server reads settings via `workspace/configuration`. Use `lsp-register-custo
   "Validate on save." :type 'boolean :group 'lsp-bgforge)
 (defcustom lsp-bgforge-validate-on-change nil
   "Validate on change." :type 'boolean :group 'lsp-bgforge)
-(defcustom lsp-bgforge-ssl-compile-path "compile"
-  "SSL compile path." :type 'string :group 'lsp-bgforge)
-(defcustom lsp-bgforge-ssl-use-built-in-compiler nil
-  "Use built-in compiler." :type 'boolean :group 'lsp-bgforge)
+(defcustom lsp-bgforge-ssl-compile-path ""
+  "SSL compile path. Empty = built-in compiler." :type 'string :group 'lsp-bgforge)
 (defcustom lsp-bgforge-ssl-compile-options "-q -p -l -O2 -d -s -n"
   "SSL compile options." :type 'string :group 'lsp-bgforge)
 (defcustom lsp-bgforge-ssl-output-directory ""
@@ -226,7 +223,6 @@ The server reads settings via `workspace/configuration`. Use `lsp-register-custo
  '(("bgforge.validateOnSave" lsp-bgforge-validate-on-save)
    ("bgforge.validateOnChange" lsp-bgforge-validate-on-change)
    ("bgforge.falloutSSL.compilePath" lsp-bgforge-ssl-compile-path)
-   ("bgforge.falloutSSL.useBuiltInCompiler" lsp-bgforge-ssl-use-built-in-compiler)
    ("bgforge.falloutSSL.compileOptions" lsp-bgforge-ssl-compile-options)
    ("bgforge.falloutSSL.outputDirectory" lsp-bgforge-ssl-output-directory)
    ("bgforge.falloutSSL.headersDirectory" lsp-bgforge-ssl-headers-directory)

@@ -71,7 +71,7 @@ The LSP Client plugin supports `initialization_options` for passing settings to 
 [fallout-ssl]
 cmd=bgforge-mls-server --stdio
 lang_id_mappings=fallout-ssl;*.ssl;fallout-ssl;*.h
-initialization_options={"bgforge": {"validateOnSave": true, "validateOnChange": false, "falloutSSL": {"compilePath": "compile", "useBuiltInCompiler": false, "compileOptions": "-q -p -l -O2 -d -s -n", "outputDirectory": "", "headersDirectory": ""}, "weidu": {"path": "weidu", "gamePath": ""}}}
+initialization_options={"bgforge": {"validateOnSave": true, "validateOnChange": false, "falloutSSL": {"compilePath": "", "compileOptions": "-q -p -l -O2 -d -s -n", "outputDirectory": "", "headersDirectory": ""}, "weidu": {"path": "weidu", "gamePath": ""}}}
 
 [weidu-baf]
 cmd=bgforge-mls-server --stdio

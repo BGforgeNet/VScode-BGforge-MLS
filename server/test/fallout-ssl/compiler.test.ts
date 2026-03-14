@@ -73,8 +73,7 @@ describe("fallout-ssl compiler", () => {
     });
 
     const baseSettings: SSLsettings = {
-        compilePath: "compile",
-        useBuiltInCompiler: true,
+        compilePath: "",
         compileOptions: "",
         outputDirectory: "/output",
         headersDirectory: "/headers",
@@ -144,7 +143,7 @@ describe("fallout-ssl compiler", () => {
         });
 
         it("cleans up tmp file after external compiler completes", async () => {
-            const externalSettings = { ...baseSettings, useBuiltInCompiler: false };
+            const externalSettings = { ...baseSettings, compilePath: "compile" };
             // Mock checkExternalCompiler to succeed
             mockExecFile.mockImplementation((...args: unknown[]) => {
                 const lastArg = args[args.length - 1];
@@ -169,7 +168,7 @@ describe("fallout-ssl compiler", () => {
         });
 
         it("cleans up tmp file even when external compiler fails", async () => {
-            const externalSettings = { ...baseSettings, useBuiltInCompiler: false };
+            const externalSettings = { ...baseSettings, compilePath: "compile" };
             mockExecFile.mockImplementation((...args: unknown[]) => {
                 const lastArg = args[args.length - 1];
                 if (typeof lastArg === "function") {
@@ -277,7 +276,7 @@ describe("fallout-ssl compiler", () => {
     describe("external compiler", () => {
         const externalSettings: SSLsettings = {
             ...baseSettings,
-            useBuiltInCompiler: false,
+            compilePath: "compile",
         };
 
         beforeEach(() => {
@@ -376,7 +375,7 @@ describe("fallout-ssl compiler", () => {
     describe("external compiler check", () => {
         const externalSettings: SSLsettings = {
             ...baseSettings,
-            useBuiltInCompiler: false,
+            compilePath: "compile",
         };
 
         it("falls back to built-in when external compiler check fails and user accepts", async () => {
