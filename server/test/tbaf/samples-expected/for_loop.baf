@@ -1,0 +1,22 @@
+/* Do not edit. This file is generated from for_loop.tbaf. Make your changes there and regenerate this file. */
+
+IF
+  Global("count", "LOCALS", 1)
+THEN
+  RESPONSE #100
+    Continue()
+END
+
+IF
+  Global("count", "LOCALS", 2)
+THEN
+  RESPONSE #100
+    Continue()
+END
+
+IF
+  Global("count", "LOCALS", 3)
+THEN
+  RESPONSE #100
+    Continue()
+END

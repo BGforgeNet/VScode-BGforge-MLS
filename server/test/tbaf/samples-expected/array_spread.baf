@@ -1,0 +1,22 @@
+/* Do not edit. This file is generated from array_spread.tbaf. Make your changes there and regenerate this file. */
+
+IF
+  See("Player1")
+THEN
+  RESPONSE #100
+    Attack("Player1")
+END
+
+IF
+  See("Player2")
+THEN
+  RESPONSE #100
+    Attack("Player2")
+END
+
+IF
+  See("Player3")
+THEN
+  RESPONSE #100
+    Attack("Player3")
+END

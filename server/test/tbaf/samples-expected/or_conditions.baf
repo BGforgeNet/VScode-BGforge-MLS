@@ -1,0 +1,10 @@
+/* Do not edit. This file is generated from or_conditions.tbaf. Make your changes there and regenerate this file. */
+
+IF
+  OR(2)
+    See(Player1)
+    See(Player2)
+THEN
+  RESPONSE #100
+    Attack(NearestEnemyOf(Myself))
+END

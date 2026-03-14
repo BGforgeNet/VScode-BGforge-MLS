@@ -1,0 +1,15 @@
+/* Do not edit. This file is generated from switch_numeric.tbaf. Make your changes there and regenerate this file. */
+
+IF
+  Global("count", "LOCALS", 5)
+THEN
+  RESPONSE #100
+    Continue()
+END
+
+IF
+  Global("count", "LOCALS", 10)
+THEN
+  RESPONSE #100
+    NoAction()
+END

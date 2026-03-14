@@ -1,0 +1,8 @@
+/* Do not edit. This file is generated from translation_refs.tbaf. Make your changes there and regenerate this file. */
+
+IF
+  True()
+THEN
+  RESPONSE #100
+    DisplayStringHead(Myself, @123)
+END

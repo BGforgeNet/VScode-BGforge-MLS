@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# TD transpiler integration tests.
+# TBAF transpiler integration tests.
 # 1. TypeScript typecheck (source validity)
-# 2. Transpile and compare against expected .d files
+# 2. Transpile and compare against expected .baf files
 
 set -e
 
@@ -13,33 +13,33 @@ ROOT="$(cd ../../../ && pwd)"
 CLI="$ROOT/cli/transpile/out/transpile-cli.js"
 
 # --- Phase 1: TypeScript typecheck ---
-echo "=== TD TypeScript Check ==="
+echo "=== TBAF TypeScript Check ==="
 ./typecheck-samples.sh
 
 # --- Phase 2: Transpile and diff ---
 echo ""
-echo "=== TD Transpile Tests ==="
+echo "=== TBAF Transpile Tests ==="
 
 fail=0
 pass=0
 
 # Transpile all samples in one batch to a temp dir
-tmpdir=".tmp-td-test"
+tmpdir=".tmp-tbaf-test"
 rm -rf "$tmpdir"
 mkdir -p "$tmpdir"
 
-for sample in samples/*.td; do
-    name=$(basename "$sample" .td)
-    cp "$sample" "$tmpdir/${name}.td"
+for sample in samples/*.tbaf; do
+    name=$(basename "$sample" .tbaf)
+    cp "$sample" "$tmpdir/${name}.tbaf"
 done
 
 # Batch transpile (single node process)
 node --no-warnings "$CLI" "$tmpdir" -r --save -q 2>&1
 
-for sample in samples/*.td; do
-    name=$(basename "$sample" .td)
-    expected="samples-expected/${name}.d"
-    actual="$tmpdir/${name}.d"
+for sample in samples/*.tbaf; do
+    name=$(basename "$sample" .tbaf)
+    expected="samples-expected/${name}.baf"
+    actual="$tmpdir/${name}.baf"
 
     if [[ ! -f "$expected" ]]; then
         echo "FAIL: $name (no expected file)"
@@ -68,7 +68,7 @@ done
 rm -rf "$tmpdir"
 
 echo ""
-echo "TD tests: $pass passed, $fail failed"
+echo "TBAF tests: $pass passed, $fail failed"
 
 if [[ $fail -gt 0 ]]; then
     exit 1

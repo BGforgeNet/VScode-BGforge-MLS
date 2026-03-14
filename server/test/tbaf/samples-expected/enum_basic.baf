@@ -1,0 +1,15 @@
+/* Do not edit. This file is generated from enum_basic.tbaf. Make your changes there and regenerate this file. */
+
+IF
+  Global("state", "LOCALS", 1)
+THEN
+  RESPONSE #100
+    Attack(NearestEnemyOf(Myself))
+END
+
+IF
+  StateCheck(Myself, 2)
+THEN
+  RESPONSE #100
+    SetGlobal("state", "LOCALS", 0)
+END

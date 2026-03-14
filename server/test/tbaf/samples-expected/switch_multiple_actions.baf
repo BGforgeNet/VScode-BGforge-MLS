@@ -1,0 +1,17 @@
+/* Do not edit. This file is generated from switch_multiple_actions.tbaf. Make your changes there and regenerate this file. */
+
+IF
+  Global("phase", "MYAREA", 0)
+THEN
+  RESPONSE #100
+    DisplayString(Myself, 100)
+    SetGlobal("phase", "MYAREA", 1)
+END
+
+IF
+  Global("phase", "MYAREA", 1)
+THEN
+  RESPONSE #100
+    DisplayString(Myself, 200)
+    ActionOverride(Player1, StartDialogNoSet(Myself))
+END

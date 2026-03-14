@@ -17,12 +17,10 @@ for sample in samples/*.tbaf; do
     links+=("$link")
 done
 
-# Single tsc invocation for all files
+# Typecheck all samples
 if $TSC --noEmit --allowUnusedLabels --lib ES2015 tbaf-runtime.d.ts "${links[@]}" 2>&1; then
     echo "TBAF typecheck: ${#links[@]} passed, 0 failed"
 else
-    echo "TBAF typecheck: FAILED"
-    rm -f "${links[@]}"
     exit 1
 fi
 

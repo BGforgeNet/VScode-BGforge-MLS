@@ -1,0 +1,8 @@
+/* Do not edit. This file is generated from basic_if.tbaf. Make your changes there and regenerate this file. */
+
+IF
+  See(Player1)
+THEN
+  RESPONSE #100
+    Attack(Player1)
+END

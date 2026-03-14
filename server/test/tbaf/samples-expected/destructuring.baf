@@ -1,0 +1,15 @@
+/* Do not edit. This file is generated from destructuring.tbaf. Make your changes there and regenerate this file. */
+
+IF
+  See("Player1")
+THEN
+  RESPONSE #100
+    GiveItemCreate("SWORD01", "Player1", 1, 0, 0)
+END
+
+IF
+  See("Player2")
+THEN
+  RESPONSE #100
+    GiveItemCreate("BOW01", "Player2", 1, 0, 0)
+END

@@ -1,0 +1,15 @@
+/* Do not edit. This file is generated from switch_const.tbaf. Make your changes there and regenerate this file. */
+
+IF
+  Global("state", "LOCALS", 0)
+THEN
+  RESPONSE #100
+    Wait(1)
+END
+
+IF
+  Global("state", "LOCALS", 1)
+THEN
+  RESPONSE #100
+    Attack(NearestEnemyOf(Myself))
+END
