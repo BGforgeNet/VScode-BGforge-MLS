@@ -24,15 +24,20 @@ const config: KnipConfig = {
             ],
         },
         server: {
-            // Entry resolved from package.json "main" field (src/server.ts).
-            // No explicit entry needed here.
+            // Point knip at the TypeScript source entry directly.
+            // The package.json "main" field targets the built JS output.
+            entry: ["src/server.ts"],
             // vitest.smoke.config.ts is a separate config run by scripts/test.sh, not imported.
             ignore: [
                 "**/*.d.ts",
                 "vitest.smoke.config.ts",
                 // Created at runtime by enum-transform.test.ts, may exist during parallel Knip runs
                 ...(isProductionKnip
-                    ? ["vitest.integration.config.ts", "test/integration/**", "test/tmp-bundle-test/**"]
+                    ? [
+                        "src/**",
+                        "vitest.integration.config.ts",
+                        "test/integration/**",
+                    ]
                     : []),
             ],
         },

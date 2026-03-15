@@ -100,7 +100,7 @@ describe("safeProcess", () => {
 });
 
 describe("findFiles", () => {
-    const tmpDir = path.join(process.cwd(), "cli/test/.tmp-findfiles");
+    const tmpDir = path.resolve("tmp/cli-test-findfiles");
 
     beforeEach(() => {
         fs.mkdirSync(path.join(tmpDir, "sub"), { recursive: true });
@@ -217,7 +217,7 @@ describe("runCli", () => {
     let exitSpy: ReturnType<typeof vi.spyOn>;
     let logSpy: ReturnType<typeof vi.spyOn>;
     let errorSpy: ReturnType<typeof vi.spyOn>;
-    const tmpDir = path.join(process.cwd(), "cli/test/.tmp-runcli");
+    const tmpDir = path.resolve("tmp/cli-test-runcli");
 
     beforeEach(() => {
         exitSpy = vi.spyOn(process, "exit").mockImplementation(() => { throw new Error("exit"); });

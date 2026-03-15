@@ -24,7 +24,7 @@ fail=0
 pass=0
 
 # Transpile all samples in one batch to a temp dir
-tmpdir=".tmp-td-test"
+tmpdir="$ROOT/tmp/server-test-td"
 rm -rf "$tmpdir"
 mkdir -p "$tmpdir"
 

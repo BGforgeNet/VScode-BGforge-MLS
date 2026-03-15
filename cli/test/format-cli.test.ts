@@ -27,7 +27,7 @@ function run(...args: string[]): { code: number; stdout: string; stderr: string 
 }
 
 describe("format CLI integration", () => {
-    const tmpDir = path.resolve("cli/test/.tmp-format");
+    const tmpDir = path.resolve("tmp/cli-test-format");
 
     beforeEach(() => {
         if (!fs.existsSync(CLI)) {

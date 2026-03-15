@@ -270,7 +270,7 @@ describe("expandEnumPropertyAccess — externalized enums", () => {
 
 describe("bundle (esbuild integration)", () => {
     // Temp directory for creating ielib-like package structures
-    const tmpDir = path.resolve(__dirname, "tmp-bundle-test");
+    const tmpDir = path.resolve("tmp/server-test-bundle");
 
     function writeTmpFile(relPath: string, content: string): string {
         const filePath = path.join(tmpDir, relPath);

@@ -24,7 +24,7 @@ fail=0
 pass=0
 
 # Transpile all samples in one batch to a temp dir
-tmpdir=".tmp-tbaf-test"
+tmpdir="$ROOT/tmp/server-test-tbaf"
 rm -rf "$tmpdir"
 mkdir -p "$tmpdir"
 

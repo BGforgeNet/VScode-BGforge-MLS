@@ -28,7 +28,7 @@ function run(...args: string[]): { code: number; stdout: string; stderr: string 
 }
 
 describe("bin CLI integration", () => {
-    const tmpDir = path.resolve("cli/test/.tmp-bin");
+    const tmpDir = path.resolve("tmp/cli-test-bin");
 
     beforeEach(() => {
         if (!fs.existsSync(CLI)) {

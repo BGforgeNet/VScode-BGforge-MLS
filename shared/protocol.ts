@@ -14,7 +14,3 @@ export const VSCODE_COMMAND_DIALOG_PREVIEW = "extension.bgforge.dialogPreview";
 /** Custom client/server protocol methods used in addition to standard LSP. */
 export const REQUEST_SET_BUILT_IN_COMPILER = "bgforge-mls/setBuiltInCompiler";
 export const NOTIFICATION_LOAD_FINISHED = "bgforge-mls/load-finished";
-
-export interface UriCommandParams {
-    uri: string;
-}

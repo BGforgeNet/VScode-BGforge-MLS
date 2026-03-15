@@ -29,7 +29,7 @@ function run(...args: string[]): { code: number; stdout: string; stderr: string 
 }
 
 describe("transpile CLI integration", () => {
-    const tmpDir = path.resolve("cli/test/.tmp-transpile");
+    const tmpDir = path.resolve("tmp/cli-test-transpile");
 
     beforeEach(() => {
         if (!fs.existsSync(CLI)) {

@@ -242,7 +242,7 @@ describe("collectReferencedIdentifiers", () => {
 });
 
 describe("extractInlineFunctionsFromFiles", () => {
-    const tmpDir = path.resolve(__dirname, "tmp-inline-test");
+    const tmpDir = path.resolve("tmp/server-test-inline");
 
     function writeTmpFile(name: string, content: string): string {
         if (!fs.existsSync(tmpDir)) fs.mkdirSync(tmpDir, { recursive: true });

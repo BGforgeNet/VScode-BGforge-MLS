@@ -34,3 +34,9 @@ Press F5 in VSCode to launch the Extension Development Host. Server attaches on 
 Server logs: Output panel, "BGforge MLS" channel.
 
 TS plugin logs: set `"typescript.tsserver.log": "verbose"` in settings, check Output panel under "TypeScript".
+
+## Temporary Files
+
+Keep transient test/build artifacts under the repo-level `tmp/` directory unless a tool specifically requires system temp storage.
+
+Do not create temporary directories inside source or fixture trees such as `server/test/`, `cli/test/`, or `scripts/**`.

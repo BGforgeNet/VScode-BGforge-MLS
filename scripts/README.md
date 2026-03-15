@@ -27,6 +27,12 @@ See also: [CONTRIBUTING.md](../CONTRIBUTING.md) | [docs/architecture.md](../docs
 - **Smoke test** (`test/smoke-stdio.test.ts`) -- requires a built server bundle (`pnpm build:base:server`). Run as part of `pnpm test` instead, which builds the bundle first.
 - **Integration tests** (`test/integration/`) -- require external repos cloned via `pnpm test:external`. Run standalone with `cd server && pnpm test:integration`, or as part of `pnpm test` (which clones repos first).
 
+## Temporary Artifacts
+
+Store transient logs, generated scratch files, and test temp directories under the repo-level `tmp/` directory.
+
+Avoid writing temporary data into source and fixture trees such as `server/test/`, `cli/test/`, `scripts/**`, or `grammars/**`.
+
 ## Running individual tests
 
 ```bash
