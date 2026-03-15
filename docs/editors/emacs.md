@@ -187,8 +187,7 @@ If you write `.tssl` or `.td` transpiler files, the server package includes Type
 ```elisp
 (setq-default eglot-workspace-configuration
               '(:bgforge
-                (:validateOnSave t
-                 :validateOnChange :json-false
+                (:validate "saveAndType"
                  :falloutSSL (:compilePath ""
                               :compileOptions "-q -p -l -O2 -d -s -n"
                               :outputDirectory ""
@@ -202,10 +201,8 @@ If you write `.tssl` or `.td` transpiler files, the server package includes Type
 The server reads settings via `workspace/configuration`. Use `lsp-register-custom-settings` to map variables to configuration paths:
 
 ```elisp
-(defcustom lsp-bgforge-validate-on-save t
-  "Validate on save." :type 'boolean :group 'lsp-bgforge)
-(defcustom lsp-bgforge-validate-on-change nil
-  "Validate on change." :type 'boolean :group 'lsp-bgforge)
+(defcustom lsp-bgforge-validate "saveAndType"
+  "Validation mode: manual, save, type, or saveAndType." :type 'string :group 'lsp-bgforge)
 (defcustom lsp-bgforge-ssl-compile-path ""
   "SSL compile path. Empty = built-in compiler." :type 'string :group 'lsp-bgforge)
 (defcustom lsp-bgforge-ssl-compile-options "-q -p -l -O2 -d -s -n"
@@ -220,8 +217,7 @@ The server reads settings via `workspace/configuration`. Use `lsp-register-custo
   "WeiDU game path." :type 'string :group 'lsp-bgforge)
 
 (lsp-register-custom-settings
- '(("bgforge.validateOnSave" lsp-bgforge-validate-on-save)
-   ("bgforge.validateOnChange" lsp-bgforge-validate-on-change)
+ '(("bgforge.validate" lsp-bgforge-validate)
    ("bgforge.falloutSSL.compilePath" lsp-bgforge-ssl-compile-path)
    ("bgforge.falloutSSL.compileOptions" lsp-bgforge-ssl-compile-options)
    ("bgforge.falloutSSL.outputDirectory" lsp-bgforge-ssl-output-directory)

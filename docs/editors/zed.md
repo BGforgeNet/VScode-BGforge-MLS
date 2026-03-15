@@ -257,8 +257,7 @@ Zed passes LSP settings via the `lsp` section in user or project settings (`~/.c
     "bgforge-mls": {
       "settings": {
         "bgforge": {
-          "validateOnSave": true,
-          "validateOnChange": false,
+          "validate": "saveAndType",
           "falloutSSL": {
             "compilePath": "",
             "compileOptions": "-q -p -l -O2 -d -s -n",

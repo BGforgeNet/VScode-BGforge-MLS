@@ -44,8 +44,7 @@ vi.mock("../src/settings-service", () => ({
             path: "weidu",
             gamePath: "/games/bg2",
         },
-        validateOnSave: true,
-        validateOnChange: false,
+        validate: "saveAndType",
     }),
 }));
 

@@ -87,28 +87,28 @@ mode = "io"
 executable = 'bgforge-mls-server'
 args = '--stdio'
 auto_start_server = true
-settings = '{"bgforge": {"validateOnSave": true, "validateOnChange": false, "falloutSSL": {"compilePath": "", "compileOptions": "-q -p -l -O2 -d -s -n", "outputDirectory": "", "headersDirectory": ""}, "weidu": {"path": "weidu", "gamePath": ""}}}'
+settings = '{"bgforge": {"validate": "saveAndType", "falloutSSL": {"compilePath": "", "compileOptions": "-q -p -l -O2 -d -s -n", "outputDirectory": "", "headersDirectory": ""}, "weidu": {"path": "weidu", "gamePath": ""}}}'
 
 [lspservers.weidu-baf]
 mode = "io"
 executable = 'bgforge-mls-server'
 args = '--stdio'
 auto_start_server = true
-settings = '{"bgforge": {"validateOnSave": true, "validateOnChange": false, "weidu": {"path": "weidu", "gamePath": ""}}}'
+settings = '{"bgforge": {"validate": "saveAndType", "weidu": {"path": "weidu", "gamePath": ""}}}'
 
 [lspservers.weidu-d]
 mode = "io"
 executable = 'bgforge-mls-server'
 args = '--stdio'
 auto_start_server = true
-settings = '{"bgforge": {"validateOnSave": true, "validateOnChange": false, "weidu": {"path": "weidu", "gamePath": ""}}}'
+settings = '{"bgforge": {"validate": "saveAndType", "weidu": {"path": "weidu", "gamePath": ""}}}'
 
 [lspservers.weidu-tp2]
 mode = "io"
 executable = 'bgforge-mls-server'
 args = '--stdio'
 auto_start_server = true
-settings = '{"bgforge": {"validateOnSave": true, "validateOnChange": false, "weidu": {"path": "weidu", "gamePath": ""}}}'
+settings = '{"bgforge": {"validate": "saveAndType", "weidu": {"path": "weidu", "gamePath": ""}}}'
 ```
 
 See [Settings Reference](../settings.md) for all available options.

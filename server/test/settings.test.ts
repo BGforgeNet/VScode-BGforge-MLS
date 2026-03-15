@@ -41,16 +41,28 @@ describe("settings", () => {
 
         it("should have correct validation defaults", async () => {
             const { defaultSettings } = await import("../src/settings");
-            expect(defaultSettings.validateOnSave).toBe(true);
-            expect(defaultSettings.validateOnChange).toBe(false);
+            expect(defaultSettings.validate).toBe("saveAndType");
         });
 
         it("should be a valid MLSsettings object", async () => {
             const { defaultSettings } = await import("../src/settings");
             expect(defaultSettings).toHaveProperty("falloutSSL");
             expect(defaultSettings).toHaveProperty("weidu");
-            expect(defaultSettings).toHaveProperty("validateOnSave");
-            expect(defaultSettings).toHaveProperty("validateOnChange");
+            expect(defaultSettings).toHaveProperty("validate");
+        });
+
+        it("should normalize partial settings by filling defaults", async () => {
+            const { normalizeSettings } = await import("../src/settings");
+            const settings = normalizeSettings({
+                falloutSSL: { compilePath: "compile" },
+                weidu: { gamePath: "/game" },
+            });
+            expect(settings.validate).toBe("saveAndType");
+            expect(settings.debug).toBe(false);
+            expect(settings.falloutSSL.compilePath).toBe("compile");
+            expect(settings.falloutSSL.compileOptions).toBe("-q -p -l -O2 -d -s -n");
+            expect(settings.weidu.path).toBe("weidu");
+            expect(settings.weidu.gamePath).toBe("/game");
         });
     });
 

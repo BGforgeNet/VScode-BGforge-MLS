@@ -45,7 +45,7 @@ import {
 import { falloutWorldmapProvider } from "./fallout-worldmap/provider";
 import { registry } from "./provider-registry";
 import * as settings from "./settings";
-import { defaultSettings, MLSsettings } from "./settings";
+import { defaultSettings, MLSsettings, normalizeSettings, shouldValidateOnChange, shouldValidateOnSave } from "./settings";
 import { weiduBafProvider } from "./weidu-baf/provider";
 import { weiduDProvider } from "./weidu-d/provider";
 import { weiduTp2Provider } from "./weidu-tp2/provider";
@@ -89,8 +89,8 @@ const initialized = new Promise<void>((resolve) => { resolveInitialized = resolv
 const pendingReloads = new Map<string, NodeJS.Timeout>();
 const RELOAD_DEBOUNCE_MS = 300;
 
-// Debouncing for compile-on-change to avoid rapid-fire compilations.
-// Without this, every keystroke with validateOnChange enabled spawns a new
+// Debouncing for validate-on-type to avoid rapid-fire compilations.
+// Without this, every keystroke with validate="type"/"saveAndType" would spawn a new
 // compiler process. This is especially problematic for SSL compilation which
 // writes a shared .tmp.ssl file — concurrent compilations corrupt each other.
 // TODO: use NormalizedUri as key (like pendingReloads) for consistency with URI normalization guidelines.
@@ -166,7 +166,7 @@ connection.onInitialized(async () => {
         // Register for all configuration changes.
         await connection.client.register(DidChangeConfigurationNotification.type, undefined);
     }
-    globalSettings = await connection.workspace.getConfiguration({ section: "bgforge" });
+    globalSettings = normalizeSettings(await connection.workspace.getConfiguration({ section: "bgforge" }));
     // load data
     projectSettings = settings.project(workspaceRoot);
 
@@ -222,13 +222,13 @@ connection.onDidChangeConfiguration(async (change) => {
         // Reset all cached document settings
         documentSettings.clear();
         // Fetch fresh global settings and push to providers (e.g., debug flag)
-        const freshSettings = await connection.workspace.getConfiguration({ section: "bgforge" }) as MLSsettings;
+        const freshSettings = normalizeSettings(await connection.workspace.getConfiguration({ section: "bgforge" }));
         globalSettings = freshSettings;
         registry.updateSettings(freshSettings);
     } else {
         // change.settings is typed as any by vscode-languageserver
-        const bgforge = change.settings?.bgforge as MLSsettings | undefined;
-        globalSettings = bgforge ?? defaultSettings;
+        const bgforge = change.settings?.bgforge as unknown;
+        globalSettings = normalizeSettings(bgforge ?? defaultSettings);
         registry.updateSettings(globalSettings);
     }
 });
@@ -255,7 +255,7 @@ export function getDocumentSettings(resource: string): Thenable<MLSsettings> {
         result = connection.workspace.getConfiguration({
             scopeUri: resource,
             section: "bgforge",
-        });
+        }).then(normalizeSettings);
         documentSettings.set(resource, result);
     }
     return result;
@@ -460,8 +460,8 @@ documents.onDidSave(async (change) => {
         return;
     }
 
-    const validateOnSave = (await getDocumentSettings(uri)).validateOnSave;
-    if (validateOnSave) {
+    const validate = (await getDocumentSettings(uri)).validate;
+    if (shouldValidateOnSave(validate)) {
         // Cancel any pending debounced compile for this URI — save takes priority
         // and must not race with a stale onDidChangeContent compilation.
         const pendingCompile = pendingCompiles.get(uri);
@@ -503,8 +503,8 @@ documents.onDidChangeContent(async (event) => {
 
     clearDiagnostics(uri);
 
-    const validateOnChange = (await getDocumentSettings(uri)).validateOnChange;
-    if (validateOnChange) {
+    const validate = (await getDocumentSettings(uri)).validate;
+    if (shouldValidateOnChange(validate)) {
         const existingCompile = pendingCompiles.get(uri);
         if (existingCompile) {
             clearTimeout(existingCompile);

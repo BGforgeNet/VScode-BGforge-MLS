@@ -157,8 +157,7 @@ command = "bgforge-mls-server"
 args = ["--stdio"]
 
 [language-server.bgforge-mls.config.bgforge]
-validateOnSave = true
-validateOnChange = false
+validate = "saveAndType"
 
 [language-server.bgforge-mls.config.bgforge.falloutSSL]
 compilePath = ""

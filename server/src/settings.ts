@@ -21,11 +21,12 @@ export interface WeiDUsettings {
     gamePath: string;
 }
 
+export type ValidationMode = "manual" | "save" | "type" | "saveAndType";
+
 export interface MLSsettings {
     falloutSSL: SSLsettings;
     weidu: WeiDUsettings;
-    validateOnSave: boolean;
-    validateOnChange: boolean;
+    validate: ValidationMode;
     debug: boolean;
 }
 
@@ -42,10 +43,37 @@ export const defaultSettings: MLSsettings = {
         compileOnValidate: true,
     },
     weidu: { path: "weidu", gamePath: "" },
-    validateOnSave: true,
-    validateOnChange: false,
+    validate: "saveAndType",
     debug: false,
 };
+
+export function normalizeSettings(value: unknown): MLSsettings {
+    const raw = (value ?? {}) as Partial<MLSsettings> & {
+        falloutSSL?: Partial<SSLsettings>;
+        weidu?: Partial<WeiDUsettings>;
+    };
+
+    return {
+        falloutSSL: {
+            ...defaultSettings.falloutSSL,
+            ...raw.falloutSSL,
+        },
+        weidu: {
+            ...defaultSettings.weidu,
+            ...raw.weidu,
+        },
+        validate: raw.validate ?? defaultSettings.validate,
+        debug: raw.debug ?? defaultSettings.debug,
+    };
+}
+
+export function shouldValidateOnSave(mode: ValidationMode): boolean {
+    return mode === "save" || mode === "saveAndType";
+}
+
+export function shouldValidateOnChange(mode: ValidationMode): boolean {
+    return mode === "type" || mode === "saveAndType";
+}
 
 export interface ProjectTraSettings {
     directory: string;

@@ -74,8 +74,7 @@ Open `Preferences > Package Settings > LSP > Settings` and add settings under th
       "command": ["bgforge-mls-server", "--stdio"],
       "selector": "source.fallout-ssl | source.weidu-baf | source.weidu-tp2 | source.weidu-d | source.fallout-worldmap-txt",
       "settings": {
-        "bgforge.validateOnSave": true,
-        "bgforge.validateOnChange": false,
+        "bgforge.validate": "saveAndType",
         "bgforge.falloutSSL.compilePath": "",
         "bgforge.falloutSSL.compileOptions": "-q -p -l -O2 -d -s -n",
         "bgforge.falloutSSL.outputDirectory": "",

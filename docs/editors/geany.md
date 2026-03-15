@@ -71,22 +71,22 @@ The LSP Client plugin supports `initialization_options` for passing settings to 
 [fallout-ssl]
 cmd=bgforge-mls-server --stdio
 lang_id_mappings=fallout-ssl;*.ssl;fallout-ssl;*.h
-initialization_options={"bgforge": {"validateOnSave": true, "validateOnChange": false, "falloutSSL": {"compilePath": "", "compileOptions": "-q -p -l -O2 -d -s -n", "outputDirectory": "", "headersDirectory": ""}, "weidu": {"path": "weidu", "gamePath": ""}}}
+initialization_options={"bgforge": {"validate": "saveAndType", "falloutSSL": {"compilePath": "", "compileOptions": "-q -p -l -O2 -d -s -n", "outputDirectory": "", "headersDirectory": ""}, "weidu": {"path": "weidu", "gamePath": ""}}}
 
 [weidu-baf]
 cmd=bgforge-mls-server --stdio
 lang_id_mappings=weidu-baf;*.baf
-initialization_options={"bgforge": {"validateOnSave": true, "validateOnChange": false, "weidu": {"path": "weidu", "gamePath": ""}}}
+initialization_options={"bgforge": {"validate": "saveAndType", "weidu": {"path": "weidu", "gamePath": ""}}}
 
 [weidu-d]
 cmd=bgforge-mls-server --stdio
 lang_id_mappings=weidu-d;*.d
-initialization_options={"bgforge": {"validateOnSave": true, "validateOnChange": false, "weidu": {"path": "weidu", "gamePath": ""}}}
+initialization_options={"bgforge": {"validate": "saveAndType", "weidu": {"path": "weidu", "gamePath": ""}}}
 
 [weidu-tp2]
 cmd=bgforge-mls-server --stdio
 lang_id_mappings=weidu-tp2;*.tp2;weidu-tp2;*.tpa;weidu-tp2;*.tph;weidu-tp2;*.tpp
-initialization_options={"bgforge": {"validateOnSave": true, "validateOnChange": false, "weidu": {"path": "weidu", "gamePath": ""}}}
+initialization_options={"bgforge": {"validate": "saveAndType", "weidu": {"path": "weidu", "gamePath": ""}}}
 ```
 
 Alternatively, put the JSON in a file and reference it:

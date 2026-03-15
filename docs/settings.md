@@ -8,8 +8,7 @@ All settings are under the `bgforge` namespace.
 
 | Setting                    | Default | Description                                                                                                                          |
 | -------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| `bgforge.validateOnSave`   | `true`  | Run diagnostics on save                                                                                                              |
-| `bgforge.validateOnChange` | `false` | Run diagnostics on edit (disk-intensive: writes to disk for external compilers). Debounced at 300ms to avoid concurrent compilations |
+| `bgforge.validate`         | `saveAndType`  | When validation runs: `manual` = only when invoked explicitly, `save` = on save, `type` = while editing, `saveAndType` = on both save and edit. `type`/`saveAndType` are disk-intensive and debounced at 300ms. |
 | `bgforge.debug`            | `false` | Enable debug logging in the Output panel (BGforge MLS channel)                                                                       |
 
 ## Fallout SSL

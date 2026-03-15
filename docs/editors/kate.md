@@ -63,8 +63,7 @@ Kate sends settings via `workspace/configuration` (requires Kate 25.08+). Add to
       "highlightingModeRegex": "^(Fallout SSL|WeiDU BAF|WeiDU D|WeiDU TP2|Fallout-Worldmap)$",
       "settings": {
         "bgforge": {
-          "validateOnSave": true,
-          "validateOnChange": false,
+          "validate": "saveAndType",
           "falloutSSL": {
             "compilePath": "",
             "compileOptions": "-q -p -l -O2 -d -s -n",

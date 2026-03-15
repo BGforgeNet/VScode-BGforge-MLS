@@ -59,8 +59,7 @@ describe("ProviderRegistry", () => {
                 path: "weidu",
                 gamePath: "",
             },
-            validateOnSave: true,
-            validateOnChange: false,
+            validate: "saveAndType",
         },
     };
 

@@ -19,7 +19,7 @@ describe("settings-service", () => {
     });
 
     it("delegates to the registered getter after init", async () => {
-        const mockSettings = { ...defaultSettings, validateOnSave: true };
+        const mockSettings = { ...defaultSettings, validate: "saveAndType" };
         const getter = () => Promise.resolve(mockSettings);
         initSettingsService(getter);
 
