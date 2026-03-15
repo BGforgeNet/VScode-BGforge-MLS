@@ -674,8 +674,8 @@ are expected.
 
 All user-visible messages (`showInformationMessage`, `showWarningMessage`,
 `showErrorMessage`) go through wrappers in `user-messages.ts` that auto-decode
-`file://` URIs to human-readable paths. An ESLint `no-restricted-syntax` rule
-(in `eslint.config.mjs`) enforces this — direct `connection.window.show*Message()`
+`file://` URIs to human-readable paths. A custom oxlint rule
+(in `.oxlint/oxlint-plugin-no-showmessage.ts`) enforces this — direct `connection.window.show*Message()`
 calls in server code produce lint errors.
 
 Debug logs intentionally keep raw URIs to preserve diagnostic ability.

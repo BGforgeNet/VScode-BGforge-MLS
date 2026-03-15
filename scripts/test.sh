@@ -31,9 +31,9 @@ parallel \
     "Typecheck plugins" "(cd plugins/tssl-plugin && pnpm exec tsc --noEmit) && (cd plugins/td-plugin && pnpm exec tsc --noEmit)" \
     "Typecheck server" "(cd server && pnpm exec tsc --noEmit)" \
     "Typecheck CLI" "pnpm exec tsc --project cli/tsconfig.json" \
-    "ESLint" "pnpm exec eslint 'server/src/**/*.ts' 'client/src/**/*.ts' 'plugins/*/src/**/*.ts' 'plugins/*/test/**/*.ts' 'cli/**/*.ts' --ignore-pattern 'cli/test' --ignore-pattern 'cli/vitest.config.ts' --no-warn-ignored --max-warnings 0" \
+    "Oxlint" "pnpm exec oxlint" \
     "Lint scripts" "pnpm lint:scripts" \
-    "Prettier check" "(cd client && pnpm exec prettier --check 'src/**/*.css' 'src/**/*.html')" \
+    "Format check" "(cd client && pnpm exec oxfmt --check 'src/**/*.css' 'src/**/*.html')" \
     "Server unit tests + coverage" "(cd server && pnpm exec vitest run --coverage)" \
     "Client unit tests" "vitest run --config client/vitest.config.ts" \
     "Plugin unit tests" "vitest run --config plugins/tssl-plugin/vitest.config.ts && vitest run --config plugins/td-plugin/vitest.config.ts" \

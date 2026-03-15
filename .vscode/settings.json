@@ -19,10 +19,10 @@
     "npm.packageManager": "pnpm",
     "npm.exclude": ["**/client", "**/server"],
     "python.analysis.extraPaths": ["./scripts"],
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "oxc.oxc-vscode",
+    "editor.formatOnSave": false,
     "editor.codeActionsOnSave": {
-        "source.fixAll.eslint": "always"
+        "source.fixAll.oxc": "always"
     },
     "[python]": {
         "editor.defaultFormatter": "ms-python.black-formatter"

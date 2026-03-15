@@ -51,12 +51,16 @@ const config: KnipConfig = {
         "external/**",
         // standalone update scripts run via pnpm exec tsx, not imported by main code
         "scripts/**",
+        // custom oxlint plugin (referenced in .oxlintrc.json, not imported by code)
+        ".oxlint/**",
     ],
     ignoreDependencies: [
         // icon font used via CSS classes in dialogTree.ts (e.g. "codicon codicon-references")
         "@vscode/codicons",
-        // run via pnpm exec in client/scripts/test.sh
-        "prettier",
+        // invoked via pnpm exec in scripts
+        "oxfmt",
+        // used by custom oxlint plugin
+        "@oxlint/plugins",
         // used by scripts/ (pnpm exec tsx scripts/...)
         "tsx",
         // invoked in scripts/*.sh build scripts, not visible to knip

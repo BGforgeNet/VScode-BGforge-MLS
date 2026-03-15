@@ -13,7 +13,7 @@ pnpm exec tsc --noEmit
 
 echo ""
 echo "=== Checking formatting ==="
-pnpm exec prettier --check "src/**/*.css" "src/**/*.html"
+pnpm exec oxfmt --check "src/**/*.css" "src/**/*.html"
 
 echo ""
 echo "SUCCESS: All client tests passed"

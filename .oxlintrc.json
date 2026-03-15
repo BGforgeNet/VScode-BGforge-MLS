@@ -1,0 +1,40 @@
+{
+    "jsPlugins": ["./.oxlint/oxlint-plugin-no-showmessage.ts"],
+    "rules": {
+        "correctness": "warn",
+        "suspicious": "warn",
+        "pedantic": "warn",
+        "perf": "warn",
+        "style": "warn"
+    },
+    "overrides": [
+        {
+            "files": ["grammars/**/*.js"],
+            "globals": {
+                "grammar": "readonly",
+                "seq": "readonly",
+                "choice": "readonly",
+                "repeat": "readonly",
+                "repeat1": "readonly",
+                "optional": "readonly",
+                "prec": "readonly",
+                "token": "readonly",
+                "field": "readonly",
+                "alias": "readonly",
+                "LANGUAGE": "readonly",
+                "LRULE": "readonly"
+            },
+            "rules": {
+                "no-undef": "error",
+                "no-unused-vars": "off"
+            }
+        },
+        {
+            "files": ["server/src/**/*.ts"],
+            "rules": {
+                "bgforge-mls/no-showmessage": "error"
+            }
+        }
+    ],
+    "ignorePatterns": ["**/node_modules/**", "**/out/**", "**/*.d.ts", "server/src/user-messages.ts"]
+}

@@ -26,7 +26,7 @@
     "build": "tree-sitter generate && tree-sitter build --wasm",
     "generate:types": "pnpm exec dts-tree-sitter . > src/tree-sitter.d.ts && cp src/tree-sitter.d.ts ../../server/src/weidu-d/tree-sitter.d.ts",
     "test": "../../scripts/test-grammar.sh weidu-d",
-    "lint": "eslint grammar.js",
+    "lint": "oxlint grammar.js",
     "playground": "tree-sitter playground"
   },
   "devDependencies": {

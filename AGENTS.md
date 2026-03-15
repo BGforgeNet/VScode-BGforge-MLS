@@ -53,7 +53,7 @@ docs/                    # User docs, editor setup guides, architecture, changel
 external/                # Third-party mod sources (test fixtures, not project code)
 ```
 
-**Root config files:** `knip.ts` (dead code detection), `eslint.config.mjs`, `.editorconfig`, `.prettierrc.yaml`, `pnpm-workspace.yaml`
+**Root config files:** `knip.ts`, `.oxlintrc.json`, `.editorconfig`, `pnpm-workspace.yaml`
 
 ## Commands
 
@@ -112,6 +112,7 @@ LSP-based extension with provider-registry pattern. Monorepo with separate `clie
 **Transpilers** (`server/src/*/`): tssl, tbaf, td + shared `transpiler-utils.ts`
 
 For detailed architecture, see:
+
 - `docs/architecture.md` — system overview, build pipeline, client, CLIs, grammars, packaging
 - `server/INTERNALS.md` — server internals: provider registry, symbol system, data flow, tree-sitter, feature implementations, design decisions
 
@@ -146,17 +147,17 @@ See `server/INTERNALS.md` for the full feature matrix and cross-language feature
 
 ## Documentation Index
 
-| Area | Key Files |
-|------|-----------|
-| Architecture | `docs/architecture.md`, `server/INTERNALS.md` |
-| Contributing | `CONTRIBUTING.md` |
-| Settings | `docs/settings.md` |
-| Changelog | `docs/changelog.md` |
-| Editor setup | `docs/editors/` (neovim, emacs, helix, zed, kate, sublime, jetbrains, geany, notepadpp) |
-| TS plugins | `docs/editors/typescript-plugins.md` |
-| Transpiler guides | `transpilers/tssl/`, `transpilers/tbaf/`, `transpilers/td/` (each has README, writing guide, llms.txt) |
-| Server npm package | `server/README.md` |
-| Data files | `server/data/README.md` |
-| Grammars | `grammars/README.md` + per-grammar READMEs |
-| Build scripts | `scripts/README.md` |
-| Packaging | `docs/ignore-files.md` |
+| Area               | Key Files                                                                                              |
+| ------------------ | ------------------------------------------------------------------------------------------------------ |
+| Architecture       | `docs/architecture.md`, `server/INTERNALS.md`                                                          |
+| Contributing       | `CONTRIBUTING.md`                                                                                      |
+| Settings           | `docs/settings.md`                                                                                     |
+| Changelog          | `docs/changelog.md`                                                                                    |
+| Editor setup       | `docs/editors/` (neovim, emacs, helix, zed, kate, sublime, jetbrains, geany, notepadpp)                |
+| TS plugins         | `docs/editors/typescript-plugins.md`                                                                   |
+| Transpiler guides  | `transpilers/tssl/`, `transpilers/tbaf/`, `transpilers/td/` (each has README, writing guide, llms.txt) |
+| Server npm package | `server/README.md`                                                                                     |
+| Data files         | `server/data/README.md`                                                                                |
+| Grammars           | `grammars/README.md` + per-grammar READMEs                                                             |
+| Build scripts      | `scripts/README.md`                                                                                    |
+| Packaging          | `docs/ignore-files.md`                                                                                 |

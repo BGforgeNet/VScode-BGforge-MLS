@@ -8,44 +8,44 @@ Controls what git tracks. Most build output is ignored; checked-in data JSONs ar
 
 ### Build output
 
-| Pattern | What it ignores |
-|---------|----------------|
-| `client/out` | Client esbuild bundles (extension.js, webviews, etc.) |
-| `server/out/*` | Server esbuild bundle, WASM files, generated runtime files |
-| `cli/*/out` | CLI bundles (format-cli.js, transpile-cli.js, bin-cli.js) |
-| `*.wasm` | Tree-sitter WASM files (built from C sources by `build:grammar`) |
-| `coverage/` | Vitest coverage reports |
+| Pattern        | What it ignores                                                  |
+| -------------- | ---------------------------------------------------------------- |
+| `client/out`   | Client esbuild bundles (extension.js, webviews, etc.)            |
+| `server/out/*` | Server esbuild bundle, WASM files, generated runtime files       |
+| `cli/*/out`    | CLI bundles (format-cli.js, transpile-cli.js, bin-cli.js)        |
+| `*.wasm`       | Tree-sitter WASM files (built from C sources by `build:grammar`) |
+| `coverage/`    | Vitest coverage reports                                          |
 
 ### Checked-in data (exceptions to `server/out/*`)
 
 These JSON files are generated from `server/data/*.yml` by `generate-data.sh` but are checked in so that tests and typechecks work on a clean checkout without a build step.
 
-| Pattern | Contents |
-|---------|----------|
-| `!server/out/completion.*.json` | Autocomplete item lists (one per language) |
-| `!server/out/hover.*.json` | Hover documentation (one per language) |
-| `!server/out/signature.*.json` | Signature help parameter hints |
+| Pattern                             | Contents                                             |
+| ----------------------------------- | ---------------------------------------------------- |
+| `!server/out/completion.*.json`     | Autocomplete item lists (one per language)           |
+| `!server/out/hover.*.json`          | Hover documentation (one per language)               |
+| `!server/out/signature.*.json`      | Signature help parameter hints                       |
 | `!server/out/engine-proc-docs.json` | Engine procedure docs for the TSSL TypeScript plugin |
 
 ### Generated source
 
-| Pattern | What it ignores |
-|---------|----------------|
-| `grammars/*/src/` | Tree-sitter generated C parser sources |
+| Pattern                         | What it ignores                                               |
+| ------------------------------- | ------------------------------------------------------------- |
+| `grammars/*/src/`               | Tree-sitter generated C parser sources                        |
 | `server/src/*/tree-sitter.d.ts` | Generated TypeScript types for grammar nodes (all 4 grammars) |
 
 ### Third-party and temporary
 
-| Pattern | What it ignores |
-|---------|----------------|
-| `node_modules` | pnpm dependencies (root, client, server, cli workspaces) |
-| `client/node_modules`, `server/node_modules` | Workspace-specific node_modules |
-| `external/*` | Cloned third-party mod repos used as test fixtures |
-| `.vscode-test/` | Downloaded VSCode binaries for E2E tests |
-| `tmp` | Scratch directory |
-| `/test` | Root-level test directory |
-| `.reports/` | Analysis reports |
-| `*.log`, `*.vsix` | Log files and built extension packages |
+| Pattern                                      | What it ignores                                          |
+| -------------------------------------------- | -------------------------------------------------------- |
+| `node_modules`                               | pnpm dependencies (root, client, server, cli workspaces) |
+| `client/node_modules`, `server/node_modules` | Workspace-specific node_modules                          |
+| `external/*`                                 | Cloned third-party mod repos used as test fixtures       |
+| `.vscode-test/`                              | Downloaded VSCode binaries for E2E tests                 |
+| `tmp`                                        | Scratch directory                                        |
+| `/test`                                      | Root-level test directory                                |
+| `.reports/`                                  | Analysis reports                                         |
+| `*.log`, `*.vsix`                            | Log files and built extension packages                   |
 
 The `external/` directory has four allowlisted text files (`!external/fallout.txt`, etc.) that list which repos to clone and what to exclude.
 
@@ -55,56 +55,56 @@ Controls what ships in the VSIX extension package. Uses a **blocklist** strategy
 
 ### Excluded: dev infrastructure
 
-| Pattern | What it excludes |
-|---------|-----------------|
-| `.claude/` | AI assistant config |
-| `.editorconfig`, `.gitattributes`, `.prettierrc.yaml` | Editor/git/formatter config |
-| `.github/` | CI workflows |
-| `.gitignore`, `.prettierignore` | Ignore config files |
-| `.reports/`, `.vscode/`, `.vscode-test/` | Dev/test directories |
-| `CLAUDE.md`, `CONTRIBUTING.md` | Dev documentation |
-| `eslint.config.mjs`, `knip.ts`, `tsconfig.json` | Linting and build config |
-| `pnpm-lock.yaml`, `pnpm-workspace.yaml` | Package manager files |
-| `*.vsix`, `*.tgz`, `*.log`, `**/*.map` | Built packages, logs, source maps |
-| `*.tmbundle`, `*.zip` | Generated bundles (tmbundle, UDL, KSH archives) |
-| `bgforge-mls-notepadpp-udl*/`, `bgforge-mls-kate-ksh*/` | Generated editor asset directories |
+| Pattern                                                 | What it excludes                                |
+| ------------------------------------------------------- | ----------------------------------------------- |
+| `.claude/`                                              | AI assistant config                             |
+| `.editorconfig`                                         | Editor config                                   |
+| `.oxlintrc.json`                                        | Linting configuration                           |
+| `.github/`                                              | CI workflows                                    |
+| `.reports/`, `.vscode/`, `.vscode-test/`                | Dev/test directories                            |
+| `CLAUDE.md`, `CONTRIBUTING.md`                          | Dev documentation                               |
+| `knip.ts`, `tsconfig.json`                              | Linting and build config                        |
+| `pnpm-lock.yaml`, `pnpm-workspace.yaml`                 | Package manager files                           |
+| `*.vsix`, `*.tgz`, `*.log`, `**/*.map`                  | Built packages, logs, source maps               |
+| `*.tmbundle`, `*.zip`                                   | Generated bundles (tmbundle, UDL, KSH archives) |
+| `bgforge-mls-notepadpp-udl*/`, `bgforge-mls-kate-ksh*/` | Generated editor asset directories              |
 
 ### Excluded: dev-only directories
 
-| Pattern | What it excludes |
-|---------|-----------------|
-| `cli/`, `coverage/`, `docs/` | CLI packages, coverage reports, documentation |
-| `external/`, `grammars/` | Test fixtures (~70 MB), tree-sitter grammar sources |
-| `plugins/` | TypeScript plugin sources (built to node_modules/) |
-| `scripts/`, `test/`, `tmp/` | Build scripts, tests, scratch |
-| `transpilers/` | Transpiler documentation |
+| Pattern                      | What it excludes                                    |
+| ---------------------------- | --------------------------------------------------- |
+| `cli/`, `coverage/`, `docs/` | CLI packages, coverage reports, documentation       |
+| `external/`, `grammars/`     | Test fixtures (~70 MB), tree-sitter grammar sources |
+| `plugins/`                   | TypeScript plugin sources (built to node_modules/)  |
+| `scripts/`, `test/`, `tmp/`  | Build scripts, tests, scratch                       |
+| `transpilers/`               | Transpiler documentation                            |
 
 ### Excluded: source code and dev files
 
-| Pattern | What it excludes |
-|---------|-----------------|
-| `client/src/**/*.ts` | Client TypeScript source (HTML/CSS webview assets are kept) |
-| `client/test/`, `client/testFixture/`, `client/out/test/` | Client test files and fixtures |
-| `client/scripts/`, `client/tsconfig*.json`, `client/vitest.config.ts` | Client dev files |
-| `client/node_modules/` | Client dev dependencies |
-| `server/src/`, `server/data/` | Server TypeScript source, YAML data files |
-| `server/test/`, `server/scripts/`, `server/coverage/` | Server test files and dev artifacts |
-| `server/tsconfig*.json`, `server/vitest.config.ts` | Server dev config |
-| `syntaxes/*.yml` | Source YAML for TextMate grammars (only .json ships) |
-| `themes/vscode-monokai.json`, `themes/vs-seti-icon-theme.json` | Upstream theme sources |
-| `**/README.md` | READMEs in subdirectories (root README auto-included by vsce) |
+| Pattern                                                               | What it excludes                                              |
+| --------------------------------------------------------------------- | ------------------------------------------------------------- |
+| `client/src/**/*.ts`                                                  | Client TypeScript source (HTML/CSS webview assets are kept)   |
+| `client/test/`, `client/testFixture/`, `client/out/test/`             | Client test files and fixtures                                |
+| `client/scripts/`, `client/tsconfig*.json`, `client/vitest.config.ts` | Client dev files                                              |
+| `client/node_modules/`                                                | Client dev dependencies                                       |
+| `server/src/`, `server/data/`                                         | Server TypeScript source, YAML data files                     |
+| `server/test/`, `server/scripts/`, `server/coverage/`                 | Server test files and dev artifacts                           |
+| `server/tsconfig*.json`, `server/vitest.config.ts`                    | Server dev config                                             |
+| `syntaxes/*.yml`                                                      | Source YAML for TextMate grammars (only .json ships)          |
+| `themes/vscode-monokai.json`, `themes/vs-seti-icon-theme.json`        | Upstream theme sources                                        |
+| `**/README.md`                                                        | READMEs in subdirectories (root README auto-included by vsce) |
 
 ### Excluded: node_modules
 
-| Pattern | What it excludes |
-|---------|-----------------|
-| `server/node_modules/esbuild-wasm/esm/` | ESM browser builds (not used in Node.js) |
-| `server/node_modules/esbuild-wasm/lib/browser*` | CJS browser builds (not used in Node.js) |
-| `server/node_modules/esbuild-wasm/**/*.d.ts` | TypeScript definitions (not needed at runtime) |
-| `server/node_modules/esbuild-wasm/LICENSE.md`, `README.md` | Documentation files |
-| `server/node_modules/.ignored*/` | pnpm internal dirs surviving after symlink strip |
-| `node_modules/` | All root dependencies (TS plugins injected by `package.sh` post-packaging) |
-| `.pkg-inject/` | Temp directory used by `package.sh` for zip injection |
+| Pattern                                                    | What it excludes                                                           |
+| ---------------------------------------------------------- | -------------------------------------------------------------------------- |
+| `server/node_modules/esbuild-wasm/esm/`                    | ESM browser builds (not used in Node.js)                                   |
+| `server/node_modules/esbuild-wasm/lib/browser*`            | CJS browser builds (not used in Node.js)                                   |
+| `server/node_modules/esbuild-wasm/**/*.d.ts`               | TypeScript definitions (not needed at runtime)                             |
+| `server/node_modules/esbuild-wasm/LICENSE.md`, `README.md` | Documentation files                                                        |
+| `server/node_modules/.ignored*/`                           | pnpm internal dirs surviving after symlink strip                           |
+| `node_modules/`                                            | All root dependencies (TS plugins injected by `package.sh` post-packaging) |
+| `.pkg-inject/`                                             | Temp directory used by `package.sh` for zip injection                      |
 
 ### Included: runtime files (not excluded, ship by default)
 
@@ -134,37 +134,33 @@ These are included implicitly (not excluded by any pattern):
 
 The script runs the prepublish build first (with full deps available), then uses `SKIP_PREPUBLISH=1` to skip the rebuild when vsce invokes `vscode:prepublish` after the strip.
 
-## .prettierignore
+## .editorconfig
 
-Controls what prettier formats. Excludes generated/binary/data files that should not be reformatted.
+Oxfmt (and VSCode) use `.editorconfig` for formatting.
 
-| Pattern | Why excluded |
-|---------|-------------|
-| `syntaxes/*.*`, `themes/*.*` | Generated/structured JSON, not hand-written |
-| `language-configurations/*.json` | Structured JSON maintained manually but not reformatted |
-| `server/data/*.yml` | YAML data files with specific formatting conventions |
-| `client/out`, `server/out/*` | Build output |
-| `client/node_modules`, `server/node_modules`, `node_modules` | Dependencies |
-| `external` | Third-party code |
-| `.vscode-test/` | Downloaded VSCode binaries |
-| `tmp` | Scratch directory |
-| `**/pnpm-lock.yaml` | Machine-generated lockfiles |
-| `*.log`, `*.vsix` | Non-source files |
+| Pattern             | Setting                                                            |
+| ------------------- | ------------------------------------------------------------------ |
+| `[*]`               | `indent_style = space`, `indent_size = 4`, `max_line_length = 120` |
+| `[*.{yml,yaml,md}]` | `indent_size = 2`                                                  |
 
-## eslint.config.mjs (ignores section)
+## .oxlintrc.json
 
-Controls what eslint skips. Defined inline in the flat config.
+Oxlint configuration.
 
-| Pattern | Why excluded |
-|---------|-------------|
-| `node_modules/**`, `client/node_modules/**`, `server/node_modules/**`, `cli/**/node_modules/**` | Dependencies |
-| `client/out/**`, `server/out/**`, `cli/**/out/**` | Build output |
-| `server/src/fallout-ssl/tree-sitter.d.ts` | Auto-generated from grammar |
-| `server/src/weidu-tp2/tree-sitter.d.ts` | Auto-generated from grammar |
-| `server/src/weidu-baf/tree-sitter.d.ts` | Auto-generated from grammar |
-| `server/src/weidu-d/tree-sitter.d.ts` | Auto-generated from grammar |
-| `server/src/td/td-runtime.d.ts` | Runtime declarations with intentional `any` types |
-| `grammars/**` | Tree-sitter grammars (JavaScript, not TypeScript; have their own lint config) |
+| Field            | Purpose                                                                                  |
+| ---------------- | ---------------------------------------------------------------------------------------- |
+| `rules`          | Categories: `correctness`, `suspicious`, `pedantic`, `perf`, `style` (all set to `warn`) |
+| `overrides`      | Grammar files get tree-sitter globals; server gets custom `no-showmessage` rule          |
+| `ignorePatterns` | Excludes: `node_modules`, `out`, `*.d.ts`, `user-messages.ts`                            |
+| `jsPlugins`      | Custom plugin for banning direct LSP showMessage calls                                   |
+
+### Tree-sitter globals
+
+Grammar files (`grammars/**/*.js`) need these globals: `grammar`, `seq`, `choice`, `repeat`, `repeat1`, `optional`, `prec`, `token`, `field`, `alias`, `LANGUAGE`, `LRULE`.
+
+### Custom rule
+
+The project has a custom oxlint plugin (`.oxlint/oxlint-plugin-no-showmessage.ts`) that bans direct `connection.window.showMessage` calls in server code. Use the wrapper functions from `user-messages.ts` instead.
 
 ## Grammar .gitignore files
 
@@ -172,9 +168,9 @@ Each grammar directory (`grammars/fallout-ssl/`, `grammars/weidu-baf/`, `grammar
 
 All grammar `.gitignore` files exclude:
 
-| Pattern | Purpose |
-|---------|---------|
-| `test/samples-formatted/` | Temporary output from format tests (compared against `test/samples-expected/` which IS committed) |
-| `test/samples-formatted-2/` | Second-pass format output for idempotency testing |
+| Pattern                     | Purpose                                                                                           |
+| --------------------------- | ------------------------------------------------------------------------------------------------- |
+| `test/samples-formatted/`   | Temporary output from format tests (compared against `test/samples-expected/` which IS committed) |
+| `test/samples-formatted-2/` | Second-pass format output for idempotency testing                                                 |
 
 The `fallout-ssl` grammar has additional ignores for tree-sitter's multi-language build artifacts (Rust, Go, Python, Swift, Zig, C compiled objects, etc.) since it serves as the primary grammar development workspace.
