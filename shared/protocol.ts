@@ -10,7 +10,6 @@ export const LSP_COMMAND_PARSE_DIALOG = "bgforge.parseDialog";
 /** VS Code extension command identifiers. These are client-side wrappers, not LSP commands. */
 export const VSCODE_COMMAND_COMPILE = "extension.bgforge.compile";
 export const VSCODE_COMMAND_DIALOG_PREVIEW = "extension.bgforge.dialogPreview";
-export const VSCODE_COMMAND_D_DIALOG_PREVIEW = "extension.bgforge.dDialogPreview";
 
 /** Custom client/server protocol methods used in addition to standard LSP. */
 export const REQUEST_SET_BUILT_IN_COMPILER = "bgforge-mls/setBuiltInCompiler";

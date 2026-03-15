@@ -213,11 +213,6 @@
                 "command": "extension.bgforge.dialogPreview",
                 "title": "BGforge MLS: Dialog Preview",
                 "icon": "$(open-preview)"
-            },
-            {
-                "command": "extension.bgforge.dDialogPreview",
-                "title": "BGforge MLS: D Dialog Preview",
-                "icon": "$(open-preview)"
             }
         ],
         "customEditors": [
@@ -410,12 +405,7 @@
             {
                 "command": "extension.bgforge.dialogPreview",
                 "key": "ctrl+shift+v",
-                "when": "editorLangId == fallout-ssl || resourceExtname == .tssl"
-            },
-            {
-                "command": "extension.bgforge.dDialogPreview",
-                "key": "ctrl+shift+v",
-                "when": "editorLangId == weidu-d || resourceExtname == .td"
+                "when": "editorLangId == fallout-ssl || resourceExtname == .tssl || editorLangId == weidu-d || resourceExtname == .td"
             }
         ],
         "typescriptServerPlugins": [

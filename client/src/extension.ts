@@ -15,6 +15,7 @@ import {
     NOTIFICATION_LOAD_FINISHED,
     REQUEST_SET_BUILT_IN_COMPILER,
     VSCODE_COMMAND_COMPILE,
+    VSCODE_COMMAND_DIALOG_PREVIEW,
 } from "../../shared/protocol";
 import { registerBinaryEditor } from "./editors/binaryEditor";
 import { registerDialogTree } from "./dialog-tree/dialogTree";
@@ -27,6 +28,7 @@ const loadingIndicator = new ServerInitializingIndicator(() => {
     conlog("loading start");
 });
 const cmd_compile = VSCODE_COMMAND_COMPILE;
+const cmd_dialogPreview = VSCODE_COMMAND_DIALOG_PREVIEW;
 
 export async function activate(context: ExtensionContext) {
     // The server is implemented in node
@@ -91,6 +93,24 @@ export async function activate(context: ExtensionContext) {
     await client.start();
     conlog("BGforge MLS client started");
 
+    const sslDialogPreview = registerDialogTree(context, client);
+    const dDialogPreview = registerDDialogTree(context, client);
+    context.subscriptions.push(vscode.commands.registerCommand(cmd_dialogPreview, async () => {
+        const document = vscode.window.activeTextEditor?.document;
+        if (!document) {
+            return;
+        }
+        if (sslDialogPreview.matchesDocument(document)) {
+            await sslDialogPreview.openPreview();
+            return;
+        }
+        if (dDialogPreview.matchesDocument(document)) {
+            await dDialogPreview.openPreview();
+            return;
+        }
+        vscode.window.showWarningMessage("Open a Fallout SSL, TSSL, D, or TD file to preview dialog");
+    }));
+
     client.onRequest(REQUEST_SET_BUILT_IN_COMPILER, async (params: { uri?: string }) => {
         const resource = params.uri ? vscode.Uri.parse(params.uri) : undefined;
         const configuration = workspace.getConfiguration("bgforge", resource);
@@ -100,10 +120,6 @@ export async function activate(context: ExtensionContext) {
         await configuration.update("falloutSSL.compilePath", "", target);
         return true;
     });
-
-    // Register dialog tree views
-    registerDialogTree(context, client);
-    registerDDialogTree(context, client);
 
     client.onNotification(NOTIFICATION_LOAD_FINISHED, () => {
         loadingIndicator.finishedLoadingProject("");

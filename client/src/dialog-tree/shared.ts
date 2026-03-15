@@ -110,8 +110,6 @@ function getDialogPreviewHtml(treeContent: string, codiconsUri: string, extensio
 interface DialogPanelConfig {
     /** Check whether a document should use this panel. */
     matchDocument: (doc: vscode.TextDocument) => boolean;
-    /** VS Code command ID (e.g. "extension.bgforge.dialogPreview") */
-    commandName: string;
     /** Warning message shown when no matching file is open */
     warningMessage: string;
     /** Language ID of translation files that trigger refresh on save */
@@ -124,6 +122,11 @@ interface DialogPanelConfig {
     tabIconPath: string;
 }
 
+export interface DialogPreviewController {
+    matchesDocument: (doc: vscode.TextDocument) => boolean;
+    openPreview: () => Promise<void>;
+}
+
 /**
  * Register a dialog preview panel with shared lifecycle management.
  * Handles panel creation, debounced refresh, document change watching,
@@ -133,7 +136,7 @@ export function registerDialogPanel(
     context: vscode.ExtensionContext,
     client: LanguageClient,
     config: DialogPanelConfig,
-): void {
+): DialogPreviewController {
     let dialogPanel: vscode.WebviewPanel | undefined;
     let currentDocumentUri: string | undefined;
     let currentFileName: string | undefined;
@@ -191,75 +194,77 @@ export function registerDialogPanel(
         })
     );
 
-    // Preview command
-    context.subscriptions.push(
-        vscode.commands.registerCommand(config.commandName, async () => {
-            const editor = vscode.window.activeTextEditor;
-            if (!editor || !config.matchDocument(editor.document)) {
-                vscode.window.showWarningMessage(config.warningMessage);
+    async function openPreview() {
+        const editor = vscode.window.activeTextEditor;
+        if (!editor || !config.matchDocument(editor.document)) {
+            vscode.window.showWarningMessage(config.warningMessage);
+            return;
+        }
+
+        currentDocumentUri = editor.document.uri.toString();
+
+        const params: ExecuteCommandParams = {
+            command: LSP_COMMAND_PARSE_DIALOG,
+            arguments: [{ uri: currentDocumentUri }],
+        };
+
+        try {
+            const data = await client.sendRequest(ExecuteCommandRequest.type, params) as unknown;
+
+            if (data == null || !config.hasData(data)) {
+                vscode.window.showWarningMessage("No dialog data found");
                 return;
             }
 
-            currentDocumentUri = editor.document.uri.toString();
+            const fileName = editor.document.fileName.split(/[/\\]/).pop() || "dialog";
+            const workspaceFolder = vscode.workspace.getWorkspaceFolder(editor.document.uri);
+            const filePath = workspaceFolder
+                ? path.relative(workspaceFolder.uri.fsPath, editor.document.fileName)
+                : fileName;
+            currentFileName = fileName;
+            currentFilePath = filePath;
 
-            const params: ExecuteCommandParams = {
-                command: LSP_COMMAND_PARSE_DIALOG,
-                arguments: [{ uri: currentDocumentUri }],
-            };
-
-            try {
-                const data = await client.sendRequest(ExecuteCommandRequest.type, params) as unknown;
-
-                if (data == null || !config.hasData(data)) {
-                    vscode.window.showWarningMessage("No dialog data found");
-                    return;
-                }
-
-                const fileName = editor.document.fileName.split(/[/\\]/).pop() || "dialog";
-                const workspaceFolder = vscode.workspace.getWorkspaceFolder(editor.document.uri);
-                const filePath = workspaceFolder
-                    ? path.relative(workspaceFolder.uri.fsPath, editor.document.fileName)
-                    : fileName;
-                currentFileName = fileName;
-                currentFilePath = filePath;
-
-                if (dialogPanel) {
-                    dialogPanel.reveal(vscode.ViewColumn.Active);
-                } else {
-                    dialogPanel = vscode.window.createWebviewPanel(
-                        "bgforgeDialogPreview",
-                        `Dialog: ${fileName}`,
-                        vscode.ViewColumn.Active,
-                        { enableScripts: true, localResourceRoots: [context.extensionUri] }
-                    );
-                    dialogPanel.iconPath = vscode.Uri.joinPath(context.extensionUri, config.tabIconPath);
-                    dialogPanel.onDidDispose(() => {
-                        dialogPanel = undefined;
-                        currentDocumentUri = undefined;
-                        currentFileName = undefined;
-                        currentFilePath = undefined;
-                        if (refreshTimeout) {
-                            clearTimeout(refreshTimeout);
-                        }
-                    });
-                }
-
-                const treeContent = config.buildTreeHtml(data);
-                const codiconsUri = dialogPanel.webview.asWebviewUri(
-                    vscode.Uri.joinPath(context.extensionUri, "client", "out", "codicons", "codicon.css")
+            if (dialogPanel) {
+                dialogPanel.reveal(vscode.ViewColumn.Active);
+            } else {
+                dialogPanel = vscode.window.createWebviewPanel(
+                    "bgforgeDialogPreview",
+                    `Dialog: ${fileName}`,
+                    vscode.ViewColumn.Active,
+                    { enableScripts: true, localResourceRoots: [context.extensionUri] }
                 );
-                const iconUri = dialogPanel.webview.asWebviewUri(
-                    vscode.Uri.joinPath(context.extensionUri, config.tabIconPath)
-                );
-
-                dialogPanel.title = `Dialog: ${fileName}`;
-                dialogPanel.webview.html = getDialogPreviewHtml(treeContent, codiconsUri.toString(), context.extensionUri.fsPath, fileName, filePath, iconUri.toString());
-            } catch (error) {
-                const msg = error instanceof Error ? error.message : String(error);
-                // Log full stack trace to Developer Tools for debugging (showErrorMessage only gets the message)
-                console.error("Dialog preview error:", error);
-                vscode.window.showErrorMessage(`Failed to generate dialog preview: ${msg}`);
+                dialogPanel.iconPath = vscode.Uri.joinPath(context.extensionUri, config.tabIconPath);
+                dialogPanel.onDidDispose(() => {
+                    dialogPanel = undefined;
+                    currentDocumentUri = undefined;
+                    currentFileName = undefined;
+                    currentFilePath = undefined;
+                    if (refreshTimeout) {
+                        clearTimeout(refreshTimeout);
+                    }
+                });
             }
-        })
-    );
+
+            const treeContent = config.buildTreeHtml(data);
+            const codiconsUri = dialogPanel.webview.asWebviewUri(
+                vscode.Uri.joinPath(context.extensionUri, "client", "out", "codicons", "codicon.css")
+            );
+            const iconUri = dialogPanel.webview.asWebviewUri(
+                vscode.Uri.joinPath(context.extensionUri, config.tabIconPath)
+            );
+
+            dialogPanel.title = `Dialog: ${fileName}`;
+            dialogPanel.webview.html = getDialogPreviewHtml(treeContent, codiconsUri.toString(), context.extensionUri.fsPath, fileName, filePath, iconUri.toString());
+        } catch (error) {
+            const msg = error instanceof Error ? error.message : String(error);
+            // Log full stack trace to Developer Tools for debugging (showErrorMessage only gets the message)
+            console.error("Dialog preview error:", error);
+            vscode.window.showErrorMessage(`Failed to generate dialog preview: ${msg}`);
+        }
+    }
+
+    return {
+        matchesDocument: config.matchDocument,
+        openPreview,
+    };
 }

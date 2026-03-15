@@ -6,7 +6,7 @@
 
 import * as vscode from "vscode";
 import { LanguageClient } from "vscode-languageclient/node";
-import { escapeHtml, registerDialogPanel } from "./shared";
+import { escapeHtml, registerDialogPanel, type DialogPreviewController } from "./shared";
 
 // ---------------------------------------------------------------------------
 // Data model (duplicated from server/src/weidu-d/dialog.ts -- can't cross-import)
@@ -311,12 +311,11 @@ export function getBlockStates(block: DDialogBlock, states: DDialogState[]): DDi
 // Registration
 // ---------------------------------------------------------------------------
 
-export function registerDDialogTree(context: vscode.ExtensionContext, client: LanguageClient): void {
-    registerDialogPanel(context, client, {
+export function registerDDialogTree(context: vscode.ExtensionContext, client: LanguageClient): DialogPreviewController {
+    return registerDialogPanel(context, client, {
         matchDocument: (doc) =>
             doc.languageId === "weidu-d" ||
             doc.fileName.toLowerCase().endsWith(".td"),
-        commandName: "extension.bgforge.dDialogPreview",
         warningMessage: "Open a D or TD file to preview dialog",
         translationLangId: "weidu-tra",
         buildTreeHtml: (data) => buildDTreeHtml(data as DDialogData),

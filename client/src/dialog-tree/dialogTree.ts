@@ -5,7 +5,7 @@
 
 import * as vscode from "vscode";
 import { LanguageClient } from "vscode-languageclient/node";
-import { escapeHtml, registerDialogPanel } from "./shared";
+import { escapeHtml, registerDialogPanel, type DialogPreviewController } from "./shared";
 
 // ---------------------------------------------------------------------------
 // Data model (duplicated from server/src/dialog.ts -- can't cross-import)
@@ -245,12 +245,11 @@ export function buildTreeHtml(data: DialogData): string {
 // Registration
 // ---------------------------------------------------------------------------
 
-export function registerDialogTree(context: vscode.ExtensionContext, client: LanguageClient): void {
-    registerDialogPanel(context, client, {
+export function registerDialogTree(context: vscode.ExtensionContext, client: LanguageClient): DialogPreviewController {
+    return registerDialogPanel(context, client, {
         matchDocument: (doc) =>
             doc.languageId === "fallout-ssl" ||
             doc.fileName.toLowerCase().endsWith(".tssl"),
-        commandName: "extension.bgforge.dialogPreview",
         warningMessage: "Open a Fallout SSL or TSSL file to preview dialog",
         translationLangId: "fallout-msg",
         buildTreeHtml: (data) => buildTreeHtml(data as DialogData),

@@ -119,6 +119,5 @@ These are VS Code extension-host commands, not LSP commands:
 
 - `extension.bgforge.compile`
 - `extension.bgforge.dialogPreview`
-- `extension.bgforge.dDialogPreview`
 
 Third-party LSP clients should not rely on these identifiers. Use the standard LSP command ids above instead.
