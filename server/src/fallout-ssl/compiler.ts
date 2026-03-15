@@ -28,12 +28,13 @@ import {
     tmpDir,
     uriToPath,
 } from "../common";
-import { getDocuments } from "../lsp-connection";
+import { getConnection, getDocuments } from "../lsp-connection";
 import { showError, showErrorWithActions, showInfo } from "../user-messages";
 import { SSLsettings } from "../settings";
 import { ssl_compile as ssl_builtin_compiler } from "../sslc/ssl_compiler";
 
 const sslExt = ".ssl";
+const REQUEST_setBuiltInCompiler = "bgforge-mls/setBuiltInCompiler";
 
 /**
  * Tmp file name used for compilation. Must be in the same directory as the
@@ -251,12 +252,17 @@ export async function compile(
                 useBuiltInCompiler = true;
             } else {
                 const response = await showErrorWithActions(
-                    `Failed to run '${sslSettings.compilePath}'! Use built-in compiler this time?`,
-                    { title: "Yes", id: "yes" },
-                    { title: "No", id: "no" },
+                    `Failed to run '${sslSettings.compilePath}'! Switch to built-in compiler?`,
+                    { title: "Switch", id: "switch" },
+                    { title: "Cancel", id: "cancel" },
                 );
-                if (response?.id === "yes") {
+                if (response?.id === "switch") {
                     useBuiltInCompiler = true;
+                    try {
+                        await getConnection().sendRequest(REQUEST_setBuiltInCompiler, { uri });
+                    } catch (err) {
+                        conlog(`Failed to persist built-in compiler switch: ${err}`);
+                    }
                 } else {
                     return;
                 }

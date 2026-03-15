@@ -23,11 +23,13 @@ const mockShowInfo = vi.fn();
 const mockShowError = vi.fn();
 const mockShowErrorWithActions = vi.fn();
 const mockSendDiagnostics = vi.fn();
+const mockSendRequest = vi.fn();
 
 vi.mock("../../src/lsp-connection", () => ({
     getConnection: () => ({
         console: { log: vi.fn() },
         sendDiagnostics: mockSendDiagnostics,
+        sendRequest: (...args: unknown[]) => mockSendRequest(...args),
         window: {
             showInformationMessage: mockShowInfo,
             showErrorMessage: mockShowError,
@@ -70,6 +72,7 @@ describe("fallout-ssl compiler", () => {
         mockWriteFile.mockResolvedValue(undefined);
         mockUnlink.mockResolvedValue(undefined);
         mockBuiltinCompiler.mockResolvedValue({ stdout: "", returnCode: 0 });
+        mockSendRequest.mockResolvedValue(true);
     });
 
     const baseSettings: SSLsettings = {
@@ -435,11 +438,20 @@ describe("fallout-ssl compiler", () => {
                     (lastArg as (err: Error) => void)(new Error("not found"));
                 }
             });
-            mockShowErrorWithActions.mockResolvedValue({ id: "yes" });
+            mockShowErrorWithActions.mockResolvedValue({ id: "switch" });
 
             await compile("file:///project/test.ssl", externalSettings, true, "code");
 
+            expect(mockShowErrorWithActions).toHaveBeenCalledWith(
+                "Failed to run 'compile'! Switch to built-in compiler?",
+                { title: "Switch", id: "switch" },
+                { title: "Cancel", id: "cancel" },
+            );
             expect(mockBuiltinCompiler).toHaveBeenCalled();
+            expect(mockSendRequest).toHaveBeenCalledWith(
+                "bgforge-mls/setBuiltInCompiler",
+                { uri: "file:///project/test.ssl" }
+            );
         });
 
         it("falls back to built-in without prompting during non-interactive validation", async () => {
@@ -463,7 +475,7 @@ describe("fallout-ssl compiler", () => {
                     (lastArg as (err: Error) => void)(new Error("not found"));
                 }
             });
-            mockShowErrorWithActions.mockResolvedValue({ id: "no" });
+            mockShowErrorWithActions.mockResolvedValue({ id: "cancel" });
 
             await compile("file:///project/test.ssl", externalSettings, true, "code");
 

@@ -2,7 +2,7 @@
 
 import * as path from "path";
 import * as vscode from "vscode";
-import { ExtensionContext, workspace } from "vscode";
+import { ConfigurationTarget, ExtensionContext, workspace } from "vscode";
 import {
     LanguageClient,
     LanguageClientOptions,
@@ -21,6 +21,7 @@ const loadingIndicator = new ServerInitializingIndicator(() => {
     conlog("loading start");
 });
 const cmd_compile = "extension.bgforge.compile";
+const request_setBuiltInCompiler = "bgforge-mls/setBuiltInCompiler";
 
 export async function activate(context: ExtensionContext) {
     // The server is implemented in node
@@ -84,6 +85,16 @@ export async function activate(context: ExtensionContext) {
     // Start the client. This will also launch the server
     await client.start();
     conlog("BGforge MLS client started");
+
+    client.onRequest(request_setBuiltInCompiler, async (params: { uri?: string }) => {
+        const resource = params.uri ? vscode.Uri.parse(params.uri) : undefined;
+        const configuration = workspace.getConfiguration("bgforge", resource);
+        const target = resource && workspace.getWorkspaceFolder(resource)
+            ? ConfigurationTarget.WorkspaceFolder
+            : ConfigurationTarget.Global;
+        await configuration.update("falloutSSL.compilePath", "", target);
+        return true;
+    });
 
     // Register dialog tree views
     registerDialogTree(context, client);
