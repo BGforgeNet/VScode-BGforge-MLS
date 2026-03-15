@@ -18,14 +18,10 @@
     "typescript.tsc.autoDetect": "off",
     "npm.packageManager": "pnpm",
     "npm.exclude": ["**/client", "**/server"],
-    "python.analysis.extraPaths": ["./scripts"],
     "editor.defaultFormatter": "oxc.oxc-vscode",
     "editor.formatOnSave": false,
     "editor.codeActionsOnSave": {
         "source.fixAll.oxc": "always"
-    },
-    "[python]": {
-        "editor.defaultFormatter": "ms-python.black-formatter"
     },
     "[typescript]": {
         "editor.defaultFormatter": "vscode.typescript-language-features"
