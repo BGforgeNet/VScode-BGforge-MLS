@@ -64,7 +64,9 @@ OUTER_SET pip_limit = 10
             expect(result?.name).toBe("pip_limit");
             expect(result?.hover).toBeDefined();
 
-            const hoverValue = (result?.hover?.contents as { value: string }).value;
+            const contents = result?.hover?.contents;
+            expect(contents).toBeDefined();
+            const hoverValue = (contents as { value: string }).value;
             expect(hoverValue).toContain("pip_limit");
         });
 
@@ -106,7 +108,9 @@ DEFINE_ACTION_FUNCTION my_func BEGIN END
 
             expect(result).toBeDefined();
             // Should have "Local version" in hover, not any indexed version
-            const hoverValue = (result?.hover?.contents as { value: string }).value;
+            const contents = result?.hover?.contents;
+            expect(contents).toBeDefined();
+            const hoverValue = (contents as { value: string }).value;
             expect(hoverValue).toContain("Local version");
         });
 
@@ -145,7 +149,9 @@ OUTER_SET documented_var = 100
             const result = weiduTp2Provider.resolveSymbol?.("documented_var", text, uri);
 
             expect(result?.hover).toBeDefined();
-            const hoverValue = (result?.hover?.contents as { value: string }).value;
+            const contents = result?.hover?.contents;
+            expect(contents).toBeDefined();
+            const hoverValue = (contents as { value: string }).value;
             expect(hoverValue).toContain("documented variable");
         });
 
@@ -155,7 +161,9 @@ OUTER_SET documented_var = 100
             const result = weiduTp2Provider.resolveSymbol?.("my_string", text, uri);
 
             expect(result?.hover).toBeDefined();
-            const hoverValue = (result?.hover?.contents as { value: string }).value;
+            const contents = result?.hover?.contents;
+            expect(contents).toBeDefined();
+            const hoverValue = (contents as { value: string }).value;
             expect(hoverValue).toContain("my_string");
         });
     });

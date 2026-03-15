@@ -9,7 +9,7 @@ See also: [CONTRIBUTING.md](../CONTRIBUTING.md) | [docs/architecture.md](../docs
 | `pnpm build`         | Build client, server, webviews, TS plugin, CLIs       |
 | `pnpm build:all`     | Build everything including tree-sitter grammars       |
 | `pnpm test`          | Run all tests including integration (see `test.sh`)   |
-| `pnpm test:e2e`      | E2E tests (requires `pnpm build` first)               |
+| `pnpm test:e2e`      | E2E tests (requires `pnpm build` first and host Electron libraries) |
 | `pnpm test:grammars` | Grammar tests (generate, lint, corpus, parse, format) |
 | `pnpm package`       | Create VSIX package                                   |
 
@@ -20,8 +20,7 @@ See also: [CONTRIBUTING.md](../CONTRIBUTING.md) | [docs/architecture.md](../docs
 ### Excluded from `pnpm test`
 
 - **Grammars** (`pnpm test:grammars`) -- slow. Run separately.
-- **E2E** (`pnpm test:e2e`) -- requires a built extension and a VSCode instance.
-- **Format samples** are partially covered via TD/TBAF sample tests. Full format sample tests: `pnpm test:format-samples`.
+- **E2E** (`pnpm test:e2e`) -- requires a built extension, a VSCode instance, and host Electron libraries.
 
 ### Excluded from `server/pnpm test:unit`
 
@@ -46,9 +45,6 @@ bash server/test/td/typecheck-samples.sh   # Type-check .td samples
 # Single grammar
 cd grammars/weidu-tp2 && pnpm test         # Test one grammar (any grammars/*/)
 
-# Format samples
-pnpm test:format-samples                   # Format comparison + idempotency
-
 # CLI tests
 pnpm test:cli                              # Exit codes and diff output
 ```
@@ -57,10 +53,9 @@ pnpm test:cli                              # Exit codes and diff output
 
 | Script                   | Description                                                                                                                                                                                     |
 | ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `test.sh`                | Main test suite run by `pnpm test`. Typechecks client/server/CLI, runs ESLint, server unit tests, client tests, TD/TBAF sample tests, formatting checks, CLI tests, binary parser tests, integration tests, and knip. |
+| `test.sh`                | Main test suite run by `pnpm test`. Typechecks client/server/CLI, runs Oxlint, server unit tests, client tests, TD/TBAF sample tests, formatting checks, CLI tests, binary parser tests, integration tests, and knip. |
 | `test-grammars.sh`       | Run all grammar test suites (calls `test-grammar.sh` per grammar).                                                                                                                              |
 | `test-grammar.sh`        | Test a single grammar (generate, lint, corpus, highlight, parse, format, compare, idempotency).                                                                                                 |
-| `test-format-samples.sh` | Format comparison and idempotency tests.                                                                                                                                                        |
 | `test-bin.sh`            | Binary parser tests.                                                                                                                                                                            |
 | `test-external.sh`       | Clone external repos and run format/idempotency tests against them. Also provides fixtures for integration tests.                                                                               |
 | `test-e2e.sh`            | E2E test runner.                                                                                                                                                                                |
@@ -87,7 +82,6 @@ pnpm test:cli                              # Exit codes and diff output
 | `grammar-test-lib.sh`    | Shared helpers for grammar tests.                                                                                                                                                               |
 | `preview-highlight.sh`   | Preview tree-sitter highlight output for a grammar's files. Usage: `preview-highlight.sh <grammar-name> [file]`.                                                                                |
 | `syntaxes-to-json.sh`    | Convert TextMate grammars from YAML to JSON.                                                                                                                                                    |
-| `format-samples.sh`      | Run formatter on sample files.                                                                                                                                                                  |
 | `lint-cli.sh`            | Lint CLI source files.                                                                                                                                                                          |
 | `lint-scripts.sh`        | Lint script utility source files.                                                                                                                                                               |
 | `lint-shell.sh`          | Lint shell scripts (shellcheck).                                                                                                                                                                |

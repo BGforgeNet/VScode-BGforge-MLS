@@ -11,7 +11,7 @@
  */
 
 import { CompletionItemKind, type CompletionItem, type Command } from "vscode-languageserver/node";
-import { JSDOC_PARAM_TAGS, JSDOC_RETURN_TAGS, JSDOC_STANDALONE_TAGS } from "./jsdoc-types";
+import { ALL_JSDOC_TAG_NAMES, JSDOC_PARAM_TAGS, JSDOC_RETURN_TAGS, JSDOC_STANDALONE_TAGS } from "./jsdoc-types";
 
 /** Minimal type metadata needed for completion. */
 interface TypeMeta {
@@ -32,10 +32,10 @@ export enum JsdocPositionKind {
 const RETRIGGER_CMD: Command = { title: "", command: "editor.action.triggerSuggest" };
 
 /** Tags that expect a type/name argument after them (insert trailing space + re-trigger). */
-const TAGS_WITH_TYPE = new Set([
+const TAGS_WITH_TYPE: ReadonlySet<string> = new Set([
     ...JSDOC_PARAM_TAGS,
     ...JSDOC_RETURN_TAGS,
-    "type",
+    JSDOC_STANDALONE_TAGS[0],
 ]);
 
 /** Detail strings for each tag group. First entry is the primary description, rest are aliases. */
@@ -45,8 +45,8 @@ const TAG_DETAILS: ReadonlyMap<string, string> = new Map([
     // Return tags
     ...JSDOC_RETURN_TAGS.map((t, i) => [t, i === 0 ? "Return type" : `Return type (alias for @${JSDOC_RETURN_TAGS[0]})`] as const),
     // Standalone tags
-    ["type", "Variable type"],
-    ["deprecated", "Mark as deprecated"],
+    [JSDOC_STANDALONE_TAGS[0], "Variable type"],
+    [JSDOC_STANDALONE_TAGS[1], "Mark as deprecated"],
 ]);
 
 /**
@@ -111,8 +111,7 @@ export function getJsdocCompletions(
  * Tags expecting a type insert trailing space + re-trigger.
  */
 function getJsdocTagCompletions(): CompletionItem[] {
-    const allTagNames = [...JSDOC_PARAM_TAGS, ...JSDOC_RETURN_TAGS, ...JSDOC_STANDALONE_TAGS];
-    return allTagNames.map((name) => {
+    return [...ALL_JSDOC_TAG_NAMES].map((name) => {
         const expectsType = TAGS_WITH_TYPE.has(name);
         const suffix = expectsType ? " " : "";
         return {

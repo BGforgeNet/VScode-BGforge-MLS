@@ -18,7 +18,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { parseArgs } from "node:util";
-import { LANGUAGES, collectKeywords, type LanguageDef } from "./language-defs";
+import { LANGUAGES, collectKeywords, type LanguageDef } from "./language-defs.ts";
 
 /** Convert space-separated extensions to semicolon-separated list. */
 function toExtensionList(ext: string): string {

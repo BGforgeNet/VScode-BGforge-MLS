@@ -27,9 +27,5 @@
     "test": "tree-sitter test",
     "lint": "oxlint grammar.js",
     "playground": "tree-sitter playground"
-  },
-  "devDependencies": {
-    "eslint": "^9.39.3",
-    "globals": "^16.5.0"
   }
 }

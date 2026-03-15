@@ -5,6 +5,7 @@
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 TS="$ROOT_DIR/node_modules/.bin/tree-sitter"
+OXLINT="$ROOT_DIR/node_modules/.bin/oxlint"
 GRAMMAR_DIR="$ROOT_DIR/grammars/$GRAMMAR_NAME"
 
 # shellcheck source=scripts/timing-lib.sh
@@ -22,8 +23,8 @@ grammar_generate() {
 }
 
 grammar_lint() {
-    step "$GRAMMAR_NAME: Running ESLint"
-    pnpm eslint grammar.js --max-warnings 0
+    step "$GRAMMAR_NAME: Running Oxlint"
+    "$OXLINT" grammar.js
 }
 
 grammar_corpus() {

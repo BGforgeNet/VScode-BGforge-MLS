@@ -10,7 +10,6 @@ import path from "path";
 import { describe, expect, it } from "vitest";
 import {
     ALL_JSDOC_TYPE_NAMES,
-    ALL_JSDOC_TAG_NAMES,
     CUSTOM_JSDOC_TYPE_NAMES,
     FALLOUT_JSDOC_TYPE_NAMES,
     JSDOC_PARAM_TAGS,
@@ -38,25 +37,17 @@ function extractTypesFromRegex(content: string, pattern: RegExp): string[] {
 
 describe("JSDoc type sync", () => {
     describe("docstring grammar matches canonical list", () => {
-        const content = readFileSync(
-            path.join(SYNTAXES_DIR, "bgforge-mls-docstring.tmLanguage.yml"),
-            "utf-8",
-        );
+        const content = readFileSync(path.join(SYNTAXES_DIR, "bgforge-mls-docstring.tmLanguage.yml"), "utf-8");
 
         it("type repository contains exactly ALL_JSDOC_TYPE_NAMES", () => {
             // The #type repository has a single regex: \b(array|any|...|string)\b
-            const typeRepoTypes = extractTypesFromRegex(
-                content,
-                /- match: \\b\(([^)]+)\)\\b/m,
-            );
+            const typeRepoTypes = extractTypesFromRegex(content, /- match: \\b\(([^)]+)\)\\b/m);
             expect(typeRepoTypes).toEqual([...ALL_JSDOC_TYPE_NAMES].sort());
         });
 
         it("brace-less param pattern contains exactly ALL_JSDOC_TYPE_NAMES", () => {
             // The brace-less @param pattern has types in a regex alternation
-            const paramLine = content
-                .split("\n")
-                .find((l) => l.includes("@arg|@param)\\s+(") && !l.includes("{"));
+            const paramLine = content.split("\n").find((l) => l.includes("@arg|@param)\\s+(") && !l.includes("{"));
             expect(paramLine).toBeDefined();
             const match = paramLine!.match(/\(([^)]+)\)\\s\+\(\\w\+\)/);
             expect(match).toBeTruthy();
@@ -69,16 +60,10 @@ describe("JSDoc type sync", () => {
             // must use the same type alternation as ALL_JSDOC_TYPE_NAMES.
             const retLines = content
                 .split("\n")
-                .filter(
-                    (l) =>
-                        l.includes("@ret|@return|@returns)\\s+(") &&
-                        !l.includes("{"),
-                );
+                .filter((l) => l.includes("@ret|@return|@returns)\\s+(") && !l.includes("{"));
             expect(retLines.length).toBeGreaterThanOrEqual(1);
             for (const retLine of retLines) {
-                const match = retLine.match(
-                    /\(@ret\|@return\|@returns\)\\s\+\(([^)]+)\)/,
-                );
+                const match = retLine.match(/\(@ret\|@return\|@returns\)\\s\+\(([^)]+)\)/);
                 expect(match).toBeTruthy();
                 const types = match![1].split("|").sort();
                 expect(types).toEqual([...ALL_JSDOC_TYPE_NAMES].sort());
@@ -101,14 +86,8 @@ describe("JSDoc type sync", () => {
     });
 
     describe("JSDoc tag sync", () => {
-        const content = readFileSync(
-            path.join(SYNTAXES_DIR, "bgforge-mls-docstring.tmLanguage.yml"),
-            "utf-8",
-        );
-        const parserContent = readFileSync(
-            path.resolve(__dirname, "../../src/shared/jsdoc.ts"),
-            "utf-8",
-        );
+        const content = readFileSync(path.join(SYNTAXES_DIR, "bgforge-mls-docstring.tmLanguage.yml"), "utf-8");
+        const parserContent = readFileSync(path.resolve(__dirname, "../../src/shared/jsdoc.ts"), "utf-8");
 
         it("grammar param patterns use exactly JSDOC_PARAM_TAGS", () => {
             // Grammar uses (@arg|@param) in match patterns
@@ -149,8 +128,7 @@ describe("JSDoc type sync", () => {
 
         it("parser return patterns use exactly JSDOC_RETURN_TAGS", () => {
             // Parser uses @(?:ret|return|returns) in regex patterns
-            const matches = [...parserContent.matchAll(/@\(\?:([\w|]+)\)\\s/g)]
-                .filter(m => m[1].includes("ret"));
+            const matches = [...parserContent.matchAll(/@\(\?:([\w|]+)\)\\s/g)].filter((m) => m[1].includes("ret"));
             expect(matches.length).toBeGreaterThan(0);
             const parserTags = matches[0][1].split("|").sort();
             expect(parserTags).toEqual([...JSDOC_RETURN_TAGS].sort());

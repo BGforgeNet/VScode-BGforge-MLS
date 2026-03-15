@@ -6,12 +6,14 @@
 
 set -e
 
+ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 mkdir -p server/out cli/format/out
 
+TREE_SITTER="$ROOT_DIR/node_modules/.bin/tree-sitter"
 for dir in fallout-ssl weidu-baf weidu-d weidu-tp2; do
     cd "grammars/$dir" || exit 1
-    pnpm exec tree-sitter generate
-    pnpm exec tree-sitter build --wasm
+    "$TREE_SITTER" generate
+    "$TREE_SITTER" build --wasm
     cp ./*.wasm ../../server/out/
     cp ./*.wasm ../../cli/format/out/
     cd ../.. || exit 1
@@ -32,6 +34,7 @@ done
 # Generate SyntaxType enums for all LSP grammars
 for dir in fallout-ssl weidu-baf weidu-d weidu-tp2; do
     cd "grammars/$dir" || exit 1
-    pnpm run generate:types
+    ./node_modules/.bin/dts-tree-sitter . > src/tree-sitter.d.ts
+    cp src/tree-sitter.d.ts "../../server/src/$dir/tree-sitter.d.ts"
     cd ../.. || exit 1
 done

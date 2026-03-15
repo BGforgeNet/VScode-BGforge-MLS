@@ -14,7 +14,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { parseArgs } from "node:util";
-import { LANGUAGES, collectKeywords, escapeXml, type LanguageDef } from "./language-defs";
+import { LANGUAGES, collectKeywords, escapeXml, type LanguageDef } from "./language-defs.ts";
 
 /**
  * Convert space-separated extensions to semicolon-separated glob patterns.
@@ -111,9 +111,9 @@ export function generateKshXml(lang: LanguageDef): string {
     const caseSensitive = lang.caseIgnored ? "false" : "true";
     const extensions = toExtensionGlobs(lang.ext);
 
-    const keywordItems = keywords.map((k) => `        <item>${escapeXml(k)}</item>`).join("\n");
-    const functionItems = functions.map((f) => `        <item>${escapeXml(f)}</item>`).join("\n");
-    const constantItems = constants.map((c) => `        <item>${escapeXml(c)}</item>`).join("\n");
+    const keywordItems = keywords.map((k: string) => `        <item>${escapeXml(k)}</item>`).join("\n");
+    const functionItems = functions.map((f: string) => `        <item>${escapeXml(f)}</item>`).join("\n");
+    const constantItems = constants.map((c: string) => `        <item>${escapeXml(c)}</item>`).join("\n");
 
     const stringParts = buildStringRules(lang.stringDelimiters);
     const foldingRules = buildFoldingRules(lang.foldingPairs);

@@ -1,11 +1,11 @@
 {
-    "jsPlugins": ["./.oxlint/oxlint-plugin-no-showmessage.ts"],
+    "jsPlugins": ["./.oxlint/oxlint-plugin-no-showmessage.mjs"],
     "rules": {
-        "correctness": "warn",
-        "suspicious": "warn",
-        "pedantic": "warn",
-        "perf": "warn",
-        "style": "warn"
+        "correctness": "error",
+        "suspicious": "error",
+        "pedantic": "error",
+        "perf": "error",
+        "style": "error"
     },
     "overrides": [
         {
@@ -26,7 +26,8 @@
             },
             "rules": {
                 "no-undef": "error",
-                "no-unused-vars": "off"
+                "no-unused-vars": "off",
+                "no-useless-escape": "off"
             }
         },
         {

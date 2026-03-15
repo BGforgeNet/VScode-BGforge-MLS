@@ -38,7 +38,9 @@ LAF my_function END
         expect(symbol?.hover?.contents).toHaveProperty("kind", MarkupKind.Markdown);
         expect(symbol?.hover?.contents).toHaveProperty("value");
 
-        const value = (symbol?.hover?.contents as { kind: string; value: string }).value;
+        const contents = symbol?.hover?.contents;
+        expect(contents).toBeDefined();
+        const value = (contents as { kind: string; value: string }).value;
         expect(value).toContain("pip_limit");
         // Non-UPPERCASE variables should NOT show value
         expect(value).not.toContain("= 10");
@@ -56,7 +58,9 @@ OUTER_SET my_var = 42
         expect(symbol?.hover).toBeDefined();
         expect(symbol?.hover?.contents).toHaveProperty("kind", MarkupKind.Markdown);
 
-        const value = (symbol?.hover?.contents as { kind: string; value: string }).value;
+        const contents = symbol?.hover?.contents;
+        expect(contents).toBeDefined();
+        const value = (contents as { kind: string; value: string }).value;
         expect(value).toContain("my_var");
         // Non-UPPERCASE variables should NOT show value
         expect(value).not.toContain("= 42");
@@ -73,7 +77,9 @@ OUTER_SPRINT my_string ~hello world~
 
         expect(symbol).toBeDefined();
         expect(symbol?.hover).toBeDefined();
-        const value = (symbol?.hover?.contents as { kind: string; value: string }).value;
+        const contents = symbol?.hover?.contents;
+        expect(contents).toBeDefined();
+        const value = (contents as { kind: string; value: string }).value;
         expect(value).toContain("my_string");
         // Non-UPPERCASE variables should NOT show value
         expect(value).not.toContain("hello world");
@@ -104,7 +110,9 @@ OUTER_SET documented_var = 100
 
         expect(symbol).toBeDefined();
         expect(symbol?.hover).toBeDefined();
-        const value = (symbol?.hover?.contents as { kind: string; value: string }).value;
+        const contents = symbol?.hover?.contents;
+        expect(contents).toBeDefined();
+        const value = (contents as { kind: string; value: string }).value;
         expect(value).toContain("documented_var");
         expect(value).toContain("detailed description");
     });
@@ -119,7 +127,9 @@ OUTER_TEXT_SPRINT text_var ~some text~
 
         expect(symbol).toBeDefined();
         expect(symbol?.hover).toBeDefined();
-        const value = (symbol?.hover?.contents as { kind: string; value: string }).value;
+        const contents = symbol?.hover?.contents;
+        expect(contents).toBeDefined();
+        const value = (contents as { kind: string; value: string }).value;
         expect(value).toContain("text_var");
     });
 
@@ -137,7 +147,9 @@ OUTER_SET count = 2
 
         expect(symbol).toBeDefined();
         expect(symbol?.hover).toBeDefined();
-        const value = (symbol?.hover?.contents as { kind: string; value: string }).value;
+        const contents = symbol?.hover?.contents;
+        expect(contents).toBeDefined();
+        const value = (contents as { kind: string; value: string }).value;
         // Non-UPPERCASE variables should NOT show value
         expect(value).not.toContain("= 1");
         expect(value).toContain("First definition");
@@ -153,7 +165,9 @@ OUTER_SET MAX_LEVEL = 40
 
         expect(symbol).toBeDefined();
         expect(symbol?.hover).toBeDefined();
-        const value = (symbol?.hover?.contents as { kind: string; value: string }).value;
+        const contents = symbol?.hover?.contents;
+        expect(contents).toBeDefined();
+        const value = (contents as { kind: string; value: string }).value;
         // UPPERCASE constants SHOULD show value
         expect(value).toContain("int MAX_LEVEL = 40");
     });
@@ -168,7 +182,9 @@ OUTER_TEXT_SPRINT MOD_FOLDER ~mymod~
 
         expect(symbol).toBeDefined();
         expect(symbol?.hover).toBeDefined();
-        const value = (symbol?.hover?.contents as { kind: string; value: string }).value;
+        const contents = symbol?.hover?.contents;
+        expect(contents).toBeDefined();
+        const value = (contents as { kind: string; value: string }).value;
         // First word uppercase → constant, SHOULD show value
         expect(value).toContain("MOD_FOLDER = ~mymod~");
     });
@@ -183,7 +199,9 @@ OUTER_TEXT_SPRINT MOD_folder ~mymod~
 
         expect(symbol).toBeDefined();
         expect(symbol?.hover).toBeDefined();
-        const value = (symbol?.hover?.contents as { kind: string; value: string }).value;
+        const contents = symbol?.hover?.contents;
+        expect(contents).toBeDefined();
+        const value = (contents as { kind: string; value: string }).value;
         // First word "MOD" is uppercase → constant, SHOULD show value
         expect(value).toContain("MOD_folder = ~mymod~");
     });
@@ -198,7 +216,9 @@ OUTER_SET Max_Level = 40
 
         expect(symbol).toBeDefined();
         expect(symbol?.hover).toBeDefined();
-        const value = (symbol?.hover?.contents as { kind: string; value: string }).value;
+        const contents = symbol?.hover?.contents;
+        expect(contents).toBeDefined();
+        const value = (contents as { kind: string; value: string }).value;
         // First word "Max" is mixed case → NOT constant
         expect(value).not.toContain("= 40");
     });
@@ -214,7 +234,9 @@ OUTER_SET local_var = 123
 
         expect(symbol).toBeDefined();
         expect(symbol?.hover).toBeDefined();
-        const value = (symbol?.hover?.contents as { kind: string; value: string }).value;
+        const contents = symbol?.hover?.contents;
+        expect(contents).toBeDefined();
+        const value = (contents as { kind: string; value: string }).value;
 
         // Should contain the variable info
         expect(value).toContain("local_var");

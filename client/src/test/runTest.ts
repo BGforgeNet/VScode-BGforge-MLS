@@ -14,10 +14,17 @@ async function main() {
 
         // The path to test runner
         // Passed to --extensionTestsPath
-        const extensionTestsPath = path.resolve(__dirname, "./index");
+        const extensionTestsPath = path.resolve(__dirname, "./index.js");
+        const workspacePath = process.env["CODE_TESTS_WORKSPACE"];
+        const launchArgs = [
+            ...(workspacePath ? [workspacePath] : []),
+            "--disable-gpu",
+            "--disable-dev-shm-usage",
+            "--ozone-platform=headless",
+        ];
 
         // Download VS Code, unzip it and run the integration test
-        await runTests({ extensionDevelopmentPath, extensionTestsPath });
+        await runTests({ extensionDevelopmentPath, extensionTestsPath, launchArgs });
     } catch (err) {
         console.error(`Failed to run tests: ${err}`);
         process.exit(1);

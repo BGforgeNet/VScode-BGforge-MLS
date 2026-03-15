@@ -4,7 +4,7 @@
  * Coverage uses an allowlist approach: only directories/files that are
  * unit-testable without tree-sitter WASM or ts-morph project initialization.
  * Parser-dependent code (providers, formatters, transpiler pipelines) is
- * covered by grammar corpus tests, format sample tests, and e2e tests.
+ * covered by grammar corpus tests and e2e tests.
  */
 
 import { defineConfig } from "vitest/config";
@@ -65,7 +65,7 @@ export default defineConfig({
             exclude: [
                 "src/**/*.d.ts",
                 "src/**/tree-sitter.d.ts",
-                // Format sub-modules tested by pnpm test:format-samples, not unit tests
+                // Format sub-modules tested by grammar tests, not unit tests
                 "src/weidu-tp2/format/**/*.ts",
                 // Provider needs full parser init, tested via e2e
                 "src/weidu-tp2/provider.ts",

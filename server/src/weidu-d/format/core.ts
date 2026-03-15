@@ -145,12 +145,7 @@ function getChildOffset(parent: SyntaxNode, child: SyntaxNode): number {
 }
 
 // Format a single-line transition using AST for break points
-function formatTransitionLine(
-    node: SyntaxNode,
-    indent: string,
-    innerIndent: string,
-    limit: number,
-): string {
+function formatTransitionLine(node: SyntaxNode, indent: string, innerIndent: string, limit: number): string {
     const normalized = normalizeTransitionText(node.text);
     const line = withNormalizedComment(indent + normalized);
 
@@ -202,12 +197,7 @@ function formatTransitionLine(
 }
 
 // Format a transition node, handling multi-line strings with simple indentation
-function formatTransitionNode(
-    node: SyntaxNode,
-    indent: string,
-    innerIndent: string,
-    limit: number,
-): string {
+function formatTransitionNode(node: SyntaxNode, indent: string, innerIndent: string, limit: number): string {
     const text = node.text;
 
     // Single-line transition - use AST-based formatting
@@ -235,7 +225,7 @@ function reindentState(node: SyntaxNode, ctx: FormatContext): string {
 
     // Build map of extra indent per line by walking AST
     // Any line that continues a multi-line node from previous line gets +1
-    const extraIndent: number[] = new Array(lines.length).fill(0);
+    const extraIndent: number[] = Array.from<number>({ length: lines.length }).fill(0);
     // END is the last non-blank line of a state
     let endKeywordLine = lines.length - 1;
     while (endKeywordLine > 0 && !lines[endKeywordLine]?.trim()) {
@@ -395,11 +385,7 @@ function getActionHeader(node: SyntaxNode): string {
 }
 
 // Iterate children with blank line preservation, calling handler for each
-function forEachChild(
-    node: SyntaxNode,
-    lines: string[],
-    handler: (_child: SyntaxNode) => string | null,
-): void {
+function forEachChild(node: SyntaxNode, lines: string[], handler: (_child: SyntaxNode) => string | null): void {
     let lastEndRow = node.startPosition.row;
     for (const child of node.children) {
         if (child.startPosition.row > lastEndRow + 1) {

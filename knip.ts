@@ -1,5 +1,7 @@
 import type { KnipConfig } from "knip";
 
+const isProductionKnip = process.argv.includes("--production");
+
 const config: KnipConfig = {
     rules: {
         types: "error",
@@ -25,14 +27,13 @@ const config: KnipConfig = {
             // Entry resolved from package.json "main" field (src/server.ts).
             // No explicit entry needed here.
             // vitest.smoke.config.ts is a separate config run by scripts/test.sh, not imported.
-            // vitest.integration.config.ts + test/integration/ are integration tests run via pnpm test:integration.
             ignore: [
                 "**/*.d.ts",
                 "vitest.smoke.config.ts",
-                "vitest.integration.config.ts",
-                "test/integration/**",
                 // Created at runtime by enum-transform.test.ts, may exist during parallel Knip runs
-                "test/tmp-bundle-test/**",
+                ...(isProductionKnip
+                    ? ["vitest.integration.config.ts", "test/integration/**", "test/tmp-bundle-test/**"]
+                    : []),
             ],
         },
         "plugins/tssl-plugin": {

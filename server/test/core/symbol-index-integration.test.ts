@@ -9,20 +9,9 @@
 import { describe, expect, it, beforeAll } from "vitest";
 import * as path from "path";
 import * as fs from "fs";
-import {
-    type CompletionItem,
-    CompletionItemKind,
-    type Hover,
-    type MarkupContent,
-} from "vscode-languageserver/node";
+import { type CompletionItem, CompletionItemKind, type Hover, type MarkupContent } from "vscode-languageserver/node";
 import { Symbols } from "../../src/core/symbol-index";
-import {
-    type Symbol,
-    SymbolKind,
-    ScopeLevel,
-    SourceType,
-    symbolKindToCompletionKind,
-} from "../../src/core/symbol";
+import { type Symbol, SymbolKind, ScopeLevel, SourceType } from "../../src/core/symbol";
 
 // Path to generated JSON files (server/out/)
 const OUT_DIR = path.join(__dirname, "../../out");
@@ -72,7 +61,7 @@ function completionToSymbol(item: CompletionItem & { category?: string }): Symbo
     return {
         name,
         kind,
-        location: null,  // Static symbols have no source file
+        location: null, // Static symbols have no source file
         scope: { level: ScopeLevel.Global },
         source: { type: SourceType.Static, uri: null },
         completion: {
@@ -107,7 +96,7 @@ describe("Symbols integration", () => {
 
             // Convert old completion items to symbols and load into index
             symbols = new Symbols();
-            const convertedSymbols = oldCompletions.map(item => completionToSymbol(item));
+            const convertedSymbols = oldCompletions.map((item) => completionToSymbol(item));
             symbols.loadStatic(convertedSymbols);
         });
 
@@ -118,8 +107,8 @@ describe("Symbols integration", () => {
 
         it("should have matching completion labels", () => {
             const newCompletions = symbols.query({});
-            const oldLabels = new Set(oldCompletions.map(c => c.label));
-            const newLabels = new Set(newCompletions.map(s => s.name));
+            const oldLabels = new Set(oldCompletions.map((c) => c.label));
+            const newLabels = new Set(newCompletions.map((s) => s.name));
 
             // Check that all old labels exist in new
             for (const label of oldLabels) {
@@ -134,7 +123,7 @@ describe("Symbols integration", () => {
 
         it("should have matching completion kinds", () => {
             const newCompletions = symbols.query({});
-            const newByLabel = new Map(newCompletions.map(s => [s.name, s]));
+            const newByLabel = new Map(newCompletions.map((s) => [s.name, s]));
 
             for (const oldItem of oldCompletions) {
                 const newSymbol = newByLabel.get(oldItem.label);
@@ -205,8 +194,10 @@ describe("Symbols integration", () => {
 
             // Load actual data if available, otherwise skip
             if (dataFilesExist) {
-                const completions = JSON.parse(fs.readFileSync(completionFile, "utf-8")) as (CompletionItem & { category?: string })[];
-                const convertedSymbols = completions.map(item => completionToSymbol(item));
+                const completions = JSON.parse(fs.readFileSync(completionFile, "utf-8")) as (CompletionItem & {
+                    category?: string;
+                })[];
+                const convertedSymbols = completions.map((item) => completionToSymbol(item));
                 symbols.loadStatic(convertedSymbols);
             }
         });

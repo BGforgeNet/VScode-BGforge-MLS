@@ -13,7 +13,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { parseArgs } from "node:util";
-import { LANGUAGES, collectKeywords, escapeXml, type LanguageDef } from "./language-defs";
+import { LANGUAGES, collectKeywords, escapeXml, type LanguageDef } from "./language-defs.ts";
 
 // -- XML generation --
 
@@ -63,8 +63,8 @@ export function generateUdlXml(lang: LanguageDef): string {
     const { keywords, functions, constants } = collectKeywords(lang.yamlFiles);
     const caseFlag = lang.caseIgnored ? "yes" : "no";
 
-    const foldOpen = lang.foldingPairs.map(([o]) => escapeXml(o)).join(" ");
-    const foldClose = lang.foldingPairs.map(([, c]) => escapeXml(c)).join(" ");
+    const foldOpen = lang.foldingPairs.map(([o]: readonly [string, string]) => escapeXml(o)).join(" ");
+    const foldClose = lang.foldingPairs.map(([, c]: readonly [string, string]) => escapeXml(c)).join(" ");
 
     return `<?xml version="1.0" encoding="UTF-8" ?>
 <NotepadPlus>

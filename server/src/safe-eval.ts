@@ -169,7 +169,7 @@ function tokenize(expr: string): readonly Token[] {
         // Anything else is unsupported (identifiers, strings, etc.)
         throw new Error(
             `Unsupported character '${ch}' at position ${i} in expression "${expr}". ` +
-            `Only numbers, arithmetic, comparisons, and boolean operators are allowed.`
+                `Only numbers, arithmetic, comparisons, and boolean operators are allowed.`,
         );
     }
 
@@ -312,7 +312,7 @@ class Parser {
     private unary(): number | boolean {
         if (this.current().type === TokenType.Not) {
             this.advance();
-            return !Boolean(this.unary());
+            return !this.unary();
         }
         if (this.current().type === TokenType.Minus) {
             this.advance();

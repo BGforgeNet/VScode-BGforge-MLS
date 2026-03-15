@@ -6,6 +6,6 @@ set -e
 esbuild ./cli/bin/src/cli.ts \
   --bundle \
   --outfile=cli/bin/out/bin-cli.js \
-  --format=cjs \
+  --format=esm \
   --platform=node \
   --sourcemap

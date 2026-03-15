@@ -33,7 +33,7 @@ parallel \
     "Typecheck CLI" "pnpm exec tsc --project cli/tsconfig.json" \
     "Oxlint" "pnpm exec oxlint" \
     "Lint scripts" "pnpm lint:scripts" \
-    "Format check" "(cd client && pnpm exec oxfmt --check 'src/**/*.css' 'src/**/*.html')" \
+    "Format check" "(cd client && pnpm exec oxfmt --check src)" \
     "Server unit tests + coverage" "(cd server && pnpm exec vitest run --coverage)" \
     "Client unit tests" "vitest run --config client/vitest.config.ts" \
     "Plugin unit tests" "vitest run --config plugins/tssl-plugin/vitest.config.ts && vitest run --config plugins/td-plugin/vitest.config.ts" \

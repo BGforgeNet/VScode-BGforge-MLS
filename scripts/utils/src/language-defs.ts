@@ -3,7 +3,7 @@
  * Contains language metadata and keyword collection from YAML data files.
  */
 
-import { loadData } from "./generate-data";
+import { loadData } from "./generate-data.ts";
 
 // -- Types --
 

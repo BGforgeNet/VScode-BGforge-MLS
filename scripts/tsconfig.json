@@ -6,9 +6,10 @@
     "compilerOptions": {
         "target": "es2022",
         "lib": ["es2022"],
-        "module": "commonjs",
-        "moduleResolution": "node",
+        "module": "NodeNext",
+        "moduleResolution": "NodeNext",
         "esModuleInterop": true,
+        "allowImportingTsExtensions": true,
         "strict": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
@@ -26,9 +27,7 @@
         "fallout-update/src",
         "fallout-update/test",
         "utils/src",
-        "utils/test",
-        "../server/src/shared/tooltip-table.ts",
-        "../server/src/shared/weidu-types.ts"
+        "utils/test"
     ],
     "exclude": ["node_modules", "out"]
 }

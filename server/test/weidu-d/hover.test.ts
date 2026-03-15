@@ -36,7 +36,9 @@ describe("weidu-d/hover", () => {
         expect(result.handled).toBe(true);
         if (result.handled) {
             expect(result.hover).not.toBeNull();
-            const value = (result.hover?.contents as { value: string }).value;
+            const contents = result.hover?.contents;
+            expect(contents).toBeDefined();
+            const value = (contents as { value: string }).value;
             expect(value).toContain("greeting");
             expect(value).toContain("Greeting state");
         }
@@ -64,19 +66,15 @@ describe("weidu-d/hover", () => {
         expect(result.handled).toBe(true);
         if (result.handled) {
             expect(result.hover).not.toBeNull();
-            const value = (result.hover?.contents as { value: string }).value;
+            const contents = result.hover?.contents;
+            expect(contents).toBeDefined();
+            const value = (contents as { value: string }).value;
             expect(value).toContain("Greeting state");
         }
     });
 
     it("returns notHandled when no JSDoc exists", () => {
-        const text = [
-            "BEGIN ~DIALOG~",
-            "",
-            "IF ~~ THEN BEGIN bare_state",
-            "    SAY ~Hello~",
-            "END",
-        ].join("\n");
+        const text = ["BEGIN ~DIALOG~", "", "IF ~~ THEN BEGIN bare_state", "    SAY ~Hello~", "END"].join("\n");
 
         // Cursor on "bare_state" (line 2, char 20)
         const result = getStateLabelHover(text, "bare_state", URI, { line: 2, character: 20 });
@@ -85,13 +83,7 @@ describe("weidu-d/hover", () => {
     });
 
     it("returns notHandled for non-state symbols", () => {
-        const text = [
-            "BEGIN ~DIALOG~",
-            "",
-            "IF ~~ THEN BEGIN s1",
-            "    SAY ~Hello~",
-            "END",
-        ].join("\n");
+        const text = ["BEGIN ~DIALOG~", "", "IF ~~ THEN BEGIN s1", "    SAY ~Hello~", "END"].join("\n");
 
         // Cursor on SAY keyword — not a state label
         const result = getStateLabelHover(text, "SAY", URI, { line: 3, character: 5 });
@@ -120,7 +112,9 @@ describe("weidu-d/hover", () => {
         const resultA = getStateLabelHover(text, "shared", URI, { line: 3, character: 20 });
         expect(resultA.handled).toBe(true);
         if (resultA.handled) {
-            const value = (resultA.hover?.contents as { value: string }).value;
+            const contents = resultA.hover?.contents;
+            expect(contents).toBeDefined();
+            const value = (contents as { value: string }).value;
             expect(value).toContain("State in dialog A");
         }
 
@@ -128,7 +122,9 @@ describe("weidu-d/hover", () => {
         const resultB = getStateLabelHover(text, "shared", URI, { line: 10, character: 20 });
         expect(resultB.handled).toBe(true);
         if (resultB.handled) {
-            const value = (resultB.hover?.contents as { value: string }).value;
+            const contents = resultB.hover?.contents;
+            expect(contents).toBeDefined();
+            const value = (contents as { value: string }).value;
             expect(value).toContain("State in dialog B");
         }
     });

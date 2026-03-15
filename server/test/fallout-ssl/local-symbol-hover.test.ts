@@ -34,7 +34,9 @@ end
         expect(symbol?.hover).toBeDefined();
         expect(symbol?.hover?.contents).toHaveProperty("kind", MarkupKind.Markdown);
 
-        const value = (symbol?.hover?.contents as { kind: string; value: string }).value;
+        const contents = symbol?.hover?.contents;
+        expect(contents).toBeDefined();
+        const value = (contents as { kind: string; value: string }).value;
         expect(value).toContain("my_proc");
 
         // Should NOT contain file path or bgforge-mls-comment block with path
@@ -54,7 +56,9 @@ end
         expect(symbol?.hover).toBeDefined();
         expect(symbol?.hover?.contents).toHaveProperty("kind", MarkupKind.Markdown);
 
-        const value = (symbol?.hover?.contents as { kind: string; value: string }).value;
+        const contents = symbol?.hover?.contents;
+        expect(contents).toBeDefined();
+        const value = (contents as { kind: string; value: string }).value;
         expect(value).toContain("MY_MACRO");
 
         // Should NOT contain file path or bgforge-mls-comment block with path
@@ -75,7 +79,9 @@ end
         expect(symbol).toBeDefined();
         expect(symbol?.hover).toBeDefined();
 
-        const value = (symbol?.hover?.contents as { kind: string; value: string }).value;
+        const contents = symbol?.hover?.contents;
+        expect(contents).toBeDefined();
+        const value = (contents as { kind: string; value: string }).value;
         // Constant macros show just the value, not "NAME = value"
         expect(value).toContain("100");
 
@@ -95,7 +101,9 @@ variable my_var := 42;
         expect(symbol).toBeDefined();
         expect(symbol?.hover).toBeDefined();
 
-        const value = (symbol?.hover?.contents as { kind: string; value: string }).value;
+        const contents = symbol?.hover?.contents;
+        expect(contents).toBeDefined();
+        const value = (contents as { kind: string; value: string }).value;
         expect(value).toContain("my_var");
 
         // Should NOT contain file path
@@ -112,7 +120,9 @@ variable my_var := 42;
         const symbol = lookupLocalSymbol("my_var", text, uri);
 
         expect(symbol).toBeDefined();
-        const value = (symbol?.hover?.contents as { kind: string; value: string }).value;
+        const contents = symbol?.hover?.contents;
+        expect(contents).toBeDefined();
+        const value = (contents as { kind: string; value: string }).value;
         // Should use fallout-ssl-tooltip language tag, not bare ```
         expect(value).toContain("```fallout-ssl-tooltip");
         expect(value).toContain("my_var");
@@ -128,7 +138,9 @@ end
         const symbol = lookupLocalSymbol("my_proc", text, uri);
 
         expect(symbol).toBeDefined();
-        const value = (symbol?.hover?.contents as { kind: string; value: string }).value;
+        const contents = symbol?.hover?.contents;
+        expect(contents).toBeDefined();
+        const value = (contents as { kind: string; value: string }).value;
         // Should use fallout-ssl-tooltip language tag
         expect(value).toContain("```fallout-ssl-tooltip");
         expect(value).toContain("my_proc");
@@ -151,7 +163,9 @@ end
         const symbol = lookupLocalSymbol("add", text, uri);
 
         expect(symbol).toBeDefined();
-        const value = (symbol?.hover?.contents as { kind: string; value: string }).value;
+        const contents = symbol?.hover?.contents;
+        expect(contents).toBeDefined();
+        const value = (contents as { kind: string; value: string }).value;
         expect(value).toContain("add");
         expect(value).toContain("sum");
     });
@@ -166,7 +180,9 @@ end
         const symbol = lookupLocalSymbol("test_defaults", text, uri);
 
         expect(symbol).toBeDefined();
-        const value = (symbol?.hover?.contents as { kind: string; value: string }).value;
+        const contents = symbol?.hover?.contents;
+        expect(contents).toBeDefined();
+        const value = (contents as { kind: string; value: string }).value;
         expect(value).toContain("x = 0");
         expect(value).toContain("z = 5");
     });
@@ -180,7 +196,25 @@ export variable my_export := 0;
         const symbol = lookupLocalSymbol("my_export", text, uri);
 
         expect(symbol).toBeDefined();
-        const value = (symbol?.hover?.contents as { kind: string; value: string }).value;
+        const contents = symbol?.hover?.contents;
+        expect(contents).toBeDefined();
+        const value = (contents as { kind: string; value: string }).value;
+        expect(value).toContain("my_export");
+        expect(value).toContain("export variable");
+    });
+
+    it("should include export variable description in hover", () => {
+        const text = `
+export variable my_export := 0;
+`;
+        const uri = "file:///test.ssl";
+        clearAllLocalSymbolsCache();
+        const symbol = lookupLocalSymbol("my_export", text, uri);
+
+        expect(symbol).toBeDefined();
+        const contents = symbol?.hover?.contents;
+        expect(contents).toBeDefined();
+        const value = (contents as { kind: string; value: string }).value;
         expect(value).toContain("my_export");
         expect(value).toContain("export variable");
     });
@@ -195,7 +229,42 @@ variable my_count := 0;
         const symbol = lookupLocalSymbol("my_count", text, uri);
 
         expect(symbol).toBeDefined();
-        const value = (symbol?.hover?.contents as { kind: string; value: string }).value;
+        const contents = symbol?.hover?.contents;
+        expect(contents).toBeDefined();
+        const value = (contents as { kind: string; value: string }).value;
+        expect(value).toContain("my_count");
+        expect(value).toContain("int");
+    });
+
+    it("should include export variable description in hover", () => {
+        const text = `
+export variable my_export := 0;
+`;
+        const uri = "file:///test.ssl";
+        clearAllLocalSymbolsCache();
+        const symbol = lookupLocalSymbol("my_export", text, uri);
+
+        expect(symbol).toBeDefined();
+        const contents = symbol?.hover?.contents;
+        expect(contents).toBeDefined();
+        const value = (contents as { kind: string; value: string }).value;
+        expect(value).toContain("my_export");
+        expect(value).toContain("export variable");
+    });
+
+    it("should include JSDoc @type in variable hover", () => {
+        const text = `
+/** @type int */
+variable my_count := 0;
+`;
+        const uri = "file:///test.ssl";
+        clearAllLocalSymbolsCache();
+        const symbol = lookupLocalSymbol("my_count", text, uri);
+
+        expect(symbol).toBeDefined();
+        const contents = symbol?.hover?.contents;
+        expect(contents).toBeDefined();
+        const value = (contents as { kind: string; value: string }).value;
         expect(value).toContain("my_count");
         expect(value).toContain("int");
     });
@@ -213,7 +282,9 @@ variable kill_count := 0;
         const symbol = lookupLocalSymbol("kill_count", text, uri);
 
         expect(symbol).toBeDefined();
-        const value = (symbol?.hover?.contents as { kind: string; value: string }).value;
+        const contents = symbol?.hover?.contents;
+        expect(contents).toBeDefined();
+        const value = (contents as { kind: string; value: string }).value;
         expect(value).toContain("kill_count");
         expect(value).toContain("int");
         expect(value).toContain("Tracks the number of kills.");
@@ -229,7 +300,9 @@ variable score := 0;
         const symbol = lookupLocalSymbol("score", text, uri);
 
         expect(symbol).toBeDefined();
-        const value = (symbol?.hover?.contents as { kind: string; value: string }).value;
+        const contents = symbol?.hover?.contents;
+        expect(contents).toBeDefined();
+        const value = (contents as { kind: string; value: string }).value;
         expect(value).toContain("score");
         expect(value).toContain("The player's current score.");
     });
@@ -244,7 +317,9 @@ export variable my_export := 0;
         const symbol = lookupLocalSymbol("my_export", text, uri);
 
         expect(symbol).toBeDefined();
-        const value = (symbol?.hover?.contents as { kind: string; value: string }).value;
+        const contents = symbol?.hover?.contents;
+        expect(contents).toBeDefined();
+        const value = (contents as { kind: string; value: string }).value;
         expect(value).toContain("my_export");
         expect(value).toContain("int");
         expect(value).toContain("export variable");

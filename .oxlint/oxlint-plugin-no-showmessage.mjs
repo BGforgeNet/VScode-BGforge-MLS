@@ -13,7 +13,7 @@ const rule = defineRule({
             "showWarningMessage",
             "showErrorMessage",
         ];
-        const messages: Record<string, string> = {
+        const messages = {
             showInformationMessage:
                 "Use showInfo() from user-messages.ts instead of connection.window.showInformationMessage(). It auto-decodes file:// URIs.",
             showWarningMessage:

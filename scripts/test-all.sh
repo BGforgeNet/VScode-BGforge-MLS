@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Run ALL tests: main suite + grammars + format-samples + transpile-external + e2e.
+# Run ALL tests: main suite + grammars + transpile-external.
 # After the main suite builds CLIs, the remaining test suites run in parallel.
 
 set -eu -o pipefail
@@ -24,12 +24,10 @@ step "Main test suite"
 pnpm test
 
 # All remaining suites are independent — they only need CLIs built (done by main suite).
-# Grammar tests and format-samples build format CLI themselves if missing (idempotent).
+# Grammar tests build format CLI themselves if missing (idempotent).
 step "Extended Tests"
-# Format sample tests omitted: grammar tests already include format + compare + idempotency.
 parallel \
     "Grammar tests"           "pnpm test:grammars" \
-    "Transpile external tests" "pnpm test:transpile-external" \
-    "E2E tests"               "pnpm test:e2e"
+    "Transpile external tests" "pnpm test:transpile-external"
 
 timing_summary "All tests passed (full suite)"

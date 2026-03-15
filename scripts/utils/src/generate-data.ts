@@ -14,9 +14,9 @@
 import fs from "node:fs";
 import { parseArgs } from "node:util";
 import YAML from "yaml";
-import { WEIDU_JSDOC_TYPES } from "../../../server/src/shared/weidu-types";
-import { buildWeiduTable, buildFalloutArgsTable, type VarSection, type VarRow } from "../../../server/src/shared/tooltip-table";
-import { buildSignatureBlock, buildWeiduHoverContent, formatDeprecation } from "../../../server/src/shared/tooltip-format";
+import { buildSignatureBlock, buildWeiduHoverContent, formatDeprecation } from "./shared/tooltip-format.js";
+import { buildFalloutArgsTable, buildWeiduTable, type VarRow, type VarSection } from "./shared/tooltip-table.js";
+import { WEIDU_JSDOC_TYPES } from "./shared/weidu-types.js";
 
 // -- Types --
 

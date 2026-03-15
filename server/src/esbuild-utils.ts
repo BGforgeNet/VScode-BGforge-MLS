@@ -181,11 +181,12 @@ export async function bundleWithEsbuild(config: BundleConfig): Promise<BundleRes
     // Extract input files from metafile if requested.
     // Only .ts files, not .d.ts.
     // Metafile paths are relative to absWorkingDir — resolve to absolute.
-    const inputFiles = (metafile && result.metafile)
-        ? Object.keys(result.metafile.inputs)
-            .filter(f => f.endsWith(".ts") && !f.endsWith(".d.ts"))
-            .map(f => path.resolve(resolveDir, f))
-        : [];
+    const inputFiles =
+        metafile && result.metafile
+            ? Object.keys(result.metafile.inputs)
+                  .filter((f) => f.endsWith(".ts") && !f.endsWith(".d.ts"))
+                  .map((f) => path.resolve(resolveDir, f))
+            : [];
 
     return { code, allEnumNames, externalEnumNames, inputFiles };
 }
@@ -245,7 +246,7 @@ export function cleanupEsbuildOutput(code: string, marker: string, originalConst
         }
     });
 
-    for (const [alias] of [...aliasMap]) {
+    for (const [alias] of aliasMap) {
         for (const id of allIdentifiers) {
             if (id.startsWith(alias) && id !== alias && /^\d+$/.test(id.slice(alias.length))) {
                 if (!aliasMap.has(id)) {
@@ -300,10 +301,7 @@ export function cleanupEsbuildOutput(code: string, marker: string, originalConst
         // Sort by length (longest first) to avoid partial replacements
         const sorted = [...aliasMap.entries()].sort((a, b) => b[0].length - a[0].length);
 
-        const pattern = new RegExp(
-            "\\b(" + sorted.map(([alias]) => escapeRegex(alias)).join("|") + ")\\b",
-            "g",
-        );
+        const pattern = new RegExp("\\b(" + sorted.map(([alias]) => escapeRegex(alias)).join("|") + ")\\b", "g");
 
         code = replaceOutsideStrings(code, pattern, (match) => aliasMap.get(match) ?? match);
     }
@@ -391,7 +389,10 @@ export function skipString(code: string, start: number): number {
     const quote = code[start];
     let i = start + 1;
     while (i < code.length) {
-        if (code[i] === "\\") { i += 2; continue; }
+        if (code[i] === "\\") {
+            i += 2;
+            continue;
+        }
         if (code[i] === quote) return i + 1;
         i++;
     }
@@ -402,7 +403,10 @@ export function skipString(code: string, start: number): number {
 export function skipTemplateLiteral(code: string, start: number): number {
     let i = start + 1;
     while (i < code.length) {
-        if (code[i] === "\\") { i += 2; continue; }
+        if (code[i] === "\\") {
+            i += 2;
+            continue;
+        }
         if (code[i] === "`") return i + 1;
         if (code[i] === "$" && i + 1 < code.length && code[i + 1] === "{") {
             // Template expression — scan for matching }, handling nested strings/templates
@@ -411,8 +415,13 @@ export function skipTemplateLiteral(code: string, start: number): number {
             while (i < code.length && braceDepth > 0) {
                 if (code[i] === "{") braceDepth++;
                 else if (code[i] === "}") braceDepth--;
-                else if (code[i] === '"' || code[i] === "'") { i = skipString(code, i); continue; }
-                else if (code[i] === "`") { i = skipTemplateLiteral(code, i); continue; }
+                else if (code[i] === '"' || code[i] === "'") {
+                    i = skipString(code, i);
+                    continue;
+                } else if (code[i] === "`") {
+                    i = skipTemplateLiteral(code, i);
+                    continue;
+                }
                 i++;
             }
             continue;
@@ -441,8 +450,8 @@ function noSideEffectsPlugin(): esbuild.Plugin {
     return {
         name: "no-side-effects",
         setup(build) {
-            build.onResolve({ filter: /.*/ }, async args => {
-                if (args.kind === 'entry-point') return null;
+            build.onResolve({ filter: /.*/ }, async (args) => {
+                if (args.kind === "entry-point") return null;
                 // Use pluginData to prevent infinite recursion (pluginData is typed as any by esbuild)
                 if (args.pluginData?.fromNoSideEffectsPlugin === true) return null;
                 const result = await build.resolve(args.path, {

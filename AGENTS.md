@@ -39,6 +39,7 @@ VSCode extension providing IDE features for niche scripting languages used in cl
 client/                  # VSCode extension client (LSP client, webviews, binary editor)
 server/                  # LSP server (providers, transpilers, symbol system, compilation)
   data/                  # YAML engine definitions (functions, actions, triggers)
+shared/                  # Shared pure TypeScript helpers used by runtime and build-time code
 grammars/                # Tree-sitter grammars (6 dirs: 4 LSP + 2 highlight-only)
 cli/                     # Standalone CLIs: format/, transpile/, bin/ (binary .pro viewer)
 plugins/                 # TypeScript Language Service Plugins: tssl-plugin/, td-plugin/
@@ -64,11 +65,10 @@ pnpm build:dev         # Minimal build for F5 development (skips CLIs, linting, 
 pnpm build:grammar     # Build tree-sitter grammars to WASM
 pnpm build:transpile-cli # Build transpile CLI (esbuild bundle, NOT included in tsc)
 pnpm test              # Tests: typecheck, lint, unit + coverage, transpiler samples, CLI, integration, knip
-pnpm test:all          # Full suite: test + grammars + format-samples + e2e
+pnpm test:all          # Full suite: test + grammars + transpile-external
 pnpm test:grammars     # Grammar tests (generate, lint, corpus, highlight, parse, format)
-pnpm test:format-samples # Format tests only (compare + idempotency + tp2 validation)
 pnpm test:cli          # CLI mode tests (check/save/stdout exit codes, diff output)
-pnpm test:e2e          # E2E tests (requires build)
+pnpm test:e2e          # E2E tests (requires build and host Electron libraries)
 pnpm package           # Create VSIX
 ```
 
@@ -93,8 +93,6 @@ cd client && pnpm test
 # Single grammar tests (auto-builds format CLI if missing)
 cd grammars/weidu-tp2 && pnpm test   # or any grammars/*/
 
-# Format tests standalone (useful after formatter code changes)
-pnpm test:format-samples
 ```
 
 ## Publishing & Release

@@ -180,10 +180,10 @@ Parse test samples:
 tree-sitter parse test/samples/*.baf
 ```
 
-Run formatter on samples:
+Run grammar tests, including formatter sample verification:
 
 ```bash
-pnpm format-samples
+pnpm test
 ```
 
 ## Grammar Notes

@@ -35,7 +35,7 @@ export function dnfToCnf(terms: BAFTopCondition[][], maxClauses = MAX_CNF_CLAUSE
     if (terms.length === 1 && firstTerm) return firstTerm; // Single conjunction is already CNF
 
     // Filter out empty terms (they represent "false" in the OR, can be ignored)
-    const nonEmptyTerms = terms.filter(t => t.length > 0);
+    const nonEmptyTerms = terms.filter((t) => t.length > 0);
     if (nonEmptyTerms.length === 0) return [];
     const firstNonEmpty = nonEmptyTerms[0];
     if (nonEmptyTerms.length === 1 && firstNonEmpty) return firstNonEmpty;
@@ -47,7 +47,7 @@ export function dnfToCnf(terms: BAFTopCondition[][], maxClauses = MAX_CNF_CLAUSE
         if (resultSize > maxClauses) {
             throw new Error(
                 `Condition inversion would produce ${resultSize}+ clauses (limit: ${maxClauses}). ` +
-                `Simplify the condition or avoid negating complex AND expressions.`
+                    `Simplify the condition or avoid negating complex AND expressions.`,
             );
         }
     }
@@ -56,7 +56,7 @@ export function dnfToCnf(terms: BAFTopCondition[][], maxClauses = MAX_CNF_CLAUSE
     const result: BAFTopCondition[] = [];
 
     // Generate all combinations using iterative approach
-    const indices = new Array(nonEmptyTerms.length).fill(0);
+    const indices = Array.from<number>({ length: nonEmptyTerms.length }).fill(0);
 
     for (;;) {
         // Create OR group from current combination
@@ -87,7 +87,7 @@ export function dnfToCnf(terms: BAFTopCondition[][], maxClauses = MAX_CNF_CLAUSE
             const term = nonEmptyTerms[j];
             if (idx !== undefined) {
                 indices[j] = idx + 1;
-                if (term && indices[j] < term.length) break;
+                if (term && (indices[j] ?? -1) < term.length) break;
                 indices[j] = 0;
             }
             j--;

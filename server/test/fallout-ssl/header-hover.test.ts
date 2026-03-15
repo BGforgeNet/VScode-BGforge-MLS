@@ -46,12 +46,14 @@ describe("fallout-ssl header symbol hover", () => {
         const symbols = parseHeaderToSymbols(testUri, headerText, workspaceRoot);
 
         // Find CURSOR_TARGETING symbol
-        const cursorSymbol = symbols.find(s => s.name === "CURSOR_TARGETING");
+        const cursorSymbol = symbols.find((s) => s.name === "CURSOR_TARGETING");
         expect(cursorSymbol).toBeDefined();
         expect(cursorSymbol?.hover.contents).toHaveProperty("kind", MarkupKind.Markdown);
 
         // Constant macros show just the value, not "NAME = value"
-        const hoverValue = (cursorSymbol?.hover?.contents as { value: string }).value;
+        const contents = cursorSymbol?.hover?.contents;
+        expect(contents).toBeDefined();
+        const hoverValue = (contents as { value: string }).value;
         expect(hoverValue).toContain("(2)");
         expect(hoverValue).toContain("headers/define.h");
     });
@@ -62,9 +64,11 @@ describe("fallout-ssl header symbol hover", () => {
 `;
         const symbols = parseHeaderToSymbols(testUri, headerText, workspaceRoot);
 
-        const getMsgSymbol = symbols.find(s => s.name === "get_msg");
+        const getMsgSymbol = symbols.find((s) => s.name === "get_msg");
         expect(getMsgSymbol).toBeDefined();
-        const hoverValue = (getMsgSymbol?.hover?.contents as { value: string }).value;
+        const contents = getMsgSymbol?.hover?.contents;
+        expect(contents).toBeDefined();
+        const hoverValue = (contents as { value: string }).value;
         expect(hoverValue).toContain("get_msg");
         expect(hoverValue).toContain("x");
     });
@@ -272,13 +276,13 @@ end
 
         // getCompletions should return BOTH symbols
         const completions = falloutSslProvider.getCompletions!("file:///mymod/scripts/test.ssl");
-        const pipboyCompletions = completions.filter(c => c.label === "PIPBOY");
+        const pipboyCompletions = completions.filter((c) => c.label === "PIPBOY");
 
         // Both duplicates should be present
         expect(pipboyCompletions).toHaveLength(2);
 
         // Each should have different labelDetails.description showing source path
-        const descriptions = pipboyCompletions.map(c => c.labelDetails?.description);
+        const descriptions = pipboyCompletions.map((c) => c.labelDetails?.description);
         expect(descriptions).toContain("headers/a.h");
         expect(descriptions).toContain("headers/b.h");
     });
