@@ -8,7 +8,7 @@ This file provides guidance to AI agents (Claude, Gemini, etc.) when working wit
 - **Use `SyntaxType` enum for tree-sitter node types.** Never hardcode strings like `"action_copy"`. Import from `./tree-sitter.d` and use `SyntaxType.ActionCopy`. The enum is generated from the grammar.
 - **External library packaging:** Libraries imported by transpiler files (ielib, folib) must use **named re-exports** (`export { X } from './module'`), not star re-exports (`export * from './module'`). Ambient declarations (`declare function`, `declare const`) must live in `.d.ts` files, not `.ts` files. See folib's `src/index.ts` for the correct pattern.
 - **URI normalization:** All URIs entering the provider system are normalized via `normalizeUri()` from `core/normalized-uri.ts`. The `ProviderRegistry` handles this at the gateway. If you add new URI-accepting methods to the registry, normalize them. If you use URIs as Map/Set keys elsewhere, use `NormalizedUri` branded type.
-- **User-facing messages:** Never call `connection.window.showInformationMessage/showWarningMessage/showErrorMessage` directly in server code. Use `showInfo()`, `showWarning()`, `showError()`, or `showErrorWithActions()` from `user-messages.ts` — they auto-decode `file://` URIs to readable paths. An ESLint rule enforces this.
+- **User-facing messages:** Never call `connection.window.showInformationMessage/showWarningMessage/showErrorMessage` directly in server code. Use `showInfo()`, `showWarning()`, `showError()`, or `showErrorWithActions()` from `user-messages.ts` — they auto-decode `file://` URIs to readable paths. An oxlint rule enforces this.
 
 ## Project Overview
 
