@@ -100,7 +100,7 @@ cd grammars/weidu-tp2 && pnpm test   # or any grammars/*/
 
 Three artifact streams, all triggered by `git tag vX.Y.Z` -> GitHub Actions. See `docs/architecture.md` for packaging details.
 
-**Version management:** Root `package.json` and `server/package.json` must have identical versions (currently 3.1.3). Other packages have independent versions. Bump manually, commit as "Update changelog, bump version: X.Y.Z", then tag.
+**Version management:** Root `package.json` and `server/package.json` must have identical versions (currently 3.2.0). Other packages have independent versions. Bump manually, commit as "Update changelog, bump version: X.Y.Z", then tag.
 
 ## Architecture
 

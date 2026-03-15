@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.1.4
+## 3.2.0
 
 Compile/validate:
 
