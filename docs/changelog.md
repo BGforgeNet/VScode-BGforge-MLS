@@ -9,10 +9,12 @@ Compile/validate:
 - Improved compilation reliability: debouncing, async I/O, guaranteed temp file cleanup.
 - Fixed diagnostics silently cleared when external compiler fails with unparseable output.
 - In-flight compiler processes are now cancelled when a new compilation starts for the same file.
+- `validateOnSave`, `validateOnType` toggles are consolidated into a single `validate` enum.
 
 Fallout SSL
 
-- Fix rename for symbols used inside macros.
+- Added find references.
+- Fixed rename for symbols used inside macros.
 - `.tmp.ssl` is now hidden by default from VScode explorer.
 - Fixed SSL compiler attempting external compile after user declines built-in fallback prompt.
 - Fixed temp file leak when `writeFile` fails before compilation.
@@ -20,12 +22,15 @@ Fallout SSL
 - Outline icons: parameterized macros now use Method icon instead of Function.
 - Variadic macros tooltips are more function-line now.
 - Fixed top-level var rename.
+- Added `falloutSSL.compileOnValidate` toggle which allows to control whether each validation is automatically saved to the output path.
+- Removed the separate "use built-in compiler" toggle, use empty `falloutSSL.compilePath` instead.
 
 WeiDU
 
 - Added actionable error message when WeiDU binary is not found.
 - Simplified diagnostics: a few detail lines instead of full stdout.
 - Fixed concurrent compilations of same-extension files overwriting shared temp file.
+- Added find references for TP2 and D files.
 - Document symbols now show function/macro body variables and parameters as children in the outline view.
 - Outline icons: macros use Method icon, arrays use Array icon, UPPER_first_word variables use Constant icon.
 - Variables now appear as top-level symbols.
