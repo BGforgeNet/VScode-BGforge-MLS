@@ -10,6 +10,12 @@ import {
     TransportKind,
 } from "vscode-languageclient/node";
 import { ExecuteCommandParams, ExecuteCommandRequest } from "vscode-languageserver-protocol";
+import {
+    LSP_COMMAND_COMPILE,
+    NOTIFICATION_LOAD_FINISHED,
+    REQUEST_SET_BUILT_IN_COMPILER,
+    VSCODE_COMMAND_COMPILE,
+} from "../../shared/protocol";
 import { registerBinaryEditor } from "./editors/binaryEditor";
 import { registerDialogTree } from "./dialog-tree/dialogTree";
 import { registerDDialogTree } from "./dialog-tree/dialogTree-d";
@@ -20,8 +26,7 @@ let client: LanguageClient | undefined;
 const loadingIndicator = new ServerInitializingIndicator(() => {
     conlog("loading start");
 });
-const cmd_compile = "extension.bgforge.compile";
-const request_setBuiltInCompiler = "bgforge-mls/setBuiltInCompiler";
+const cmd_compile = VSCODE_COMMAND_COMPILE;
 
 export async function activate(context: ExtensionContext) {
     // The server is implemented in node
@@ -86,7 +91,7 @@ export async function activate(context: ExtensionContext) {
     await client.start();
     conlog("BGforge MLS client started");
 
-    client.onRequest(request_setBuiltInCompiler, async (params: { uri?: string }) => {
+    client.onRequest(REQUEST_SET_BUILT_IN_COMPILER, async (params: { uri?: string }) => {
         const resource = params.uri ? vscode.Uri.parse(params.uri) : undefined;
         const configuration = workspace.getConfiguration("bgforge", resource);
         const target = resource && workspace.getWorkspaceFolder(resource)
@@ -100,7 +105,7 @@ export async function activate(context: ExtensionContext) {
     registerDialogTree(context, client);
     registerDDialogTree(context, client);
 
-    client.onNotification("bgforge-mls/load-finished", () => {
+    client.onNotification(NOTIFICATION_LOAD_FINISHED, () => {
         loadingIndicator.finishedLoadingProject("");
     });
 }
@@ -118,11 +123,10 @@ async function compile(document = vscode.window.activeTextEditor?.document) {
     }
     const uri = document.uri;
     const params: ExecuteCommandParams = {
-        command: cmd_compile,
+        command: LSP_COMMAND_COMPILE,
         arguments: [
             {
                 uri: uri.toString(),
-                scheme: uri.scheme,
             },
         ],
     };

@@ -31,6 +31,7 @@ bgforge-mls-server --stdio
 ```
 
 [Settings Reference](../docs/settings.md) - All server settings with defaults.
+[LSP API](../docs/lsp-api.md) - Public commands, custom requests, and notifications.
 
 See [Editor Setup](https://github.com/BGforgeNet/VScode-BGforge-MLS/blob/master/docs/editors/README.md) for editor-specific guides.
 

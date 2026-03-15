@@ -18,6 +18,7 @@ Transpiler guides are in [`transpilers/`](../transpilers/) (TSSL, TBAF, TD -- ea
 
 | Document                                         | Contents                                                                   |
 | ------------------------------------------------ | -------------------------------------------------------------------------- |
+| [lsp-api.md](lsp-api.md)                         | Public LSP commands, custom requests, notifications, and integration notes |
 | [architecture.md](architecture.md)               | System overview, build pipeline, client/server/CLI structure, packaging    |
 | [../server/INTERNALS.md](../server/INTERNALS.md) | Server internals: provider registry, symbol system, data flow, tree-sitter |
 | [../CONTRIBUTING.md](../CONTRIBUTING.md)         | Quick start, debugging, doc index                                          |

@@ -14,12 +14,14 @@
         "noImplicitReturns": true,
         "noFallthroughCasesInSwitch": true,
         "noUncheckedIndexedAccess": true,
+        "rootDir": "..",
         "outDir": "out",
         "resolveJsonModule": true,
         "esModuleInterop": true
     },
     "include": [
-        "src"
+        "src",
+        "../shared"
     ],
     "exclude": [
         "node_modules",

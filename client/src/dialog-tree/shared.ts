@@ -11,6 +11,7 @@ import * as fs from "fs";
 import * as path from "path";
 import { LanguageClient, ExecuteCommandRequest, ExecuteCommandParams } from "vscode-languageclient/node";
 import { escapeHtml } from "../utils";
+import { LSP_COMMAND_PARSE_DIALOG } from "../../../shared/protocol";
 
 // ---------------------------------------------------------------------------
 // Asset caching -- reads from disk once, invalidated when extension updates
@@ -143,7 +144,7 @@ export function registerDialogPanel(
         if (!dialogPanel || !currentDocumentUri) return;
 
         const params: ExecuteCommandParams = {
-            command: "bgforge.parseDialog",
+            command: LSP_COMMAND_PARSE_DIALOG,
             arguments: [{ uri: currentDocumentUri }],
         };
 
@@ -202,7 +203,7 @@ export function registerDialogPanel(
             currentDocumentUri = editor.document.uri.toString();
 
             const params: ExecuteCommandParams = {
-                command: "bgforge.parseDialog",
+                command: LSP_COMMAND_PARSE_DIALOG,
                 arguments: [{ uri: currentDocumentUri }],
             };
 

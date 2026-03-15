@@ -51,6 +51,11 @@ import { weiduDProvider } from "./weidu-d/provider";
 import { weiduTp2Provider } from "./weidu-tp2/provider";
 import { initLspConnection } from "./lsp-connection";
 import { initSettingsService } from "./settings-service";
+import {
+    LSP_COMMAND_PARSE_DIALOG,
+    NOTIFICATION_LOAD_FINISHED,
+    VSCODE_COMMAND_COMPILE,
+} from "../../shared/protocol";
 
 // Create a connection for the server.
 // createConnection() auto-detects transport from process.argv:
@@ -134,7 +139,7 @@ connection.onInitialize((params: InitializeParams) => {
             workspaceSymbolProvider: true,
             foldingRangeProvider: true,
             executeCommandProvider: {
-                commands: ["bgforge.parseDialog"],
+                commands: [COMMAND_compile, LSP_COMMAND_PARSE_DIALOG],
             },
         },
     };
@@ -204,7 +209,7 @@ connection.onInitialized(async () => {
     }
 
     resolveInitialized();
-    void connection.sendNotification("bgforge-mls/load-finished");
+    void connection.sendNotification(NOTIFICATION_LOAD_FINISHED);
     conlog("onInitialized completed");
 });
 
@@ -363,15 +368,13 @@ const dialogHandlers = [
 
 connection.onExecuteCommand(async (params) => {
     const command = params.command;
-    const COMMAND_parseDialog = "bgforge.parseDialog";
-
     if (!params.arguments) {
         return;
     }
     const args = params.arguments[0];
 
     // Handle parseDialog command
-    if (command === COMMAND_parseDialog) {
+    if (command === LSP_COMMAND_PARSE_DIALOG) {
         const uri: string = args.uri;
         const textDoc = documents.get(uri);
         if (!textDoc) {
@@ -399,24 +402,25 @@ connection.onExecuteCommand(async (params) => {
         }
     }
 
-    if (command !== COMMAND_compile) {
+    if (command !== COMMAND_compile && command !== VSCODE_COMMAND_COMPILE) {
         return;
     }
 
-    if (args.scheme !== "file") {
-        conlog("Compile: scheme is not 'file'");
+    const uri = typeof args.uri === "string" ? args.uri : undefined;
+    if (!uri || !uri.startsWith("file://")) {
+        conlog(`Compile: invalid non-file uri '${String(uri)}'`);
         showInfo("Focus a valid file to run commands!");
         return;
     }
 
-    const textDoc = documents.get(args.uri);
+    const textDoc = documents.get(uri);
     if (!textDoc) {
         return;
     }
     const langId = textDoc.languageId;
     const text = textDoc.getText();
 
-    void compile(args.uri, langId, true, text).catch(logCompileError);
+    void compile(uri, langId, true, text).catch(logCompileError);
     return undefined;
 });
 
@@ -687,4 +691,3 @@ connection.onFoldingRanges((params) => {
     }
     return registry.foldingRanges(textDoc.languageId, textDoc.getText());
 });
-

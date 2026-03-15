@@ -15,8 +15,9 @@ import * as tbaf from "./tbaf/index";
 import * as td from "./td/index";
 import * as tssl from "./tssl";
 import * as weidu from "./weidu-compile";
+import { LSP_COMMAND_COMPILE } from "../../shared/protocol";
 
-export const COMMAND_compile = "extension.bgforge.compile";
+export const COMMAND_compile = LSP_COMMAND_COMPILE;
 
 export function clearDiagnostics(uri: string) {
     // Clear old diagnostics (fire-and-forget notification)

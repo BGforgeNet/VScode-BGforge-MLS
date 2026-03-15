@@ -32,9 +32,9 @@ import { getConnection, getDocuments } from "../lsp-connection";
 import { showError, showErrorWithActions, showInfo } from "../user-messages";
 import { SSLsettings } from "../settings";
 import { ssl_compile as ssl_builtin_compiler } from "../sslc/ssl_compiler";
+import { REQUEST_SET_BUILT_IN_COMPILER } from "../../../shared/protocol";
 
 const sslExt = ".ssl";
-const REQUEST_setBuiltInCompiler = "bgforge-mls/setBuiltInCompiler";
 
 /**
  * Tmp file name used for compilation. Must be in the same directory as the
@@ -259,7 +259,7 @@ export async function compile(
                 if (response?.id === "switch") {
                     useBuiltInCompiler = true;
                     try {
-                        await getConnection().sendRequest(REQUEST_setBuiltInCompiler, { uri });
+                        await getConnection().sendRequest(REQUEST_SET_BUILT_IN_COMPILER, { uri });
                     } catch (err) {
                         conlog(`Failed to persist built-in compiler switch: ${err}`);
                     }
