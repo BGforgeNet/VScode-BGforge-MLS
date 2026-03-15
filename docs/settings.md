@@ -20,6 +20,7 @@ All settings are under the `bgforge` namespace.
 | `bgforge.falloutSSL.compileOptions`   | `-q -p -l -O2 -d -s -n` | Compiler flags                                                                                               |
 | `bgforge.falloutSSL.outputDirectory`  | `""`                    | Output directory for compiled scripts (default: next to source)                                              |
 | `bgforge.falloutSSL.headersDirectory` | `""`                    | Additional headers directory (workspace is always scanned)                                                   |
+| `bgforge.falloutSSL.compileOnValidate` | `true`                 | When enabled, validation on save/edit also writes the compiled `.int`. Disable to validate without overwriting output. |
 
 ## WeiDU
 

@@ -13,6 +13,7 @@ export interface SSLsettings {
     compileOptions: string;
     outputDirectory: string;
     headersDirectory: string;
+    compileOnValidate: boolean;
 }
 
 export interface WeiDUsettings {
@@ -38,6 +39,7 @@ export const defaultSettings: MLSsettings = {
         compileOptions: "-q -p -l -O2 -d -s -n",
         outputDirectory: "",
         headersDirectory: "",
+        compileOnValidate: true,
     },
     weidu: { path: "weidu", gamePath: "" },
     validateOnSave: true,

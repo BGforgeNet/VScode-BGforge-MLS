@@ -77,6 +77,7 @@ describe("fallout-ssl compiler", () => {
         compileOptions: "",
         outputDirectory: "/output",
         headersDirectory: "/headers",
+        compileOnValidate: true,
     };
 
     describe("TMP_SSL_NAME", () => {
@@ -127,6 +128,16 @@ describe("fallout-ssl compiler", () => {
 
             expect(mockUnlink).toHaveBeenCalledWith(
                 expect.stringContaining(TMP_SSL_NAME)
+            );
+        });
+
+        it("cleans up validation-only .int files from temp dir", async () => {
+            const settings = { ...baseSettings, compileOnValidate: false };
+
+            await compile("file:///project/test.ssl", settings, false, "code");
+
+            expect(mockUnlink).toHaveBeenCalledWith(
+                expect.stringMatching(/bgforge-mls\/tmp-[0-9a-f]{8}-test\.int$/)
             );
         });
 
@@ -240,6 +251,30 @@ describe("fallout-ssl compiler", () => {
             );
         });
 
+        it("writes validation output to temp dir when compileOnValidate is disabled", async () => {
+            const settings = { ...baseSettings, compileOnValidate: false };
+
+            await compile("file:///project/test.ssl", settings, false, "code");
+
+            expect(mockBuiltinCompiler).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    outputFileName: expect.stringMatching(/bgforge-mls\/tmp-[0-9a-f]{8}-test\.int$/),
+                })
+            );
+        });
+
+        it("keeps explicit compile writing to outputDirectory when compileOnValidate is disabled", async () => {
+            const settings = { ...baseSettings, compileOnValidate: false };
+
+            await compile("file:///project/test.ssl", settings, true, "code");
+
+            expect(mockBuiltinCompiler).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    outputFileName: "/output/test.int",
+                })
+            );
+        });
+
         it("shows success message on returnCode 0 in interactive mode", async () => {
             mockBuiltinCompiler.mockResolvedValue({ stdout: "", returnCode: 0 });
 
@@ -341,6 +376,20 @@ describe("fallout-ssl compiler", () => {
             expect(args).toContain("-p");
         });
 
+        it("writes validation output to temp dir when compileOnValidate is disabled", async () => {
+            const settings = { ...externalSettings, compileOnValidate: false };
+
+            await compile("file:///project/test.ssl", settings, false, "code");
+
+            const compileCalls = mockExecFile.mock.calls.filter(
+                (call: unknown[]) => !(call[1] as string[]).some((a: string) => a === "--version")
+            );
+            const args = compileCalls[0][1] as string[];
+            const outIndex = args.indexOf("-o");
+            expect(outIndex).toBeGreaterThanOrEqual(0);
+            expect(args[outIndex + 1]).toMatch(/bgforge-mls\/tmp-[0-9a-f]{8}-test\.int$/);
+        });
+
         it("shows success message in interactive mode", async () => {
             await compile("file:///project/test.ssl", externalSettings, true, "code");
 
@@ -388,8 +437,22 @@ describe("fallout-ssl compiler", () => {
             });
             mockShowErrorWithActions.mockResolvedValue({ id: "yes" });
 
+            await compile("file:///project/test.ssl", externalSettings, true, "code");
+
+            expect(mockBuiltinCompiler).toHaveBeenCalled();
+        });
+
+        it("falls back to built-in without prompting during non-interactive validation", async () => {
+            mockExecFile.mockImplementation((...args: unknown[]) => {
+                const lastArg = args[args.length - 1];
+                if (typeof lastArg === "function") {
+                    (lastArg as (err: Error) => void)(new Error("not found"));
+                }
+            });
+
             await compile("file:///project/test.ssl", externalSettings, false, "code");
 
+            expect(mockShowErrorWithActions).not.toHaveBeenCalled();
             expect(mockBuiltinCompiler).toHaveBeenCalled();
         });
 
@@ -402,7 +465,7 @@ describe("fallout-ssl compiler", () => {
             });
             mockShowErrorWithActions.mockResolvedValue({ id: "no" });
 
-            await compile("file:///project/test.ssl", externalSettings, false, "code");
+            await compile("file:///project/test.ssl", externalSettings, true, "code");
 
             expect(mockBuiltinCompiler).not.toHaveBeenCalled();
             // Should not attempt external compile either (only the --version check)
@@ -420,7 +483,7 @@ describe("fallout-ssl compiler", () => {
             });
             mockShowErrorWithActions.mockResolvedValue(undefined);
 
-            await compile("file:///project/test.ssl", externalSettings, false, "code");
+            await compile("file:///project/test.ssl", externalSettings, true, "code");
 
             expect(mockBuiltinCompiler).not.toHaveBeenCalled();
             expect(mockExecFile).toHaveBeenCalledTimes(1);

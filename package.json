@@ -369,6 +369,11 @@
                     "default": "",
                     "description": "Path to an additional directory with Fallout headers to scan for defines.\nLeave empty if all your headers are inside workspace directory. Workspace is always scanned."
                 },
+                "bgforge.falloutSSL.compileOnValidate": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Whether validation triggered by save/edit should also write the compiled .int output. Disable this to validate SSL without overwriting compiled artifacts."
+                },
                 "bgforge.weidu.path": {
                     "type": "string",
                     "default": "weidu",

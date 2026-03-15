@@ -10,6 +10,7 @@
  */
 
 import * as cp from "child_process";
+import * as crypto from "crypto";
 import * as fs from "fs";
 import * as os from "os";
 import * as path from "path";
@@ -24,6 +25,7 @@ import {
     reportCompileResult,
     runProcess,
     sendParseResult,
+    tmpDir,
     uriToPath,
 } from "../common";
 import { getDocuments } from "../lsp-connection";
@@ -196,6 +198,11 @@ function runExternalCompiler(
     return runProcess(executable, allArgs, cwdTo, signal);
 }
 
+function getValidationOutputPath(uri: string, base: string) {
+    const uriHash = crypto.createHash("md5").update(uri).digest("hex").slice(0, 8);
+    return path.join(tmpDir, `tmp-${uriHash}-${base}.int`);
+}
+
 export async function compile(
     uri: string,
     sslSettings: SSLsettings,
@@ -210,7 +217,10 @@ export async function compile(
     const baseName = parsed.base;
     const base = parsed.name;
     const compileOptions = sslSettings.compileOptions.split(/\s+/).filter(Boolean);
-    const dstPath = path.join(sslSettings.outputDirectory, base + ".int");
+    const shouldWriteOutput = interactive || sslSettings.compileOnValidate;
+    const dstPath = shouldWriteOutput
+        ? path.join(sslSettings.outputDirectory, base + ".int")
+        : getValidationOutputPath(uri, base);
 
     if (parsed.ext.toLowerCase() !== sslExt) {
         // vscode loses open file if clicked on console or elsewhere
@@ -237,15 +247,19 @@ export async function compile(
         let useBuiltInCompiler = !sslSettings.compilePath;
 
         if (!useBuiltInCompiler && !(await checkExternalCompiler(sslSettings.compilePath))) {
-            const response = await showErrorWithActions(
-                `Failed to run '${sslSettings.compilePath}'! Use built-in compiler this time?`,
-                { title: "Yes", id: "yes" },
-                { title: "No", id: "no" },
-            );
-            if (response?.id === "yes") {
+            if (!interactive) {
                 useBuiltInCompiler = true;
             } else {
-                return;
+                const response = await showErrorWithActions(
+                    `Failed to run '${sslSettings.compilePath}'! Use built-in compiler this time?`,
+                    { title: "Yes", id: "yes" },
+                    { title: "No", id: "no" },
+                );
+                if (response?.id === "yes") {
+                    useBuiltInCompiler = true;
+                } else {
+                    return;
+                }
             }
         }
 
@@ -299,5 +313,8 @@ export async function compile(
     } finally {
         activeCompiles.delete(uri);
         await removeTmpFile(tmpPath);
+        if (!shouldWriteOutput) {
+            await removeTmpFile(dstPath);
+        }
     }
 }

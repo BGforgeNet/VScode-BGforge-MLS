@@ -30,6 +30,7 @@ describe("settings", () => {
             expect(defaultSettings.falloutSSL.compileOptions).toBe("-q -p -l -O2 -d -s -n");
             expect(defaultSettings.falloutSSL.outputDirectory).toBe("");
             expect(defaultSettings.falloutSSL.headersDirectory).toBe("");
+            expect(defaultSettings.falloutSSL.compileOnValidate).toBe(true);
         });
 
         it("should have correct weidu defaults", async () => {
