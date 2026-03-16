@@ -219,7 +219,7 @@ function getJsdocCompletions(linePrefix: string): Tp2CompletionItem[] {
 
 class WeiduTp2Provider implements LanguageProvider {
     readonly id = LANG_WEIDU_TP2;
-    readonly watchExtensions = [...EXT_WEIDU_TP2];
+    readonly indexExtensions = [...EXT_WEIDU_TP2];
 
     private fileIndex: FileIndex | undefined;
     private storedContext: ProviderContext | undefined;

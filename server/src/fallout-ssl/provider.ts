@@ -9,19 +9,17 @@
  */
 
 import { readFileSync } from "node:fs";
-import { readFile } from "node:fs/promises";
-import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { type CompletionItem, type DocumentSymbol, type FoldingRange, type Location, type Position, type SignatureHelp, type SymbolInformation, type WorkspaceEdit } from "vscode-languageserver/node";
 import { type IndexedSymbol, SourceType } from "../core/symbol";
-import { conlog, findFiles, getLinePrefix, pathToUri } from "../common";
-import { EXT_FALLOUT_SSL_ALL, EXT_FALLOUT_SSL_HEADERS, LANG_FALLOUT_SSL } from "../core/languages";
+import { conlog, getLinePrefix } from "../common";
+import { EXT_FALLOUT_SSL_ALL, LANG_FALLOUT_SSL } from "../core/languages";
 import { isHeaderFile } from "../core/location-utils";
 import { FileIndex } from "../core/file-index";
 import { loadStaticSymbols } from "../core/static-loader";
 import { compile as falloutCompile } from "./compiler";
 import { type FormatResult, type LanguageProvider, type ProviderContext } from "../language-provider";
-import { formatWithValidation, resolveSymbolWithLocal } from "../shared/provider-helpers";
+import { formatWithValidation } from "../shared/provider-helpers";
 import { getJsdocCompletions } from "../shared/jsdoc-completions";
 import { FALLOUT_JSDOC_TYPES } from "../shared/fallout-types";
 import { stripCommentsFalloutSsl } from "../shared/format-utils";
@@ -53,20 +51,22 @@ const SSL_FOLDABLE_TYPES = new Set([
 
 const sslFoldingRanges = createFoldingRangesProvider(isInitialized, parseWithCache, SSL_FOLDABLE_TYPES);
 
-/** File extensions to scan at startup, derived from language constants. */
-const WORKSPACE_SCAN_EXTENSIONS = EXT_FALLOUT_SSL_ALL.map(ext => ext.slice(1));
-
 class FalloutSslProvider implements LanguageProvider {
     readonly id = LANG_FALLOUT_SSL;
-    // Only watch header files for external change events. Non-header .ssl files
-    // get workspace symbol updates via onDidChangeContent (open documents) and
-    // scanWorkspaceFiles (startup scan). Adding .ssl here would cause double I/O
-    // at startup since scanWorkspaceFiles already reads all .ssl files.
-    readonly watchExtensions = [...EXT_FALLOUT_SSL_HEADERS];
+    readonly indexExtensions = [...EXT_FALLOUT_SSL_ALL];
 
     private fileIndex: FileIndex | undefined;
     private staticSignatures: signature.SigMap | undefined;
     private storedContext: ProviderContext | undefined;
+
+    private lookupFallbackSymbol(name: string, currentUri?: string): IndexedSymbol | undefined {
+        return this.fileIndex?.symbols
+            .lookupAll(name)
+            .find((symbol) =>
+                symbol.source.type !== SourceType.Navigation &&
+                symbol.source.uri !== currentUri
+            );
+    }
 
     async init(context: ProviderContext): Promise<void> {
         this.storedContext = context;
@@ -79,66 +79,7 @@ class FalloutSslProvider implements LanguageProvider {
 
         this.staticSignatures = signature.loadStatic(LANG_FALLOUT_SSL);
 
-        // Scan workspace files for symbols and references (async to avoid blocking the event loop)
-        if (context.workspaceRoot) {
-            await this.scanWorkspaceFiles(context.workspaceRoot);
-        }
-
         conlog(`Fallout SSL provider initialized with ${staticSymbols.length} static symbols`);
-    }
-
-    /**
-     * Scan workspace for all relevant files, populate the symbol index and
-     * references index.
-     *
-     * Uses async I/O to avoid blocking the event loop at startup.
-     * Called once at init time.
-     *
-     * This method reads ALL .ssl and .h files. watchExtensions is intentionally
-     * set to .h only (see comment there) so that ProviderRegistry.scanWorkspaceHeaders
-     * does NOT re-read .ssl files. Without this separation, every .ssl file would
-     * be read twice at startup: once here (async) and once via scanWorkspaceHeaders
-     * (sync). Open .ssl documents still get workspace symbol updates at runtime via
-     * onDidChangeContent -> reloadFileData.
-     */
-    private async scanWorkspaceFiles(workspaceRoot: string): Promise<void> {
-        const filePaths: { absolutePath: string; uri: string }[] = [];
-        for (const ext of WORKSPACE_SCAN_EXTENSIONS) {
-            const files = findFiles(workspaceRoot, ext);
-            for (const relativePath of files) {
-                const absolutePath = join(workspaceRoot, relativePath);
-                filePaths.push({ absolutePath, uri: pathToUri(absolutePath) });
-            }
-        }
-
-        const results = await Promise.allSettled(
-            filePaths.map(async ({ absolutePath, uri }) => {
-                const text = await readFile(absolutePath, "utf-8");
-
-                // Parse symbols and references from the text we just read
-                if (isInitialized()) {
-                    const st = isHeaderFile(uri) ? SourceType.Workspace : SourceType.Navigation;
-                    const result = parseFile(uri, text, workspaceRoot, st);
-                    this.fileIndex?.updateFile(uri, result);
-                }
-            }),
-        );
-
-        let fileCount = 0;
-        for (const result of results) {
-            if (result.status === "fulfilled") {
-                fileCount++;
-            }
-        }
-        // Log failures separately — results and filePaths arrays are parallel
-        const failures = results
-            .map((r, i) => r.status === "rejected" ? filePaths[i] : null)
-            .filter((f): f is { absolutePath: string; uri: string } => f !== null);
-        for (const f of failures) {
-            conlog(`Workspace scan: failed to read ${f.absolutePath}`);
-        }
-
-        conlog(`Workspace scan: indexed ${fileCount} files`);
     }
 
     /**
@@ -165,7 +106,11 @@ class FalloutSslProvider implements LanguageProvider {
     }
 
     resolveSymbol(name: string, text: string, uri: string): IndexedSymbol | undefined {
-        return resolveSymbolWithLocal(name, text, uri, this.fileIndex?.symbols, lookupLocalSymbol);
+        const local = lookupLocalSymbol(name, text, uri);
+        if (local) {
+            return local;
+        }
+        return this.lookupFallbackSymbol(name, uri);
     }
 
     format(text: string, uri: string): FormatResult {
@@ -315,7 +260,7 @@ class FalloutSslProvider implements LanguageProvider {
     }
 
     getSymbolDefinition(symbolName: string): Location | null {
-        const symbol = this.fileIndex?.symbols.lookup(symbolName);
+        const symbol = this.lookupFallbackSymbol(symbolName);
         return symbol?.location ?? null;
     }
 

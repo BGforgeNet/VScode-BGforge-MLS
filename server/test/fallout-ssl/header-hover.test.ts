@@ -112,6 +112,26 @@ end
         expect(hoverValue).toContain("headers/define.h");
     });
 
+    it("resolveSymbol should not fall back to unrelated source-file symbols", () => {
+        const sourceUri = "file:///mymod/scripts/other.ssl";
+        const sourceText = `
+procedure shared_name begin
+end
+`;
+        falloutSslProvider.reloadFileData!(sourceUri, sourceText);
+
+        const currentText = `
+procedure test begin
+    shared_name();
+end
+`;
+        const currentUri = "file:///mymod/scripts/test.ssl";
+
+        const resolved = falloutSslProvider.resolveSymbol!("shared_name", currentText, currentUri);
+
+        expect(resolved).toBeUndefined();
+    });
+
     it("resolveSymbol should show relative path, not absolute realpath", async () => {
         const headerUri = "file:///home/user/mymod/headers/define.h";
         const headerText = `
@@ -237,6 +257,15 @@ end
             const location = falloutSslProvider.getSymbolDefinition!("my_helper");
             expect(location).not.toBeNull();
             expect(location!.uri).toBe(testUri);
+        });
+
+        it("does not return location for procedure from unrelated source file", () => {
+            const sourceUri = "file:///mymod/scripts/other.ssl";
+            const sourceText = `procedure shared_name begin end`;
+            falloutSslProvider.reloadFileData!(sourceUri, sourceText);
+
+            const location = falloutSslProvider.getSymbolDefinition!("shared_name");
+            expect(location).toBeNull();
         });
 
         it("returns location for variable from header", () => {

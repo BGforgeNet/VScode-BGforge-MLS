@@ -5,12 +5,11 @@
  * Uses unified Symbols storage for completion and hover data.
  */
 
-import { readFile } from "node:fs/promises";
-import { join } from "node:path";
 import type { CompletionItem, DocumentSymbol, FoldingRange, Location, Position } from "vscode-languageserver/node";
-import { conlog, findFiles, pathToUri } from "../common";
+import { conlog } from "../common";
 import { EXT_WEIDU_D, LANG_WEIDU_D } from "../core/languages";
 import type { IndexedSymbol } from "../core/symbol";
+import { SourceType } from "../core/symbol";
 import { FileIndex } from "../core/file-index";
 import { loadStaticSymbols } from "../core/static-loader";
 import { type FormatResult, type LanguageProvider, type ProviderContext } from "../language-provider";
@@ -47,9 +46,7 @@ const dFoldingRanges = createFoldingRangesProvider(isInitialized, parseWithCache
 
 class WeiduDProvider implements LanguageProvider {
     readonly id = LANG_WEIDU_D;
-    // D files are primary source files, not headers. watchExtensions is not set
-    // because scanWorkspaceHeaders uses readFileSync — we do our own async scan
-    // in init() instead, following the SSL provider pattern.
+    readonly indexExtensions = [EXT_WEIDU_D];
 
     private fileIndex: FileIndex | undefined;
     private storedContext: ProviderContext | undefined;
@@ -63,53 +60,18 @@ class WeiduDProvider implements LanguageProvider {
         const staticSymbols = loadStaticSymbols(LANG_WEIDU_D);
         this.fileIndex.loadStatic(staticSymbols);
 
-        // Build references index from all .d files in the workspace (async I/O)
-        if (context.workspaceRoot) {
-            await this.scanWorkspaceFiles(context.workspaceRoot);
-        }
-
         conlog(`WeiDU D provider initialized with ${staticSymbols.length} static symbols`);
-    }
-
-    /**
-     * Scan workspace for all .d files and populate the references index.
-     * Uses async I/O to avoid blocking the event loop at startup.
-     */
-    private async scanWorkspaceFiles(workspaceRoot: string): Promise<void> {
-        const ext = EXT_WEIDU_D.slice(1); // ".d" -> "d"
-        const relativePaths = findFiles(workspaceRoot, ext);
-
-        const results = await Promise.allSettled(
-            relativePaths.map(async (relativePath) => {
-                const absolutePath = join(workspaceRoot, relativePath);
-                const uri = pathToUri(absolutePath);
-                const text = await readFile(absolutePath, "utf-8");
-                if (this.fileIndex) {
-                    const result = parseFile(uri, text);
-                    this.fileIndex.updateFile(uri, result);
-                }
-            }),
-        );
-
-        const fulfilled = results.filter(r => r.status === "fulfilled").length;
-        const firstRejected = results.find((r): r is PromiseRejectedResult => r.status === "rejected");
-        const rejectedCount = results.length - fulfilled;
-        if (fulfilled > 0 || rejectedCount > 0) {
-            const warning = firstRejected
-                ? ` (${rejectedCount} failed, first: ${firstRejected.reason})`
-                : "";
-            conlog(`D references index: indexed ${fulfilled} files${warning}`);
-        }
     }
 
     shouldProvideFeatures(text: string, position: Position): boolean {
         return !isInsideComment(text, position);
     }
 
-    // D files have state labels but no user-defined functions/macros.
-    // Symbol lookup is static-only (YAML data: actions + triggers).
+    // D files have state labels for navigation, but data-driven hover/completion
+    // should remain static-only (YAML data: actions + triggers).
     resolveSymbol(name: string, _text: string, _uri: string): IndexedSymbol | undefined {
-        return resolveSymbolStatic(name, this.fileIndex?.symbols);
+        const symbol = resolveSymbolStatic(name, this.fileIndex?.symbols);
+        return symbol?.source.type === SourceType.Static ? symbol : undefined;
     }
 
     format(text: string, uri: string): FormatResult {
@@ -160,13 +122,19 @@ class WeiduDProvider implements LanguageProvider {
         return getStaticCompletions(this.fileIndex?.symbols);
     }
 
-    // Called by server.ts onDidChangeContent/onDidSave for open documents.
-    // Not called via scanWorkspaceHeaders (no watchExtensions set).
+    workspaceSymbols(query: string) {
+        return this.fileIndex?.symbols.searchWorkspaceSymbols(query) ?? [];
+    }
+
     reloadFileData(uri: string, text: string): void {
         if (isInitialized() && this.fileIndex) {
-            const result = parseFile(uri, text);
+            const result = parseFile(uri, text, this.storedContext?.workspaceRoot);
             this.fileIndex.updateFile(uri, result);
         }
+    }
+
+    onWatchedFileDeleted(uri: string): void {
+        this.fileIndex?.removeFile(uri);
     }
 
     async compile(uri: string, text: string, interactive: boolean): Promise<void> {

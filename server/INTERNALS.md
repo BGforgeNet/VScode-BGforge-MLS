@@ -354,7 +354,7 @@ interface LanguageProvider {
   getSymbolDefinition?(symbol): Location | null;
 
   // File watching
-  watchExtensions?: string[];
+  indexExtensions?: string[];
   reloadFileData?(uri, text): void;
   onWatchedFileDeleted?(uri): void;
   onDocumentClosed?(uri): void;
@@ -421,7 +421,7 @@ This copies the generated `tree-sitter.d.ts` to `server/src/{lang}/`.
 | ----------- | :--------: | :---: | :-------: | :--------: | :--------: | :----: | :-----: | :---------------: | :----: | :---: | :-----: | :---------: | :---: |
 | fallout-ssl |     Y      |   Y   |     Y     |     Y      |     Y      |   Y    |    Y    |         Y         |   Y    | .msg  |    Y    |      Y      |   Y   |
 | weidu-baf   |     Y      |   Y   |           |    n/a     |    n/a     |   Y    |         |        n/a        |  n/a   | .tra  |    Y    |      Y      |  n/a  |
-| weidu-d     |     Y      |   Y   |           |     Y      |     Y      |   Y    |    Y    |                   |   Y    | .tra  |    Y    |      Y      |   Y   |
+| weidu-d     |     Y      |   Y   |           |     Y      |     Y      |   Y    |    Y    |         Y         |   Y    | .tra  |    Y    |      Y      |   Y   |
 | weidu-tp2   |     Y      |   Y   |           |     Y      |     Y      |   Y    |    Y    |         Y         |   Y    | .tra  |    Y    |      Y      |   Y   |
 | worldmap    |     Y      |   Y   |    n/a    |    n/a     |    n/a     |  n/a   |   n/a   |        n/a        |  n/a   |  n/a  |   n/a   |     n/a     |  n/a  |
 
@@ -465,6 +465,8 @@ Reusable infrastructure that providers consume via configuration, not inheritanc
 Features are shared via **factory functions with language-specific configuration**, not class inheritance. Each provider passes its own block types, comment types, or return modes to shared factories. This keeps providers decoupled while eliminating boilerplate.
 
 Example: folding ranges require only a `Set<SyntaxType>` of foldable node types per language — the walking algorithm is shared.
+
+The indexing lifecycle is also shared, but symbol visibility rules remain provider-specific. `ProviderRegistry` owns startup scan, watched-file create/change/delete handling, and reload dispatch via each provider's `indexExtensions`; providers still decide which indexed symbols are visible to fallback lookup, completion, or rename.
 
 ## Compilation
 
@@ -563,11 +565,15 @@ Find References Request
 
 - **SSL**: Collects all `Identifier` nodes grouped by name. Cross-file lookup uses exact match.
 - **TP2**: Collects `FUNCTION_DEF_TYPES` and `FUNCTION_CALL_TYPES` name fields. Keys are case-sensitive. Variables are not indexed — they are function/loop-scoped.
-- **D**: Collects state label references with `dialogFile:labelName` composite keys. Dialog files are normalized to lowercase.
+- **D**: Collects state label references with `dialogFile:labelName` composite keys. Dialog files are normalized to lowercase. Workspace symbols use the same dialog-scoped key so labels like `0` remain distinguishable in multi-dialog files.
 
-**Index population**: Populated at startup during the workspace scan. SSL populates in `scanWorkspaceFiles()` (async I/O). TP2 populates in `reloadFileData()` via `scanWorkspaceHeaders()`. D has its own async scan in `init()` (no `watchExtensions` — `.d` files are primary sources, not headers). Updated incrementally for open documents via `onDidChangeContent`.
+**Index population**: Populated uniformly by `ProviderRegistry` using each provider's `indexExtensions`. The same extension list drives startup scan, watched-file create/change/delete handling, and provider reload cleanup. Open documents still update incrementally via `onDidChangeContent`.
+
+**Workspace symbol routing**: The server still supports global aggregation, but the VS Code client now scopes `workspace/symbol` queries to the active editor language for `fallout-ssl`, `weidu-d`, and `weidu-tp2`. This avoids cross-language pollution in Ctrl+T while preserving the registry's global fallback behavior for other clients.
 
 **Scoping**: Only file-scoped symbols get cross-file results. Procedure-local variables (SSL), function/loop-scoped variables (TP2), and intra-dialog labels (D) remain single-file only. The `references.ts` module in each language checks the symbol scope before querying the index. For SSL, when a symbol is not defined in the current file (e.g., a macro from an included header), `findReferences` falls back to the ReferencesIndex for cross-file references and file-scope AST search for local occurrences.
+
+**SSL visibility boundary**: SSL indexes both `.h` and `.ssl` files. Header symbols are loaded as `SourceType.Workspace` and are globally visible for fallback hover/definition/rename. Source-file `.ssl` symbols are loaded as `SourceType.Navigation`: they power workspace symbols and cross-file navigation data, but must not participate in global fallback symbol resolution for unrelated scripts.
 
 **Single-file rename** (`rename.ts`): Uses scope info to rename only within the correct scope.
 

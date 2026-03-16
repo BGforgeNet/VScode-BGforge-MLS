@@ -60,13 +60,13 @@ external/                # Third-party mod sources (test fixtures, not project c
 ## Commands
 
 ```bash
-pnpm build             # Build client + server + test bundles + webviews (no grammars)
-pnpm build:all         # Build everything including grammars and editor bundles
+pnpm build             # Default repo-wide build: client + server + test bundles + webviews
+pnpm build:all         # Full build: build + grammars + editor bundles
 pnpm build:dev         # Minimal build for F5 development (skips CLIs, linting, tests)
 pnpm build:grammar     # Build tree-sitter grammars to WASM
 pnpm build:transpile-cli # Build transpile CLI (esbuild bundle, NOT included in tsc)
-pnpm test              # Tests: typecheck, lint, unit + coverage, transpiler samples, CLI, integration, knip
-pnpm test:all          # Full suite: test + grammars + transpile-external
+pnpm test              # Default repo-wide test suite: typecheck, lint, unit + coverage, transpiler samples, CLI, integration, knip
+pnpm test:all          # Full test suite: test + grammars + transpile-external
 pnpm test:grammars     # Grammar tests (generate, lint, corpus, highlight, parse, format)
 pnpm test:cli          # CLI mode tests (check/save/stdout exit codes, diff output)
 pnpm test:e2e          # E2E tests (requires build and host Electron libraries)

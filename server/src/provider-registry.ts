@@ -13,6 +13,7 @@
  */
 
 import { readFileSync } from "node:fs";
+import { readFile } from "node:fs/promises";
 import { extname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
@@ -34,13 +35,14 @@ import { FormatResult, HoverResult, LanguageProvider, ProviderContext } from "./
 import { conlog, findFiles, pathToUri } from "./common";
 import { validLocationOrNull } from "./core/location-utils";
 import { normalizeUri } from "./core/normalized-uri";
+import { decodeWorkspaceSymbolQuery } from "../../shared/protocol";
 
 class ProviderRegistry {
     private providers: Map<string, LanguageProvider> = new Map();
     private context: ProviderContext | undefined;
     /** Maps alias language IDs to their parent provider ID */
     private aliases: Map<string, string> = new Map();
-    /** Maps file extensions to providers for file watching (e.g., ".tph" -> weidu-tp2 provider) */
+    /** Maps indexed file extensions to providers (e.g., ".tph" -> weidu-tp2 provider) */
     private extensionToProvider: Map<string, LanguageProvider> = new Map();
 
     /**
@@ -93,17 +95,17 @@ class ProviderRegistry {
         // Build extension -> provider map for file watching
         this.buildExtensionMap();
 
-        // Scan workspace for header files and index them
-        await this.scanWorkspaceHeaders(context.workspaceRoot);
+        // Scan workspace for indexed files and populate provider caches
+        await this.scanWorkspaceFiles(context.workspaceRoot);
     }
 
     /**
-     * Build the extension -> provider map from all providers' watchExtensions.
+     * Build the extension -> provider map from all providers' indexExtensions.
      */
     private buildExtensionMap(): void {
         for (const provider of this.providers.values()) {
-            if (!provider.watchExtensions) continue;
-            for (const ext of provider.watchExtensions) {
+            if (!provider.indexExtensions) continue;
+            for (const ext of provider.indexExtensions) {
                 this.extensionToProvider.set(ext.toLowerCase(), provider);
             }
         }
@@ -111,39 +113,40 @@ class ProviderRegistry {
     }
 
     /**
-     * Scan workspace for header files and index them.
-     * Called after providers are initialized to populate indices with workspace headers.
+     * Scan workspace for indexed files and reload them through their providers.
+     * Called after providers are initialized to populate indices at startup.
      *
-     * Uses each provider's watchExtensions to find files and reloadFileData to index them.
-     * This follows SRP: registry handles file discovery, providers handle indexing.
+     * Uses each provider's indexExtensions to find files and reloadFileData to index them.
+     * This keeps startup scan, file watching, and delete cleanup on the same contract.
      */
-    async scanWorkspaceHeaders(workspaceRoot: string | undefined): Promise<void> {
+    async scanWorkspaceFiles(workspaceRoot: string | undefined): Promise<void> {
         if (!workspaceRoot) {
             return;
         }
 
         for (const provider of this.providers.values()) {
-            if (!provider.watchExtensions || !provider.reloadFileData) {
+            if (!provider.indexExtensions || !provider.reloadFileData) {
                 continue;
             }
 
-            for (const ext of provider.watchExtensions) {
+            for (const ext of provider.indexExtensions) {
                 // Remove leading dot for findFiles (e.g., ".tph" -> "tph")
                 const extWithoutDot = ext.startsWith(".") ? ext.slice(1) : ext;
                 const files = findFiles(workspaceRoot, extWithoutDot);
 
-                for (const relativePath of files) {
-                    const absolutePath = join(workspaceRoot, relativePath);
-                    const uri = pathToUri(absolutePath);
-                    try {
-                        const text = readFileSync(absolutePath, "utf-8");
-                        // Use the public gateway method to ensure URI normalization
+                const results = await Promise.allSettled(
+                    files.map(async (relativePath) => {
+                        const absolutePath = join(workspaceRoot, relativePath);
+                        const uri = pathToUri(absolutePath);
+                        const text = await readFile(absolutePath, "utf-8");
                         this.reloadFileData(provider.id, uri, text);
-                    } catch (error) {
-                        conlog(`Failed to read header file ${absolutePath}: ${error}`);
-                    }
-                }
+                    }),
+                );
 
+                const failures = results.filter((result): result is PromiseRejectedResult => result.status === "rejected");
+                if (failures.length > 0) {
+                    conlog(`Startup scan for ${provider.id} (${ext}) had ${failures.length} read failures`);
+                }
                 if (files.length > 0) {
                     conlog(`Scanned ${files.length} ${ext} files for ${provider.id}`);
                 }
@@ -224,10 +227,16 @@ class ProviderRegistry {
      * Aggregates results from every provider that implements workspaceSymbols.
      */
     workspaceSymbols(query: string): SymbolInformation[] {
+        const decoded = decodeWorkspaceSymbolQuery(query);
+        if (decoded.languageId) {
+            const provider = this.get(decoded.languageId);
+            return provider?.workspaceSymbols?.(decoded.query) ?? [];
+        }
+
         const results: SymbolInformation[] = [];
         for (const provider of this.providers.values()) {
             if (provider.workspaceSymbols) {
-                results.push(...provider.workspaceSymbols(query));
+                results.push(...provider.workspaceSymbols(decoded.query));
             }
         }
         return results;
@@ -416,15 +425,15 @@ class ProviderRegistry {
 
     /**
      * Get watch patterns for LSP registration.
-     * Collects all watchExtensions from providers and converts to glob patterns.
+     * Collects all indexExtensions from providers and converts to glob patterns.
      */
     getWatchPatterns(): { globPattern: string; kind: number }[] {
         const patterns: { globPattern: string; kind: number }[] = [];
         const watchAll = WatchKind.Create | WatchKind.Change | WatchKind.Delete;
 
         for (const provider of this.providers.values()) {
-            if (!provider.watchExtensions) continue;
-            for (const ext of provider.watchExtensions) {
+            if (!provider.indexExtensions) continue;
+            for (const ext of provider.indexExtensions) {
                 patterns.push({
                     globPattern: `**/*${ext}`,
                     kind: watchAll,

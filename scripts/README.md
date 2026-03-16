@@ -6,20 +6,23 @@ See also: [CONTRIBUTING.md](../CONTRIBUTING.md) | [docs/architecture.md](../docs
 
 | Command              | Description                                           |
 | -------------------- | ----------------------------------------------------- |
-| `pnpm build`         | Build client, server, webviews, TS plugin, CLIs       |
-| `pnpm build:all`     | Build everything including tree-sitter grammars       |
-| `pnpm test`          | Run all tests including integration (see `test.sh`)   |
+| `pnpm build`         | Default repo-wide build: client, server, webviews, TS plugin, CLIs |
+| `pnpm build:all`     | Full build: `pnpm build` plus tree-sitter grammars and editor bundles |
+| `pnpm test`          | Default repo-wide test suite from `test.sh` (excludes grammar and E2E suites) |
+| `pnpm test:all`      | Full test suite: `pnpm test` plus grammar and external transpile suites |
 | `pnpm test:e2e`      | E2E tests (requires `pnpm build` first and host Electron libraries) |
 | `pnpm test:grammars` | Grammar tests (generate, lint, corpus, parse, format) |
 | `pnpm package`       | Create VSIX package                                   |
 
 ### Excluded from `pnpm build`
 
-- **Grammars** (`pnpm build:grammar`) -- too slow for regular dev. Use `pnpm build:all` to include them, or run `pnpm build:grammar` separately.
+- **Grammars** (`pnpm build:grammar`) -- too slow for regular dev. Use `pnpm build:all` for the full build, or run `pnpm build:grammar` separately.
+- **Editor bundles** (`pnpm build:editors`) -- included by `pnpm build:all`, not by `pnpm build`.
 
 ### Excluded from `pnpm test`
 
-- **Grammars** (`pnpm test:grammars`) -- slow. Run separately.
+- **Grammars** (`pnpm test:grammars`) -- slow. Included by `pnpm test:all`, or run separately.
+- **Transpile external** (`pnpm test:external`) -- included by `pnpm test:all`, not by `pnpm test`.
 - **E2E** (`pnpm test:e2e`) -- requires a built extension, a VSCode instance, and host Electron libraries.
 
 ### Excluded from `server/pnpm test:unit`

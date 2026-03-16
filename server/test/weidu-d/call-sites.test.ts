@@ -100,7 +100,7 @@ END
         expect(refs.size).toBe(0);
     });
 
-    it("returns empty symbols (D has no user-defined functions)", () => {
+    it("returns state symbols for workspace navigation", () => {
         const text = `
 BEGIN ~MYMOD~
 IF ~~ THEN BEGIN state1
@@ -108,6 +108,28 @@ IF ~~ THEN BEGIN state1
 END
 `;
         const { symbols } = parseFile(TEST_URI, text);
-        expect(symbols).toHaveLength(0);
+        expect(symbols).toHaveLength(1);
+        expect(symbols[0]?.name).toBe("mymod:state1");
+    });
+
+    it("preserves dialog scope in indexed state symbol names", () => {
+        const text = `
+BEGIN ~DIALOG_A~
+IF ~~ THEN BEGIN 0
+  SAY ~A~
+END
+
+BEGIN ~DIALOG_B~
+IF ~~ THEN BEGIN 0
+  SAY ~B~
+END
+`;
+        const { symbols } = parseFile(TEST_URI, text);
+
+        expect(symbols).toHaveLength(2);
+        expect(symbols.map(symbol => symbol.name)).toEqual([
+            "dialog_a:0",
+            "dialog_b:0",
+        ]);
     });
 });

@@ -16,6 +16,8 @@ import { getStateLabelHover } from "../../src/weidu-d/hover";
 import { formatDocument } from "../../src/weidu-d/format/core";
 import { createFoldingRangesProvider } from "../../src/shared/folding-ranges";
 import { SyntaxType } from "../../src/weidu-d/tree-sitter.d";
+import { FileIndex } from "../../src/core/file-index";
+import { parseFile } from "../../src/weidu-d/file-parser";
 import { loadFixture, findIdentifierPosition, IE_FIXTURES } from "./test-helpers";
 
 const BGT_BASE = join(IE_FIXTURES, "BGT-WeiDU");
@@ -163,6 +165,57 @@ describe("weidu-d integration", () => {
             const prep = prepareRenameSymbol(f.text, pos!);
             expect(prep).not.toBeNull();
             expect(prep!.placeholder).toBe("a31");
+        });
+    });
+
+    // =========================================================================
+    // Workspace Symbols
+    // =========================================================================
+
+    describe("workspace symbols", () => {
+        it("indexes D state labels for workspace search", () => {
+            const f = loadFixture(IE_FIXTURES, "Ascension/ascension/balthazar/d/balth.d");
+
+            const fileIndex = new FileIndex();
+            fileIndex.updateFile(f.uri, parseFile(f.uri, f.text, IE_FIXTURES));
+
+            const results = fileIndex.symbols.searchWorkspaceSymbols("a39");
+            expect(results.length).toBeGreaterThan(0);
+            expect(results.some(result => result.name === "balth:a39")).toBe(true);
+        });
+
+        it("includes D symbols from multiple files", () => {
+            const first = loadFixture(BGT_BASE, "bgt/base/d_bg1/durlyle1.d");
+            const second = loadFixture(IE_FIXTURES, "Ascension/ascension/balthazar/d/balth.d");
+
+            const fileIndex = new FileIndex();
+            fileIndex.updateFile(first.uri, parseFile(first.uri, first.text, IE_FIXTURES));
+            fileIndex.updateFile(second.uri, parseFile(second.uri, second.text, IE_FIXTURES));
+
+            const results = fileIndex.symbols.searchWorkspaceSymbols("");
+            expect(results.length).toBeGreaterThan(100);
+        });
+
+        it("keeps duplicate numeric labels distinguishable by dialog", () => {
+            const text = `
+BEGIN ~A~
+IF ~~ THEN BEGIN 0
+  SAY ~A~
+END
+
+BEGIN ~B~
+IF ~~ THEN BEGIN 0
+  SAY ~B~
+END
+`;
+            const uri = "file:///test/multi-dialog.d";
+
+            const fileIndex = new FileIndex();
+            fileIndex.updateFile(uri, parseFile(uri, text, "/test"));
+
+            const results = fileIndex.symbols.searchWorkspaceSymbols("0");
+            expect(results).toHaveLength(2);
+            expect(results.map(result => result.name)).toEqual(["a:0", "b:0"]);
         });
     });
 

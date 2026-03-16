@@ -22,6 +22,7 @@ import {
     WorkspaceEdit,
 } from "vscode-languageserver/node";
 import type { LanguageProvider, ProviderContext, FormatResult } from "../src/language-provider";
+import { encodeWorkspaceSymbolQuery } from "../../shared/protocol";
 
 // Mock the common module to suppress logs and control file finding during tests
 vi.mock("../src/common", () => ({
@@ -33,6 +34,11 @@ vi.mock("../src/common", () => ({
 // Mock fs.readFileSync for file watching tests
 vi.mock("node:fs", () => ({
     readFileSync: vi.fn(() => "mock file content"),
+}));
+
+// Mock fs/promises.readFile for startup indexing tests
+vi.mock("node:fs/promises", () => ({
+    readFile: vi.fn().mockResolvedValue("mock file content"),
 }));
 
 // Re-import registry after mocks are set up
@@ -633,7 +639,7 @@ describe("ProviderRegistry", () => {
     });
 
     describe("getWatchPatterns()", () => {
-        it("should return empty array if no providers have watch extensions", async () => {
+        it("should return empty array if no providers have index extensions", async () => {
             const registry = await createRegistry();
             registry.register(createMockProvider("test"));
 
@@ -642,8 +648,8 @@ describe("ProviderRegistry", () => {
 
         it("should collect watch patterns from all providers", async () => {
             const registry = await createRegistry();
-            registry.register(createMockProvider("lang1", { watchExtensions: [".h", ".inc"] }));
-            registry.register(createMockProvider("lang2", { watchExtensions: [".tph"] }));
+            registry.register(createMockProvider("lang1", { indexExtensions: [".h", ".inc"] }));
+            registry.register(createMockProvider("lang2", { indexExtensions: [".tph"] }));
 
             const patterns = registry.getWatchPatterns();
 
@@ -672,12 +678,12 @@ describe("ProviderRegistry", () => {
         });
     });
 
-    describe("scanWorkspaceHeaders()", () => {
+    describe("scanWorkspaceFiles()", () => {
         it("should call reloadFileData for each matching file in workspace", async () => {
             const registry = await createRegistry();
             const mockReload = vi.fn();
             registry.register(createMockProvider("test", {
-                watchExtensions: [".tph"],
+                indexExtensions: [".tph"],
                 reloadFileData: mockReload,
             }));
 
@@ -685,7 +691,7 @@ describe("ProviderRegistry", () => {
             const { findFiles } = await import("../src/common");
             vi.mocked(findFiles).mockReturnValue(["lib/utils.tph", "lib/other.tph"]);
 
-            await registry.scanWorkspaceHeaders("/test/workspace");
+            await registry.scanWorkspaceFiles("/test/workspace");
 
             expect(findFiles).toHaveBeenCalledWith("/test/workspace", "tph");
             expect(mockReload).toHaveBeenCalledTimes(2);
@@ -695,28 +701,28 @@ describe("ProviderRegistry", () => {
             const registry = await createRegistry();
             const mockReload = vi.fn();
             registry.register(createMockProvider("test", {
-                watchExtensions: [".tph"],
+                indexExtensions: [".tph"],
                 reloadFileData: mockReload,
             }));
 
-            await registry.scanWorkspaceHeaders(undefined);
+            await registry.scanWorkspaceFiles(undefined);
 
             expect(mockReload).not.toHaveBeenCalled();
         });
 
-        it("should skip providers without watchExtensions", async () => {
+        it("should skip providers without indexExtensions", async () => {
             const registry = await createRegistry();
             const mockReload = vi.fn();
             registry.register(createMockProvider("test", {
                 reloadFileData: mockReload,
-                // No watchExtensions
+                // No indexExtensions
             }));
 
             const { findFiles } = await import("../src/common");
             vi.mocked(findFiles).mockClear();  // Clear any previous calls
             vi.mocked(findFiles).mockReturnValue([]);
 
-            await registry.scanWorkspaceHeaders("/test/workspace");
+            await registry.scanWorkspaceFiles("/test/workspace");
 
             expect(findFiles).not.toHaveBeenCalled();
             expect(mockReload).not.toHaveBeenCalled();
@@ -725,7 +731,7 @@ describe("ProviderRegistry", () => {
         it("should skip providers without reloadFileData", async () => {
             const registry = await createRegistry();
             registry.register(createMockProvider("test", {
-                watchExtensions: [".tph"],
+                indexExtensions: [".tph"],
                 // No reloadFileData
             }));
 
@@ -733,7 +739,7 @@ describe("ProviderRegistry", () => {
             vi.mocked(findFiles).mockReturnValue(["file.tph"]);
 
             // Should not throw
-            await registry.scanWorkspaceHeaders("/test/workspace");
+            await registry.scanWorkspaceFiles("/test/workspace");
         });
 
         it("should handle multiple providers with different extensions", async () => {
@@ -741,11 +747,11 @@ describe("ProviderRegistry", () => {
             const mockReload1 = vi.fn();
             const mockReload2 = vi.fn();
             registry.register(createMockProvider("weidu-tp2", {
-                watchExtensions: [".tph"],
+                indexExtensions: [".tph"],
                 reloadFileData: mockReload1,
             }));
             registry.register(createMockProvider("fallout-ssl", {
-                watchExtensions: [".h"],
+                indexExtensions: [".h"],
                 reloadFileData: mockReload2,
             }));
 
@@ -754,10 +760,40 @@ describe("ProviderRegistry", () => {
                 .mockReturnValueOnce(["lib/a.tph"])  // First call for .tph
                 .mockReturnValueOnce(["lib/b.h"]);   // Second call for .h
 
-            await registry.scanWorkspaceHeaders("/test/workspace");
+            await registry.scanWorkspaceFiles("/test/workspace");
 
             expect(mockReload1).toHaveBeenCalledTimes(1);
             expect(mockReload2).toHaveBeenCalledTimes(1);
+        });
+    });
+
+    describe("handleWatchedFileChange()", () => {
+        it("should route created files using indexExtensions", async () => {
+            const registry = await createRegistry();
+            const mockReload = vi.fn();
+            registry.register(createMockProvider("weidu-d", {
+                indexExtensions: [".d"],
+                reloadFileData: mockReload,
+            }));
+            await registry.init(mockContext);
+
+            registry.handleWatchedFileChange("file:///test/workspace/dialogs/a.d", 1);
+
+            expect(mockReload).toHaveBeenCalledWith("file:///test/workspace/dialogs/a.d", "mock file content");
+        });
+
+        it("should route deleted files using indexExtensions", async () => {
+            const registry = await createRegistry();
+            const mockDeleted = vi.fn();
+            registry.register(createMockProvider("weidu-d", {
+                indexExtensions: [".d"],
+                onWatchedFileDeleted: mockDeleted,
+            }));
+            await registry.init(mockContext);
+
+            registry.handleWatchedFileChange("file:///test/workspace/dialogs/a.d", 3);
+
+            expect(mockDeleted).toHaveBeenCalledWith("file:///test/workspace/dialogs/a.d");
         });
     });
 
@@ -819,6 +855,34 @@ describe("ProviderRegistry", () => {
             const results = registry.workspaceSymbols("");
             expect(results).toHaveLength(1);
             expect(results[0]).toBe(symbol);
+        });
+
+        it("should filter workspace symbols to the scoped language when query is encoded", async () => {
+            const registry = await createRegistry();
+            const scoped = vi.fn().mockReturnValue([]);
+            const other = vi.fn().mockReturnValue([]);
+
+            registry.register(createMockProvider("weidu-d", { workspaceSymbols: scoped }));
+            registry.register(createMockProvider("weidu-tp2", { workspaceSymbols: other }));
+
+            registry.workspaceSymbols(encodeWorkspaceSymbolQuery("label", "weidu-d"));
+
+            expect(scoped).toHaveBeenCalledWith("label");
+            expect(other).not.toHaveBeenCalled();
+        });
+
+        it("should fall back to global aggregation for unscoped workspace symbol queries", async () => {
+            const registry = await createRegistry();
+            const scoped = vi.fn().mockReturnValue([]);
+            const other = vi.fn().mockReturnValue([]);
+
+            registry.register(createMockProvider("weidu-d", { workspaceSymbols: scoped }));
+            registry.register(createMockProvider("weidu-tp2", { workspaceSymbols: other }));
+
+            registry.workspaceSymbols("label");
+
+            expect(scoped).toHaveBeenCalledWith("label");
+            expect(other).toHaveBeenCalledWith("label");
         });
     });
 });

@@ -190,10 +190,11 @@ export interface LanguageProvider {
     // =========================================================================
 
     /**
-     * File extensions this provider watches for changes (e.g., [".tph", ".h"]).
-     * Used to detect external file changes and update indices.
+     * File extensions this provider indexes for startup scan and external file changes
+     * (e.g., [".tph", ".h"]). The registry uses the same list for initial indexing,
+     * file watchers, and delete cleanup so providers do not need separate scan logic.
      */
-    watchExtensions?: string[];
+    indexExtensions?: string[];
 
     /**
      * Called when a watched file is deleted from the workspace.
@@ -207,4 +208,3 @@ export interface LanguageProvider {
      */
     onDocumentClosed?(uri: string): void;
 }
-

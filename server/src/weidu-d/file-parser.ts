@@ -1,10 +1,11 @@
 /**
  * WeiDU D file parser.
- * Extracts cross-file references (state label locations) from a single
+ * Extracts workspace symbols and cross-file references from a single
  * tree-sitter AST parse, returning a unified ParseResult.
  *
- * D files have no user-defined functions/macros, so symbols is always empty.
- * Only the reference index (dialog-scoped state labels) is populated.
+ * D files have no user-defined functions/macros, but state labels are
+ * navigable symbols for workspace search. References use dialog-scoped
+ * composite keys ("dialogFile:labelName").
  *
  * NOTE: reference-finder.ts has structurally similar AST traversal (same node types)
  * but filters by a specific (dialogFile, labelName) pair for single-file rename/references.
@@ -12,10 +13,14 @@
  * must be updated.
  */
 
-import { Location } from "vscode-languageserver/node";
+import { CompletionItemKind, InsertTextFormat, Location, MarkupKind } from "vscode-languageserver/node";
 import type { Node as SyntaxNode } from "web-tree-sitter";
+import { computeDisplayPath, extractFilename } from "../core/location-utils";
 import { type ParseResult, EMPTY_PARSE_RESULT } from "../core/parse-result";
 import { makeRange } from "../core/position-utils";
+import { ScopeLevel, type StateSymbol, SourceType, SymbolKind } from "../core/symbol";
+import { buildSignatureBlock } from "../shared/tooltip-format";
+import { LANG_WEIDU_D_TOOLTIP } from "../core/languages";
 import { SyntaxType } from "./tree-sitter.d";
 import { normalizeDialogFile } from "./state-utils";
 import { parseWithCache, isInitialized } from "./parser";
@@ -25,11 +30,44 @@ function labelKey(dialogFile: string, labelName: string): string {
     return `${dialogFile}:${labelName}`;
 }
 
+function createStateSymbol(
+    uri: string,
+    dialogFile: string,
+    labelNode: SyntaxNode,
+    displayPath: string,
+): StateSymbol {
+    const label = labelNode.text;
+    const scopedName = labelKey(dialogFile, label);
+    return {
+        name: scopedName,
+        kind: SymbolKind.State,
+        location: { uri, range: makeRange(labelNode) },
+        scope: { level: ScopeLevel.File },
+        source: {
+            type: SourceType.Navigation,
+            uri,
+            displayPath,
+        },
+        completion: {
+            label,
+            kind: CompletionItemKind.Field,
+            detail: `state (${dialogFile})`,
+            insertTextFormat: InsertTextFormat.PlainText,
+            labelDetails: { description: displayPath },
+        },
+        hover: {
+            contents: {
+                kind: MarkupKind.Markdown,
+                value: buildSignatureBlock(`state ${scopedName}`, LANG_WEIDU_D_TOOLTIP, displayPath),
+            },
+        },
+    };
+}
+
 /**
- * Parse a D file and return references (state label locations).
- * Symbols is always empty — D files have no user-defined functions/macros.
+ * Parse a D file and return state symbols and references.
  */
-export function parseFile(uri: string, text: string): ParseResult {
+export function parseFile(uri: string, text: string, workspaceRoot?: string): ParseResult {
     if (!isInitialized()) {
         return EMPTY_PARSE_RESULT;
     }
@@ -39,7 +77,9 @@ export function parseFile(uri: string, text: string): ParseResult {
         return EMPTY_PARSE_RESULT;
     }
 
+    const symbols: StateSymbol[] = [];
     const refs = new Map<string, Location[]>();
+    const displayPath = computeDisplayPath(uri, workspaceRoot) || extractFilename(uri);
 
     function addRef(dialogFile: string, labelName: string, loc: Location): void {
         const key = labelKey(dialogFile, labelName);
@@ -57,7 +97,9 @@ export function parseFile(uri: string, text: string): ParseResult {
             const fileNode = node.childForFieldName("file");
             if (fileNode) {
                 const dialogFile = normalizeDialogFile(fileNode.text);
-                collectRefsInScope(node, dialogFile, uri, addRef);
+                collectRefsInScope(node, dialogFile, uri, addRef, (label) => {
+                    symbols.push(createStateSymbol(uri, dialogFile, label, displayPath));
+                });
             }
             // Don't recurse — collectRefsInScope handles children
             return;
@@ -75,7 +117,7 @@ export function parseFile(uri: string, text: string): ParseResult {
     }
 
     visit(tree.rootNode);
-    return { symbols: [], refs };
+    return { symbols, refs };
 }
 
 /** Collect state label refs inside a begin_action or append_action scope. */
@@ -84,12 +126,14 @@ function collectRefsInScope(
     scopeDialog: string,
     uri: string,
     addRef: (dialogFile: string, labelName: string, loc: Location) => void,
+    addSymbol: (labelNode: SyntaxNode) => void,
 ): void {
     function visit(node: SyntaxNode): void {
         // State definition
         if (node.type === SyntaxType.State) {
             const label = node.childForFieldName("label");
             if (label) {
+                addSymbol(label);
                 addRef(scopeDialog, label.text, { uri, range: makeRange(label) });
             }
         }

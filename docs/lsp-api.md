@@ -6,6 +6,7 @@ This document covers:
 
 - standard LSP commands exposed via `workspace/executeCommand`
 - custom requests and notifications used by the full VS Code client
+- repo-specific behavior layered onto standard LSP methods
 - which methods are portable to non-VSCode clients
 
 ## Standard LSP Commands
@@ -121,3 +122,54 @@ These are VS Code extension-host commands, not LSP commands:
 - `extension.bgforge.dialogPreview`
 
 Third-party LSP clients should not rely on these identifiers. Use the standard LSP command ids above instead.
+
+## Standard Method Extensions
+
+The server uses standard LSP methods wherever possible. In one case, the VS Code client and server use a repo-specific convention layered onto a standard request.
+
+### `workspace/symbol`
+
+The server accepts ordinary standard LSP `workspace/symbol` requests:
+
+```json
+{
+  "query": "foo"
+}
+```
+
+With a plain query string, the server performs the default global aggregation across providers.
+
+The VS Code client can also opt into language-scoped results by encoding the active language into the same `query` field:
+
+```json
+{
+  "query": "bgforge-ws:weidu-d:foo"
+}
+```
+
+Format:
+
+- `bgforge-ws:<languageId>:<query>`
+
+Supported `languageId` values:
+
+- `fallout-ssl`
+- `weidu-d`
+- `weidu-tp2`
+
+Behavior:
+
+- scoped query: only the matching provider contributes workspace symbols
+- plain query: all providers with `workspaceSymbols()` contribute results
+
+Compatibility:
+
+- third-party clients do not need to change anything to remain compatible
+- clients that want language-scoped Ctrl+T behavior must opt in by using the encoded query format above
+- this convention is repo-specific and not part of standard LSP
+
+Rationale:
+
+- standard LSP `workspace/symbol` provides only a free-form `query` string
+- it does not carry current document URI or language id
+- the encoding is therefore the only lightweight way for a client to request active-language scoping without defining a separate custom request

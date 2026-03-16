@@ -177,9 +177,12 @@ pnpm build
   +-> build:test          esbuild E2E test bundles
   +-> build:webviews      esbuild webview bundles
 
-pnpm build:all            (build:grammar + build + build:editors)
+pnpm build:all            Full build: build:grammar + build + build:editors
 pnpm build:dev            Minimal build for F5 development (skips CLIs)
 ```
+
+`pnpm build` is the default repo-wide build, not the full build. Use `pnpm build:all`
+when you need grammars and editor bundles too.
 
 ### Key Build Constraints
 
@@ -242,6 +245,11 @@ See [server/INTERNALS.md](../server/INTERNALS.md) for comprehensive documentatio
 - Translation service (.tra/.msg inlay hints)
 - Adding a new provider
 
+Two recent behavior points are easy to miss:
+
+- Provider indexing is registry-driven via `indexExtensions`, not provider-specific startup scans.
+- VS Code workspace-symbol search is scoped to the active document language for `fallout-ssl`, `weidu-d`, and `weidu-tp2`, so Ctrl+T does not mix symbols across languages.
+
 ### Providers
 
 Each provider implements a subset of the `LanguageProvider` interface:
@@ -251,7 +259,7 @@ Each provider implements a subset of the `LanguageProvider` interface:
 | fallout-ssl | x | x | x | x | x | x | x | x | x | .msg | x | sslc | x |
 | fallout-worldmap | x | x | | | | | | | | | | | |
 | weidu-baf | x | x | | | | x | | | | .tra | x | weidu | |
-| weidu-d | x | x | | x | x | x | x | | x | .tra | x | weidu | x |
+| weidu-d | x | x | | x | x | x | x | x | x | .tra | x | weidu | x |
 | weidu-tp2 | x | x | | x | x | x | x | x | x | .tra | x | weidu | x |
 
 ### Transpilers

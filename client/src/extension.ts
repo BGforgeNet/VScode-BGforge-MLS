@@ -16,6 +16,7 @@ import {
     REQUEST_SET_BUILT_IN_COMPILER,
     VSCODE_COMMAND_COMPILE,
     VSCODE_COMMAND_DIALOG_PREVIEW,
+    encodeWorkspaceSymbolQuery,
 } from "../../shared/protocol";
 import { registerBinaryEditor } from "./editors/binaryEditor";
 import { registerDialogTree } from "./dialog-tree/dialogTree";
@@ -29,6 +30,19 @@ const loadingIndicator = new ServerInitializingIndicator(() => {
 });
 const cmd_compile = VSCODE_COMMAND_COMPILE;
 const cmd_dialogPreview = VSCODE_COMMAND_DIALOG_PREVIEW;
+
+function getWorkspaceSymbolScopeLanguageId(): string | undefined {
+    const document = vscode.window.activeTextEditor?.document;
+    if (!document) {
+        return undefined;
+    }
+
+    if (document.languageId === "fallout-ssl" || document.languageId === "weidu-d" || document.languageId === "weidu-tp2") {
+        return document.languageId;
+    }
+
+    return undefined;
+}
 
 export async function activate(context: ExtensionContext) {
     // The server is implemented in node
@@ -81,6 +95,11 @@ export async function activate(context: ExtensionContext) {
         synchronize: {
             // Notify the server about file changes to '.clientrc files contained in the workspace
             fileEvents: workspace.createFileSystemWatcher("**/.clientrc"),
+        },
+        middleware: {
+            provideWorkspaceSymbols: (query, token, next) => {
+                return next(encodeWorkspaceSymbolQuery(query, getWorkspaceSymbolScopeLanguageId()), token);
+            },
         },
     };
 
