@@ -214,8 +214,8 @@ repository:
       - match: \b(Difficulty)\b
       - match: \b(DifficultyGT)\b
       - match: \b(DifficultyLT)\b
-      - match: \b(Disarmed)\b
       - match: \b(DisarmFailed)\b
+      - match: \b(Disarmed)\b
       - match: \b(Entered)\b
       - match: \b(Exists)\b
       - match: \b(ExtendedStateCheck)\b
@@ -223,19 +223,25 @@ repository:
       - match: \b(FallenRanger)\b
       - match: \b(False)\b
       - match: \b(G)\b
+      - match: \b(GGT)\b
+      - match: \b(GLT)\b
       - match: \b(Gender)\b
       - match: \b(General)\b
-      - match: \b(GGT)\b
       - match: \b(Global)\b
       - match: \b(GlobalGT)\b
       - match: \b(GlobalLT)\b
-      - match: \b(GlobalsEqual)\b
-      - match: \b(GlobalsGT)\b
-      - match: \b(GlobalsLT)\b
       - match: \b(GlobalTimerExact)\b
       - match: \b(GlobalTimerExpired)\b
       - match: \b(GlobalTimerNotExpired)\b
-      - match: \b(GLT)\b
+      - match: \b(GlobalsEqual)\b
+      - match: \b(GlobalsGT)\b
+      - match: \b(GlobalsLT)\b
+      - match: \b(HP)\b
+      - match: \b(HPGT)\b
+      - match: \b(HPLT)\b
+      - match: \b(HPPercent)\b
+      - match: \b(HPPercentGT)\b
+      - match: \b(HPPercentLT)\b
       - match: \b(Happiness)\b
       - match: \b(HappinessGT)\b
       - match: \b(HappinessLT)\b
@@ -260,27 +266,21 @@ repository:
       - match: \b(Help)\b
       - match: \b(HitBy)\b
       - match: \b(HotKey)\b
-      - match: \b(HP)\b
-      - match: \b(HPGT)\b
-      - match: \b(HPLT)\b
-      - match: \b(HPPercent)\b
-      - match: \b(HPPercentGT)\b
-      - match: \b(HPPercentLT)\b
+      - match: \b(INI)\b
       - match: \b(IfValidForPartyDialog)\b
       - match: \b(IfValidForPartyDialogue)\b
       - match: \b(ImmuneToSpellLevel)\b
       - match: \b(InActiveArea)\b
-      - match: \b(INI)\b
       - match: \b(InLine)\b
       - match: \b(InMyArea)\b
       - match: \b(InMyGroup)\b
       - match: \b(InParty)\b
       - match: \b(InPartyAllowDead)\b
       - match: \b(InPartySlot)\b
-      - match: \b(InteractingWith)\b
-      - match: \b(InventoryFull)\b
       - match: \b(InWatchersKeep)\b
       - match: \b(InWeaponRange)\b
+      - match: \b(InteractingWith)\b
+      - match: \b(InventoryFull)\b
       - match: \b(IsActive)\b
       - match: \b(IsForcedRandomEncounterActive)\b
       - match: \b(IsGabber)\b
@@ -292,6 +292,7 @@ repository:
       - match: \b(Joins)\b
       - match: \b(Killed)\b
       - match: \b(Kit)\b
+      - match: \b(LOS)\b
       - match: \b(Leaves)\b
       - match: \b(Level)\b
       - match: \b(LevelGT)\b
@@ -302,7 +303,6 @@ repository:
       - match: \b(LocalsEqual)\b
       - match: \b(LocalsGT)\b
       - match: \b(LocalsLT)\b
-      - match: \b(LOS)\b
       - match: \b(ModalState)\b
       - match: \b(ModalStateObject)\b
       - match: \b(Morale)\b
@@ -314,7 +314,6 @@ repository:
       - match: \b(NextTriggerObject)\b
       - match: \b(NightmareModeOn)\b
       - match: \b(NotStateCheck)\b
-      - match: \b(NumberOfTimesTalkedTo)\b
       - match: \b(NumCreature)\b
       - match: \b(NumCreatureGT)\b
       - match: \b(NumCreatureLT)\b
@@ -345,12 +344,13 @@ repository:
       - match: \b(NumTimesTalkedTo)\b
       - match: \b(NumTimesTalkedToGT)\b
       - match: \b(NumTimesTalkedToLT)\b
+      - match: \b(NumberOfTimesTalkedTo)\b
+      - match: \b(OR)\b
       - match: \b(ObjectActionListEmpty)\b
       - match: \b(OnCreation)\b
       - match: \b(OnScreen)\b
-      - match: \b(Opened)\b
       - match: \b(OpenState)\b
-      - match: \b(OR)\b
+      - match: \b(Opened)\b
       - match: \b(OriginalClass)\b
       - match: \b(OutOfAmmo)\b
       - match: \b(PartyGold)\b
@@ -381,10 +381,6 @@ repository:
       - match: \b(Reputation)\b
       - match: \b(ReputationGT)\b
       - match: \b(ReputationLT)\b
-      - match: \b(reserved)\b
-      - match: \b(reserved1)\b
-      - match: \b(reserved2)\b
-      - match: \b(reserved3)\b
       - match: \b(Reset)\b
       - match: \b(Said)\b
       - match: \b(SecretDoorDetected)\b
@@ -412,7 +408,6 @@ repository:
       - match: \b(TookDamage)\b
       - match: \b(TrapTriggered)\b
       - match: \b(Trigger)\b
-      - match: \b(TriggerOverride)\b
       - match: \b(True)\b
       - match: \b(TurnedBy)\b
       - match: \b(Unlocked)\b
@@ -874,7 +869,6 @@ repository:
       - match: \b(Weather)\b
       - match: \b(XEquipItem)\b
       - match: \b(ZoomLock)\b
-      - match: \b(reserved)\b
   actions-extras:
     name: support.function.weidu-baf
     patterns:
