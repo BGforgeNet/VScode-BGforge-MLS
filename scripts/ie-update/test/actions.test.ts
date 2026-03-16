@@ -61,6 +61,66 @@ describe("actionDescAbsoluteUrls", () => {
             "Game not found"
         );
     });
+
+    it("normalizes mixed HTML docs into markdown-friendly text", () => {
+        const desc = [
+            "Use <a href=\"../../file_formats/ie_formats/cre_v1.htm\"><code>CRE</code></a> and ",
+            "<code><a href=\"../../files/ids/bgee/xequip.htm#EQUIP\">EQUIP</a></code>.",
+            "The 8<sup>th</sup> slot uses &quot;quoted&quot; text.",
+        ].join("");
+
+        const result = actionDescAbsoluteUrls(desc, GAMES, "bgee", BASE_URL);
+
+        expect(result).toContain("[CRE](https://gibberlings3.github.io/iesdp/file_formats/ie_formats/cre_v1.htm)");
+        expect(result).toContain("[EQUIP](https://gibberlings3.github.io/iesdp/files/ids/bgee/xequip.htm#EQUIP)");
+        expect(result).toContain("8th");
+        expect(result).toContain("\"quoted\" text.");
+        expect(result).not.toContain("<a ");
+        expect(result).not.toContain("<code>");
+        expect(result).not.toContain("&quot;");
+    });
+
+    it("resolves trigger_link includes to trigger page links", () => {
+        const desc = [
+            "Acts like ",
+            "{% assign text = \"<code>Heard()</code>\" -%} ",
+            "{%- assign anchor = \"0x002F\" -%} ",
+            "{%- include trigger_link.html %}",
+            ".",
+        ].join("");
+
+        const result = actionDescAbsoluteUrls(desc, GAMES, "bgee", BASE_URL);
+
+        expect(result).toContain("[Heard()](https://gibberlings3.github.io/iesdp/scripting/triggers/bgeetriggers.htm#0x002F)");
+        expect(result).not.toContain("trigger_link.html");
+        expect(result).not.toContain("{% assign");
+    });
+
+    it("preserves indentation inside fenced code blocks", () => {
+        const desc = [
+            "Example:",
+            "<br />",
+            "```",
+            "<br />",
+            "IF",
+            "<br />",
+            "  True()",
+            "<br />",
+            "THEN",
+            "<br />",
+            "  RESPONSE #100",
+            "<br />",
+            "    ActionOverride(Player1,Face(10))",
+            "<br />",
+            "END",
+            "<br />",
+            "```",
+        ].join("");
+
+        const result = actionDescAbsoluteUrls(desc, GAMES, "bg2", BASE_URL);
+
+        expect(result).toContain("```\nIF\n  True()\nTHEN\n  RESPONSE #100\n    ActionOverride(Player1,Face(10))\nEND\n```");
+    });
 });
 
 describe("actionDesc", () => {
@@ -132,5 +192,31 @@ describe("actionDetail", () => {
             params: [{ type: "o", name: "Object", ids: "OBJECT" }],
         };
         expect(actionDetail(action)).toBe("TestAction(O:Object*Object)");
+    });
+
+    it("formats known compound type names with readable casing", () => {
+        const action: ActionItem = {
+            n: 1,
+            name: "CreateThing",
+            bg2: 1,
+            params: [
+                { type: "creref", name: "Creature" },
+                { type: "itmref", name: "Item" },
+                { type: "splref", name: "Spell" },
+                { type: "strref", name: "Text" },
+            ],
+        };
+        expect(actionDetail(action)).toBe("CreateThing(CreRef:Creature, ItmRef:Item, SplRef:Spell, StrRef:Text)");
+    });
+
+    it("skips reserved placeholder action names during deduplication", () => {
+        const existing: ActionItem[] = [];
+        const newActions: ActionItem[] = [
+            { n: 1, name: "reserved", bg2: 1 },
+            { n: 2, name: "RealAction", bg2: 1 },
+        ];
+
+        const result = appendUnique(existing, newActions);
+        expect(result.map((item) => item.name)).toEqual(["RealAction"]);
     });
 });

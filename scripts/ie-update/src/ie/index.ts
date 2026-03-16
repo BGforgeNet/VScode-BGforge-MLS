@@ -26,6 +26,8 @@ export {
     actionDetail,
 } from "./actions.js";
 
+export { extractTriggersFromHtml } from "./triggers.js";
+
 export {
     createItemsSeq,
     dumpCompletion,

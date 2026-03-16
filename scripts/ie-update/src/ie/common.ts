@@ -22,6 +22,32 @@ import { COMPLETION_TYPE_CONSTANT } from "./types.js";
 
 export { cmpStr, findFiles, litscal };
 
+const HTML_ENTITY_MAP: Readonly<Record<string, string>> = {
+    nbsp: " ",
+    quot: "\"",
+    apos: "'",
+    lt: "<",
+    gt: ">",
+    amp: "&",
+    mdash: "-",
+    ndash: "-",
+    frasl: "/",
+    longrightarrow: "->",
+    bull: "*",
+    middot: "*",
+    hellip: "...",
+    lsquo: "'",
+    rsquo: "'",
+    ldquo: "\"",
+    rdquo: "\"",
+};
+
+export interface NormalizeHtmlFragmentOptions {
+    readonly resolveHref: (href: string) => string;
+    readonly preprocess?: (html: string) => string;
+    readonly compactBlankLines?: boolean;
+}
+
 /**
  * Sorts strings alphabetically but with longer strings first when one is a
  * prefix of the other. Matches Python's sort_longer_first: compares char by
@@ -221,4 +247,76 @@ export function stripLiquid(text: string): string {
         .replace(/{% capture note %}/g, "")
         .replace(/{% endcapture %} {% include note\.html %}/g, "")
         .replace(/{% endcapture %} {% include info\.html %}/g, "");
+}
+
+/**
+ * Converts a narrow, importer-specific HTML fragment into markdown/plain text.
+ * This is intentionally not a general HTML renderer; callers provide href resolution
+ * and any source-specific preprocessing.
+ */
+export function normalizeHtmlFragment(
+    html: string,
+    options: NormalizeHtmlFragmentOptions
+): string {
+    let result = options.preprocess?.(html) ?? html;
+
+    result = result.replace(/<a\s+href="([^"]*)">([\s\S]*?)<\/a>/gi, (_m, href: string, inner: string) => {
+        const text = htmlInlineToText(inner);
+        return `[${text}](${options.resolveHref(href.trim())})`;
+    });
+
+    result = result.replace(/<code>(\[[\s\S]*?\]\([\s\S]*?\))<\/code>/gi, "$1");
+    result = result.replace(/<code>([\s\S]*?)<\/code>/gi, (_m, inner: string) => `\`${decodeHtmlEntities(inner.trim())}\``);
+    result = result.replace(/<br\s*\/?>/gi, "\n");
+    result = result.replace(/<\/?(?:div|p|span|strong|em)>/gi, "");
+    result = result.replace(/<sup>([\s\S]*?)<\/sup>/gi, (_m, inner: string) => decodeHtmlEntities(inner));
+    result = result.replace(/<[^>]+>/g, "");
+    result = decodeHtmlEntities(result);
+    result = result.replace(/[ \t]+\n/g, "\n");
+
+    if (options.compactBlankLines !== false) {
+        return normalizeMarkdownWhitespace(result);
+    }
+
+    return result.trim();
+}
+
+function normalizeMarkdownWhitespace(text: string): string {
+    const segments = text.replace(/\n{3,}/g, "\n\n").split(/(```[\s\S]*?```)/g);
+    const normalized = segments.map((segment) => {
+        if (segment.startsWith("```") && segment.endsWith("```")) {
+            return normalizeCodeFence(segment);
+        }
+        return normalizeProse(segment);
+    });
+
+    return normalized.join("").trim();
+}
+
+function normalizeProse(text: string): string {
+    const lines = text.split("\n").map((line) => line.trim());
+    return lines.join("\n").replace(/\n\s*\n+/g, "\n");
+}
+
+function normalizeCodeFence(text: string): string {
+    return text
+        .split("\n")
+        .map((line, index, lines) => {
+            if (index === 0 || index === lines.length - 1) {
+                return line.trim();
+            }
+            return line.replace(/[ \t]+$/g, "");
+        })
+        .join("\n");
+}
+
+export function htmlInlineToText(html: string): string {
+    return decodeHtmlEntities(html.replace(/<[^>]+>/g, "").trim());
+}
+
+export function decodeHtmlEntities(text: string): string {
+    return text
+        .replace(/&#x([0-9a-fA-F]+);/g, (_m, hex: string) => String.fromCodePoint(parseInt(hex, 16)))
+        .replace(/&#([0-9]+);/g, (_m, dec: string) => String.fromCodePoint(parseInt(dec, 10)))
+        .replace(/&([a-zA-Z]+);/g, (match, name: string) => HTML_ENTITY_MAP[name] ?? match);
 }

@@ -14,6 +14,7 @@ import {
     appendUnique,
     cmpStr,
     createItemsSeq,
+    extractTriggersFromHtml,
     findFiles,
     litscal,
     stripLiquid,
@@ -31,6 +32,10 @@ import type {
 const IESDP_BASE_URL = "https://gibberlings3.github.io/iesdp/";
 /** Actions stanza key in YAML data */
 const ACTIONS_STANZA = "actions";
+/** Triggers stanza key in YAML data */
+const TRIGGERS_STANZA = "triggers";
+/** Relative path to the BGEE trigger page inside IESDP checkout */
+const BGEE_TRIGGERS_PATH = "scripting/triggers/bgeetriggers.htm";
 
 /**
  * Loads and filters IESDP action YAML files.
@@ -65,7 +70,11 @@ function writeActionsHighlight(
     actions: readonly ActionItem[],
     highlightBaf: string,
 ): void {
-    const actionsHighlight = [...new Set(actions.map((x) => x.name))];
+    const actionsHighlight = [...new Set(
+        actions
+            .map((x) => x.name)
+            .filter((name) => !/^reserved\d*$/i.test(name))
+    )];
     const actionsHighlightPatterns = actionsHighlight
         .map((x) => ({ match: `\\b(${x})\\b` }))
         .sort((a, b) => cmpStr(a.match, b.match));
@@ -151,6 +160,59 @@ function writeActionsCompletion(
 }
 
 /**
+ * Writes BAF trigger completion data to YAML file.
+ */
+function writeTriggersCompletion(
+    dataBaf: string,
+    items: readonly CompletionItem[],
+): void {
+    const bafDataDoc = YAML.parseDocument(fs.readFileSync(dataBaf, "utf8"));
+    let triggersNode = bafDataDoc.get(TRIGGERS_STANZA, true);
+    if (!isMap(triggersNode)) {
+        triggersNode = bafDataDoc.createNode({ type: 3, items: [] });
+        bafDataDoc.set(TRIGGERS_STANZA, triggersNode);
+    }
+    if (!isMap(triggersNode)) {
+        throw new Error(`Expected '${TRIGGERS_STANZA}' map in ${dataBaf}`);
+    }
+    triggersNode.set("type", 3);
+    const itemsSeq = createItemsSeq(bafDataDoc, items, true);
+    triggersNode.set("items", itemsSeq);
+    fs.writeFileSync(
+        dataBaf,
+        bafDataDoc.toString({ lineWidth: 4096, indent: 2, indentSeq: true }),
+        "utf8"
+    );
+}
+
+/**
+ * Writes BAF highlight patterns from sorted trigger names.
+ */
+function writeTriggersHighlight(
+    triggers: readonly CompletionItem[],
+    highlightBaf: string,
+): void {
+    const triggerPatterns = [...new Set(triggers.map((x) => x.name))]
+        .map((x) => ({ match: `\\b(${x})\\b` }))
+        .sort((a, b) => cmpStr(a.match, b.match));
+
+    const bafHighlightDoc = YAML.parseDocument(fs.readFileSync(highlightBaf, "utf8"));
+    const triggersStanzaNode = bafHighlightDoc.getIn(["repository", TRIGGERS_STANZA], true);
+    if (!isMap(triggersStanzaNode)) {
+        throw new Error(`Expected 'repository.${TRIGGERS_STANZA}' map in ${highlightBaf}`);
+    }
+    triggersStanzaNode.set(
+        "patterns",
+        bafHighlightDoc.createNode(triggerPatterns)
+    );
+    fs.writeFileSync(
+        highlightBaf,
+        bafHighlightDoc.toString({ lineWidth: 4096, indent: 2, indentSeq: true }),
+        "utf8"
+    );
+}
+
+/**
  * Loads action YAML files, deduplicates, and writes BAF completion/highlight data.
  */
 function processActions(
@@ -171,6 +233,23 @@ function processActions(
 
     const completionItems = buildActionsCompletion(actions, iesdpGames);
     writeActionsCompletion(dataBaf, completionItems);
+}
+
+/**
+ * Loads trigger HTML, extracts completion items, and writes BAF completion/highlight data.
+ */
+function processTriggers(
+    iesdpDir: string,
+    dataBaf: string,
+    highlightBaf: string,
+): void {
+    const triggersFile = path.join(iesdpDir, BGEE_TRIGGERS_PATH);
+    const html = fs.readFileSync(triggersFile, "utf8");
+    const pageUrl = new URL(BGEE_TRIGGERS_PATH, IESDP_BASE_URL).toString();
+    const triggers = extractTriggersFromHtml(html, pageUrl);
+
+    writeTriggersHighlight(triggers, highlightBaf);
+    writeTriggersCompletion(dataBaf, triggers);
 }
 
 function main(): void {
@@ -194,6 +273,7 @@ function main(): void {
     }
 
     processActions(iesdpDir, dataBaf, highlightBaf);
+    processTriggers(iesdpDir, dataBaf, highlightBaf);
 }
 
 try {

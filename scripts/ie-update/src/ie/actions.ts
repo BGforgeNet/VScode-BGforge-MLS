@@ -4,7 +4,17 @@
  * deduplication, and signature formatting.
  */
 
+import { htmlInlineToText, normalizeHtmlFragment } from "./common.js";
 import type { ActionItem, IESDPGame } from "./types.js";
+
+const DISPLAY_TYPE_NAMES: Readonly<Record<string, string>> = {
+    // Match @bgforge/iets type naming for compound refs (CreRef, ItmRef, SplRef, StrRef)
+    // instead of blindly uppercasing the raw IESDP tokens (creref, itmref, splref, strref).
+    creref: "CreRef",
+    itmref: "ItmRef",
+    splref: "SplRef",
+    strref: "StrRef",
+};
 
 /**
  * Resolves the description for an aliased action by looking up the parent action.
@@ -59,6 +69,14 @@ export function actionDesc(
 /**
  * Resolves relative and variable-based URLs in action descriptions to absolute IESDP URLs.
  * Replaces {{ ids }} and {{ 2da }} template variables, then resolves relative links.
+ *
+ * Rationale: this importer intentionally uses targeted normalization rather than a full HTML
+ * parser/renderer. The IESDP action docs in this pipeline are a narrow, known subset of
+ * markdown plus a few HTML/Jekyll constructs (`<a>`, `<code>`, `<sup>`, `<br>`, wrapper tags,
+ * `trigger_link.html`, common entities). We convert that subset into markdown/plain text for
+ * hover data, not general HTML output. If the source format expands materially, the better
+ * long-term design is to switch this step to an HTML fragment parser plus a small markdown
+ * renderer instead of growing the regex-based normalizer indefinitely.
  */
 export function actionDescAbsoluteUrls(
     desc: string,
@@ -89,7 +107,7 @@ export function actionDescAbsoluteUrls(
         result = result.replace(`](${dst})`, `](${dstAbs})`);
     }
 
-    return result;
+    return normalizeActionMarkup(result, currentUrl);
 }
 
 /**
@@ -132,6 +150,26 @@ function resolveUrl(base: string, relative: string): string {
     return origin + resolved.join("/");
 }
 
+function normalizeActionMarkup(desc: string, currentUrl: string): string {
+    return normalizeHtmlFragment(desc, {
+        preprocess: (html) => replaceTriggerLinkIncludes(html, currentUrl),
+        resolveHref: (href) => resolveUrl(currentUrl, href),
+    });
+}
+
+function replaceTriggerLinkIncludes(desc: string, currentUrl: string): string {
+    let triggerUrl = currentUrl.replace("/scripting/actions/", "/scripting/triggers/");
+    if (/actions\.htm(?=#|$)/.test(triggerUrl)) {
+        triggerUrl = triggerUrl.replace(/actions\.htm(?=#|$)/, "triggers.htm");
+    } else {
+        triggerUrl = triggerUrl.replace(/\/([^/]+?)(?=#|$)/, "/$1triggers.htm");
+    }
+
+    return desc.replace(
+        /\{%-?\s*assign\s+text\s*=\s*"([\s\S]*?)"\s*-?%\}\s*\{%-?\s*assign\s+anchor\s*=\s*"([^"]+)"\s*-?%\}\s*\{%-?\s*include\s+trigger_link\.html\s*-?%\}/g,
+        (_m, text: string, anchor: string) => `[${htmlInlineToText(text)}](${triggerUrl}#${anchor})`
+    );
+}
 /**
  * Appends actions to the list, skipping those whose name already exists.
  * Returns a new array (does not mutate the input).
@@ -142,6 +180,9 @@ export function appendUnique(
 ): readonly ActionItem[] {
     const result = [...actions];
     for (const newAction of newActions) {
+        if (/^reserved\d*$/i.test(newAction.name)) {
+            continue;
+        }
         const exists = result.some((x) => x.name === newAction.name);
         if (!exists) {
             result.push(newAction);
@@ -159,13 +200,21 @@ export function actionDetail(action: ActionItem): string {
         return `${action.name}()`;
     }
     const paramParts = action.params.map((param) => {
-        let part = `${param.type.toUpperCase()}:${param.name}`;
+        let part = `${displayTypeName(param.type)}:${param.name}`;
         if (param.ids !== undefined) {
             part = `${part}*${titleCase(param.ids)}`;
         }
         return part;
     });
     return `${action.name}(${paramParts.join(", ")})`;
+}
+
+function displayTypeName(type: string): string {
+    const mapped = DISPLAY_TYPE_NAMES[type.toLowerCase()];
+    if (mapped) {
+        return mapped;
+    }
+    return type.toUpperCase();
 }
 
 /** Converts a string to title case (first letter uppercase) */
