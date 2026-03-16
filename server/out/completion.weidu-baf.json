@@ -18,12 +18,6 @@
         "category": "keywords"
     },
     {
-        "label": "OR",
-        "kind": 14,
-        "source": "builtin",
-        "category": "keywords"
-    },
-    {
         "label": "GLOBAL",
         "kind": 14,
         "source": "builtin",
@@ -1705,7 +1699,8 @@
         "documentation": {
             "kind": "markdown",
             "value": "```weidu-baf-tooltip\nHelp()\n```\nThis action acts similar to shout, but does not accept values. The range of the Help action is larger than the default visual radius of NPCs (see description of `Shout`).\n```\nIF\n  HitBy([ANYONE],CRUSHING)\nTHEN\n  RESPONSE #50\n    Help()\n    Attack(NearestEnemyOf(Myself))\n  RESPONSE #50\n    RunAwayFrom(NearestEnemyOf(Myself),75)\nEND\n\nIF\n  Help([0.0.GIBBERLING])\nTHEN\n  RESPONSE #100\n    Attack(NearestEnemyOf(LastHelp(Myself)))\nEND\n\nIF\n  See(NearestEnemyOf(Myself))\nTHEN\n  RESPONSE #100\n    Help()\n    AttackReevaluate(NearestEnemyOf(Myself),30)\nEND\n```"
-        }
+        },
+        "detail": "Help()"
     },
     {
         "label": "Hide",
@@ -4025,7 +4020,8 @@
         "documentation": {
             "kind": "markdown",
             "value": "```weidu-baf-tooltip\nHelp(O:Object*)\n```\nReturns true if the specified object shouted for [Help()](https://gibberlings3.github.io/iesdp/scripting/actions/bgeeactions.htm#17) in the two script rounds. Help() has a range of approximately 40."
-        }
+        },
+        "detail": "Help(O:Object*)"
     },
     {
         "label": "Joins",

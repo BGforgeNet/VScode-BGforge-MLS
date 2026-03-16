@@ -57,6 +57,7 @@ interface CompletionResult {
     readonly category: string;
     readonly documentation?: MarkupContent;
     readonly tags?: readonly number[];
+    readonly detail?: string;
 }
 
 interface HoverResult {
@@ -253,6 +254,14 @@ function markdown(value: string): MarkupContent {
  * Generates completion items from data stanzas.
  */
 export function generateCompletion(data: DataFile, tooltipLangId: string): readonly CompletionResult[] {
+    // Count label occurrences across all stanzas
+    const labelCounts = new Map<string, number>();
+    for (const stanza of Object.values(data)) {
+        for (const item of stanza.items) {
+            labelCounts.set(item.name, (labelCounts.get(item.name) ?? 0) + 1);
+        }
+    }
+
     const result: CompletionResult[] = [];
     for (const [stanzaName, stanza] of Object.entries(data)) {
         const kind = stanza.type;
@@ -292,6 +301,9 @@ export function generateCompletion(data: DataFile, tooltipLangId: string): reado
                 category: stanzaName,
                 ...(documentation !== undefined ? { documentation } : {}),
                 ...(tags !== undefined ? { tags } : {}),
+                // Copy detail only for duplicate labels across stanzas.
+                // Non-null assertion is safe: label comes from the same data that built labelCounts.
+                ...(labelCounts.get(label)! > 1 ? { detail } : {}),
             };
 
             result.push(completionItem);
@@ -334,7 +346,18 @@ export function generateHover(data: DataFile, langId: string): Record<string, Ho
                 value += formatDeprecation(item.deprecated);
             }
 
-            result[label] = { contents: markdown(value) };
+            if (result[label]) {
+                // Skip if identical content already present
+                if (result[label]!.contents.value === value) {
+                    continue;
+                }
+                // Merge overloads: append with separator
+                result[label] = {
+                    contents: markdown(result[label]!.contents.value + "\n\n---\n\n" + value),
+                };
+            } else {
+                result[label] = { contents: markdown(value) };
+            }
         }
     }
     return result;

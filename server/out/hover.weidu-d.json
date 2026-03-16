@@ -170,25 +170,25 @@
     "EXTERN": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-d-tooltip\nEXTERN [ IF_FILE_EXISTS ] filename stateLabel\n```\nThe dialogue continues at the state with label stateLabel in the file filename.DLG. The whole transition is not compiled if there's IF_FILE_EXISTS and the file filename doesn't exist."
+            "value": "```weidu-d-tooltip\nEXTERN filename stateNumber\n```\nTransfer to the given state in the given dialogue file.\n\n---\n\n```weidu-d-tooltip\nEXTERN [ IF_FILE_EXISTS ] filename stateLabel\n```\nThe dialogue continues at the state with label stateLabel in the file filename.DLG. The whole transition is not compiled if there's IF_FILE_EXISTS and the file filename doesn't exist."
         }
     },
     "COPY_TRANS": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-d-tooltip\nCOPY_TRANS [ SAFE ] filename stateLabel\n```\nThis instructs WeiDU to copy all of the transitions from the state with the given stateLabel in filename.DLG. This copying takes place before all other D Actions. For example, this is a valid transition list: IF ~Before()~ THEN GOTO my_state COPY_TRANS PLAYER1 33 IF ~After()~ THEN EXTERN SOLA 55 If SAFE is specified, COPY_TRANS will not warn about potentially unsafe uses (use this if you know it is safe)."
+            "value": "```weidu-d-tooltip\nCOPY_TRANS [ SAFE ] filename stateNumber\n```\nAt the end of the CHAIN text, copy all transitions from the given state in the given file. This is useful for interjections (see INTERJECT). If SAFE is specified, CHAIN will not warn about potentially unsafe uses of COPY_TRANS (use this if you know it is safe).\n\n---\n\n```weidu-d-tooltip\nCOPY_TRANS [ SAFE ] filename stateLabel\n```\nThis instructs WeiDU to copy all of the transitions from the state with the given stateLabel in filename.DLG. This copying takes place before all other D Actions. For example, this is a valid transition list: IF ~Before()~ THEN GOTO my_state COPY_TRANS PLAYER1 33 IF ~After()~ THEN EXTERN SOLA 55 If SAFE is specified, COPY_TRANS will not warn about potentially unsafe uses (use this if you know it is safe)."
         }
     },
     "COPY_TRANS_LATE": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-d-tooltip\nCOPY_TRANS_LATE [ SAFE ] filename stateLabel\n```\nSame as COPY_TRANS, but is invoked after all other D Actions."
+            "value": "```weidu-d-tooltip\nCOPY_TRANS_LATE [ SAFE ] filename stateNumber\n```\nSame as above, but only copy after all the other D Actions have been applied.\n\n---\n\n```weidu-d-tooltip\nCOPY_TRANS_LATE [ SAFE ] filename stateLabel\n```\nSame as COPY_TRANS, but is invoked after all other D Actions."
         }
     },
     "EXIT": {
         "contents": {
             "kind": "markdown",
-            "value": "```weidu-d-tooltip\nEXIT\n```\nThe conversation ends."
+            "value": "```weidu-d-tooltip\nEXIT\n```\nAt the end of the CHAIN text, exit the dialogue.\n\n---\n\n```weidu-d-tooltip\nEXIT\n```\nThe conversation ends."
         }
     },
     "APPENDI": {

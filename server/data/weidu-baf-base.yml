@@ -4,7 +4,7 @@ keywords:
     - name: IF
     - name: THEN
     - name: RESPONSE
-    - name: OR
+    # - name: OR  # defined as a trigger in weidu-baf-iesdp.yml
     - name: GLOBAL
     - name: LOCALS
     - name: MYAREA

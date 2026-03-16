@@ -196,6 +196,44 @@ describe("generateHover", () => {
         const result = generateHover(data, "lang");
         expect(result["f"]!.contents.value).toContain("int f(int x)");
     });
+
+    it("merges hover for same-name items across stanzas", () => {
+        const data = {
+            actions: { type: 3, items: [{ name: "Help", detail: "Help()", doc: "Action doc." }] },
+            triggers: { type: 3, items: [{ name: "Help", detail: "Help(O:Object*)", doc: "Trigger doc." }] },
+        };
+        const result = generateHover(data, "lang");
+        expect(result["Help"]).toBeDefined();
+        const value = result["Help"]!.contents.value;
+        expect(value).toContain("Help()");
+        expect(value).toContain("Help(O:Object*)");
+        expect(value).toContain("Action doc.");
+        expect(value).toContain("Trigger doc.");
+        expect(value).toContain("---");
+    });
+});
+
+describe("generateCompletion detail propagation", () => {
+    it("adds detail for duplicated labels across stanzas", () => {
+        const data = {
+            actions: { type: 3, items: [{ name: "Help", detail: "Help()" }] },
+            triggers: { type: 3, items: [{ name: "Help", detail: "Help(O:Object*)" }] },
+        };
+        const result = generateCompletion(data, "test-lang");
+        const helpItems = result.filter((r) => r.label === "Help");
+        expect(helpItems).toHaveLength(2);
+        for (const item of helpItems) {
+            expect(item.detail).toBeDefined();
+        }
+    });
+
+    it("omits detail for unique labels even when detail differs from label", () => {
+        const data = {
+            actions: { type: 3, items: [{ name: "Continue", detail: "Continue()" }] },
+        };
+        const result = generateCompletion(data, "test-lang");
+        expect(result[0]!.detail).toBeUndefined();
+    });
 });
 
 // -- WeiDU-format tests --

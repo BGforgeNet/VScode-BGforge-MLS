@@ -697,7 +697,8 @@
         "documentation": {
             "kind": "markdown",
             "value": "```weidu-tp2-tooltip\nBEGIN componentName [ component flags... ] TP2 Action list\n```\nStarts a new component. Each component has a name, optional component flags (DESIGNATED, GROUP, etc.), and a list of actions to perform."
-        }
+        },
+        "detail": "BEGIN componentName [ component flags... ] TP2 Action list"
     },
     {
         "label": "LANGUAGE",
@@ -2479,7 +2480,8 @@
         "documentation": {
             "kind": "markdown",
             "value": "```weidu-tp2-tooltip\nEVALUATE_BUFFER\n```\nAny WeiDU variables (like %myvar%) inside the current file (which should probably be a plain text file in order for this to make much sense) are replaced by their values. Example: <<<<<<<< .../mymod-inlined/script.baf IF See(%myvar%) THEN RESPONSE #100 Kill(%myvar%) END >>>>>>>> EXTEND_TOP ~sola.bcs~ ~.../mymod-inlined/script.baf~ SPRINT myvar = ~\"Anomen\"~ EVALUATE_BUFFER Those two actions extend the top of sola.bcs with the script block IF See(\"Anomen\") THEN RESPONSE #100 Kill(\"Anomen\") END. You can also use EVALUATE_BUFFER in COMPILE actions or before strings in values. You may use EVAL as a synonym for EVALUATE_BUFFER."
-        }
+        },
+        "detail": "EVALUATE_BUFFER"
     },
     {
         "label": "EVALUATE_BUFFER_SPECIAL",
@@ -3835,7 +3837,8 @@
         "label": "BEGIN",
         "kind": 14,
         "source": "builtin",
-        "category": "value"
+        "category": "value",
+        "detail": "BEGIN"
     },
     {
         "label": "ELSE",
@@ -4487,7 +4490,8 @@
         "documentation": {
             "kind": "markdown",
             "value": "```weidu-tp2-tooltip\nEVALUATE_BUFFER variable\n```\nUser variables inside the given string are evaluated one additional time. You may prepend `EVALUATE_BUFFER` when a value is called for and you would normally use a string. You may also use it for `SET` and `SPRINT` statements. Example:\n```\nSPRINT x ~y~\nSET y = 5\nSPRINT z EVALUATE_BUFFER ~tricky %%x%%~\nSET EVALUATE_BUFFER \"%x%\" += 77\nPATCH_PRINT \"y is %y% ; z is %z%\"\n```\nThis prints out `y is 82 ; z is tricky 5`. You may also do hackery like `FILE_SIZE \"myfile\" \"%%indirection%%\"`. Be very careful with this feature."
-        }
+        },
+        "detail": "EVALUATE_BUFFER variable"
     },
     {
         "label": "EVAL",
@@ -5593,7 +5597,8 @@
         "documentation": {
             "kind": "markdown",
             "value": "```weidu-tp2-tooltip\nSTR_VAR\n```\nString variable"
-        }
+        },
+        "detail": "STR_VAR"
     },
     {
         "label": "TARGET_IMMUNE",
@@ -5783,7 +5788,8 @@
         "documentation": {
             "kind": "markdown",
             "value": "```weidu-tp2-tooltip\nSTR_VAR\n```\nString variable"
-        }
+        },
+        "detail": "STR_VAR"
     },
     {
         "label": "RET",
