@@ -3626,7 +3626,7 @@
         "category": "sfall-functions",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nvoid art_cache_clear()\n```\nClears the cache of FRM image files loaded into memory."
+            "value": "```fallout-ssl-tooltip\nvoid art_cache_clear\n```\nClears the cache of FRM image files loaded into memory."
         }
     },
     {
@@ -3676,7 +3676,7 @@
         "category": "sfall-functions",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nint eax_available()\n```\nObsolete since sfall 2.1a. Always returns 0."
+            "value": "```fallout-ssl-tooltip\nint eax_available\n```\nObsolete since sfall 2.1a. Always returns 0."
         }
     },
     {
@@ -3716,7 +3716,7 @@
         "category": "sfall-functions",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nint car_gas_amount()\n```\nReturns the current amount of fuel in player's car (between 0 and 80000).\nTo change fuel amount, use vanilla function: `metarule(METARULE_GIVE_CAR_GAS, amount)` - `amount` can be positive or negative.\n"
+            "value": "```fallout-ssl-tooltip\nint car_gas_amount\n```\nReturns the current amount of fuel in player's car (between 0 and 80000).\nTo change fuel amount, use vanilla function: `metarule(METARULE_GIVE_CAR_GAS, amount)` - `amount` can be positive or negative.\n"
         }
     },
     {
@@ -3746,7 +3746,7 @@
         "category": "sfall-functions",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nbool attack_is_aimed()\n```\nReturns 1 if the aimed attack mode is selected, 0 otherwise."
+            "value": "```fallout-ssl-tooltip\nbool attack_is_aimed\n```\nReturns 1 if the aimed attack mode is selected, 0 otherwise."
         }
     },
     {
@@ -3816,7 +3816,7 @@
         "category": "sfall-functions",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nint get_combat_free_move()\n```\nReturns available \"bonus move\" points of the current critter's turn. For NPCs, this is always 0 unless changed by `set_combat_free_move`"
+            "value": "```fallout-ssl-tooltip\nint get_combat_free_move\n```\nReturns available \"bonus move\" points of the current critter's turn. For NPCs, this is always 0 unless changed by `set_combat_free_move`"
         }
     },
     {
@@ -3936,7 +3936,7 @@
         "category": "sfall-functions",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nint get_cursor_mode()\n```\nReturns the current cursor mode. Values: 0 - movement cursor, 1 - command cursor, 2 - targeting cursor, 4 to 10 are Skilldex skills (yellow targeting cursor)."
+            "value": "```fallout-ssl-tooltip\nint get_cursor_mode\n```\nReturns the current cursor mode. Values: 0 - movement cursor, 1 - command cursor, 2 - targeting cursor, 4 to 10 are Skilldex skills (yellow targeting cursor)."
         }
     },
     {
@@ -4166,7 +4166,7 @@
         "category": "sfall-functions",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nint get_screen_height()\n```\nThe graphics functions are only available if the user is using graphics mode 4 or 5. Use `graphics_funcs_available` to check; it returns 1 if you can use them or 0 if you can't. Calling graphics functions when `graphics_funcs_available` returns 0 will do nothing."
+            "value": "```fallout-ssl-tooltip\nint get_screen_height\n```\nThe graphics functions are only available if the user is using graphics mode 4 or 5. Use `graphics_funcs_available` to check; it returns 1 if you can use them or 0 if you can't. Calling graphics functions when `graphics_funcs_available` returns 0 will do nothing."
         }
     },
     {
@@ -4176,7 +4176,7 @@
         "category": "sfall-functions",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nint get_screen_width()\n```\nThe graphics functions are only available if the user is using graphics mode 4 or 5. Use `graphics_funcs_available` to check; it returns 1 if you can use them or 0 if you can't. Calling graphics functions when `graphics_funcs_available` returns 0 will do nothing."
+            "value": "```fallout-ssl-tooltip\nint get_screen_width\n```\nThe graphics functions are only available if the user is using graphics mode 4 or 5. Use `graphics_funcs_available` to check; it returns 1 if you can use them or 0 if you can't. Calling graphics functions when `graphics_funcs_available` returns 0 will do nothing."
         }
     },
     {
@@ -4286,7 +4286,7 @@
         "category": "sfall-functions",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nmixed get_sfall_arg()\n```\nGets the next argument from sfall. Each time it's called it returns the next argument, or otherwise it returns 0 if there are no more arguments left. You can arbitrarily get the value of any argument using the `sfall_func1(\"get_sfall_arg_at\", argNum)` function."
+            "value": "```fallout-ssl-tooltip\nmixed get_sfall_arg\n```\nGets the next argument from sfall. Each time it's called it returns the next argument, or otherwise it returns 0 if there are no more arguments left. You can arbitrarily get the value of any argument using the `sfall_func1(\"get_sfall_arg_at\", argNum)` function."
         }
     },
     {
@@ -4306,7 +4306,7 @@
         "category": "sfall-functions",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nint get_sfall_args()\n```\nReturns all hook arguments as a new temp array."
+            "value": "```fallout-ssl-tooltip\nint get_sfall_args\n```\nReturns all hook arguments as a new temp array."
         }
     },
     {
@@ -4316,7 +4316,7 @@
         "category": "sfall-functions",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nint init_hook()\n```\nThe hook script equivalent of `game_loaded`; it returns 1 when the script is loaded for the first time or when the player reloads the game, and 0 otherwise."
+            "value": "```fallout-ssl-tooltip\nint init_hook\n```\nThe hook script equivalent of `game_loaded`; it returns 1 when the script is loaded for the first time or when the player reloads the game, and 0 otherwise."
         }
     },
     {
@@ -4456,7 +4456,7 @@
         "category": "sfall-functions",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nvoid display_stats()\n```\n- Updates player's stats in the inventory display window or on the character screen.\n- NOTE: works only when the interface window is opened\n"
+            "value": "```fallout-ssl-tooltip\nvoid display_stats\n```\n- Updates player's stats in the inventory display window or on the character screen.\n- NOTE: works only when the interface window is opened\n"
         }
     },
     {
@@ -4476,7 +4476,7 @@
         "category": "sfall-functions",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nint get_mouse_buttons()\n```\nReturns the number of the mouse button that is currently pressed (1 - left, 2 - right, 3 - left+right, 4 - middle, 0 otherwise)."
+            "value": "```fallout-ssl-tooltip\nint get_mouse_buttons\n```\nReturns the number of the mouse button that is currently pressed (1 - left, 2 - right, 3 - left+right, 4 - middle, 0 otherwise)."
         }
     },
     {
@@ -4486,7 +4486,7 @@
         "category": "sfall-functions",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nint get_mouse_x()\n```"
+            "value": "```fallout-ssl-tooltip\nint get_mouse_x\n```"
         }
     },
     {
@@ -4496,7 +4496,7 @@
         "category": "sfall-functions",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nint get_mouse_y()\n```"
+            "value": "```fallout-ssl-tooltip\nint get_mouse_y\n```"
         }
     },
     {
@@ -4666,7 +4666,7 @@
         "category": "sfall-functions",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nvoid intface_hide()\n```\nHides main interface."
+            "value": "```fallout-ssl-tooltip\nvoid intface_hide\n```\nHides main interface."
         }
     },
     {
@@ -4676,7 +4676,7 @@
         "category": "sfall-functions",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nbool intface_is_hidden()\n```\nReturns 1 if interface is currently hidden, 0 otherwise."
+            "value": "```fallout-ssl-tooltip\nbool intface_is_hidden\n```\nReturns 1 if interface is currently hidden, 0 otherwise."
         }
     },
     {
@@ -4696,7 +4696,7 @@
         "category": "sfall-functions",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nvoid intface_show()\n```\nShows main interface."
+            "value": "```fallout-ssl-tooltip\nvoid intface_show\n```\nShows main interface."
         }
     },
     {
@@ -4706,7 +4706,7 @@
         "category": "sfall-functions",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nvoid exec_map_update_scripts()\n```\nExecutes `map_update_p_proc` for all objects on map and global/hook scripts as well."
+            "value": "```fallout-ssl-tooltip\nvoid exec_map_update_scripts\n```\nExecutes `map_update_p_proc` for all objects on map and global/hook scripts as well."
         }
     },
     {
@@ -4736,7 +4736,7 @@
         "category": "sfall-functions",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\narray get_map_enter_position()\n```\nReturns an array of the player's position data (index: 0 - tile, 1 - elevation, 2 - rotation) when entering the map through exit grids. If entering from the world map, the tile value will be -1. Should be called in `map_enter_p_proc` procedure to get the correct position data."
+            "value": "```fallout-ssl-tooltip\narray get_map_enter_position\n```\nReturns an array of the player's position data (index: 0 - tile, 1 - elevation, 2 - rotation) when entering the map through exit grids. If entering from the world map, the tile value will be -1. Should be called in `map_enter_p_proc` procedure to get the correct position data."
         }
     },
     {
@@ -4986,7 +4986,7 @@
         "category": "sfall-functions",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nObjectPtr dialog_obj()\n```\nReturns a pointer to the object (critter) the player is having a conversation or bartering with."
+            "value": "```fallout-ssl-tooltip\nObjectPtr dialog_obj\n```\nReturns a pointer to the object (critter) the player is having a conversation or bartering with."
         }
     },
     {
@@ -5026,7 +5026,7 @@
         "category": "sfall-functions",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nObjectPtr loot_obj()\n```\nReturns a pointer to the target object (container or critter) of the loot screen."
+            "value": "```fallout-ssl-tooltip\nObjectPtr loot_obj\n```\nReturns a pointer to the target object (container or critter) of the loot screen."
         }
     },
     {
@@ -5066,7 +5066,7 @@
         "category": "sfall-functions",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nObjectPtr real_dude_obj()\n```\nReturns the initial `dude_obj` after `set_dude_obj` was used."
+            "value": "```fallout-ssl-tooltip\nObjectPtr real_dude_obj\n```\nReturns the initial `dude_obj` after `set_dude_obj` was used."
         }
     },
     {
@@ -5196,7 +5196,7 @@
         "category": "sfall-functions",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nint game_loaded()\n```\nReturns 1 the first time it is called after a new game or game load, and 0 any time after. It works on an individual basis for each script, so one script wont interfere with others. Its primary use is for global scripts, so that they know when to call `set_global_script_repeat`, but it can be called from normal scripts too."
+            "value": "```fallout-ssl-tooltip\nint game_loaded\n```\nReturns 1 the first time it is called after a new game or game load, and 0 any time after. It works on an individual basis for each script, so one script wont interfere with others. Its primary use is for global scripts, so that they know when to call `set_global_script_repeat`, but it can be called from normal scripts too."
         }
     },
     {
@@ -5216,7 +5216,7 @@
         "category": "sfall-functions",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nint get_game_mode()\n```\nA more flexible version of in_world_map. It will return a set of flags indicating which mode the game is currently in. These flags are the same as those used in the `set_shader_mode function`."
+            "value": "```fallout-ssl-tooltip\nint get_game_mode\n```\nA more flexible version of in_world_map. It will return a set of flags indicating which mode the game is currently in. These flags are the same as those used in the `set_shader_mode function`."
         }
     },
     {
@@ -5246,7 +5246,7 @@
         "category": "sfall-functions",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nint get_light_level()\n```\nReturns ambient light level in range 0..65536. The value returned by get_light_level may not exactly match that set by `set_light_level`, as `set_light_level` applies modifiers from the Night Vision perk."
+            "value": "```fallout-ssl-tooltip\nint get_light_level\n```\nReturns ambient light level in range 0..65536. The value returned by get_light_level may not exactly match that set by `set_light_level`, as `set_light_level` applies modifiers from the Night Vision perk."
         }
     },
     {
@@ -5276,7 +5276,7 @@
         "category": "sfall-functions",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nint get_unspent_ap_bonus()\n```\nGets the AC bonus you receive per unused action point at the end of your turn in combat. To allow for fractional values, the value given if divided by 4. (Hence the default value is 4 and not 1.)"
+            "value": "```fallout-ssl-tooltip\nint get_unspent_ap_bonus\n```\nGets the AC bonus you receive per unused action point at the end of your turn in combat. To allow for fractional values, the value given if divided by 4. (Hence the default value is 4 and not 1.)"
         }
     },
     {
@@ -5286,7 +5286,7 @@
         "category": "sfall-functions",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nint get_unspent_ap_perk_bonus()\n```\nSimilar to `get_unspent_ap_bonus`, but accounts for the extra AC granted by the H2H Evade perk. (The default value of this is also 4, equivalent to doubling the original bonus."
+            "value": "```fallout-ssl-tooltip\nint get_unspent_ap_perk_bonus\n```\nSimilar to `get_unspent_ap_bonus`, but accounts for the extra AC granted by the H2H Evade perk. (The default value of this is also 4, equivalent to doubling the original bonus."
         }
     },
     {
@@ -5296,7 +5296,7 @@
         "category": "sfall-functions",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nint get_uptime()\n```\nJust a wrapper around the windows GetTickCount() function. It's useful for making time fade effects in shaders, since they already have access to the current tick count."
+            "value": "```fallout-ssl-tooltip\nint get_uptime\n```\nJust a wrapper around the windows GetTickCount() function. It's useful for making time fade effects in shaders, since they already have access to the current tick count."
         }
     },
     {
@@ -5306,7 +5306,7 @@
         "category": "sfall-functions",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nint get_viewport_x()\n```"
+            "value": "```fallout-ssl-tooltip\nint get_viewport_x\n```"
         }
     },
     {
@@ -5316,7 +5316,7 @@
         "category": "sfall-functions",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nint get_viewport_y()\n```"
+            "value": "```fallout-ssl-tooltip\nint get_viewport_y\n```"
         }
     },
     {
@@ -5356,7 +5356,7 @@
         "category": "sfall-functions",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nint input_funcs_available()\n```\n(DEPRECATED) The input functions are only available if the user has the input hook turned on in `ddraw.ini`. Use `input_funcs_available` to check."
+            "value": "```fallout-ssl-tooltip\nint input_funcs_available\n```\n(DEPRECATED) The input functions are only available if the user has the input hook turned on in `ddraw.ini`. Use `input_funcs_available` to check."
         }
     },
     {
@@ -5396,7 +5396,7 @@
         "category": "sfall-functions",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nint nb_create_char()\n```\n(DEPRECATED) Reserved for the brotherhood tactical training mod, and should be avoided. Not implemented, always returns 0."
+            "value": "```fallout-ssl-tooltip\nint nb_create_char\n```\n(DEPRECATED) Reserved for the brotherhood tactical training mod, and should be avoided. Not implemented, always returns 0."
         }
     },
     {
@@ -5406,7 +5406,7 @@
         "category": "sfall-functions",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nvoid resume_game()\n```"
+            "value": "```fallout-ssl-tooltip\nvoid resume_game\n```"
         }
     },
     {
@@ -5526,7 +5526,7 @@
         "category": "sfall-functions",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nvoid set_pipboy_available(int available)\n```\nSets the availability of the pipboy in the game. Use 0 to disable the pipboy, and 1 or 2 to enable it (value 2 does not mark the `VSUIT_MOVIE` movie as \"played\")."
+            "value": "```fallout-ssl-tooltip\nvoid set_pipboy_available(int available)\n```\nSets the availability of the pipboy in the game. Use 0 to disable the pipboy, and 1 or 2 to enable it (value 2 does not change the player's default appearance).\n- The availability state will be reset each time the player reloads the game.\n- __NOTE:__ starting from sfall 4.4.6/3.8.46, value 1 no longer marks the `VSUIT_MOVIE` movie as \"played\". Use `mark_movie_played(VSUIT_MOVIE)` instead if you want the old behavior.\n"
         }
     },
     {
@@ -5616,7 +5616,7 @@
         "category": "sfall-functions",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nvoid stop_game()\n```"
+            "value": "```fallout-ssl-tooltip\nvoid stop_game\n```"
         }
     },
     {
@@ -5656,7 +5656,7 @@
         "category": "sfall-functions",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nObjectPtr outlined_object()\n```\nReturns an object that is currently highlighted by hovering the mouse above it."
+            "value": "```fallout-ssl-tooltip\nObjectPtr outlined_object\n```\nReturns an object that is currently highlighted by hovering the mouse above it."
         }
     },
     {
@@ -5696,7 +5696,7 @@
         "category": "sfall-functions",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nvoid clear_selectable_perks()\n```\nRestores the \"select a perk\" box to its default state."
+            "value": "```fallout-ssl-tooltip\nvoid clear_selectable_perks\n```\nRestores the \"select a perk\" box to its default state."
         }
     },
     {
@@ -5746,7 +5746,7 @@
         "category": "sfall-functions",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nvoid hide_real_perks()\n```\nPrevent the \"select a perk\" box from displaying any of the original 119 perks."
+            "value": "```fallout-ssl-tooltip\nvoid hide_real_perks\n```\nPrevent the \"select a perk\" box from displaying any of the original 119 perks."
         }
     },
     {
@@ -6066,7 +6066,7 @@
         "category": "sfall-functions",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nvoid show_real_perks()\n```\nReverts the effect os `hide_real_perks`."
+            "value": "```fallout-ssl-tooltip\nvoid show_real_perks\n```\nReverts the effect os `hide_real_perks`."
         }
     },
     {
@@ -6346,7 +6346,7 @@
         "category": "sfall-functions",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nint get_available_skill_points()\n```"
+            "value": "```fallout-ssl-tooltip\nint get_available_skill_points\n```"
         }
     },
     {
@@ -6636,7 +6636,7 @@
         "category": "sfall-functions",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nvoid add_iface_tag()\n```\nAdds one custom box to the current boxes, and returns the number of the added tag (-1 if the tags limit is exceeded. The maximum number of boxes is limited to 126 tags.\n`show_iface_tag`, `hide_iface_tag` and `is_iface_tag_active` relate to the boxes that appear above the interface such as SNEAK and LEVEL. You can use 0 for **SNEAK** (starting from sfall 4.4.4/3.8.44), 3 for **LEVEL**, 4 for **ADDICT**, and 5 to (4 + the value of BoxBarCount in `ddraw.ini`) for custom boxes. Remember to add your messages to `intrface.msg` and set up the font colours in `ddraw.ini` if you're going to use custom boxes. Starting from sfall 4.1/3.8.12, `is_iface_tag_active` can also be used to check 0 for **SNEAK**, 1 for **POISONED**, and 2 for **RADIATED**.\n"
+            "value": "```fallout-ssl-tooltip\nvoid add_iface_tag\n```\nAdds one custom box to the current boxes, and returns the number of the added tag (-1 if the tags limit is exceeded. The maximum number of boxes is limited to 126 tags.\n`show_iface_tag`, `hide_iface_tag` and `is_iface_tag_active` relate to the boxes that appear above the interface such as SNEAK and LEVEL. You can use 0 for **SNEAK** (starting from sfall 4.4.4/3.8.44), 3 for **LEVEL**, 4 for **ADDICT**, and 5 to (4 + the value of BoxBarCount in `ddraw.ini`) for custom boxes. Remember to add your messages to `intrface.msg` and set up the font colours in `ddraw.ini` if you're going to use custom boxes. Starting from sfall 4.1/3.8.12, `is_iface_tag_active` can also be used to check 0 for **SNEAK**, 1 for **POISONED**, and 2 for **RADIATED**.\n"
         }
     },
     {
@@ -6776,7 +6776,7 @@
         "category": "sfall-functions",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nvoid tile_refresh_display()\n```\nRedraws the game scene (tiles, walls, objects, etc.)."
+            "value": "```fallout-ssl-tooltip\nvoid tile_refresh_display\n```\nRedraws the game scene (tiles, walls, objects, etc.)."
         }
     },
     {
@@ -6836,7 +6836,7 @@
         "category": "sfall-functions",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nint sfall_ver_build()\n```"
+            "value": "```fallout-ssl-tooltip\nint sfall_ver_build\n```"
         }
     },
     {
@@ -6846,7 +6846,7 @@
         "category": "sfall-functions",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nint sfall_ver_major()\n```"
+            "value": "```fallout-ssl-tooltip\nint sfall_ver_major\n```"
         }
     },
     {
@@ -6856,7 +6856,7 @@
         "category": "sfall-functions",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nint sfall_ver_minor()\n```"
+            "value": "```fallout-ssl-tooltip\nint sfall_ver_minor\n```"
         }
     },
     {
@@ -7136,7 +7136,7 @@
         "category": "sfall-functions",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nint get_window_under_mouse()\n```\nReturns the internal ID of the top-most window under mouse cursor."
+            "value": "```fallout-ssl-tooltip\nint get_window_under_mouse\n```\nReturns the internal ID of the top-most window under mouse cursor."
         }
     },
     {
@@ -7206,7 +7206,7 @@
         "category": "sfall-functions",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nint get_world_map_x_pos()\n```\nThe mapper manual lists the functions `world_map_x_pos` and `world_map_y_pos`, which supposedly return the player's x and y positions on the world map. `get_world_map_x/y_pos` are included here anyway, because I was unable to get those original functions to work, or even to find any evidence that they existed in game."
+            "value": "```fallout-ssl-tooltip\nint get_world_map_x_pos\n```\nThe mapper manual lists the functions `world_map_x_pos` and `world_map_y_pos`, which supposedly return the player's x and y positions on the world map. `get_world_map_x/y_pos` are included here anyway, because I was unable to get those original functions to work, or even to find any evidence that they existed in game."
         }
     },
     {
@@ -7216,7 +7216,7 @@
         "category": "sfall-functions",
         "documentation": {
             "kind": "markdown",
-            "value": "```fallout-ssl-tooltip\nint get_world_map_y_pos()\n```\nThe mapper manual lists the functions `world_map_x_pos` and `world_map_y_pos`, which supposedly return the player's x and y positions on the world map. `get_world_map_x/y_pos` are included here anyway, because I was unable to get those original functions to work, or even to find any evidence that they existed in game."
+            "value": "```fallout-ssl-tooltip\nint get_world_map_y_pos\n```\nThe mapper manual lists the functions `world_map_x_pos` and `world_map_y_pos`, which supposedly return the player's x and y positions on the world map. `get_world_map_x/y_pos` are included here anyway, because I was unable to get those original functions to work, or even to find any evidence that they existed in game."
         }
     },
     {

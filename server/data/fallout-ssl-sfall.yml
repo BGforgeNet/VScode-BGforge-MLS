@@ -139,7 +139,7 @@ sfall-functions:
       doc: |-
         Works exactly like `create_array`, only created array becomes "temporary".
     - name: art_cache_clear
-      detail: void art_cache_clear()
+      detail: void art_cache_clear
       doc: |-
         Clears the cache of FRM image files loaded into memory.
     - name: art_exists
@@ -153,7 +153,7 @@ sfall-functions:
     - name: set_hero_style
       detail: void set_hero_style(int style)
     - name: eax_available
-      detail: int eax_available()
+      detail: int eax_available
       doc: |-
         Obsolete since sfall 2.1a. Always returns 0.
     - name: play_sfall_sound
@@ -171,7 +171,7 @@ sfall-functions:
       doc: |-
         Stops looping `mp3/wav/wma` files previously launched by `play_sfall_sound`. All sounds effects will be stopped on game reload, looping or not. Does not require `AllowDShowSound` to be set to 1 in `ddraw.ini`.
     - name: car_gas_amount
-      detail: int car_gas_amount()
+      detail: int car_gas_amount
       doc: |
         Returns the current amount of fuel in player's car (between 0 and 80000).
         To change fuel amount, use vanilla function: `metarule(METARULE_GIVE_CAR_GAS, amount)` - `amount` can be positive or negative.
@@ -186,7 +186,7 @@ sfall-functions:
         - Should be called before going to the world map
         - Vanilla art index is 433
     - name: attack_is_aimed
-      detail: bool attack_is_aimed()
+      detail: bool attack_is_aimed
       doc: |-
         Returns 1 if the aimed attack mode is selected, 0 otherwise.
     - name: block_combat
@@ -214,7 +214,7 @@ sfall-functions:
       doc: |-
         Gets the hit percentage modifiers for aiming at specific bodyparts. Valid bodypart id's are from 0 to 8.
     - name: get_combat_free_move
-      detail: int get_combat_free_move()
+      detail: int get_combat_free_move
       doc: |-
         Returns available "bonus move" points of the current critter's turn. For NPCs, this is always 0 unless changed by `set_combat_free_move`
     - name: get_critical_table
@@ -266,7 +266,7 @@ sfall-functions:
         - `centerMult/targetMult`: multiplier values are capped at divisor values
         - __NOTE:__ refer to the description of **ComputeSpray_\*** settings in ddraw.ini for details of the bullet distribution of burst attacks
     - name: get_cursor_mode
-      detail: int get_cursor_mode()
+      detail: int get_cursor_mode
       doc: |-
         Returns the current cursor mode. Values: 0 - movement cursor, 1 - command cursor, 2 - targeting cursor, 4 to 10 are Skilldex skills (yellow targeting cursor).
     - name: set_cursor_mode
@@ -364,11 +364,11 @@ sfall-functions:
       doc: |-
         The graphics functions are only available if the user is using graphics mode 4 or 5. Use `graphics_funcs_available` to check; it returns 1 if you can use them or 0 if you can't. Calling graphics functions when `graphics_funcs_available` returns 0 will do nothing.
     - name: get_screen_height
-      detail: int get_screen_height()
+      detail: int get_screen_height
       doc: |-
         The graphics functions are only available if the user is using graphics mode 4 or 5. Use `graphics_funcs_available` to check; it returns 1 if you can use them or 0 if you can't. Calling graphics functions when `graphics_funcs_available` returns 0 will do nothing.
     - name: get_screen_width
-      detail: int get_screen_width()
+      detail: int get_screen_width
       doc: |-
         The graphics functions are only available if the user is using graphics mode 4 or 5. Use `graphics_funcs_available` to check; it returns 1 if you can use them or 0 if you can't. Calling graphics functions when `graphics_funcs_available` returns 0 will do nothing.
     - name: get_shader_texture
@@ -415,7 +415,7 @@ sfall-functions:
       doc: |-
         The graphics functions are only available if the user is using graphics mode 4 or 5. Use `graphics_funcs_available` to check; it returns 1 if you can use them or 0 if you can't. Calling graphics functions when `graphics_funcs_available` returns 0 will do nothing.
     - name: get_sfall_arg
-      detail: mixed get_sfall_arg()
+      detail: mixed get_sfall_arg
       doc: |-
         Gets the next argument from sfall. Each time it's called it returns the next argument, or otherwise it returns 0 if there are no more arguments left. You can arbitrarily get the value of any argument using the `sfall_func1("get_sfall_arg_at", argNum)` function.
     - name: get_sfall_arg_at
@@ -423,11 +423,11 @@ sfall-functions:
       doc: |-
         Gets the value of hook argument with the specified argument number (first argument of hook starts from 0)
     - name: get_sfall_args
-      detail: int get_sfall_args()
+      detail: int get_sfall_args
       doc: |-
         Returns all hook arguments as a new temp array.
     - name: init_hook
-      detail: int init_hook()
+      detail: int init_hook
       doc: |-
         The hook script equivalent of `game_loaded`; it returns 1 when the script is loaded for the first time or when the player reloads the game, and 0 otherwise.
     - name: register_hook
@@ -523,7 +523,7 @@ sfall-functions:
       doc: |-
         Writes an integer or a string value to an ini file in the Fallout directory. If the ini file does not exist, it will be created The setting argument works in the same way as in `get_ini_setting`, seperate the file name, section and key with a "|" character. __Note:__ the file name is limited to 63 chars (including the extension), the section name is limited to 32 characters.
     - name: display_stats
-      detail: void display_stats()
+      detail: void display_stats
       doc: |
         - Updates player's stats in the inventory display window or on the character screen.
         - NOTE: works only when the interface window is opened
@@ -532,13 +532,13 @@ sfall-functions:
       doc: |-
         Redraws inventory items list in the inventory/loot/barter screens. Argument invSide specifies which side needs to be redrawn: 0 - the player, 1 - target (container/NPC in loot/barter screens), -1 - both sides (same as without argument).
     - name: get_mouse_buttons
-      detail: int get_mouse_buttons()
+      detail: int get_mouse_buttons
       doc: |-
         Returns the number of the mouse button that is currently pressed (1 - left, 2 - right, 3 - left+right, 4 - middle, 0 otherwise).
     - name: get_mouse_x
-      detail: int get_mouse_x()
+      detail: int get_mouse_x
     - name: get_mouse_y
-      detail: int get_mouse_y()
+      detail: int get_mouse_y
     - name: key_pressed
       detail: int key_pressed(int dxScancode)
     - name: tap_key
@@ -601,11 +601,11 @@ sfall-functions:
       doc: |-
         Unjams a lock immediately without having to wait until the next day, or leave the map and then return after 24 hours. __Does not work__ in `use_skill_on_p_proc` procedure.
     - name: intface_hide
-      detail: void intface_hide()
+      detail: void intface_hide
       doc: |-
         Hides main interface.
     - name: intface_is_hidden
-      detail: bool intface_is_hidden()
+      detail: bool intface_is_hidden
       doc: |-
         Returns 1 if interface is currently hidden, 0 otherwise.
     - name: intface_redraw
@@ -615,11 +615,11 @@ sfall-functions:
         - redraws main game interface, useful to reflect changes after directly changing current player weapons or stats
         - `winType`: the type number of the interface window (see `WINTYPE_*` constants in **sfall.h**). Pass `-1` to redraw all interface windows.
     - name: intface_show
-      detail: void intface_show()
+      detail: void intface_show
       doc: |-
         Shows main interface.
     - name: exec_map_update_scripts
-      detail: void exec_map_update_scripts()
+      detail: void exec_map_update_scripts
       doc: |-
         Executes `map_update_p_proc` for all objects on map and global/hook scripts as well.
     - name: force_encounter
@@ -632,7 +632,7 @@ sfall-functions:
         Does the same thing as force_encounter, but allows the specification of some extra options (see **sfall.h** for available flags).
         Forcing a random encounter on a map that is not normally used for random encounters may cause the player to lose the car, if they have it. In this case use `force_encounter_with_flags` with the `ENCOUNTER_FLAG_NO_CAR` flag set.
     - name: get_map_enter_position
-      detail: array get_map_enter_position()
+      detail: array get_map_enter_position
       doc: |-
         Returns an array of the player's position data (index: 0 - tile, 1 - elevation, 2 - rotation) when entering the map through exit grids. If entering from the world map, the tile value will be -1. Should be called in `map_enter_p_proc` procedure to get the correct position data.
     - name: get_terrain_name
@@ -740,7 +740,7 @@ sfall-functions:
       doc: |-
         These functions are similar to `has_fake_*/set_fake_*/set_selectable_perk` functions, but apply to the specified party member NPC (including `dude_obj`)
     - name: dialog_obj
-      detail: ObjectPtr dialog_obj()
+      detail: ObjectPtr dialog_obj
       doc: |-
         Returns a pointer to the object (critter) the player is having a conversation or bartering with.
     - name: get_flags
@@ -757,7 +757,7 @@ sfall-functions:
         - accepts a pointer to an object and returns its scriptID (line number in `scripts.lst`), or 0 if the object is unscripted.
         - returns -1 on argument error.
     - name: loot_obj
-      detail: ObjectPtr loot_obj()
+      detail: ObjectPtr loot_obj
       doc: |-
         Returns a pointer to the target object (container or critter) of the loot screen.
     - name: obj_is_carrying_obj
@@ -778,7 +778,7 @@ sfall-functions:
         - passing False to the includeDude argument will ignore dude_obj
           - **NOTE:** to get an object located on a tile when the cursor is in movement mode (hexagon cursor), use the `tile_under_cursor` function
     - name: real_dude_obj
-      detail: ObjectPtr real_dude_obj()
+      detail: ObjectPtr real_dude_obj
       doc: |-
         Returns the initial `dude_obj` after `set_dude_obj` was used.
     - name: remove_script
@@ -841,13 +841,13 @@ sfall-functions:
       doc: |-
         Creates new spatial script with given SID, at given tile, and radius.
     - name: game_loaded
-      detail: int game_loaded()
+      detail: int game_loaded
       doc: |-
         Returns 1 the first time it is called after a new game or game load, and 0 any time after. It works on an individual basis for each script, so one script wont interfere with others. Its primary use is for global scripts, so that they know when to call `set_global_script_repeat`, but it can be called from normal scripts too.
     - name: gdialog_get_barter_mod
       detail: int gdialog_get_barter_mod
     - name: get_game_mode
-      detail: int get_game_mode()
+      detail: int get_game_mode
       doc: |-
         A more flexible version of in_world_map. It will return a set of flags indicating which mode the game is currently in. These flags are the same as those used in the `set_shader_mode function`.
     - name: get_inven_ap_cost
@@ -857,7 +857,7 @@ sfall-functions:
     - name: get_kill_counter
       detail: int get_kill_counter(int critterType)
     - name: get_light_level
-      detail: int get_light_level()
+      detail: int get_light_level
       doc: |-
         Returns ambient light level in range 0..65536. The value returned by get_light_level may not exactly match that set by `set_light_level`, as `set_light_level` applies modifiers from the Night Vision perk.
     - name: get_npc_level
@@ -867,21 +867,21 @@ sfall-functions:
       doc: |-
         Used to read the in-memory copies of the .pro files Fallout makes when they are loaded. The offset refers to the offset in memory from the start of the proto to the element you are reading.
     - name: get_unspent_ap_bonus
-      detail: int get_unspent_ap_bonus()
+      detail: int get_unspent_ap_bonus
       doc: |-
         Gets the AC bonus you receive per unused action point at the end of your turn in combat. To allow for fractional values, the value given if divided by 4. (Hence the default value is 4 and not 1.)
     - name: get_unspent_ap_perk_bonus
-      detail: int get_unspent_ap_perk_bonus()
+      detail: int get_unspent_ap_perk_bonus
       doc: |-
         Similar to `get_unspent_ap_bonus`, but accounts for the extra AC granted by the H2H Evade perk. (The default value of this is also 4, equivalent to doubling the original bonus.
     - name: get_uptime
-      detail: int get_uptime()
+      detail: int get_uptime
       doc: |-
         Just a wrapper around the windows GetTickCount() function. It's useful for making time fade effects in shaders, since they already have access to the current tick count.
     - name: get_viewport_x
-      detail: int get_viewport_x()
+      detail: int get_viewport_x
     - name: get_viewport_y
-      detail: int get_viewport_y()
+      detail: int get_viewport_y
     - name: get_year
       detail: int get_year
     - name: hero_select_win
@@ -891,7 +891,7 @@ sfall-functions:
       doc: |-
         Takes a party member PID or an NPC name (deprecated, for compatibility with sfall 4.1.5/3.8.15 or earlier) as an argument. The NPC must be in your party. This function ignores player level requirements and the minimum 3 player level delay between NPC level gains. It also ignores the random element, regardless of sfall's `NPCAutoLevel` or `PartyMemberNonRandomLevelUp` setting.
     - name: input_funcs_available
-      detail: int input_funcs_available()
+      detail: int input_funcs_available
       doc: |-
         (DEPRECATED) The input functions are only available if the user has the input hook turned on in `ddraw.ini`. Use `input_funcs_available` to check.
     - name: mark_movie_played
@@ -905,11 +905,11 @@ sfall-functions:
     - name: mod_kill_counter
       detail: void mod_kill_counter(int critterType, int amount)
     - name: nb_create_char
-      detail: int nb_create_char()
+      detail: int nb_create_char
       doc: |-
         (DEPRECATED) Reserved for the brotherhood tactical training mod, and should be avoided. Not implemented, always returns 0.
     - name: resume_game
-      detail: void resume_game()
+      detail: void resume_game
     - name: set_base_hit_chance_mod
       detail: void set_base_hit_chance_mod(int max, int mod)
     - name: set_base_pickpocket_mod
@@ -942,8 +942,10 @@ sfall-functions:
         Effects all critters rather than just the player and can set the maximum in range from 0 to 999.
     - name: set_pipboy_available
       detail: void set_pipboy_available(int available)
-      doc: |-
-        Sets the availability of the pipboy in the game. Use 0 to disable the pipboy, and 1 or 2 to enable it (value 2 does not mark the `VSUIT_MOVIE` movie as "played").
+      doc: |
+        Sets the availability of the pipboy in the game. Use 0 to disable the pipboy, and 1 or 2 to enable it (value 2 does not change the player's default appearance).
+        - The availability state will be reset each time the player reloads the game.
+        - __NOTE:__ starting from sfall 4.4.6/3.8.46, value 1 no longer marks the `VSUIT_MOVIE` movie as "played". Use `mark_movie_played(VSUIT_MOVIE)` instead if you want the old behavior.
     - name: set_proto_data
       detail: void set_proto_data(int pid, int offset, int value)
       doc: |-
@@ -971,7 +973,7 @@ sfall-functions:
       doc: |-
         Returns 1 if last sneak attempt (roll against skill) was successful, 0 otherwise. This calls an internal engine function which is used to determine the perception range of critters (which you can override using `HOOK_WITHINPERCEPTION`).
     - name: stop_game
-      detail: void stop_game()
+      detail: void stop_game
     - name: toggle_active_hand
       detail: void toggle_active_hand
     - name: unwield_slot
@@ -985,7 +987,7 @@ sfall-functions:
       doc: |-
         Gets the current outline color for an object.
     - name: outlined_object
-      detail: ObjectPtr outlined_object()
+      detail: ObjectPtr outlined_object
       doc: |-
         Returns an object that is currently highlighted by hovering the mouse above it.
     - name: set_outline
@@ -1001,7 +1003,7 @@ sfall-functions:
     - name: apply_heaveho_fix
       detail: void apply_heaveho_fix
     - name: clear_selectable_perks
-      detail: void clear_selectable_perks()
+      detail: void clear_selectable_perks
       doc: |-
         Restores the "select a perk" box to its default state.
     - name: get_perk_available
@@ -1017,7 +1019,7 @@ sfall-functions:
       doc: |-
         Returns the number of levels the player has of the traits with the given name or ID of extra trait.
     - name: hide_real_perks
-      detail: void hide_real_perks()
+      detail: void hide_real_perks
       doc: |-
         Prevent the "select a perk" box from displaying any of the original 119 perks.
     - name: perk_add_mode
@@ -1099,7 +1101,7 @@ sfall-functions:
     - name: set_swiftlearner_mod
       detail: void set_swiftlearner_mod(int bonus)
     - name: show_real_perks
-      detail: void show_real_perks()
+      detail: void show_real_perks
       doc: |-
         Reverts the effect os `hide_real_perks`.
     - name: set_quest_failure_value
@@ -1233,7 +1235,7 @@ sfall-functions:
       doc: |-
         Clears all set timer events for the current global script.
     - name: get_available_skill_points
-      detail: int get_available_skill_points()
+      detail: int get_available_skill_points
     - name: get_critter_skill_points
       detail: int get_critter_skill_points(int critter, int skill)
       doc: |-
@@ -1357,7 +1359,7 @@ sfall-functions:
         - If length is negative - it means so many characters will be omitted from the end of string (example: `substr("test", 0, -2)` will return string without last 2 characters: "te").
         - If length is zero - it will return a string from the starting position to the end of the string. **New behavior** for sfall 4.2.2/3.8.22
     - name: add_iface_tag
-      detail: void add_iface_tag()
+      detail: void add_iface_tag
       doc: |
         Adds one custom box to the current boxes, and returns the number of the added tag (-1 if the tags limit is exceeded. The maximum number of boxes is limited to 126 tags.
         `show_iface_tag`, `hide_iface_tag` and `is_iface_tag_active` relate to the boxes that appear above the interface such as SNEAK and LEVEL. You can use 0 for **SNEAK** (starting from sfall 4.4.4/3.8.44), 3 for **LEVEL**, 4 for **ADDICT**, and 5 to (4 + the value of BoxBarCount in `ddraw.ini`) for custom boxes. Remember to add your messages to `intrface.msg` and set up the font colours in `ddraw.ini` if you're going to use custom boxes. Starting from sfall 4.1/3.8.12, `is_iface_tag_active` can also be used to check 0 for **SNEAK**, 1 for **POISONED**, and 2 for **RADIATED**.
@@ -1418,7 +1420,7 @@ sfall-functions:
       doc: |-
         Returns light intensity at the given tile in range from 0 to 65535.
     - name: tile_refresh_display
-      detail: void tile_refresh_display()
+      detail: void tile_refresh_display
       doc: |-
         Redraws the game scene (tiles, walls, objects, etc.).
     - name: tile_under_cursor
@@ -1437,11 +1439,11 @@ sfall-functions:
       doc: |-
         Returns type of the given value: VALTYPE_INT, VALTYPE_FLOAT or VALTYPE_STR.
     - name: sfall_ver_build
-      detail: int sfall_ver_build()
+      detail: int sfall_ver_build
     - name: sfall_ver_major
-      detail: int sfall_ver_major()
+      detail: int sfall_ver_major
     - name: sfall_ver_minor
-      detail: int sfall_ver_minor()
+      detail: int sfall_ver_minor
     - name: fs_copy
       detail: int fs_copy(string path, string source)
       doc: |-
@@ -1573,7 +1575,7 @@ sfall-functions:
                       (use standard syntax to access array values, e.g. `winRect.top`, `winRect.bottom`)
         - returns -1 if the specified attribute cannot be obtained
     - name: get_window_under_mouse
-      detail: int get_window_under_mouse()
+      detail: int get_window_under_mouse
       doc: |-
         Returns the internal ID of the top-most window under mouse cursor.
     - name: interface_art_draw
@@ -1647,11 +1649,11 @@ sfall-functions:
         Fills the rectangle area of the currently selected script window with the specified color, or clears the window with transparent (index 0) color (call the function without arguments).
         - `color`: the color index in the game palette (from 0 to 255)
     - name: get_world_map_x_pos
-      detail: int get_world_map_x_pos()
+      detail: int get_world_map_x_pos
       doc: |-
         The mapper manual lists the functions `world_map_x_pos` and `world_map_y_pos`, which supposedly return the player's x and y positions on the world map. `get_world_map_x/y_pos` are included here anyway, because I was unable to get those original functions to work, or even to find any evidence that they existed in game.
     - name: get_world_map_y_pos
-      detail: int get_world_map_y_pos()
+      detail: int get_world_map_y_pos
       doc: |-
         The mapper manual lists the functions `world_map_x_pos` and `world_map_y_pos`, which supposedly return the player's x and y positions on the world map. `get_world_map_x/y_pos` are included here anyway, because I was unable to get those original functions to work, or even to find any evidence that they existed in game.
     - name: set_world_map_pos
