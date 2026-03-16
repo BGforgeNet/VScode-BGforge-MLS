@@ -1,0 +1,4 @@
+interface:
+  display_name: "TDD"
+  short_description: "Drive code changes with failing tests first."
+  default_prompt: "Use this skill when implementing or modifying code with a test-driven workflow: write or identify a failing test first, make the smallest change to pass, then refactor and verify."
