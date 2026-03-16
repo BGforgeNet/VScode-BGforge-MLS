@@ -10,6 +10,7 @@ This file provides guidance to AI agents (Claude, Gemini, etc.) when working wit
 - **URI normalization:** All URIs entering the provider system are normalized via `normalizeUri()` from `core/normalized-uri.ts`. The `ProviderRegistry` handles this at the gateway. If you add new URI-accepting methods to the registry, normalize them. If you use URIs as Map/Set keys elsewhere, use `NormalizedUri` branded type.
 - **User-facing messages:** Never call `connection.window.showInformationMessage/showWarningMessage/showErrorMessage` directly in server code. Use `showInfo()`, `showWarning()`, `showError()`, or `showErrorWithActions()` from `user-messages.ts` — they auto-decode `file://` URIs to readable paths. An oxlint rule enforces this.
 - **Temporary artifacts:** Put transient test/build files under the repo-level `tmp/` directory (or `os.tmpdir()` when system temp is required). Do not create ad hoc temp directories under source trees like `server/test/`, `cli/test/`, or `scripts/**`.
+- **Avoid parallel logic when extending an existing transform/helper path.** If a change adds a second implementation of behavior that already exists elsewhere in the repo (for example a second HTML-to-markdown normalizer, parser cleanup path, or provider indexing lifecycle), stop and check whether the logic should be shared instead. Treat this as a review concern, not optional cleanup.
 
 ## Project Overview
 

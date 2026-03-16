@@ -16,7 +16,8 @@ Use a strict red-green-refactor loop unless that is impossible.
 5. Make the smallest production change that turns the test green.
 6. Re-run the focused test.
 7. Refactor only after the behavior is proven.
-8. Finish with the smallest broader verification justified by the change.
+8. During refactor, explicitly check whether the new implementation duplicated an existing helper, transform, parser pass, or lifecycle path. If it did, either consolidate it now or document why duplication is intentional.
+9. Finish with the smallest broader verification justified by the change.
 
 ## Test Selection
 
@@ -52,6 +53,7 @@ For refactors:
 - Prefer one small production patch over speculative cleanup
 - If the test exposes missing seams, introduce only the seam needed to make the behavior testable
 - Keep test and production changes paired; do not leave broad unrelated cleanup in the same pass
+- If the green fix required copying logic from another code path, treat deduplication review as part of the refactor step before you call the task done
 
 ## Verification
 
@@ -59,6 +61,7 @@ Always report:
 
 - The focused failing test you added or changed
 - The focused command used to make it pass
+- Whether the refactor step found any duplicated logic and what you did about it
 - Any broader verification you ran
 - Any reason TDD could not be followed exactly
 
