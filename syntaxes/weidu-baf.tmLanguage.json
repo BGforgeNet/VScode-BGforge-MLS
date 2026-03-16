@@ -604,11 +604,11 @@
           "name": "entity.name.function.trigger.weidu-baf"
         },
         {
-          "match": "\\b(Disarmed)\\b",
+          "match": "\\b(DisarmFailed)\\b",
           "name": "entity.name.function.trigger.weidu-baf"
         },
         {
-          "match": "\\b(DisarmFailed)\\b",
+          "match": "\\b(Disarmed)\\b",
           "name": "entity.name.function.trigger.weidu-baf"
         },
         {
@@ -640,15 +640,19 @@
           "name": "entity.name.function.trigger.weidu-baf"
         },
         {
+          "match": "\\b(GGT)\\b",
+          "name": "entity.name.function.trigger.weidu-baf"
+        },
+        {
+          "match": "\\b(GLT)\\b",
+          "name": "entity.name.function.trigger.weidu-baf"
+        },
+        {
           "match": "\\b(Gender)\\b",
           "name": "entity.name.function.trigger.weidu-baf"
         },
         {
           "match": "\\b(General)\\b",
-          "name": "entity.name.function.trigger.weidu-baf"
-        },
-        {
-          "match": "\\b(GGT)\\b",
           "name": "entity.name.function.trigger.weidu-baf"
         },
         {
@@ -664,18 +668,6 @@
           "name": "entity.name.function.trigger.weidu-baf"
         },
         {
-          "match": "\\b(GlobalsEqual)\\b",
-          "name": "entity.name.function.trigger.weidu-baf"
-        },
-        {
-          "match": "\\b(GlobalsGT)\\b",
-          "name": "entity.name.function.trigger.weidu-baf"
-        },
-        {
-          "match": "\\b(GlobalsLT)\\b",
-          "name": "entity.name.function.trigger.weidu-baf"
-        },
-        {
           "match": "\\b(GlobalTimerExact)\\b",
           "name": "entity.name.function.trigger.weidu-baf"
         },
@@ -688,7 +680,39 @@
           "name": "entity.name.function.trigger.weidu-baf"
         },
         {
-          "match": "\\b(GLT)\\b",
+          "match": "\\b(GlobalsEqual)\\b",
+          "name": "entity.name.function.trigger.weidu-baf"
+        },
+        {
+          "match": "\\b(GlobalsGT)\\b",
+          "name": "entity.name.function.trigger.weidu-baf"
+        },
+        {
+          "match": "\\b(GlobalsLT)\\b",
+          "name": "entity.name.function.trigger.weidu-baf"
+        },
+        {
+          "match": "\\b(HP)\\b",
+          "name": "entity.name.function.trigger.weidu-baf"
+        },
+        {
+          "match": "\\b(HPGT)\\b",
+          "name": "entity.name.function.trigger.weidu-baf"
+        },
+        {
+          "match": "\\b(HPLT)\\b",
+          "name": "entity.name.function.trigger.weidu-baf"
+        },
+        {
+          "match": "\\b(HPPercent)\\b",
+          "name": "entity.name.function.trigger.weidu-baf"
+        },
+        {
+          "match": "\\b(HPPercentGT)\\b",
+          "name": "entity.name.function.trigger.weidu-baf"
+        },
+        {
+          "match": "\\b(HPPercentLT)\\b",
           "name": "entity.name.function.trigger.weidu-baf"
         },
         {
@@ -788,27 +812,7 @@
           "name": "entity.name.function.trigger.weidu-baf"
         },
         {
-          "match": "\\b(HP)\\b",
-          "name": "entity.name.function.trigger.weidu-baf"
-        },
-        {
-          "match": "\\b(HPGT)\\b",
-          "name": "entity.name.function.trigger.weidu-baf"
-        },
-        {
-          "match": "\\b(HPLT)\\b",
-          "name": "entity.name.function.trigger.weidu-baf"
-        },
-        {
-          "match": "\\b(HPPercent)\\b",
-          "name": "entity.name.function.trigger.weidu-baf"
-        },
-        {
-          "match": "\\b(HPPercentGT)\\b",
-          "name": "entity.name.function.trigger.weidu-baf"
-        },
-        {
-          "match": "\\b(HPPercentLT)\\b",
+          "match": "\\b(INI)\\b",
           "name": "entity.name.function.trigger.weidu-baf"
         },
         {
@@ -825,10 +829,6 @@
         },
         {
           "match": "\\b(InActiveArea)\\b",
-          "name": "entity.name.function.trigger.weidu-baf"
-        },
-        {
-          "match": "\\b(INI)\\b",
           "name": "entity.name.function.trigger.weidu-baf"
         },
         {
@@ -856,19 +856,19 @@
           "name": "entity.name.function.trigger.weidu-baf"
         },
         {
-          "match": "\\b(InteractingWith)\\b",
-          "name": "entity.name.function.trigger.weidu-baf"
-        },
-        {
-          "match": "\\b(InventoryFull)\\b",
-          "name": "entity.name.function.trigger.weidu-baf"
-        },
-        {
           "match": "\\b(InWatchersKeep)\\b",
           "name": "entity.name.function.trigger.weidu-baf"
         },
         {
           "match": "\\b(InWeaponRange)\\b",
+          "name": "entity.name.function.trigger.weidu-baf"
+        },
+        {
+          "match": "\\b(InteractingWith)\\b",
+          "name": "entity.name.function.trigger.weidu-baf"
+        },
+        {
+          "match": "\\b(InventoryFull)\\b",
           "name": "entity.name.function.trigger.weidu-baf"
         },
         {
@@ -916,6 +916,10 @@
           "name": "entity.name.function.trigger.weidu-baf"
         },
         {
+          "match": "\\b(LOS)\\b",
+          "name": "entity.name.function.trigger.weidu-baf"
+        },
+        {
           "match": "\\b(Leaves)\\b",
           "name": "entity.name.function.trigger.weidu-baf"
         },
@@ -953,10 +957,6 @@
         },
         {
           "match": "\\b(LocalsLT)\\b",
-          "name": "entity.name.function.trigger.weidu-baf"
-        },
-        {
-          "match": "\\b(LOS)\\b",
           "name": "entity.name.function.trigger.weidu-baf"
         },
         {
@@ -1001,10 +1001,6 @@
         },
         {
           "match": "\\b(NotStateCheck)\\b",
-          "name": "entity.name.function.trigger.weidu-baf"
-        },
-        {
-          "match": "\\b(NumberOfTimesTalkedTo)\\b",
           "name": "entity.name.function.trigger.weidu-baf"
         },
         {
@@ -1128,6 +1124,14 @@
           "name": "entity.name.function.trigger.weidu-baf"
         },
         {
+          "match": "\\b(NumberOfTimesTalkedTo)\\b",
+          "name": "entity.name.function.trigger.weidu-baf"
+        },
+        {
+          "match": "\\b(OR)\\b",
+          "name": "entity.name.function.trigger.weidu-baf"
+        },
+        {
           "match": "\\b(ObjectActionListEmpty)\\b",
           "name": "entity.name.function.trigger.weidu-baf"
         },
@@ -1140,15 +1144,11 @@
           "name": "entity.name.function.trigger.weidu-baf"
         },
         {
-          "match": "\\b(Opened)\\b",
-          "name": "entity.name.function.trigger.weidu-baf"
-        },
-        {
           "match": "\\b(OpenState)\\b",
           "name": "entity.name.function.trigger.weidu-baf"
         },
         {
-          "match": "\\b(OR)\\b",
+          "match": "\\b(Opened)\\b",
           "name": "entity.name.function.trigger.weidu-baf"
         },
         {
@@ -1272,22 +1272,6 @@
           "name": "entity.name.function.trigger.weidu-baf"
         },
         {
-          "match": "\\b(reserved)\\b",
-          "name": "entity.name.function.trigger.weidu-baf"
-        },
-        {
-          "match": "\\b(reserved1)\\b",
-          "name": "entity.name.function.trigger.weidu-baf"
-        },
-        {
-          "match": "\\b(reserved2)\\b",
-          "name": "entity.name.function.trigger.weidu-baf"
-        },
-        {
-          "match": "\\b(reserved3)\\b",
-          "name": "entity.name.function.trigger.weidu-baf"
-        },
-        {
           "match": "\\b(Reset)\\b",
           "name": "entity.name.function.trigger.weidu-baf"
         },
@@ -1393,10 +1377,6 @@
         },
         {
           "match": "\\b(Trigger)\\b",
-          "name": "entity.name.function.trigger.weidu-baf"
-        },
-        {
-          "match": "\\b(TriggerOverride)\\b",
           "name": "entity.name.function.trigger.weidu-baf"
         },
         {
@@ -3230,10 +3210,6 @@
         },
         {
           "match": "\\b(ZoomLock)\\b",
-          "name": "support.function.weidu-baf"
-        },
-        {
-          "match": "\\b(reserved)\\b",
           "name": "support.function.weidu-baf"
         }
       ]

@@ -12,19 +12,24 @@
       "name": "meta.weidu-d-tooltip",
       "patterns": [
         {
-          "include": "#datatypes"
+          "include": "#datatypes",
+          "name": "meta.weidu-d-tooltip"
         },
         {
-          "include": "#strings"
+          "include": "#strings",
+          "name": "meta.weidu-d-tooltip"
         },
         {
-          "include": "#variables"
+          "include": "#variables",
+          "name": "meta.weidu-d-tooltip"
         },
         {
-          "include": "#keywords"
+          "include": "#keywords",
+          "name": "meta.weidu-d-tooltip"
         },
         {
-          "include": "#constants"
+          "include": "#constants",
+          "name": "meta.weidu-d-tooltip"
         },
         {
           "include": "source.weidu-d",
