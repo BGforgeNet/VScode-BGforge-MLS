@@ -16,6 +16,7 @@ import {
     CollectedItemType,
 } from "./types";
 import { SyntaxType } from "../tree-sitter.d";
+import { tokenizeWeidu, WeiduTokenType, normalizeWhitespaceWeidu, WeiduToken } from "../../shared/format-utils";
 
 // ============================================
 // Type lookup sets (O(1) instead of O(n) array includes)
@@ -128,40 +129,79 @@ export function handleComment(lines: string[], child: SyntaxNode, indent: string
 // Whitespace utilities
 // ============================================
 
-/** Normalize whitespace: collapse multiple spaces, preserve line comments. */
+/** Normalize whitespace: collapse multiple spaces, preserve line comments and strings. */
 export function normalizeWhitespace(text: string): string {
-    // Check if text contains block comments (/* */ or /** */)
     // Block comments must be preserved as-is with their newline structure
-    const hasBlockComment = text.includes("/*");
-    if (hasBlockComment) {
-        // Don't normalize text containing block comments - return trimmed as-is
+    if (text.includes("/*")) {
         return text.trim();
     }
 
-    // Handle line comments specially - preserve content after //
-    const lines = text.split("\n");
-    const normalizedLines: string[] = [];
-    let hasComments = false;
+    const tokens = tokenizeWeidu(text);
+    const hasLineComments = tokens.some((t) => t.type === WeiduTokenType.Comment && t.text.startsWith("//"));
+    const hasMultilineStrings = tokens.some((t) => t.type === WeiduTokenType.String && t.text.includes("\n"));
 
-    for (const line of lines) {
-        const commentIdx = line.indexOf("//");
-        if (commentIdx >= 0) {
-            hasComments = true;
-            // Normalize before comment, preserve comment
-            const before = line.slice(0, commentIdx).trim().replace(/\s+/g, " ");
-            const comment = normalizeLineComment(line.slice(commentIdx));
-            normalizedLines.push(before ? before + " " + comment : comment);
-        } else {
-            const normalized = line.trim().replace(/\s+/g, " ");
-            if (normalized) {
-                normalizedLines.push(normalized);
+    // Fast path: no line comments and no multiline strings
+    if (!hasLineComments && !hasMultilineStrings) {
+        return normalizeWhitespaceWeidu(text);
+    }
+
+    const normalizedLines: string[] = [];
+    let currentLineTokens: WeiduToken[] = [];
+
+    const flushLine = () => {
+        if (currentLineTokens.length === 0) return;
+        let lineText = "";
+        for (let i = 0; i < currentLineTokens.length; i++) {
+            const t = currentLineTokens[i];
+            if (!t) continue;
+            if (t.type === WeiduTokenType.Code) {
+                let normalized = t.text.replace(/\s+/g, " ");
+                if (i === 0) normalized = normalized.trimStart();
+                if (i === currentLineTokens.length - 1) normalized = normalized.trimEnd();
+                lineText += normalized;
+            } else {
+                lineText += t.text;
+            }
+        }
+
+        const lastToken = currentLineTokens[currentLineTokens.length - 1];
+        const shouldTrimEnd = lastToken && lastToken.type === WeiduTokenType.Code;
+        if (lineText.trim() || currentLineTokens.some((t) => t.type !== WeiduTokenType.Code)) {
+            normalizedLines.push(shouldTrimEnd ? lineText.trimEnd() : lineText);
+        }
+        currentLineTokens = [];
+    };
+
+    for (const token of tokens) {
+        if (token.type === WeiduTokenType.Comment && token.text.startsWith("//")) {
+            // Line comment: normalize it and flush the line
+            const normalizedComment = normalizeLineComment(token.text);
+            currentLineTokens.push({ type: WeiduTokenType.Comment, text: normalizedComment });
+            flushLine();
+            continue;
+        }
+
+        if (token.type === WeiduTokenType.String || token.type === WeiduTokenType.Comment) {
+            // Never split strings or block comments by newlines.
+            currentLineTokens.push(token);
+            continue;
+        }
+
+        // Code part: may contain newlines
+        const codeParts = token.text.split("\n");
+        for (let i = 0; i < codeParts.length; i++) {
+            const part = codeParts[i];
+            if (part !== undefined) {
+                currentLineTokens.push({ type: WeiduTokenType.Code, text: part });
+                if (i < codeParts.length - 1) {
+                    flushLine();
+                }
             }
         }
     }
+    flushLine();
 
-    // Join with newlines if there are comments (to preserve comment line structure),
-    // otherwise join with spaces to produce a single line for proper length checking
-    return hasComments ? normalizedLines.join("\n").trim() : normalizedLines.join(" ").trim();
+    return normalizedLines.join("\n").trim();
 }
 
 // ============================================

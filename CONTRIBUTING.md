@@ -10,6 +10,8 @@ pnpm watch:client     # Dev mode: rebuild on change
 pnpm watch:server
 ```
 
+**Note:** This project uses `pnpm` exclusively. Use `pnpm exec <command>` instead of `npx <command>`.
+
 ## Documentation
 
 | Document                                                       | Contents                                                                                      |

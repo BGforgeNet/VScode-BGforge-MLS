@@ -4,6 +4,7 @@
  */
 
 import type { Node as SyntaxNode } from "web-tree-sitter";
+import { normalizeWhitespaceWeidu, tokenizeWeidu, WeiduTokenType } from "../../shared/format-utils";
 
 interface FormatOptions {
     indentSize: number;
@@ -68,9 +69,9 @@ function withNormalizedComment(line: string): string {
     return normalizeInlineComment(line);
 }
 
-// Normalize whitespace in a string: collapse runs of whitespace to single space
+// Normalize whitespace in a string: collapse runs of whitespace to single space, preserve strings
 function normalizeWhitespace(text: string): string {
-    return text.replace(/\s+/g, " ").trim();
+    return normalizeWhitespaceWeidu(text);
 }
 
 // Normalize a line comment: ensure "// comment" format (1 space after //)
@@ -108,7 +109,7 @@ function normalizeDelimitedString(text: string): string {
         return text;
     }
 
-    return delim + normalizeWhitespace(inner) + delim;
+    return delim + normalizeWhitespaceWeidu(inner) + delim;
 }
 
 // Check if node is a next-state feature (goto, exit, extern, short_goto)
@@ -121,15 +122,9 @@ function isNextFeature(node: SyntaxNode): boolean {
     );
 }
 
-// Normalize transition text: collapse whitespace, normalize delimited strings
+// Normalize transition text: collapse whitespace, preserve strings
 function normalizeTransitionText(text: string): string {
-    return text
-        .trim()
-        .replace(/\s+/g, " ")
-        .replace(/([~"%])([^~"%]*)\1/g, (match, delim: string, inner: string) => {
-            if (inner.includes("//")) return match;
-            return delim + inner.replace(/\s+/g, " ").trim() + delim;
-        });
+    return normalizeWhitespaceWeidu(text);
 }
 
 // Get line length excluding comment
@@ -196,7 +191,7 @@ function formatTransitionLine(node: SyntaxNode, indent: string, innerIndent: str
     return line;
 }
 
-// Format a transition node, handling multi-line strings with simple indentation
+// Format a single transition node, breaking it into lines based on source structure
 function formatTransitionNode(node: SyntaxNode, indent: string, innerIndent: string, limit: number): string {
     const text = node.text;
 
@@ -206,74 +201,112 @@ function formatTransitionNode(node: SyntaxNode, indent: string, innerIndent: str
     }
 
     // Multi-line transition - reindent preserving structure
-    const lines = text.split("\n");
+    const tokens = tokenizeWeidu(text);
     const result: string[] = [];
+    let currentLine: string = "";
 
-    lines.forEach((line, i) => {
-        const trimmed = line.trim();
-        if (!trimmed) return;
-        result.push(withNormalizedComment((i === 0 ? indent : innerIndent) + trimmed));
-    });
+    const flushLine = () => {
+        if (currentLine.trim() || result.length === 0) {
+            const prefix = result.length === 0 ? indent : innerIndent;
+            result.push(withNormalizedComment(prefix + currentLine.trimEnd()));
+        }
+        currentLine = "";
+    };
+
+    for (const token of tokens) {
+        if (token.type !== WeiduTokenType.Code) {
+            // String or comment: preserve exactly, never split.
+            // Add separator from preceding code token (tokenizer places inter-token
+            // whitespace inside code tokens, so literals never carry leading whitespace).
+            if (currentLine && !currentLine.endsWith(" ")) {
+                currentLine += " ";
+            }
+            currentLine += token.text;
+            continue;
+        }
+
+        // Code token: may contain newlines
+        if (token.text.includes("\n")) {
+            const lines = token.text.split("\n");
+            for (let i = 0; i < lines.length; i++) {
+                const linePart = lines[i];
+                if (linePart !== undefined) {
+                    const normalized = linePart.trim().replace(/\s+/g, " ");
+                    if (normalized) {
+                        currentLine += (currentLine && !currentLine.endsWith(" ") ? " " : "") + normalized;
+                    }
+                    if (i < lines.length - 1) {
+                        flushLine();
+                    }
+                }
+            }
+        } else {
+            const normalized = token.text.trim().replace(/\s+/g, " ");
+            if (normalized) {
+                currentLine += (currentLine && !currentLine.endsWith(" ") ? " " : "") + normalized;
+            }
+        }
+    }
+    flushLine();
 
     return result.join("\n");
 }
 
+
 // Reindent a multi-line state preserving source structure
 function reindentState(node: SyntaxNode, ctx: FormatContext): string {
-    const baseRow = node.startPosition.row;
-    const lines = node.text.split("\n");
+    const tokens = tokenizeWeidu(node.text);
+    const result: string[] = [];
+    let currentLine: string = "";
 
-    // Build map of extra indent per line by walking AST
-    // Any line that continues a multi-line node from previous line gets +1
-    const extraIndent: number[] = Array.from<number>({ length: lines.length }).fill(0);
-    // END is the last non-blank line of a state
-    let endKeywordLine = lines.length - 1;
-    while (endKeywordLine > 0 && !lines[endKeywordLine]?.trim()) {
-        endKeywordLine--;
-    }
+    const flushLine = () => {
+        if (currentLine.trim() || result.length === 0) {
+            const isFirst = result.length === 0;
+            // Simplified depth: 1 for first line, 2 for middle lines
+            const depth = isFirst ? 1 : 2;
+            result.push(withNormalizedComment(ctx.indent.repeat(depth) + currentLine.trimEnd()));
+        } else if (result.length > 0) {
+            result.push(""); // preserve intentional blank lines
+        }
+        currentLine = "";
+    };
 
-    function markContinuations(n: SyntaxNode) {
-        // Only count top-level string nodes (not inner tilde_string etc)
-        const isString = n.type === "string";
-        const startLine = n.startPosition.row - baseRow;
-        const endLine = n.endPosition.row - baseRow;
+    for (const token of tokens) {
+        if (token.type !== WeiduTokenType.Code) {
+            // String or comment: preserve exactly, never split.
+            // Add separator from preceding code token (tokenizer places inter-token
+            // whitespace inside code tokens, so literals never carry leading whitespace).
+            if (currentLine && !currentLine.endsWith(" ")) {
+                currentLine += " ";
+            }
+            currentLine += token.text;
+            continue;
+        }
 
-        if (isString && endLine > startLine && startLine >= 0) {
-            // This string spans lines
-            // Base depth is the extraIndent of the line where this string starts
-            const baseDepth = (startLine < extraIndent.length ? extraIndent[startLine] : 0) ?? 0;
-            for (let line = startLine + 1; line <= endLine; line++) {
-                if (line < extraIndent.length) {
-                    extraIndent[line] = Math.max(extraIndent[line] ?? 0, baseDepth + 1);
+        // Code token: may contain newlines
+        if (token.text.includes("\n")) {
+            const lines = token.text.split("\n");
+            for (let i = 0; i < lines.length; i++) {
+                const linePart = lines[i];
+                if (linePart !== undefined) {
+                    const normalized = linePart.trim().replace(/\s+/g, " ");
+                    if (normalized) {
+                        currentLine += (currentLine && !currentLine.endsWith(" ") ? " " : "") + normalized;
+                    }
+                    if (i < lines.length - 1) {
+                        flushLine();
+                    }
                 }
             }
-        }
-        for (const child of n.children) {
-            markContinuations(child);
+        } else {
+            const normalized = token.text.trim().replace(/\s+/g, " ");
+            if (normalized) {
+                currentLine += (currentLine && !currentLine.endsWith(" ") ? " " : "") + normalized;
+            }
         }
     }
-    markContinuations(node);
+    flushLine();
 
-    // Now reindent with the computed extra indents
-    const result: string[] = [];
-    let prevBlank = false;
-
-    lines.forEach((line, i) => {
-        const trimmed = line.trim();
-        if (!trimmed) {
-            if (!prevBlank && result.length > 0) {
-                result.push("");
-            }
-            prevBlank = true;
-            return;
-        }
-        prevBlank = false;
-
-        const isFirst = result.length === 0;
-        const isEnd = i === endKeywordLine;
-        const depth = isFirst || isEnd ? 1 : 2 + (extraIndent[i] ?? 0);
-        result.push(withNormalizedComment(ctx.indent.repeat(depth) + trimmed));
-    });
     return result.join("\n");
 }
 

@@ -20,16 +20,39 @@ export function createFullDocumentEdit(originalText: string, newText: string): T
     }, newText)];
 }
 
+/** WeiDU token types for formatting. */
+export enum WeiduTokenType {
+    Code,
+    String,
+    Comment,
+}
+
+/** WeiDU token for formatting. */
+export interface WeiduToken {
+    type: WeiduTokenType;
+    text: string;
+}
+
 /**
- * Strip comments from WeiDU text, respecting string literals.
- * Handles: ~string~, "string", ~~~~~string~~~~~
+ * Tokenize WeiDU text into code and literals (strings, comments).
+ * Handles: ~string~, "string", %string%, ~~~~~string~~~~~, /* comments * /, // comments.
  */
-export function stripCommentsWeidu(text: string): string {
-    let result = "";
+export function tokenizeWeidu(text: string): WeiduToken[] {
+    const tokens: WeiduToken[] = [];
     let i = 0;
+    let lastCodeStart = 0;
+
+    const flushCode = (end: number) => {
+        if (end > lastCodeStart) {
+            tokens.push({
+                type: WeiduTokenType.Code,
+                text: text.slice(lastCodeStart, end),
+            });
+        }
+    };
+
     while (i < text.length) {
         // Tilde strings: WeiDU uses 1 tilde or 5 tildes as delimiters
-        // ~content~ or ~~~~~content~~~~~
         if (text[i] === "~") {
             const start = i;
             let tildeCount = 0;
@@ -37,20 +60,18 @@ export function stripCommentsWeidu(text: string): string {
                 tildeCount++;
                 i++;
             }
-            // WeiDU only recognizes 1 or 5 tildes as delimiters
-            // If we see ~~, it's ~~ = ~ + empty + ~ (two single-tilde strings)
-            // If we see ~~~, it's ~ + ~ + ~ (single tilde delimiters)
-            // Only 5+ consecutive tildes use multi-tilde mode
             const delimiterCount = tildeCount >= 5 ? 5 : 1;
-            // Rewind: we consumed all tildes but may need to re-parse some
             i = start + delimiterCount;
-            result += text.slice(start, i);
-            // Find matching closing tildes
             const closer = "~".repeat(delimiterCount);
             const end = text.indexOf(closer, i);
             if (end !== -1) {
-                result += text.slice(i, end + delimiterCount);
+                flushCode(start);
+                tokens.push({
+                    type: WeiduTokenType.String,
+                    text: text.slice(start, end + delimiterCount),
+                });
                 i = end + delimiterCount;
+                lastCodeStart = i;
             }
             continue;
         }
@@ -61,23 +82,95 @@ export function stripCommentsWeidu(text: string): string {
                 if (text[i] === "\\") i++; // Skip escaped char
                 i++;
             }
-            result += text.slice(start, ++i);
+            if (i < text.length) i++; // consume closing quote
+            flushCode(start);
+            tokens.push({
+                type: WeiduTokenType.String,
+                text: text.slice(start, i),
+            });
+            lastCodeStart = i;
+            continue;
+        }
+        // Percent strings/variables
+        if (text[i] === "%") {
+            const start = i++;
+            const end = text.indexOf("%", i);
+            if (end !== -1) {
+                flushCode(start);
+                tokens.push({
+                    type: WeiduTokenType.String,
+                    text: text.slice(start, end + 1),
+                });
+                i = end + 1;
+                lastCodeStart = i;
+            }
             continue;
         }
         // Block comments
         if (text[i] === "/" && text[i + 1] === "*") {
+            const start = i;
             const end = text.indexOf("*/", i + 2);
             i = end !== -1 ? end + 2 : text.length;
+            flushCode(start);
+            tokens.push({
+                type: WeiduTokenType.Comment,
+                text: text.slice(start, i),
+            });
+            lastCodeStart = i;
             continue;
         }
         // Line comments
         if (text[i] === "/" && text[i + 1] === "/") {
+            const start = i;
             while (i < text.length && text[i] !== "\n") i++;
+            flushCode(start);
+            tokens.push({
+                type: WeiduTokenType.Comment,
+                text: text.slice(start, i),
+            });
+            lastCodeStart = i;
             continue;
         }
-        result += text[i++];
+        i++;
     }
-    return result;
+    flushCode(text.length);
+    return tokens;
+}
+
+/**
+ * Normalizes whitespace in WeiDU text while preserving strings and comments.
+ * Collapses multiple spaces into one, trims outer whitespace.
+ *
+ * Important: line-based formatters must never split string/comment tokens by newlines.
+ */
+export function normalizeWhitespaceWeidu(text: string): string {
+    const tokens = tokenizeWeidu(text);
+    const parts: string[] = [];
+
+    for (const token of tokens) {
+        if (token.type === WeiduTokenType.Code) {
+            // Collapse whitespace in code parts
+            const normalized = token.text.replace(/\s+/g, " ");
+            parts.push(normalized);
+        } else {
+            // Preserve strings and comments exactly
+            parts.push(token.text);
+        }
+    }
+
+    // Join parts directly (no separator) — whitespace is already in Code tokens
+    return parts.join("").trim();
+}
+
+/**
+ * Strip comments from WeiDU text, respecting string literals.
+ * Handles: ~string~, "string", %string%, ~~~~~string~~~~~
+ */
+export function stripCommentsWeidu(text: string): string {
+    return tokenizeWeidu(text)
+        .filter((t) => t.type !== WeiduTokenType.Comment)
+        .map((t) => t.text)
+        .join("");
 }
 
 /**

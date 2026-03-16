@@ -11,6 +11,7 @@ This file provides guidance to AI agents (Claude, Gemini, etc.) when working wit
 - **User-facing messages:** Never call `connection.window.showInformationMessage/showWarningMessage/showErrorMessage` directly in server code. Use `showInfo()`, `showWarning()`, `showError()`, or `showErrorWithActions()` from `user-messages.ts` — they auto-decode `file://` URIs to readable paths. An oxlint rule enforces this.
 - **Temporary artifacts:** Put transient test/build files under the repo-level `tmp/` directory (or `os.tmpdir()` when system temp is required). Do not create ad hoc temp directories under source trees like `server/test/`, `cli/test/`, or `scripts/**`.
 - **Avoid parallel logic when extending an existing transform/helper path.** If a change adds a second implementation of behavior that already exists elsewhere in the repo (for example a second HTML-to-markdown normalizer, parser cleanup path, or provider indexing lifecycle), stop and check whether the logic should be shared instead. Treat this as a review concern, not optional cleanup.
+- **Use `pnpm` exclusively.** Never use `npm` or `npx`. Run commands via `pnpm exec <command>` instead of `npx <command>`.
 
 ## Project Overview
 
