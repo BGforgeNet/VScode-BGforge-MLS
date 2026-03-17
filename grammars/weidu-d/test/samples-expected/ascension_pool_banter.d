@@ -8,8 +8,7 @@ APPEND balth2
         IF ~~ THEN DO ~SetGlobal("FinalFight","AR6200",5)~ EXIT
     END
 
-END
-// end of APPEND
+END // end of APPEND
 
 APPEND finbodh
 
@@ -18,8 +17,7 @@ APPEND finbodh
         IF ~~ THEN DO ~SetGlobal("FinalFight","AR6200",5)~ EXIT
     END
 
-END
-// end of APPEND
+END // end of APPEND
 
 APPEND player1
 
@@ -28,5 +26,4 @@ APPEND player1
         IF ~~ THEN DO ~SetGlobal("FinalFight","AR6200",5)~ EXIT
     END
 
-END
-// end of APPEND
+END // end of APPEND

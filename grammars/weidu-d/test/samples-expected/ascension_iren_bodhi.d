@@ -1,6 +1,6 @@
-// ////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////
 // // Irenicus / Bodhi / CHARNAME banter
-// ////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////
 
 // Bodhi's initial state
 
@@ -11,8 +11,7 @@ APPEND finbodh
         IF ~~ THEN DO ~SetGlobal("BodhiTalks","LOCALS",1)~ EXTERN irenic2 iren_bodhi_intro_chain
     END
 
-END
-// end of APPEND
+END // end of APPEND
 
 // Initial Iren/Bodhi banter
 
@@ -170,8 +169,7 @@ APPEND_EARLY finbodh
         IF ~~ THEN EXTERN irenic2 iren_exit_bodhifriendly
     END
 
-END
-// end of APPEND
+END // end of APPEND
 
 // Irenicus exit states
 
@@ -207,8 +205,7 @@ APPEND irenic2
         IF ~DifficultyLT(4)~ THEN DO ~ClearAllActions()StartCutSceneMode()StartCutScene("irenic2e")~ EXIT
     END
 
-END
-// end of APPEND
+END // end of APPEND
 
 // / Irenicus interjections into Bodhi dialog
 // / (one of these is added by David, since

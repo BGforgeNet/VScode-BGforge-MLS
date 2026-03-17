@@ -2,10 +2,10 @@
 // // there is a variable mismatch in Sarevok's and Balthazar's lines,
 // // which I fix
 
-// ///////////
+/////////////
 // Sarevok
 // NB this originally checked to make sure it wasn't Sarevok's sword conversation (edge case: I guess the player *could* not get around to providing it till now). But this ought to be higher priority in any case.
-// ///////////
+/////////////
 
 APPEND sarev25j
 
@@ -14,12 +14,11 @@ APPEND sarev25j
         IF ~~ THEN DO ~SetGlobal("MelStillImmortal","AR6200",4)~ EXIT
     END
 
-END
-// end of APPEND
+END // end of APPEND
 
-// ///////////
+/////////////
 // Balthazar
-// ///////////
+/////////////
 
 APPEND balth2
 
@@ -28,12 +27,11 @@ APPEND balth2
         IF ~~ THEN DO ~SetGlobal("MelStillImmortal","AR6200",4)~ EXIT
     END
 
-END
-// end of APPEND
+END // end of APPEND
 
-// ////////////////
+//////////////////
 // / Inner monologue
-// ////////////////
+//////////////////
 
 APPEND player1
 
@@ -42,5 +40,4 @@ APPEND player1
         IF ~~ THEN DO ~SetGlobal("MelStillImmortal","AR6200",4)~ EXIT
     END
 
-END
-// end of APPEND
+END // end of APPEND

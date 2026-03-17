@@ -51,8 +51,7 @@ APPEND finsol01
         SAY @585
         IF ~~ THEN EXTERN ~IMOEN25J~ 14
     END
-END
-// end of APPENDs to finsol01
+END // end of APPENDs to finsol01
 
 CHAIN
 IF ~~ THEN balth2 balth_renounce_taint

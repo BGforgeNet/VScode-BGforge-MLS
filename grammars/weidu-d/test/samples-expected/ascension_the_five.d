@@ -1,10 +1,10 @@
-// //////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
 // /  Summon the Five, banter with Sarevok
-// //////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
 
-// ///////////////////////////////
+/////////////////////////////////
 // Initial summons - replace the same-string block from vanilla in case some NPC interjects
-// ///////////////////////////////
+/////////////////////////////////
 
 REPLACE finmel01
 
@@ -18,12 +18,11 @@ IF ~Global("FinalFight","AR6200",6)Global("TheFiveAreHere","AR6200",0)~ THEN BEG
   ~ClearAllActions()StartCutSceneMode()StartCutScene("finmel3c")~ EXIT
 END
 
-END
-// end of REPLACE
+END // end of REPLACE
 
-// ///////////////////////////////
+/////////////////////////////////
 // Banter about bringing the Five back, ending either with Sarevok brought back, or the fight starting, or entering a banter with in-party Sarevok
-// ///////////////////////////////
+/////////////////////////////////
 
 APPEND_EARLY finmel01 // APPEND_EARLY just because we APPEND_EARLY some other stuff and it's good to keep the logical order
 
@@ -61,8 +60,7 @@ APPEND_EARLY finmel01 // APPEND_EARLY just because we APPEND_EARLY some other st
         IF ~!Global("fin_sarev_redeemed","GLOBAL",0)~ THEN DO ~ClearAllActions()SetGlobal("SarevokSummoned","AR6200",1)StartCutSceneMode()StartCutScene("finmel5a")~ EXIT
     END
 
-END
-// end of APPEND
+END // end of APPEND
 
 APPEND balth2 // the line Balthazar speaks in the above
 
@@ -71,12 +69,11 @@ APPEND balth2 // the line Balthazar speaks in the above
         IF ~~ THEN EXTERN finmel01 mel_sarevok_checkpoint
     END
 
-END
-// end of APPEND
+END // end of APPEND
 
-// ///////////////////////////////
+/////////////////////////////////
 // banter with out-of-party Sarevok
-// ///////////////////////////////
+/////////////////////////////////
 
 CHAIN
 IF ~NumTimesTalkedTo(0)~ THEN finsarev finsarev_intro
@@ -103,12 +100,11 @@ APPEND_EARLY finsarev
         IF ~~ THEN DO ~ActionOverride("finsarev",Enemy())~ EXTERN finmel01 mel_exit_sarevok
     END
 
-END
-// end APPEND
+END // end APPEND
 
-// ///////////////////////////////
+/////////////////////////////////
 // banter with in-party Sarevok
-// ///////////////////////////////
+/////////////////////////////////
 
 CHAIN 
 IF ~~ THEN finmel01 mel_sarev_offer_inparty
@@ -170,12 +166,11 @@ APPEND_EARLY sarev25j
         IF ~~ THEN EXTERN finmel01 mel_exit_sarevok
     END
 
-END
-// end of APPEND
+END // end of APPEND
 
-// ///////////////////////////////
+/////////////////////////////////
 // melissan exit states
-// ///////////////////////////////
+/////////////////////////////////
 
 APPEND_EARLY finmel01
 

@@ -1,6 +1,6 @@
-// ////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////
 // // Irenicus banters with CHARNAME, then summons Bodhi
-// ////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////
 
 APPEND_EARLY irenic2 // EARLY so Sarevok's INTERJECT can respond to it
     IF ~Global("FinalFight","AR6200",2)~ THEN BEGIN iren_intro  // from:
@@ -43,8 +43,7 @@ APPEND_EARLY irenic2 // EARLY so Sarevok's INTERJECT can respond to it
             StartCutSceneMode()
             StartCutScene("finiren1")~ EXIT
     END
-END
-// end of APPEND
+END // end of APPEND
 
 // /// Sarevok's interjection into this conversation
 

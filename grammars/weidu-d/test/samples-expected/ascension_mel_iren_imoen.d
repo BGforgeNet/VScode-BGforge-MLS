@@ -1,14 +1,13 @@
-// ///////////////////////////////////////////
+/////////////////////////////////////////////
 // /// Initial Mel/Irenicus/Charname banter
-// ////////////////////////////////////////////
+//////////////////////////////////////////////
 
 APPEND finmel01
     IF ~Global("FinalFight","AR6200",2)~ THEN BEGIN mel_call_irenicus
         SAY @607 /* ~Irenicus, I believe you called him.  So easily culled as my own, since you abandoned him here recently...and such a valuable source of information on you, <CHARNAME>.  After all...I believe you did share a soul, once, no?  Say hello to the dear <PRO_MANWOMAN>, Irenicus.~ */
         IF ~~ THEN EXTERN irenic2 iren_intro
     END
-END
-// end of APPEND
+END // end of APPEND
 
 APPEND irenic2
 
@@ -19,12 +18,11 @@ APPEND irenic2
         IF ~~ THEN REPLY @438 /* ~You're a pathetic excuse for an elf, Irenicus.  If you wish to die again, I'll happily oblige.~ */ EXTERN finmel01 mel_call_imoen
         IF ~~ THEN REPLY @439 /* ~You're collecting my leavings, Melissan?  How very sad for you.~ */ EXTERN finmel01 mel_call_imoen
     END
-END
-// end of APPEND
+END // end of APPEND
 
-// ///////////////////////////////////////////
+/////////////////////////////////////////////
 // /// Mel summons Imoen
-// ////////////////////////////////////////////
+//////////////////////////////////////////////
 
 APPEND finmel01
     IF ~~ THEN BEGIN mel_call_imoen
@@ -51,8 +49,7 @@ APPEND finmel01
         IF ~~ THEN DO ~ClearAllActions()StartCutSceneMode()StartCutScene("resimo3")~ EXIT
     END
 
-END
-// end of APPEND
+END // end of APPEND
 
 // Imoen's party response
 
@@ -62,8 +59,7 @@ APPEND imoen25j
         IF ~~ THEN EXTERN finmel01 mel_call_essence
     END
 
-END
-// end of imoen APPEND
+END // end of imoen APPEND
 
 // Imoen's non-party response
 
@@ -79,9 +75,9 @@ THEN imoen25p imoenp_response
 == imoen25p @476 /* ~I'm not going anywhere with you!  And nobody's touching my soul!  Not again!!~ */
 END finmel01 mel_call_essence
 
-// ///////////////////////////////////////////
+/////////////////////////////////////////////
 // /// Conversation with Imoen continues after mel casts resimo3
-// ////////////////////////////////////////////
+//////////////////////////////////////////////
 
 APPEND imoen25p
 
@@ -92,8 +88,7 @@ APPEND imoen25p
         IF ~~ THEN REPLY @473  DO ~SetGlobal("ImoenHurt","GLOBAL",0)~ EXTERN finmel01 6
         IF ~~ THEN REPLY @474  DO ~SetGlobal("ImoenHate","GLOBAL",1)SetGlobal("ImoenHurt","GLOBAL",0)~ EXTERN finmel01 6  // this is the 'what do I care?' response
     END
-END
-// end of APPEND
+END // end of APPEND
 
 REPLACE finmel01 
 
@@ -102,5 +97,4 @@ IF ~~  THEN BEGIN 6 // replace the similar block from vanilla script in case a l
   IF ~~ THEN DO ~ClearAllActions()StartCutSceneMode()StartCutScene("resimo4")~ EXIT
 END
 
-END
-// end of REPLACE
+END // end of REPLACE

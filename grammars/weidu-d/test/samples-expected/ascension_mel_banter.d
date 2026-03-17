@@ -6,8 +6,7 @@ IF ~Global("FinalFight","AR6200",8)Global("ShesInIt","LOCALS",0)~ THEN BEGIN 10 
   IF ~~ THEN DO ~SetGlobal("ShesInIt","LOCALS",1)ActionOverride("cutspy",DestroySelf())Enemy()~ EXIT
 END
 
-END
-// end of REPLACE
+END // end of REPLACE
 
 APPEND finmel01
 

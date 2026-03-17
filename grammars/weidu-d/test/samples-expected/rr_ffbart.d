@@ -3,13 +3,13 @@
 // New dialogue options for the Five Flaggons inkeeper related to Arledrian's Silverblaze quest
 
 EXTEND_BOTTOM ~FFBART~ 0
-    IF ~PartyHasItem("RR#BK04")~ THEN REPLY  @170 DO ~TakePartyItem("RR#BK04")
+    IF ~PartyHasItem("RR#BK04")~ THEN REPLY @170 DO ~TakePartyItem("RR#BK04")
         DestroyItem("RR#BK04")
         EraseJournalEntry(@652)~ GOTO RR#HaerArled01
 END
 
 EXTEND_BOTTOM ~FFBART~ 8
-    IF ~PartyHasItem("RR#BK04")~ THEN REPLY  @171 DO ~TakePartyItem("RR#BK04")
+    IF ~PartyHasItem("RR#BK04")~ THEN REPLY @171 DO ~TakePartyItem("RR#BK04")
         DestroyItem("RR#BK04")
         EraseJournalEntry(@652)~ GOTO RR#HaerArled01
 END

@@ -1,4 +1,4 @@
-// ////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////
 // / Vanilla Ascension tries to use
 // / the LastTalkedTo trigger to select
 // / what dialog to use. This doesn't
@@ -7,7 +7,7 @@
 // / block of a script, perhaps because it
 // / doesn't get set till the conversation
 // / starts.)
-// /
+///
 // / Instead, we set a variable from the activation script
 
 BEGIN ~PPGUY02~

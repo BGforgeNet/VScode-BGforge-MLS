@@ -1,20 +1,19 @@
-// /////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////
 // Ascension : BALTH
-// /////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////
 // (1) Assigns weight #0 to state 12
 // (2) Fixes a typo (?) in the text in state 19
 // (3) makes the response triggers much more complicated in state 24
 // (4) adds a bunch of dialogue starting with state 31 -- original
 // balth.dlg has 30 states
-// /////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////
 
-SET_WEIGHT BALTH 12 #-1
-// ensures that it will be first
+SET_WEIGHT BALTH 12 #-1 // ensures that it will be first
 
 REPLACE_SAY BALTH 19 @1060
 
 // / round one of the verbal battle
-// /
+///
 
 // / Entry block
 
@@ -37,17 +36,16 @@ REPLACE BALTH
   !ReputationGT(Player1,6)~ THEN REPLY #67730 GOTO a38
   END
 
-END
-/* end of states that are REPLACEd */
+END /* end of states that are REPLACEd */
 
 APPEND BALTH
 
-    // //////////////////////
+    ////////////////////////
     // / Response blocks
-    // /
+    ///
     // / All exit to the round 2
     // / start blocks
-    // //////////////////////
+    ////////////////////////
 
     IF ~~ THEN BEGIN a31  // from: 24.0
         SAY @1074 /* ~It is true.  You are a good <PRO_MANWOMAN>, <CHARNAME>, and your stance against evil is without question.  Your fight against the taint of our evil father is worthy of praise.~ #74107 */
@@ -94,24 +92,24 @@ APPEND BALTH
         IF ~~ THEN GOTO a39
     END
 
-    // ///////////////////////////////////////////////////////
-    // ///////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////
     // /// verbal battle round 2
-    // ///
+    /////
     // /// You get a flat +1 if non-evil, 0 if evil
-    // ///
+    /////
     // /// DW: originally it was -1 if evil; this respects the
     // /// hint in the readme that there *is* a way through.
     // /// Depending on your reply, you get an additional
     // /// +1 to -2.
-    // ///////////////////////////////////////////////////////
-    // ///////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////
 
-    // ///////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////
     // /// Round 2 intro blocks
-    // ///
+    /////
     // /// both states are functionally identical; they differ only in the entry line
-    // ///////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////
 
     IF ~~ THEN BEGIN a39  // from: 41.0 35.0 32.0 31.0
         SAY @1082 /* ~But regardless of our wishes on the matter, our destiny has been written for us, <CHARNAME>.  Some may run from it or deny it, while others embrace it...but each and every Bhaalspawn has a seed within them that has sprung forth a fruit laden with blood and murder.  Do you deny this?~ #80546 */
@@ -131,9 +129,9 @@ APPEND BALTH
         IF ~~ THEN REPLY @1087 /* ~I am death incarnate, fool!  Not some weak fool wrapped in denial like yourself!~ #74225 */ DO ~IncrementGlobal("ConvinceBalth","GLOBAL",-2)~ GOTO a100
     END
 
-    // ///////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////
     // /// Round 2 response blocks
-    // ///////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////
 
     IF ~~ THEN BEGIN a42  // from: 40.0 39.0
         SAY @1090 /* ~No.  I have brought my share of death and destruction to this land.  But I see a larger purpose behind it...I seek to end the possibility of Bhaal's return forever, and to wipe his taint from the land.~ #74124 */
@@ -168,27 +166,27 @@ APPEND BALTH
         IF ~Alignment(Player1,MASK_EVIL)~ THEN GOTO a94
     END
 
-    // ///////////////////////////////////////////////////////
-    // ///////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////
     // /// verbal battle round 3
-    // ///
+    /////
     // /// There are three looping branches of dialog,
     // /// but the player only gets to explore two of them. In
     // /// each, if the player's Convince score is too low (-2)
     // /// then Balthazar will fight rather than going back round
-    // ///
+    /////
     // /// The player can also quit ('enough talk') and
     // /// go to combat.
-    // ///
+    /////
     // /// If, after both loops, Convince is -2 or higher, the player
     // /// goes on to round 4
-    // ///////////////////////////////////////////////////////
-    // ///////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////
 
-    // ///////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////
     // /// intro blocks
     // /// (which one you get depends on alignment)
-    // ///////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////
 
     IF ~~ THEN BEGIN a44  // from: 100.0 99.0 98.0 96.0 43.0
         SAY @1092 /* ~If only we had met under other circumstances, <CHARNAME>...I would have liked to sit and compare the paths that have brought us to this point.  If we had not been forced by destiny to bear this taint upon our souls, what would have become of us?  I regret what I must do, yet I know it must be done.~ #80547 */
@@ -206,10 +204,10 @@ APPEND BALTH
         IF ~~ THEN REPLY @1096 /* ~Enough talk, then.  Let's get this over with.~ #74210 */ GOTO a93
     END
 
-    // //////////////////////
+    ////////////////////////
     // / Second pass through
     // / the conversation
-    // //////////////////////
+    ////////////////////////
 
     IF ~~ THEN BEGIN a48  // from: 92.0 91.0 89.0 88.0 87.0 85.0 83.0 82.0 81.0 80.0 78.0 77.0 76.0 74.0 73.0 70.0 69.0 68.0 67.0 65.0 64.0 63.0 61.0 47.0
         SAY #36427 /* ~...I...~ */
@@ -241,9 +239,9 @@ APPEND BALTH
         IF ~~ THEN REPLY @1107 /* ~Alright, Balthazar.  If that's what you want...let's end this now.~ #74137 */ GOTO a93
     END
 
-    // /////////////////////////////////////
+    ///////////////////////////////////////
     // / Exit states from phase 3
-    // //////////////////////////////////////
+    ////////////////////////////////////////
 
     // failure exit state
 
@@ -271,9 +269,9 @@ APPEND BALTH
             EraseJournalEntry(66357)~ EXIT
     END
 
-    // /////////////////////////////////
+    ///////////////////////////////////
     // // Loop A: 'what becomes of Melissan?'
-    // /////////////////////////////////
+    ///////////////////////////////////
 
     IF ~~ THEN BEGIN a45  // from: 94.0 49.0 44.0
         SAY @1097 /* ~Of course not.  It is she that holds the key to Bhaal's resurrection.  After you are dead, she too must be destroyed.~ #74128 */
@@ -365,9 +363,9 @@ APPEND BALTH
         IF ~GlobalLT("ConvinceBalth","GLOBAL",-2)~ THEN GOTO a60
     END
 
-    // /////////////////////////////////
+    ///////////////////////////////////
     // // Loop B: 'you don't have to do this'
-    // /////////////////////////////////
+    ///////////////////////////////////
 
     IF ~~ THEN BEGIN a71  // from: 94.1 49.1 44.1
         SAY @1139 /* ~But I do.  It is my destiny.  What other choice have I?~ #74167 */
@@ -461,9 +459,9 @@ APPEND BALTH
         IF ~GlobalLT("ConvinceBalth","GLOBAL",-2)~ THEN GOTO a60
     END
 
-    // /////////////////////////////////
+    ///////////////////////////////////
     // // Loop C: 'you seriously see yourself as the force of righteousness?'
-    // /////////////////////////////////
+    ///////////////////////////////////
 
     IF ~~ THEN BEGIN a84  // from: 94.2 49.2 44.2
         SAY @1161 /* ~I make no judgement upon you, <CHARNAME>.  You are what you were born to be.  I can only trust myself to hold to the path of good that will lead to the destruction of the true evil that threatens Faerun.  There is no other path for me.~ #74190 */
@@ -527,17 +525,17 @@ APPEND BALTH
         IF ~GlobalLT("ConvinceBalth","GLOBAL",-2)~ THEN GOTO a60
     END
 
-    // ////////////////////////////////////////
-    // ////////////////////////////////////////
+    //////////////////////////////////////////
+    //////////////////////////////////////////
     // / Round 4
     // / Balthazar asks what he should do.
-    // /
+    ///
     // / you can (a) persuade him to fight (Convince=4+)
     // /         (b) have him kill himself, provided you vow not to take the taint (Convince=1-3)
     // /         (c) Be required to fight because Convince<=0
     // /         (d) choose to fight (several possible lines, all functionally identical)
-    // ////////////////////////////////////////
-    // ////////////////////////////////////////
+    //////////////////////////////////////////
+    //////////////////////////////////////////
 
     IF ~~ THEN BEGIN a50  // from: 48.5 48.4 48.3
         SAY @1108 /* ~I am at a loss, <CHARNAME>.  You question me, and I have no good answers for you.  My heart tells me that you must be killed, but I am not sure if I should listen to it.  What...what would you have me do?~ #74138 */
@@ -626,5 +624,4 @@ APPEND BALTH
             EraseJournalEntry(66357)~ EXIT
     END
 
-END
-/* end of big APPEND of states to BALTH.DLG */
+END /* end of big APPEND of states to BALTH.DLG */

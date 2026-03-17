@@ -3,29 +3,29 @@
 
 EXTEND_BOTTOM ~BMTHIEF~ 0
     IF ~!Class(LastTalkedToBy(Myself),THIEF_ALL)
-        !Class(LastTalkedToBy(Myself),BARD_ALL)~ THEN REPLY  @1000  GOTO a5
+        !Class(LastTalkedToBy(Myself),BARD_ALL)~ THEN REPLY @1000 GOTO a5
     IF ~Global("RR#KnowMarina","GLOBAL",0)
         OR(2)	 Class(LastTalkedToBy(Myself),THIEF_ALL)
-        Class(LastTalkedToBy(Myself),BARD_ALL)~ THEN REPLY  @1001 GOTO RR#THFCNT
+        Class(LastTalkedToBy(Myself),BARD_ALL)~ THEN REPLY @1001 GOTO RR#THFCNT
     IF ~PartyHasItem("RR#BK03")
-        Global("RR#ARLED_JOURNAL","GLOBAL",4)~ THEN REPLY  @1002 GOTO a20
+        Global("RR#ARLED_JOURNAL","GLOBAL",4)~ THEN REPLY @1002 GOTO a20
 END
 
 EXTEND_BOTTOM ~BMTHIEF~ 4
     IF ~!Class(LastTalkedToBy(Myself),THIEF_ALL)
-        !Class(LastTalkedToBy(Myself),BARD_ALL)~ THEN REPLY  @1000  GOTO a5
+        !Class(LastTalkedToBy(Myself),BARD_ALL)~ THEN REPLY @1000 GOTO a5
     IF ~Global("RR#KnowMarina","GLOBAL",0)
         OR(2)	 Class(LastTalkedToBy(Myself),THIEF_ALL)
-        Class(LastTalkedToBy(Myself),BARD_ALL)~ THEN REPLY  @1001 GOTO RR#THFCNT
+        Class(LastTalkedToBy(Myself),BARD_ALL)~ THEN REPLY @1001 GOTO RR#THFCNT
     IF ~!Global("RR#KnowMarina","GLOBAL",0)
         OR(2)	 Class(LastTalkedToBy(Myself),THIEF_ALL)
-        Class(LastTalkedToBy(Myself),BARD_ALL)~ THEN REPLY  @1003 GOTO a8
+        Class(LastTalkedToBy(Myself),BARD_ALL)~ THEN REPLY @1003 GOTO a8
 
     IF ~Global("RR#KnowMarina","GLOBAL",2)~ THEN REPLY @1004 GOTO a9
     IF ~PartyHasItem("RR#BK03")
-        Global("RR#ARLED_JOURNAL","GLOBAL",4)~ THEN REPLY  @1002 GOTO a20
+        Global("RR#ARLED_JOURNAL","GLOBAL",4)~ THEN REPLY @1002 GOTO a20
     IF ~GlobalGT("RR#ARLED_VAMP_SPAWN","GLOBAL",0)
-        Global("RR#TOLD_MARINA_ABOUT_ARLED","GLOBAL",0)~ THEN REPLY  @1005 GOTO a35
+        Global("RR#TOLD_MARINA_ABOUT_ARLED","GLOBAL",0)~ THEN REPLY @1005 GOTO a35
 END
 
 APPEND BMTHIEF

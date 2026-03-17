@@ -1,6 +1,6 @@
-// ////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 // //////////  Bodhi's interjection into the Solar conversation
-// ///////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
 
 // / Solar block 4 needs to allow dialog to start here, since in the Bodhi
 // / conversation we exit and re-enter
@@ -13,9 +13,9 @@ EXTEND_BOTTOM finsol01 4
     IF ~Global("BodhiFights","GLOBAL",1)~ THEN EXTERN finbodh bodhi_interjection
 END
 
-// ////////////////////////
+//////////////////////////
 // / Bodhi initial conversation
-// /////////////////////////
+///////////////////////////
 
 APPEND finbodh
 
@@ -45,8 +45,7 @@ APPEND finbodh
         IF ~Global("BodhiPromised","GLOBAL",0)~ THEN REPLY @82 DO ~SetGlobal("BodhiFights","GLOBAL",0)ClearAllActions()StartCutSceneMode()StartCutScene("bodhif02")~ EXIT  // disintegrate Bodhi
     END
 
-END
-// end of APPEND
+END // end of APPEND
 
 APPEND finsol01
 
@@ -55,12 +54,11 @@ APPEND finsol01
         IF ~~ THEN DO ~ClearAllActions()StartCutSceneMode()StartCutScene("bodhif01")~ EXIT
     END
 
-END
-// end of APPEND
+END // end of APPEND
 
-// ///////////////////
+/////////////////////
 // / Bodhi subsequent conversation
-// //////////////////
+////////////////////
 
 APPEND finbodh
 
@@ -79,5 +77,4 @@ APPEND finbodh
         IF ~~ THEN DO ~SetGlobal("BodhiFights","GLOBAL",2)ClearAllActions()StartCutSceneMode()StartCutScene("bodhif03")~ EXIT
     END
 
-END
-// end of APPEND
+END // end of APPEND
