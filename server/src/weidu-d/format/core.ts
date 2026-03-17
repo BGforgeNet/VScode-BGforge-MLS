@@ -1,6 +1,9 @@
 /**
  * Core formatting logic for WeiDU D files.
  * Simple approach: preserve source structure, normalize indent, break long lines.
+ * 
+ * For formatter behavior and examples, see:
+ * {@link https://github.com/bgforge/vscode-mls/tree/master/grammars/weidu-d/formatter.md}
  */
 
 import type { Node as SyntaxNode } from "web-tree-sitter";

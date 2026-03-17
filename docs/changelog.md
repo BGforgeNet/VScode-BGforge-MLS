@@ -1,5 +1,16 @@
 # Changelog
 
+## 3.2.1
+
+WeiDU D Formatter
+
+- Fixed comment preservation:
+  - Decorative separator comments (`//////`) no longer have space added
+  - Block comments preserve all internal whitespace exactly
+  - Trailing comments stay on the same line as code
+- Fixed multi-line tilde string formatting in transitions
+- Fixed blank line preservation between comments and code blocks
+
 ## 3.2.0
 
 Compile/validate:

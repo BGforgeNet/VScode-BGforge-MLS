@@ -209,3 +209,12 @@ tree-sitter build --wasm
 ```bash
 pnpm test
 ```
+
+## Formatter
+
+See [formatter.md](./formatter.md) for complete documentation on the WeiDU D formatter, including:
+
+- Comment preservation (decorative separators, block comments, trailing comments)
+- Multi-line string formatting
+- Whitespace normalization rules
+- Usage examples (VSCode and CLI)
