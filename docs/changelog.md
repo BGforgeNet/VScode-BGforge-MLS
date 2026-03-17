@@ -2,14 +2,32 @@
 
 ## 3.2.1
 
-WeiDU D Formatter
+### Formatter Improvements
 
+**WeiDU D Formatter:**
 - Fixed comment preservation:
-  - Decorative separator comments (`//////`) no longer have space added
-  - Block comments preserve all internal whitespace exactly
-  - Trailing comments stay on the same line as code
-- Fixed multi-line tilde string formatting in transitions
-- Fixed blank line preservation between comments and code blocks
+  - Decorative separator comments (`//////`) no longer have space added.
+  - Block comments preserve all internal whitespace exactly.
+  - Trailing comments stay on the same line as code.
+- Fixed multi-line tilde string formatting in transitions.
+- Fixed blank line preservation between comments and code blocks.
+- Formatter is now idempotent for all D files.
+
+**WeiDU TP2 Formatter:**
+- Fixed mangling of string literals containing newlines.
+
+### Data Updates
+
+**Infinity Engine:**
+- BAF trigger definitions are now pulled from IESDP.
+
+**Fallout (sfall):**
+- Updated sfall data.
+
+### Core Improvements
+
+- Fixed completion detail and hover for overloaded symbol names.
+- Unified provider indexing and scoped workspace symbols by language.
 
 ## 3.2.0
 
