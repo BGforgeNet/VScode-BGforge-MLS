@@ -1,14 +1,14 @@
-// /////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////
 // Ascension : MELISS01
-// /////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////
 // (1) adds more transitions to state 12
 // (2) changes the SAY text in state 14
 // (3) appends states 18 -- 19
-// /////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////
 
 EXTEND_BOTTOM MELISS01 12
-    IF ~~ THEN REPLY @419 /* ~Oh, please. I saw you coming from a mile away. I just played along because I had no choice.~ #74260 */ DO ~IncrementGlobal("Bhaal25Dream5","GLOBAL",-1)~ GOTO a18
-    IF ~Global("BalthazarFights","GLOBAL",1)~ THEN REPLY @420 /*~Well, your plan didn't work out quite like you thought. Balthazar is still alive.~ #74263 */ GOTO a19
+    IF ~~ THEN REPLY @419 /* ~Oh, please.  I saw you coming from a mile away.  I just played along because I had no choice.~ #74260 */ DO ~IncrementGlobal("Bhaal25Dream5","GLOBAL",-1)~ GOTO a18
+    IF ~Global("BalthazarFights","GLOBAL",1)~ THEN REPLY @420 /* ~Well, your plan didn't work out quite like you thought.  Balthazar is still alive.~ #74263 */ GOTO a19
 END
 
 REPLACE_SAY MELISS01 14 @422 /* ~Do you dare come and face me there?  Or shall I have to hunt you down like the sorry dog that you are?  Because make no mistake...one way or another, every last drop of that divine essence will be *mine*.~ [MELISS23] #74259 */
