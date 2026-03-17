@@ -74,12 +74,17 @@ function normalizeWhitespace(text: string): string {
     return normalizeWhitespaceWeidu(text);
 }
 
-// Normalize a line comment: ensure "// comment" format (1 space after //)
+// Normalize a line comment: ensure "// comment" format (1 space after //), but preserve decorative separators
 function normalizeLineComment(text: string): string {
     const trimmed = text.trim();
     if (trimmed.startsWith("//")) {
-        const content = trimmed.slice(2).trimStart();
-        return content ? "// " + content : "//";
+        const content = trimmed.slice(2);
+        // Preserve decorative separators (//////) exactly - don't add space
+        if (/^\/+$/.test(content)) {
+            return "//" + content;
+        }
+        const normalized = content.trimStart();
+        return normalized ? "// " + normalized : "//";
     }
     return trimmed;
 }
@@ -122,9 +127,22 @@ function isNextFeature(node: SyntaxNode): boolean {
     );
 }
 
-// Normalize transition text: collapse whitespace, preserve strings
+// Normalize transition text: collapse whitespace in code, preserve strings and block comments exactly
 function normalizeTransitionText(text: string): string {
-    return normalizeWhitespaceWeidu(text);
+    const tokens = tokenizeWeidu(text);
+    const parts: string[] = [];
+
+    for (const token of tokens) {
+        if (token.type === WeiduTokenType.Code) {
+            // Collapse whitespace in code parts
+            parts.push(token.text.replace(/\s+/g, " "));
+        } else {
+            // Preserve strings and comments exactly as-is
+            parts.push(token.text);
+        }
+    }
+
+    return parts.join("").trim();
 }
 
 // Get line length excluding comment
@@ -213,37 +231,56 @@ function formatTransitionNode(node: SyntaxNode, indent: string, innerIndent: str
         currentLine = "";
     };
 
+    // Helper: process a multi-line token (string or code) and split across output lines
+    const processMultiLineToken = (tokenText: string, isCode: boolean) => {
+        const lines = tokenText.split("\n");
+        for (let i = 0; i < lines.length; i++) {
+            const linePart = lines[i];
+            if (linePart !== undefined) {
+                const processed = isCode ? linePart.trim().replace(/\s+/g, " ") : (i === 0 ? linePart : linePart.trimStart());
+                if (processed || (isCode && i < lines.length - 1)) {
+                    if (i === 0) {
+                        if (currentLine && !currentLine.endsWith(" ")) {
+                            currentLine += " ";
+                        }
+                        currentLine += processed;
+                    } else {
+                        flushLine();
+                        currentLine = processed;
+                    }
+                } else if (i < lines.length - 1) {
+                    // Empty line in middle of multi-line token
+                    flushLine();
+                }
+            }
+        }
+    };
+
     for (const token of tokens) {
         if (token.type !== WeiduTokenType.Code) {
-            // String or comment: preserve exactly, never split.
-            // Add separator from preceding code token (tokenizer places inter-token
-            // whitespace inside code tokens, so literals never carry leading whitespace).
-            if (currentLine && !currentLine.endsWith(" ")) {
-                currentLine += " ";
+            // String or comment
+            if (token.text.includes("\n")) {
+                processMultiLineToken(token.text, false);
+            } else {
+                // Single-line string/comment
+                if (currentLine && !currentLine.endsWith(" ")) {
+                    currentLine += " ";
+                }
+                currentLine += token.text;
             }
-            currentLine += token.text;
             continue;
         }
 
-        // Code token: may contain newlines
+        // Code token
         if (token.text.includes("\n")) {
-            const lines = token.text.split("\n");
-            for (let i = 0; i < lines.length; i++) {
-                const linePart = lines[i];
-                if (linePart !== undefined) {
-                    const normalized = linePart.trim().replace(/\s+/g, " ");
-                    if (normalized) {
-                        currentLine += (currentLine && !currentLine.endsWith(" ") ? " " : "") + normalized;
-                    }
-                    if (i < lines.length - 1) {
-                        flushLine();
-                    }
-                }
-            }
+            processMultiLineToken(token.text, true);
         } else {
             const normalized = token.text.trim().replace(/\s+/g, " ");
             if (normalized) {
-                currentLine += (currentLine && !currentLine.endsWith(" ") ? " " : "") + normalized;
+                if (currentLine && !currentLine.endsWith(" ")) {
+                    currentLine += " ";
+                }
+                currentLine += normalized;
             }
         }
     }
@@ -255,58 +292,60 @@ function formatTransitionNode(node: SyntaxNode, indent: string, innerIndent: str
 
 // Reindent a multi-line state preserving source structure
 function reindentState(node: SyntaxNode, ctx: FormatContext): string {
-    const tokens = tokenizeWeidu(node.text);
-    const result: string[] = [];
-    let currentLine: string = "";
+    const baseRow = node.startPosition.row;
+    const lines = node.text.split("\n");
 
-    const flushLine = () => {
-        if (currentLine.trim() || result.length === 0) {
-            const isFirst = result.length === 0;
-            // Simplified depth: 1 for first line, 2 for middle lines
-            const depth = isFirst ? 1 : 2;
-            result.push(withNormalizedComment(ctx.indent.repeat(depth) + currentLine.trimEnd()));
-        } else if (result.length > 0) {
-            result.push(""); // preserve intentional blank lines
-        }
-        currentLine = "";
-    };
+    // Build map of extra indent per line by walking AST
+    // Any line that continues a multi-line node from previous line gets +1
+    const extraIndent: number[] = Array.from<number>({ length: lines.length }).fill(0);
+    // END is the last non-blank line of a state
+    let endKeywordLine = lines.length - 1;
+    while (endKeywordLine > 0 && !lines[endKeywordLine]?.trim()) {
+        endKeywordLine--;
+    }
 
-    for (const token of tokens) {
-        if (token.type !== WeiduTokenType.Code) {
-            // String or comment: preserve exactly, never split.
-            // Add separator from preceding code token (tokenizer places inter-token
-            // whitespace inside code tokens, so literals never carry leading whitespace).
-            if (currentLine && !currentLine.endsWith(" ")) {
-                currentLine += " ";
-            }
-            currentLine += token.text;
-            continue;
-        }
+    function markContinuations(n: SyntaxNode) {
+        // Only count top-level string nodes (not inner tilde_string etc)
+        const isString = n.type === "string";
+        const startLine = n.startPosition.row - baseRow;
+        const endLine = n.endPosition.row - baseRow;
 
-        // Code token: may contain newlines
-        if (token.text.includes("\n")) {
-            const lines = token.text.split("\n");
-            for (let i = 0; i < lines.length; i++) {
-                const linePart = lines[i];
-                if (linePart !== undefined) {
-                    const normalized = linePart.trim().replace(/\s+/g, " ");
-                    if (normalized) {
-                        currentLine += (currentLine && !currentLine.endsWith(" ") ? " " : "") + normalized;
-                    }
-                    if (i < lines.length - 1) {
-                        flushLine();
-                    }
+        if (isString && endLine > startLine && startLine >= 0) {
+            // This string spans lines
+            // Base depth is the extraIndent of the line where this string starts
+            const baseDepth = (startLine < extraIndent.length ? extraIndent[startLine] : 0) ?? 0;
+            for (let line = startLine + 1; line <= endLine; line++) {
+                if (line < extraIndent.length) {
+                    extraIndent[line] = Math.max(extraIndent[line] ?? 0, baseDepth + 1);
                 }
             }
-        } else {
-            const normalized = token.text.trim().replace(/\s+/g, " ");
-            if (normalized) {
-                currentLine += (currentLine && !currentLine.endsWith(" ") ? " " : "") + normalized;
-            }
+        }
+        for (const child of n.children) {
+            markContinuations(child);
         }
     }
-    flushLine();
+    markContinuations(node);
 
+    // Now reindent with the computed extra indents
+    const result: string[] = [];
+    let prevBlank = false;
+
+    lines.forEach((line, i) => {
+        const trimmed = line.trim();
+        if (!trimmed) {
+            if (!prevBlank && result.length > 0) {
+                result.push("");
+            }
+            prevBlank = true;
+            return;
+        }
+        prevBlank = false;
+
+        const isFirst = result.length === 0;
+        const isEnd = i === endKeywordLine;
+        const depth = isFirst || isEnd ? 1 : 2 + (extraIndent[i] ?? 0);
+        result.push(withNormalizedComment(ctx.indent.repeat(depth) + trimmed));
+    });
     return result.join("\n");
 }
 
@@ -513,14 +552,25 @@ export function formatDocument(root: SyntaxNode, options?: Partial<FormatOptions
     let lastEndRow = -1;
 
     for (const child of root.children) {
-        // Preserve blank lines between top-level items
-        if (lastEndRow >= 0 && child.startPosition.row > lastEndRow + 1) {
-            result.push("");
-        }
-
         if (isComment(child)) {
-            result.push(normalizeLineComment(child.text));
+            // Check if this comment is on the same line as the previous item (trailing comment)
+            if (lastEndRow >= 0 && child.startPosition.row === lastEndRow) {
+                // Trailing comment - append to previous line (only if there is a previous line)
+                if (result.length > 0) {
+                    result[result.length - 1] += " " + child.text;
+                }
+            } else {
+                // Standalone comment - preserve blank lines
+                if (lastEndRow >= 0 && child.startPosition.row > lastEndRow + 1) {
+                    result.push("");
+                }
+                result.push(normalizeLineComment(child.text));
+            }
         } else {
+            // Non-comment node - preserve blank lines
+            if (lastEndRow >= 0 && child.startPosition.row > lastEndRow + 1) {
+                result.push("");
+            }
             result.push(formatAction(child, ctx));
         }
         lastEndRow = child.endPosition.row;
