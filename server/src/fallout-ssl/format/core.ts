@@ -4,6 +4,9 @@
  *
  * Control flow formatters are in control-flow.ts.
  * Expression formatters are in expressions.ts.
+ * 
+ * For formatter behavior and examples, see:
+ * {@link https://github.com/bgforge/vscode-mls/tree/master/grammars/fallout-ssl/formatter.md}
  */
 
 import type { Node as SyntaxNode } from "web-tree-sitter";

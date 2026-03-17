@@ -444,3 +444,7 @@ caught at parse time.
 
 The formatter detects reserved words used as identifiers and reports them as errors.
 This semantic check ensures code correctness while keeping the grammar simple.
+
+## Formatter
+
+See [formatter.md](./formatter.md) for complete documentation on the Fallout SSL formatter.

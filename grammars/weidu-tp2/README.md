@@ -1368,3 +1368,7 @@ tree-sitter build --wasm
 ```bash
 pnpm test
 ```
+
+## Formatter
+
+See [formatter.md](./formatter.md) for complete documentation on the WeiDU TP2 formatter.

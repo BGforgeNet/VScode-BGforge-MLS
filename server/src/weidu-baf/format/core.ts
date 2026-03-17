@@ -1,6 +1,9 @@
 /**
  * Core formatting logic for WeiDU BAF files.
  * Shared between LSP server and CLI.
+ * 
+ * For formatter behavior and examples, see:
+ * {@link https://github.com/bgforge/vscode-mls/tree/master/grammars/weidu-baf/formatter.md}
  */
 
 import type { Node as SyntaxNode } from "web-tree-sitter";

@@ -186,6 +186,10 @@ Run grammar tests, including formatter sample verification:
 pnpm test
 ```
 
+## Formatter
+
+See [formatter.md](./formatter.md) for complete documentation on the WeiDU BAF formatter.
+
 ## Grammar Notes
 
 ### Ambiguity Resolution

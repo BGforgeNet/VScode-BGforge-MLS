@@ -1,6 +1,9 @@
 /**
  * Core formatting logic for WeiDU TP2 files.
  * Main entry point and dispatcher for formatting operations.
+ * 
+ * For formatter behavior and examples, see:
+ * {@link https://github.com/bgforge/vscode-mls/tree/master/grammars/weidu-tp2/formatter.md}
  */
 
 import type { Node as SyntaxNode } from "web-tree-sitter";
