@@ -1,6 +1,6 @@
 /** @tra setup.tra */
 BACKUP ~ua/backup~
-SUPPORT ~https: // forums.bgforge.net/viewforum.php?f=30~
+SUPPORT ~https://forums.bgforge.net/viewforum.php?f=30~
 NO_IF_EVAL_BUG
 AUTO_EVAL_STRINGS
 // MODDER
