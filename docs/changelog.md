@@ -4,17 +4,17 @@
 
 ### Formatter Improvements
 
-**WeiDU D Formatter:**
+**WeiDU D formatter:**
 - Fixed comment preservation:
   - Decorative separator comments (`//////`) no longer have space added.
   - Block comments preserve all internal whitespace exactly.
   - Trailing comments stay on the same line as code.
 - Fixed multi-line tilde string formatting in transitions.
 - Fixed blank line preservation between comments and code blocks.
-- Formatter is now idempotent for all D files.
 
-**WeiDU TP2 Formatter:**
-- Fixed mangling of string literals containing newlines.
+**WeiDU TP2:**
+- Fixed formatter mangling of string literals containing newlines.
+- Fixed `INCLUDE` failing to parse when multiple files are provided.
 
 ### Data Updates
 

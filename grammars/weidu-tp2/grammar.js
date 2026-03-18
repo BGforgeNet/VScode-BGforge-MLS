@@ -1479,7 +1479,7 @@ export default grammar({
         action_outer_inner_patch_save: outerPatchSaveAction("OUTER_INNER_PATCH_SAVE"),
 
         // Includes
-        action_include: ($) => seq("INCLUDE", field("file", $.value)),
+        action_include: ($) => prec.right(seq("INCLUDE", repeat1(field("file", $.value)))),
         action_reinclude: ($) => prec.right(seq(choice("REINCLUDE", "ACTION_REINCLUDE"), repeat1(field("file", $.value)))),
 
         // Functions/macros definitions (using helpers)
