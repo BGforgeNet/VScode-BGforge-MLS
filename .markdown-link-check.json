@@ -1,0 +1,10 @@
+{
+  "ignorePatterns": [
+    {
+      "pattern": "^irc:"
+    },
+    {
+      "pattern": "^https://bgforge\\.net/irc$"
+    }
+  ]
+}

@@ -358,7 +358,7 @@ Must be in a JSDoc comment (`/** ... */`).
 
 ## Imports
 
-Engine builtins (triggers, actions, objects, constants) come from [ielib](https://github.com/BGforgeNet/ielib):
+Engine builtins (triggers, actions, objects, constants) come from [IETS](https://github.com/BGforgeNet/iets):
 
 ```typescript
 import { See, Attack, Global, SetGlobal } from "ielib/baf.d";

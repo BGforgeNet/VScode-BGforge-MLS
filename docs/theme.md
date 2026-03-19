@@ -8,8 +8,8 @@ The theme is best used with [IElib](https://ielib.bgforge.net).
 
 ### Default Monokai
 
-![default monokai example](/docs/monokai.png)
+![default monokai example](./monokai.png)
 
 ### BGforge Monokai
 
-![bgforge monokai example](/docs/bgforge_monokai.png)
+![bgforge monokai example](./bgforge_monokai.png)

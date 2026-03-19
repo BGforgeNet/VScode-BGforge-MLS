@@ -10,7 +10,7 @@ TBAF is a TypeScript subset that transpiles to BAF (Infinity Engine AI scripts).
 2. Transpiler converts `.tbaf` to `.baf`, the resulting file is written next to the source
 3. WeiDU compiles the `.baf` into the game
 
-Engine builtins (triggers, actions, objects) are provided by [ielib](https://github.com/BGforgeNet/ielib) as typed declarations.
+Engine builtins (triggers, actions, objects) are provided by [IETS](https://github.com/BGforgeNet/iets) as typed declarations.
 
 ## Guides
 

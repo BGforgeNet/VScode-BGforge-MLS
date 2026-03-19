@@ -674,7 +674,7 @@ Global("quest", GLOBAL, 1);
 
 ## Imports
 
-Engine builtins come from [ielib](https://github.com/BGforgeNet/ielib):
+Engine builtins come from [IETS](https://github.com/BGforgeNet/iets):
 
 ```typescript
 import { tra, tlk, obj } from "ielib";

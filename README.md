@@ -10,7 +10,7 @@ BGforge MLS is a VS Code extension for classic RPG modding languages. It support
 
 It also works with non-VS Code editors. Setup guides are available for [Sublime](docs/editors/sublime-text.md), [Neovim](docs/editors/neovim.md), [Emacs](docs/editors/emacs.md), [JetBrains](docs/editors/jetbrains.md), [Helix](docs/editors/helix.md), [Zed](docs/editors/zed.md), [Kate](docs/editors/kate.md), [Notepad++](docs/editors/notepadpp.md), and [Geany](docs/editors/geany.md).
 
-- [**Languages**](#languages): Fallout [SSL](#fallout-ssl); WeiDU [BAF](#weidu-baf), [D](#weidu-d), [TP2](#weidu-tp2).
+- [**Languages**](#languages): Fallout SSL; WeiDU BAF, D, TP2.
 - [**Transpilers**](#transpilers): TSSL, TBAF, TD.
 - [**Other formats**](#other-formats): TRA, MSG, 2DA, Fallout PRO, worldmap.txt and scripts.lst.
 - [**Installation**](#installation)

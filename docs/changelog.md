@@ -359,7 +359,7 @@ Fixed crash on mod directory open on Windows.
 
 - Fallout
   - Added `start_gialog`/`start_gdialog` synonyms.
-  - Added notes about visibility and `move_to` during fallout [game load](https://github.com/phobos2077/sfall/issues/380).
+  - Added notes about visibility and `move_to` during fallout [game load](https://github.com/sfall-team/sfall/issues/380).
 - IE
   - Fixed typo in `CLERIC_FAVOR_OR_ILMATER`.
   - Added some missing `tp2-vars` to autocompletion.

@@ -30,7 +30,7 @@ High-level architecture of the BGforge MLS extension. For server-specific detail
   - [TextMate Grammars](#textmate-grammars)
 - [Data Pipeline](#data-pipeline)
 - [Test Architecture](#test-architecture)
-  - [Server Unit Tests](#server-unit-tests-servertest)
+  - [Server Unit Tests](#server-unit-tests)
   - [Integration Tests](#integration-tests)
   - [E2E Tests](#e2e-tests)
 - [Extension Packaging](#extension-packaging)
@@ -416,8 +416,16 @@ See [scripts/README.md](../scripts/README.md) for all test commands.
 
 Four test layers:
 
+### Server Unit Tests
+
 - **Server unit tests** (`server/test/`, vitest) -- ~1900 tests covering providers, transpilers, core symbol system, shared utilities
+
+### Integration Tests
+
 - **Integration tests** -- grammar corpus, TD/TBAF sample transpilation, format comparison, CLI exit codes
+
+### E2E Tests
+
 - **E2E tests** (`client/src/test/`, mocha + vscode) -- completion, hover in a real VSCode instance
 - **Grammar tests** (`grammars/*/test/corpus/`) -- tree-sitter corpus tests per grammar
 

@@ -10,7 +10,7 @@ TD is a TypeScript DSL that transpiles to WeiDU D dialog files for Infinity Engi
 2. Transpiler converts `.td` to `.d`, the resulting file is written next to the source
 3. WeiDU compiles the `.d` into the game
 
-Engine builtins (triggers, actions, objects) and text helpers (`tra`, `tlk`, `obj`) are provided by [ielib](https://github.com/BGforgeNet/ielib) as typed declarations.
+Engine builtins (triggers, actions, objects) and text helpers (`tra`, `tlk`, `obj`) are provided by [IETS](https://github.com/BGforgeNet/iets) as typed declarations.
 
 ## Guides
 
