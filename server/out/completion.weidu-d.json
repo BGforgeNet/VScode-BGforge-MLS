@@ -1,54 +1,42 @@
 [
     {
-        "label": "THEN",
-        "kind": 14,
-        "source": "builtin",
-        "category": "keywords"
-    },
-    {
-        "label": "RESPONSE",
-        "kind": 14,
-        "source": "builtin",
-        "category": "keywords"
-    },
-    {
-        "label": "OR",
-        "kind": 14,
-        "source": "builtin",
-        "category": "keywords"
-    },
-    {
-        "label": "GLOBAL",
-        "kind": 14,
-        "source": "builtin",
-        "category": "keywords"
-    },
-    {
-        "label": "LOCALS",
-        "kind": 14,
-        "source": "builtin",
-        "category": "keywords"
-    },
-    {
-        "label": "MYAREA",
-        "kind": 14,
-        "source": "builtin",
-        "category": "keywords"
-    },
-    {
-        "label": "END",
-        "kind": 14,
-        "source": "builtin",
-        "category": "keywords"
-    },
-    {
-        "label": "BEGIN",
+        "label": "ADD_STATE_TRIGGER",
         "kind": 3,
         "source": "builtin",
         "category": "actions",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-d-tooltip\nBEGIN filename [ nonPausing ] state list\n```\nBEGIN tells WeiDU that you are creating a new DLG file from scratch. Any existing DLG file with the same name will be overwritten. The new DLG file contains exactly the states in the list. If you set nonPausing to a non-zero integer, the game will not \"stop time\" while the conversation takes place. By default time stops during conversations."
+            "value": "```weidu-d-tooltip\nADD_STATE_TRIGGER filename stateNumber stateTriggerString [ stateNumber list ] \tdActionWhen list\n```\nThis instructs WeiDU to add the stateTriggerString to all of the states with the given stateNumbers in the file filename.DLG (which must already exist). This is handy for adding extra conditions to an existing dialogue state."
+        }
+    },
+    {
+        "label": "ADD_TRANS_ACTION",
+        "kind": 3,
+        "source": "builtin",
+        "category": "actions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-d-tooltip\nADD_TRANS_ACTION filename BEGIN stateNumber list END BEGIN transNumber list END transActionString dActionWhen list\n```\nThis instructs WeiDU to add the transActionString to all of the actions in all the transitions in all of the states specified by the stateNumber list and the transNumber list. You may use state labels in the stateNumber list. If the transNumber list is empty, the text added to all transitions on all listed states. Note that the BEGIN and END keywords must be present, even if you specify an empty list of transNumbers. The \"first\" transition is number 0. Any out-of-bounds transNumbers are silently ignored. The transActionString is prepended to any existing action text on a per-transition, per-state basis."
+        }
+    },
+    {
+        "label": "ADD_TRANS_TRIGGER",
+        "kind": 3,
+        "source": "builtin",
+        "category": "actions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-d-tooltip\nADD_TRANS_TRIGGER filename stateNumber transTriggerString [ moreStateNumbers list ] [ DO transNumber list ] dActionWhen list\n```\nThis instructs WeiDU to add the transTriggerString to all of the transitions in all of the states with the given stateNumbers in the file filename.DLG (which must already exist). This is often used in conjunction with EXTEND_BOTTOM to make a new branch in an existing state. Use ADD_TRANS_TRIGGER to add the negation of some predicate to all of the existing transitions, then use EXTEND_BOTTOM to add a transition with that predicate to that state. If a list of transNumbers is specified, only those transitions will have transTriggerString added to them. If such a list is not specified, every transition in every specified state will be modified. Note that the \"first\" transition is number 0."
+        }
+    },
+    {
+        "label": "ALTER_TRANS",
+        "kind": 3,
+        "source": "builtin",
+        "category": "actions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-d-tooltip\nALTER_TRANS filename BEGIN stateNumber list END BEGIN transNumber list END BEGIN changeWhat changeInto list END\n```\nFine altering of a single transition. See the ALTER_TRANS tutorial."
         }
     },
     {
@@ -72,6 +60,16 @@
         }
     },
     {
+        "label": "BEGIN",
+        "kind": 3,
+        "source": "builtin",
+        "category": "actions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-d-tooltip\nBEGIN filename [ nonPausing ] state list\n```\nBEGIN tells WeiDU that you are creating a new DLG file from scratch. Any existing DLG file with the same name will be overwritten. The new DLG file contains exactly the states in the list. If you set nonPausing to a non-zero integer, the game will not \"stop time\" while the conversation takes place. By default time stops during conversations."
+        }
+    },
+    {
         "label": "CHAIN",
         "kind": 3,
         "source": "builtin",
@@ -79,6 +77,26 @@
         "documentation": {
             "kind": "markdown",
             "value": "```weidu-d-tooltip\nCHAIN\n  [ IF [ WEIGHT #weight ] stateTriggerString THEN ]\n  [ IF_FILE_EXISTS ] entryFilename entryLabel\n  chainText list\n  chainEpilogue\n```\nThis instructs WeiDU to make a long conversation in which the PC can say nothing. This is useful when you want the NPCs to talk among themselves for a long time. It and its friends, INTERJECT and INTERJECT_COPY_TRANS can incredible time-savers when you're writing non-trivial dialogue. See the examples for ideas. CHAIN will only append to existing dialogues. You cannot use CHAIN to create a new DLG. If the entryFilename file is missing and there is IF_FILE_EXISTS, the whole CHAIN is not compiled."
+        }
+    },
+    {
+        "label": "EXTEND_BOTTOM",
+        "kind": 3,
+        "source": "builtin",
+        "category": "actions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-d-tooltip\nEXTEND_BOTTOM filename stateNumber list [ #positionNumber ] transition list END\n```\nBehaves just like EXTEND_TOP but adds the transitions to the bottom of the list instead."
+        }
+    },
+    {
+        "label": "EXTEND_TOP",
+        "kind": 3,
+        "source": "builtin",
+        "category": "actions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-d-tooltip\nEXTEND_TOP filename stateLabel list [ #positionNumber ] transition list END\n```\nThis instructs WeiDU to add the transitions in list to the top of the transition list for the specified states in filename.DLG (which must already exist).If a positionNumber is given, WeiDU to insert the transitions just between already-existing transitions #positionNumber and #positionNumber+1 in the given states for the given file. The first transition is number 1."
         }
     },
     {
@@ -132,86 +150,6 @@
         }
     },
     {
-        "label": "EXTEND_TOP",
-        "kind": 3,
-        "source": "builtin",
-        "category": "actions",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-d-tooltip\nEXTEND_TOP filename stateLabel list [ #positionNumber ] transition list END\n```\nThis instructs WeiDU to add the transitions in list to the top of the transition list for the specified states in filename.DLG (which must already exist).If a positionNumber is given, WeiDU to insert the transitions just between already-existing transitions #positionNumber and #positionNumber+1 in the given states for the given file. The first transition is number 1."
-        }
-    },
-    {
-        "label": "EXTEND_BOTTOM",
-        "kind": 3,
-        "source": "builtin",
-        "category": "actions",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-d-tooltip\nEXTEND_BOTTOM filename stateNumber list [ #positionNumber ] transition list END\n```\nBehaves just like EXTEND_TOP but adds the transitions to the bottom of the list instead."
-        }
-    },
-    {
-        "label": "ADD_STATE_TRIGGER",
-        "kind": 3,
-        "source": "builtin",
-        "category": "actions",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-d-tooltip\nADD_STATE_TRIGGER filename stateNumber stateTriggerString [ stateNumber list ] \tdActionWhen list\n```\nThis instructs WeiDU to add the stateTriggerString to all of the states with the given stateNumbers in the file filename.DLG (which must already exist). This is handy for adding extra conditions to an existing dialogue state."
-        }
-    },
-    {
-        "label": "ADD_TRANS_TRIGGER",
-        "kind": 3,
-        "source": "builtin",
-        "category": "actions",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-d-tooltip\nADD_TRANS_TRIGGER filename stateNumber transTriggerString [ moreStateNumbers list ] [ DO transNumber list ] dActionWhen list\n```\nThis instructs WeiDU to add the transTriggerString to all of the transitions in all of the states with the given stateNumbers in the file filename.DLG (which must already exist). This is often used in conjunction with EXTEND_BOTTOM to make a new branch in an existing state. Use ADD_TRANS_TRIGGER to add the negation of some predicate to all of the existing transitions, then use EXTEND_BOTTOM to add a transition with that predicate to that state. If a list of transNumbers is specified, only those transitions will have transTriggerString added to them. If such a list is not specified, every transition in every specified state will be modified. Note that the \"first\" transition is number 0."
-        }
-    },
-    {
-        "label": "ADD_TRANS_ACTION",
-        "kind": 3,
-        "source": "builtin",
-        "category": "actions",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-d-tooltip\nADD_TRANS_ACTION filename BEGIN stateNumber list END BEGIN transNumber list END transActionString dActionWhen list\n```\nThis instructs WeiDU to add the transActionString to all of the actions in all the transitions in all of the states specified by the stateNumber list and the transNumber list. You may use state labels in the stateNumber list. If the transNumber list is empty, the text added to all transitions on all listed states. Note that the BEGIN and END keywords must be present, even if you specify an empty list of transNumbers. The \"first\" transition is number 0. Any out-of-bounds transNumbers are silently ignored. The transActionString is prepended to any existing action text on a per-transition, per-state basis."
-        }
-    },
-    {
-        "label": "REPLACE_TRANS_ACTION",
-        "kind": 3,
-        "source": "builtin",
-        "category": "actions",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-d-tooltip\nREPLACE_TRANS_ACTION filename BEGIN stateNumber list END BEGIN transNumber list END oldText newText dActionWhen list\n```\nThis instructs WeiDU to replace all instances of oldText in newText to all of the actions in all the transitions in all of the states specified by the stateNumber list and the transNumber list. You may use state labels in the stateNumber list. If the transNumber list is empty, the text added to all transitions on all listed states. Note that the BEGIN and END keywords must be present, even if you specify an empty list of transNumbers. The \"first\" transition is number 0. Any out-of-bounds transNumbers are silently ignored."
-        }
-    },
-    {
-        "label": "REPLACE_TRANS_TRIGGER",
-        "kind": 3,
-        "source": "builtin",
-        "category": "actions",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-d-tooltip\nREPLACE_TRANS_TRIGGER filename BEGIN stateNumber list END BEGIN transNumber list END oldText newText dActionWhen list\n```\nThis instructs WeiDU to replace all instances of oldText in newText to all of the triggers in all of the transitions in all of the states specified by the stateNumber list and the transNumber list. You may use state labels in the stateNumber list. If the transNumber list is empty, the text added to all transitions on all listed states. Note that the BEGIN and END keywords must be present, even if you specify an empty list of transNumbers. The \"first\" transition is number 0. Any out-of-bounds transNumbers are silently ignored."
-        }
-    },
-    {
-        "label": "ALTER_TRANS",
-        "kind": 3,
-        "source": "builtin",
-        "category": "actions",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-d-tooltip\nALTER_TRANS filename BEGIN stateNumber list END BEGIN transNumber list END BEGIN changeWhat changeInto list END\n```\nFine altering of a single transition. See the ALTER_TRANS tutorial."
-        }
-    },
-    {
         "label": "REPLACE",
         "kind": 3,
         "source": "builtin",
@@ -222,13 +160,33 @@
         }
     },
     {
-        "label": "SET_WEIGHT",
+        "label": "REPLACE_ACTION_TEXT",
         "kind": 3,
         "source": "builtin",
         "category": "actions",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-d-tooltip\nSET_WEIGHT filename stateLabel #stateWeight\n```\nThis instructs WeiDU to destructively change the WEIGHT of the given state in filename.DLG (which must exist). This should only be used to patch or workaround existing dialogues. Never use SET_WEIGHT if you can help it."
+            "value": "```weidu-d-tooltip\nREPLACE_ACTION_TEXT filename oldText newText [ moreFilenames ] dActionWhen list\n```\nThis instructs WeiDU to destructively replace every occurrence of oldText (which may be a regexp) in the stateActionStrings of filename.DLG (which must exist). This should only be used to patch or workaround existing dialogues. Never use this if you can help it."
+        }
+    },
+    {
+        "label": "REPLACE_ACTION_TEXT_PROCESS",
+        "kind": 3,
+        "source": "builtin",
+        "category": "actions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-d-tooltip\nREPLACE_ACTION_TEXT_PROCESS filename oldText newText [ moreFilenames ] dActionWhen list\n```\nThis instructs WeiDU to destructively replace every occurrence of oldText (which may be a regexp) in the stateActionStrings of filename.DLG (which must exist) with newText. However, newText is first compiled as a BAF action list. In particular, this means that replacing with commands like: ~DisplayString(Myself,@123)~ ... will do what you expect. This should only be used to patch or workaround existing dialogues. Never use this if you can help it."
+        }
+    },
+    {
+        "label": "REPLACE_ACTION_TEXT_REGEXP",
+        "kind": 3,
+        "source": "builtin",
+        "category": "actions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-d-tooltip\nREPLACE_ACTION_TEXT_REGEXP filenameRegexp oldText newText [ moreFilenameRegexps ] dActionWhen list\n```\nJust like REPLACE_ACTION_TEXT but the filenames are regexps. The .DLG is implied, do not include it in your regexps."
         }
     },
     {
@@ -252,6 +210,26 @@
         }
     },
     {
+        "label": "REPLACE_TRANS_ACTION",
+        "kind": 3,
+        "source": "builtin",
+        "category": "actions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-d-tooltip\nREPLACE_TRANS_ACTION filename BEGIN stateNumber list END BEGIN transNumber list END oldText newText dActionWhen list\n```\nThis instructs WeiDU to replace all instances of oldText in newText to all of the actions in all the transitions in all of the states specified by the stateNumber list and the transNumber list. You may use state labels in the stateNumber list. If the transNumber list is empty, the text added to all transitions on all listed states. Note that the BEGIN and END keywords must be present, even if you specify an empty list of transNumbers. The \"first\" transition is number 0. Any out-of-bounds transNumbers are silently ignored."
+        }
+    },
+    {
+        "label": "REPLACE_TRANS_TRIGGER",
+        "kind": 3,
+        "source": "builtin",
+        "category": "actions",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-d-tooltip\nREPLACE_TRANS_TRIGGER filename BEGIN stateNumber list END BEGIN transNumber list END oldText newText dActionWhen list\n```\nThis instructs WeiDU to replace all instances of oldText in newText to all of the triggers in all of the transitions in all of the states specified by the stateNumber list and the transNumber list. You may use state labels in the stateNumber list. If the transNumber list is empty, the text added to all transitions on all listed states. Note that the BEGIN and END keywords must be present, even if you specify an empty list of transNumbers. The \"first\" transition is number 0. Any out-of-bounds transNumbers are silently ignored."
+        }
+    },
+    {
         "label": "REPLACE_TRIGGER_TEXT",
         "kind": 3,
         "source": "builtin",
@@ -272,36 +250,6 @@
         }
     },
     {
-        "label": "REPLACE_ACTION_TEXT",
-        "kind": 3,
-        "source": "builtin",
-        "category": "actions",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-d-tooltip\nREPLACE_ACTION_TEXT filename oldText newText [ moreFilenames ] dActionWhen list\n```\nThis instructs WeiDU to destructively replace every occurrence of oldText (which may be a regexp) in the stateActionStrings of filename.DLG (which must exist). This should only be used to patch or workaround existing dialogues. Never use this if you can help it."
-        }
-    },
-    {
-        "label": "REPLACE_ACTION_TEXT_REGEXP",
-        "kind": 3,
-        "source": "builtin",
-        "category": "actions",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-d-tooltip\nREPLACE_ACTION_TEXT_REGEXP filenameRegexp oldText newText [ moreFilenameRegexps ] dActionWhen list\n```\nJust like REPLACE_ACTION_TEXT but the filenames are regexps. The .DLG is implied, do not include it in your regexps."
-        }
-    },
-    {
-        "label": "REPLACE_ACTION_TEXT_PROCESS",
-        "kind": 3,
-        "source": "builtin",
-        "category": "actions",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-d-tooltip\nREPLACE_ACTION_TEXT_PROCESS filename oldText newText [ moreFilenames ] dActionWhen list\n```\nThis instructs WeiDU to destructively replace every occurrence of oldText (which may be a regexp) in the stateActionStrings of filename.DLG (which must exist) with newText. However, newText is first compiled as a BAF action list. In particular, this means that replacing with commands like: ~DisplayString(Myself,@123)~ ... will do what you expect. This should only be used to patch or workaround existing dialogues. Never use this if you can help it."
-        }
-    },
-    {
         "label": "R_A_T_P_R",
         "kind": 3,
         "source": "builtin",
@@ -312,25 +260,14 @@
         }
     },
     {
-        "label": "UNLESS",
-        "kind": 14,
+        "label": "SET_WEIGHT",
+        "kind": 3,
         "source": "builtin",
-        "category": "when",
+        "category": "actions",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-d-tooltip\nUNLESS String\n```\nThe action is not processed if the element being altered/replaced/added to contains a substring matching against the String regexp."
+            "value": "```weidu-d-tooltip\nSET_WEIGHT filename stateLabel #stateWeight\n```\nThis instructs WeiDU to destructively change the WEIGHT of the given state in filename.DLG (which must exist). This should only be used to patch or workaround existing dialogues. Never use SET_WEIGHT if you can help it."
         }
-    },
-    {
-        "label": "EXTERN",
-        "kind": 14,
-        "source": "builtin",
-        "category": "chain_epilogue",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-d-tooltip\nEXTERN filename stateNumber\n```\nTransfer to the given state in the given dialogue file."
-        },
-        "detail": "EXTERN filename stateNumber"
     },
     {
         "label": "COPY_TRANS",
@@ -366,6 +303,79 @@
         "detail": "EXIT"
     },
     {
+        "label": "EXTERN",
+        "kind": 14,
+        "source": "builtin",
+        "category": "chain_epilogue",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-d-tooltip\nEXTERN filename stateNumber\n```\nTransfer to the given state in the given dialogue file."
+        },
+        "detail": "EXTERN filename stateNumber"
+    },
+    {
+        "label": "END",
+        "kind": 14,
+        "source": "builtin",
+        "category": "keywords"
+    },
+    {
+        "label": "GLOBAL",
+        "kind": 14,
+        "source": "builtin",
+        "category": "keywords"
+    },
+    {
+        "label": "LOCALS",
+        "kind": 14,
+        "source": "builtin",
+        "category": "keywords"
+    },
+    {
+        "label": "MYAREA",
+        "kind": 14,
+        "source": "builtin",
+        "category": "keywords"
+    },
+    {
+        "label": "OR",
+        "kind": 14,
+        "source": "builtin",
+        "category": "keywords"
+    },
+    {
+        "label": "RESPONSE",
+        "kind": 14,
+        "source": "builtin",
+        "category": "keywords"
+    },
+    {
+        "label": "THEN",
+        "kind": 14,
+        "source": "builtin",
+        "category": "keywords"
+    },
+    {
+        "label": "IF",
+        "kind": 14,
+        "source": "builtin",
+        "category": "multi",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-d-tooltip\nIF\n```\nTransition: `IF transTriggerString [ THEN ] transFeature list transNext`\n\nIf the transTriggerString evaluates to true or is empty, this transition is viable. If it contains no replyText within its transFeature list, it is immediately taken. Otherwise, the replyText is presented as an option to the user. If the transition is taken, any actions in the transFeature list are performed and the dialogue flows to the point indicated by the transNext. transitions are evaluated in \"reverse order\".\n\n---\nAction condition: `IF String`.\n\nThe action is processed if the element being altered/replaced/added to contains a substring matching against the String regexp.\n\n---\nState: `IF [ WEIGHT #weightNumber ] stateTriggerString [ THEN ] [ BEGIN ] stateLabel SAY sayText [ = sayText ... ] transition list END`\n\n[Online documentation](https://weidu.org/~thebigg/README-WeiDU.html#state)"
+        }
+    },
+    {
+        "label": "text",
+        "kind": 14,
+        "source": "builtin",
+        "category": "say_text",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-d-tooltip\ntext\n```\nsayText and replyText are both text."
+        }
+    },
+    {
         "label": "APPENDI",
         "kind": 14,
         "source": "builtin",
@@ -386,13 +396,105 @@
         }
     },
     {
-        "label": "text",
+        "label": "^",
         "kind": 14,
         "source": "builtin",
-        "category": "say_text",
+        "category": "string",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-d-tooltip\ntext\n```\nsayText and replyText are both text."
+            "value": "```weidu-d-tooltip\nString ^ String\n```\nString literal concatenation. The second string is appended to the first string. No whitespace is added. Thus \"hello\" ^ \"World\" is the same as \"helloWorld\"."
+        }
+    },
+    {
+        "label": "EXIT",
+        "kind": 14,
+        "source": "builtin",
+        "category": "tran_next",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-d-tooltip\nEXIT\n```\nThe conversation ends."
+        },
+        "detail": "EXIT"
+    },
+    {
+        "label": "EXTERN",
+        "kind": 14,
+        "source": "builtin",
+        "category": "tran_next",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-d-tooltip\nEXTERN [ IF_FILE_EXISTS ] filename stateLabel\n```\nThe dialogue continues at the state with label stateLabel in the file filename.DLG. The whole transition is not compiled if there's IF_FILE_EXISTS and the file filename doesn't exist."
+        },
+        "detail": "EXTERN [ IF_FILE_EXISTS ] filename stateLabel"
+    },
+    {
+        "label": "GOTO",
+        "kind": 14,
+        "source": "builtin",
+        "category": "tran_next",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-d-tooltip\nGOTO stateLabel\n```\nThe dialogue continues at the state with label stateLabel in the same DLG file as the current state."
+        }
+    },
+    {
+        "label": "DO",
+        "kind": 14,
+        "source": "builtin",
+        "category": "trans_feature",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-d-tooltip\nDO stateActionString\n```\nIf this transition is taken, the stateActionString is executed."
+        }
+    },
+    {
+        "label": "FLAGS",
+        "kind": 14,
+        "source": "builtin",
+        "category": "trans_feature",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-d-tooltip\nFLAGS integer\n```\nThis allows you to set the features associated with a transition directly using the binary format of DLG files."
+        }
+    },
+    {
+        "label": "JOURNAL",
+        "kind": 14,
+        "source": "builtin",
+        "category": "trans_feature",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-d-tooltip\nJOURNAL text\n```\nIf this transition is taken, the text is added to the PC's journal."
+        }
+    },
+    {
+        "label": "REPLY",
+        "kind": 14,
+        "source": "builtin",
+        "category": "trans_feature",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-d-tooltip\nREPLY replyText\n```\nIf this transition is taken, the PC says the replyText."
+        }
+    },
+    {
+        "label": "SOLVED_JOURNAL",
+        "kind": 14,
+        "source": "builtin",
+        "category": "trans_feature",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-d-tooltip\nSOLVED_JOURNAL text\n```\nIf this transition is taken, the text is added to the \"solved\" section of the PC's journal."
+        }
+    },
+    {
+        "label": "UNSOLVED_JOURNAL",
+        "kind": 14,
+        "source": "builtin",
+        "category": "trans_feature",
+        "documentation": {
+            "kind": "markdown",
+            "value": "```weidu-d-tooltip\nUNSOLVED_JOURNAL text\n```\nIf this transition is taken, the text is added to the \"unsolved\" section of the PC's journal."
         }
     },
     {
@@ -428,115 +530,13 @@
         "detail": "COPY_TRANS_LATE [ SAFE ] filename stateLabel"
     },
     {
-        "label": "REPLY",
+        "label": "UNLESS",
         "kind": 14,
         "source": "builtin",
-        "category": "trans_feature",
+        "category": "when",
         "documentation": {
             "kind": "markdown",
-            "value": "```weidu-d-tooltip\nREPLY replyText\n```\nIf this transition is taken, the PC says the replyText."
-        }
-    },
-    {
-        "label": "DO",
-        "kind": 14,
-        "source": "builtin",
-        "category": "trans_feature",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-d-tooltip\nDO stateActionString\n```\nIf this transition is taken, the stateActionString is executed."
-        }
-    },
-    {
-        "label": "JOURNAL",
-        "kind": 14,
-        "source": "builtin",
-        "category": "trans_feature",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-d-tooltip\nJOURNAL text\n```\nIf this transition is taken, the text is added to the PC's journal."
-        }
-    },
-    {
-        "label": "SOLVED_JOURNAL",
-        "kind": 14,
-        "source": "builtin",
-        "category": "trans_feature",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-d-tooltip\nSOLVED_JOURNAL text\n```\nIf this transition is taken, the text is added to the \"solved\" section of the PC's journal."
-        }
-    },
-    {
-        "label": "UNSOLVED_JOURNAL",
-        "kind": 14,
-        "source": "builtin",
-        "category": "trans_feature",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-d-tooltip\nUNSOLVED_JOURNAL text\n```\nIf this transition is taken, the text is added to the \"unsolved\" section of the PC's journal."
-        }
-    },
-    {
-        "label": "FLAGS",
-        "kind": 14,
-        "source": "builtin",
-        "category": "trans_feature",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-d-tooltip\nFLAGS integer\n```\nThis allows you to set the features associated with a transition directly using the binary format of DLG files."
-        }
-    },
-    {
-        "label": "GOTO",
-        "kind": 14,
-        "source": "builtin",
-        "category": "tran_next",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-d-tooltip\nGOTO stateLabel\n```\nThe dialogue continues at the state with label stateLabel in the same DLG file as the current state."
-        }
-    },
-    {
-        "label": "EXTERN",
-        "kind": 14,
-        "source": "builtin",
-        "category": "tran_next",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-d-tooltip\nEXTERN [ IF_FILE_EXISTS ] filename stateLabel\n```\nThe dialogue continues at the state with label stateLabel in the file filename.DLG. The whole transition is not compiled if there's IF_FILE_EXISTS and the file filename doesn't exist."
-        },
-        "detail": "EXTERN [ IF_FILE_EXISTS ] filename stateLabel"
-    },
-    {
-        "label": "EXIT",
-        "kind": 14,
-        "source": "builtin",
-        "category": "tran_next",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-d-tooltip\nEXIT\n```\nThe conversation ends."
-        },
-        "detail": "EXIT"
-    },
-    {
-        "label": "IF",
-        "kind": 14,
-        "source": "builtin",
-        "category": "multi",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-d-tooltip\nIF\n```\nTransition: `IF transTriggerString [ THEN ] transFeature list transNext`\n\nIf the transTriggerString evaluates to true or is empty, this transition is viable. If it contains no replyText within its transFeature list, it is immediately taken. Otherwise, the replyText is presented as an option to the user. If the transition is taken, any actions in the transFeature list are performed and the dialogue flows to the point indicated by the transNext. transitions are evaluated in \"reverse order\".\n\n---\nAction condition: `IF String`.\n\nThe action is processed if the element being altered/replaced/added to contains a substring matching against the String regexp.\n\n---\nState: `IF [ WEIGHT #weightNumber ] stateTriggerString [ THEN ] [ BEGIN ] stateLabel SAY sayText [ = sayText ... ] transition list END`\n\n[Online documentation](https://weidu.org/~thebigg/README-WeiDU.html#state)"
-        }
-    },
-    {
-        "label": "^",
-        "kind": 14,
-        "source": "builtin",
-        "category": "string",
-        "documentation": {
-            "kind": "markdown",
-            "value": "```weidu-d-tooltip\nString ^ String\n```\nString literal concatenation. The second string is appended to the first string. No whitespace is added. Thus \"hello\" ^ \"World\" is the same as \"helloWorld\"."
+            "value": "```weidu-d-tooltip\nUNLESS String\n```\nThe action is not processed if the element being altered/replaced/added to contains a substring matching against the String regexp."
         }
     }
 ]
